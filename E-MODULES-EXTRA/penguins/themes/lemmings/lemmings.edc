@@ -278,12 +278,12 @@ data
 {
    item: "PopulationName" "Lemmings";
  //item: "<action>" "width height speed";
-   item: "Walker" "20 20 90"; //90
-   item: "Faller" "16 20 600"; //600
-   item: "Climber" "16 32 80"; //80
-   item: "Floater" "18 32 80";
-   item: "Splatter" "32 32 80";
-   item: "Flyer" "18 32 80";
+   item: "Walker" "20 20 25";
+   item: "Faller" "16 20 150";
+   item: "Climber" "16 32 20";
+   item: "Floater" "18 32 35";
+   item: "Splatter" "32 32 35";
+   item: "Flyer" "18 32 35";
    item: "Bomber" "64 83 0";
 
  //item: "Custom_x" "width height h_speed v_speed r_min r_max";

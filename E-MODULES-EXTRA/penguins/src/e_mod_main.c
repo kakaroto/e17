@@ -506,8 +506,8 @@ _cb_animator(void *data)
       // ******  CUSTOM ACTIONS  ********
       if (tux->custom)
       {
-         tux->x += ((double)tux->custom->h_speed / 100);
-         tux->y += ((double)tux->custom->v_speed / 100);
+         tux->x += ((double)tux->custom->h_speed * ecore_animator_frametime_get());
+         tux->y += ((double)tux->custom->v_speed * ecore_animator_frametime_get());
          if (!_is_inside_any_win(pop,
                (int)tux->x+(tux->action->w/2),
                (int)tux->y+tux->action->h+1,
@@ -523,7 +523,7 @@ _cb_animator(void *data)
       // ******  FALLER  ********
       else if (tux->action->id == ID_FALLER)
       {
-         tux->y += ((double)tux->action->speed / 100);
+         tux->y += ((double)tux->action->speed * ecore_animator_frametime_get());
          if ((touch = _is_inside_any_win(pop,
                         (int)tux->x+(tux->action->w/2),
                         (int)tux->y + tux->action->h,
@@ -545,7 +545,7 @@ _cb_animator(void *data)
       // ******  FLOATER ********
       else if (tux->action->id == ID_FLOATER)
       {
-         tux->y += ((double)tux->action->speed / 100);
+         tux->y += ((double)tux->action->speed * ecore_animator_frametime_get());
          if ((touch = _is_inside_any_win(pop,
                         (int)tux->x+(tux->action->w/2),
                         (int)tux->y + tux->action->h,
@@ -569,7 +569,9 @@ _cb_animator(void *data)
          // left
          else if (tux->reverse)
          {
-            tux->x -= ((double)tux->action->speed / 100);
+            //~ printf("FT: %f\n", edje_frametime_get());
+            //~ printf("FT: %f\n", pop->frame_speed);
+            tux->x -= ((double)tux->action->speed * ecore_animator_frametime_get());
             if ((touch = _is_inside_any_win(pop, (int)tux->x , (int)tux->y, _RET_RIGHT_VALUE)) ||
                 tux->x < 0)
             {
@@ -588,7 +590,7 @@ _cb_animator(void *data)
          // right
          else
          {
-            tux->x += ((double)tux->action->speed / 100);
+            tux->x += ((double)tux->action->speed * ecore_animator_frametime_get());
             if ((touch = _is_inside_any_win(pop, (int)tux->x + tux->action->w, (int)tux->y, _RET_LEFT_VALUE)) ||
                 (tux->x + tux->action->w) > pop->width)
             {
@@ -613,7 +615,7 @@ _cb_animator(void *data)
       // ******  FLYER  ********
       else if (tux->action->id == ID_FLYER)
       {
-         tux->y -= ((double)tux->action->speed / 100);
+         tux->y -= ((double)tux->action->speed * ecore_animator_frametime_get());
          tux->x += (random() % 3) - 1;
          if (tux->y < 0)
          {
@@ -624,7 +626,7 @@ _cb_animator(void *data)
       // ******  ANGEL  ********
       else if (tux->action->id == ID_ANGEL)
       {
-         tux->y -= ((double)tux->action->speed / 100);
+         tux->y -= ((double)tux->action->speed * ecore_animator_frametime_get());
          tux->x += (random() % 3) - 1;
          if (tux->y < -100)
             _reborn(tux);
@@ -632,7 +634,7 @@ _cb_animator(void *data)
       // ******  CLIMBER  ********
       else if (tux->action->id == ID_CLIMBER)
       {
-         tux->y -= ((double)tux->action->speed / 100);
+         tux->y -= ((double)tux->action->speed * ecore_animator_frametime_get());
          // left
          if (tux->reverse)
          {
@@ -671,7 +673,7 @@ _cb_animator(void *data)
       // printf("PENGUINS: Place tux at x:%d y:%d w:%d h:%d\n", tux->x, tux->y, tux->action->w, tux->action->h);
       evas_object_move(tux->obj, (int)tux->x, (int)tux->y);
   }
-  return 1;
+  return ECORE_CALLBACK_RENEW;
 }
 
 static int
@@ -893,7 +895,7 @@ _start_bombing_at(Penguin *tux, int at_y)
 }
 
 static void 
-_cb_custom_end (void *data, Evas_Object *o, const char *emi, const char *src)
+_cb_custom_end(void *data, Evas_Object *o, const char *emi, const char *src)
 {
    Penguin* tux = data;
    //printf("PENGUINS: Custom action end.\n");

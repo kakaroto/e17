@@ -146,14 +146,14 @@ data
     *    speed: the speed of the movement (not the frame rate)
     *           acceptable value are from 10 to 1000
     *************************************************************/
-   item: "Faller" "30 30 600"; //600
-   item: "Floater" "30 30 300"; //600
-   item: "Walker" "30 30 150"; //90
-   item: "Climber" "30 30 150";
+   item: "Faller" "30 30 200";
+   item: "Floater" "30 30 70";
+   item: "Walker" "30 30 50";
+   item: "Climber" "30 30 40";
    item: "Bomber" "32 32 0";
    item: "Splatter" "30 30 0";
-   item: "Flyer" "30 30 200";
-   item: "Angel" "44 30 100"; //This is an optional action
+   item: "Flyer" "30 30 70";
+   item: "Angel" "44 30 30"; //This is an optional action
    
    /**************************************************************
     * Custom actions definitions. 
