@@ -312,15 +312,9 @@ public:
    * @param func_data Data passed to @p func above.
    * @return A handle to the item added or NULL if not possible
    *
-   * @ingroup Genlist
    */
-  
-   //EAPI Elm_Genlist_Item *elm_genlist_item_append(Evas_Object *obj, const Elm_Genlist_Item_Class *itc,
-   //                       const void *data, Elm_Genlist_Item *parent, Elm_Genlist_Item_Flags flags, 
-   //                       Evas_Smart_Cb func, const void *func_data);
 
-
-  void append (GenListColumnConstructor *construction, GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
+  GenListItem *append (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
   
   // TODO: which type is event_info here instead of void*?
   sigc::signal <void, GenListColumnSelector&, const Evasxx::Object&, void*> signalSelect;
@@ -342,13 +336,7 @@ private:
 };
 
 #if 0
-
-
    /* operations to add items */
-   EAPI Elm_Genlist_Item *elm_genlist_item_append(Evas_Object *obj, const Elm_Genlist_Item_Class *itc,
-                                                  const void *data, Elm_Genlist_Item *parent, 
-                                                  Elm_Genlist_Item_Flags flags, Evas_Smart_Cb func, 
-                                                  const void *func_data);
    EAPI Elm_Genlist_Item *elm_genlist_item_prepend(Evas_Object *obj, const Elm_Genlist_Item_Class *itc, const void *data, Elm_Genlist_Item *parent, Elm_Genlist_Item_Flags flags, Evas_Smart_Cb func, const void *func_data);
    EAPI Elm_Genlist_Item *elm_genlist_item_insert_before(Evas_Object *obj, const Elm_Genlist_Item_Class *itc, const void *data, Elm_Genlist_Item *before, Elm_Genlist_Item_Flags flags, Evas_Smart_Cb func, const void *func_data);
    EAPI Elm_Genlist_Item *elm_genlist_item_insert_after(Evas_Object *obj, const Elm_Genlist_Item_Class *itc, const void *data, Elm_Genlist_Item *after, Elm_Genlist_Item_Flags flags, Evas_Smart_Cb func, const void *func_data);
@@ -366,32 +354,7 @@ private:
     * icon_top_text_bottom
     */
 
-   /* Genlist Item operation */
-   EAPI Elm_Genlist_Item *elm_genlist_item_next_get(const Elm_Genlist_Item *item);
-   EAPI Elm_Genlist_Item *elm_genlist_item_prev_get(const Elm_Genlist_Item *item);
-   EAPI Evas_Object      *elm_genlist_item_genlist_get(const Elm_Genlist_Item *item);
-   EAPI Elm_Genlist_Item *elm_genlist_item_parent_get(const Elm_Genlist_Item *it);
-   EAPI void              elm_genlist_item_subitems_clear(Elm_Genlist_Item *item);
-   EAPI void              elm_genlist_item_selected_set(Elm_Genlist_Item *item, Eina_Bool selected);
-   EAPI Eina_Bool         elm_genlist_item_selected_get(const Elm_Genlist_Item *item);
-   EAPI void              elm_genlist_item_expanded_set(Elm_Genlist_Item *item, Eina_Bool expanded);
-   EAPI Eina_Bool         elm_genlist_item_expanded_get(const Elm_Genlist_Item *item);
-   EAPI void              elm_genlist_item_disabled_set(Elm_Genlist_Item *item, Eina_Bool disabled);
-   EAPI Eina_Bool         elm_genlist_item_disabled_get(const Elm_Genlist_Item *item);
-   EAPI void              elm_genlist_item_display_only_set(Elm_Genlist_Item *it, Eina_Bool display_only);
-   EAPI Eina_Bool         elm_genlist_item_display_only_get(const Elm_Genlist_Item *it);
-   EAPI void              elm_genlist_item_show(Elm_Genlist_Item *item);
-   EAPI void              elm_genlist_item_bring_in(Elm_Genlist_Item *item);
-   EAPI void              elm_genlist_item_top_show(Elm_Genlist_Item *item);
-   EAPI void              elm_genlist_item_top_bring_in(Elm_Genlist_Item *item);
-   EAPI void		  elm_genlist_item_middle_show(Elm_Genlist_Item *it);
-   EAPI void		  elm_genlist_item_middle_bring_in(Elm_Genlist_Item *it);
-   EAPI void              elm_genlist_item_del(Elm_Genlist_Item *item);
-   EAPI const void       *elm_genlist_item_data_get(const Elm_Genlist_Item *item);
-   EAPI void              elm_genlist_item_data_set(Elm_Genlist_Item *it, const void *data);
-   EAPI const Evas_Object *elm_genlist_item_object_get(const Elm_Genlist_Item *it);
-   EAPI void              elm_genlist_item_update(Elm_Genlist_Item *item);
- 
+
 #endif // 0
 
 } // end namespace Elmxx

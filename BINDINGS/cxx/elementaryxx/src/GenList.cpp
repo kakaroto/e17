@@ -145,7 +145,7 @@ void GenList::glSelected (GenListColumnSelector &selection, const Evasxx::Object
 
 /* operations to add items */
 
-void GenList::append (GenListColumnConstructor *construction, GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
+GenListItem *GenList::append (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
 {
   assert (mModel);
   
@@ -187,6 +187,8 @@ void GenList::append (GenListColumnConstructor *construction, GenListItem *paren
   {
     mInternalSelList.push_back (selection);
   }
+
+  return GenListItem::wrap (gli);
 }
 
 } // end namespace Elmxx
