@@ -306,10 +306,6 @@ elixir_version(JSContext *cx, uintN argc, jsval *vp)
 static JSBool
 elixir_gc(JSContext *cx, uintN argc, jsval *vp)
 {
-   Eina_List *scx;
-   JSContext *lcx;
-   Eina_Bool suspended;
-
    if (!elixir_params_check(cx, void_params, NULL, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 

@@ -73,11 +73,6 @@ static const elixir_parameter_t*        _edje_object_3int_params[5] = {
    &int_parameter,
    NULL
 };
-static const elixir_parameter_t*        _edje_object_int_params[3] = {
-   &_edje_object_parameter,
-   &int_parameter,
-   NULL
-};
 static const elixir_parameter_t*        _edje_object_2strings_params[4] = {
    &_edje_object_parameter,
    &string_parameter,
@@ -818,7 +813,6 @@ elixir_edje_object_part_exists(JSContext *cx, uintN argc, jsval *vp)
 {
    Evas_Object *eo;
    const char *part;
-   Eina_Bool res;
 
    if (!elixir_string_params_edje_object_string_ret(cx, argc, vp, &eo, &part))
      return JS_FALSE;
@@ -888,24 +882,24 @@ FAST_CALL_PARAMS(edje_object_calc_force, elixir_void_params_edje_object);
 FAST_CALL_PARAMS(edje_object_message_signal_process, elixir_void_params_edje_object);
 
 static JSBool
-elixir_void_params_edje_object_int(void (*func)(Evas_Object *obj, int play),
-                                   JSContext *cx, uintN argc, jsval *vp)
+elixir_void_params_edje_object_bool(void (*func)(Evas_Object *obj, Eina_Bool play),
+				    JSContext *cx, uintN argc, jsval *vp)
 {
    Evas_Object *eo;
    elixir_value_t val[2];
 
-   if (!elixir_params_check(cx, _edje_object_int_params, val, argc, JS_ARGV(cx, vp)))
+   if (!elixir_params_check(cx, _edje_object_bool_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
 
-   func(eo, val[1].v.num);
+   func(eo, val[1].v.bol);
 
    return JS_TRUE;
 }
 
-FAST_CALL_PARAMS(edje_object_play_set, elixir_void_params_edje_object_int);
-FAST_CALL_PARAMS(edje_object_animation_set, elixir_void_params_edje_object_int);
+FAST_CALL_PARAMS(edje_object_play_set, elixir_void_params_edje_object_bool);
+FAST_CALL_PARAMS(edje_object_animation_set, elixir_void_params_edje_object_bool);
 
 static JSBool
 elixir_edje_object_file_set(JSContext *cx, uintN argc, jsval *vp)

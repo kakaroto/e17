@@ -234,14 +234,12 @@ static void
 elixir_evas_event_callback(void *data, Evas *e, void *event_info)
 {
    JSObject *obj_event = NULL;
-   JSClass *evas_event_class;
    struct _js_callback *cb;
    JSObject *parent;
    JSContext *cx;
    jsval js_event = JSVAL_NULL;
    jsval js_return;
    jsval js_data;
-   jsval js_obj;
    jsval argv[3];
 
    cb = elixir_void_get_private(data);

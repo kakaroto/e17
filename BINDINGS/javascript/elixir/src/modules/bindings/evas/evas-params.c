@@ -9,12 +9,6 @@ static const elixir_parameter_t*        _evas_params[2] = {
    NULL
 };
 
-static const elixir_parameter_t*        _evas_any_params[3] = {
-   &evas_parameter,
-   &any_parameter,
-   NULL
-};
-
 /* FIXME: Don't say anything with an undefined arg. */
 static JSBool
 elixir_evas_params(void (*func)(Evas *evas),

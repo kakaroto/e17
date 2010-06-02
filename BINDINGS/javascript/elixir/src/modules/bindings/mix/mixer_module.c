@@ -403,7 +403,7 @@ static Eina_Bool
 module_close(Elixir_Module *em, JSContext *cx)
 {
    void **tmp;
-   int i = 0;
+   unsigned int i = 0;
 
    if (!em->data)
      return EINA_FALSE;
