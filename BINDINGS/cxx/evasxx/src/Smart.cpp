@@ -141,8 +141,9 @@ sigc::signal <void, Object&, void*> *Smart::getEventSignal (const std::string &e
   addEventSignal (event);
   
   struct CustomEventWrap *cew = mCustomSignalMap[event];
+  assert (cew);
 
-  return cew ? cew->customSignal : NULL; // NULL should never return as one is added always
+  return cew->customSignal; // one is added always
 }
 
 void Smart::callEventSignal (const std::string &event, void *event_info)
