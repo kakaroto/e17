@@ -1207,6 +1207,7 @@ _plugins_init(const Evry_API *_api)
 
 #define ACTION_NEW(_name, _type, _icon, _action, _check, _method)	\
    act = EVRY_ACTION_NEW(_name, _type, 0, _icon, _action, _check);	\
+   act->remember_context = EINA_TRUE;					\
    EVRY_ITEM_DATA_INT_SET(act, _method);				\
    EVRY_ITEM(act)->icon_get = &_icon_get;				\
    evry->action_register(act, 1);				       	\
