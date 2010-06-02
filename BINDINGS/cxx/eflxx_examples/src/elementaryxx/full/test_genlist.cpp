@@ -198,18 +198,11 @@ void test_genlist (void *data, Evas_Object *obj, void *event_info)
     GenListColumnSelector1 *select1 = new GenListColumnSelector1 ();
     select1->setItemNum (i * 10);
     
-    gl->append (construct1, NULL, ELM_GENLIST_ITEM_NONE, select1);
+    GenListItem *item = gl->append (construct1, NULL, ELM_GENLIST_ITEM_NONE, select1);
 
     constructList1.push_back (construct1);
     selectList1.push_back (select1);
-#if 0
-        gli = elm_genlist_item_append(gl, &itc1,
-                                      (void *)i/* item data */,
-                                      NULL/* parent */,
-                                      ELM_GENLIST_ITEM_NONE,
-                                      gl_sel/* func */,
-                                      (void *)(i * 10)/* func data */);
-#endif
+
     if (i == 50)
     {
       //evas_object_smart_callback_add(bt_50, "clicked", _bt50_cb, gli);
