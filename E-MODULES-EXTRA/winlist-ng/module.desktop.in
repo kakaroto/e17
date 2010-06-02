@@ -2,5 +2,6 @@
 Type=Link
 Name=Winlist NG
 Icon=e-module-ng
-Comment=<hililight>Winlist Switcher Module</hilight><br>Configure it with: <br> Config Panel > Extensions > Winlist NG 
+Comment=<hilight>Winlist Switcher Module</hilight><br>Configure it with: <br> Config Panel > Extensions > Winlist NG 
+Comment[it]=<hilight>Modulo commutazione finestre</hilight><br>Per configurarlo: Pannello di configurazione > Estensioni > Winlist NG 
 X-Enlightenment-ModuleType=system
