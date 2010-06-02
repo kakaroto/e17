@@ -79,7 +79,8 @@ static Evry_Module *evry_module = NULL;
 static Plugin *_plug;
 static Eina_List *actions = NULL;
 static Eina_List *players = NULL;
-
+static Ecore_Event_Handler *select_handler = NULL;
+static Eina_Bool plugin_selected = EINA_FALSE;
 static E_DBus_Connection *conn = NULL;
 static E_DBus_Signal_Handler *cb_name_owner_changed = NULL;
 static E_DBus_Signal_Handler *cb_tracklist_change = NULL;
@@ -191,7 +192,7 @@ _dbus_cb_current_track(void *data, DBusMessage *reply, DBusError *error)
 	p->current_track = num;
 
 	it = eina_list_nth(p->tracks, p->current_track);
-	if (it) evry->item_changed(it, 1, 0);
+	if (it) evry->item_changed(it, 1, plugin_selected);
      }
 }
 
@@ -639,7 +640,7 @@ _begin(Evry_Plugin *plugin, const Evry_Item *item __UNUSED__)
 }
 
 static void
-_cleanup(Evry_Plugin *plugin)
+_finish(Evry_Plugin *plugin)
 {
    GET_PLUGIN(p, plugin);
    Evry_Item *it;
@@ -1297,6 +1298,34 @@ _cb_key_down(Evry_Plugin *plugin, const Ecore_Event_Key *ev)
 }
 
 static int
+_cb_plugin_selected(void *data, int type, void *event)
+{
+   Evry_Event_Item_Selected *ev = event;
+   Track *t;
+
+   if (ev->item != EVRY_ITEM(_plug))
+     {
+	plugin_selected = EINA_FALSE;
+	return 1;
+     }
+
+   GET_PLUGIN(p, _plug);
+
+   if (!p)
+     return 1;
+
+   plugin_selected = EINA_TRUE;
+
+   if ((t = eina_list_nth(p->tracks, p->current_track)))
+     {
+	if (!EVRY_ITEM(t)->selected)
+	  evry->item_changed(EVRY_ITEM(t), 1, 1);
+     }
+
+   return 1;
+}
+
+static int
 _plugins_init(const Evry_API *_api)
 {
    Evry_Action *act;
@@ -1328,10 +1357,13 @@ _plugins_init(const Evry_API *_api)
 
 
    p = EVRY_PLUGIN_NEW(Plugin, N_("Playlist"), "emblem-sound", MPRIS_TRACK,
-		       _begin, _cleanup, _fetch, NULL);
+		       _begin, _finish, _fetch, NULL);
    p->history     = EINA_FALSE;
    p->async_fetch = EINA_TRUE;
    p->cb_key_down = &_cb_key_down;
+
+   select_handler = evry->event_handler_add(EVRY_EVENT_PLUGIN_SELECTED,
+					    _cb_plugin_selected, NULL);
 
    if (evry->plugin_register(p, EVRY_PLUGIN_SUBJECT, 0))
      {
@@ -1445,6 +1477,9 @@ _plugins_shutdown(void)
 	if (cb_name_owner_changed) e_dbus_signal_handler_del(conn, cb_name_owner_changed);
 	e_dbus_connection_close(conn);
      }
+
+   ecore_event_handler_del(select_handler);
+   select_handler = NULL;
 
    EINA_LIST_FREE(players, player)
      eina_stringshare_del(player);
