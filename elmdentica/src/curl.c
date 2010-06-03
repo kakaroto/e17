@@ -206,7 +206,7 @@ gint ed_curl_get(char *screen_name, char *password, http_request * request, int 
 	} else {
 		res = curl_easy_getinfo(ua, CURLINFO_RESPONSE_CODE, &request->response_code);
 		if(debug) printf("Response code: %ld\n", request->response_code);
-		return(0);
+		return(content_length>0?0:-1);
 	}
 }
 
