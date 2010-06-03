@@ -1,0 +1,17 @@
+gone till after zentific code freeze has begun (15 June 2010)
+add whatever to this todo in the proper section and I'll get to it when I get back
+
+things I am/will be working on:
+___URGENT___
+*hal detection in efm to only attempt hal actions when hal is active
+*mount actions for eeze
+*eeze integration into efm to replace hal
+
+
+___EVENTUAL___
+efl guake+vte lib clones
+efl comix clone
+efl gmpc clone
+evry module for controlling vms (libvirt, xen, possibly vmware depending on legality?)
+efl bittorrent client
+efl im client?
