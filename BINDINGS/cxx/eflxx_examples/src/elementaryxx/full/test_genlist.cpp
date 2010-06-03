@@ -54,10 +54,6 @@ public:
   {
     return false;
   }
-    
-  void del (GenListColumnConstructor *construction, Evasxx::Object &obj)
-  {
-  }
 };
 
 class GenListColumnSelector1 : public GenListColumnSelector
