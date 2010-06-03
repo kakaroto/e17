@@ -68,7 +68,8 @@ Evas_Object *timeline_label=NULL, *status_list=NULL, *scroller=NULL, *status=NUL
 char * dm_to=NULL;
 
 StatusesList	*statuses=NULL;
-int debug=0;
+int debug=0, mouse_x=0, mouse_y=0;
+Evas_Coord finger_size;
 int first_message=1;
 time_t now;
 
@@ -784,7 +785,7 @@ static void on_bubble_icon_mouse_up(void *data, Evas *e, Evas_Object *icon, void
 	gettimeofday(&tv, NULL);
 	now = (double)tv.tv_sec + (double)tv.tv_usec/1000000;
 	delta = now - icon_zoom_init;
-	if( (delta >= 0.25) && (delta <= 1.25) )
+	if( delta <= 1 )
 		zoom_icon(data);
 	icon_zoom_init = 0;
 }
@@ -795,6 +796,7 @@ static void on_bubble_mouse_down(void *data, Evas *e, Evas_Object *obj, void *ev
 	gettimeofday(&tv, NULL);
 	
 	mouse_held_down = (double)tv.tv_sec + (double)tv.tv_usec/1000000;
+	evas_pointer_output_xy_get(e, &mouse_x, &mouse_y);
 }
 
 static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info) {
@@ -802,9 +804,21 @@ static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *even
 	ub_Bubble * ubBubble = eina_hash_find(status2user, &bubble);
 	double time_delta;
 	struct timeval tv;
+	int m_x=0, m_y=0;
 
 	gettimeofday(&tv, NULL);
 	time_delta = ((double)tv.tv_sec + (double)tv.tv_usec/1000000) - mouse_held_down;
+
+	evas_pointer_output_xy_get(e, &m_x, &m_y);
+
+	if( (abs(mouse_x-m_x) >= finger_size) || (abs(mouse_y-m_y) >= finger_size)) {
+		mouse_x=m_x;
+		mouse_y=m_y;
+		return;
+	}
+
+	mouse_x=m_x;
+	mouse_y=m_y;
 
 	if( time_delta < 0.25 || time_delta >= 0.8 ) return;
 	else mouse_held_down=0;
@@ -1414,6 +1428,8 @@ EAPI int elm_main(int argc, char **argv)
 	if(settings->fullscreen) toggle_fullscreen(settings->fullscreen);
 
 	curl_global_init(CURL_GLOBAL_ALL);
+
+	finger_size =  elm_finger_size_get();
 
 	elm_run();
 	elm_shutdown();
