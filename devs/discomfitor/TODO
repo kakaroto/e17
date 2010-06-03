@@ -6,6 +6,7 @@ ___URGENT___
 *hal detection in efm to only attempt hal actions when hal is active
 *mount actions for eeze
 *eeze integration into efm to replace hal
+*update battery fuzzy mode to do rolling averages
 
 
 ___EVENTUAL___
