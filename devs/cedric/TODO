@@ -1,0 +1,52 @@
+* Eet
+	- add inheritance
+
+* Evas
+	- add _stringshared version for evas_event_feed_*
+	- add joystick support
+	- cleanup sdl engine
+d	- rewrite preload support
+	- add a prepare phase that could be used by all engine when we got many main CPU to prepare font and load image in parallel (should work also with dsp)
+h	- add quadtree support
+
+* Ecore
+	- add ecore_long_run with pipe facility (max = CPU - 1, with and without queue)
+	- replace int by Eina_Bool when it make sense for callback
+
+* Edje
+d	- Fixed Point
+	- Make it possible to catch requested file and to rewrite it
+	- Optimize file format
+	- Optimize memory layout thanks to new file format
+
+* Elixir
+h	- add eet -> js object
+	- add elementary binding
+	- add physique binding
+	- use eet connection
+
+* Explicit
+	- add server
+h	- add client library
+	- integrate with edje (so we can request url image from lua, embryo or with USER directive)
+	- integrate with elementary
+
+* Efo
+	- write module interface
+	- write info manipulation library
+
+* Et
+	- write basic contact/place efo module
+	- write elementary interface (pan + efo)
+
+* Emap
+	- write location efo module
+	- write extraction code for devs info.txt
+	- write elementary interface (pan + efo + maps)
+
+* Eyelight
+	- write own layout function
+	- fix expose and thumbnail display to be fully async
+
+h: half done
+d: done
