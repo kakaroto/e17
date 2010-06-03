@@ -285,3 +285,71 @@ elixir_get_fct(JSContext *cx, jsval arg)
 {
    return JS_ValueToFunction(cx, arg);
 }
+
+Eina_List *
+elixir_jsmap_add(Eina_List *list, JSContext *cx, jsval val, void *data)
+{
+   Elixir_Jsmap *m;
+
+   m = malloc(sizeof (Elixir_Jsmap));
+   if (!m) return list;
+
+   m->val = val;
+   m->data = data;
+
+   if (!elixir_rval_register(cx, &m->val))
+     {
+	free(m);
+	return list;
+     }
+
+   return eina_list_append(list, m);
+}
+
+Eina_List *
+elixir_jsmap_del(Eina_List *list, JSContext *cx, jsval val)
+{
+   Elixir_Jsmap *m;
+   Eina_List *l;
+
+   EINA_LIST_FOREACH(list, l, m)
+     if (m->val == val)
+       {
+	  elixir_rval_delete(cx, &m->val);
+	  free(m);
+
+	  return eina_list_remove_list(list, l);
+       }
+
+   return list;
+}
+
+void *
+elixir_jsmap_find(Eina_List **list, jsval val)
+{
+   Elixir_Jsmap *m;
+   Eina_List *l;
+
+   EINA_LIST_FOREACH(*list, l, m)
+     if (m->val == val)
+       {
+	  *list = eina_list_promote_list(*list, l);
+	  return m->data;
+       }
+
+   return NULL;
+}
+
+void
+elixir_jsmap_free(Eina_List *list, JSContext *cx)
+{
+   Elixir_Jsmap *m;
+
+   EINA_LIST_FREE(list, m)
+     {
+	elixir_rval_delete(cx, &m->val);
+	elixir_void_free(m->data);
+	free(m);
+     }
+}
+

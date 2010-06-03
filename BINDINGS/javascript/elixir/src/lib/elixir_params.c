@@ -226,7 +226,7 @@ elixir_params_get_string(JSContext* cx, jsval arg, JSString** str, int index)
    return 0;
 }
 
-static int
+int
 elixir_params_check_class(const JSClass *object, const JSClass *match)
 {
    if (!object)

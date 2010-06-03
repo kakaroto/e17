@@ -419,6 +419,7 @@ _func_smart_cb(void *data, Evas_Object *obj, void *event_info)
 static JSBool
 elixir_evas_object_smart_callback_add(JSContext *cx, uintN argc, jsval *vp)
 {
+   Eina_List *lst;
    Evas_Object *eo;
    const char *event;
    void *data;
@@ -431,6 +432,11 @@ elixir_evas_object_smart_callback_add(JSContext *cx, uintN argc, jsval *vp)
    event = elixir_get_string_bytes(val[1].v.str, NULL);
    data = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), val[3].v.any, val[2].v.fct);
 
+   /* Prevent leaking by linking the callback to the object lifetime */
+   lst = evas_object_data_get(eo, "elixir_jsmap");
+   lst = elixir_jsmap_add(lst, cx, elixir_void_get_jsval(data), data);
+   evas_object_data_set(eo, "elixir_jsmap", lst);
+
    evas_object_smart_callback_add(eo, event, _func_smart_cb, data);
 
    return JS_TRUE;
@@ -439,6 +445,7 @@ elixir_evas_object_smart_callback_add(JSContext *cx, uintN argc, jsval *vp)
 static JSBool
 elixir_evas_object_smart_callback_del(JSContext *cx, uintN argc, jsval *vp)
 {
+   Eina_List *lst;
    Evas_Object *eo;
    const char *event;
    void *data;
@@ -450,6 +457,11 @@ elixir_evas_object_smart_callback_del(JSContext *cx, uintN argc, jsval *vp)
    GET_PRIVATE(cx, val[0].v.obj, eo);
    event = elixir_get_string_bytes(val[1].v.str, NULL);
    data = evas_object_smart_callback_del(eo, event, _func_smart_cb);
+
+   /* Prevent leaking by linking the callback to the object lifetime */
+   lst = evas_object_data_get(eo, "elixir_jsmap");
+   lst = elixir_jsmap_del(lst, cx, elixir_void_get_jsval(data));
+   evas_object_data_set(eo, "elixir_jsmap", lst);
 
    JS_SET_RVAL(cx, vp, elixir_void_free(data));
    return JS_TRUE;

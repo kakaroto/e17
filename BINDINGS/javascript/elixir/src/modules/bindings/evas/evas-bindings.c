@@ -344,6 +344,7 @@ evas_object_to_elixir_object(Evas_Object *obj)
 static void
 _elixir_evas_object(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
+   Eina_List *jsmap;
    JSContext *cx;
    JSObject *js_obj;
    jsval *tmp;
@@ -368,6 +369,9 @@ _elixir_evas_object(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    elixir_rval_delete(cx, tmp);
    free(tmp);
+
+   jsmap = evas_object_data_del(obj, "elixir_jsmap");
+   elixir_jsmap_free(jsmap, cx);
 
    if (suspended) elixir_function_stop(cx);
 

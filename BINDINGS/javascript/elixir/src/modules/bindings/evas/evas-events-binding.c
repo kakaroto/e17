@@ -411,6 +411,7 @@ elixir_object_event_callback(void *data, Evas *e, Evas_Object *obj, void *event)
 static JSBool
 elixir_evas_object_event_callback_add(JSContext *cx, uintN argc, jsval *vp)
 {
+   Eina_List *lst;
    Evas_Object *know = NULL;
    Evas_Callback_Type type;
    struct _js_callback *cb;
@@ -429,6 +430,12 @@ elixir_evas_object_event_callback_add(JSContext *cx, uintN argc, jsval *vp)
    cb->type = type;
 
    cdata = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), val[3].v.any, cb);
+
+   /* Prevent leaking by linking the callback to the object lifetime */
+   lst = evas_object_data_get(know, "elixir_jsmap");
+   lst = elixir_jsmap_add(lst, cx, elixir_void_get_jsval(cdata), cdata);
+   evas_object_data_set(know, "elixir_jsmap", lst);
+
    evas_object_event_callback_add(know, type, elixir_object_event_callback, cdata);
 
    return JS_TRUE;
@@ -463,6 +470,7 @@ elixir_evas_event_callback_add(JSContext *cx, uintN argc, jsval *vp)
 static JSBool
 elixir_evas_object_event_callback_del(JSContext *cx, uintN argc, jsval *vp)
 {
+   Eina_List *lst;
    Evas_Object *know = NULL;
    void *cdata;
    Evas_Callback_Type type;
@@ -475,10 +483,17 @@ elixir_evas_object_event_callback_del(JSContext *cx, uintN argc, jsval *vp)
    GET_PRIVATE(cx, val[0].v.obj, know);
    type = val[1].v.num;
 
-   /* FIXME: It will delete the first callback, he could found insteed of the right one */
-   cdata = evas_object_event_callback_del(know, type, elixir_object_event_callback);
+   /* Prevent leaking */
+   lst = evas_object_data_get(know, "elixir_jsmap");
+   cdata = elixir_jsmap_find(&lst, val[3].v.any);
+
+   cdata = evas_object_event_callback_del_full(know, type, elixir_object_event_callback, cdata);
    if (elixir_void_get_private(cdata))
      free(elixir_void_get_private(cdata));
+
+   lst = elixir_jsmap_del(lst, cx, elixir_void_get_jsval(cdata));
+   evas_object_data_set(know, "elixir_jsmap", lst);
+
    ret = elixir_void_free(cdata);
 
    JS_SET_RVAL(cx, vp, ret);
@@ -500,10 +515,10 @@ elixir_evas_event_callback_del(JSContext *cx, uintN argc, jsval *vp)
    GET_PRIVATE(cx, val[0].v.obj, know);
    type = val[1].v.num;
 
-   /* FIXME: It will delete the first callback, he could found insteed of the right one */
    cdata = evas_event_callback_del(know, type, elixir_evas_event_callback);
    if (elixir_void_get_private(cdata))
      free(elixir_void_get_private(cdata));
+
    ret = elixir_void_free(cdata);
 
    JS_SET_RVAL(cx, vp, ret);

@@ -10,6 +10,9 @@
 #include <libgen.h>
 #include <alloca.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include <Ecore.h>
 #include <Ecore_Download.h>
@@ -472,6 +475,45 @@ elixir_ecore_download_file_data_get(JSContext *cx, uintN argc, jsval *vp)
    return JS_TRUE;
 }
 
+static JSBool
+elixir_mkdir(JSContext *cx, uintN argc, jsval *vp)
+{
+   const char *path;
+   Eina_Bool result = EINA_FALSE;
+   elixir_value_t val[1];
+
+   if (!elixir_params_check(cx, string_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   path = elixir_get_string_bytes(val[0].v.str, NULL);
+   if (path)
+     if (mkdir(path, S_IRUSR | S_IWUSR | S_IXUSR
+	       | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == 0)
+       result = EINA_TRUE;
+
+   JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(result));
+   return JS_TRUE;
+}
+
+static JSBool
+elixir_chdir(JSContext *cx, uintN argc, jsval *vp)
+{
+   const char *path;
+   Eina_Bool result = EINA_FALSE;
+   elixir_value_t val[1];
+
+   if (!elixir_params_check(cx, string_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   path = elixir_get_string_bytes(val[0].v.str, NULL);
+   if (path)
+     if (chdir(path) == 0)
+       result = EINA_TRUE;
+
+   JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(result));
+   return JS_TRUE;
+}
+
 static JSFunctionSpec           ecore_download_functions[] = {
   ELIXIR_FN(ecore_download_init, 0, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_download_shutdown, 0, JSPROP_ENUMERATE, 0 ),
@@ -485,6 +527,8 @@ static JSFunctionSpec           ecore_download_functions[] = {
   ELIXIR_FN(ecore_download_file_destroy, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_download_file_data_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_download_file_data_get, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(mkdir, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(chdir, 1, JSPROP_ENUMERATE, 0 ),
   JS_FS_END
 };
 

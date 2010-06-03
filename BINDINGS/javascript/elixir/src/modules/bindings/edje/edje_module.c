@@ -40,6 +40,13 @@ static const elixir_parameter_t*        _edje_object_string_2double_params[5] = 
    &double_parameter,
    NULL
 };
+static const elixir_parameter_t*        _edje_object_string_2int_params[5] = {
+   &_edje_object_parameter,
+   &string_parameter,
+   &int_parameter,
+   &int_parameter,
+   NULL
+};
 static const elixir_parameter_t*	_edje_object_double_params[3] = {
    &_edje_object_parameter,
    &double_parameter,
@@ -166,6 +173,13 @@ static const elixir_parameter_t*        _edje_object_func_any_params[4] = {
    &any_parameter,
    NULL
 };
+static const elixir_parameter_t*        _edje_object_string_func_any_params[5] = {
+   &_edje_object_parameter,
+   &string_parameter,
+   &function_parameter,
+   &any_parameter,
+   NULL
+};
 static const elixir_parameter_t*        _edje_object_2strings_func_any_params[6] = {
    &_edje_object_parameter,
    &string_parameter,
@@ -247,6 +261,7 @@ static void
 _elixir_evas_object(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Eina_Bool suspended;
+   Eina_List *jsmap;
    JSContext *cx;
    JSObject *js_obj;
    jsval *tmp;
@@ -270,6 +285,9 @@ _elixir_evas_object(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    elixir_rval_delete(cx, tmp);
    free(tmp);
+
+   jsmap = evas_object_data_del(obj, "elixir_jsmap");
+   elixir_jsmap_free(jsmap, cx);
 
    if (suspended) elixir_function_stop(cx);
 
@@ -411,6 +429,21 @@ elixir_void_params_int(void (*func)(int count),
 
 FAST_CALL_PARAMS(edje_file_cache_set, elixir_void_params_int);
 FAST_CALL_PARAMS(edje_collection_cache_set, elixir_void_params_int);
+
+static JSBool
+elixir_edje_external_param_type_str(JSContext *cx, uintN argc, jsval *vp)
+{
+   const char *result;
+   elixir_value_t val[1];
+
+   if (!elixir_params_check(cx, int_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   result = edje_external_param_type_str(val[0].v.num);
+   elixir_return_str(cx, vp, result);
+
+   return JS_TRUE;
+}
 
 static JSBool
 elixir_edje_file_group_exists(JSContext *cx, uintN argc, jsval *vp)
@@ -727,6 +760,9 @@ elixir_void_params_edje_object_string(void (*func)(const Evas_Object*, const cha
 FAST_CALL_PARAMS_CAST(edje_object_color_class_del, elixir_void_params_edje_object_string);
 FAST_CALL_PARAMS(edje_object_part_text_select_none, elixir_void_params_edje_object_string);
 FAST_CALL_PARAMS(edje_object_part_text_select_all, elixir_void_params_edje_object_string);
+FAST_CALL_PARAMS(edje_object_part_text_select_abort, elixir_void_params_edje_object_string);
+FAST_CALL_PARAMS(edje_object_part_text_select_begin, elixir_void_params_edje_object_string);
+FAST_CALL_PARAMS(edje_object_part_text_select_extend, elixir_void_params_edje_object_string);
 
 static JSBool
 elixir_string_params_edje_object_string_ret(JSContext *cx, uintN argc, jsval *vp,
@@ -907,7 +943,7 @@ elixir_edje_object_file_set(JSContext *cx, uintN argc, jsval *vp)
    Evas_Object *eo;
    const char *part;
    char *file;
-   int ret;
+   Eina_Bool ret;
    elixir_value_t val[3];
 
    if (!elixir_params_check(cx, _edje_object_2strings_params, val, argc, JS_ARGV(cx, vp)))
@@ -919,8 +955,54 @@ elixir_edje_object_file_set(JSContext *cx, uintN argc, jsval *vp)
 
    ret = edje_object_file_set(eo, file, part);
 
-   JS_SET_RVAL(cx, vp, INT_TO_JSVAL(ret));
+   JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(ret));
    free(file);
+   return JS_TRUE;
+}
+
+static JSBool
+elixir_edje_object_part_text_unescaped_set(JSContext *cx, uintN argc, jsval *vp)
+{
+   Evas_Object *eo;
+   const char *part;
+   const char *text_to_escape;
+   Eina_Bool ret;
+   elixir_value_t val[3];
+
+   if (!elixir_params_check(cx, _edje_object_2strings_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, eo);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
+   text_to_escape = part = elixir_get_string_bytes(val[2].v.str, NULL);
+
+   ret = edje_object_part_text_unescaped_set(eo, part, text_to_escape);
+
+   JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(ret));
+   return JS_TRUE;
+}
+
+static JSBool
+elixir_edje_object_part_text_unescaped_get(JSContext *cx, uintN argc, jsval *vp)
+{
+   Evas_Object *eo;
+   JSString *jss;
+   const char *part;
+   char *ret;
+   elixir_value_t val[2];
+
+   if (!elixir_params_check(cx, _edje_object_string_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, eo);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
+
+   ret = edje_object_part_text_unescaped_get(eo, part);
+
+   jss = elixir_ndup(cx, ret, strlen(ret));
+   JS_SET_RVAL(cx, vp, STRING_TO_JSVAL(jss));
+
+   free(ret);
    return JS_TRUE;
 }
 
@@ -1407,7 +1489,8 @@ elixir_edje_object_part_state_get(JSContext *cx, uintN argc, jsval *vp)
 }
 
 static JSBool
-elixir_edje_object_part_text_anchor_list_get(JSContext *cx, uintN argc, jsval *vp)
+elixir_const_list_edje_string(const Eina_List *(*func)(const Evas_Object *obj, const char *part),
+			      JSContext *cx, uintN argc, jsval *vp)
 {
    const Eina_List *texts;
    const Eina_List *l;
@@ -1424,7 +1507,7 @@ elixir_edje_object_part_text_anchor_list_get(JSContext *cx, uintN argc, jsval *v
    GET_PRIVATE(cx, val[0].v.obj, eo);
    part = elixir_get_string_bytes(val[1].v.str, NULL);
 
-   texts = edje_object_part_text_anchor_list_get(eo, part);
+   texts = func(eo, part);
 
    array = elixir_return_array(cx, vp);
    if (!array) return JS_FALSE;
@@ -1441,6 +1524,9 @@ elixir_edje_object_part_text_anchor_list_get(JSContext *cx, uintN argc, jsval *v
 
    return JS_TRUE;
 }
+
+FAST_CALL_PARAMS(edje_object_part_text_anchor_list_get, elixir_const_list_edje_string);
+FAST_CALL_PARAMS(edje_object_part_text_item_list_get, elixir_const_list_edje_string);
 
 static void
 _elixir_edje_object_size_min_get(Evas_Object *obj, Evas_Coord *w, Evas_Coord *h)
@@ -1616,6 +1702,385 @@ elixir_edje_color_class_set(JSContext *cx, uintN argc, jsval *vp)
    return JS_FALSE;
 }
 
+static JSBool
+elixir_edje_color_class_get(JSContext *cx, uintN argc, jsval *vp)
+{
+   JSObject *obj;
+   int r, g, b, a;
+   int r2, g2, b2, a2;
+   int r3, g3, b3, a3;
+   Eina_Bool result;
+   elixir_value_t val[1];
+
+   if (!elixir_params_check(cx, string_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   result = edje_color_class_get(elixir_get_string_bytes(val[0].v.str, NULL),
+				 &r, &g, &b, &a,
+				 &r2, &g2, &b2, &a2,
+				 &r3, &g3, &b3, &a3);
+
+   obj = JS_NewObject(cx, elixir_class_request("color_class", NULL), NULL, NULL);
+   if (!elixir_object_register(cx, &obj, NULL))
+     return JS_FALSE;
+
+   elixir_add_int_prop(cx, obj, "r", r);
+   elixir_add_int_prop(cx, obj, "g", g);
+   elixir_add_int_prop(cx, obj, "b", b);
+   elixir_add_int_prop(cx, obj, "a", a);
+
+   elixir_add_int_prop(cx, obj, "r2", r2);
+   elixir_add_int_prop(cx, obj, "g2", g2);
+   elixir_add_int_prop(cx, obj, "b2", b2);
+   elixir_add_int_prop(cx, obj, "a2", a2);
+
+   elixir_add_int_prop(cx, obj, "r3", r3);
+   elixir_add_int_prop(cx, obj, "g3", g3);
+   elixir_add_int_prop(cx, obj, "b3", b3);
+   elixir_add_int_prop(cx, obj, "a3", a3);
+
+   JS_SET_RVAL(cx, vp, OBJECT_TO_JSVAL(obj));
+
+   elixir_object_unregister(cx, &obj);
+
+   return JS_TRUE;
+}
+
+static JSBool
+elixir_edje_object_part_text_item_geometry_get(JSContext *cx, uintN argc, jsval *vp)
+{
+   Evas_Object *eo;
+   const char *part;
+   const char *item;
+   int x, y, w, h;
+   Eina_Bool ret;
+   elixir_value_t val[3];
+
+   if (!elixir_params_check(cx, _edje_object_2strings_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, eo);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
+   item = elixir_get_string_bytes(val[2].v.str, NULL);
+
+   ret = edje_object_part_text_item_geometry_get(eo, part, item, &x, &y, &w, &h);
+
+   if (!ret)
+     {
+	JS_SET_RVAL(cx, vp, JSVAL_NULL);
+     }
+   else
+     {
+	JSObject *js_obj;
+
+	js_obj = elixir_new_geometry(cx, x, y, w, h);
+	if (!js_obj)
+	  return JS_FALSE;
+
+	JS_SET_RVAL(cx, vp, OBJECT_TO_JSVAL(js_obj));
+     }
+
+   return JS_TRUE;
+}
+
+static JSBool
+elixir_bool_edje_object_string_cursor(Eina_Bool (*func)(const Evas_Object *obj, const char *part, Edje_Cursor cur),
+				      JSContext *cx, uintN argc, jsval *vp)
+{
+   Evas_Object *eo;
+   const char *part;
+   Eina_Bool ret;
+   elixir_value_t val[3];
+
+   if (!elixir_params_check(cx, _edje_object_string_int_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, eo);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
+
+   ret = func(eo, part, val[2].v.num);
+
+   JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(ret));
+   return JS_TRUE;
+}
+
+FAST_CALL_PARAMS(edje_object_part_text_cursor_next, elixir_bool_edje_object_string_cursor);
+FAST_CALL_PARAMS(edje_object_part_text_cursor_prev, elixir_bool_edje_object_string_cursor);
+FAST_CALL_PARAMS(edje_object_part_text_cursor_up, elixir_bool_edje_object_string_cursor);
+FAST_CALL_PARAMS(edje_object_part_text_cursor_down, elixir_bool_edje_object_string_cursor);
+FAST_CALL_PARAMS(edje_object_part_text_cursor_is_format_get, elixir_bool_edje_object_string_cursor);
+FAST_CALL_PARAMS(edje_object_part_text_cursor_is_visible_format_get, elixir_bool_edje_object_string_cursor);
+
+static JSBool
+elixir_void_edje_object_string_cursor(void (*func)(const Evas_Object *obj, const char *part, Edje_Cursor cur),
+				      JSContext *cx, uintN argc, jsval *vp)
+{
+   Evas_Object *eo;
+   const char *part;
+   elixir_value_t val[3];
+
+   if (!elixir_params_check(cx, _edje_object_string_int_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, eo);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
+
+   func(eo, part, val[2].v.num);
+
+   return JS_TRUE;
+}
+
+FAST_CALL_PARAMS(edje_object_part_text_cursor_begin_set, elixir_void_edje_object_string_cursor);
+FAST_CALL_PARAMS(edje_object_part_text_cursor_end_set, elixir_void_edje_object_string_cursor);
+FAST_CALL_PARAMS(edje_object_part_text_cursor_line_begin_set, elixir_void_edje_object_string_cursor);
+FAST_CALL_PARAMS(edje_object_part_text_cursor_line_end_set, elixir_void_edje_object_string_cursor);
+
+static JSBool
+elixir_edje_object_part_text_cursor_copy(JSContext *cx, uintN argc, jsval *vp)
+{
+   Evas_Object *eo;
+   const char *part;
+   elixir_value_t val[4];
+
+   if (!elixir_params_check(cx, _edje_object_string_2int_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, eo);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
+
+   edje_object_part_text_cursor_copy(eo, part, val[2].v.num, val[3].v.num);
+
+   return JS_TRUE;
+}
+
+static JSBool
+elixir_edje_object_part_text_cursor_content_get(JSContext *cx, uintN argc, jsval *vp)
+{
+   Evas_Object *eo;
+   const char *part;
+   const char *res;
+   JSString *jss;
+   elixir_value_t val[3];
+
+   if (!elixir_params_check(cx, _edje_object_string_int_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, eo);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
+
+   res = edje_object_part_text_cursor_content_get(eo, part, val[2].v.num);
+
+   jss = elixir_ndup(cx, res, strlen(res));
+   JS_SET_RVAL(cx, vp, STRING_TO_JSVAL(jss));
+
+   return JS_TRUE;
+}
+
+static Evas_Object *
+_elixir_edje_object_item_provider_set(void *data,
+				      Evas_Object *obj,
+				      const char *part,
+				      const char *item)
+{
+   Evas_Object *result = NULL;
+   JSFunction *cb;
+   JSContext *cx;
+   JSObject *parent;
+   JSString *js_part;
+   JSString *js_item;
+   JSClass *cs_obj;
+   JSObject *js_obj;
+   jsval js_return;
+   jsval argv[4];
+
+   cb = elixir_void_get_private(data);
+   cx = elixir_void_get_cx(data);
+   parent = elixir_void_get_parent(data);
+
+   if (!cx || !parent || !cb)
+     return NULL;
+
+   elixir_function_start(cx);
+
+   if (!elixir_rval_new(cx, elixir_class_request("edje_object", "evas_object"), obj, argv + 1))
+     goto on_edje_error;
+
+   js_part = elixir_ndup(cx, part, strlen(part));
+   if (!elixir_string_register(cx, &js_part))
+     goto on_part_error;
+
+   js_item = elixir_ndup(cx, item, strlen(item));
+   if (!elixir_string_register(cx, &js_item))
+     goto on_item_error;
+
+   argv[0] = elixir_void_get_jsval(data);
+   argv[2] = STRING_TO_JSVAL(js_part);
+   argv[3] = STRING_TO_JSVAL(js_item);
+
+   if (!elixir_function_run(cx, cb, parent, 4, argv, &js_return))
+     goto on_item_error;
+
+   if (!JSVAL_IS_OBJECT(js_return))
+     goto on_item_error;
+
+   if (JS_ValueToObject(cx, js_return, &js_obj) == JS_FALSE)
+     goto on_item_error;
+
+   if (!js_obj)
+     goto on_item_error;
+
+   cs_obj = JS_GET_CLASS(cx, js_obj);
+
+   if (!cs_obj)
+     goto on_item_error;
+
+   if (!elixir_params_check_class(cs_obj, elixir_class_request("evas_object", NULL)))
+     goto on_item_error;
+
+   GET_PRIVATE(cx, js_obj, result);
+
+ on_item_error:
+   elixir_string_unregister(cx, &js_part);
+
+ on_part_error:
+   elixir_rval_delete(cx, argv + 1);
+
+ on_edje_error:
+   elixir_function_stop(cx);
+
+   return result;
+}
+
+static JSBool
+elixir_edje_object_item_provider_set(JSContext *cx, uintN argc, jsval *vp)
+{
+   Evas_Object *eo;
+   Eina_List *lst;
+   void *data;
+   elixir_value_t val[3];
+
+   if (!elixir_params_check(cx, _edje_object_func_any_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, eo);
+   data = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), val[2].v.any, val[1].v.fct);
+
+   /* Prevent leaking by linking the callback to the object lifetime */
+   lst = evas_object_data_get(eo, "elixir_jsmap");
+   lst = elixir_jsmap_add(lst, cx, elixir_void_get_jsval(data), data);
+   evas_object_data_set(eo, "elixir_jsmap", lst);
+
+   edje_object_item_provider_set(eo, _elixir_edje_object_item_provider_set, data);
+
+   return JS_TRUE;
+}
+
+static void
+_elixir_edje_object_text_insert_filter_cb(void *data, Evas_Object *obj, const char *part, char **text)
+{
+   JSFunction *cb;
+   JSContext *cx;
+   JSObject *parent;
+   JSString *spart;
+   JSString *stext;
+   jsval js_return;
+   jsval argv[4];
+
+   cb = elixir_void_get_private(data);
+   cx = elixir_void_get_cx(data);
+   parent = elixir_void_get_parent(data);
+
+   if (!cx || !parent || !cb)
+     return ;
+
+   elixir_function_start(cx);
+
+   if (!elixir_rval_new(cx, elixir_class_request("edje_object", "evas_object"), obj, argv + 1))
+     goto on_edje_error;
+
+   spart = elixir_ndup(cx, part, strlen(part));
+   if (!elixir_string_register(cx, &spart))
+     goto on_part_error;
+
+   stext = elixir_ndup(cx, *text, strlen(*text));
+   if (!elixir_string_register(cx, &stext))
+     goto on_text_error;
+
+   argv[0] = elixir_void_get_jsval(data);
+   argv[2] = STRING_TO_JSVAL(spart);
+   argv[3] = STRING_TO_JSVAL(stext);
+
+   if (!elixir_function_run(cx, cb, parent, 4, argv, &js_return))
+     goto on_run_error;
+
+   *text = elixir_get_string(cx, js_return);
+
+ on_run_error:
+   elixir_string_unregister(cx, &stext);
+
+ on_text_error:
+   elixir_string_unregister(cx, &spart);
+
+ on_part_error:
+   elixir_rval_delete(cx, argv + 1);
+
+ on_edje_error:
+   elixir_function_stop(cx);
+}
+
+static JSBool
+elixir_edje_object_text_insert_filter_callback_add(JSContext *cx, uintN argc, jsval *vp)
+{
+   Evas_Object *eo;
+   Eina_List *lst;
+   const char *part;
+   void *data;
+   elixir_value_t val[4];
+
+   if (!elixir_params_check(cx, _edje_object_string_func_any_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, eo);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
+   data = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), val[3].v.any, val[2].v.fct);
+
+   /* Prevent leaking by linking the callback to the object lifetime */
+   lst = evas_object_data_get(eo, "elixir_jsmap");
+   lst = elixir_jsmap_add(lst, cx, elixir_void_get_jsval(data), data);
+   evas_object_data_set(eo, "elixir_jsmap", lst);
+
+   edje_object_text_insert_filter_callback_add(eo, part, _elixir_edje_object_text_insert_filter_cb, data);
+
+   return JS_TRUE;
+}
+
+static JSBool
+elixir_edje_object_text_insert_filter_callback_del(JSContext *cx, uintN argc, jsval *vp)
+{
+   Evas_Object *eo;
+   Eina_List *lst;
+   const char *part;
+   void *data;
+   elixir_value_t val[4];
+
+   if (!elixir_params_check(cx, _edje_object_string_func_any_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, eo);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
+
+   /* Prevent leaking by linking the callback to the object lifetime */
+   lst = evas_object_data_get(eo, "elixir_jsmap");
+   data = elixir_jsmap_find(&lst, val[3].v.any);
+
+   edje_object_text_insert_filter_callback_del(eo, part, _elixir_edje_object_text_insert_filter_cb, data);
+
+   lst = elixir_jsmap_del(lst, cx, val[3].v.any);
+   evas_object_data_set(eo, "elixir_jsmap", lst);
+
+   return JS_TRUE;
+}
+
 static void
 _elixir_edje_object_text_change_cb(void* data, Evas_Object* obj, const char* part)
 {
@@ -1659,6 +2124,7 @@ static JSBool
 elixir_edje_object_text_change_cb_set(JSContext *cx, uintN argc, jsval *vp)
 {
    Evas_Object *eo;
+   Eina_List *lst;
    void *data;
    elixir_value_t val[3];
 
@@ -1666,8 +2132,12 @@ elixir_edje_object_text_change_cb_set(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   /* This will leak. No way to deallocte this safely. */
    data = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), val[2].v.any, val[1].v.fct);
+
+   /* Prevent leaking by linking the callback to the object lifetime */
+   lst = evas_object_data_get(eo, "elixir_jsmap");
+   lst = elixir_jsmap_add(lst, cx, elixir_void_get_jsval(data), data);
+   evas_object_data_set(eo, "elixir_jsmap", lst);
 
    edje_object_text_change_cb_set(eo, _elixir_edje_object_text_change_cb, data);
 
@@ -1724,6 +2194,7 @@ _elixir_edje_object_signal_cb(void* data, Evas_Object* obj,
 static JSBool
 elixir_edje_object_signal_callback_add(JSContext *cx, uintN argc, jsval *vp)
 {
+   Eina_List *lst;
    Evas_Object *eo;
    const char *emission;
    const char *source;
@@ -1738,6 +2209,11 @@ elixir_edje_object_signal_callback_add(JSContext *cx, uintN argc, jsval *vp)
    source = elixir_get_string_bytes(val[2].v.str, NULL);
    data = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), val[4].v.any, val[3].v.fct);
 
+   /* Prevent leaking by linking the callback to the object lifetime */
+   lst = evas_object_data_get(eo, "elixir_jsmap");
+   lst = elixir_jsmap_add(lst, cx, elixir_void_get_jsval(data), data);
+   evas_object_data_set(eo, "elixir_jsmap", lst);
+
    edje_object_signal_callback_add(eo, emission, source, _elixir_edje_object_signal_cb, data);
 
    return JS_TRUE;
@@ -1746,6 +2222,7 @@ elixir_edje_object_signal_callback_add(JSContext *cx, uintN argc, jsval *vp)
 static JSBool
 elixir_edje_object_signal_callback_del(JSContext *cx, uintN argc, jsval *vp)
 {
+   Eina_List *lst;
    Evas_Object *eo;
    const char *emission;
    const char *source;
@@ -1760,6 +2237,11 @@ elixir_edje_object_signal_callback_del(JSContext *cx, uintN argc, jsval *vp)
    source = elixir_get_string_bytes(val[2].v.str, NULL);
 
    data = edje_object_signal_callback_del(eo, emission, source, _elixir_edje_object_signal_cb);
+
+   /* Prevent leaking by linking the callback to the object lifetime */
+   lst = evas_object_data_get(eo, "elixir_jsmap");
+   lst = elixir_jsmap_del(lst, cx, elixir_void_get_jsval(data));
+   evas_object_data_set(eo, "elixir_jsmap", lst);
 
    JS_SET_RVAL(cx, vp, elixir_void_free(data));
    return JS_TRUE;
@@ -2286,16 +2768,21 @@ _elixir_edje_object_message_handler_cb(void *data, Evas_Object *obj, Edje_Messag
 static JSBool
 elixir_edje_object_message_handler_set(JSContext *cx, uintN argc, jsval *vp)
 {
-   Evas_Object*         eo;
-   void*                data;
-   elixir_value_t       val[3];
+   Evas_Object *eo;
+   Eina_List *lst;
+   void *data;
+   elixir_value_t val[3];
 
    if (!elixir_params_check(cx, _edje_object_func_any_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
-   /* FIXME: This will leak some memory. */
    data = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), val[2].v.any, val[1].v.fct);
+
+   /* Prevent leaking by linking the callback to the object lifetime */
+   lst = evas_object_data_get(eo, "elixir_jsmap");
+   lst = elixir_jsmap_add(lst, cx, elixir_void_get_jsval(data), data);
+   evas_object_data_set(eo, "elixir_jsmap", lst);
 
    edje_object_message_handler_set(eo, _elixir_edje_object_message_handler_cb, data);
 
@@ -2418,44 +2905,134 @@ static JSFunctionSpec   edje_functions[] = {
   ELIXIR_FN(edje_object_part_table_clear, 3, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(edje_object_scale_set, 2, JSPROP_ENUMERATE, 0),
   ELIXIR_FN(edje_object_scale_get, 1, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_external_param_type_str, 1, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_color_class_get, 1, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_item_provider_set, 3, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_part_text_unescaped_set, 3, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_part_text_unescaped_get, 2, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_part_text_item_list_get, 2, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_part_text_item_geometry_get, 3, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_part_text_select_abort, 2, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_part_text_select_begin, 2, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_part_text_select_extend, 2, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_part_text_cursor_next, 3, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_part_text_cursor_prev, 3, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_part_text_cursor_up, 3, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_part_text_cursor_down, 3, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_part_text_cursor_is_format_get, 3, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_part_text_cursor_is_visible_format_get, 3, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_part_text_cursor_begin_set, 3, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_part_text_cursor_end_set, 3, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_part_text_cursor_line_begin_set, 3, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_part_text_cursor_line_end_set, 3, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_part_text_cursor_copy, 4, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_part_text_cursor_content_get, 3, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_text_insert_filter_callback_add, 4, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(edje_object_text_insert_filter_callback_del, 4, JSPROP_ENUMERATE, 0),
   JS_FS_END
 };
+
+#define EDJE_DEFINE(Const) { #Const, Const }
 
 static const struct {
    const char*  name;
    int          value;
 } edje_const_properties[] = {
-   { "EDJE_ASPECT_CONTROL_NONE", EDJE_ASPECT_CONTROL_NONE },
-   { "EDJE_ASPECT_CONTROL_NEITHER", EDJE_ASPECT_CONTROL_NEITHER },
-   { "EDJE_ASPECT_CONTROL_HORIZONTAL", EDJE_ASPECT_CONTROL_HORIZONTAL },
-   { "EDJE_ASPECT_CONTROL_VERTICAL", EDJE_ASPECT_CONTROL_VERTICAL },
-   { "EDJE_ASPECT_CONTROL_BOTH", EDJE_ASPECT_CONTROL_BOTH },
-   { "EDJE_MESSAGE_NONE", EDJE_MESSAGE_NONE },
-   { "EDJE_MESSAGE_STRING", EDJE_MESSAGE_STRING },
-   { "EDJE_MESSAGE_INT", EDJE_MESSAGE_INT },
-   { "EDJE_MESSAGE_FLOAT", EDJE_MESSAGE_FLOAT },
-   { "EDJE_MESSAGE_STRING_SET", EDJE_MESSAGE_STRING_SET },
-   { "EDJE_MESSAGE_INT_SET", EDJE_MESSAGE_INT_SET },
-   { "EDJE_MESSAGE_FLOAT_SET", EDJE_MESSAGE_FLOAT_SET },
-   { "EDJE_MESSAGE_STRING_INT", EDJE_MESSAGE_STRING_INT },
-   { "EDJE_MESSAGE_STRING_FLOAT", EDJE_MESSAGE_STRING_FLOAT },
-   { "EDJE_MESSAGE_STRING_INT_SET", EDJE_MESSAGE_STRING_INT_SET },
-   { "EDJE_MESSAGE_STRING_FLOAT_SET", EDJE_MESSAGE_STRING_FLOAT_SET },
-   { "EDJE_DRAG_DIR_NONE", EDJE_DRAG_DIR_NONE },
-   { "EDJE_DRAG_DIR_X", EDJE_DRAG_DIR_X },
-   { "EDJE_DRAG_DIR_Y", EDJE_DRAG_DIR_Y },
-   { "EDJE_DRAG_DIR_XY", EDJE_DRAG_DIR_XY },
-   { "EDJE_LOAD_ERROR_NONE", EDJE_LOAD_ERROR_NONE },
-   { "EDJE_LOAD_ERROR_GENERIC", EDJE_LOAD_ERROR_GENERIC },
-   { "EDJE_LOAD_ERROR_DOES_NOT_EXIST", EDJE_LOAD_ERROR_DOES_NOT_EXIST },
-   { "EDJE_LOAD_ERROR_PERMISSION_DENIED", EDJE_LOAD_ERROR_PERMISSION_DENIED },
-   { "EDJE_LOAD_ERROR_RESOURCE_ALLOCATION_FAILED", EDJE_LOAD_ERROR_RESOURCE_ALLOCATION_FAILED },
-   { "EDJE_LOAD_ERROR_CORRUPT_FILE", EDJE_LOAD_ERROR_CORRUPT_FILE },
-   { "EDJE_LOAD_ERROR_UNKNOWN_FORMAT", EDJE_LOAD_ERROR_UNKNOWN_FORMAT },
-   { "EDJE_LOAD_ERROR_INCOMPATIBLE_FILE", EDJE_LOAD_ERROR_INCOMPATIBLE_FILE },
-   { "EDJE_LOAD_ERROR_UNKNOWN_COLLECTION", EDJE_LOAD_ERROR_UNKNOWN_COLLECTION },
+   EDJE_DEFINE(EDJE_ASPECT_CONTROL_NONE),
+   EDJE_DEFINE(EDJE_ASPECT_CONTROL_NEITHER),
+   EDJE_DEFINE(EDJE_ASPECT_CONTROL_HORIZONTAL),
+   EDJE_DEFINE(EDJE_ASPECT_CONTROL_VERTICAL),
+   EDJE_DEFINE(EDJE_ASPECT_CONTROL_BOTH),
+   EDJE_DEFINE(EDJE_MESSAGE_NONE),
+   EDJE_DEFINE(EDJE_MESSAGE_STRING),
+   EDJE_DEFINE(EDJE_MESSAGE_INT),
+   EDJE_DEFINE(EDJE_MESSAGE_FLOAT),
+   EDJE_DEFINE(EDJE_MESSAGE_STRING_SET),
+   EDJE_DEFINE(EDJE_MESSAGE_INT_SET),
+   EDJE_DEFINE(EDJE_MESSAGE_FLOAT_SET),
+   EDJE_DEFINE(EDJE_MESSAGE_STRING_INT),
+   EDJE_DEFINE(EDJE_MESSAGE_STRING_FLOAT),
+   EDJE_DEFINE(EDJE_MESSAGE_STRING_INT_SET),
+   EDJE_DEFINE(EDJE_MESSAGE_STRING_FLOAT_SET),
+   EDJE_DEFINE(EDJE_DRAG_DIR_NONE),
+   EDJE_DEFINE(EDJE_DRAG_DIR_X),
+   EDJE_DEFINE(EDJE_DRAG_DIR_Y),
+   EDJE_DEFINE(EDJE_DRAG_DIR_XY),
+   EDJE_DEFINE(EDJE_LOAD_ERROR_NONE),
+   EDJE_DEFINE(EDJE_LOAD_ERROR_GENERIC),
+   EDJE_DEFINE(EDJE_LOAD_ERROR_DOES_NOT_EXIST),
+   EDJE_DEFINE(EDJE_LOAD_ERROR_PERMISSION_DENIED),
+   EDJE_DEFINE(EDJE_LOAD_ERROR_RESOURCE_ALLOCATION_FAILED),
+   EDJE_DEFINE(EDJE_LOAD_ERROR_CORRUPT_FILE),
+   EDJE_DEFINE(EDJE_LOAD_ERROR_UNKNOWN_FORMAT),
+   EDJE_DEFINE(EDJE_LOAD_ERROR_INCOMPATIBLE_FILE),
+   EDJE_DEFINE(EDJE_LOAD_ERROR_UNKNOWN_COLLECTION),
+   EDJE_DEFINE(EDJE_PART_TYPE_NONE),
+   EDJE_DEFINE(EDJE_PART_TYPE_RECTANGLE),
+   EDJE_DEFINE(EDJE_PART_TYPE_TEXT),
+   EDJE_DEFINE(EDJE_PART_TYPE_IMAGE),
+   EDJE_DEFINE(EDJE_PART_TYPE_SWALLOW),
+   EDJE_DEFINE(EDJE_PART_TYPE_TEXTBLOCK),
+   EDJE_DEFINE(EDJE_PART_TYPE_GRADIENT),
+   EDJE_DEFINE(EDJE_PART_TYPE_GROUP),
+   EDJE_DEFINE(EDJE_PART_TYPE_BOX),
+   EDJE_DEFINE(EDJE_PART_TYPE_TABLE),
+   EDJE_DEFINE(EDJE_PART_TYPE_EXTERNAL),
+   EDJE_DEFINE(EDJE_PART_TYPE_LAST),
+   EDJE_DEFINE(EDJE_TEXT_EFFECT_NONE),
+   EDJE_DEFINE(EDJE_TEXT_EFFECT_PLAIN),
+   EDJE_DEFINE(EDJE_TEXT_EFFECT_OUTLINE),
+   EDJE_DEFINE(EDJE_TEXT_EFFECT_SOFT_OUTLINE),
+   EDJE_DEFINE(EDJE_TEXT_EFFECT_SHADOW),
+   EDJE_DEFINE(EDJE_TEXT_EFFECT_SOFT_SHADOW),
+   EDJE_DEFINE(EDJE_TEXT_EFFECT_OUTLINE_SHADOW),
+   EDJE_DEFINE(EDJE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW),
+   EDJE_DEFINE(EDJE_TEXT_EFFECT_FAR_SHADOW),
+   EDJE_DEFINE(EDJE_TEXT_EFFECT_FAR_SOFT_SHADOW),
+   EDJE_DEFINE(EDJE_TEXT_EFFECT_GLOW),
+   EDJE_DEFINE(EDJE_TEXT_EFFECT_LAST),
+   EDJE_DEFINE(EDJE_CURSOR_MAIN),
+   EDJE_DEFINE(EDJE_CURSOR_SELECTION_BEGIN),
+   EDJE_DEFINE(EDJE_CURSOR_SELECTION_END),
+   EDJE_DEFINE(EDJE_EXTERNAL_PARAM_TYPE_INT),
+   EDJE_DEFINE(EDJE_EXTERNAL_PARAM_TYPE_DOUBLE),
+   EDJE_DEFINE(EDJE_EXTERNAL_PARAM_TYPE_STRING),
+   EDJE_DEFINE(EDJE_EXTERNAL_PARAM_TYPE_BOOL),
+   EDJE_DEFINE(EDJE_EXTERNAL_PARAM_TYPE_CHOICE),
+   EDJE_DEFINE(EDJE_EXTERNAL_PARAM_TYPE_MAX),
    { NULL, 0 }
 };
+
+/*
+edje_object_part_external_object_get
+edje_object_part_external_param_set
+edje_object_part_external_param_get
+edje_object_part_external_param_type_get
+edje_external_type_register
+edje_external_type_unregister
+edje_external_type_array_register
+edje_external_type_array_unregister
+edje_external_type_abi_version_get
+edje_external_iterator_get
+edje_external_param_find
+edje_external_param_int_get
+edje_external_param_double_get
+edje_external_param_string_get
+edje_external_param_bool_get
+edje_external_param_choice_get
+edje_external_param_info_get
+edje_external_type_get
+edje_module_load
+edje_available_modules_get
+edje_perspective_new
+edje_perspective_free
+edje_perspective_set
+edje_perspective_global_set
+edje_perspective_global_get
+edje_evas_global_perspective_get
+edje_object_perspective_set
+edje_object_perspective_get
+ */
 
 static Eina_Bool
 module_open(Elixir_Module *em, JSContext *cx, JSObject *parent)

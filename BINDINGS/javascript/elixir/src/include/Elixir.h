@@ -296,6 +296,7 @@ extern const elixir_parameter_t         *function_params[];
 extern const elixir_parameter_t         *double_params[];
 extern const elixir_parameter_t         *jsobject_params[];
 
+EAPI int                     elixir_params_check_class(const JSClass *object, const JSClass *match);
 EAPI elixir_parameter_type_t elixir_params_get_type(jsval arg);
 EAPI int                     elixir_params_check(JSContext *cx,
                                                  const elixir_parameter_t **params, elixir_value_t *values,
@@ -593,5 +594,17 @@ EAPI JSObject *elixir_eet_data_new(JSContext *cx, void *data, int length);
      (char*) memcpy (__new, str, __len);				\
   })
 #endif
+
+typedef struct _Elixir_Jsmap Elixir_Jsmap;
+struct _Elixir_Jsmap
+{
+   jsval val;
+   void *data;
+};
+
+Eina_List *elixir_jsmap_add(Eina_List *list, JSContext *cx, jsval val, void *data);
+Eina_List *elixir_jsmap_del(Eina_List *list, JSContext *cx, jsval val);
+void *elixir_jsmap_find(Eina_List **list, jsval val);
+void elixir_jsmap_free(Eina_List *list, JSContext *cx);
 
 #endif          /* ELIXIR_H__ */
