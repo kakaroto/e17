@@ -4,16 +4,19 @@
 
 /* Project */
 #include "../include/elementaryxx/GenListItem.h"
+#include "../include/elementaryxx/GenListDataModel.h"
 
 /* STD */
 #include <cassert>
 
+using namespace std;
+
 namespace Elmxx {
 
-GenListItem::GenListItem (const Elm_Genlist_Item *item) :
-  mItem (const_cast <Elm_Genlist_Item*> (item))
+GenListItem::GenListItem (Elm_Genlist_Item *item) :
+  mItem (item)
 {
-  elm_genlist_item_data_set (mItem, this);
+  //elm_genlist_item_data_set (mItem, this);
 }
   
 GenListItem::~GenListItem ()
@@ -24,7 +27,6 @@ GenListItem::~GenListItem ()
 void GenListItem::clearSubItems ()
 {
   elm_genlist_item_subitems_clear (mItem);
-
 }
 
 void GenListItem::setSelected (bool selected)
@@ -108,16 +110,25 @@ const Evasxx::Object *GenListItem::getEvasObject ()
   return Evasxx::Object::objectLink (obj);
 }
 
-GenListItem *GenListItem::wrap (const Elm_Genlist_Item *item)
+GenListItem *GenListItem::wrap (Elm_Genlist_Item &item, GenListDataModel &model)
 {
-  return new GenListItem (item);
+  GenListItem *genItem = new GenListItem (&item);
+  genItem->mDataModel = &model;
+  model.signalDel.connect (sigc::mem_fun (genItem, &GenListItem::destroy));
+
+  return genItem;
 }
 
 GenListItem *GenListItem::objectLink (const Elm_Genlist_Item *item)
 {
-  GenListItem *item2 = static_cast <GenListItem*> (const_cast <void*> (elm_genlist_item_data_get(item)));
-  assert (item2);
-  return item2;
+  //GenListItem *item2 = static_cast <GenListItem*> (const_cast <void*> (elm_genlist_item_data_get(item)));
+  //assert (item2);
+  return NULL;//item2;
+}
+
+void GenListItem::destroy (GenListColumnConstructor &construction, const Evasxx::Object &obj)
+{
+  cout << "destroy" << endl;
 }
   
 } // end namespace Elmxx

@@ -6,6 +6,7 @@
 
 /* STD */
 #include <iostream>
+#include <cassert>
 
 using namespace std;
 
@@ -70,8 +71,13 @@ void GenListDataModel::gl_del(const void *data, Evas_Object *obj)
                                            const_cast <void*> (data));
   GenListDataModel *model = construction->mDataModel;
   Evasxx::Object *objWrap = Evasxx::Object::objectLink (obj);
-      
-  return model->del (construction, *objWrap);
+  assert (model);
+  assert (objWrap);
+  
+  cout << "+del" << endl;
+  // FIXME: for some reason emit isn't working. and never returns and emit() is called infinite??
+  //model->signalDel.emit (*construction, *objWrap);
+  cout << "-del" << endl;
 }
   
 } // end namespace Elmxx

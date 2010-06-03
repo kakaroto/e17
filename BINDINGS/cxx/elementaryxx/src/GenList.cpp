@@ -187,8 +187,10 @@ GenListItem *GenList::append (GenListColumnConstructor *construction, const GenL
   {
     mInternalSelList.push_back (selection);
   }
-
-  return GenListItem::wrap (gli);
+  
+  GenListItem *item = GenListItem::wrap (*gli, *mModel);
+  
+  return item;
 }
 
 } // end namespace Elmxx

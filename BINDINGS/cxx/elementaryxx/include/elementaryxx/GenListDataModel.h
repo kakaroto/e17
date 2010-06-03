@@ -31,7 +31,7 @@ public:
 
   virtual bool getState (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part) = 0;
   
-  virtual void del (GenListColumnConstructor *construction, Evasxx::Object &obj) = 0;
+  sigc::signal <void, GenListColumnConstructor&, const Evasxx::Object&> signalDel;
 
 private:
   static char *gl_label_get (const void *data, Evas_Object *obj, const char *part);

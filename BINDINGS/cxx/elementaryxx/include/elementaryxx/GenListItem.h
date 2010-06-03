@@ -6,11 +6,13 @@
 
 /* EFLxx */
 #include <evasxx/Evasxx.h>
+#include "GenListColumnConstructor.h"
 
 namespace Elmxx {
 
 /* forward declarations */
 class GenList;
+class GenListDataModel;
   
 class GenListItem
 {
@@ -46,14 +48,17 @@ public:
 
   const Evasxx::Object *getEvasObject ();
 
-  static GenListItem *wrap (const Elm_Genlist_Item *item);
+  static GenListItem *wrap (Elm_Genlist_Item &item, GenListDataModel &model);
 
   static GenListItem *objectLink (const Elm_Genlist_Item *item);
   
 private:
-  GenListItem (const Elm_Genlist_Item *item);
+  GenListItem (Elm_Genlist_Item *item);
+
+  void destroy (GenListColumnConstructor &construction, const Evasxx::Object &obj);
   
   Elm_Genlist_Item *mItem;
+  GenListDataModel *mDataModel;
 };
 
 } // end namespace Elmxx
