@@ -543,8 +543,11 @@ _begin(Evry_Plugin *plugin, const Evry_Item *it)
 }
 
 static void
-_cleanup(Evry_Plugin *plugin)
+_finish(Evry_Plugin *plugin)
 {
+   Eina_List *l;
+   Evry_Item *it;
+
    GET_PLUGIN(p, plugin);
 
    if (p->dd)
@@ -555,6 +558,15 @@ _cleanup(Evry_Plugin *plugin)
 
    IF_RELEASE(p->input);
    IF_RELEASE(p->browse_input);
+
+   EINA_LIST_FOREACH(p->base.items, l, it)
+     if (CHECK_TYPE(it, WEBLINK))
+       {
+	  GET_WEBLINK(wl, it);
+	  if (!wl->dd) continue;
+	  _url_data_free(wl->dd);
+	  wl->dd = NULL;
+       }
 
    EVRY_PLUGIN_ITEMS_FREE(p);
 
@@ -1165,8 +1177,8 @@ _plugins_init(const Evry_API *_api)
 
    WEBLINK = evry->type_register("WEBLINK");
 
-#define PLUGIN_NEW(_name, _type, _icon, _begin, _cleaup, _fetch, _complete, _request, _data_cb, _host, _trigger) { \
-      p = EVRY_PLUGIN_NEW(Plugin, _name, _icon, _type, _begin, _cleanup, _fetch, NULL); \
+#define PLUGIN_NEW(_name, _type, _icon, _begin, _finish, _fetch, _complete, _request, _data_cb, _host, _trigger) { \
+      p = EVRY_PLUGIN_NEW(Plugin, _name, _icon, _type, _begin, _finish, _fetch, NULL); \
       p->config_path = _config_path;					\
       plugins = eina_list_append(plugins, p);				\
       p->complete = _complete;						\
@@ -1186,22 +1198,22 @@ _plugins_init(const Evry_API *_api)
 	 pc->trigger = eina_stringshare_add(_trigger); }}		\
 
    PLUGIN_NEW(N_("Google"), EVRY_TYPE_TEXT, "google",
-	      _begin, _cleanup, _fetch, &_complete,
+	      _begin, _finish, _fetch, &_complete,
 	      _request_goolge, _google_data_cb,
 	      NULL, _trigger_google);
 
    PLUGIN_NEW(N_("Wikipedia"), EVRY_TYPE_TEXT, "wikipedia",
-	      _begin, _cleanup, _fetch, &_complete,
+	      _begin, _finish, _fetch, &_complete,
 	      _request_wiki, _wikipedia_data_cb,
 	      NULL, _trigger_wiki);
 
    PLUGIN_NEW(N_("Youtube"), WEBLINK, "youtube",
-	      _begin, _cleanup, _fetch, &_complete,
+	      _begin, _finish, _fetch, &_complete,
 	      _request_youtube, _youtube_data_cb,
 	      "gdata.youtube.com", _trigger_youtube);
 
    PLUGIN_NEW(N_("Translate"), EVRY_TYPE_TEXT, "text-html",
-	      _begin, _cleanup, _fetch, NULL,
+	      _begin, _finish, _fetch, NULL,
 	      _request_gtranslate, _gtranslate_data_cb,
 	      "ajax.googleapis.com", _trigger_gtranslate);
 
