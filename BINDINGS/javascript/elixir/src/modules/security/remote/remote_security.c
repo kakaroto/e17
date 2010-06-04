@@ -259,6 +259,12 @@ _elixir_init_sk_iv_ik(uint64_t salt)
    return sk;
 }
 
+static inline uint64_t
+elixir_htonll(uint64_t n)
+{
+   return (((uint64_t) htonl(n >> 32)) << 32) | htonl((uint32_t) n & 0xFFFFFFFF);
+}
+
 static elixir_check_validity_t
 _elixir_security_check(const char *sha1, int sha1_length, const char *sign, int sign_length, const char *cert, int cert_length)
 {
@@ -419,9 +425,7 @@ _elixir_security_check(const char *sha1, int sha1_length, const char *sign, int 
    state = 8;
 
    /* Send SALTI */
-   dec = (int*) &salt[0];
-   dec[0] = htonl(dec[0]);
-   dec[1] = htonl(dec[1]);
+   salt[0] = elixir_htonll(salt[0]);
 
    if (send(fd, &salt[0], sizeof (salt[0]), MSG_MORE) < 0)
      goto on_error;
