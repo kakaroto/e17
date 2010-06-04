@@ -15,6 +15,8 @@ h	- add quadtree support
 
 * Edje
 d	- Fixed Point
+	- Add REVERSE to edje possible program action
+	- Add continue: (ABORT|CONTINUE|CHAIN) to edje STATE_SET argument
 	- Make it possible to catch requested file and to rewrite it
 	- Optimize file format
 	- Optimize memory layout thanks to new file format
