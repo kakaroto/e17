@@ -163,7 +163,6 @@ CURL * ed_curl_init(char *screen_name, char *password, http_request * request, i
 gint ed_curl_get(char *screen_name, char *password, http_request * request, int account_id) {
 	CURLcode res;
 	CURL *ua=NULL;
-	double	content_length=0;
 	char *key=NULL;
 
 	if(request ==NULL)
@@ -197,17 +196,13 @@ gint ed_curl_get(char *screen_name, char *password, http_request * request, int 
 	if(debug) printf("Fetching URL\n");
 	res = curl_easy_perform(ua);
 
-	if(debug) printf("Get length:");
-	curl_easy_getinfo(ua, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &content_length);
-	if(debug) printf("%lf\n", content_length);
-	if((res == 18 && content_length != -1) || res != 0) {
-		show_curl_error(res, &(request->content));
-		return(4);
-	} else {
+	if(res == 0) {
 		res = curl_easy_getinfo(ua, CURLINFO_RESPONSE_CODE, &request->response_code);
 		if(debug) printf("Response code: %ld\n", request->response_code);
-		return(content_length>0?0:-1);
+		return(request->content.size>0?0:-1);
 	}
+
+	return(-1);
 }
 
 gint ed_curl_post(char *screen_name, char *password, http_request * request, char * post_fields, int account_id) {
