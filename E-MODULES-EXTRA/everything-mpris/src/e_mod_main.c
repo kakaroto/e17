@@ -300,6 +300,12 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 
    t->pnd = NULL;
 
+   if (!p->instances)
+     {
+	ERR("dbus return after finish!");
+	goto error;
+     }
+     
    if (!p->fetch_tracks)
      {
 	ERR("should be nothing to fetch!");
@@ -376,8 +382,6 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 	  }
      }
 
-   /* printf("%d, %s\n", p->fetch_tracks, EVRY_FILE(t)->url); */
-
    if (!p->fetch_tracks)
      _update_list(p);
 
@@ -392,7 +396,9 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 	  EVRY_ITEM_FREE(t);
 
 	p->tracks = p->fetch;
-	EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
+
+	if (p->instances)
+	  EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
      }
 
    p->tracks = eina_list_remove(p->tracks, t);
@@ -598,7 +604,7 @@ _dbus_cb_status_change(void *data, DBusMessage *msg)
      }
    else if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_INT32)
      {
-	/* XXX audacious.. */
+	/* XXX audacious.. seems to be fixed upstream, remove later */
 	_dbus_send_msg("/Player", "GetStatus", _dbus_cb_get_status, p);
      }
 }
@@ -613,7 +619,7 @@ _begin(Evry_Plugin *plugin, const Evry_Item *item __UNUSED__)
    p->instances++;
 
    if (p->instances > 1)
-     return EVRY_PLUGIN(p);
+     return NULL;
 
    _dbus_send_msg("/TrackList", "GetLength", _dbus_cb_tracklist_length, p);
 
@@ -642,9 +648,9 @@ _begin(Evry_Plugin *plugin, const Evry_Item *item __UNUSED__)
 static void
 _finish(Evry_Plugin *plugin)
 {
-   GET_PLUGIN(p, plugin);
-   Evry_Item *it;
+   Track *t;
 
+   GET_PLUGIN(p, plugin);
    EVRY_PLUGIN_ITEMS_CLEAR(p);
 
    IF_RELEASE(p->input);
@@ -661,10 +667,13 @@ _finish(Evry_Plugin *plugin)
    if (cb_player_status_change)
      e_dbus_signal_handler_del(conn, cb_player_status_change);
 
-   EINA_LIST_FREE(p->tracks, it)
+   EINA_LIST_FREE(p->tracks, t)
      {
-	if (it != EVRY_ITEM(p->empty))
-	  EVRY_ITEM_FREE(it);
+	if (t == p->empty)
+	  continue;
+	
+	if (t->pnd) dbus_pending_call_cancel(t->pnd);
+	EVRY_ITEM_FREE(t);
      }
 
    EVRY_ITEM_FREE(p->empty);
