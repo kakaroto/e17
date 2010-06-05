@@ -178,7 +178,11 @@ _dbus_cb_current_track(void *data, DBusMessage *reply, DBusError *error)
    Evry_Item *it;
    int num;
 
-   if (!_dbus_check_msg(reply, error)) return;
+   if (!p->instances)
+     return;
+   
+   if (!_dbus_check_msg(reply, error))
+     return;
 
    dbus_message_get_args(reply, error,
 			 DBUS_TYPE_INT32, (dbus_int32_t*) &(num),
@@ -303,7 +307,7 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
    if (!p->instances)
      {
 	ERR("dbus return after finish!");
-	goto error;
+	return;
      }
      
    if (!p->fetch_tracks)
@@ -397,8 +401,7 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 
 	p->tracks = p->fetch;
 
-	if (p->instances)
-	  EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
+	EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
      }
 
    p->tracks = eina_list_remove(p->tracks, t);
@@ -558,6 +561,11 @@ _set_status(Plugin *p, DBusMessage *msg)
 static void
 _dbus_cb_get_status(void *data, DBusMessage *reply, DBusError *error)
 {
+   GET_PLUGIN(p, data);
+
+   if (!p->instances)
+     return;
+
    if (!_dbus_check_msg(reply, error)) return;
 
    _set_status(data, reply);
