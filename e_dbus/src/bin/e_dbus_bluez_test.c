@@ -430,6 +430,7 @@ _on_cmd_adapter_get_name(char *cmd, char *args)
    return 1;
 }
 
+static int
 _on_cmd_adapter_set_name(char *cmd, char *args)
 {
    char *path, *next_args;
