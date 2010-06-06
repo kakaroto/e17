@@ -381,7 +381,7 @@ void                EwinUpdateOpacity(EWin * ewin);
 
 void                EwinChange(EWin * ewin, unsigned int flag);
 
-void                EwinWarpTo(EWin * ewin);
+void                EwinWarpTo(EWin * ewin, int force);
 
 EWin              **EwinListTransients(const EWin * ewin, int *num, int group);
 EWin              **EwinListTransientFor(const EWin * ewin, int *num);

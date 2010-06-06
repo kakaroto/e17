@@ -1808,9 +1808,9 @@ EwinReposition(EWin * ewin)
 }
 
 void
-EwinWarpTo(EWin * ewin)
+EwinWarpTo(EWin * ewin, int force)
 {
-   if (ewin == Mode.mouse_over_ewin)
+   if (!force && ewin == Mode.mouse_over_ewin)
       return;
 
    if (ewin->state.iconified)

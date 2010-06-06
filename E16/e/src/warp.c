@@ -362,7 +362,7 @@ WarpFocus(int delta)
    if (Conf.focus.raise_on_next)
       EwinRaise(ewin);
    if (Conf.focus.warp_on_next)
-      EwinWarpTo(ewin);
+      EwinWarpTo(ewin, 0);
    if (Conf.warplist.warpfocused)
       FocusToEWin(ewin, FOCUS_SET);
 }
@@ -406,7 +406,7 @@ WarpFocusFinish(void)
 
    EwinOpActivate(ewin, OPSRC_USER, Conf.warplist.raise_on_select);
    if (Conf.warplist.warp_on_select)
-      EwinWarpTo(ewin);
+      EwinWarpTo(ewin, 0);
 }
 
 static void

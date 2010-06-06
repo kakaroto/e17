@@ -412,7 +412,7 @@ doFocusToEwin(EWin * ewin, int why)
    if (Conf.focus.warp_always)
       do_warp = 1;
    if (do_warp)
-      EwinWarpTo(ewin);
+      EwinWarpTo(ewin, 0);
 
    switch (why)
      {

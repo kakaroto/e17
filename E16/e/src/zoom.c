@@ -215,7 +215,7 @@ Zoom(EWin * ewin)
 	     if (zoom_mask_4)
 		EDestroyWindow(zoom_mask_4);
 	     SwitchRes(0, 0, 0, 0, 0);
-	     EwinWarpTo(ewin);
+	     EwinWarpTo(ewin, 1);
 	     ESync(0);
 	     zoom_last_ewin = NULL;
 	  }
@@ -246,7 +246,7 @@ Zoom(EWin * ewin)
 	EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
 	EwinMove(ewin, -bl + x1, -bt + y1);
 	FocusToEWin(ewin, FOCUS_SET);
-	EwinWarpTo(ewin);
+	EwinWarpTo(ewin, 1);
 #if 0				/* Doesn't work as intended */
 	XGrabPointer(disp, EwinGetClientXwin(ewin), True,
 		     ButtonPressMask | ButtonReleaseMask |
