@@ -68,7 +68,9 @@ struct _button {
 
    int                 state;
    Window              inside_win;
+#if 0				/* Unused */
    Window              event_win;
+#endif
    char                left;
    unsigned int        ref_count;
 };
@@ -127,6 +129,8 @@ ButtonCreate(const char *name, int id, const char *iclass,
       desk = 0;
 
    b = ECALLOC(Button, 1);
+   if (!b)
+      return b;
 
    if (!button_list)
       button_list = ecore_list_new();

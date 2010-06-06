@@ -148,6 +148,7 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
 		       break;
 		    case FONT_TO_UP:
 		       y = h - w;
+		       /* FALLTHROUGH */
 		    case FONT_TO_DOWN:
 		       h = w;
 		       break;
@@ -600,6 +601,8 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
       int                 j = 0;
 
       wl = EMALLOC(Window, b->num_winparts + 1);
+      if (!wl)
+	 return;
       for (i = b->num_winparts - 1; i >= 0; i--)
 	{
 	   if (b->part[i].ontop)
@@ -945,15 +948,11 @@ BorderWinpartEventEnter(EWinBit * wbit, XEvent * ev)
 #endif
    if (wbit->state == STATE_CLICKED)
       wbit->left = 0;
-#if 0				/* Hmmm.. */
-   else
-#endif
-     {
-	wbit->state = STATE_HILITED;
-	BorderWinpartChange(ewin, part, 0);
-	if (ewin->border->part[part].aclass)
-	   ActionclassEvent(ewin->border->part[part].aclass, ev, ewin);
-     }
+
+   wbit->state = STATE_HILITED;
+   BorderWinpartChange(ewin, part, 0);
+   if (ewin->border->part[part].aclass)
+      ActionclassEvent(ewin->border->part[part].aclass, ev, ewin);
 }
 
 static void

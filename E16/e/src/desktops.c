@@ -375,6 +375,8 @@ DeskCreate(int desk, int configure)
       return NULL;
 
    dsk = ECALLOC(Desk, 1);
+   if (!dsk)
+      return dsk;
 
    desks.desk[desk] = dsk;
    dsk->num = desk;

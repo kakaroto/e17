@@ -93,6 +93,8 @@ ActionCreate(char event, char anymod, int mod, int anybut, int but,
    Action             *aa;
 
    aa = EMALLOC(Action, 1);
+   if (!aa)
+      return NULL;
    aa->action = NULL;
    aa->event = event;
    aa->anymodifier = anymod;
@@ -170,6 +172,8 @@ ActionclassCreate(const char *name, int global)
    ActionClass        *ac;
 
    ac = ECALLOC(ActionClass, 1);
+   if (!ac)
+      return NULL;
    ac->name = Estrdup(name);
 
    if (global)

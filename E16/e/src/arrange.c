@@ -490,15 +490,15 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
    bottom_bound = top_bound + h;
    screen_snap_dist = Mode.constrained ? (w + h) : Conf.snap.screen_snap_dist;
 
-   lst = NULL;
    lst1 = EwinListOrderGet(&num);
-   if (lst1)
-     {
-	lst = EMALLOC(EWin *, num);
-	if (!lst)
-	   return;
-	memcpy(lst, lst1, num * sizeof(EWin *));
-     }
+   if (!lst1)
+      return;
+
+   lst = EMALLOC(EWin *, num);
+   if (!lst)
+      return;
+   memcpy(lst, lst1, num * sizeof(EWin *));
+
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, Mode.nogroup
 				      || Mode.move.swap, &gnum);
    if (gwins)
@@ -523,7 +523,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 	  {
 	     dx = left_bound - ewin->shape_x;
 	  }
-	else if (lst)
+	else
 	  {
 	     for (i = 0; i < num; i++)
 	       {
@@ -562,7 +562,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 	  {
 	     dx = right_bound - (ewin->shape_x + EoGetW(ewin));
 	  }
-	else if (lst)
+	else
 	  {
 	     for (i = 0; i < num; i++)
 	       {
@@ -599,7 +599,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 	  {
 	     dy = top_bound - ewin->shape_y;
 	  }
-	else if (lst)
+	else
 	  {
 	     for (i = 0; i < num; i++)
 	       {
@@ -639,7 +639,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 	  {
 	     dy = bottom_bound - (ewin->shape_y + EoGetH(ewin));
 	  }
-	else if (lst)
+	else
 	  {
 	     for (i = 0; i < num; i++)
 	       {
@@ -867,6 +867,8 @@ ArrangeEwinXY(EWin * ewin, int *px, int *py)
    newrect.p = EoGetLayer(ewin);
 
    ret = ECALLOC(RectBox, num + 1);
+   if (!ret)
+      return;
    ArrangeRects(fixed, num, &newrect, 1, ret, 0, 0,
 		WinGetW(VROOT), WinGetH(VROOT), ARRANGE_BY_SIZE, 1);
 
@@ -924,6 +926,8 @@ ArrangeEwins(const char *params)
    ArrangeGetRectList(&fixed, &nfix, &floating, &nflt, NULL);
 
    ret = ECALLOC(RectBox, nflt + nfix);
+   if (!ret)
+      return;
    ArrangeRects(fixed, nfix, floating, nflt, ret, 0, 0,
 		WinGetW(VROOT), WinGetH(VROOT), method, 1);
 

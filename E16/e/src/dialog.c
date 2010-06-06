@@ -558,6 +558,8 @@ DialogItemCreate(int type)
    DItem              *di;
 
    di = ECALLOC(DItem, 1);
+   if (!di)
+      return di;
 
    di->type = type;
    di->align_h = 512;
@@ -1037,6 +1039,9 @@ DialogRealizeItem(Dialog * d, DItem * di)
 		col_size = EMALLOC(int, cols);
 		row_size = EMALLOC(int, rows);
 
+		if (!col_size || !row_size)
+		   goto bail_out;
+
 		row_size[0] = 0;
 		for (i = 0; i < cols; i++)
 		   col_size[i] = 0;
@@ -1069,6 +1074,9 @@ DialogRealizeItem(Dialog * d, DItem * di)
 			  r++;
 			  rows++;
 			  row_size = EREALLOC(int, row_size, rows);
+
+			  if (!row_size)
+			     goto bail_out;
 
 			  row_size[rows - 1] = 0;
 		       }
@@ -1238,6 +1246,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 			  r++;
 		       }
 		  }
+	      bail_out:
 		Efree(col_size);
 		Efree(row_size);
 	     }
