@@ -9,6 +9,7 @@ OUT="$PWD/SNAPSHOTS"
 for I in $PROJ; do
   ./SCRIPTS/_pre_snap.sh "$I" "$VA" "$VB"
 done
+svn update
 for I in $PROJ; do
   ./SCRIPTS/_dist.sh "$I" "$OUT"
 done

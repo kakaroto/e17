@@ -35,7 +35,6 @@ make clean maintainer-clean || true
 
 cd ..
 svn copy $PROJ ../tags/$PROJ-$V
-cd ../tags
-svn commit -m "Tag for $PROJ $V"
+svn commit -m "Tag for $PROJ $V" ../tags
 
 exit 0

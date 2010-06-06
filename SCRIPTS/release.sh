@@ -10,6 +10,7 @@ for I in $PROJ; do
   ./SCRIPTS/_svnrev-remove.sh "$I"
   ./SCRIPTS/_changelog.sh "$I"
 done
+svn update
 for I in $PROJ; do
   ./SCRIPTS/_dist.sh "$I" "$OUT"
 done
