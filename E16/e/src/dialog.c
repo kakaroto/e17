@@ -103,7 +103,6 @@ typedef struct {
    int                *val_ptr;
    DItem              *next;
    DItem              *first;
-   DialogItemCallbackFunc *event_func;
 } DItemRadioButton;
 
 struct _ditem {
@@ -1605,12 +1604,6 @@ DialogItemSetText(DItem * di, const char *text)
 }
 
 void
-DialogItemRadioButtonSetEventFunc(DItem * di, DialogItemCallbackFunc * func)
-{
-   di->item.radio_button.event_func = func;
-}
-
-void
 DialogItemRadioButtonSetFirst(DItem * di, DItem * first)
 {
    di->item.radio_button.first = first;
@@ -2167,11 +2160,6 @@ DItemEventMouseIn(Win win __UNUSED__, DItem * di, XEvent * ev)
 	if (di->item.area.event_func)
 	   di->item.area.event_func(di, 0, ev);
 	break;
-
-     case DITEM_RADIOBUTTON:
-	if (di->item.radio_button.event_func)
-	   di->item.radio_button.event_func(di, di->item.radio_button.val, ev);
-	break;
      }
 
    di->hilited = 1;
@@ -2187,12 +2175,6 @@ DItemEventMouseOut(Win win __UNUSED__, DItem * di, XEvent * ev)
      case DITEM_AREA:
 	if (di->item.area.event_func)
 	   di->item.area.event_func(di, 0, ev);
-	break;
-
-     case DITEM_RADIOBUTTON:
-	if (di->item.radio_button.event_func)
-	   di->item.radio_button.event_func(di, di->item.radio_button.val,
-					    NULL);
 	break;
      }
 

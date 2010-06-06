@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -116,9 +116,6 @@ void                DialogItemSetFill(DItem * di, char fill_h, char fill_v);
 void                DialogItemSetAlign(DItem * di, int align_h, int align_v);
 void                DialogItemSetText(DItem * di, const char *text);
 void                DialogItemCallCallback(Dialog * d, DItem * di);
-void                DialogItemRadioButtonSetEventFunc(DItem * di,
-						      DialogItemCallbackFunc *
-						      func);
 void                DialogItemCheckButtonSetState(DItem * di, char onoff);
 void                DialogItemCheckButtonSetPtr(DItem * di, char *onoff_ptr);
 void                DialogItemTableSetOptions(DItem * di, int num_columns,
