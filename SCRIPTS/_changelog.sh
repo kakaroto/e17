@@ -28,9 +28,14 @@ echo "$DATE  $NAME"                   >> ChangeLog
 echo ""                               >> ChangeLog
 echo "        * Release $PROJNAME $V" >> ChangeLog
 echo ""                               >> ChangeLog
-svn commit ChangeLog -m "Release $PROJNAME $V"
+svn commit -m "Release $PROJNAME $V"
 ./autogen.sh
-svn copy $I ../tags/$PROJ-$V
-
+pwd
 make clean maintainer-clean || true
+
+cd ..
+svn copy $PROJ ../tags/$PROJ-$V
+cd ../tags
+svn commit -m "Tag for $PROJ $V"
+
 exit 0

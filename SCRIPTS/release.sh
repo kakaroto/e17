@@ -8,14 +8,14 @@ OUT="$PWD/RELEASES"
 
 for I in $PROJ; do
   ./SCRIPTS/_svnrev-remove.sh "$I"
-#  ./SCRIPTS/_changelog.sh "$I"
+  ./SCRIPTS/_changelog.sh "$I"
 done
 for I in $PROJ; do
   ./SCRIPTS/_dist.sh "$I" "$OUT"
 done
 for I in $PROJ; do
   ./SCRIPTS/_svnrev-restore.sh "$I"
-#  ./SCRIPTS/_post_release.sh "$I"
+  ./SCRIPTS/_post_release.sh "$I"
 done
 
 exit 0
