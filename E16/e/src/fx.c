@@ -780,6 +780,7 @@ FxSighan(int sig, void *prm __UNUSED__)
 	break;
      case ESIGNAL_ANIMATION_SUSPEND:
 	FX_OpForEach(FX_OP_PAUSE);
+	break;
      case ESIGNAL_ANIMATION_RESUME:
 	FX_OpForEach(FX_OP_START);
 	break;
