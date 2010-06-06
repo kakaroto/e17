@@ -726,7 +726,6 @@ ButtonsConfigLoad(FILE * fs)
 	       }
 	     goto done;
 	  case CONFIG_CLASSNAME:
-	  case BUTTON_NAME:
 	     STRCPY(name, s2);
 	     pbt = ButtonFind(name);
 	     break;
@@ -734,11 +733,9 @@ ButtonsConfigLoad(FILE * fs)
 	     STRCPY(label, s2);
 	     break;
 	  case CONFIG_IMAGECLASS:
-	  case BUTTON_ICLASS:
 	     STRCPY(iclass, s2);
 	     break;
 	  case CONFIG_ACTIONCLASS:
-	  case BUTTON_ACLASS:
 	     STRCPY(aclass, s2);
 	     break;
 	  case CONFIG_TEXT:
