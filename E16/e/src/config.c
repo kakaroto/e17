@@ -40,6 +40,9 @@
 
 #define MAX_E_CFG_VERSION 2	/* Max. supported configuration version */
 
+static char        *ConfigFileFind(const char *name, const char *themepath,
+				   int pp);
+
 void
 SkipTillEnd(FILE * fs)
 {
@@ -511,7 +514,7 @@ ThemeFileFind(const char *file, int type)
    return FindFile(file, Mode.theme.path, type);
 }
 
-char               *
+static char        *
 ConfigFileFind(const char *name, const char *themepath, int pp)
 {
    char                s[FILEPATH_LEN_MAX];

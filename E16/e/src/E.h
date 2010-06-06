@@ -460,8 +460,6 @@ void                ConfigParseError(const char *where, const char *line);
 void                ConfigAlertLoad(const char *txt);
 char               *FindFile(const char *file, const char *themepath, int type);
 char               *ThemeFileFind(const char *file, int type);
-char               *ConfigFileFind(const char *name, const char *themepath,
-				   int pp);
 int                 ConfigFileLoad(const char *name, const char *themepath,
 				   int (*parse) (FILE * fs), int preparse);
 int                 ConfigFileRead(FILE * fs);
