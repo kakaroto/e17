@@ -18,15 +18,14 @@ for I in $PROJ; do
   ./SCRIPTS/_post_release.sh "$I"
 done
 
-exit 0
 ## upload
 DATE=`date +'%F'`
 SVR="www.enlightenment.org"
 DST="/var/www/download/releases"
 SSH="ssh -p 995"
-SCP="ssh -P 995"
+SCP="scp -P 995"
 
-$SSH "$SVR" mkdir "$DST"
-$SCP "$OUT/"* "$SVR:$DST/LATEST/"
+$SSH "$SVR" mkdir "$DST" || true
+$SCP "$OUT/"* "$SVR:$DST/"
 
 exit 0

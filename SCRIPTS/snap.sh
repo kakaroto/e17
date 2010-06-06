@@ -16,13 +16,12 @@ for I in $PROJ; do
   ./SCRIPTS/_post_snap.sh "$I" "$VA" "$VB"
 done
 
-exit 0
 ## upload
 DATE=`date +'%F'`
 SVR="www.enlightenment.org"
 DST="/var/www/download/snapshots"
 SSH="ssh -p 995"
-SCP="ssh -P 995"
+SCP="scp -P 995"
 
 $SSH "$SVR" mkdir "$DST/$DATE"
 $SSH "$SVR" rm -rf "$DST/LATEST"
