@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler and various contributors (see AUTHORS)
+ * Copyright (C) 2006-2010 Kim Woelders
  *
  * Copyright (C) Nathan Ingersoll (author)
  * Copyright (C) Ibukun Olumuyiwa (ewd -> ecore)
@@ -33,17 +34,10 @@
 #ifndef _E16_ECORE_LIST_H_
 #define _E16_ECORE_LIST_H_
 
-#if USE_ECORE
-
-#include <Ecore_Data.h>
-
-#else
-
 #undef EAPI
 #define EAPI
 
 typedef struct _ecore_list Ecore_List;
-typedef struct _ecore_list_node Ecore_List_Node;
 
 typedef int         (*Ecore_Compare_Cb) (const void *data, const void *match);
 typedef void        (*Ecore_For_Each) (void *value, void *user_data);
@@ -51,7 +45,6 @@ typedef void        (*Ecore_Free_Cb) (void *data);
 
 /* Creating and initializing new list structures */
 EAPI Ecore_List    *ecore_list_new(void);
-EAPI int            ecore_list_init(Ecore_List * list);
 
 /* Adding items to the list */
 EAPI int            ecore_list_append(Ecore_List * list, void *_data);
@@ -93,18 +86,8 @@ EAPI int            ecore_list_clear(Ecore_List * list);
 /* Free the list and it's contents */
 EAPI void           ecore_list_destroy(Ecore_List * list);
 
-/* Creating and initializing list nodes */
-EAPI Ecore_List_Node *ecore_list_node_new(void);
-EAPI int            ecore_list_node_init(Ecore_List_Node * newNode);
-
-/* Destroying nodes */
-EAPI int            ecore_list_node_destroy(Ecore_List_Node * _e_node,
-					    Ecore_Free_Cb free_func);
-
 EAPI int            ecore_list_free_cb_set(Ecore_List * list,
 					   Ecore_Free_Cb free_func);
-
-#endif /* USE_ECORE */
 
 /* e16 additions */
 #if __cplusplus
