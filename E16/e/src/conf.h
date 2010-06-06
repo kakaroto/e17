@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -48,8 +48,6 @@
 
 #define TEXT_ORIENTATION 200
 #define TEXT_JUSTIFICATION 201
-#define TEXT_MODE 202
-#define TEXT_FONTNAME 203
 #define TEXT_EFFECT 204
 #define TEXT_FG_COL 205
 #define TEXT_BG_COL 206

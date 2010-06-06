@@ -85,7 +85,6 @@
 
 #define __NAME 100
 
-#define __FONT 203
 #define __ORIENTATION 200
 #define __JUSTIFICATION 201
 #define __DRAWING_EFFECT 204

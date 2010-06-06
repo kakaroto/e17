@@ -58,14 +58,10 @@ TextstateCreate(const char *font)
    if (!ts)
       return NULL;
 
-   ts->style.mode = MODE_WRAP_CHAR;
    ts->style.orientation = FONT_TO_RIGHT;
 
    if (font)
-     {
-	ts->fontname = TextstateFontLookup(font);
-	ts->style.mode = MODE_VERBATIM;
-     }
+      ts->fontname = TextstateFontLookup(font);
 
    return ts;
 }
@@ -331,9 +327,6 @@ TextclassConfigLoad(FILE * fs)
 	  {
 	  case TEXT_ORIENTATION:
 	     ts->style.orientation = atoi(s2);
-	     continue;
-	  case TEXT_MODE:
-	     ts->style.mode = atoi(s2);
 	     continue;
 	  case TEXT_EFFECT:
 	     ts->style.effect = atoi(s2);

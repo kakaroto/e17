@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -28,16 +28,11 @@
 #include "etypes.h"
 #include "xwin.h"
 
-#define MODE_VERBATIM     0
-#define MODE_WRAP_CHAR    1
-#define MODE_WRAP_WORD    2
-
 #define FONT_TO_RIGHT     0
 #define FONT_TO_DOWN      1
 #define FONT_TO_UP        2
 #define FONT_TO_LEFT      3
 
-#define FONT_TYPE_UNKNOWN       0
 #define FONT_TYPE_XFONT         0	/* XFontStruct     */
 #define FONT_TYPE_XFS           2	/* XFontSet        */
 #define FONT_TYPE_IFT           3	/* Imlib2/FreeType */
