@@ -171,6 +171,8 @@ _ecore_x_window_prop32_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
 	     num = (int)num_ret;
 	     lst = (unsigned int *)malloc(num * sizeof(unsigned int));
 	     *val = lst;
+	     if (!lst)
+		return 0;
 	  }
 	for (i = 0; i < num; i++)
 	   lst[i] = ((unsigned long *)prop_ret)[i];
@@ -269,6 +271,8 @@ ecore_x_window_prop_string_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
 	     if (items > 0)
 	       {
 		  pstr = (char **)malloc(items * sizeof(char *));
+		  if (!pstr)
+		     goto done;
 		  for (i = 0; i < items; i++)
 		     pstr[i] = (list[i] && (*list[i] || i < items - 1)) ?
 			strdup(list[i]) : NULL;
@@ -280,14 +284,18 @@ ecore_x_window_prop_string_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
      }
 
    /* Bad format or XmbTextPropertyToTextList failed - Now what? */
-   pstr = (char **)malloc(sizeof(char *));
-   pstr[0] = (xtp.value) ? strdup((char *)xtp.value) : NULL;
    items = 1;
+   pstr = (char **)malloc(sizeof(char *));
+   if (!pstr)
+      goto done;
+   pstr[0] = (xtp.value) ? strdup((char *)xtp.value) : NULL;
 
  done:
    XFree(xtp.value);
 
    *plst = pstr;
+   if (!pstr)
+      items = 0;
    return items;
 }
 
@@ -429,7 +437,7 @@ void
 ecore_x_window_prop_xid_list_change(Ecore_X_Window win, Ecore_X_Atom atom,
 				    Ecore_X_Atom type, Ecore_X_ID item, int op)
 {
-   Ecore_X_ID         *lst;
+   Ecore_X_ID         *lst, *lst_r;
    int                 i, num;
 
    num = ecore_x_window_prop_xid_list_get(win, atom, type, &lst);
@@ -460,7 +468,10 @@ ecore_x_window_prop_xid_list_change(Ecore_X_Window win, Ecore_X_Atom atom,
 	   goto done;
 	/* Add it */
 	num++;
-	lst = (Ecore_X_ID *) realloc(lst, num * sizeof(Ecore_X_ID));
+	lst_r = (Ecore_X_ID *) realloc(lst, num * sizeof(Ecore_X_ID));
+	if (!lst_r)
+	   goto done;
+	lst = lst_r;
 	lst[i] = item;
      }
 
@@ -869,7 +880,7 @@ void
 ecore_x_netwm_desk_names_set(Ecore_X_Window root, const char **names,
 			     unsigned int n_desks)
 {
-   char                ss[32], *buf;
+   char                ss[32], *buf, *buf_r;
    const char         *s;
    unsigned int        i;
    int                 l, len;
@@ -888,7 +899,10 @@ ecore_x_netwm_desk_names_set(Ecore_X_Window root, const char **names,
 	  }
 
 	l = strlen(s) + 1;
-	buf = (char *)realloc(buf, len + l);
+	buf_r = (char *)realloc(buf, len + l);
+	if (!buf_r)
+	   goto done;
+	buf = buf_r;
 	memcpy(buf + len, s, l);
 	len += l;
      }
@@ -897,6 +911,7 @@ ecore_x_netwm_desk_names_set(Ecore_X_Window root, const char **names,
 		   ECORE_X_ATOM_UTF8_STRING, 8, PropModeReplace,
 		   (unsigned char *)buf, len);
 
+ done:
    free(buf);
 }
 
