@@ -379,6 +379,9 @@ typedef struct {
    struct {
       int                 w_old;
       int                 h_old;
+#ifdef USE_XRANDR
+      unsigned short      rotation;
+#endif
    } screen;
    struct {
       unsigned int        extensions;

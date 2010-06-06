@@ -148,11 +148,15 @@ ExtInitSS(int available)
 static void
 ExtInitRR(int available)
 {
+   Rotation            rot;
+
    if (!available)
       return;
 
    /* Listen for RandR events */
    XRRSelectInput(disp, WinGetXwin(VROOT), RRScreenChangeNotifyMask);
+   XRRRotations(disp, Dpy.screen, &rot);
+   Mode.screen.rotation = rot;
 
 #if 0				/* Debug */
    if (EDebug(EDBUG_TYPE_VERBOSE))

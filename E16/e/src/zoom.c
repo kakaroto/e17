@@ -28,6 +28,9 @@
 
 #ifdef WITH_ZOOM
 #include <X11/extensions/xf86vmode.h>
+#if USE_XRANDR
+#include <X11/extensions/Xrandr.h>
+#endif
 
 static int          std_vid_modes_num = 0;
 static int          std_vid_mode_cur = 0;
@@ -54,6 +57,15 @@ FindMode(int w, int h)
    XF86VidModeModeInfo *chosen = NULL;
    int                 i, closest = 0x7fffffff;
 
+#if USE_XRANDR
+   if ((Mode.screen.rotation == RR_Rotate_90) ||
+       (Mode.screen.rotation == RR_Rotate_270))
+     {
+	i = w;
+	w = h;
+	h = i;
+     }
+#endif
    for (i = 0; i < std_vid_modes_num; i++)
      {
 	int                 value = 0x7fffffff;
@@ -101,6 +113,7 @@ SwitchRes(char inout, int x, int y, int w, int h)
      {
 	XF86VidModeModeLine curmode;
 	int                 dotclock;
+	int                 rx, ry;
 
 	if (!XF86VidModeGetModeLine(disp, scr, &dotclock, &curmode))
 	   return mode;
@@ -109,10 +122,37 @@ SwitchRes(char inout, int x, int y, int w, int h)
 	mode = FindMode(w, h);
 	if (mode)
 	  {
+#if USE_XRANDR
+	     int                 vw, vh;
+
+	     vw = WinGetW(VROOT);
+	     vh = WinGetH(VROOT);
+	     /* x and y relative to unrotated display */
+	     if (Mode.screen.rotation == RR_Rotate_90)
+	       {
+		  rx = y;
+		  ry = vw - mode->vdisplay - x;
+	       }
+	     else if (Mode.screen.rotation == RR_Rotate_270)
+	       {
+		  rx = vh - mode->hdisplay - y;
+		  ry = x;
+	       }
+	     else if (Mode.screen.rotation == RR_Rotate_180)
+	       {
+		  rx = vw - mode->hdisplay - x;
+		  ry = vh - mode->vdisplay - y;
+	       }
+	     else
+#endif
+	       {
+		  rx = x;
+		  ry = y;
+	       }
 	     XF86VidModeLockModeSwitch(disp, scr, 0);
 	     std_vid_mode_cur = GetModeIndex(dotclock, &curmode);
 	     XF86VidModeSwitchToMode(disp, scr, mode);
-	     XF86VidModeSetViewPort(disp, scr, x, y);
+	     XF86VidModeSetViewPort(disp, scr, rx, ry);
 	     XF86VidModeLockModeSwitch(disp, scr, 1);
 	  }
      }
@@ -225,21 +265,34 @@ Zoom(EWin * ewin)
    mode = SwitchRes(1, 0, 0, ewin->client.w, ewin->client.h);
    if (mode)
      {
-	int                 x1, y1, x2, y2, bl, br, bt, bb;
+	int                 x1, y1, x2, y2, bl, br, bt, bb, dw, dh;
 
 	zoom_last_ewin = ewin;
 	zoom_last_x = EoGetX(ewin);
 	zoom_last_y = EoGetY(ewin);
-	x1 = (mode->hdisplay - ewin->client.w) / 2;
+#if USE_XRANDR
+	if ((Mode.screen.rotation == RR_Rotate_90) ||
+	    (Mode.screen.rotation == RR_Rotate_270))
+	  {
+	     dw = mode->vdisplay;
+	     dh = mode->hdisplay;
+	  }
+	else
+#endif
+	  {
+	     dw = mode->hdisplay;
+	     dh = mode->vdisplay;
+	  }
+	x1 = (dw - ewin->client.w) / 2;
 	if (x1 < 0)
 	   x1 = 0;
-	y1 = (mode->vdisplay - ewin->client.h) / 2;
+	y1 = (dh - ewin->client.h) / 2;
 	if (y1 < 0)
 	   y1 = 0;
-	x2 = mode->hdisplay - ewin->client.w - x1;
+	x2 = dw - ewin->client.w - x1;
 	if (x2 < 0)
 	   x2 = 0;
-	y2 = mode->vdisplay - ewin->client.h - y1;
+	y2 = dh - ewin->client.h - y1;
 	if (y2 < 0)
 	   y2 = 0;
 	EwinRaise(ewin);
@@ -255,10 +308,10 @@ Zoom(EWin * ewin)
 		     GrabModeAsync, GrabModeAsync,
 		     EwinGetClientXwin(ewin), None, CurrentTime);
 #endif
-	zoom_mask_1 = ZoomMask(0, 0, x1, mode->vdisplay);
-	zoom_mask_2 = ZoomMask(0, 0, mode->hdisplay, y1);
-	zoom_mask_3 = ZoomMask(x1 + ewin->client.w, 0, x2, mode->vdisplay);
-	zoom_mask_4 = ZoomMask(0, y1 + ewin->client.h, mode->hdisplay, y2);
+	zoom_mask_1 = ZoomMask(0, 0, x1, dh);
+	zoom_mask_2 = ZoomMask(0, 0, dw, y1);
+	zoom_mask_3 = ZoomMask(x1 + ewin->client.w, 0, x2, dh);
+	zoom_mask_4 = ZoomMask(0, y1 + ewin->client.h, dw, y2);
 	ESync(0);
      }
 }
