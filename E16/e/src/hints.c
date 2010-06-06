@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 Kim Woelders
+ * Copyright (C) 2003-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -332,12 +332,10 @@ Pixmap
 HintsGetRootPixmap(Win win)
 {
    Ecore_X_Pixmap      pm;
-   int                 num;
 
    pm = None;
-   num =
-      ecore_x_window_prop_xid_get(WinGetXwin(win), E_XROOTPMAP_ID, XA_PIXMAP,
-				  &pm, 1);
+   ecore_x_window_prop_xid_get(WinGetXwin(win), E_XROOTPMAP_ID, XA_PIXMAP,
+			       &pm, 1);
 
    return pm;
 }

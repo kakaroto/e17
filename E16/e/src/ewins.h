@@ -442,7 +442,6 @@ void                EwinOpFullscreen(EWin * ewin, int source, int on);
 /* finders.c */
 EWin               *EwinFindByPtr(const EWin * ewin);
 EWin               *EwinFindByClient(Window win);
-EWin               *EwinFindByChildren(Window win);
 EWin              **EwinsFindByExpr(const char *match, int *pnum, int *pflags);
 EWin               *EwinFindByExpr(const char *match);
 

@@ -564,7 +564,6 @@ typedef struct {
    char                snap_location;
    char                snap_layer;
    char                snap_sticky;
-   char                snap_icon;
    char                snap_shaded;
    char                snap_cmd;
    char                snap_group;

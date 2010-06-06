@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007 Kim Woelders
+ * Copyright (C) 2007-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -26,11 +26,9 @@
 #include "eimage.h"
 #include "xwin.h"
 
-#define _glhook _etexture
+typedef struct _glhook ETexture;
 
-typedef struct _etexture ETexture;
-
-struct _etexture {
+struct _glhook {
    unsigned int        texture;
    unsigned short      target;
    unsigned char       type;
@@ -42,9 +40,6 @@ void                EGlExit(void);
 
 Visual             *EGlGetVisual(void);
 unsigned int        EGlGetDepth(void);
-
-Win                 EGlWindowCreate(Win parent, int x, int y,
-				    unsigned int width, unsigned int height);
 
 void                EGlWindowConnect(Window xwin);
 void                EGlWindowDisconnect(void);

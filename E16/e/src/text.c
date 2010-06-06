@@ -655,7 +655,9 @@ TsTextDraw(TextState * ts, int x, int y, const char *text, int len)
 typedef struct {
    const char         *type;
    const FontOps      *ops;
+#if USE_MODULES
    char                checked;
+#endif
 } FontHandler;
 
 #if USE_MODULES
@@ -664,7 +666,7 @@ typedef struct {
 
 #else
 
-#define FONT(type, ops, opsm) { type, ops, 0 }
+#define FONT(type, ops, opsm) { type, ops }
 
 #if FONT_TYPE_IFT
 extern const FontOps FontOps_ift;
@@ -694,7 +696,7 @@ static FontHandler  fhs[] = {
 #if FONT_TYPE_PANGO_XFT
    FONT("pango", &FontOps_pango, NULL),	/* Pango-Xft */
 #endif
-   {NULL, NULL, 0},
+   FONT(NULL, NULL, NULL)
 };
 
 static void

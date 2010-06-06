@@ -302,7 +302,9 @@ ExtQuery(const EServerExt * ext)
  */
 
 struct _EventFdDesc {
+#if 0				/* Unused */
    const char         *name;
+#endif
    int                 fd;
    void                (*handler) (void);
 };
@@ -432,6 +434,7 @@ HandleEvent(XEvent * ev)
      case KeyPress:
 	Mode.events.last_keycode = ev->xkey.keycode;
 	Mode.events.last_keystate = ev->xkey.state;
+	/* FALLTHROUGH */
      case KeyRelease:
 	Mode.events.time = ev->xkey.time;
 	ModeGetXY(ev->xkey.x_root, ev->xkey.y_root);

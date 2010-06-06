@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007 Kim Woelders
+ * Copyright (C) 2007-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -298,16 +298,6 @@ EGlGetDepth(void)
    return (egl.vi) ? egl.vi->depth : 0;
 }
 
-#if 0
-Win
-EGlWindowCreate(Win parent, int x, int y, unsigned int width,
-		unsigned int height)
-{
-   return ECreateWindowVD(parent, x, y, width, height, egl.vi->visual,
-			  egl.vi->depth);
-}
-#endif
-
 void
 EGlWindowConnect(Window xwin)
 {
@@ -502,28 +492,27 @@ EobjGetTexture(EObj * eo)
 {
    if (eo->glhook)
      {
-	if (eo->glhook->glxpmap)
-	   return eo->glhook;
-
-	_EGlTextureFromDrawable(eo->glhook, EobjGetPixmap(eo), 0);
-	return eo->glhook;
+	if (eo->glhook->glxpmap == None)
+	   _EGlTextureFromDrawable(eo->glhook, EobjGetPixmap(eo), 0);
+     }
+   else
+     {
+	EobjTextureCreate(eo);
      }
 
-   return EobjTextureCreate(eo);
+   return eo->glhook;
 }
 
-ETexture           *
+void
 EobjTextureCreate(EObj * eo)
 {
    Pixmap              pmap;
 
    pmap = EobjGetPixmap(eo);
    if (pmap == None)
-      return NULL;
+      return;
 
    eo->glhook = EGlTextureFromDrawable(pmap, 0);
-
-   return eo->glhook;
 }
 
 void

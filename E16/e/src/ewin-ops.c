@@ -850,7 +850,7 @@ typedef struct {
    int                 k, dk;
    _xywh               start;
    _xywh               final;
-   int                 a, b, c, d;
+   int                 a, b, c;
 } _ewin_shade_data;
 
 static void

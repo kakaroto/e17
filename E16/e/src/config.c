@@ -110,6 +110,7 @@ GetLine(char *s, int size, FILE * f)
 	  case ';':		/* Line separator */
 	     if (escape || quote)
 		goto case_char;
+	     /* FALLTHROUGH */
 	  case '\n':
 	     if (so == s)	/* Skip empty lines */
 		break;

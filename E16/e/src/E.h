@@ -370,7 +370,6 @@ typedef struct {
    struct {
       char                check;	/* Avoid losing windows offscreen */
       char                swap;
-      int                 swapcoord_x, swapcoord_y;
    } move;
    struct {
       signed char         enable_features;

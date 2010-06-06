@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2008 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -24,7 +24,6 @@
 #include "E.h"
 #include "container.h"
 #include "desktops.h"
-#include "e16-ecore_hints.h"
 #include "emodule.h"
 #include "eobj.h"
 #include "ewins.h"

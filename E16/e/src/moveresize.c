@@ -802,6 +802,7 @@ _MoveResizeHandleKey(unsigned int key)
      case XK_Escape:
 	Mode_mr.cur_x = Mode_mr.start_x;
 	Mode_mr.cur_y = Mode_mr.start_y;
+	/* FALLTHROUGH */
      case XK_Return:
 	end = 1;
 	break;

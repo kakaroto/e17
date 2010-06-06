@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2009 Kim Woelders
+ * Copyright (C) 2008-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -87,7 +87,7 @@ typedef enum {
    SOUND_WINDOW_STICK,
    SOUND_WINDOW_UNSTICK,
    SOUND_NOT_USED
-} sound_e;
+} esound_e;
 
 #if HAVE_SOUND
 

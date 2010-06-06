@@ -364,7 +364,7 @@ ECreateArgbWindow(Win parent, int x, int y, int w, int h, Win cwin)
 }
 
 #if USE_GLX
-Win
+static              Win
 ECreateWindowVD(Win parent, int x, int y, int w, int h,
 		Visual * vis, unsigned int depth)
 {

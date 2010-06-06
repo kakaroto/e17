@@ -317,8 +317,8 @@ SceneDraw2(double t, EWin ** ewins, int num)
 
    DrawBackground(texture[sel_bg], w, h);
 
-   i = sqrt(w * h / (1.0 * num));
-   nx = (w + i - 1) / i;
+   i = (int)sqrt(w * h / (1.0 * num));
+   nx = (int)((w + i - 1) / i);
    if (nx <= 0)
       nx = 1;
    ny = (num + nx - 1) / nx;

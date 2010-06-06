@@ -168,10 +168,10 @@ void                EobjsRepaint(void);
 Pixmap              EobjGetPixmap(const EObj * eo);
 
 #if USE_GLX
-struct _etexture   *EobjGetTexture(EObj * eo);
-struct _etexture   *EobjTextureCreate(EObj * eo);
+void                EobjTextureCreate(EObj * eo);
 void                EobjTextureDestroy(EObj * eo);
 void                EobjTextureInvalidate(EObj * eo);
+struct _glhook     *EobjGetTexture(EObj * eo);
 #endif
 void                EobjChangeOpacity(EObj * eo, unsigned int opacity);
 void                EobjChangeShadow(EObj * eo, int shadow);

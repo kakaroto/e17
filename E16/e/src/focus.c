@@ -323,6 +323,7 @@ doFocusToEwin(EWin * ewin, int why)
 
      case FOCUS_DESK_LEAVE:
 	focus_is_set = 0;
+	/* FALLTHROUGH */
      case FOCUS_NONE:
 	ewin = NULL;
 	if (ewin == Mode.focuswin)
@@ -423,6 +424,7 @@ doFocusToEwin(EWin * ewin, int why)
      case FOCUS_DESK_ENTER:
 	if (Conf.focus.mode == MODE_FOCUS_CLICK)
 	   break;
+	/* FALLTHROUGH */
      default:
      case FOCUS_INIT:
 	EwinListFocusRaise(ewin);

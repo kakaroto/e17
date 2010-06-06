@@ -53,7 +53,6 @@ typedef struct {
    int                 scale;	/* Zoom level */
    int                 sx, sy;	/* Scene x,y */
    int                 sw, sh;	/* Scene wxh */
-   char                mode;
    char                bpress;
    char                filter;
    char                grabbing;

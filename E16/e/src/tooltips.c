@@ -58,9 +58,7 @@ struct _tooltip {
    int                 dist;
    Win                 iwin;
    EObj               *win[5];
-   char                visible;
    ImageClass         *tooltippic;
-   unsigned int        ref_count;
 };
 
 #define TTWIN win[4]

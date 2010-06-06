@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 Kim Woelders
+ * Copyright (C) 2003-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -60,7 +60,7 @@ typedef enum {
    ESIGNAL_EWIN_CHANGE,
    ESIGNAL_EWIN_DAMAGE,
    ESIGNAL_THEME_TRANS_CHANGE,
-} e_signal_t;
+} esignal_e;
 
 #if 0				/* Maybe later */
 void                EModuleRegister(EModule * em);
