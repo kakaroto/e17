@@ -17,6 +17,16 @@
 #include "epdf_poppler_private.h"
 
 
+# include <sys/time.h>
+EAPI double
+ecore_time_get(void)
+{
+   struct timeval      timev;
+
+   gettimeofday(&timev, NULL);
+   return (double)timev.tv_sec + (((double)timev.tv_usec) / 1000000);
+}
+
 Epdf_Page *
 epdf_page_new (const Epdf_Document *doc)
 {
@@ -75,6 +85,8 @@ epdf_page_render (Epdf_Page *page, Evas_Object *o)
   int              rotate;
   int              width;
   int              height;
+  double t1,t2;
+  t1 = ecore_time_get();
 
   white[0] = 255;
   white[1] = 255;
@@ -131,6 +143,8 @@ epdf_page_render (Epdf_Page *page, Evas_Object *o)
 
  sortie:
   delete output_dev;
+    t2 = ecore_time_get();
+    printf ("time poppler: %f\n", t2-t1);
 }
 
 void

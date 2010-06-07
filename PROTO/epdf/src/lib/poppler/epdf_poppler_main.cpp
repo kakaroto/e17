@@ -42,7 +42,7 @@ epdf_shutdown()
 }
 
 const char *
-epdf_poppler_version_get (void)
+epdf_backend_version_get (void)
 {
   return POPPLER_VERSION;
 }

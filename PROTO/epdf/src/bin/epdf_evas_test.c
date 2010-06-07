@@ -164,7 +164,7 @@ document_info_print (Epdf_Document *document, Epdf_Page *page)
   int             height;
 
   printf ("\n");
-  printf ("  Poppler version....: %s\n", epdf_poppler_version_get ());
+  printf ("  Backend version....: %s\n", epdf_backend_version_get ());
   printf ("\n");
 
   printf ("  Document Metadata:\n");

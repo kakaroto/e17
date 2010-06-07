@@ -1,7 +1,15 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
+if BUILD_EPDF_MUPDF
+
+SUBDIRS = mupdf
+
+else
+
 SUBDIRS = poppler
+
+endif
 
 lib_LTLIBRARIES = libepdf.la
 
@@ -37,13 +45,22 @@ libepdf_la_CPPFLAGS = \
 -I$(top_builddir)/src/lib \
 @EPDF_CFLAGS@
 
+if BUILD_EPDF_MUPDF
+
+libepdf_la_LIBADD = mupdf/libepdf_mupdf.la mupdf/libfonts.la mupdf/libcmaps.la mupdf/libmupdf.la mupdf/libfitzdraw.la mupdf/libfitz.la
+
+else
+
 libepdf_la_LIBADD = poppler/libepdf_poppler.la
+
+endif
+
 libepdf_la_LDFLAGS = -no-undefined @lt_enable_auto_import@ -version-info @version_info@
 
 if BUILD_EPDF_EWL
 
 libepdf_ewl_la_SOURCES = ewl_pdf.c
-libepdf_ewl_la_CPPFLAGS = @EWL_CFLAGS@ poppler/libepdf_poppler.la
+libepdf_ewl_la_CPPFLAGS = @EWL_CFLAGS@
 libepdf_ewl_la_LIBADD = @EWL_LIBS@ @EPDF_LIBS@
 libepdf_ewl_la_LDFLAGS = -no-undefined -version-info @version_info@
 

@@ -1,5 +1,5 @@
-#ifndef __EPDF_PRIVATE_H__
-#define __EPDF_PRIVATE_H__
+#ifndef __EPDF_POPPLER_PRIVATE_H__
+#define __EPDF_POPPLER_PRIVATE_H__
 
 
 class PDFDoc;
@@ -83,4 +83,4 @@ Epdf_Page_Transition *epdf_page_transition_new (const Object *data);
 PDFDoc *epdf_document_doc_get (Epdf_Document *document);
 
 
-#endif /* __EPDF_PRIVATE_H__ */
+#endif /* __EPDF_POPPLER_PRIVATE_H__ */

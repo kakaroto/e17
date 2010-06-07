@@ -30,7 +30,58 @@ AC_SUBST(version_info)
 
 ### Default options with respect to host
 
-requirements_epdf="poppler evas ecore"
+requirements_epdf="evas ecore"
+
+### Additional options to configure
+
+# mupdf
+AC_ARG_ENABLE([mupdf],
+   [AC_HELP_STRING([--disable-mupdf], [disable mupdf backend @<:@default=enabled@:>@])],
+   [
+    if test "x${enableval}" = "xyes" ; then
+       want_mupdf="yes"
+    else
+       want_mupdf="no"
+    fi
+   ],
+   [want_mupdf="yes"])
+
+AC_MSG_CHECKING([whether mupdf is enabled])
+AC_MSG_RESULT([${want_mupdf}])
+
+# CJK fonts for mupdf
+AC_ARG_ENABLE([mupdf-cjk],
+   [AC_HELP_STRING([--enable-mupdf-cjk], [enable mupdf CJK fonts @<:@default=disabled@:>@])],
+   [
+    if test "x${enableval}" = "xyes" ; then
+       want_mupdf_cjk="yes"
+    else
+       want_mupdf_cjk="no"
+    fi
+   ],
+   [want_mupdfcjk="no"])
+
+AC_MSG_CHECKING([whether mupdf CJK fonts are enabled])
+AC_MSG_RESULT([${want_mupdf_cjk}])
+
+# poppler
+AC_ARG_ENABLE([poppler],
+   [AC_HELP_STRING([--enable-poppler], [enable poppler backend @<:@default=disabled@:>@])],
+   [
+    if test "x${enableval}" = "xyes" ; then
+       want_poppler="yes"
+    else
+       want_poppler="no"
+    fi
+   ],
+   [want_poppler="yes"])
+
+AC_MSG_CHECKING([whether poppler is enabled])
+AC_MSG_RESULT([${want_poppler}])
+
+if test "x${want_mupdf}" = "xno" && test "x${want_poppler}" = "xno" ; then
+   AC_MSG_ERROR([one of mupdf or poppler backends must be enabled])
+fi
 
 
 ### Checks for programs
@@ -43,6 +94,10 @@ AC_PROG_CXXCPP
 AC_PROG_CXX_C_O
 AC_LANG(C)
 
+# pkg-config
+
+PKG_PROG_PKG_CONFIG
+
 # doxygen program for documentation building
 
 EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
@@ -50,10 +105,25 @@ EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
 ### Checks for libraries
 
-PKG_CHECK_MODULES(EPDF, [poppler >= 0.12 evas >= 0.9.9 eina-0])
+BUILD_MUPDF_CJK_FONTS=""
+if test "x${want_mupdf}" = "xyes" ; then
+   PKG_CHECK_MODULES(FREETYPE, [freetype2])
+   PKG_CHECK_MODULES(EPDF, [evas >= 0.9.9 eina-0])
+   backend="mupdf"
+   if ! test "x${want_mupdf_cjk}" = "xyes" ; then
+      BUILD_MUPDF_CJK_FONTS="-DNOCJK"
+   fi
+else
+   PKG_CHECK_MODULES(EPDF, [poppler evas >= 0.9.9 eina-0])
+   POPPLER_VERSION=`${PKG_CONFIG} --modversion poppler`
+   AC_DEFINE_UNQUOTED([POPPLER_VERSION], ["${POPPLER_VERSION}"], [Poppler version.])
+   requirements_epdf="poppler ${requirements_epdf}"
+   backend="poppler"
+fi
 
-POPPLER_VERSION=`pkg-config --modversion poppler`
-AC_DEFINE_UNQUOTED([POPPLER_VERSION], ["${POPPLER_VERSION}"], [Poppler version.])
+AC_SUBST(BUILD_MUPDF_CJK_FONTS)
+AM_CONDITIONAL([BUILD_MUPDF_CJK_FONTS], [test "x${want_mupdf_cjk}" = "xyes"])
+AM_CONDITIONAL([BUILD_EPDF_MUPDF], [test "x${want_mupdf}" = "xyes"])
 
 PKG_CHECK_MODULES(EPDFBIN, [ecore-evas >= 0.9.9 ecore >= 0.9.9])
 
@@ -87,6 +157,7 @@ if test "x${have_ewl}" = "xyes" ; then
 else
    have_ewl="no"
 fi
+
 AM_CONDITIONAL([BUILD_EPDF_EWL], [test "x${have_ewl}" = "xyes"])
 
 
@@ -94,15 +165,16 @@ AM_CONDITIONAL([BUILD_EPDF_EWL], [test "x${have_ewl}" = "xyes"])
 
 # Xpdf header files are needed
 
-AC_LANG_PUSH(C++)
-CPPFLAGS_save=${CPPFLAGS}
-CPPFLAGS="${CPPFLAGS} ${EPDF_CFLAGS}"
-AC_CHECK_HEADER([GlobalParams.h],
-   [dummy="yes"],
-   [AC_MSG_ERROR([Xpdf headers not found. Did you configure poppler with the option --enable-xpdf-headers ?])]
-)
-CPPFLAGS=${CPPFLAGS_save}
-AC_LANG_POP(C++)
+if ! test "x${want_mupdf}" = "xyes" ; then
+   AC_LANG_PUSH(C++)
+   CPPFLAGS_save=${CPPFLAGS}
+   CPPFLAGS="${CPPFLAGS} ${EPDF_CFLAGS}"
+   AC_CHECK_HEADER([GlobalParams.h],
+      [dummy="yes"],
+      [AC_MSG_ERROR([Xpdf headers not found. Did you configure poppler with the option --enable-xpdf-headers ?])])
+   CPPFLAGS=${CPPFLAGS_save}
+   AC_LANG_POP(C++)
+fi
 
 
 ### Checks for types
@@ -137,6 +209,7 @@ epdf-ewl.pc
 doc/Makefile
 src/Makefile
 src/lib/Makefile
+src/lib/mupdf/Makefile
 src/lib/poppler/Makefile
 src/bin/Makefile
 src/plugins/Makefile
@@ -153,6 +226,7 @@ echo "------------------------------------------------------------------------"
 echo
 echo "Configuration Options Summary:"
 echo
+echo "  Backend..............: ${backend}"
 echo "  Documentation........: ${enable_doc}"
 echo
 echo "  Ewl widget...........: ${have_ewl}"

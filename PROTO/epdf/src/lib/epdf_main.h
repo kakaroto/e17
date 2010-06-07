@@ -27,7 +27,7 @@ int epdf_shutdown();
  *
  * @ingroup Epdf_Main
  */
-const char *epdf_poppler_version_get (void);
+const char *epdf_backend_version_get (void);
 
 /**
  * @brief Return the state of fonts antialiasing in Poppler

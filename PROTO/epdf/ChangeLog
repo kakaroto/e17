@@ -1,3 +1,35 @@
+2010-06-07  Vincent Torri  <doursse at users dot sf dot net>
+
+	Add mupdf 0.5 backend. That backend is statically linked
+	to epdf, hence epdf will significantly be bigger with that
+	backend than with poppler. It has also less features than
+	poppler (for now). On the other hand, smaller memory
+	footprint, better output, and faster, especially with embedded
+	devices.
+
+	* AUTHORS:
+	* configure.ac:
+	* src/bin/epdf_evas_test.c:
+	* src/lib/Makefile.am:
+	* src/lib/mupdf/Makefile.am:
+	* src/lib/mupdf/epdf_mupdf_document.c:
+	* src/lib/mupdf/epdf_mupdf_index.c:
+	* src/lib/mupdf/epdf_mupdf_main.c:
+	* src/lib/mupdf/epdf_mupdf_page.c:
+	* src/lib/mupdf/epdf_mupdf_private.h:
+	mupdf 0.5 bindings, by Alexander 'LunohoD' Kerner,
+	modified a bit by myself.
+
+	* src/lib/epdf_main.h:
+	* src/lib/poppler/epdf_poppler_main.cpp:
+	* src/lib/poppler/epdf_poppler_page.cpp:
+	* src/lib/poppler/epdf_poppler_private.h:
+	API break: epdf_poppler_version_get() renamed as
+	epdf_backend_version_get().
+
+	* src/lib/mupdf/mupdf-0.5 (added):
+	mupdf 0.5
+
 2010-04-23  Vincent Torri  <doursse at users dot sf dot net>
 
 	* src/lib/poppler/epdf_poppler_document.cpp:
