@@ -180,7 +180,7 @@ _dbus_cb_current_track(void *data, DBusMessage *reply, DBusError *error)
 
    if (!p->instances)
      return;
-   
+
    if (!_dbus_check_msg(reply, error))
      return;
 
@@ -309,7 +309,7 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 	ERR("dbus return after finish!");
 	return;
      }
-     
+
    if (!p->fetch_tracks)
      {
 	ERR("should be nothing to fetch!");
@@ -624,10 +624,10 @@ _begin(Evry_Plugin *plugin, const Evry_Item *item __UNUSED__)
 
    GET_PLUGIN(p, plugin);
 
-   p->instances++;
-
-   if (p->instances > 1)
+   if (p->instances)
      return NULL;
+
+   p->instances++;
 
    _dbus_send_msg("/TrackList", "GetLength", _dbus_cb_tracklist_length, p);
 
@@ -679,7 +679,7 @@ _finish(Evry_Plugin *plugin)
      {
 	if (t == p->empty)
 	  continue;
-	
+
 	if (t->pnd) dbus_pending_call_cancel(t->pnd);
 	EVRY_ITEM_FREE(t);
      }
