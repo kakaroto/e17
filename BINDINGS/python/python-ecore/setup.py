@@ -67,7 +67,7 @@ ecoremodule = Extension('ecore.c_ecore',
                                  'ecore/ecore.c_ecore_fd_handler.pxi',
                                  'include/ecore/c_ecore.pxd',
                                  ],
-                        **pkgconfig('"ecore >= 0.9.9.063" ''"eina-0 >= 0.9.9.063"'))
+                        **pkgconfig('"ecore >= 0.9.9.49539" ''"eina-0 >= 0.9.9.49539"'))
 
 
 
@@ -130,7 +130,7 @@ if int(os.environ.get("ECORE_BUILD_EVAS", 1)):
                  'ecore/evas/ecore.evas.c_ecore_evas_software_x11_16.pxi',
                  'include/ecore/evas/c_ecore_evas.pxd',
                  ],
-        **pkgconfig('"ecore-evas >= 0.9.9.063" ''"eina-0 >= 0.9.9.063"'))
+        **pkgconfig('"ecore-evas >= 0.9.9.49539" ''"eina-0 >= 0.9.9.49539"'))
     module_list.append(ecoreevasmodule)
 else:
     print "NOTICE: not building ecore.evas module as requested " \
@@ -143,7 +143,7 @@ if int(os.environ.get("ECORE_BUILD_X", 1)):
         depends=['ecore/x/ecore.x.c_ecore_x_window.pxi',
                  'include/ecore/x/c_ecore_x.pxd',
                  ],
-        **pkgconfig('"ecore-x >= 0.9.9.063" ''"eina-0 >= 0.9.9.063"'))
+        **pkgconfig('"ecore-x >= 0.9.9.49539" ''"eina-0 >= 0.9.9.49539"'))
     module_list.append(ecorexmodule)
 else:
     print "NOTICE: not building ecore.x module as requested " \
@@ -154,7 +154,7 @@ if int(os.environ.get("ECORE_BUILD_XSCREENSAVER", 1)):
         'ecore.x.screensaver',
         sources=['ecore/x/ecore.x.screensaver.pyx'],
         depends=['include/ecore/x/screensaver.pxd'],
-        **pkgconfig('"ecore-x >= 0.9.9.063" ''"eina-0 >= 0.9.9.063"'))
+        **pkgconfig('"ecore-x >= 0.9.9.49539" ''"eina-0 >= 0.9.9.49539"'))
     module_list.append(ecorexscreensavermodule)
 else:
     print "NOTICE: not building ecore.xscreensaver module as requested " \
@@ -165,14 +165,14 @@ if int(os.environ.get("ECORE_BUILD_IMF", 1)):
         'ecore.imf.c_ecore_imf',
         sources=['ecore/imf/ecore.imf.c_ecore_imf.pyx'],
         depends=['include/ecore/imf/c_ecore_imf.pxd'],
-        **pkgconfig('"ecore-imf >= 0.9.9.063" ''"eina-0 >= 0.9.9.063"'))
+        **pkgconfig('"ecore-imf >= 0.9.9.49539" ''"eina-0 >= 0.9.9.49539"'))
     module_list.append(ecoreimfmodule)
 else:
     print "NOTICE: not building ecore.imf module as requested " \
           "by ECORE_BUILD_IMF=0!"
 
 setup(name='python-ecore',
-      version='0.4.0',
+      version='0.5.0',
       license='LGPL',
       author='Gustavo Sverzut Barbieri',
       author_email='barbieri@gmail.com',
@@ -182,8 +182,8 @@ setup(name='python-ecore',
       keywords='wrapper binding enlightenment abstraction event ecore',
       classifiers=trove_classifiers,
       packages=find_packages(),
-      install_requires=['python-evas>=0.4.0'],
-      setup_requires=['python-evas>=0.4.0'],
+      install_requires=['python-evas>=0.5.0'],
+      setup_requires=['python-evas>=0.5.0'],
       ext_modules=module_list,
       zip_safe=False,
       cmdclass={'build_ext': ecore_build_ext,},

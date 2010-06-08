@@ -3,12 +3,12 @@
 REQUIREMENTS
 ============
 
- * Edje >= 0.9.9.063
- * Eet >= 1.2.3         (indirect, Edje dependency)
- * Embryo >= 0.9.9.063  (indirect, Edje dependency)
- * Ecore >= 0.9.9.063   (indirect, Edje dependency)
- * Evas >= 0.9.9.063
- * Python-Evas >= 0.4.0
+ * Edje >= 0.9.9.49539
+ * Eet >= 1.3.0          (indirect, Edje dependency)
+ * Embryo >= 0.9.9.49539 (indirect, Edje dependency)
+ * Ecore >= 0.9.9.49539  (indirect, Edje dependency)
+ * Evas >= 0.9.9.49539
+ * Python-Evas >= 0.5.0
  * Cython >= 0.12.1
  * Python >= 2.4
  * Python-setuptools >= 0.6_rc9
