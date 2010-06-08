@@ -19,5 +19,7 @@ void photo_object_camera_set(Evas_Object *obj, Eina_Bool b);
 void photo_object_text_set(Evas_Object *obj, const char *s);
 void photo_object_done_set(Evas_Object *obj, Eina_Bool b);
 
+Evas_Object *photo_object_flickr_state_set(Evas_Object *obj, const char* state);
+
 #endif   /* ----- #ifndef PHOTO_OBJECT_INC  ----- */
 

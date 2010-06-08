@@ -44,9 +44,7 @@ images {
     image: "images/geocaching/icon_needsmaint.png" COMP;
     image: "images/flickr/set_account_0.png" COMP;
     image: "images/flickr/set_account_1.png" COMP;
-    image: "images/flickr/notinflickr.png" COMP;
-    image: "images/flickr/flickrnotuptodate.png" COMP;
-    image: "images/flickr/notuptodate.png" COMP;
+    image: "images/flickr/update.png" COMP;
     image: "images/flickr/select.png" COMP;
 }
 
@@ -261,6 +259,19 @@ parts {
             rel2.relative: 0.2 0.9;
         }
     }
+    part {
+            name: "object.swallow.sync";
+            type: SWALLOW;
+            description {
+                state: "default" 0.0;
+                align: 1.0 0.0;
+                fixed: 1 1;
+                rel1.relative: 0.0 0.7;
+                rel2.relative: 1.0 1.0;
+                rel2.to: "shadow";
+                rel1.to: "shadow";
+            }
+        }
     part {
         name: "loading_clip";
         type: RECT;
@@ -1859,75 +1870,19 @@ group {
     name: "flickr/sync";
     parts {
         part {
-            name: "notinflickr";
+            name: "main";
             description {
                 state: "default" 0.0;
                 aspect: 1.56 1;
                 aspect_preference: BOTH;
                 color: 255 255 255 0;
                 align: 1.0 0.0;
-                image.normal: "images/flickr/notinflickr.png";
+                image.normal: "images/flickr/update.png";
             }
             description {
-                state: "notinflickr" 0.0;
+                state: "update" 0.0;
                 inherit: "default" 0.0;
                 color: 255 255 255 255;
-            }
-            description {
-                state: "flickrnotuptodate" 0.0;
-                inherit: "default" 0.0;
-            }
-            description {
-                state: "notuptodate" 0.0;
-                inherit: "default" 0.0;
-            }
-        }
-        part {
-            name: "flickrnotuptodate";
-            description {
-                state: "default" 0.0;
-                aspect: 1.56 1;
-                aspect_preference: BOTH;
-                color: 255 255 255 0;
-                align: 1.0 0.0;
-                image.normal: "images/flickr/flickrnotuptodate.png";
-            }
-            description {
-                state: "flickrnotuptodate" 0.0;
-                inherit: "default" 0.0;
-                color: 255 255 255 255;
-            }
-            description {
-                state: "notinflickr" 0.0;
-                inherit: "default" 0.0;
-            }
-            description {
-                state: "notuptodate" 0.0;
-                inherit: "default" 0.0;
-            }
-        }
-        part {
-            name: "notuptodate";
-            description {
-                state: "default" 0.0;
-                aspect: 1.56 1;
-                aspect_preference: BOTH;
-                color: 255 255 255 0;
-                align: 1.0 0.0;
-                image.normal: "images/flickr/notuptodate.png";
-            }
-            description {
-                state: "notuptodate" 0.0;
-                inherit: "default" 0.0;
-                color: 255 255 255 255;
-            }
-            description {
-                state: "flickrnotuptodate" 0.0;
-                inherit: "default" 0.0;
-            }
-            description {
-                state: "notinflickr" 0.0;
-                inherit: "default" 0.0;
             }
         }
         part {
@@ -1956,42 +1911,18 @@ group {
     }
     programs {
         program {
-            name: "notinflickr";
-            signal: "notinflickr";
-            action: STATE_SET "notinflickr" 0.0;
-            target: "notinflickr";
-            target: "notuptodate";
-            target: "flickrnotuptodate";
+            name: "uptodate";
+            signal: "uptodate";
+            action: STATE_SET "default" 0.0;
+            target: "main";
             transition: LINEAR 1.0;
             after: "show_select";
         }
         program {
-            name: "notuptodate";
-            signal: "notuptodate";
-            action: STATE_SET "notuptodate" 0.0;
-            target: "notinflickr";
-            target: "notuptodate";
-            target: "flickrnotuptodate";
-            transition: LINEAR 1.0;
-            after: "show_select";
-        }
-        program {
-            name: "photo_notuptodate";
-            signal: "photo_notuptodate";
-            action: STATE_SET "notuptodate" 0.0;
-            target: "notinflickr";
-            target: "notuptodate";
-            target: "flickrnotuptodate";
-            transition: LINEAR 1.0;
-            after: "show_select";
-        }
-        program {
-            name: "flickrnotuptodate";
-            signal: "flickrnotuptodate";
-            action: STATE_SET "flickrnotuptodate" 0.0;
-            target: "notinflickr";
-            target: "notuptodate";
-            target: "flickrnotuptodate";
+            name: "update";
+            signal: "update";
+            action: STATE_SET "update" 0.0;
+            target: "main";
             transition: LINEAR 1.0;
             after: "show_select";
         }

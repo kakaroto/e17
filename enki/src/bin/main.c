@@ -35,6 +35,7 @@ void close_cb(void *data, Evas_Object *obj, void *event_info)
    photos_list_object_freeze(enlil_data->list_photo->o_list, 1);
 
    download_free(&(enlil_data->dl));
+   upload_free(&(enlil_data->ul));
    enlil_root_free(&(enlil_data->root));
    enlil_sync_free(&(enlil_data->sync));
    if(enlil_data->load) enlil_load_free(&(enlil_data->load));
@@ -318,6 +319,7 @@ int elm_main(int argc, char **argv)
 
    //
    enlil_data->dl = download_new(win->win);
+   enlil_data->ul = upload_new(win->win);
    //
 
    //
@@ -514,20 +516,16 @@ void enlil_geocaching_data_free(Enlil_Geocaching *gp, void *_data)
    free(data);
 }
 
-const char *album_flickr_edje_signal_get(Album_Flickr_Enum e)
+const char *album_flickr_edje_signal_get(Enlil_Album_Data *album_data)
 {
-   switch(e)
-     {
-      case ALBUM_FLICKR_NONE:
-	 return "none";
-      case ALBUM_FLICKR_FLICKRNOTUPTODATE:
-	 return "flickrnotuptodate";
-      case ALBUM_FLICKR_NOTUPTODATE:
-	 return "notuptodate";
-      case ALBUM_FLICKR_NOTINFLICKR:
-	 return "notinflickr";
-     }
-   return NULL;
+   ASSERT_RETURN(album_data != NULL);
+   if(album_data->flickr_sync.album_flickr_notuptodate
+	 || album_data->flickr_sync.album_notinflickr
+	 || album_data->flickr_sync.album_notuptodate
+	 || album_data->flickr_sync.photos_notuptodate
+	 || album_data->flickr_sync.photos_notinlocal)
+     return "update";
+   return "uptodate";
 }
 
 const char *photo_flickr_edje_signal_get(Photo_Flickr_Enum e)
@@ -535,9 +533,13 @@ const char *photo_flickr_edje_signal_get(Photo_Flickr_Enum e)
    switch(e)
      {
       case PHOTO_FLICKR_NONE:
-	 return "none";
+	 return "uptodate";
       case PHOTO_FLICKR_NOTUPTODATE:
-	 return "photo_notuptodate";
+	 return "update";
+      case PHOTO_FLICKR_FLICKRNOTUPTODATE:
+	 return "update";
+      case PHOTO_FLICKR_NOTINFLICKR:
+	 return "update";
      }
    return NULL;
 }

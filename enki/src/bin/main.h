@@ -40,7 +40,7 @@ typedef struct album_menu Album_Menu;
 typedef struct photo_menu Photo_Menu;
 typedef struct collection_menu Collection_Menu;
 typedef struct Download Download;
-typedef struct Download_Job Download_Job;
+typedef struct Upload Upload;
 typedef struct tag_menu Tag_Menu;
 typedef struct inwin Inwin;
 
@@ -52,6 +52,7 @@ struct enlil_data
     Enlil_Load *load;
 
     Download *dl;
+    Upload *ul;
 
     int nb_photos, nb_albums;
 
@@ -76,18 +77,12 @@ struct enlil_data
 };
 
 
-typedef enum Album_Flickr_Enum
-{
-   ALBUM_FLICKR_NONE,
-   ALBUM_FLICKR_FLICKRNOTUPTODATE,
-   ALBUM_FLICKR_NOTUPTODATE,
-   ALBUM_FLICKR_NOTINFLICKR
-} Album_Flickr_Enum;
-
 typedef enum Photo_Flickr_Enum
 {
    PHOTO_FLICKR_NONE,
-   PHOTO_FLICKR_NOTUPTODATE
+   PHOTO_FLICKR_NOTUPTODATE,
+   PHOTO_FLICKR_FLICKRNOTUPTODATE,
+   PHOTO_FLICKR_NOTINFLICKR
 } Photo_Flickr_Enum;
 /**
  * @brief Data associated to all albums. Some information are stored inside as
@@ -110,8 +105,33 @@ struct enlil_album_data
    struct
      {
 	Evas_Object *icon;
-	Album_Flickr_Enum state;
-	Photo_Flickr_Enum photos_state;
+	Eina_Bool album_flickr_notuptodate;
+	Eina_Bool album_notinflickr;
+	Eina_Bool album_notuptodate;
+	Eina_Bool photos_notuptodate; //see in each photo for more information
+	Eina_Bool photos_notinlocal; //photo which are on flickr but not in the local library
+	Eina_List *photos_notinlocal_name; //list of char *
+
+	struct
+	  {
+	     Evas_Object *win;
+	     Evas_Object *pb;
+
+	     Evas_Object *pb_is_currently_downloading_photos;
+
+
+	     Evas_Object *tb;
+	     Evas_Object *fr;
+
+	     Evas_Object *bt1;
+	     Evas_Object *bt2;
+	     Evas_Object *bt3;
+	     Evas_Object *bt4;
+	     Evas_Object *bt5;
+	     Evas_Object *bt6;
+	  } inwin;
+
+	Eina_Bool is_currently_downloading_photos;
      } flickr_sync;
 };
 
@@ -131,6 +151,12 @@ struct enlil_photo_data
     Elm_Map_Marker *marker;
 
     int cant_create_thumb;
+
+    struct
+     {
+	Evas_Object *icon;
+	Photo_Flickr_Enum state;
+     } flickr_sync;
 };
 
 struct enlil_collection_data
@@ -358,11 +384,20 @@ struct Download
    Evas_Object *lbl;
 };
 
+struct Upload
+{
+   Evas_Object *main;
+   Evas_Object *pb;
+   Evas_Object *lbl;
+};
+
+
+
 extern Enlil_Photo *current_photo;
 extern Enlil_Data *enlil_data;
 
 
-const char *album_flickr_edje_signal_get(Album_Flickr_Enum e);
+const char *album_flickr_edje_signal_get(Enlil_Album_Data *album_data);
 const char *photo_flickr_edje_signal_get(Photo_Flickr_Enum e);
 
 /* main window */
@@ -489,8 +524,17 @@ Evas_Object *flickr_menu_new(Evas_Object *win);
 
 /* Download manager */
 Download *download_new(Evas_Object *parent);
-void download_free(Download **_dl);
-void download_add(Download *dl, const char *source, Enlil_Photo *photo);
+void download_free(Download **_ul);
+void download_add(Download *ul, const char *source, Enlil_Photo *photo);
+
+/* Upload manager */
+Upload *upload_new(Evas_Object *parent);
+void upload_free(Upload **_ul);
+void upload_add(Upload *ul, Enlil_Photo *photo);
+void upload_album_create_add(Upload *ul, Enlil_Album *album);
+
+
+
 
 /* Photo manager callbacks */
 void sync_done_cb(void *data, Enlil_Sync *sync);
@@ -542,11 +586,15 @@ void flickr_album_uptodate_cb(void *data, Enlil_Root *root, Enlil_Album *album);
 void flickr_error_cb(void *data, Enlil_Root *root);
 
 void flickr_photo_new_cb(void *data, Enlil_Album *album, const char *photo_name, const char *photo_id);
-void flickr_photo_flickrnotuptodate_cb(void *data, Enlil_Album *album, Enlil_Photo *photo);
-void flickr_photo_notuptodate_cb(void *data, Enlil_Album *album, Enlil_Photo *photo);
 void flickr_photo_notinflickr_cb(void *data, Enlil_Album *album, Enlil_Photo *photo);
-void flickr_photo_uptodate_cb(void *data, Enlil_Album *album, Enlil_Photo *photo);
+void flickr_photo_known_cb(void *data, Enlil_Album *album, Enlil_Photo *photo);
+
+void flickr_photo_flickrnotuptodate_cb(void *data, Enlil_Photo *photo);
+void flickr_photo_notuptodate_cb(void *data, Enlil_Photo *photo);
+void flickr_photo_uptodate_cb(void *data, Enlil_Photo *photo);
+
 void flickr_album_error_cb(void *data, Enlil_Album *album);
+void flickr_photo_error_cb(void *data, Enlil_Photo *photo);
 
 //main menu
 Evas_Object *main_menu_new(Evas_Object *parent);
@@ -554,5 +602,10 @@ void main_menu_update_libraries_list(Eina_List *list);
 void main_menu_loading_disable_set(Eina_Bool disabled);
 void main_menu_sync_disable_set(Eina_Bool disabled);
 void main_menu_noroot_disabled_set(Eina_Bool disabled);
+
+//inwin flickr sync
+Evas_Object *flickr_sync_new(Evas_Object *win, Enlil_Album *album);
+void flickr_sync_update(Enlil_Album *album);
+
 
 #endif

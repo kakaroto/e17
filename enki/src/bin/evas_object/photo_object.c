@@ -22,6 +22,8 @@ struct _Smart_Data
    Eina_Bool progressbar;
    Evas_Object *o_progressbar;
 
+   Evas_Object *flickr;
+
    Eina_Bool done : 1;
    Eina_Bool selected: 1;
 };
@@ -258,6 +260,28 @@ void photo_object_text_set(Evas_Object *obj, const char *s)
    edje_object_part_text_set(sd->obj, "object.text", s);
 }
 
+Evas_Object *photo_object_flickr_state_set(Evas_Object *obj, const char* state)
+{
+   Smart_Data *sd;
+   sd = evas_object_smart_data_get(obj);
+   if (!sd) return NULL;
+
+   if(!sd->flickr)
+     {
+	sd->flickr = edje_object_add(evas_object_evas_get(obj));
+	evas_object_show(sd->flickr);
+	edje_object_file_set(sd->flickr, PACKAGE_DATA_DIR"/theme.edj", "flickr/sync");
+	evas_object_size_hint_weight_set(sd->flickr, 1.0, 1.0);
+	evas_object_size_hint_align_set(sd->flickr, 1.0, 0.0);
+
+	edje_object_part_swallow(sd->obj, "object.swallow.sync", sd->flickr);
+     }
+
+   printf("%s\n", state);
+   edje_object_signal_emit(sd->flickr, state, "");
+   return sd->flickr;
+}
+
 static void _update(Evas_Object *obj)
 {
    int zoomw = 1, zoomh = 1;
@@ -293,9 +317,9 @@ static void _update(Evas_Object *obj)
      }
 
    if(sd->done)
-     edje_object_signal_emit(sd->obj, "done", "photo");  
+     edje_object_signal_emit(sd->obj, "done", "photo");
    else
-     edje_object_signal_emit(sd->obj, "undone", "photo");  
+     edje_object_signal_emit(sd->obj, "undone", "photo");
 
    if(sd->progressbar)
      {
@@ -325,6 +349,7 @@ static void _update(Evas_Object *obj)
       w = sd->w;
       h = sd->h;
    }
+
 
    w_img = sd->iw;
    h_img = sd->ih;
@@ -478,6 +503,9 @@ _smart_del(Evas_Object * obj)
      {
 	evas_object_del(sd->image);
      }
+   if(sd->flickr)
+     evas_object_del(sd->flickr);
+
 
    free(sd);
 }

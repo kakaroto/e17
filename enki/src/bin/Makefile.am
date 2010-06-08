@@ -28,7 +28,9 @@ enki_SOURCES = \
 								tag_menu.c \
 								inwin.c \
 								flickr_menu.c \
+								flickr_sync.c \
 								download.c \
+								upload.c \
 								main_menu.c
 
 enki_LDADD = @ENKI_LIBS@

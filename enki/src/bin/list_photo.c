@@ -22,6 +22,7 @@ static void _bt_album_select_all_cb(void *data, Evas_Object *obj, void *event_in
 static void _bt_album_unselect_all_cb(void *data, Evas_Object *obj, void *event_info);
 static void _tg_multiselect_changed_cb(void *data, Evas_Object *obj, void *event_info);
 static void _album_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _photo_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _flickr_album_done_cb(void *data, Enlil_Root *root, Enlil_Album *album, Eina_Bool error);
 static void _flickr_album_photos_done_cb(void *data, Enlil_Root *root, Enlil_Album *album, Eina_Bool error);
 static void _flickr_album_photos_sync_photo_new_cb(void *data, Enlil_Album *album, const char *photo_name, const char *photo_id);
@@ -267,12 +268,8 @@ static Evas_Object *_album_icon_get(const void *data, Evas_Object *obj)
    evas_object_size_hint_weight_set(ic, 1.0, 1.0);
    evas_object_size_hint_align_set(ic, 1.0, 0.0);
    evas_object_event_callback_add(ic, EVAS_CALLBACK_MOUSE_UP, _album_sync_flickr_cb, album);
-   if(album_data->flickr_sync.state != ALBUM_FLICKR_NONE)
-     edje_object_signal_emit(ic,
-	   album_flickr_edje_signal_get(album_data->flickr_sync.state), "");
-   if(album_data->flickr_sync.photos_state != PHOTO_FLICKR_NONE)
-     edje_object_signal_emit(ic,
-	   photo_flickr_edje_signal_get(album_data->flickr_sync.photos_state), "");
+   edje_object_signal_emit(ic,
+	 album_flickr_edje_signal_get(album_data), "");
 
    elm_layout_content_set(ly, "object.swallow.sync", ic);
 
@@ -307,6 +304,10 @@ static Evas_Object *_photo_icon_get(const void *data, Evas_Object *obj)
 
    if(enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_VIDEO)
      photo_object_camera_set(o, EINA_TRUE);
+
+   Evas_Object *flickr =
+      photo_object_flickr_state_set(o, photo_flickr_edje_signal_get(enlil_photo_data->flickr_sync.state));
+   evas_object_event_callback_add(flickr, EVAS_CALLBACK_MOUSE_UP, _photo_sync_flickr_cb, photo);
 
    photo_object_text_set(o, enlil_photo_name_get(photo));
 
@@ -472,6 +473,9 @@ static void _album_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *e
    Enlil_Album *album = data;
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 
+   Evas_Object *sync = flickr_sync_new(enlil_data->win->win, album);
+
+   /*
    if(album_data->flickr_sync.state == ALBUM_FLICKR_FLICKRNOTUPTODATE)
      {
 	enlil_flickr_job_sync_album_header_update_flickr_append(album, _flickr_album_done_cb, album);
@@ -488,28 +492,38 @@ static void _album_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *e
    if(album_data->flickr_sync.photos_state == PHOTO_FLICKR_NOTUPTODATE)
      {
 	enlil_flickr_job_sync_album_photos_append(album,
-        _flickr_album_photos_sync_photo_new_cb, NULL, NULL, NULL, NULL, NULL, album);
+	      _flickr_album_photos_sync_photo_new_cb, NULL, NULL, NULL, album);
+     }
+     */
+}
+
+static void _photo_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Enlil_Photo *photo = data;
+   Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+
+   if(photo_data->flickr_sync.state == PHOTO_FLICKR_FLICKRNOTUPTODATE)
+     {
+	upload_add(enlil_data->ul, photo);
+     }
+   else if(photo_data->flickr_sync.state == PHOTO_FLICKR_NOTUPTODATE)
+     {
+	//enlil_flickr_job_sync_album_header_update_local_append(album, _flickr_album_done_cb, album);
+     }
+   else if(photo_data->flickr_sync.state == PHOTO_FLICKR_NOTINFLICKR)
+     {
+	upload_add(enlil_data->ul, photo);
      }
 }
 
 static void _flickr_album_done_cb(void *data, Enlil_Root *root, Enlil_Album *album, Eina_Bool error)
 {
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
-
-   if(!error)
-	album_data->flickr_sync.state = ALBUM_FLICKR_NONE;
-   photos_list_object_header_update(album_data->list_photo_item);
-   elm_genlist_item_update(album_data->list_album_item);
 }
 
 static void _flickr_album_photos_done_cb(void *data, Enlil_Root *root, Enlil_Album *album, Eina_Bool error)
 {
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
-
-   if(!error)
-	album_data->flickr_sync.photos_state = PHOTO_FLICKR_NONE;
-   photos_list_object_header_update(album_data->list_photo_item);
-   elm_genlist_item_update(album_data->list_album_item);
 }
 
 static void _flickr_album_photos_sync_photo_new_cb(void *data, Enlil_Album *album, const char *photo_name, const char *photo_id)

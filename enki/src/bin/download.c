@@ -78,9 +78,46 @@ static void _start_cb(void *data, Enlil_Photo *photo)
 
 static void _done_cb(void *data, Enlil_Photo *photo, int status)
 {
+    Eina_List *l;
+    Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+    Enlil_Photo *_photo;
+    Enlil_Album *album = enlil_photo_album_get(photo);
     Download *dl = data;
 
     evas_object_hide(dl->main);
+
+    if(photo_data)
+    {
+        //if the photo is new, the data doesnt exists right now
+        photo_data->flickr_sync.state = PHOTO_FLICKR_NONE;
+        photos_list_object_item_update(photo_data->list_photo_item);
+    }
+
+    if(!enlil_download_photos_of_album_in_list(album, EINA_FALSE))
+    {
+        //set the album as uptodate and force to check if it is really uptodate
+        Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
+        album_data->flickr_sync.album_flickr_notuptodate = EINA_FALSE;
+	album_data->flickr_sync.album_notinflickr = EINA_FALSE;
+	album_data->flickr_sync.album_notuptodate = EINA_FALSE;
+	album_data->flickr_sync.photos_notuptodate = EINA_FALSE;
+	album_data->flickr_sync.photos_notinlocal = EINA_FALSE;
+
+        photos_list_object_header_update(album_data->list_photo_item);
+
+        album_data->flickr_sync.is_currently_downloading_photos = EINA_FALSE;
+        evas_object_hide(album_data->flickr_sync.inwin.pb_is_currently_downloading_photos);
+
+        enlil_flickr_job_sync_album_photos_append(album,
+                flickr_photo_new_cb,
+                flickr_photo_notinflickr_cb,
+                flickr_photo_known_cb,
+                flickr_album_error_cb,
+                enlil_data);
+
+        if(album_data->flickr_sync.inwin.win)
+            flickr_sync_update(album);
+    }
 }
 
 static int _progress_cb(void *data, Enlil_Photo *photo, long int dltotal, long int dlnow)
