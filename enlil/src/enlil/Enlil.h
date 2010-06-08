@@ -317,8 +317,6 @@ EAPI    int             enlil_photo_eet_save(Enlil_Photo *photo);
 
 EAPI	const char *	enlil_photo_flickr_id_get(Enlil_Photo *photo);
 EAPI	void		enlil_photo_flickr_id_set(Enlil_Photo *photo, const char *id);
-EAPI	Eina_Bool	enlil_photo_flickr_need_sync_get(Enlil_Photo *photo);
-EAPI	void		enlil_photo_flickr_need_sync_set(Enlil_Photo *photo, Eina_Bool need_sync);
 
 /* File manager */
 EAPI    Eet_File *	enlil_file_manager_open(const char *file);
@@ -578,6 +576,7 @@ typedef struct Enlil_Flickr_Photo_Size Enlil_Flickr_Photo_Size;
 
 typedef void (*Enlil_Flickr_Error_Cb) (void *data, Enlil_Root *root);
 typedef void (*Enlil_Flickr_Album_Error_Cb) (void *data, Enlil_Album *album);
+typedef void (*Enlil_Flickr_Photo_Error_Cb) (void *data, Enlil_Photo *photo);
 
 typedef void (*Enlil_Flickr_Album_New_Cb) (void *data, Enlil_Root *root, Enlil_Album *album);
 typedef void (*Enlil_Flickr_Album_NotInFlickr_Cb) (void *data, Enlil_Root *root, Enlil_Album *album);
@@ -587,11 +586,17 @@ typedef void (*Enlil_Flickr_Album_UpToDate_Cb) (void *data, Enlil_Root *root, En
 typedef void (*Enlil_Flickr_Album_Done_Cb) (void *data, Enlil_Root *root, Enlil_Album *album, Eina_Bool error);
 
 typedef void (*Enlil_Flickr_Photo_New_Cb) (void *data, Enlil_Album *album, const char *name, const char *photo_id);
+typedef void (*Enlil_Flickr_Photo_Known_Cb) (void *data, Enlil_Album *album, Enlil_Photo *photo);
+
 typedef void (*Enlil_Flickr_Photo_NotInFlickr_Cb) (void *data, Enlil_Album *album, Enlil_Photo *photo);
-typedef void (*Enlil_Flickr_Photo_NotUpToDate_Cb) (void *data, Enlil_Album *album, Enlil_Photo *photo);
-typedef void (*Enlil_Flickr_Photo_FlickrNotUpToDate_Cb) (void *data, Enlil_Album *album, Enlil_Photo *photo);
-typedef void (*Enlil_Flickr_Photo_UpToDate_Cb) (void *data, Enlil_Album *album, Enlil_Photo *photo);
-typedef void (*Enlil_Flickr_Photo_Done_Cb) (void *data, Enlil_Album *album, Enlil_Photo *photo, Eina_Bool error);
+typedef void (*Enlil_Flickr_Photo_NotUpToDate_Cb) (void *data, Enlil_Photo *photo);
+typedef void (*Enlil_Flickr_Photo_FlickrNotUpToDate_Cb) (void *data, Enlil_Photo *photo);
+typedef void (*Enlil_Flickr_Photo_UpToDate_Cb) (void *data, Enlil_Photo *photo);
+typedef void (*Enlil_Flickr_Photo_Done_Cb) (void *data, Enlil_Photo *photo);
+
+typedef void (*Enlil_Flickr_Photo_Upload_Start_Cb) (void *data, Enlil_Photo *photo);
+typedef int (*Enlil_Flickr_Photo_Upload_Progress_Cb) (void *data, Enlil_Photo *photo, long int dltotal, long int dlnow);
+typedef void (*Enlil_Flickr_Photo_Upload_Done_Cb) (void *data, Enlil_Photo *photo, int status);
 
 typedef void (*Enlil_Flickr_Photo_Sizes_Cb) (void *data, Eina_List *sizes, Eina_Bool error);
 
@@ -607,7 +612,10 @@ EAPI	Enlil_Flickr_Job *	enlil_flickr_job_sync_album_header_update_local_append(E
       Enlil_Flickr_Album_Done_Cb done_cb,
       void *data);
 EAPI	Enlil_Flickr_Job *	enlil_flickr_job_sync_album_header_create_flickr_append(Enlil_Album *album,
-      Enlil_Flickr_Album_Done_Cb done_cb,
+      Enlil_Flickr_Photo_Upload_Start_Cb start_cb,
+      Enlil_Flickr_Photo_Upload_Progress_Cb progress_cb,
+      Enlil_Flickr_Photo_Upload_Done_Cb done_cb,
+      Enlil_Flickr_Photo_Error_Cb error_cb,
       void *data);
 EAPI	Enlil_Flickr_Job *	enlil_flickr_job_sync_album_header_append(Enlil_Album *album,
       Enlil_Flickr_Album_New_Cb new_cb,
@@ -628,16 +636,45 @@ EAPI	Enlil_Flickr_Job *	enlil_flickr_job_sync_albums_append(Enlil_Root *root,
 EAPI	Enlil_Flickr_Job *enlil_flickr_job_sync_album_photos_append(Enlil_Album *album,
         Enlil_Flickr_Photo_New_Cb new_cb,
         Enlil_Flickr_Photo_NotInFlickr_Cb notinflickr_cb,
-        Enlil_Flickr_Photo_NotUpToDate_Cb notuptodate_cb,
-        Enlil_Flickr_Photo_FlickrNotUpToDate_Cb flickrnotuptodate_cb,
-	Enlil_Flickr_Photo_UpToDate_Cb uptodate_cb,
+        Enlil_Flickr_Photo_Known_Cb known_cb,
         Enlil_Flickr_Album_Error_Cb error_cb,
         void *data);
 
+EAPI	Enlil_Flickr_Job *enlil_flickr_job_cmp_photo_append(
+      Enlil_Photo *photo,
+      Enlil_Flickr_Photo_FlickrNotUpToDate_Cb flickrnotuptodate_cb,
+      Enlil_Flickr_Photo_NotUpToDate_Cb notuptodate_cb,
+      Enlil_Flickr_Photo_UpToDate_Cb uptodate_cb,
+      Enlil_Flickr_Photo_Error_Cb error_cb,
+      void *data);
+EAPI	Enlil_Flickr_Job *enlil_flickr_job_sync_photo_update_flickr_append(
+      Enlil_Photo *photo,
+      Enlil_Flickr_Photo_Upload_Start_Cb start_cb,
+      Enlil_Flickr_Photo_Upload_Progress_Cb progress_cb,
+      Enlil_Flickr_Photo_Upload_Done_Cb done_cb,
+      Enlil_Flickr_Photo_Error_Cb error_cb,
+      void *data);
+EAPI	Enlil_Flickr_Job *enlil_flickr_job_sync_photo_upload_flickr_append(
+      Enlil_Photo *photo,
+      Enlil_Flickr_Photo_Upload_Start_Cb start_cb,
+      Enlil_Flickr_Photo_Upload_Progress_Cb progress_cb,
+      Enlil_Flickr_Photo_Upload_Done_Cb done_cb,
+      Enlil_Flickr_Photo_Error_Cb error_cb,
+      void *data);
+EAPI	Enlil_Flickr_Job *enlil_flickr_job_sync_photo_upload_flickr_append(
+      Enlil_Photo *photo,
+      Enlil_Flickr_Photo_Upload_Start_Cb start_cb,
+      Enlil_Flickr_Photo_Upload_Progress_Cb progress_cb,
+      Enlil_Flickr_Photo_Upload_Done_Cb done_cb,
+      Enlil_Flickr_Photo_Error_Cb error_cb,
+      void *data);
 EAPI	Enlil_Flickr_Job *enlil_flickr_job_get_photo_sizes_append(const char *photo_id,
         Enlil_Flickr_Photo_Sizes_Cb cb,
         void *data);
-
+EAPI	Enlil_Flickr_Job *enlil_flickr_job_set_photo_times_flickr_fs_prepend(
+	Enlil_Photo *photo,
+	Enlil_Flickr_Photo_Error_Cb error_cb,
+        void *data);
 
 EAPI	const char* enlil_flickr_size_label_get(Enlil_Flickr_Photo_Size *size);
 EAPI	const char* enlil_flickr_size_source_get(Enlil_Flickr_Photo_Size *size);
@@ -660,6 +697,7 @@ EAPI	void	enlil_download_add(Enlil_Photo *photo, const char *source,
       Enlil_Download_Progress_Cb progress_cb,
       Enlil_Download_Done_Cb done_cb,
       void *data);
-
+EAPI	Eina_Bool enlil_download_image_in_list(const char *src, const Enlil_Album *album);
+EAPI	Eina_Bool enlil_download_photos_of_album_in_list(const Enlil_Album *album, Eina_Bool test_current);
 #endif   /* ----- #ifndef ENLIL_INC  ----- */
 

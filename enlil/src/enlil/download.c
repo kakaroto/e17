@@ -1,4 +1,5 @@
 #include "enlil_private.h"
+#include "../../config.h"
 
 
 static void _job_free(Enlil_Download_Job *job);
@@ -69,6 +70,67 @@ void enlil_download_add(Enlil_Photo *photo, const char *source,
     _job_next();
 }
 
+Eina_Bool enlil_download_image_in_list(const char *src, const Enlil_Album *album)
+{
+    ASSERT_RETURN(src != NULL);
+    ASSERT_RETURN(album != NULL);
+
+    const char *src_share = eina_stringshare_add(src);
+
+    Eina_Bool find = EINA_FALSE;
+    Eina_List *l;
+    Enlil_Download_Job *job;
+
+    EINA_LIST_FOREACH(jobs, l, job)
+    {
+        if(job->source == src_share
+                && album == enlil_photo_album_get(job->photo))
+        {
+            find = EINA_TRUE;
+            break;
+        }
+    }
+
+    if(current_job)
+    {
+        if(current_job->source == src_share
+                && album == enlil_photo_album_get(current_job->photo))
+            find = EINA_TRUE;
+    }
+
+    EINA_STRINGSHARE_DEL(src_share);
+
+    return find;
+}
+
+
+Eina_Bool enlil_download_photos_of_album_in_list(const Enlil_Album *album, Eina_Bool test_current)
+{
+    ASSERT_RETURN(album != NULL);
+
+    Eina_Bool find = EINA_FALSE;
+    Eina_List *l;
+    Enlil_Download_Job *job;
+
+    EINA_LIST_FOREACH(jobs, l, job)
+    {
+        if(album == enlil_photo_album_get(job->photo))
+        {
+            find = EINA_TRUE;
+            break;
+        }
+    }
+
+    if(test_current && current_job)
+    {
+        if(album == enlil_photo_album_get(current_job->photo))
+            find = EINA_TRUE;
+    }
+
+    return find;
+}
+
+
 
 static void _job_next()
 {
@@ -134,6 +196,13 @@ static void _done_cb(void *data, const char *file, int status)
 
     ecore_file_mv(file, buf);
 
+#ifdef HAVE_FLICKR
+    enlil_flickr_job_set_photo_times_flickr_fs_prepend(
+            current_job->photo,
+            NULL,
+            NULL);
+#endif
+
     if(current_job->done_cb)
         current_job->done_cb(current_job->data, current_job->photo, status);
 
@@ -161,8 +230,4 @@ static int _progress_cb(void *data, const char *file, long int dltotal, long int
 
     return 0;
 }
-
-
-
-
 

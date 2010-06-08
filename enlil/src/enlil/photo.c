@@ -10,6 +10,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <sys/stat.h>
+#include <unistd.h>
+
 typedef struct Enlil_Photo_Exif Enlil_Photo_Exif;
 typedef struct Enlil_Photo_IPTC Enlil_Photo_IPTC;
 
@@ -47,7 +50,8 @@ struct enlil_photo
    struct
      {
 	const char *id;
-	Eina_Bool need_sync;
+	long long last_change;
+	long long fs_time;
      } flickr;
 
    Eina_Bool exif_loaded;
@@ -289,18 +293,41 @@ void enlil_photo_flickr_id_set(Enlil_Photo *photo, const char *id)
      photo->flickr.id = NULL;
 }
 
-Eina_Bool enlil_photo_flickr_need_sync_get(Enlil_Photo *photo)
+long long int _enlil_photo_flickr_last_change_get(Enlil_Photo *photo)
 {
     ASSERT_RETURN(photo!=NULL);
-
-    return photo->flickr.need_sync;
+    return photo->flickr.last_change;
 }
 
-void enlil_photo_flickr_need_sync_set(Enlil_Photo *photo, Eina_Bool need_sync)
+void _enlil_photo_flickr_last_change_set(Enlil_Photo *photo, long long last_change)
 {
    ASSERT_RETURN_VOID(photo != NULL);
+   photo->flickr.last_change = last_change;
+}
 
-   photo->flickr.need_sync = need_sync;
+long long _enlil_photo_flickr_fs_time_get(Enlil_Photo *photo)
+{
+   ASSERT_RETURN(photo!=NULL);
+   return photo->flickr.fs_time;
+}
+
+void _enlil_photo_flickr_fs_time_calc(Enlil_Photo *photo)
+{
+   char buf[PATH_MAX];
+   time_t time;
+   int size;
+   ASSERT_RETURN_VOID(photo!=NULL);
+
+   snprintf(buf, sizeof(buf), "%s/%s", enlil_photo_path_get(photo), enlil_photo_file_name_get(photo));
+   FILE_INFO_GET(buf, time, size);
+
+   photo->flickr.fs_time = time;
+}
+
+void enlil_photo_flickr_last_change_set(Enlil_Photo *photo, long long last_change)
+{
+   ASSERT_RETURN_VOID(photo != NULL);
+   photo->flickr.last_change = last_change;
 }
 
 void enlil_photo_name_set(Enlil_Photo *photo, const char *name)
@@ -315,7 +342,6 @@ void enlil_photo_name_set(Enlil_Photo *photo, const char *name)
      _enlil_album_photo_name_changed(photo->album, photo);
 
    enlil_photo_iptc_add(photo, "ObjectName", photo->name, EINA_FALSE);
-   enlil_photo_flickr_need_sync_set(photo, EINA_TRUE);
 }
 
 void enlil_photo_description_set(Enlil_Photo *photo, const char *desc)
@@ -330,7 +356,6 @@ void enlil_photo_description_set(Enlil_Photo *photo, const char *desc)
    if(!old && desc[0] == '\0') return ;
 
    enlil_photo_iptc_add(photo, "Caption", photo->description, EINA_FALSE);
-   enlil_photo_flickr_need_sync_set(photo, EINA_TRUE);
 }
 
 void enlil_photo_exif_clear(Enlil_Photo *photo)
@@ -1323,7 +1348,8 @@ Eet_Data_Descriptor * enlil_photo_edd_new(Eet_Data_Descriptor *edd_tag)
    EET_DATA_DESCRIPTOR_ADD_LIST(edd, Enlil_Photo, "tags", tags, edd_tag);
 
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "flickr.id", flickr.id, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "flickr.need_sync", flickr.need_sync, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "flickr.last_change", flickr.last_change, EET_T_LONG_LONG);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "flickr.fs_time", flickr.fs_time, EET_T_LONG_LONG);
 
    return edd;
 }

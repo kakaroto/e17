@@ -73,6 +73,11 @@ Eet_Data_Descriptor * _enlil_iptc_edd_new();
 
 void _enlil_album_flickr_id_set(Enlil_Album *album, const char *id);
 
+long long 	_enlil_photo_flickr_last_change_get(Enlil_Photo *photo);
+void		_enlil_photo_flickr_last_change_set(Enlil_Photo *photo, long long last_change);
+long long 	_enlil_photo_flickr_fs_time_get(Enlil_Photo *photo);
+void		_enlil_photo_flickr_fs_time_calc(Enlil_Photo *photo);
+
 int enlil_trans_init();
 int enlil_trans_shutdown();
 

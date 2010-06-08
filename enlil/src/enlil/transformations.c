@@ -312,7 +312,6 @@ end:
 
 static int _exe_del_cb(void *data, int type, void *event)
 {
-   printf("EX DEL\n");
    _end_cb(job_current);
    return 1;
 }
