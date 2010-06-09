@@ -199,12 +199,10 @@ void test_genlist (void *data, Evas_Object *obj, void *event_info)
 
     if (i == 50)
     {
-      //evas_object_smart_callback_add(bt_50, "clicked", _bt50_cb, gli);
       bt_50->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&_bt50_cb), gli));
     }
     else if (i == 1500)
     {
-      //evas_object_smart_callback_add(bt_1500, "clicked", _bt1500_cb, gli);
       bt_1500->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&_bt1500_cb), gli));
     }
   }
