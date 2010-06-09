@@ -298,10 +298,22 @@ static JSFunctionSpec        file_functions[] = {
   JS_FS_END
 };
 
+static const struct {
+   const char *extention;
+   const char *type_name;
+} file_types[] = {
+   { ".txt", "Text File" },
+   { ".csv", "Text File" },
+   { ".htm", "HTML File" },
+   { ".html", "HTML File" },
+   { ".m3u", "Playlist File" },
+};
+
 static Eina_Bool
 module_open(Elixir_Module *em, JSContext *cx, JSObject *parent)
 {
    void **tmp = NULL;
+   int i;
 
    if (em->data)
      return EINA_TRUE;
@@ -314,6 +326,9 @@ module_open(Elixir_Module *em, JSContext *cx, JSObject *parent)
 
    if (!JS_DefineFunctions(cx, *((JSObject**) tmp), file_functions))
      goto on_error;
+
+   for (i = 0; i < sizeof (file_types) / sizeof(*file_types); i++)
+     elixir_file_register(file_types[i].extention, file_types[i].type_name);
 
    _file_parameter.class = elixir_class_request("FILE", NULL);
 
@@ -339,6 +354,9 @@ module_close(Elixir_Module *em, JSContext *cx)
 
    while (file_functions[i].name != NULL)
      JS_DeleteProperty(cx, *((JSObject**) tmp), file_functions[i++].name);
+
+   for (i = 0; i < sizeof (file_types) / sizeof(*file_types); i++)
+     elixir_file_unregister(file_types[i].extention, file_types[i].type_name);
 
    elixir_object_unregister(cx, (JSObject**) tmp);
 
