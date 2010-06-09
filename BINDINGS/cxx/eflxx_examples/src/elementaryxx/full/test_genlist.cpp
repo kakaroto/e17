@@ -91,32 +91,30 @@ void glSelected (GenListColumnSelector &selection, const Evasxx::Object &obj, vo
 
 void _move (const Evasxx::MouseMoveEvent &ev, GenList *gl)
 {
-  // TODO: port _move below to C++
+  int where = 0;
+  Eflxx::Point pos (ev.data->cur.canvas.x, ev.data->cur.canvas.y);
+  
+  GenListItem *gli = gl->getItemAtXY (pos, where);
+
+  if (gli)
+  {
+    printf("over item where %i\n", where);
+  }
+  else
+  {
+    printf("over none, where %i\n", where);
+  }
 }
 
-#if 0
-static void
-_move(void *data, Evas *evas, Evas_Object *obj, void *event_info)
+
+static void _bt50_cb (Evasxx::Object &obj, void *event_info, GenListItem *gli)
 {
-   Evas_Object *gl = data;
-   Evas_Event_Mouse_Move *ev = event_info;
-   int where = 0;
-   Elm_Genlist_Item *gli;
-   gli = elm_genlist_at_xy_item_get(gl, ev->cur.canvas.x, ev->cur.canvas.y, &where);
-   if (gli)
-     printf("over %p, where %i\n", elm_genlist_item_data_get(gli), where);
-   else
-     printf("over none, where %i\n", where);
-}
-#endif // 0
-static void _bt50_cb (Evasxx::Object &obj, void *event_info)
-{
-  //elm_genlist_item_bring_in(data);
+  gli->bringIn ();
 }
 
-static void _bt1500_cb (Evasxx::Object &obj, void *event_info)
+static void _bt1500_cb (Evasxx::Object &obj, void *event_info, GenListItem *gli)
 {
-  //elm_genlist_item_middle_bring_in(data);
+  gli->bringInMiddle ();
 }
 
 static void _gl_selected (Evasxx::Object &obj, void *event_info)
@@ -194,7 +192,7 @@ void test_genlist (void *data, Evas_Object *obj, void *event_info)
     GenListColumnSelector1 *select1 = new GenListColumnSelector1 ();
     select1->setItemNum (i * 10);
     
-    GenListItem *item = gl->append (construct1, NULL, ELM_GENLIST_ITEM_NONE, select1);
+    GenListItem *gli = gl->append (construct1, NULL, ELM_GENLIST_ITEM_NONE, select1);
 
     constructList1.push_back (construct1);
     selectList1.push_back (select1);
@@ -202,12 +200,12 @@ void test_genlist (void *data, Evas_Object *obj, void *event_info)
     if (i == 50)
     {
       //evas_object_smart_callback_add(bt_50, "clicked", _bt50_cb, gli);
-      bt_50->getEventSignal ("clicked")->connect (sigc::ptr_fun (&_bt50_cb));
+      bt_50->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&_bt50_cb), gli));
     }
     else if (i == 1500)
     {
       //evas_object_smart_callback_add(bt_1500, "clicked", _bt1500_cb, gli);
-      bt_1500->getEventSignal ("clicked")->connect (sigc::ptr_fun (&_bt1500_cb));
+      bt_1500->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&_bt1500_cb), gli));
     }
   }
     
