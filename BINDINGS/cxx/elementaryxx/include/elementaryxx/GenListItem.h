@@ -45,7 +45,7 @@ public:
   void showMiddle ();
   void bringInMiddle ();
   void update ();
-
+  
   const Evasxx::Object *getEvasObject ();
 
   static GenListItem *wrap (Elm_Genlist_Item &item, GenListDataModel &model);
@@ -55,7 +55,8 @@ public:
 private:
   GenListItem (Elm_Genlist_Item *item);
 
-  void destroy (GenListColumnConstructor &construction, const Evasxx::Object &obj);
+  const void *getData ();
+  void setData (const void *data);
   
   Elm_Genlist_Item *mItem;
   GenListDataModel *mDataModel;

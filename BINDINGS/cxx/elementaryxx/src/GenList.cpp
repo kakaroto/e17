@@ -179,6 +179,15 @@ GenListItem *GenList::append (GenListColumnConstructor *construction, const GenL
                                  GenList::gl_sel/* func */,
                                  selection /* func data */);
 
+  GenListItem *item = GenListItem::wrap (*gli, *mModel);
+  
+  construction->mGenListItem = item;
+
+  //EAPI const void *
+  //elm_genlist_item_data_get(const Elm_Genlist_Item *it)
+  // -> returns: GenListColumnConstructor *construction
+  // 1. add GenListItem* to construction
+
   if (internalConstruction)
   {
     mInternalConstructList.push_back (construction);
@@ -188,9 +197,46 @@ GenListItem *GenList::append (GenListColumnConstructor *construction, const GenL
     mInternalSelList.push_back (selection);
   }
   
-  GenListItem *item = GenListItem::wrap (*gli, *mModel);
-  
   return item;
+}
+
+GenListItem *GenList::getItemSelected () const
+{
+  Elm_Genlist_Item *item = elm_genlist_selected_item_get (o);
+
+  const GenListColumnConstructor *construction = static_cast <const GenListColumnConstructor*> (elm_genlist_item_data_get (item));
+  
+  return construction->mGenListItem;
+}
+
+GenListItem *GenList::getItemAtXY (const Eflxx::Point &pos, int &posret) const
+{
+  Elm_Genlist_Item *item = elm_genlist_at_xy_item_get (o, pos.x (), pos.y (), &posret);
+
+  if (!item)
+    return NULL;
+  
+  const GenListColumnConstructor *construction = static_cast <const GenListColumnConstructor*> (elm_genlist_item_data_get (item));
+  
+  return construction->mGenListItem;
+}
+
+GenListItem *GenList::getItemFirst () const
+{
+  Elm_Genlist_Item *item = elm_genlist_first_item_get (o);
+
+  const GenListColumnConstructor *construction = static_cast <const GenListColumnConstructor*> (elm_genlist_item_data_get (item));
+  
+  return construction->mGenListItem;
+}
+
+GenListItem *GenList::getItemLast () const
+{
+  Elm_Genlist_Item *item = elm_genlist_last_item_get (o);
+
+  const GenListColumnConstructor *construction = static_cast <const GenListColumnConstructor*> (elm_genlist_item_data_get (item));
+  
+  return construction->mGenListItem;
 }
 
 } // end namespace Elmxx

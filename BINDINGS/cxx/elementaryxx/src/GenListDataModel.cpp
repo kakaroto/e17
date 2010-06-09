@@ -74,10 +74,7 @@ void GenListDataModel::gl_del(const void *data, Evas_Object *obj)
   assert (model);
   assert (objWrap);
   
-  cout << "+del" << endl;
-  // FIXME: for some reason emit isn't working. and never returns and emit() is called infinite??
-  //model->signalDel.emit (*construction, *objWrap);
-  cout << "-del" << endl;
+  // TODO: delete all allocated menuitem/construction data
 }
   
 } // end namespace Elmxx

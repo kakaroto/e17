@@ -7,6 +7,7 @@
 #include "../include/elementaryxx/GenListDataModel.h"
 
 /* STD */
+#include <iostream>
 #include <cassert>
 
 using namespace std;
@@ -16,11 +17,12 @@ namespace Elmxx {
 GenListItem::GenListItem (Elm_Genlist_Item *item) :
   mItem (item)
 {
-  //elm_genlist_item_data_set (mItem, this);
+
 }
   
 GenListItem::~GenListItem ()
 {
+  cout << "GenListItem::~GenListItem" << endl;
   elm_genlist_item_del (mItem);
 }
 
@@ -114,7 +116,7 @@ GenListItem *GenListItem::wrap (Elm_Genlist_Item &item, GenListDataModel &model)
 {
   GenListItem *genItem = new GenListItem (&item);
   genItem->mDataModel = &model;
-  model.signalDel.connect (sigc::mem_fun (genItem, &GenListItem::destroy));
+  //model.signalDel.connect (sigc::mem_fun (genItem, &GenListItem::destroy));
 
   return genItem;
 }
@@ -126,9 +128,14 @@ GenListItem *GenListItem::objectLink (const Elm_Genlist_Item *item)
   return NULL;//item2;
 }
 
-void GenListItem::destroy (GenListColumnConstructor &construction, const Evasxx::Object &obj)
+const void *GenListItem::getData ()
 {
-  cout << "destroy" << endl;
+  return elm_genlist_item_data_get (mItem);
+}
+
+void GenListItem::setData (const void *data)
+{
+  elm_genlist_item_data_set (mItem, data);
 }
   
 } // end namespace Elmxx

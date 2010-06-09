@@ -299,6 +299,7 @@ public:
   
   /*!
    * Append item to the end of the genlist
+   * TODO: C++ comment!
    *
    * This appends the given item to the end of the list or the end of the
    * children if the parent is given.
@@ -313,8 +314,35 @@ public:
    * @return A handle to the item added or NULL if not possible
    *
    */
-
   GenListItem *append (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
+
+  GenListItem *getItemSelected () const;
+
+  /*!
+   * Get the item that is at the x, y canvas coords
+   * TODO: C++ comment!
+   *
+   * This returns the item at the given coordinates (which are canvas relative
+   * not object-relative). If an item is at that coordinate, that item handle
+   * is returned, and if @p posret is not NULL, the integer pointed to is set
+   * to a value of -1, 0 or 1, depending if the coordinate is on the upper
+   * portion of that item (-1), on the middle section (0) or on the lower part
+   * (1). If NULL is returned as an item (no item found there), then posret
+   * may indicate -1 or 1 based if the coordinate is above or below all items
+   * respectively in the genlist.
+   *
+   * @param it The item
+   * @param x The input x coordinate
+   * @param y The input y coordinate
+   * @param posret The position relative to the item returned here
+   * @return The item at the coordinates or NULL if none
+   *
+   */
+  GenListItem *getItemAtXY (const Eflxx::Point &pos, int &posret) const;
+
+  GenListItem *getItemFirst () const;
+
+  GenListItem *getItemLast () const;
   
   // TODO: which type is event_info here instead of void*?
   sigc::signal <void, GenListColumnSelector&, const Evasxx::Object&, void*> signalSelect;
@@ -341,12 +369,11 @@ private:
    EAPI Elm_Genlist_Item *elm_genlist_item_insert_before(Evas_Object *obj, const Elm_Genlist_Item_Class *itc, const void *data, Elm_Genlist_Item *before, Elm_Genlist_Item_Flags flags, Evas_Smart_Cb func, const void *func_data);
    EAPI Elm_Genlist_Item *elm_genlist_item_insert_after(Evas_Object *obj, const Elm_Genlist_Item_Class *itc, const void *data, Elm_Genlist_Item *after, Elm_Genlist_Item_Flags flags, Evas_Smart_Cb func, const void *func_data);
    /* operations to retrieve existing items */
-   EAPI Elm_Genlist_Item *elm_genlist_selected_item_get(const Evas_Object *obj);
+
+
    EAPI const Eina_List  *elm_genlist_selected_items_get(const Evas_Object *obj);
    EAPI Eina_List        *elm_genlist_realized_items_get(const Evas_Object *obj);
-   EAPI Elm_Genlist_Item *elm_genlist_at_xy_item_get(const Evas_Object *obj, Evas_Coord x, Evas_Coord y, int *posret);
-   EAPI Elm_Genlist_Item *elm_genlist_first_item_get(const Evas_Object *obj);
-   EAPI Elm_Genlist_Item *elm_genlist_last_item_get(const Evas_Object *obj);
+
    /* available item styles:
     * default
     * default_style - The text part is a textblock
