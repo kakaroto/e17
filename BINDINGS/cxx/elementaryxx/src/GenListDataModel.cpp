@@ -75,6 +75,7 @@ void GenListDataModel::gl_del(const void *data, Evas_Object *obj)
   assert (objWrap);
   
   // TODO: delete all allocated menuitem/construction data
+  // TODO: also call virtual function to allow user code to react on delete event
 }
   
 } // end namespace Elmxx
