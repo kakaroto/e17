@@ -201,6 +201,9 @@ efl_src_prepare() {
 	if [[ -z "${E_PYTHON}" ]]; then
 		if [[ -e configure.ac || -e configure.in ]] && \
 			[[ "${WANT_AUTOTOOLS}" == "yes" ]]; then
+
+			export SVN_REPO_PATH="$ESVN_WC_PATH"
+
 			if [[ -z "${E_NO_NLS}" ]] && \
 				grep -qE '^[[:space:]]*AM_GNU_GETTEXT_VERSION' configure.{ac,in}; then
 				local autopoint_log_file="${T}/autopoint.$$"
@@ -238,6 +241,7 @@ efl_src_prepare() {
 
 efl_src_configure() {
 	if [[ -z "${E_PYTHON}" ]]; then
+		export SVN_REPO_PATH="$ESVN_WC_PATH"
 		if [[ -x ${ECONF_SOURCE:-.}/configure ]]; then
 			[[ -z "${E_NO_NLS}" ]] && MY_ECONF="${MY_ECONF} $(use_enable nls)"
 			[[ -z "${E_NO_DOC}" ]] && MY_ECONF="${MY_ECONF} $(use_enable doc)"
