@@ -383,6 +383,7 @@ libmupdf_la_LIBADD = @FREETYPE_LIBS@
 
 libepdf_mupdf_la_SOURCES = \
 epdf_mupdf_document.c \
+epdf_mupdf_fontinfo.c \
 epdf_mupdf_index.c \
 epdf_mupdf_main.c \
 epdf_mupdf_page.c

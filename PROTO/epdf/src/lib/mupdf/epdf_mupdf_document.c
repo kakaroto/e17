@@ -373,3 +373,21 @@ epdf_document_pdf_version_get (const Epdf_Document *document, int *major, int *m
    if (major) *major = document->xref->version / 10;
    if (minor) *minor = document->xref->version % 10;
 }
+
+Eina_List *
+epdf_document_fonts_get (const Epdf_Document *document)
+{
+  return NULL;
+}
+
+const char *
+epdf_document_page_mode_string_get (const Epdf_Document *document)
+{
+  return "none";
+}
+
+const char *
+epdf_document_page_layout_string_get (const Epdf_Document *document)
+{
+  return "none";
+}

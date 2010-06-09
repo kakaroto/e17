@@ -1,3 +1,11 @@
+2010-06-09  Vincent Torri  <doursse at users dot sf dot net>
+
+	* src/lib/mupdf/Makefile.am:
+	* src/lib/mupdf/epdf_mupdf_document.c:
+	* src/lib/mupdf/epdf_mupdf_fontinfo.c:
+	* src/lib/mupdf/epdf_mupdf_fontinfo.c (added):
+	add missing functions in mupdf backend (dummy ones)
+
 2010-06-07  Vincent Torri  <doursse at users dot sf dot net>
 
 	Add mupdf 0.5 backend. That backend is statically linked
