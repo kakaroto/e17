@@ -1,18 +1,17 @@
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 #include <Evas.h>
 #include <Ecore.h>
 #include <Ecore_Evas.h>
 #include <Ecore_File.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <Edje.h>
-#include <string.h>
 #include <Eyelight_Smart.h>
-
-#include "../../config.h"
-
-Ecore_Evas *ee;
-Evas_Object *container;
 
 static void app_resize(Ecore_Evas *ee);
 static int app_signal_exit(void *data, int ev_type, void *ev);
@@ -66,8 +65,6 @@ char* help_msg_desc ="display this message <NewLine>"
 "exit<NewLine><NewLine>"
 "move into the slide list<NewLine>"
 "exit";
-
-Evas_Object *eyelight_smart;
 
 
 typedef struct _Eyelight_Key Eyelight_Key;
@@ -175,10 +172,14 @@ void time_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
 void slide_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
+    Ecore_Evas *ee;
+    Evas_Object  *eyelight_smart;
     Evas_Event_Key_Down* event = (Evas_Event_Key_Down*) event_info;
     Eyelight_Event_Action action = EYELIGHT_NONE;
     unsigned int i;
 
+    ee = (Ecore_Evas *)data;
+    eyelight_smart = ecore_evas_data_get(ee, "eyelight_smart");
     if (event->timestamp == timestamp)
       return ;
 
@@ -346,6 +347,7 @@ void mouse_event_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
 void mouse_event_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
+    Evas_Object *eyelight_smart = data;
     Evas_Event_Mouse_Up *ev = event_info;
 
     if(ev->button == 1)
@@ -368,107 +370,106 @@ static const Ecore_Getopt options = {
         "eyelight -y presentation/eyelight.eye\n",
         1,
         {
-            ECORE_GETOPT_VERSION('V', "version"),
-            ECORE_GETOPT_COPYRIGHT('R', "copyright"),
-            ECORE_GETOPT_LICENSE('L', "license"),
             ECORE_GETOPT_STORE_STR('p', "presentation", "specify the elt presentation file"),
             ECORE_GETOPT_STORE_STR('t', "theme", "specify the edje file theme"),
             ECORE_GETOPT_STORE_STR('e', "engine", "ecore-evas engine to use"),
+	    ECORE_GETOPT_STORE_STR('o', "dump", "dump all generated value/image/theme inside a file use it with -y"),
+	    ECORE_GETOPT_STORE_STR('y', "eye", "use an eye file, faster than elt + theme"),
             ECORE_GETOPT_CALLBACK_NOARGS('E', "list-engines", "list ecore-evas engines",
                     ecore_getopt_callback_ecore_evas_list_engines, NULL),
             ECORE_GETOPT_STORE_TRUE('d', "display-areas", "display the borders of each area"),
-            ECORE_GETOPT_STORE_STR('b', "no-thumbs-bg", "deactivate the creation of the thumbnails list in the background, saves a lot of memory, some mode (expose, slideshow) will be slow"),
+            ECORE_GETOPT_STORE_FALSE('b', "no-thumbs-bg", "deactivate the creation of the thumbnails list in the background, saves a lot of memory, some mode (expose, slideshow) will be slow"),
             ECORE_GETOPT_STORE_TRUE('H', "hd", "Display the presentation with a default size of 1280x720"),
             ECORE_GETOPT_HELP('h', "help"),
-	    ECORE_GETOPT_STORE_STR('o', "dump", "dump all generated value/image/theme inside a file use it with -y"),
-	    ECORE_GETOPT_STORE_STR('y', "eye", "use an eye file, faster than elt + theme"),
+            ECORE_GETOPT_VERSION('V', "version"),
+            ECORE_GETOPT_COPYRIGHT('R', "copyright"),
+            ECORE_GETOPT_LICENSE('L', "license"),
             ECORE_GETOPT_SENTINEL
         }
 };
 
 int main(int argc, char*argv[])
 {
-    Evas          *evas;
-    Evas_Coord w_win,h_win;
+    Ecore_Evas   *ee;
+    Evas         *evas;
+    Evas_Object  *eyelight_smart;
+    Evas_Object  *container;
+    Evas_Coord    w_win;
+    Evas_Coord    h_win;
+    Evas_Coord    sizew = 1024;
+    Evas_Coord    sizeh = 768;
+    int           nonargs;
 
-    unsigned char exit_option = 0;
+    char         *presentation = NULL;
+    char         *theme = NULL;
+    char         *engine = NULL;
+    char         *dump_out = NULL;
+    char         *dump_in = NULL;
     unsigned char engines_listed = 0;
-    char* engine = NULL;
-    char* theme = NULL;
-    char* presentation = NULL;
-    char* dump_in = NULL;
-    char* dump_out = NULL;
     unsigned char with_border = 0;
     unsigned char no_thumbs_bg = 0;
     unsigned char hd = 0;
-
-    Evas_Coord sizew = 1024;
-    Evas_Coord sizeh = 768;
-
-    if (!ecore_init()) {
-        evas_shutdown ();
-        return EXIT_FAILURE;
-    }
-
-    if (!ecore_evas_init()) {
-        evas_shutdown ();
-        ecore_shutdown ();
-        return EXIT_FAILURE;
-    }
-
-    eina_log_level_set(5);
-    eyelight_init();
+    unsigned char exit_option = 0;
 
     Ecore_Getopt_Value values[] = {
-        ECORE_GETOPT_VALUE_BOOL(exit_option),
-        ECORE_GETOPT_VALUE_BOOL(exit_option),
-        ECORE_GETOPT_VALUE_BOOL(exit_option),
         ECORE_GETOPT_VALUE_STR(presentation),
         ECORE_GETOPT_VALUE_STR(theme),
+	ECORE_GETOPT_VALUE_STR(dump_out),
+	ECORE_GETOPT_VALUE_STR(dump_in),
         ECORE_GETOPT_VALUE_STR(engine),
         ECORE_GETOPT_VALUE_BOOL(engines_listed),
         ECORE_GETOPT_VALUE_BOOL(with_border),
         ECORE_GETOPT_VALUE_BOOL(no_thumbs_bg),
         ECORE_GETOPT_VALUE_BOOL(hd),
         ECORE_GETOPT_VALUE_BOOL(exit_option),
-	ECORE_GETOPT_VALUE_STR(dump_out),
-	ECORE_GETOPT_VALUE_STR(dump_in)
+        ECORE_GETOPT_VALUE_BOOL(exit_option),
+        ECORE_GETOPT_VALUE_BOOL(exit_option),
+        ECORE_GETOPT_VALUE_BOOL(exit_option)
     };
 
+    if (!ecore_evas_init())
+        return EXIT_FAILURE;
+
+    if (!edje_init())
+        goto shutdown_ecore_evas;
+
+    eina_log_level_set(5);
+    eyelight_init();
+
     ecore_app_args_set(argc, (const char **) argv);
-    int nonargs = ecore_getopt_parse(&options, values, argc, argv);
+    nonargs = ecore_getopt_parse(&options, values, argc, argv);
     if (nonargs < 0)
-        return 1;
+        goto shutdown_edje;
     else if (nonargs != argc)
     {
         fputs("Invalid non-option argument", stderr);
         ecore_getopt_help(stderr, &options);
-        return 1;
+        goto shutdown_edje;
     }
 
     if(exit_option || engines_listed)
-        return 0;
+        goto shutdown_edje;
 
     if ((presentation || theme) && dump_in)
     {
        fprintf(stderr, "You can't set an eye file as an input if you want to specify a theme and a presentation.\nBetter specify it with -o.\n");
-       return EXIT_FAILURE;
+       goto shutdown_edje;
     }
 
     if((dump_out || !dump_in) && !presentation)
     {
         fprintf(stderr,"A presentation is required !\n");
-        return EXIT_FAILURE;
+        goto shutdown_edje;
     }
 
     if(presentation && (ecore_file_is_dir(presentation) || !ecore_file_exists(presentation)))
     {
         fprintf(stderr,"The presentation file doesn't exists \n");
-        exit(EXIT_FAILURE);
+        goto shutdown_edje;
     } else if (dump_in && (ecore_file_is_dir(dump_in) || !ecore_file_exists(dump_in)))
     {
         fprintf(stderr,"The eye file doesn't exists \n");
-        exit(EXIT_FAILURE);
+        goto shutdown_edje;
     }
 
     if(hd)
@@ -481,13 +482,9 @@ int main(int argc, char*argv[])
     if(!ee)
     {
         fprintf(stderr,"Failed to init the evas engine! \n");
-        evas_shutdown ();
-        ecore_shutdown ();
-
-        return EXIT_FAILURE;
+        goto shutdown_edje;
     }
 
-    edje_init();
     ecore_event_handler_add (ECORE_EVENT_SIGNAL_EXIT, app_signal_exit, NULL);
     ecore_evas_callback_delete_request_set (ee, app_delete_request);
     ecore_evas_title_set (ee, "Eyelight: presentation tools");
@@ -509,35 +506,48 @@ int main(int argc, char*argv[])
     evas_object_move(eyelight_smart,0,0);
     evas_object_show(eyelight_smart);
 
+    ecore_evas_data_set(ee, "eyelight_smart", eyelight_smart);
+
     container= evas_object_rectangle_add(evas);
     evas_object_color_set(container,0,0,0,0);
-    evas_object_event_callback_add(container,EVAS_CALLBACK_KEY_DOWN, slide_cb, NULL);
+    evas_object_event_callback_add(container,EVAS_CALLBACK_KEY_DOWN, slide_cb, ee);
     evas_object_event_callback_add(container,EVAS_CALLBACK_KEY_UP, time_cb, NULL);
     evas_object_event_callback_add(container,EVAS_CALLBACK_MOUSE_MOVE, mouse_event_cb, NULL);
     evas_object_event_callback_add(container,EVAS_CALLBACK_MOUSE_IN, mouse_event_cb, NULL);
-    evas_object_event_callback_add(container,EVAS_CALLBACK_MOUSE_UP, mouse_event_up_cb, NULL);
+    evas_object_event_callback_add(container,EVAS_CALLBACK_MOUSE_UP, mouse_event_up_cb, eyelight_smart);
     evas_object_repeat_events_set(container,1);
-    evas_object_show(container);
     evas_object_resize(container, sizew, sizeh);
-
     evas_object_raise(container);
+    evas_object_show(container);
+
+    ecore_evas_data_set(ee, "container", container);
 
     ecore_main_loop_begin ();
 
     eyelight_shutdown();
+    edje_shutdown();
     ecore_evas_shutdown ();
-    ecore_shutdown ();
-    evas_shutdown ();
 
-    return 1;
+    return EXIT_SUCCESS;
+
+ shutdown_edje:
+    eyelight_shutdown();
+    edje_shutdown();
+ shutdown_ecore_evas:
+    ecore_evas_shutdown();
+
+    return EXIT_FAILURE;
 }
 
 static void app_resize(Ecore_Evas *ee)
 {
+    Evas_Object *eyelight_smart;
+    Evas_Object *container;
     Evas_Coord w, h;
-    Evas *evas;
-    evas = ecore_evas_get(ee);
-    evas_output_viewport_get(evas, NULL, NULL, &w, &h);
+
+    eyelight_smart = ecore_evas_data_get(ee, "eyelight_smart");
+    container = ecore_evas_data_get(ee, "container");
+    ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
     evas_object_resize(eyelight_smart, w,h);
     evas_object_resize(container, w, h);
 }
