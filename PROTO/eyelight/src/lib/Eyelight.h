@@ -23,13 +23,35 @@
 #include <Ecore.h>
 #include <Ecore_Evas.h>
 #include <Ecore_File.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <Edje.h>
-#include <string.h>
-#include <sys/wait.h>
 
 #include "eyelight_common.h"
+
+#ifdef EAPI
+# undef EAPI
+#endif
+
+#ifdef _WIN32
+# ifdef EFL_EYELIGHT_BUILD
+#  ifdef DLL_EXPORT
+#   define EAPI __declspec(dllexport)
+#  else
+#   define EAPI
+#  endif /* ! DLL_EXPORT */
+# else
+#  define EAPI __declspec(dllimport)
+# endif /* ! EFL_EET_BUILD */
+#else
+# ifdef __GNUC__
+#  if __GNUC__ >= 4
+#   define EAPI __attribute__ ((visibility("default")))
+#  else
+#   define EAPI
+#  endif
+# else
+#  define EAPI
+# endif
+#endif /* ! _WIN32 */
 
 /**
  * This file act like the public header of eyelight_viewer.h

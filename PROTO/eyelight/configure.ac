@@ -9,6 +9,7 @@ AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE(eyelight, 0.5)
 AM_CONFIG_HEADER(config.h)
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 AC_PROG_CC
 AM_PROG_CC_STDC
@@ -16,9 +17,12 @@ AC_HEADER_STDC
 AC_C_CONST
 AM_PROG_CC_C_O
 
+AC_LIBTOOL_WIN32_DLL
+define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
+define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
 AM_PROG_LIBTOOL
 
-requirements="ecore ecore-data ecore-evas ecore-file evas edje"
+requirements="ecore ecore-evas ecore-file evas edje"
 
 
 AC_SUBST(version_info)
@@ -44,11 +48,10 @@ AC_ARG_WITH(edje-cc,
 EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
 PKG_CHECK_MODULES(EYELIGHT, [
-                        ecore >= 0.9.9.037,
-                        ecore-evas >= 0.9.9.038,
-                        ecore-file >= 0.9.9,
-                        ecore-data >= 0.9.9,
-                        evas >= 0.9.9.40,
+                        ecore >= 0.9.9
+                        ecore-evas >= 0.9.9
+                        ecore-file >= 0.9.9
+                        evas >= 0.9.9
                         edje >= 0.5
                         emotion >= 0.1
                         libpng >= 0.1
@@ -58,6 +61,16 @@ eyelight_libs=$EYELIGHT_LIBS
 eyelight_cflags=$EYELIGHT_CFLAGS
 AC_SUBST(eyelight_libs)
 AC_SUBST(eyelight_cflags)
+
+lt_enable_auto_import=""
+case "$host_os" in
+   mingw*)
+      lt_enable_auto_import="-Wl,--enable-auto-import"
+      EFL_EYELIGHT_BUILD="-DEFL_EYELIGHT_BUILD"
+      ;;
+esac
+AC_SUBST(lt_enable_auto_import)
+AC_SUBST(EFL_EYELIGHT_BUILD)
 
 AC_SUBST(EDJE_CC)
 AC_MSG_CHECKING([Which edje_cc to use])

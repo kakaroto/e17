@@ -71,8 +71,8 @@ typedef struct Eyelight_Slide Eyelight_Slide;
 
 
 
-#include "Eyelight.h"
 #include <Eet.h>
+#include "Eyelight.h"
 #include "eyelight_viewer_thumbnails.h"
 #include "eyelight_compiler_parser.h"
 #include "Eyelight_Edit.h"

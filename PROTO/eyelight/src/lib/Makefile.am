@@ -6,7 +6,8 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/src/lib \
 -DPACKAGE_BIN_DIR=\"$(bindir)\" \
 -DPACKAGE_LIB_DIR=\"$(libdir)\" \
--DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\"
+-DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
+@EFL_EYELIGHT_BUILD@
 
 INCLUDES = \
 -I. \
@@ -40,8 +41,8 @@ edit/edit_area.c \
 edit/edit_slide.c \
 edit/edit_image.c
 
-libeyelight_la_DEPENDENCIES = $(top_builddir)/config.h
-libeyelight_la_LDFLAGS = @eyelight_libs@
+libeyelight_la_LDFLAGS = -no-undefined @lt_enable_auto_import@
+libeyelight_la_LIBADD = @eyelight_libs@
 
 EXTRA_DIST = \
 eyelight_common.h \

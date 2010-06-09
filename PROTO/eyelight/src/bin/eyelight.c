@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <Edje.h>
 #include <string.h>
-#include <sys/wait.h>
 #include <Eyelight_Smart.h>
 
 #include "../../config.h"

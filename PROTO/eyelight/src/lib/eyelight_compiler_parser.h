@@ -32,7 +32,6 @@ typedef struct eyelight_video Eyelight_Video;
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <Ecore_Data.h>
 #include <Ecore_File.h>
 #include <errno.h>
 #include <limits.h>
