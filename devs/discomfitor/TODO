@@ -3,6 +3,7 @@ add whatever to this todo in the proper section and I'll get to it when I get ba
 
 things I am/will be working on:
 ___URGENT___
+*efl eclass
 *hal detection in efm to only attempt hal actions when hal is active
 *mount actions for eeze
 *eeze integration into efm to replace hal
