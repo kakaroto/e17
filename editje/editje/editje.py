@@ -758,6 +758,9 @@ class Editje(elementary.Window, OpenFileManager):
             def animations_restore():
                 self.e.part.name = None
                 self.e.signal.name = None
+                # Animation is being deselected here too to trigger
+                # desktop_block when this change is coming from Parts Mode
+                self.e.animation.name = None
 
             def signals_restore():
                 self.e.part.name = None
