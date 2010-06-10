@@ -154,7 +154,6 @@ struct enlil_photo_data
 
     struct
      {
-	Evas_Object *icon;
 	Photo_Flickr_Enum state;
      } flickr_sync;
 };
@@ -577,6 +576,10 @@ void iptc_load_done(void *data, Enlil_IPTC_Job *job, Eina_List *iptcs);
 
 void geocaching_done_cb(void *data, Eina_Hash *db);
 void geocaching_remove_marker_cb(void *data, Eina_Hash *db);
+
+
+void flickr_job_start_cb(void *data, Enlil_Album *album, Enlil_Photo *photo);
+void flickr_job_done_cb(void *data, Enlil_Album *album, Enlil_Photo *photo);
 
 void flickr_album_new_cb(void *data, Enlil_Root *root, Enlil_Album *album);
 void flickr_album_flickrnotuptodate_cb(void *data, Enlil_Root *root, Enlil_Album *album);

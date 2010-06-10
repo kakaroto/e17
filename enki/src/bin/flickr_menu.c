@@ -54,7 +54,7 @@ static void _menu_open_cb(void *data, Evas_Object *obj, void *event_info)
     }
     else
     {
-        snprintf(buf, PATH_MAX, D_("Flickr account : %s"), 
+        snprintf(buf, PATH_MAX, D_("Flickr account : %s"),
                 enlil_root_flickr_account_get(enlil_data->root));
         elm_menu_item_add(menu, NULL, NULL, buf, NULL, NULL);
         elm_menu_item_add(menu, NULL, NULL, D_("Change the Flickr account"), _account_set_cb, NULL);
@@ -67,7 +67,7 @@ static void _menu_open_cb(void *data, Evas_Object *obj, void *event_info)
 
 static void _account_set_cb(void *data, Evas_Object *obj, void *event_info)
 {
-    Evas_Object *fr, *tb, *inwin, *lbl, *sc, *text, *bt, *hbox, *img;
+    Evas_Object *fr, *tb, *inwin, *lbl, *sc, *text, *bt, *hbox, *img, *entry;
     char buf[PATH_MAX];
 
     inwin = elm_win_inwin_add(enlil_data->win->win);
@@ -87,20 +87,28 @@ static void _account_set_cb(void *data, Evas_Object *obj, void *event_info)
     evas_object_show(tb);
 
     //steps
-    snprintf(buf, PATH_MAX, D_("<b>STEP 1 :</b> Open the web page %s in your favorite web browser."), enlil_flickr_auth_url_get());
     lbl = elm_label_add(enlil_data->win->win);
-    elm_label_label_set(lbl, buf);
+    elm_label_label_set(lbl, D_("<b>STEP 1 :</b> Open the web page in your favorite web browser."));
     evas_object_size_hint_weight_set(lbl, 0.0, 0.0);
     evas_object_size_hint_align_set(lbl, -1.0, 0.0);
     evas_object_show(lbl);
     elm_table_pack(tb, lbl, 0, 0, 2, 1);
+
+
+    entry = elm_scrolled_entry_add(enlil_data->win->win);
+    elm_scrolled_entry_single_line_set(entry, EINA_TRUE);
+    elm_scrolled_entry_entry_set(entry, enlil_flickr_auth_url_get());
+    evas_object_size_hint_weight_set(entry, 1.0, 0.0);
+    evas_object_size_hint_align_set(entry, -1.0, 0.0);
+    evas_object_show(entry);
+    elm_table_pack(tb, entry, 0, 1, 2, 1);
 
     img = elm_image_add(obj);
     elm_image_file_set(img, PACKAGE_DATA_DIR"/theme.edj", "flickr/set_account_0");
     evas_object_size_hint_weight_set(img, 1.0, 1.0);
     evas_object_size_hint_align_set(img, -1.0, -1.0);
     evas_object_show(img);
-    elm_table_pack(tb, img, 0, 1, 2, 1);
+    elm_table_pack(tb, img, 0, 2, 2, 1);
 
     snprintf(buf, PATH_MAX, D_("<b>STEP 2 :</b> Authorize Enki to access to your account."));
     lbl = elm_label_add(enlil_data->win->win);
@@ -108,14 +116,14 @@ static void _account_set_cb(void *data, Evas_Object *obj, void *event_info)
     evas_object_size_hint_weight_set(lbl, 0.0, 0.0);
     evas_object_size_hint_align_set(lbl, -1.0, 0.0);
     evas_object_show(lbl);
-    elm_table_pack(tb, lbl, 0, 2, 2, 1);
+    elm_table_pack(tb, lbl, 0, 3, 2, 1);
 
     img = elm_image_add(obj);
     elm_image_file_set(img, PACKAGE_DATA_DIR"/theme.edj", "flickr/set_account_1");
     evas_object_size_hint_weight_set(img, 0.0, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set(img, -1.0, -1.0);
     evas_object_show(img);
-    elm_table_pack(tb, img, 0, 3, 2, 1);
+    elm_table_pack(tb, img, 0, 4, 2, 1);
 
     snprintf(buf, PATH_MAX, D_("<b>STEP 3 :</b> Copy the code in the followed text area."));
     lbl = elm_label_add(enlil_data->win->win);
@@ -123,7 +131,7 @@ static void _account_set_cb(void *data, Evas_Object *obj, void *event_info)
     evas_object_size_hint_weight_set(lbl, 0.0, 0.0);
     evas_object_size_hint_align_set(lbl, -1.0, 0.0);
     evas_object_show(lbl);
-    elm_table_pack(tb, lbl, 0, 4, 2, 1);
+    elm_table_pack(tb, lbl, 0, 5, 2, 1);
     //
 
     lbl = elm_label_add(enlil_data->win->win);
@@ -131,7 +139,7 @@ static void _account_set_cb(void *data, Evas_Object *obj, void *event_info)
     evas_object_size_hint_weight_set(lbl, 0.0, 0.0);
     evas_object_size_hint_align_set(lbl, -1.0, 0.0);
     evas_object_show(lbl);
-    elm_table_pack(tb, lbl, 0, 5, 1, 1);
+    elm_table_pack(tb, lbl, 0, 6, 1, 1);
 
     sc = elm_scroller_add(enlil_data->win->win);
     evas_object_size_hint_weight_set(sc, 1.0, 0.0);
@@ -140,7 +148,7 @@ static void _account_set_cb(void *data, Evas_Object *obj, void *event_info)
     elm_scroller_policy_set(sc, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
     elm_scroller_bounce_set(sc, 0, 0);
     evas_object_show(sc);
-    elm_table_pack(tb, sc, 1, 5, 1, 1);
+    elm_table_pack(tb, sc, 1, 6, 1, 1);
 
     text = elm_entry_add(enlil_data->win->win);
     set_account.entry = text;
@@ -156,7 +164,7 @@ static void _account_set_cb(void *data, Evas_Object *obj, void *event_info)
     evas_object_size_hint_weight_set(hbox, EVAS_HINT_EXPAND, 0.0);
     evas_object_size_hint_align_set(hbox, 1.0, 0.0);
     evas_object_show(hbox);
-    elm_table_pack(tb, hbox, 1, 6, 1, 1);
+    elm_table_pack(tb, hbox, 1, 7, 1, 1);
 
     bt = elm_button_add(enlil_data->win->win);
     elm_button_label_set(bt, D_("Cancel"));

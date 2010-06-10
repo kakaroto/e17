@@ -739,6 +739,7 @@ void flickr_photo_known_cb(void *data, Enlil_Album *album, Enlil_Photo *photo)
 void flickr_photo_flickrnotuptodate_cb(void *data, Enlil_Photo *photo)
 {
    Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+   ASSERT_RETURN_VOID(photo_data != NULL);
    photo_data->flickr_sync.state = PHOTO_FLICKR_FLICKRNOTUPTODATE;
 
    Evas_Object *o = (Evas_Object *)photos_list_object_item_object_get(photo_data->list_photo_item);
@@ -778,4 +779,66 @@ void flickr_photo_error_cb(void *data, Enlil_Photo *photo)
 {
    printf("PHOTO ERROR %s\n", enlil_photo_name_get(photo));
 }
+
+
+void flickr_job_start_cb(void *data, Enlil_Album *album, Enlil_Photo *photo)
+{
+   if(photo)
+     {
+	album = enlil_photo_album_get(photo);
+
+	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+
+	if(photo_data)
+	  {
+	     Evas_Object *o = (Evas_Object*)photos_list_object_item_object_get(photo_data->list_photo_item);
+	     if(o)
+	       photo_object_flickr_state_set(o, "animated");
+	  }
+     }
+
+   if(album)
+     {
+	Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
+
+	if(album_data && album_data->flickr_sync.icon)
+	  edje_object_signal_emit(album_data->flickr_sync.icon, "animated", "");
+     }
+}
+
+
+void flickr_job_done_cb(void *data, Enlil_Album *album, Enlil_Photo *photo)
+{
+   if(photo)
+     {
+	album = enlil_photo_album_get(photo);
+
+	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+
+	if(photo_data)
+	  {
+	     Evas_Object *o = (Evas_Object *)photos_list_object_item_object_get(photo_data->list_photo_item);
+	     if(o)
+	       photo_object_flickr_state_set(o, photo_flickr_edje_signal_get(photo_data->flickr_sync.state) );
+	  }
+     }
+
+   if(album)
+     {
+	Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
+
+	const char *signal = "uptodate";
+
+	if(album_data->flickr_sync.album_flickr_notuptodate
+	      || album_data->flickr_sync.album_notinflickr
+	      || album_data->flickr_sync.album_notuptodate
+	      || album_data->flickr_sync.photos_notuptodate
+	      || album_data->flickr_sync.photos_notinlocal)
+	  signal = "update";
+	if(album_data && album_data->flickr_sync.icon)
+		edje_object_signal_emit(album_data->flickr_sync.icon, signal, "");
+     }
+}
+
+
 
