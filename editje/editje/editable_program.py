@@ -26,6 +26,10 @@ class EditableProgram(Manager, object):
 
         self._edit_grp = editable
         self._null()
+        self._edit_grp.callback_add("group.changed", self._group_changed_cb)
+
+    def _group_changed_cb(self, emissor, data):
+        self.name = None
 
     def _null(self):
         self._name = None
