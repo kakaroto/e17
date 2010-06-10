@@ -98,15 +98,11 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, void *userp) {
 	char *newMem = NULL;
 	size_t realsize = size*nmemb;
 
-	newMem = malloc(mem->size + realsize + 1);
+	newMem = calloc(sizeof(char), mem->size + realsize + 1);
 
-	//mem->memory = my_realloc(mem->memory, mem->size + realsize + 1);
-
-	//if (mem->memory) {
 	if (newMem) {
 		memcpy(newMem, mem->memory, mem->size);
 		memcpy(&(newMem[mem->size]), ptr, realsize);
-		//memcpy(&(mem->memory[mem->size]), ptr, realsize);
 		free(mem->memory);
 		mem->memory=newMem;
 		mem->size += realsize;

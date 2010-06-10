@@ -64,7 +64,7 @@
 #include "twitter.h"
 #include "curl.h"
 
-Evas_Object *status_list=NULL, *scroller=NULL, *status=NULL, *win=NULL, *error_win=NULL, *entry=NULL, *fs=NULL, *count=NULL, *url_win=NULL, *zoom=NULL;
+Evas_Object *status_list=NULL, *scroller=NULL, *status=NULL, *win=NULL, *error_win=NULL, *entry=NULL, *fs=NULL, *count=NULL, *url_win=NULL, *zoom=NULL, *hv=NULL;
 char * dm_to=NULL;
 
 StatusesList	*statuses=NULL;
@@ -1301,7 +1301,7 @@ static void on_entry_clicked(void *data, Evas_Object *entry, void *event_info) {
 
 EAPI int elm_main(int argc, char **argv)
 {
-	Evas_Object *bg=NULL, *box=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *box2=NULL, *hv=NULL, *hoversel=NULL, *panel=NULL;
+	Evas_Object *bg=NULL, *box=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *box2=NULL, *hoversel=NULL, *panel=NULL;
 
 	LIBXML_TEST_VERSION
 
