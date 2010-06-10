@@ -23,18 +23,18 @@ class Manager(object):
         self.__callbacks = {}
 
     def callback_add(self, event, callback):
-        list = self.__callbacks.get(event)
-        if not list:
-            list = []
-            self.__callbacks[event] = list
-        elif callback in list:
+        callbacks_list = self.__callbacks.get(event)
+        if not callbacks_list:
+            callbacks_list = []
+            self.__callbacks[event] = callbacks_list
+        elif callback in callbacks_list:
             return
-        list.append(callback)
+        callbacks_list.append(callback)
 
     def callback_del(self, event, callback):
-        list = self.__callbacks.get(event)
-        if list and callback in list:
-            list.remove(callback)
+        callbacks_list = self.__callbacks.get(event)
+        if callbacks_list and callback in callbacks_list:
+            callbacks_list.remove(callback)
 
     def callbacks_clear(self, event):
         del self.__callbacks[event]
@@ -42,9 +42,9 @@ class Manager(object):
     def event_emit(self, event, data=None):
         # print "EMIT", event, self, data
         queue = len(self.queue)
-        list = self.__callbacks.get(event)
-        if list:
-            for callback in list:
+        callbacks_list = self.__callbacks.get(event)
+        if callbacks_list:
+            for callback in callbacks_list:
                 self.queue.append((event, callback, self, data))
         if not queue:
             while self.queue:

@@ -26,11 +26,11 @@ class WidgetSource(WidgetEntryButtonList):
         self._title = title
 
     def _floater_list_items_update(self):
-        list = []
+        items_list = []
 
         for item in self._list_get_cb():
-            list.append((item, item))
-        return list
+            items_list.append((item, item))
+        return items_list
 
     def _floater_title_init(self):
         self._floater.title_set(self._title)

@@ -25,34 +25,34 @@ class WidgetSignal(WidgetEntryButtonList):
             self, parent, list_get_cb, popup_hide_object_signal_list)
 
     def _floater_list_items_update(self):
-        list = []
+        items_list = []
 
-        list.append(("On Load", "load"))
-        list.append(("Mouse In", "mouse,in"))
-        list.append(("Mouse Out", "mouse,out"))
+        items_list.append(("On Load", "load"))
+        items_list.append(("Mouse In", "mouse,in"))
+        items_list.append(("Mouse Out", "mouse,out"))
 
-        list.append(("Mouse Left Down", "mouse,down,1"))
-        list.append(("Mouse Right Down", "mouse,down,3"))
-        list.append(("Mouse Any Down", "mouse,down,*"))
+        items_list.append(("Mouse Left Down", "mouse,down,1"))
+        items_list.append(("Mouse Right Down", "mouse,down,3"))
+        items_list.append(("Mouse Any Down", "mouse,down,*"))
 
-        list.append(("Mouse Left Double Down", "mouse,down,1,double"))
-        list.append(("Mouse Right Double Down", "mouse,down,3,double"))
+        items_list.append(("Mouse Left Double Down", "mouse,down,1,double"))
+        items_list.append(("Mouse Right Double Down", "mouse,down,3,double"))
 
-        list.append(("Mouse Left Up", "mouse,up,1"))
-        list.append(("Mouse Right Up", "mouse,up,3"))
-        list.append(("Mouse Any Up", "mouse,up,*"))
+        items_list.append(("Mouse Left Up", "mouse,up,1"))
+        items_list.append(("Mouse Right Up", "mouse,up,3"))
+        items_list.append(("Mouse Any Up", "mouse,up,*"))
 
-        list.append(("Mouse Left Click", "mouse,clicked,1"))
-        list.append(("Mouse Right Click", "mouse,clicked,3"))
-        list.append(("Mouse Any Click", "mouse,clicked,*"))
+        items_list.append(("Mouse Left Click", "mouse,clicked,1"))
+        items_list.append(("Mouse Right Click", "mouse,clicked,3"))
+        items_list.append(("Mouse Any Click", "mouse,clicked,*"))
 
-        list.append(("Mouse Move", "mouse,move"))
-        list.append(("Mouse Wheel Up", "mouse,wheel,0,-1"))
-        list.append(("Mouse Wheel Down", "mouse,wheel,0,1"))
+        items_list.append(("Mouse Move", "mouse,move"))
+        items_list.append(("Mouse Wheel Up", "mouse,wheel,0,-1"))
+        items_list.append(("Mouse Wheel Down", "mouse,wheel,0,1"))
 
-        list.append(("Animation End", "animation,end"))
+        items_list.append(("Animation End", "animation,end"))
 
-        return list
+        return items_list
 
     def _floater_title_init(self):
         self._floater.title_set("Common Signals")

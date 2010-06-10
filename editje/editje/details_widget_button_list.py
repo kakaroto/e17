@@ -62,14 +62,14 @@ class WidgetButtonList(FloaterListOpener, WidgetButton):
             self.obj.label_set("< None >")
 
     def _floater_list_items_update(self):
-        list = []
+        items_list = []
         sel_object = self._sel_object_get_cb()
 
         for item in self._list_get_cb():
             if item == sel_object:
                 continue
-            list.append((item, item))
-        return list
+            items_list.append((item, item))
+        return items_list
 
     def _floater_title_init(self):
         self._floater.title_set(self._title)

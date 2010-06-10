@@ -21,12 +21,12 @@ from floater_opener import FloaterListOpener
 
 class WidgetActionsList(WidgetButtonList):
     def _floater_list_items_update(self):
-        list = []
+        items_list = []
         for item in self._list_get_cb():
             if item.startswith("@") and item.endswith("@0.00"):
                 fixedname = item[1:item.rindex("@")]
-                list.append((fixedname, item))
-        return list
+                items_list.append((fixedname, item))
+        return items_list
 
     def _floater_actions_init(self):
         self._floater.action_add("None", self._none_selected)
