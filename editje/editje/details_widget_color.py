@@ -62,10 +62,10 @@ class WidgetColor(FloaterOpener, WidgetEntry):
 
         self.obj = self.box
 
-        self.delayed_callback = 0
+        self._delayed_callback = False
 
     def _value_set(self, val):
-        self.entry.entry_set("%d %d %d %d" % val)
+        self._internal_value_set("%d %d %d %d" % val)
         self.color = val
 
     def _value_get(self):
@@ -120,16 +120,19 @@ class WidgetColor(FloaterOpener, WidgetEntry):
         self.color = (r, g, b, a)
         self.rect.color_class_set("colorpicker.sample", r, g, b, a,
                                   0, 0, 0, 0, 0, 0, 0, 0)
-        if self.delayed_callback:
+
+        if self._delayed_callback:
+            self._delayed_callback = False
+            self._update_value()
+
+    def _update_value(self):
+        if self._validated:
+            if self._value == self._validated_value:
+                return
+            self._value = self._validated_value
             self._callback_call("changed")
-            self.delayed_callback = 0
-
-    def _entry_activate_cb(self, obj, *args, **kwargs):
-        if not self._validated:
-            self._value_set(self.color)
-            return
-
-        self._callback_call("changed")
+        else:
+            self.entry.entry_set("%d %d %d %d" % self.color)
 
     def _dblclick_cb(self, obj):
         self.entry.select_all()
@@ -139,8 +142,9 @@ class WidgetColor(FloaterOpener, WidgetEntry):
         self.picker.current_color_set(*self.color)
 
     def _set_clicked(self, popup, data):
-        self.value = self.picker.current_color_get()
-        self.delayed_callback = 1
+        val = self.picker.current_color_get()
+        self._delayed_callback = True
+        self.entry.entry_set("%d %d %d %d" % val)
         self._floater.hide()
 
     def _floater_content_init(self):

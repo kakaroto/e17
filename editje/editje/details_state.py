@@ -555,29 +555,18 @@ class PartStateDetails(EditjeDetails):
         self["main"]["visible"].value = self.state.visible
 
         x, y = self.state.rel1_to_get()
-        if x is None:
-            x = ""
-        if y is None:
-            y = ""
         self["rel1"]["to"].value = x, y
         self["rel1"]["relative"].value = self.state.rel1_relative_get()
         self["rel1"]["offset"].value = self.state.rel1_offset_get()
 
         x, y = self.state.rel2_to_get()
-        if x is None:
-            x = ""
-        if y is None:
-            y = ""
         self["rel2"]["to"].value = x, y
         self["rel2"]["relative"].value = self.state.rel2_relative_get()
         self["rel2"]["offset"].value = self.state.rel2_offset_get()
 
     def _update_text(self):
         t = self.state.text_get()
-        if t is None:
-            t = ""
         self["text"]["text"].value = t
-
         f = self.state.font_get()
         if f is None:
             f = ""

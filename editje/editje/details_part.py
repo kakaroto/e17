@@ -302,7 +302,7 @@ class PartDetails(EditjeDetails):
         if clipper:
             self["main"]["clip_to"].value = clipper
         else:
-            self["main"]["clip_to"].value = ""
+            self["main"]["clip_to"].value = None
 
         self["main"]["mouse_events"].value = self.e.part._part.mouse_events
         self["main"]["mouse_events"].show_value()
@@ -323,7 +323,7 @@ class PartDetails(EditjeDetails):
         if source:
             self["group"]["source"].value = source
         else:
-            self["group"]["source"].value = ""
+            self["group"]["source"].value = None
             self["group"]["source"].show_value()
         self.group_show("group")
 

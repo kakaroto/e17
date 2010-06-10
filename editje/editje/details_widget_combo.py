@@ -53,5 +53,7 @@ class WidgetCombo(Widget):
         self.obj.clear()
 
     def _hover_item_selected_cb(self, obj, it, item, *args, **kwargs):
+        if self.obj.label_get() == item:
+            return
         self.obj.label_set(item)
         self._callback_call("changed")

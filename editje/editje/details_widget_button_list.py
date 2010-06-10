@@ -83,6 +83,8 @@ class WidgetButtonList(FloaterListOpener, WidgetButton):
         self._floater_cancel()
 
     def value_set(self, value):
+        if self._value == value:
+            return
         self._value = value
         self._update()
         self._callback_call("changed")

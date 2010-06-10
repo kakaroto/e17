@@ -394,6 +394,7 @@ class Editje(elementary.Window, OpenFileManager):
         self._group_name_entry.single_line_set(True)
         self._group_name_entry.style_set("editje")
         self._group_name_entry.callback_activated_add(self._group_name_changed)
+        self._group_name_entry.callback_unfocused_add(self._group_name_changed)
         self.main_layout.content_set("details_group.swallow",
                                      self._group_name_entry)
 
