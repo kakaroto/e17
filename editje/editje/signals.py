@@ -32,6 +32,7 @@ from clist import CList
 from prop import Property, PropertyTable
 from groupselector import NameEntry
 from operation import Operation
+from elementary import Notify, ELM_NOTIFY_ORIENT_BOTTOM, Box, Label
 import objects_data
 
 
@@ -345,6 +346,7 @@ class SignalDetails(EditjeDetails):
         self.open = True
         self.open_disable = True
         self.show()
+        self.__notification = None
 
     def _header_prop_value_changed(self, prop_name, prop_value, group_name):
 
@@ -495,6 +497,39 @@ class SignalDetails(EditjeDetails):
     def _prop_object_get(self):
         return self.e.signal
 
+    def _notify(self, message):
+        if self.__notification:
+            self.__notification.hide()
+            self.__notification.delete()
+            self.__notification = None
+        self.__notification = Notify(self._parent)
+        self.__notification.timeout_set(4)
+        self.__notification.orient_set(ELM_NOTIFY_ORIENT_BOTTOM)
+
+        bx = Box(self)
+        bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+        bx.horizontal_set(True)
+        self.__notification.content_set(bx)
+        bx.show()
+
+        lb = Label(self)
+        lb.label_set(message)
+        bx.pack_end(lb)
+        lb.show()
+
+        self.__notification.show()
+
+    def _conflicting_animation_get(self, afters_list, anim):
+        if not afters_list or not anim:
+            return None
+        anim_targets_list = self.e.edje.program_get(anim).targets_get()
+        for after in afters_list:
+            after_targets_list = self.e.edje.program_get(after).targets_get()
+            for target in anim_targets_list:
+                if target in after_targets_list:
+                    return after
+        return None
+
     def prop_value_changed(self, prop, value, group):
         if group == "main":
             if prop == "signal":
@@ -531,6 +566,12 @@ class SignalDetails(EditjeDetails):
             old_afters = self.e.signal._afters_get()
             new_afters = self.e.signal._afters_get()
 
+            if value in old_afters:
+                value = re_anim_program.match(value).groups()[0]
+                self._notify("Error: " + value + " is already in the list")
+                self._update(self._emissor, self._data)
+                return
+
             action_number = int(re.match("action (\d+)", prop).group(1))
 
             if value:
@@ -540,6 +581,17 @@ class SignalDetails(EditjeDetails):
                     new_afters.append(value)
             elif action_number <= len(new_afters):
                 new_afters.pop(action_number - 1)
+
+            conflicting_after = self._conflicting_animation_get(new_afters,
+                                                                value)
+            if conflicting_after and conflicting_after != value:
+                conflicting_after = re_anim_program.match(
+                                        conflicting_after).groups()[0]
+                self._notify("Error: this animation conflicts with "
+                             + conflicting_after + ".<br>"
+                             "There are parts in common being animated.")
+                self._update(self._emissor, self._data)
+                return
 
             op = Operation("signal's \"after\" action change")
             op.redo_callback_add(afters_change, new_afters, self.e.signal.name)
