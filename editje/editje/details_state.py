@@ -124,6 +124,8 @@ class PartStateDetails(EditjeDetails):
                         edje.EDJE_EXTERNAL_PARAM_TYPE_CHOICE) and \
                         old_value is None:
                     old_values.append("")
+                else:
+                    old_values.append(old_value)
             else:
                 old_values.append(getattr(state, p))
 
