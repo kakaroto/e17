@@ -212,8 +212,8 @@ class NewSignalWizard(Wizard):
         self._types_btns.show()
 
         self.action_add("default", "Cancel", self._cancel, key="Escape")
-        self.action_add("default", "Create", self._add, key="Return")
-        self.action_disabled_set("default", "Create", True)
+        self.action_add("default", "Add", self._add, key="Return")
+        self.action_disabled_set("default", "Add", True)
 
         self._new_sig_cb = new_sig_cb
         self._sigs_list_cb = sigs_list_cb
@@ -230,23 +230,23 @@ class NewSignalWizard(Wizard):
 
         def good():
             self._sig_name_entry.status_label = ""
-            self.action_disabled_set("default", "Create", False)
+            self.action_disabled_set("default", "Add", False)
 
         def bad():
             self._sig_name_entry.status_label = error_msg
-            self.action_disabled_set("default", "Create", True)
+            self.action_disabled_set("default", "Add", True)
 
         def incomplete():
             self._sig_name_entry.status_label = ""
-            self.action_disabled_set("default", "Create", True)
+            self.action_disabled_set("default", "Add", True)
 
         name = self._sig_name_entry.entry
-        if not name or self._type is None:
-            incomplete()
-            return
-
         if name in self._sigs_list_cb():
             bad()
+            return
+
+        if not name or self._type is None:
+            incomplete()
             return
 
         good()

@@ -539,6 +539,10 @@ class NewPartWizard(Wizard):
             self.action_disabled_set("default", "Add", True)
 
         name = self._part_name_entry.entry
+        if name in self._edit_grp.parts:
+            bad()
+            return
+
         if not name or not self._type:
             incomplete()
             return
@@ -546,10 +550,6 @@ class NewPartWizard(Wizard):
         external_type = self._ext_list.type
         if self._type == edje.EDJE_PART_TYPE_EXTERNAL and not external_type:
             incomplete()
-            return
-
-        if name in self._edit_grp.parts:
-            bad()
             return
 
         good()
