@@ -17,6 +17,7 @@
 
 import elementary
 
+import sysconfig
 from details_widget_entry import WidgetEntry
 
 
@@ -24,29 +25,36 @@ class WidgetEntryButton(WidgetEntry):
     pop_min_w = 200
     pop_min_h = 300
 
-    def __init__(self, parent):
+    def __init__(self, parent, bt_icon=None):
         WidgetEntry.__init__(self, parent)
 
         self.selection_list = []
 
-        self.rect = elementary.Button(parent)
-        self.rect.label_set("...")
-        self.rect.size_hint_align_set(-1.0, -1.0)
-        self.rect.size_hint_min_set(30, 16)
-        self.rect.callback_clicked_add(self._open)
-        self.rect.style_set("editje.details")
-        self.rect.show()
+        self.button = elementary.Button(parent)
+        self.button.size_hint_align_set(-1.0, -1.0)
+        self.button.callback_clicked_add(self._open)
+        self.button.style_set("editje.details")
+        self.button.show()
+        self.theme_file = sysconfig.theme_file_get("default")
+        ico = elementary.Icon(self.button)
+        if bt_icon:
+            ico.file_set(self.theme_file, bt_icon)
+        else:
+            ico.file_set(self.theme_file, "editje/icon/entry_button")
+        ico.size_hint_min_set(18, 18)
+        ico.show()
+        self.button.icon_set(ico)
+        self.button.size_hint_min_set(20, 20)
 
         self.box = elementary.Box(parent)
         self.box.horizontal_set(True)
         self.box.size_hint_weight_set(1.0, 0.0)
         self.box.size_hint_align_set(-1.0, -1.0)
         self.box.pack_end(self.scr)
-        self.box.pack_end(self.rect)
+        self.box.pack_end(self.button)
         self.box.show()
 
         self.obj = self.box
-
 
     def _value_set(self, val):
         self._internal_value_set(val)
@@ -62,4 +70,3 @@ class WidgetEntryButton(WidgetEntry):
     def _internal_value_set(self, val):
         WidgetEntry._internal_value_set(self, val)
         self.entry.select_all()
-

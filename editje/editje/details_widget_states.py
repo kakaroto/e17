@@ -20,7 +20,6 @@ import re
 import evas
 from elementary import Label, Box, Pager, Button, Icon, List
 
-import sysconfig
 from details_widget_entry_button import WidgetEntryButton
 from floater import Floater
 from groupselector import NameEntry
@@ -33,20 +32,11 @@ class WidgetStates(WidgetEntryButton):
     pop_min_h = 300
 
     def __init__(self, parent, editable, operation_stack_cb):
-        WidgetEntryButton.__init__(self, parent)
+        WidgetEntryButton.__init__(self, parent, "editje/icon/options")
 
         self._operation_stack_cb = operation_stack_cb
         self._edit_grp = editable
         self._selstate = None
-        self.theme_file = sysconfig.theme_file_get("default")
-
-        ico = Icon(self.rect)
-        ico.file_set(self.theme_file, "editje/icon/options")
-        ico.show()
-        self.rect.label_set("")
-        self.rect.icon_set(ico)
-        self.rect.size_hint_min_set(24, 24)
-
         self._pop = None
         self._edit_grp.part.callback_add("part.unselected", self._close_cb)
         self._edit_grp.part.callback_add("part.changed", self._close_cb)
@@ -273,7 +263,7 @@ class WidgetStates(WidgetEntryButton):
 
     def open(self):
         if not self._pop:
-            self._pop = Floater(self.rect, self.obj)
+            self._pop = Floater(self.button, self.obj)
             self.pager = Pager(self._pop)
             self.pager.style_set("editje.rightwards")
             self.states = List(self._pop)

@@ -20,6 +20,8 @@ ico_del.png \
 ico_del_disabled.png \
 ico_down.png \
 ico_editje.png \
+ico_entry_button.png \
+ico_font_button.png \
 ico_fonts.png \
 ico_group.png \
 ico_images.png \

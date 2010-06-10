@@ -22,7 +22,7 @@ from filewizard import FontSelectionWizard
 class WidgetFont(WidgetEntryButton):
     def __init__(self, parent, fnt_new_fnt_cb=None, fnt_list_get_cb=None,
                  fnt_id_get_cb=None, workfile_name_get_cb=None):
-        WidgetEntryButton.__init__(self, parent)
+        WidgetEntryButton.__init__(self, parent, "editje/icon/font_button")
 
         self._parent = parent
         self._fnt_new_fnt_cb = fnt_new_fnt_cb
@@ -31,7 +31,6 @@ class WidgetFont(WidgetEntryButton):
         self._workfile_name_get_cb = workfile_name_get_cb
 
         self.entry_value = "Sans"
-        self.rect.label_set("Aa")
 
     def _actions_init(self):
         self._pop.title_set("Fonts")
