@@ -1,55 +1,51 @@
 #include "test.h"
 
-/*static Elm_Genlist_Item_Class itc;
+/*
+static void _item_del(const void *data, Evas_Object *obj);*/
+static Eina_Bool _dir_has_subs(const char *path);
 
-static char *_label_get(const void *data, Evas_Object *obj, const char *source);
-static Evas_Object *_icon_get(const void *data, Evas_Object *obj, const char *source);
-static Eina_Bool _state_get(const void *data, Evas_Object *obj, const char *source);
-static void _item_del(const void *data, Evas_Object *obj);
-static void _fill_list(Evas_Object *obj);
-static Eina_Bool _dir_has_subs(const char *path);*/
+static void _fill_list (Evasxx::Object *obj);
 
-void test_panel (void *data, Evas_Object *obj, void *event_info) 
+class GenListColumnConstructor1 : public GenListColumnConstructor
 {
-  Window *win = Window::factory ("panel", ELM_WIN_BASIC);
-  win->setTitle ("Panel");
-  win->setAutoDel (true);
+public:
+  GenListColumnConstructor1 () :
+    mItemNum (0)
+  {}
   
-  Background *bg = Background::factory (*win);
-  win->addObjectResize (*bg);
-  bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-  bg->show ();
+  void setItemNum (int num) {mItemNum = num;}
+  int getItemNum () const {return mItemNum;}
   
-  Panel *panel = Panel::factory (*win);
-  panel->setOrientation (ELM_PANEL_ORIENT_LEFT);
-  panel->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-  panel->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
-  panel->show ();
+private:
+  int mItemNum;
+};
 
-  GenList *gl = GenList::factory (*win);
-  gl->resize (Eflxx::Size (100, 100));
-  gl->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-  gl->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
-  gl->show ();
-  panel->setContent (*gl);
-
-#warning TODO: GenList Wrapper
-  cerr << "TODO: GenList Wrapper" << endl;
-
-  win->resize (Size (300, 300));
-  win->show ();
-}
-
-/*static char *
-_label_get(const void *data, Evas_Object *obj, const char *source) 
+class GenListDataModel1 : public GenListDataModel
 {
-   return strdup(ecore_file_file_get(data));
-}
+public:
+  GenListDataModel1 (const std::string &style) :
+    GenListDataModel (style) {}
 
-static Evas_Object *
-_icon_get(const void *data, Evas_Object *obj, const char *source) 
-{
-   if (!strcmp(source, "elm.swallow.icon")) 
+  ~GenListDataModel1 () {}
+
+  std::string getLabel (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part) const
+  { 
+    GenListColumnConstructor1 *construct1 = static_cast <GenListColumnConstructor1*> (construction);
+    cout << "GenListDataModel::getLabel" << endl;
+
+    //return strdup(ecore_file_file_get(data));
+    return "Item " + toString <int> (construct1->getItemNum ());
+  }
+    
+  Elmxx::Object *getIcon (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
+  {
+    Window *win = static_cast <Window*> (&obj);
+    Icon *ic = Icon::factory (*win);
+    ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
+    ic->setAspectHintSize (EVAS_ASPECT_CONTROL_VERTICAL, Eflxx::Size (1, 1));
+
+    /*
+    if (!strcmp(source, "elm.swallow.icon")) 
      {
         Evas_Object *ic;
 
@@ -63,43 +59,94 @@ _icon_get(const void *data, Evas_Object *obj, const char *source)
         return ic;
      }
    return NULL;
+     */
+    
+    //part: elm.swallow.icon
+    //part: elm.swallow.end
+
+    return ic;
+  }
+
+  bool getState (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
+  {
+    return false;
+  }
+};
+
+static GenListDataModel1 model ("default");
+
+void test_panel (void *data, Evas_Object *obj, void *event_info) 
+{
+  Window *win = Window::factory ("panel", ELM_WIN_BASIC);
+  win->setTitle ("Panel");
+  win->setAutoDel (true);
+  
+  Background *bg = Background::factory (*win);
+  win->addObjectResize (*bg);
+  bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  bg->show ();
+
+  Box *bx = Box::factory (*win);
+  bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  win->addObjectResize (*bx);
+  bx->show ();
+  
+  Panel *panel = Panel::factory (*win);
+  panel->setOrientation (ELM_PANEL_ORIENT_LEFT);
+  panel->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  panel->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+  GenList *gl = GenList::factory (*win);
+  gl->resize (Eflxx::Size (100, 100));
+  gl->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  gl->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  gl->show ();
+  panel->setContent (*gl);
+
+  bx->packEnd (*panel);
+  panel->show ();
+
+  _fill_list (gl);
+
+#warning TODO: GenList Wrapper
+  cerr << "TODO: GenList Wrapper" << endl;
+
+  win->resize (Size (300, 300));
+  win->show ();
 }
 
-static Eina_Bool 
-_state_get(const void *data, Evas_Object *obj, const char *source) 
-{
-   return EINA_FALSE;
-}
+#if 0
+
 
 static void 
 _item_del(const void *data, Evas_Object *obj) 
 {
    eina_stringshare_del(data);
 }
+#endif
 
-static void 
-_fill_list(Evas_Object *obj) 
+static void _fill_list (Evasxx::Object *obj) 
 {
-   DIR *d;
-   struct dirent *de;
-   Eina_List *dirs = NULL, *l;
-   char *real;
+  DIR *d;
+  struct dirent *de;
+  Eina_List *dirs = NULL, *l;
+  char *real;
 
-   if (!(d = opendir(getenv("HOME")))) return;
-   while ((de = readdir(d)) != NULL) 
-     {
-        char buff[PATH_MAX];
+  if (!(d = opendir(getenv("HOME")))) return;
+  while ((de = readdir(d)) != NULL) 
+  {
+    char buff[PATH_MAX];
 
-        if (de->d_name[0] == '.') continue;
-        snprintf(buff, sizeof(buff), "%s/%s", getenv("HOME"), de->d_name);
-        if (!ecore_file_is_dir(buff)) continue;
-        real = ecore_file_realpath(buff);
-        dirs = eina_list_append(dirs, real);
-     }
-   closedir(d);
+    if (de->d_name[0] == '.') continue;
+    snprintf(buff, sizeof(buff), "%s/%s", getenv("HOME"), de->d_name);
+    if (!ecore_file_is_dir(buff)) continue;
+    real = ecore_file_realpath(buff);
+    dirs = eina_list_append(dirs, real);
+  }
+  closedir(d);
 
-   dirs = eina_list_sort(dirs, eina_list_count(dirs), EINA_COMPARE_CB(strcoll));
-
+  dirs = eina_list_sort(dirs, eina_list_count(dirs), EINA_COMPARE_CB(strcoll));
+#if 0
    EINA_LIST_FOREACH(dirs, l, real) 
      {
         Eina_Bool result = EINA_FALSE;
@@ -114,31 +161,30 @@ _fill_list(Evas_Object *obj)
                                   NULL, NULL);
         free(real);
      }
-   eina_list_free(dirs);
+  eina_list_free(dirs);
+#endif
 }
 
-static Eina_Bool 
-_dir_has_subs(const char *path) 
+static Eina_Bool _dir_has_subs(const char *path) 
 {
-   DIR *d;
-   struct dirent *de;
-   Eina_Bool result = EINA_FALSE;
+  DIR *d;
+  struct dirent *de;
+  Eina_Bool result = EINA_FALSE;
 
-   if (!path) return result;
-   if (!(d = opendir(path))) return result;
-   while ((de = readdir(d)) != NULL) 
-     {
-        char buff[PATH_MAX];
+  if (!path) return result;
+  if (!(d = opendir(path))) return result;
+  while ((de = readdir(d)) != NULL) 
+  {
+    char buff[PATH_MAX];
 
-        if (de->d_name[0] == '.') continue;
-        snprintf(buff, sizeof(buff), "%s/%s", path, de->d_name);
-        if (ecore_file_is_dir(buff)) 
-          {
-             result = EINA_TRUE;
-             break;
-          }
-     }
-   closedir(d);
-   return result;
+    if (de->d_name[0] == '.') continue;
+    snprintf(buff, sizeof(buff), "%s/%s", path, de->d_name);
+    if (ecore_file_is_dir(buff)) 
+    {
+      result = EINA_TRUE;
+      break;
+    }
+  }
+  closedir(d);
+  return result;
 }
-*/
