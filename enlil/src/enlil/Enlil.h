@@ -574,6 +574,9 @@ EAPI	void			enlil_geocaching_user_data_set(Enlil_Geocaching *gp, void *data, Enl
 typedef struct Enlil_Flickr_Job Enlil_Flickr_Job;
 typedef struct Enlil_Flickr_Photo_Size Enlil_Flickr_Photo_Size;
 
+typedef void (*Enlil_Flickr_Job_Start_Cb) (void *data, Enlil_Album *album, Enlil_Photo *photo);
+typedef void (*Enlil_Flickr_Job_Done_Cb) (void *data, Enlil_Album *album, Enlil_Photo *photo);
+
 typedef void (*Enlil_Flickr_Error_Cb) (void *data, Enlil_Root *root);
 typedef void (*Enlil_Flickr_Album_Error_Cb) (void *data, Enlil_Album *album);
 typedef void (*Enlil_Flickr_Photo_Error_Cb) (void *data, Enlil_Photo *photo);
@@ -601,6 +604,9 @@ typedef void (*Enlil_Flickr_Photo_Upload_Done_Cb) (void *data, Enlil_Photo *phot
 typedef void (*Enlil_Flickr_Photo_Sizes_Cb) (void *data, Eina_List *sizes, Eina_Bool error);
 
 EAPI	Eina_Bool		enlil_flickr_have();
+
+EAPI	void			enlil_flickr_job_start_cb_set(Enlil_Flickr_Job_Start_Cb start_cb, void *data);
+EAPI	void			enlil_flickr_job_done_cb_set(Enlil_Flickr_Job_Done_Cb done_cb, void *data);
 
 EAPI	void			enlil_flickr_reinit(Enlil_Root *root);
 EAPI	const char *		enlil_flickr_auth_url_get();
