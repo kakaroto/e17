@@ -2006,23 +2006,25 @@ _ngi_redraw(Ng *ng)
 
 	EINA_LIST_FOREACH (box->items, l, it)
 	  {
+	     double size;
+
 	     if (cfg->zoomfactor > 1.0)
 	       {
 		  distance = (double)(it->pos - ng->pos) / (double)size_spacing;
 
 		  _ngi_zoom_function(ng, distance, &zoom, &disp);
 
-		  size = (int)((it->scale * zoom * (double)ng->size) - 0.5);
+		  size = ((it->scale * zoom * (double)ng->size)) + 0.5;
 
 		  pos = (ng->pos + disp) - (size / 2);
 
 		  if (it->pos < ng->pos)
 		    {
-		       pos = (ng->pos + (disp - 0.5)) - (size / 2);
+		       pos = ((double)ng->pos + disp) - (size / 2.0) - 0.5;
 		    }
 		  else if (it->pos > ng->pos)
 		    {
-		       pos = (ng->pos + (disp + 0.5)) - (size / 2);
+		       pos = ((double)ng->pos + disp) - (size / 2.0) + 0.5;
 		    }
 	       }
 	     else
