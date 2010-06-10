@@ -96,6 +96,8 @@ class Editje(elementary.Window, OpenFileManager):
         editje.show()
 
     def key_down(self, win, event):
+        if self.mode == "Animations":
+            return
         key = event.keyname
         alt_key = event.modifier_is_set("Alt")
         control_key = event.modifier_is_set("Control")
