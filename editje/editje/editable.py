@@ -360,7 +360,6 @@ class Editable(Manager):
         self.callback_add("group.changed", self._parts_load_cb)
         self.callback_add("part.added", self._parts_reload_cb)
         self.callback_add("part.removed", self._parts_reload_cb)
-        self.callback_add("part.removed", self._parts_reload_cb)
         self.part.callback_add("name.changed", self._parts_reload_cb)
 
     def _parts_load_cb(self, emissor, data):
