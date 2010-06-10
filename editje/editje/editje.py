@@ -21,6 +21,7 @@ import sys
 import evas
 import edje
 import elementary
+import ecore
 
 import sysconfig
 from about import About
@@ -890,12 +891,18 @@ class Editje(elementary.Window, OpenFileManager):
         toolbar = elementary.Layout(self)
         toolbar.file_set(self.theme, "toolbar.anim")
         toolbar.show()
+        self._delay = None
 
-        def play_end(emissor, data):
+        def play_end():
             self.e.animation.state = 0.0
             self._animation_toolbar_set("stopped")
+            self._delay = None
+            return False
 
-        self.e.animation.callback_add("animation.play.end", play_end)
+        def play_end_cb(emissor, data):
+            self._delay = ecore.timer_add(0.5, play_end)
+
+        self.e.animation.callback_add("animation.play.end", play_end_cb)
 
         def play_cb(obj, emission, source):
             self.e.part.name = ""
