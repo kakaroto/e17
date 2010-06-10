@@ -353,25 +353,29 @@ void ed_twitter_friends_startElement(void *user_data, const xmlChar * name, cons
 		statuses->state = FT_NULL;
 	} else if(strlen((char*)name) == 2 && strncmp((char*)name, "id", 2) == 0 && statuses->state == FT_STATUS) {
 		statuses->state = FT_ID;
-	} else if(strlen((char*)name) == 6 && strncmp((char*)name, "status", 6) == 0) {
+	} else if(statuses->state == FT_NULL && strlen((char*)name) == 6 && strncmp((char*)name, "status", 6) == 0) {
 		statuses->state = FT_STATUS;
 
 		status = (ub_Status*)malloc(sizeof(ub_Status));
 		memset(status, '\0', sizeof(ub_Status));
 
 		statuses->current = status;
-	} else if(strncmp((char*)name, "name", 4) == 0)
+	} else if(statuses->state == FT_USER && strncmp((char*)name, "name", 4) == 0)
 		statuses->state = FT_NAME;
-	else if(strncmp((char*)name, "user", 4) == 0)
+	else if(statuses->state == FT_STATUS && strncmp((char*)name, "user", 4) == 0)
 		statuses->state = FT_USER;
-	else if(strncmp((char*)name, "profile_image_url", 17) == 0)
+	else if(statuses->state == FT_USER && strncmp((char*)name, "profile_image_url", 17) == 0)
 		statuses->state = FT_AVATAR;
-	else if(strncmp((char*)name, "screen_name", 11) == 0)
+	else if(statuses->state == FT_USER && strncmp((char*)name, "screen_name", 11) == 0)
 		statuses->state = FT_SCREEN_NAME;
 	else if(statuses->state == FT_STATUS && strncmp((char*)name, "created_at", 10) == 0)
 		statuses->state = FT_CREATED_AT;
-	else if(strncmp((char*)name, "text", 4) == 0)
+	else if(statuses->state == FT_STATUS && strncmp((char*)name, "text", 4) == 0)
 		statuses->state = FT_TEXT;
+	else if(statuses->state == FT_STATUS && strncmp((char*)name, "retweeted_status", 16) == 0)
+		statuses->state = FT_RT;
+	else if(statuses->state == FT_STATUS && strncmp((char*)name, "place", 5) == 0)
+		statuses->state = FT_PLACE;
 }
 void ed_twitter_friends_endElement(void *user_data, const xmlChar * name) {
 	StatusesList *statuses = (StatusesList*)user_data;
@@ -382,118 +386,108 @@ void ed_twitter_friends_endElement(void *user_data, const xmlChar * name) {
 		statuses->state = HASH;
 	} else if(strncmp((char*)name, "request", 7) == 0 && statuses->state == HASH_REQUEST) {
 		statuses->state = HASH;
-	} else if(strlen((char*)name) == 2 && strncmp((char*)name, "id", 2) == 0 && statuses->state == FT_ID) {
+	} else if(statuses->state == FT_ID && strlen((char*)name) == 2 && strncmp((char*)name, "id", 2) == 0) {
 		statuses->current->id = atoll(statuses->current->id_str);
 		free(statuses->current->id_str);
 		statuses->state = FT_STATUS;
-	} else if(strncmp((char*)name, "status", 6) == 0 && strlen((char*)name) == 6) {
+	} else if(statuses->state == FT_STATUS && strncmp((char*)name, "status", 6) == 0 && strlen((char*)name) == 6) {
 		statuses->list = eina_list_append(statuses->list, (void*)statuses->current);
 		statuses->state = FT_NULL;
-	} else if(strncmp((char*)name, "name", 4) == 0)
+	} else if(statuses->state == FT_NAME && strncmp((char*)name, "name", 4) == 0)
 		statuses->state = FT_USER;
-	else if(strncmp((char*)name, "profile_image_url", 17) == 0) {
+	else if(statuses->state == FT_AVATAR && strncmp((char*)name, "profile_image_url", 17) == 0) {
 		statuses->state = FT_USER;
 		ed_twitter_statuses_get_avatar(statuses->current->screen_name);
-	} else if(strncmp((char*)name, "user", 4) == 0)
+	} else if(statuses->state == FT_USER && strncmp((char*)name, "user", 4) == 0)
 		statuses->state = FT_STATUS;
-	else if(strncmp((char*)name, "screen_name", 11) == 0)
+	else if(statuses->state == FT_SCREEN_NAME && strncmp((char*)name, "screen_name", 11) == 0)
 		statuses->state = FT_USER;
 	else if(statuses->state == FT_CREATED_AT && strncmp((char*)name, "created_at", 10) == 0) {
 		statuses->current->created_at = curl_getdate(statuses->current->created_at_str, NULL);
 		free(statuses->current->created_at_str);
 		statuses->state = FT_STATUS;
-	} else if(strncmp((char*)name, "text", 4) == 0)
+	} else if(statuses->state == FT_TEXT && strncmp((char*)name, "text", 4) == 0)
+		statuses->state = FT_STATUS;
+	else if(statuses->state == FT_RT && strncmp((char*)name, "retweeted_status", 16) == 0)
+		statuses->state = FT_STATUS;
+	else if(statuses->state == FT_PLACE && strncmp((char*)name, "place", 5) == 0)
 		statuses->state = FT_STATUS;
 }
 void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len) {
 	StatusesList *statuses = (StatusesList*)user_data;
 	ub_Status *status = statuses->current;
 	TimeLineStates * state = &(statuses->state);
-	char * tmp, *tmp2;
+	char *format=NULL, text[PIPE_BUF];
 	int res=0;
 
-
+	res = asprintf(&format, "%%s%%.%ds", len);
 	if(*state == HASH_ERROR && ch && len > 0) {
-		tmp = statuses->hash_error;
-		tmp2 = strndup((char*)ch, len);
-		if(tmp) {
-			res = asprintf(&statuses->hash_error, "%s%s",tmp,tmp2);
-			free(tmp);
-			free(tmp2);
+		if(statuses->hash_error != NULL) {
+			snprintf(text, strlen(statuses->hash_error)+len+1, format, statuses->hash_error, ch);
 		} else {
-			statuses->hash_error = tmp2;
+			snprintf(text, len+1, format, "", ch);
 		}
+		if(statuses->hash_error) free(statuses->hash_error);
+		statuses->hash_error = strdup(text);
 	} else if(*state == HASH_REQUEST && ch && len>0) {
-		tmp = statuses->hash_request;
-		tmp2 = strndup((char*)ch, len);
-		if(tmp) {
-			res = asprintf(&statuses->hash_request, "%s%s",tmp,tmp2);
-			free(tmp);
-			free(tmp2);
+		if(statuses->hash_request != NULL) {
+			snprintf(text, strlen(statuses->hash_request)+len+1, format, statuses->hash_request, ch);
 		} else {
-			statuses->hash_request = tmp2;
+			snprintf(text, len+1, format, "", ch);
 		}
+		if(statuses->hash_request) free(statuses->hash_request);
+		statuses->hash_request = strdup(text);
 	} else if(*state == FT_ID && ch && len>0) {
-		tmp = status->id_str;
-		tmp2 = strndup((char*)ch, len);
-		if(tmp) {
-			res = asprintf(&status->id_str, "%s%s",tmp,tmp2);
-			free(tmp);
-			free(tmp2);
+		if(status->id_str != NULL) {
+			snprintf(text, strlen(status->id_str)+len+1, format, status->id_str, ch);
 		} else {
-			status->id_str = tmp2;
+			snprintf(text, len+1, format, "", ch);
 		}
+		if(status->id_str) free(status->id_str);
+		status->id_str = strdup(text);
 	} else if(*state == FT_NAME && ch && len>0) {
-		tmp = status->name;
-		tmp2 = strndup((char*)ch, len);
-		if(tmp) {
-			res = asprintf(&status->name, "%s%s",tmp,tmp2);
-			free(tmp);
-			free(tmp2);
+		if(status->name != NULL) {
+			snprintf(text, strlen(status->name)+len+1, format, status->name, ch);
 		} else {
-			status->name = tmp2;
+			snprintf(text, len+1, format, "", ch);
 		}
+		if(status->name) free(status->name);
+		status->name = strdup(text);
 	} else if(*state == FT_AVATAR && ch && len>0) {
-		tmp = avatar;
-		tmp2 = strndup((char*)ch, len);
-		if(tmp) {
-			res = asprintf(&avatar, "%s%s",tmp,tmp2);
-			free(tmp);
-			free(tmp2);
+		if(avatar != NULL) {
+			snprintf(text, strlen(avatar)+len+1, format, avatar, ch);
+			free(avatar);
 		} else {
-			avatar = tmp2;
+			snprintf(text, len+1, format, "", ch);
 		}
+		avatar = strdup(text);
 	} else if(*state == FT_SCREEN_NAME && ch && len>0) {
-		tmp = status->screen_name;
-		tmp2 = strndup((char*)ch, len);
-		if(tmp) {
-			res = asprintf(&status->screen_name, "%s%s",tmp,tmp2);
-			free(tmp);
-			free(tmp2);
+		if(status->screen_name != NULL) {
+			snprintf(text, strlen(status->screen_name)+len+1, format, status->screen_name, ch);
+			free(status->screen_name);
 		} else {
-			status->screen_name = tmp2;
+			snprintf(text, len+1, format, "", ch);
 		}
+		status->screen_name = strdup(text);
 	} else if(*state == FT_CREATED_AT && ch && len>0) {
-		tmp = status->created_at_str;
-		tmp2 = strndup((char*)ch, len);
-		if(tmp) {
-			res = asprintf(&status->created_at_str, "%s%s",tmp,tmp2);
-			free(tmp);
-			free(tmp2);
+		if(status->created_at_str != NULL) {
+			snprintf(text, strlen(status->created_at_str)+len+1, format, status->created_at_str, ch);
 		} else {
-			status->created_at_str = tmp2;
+			snprintf(text, len+1, format, "", ch);
 		}
+		if(status->created_at_str) free(status->created_at_str);
+		status->created_at_str = strdup(text);
 	} else if(*state == FT_TEXT && ch && len>0) {
-		tmp = status->text;
-		tmp2 = strndup((char*)ch, len);
-		if(tmp) {
-			res = asprintf(&status->text, "%s%s",tmp,tmp2);
-			free(tmp);
-			free(tmp2);
+		if(status->text != NULL) {
+			snprintf(text, strlen(status->text)+len+1, format, status->text, ch);
 		} else {
-			status->text = tmp2;
+			snprintf(text, len+1, format, "", ch);
 		}
+		if(status->text) free(status->text);
+		status->text = strdup(text);
 	}
+
+	free(format);
 }
 
 void ed_twitter_users_show_startDocument(void *user_data) {

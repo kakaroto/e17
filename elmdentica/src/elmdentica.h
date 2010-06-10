@@ -34,7 +34,9 @@ typedef enum _TimeLineStates {
 	FT_AVATAR,
 	FT_SCREEN_NAME,
 	FT_TEXT,
-	FT_CREATED_AT
+	FT_CREATED_AT,
+	FT_RT,
+	FT_PLACE
 } TimeLineStates;
 
 typedef enum _UsersShowStates {
