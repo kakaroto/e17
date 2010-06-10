@@ -64,7 +64,7 @@
 #include "twitter.h"
 #include "curl.h"
 
-Evas_Object *timeline_label=NULL, *status_list=NULL, *scroller=NULL, *status=NULL, *win=NULL, *error_win=NULL, *entry=NULL, *fs=NULL, *count=NULL, *url_win=NULL, *zoom=NULL;
+Evas_Object *status_list=NULL, *scroller=NULL, *status=NULL, *win=NULL, *error_win=NULL, *entry=NULL, *fs=NULL, *count=NULL, *url_win=NULL, *zoom=NULL;
 char * dm_to=NULL;
 
 StatusesList	*statuses=NULL;
@@ -164,14 +164,14 @@ void make_status_list(int timeline) {
 	char *label;
 
 	switch(timeline) {
-		case TIMELINE_USER:		{	label = _(" <b>Last posted messages...</b>");		break; }
-		case TIMELINE_PUBLIC:	{	label = _(" <b>Everyone...</b>");	break; }
-		case TIMELINE_FAVORITES: {	label = _(" <b>My favorites...</b>");	break; }
+		case TIMELINE_USER:		{	label = _("Last messages...");		break; }
+		case TIMELINE_PUBLIC:	{	label = _("Everyone...");	break; }
+		case TIMELINE_FAVORITES: {	label = _("My favorites...");	break; }
 		case TIMELINE_FRIENDS:
-		default:				{	label = _(" <b>Me and my friends...</b>");	break; }
+		default:				{	label = _("My friends...");	break; }
 	}
 
-    elm_label_label_set(timeline_label, label);
+	elm_win_title_set(win, label);
 
 	if(status_list != NULL)
 		evas_object_del(status_list);
@@ -1222,7 +1222,13 @@ static int do_post(void *notUsed, int argc, char **argv, char **azColName) {
 	return(0);
 }
 
+static void on_post_clear(void *data, Evas_Object *obj, void *event_info) {
+	Evas_Object *entry = data;
+	elm_entry_entry_set(entry, "");
+}
+
 static void on_post(void *data, Evas_Object *obj, void *event_info) {
+	Evas_Object *hv = data;
 	char *query = NULL, *db_err=NULL;
 	int sqlite_res = 0;
 
@@ -1235,6 +1241,14 @@ static void on_post(void *data, Evas_Object *obj, void *event_info) {
 
 	elm_entry_entry_set(entry, "");
 	evas_object_focus_set(entry, 0);
+
+	evas_object_hide(hv);
+}
+
+static void on_post_hv(void *data, Evas_Object *obj, void *event_info) {
+	Evas_Object *hv = data;
+
+	evas_object_show(hv);
 }
 
 static void win_del(void *data, Evas_Object *obj, void *event_info) {
@@ -1287,7 +1301,7 @@ static void on_entry_clicked(void *data, Evas_Object *entry, void *event_info) {
 
 EAPI int elm_main(int argc, char **argv)
 {
-	Evas_Object *bg=NULL, *box=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *box2=NULL, *hoversel=NULL;
+	Evas_Object *bg=NULL, *box=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *box2=NULL, *hv=NULL, *hoversel=NULL, *panel=NULL;
 
 	LIBXML_TEST_VERSION
 
@@ -1300,7 +1314,6 @@ EAPI int elm_main(int argc, char **argv)
 	elmdentica_init();
 
 	win = elm_win_add(NULL, "elmdentica", ELM_WIN_BASIC);
-	elm_win_title_set(win, _("ElmDentica µ-bloggin'"));
 	evas_object_smart_callback_add(win, "delete-request", win_del, NULL);
 	evas_object_size_hint_min_set(win, 480, 480);
 	evas_object_size_hint_max_set(win, 640, 640);
@@ -1316,6 +1329,44 @@ EAPI int elm_main(int argc, char **argv)
 	evas_object_size_hint_align_set(box, -1, 0);
 	elm_win_resize_object_add(win, box);
 	elm_box_homogenous_set(box, 0);
+
+	scroller = elm_scroller_add(box);
+		evas_object_size_hint_weight_set(scroller, 1, 1);
+		evas_object_size_hint_align_set(scroller, -1, -1);
+		elm_scroller_bounce_set(scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+		elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
+
+		// Statuses list
+		make_status_list(TIMELINE_FRIENDS);
+		fill_message_list(TIMELINE_FRIENDS);
+
+	evas_object_show(scroller);
+
+	elm_box_pack_end(box, scroller);
+
+	panel = elm_box_add(win);
+		elm_box_homogenous_set(panel, 0);
+		elm_box_horizontal_set(panel, 1);
+		evas_object_size_hint_align_set(panel, -1, 1);
+
+		count = elm_label_add(win);
+			elm_label_label_set(count, " 140c | ");
+			evas_object_size_hint_weight_set(count, 0, 1);
+			evas_object_size_hint_align_set(count, 0, 0);
+		evas_object_show(count);
+		elm_box_pack_end(panel, count);
+
+		entry = elm_entry_add(win);
+			elm_entry_entry_set(entry, _("Type your status here..."));
+			elm_entry_single_line_set(entry, 0);
+			elm_entry_line_wrap_set(entry, 1);
+			evas_object_size_hint_weight_set(entry, 1, 0);
+			evas_object_size_hint_align_set(entry, -1, 1);
+			evas_object_smart_callback_add(entry, "cursor,changed", on_entry_clicked, NULL);
+			evas_object_smart_callback_add(entry, "changed", on_entry_changed, NULL);
+		elm_box_pack_end(panel, entry);
+		evas_object_show(entry);
+	evas_object_show(panel);
 
 	/* toolbar (horizontal box object) */
 	toolbar = elm_box_add(win);
@@ -1345,17 +1396,57 @@ EAPI int elm_main(int argc, char **argv)
 		elm_box_pack_end(toolbar, bt);
 		evas_object_show(bt);
 
+		hv = elm_hover_add(win);
+			elm_object_style_set(hv, "popout");
+			elm_hover_parent_set(hv, win);
+			elm_hover_content_set(hv, "top", panel);
+
 		icon = elm_icon_add(win);
 		elm_icon_standard_set(icon, "edit");
 		evas_object_show(icon);
+
 		bt = elm_button_add(win);
-			elm_button_label_set(bt, _("Post"));
-			elm_button_icon_set(bt, icon);
-			evas_object_smart_callback_add(bt, "clicked", on_post, NULL);
 			evas_object_size_hint_weight_set(bt, 1, 1);
 			evas_object_size_hint_align_set(bt, -1, 0);
+			elm_button_label_set(bt, _("Post"));
+			elm_button_icon_set(bt, icon);
+			evas_object_smart_callback_add(bt, "clicked", on_post_hv, hv);
 		elm_box_pack_end(toolbar, bt);
 		evas_object_show(bt);
+
+		elm_hover_target_set(hv, toolbar);
+
+		box2 = elm_box_add(win);
+		elm_box_horizontal_set(box2, EINA_TRUE);
+
+			icon = elm_icon_add(win);
+			elm_icon_standard_set(icon, "edit");
+			evas_object_show(icon);
+
+			bt = elm_button_add(win);
+				evas_object_size_hint_weight_set(bt, 1, 1);
+				evas_object_size_hint_align_set(bt, -1, 0);
+				elm_button_label_set(bt, _("Send"));
+				elm_button_icon_set(bt, icon);
+				evas_object_smart_callback_add(bt, "clicked", on_post, hv);
+				elm_box_pack_end(box2, bt);
+			evas_object_show(bt);
+
+			icon = elm_icon_add(win);
+			elm_icon_standard_set(icon, "delete");
+			evas_object_show(icon);
+
+			bt = elm_button_add(win);
+				evas_object_size_hint_weight_set(bt, 1, 1);
+				evas_object_size_hint_align_set(bt, -1, 0);
+				elm_button_label_set(bt, _("Clear"));
+				elm_button_icon_set(bt, icon);
+				evas_object_smart_callback_add(bt, "clicked", on_post_clear, entry);
+				elm_box_pack_end(box2, bt);
+			evas_object_show(bt);
+
+			elm_hover_content_set(hv, "middle", box2);
+		evas_object_show(box2);
 
 		hoversel = elm_hoversel_add(win);
 			evas_object_size_hint_weight_set(hoversel, 1, 1);
@@ -1373,51 +1464,6 @@ EAPI int elm_main(int argc, char **argv)
 
 	evas_object_show(toolbar);
 	elm_box_pack_end(box, toolbar);
-
-	box2 = elm_box_add(win);
-	elm_box_homogenous_set(box2, 0);
-	elm_box_horizontal_set(box2, 1);
-	evas_object_size_hint_align_set(box2, -1, 0);
-
-		count = elm_label_add(win);
-			elm_label_label_set(count, " 140c | ");
-			evas_object_size_hint_weight_set(count, 0, 1);
-			evas_object_size_hint_align_set(count, 0, 0);
-		evas_object_show(count);
-		elm_box_pack_end(box2, count);
-
-		entry = elm_entry_add(win);
-			elm_entry_entry_set(entry, _("Type your status here..."));
-			elm_entry_single_line_set(entry, 0);
-			elm_entry_line_wrap_set(entry, 1);
-			evas_object_size_hint_weight_set(entry, 1, 0);
-			evas_object_size_hint_align_set(entry, -1, 1);
-			evas_object_smart_callback_add(entry, "cursor,changed", on_entry_clicked, NULL);
-			evas_object_smart_callback_add(entry, "changed", on_entry_changed, NULL);
-		elm_box_pack_end(box2, entry);
-		evas_object_show(entry);
-
-	evas_object_show(box2);
-	elm_box_pack_end(box, box2);
-
-	timeline_label = elm_label_add(box);
-	evas_object_size_hint_align_set(timeline_label, 0, 0);
-	elm_box_pack_end(box, timeline_label);
-	evas_object_show(timeline_label);
-
-	scroller = elm_scroller_add(box);
-		evas_object_size_hint_weight_set(scroller, 1, 1);
-		evas_object_size_hint_align_set(scroller, -1, -1);
-		elm_scroller_bounce_set(scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-		elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
-
-		// Statuses list
-		make_status_list(TIMELINE_FRIENDS);
-		fill_message_list(TIMELINE_FRIENDS);
-
-	evas_object_show(scroller);
-
-	elm_box_pack_end(box, scroller);
 
 	evas_object_show(box);
 
