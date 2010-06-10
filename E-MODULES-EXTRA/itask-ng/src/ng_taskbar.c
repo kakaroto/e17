@@ -655,7 +655,7 @@ _ngi_taskbar_item_set_icon(Ngi_Item *it)
    it->o_icon2 = _ngi_taskbar_border_icon_add(it->border, it->box->ng->win->evas);
    edje_object_part_swallow(it->over, "e.swallow.content", it->o_icon2);
    evas_object_pass_events_set(it->o_icon2, 1);
-   //evas_object_show(it->o_icon2;
+   evas_object_show(it->o_icon2);
 
    if (it->border->iconic && it->box->cfg->taskbar_show_iconified != 2)
      ngi_item_signal_emit(it, "e,state,taskbar_item_iconify");
