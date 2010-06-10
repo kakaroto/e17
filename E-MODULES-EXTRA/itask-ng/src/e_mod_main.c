@@ -1821,29 +1821,30 @@ _ngi_zoom_function(Ng *ng, double d, double *zoom, double *disp)
 	  {
 	     z = fabsf(((ng->zoom) - (*zoom)) / (ng->zoom - 1.0f) );
 	     if (z > 1.0f)
-	       z = (float) ng->item_spacing;
+	       z = (double) ng->item_spacing;
 	     else
-	       z *= (float) ng->item_spacing;
+	       z *= (double) ng->item_spacing;
 	  }
 	else
 	  {
-	     z = (float) ng->item_spacing;
+	     z = (double) ng->item_spacing;
 	  }
 
-	*disp = (((float)ng->size) + z)
-	  * ((ng->zoom - 1.0) * (cfg->zoomfactor - 1.0)
-	     * (range * (x * (2 * sqrt_ff_1 - sqrt_ffxx) -
-			 ff * atan(x / sqrt_ffxx)) / (2.0 * (sqrt_ff_1 - f))) + d);
+	*disp = (((double) ng->size) + z)
+	  * ((ng->zoom - 1.0) * (cfg->zoomfactor - 1.0) *
+	     (range *
+	      (x * (2 * sqrt_ff_1 - sqrt_ffxx) -
+	       ff * atan(x / sqrt_ffxx)) /
+	      (2.0 * (sqrt_ff_1 - f))) + d);
      }
    else
      {
-	*disp = ((z * w) + ((- z * w) / - w) * (d - w));
-
 	*zoom = 1.0;
 	*disp = (ng->size + ng->item_spacing) *
 	  ((ng->zoom - 1.0) * (cfg->zoomfactor - 1.0) *
 	   (range * (sqrt_ff_1 - ff * atan(1.0 / sqrt_ff_1)) /
-	    (2.0 * (sqrt_ff_1 - f))) + range + fabs(d) - range);
+	    (2.0 * (sqrt_ff_1 - f))) +
+	   range + fabs(d) - range);
 
 	if (d < 0.0)
 	  *disp = -(*disp);
@@ -2011,25 +2012,17 @@ _ngi_redraw(Ng *ng)
 
 		  _ngi_zoom_function(ng, distance, &zoom, &disp);
 
-		  size = (int)((it->scale * zoom) * ng->size);
+		  size = (int)((it->scale * zoom * (double)ng->size) - 0.5);
 
 		  pos = (ng->pos + disp) - (size / 2);
 
-		  /* hack for tighter packing -> dont let icons overlap */
-		  if (zoom > 1.0)
+		  if (it->pos < ng->pos)
 		    {
-		       if (it->pos < ng->pos)
-			 {
-			    _ngi_zoom_function(ng, distance - 1.0, &zoom2, &disp2);
-			    if (zoom2 == 1.0 && (ng->pos + disp2) + ng->size/2  > (ng->pos + disp) - size/2)
-			      pos += (((double)ng->pos + disp2) + (double)ng->size/2.0) - (((double)ng->pos + disp) - (double)size/2.0);
-			 }
-		       else if (it->pos > ng->pos)
-			 {
-			    _ngi_zoom_function(ng, distance + 1.0, &zoom2, &disp2);
-			    if (zoom2 == 1.0 && (ng->pos + disp2) - ng->size/2  < (ng->pos + disp) + size/2)
-			      pos -= (((double)ng->pos + disp) + (double)size/2.0) - (((double)ng->pos + disp2) - (double)ng->size/2.0);
-			 }
+		       pos = (ng->pos + (disp - 0.5)) - (size / 2);
+		    }
+		  else if (it->pos > ng->pos)
+		    {
+		       pos = (ng->pos + (disp + 0.5)) - (size / 2);
 		    }
 	       }
 	     else
