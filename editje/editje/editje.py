@@ -333,6 +333,8 @@ class Editje(elementary.Window, OpenFileManager):
 
         if self.group != selection:
             self._operation_stack_clean()
+            self._context_clean()
+            self._mode_set_cb(self._modes_selector, None, "Parts")
         self.group = selection
 
         return True
@@ -709,6 +711,66 @@ class Editje(elementary.Window, OpenFileManager):
 
     mode = property(fget=_mode_get)
 
+    def _context_clean(self):
+        if hasattr(self, "_prevparts"):
+            del self._prevparts
+
+    def _context_save(self, mode):
+
+        def parts_save():
+            if hasattr(self, "_prevparts"):
+                return
+
+            self._prevparts = []
+            for p_name in self.e.parts:
+                real_part = self.e.part_get(p_name)
+                s_name = real_part.state_selected_get()
+                self._prevparts.append((p_name, s_name))
+
+        def animations_save():
+            pass
+
+        def signals_save():
+            pass
+
+        save_contexts = \
+            {"Parts": parts_save, "Animations": animations_save,
+             "Signals": signals_save}
+
+        save_contexts[mode]()
+
+    def _context_restore(self, mode):
+        def parts_restore():
+            if not hasattr(self, "_prevparts"):
+                return
+
+            for p_name, s_name in self._prevparts:
+                real_part = self.e.part_get(p_name)
+                real_part.state_selected_set(*s_name)
+                if p_name == self.e.part.name:
+                    self.e.part.state.name = s_name[0]
+            del self._prevparts
+
+            self.e.animation.name = None
+            self.e.signal.name = None
+
+        def animations_restore():
+            self.e.part.name = None
+            self.e.signal.name = None
+            # Animation is being deselected here too to trigger
+            # desktop_block when this change is coming from Parts Mode
+            self.e.animation.name = None
+
+        def signals_restore():
+            self.e.part.name = None
+            self.e.animation.name = None
+
+        restore_contexts = \
+            {"Parts": parts_restore, "Animations": animations_restore,
+             "Signals": signals_restore}
+
+        restore_contexts[mode]()
+
     def _mode_set_cb(self, obj, it, name, *args, **kwargs):
         if self.mode == name:
             return
@@ -718,64 +780,8 @@ class Editje(elementary.Window, OpenFileManager):
         self._mainbar_pager.content_promote(mainbar)
         self._sidebar_pager.content_promote(sidebar)
 
-        def context_save(mode):
-
-            def parts_save():
-                if hasattr(self, "_prevparts"):
-                    return
-
-                self._prevparts = []
-                for p_name in self.e.parts:
-                    real_part = self.e.part_get(p_name)
-                    s_name = real_part.state_selected_get()
-                    self._prevparts.append((p_name, s_name))
-
-            def animations_save():
-                pass
-
-            def signals_save():
-                pass
-
-            save_contexts = \
-                {"Parts": parts_save, "Animations": animations_save,
-                 "Signals": signals_save}
-
-            save_contexts[mode]()
-
-        def context_restore(mode):
-            def parts_restore():
-                if not hasattr(self, "_prevparts"):
-                    return
-
-                for p_name, s_name in self._prevparts:
-                    real_part = self.e.part_get(p_name)
-                    real_part.state_selected_set(*s_name)
-                    if p_name == self.e.part.name:
-                        self.e.part.state.name = s_name[0]
-                del self._prevparts
-
-                self.e.animation.name = None
-                self.e.signal.name = None
-
-            def animations_restore():
-                self.e.part.name = None
-                self.e.signal.name = None
-                # Animation is being deselected here too to trigger
-                # desktop_block when this change is coming from Parts Mode
-                self.e.animation.name = None
-
-            def signals_restore():
-                self.e.part.name = None
-                self.e.animation.name = None
-
-            restore_contexts = \
-                {"Parts": parts_restore, "Animations": animations_restore,
-                 "Signals": signals_restore}
-
-            restore_contexts[mode]()
-
         if self.mode:
-            context_save(self.mode)
+            self._context_save(self.mode)
         self._mode = name
 
         if name == "Signals":
@@ -787,7 +793,7 @@ class Editje(elementary.Window, OpenFileManager):
             self.main_edje.signal_emit("mode,anim,off", "editje")
             self.desktop_block(False)
 
-        context_restore(self.mode)
+        self._context_restore(self.mode)
 
         self._modes_selector.label_set("Mode: " + self.mode)
 
