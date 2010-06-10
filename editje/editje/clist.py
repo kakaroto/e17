@@ -45,6 +45,7 @@ class CList(Collapsable):
         self._first = None
         self._items.clear()
         self._list.clear()
+        self._selected.clear()
 
     def add(self, item, data=None):
         self.add_full(item, data=data)
