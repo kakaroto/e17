@@ -979,7 +979,7 @@ class Editje(elementary.Window, OpenFileManager):
         animations_list.show()
 
         animations_list = AnimationsPartsList(self, self.e, self._operation_stack)
-        animations_list.title = "Parts"
+        animations_list.title = "Participating Parts"
         animations_list.open = True
         mainbar.pack_end(animations_list)
         animations_list.show()

@@ -191,7 +191,7 @@ class AnimationsPartsList(PartsList):
 
     def _parts_update_cb(self, emissor, data):
         if not self._edit_grp.animation.name:
-            PartsList._parts_update_cb(self, emissor, data)
+            self.clear()
             return
 
         parts = data
