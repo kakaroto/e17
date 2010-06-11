@@ -16,8 +16,11 @@
  * =====================================================================================
  */
 
-#include "eyelight_viewer.h"
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
+#include "eyelight_viewer.h"
 
 void _eyelight_viewer_slideshow_slides_load(Eyelight_Viewer* pres);
 void _eyelight_viewer_slideshow_slides_destroy(Eyelight_Viewer* pres);

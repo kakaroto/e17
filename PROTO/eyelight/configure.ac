@@ -56,6 +56,9 @@ PKG_CHECK_MODULES(EYELIGHT, [
                         emotion >= 0.1
                         libpng >= 0.1
                         ])
+
+AC_FUNC_ALLOCA
+
 # required libs / cflags
 eyelight_libs=$EYELIGHT_LIBS
 eyelight_cflags=$EYELIGHT_CFLAGS

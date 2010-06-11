@@ -16,8 +16,14 @@
  * =====================================================================================
  */
 
-#include "eyelight_viewer.h"
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include<time.h>
+
+#include "eyelight_viewer.h"
+
 void _eyelight_viewer_expose_window_previous_cb(void *data, Evas_Object *o, const char *emission, const char *source);
 void _eyelight_viewer_expose_window_next_cb(void *data, Evas_Object *o, const char *emission, const char *source);
 void _eyelight_viewer_expose_slides_load(Eyelight_Viewer* pres);

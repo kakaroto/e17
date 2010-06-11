@@ -1,12 +1,33 @@
 // vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
 
-#include "eyelight_compiler_parser.h"
-#include "eyelight_object.h"
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#ifdef HAVE_ALLOCA_H
+# include <alloca.h>
+#elif defined __GNUC__
+# define alloca __builtin_alloca
+#elif defined _AIX
+# define alloca __alloca
+#elif defined _MSC_VER
+# include <malloc.h>
+# define alloca _alloca
+#else
+# include <stddef.h>
+# ifdef  __cplusplus
+extern "C"
+# endif
+void *alloca (size_t);
+#endif
 
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+#include "eyelight_compiler_parser.h"
+#include "eyelight_object.h"
 
 void eyelight_compile_block_image(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node_image, const char *area);
 void eyelight_compile_block_item(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node_item, const char *area, int depth, char *numbering, int numbering_id);

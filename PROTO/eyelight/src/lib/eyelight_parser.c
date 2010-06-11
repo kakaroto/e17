@@ -2,8 +2,13 @@
  * @brief parse an elt file and create a Eyelight tree (eyelight_compiler, eyelight_node)
  */
 
-#include "eyelight_compiler_parser.h"
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <locale.h>
+
+#include "eyelight_compiler_parser.h"
 
 static void _eyelight_save(Eyelight_Node *node, FILE *file, char *tabs);
 

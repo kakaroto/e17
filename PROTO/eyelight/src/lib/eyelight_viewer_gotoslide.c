@@ -16,10 +16,11 @@
  * =====================================================================================
  */
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
 #include "eyelight_viewer.h"
-
-
 
 void eyelight_viewer_gotoslide_start(Eyelight_Viewer* pres)
 {

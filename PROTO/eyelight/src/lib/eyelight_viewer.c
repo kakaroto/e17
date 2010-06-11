@@ -16,8 +16,11 @@
  * =====================================================================================
  */
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include "eyelight_viewer.h"
-#include "../../config.h"
 
 static int _eyelight_init_count = 0;
 int _eyelight_log_dom_global = -1;
