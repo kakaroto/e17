@@ -1,6 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-EDJE_FLAGS = -v -id images -fd .
+EDJE_FLAGS = -v -id $(top_srcdir)/data/themes -fd $(top_srcdir)/data/themes
 
 filesdir = $(datadir)
 files_DATA = \
