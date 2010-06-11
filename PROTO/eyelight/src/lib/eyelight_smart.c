@@ -65,7 +65,7 @@ Eina_Bool _eyelight_object_init(Evas_Object *obj)
 {
     Smart_Data *sd;
 
-    E_SMART_OBJ_GET_RETURN(sd, obj, E_OBJ_NAME, 0);
+    E_SMART_OBJ_GET_RETURN(sd, obj, E_OBJ_NAME, EINA_FALSE);
 
     sd->pres = eyelight_viewer_new(evas_object_evas_get(obj), NULL, NULL, 0);
 
@@ -78,6 +78,7 @@ Eina_Bool _eyelight_object_init(Evas_Object *obj)
 void eyelight_object_thumbnails_size_set(Evas_Object *obj, int w, int h)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return ;
 
@@ -87,7 +88,8 @@ void eyelight_object_thumbnails_size_set(Evas_Object *obj, int w, int h)
 Eyelight_Viewer_State eyelight_object_state_get(Evas_Object *obj)
 {
     Smart_Data *sd;
-    E_SMART_OBJ_GET_RETURN(sd, obj, E_OBJ_NAME, 0);
+
+    E_SMART_OBJ_GET_RETURN(sd, obj, E_OBJ_NAME, EYELIGHT_VIEWER_STATE_DEFAULT);
     if(!sd->pres) return 0;
 
     return eyelight_viewer_state_get(sd->pres);
@@ -96,6 +98,7 @@ Eyelight_Viewer_State eyelight_object_state_get(Evas_Object *obj)
 void eyelight_object_presentation_file_set(Evas_Object *obj, const char* presentation)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if (!sd->pres) return;
 
@@ -105,6 +108,7 @@ void eyelight_object_presentation_file_set(Evas_Object *obj, const char* present
 void eyelight_object_theme_file_set(Evas_Object *obj, const char* theme)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if (!sd->pres) return;
 
@@ -114,7 +118,8 @@ void eyelight_object_theme_file_set(Evas_Object *obj, const char* theme)
 EAPI const char* eyelight_object_presentation_file_get(Evas_Object *obj)
 {
     Smart_Data *sd;
-    E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
+
+    E_SMART_OBJ_GET_RETURN(sd, obj, E_OBJ_NAME, NULL);
     if (!sd->pres) return NULL;
 
     return eyelight_viewer_presentation_file_get(sd->pres);
@@ -123,7 +128,8 @@ EAPI const char* eyelight_object_presentation_file_get(Evas_Object *obj)
 EAPI const char* eyelight_object_theme_file_get(Evas_Object *obj)
 {
     Smart_Data *sd;
-    E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
+
+    E_SMART_OBJ_GET_RETURN(sd, obj, E_OBJ_NAME, NULL);
     if (!sd->pres) return NULL;
 
     return eyelight_viewer_theme_file_get(sd->pres);
@@ -132,6 +138,7 @@ EAPI const char* eyelight_object_theme_file_get(Evas_Object *obj)
 EAPI void eyelight_object_eye_file_set(Evas_Object *obj, const char *eye)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if (!sd->pres || !eye) return;
 
@@ -142,6 +149,7 @@ EAPI void eyelight_object_eye_file_set(Evas_Object *obj, const char *eye)
 EAPI void eyelight_object_dump_file_set(Evas_Object *obj, const char *dump)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if (!sd->pres) return;
 
@@ -151,6 +159,7 @@ EAPI void eyelight_object_dump_file_set(Evas_Object *obj, const char *dump)
 void eyelight_object_border_set(Evas_Object *obj, int border)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if (!sd->pres) return;
 
@@ -160,7 +169,8 @@ void eyelight_object_border_set(Evas_Object *obj, int border)
 Eyelight_Viewer *eyelight_object_pres_get(Evas_Object *obj)
 {
     Smart_Data *sd;
-    E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
+
+    E_SMART_OBJ_GET_RETURN(sd, obj, E_OBJ_NAME, NULL);
     return sd->pres;
 }
 
@@ -168,6 +178,7 @@ Eyelight_Viewer *eyelight_object_pres_get(Evas_Object *obj)
 void eyelight_object_clear_cache_set(Evas_Object *obj, int clear)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if (!sd->pres) return;
 
@@ -181,6 +192,7 @@ void eyelight_object_clear_cache_set(Evas_Object *obj, int clear)
 void eyelight_object_event_set(Evas_Object *obj, int event)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if (!sd->pres) return;
 
@@ -196,6 +208,7 @@ void eyelight_object_event_set(Evas_Object *obj, int event)
 void eyelight_object_focus_set(Evas_Object *obj, int focus)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if (!sd->pres) return;
 
@@ -205,8 +218,9 @@ void eyelight_object_focus_set(Evas_Object *obj, int focus)
 int eyelight_object_size_get(Evas_Object* obj)
 {
     Smart_Data *sd;
-    E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
-    if (!sd->pres) return;
+
+    E_SMART_OBJ_GET_RETURN(sd, obj, E_OBJ_NAME, 0);
+    if (!sd->pres) return 0;
 
     return eyelight_viewer_size_get(sd->pres);
 }
@@ -214,6 +228,7 @@ int eyelight_object_size_get(Evas_Object* obj)
 void eyelight_object_slide_next(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if (!sd->pres) return;
 
@@ -223,6 +238,7 @@ void eyelight_object_slide_next(Evas_Object *obj)
 void eyelight_object_slide_previous(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if (!sd->pres) return;
 
@@ -232,6 +248,7 @@ void eyelight_object_slide_previous(Evas_Object *obj)
 void eyelight_object_slide_goto(Evas_Object *obj, int id)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if (!sd->pres) return;
 
@@ -241,6 +258,7 @@ void eyelight_object_slide_goto(Evas_Object *obj, int id)
 int eyelight_object_current_id_get(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET_RETURN(sd, obj, E_OBJ_NAME, 0);
     if(!sd->pres) return 0;
 
@@ -250,6 +268,7 @@ int eyelight_object_current_id_get(Evas_Object *obj)
 void eyelight_object_expose_start(Evas_Object *obj, int select)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
@@ -259,6 +278,7 @@ void eyelight_object_expose_start(Evas_Object *obj, int select)
 void eyelight_object_expose_stop(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return ;
 
@@ -268,6 +288,7 @@ void eyelight_object_expose_stop(Evas_Object *obj)
 void eyelight_object_expose_next(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return ;
 
@@ -277,6 +298,7 @@ void eyelight_object_expose_next(Evas_Object *obj)
 void eyelight_object_expose_previous(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
@@ -286,6 +308,7 @@ void eyelight_object_expose_previous(Evas_Object *obj)
 void eyelight_object_expose_window_next(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
@@ -295,6 +318,7 @@ void eyelight_object_expose_window_next(Evas_Object *obj)
 void eyelight_object_expose_window_previous(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
@@ -304,6 +328,7 @@ void eyelight_object_expose_window_previous(Evas_Object *obj)
 void eyelight_object_expose_down(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
@@ -313,6 +338,7 @@ void eyelight_object_expose_down(Evas_Object *obj)
 void eyelight_object_expose_up(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return ;
 
@@ -322,17 +348,17 @@ void eyelight_object_expose_up(Evas_Object *obj)
 void eyelight_object_expose_select(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
     eyelight_viewer_expose_select(sd->pres);
 }
 
-
-
  void eyelight_object_slideshow_start(Evas_Object *obj,int select)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
@@ -342,6 +368,7 @@ void eyelight_object_expose_select(Evas_Object *obj)
  void eyelight_object_slideshow_stop(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
@@ -351,6 +378,7 @@ void eyelight_object_expose_select(Evas_Object *obj)
  void eyelight_object_slideshow_next(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
@@ -360,6 +388,7 @@ void eyelight_object_expose_select(Evas_Object *obj)
  void eyelight_object_slideshow_previous(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
@@ -369,6 +398,7 @@ void eyelight_object_expose_select(Evas_Object *obj)
  void eyelight_object_slideshow_select(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
@@ -380,6 +410,7 @@ void eyelight_object_expose_select(Evas_Object *obj)
 void eyelight_object_tableofcontents_start(Evas_Object *obj, int select)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
@@ -389,6 +420,7 @@ void eyelight_object_tableofcontents_start(Evas_Object *obj, int select)
 void eyelight_object_tableofcontents_stop(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
@@ -398,6 +430,7 @@ void eyelight_object_tableofcontents_stop(Evas_Object *obj)
 void eyelight_object_tableofcontents_next(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
@@ -407,6 +440,7 @@ void eyelight_object_tableofcontents_next(Evas_Object *obj)
 void eyelight_object_tableofcontents_previous(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
@@ -416,6 +450,7 @@ void eyelight_object_tableofcontents_previous(Evas_Object *obj)
 void eyelight_object_tableofcontents_select(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
@@ -426,6 +461,7 @@ void eyelight_object_tableofcontents_select(Evas_Object *obj)
 void eyelight_object_gotoslide_start(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
@@ -435,6 +471,7 @@ void eyelight_object_gotoslide_start(Evas_Object *obj)
 void eyelight_object_gotoslide_stop(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
@@ -444,6 +481,7 @@ void eyelight_object_gotoslide_stop(Evas_Object *obj)
 void eyelight_object_gotoslide_digit_add(Evas_Object *obj, int digit)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
@@ -454,6 +492,7 @@ void eyelight_object_gotoslide_digit_add(Evas_Object *obj, int digit)
 void eyelight_object_gotoslide_goto(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
@@ -463,6 +502,7 @@ void eyelight_object_gotoslide_goto(Evas_Object *obj)
 void eyelight_object_gotoslide_digit_last_remove(Evas_Object *obj)
 {
     Smart_Data *sd;
+
     E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
     if(!sd->pres) return;
 
@@ -716,7 +756,6 @@ _smart_init(void)
 _smart_add(Evas_Object * obj)
 {
     Smart_Data *sd;
-    unsigned int *pixel;
 
     sd = calloc(1, sizeof(Smart_Data));
     if (!sd) return;
