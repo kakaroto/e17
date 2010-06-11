@@ -132,6 +132,7 @@ struct enlil_album_data
 	  } inwin;
 
 	Eina_Bool is_currently_downloading_photos;
+	Eina_List *jobs; // list of Enlil_Flickr_Job*
      } flickr_sync;
 };
 
@@ -155,6 +156,7 @@ struct enlil_photo_data
     struct
      {
 	Photo_Flickr_Enum state;
+	Eina_List *jobs; // list of Enlil_Flickr_Job*
      } flickr_sync;
 };
 
@@ -578,8 +580,8 @@ void geocaching_done_cb(void *data, Eina_Hash *db);
 void geocaching_remove_marker_cb(void *data, Eina_Hash *db);
 
 
-void flickr_job_start_cb(void *data, Enlil_Album *album, Enlil_Photo *photo);
-void flickr_job_done_cb(void *data, Enlil_Album *album, Enlil_Photo *photo);
+void flickr_job_start_cb(void *data, Enlil_Flickr_Job* job, Enlil_Album *album, Enlil_Photo *photo);
+void flickr_job_done_cb(void *data, Enlil_Flickr_Job* job, Enlil_Album *album, Enlil_Photo *photo);
 
 void flickr_album_new_cb(void *data, Enlil_Root *root, Enlil_Album *album);
 void flickr_album_flickrnotuptodate_cb(void *data, Enlil_Root *root, Enlil_Album *album);

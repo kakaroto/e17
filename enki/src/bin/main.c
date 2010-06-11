@@ -457,6 +457,7 @@ void enlil_album_data_free(Enlil_Album *album, void *_data)
 {
    Enlil_Album_Data *data = _data;
    Enlil_Data *enlil_data = data->enlil_data;
+   Enlil_Flickr_Job *job;
 
    if(data->import_list_album_item)
      elm_genlist_item_del(data->import_list_album_item);
@@ -466,6 +467,11 @@ void enlil_album_data_free(Enlil_Album *album, void *_data)
    list_left_remove(enlil_data->list_left, album);
    photos_list_object_header_del(data->list_photo_item);
 
+   EINA_LIST_FREE(data->flickr_sync.jobs, job)
+     {
+	enlil_flickr_job_del(job);
+     }
+
    free(data);
 }
 
@@ -473,6 +479,7 @@ void enlil_photo_data_free(Enlil_Photo *photo, void *_data)
 {
    Enlil_Photo_Data *data = _data;
    //Enlil_Data *enlil_data = data->enlil_data;
+   Enlil_Flickr_Job *job;
 
    enlil_thumb_photo_clear(photo);
    photos_list_object_item_del(data->list_photo_item);
@@ -486,6 +493,11 @@ void enlil_photo_data_free(Enlil_Photo *photo, void *_data)
      enlil_exif_job_del(data->exif_job);
    if(data->iptc_job)
      enlil_iptc_job_del(data->iptc_job);
+
+   EINA_LIST_FREE(data->flickr_sync.jobs, job)
+     {
+	enlil_flickr_job_del(job);
+     }
 
    free(data);
 }

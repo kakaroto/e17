@@ -63,10 +63,18 @@ void upload_add(Upload *ul, Enlil_Photo *photo)
     ASSERT_RETURN_VOID(ul != NULL);
     ASSERT_RETURN_VOID(photo != NULL);
 
+    Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+
     if(enlil_photo_flickr_id_get(photo))
-        enlil_flickr_job_sync_photo_update_flickr_append(photo, _start_cb, _progress_cb, _done_cb, _error_cb, ul);
+    {
+        Enlil_Flickr_Job *job = enlil_flickr_job_sync_photo_update_flickr_append(photo, _start_cb, _progress_cb, _done_cb, _error_cb, ul);
+        photo_data->flickr_sync.jobs = eina_list_append(photo_data->flickr_sync.jobs, job);
+    }
     else
-        enlil_flickr_job_sync_photo_upload_flickr_append(photo, _start_cb, _progress_cb, _done_cb, flickr_photo_error_cb, ul);
+    {
+        Enlil_Flickr_Job *job = enlil_flickr_job_sync_photo_upload_flickr_append(photo, _start_cb, _progress_cb, _done_cb, flickr_photo_error_cb, ul);
+        photo_data->flickr_sync.jobs = eina_list_append(photo_data->flickr_sync.jobs, job);
+    }
 }
 
 
@@ -81,12 +89,15 @@ void upload_album_create_add(Upload *ul, Enlil_Album *album)
     ASSERT_RETURN_VOID(ul != NULL);
     ASSERT_RETURN_VOID(album != NULL);
 
-    enlil_flickr_job_sync_album_header_create_flickr_append(album,
+    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
+
+    Enlil_Flickr_Job *job = enlil_flickr_job_sync_album_header_create_flickr_append(album,
             _start_cb,
             _progress_cb,
             _album_create_done_cb,
             _error_cb,
             ul);
+    album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
 }
 
 
@@ -112,13 +123,15 @@ static void _done_cb(void *data, Enlil_Photo *photo, int status)
 
     photo_data->flickr_sync.state = PHOTO_FLICKR_NONE;
 
-    enlil_flickr_job_cmp_photo_append(photo,
+    Enlil_Flickr_Job *job = enlil_flickr_job_cmp_photo_append(photo,
 	      flickr_photo_flickrnotuptodate_cb,
 	      flickr_photo_notuptodate_cb,
 	      flickr_photo_uptodate_cb,
 	      flickr_photo_error_cb,
-	      enlil_data);
+              enlil_data);
+    photo_data->flickr_sync.jobs = eina_list_append(photo_data->flickr_sync.jobs, job);
 }
+
 
 static void _album_create_done_cb(void *data, Enlil_Photo *photo, int status)
 {
@@ -135,17 +148,19 @@ static void _album_create_done_cb(void *data, Enlil_Photo *photo, int status)
     flickr_sync_update(album);
     photos_list_object_header_update(album_data->list_photo_item);
 
-    enlil_flickr_job_sync_album_header_append(album, flickr_album_new_cb,
+    Enlil_Flickr_Job *job = enlil_flickr_job_sync_album_header_append(album, flickr_album_new_cb,
             flickr_album_notinflickr_cb, flickr_album_notuptodate_cb,
             flickr_album_flickrnotuptodate_cb, flickr_album_uptodate_cb,
             flickr_error_cb, enlil_data);
+    album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
 
-    enlil_flickr_job_sync_album_photos_append(album,
+    job = enlil_flickr_job_sync_album_photos_append(album,
         flickr_photo_new_cb,
         flickr_photo_notinflickr_cb,
         flickr_photo_known_cb,
         flickr_album_error_cb,
         enlil_data);
+    album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
 }
 
 

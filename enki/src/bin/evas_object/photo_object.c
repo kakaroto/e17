@@ -277,7 +277,6 @@ Evas_Object *photo_object_flickr_state_set(Evas_Object *obj, const char* state)
 	edje_object_part_swallow(sd->obj, "object.swallow.sync", sd->flickr);
      }
 
-   printf("%s\n", state);
    edje_object_signal_emit(sd->flickr, state, "");
    return sd->flickr;
 }

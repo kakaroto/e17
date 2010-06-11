@@ -283,7 +283,8 @@ static void _flickr_notuptodate_cb(void *data, Evas_Object *obj, void *event_inf
    Enlil_Album *album = data;
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 
-   enlil_flickr_job_sync_album_header_update_flickr_append(album, _flickr_album_header_sync_done_cb, album);
+   Enlil_Flickr_Job *job = enlil_flickr_job_sync_album_header_update_flickr_append(album, _flickr_album_header_sync_done_cb, album);
+   album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
    _sync_start(album_data);
 }
 
@@ -292,7 +293,8 @@ static void _local_notuptodate_cb(void *data, Evas_Object *obj, void *event_info
    Enlil_Album *album = data;
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 
-   enlil_flickr_job_sync_album_header_update_local_append(album, _flickr_album_header_sync_done_cb, album);
+   Enlil_Flickr_Job *job = enlil_flickr_job_sync_album_header_update_local_append(album, _flickr_album_header_sync_done_cb, album);
+   album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
    _sync_start(album_data);
 }
 
@@ -307,8 +309,9 @@ static void _photos_notinlocal_cb(void *data, Evas_Object *obj, void *event_info
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 
    //Retrieve the list of photos which are not in the local library
-   enlil_flickr_job_sync_album_photos_append(album,
+   Enlil_Flickr_Job *job = enlil_flickr_job_sync_album_photos_append(album,
 	 _flickr_photos_notinlocal_photo_new_cb, NULL, NULL, NULL, album);
+   album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
 
    album_data->flickr_sync.is_currently_downloading_photos = EINA_TRUE;
    evas_object_show(album_data->flickr_sync.inwin.pb_is_currently_downloading_photos);
@@ -331,7 +334,8 @@ static void _flickr_photos_notinlocal_photo_new_cb(void *data, Enlil_Album *albu
    enlil_photo_album_set(photo, album);
 
    //get the list of sizes of the photo
-   enlil_flickr_job_get_photo_sizes_append(photo_id, _flickr_photos_notinlocal_sizes_get_cb, photo);
+   Enlil_Flickr_Job *job = enlil_flickr_job_get_photo_sizes_append(photo_id, _flickr_photos_notinlocal_sizes_get_cb, photo);
+
 }
 
 //retrieve the list of sizes and use the bigger one
@@ -405,7 +409,7 @@ static void _flickr_album_header_sync_done_cb(void *data, Enlil_Root *root, Enli
 {
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 
-   if(error)
+   if(!error)
      {
 	album_data->flickr_sync.album_flickr_notuptodate = EINA_FALSE;
 	album_data->flickr_sync.album_notuptodate = EINA_FALSE;

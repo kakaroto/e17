@@ -474,27 +474,6 @@ static void _album_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *e
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 
    Evas_Object *sync = flickr_sync_new(enlil_data->win->win, album);
-
-   /*
-   if(album_data->flickr_sync.state == ALBUM_FLICKR_FLICKRNOTUPTODATE)
-     {
-	enlil_flickr_job_sync_album_header_update_flickr_append(album, _flickr_album_done_cb, album);
-     }
-   else if(album_data->flickr_sync.state == ALBUM_FLICKR_NOTUPTODATE)
-     {
-	enlil_flickr_job_sync_album_header_update_local_append(album, _flickr_album_done_cb, album);
-     }
-   else if(album_data->flickr_sync.state == ALBUM_FLICKR_NOTINFLICKR)
-     {
-	enlil_flickr_job_sync_album_header_create_flickr_append(album, _flickr_album_done_cb, album);
-     }
-
-   if(album_data->flickr_sync.photos_state == PHOTO_FLICKR_NOTUPTODATE)
-     {
-	enlil_flickr_job_sync_album_photos_append(album,
-	      _flickr_album_photos_sync_photo_new_cb, NULL, NULL, NULL, album);
-     }
-     */
 }
 
 static void _photo_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
@@ -540,7 +519,7 @@ static void _flickr_album_photos_sync_photo_new_cb(void *data, Enlil_Album *albu
    enlil_photo_flickr_id_set(photo, photo_id);
    enlil_photo_album_set(photo, album);
 
-   enlil_flickr_job_get_photo_sizes_append(photo_id, _flickr_photo_sizes_get, photo);
+   Enlil_Flickr_Job *job = enlil_flickr_job_get_photo_sizes_append(photo_id, _flickr_photo_sizes_get, photo);
 }
 
 static void _flickr_photo_sizes_get(void *data, Eina_List *sizes, Eina_Bool error)
