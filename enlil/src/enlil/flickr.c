@@ -145,6 +145,20 @@ void enlil_flickr_job_done_cb_set(Enlil_Flickr_Job_Done_Cb done_cb, void *data)
    _job_done_data = data;
 }
 
+void enlil_flickr_job_del(Enlil_Flickr_Job *job)
+{
+    ASSERT_RETURN_VOID(job != NULL);
+
+    if(job == job_current)
+    {
+        job_current = NULL;
+    }
+
+    l_jobs = eina_list_remove(l_jobs, job);
+
+    _job_free(job);
+}
+
 Enlil_Flickr_Job *enlil_flickr_job_reinit_prepend(Enlil_Root *root)
 {
    Enlil_Flickr_Job *job;
@@ -635,7 +649,7 @@ static void _job_next()
    ecore_thread_run(_flickr_thread, _end_cb, NULL, NULL);
 
    if(_job_start_cb)
-     _job_start_cb(_job_start_data, job->album, job->photo);
+     _job_start_cb(_job_start_data, job, job->album, job->photo);
 #else
    LOG_ERR("Flickr support is not built");
 #endif
@@ -831,7 +845,7 @@ static void _end_cb(void *data)
 	 && job->type !=  ENLIL_FLICKR_JOB_SYNC_ALBUM_HEADER_CREATE_FLICKR_PHOTO_UPLOAD
 	 && job->type != ENLIL_FLICKR_JOB_SYNC_PHOTO_UPDATE_FLICKR
 	 && job->type != ENLIL_FLICKR_JOB_SYNC_PHOTO_UPLOAD_FLICKR )
-     _job_done_cb(_job_done_data, job->album, job->photo);
+     _job_done_cb(_job_done_data, job, job->album, job->photo);
 
    switch(job->type)
      {
@@ -1292,7 +1306,7 @@ static int _idler_upload_cb(void *data)
 upload_done:
 
    if(_job_done_cb) 
-     _job_done_cb(_job_done_data, job->album, job->photo);
+     _job_done_cb(_job_done_data, job, job->album, job->photo);
 
    if(job->type != ENLIL_FLICKR_JOB_SYNC_PHOTO_UPLOAD_FLICKR_ADD_IN_SET
 	 && job->upload_done_cb)
