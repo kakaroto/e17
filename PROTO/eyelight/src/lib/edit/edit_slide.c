@@ -43,6 +43,8 @@ const char* eyelight_edit_slide_title_get(Eyelight_Viewer *pres, int id_slide)
                         node_slide = node;
                         i_slide++;
                         break;
+                    default:
+                        break;
                 }
                 break;
         }

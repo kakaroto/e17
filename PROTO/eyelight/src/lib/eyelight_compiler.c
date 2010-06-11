@@ -637,6 +637,8 @@ int eyelight_compile_block_items(Eyelight_Viewer *pres, Eyelight_Slide *slide, E
                         numbering_id++;
                         id_item++;
                         break;
+                    default:
+                        break;
                 }
                 break;
             case EYELIGHT_NODE_TYPE_PROP:
@@ -675,6 +677,8 @@ int eyelight_compile_block_items(Eyelight_Viewer *pres, Eyelight_Slide *slide, E
 		    eyelight_object_item_code_add(pres, slide, node, area,
 						  eyelight_retrieve_value_of_prop(node,0));
 		    id_item++;
+		    break;
+		 default:
 		    break;
                 }
                 break;
@@ -762,9 +766,13 @@ void eyelight_compile_block_area(Eyelight_Viewer *pres, Eyelight_Slide *slide, E
                     case EYELIGHT_NAME_VIDEO:
                         eyelight_object_item_video_add(pres,slide, node, area,
                                 eyelight_retrieve_value_of_prop(node,0),255,0,1,0,0);
+                        break;
 		    case EYELIGHT_NAME_CODE:
 			eyelight_object_item_code_add(pres, slide, node, area,
                                 eyelight_retrieve_value_of_prop(node,0));
+                        break;
+		    default:
+                        break;
                 }
                 break;
         }
@@ -811,9 +819,12 @@ void eyelight_compile_block_slide(Eyelight_Viewer *pres, Eyelight_Node* node_sli
                                 eyelight_object_custom_area_add(pres, slide, node, name,rel1_x,rel1_y,rel2_x,rel2_y);
                         }
                         break;
+                    default:
+                        break;
                 }
                 break;
-            default: ;
+            default:
+                break;
         }
     }
 
@@ -837,6 +848,8 @@ void eyelight_compile_block_slide(Eyelight_Viewer *pres, Eyelight_Node* node_sli
                 {
                     case EYELIGHT_NAME_AREA:
                         eyelight_compile_block_area(pres,slide, node);
+                        break;
+                    default:
                         break;
                 }
                 break;
@@ -893,6 +906,8 @@ void eyelight_compile(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide
                     case EYELIGHT_NAME_SUBTITLE:
                             default_subtitle = eyelight_retrieve_value_of_prop(node,0);
                             break;
+                    default:
+                            break;
                 }
                 break;
             case EYELIGHT_NODE_TYPE_BLOCK:
@@ -901,6 +916,8 @@ void eyelight_compile(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide
                     case EYELIGHT_NAME_SLIDE:
                         node_slide = node;
                         i_slide++;
+                        break;
+                    default:
                         break;
                 }
                 break;
@@ -1068,6 +1085,8 @@ void eyelight_slide_transitions_get(Eyelight_Viewer* pres,int id_slide, const ch
 		  case EYELIGHT_NAME_SLIDE:
 		     node_slide = node;
 		     i_slide++;
+		     break;
+		  default:
 		     break;
 		 }
 	       break;

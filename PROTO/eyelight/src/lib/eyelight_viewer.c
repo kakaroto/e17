@@ -684,6 +684,8 @@ Evas_Object* eyelight_viewer_slide_load(Eyelight_Viewer*pres,Eyelight_Slide *sli
                         node_slide = node;
                         i_slide++;
                         break;
+                    default:
+                        break;
                 }
                 break;
         }
