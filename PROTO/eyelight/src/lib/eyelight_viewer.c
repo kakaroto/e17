@@ -19,27 +19,54 @@
 #include "eyelight_viewer.h"
 #include "../../config.h"
 
-int LOG_DOMAIN;
+static int _eyelight_init_count = 0;
+int _eyelight_log_dom_global = -1;
 
 void _eyelight_viewer_end_transition_cb(void *data, Evas_Object *o, const char *emission, const char *source);
 
-static int count = 0;
 
 int eyelight_init()
 {
-    if(count>0) return ++count;
+    if (++_eyelight_init_count != 1) return _eyelight_init_count;
 
-    LOG_DOMAIN = eina_log_domain_register("Eyelight",EINA_COLOR_BLUE);
+    if (!eina_init())
+        return --_eyelight_init_count;
 
-    return ++count;
+    _eyelight_log_dom_global = eina_log_domain_register("Eyelight", EINA_COLOR_BLUE);
+    if (_eyelight_log_dom_global < 0)
+    {
+        EINA_LOG_ERR("Eyelight could not create a default log domain\n");
+	goto shutdown_eina;
+    }
+
+    if (!ecore_evas_init())
+	goto shutdown_eina;
+
+    if (!edje_init())
+	goto shutdown_ecore_evas;
+
+    return _eyelight_init_count;
+
+ shutdown_ecore_evas:
+    ecore_evas_shutdown();
+ shutdown_eina:
+    eina_shutdown();
+
+    return --_eyelight_init_count;
 }
 
 int eyelight_shutdown()
 {
-    if(count>1) return --count;
+    if (--_eyelight_init_count != 0)
+        return _eyelight_init_count;
 
-    eina_log_domain_unregister(LOG_DOMAIN);
-    return --count;
+    edje_shutdown();
+    ecore_evas_shutdown();
+    eina_log_domain_unregister(_eyelight_log_dom_global);
+    _eyelight_log_dom_global = -1;
+    eina_shutdown();
+
+    return _eyelight_init_count;
 }
 
 /*

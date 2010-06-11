@@ -5,13 +5,13 @@
 #ifndef  EYELIGHT_VIEWER_INC
 #define  EYELIGHT_VIEWER_INC
 
-extern int LOG_DOMAIN;
+extern int _eyelight_log_dom_global;
 typedef struct Eyelight_Slide Eyelight_Slide;
 
-#define INFO(s, ...) EINA_LOG_DOM_INFO(LOG_DOMAIN,s, ##__VA_ARGS__)
-#define WARN(s, ...) EINA_LOG_DOM_WARN(LOG_DOMAIN,s, ##__VA_ARGS__)
-#define DBG(s, ...) EINA_LOG_DOM_DBG(LOG_DOMAIN,s, ##__VA_ARGS__)
-#define ERR(s, ...) EINA_LOG_DOM_ERR(LOG_DOMAIN,s, ##__VA_ARGS__)
+#define INFO(s, ...) EINA_LOG_DOM_INFO(_eyelight_log_dom_global,s, ##__VA_ARGS__)
+#define WARN(s, ...) EINA_LOG_DOM_WARN(_eyelight_log_dom_global,s, ##__VA_ARGS__)
+#define DBG(s, ...) EINA_LOG_DOM_DBG(_eyelight_log_dom_global,s, ##__VA_ARGS__)
+#define ERR(s, ...) EINA_LOG_DOM_ERR(_eyelight_log_dom_global,s, ##__VA_ARGS__)
 
 
 

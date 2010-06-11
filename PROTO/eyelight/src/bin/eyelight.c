@@ -11,7 +11,9 @@
 #include <Ecore_Evas.h>
 #include <Ecore_File.h>
 #include <Edje.h>
+
 #include <Eyelight_Smart.h>
+#include <eyelight_viewer.h>
 
 static void app_resize(Ecore_Evas *ee);
 static int app_signal_exit(void *data, int ev_type, void *ev);
@@ -427,49 +429,43 @@ int main(int argc, char*argv[])
         ECORE_GETOPT_VALUE_BOOL(exit_option)
     };
 
-    if (!ecore_evas_init())
+    if (!eyelight_init())
         return EXIT_FAILURE;
-
-    if (!edje_init())
-        goto shutdown_ecore_evas;
-
-    eina_log_level_set(5);
-    eyelight_init();
 
     ecore_app_args_set(argc, (const char **) argv);
     nonargs = ecore_getopt_parse(&options, values, argc, argv);
     if (nonargs < 0)
-        goto shutdown_edje;
+        goto shutdown_eyelight;
     else if (nonargs != argc)
     {
         fputs("Invalid non-option argument", stderr);
         ecore_getopt_help(stderr, &options);
-        goto shutdown_edje;
+        goto shutdown_eyelight;
     }
 
     if(exit_option || engines_listed)
-        goto shutdown_edje;
+        goto shutdown_eyelight;
 
     if ((presentation || theme) && dump_in)
     {
-       fprintf(stderr, "You can't set an eye file as an input if you want to specify a theme and a presentation.\nBetter specify it with -o.\n");
-       goto shutdown_edje;
+       ERR("You can't set an eye file as an input if you want to specify a theme and a presentation.\nBetter specify it with -o.");
+       goto shutdown_eyelight;
     }
 
     if((dump_out || !dump_in) && !presentation)
     {
-        fprintf(stderr,"A presentation is required !\n");
-        goto shutdown_edje;
+        ERR("A presentation is required!");
+        goto shutdown_eyelight;
     }
 
     if(presentation && (ecore_file_is_dir(presentation) || !ecore_file_exists(presentation)))
     {
-        fprintf(stderr,"The presentation file doesn't exists \n");
-        goto shutdown_edje;
+        ERR("The presentation file doesn't exists.");
+        goto shutdown_eyelight;
     } else if (dump_in && (ecore_file_is_dir(dump_in) || !ecore_file_exists(dump_in)))
     {
-        fprintf(stderr,"The eye file doesn't exists \n");
-        goto shutdown_edje;
+        ERR("The eye file doesn't exists.");
+        goto shutdown_eyelight;
     }
 
     if(hd)
@@ -481,8 +477,8 @@ int main(int argc, char*argv[])
     ee = ecore_evas_new(engine, 0, 0, sizew, sizeh, NULL);
     if(!ee)
     {
-        fprintf(stderr,"Failed to init the evas engine! \n");
-        goto shutdown_edje;
+        ERR("Failed to init the evas engine!");
+        goto shutdown_eyelight;
     }
 
     ecore_event_handler_add (ECORE_EVENT_SIGNAL_EXIT, app_signal_exit, NULL);
@@ -525,16 +521,11 @@ int main(int argc, char*argv[])
     ecore_main_loop_begin ();
 
     eyelight_shutdown();
-    edje_shutdown();
-    ecore_evas_shutdown ();
 
     return EXIT_SUCCESS;
 
- shutdown_edje:
+ shutdown_eyelight:
     eyelight_shutdown();
-    edje_shutdown();
- shutdown_ecore_evas:
-    ecore_evas_shutdown();
 
     return EXIT_FAILURE;
 }
