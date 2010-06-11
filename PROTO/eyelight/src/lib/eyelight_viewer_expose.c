@@ -105,10 +105,9 @@ void _eyelight_viewer_expose_slides_load(Eyelight_Viewer* pres)
 
     pres->expose_image_thumbnails = calloc(nb_slides,sizeof(Evas_Object*));
 
-    Evas_Object *o_image, *o_swallow;
+    Evas_Object *o_image;
 
     int w_body, h_body, x_body, y_body;
-    int w_swallow, h_swallow;
 
     edje_object_part_geometry_get(pres->expose_background,"body",&x_body,&y_body,&w_body,&h_body);
 

@@ -70,8 +70,7 @@ void eyelight_viewer_slideshow_start(Eyelight_Viewer* pres,int select)
 void _eyelight_viewer_slideshow_slides_load(Eyelight_Viewer* pres)
 {
     int i;
-
-    Evas_Object *o,*o_image, *o_swallow;
+    Evas_Object *o_image;
     char buf[EYELIGHT_BUFLEN];
 
     int nb_slides = pres->slideshow_nb_slides;
@@ -79,7 +78,6 @@ void _eyelight_viewer_slideshow_slides_load(Eyelight_Viewer* pres)
     int first_slide = pres->slideshow_current - (nb_slides/2);
     if(!pres->slideshow_image_thumbnails)
         pres->slideshow_image_thumbnails = calloc(nb_slides,sizeof(Evas_Object*));
-    int w_swallow, h_swallow;
 
     for(i=0;i<nb_slides; i++)
     {
@@ -245,7 +243,6 @@ void eyelight_viewer_slideshow_select(Eyelight_Viewer* pres)
 
 void _eyelight_viewer_slideshow_next_end_cb(void *data, Evas_Object *o, const char *emission, const char *source)
 {
-    int h_swallow,w_swallow;
     int i;
     char buf[EYELIGHT_BUFLEN];
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
@@ -280,7 +277,6 @@ void _eyelight_viewer_slideshow_next_end_cb(void *data, Evas_Object *o, const ch
 
 void _eyelight_viewer_slideshow_previous_end_cb(void *data, Evas_Object *o, const char *emission, const char *source)
 {
-    int h_swallow,w_swallow;
     int i;
     char buf[EYELIGHT_BUFLEN];
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
@@ -325,10 +321,11 @@ void _eyelight_viewer_slideshow_previous_cb(void *data, Evas_Object *o, const ch
 
 void _eyelight_viewer_slideshow_slide_select_cb(void *data, Evas_Object *o, const char *emission, const char *source)
 {
+    /*
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
     int i;
 
-    /*for(i=0;i<pres->slideshow_nb_slides;i++)
+    for(i=0;i<pres->slideshow_nb_slides;i++)
     {
         if(o==pres->slideshow_slides[i])
         {

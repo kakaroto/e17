@@ -110,10 +110,6 @@ const Eyelight_Thumb* eyelight_viewer_thumbnails_custom_size_get(Eyelight_Viewer
  */
 static const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos, int size_w, int size_h)
 {
-    Eet_File* file;
-    unsigned int w,h;
-    int alpha,compress,quality,lossy;
-
     Eyelight_Slide *slide = eina_list_nth(pres->slides, pos);
 
     if(!slide->thumb.thumb)
@@ -148,10 +144,8 @@ static int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos,int
     Ecore_Evas    *ee;
     Evas *e;
     Evas_Object *o;
-    char buf[EYELIGHT_BUFLEN];
     int *pixel_resize;
     const int *pixel;
-    Eina_List *l;
     Eyelight_Slide *slide;
     int i;
 

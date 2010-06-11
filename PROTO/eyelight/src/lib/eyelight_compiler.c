@@ -55,12 +55,6 @@ static void eyelight_node_parent_set(Eyelight_Node *node, Eyelight_Node *parent)
  */
 Eyelight_Compiler* eyelight_elt_load(const char *input_file, const char *dump_out, int presw, int presh)
 {
-    FILE* output;
-    char* end;
-    char* p = NULL;
-    char buf[EYELIGHT_BUFLEN];
-    char* output_file;
-
     Eyelight_Compiler* compiler = eyelight_compiler_new(input_file, 0);
 
     if(input_file)
@@ -196,7 +190,6 @@ Eyelight_Compiler* eyelight_compiler_new(const char* input_file, int display_are
 void eyelight_compiler_free(Eyelight_Compiler **p_compiler)
 {
     Eyelight_Compiler* compiler;
-    char* str;
 
     if(!p_compiler || !(*p_compiler)) return ;
 
@@ -291,7 +284,6 @@ char* eyelight_retrieve_value_of_prop(Eyelight_Node* node,int i)
 Eyelight_Node* eyelight_retrieve_node_prop(Eyelight_Node* current, Eyelight_Node_Name prop)
 {
     Eyelight_Node* node = NULL;
-    int find = 0;
     Eina_List *l;
 
     EINA_LIST_FOREACH(current->l, l, node)
@@ -694,9 +686,6 @@ void eyelight_compile_block_area(Eyelight_Viewer *pres, Eyelight_Slide *slide, E
 {
     Eyelight_Node* node;
     char* area;
-    int number_item = 0;
-    int item_number = 0;
-    char* value;
     Eina_List *l;
     const char *layout = "vertical";
     char buf[EYELIGHT_BUFLEN];
@@ -792,9 +781,7 @@ void eyelight_compile_block_slide(Eyelight_Viewer *pres, Eyelight_Node* node_sli
         )
 {
     Eyelight_Node * node;
-    Eina_List *l, *l_next;
-    const char *s = NULL, *_s = NULL;
-    Eyelight_Area *area;
+    Eina_List *l;
 
     slide->node = node_slide;
 
@@ -864,9 +851,7 @@ void eyelight_compile_block_slide(Eyelight_Viewer *pres, Eyelight_Node* node_sli
 void eyelight_compile(Eyelight_Viewer *pres, Eyelight_Slide *slide, int id_slide)
 {
     Eyelight_Node* node;
-    int slide_number = 1;
     Eyelight_Compiler *compiler = pres->compiler;
-    char* image,*edc_file;
     int nb_slides;
     Eyelight_Node *node_slide;
     Eina_List *l;
@@ -1246,19 +1231,16 @@ void eyelight_theme_areas_create(Eyelight_Viewer *pres, Eyelight_Slide *slide)
 
 Eina_List *eyelight_theme_areas_get(Eyelight_Slide *slide)
 {
-    const char *s, *_s;
-    Eina_List *l, *res = NULL;
-    Eyelight_Area *area;
+    const char *s;
+    Eina_List *res = NULL;
 
     //load the areas of the theme
     s = edje_object_data_get(slide->obj, "areas");
     if(s)
     {
         int i;
-        char *s1, *s2, *s3, *s4;
-        char *s_save, *_s_save;
-        char* rel[4];
-        int i_rel;
+        char *s1, *s2;
+        char *s_save;
         s1 = strdup(s);
         s_save = s1;
 

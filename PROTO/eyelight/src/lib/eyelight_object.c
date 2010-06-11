@@ -574,8 +574,6 @@ void _video_obj_progress_cb(void *data, Evas_Object *o, void  *event_info)
 
 void _video_obj_replay_cb(void *data, Evas_Object *o, void *event_info)
 {
-    double len, pos;
-
     Eyelight_Video *e_video = data;
     emotion_object_position_set(e_video->o_inter,0);
     if(e_video->replay)
@@ -894,7 +892,6 @@ Evas_Object *eyelight_object_item_edje_add(Eyelight_Viewer *pres, Eyelight_Slide
 
 Evas_Object *eyelight_object_custom_area_add(Eyelight_Viewer *pres, Eyelight_Slide *slide, Eyelight_Node *node, const char *area, double rel1_x, double rel1_y, double rel2_x, double rel2_y)
 {
-    char buf[EYELIGHT_BUFLEN];
     int w, h;
 
     Evas_Object *o_area = edje_object_add(pres->evas);

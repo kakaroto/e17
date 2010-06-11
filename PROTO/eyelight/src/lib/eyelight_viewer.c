@@ -77,9 +77,8 @@ int eyelight_shutdown()
  */
 Eyelight_Viewer* eyelight_viewer_new(Evas* evas, const char* presentation, const char* theme, int with_border)
 {
-    char* str;
     Eyelight_Viewer* pres;
-    char buf[EYELIGHT_BUFLEN];
+
     pres  = calloc(1,sizeof(Eyelight_Viewer));
     pres->state= EYELIGHT_VIEWER_STATE_DEFAULT;
     pres->evas = evas;
@@ -263,8 +262,6 @@ void eyelight_viewer_border_set(Eyelight_Viewer *pres, int border)
 
 void eyelight_viewer_clean(Eyelight_Viewer *pres)
 {
-    int i;
-
     Eyelight_Slide *slide;
     EINA_LIST_FREE(pres->slides, slide)
     {
@@ -375,7 +372,6 @@ Eyelight_Viewer_State eyelight_viewer_state_get(Eyelight_Viewer* pres)
  */
 void eyelight_viewer_smart_obj_set(Eyelight_Viewer *pres, Evas_Object *obj)
 {
-    int i;
     Eina_List *l;
     Eyelight_Slide *slide;
     pres->smart_obj = obj;
@@ -407,7 +403,6 @@ void eyelight_viewer_smart_obj_set(Eyelight_Viewer *pres, Evas_Object *obj)
  */
 void eyelight_viewer_resize(Eyelight_Viewer*pres, Evas_Coord w, Evas_Coord h)
 {
-    int i;
     Eina_List *l;
     Eyelight_Slide *slide;
 
@@ -450,7 +445,6 @@ void eyelight_viewer_resize(Eyelight_Viewer*pres, Evas_Coord w, Evas_Coord h)
  */
 void eyelight_viewer_scale_set(Eyelight_Viewer*pres, double ratio)
 {
-    int i;
     Eina_List *l;
     Eyelight_Slide *slide;
 
@@ -488,7 +482,6 @@ void eyelight_viewer_scale_set(Eyelight_Viewer*pres, double ratio)
  */
 void eyelight_viewer_clip_set(Eyelight_Viewer*pres, Evas_Object *clip)
 {
-    int i;
     Eina_List *l;
     Eyelight_Slide *slide;
 
@@ -520,7 +513,6 @@ void eyelight_viewer_clip_set(Eyelight_Viewer*pres, Evas_Object *clip)
  */
 void eyelight_viewer_move(Eyelight_Viewer*pres, Evas_Coord x, Evas_Coord y)
 {
-    int i;
     Eina_List *l;
     Eyelight_Slide *slide;
 
@@ -611,8 +603,6 @@ void eyelight_viewer_clear_cache_set(Eyelight_Viewer *pres, int clear)
  */
 Evas_Object* eyelight_viewer_slide_get(Eyelight_Viewer*pres,Eyelight_Slide *slide,int pos)
 {
-    int w,h;
-
     if(!slide->obj)
     {
         eyelight_slide_clean(slide);

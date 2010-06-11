@@ -74,11 +74,7 @@ void eyelight_viewer_tableofcontents_start(Eyelight_Viewer* pres,int select)
 void _eyelight_viewer_tableofcontents_slides_load(Eyelight_Viewer* pres)
 {
     int i;
-    Ecore_Evas    *ee;
-    Evas *e;
-    Evas_Object *o,*o_image, *o_swallow;
     char buf[EYELIGHT_BUFLEN];
-    const int * pixel;
     char *default_title;
     Eina_List *l;
 
@@ -156,7 +152,6 @@ void _eyelight_viewer_tableofcontents_slides_load(Eyelight_Viewer* pres)
 
 void _eyelight_viewer_tableofcontents_slides_destroy(Eyelight_Viewer* pres)
 {
-    int i;
     int size = pres->tableofcontents_nb_slides;
 
     if(pres->tableofcontents_background)
@@ -258,9 +253,6 @@ void eyelight_viewer_tableofcontents_select(Eyelight_Viewer* pres)
 
 void _eyelight_viewer_tableofcontents_next_end_cb(void *data, Evas_Object *o, const char *emission, const char *source)
 {
-    int h_swallow,w_swallow;
-    int i;
-    char buf[EYELIGHT_BUFLEN];
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
 
     edje_object_signal_emit(pres->tableofcontents_background,
@@ -273,9 +265,6 @@ void _eyelight_viewer_tableofcontents_next_end_cb(void *data, Evas_Object *o, co
 
 void _eyelight_viewer_tableofcontents_previous_end_cb(void *data, Evas_Object *o, const char *emission, const char *source)
 {
-    int h_swallow,w_swallow;
-    int i;
-    char buf[EYELIGHT_BUFLEN];
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
 
     edje_object_signal_emit(pres->tableofcontents_background,
@@ -301,5 +290,4 @@ void _eyelight_viewer_tableofcontents_previous_cb(void *data, Evas_Object *o, co
 void _eyelight_viewer_tableofcontents_slide_select_cb(void *data, Evas_Object *o, const char *emission, const char *source)
 {
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
-    int i;
 }

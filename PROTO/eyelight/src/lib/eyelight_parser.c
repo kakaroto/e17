@@ -202,7 +202,6 @@ char* eyelight_next_token(Eyelight_Compiler* compiler,char *p, char *end, char *
     int done = 0;
     int string = 0;
     int in_comment = 0;
-    int i;
 
     if(p>=end)
         return NULL;
@@ -427,8 +426,6 @@ void eyelight_parse(Eyelight_Compiler* compiler,char *p, char* end)
             {
                 Eyelight_Value_Type type = eyelight_get_type_value_of_prop(current_node->name,i);
                 char* end_float=NULL;
-                long exponent = 0;
-                long long mantisse = 0;
                 double v;
                 switch(type)
                 {
