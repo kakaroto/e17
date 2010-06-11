@@ -522,6 +522,7 @@ Inwin *inwin_save_as_file_exists_new(Inwin_Del del_cb, Inwin_Apply apply_cb, voi
 Inwin *inwin_preferences_new();
 
 Evas_Object *flickr_menu_new(Evas_Object *win);
+void flickr_menu_animated_set(Eina_Bool animated);
 
 /* Download manager */
 Download *download_new(Evas_Object *parent);

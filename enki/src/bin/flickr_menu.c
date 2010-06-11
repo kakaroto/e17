@@ -10,6 +10,7 @@ struct set_account
 };
 
 static struct set_account set_account;
+static Evas_Object *ic = NULL;
 
 static void _menu_open_cb(void *data, Evas_Object *obj, void *event_info);
 static void _account_set_cb(void *data, Evas_Object *obj, void *event_info);
@@ -27,15 +28,24 @@ Evas_Object *flickr_menu_new(Evas_Object *win)
     elm_button_label_set(bt, "");
     evas_object_show(bt);
 
-    Evas_Object *ic = elm_icon_add(win);
-    elm_icon_file_set(ic, PACKAGE_DATA_DIR"/theme.edj", "flickr/logo");
+    ic = edje_object_add(evas_object_evas_get(win));
+    edje_object_file_set(ic, PACKAGE_DATA_DIR"/theme.edj", "flickr/logo");
     evas_object_size_hint_weight_set(ic, 1.0, 1.0);
     evas_object_size_hint_align_set(ic, -1.0, -1.0);
     elm_button_icon_set(bt, ic);
     evas_object_smart_callback_add(bt, "clicked", _menu_open_cb, win);
+    edje_object_signal_emit(ic, "not_animated", "");
     evas_object_show(ic);
 
     return bt;
+}
+
+void flickr_menu_animated_set(Eina_Bool animated)
+{
+   if(animated)
+     edje_object_signal_emit(ic, "animated", "");
+   else
+     edje_object_signal_emit(ic, "not_animated", "");
 }
 
 static void _menu_open_cb(void *data, Evas_Object *obj, void *event_info)

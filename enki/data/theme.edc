@@ -1835,21 +1835,6 @@ group {
 }
 
 group {
-    name: "flickr/logo";
-    parts {
-        part {
-            name: "icon";
-            description {
-                state: "default" 0.0;
-                aspect: 1 1;
-                aspect_preference: BOTH;
-                image.normal: "images/flickr_logo.png";
-            }
-        }
-    }
-}
-
-group {
     name: "flickr/set_account_0";
     parts {
         part {
@@ -1880,6 +1865,7 @@ group {
 }
 
 group {
+    alias: "flickr/logo";
     name: "flickr/sync";
     parts {
         part {
@@ -1948,6 +1934,14 @@ group {
             target: "main";
             transition: LINEAR 1.0;
             after: "hide_select";
+        }
+        program {
+            name: "not_animated";
+            signal: "not_animated";
+            action: STATE_SET "visible" 0.0;
+            target: "main";
+            transition: LINEAR 1.0;
+            after: "show_select";
         }
         program {
             name: "update";

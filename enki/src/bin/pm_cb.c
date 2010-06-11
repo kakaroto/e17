@@ -819,6 +819,8 @@ void flickr_job_start_cb(void *data, Enlil_Flickr_Job* job, Enlil_Album *album, 
 	if(album_data && album_data->flickr_sync.icon)
 	  edje_object_signal_emit(album_data->flickr_sync.icon, "animated", "");
      }
+   
+   flickr_menu_animated_set(EINA_TRUE);
 }
 
 
@@ -858,6 +860,7 @@ void flickr_job_done_cb(void *data, Enlil_Flickr_Job* job, Enlil_Album *album, E
 	if(album_data)
 	  album_data->flickr_sync.jobs = eina_list_remove(album_data->flickr_sync.jobs, job);
      }
+   flickr_menu_animated_set(EINA_FALSE);
 }
 
 
