@@ -841,7 +841,7 @@ static void _end_cb(void *data)
 #ifdef HAVE_FLICKR
    LOG_INFO("Flickr job done");
 
-   if(_job_done_cb 
+   if(_job_done_cb
 	 && job->type !=  ENLIL_FLICKR_JOB_SYNC_ALBUM_HEADER_CREATE_FLICKR_PHOTO_UPLOAD
 	 && job->type != ENLIL_FLICKR_JOB_SYNC_PHOTO_UPDATE_FLICKR
 	 && job->type != ENLIL_FLICKR_JOB_SYNC_PHOTO_UPLOAD_FLICKR )
@@ -1289,8 +1289,6 @@ static int _idler_upload_cb(void *data)
 	if(!tickets || !tickets[0])
 	  goto upload_done;
 
-	printf("complete %d\n", tickets[0]->complete);
-
 	int done = tickets[0]->complete;
 	flickcurl_free_tickets(tickets);
 
@@ -1305,7 +1303,7 @@ static int _idler_upload_cb(void *data)
 
 upload_done:
 
-   if(_job_done_cb) 
+   if(_job_done_cb)
      _job_done_cb(_job_done_data, job, job->album, job->photo);
 
    if(job->type != ENLIL_FLICKR_JOB_SYNC_PHOTO_UPLOAD_FLICKR_ADD_IN_SET
