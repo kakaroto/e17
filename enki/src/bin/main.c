@@ -531,15 +531,31 @@ void enlil_geocaching_data_free(Enlil_Geocaching *gp, void *_data)
    free(data);
 }
 
-const char *album_flickr_edje_signal_get(Enlil_Album_Data *album_data)
+const char *album_flickr_edje_signal_get(Enlil_Album *album)
 {
-   ASSERT_RETURN(album_data != NULL);
+   ASSERT_RETURN(album != NULL);
+   Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
+   Eina_List *l;
+   Enlil_Photo *photo;
+
+   if(!album_data)
+     return "uptodate";
+
    if(album_data->flickr_sync.album_flickr_notuptodate
 	 || album_data->flickr_sync.album_notinflickr
 	 || album_data->flickr_sync.album_notuptodate
-	 || album_data->flickr_sync.photos_notuptodate
-	 || album_data->flickr_sync.photos_notinlocal)
+	 || album_data->flickr_sync.photos_notinlocal
+	 )
      return "update";
+
+
+   EINA_LIST_FOREACH(enlil_album_photos_get(album), l, photo)
+     {
+	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+	if (photo_data && photo_data->flickr_sync.state != PHOTO_FLICKR_NONE)
+	  return "update";
+     }
+
    return "uptodate";
 }
 

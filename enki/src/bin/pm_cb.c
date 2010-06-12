@@ -47,7 +47,8 @@ static void _album_new(void *data, Enlil_Album *album)
 	 flickr_photo_known_cb,
 	 flickr_album_error_cb,
 	 enlil_data);
-   enlil_album_data->flickr_sync.jobs = eina_list_append(enlil_album_data->flickr_sync.jobs, job);
+   if(!eina_list_data_find(enlil_album_data->flickr_sync.jobs, job))
+     enlil_album_data->flickr_sync.jobs = eina_list_append(enlil_album_data->flickr_sync.jobs, job);
 }
 
 void load_done_cb(void *data, Enlil_Load *load, int nb_albums, int nb_photos)
@@ -78,7 +79,8 @@ void load_done_cb(void *data, Enlil_Load *load, int nb_albums, int nb_photos)
 
    photos_list_object_freeze(enlil_data->list_photo->o_list, EINA_FALSE);
 
-   Enlil_Flickr_Job *job = enlil_flickr_job_sync_albums_append(enlil_data->root, flickr_album_new_cb,
+   //Enlil_Flickr_Job *job =
+   enlil_flickr_job_sync_albums_append(enlil_data->root, flickr_album_new_cb,
 	 flickr_album_notinflickr_cb, flickr_album_notuptodate_cb, flickr_album_flickrnotuptodate_cb,
 	 flickr_album_uptodate_cb, flickr_error_cb, enlil_data);
 }
@@ -182,7 +184,8 @@ void sync_album_new_cb(void *data, Enlil_Sync *sync,Enlil_Root *root, Enlil_Albu
 	 flickr_album_notinflickr_cb, flickr_album_notuptodate_cb,
 	 flickr_album_flickrnotuptodate_cb, flickr_album_uptodate_cb,
 	 flickr_error_cb, enlil_data);
-   album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
+   if(!eina_list_data_find(album_data->flickr_sync.jobs, job))
+     album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
 }
 
 void sync_album_update_cb(void *data, Enlil_Sync *sync,Enlil_Root *root, Enlil_Album *album)
@@ -203,7 +206,8 @@ void sync_album_update_cb(void *data, Enlil_Sync *sync,Enlil_Root *root, Enlil_A
 	 flickr_album_notinflickr_cb, flickr_album_notuptodate_cb,
 	 flickr_album_flickrnotuptodate_cb, flickr_album_uptodate_cb,
 	 flickr_error_cb, enlil_data);
-   enlil_album_data->flickr_sync.jobs = eina_list_append(enlil_album_data->flickr_sync.jobs, job);
+   if(!eina_list_data_find(enlil_album_data->flickr_sync.jobs, job))
+     enlil_album_data->flickr_sync.jobs = eina_list_append(enlil_album_data->flickr_sync.jobs, job);
 
    //snprintf(buf, PATH_MAX, "%s %s",D_("Update Album : "), enlil_album_name_get(album));
    //notify_sync_content_set(enlil_data, buf);
@@ -284,14 +288,14 @@ void sync_photo_new_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Ph
 	enlil_photo_data->clear_iptc_data = EINA_TRUE;
      }
 
-  Enlil_Flickr_Job *job =  enlil_flickr_job_sync_album_photos_append(_album,
+   Enlil_Flickr_Job *job =  enlil_flickr_job_sync_album_photos_append(_album,
 	 flickr_photo_new_cb,
 	 flickr_photo_notinflickr_cb,
 	 flickr_photo_known_cb,
 	 flickr_album_error_cb,
 	 enlil_data);
-
-  album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
+   if(!eina_list_data_find(album_data->flickr_sync.jobs, job))
+     album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
 }
 
 void sync_photo_update_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Photo *photo)
@@ -326,7 +330,8 @@ void sync_photo_update_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil
 	      flickr_photo_uptodate_cb,
 	      flickr_photo_error_cb,
 	      enlil_data);
-	enlil_photo_data->flickr_sync.jobs = eina_list_append(enlil_photo_data->flickr_sync.jobs, job);
+	if(!eina_list_data_find(enlil_photo_data->flickr_sync.jobs, job))
+	  enlil_photo_data->flickr_sync.jobs = eina_list_append(enlil_photo_data->flickr_sync.jobs, job);
      }
    else
      {
@@ -650,7 +655,8 @@ void flickr_album_new_cb(void *data, Enlil_Root *root, Enlil_Album *album)
 	 flickr_photo_known_cb,
 	 flickr_album_error_cb,
 	 enlil_data);
-   album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
+   if(!eina_list_data_find(album_data->flickr_sync.jobs, job))
+     album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
 }
 
 void flickr_album_flickrnotuptodate_cb(void *data, Enlil_Root *root, Enlil_Album *album)
@@ -659,7 +665,7 @@ void flickr_album_flickrnotuptodate_cb(void *data, Enlil_Root *root, Enlil_Album
    album_data->flickr_sync.album_flickr_notuptodate = EINA_TRUE;
 
    if(photos_list_object_header_object_get(album_data->list_photo_item))
-     edje_object_signal_emit(album_data->flickr_sync.icon, album_flickr_edje_signal_get(album_data), "");
+     edje_object_signal_emit(album_data->flickr_sync.icon, album_flickr_edje_signal_get(album), "");
 
    Enlil_Flickr_Job *job = enlil_flickr_job_sync_album_photos_append(album,
 	 flickr_photo_new_cb,
@@ -667,7 +673,8 @@ void flickr_album_flickrnotuptodate_cb(void *data, Enlil_Root *root, Enlil_Album
 	 flickr_photo_known_cb,
 	 flickr_album_error_cb,
 	 enlil_data);
-   album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
+   if(!eina_list_data_find(album_data->flickr_sync.jobs, job))
+     album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
 }
 
 void flickr_album_notuptodate_cb(void *data, Enlil_Root *root, Enlil_Album *album)
@@ -676,7 +683,7 @@ void flickr_album_notuptodate_cb(void *data, Enlil_Root *root, Enlil_Album *albu
    album_data->flickr_sync.album_notuptodate = EINA_TRUE;
 
    if(photos_list_object_header_object_get(album_data->list_photo_item))
-     edje_object_signal_emit(album_data->flickr_sync.icon,album_flickr_edje_signal_get(album_data), "");
+     edje_object_signal_emit(album_data->flickr_sync.icon,album_flickr_edje_signal_get(album), "");
 
    Enlil_Flickr_Job *job = enlil_flickr_job_sync_album_photos_append(album,
 	 flickr_photo_new_cb,
@@ -684,7 +691,8 @@ void flickr_album_notuptodate_cb(void *data, Enlil_Root *root, Enlil_Album *albu
 	 flickr_photo_known_cb,
 	 flickr_album_error_cb,
 	 enlil_data);
-   album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
+   if(!eina_list_data_find(album_data->flickr_sync.jobs, job))
+     album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
 }
 
 void flickr_album_notinflickr_cb(void *data, Enlil_Root *root, Enlil_Album *album)
@@ -693,7 +701,7 @@ void flickr_album_notinflickr_cb(void *data, Enlil_Root *root, Enlil_Album *albu
    album_data->flickr_sync.album_notinflickr = EINA_TRUE;
 
    if(photos_list_object_header_object_get(album_data->list_photo_item))
-     edje_object_signal_emit(album_data->flickr_sync.icon,album_flickr_edje_signal_get(album_data), "");
+     edje_object_signal_emit(album_data->flickr_sync.icon,album_flickr_edje_signal_get(album), "");
 
    Enlil_Flickr_Job *job = enlil_flickr_job_sync_album_photos_append(album,
 	 flickr_photo_new_cb,
@@ -701,7 +709,8 @@ void flickr_album_notinflickr_cb(void *data, Enlil_Root *root, Enlil_Album *albu
 	 flickr_photo_known_cb,
 	 flickr_album_error_cb,
 	 enlil_data);
-   album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
+   if(!eina_list_data_find(album_data->flickr_sync.jobs, job))
+     album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
 }
 
 void flickr_album_uptodate_cb(void *data, Enlil_Root *root, Enlil_Album *album)
@@ -713,7 +722,8 @@ void flickr_album_uptodate_cb(void *data, Enlil_Root *root, Enlil_Album *album)
 	 flickr_photo_known_cb,
 	 flickr_album_error_cb,
 	 enlil_data);
-   album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
+   if(!eina_list_data_find(album_data->flickr_sync.jobs, job))
+     album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
 }
 
 void flickr_error_cb(void *data, Enlil_Root *root)
@@ -727,7 +737,7 @@ void flickr_photo_new_cb(void *data, Enlil_Album *album, const char *photo_name,
    album_data->flickr_sync.photos_notinlocal = EINA_TRUE;
 
    if(photos_list_object_header_object_get(album_data->list_photo_item))
-     edje_object_signal_emit(album_data->flickr_sync.icon,album_flickr_edje_signal_get(album_data), "");
+     edje_object_signal_emit(album_data->flickr_sync.icon,album_flickr_edje_signal_get(album), "");
 }
 
 void flickr_photo_notinflickr_cb(void *data, Enlil_Album *album, Enlil_Photo *photo)
@@ -749,7 +759,8 @@ void flickr_photo_known_cb(void *data, Enlil_Album *album, Enlil_Photo *photo)
 	 flickr_photo_uptodate_cb,
 	 flickr_photo_error_cb,
 	 enlil_data);
-   photo_data->flickr_sync.jobs = eina_list_append(photo_data->flickr_sync.jobs, job);
+   if(photo_data &&!eina_list_data_find(photo_data->flickr_sync.jobs, job))
+     photo_data->flickr_sync.jobs = eina_list_append(photo_data->flickr_sync.jobs, job);
 }
 
 
@@ -819,7 +830,7 @@ void flickr_job_start_cb(void *data, Enlil_Flickr_Job* job, Enlil_Album *album, 
 	if(album_data && album_data->flickr_sync.icon)
 	  edje_object_signal_emit(album_data->flickr_sync.icon, "animated", "");
      }
-   
+
    flickr_menu_animated_set(EINA_TRUE);
 }
 
@@ -838,7 +849,8 @@ void flickr_job_done_cb(void *data, Enlil_Flickr_Job* job, Enlil_Album *album, E
 	     if(o)
 	       photo_object_flickr_state_set(o, photo_flickr_edje_signal_get(photo_data->flickr_sync.state) );
 
-	     photo_data->flickr_sync.jobs = eina_list_remove(photo_data->flickr_sync.jobs, job);
+	     if(job)
+	       photo_data->flickr_sync.jobs = eina_list_remove(photo_data->flickr_sync.jobs, job);
 	  }
      }
 
@@ -846,19 +858,17 @@ void flickr_job_done_cb(void *data, Enlil_Flickr_Job* job, Enlil_Album *album, E
      {
 	Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 
-	const char *signal = "uptodate";
 
-	if(album_data->flickr_sync.album_flickr_notuptodate
-	      || album_data->flickr_sync.album_notinflickr
-	      || album_data->flickr_sync.album_notuptodate
-	      || album_data->flickr_sync.photos_notuptodate
-	      || album_data->flickr_sync.photos_notinlocal)
-	  signal = "update";
 	if(album_data && album_data->flickr_sync.icon)
-	  edje_object_signal_emit(album_data->flickr_sync.icon, signal, "");
+	  {
+	     const char *signal = album_flickr_edje_signal_get(album);
+	     edje_object_signal_emit(album_data->flickr_sync.icon, signal, "");
+	  }
 
-	if(album_data)
-	  album_data->flickr_sync.jobs = eina_list_remove(album_data->flickr_sync.jobs, job);
+	if(album_data && job)
+	  {
+	     album_data->flickr_sync.jobs = eina_list_remove(album_data->flickr_sync.jobs, job);
+	  }
      }
    flickr_menu_animated_set(EINA_FALSE);
 }

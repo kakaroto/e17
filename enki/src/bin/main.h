@@ -108,7 +108,6 @@ struct enlil_album_data
 	Eina_Bool album_flickr_notuptodate;
 	Eina_Bool album_notinflickr;
 	Eina_Bool album_notuptodate;
-	Eina_Bool photos_notuptodate; //see in each photo for more information
 	Eina_Bool photos_notinlocal; //photo which are on flickr but not in the local library
 	Eina_List *photos_notinlocal_name; //list of char *
 
@@ -398,7 +397,7 @@ extern Enlil_Photo *current_photo;
 extern Enlil_Data *enlil_data;
 
 
-const char *album_flickr_edje_signal_get(Enlil_Album_Data *album_data);
+const char *album_flickr_edje_signal_get(Enlil_Album *album);
 const char *photo_flickr_edje_signal_get(Photo_Flickr_Enum e);
 
 /* main window */
@@ -601,6 +600,8 @@ void flickr_photo_uptodate_cb(void *data, Enlil_Photo *photo);
 
 void flickr_album_error_cb(void *data, Enlil_Album *album);
 void flickr_photo_error_cb(void *data, Enlil_Photo *photo);
+
+void flickr_photos_notinlocal_sizes_get_cb(void *data, Eina_List *sizes, Eina_Bool error);
 
 //main menu
 Evas_Object *main_menu_new(Evas_Object *parent);

@@ -23,10 +23,6 @@ static void _bt_album_unselect_all_cb(void *data, Evas_Object *obj, void *event_
 static void _tg_multiselect_changed_cb(void *data, Evas_Object *obj, void *event_info);
 static void _album_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _photo_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void _flickr_album_done_cb(void *data, Enlil_Root *root, Enlil_Album *album, Eina_Bool error);
-static void _flickr_album_photos_done_cb(void *data, Enlil_Root *root, Enlil_Album *album, Eina_Bool error);
-static void _flickr_album_photos_sync_photo_new_cb(void *data, Enlil_Album *album, const char *photo_name, const char *photo_id);
-static void _flickr_photo_sizes_get(void *data, Eina_List *sizes, Eina_Bool error);
 
 List_Photo *list_photo_new(Evas_Object *win)
 {
@@ -269,7 +265,7 @@ static Evas_Object *_album_icon_get(const void *data, Evas_Object *obj)
    evas_object_size_hint_align_set(ic, 1.0, 0.0);
    evas_object_event_callback_add(ic, EVAS_CALLBACK_MOUSE_UP, _album_sync_flickr_cb, album);
    edje_object_signal_emit(ic,
-	 album_flickr_edje_signal_get(album_data), "");
+	 album_flickr_edje_signal_get(album), "");
 
    elm_layout_content_set(ly, "object.swallow.sync", ic);
 
@@ -471,9 +467,10 @@ static void _tg_multiselect_changed_cb(void *data, Evas_Object *obj, void *event
 static void _album_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Enlil_Album *album = data;
-   Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
+   //Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 
-   Evas_Object *sync = flickr_sync_new(enlil_data->win->win, album);
+   //Evas_Object *sync =
+   flickr_sync_new(enlil_data->win->win, album);
 }
 
 static void _photo_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
@@ -487,84 +484,16 @@ static void _photo_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *e
      }
    else if(photo_data->flickr_sync.state == PHOTO_FLICKR_NOTUPTODATE)
      {
-	//enlil_flickr_job_sync_album_header_update_local_append(album, _flickr_album_done_cb, album);
+	//get the list of sizes of the photo
+	Enlil_Flickr_Job *job =
+	   enlil_flickr_job_get_photo_sizes_append(enlil_photo_flickr_id_get(photo),
+		 flickr_photos_notinlocal_sizes_get_cb, photo);
+if(!eina_list_data_find(photo_data->flickr_sync.jobs, job))
+	photo_data->flickr_sync.jobs = eina_list_append(photo_data->flickr_sync.jobs, job);
      }
    else if(photo_data->flickr_sync.state == PHOTO_FLICKR_NOTINFLICKR)
      {
 	upload_add(enlil_data->ul, photo);
      }
-}
-
-static void _flickr_album_done_cb(void *data, Enlil_Root *root, Enlil_Album *album, Eina_Bool error)
-{
-   Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
-}
-
-static void _flickr_album_photos_done_cb(void *data, Enlil_Root *root, Enlil_Album *album, Eina_Bool error)
-{
-   Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
-}
-
-static void _flickr_album_photos_sync_photo_new_cb(void *data, Enlil_Album *album, const char *photo_name, const char *photo_id)
-{
-   char buf[PATH_MAX];
-   char dest[PATH_MAX];
-   snprintf(dest, sizeof(dest), "%s/%s/%s", enlil_album_path_get(album), enlil_album_file_name_get(album), photo_name);
-   snprintf(buf, sizeof(buf), "%s/%s", enlil_album_path_get(album), enlil_album_file_name_get(album));
-
-   Enlil_Photo *photo = enlil_photo_new();
-   enlil_photo_name_set(photo, photo_name);
-   enlil_photo_file_name_set(photo, photo_name);
-   enlil_photo_path_set(photo, buf);
-   enlil_photo_flickr_id_set(photo, photo_id);
-   enlil_photo_album_set(photo, album);
-
-   Enlil_Flickr_Job *job = enlil_flickr_job_get_photo_sizes_append(photo_id, _flickr_photo_sizes_get, photo);
-}
-
-static void _flickr_photo_sizes_get(void *data, Eina_List *sizes, Eina_Bool error)
-{
-   Eina_List  *l;
-   Enlil_Flickr_Photo_Size *size;
-   Enlil_Flickr_Photo_Size *sizeB = NULL;
-   Enlil_Photo *photo = data;
-   const char *p;
-   char buf[PATH_MAX];
-
-   EINA_LIST_FOREACH(sizes, l, size)
-     {
-	if(!sizeB)
-	  sizeB = size;
-	else if(enlil_flickr_size_order_get(size) > enlil_flickr_size_order_get(sizeB))
-	  sizeB = size;
-     }
-
-   if(!sizeB) return ;
-
-   char *strip_ext = ecore_file_strip_ext(enlil_flickr_size_source_get(sizeB));
-   const char *ext = enlil_flickr_size_source_get(sizeB) + strlen(strip_ext);
-   FREE(strip_ext);
-
-   //the video file name is very strange, example : .com/photos/watchwolf/3478789769/play/orig/b10ccbef3b/
-   //it have no valid extension
-   p = ext;
-   while(p && *p != '\0')
-     {
-	if(*p == '/')
-	  p = NULL;
-	else
-	  p++;
-     }
-
-   if(!p)
-     {
-	enlil_photo_type_set(photo, ENLIL_PHOTO_TYPE_VIDEO);
-	ext = ".avi";
-     }
-
-   snprintf(buf, sizeof(buf), "%s%s", enlil_photo_file_name_get(photo), ext);
-   enlil_photo_file_name_set(photo, buf);
-
-   download_add(enlil_data->dl, enlil_flickr_size_source_get(sizeB), photo);
 }
 

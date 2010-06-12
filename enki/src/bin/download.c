@@ -74,17 +74,18 @@ static void _start_cb(void *data, Enlil_Photo *photo)
 
     elm_progressbar_label_set(dl->pb, enlil_photo_name_get(photo));
     elm_progressbar_pulse_set(dl->pb, 0);
+
+    flickr_job_start_cb(NULL, NULL, enlil_photo_album_get(photo), photo);
 }
 
 static void _done_cb(void *data, Enlil_Photo *photo, int status)
 {
-    Eina_List *l;
     Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-    Enlil_Photo *_photo;
     Enlil_Album *album = enlil_photo_album_get(photo);
     Download *dl = data;
 
     evas_object_hide(dl->main);
+    flickr_job_done_cb(NULL, NULL, enlil_photo_album_get(photo), photo);
 
     if(photo_data)
     {
@@ -100,7 +101,6 @@ static void _done_cb(void *data, Enlil_Photo *photo, int status)
         album_data->flickr_sync.album_flickr_notuptodate = EINA_FALSE;
 	album_data->flickr_sync.album_notinflickr = EINA_FALSE;
 	album_data->flickr_sync.album_notuptodate = EINA_FALSE;
-	album_data->flickr_sync.photos_notuptodate = EINA_FALSE;
 	album_data->flickr_sync.photos_notinlocal = EINA_FALSE;
 
         photos_list_object_header_update(album_data->list_photo_item);
