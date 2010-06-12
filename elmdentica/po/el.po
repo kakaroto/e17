@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: elmdentica 0.8.0\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
-"POT-Creation-Date: 2010-04-04 18:02+0100\n"
+"POT-Creation-Date: 2010-06-12 10:54+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Giorgos Koutsikos <ragecryx@yahoo.gr>\n"
 "Language-Team: Greek\n"
@@ -15,316 +15,292 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/curl.c:80
-#: src/elmdentica.c:611
-#: src/elmdentica.c:686
-#: src/elmdentica.c:1003
+#: src/curl.c:86 src/elmdentica.c:623 src/elmdentica.c:707
+#: src/elmdentica.c:1032
 msgid "Close"
 msgstr "Κλείσιμο"
 
-#: src/elmdentica.c:166
-msgid " <b>Last posted messages...</b>"
+#: src/elmdentica.c:167
+#, fuzzy
+msgid "Last messages..."
 msgstr " <b>Τα πιο πρόσφατα μηνύματα...</b>"
 
-#: src/elmdentica.c:167
-msgid " <b>Everyone...</b>"
-msgstr " <b>Όλοι...</b>"
-
 #: src/elmdentica.c:168
-msgid " <b>My favorites...</b>"
+#, fuzzy
+msgid "Everyone..."
+msgstr "Όλοι"
+
+#: src/elmdentica.c:169
+#, fuzzy
+msgid "My favorites..."
 msgstr " <b>Τα αγαπημένα μου...</b>"
 
-#: src/elmdentica.c:170
-msgid " <b>Me and my friends...</b>"
+#: src/elmdentica.c:171
+#, fuzzy
+msgid "My friends..."
 msgstr " <b>Εγώ και οι φίλοι μου...</b>"
 
-#: src/elmdentica.c:357
+#: src/elmdentica.c:363
 #, c-format
 msgid "Error %d: %s\n"
 msgstr "Σφάλμα %d: %s\n"
 
-#: src/elmdentica.c:360
+#: src/elmdentica.c:366
 #, c-format
 msgid "System failed, child exited with status %d\n"
 msgstr ""
 
-#: src/elmdentica.c:540
-msgid "Fetching user info..."
-msgstr "Λήψη πληροφοριών χρήστη..."
-
-#: src/elmdentica.c:561
+#: src/elmdentica.c:573
 #, c-format
 msgid "Error fetching user info: %s"
 msgstr "Σφάλμα λήψης πληροφοριών χρήστη: %s"
 
-#: src/elmdentica.c:566
+#: src/elmdentica.c:578
 msgid "Unknown error fetching user info."
 msgstr ""
 
-#: src/elmdentica.c:573
+#: src/elmdentica.c:585
 #, fuzzy
 msgid "Couldn't parse user info message..."
 msgstr "Αδυναμία λήψης του μηνύματος πληροφοριών χρήστη..."
 
-#: src/elmdentica.c:595
+#: src/elmdentica.c:607
 msgid "Follow"
 msgstr ""
 
-#: src/elmdentica.c:601
+#: src/elmdentica.c:613
 msgid "Stop following"
 msgstr ""
 
-#: src/elmdentica.c:655
-#, c-format
-msgid "%s posted this link..."
+#: src/elmdentica.c:657
+msgid "Visit website?"
+msgstr ""
+
+#: src/elmdentica.c:668
+#, fuzzy, c-format
+msgid "%s posted the following URL...<br>"
 msgstr "Ο %s δημοσίευσε αυτό το σύνδεσμο..."
 
-#: src/elmdentica.c:678
+#: src/elmdentica.c:699
 msgid "Check it out!"
 msgstr ""
 
-#: src/elmdentica.c:769
+#: src/elmdentica.c:736
+msgid "View details?"
+msgstr ""
+
+#: src/elmdentica.c:838
 msgid "Reply"
 msgstr "Απάντηση"
 
-#: src/elmdentica.c:777
+#: src/elmdentica.c:846
 msgid "Repeat"
 msgstr "Επανάληψη"
 
-#: src/elmdentica.c:786
+#: src/elmdentica.c:855
 msgid "Unmark favorite"
 msgstr "Αφαίρεση από τα αγαπημένα"
 
-#: src/elmdentica.c:788
+#: src/elmdentica.c:857
 msgid "Mark favorite"
 msgstr "Προσθήκη στα αγαπημένα"
 
-#: src/elmdentica.c:851
-#, c-format
-msgid "%d s ago..."
-msgstr "%d δευτερόλεπτα πριν"
-
-#: src/elmdentica.c:855
-#, c-format
-msgid "± %d min ago..."
-msgstr "± %d λεπτά πριν"
-
-#: src/elmdentica.c:860
-msgid "> 1 h ago..."
-msgstr "> 1 ώρα πριν..."
-
-#: src/elmdentica.c:862
-#, c-format
-msgid "± %d hs ago..."
-msgstr "± %d ώρες πριν..."
-
-#: src/elmdentica.c:868
-msgid "> a day ago..."
-msgstr "> μια ημέρα πριν..."
-
-#: src/elmdentica.c:870
-#, c-format
-msgid "± %d days ago..."
-msgstr "± %d ημέρες πριν"
-
-#: src/elmdentica.c:875
-msgid "a long ago..."
-msgstr "πολύ παλιά"
-
-#: src/elmdentica.c:973
+#: src/elmdentica.c:1002
 msgid "Error"
 msgstr "Σφάλμα"
 
-#: src/elmdentica.c:974
+#: src/elmdentica.c:1003
 msgid "µ-blog Error"
 msgstr "Σφάλμα µ-blog"
 
-#: src/elmdentica.c:1250
-#: src/elmdentica.c:1365
-msgid "Press here to start typing your message..."
-msgstr "Πατήστε εδώ για να γράψετε το μήνυμα σας..."
+#: src/elmdentica.c:1290 src/elmdentica.c:1361
+msgid "Type your status here..."
+msgstr ""
 
-#: src/elmdentica.c:1278
-msgid "ElmDentica: µ-blog at your fingertips"
-msgstr "ElmDentica: "
-
-#: src/elmdentica.c:1310
+#: src/elmdentica.c:1387
 msgid "Timeline"
 msgstr "Γραμμή χρόνου"
 
-#: src/elmdentica.c:1313
-msgid "Friends & I"
-msgstr "Φίλοι και εγώ"
-
-#: src/elmdentica.c:1314
-msgid "Favorites"
-msgstr "Αγαπημένα"
-
-#: src/elmdentica.c:1315
+#: src/elmdentica.c:1390
 msgid "Everyone"
 msgstr "Όλοι"
 
-#: src/elmdentica.c:1316
+#: src/elmdentica.c:1391
 msgid "Just me"
 msgstr "Απλά εγώ"
 
-#: src/elmdentica.c:1327
+#: src/elmdentica.c:1392
+msgid "Favorites"
+msgstr "Αγαπημένα"
+
+#: src/elmdentica.c:1393
+msgid "Friends & I"
+msgstr "Φίλοι και εγώ"
+
+#: src/elmdentica.c:1412
 msgid "Post"
 msgstr "Δημοσίευση"
 
-#: src/elmdentica.c:1340
+#: src/elmdentica.c:1430
+#, fuzzy
+msgid "Send"
+msgstr "Αποστολή?"
+
+#: src/elmdentica.c:1443
+#, fuzzy
+msgid "Clear"
+msgstr "Κλείσιμο"
+
+#: src/elmdentica.c:1457
 msgid "More..."
 msgstr "Περισσότερα..."
 
-#: src/elmdentica.c:1342
+#: src/elmdentica.c:1459
 msgid "Fullscreen"
 msgstr "Πλήρης οθόνη"
 
-#: src/elmdentica.c:1343
-#: src/settings.c:1031
+#: src/elmdentica.c:1460 src/settings.c:1032
 msgid "Settings"
 msgstr "Ρυθμίσεις"
 
-#: src/twitter.c:221
+#: src/twitter.c:222
 #, c-format
 msgid "FAILED TO SAX FRIENDS: %d\n"
 msgstr ""
 
-#: src/twitter.c:319
+#: src/twitter.c:323
 #, c-format
 msgid "Can't open %s for writing: %s\n"
 msgstr "Αδύνατο το άνοιγμα του %s για εγγραφή: %s\n"
 
-#: src/twitter.c:732
+#: src/twitter.c:735
 #, c-format
 msgid "FAILED TO SAX USERS SHOW: %d\n"
 msgstr ""
 
-#: src/settings.c:359
+#: src/settings.c:360
 msgid "Screen name"
 msgstr "Όνομα"
 
-#: src/settings.c:373
+#: src/settings.c:374
 msgid "Password"
 msgstr "Κωδικός"
 
-#: src/settings.c:401
+#: src/settings.c:402
 msgid "Type"
 msgstr "Τύπος"
 
-#: src/settings.c:422
+#: src/settings.c:423
 msgid "Secure"
 msgstr "Ασφαλές"
 
-#: src/settings.c:422
+#: src/settings.c:423
 msgid "Faster"
 msgstr "Γρηγορότερα"
 
-#: src/settings.c:434
+#: src/settings.c:435
 msgid "Domain"
 msgstr ""
 
-#: src/settings.c:449
+#: src/settings.c:450
 msgid "Base URL"
 msgstr "Βασικό URL"
 
-#: src/settings.c:464
+#: src/settings.c:465
 msgid "Receive?"
 msgstr "Λήψη?"
 
-#: src/settings.c:476
+#: src/settings.c:477
 msgid "Send?"
 msgstr "Αποστολή?"
 
-#: src/settings.c:502
+#: src/settings.c:503
 msgid "OK"
 msgstr "Οκ"
 
-#: src/settings.c:510
+#: src/settings.c:511
 msgid "Cancel"
 msgstr "Άκυρο"
 
-#: src/settings.c:681
+#: src/settings.c:682
 msgid "Accounts..."
 msgstr "Λογαριασμοί..."
 
-#: src/settings.c:716
+#: src/settings.c:717
 msgid "Add"
 msgstr "Προσθήκη"
 
-#: src/settings.c:729
+#: src/settings.c:730
 msgid "Edit"
 msgstr "Επεξεργασία"
 
-#: src/settings.c:743
+#: src/settings.c:744
 msgid "Delete"
 msgstr "Διαγραφή"
 
-#: src/settings.c:770
-#: src/settings.c:793
+#: src/settings.c:771 src/settings.c:794
 msgid "No posts<br>in cache."
 msgstr "Χωρίς "
 
-#: src/settings.c:772
+#: src/settings.c:773
 #, c-format
 msgid "Currently remembering<br>%d posts."
 msgstr ""
 
-#: src/settings.c:808
-#: src/settings.c:831
+#: src/settings.c:809 src/settings.c:832
 msgid "No messages<br>in cache."
 msgstr "Χωρίς μηνύματα<br>στην προσωρινή μνήμη."
 
-#: src/settings.c:810
+#: src/settings.c:811
 #, c-format
 msgid "Currently remembering<br>%d messages."
 msgstr ""
 
-#: src/settings.c:908
+#: src/settings.c:909
 msgid "Displayed messages"
 msgstr "Εμφανιζόμενα μηνύματα"
 
-#: src/settings.c:975
+#: src/settings.c:976
 msgid "Please choose a browser"
 msgstr "Παρακαλώ επιλέξτε έναν περιηγητή"
 
-#: src/settings.c:977
+#: src/settings.c:978
 msgid "No supported browser available"
 msgstr "Δεν υπάρχουν υποστηριζόμενοι περιηγητές ιστού"
 
-#: src/settings.c:1003
+#: src/settings.c:1004
 msgid "Preferred browser..."
 msgstr "Προτιμώμενος περιηγητής ιστού..."
 
-#: src/settings.c:1011
+#: src/settings.c:1012
 msgid "Online mode..."
 msgstr "Λειτουργία με σύνδεση"
 
-#: src/settings.c:1013
+#: src/settings.c:1014
 msgid "Online"
 msgstr "Με σύνδεση"
 
-#: src/settings.c:1013
+#: src/settings.c:1014
 msgid "Offline"
 msgstr "Χωρίς σύνδεση"
 
-#: src/settings.c:1032
+#: src/settings.c:1033
 msgid "ElmDentica settings..."
 msgstr "Ρυθμίσεις ElmDentica..."
 
-#: src/settings.c:1060
+#: src/settings.c:1061
 msgid "Accounts"
 msgstr "Λογαριασμοί"
 
-#: src/settings.c:1065
+#: src/settings.c:1066
 msgid "Cache"
 msgstr "Προσωρινή μνήμη"
 
-#: src/settings.c:1070
+#: src/settings.c:1071
 msgid "Options"
 msgstr "Επιλογές"
 
-#: src/settings.c:1082
+#: src/settings.c:1083
 #, c-format
 msgid ""
 "\n"
@@ -335,56 +311,43 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/settings.c:1106
+#: src/settings.c:1107
 #, c-format
 msgid "Can't run ecore_file_init()\n"
 msgstr ""
 
-#: src/settings.c:1115
+#: src/settings.c:1116
 #, c-format
 msgid "Can't create preferences directories since asprintf failed\n"
 msgstr ""
 
-#: src/settings.c:1115
+#: src/settings.c:1116
 #, c-format
 msgid "Can't create preferences directories since ecore_file_mkpath failed\n"
 msgstr ""
 
-#: src/settings.c:1126
+#: src/settings.c:1127
 #, c-format
 msgid "Not enough memory to define conf.eet path"
 msgstr ""
 
-#: src/settings.c:1132
+#: src/settings.c:1133
 #, c-format
 msgid "Couldn't run eet_init()"
 msgstr ""
 
-#: src/settings.c:1139
+#: src/settings.c:1140
 #, c-format
 msgid "Can't create %s"
 msgstr ""
 
-#: src/settings.c:1147
+#: src/settings.c:1148
 #, c-format
 msgid "Can't setup settings_edd."
 msgstr ""
 
-#: src/settings.c:1164
+#: src/settings.c:1165
 #, c-format
-msgid "Not enough memory for settings, no doubt for anything else either, surely..."
+msgid ""
+"Not enough memory for settings, no doubt for anything else either, surely..."
 msgstr ""
-
-#~ msgid "HTTP Error"
-#~ msgstr "Σφάλμα HTTP"
-
-#, fuzzy
-#~ msgid "%s failed with HTTP Response %ld"
-#~ msgstr "%s απέτυχε με απάντηση HTTP %ld"
-#~ msgid "Open this url"
-#~ msgstr "Άνοιγμα του URL"
-#~ msgid "Direct message"
-#~ msgstr "Απευθείας μήνυμα"
-#~ msgid "Enabled?"
-#~ msgstr "Ενεργοποιημένο?"
-

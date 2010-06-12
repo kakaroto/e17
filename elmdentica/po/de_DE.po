@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: elmdentica 0.6.0\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
-"POT-Creation-Date: 2010-04-04 18:02+0100\n"
+"POT-Creation-Date: 2010-06-12 10:54+0100\n"
 "PO-Revision-Date: 2009-07-12 17:30+0001\n"
 "Last-Translator: Rui Miguel Silva Seabra <rms@1407.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,313 +16,291 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/curl.c:80 src/elmdentica.c:611 src/elmdentica.c:686
-#: src/elmdentica.c:1003
+#: src/curl.c:86 src/elmdentica.c:623 src/elmdentica.c:707
+#: src/elmdentica.c:1032
 msgid "Close"
 msgstr "Schließen"
 
-#: src/elmdentica.c:166
-msgid " <b>Last posted messages...</b>"
-msgstr ""
-
 #: src/elmdentica.c:167
-#, fuzzy
-msgid " <b>Everyone...</b>"
-msgstr " <b>Freunde-Zeitleiste...</b>"
+msgid "Last messages..."
+msgstr "Letzte Nachrichten"
 
 #: src/elmdentica.c:168
 #, fuzzy
-msgid " <b>My favorites...</b>"
-msgstr " <b>Freunde-Zeitleiste...</b>"
+msgid "Everyone..."
+msgstr "Jedermann-Zeitleiste..."
 
-#: src/elmdentica.c:170
+#: src/elmdentica.c:169
 #, fuzzy
-msgid " <b>Me and my friends...</b>"
-msgstr " <b>Freunde-Zeitleiste...</b>"
+msgid "My favorites..."
+msgstr "Favoriten-Zeitleiste..."
 
-#: src/elmdentica.c:357
+#: src/elmdentica.c:171
+#, fuzzy
+msgid "My friends..."
+msgstr "Freunde-Zeitleiste..."
+
+#: src/elmdentica.c:363
 #, c-format
 msgid "Error %d: %s\n"
 msgstr "Fehler %d: %s\n"
 
-#: src/elmdentica.c:360
+#: src/elmdentica.c:366
 #, c-format
 msgid "System failed, child exited with status %d\n"
 msgstr "Systemfehler, Unterprozess geschlossen mit Status %d\n"
 
-#: src/elmdentica.c:540
-msgid "Fetching user info..."
-msgstr ""
-
-#: src/elmdentica.c:561
+#: src/elmdentica.c:573
 #, fuzzy, c-format
 msgid "Error fetching user info: %s"
 msgstr "Fehler beim Holen der Domain: %s\n"
 
-#: src/elmdentica.c:566
+#: src/elmdentica.c:578
 msgid "Unknown error fetching user info."
 msgstr ""
 
-#: src/elmdentica.c:573
+#: src/elmdentica.c:585
 msgid "Couldn't parse user info message..."
 msgstr ""
 
-#: src/elmdentica.c:595
+#: src/elmdentica.c:607
 msgid "Follow"
 msgstr ""
 
-#: src/elmdentica.c:601
+#: src/elmdentica.c:613
 msgid "Stop following"
 msgstr ""
 
-#: src/elmdentica.c:655
-#, c-format
-msgid "%s posted this link..."
+#: src/elmdentica.c:657
+msgid "Visit website?"
 msgstr ""
 
-#: src/elmdentica.c:678
+#: src/elmdentica.c:668
+#, c-format
+msgid "%s posted the following URL...<br>"
+msgstr ""
+
+#: src/elmdentica.c:699
 msgid "Check it out!"
 msgstr ""
 
-#: src/elmdentica.c:769
+#: src/elmdentica.c:736
+#, fuzzy
+msgid "View details?"
+msgstr "Benutzerdetails..."
+
+#: src/elmdentica.c:838
 msgid "Reply"
-msgstr ""
+msgstr "Antwort"
 
-#: src/elmdentica.c:777
+#: src/elmdentica.c:846
 msgid "Repeat"
-msgstr ""
-
-#: src/elmdentica.c:786
-msgid "Unmark favorite"
-msgstr ""
-
-#: src/elmdentica.c:788
-msgid "Mark favorite"
-msgstr ""
-
-#: src/elmdentica.c:851
-#, c-format
-msgid "%d s ago..."
-msgstr "vor %d s..."
+msgstr "Wiederholen"
 
 #: src/elmdentica.c:855
-#, c-format
-msgid "± %d min ago..."
-msgstr "vor ± %d min..."
+msgid "Unmark favorite"
+msgstr "Abwählen favoriten"
 
-#: src/elmdentica.c:860
-msgid "> 1 h ago..."
-msgstr "vor mehr als 1 h..."
+#: src/elmdentica.c:857
+msgid "Mark favorite"
+msgstr "Mark favoriten"
 
-#: src/elmdentica.c:862
-#, c-format
-msgid "± %d hs ago..."
-msgstr "vor ± %d h..."
-
-#: src/elmdentica.c:868
-msgid "> a day ago..."
-msgstr "vor mehr als einem Tag..."
-
-#: src/elmdentica.c:870
-#, c-format
-msgid "± %d days ago..."
-msgstr "vor ± %d Tagen..."
-
-#: src/elmdentica.c:875
-msgid "a long ago..."
-msgstr "vor langer Zeit..."
-
-#: src/elmdentica.c:973
+#: src/elmdentica.c:1002
 msgid "Error"
 msgstr "Fehler"
 
-#: src/elmdentica.c:974
+#: src/elmdentica.c:1003
 msgid "µ-blog Error"
 msgstr "µ-blog Fehler"
 
-#: src/elmdentica.c:1250 src/elmdentica.c:1365
-msgid "Press here to start typing your message..."
-msgstr "Zum Nachricht schreiben hier drücken..."
+#: src/elmdentica.c:1290 src/elmdentica.c:1361
+msgid "Type your status here..."
+msgstr ""
 
-#: src/elmdentica.c:1278
-msgid "ElmDentica: µ-blog at your fingertips"
-msgstr "ElmDentica: µ-blog mit den Fingern"
-
-#: src/elmdentica.c:1310
+#: src/elmdentica.c:1387
 msgid "Timeline"
 msgstr "Zeitleiste"
 
-#: src/elmdentica.c:1313
-msgid "Friends & I"
-msgstr ""
-
-#: src/elmdentica.c:1314
-msgid "Favorites"
-msgstr ""
-
-#: src/elmdentica.c:1315
+#: src/elmdentica.c:1390
 msgid "Everyone"
-msgstr ""
+msgstr "Jedermann"
 
-#: src/elmdentica.c:1316
+#: src/elmdentica.c:1391
 msgid "Just me"
 msgstr ""
 
-#: src/elmdentica.c:1327
+#: src/elmdentica.c:1392
+msgid "Favorites"
+msgstr "Favoriten"
+
+#: src/elmdentica.c:1393
+msgid "Friends & I"
+msgstr ""
+
+#: src/elmdentica.c:1412
 msgid "Post"
 msgstr "Schreiben"
 
-#: src/elmdentica.c:1340
-msgid "More..."
-msgstr ""
+#: src/elmdentica.c:1430
+msgid "Send"
+msgstr "Senden"
 
-#: src/elmdentica.c:1342
+#: src/elmdentica.c:1443
+#, fuzzy
+msgid "Clear"
+msgstr "Schließen"
+
+#: src/elmdentica.c:1457
+msgid "More..."
+msgstr "Mehr..."
+
+#: src/elmdentica.c:1459
 msgid "Fullscreen"
 msgstr ""
 
-#: src/elmdentica.c:1343 src/settings.c:1031
+#: src/elmdentica.c:1460 src/settings.c:1032
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: src/twitter.c:221
+#: src/twitter.c:222
 #, c-format
 msgid "FAILED TO SAX FRIENDS: %d\n"
 msgstr "SAX der Freunde gescheitert: %d\n"
 
-#: src/twitter.c:319
+#: src/twitter.c:323
 #, c-format
 msgid "Can't open %s for writing: %s\n"
 msgstr "Kann %s nicht zum schreiben öffnen: %s\n"
 
-#: src/twitter.c:732
+#: src/twitter.c:735
 #, fuzzy, c-format
 msgid "FAILED TO SAX USERS SHOW: %d\n"
 msgstr "SAX der Freunde gescheitert: %d\n"
 
-#: src/settings.c:359
+#: src/settings.c:360
 msgid "Screen name"
 msgstr "Anzeigename"
 
-#: src/settings.c:373
+#: src/settings.c:374
 msgid "Password"
 msgstr "Passwort"
 
-#: src/settings.c:401
+#: src/settings.c:402
 msgid "Type"
 msgstr ""
 
-#: src/settings.c:422
+#: src/settings.c:423
 msgid "Secure"
 msgstr ""
 
-#: src/settings.c:422
+#: src/settings.c:423
 msgid "Faster"
 msgstr ""
 
-#: src/settings.c:434
+#: src/settings.c:435
 msgid "Domain"
 msgstr "Domain"
 
-#: src/settings.c:449
+#: src/settings.c:450
 msgid "Base URL"
 msgstr ""
 
-#: src/settings.c:464
+#: src/settings.c:465
 msgid "Receive?"
 msgstr ""
 
-#: src/settings.c:476
+#: src/settings.c:477
 msgid "Send?"
 msgstr ""
 
-#: src/settings.c:502
+#: src/settings.c:503
 msgid "OK"
 msgstr "OK"
 
-#: src/settings.c:510
+#: src/settings.c:511
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: src/settings.c:681
+#: src/settings.c:682
 msgid "Accounts..."
 msgstr "Konten..."
 
-#: src/settings.c:716
+#: src/settings.c:717
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: src/settings.c:729
+#: src/settings.c:730
 msgid "Edit"
 msgstr ""
 
-#: src/settings.c:743
+#: src/settings.c:744
 msgid "Delete"
 msgstr "Löschen"
 
-#: src/settings.c:770 src/settings.c:793
+#: src/settings.c:771 src/settings.c:794
 msgid "No posts<br>in cache."
 msgstr ""
 
-#: src/settings.c:772
+#: src/settings.c:773
 #, c-format
 msgid "Currently remembering<br>%d posts."
 msgstr ""
 
-#: src/settings.c:808 src/settings.c:831
+#: src/settings.c:809 src/settings.c:832
 msgid "No messages<br>in cache."
 msgstr ""
 
-#: src/settings.c:810
+#: src/settings.c:811
 #, c-format
 msgid "Currently remembering<br>%d messages."
 msgstr ""
 
-#: src/settings.c:908
+#: src/settings.c:909
 msgid "Displayed messages"
 msgstr ""
 
-#: src/settings.c:975
+#: src/settings.c:976
 msgid "Please choose a browser"
 msgstr ""
 
-#: src/settings.c:977
+#: src/settings.c:978
 msgid "No supported browser available"
 msgstr ""
 
-#: src/settings.c:1003
+#: src/settings.c:1004
 msgid "Preferred browser..."
 msgstr ""
 
-#: src/settings.c:1011
+#: src/settings.c:1012
 msgid "Online mode..."
 msgstr ""
 
-#: src/settings.c:1013
+#: src/settings.c:1014
 msgid "Online"
 msgstr ""
 
-#: src/settings.c:1013
+#: src/settings.c:1014
 msgid "Offline"
 msgstr ""
 
-#: src/settings.c:1032
+#: src/settings.c:1033
 msgid "ElmDentica settings..."
 msgstr "ElmDentica Einstellungen"
 
-#: src/settings.c:1060
+#: src/settings.c:1061
 msgid "Accounts"
 msgstr "Konten"
 
-#: src/settings.c:1065
+#: src/settings.c:1066
 #, fuzzy
 msgid "Cache"
 msgstr "Abbrechen"
 
-#: src/settings.c:1070
+#: src/settings.c:1071
 msgid "Options"
 msgstr ""
 
-#: src/settings.c:1082
+#: src/settings.c:1083
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -338,135 +316,43 @@ msgstr ""
 "\t-h\tHelp (was du eben liest)\n"
 "\n"
 
-#: src/settings.c:1106
+#: src/settings.c:1107
 #, c-format
 msgid "Can't run ecore_file_init()\n"
 msgstr ""
 
-#: src/settings.c:1115
+#: src/settings.c:1116
 #, c-format
 msgid "Can't create preferences directories since asprintf failed\n"
 msgstr ""
 
-#: src/settings.c:1115
+#: src/settings.c:1116
 #, c-format
 msgid "Can't create preferences directories since ecore_file_mkpath failed\n"
 msgstr ""
 
-#: src/settings.c:1126
+#: src/settings.c:1127
 #, c-format
 msgid "Not enough memory to define conf.eet path"
 msgstr ""
 
-#: src/settings.c:1132
+#: src/settings.c:1133
 #, c-format
 msgid "Couldn't run eet_init()"
 msgstr ""
 
-#: src/settings.c:1139
+#: src/settings.c:1140
 #, c-format
 msgid "Can't create %s"
 msgstr ""
 
-#: src/settings.c:1147
+#: src/settings.c:1148
 #, c-format
 msgid "Can't setup settings_edd."
 msgstr ""
 
-#: src/settings.c:1164
+#: src/settings.c:1165
 #, c-format
 msgid ""
 "Not enough memory for settings, no doubt for anything else either, surely..."
 msgstr ""
-
-#~ msgid "HTTP Error"
-#~ msgstr "HTTP Fehler"
-
-#~ msgid "%s failed with HTTP Response %ld"
-#~ msgstr "%s scheiterte mit der HTTP Antwort %ld"
-
-#~ msgid ""
-#~ "Error setting key %s = %s: %s\n"
-#~ ")"
-#~ msgstr ""
-#~ "Fehler beim Setzen des Schlüssels %s = %s: %s\n"
-#~ ")"
-
-#, fuzzy
-#~ msgid "Open this url"
-#~ msgstr "Diese URL laden?"
-
-#~ msgid "CURL Error"
-#~ msgstr "CURL Fehler"
-
-#~ msgid ""
-#~ "No current account?\n"
-#~ "This should NOT happen unless it's your first time running this program!\n"
-#~ msgstr ""
-#~ "Kein aktuelles Konto?\n"
-#~ "Das sollte NICHT passieren, außer beim ersten Start des Programmes! \n"
-
-#~ msgid "Error getting current account: %s\n"
-#~ msgstr "Fehler beim holen des aktuellen Kontos: %s\n"
-
-#~ msgid "Error on g_regex_new: %s\n"
-#~ msgstr "Fehler in g_regex_new: %s\n"
-
-#~ msgid "Error getting accounts: %s\n"
-#~ msgstr "Fehler beim Holen des Kontos: %s\n"
-
-#~ msgid "Load url"
-#~ msgstr "URL laden"
-
-#~ msgid "Load url?"
-#~ msgstr "URL laden?"
-
-#~ msgid "No"
-#~ msgstr "Nein"
-
-#~ msgid "Yes"
-#~ msgstr "Ja"
-
-#~ msgid "%s, at %s, said:"
-#~ msgstr "%s, sagte um %s:"
-
-#~ msgid "Error gconf_client_set_list: %s\n"
-#~ msgstr "Fehler in gconf_client_set_list: %s\n"
-
-#~ msgid "Error gconf_client_set_string %s: %s\n"
-#~ msgstr "Fehler in gconf_client_set_string %s: %s\n"
-
-#~ msgid "Error gconf_client_set_string /apps/elmdentica/current_account: %s\n"
-#~ msgstr ""
-#~ "Fehler in gconf_client_set_string /apps/elmdentica/current_account: %s\n"
-
-#~ msgid "Selected: %s => %s\n"
-#~ msgstr "Ausgewählt: %s => %s\n"
-
-#~ msgid "DomainData"
-#~ msgstr "DomainDaten"
-
-#, fuzzy
-#~ msgid "Domain details..."
-#~ msgstr "Domain Details..."
-
-#~ msgid "API web root"
-#~ msgstr "Web root API"
-
-#~ msgid "UserData"
-#~ msgstr "BenutzerDaten"
-
-#~ msgid "User details..."
-#~ msgstr "Benutzerdetails..."
-
-#~ msgid "Registered domains"
-#~ msgstr "Registrierte Domains"
-
-#~ msgid "Error unsetting %s: %s\n"
-#~ msgstr "Fehler beim löschen von %s: %s\n"
-
-#~ msgid "Domains..."
-#~ msgstr "Domains..."
-
-#~ msgid "Domains"
-#~ msgstr "Domains"
