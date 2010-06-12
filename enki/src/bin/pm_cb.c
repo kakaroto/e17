@@ -789,6 +789,7 @@ void flickr_photo_notuptodate_cb(void *data, Enlil_Photo *photo)
 void flickr_photo_uptodate_cb(void *data, Enlil_Photo *photo)
 {
    Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+   ASSERT_RETURN_VOID(photo_data != NULL);
    photo_data->flickr_sync.state = PHOTO_FLICKR_NONE;
 
    Evas_Object *o = (Evas_Object *)photos_list_object_item_object_get(photo_data->list_photo_item);

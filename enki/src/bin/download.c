@@ -105,8 +105,10 @@ static void _done_cb(void *data, Enlil_Photo *photo, int status)
 
         photos_list_object_header_update(album_data->list_photo_item);
 
-        album_data->flickr_sync.is_currently_downloading_photos = EINA_FALSE;
-        evas_object_hide(album_data->flickr_sync.inwin.pb_is_currently_downloading_photos);
+        album_data->flickr_sync.inwin.notinlocal.is_updating = EINA_FALSE;
+        elm_pager_content_promote(album_data->flickr_sync.inwin.notinlocal.pager, 
+                album_data->flickr_sync.inwin.notinlocal.pb);
+        elm_progressbar_pulse(album_data->flickr_sync.inwin.notinlocal.pb, EINA_FALSE);
 
         enlil_flickr_job_sync_album_photos_append(album,
                 flickr_photo_new_cb,

@@ -116,7 +116,27 @@ struct enlil_album_data
 	     Evas_Object *win;
 	     Evas_Object *pb;
 
-	     Evas_Object *pb_is_currently_downloading_photos;
+	     struct {
+		  Evas_Object *pager;
+		  Evas_Object *bt;
+		  Evas_Object *pb;
+		  Eina_Bool is_updating;
+	     } notinlocal;
+
+	     struct {
+		  Evas_Object *pager;
+		  Evas_Object *bt;
+		  Evas_Object *pb;
+		  Eina_Bool is_updating;
+	     } notinflickr;
+
+	     struct {
+		  Evas_Object *pager;
+		  Evas_Object *bt;
+		  Evas_Object *pb;
+		  Eina_Bool is_updating;
+	     } flickrupdate;
+
 
 
 	     Evas_Object *tb;
@@ -130,7 +150,6 @@ struct enlil_album_data
 	     Evas_Object *bt6;
 	  } inwin;
 
-	Eina_Bool is_currently_downloading_photos;
 	Eina_List *jobs; // list of Enlil_Flickr_Job*
      } flickr_sync;
 };
