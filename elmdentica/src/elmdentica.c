@@ -305,6 +305,8 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 		hover = evas_object_name_find(e, "hover_actions");
 		if(hover) evas_object_del(hover);
 	}
+
+	evas_object_show(hv);
 }
 
 static void on_reply(void *data, Evas_Object *obj, void *event_info) {
@@ -330,6 +332,8 @@ static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 		hover = evas_object_name_find(e, "hover_actions");
 		if(hover) evas_object_del(hover);
 	}
+
+	evas_object_show(hv);
 }
 
 
@@ -1228,7 +1232,6 @@ static void on_post_clear(void *data, Evas_Object *obj, void *event_info) {
 }
 
 static void on_post(void *data, Evas_Object *obj, void *event_info) {
-	Evas_Object *hv = data;
 	char *query = NULL, *db_err=NULL;
 	int sqlite_res = 0;
 
@@ -1246,8 +1249,6 @@ static void on_post(void *data, Evas_Object *obj, void *event_info) {
 }
 
 static void on_post_hv(void *data, Evas_Object *obj, void *event_info) {
-	Evas_Object *hv = data;
-
 	evas_object_show(hv);
 }
 
@@ -1386,10 +1387,10 @@ EAPI int elm_main(int argc, char **argv)
 			elm_hoversel_label_set(bt, _("Timeline"));
 			elm_hoversel_icon_set(bt, icon);
 			
-			elm_hoversel_item_add(bt, _("Friends & I"), NULL, ELM_ICON_NONE, on_timeline_friends_reload, NULL);
-			elm_hoversel_item_add(bt, _("Favorites"), NULL, ELM_ICON_NONE, on_timeline_favorites_reload, NULL);
 			elm_hoversel_item_add(bt, _("Everyone"), NULL, ELM_ICON_NONE, on_timeline_public_reload, NULL);
 			elm_hoversel_item_add(bt, _("Just me"), NULL, ELM_ICON_NONE, on_timeline_user_reload, NULL);
+			elm_hoversel_item_add(bt, _("Favorites"), NULL, ELM_ICON_NONE, on_timeline_favorites_reload, NULL);
+			elm_hoversel_item_add(bt, _("Friends & I"), NULL, ELM_ICON_NONE, on_timeline_friends_reload, NULL);
 			
 			elm_hoversel_hover_end(bt);
 
@@ -1410,7 +1411,7 @@ EAPI int elm_main(int argc, char **argv)
 			evas_object_size_hint_align_set(bt, -1, 0);
 			elm_button_label_set(bt, _("Post"));
 			elm_button_icon_set(bt, icon);
-			evas_object_smart_callback_add(bt, "clicked", on_post_hv, hv);
+			evas_object_smart_callback_add(bt, "clicked", on_post_hv, NULL);
 		elm_box_pack_end(toolbar, bt);
 		evas_object_show(bt);
 
