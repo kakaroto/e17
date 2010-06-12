@@ -1,3 +1,7 @@
+2010-06-12  release 0.9.9
+	* Reorder UI for bottom posting and get more screen used for the messages list
+	* Fix a couple of common crasher bugs
+
 2010-??-??  release 0.9.0
 	* Zoom avatars when pressing avatar icon for about 1s
 	* Better url and browser handling

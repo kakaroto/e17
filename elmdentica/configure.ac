@@ -1,6 +1,6 @@
 AC_PREREQ(2.53)
-AC_INIT(elmdentica, 0.9.0, http://code.google.com/p/elmdentica/)
-AM_INIT_AUTOMAKE(elmdentica, 0.9.0)
+AC_INIT(elmdentica, 0.9.9, http://code.google.com/p/elmdentica/)
+AM_INIT_AUTOMAKE(elmdentica, 0.9.9)
 AC_CONFIG_SRCDIR(src/)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
