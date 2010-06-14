@@ -400,6 +400,9 @@ cdef extern from "Evas.h":
         Evas_Event_Flags event_flags
         Evas_Device *dev
 
+    ctypedef struct Evas_Object_Box_Option:
+        Evas_Object *obj
+
 
     ####################################################################
     # Other typedefs
@@ -852,6 +855,20 @@ cdef extern from "Evas.h":
     void evas_object_textblock_size_formatted_get(Evas_Object *obj, Evas_Coord *w, Evas_Coord *h)
     void evas_object_textblock_size_native_get(Evas_Object *obj, Evas_Coord *w, Evas_Coord *h)
     void evas_object_textblock_style_insets_get(Evas_Object *obj, Evas_Coord *l, Evas_Coord *r, Evas_Coord *t, Evas_Coord *b)
+
+    ####################################################################
+    # Box Object
+    #
+    Evas_Object *evas_object_box_add(Evas *e)
+    Evas_Object *evas_object_box_add_to(Evas_Object *parent)
+    Evas_Object_Box_Option *evas_object_box_append(Evas_Object *o, Evas_Object *child)
+    Evas_Object_Box_Option *evas_object_box_prepend(Evas_Object *o, Evas_Object *child)
+    Evas_Object_Box_Option *evas_object_box_insert_before(Evas_Object *o, Evas_Object *child, Evas_Object *reference)
+    Evas_Object_Box_Option *evas_object_box_insert_after(Evas_Object *o, Evas_Object *child, Evas_Object *reference)
+    Evas_Object_Box_Option *evas_object_box_insert_at(Evas_Object *o, Evas_Object *child, unsigned int pos)
+    Eina_Bool evas_object_box_remove(Evas_Object *o, Evas_Object *child)
+    Eina_Bool evas_object_box_remove_at(Evas_Object *o, unsigned int pos)
+    Eina_Bool evas_object_box_remove_all(Evas_Object *o, Eina_Bool clear)
 
 cdef extern from "evas/evas_object_image_python_extras.h":
     ctypedef enum Evas_Object_Image_Rotation:
