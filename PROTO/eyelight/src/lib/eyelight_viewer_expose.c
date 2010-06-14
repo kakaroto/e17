@@ -94,86 +94,129 @@ _image_resize_func(void *data, Evas *e, Evas_Object *obj, void *event_info)
     evas_object_image_fill_set(obj, 0, 0, tw, th);
 }
 
+typedef struct _Eyelight_Viewer_Expose Eyelight_Viewer_Expose;
+struct _Eyelight_Viewer_Expose
+{
+   Evas_Object *obj;
+   const char target[30];
+};
+
+static int
+_eyelight_viewer_show(void *data)
+{
+   Eyelight_Viewer_Expose *msg;
+
+   msg = data;
+
+   edje_object_signal_emit(msg->obj, msg->target, "eyelight");
+
+   free(msg);
+
+   return 0;
+}
+
+static void
+_image_load_func(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   ecore_idler_add(_eyelight_viewer_show, data);
+}
+
 void _eyelight_viewer_expose_slides_load(Eyelight_Viewer* pres)
 {
+    Evas_Object *o_image;
+    int w_body, h_body, x_body, y_body;
     int i;
-
+    int dec;
+    int w, h;
+    int pos_x, pos_y;
     int first_slide = pres->expose_first_slide;
     int nb_cols = pres->expose_nb_cols;
     int nb_lines = pres->expose_nb_lines;
     int nb_slides = nb_lines * nb_cols;
+    char msg[EYELIGHT_BUFLEN];
+    char at[22];
 
-    pres->expose_image_thumbnails = calloc(nb_slides,sizeof(Evas_Object*));
+    pres->expose_image_thumbnails = calloc(nb_slides, sizeof(Evas_Object*));
 
-    Evas_Object *o_image;
+    edje_object_part_geometry_get(pres->expose_background, "body", &x_body, &y_body, &w_body, &h_body);
 
-    int w_body, h_body, x_body, y_body;
+    w = (w_body-(nb_cols+1))/nb_cols;
+    h = (h_body-(nb_lines+1))/nb_lines;
 
-    edje_object_part_geometry_get(pres->expose_background,"body",&x_body,&y_body,&w_body,&h_body);
-
-    int w = (w_body-(nb_cols+1))/nb_cols;
-    int h = (h_body-(nb_lines+1))/nb_lines;
-
-    for(i=0;i<nb_slides;i++)
+    for (i=0; i < nb_slides; i++)
     {
-        int pos_y = i/nb_cols;
-        int pos_x = i%nb_cols;
-        char buf[EYELIGHT_BUFLEN];
+        pos_y = i/nb_cols;
+        pos_x = i%nb_cols;
 
-        if(i+first_slide>=pres->size)
+	dec = eina_convert_itoa(pos_y, at);
+	at[dec] = '_';
+	eina_convert_itoa(pos_x, at + dec + 1);
+
+	strcpy(msg, "hide,");
+	strcat(msg, at);
+	edje_object_signal_emit(pres->expose_background, msg, "eyelight");
+
+	strcpy(msg, "expose,slide,unselect,");
+	strcat(msg, at);
+	edje_object_signal_emit(pres->expose_background, msg, "eyelight");
+
+	if(i+first_slide < pres->size)
         {
-            snprintf(buf,EYELIGHT_BUFLEN, "hide,%d_%d",pos_y,pos_x);
-            edje_object_signal_emit(
-                    pres->expose_background,
-                    buf,"eyelight");
-        }
-        else
-        {
+	   const Eyelight_Thumb* thumb;
+	   Eyelight_Viewer_Expose *delay;
+
 	   /* FIXME: Cleanup required, sharing more code with eyelight_viewer_slideshow.c */
 	   /* FIXME: Should be possible to do this asynchronously. */
-            snprintf(buf,EYELIGHT_BUFLEN,"object.swallow_%d_%d",pos_y,pos_x);
-            const Eyelight_Thumb* thumb = eyelight_viewer_thumbnails_get(pres,i+first_slide);
+	   thumb = eyelight_viewer_thumbnails_get(pres, i + first_slide);
 
-            o_image = evas_object_image_add(pres->evas);
-            pres->expose_image_thumbnails[i] = o_image;
-            evas_object_color_set(o_image,255,255,255,255);
+	   o_image = evas_object_image_add(pres->evas);
+	   pres->expose_image_thumbnails[i] = o_image;
+	   evas_object_color_set(o_image,255,255,255,255);
 
-	    if (thumb->thumb)
-	      {
-		 evas_object_image_size_set(o_image, thumb->w, thumb->h);
-		 evas_object_image_data_set(o_image,thumb->thumb);
-		 evas_object_image_filled_set(o_image,1);
-	      }
-	    else
-	      {
-		 char key[256];
+	   /* FIXME: should keep track of them, if we destroy the current expose stuff */
+	   /* Displaying an image will only occur when the CPU idle */
+	   delay = malloc(sizeof (Eyelight_Viewer_Expose));
+	   delay->obj = pres->expose_background;
 
-		 snprintf(key, sizeof (key), "eyelight/thumb/%i", thumb->pos);
-		 evas_object_image_file_set(o_image, pres->dump_in, key);
-		 evas_object_event_callback_add(o_image, EVAS_CALLBACK_RESIZE, _image_resize_func, NULL);
-	      }
+	   strcpy(delay->target, "show,");
+	   strcat(delay->target, at);
 
-            evas_object_show(o_image);
-            edje_object_part_swallow(pres->expose_background,buf,o_image);
+	   if (thumb->thumb)
+	     {
+		evas_object_image_size_set(o_image, thumb->w, thumb->h);
+		evas_object_image_data_set(o_image,thumb->thumb);
+		evas_object_image_filled_set(o_image,1);
 
-            snprintf(buf,EYELIGHT_BUFLEN,"show,%d_%d",pos_y,pos_x);
-            edje_object_signal_emit(pres->expose_background,buf,"eyelight");
+		ecore_idler_add(_eyelight_viewer_show, delay);
+	     }
+	   else
+	     {
+		char key[256];
 
-            snprintf(buf,EYELIGHT_BUFLEN, "expose,slide,unselect,%d_%d",pos_y,pos_x);
-            edje_object_signal_emit(
-                    pres->expose_background,
-                    buf,"eyelight");
+		snprintf(key, sizeof (key), "eyelight/thumb/%i", thumb->pos);
+		evas_object_image_file_set(o_image, pres->dump_in, key);
+		evas_object_event_callback_add(o_image, EVAS_CALLBACK_RESIZE, _image_resize_func, NULL);
+		evas_object_event_callback_add(o_image, EVAS_CALLBACK_IMAGE_PRELOADED, _image_load_func, delay);
+		evas_object_image_preload(o_image, EINA_FALSE);
+	     }
+
+	   strcpy(msg, "object.swallow_");
+	   strcat(msg, at);
+	   edje_object_part_swallow(pres->expose_background, msg, o_image);
         }
     }
 
     //select the current slide
-    char buf[EYELIGHT_BUFLEN];
-    int pos_x = pres->expose_current % pres->expose_nb_cols;
-    int pos_y = pres->expose_current / pres->expose_nb_cols;
-    snprintf(buf,EYELIGHT_BUFLEN, "expose,slide,select,%d_%d",pos_y,pos_x);
-    edje_object_signal_emit(
-            pres->expose_background,
-            buf,"eyelight");
+    pos_x = pres->expose_current % pres->expose_nb_cols;
+    pos_y = pres->expose_current / pres->expose_nb_cols;
+
+    dec = eina_convert_itoa(pos_y, at);
+    at[dec] = '_';
+    eina_convert_itoa(pos_x, at + dec + 1);
+
+    strcpy(msg, "expose,slide,select,");
+    strcat(msg, at);
+    edje_object_signal_emit(pres->expose_background, msg, "eyelight");
 
     eyelight_viewer_thumbnails_clean(pres, first_slide, first_slide+nb_slides);
 }

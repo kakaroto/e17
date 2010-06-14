@@ -48,7 +48,7 @@ h	- add client library
 
 * Eyelight
 	- write own layout function
-	- fix expose and thumbnail display to be fully async
+h	- fix expose and thumbnail display to be fully async
 
 h: half done
 d: done
