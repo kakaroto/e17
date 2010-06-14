@@ -861,11 +861,18 @@ cdef extern from "Evas.h":
     #
     Evas_Object *evas_object_box_add(Evas *e)
     Evas_Object *evas_object_box_add_to(Evas_Object *parent)
+
+    void evas_object_box_align_set(Evas_Object  *o, double horizontal, double vertical)
+    void evas_object_box_align_get(Evas_Object *o, double *horizontal, double *vertical)
+    void evas_object_box_padding_set(Evas_Object *o, Evas_Coord horizontal, Evas_Coord vertical)
+    void evas_object_box_padding_get(Evas_Object *o, Evas_Coord *horizontal, Evas_Coord *vertical)
+
     Evas_Object_Box_Option *evas_object_box_append(Evas_Object *o, Evas_Object *child)
     Evas_Object_Box_Option *evas_object_box_prepend(Evas_Object *o, Evas_Object *child)
     Evas_Object_Box_Option *evas_object_box_insert_before(Evas_Object *o, Evas_Object *child, Evas_Object *reference)
     Evas_Object_Box_Option *evas_object_box_insert_after(Evas_Object *o, Evas_Object *child, Evas_Object *reference)
     Evas_Object_Box_Option *evas_object_box_insert_at(Evas_Object *o, Evas_Object *child, unsigned int pos)
+
     Eina_Bool evas_object_box_remove(Evas_Object *o, Evas_Object *child)
     Eina_Bool evas_object_box_remove_at(Evas_Object *o, unsigned int pos)
     Eina_Bool evas_object_box_remove_all(Evas_Object *o, Eina_Bool clear)

@@ -27,7 +27,7 @@ cdef public class Box(Object) [object PyEvasBox, type PyEvasBox_Type]:
         if self.obj == NULL:
             self._set_obj(evas_object_box_add(self.evas.obj))
 
-    def align_get(self)
+    def align_get(self):
         cdef double horizontal, vertical
         evas_object_box_align_get(self.obj, &horizontal, &vertical)
         return (horizontal, vertical)
@@ -39,10 +39,11 @@ cdef public class Box(Object) [object PyEvasBox, type PyEvasBox_Type]:
         def __get__(self):
             return self.align_get()
 
-        def __set__(self, horizontal, vertical):
-            self.align_set(self.obj, horizontal, vertical)
+        def __set__(self, v):
+            (horizontal, vertical) = v
+            self.align_set(horizontal, vertical)
 
-    def padding_get(self)
+    def padding_get(self):
         cdef Evas_Coord horizontal, vertical
         evas_object_box_padding_get(self.obj, &horizontal, &vertical)
         return (horizontal, vertical)
@@ -54,8 +55,9 @@ cdef public class Box(Object) [object PyEvasBox, type PyEvasBox_Type]:
         def __get__(self):
             return self.padding_get()
 
-        def __set__(self, horizontal, vertical):
-            self.padding_set(self.obj, horizontal, vertical)
+        def __set__(self, v):
+            (horizontal, vertical) = v
+            self.padding_set(horizontal, vertical)
 
     def append(self, Object child):
         evas_object_box_append(self.obj, child.obj)
@@ -83,4 +85,4 @@ cdef public class Box(Object) [object PyEvasBox, type PyEvasBox_Type]:
 
 cdef extern from "Evas.h": # hack to force type to be known
     cdef PyTypeObject PyEvasBox_Type # hack to install metaclass
-    _install_metaclass(&PyEvasBox_Type, EvasObjectMeta)
+_install_metaclass(&PyEvasBox_Type, EvasObjectMeta)
