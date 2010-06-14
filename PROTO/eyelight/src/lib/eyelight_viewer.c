@@ -42,11 +42,11 @@ int eyelight_init()
 	goto shutdown_eina;
     }
 
-    if (!ecore_evas_init())
-	goto shutdown_eina;
-
     if (!edje_init())
 	goto shutdown_ecore_evas;
+
+    if (!ecore_evas_init())
+	goto shutdown_eina;
 
     return _eyelight_init_count;
 
@@ -63,8 +63,8 @@ int eyelight_shutdown()
     if (--_eyelight_init_count != 0)
         return _eyelight_init_count;
 
-    edje_shutdown();
     ecore_evas_shutdown();
+    edje_shutdown();
     eina_log_domain_unregister(_eyelight_log_dom_global);
     _eyelight_log_dom_global = -1;
     eina_shutdown();

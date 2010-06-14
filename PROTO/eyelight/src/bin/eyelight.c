@@ -416,9 +416,9 @@ int main(int argc, char*argv[])
     Ecore_Getopt_Value values[] = {
         ECORE_GETOPT_VALUE_STR(presentation),
         ECORE_GETOPT_VALUE_STR(theme),
+        ECORE_GETOPT_VALUE_STR(engine),
 	ECORE_GETOPT_VALUE_STR(dump_out),
 	ECORE_GETOPT_VALUE_STR(dump_in),
-        ECORE_GETOPT_VALUE_STR(engine),
         ECORE_GETOPT_VALUE_BOOL(engines_listed),
         ECORE_GETOPT_VALUE_BOOL(with_border),
         ECORE_GETOPT_VALUE_BOOL(no_thumbs_bg),
