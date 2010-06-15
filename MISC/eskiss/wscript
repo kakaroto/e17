@@ -23,7 +23,7 @@ def configure(conf):
         conf.check_cfg(package='eina-0', atleast_version='0.9.9.063', args='--cflags --libs', mandatory=True)
         conf.check_cfg(package='ecore', atleast_version='0.9.9.063', args='--cflags --libs', mandatory=True)
         conf.check_cfg(package='evas', atleast_version='0.9.9.063', args='--cflags --libs', mandatory=True)
-        conf.check_cfg(package='edje', atleast_version='0.9.93.063', args='--cflags --libs', mandatory=True)
+        conf.check_cfg(package='edje', atleast_version='0.9.9.063', args='--cflags --libs', mandatory=True)
         conf.check_cfg(package='ecore-evas', atleast_version='0.9.9.063', args='--cflags --libs', mandatory=True)
         conf.check_cfg(package='ecore-file', atleast_version='0.9.9.063', args='--cflags --libs', mandatory=True)
 
