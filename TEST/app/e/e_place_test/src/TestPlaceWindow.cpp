@@ -23,7 +23,7 @@ TestPlaceWindow::TestPlaceWindow (Border border, const std::string &helpImageNam
       break;
 
     case Right:
-      xpos = xres - winWidth / 2;
+      xpos = xres - winWidth;
       ypos = yres / 2 - winHeight / 2;
       break;
 
