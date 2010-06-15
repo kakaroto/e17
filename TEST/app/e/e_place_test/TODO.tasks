@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<gtodo>
+  <category title="Features" place="0">
+    <item>
+      <attribute id="1276635144" priority="1" done="0" start_date="733938" enddate="99999999" notify="0" endtime="-60" last_edited="1276635144"/>
+      <summary>Popup Test</summary>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1276635152" priority="1" done="0" start_date="733938" enddate="99999999" notify="0" endtime="-60" last_edited="1276635152"/>
+      <summary>Dialog Test</summary>
+      <comment></comment>
+    </item>
+  </category>
+  <category title="Bugs" place="1"/>
+</gtodo>
