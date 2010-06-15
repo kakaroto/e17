@@ -68,6 +68,7 @@ PKG_CHECK_MODULES(E_PLACE_TEST, [gtkmm-2.4 >= 2.8 libglademm-2.4 >= 2.6    ])
 
 AC_OUTPUT([
 Makefile
+pixmaps/Makefile
 src/Makefile
 
 ])

@@ -1,7 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 ## Created by Anjuta
 
-SUBDIRS = src 
+SUBDIRS = src \
+	pixmaps
 
 e_place_testdocdir = ${prefix}/doc/e_place_test
 e_place_testdoc_DATA = \
