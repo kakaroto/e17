@@ -141,6 +141,15 @@ cdef extern from "Edje_Edit.h":
     void edje_edit_part_drag_confine_set(evas.c_evas.Evas_Object *obj, char *part, char *confine)
     char* edje_edit_part_drag_event_get(evas.c_evas.Evas_Object *obj, char *part)
     void edje_edit_part_drag_event_set(evas.c_evas.Evas_Object *obj, char *part, char *event)
+    char* edje_edit_part_api_name_get(evas.c_evas.Evas_Object *obj, char *part)
+    char* edje_edit_part_api_description_get(evas.c_evas.Evas_Object *obj, char *part)
+    evas.c_evas.Eina_Bool edje_edit_part_api_name_set(evas.c_evas.Evas_Object *obj, char *part, char *name)
+    evas.c_evas.Eina_Bool edje_edit_part_api_description_set(evas.c_evas.Evas_Object *obj, char *part, char *description)
+    char* edje_edit_program_api_name_get(evas.c_evas.Evas_Object *obj, char *part)
+    char* edje_edit_program_api_description_get(evas.c_evas.Evas_Object *obj, char *part)
+    evas.c_evas.Eina_Bool edje_edit_program_api_name_set(evas.c_evas.Evas_Object *obj, char *part, char *name)
+    evas.c_evas.Eina_Bool edje_edit_program_api_description_set(evas.c_evas.Evas_Object *obj, char *part, char *description)
+
 
     # STATES API
     evas.c_evas.Eina_List * edje_edit_part_states_list_get(evas.c_evas.Evas_Object *obj, char *part)

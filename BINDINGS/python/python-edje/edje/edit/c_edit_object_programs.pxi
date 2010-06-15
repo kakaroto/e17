@@ -178,3 +178,35 @@ cdef class Program:
     def transition_time_set(self, double t):
         return bool(edje_edit_program_transition_time_set(self.edje.obj,
                                                           self.name, t))
+
+    property api:
+        def __get__(self):
+            cdef char *name
+            cdef char *description
+            name = edje_edit_program_api_name_get(self.edje.obj, self.name)
+            description = edje_edit_program_api_description_get(self.edje.obj, self.name)
+            n, d = None, None
+
+            if name:
+               n = name
+            if description:
+               d = description
+
+            edje_edit_string_free(name)
+            edje_edit_string_free(description)
+
+            return (n, d)
+
+        def __set__(self, value):
+            name, description = value
+            cdef char *n
+            cdef char *d
+            n, d = NULL, NULL
+
+            if name:
+               n = name
+            if description:
+               d = description
+
+            edje_edit_program_api_description_set(self.edje.obj, self.name, d)
+            edje_edit_program_api_name_set(self.edje.obj, self.name, n)
