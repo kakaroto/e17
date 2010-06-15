@@ -2,14 +2,26 @@
 <gtodo>
   <category title="Features" place="0">
     <item>
-      <attribute id="1276635144" priority="1" done="0" start_date="733938" enddate="99999999" notify="0" endtime="-60" last_edited="1276635144"/>
-      <summary>Popup Test</summary>
-      <comment/>
+      <attribute id="1276635152" priority="1" done="0" start_date="733938" enddate="99999999" notify="0" endtime="-60" last_edited="1276637793"/>
+      <summary>Dialog test</summary>
+      <comment>show how dialogs behave (I've seen they're special handled in the E source code)</comment>
     </item>
     <item>
-      <attribute id="1276635152" priority="1" done="0" start_date="733938" enddate="99999999" notify="0" endtime="-60" last_edited="1276635152"/>
-      <summary>Dialog Test</summary>
-      <comment></comment>
+      <attribute id="1276635144" priority="1" done="0" start_date="733938" enddate="99999999" notify="0" endtime="-60" last_edited="1276637800"/>
+      <summary>Popup test</summary>
+      <comment>not sure how popup is handled in the E source, but a test of this window type doesn't hurt...</comment>
+    </item>
+    <item>
+      <attribute id="1276637788" priority="1" done="0" start_date="733938" enddate="99999999" notify="0" endtime="-60" last_edited="1276637912"/>
+      <summary>Window resize test</summary>
+      <comment>windows like Gnome file chooser or gnome-terminal change position  if they go offscreen after changing size (e.g. details button,...) in Metacity. At least writing a test is needed as this is a cool feature. Next step is to think about implementing this in E...</comment>
+    </item>
+    <item>
+      <attribute id="1276637694" priority="1" done="0" start_date="733938" enddate="99999999" notify="0" endtime="-60" last_edited="1276637975"/>
+      <summary>Drag&amp;Drop test</summary>
+      <comment>Moving the drop mouse over a new window whould bring it in the front after some seconds.
+
+Think about Alt-Tab of taskbar support for this feature. But this is a implementation detail.</comment>
     </item>
   </category>
   <category title="Bugs" place="1"/>
