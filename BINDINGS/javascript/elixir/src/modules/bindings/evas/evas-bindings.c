@@ -357,7 +357,7 @@ _elixir_evas_object(void *data, Evas *e, Evas_Object *obj, void *event_info)
    tmp = evas_object_data_del(obj, "elixir_jsval");
    if (!tmp) return ;
 
-   cx = evas_object_event_callback_del(obj, EVAS_CALLBACK_DEL, _elixir_evas_object);
+   cx = evas_object_event_callback_del(obj, EVAS_CALLBACK_FREE, _elixir_evas_object);
 
    suspended = elixir_function_suspended(cx);
 
@@ -418,7 +418,7 @@ evas_object_to_jsval(JSContext *cx, Evas_Object *obj, jsval *rval)
 
    evas_object_data_set(obj, "elixir_jsval", tmp);
    elixir_increase_count(cx);
-   evas_object_event_callback_add(obj, EVAS_CALLBACK_DEL, _elixir_evas_object, cx);
+   evas_object_event_callback_add(obj, EVAS_CALLBACK_FREE, _elixir_evas_object, cx);
 
    return EINA_TRUE;
 }
