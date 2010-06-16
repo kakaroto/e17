@@ -184,6 +184,7 @@ class AnimationsPartsList(PartsList):
                                               self._animation_changed_cb)
         self._edit_grp.animation.callback_add("animation.unselected",
                                               self._animation_changed_cb)
+        self._blocked_parts = []
 
     def _animation_changed_cb(self, emissor, data):
         # Nasty hack
@@ -192,17 +193,24 @@ class AnimationsPartsList(PartsList):
     def _parts_update_cb(self, emissor, data):
         if not self._edit_grp.animation.name:
             self.clear()
+            self._edit_grp.animation.event_emit("parts.blocked.changed", [])
             return
 
         parts = data
         self.clear()
+        self._blocked_parts = []
+        self._edit_grp.part.name = None
         for p in parts[::-1]:
             chk = elementary.Check(self._parent)
             chk.state_set(self._edit_grp.animation.parts.get(p))
+            if not chk.state:
+                self._blocked_parts.append(p)
             chk.callback_changed_add(self._check_changed_cb, p)
             chk.show()
             self.add_full(p, end=chk)
         self.go()
+        self._edit_grp.animation.event_emit("parts.blocked.changed",
+                                            self._blocked_parts)
 
     def _part_added_cb(self, emissor, data):
         if not self._edit_grp.animation.name:
@@ -211,6 +219,9 @@ class AnimationsPartsList(PartsList):
 
         chk = elementary.Check(self._parent)
         chk.state_set(False)
+        self._blocked_parts.append(data)
+        self._edit_grp.animation.event_emit("parts.blocked.changed",
+                                            self._blocked_parts)
         chk.callback_changed_add(self._check_changed_cb, data)
         chk.show()
         self.add_full(data, end=chk)
@@ -219,6 +230,9 @@ class AnimationsPartsList(PartsList):
     def _check_changed_cb(self, obj, part):
         if obj.state:
             self._edit_grp.animation.part_add(part)
+            self._blocked_parts.remove(part)
+            self._edit_grp.animation.event_emit("parts.blocked.changed",
+                                                self._blocked_parts)
         else:
             # FIXME: Take the confirmation out of this function
             self._notification = ErrorNotify(
@@ -238,6 +252,10 @@ class AnimationsPartsList(PartsList):
     def _confirm_remove_cb(self, btn, part):
         self._edit_grp.animation.part_remove(part)
         self._notification_delete()
+        self._edit_grp.part.name = None
+        self._blocked_parts.append(part)
+        self._edit_grp.animation.event_emit("parts.blocked.changed",
+                                            self._blocked_parts)
 
     def _cancel_remove_cb(self, btn, chk):
         self._notification_delete()
@@ -246,6 +264,18 @@ class AnimationsPartsList(PartsList):
     def _notification_delete(self):
         self._notification.delete()
         self._notification = None
+
+    def _selected_cb(self, list_, list_item):
+        if not self._edit_grp.animation.name:
+            return
+
+        part_name = list_item.label_get()
+        if self._edit_grp.animation.parts.get(part_name):
+            CList._selected_cb(self, list_, list_item)
+            self._edit_grp.part.name = part_name
+        else:
+            self._edit_grp.part.name = None
+            CList._unselected_cb(self, list_, list_item)
 
 
 class NewAnimationWizard(Wizard):

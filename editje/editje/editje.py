@@ -927,6 +927,9 @@ class Editje(elementary.Window, OpenFileManager):
     # Animations
 
     def _animations_init(self):
+        self.e.animation.callback_add("parts.blocked.changed",
+                                      self._parts_block_cb)
+
         # Toolbar
         toolbar = elementary.Layout(self)
         toolbar.file_set(self.theme, "toolbar.anim")
@@ -1056,6 +1059,9 @@ class Editje(elementary.Window, OpenFileManager):
         box.pack_end(self.anim_state_details)
 
         return self._set_scrolled_contents(box)
+
+    def _parts_block_cb(self, emissor, data):
+        self.desktop.parts_block(data)
 
     # Signals
 

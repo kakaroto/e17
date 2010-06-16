@@ -176,3 +176,13 @@ class PartsManager(evas.ClippedSmartObject):
         return self._select
 
     select = property(_select_get, _select_set)
+
+    def parts_block(self, parts_list):
+        for part in parts_list:
+            part_obj = self.parts[part]
+            viewport = self.viewports[part_obj]
+            viewport.hide()
+
+    def parts_unblock(self):
+        for viewport in self.viewports.values():
+            viewport.show()

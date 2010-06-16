@@ -82,6 +82,10 @@ class Desktop(Controller):
     def _rel2_load(self, emissor, data):
         self._view.part_rel2_set(data)
 
+    def parts_block(self, parts_list=[]):
+        self._view.manager.parts_manager.parts_unblock()
+        self._view.manager.parts_manager.parts_block(parts_list)
+
 
 class DesktopView(View, elementary.Scroller):
     def __init__(self, controller, parent_view, op_stack_cb):
