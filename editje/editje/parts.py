@@ -133,24 +133,32 @@ class PartsList(CList):
             workfile_name_get_cb=self._workfile_name_get_cb)
         new_part_wiz.open()
 
+    def _restack_above(self, part_name):
+        self._context_recall(part=part_name)
+        return self._edit_grp.part.restack_above()
+
+    def _restack_below(self, part_name):
+        self._context_recall(part=part_name)
+        return self._edit_grp.part.restack_below()
+
     def _up_cb(self, obj, emission, source):
-        r = self._edit_grp.part.restack_above()
+        r = self._restack_above(self._edit_grp.part.name)
         if not r:
             return
 
         op = Operation("part re-stacking (above)")
-        op.redo_callback_add(self._edit_grp.part.restack_above)
-        op.undo_callback_add(self._edit_grp.part.restack_below)
+        op.redo_callback_add(self._restack_above, self._edit_grp.part.name)
+        op.undo_callback_add(self._restack_above, self._edit_grp.part.name)
         self._operation_stack_cb(op)
 
     def _down_cb(self, obj, emission, source):
-        r = self._edit_grp.part.restack_below()
+        r = self._restack_below(self._edit_grp.part.name)
         if not r:
             return
 
         op = Operation("part re-stacking (below)")
-        op.redo_callback_add(self._edit_grp.part.restack_below)
-        op.undo_callback_add(self._edit_grp.part.restack_above)
+        op.redo_callback_add(self._restack_below, self._edit_grp.part.name)
+        op.undo_callback_add(self._restack_above, self._edit_grp.part.name)
         self._operation_stack_cb(op)
 
     def _remove_cb(self, obj, emission, source):
@@ -264,6 +272,12 @@ class PartsList(CList):
             op.undo_callback_add(sigs_restore, part_name, sigs_save)
 
             self._operation_stack_cb(op)
+
+    def _context_recall(self, **kargs):
+        if "part" in kargs:
+            self._edit_grp.part.name = kargs["part"]
+            if "state" in kargs:
+                self._edit_grp.part.state.name = kargs["state"]
 
 
 class ExternalSelector(elementary.Box):
