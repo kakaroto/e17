@@ -9,6 +9,7 @@ animations.py \
 clist.py \
 collapsable.py \
 colorpicker.py \
+command_handler.py \
 controller.py \
 desktop.py \
 desktop_handler.py \
@@ -23,13 +24,13 @@ details_widget.py \
 details_widget_actionslist.py \
 details_widget_boolean.py \
 details_widget_button.py \
+details_widget_button_list.py \
 details_widget_color.py \
 details_widget_combo.py \
 details_widget_entry.py \
 details_widget_entry_button.py \
 details_widget_entry_button_list.py \
 details_widget_font.py \
-details_widget_button_list.py \
 details_widget_signals.py \
 details_widget_source.py \
 details_widget_states.py \

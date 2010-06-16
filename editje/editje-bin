@@ -30,57 +30,78 @@ import editje.swapfile as swapfile
 from editje.popup_win import PopupWindow
 
 version = 0.9  # remember to bump when needed
-vtext = "%prog" + str(version)
-usage = "usage: %prog [file[:group]]"
+vtext = "editje " + str(version)
+usage = "usage: %prog [FILE [GROUP]]\n" + \
+    "   or: %prog -s [-p PORT] FILE GROUP"
+
 parser = OptionParser(usage=usage, version=vtext)
+parser.add_option(
+    "-s", "--slave-mode", action="store_true", dest="slave", default=False,
+    help="open editor in slave mode")
+parser.add_option(
+    "-p", "--port", dest="port", type="int", default=8000,
+    help="listening port number, for slave mode (default is 8000)")
+
+file_re = re.compile(r"(.*\.ed[cj])$")
+group_re = re.compile(r"([a-zA-Z0-9_]+)$")
 
 
-def cancel(bt, pop):
+def file_and_group_parse(file_, grp):
+    r = file_re.match(file_)
+    if not r:
+        #FIXME: do we really want to barf for non ".*\.ed[cj]"
+        #file names? Maybe to document it in the usage string,
+        #then
+        parser.error("wrong format for FILE argument")
+
+    f = r.group(0)
+
+    if not grp:
+        return [f, ""]
+
+    r = group_re.match(grp)
+    if not r:
+        parser.error("wrong format for GROUP argument")
+
+    return [f, r.group(0)]
+
+
+def open_editje_abort_cb(bt, pop):
     pop.hide()
     pop.delete()
 
 
-def open_swap_error(bt, data):
-    pop, option, sf, group = data
+def open_editje_on_swap_error_cb(bt, data):
+    pop, option, sf, group, slave_mode = data
     sf.open(option)
     pop.hide()
-    open_editje(sf, group)
+    open_editje_with_swap_file(sf, group, slave_mode=slave_mode)
     pop.delete()
 
 
-def open_editje(sf, group):
-    editje = Editje(sf)
+def open_editje_with_swap_file(sf, group, slave_mode=False, port=None):
+    editje = Editje(sf, slave_mode=slave_mode, port=port)
     if group and group in edje.file_collection_list(sf.workfile):
         editje.group = group
     editje.show()
 
-if __name__ == "__main__":
-    elementary.init()
-    elementary.finger_size_set(15)
-    elementary.policy_set(elementary.ELM_POLICY_QUIT,
-                          elementary.ELM_POLICY_QUIT_LAST_WINDOW_CLOSED)
 
-    filegrp_re = re.compile(r"(.*\.ed[cj])(?:\:(.*))?")
-    options, args = parser.parse_args()
-
-    if args:
-        if len(args) != 1:
-            parser.print_usage()
-            sys.exit(2)
-
-        filegrp = args[0]
-
-        try:
-            r = filegrp_re.match(filegrp)
-            if r:
-                file_, group = r.groups()
-            else:
-                file_ = filegrp
-                group = None
-            sf = swapfile.SwapFile()
+def open_editje(file_, group, slave_mode=False, port=None):
+    try:
+        sf = swapfile.SwapFile()
+        if not slave_mode and not file_:
+            sf.file = ""
+            sf.new = True
+        else:
             sf.file = os.path.realpath(file_)
-            sf.open()
-        except swapfile.CacheAlreadyExists, e:
+
+        sf.open()
+    except swapfile.CacheAlreadyExists, e:
+        if slave_mode:
+            # sticking to REPLACE action in slave mode
+            sf.open(swapfile.REPLACE)
+            open_editje_with_swap_file(sf, group, slave_mode, port)
+        else:
             pop = PopupWindow()
             pop.title = "Editje - Swap file already exists"
 
@@ -92,14 +113,18 @@ if __name__ == "__main__":
             pop.pack_end(lb)
             lb.show()
 
-            pop.action_add("Ignore Swap", open_swap_error,
-                           data=(pop, swapfile.REPLACE, sf, group))
-            pop.action_add("Recover", open_swap_error,
-                           data=(pop, swapfile.RESTORE, sf, group))
-            pop.action_add("Abort", cancel, data=pop)
-
+            pop.action_add(
+                "Ignore Swap", open_editje_on_swap_error_cb,
+                data=(pop, swapfile.REPLACE, sf, group, slave_mode))
+            pop.action_add(
+                "Recover", open_editje_on_swap_error_cb,
+                data=(pop, swapfile.RESTORE, sf, group, slave_mode))
+            pop.action_add("Abort", open_editje_abort_cb, data=pop)
             pop.show()
-        except swapfile.CompileError, e:
+    except swapfile.CompileError, e:
+        if slave_mode:
+            raise RuntimeError("compiling error")
+        else:
             pop = PopupWindow()
             pop.title = "Editje - Compiler Error"
 
@@ -108,10 +133,14 @@ if __name__ == "__main__":
             pop.pack_end(lb)
             lb.show()
 
-            pop.action_add("OK", cancel, data=pop)
-
+            pop.action_add("OK", open_editje_abort_cb, data=pop)
             pop.show()
-        except Exception, e:
+
+            return None
+    except Exception, e:
+        if slave_mode:
+            raise RuntimeError("file error")
+        else:
             pop = PopupWindow()
             pop.title = "Editje - File Error"
 
@@ -120,21 +149,43 @@ if __name__ == "__main__":
             pop.pack_end(lb)
             lb.show()
 
-            pop.action_add("OK", cancel, data=pop)
-
+            pop.action_add("OK", open_editje_abort_cb, data=pop)
             pop.show()
-        else:
-            open_editje(sf, group)
 
+            return None
     else:
-        sf = swapfile.SwapFile()
-        sf.file = ""
-        sf.new = True
-        sf.open()
+        open_editje_with_swap_file(sf, group, slave_mode, port)
 
-        editje = Editje(sf)
-        editje.group = "main"
-        editje.show()
+
+if __name__ == "__main__":
+    elementary.init()
+    elementary.finger_size_set(15)
+    elementary.policy_set(elementary.ELM_POLICY_QUIT,
+                          elementary.ELM_POLICY_QUIT_LAST_WINDOW_CLOSED)
+
+    options, args = parser.parse_args()
+    slave_mode = options.slave
+
+    if slave_mode:
+        if not args:
+            parser.error("incorrect number of arguments")
+
+        if len(args) != 2:
+            parser.error("incorrect number of arguments")
+
+        file_, group = file_and_group_parse(args[0], args[1])
+        open_editje(file_, group, slave_mode, port=options.port)
+    elif not args:
+        open_editje("", "main")
+    else:
+        if len(args) == 1:
+            file_, group = file_and_group_parse(args[0], "")
+        elif len(args) == 2:
+            file_, group = file_and_group_parse(args[0], args[1])
+        else:
+            parser.error("incorrect number of arguments")
+
+        open_editje(file_, group)
 
     elementary.run()
     elementary.shutdown()

@@ -18,6 +18,13 @@
 import re
 
 
+def part_type_to_text(type_):
+    parttypes = ['NONE', 'RECTANGLE', 'TEXT', 'IMAGE', 'SWALLOW',
+                 'TEXTBLOCK', 'GRADIENT', 'GROUP', 'BOX', 'TABLE',
+                 'EXTERNAL']
+    return parttypes[type_]
+
+
 def name_generate(suggest, list=[]):
     # Split the name and the number in end
     spliter = re.compile("((?:(?:\d+\D)*|\D)*)(\d*$)")

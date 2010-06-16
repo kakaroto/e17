@@ -31,6 +31,7 @@ from prop import Property, PropertyTable
 from filewizard import ImageSelectionWizard
 from floater_opener import FloaterListOpener
 from operation import Operation
+from misc import part_type_to_text
 
 
 class StateCopyButton(FloaterListOpener):
@@ -186,12 +187,6 @@ class PartStateDetails(EditjeDetails):
     def _part_removed(self, emissor, data):
         self.part_edje = None
         self.part_evas = None
-
-    def _part_type_to_text(self, type):
-        parttypes = ['NONE', 'RECTANGLE', 'TEXT', 'IMAGE', 'SWALLOW',
-                     'TEXTBLOCK', 'GRADIENT', 'GROUP', 'BOX', 'TABLE',
-                     'EXTERNAL']
-        return parttypes[type]
 
     def _common_props_create(self):
         prop = Property(self._parent, "min")
@@ -849,7 +844,7 @@ class PartAnimStateDetails(PartStateDetails):
         self._header_table["name"].value = self.part_edje.name
         self._header_table["name"].show_value()
         self._header_table["type"].value = \
-            self._part_type_to_text(self.part_edje.type)
+            part_type_to_text(self.part_edje.type)
         self._header_table["type"].show_value()
 
         if self.e.part.type == edje.EDJE_PART_TYPE_EXTERNAL:

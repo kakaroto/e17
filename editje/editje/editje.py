@@ -19,6 +19,7 @@ import os
 import sys
 
 import evas
+import ecore
 import edje
 import elementary
 import ecore
@@ -46,6 +47,7 @@ import swapfile
 from widgets_list import WidgetsList
 from groupselector import GroupSelectionWizard
 from operation import Operation
+from command_handler import CommandHandler
 
 from misc import name_generate, accepted_filetype
 
@@ -55,8 +57,7 @@ def debug_cb(obj, emission, source):
 
 
 class Editje(elementary.Window, OpenFileManager):
-
-    def __init__(self, swapfile, theme="default"):
+    def __init__(self, swapfile, theme="default", slave_mode=False, port=None):
         self.theme = sysconfig.theme_file_get(theme)
         elementary.theme_extension_add(self.theme)
 
@@ -78,6 +79,16 @@ class Editje(elementary.Window, OpenFileManager):
 
         self.e = Editable(self.evas, swapfile, self._mode_get)
 
+        self._child_to_close = []
+
+        self._slave_mode = slave_mode
+        if slave_mode:
+            if not self._slave_mode_init(port):
+                # TODO: find a way to quit the elm application with an error
+                # status
+                self._close()
+                return
+
         # Setup Windows Parts
         self._toolbar_static_init()
         self._desktop_init()
@@ -87,17 +98,16 @@ class Editje(elementary.Window, OpenFileManager):
 
         self._clipboard = None
 
-        self._child_to_close = []
-
-        self.main_layout.on_key_down_add(self.key_down)
+        self.main_layout.on_key_down_add(self._on_key_down_cb)
 
     def open(self, sf):
         editje = Editje(sf)
         editje.show()
 
-    def key_down(self, win, event):
+    def _on_key_down_cb(self, win, event):
         if self.mode == "Animations":
             return
+
         key = event.keyname
         alt_key = event.modifier_is_set("Alt")
         control_key = event.modifier_is_set("Control")
@@ -152,10 +162,24 @@ class Editje(elementary.Window, OpenFileManager):
         notification.action_add("Cancel", dismiss, None, notification)
         notification.show()
 
+    def _slave_mode_init(self, port):
+        try:
+            self._cmd_handler = CommandHandler(self.e, port)
+        except Exception, e:
+            print "Error on entering slave mode: %s" % str(e)
+            return False
+
+        return True
+
     def _close(self, *args):
         for i in self._child_to_close:
             i.delete()
         self.e.close()
+
+        if self._slave_mode:
+            if hasattr(self, "_cmd_handler"):
+                self._cmd_handler.delete()
+
         self.hide()
         self.delete()
 
@@ -417,6 +441,8 @@ class Editje(elementary.Window, OpenFileManager):
         self._toolbar_bt_init(self.main_edje, "redo.bt", "Redo", self._redo_cb)
         self._toolbar_bt_init(
             self.main_edje, "group.bt", "Groups", self._group_cb)
+        if self._slave_mode:
+            self.main_edje.signal_emit("group.bt,disable", "")
 
         self.main_edje.signal_emit("undo.bt,disable", "")
         self.main_edje.signal_emit("redo.bt,disable", "")

@@ -24,7 +24,7 @@ from details_widget_combo import WidgetCombo
 from details_widget_button_list import WidgetButtonList
 from prop import Property, PropertyTable
 from operation import Operation
-
+from misc import part_type_to_text
 
 class PartDetails(EditjeDetails):
     def __init__(self, parent, operation_stack_cb):
@@ -226,8 +226,8 @@ class PartDetails(EditjeDetails):
 
         self._header_table["name"].value = self.e.part.name
         self._header_table["name"].show_value()
-        type = self._part_type_to_text(self.e.part.type)
-        self._header_table["type"].value = type
+        type_ = part_type_to_text(self.e.part.type)
+        self._header_table["type"].value = type_
         self._header_table["type"].show_value()
         self._update_common_props()
 
@@ -326,9 +326,3 @@ class PartDetails(EditjeDetails):
             self["group"]["source"].value = None
             self["group"]["source"].show_value()
         self.group_show("group")
-
-    def _part_type_to_text(self, type):
-        parttypes = ['NONE', 'RECTANGLE', 'TEXT', 'IMAGE', 'SWALLOW',
-                     'TEXTBLOCK', 'GRADIENT', 'GROUP', 'BOX', 'TABLE',
-                     'EXTERNAL']
-        return parttypes[type]
