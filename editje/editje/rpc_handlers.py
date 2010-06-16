@@ -16,7 +16,9 @@
 # License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import os
-from SimpleXMLRPCServer import SimpleXMLRPCServer, SimpleXMLRPCRequestHandler
+import xmlrpclib
+from SimpleXMLRPCServer import SimpleXMLRPCServer, \
+    SimpleXMLRPCRequestHandler, Fault
 
 import edje
 import ecore
@@ -24,7 +26,7 @@ import ecore
 from misc import part_type_to_text
 
 
-class CommandHandler(object):
+class QueriesHandler(object):
     def __init__(self, edit_grp, port):
         self._server = EditjeServer(("localhost", port), edit_grp)
         self._socket_no = self._server.fileno()
@@ -48,13 +50,17 @@ class EditjeServer(SimpleXMLRPCServer):
                  requestHandler=SimpleXMLRPCRequestHandler,
                  logRequests=True, allow_none=True, encoding=None,
                  bind_and_activate=True):
-        SimpleXMLRPCServer.__init__(self, addr=addr,
-                                    requestHandler=requestHandler,
-                                    logRequests=logRequests,
-                                    allow_none=allow_none,
-                                    encoding=encoding,
-                                    bind_and_activate=bind_and_activate)
-
+        try:
+            SimpleXMLRPCServer.__init__(self, addr=addr,
+                                        requestHandler=requestHandler,
+                                        logRequests=logRequests,
+                                        allow_none=allow_none,
+                                        encoding=encoding,
+                                        bind_and_activate=bind_and_activate)
+        except Exception, e:
+            if type(e.args) is tuple and e.args[0] == 98:
+                raise SystemExit("error: port %d already in use at localhost" %
+                                 addr[1])
         self._edit_grp = edit_grp
 
     def _dispatch(self, method, params):
@@ -104,3 +110,50 @@ class EditjeServer(SimpleXMLRPCServer):
                "states": p.states}
 
         return ret
+
+
+class ReportsHandler(object):
+    def __init__(self, edit_grp, ports):
+        if not ports:
+            raise TypeError("ReportsHandler must be created with one or " +
+                            "more writing ports")
+
+        self._clients = []
+        self._edit_grp = edit_grp
+        for p in ports:
+            self._clients.append(xmlrpclib.ServerProxy(
+                    "http://localhost:" + str(p)))
+
+        self._handlers = {self._edit_grp:
+                              [("parts.changed",
+                                self._parts_changed_event_handler)]}
+
+        self._handlers_register()
+
+    def _handlers_register(self):
+        for obj, event_list in self._handlers.items():
+            for event, handler in event_list:
+                obj.callback_add(event, handler)
+
+    def _clients_call(self, method_name, *args):
+        prefix = "eclipse-efl-sdk."
+
+        for c in self._clients:
+            if args:
+                getattr(c, prefix + method_name)(*args)
+            else:
+                getattr(c, prefix + method_name)()
+
+    def _event_handlers_get(self):
+        return self._handlers
+
+    event_handlers = property(fget=_event_handlers_get)
+
+    # clients' api contract from now on
+    def parts_changed(self, parts):
+        self._clients_call("partsChanged", parts)
+
+    def _parts_changed_event_handler(self, emissor, data):
+        self.parts_changed(data)
+
+

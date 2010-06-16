@@ -47,7 +47,7 @@ import swapfile
 from widgets_list import WidgetsList
 from groupselector import GroupSelectionWizard
 from operation import Operation
-from command_handler import CommandHandler
+from rpc_handlers import QueriesHandler, ReportsHandler
 
 from misc import name_generate, accepted_filetype
 
@@ -57,7 +57,8 @@ def debug_cb(obj, emission, source):
 
 
 class Editje(elementary.Window, OpenFileManager):
-    def __init__(self, swapfile, theme="default", slave_mode=False, port=None):
+    def __init__(self, swapfile, theme="default", slave_mode=False,
+                 in_port=None, out_ports=None):
         self.theme = sysconfig.theme_file_get(theme)
         elementary.theme_extension_add(self.theme)
 
@@ -83,11 +84,11 @@ class Editje(elementary.Window, OpenFileManager):
 
         self._slave_mode = slave_mode
         if slave_mode:
-            if not self._slave_mode_init(port):
-                # TODO: find a way to quit the elm application with an error
-                # status
+            try:
+                self._slave_mode_init(in_port, out_ports)
+            except Exception, e:
                 self._close()
-                return
+                raise
 
         # Setup Windows Parts
         self._toolbar_static_init()
@@ -162,12 +163,9 @@ class Editje(elementary.Window, OpenFileManager):
         notification.action_add("Cancel", dismiss, None, notification)
         notification.show()
 
-    def _slave_mode_init(self, port):
-        try:
-            self._cmd_handler = CommandHandler(self.e, port)
-        except Exception, e:
-            print "Error on entering slave mode: %s" % str(e)
-            return False
+    def _slave_mode_init(self, in_port, out_ports):
+        self._rpc_server = QueriesHandler(self.e, in_port)
+        self._rpc_client = ReportsHandler(self.e, out_ports)
 
         return True
 
@@ -177,8 +175,8 @@ class Editje(elementary.Window, OpenFileManager):
         self.e.close()
 
         if self._slave_mode:
-            if hasattr(self, "_cmd_handler"):
-                self._cmd_handler.delete()
+            if hasattr(self, "_rpc_server"):
+                self._rpc_server.delete()
 
         self.hide()
         self.delete()

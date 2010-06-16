@@ -34,15 +34,18 @@ vtext = "editje " + str(version)
 # TODO syncronize this version number with the one shown at the
 # "about" dialog, later
 usage = "usage: %prog [FILE [GROUP]]\n" + \
-    "   or: %prog -s [-p PORT] FILE GROUP"
+    "   or: %prog -s [-i IN_PORT] -o OUT_PORT [-o OUT_PORT]... FILE GROUP"
 
 parser = OptionParser(usage=usage, version=vtext)
 parser.add_option(
     "-s", "--slave-mode", action="store_true", dest="slave", default=False,
     help="open editor in slave mode")
 parser.add_option(
-    "-p", "--port", dest="port", type="int", default=8000,
+    "-i", "--in-port", dest="in_port", type="int", default=8000,
     help="listening port number, for slave mode (default is 8000)")
+parser.add_option(
+    "-o", "--out-port", dest="out_ports", type="int", action="append",
+    help="writing port number, for slave mode (at least one must be given)")
 
 file_re = re.compile(r"(.*\.ed[cj])$")
 group_re = re.compile(r"([a-zA-Z0-9_]+)$")
@@ -81,14 +84,17 @@ def open_editje_on_swap_error_cb(bt, data):
     pop.delete()
 
 
-def open_editje_with_swap_file(sf, group, slave_mode=False, port=None):
-    editje = Editje(sf, slave_mode=slave_mode, port=port)
+def open_editje_with_swap_file(sf, group, slave_mode=False, in_port=None,
+                               out_ports=None):
+    editje = Editje(
+        sf, slave_mode=slave_mode, in_port=in_port, out_ports=out_ports)
+
     if group and group in edje.file_collection_list(sf.workfile):
         editje.group = group
     editje.show()
 
 
-def open_editje(file_, group, slave_mode=False, port=None):
+def open_editje(file_, group, slave_mode=False, in_port=None, out_ports=None):
     try:
         sf = swapfile.SwapFile()
         if not slave_mode and not file_:
@@ -102,7 +108,8 @@ def open_editje(file_, group, slave_mode=False, port=None):
         if slave_mode:
             # sticking to REPLACE action in slave mode
             sf.open(swapfile.REPLACE)
-            open_editje_with_swap_file(sf, group, slave_mode, port)
+            open_editje_with_swap_file(
+                sf, group, slave_mode, in_port, out_ports)
         else:
             pop = PopupWindow()
             pop.title = "Editje - Swap file already exists"
@@ -156,7 +163,7 @@ def open_editje(file_, group, slave_mode=False, port=None):
 
             return None
     else:
-        open_editje_with_swap_file(sf, group, slave_mode, port)
+        open_editje_with_swap_file(sf, group, slave_mode, in_port, out_ports)
 
 
 if __name__ == "__main__":
@@ -167,6 +174,9 @@ if __name__ == "__main__":
 
     options, args = parser.parse_args()
     slave_mode = options.slave
+    out_ports = options.out_ports
+
+    args_dict = {}
 
     if slave_mode:
         if not args:
@@ -175,10 +185,15 @@ if __name__ == "__main__":
         if len(args) != 2:
             parser.error("incorrect number of arguments")
 
+        if not out_ports:
+            parser.error("you must provide at least one writing port")
+
         file_, group = file_and_group_parse(args[0], args[1])
-        open_editje(file_, group, slave_mode, port=options.port)
+
+        args_list = [file_, group, slave_mode]
+        args_dict = {"in_port": options.in_port, "out_ports": out_ports}
     elif not args:
-        open_editje("", "main")
+        args_list = ["", "main"]
     else:
         if len(args) == 1:
             file_, group = file_and_group_parse(args[0], "")
@@ -187,7 +202,13 @@ if __name__ == "__main__":
         else:
             parser.error("incorrect number of arguments")
 
-        open_editje(file_, group)
+        args_list = [file_, group]
+
+    try:
+        open_editje(*args_list, **args_dict)
+    except SystemExit, e:
+        elementary.shutdown()
+        sys.exit(str(e))
 
     elementary.run()
     elementary.shutdown()

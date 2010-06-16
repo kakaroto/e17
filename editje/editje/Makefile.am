@@ -9,7 +9,7 @@ animations.py \
 clist.py \
 collapsable.py \
 colorpicker.py \
-command_handler.py \
+rpc_handlers.py \
 controller.py \
 desktop.py \
 desktop_handler.py \
