@@ -361,19 +361,16 @@ class Editable(Manager):
     parts = property(_parts_get)
 
     def _parts_init(self):
-        self.callback_add("group.changed", self._parts_load_cb)
+        self.callback_add("group.changed", self._parts_reload_cb)
         self.callback_add("part.added", self._parts_reload_cb)
         self.callback_add("part.removed", self._parts_reload_cb)
         self.part.callback_add("name.changed", self._parts_reload_cb)
 
-    def _parts_load_cb(self, emissor, data):
+    def _parts_reload_cb(self, emissor, data):
         if data:
             self.event_emit("parts.changed", self.parts)
         else:
             self.event_emit("parts.changed", [])
-
-    def _parts_reload_cb(self, emissor, data):
-        self.event_emit("parts.changed", self.parts)
 
     # TODO: externals API may change in near future
     # besides being totally annoying this use (part_add + external_add, when
