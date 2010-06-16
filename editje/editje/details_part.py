@@ -26,6 +26,7 @@ from prop import Property, PropertyTable
 from operation import Operation
 from misc import part_type_to_text
 
+
 class PartDetails(EditjeDetails):
     def __init__(self, parent, operation_stack_cb):
         EditjeDetails.__init__(
@@ -141,6 +142,18 @@ class PartDetails(EditjeDetails):
                 popup_hide_cb_list))
         self["group"].property_add(prop)
 
+        self.group_add("api")
+        prop = Property(parent, "export")
+        prop.widget_add("export", WidgetBoolean(self))
+        self["api"].property_add(prop)
+        self._prop_api_name = Property(parent, "name")
+        self._prop_api_name.widget_add("name", WidgetEntry(self))
+        self["api"].property_add(self._prop_api_name)
+        self._prop_api_description = Property(parent, "description")
+        self._prop_api_description.widget_add("description", WidgetEntry(self))
+        self["api"].property_add(self._prop_api_description)
+        self.group_hide("api")
+
         self.main_hide()
         self.group_hide("textblock")
         self.group_hide("group")
@@ -193,6 +206,8 @@ class PartDetails(EditjeDetails):
             self._prop_value_text_changed(prop_name, prop_value)
         elif group_name == "group":
             self._prop_value_group_changed(prop_name, prop_value)
+        elif group_name == "api":
+            self._prop_value_api_changed(prop_name, prop_value)
 
     def _prop_value_common_changed(self, prop, value):
         args = [["main"], [prop], [value], [None], [False], [None]]
@@ -220,6 +235,61 @@ class PartDetails(EditjeDetails):
         args = [["group"], [prop], [value], [None], [False], [None]]
         self._prop_change_do("part group source setting", *args)
 
+    def _prop_value_api_changed(self, prop, value):
+        if prop == "name":
+
+            def api_name_change(value, part_name):
+                self._context_recall(part=part_name)
+                self.e.part.api = value
+                self["api"]["name"].value = value[0]
+
+            val = [value, self.e.part.api[1]]
+            old_val = [self.e.part.api[0], val[1]]
+
+            op = Operation("part's api name change")
+            op.redo_callback_add(api_name_change, val, self.e.part.name)
+            op.undo_callback_add(api_name_change, old_val, self.e.part.name)
+            self._operation_stack_cb(op)
+            op.redo()
+
+        if prop == "description":
+
+            def api_description_change(value, part_name):
+                self._context_recall(part=part_name)
+                self.e.part.api = value
+                self["api"]["description"].value = value[1]
+
+            val = [self.e.part.api[0], value]
+            old_val = [val[0], self.e.part.api[1]]
+
+            op = Operation("part's api description change")
+            op.redo_callback_add(api_description_change, val, self.e.part.name)
+            op.undo_callback_add(api_description_change,
+                                 old_val, self.e.part.name)
+            self._operation_stack_cb(op)
+            op.redo()
+
+        if prop == "export":
+
+            def api_export_change(value, part_name, export):
+                self._context_recall(part=part_name)
+                self.e.part.api_export = export
+                self.e.part.api = value
+                self._update_api_props(export, value)
+
+            export = value
+            old_export = self.e.part.api_export
+            old_val = [self.e.part.api[0], self.e.part.api[1]]
+            val = [None, None]
+
+            op = Operation("part's api description change")
+            op.redo_callback_add(api_export_change, val, self.e.part.name,
+                                 export)
+            op.undo_callback_add(api_export_change, old_val, self.e.part.name,
+                                 old_export)
+            self._operation_stack_cb(op)
+            op.redo()
+
     def _part_update(self, emissor, data):
         if not self.e.part.name:
             return
@@ -230,6 +300,10 @@ class PartDetails(EditjeDetails):
         self._header_table["type"].value = type_
         self._header_table["type"].show_value()
         self._update_common_props()
+
+        if self["api"]["export"].value:
+            self["api"]["name"].value = self.e.part.api[0]
+            self["api"]["description"].value = self.e.part.api[1]
 
         self.group_hide("textblock")
         self.group_hide("group")
@@ -254,6 +328,9 @@ class PartDetails(EditjeDetails):
             self._header_table["module"].show_value()
         else:
             self._header_extra_hide()
+
+        self._update_api_props(self.e.part.api_export, self.e.part.api)
+        self.group_show("api")
 
         if self.e.part.type == edje.EDJE_PART_TYPE_TEXT:
             self._update_text_props()
@@ -280,6 +357,8 @@ class PartDetails(EditjeDetails):
         self.group_hide("textblock")
         self.group_hide("group")
 
+        self.group_hide("api")
+
         self["main"]["clip_to"].hide_value()
         self["main"]["mouse_events"].hide_value()
         self["main"]["repeat_events"].hide_value()
@@ -296,6 +375,7 @@ class PartDetails(EditjeDetails):
 
     def _update_common_props(self):
         self.main_hide()
+        self.group_hide("api")
 
         clipper = self.e.part._part.clip_to
         self["main"]["clip_to"].show_value()
@@ -311,6 +391,18 @@ class PartDetails(EditjeDetails):
         self["main"]["repeat_events"].show_value()
 
         self.main_show()
+
+    def _update_api_props(self, export, api):
+        self["api"]["export"].value = export
+        if self["api"]["export"].value:
+            if not self["api"].has_key("name"):
+                self["api"].property_add(self._prop_api_name)
+                self["api"].property_add(self._prop_api_description)
+            self["api"]["name"].value = api[0]
+            self["api"]["description"].value = api[1]
+        elif self["api"].has_key("name"):
+            self["api"].property_del("name")
+            self["api"].property_del("description")
 
     def _update_text_props(self):
         self["textblock"]["effect"].value = \

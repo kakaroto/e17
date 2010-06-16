@@ -27,6 +27,7 @@ from details_widget_entry import WidgetEntry
 from details_widget_signals import WidgetSignal
 from details_widget_source import WidgetSource
 from details_widget_actionslist import WidgetActionsList
+from details_widget_boolean import WidgetBoolean
 from floater import Wizard
 from clist import CList
 from prop import Property, PropertyTable
@@ -322,6 +323,17 @@ class SignalDetails(EditjeDetails):
         prop.widget_add("range", wid)
         self["main"].property_add(prop)
 
+        self.group_add("api")
+        prop = Property(parent, "export")
+        prop.widget_add("export", WidgetBoolean(self))
+        self["api"].property_add(prop)
+        self._prop_api_name = Property(parent, "name")
+        self._prop_api_name.widget_add("name", WidgetEntry(self))
+        self["api"].property_add(self._prop_api_name)
+        self._prop_api_description = Property(parent, "description")
+        self._prop_api_description.widget_add("description", WidgetEntry(self))
+        self["api"].property_add(self._prop_api_description)
+
         self.group_add("actions")
 
         self.group_add("out")
@@ -398,6 +410,12 @@ class SignalDetails(EditjeDetails):
         self["main"]["delay"].value = (None, None)
         self["main"]["delay"].hide_value()
 
+        self.group_hide("api")
+        self.group_show("api")
+
+        self["api"]["name"].value = None
+        self["api"]["description"].value = None
+
         self.group_hide("actions")
         self.group_show("actions")
 
@@ -413,6 +431,7 @@ class SignalDetails(EditjeDetails):
 
         self["out"]["source"].value = ""
         self["out"]["source"].hide_value()
+
         self.open_set(False)
 
     def _update(self, emissor, data):
@@ -444,6 +463,10 @@ class SignalDetails(EditjeDetails):
         self["main"]["delay"].value = self.e.signal.in_time
 
         action = self.e.signal.action
+
+        self._update_api_props(self.e.signal.api_export, self.e.signal.api)
+        self.group_hide("api")
+        self.group_show("api")
 
         if action == edje.EDJE_ACTION_TYPE_NONE:
             afters = self.e.signal.afters
@@ -635,3 +658,72 @@ class SignalDetails(EditjeDetails):
                                      old_val, self.e.signal.name)
                 self._operation_stack_cb(op)
                 op.redo()
+
+        elif group == "api":
+            if prop == "name":
+
+                def api_name_change(value, sig_name):
+                    self._context_recall(signal=sig_name)
+                    self.e.signal.api = value
+                    self["api"]["name"].value = value[0]
+
+                val = [value, self.e.signal.api[1]]
+                old_val = [self.e.signal.api[0], val[1]]
+
+                op = Operation("program's api name change")
+                op.redo_callback_add(api_name_change, val, self.e.signal.name)
+                op.undo_callback_add(api_name_change, old_val,
+                                     self.e.signal.name)
+                self._operation_stack_cb(op)
+                op.redo()
+
+            if prop == "description":
+
+                def api_description_change(value, sig_name):
+                    self._context_recall(signal=sig_name)
+                    self.e.signal.api = value
+                    self["api"]["description"].value = value[1]
+
+                val = [self.e.signal.api[0], value]
+                old_val = [val[0], self.e.signal.api[1]]
+
+                op = Operation("program's api description change")
+                op.redo_callback_add(api_description_change, val,
+                                     self.e.signal.name)
+                op.undo_callback_add(api_description_change,
+                                         old_val, self.e.signal.name)
+                self._operation_stack_cb(op)
+                op.redo()
+
+            if prop == "export":
+
+                def api_export_change(value, sig_name, export):
+                    self._context_recall(signal=sig_name)
+                    self.e.signal.api_export = export
+                    self.e.signal.api = value
+                    self._update_api_props(export, value)
+
+                export = value
+                old_export = self.e.signal.api_export
+                old_val = [self.e.signal.api[0], self.e.signal.api[1]]
+                val = [None, None]
+
+                op = Operation("program's api description change")
+                op.redo_callback_add(api_export_change, val,
+                                     self.e.signal.name, export)
+                op.undo_callback_add(api_export_change, old_val,
+                                     self.e.signal.name, old_export)
+                self._operation_stack_cb(op)
+                op.redo()
+
+    def _update_api_props(self, export, api):
+        self["api"]["export"].value = export
+        if self["api"]["export"].value:
+            if not self["api"].has_key("name"):
+                self["api"].property_add(self._prop_api_name)
+                self["api"].property_add(self._prop_api_description)
+            self["api"]["name"].value = api[0]
+            self["api"]["description"].value = api[1]
+        elif self["api"].has_key("name"):
+            self["api"].property_del("name")
+            self["api"].property_del("description")

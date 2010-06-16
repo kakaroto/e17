@@ -28,6 +28,8 @@ class EditableProgram(Manager, object):
         self._null()
         self._edit_grp.callback_add("group.changed", self._group_changed_cb)
 
+        self._api_export = False
+
     def _group_changed_cb(self, emissor, data):
         self.name = None
 
@@ -197,3 +199,31 @@ class EditableProgram(Manager, object):
         self._program.in_range_set(value[1])
 
     in_time = property(_in_get, _in_set)
+
+    def _api_set(self, value):
+        if not self.name:
+            return
+
+        self._program.api = value
+
+    def _api_get(self):
+        if not self.name:
+            return None
+
+        return self._program.api
+
+    api = property(_api_get, _api_set)
+
+    def _api_export_set(self, value):
+        if not self.name:
+            return
+
+        self._api_export = value
+
+    def _api_export_get(self):
+        if not self.name:
+            return None
+
+        return (self._api_get() != (None, None))
+
+    api_export = property(_api_export_get, _api_export_set)

@@ -59,6 +59,7 @@ class Part(Object):
         self["clip_to"] = obj.clip_to
         self["source"] = obj.source
         self["effect"] = obj.effect
+        self["api"] = obj.api
 
         dragable = dict()
         self["dragable"] = dragable
@@ -104,6 +105,7 @@ class Part(Object):
         obj.clip_to = self["clip_to"]
         obj.source = self["source"]
         obj.effect = self["effect"]
+        obj.api = self["api"]
 
         #dragable = self["dragable"]
         #obj.drag = (dragable["x"], dragable["y"])
@@ -454,6 +456,7 @@ class Program(Object):
         self["transition"] = obj.transition_get()
         self["transition_time"] = obj.transition_time_get()
         self["in"] = (obj.in_from_get(), obj.in_range_get())
+        self["api"] = obj.api
 
         targets = []
         self["targets"] = targets
@@ -477,6 +480,7 @@ class Program(Object):
         in_from, in_range = self["in"]
         obj.in_from_set(in_from)
         obj.in_range_set(in_range)
+        obj.api= self["api"]
 
         obj.targets_clear()
         for target in self["targets"]:

@@ -28,6 +28,8 @@ class EditablePart(Manager):
 
         self._part = None
 
+        self._api_export = False
+
         self.state = EditableState(self)
 
         self._states_init()
@@ -152,3 +154,31 @@ class EditablePart(Manager):
         return self._part.mouse_events
 
     mouse_events = property(fget=_mouse_events_get, fset=_mouse_events_set)
+
+    def _api_set(self, value):
+        if not self.name:
+            return
+
+        self._part.api = value
+
+    def _api_get(self):
+        if not self.name:
+            return None
+
+        return self._part.api
+
+    api = property(_api_get, _api_set)
+
+    def _api_export_set(self, value):
+        if not self.name:
+            return
+
+        self._api_export = value
+
+    def _api_export_get(self):
+        if not self.name:
+            return None
+
+        return (self._api_get() != (None, None))
+
+    api_export = property(_api_export_get, _api_export_set)
