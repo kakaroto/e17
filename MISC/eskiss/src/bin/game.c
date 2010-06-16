@@ -154,7 +154,7 @@ void game_play_level(Evas *e, Level *lvl, Game_Win_Cb cb, Eina_Bool _want_menu_b
                 ecore_evas_geometry_get(ecore_evas_ecore_evas_get(evas), NULL, NULL, &bg_width, &bg_height);
 
                 menu_button = edje_object_add(evas);
-                edje_object_file_set(menu_button, PACKAGE_DATA "/theme/default.edj", "main/game/menu_button");
+                edje_object_file_set(menu_button, PACKAGE_DATA_DIR "/theme/default.edj", "main/game/menu_button");
                 evas_object_resize(menu_button, bg_width, bg_height);
                 edje_object_signal_callback_add(menu_button, "click", "menu", _menu_button_click, NULL);
                 evas_object_move(menu_button, 0, 0);
@@ -331,7 +331,7 @@ void _add_ball(void)
         int w, h;
 
         Evas_Object *b = edje_object_add(evas);
-        edje_object_file_set(b, PACKAGE_DATA "/theme/default.edj", "main/ball");
+        edje_object_file_set(b, PACKAGE_DATA_DIR "/theme/default.edj", "main/ball");
         edje_object_size_min_get(b, &w, &h);
         evas_object_resize(b, w, h);
         evas_object_move(b, level->ball.x, level->ball.y);
@@ -351,7 +351,7 @@ void _add_goal(void)
         int w, h;
 
         Evas_Object *g = edje_object_add(evas);
-        edje_object_file_set(g, PACKAGE_DATA "/theme/default.edj", "main/goal");
+        edje_object_file_set(g, PACKAGE_DATA_DIR "/theme/default.edj", "main/goal");
         edje_object_size_min_get(g, &w, &h);
         evas_object_resize(g, w, h);
         evas_object_move(g, level->goal.x, level->goal.y);
@@ -400,7 +400,7 @@ static void _win_callback(Level *level)
         ecore_evas_geometry_get(ecore_evas_ecore_evas_get(evas), NULL, NULL, &bg_width, &bg_height);
 
         win_dialog = edje_object_add(evas);
-        edje_object_file_set(win_dialog, PACKAGE_DATA "/theme/default.edj", "dialog/win");
+        edje_object_file_set(win_dialog, PACKAGE_DATA_DIR "/theme/default.edj", "dialog/win");
         evas_object_resize(win_dialog, bg_width, bg_height);
         edje_object_signal_callback_add(win_dialog, "*", "*", _win_dialog_cb, NULL);
         evas_object_move(win_dialog, 0, 0);

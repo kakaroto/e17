@@ -21,7 +21,7 @@
 #define PHYSIC_OBJECT_H
 
 #include "common.h"
-#include <chipmunk.h>
+#include <chipmunk/chipmunk.h>
 
 // struct _PhysicObject;
 // typedef struct _Constraint

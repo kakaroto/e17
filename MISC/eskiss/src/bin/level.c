@@ -246,7 +246,7 @@ Eina_Bool level_save_file(Level *level, const char *file)
         }
 
         Evas_Object *ball = evas_object_image_filled_add(evas_im);
-        evas_object_image_file_set(ball, PACKAGE_DATA "/brushes/ball_01.png", NULL);
+        evas_object_image_file_set(ball, PACKAGE_DATA_DIR "/brushes/ball_01.png", NULL);
         int w, h;
         evas_object_image_size_get(ball, &w, &h);
         evas_object_resize(ball, w, h);
@@ -254,7 +254,7 @@ Eina_Bool level_save_file(Level *level, const char *file)
         evas_object_show(ball);
 
         Evas_Object *goal = evas_object_image_filled_add(evas_im);
-        evas_object_image_file_set(goal, PACKAGE_DATA "/brushes/goal_01.png", NULL);
+        evas_object_image_file_set(goal, PACKAGE_DATA_DIR "/brushes/goal_01.png", NULL);
         evas_object_image_size_get(goal, &w, &h);
         evas_object_resize(goal, w, h);
         evas_object_move(goal, level->goal.x, level->goal.y);
@@ -356,7 +356,7 @@ Evas_Object *level_get_thumb(Evas *evas, Level *level)
                 }
 
                 Evas_Object *ball = evas_object_image_filled_add(evas_im);
-                evas_object_image_file_set(ball, PACKAGE_DATA "/brushes/ball_01.png", NULL);
+                evas_object_image_file_set(ball, PACKAGE_DATA_DIR "/brushes/ball_01.png", NULL);
                 int w, h;
                 evas_object_image_size_get(ball, &w, &h);
                 evas_object_resize(ball, w, h);
@@ -364,7 +364,7 @@ Evas_Object *level_get_thumb(Evas *evas, Level *level)
                 evas_object_show(ball);
 
                 Evas_Object *goal = evas_object_image_filled_add(evas_im);
-                evas_object_image_file_set(goal, PACKAGE_DATA "/brushes/goal_01.png", NULL);
+                evas_object_image_file_set(goal, PACKAGE_DATA_DIR "/brushes/goal_01.png", NULL);
                 evas_object_image_size_get(goal, &w, &h);
                 evas_object_resize(goal, w, h);
                 evas_object_move(goal, level->goal.x, level->goal.y);
@@ -481,7 +481,7 @@ Eina_List *level_search_level_files(void)
 {
         Eina_List *list = NULL, *ls = NULL, *l;
 
-        ls = ecore_file_ls(PACKAGE_DATA "/levels");
+        ls = ecore_file_ls(PACKAGE_DATA_DIR "/levels");
 
         char *file, filepath[PATH_MAX];
         EINA_LIST_FOREACH(ls, l, file)
@@ -492,7 +492,7 @@ Eina_List *level_search_level_files(void)
                         continue;
                 }
 
-                sprintf(filepath, "%s/levels/%s", PACKAGE_DATA, file);
+                sprintf(filepath, "%s/levels/%s", PACKAGE_DATA_DIR, file);
                 free(file);
 
                 Level *level = NULL;

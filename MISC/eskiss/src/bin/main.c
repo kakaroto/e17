@@ -328,7 +328,7 @@ int main(int argc, char **argv)
         //Create background
         application->background = evas_object_image_add(application->evas);
 //         evas_object_color_set(background, 80, 147, 147, 255);
-        evas_object_image_file_set(application->background, PACKAGE_DATA "/backgrounds/background_02.jpg", NULL);
+        evas_object_image_file_set(application->background, PACKAGE_DATA_DIR "/backgrounds/background_02.jpg", NULL);
         evas_object_image_fill_set(application->background, 0, 0, geometry.w, geometry.h);
         evas_object_resize(application->background, geometry.w, geometry.h);
         evas_object_move(application->background, 0, 0);
@@ -356,7 +356,7 @@ int main(int argc, char **argv)
         edje_frametime_set(1.0 / 60.0);
 
         application->main_menu = edje_object_add(application->evas);
-        edje_object_file_set(application->main_menu, PACKAGE_DATA "/theme/default.edj", "main/menu");
+        edje_object_file_set(application->main_menu, PACKAGE_DATA_DIR "/theme/default.edj", "main/menu");
         edje_object_signal_callback_add(application->main_menu, "*", "menu", main_menu_cb, NULL);
         evas_object_resize(application->main_menu, geometry.w, geometry.h);
         evas_object_move(application->main_menu, 0, 0);

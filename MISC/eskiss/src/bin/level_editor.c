@@ -92,14 +92,14 @@ void level_editor_edit(Evas *e, Level *l, void (*edit_done)(Level *level, void *
 
         //create the editor edje, and show it
         editor_menu = edje_object_add(evas);
-        edje_object_file_set(editor_menu, PACKAGE_DATA "/theme/default.edj", "editor/menu");
+        edje_object_file_set(editor_menu, PACKAGE_DATA_DIR "/theme/default.edj", "editor/menu");
         edje_object_signal_callback_add(editor_menu, "*", "menu", _menu_cb, NULL);
         evas_object_resize(editor_menu, bg_width, bg_height);
         evas_object_move(editor_menu, 0, 0);
         evas_object_show(editor_menu);
 
         ball = edje_object_add(evas);
-        edje_object_file_set(ball, PACKAGE_DATA "/theme/default.edj", "main/ball");
+        edje_object_file_set(ball, PACKAGE_DATA_DIR "/theme/default.edj", "main/ball");
         int w, h;
         edje_object_size_min_get(ball, &w, &h);
         evas_object_resize(ball, w, h);
@@ -111,7 +111,7 @@ void level_editor_edit(Evas *e, Level *l, void (*edit_done)(Level *level, void *
         evas_object_event_callback_add(ball, EVAS_CALLBACK_MOUSE_MOVE, _mouse_move_cb, NULL);
 
         goal = edje_object_add(evas);
-        edje_object_file_set(goal, PACKAGE_DATA "/theme/default.edj", "main/goal");
+        edje_object_file_set(goal, PACKAGE_DATA_DIR "/theme/default.edj", "main/goal");
         edje_object_size_min_get(goal, &w, &h);
         evas_object_resize(goal, w, h);
         evas_object_move(goal, level->goal.x, level->goal.y);
@@ -343,7 +343,7 @@ static void _menu_cb(void *data, Evas_Object *obj, const char *emission, const c
                         ecore_evas_geometry_get(ecore_evas_ecore_evas_get(evas), NULL, NULL, &bg_width, &bg_height);
 
                         editor_menu_running = edje_object_add(evas);
-                        edje_object_file_set(editor_menu_running, PACKAGE_DATA "/theme/default.edj", "editor/menu/running");
+                        edje_object_file_set(editor_menu_running, PACKAGE_DATA_DIR "/theme/default.edj", "editor/menu/running");
                         edje_object_signal_callback_add(editor_menu_running, "*", "menu", _menu_cb, NULL);
                         evas_object_resize(editor_menu_running, bg_width, bg_height);
                         evas_object_move(editor_menu_running, 0, 0);
@@ -355,7 +355,7 @@ static void _menu_cb(void *data, Evas_Object *obj, const char *emission, const c
                         ecore_evas_geometry_get(ecore_evas_ecore_evas_get(evas), NULL, NULL, &bg_width, &bg_height);
 
                         editor_menu_color = edje_object_add(evas);
-                        edje_object_file_set(editor_menu_color, PACKAGE_DATA "/theme/default.edj", "editor/menu/color");
+                        edje_object_file_set(editor_menu_color, PACKAGE_DATA_DIR "/theme/default.edj", "editor/menu/color");
                         edje_object_signal_callback_add(editor_menu_color, "*", "menu", _menu_cb, NULL);
                         evas_object_resize(editor_menu_color, bg_width, bg_height);
                         evas_object_move(editor_menu_color, 0, 0);

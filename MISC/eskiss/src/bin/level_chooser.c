@@ -66,7 +66,7 @@ void level_chooser_show(Evas *e, Eina_List *list, void (*cb)(char *level, void *
         ecore_evas_geometry_get(ecore_evas_ecore_evas_get(evas), NULL, NULL, &bg_width, &bg_height);
 
         file_chooser = edje_object_add(evas);
-        edje_object_file_set(file_chooser, PACKAGE_DATA "/theme/default.edj", "dialog/level_list");
+        edje_object_file_set(file_chooser, PACKAGE_DATA_DIR "/theme/default.edj", "dialog/level_list");
         evas_object_resize(file_chooser, bg_width, bg_height);
         evas_object_move(file_chooser, 0, 0);
         evas_object_show(file_chooser);

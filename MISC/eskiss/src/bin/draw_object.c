@@ -224,7 +224,7 @@ Evas_Object *draw_object_create(Evas *e, Eina_List *point_list, BrushColor color
         //Get brush size...
         Evas_Object *tmp_brush;
         tmp_brush = evas_object_image_add(e);
-        evas_object_image_file_set(tmp_brush, PACKAGE_DATA "/brushes/brush01.png", NULL);
+        evas_object_image_file_set(tmp_brush, PACKAGE_DATA_DIR "/brushes/brush01.png", NULL);
         int iw, ih;
         evas_object_image_size_get(tmp_brush, &iw, &ih);
         evas_object_del(tmp_brush);
@@ -266,7 +266,7 @@ Evas_Object *draw_object_create(Evas *e, Eina_List *point_list, BrushColor color
 
                 //Draw on a buffer
                 char file[128];
-                sprintf(file, PACKAGE_DATA "/brushes/brush0%d.png", (rand() % 4) + 1);
+                sprintf(file, PACKAGE_DATA_DIR "/brushes/brush0%d.png", (rand() % 4) + 1);
 
                 Evas_Object *image = evas_object_image_add(evas_im);
                 evas_object_image_file_set(image, file, NULL);
@@ -352,7 +352,7 @@ static void _add_point(int x, int y)
         evas_object_move(point, x, y);
 
         char file[128];
-        sprintf(file, PACKAGE_DATA "/brushes/brush0%d.png", (rand() % 4) + 1);
+        sprintf(file, PACKAGE_DATA_DIR "/brushes/brush0%d.png", (rand() % 4) + 1);
         evas_object_image_file_set(point, file, NULL);
 
         int iw, ih;
@@ -546,7 +546,7 @@ static void _mouse_up_cb(void *data, Evas *evas, Evas_Object *obj, void *event_i
 
                         //Draw on a buffer
                         char file[128];
-                        sprintf(file, PACKAGE_DATA "/brushes/brush0%d.png", (rand() % 4) + 1);
+                        sprintf(file, PACKAGE_DATA_DIR "/brushes/brush0%d.png", (rand() % 4) + 1);
 
                         Evas_Object *image = evas_object_image_add(evas_im);
                         evas_object_image_file_set(image, file, NULL);
