@@ -474,26 +474,27 @@ class Editable(Manager):
         return False
 
     # Programs
+    def _programs_get(self):
+        return self.__edje.programs
+
+    programs = property(_programs_get)
+
     def _programs_init(self):
-        self.programs = []
         self.callback_add("group.changed", self._programs_reload_cb)
         self.signal.callback_add(
             "program.name.changed", self._programs_reload_cb)
 
     def _programs_reload_cb(self, emissor, data):
         if data:
-            self.programs = self.__edje.programs
+            self.event_emit("programs.changed", self.programs)
         else:
-            self.programs = []
-
-        self.event_emit("programs.changed", self.programs)
+            self.event_emit("programs.changed", [])
 
     def program_add(self, name):
         if not self.__edje.program_add(name):
             return False
 
         self._modified = True
-        self.programs.append(name)
         self.event_emit("program.added", name)
 
         return True
@@ -503,7 +504,6 @@ class Editable(Manager):
             return False
 
         self._modified = True
-        self.programs.remove(name)
         self.event_emit("program.removed", name)
 
         return True
