@@ -936,8 +936,6 @@ elixir_script_run(Elixir_Script *es, jsval *rval)
    status = JS_ExecuteScript(es->er->cx, es->er->root, es->script, &tmp);
    out = save;
 
-   elixir_unlock_cx(es->er->cx);
-
    if (file)
      {
 	free(eina_array_pop(exe));
@@ -947,7 +945,16 @@ elixir_script_run(Elixir_Script *es, jsval *rval)
      }
 
    if (status == JS_FALSE)
-     return EINA_FALSE;
+     {
+	JS_ReportPendingException(es->er->cx);
+	JS_ReportError(es->er->cx, "inside %s", file);
+	JS_ReportPendingException(es->er->cx);
+	elixir_unlock_cx(es->er->cx);
+
+	return EINA_FALSE;
+     }
+
+   elixir_unlock_cx(es->er->cx);
 
    if (rval)
      *rval = tmp;
