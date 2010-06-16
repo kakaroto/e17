@@ -64,12 +64,18 @@ class CList(Collapsable):
     def remove(self, item):
         i = self._items.get(item)
         if i:
-            if i == self._first:
-                self._first = i.next_get()
+            next_item = i.next
+            prev_item = i.prev
+            if not prev_item:
+                self._first = next
             i.delete()
             self._list.go()
             del self._items[item]
             self.event_emit("item.removed", item)
+            if next_item:
+                next_item.selected_set(True)
+            elif prev_item:
+                prev_item.selected_set(True)
 
     def go(self):
         self._selected.clear()

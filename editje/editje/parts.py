@@ -304,22 +304,6 @@ class PartsList(CList):
 
             self._operation_stack_cb(op)
 
-    def remove(self, item):
-        i = self._items.get(item)
-        if i:
-            next_item = i.next
-            prev_item = i.prev
-            if not prev_item:
-                self._first = next
-            i.delete()
-            self._list.go()
-            del self._items[item]
-            self.event_emit("item.removed", item)
-            if next_item:
-                next_item.selected_set(True)
-            elif prev_item:
-                prev_item.selected_set(True)
-
 
 class ExternalSelector(elementary.Box):
     def __init__(self, parent, type_cb):
