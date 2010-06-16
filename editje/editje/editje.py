@@ -140,11 +140,16 @@ class Editje(elementary.Window, OpenFileManager):
             notification.delete()
             self.save_as()
 
+        def dismiss(bt, notification):
+            notification.hide()
+            notification.delete()
+
         notification = ErrorNotify(self,
                                    orient=elementary.ELM_NOTIFY_ORIENT_CENTER)
         notification.title = "Not saved"
         notification.action_add("Close", self._close)
         notification.action_add("Save", save_as, None, notification)
+        notification.action_add("Cancel", dismiss, None, notification)
         notification.show()
 
     def _close(self, *args):
