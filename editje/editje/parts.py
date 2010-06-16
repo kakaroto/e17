@@ -133,17 +133,7 @@ class PartsList(CList):
             workfile_name_get_cb=self._workfile_name_get_cb)
         new_part_wiz.open()
 
-    def _current_part_get(self):
-        curr_part = self._edit_grp.part
-        if not curr_part:
-            return None
-
-        return curr_part.name
-
     def _up_cb(self, obj, emission, source):
-        if self._current_part_get() is None:
-            return
-
         r = self._edit_grp.part.part_restack_above()
         if not r:
             return
@@ -154,9 +144,6 @@ class PartsList(CList):
         self._operation_stack_cb(op)
 
     def _down_cb(self, obj, emission, source):
-        if self._current_part_get() is None:
-            return
-
         r = self._edit_grp.part.part_restack_below()
         if not r:
             return
