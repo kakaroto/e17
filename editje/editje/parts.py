@@ -134,23 +134,23 @@ class PartsList(CList):
         new_part_wiz.open()
 
     def _up_cb(self, obj, emission, source):
-        r = self._edit_grp.part.part_restack_above()
+        r = self._edit_grp.part.restack_above()
         if not r:
             return
 
         op = Operation("part re-stacking (above)")
-        op.redo_callback_add(self._edit_grp.part.part_restack_above)
-        op.undo_callback_add(self._edit_grp.part.part_restack_below)
+        op.redo_callback_add(self._edit_grp.part.restack_above)
+        op.undo_callback_add(self._edit_grp.part.restack_below)
         self._operation_stack_cb(op)
 
     def _down_cb(self, obj, emission, source):
-        r = self._edit_grp.part.part_restack_below()
+        r = self._edit_grp.part.restack_below()
         if not r:
             return
 
         op = Operation("part re-stacking (below)")
-        op.redo_callback_add(self._edit_grp.part.part_restack_below)
-        op.undo_callback_add(self._edit_grp.part.part_restack_above)
+        op.redo_callback_add(self._edit_grp.part.restack_below)
+        op.undo_callback_add(self._edit_grp.part.restack_above)
         self._operation_stack_cb(op)
 
     def _remove_cb(self, obj, emission, source):

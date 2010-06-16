@@ -183,7 +183,7 @@ class EditablePart(Manager):
 
     api_export = property(_api_export_get, _api_export_set)
 
-    def part_restack_above(self):
+    def restack_above(self):
         part = self.e.part_get(self.name)
         if not part:
             return False
@@ -195,7 +195,7 @@ class EditablePart(Manager):
 
         return r
 
-    def part_restack_below(self):
+    def restack_below(self):
         part = self.e.part_get(self.name)
         if not part:
             return False
