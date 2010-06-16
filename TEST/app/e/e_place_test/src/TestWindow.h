@@ -11,6 +11,8 @@ public:
 
   int getImageWidth () const;
   int getImageHeight () const;
+
+  void add (Widget& widget);
   
 protected:
   Gtk::VBox mVBox;

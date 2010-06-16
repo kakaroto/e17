@@ -17,13 +17,6 @@
       <comment>windows like Gnome file chooser or gnome-terminal change position  if they go offscreen after changing size (e.g. details button,...) in Metacity. At least writing a test is needed as this is a cool feature. Next step is to think about implementing this in E...</comment>
     </item>
     <item>
-      <attribute id="1276637694" priority="1" done="0" start_date="733938" enddate="99999999" notify="0" endtime="-60" last_edited="1276637975"/>
-      <summary>Drag&amp;Drop test</summary>
-      <comment>Moving the drop mouse over a new window whould bring it in the front after some seconds.
-
-Think about Alt-Tab of taskbar support for this feature. But this is a implementation detail.</comment>
-    </item>
-    <item>
       <attribute id="1276716570" priority="1" done="0" start_date="733939" enddate="99999999" notify="0" endtime="-60" last_edited="1276716577"/>
       <summary>Misc function</summary>
       <comment>Gtk::Window
@@ -40,6 +33,13 @@ Think about Alt-Tab of taskbar support for this feature. But this is a implement
   //set_icon_from_file (const std::string&amp;  filename)
   //set_modal (bool modal=true)
   //set_keep_above (bool setting=true)</comment>
+    </item>
+    <item>
+      <attribute id="1276637694" priority="1" done="1" start_date="733938" completed_date="733939" notify="0" last_edited="1276720956"/>
+      <summary>Drag</summary>
+      <comment>Moving the drop mouse over a new window whould bring it in the front after some seconds.
+
+Think about Alt-Tab of taskbar support for this feature. But this is a implementation detail.</comment>
     </item>
   </category>
   <category title="Bugs" place="1"/>

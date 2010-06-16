@@ -17,7 +17,9 @@ pixmaps_DATA = \
 	top_window.svg \
 	top_window_small.png \
 	stick_window.svg \
-	stick_window_small.png
+	stick_window_small.png \
+	dnd_window.svg \
+	dnd_window_small.png
 
 pixmapsdir = \
 	$(pkgdatadir)

@@ -13,7 +13,7 @@ TestWindow::TestWindow (const Glib::ustring &title, const std::string &helpImage
   set_border_width (5);
   set_title (title);
 
-  add (mVBox);
+  Gtk::Window::add (mVBox);
   mVBox.pack_start (mImageHelp);
 
   mVBox.show_all ();
@@ -33,4 +33,9 @@ int TestWindow::getImageHeight () const
 {
   const Glib::RefPtr <const Gdk::Pixbuf> pixbuf = mImageHelp.get_pixbuf ();
   return pixbuf->get_height ();
+}
+
+void TestWindow::add (Widget& widget)
+{
+  mVBox.pack_end (widget);
 }

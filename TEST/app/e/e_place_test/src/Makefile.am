@@ -24,7 +24,9 @@ e_place_test_SOURCES = \
 	TestGravityWindow.cpp      \
 	TestGravityWindow.h      \
 	TestStateWindow.cpp      \
-	TestStateWindow.h
+	TestStateWindow.h      \
+	TestDnDWindow.cpp      \
+	TestDnDWindow.h
 
 e_place_test_LDFLAGS = 
 

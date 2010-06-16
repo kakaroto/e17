@@ -7,6 +7,7 @@
 #include "TestPlaceWindow.h"
 #include "TestGravityWindow.h"
 #include "TestStateWindow.h"
+#include "TestDnDWindow.h"
 
 using namespace std;
 
@@ -147,6 +148,11 @@ Application::Application() :
   row[m_Columns.m_col_icon] = pixbuf;
   row[m_Columns.m_col_name] = "Fullscreen";
 
+  row = *(m_refTreeModel->append());
+  pixbuf = Gdk::Pixbuf::create_from_file (searchPixmapFile ("dnd_window_small.png"));
+  row[m_Columns.m_col_id] = "test_dnd";
+  row[m_Columns.m_col_icon] = pixbuf;
+  row[m_Columns.m_col_name] = "Drag&Drop";
 
   // don't test gravity for now, not sure how useful this is...
   /*row = *(m_refTreeModel->append());
@@ -251,6 +257,12 @@ void Application::onButtonRun ()
   {
     // TODO: delete?    
     TestStateWindow *testStateWindow = new TestStateWindow (TestStateWindow::Fullscreen, "fullscreen_window.svg");
+  }
+  else if (runTest == "test_dnd")
+  {
+    // TODO: delete?    
+    TestDnDWindow *testStateWindow = new TestDnDWindow ("dnd_window.svg");
+    TestDnDWindow *testStateWindow2 = new TestDnDWindow ("dnd_window.svg");
   }
   /*else if (runTest == "test_gravity_north_west")
   {
