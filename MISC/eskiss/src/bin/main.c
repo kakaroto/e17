@@ -24,6 +24,7 @@
 #include "level.h"
 #include "level_editor.h"
 #include "level_chooser.h"
+#include <Ecore_X.h>
 
 int _drawin_log_domain = -1;
 

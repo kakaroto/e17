@@ -17,6 +17,7 @@
 **
 ******************************************************************************/
 
+#include "level_chooser.h"
 #include "level_editor.h"
 #include "main.h"
 
