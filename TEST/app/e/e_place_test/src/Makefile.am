@@ -26,7 +26,9 @@ e_place_test_SOURCES = \
 	TestStateWindow.cpp      \
 	TestStateWindow.h      \
 	TestDnDWindow.cpp      \
-	TestDnDWindow.h
+	TestDnDWindow.h      \
+	TestResizeWindow.cpp      \
+	TestResizeWindow.h
 
 e_place_test_LDFLAGS = 
 

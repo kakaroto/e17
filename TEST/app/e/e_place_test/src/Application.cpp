@@ -8,6 +8,7 @@
 #include "TestGravityWindow.h"
 #include "TestStateWindow.h"
 #include "TestDnDWindow.h"
+#include "TestResizeWindow.h"
 
 using namespace std;
 
@@ -154,6 +155,12 @@ Application::Application() :
   row[m_Columns.m_col_icon] = pixbuf;
   row[m_Columns.m_col_name] = "Drag&Drop";
 
+  row = *(m_refTreeModel->append());
+  pixbuf = Gdk::Pixbuf::create_from_file (searchPixmapFile ("resize_window_small.png"));
+  row[m_Columns.m_col_id] = "test_resize";
+  row[m_Columns.m_col_icon] = pixbuf;
+  row[m_Columns.m_col_name] = "Resize";
+
   // don't test gravity for now, not sure how useful this is...
   /*row = *(m_refTreeModel->append());
   pixbuf = Gdk::Pixbuf::create_from_file (searchPixmapFile ("top_window_small.png"));
@@ -261,8 +268,13 @@ void Application::onButtonRun ()
   else if (runTest == "test_dnd")
   {
     // TODO: delete?    
-    TestDnDWindow *testStateWindow = new TestDnDWindow ("dnd_window.svg");
-    TestDnDWindow *testStateWindow2 = new TestDnDWindow ("dnd_window.svg");
+    TestDnDWindow *testDnDWindow = new TestDnDWindow ("dnd_window.svg");
+    TestDnDWindow *testDnDWindow2 = new TestDnDWindow ("dnd_window.svg");
+  }
+  else if (runTest == "test_resize")
+  {
+    // TODO: delete?    
+    TestResizeWindow *testResizeWindow = new TestResizeWindow ("resize_window.svg");
   }
   /*else if (runTest == "test_gravity_north_west")
   {
