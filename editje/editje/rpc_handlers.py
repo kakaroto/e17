@@ -74,6 +74,23 @@ class EditjeServer(SimpleXMLRPCServer):
         else:
             return func(*params)
 
+    def _get_api_signals(self):
+        ret = {}
+
+        for s in self._edit_grp.signals:
+            sinfo = {}
+            api = self._edit_grp.program_get(s).api
+            if api == (None, None):
+                continue
+
+            sinfo["type"] = "signal"
+            sinfo["name"] = api[0]
+            sinfo["description"] = api[1]
+
+            ret[s] = sinfo
+
+        return ret
+
     # exported methods
     def export_get_groups(self):
         return edje.file_collection_list(self._edit_grp.workfile)
@@ -94,7 +111,22 @@ class EditjeServer(SimpleXMLRPCServer):
         return ret
 
     def export_get_api_objects(self):
-        return "to be implemented"
+        ret = self.export_get_parts()
+
+        for k in tuple(ret.iterkeys()):
+            p = self._edit_grp.part_get(k)
+            api = self._edit_grp.part_get(k).api
+            if api == (None, None):
+                ret.pop(k)
+            else:
+                ret[k]["type"] = "part"
+                ret[k]["name"] = api[0]
+                ret[k]["description"] = api[1]
+                ret[k].pop("mouse_events")
+
+        ret.update(self._get_api_signals())
+
+        return ret
 
     def export_get_part(self, part):
         # TODO: make Java to accept the fscking nil value extension
