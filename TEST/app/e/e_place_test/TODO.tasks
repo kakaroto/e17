@@ -23,6 +23,24 @@
 
 Think about Alt-Tab of taskbar support for this feature. But this is a implementation detail.</comment>
     </item>
+    <item>
+      <attribute id="1276716570" priority="1" done="0" start_date="733939" enddate="99999999" notify="0" endtime="-60" last_edited="1276716577"/>
+      <summary>Misc function</summary>
+      <comment>Gtk::Window
+
+  //set_type_hint (Gdk::WindowTypeHint hint)
+  //void set_skip_taskbar_hint (bool setting=true)
+  //set_skip_pager_hint (bool setting=true)
+  //set_urgency_hint (bool setting=true)
+  //set_resizable (bool resizable=true)
+  //set_gravity (Gdk::Gravity gravity)
+  //set_geometry_hints (Widget&amp; geometry_widget, const Gdk::Geometry&amp; geometry, Gdk::WindowHints geom_mask)
+  //set_decorated (bool setting=true)
+  //set_deletable (bool setting=true)
+  //set_icon_from_file (const std::string&amp;  filename)
+  //set_modal (bool modal=true)
+  //set_keep_above (bool setting=true)</comment>
+    </item>
   </category>
   <category title="Bugs" place="1"/>
 </gtodo>

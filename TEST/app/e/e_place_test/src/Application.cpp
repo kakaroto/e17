@@ -130,7 +130,7 @@ Application::Application() :
   row[m_Columns.m_col_name] = "Iconify";
 
   row = *(m_refTreeModel->append());
-  pixbuf = Gdk::Pixbuf::create_from_file (searchPixmapFile ("center_window_small.png"));
+  pixbuf = Gdk::Pixbuf::create_from_file (searchPixmapFile ("stick_window_small.png"));
   row[m_Columns.m_col_id] = "test_stick";
   row[m_Columns.m_col_icon] = pixbuf;
   row[m_Columns.m_col_name] = "Stick";
@@ -240,7 +240,7 @@ void Application::onButtonRun ()
   else if (runTest == "test_stick")
   {
     // TODO: delete?    
-    TestStateWindow *testStateWindow = new TestStateWindow (TestStateWindow::Stick, "center_window.svg");
+    TestStateWindow *testStateWindow = new TestStateWindow (TestStateWindow::Stick, "stick_window.svg");
   }
   else if (runTest == "test_maximize")
   {
