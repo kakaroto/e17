@@ -31,6 +31,8 @@ from editje.popup_win import PopupWindow
 
 version = 0.9  # remember to bump when needed
 vtext = "editje " + str(version)
+# TODO syncronize this version number with the one shown at the
+# "about" dialog, later
 usage = "usage: %prog [FILE [GROUP]]\n" + \
     "   or: %prog -s [-p PORT] FILE GROUP"
 
