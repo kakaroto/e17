@@ -20,6 +20,7 @@
 import os
 import sys
 import re
+from optparse import OptionParser
 
 import elementary
 import edje
@@ -27,6 +28,11 @@ import edje
 from editje.editje import Editje
 import editje.swapfile as swapfile
 from editje.popup_win import PopupWindow
+
+version = 0.9  # remember to bump when needed
+vtext = "%prog" + str(version)
+usage = "usage: %prog [file[:group]]"
+parser = OptionParser(usage=usage, version=vtext)
 
 
 def cancel(bt, pop):
@@ -54,68 +60,70 @@ if __name__ == "__main__":
     elementary.policy_set(elementary.ELM_POLICY_QUIT,
                           elementary.ELM_POLICY_QUIT_LAST_WINDOW_CLOSED)
 
-    spliter = re.compile(r"(.*\.ed[cj])(?:\:(.*))?")
+    filegrp_re = re.compile(r"(.*\.ed[cj])(?:\:(.*))?")
+    options, args = parser.parse_args()
 
-    args = sys.argv[1:]
     if args:
-        for arg in args:
-            try:
-                r = spliter.match(arg)
-                if r:
-                    file, group = r.groups()
-                else:
-                    file = arg
-                    group = None
-                sf = swapfile.SwapFile()
-                sf.file = os.path.realpath(file)
-                sf.open()
-            except swapfile.CacheAlreadyExists, e:
-                pop = PopupWindow()
-                pop.title = "Editje - Swap file already exists"
+        if len(args) != 1:
+            parser.print_usage()
+            sys.exit(2)
 
-                lb = elementary.Label(pop)
-                lb.label_set(
-                    "Swap file to " + file + " already exists.<br>" +
-                    "Another program may be editing the same file<br>" +
-                    "or an edition session for this file crashed.")
-                pop.pack_end(lb)
-                lb.show()
+        filegrp = args[0]
 
-                pop.action_add("Ignore Swap", open_swap_error,
-                               data=(pop, swapfile.REPLACE, sf, group))
-                pop.action_add("Recover", open_swap_error,
-                               data=(pop, swapfile.RESTORE, sf, group))
-                pop.action_add("Abort", cancel, data=pop)
+        try:
+            r = filegrp_re.match(filegrp)
+            if r:
+                file_, group = r.groups()
+            else:
+                file_ = filegrp
+                group = None
+            sf = swapfile.SwapFile()
+            sf.file = os.path.realpath(file_)
+            sf.open()
+        except swapfile.CacheAlreadyExists, e:
+            pop = PopupWindow()
+            pop.title = "Editje - Swap file already exists"
 
-                pop.show()
-                continue
-            except swapfile.CompileError, e:
-                pop = PopupWindow()
-                pop.title = "Editje - Compiler Error"
+            lb = elementary.Label(pop)
+            lb.label_set(
+                "Swap file to " + file_ + " already exists.<br>" +
+                "Another program may be editing the same file<br>" +
+                "or an edition session for this file crashed.")
+            pop.pack_end(lb)
+            lb.show()
 
-                lb = elementary.Label(pop)
-                lb.label_set("Compile Error: " + file + "<br>" + e.message)
-                pop.pack_end(lb)
-                lb.show()
+            pop.action_add("Ignore Swap", open_swap_error,
+                           data=(pop, swapfile.REPLACE, sf, group))
+            pop.action_add("Recover", open_swap_error,
+                           data=(pop, swapfile.RESTORE, sf, group))
+            pop.action_add("Abort", cancel, data=pop)
 
-                pop.action_add("OK", cancel, data=pop)
+            pop.show()
+        except swapfile.CompileError, e:
+            pop = PopupWindow()
+            pop.title = "Editje - Compiler Error"
 
-                pop.show()
-                continue
-            except Exception, e:
-                pop = PopupWindow()
-                pop.title = "Editje - File Error"
+            lb = elementary.Label(pop)
+            lb.label_set("Compile Error: " + file_ + "<br>" + e.message)
+            pop.pack_end(lb)
+            lb.show()
 
-                lb = elementary.Label(pop)
-                lb.label_set("Error with file: " + file + "<br>" + str(e))
-                pop.pack_end(lb)
-                lb.show()
+            pop.action_add("OK", cancel, data=pop)
 
-                pop.action_add("OK", cancel, data=pop)
+            pop.show()
+        except Exception, e:
+            pop = PopupWindow()
+            pop.title = "Editje - File Error"
 
-                pop.show()
-                continue
+            lb = elementary.Label(pop)
+            lb.label_set("Error with file: " + file_ + "<br>" + str(e))
+            pop.pack_end(lb)
+            lb.show()
 
+            pop.action_add("OK", cancel, data=pop)
+
+            pop.show()
+        else:
             open_editje(sf, group)
 
     else:
