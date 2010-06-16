@@ -355,8 +355,12 @@ class Editable(Manager):
             return False
 
     # Parts
+    def _parts_get(self):
+        return self.__edje.parts
+
+    parts = property(_parts_get)
+
     def _parts_init(self):
-        self.parts = []
         self.callback_add("group.changed", self._parts_load_cb)
         self.callback_add("part.added", self._parts_reload_cb)
         self.callback_add("part.removed", self._parts_reload_cb)
@@ -364,13 +368,11 @@ class Editable(Manager):
 
     def _parts_load_cb(self, emissor, data):
         if data:
-            self.parts = self.__edje.parts
+            self.event_emit("parts.changed", self.parts)
         else:
-            self.parts = []
-        self.event_emit("parts.changed", self.parts)
+            self.event_emit("parts.changed", [])
 
     def _parts_reload_cb(self, emissor, data):
-        self.parts = self.__edje.parts
         self.event_emit("parts.changed", self.parts)
 
     # TODO: externals API may change in near future

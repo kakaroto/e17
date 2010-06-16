@@ -133,30 +133,6 @@ class PartsList(CList):
             workfile_name_get_cb=self._workfile_name_get_cb)
         new_part_wiz.open()
 
-    def _part_restack_above(self, part_name):
-        part = self._edit_grp.part_get(part_name)
-        if not part:
-            return False
-
-        r = part.restack_above()
-        if r is True:
-            # FIXME: turning a blind eye on it
-            self._edit_grp._parts_reload_cb(self, None)
-
-        return r
-
-    def _part_restack_below(self, part_name):
-        part = self._edit_grp.part_get(part_name)
-        if not part:
-            return False
-
-        r = part.restack_below()
-        if r is True:
-            # FIXME: turning a blind eye on it
-            self._edit_grp._parts_reload_cb(self, None)
-
-        return r
-
     def _current_part_get(self):
         curr_part = self._edit_grp.part
         if not curr_part:
@@ -165,31 +141,29 @@ class PartsList(CList):
         return curr_part.name
 
     def _up_cb(self, obj, emission, source):
-        curr_part_name = self._current_part_get()
-        if curr_part_name is None:
+        if self._current_part_get() is None:
             return
 
-        r = self._part_restack_above(curr_part_name)
+        r = self._edit_grp.part.part_restack_above()
         if not r:
             return
 
         op = Operation("part re-stacking (above)")
-        op.redo_callback_add(self._part_restack_above, curr_part_name)
-        op.undo_callback_add(self._part_restack_below, curr_part_name)
+        op.redo_callback_add(self._edit_grp.part.part_restack_above)
+        op.undo_callback_add(self._edit_grp.part.part_restack_below)
         self._operation_stack_cb(op)
 
     def _down_cb(self, obj, emission, source):
-        curr_part_name = self._current_part_get()
-        if curr_part_name is None:
+        if self._current_part_get() is None:
             return
 
-        r = self._part_restack_below(curr_part_name)
+        r = self._edit_grp.part.part_restack_below()
         if not r:
             return
 
         op = Operation("part re-stacking (below)")
-        op.redo_callback_add(self._part_restack_below, curr_part_name)
-        op.undo_callback_add(self._part_restack_above, curr_part_name)
+        op.redo_callback_add(self._edit_grp.part.part_restack_below)
+        op.undo_callback_add(self._edit_grp.part.part_restack_above)
         self._operation_stack_cb(op)
 
     def _remove_cb(self, obj, emission, source):

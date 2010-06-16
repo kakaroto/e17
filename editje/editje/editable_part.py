@@ -182,3 +182,27 @@ class EditablePart(Manager):
         return (self._api_get() != (None, None))
 
     api_export = property(_api_export_get, _api_export_set)
+
+    def part_restack_above(self):
+        part = self.e.part_get(self.name)
+        if not part:
+            return False
+
+        r = part.restack_above()
+        if r is True:
+            self.e.event_emit("parts.changed", self.e.parts)
+            self.event_emit("part.changed", self.name)
+
+        return r
+
+    def part_restack_below(self):
+        part = self.e.part_get(self.name)
+        if not part:
+            return False
+
+        r = part.restack_below()
+        if r is True:
+            self.e.event_emit("parts.changed", self.e.parts)
+            self.event_emit("part.changed", self.name)
+
+        return r
