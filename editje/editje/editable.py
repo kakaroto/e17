@@ -632,7 +632,6 @@ class Editable(Manager):
         program.action_set(action_type)
 
         self.event_emit("signal.added", name)
-        self.event_emit("signals.changed", self._signals)
 
         return True
 
@@ -645,7 +644,6 @@ class Editable(Manager):
         sig_data.apply_to(program)
 
         self.event_emit("signal.added", name)
-        self.event_emit("signals.changed", self._signals)
 
         return True
 
@@ -658,7 +656,6 @@ class Editable(Manager):
 
         self._signals.remove(name)
         self.event_emit("signal.removed", name)
-        self.event_emit("signals.changed", self._signals)
 
         return True
 
