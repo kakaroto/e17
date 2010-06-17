@@ -560,6 +560,8 @@ FAST_CALL_PARAMS_SPEC(evas_object_clip_unset, elixir_evas_object_params, _evas_o
 FAST_CALL_PARAMS_SPEC(evas_object_image_reload, elixir_evas_object_params, _evas_object_image_params);
 FAST_CALL_PARAMS_SPEC(evas_object_polygon_points_clear, elixir_evas_object_params, _evas_object_polygon_params);
 FAST_CALL_PARAMS_SPEC(evas_object_textblock_clear, elixir_evas_object_params, _evas_object_textblock_params);
+FAST_CALL_PARAMS_SPEC(evas_object_smart_changed, elixir_evas_object_params, _evas_object_smart_params);
+FAST_CALL_PARAMS_SPEC(evas_object_smart_calculate, elixir_evas_object_params, _evas_object_smart_params);
 
 FAST_CALL_PARAMS_SPEC(evas_object_type_get, elixir_string_const_evas_object_params, _evas_object_params);
 FAST_CALL_PARAMS_SPEC(evas_object_name_get, elixir_string_const_evas_object_params, _evas_object_params);
@@ -598,6 +600,7 @@ FAST_CALL_PARAMS_SPEC(evas_object_image_pixels_dirty_get, elixir_bool_evas_objec
 FAST_CALL_PARAMS_SPEC(evas_object_pass_events_get, elixir_bool_evas_object_params, _evas_object_image_params);
 FAST_CALL_PARAMS_SPEC(evas_object_repeat_events_get, elixir_bool_evas_object_params, _evas_object_params);
 FAST_CALL_PARAMS_SPEC(evas_object_propagate_events_get, elixir_bool_evas_object_params, _evas_object_params);
+FAST_CALL_PARAMS_SPEC(evas_object_smart_need_recalculate_get, elixir_bool_evas_object_params, _evas_object_smart_params);
 
 FAST_CALL_PARAMS_SPEC(evas_object_image_load_dpi_get, elixir_dbl_evas_object_params, _evas_object_image_params);
 FAST_CALL_PARAMS_SPEC(evas_object_scale_get, elixir_dbl_evas_object_params, _evas_object_params);
@@ -625,6 +628,9 @@ FAST_CALL_PARAMS_SPEC(evas_object_text_glow2_color_get, elixir_color_evas_object
 FAST_CALL_PARAMS_SPEC(evas_object_text_outline_color_get, elixir_color_evas_object_params, _evas_object_text_params);
 
 static JSFunctionSpec     evas_object_params_function[] = {
+  ELIXIR_FN(evas_object_smart_changed, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(evas_object_smart_need_recalculate_get, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(evas_object_smart_calculate, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_size_hint_align_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_size_hint_weight_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_size_hint_aspect_get, 1, JSPROP_ENUMERATE, 0 ),

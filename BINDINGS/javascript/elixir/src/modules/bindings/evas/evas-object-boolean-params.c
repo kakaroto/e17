@@ -14,16 +14,22 @@ static const elixir_parameter_t*        _evas_object_image_boolean_params[3] = {
    &boolean_parameter,
    NULL
 };
+static const elixir_parameter_t*        _evas_object_smart_boolean_params[3] = {
+  &evas_object_smart_parameter,
+  &boolean_parameter,
+  NULL
+};
 
 static JSBool
 elixir_evas_object_boolean_params(void (*func)(Evas_Object* obj, Eina_Bool bool),
+				  const elixir_parameter_t *params[],
                                   JSContext *cx, uintN argc, jsval *vp)
 {
    Evas_Object *know = NULL;
    Eina_Bool boolean;
    elixir_value_t val[2];
 
-   if (!elixir_params_check(cx, _evas_object_boolean_params, val, argc, JS_ARGV(cx, vp)))
+   if (!elixir_params_check(cx, params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, know);
@@ -89,14 +95,15 @@ elixir_evas_object_image_data_get(JSContext *cx, uintN argc, jsval *vp)
    return JS_FALSE;
 }
 
-FAST_CALL_PARAMS(evas_object_anti_alias_set, elixir_evas_object_boolean_params);
-FAST_CALL_PARAMS(evas_object_focus_set, elixir_evas_object_boolean_params);
-FAST_CALL_PARAMS(evas_object_image_alpha_set, elixir_evas_object_boolean_params);
-FAST_CALL_PARAMS(evas_object_image_smooth_scale_set, elixir_evas_object_boolean_params);
-FAST_CALL_PARAMS(evas_object_image_pixels_dirty_set, elixir_evas_object_boolean_params);
-FAST_CALL_PARAMS(evas_object_pass_events_set, elixir_evas_object_boolean_params);
-FAST_CALL_PARAMS(evas_object_repeat_events_set, elixir_evas_object_boolean_params);
-FAST_CALL_PARAMS(evas_object_propagate_events_set, elixir_evas_object_boolean_params);
+FAST_CALL_PARAMS_SPEC(evas_object_anti_alias_set, elixir_evas_object_boolean_params, _evas_object_boolean_params);
+FAST_CALL_PARAMS_SPEC(evas_object_focus_set, elixir_evas_object_boolean_params, _evas_object_boolean_params);
+FAST_CALL_PARAMS_SPEC(evas_object_image_alpha_set, elixir_evas_object_boolean_params, _evas_object_image_boolean_params);
+FAST_CALL_PARAMS_SPEC(evas_object_image_smooth_scale_set, elixir_evas_object_boolean_params, _evas_object_image_boolean_params);
+FAST_CALL_PARAMS_SPEC(evas_object_image_pixels_dirty_set, elixir_evas_object_boolean_params, _evas_object_image_boolean_params);
+FAST_CALL_PARAMS_SPEC(evas_object_pass_events_set, elixir_evas_object_boolean_params, _evas_object_boolean_params);
+FAST_CALL_PARAMS_SPEC(evas_object_repeat_events_set, elixir_evas_object_boolean_params, _evas_object_boolean_params);
+FAST_CALL_PARAMS_SPEC(evas_object_propagate_events_set, elixir_evas_object_boolean_params, _evas_object_boolean_params);
+FAST_CALL_PARAMS_SPEC(evas_object_smart_need_recalculate_set, elixir_evas_object_boolean_params, _evas_object_smart_boolean_params);
 
 static JSFunctionSpec     evas_object_params_function[] = {
   ELIXIR_FN(evas_object_image_data_get, 2, JSPROP_ENUMERATE, 0 ),
@@ -108,6 +115,7 @@ static JSFunctionSpec     evas_object_params_function[] = {
   ELIXIR_FN(evas_object_pass_events_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_repeat_events_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_propagate_events_set, 2, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(evas_object_smart_need_recalculate_set, 2, JSPROP_ENUMERATE, 0 ),
   JS_FS_END
 };
 
