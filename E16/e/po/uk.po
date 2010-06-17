@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-05-09 14:55+0200\n"
+"POT-Creation-Date: 2010-06-15 21:34+0200\n"
 "PO-Revision-Date: 2010-01-25 00:46+0000\n"
 "Last-Translator: Sergiy Gavrylov <sergiovana@bigmir.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -45,8 +45,8 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:212 src/backgrounds.c:254 src/borders.c:692 src/buttons.c:183
-#: src/cursors.c:131 src/iclass.c:337 src/tclass.c:125 src/tooltips.c:135
+#: src/aclass.c:216 src/backgrounds.c:254 src/borders.c:695 src/buttons.c:187
+#: src/cursors.c:131 src/iclass.c:337 src/tclass.c:121 src/tooltips.c:133
 #, c-format
 msgid "%u references remain"
 msgstr "%u посилань залишилося"
@@ -175,7 +175,7 @@ msgstr "Вийти з Enlightenment"
 msgid "Attention !!!"
 msgstr "Увага !!!"
 
-#: src/alert.c:581 src/dialog.c:693 src/dialog.c:1898 src/events.c:90
+#: src/alert.c:581 src/dialog.c:694 src/dialog.c:1900 src/events.c:90
 #: src/setup.c:159 src/sound.c:310
 msgid "OK"
 msgstr "Гаразд"
@@ -331,17 +331,17 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/config.c:198 src/config.c:300
+#: src/config.c:202 src/config.c:304
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\""
 msgstr "CONFIG: ігнорую зайві дані в \"%s\""
 
-#: src/config.c:206 src/config.c:307
+#: src/config.c:210 src/config.c:311
 #, c-format
 msgid "CONFIG: missing required data in \"%s\""
 msgstr "CONFIG: відсутні обов'язкові дані в \"%s\""
 
-#: src/config.c:216
+#: src/config.c:220
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -354,7 +354,7 @@ msgstr ""
 "%s\n"
 "Ігнорую і продовжую...\n"
 
-#: src/config.c:224
+#: src/config.c:228
 #, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
@@ -363,19 +363,19 @@ msgstr ""
 "Попередження: Помилка конфігурації в %s блоці.\n"
 "Результат певно непридатний.\n"
 
-#: src/config.c:316
+#: src/config.c:320
 msgid "Theme versioning ERROR"
 msgstr "ПОМИЛКА версії теми"
 
-#: src/config.c:317
+#: src/config.c:321
 msgid "Restart with Defaults"
 msgstr "Перезапуск з типовою"
 
-#: src/config.c:318
+#: src/config.c:322
 msgid "Abort and Exit"
 msgstr "Скасувати і вийти"
 
-#: src/config.c:319
+#: src/config.c:323
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -412,7 +412,7 @@ msgstr ""
 "деякий час і ця тема використовує нові функції і має\n"
 "переваги нових версій Enlightenment.\n"
 
-#: src/config.c:621
+#: src/config.c:625
 msgid "Enlightenment Starting..."
 msgstr "Запуск Enlightenment..."
 
@@ -420,7 +420,7 @@ msgstr "Запуск Enlightenment..."
 msgid "Settings..."
 msgstr "Налаштування..."
 
-#: src/container.c:1191 src/dialog.c:704 src/pager.c:1016 config/strings.c:30
+#: src/container.c:1191 src/dialog.c:705 src/pager.c:1016 config/strings.c:30
 #: config/strings.c:122
 msgid "Close"
 msgstr "Закрити"
@@ -498,7 +498,7 @@ msgstr "З обох боків"
 msgid "End"
 msgstr "В кінці"
 
-#: src/container.c:1657 src/focus.c:969
+#: src/container.c:1657 src/focus.c:971
 msgid "None"
 msgstr "Немає"
 
@@ -510,7 +510,7 @@ msgstr "Показувати назви піктограм"
 msgid "Animation mode:"
 msgstr ""
 
-#: src/container.c:1679 src/desktops.c:2579
+#: src/container.c:1679 src/desktops.c:2582
 msgid "Off"
 msgstr "Вимкнено"
 
@@ -607,55 +607,55 @@ msgstr ""
 "Натисніть тут, щоб опустити цю\n"
 "стільницю вниз."
 
-#: src/desktops.c:2340
+#: src/desktops.c:2343
 msgid "Number of virtual desktops:"
 msgstr "Кількість віртуальних стільниць:"
 
-#: src/desktops.c:2365
+#: src/desktops.c:2368
 msgid "Slide desktops around when changing"
 msgstr "Ковзання під час зміни стільниць"
 
-#: src/desktops.c:2371
+#: src/desktops.c:2374
 msgid "Desktop Slide speed:"
 msgstr "Швидкість ковзання стільниці:"
 
-#: src/desktops.c:2385
+#: src/desktops.c:2388
 msgid "Wrap desktops around"
 msgstr "Переміщення стільниць по колу"
 
-#: src/desktops.c:2393
+#: src/desktops.c:2396
 msgid "Display desktop dragbar"
 msgstr "Показати панель перетягування"
 
-#: src/desktops.c:2399
+#: src/desktops.c:2402
 msgid "Drag bar position:"
 msgstr "Розташування панелі перетягування:"
 
-#: src/desktops.c:2403
+#: src/desktops.c:2406
 msgid "Top"
 msgstr "Вверху"
 
-#: src/desktops.c:2409
+#: src/desktops.c:2412
 msgid "Bottom"
 msgstr "Внизу"
 
-#: src/desktops.c:2415 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
+#: src/desktops.c:2418 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
 msgid "Left"
 msgstr "Ліворуч"
 
-#: src/desktops.c:2421 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
+#: src/desktops.c:2424 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
 msgid "Right"
 msgstr "Праворуч"
 
-#: src/desktops.c:2429 src/menus-misc.c:585
+#: src/desktops.c:2432 src/menus-misc.c:585
 msgid "Desks"
 msgstr "Столи"
 
-#: src/desktops.c:2430
+#: src/desktops.c:2433
 msgid "Multiple Desktop Settings"
 msgstr "Параметри складених стільниць"
 
-#: src/desktops.c:2433
+#: src/desktops.c:2436
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog"
@@ -663,39 +663,39 @@ msgstr ""
 "Діалог параметрів складених\n"
 "стільниць Enlightenment"
 
-#: src/desktops.c:2533
+#: src/desktops.c:2536
 msgid "Virtual Desktop size:"
 msgstr "Розмір віртуальної стільниці:"
 
-#: src/desktops.c:2569
+#: src/desktops.c:2572
 msgid "Wrap virtual desktops around"
 msgstr "Переміщення віртуальних стільниць по колу"
 
-#: src/desktops.c:2576
+#: src/desktops.c:2579
 msgid "Edge Flip Mode:"
 msgstr "Режим перегортання з вказівником біля краю:"
 
-#: src/desktops.c:2584
+#: src/desktops.c:2587
 msgid "On"
 msgstr "Увімкнено"
 
-#: src/desktops.c:2589
+#: src/desktops.c:2592
 msgid "Only when moving window"
 msgstr "Лише під час переміщення вікна"
 
-#: src/desktops.c:2595
+#: src/desktops.c:2598
 msgid "Resistance at edge of screen:"
 msgstr "Протидія біля краю екрана:"
 
-#: src/desktops.c:2607
+#: src/desktops.c:2610
 msgid "Areas"
 msgstr "Області"
 
-#: src/desktops.c:2608
+#: src/desktops.c:2611
 msgid "Virtual Desktop Settings"
 msgstr "Параметри віртуальних стільниць"
 
-#: src/desktops.c:2611
+#: src/desktops.c:2614
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog"
@@ -703,7 +703,7 @@ msgstr ""
 "Діалог параметрів віртуальних\n"
 "стільниць Enlightenment"
 
-#: src/dialog.c:698
+#: src/dialog.c:699
 msgid "Apply"
 msgstr "Застосувати"
 
@@ -743,113 +743,113 @@ msgstr ""
 "\n"
 "Вихід.\n"
 
-#: src/focus.c:815
+#: src/focus.c:817
 msgid "Focus follows pointer"
 msgstr "Фокус слідує за вказівником"
 
-#: src/focus.c:821
+#: src/focus.c:823
 msgid "Focus follows pointer sloppily"
 msgstr "Фокус слідує за вказівником із затримкою"
 
-#: src/focus.c:827
+#: src/focus.c:829
 msgid "Focus follows mouse clicks"
 msgstr "Фокусування клацанням кнопкою миші"
 
-#: src/focus.c:837
+#: src/focus.c:839
 msgid "Clicking in a window always raises it"
 msgstr "Клацання у вікні завжди піднімає його"
 
-#: src/focus.c:845
+#: src/focus.c:847
 msgid "All new windows first get the focus"
 msgstr "Всі нові вікна отримують фокус"
 
-#: src/focus.c:852
+#: src/focus.c:854
 msgid "New windows get the focus if their window group is focused"
 msgstr ""
 
-#: src/focus.c:857
+#: src/focus.c:859
 msgid "Only new dialog windows get the focus"
 msgstr "Лише нові діалоги отримують фокус"
 
-#: src/focus.c:864
+#: src/focus.c:866
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Лише нові діалоги сфокусованих вікон, отримують фокус"
 
-#: src/focus.c:869
+#: src/focus.c:871
 msgid "Raise windows while switching focus"
 msgstr "Піднімати вікна після передачі фокусу"
 
-#: src/focus.c:875
+#: src/focus.c:877
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Переслати вказівник у вікно під час отримання фокусу"
 
-#: src/focus.c:881
+#: src/focus.c:883
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Завжди переслати вказівник у вікно під час отримання фокусу"
 
-#: src/focus.c:889
+#: src/focus.c:891
 msgid "Raise windows automatically"
 msgstr "Піднімати вікна автоматично"
 
-#: src/focus.c:895
+#: src/focus.c:897
 msgid "Autoraise delay:"
 msgstr "Затримка авто-підйому:"
 
-#: src/focus.c:908
+#: src/focus.c:910
 msgid "Display and use focus list"
 msgstr "Відобразити і використовувати список сфокусованих вікон"
 
-#: src/focus.c:913
+#: src/focus.c:915
 msgid "Include sticky windows in focus list"
 msgstr "Включати прикріплені вікна в список сфокусованих вікон"
 
-#: src/focus.c:918
+#: src/focus.c:920
 msgid "Include shaded windows in focus list"
 msgstr "Включати затінені вікна в список сфокусованих вікон"
 
-#: src/focus.c:923
+#: src/focus.c:925
 msgid "Include iconified windows in focus list"
 msgstr "Включати згорнуті вікна в список сфокусованих вікон"
 
-#: src/focus.c:928
+#: src/focus.c:930
 msgid "Include windows on other desks in focus list"
 msgstr "Включати вікна з інших столів в список сфокусованих вікон"
 
-#: src/focus.c:933
+#: src/focus.c:935
 msgid "Focus windows while switching"
 msgstr "Фокусувати вікна після перемикання"
 
-#: src/focus.c:938
+#: src/focus.c:940
 msgid "Raise windows after focus switch"
 msgstr "Піднімати вікна після отримання фокусу"
 
-#: src/focus.c:943
+#: src/focus.c:945
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Посилати вказівник у вікно після отримання фокусу"
 
-#: src/focus.c:953
+#: src/focus.c:955
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 "Поведінка відображення піктограм в списку сфокусованих вікон (якщо дія не "
 "вдала, спробуйте наступну):"
 
-#: src/focus.c:957
+#: src/focus.c:959
 msgid "First E Icon, then App Icon"
 msgstr "Спочатку піктограма E, потім піктограма програми"
 
-#: src/focus.c:963
+#: src/focus.c:965
 msgid "First App Icon, then E Icon"
 msgstr "Спочатку піктограма програми, потім піктограма E"
 
-#: src/focus.c:977
+#: src/focus.c:979
 msgid "Focus"
 msgstr "Фокусування"
 
-#: src/focus.c:978
+#: src/focus.c:980
 msgid "Focus Settings"
 msgstr "Налаштування фокусування"
 
-#: src/focus.c:981
+#: src/focus.c:983
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog"
@@ -857,31 +857,31 @@ msgstr ""
 "Діалог налаштування\n"
 "фокусування Enlightenment"
 
-#: src/fx.c:824
+#: src/fx.c:825
 msgid "Effects"
 msgstr "Ефекти"
 
-#: src/fx.c:826
+#: src/fx.c:827
 msgid "Ripples"
 msgstr "Брижі"
 
-#: src/fx.c:829
+#: src/fx.c:830
 msgid "Waves"
 msgstr "Хвилі"
 
-#: src/fx.c:834
+#: src/fx.c:835
 msgid "Raindrops"
 msgstr ""
 
-#: src/fx.c:841
+#: src/fx.c:842
 msgid "FX"
 msgstr "Спецефекти (FX)"
 
-#: src/fx.c:842
+#: src/fx.c:843
 msgid "Special FX Settings"
 msgstr "Налаштування спецефектів FX"
 
-#: src/fx.c:845
+#: src/fx.c:846
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog"
@@ -1108,20 +1108,20 @@ msgstr ""
 "операційної системи. Така помилка зустрічається вкрай\n"
 "рідко на оперативному обладнані.\n"
 
-#: src/hints.c:600
+#: src/hints.c:598
 msgid "Selection Error!"
 msgstr "Помилка відбору!"
 
-#: src/hints.c:600
+#: src/hints.c:598
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr "Не вдалося зробити відбір: %s"
 
-#: src/iconify.c:469
+#: src/iconify.c:468
 msgid "Iconbox Options"
 msgstr "Параметри Iconbox"
 
-#: src/iconify.c:470
+#: src/iconify.c:469
 msgid "Iconbox Settings"
 msgstr "Налаштування Iconbox"
 
@@ -1231,7 +1231,7 @@ msgstr ""
 "Будь ласка, розберіться в ситуації і переконайтеся, що\n"
 "утиліта встановлена правильно.\n"
 
-#: src/magwin.c:461
+#: src/magwin.c:460
 msgid "Magnifier"
 msgstr "Лупа"
 
@@ -1508,51 +1508,51 @@ msgstr ""
 "\n"
 "... маю надію.\n"
 
-#: src/session.c:645
+#: src/session.c:646
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
 
-#: src/session.c:647
+#: src/session.c:648
 msgid "Are you sure you wish to log out ?"
 msgstr "Ви дійсно хочете вийти з системи ?"
 
-#: src/session.c:655
+#: src/session.c:656
 msgid "Yes, Shut Down"
 msgstr "Так, вимкнути"
 
-#: src/session.c:657
+#: src/session.c:658
 msgid "Yes, Reboot"
 msgstr "Так, перезавантажити"
 
-#: src/session.c:660
+#: src/session.c:661
 msgid "Yes, Log Out"
 msgstr "Так, завершити сеанс"
 
-#: src/session.c:662
+#: src/session.c:663
 msgid "No"
 msgstr "Ні"
 
-#: src/session.c:797
+#: src/session.c:798
 msgid "Enable Session Script"
 msgstr "Дозволити сценарій сеансу"
 
-#: src/session.c:802
+#: src/session.c:803
 msgid "Enable Logout Dialog"
 msgstr "Дозволити діалог завершення сеансу"
 
-#: src/session.c:807
+#: src/session.c:808
 msgid "Enable Reboot/Halt on Logout"
 msgstr "Дозволити перезавантаження/зупинку під час завершення сеансу"
 
-#: src/session.c:813
+#: src/session.c:814
 msgid "Session"
 msgstr "Сеанс"
 
-#: src/session.c:814
+#: src/session.c:815
 msgid "Session Settings"
 msgstr "Налаштування сеансу"
 
-#: src/session.c:817
+#: src/session.c:818
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog"
@@ -1880,87 +1880,87 @@ msgstr ""
 "працюватиме некоректно. Якщо ваш X-сервер новіший ніж X11\n"
 "то автор Enlightenment не чув і не бачив такого.\n"
 
-#: src/snaps.c:723
+#: src/snaps.c:722
 msgid "Title:"
 msgstr "Заголовок:"
 
-#: src/snaps.c:735
+#: src/snaps.c:734
 msgid "Name:"
 msgstr "Ім'я:"
 
-#: src/snaps.c:748
+#: src/snaps.c:747
 msgid "Class:"
 msgstr "Клас:"
 
-#: src/snaps.c:761
+#: src/snaps.c:760
 msgid "Role:"
 msgstr "Роль:"
 
-#: src/snaps.c:774
+#: src/snaps.c:773
 msgid "Command:"
 msgstr "Команда:"
 
-#: src/snaps.c:813
+#: src/snaps.c:812
 msgid "Track Changes"
 msgstr "Слідкувати за змінами"
 
-#: src/snaps.c:818
+#: src/snaps.c:817
 msgid "Location"
 msgstr "Адреса"
 
-#: src/snaps.c:823
+#: src/snaps.c:822
 msgid "Border style"
 msgstr "Стиль рамки"
 
-#: src/snaps.c:828 config/strings.c:174
+#: src/snaps.c:827 config/strings.c:174
 msgid "Size"
 msgstr "Розмір"
 
-#: src/snaps.c:833 config/strings.c:90 config/strings.c:112
+#: src/snaps.c:832 config/strings.c:90 config/strings.c:112
 msgid "Desktop"
 msgstr "Стільниця"
 
-#: src/snaps.c:838
+#: src/snaps.c:837
 msgid "Shaded state"
 msgstr "Затінений стан"
 
-#: src/snaps.c:843
+#: src/snaps.c:842
 msgid "Sticky state"
 msgstr "Прикріплений стан"
 
-#: src/snaps.c:848
+#: src/snaps.c:847
 msgid "Stacking layer"
 msgstr "Прошарки стека"
 
-#: src/snaps.c:853
+#: src/snaps.c:852
 msgid "Window List Skip"
 msgstr "Пропустити список вікон"
 
-#: src/snaps.c:859 config/strings.c:135 config/strings.c:162
+#: src/snaps.c:858 config/strings.c:135 config/strings.c:162
 msgid "Opacity"
 msgstr "Непрозорість"
 
-#: src/snaps.c:864
+#: src/snaps.c:863
 msgid "Shadowing"
 msgstr "Затінення"
 
-#: src/snaps.c:870
+#: src/snaps.c:869
 msgid "Flags"
 msgstr "Ознаки"
 
-#: src/snaps.c:889
+#: src/snaps.c:888
 msgid "Restart application on login"
 msgstr "Перезапустити програму під час входу в систему"
 
-#: src/snaps.c:908
+#: src/snaps.c:907
 msgid "Remember this window's group(s)"
 msgstr "Пам'ятати групу(и) цього вікна"
 
-#: src/snaps.c:916
+#: src/snaps.c:915
 msgid "Remembered Application Attributes"
 msgstr "Пам'ятати атрибути програми"
 
-#: src/snaps.c:919
+#: src/snaps.c:918
 msgid ""
 "Select the attributes of this\n"
 "window you wish to Remember\n"
@@ -1970,31 +1970,31 @@ msgstr ""
 "вікна, якщо віднині хочете\n"
 "пам'ятати їх\n"
 
-#: src/snaps.c:1009
+#: src/snaps.c:1008
 msgid "Delete"
 msgstr "Вилучити"
 
-#: src/snaps.c:1037
+#: src/snaps.c:1036
 msgid "Remembered Settings..."
 msgstr "Пам'ятати налаштування..."
 
-#: src/snaps.c:1044
+#: src/snaps.c:1043
 msgid "Unused"
 msgstr "Не використовується"
 
-#: src/snaps.c:1057
+#: src/snaps.c:1056
 msgid "There are no active windows with remembered attributes."
 msgstr "Немає активних вікон з атрибутами запам'ятовування."
 
-#: src/snaps.c:1063
+#: src/snaps.c:1062
 msgid "Remember"
 msgstr "Пам'ятати"
 
-#: src/snaps.c:1064
+#: src/snaps.c:1063
 msgid "Remembered Windows Settings"
 msgstr "Параметри запам'ятовування вікон"
 
-#: src/snaps.c:1067
+#: src/snaps.c:1066
 msgid ""
 "Enlightenment Remembered\n"
 "Windows Settings Dialog"
@@ -2002,7 +2002,7 @@ msgstr ""
 "Діалог налаштування запам'ятовування\n"
 "вікон Enlightenment"
 
-#: src/snaps.c:1161
+#: src/snaps.c:1160
 msgid "Error saving snaps file"
 msgstr "Помилка збереження snaps файла"
 
@@ -2128,27 +2128,27 @@ msgstr ""
 "Діалог налаштування\n"
 "теми Enlightenment"
 
-#: src/tooltips.c:853
+#: src/tooltips.c:851
 msgid "Display Tooltips"
 msgstr "Показувати підказки"
 
-#: src/tooltips.c:858
+#: src/tooltips.c:856
 msgid "Display Root Window Tips"
 msgstr "Показувати поради адміністратора"
 
-#: src/tooltips.c:863
+#: src/tooltips.c:861
 msgid "Tooltip Delay:"
 msgstr "Затримка підказок:"
 
-#: src/tooltips.c:874
+#: src/tooltips.c:872
 msgid "Tooltips"
 msgstr "Підказки"
 
-#: src/tooltips.c:875
+#: src/tooltips.c:873
 msgid "Tooltip Settings"
 msgstr "Налаштування підказок"
 
-#: src/tooltips.c:878
+#: src/tooltips.c:876
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog"
