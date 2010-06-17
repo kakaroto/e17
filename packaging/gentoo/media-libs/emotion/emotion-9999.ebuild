@@ -8,6 +8,11 @@ inherit efl
 
 DESCRIPTION="Enlightenment's (Ecore/Evas) video integration."
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/Emotion"
+SRC_URI=""
+
+LICENSE="BSD"
+SLOT="0"
+KEYWORDS=""
 
 # vlc support is buggy, do not even expose it here
 IUSE="gstreamer xine static-modules"

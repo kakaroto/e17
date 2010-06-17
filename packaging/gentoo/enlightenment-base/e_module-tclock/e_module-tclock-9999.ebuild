@@ -9,6 +9,13 @@ E_NO_DOC="1"
 inherit efl
 
 DESCRIPTION="Simple TEXT Clock module for e17"
+HOMEPAGE="http://www.enlightenment.org"
+SRC_URI=""
+
+LICENSE="BSD"
+SLOT="0"
+KEYWORDS=""
+
 IUSE=""
 
 RDEPEND=">=x11-wm/enlightenment-9999"

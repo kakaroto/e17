@@ -9,6 +9,13 @@ E_NO_VISIBILITY="1"
 inherit efl
 
 DESCRIPTION="View PDF files using EFL applications."
+HOMEPAGE="http://www.enlightenment.org/"
+SRC_URI=""
+
+LICENSE="GPL-2 || ( LGPL-3 )"
+SLOT="0"
+KEYWORDS=""
+
 IUSE=""
 
 RDEPEND="

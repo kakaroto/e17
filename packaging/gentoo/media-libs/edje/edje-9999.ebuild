@@ -8,6 +8,11 @@ inherit efl elisp-common
 
 DESCRIPTION="graphical layout and animation library"
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/Edje"
+SRC_URI=
+
+LICENSE="BSD"
+SLOT="0"
+KEYWORDS=""
 
 IUSE="vim-syntax emacs experimental debug"
 

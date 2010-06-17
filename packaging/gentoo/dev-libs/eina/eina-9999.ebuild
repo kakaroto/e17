@@ -8,7 +8,12 @@ inherit efl
 
 DESCRIPTION="Enlightenment's data types library (List, hash, etc) in C."
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/Eina"
+SRC_URI=""
+
 LICENSE="LGPL-2.1"
+SLOT="0"
+KEYWORDS=""
+
 IUSE="mmx sse sse2 altivec +threads test +safety-checks +mempool-chained mempool-ememoa-fixed mempool-ememoa-unknown mempool-fixed-bitmap +mempool-pass-through mempool-buddy default-mempool +static-modules debug"
 
 RDEPEND="

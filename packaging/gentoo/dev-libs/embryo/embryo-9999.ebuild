@@ -8,6 +8,10 @@ inherit efl
 
 DESCRIPTION="load and control programs compiled in embryo language (small/pawn variant)"
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/Embryo"
-IUSE=""
+SRC_URI=""
 
-RDEPEND=""
+LICENSE="BSD"
+SLOT="0"
+KEYWORDS=""
+
+IUSE=""

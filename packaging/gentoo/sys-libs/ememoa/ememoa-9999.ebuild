@@ -8,8 +8,11 @@ inherit eutils
 
 DESCRIPTION="Fast memory pool allocator"
 HOMEPAGE="http://code.google.com/p/ememoa/"
+SRC_URI=""
+
 LICENSE="BSD"
 SLOT="0"
+KEYWORDS=""
 
 IUSE="debug doc threads"
 

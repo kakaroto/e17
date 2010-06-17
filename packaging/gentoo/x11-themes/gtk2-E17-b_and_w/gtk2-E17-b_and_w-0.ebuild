@@ -12,7 +12,6 @@ KEYWORDS="alpha amd64 arm hppa ia64 mips ppc ppc64 sh sparc x86"
 IUSE=""
 
 RDEPEND="x11-libs/gtk+"
-DEPEND=""
 
 S=${WORKDIR}/B_and_W
 

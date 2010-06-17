@@ -3,7 +3,6 @@
 # $Header: $
 
 EAPI="2"
-EKEY_STATE=snap
 E_NO_NLS="1"
 inherit efl
 
@@ -11,6 +10,11 @@ SRC_URI="http://download.enlightenment.org/releases/${P}.tar.bz2"
 
 DESCRIPTION="E file chunk reading/writing library"
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/Eet"
+SRC_URI="http://download.enlightenment.org/releases/${P}.tar.gz"
+
+LICENSE="BSD"
+SLOT="0"
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd"
 
 IUSE="+threads debug test gnutls ssl"
 

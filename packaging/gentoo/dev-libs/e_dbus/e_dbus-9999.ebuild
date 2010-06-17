@@ -8,6 +8,11 @@ inherit efl
 
 DESCRIPTION="Enlightenment's (Ecore) integration to DBus"
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/E_Dbus"
+SRC_URI=""
+
+LICENSE="BSD"
+SLOT="0"
+KEYWORDS=""
 
 IUSE="hal connman libnotify bluetooth ofono ukit"
 

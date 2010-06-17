@@ -11,6 +11,13 @@ ESVN_SUB_PROJECT="BINDINGS/python"
 inherit efl
 
 DESCRIPTION="Python bindings for Edje"
+HOMEPAGE="http://www.enlightenment.org"
+SRC_URI=""
+
+LICENSE="LGPL-2.1"
+SLOT="0"
+KEYWORDS=""
+
 IUSE="examples"
 
 RDEPEND=">=media-libs/edje-9999"

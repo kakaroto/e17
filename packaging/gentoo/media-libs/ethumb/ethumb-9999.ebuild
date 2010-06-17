@@ -8,8 +8,11 @@ inherit efl
 
 DESCRIPTION="Enlightenment's thumbnailing library"
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/Ethumb"
+SRC_URI=""
 
 LICENSE="LGPL-3"
+SLOT="0"
+KEYWORDS=""
 
 IUSE="+dbus emotion epdf debug"
 

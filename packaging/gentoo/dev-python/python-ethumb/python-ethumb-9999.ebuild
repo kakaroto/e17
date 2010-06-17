@@ -11,6 +11,13 @@ ESVN_SUB_PROJECT="BINDINGS/python"
 inherit efl
 
 DESCRIPTION="Python bindings for Ethumb thumbnailing library"
+HOMEPAGE="http://www.enlightenment.org"
+SRC_URI=""
+
+LICENSE="LGPL-2.1"
+SLOT="0"
+KEYWORDS=""
+
 IUSE="+dbus examples"
 
 RDEPEND=">=media-libs/ethumb-9999[dbus?]"

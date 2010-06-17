@@ -8,6 +8,11 @@ inherit efl
 
 DESCRIPTION="hardware-accelerated retained canvas API"
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/Evas"
+SRC_URI=""
+
+LICENSE="BSD"
+SLOT="0"
+KEYWORDS=""
 
 IUSE="debug mmx sse altivec +threads +fontconfig bidi +cserve directfb fbcon opengl sdl X xcb +eet gif +jpeg +pnm +png svg +tiff +xpm static-modules +safety-checks"
 

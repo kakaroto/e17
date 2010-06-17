@@ -8,6 +8,12 @@ E_NO_DOC="1"
 inherit efl
 
 DESCRIPTION="Comprehensive test and benchmark suite for Evas"
+HOMEPAGE="http://www.enlightenment.org/"
+SRC_URI=""
+
+LICENSE="BSD"
+SLOT="0"
+KEYWORDS=""
 
 IUSE="directfb fbcon opengl sdl X xcb"
 

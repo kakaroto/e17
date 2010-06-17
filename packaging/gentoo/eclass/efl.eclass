@@ -1,6 +1,6 @@
 # Copyright 1999-2010 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/eclass/enlightenment.eclass,v 1.80 2009/03/07 22:28:16 vapier Exp $
+# $Header: $
 #
 # Author: vapier@gentoo.org
 # Modified: barbieri@profusion.mobi
@@ -86,22 +86,6 @@ if [[ ${WANT_AUTOTOOLS} == "yes" ]] ; then
 
 	inherit autotools
 fi
-
-HOMEPAGE="http://www.enlightenment.org/"
-case ${EURI_STATE:-${E_STATE}} in
-	release) SRC_URI="mirror://sourceforge/enlightenment/${P}.tar.gz";;
-	snap)    SRC_URI="http://download.enlightenment.org/snapshots/${E_SNAP_DATE}/${P}.tar.bz2";;
-	live)    SRC_URI="";;
-esac
-
-LICENSE="BSD"
-SLOT="0"
-
-case ${EKEY_STATE:-${E_STATE}} in
-	release) KEYWORDS="alpha amd64 arm hppa ia64 mips ppc ppc64 sh sparc x86 ~x86-fbsd";;
-	snap)    KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd";;
-	live)    KEYWORDS="";;
-esac
 
 DEPEND="${DEPEND} dev-util/pkgconfig"
 

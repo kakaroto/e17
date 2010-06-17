@@ -9,6 +9,13 @@ E_NO_DOC="1"
 inherit efl
 
 DESCRIPTION="Enlightenment way to exchange contributed stuff"
+HOMEPAGE="http://www.enlightenment.org/"
+SRC_URI=""
+
+LICENSE="GPL-2"
+SLOT="0"
+KEYWORDS=""
+
 IUSE=""
 
 DEPEND="

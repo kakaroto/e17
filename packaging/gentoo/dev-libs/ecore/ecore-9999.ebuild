@@ -7,6 +7,11 @@ inherit efl
 
 DESCRIPTION="Enlightenment's core event abstraction layer and OS abstraction layer"
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/Ecore"
+SRC_URI=""
+
+LICENSE="BSD"
+SLOT="0"
+KEYWORDS=""
 
 IUSE="glib threads +xim curl gnutls ssl +inotify +evas directfb fbcon opengl sdl X xcb xinerama +xprint +xscreensaver +tslib"
 

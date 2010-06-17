@@ -9,8 +9,11 @@ inherit efl
 
 DESCRIPTION="Basic widget set, based on EFL with focus mobile touch-screen devices."
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/Elementary"
+SRC_URI=""
 
 LICENSE="LGPL-2.1"
+SLOT="0"
+KEYWORDS=""
 
 IUSE="fbcon opengl sdl X dbus xdg weather thumbnails xcb"
 

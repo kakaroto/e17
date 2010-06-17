@@ -9,9 +9,14 @@ ESVN_SUB_PROJECT="PROTO"
 inherit efl
 
 DESCRIPTION="Enlightenment's UPnP/DLNA framework"
-IUSE="examples test"
+HOMEPAGE="http://www.enlightenment.org"
+SRC_URI=""
 
 LICENSE="LGPL-3"
+SLOT="0"
+KEYWORDS=""
+
+IUSE="examples test"
 
 RDEPEND="
 	>=dev-libs/eina-9999

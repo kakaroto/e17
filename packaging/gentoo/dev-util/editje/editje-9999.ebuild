@@ -11,7 +11,12 @@ inherit efl
 
 DESCRIPTION="View and edit Edje (EDC/EDJ) files."
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/Editje"
+SRC_URI=""
+
 LICENSE="GPL-3"
+SLOT="0"
+KEYWORDS=""
+
 IUSE=""
 
 RDEPEND="

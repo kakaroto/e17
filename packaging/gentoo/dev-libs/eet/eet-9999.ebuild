@@ -8,6 +8,11 @@ inherit efl
 
 DESCRIPTION="E file chunk reading/writing library"
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/Eet"
+SRC_URI=""
+
+LICENSE="BSD"
+SLOT="0"
+KEYWORDS=""
 
 IUSE="+threads debug test gnutls ssl"
 

@@ -9,9 +9,14 @@ ESVN_SUB_PROJECT="PROTO"
 inherit efl
 
 DESCRIPTION="Enlightenment's weather information fetching and parsing framework"
-IUSE=""
+HOMEPAGE="http://www.enlightenment.org"
+SRC_URI=""
 
 LICENSE="LGPL-2.1"
+SLOT="0"
+KEYWORDS=""
+
+IUSE=""
 
 RDEPEND="
 	>=dev-libs/ecore-9999[curl]

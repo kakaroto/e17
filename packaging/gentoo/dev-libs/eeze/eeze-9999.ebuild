@@ -8,6 +8,12 @@ inherit efl
 
 DESCRIPTION="Enlightenment's integration to various libraries"
 HOMEPAGE="http://www.enlightenment.org"
+SRC_URI=""
+
+LICENSE="BSD"
+SLOT="0"
+KEYWORDS=""
+
 IUSE=""
 
 RDEPEND="
