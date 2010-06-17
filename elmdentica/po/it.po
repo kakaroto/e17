@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: elmdentica 0.8.0\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
 "POT-Creation-Date: 2010-06-12 10:54+0100\n"
-"PO-Revision-Date: 2010-04-05 10:24+0200\n"
+"PO-Revision-Date: 2010-06-17 18:25+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -21,24 +21,20 @@ msgid "Close"
 msgstr "Chiudi"
 
 #: src/elmdentica.c:167
-#, fuzzy
 msgid "Last messages..."
-msgstr " <b>Ultimo messaggio inviato...</b>"
+msgstr "Ultimi messaggi..."
 
 #: src/elmdentica.c:168
-#, fuzzy
 msgid "Everyone..."
-msgstr "Tutti"
+msgstr "Tutti..."
 
 #: src/elmdentica.c:169
-#, fuzzy
 msgid "My favorites..."
-msgstr " <b>Preferiti...</b>"
+msgstr "I miei preferiti..."
 
 #: src/elmdentica.c:171
-#, fuzzy
 msgid "My friends..."
-msgstr " <b>Io e i miei amici...</b>"
+msgstr "I miei amici..."
 
 #: src/elmdentica.c:363
 #, c-format
@@ -73,12 +69,12 @@ msgstr "Smetti di seguire"
 
 #: src/elmdentica.c:657
 msgid "Visit website?"
-msgstr ""
+msgstr "Visitare sito web?"
 
 #: src/elmdentica.c:668
-#, fuzzy, c-format
+#, c-format
 msgid "%s posted the following URL...<br>"
-msgstr "%s ha inviato questo link..."
+msgstr "%s ha inviato la seguente URL...<br>"
 
 #: src/elmdentica.c:699
 msgid "Check it out!"
@@ -86,7 +82,7 @@ msgstr "Controllare!"
 
 #: src/elmdentica.c:736
 msgid "View details?"
-msgstr ""
+msgstr "Vedere dettagli?"
 
 #: src/elmdentica.c:838
 msgid "Reply"
@@ -114,7 +110,7 @@ msgstr "Errore µ-blog"
 
 #: src/elmdentica.c:1290 src/elmdentica.c:1361
 msgid "Type your status here..."
-msgstr ""
+msgstr "Inserisci il tuo stato qui..."
 
 #: src/elmdentica.c:1387
 msgid "Timeline"
@@ -141,14 +137,12 @@ msgid "Post"
 msgstr "Pubblica"
 
 #: src/elmdentica.c:1430
-#, fuzzy
 msgid "Send"
-msgstr "Inviare?"
+msgstr "Invia"
 
 #: src/elmdentica.c:1443
-#, fuzzy
 msgid "Clear"
-msgstr "Chiudi"
+msgstr "Pulisci"
 
 #: src/elmdentica.c:1457
 msgid "More..."
@@ -359,4 +353,3 @@ msgid ""
 msgstr ""
 "Memoria insufficiente per impostazioni, e sicuramente anche per "
 "nient'altro..."
-

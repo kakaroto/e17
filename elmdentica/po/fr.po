@@ -7,41 +7,39 @@ msgstr ""
 "Project-Id-Version: Elmdentica\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
 "POT-Creation-Date: 2010-06-12 10:54+0100\n"
-"PO-Revision-Date: 2010-04-05 09:00+0400\n"
+"PO-Revision-Date: 2010-06-17 13:20+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <pourunmondesansgourou@gmail.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: src/curl.c:86 src/elmdentica.c:623 src/elmdentica.c:707
+#: src/curl.c:86
+#: src/elmdentica.c:623
+#: src/elmdentica.c:707
 #: src/elmdentica.c:1032
 msgid "Close"
 msgstr "Fermer"
 
 #: src/elmdentica.c:167
-#, fuzzy
 msgid "Last messages..."
-msgstr " <b>Derniers messages postés...</b>"
+msgstr " Derniers messages..."
 
 #: src/elmdentica.c:168
-#, fuzzy
 msgid "Everyone..."
-msgstr "Tout le monde"
+msgstr "Tous..."
 
 #: src/elmdentica.c:169
-#, fuzzy
 msgid "My favorites..."
-msgstr " <b>Mes favoris...</b>"
+msgstr "Mes favoris..."
 
 #: src/elmdentica.c:171
-#, fuzzy
 msgid "My friends..."
-msgstr " <b>Mes amis et moi...</b>"
+msgstr "Mes amis..."
 
 #: src/elmdentica.c:363
 #, c-format
@@ -76,12 +74,12 @@ msgstr "Ne plus suivre"
 
 #: src/elmdentica.c:657
 msgid "Visit website?"
-msgstr ""
+msgstr "Visiter le site ?"
 
 #: src/elmdentica.c:668
-#, fuzzy, c-format
+#, c-format
 msgid "%s posted the following URL...<br>"
-msgstr "%s postés pour ce lien..."
+msgstr "%s postés pour l'URL suivante...<br>"
 
 #: src/elmdentica.c:699
 msgid "Check it out!"
@@ -89,7 +87,7 @@ msgstr "Jeter un oeil !"
 
 #: src/elmdentica.c:736
 msgid "View details?"
-msgstr ""
+msgstr "Voir les détails ?"
 
 #: src/elmdentica.c:838
 msgid "Reply"
@@ -115,9 +113,10 @@ msgstr "Erreur"
 msgid "µ-blog Error"
 msgstr "Erreur µ-blog"
 
-#: src/elmdentica.c:1290 src/elmdentica.c:1361
+#: src/elmdentica.c:1290
+#: src/elmdentica.c:1361
 msgid "Type your status here..."
-msgstr ""
+msgstr "Entrer votre statut ici..."
 
 #: src/elmdentica.c:1387
 msgid "Timeline"
@@ -144,14 +143,12 @@ msgid "Post"
 msgstr "Publier"
 
 #: src/elmdentica.c:1430
-#, fuzzy
 msgid "Send"
-msgstr "Envoyer ?"
+msgstr "Envoyer"
 
 #: src/elmdentica.c:1443
-#, fuzzy
 msgid "Clear"
-msgstr "Fermer"
+msgstr "Effacer"
 
 #: src/elmdentica.c:1457
 msgid "More..."
@@ -161,7 +158,8 @@ msgstr "Plus..."
 msgid "Fullscreen"
 msgstr "Plein écran"
 
-#: src/elmdentica.c:1460 src/settings.c:1032
+#: src/elmdentica.c:1460
+#: src/settings.c:1032
 msgid "Settings"
 msgstr "Configuration"
 
@@ -240,7 +238,8 @@ msgstr "Éditer"
 msgid "Delete"
 msgstr "Supprimer"
 
-#: src/settings.c:771 src/settings.c:794
+#: src/settings.c:771
+#: src/settings.c:794
 msgid "No posts<br>in cache."
 msgstr "Aucun post<br>en cache."
 
@@ -249,7 +248,8 @@ msgstr "Aucun post<br>en cache."
 msgid "Currently remembering<br>%d posts."
 msgstr "En mémoire :<br>%d posts."
 
-#: src/settings.c:809 src/settings.c:832
+#: src/settings.c:809
+#: src/settings.c:832
 msgid "No messages<br>in cache."
 msgstr "Aucun message<br>en cache."
 
@@ -288,7 +288,7 @@ msgstr "Hors ligne"
 
 #: src/settings.c:1033
 msgid "ElmDentica settings..."
-msgstr "Configuration ElmDentica..."
+msgstr "Configuration d'ElmDentica..."
 
 #: src/settings.c:1061
 msgid "Accounts"
@@ -331,9 +331,7 @@ msgstr "La création des dossiers de préférences a échoué à cause de asprin
 #: src/settings.c:1116
 #, c-format
 msgid "Can't create preferences directories since ecore_file_mkpath failed\n"
-msgstr ""
-"La création des dossiers de préférences a échoué à cause de "
-"ecore_file_mkpath\n"
+msgstr "La création des dossiers de préférences a échoué à cause de ecore_file_mkpath\n"
 
 #: src/settings.c:1127
 #, c-format
@@ -357,7 +355,6 @@ msgstr "Impossible d'initialiser settings_edd."
 
 #: src/settings.c:1165
 #, c-format
-msgid ""
-"Not enough memory for settings, no doubt for anything else either, surely..."
-msgstr ""
-"Mémoire insuffisante pour la configuration, ou quoi que ce soit d'autre..."
+msgid "Not enough memory for settings, no doubt for anything else either, surely..."
+msgstr "Mémoire insuffisante pour la configuration, ou quoi que ce soit d'autre..."
+
