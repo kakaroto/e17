@@ -5294,3 +5294,21 @@ Remove some trailing spaces from bg show command output.
 Trim whitespace from translatable strings.
 Fix up po files after whitespace removal.
 
+-------------------------------------------------------------------------------
+
+Thu Jun 17 18:14:45 CEST 2010
+
+--- 1.0.2.002 ---
+Add missing break.
+Simplify list stuff.
+Remove remnants of unimplemented textclass mode attribute.
+Remove some unused BUTTON_... and KEY_... defines.
+Make ConfigFileFind static.
+Remove unused radio button event function.
+Fix some potential segvs.
+Fix some poytential segvs. Minor cleanups.
+Trivial cleanups.
+Fix logic in ReZoom().
+Add force parameter to EwinWarpTo().
+Fix zooming when screen is rotated using randr (based on patch by Daniel Manjarres).
+
