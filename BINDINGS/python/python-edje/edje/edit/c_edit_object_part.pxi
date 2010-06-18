@@ -181,6 +181,16 @@ cdef class Part:
         def __set__(self, flags):
             edje_edit_part_ignore_flags_set(self.edje.obj, self.name, flags)
 
+    property scale:
+        def __get__(self):
+            return bool(edje_edit_part_scale_get(self.edje.obj, self.name))
+
+        def __set__(self, scale):
+            if (scale):
+                edje_edit_part_scale_set(self.edje.obj, self.name, 1)
+            else:
+                edje_edit_part_scale_set(self.edje.obj, self.name, 0)
+
     property drag:
         def __get__(self):
             cdef int x, y

@@ -125,6 +125,8 @@ cdef extern from "Edje_Edit.h":
     void edje_edit_part_repeat_events_set(evas.c_evas.Evas_Object *obj, char *part, evas.c_evas.Eina_Bool repeat_events)
     evas.c_evas.Evas_Event_Flags edje_edit_part_ignore_flags_get(evas.c_evas.Evas_Object *obj, char *part)
     void edje_edit_part_ignore_flags_set(evas.c_evas.Evas_Object *obj, char *part, evas.c_evas.Evas_Event_Flags ignore_flags)
+    void edje_edit_part_scale_set(evas.c_evas.Evas_Object *obj, char *part, evas.c_evas.Eina_Bool scale)
+    evas.c_evas.Eina_Bool edje_edit_part_scale_get(evas.c_evas.Evas_Object *obju, char *part)
     int edje_edit_part_drag_x_get(evas.c_evas.Evas_Object *obj, char *part)
     void edje_edit_part_drag_x_set(evas.c_evas.Evas_Object *obj, char *part, int drag)
     int edje_edit_part_drag_y_get(evas.c_evas.Evas_Object *obj, char *part)
