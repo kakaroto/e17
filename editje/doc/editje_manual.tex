@@ -17,9 +17,9 @@
 \title{Editje\\
   \normalsize{User's manual}}
 
-\ProFUSIONMail{\{glima,ivan,tiago\}@profusion.mobi}
+\ProFUSIONMail{\{glima,ivan,tiago,masaki\}@profusion.mobi}
 \author{Gustavo Lima Chaves \hspace{1cm} Iván Briano \hspace{1cm}
-  Tiago Rezende Campos Falcão}
+  Tiago Rezende Campos Falcão \newline Thiago Ribeiro Masaki}
 
 \begin{document}
 
@@ -46,31 +46,15 @@ This document describes briefly Editje's features and functionality.
 
 Editje's invoking command, if you're using a terminal to launch it, is
 \texttt{editje-bin}. If invoked like that, with no arguments, it will
-show the screen pictured in figure \ref{fig:open_file}.
+create a new edj group called main, and open it, and show the screen
+pictured in figure \ref{fig:new_file}.
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.87\textwidth]{images/open_file.png}
-  \caption{``Open file'' dialog}
-  \label{fig:open_file}
+  \includegraphics[width=0.87\textwidth]{images/new_file.png}
+  \caption{``New file'' group main}
+  \label{fig:new_file}
 \end{figure}
-
-The actions on that window are straightforward: you navigate through
-directories on the list on the left side and select files to open on
-the files list, on the right. The latter list shows the files in the
-current folder, which was selected on the former one. The
-\GUICheckbox{``filter extensions''} checkbox will only list files
-whose extension match \texttt{.edc} or \texttt{.edj}.
-
-%FIXME: the fscking \times, instead of 'x' (not working)
-If a (valid) file on the list on the right is selected, you may click
-the \GUIButton{``Ok''} button and Editje will open it and lead you to
-its main window. The \GUIButton{``New''} button will ask you for a
-name to a \emph{new} file to work on. Just give it a name and hit
-\GUIButton{``Ok''} to start editing it. To the current date, this new
-file starts with just one group, named ``main'', with no parts and
-with a default size of 500x500 pixels. Group templates will come as an
-option to start new files, shortly.
 
 Editje may also be invoked with one argument, which is the path to a
 file to open. Whether you choose a file in the dialog shown in figure
@@ -140,18 +124,49 @@ rectangles and numbered. The following is a description of each of
 them:
 
 \begin{description}
-\item[1 -- Actions on file and group]
-  The first action, \GUIIcon{``Open''}, will call the same dialog
-  window you saw if you called Editje with no arguments. When you
-  select the file to operate on, you'll get \emph{another} independent
-  instance of a main window with an opened file. It's \emph{not}
-  another instance of the editor, though, and the process will only
-  finish when the last editor's window is closed.
+\item[1 -- Actions on file and group] The first action,
+  \GUIIcon{``Open''}, will show the screen picture in \ref{fig:open_file}.
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.87\textwidth]{images/open_file.png}
+    \caption{``Open file'' dialog}
+    \label{fig:open_file}
+  \end{figure}
+  The actions on that window are straightforward: you navigate through
+  directories on the list on the left side and select files to open on
+  the files list, on the right. The latter list shows the files in the
+  current folder, which was selected on the former one. The
+  \GUICheckbox{``filter extensions''} checkbox will only list files
+  whose extension match \texttt{.edc} or \texttt{.edj}.
+
+  %FIXME: the fscking \times, instead of 'x' (not working)
+  If a (valid) file on the list on the right is selected, you may click
+  the \GUIButton{``Ok''} button and Editje will open it and lead you to
+  its main window. The \GUIButton{``New''} button will ask you for a
+  name to a \emph{new} file to work on. Just give it a name and hit
+  \GUIButton{``Ok''} to start editing it. To the current date, this new
+  file starts with just one group, named ``main'', with no parts and
+  with a default size of 500x500 pixels. Group templates will come as an
+  option to start new files, shortly.
+
+  When you select the file to operate on, you'll get \emph{another}
+  independent instance of a main window with an opened file. It's
+  \emph{not} another instance of the editor, though, and the process
+  will only finish when the last editor's window is closed.
 
   The second action, \GUIIcon{``Save''}, naturally tells the editor to
-  save back the modifications on the file under edition. As said
+  save back the modifications on the file under edition.
+  If you are editing new file, the save action
+  \GUIIcon{``Save''}, will show the screen picture in \ref{fig:save_file}.
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.87\textwidth]{images/save_file.png}
+    \caption{``Save file'' dialog}
+    \label{fig:save_file}
+  \end{figure}
+  If the file being edited is a already existing opened file, as said
   before, they get saved in the same format they were opened with, be
-  it \texttt{.edc} or \texttt{.edj}.
+  it \texttt{.edc} or \texttt{.edj}, and no dialog is shown.
 
   The \GUIIcon{``Groups''} one will raise the same box you get when
   calling Editje with just a file name argument -- the group selection
@@ -257,8 +272,8 @@ be described better on section \ref{sec:part_editing}.
   in the document. On the bottom of this area, one sees the \emph{list
     of available widgets/parts}. From this place, you'll see all types
   of GUI elements Editje supports. Interaction with this list is one
-  the ways of telling the editor to add new widgets to the group under
-  edition.
+  of the ways of telling the editor to add new widgets to the group
+  under edition.
 
 \end{description}
 
@@ -422,16 +437,16 @@ it. If you accepted the suggested name, while adding it, it will be
 named ``\texttt{Rectangle02}''. Let's resize it by directly editing
 its size/positioning property values. Figure
 \ref{fig:restack_pre_pre}, region 2, highlights the text entries
-you'll have to edit and hit the return key to resize
-\texttt{Rectangle02}: the \GUIEditable{``relative''} and
-\GUIEditable{``offset''} ones. There are two pairs of them, placed
-inside the property subgroups named \GUILabel{``top-left''} and
-\GUILabel{``bottom-right''}. Make sure \texttt{Rectangle02} is the
-selected part and change that values to exactly what is seen on figure
-\ref{fig:restack_pre_pre}; the part will be then resized to the
-group's dimensions, centered to it, as seen there. You should not care
-if it's not clear how this editing had that effect, because it will be
-better explained at section \ref{sec:part_states}.
+you'll have to edit, \texttt{Rectangle02}: the
+\GUIEditable{``relative''} and \GUIEditable{``offset''} ones. There
+are two pairs of them, placed inside the property subgroups named
+\GUILabel{``top-left''} and \GUILabel{``bottom-right''}. Make sure
+\texttt{Rectangle02} is the selected part and change that values to
+exactly what is seen on figure \ref{fig:restack_pre_pre}; the part
+will be then resized to the group's dimensions, centered to it, as
+seen there. You should not care if it's not clear how this editing had
+that effect, because it will be better explained at section
+\ref{sec:part_states}.
 
 %FIXME: look at the alignment bug after text entry changes
 \begin{figure}[h!]
@@ -527,7 +542,8 @@ labels which give you the name of the selected part and its type. The
 entry. By changing its contents and hitting the return key, you'll be
 \emph{renaming} the selected part. One will see, additionally, a
 \GUILabel{``clip to''} field, which, when clicked, will raise a box
-with a list of clipping objects (rectangles) to choose from.
+with a list of clipping objects (rectangles) to choose from. Objects
+that creates cyclic reference are not shown in the clipping list.
 
 For example, suppose we have, again, those two rectangles --
 \texttt{Rectangle01} and \texttt{Rectangle02} -- and a third one,
@@ -607,16 +623,16 @@ edition of the \GUIEditable{``name''} entry in this region.
 Region 3, in that same figure, has general properties, like
 minimum/maximum size hints, visibility flag, alignment inside part's
 container and color. All of them are text entries which can be altered
-and, after a return key press, have the visual representation updated
-on the group displaying area. The \GUILabel{``current''} label you see
-is not editable and shows the part's current size based on what is
-filled for the two regions below, 4 and 5. These two regions denote,
-respectively, the positioning of the \emph{top-left} and
-\emph{bottom-right} corners of the the part's container. Figure
-\ref{fig:rectangle_rel1rel2} highlights these two points for
-\texttt{Rectangle01}, which coincide with two of the part resizing
-squares. The ``current'' label gets updated while a part is being
-resized.
+and, after a return key press, or focus out, we get the visual
+representation updated on the group displaying area. The
+\GUILabel{``current''} label you see is not editable and shows the
+part's current size based on what is filled for the two regions below,
+4 and 5. These two regions denote, respectively, the positioning of
+the \emph{top-left} and \emph{bottom-right} corners of the the part's
+container. Figure \ref{fig:rectangle_rel1rel2} highlights these two
+points for \texttt{Rectangle01}, which coincide with two of the part
+resizing squares. The ``current'' label gets updated while a part is
+being resized.
 
 \begin{figure}[h!]
   \centering
@@ -1124,7 +1140,9 @@ shown in figure \ref{fig:animation_mode_numbers}.
 \item[3 -- Parts list] The list of all parts in the group, but unlike
   the ``Parts'' mode, this only lets you select a part. It's not
   possible in this mode to add or remove parts, nor to change their
-  stacking order.
+  stacking order. The animation's participant parts are the ones
+  selected by the checkbox on it. To add or remove parts, just
+  click in the checkbox.
 \item[4 -- Frame details] Shows the previous, current and next
   \emph{times} for the currently selected frame, as well as the
   transition style and duration. The transition style operates over
@@ -1146,7 +1164,7 @@ some are grayed out. The black ones are existing frames in the
 animation and we can jump to these states by clicking on them. By
 clicking on a grey dot, a new frame is added, creating the necessary
 states by copying them from the previous frame in the timeline. In the
-future, this new states could be generated by interpolating from the
+future, this new states will be generated by interpolating from the
 previous and following frame to form an intermediate state, making it
 easier to create fluent animations.
 
@@ -1157,7 +1175,20 @@ easier to create fluent animations.
   \label{fig:animation_timeline}
 \end{figure}
 
-The marker below the dots indicates the frame being currently edited.
+The green dot indicates the frame being currently edited. Just bellow
+the green dot, a ``X'' can be seen, this is the place to click to
+remove the current frame from the animation. When removing a frame
+from a animation, a confirmation dialog appears, like the figure
+\ref{fig:animation_remove_frame}.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=1.0\textwidth]{images/animation_frame_remove.png}
+  \caption{Frame remove confirmation}
+  \label{fig:animation_remove_frame}
+\end{figure}
+
+
 
 On the animations list we can also see three icons. Marked on figure
 \ref{fig:animation_list}, this icons are:
@@ -1175,15 +1206,16 @@ On the animations list we can also see three icons. Marked on figure
   \label{fig:animation_list}
 \end{figure}
 
-Be warned that there is no confirmation on deletion yet, so clicking
-on delete will effectively remove the animation with no way to bring
-it back.
+Once you delete a animation, it's possible to bring it back by
+clicking on undo button.
 
 Clicking on \GUIIcon{``New Animation''} will show the dialog in figure
 \ref{fig:animation_dialog_new}. In this dialog, just type the name of
-the new animation and click \GUIButton{``Add''} or press the return
-key to create the animation. If one with the same name already exists,
-you will be prompted to choose another one.
+the new animation, select the participants parts (optional), and click
+\GUIButton{``Add''} or press the return key to create the
+animation. If no participant part is selected, all the parts will be
+added to the animation as default. If one animation with the same name
+already exists, you will be prompted to choose another one.
 
 \begin{figure}[h!]
   \centering
@@ -1291,10 +1323,8 @@ For this example we will use only Edje, so we are going to stick to simple
 parts. We'll start by defining the basic layout of our ``UI'' to have a
 couple of ``buttons'' and some sort of indicator of something.
 
-Launch Editje, select \GUIButton{``New''} and pick a name for the
-file to start working on an empty group.
-
-Add a Rectangle named ``bg'', make it white and set the relative values to
+Launch Editje, add a Rectangle named ``bg'', make it white and set the
+relative values to
 \begin{verbatim}
 top-left:
   to:       < None >   < None >
@@ -1647,18 +1677,20 @@ now.
 
 With the animations over, it's time to connect them to signals so we
 can trigger them. Switch to \emph{Signals Mode} and add a new signal
-of type \emph{Animation}. Let's call it ``turn.on''. On the right side
-of the window are the signal properties. Set \GUIEditable{``signal''}
-to ``mouse,clicked,1'' and \GUIEditable{``source''} to ``btn.on'' by
-typing these values in there. This will make our signal react to mouse
-clicks on the ``Turn on'' button. Then click on the
-\GUIEditable{``action''} property to pop up the list of animations and
-choose \emph{level1.on}. Now, when clicking on the button, the first
-animation will run.
+of type \emph{Animation triggering}. Let's call it ``turn.on''. On the
+right side of the window are the signal properties. Set
+\GUIEditable{``signal''} to ``mouse,clicked,1'' and
+\GUIEditable{``source''} to ``btn.on'' by typing these values in
+there. This will make our signal react to mouse clicks on the ``Turn
+on'' button. Then click on the \GUIEditable{``action''} property to
+pop up the list of animations and choose \emph{level1.on}. Now, when
+clicking on the button, the first animation will run (It's possible to
+trigger more than one animation in parallel, to do this click on the
+next \GUIEditable{``action''} property).
 
 But this is not enough, we want all the animations to run, one after
 the other, so we need to somehow hook them together. To do this, add
-another signal, this time of type \emph{Signal}, and name it
+another signal, this time of type \emph{General purpose}, and name it
 ``turn.on.2''. On the right side there are two instances of
 \GUIEditable{``signal''} and \GUIEditable{``source''} now, the ones
 above are what the signal listens to in order to be executed, the ones
@@ -1669,10 +1701,10 @@ and ``level2.on''. Now, when the first animation ends, our new signal
 will get notified of it and send the play signal to the second
 animation.
 
-Add another signal, again of type \emph{Signal}, named ``turn.on.3'',
-this time listening to ``animation,end'' from ``level2.on'', and
-emitting ``animation,play'' for ``level3.on''. We should have a setup
-like seen in figure \ref{fig:anim1_signal_level2}.
+Add another signal, again of type \emph{General purpose}, named
+``turn.on.3'', this time listening to ``animation,end'' from
+``level2.on'', and emitting ``animation,play'' for ``level3.on''. We
+should have a setup like seen in figure \ref{fig:anim1_signal_level2}.
 
 \begin{figure}[h!]
   \centering
@@ -1890,15 +1922,15 @@ editje animation.
 
 \subsection{Editje Signals}
 
-Editje signals are edje programs to manager edje edited events. Is
-possible manage received events to emit signals to application (see
-\ref{sec:signal_editing_signal}) or call animations (see
+Editje signals are edje programs to manager edje edited events. It's
+possible to manage received events, to emit signals to application
+(see \ref{sec:signal_editing_signal}) or call animations (see
 \ref{sec:signal_editing_animation}). Making very simple do this tasks,
 what cover the common use.
 
 \subsection{Signal Edition Window}
 
-Once in Signals mode, are presented the window shown in figure
+Once in Signals mode, it's presented the window shown in figure
 \ref{fig:signal_window}.
 
 \begin{figure}
@@ -1922,7 +1954,7 @@ Once in Signals mode, are presented the window shown in figure
  \centering
  \includegraphics[width=1.0\textwidth]{./images/signal_list.png}
  % signal_list.png: 997x595 pixel, 72dpi, 35.17x20.99 cm, bb=0 0 997 595
- \caption{Editje Signal Edition Mode Window}
+ \caption{Signal selected}
  \label{fig:signal_window_list}
 \end{figure}
 
@@ -1937,7 +1969,7 @@ there, you get a dialog box like the one shown in figure
  \centering
  \includegraphics[width=1.0\textwidth]{./images/signal_new.png}
  % new_signal.png: 996x595 pixel, 72dpi, 35.14x20.99 cm, bb=0 0 996 595
- \caption{Editje Signal Edition Mode Window}
+ \caption{New Signal Wizard}
  \label{fig:signal_window_new}
 \end{figure}
 
@@ -1947,13 +1979,13 @@ signal, can confirm creation.
 
 The signal type are:
 \begin{description}
- \item[Animation] Manage animation with custom signals (more in
+ \item[Animation triggering] Manage animation with custom signals (more in
    \ref{sec:signal_editing_animation}).
- \item[Signal] Receive signals and emit custom signals (more in
+ \item[General purpose] Receive signals and emit custom signals (more in
    \ref{sec:signal_editing_signal}).
 \end{description}
 
-\subsection{Animation Integration}
+\subsection{Animation Triggering}
 \label{sec:signal_editing_animation}
 
 To connect events with animations, can be created one editje signal of
@@ -1983,7 +2015,7 @@ Once selected one Animation Signal, the area number 2 in
  \item[\GUIEditable{action}] The animation to be started with signal.
 \end{description}
 
-\subsection{Signal Management}
+\subsection{General purpose signal}
 \label{sec:signal_editing_signal}
 
 	To translate, manage, merge signals to one custom signal. The
@@ -1998,7 +2030,7 @@ program listen one signal and after one optional delay emit another signal.
 \end{figure}
 
 
-	Once selected one Animation Signal, the area number 2 in
+Once selected one General purpose Signal, the area number 2 in
 \ref{fig:signal_window} will be showed as the figure
 \ref{fig:signal_signal_edition}.
 
