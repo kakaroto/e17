@@ -56,6 +56,7 @@ class Part(Object):
         self._type = obj.type
         self["mouse_events"] = obj.mouse_events
         self["repeat_events"] = obj.repeat_events
+        self["scale"] = obj.scale
         self["clip_to"] = obj.clip_to
         self["source"] = obj.source
         self["effect"] = obj.effect
@@ -102,6 +103,7 @@ class Part(Object):
         # type is imutable
         obj.mouse_events = self["mouse_events"]
         obj.repeat_events = self["repeat_events"]
+        obj.scale = self["scale"]
         obj.clip_to = self["clip_to"]
         obj.source = self["source"]
         obj.effect = self["effect"]
@@ -129,6 +131,7 @@ class Part(Object):
         ret += indent + '   type: %s;\n' % types[self.type]
         ret += indent + '   mouse_events: %d;\n' % int(self["mouse_events"])
         ret += indent + '   repeat_events: %d;\n' % int(self["repeat_events"])
+        ret += indent + '   scale: %d;\n' % int(self["scale"])
         ret += indent + '   clip_to: "%s";\n' % self["clip_to"]
         ret += indent + '   source: "%s";\n' % self["source"]
         effects = ["NONE", "PLAIN", "OUTLINE", "SOFT_OUTLINE", "SHADOW",

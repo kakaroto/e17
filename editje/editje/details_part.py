@@ -115,7 +115,11 @@ class PartDetails(EditjeDetails):
         prop = Property(parent, "repeat_events")
         prop.widget_add("re", WidgetBoolean(self))
         self["main"].property_add(prop)
-        # Missing properties: ignore_flags, scale, pointer_mode,
+
+        prop = Property(parent, "scale")
+        prop.widget_add("s", WidgetBoolean(self))
+        self["main"].property_add(prop)
+        # Missing properties: ignore_flags, pointer_mode,
         # precise_is_inside
 
         # textblock only (source is for group too, but later)
@@ -219,6 +223,8 @@ class PartDetails(EditjeDetails):
                 "part events repeating property setting", *args)
         elif prop == "clip_to":
             self._prop_change_do("part clipper setting", *args)
+        elif prop == "scale":
+            self._prop_change_do("part scale setting", *args)
 
     def _prop_value_text_changed(self, prop, value):
         if prop != "effect":
@@ -389,6 +395,9 @@ class PartDetails(EditjeDetails):
 
         self["main"]["repeat_events"].value = self.e.part._part.repeat_events
         self["main"]["repeat_events"].show_value()
+
+        self["main"]["scale"].value = self.e.part._part.scale
+        self["main"]["scale"].show_value()
 
         self.main_show()
 
