@@ -413,8 +413,9 @@ class SignalDetails(EditjeDetails):
         self.group_hide("api")
         self.group_show("api")
 
-        self["api"]["name"].value = None
-        self["api"]["description"].value = None
+        if self["api"].has_key("name"):
+            self["api"]["name"].value = None
+            self["api"]["description"].value = None
 
         self.group_hide("actions")
         self.group_show("actions")
