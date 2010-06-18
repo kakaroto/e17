@@ -767,8 +767,8 @@ class PartStateDetails(EditjeDetails):
         for p in self._params_info:
             if p.name == prop:
                 if not p.validate(value):
-                    nil, value = self.state.external_param_get(prop)
-                    self["external"][prop].value = value
+                    nil, old_value = self.state.external_param_get(prop)
+                    self["external"][prop].value = old_value
                     return
         args = [["external"], [prop], [value], [None], [True], [None]]
         self._prop_change_do(

@@ -239,8 +239,9 @@ class EditjeDetails(edje.Edje):
 
             for i, p in efunc(prop_attrs):
                 if is_external[i]:
-                    self.e.part.state.external_param_set(prop_attrs[i],
-                                                         prop_values[i])
+                    if not self.e.part.state.external_param_set(prop_attrs[i],
+                            prop_values[i]):
+                        return i
                 else:
                     obj = self._prop_object_get()
                     setattr(obj, prop_attrs[i], prop_values[i])
@@ -251,6 +252,7 @@ class EditjeDetails(edje.Edje):
                     label_value = prop_values[i]
                 if self[prop_groups[i]][prop_names[i]].value != label_value:
                     self[prop_groups[i]][prop_names[i]].value = label_value
+            return True
 
         if not self._prop_object_get:
             raise NotImplementedError(
@@ -280,8 +282,12 @@ class EditjeDetails(edje.Edje):
 
         old_values = self._prop_old_values_get(prop_attrs, is_external)
 
-        set_property(part_name, state_name, anim_name, frame, sig_name,
+        is_valid = set_property(part_name, state_name, anim_name, frame, sig_name,
                      prop_attrs, prop_names, prop_values, is_external, filters)
+
+        if is_valid is not True:
+            self["external"][prop_attrs[is_valid]].value = old_values[is_valid]
+            return
 
         op = Operation(op_name)
         op.redo_callback_add(
