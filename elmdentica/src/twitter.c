@@ -29,6 +29,8 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
+#include <json.h>
+
 #include <glib.h>
 #include <glib/gprintf.h>
 
@@ -92,6 +94,8 @@ void messages_insert(int account_id, Eina_List *list, int timeline) {
 	char *query=NULL;
 	Eina_List *l;
 	void *data;
+
+	printf("%d entradas na lista\n", eina_list_count(list));
 
 	sqlite_res = asprintf(&query, "SELECT max(status_id) FROM messages where account_id = %d and timeline = %d;", account_id, timeline);
 	if(sqlite_res != -1) {
@@ -175,12 +179,128 @@ void ed_twitter_max_status_id(int account_id, long long int*since_id, int timeli
 	}
 }
 
+void ed_twitter_statuses_get_avatar(char *screen_name) {
+	http_request *request = NULL;
+	int file, res=0;
+	char * file_path=NULL;
+	char * home=NULL;
+
+
+	// properly check if it's already cached (FIXME: this cache doesn't support updating)
+	home = getenv("HOME");
+	if(home)
+		res = asprintf(&file_path, "%s/.elmdentica/cache/icons/%s", home, screen_name);
+	else
+		res = asprintf(&file_path, ".elmdentica/cache/icons/%s", screen_name);
+
+	if(res != 0) {
+		file = open(file_path, O_RDONLY);
+		// if not, then fetch the icon and write it to the cache
+		if(file == -1) {
+			file = open(file_path, O_WRONLY | O_CREAT, S_IRUSR|S_IWUSR);
+			if(file != -1) {
+				request = calloc(1, sizeof(http_request));
+				request->url=avatar;
+				res = ed_curl_get(NULL, NULL, request, -1);
+				if((res == 0) && (request->response_code == 200))
+					res=write(file, request->content.memory, request->content.size);
+				close(file);
+
+				free(request);
+			} else {
+				fprintf(stderr, _("Can't open %s for writing: %s\n"),file_path, strerror(errno));
+			}
+		} else
+			close(file);
+
+		free(file_path);
+
+		free(avatar);
+
+		avatar = NULL;
+	}
+}
+
+
+void json_timeline_handle(StatusesList *statuses, json_object *json_stream) {
+	json_object *status, *id, *text, *created_at, *user, *screen_name, *name, *profile_image_url;
+	int size,pos=0;
+    ub_Status *ubstatus=NULL;
+
+	size = json_object_array_length(json_stream);
+
+	for(pos=0; pos<size; pos++) {
+    	ubstatus = (ub_Status*)calloc(1, sizeof(ub_Status));
+		status = json_object_array_get_idx(json_stream, pos);
+
+		id = json_object_object_get(status, "id");
+		text = json_object_object_get(status, "text");
+		created_at = json_object_object_get(status, "created_at");
+		user = json_object_object_get(status, "user");
+		name = json_object_object_get(user, "name");
+		screen_name = json_object_object_get(user, "screen_name");
+		profile_image_url = json_object_object_get(user, "profile_image_url");
+
+		ubstatus->id = (long long int)(json_object_get_double(id));
+		ubstatus->name = strndup(json_object_get_string(name), PIPE_BUF);
+		ubstatus->screen_name = strndup(json_object_get_string(screen_name), PIPE_BUF);
+		ubstatus->text = strndup(json_object_get_string(text), PIPE_BUF);
+		avatar = strndup(json_object_get_string(profile_image_url), PIPE_BUF);
+		ubstatus->created_at = curl_getdate(json_object_get_string(created_at), NULL);
+		ed_twitter_statuses_get_avatar(ubstatus->screen_name);
+
+		statuses->list = eina_list_append(statuses->list, (void*)ubstatus);
+
+		json_object_put(id);
+		json_object_put(text);
+		json_object_put(created_at);
+		json_object_put(name);
+		json_object_put(screen_name);
+		json_object_put(profile_image_url);
+		json_object_put(user);
+	}
+}
+
+void json_timeline(StatusesList *statuses, char *stream) {
+	json_object *json_stream, *obj;
+	enum json_type json_stream_type;
+
+	json_stream = json_tokener_parse(stream);
+
+	if(json_stream == NULL) {
+		fprintf(stderr, "ERROR parsing json stream:\n%s\n", stream);
+		return;
+	}
+
+	json_stream_type = json_object_get_type(json_stream);
+
+	switch(json_stream_type) {
+		case json_type_object: {
+			obj = json_object_object_get(json_stream, "error");
+			if(obj)
+				fprintf(stderr, "ERROR: %s\n", json_object_get_string(obj));
+			else
+				fprintf(stderr, "ERROR unexpected content in json stream:\n%s\n", stream);
+			break;
+		}
+		case json_type_array: {
+			json_timeline_handle(statuses, json_stream);
+			break;
+		}
+		default: {
+			fprintf(stderr, "ERROR unsupported json type: %d\n%s\n", json_stream_type, stream);
+		}
+	}
+	json_object_put(json_stream);
+	
+}
+
 void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline) {
-	int xml_res=0;
+	int res=0;
 	long long int since_id=0;
 	char *timeline_str;
 	http_request * request=calloc(1, sizeof(http_request));
-	StatusesList *statuses=(StatusesList*)g_malloc(sizeof(StatusesList));
+	StatusesList *statuses=(StatusesList*)calloc(1, sizeof(StatusesList));
 	time_t now;
 
 	switch(timeline) {
@@ -190,36 +310,33 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 		default:				{ timeline_str="friends"; break; }
 	}
 
-	memset(statuses, 0, sizeof(StatusesList));
 	statuses->state = FT_NULL;
 
 	ed_twitter_max_status_id(account_id, &since_id, timeline);
 
 	if(timeline < TIMELINE_FAVORITES) {
 		if(since_id > 0)
-			xml_res = asprintf(&request->url, "%s://%s:%d%s/statuses/%s_timeline.xml?since_id=%lld", proto, domain, port, base_url, timeline_str, since_id);
+			res = asprintf(&request->url, "%s://%s:%d%s/statuses/%s_timeline.json?since_id=%lld", proto, domain, port, base_url, timeline_str, since_id);
 		else
-			xml_res = asprintf(&request->url, "%s://%s:%d%s/statuses/%s_timeline.xml", proto, domain, port, base_url, timeline_str);
+			res = asprintf(&request->url, "%s://%s:%d%s/statuses/%s_timeline.json", proto, domain, port, base_url, timeline_str);
 	} else if(timeline == TIMELINE_FAVORITES) {
 		if(since_id > 0)
-			xml_res = asprintf(&request->url, "%s://%s:%d%s/favorites.xml?since_id=%lld", proto, domain, port, base_url, since_id);
+			res = asprintf(&request->url, "%s://%s:%d%s/favorites.json?since_id=%lld", proto, domain, port, base_url, since_id);
 		else
-			xml_res = asprintf(&request->url, "%s://%s:%d%s/favorites.xml", proto, domain, port, base_url);
+			res = asprintf(&request->url, "%s://%s:%d%s/favorites.json", proto, domain, port, base_url);
 	}
 
-	if(xml_res != -1) {
+	if(res != -1) {
 		if (debug) printf("gnome-open %s\n", request->url);
 
-		xml_res = ed_curl_get(screen_name, password, request, account_id);
+		res = ed_curl_get(screen_name, password, request, account_id);
 
-		if((xml_res == 0) && (request->response_code == 200)) {
-			ed_twitter_init_friends();
-			xmlSubstituteEntitiesDefault(1);
+		if((res == 0) && (request->response_code == 200)) {
 
-			xml_res = xmlSAXUserParseMemory(&saxHandler, (void*)statuses, request->content.memory, request->content.size);
+			json_timeline(statuses, request->content.memory);
 
-			if(xml_res != 0) {
-				fprintf(stderr,_("FAILED TO SAX FRIENDS: %d\n"),xml_res);
+			if(res != 0) {
+				fprintf(stderr,_("FAILED TO SAX FRIENDS: %d\n"),res);
 				if (debug) fprintf(stderr,"%s\n",request->content.memory);
 			}
 
@@ -279,215 +396,6 @@ void ed_twitter_favorite_destroy(int account_id, char *screen_name, char *passwo
 		free(request->url);
 	}
 	if(request) free(request);
-}
-
-void ed_twitter_init_friends(void) {
-	memset(&saxHandler, '\0', sizeof(xmlSAXHandler));
-
-	saxHandler.startDocument		= ed_twitter_friends_startDocument;
-	saxHandler.endDocument			= ed_twitter_friends_endDocument;
-	saxHandler.startElement			= ed_twitter_friends_startElement;
-	saxHandler.endElement			= ed_twitter_friends_endElement;
-	saxHandler.characters			= ed_twitter_friends_characters;
-}
-
-void ed_twitter_statuses_get_avatar(char *screen_name) {
-	http_request *request = NULL;
-	int file, res=0;
-	char * file_path=NULL;
-	char * home=NULL;
-
-
-	// properly check if it's already cached (FIXME: this cache doesn't support updating)
-	home = getenv("HOME");
-	if(home)
-		res = asprintf(&file_path, "%s/.elmdentica/cache/icons/%s", home, screen_name);
-	else
-		res = asprintf(&file_path, ".elmdentica/cache/icons/%s", screen_name);
-
-	if(res != 0) {
-		file = open(file_path, O_RDONLY);
-		// if not, then fetch the icon and write it to the cache
-		if(file == -1) {
-			file = open(file_path, O_WRONLY | O_CREAT, S_IRUSR|S_IWUSR);
-			if(file != -1) {
-				request = calloc(1, sizeof(http_request));
-				request->url=avatar;
-				res = ed_curl_get(NULL, NULL, request, -1);
-				if((res == 0) && (request->response_code == 200))
-					res=write(file, request->content.memory, request->content.size);
-				close(file);
-
-				free(request);
-			} else {
-				fprintf(stderr, _("Can't open %s for writing: %s\n"),file_path, strerror(errno));
-			}
-		} else
-			close(file);
-
-		free(file_path);
-
-		free(avatar);
-
-		avatar = NULL;
-	}
-}
-
-void ed_twitter_friends_startDocument(void *user_data) {
-}
-
-void ed_twitter_friends_endDocument(void *user_data) {
-}
-
-void ed_twitter_friends_startElement(void *user_data, const xmlChar * name, const xmlChar ** attrs) {
-	StatusesList *statuses = (StatusesList*)user_data;
-	ub_Status *status=NULL;
-
-	if(strncmp((char*)name, "hash", 4) == 0 && strlen((char*)name) == 4) {
-		statuses->state = HASH;
-	} else if(strncmp((char*)name, "error", 5) == 0 && statuses->state == HASH) {
-		statuses->state = HASH_ERROR;
-	} else if(strncmp((char*)name, "request", 7) == 0 && statuses->state == HASH) {
-		statuses->state = HASH_REQUEST;
-	} else if(strlen((char*)name) == 8 && strncmp((char*)name, "statuses", 8) == 0) {
-		statuses->state = FT_NULL;
-	} else if(strlen((char*)name) == 2 && strncmp((char*)name, "id", 2) == 0 && statuses->state == FT_STATUS) {
-		statuses->state = FT_ID;
-	} else if(statuses->state == FT_NULL && strlen((char*)name) == 6 && strncmp((char*)name, "status", 6) == 0) {
-		statuses->state = FT_STATUS;
-
-		status = (ub_Status*)malloc(sizeof(ub_Status));
-		memset(status, '\0', sizeof(ub_Status));
-
-		statuses->current = status;
-	} else if(statuses->state == FT_USER && strncmp((char*)name, "name", 4) == 0)
-		statuses->state = FT_NAME;
-	else if(statuses->state == FT_STATUS && strncmp((char*)name, "user", 4) == 0)
-		statuses->state = FT_USER;
-	else if(statuses->state == FT_USER && strncmp((char*)name, "profile_image_url", 17) == 0)
-		statuses->state = FT_AVATAR;
-	else if(statuses->state == FT_USER && strncmp((char*)name, "screen_name", 11) == 0)
-		statuses->state = FT_SCREEN_NAME;
-	else if(statuses->state == FT_STATUS && strncmp((char*)name, "created_at", 10) == 0)
-		statuses->state = FT_CREATED_AT;
-	else if(statuses->state == FT_STATUS && strncmp((char*)name, "text", 4) == 0)
-		statuses->state = FT_TEXT;
-	else if(statuses->state == FT_STATUS && strncmp((char*)name, "retweeted_status", 16) == 0)
-		statuses->state = FT_RT;
-	else if(statuses->state == FT_STATUS && strncmp((char*)name, "place", 5) == 0)
-		statuses->state = FT_PLACE;
-}
-void ed_twitter_friends_endElement(void *user_data, const xmlChar * name) {
-	StatusesList *statuses = (StatusesList*)user_data;
-
-	if(strncmp((char*)name, "hash", 4) == 0 && strlen((char*)name) == 4) {
-		statuses->state = HASH;
-	} else if(strncmp((char*)name, "error", 5) == 0 && statuses->state == HASH_ERROR) {
-		statuses->state = HASH;
-	} else if(strncmp((char*)name, "request", 7) == 0 && statuses->state == HASH_REQUEST) {
-		statuses->state = HASH;
-	} else if(statuses->state == FT_ID && strlen((char*)name) == 2 && strncmp((char*)name, "id", 2) == 0) {
-		statuses->current->id = atoll(statuses->current->id_str);
-		free(statuses->current->id_str);
-		statuses->state = FT_STATUS;
-	} else if(statuses->state == FT_STATUS && strncmp((char*)name, "status", 6) == 0 && strlen((char*)name) == 6) {
-		statuses->list = eina_list_append(statuses->list, (void*)statuses->current);
-		statuses->state = FT_NULL;
-	} else if(statuses->state == FT_NAME && strncmp((char*)name, "name", 4) == 0)
-		statuses->state = FT_USER;
-	else if(statuses->state == FT_AVATAR && strncmp((char*)name, "profile_image_url", 17) == 0) {
-		statuses->state = FT_USER;
-		ed_twitter_statuses_get_avatar(statuses->current->screen_name);
-	} else if(statuses->state == FT_USER && strncmp((char*)name, "user", 4) == 0)
-		statuses->state = FT_STATUS;
-	else if(statuses->state == FT_SCREEN_NAME && strncmp((char*)name, "screen_name", 11) == 0)
-		statuses->state = FT_USER;
-	else if(statuses->state == FT_CREATED_AT && strncmp((char*)name, "created_at", 10) == 0) {
-		statuses->current->created_at = curl_getdate(statuses->current->created_at_str, NULL);
-		free(statuses->current->created_at_str);
-		statuses->state = FT_STATUS;
-	} else if(statuses->state == FT_TEXT && strncmp((char*)name, "text", 4) == 0)
-		statuses->state = FT_STATUS;
-	else if(statuses->state == FT_RT && strncmp((char*)name, "retweeted_status", 16) == 0)
-		statuses->state = FT_STATUS;
-	else if(statuses->state == FT_PLACE && strncmp((char*)name, "place", 5) == 0)
-		statuses->state = FT_STATUS;
-}
-void ed_twitter_friends_characters(void *user_data, const xmlChar * ch, int len) {
-	StatusesList *statuses = (StatusesList*)user_data;
-	ub_Status *status = statuses->current;
-	TimeLineStates * state = &(statuses->state);
-	char *format=NULL, text[PIPE_BUF];
-	int res=0;
-
-	res = asprintf(&format, "%%s%%.%ds", len);
-	if(*state == HASH_ERROR && ch && len > 0) {
-		if(statuses->hash_error != NULL) {
-			snprintf(text, strlen(statuses->hash_error)+len+1, format, statuses->hash_error, ch);
-		} else {
-			snprintf(text, len+1, format, "", ch);
-		}
-		if(statuses->hash_error) free(statuses->hash_error);
-		statuses->hash_error = strdup(text);
-	} else if(*state == HASH_REQUEST && ch && len>0) {
-		if(statuses->hash_request != NULL) {
-			snprintf(text, strlen(statuses->hash_request)+len+1, format, statuses->hash_request, ch);
-		} else {
-			snprintf(text, len+1, format, "", ch);
-		}
-		if(statuses->hash_request) free(statuses->hash_request);
-		statuses->hash_request = strdup(text);
-	} else if(*state == FT_ID && ch && len>0) {
-		if(status->id_str != NULL) {
-			snprintf(text, strlen(status->id_str)+len+1, format, status->id_str, ch);
-		} else {
-			snprintf(text, len+1, format, "", ch);
-		}
-		if(status->id_str) free(status->id_str);
-		status->id_str = strdup(text);
-	} else if(*state == FT_NAME && ch && len>0) {
-		if(status->name != NULL) {
-			snprintf(text, strlen(status->name)+len+1, format, status->name, ch);
-		} else {
-			snprintf(text, len+1, format, "", ch);
-		}
-		if(status->name) free(status->name);
-		status->name = strdup(text);
-	} else if(*state == FT_AVATAR && ch && len>0) {
-		if(avatar != NULL) {
-			snprintf(text, strlen(avatar)+len+1, format, avatar, ch);
-			free(avatar);
-		} else {
-			snprintf(text, len+1, format, "", ch);
-		}
-		avatar = strdup(text);
-	} else if(*state == FT_SCREEN_NAME && ch && len>0) {
-		if(status->screen_name != NULL) {
-			snprintf(text, strlen(status->screen_name)+len+1, format, status->screen_name, ch);
-			free(status->screen_name);
-		} else {
-			snprintf(text, len+1, format, "", ch);
-		}
-		status->screen_name = strdup(text);
-	} else if(*state == FT_CREATED_AT && ch && len>0) {
-		if(status->created_at_str != NULL) {
-			snprintf(text, strlen(status->created_at_str)+len+1, format, status->created_at_str, ch);
-		} else {
-			snprintf(text, len+1, format, "", ch);
-		}
-		if(status->created_at_str) free(status->created_at_str);
-		status->created_at_str = strdup(text);
-	} else if(*state == FT_TEXT && ch && len>0) {
-		if(status->text != NULL) {
-			snprintf(text, strlen(status->text)+len+1, format, status->text, ch);
-		} else {
-			snprintf(text, len+1, format, "", ch);
-		}
-		if(status->text) free(status->text);
-		status->text = strdup(text);
-	}
-
-	free(format);
 }
 
 void ed_twitter_users_show_startDocument(void *user_data) {

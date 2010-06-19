@@ -57,13 +57,11 @@ typedef enum _UsersShowStates {
 } UsersShowStates;
 
 typedef struct _ub_Status {
-	char * screen_name;	// <screen_name>
-	char * name;		// <name>
-	char * text;		// <text>
-	char * created_at_str;	// <created_at> as a string
-	time_t created_at;	// <created_at>
-	long long int    id;		// <id>
-	char * id_str;		// <id> as string
+	char * screen_name;
+	char * name;
+	char * text;
+	time_t created_at;
+	long long int    id;
 } ub_Status;
 
 typedef struct _ub_bubble {

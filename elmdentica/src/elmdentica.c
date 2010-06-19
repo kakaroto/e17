@@ -47,9 +47,10 @@
 
 #include <sqlite3.h>
 
-#include <curl/curl.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+
+#include <curl/curl.h>
 #include <glib.h>
 #include <glib/gprintf.h>
 
@@ -83,8 +84,6 @@ extern char * browserNames[];
 char * follow_user=NULL;
 
 extern Settings *settings;
-
-extern xmlSAXHandler friends_saxHandler;
 
 extern CURL * user_agent;
 
@@ -1041,11 +1040,9 @@ void show_error(StatusesList * statuses) {
 void del_status(gpointer data, gpointer user_data) {
 	ub_Status	* status=(ub_Status*)data;
 
-	free(status->id_str);
 	free(status->screen_name);
 	free(status->name);
 	free(status->text);
-	free(status->created_at_str);
 	free(status);
 
 }
@@ -1487,8 +1484,6 @@ EAPI int elm_main(int argc, char **argv)
 	if(re_user) g_regex_unref(re_user);
 	if(re_link_content) g_regex_unref(re_link_content);
 	if(re_amp) g_regex_unref(re_amp);
-
-	xmlCleanupParser();
 
 	return 0;
 }
