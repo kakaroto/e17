@@ -21,8 +21,8 @@ PKG_CHECK_MODULES(SQLITE, sqlite3, [],
 		[AC_MSG_FAILURE([sqlite3 not found])]
 		)
 
-PKG_CHECK_MODULES(LIBXML, libxml-2.0, [], [
-		PKG_CHECK_MODULES(LIBXML, libxml, [], [AC_MSG_FAILURE([libxml not found])])
+PKG_CHECK_MODULES(JSON, json, [], [
+		PKG_CHECK_MODULES(JSON, json, [], [AC_MSG_FAILURE([json not found])])
 		])
 
 PKG_CHECK_MODULES(CURL, libcurl, [],

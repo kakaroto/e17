@@ -47,9 +47,6 @@
 
 #include <sqlite3.h>
 
-#include <libxml/parser.h>
-#include <libxml/tree.h>
-
 #include <curl/curl.h>
 #include <glib.h>
 #include <glib/gprintf.h>
@@ -498,10 +495,7 @@ static void on_user_info_close(void *data, Evas_Object *obj, void *event_info) {
 static void user_free(UserProfile *user) {
 	if(user) {
 		if(user->name) free(user->name);
-		if(user->description) free(user->description);
 		if(user->tmp) free(user->tmp);
-		if(user->hash_error) free(user->hash_error);
-		if(user->hash_request) free(user->hash_request);
 
 		free(user);
 	}
@@ -525,10 +519,7 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 	user->screen_name=anchor->url;
     user->name=NULL;
     user->description=NULL;
-    user->profile_image_url=NULL;
     user->tmp=NULL;
-    user->hash_error=NULL;
-    user->hash_request=NULL;
 
 	url_win = elm_win_inwin_add(win);
 		elm_object_style_set(url_win, "minimal_vertical");
@@ -567,15 +558,6 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 	buttons = elm_box_add(win);
 		elm_box_horizontal_set(buttons, EINA_TRUE);
 
-	if(user->state == US_ERROR) {
-		elm_label_line_wrap_set(label, EINA_TRUE);
-		res = asprintf(&description, _("Error fetching user info: %s"), user->hash_error);
-		if(res != -1) {
-			elm_label_label_set(label, description);
-			free(description);
-		} else
-			elm_label_label_set(label, _("Unknown error fetching user info."));
-	} else if(user->state == US_NULL) {
 		res = asprintf(&description, "%s is following %d and has %d followers.", user->name, user->friends_count, user->followers_count);
 		elm_label_line_wrap_set(label, EINA_TRUE);
 		if(res!=-1)
@@ -601,22 +583,21 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 
 		follow_user=user->screen_name;
 
-			if(!user->following && !user->protected) {
-				button = elm_button_add(win);
-					elm_button_label_set(button, _("Follow"));
-					evas_object_smart_callback_add(button, "clicked", on_user_follow, ubBubble);
-					elm_box_pack_end(buttons, button);
-				evas_object_show(button);
-			} else {
-				button = elm_button_add(win);
-					elm_button_label_set(button, _("Stop following"));
-					evas_object_smart_callback_add(button, "clicked", on_user_abandon, ubBubble);
-					elm_box_pack_end(buttons, button);
-				evas_object_show(button);
-			}
+		if(!user->following && !user->protected) {
+			button = elm_button_add(win);
+				elm_button_label_set(button, _("Follow"));
+				evas_object_smart_callback_add(button, "clicked", on_user_follow, ubBubble);
+				elm_box_pack_end(buttons, button);
+			evas_object_show(button);
+		} else {
+			button = elm_button_add(win);
+				elm_button_label_set(button, _("Stop following"));
+				evas_object_smart_callback_add(button, "clicked", on_user_abandon, ubBubble);
+				elm_box_pack_end(buttons, button);
+			evas_object_show(button);
+		}
 
 		user_free(user);
-	}
 
 		button = elm_button_add(win);
 			elm_button_label_set(button, _("Close"));
@@ -1300,8 +1281,6 @@ static void on_entry_clicked(void *data, Evas_Object *entry, void *event_info) {
 EAPI int elm_main(int argc, char **argv)
 {
 	Evas_Object *bg=NULL, *box=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *box2=NULL, *hoversel=NULL, *panel=NULL;
-
-	LIBXML_TEST_VERSION
 
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, LOCALEDIR);

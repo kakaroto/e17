@@ -26,9 +26,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include <libxml/parser.h>
-#include <libxml/tree.h>
-
 #include <json.h>
 
 #include <glib.h>
@@ -50,7 +47,6 @@
 #include "curl.h"
 #include "elmdentica.h"
 
-xmlSAXHandler saxHandler;
 char * avatar=NULL;
 extern struct sqlite3 *ed_DB;
 extern int debug;
@@ -140,7 +136,7 @@ int ed_twitter_post(int account_id, char *screen_name, char *password, char *pro
 			res = asprintf(&ub_status, "source=%s&status=%s", PACKAGE, msg);
 
 		if(res != -1) {
-			res  = asprintf(&request->url,"%s://%s:%d%s/statuses/update.xml", proto, domain, port, base_url);
+			res  = asprintf(&request->url,"%s://%s:%d%s/statuses/update.json", proto, domain, port, base_url);
 			if(res != -1) {
 				res = ed_curl_post(screen_name, password, request, ub_status, account_id);
 
@@ -292,7 +288,6 @@ void json_timeline(StatusesList *statuses, char *stream) {
 		}
 	}
 	json_object_put(json_stream);
-	
 }
 
 void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline) {
@@ -362,7 +357,7 @@ void ed_twitter_favorite_create(int account_id, char *screen_name, char *passwor
 	http_request * request=calloc(1, sizeof(http_request));
 	int res;
 
-	res = asprintf(&request->url, "%s://%s:%d%s/favorites/create/%ld.xml", proto, domain, port, base_url, status_id);
+	res = asprintf(&request->url, "%s://%s:%d%s/favorites/create/%ld.json", proto, domain, port, base_url, status_id);
 	if(res != -1) {
 		ed_curl_post(screen_name, password, request, "", account_id);
 		free(request->url);
@@ -390,7 +385,7 @@ void ed_twitter_favorite_destroy(int account_id, char *screen_name, char *passwo
 	int res;
 
 	ed_twitter_favorite_db_remove(account_id, status_id);
-	res = asprintf(&request->url, "%s://%s:%d%s/favorites/destroy/%ld.xml", proto, domain, port, base_url, status_id);
+	res = asprintf(&request->url, "%s://%s:%d%s/favorites/destroy/%ld.json", proto, domain, port, base_url, status_id);
 	if(res != -1) {
 		ed_curl_post(screen_name, password, request, "", account_id);
 		free(request->url);
@@ -398,211 +393,78 @@ void ed_twitter_favorite_destroy(int account_id, char *screen_name, char *passwo
 	if(request) free(request);
 }
 
-void ed_twitter_users_show_startDocument(void *user_data) {
-}
+void json_user_show(UserProfile *user, char *stream) {
+	json_object *json_stream, *obj, *screen_name_obj;
+	enum json_type json_stream_type;
 
-void ed_twitter_users_show_endDocument(void *user_data) {
-}
-void ed_twitter_users_show_startElement(void *user_data, const xmlChar * name, const xmlChar ** attrs) {
-	UserProfile *user = (UserProfile*)user_data;
+	json_stream = json_tokener_parse(stream);
 
-	if(strncmp((char*)name, "hash", 4) == 0 && strlen((char*)name) == 4) {
-		user->state = US_HASH;
-	} else if(strncmp((char*)name, "error", 5) == 0 && user->state == US_HASH) {
-		user->state = US_HASH_ERROR;
-	} else if(strncmp((char*)name, "request", 7) == 0 && user->state == US_HASH) {
-		user->state = US_HASH_REQUEST;
-	} else if(strlen((char*)name) == 4 && strncmp((char*)name, "name", 4) == 0) {
-		user->state = US_NAME;
-	} else if(strlen((char*)name) == 11 && strncmp((char*)name, "description", 11) == 0) {
-		user->state = US_DESCRIPTION;
-	} else if(strlen((char*)name) == 17 && strncmp((char*)name, "profile_image_url", 17) == 0) {
-		user->state = US_PROFILE_IMAGE;
-	} else if(strlen((char*)name) == 9 && strncmp((char*)name, "protected", 9) == 0) {
-		user->state = US_PROTECTED;
-	} else if(strlen((char*)name) == 15 && strncmp((char*)name, "followers_count", 15) == 0) {
-		user->state = US_FOLLOWERS_COUNT;
-	} else if(strlen((char*)name) == 13 && strncmp((char*)name, "friends_count", 13) == 0) {
-		user->state = US_FRIENDS_COUNT;
-	} else if(strlen((char*)name) == 9 && strncmp((char*)name, "following", 9) == 0) {
-		user->state = US_FOLLOWING;
+	if(json_stream == NULL) {
+		fprintf(stderr, "ERROR parsing json stream:\n%s\n", stream);
+		return;
 	}
-}
 
-void ed_twitter_users_show_endElement(void *user_data, const xmlChar * name) {
-	UserProfile *user = (UserProfile*)user_data;
+	json_stream_type = json_object_get_type(json_stream);
 
-	if(strncmp((char*)name, "hash", 4) == 0 && strlen((char*)name) == 4) {
-		user->state = US_ERROR;
-	} else if(strncmp((char*)name, "error", 5) == 0 && user->state == US_HASH_ERROR) {
-		user->state = US_HASH;
-	} else if(strncmp((char*)name, "request", 7) == 0 && user->state == US_HASH_REQUEST) {
-		user->state = US_HASH;
-	} else if(strlen((char*)name) == 4 && strncmp((char*)name, "name", 4) == 0) {
-		user->state = US_NULL;
-	} else if(strlen((char*)name) == 11 && strncmp((char*)name, "description", 11) == 0) {
-		user->state = US_NULL;
-	} else if(strlen((char*)name) == 17 && strncmp((char*)name, "profile_image_url", 17) == 0) {
-		avatar=user->profile_image_url;
-		ed_twitter_statuses_get_avatar(user->screen_name);
-		user->state = US_NULL;
-	} else if(strlen((char*)name) == 9 && strncmp((char*)name, "protected", 9) == 0) {
-		user->state = US_NULL;
-		if(user->tmp) {
-			if(strncmp(user->tmp, "true", 4) == 0)
-				user->protected = EINA_TRUE;
-			else
-				user->protected = EINA_FALSE;
-			free(user->tmp);
-			user->tmp=NULL;
-		} else
-			user->protected = EINA_FALSE;
-	} else if(strlen((char*)name) == 15 && strncmp((char*)name, "followers_count", 15) == 0) {
-		user->state = US_NULL;
-		if(user->tmp) {
-			user->followers_count = atoi(user->tmp);
-			free(user->tmp);
-			user->tmp=NULL;
-		} else
-			user->followers_count = 0;
-	} else if(strlen((char*)name) == 13 && strncmp((char*)name, "friends_count", 13) == 0) {
-		user->state = US_NULL;
-		if(user->tmp) {
-			user->friends_count = atoi(user->tmp);
-			free(user->tmp);
-			user->tmp=NULL;
-		} else
-			user->friends_count = 0;
-	} else if(strlen((char*)name) == 9 && strncmp((char*)name, "following", 9) == 0) {
-		user->state = US_NULL;
-		if(user->tmp) {
-			if(strncmp(user->tmp, "true", 4) == 0)
-				user->following = EINA_TRUE;
-			else
-				user->following = EINA_FALSE;
-			free(user->tmp);
-			user->tmp=NULL;
-		} else
-			user->following = EINA_FALSE;
+	if(json_object_get_type(json_stream) == json_type_object) {
+		obj = json_object_object_get(json_stream, "error");
+		if(obj) {
+			fprintf(stderr, "ERROR: %s\n", json_object_get_string(obj));
+			return;
+		}
+
+		screen_name_obj = json_object_object_get(json_stream, "screen_name");
+		if(screen_name_obj && strncmp(user->screen_name, json_object_get_string(screen_name_obj), strlen(user->screen_name)) == 0 ) {
+			json_object_put(screen_name_obj);
+
+			obj = json_object_object_get(json_stream, "name");
+			if(obj) {
+				user->name = strndup(json_object_get_string(obj), PIPE_BUF);
+				json_object_put(obj);
+			}
+
+			obj = json_object_object_get(json_stream, "profile_image_url");
+			if(obj) {
+				avatar = strndup(json_object_get_string(obj), PIPE_BUF);
+				ed_twitter_statuses_get_avatar(user->screen_name);
+				json_object_put(obj);
+			}
+
+			obj = json_object_object_get(json_stream, "protected");
+			if(obj) {
+				user->protected = (Eina_Bool)json_object_get_boolean(obj);
+				json_object_put(obj);
+			}
+
+			if(obj) {
+				obj = json_object_object_get(json_stream, "following");
+				user->following = (Eina_Bool)json_object_get_boolean(obj);
+				json_object_put(obj);
+			}
+
+			if(obj) {
+				obj = json_object_object_get(json_stream, "friends_count");
+				user->friends_count = (int)json_object_get_double(obj);
+				json_object_put(obj);
+			}
+
+			if(obj) {
+				obj = json_object_object_get(json_stream, "followers_count");
+				user->followers_count = (int)json_object_get_double(obj);
+				json_object_put(obj);
+			}
+
+		}
+		
 	}
-}
-void ed_twitter_users_show_characters(void *user_data, const xmlChar * ch, int len) {
-	UserProfile *user = (UserProfile*)user_data;
-	char *tmp=NULL, *tmp2=NULL;
-	int res=0;
-
-	if(user->state == US_HASH_ERROR && ch && len > 0) {
-		tmp = user->hash_error;
-		tmp2 = strndup((char*)ch, len);
-		if(tmp) {
-			res = asprintf(&user->hash_error, "%s%s",tmp,tmp2);
-			free(tmp);
-			free(tmp2);
-		} else {
-			user->hash_error = tmp2;
-		}
-	} else if(user->state == US_HASH_REQUEST && ch && len>0) {
-		//tmp = user->hash_request;
-		tmp2 = strndup((char*)ch, len);
-		if(user->hash_request) {
-			res = asprintf(&tmp, "%s%s",user->hash_request,tmp2);
-			free(user->hash_request);
-			user->hash_request = tmp;
-			free(tmp2);
-		} else {
-			user->hash_request = tmp2;
-		}
-	} else if(user->state == US_NAME && ch && len>0) {
-		//tmp = user->name;
-		tmp2 = strndup((char*)ch, len);
-		if(user->name) {
-			res = asprintf(&tmp, "%s%s",user->name,tmp2);
-			free(user->name);
-			user->name = tmp;
-			free(tmp2);
-		} else {
-			user->name = tmp2;
-		}
-	} else if(user->state == US_DESCRIPTION && ch && len>0) {
-		tmp = user->description;
-		tmp2 = strndup((char*)ch, len);
-		if(tmp) {
-			res = asprintf(&user->description, "%s%s",tmp,tmp2);
-			free(tmp);
-			free(tmp2);
-		} else {
-			user->description = tmp2;
-		}
-	} else if(user->state == US_PROFILE_IMAGE && ch && len>0) {
-		tmp = user->profile_image_url;
-		tmp2 = strndup((char*)ch, len);
-		if(tmp) {
-			res = asprintf(&user->profile_image_url, "%s%s",tmp,tmp2);
-			free(tmp);
-			free(tmp2);
-		} else {
-			user->profile_image_url = tmp2;
-		}
-	} else if(user->state == US_PROTECTED && ch && len>0) {
-		tmp = user->tmp;
-		tmp2 = strndup((char*)ch, len);
-		if(tmp) {
-			res = asprintf(&user->tmp, "%s%s",tmp,tmp2);
-			free(tmp);
-			free(tmp2);
-		} else {
-			user->tmp = tmp2;
-		}
-	} else if(user->state == US_FOLLOWERS_COUNT && ch && len>0) {
-		tmp = user->tmp;
-		tmp2 = strndup((char*)ch, len);
-		if(tmp) {
-			res = asprintf(&user->tmp, "%s%s",tmp,tmp2);
-			free(tmp);
-			free(tmp2);
-		} else {
-			user->tmp = tmp2;
-		}
-	} else if(user->state == US_FRIENDS_COUNT && ch && len>0) {
-		tmp = user->tmp;
-		tmp2 = strndup((char*)ch, len);
-		if(tmp) {
-			res = asprintf(&user->tmp, "%s%s",tmp,tmp2);
-			free(tmp);
-			free(tmp2);
-		} else {
-			user->tmp = tmp2;
-		}
-	} else if(user->state == US_FOLLOWING && ch && len>0) {
-		//tmp = user->tmp;
-		tmp2 = strndup((char*)ch, len);
-		if(user->tmp) {
-			res = asprintf(&tmp, "%s%s",user->tmp,tmp2);
-			free(user->tmp);
-			user->tmp = tmp;
-			free(tmp2);
-		} else {
-			user->tmp = tmp2;
-		}
-	}
-}
-
-void ed_twitter_init_users_show(UserProfile *user) {
-	user->state = US_NULL;
-	memset(&saxHandler, '\0', sizeof(xmlSAXHandler));
-
-	saxHandler.startDocument		= ed_twitter_users_show_startDocument;
-	saxHandler.endDocument			= ed_twitter_users_show_endDocument;
-	saxHandler.startElement			= ed_twitter_users_show_startElement;
-	saxHandler.endElement			= ed_twitter_users_show_endElement;
-	saxHandler.characters			= ed_twitter_users_show_characters;
+	json_object_put(json_stream);
 }
 
 static int ed_twitter_user_get_handler(void *data, int argc, char **argv, char **azColName) {
 	UserGet *ug=(UserGet*)data;
 	UserProfile *user = ug->user;
     char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
-    int port=0, id=0, xml_res;
+    int port=0, id=0, res;
 	http_request * request=calloc(1, sizeof(http_request));
     /* In this query handler, these are the current fields:
         argv[0] == name TEXT
@@ -626,24 +488,14 @@ static int ed_twitter_user_get_handler(void *data, int argc, char **argv, char *
 
 	if(request == NULL) return(-1);
 
-	xml_res = asprintf(&request->url, "%s://%s:%d%s/users/show.xml?screen_name=%s", proto, domain, port, base_url, user->screen_name);
+	res = asprintf(&request->url, "%s://%s:%d%s/users/show.json?screen_name=%s", proto, domain, port, base_url, user->screen_name);
 
-	if(xml_res != -1) {
+	if(res != -1) {
 		if (debug) printf("gnome-open %s\n", request->url);
 
-		xml_res = ed_curl_get(screen_name, password, request, ug->account_id);
-		if((xml_res == 0) && (request->response_code == 200)) {
-
-			ed_twitter_init_users_show(user);
-			xmlSubstituteEntitiesDefault(1);
-
-			xml_res = xmlSAXUserParseMemory(&saxHandler, (void*)user, request->content.memory, request->content.size);
-
-			if(xml_res != 0) {
-				fprintf(stderr,_("FAILED TO SAX USERS SHOW: %d\n"),xml_res);
-				if (debug) fprintf(stderr,"%s\n",request->content.memory);
-			}
-		}
+		res = ed_curl_get(screen_name, password, request, ug->account_id);
+		if((res == 0) && (request->response_code == 200))
+			json_user_show(user, request->content.memory);
 
 	}
 
@@ -675,7 +527,7 @@ void ed_twitter_user_follow(int account_id, char *screen_name, char *password, c
 	http_request * request=calloc(1, sizeof(http_request));
 	int res;
 
-	res = asprintf(&request->url, "%s://%s:%d%s/friendships/create.xml?screen_name=%s", proto, domain, port, base_url, user_screen_name);
+	res = asprintf(&request->url, "%s://%s:%d%s/friendships/create.json?screen_name=%s", proto, domain, port, base_url, user_screen_name);
 	if(res != -1) {
 		ed_curl_post(screen_name, password, request, "", account_id);
 		if(debug && request->response_code != 200)
@@ -688,7 +540,7 @@ void ed_twitter_user_abandon(int account_id, char *screen_name, char *password, 
 	http_request * request=calloc(1, sizeof(http_request));
 	int res;
 
-	res = asprintf(&request->url, "%s://%s:%d%s/friendships/destroy.xml?screen_name=%s", proto, domain, port, base_url, user_screen_name);
+	res = asprintf(&request->url, "%s://%s:%d%s/friendships/destroy.json?screen_name=%s", proto, domain, port, base_url, user_screen_name);
 	if(res != -1) {
 		ed_curl_post(screen_name, password, request, "", account_id);
 		if(debug && request->response_code != 200)

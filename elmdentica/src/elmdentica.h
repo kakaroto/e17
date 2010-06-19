@@ -91,14 +91,11 @@ typedef struct _User_Profile {
 	char		*name;
 	char		*screen_name;
 	char		*description;
-	char		*profile_image_url;
 	char		*tmp;
 	Eina_Bool	protected;
 	int			followers_count;
 	int			friends_count;
 	Eina_Bool	following;
-	char		*hash_error;
-	char		*hash_request;
 } UserProfile;
 
 #define ACCOUNT_TYPE_NONE 0

@@ -3,7 +3,6 @@ NTAINERCLEANFILES = Makefile.in
 AM_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\" \
 		-I ../			\
 		@PTHREAD_CFLAGS@	\
-		@LIBXML_CFLAGS@		\
 		@JSON_CFLAGS@		\
 		@GLIB_CFLAGS@		\
 		@SQLITE_CFLAGS@		\
@@ -14,7 +13,6 @@ AM_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\" \
 
 
 AM_LDFLAGS =	@PTHREAD_LIBS@		\
-		@LIBXML_LIBS@		\
 		@JSON_LIBS@		\
 		@GLIB_LIBS@		\
 		@SQLITE_LIBS@		\
