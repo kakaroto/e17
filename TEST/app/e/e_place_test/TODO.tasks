@@ -79,5 +79,10 @@ Think about Alt-Tab of taskbar support for this feature. But this is a implement
       <summary>req_window_resize_move</summary>
       <comment>If a window resizes itself without border interaction it's moved to the next available coordinates which aren't covered by ignore zones like not overlap allowed shelfes.</comment>
     </item>
+    <item>
+      <attribute id="1276890347" priority="1" done="0" start_date="733941" enddate="99999999" notify="0" endtime="-60" last_edited="1276890347"/>
+      <summary>req_maximize_drag</summary>
+      <comment>If the user drags a maximized window it should lose its maximize state. If the window is moved back while holding mouse button to border maximize position the maximize state is recovered.</comment>
+    </item>
   </category>
 </gtodo>
