@@ -6,6 +6,8 @@ static void _flickr_notuptodate_cb(void *data, Evas_Object *obj, void *event_inf
 static void _close_cb(void *data, Evas_Object *obj, void *event_info);
 static void _local_notuptodate_cb(void *data, Evas_Object *obj, void *event_info);
 static void _album_notinflickr_cb(void *data, Evas_Object *obj, void *event_info);
+static void _photos_notinflickr_cb(void *data, Evas_Object *obj, void *event_info);
+
 
 static void _photos_notinlocal_cb(void *data, Evas_Object *obj, void *event_info);
 static void _flickr_photos_notinlocal_photo_new_cb(void *data, Enlil_Album *album, const char *photo_name, const char *photo_id);
@@ -225,7 +227,7 @@ void flickr_sync_update(Enlil_Album *album)
 	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
 	if (photo_data && photo_data->flickr_sync.state == PHOTO_FLICKR_NOTINFLICKR)
 	  {
-		nb_photos++;
+	     nb_photos++;
 	  }
      }
    if(nb_photos>0)
@@ -254,7 +256,7 @@ void flickr_sync_update(Enlil_Album *album)
 	evas_object_size_hint_align_set(bt, -1.0, 0.5);
 	evas_object_size_hint_weight_set(bt, 1.0, 0.0);
 	elm_button_label_set(bt, D_("Sending Them All"));
-	//evas_object_smart_callback_add(bt, "clicked", _photos_notinlocal_cb, album);
+	evas_object_smart_callback_add(bt, "clicked", _photos_notinflickr_cb, album);
 	evas_object_show(bt);
 	elm_pager_content_push(pager, bt);
 
@@ -295,9 +297,9 @@ void flickr_sync_update(Enlil_Album *album)
    if(nb_photos>0)
      {
 	if(nb_photos>1)
-	snprintf(buf, sizeof(buf), D_("%d local photos need to be updated"), nb_photos);
+	  snprintf(buf, sizeof(buf), D_("%d local photos need to be updated"), nb_photos);
 	else
-snprintf(buf, sizeof(buf), D_("1 local photo needs to be updated"));
+	  snprintf(buf, sizeof(buf), D_("1 local photo needs to be updated"));
 
 	lbl = elm_label_add(inwin);
 	elm_label_label_set(lbl, buf);
@@ -517,7 +519,7 @@ static void _flickr_photos_notinlocal_photo_new_cb(void *data, Enlil_Album *albu
 
    //get the list of sizes of the photo
    //Enlil_Flickr_Job *job =
-	enlil_flickr_job_get_photo_sizes_append(photo_id, flickr_photos_notinlocal_sizes_get_cb, photo);
+   enlil_flickr_job_get_photo_sizes_append(photo_id, flickr_photos_notinlocal_sizes_get_cb, photo);
 }
 
 //retrieve the list of sizes and use the bigger one
@@ -604,4 +606,28 @@ static void _flickr_album_header_sync_done_cb(void *data, Enlil_Root *root, Enli
    _sync_stop(album_data);
 }
 
+//send all photos
+static void _photos_notinflickr_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   Enlil_Album *album = data;
+   Enlil_Photo *photo;
+   Eina_List *l;
+
+   Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
+
+   EINA_LIST_FOREACH(enlil_album_photos_get(album), l, photo)
+     {
+	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+	if (photo_data && photo_data->flickr_sync.state == PHOTO_FLICKR_NOTINFLICKR)
+	  {
+		upload_add(enlil_data->ul, photo);
+	  }
+     }
+
+   album_data->flickr_sync.inwin.notinflickr.is_updating = EINA_TRUE;
+   elm_pager_content_promote(album_data->flickr_sync.inwin.notinflickr.pager,
+	 album_data->flickr_sync.inwin.notinflickr.pb);
+   elm_progressbar_pulse(album_data->flickr_sync.inwin.notinflickr.pb, EINA_TRUE);
+
+}
 

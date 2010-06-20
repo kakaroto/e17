@@ -29,6 +29,9 @@ static const Ecore_Getopt options = {
 
 void close_cb(void *data, Evas_Object *obj, void *event_info)
 {
+
+   enlil_file_manager_flush();
+
    slideshow_hide();
    slideshow_clear();
 

@@ -121,6 +121,8 @@ static void _done_cb(void *data, Enlil_Photo *photo, int status)
 {
     Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
     Upload *ul = data;
+    Enlil_Album* album = enlil_photo_album_get(photo);
+    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 
     evas_object_hide(ul->main);
 
@@ -134,6 +136,12 @@ static void _done_cb(void *data, Enlil_Photo *photo, int status)
             enlil_data);
     if(!eina_list_data_find(photo_data->flickr_sync.jobs, job))
         photo_data->flickr_sync.jobs = eina_list_append(photo_data->flickr_sync.jobs, job);
+
+    if(album_data)
+    {
+        if(album_data->flickr_sync.inwin.win)
+            flickr_sync_update(album);
+    }
 }
 
 

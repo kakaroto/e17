@@ -488,8 +488,8 @@ static void _photo_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *e
 	Enlil_Flickr_Job *job =
 	   enlil_flickr_job_get_photo_sizes_append(enlil_photo_flickr_id_get(photo),
 		 flickr_photos_notinlocal_sizes_get_cb, photo);
-if(!eina_list_data_find(photo_data->flickr_sync.jobs, job))
-	photo_data->flickr_sync.jobs = eina_list_append(photo_data->flickr_sync.jobs, job);
+	if(!eina_list_data_find(photo_data->flickr_sync.jobs, job))
+	  photo_data->flickr_sync.jobs = eina_list_append(photo_data->flickr_sync.jobs, job);
      }
    else if(photo_data->flickr_sync.state == PHOTO_FLICKR_NOTINFLICKR)
      {
