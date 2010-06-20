@@ -112,12 +112,66 @@ static void _job_next();
 static void _job_free(Enlil_Flickr_Job *job);
 static void _flickr_thread(void *data);
 static void _end_cb(void *data);
+static const char *_enlil_flickr_job_type_tostring(Enlil_Flickr_Job_Type type);
 
 static Enlil_Flickr_Job *_enlil_flickr_job_get_authtoken_prepend(Enlil_Root *root, const char *code);
 static int _connect(Enlil_Root *root, const char *code);
 static int _disconnect();
 static int _idler_upload_cb(void *data);
 
+
+static const char *_enlil_flickr_job_type_tostring(Enlil_Flickr_Job_Type type)
+{
+   switch(type)
+     {
+      case ENLIL_FLICKR_JOB_REINIT:
+	 return "ENLIL_FLICKR_JOB_REINIT";
+	 break;
+      case ENLIL_FLICKR_JOB_GET_AUTHTOKEN:
+	 return "ENLIL_FLICKR_JOB_GET_AUTHTOKEN";
+	 break;
+      case ENLIL_FLICKR_JOB_CMP_ALBUM_HEADER:
+	 return "ENLIL_FLICKR_JOB_CMP_ALBUM_HEADER";
+	 break;
+      case ENLIL_FLICKR_JOB_CMP_ALBUMS_HEADER:
+	 return "ENLIL_FLICKR_JOB_CMP_ALBUMS_HEADER";
+	 break;
+      case ENLIL_FLICKR_JOB_SYNC_ALBUM_HEADER_UPDATE_FLICKR:
+	 return "ENLIL_FLICKR_JOB_SYNC_ALBUM_HEADER_UPDATE_FLICKR";
+	 break;
+      case ENLIL_FLICKR_JOB_SYNC_ALBUM_HEADER_UPDATE_LOCAL:
+	 return "ENLIL_FLICKR_JOB_SYNC_ALBUM_HEADER_UPDATE_LOCAL";
+	 break;
+      case ENLIL_FLICKR_JOB_SYNC_ALBUM_HEADER_CREATE_FLICKR_PHOTO_UPLOAD:
+	 return "ENLIL_FLICKR_JOB_SYNC_ALBUM_HEADER_CREATE_FLICKR_PHOTO_UPLOAD";
+	 break;
+      case ENLIL_FLICKR_JOB_SYNC_ALBUM_HEADER_CREATE_FLICKR_ALBUM_CREATE:
+	 return "ENLIL_FLICKR_JOB_SYNC_ALBUM_HEADER_CREATE_FLICKR_ALBUM_CREATE";
+	 break;
+      case ENLIL_FLICKR_JOB_CMP_ALBUM_PHOTOS:
+	 return "ENLIL_FLICKR_JOB_CMP_ALBUM_PHOTOS";
+	 break;
+      case ENLIL_FLICKR_JOB_CMP_PHOTO:
+	 return "ENLIL_FLICKR_JOB_CMP_PHOTO";
+	 break;
+      case ENLIL_FLICKR_JOB_SYNC_PHOTO_UPDATE_FLICKR:
+	 return "ENLIL_FLICKR_JOB_SYNC_PHOTO_UPDATE_FLICKR";
+	 break;
+      case ENLIL_FLICKR_JOB_SYNC_PHOTO_UPLOAD_FLICKR:
+	 return "ENLIL_FLICKR_JOB_SYNC_PHOTO_UPLOAD_FLICKR";
+	 break;
+      case ENLIL_FLICKR_JOB_SYNC_PHOTO_UPLOAD_FLICKR_ADD_IN_SET:
+	 return "ENLIL_FLICKR_JOB_SYNC_PHOTO_UPLOAD_FLICKR_ADD_IN_SET";
+	 break;
+      case ENLIL_FLICKR_JOB_GET_PHOTO_SIZES:
+	 return "ENLIL_FLICKR_JOB_GET_PHOTO_SIZES";
+	 break;
+      case ENLIL_FLICKR_JOB_SET_PHOTO_TIMES_FLICKR_FS:
+	 return "ENLIL_FLICKR_JOB_SET_PHOTO_TIMES_FLICKR_FS";
+	 break;
+     }
+   return "unknown";
+}
 
 const char *enlil_flickr_auth_url_get()
 {
@@ -148,6 +202,8 @@ void enlil_flickr_job_done_cb_set(Enlil_Flickr_Job_Done_Cb done_cb, void *data)
 void enlil_flickr_job_del(Enlil_Flickr_Job *job)
 {
     ASSERT_RETURN_VOID(job != NULL);
+
+    LOG_INFO("Delete Flickr's job : %s\n", _enlil_flickr_job_type_tostring(job->type));
 
     if(job == job_current)
     {
