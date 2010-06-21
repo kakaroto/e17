@@ -9,6 +9,7 @@
 #include "TestStateWindow.h"
 #include "TestDnDWindow.h"
 #include "TestResizeWindow.h"
+#include "TestTypeWindow.h"
 
 using namespace std;
 
@@ -161,6 +162,13 @@ Application::Application() :
   row[m_Columns.m_col_icon] = pixbuf;
   row[m_Columns.m_col_name] = "Resize";
 
+  row = *(m_refTreeModel->append());
+  pixbuf = Gdk::Pixbuf::create_from_file (searchPixmapFile ("resize_window_small.png"));
+  row[m_Columns.m_col_id] = "test_type_dialog";
+  row[m_Columns.m_col_icon] = pixbuf;
+  row[m_Columns.m_col_name] = "Type Dialog";
+
+
   // don't test gravity for now, not sure how useful this is...
   /*row = *(m_refTreeModel->append());
   pixbuf = Gdk::Pixbuf::create_from_file (searchPixmapFile ("top_window_small.png"));
@@ -275,6 +283,11 @@ void Application::onButtonRun ()
   {
     // TODO: delete?    
     TestResizeWindow *testResizeWindow = new TestResizeWindow ("resize_window.svg");
+  }
+  else if (runTest == "test_type_dialog")
+  {
+    // TODO: delete?    
+    TestTypeWindow *testTypeWindow = new TestTypeWindow (Gdk::WINDOW_TYPE_HINT_DIALOG , "resize_window.svg");
   }
   /*else if (runTest == "test_gravity_north_west")
   {
