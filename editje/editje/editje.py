@@ -58,7 +58,7 @@ def debug_cb(obj, emission, source):
 
 class Editje(elementary.Window, OpenFileManager):
     def __init__(self, swapfile, theme="default", slave_mode=False,
-                 in_port=None, out_ports=None):
+                 in_port=None):
         self.theme = sysconfig.theme_file_get(theme)
         elementary.theme_extension_add(self.theme)
 
@@ -85,7 +85,7 @@ class Editje(elementary.Window, OpenFileManager):
         self._slave_mode = slave_mode
         if slave_mode:
             try:
-                self._slave_mode_init(in_port, out_ports)
+                self._slave_mode_init(in_port)
             except Exception, e:
                 self._close()
                 raise
@@ -163,9 +163,11 @@ class Editje(elementary.Window, OpenFileManager):
         notification.action_add("Cancel", dismiss, None, notification)
         notification.show()
 
-    def _slave_mode_init(self, in_port, out_ports):
-        self._rpc_server = QueriesHandler(self.e, in_port)
-        self._rpc_client = ReportsHandler(self.e, out_ports)
+    def _slave_mode_init(self, in_port):
+        self._rpc_client = ReportsHandler(self.e)
+        self._rpc_server = QueriesHandler(self.e, in_port,
+                self._rpc_client.agent_register,
+                self._rpc_client.agent_unregister)
 
         return True
 

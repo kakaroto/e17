@@ -27,8 +27,10 @@ from misc import part_type_to_text
 
 
 class QueriesHandler(object):
-    def __init__(self, edit_grp, port):
-        self._server = EditjeServer(("localhost", port), edit_grp)
+    def __init__(self, edit_grp, port, agent_register, agent_unregister):
+        #FIXME: Change localhost to a host received as parameter.
+        self._server = EditjeServer(("localhost", port), edit_grp,
+                agent_register, agent_unregister)
         self._socket_no = self._server.fileno()
 
         self._input_fd = ecore.fd_handler_add(
@@ -46,7 +48,7 @@ class QueriesHandler(object):
 
 
 class EditjeServer(SimpleXMLRPCServer):
-    def __init__(self, addr, edit_grp,
+    def __init__(self, addr, edit_grp, agent_register, agent_unregister,
                  requestHandler=SimpleXMLRPCRequestHandler,
                  logRequests=True, allow_none=True, encoding=None,
                  bind_and_activate=True):
@@ -62,6 +64,8 @@ class EditjeServer(SimpleXMLRPCServer):
                 raise SystemExit("error: port %d already in use at localhost" %
                                  addr[1])
         self._edit_grp = edit_grp
+        self._agent_register = agent_register
+        self._agent_unregister = agent_unregister
 
     def _dispatch(self, method, params):
         try:
@@ -92,6 +96,14 @@ class EditjeServer(SimpleXMLRPCServer):
         return ret
 
     # exported methods
+    def export_agent_register(self, host, port):
+        self._agent_register(host, port)
+        return True
+
+    def export_agent_unregister(self, host, port):
+        self._agent_unregister(host, port)
+        return True
+
     def export_get_groups(self):
         return edje.file_collection_list(self._edit_grp.workfile)
 
@@ -145,22 +157,30 @@ class EditjeServer(SimpleXMLRPCServer):
 
 
 class ReportsHandler(object):
-    def __init__(self, edit_grp, ports):
-        if not ports:
-            raise TypeError("ReportsHandler must be created with one or " +
-                            "more writing ports")
-
+    def __init__(self, edit_grp):
         self._clients = []
         self._edit_grp = edit_grp
-        for p in ports:
-            self._clients.append(xmlrpclib.ServerProxy(
-                    "http://localhost:" + str(p)))
 
         self._handlers = {self._edit_grp:
                               [("parts.changed",
                                 self._parts_changed_event_handler)]}
 
         self._handlers_register()
+
+    def agent_register(self, host, port):
+        for c, (h, p) in self._clients:
+            if (h, p) == (host, port):
+                return
+
+        c = xmlrpclib.ServerProxy("%s:%d" % (host, port))
+        self._clients.append((c, (host, port)))
+
+    def agent_unregister(self, host, port):
+        for c in self._clients:
+            if c[1] == (host, port):
+                self._clients.remove(c)
+                del c
+                break
 
     def _handlers_register(self):
         for obj, event_list in self._handlers.items():
@@ -172,9 +192,18 @@ class ReportsHandler(object):
 
         for c in self._clients:
             if args:
-                getattr(c, prefix + method_name)(*args)
+                try:
+                    getattr(c[0], prefix + method_name)(*args)
+
+                except xmlrpclib.ProtocolError, err:
+                    self._clients.remove(c)
+                    del c
             else:
-                getattr(c, prefix + method_name)()
+                try:
+                    getattr(c[0], prefix + method_name)()
+                except xmlrpclib.ProtocolError, err:
+                    self._clients.remove(c)
+                    del c
 
     def _event_handlers_get(self):
         return self._handlers
@@ -187,5 +216,3 @@ class ReportsHandler(object):
 
     def _parts_changed_event_handler(self, emissor, data):
         self.parts_changed(data)
-
-
