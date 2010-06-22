@@ -62,6 +62,9 @@ Tabpanel *tabpanel_add(Evas_Object *parent)
    tab->tabs = elm_toolbar_add(parent);
    elm_toolbar_homogenous_set(tab->tabs, 0);
    tab->panels = elm_pager_add(parent);
+   evas_object_size_hint_weight_set(tab->panels ,1.0, 1.0);
+   evas_object_size_hint_align_set(tab->panels, -1.0, -1.0);
+
    elm_object_style_set(tab->panels, "fade_translucide");
 
    evas_object_smart_callback_add(tab->panels, "hide,finished", _hide_finished_cb, tab);

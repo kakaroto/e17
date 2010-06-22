@@ -57,7 +57,7 @@ struct enlil_data
     int nb_photos, nb_albums;
 
     Enlil_Win *win;
-    Evas_Object *tb;
+    Evas_Object *vbox;
     Tabpanel *tabpanel;
     Tabpanel_Item *library_item;
 

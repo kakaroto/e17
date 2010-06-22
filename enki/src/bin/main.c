@@ -29,7 +29,6 @@ static const Ecore_Getopt options = {
 
 void close_cb(void *data, Evas_Object *obj, void *event_info)
 {
-
    enlil_file_manager_flush();
 
    slideshow_hide();
@@ -185,6 +184,21 @@ void root_set(const char *root_path)
    main_menu_loading_disable_set(1);
 }
 
+
+static double _panes_size = 0;
+static void _panes_clicked_double(void *data, Evas_Object *obj, void *event_info)
+{
+    if(elm_panes_content_left_size_get(obj) > 0)
+    {
+        _panes_size = elm_panes_content_left_size_get(obj);
+        elm_panes_content_left_size_set(obj, 0.0);
+    }
+    else
+        elm_panes_content_left_size_set(obj, _panes_size);
+}
+
+
+
 int elm_main(int argc, char **argv)
 {
    Evas_Object *panels, *tabs, *page_1, *bx;
@@ -231,16 +245,16 @@ int elm_main(int argc, char **argv)
    enlil_data->win = win;
    evas_object_smart_callback_add(win->win, "delete-request", close_cb, NULL);
 
-   Evas_Object *tb = elm_table_add(win->win);
-   enlil_data->tb = tb;
-   evas_object_size_hint_weight_set(tb, 1.0, 1.0);
-   evas_object_show(tb);
+   Evas_Object *vbox = elm_box_add(win->win);
+   enlil_data->vbox = vbox;
+   evas_object_size_hint_weight_set(vbox, 1.0, 1.0);
+   evas_object_show(vbox);
 
    bx = elm_box_add(win->win);
    elm_box_horizontal_set(bx, EINA_TRUE);
    evas_object_size_hint_weight_set(bx, 1.0, 0.0);
-   evas_object_size_hint_align_set(bx, -1.0, -1.0);
-   elm_table_pack(tb, bx, 0, 0, 1, 1);
+   evas_object_size_hint_align_set(bx, -1.0, 0.0);
+   elm_box_pack_end(vbox, bx);
    evas_object_show(bx);
 
 
@@ -261,34 +275,37 @@ int elm_main(int argc, char **argv)
    evas_object_size_hint_weight_set(panels, 1.0, 1.0);
    evas_object_size_hint_align_set(panels, -1.0, -1.0);
    evas_object_show(panels);
-   elm_table_pack(tb, panels, 0, 2, 1, 1);
+   elm_box_pack_end(vbox, panels);
 
 
-   page_1 = elm_box_add(win->win);
-   elm_box_horizontal_set(page_1, 1);
+   bx = elm_box_add(win->win);
+   elm_box_horizontal_set(bx, EINA_TRUE);
+   evas_object_size_hint_weight_set(bx, 1.0, 0.0);
+   evas_object_size_hint_align_set(bx, -1.0, 0.0);
+   elm_box_pack_end(vbox, bx);
+   evas_object_show(bx);
+
+
+   page_1 = elm_panes_add(win->win);
+   elm_panes_content_left_size_set(page_1, 0.2);
    evas_object_size_hint_weight_set(page_1, 1.0, 1.0);
    evas_object_size_hint_align_set(page_1, -1.0, -1.0);
+   evas_object_smart_callback_add(page_1, "clicked,double", _panes_clicked_double, enlil_data);
    evas_object_show(page_1);
    enlil_data->library_item =
       tabpanel_item_add(enlil_data->tabpanel, D_("Library"), page_1, _tabpanel_select_page1_cb, enlil_data);
 
-   //HACK to have a list with a width>0
    bx = elm_box_add(win->win);
-   evas_object_size_hint_weight_set(bx, 0.0, 1.0);
+   evas_object_size_hint_weight_set(bx, 1.0, 1.0);
    evas_object_size_hint_align_set(bx, -1.0, -1.0);
    evas_object_show(bx);
-   elm_box_pack_end(page_1, bx);
-
-   Evas_Object *rect = evas_object_rectangle_add(evas_object_evas_get(win->win));
-   evas_object_size_hint_weight_set(rect, 0, 0);
-   evas_object_size_hint_min_set(rect, 200, 0);
-   evas_object_size_hint_max_set(rect, 200, 0);
-   elm_box_pack_end(bx, rect);
+   elm_panes_content_left_set(page_1, bx);
 
    List_Left *list_album = list_left_new(win->win);
    list_left_data_set(list_album, enlil_data);
    elm_box_pack_end(bx, list_album->bx);
-   elm_box_pack_end(page_1, list_album->panels_map);
+
+   elm_panes_content_right_set(page_1, list_album->panels_map);
 
 
    Evas_Object *main_menu = main_menu_new(win->win);
@@ -359,7 +376,7 @@ int elm_main(int argc, char **argv)
    if(root_path)
      root_set(root_path);
 
-   elm_win_resize_object_add(win->win, tb);
+   elm_win_resize_object_add(win->win, vbox);
 
    evas_object_resize(win->win, 1024, 768);
    evas_object_show(win->win);
