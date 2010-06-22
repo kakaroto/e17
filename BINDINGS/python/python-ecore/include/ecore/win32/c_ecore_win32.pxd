@@ -19,7 +19,7 @@ cdef extern from "Ecore_Win32.h":
     ####################################################################
     # Data Types
     #
-    ctypedef struct _Ecore_Win32_Window Ecore_Win32_Window
+    ctypedef struct Ecore_Win32_Window
     ctypedef void Ecore_Win32_Cursor
 
     ctypedef enum Ecore_Win32_Window_State:
@@ -70,8 +70,8 @@ cdef extern from "Ecore_Win32.h":
     int    ecore_win32_init()
     int    ecore_win32_shutdown()
     int    ecore_win32_screen_depth_get()
-    long   ecore_win32_current_time_get(void)
-    void   ecore_win32_message_loop_begin (void)
+    long   ecore_win32_current_time_get()
+    void   ecore_win32_message_loop_begin()
 
     Ecore_Win32_Window *ecore_win32_window_new(Ecore_Win32_Window *parent,
                                                int                 x,
@@ -197,7 +197,7 @@ cdef extern from "Ecore_Win32.h":
 
     Ecore_Win32_Cursor *ecore_win32_cursor_shape_get(Ecore_Win32_Cursor_Shape shape)
 
-    int                 ecore_win32_cursor_size_get(void)
+    int                 ecore_win32_cursor_size_get()
 
 
 

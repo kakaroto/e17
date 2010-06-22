@@ -18,6 +18,8 @@
 # This file is included verbatim by c_ecore_win32.pyx
 
 cdef class Window:
+    cdef Ecore_Win32_Window *obj
+
     def __new__(self, *a, **ka):
         self.obj = NULL
 
@@ -113,7 +115,7 @@ cdef class Window:
         "@rtype: tuple of int"
         cdef int width, height
         ecore_win32_window_size_get(self.obj, &width, &height)
-        return (x, y, w, h)
+        return (width, height)
 
     def size_min_set(self, min_width, min_height):
         """Set minimum window size
@@ -125,7 +127,7 @@ cdef class Window:
 
     def size_min_get(self):
         "@rtype: tuple of int"
-        cdef int w, h
+        cdef unsigned int w, h
         ecore_win32_window_size_min_get(self.obj, &w, &h)
         return (w, h)
 
@@ -147,7 +149,7 @@ cdef class Window:
 
     def size_max_get(self):
         "@rtype: tuple of int"
-        cdef int w, h
+        cdef unsigned int w, h
         ecore_win32_window_size_max_get(self.obj, &w, &h)
         return (w, h)
 
@@ -169,7 +171,7 @@ cdef class Window:
 
     def size_base_get(self):
         "@rtype: tuple of int"
-        cdef int w, h
+        cdef unsigned int w, h
         ecore_win32_window_size_base_get(self.obj, &w, &h)
         return (w, h)
 
@@ -191,7 +193,7 @@ cdef class Window:
 
     def size_step_get(self):
         "@rtype: tuple of int"
-        cdef int w, h
+        cdef unsigned int w, h
         ecore_win32_window_size_step_get(self.obj, &w, &h)
         return (w, h)
 
@@ -209,7 +211,7 @@ cdef class Window:
     def hide(self):
         ecore_win32_window_hide(self.obj)
 
-    def raise(self):
+    def raise_(self):
         ecore_win32_window_raise(self.obj)
 
     def lower(self):
