@@ -21,6 +21,7 @@ from SimpleXMLRPCServer import SimpleXMLRPCServer, \
     SimpleXMLRPCRequestHandler, Fault
 
 import edje
+from edje.edit import EdjeEdit
 import ecore
 
 from misc import part_type_to_text
@@ -78,12 +79,24 @@ class EditjeServer(SimpleXMLRPCServer):
         else:
             return func(*params)
 
-    def _get_api_signals(self):
+    def _create_dummy_edje(self, group):
+        return EdjeEdit(
+            # FIXME: we surely don't want to access the canvas
+            # like that, just lack of time now
+            self._edit_grp._canvas, file=self._edit_grp.workfile,
+            group=group)
+
+    def _edje_check_free(self, editable):
+        if editable != self._edit_grp:
+            del editable
+
+    def _get_api_signals(self, editable):
         ret = {}
 
-        for s in self._edit_grp.signals:
+        sigs = [p for p in editable.programs if not p.startswith("@")]
+        for s in sigs:
             sinfo = {}
-            api = self._edit_grp.program_get(s).api
+            api = editable.program_get(s).api
             if api == (None, None):
                 continue
 
@@ -107,27 +120,48 @@ class EditjeServer(SimpleXMLRPCServer):
     def export_get_groups(self):
         return edje.file_collection_list(self._edit_grp.workfile)
 
-    def export_get_parts(self):
+    def export_get_parts(self, group):
         if not self._edit_grp.group:
-            return None
+            return {}
+
+        if self._edit_grp.group != group:
+            try:
+                editable = self._create_dummy_edje(group)
+            except Exception, e:
+                return {}
+        else:
+            editable = self._edit_grp
 
         ret = {}
-        for p in self._edit_grp.parts:
+        for p in editable.parts:
             pinfo = {}
-            part = self._edit_grp.part_get(p)
+            part = editable.part_get(p)
             pinfo["type"] = part_type_to_text(part.type)
             pinfo["mouse_events"] = bool(part.mouse_events)
 
             ret[p] = pinfo
 
+        self._edje_check_free(editable)
+
         return ret
 
-    def export_get_api_objects(self):
-        ret = self.export_get_parts()
+    def export_get_api_objects(self, group):
+        try:
+            ret = self.export_get_parts(group)
+        except Exception, e:
+            return {}
+
+        if self._edit_grp.group != group:
+            try:
+                editable = self._create_dummy_edje(group)
+            except Exception, e:
+                return {}
+        else:
+            editable = self._edit_grp
 
         for k in tuple(ret.iterkeys()):
-            p = self._edit_grp.part_get(k)
-            api = self._edit_grp.part_get(k).api
+            p = editable.part_get(k)
+            api = editable.part_get(k).api
             if api == (None, None):
                 ret.pop(k)
             else:
@@ -136,22 +170,35 @@ class EditjeServer(SimpleXMLRPCServer):
                 ret[k]["description"] = api[1]
                 ret[k].pop("mouse_events")
 
-        ret.update(self._get_api_signals())
+        ret.update(self._get_api_signals(editable))
+
+        self._edje_check_free(editable)
 
         return ret
 
-    def export_get_part(self, part):
+    def export_get_part(self, group, part):
         # TODO: make Java to accept the fscking nil value extension
         if not self._edit_grp.group:
-            return None
+            return {}
 
-        p = self._edit_grp.part_get(part)
+        if self._edit_grp.group != group:
+            try:
+                editable = self._create_dummy_edje(group)
+            except Exception, e:
+                return {}
+        else:
+            editable = self._edit_grp
+
+        p = editable.part_get(part)
         if not p:
-            return None
+            self._edje_check_free(editable)
+            return {}
 
         ret = {"type": p.type,
                "source": p.source,
                "states": p.states}
+
+        self._edje_check_free(editable)
 
         return ret
 
