@@ -153,7 +153,7 @@ cdef extern from "Ecore_Win32.h":
     void ecore_win32_window_lower(Ecore_Win32_Window *window)
 
     void ecore_win32_window_title_set(Ecore_Win32_Window *window,
-                                       const char         *title)
+                                      char         *title)
 
     void ecore_win32_window_focus_set(Ecore_Win32_Window *window)
 
@@ -186,12 +186,12 @@ cdef extern from "Ecore_Win32.h":
                                       Ecore_Win32_Window_Type  type)
 
 
-    Ecore_Win32_Cursor *ecore_win32_cursor_new(const void *pixels_and,
-                                                const void *pixels_xor,
-                                                int         width,
-                                                int         height,
-                                                int         hot_x,
-                                                int         hot_y)
+    Ecore_Win32_Cursor *ecore_win32_cursor_new(void *pixels_and,
+                                               void *pixels_xor,
+                                               int         width,
+                                               int         height,
+                                               int         hot_x,
+                                               int         hot_y)
 
     void                ecore_win32_cursor_free(Ecore_Win32_Cursor *cursor)
 
@@ -203,8 +203,8 @@ cdef extern from "Ecore_Win32.h":
 
     int ecore_win32_dnd_init()
     int ecore_win32_dnd_shutdown()
-    int ecore_win32_dnd_begin(const char *data,
-                               int         size)
+    int ecore_win32_dnd_begin(char *data,
+                              int         size)
 
     #int ecore_win32_dnd_register_drop_target(Ecore_Win32_Window                 *window,
     #                                         Ecore_Win32_Dnd_DropTarget_Callback callback)
