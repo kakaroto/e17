@@ -274,6 +274,12 @@ struct panel_image
    Enlil_Photo *photo;
 
 
+   Evas_Object *panes;
+   double panes_size;
+
+   Evas_Object *panes_h;
+   double panes_h_size;
+
    Evas_Object *photocam;
    Evas_Object *sl;
    Evas_Object *rect;

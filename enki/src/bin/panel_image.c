@@ -54,11 +54,16 @@ void _panel_select_cb(void *data, Tabpanel *tabpanel, Tabpanel_Item *item);
 static int _save_description_name_timer(void *data);
 static void _save_description_name(Panel_Image *panel_image);
 
+static void _panes_clicked_double(void *data, Evas_Object *obj, void *event_info);
+static void _panes_h_clicked_double(void *data, Evas_Object *obj, void *event_info);
+
+
+
 Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
 {
    char buf[PATH_MAX];
-   Evas_Object *ph, *vbox, *vbox2, *bx, *bx2, *tb, *bt, *rect, *sl, *pb, *icon, *main_bx, *gl,
-	       *fr, *entry, *sc, *lbl, *tabs, *panels;
+   Evas_Object *ph, *vbox, *vbox2, *bx, *bx2, *tb, *bt, *rect, *sl, *pb, *icon, *gl,
+	       *fr, *entry, *sc, *lbl, *tabs, *panels, *panes, *panes_h;
    Elm_Toolbar_Item *tb_item;
    Tabpanel_Item *tp_item;
 
@@ -67,19 +72,31 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    photo_data->panel_image = panel_image;
    panel_image->photo = photo;
 
-   bx = elm_box_add(obj);
-   main_bx = bx;
-   elm_box_horizontal_set(bx, 1);
-   evas_object_size_hint_weight_set(bx, 1.0, 1.0);
-   evas_object_size_hint_align_set(bx, -1.0, -1.0);
-   evas_object_show(bx);
+   panes = elm_panes_add(obj);
+   panel_image->panes = panes;
+   evas_object_size_hint_weight_set(panes, 1.0, 1.0);
+   evas_object_size_hint_align_set(panes, -1.0, -1.0);
+   elm_panes_content_left_size_set(panes, 0.20);
+   evas_object_smart_callback_add(panes, "clicked,double", _panes_clicked_double, panel_image);
+   evas_object_show(panes);
 
-   // left panel
+   // left panel 
+   panes_h = elm_panes_add(obj);
+   panel_image->panes_h = panes_h;
+   elm_panes_horizontal_set(panes_h, EINA_TRUE);
+   evas_object_size_hint_weight_set(panes_h, 1.0, 1.0);
+   evas_object_size_hint_align_set(panes_h, -1.0, -1.0);
+   elm_panes_content_left_size_set(panes_h, 0.40);
+   evas_object_smart_callback_add(panes_h, "clicked,double", _panes_h_clicked_double, panel_image);
+   evas_object_show(panes_h);
+   elm_panes_content_left_set(panes, panes_h);
+
+
    vbox = elm_box_add(obj);
    evas_object_size_hint_weight_set(vbox, 0.0, 1.0);
    evas_object_size_hint_align_set(vbox, -1.0, -1.0);
    evas_object_show(vbox);
-   elm_box_pack_end(bx, vbox);
+   elm_panes_content_left_set(panes_h, vbox);
 
    bt = elm_button_add(obj);
    elm_button_label_set(bt, D_("Close the photo"));
@@ -187,6 +204,13 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    //
    panel_image->tabpanel = tabpanel_add(obj);
 
+   vbox = elm_box_add(obj);
+   evas_object_size_hint_weight_set(vbox, 0.0, 1.0);
+   evas_object_size_hint_align_set(vbox, -1.0, -1.0);
+   evas_object_show(vbox);
+   elm_panes_content_right_set(panes_h, vbox);
+
+
    tabs = tabpanel_tabs_obj_get(panel_image->tabpanel);
    evas_object_size_hint_weight_set(tabs, 0.0, 0.0);
    evas_object_size_hint_align_set(tabs, -1.0, 0.0);
@@ -230,24 +254,20 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    tabpanel_item_select(tp_item);
    //
 
+
+
+
+   //right panel
    ph = elm_photocam_add(obj);
    panel_image->photocam = ph;
 
    panel_image->menu = menu_photo_new(photo_data->enlil_data->win->win);
 
-   //
-   tb = elm_table_add(obj);
-   evas_object_size_hint_weight_set(tb, 0.0, 0.0);
-   evas_object_size_hint_align_set(tb, 0.0, 0.0);
-   evas_object_show(tb);
-   elm_box_pack_end(bx, tb);
-   //
-
    bx2 = elm_box_add(obj);
    evas_object_size_hint_weight_set(bx2, 1.0, 1.0);
    evas_object_size_hint_align_set(bx2, -1.0, -1.0);
    evas_object_show(bx2);
-   elm_box_pack_end(bx, bx2);
+   elm_panes_content_right_set(panes, bx2);
 
 
    panel_image->tb = elm_toolbar_add(obj);
@@ -423,7 +443,7 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    panel_image->history = enlil_trans_history_new(buf);
 
    panel_image->tabpanel_item = tabpanel_item_add(photo_data->enlil_data->tabpanel,
-	 enlil_photo_name_get(photo), main_bx, _panel_select_cb, photo);
+	 enlil_photo_name_get(photo), panes, _panel_select_cb, photo);
 
    panel_image_exifs_update(photo);
    panel_image_iptcs_update(photo);
@@ -1328,4 +1348,29 @@ static void _entry_description_changed_cb(void *data, Evas_Object *obj, void *ev
      }
 }
 
+static void _panes_clicked_double(void *data, Evas_Object *obj, void *event_info)
+{
+   Panel_Image *panel_image = data;
+
+   if(elm_panes_content_left_size_get(obj) > 0)
+     {
+	panel_image->panes_size = elm_panes_content_left_size_get(obj);
+	elm_panes_content_left_size_set(obj, 0.0);
+     }
+   else
+     elm_panes_content_left_size_set(obj, panel_image->panes_size);
+}
+
+static void _panes_h_clicked_double(void *data, Evas_Object *obj, void *event_info)
+{
+   Panel_Image *panel_image = data;
+
+   if(elm_panes_content_left_size_get(obj) > 0)
+     {
+	panel_image->panes_h_size = elm_panes_content_left_size_get(obj);
+	elm_panes_content_left_size_set(obj, 0.0);
+     }
+   else
+     elm_panes_content_left_size_set(obj, panel_image->panes_h_size);
+}
 
