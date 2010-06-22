@@ -2,7 +2,7 @@ Login:        englebass
 IRC Nick:     englebass
 Name:         Sebastian Dransfeld
 Location:     Gjøvik, Norway
-E-Mail:       -sebastid@tango.flipp.net
+E-Mail:       -sd@tango.flipp.net
 Contributing: enlightenment, efreet
 Group:        Core
 Platform:     Linux
