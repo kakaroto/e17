@@ -51,6 +51,7 @@ char * avatar=NULL;
 extern struct sqlite3 *ed_DB;
 extern int debug;
 extern char *dm_to, *reply_id;
+extern Evas_Object *win;
 
 long long max_status_id=0;
 
@@ -90,8 +91,6 @@ void messages_insert(int account_id, Eina_List *list, int timeline) {
 	char *query=NULL;
 	Eina_List *l;
 	void *data;
-
-	printf("%d entradas na lista\n", eina_list_count(list));
 
 	sqlite_res = asprintf(&query, "SELECT max(status_id) FROM messages where account_id = %d and timeline = %d;", account_id, timeline);
 	if(sqlite_res != -1) {
@@ -293,10 +292,11 @@ void json_timeline(StatusesList *statuses, char *stream) {
 void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline) {
 	int res=0;
 	long long int since_id=0;
-	char *timeline_str;
+	char *timeline_str, *notify_message;
 	http_request * request=calloc(1, sizeof(http_request));
 	StatusesList *statuses=(StatusesList*)calloc(1, sizeof(StatusesList));
 	time_t now;
+	Evas_Object *notify, *label;
 
 	switch(timeline) {
 		case TIMELINE_USER:		{ timeline_str="user";    break; }
@@ -342,7 +342,26 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 				//show_error(statuses);
 			}
 		} else {
-			printf("http response code was %ld\n", request->response_code);
+			res = asprintf(&notify_message, _("%s@%s had HTTP response: %ld"), screen_name, domain, request->response_code);
+			if(res != -1) {
+				notify = elm_notify_add(win);
+					evas_object_size_hint_weight_set(notify, 1, 1);
+					evas_object_size_hint_align_set(notify, -1, -1);
+					label = elm_label_add(win);
+						evas_object_size_hint_weight_set(label, 1, 1);
+						evas_object_size_hint_align_set(label, -1, -1);
+						elm_label_label_set(label, notify_message);
+						elm_label_line_wrap_set(label, EINA_TRUE);
+					evas_object_show(label);
+					elm_notify_content_set(notify, label);
+					elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_TOP_RIGHT);
+					elm_notify_parent_set(notify, win);
+					elm_notify_timeout_set(notify, 5);
+					elm_notify_timer_init(notify);
+				evas_object_show(notify);
+
+				free(notify_message);
+			}
 		}
 
 	}
