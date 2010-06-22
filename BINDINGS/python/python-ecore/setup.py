@@ -149,6 +149,19 @@ else:
     print "NOTICE: not building ecore.x module as requested " \
           "by ECORE_BUILD_X=0!"
 
+if int(os.environ.get("ECORE_BUILD_WIN32", 1)):
+    ecorexmodule = Extension(
+        'ecore.win32.c_ecore_win32',
+        sources=['ecore/win32/ecore.win32.c_ecore_win32.pyx'],
+        depends=['ecore/win32/ecore.win32.c_ecore_win32_window.pxi',
+                 'include/ecore/win32/c_ecore_win32.pxd',
+                 ],
+        **pkgconfig('"ecore-win32 >= 0.9.9.49539" ''"eina-0 >= 0.9.9.49539"'))
+    module_list.append(ecorexmodule)
+else:
+    print "NOTICE: not building ecore.win32 module as requested " \
+          "by ECORE_BUILD_WIN32=0!"
+
 if int(os.environ.get("ECORE_BUILD_XSCREENSAVER", 1)):
     ecorexscreensavermodule = Extension(
         'ecore.x.screensaver',
