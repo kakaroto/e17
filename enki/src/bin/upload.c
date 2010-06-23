@@ -21,7 +21,7 @@ Upload *upload_new(Evas_Object *parent)
     evas_object_size_hint_weight_set(notify, -1.0, -1.0);
     evas_object_size_hint_align_set(notify, -1.0, -1.0);
 
-    bx = elm_box_add(notify);
+    bx = elm_box_add(parent);
     evas_object_size_hint_weight_set(bx, 1.0, 1.0);
     evas_object_size_hint_align_set(bx, -1.0, -1.0);
     evas_object_show(bx);

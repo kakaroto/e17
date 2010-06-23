@@ -19,8 +19,8 @@ Download *download_new(Evas_Object *parent)
     evas_object_size_hint_weight_set(notify, -1.0, -1.0);
     evas_object_size_hint_align_set(notify, -1.0, -1.0);
 
-    bx = elm_box_add(notify);
-    evas_object_size_hint_weight_set(bx, 1.0, 1.0);
+    bx = elm_box_add(parent);
+    evas_object_size_hint_weight_set(bx, -1.0, -1.0);
     evas_object_size_hint_align_set(bx, -1.0, -1.0);
     evas_object_show(bx);
     elm_notify_content_set(notify, bx);
@@ -28,7 +28,7 @@ Download *download_new(Evas_Object *parent)
     lbl = elm_label_add(bx);
     elm_label_label_set(lbl, D_("Downloading ..."));
     evas_object_size_hint_weight_set(lbl, 1.0, 1.0);
-    evas_object_size_hint_align_set(lbl, 1.0, 1.0);
+    evas_object_size_hint_align_set(lbl, -1.0, -1.0);
     elm_box_pack_end(bx, lbl);
     evas_object_show(lbl);
 
@@ -36,7 +36,7 @@ Download *download_new(Evas_Object *parent)
     pb = elm_progressbar_add(bx);
     elm_progressbar_label_set(pb, "Photo");
     evas_object_size_hint_weight_set(pb, 1.0, 1.0);
-    evas_object_size_hint_align_set(pb, 1.0, 1.0);
+    evas_object_size_hint_align_set(pb, -1.0, -1.0);
     elm_box_pack_end(bx, pb);
     evas_object_show(pb);
 
@@ -106,7 +106,7 @@ static void _done_cb(void *data, Enlil_Photo *photo, int status)
         photos_list_object_header_update(album_data->list_photo_item);
 
         album_data->flickr_sync.inwin.notinlocal.is_updating = EINA_FALSE;
-        elm_pager_content_promote(album_data->flickr_sync.inwin.notinlocal.pager, 
+        elm_pager_content_promote(album_data->flickr_sync.inwin.notinlocal.pager,
                 album_data->flickr_sync.inwin.notinlocal.pb);
         elm_progressbar_pulse(album_data->flickr_sync.inwin.notinlocal.pb, EINA_FALSE);
 
