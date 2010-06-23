@@ -136,42 +136,44 @@ else:
     print "NOTICE: not building ecore.evas module as requested " \
           "by ECORE_BUILD_EVAS=0!"
 
-if int(os.environ.get("ECORE_BUILD_X", 1)):
-    ecorexmodule = Extension(
-        'ecore.x.c_ecore_x',
-        sources=['ecore/x/ecore.x.c_ecore_x.pyx'],
-        depends=['ecore/x/ecore.x.c_ecore_x_window.pxi',
-                 'include/ecore/x/c_ecore_x.pxd',
-                 ],
-        **pkgconfig('"ecore-x >= 0.9.9.49539" ''"eina-0 >= 0.9.9.49539"'))
-    module_list.append(ecorexmodule)
-else:
-    print "NOTICE: not building ecore.x module as requested " \
-          "by ECORE_BUILD_X=0!"
+if os.name != 'nt':
+    if int(os.environ.get("ECORE_BUILD_X", 1)):
+        ecorexmodule = Extension(
+            'ecore.x.c_ecore_x',
+            sources=['ecore/x/ecore.x.c_ecore_x.pyx'],
+            depends=['ecore/x/ecore.x.c_ecore_x_window.pxi',
+                     'include/ecore/x/c_ecore_x.pxd',
+                     ],
+            **pkgconfig('"ecore-x >= 0.9.9.49539" ''"eina-0 >= 0.9.9.49539"'))
+        module_list.append(ecorexmodule)
+    else:
+        print "NOTICE: not building ecore.x module as requested " \
+              "by ECORE_BUILD_X=0!"
 
-if int(os.environ.get("ECORE_BUILD_WIN32", 1)):
-    ecorexmodule = Extension(
-        'ecore.win32.c_ecore_win32',
-        sources=['ecore/win32/ecore.win32.c_ecore_win32.pyx'],
-        depends=['ecore/win32/ecore.win32.c_ecore_win32_window.pxi',
-                 'include/ecore/win32/c_ecore_win32.pxd',
-                 ],
-        **pkgconfig('"ecore-win32 >= 0.9.9.49539" ''"eina-0 >= 0.9.9.49539"'))
-    module_list.append(ecorexmodule)
-else:
-    print "NOTICE: not building ecore.win32 module as requested " \
-          "by ECORE_BUILD_WIN32=0!"
+    if int(os.environ.get("ECORE_BUILD_XSCREENSAVER", 1)):
+        ecorexscreensavermodule = Extension(
+            'ecore.x.screensaver',
+            sources=['ecore/x/ecore.x.screensaver.pyx'],
+            depends=['include/ecore/x/screensaver.pxd'],
+            **pkgconfig('"ecore-x >= 0.9.9.49539" ''"eina-0 >= 0.9.9.49539"'))
+        module_list.append(ecorexscreensavermodule)
+    else:
+        print "NOTICE: not building ecore.xscreensaver module as requested " \
+              "by ECORE_BUILD_XSCREENSAVER=0!"
 
-if int(os.environ.get("ECORE_BUILD_XSCREENSAVER", 1)):
-    ecorexscreensavermodule = Extension(
-        'ecore.x.screensaver',
-        sources=['ecore/x/ecore.x.screensaver.pyx'],
-        depends=['include/ecore/x/screensaver.pxd'],
-        **pkgconfig('"ecore-x >= 0.9.9.49539" ''"eina-0 >= 0.9.9.49539"'))
-    module_list.append(ecorexscreensavermodule)
-else:
-    print "NOTICE: not building ecore.xscreensaver module as requested " \
-          "by ECORE_BUILD_XSCREENSAVER=0!"
+if os.name == 'nt':
+    if int(os.environ.get("ECORE_BUILD_WIN32", 1)):
+        ecorexmodule = Extension(
+            'ecore.win32.c_ecore_win32',
+            sources=['ecore/win32/ecore.win32.c_ecore_win32.pyx'],
+            depends=['ecore/win32/ecore.win32.c_ecore_win32_window.pxi',
+                     'include/ecore/win32/c_ecore_win32.pxd',
+                     ],
+            **pkgconfig('"ecore-win32 >= 0.9.9.49539" ''"eina-0 >= 0.9.9.49539"'))
+        module_list.append(ecorexmodule)
+    else:
+        print "NOTICE: not building ecore.win32 module as requested " \
+              "by ECORE_BUILD_WIN32=0!"
 
 if int(os.environ.get("ECORE_BUILD_IMF", 1)):
     ecoreimfmodule = Extension(
