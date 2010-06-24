@@ -46,9 +46,9 @@ struct E_DBus_Timeout_Data
   int interval;
 };
 
-static int e_dbus_idler(void *data);
+static Eina_Bool e_dbus_idler(void *data);
 
-static int
+static Eina_Bool
 e_dbus_fd_handler(void *data, Ecore_Fd_Handler *fd_handler)
 {
   E_DBus_Handler_Data *hd;
@@ -62,7 +62,7 @@ e_dbus_fd_handler(void *data, Ecore_Fd_Handler *fd_handler)
     DBG("handler disabled");
     if (hd->fd_handler) ecore_main_fd_handler_del(hd->fd_handler);
     hd->fd_handler = NULL;
-    return 0;
+    return ECORE_CALLBACK_CANCEL;
   }
   if (ecore_main_fd_handler_active_get(fd_handler, ECORE_FD_READ)) condition |= DBUS_WATCH_READABLE;
   if (ecore_main_fd_handler_active_get(fd_handler, ECORE_FD_WRITE)) condition |= DBUS_WATCH_WRITABLE;
@@ -72,9 +72,8 @@ e_dbus_fd_handler(void *data, Ecore_Fd_Handler *fd_handler)
   dbus_watch_handle(hd->watch, condition);
   hd = NULL;
 
-  return 1;
+  return ECORE_CALLBACK_RENEW;
 }
-
 
 static void
 e_dbus_fd_handler_add(E_DBus_Handler_Data *hd)
@@ -227,7 +226,7 @@ cb_dispatch_status(DBusConnection *conn __UNUSED__, DBusDispatchStatus new_statu
   }
 }
 
-static int
+static Eina_Bool
 e_dbus_timeout_handler(void *data)
 {
   E_DBus_Timeout_Data *td;
@@ -238,12 +237,12 @@ e_dbus_timeout_handler(void *data)
   {
     DBG("timeout_handler (not enabled, ending)");
     td->handler = NULL;
-    return 0;
+    return ECORE_CALLBACK_CANCEL;
   }
 
   DBG("timeout handler!");
   dbus_timeout_handle(td->timeout);
-  return 1;
+  return ECORE_CALLBACK_RENEW;
 }
 
 static void
@@ -409,7 +408,7 @@ e_dbus_filter(DBusConnection *conn __UNUSED__, DBusMessage *message, void *user_
 
 int e_dbus_idler_active = 0;
 
-static int
+static Eina_Bool
 e_dbus_idler(void *data)
 {
   E_DBus_Connection *cd;
@@ -419,7 +418,7 @@ e_dbus_idler(void *data)
   {
     DBG("done dispatching!");
     cd->idler = NULL;
-    return 0;
+    return ECORE_CALLBACK_CANCEL;
   }
   e_dbus_idler_active++;
   dbus_connection_ref(cd->conn);
@@ -435,7 +434,7 @@ e_dbus_idler(void *data)
       e_dbus_connection_close(cd);
     } while (--close_connection);
   }
-  return 1;
+  return ECORE_CALLBACK_RENEW;
 }
 
 /**

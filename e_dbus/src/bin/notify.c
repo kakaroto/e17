@@ -25,7 +25,7 @@ cb_sent(void *data __UNUSED__, void *ret, DBusError *err)
   free(notify);
 }
 
-int
+Eina_Bool
 cb_timer(void *data __UNUSED__)
 {
   E_Notification *n;
@@ -43,7 +43,7 @@ cb_timer(void *data __UNUSED__)
   e_notification_unref(n);
   num++;
 
-  return 1;
+  return ECORE_CALLBACK_RENEW;
 }
 
 void

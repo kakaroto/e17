@@ -43,7 +43,7 @@ daemon_note_close(Daemon_Data *dd, E_Notification *n, int reason)
   }
 }
 
-int
+Eina_Bool
 cb_note_close_timer(void *data)
 {
   Timer_Data *td = data;
@@ -54,7 +54,7 @@ cb_note_close_timer(void *data)
   e_notification_unref(td->n);
   free(td);
 
-  return 0;
+  return ECORE_CALLBACK_CANCEL;
 }
 
 void
@@ -66,7 +66,7 @@ daemon_note_show(Daemon_Data *d, E_Notification *n)
   d->history = eina_list_append(d->history, n); 
 
   // adjust history
-  if (eina_list_count(d->history) > d->max_history_length)
+  if ((int) eina_list_count(d->history) > d->max_history_length)
   {
     E_Notification *old;
     old = eina_list_data_get(d->history);
@@ -93,7 +93,7 @@ daemon_note_show(Daemon_Data *d, E_Notification *n)
 }
 
 E_Notification *
-daemon_note_open_find(Daemon_Data *d, int id)
+daemon_note_open_find(Daemon_Data *d, unsigned int id)
 {
   E_Notification *n;
   Eina_List *l;

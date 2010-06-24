@@ -26,13 +26,13 @@ cb_reply(void *data __UNUSED__, DBusMessage *reply, DBusError *error)
   if (val == NUM_LOOPS - 1) ecore_main_loop_quit();
 }
 
-int
+Eina_Bool
 send_message(void *data)
 {
 
   DBusMessage *msg;
   E_DBus_Connection *conn;
-  
+
   conn = data;
 
   msg = dbus_message_new_method_call(
@@ -47,7 +47,7 @@ send_message(void *data)
   e_dbus_message_send(conn, msg, cb_reply, -1, NULL);
   dbus_message_unref(msg);
   printf("Sent: %d\n", msg_num);
-  return 1;
+  return ECORE_CALLBACK_RENEW;
 }
 
 int

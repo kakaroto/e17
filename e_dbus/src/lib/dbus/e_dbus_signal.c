@@ -83,7 +83,7 @@ _match_append(char *buf, int size, int *used, const char *keyword, int keyword_s
    if(value == NULL)
 	return 1;
 
-   if (*used + keyword_size + value_size + sizeof(",=''") >= size)
+   if ((int) (*used + keyword_size + value_size + sizeof(",=''")) >= size)
      {
 	ERR("cannot add match %s='%s': too long!", keyword, value);
 	return 0;
@@ -198,17 +198,18 @@ e_dbus_signal_handler_add(E_DBus_Connection *conn, const char *sender, const cha
   /* if we have a sender, and it is not a unique name, we need to know the unique name to match since signals will have the name owner as ther sender. */
   if (sender && sender[0] != ':')
     {
-       struct cb_name_owner_data *data;
-       data = malloc(sizeof(*data));
-       if (!data)
+       struct cb_name_owner_data *data_cb;
+
+       data_cb = malloc(sizeof(*data));
+       if (!data_cb)
 	 {
 	    e_dbus_signal_handler_free(sh);
 	    return NULL;
 	 }
-       data->conn = conn;
-       data->sh = sh;
-       sh->get_name_owner_pending = 
-         e_dbus_get_name_owner(conn, sender, cb_name_owner, data);
+       data_cb->conn = conn;
+       data_cb->sh = sh;
+       sh->get_name_owner_pending =
+         e_dbus_get_name_owner(conn, sender, cb_name_owner, data_cb);
     }
 
   conn->signal_handlers = eina_list_append(conn->signal_handlers, sh);

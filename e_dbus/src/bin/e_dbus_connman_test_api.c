@@ -1,3 +1,7 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "E_Connman.h"
 #include <stdio.h>
 #include <string.h>
@@ -476,20 +480,20 @@ static const struct test_desc test_desc_service[] = {
   TEST_DESC_SENTINEL
 };
 
-static int
-_quit(void *data)
+static Eina_Bool
+_quit(__UNUSED__ void *data)
 {
    ecore_main_loop_quit();
-   return 0;
+   return ECORE_CALLBACK_CANCEL;
 }
 
-static int
-_on_exiter(void *data)
+static Eina_Bool
+_on_exiter(__UNUSED__ void *data)
 {
    e_connman_system_shutdown();
    ecore_idle_enterer_add(_quit, NULL);
    exiter = NULL;
-   return 0;
+   return ECORE_CALLBACK_CANCEL;
 }
 
 static void
@@ -506,7 +510,7 @@ struct test_element_timer_data
    Ecore_Timer *timer;
 };
 
-static int
+static Eina_Bool
 _test_element_timer(void *data)
 {
    struct test_element_timer_data *d = data;
@@ -529,11 +533,11 @@ _test_element_timer(void *data)
    _exiter_reschedule();
 
    d->timer = NULL;
-   return 0;
+   return ECORE_CALLBACK_CANCEL;
 }
 
 static void
-_element_listener(void *data, const E_Connman_Element *element)
+_element_listener(void *data, __UNUSED__ const E_Connman_Element *element)
 {
    struct test_element_timer_data *d = data;
    if (d->timer)
@@ -551,38 +555,38 @@ _element_listener_free(void *data)
    free(d);
 }
 
-static int
-_on_element_add(void *data, int type, void *info)
+static Eina_Bool
+_on_element_add(__UNUSED__ void *data, __UNUSED__ int type, void *info)
 {
    E_Connman_Element *element = info;
    struct test_element_timer_data *d;
 
    d = malloc(sizeof(*d));
    if (!d)
-     return 1;
+     return ECORE_CALLBACK_PASS_ON;
 
    d->element = element;
    d->timer = ecore_timer_add(1.0, _test_element_timer, d);
    e_connman_element_listener_add
      (element, _element_listener, d, _element_listener_free);
 
-   return 1;
+   return ECORE_CALLBACK_PASS_ON;
 }
 
-static int
-_on_element_del(void *data, int type, void *info)
+static Eina_Bool
+_on_element_del(__UNUSED__ void *data, __UNUSED__ int type, __UNUSED__ void *info)
 {
-   return 1;
+   return ECORE_CALLBACK_PASS_ON;
 }
 
-static int
-_on_element_updated(void *data, int type, void *info)
+static Eina_Bool
+_on_element_updated(__UNUSED__ void *data, __UNUSED__ int type, __UNUSED__ void *info)
 {
-   return 1;
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 int
-main(int argc, char *argv[])
+main(__UNUSED__ int argc, __UNUSED__ char *argv[])
 {
    E_DBus_Connection *c;
    int total;

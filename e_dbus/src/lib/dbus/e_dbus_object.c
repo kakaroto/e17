@@ -600,8 +600,8 @@ _introspect_indent_append(Eina_Strbuf *buf, int level)
 static void
 _introspect_interface_append(Eina_Strbuf *buf, E_DBus_Interface *iface, int level)
 {
-  E_DBus_Method *method;
-  E_DBus_Signal *signal;
+  E_DBus_Method *m;
+  E_DBus_Signal *s;
   Eina_List *l;
 
   _introspect_indent_append(buf, level);
@@ -611,10 +611,10 @@ _introspect_interface_append(Eina_Strbuf *buf, E_DBus_Interface *iface, int leve
   level++;
 
   DBG("introspect iface: %s", iface->name);
-  EINA_LIST_FOREACH(iface->methods, l, method)
-    _introspect_method_append(buf, method, level);
-  EINA_LIST_FOREACH(iface->signals, l, signal)
-    _introspect_signal_append(buf, signal, level);
+  EINA_LIST_FOREACH(iface->methods, l, m)
+    _introspect_method_append(buf, m, level);
+  EINA_LIST_FOREACH(iface->signals, l, s)
+    _introspect_signal_append(buf, s, level);
 
   level--;
   _introspect_indent_append(buf, level);
@@ -669,24 +669,24 @@ _introspect_method_append(Eina_Strbuf *buf, E_DBus_Method *method, int level)
 }
 
 static void
-_introspect_signal_append(Eina_Strbuf *buf, E_DBus_Signal *signal, int level)
+_introspect_signal_append(Eina_Strbuf *buf, E_DBus_Signal *s, int level)
 {
   DBusSignatureIter iter;
   char *type;
 
   _introspect_indent_append(buf, level);
-  DBG("introspect signal: %s", signal->name);
+  DBG("introspect signal: %s", s->name);
   eina_strbuf_append(buf, "<signal name=\"");
-  eina_strbuf_append(buf, signal->name);
+  eina_strbuf_append(buf, s->name);
   eina_strbuf_append(buf, "\">\n");
   level++;
 
   /* append args */
-  if (signal->signature &&
-      signal->signature[0] &&
-      dbus_signature_validate(signal->signature, NULL))
+  if (s->signature &&
+      s->signature[0] &&
+      dbus_signature_validate(s->signature, NULL))
   {
-    dbus_signature_iter_init(&iter, signal->signature);
+    dbus_signature_iter_init(&iter, s->signature);
     while ((type = dbus_signature_iter_get_signature(&iter)))
     {
       _introspect_arg_append(buf, type, NULL, level);

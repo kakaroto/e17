@@ -189,13 +189,13 @@ _e_bluez_element_listeners_call_do(E_Bluez_Element *element)
    e_bluez_element_event_add(E_BLUEZ_EVENT_ELEMENT_UPDATED, element);
 }
 
-static int
+static Eina_Bool
 _e_bluez_element_listeners_call_idler(void *data)
 {
    E_Bluez_Element *element = data;
    _e_bluez_element_listeners_call_do(element);
    element->_idler.changed = NULL;
-   return 0;
+   return ECORE_CALLBACK_CANCEL;
 }
 
 static void
@@ -712,7 +712,7 @@ e_bluez_element_bytes_array_get_stringshared(const E_Bluez_Element *element, con
 }
 
 Eina_Bool
-e_bluez_element_objects_array_get_stringshared(const E_Bluez_Element *element, const char *property, unsigned int *count, E_Bluez_Element ***elements)
+e_bluez_element_objects_array_get_stringshared(const E_Bluez_Element *element, const char *property, unsigned int *count, E_Bluez_Element ***p_elements)
 {
    E_Bluez_Element **ret, **p;
    Eina_Array_Iterator iterator;
@@ -724,10 +724,10 @@ e_bluez_element_objects_array_get_stringshared(const E_Bluez_Element *element, c
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(property, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(elements, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, 0);
 
    *count = 0;
-   *elements = NULL;
+   *p_elements = NULL;
 
    if (!e_bluez_element_property_get_stringshared
        (element, property, &type, &array))
@@ -768,7 +768,7 @@ e_bluez_element_objects_array_get_stringshared(const E_Bluez_Element *element, c
 	p++;
      }
    *count = p - ret;
-   *elements = ret;
+   *p_elements = ret;
    return 1;
 }
 

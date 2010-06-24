@@ -203,13 +203,13 @@ _e_connman_element_listeners_call_do(E_Connman_Element *element)
    e_connman_element_event_add(E_CONNMAN_EVENT_ELEMENT_UPDATED, element);
 }
 
-static int
+static Eina_Bool
 _e_connman_element_listeners_call_idler(void *data)
 {
    E_Connman_Element *element = data;
    _e_connman_element_listeners_call_do(element);
    element->_idler.changed = NULL;
-   return 0;
+   return ECORE_CALLBACK_CANCEL;
 }
 
 static void
@@ -733,7 +733,7 @@ e_connman_element_bytes_array_get_stringshared(const E_Connman_Element *element,
 }
 
 bool
-e_connman_element_objects_array_get_stringshared(const E_Connman_Element *element, const char *property, unsigned int *count, E_Connman_Element ***elements)
+e_connman_element_objects_array_get_stringshared(const E_Connman_Element *element, const char *property, unsigned int *count, E_Connman_Element ***p_elements)
 {
    E_Connman_Element **ret, **p;
    Eina_Array_Iterator iterator;
@@ -745,10 +745,10 @@ e_connman_element_objects_array_get_stringshared(const E_Connman_Element *elemen
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(property, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(elements, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, 0);
 
    *count = 0;
-   *elements = NULL;
+   *p_elements = NULL;
 
    if (!e_connman_element_property_get_stringshared
        (element, property, &type, &array))
@@ -789,7 +789,7 @@ e_connman_element_objects_array_get_stringshared(const E_Connman_Element *elemen
 	p++;
      }
    *count = p - ret;
-   *elements = ret;
+   *p_elements = ret;
    return 1;
 }
 

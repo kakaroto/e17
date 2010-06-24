@@ -1,3 +1,7 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "E_Bluez.h"
 #include <stdio.h>
 #include <string.h>
@@ -16,7 +20,7 @@ static E_Msgbus_Data *_msgbus_data = NULL;
 static E_DBus_Interface *iface = NULL;
 
 static void
-_method_success_check(void *data, DBusMessage *msg, DBusError *error)
+_method_success_check(void *data, __UNUSED__ DBusMessage *msg, DBusError *error)
 {
    const char *name = data;
 
@@ -32,7 +36,7 @@ _method_success_check(void *data, DBusMessage *msg, DBusError *error)
 }
 
 static void
-_default_adapter_callback(void *data, DBusMessage *msg, DBusError *err)
+_default_adapter_callback(__UNUSED__ void *data, DBusMessage *msg, __UNUSED__ DBusError *err)
 {
    E_Bluez_Element *element;
    const char *path;
@@ -59,7 +63,7 @@ _create_paired_device_cb(void *data, DBusMessage *msg, DBusError *err)
 }
 
 static DBusMessage*
-_request_pincode_cb(E_DBus_Object *obj, DBusMessage *msg)
+_request_pincode_cb(__UNUSED__ E_DBus_Object *obj, DBusMessage *msg)
 {
 	DBusMessage *reply;
 	char pin[16];
@@ -91,33 +95,33 @@ _elements_print(E_Bluez_Element **elements, unsigned int count)
    printf("END: all elements count = %u\n", count);
 }
 
-static int
-_on_element_add(void *data, int type, void *info)
+static Eina_Bool
+_on_element_add(__UNUSED__ void *data, __UNUSED__ int type, void *info)
 {
    E_Bluez_Element *element = info;
    printf(">>> %s\n", element->path);
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_element_del(void *data, int type, void *info)
+static Eina_Bool
+_on_element_del(__UNUSED__ void *data, __UNUSED__ int type, void *info)
 {
    E_Bluez_Element *element = info;
    printf("<<< %s\n", element->path);
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_element_updated(void *data, int type, void *info)
+static Eina_Bool
+_on_element_updated(__UNUSED__ void *data, __UNUSED__ int type, void *info)
 {
    E_Bluez_Element *element = info;
    printf("!!! %s\n", element->path);
    e_bluez_element_print(stderr, element);
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_device_found(void *data, int type, void *info)
+static Eina_Bool
+_on_device_found(__UNUSED__ void *data, int __UNUSED__ type, void *info)
 {
    E_Bluez_Device_Found *device = info;
    printf("!!! %s\n", device->adapter->path);
@@ -126,22 +130,22 @@ _on_device_found(void *data, int type, void *info)
    printf("\n");
 
    e_bluez_devicefound_free(device);
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_cmd_quit(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_quit(__UNUSED__ char *cmd, __UNUSED__ char *args)
 {
    fputs("Bye!\n", stderr);
    ecore_main_loop_quit();
    return 0;
 }
 
-static int
-_on_cmd_sync(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_sync(__UNUSED__ char *cmd, __UNUSED__ char *args)
 {
    e_bluez_manager_sync_elements();
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
 static char *
@@ -161,8 +165,8 @@ _tok(char *p)
    return p;
 }
 
-static int
-_on_cmd_get_all(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_get_all(__UNUSED__ char *cmd, char *args)
 {
    E_Bluez_Element **elements;
    char *type;
@@ -187,7 +191,7 @@ _on_cmd_get_all(char *cmd, char *args)
 	_elements_print(elements, count);
      }
 
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
 static E_Bluez_Element *
@@ -210,28 +214,28 @@ _element_from_args(char *args, char **next_args)
    return element;
 }
 
-static int
-_on_cmd_print(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_print(__UNUSED__ char *cmd, char *args)
 {
    char *next_args;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
    if (element)
      e_bluez_element_print(stdout, element);
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_cmd_get_properties(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_get_properties(__UNUSED__ char *cmd, char *args)
 {
    char *next_args;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
    if (element)
      e_bluez_element_properties_sync(element);
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_cmd_property_set(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_property_set(__UNUSED__ char *cmd, char *args)
 {
    char *next_args, *name, *p;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
@@ -242,12 +246,12 @@ _on_cmd_property_set(char *cmd, char *args)
    int type;
 
    if (!element)
-     return 1;
+     return ECORE_CALLBACK_RENEW;
 
    if (!next_args)
      {
 	fputs("ERROR: missing parameters name, type and value.\n", stderr);
-	return 1;
+	return ECORE_CALLBACK_RENEW;
      }
 
    name = next_args;
@@ -255,14 +259,14 @@ _on_cmd_property_set(char *cmd, char *args)
    if (!p)
      {
 	fputs("ERROR: missing parameters type and value.\n", stderr);
-	return 1;
+	return ECORE_CALLBACK_RENEW;
      }
 
    next_args = _tok(p);
    if (!next_args)
      {
 	fputs("ERROR: missing parameter value.\n", stderr);
-	return 1;
+	return ECORE_CALLBACK_RENEW;
      }
 
    type = p[0];
@@ -278,7 +282,7 @@ _on_cmd_property_set(char *cmd, char *args)
 	 if (p == next_args)
 	   {
 	      fprintf(stderr, "ERROR: invalid number \"%s\".\n", next_args);
-	      return 1;
+	      return ECORE_CALLBACK_RENEW;
 	   }
 	 value = &vu16;
 	 fprintf(stderr, "DBG: u16 is: %hu\n", vu16);
@@ -288,7 +292,7 @@ _on_cmd_property_set(char *cmd, char *args)
 	 if (p == next_args)
 	   {
 	      fprintf(stderr, "ERROR: invalid number \"%s\".\n", next_args);
-	      return 1;
+	      return ECORE_CALLBACK_RENEW;
 	   }
 	 value = &vu32;
 	 fprintf(stderr, "DBG: u16 is: %u\n", vu32);
@@ -311,7 +315,7 @@ _on_cmd_property_set(char *cmd, char *args)
       default:
 	 fprintf(stderr, "ERROR: don't know how to parse type '%c' (%d)\n",
 		 type, type);
-	 return 1;
+	 return ECORE_CALLBACK_RENEW;
      }
 
    fprintf(stderr, "set_property %s [%p] %s %c %p...\n",
@@ -319,47 +323,47 @@ _on_cmd_property_set(char *cmd, char *args)
    if (!e_bluez_element_property_set(element, name, type, value))
 	fputs("ERROR: error setting property.\n", stderr);
 
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
 /* Manager Commands */
 
-static int
-_on_cmd_manager_get(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_manager_get(__UNUSED__ char *cmd, __UNUSED__ char *args)
 {
    E_Bluez_Element *element;
    element = e_bluez_manager_get();
    e_bluez_element_print(stderr, element);
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_cmd_manager_default_adapter(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_manager_default_adapter(__UNUSED__ char *cmd, __UNUSED__ char *args)
 {
    return e_bluez_manager_default_adapter(_default_adapter_callback, NULL);
 }
 
 /* Adapter Commands */
 
-static int
-_on_cmd_adapter_register_agent(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_adapter_register_agent(__UNUSED__ char *cmd, char *args)
 {
    char *next_args, *path, *cap;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
 
    if (!element)
-	   return 1;
+	   return ECORE_CALLBACK_RENEW;
 
    if (!next_args) {
 	   fputs("ERROR: missing parameters name, type and value.\n", stderr);
-	   return 1;
+	   return ECORE_CALLBACK_RENEW;
    }
 
    path = next_args;
    cap = _tok(path);
    if (!cap) {
 	   fputs("ERROR: missing parameters name, type and value.\n", stderr);
-	   return 1;
+	   return ECORE_CALLBACK_RENEW;
    }
 
    if (e_bluez_adapter_agent_register(element,
@@ -368,22 +372,22 @@ _on_cmd_adapter_register_agent(char *cmd, char *args)
    else
      fprintf(stderr, "ERROR: can't register agent %s\n", path);
 
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_cmd_adapter_unregister_agent(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_adapter_unregister_agent(__UNUSED__ char *cmd, char *args)
 {
    char *path, *next_args;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
 
    if (!element)
-	   return 1;
+	   return ECORE_CALLBACK_RENEW;
 
    if (!args)
      {
 	fputs("ERROR: missing the object path\n", stderr);
-	return 1;
+	return ECORE_CALLBACK_RENEW;
      }
 
    path = next_args;
@@ -393,55 +397,55 @@ _on_cmd_adapter_unregister_agent(char *cmd, char *args)
    else
      fprintf(stderr, "ERROR: can't unregister agent %s\n", path);
 
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_cmd_adapter_get_address(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_adapter_get_address(__UNUSED__ char *cmd, char *args)
 {
    const char *address;
    char *next_args;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
 
    if (!element)
-	   return 1;
+	   return ECORE_CALLBACK_RENEW;
 
    if (e_bluez_adapter_address_get(element, &address))
      printf(":::Adapter address = \"%s\"\n", address);
    else
      fputs("ERROR: can't get adapter address\n", stderr);
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_cmd_adapter_get_name(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_adapter_get_name(__UNUSED__ char *cmd, char *args)
 {
    const char *name;
    char *next_args;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
 
    if (!element)
-	   return 1;
+	   return ECORE_CALLBACK_RENEW;
 
    if (e_bluez_adapter_name_get(element, &name))
      printf(":::Adapter name = \"%s\"\n", name);
    else
      fputs("ERROR: can't get adapter name\n", stderr);
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_cmd_adapter_set_name(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_adapter_set_name(__UNUSED__ char *cmd, char *args)
 {
-   char *path, *next_args;
+   char *next_args;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
 
    if (!element)
-	   return 1;
+	   return ECORE_CALLBACK_RENEW;
 
    if (!next_args) {
       fprintf(stderr, "ERROR: missing name value\n");
-      return 1;
+      return ECORE_CALLBACK_RENEW;
    }
 
    if (e_bluez_adapter_name_set(element, next_args, _method_success_check,
@@ -449,40 +453,40 @@ _on_cmd_adapter_set_name(char *cmd, char *args)
      printf(":::Adapter %s Name set to %s\n", element->path, next_args);
    else
      fputs("ERROR: can't set adapter name\n", stderr);
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_cmd_adapter_get_powered(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_adapter_get_powered(__UNUSED__ char *cmd, char *args)
 {
    char *next_args;
    Eina_Bool powered;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
 
    if (!element)
-	   return 1;
+	   return ECORE_CALLBACK_RENEW;
 
    if (e_bluez_adapter_powered_get(element, &powered))
      printf(":::Adapter powered = \"%hhu\"\n", powered);
    else
      fputs("ERROR: can't get adapter powered\n", stderr);
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_cmd_adapter_set_powered(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_adapter_set_powered(__UNUSED__ char *cmd, char *args)
 {
    char *next_args;
    Eina_Bool powered;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
 
    if (!element)
-	   return 1;
+	   return ECORE_CALLBACK_RENEW;
 
    if (!args)
      {
 	fputs("ERROR: missing the powered value\n", stderr);
-	return 1;
+	return ECORE_CALLBACK_RENEW;
      }
 
    powered = !!atol(next_args);
@@ -492,40 +496,40 @@ _on_cmd_adapter_set_powered(char *cmd, char *args)
      printf(":::Adapter %s Powered set to %hhu\n", element->path, powered);
    else
      fputs("ERROR: can't set device powered\n", stderr);
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_cmd_adapter_get_discoverable(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_adapter_get_discoverable(__UNUSED__ char *cmd, char *args)
 {
    char *next_args;
    Eina_Bool discoverable;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
 
    if (!element)
-	   return 1;
+	   return ECORE_CALLBACK_RENEW;
 
    if (e_bluez_adapter_discoverable_get(element, &discoverable))
      printf(":::Adapter discoverable = \"%hhu\"\n", discoverable);
    else
      fputs("ERROR: can't get adapter discoverable\n", stderr);
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_cmd_adapter_set_discoverable(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_adapter_set_discoverable(__UNUSED__ char *cmd, char *args)
 {
    char *next_args;
    Eina_Bool discoverable;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
 
    if (!element)
-	   return 1;
+	   return ECORE_CALLBACK_RENEW;
 
    if (!args)
      {
 	fputs("ERROR: missing the discoverable value\n", stderr);
-	return 1;
+	return ECORE_CALLBACK_RENEW;
      }
 
    discoverable = !!atol(next_args);
@@ -535,46 +539,46 @@ _on_cmd_adapter_set_discoverable(char *cmd, char *args)
      printf(":::Adapter %s discoverable set to %hhu\n", element->path, discoverable);
    else
      fputs("ERROR: can't set adapter discoverable\n", stderr);
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_cmd_adapter_get_discoverable_timeout(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_adapter_get_discoverable_timeout(__UNUSED__ char *cmd, char *args)
 {
    char *next_args;
    unsigned int timeout;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
 
    if (!element)
-	   return 1;
+	   return ECORE_CALLBACK_RENEW;
 
    if (e_bluez_adapter_discoverable_timeout_get(element, &timeout))
      printf(":::Adapter %s DiscovableTimeout = %hu\n", element->path, timeout);
    else
      fputs("ERROR: can't get adapter discoverable timeout\n", stderr);
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_cmd_adapter_set_discoverable_timeout(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_adapter_set_discoverable_timeout(__UNUSED__ char *cmd, char *args)
 {
-   char *device_path, *next_args, *p;
+   char *next_args, *p;
    unsigned int timeout;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
 
    if (!element)
-	   return 1;
+	   return ECORE_CALLBACK_RENEW;
 
    if (!next_args) {
       fprintf(stderr, "ERROR: missing timeout value\n");
-      return 1;
+      return ECORE_CALLBACK_RENEW;
    }
 
    timeout = strtol(next_args, &p, 0);
    if (p == next_args)
      {
 	fprintf(stderr, "ERROR: invalid number \"%s\".\n", next_args);
-	return 1;
+	return ECORE_CALLBACK_RENEW;
      }
 
    if (e_bluez_adapter_discoverable_timeout_set(element, timeout,
@@ -583,84 +587,84 @@ _on_cmd_adapter_set_discoverable_timeout(char *cmd, char *args)
      printf(":::Adapter %s scan interval set to %hu\n", element->path, timeout);
    else
      fputs("ERROR: can't set adapter discoverable timeout\n", stderr);
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_cmd_adapter_get_discovering(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_adapter_get_discovering(__UNUSED__ char *cmd, char *args)
 {
    char *next_args;
    Eina_Bool discovering;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
 
    if (!element)
-	   return 1;
+	   return ECORE_CALLBACK_RENEW;
 
    if (e_bluez_adapter_discovering_get(element, &discovering))
      printf(":::Adapter discovering = \"%hhu\"\n", discovering);
    else
      fputs("ERROR: can't get adapter's Discovering\n", stderr);
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_cmd_adapter_start_discovery(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_adapter_start_discovery(__UNUSED__ char *cmd, char *args)
 {
    char *next_args;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
 
    if (!element)
-	   return 1;
+	   return ECORE_CALLBACK_RENEW;
 
    if (e_bluez_adapter_start_discovery(element,
         _method_success_check, "adapter_start_discovery"))
      printf(":::Adapter Start Discovery for %s\n", element->path);
    else
      fputs("ERROR: can't start discovery on adapter \n", stderr);
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_cmd_adapter_stop_discovery(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_adapter_stop_discovery(__UNUSED__ char *cmd, char *args)
 {
    char *next_args;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
 
    if (!element)
-	   return 1;
+	   return ECORE_CALLBACK_RENEW;
 
    if (e_bluez_adapter_stop_discovery(element,
         _method_success_check, "adapter_stop_discovery"))
      printf(":::Adapter Stop Discovery for %s\n", element->path);
    else
      fputs("ERROR: can't stop discovery on adapter \n", stderr);
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_cmd_adapter_create_paired_device(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_adapter_create_paired_device(__UNUSED__ char *cmd, char *args)
 {
    char *next_args, *path, *cap, *device;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
 
    if (!element)
-	   return 1;
+	   return ECORE_CALLBACK_RENEW;
 
    if (!next_args) {
 	   fputs("ERROR: missing parameters name, type and value.\n", stderr);
-	   return 1;
+	   return ECORE_CALLBACK_RENEW;
    }
 
    path = next_args;
    cap = _tok(path);
    if (!cap) {
 	   fputs("ERROR: missing parameters name, type and value.\n", stderr);
-	   return 1;
+	   return ECORE_CALLBACK_RENEW;
    }
    device = _tok(cap);
    if (!device) {
 	   fputs("ERROR: missing parameters name, type and value.\n", stderr);
-	   return 1;
+	   return ECORE_CALLBACK_RENEW;
    }
 
    if (e_bluez_adapter_create_paired_device(element, path, cap, device,
@@ -680,36 +684,36 @@ _on_cmd_adapter_create_paired_device(char *cmd, char *args)
    else
      fprintf(stderr, "ERROR: can't create paired device %s\n", path);
 
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
 /* Devices Commands */
 
-static int
-_on_cmd_device_get_name(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_device_get_name(__UNUSED__ char *cmd, char *args)
 {
    const char *name;
    char *next_args;
    E_Bluez_Element *element = _element_from_args(args, &next_args);
 
    if (!element)
-	   return 1;
+	   return ECORE_CALLBACK_RENEW;
 
    if (e_bluez_device_name_get(element, &name))
      printf(":::Device name = \"%s\"\n", name);
    else
      fputs("ERROR: can't get device name\n", stderr);
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
-static int
-_on_input(void *data, Ecore_Fd_Handler *fd_handler)
+static Eina_Bool
+_on_input(__UNUSED__ void *data, Ecore_Fd_Handler *fd_handler)
 {
    char buf[256];
    char *cmd, *args;
    const struct {
       const char *cmd;
-      int (*cb)(char *cmd, char *args);
+      Eina_Bool (*cb)(char *cmd, char *args);
    } *itr, maps[] = {
      {"quit", _on_cmd_quit},
      {"sync", _on_cmd_sync},
@@ -802,7 +806,7 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
 	       printf("\t%s\n", itr->cmd);
 	  }
 	fputc('\n', stdout);
-	return 1;
+	return ECORE_CALLBACK_RENEW;
      }
 
    for (itr = maps; itr->cmd != NULL; itr++)
@@ -810,11 +814,11 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
        return itr->cb(cmd, args);
 
    printf("unknown command \"%s\", args=%s\n", cmd, args);
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
 int
-main(int argc, char *argv[])
+main(__UNUSED__ int argc,__UNUSED__ char *argv[])
 {
    ecore_init();
    e_dbus_init();
