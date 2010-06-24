@@ -97,6 +97,7 @@ static Evry_Action *act3 = NULL;
 static const int DEFAULT_CONVERSATION_TYPE = 1;
 static Evry_Type PIDGIN_CONTACT;
 static const char *buddy_icon_default = NULL;
+static int instances = 0;
 
 static void
 getBuddyList()
@@ -333,10 +334,23 @@ _item_add(Buddy_Info *bi)
   _update_list(1);
 }
 
+static Evry_Plugin *
+_begin(Evry_Plugin *plugin, const Evry_Item *item __UNUSED__)
+{
+   if (instances)
+     return NULL;
+
+   instances++;
+
+   return plugin;
+}
+
 static void
 _cleanup(Evry_Plugin *p)
 {
   Buddy_Info *bi;
+
+  instances--;
 
   active = 0;
 
@@ -581,7 +595,6 @@ _action_chat(Evry_Action *act)
   return EVRY_ACTION_FINISHED;
 }
 
-
 static int
 _plugins_init(const Evry_API *_api)
 {
@@ -606,7 +619,7 @@ _plugins_init(const Evry_API *_api)
 
   plug = EVRY_PLUGIN_NEW(Evry_Plugin, N_("Pidgin"), NULL,
 			 PIDGIN_CONTACT,
-			 NULL, _cleanup, _fetch, NULL);
+			 _begin, _cleanup, _fetch, NULL);
   evry->plugin_register(plug, EVRY_PLUGIN_SUBJECT, 1);
 
   act = EVRY_ACTION_NEW(N_("Chat"), PIDGIN_CONTACT, 0, "go-next",
