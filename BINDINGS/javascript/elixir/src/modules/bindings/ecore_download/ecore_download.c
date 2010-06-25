@@ -77,15 +77,13 @@ static const struct
 };
 
 static void
-_ecore_event_func_free(void* data, void* ev)
+_ecore_event_func_free(__UNUSED__ void* data, void* ev)
 {
-   (void) data;
-
    elixir_void_free(ev);
 }
 
-static int
-_elixir_download_event_cancel_cb(void *data, int type, void *event)
+static Eina_Bool
+_elixir_download_event_cancel_cb(__UNUSED__ void *data, __UNUSED__ int type, void *event)
 {
    Ecore_Download_Event_Cancel          *edec;
    JSContext                            *cx;
@@ -93,13 +91,10 @@ _elixir_download_event_cancel_cb(void *data, int type, void *event)
    JSObject                             *obj_edf;
    void                                 *private_data;
 
-   (void) data;
-   (void) type;
-
    edec = event;
    private_data = ecore_download_file_data_get(edec->edf);
    cx = elixir_void_get_cx(private_data);
-   if (!cx) return 0;
+   if (!cx) return ECORE_CALLBACK_PASS_ON;
 
    elixir_function_start(cx);
 
@@ -120,9 +115,6 @@ _elixir_download_event_cancel_cb(void *data, int type, void *event)
                    elixir_void_new(cx, NULL, OBJECT_TO_JSVAL(obj_edec), NULL),
                    _ecore_event_func_free,
                    NULL);
-   elixir_object_unregister(cx, &obj_edf);
-   elixir_object_unregister(cx, &obj_edec);
-   return -1;
 
  on_error:
    elixir_object_unregister(cx, &obj_edf);
@@ -131,26 +123,22 @@ _elixir_download_event_cancel_cb(void *data, int type, void *event)
  on_finish:
    elixir_function_stop(cx);
 
-   return 0;
+   return ECORE_CALLBACK_DONE;
 }
 
-static int
-_elixir_download_event_complete_cb(void *data, int type, void *event)
+static Eina_Bool
+_elixir_download_event_complete_cb(__UNUSED__ void *data, __UNUSED__ int type, void *event)
 {
    Ecore_Download_Event_Complete        *edec;
    JSContext                            *cx;
    JSObject                             *obj_edec;
    JSObject                             *obj_edf;
    void                                 *private_data;
-   int                                   ret = 0;
-
-   (void) data;
-   (void) type;
 
    edec = event;
    private_data = ecore_download_file_data_get(edec->edf);
    cx = elixir_void_get_cx(private_data);
-   if (!cx) return 0;
+   if (!cx) return ECORE_CALLBACK_PASS_ON;
 
    elixir_function_start(cx);
 
@@ -172,8 +160,6 @@ _elixir_download_event_complete_cb(void *data, int type, void *event)
                    _ecore_event_func_free,
                    NULL);
 
-   ret = -1;
-
  on_error:
    elixir_object_unregister(cx, &obj_edf);
    elixir_object_unregister(cx, &obj_edec);
@@ -181,26 +167,22 @@ _elixir_download_event_complete_cb(void *data, int type, void *event)
  on_finish:
    elixir_function_stop(cx);
 
-   return ret;
+   return ECORE_CALLBACK_DONE;
 }
 
-static int
-_elixir_download_event_progress_cb(void *data, int type, void *event)
+static Eina_Bool
+_elixir_download_event_progress_cb(__UNUSED__ void *data, __UNUSED__ int type, void *event)
 {
    Ecore_Download_Event_Progress        *edep;
    JSContext                            *cx;
    JSObject                             *obj_edep;
    JSObject                             *obj_edf;
    void                                 *private_data;
-   int                                   ret = 0;
-
-   (void) data;
-   (void) type;
 
    edep = event;
    private_data = ecore_download_file_data_get(edep->edf);
    cx = elixir_void_get_cx(private_data);
-   if (!cx) return 0;
+   if (!cx) return ECORE_CALLBACK_PASS_ON;
 
    elixir_function_start(cx);
 
@@ -227,8 +209,6 @@ _elixir_download_event_progress_cb(void *data, int type, void *event)
                    _ecore_event_func_free,
                    NULL);
 
-   ret = -1;
-
  on_error:
    elixir_object_unregister(cx, &obj_edf);
    elixir_object_unregister(cx, &obj_edep);
@@ -236,7 +216,7 @@ _elixir_download_event_progress_cb(void *data, int type, void *event)
  on_finish:
    elixir_function_stop(cx);
 
-   return ret;
+   return ECORE_CALLBACK_DONE;
 }
 
 static JSBool

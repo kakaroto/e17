@@ -146,12 +146,12 @@ elixir_ecore_event_current_event_get(JSContext *cx, uintN argc, jsval *vp)
    return JS_TRUE;
 }
 
-static int
+static Eina_Bool
 _elixir_ecore_maybe_gc(__UNUSED__ void *data)
 {
    elixir_suspended_gc();
 
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
 static JSBool
@@ -228,13 +228,44 @@ elixir_ecore_animator_frametime_set(JSContext *cx, uintN argc, jsval *vp)
    return JS_TRUE;
 }
 
-static int
+static Eina_Bool
+_ecore_jsval_to_boolean(JSContext *cx, jsval val)
+{
+   Eina_Bool ret = EINA_FALSE;
+
+   if (JSVAL_IS_BOOLEAN(val))
+     {
+	ret = JSVAL_TO_BOOLEAN(val);
+     }
+   else if (JSVAL_IS_INT(val)
+	    || JSVAL_IS_STRING(val))
+     {
+	int tmp;
+
+        if (JS_ValueToInt32(cx, val, &tmp) == JS_FALSE)
+          tmp = EINA_FALSE;
+
+	ret = tmp ? EINA_TRUE : EINA_FALSE;
+     }
+   else if (JSVAL_IS_DOUBLE(val))
+     {
+        jsdouble        dbl;
+
+        if (JS_ValueToNumber(cx, val, &dbl) == JS_TRUE)
+	  ret = dbl;
+     }
+
+   return ret;
+}
+
+
+static Eina_Bool
 _ecore_event_handler_func(void *data, int type, void *event)
 {
    JSFunction *cb;
    JSContext *cx;
    JSObject *parent;
-   int ret = 0;
+   Eina_Bool ret = EINA_FALSE;
    jsval js_return;
    jsval argv[3];
 
@@ -254,22 +285,7 @@ _ecore_event_handler_func(void *data, int type, void *event)
    if (!elixir_function_run(cx, cb, parent, 3, argv, &js_return))
      goto end;
 
-   if (JSVAL_IS_INT(js_return)
-       || JSVAL_IS_STRING(js_return))
-     {
-        if (JS_ValueToInt32(cx, js_return, &ret) == JS_FALSE)
-          ret = 0;
-
-        goto end;
-     }
-
-   if (JSVAL_IS_DOUBLE(js_return))
-     {
-        jsdouble        dbl;
-
-        if (JS_ValueToNumber(cx, js_return, &dbl) == JS_TRUE)
-	  ret = dbl;
-     }
+   ret = _ecore_jsval_to_boolean(cx, js_return);
 
   end:
    elixir_function_stop(cx);
@@ -426,7 +442,7 @@ _ecore_filter_func_start(void *data)
    return res;
 }
 
-static int
+static Eina_Bool
 _ecore_filter_func_filter(void *data, void *loop_data, int type, void *event)
 {
    struct _ecore_filter_func_s *effs;
@@ -434,12 +450,12 @@ _ecore_filter_func_filter(void *data, void *loop_data, int type, void *event)
    JSObject *parent;
    jsval js_return;
    jsval argv[4];
-   int ret = 1;
+   Eina_Bool ret = EINA_TRUE;
 
    cx = elixir_void_get_cx(data);
    parent = elixir_void_get_parent(data);
    if (!cx || !parent)
-     return 0;
+     return EINA_TRUE;
 
    elixir_function_start(cx);
 
@@ -455,8 +471,7 @@ _ecore_filter_func_filter(void *data, void *loop_data, int type, void *event)
         ret = 0;
 
         if (elixir_function_run(cx, effs->filter, parent, 4, argv, &js_return))
-          if (!JS_ValueToInt32(cx, js_return, &ret))
-            ret = 0;
+	  ret = _ecore_jsval_to_boolean(cx, js_return);
      }
 
    /* If we return 0, the event will be deleted. Free data before loosing reference. */
@@ -549,20 +564,20 @@ struct _Elixir_Ecore_Handler
    Eina_Bool delete : 1;
 };
 
-static int
+static Eina_Bool
 _ecore_int_func_void(void* data)
 {
    Elixir_Ecore_Handler *eeh;
    JSContext *cx;
    JSObject *parent;
-   int ret = 0;
+   Eina_Bool ret = ECORE_CALLBACK_CANCEL;
    jsval js_return;
    jsval argv[1];
 
    cx = elixir_void_get_cx(data);
    parent = elixir_void_get_parent(data);
    if (!cx || !parent)
-     return 0;
+     return ECORE_CALLBACK_CANCEL;
 
    elixir_function_start(cx);
 
@@ -574,8 +589,7 @@ _ecore_int_func_void(void* data)
 	eeh->running = EINA_TRUE;
 
 	if (elixir_function_run(cx, eeh->cb, parent, 1, argv, &js_return))
-	  if (!JS_ValueToInt32(cx, js_return, &ret))
-	    ret = 0;
+	  ret = _ecore_jsval_to_boolean(cx, js_return);
 
 	eeh->running = EINA_FALSE;
      }
@@ -596,7 +610,7 @@ _ecore_int_func_void(void* data)
    return ret;
 }
 
-typedef void *(*Elixir_Ecore_Add)(int (*callback)(void *data), const void *data);
+typedef void *(*Elixir_Ecore_Add)(Eina_Bool (*callback)(void *data), const void *data);
 typedef void *(*Elixir_Ecore_Del)(void *handler);
 
 static JSBool
@@ -727,7 +741,7 @@ elixir_ecore_animator_del(JSContext *cx, uintN argc, jsval *vp)
 }
 
 static JSBool
-elixir_ecore_timer_double_func_any(Ecore_Timer *(*func)(double dbl, int (*func)(void *data), const void *data),
+elixir_ecore_timer_double_func_any(Ecore_Timer *(*func)(double dbl, Eina_Bool (*func)(void *data), const void *data),
 				   JSContext *cx, uintN argc, jsval *vp)
 {
    Elixir_Ecore_Handler *eeh;
@@ -1150,6 +1164,10 @@ static const struct {
    { "ECORE_EVENT_SIGNAL_POWER", ECORE_EVENT_SIGNAL_POWER },
    { "ECORE_EVENT_SIGNAL_REALTIME", ECORE_EVENT_SIGNAL_REALTIME },
    { "ECORE_EVENT_COUNT", ECORE_EVENT_COUNT },
+   { "ECORE_CALLBACK_CANCEL", ECORE_CALLBACK_CANCEL },
+   { "ECORE_CALLBACK_RENEW", ECORE_CALLBACK_RENEW },
+   { "ECORE_CALLBACK_PASS_ON", ECORE_CALLBACK_PASS_ON },
+   { "ECORE_CALLBACK_DONE", ECORE_CALLBACK_DONE },
    { NULL, 0 }
 };
 

@@ -313,7 +313,7 @@ static Eina_Bool
 module_open(Elixir_Module *em, JSContext *cx, JSObject *parent)
 {
    void **tmp = NULL;
-   int i;
+   unsigned int i;
 
    if (em->data)
      return EINA_TRUE;

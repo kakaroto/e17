@@ -263,8 +263,8 @@ _elixir_ecore_con_client_get(JSContext *cx, Ecore_Con_Client *clt)
    return elixir_void_get_parent(data);
 }
 
-static int
-_elixir_con_event_url_data_cb(void *data, int type, void *event)
+static Eina_Bool
+_elixir_con_event_url_data_cb(__UNUSED__ void *data, __UNUSED__ int type, void *event)
 {
    Ecore_Con_Event_Url_Data *eceud;
    Elixir_Con_Data *ecd;
@@ -274,16 +274,13 @@ _elixir_con_event_url_data_cb(void *data, int type, void *event)
    void *new;
    void *private_data;
    jsval tmp;
-   int ret = 0;
-
-   (void) data;
-   (void) type;
+   Eina_Bool ret = ECORE_CALLBACK_PASS_ON;
 
    eceud = event;
 
    private_data = ecore_con_url_data_get(eceud->url_con);
    cx = elixir_void_get_cx(private_data);
-   if (!cx) return 0;
+   if (!cx) return ECORE_CALLBACK_PASS_ON;
 
    ret = _elixir_con_data_handler(private_data, (int*) eceud->data, eceud->size);
    if (ret != 1)
@@ -336,8 +333,6 @@ _elixir_con_event_url_data_cb(void *data, int type, void *event)
    new = elixir_void_new(cx, NULL, OBJECT_TO_JSVAL(obj_eceud), NULL);
    ecore_event_add(ELIXIR_CON_EVENT_URL_DATA, new, _ecore_event_func_free, NULL);
 
-   ret = -1;
-
  on_error:
    if (ecd)
      {
@@ -354,24 +349,21 @@ _elixir_con_event_url_data_cb(void *data, int type, void *event)
    return ret;
 }
 
-static int
-_elixir_con_event_url_complete_cb(void *data, int type, void *event)
+static Eina_Bool
+_elixir_con_event_url_complete_cb(__UNUSED__ void *data, __UNUSED__ int type, void *event)
 {
    Ecore_Con_Event_Url_Complete *eceuc;
    JSContext *cx;
    JSObject *obj_eceuc;
    void *new;
    void *private_data;
-   int ret = 0;
-
-   (void) data;
-   (void) type;
+   Eina_Bool ret = ECORE_CALLBACK_PASS_ON;
 
    eceuc = event;
 
    private_data = ecore_con_url_data_get(eceuc->url_con);
    cx = elixir_void_get_cx(private_data);
-   if (!cx) return 0;
+   if (!cx) return ECORE_CALLBACK_PASS_ON;
 
    elixir_function_start(cx);
 
@@ -391,8 +383,6 @@ _elixir_con_event_url_complete_cb(void *data, int type, void *event)
    new = elixir_void_new(cx, NULL, OBJECT_TO_JSVAL(obj_eceuc), NULL);
    ecore_event_add(ELIXIR_CON_EVENT_URL_COMPLETE, new, _ecore_event_func_free, NULL);
 
-   ret = -1;
-
  on_error:
    elixir_object_unregister(cx, &obj_eceuc);
 
@@ -402,7 +392,7 @@ _elixir_con_event_url_complete_cb(void *data, int type, void *event)
    return ret;
 }
 
-static int
+static Eina_Bool
 _elixir_con_event_url_progress_cb(void *data, int type, void *event)
 {
    Ecore_Con_Event_Url_Progress *eceup;
@@ -412,16 +402,13 @@ _elixir_con_event_url_progress_cb(void *data, int type, void *event)
    JSObject *obj_upload;
    void *new;
    void *private_data;
-   int ret = 0;
-
-   (void) data;
-   (void) type;
+   Eina_Bool ret = ECORE_CALLBACK_PASS_ON;
 
    eceup = event;
 
    private_data = ecore_con_url_data_get(eceup->url_con);
    cx = elixir_void_get_cx(private_data);
-   if (!cx) return 0;
+   if (!cx) return ECORE_CALLBACK_PASS_ON;
 
    elixir_function_start(cx);
 
@@ -454,19 +441,20 @@ _elixir_con_event_url_progress_cb(void *data, int type, void *event)
    new = elixir_void_new(cx, NULL, OBJECT_TO_JSVAL(obj_eceup), NULL);
    ecore_event_add(ELIXIR_CON_EVENT_URL_PROGRESS, new, _ecore_event_func_free, NULL);
 
-   ret = -1;
-
  on_error:
    elixir_object_unregister(cx, &obj_download);
    elixir_object_unregister(cx, &obj_upload);
    elixir_object_unregister(cx, &obj_eceup);
+
+   ret = ECORE_CALLBACK_DONE;
+
  on_finish:
    elixir_function_stop(cx);
    return ret;
 }
 
-static int
-_elixir_con_event_client_add_cb(void *data, int type, void *event)
+static Eina_Bool
+_elixir_con_event_client_add_cb(__UNUSED__ void *data, __UNUSED__ int type, void *event)
 {
    Ecore_Con_Event_Client_Add*  ececa;
    Ecore_Con_Server*            server;
@@ -474,17 +462,14 @@ _elixir_con_event_client_add_cb(void *data, int type, void *event)
    JSObject*                    obj_ececa;
    void*                        new;
    void*                        private_data;
-   int                          ret = 0;
-
-   (void) data;
-   (void) type;
+   Eina_Bool                    ret = ECORE_CALLBACK_PASS_ON;
 
    ececa = event;
 
    server = ecore_con_client_server_get(ececa->client);
    private_data = ecore_con_server_data_get(server);
    cx = elixir_void_get_cx(private_data);
-   if (!cx) return 0;
+   if (!cx) return ECORE_CALLBACK_PASS_ON;
 
    elixir_function_start(cx);
 
@@ -501,10 +486,10 @@ _elixir_con_event_client_add_cb(void *data, int type, void *event)
    new = elixir_void_new(cx, NULL, OBJECT_TO_JSVAL(obj_ececa), NULL);
    ecore_event_add(ELIXIR_CON_EVENT_CLIENT_ADD, new, _ecore_event_func_free, NULL);
 
-   ret = -1;
-
  on_error:
    elixir_object_unregister(cx, &obj_ececa);
+
+   ret = ECORE_CALLBACK_DONE;
 
  on_finish:
    elixir_function_stop(cx);
@@ -512,8 +497,8 @@ _elixir_con_event_client_add_cb(void *data, int type, void *event)
    return ret;
 }
 
-static int
-_elixir_con_event_client_del_cb(void *data, int type, void *event)
+static Eina_Bool
+_elixir_con_event_client_del_cb(__UNUSED__ void *data, __UNUSED__ int type, void *event)
 {
    Ecore_Con_Event_Client_Del *ececd;
    Ecore_Con_Server *server;
@@ -521,17 +506,14 @@ _elixir_con_event_client_del_cb(void *data, int type, void *event)
    JSObject *obj_ececd;
    void *new;
    void *private_data;
-   int ret = 0;
-
-   (void) data;
-   (void) type;
+   Eina_Bool ret = ECORE_CALLBACK_PASS_ON;
 
    ececd = event;
 
    server = ecore_con_client_server_get(ececd->client);
    private_data = ecore_con_server_data_get(server);
    cx = elixir_void_get_cx(private_data);
-   if (!cx) return 0;
+   if (!cx) return ECORE_CALLBACK_PASS_ON;
 
    elixir_function_start(cx);
 
@@ -548,33 +530,31 @@ _elixir_con_event_client_del_cb(void *data, int type, void *event)
    new = elixir_void_new(cx, NULL, OBJECT_TO_JSVAL(obj_ececd), NULL);
    ecore_event_add(ELIXIR_CON_EVENT_CLIENT_DEL, new, _ecore_event_func_free, NULL);
 
-   ret = -1;
-
  on_error:
    elixir_object_unregister(cx, &obj_ececd);
+
+   ret = ECORE_CALLBACK_DONE;
+
  on_finish:
    elixir_function_stop(cx);
 
    return ret;
 }
 
-static int
-_elixir_con_event_server_add_cb(void *data, int type, void *event)
+static Eina_Bool
+_elixir_con_event_server_add_cb(__UNUSED__ void *data, __UNUSED__ int type, void *event)
 {
    Ecore_Con_Event_Server_Add   *ecesa;
    JSContext                    *cx;
    JSObject                     *obj_ecesa;
    void                         *new;
    void                         *private_data;
-   int                           ret = 0;
-
-   (void) data;
-   (void) type;
+   Eina_Bool                     ret = ECORE_CALLBACK_PASS_ON;
 
    ecesa = event;
    private_data = ecore_con_server_data_get(ecesa->server);
    cx = elixir_void_get_cx(private_data);
-   if (!cx) return 0;
+   if (!cx) return ECORE_CALLBACK_PASS_ON;
 
    elixir_function_start(cx);
 
@@ -591,33 +571,31 @@ _elixir_con_event_server_add_cb(void *data, int type, void *event)
    new = elixir_void_new(cx, NULL, OBJECT_TO_JSVAL(obj_ecesa), NULL);
    ecore_event_add(ELIXIR_CON_EVENT_SERVER_ADD, new, _ecore_event_func_free, NULL);
 
-   ret = -1;
-
  on_error:
    elixir_object_unregister(cx, &obj_ecesa);
+
+   ret = ECORE_CALLBACK_DONE;
+
  on_finish:
    elixir_function_stop(cx);
 
    return ret;
 }
 
-static int
-_elixir_con_event_server_del_cb(void *data, int type, void *event)
+static Eina_Bool
+_elixir_con_event_server_del_cb(__UNUSED__ void *data, __UNUSED__ int type, void *event)
 {
    Ecore_Con_Event_Server_Del   *ecesd;
    JSContext                    *cx;
    JSObject                     *obj_ecesd;
    void                         *new;
    void                         *private_data;
-   int                           ret = 0;
-
-   (void) data;
-   (void) type;
+   Eina_Bool                     ret = ECORE_CALLBACK_PASS_ON;
 
    ecesd = event;
    private_data = ecore_con_server_data_get(ecesd->server);
    cx = elixir_void_get_cx(private_data);
-   if (!cx) return 0;
+   if (!cx) return ECORE_CALLBACK_PASS_ON;
 
    elixir_function_start(cx);
 
@@ -625,7 +603,7 @@ _elixir_con_event_server_del_cb(void *data, int type, void *event)
    if (!elixir_object_register(cx, &obj_ecesd, NULL))
      {
 	elixir_function_stop(cx);
-	return -1;
+	return ECORE_CALLBACK_DONE;
      }
 
    if (!JS_DefineProperty(cx, obj_ecesd, "server",
@@ -637,16 +615,14 @@ _elixir_con_event_server_del_cb(void *data, int type, void *event)
    new = elixir_void_new(cx, NULL, OBJECT_TO_JSVAL(obj_ecesd), NULL);
    ecore_event_add(ELIXIR_CON_EVENT_SERVER_DEL, new, _ecore_event_func_free, NULL);
 
-   ret = -1;
-
  on_error:
    elixir_object_unregister(cx, &obj_ecesd);
    elixir_function_stop(cx);
-   return ret;
+   return ECORE_CALLBACK_DONE;
 }
 
-static int
-_elixir_con_event_client_data_cb(void *data, int type, void *event)
+static Eina_Bool
+_elixir_con_event_client_data_cb(__UNUSED__ void *data, __UNUSED__ int type, void *event)
 {
    Ecore_Con_Event_Client_Data *ececd;
    Ecore_Con_Server *server;
@@ -657,22 +633,16 @@ _elixir_con_event_client_data_cb(void *data, int type, void *event)
    void *new;
    void *private_data;
    jsval tmp;
-   int ret = 0;
-
-   (void) data;
-   (void) type;
 
    ececd = event;
 
    server = ecore_con_client_server_get(ececd->client);
    private_data = ecore_con_server_data_get(server);
    cx = elixir_void_get_cx(private_data);
-   if (!cx) return 0;
+   if (!cx) return ECORE_CALLBACK_PASS_ON;
 
-   ret = _elixir_con_data_handler(private_data, (int*) ececd->data, ececd->size);
-   if (ret != 1)
-     return ret;
-   ret = 0;
+   if (_elixir_con_data_handler(private_data, (int*) ececd->data, ececd->size) != 1)
+     return ECORE_CALLBACK_DONE;
 
    ecd = elixir_void_get_private(private_data);
 
@@ -682,7 +652,7 @@ _elixir_con_event_client_data_cb(void *data, int type, void *event)
    if (!elixir_object_register(cx, &obj_ececd, NULL))
      {
 	elixir_function_stop(cx);
-	return -1;
+	return ECORE_CALLBACK_DONE;
      }
 
    if (!JS_DefineProperty(cx, obj_ececd, "client",
@@ -723,8 +693,6 @@ _elixir_con_event_client_data_cb(void *data, int type, void *event)
    new = elixir_void_new(cx, NULL, OBJECT_TO_JSVAL(obj_ececd), NULL);
    ecore_event_add(ELIXIR_CON_EVENT_CLIENT_DATA, new, _ecore_event_func_free, NULL);
 
-   ret = -1;
-
  on_error:
    if (ecd)
      {
@@ -737,11 +705,11 @@ _elixir_con_event_client_data_cb(void *data, int type, void *event)
 
    elixir_function_stop(cx);
 
-   return ret;
+   return ECORE_CALLBACK_DONE;
 }
 
-static int
-_elixir_con_event_server_data_cb(void *data, int type, void *event)
+static Eina_Bool
+_elixir_con_event_server_data_cb(__UNUSED__ void *data, __UNUSED__ int type, void *event)
 {
    Ecore_Con_Event_Server_Data *ececd;
    Elixir_Con_Data *ecd;
@@ -751,20 +719,14 @@ _elixir_con_event_server_data_cb(void *data, int type, void *event)
    void *new;
    void *private_data;
    jsval tmp;
-   int ret = 0;
-
-   (void) data;
-   (void) type;
 
    ececd = event;
    private_data = ecore_con_server_data_get(ececd->server);
    cx = elixir_void_get_cx(private_data);
-   if (!cx) return 0;
+   if (!cx) return ECORE_CALLBACK_PASS_ON;
 
-   ret = _elixir_con_data_handler(private_data, (int*) ececd->data, ececd->size);
-   if (ret != 1)
-     return ret;
-   ret = 0;
+   if (_elixir_con_data_handler(private_data, (int*) ececd->data, ececd->size) != 1)
+     return ECORE_CALLBACK_PASS_ON;
 
    ecd = elixir_void_get_private(private_data);
 
@@ -812,8 +774,6 @@ _elixir_con_event_server_data_cb(void *data, int type, void *event)
    new = elixir_void_new(cx, NULL, OBJECT_TO_JSVAL(obj_ececd), NULL);
    ecore_event_add(ELIXIR_CON_EVENT_SERVER_DATA, new, _ecore_event_func_free, NULL);
 
-   ret = -1;
-
  on_error:
    if (ecd)
      {
@@ -827,7 +787,7 @@ _elixir_con_event_server_data_cb(void *data, int type, void *event)
  on_finish:
    elixir_function_stop(cx);
 
-   return ret;
+   return ECORE_CALLBACK_DONE;
 }
 
 static JSBool
