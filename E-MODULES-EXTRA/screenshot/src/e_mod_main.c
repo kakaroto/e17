@@ -25,7 +25,7 @@ static char *_gc_label(E_Gadcon_Client_Class *client_class);
 static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
 static const char *_gc_id_new(E_Gadcon_Client_Class *client_class);
 static void _cfg_free(void);
-static int _cfg_timer(void *data);
+static Eina_Bool _cfg_timer(void *data);
 static void _cfg_new(void);
 static void _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_info);
 static void _cb_menu_post(void *data, E_Menu *menu);
@@ -39,7 +39,7 @@ static void _cb_dialog_ok(char *text, void *data);
 static void _cb_send_msg(void *data);
 static void _cb_do_shot(void);
 static void _cb_take_shot(E_Object *obj, const char *params);
-static int _cb_timer(void *data);
+static Eina_Bool _cb_timer(void *data);
 
 typedef struct _Instance Instance;
 struct _Instance 
@@ -298,11 +298,11 @@ _cfg_free(void)
    E_FREE(ss_cfg);
 }
 
-static int 
+static Eina_Bool 
 _cfg_timer(void *data) 
 {
    e_util_dialog_internal(D_("Screenshot Configuration Updated"), data);
-   return 0;
+   return EINA_FALSE;
 }
 
 static void 
@@ -692,13 +692,13 @@ _cb_take_shot(E_Object *obj, const char *params)
    if (exe) ecore_exe_free(exe);
 }
 
-static int 
+static Eina_Bool 
 _cb_timer(void *data) 
 {
    Instance *inst = NULL;
    char buf[256];
 
-   if (!(inst = data)) return 0;
+   if (!(inst = data)) return EINA_FALSE;
 
    if ((ss_cfg->delay - inst->counter) <= 0) inst->counter = 0;
 
@@ -707,10 +707,10 @@ _cb_timer(void *data)
         inst->timer = NULL;
         inst->counter = 0;
         _cb_send_msg(inst);
-        return 0;
+        return EINA_FALSE;
      }
    snprintf(buf, sizeof(buf), "%2.0f", (ss_cfg->delay - inst->counter));
    edje_object_part_text_set(inst->o_base, "e.text.counter", buf);
    inst->counter++;
-   return 1;
+   return EINA_TRUE;
 }
