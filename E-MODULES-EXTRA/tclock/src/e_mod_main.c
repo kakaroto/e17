@@ -52,7 +52,7 @@ struct _Instance
    E_Gadcon_Client *gcc;
    Evas_Object *tclock, *o_tip;
    Config_Item *ci;
-   E_Popup *tip;
+   E_Gadcon_Popup *tip;
 };
 
 static E_Gadcon_Client *
@@ -193,7 +193,7 @@ _tclock_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
         e_menu_activate_mouse (mn,
                                e_util_zone_current_get(e_manager_current_get()), 
                                x + ev->output.x, y + ev->output.y, 1, 1,
-                               E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
+                               E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
      }
 }
 
@@ -201,79 +201,24 @@ static void
 _tclock_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info) 
 {
    Instance *inst = NULL;
-   E_Zone *zone = NULL;
    char buf[PATH_MAX];
-   int x, y, w, h;
-   int gx, gy, gw, gh;
    time_t current_time;
    struct tm *local_time;
 
    if (!(inst = data)) return;
    if (!inst->ci->show_tip) return;
    if (inst->tip) return;
-   snprintf(buf, sizeof(buf), "%s/tclock.edj", tclock_config->mod_dir);
 
-   zone = e_util_zone_current_get(e_manager_current_get());
-   inst->tip = e_popup_new(zone, 0, 0, 0, 0);
-   e_popup_layer_set(inst->tip, 255);
-
-   inst->o_tip = edje_object_add(inst->tip->evas);
-   if (!e_theme_edje_object_set(inst->o_tip, "base/theme/modules/tclock", 
-                                "modules/tclock/tip"))
-     edje_object_file_set(inst->o_tip, buf, "modules/tclock/tip");
-   evas_object_show(inst->o_tip);
+   inst->tip = e_gadcon_popup_new(inst->gcc);
 
    current_time = time(NULL);
    local_time = localtime(&current_time);
    memset(buf, 0, sizeof(buf));
    strftime(buf, 1024, inst->ci->tip_format, local_time);
-   edje_object_part_text_set(inst->o_tip, "e.text.tip", buf);
+   inst->o_tip = e_widget_label_add(inst->tip->win->evas, buf);
 
-   evas_object_move(inst->o_tip, 0, 0);
-   edje_object_size_min_calc(inst->o_tip, &w, &h);
-   evas_object_resize(inst->o_tip, w, h);
-
-   e_popup_edje_bg_object_set(inst->tip, inst->o_tip);
-
-   ecore_x_pointer_xy_get(zone->container->win, &x, &y);
-   e_gadcon_client_geometry_get(inst->gcc, &gx, &gy, &gw, &gh);
-   switch (inst->gcc->gadcon->orient) 
-     {
-      case E_GADCON_ORIENT_CORNER_RT:
-      case E_GADCON_ORIENT_CORNER_RB:
-      case E_GADCON_ORIENT_RIGHT:
-	x = gx - w;
-	y = gy;
-	break;
-      case E_GADCON_ORIENT_LEFT:
-      case E_GADCON_ORIENT_CORNER_LT:
-      case E_GADCON_ORIENT_CORNER_LB:
-	x = gx + gw;
-	y = gy;
-	break;
-      case E_GADCON_ORIENT_TOP:
-      case E_GADCON_ORIENT_CORNER_TL:
-      case E_GADCON_ORIENT_CORNER_TR:
-	y = gy + gh;
-	x = gx;
-	break;
-      case E_GADCON_ORIENT_BOTTOM:
-      case E_GADCON_ORIENT_CORNER_BL:
-      case E_GADCON_ORIENT_CORNER_BR:
-	y = gy - h;
-	x = gx;
-	break;
-      default:
-	break;
-     }
-
-   if ((x + w) >= zone->w)
-     x = gx + gw - w;
-   if ((y + h) >= zone->h)
-     y = gy + gh - h;
-
-   e_popup_move_resize(inst->tip, x, y, w, h);
-   e_popup_show(inst->tip);
+   e_gadcon_popup_content_set(inst->tip, inst->o_tip);
+   e_gadcon_popup_show(inst->tip);
 }
 
 static void 
@@ -422,9 +367,9 @@ _tclock_config_item_get(const char *id)
    ci->id = eina_stringshare_add(id);
    ci->show_date = 1;
    ci->show_time = 1;
-   ci->show_tip = 1;
-   ci->time_format = eina_stringshare_add("%T");
-   ci->date_format = eina_stringshare_add("%d/%m/%y");
+   ci->show_tip = 0;
+   ci->time_format = eina_stringshare_add("%I:%M %p");
+   ci->date_format = eina_stringshare_add("%m/%d/%y");
    ci->tip_format = eina_stringshare_add("%A, %B %d, %Y");
 
    tclock_config->items = eina_list_append(tclock_config->items, ci);
