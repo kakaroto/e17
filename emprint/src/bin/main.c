@@ -43,11 +43,11 @@ static void _em_do_window(void);
 static void _em_do_region(void);
 static void _em_do_thumb(void *data);
 static void _em_take_shot(int x, int y, int w, int h);
-static int _em_cb_key_down(void *data, int type, void *event);
-static int _em_cb_mouse_move(void *data, int type, void *event);
-static int _em_cb_mouse_up(void *data, int type, void *event);
-static int _em_cb_mouse_down(void *data, int type, void *event);
-static int _em_cb_timer(void *data);
+static Eina_Bool _em_cb_key_down(void *data, int type, void *event);
+static Eina_Bool _em_cb_mouse_move(void *data, int type, void *event);
+static Eina_Bool _em_cb_mouse_up(void *data, int type, void *event);
+static Eina_Bool _em_cb_mouse_down(void *data, int type, void *event);
+static Eina_Bool _em_cb_timer(void *data);
 static void _em_band_show(void);
 static void _em_band_move(int x, int y);
 static void _em_band_hide(void);
@@ -634,7 +634,7 @@ _em_take_shot(int x, int y, int w, int h)
    if (opts->app) _em_do_app();
 }
 
-static int 
+static Eina_Bool 
 _em_cb_key_down(void *data, int type, void *event) 
 {
    Ecore_Event_Key *ev;
@@ -661,19 +661,19 @@ _em_cb_key_down(void *data, int type, void *event)
         input_window = 0;
 
         ecore_main_loop_quit();
-        return 0;
+        return EINA_FALSE;
      }
-   return 1;
+   return EINA_TRUE;
 }
 
-static int 
+static Eina_Bool 
 _em_cb_mouse_move(void *data, int type, void *event) 
 {
    Ecore_Event_Mouse_Move *ev;
    int x, y, w, h;
 
    ev = event;
-   if ((gx < 0) && (gy < 0)) return 1;
+   if ((gx < 0) && (gy < 0)) return EINA_TRUE;
 
    w = ev->root.x - gx;
    h = ev->root.y - gy;
@@ -699,10 +699,10 @@ _em_cb_mouse_move(void *data, int type, void *event)
      }
    else
      _em_band_resize(w, h);
-   return 1;
+   return EINA_TRUE;
 }
 
-static int 
+static Eina_Bool 
 _em_cb_mouse_up(void *data, int type, void *event) 
 {
    Ecore_Event_Mouse_Button *ev;
@@ -713,15 +713,15 @@ _em_cb_mouse_up(void *data, int type, void *event)
    if (opts->region) 
      {
 	_em_grab_region_end();
-	return 1;
+	return EINA_TRUE;
      }
    ev = event;
 
    /* check for correct mouse button */
-   if (ev->buttons != 1) return 1;
+   if (ev->buttons != 1) return EINA_TRUE;
 
    /* check for correct window */
-   if (ev->window != input_window) return 1;
+   if (ev->window != input_window) return EINA_TRUE;
 
    /* get last known pointer position */
    ecore_x_pointer_last_xy_get(&x, &y);
@@ -762,27 +762,27 @@ _em_cb_mouse_up(void *data, int type, void *event)
    /* quit the main ecore loop */
    ecore_main_loop_quit();
 
-   return 0;
+   return EINA_FALSE;
 }
 
-static int 
+static Eina_Bool 
 _em_cb_mouse_down(void *data, int type, void *event) 
 {
    Ecore_Event_Mouse_Button *ev;
 
    ev = event;
-   if (ev->window != input_window) return 1;
-   if (ev->buttons != 1) return 1;
+   if (ev->window != input_window) return EINA_TRUE;
+   if (ev->buttons != 1) return EINA_TRUE;
 
    /* get current mouse coordinates */
    ecore_x_pointer_xy_get(input_window, &gx, &gy);
 
    /* move the band to current coordinates */
    _em_band_move(gx, gy);
-   return 1;
+   return EINA_TRUE;
 }
 
-static int 
+static Eina_Bool 
 _em_cb_timer(void *data) 
 {
    static int count = 0;
@@ -797,14 +797,14 @@ _em_cb_timer(void *data)
 	else
 	  _em_do_screen();
 
-        return 0;
+        return EINA_FALSE;
      }
 
    /* tell the user we are counting down */
    printf("Taking shot in %d\n", (opts->delay - count));
    count++;
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static void 
