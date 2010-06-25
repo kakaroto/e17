@@ -28,7 +28,7 @@ static void _tclock_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *eve
 static void _tclock_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _tclock_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _tclock_menu_cb_post(void *data, E_Menu *m);
-static int _tclock_cb_check(void *data);
+static Eina_Bool _tclock_cb_check(void *data);
 static Config_Item *_tclock_config_item_get(const char *id);
 
 static E_Config_DD *conf_edd = NULL;
@@ -334,7 +334,7 @@ _tclock_config_updated(Config_Item *ci)
      }
 }
 
-static int
+static Eina_Bool
 _tclock_cb_check(void *data)
 {
    Instance *inst;
@@ -382,7 +382,7 @@ _tclock_cb_check(void *data)
 	  }
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static Config_Item *
