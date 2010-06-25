@@ -41,20 +41,22 @@ enasn_load(const char *path){
 	DIR *dir;
 	char buf[BUFSIZ];
 
-	if (path == NULL) path = "assurances";
+	if (path == NULL) path = PACKAGE_MODULE_DIR;
+printf("Tring: %s\n",path);
 
 	dir = opendir(path);
 	if (!dir) return -1;
 
 	while ((de = readdir(dir))){
 		if (de->d_name[0] == '.') continue;
-		if (!(p = strstr(de->d_name,".asn"))) continue;
-		if (p[4]) continue;
+		if (!(p = strstr(de->d_name,".so"))) continue;
+		if (p[3]) continue;
 
 		snprintf(buf,sizeof(buf),"%s/%s",path,de->d_name);
 		dlh = dlopen(buf,RTLD_NOW|RTLD_LOCAL);
 		if (!dlh){
-			printf("Unable to open %s\n",buf);
+			printf("Unable to open %s: %s\n",buf,
+					dlerror());
 			continue;
 		}
 		asn = dlsym(dlh,"assurance");

@@ -116,7 +116,7 @@ elm_main(int argc, char **argv){
 
 	signal_init();
 
-	enasn_load("assurances");
+	enasn_load(NULL);
 
         elm_list_go(mainwindow);
         elm_run();
