@@ -12,16 +12,6 @@
 #include "Epdf.h"
 #include "epdf_mupdf_private.h"
 
-# include <sys/time.h>
-EAPI double
-ecore_time_get(void)
-{
-   struct timeval      timev;
-
-   gettimeofday(&timev, NULL);
-   return (double)timev.tv_sec + (((double)timev.tv_usec) / 1000000);
-}
-
 Epdf_Page *
 epdf_page_new(const Epdf_Document *doc)
 {
@@ -121,10 +111,7 @@ void
 epdf_page_render(Epdf_Page *page, Evas_Object *o)
 {
    double t1,t2;
-   t1 = ecore_time_get();
    epdf_page_render_slice(page, o, 0, 0, -1, -1);
-   t2 = ecore_time_get();
-   printf ("time mupdf: %f\n", t2-t1);
 }
 
 void
