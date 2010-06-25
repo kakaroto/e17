@@ -1,9 +1,3 @@
-images 
-{
-   image: "tip_bd.png" COMP;
-   image: "tip_bg.png" COMP;
-}
-
 collections
 {
    group
@@ -143,96 +137,6 @@ collections
 		  action: STATE_SET "visible" 0.0;
 		  target: "tclock_date";
 	       }	     
-	  }
-	/* Close Programs */
-     }
-   /* Close Group */
-   group 
-     {
-	name: "modules/tclock/tip";
-	data.item: "shaped" "1";
-	parts 
-	  {
-	     part 
-	       {
-		  name: "base";
-		  mouse_events: 0;
-		  type: RECT;
-		  description 
-		    {
-		       state: "default" 0.0;
-		       color: 221 221 221 255;
-		    }
-	       }
-	     part 
-	       {
-		  name: "bg";
-		  mouse_events: 0;
-		  type: IMAGE;
-		  description 
-		    {
-		       state: "default" 0.0;
-		       max: 99999 48;
-		       align: 0.5 0.0;
-		       rel1 
-			 {
-			    offset: 1 1;
-			    to: "base";
-			 }
-		       rel2 
-			 {
-			    offset: -2 -2;
-			    to: "base";
-			 }
-		       image.normal: "tip_bg.png";
-		       fill 
-			 {
-			    origin.offset: 0 -6;
-			    size.offset: 0 6;
-			 }
-		    }
-	       }
-	     part 
-	       {
-		  name: "bd";
-		  mouse_events: 0;
-		  type: IMAGE;
-		  description 
-		    {
-		       state: "default" 0.0;
-		       image 
-			 {
-			    normal: "tip_bd.png";
-			    border: 1 1 1 1;
-			    middle: 0;
-			 }
-		    }
-	       }
-	     part 
-	       {
-		  name: "e.text.tip";
-		  mouse_events: 0;
-		  type: TEXT;
-		  effect: SOFT_SHADOW;
-		  description 
-		    {
-		       state: "default" 0.0;
-		       rel1.offset: 2 2;
-		       rel2.offset: -3 -3;
-		       color: 0 0 0 255;
-		       color3: 255 255 255 32;
-		       color_class: "module_label";
-		       text 
-			 {
-			    text: "";
-			    font: "Sans";
-			    size: 12;
-			    min: 1 1;
-			    align: 0.5 0.5;
-                            text_class: "module_small";
-			 }
-		    }
-	       }
 	  }
      }
 }
