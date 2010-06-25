@@ -17,7 +17,7 @@ fi
 find . -name Makefile -delete
 find . -name Makefile.in -delete
 
-autoreconf -f -i
+autoreconf -i
 
 cd $ORIGDIR || exit 1
 
