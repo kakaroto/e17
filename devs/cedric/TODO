@@ -6,12 +6,12 @@
 	- add joystick support
 	- cleanup sdl engine
 d	- rewrite preload support
-	- add a prepare phase that could be used by all engine when we got many main CPU to prepare font and load image in parallel (should work also with dsp)
-h	- add quadtree support
+	- add a prepare phase that could be used by all engine when we got many main CPU to prepare font, polygon and load image in parallel (should work also with dsp)
+h	- try quadtree support
 
 * Ecore
 	- add ecore_long_run with pipe facility (max = CPU - 1, with and without queue)
-	- replace int by Eina_Bool when it make sense for callback
+d	- replace int by Eina_Bool when it make sense for callback
 
 * Edje
 d	- Fixed Point
