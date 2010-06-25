@@ -3,6 +3,7 @@ Ensure
 
 Validator application for EFL programs.
 
+Ensure is licenced under the GPL version 3 (only).
 
 Setup
 -----
