@@ -699,10 +699,7 @@ _cb_timer(void *data)
    char buf[256];
 
    if (!(inst = data)) return EINA_FALSE;
-
-   if ((ss_cfg->delay - inst->counter) <= 0) inst->counter = 0;
-
-   if ((ss_cfg->delay - inst->counter) <= 0) 
+   if ((ss_cfg->delay - inst->counter) == 0) 
      {
         inst->timer = NULL;
         inst->counter = 0;
