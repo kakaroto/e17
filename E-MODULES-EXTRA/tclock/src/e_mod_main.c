@@ -312,8 +312,6 @@ _tclock_cb_check(void *data)
 	  {
              strftime(buf, 1024, inst->ci->time_format, local_time);
              edje_object_part_text_set(inst->tclock, "tclock_time", buf);
-	     if (inst->tip) 
-	       edje_object_part_text_set(inst->o_tip, "e.text.tip", buf);
 	  }
 	if (inst->ci->date_format)
 	  {
