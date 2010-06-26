@@ -95,7 +95,7 @@ if [[ -z "${E_NO_NLS}" ]]; then
 
 	# gettext (via `autopoint`) needs to run cvs #245073
 	if [[ ${E_STATE} == "live" ]] && [[ ${WANT_AUTOTOOLS} == "yes" ]]; then
-		DEPEND="${DEPEND} dev-util/cvs"
+		DEPEND="${DEPEND} dev-vcs/cvs"
 	fi
 fi
 
