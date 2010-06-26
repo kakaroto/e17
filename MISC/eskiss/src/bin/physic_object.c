@@ -27,7 +27,7 @@ static Ecore_Timer *timer = NULL;
 static Eina_Bool play_status = EINA_FALSE;
 static double simulation_step = 1.0 / 60.0;
 
-static int _main_tick(void *data);
+static Eina_Bool _main_tick(void *data);
 static void _physic_simulation_step(double step);
 static int _collision_begin_cb(cpArbiter *arb, cpSpace *space, void *unused);
 
@@ -597,7 +597,7 @@ Eina_Bool physic_simulation_play_get(void)
 
 /* Private ---------------- */
 
-static int _main_tick(void *data)
+static Eina_Bool _main_tick(void *data)
 {
         _physic_simulation_step(simulation_step);
 
@@ -691,8 +691,8 @@ static int _collision_begin_cb(cpArbiter *arb, cpSpace *space, void *data)
         //Check if values are ok
         CP_ARBITER_GET_SHAPES(arb, a, b);
 
-        if (pobj->body == a->body && pobj->collision_pobj->body == b->body ||
-            pobj->body == b->body && pobj->collision_pobj->body == a->body)
+        if ((pobj->body == a->body && pobj->collision_pobj->body == b->body) ||
+            (pobj->body == b->body && pobj->collision_pobj->body == a->body))
         {
                 if (pobj->collision_callback)
                         pobj->collision_callback(pobj, pobj->collision_pobj, pobj->collision_data);

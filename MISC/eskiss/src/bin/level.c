@@ -294,7 +294,7 @@ Evas_Object *level_get_thumb(Evas *evas, Level *level)
 {
         Eet_File *ef;
         void *data;
-        int w, h;
+        unsigned int w, h;
         Evas_Object *image = NULL;
 
         INF("Getting thumbnail for level %s", level->eet_file);

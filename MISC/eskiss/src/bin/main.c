@@ -82,7 +82,7 @@ static void on_close_window(Ecore_Evas* ee)
         ecore_main_loop_quit();
 }
 
-static int main_signal_exit(void* data, int ev_type, void* ev)
+static Eina_Bool main_signal_exit(void* data, int ev_type, void* ev)
 {
         ecore_main_loop_quit();
 
