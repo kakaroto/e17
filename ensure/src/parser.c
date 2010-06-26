@@ -62,7 +62,7 @@ static const struct parser {
 /*
  * Child data received: Hopefully an object
  */
-int
+Eina_Bool
 child_data(void *data, Ecore_Fd_Handler *hdlr){
 	int fd;
 	struct ensure *ensure = data;

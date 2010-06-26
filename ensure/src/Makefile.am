@@ -4,7 +4,9 @@ MAINTAINERCLEANFILES = Makefile.in
 
 AM_LDFLAGS =    @ELEMENTARY_LIBS@
 AM_CFLAGS =	@ELEMENTARY_CFLAGS@ -Wall	\
-		-DPACKAGE_MODULE_DIR=\"$(libdir)/ensure/assurances/\" -rdynamic
+		-DPACKAGE_MODULE_DIR=\"$(libdir)/assurances/\" \
+		-DLIBENSURE_DIR=\"$(libdir)/\" \
+	       	-rdynamic
 
 bin_PROGRAMS = ensure
 
@@ -24,6 +26,7 @@ ensure_SOURCES = \
 
 
 lib_LTLIBRARIES	= libensure.la
+libdir = $(prefix)/lib/ensure/
 
 libensure_la_SOURCES =		\
 	libensure.c

@@ -15,14 +15,8 @@
 
 #define ensure_unused	__attribute__((unused))
 
-static int libensure_dump(void *data ensure_unused, Ecore_Fd_Handler *fdh);
+static Eina_Bool libensure_dump(void *data ensure_unused, Ecore_Fd_Handler *fdh);
 static void libensure_objdump(Evas_Object *o, Evas_Object *parent);
-
-struct Ecore_Evas_Wrap {
-	EINA_INLIST;
-};
-
-extern struct Ecore_Evas_Wrap *ecore_evases;
 
 static FILE *outfile;
 
@@ -60,13 +54,14 @@ libensure_init(void){
 }
 
 
-static int
+static Eina_Bool
 libensure_dump(void *data ensure_unused, Ecore_Fd_Handler *fdh){
 	int fd;
 	struct signalfd_siginfo siginfo;
 	Eina_List *os,*ot;
 	Evas_Object *o;
-	struct Ecore_Evas_Wrap *eew;
+	Eina_List *ees,*l;
+	Ecore_Evas *ee;
 
 	fd = ecore_main_fd_handler_fd_get(fdh);
 
@@ -74,11 +69,14 @@ libensure_dump(void *data ensure_unused, Ecore_Fd_Handler *fdh){
 
 	fprintf(outfile,"Ensure dump!\n");
 
-	EINA_INLIST_FOREACH(ecore_evases, eew){
+	ees = ecore_evas_ecore_evas_list_get();
+
+	EINA_LIST_FOREACH(ees, l, ee){
 		Evas *e;
 		int w,h;
-		e = ecore_evas_get((Ecore_Evas *)eew);
+		e = ecore_evas_get(ee);
 		evas_output_size_get(e,&w,&h);
+
 		fprintf(outfile,"E: %p %d %d\n",e,w,h);
 		os = evas_objects_in_rectangle_get(e,SHRT_MIN, SHRT_MIN,
 				USHRT_MAX, USHRT_MAX, true, true);

@@ -65,7 +65,7 @@ static void on_switch_config(void *data, Evas_Object *button, void *event_info);
 static void dochild(char **args, int fd);
 
 static int signal_init(void);
-static int signalfd_child(void *data, Ecore_Fd_Handler *fd_handler);
+static Eina_Bool signalfd_child(void *data, Ecore_Fd_Handler *fd_handler);
 
 static void config_add_classes(Evas_Object *gl);
 static void cfg_sel(void *data, Evas_Object *obj, void *event);
@@ -248,7 +248,6 @@ static void
 config_add_classes(Evas_Object *gl){
 	int i;
 	for (i = 0 ; i < ENSURE_N_SEVERITIES ; i ++){
-		printf("Add %s\n",severity[i].name);
 		severity[i].item = elm_genlist_item_append(gl,&clc,
 				severity + i,
 				NULL, /* No parent */
@@ -455,7 +454,7 @@ signal_init(void){
 	return 0;
 }
 
-static int
+static Eina_Bool
 signalfd_child(void *data ensure_unused, Ecore_Fd_Handler *fdh){
 	int fd;
 	struct signalfd_siginfo siginfo;
@@ -568,7 +567,7 @@ static void
 dochild(char **args, int fd){
 	char buf[4];
 
-	setenv("LD_PRELOAD", "./libensure.so.0",1);
+	setenv("LD_PRELOAD", LIBENSURE_DIR "/libensure.so",1);
 	snprintf(buf, sizeof(buf), "%d",fd);
 	setenv("ENSURE_FD", buf, 1);
 	execvp(args[0],args);

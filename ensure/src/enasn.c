@@ -42,7 +42,6 @@ enasn_load(const char *path){
 	char buf[BUFSIZ];
 
 	if (path == NULL) path = PACKAGE_MODULE_DIR;
-printf("Tring: %s\n",path);
 
 	dir = opendir(path);
 	if (!dir) return -1;
