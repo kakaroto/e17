@@ -203,7 +203,7 @@ void enlil_flickr_job_del(Enlil_Flickr_Job *job)
 {
     ASSERT_RETURN_VOID(job != NULL);
 
-    LOG_INFO("Delete Flickr's job : %s\n", _enlil_flickr_job_type_tostring(job->type));
+    LOG_INFO("Delete Flickr's job : %s", _enlil_flickr_job_type_tostring(job->type));
 
     if(job == job_current)
     {
