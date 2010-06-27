@@ -8,10 +8,10 @@ considered stable. It is available from
 </p>
 <p>
 Eina, Evas, Ecore, Embryo, Edje, E_Dbus, Efreet, Elementary and Enlightenment
-have had a snapshot release (snapshot 49899), and can be downloaded from
+have had a snapshot release (snapshot 49898), and can be downloaded from
 <a href="http://download.enlightenment.org/snapshots/2010-06-27/">here</a>. If
 you are taking source from <a href="http://svn.enlightenment.org">SVN</a>, then
-use SVN revision 49899.
+use SVN revision 49898.
 </p>
 <!-- cut -->
 
