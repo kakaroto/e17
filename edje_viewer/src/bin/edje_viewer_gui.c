@@ -38,7 +38,7 @@ static void text_entry_toggle(Viewer *v, Eina_Bool show);
 
 static void on_win_del_req(void *data, Evas_Object *obj, void *event_info);
 static void on_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static int on_typebuf_timer(void *data);
+static Eina_Bool on_typebuf_timer(void *data);
 static void on_group_check_changed(void *data, Evas_Object *obj, void *event_info);
 static void on_toolbar_changed(void *data, Evas_Object *obj, void *event_info);
 static void on_entry_changed(void *data, Evas_Object *obj, void *event_info);
@@ -788,7 +788,7 @@ on_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
      }
 }
 
-static int
+static Eina_Bool
 on_typebuf_timer(void *data)
 {
    Viewer *v = data;

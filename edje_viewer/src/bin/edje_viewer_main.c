@@ -11,7 +11,7 @@ static void config_init(Viewer *v);
 static int config_load(Viewer *v);
 static void config_free(Viewer *v);
 static void config_groups_free(Viewer *v);
-static int on_config_save_timer(void *data);
+static Eina_Bool on_config_save_timer(void *data);
 
 int
 elm_main(int argc, char **argv)
@@ -264,7 +264,7 @@ config_groups_free(Viewer *v)
      }
 }
 
-static int
+static Eina_Bool
 on_config_save_timer(void *data)
 {
    Viewer *v = data;
