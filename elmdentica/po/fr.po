@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Elmdentica\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
 "POT-Creation-Date: 2010-06-12 10:54+0100\n"
-"PO-Revision-Date: 2010-06-17 13:20+0400\n"
+"PO-Revision-Date: 2010-06-27 08:56+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <pourunmondesansgourou@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -27,7 +27,7 @@ msgstr "Fermer"
 
 #: src/elmdentica.c:167
 msgid "Last messages..."
-msgstr " Derniers messages..."
+msgstr "Derniers messages..."
 
 #: src/elmdentica.c:168
 msgid "Everyone..."
@@ -124,7 +124,7 @@ msgstr "Chronologie"
 
 #: src/elmdentica.c:1390
 msgid "Everyone"
-msgstr "Tout le monde"
+msgstr "Tous"
 
 #: src/elmdentica.c:1391
 msgid "Just me"
