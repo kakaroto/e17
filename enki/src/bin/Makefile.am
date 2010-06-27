@@ -17,9 +17,6 @@ enki_SOURCES = \
 								slideshow.c \
 								panel_image.c \
 								panel_geocaching.c \
-								evas_object/photo_object.c \
-								evas_object/photos_list_object.c \
-								evas_object/tabpanel.c \
 								menu.c \
 								import.c \
 								album_menu.c \
@@ -31,6 +28,10 @@ enki_SOURCES = \
 								flickr_sync.c \
 								download.c \
 								upload.c \
-								main_menu.c
+								main_menu.c \
+								evas_object/photos_list_object.c \
+								evas_object/photo_object.c \
+								evas_object/slideshow_object.c \
+								evas_object/tabpanel.c
 
 enki_LDADD = @ENKI_LIBS@

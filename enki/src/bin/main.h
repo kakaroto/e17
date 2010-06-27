@@ -159,6 +159,7 @@ struct enlil_photo_data
     Enlil_Data *enlil_data;
     PL_Child_Item *list_photo_item;
     Elm_Slideshow_Item *slideshow_item;
+	Eina_List *slideshow_object_items; //list of Slideshow_Item*
 
     Panel_Image *panel_image;
     Enlil_Exif_Job *exif_job;
@@ -287,8 +288,14 @@ struct panel_image
    Evas_Object *menu;
    Evas_Object *tb;
 
+   struct 
+     {
+	Evas_Object *slideshow;
+     } slideshow;
+
    Evas_Object *entry_name;
    Evas_Object *entry_description;
+   Evas_Object *lbl_file_size;
    Eina_Bool save_description_name;
    Ecore_Timer *timer_description_name;
    struct

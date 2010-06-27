@@ -1,12 +1,20 @@
 // vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
 
 #include "main.h"
+#include "evas_object/slideshow_object.h"
 
 static Elm_Genlist_Item_Class itc_exifs;
 static char *_gl_exifs_label_get(const void *data, Evas_Object *obj, const char *part);
 
 static Elm_Genlist_Item_Class itc_iptcs;
 static char *_gl_iptcs_label_get(const void *data, Evas_Object *obj, const char *part);
+static void _slideshow_selected_cb(void *data, Evas_Object *obj, void *event_info);
+
+static Slideshow_Item_Class itc_slideshow;
+static Evas_Object *_slideshow_icon_get(const void *data, Evas_Object *obj);
+
+
+static void _panel_image_photo_set(Panel_Image *panel_image, Enlil_Photo *photo);
 
 static void _entry_name_changed_cb(void *data, Evas_Object *obj, void *event_info);
 static void _entry_description_changed_cb(void *data, Evas_Object *obj, void *event_info);
@@ -61,11 +69,12 @@ static void _panes_h_clicked_double(void *data, Evas_Object *obj, void *event_in
 
 Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
 {
-   char buf[PATH_MAX];
-   Evas_Object *ph, *vbox, *vbox2, *bx, *bx2, *tb, *bt, *rect, *sl, *pb, *icon, *gl,
-	       *fr, *entry, *sc, *lbl, *tabs, *panels, *panes, *panes_h;
+    Evas_Object *ph, *vbox, *vbox2, *bx, *bx2, *tb, *bt, *rect, *sl, *pb, *icon, *gl,
+	       *fr, *entry, *sc, *lbl, *tabs, *panels, *panes, *panes_h, *hbox;
    Elm_Toolbar_Item *tb_item;
    Tabpanel_Item *tp_item;
+   Eina_List *l;
+   Enlil_Photo *_photo;
 
    Panel_Image *panel_image = calloc(1, sizeof(Panel_Image));
    Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
@@ -80,7 +89,7 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    evas_object_smart_callback_add(panes, "clicked,double", _panes_clicked_double, panel_image);
    evas_object_show(panes);
 
-   // left panel 
+   // left panel
    panes_h = elm_panes_add(obj);
    panel_image->panes_h = panes_h;
    elm_panes_horizontal_set(panes_h, EINA_TRUE);
@@ -110,7 +119,7 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    elm_button_label_set(bt, D_("Save"));
    evas_object_size_hint_weight_set(bt, 1.0, 0.0);
    evas_object_size_hint_align_set(bt, -1.0, 0.0);
-   evas_object_smart_callback_add(bt, "clicked", _bt_save_cb, photo);
+   evas_object_smart_callback_add(bt, "clicked", _bt_save_cb, panel_image);
    evas_object_show(bt);
    elm_box_pack_end(vbox, bt);
 
@@ -118,7 +127,7 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    elm_button_label_set(bt, D_("Save as"));
    evas_object_size_hint_weight_set(bt, 1.0, 0.0);
    evas_object_size_hint_align_set(bt, -1.0, 0.0);
-   evas_object_smart_callback_add(bt, "clicked", _bt_save_as_cb, photo);
+   evas_object_smart_callback_add(bt, "clicked", _bt_save_as_cb, panel_image);
    evas_object_show(bt);
    elm_box_pack_end(vbox, bt);
 
@@ -146,7 +155,6 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
 
    entry = elm_entry_add(obj);
    panel_image->entry_name = entry;
-   elm_entry_entry_set(entry, enlil_photo_name_get(photo));
    elm_entry_single_line_set(entry, 1);
    evas_object_smart_callback_add(entry, "changed", _entry_name_changed_cb, panel_image);
    evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, 1.0);
@@ -163,7 +171,6 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
 
    entry = elm_entry_add(obj);
    panel_image->entry_description = entry;
-   elm_entry_entry_set(entry, enlil_photo_description_get(photo));
    evas_object_smart_callback_add(entry, "changed", _entry_description_changed_cb, panel_image);
    elm_entry_single_line_set(entry, 0);
    evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, 0.0);
@@ -183,9 +190,8 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    evas_object_show(lbl);
    elm_table_pack(tb, lbl, 0, 1, 1, 1);
 
-   snprintf(buf, PATH_MAX, "%f mo", enlil_photo_size_get(photo) / 1024. / 1024.);
    lbl = elm_label_add(obj);
-   elm_label_label_set(lbl, buf);
+   panel_image->lbl_file_size = lbl;
    evas_object_show(lbl);
    elm_table_pack(tb, lbl, 1, 1, 1, 1);
 
@@ -278,8 +284,8 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    evas_object_size_hint_align_set(panel_image->tb, -1.0, 0.0);
    evas_object_show(panel_image->tb);
 
-   elm_toolbar_item_add(panel_image->tb, NULL, D_("Save"), _bt_save_cb, photo);
-   elm_toolbar_item_add(panel_image->tb, NULL, D_("Save as"), _bt_save_as_cb, photo);
+   elm_toolbar_item_add(panel_image->tb, NULL, D_("Save"), _bt_save_cb, panel_image);
+   elm_toolbar_item_add(panel_image->tb, NULL, D_("Save as"), _bt_save_as_cb, panel_image);
 
    tb_item = elm_toolbar_item_add(panel_image->tb, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(tb_item, 1);
@@ -291,7 +297,7 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/undo");
-   panel_image->undo.item_undo = elm_menu_item_add(panel_image->undo.undo, NULL, icon, D_("Undo"), _bt_undo_cb, photo);
+   panel_image->undo.item_undo = elm_menu_item_add(panel_image->undo.undo, NULL, icon, D_("Undo"), _bt_undo_cb, panel_image);
    elm_menu_item_disabled_set(panel_image->undo.item_undo, 1);
    elm_menu_item_separator_add(panel_image->undo.undo, NULL);
 
@@ -303,7 +309,7 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    icon = elm_icon_add(obj);
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
    elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/redo");
-   panel_image->undo.item_redo = elm_menu_item_add(panel_image->undo.redo, NULL, icon, D_("Redo"), _bt_redo_cb, photo);
+   panel_image->undo.item_redo = elm_menu_item_add(panel_image->undo.redo, NULL, icon, D_("Redo"), _bt_redo_cb, panel_image);
    elm_menu_item_disabled_set(panel_image->undo.item_redo, 1);
    elm_menu_item_separator_add(panel_image->undo.redo, NULL);
 
@@ -312,54 +318,54 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/1_1");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("1:1"), _bt_1_1_cb, photo);
+   elm_toolbar_item_add(panel_image->tb, icon, D_("1:1"), _bt_1_1_cb, panel_image);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/fit");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("Fit"), _bt_fit_cb, photo);
+   elm_toolbar_item_add(panel_image->tb, icon, D_("Fit"), _bt_fit_cb, panel_image);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/fill");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("Fill"), _bt_fill_cb, photo);
+   elm_toolbar_item_add(panel_image->tb, icon, D_("Fill"), _bt_fill_cb, panel_image);
 
    tb_item = elm_toolbar_item_add(panel_image->tb, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(tb_item, 1);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/rotate/90");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("90°"), _bt_rotate_90_cb, photo);
+   elm_toolbar_item_add(panel_image->tb, icon, D_("90°"), _bt_rotate_90_cb, panel_image);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/rotate/90/reverse");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("-90°"), _bt_rotate_R90_cb, photo);
+   elm_toolbar_item_add(panel_image->tb, icon, D_("-90°"), _bt_rotate_R90_cb, panel_image);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/rotate/180");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("180°"), _bt_rotate_180_cb, photo);
+   elm_toolbar_item_add(panel_image->tb, icon, D_("180°"), _bt_rotate_180_cb, panel_image);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/flip/horizontal");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("Horizontal"), _bt_flip_horizontal_cb, photo);
+   elm_toolbar_item_add(panel_image->tb, icon, D_("Horizontal"), _bt_flip_horizontal_cb, panel_image);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/flip/vertical");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("Vertical"), _bt_flip_vertical_cb, photo);
+   elm_toolbar_item_add(panel_image->tb, icon, D_("Vertical"), _bt_flip_vertical_cb, panel_image);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/blur");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("Blur"), _bt_blur_cb, photo);
+   elm_toolbar_item_add(panel_image->tb, icon, D_("Blur"), _bt_blur_cb, panel_image);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/sharpen");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("Sharpen"), _bt_sharpen_cb, photo);
+   elm_toolbar_item_add(panel_image->tb, icon, D_("Sharpen"), _bt_sharpen_cb, panel_image);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/sepia");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("Sepia"), _bt_sepia_cb, photo);
+   elm_toolbar_item_add(panel_image->tb, icon, D_("Sepia"), _bt_sepia_cb, panel_image);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/grayscale");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("Grayscale"), _bt_grayscale_cb, photo);
+   elm_toolbar_item_add(panel_image->tb, icon, D_("Grayscale"), _bt_grayscale_cb, panel_image);
 
 
 
@@ -368,9 +374,6 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    evas_object_show(ph);
    elm_photocam_zoom_mode_set(ph, ELM_PHOTOCAM_ZOOM_MODE_AUTO_FIT);
    elm_box_pack_end(bx2, ph);
-
-   snprintf(buf, PATH_MAX,"%s/%s", enlil_photo_path_get(photo), enlil_photo_file_name_get(photo));
-   elm_photocam_file_set(ph, buf);
 
    //rectangle on top of the photocam which retrieves the mouse wheel
    rect = evas_object_rectangle_add(evas_object_evas_get(obj));
@@ -388,6 +391,36 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    evas_object_event_callback_add(ph, EVAS_CALLBACK_RESIZE, _photocam_move_resize_cb, panel_image);
    evas_object_event_callback_add(ph, EVAS_CALLBACK_MOVE, _photocam_move_resize_cb, panel_image);
 
+   hbox = elm_box_add(obj);
+   evas_object_size_hint_weight_set(hbox, 1.0, 0.0);
+   evas_object_size_hint_align_set(hbox, -1.0, 1.0);
+   evas_object_show(hbox);
+   elm_box_horizontal_set(hbox, EINA_TRUE);
+   elm_box_pack_end(bx2, hbox);
+
+   //slideshow
+   Evas_Object *slideshow = slideshow_object_add(obj);
+   panel_image->slideshow.slideshow = slideshow;
+   evas_object_size_hint_weight_set(slideshow, 0.0, 1.0);
+   evas_object_size_hint_align_set(slideshow, 0.0, -1.0);
+   evas_object_size_hint_min_set(slideshow, 100, 50);
+   slideshow_object_file_set(slideshow, PACKAGE_DATA_DIR"/theme.edj", "slideshow");
+   evas_object_smart_callback_add(slideshow, "selected", _slideshow_selected_cb, panel_image);
+   evas_object_show(slideshow);
+   elm_box_pack_end(hbox, slideshow);
+
+   itc_slideshow.icon_get = _slideshow_icon_get;
+   EINA_LIST_FOREACH(enlil_album_photos_get(enlil_photo_album_get(photo)), l, _photo)
+   {
+	   Enlil_Photo_Data *_photo_data = enlil_photo_user_data_get(_photo);
+	   Slideshow_Item *_item = slideshow_object_item_append(slideshow, &itc_slideshow,  _photo);
+	   _photo_data->slideshow_object_items = eina_list_append(_photo_data->slideshow_object_items, _item);
+   }
+
+   Slideshow_Item *_item = eina_list_data_get(eina_list_last(photo_data->slideshow_object_items));
+   slideshow_object_item_select(slideshow, _item);
+
+   //zoom
    sl = elm_slider_add(obj);
    panel_image->sl = sl;
    evas_object_size_hint_weight_set(sl, 1.0, 0.0);
@@ -399,8 +432,10 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    elm_slider_unit_format_set(sl, "%4.0f");
    evas_object_smart_callback_add(sl, "delay,changed", _slider_photocam_zoom_cb, panel_image);
    evas_object_show(sl);
-   elm_box_pack_end(bx2, sl);
+   elm_box_pack_end(hbox, sl);
    elm_slider_value_set(photo_data->panel_image->sl, elm_photocam_zoom_get(photo_data->panel_image->photocam));
+
+
 
    //transformations notification window
    panel_image->notify_trans = elm_notify_add(ph);
@@ -440,20 +475,65 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    elm_box_pack_end(bx2, bt);
    //
 
-   panel_image->history = enlil_trans_history_new(buf);
-
    panel_image->tabpanel_item = tabpanel_item_add(photo_data->enlil_data->tabpanel,
 	 enlil_photo_name_get(photo), panes, _panel_select_cb, photo);
 
-   panel_image_exifs_update(photo);
-   panel_image_iptcs_update(photo);
+   _panel_image_photo_set(panel_image, photo);
 
    return panel_image;
+}
+
+static void _panel_image_photo_set(Panel_Image *panel_image, Enlil_Photo *photo)
+{
+	Enlil_Trans_Job *job;
+	Elm_Menu_Item *mi_item;
+	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+	char buf[PATH_MAX];
+
+	if(panel_image->photo)
+	{
+		Enlil_Photo_Data *_data = enlil_photo_user_data_get(panel_image->photo);
+		_data->panel_image = NULL;
+	}
+
+	panel_image->photo = photo;
+	photo_data->panel_image = panel_image;
+
+	tabpanel_item_label_set(panel_image->tabpanel_item, enlil_photo_name_get(photo));
+
+	elm_entry_entry_set(panel_image->entry_name, enlil_photo_name_get(photo));
+	elm_entry_entry_set(panel_image->entry_description, enlil_photo_description_get(photo));
+
+	snprintf(buf, sizeof(buf), "%f mo", enlil_photo_size_get(photo) / 1024. / 1024.);
+	elm_label_label_set(panel_image->lbl_file_size, buf);
+
+	elm_label_label_set(panel_image->exifs.size, D_("Unknown"));
+
+	snprintf(buf, sizeof(buf),"%s/%s", enlil_photo_path_get(photo), enlil_photo_file_name_get(photo));
+	elm_photocam_file_set(panel_image->photocam, buf);
+
+	panel_image->save.save = EINA_FALSE;
+
+	EINA_LIST_FREE( panel_image->jobs_trans, job)
+		enlil_trans_job_del(job);
+
+	EINA_LIST_FREE( panel_image->undo.items_undo, mi_item)
+	      ;
+	EINA_LIST_FREE( panel_image->undo.items_redo, mi_item)
+	      ;
+
+	enlil_trans_history_free(panel_image->history);
+	panel_image->history = enlil_trans_history_new(buf);
+
+	panel_image_exifs_update(photo);
+	panel_image_iptcs_update(photo);
 }
 
 void panel_image_free(Panel_Image **_panel_image)
 {
    Enlil_Trans_Job *job;
+   Eina_List *l;
+   Slideshow_Item *item;
    Elm_Menu_Item *mi_item;
    Panel_Image *panel_image = *_panel_image;
    Enlil_Photo_Data *photo_data = enlil_photo_user_data_get( panel_image->photo );
@@ -480,6 +560,17 @@ void panel_image_free(Panel_Image **_panel_image)
 
    if(panel_image->timer_description_name)
      ecore_timer_del(panel_image->timer_description_name);
+
+   EINA_LIST_FOREACH(slideshow_object_items_get(panel_image->slideshow.slideshow), l, item)
+   {
+	   Enlil_Photo *_photo;
+	   Eina_List *l2;
+	   EINA_LIST_FOREACH(enlil_album_photos_get(enlil_photo_album_get(panel_image->photo)), l2, _photo)
+	   {
+		   Enlil_Photo_Data *_photo_data = enlil_photo_user_data_get(_photo);
+		   _photo_data->slideshow_object_items = eina_list_remove( _photo_data->slideshow_object_items, item);
+	   }
+   }
 
    FREE(panel_image);
 }
@@ -775,7 +866,7 @@ void panel_image_save_as(Enlil_Photo *photo)
    elm_box_pack_end(vbox, fs);
    evas_object_show(fs);
 
-   evas_object_smart_callback_add(fs, "done", _bt_save_as_done_cb, photo);
+   evas_object_smart_callback_add(fs, "done", _bt_save_as_done_cb, panel_image);
 
    panel_image->save.save = EINA_FALSE;
 }
@@ -906,47 +997,56 @@ static void _photocam_move_resize_cb(void *data, Evas *e, Evas_Object *obj, void
 
 static void _bt_rotate_180_cb(void *data, Evas_Object *obj, void *event_info)
 {
-   panel_image_rotation_180(data);
+   Panel_Image *panel_image = data;
+   panel_image_rotation_180(panel_image->photo);
 }
 
 static void _bt_rotate_90_cb(void *data, Evas_Object *obj, void *event_info)
 {
-   panel_image_rotation_90(data);
+Panel_Image *panel_image = data;
+   panel_image_rotation_90(panel_image->photo);
 }
 
 static void _bt_rotate_R90_cb(void *data, Evas_Object *obj, void *event_info)
 {
-   panel_image_rotation_R90(data);
+   Panel_Image *panel_image = data;
+   panel_image_rotation_R90(panel_image->photo);
 }
 
 static void _bt_flip_vertical_cb(void *data, Evas_Object *obj, void *event_info)
 {
-   panel_image_flip_vertical(data);
+   Panel_Image *panel_image = data;
+   panel_image_flip_vertical(panel_image->photo);
 }
 
 static void _bt_flip_horizontal_cb(void *data, Evas_Object *obj, void *event_info)
 {
-   panel_image_flip_horizontal(data);
+Panel_Image *panel_image = data;
+   panel_image_flip_horizontal(panel_image->photo);
 }
 
 static void _bt_blur_cb(void *data, Evas_Object *obj, void *event_info)
 {
-   panel_image_blur(data);
+   Panel_Image *panel_image = data;
+   panel_image_blur(panel_image->photo);
 }
 
 static void _bt_sharpen_cb(void *data, Evas_Object *obj, void *event_info)
 {
-   panel_image_sharpen(data);
+   Panel_Image *panel_image = data;
+   panel_image_sharpen(panel_image->photo);
 }
 
 static void _bt_grayscale_cb(void *data, Evas_Object *obj, void *event_info)
 {
-   panel_image_grayscale(data);
+   Panel_Image *panel_image = data;
+   panel_image_grayscale(panel_image->photo);
 }
 
 static void _bt_sepia_cb(void *data, Evas_Object *obj, void *event_info)
 {
-   panel_image_sepia(data);
+   Panel_Image *panel_image = data;
+   panel_image_sepia(panel_image->photo);
 }
 
 static void _end_trans_cb(void *data, Enlil_Trans_Job *job, const char *file)
@@ -1191,9 +1291,9 @@ static void _menu_history_cb(void *data, Evas_Object *obj, void *event_info)
 static void _bt_save_as_done_cb(void *data, Evas_Object *obj, void *event_info)
 {
    char buf[PATH_MAX];
-   Enlil_Photo *photo = data;
+   Panel_Image *panel_image = data;
+   Enlil_Photo *photo = panel_image->photo;
    Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-   Panel_Image *panel_image = photo_data->panel_image;
    const char *selected = event_info;
 
    if(panel_image->inwin)
@@ -1236,12 +1336,14 @@ static void _inwin_save_as_apply_cb(void *data)
 
 static void _bt_save_as_cb(void *data, Evas_Object *obj, void *event_info)
 {
-   panel_image_save_as(data);
+   Panel_Image *panel_image = data;
+   panel_image_save_as(panel_image->photo);
 }
 
 static void _bt_save_cb(void *data, Evas_Object *obj, void *event_info)
 {
-   panel_image_save(data);
+   Panel_Image *panel_image = data;
+   panel_image_save(panel_image->photo);
 }
 
 static void _bt_close_cb(void *data, Evas_Object *obj, void *event_info)
@@ -1374,3 +1476,43 @@ static void _panes_h_clicked_double(void *data, Evas_Object *obj, void *event_in
      elm_panes_content_left_size_set(obj, panel_image->panes_h_size);
 }
 
+static Evas_Object *_slideshow_icon_get(const void *data, Evas_Object *obj)
+{
+	const char *s = NULL;
+	Enlil_Photo *photo = (Enlil_Photo *) data;
+	Enlil_Photo_Data *enlil_photo_data = enlil_photo_user_data_get(photo);
+
+	Evas_Object *o = photo_object_add(obj);
+	photo_object_theme_file_set(o, PACKAGE_DATA_DIR"/theme.edj", "photo_simple");
+
+	if(enlil_photo_data->cant_create_thumb == 1)
+		return o;
+
+	s = enlil_thumb_photo_get(photo, Enlil_THUMB_FDO_NORMAL, thumb_done_cb, thumb_error_cb, NULL);
+
+	evas_image_cache_flush (evas_object_evas_get(obj));
+
+	if(s)
+		photo_object_file_set(o, s , NULL);
+	else
+		photo_object_progressbar_set(o, EINA_TRUE);
+
+	if(enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_VIDEO)
+		photo_object_camera_set(o, EINA_TRUE);
+
+	photo_object_text_set(o, enlil_photo_name_get(photo));
+
+	evas_object_show(o);
+	return o;
+}
+
+
+static void _slideshow_selected_cb(void *data, Evas_Object *obj, void *event_info)
+{
+	Slideshow_Item *item = event_info;
+	Panel_Image *panel_image = data;
+
+	Enlil_Photo *photo = slideshow_object_item_data_get(item);
+
+	_panel_image_photo_set(panel_image, photo);
+}

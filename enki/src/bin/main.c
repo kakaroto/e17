@@ -1,6 +1,7 @@
 // vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
 
 #include "main.h"
+#include "evas_object/slideshow_object.h"
 
 int APP_LOG_DOMAIN;
 
@@ -498,6 +499,7 @@ void enlil_album_data_free(Enlil_Album *album, void *_data)
 void enlil_photo_data_free(Enlil_Photo *photo, void *_data)
 {
    Enlil_Photo_Data *data = _data;
+   Slideshow_Item *item;
    //Enlil_Data *enlil_data = data->enlil_data;
    Enlil_Flickr_Job *job;
 
@@ -513,6 +515,11 @@ void enlil_photo_data_free(Enlil_Photo *photo, void *_data)
      enlil_exif_job_del(data->exif_job);
    if(data->iptc_job)
      enlil_iptc_job_del(data->iptc_job);
+
+   EINA_LIST_FREE(data->slideshow_object_items, item)
+   {
+	   slideshow_object_item_del(item);
+   }
 
    EINA_LIST_FREE(data->flickr_sync.jobs, job)
      {
