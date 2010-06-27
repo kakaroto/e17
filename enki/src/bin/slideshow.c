@@ -5,7 +5,7 @@
 #define TRANSFORMATION_DURATION 1.0
 
 static Evas_Object *win = NULL;
-static Evas_Object *notify, *notify_right, *notify_left;
+static Evas_Object *notify, *notify_right;// *notify_left;
 static Evas_Object *slideshow, *bt_start, *bt_stop, *sl, *rect;
 static Elm_Slideshow_Item_Class itc;
 static Evas_Object * _get(void *data, Evas_Object *obj);
@@ -57,11 +57,11 @@ _notify_show(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    evas_object_show(data);
    evas_object_show(notify_right);
-   evas_object_show(notify_left);
+   //evas_object_show(notify_left);
 
    elm_notify_timer_init(data);
    elm_notify_timer_init(notify_right);
-   elm_notify_timer_init(notify_left);
+   //elm_notify_timer_init(notify_left);
 }
 
    static void
@@ -81,7 +81,7 @@ _mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    elm_notify_timeout_set(data, 0);
    elm_notify_timeout_set(notify_right, 0);
-   elm_notify_timeout_set(notify_left, 0);
+   //elm_notify_timeout_set(notify_left, 0);
 }
 
 
@@ -90,7 +90,7 @@ _mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    elm_notify_timeout_set(data, 3);
    elm_notify_timeout_set(notify_right, 3);
-   elm_notify_timeout_set(notify_left, 3);
+   //elm_notify_timeout_set(notify_left, 3);
 }
 
    static void
@@ -232,6 +232,7 @@ _delete_cb(void *data, Evas_Object *obj, void *event_info)
      }
 }
 
+   /* TOTO: finish this code a day
 static int _transformation(void *data)
 {
    Elm_Slideshow_Item *item = elm_slideshow_item_current_get(slideshow);
@@ -296,6 +297,7 @@ _rotate_90_cb(void *data, Evas_Object *obj, void *event_info)
    start = ecore_loop_time_get();
    animator = ecore_animator_add(_transformation, NULL);
 }
+*/
    static void
 _photocam_mouse_wheel_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
@@ -516,7 +518,7 @@ _init_slideshow()
    elm_box_pack_end(bx, sl);
 
 
-   notify_left = elm_notify_add(win);
+   /*notify_left = elm_notify_add(win);
    elm_notify_orient_set(notify_left, ELM_NOTIFY_ORIENT_LEFT);
    elm_win_resize_object_add(win, notify_left);
    elm_notify_timeout_set(notify_left, 3);
@@ -551,6 +553,7 @@ _init_slideshow()
    evas_object_smart_callback_add(bt, "clicked", _rotate_90_cb, slideshow);
    elm_box_pack_end(bx, bt);
    evas_object_show(bt);
+   */
 
 
 
@@ -566,8 +569,8 @@ void slideshow_show()
 {
    _init_slideshow();
 
-   //elm_win_fullscreen_set(win, 1);
-   evas_object_resize(win, 400,400);
+   elm_win_fullscreen_set(win, 1);
+   //evas_object_resize(win, 400,400);
    evas_object_show(win);
 }
 
