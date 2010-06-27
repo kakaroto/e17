@@ -159,7 +159,7 @@ struct _IV_Files_Account
 };
 
 /* Prototypes */
-static int  on_idler(void *data);
+static Eina_Bool on_idler(void *data);
 static void slideshow_on(IV *iv);
 static void slideshow_off(IV *iv);
 #ifdef HAVE_ETHUMB
@@ -252,7 +252,7 @@ remove_iv_file(IV *iv, IV_File *file, Eina_Bool set_current)
    free(file);
 }
 
-static int
+static Eina_Bool
 on_config_save_tick(void *data)
 {
    IV *iv = data;
@@ -349,7 +349,7 @@ on_win_del_req(void *data, Evas_Object *obj, void *event_info)
    iv_exit(data); /* exit the program's main loop that runs in elm_run() */
 }
 
-static int
+static Eina_Bool
 on_win_move_tick(void *data)
 {
    IV *iv = data;
@@ -361,7 +361,7 @@ on_win_move_tick(void *data)
    return ECORE_CALLBACK_CANCEL;
 }
 
-static int 
+static Eina_Bool
 on_win_move(void *data, int event_type, void *event_info)
 {
    IV *iv = data;
@@ -1074,7 +1074,7 @@ trash_image(IV *iv)
      }
 }
 
-static int
+static Eina_Bool
 on_idler(void *data)
 {
    IV *iv = data;
@@ -1333,7 +1333,7 @@ on_idler(void *data)
      }
 }
 
-static int
+static Eina_Bool
 on_slideshow_tick(void *data)
 {
    IV *iv = data;
@@ -1620,7 +1620,7 @@ create_main_win(IV *iv)
     * XXX: configurable themes
     * */
    snprintf(buf, sizeof(buf), "%s/themes/default.edj", PACKAGE_DATA_DIR);
-   elm_theme_extension_add(buf);
+   elm_theme_extension_add(NULL, buf);
    iv->theme_file = eina_stringshare_add(buf);
 
    o = elm_win_add(NULL, "main", ELM_WIN_BASIC);
