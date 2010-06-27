@@ -45,16 +45,6 @@ Think about Alt-Tab of taskbar support for this feature. But this is a implement
   <category title="Bugs" place="1"/>
   <category title="Requirements" place="2">
     <item>
-      <attribute id="1276809575" priority="1" done="0" start_date="733940" enddate="99999999" notify="0" endtime="-60" last_edited="1276809836"/>
-      <summary>req_window_offscreen</summary>
-      <comment>If a window likes to open with initial offscreen coordinates E should move it to the nearest onscreen coordinates.</comment>
-    </item>
-    <item>
-      <attribute id="1276809788" priority="1" done="0" start_date="733940" enddate="99999999" notify="0" endtime="-60" last_edited="1276809860"/>
-      <summary>req_window_ignore_zone</summary>
-      <comment>If a window likes to open with initial coordinates in a window ignore zone (lile not overlap allowed shelfes) if should be moved to the next allowed coordinates.</comment>
-    </item>
-    <item>
       <attribute id="1276809989" priority="1" done="0" start_date="733940" enddate="99999999" notify="0" endtime="-60" last_edited="1276809989"/>
       <summary>req_window_oversize</summary>
       <comment>If a window likes to open with bigger initial coordinates bigger than the screen (minus ignore zones like not overlap allowed shelfes) the window should be sized to the maximum allowed size and widow state should be toggled to maximized.</comment>
@@ -75,14 +65,29 @@ Think about Alt-Tab of taskbar support for this feature. But this is a implement
       <comment>If a user drags something over the taskbar icon the window should come to the front after time t.</comment>
     </item>
     <item>
-      <attribute id="1276810449" priority="1" done="0" start_date="733940" enddate="99999999" notify="0" endtime="-60" last_edited="1276810449"/>
-      <summary>req_window_resize_move</summary>
-      <comment>If a window resizes itself without border interaction it's moved to the next available coordinates which aren't covered by ignore zones like not overlap allowed shelfes.</comment>
-    </item>
-    <item>
       <attribute id="1276890347" priority="1" done="0" start_date="733941" enddate="99999999" notify="0" endtime="-60" last_edited="1276890347"/>
       <summary>req_maximize_drag</summary>
       <comment>If the user drags a maximized window it should lose its maximize state. If the window is moved back while holding mouse button to border maximize position the maximize state is recovered.</comment>
+    </item>
+    <item>
+      <attribute id="1277410426" priority="1" done="0" start_date="733947" enddate="99999999" notify="0" endtime="-60" last_edited="1277410436"/>
+      <summary>req_menu_move</summary>
+      <comment>If the user drags the menu (e.g. in a Gtk+) application the window should be moved.</comment>
+    </item>
+    <item>
+      <attribute id="1276809575" priority="1" done="1" start_date="733940" completed_date="733950" enddate="99999999" notify="0" endtime="-60" last_edited="1277671202"/>
+      <summary>req_window_offscreen</summary>
+      <comment>If a window likes to open with initial offscreen coordinates E should move it to the nearest onscreen coordinates.</comment>
+    </item>
+    <item>
+      <attribute id="1276809788" priority="1" done="1" start_date="733940" completed_date="733950" enddate="99999999" notify="0" endtime="-60" last_edited="1277671317"/>
+      <summary>req_window_ignore_zone</summary>
+      <comment>If a window likes to open with initial coordinates in a window ignore zone (like not overlap allowed shelfes) if should be moved to the next allowed coordinates.</comment>
+    </item>
+    <item>
+      <attribute id="1276810449" priority="1" done="1" start_date="733940" completed_date="733950" enddate="99999999" notify="0" endtime="-60" last_edited="1277671730"/>
+      <summary>req_window_resize_move</summary>
+      <comment>If a window resizes itself without border interaction it's moved to the next available coordinates which aren't covered by ignore zones like not overlap allowed shelfes.</comment>
     </item>
   </category>
 </gtodo>
