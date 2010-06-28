@@ -236,7 +236,7 @@ void json_timeline_handle(StatusesList *statuses, json_object *json_stream) {
 		screen_name = json_object_object_get(user, "screen_name");
 		profile_image_url = json_object_object_get(user, "profile_image_url");
 
-		ubstatus->id = (long long int)(json_object_get_double(id));
+		ubstatus->id = json_object_get_int(id);
 		ubstatus->name = strndup(json_object_get_string(name), PIPE_BUF);
 		ubstatus->screen_name = strndup(json_object_get_string(screen_name), PIPE_BUF);
 		ubstatus->text = strndup(json_object_get_string(text), PIPE_BUF);
