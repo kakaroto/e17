@@ -78,6 +78,13 @@ typedef struct anchor_data {
 	char        *url;
 } AnchorData;
 
+typedef struct gag_data {
+	char        *screen_name;
+	char        *name;
+	char        *message;
+	Eina_Bool	match;
+} GagData;
+
 typedef struct _StatusesList {
 	Eina_List	*list;
 	ub_Status 	*current;

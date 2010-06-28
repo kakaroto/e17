@@ -119,6 +119,13 @@ void elmdentica_init(void) {
 	chmod(db_path, S_IRUSR|S_IWUSR);
 	free(db_path);
 
+	query = "CREATE TABLE IF NOT EXISTS gag (id INTEGER PRIMARY KEY, enabled INTEGER, pattern TEXT);";
+	sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
+	if(sqlite_res != 0) {
+		printf("Can't run %s: %d => %s\n", query, sqlite_res, db_err);
+		exit(sqlite_res);
+	}
+
 	query = "CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY, enabled INTEGER, name TEXT, password TEXT, type INTEGER, proto TEXT, domain TEXT, port INTEGER, base_url TEXT, receive INTEGER, send INTEGER );";
 	sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
 	if(sqlite_res != 0) {
@@ -851,6 +858,42 @@ static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *even
 
 }
 
+static int ed_check_gag_message(void *user_data, int argc, char **argv, char **azColName) {
+	GagData *gd = (GagData*)user_data;
+
+	/* In this query handler, these are the current fields:
+		argv[0] == patern STRING
+	*/
+
+	// only do costly matches if there's isn't a match already
+	if(	gd->match == EINA_FALSE &&
+			(g_regex_match_simple(argv[0], gd->screen_name, G_REGEX_CASELESS, 0) ||
+			 g_regex_match_simple(argv[0], gd->name, G_REGEX_CASELESS, 0)        ||
+			 g_regex_match_simple(argv[0], gd->message, G_REGEX_CASELESS, 0)))
+		gd->match = EINA_TRUE;
+	return(0);
+}
+
+Eina_Bool ed_check_gag(char *screen_name, char *name, char *message) {
+	GagData gd;
+	char *query, *db_err=NULL;
+	int sqlite_res = 0;
+
+	gd.screen_name = screen_name;
+	gd.name = name;
+	gd.message = message;
+	gd.match = EINA_FALSE;
+
+	query = "SELECT pattern FROM gag where enabled = 1;";
+	sqlite_res = sqlite3_exec(ed_DB, query, ed_check_gag_message, &gd, &db_err);
+	if(sqlite_res != 0) {
+		printf("Can't run %s: %s\n", query, db_err);
+		sqlite3_free(db_err);
+	}
+
+	return(gd.match);
+}
+
 static int add_status(void *data, int argc, char **argv, char **azColName) {
 	char *screen_name=NULL, *name=NULL, *status_message=NULL;
 	int id=0, account_id=0, res=0, type;
@@ -882,6 +925,7 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 	date=(time_t)atoi(argv[6]);
 	type=atoi(argv[7]);
 
+	if(ed_check_gag(argv[3], argv[4], argv[5])) return(0);
 	bubble = elm_bubble_add(win);
 	evas_object_size_hint_weight_set(bubble, 1, 0);
 	evas_object_size_hint_align_set(bubble, -1, -1);

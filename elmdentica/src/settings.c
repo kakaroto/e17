@@ -45,7 +45,7 @@
 #include "elmdentica.h"
 
 Evas_Object *settings_win=NULL, *settings_area=NULL, *account_editor=NULL, *cache_editor=NULL, *options_editor=NULL,
-	    *user_data_dialog=NULL, *screen_name_entry=NULL, *password_entry=NULL,
+	    *user_data_dialog=NULL, *screen_name_entry=NULL, *password_entry=NULL, *gag_editor=NULL,
 	    *domain_data_dialog=NULL, *apiroot_entry=NULL, *type_entry=NULL, *secure_entry=NULL,
 	    *domain_entry=NULL, *base_url_entry=NULL, *enabled_entry=NULL, *receive_entry=NULL, *send_entry=NULL;
 
@@ -672,6 +672,8 @@ void on_settings_accounts(void *data, Evas_Object *toolbar, void *event_info) {
 	if(account_editor) evas_object_del(account_editor);
 	if(cache_editor) evas_object_del(cache_editor);
 	if(options_editor) evas_object_del(options_editor);
+	if(gag_editor) evas_object_del(gag_editor);
+
 	account_editor = elm_box_add(settings_area);
 		evas_object_size_hint_weight_set(account_editor, 1, 1);
 		evas_object_size_hint_align_set(account_editor, -1, -1);
@@ -856,6 +858,7 @@ void on_settings_cache(void *data, Evas_Object *toolbar, void *event_info) {
 	if(account_editor) evas_object_del(account_editor);
 	if(cache_editor) evas_object_del(cache_editor);
 	if(options_editor) evas_object_del(options_editor);
+	if(gag_editor) evas_object_del(gag_editor);
 
 	cache_editor = elm_table_add(settings_area);
 		evas_object_size_hint_weight_set(cache_editor, 1, 1);
@@ -995,6 +998,7 @@ void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
 	if(account_editor) evas_object_del(account_editor);
 	if(cache_editor) evas_object_del(cache_editor);
 	if(options_editor) evas_object_del(options_editor);
+	if(gag_editor) evas_object_del(gag_editor);
 
 	options_editor = elm_table_add(settings_area);
 		evas_object_size_hint_weight_set(options_editor, 1, 1);
@@ -1020,6 +1024,157 @@ void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
 		
 		elm_box_pack_start(settings_area, options_editor);
 	evas_object_show(options_editor);
+}
+
+void on_gag_enabled_toggle(void *data, Evas_Object *check, void *event_info) {
+	int *id = (int*)data;
+	int sqlite_res = 0;
+	char *query=NULL, *db_err=NULL;
+
+	if(elm_check_state_get(check)) {
+		sqlite_res = asprintf(&query, "UPDATE gag set enabled='%d' where id='%d';", 1, *id);
+	} else {
+		sqlite_res = asprintf(&query, "UPDATE gag set enabled='%d' where id='%d';", 0, *id);
+	}
+
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
+		if(sqlite_res != 0)
+			printf("Can't %s: %d = %s\n", query, sqlite_res, db_err);
+		sqlite3_free(db_err);
+		free(query);
+	}
+
+}
+
+static int gag_list_insert(void *user_data, int argc, char **argv, char **azColName) {
+	Evas_Object *list = (Evas_Object*)user_data, *check=NULL;
+	Elm_List_Item * item=NULL;
+	int *id = calloc(1, sizeof(int));
+	char *pattern=NULL;
+	int enabled=0;
+
+	/*	In this SQL context, these are the columns:
+			argv[0] == id
+			argv[1] == enabled
+			argv[2] == pattern
+	*/
+
+	*id = atoi(argv[0]);
+	enabled = atoi(argv[1]);
+    pattern = strndup(argv[2], NAME_MAX);
+
+	check = elm_check_add(settings_win);
+	if(enabled)
+		elm_check_state_set(check, TRUE);
+	else
+		elm_check_state_set(check, FALSE);
+
+	evas_object_smart_callback_add(check, "changed", on_gag_enabled_toggle, id);
+	evas_object_show(check);
+
+	item = elm_list_item_append(list, pattern, check, NULL, on_account_selected, id);
+
+	return(0);
+}
+void on_gag_edit(void *data, Evas_Object *obj, void *event_info) {
+}
+void on_gag_add(void *data, Evas_Object *obj, void *event_info) {
+}
+void on_gag_delete(void *data, Evas_Object *button, void *event_info) {
+}
+
+void on_settings_gag(void *data, Evas_Object *toolbar, void *event_info) {
+	Evas_Object *frame=NULL, *list=NULL, *button_list=NULL, *button=NULL, *icon=NULL;
+	char *query=NULL, *db_err=NULL;
+	int sqlite_res = 0;
+
+	if(account_editor) evas_object_del(account_editor);
+	if(cache_editor) evas_object_del(cache_editor);
+	if(options_editor) evas_object_del(options_editor);
+	if(gag_editor) evas_object_del(gag_editor);
+
+	gag_editor = elm_box_add(settings_area);
+		evas_object_size_hint_weight_set(gag_editor, 1, 1);
+		evas_object_size_hint_align_set(gag_editor, -1, -1);
+
+		frame = elm_frame_add(settings_win);
+			evas_object_size_hint_weight_set(frame, 1, 1);
+			evas_object_size_hint_align_set(frame, -1, -1);
+			elm_frame_label_set(frame, _("Gag patterns..."));
+
+			list = elm_list_add(settings_win);
+				evas_object_name_set(list, "gag_list");
+				evas_object_size_hint_weight_set(list, 1, 1);
+				evas_object_size_hint_align_set(list, -1, -1);
+
+				query = "SELECT id,enabled,pattern FROM gag;";
+				sqlite_res = sqlite3_exec(ed_DB, query, gag_list_insert, list, &db_err);
+        			if(sqlite_res != 0) {
+               				printf("Can't run %s: %s\n", query, db_err);
+					sqlite3_free(db_err);
+        			}
+
+			elm_list_go(list);
+			evas_object_show(list);
+			elm_frame_content_set(frame, list);
+		evas_object_show(frame);
+		elm_box_pack_end(gag_editor, frame);
+
+
+		button_list = elm_box_add(settings_area);
+			elm_box_horizontal_set(button_list, 1);
+			elm_box_homogenous_set(button_list, 1);
+
+			evas_object_size_hint_weight_set(button_list, 1, 0);
+			evas_object_size_hint_align_set(button_list, -1, 0);
+
+			icon = elm_icon_add(settings_win);
+				elm_icon_standard_set(icon, "file");
+			evas_object_show(icon);
+
+			button = elm_button_add(settings_win);
+				elm_button_icon_set(button, icon);
+				elm_button_label_set(button, _("Add"));
+				evas_object_smart_callback_add(button, "clicked", on_gag_add, list);
+				evas_object_size_hint_weight_set(button, 1, 1);
+				evas_object_size_hint_align_set(button, -1, 0);
+			elm_box_pack_end(button_list, button);
+			evas_object_show(button);
+
+			icon = elm_icon_add(settings_win);
+				elm_icon_standard_set(icon, "edit");
+			evas_object_show(icon);
+
+			button = elm_button_add(settings_win);
+				elm_button_icon_set(button, icon);
+				elm_button_label_set(button, _("Edit"));
+				evas_object_smart_callback_add(button, "clicked", on_gag_edit, list);
+				evas_object_size_hint_weight_set(button, 1, 1);
+				evas_object_size_hint_align_set(button, -1, 0);
+			elm_box_pack_end(button_list, button);
+			evas_object_show(button);
+
+			icon = elm_icon_add(settings_win);
+				elm_icon_standard_set(icon, "delete");
+			evas_object_show(icon);
+
+			button = elm_button_add(settings_win);
+				elm_button_icon_set(button, icon);
+				elm_button_label_set(button, _("Delete"));
+				evas_object_smart_callback_add(button, "clicked", on_gag_delete, list);
+				evas_object_size_hint_weight_set(button, 1, 1);
+				evas_object_size_hint_align_set(button, -1, 0);
+			elm_box_pack_end(button_list, button);
+			evas_object_show(button);
+
+
+		elm_box_pack_start(gag_editor, button_list);
+		evas_object_show(button_list);
+
+	elm_box_pack_start(settings_area, gag_editor);
+	evas_object_show(gag_editor);
+
 }
 
 void on_settings(void *data, Evas_Object *obj, void *event_info) {
@@ -1070,6 +1225,10 @@ void on_settings(void *data, Evas_Object *obj, void *event_info) {
 				evas_object_show(icon);
 			elm_toolbar_item_add(toolbar, icon, _("Options"), on_settings_options, NULL);
 
+			icon = elm_photo_add(settings_win);
+				elm_photo_file_set(icon, "head.png");
+				evas_object_show(icon);
+			elm_toolbar_item_add(toolbar, icon, _("Gag"), on_settings_gag, NULL);
 		elm_box_pack_start(box, toolbar);
 		evas_object_show(toolbar);
 		elm_toolbar_item_select(item);
