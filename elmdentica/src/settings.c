@@ -59,6 +59,7 @@ char *conf_file_path=NULL;
 
 int current_account_type = ACCOUNT_TYPE_NONE;
 int current_account = 0;
+int current_gag = 0;
 extern char * url_post;
 extern char * url_friends;
 
@@ -1047,6 +1048,13 @@ void on_gag_enabled_toggle(void *data, Evas_Object *check, void *event_info) {
 
 }
 
+void on_gag_selected(void *data, Evas_Object *gag_list, void *event_info) {
+	int *id = (int*)data;
+
+	current_gag = *id;
+	if (debug) printf("Selected gag: %d\n", current_gag);
+}
+
 static int gag_list_insert(void *user_data, int argc, char **argv, char **azColName) {
 	Evas_Object *list = (Evas_Object*)user_data, *check=NULL;
 	Elm_List_Item * item=NULL;
@@ -1073,15 +1081,178 @@ static int gag_list_insert(void *user_data, int argc, char **argv, char **azColN
 	evas_object_smart_callback_add(check, "changed", on_gag_enabled_toggle, id);
 	evas_object_show(check);
 
-	item = elm_list_item_append(list, pattern, check, NULL, on_account_selected, id);
+	item = elm_list_item_append(list, pattern, check, NULL, on_gag_selected, id);
 
 	return(0);
 }
+
+void on_gag_dialog_win_del(void *data, Evas_Object *obj, void *event_info) {
+	evas_object_del(obj);
+}
+
+void on_gag_pattern_add(void *data, Evas_Object *obj, void *event_info) {
+	Evas *e = evas_object_evas_get(obj);
+	Evas_Object *gag_list = evas_object_name_find(e, "gag_list"), *gag_pattern = evas_object_name_find(e, "gag-pattern");
+	const Eina_List *list_items=NULL, *l=NULL;
+	Elm_List_Item *li=NULL;
+	char *query, *db_err=NULL;
+	const char *pattern = elm_entry_entry_get(gag_pattern);
+	int res=0;
+
+	res = asprintf(&query, "INSERT INTO gag (enabled, pattern) VALUES ( 1, '%s');", pattern);
+	if(res != -1) {
+		res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
+		if(res != 0)
+			printf("Can't %s: %d = %s\n", query, res, db_err);
+		else {
+			free(query);
+
+			list_items = elm_list_items_get(gag_list);
+			EINA_LIST_FOREACH(list_items, l, li)
+				elm_list_item_del(li);
+
+			query = "SELECT id,enabled,pattern FROM gag;";
+			res = sqlite3_exec(ed_DB, query, gag_list_insert, gag_list, &db_err);
+			if(res != 0) {
+				printf("Can't run %s: %s\n", query, db_err);
+				sqlite3_free(db_err);
+			}
+
+			elm_list_go(gag_list);
+			query=NULL;
+		}
+		sqlite3_free(db_err);
+		if(query) free(query);
+	}
+
+	evas_object_del((Evas_Object*)data);
+}
+
+void on_gag_pattern_edit(void *data, Evas_Object *obj, void *event_info) {
+	Evas *e = evas_object_evas_get(obj);
+	Evas_Object *gag_list = evas_object_name_find(e, "gag_list"), *gag_pattern = evas_object_name_find(e, "gag-pattern");
+	Elm_List_Item *li = elm_list_selected_item_get(gag_list);
+	char *query, *db_err=NULL;
+	const char *pattern = elm_entry_entry_get(gag_pattern);
+	int res=0;
+
+	res = asprintf(&query, "UPDATE gag SET pattern = '%s' where id = %d;", pattern, current_gag);
+	if(res != -1) {
+		res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
+		if(res != 0)
+			printf("Can't %s: %d = %s\n", query, res, db_err);
+		else
+			elm_list_item_label_set(li, pattern);
+		sqlite3_free(db_err);
+		free(query);
+	}
+	evas_object_del((Evas_Object*)data);
+}
+
+void on_gag_pattern_cancel(void *data, Evas_Object *obj, void *event_info) {
+	evas_object_del((Evas_Object*)data);
+}
+
+Evas_Object * gag_edit_widgets(char *pattern) {
+	Evas_Object *inwin=NULL, *box=NULL, *frame=NULL, *entry=NULL, *buttons=NULL, *button=NULL;
+
+	inwin = elm_win_inwin_add(settings_win);
+		elm_object_style_set(inwin, "minimal_vertical");
+		evas_object_size_hint_weight_set(inwin, 1, 1);
+		evas_object_size_hint_align_set(inwin, -1, 1);
+
+		evas_object_smart_callback_add(inwin, "delete-request", on_gag_dialog_win_del, NULL);
+
+		box = elm_box_add(settings_win);
+			evas_object_size_hint_weight_set(box, 1, 1);
+			evas_object_size_hint_align_set(box, -1, 1);
+
+			frame = elm_frame_add(settings_win);
+				evas_object_size_hint_weight_set(frame, 1, 1);
+				evas_object_size_hint_align_set(frame, -1, 1);
+				elm_frame_label_set(frame, _("Pattern..."));
+				entry = elm_entry_add(settings_win);
+					evas_object_size_hint_weight_set(entry, 1, 1);
+					evas_object_size_hint_align_set(entry, -1, 1);
+					evas_object_name_set(entry, "gag-pattern");
+
+					if(pattern == NULL)
+						elm_entry_entry_set(entry, "");
+					else
+						elm_entry_entry_set(entry, pattern);
+				elm_frame_content_set(frame, entry);
+				elm_box_pack_end(box, frame);
+			evas_object_show(frame);
+
+			buttons = elm_box_add(settings_win);
+				evas_object_size_hint_weight_set(buttons, 1, 1);
+				evas_object_size_hint_align_set(buttons, -1, 1);
+				elm_box_horizontal_set(buttons, EINA_TRUE);
+
+				button = elm_button_add(settings_win);
+					elm_button_label_set(button, _("OK"));
+					if(pattern == NULL)
+						evas_object_smart_callback_add(button, "clicked", on_gag_pattern_add, inwin);
+					else
+						evas_object_smart_callback_add(button, "clicked", on_gag_pattern_edit, inwin);
+					elm_box_pack_end(buttons, button);
+				evas_object_show(button);
+
+				button = elm_button_add(settings_win);
+					elm_button_label_set(button, _("Cancel"));
+					evas_object_smart_callback_add(button, "clicked", on_gag_pattern_cancel, inwin);
+					elm_box_pack_end(buttons, button);
+				evas_object_show(button);
+
+				elm_box_pack_end(box, buttons);
+			evas_object_show(buttons);
+		evas_object_show(box);
+
+	elm_win_inwin_content_set(inwin, box);
+
+	return(inwin);
+}
+
 void on_gag_edit(void *data, Evas_Object *obj, void *event_info) {
+	Elm_List_Item *li = elm_list_selected_item_get((Evas_Object*)data);
+	Evas_Object *inwin=NULL;
+	const char *label=NULL;
+
+	if(li) {
+		label = elm_list_item_label_get(li);
+	}
+
+	inwin = gag_edit_widgets((char*)label);
+	evas_object_show(inwin);
 }
+
 void on_gag_add(void *data, Evas_Object *obj, void *event_info) {
+	Evas_Object *inwin = gag_edit_widgets(NULL);
+	evas_object_show(inwin);
 }
+
 void on_gag_delete(void *data, Evas_Object *button, void *event_info) {
+	Evas_Object *gag_list=(Evas_Object*)data;
+	int sqlite_res = 0;
+	char *query=NULL, *db_err=NULL;
+	Elm_List_Item *li;
+
+	if(current_gag != 0) {
+
+		sqlite_res = asprintf(&query, "DELETE FROM gag WHERE id='%d';", current_gag);
+		if(sqlite_res != -1) {
+			if(debug) printf("QUERY: %s\n", query);
+			sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
+			if(sqlite_res != 0)
+				printf("Can't %s: %d = %s\n", query, sqlite_res, db_err);
+			sqlite3_free(db_err);
+			free(query);
+
+			current_gag = 0;
+			li = elm_list_selected_item_get(gag_list);
+			if(li) elm_list_item_del(li);
+		}
+	}
 }
 
 void on_settings_gag(void *data, Evas_Object *toolbar, void *event_info) {
