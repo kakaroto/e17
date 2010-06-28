@@ -650,10 +650,13 @@ Enlil_Flickr_Job *enlil_flickr_job_get_photo_sizes_append(const char *photo_id,
    return job;
 }
 
+
 static void _job_free(Enlil_Flickr_Job *job)
 {
    ASSERT_RETURN_VOID(job != NULL);
 
+
+#ifdef HAVE_FLICKR
    EINA_STRINGSHARE_DEL(job->photo_id);
    EINA_STRINGSHARE_DEL(job->response.upload_params.title);
    EINA_STRINGSHARE_DEL(job->response.upload_params.description);
@@ -661,6 +664,7 @@ static void _job_free(Enlil_Flickr_Job *job)
    EINA_STRINGSHARE_DEL(job->response.upload_params.photo_file);
 
    FREE(job);
+#endif
 }
 
 static void _job_next()
