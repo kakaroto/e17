@@ -113,6 +113,7 @@ typedef struct _User_Profile {
 #define TIMELINE_USER 1
 #define TIMELINE_PUBLIC 2
 #define TIMELINE_FAVORITES 3
+#define TIMELINE_MENTIONS 4
 
 #define BROWSER_XDG		0
 #define	BROWSER_VENTURA	1

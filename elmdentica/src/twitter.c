@@ -319,6 +319,11 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 			res = asprintf(&request->url, "%s://%s:%d%s/favorites.json?since_id=%lld", proto, domain, port, base_url, since_id);
 		else
 			res = asprintf(&request->url, "%s://%s:%d%s/favorites.json", proto, domain, port, base_url);
+	} else if(timeline == TIMELINE_MENTIONS) {
+		if(since_id > 0)
+			res = asprintf(&request->url, "%s://%s:%d%s/statuses/mentions.json?since_id=%lld", proto, domain, port, base_url, since_id);
+		else
+			res = asprintf(&request->url, "%s://%s:%d%s/statuses/mentions.json", proto, domain, port, base_url);
 	}
 
 	if(res != -1) {

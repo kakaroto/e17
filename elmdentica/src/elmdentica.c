@@ -170,6 +170,7 @@ void make_status_list(int timeline) {
 		case TIMELINE_USER:		{	label = _("Last messages...");		break; }
 		case TIMELINE_PUBLIC:	{	label = _("Everyone...");	break; }
 		case TIMELINE_FAVORITES: {	label = _("My favorites...");	break; }
+		case TIMELINE_MENTIONS: {	label = _("Replies / mentions...");	break; }
 		case TIMELINE_FRIENDS:
 		default:				{	label = _("My friends...");	break; }
 	}
@@ -871,15 +872,19 @@ static int ed_check_gag_message(void *user_data, int argc, char **argv, char **a
 			 g_regex_match_simple(argv[0], gd->name, G_REGEX_CASELESS, 0)        ||
 			 g_regex_match_simple(argv[0], gd->message, G_REGEX_CASELESS, 0)))
 		gd->match = EINA_TRUE;
+
+	if(debug) printf("There is %s match in '%s', '%s' or '%s' for pattern '%s'\n", gd->match?"a":"no", gd->screen_name, gd->name, gd->message, argv[0]);
 	return(0);
 }
 
 Eina_Bool ed_check_gag(char *screen_name, char *name, char *message) {
 	GagData gd;
 	char *query, *db_err=NULL;
-	int sqlite_res = 0;
+	int sqlite_res = 0, res=0;
 
-	gd.screen_name = screen_name;
+	res = asprintf(&gd.screen_name, "@%s", screen_name);
+	if(res == -1)
+		gd.screen_name = screen_name;
 	gd.name = name;
 	gd.message = message;
 	gd.match = EINA_FALSE;
@@ -891,6 +896,9 @@ Eina_Bool ed_check_gag(char *screen_name, char *name, char *message) {
 		sqlite3_free(db_err);
 	}
 
+	if(res != -1) {
+		free(gd.screen_name);
+	}
 	return(gd.match);
 }
 
@@ -926,6 +934,7 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 	type=atoi(argv[7]);
 
 	if(ed_check_gag(argv[3], argv[4], argv[5])) return(0);
+
 	bubble = elm_bubble_add(win);
 	evas_object_size_hint_weight_set(bubble, 1, 0);
 	evas_object_size_hint_align_set(bubble, -1, -1);
@@ -1149,24 +1158,35 @@ static void on_timeline_friends_reload(void *data, Evas_Object *obj, void *event
 	if(settings->online) get_messages(TIMELINE_FRIENDS);
 	make_status_list(TIMELINE_FRIENDS);
 	fill_message_list(TIMELINE_FRIENDS);
+	evas_object_hide((Evas_Object*)data);
+}
+
+static void on_timeline_mentions_reload(void *data, Evas_Object *obj, void *event_info) {
+	if(settings->online) get_messages(TIMELINE_MENTIONS);
+	make_status_list(TIMELINE_MENTIONS);
+	fill_message_list(TIMELINE_MENTIONS);
+	evas_object_hide((Evas_Object*)data);
 }
 
 static void on_timeline_user_reload(void *data, Evas_Object *obj, void *event_info) {
 	if(settings->online) get_messages(TIMELINE_USER);
 	make_status_list(TIMELINE_USER);
 	fill_message_list(TIMELINE_USER);
+	evas_object_hide((Evas_Object*)data);
 }
 
 static void on_timeline_public_reload(void *data, Evas_Object *obj, void *event_info) {
 	if(settings->online) get_messages(TIMELINE_PUBLIC);
 	make_status_list(TIMELINE_PUBLIC);
 	fill_message_list(TIMELINE_PUBLIC);
+	evas_object_hide((Evas_Object*)data);
 }
 
 static void on_timeline_favorites_reload(void *data, Evas_Object *obj, void *event_info) {
 	if(settings->online) get_messages(TIMELINE_FAVORITES);
 	make_status_list(TIMELINE_FAVORITES);
 	fill_message_list(TIMELINE_FAVORITES);
+	evas_object_hide((Evas_Object*)data);
 }
 
 static void on_fs(void *data, Evas_Object *obj, void *event_info) {
@@ -1270,6 +1290,10 @@ static void on_post(void *data, Evas_Object *obj, void *event_info) {
 	evas_object_hide(hv);
 }
 
+static void on_timelines_hv(void *data, Evas_Object *obj, void *event_info) {
+	evas_object_show((Evas_Object*)data);
+}
+
 static void on_post_hv(void *data, Evas_Object *obj, void *event_info) {
 	evas_object_show(hv);
 }
@@ -1324,7 +1348,7 @@ static void on_entry_clicked(void *data, Evas_Object *entry, void *event_info) {
 
 EAPI int elm_main(int argc, char **argv)
 {
-	Evas_Object *bg=NULL, *box=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *box2=NULL, *hoversel=NULL, *panel=NULL;
+	Evas_Object *bg=NULL, *box=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *box2=NULL, *hoversel=NULL, *edit_panel=NULL, *timelines=NULL, *timelines_panel=NULL;
 
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, LOCALEDIR);
@@ -1365,17 +1389,17 @@ EAPI int elm_main(int argc, char **argv)
 
 	elm_box_pack_end(box, scroller);
 
-	panel = elm_box_add(win);
-		elm_box_homogenous_set(panel, 0);
-		elm_box_horizontal_set(panel, 1);
-		evas_object_size_hint_align_set(panel, -1, 1);
+	edit_panel = elm_box_add(win);
+		elm_box_homogenous_set(edit_panel, 0);
+		elm_box_horizontal_set(edit_panel, 1);
+		evas_object_size_hint_align_set(edit_panel, -1, 1);
 
 		count = elm_label_add(win);
 			elm_label_label_set(count, " 140c | ");
 			evas_object_size_hint_weight_set(count, 0, 1);
 			evas_object_size_hint_align_set(count, 0, 0);
 		evas_object_show(count);
-		elm_box_pack_end(panel, count);
+		elm_box_pack_end(edit_panel, count);
 
 		entry = elm_entry_add(win);
 			elm_entry_entry_set(entry, _("Type your status here..."));
@@ -1385,55 +1409,98 @@ EAPI int elm_main(int argc, char **argv)
 			evas_object_size_hint_align_set(entry, -1, 1);
 			evas_object_smart_callback_add(entry, "cursor,changed", on_entry_clicked, NULL);
 			evas_object_smart_callback_add(entry, "changed", on_entry_changed, NULL);
-		elm_box_pack_end(panel, entry);
+		elm_box_pack_end(edit_panel, entry);
 		evas_object_show(entry);
-	evas_object_show(panel);
+	evas_object_show(edit_panel);
+
+	timelines = elm_hover_add(win);
+		evas_object_size_hint_weight_set(timelines, 1, 1);
+		evas_object_size_hint_align_set(timelines, -1, 0);
+	elm_hover_parent_set(timelines, win);
+
+	timelines_panel = elm_box_add(win);
+		elm_box_homogenous_set(timelines_panel, 1);
+		evas_object_size_hint_align_set(timelines_panel, -1, 0);
+
+		bt = elm_button_add(win);
+			evas_object_size_hint_align_set(bt, -1, 0);
+			elm_button_label_set(bt, _("Everyone"));
+			evas_object_smart_callback_add(bt, "clicked", on_timeline_public_reload, NULL);
+			elm_box_pack_end(timelines_panel, bt);
+		evas_object_show(bt);
+
+		bt = elm_button_add(win);
+			evas_object_size_hint_align_set(bt, -1, 0);
+			elm_button_label_set(bt, _("Just me"));
+			evas_object_smart_callback_add(bt, "clicked", on_timeline_user_reload, timelines);
+			elm_box_pack_end(timelines_panel, bt);
+		evas_object_show(bt);
+
+		bt = elm_button_add(win);
+			evas_object_size_hint_align_set(bt, -1, 0);
+			elm_button_label_set(bt, _("Favorites"));
+			evas_object_smart_callback_add(bt, "clicked", on_timeline_favorites_reload, timelines);
+			elm_box_pack_end(timelines_panel, bt);
+		evas_object_show(bt);
+
+		bt = elm_button_add(win);
+			evas_object_size_hint_align_set(bt, -1, 0);
+			elm_button_label_set(bt, _("Replies/Mentions"));
+			evas_object_smart_callback_add(bt, "clicked", on_timeline_mentions_reload, timelines);
+			elm_box_pack_end(timelines_panel, bt);
+		evas_object_show(bt);
+
+		bt = elm_button_add(win);
+			evas_object_size_hint_align_set(bt, -1, 0);
+			elm_button_label_set(bt, _("Friends & I"));
+			evas_object_smart_callback_add(bt, "clicked", on_timeline_friends_reload, timelines);
+			elm_box_pack_end(timelines_panel, bt);
+		evas_object_show(bt);
+
+		elm_hover_content_set(timelines, "top", timelines_panel);
+	evas_object_show(timelines_panel);
 
 	/* toolbar (horizontal box object) */
 	toolbar = elm_box_add(win);
-	evas_object_size_hint_weight_set(toolbar, 1.0, 0.0);
-	evas_object_size_hint_align_set(toolbar, -1, 0);
-	elm_box_homogenous_set(toolbar, 0);
-	elm_box_horizontal_set(toolbar, 1);
+		evas_object_size_hint_weight_set(toolbar, 1.0, 0.0);
+		evas_object_size_hint_align_set(toolbar, -1, 0);
+		elm_box_homogenous_set(toolbar, 0);
+		elm_box_horizontal_set(toolbar, 1);
+
 
 		icon = elm_icon_add(win);
 		elm_icon_standard_set(icon, "chat");
-		evas_object_show(icon);
-		bt = elm_hoversel_add(win);
-			evas_object_size_hint_weight_set(bt, 1, 1);
-			evas_object_size_hint_align_set(bt, -1, 0);
-			elm_hoversel_hover_begin(bt);
-			elm_hoversel_hover_parent_set(bt, win);
-			elm_hoversel_label_set(bt, _("Timeline"));
-			elm_hoversel_icon_set(bt, icon);
-			
-			elm_hoversel_item_add(bt, _("Everyone"), NULL, ELM_ICON_NONE, on_timeline_public_reload, NULL);
-			elm_hoversel_item_add(bt, _("Just me"), NULL, ELM_ICON_NONE, on_timeline_user_reload, NULL);
-			elm_hoversel_item_add(bt, _("Favorites"), NULL, ELM_ICON_NONE, on_timeline_favorites_reload, NULL);
-			elm_hoversel_item_add(bt, _("Friends & I"), NULL, ELM_ICON_NONE, on_timeline_friends_reload, NULL);
-			
-			elm_hoversel_hover_end(bt);
-
-		elm_box_pack_end(toolbar, bt);
-		evas_object_show(bt);
-
-		hv = elm_hover_add(win);
-			elm_object_style_set(hv, "popout");
-			elm_hover_parent_set(hv, win);
-			elm_hover_content_set(hv, "top", panel);
-
-		icon = elm_icon_add(win);
-		elm_icon_standard_set(icon, "edit");
 		evas_object_show(icon);
 
 		bt = elm_button_add(win);
 			evas_object_size_hint_weight_set(bt, 1, 1);
 			evas_object_size_hint_align_set(bt, -1, 0);
-			elm_button_label_set(bt, _("Post"));
+			elm_button_label_set(bt, _("Timelines"));
 			elm_button_icon_set(bt, icon);
-			evas_object_smart_callback_add(bt, "clicked", on_post_hv, NULL);
-		elm_box_pack_end(toolbar, bt);
+			evas_object_smart_callback_add(bt, "clicked", on_timelines_hv, timelines);
+			elm_box_pack_end(toolbar, bt);
+
+			elm_hover_target_set(timelines, bt);
 		evas_object_show(bt);
+
+
+		hv = elm_hover_add(win);
+			elm_object_style_set(hv, "popout");
+			elm_hover_parent_set(hv, win);
+			elm_hover_content_set(hv, "top", edit_panel);
+
+			icon = elm_icon_add(win);
+			elm_icon_standard_set(icon, "edit");
+			evas_object_show(icon);
+
+			bt = elm_button_add(win);
+				evas_object_size_hint_weight_set(bt, 1, 1);
+				evas_object_size_hint_align_set(bt, -1, 0);
+				elm_button_label_set(bt, _("Post"));
+				elm_button_icon_set(bt, icon);
+				evas_object_smart_callback_add(bt, "clicked", on_post_hv, NULL);
+				elm_box_pack_end(toolbar, bt);
+			evas_object_show(bt);
 
 		elm_hover_target_set(hv, toolbar);
 
