@@ -882,8 +882,11 @@ Eina_Bool ed_check_gag(char *screen_name, char *name, char *message) {
 	char *query, *db_err=NULL;
 	int sqlite_res = 0, res=0;
 
-	res = asprintf(&gd.screen_name, "@%s", screen_name);
-	if(res == -1)
+	if(strchr(screen_name, '@')) {
+		res = asprintf(&gd.screen_name, "@%s", screen_name);
+		if(res == -1)
+			gd.screen_name = screen_name;
+	} else
 		gd.screen_name = screen_name;
 	gd.name = name;
 	gd.message = message;
@@ -896,9 +899,9 @@ Eina_Bool ed_check_gag(char *screen_name, char *name, char *message) {
 		sqlite3_free(db_err);
 	}
 
-	if(res != -1) {
-		free(gd.screen_name);
-	}
+	if(res > 0)
+		if(gd.screen_name) free(gd.screen_name);
+
 	return(gd.match);
 }
 
