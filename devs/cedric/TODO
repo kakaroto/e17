@@ -10,7 +10,7 @@ d	- rewrite preload support
 h	- try quadtree support
 
 * Ecore
-	- add ecore_long_run with pipe facility (max = CPU - 1, with and without queue)
+d	- add ecore_long_run with pipe facility (max = CPU - 1, with and without queue)
 d	- replace int by Eina_Bool when it make sense for callback
 
 * Edje
