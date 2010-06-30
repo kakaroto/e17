@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Link
+Name=OpenOffice.org Quickstart
+Icon=e-module-eooorg
+Comment=This module preloads the openoffice process to save start time with the costs of some memory.
+#Several different types available here. NEED TO DOC THESE.
+X-Enlightenment-ModuleType=system
