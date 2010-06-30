@@ -200,7 +200,7 @@ e_dbus_signal_handler_add(E_DBus_Connection *conn, const char *sender, const cha
     {
        struct cb_name_owner_data *data_cb;
 
-       data_cb = malloc(sizeof(*data));
+       data_cb = malloc(sizeof(*data_cb));
        if (!data_cb)
 	 {
 	    e_dbus_signal_handler_free(sh);
