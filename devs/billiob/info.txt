@@ -5,7 +5,6 @@ Location:     Courbevoie, France
 Jabber:       billiob@gmail.com
 MSN:          billiob@gmail.com
 E-Mail:       billiob@gmail.com
-Contributing: Python-elementary
-Platform:     ArchLinux, Debian, OpenBSD
-GeoData:      48.9073 2.2776
-
+Contributing: Python bindings, e…
+Platform:     Gentoo, ArchLinux, OpenBSD
+GeoData:      48.9026 2.2694
