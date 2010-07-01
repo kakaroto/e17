@@ -4,8 +4,8 @@ Name:         Brett Nash
 Location:     Xi'an, China
 E-Mail:       nash@nash.id.au
 WWW:          http://www.nash.id.au
-Managing:     Nothing much
-Contributing: evas, ecore
+Managing:     Ensure, Evas neon, Elementary X Selections
+Contributing: evas (neon), ecore, elementary, edje
 Group:        Applications, Libraries
 Platform:     Debian (Linux)
 GeoData:      -34.069582 150.830569
