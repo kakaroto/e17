@@ -36,7 +36,7 @@ src_configure() {
 
 	export MY_ECONF="
 	  ${MY_ECONF}
-	  --with-dbus-services=/etc/dbus-1/session.d
+	  --with-dbus-services=/usr/share/dbus-1/services
 	  $(use_enable dbus ethumbd)
 	  $(use_enable emotion)
 	  $(use_enable epdf)
