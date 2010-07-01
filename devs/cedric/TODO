@@ -8,6 +8,7 @@
 d	- rewrite preload support
 	- add a prepare phase that could be used by all engine when we got many main CPU to prepare font, polygon and load image in parallel (should work also with dsp)
 h	- try quadtree support
+	- fix Evas_Object_Polygon resize issue and API.
 
 * Ecore
 d	- add ecore_long_run with pipe facility (max = CPU - 1, with and without queue)
@@ -19,7 +20,7 @@ d	- Fixed Point
 	- Add continue: (ABORT|CONTINUE|CHAIN) to edje STATE_SET argument
 	- Make it possible to catch requested file and to rewrite it
 	- Optimize file format
-	- Optimize memory layout thanks to new file format
+h	- Optimize memory layout thanks to new file format
 
 * Elixir
 h	- add eet -> js object
