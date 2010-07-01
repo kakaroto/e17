@@ -1,11 +1,12 @@
 Login:        doursse
-IRC Nick:     caro
+IRC Nick:     vtorri
 Cloak:        developer/vtorri
 Name:         Vincent Torri
-Location:     France, Paris
+Location:     France, Maisons-Alfort
 E-Mail:       -vtorri@univ-evry.fr
 WWW:          http://avisynth3.unite-video.com/
-Managing:     epdf, edvi
-Contributing: evas, ecore, emotion, etk, ewl
+Managing:     epdf, edvi, eps
+Contributing: eina, evas, ecore, emotion, etk, ewl
 Group:        Core, Libraries
 Platform:     Linux, Windows
+GeoData:      48.803728, 2.430786
