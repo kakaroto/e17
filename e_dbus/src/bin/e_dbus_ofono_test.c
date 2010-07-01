@@ -1,3 +1,7 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "E_Ofono.h"
 #include <stdio.h>
 #include <string.h>
@@ -5,7 +9,7 @@
 #include <errno.h>
 
 static void
-_method_success_check(void *data, DBusMessage *msg, DBusError *error)
+_method_success_check(void *data, DBusMessage *msg __UNUSED__, DBusError *error)
 {
    const char *name = data;
 
@@ -33,40 +37,40 @@ _elements_print(E_Ofono_Element **elements, unsigned int count)
    printf("END: all elements count = %u\n", count);
 }
 
-static int
-_on_element_add(void *data, int type, void *info)
+static Eina_Bool
+_on_element_add(void *data __UNUSED__, int type __UNUSED__, void *info)
 {
    E_Ofono_Element *element = info;
    printf(">>> %s %s\n", element->path, element->interface);
    return 1;
 }
 
-static int
-_on_element_del(void *data, int type, void *info)
+static Eina_Bool
+_on_element_del(void *data __UNUSED__, int type __UNUSED__, void *info)
 {
    E_Ofono_Element *element = info;
    printf("<<< %s %s\n", element->path, element->interface);
    return 1;
 }
 
-static int
-_on_element_updated(void *data, int type, void *info)
+static Eina_Bool
+_on_element_updated(void *data __UNUSED__, int type __UNUSED__, void *info)
 {
    E_Ofono_Element *element = info;
    printf("!!! %s %s\n", element->path, element->interface);
    e_ofono_element_print(stderr, element);
    return 1;
 }
-static int
-_on_cmd_quit(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_quit(char *cmd __UNUSED__, char *args __UNUSED__)
 {
    fputs("Bye!\n", stderr);
    ecore_main_loop_quit();
    return 0;
 }
 
-static int
-_on_cmd_sync(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_sync(char *cmd __UNUSED__, char *args __UNUSED__)
 {
    e_ofono_manager_sync_elements();
    return 1;
@@ -89,8 +93,8 @@ _tok(char *p)
    return p;
 }
 
-static int
-_on_cmd_get_all(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_get_all(char *cmd __UNUSED__, char *args)
 {
    E_Ofono_Element **elements;
    char *type;
@@ -145,8 +149,8 @@ _element_from_args(char *interface, char *args, char **next_args)
    return element;
 }
 
-static int
-_on_cmd_print(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_print(char *cmd __UNUSED__, char *args)
 {
    char *next_args;
    E_Ofono_Element *element = _element_from_args(NULL, args, &next_args);
@@ -155,8 +159,8 @@ _on_cmd_print(char *cmd, char *args)
    return 1;
 }
 
-static int
-_on_cmd_get_properties(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_get_properties(char *cmd __UNUSED__, char *args)
 {
    char *next_args;
    E_Ofono_Element *element = _element_from_args(NULL, args, &next_args);
@@ -165,8 +169,8 @@ _on_cmd_get_properties(char *cmd, char *args)
    return 1;
 }
 
-static int
-_on_cmd_property_set(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_property_set(char *cmd __UNUSED__, char *args)
 {
    char *next_args, *name, *p;
    E_Ofono_Element *element = _element_from_args(NULL, args, &next_args);
@@ -259,8 +263,8 @@ _on_cmd_property_set(char *cmd, char *args)
 
 /* Manager Commands */
 
-static int
-_on_cmd_manager_get(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_manager_get(char *cmd __UNUSED__, char *args __UNUSED__)
 {
    E_Ofono_Element *element;
    element = e_ofono_manager_get();
@@ -268,8 +272,8 @@ _on_cmd_manager_get(char *cmd, char *args)
    return 1;
 }
 
-static int
-_on_cmd_manager_modems_get(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_manager_modems_get(char *cmd __UNUSED__, char *args __UNUSED__)
 {
    char *path;
    Eina_Array_Iterator iterator;
@@ -290,8 +294,8 @@ _on_cmd_manager_modems_get(char *cmd, char *args)
 
 /* Modem Commands */
 
-static int
-_on_cmd_modem_set_powered(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_modem_set_powered(char *cmd __UNUSED__, char *args)
 {
    char *next_args;
    Eina_Bool powered;
@@ -318,8 +322,8 @@ _on_cmd_modem_set_powered(char *cmd, char *args)
 
 /* SMS Commands */
 
-static int
-_on_cmd_sms_sca_set(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_sms_sca_set(char *cmd __UNUSED__, char *args)
 {
    char *next_args, *sca;
    E_Ofono_Element *element = _element_from_args("org.ofono.SmsManager", args,
@@ -345,8 +349,8 @@ _on_cmd_sms_sca_set(char *cmd, char *args)
    return 1;
 }
 
-static int
-_on_cmd_sms_send_message(char *cmd, char *args)
+static Eina_Bool
+_on_cmd_sms_send_message(char *cmd __UNUSED__, char *args)
 {
    char *next_args, *number, *message;
    E_Ofono_Element *element = _element_from_args("org.ofono.SmsManager", args,
@@ -376,14 +380,14 @@ _on_cmd_sms_send_message(char *cmd, char *args)
    return 1;
 }
 
-static int
-_on_input(void *data, Ecore_Fd_Handler *fd_handler)
+static Eina_Bool
+_on_input(void *data __UNUSED__, Ecore_Fd_Handler *fd_handler)
 {
    char buf[256];
    char *cmd, *args;
    const struct {
       const char *cmd;
-      int (*cb)(char *cmd, char *args);
+      Eina_Bool (*cb)(char *cmd, char *args);
    } *itr, maps[] = {
      {"quit", _on_cmd_quit},
      {"sync", _on_cmd_sync},
@@ -475,7 +479,7 @@ _on_input(void *data, Ecore_Fd_Handler *fd_handler)
 }
 
 int
-main(int argc, char *argv[])
+main(int argc __UNUSED__, char *argv[] __UNUSED__)
 {
    E_DBus_Connection *c;
 
