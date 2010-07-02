@@ -51,7 +51,8 @@ struct _Ephoto
 	Evas_Object *thumb_browser;
 	Evas_Object *thumb_slider;
 	Evas_Object *toolbar;
-	Eina_List *images;
+	Eina_Hash   *thumbs_images;
+	Eina_List   *images;
 };
 typedef struct _Ephoto Ephoto;
 extern Ephoto *em;

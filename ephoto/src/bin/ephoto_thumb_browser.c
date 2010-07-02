@@ -240,17 +240,10 @@ _ephoto_thumbnail_generated(void *data, Ethumb_Client *client, int id,
 			const char *thumb_path, const char *thumb_key, 
 			Eina_Bool success)
 {
-	Evas_Object *o;
-
-	o = ephoto_thumb_add();
-	evas_object_image_size_set(o, 176, 117);
-	ephoto_thumb_fill_inside_set(o, 0);
-	ephoto_thumb_file_set(o, thumb_path, 176, 117);
-	evas_object_data_set(o, "file", strdup(file));
-
 	if (success)
 	{
-		elm_gengrid_item_append(em->thumb_browser, &eg, o, NULL, NULL);
+		eina_hash_add(em->thumbs_images, strdup(file), strdup(thumb_path));
+		elm_gengrid_item_append(em->thumb_browser, &eg, file, NULL, NULL);
 	}
 }
 
@@ -258,12 +251,11 @@ _ephoto_thumbnail_generated(void *data, Ethumb_Client *client, int id,
 static char *
 _ephoto_get_label(const void *data, Evas_Object *obj, const char *part)
 {
-	Evas_Object *o;
-	char *file, *bname;
+	char *file;
+	const char *bname;
 
-	o = (Evas_Object *)data;
+	file = (char *)data;
 
-	file = evas_object_data_get(o, "file");
 	bname = basename(file);
 
 	return strdup(bname);
@@ -273,37 +265,26 @@ _ephoto_get_label(const void *data, Evas_Object *obj, const char *part)
 static Evas_Object *
 _ephoto_get_icon(const void *data, Evas_Object *obj, const char *part)
 {
-	Evas_Object *edje, *thumb, *o;
+	char *file, *path;
+	Evas_Object *thumb, *o;
 
-	o = (Evas_Object *)data;
-
+	file = (char *)data;
+	path = (char *)eina_hash_find(em->thumbs_images, file);
+	
 	if (!strcmp(part, "elm.swallow.icon"))
 	{
-		thumb = edje_object_add(evas_object_evas_get(em->thumb_browser));
-		edje_object_file_set(thumb, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
-				"/ephoto/thumb/shadow");
+		thumb = elm_layout_add(em->win);
+		elm_layout_file_set(thumb, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
+				"/ephoto/thumb");
+		evas_object_size_hint_weight_set(thumb, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 		evas_object_show(thumb);
-		evas_object_resize(thumb, 198, 136);
-		evas_object_size_hint_aspect_set(thumb, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-		evas_object_size_hint_align_set(thumb, 0.5, 0.5);
-		evas_object_size_hint_fill_set(thumb, 1.0, 1.0);
-		evas_object_size_hint_min_set(thumb, 198, 136);
-		evas_object_size_hint_max_set(thumb, 198, 136);
-	
-		edje = edje_object_add(evas_object_evas_get(em->thumb_browser));
-		edje_object_file_set(edje, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
-								"/ephoto/thumb/image");
-		evas_object_show(edje);
-	
-		edje_object_part_swallow(edje, "ephoto.swallow.content", o);
-		edje_object_part_swallow(thumb, "ephoto.swallow.content", edje);
-	
-		evas_object_resize(o, 176, 117);
-		evas_object_size_hint_min_set(o, 176, 117);
-		evas_object_size_hint_max_set(o, 176, 117);
-		evas_object_resize(edje, 176, 117);
-		evas_object_size_hint_min_set(edje, 176, 117);
-		evas_object_size_hint_max_set(edje, 176, 117);
+
+		o = ephoto_thumb_add();
+                evas_object_image_size_set(o, 176, 117);
+                ephoto_thumb_fill_inside_set(o, 0);
+                ephoto_thumb_file_set(o, path, 176, 117);
+
+		elm_layout_content_set(thumb, "ephoto.swallow.content", o);
 
 		return thumb;
 	}
