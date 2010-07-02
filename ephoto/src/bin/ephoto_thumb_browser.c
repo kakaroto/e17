@@ -134,51 +134,35 @@ ephoto_delete_thumb_browser(void)
 }
 
 /* Use ecore thread facility to avoid lock completly */
-typedef struct _Ephoto_DIR Ephoto_DIR;
-struct _Ephoto_DIR
-{
-	DIR *direc;
-	char dir[1];
-};
 
 /* List image in a directory from another thread */
 static void
 _ephoto_access_disk(Ecore_Thread *thread, void *data)
 {
-	Ephoto_DIR *ed = data;
+	Eina_Iterator *it = data;
+	const char *file;
 	const char *type;
-	struct dirent *d;
-	char *path;
-	int length;
 
-	while ((d = readdir(ed->direc)))
+	EINA_ITERATOR_FOREACH(it, file)
 	{
 		if (ecore_thread_check(thread)) break;
 
-		path = malloc(sizeof (char) *
-			      (strlen(ed->dir) + 2 + strlen(d->d_name)));
-		if (!path) continue;
+		type = efreet_mime_type_get((const char *)file);
 
-		strcpy(path, ed->dir);
-		strcat(path, "/");
-		strcat(path, d->d_name);
-
-		type = efreet_mime_type_get((const char *)path);
-
+		fprintf(stderr, "[%s] => [%s]\n", file, type);
 		if (!strncmp(type, "image", 5))
-			if (ecore_thread_notify(thread, path))
+			if (ecore_thread_notify(thread, file))
 				continue ;
-		free(path);
+		eina_stringshare_del(file);
 	}
 }
 
 static void
 _ephoto_populate_end(void *data)
 {
-	Ephoto_DIR *ed = data;
+	Eina_Iterator *it = data;
 
-	closedir(ed->direc);
-	free(ed);
+	eina_iterator_free(it);
 
 	thread = NULL;
 }
@@ -209,22 +193,20 @@ _ephoto_populate_notify(Ecore_Thread *thread, void *msg_data, void *data)
 void
 ephoto_populate_thumbnails(void)
 {
-	Ephoto_DIR *ed;
+	Eina_Iterator *it;
 	char *dir, cwd[PATH_MAX];
 
 	dir = getcwd(cwd, PATH_MAX);
 	if (!dir) return ;
 
-	ed = malloc(sizeof (Ephoto_DIR) + strlen(dir));
-	if (!ed) return ;
-	ed->direc = opendir(dir);
-	strcpy(ed->dir, dir);
+	it = ecore_file_ls_iterator(dir);
+	if (!it) return ;
 
 	thread = ecore_long_run(_ephoto_access_disk,
 				_ephoto_populate_notify,
 				_ephoto_populate_end,
 				_ephoto_populate_end,
-				ed,
+				it,
 				EINA_FALSE);
 }
 
