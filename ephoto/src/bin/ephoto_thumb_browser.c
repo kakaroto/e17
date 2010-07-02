@@ -199,7 +199,7 @@ ephoto_populate_thumbnails(void)
 	dir = getcwd(cwd, PATH_MAX);
 	if (!dir) return ;
 
-	it = ecore_file_ls_iterator(dir);
+	it = eina_file_ls(dir);
 	if (!it) return ;
 
 	thread = ecore_long_run(_ephoto_access_disk,
