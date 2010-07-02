@@ -4,6 +4,7 @@ EXTRA_DIST = \
 bg2.png \
 bg_scrollbar.png \
 bg_toolbar.png \
+bg_gradient.png \
 circle.png \
 desktop_resize_handler.png \
 dialog_entry_bg.png \
@@ -47,6 +48,12 @@ knob_scrollbar.png \
 new_bg.png \
 shadow_l.png \
 shadow_r.png \
+shadow_t.png \
+shadow_b.png \
+shadow_br.png \
+shadow_bl.png \
+shadow_tl.png \
+shadow_tr.png \
 shadow_under.png \
 shadow_under_bigger.png \
 sunken_box.png \

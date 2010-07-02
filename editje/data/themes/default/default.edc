@@ -594,9 +594,8 @@ collections {
 #define HEADER_BASE(normal_offset, extra_offset, event_offset, open_clip_rel) \
    part {                                                               \
       name: "cl.header.bg";                                             \
-      type: GRADIENT;                                                   \
       description { state: "default" 0.0;                               \
-         gradient.spectrum: "bg";                                       \
+	 image.normal: "bg_gradient.png";                               \
          rel2 {                                                         \
             relative: 1.0 0.0;                                          \
             offset: -1 normal_offset;                                   \
@@ -713,9 +712,8 @@ collections {
       name: "cl.header.dropshadow";                                     \
       clip_to: "cl.clipper";                                            \
       mouse_events: 0;                                                  \
-      type: GRADIENT;                                                   \
       description { state: "default" 0.0;                               \
-         gradient.spectrum: "shadow";                                   \
+	 image.normal: "shadow_b.png";                                  \
          rel1 {                                                         \
             to: "cl.clipper";                                           \
             relative: 0.0 0.0;                                          \
@@ -986,10 +984,9 @@ collections {
       name: "subgroup";
       parts {
          part { name: "shadow";
-            type: GRADIENT;
             mouse_events: 0;
             description { state: "default" 0.0;
-               gradient.spectrum: "shadow";
+	       image.normal: "shadow_b.png";
                rel1 {
                   relative: 0.0 0.0;
                   offset: 0 6;

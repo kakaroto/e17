@@ -20,6 +20,7 @@
 images {
    image: "ico_opened.png" COMP;
    image: "ico_closed.png" COMP;
+   image: "bg_gradient.png" COMP;
 }
 
 
@@ -46,10 +47,9 @@ collections {
             }
          }
          part { name: "header.bg";
-            type: GRADIENT;
             mouse_events: 0;
             description { state: "default" 0.0;
-               gradient.spectrum: "bg";
+	       image.normal: "bg_gradient.png";
                rel2 {
                   relative: 1.0 0.0;
                   offset: -1 20;

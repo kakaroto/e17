@@ -37,11 +37,10 @@ collections {
 
          part {
             name: "header.bg";
-            type: GRADIENT;
             mouse_events: 0;
             description {
                state: "default" 0.0;
-               gradient.spectrum: "bg";
+	       image.normal: "bg_gradient.png";
                rel2 {
                   relative: 1.0 0.0;
                   offset: -1 30;
@@ -216,11 +215,10 @@ collections {
 
          part {
             name: "header.bg";
-            type: GRADIENT;
             mouse_events: 0;
             description {
                state: "default" 0.0;
-               gradient.spectrum: "bg";
+	       image.normal: "bg_gradient.png";
                rel2 {
                   relative: 1.0 0.0;
                   offset: -1 30;
@@ -407,10 +405,9 @@ collections {
          }
          part {
             name: "title.bg";
-            type: GRADIENT;
             description {
                state: "default" 0.0;
-               gradient.spectrum: "bg";
+	       image.normal: "bg_gradient.png";
                rel1 {
                   to: "bg";
                   relative: 0.0 0.0;
@@ -498,10 +495,9 @@ collections {
          }
          part {
             name: "title.bg";
-            type: GRADIENT;
             description {
                state: "default" 0.0;
-               gradient.spectrum: "bg";
+	       image.normal: "bg_gradient.png";
                rel1 {
                   to: "bg";
                   relative: 0.0 0.0;
@@ -581,10 +577,9 @@ collections {
          }
          part {
             name: "title.bg";
-            type: GRADIENT;
             description {
                state: "default" 0.0;
-               gradient.spectrum: "bg";
+	       image.normal: "bg_gradient.png";
                rel1 {
                   to: "bg";
                   relative: 0.0 0.0;
@@ -738,11 +733,10 @@ collections {
 
          part {
             name: "header.bg";
-            type: GRADIENT;
             mouse_events: 0;
             description {
                state: "default" 0.0;
-               gradient.spectrum: "bg";
+	       image.normal: "bg_gradient.png";
                rel2 {
                   relative: 1.0 0.0;
                   offset: -1 30;

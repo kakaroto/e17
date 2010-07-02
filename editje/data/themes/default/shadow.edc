@@ -18,8 +18,14 @@
  * <http://www.gnu.org/licenses/>.
  */
 images {
-	image: "shadow_l.png" COMP;
 	image: "shadow_r.png" COMP;
+	image: "shadow_l.png" COMP;
+	image: "shadow_b.png" COMP;
+	image: "shadow_br.png" COMP;
+	image: "shadow_bl.png" COMP;
+	image: "shadow_t.png" COMP;
+	image: "shadow_tr.png" COMP;
+	image: "shadow_tl.png" COMP;
 	image: "shadow_under.png" COMP;
 	image: "shadow_under_bigger.png" COMP;
 }
@@ -27,11 +33,10 @@ images {
 #define SHADOW_LINEAR_BOTTOM(object, size_) \
          part { \
             name: object".shadow.b"; \
-            type: GRADIENT; \
             mouse_events: 0; \
             description { \
                state: "default" 0.0; \
-               gradient.spectrum: "shadow"; \
+	       image.normal: "shadow_b.png"; \
                rel1 { \
                   to: object; \
                   relative: 0.0 1.0; \
@@ -48,15 +53,10 @@ images {
 #define SHADOW_LINEAR_TOP(object, size_) \
          part { \
             name: object".shadow.t"; \
-            type: GRADIENT; \
             mouse_events: 0; \
             description { \
                state: "default" 0.0; \
-               gradient.spectrum: "shadow"; \
-               fill { \
-                  angle: 180; \
-                  origin.relative: 0.0 1.0; \
-               } \
+	       image.normal: "shadow_t.png"; \
                rel1 { \
                   to: object; \
                   relative: 0.0 0.0; \
@@ -78,11 +78,6 @@ images {
             description { \
                state: "default" 0.0; \
                image.normal: "shadow_l.png"; \
-               fill { \
-                  smooth: 1; \
-                  size.relative: 0 0; \
-                  size.offset: size_ 1; \
-               } \
                rel1 { \
                   to: object; \
                   relative: 0.0 0.0; \
@@ -104,11 +99,6 @@ images {
             description { \
                state: "default" 0.0; \
                image.normal: "shadow_l.png"; \
-               fill { \
-                  smooth: 1; \
-                  size.relative: 0 0; \
-                  size.offset: size_ 1; \
-               } \
                rel1 { \
                   to_x: left; \
                   to_y: under; \
@@ -131,11 +121,6 @@ images {
             description { \
                state: "default" 0.0; \
                image.normal: "shadow_r.png"; \
-               fill { \
-                  smooth: 1; \
-                  size.relative: 0 0; \
-                  size.offset: size_ 1; \
-               } \
                rel1 { \
                   to: object; \
                   relative: 1.0 0.0; \
@@ -157,11 +142,6 @@ images {
             description { \
                state: "default" 0.0; \
                image.normal: "shadow_r.png"; \
-               fill { \
-                  smooth: 1; \
-                  size.relative: 0 0; \
-                  size.offset: size_ 1; \
-               } \
                rel1 { \
                   to_x: right; \
                   to_y: under; \
@@ -183,15 +163,10 @@ images {
          SHADOW_LINEAR_RIGHT(object, size_) \
          part { \
             name: object".shadow.tl"; \
-            type: GRADIENT; \
             mouse_events: 0; \
             description { \
                state: "default" 0.0; \
-               gradient { \
-                  type: "rectangular"; \
-                  spectrum: "shadow"; \
-                  rel1.relative: 1.0 1.0; \
-               } \
+	       image.normal: "shadow_tl.png"; \
                rel1 { \
                   to_x: object".shadow.l"; \
                   to_y: object".shadow.t"; \
@@ -208,16 +183,10 @@ images {
          } \
          part { \
             name: object".shadow.tr"; \
-            type: GRADIENT; \
             mouse_events: 0; \
             description { \
                state: "default" 0.0; \
-               gradient { \
-                  type: "rectangular"; \
-                  spectrum: "shadow"; \
-                  rel1.relative: 0.0 1.0; \
-                  rel2.relative: 1.0 0.0; \
-               } \
+	       image.normal: "shadow_tr.png"; \
                rel1 { \
                   to_x: object".shadow.r"; \
                   to_y: object".shadow.t"; \
@@ -234,16 +203,10 @@ images {
          } \
          part { \
             name: object".shadow.bl"; \
-            type: GRADIENT; \
             mouse_events: 0; \
             description { \
                state: "default" 0.0; \
-               gradient { \
-                  type: "rectangular"; \
-                  spectrum: "shadow"; \
-                  rel1.relative: 1.0 1.0; \
-                  rel2.relative: 0.0 0.0; \
-               } \
+	       image.normal: "shadow_bl.png"; \
                rel1 { \
                   to_x: object".shadow.l"; \
                   to_y: object".shadow.b"; \
@@ -260,16 +223,10 @@ images {
          } \
          part { \
             name: object".shadow.br"; \
-            type: GRADIENT; \
             mouse_events: 0; \
             description { \
                state: "default" 0.0; \
-               gradient { \
-                  type: "rectangular"; \
-                  spectrum: "shadow"; \
-                  rel1.relative: 0.0 1.0; \
-                  rel2.relative: 1.0 0.0; \
-               } \
+	       image.normal: "shadow_br.png"; \
                rel1 { \
                   to_x: object".shadow.r"; \
                   to_y: object".shadow.b"; \
