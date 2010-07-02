@@ -136,6 +136,9 @@ ephoto_thumb_smart_init(void)
 		NULL,
 		NULL,
 		NULL,
+		NULL,
+		NULL,
+		NULL,
 		NULL
 	};
 

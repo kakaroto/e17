@@ -2,7 +2,6 @@
 
 /*Callbacks*/
 static void _ephoto_slider_changed(void *data, Evas_Object *obj, void *event_info);
-static int _ephoto_get_thumbnails(void *data);
 static void _ephoto_thumber_connected(void *data, Ethumb_Client *client, Eina_Bool success);
 static void _ephoto_thumbnail_generated(void *data, Ethumb_Client *client, int id,
 		                        const char *file, const char *key, 
@@ -14,11 +13,10 @@ static Eina_Bool _ephoto_get_state(const void *data, Evas_Object *obj, const cha
 static void _ephoto_grid_del(const void *data, Evas_Object *obj);
 
 /*Inline Variables*/
-static Ecore_Idler *idler;
 static Elm_Gengrid_Item_Class eg;
 static Ethumb_Client *ec;
-static DIR *direc;
 static int cur_val;
+static Ecore_Thread *thread = NULL;
 
 /*Create the thumbnail browser object*/
 void
@@ -135,15 +133,99 @@ ephoto_delete_thumb_browser(void)
 	ethumb_client_disconnect(ec);
 }
 
-/*Start an idler to list images in a directory*/
+/* Use ecore thread facility to avoid lock completly */
+typedef struct _Ephoto_DIR Ephoto_DIR;
+struct _Ephoto_DIR
+{
+	DIR *direc;
+	char dir[1];
+};
+
+/* List image in a directory from another thread */
+static void
+_ephoto_access_disk(Ecore_Thread *thread, void *data)
+{
+	Ephoto_DIR *ed = data;
+	const char *type;
+	struct dirent *d;
+	char *path;
+	int length;
+
+	while ((d = readdir(ed->direc)))
+	{
+		if (ecore_thread_check(thread)) break;
+
+		path = malloc(sizeof (char) *
+			      (strlen(ed->dir) + 2 + strlen(d->d_name)));
+		if (!path) continue;
+
+		strcpy(path, ed->dir);
+		strcat(path, "/");
+		strcat(path, d->d_name);
+
+		type = efreet_mime_type_get((const char *)path);
+
+		if (!strncmp(type, "image", 5))
+			if (ecore_thread_notify(thread, path))
+				continue ;
+		free(path);
+	}
+}
+
+static void
+_ephoto_populate_end(void *data)
+{
+	Ephoto_DIR *ed = data;
+
+	closedir(ed->direc);
+	free(ed);
+
+	thread = NULL;
+}
+
+/* Build the interface component after detection from listing thread */
+static void
+_ephoto_populate_notify(Ecore_Thread *thread, void *msg_data, void *data)
+{
+	const char *thumb;
+	char *path = msg_data;
+
+	em->images = eina_list_append(em->images, path);
+	ethumb_client_file_set(ec, path, NULL);
+	if (!ethumb_client_thumb_exists(ec))
+	{
+		ethumb_client_generate(ec, _ephoto_thumbnail_generated, NULL, NULL);
+	}
+	else
+	{
+		ethumb_client_thumb_path_get(ec, &thumb, NULL);
+		_ephoto_thumbnail_generated(NULL, ec, 0, path, NULL,
+					    thumb, NULL, EINA_TRUE);
+
+	}
+}
+
+/* Start a thread to list images in a directory without locking the interface */
 void
 ephoto_populate_thumbnails(void)
 {
+	Ephoto_DIR *ed;
 	char *dir, cwd[PATH_MAX];
 
 	dir = getcwd(cwd, PATH_MAX);
-	direc = opendir(dir);
-	idler = ecore_idler_add(_ephoto_get_thumbnails, strdup(dir));
+	if (!dir) return ;
+
+	ed = malloc(sizeof (Ephoto_DIR) + strlen(dir));
+	if (!ed) return ;
+	ed->direc = opendir(dir);
+	strcpy(ed->dir, dir);
+
+	thread = ecore_long_run(_ephoto_access_disk,
+				_ephoto_populate_notify,
+				_ephoto_populate_end,
+				_ephoto_populate_end,
+				ed,
+				EINA_FALSE);
 }
 
 /*Change the thumbnail size*/
@@ -151,61 +233,6 @@ static void
 _ephoto_slider_changed(void *data, Evas_Object *obj, void *event)
 {
 
-}
-
-/*Get a list of images to be thumbnailed*/
-static int 
-_ephoto_get_thumbnails(void *data)
-{
-	const char *type, *thumb;
-	char *dir, path[PATH_MAX];
-	int i;
-	struct dirent *d;
-
-	dir = data;
-
-	for (i = 0; i <= 10; i++)
-	{
-		d = readdir(direc);
-		if (!d)
-		{
-			ecore_idler_del(idler);
-			closedir(direc);
-			return 0;
-		}
-		else
-		{
-			memset(&path, 0, sizeof(path));
-			if (strcmp(dir, "/"))
-			{
-				snprintf(path, PATH_MAX, "%s/%s",
-						dir, d->d_name);
-			}
-			else
-			{
-				snprintf(path, PATH_MAX, "%s%s",
-						dir, d->d_name);
-			}
-			type = efreet_mime_type_get((const char *)path);
-			if (!strncmp(type, "image", 5))
-			{
-				em->images = eina_list_append(em->images, path);
-				ethumb_client_file_set(ec, path, NULL);
-				if (!ethumb_client_thumb_exists(ec))
-				{
-					ethumb_client_generate(ec, _ephoto_thumbnail_generated, NULL, NULL);
-				}
-				else
-				{
-					ethumb_client_thumb_path_get(ec, &thumb, NULL);
-					_ephoto_thumbnail_generated(NULL, ec, 0, path, NULL, 
-									thumb, NULL, EINA_TRUE);
-				}
-			}
-		}
-	}
-
-	return 1;
 }
 
 /*Callback when the client is connected*/
