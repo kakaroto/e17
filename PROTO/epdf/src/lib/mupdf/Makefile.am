@@ -2,6 +2,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 noinst_PROGRAMS = cmapdump fontdump
+BUILT_SOURCES = cmapdump fontdump
 
 cmapdump_SOURCES = mupdf-0.5/mupdf/cmapdump.c
 cmapdump_CPPFLAGS = \

@@ -9,7 +9,7 @@
 
 
 static void app_resize(Ecore_Evas *ee);
-static int app_signal_exit(void *data, int ev_type, void *ev);
+static Eina_Bool app_signal_exit(void *data, int ev_type, void *ev);
 static void app_delete_request(Ecore_Evas *ee);
 
 int
@@ -110,7 +110,7 @@ app_resize(Ecore_Evas *ee)
    evas_object_resize(bg, w, h);
 }
 
-static int
+static Eina_Bool
 app_signal_exit(void *data, int ev_type, void *ev)
 {
    ecore_main_loop_quit();
