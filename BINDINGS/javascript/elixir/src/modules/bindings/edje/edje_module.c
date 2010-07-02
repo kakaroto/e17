@@ -234,7 +234,6 @@ static const struct {
   { "text", "evas_object_text" },
   { "line", "evas_object_line" },
   { "image", "evas_object_image" },
-  { "gradient", "evas_object_gradient" },
   { "edje", "edje_object" },
   { NULL, NULL }
 };

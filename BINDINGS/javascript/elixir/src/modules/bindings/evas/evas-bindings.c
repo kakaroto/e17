@@ -25,9 +25,6 @@ elixir_parameter_t                      evas_object_rectangle_parameter = {
 elixir_parameter_t                      evas_object_line_parameter = {
   "Evas_Object_Line", JOBJECT, NULL
 };
-elixir_parameter_t                      evas_object_gradient_parameter = {
-  "Evas_Object_Gradient", JOBJECT, NULL
-};
 elixir_parameter_t                      evas_object_polygon_parameter = {
   "Evas_Object_Polygon", JOBJECT, NULL
 };
@@ -318,7 +315,6 @@ static const struct {
   { "text", "evas_object_text" },
   { "line", "evas_object_line" },
   { "image", "evas_object_image" },
-  { "gradient", "evas_object_gradient" },
   { "edje", "edje_object" },
   { NULL, NULL }
 };
@@ -523,7 +519,6 @@ module_open(Elixir_Module *em, JSContext *cx, JSObject *parent)
    evas_object_parameter.class = elixir_class_request("evas_object", NULL);
    evas_object_rectangle_parameter.class = elixir_class_request("evas_object_rectangle", "evas_object");
    evas_object_line_parameter.class = elixir_class_request("evas_object_line", "evas_object");
-   evas_object_gradient_parameter.class = elixir_class_request("evas_object_gradient", "evas_object");
    evas_object_polygon_parameter.class = elixir_class_request("evas_object_polygon", "evas_object");
    evas_object_image_parameter.class = elixir_class_request("evas_object_image", "evas_object");
    evas_object_smart_parameter.class = elixir_class_request("evas_object_smart", "evas_object");
