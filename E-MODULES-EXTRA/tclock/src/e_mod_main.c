@@ -101,7 +101,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 {
    Instance *inst;
 
-   inst = gcc->data;
+   if (!(inst = gcc->data)) return;
 
    evas_object_event_callback_del(inst->tclock, EVAS_CALLBACK_MOUSE_DOWN,
                                   _tclock_cb_mouse_down);
@@ -110,14 +110,14 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    evas_object_event_callback_del(inst->tclock, EVAS_CALLBACK_MOUSE_OUT,
                                   _tclock_cb_mouse_out);
 
-   evas_object_del(inst->tclock);
+   if (inst->tclock) evas_object_del(inst->tclock);
 
    tclock_config->instances =
      eina_list_remove(tclock_config->instances, inst);
 
    if (eina_list_count(tclock_config->instances) <= 0) 
      {
-	ecore_timer_del(check_timer);
+	if (check_timer) ecore_timer_del(check_timer);
 	check_timer = NULL;
      }
 
@@ -321,7 +321,7 @@ _tclock_cb_check(void *data)
 	if ((inst->ci->tip_format) && (inst->o_tip))
 	  {
              strftime(buf, 1024, inst->ci->tip_format, local_time);
-             edje_object_part_text_set(inst->o_tip, "e.text.tip", buf);
+	     e_widget_label_text_set(inst->o_tip, buf);
 	  }
      }
 
