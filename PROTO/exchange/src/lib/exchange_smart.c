@@ -272,7 +272,7 @@ exchange_smart_object_run(Evas_Object *obj)
    evas_object_box_remove_all(sd->obj_box, 1);
    exchange_smart_object_offset_set(obj, 0, 0);
 
-   if (exchange_remote_list(sd->group, NULL, 0, 0, 0, NULL, 0, 0,
+   if (exchange_query(sd->group, NULL, 0, 0, 0, NULL, 0, 0,
                             _list_complete_cb, sd))
       evas_object_text_text_set(sd->obj_lbl, "Getting data...");
    else
@@ -539,7 +539,7 @@ _exchange_smart_clip_unset(Evas_Object *obj)
 /*** Private functions ***/
 static const char *
 _exchange_user_homedir_get(void)
-{ // TODO This function should be moved into to ecore
+{ // TODO This function should be moved into ecore (or I have missed it?)
    char *homedir;
    int len;
 

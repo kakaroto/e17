@@ -124,7 +124,8 @@ typedef struct _Exchange_Object Exchange_Object;
 EAPI int  exchange_init(void);
 EAPI int  exchange_shutdown(void);
 
-EAPI unsigned char exchange_object_free(Exchange_Object *obj);
+EAPI const char *exchange_cache_dir_get(void);
+EAPI Eina_Bool   exchange_object_free(Exchange_Object *obj);
 
 #ifdef __cplusplus
 }

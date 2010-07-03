@@ -52,18 +52,25 @@ extern int __exchange_log_domain;
 
 struct _Exchange_Object {
    int id; /**< id */
-   char *name; /**< name */
+   const char *name; /**< name */
+   const char *file_name; /**< name of the edje file */
    char *author; /**< author */
    char *license; /**< license */
    char *version; /**< version */
    char description[4096]; /**< description */
    char *url; /**< URL */
    char *thumbnail; /**< thumbnail URL */
+   const char *thumbnail_local; /**< full path to the thumbnail in cache */
    char *screenshot; /**< screenshot URL */
+   const char *screenshot_local; /**< full path to the screenshot in cache */
    float rating; /**< rating */ 
    int user_id; /**< User id of the author */
    char *created_at; /**< creation timestamp */
    char *updated_at; /**< last update timestamp */
+   void *user_data; /**< user attached data */
+   Ecore_File_Download_Job *job_thumbnail; /**< download job for thumbnail */
+   Ecore_File_Download_Job *job_screenshot; /**< download job for screenshot */
+   Ecore_File_Download_Job *job_entry; /**< download job for the entry */
 };
 
 #endif /* _EXCHANGE_PRIVATE_H */
