@@ -214,7 +214,22 @@ ephoto_populate_thumbnails(void)
 static void
 _ephoto_slider_changed(void *data, Evas_Object *obj, void *event)
 {
+	int w, h, val;
 
+	val = elm_slider_value_get(em->thumb_slider);
+	elm_gengrid_item_size_get(em->thumb_browser, &w, &h);
+	if (val < cur_val)
+	{
+		w -= cur_val-val;
+		h -= cur_val-val;
+	}
+	else if (val > cur_val)
+	{
+		w += val-cur_val;
+		h += val-cur_val;
+	}
+	elm_gengrid_item_size_set(em->thumb_browser, w, h);
+	cur_val = val;
 }
 
 /*Callback when the client is connected*/
@@ -242,7 +257,7 @@ _ephoto_thumbnail_generated(void *data, Ethumb_Client *client, int id,
 {
 	if (success)
 	{
-		eina_hash_add(em->thumbs_images, strdup(file), strdup(thumb_path));
+		eina_hash_add(em->thumbs_images, file, eina_stringshare_ref(thumb_path));
 		elm_gengrid_item_append(em->thumb_browser, &eg, file, NULL, NULL);
 	}
 }

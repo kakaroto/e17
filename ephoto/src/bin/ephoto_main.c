@@ -5,13 +5,12 @@ Ephoto *em;
 
 /*Inline Callbacks*/
 static void _ephoto_delete_main_window(void *data, Evas_Object *obj, void *event_info);
-static void _ephoto_free_hash(void *data);
 
 /*Create the main ephoto window*/
 void ephoto_create_main_window(void)
 {
 	em = calloc(1, sizeof(Ephoto));
-	em->thumbs_images = eina_hash_string_superfast_new(_ephoto_free_hash);
+	em->thumbs_images = eina_hash_string_superfast_new((Eina_Free_Cb)eina_stringshare_del);
 
 	/*Setup the main window*/
 	em->win = elm_win_add(NULL, "ephoto", ELM_WIN_BASIC);
@@ -54,14 +53,5 @@ static void _ephoto_delete_main_window(void *data, Evas_Object *obj, void *event
 		eina_list_free(em->images);
 	free(em);
 	elm_exit();
-}
-
-/*Free the eina hash*/
-static void _ephoto_free_hash(void *data)
-{
-	char *item;
-
-	item = data;
-	free(item);
 }
 
