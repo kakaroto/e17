@@ -1,5 +1,8 @@
 collections
 {
+   images 
+     {
+     }
    group
      {
 	name: "modules/tclock/main";
@@ -27,11 +30,11 @@ collections
 		       color3: 0 0 0 32;
 		       color_class: "module_label";
 		       text {
-			  text:     "";
-			  font:     "Sans:style=Mono";
-			  size:     10;
-			  min:      1 1;
-			  align:    0.5 0.5;
+			  text: "";
+			  font: "Sans:style=Mono";
+			  size: 10;
+			  min: 1 1;
+			  align: 0.5 0.5;
 			  text_class: "module_large";			  
 		       }
 		    }
@@ -70,11 +73,11 @@ collections
 		       color3: 0 0 0 32;
 		       color_class: "module_label";
 		       text {
-			  text:     "";
-			  font:     "Sans:style=Mono";
-			  size:     9;
-			  min:      1 1;
-			  align:    0.5 0.5;
+			  text: "";
+			  font: "Sans:style=Mono";
+			  size: 9;
+			  min: 1 1;
+			  align: 0.5 0.5;
 			  text_class: "module_small";
 		       }
 		    }
