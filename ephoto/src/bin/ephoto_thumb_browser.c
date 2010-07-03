@@ -125,6 +125,15 @@ ephoto_hide_thumb_browser(void)
 void
 ephoto_delete_thumb_browser(void)
 {
+	Eina_List *items;
+
+	items = elm_toolbar_item_get_all(em->toolbar);
+	while (items)
+	{
+		evas_object_del(eina_list_data_get(items));
+		items = eina_list_next(items);
+	}
+
 	evas_object_del(em->toolbar);
 	evas_object_del(em->thumb_browser);
 	evas_object_del(em->dir_label);
@@ -294,10 +303,9 @@ _ephoto_get_icon(const void *data, Evas_Object *obj, const char *part)
 		evas_object_size_hint_weight_set(thumb, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 		evas_object_show(thumb);
 
-		o = ephoto_thumb_add();
-                evas_object_image_size_set(o, 176, 117);
-                ephoto_thumb_fill_inside_set(o, 0);
-                ephoto_thumb_file_set(o, path, 176, 117);
+		o = elm_bg_add(em->win);
+		elm_bg_file_set(o, path, NULL);
+		evas_object_resize(o, 176, 117);
 
 		elm_layout_content_set(thumb, "ephoto.swallow.content", o);
 

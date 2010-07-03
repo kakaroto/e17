@@ -33,12 +33,6 @@ void ephoto_hide_thumb_browser(void);
 void ephoto_delete_thumb_browser(void);
 void ephoto_populate_thumbnails(void);
 
-/*Ephoto Thumbnail*/
-Evas_Object *ephoto_thumb_add();
-void ephoto_thumb_file_set(Evas_Object *obj, const char *file, int w, int h);
-void ephoto_thumb_fill_inside_set(Evas_Object *obj, int fill);
-void ephoto_thumb_size_get(Evas_Object *obj, int *w, int *h);
-
 /*Ephoto Main Structure*/
 struct _Ephoto
 {
