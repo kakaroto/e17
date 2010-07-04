@@ -204,6 +204,9 @@ GenListItem *GenList::getItemSelected () const
 {
   Elm_Genlist_Item *item = elm_genlist_selected_item_get (o);
 
+  if (!item)
+    return NULL;
+  
   const GenListColumnConstructor *construction = static_cast <const GenListColumnConstructor*> (elm_genlist_item_data_get (item));
   
   return construction->mGenListItem;
@@ -225,6 +228,9 @@ GenListItem *GenList::getItemFirst () const
 {
   Elm_Genlist_Item *item = elm_genlist_first_item_get (o);
 
+  if (!item)
+    return NULL;
+
   const GenListColumnConstructor *construction = static_cast <const GenListColumnConstructor*> (elm_genlist_item_data_get (item));
   
   return construction->mGenListItem;
@@ -233,6 +239,9 @@ GenListItem *GenList::getItemFirst () const
 GenListItem *GenList::getItemLast () const
 {
   Elm_Genlist_Item *item = elm_genlist_last_item_get (o);
+
+  if (!item)
+    return NULL;
 
   const GenListColumnConstructor *construction = static_cast <const GenListColumnConstructor*> (elm_genlist_item_data_get (item));
   
