@@ -45,11 +45,6 @@ Think about Alt-Tab of taskbar support for this feature. But this is a implement
   <category title="Bugs" place="1"/>
   <category title="Requirements" place="2">
     <item>
-      <attribute id="1276809989" priority="1" done="0" start_date="733940" enddate="99999999" notify="0" endtime="-60" last_edited="1276809989"/>
-      <summary>req_window_oversize</summary>
-      <comment>If a window likes to open with bigger initial coordinates bigger than the screen (minus ignore zones like not overlap allowed shelfes) the window should be sized to the maximum allowed size and widow state should be toggled to maximized.</comment>
-    </item>
-    <item>
       <attribute id="1276810277" priority="1" done="0" start_date="733940" enddate="99999999" notify="0" endtime="-60" last_edited="1276810277"/>
       <summary>req_window_dnd</summary>
       <comment>If a user drags something over a covered window if should come to the front after time t.</comment>
@@ -88,6 +83,11 @@ Think about Alt-Tab of taskbar support for this feature. But this is a implement
       <attribute id="1276810195" priority="1" done="1" start_date="733940" completed_date="733952" notify="0" last_edited="1277845463"/>
       <summary>req_maximize_ignore_zone</summary>
       <comment>If a window likes to maximize while it stays below a ignore zone (like not overlap allowed shelfes) it should be maximized only in the overlap allowed zone. At returning to normal state it should be placed in the original position.</comment>
+    </item>
+    <item>
+      <attribute id="1276809989" priority="1" done="1" start_date="733940" completed_date="733957" enddate="99999999" notify="0" endtime="-60" last_edited="1278271207"/>
+      <summary>req_window_oversize</summary>
+      <comment>If a window likes to open with bigger initial coordinates bigger than the screen (minus ignore zones like not overlap allowed shelfes) the window should be sized to the maximum allowed size.</comment>
     </item>
   </category>
 </gtodo>
