@@ -35,7 +35,7 @@ static void* calibration_event_filter_start( void* data )
 #warning FIXME this is wrong
 #define ECORE_FB_EVENT_MOUSE_BUTTON_UP 2
 
-static int calibration_event_filter_event( void* loop_data, void *data, int type, void* event )
+static Eina_Bool calibration_event_filter_event( void* loop_data, void *data, int type, void* event )
 {
 #ifdef ENABLE_EFLPP_FB
   if ( type == ECORE_FB_EVENT_MOUSE_BUTTON_UP )
