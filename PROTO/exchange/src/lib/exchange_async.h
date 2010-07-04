@@ -19,8 +19,6 @@
 #ifndef _EXCHANGE_THEMES_ASYNC_H
 #define _EXCHANGE_THEMES_ASYNC_H
 
-#include <Ecore_File.h>
-
 /**
  * @file exchange_async.h
  * @brief This file contains the function exchange_remote_list

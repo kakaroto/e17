@@ -3,10 +3,11 @@ MAINTAINERCLEANFILES = Makefile.in
 AM_CPPFLAGS = -Wall \
 -I. \
 -I$(top_srcdir)/src/lib \
-@EXCHANGE_CFLAGS@ \
 -DPACKAGE_BIN_DIR=\"$(bindir)\" \
 -DPACKAGE_LIB_DIR=\"$(libdir)\" \
--DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\"
+-DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
+@EFL_EXCHANGE_BUILD@ \
+@EXCHANGE_CFLAGS@
 
 lib_LTLIBRARIES = libexchange.la
 

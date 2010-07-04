@@ -47,6 +47,7 @@
  */
 
 #include <libxml/parser.h>
+#include <Ecore_File.h>
 #include <Edje.h>
 
 #ifdef EAPI

@@ -21,6 +21,7 @@
 #endif
 
 #include <string.h>
+
 #include "Exchange.h"
 
 xmlSAXHandler LoginParser = {

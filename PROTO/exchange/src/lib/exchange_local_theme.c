@@ -21,7 +21,9 @@
 #endif
 
 #include <string.h>
+
 #include <Ecore_File.h>
+
 #include "Exchange.h"
 #include "exchange_private.h"
 

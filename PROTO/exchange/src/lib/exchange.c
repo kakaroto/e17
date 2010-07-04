@@ -20,8 +20,9 @@
 # include <config.h>
 #endif
 
-#include "Ecore.h"
-#include "Ecore_File.h"
+#include <Ecore.h>
+#include <Ecore_File.h>
+
 #include "Exchange.h"
 #include "exchange_private.h"
 

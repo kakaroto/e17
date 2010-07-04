@@ -70,6 +70,14 @@ fi
 AM_CONDITIONAL([BUILD_ETK], [test "x${enable_etk}" = "xyes"])
 AM_CONDITIONAL([BUILD_EWL], [test "x${enable_ewl}" = "xyes"])
 
+EFL_EXCHANGE_BUILD=""
+case "$host_os" in
+   mingw*)
+      EFL_EXCHANGE_BUILD="-DEFL_EXCHANGE_BUILD"
+   ;;
+esac
+AC_SUBST(EFL_EXCHANGE_BUILD)
+
 AC_OUTPUT([
 exchange.pc
 Makefile

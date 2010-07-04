@@ -21,6 +21,7 @@
 #endif
 
 #include <string.h>
+
 #include "Exchange.h"
 #include "exchange_private.h"
 
