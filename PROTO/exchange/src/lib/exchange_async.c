@@ -28,8 +28,6 @@
 # include <unistd.h>
 #endif
 
-#include <Ecore_File.h>
-
 #include "Exchange.h"
 #include "exchange_private.h"
 
