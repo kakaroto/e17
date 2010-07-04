@@ -2,13 +2,7 @@ TODO list
 
 * Register new users & Login/Logout
   Partially done: login only, registration and logout seems uncovered by API;
-  
-* Check for updates for a list of themes
-  Partially done: atm i check for update for a single theme only;
-  
-* Check for new themes / apps / modules
-  TODO
-  
+
 * Rate themes, apps and modules
   TODO, and a note: rating aren't covered by API, need some works on server side;
   
@@ -19,7 +13,4 @@ TODO list
   TODO
   
 * Add / Delete apps and modules
-  TODO
-  
-* Provide a mechanism to store what's installed (especially themes, so you can check for updates).
   TODO

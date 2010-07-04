@@ -43,7 +43,6 @@
  * @li @link exchange_login.h Functions to login into exchange website. @endlink
  * @li @link exchange_theme_group.h Functions to work with theme_groups. @endlink
  * @li @link exchange_async.h Functions that list remote themes, modules and apps @endlink
- * @li @link exchange_smart.h The Exchange Smart Object @endlink
  */
 
 #include <libxml/parser.h>
@@ -118,7 +117,6 @@ typedef struct _Exchange_Object Exchange_Object;
 #include "exchange_remote_theme.h"
 #include "exchange_login.h"
 #include "exchange_theme_group.h"
-/* #include "exchange_smart.h" */
 #include "exchange_async.h"
 
 

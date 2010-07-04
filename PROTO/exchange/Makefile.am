@@ -1,4 +1,4 @@
-SUBDIRS = src data
+SUBDIRS = src
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \

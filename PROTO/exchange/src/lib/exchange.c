@@ -26,7 +26,7 @@
 #include "exchange_private.h"
 
 static int _exchange_init_count = 0;
-static const char *_smart_cache = NULL;
+static const char *_cache_folder = NULL;
 
 int __exchange_log_domain = -1;
 
@@ -75,9 +75,9 @@ _exchange_user_homedir_get(void)
 EAPI int
 exchange_init(void)
 {
-    if (++_exchange_init_count > 1) return _exchange_init_count;
+   if (++_exchange_init_count > 1) return _exchange_init_count;
 
-    if (!eina_init()) return 0;
+   if (!eina_init()) return 0;
    __exchange_log_domain = eina_log_domain_register("Exchange", EINA_COLOR_BLUE);
    if (__exchange_log_domain < 0)
    {
@@ -85,9 +85,6 @@ exchange_init(void)
       eina_shutdown();
       return 0;
    }
-
-    /* Smart object disabled... going to die soon */
-   //~ if (!exchange_smart_init()) return 0;
 
    return _exchange_init_count;
 }
@@ -107,11 +104,10 @@ exchange_shutdown(void)
    _login_free_data(); //TODO Whats this ??
    _theme_group_free_data(); //TODO Whats this ??
 
-   //~ exchange_smart_shutdown();
-   if (_smart_cache)
+   if (_cache_folder)
    {
-      eina_stringshare_del(_smart_cache);
-      _smart_cache = NULL;
+      eina_stringshare_del(_cache_folder);
+      _cache_folder = NULL;
    }
 
    xmlCleanupParser();
@@ -164,7 +160,7 @@ exchange_cache_dir_get(void)
 {
    char buf[4096]; // TODO PATH_MAX
 
-   if (_smart_cache) return _smart_cache;
+   if (_cache_folder) return _cache_folder;
 
    snprintf(buf, sizeof(buf), "%s/.cache/exchange.org",
                  _exchange_user_homedir_get());
@@ -174,7 +170,7 @@ exchange_cache_dir_get(void)
       return NULL;
    }
 
-   return _smart_cache = eina_stringshare_add(buf);
+   return _cache_folder = eina_stringshare_add(buf);
 }
 
 /**
