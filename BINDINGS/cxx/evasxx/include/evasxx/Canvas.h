@@ -79,7 +79,19 @@ public:
    * @param o The C to to be wrapped.
    * @return The wrapped C++ type.
    */
-  static Canvas *wrap (Evas_Object* o);
+  static Canvas *wrap (Evas_Object *o);
+  
+  /*!
+   * @brief C object wrapper factory method.
+   *
+   * For internal usage only! This return a new allocated Object that holds
+   * the wrapped Evas_Object variable. With a delete on this object the wrapped
+   * C type won't be freed.
+   *
+   * @param o The C to to be wrapped.
+   * @return The wrapped C++ type.
+   */   
+  static Canvas *wrap (Evas *evas);
   
 private:
   Canvas( Evas* evas );
