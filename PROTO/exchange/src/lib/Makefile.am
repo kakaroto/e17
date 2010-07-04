@@ -7,7 +7,8 @@ AM_CPPFLAGS = -Wall \
 -DPACKAGE_LIB_DIR=\"$(libdir)\" \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 @EFL_EXCHANGE_BUILD@ \
-@EXCHANGE_CFLAGS@
+@EXCHANGE_CFLAGS@ \
+@EXCHANGE_CPPFLAGS@
 
 lib_LTLIBRARIES = libexchange.la
 
@@ -36,4 +37,4 @@ installed_headersdir = $(prefix)/include/exchange
 installed_headers_DATA = $(EXCHANGEHEADERS)
 
 libexchange_la_LIBADD = @EXCHANGE_LIBS@
-libexchange_la_LDFLAGS = -version-info @version_info@
+libexchange_la_LDFLAGS = -no-undefined @lt_enable_auto_import@ -version-info @version_info@
