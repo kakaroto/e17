@@ -37,29 +37,29 @@ Evas_Object *menu_photo_new(Evas_Object *parent)
 
    icon = elm_icon_add(parent);
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/undo");
+   elm_icon_file_set(icon, THEME, "icons/undo");
    elm_menu_item_add(menu, NULL, icon, D_("Undo"), _undo_cb, NULL);
 
    icon = elm_icon_add(parent);
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/redo");
+   elm_icon_file_set(icon, THEME, "icons/redo");
    elm_menu_item_add(menu, NULL, icon, D_("Redo"), _redo_cb, NULL);
 
    elm_menu_item_separator_add(menu, NULL);
 
    icon = elm_icon_add(parent);
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/1_1");
+   elm_icon_file_set(icon, THEME, "icons/1_1");
    elm_menu_item_add(menu, NULL, icon, D_("1:1"), _1_1_cb, NULL);
 
    icon = elm_icon_add(parent);
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/fit");
+   elm_icon_file_set(icon, THEME, "icons/fit");
    elm_menu_item_add(menu, NULL, icon, D_("Fit"), _fit_cb, NULL);
 
    icon = elm_icon_add(parent);
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/fill");
+   elm_icon_file_set(icon, THEME, "icons/fill");
    elm_menu_item_add(menu, NULL, icon, D_("Fill"), _fill_cb, NULL);
 
    elm_menu_item_separator_add(menu, NULL);
@@ -67,50 +67,50 @@ Evas_Object *menu_photo_new(Evas_Object *parent)
 
    icon = elm_icon_add(parent);
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/flip/vertical");
+   elm_icon_file_set(icon, THEME, "icons/flip/vertical");
    elm_menu_item_add(menu, mi, icon, D_("Flip vertical"), _flip_vertical_cb, NULL);
 
    icon = elm_icon_add(parent);
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/flip/horizontal");
+   elm_icon_file_set(icon, THEME, "icons/flip/horizontal");
    elm_menu_item_add(menu, mi, icon, D_("Flip Horizontal"), _flip_horizontal_cb, NULL);
 
    elm_menu_item_separator_add(menu, mi);
    icon = elm_icon_add(parent);
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/rotate/90");
+   elm_icon_file_set(icon, THEME, "icons/rotate/90");
    elm_menu_item_add(menu, mi, icon, D_("Rotate +90°"), _rotation_90_cb, NULL);
 
    icon = elm_icon_add(parent);
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/rotate/90/reverse");
+   elm_icon_file_set(icon, THEME, "icons/rotate/90/reverse");
    elm_menu_item_add(menu, mi, icon, D_("Rotate -90°"), _rotation_R90_cb, NULL);
 
    icon = elm_icon_add(parent);
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/rotate/180");
+   elm_icon_file_set(icon, THEME, "icons/rotate/180");
    elm_menu_item_add(menu, mi, icon, D_("Rotate 180°"), _rotation_180_cb, NULL);
 
    mi = elm_menu_item_add(menu, NULL, NULL, D_("Effects"), NULL, NULL);
 
    icon = elm_icon_add(parent);
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/blur");
+   elm_icon_file_set(icon, THEME, "icons/blur");
    elm_menu_item_add(menu, mi, icon, D_("Blur"), _blur_cb, NULL);
 
    icon = elm_icon_add(parent);
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/sharpen");
+   elm_icon_file_set(icon, THEME, "icons/sharpen");
    elm_menu_item_add(menu, mi, icon, D_("Sharpen"), _sharpen_cb, NULL);
 
    icon = elm_icon_add(parent);
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/sepia");
+   elm_icon_file_set(icon, THEME, "icons/sepia");
    elm_menu_item_add(menu, mi, icon, D_("Sepia"), _sepia_cb, NULL);
 
    icon = elm_icon_add(parent);
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/grayscale");
+   elm_icon_file_set(icon, THEME, "icons/grayscale");
    elm_menu_item_add(menu, mi, icon, D_("Grayscale"), _grayscale_cb, NULL);
 
    elm_menu_item_separator_add(menu, NULL);

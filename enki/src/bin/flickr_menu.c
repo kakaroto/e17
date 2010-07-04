@@ -29,7 +29,7 @@ Evas_Object *flickr_menu_new(Evas_Object *win)
     evas_object_show(bt);
 
     ic = edje_object_add(evas_object_evas_get(win));
-    edje_object_file_set(ic, PACKAGE_DATA_DIR"/theme.edj", "flickr/logo");
+    edje_object_file_set(ic, THEME, "flickr/logo");
     evas_object_size_hint_weight_set(ic, 1.0, 1.0);
     evas_object_size_hint_align_set(ic, -1.0, -1.0);
     elm_button_icon_set(bt, ic);
@@ -114,7 +114,7 @@ static void _account_set_cb(void *data, Evas_Object *obj, void *event_info)
     elm_table_pack(tb, entry, 0, 1, 2, 1);
 
     img = elm_image_add(obj);
-    elm_image_file_set(img, PACKAGE_DATA_DIR"/theme.edj", "flickr/set_account_0");
+    elm_image_file_set(img, THEME, "flickr/set_account_0");
     evas_object_size_hint_weight_set(img, 1.0, 1.0);
     evas_object_size_hint_align_set(img, -1.0, -1.0);
     evas_object_show(img);
@@ -129,7 +129,7 @@ static void _account_set_cb(void *data, Evas_Object *obj, void *event_info)
     elm_table_pack(tb, lbl, 0, 3, 2, 1);
 
     img = elm_image_add(obj);
-    elm_image_file_set(img, PACKAGE_DATA_DIR"/theme.edj", "flickr/set_account_1");
+    elm_image_file_set(img, THEME, "flickr/set_account_1");
     evas_object_size_hint_weight_set(img, 0.0, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set(img, -1.0, -1.0);
     evas_object_show(img);

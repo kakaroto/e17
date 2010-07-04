@@ -29,7 +29,7 @@ Evas_Object *main_menu_new(Evas_Object *parent)
     Evas_Object *ly, *bt, *edje;
 
     ly = elm_layout_add(parent);
-    elm_layout_file_set(ly, PACKAGE_DATA_DIR"/theme.edj", "main_menu");
+    elm_layout_file_set(ly, THEME, "main_menu");
     evas_object_size_hint_weight_set(ly, -1.0, -1.0);
     evas_object_size_hint_align_set(ly, -1.0, -1.0);
     evas_object_show(ly);

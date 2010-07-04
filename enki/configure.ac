@@ -66,6 +66,8 @@ Makefile
 src/Makefile
 src/bin/Makefile
 data/Makefile
+data/themes/Makefile
+data/themes/default/Makefile
 ])
 
 

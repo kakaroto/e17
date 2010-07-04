@@ -137,7 +137,7 @@ _get(void *data, Evas_Object *obj)
 
    snprintf(buf,PATH_MAX, "%s/%s", enlil_photo_path_get(data), enlil_photo_file_name_get(data));
    //Evas_Object *o = photo_object_add(slideshow);
-   //photo_object_theme_file_set(o, PACKAGE_DATA_DIR"/theme.edj", "photo/slideshow");
+   //photo_object_theme_file_set(o, THEME, "photo/slideshow");
    //photo_object_file_set(o, buf, NULL);
 
    Evas_Object *o = elm_photocam_add(obj);
@@ -466,7 +466,7 @@ _init_slideshow()
    evas_object_event_callback_add(bx, EVAS_CALLBACK_MOUSE_OUT, _mouse_out, notify);
 
    icon = elm_icon_add(win);
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/1_1");
+   elm_icon_file_set(icon, THEME, "icons/1_1");
 
    bt = elm_button_add(win);
    elm_button_label_set(bt, "1:1");
@@ -477,7 +477,7 @@ _init_slideshow()
    evas_object_show(bt);
 
    icon = elm_icon_add(win);
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/fit");
+   elm_icon_file_set(icon, THEME, "icons/fit");
 
    bt = elm_button_add(win);
    elm_button_label_set(bt, "Fit");
@@ -488,7 +488,7 @@ _init_slideshow()
    evas_object_show(bt);
 
    icon = elm_icon_add(win);
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/fill");
+   elm_icon_file_set(icon, THEME, "icons/fill");
 
    bt = elm_button_add(win);
    elm_button_label_set(bt, "Fill");
@@ -532,7 +532,7 @@ _init_slideshow()
    evas_object_event_callback_add(bx, EVAS_CALLBACK_MOUSE_OUT, _mouse_out, notify);
 
    icon = elm_icon_add(win);
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/1_1");
+   elm_icon_file_set(icon, THEME, "icons/1_1");
 
    bt = elm_button_add(win);
    elm_button_label_set(bt, "Delete");
@@ -544,7 +544,7 @@ _init_slideshow()
 
    
    icon = elm_icon_add(win);
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/rotate/90");
+   elm_icon_file_set(icon, THEME, "icons/rotate/90");
 
    bt = elm_button_add(win);
    elm_button_label_set(bt, "90°");

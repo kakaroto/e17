@@ -19,6 +19,8 @@
 
 #define D_(s) gettext(s)
 
+#define THEME PACKAGE_DATA_DIR"/themes/default.edj"
+
 extern int APP_LOG_DOMAIN;
 #define LOG_DOMAIN APP_LOG_DOMAIN
 

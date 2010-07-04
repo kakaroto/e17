@@ -1,67 +1,67 @@
 externals { external: "elm"; }
 images {
-    image: "images/shadow.png" COMP;
-    image: "images/album_header.png" COMP;
-    image:  "images/r_rotate.png" COMP;
-    image:  "images/rotate.png" COMP;
-    image:  "images/flip_horizontal.png" COMP;
-    image:  "images/flip_vertical.png" COMP;
-    image:  "images/blur.png" COMP;
-    image:  "images/sharpen.png" COMP;
-    image:  "images/grayscale.png" COMP;
-    image:  "images/sepia.png" COMP;
-    image:  "images/undo.png" COMP;
-    image:  "images/fit.png" COMP;
-    image:  "images/fill.png" COMP;
-    image:  "images/1_1.png" COMP;
-    image:  "images/menu.png" COMP;
-    image:  "images/camera-video.png" COMP;
-    image:  "images/done.png" COMP;
-    image:  "images/star.png" COMP;
-    image:  "images/star_demi.png" COMP;
-    image:  "images/star_empty.png" COMP;
-    image:  "images/flickr_logo.png" COMP;
+    image: "shadow.png" COMP;
+    image: "album_header.png" COMP;
+    image:  "r_rotate.png" COMP;
+    image:  "rotate.png" COMP;
+    image:  "flip_horizontal.png" COMP;
+    image:  "flip_vertical.png" COMP;
+    image:  "blur.png" COMP;
+    image:  "sharpen.png" COMP;
+    image:  "grayscale.png" COMP;
+    image:  "sepia.png" COMP;
+    image:  "undo.png" COMP;
+    image:  "fit.png" COMP;
+    image:  "fill.png" COMP;
+    image:  "1_1.png" COMP;
+    image:  "menu.png" COMP;
+    image:  "camera-video.png" COMP;
+    image:  "done.png" COMP;
+    image:  "star.png" COMP;
+    image:  "star_demi.png" COMP;
+    image:  "star_empty.png" COMP;
+    image:  "flickr_logo.png" COMP;
 
-    image: "images/geocaching/2.png" COMP;
-    image: "images/geocaching/3.png" COMP;
-    image: "images/geocaching/4.png" COMP;
-    image: "images/geocaching/5.png" COMP;
-    image: "images/geocaching/6.png" COMP;
-    image: "images/geocaching/8.png" COMP;
-    image: "images/geocaching/11.png" COMP;
-    image: "images/geocaching/12.png" COMP;
-    image: "images/geocaching/13.png" COMP;
-    image: "images/geocaching/1858.png" COMP;
-    image: "images/geocaching/ape_32.png" COMP;
-    image: "images/geocaching/earthcache.png" COMP;
-    image: "images/geocaching/mega.png" COMP;
-    image: "images/geocaching/found.png" COMP;
-    image: "images/geocaching/geocaching.png" COMP;
-    image: "images/geocaching/icon_note.png" COMP;
-    image: "images/geocaching/icon_disabled.png" COMP;
-    image: "images/geocaching/icon_smile.png" COMP;
-    image: "images/geocaching/icon_sad.png" COMP;
-    image: "images/geocaching/icon_needsmaint.png" COMP;
-    image: "images/flickr/set_account_0.png" COMP;
-    image: "images/flickr/set_account_1.png" COMP;
-    image: "images/flickr/update.png" COMP;
-    image: "images/flickr/select.png" COMP;
+    image: "geocaching/2.png" COMP;
+    image: "geocaching/3.png" COMP;
+    image: "geocaching/4.png" COMP;
+    image: "geocaching/5.png" COMP;
+    image: "geocaching/6.png" COMP;
+    image: "geocaching/8.png" COMP;
+    image: "geocaching/11.png" COMP;
+    image: "geocaching/12.png" COMP;
+    image: "geocaching/13.png" COMP;
+    image: "geocaching/1858.png" COMP;
+    image: "geocaching/ape_32.png" COMP;
+    image: "geocaching/earthcache.png" COMP;
+    image: "geocaching/mega.png" COMP;
+    image: "geocaching/found.png" COMP;
+    image: "geocaching/geocaching.png" COMP;
+    image: "geocaching/icon_note.png" COMP;
+    image: "geocaching/icon_disabled.png" COMP;
+    image: "geocaching/icon_smile.png" COMP;
+    image: "geocaching/icon_sad.png" COMP;
+    image: "geocaching/icon_needsmaint.png" COMP;
+    image: "flickr/set_account_0.png" COMP;
+    image: "flickr/set_account_1.png" COMP;
+    image: "flickr/update.png" COMP;
+    image: "flickr/select.png" COMP;
 
 
-    image: "images/flickr/logo.png" COMP;
-    image: "images/flickr/logo_1.png" COMP;
-    image: "images/flickr/logo_2.png" COMP;
-    image: "images/flickr/logo_3.png" COMP;
-    image: "images/flickr/logo_4.png" COMP;
-    image: "images/flickr/logo_5.png" COMP;
-    image: "images/flickr/logo_6.png" COMP;
-    image: "images/flickr/logo_7.png" COMP;
-    image: "images/flickr/logo_8.png" COMP;
-    image: "images/flickr/logo_9.png" COMP;
-    image: "images/flickr/logo_10.png" COMP;
+    image: "flickr/logo.png" COMP;
+    image: "flickr/logo_1.png" COMP;
+    image: "flickr/logo_2.png" COMP;
+    image: "flickr/logo_3.png" COMP;
+    image: "flickr/logo_4.png" COMP;
+    image: "flickr/logo_5.png" COMP;
+    image: "flickr/logo_6.png" COMP;
+    image: "flickr/logo_7.png" COMP;
+    image: "flickr/logo_8.png" COMP;
+    image: "flickr/logo_9.png" COMP;
+    image: "flickr/logo_10.png" COMP;
 
-    image: "images/slideshow.png" COMP;
-    image: "images/slideshow_select.png" COMP;
+    image: "slideshow.png" COMP;
+    image: "slideshow_select.png" COMP;
 }
 
 collections {
@@ -131,7 +131,7 @@ parts {
         description {
             state: "default" 0.0;
             visible: 1;
-            image.normal: "images/shadow.png";
+            image.normal: "shadow.png";
         }
     }
     part {
@@ -190,7 +190,7 @@ parts {
             rel1.relative: 0.0 0.7;
             rel2.relative: 0.0 0.9;
             image.scale_hint: DYNAMIC;
-            image.normal: "images/camera-video.png";
+            image.normal: "camera-video.png";
         }
         description {
             state: "visible" 0.0;
@@ -324,7 +324,7 @@ parts {
         description {
             state: "default" 0.0;
             visible: 1;
-            image.normal: "images/shadow.png";
+            image.normal: "shadow.png";
         }
     }
     part {
@@ -431,7 +431,7 @@ parts {
             rel2.offset: -2 10;
             rel2.relative: 1.0 0.2;
             image.scale_hint: DYNAMIC;
-            image.normal: "images/menu.png";
+            image.normal: "menu.png";
         }
         description {
             state: "select" 0.0;
@@ -457,7 +457,7 @@ parts {
             rel1.relative: 0.0 0.7;
             rel2.relative: 0.0 0.9;
             image.scale_hint: DYNAMIC;
-            image.normal: "images/camera-video.png";
+            image.normal: "camera-video.png";
         }
         description {
             state: "visible" 0.0;
@@ -706,7 +706,7 @@ parts {
         description {
             state: "default" 0.0;
             visible: 1;
-            image.normal: "images/shadow.png";
+            image.normal: "shadow.png";
         }
     }
     part {
@@ -803,7 +803,7 @@ parts {
             rel1.relative: 0.0 0.7;
             rel2.relative: 0.0 0.9;
             image.scale_hint: DYNAMIC;
-            image.normal: "images/camera-video.png";
+            image.normal: "camera-video.png";
         }
         description {
             state: "visible" 0.0;
@@ -849,7 +849,7 @@ parts {
             aspect: 1 1;
             aspect_preference: BOTH;
             image.scale_hint: DYNAMIC;
-            image.normal: "images/done.png";
+            image.normal: "done.png";
         }
         description {
             state: "visible" 0.0;
@@ -1038,7 +1038,7 @@ group {
             description {
                 state: "default" 0.0;
                 visible: 1;
-                image.normal: "images/album_header.png";
+                image.normal: "album_header.png";
                 image.border: 6 6 6 6;
                 rel1.offset: 10 1;
                 rel2.offset: -10 -1;
@@ -1107,7 +1107,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/r_rotate.png";
+                image.normal: "r_rotate.png";
             }
         }
     }
@@ -1119,7 +1119,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/rotate.png";
+                image.normal: "rotate.png";
             }
         }
     }
@@ -1131,7 +1131,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/rotate.png";
+                image.normal: "rotate.png";
             }
         }
     }
@@ -1143,7 +1143,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/flip_horizontal.png";
+                image.normal: "flip_horizontal.png";
             }
         }
     }
@@ -1155,7 +1155,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/flip_vertical.png";
+                image.normal: "flip_vertical.png";
             }
         }
     }
@@ -1167,7 +1167,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/blur.png";
+                image.normal: "blur.png";
             }
         }
     }
@@ -1179,7 +1179,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/sharpen.png";
+                image.normal: "sharpen.png";
             }
         }
     }
@@ -1191,7 +1191,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/grayscale.png";
+                image.normal: "grayscale.png";
             }
         }
     }
@@ -1203,7 +1203,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/sepia.png";
+                image.normal: "sepia.png";
             }
         }
     }
@@ -1215,7 +1215,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/undo.png";
+                image.normal: "undo.png";
             }
         }
     }
@@ -1227,7 +1227,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/r_rotate.png";
+                image.normal: "r_rotate.png";
             }
         }
     }
@@ -1239,7 +1239,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/1_1.png";
+                image.normal: "1_1.png";
             }
         }
     }
@@ -1251,7 +1251,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/fit.png";
+                image.normal: "fit.png";
             }
         }
     }
@@ -1263,7 +1263,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/fill.png";
+                image.normal: "fill.png";
             }
         }
     }
@@ -1291,7 +1291,7 @@ group {
                 aspect: 1 1;
                 align: 0.0 0.0;
                 color: 255 255 255 255;
-                image.normal: "images/star.png";
+                image.normal: "star.png";
                 min: 10 10;
                 max: 10 10;
                 fixed: 1 1;
@@ -1303,12 +1303,12 @@ group {
             description {
                 state: "empty" 0.0;
                 inherit: "default" 0.0;
-                image.normal: "images/star_empty.png";
+                image.normal: "star_empty.png";
             }
             description {
                 state: "demi" 0.0;
                 inherit: "default" 0.0;
-                image.normal: "images/star_demi.png";
+                image.normal: "star_demi.png";
             }
         }
 
@@ -1322,7 +1322,7 @@ group {
                 aspect: 1 1;
                 align: 0.0 0.0;
                 color: 255 255 255 255;
-                image.normal: "images/star.png";
+                image.normal: "star.png";
                 rel1.to_x: "star_1";
                 rel1.relative: 1.0 0.0;
                 min: 10 10;
@@ -1336,12 +1336,12 @@ group {
             description {
                 state: "empty" 0.0;
                 inherit: "default" 0.0;
-                image.normal: "images/star_empty.png";
+                image.normal: "star_empty.png";
             }
             description {
                 state: "demi" 0.0;
                 inherit: "default" 0.0;
-                image.normal: "images/star_demi.png";
+                image.normal: "star_demi.png";
             }
         }
 
@@ -1355,7 +1355,7 @@ group {
                 aspect: 1 1;
                 align: 0.0 0.0;
                 color: 255 255 255 255;
-                image.normal: "images/star.png";
+                image.normal: "star.png";
                 rel1.to_x: "star_2";
                 rel1.relative: 1.0 0.0;
                 min: 10 10;
@@ -1369,12 +1369,12 @@ group {
             description {
                 state: "empty" 0.0;
                 inherit: "default" 0.0;
-                image.normal: "images/star_empty.png";
+                image.normal: "star_empty.png";
             }
             description {
                 state: "demi" 0.0;
                 inherit: "default" 0.0;
-                image.normal: "images/star_demi.png";
+                image.normal: "star_demi.png";
             }
         }
 
@@ -1388,7 +1388,7 @@ group {
                 aspect: 1 1;
                 align: 0.0 0.0;
                 color: 255 255 255 255;
-                image.normal: "images/star.png";
+                image.normal: "star.png";
                 rel1.to_x: "star_3";
                 rel1.relative: 1.0 0.0;
                 min: 10 10;
@@ -1402,12 +1402,12 @@ group {
             description {
                 state: "empty" 0.0;
                 inherit: "default" 0.0;
-                image.normal: "images/star_empty.png";
+                image.normal: "star_empty.png";
             }
             description {
                 state: "demi" 0.0;
                 inherit: "default" 0.0;
-                image.normal: "images/star_demi.png";
+                image.normal: "star_demi.png";
             }
         }
 
@@ -1421,7 +1421,7 @@ group {
                 aspect: 1 1;
                 align: 0.0 0.0;
                 color: 255 255 255 255;
-                image.normal: "images/star.png";
+                image.normal: "star.png";
                 rel1.to_x: "star_4";
                 rel1.relative: 1.0 0.0;
                 min: 10 10;
@@ -1435,12 +1435,12 @@ group {
             description {
                 state: "empty" 0.0;
                 inherit: "default" 0.0;
-                image.normal: "images/star_empty.png";
+                image.normal: "star_empty.png";
             }
             description {
                 state: "demi" 0.0;
                 inherit: "default" 0.0;
-                image.normal: "images/star_demi.png";
+                image.normal: "star_demi.png";
             }
         }
 
@@ -1661,7 +1661,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/geocaching/2.png";
+                image.normal: "geocaching/2.png";
             }
         }
     }
@@ -1676,7 +1676,7 @@ group {
                 state: "default" 0.0;
                 aspect: 1 1;
                 aspect_preference: BOTH;
-                image.normal: "images/geocaching/2.png";
+                image.normal: "geocaching/2.png";
             }
         }
     }
@@ -1689,7 +1689,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/geocaching/3.png";
+                image.normal: "geocaching/3.png";
             }
         }
     }
@@ -1702,7 +1702,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/geocaching/8.png";
+                image.normal: "geocaching/8.png";
             }
         }
     }
@@ -1715,7 +1715,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/geocaching/4.png";
+                image.normal: "geocaching/4.png";
             }
         }
     }
@@ -1728,7 +1728,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/geocaching/5.png";
+                image.normal: "geocaching/5.png";
             }
         }
     }
@@ -1741,7 +1741,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/geocaching/earthcache.png";
+                image.normal: "geocaching/earthcache.png";
             }
         }
     }
@@ -1754,7 +1754,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/geocaching/6.png";
+                image.normal: "geocaching/6.png";
             }
         }
     }
@@ -1767,7 +1767,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/geocaching/11.png";
+                image.normal: "geocaching/11.png";
             }
         }
     }
@@ -1780,7 +1780,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/geocaching/1858.png";
+                image.normal: "geocaching/1858.png";
             }
         }
     }
@@ -1793,7 +1793,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/geocaching/13.png";
+                image.normal: "geocaching/13.png";
             }
         }
     }
@@ -1806,7 +1806,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/geocaching/mega.png";
+                image.normal: "geocaching/mega.png";
             }
         }
     }
@@ -1819,7 +1819,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/geocaching/ape_32.png";
+                image.normal: "geocaching/ape_32.png";
             }
         }
     }
@@ -1832,7 +1832,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/geocaching/found.png";
+                image.normal: "geocaching/found.png";
             }
         }
     }
@@ -1845,7 +1845,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/geocaching/geocaching.png";
+                image.normal: "geocaching/geocaching.png";
             }
         }
     }
@@ -1858,7 +1858,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/geocaching/icon_smile.png";
+                image.normal: "geocaching/icon_smile.png";
             }
         }
     }
@@ -1871,7 +1871,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/geocaching/icon_sad.png";
+                image.normal: "geocaching/icon_sad.png";
             }
         }
     }
@@ -1884,7 +1884,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/geocaching/icon_note.png";
+                image.normal: "geocaching/icon_note.png";
             }
         }
     }
@@ -1897,7 +1897,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/geocaching/icon_needsmaint.png";
+                image.normal: "geocaching/icon_needsmaint.png";
             }
         }
     }
@@ -1910,7 +1910,7 @@ group {
             name: "icon";
             description {
                 state: "default" 0.0;
-                image.normal: "images/geocaching/icon_disabled.png";
+                image.normal: "geocaching/icon_disabled.png";
             }
         }
     }
@@ -2039,7 +2039,7 @@ group {
                 state: "default" 0.0;
                 aspect: 2.17 1;
                 aspect_preference: BOTH;
-                image.normal: "images/flickr/set_account_0.png";
+                image.normal: "flickr/set_account_0.png";
             }
         }
     }
@@ -2054,7 +2054,7 @@ group {
                 state: "default" 0.0;
                 aspect: 7.3 1;
                 aspect_preference: BOTH;
-                image.normal: "images/flickr/set_account_1.png";
+                image.normal: "flickr/set_account_1.png";
             }
         }
     }
@@ -2072,7 +2072,7 @@ group {
                 aspect_preference: BOTH;
                 color: 255 255 255 0;
                 align: 1.0 0.0;
-                image.normal: "images/flickr/logo.png";
+                image.normal: "flickr/logo.png";
             }
             description {
                 state: "visible" 0.0;
@@ -2084,17 +2084,17 @@ group {
                 inherit: "default" 0.0;
                 color: 255 255 255 255;
                 image {
-                    normal: "images/flickr/logo.png";
-                    tween: "images/flickr/logo_1.png";
-                    tween: "images/flickr/logo_2.png";
-                    tween: "images/flickr/logo_3.png";
-                    tween: "images/flickr/logo_4.png";
-                    tween: "images/flickr/logo_5.png";
-                    tween: "images/flickr/logo_6.png";
-                    tween: "images/flickr/logo_7.png";
-                    tween: "images/flickr/logo_8.png";
-                    tween: "images/flickr/logo_9.png";
-                    tween: "images/flickr/logo_10.png";
+                    normal: "flickr/logo.png";
+                    tween: "flickr/logo_1.png";
+                    tween: "flickr/logo_2.png";
+                    tween: "flickr/logo_3.png";
+                    tween: "flickr/logo_4.png";
+                    tween: "flickr/logo_5.png";
+                    tween: "flickr/logo_6.png";
+                    tween: "flickr/logo_7.png";
+                    tween: "flickr/logo_8.png";
+                    tween: "flickr/logo_9.png";
+                    tween: "flickr/logo_10.png";
                 }
             }
         }
@@ -2107,7 +2107,7 @@ group {
                 color: 255 255 255 0;
                 visible: 0;
                 align: 1.0 0.0;
-                image.normal: "images/flickr/select.png";
+                image.normal: "flickr/select.png";
             }
             description {
                 state: "visible" 0.0;
@@ -2385,7 +2385,7 @@ group {
             visible: 1;
             rel1.to: "whole";
             rel2.to: "whole";
-            image.normal: "images/slideshow.png";
+            image.normal: "slideshow.png";
             image.border: 10 10 9 9;
         }
     }
@@ -2449,7 +2449,7 @@ group {
             rel2.to_y: "rect";
             rel2.relative: 0.14285*4 1.0;
             rel2.offset: 0 -5;
-            image.normal: "images/slideshow_select.png";
+            image.normal: "slideshow_select.png";
             image.border: 2 2 2 2;
         }
     }

@@ -55,7 +55,7 @@ Panel_Geocaching *panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geoca
    elm_box_pack_end(bx, fr);
 
    ly = elm_layout_add(obj);
-   elm_layout_file_set(ly, PACKAGE_DATA_DIR"/theme.edj", "layout/panel/geocaching");
+   elm_layout_file_set(ly, THEME, "layout/panel/geocaching");
    evas_object_size_hint_weight_set(ly, 1.0, 1.0);
    evas_object_size_hint_align_set(ly, -1.0, -1.0);
    evas_object_show(ly);
@@ -63,7 +63,7 @@ Panel_Geocaching *panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geoca
 
    ic = elm_icon_add(obj);
    snprintf(buf, PATH_MAX, "icons/geocaching/%s", enlil_geocaching_gp_type_get(geocaching));
-   elm_icon_file_set(ic, PACKAGE_DATA_DIR"/theme.edj", buf);
+   elm_icon_file_set(ic, THEME, buf);
    evas_object_size_hint_weight_set(ic, 1.0, 1.0);
    evas_object_size_hint_align_set(ic, -1.0, 0.0);
    evas_object_show(ic);
@@ -86,7 +86,7 @@ Panel_Geocaching *panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geoca
    elm_layout_content_set(ly, "swallow.owner", lbl);
 
    ic = elm_icon_add(obj);
-   elm_icon_file_set(ic, PACKAGE_DATA_DIR"/theme.edj", "icons/geocaching/geocaching");
+   elm_icon_file_set(ic, THEME, "icons/geocaching/geocaching");
    evas_object_size_hint_weight_set(ic, 1.0, 1.0);
    evas_object_size_hint_align_set(ic, -1.0, 0.0);
    evas_object_show(ic);
@@ -116,7 +116,7 @@ Panel_Geocaching *panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geoca
    elm_box_pack_end(bx, o);
 
    o = elm_layout_add(tb);
-   elm_layout_file_set(o, PACKAGE_DATA_DIR"/theme.edj", "stars");
+   elm_layout_file_set(o, THEME, "stars");
    evas_object_show(o);
    evas_object_size_hint_weight_set(o, 1.0, 0.0);
    evas_object_size_hint_align_set(o, -1.0, 0.0);
@@ -139,7 +139,7 @@ Panel_Geocaching *panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geoca
    elm_box_pack_end(bx, o);
 
    o = elm_layout_add(tb);
-   elm_layout_file_set(o, PACKAGE_DATA_DIR"/theme.edj", "stars");
+   elm_layout_file_set(o, THEME, "stars");
    evas_object_show(o);
    evas_object_size_hint_weight_set(o, 1.0, 0.0);
    evas_object_size_hint_align_set(o, -1.0, 0.0);
@@ -310,7 +310,7 @@ Panel_Geocaching *panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geoca
 
 	o = elm_icon_add(obj);
 	snprintf(buf, PATH_MAX, "icons/geocaching/%s", enlil_geocaching_log_type_get(log));
-	elm_icon_file_set(o, PACKAGE_DATA_DIR"/theme.edj", buf);
+	elm_icon_file_set(o, THEME, buf);
 	elm_bubble_icon_set(bb, o);
 	evas_object_show(o);
 	evas_object_size_hint_weight_set(bb, EVAS_HINT_EXPAND, 0.0);
@@ -416,7 +416,7 @@ static Evas_Object *_map_icon_get(Evas_Object *obj, Elm_Map_Marker *marker, void
    else
      snprintf(buf, PATH_MAX, "icons/geocaching/%s", enlil_geocaching_gp_type_get(gp));
 
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", buf);
+   elm_icon_file_set(icon, THEME, buf);
 
    evas_object_show(icon);
    return icon;	

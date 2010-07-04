@@ -273,7 +273,7 @@ static Evas_Object *_marker_get(Evas_Object *obj, Elm_Map_Marker *marker, void *
    Enlil_Photo_Data *enlil_photo_data = enlil_photo_user_data_get(photo);
 
    Evas_Object *o = photo_object_add(obj);
-   photo_object_theme_file_set(o, PACKAGE_DATA_DIR"/theme.edj", "photo");
+   photo_object_theme_file_set(o, THEME, "photo");
    evas_object_size_hint_min_set(o, 128, 96);
 
    evas_object_smart_callback_add(o, "open", _open, photo);
@@ -334,7 +334,7 @@ static Evas_Object *_gp_marker_get(Evas_Object *obj, Elm_Map_Marker *marker, voi
    elm_button_label_set(bt, enlil_geocaching_name_get(gp));
    o = elm_icon_add(tb);
    snprintf(buf, PATH_MAX, "icons/geocaching/%s", enlil_geocaching_gp_type_get(gp));
-   elm_icon_file_set(o, PACKAGE_DATA_DIR"/theme.edj", buf);
+   elm_icon_file_set(o, THEME, buf);
    evas_object_smart_callback_add(bt, "clicked", _bt_geocaching_cb, gp);
    elm_button_icon_set(bt, o);
    evas_object_show(bt);
@@ -358,7 +358,7 @@ static Evas_Object *_gp_marker_get(Evas_Object *obj, Elm_Map_Marker *marker, voi
    elm_box_pack_end(bx, o);
 
    o = elm_layout_add(tb);
-   elm_layout_file_set(o, PACKAGE_DATA_DIR"/theme.edj", "stars");
+   elm_layout_file_set(o, THEME, "stars");
    evas_object_show(o);
    evas_object_size_hint_weight_set(o, 1.0, 0.0);
    evas_object_size_hint_align_set(o, -1.0, 0.0);
@@ -382,7 +382,7 @@ static Evas_Object *_gp_marker_get(Evas_Object *obj, Elm_Map_Marker *marker, voi
    elm_box_pack_end(bx, o);
 
    o = elm_layout_add(tb);
-   elm_layout_file_set(o, PACKAGE_DATA_DIR"/theme.edj", "stars");
+   elm_layout_file_set(o, THEME, "stars");
    evas_object_show(o);
    evas_object_size_hint_weight_set(o, 1.0, 0.0);
    evas_object_size_hint_align_set(o, -1.0, 1.0);
@@ -440,7 +440,7 @@ static Evas_Object *_gp_marker_icon_get(Evas_Object *obj, Elm_Map_Marker *marker
    else
      snprintf(buf, PATH_MAX, "icons/geocaching/%s", enlil_geocaching_gp_type_get(gp));
 
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", buf);
+   elm_icon_file_set(icon, THEME, buf);
 
    evas_object_show(icon);
    return icon;
@@ -451,7 +451,7 @@ static Evas_Object *_gp_group_icon_get(Evas_Object *obj, void *data)
    Evas_Object *icon;
 
    icon = elm_icon_add(obj);
-   elm_icon_file_set(icon, PACKAGE_DATA_DIR"/theme.edj", "icons/geocaching/geocaching");
+   elm_icon_file_set(icon, THEME, "icons/geocaching/geocaching");
 
    evas_object_show(icon);
    return icon;

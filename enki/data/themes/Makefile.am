@@ -1,6 +1,4 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = themes
-
-
+SUBDIRS = default
 

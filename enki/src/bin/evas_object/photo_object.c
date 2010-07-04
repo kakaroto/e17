@@ -3,6 +3,9 @@
 #include "photo_object.h"
 #include <locale.h>
 
+//TODO: REMOVE this dependance "#define THEME"
+#include "../main.h"
+
 typedef struct _Smart_Data Smart_Data;
 
 struct _Smart_Data
@@ -270,7 +273,7 @@ Evas_Object *photo_object_flickr_state_set(Evas_Object *obj, const char* state)
      {
 	sd->flickr = edje_object_add(evas_object_evas_get(obj));
 	evas_object_show(sd->flickr);
-	edje_object_file_set(sd->flickr, PACKAGE_DATA_DIR"/theme.edj", "flickr/sync");
+	edje_object_file_set(sd->flickr, THEME, "flickr/sync");
 	evas_object_size_hint_weight_set(sd->flickr, 1.0, 1.0);
 	evas_object_size_hint_align_set(sd->flickr, 1.0, 0.0);
 
