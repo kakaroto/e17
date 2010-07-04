@@ -26,7 +26,7 @@ static void _quit_cb(void *data, Evas_Object *obj, void *event_info);
 
 Evas_Object *main_menu_new(Evas_Object *parent)
 {
-    Evas_Object *ly, *bt, *edje, *ebx, *list, *ic;
+    Evas_Object *ly, *bt, *edje;
 
     ly = elm_layout_add(parent);
     elm_layout_file_set(ly, PACKAGE_DATA_DIR"/theme.edj", "main_menu");
@@ -37,155 +37,35 @@ Evas_Object *main_menu_new(Evas_Object *parent)
     edje = elm_layout_edje_get(ly);
 
     //Libraries
-    ebx = (Evas_Object*)edje_object_part_object_get(edje, "library");
-
-    list = elm_list_add(parent);
-    libraries_list = list;
-    evas_object_size_hint_weight_set(list, -1.0, 1.0);
-    evas_object_size_hint_align_set(list, -1.0, -1.0);
-    evas_object_show(list);
-    evas_object_box_append(ebx, list);
-
-    bt = elm_button_add(parent);
-    bt_new_library = bt;
-    evas_object_size_hint_weight_set(bt, -1.0, 0.0);
-    evas_object_size_hint_align_set(bt, -1.0, 0.0);
-    evas_object_show(bt);
-    elm_button_label_set(bt, D_("New Library"));
-    evas_object_box_append(ebx, bt);
-    evas_object_smart_callback_add(bt, "clicked", _new_library_cb, NULL);
+    libraries_list = edje_object_part_external_object_get(edje, "object.list_libraries");
+    bt_new_library = edje_object_part_external_object_get(edje, "object.bt_new_library");
+    evas_object_smart_callback_add(bt_new_library, "clicked", _new_library_cb, NULL);
     //
 
     //tools
-    ebx = (Evas_Object*)edje_object_part_object_get(edje, "tools");
+    bt_slideshow = edje_object_part_external_object_get(edje, "object.bt_slideshow");
+    evas_object_smart_callback_add(bt_slideshow, "clicked", _slideshow_cb, NULL);
 
-    bt = elm_button_add(parent);
-    bt_slideshow = bt;
-    evas_object_size_hint_weight_set(bt, -1.0, 0.0);
-    evas_object_size_hint_align_set(bt, -1.0, 0.0);
-    evas_object_show(bt);
-    elm_button_label_set(bt, D_("Slideshow"));
-    evas_object_box_append(ebx, bt);
-    evas_object_smart_callback_add(bt, "clicked", _slideshow_cb, NULL);
+    bt_album_new = edje_object_part_external_object_get(edje, "object.bt_new_album");
+    evas_object_smart_callback_add(bt_album_new, "clicked", _album_new_cb, NULL);
 
-    ic = elm_icon_add(parent);
-    elm_icon_standard_set(ic, "edit");
-    elm_icon_fill_outside_set(ic, EINA_TRUE);
-    evas_object_show(ic);
-    elm_button_icon_set(bt, ic);
+    bt_import = edje_object_part_external_object_get(edje, "object.bt_import_photos");
+    evas_object_smart_callback_add(bt_import, "clicked", _import_cb, NULL);
+
+    bt_del_bg = edje_object_part_external_object_get(edje, "object.bt_remove_wall");
+    evas_object_smart_callback_add(bt_del_bg, "clicked", _del_bg_cb, NULL);
 
 
-    bt = elm_separator_add(parent);
-    evas_object_size_hint_weight_set(bt, -1.0, 0.0);
-    evas_object_size_hint_align_set(bt, -1.0, 0.0);
-    evas_object_show(bt);
-    evas_object_box_append(ebx, bt);
-
-    bt = elm_button_add(parent);
-    bt_album_new = bt;
-    evas_object_size_hint_weight_set(bt, -1.0, 0.0);
-    evas_object_size_hint_align_set(bt, -1.0, 0.0);
-    evas_object_show(bt);
-    elm_button_label_set(bt, D_("New Album"));
-    evas_object_box_append(ebx, bt);
-    evas_object_smart_callback_add(bt, "clicked", _album_new_cb, NULL);
-
-    ic = elm_icon_add(parent);
-    elm_icon_standard_set(ic, "edit");
-    elm_icon_fill_outside_set(ic, EINA_TRUE);
-    evas_object_show(ic);
-    elm_button_icon_set(bt, ic);
-
-
-    bt = elm_button_add(parent);
-    bt_import = bt;
-    evas_object_size_hint_weight_set(bt, -1.0, 0.0);
-    evas_object_size_hint_align_set(bt, -1.0, 0.0);
-    evas_object_show(bt);
-    elm_button_label_set(bt, D_("Import Photos"));
-    evas_object_box_append(ebx, bt);
-    evas_object_smart_callback_add(bt, "clicked", _import_cb, NULL);
-
-    ic = elm_icon_add(parent);
-    elm_icon_standard_set(ic, "edit");
-    elm_icon_fill_outside_set(ic, EINA_TRUE);
-    evas_object_show(ic);
-    elm_button_icon_set(bt, ic);
-
-
-    bt = elm_button_add(parent);
-    bt_del_bg = bt;
-    evas_object_size_hint_weight_set(bt, -1.0, 0.0);
-    evas_object_size_hint_align_set(bt, -1.0, 0.0);
-    evas_object_show(bt);
-    elm_button_label_set(bt, D_("Remove The Wallpaper"));
-    evas_object_box_append(ebx, bt);
-    evas_object_smart_callback_add(bt, "clicked", _del_bg_cb, NULL);
-
-    ic = elm_icon_add(parent);
-    elm_icon_standard_set(ic, "delete");
-    elm_icon_fill_outside_set(ic, EINA_TRUE);
-    evas_object_show(ic);
-    elm_button_icon_set(bt, ic);
-
-    bt = elm_separator_add(parent);
-    evas_object_size_hint_weight_set(bt, -1.0, 0.0);
-    evas_object_size_hint_align_set(bt, -1.0, 0.0);
-    evas_object_show(bt);
-    evas_object_box_append(ebx, bt);
-
-    bt = elm_button_add(parent);
-    evas_object_size_hint_weight_set(bt, -1.0, 0.0);
-    evas_object_size_hint_align_set(bt, -1.0, 0.0);
-    evas_object_show(bt);
-    elm_button_label_set(bt, D_("Import a GPX File"));
-    evas_object_box_append(ebx, bt);
+    bt = edje_object_part_external_object_get(edje, "object.bt_import_gpx");
     evas_object_smart_callback_add(bt, "clicked", _geocaching_import_cb, NULL);
 
-    ic = elm_icon_add(parent);
-    elm_icon_standard_set(ic, "edit");
-    elm_icon_fill_outside_set(ic, EINA_TRUE);
-    evas_object_show(ic);
-    elm_button_icon_set(bt, ic);
-
-
-    bt = elm_separator_add(parent);
-    evas_object_size_hint_weight_set(bt, -1.0, 0.0);
-    evas_object_size_hint_align_set(bt, -1.0, 0.0);
-    evas_object_show(bt);
-    evas_object_box_append(ebx, bt);
-
-    bt = elm_button_add(parent);
-    evas_object_size_hint_weight_set(bt, -1.0, 0.0);
-    evas_object_size_hint_align_set(bt, -1.0, 0.0);
-    evas_object_show(bt);
-    elm_button_label_set(bt, D_("Preference"));
-    evas_object_box_append(ebx, bt);
+    bt = edje_object_part_external_object_get(edje, "object.bt_preference");
     evas_object_smart_callback_add(bt, "clicked", _preferences_cb, NULL);
-
-    ic = elm_icon_add(parent);
-    elm_icon_standard_set(ic, "edit");
-    elm_icon_fill_outside_set(ic, EINA_TRUE);
-    evas_object_show(ic);
-    elm_button_icon_set(bt, ic);
     //
 
     //Quit
-    ebx = (Evas_Object*)edje_object_part_object_get(edje, "quit");
-
-    bt = elm_button_add(parent);
-    evas_object_size_hint_weight_set(bt, -1.0, 0.0);
-    evas_object_size_hint_align_set(bt, -1.0, 1.0);
-    evas_object_show(bt);
-    elm_button_label_set(bt, D_("Close Enki"));
-    evas_object_box_append(ebx, bt);
-    evas_object_smart_callback_add(bt, "clicked", _quit_cb, NULL);
-
-    ic = elm_icon_add(parent);
-    elm_icon_standard_set(ic, "close");
-    elm_icon_fill_outside_set(ic, EINA_TRUE);
-    evas_object_show(ic);
-    elm_button_icon_set(bt, ic);
+    bt = edje_object_part_external_object_get(edje, "object.bt_close");
+    evas_object_smart_callback_add(bt, "clicked", _quit_cb , NULL);
     //
 
 

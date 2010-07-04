@@ -2187,17 +2187,45 @@ group {
 group {
     name : "main_menu";
     parts {
+    	alias: "object.bt_slideshow" 		"tools[bt_slideshow]:object.bt_slideshow";
+    	alias: "object.bt_new_album" 		"tools[bt_new_album]:object.bt_new_album";
+    	alias: "object.bt_import_photos" 	"tools[bt_import_photos]:object.bt_import_photos";
+    	alias: "object.bt_remove_wall" 		"tools[bt_remove_wall]:object.bt_remove_wall";
+    	alias: "object.bt_import_gpx" 		"tools[bt_import_gpx]:object.bt_import_gpx";
+    	alias: "object.bt_preference" 		"tools[bt_preference]:object.bt_preference";
+    	alias: "object.bt_close" 			"quit[bt_close]:object.bt_close";
+    	
+    	alias: "object.bt_new_library" 		"libraries[bt_new_library]:object.bt_new_library";
+    	alias: "object.list_libraries" 		"libraries[list_libraries]:object.libraries";
         part {
-            name: "library";
+            name: "libraries";
             type: BOX;
             description {
                 state : "default" 0.0;
                 rel1.relative: 0.15 0.1;
                 rel2.relative: 0.45 0.7;
                 box {
-                    layout: "vertical";
+                    layout: "vertical";    
                 }
             }
+            box {
+            	items {
+            		item {
+                        type: GROUP;
+                        source: "main_menu.object.libraries";
+                        name: "list_libraries";
+                        align: -1 -1;
+                        weight: 1 1;
+                    }
+                    item {
+                        type: GROUP;
+                        source: "main_menu.object.bt_new_library";
+                        name: "bt_new_library";
+                        align: -1 1;
+                        weight: 0 0;
+                    }
+               }
+           }
         }
         part {
             name: "tools";
@@ -2207,7 +2235,47 @@ group {
                 rel1.relative: 0.6 0.1;
                 rel2.relative: 0.8 0.7;
                 box {
-                    layout: "vertical";
+                    layout: "vertical";    
+                }
+            }
+            box {
+            	items {
+            		item {
+                        type: GROUP;
+                        source: "main_menu.object.bt_slideshow";
+                        name:  "bt_slideshow";
+                        align: -1 -1;
+                    }
+                    item {
+                        type: GROUP;
+                        source: "main_menu.object.bt_new_album";
+                        name: "bt_new_album";
+                        align: -1 -1;
+                    }
+                    item {
+                        type: GROUP;
+                        source: "main_menu.object.bt_import_photos";
+                        name: "bt_import_photos";
+                        align: -1 -1;
+                    }
+                    item {
+                        type: GROUP;
+                        source: "main_menu.object.bt_remove_wall";
+                        name: "bt_remove_wall";
+                        align: -1 -1;
+                    }
+                    item {
+                        type: GROUP;
+                        source: "main_menu.object.bt_import_gpx";
+                        name: "bt_import_gpx";
+                        align: -1 -1;
+                    }
+                    item {
+                        type: GROUP;
+                        source: "main_menu.object.bt_preference";
+                        name: "bt_preference";
+                        align: -1 -1;
+                    }
                 }
             }
         }
@@ -2222,9 +2290,64 @@ group {
                     layout: "vertical";
                 }
             }
+            box {
+            	items {
+            		item {
+                        type: GROUP;
+                        source: "main_menu.object.bt_close";
+                        name: "bt_close";
+                        align: -1 -1;
+                    }
+               }
+           }
         }
     }
 }
+
+#define list(_prefix, _name) 						\
+group { 											\
+		name: _prefix""_name; 						\
+		parts {										\
+		part {										\
+            name: _name; 							\
+            type: EXTERNAL;							\
+            source: "elm/list";						\
+            description {							\
+                state : "default" 0.0;				\
+            }										\
+        } 											\
+        } 											\
+   }
+        
+#define button(_prefix, _name, text, icon) 	\
+	group { 								\
+		name: _prefix""_name; 				\
+		parts {								\
+		part {  							\
+        	name: _name;					\
+	    	type: EXTERNAL;					\
+	    	repeat_events: 0;				\
+	    	source: "elm/button"; 			\
+	    	description {					\
+	       		params {					\
+	          		string: "label" text; 	\
+	          		string: "icon" icon; 	\
+	       		}							\
+	    	}								\
+	    }									\
+	    }									\
+    }
+   
+button("main_menu.", "object.bt_slideshow", "Slideshow", "edit") 
+button("main_menu.", "object.bt_new_album", "New Album", "folder")
+button("main_menu.", "object.bt_import_photos", "Import Photos", "file")
+button("main_menu.", "object.bt_remove_wall", "Remove The Wallpaper", "delete")
+button("main_menu.", "object.bt_import_gpx", "Import a GPX File", "file")
+button("main_menu.", "object.bt_preference", "Preference", "edit")	
+button("main_menu.", "object.bt_close", "Close Enki", "close")	
+
+list("main_menu.", "object.libraries")
+button("main_menu.", "object.bt_new_library", "New Library", "folder")
 
 group {
     name: "slideshow";
