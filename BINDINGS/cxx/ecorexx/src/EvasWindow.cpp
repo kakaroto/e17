@@ -462,7 +462,7 @@ EvasWindowSoftwareX11::EvasWindowSoftwareX11( const Eflxx::Size &size, const cha
   ecore_evas_title_set( _ee, Application::getInstance()->getName().c_str() );
   ecore_evas_borderless_set( _ee, 0 );
 
-  _canvas = new Evasxx::Canvas( ecore_evas_get( _ee ) );
+  _canvas = Evasxx::Canvas::wrap ( ecore_evas_get( _ee ) );
 
   /* Set up magic object back link */
   ecore_evas_data_set( _ee, "obj_c++", this );
@@ -501,7 +501,7 @@ EvasWindowGLX11::EvasWindowGLX11( const Eflxx::Size &size, const char* display )
   ecore_evas_title_set( _ee, Application::getInstance()->getName().c_str() );
   ecore_evas_borderless_set( _ee, 0 );
 
-  _canvas = new Evasxx::Canvas( ecore_evas_get( _ee ) );
+  _canvas = Evasxx::Canvas::wrap (ecore_evas_get( _ee ));
 
   /* Set up magic object back link */
   ecore_evas_data_set( _ee, "obj_c++", this );
@@ -541,7 +541,7 @@ EvasWindowXRenderX11::EvasWindowXRenderX11( const Eflxx::Size &size, const char*
   ecore_evas_title_set( _ee, Application::getInstance()->getName().c_str() );
   ecore_evas_borderless_set( _ee, 0 );
 
-  _canvas = new Evasxx::Canvas( ecore_evas_get( _ee ) );
+  _canvas = Evasxx::Canvas::wrap (ecore_evas_get( _ee ));
 
   /* Set up magic object back link */
   ecore_evas_data_set( _ee, "obj_c++", this );
@@ -622,7 +622,7 @@ EvasWindowFB::EvasWindowFB( const Eflxx::Size &size, const char* display, int ro
   ecore_evas_title_set( _ee, Application::getInstance()->getName().c_str() );
   ecore_evas_borderless_set( _ee, 0 );
 
-  _canvas = new Evasxx::Canvas( ecore_evas_get( _ee ) );
+  _canvas = Evasxx::Canvas::wrap (ecore_evas_get( _ee ));
 
   /* Set up magic object back link */
   ecore_evas_data_set( _ee, "obj_c++", this );

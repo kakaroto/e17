@@ -19,7 +19,7 @@ public:
 private:
   Ecore_Animator* _ea;
 
-  static int __dispatcher( void* data );
+  static Eina_Bool __dispatcher( void* data );
 };
 
 } // end namespace Ecorexx

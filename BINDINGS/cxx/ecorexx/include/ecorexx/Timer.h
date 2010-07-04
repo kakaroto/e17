@@ -50,7 +50,7 @@ private:
   Ecore_Timer* _et;
   bool _ss;
 
-  static int __dispatcher( void* data );
+  static Eina_Bool __dispatcher( void* data );
 };
 
 } // end namespace Ecorexx

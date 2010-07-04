@@ -81,7 +81,7 @@ void Timer::setPrecision (double precision)
   Dout( dc::notice, "Timer[ " << this << " ]::tick()" );
 }*/
 
-int Timer::__dispatcher( void* data )
+Eina_Bool Timer::__dispatcher( void* data )
 {
   Timer* object = reinterpret_cast<Timer*>( data );
   assert( object );

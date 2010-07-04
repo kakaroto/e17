@@ -34,7 +34,7 @@ bool Animator::tick()
   return true;
 }
 
-int Animator::__dispatcher( void* data )
+Eina_Bool Animator::__dispatcher( void* data )
 {
   Animator* object = reinterpret_cast<Animator*>( data );
   int result = object->tick();
