@@ -1,0 +1,47 @@
+%define _missing_doc_files_terminate_build 0
+%{!?_rel:%{expand:%%global _rel 0.r%(svnversion | sed 's/[^0-9].*$//' || echo 0000)}}
+
+Summary: Editje is an Edje editor, but not just a GUI over the edc syntax
+Name: @PACKAGE@
+Version: @VERSION@
+Release: %{_rel}
+License: GPLv3+
+Group: Applications/Internet
+Source: %{name}-%{version}.tar.gz
+Packager: %{?_packager:%{_packager}}%{!?_packager:Rui Miguel Seabra <rms@1407.org>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
+Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
+URL: http://www.enlightenment.org/
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
+Requires: elementary, embryo
+BuildRequires: elementary-devel, embryo-devel
+
+%description
+Editje is an Edje editor oriented towards UI design, and not just being a GUI
+over the edc syntax. It provides three major modes: standard edition, animations
+and signals management.
+
+%prep
+%setup -q
+
+%build
+%{configure} --prefix=%{_prefix}
+%{__make} %{?_smp_mflags} %{?mflags}
+
+%install
+%{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
+
+%clean
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-, root, root)
+%doc AUTHORS COPYING README
+%{_bindir}/editje-bin
+%{_datadir}/applications/editje.desktop
+%{_datadir}/application-registry/editje.applications
+%{_datadir}/icons/editje.png
+%{_datadir}/editje
+%{_prefix}/lib/python2.6/site-packages/editje
+
+%changelog

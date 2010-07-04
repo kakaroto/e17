@@ -6,4 +6,5 @@ SUBDIRS = editje data test
 dist_bin_SCRIPTS = editje-bin
 
 EXTRA_DIST = \
+editje.spec.in editje.spec \
 autogen.sh

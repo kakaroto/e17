@@ -13,6 +13,7 @@ AM_PATH_PYTHON(2.5)
 
 AC_OUTPUT([
 Makefile
+editje.spec
 editje/Makefile
 editje/sysconfig.py
 data/Makefile
