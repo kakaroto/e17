@@ -1,0 +1,133 @@
+
+
+   
+button("object.main_menu.bt_slideshow", "Slideshow", "edit") 
+button("object.main_menu.bt_new_album", "New Album", "folder")
+button("object.main_menu.bt_import_photos", "Import Photos", "file")
+button("object.main_menu.bt_remove_wall", "Remove The Wallpaper", "delete")
+button("object.main_menu.bt_import_gpx", "Import a GPX File", "file")
+button("object.main_menu.bt_preference", "Preference", "edit")	
+button("object.main_menu.bt_close", "Close Enki", "close")	
+
+list("object.main_menu.libraries")
+button("object.main_menu.bt_new_library", "New Library", "folder")
+
+group {
+    name : "main_menu";
+    parts {
+    	alias: "object.main_menu.bt_slideshow" 		"tools[bt_slideshow]:object.main_menu.bt_slideshow";
+    	alias: "object.main_menu.bt_new_album" 		"tools[bt_new_album]:object.main_menu.bt_new_album";
+    	alias: "object.main_menu.bt_import_photos" 	"tools[bt_import_photos]:object.main_menu.bt_import_photos";
+    	alias: "object.main_menu.bt_remove_wall" 	"tools[bt_remove_wall]:object.main_menu.bt_remove_wall";
+    	alias: "object.main_menu.bt_import_gpx" 	"tools[bt_import_gpx]:object.main_menu.bt_import_gpx";
+    	alias: "object.main_menu.bt_preference" 	"tools[bt_preference]:object.main_menu.bt_preference";
+    	alias: "object.main_menu.bt_close" 			"quit[bt_close]:object.main_menu.bt_close";
+    	
+    	alias: "object.main_menu.bt_new_library" 	"libraries[bt_new_library]:object.main_menu.bt_new_library";
+    	alias: "object.main_menu.list_libraries" 	"libraries[list_libraries]:object.main_menu.libraries";
+        part {
+            name: "libraries";
+            type: BOX;
+            description {
+                state : "default" 0.0;
+                rel1.relative: 0.15 0.1;
+                rel2.relative: 0.45 0.7;
+                box {
+                    layout: "vertical";    
+                }
+            }
+            box {
+            	items {
+            		item {
+                        type: GROUP;
+                        source: "object.main_menu.libraries";
+                        name: "list_libraries";
+                        align: -1 -1;
+                        weight: 1 1;
+                    }
+                    item {
+                        type: GROUP;
+                        source: "object.main_menu.bt_new_library";
+                        name: "bt_new_library";
+                        align: -1 1;
+                        weight: 0 0;
+                    }
+               }
+           }
+        }
+        part {
+            name: "tools";
+            type: BOX;
+            description {
+                state : "default" 0.0;
+                rel1.relative: 0.6 0.1;
+                rel2.relative: 0.8 0.7;
+                box {
+                    layout: "vertical";    
+                }
+            }
+            box {
+            	items {
+            		item {
+                        type: GROUP;
+                        source: "object.main_menu.bt_slideshow";
+                        name:  "bt_slideshow";
+                        align: -1 -1;
+                    }
+                    item {
+                        type: GROUP;
+                        source: "object.main_menu.bt_new_album";
+                        name: "bt_new_album";
+                        align: -1 -1;
+                    }
+                    item {
+                        type: GROUP;
+                        source: "object.main_menu.bt_import_photos";
+                        name: "bt_import_photos";
+                        align: -1 -1;
+                    }
+                    item {
+                        type: GROUP;
+                        source: "object.main_menu.bt_remove_wall";
+                        name: "bt_remove_wall";
+                        align: -1 -1;
+                    }
+                    item {
+                        type: GROUP;
+                        source: "object.main_menu.bt_import_gpx";
+                        name: "bt_import_gpx";
+                        align: -1 -1;
+                    }
+                    item {
+                        type: GROUP;
+                        source: "object.main_menu.bt_preference";
+                        name: "bt_preference";
+                        align: -1 -1;
+                    }
+                }
+            }
+        }
+        part {
+            name: "quit";
+            type: BOX;
+            description {
+                state : "default" 0.0;
+                rel1.relative: 0.75 0.9;
+                rel2.relative: 0.95 0.95;
+                box {
+                    layout: "vertical";
+                }
+            }
+            box {
+            	items {
+            		item {
+                        type: GROUP;
+                        source: "object.main_menu.bt_close";
+                        name: "bt_close";
+                        align: -1 -1;
+                    }
+               }
+           }
+        }
+    }
+}

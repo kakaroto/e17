@@ -37,34 +37,34 @@ Evas_Object *main_menu_new(Evas_Object *parent)
     edje = elm_layout_edje_get(ly);
 
     //Libraries
-    libraries_list = edje_object_part_external_object_get(edje, "object.list_libraries");
-    bt_new_library = edje_object_part_external_object_get(edje, "object.bt_new_library");
+    libraries_list = edje_object_part_external_object_get(edje, "object.main_menu.list_libraries");
+    bt_new_library = edje_object_part_external_object_get(edje, "object.main_menu.bt_new_library");
     evas_object_smart_callback_add(bt_new_library, "clicked", _new_library_cb, NULL);
     //
 
     //tools
-    bt_slideshow = edje_object_part_external_object_get(edje, "object.bt_slideshow");
+    bt_slideshow = edje_object_part_external_object_get(edje, "object.main_menu.bt_slideshow");
     evas_object_smart_callback_add(bt_slideshow, "clicked", _slideshow_cb, NULL);
 
-    bt_album_new = edje_object_part_external_object_get(edje, "object.bt_new_album");
+    bt_album_new = edje_object_part_external_object_get(edje, "object.main_menu.bt_new_album");
     evas_object_smart_callback_add(bt_album_new, "clicked", _album_new_cb, NULL);
 
-    bt_import = edje_object_part_external_object_get(edje, "object.bt_import_photos");
+    bt_import = edje_object_part_external_object_get(edje, "object.main_menu.bt_import_photos");
     evas_object_smart_callback_add(bt_import, "clicked", _import_cb, NULL);
 
-    bt_del_bg = edje_object_part_external_object_get(edje, "object.bt_remove_wall");
+    bt_del_bg = edje_object_part_external_object_get(edje, "object.main_menu.bt_remove_wall");
     evas_object_smart_callback_add(bt_del_bg, "clicked", _del_bg_cb, NULL);
 
 
-    bt = edje_object_part_external_object_get(edje, "object.bt_import_gpx");
+    bt = edje_object_part_external_object_get(edje, "object.main_menu.bt_import_gpx");
     evas_object_smart_callback_add(bt, "clicked", _geocaching_import_cb, NULL);
 
-    bt = edje_object_part_external_object_get(edje, "object.bt_preference");
+    bt = edje_object_part_external_object_get(edje, "object.main_menu.bt_preference");
     evas_object_smart_callback_add(bt, "clicked", _preferences_cb, NULL);
     //
 
     //Quit
-    bt = edje_object_part_external_object_get(edje, "object.bt_close");
+    bt = edje_object_part_external_object_get(edje, "object.main_menu.bt_close");
     evas_object_smart_callback_add(bt, "clicked", _quit_cb , NULL);
     //
 
