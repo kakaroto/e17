@@ -861,33 +861,41 @@ static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *even
 
 static int ed_check_gag_message(void *user_data, int argc, char **argv, char **azColName) {
 	GagData *gd = (GagData*)user_data;
+	char *sn = NULL, *pattern=argv[0];
+	int res = -1;
 
 	/* In this query handler, these are the current fields:
 		argv[0] == patern STRING
 	*/
 
+	if(strchr(pattern, '@')) {
+		res = asprintf(&sn, "@%s", gd->screen_name);
+		if(res == -1)
+			sn = gd->screen_name;
+	}
+
+	if(debug) printf("(%s|%s|%s) ~ %s ?", sn, gd->name, gd->message, pattern);
+
 	// only do costly matches if there's isn't a match already
 	if(	gd->match == EINA_FALSE &&
-			(g_regex_match_simple(argv[0], gd->screen_name, G_REGEX_CASELESS, 0) ||
-			 g_regex_match_simple(argv[0], gd->name, G_REGEX_CASELESS, 0)        ||
-			 g_regex_match_simple(argv[0], gd->message, G_REGEX_CASELESS, 0)))
+			(g_regex_match_simple(pattern, sn, G_REGEX_CASELESS, 0) ||
+			 g_regex_match_simple(pattern, gd->name, G_REGEX_CASELESS, 0)        ||
+			 g_regex_match_simple(pattern, gd->message, G_REGEX_CASELESS, 0)))
 		gd->match = EINA_TRUE;
 
-	if(debug) printf("There is %s match in '%s', '%s' or '%s' for pattern '%s'\n", gd->match?"a":"no", gd->screen_name, gd->name, gd->message, argv[0]);
+	if(debug) printf(" %s\n", gd->match==EINA_TRUE?"Yes":"No");
+
+	if(res != -1) free(sn);
+
 	return(0);
 }
 
 Eina_Bool ed_check_gag(char *screen_name, char *name, char *message) {
 	GagData gd;
 	char *query, *db_err=NULL;
-	int sqlite_res = 0, res=0;
+	int sqlite_res = 0;
 
-	if(strchr(screen_name, '@')) {
-		res = asprintf(&gd.screen_name, "@%s", screen_name);
-		if(res == -1)
-			gd.screen_name = screen_name;
-	} else
-		gd.screen_name = screen_name;
+	gd.screen_name = screen_name;
 	gd.name = name;
 	gd.message = message;
 	gd.match = EINA_FALSE;
@@ -898,9 +906,6 @@ Eina_Bool ed_check_gag(char *screen_name, char *name, char *message) {
 		printf("Can't run %s: %s\n", query, db_err);
 		sqlite3_free(db_err);
 	}
-
-	if(res > 0)
-		if(gd.screen_name) free(gd.screen_name);
 
 	return(gd.match);
 }
