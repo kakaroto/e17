@@ -880,10 +880,10 @@ static int ed_check_gag_message(void *user_data, int argc, char **argv, char **a
 	if(	gd->match == EINA_FALSE &&
 			(g_regex_match_simple(pattern, sn, G_REGEX_CASELESS, 0) ||
 			 g_regex_match_simple(pattern, gd->name, G_REGEX_CASELESS, 0)        ||
-			 g_regex_match_simple(pattern, gd->message, G_REGEX_CASELESS, 0)))
+			 g_regex_match_simple(pattern, gd->message, G_REGEX_CASELESS, 0))) {
 		gd->match = EINA_TRUE;
-
-	if(debug) printf(" %s\n", gd->match==EINA_TRUE?"Yes":"No");
+		if(debug) printf(" %s\n", "Yes");
+	} else if(debug) printf(" %s\n", "No");
 
 	if(res != -1) free(sn);
 
