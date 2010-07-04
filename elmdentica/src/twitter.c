@@ -422,6 +422,7 @@ void json_user_show(UserProfile *user, char *stream) {
 	enum json_type json_stream_type;
 
 	json_stream = json_tokener_parse(stream);
+	if(debug) printf("About to parse\n%s\n", stream);
 
 	if(json_stream == NULL) {
 		fprintf(stderr, "ERROR parsing json stream:\n%s\n", stream);
@@ -460,26 +461,24 @@ void json_user_show(UserProfile *user, char *stream) {
 				json_object_put(obj);
 			}
 
+			obj = json_object_object_get(json_stream, "following");
 			if(obj) {
-				obj = json_object_object_get(json_stream, "following");
 				user->following = (Eina_Bool)json_object_get_boolean(obj);
 				json_object_put(obj);
 			}
 
+			obj = json_object_object_get(json_stream, "friends_count");
 			if(obj) {
-				obj = json_object_object_get(json_stream, "friends_count");
-				user->friends_count = (int)json_object_get_double(obj);
+				user->friends_count = (int)json_object_get_int(obj);
 				json_object_put(obj);
 			}
 
+			obj = json_object_object_get(json_stream, "followers_count");
 			if(obj) {
-				obj = json_object_object_get(json_stream, "followers_count");
-				user->followers_count = (int)json_object_get_double(obj);
+				user->followers_count = (int)json_object_get_int(obj);
 				json_object_put(obj);
 			}
-
 		}
-		
 	}
 	json_object_put(json_stream);
 }
