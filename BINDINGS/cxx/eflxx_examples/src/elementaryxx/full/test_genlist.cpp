@@ -1,11 +1,11 @@
 #include "test.h"
 
-typedef struct _Testitem
+typedef struct _TestItem
 {
-   Elm_Genlist_Item *item;
+   GenListItem *item;
    int mode;
    int onoff;
-} Testitem;
+} TestItem;
 
 class GenListColumnConstructor1 : public GenListColumnConstructor
 {
@@ -68,7 +68,6 @@ private:
 
 static GenListDataModel1 model ("default");
 static GenListDataModel1 model2 ("default");
-static GenListDataModel1 model3 ("default");
 
 /*
  * Hint: 'constructList1' isn't cleaned up at exit. Normal applications should do this.
@@ -598,50 +597,6 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
 #if 0
 /*************/
 
-static Elm_Genlist_Item_Class itc2;
-char *gl2_label_get(const void *data, Evas_Object *obj, const char *part)
-{
-   const Testitem *tit = data;
-   char buf[256];
-   snprintf(buf, sizeof(buf), "Item mode %i", tit->mode);
-   return strdup(buf);
-}
-Evas_Object *gl2_icon_get(const void *data, Evas_Object *obj, const char *part)
-{
-   const Testitem *tit = data;
-   char buf[PATH_MAX];
-   Evas_Object *ic = elm_icon_add(obj);
-   if (!strcmp(part, "elm.swallow.icon"))
-     {
-	if ((tit->mode & 0x3) == 0)
-	  snprintf(buf, sizeof(buf), "%s/images/logo_small.png", PACKAGE_DATA_DIR);
-	else if ((tit->mode & 0x3) == 1)
-	  snprintf(buf, sizeof(buf), "%s/images/logo.png", PACKAGE_DATA_DIR);
-	else if ((tit->mode & 0x3) == 2)
-	  snprintf(buf, sizeof(buf), "%s/images/panel_01.jpg", PACKAGE_DATA_DIR);
-	else if ((tit->mode & 0x3) == 3)
-	  snprintf(buf, sizeof(buf), "%s/images/rock_01.jpg", PACKAGE_DATA_DIR);
-	elm_icon_file_set(ic, buf, NULL);
-     }
-   else if (!strcmp(part, "elm.swallow.end"))
-     {
-	if ((tit->mode & 0x3) == 0)
-	  snprintf(buf, sizeof(buf), "%s/images/sky_01.jpg", PACKAGE_DATA_DIR);
-	else if ((tit->mode & 0x3) == 1)
-	  snprintf(buf, sizeof(buf), "%s/images/sky_02.jpg", PACKAGE_DATA_DIR);
-	else if ((tit->mode & 0x3) == 2)
-	  snprintf(buf, sizeof(buf), "%s/images/sky_03.jpg", PACKAGE_DATA_DIR);
-	else if ((tit->mode & 0x3) == 3)
-	  snprintf(buf, sizeof(buf), "%s/images/sky_04.jpg", PACKAGE_DATA_DIR);
-	elm_icon_file_set(ic, buf, NULL);
-     }
-   evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   return ic;
-}
-Eina_Bool gl2_state_get(const void *data, Evas_Object *obj, const char *part)
-{
-   return EINA_FALSE;
-}
 void gl2_del(const void *data, Evas_Object *obj)
 {
 }
@@ -654,13 +609,113 @@ my_gl_update(void *data, Evas_Object *obj, void *event_info)
    elm_genlist_item_update(tit->item);
 }
 #endif
-void
-test_genlist3(void *data, Evas_Object *obj, void *event_info)
+
+class GenListColumnConstructor3 : public GenListColumnConstructor
 {
-   //Evas_Object *win, *bg, *gl, *bx, *bx2, *bt;
+public:
+  GenListColumnConstructor3 () :
+    mTestItem (NULL)
+  {}
+  
+  void setTestItem (TestItem *testItem) {mTestItem = testItem;}
+  TestItem *getTestItem () const {return mTestItem;}
+  
+private:
+  TestItem *mTestItem;
+};
+
+class GenListColumnSelector3 : public GenListColumnSelector
+{
+public:
+  GenListColumnSelector3 () :
+    mTestItem (NULL)
+  {}
+    
+  void setTestItem (TestItem *testItem) {mTestItem = testItem;}
+  TestItem *getTestItem () const {return mTestItem;}
+  
+private:
+  TestItem *mTestItem;
+};
+
+class GenListDataModel3 : public GenListDataModel
+{
+public:
+  GenListDataModel3 (const std::string &style) :
+    GenListDataModel (style) {}
+
+  ~GenListDataModel3 () {}
+
+  std::string getLabel (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part) const
+  { 
+    GenListColumnConstructor3 *construct1 = static_cast <GenListColumnConstructor3*> (construction);
+    cout << "GenListDataModel::getLabel" << endl;
+
+    return "Item mode " + toString <int> (construct1->getTestItem ()->mode);
+  }
+    
+  Elmxx::Object *getIcon (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
+  {
+    GenListColumnConstructor3 *construct1 = static_cast <GenListColumnConstructor3*> (construction);
+    int mode = construct1->getTestItem ()->mode;
+    
+    Window *win = static_cast <Window*> (&obj);
+    Icon *ic = Icon::factory (*win);
+
+    string iconName;
+
+    if (part == "elm.swallow.icon")
+    {
+      if ((mode & 0x3) == 0)
+        iconName = searchPixmapFile ("elementaryxx/logo_small.png");
+      else if ((mode & 0x3) == 1)
+        iconName = searchPixmapFile ("elementaryxx/logo.png");
+      else if ((mode & 0x3) == 2)
+        iconName = searchPixmapFile ("elementaryxx/panel_01.jpg");
+      else if ((mode & 0x3) == 3)
+        iconName = searchPixmapFile ("elementaryxx/rock_01.jpg");
+      
+      ic->setFile (iconName);
+    }
+    else if (part == "elm.swallow.end")
+    {
+      if ((mode & 0x3) == 0)
+        iconName = searchPixmapFile ("elementaryxx/sky_01.jpg");
+      else if ((mode & 0x3) == 1)
+        iconName = searchPixmapFile ("elementaryxx/sky_02.jpg");
+      else if ((mode & 0x3) == 2)
+        iconName = searchPixmapFile ("elementaryxx/sky_03.jpg");
+      else if ((mode & 0x3) == 3)
+        iconName = searchPixmapFile ("elementaryxx/sky_04.jpg");
+           
+      ic->setFile (iconName);
+     }
+    
+    ic->setAspectHintSize (EVAS_ASPECT_CONTROL_VERTICAL, Eflxx::Size (1, 1));
+
+    return ic;
+  }
+
+  bool getState (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
+  {
+    return false;
+  }
+};
+
+void glSelected3 (GenListColumnSelector &selection, const Evasxx::Object &obj, void *event_info)
+{
+  GenListColumnSelector3 *selection1 = static_cast <GenListColumnSelector3*> (&selection);
+  
+  cout << "glSelected3 mode " << selection1->getTestItem ()->mode << endl;
+}
+
+static GenListDataModel3 model3 ("default");
+
+void test_genlist3(void *data, Evas_Object *obj, void *event_info)
+{
   Button *bt = NULL;
   Box *bx2 = NULL;
-  static Testitem tit[3];
+  static TestItem tit[3];
 
   Window *win = Window::factory ("genlist-3", ELM_WIN_BASIC);
   win->setTitle ("GenList 2");
@@ -682,12 +737,30 @@ test_genlist3(void *data, Evas_Object *obj, void *event_info)
   bx->packEnd (*gl);
   gl->show ();
 
-  gl->setDataModel (model2);
+  gl->setDataModel (model3);
   
-  //gl->signalSelect.connect (sigc::ptr_fun (&glSelected));
+  gl->signalSelect.connect (sigc::ptr_fun (&glSelected3));
 
-  // only for development -> remove
-  //gl->append (NULL, NULL, ELM_GENLIST_ITEM_NONE, NULL);
+  GenListColumnConstructor3 *construct1 = new GenListColumnConstructor3 ();
+  construct1->setTestItem (&(tit[0]));
+  GenListColumnSelector3 *select1 = new GenListColumnSelector3 ();
+  select1->setTestItem (&(tit[0]));
+  tit[0].mode = 0;
+  tit[0].item = gl->append (construct1, NULL, ELM_GENLIST_ITEM_NONE, select1);
+
+  GenListColumnConstructor3 *construct2 = new GenListColumnConstructor3 ();
+  construct2->setTestItem (&(tit[1]));
+  GenListColumnSelector3 *select2 = new GenListColumnSelector3 ();
+  select2->setTestItem (&(tit[1]));
+  tit[1].mode = 1;
+  tit[1].item = gl->append (construct2, NULL, ELM_GENLIST_ITEM_NONE, select2);
+
+  GenListColumnConstructor3 *construct3 = new GenListColumnConstructor3 ();
+  construct3->setTestItem (&(tit[2]));
+  GenListColumnSelector3 *select3 = new GenListColumnSelector3 ();
+  select3->setTestItem (&(tit[2]));
+  tit[2].mode = 2;
+  tit[2].item = gl->append (construct3, NULL, ELM_GENLIST_ITEM_NONE, select3);
 
   
 #if 0
@@ -828,7 +901,7 @@ test_genlist4(void *data, Evas_Object *obj, void *event_info)
   Button *bt = NULL;
   Box *bx2 = NULL;
   //Evas_Object *win, *bg, *gl, *bx, *bx2, *bt;
-  static Testitem tit[3];
+  static TestItem tit[3];
 
   Window *win = Window::factory ("genlist-4", ELM_WIN_BASIC);
   win->setTitle ("GenList 4");
