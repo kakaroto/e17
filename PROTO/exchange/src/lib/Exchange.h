@@ -117,7 +117,7 @@ typedef struct _Exchange_Object Exchange_Object;
 #include "exchange_remote_theme.h"
 #include "exchange_login.h"
 #include "exchange_theme_group.h"
-#include "exchange_smart.h"
+/* #include "exchange_smart.h" */
 #include "exchange_async.h"
 
 
