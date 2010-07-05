@@ -69,7 +69,6 @@ ephoto_create_thumb_browser(void)
 	evas_object_show(em->thumb_browser);
 
 	thbox = elm_box_add(em->win);
-        elm_win_resize_object_add(em->win, thbox);
 	elm_box_horizontal_set(thbox, EINA_TRUE);
         evas_object_size_hint_weight_set(thbox, EVAS_HINT_EXPAND, EVAS_HINT_FILL);
         evas_object_size_hint_fill_set(thbox, EVAS_HINT_FILL, EVAS_HINT_FILL);
