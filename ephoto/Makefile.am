@@ -3,7 +3,7 @@
 MAINTAINERCLEANFILES = Makefile.in Makefile aclocal.m4 config.* \
                    configure compile depcomp install-sh \
                    ltconfig ltmain.sh missing mkinstalldirs \
-                   stamp-h.in
+                   stamp-h.in m4/l*m4
 
 SUBDIRS = src data
 
