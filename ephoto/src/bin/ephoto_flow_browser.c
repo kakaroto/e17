@@ -12,7 +12,8 @@ static Eina_List *iter;
 static Evas_Object *image, *toolbar;
 
 /*Create the flow browser*/
-void ephoto_create_flow_browser(void)
+void 
+ephoto_create_flow_browser(void)
 {
 	Evas_Object *o;
 
@@ -61,7 +62,8 @@ void ephoto_create_flow_browser(void)
 }
 
 /*Show the flow browser*/
-void ephoto_show_flow_browser(const char *current_image)
+void 
+ephoto_show_flow_browser(const char *current_image)
 {
 	iter = eina_list_data_find_list(em->images, current_image);
 	if (iter == NULL)
@@ -75,7 +77,8 @@ void ephoto_show_flow_browser(const char *current_image)
 }
 
 /*Hide the flow browser*/
-void ephoto_hide_flow_browser(void)
+void 
+ephoto_hide_flow_browser(void)
 {
 	evas_object_hide(image);
 	evas_object_hide(toolbar);
@@ -83,7 +86,8 @@ void ephoto_hide_flow_browser(void)
 }
 
 /*Delete the flow browser*/
-void ephoto_delete_flow_browser(void)
+void 
+ephoto_delete_flow_browser(void)
 {
 	Eina_List *items;
 
@@ -100,7 +104,8 @@ void ephoto_delete_flow_browser(void)
 }
 
 /*Go back to the thumbnail viewer*/
-static void _ephoto_go_back(void *data, Evas_Object *obj, void *event_info)
+static void 
+_ephoto_go_back(void *data, Evas_Object *obj, void *event_info)
 {
 	ephoto_hide_flow_browser();
 	ephoto_show_thumb_browser();
@@ -109,7 +114,8 @@ static void _ephoto_go_back(void *data, Evas_Object *obj, void *event_info)
 }
 
 /*Go to the very first image in the list*/
-static void _ephoto_go_first(void *data, Evas_Object *obj, void *event_info)
+static void 
+_ephoto_go_first(void *data, Evas_Object *obj, void *event_info)
 {
 	iter = eina_list_nth_list(em->images, 0);
 
@@ -119,7 +125,8 @@ static void _ephoto_go_first(void *data, Evas_Object *obj, void *event_info)
 }
 
 /*Go to the very last image in the list*/
-static void _ephoto_go_last(void *data, Evas_Object *obj, void *event_info)
+static void 
+_ephoto_go_last(void *data, Evas_Object *obj, void *event_info)
 {
 	iter = eina_list_last(em->images);
 
@@ -129,7 +136,8 @@ static void _ephoto_go_last(void *data, Evas_Object *obj, void *event_info)
 }
 
 /*Go to the next image in the list*/
-static void _ephoto_go_next(void *data, Evas_Object *obj, void *event_info)
+static void 
+_ephoto_go_next(void *data, Evas_Object *obj, void *event_info)
 {
 	iter = iter->next;
 	if (!iter)
@@ -141,7 +149,8 @@ static void _ephoto_go_next(void *data, Evas_Object *obj, void *event_info)
 }
 
 /*Go to the previous image in the list*/
-static void _ephoto_go_previous(void *data, Evas_Object *obj, void *event_info)
+static void 
+_ephoto_go_previous(void *data, Evas_Object *obj, void *event_info)
 {
 	iter = iter->prev;
 	if (!iter)

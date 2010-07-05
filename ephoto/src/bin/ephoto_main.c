@@ -7,7 +7,8 @@ Ephoto *em;
 static void _ephoto_delete_main_window(void *data, Evas_Object *obj, void *event_info);
 
 /*Create the main ephoto window*/
-void ephoto_create_main_window(void)
+void 
+ephoto_create_main_window(void)
 {
 	em = calloc(1, sizeof(Ephoto));
 	em->thumbs_images = eina_hash_string_superfast_new((Eina_Free_Cb)eina_stringshare_del);
@@ -42,7 +43,8 @@ void ephoto_create_main_window(void)
 }
 
 /*Delete the main ephoto window*/
-static void _ephoto_delete_main_window(void *data, Evas_Object *obj, void *event_info)
+static void 
+_ephoto_delete_main_window(void *data, Evas_Object *obj, void *event_info)
 {
 	ephoto_delete_thumb_browser();
 	ephoto_delete_flow_browser();

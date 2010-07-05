@@ -1,6 +1,7 @@
 #include "ephoto.h"
 
-int main(int argc, char **argv)
+int 
+main(int argc, char **argv)
 {
 	ethumb_client_init();
 	elm_need_efreet();

@@ -11,6 +11,7 @@ static char *_ephoto_get_label(const void *data, Evas_Object *obj, const char *p
 static Evas_Object *_ephoto_get_icon(const void *data, Evas_Object *obj, const char *part);
 static Eina_Bool _ephoto_get_state(const void *data, Evas_Object *obj, const char *part);
 static void _ephoto_grid_del(const void *data, Evas_Object *obj);
+static void _ephoto_thumb_clicked(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _ephoto_view_large(void *data, Evas_Object *obj, void *event_info);
 
 /*Inline Variables*/
@@ -307,6 +308,8 @@ _ephoto_get_icon(const void *data, Evas_Object *obj, const char *part)
 		elm_layout_file_set(thumb, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
 				"/ephoto/thumb");
 		evas_object_size_hint_weight_set(thumb, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+		evas_object_event_callback_add(thumb, EVAS_CALLBACK_MOUSE_DOWN,
+						_ephoto_thumb_clicked, NULL);
 		evas_object_show(thumb);
 
 		o = elm_bg_add(em->win);
@@ -335,12 +338,49 @@ _ephoto_grid_del(const void *data, Evas_Object *obj)
 	return;
 }
 
+/*Check to see if the thumbnail was double clicked*/
+static void 
+_ephoto_thumb_clicked(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+	char *file;
+	const Eina_List *selected;
+	Evas_Event_Mouse_Down *emd;
+	Evas_Object *o;
+
+	emd = event_info;
+	if (emd->flags == EVAS_BUTTON_DOUBLE_CLICK || 
+		emd->flags == EVAS_BUTTON_TRIPLE_CLICK)
+	{
+		selected = elm_gengrid_selected_items_get(em->thumb_browser);
+		o = eina_list_data_get(selected);
+		file = (char *)elm_gengrid_item_data_get((Elm_Gengrid_Item *)o);
+		ephoto_hide_thumb_browser();
+		ephoto_show_flow_browser(file);
+	}
+}
+
 /*Show the flow browser*/
 static void 
 _ephoto_view_large(void *data, Evas_Object *obj, void *event_info)
 {
+	const Eina_List *selected;
+	Evas_Object *o;
+	char *file;
+
 	ephoto_hide_thumb_browser();
-	ephoto_show_flow_browser(eina_list_data_get(em->images));
+
+	selected = elm_gengrid_selected_items_get(em->thumb_browser);
+
+	if (eina_list_data_get(selected))
+	{
+		o = eina_list_data_get(selected);
+		file = (char *)elm_gengrid_item_data_get((Elm_Gengrid_Item *)o);
+		ephoto_show_flow_browser(file);
+	}
+	else
+	{
+		ephoto_show_flow_browser(eina_list_data_get(em->images));
+	}
 
 	elm_toolbar_item_unselect_all(toolbar);
 }
