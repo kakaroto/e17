@@ -151,6 +151,8 @@ _ephoto_access_disk(Ecore_Thread *thread, void *data)
 	Eina_Iterator *it = data;
 	const char *file;
 	const char *type;
+	if (!efreet_mime_init())
+		fprintf(stderr, "Could not init efreet_mime!\n");
 
 	EINA_ITERATOR_FOREACH(it, file)
 	{
@@ -165,6 +167,7 @@ _ephoto_access_disk(Ecore_Thread *thread, void *data)
 				continue ;
 		eina_stringshare_del(file);
 	}
+	efreet_mime_shutdown();
 }
 
 static void
