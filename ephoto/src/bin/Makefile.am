@@ -8,6 +8,7 @@ bin_PROGRAMS = ephoto
 ephoto_SOURCES = \
 		 ephoto.c \
 		 ephoto.h \
+		 ephoto_flow_browser.c \
 		 ephoto_main.c \
 		 ephoto_thumb_browser.c
 

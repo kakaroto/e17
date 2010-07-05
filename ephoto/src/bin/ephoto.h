@@ -26,6 +26,12 @@
 /*Main Functions*/
 void ephoto_create_main_window(void);
 
+/*Ephoto Flow Browser*/
+void ephoto_create_flow_browser(void);
+void ephoto_show_flow_browser(const char *current_image);
+void ephoto_hide_flow_browser(void);
+void ephoto_delete_flow_browser(void);
+
 /*Ephoto Thumb Browser*/
 void ephoto_create_thumb_browser(void);
 void ephoto_show_thumb_browser(void);
@@ -40,11 +46,8 @@ struct _Ephoto
 	Evas_Object *win;
 	Evas_Object *bg;
 	Evas_Object *box;
-	Evas_Object *dir_label;
-	Evas_Object *thbox;
+	Evas_Object *flow_browser;
 	Evas_Object *thumb_browser;
-	Evas_Object *thumb_slider;
-	Evas_Object *toolbar;
 	Eina_Hash   *thumbs_images;
 	Eina_List   *images;
 };

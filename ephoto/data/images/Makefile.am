@@ -4,7 +4,12 @@ IMAGES = \
 change_directory.png \
 filter.png \
 view_presentation.png \
-play_slideshow.png 
+play_slideshow.png \
+first.png \
+last.png \
+next.png \
+previous.png \
+go_back.png
 
 imagesdir = $(pkgdatadir)/images
 images_DATA = $(IMAGES)

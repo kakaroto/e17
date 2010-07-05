@@ -11,12 +11,14 @@ static char *_ephoto_get_label(const void *data, Evas_Object *obj, const char *p
 static Evas_Object *_ephoto_get_icon(const void *data, Evas_Object *obj, const char *part);
 static Eina_Bool _ephoto_get_state(const void *data, Evas_Object *obj, const char *part);
 static void _ephoto_grid_del(const void *data, Evas_Object *obj);
+static void _ephoto_view_large(void *data, Evas_Object *obj, void *event_info);
 
 /*Inline Variables*/
 static Elm_Gengrid_Item_Class eg;
 static Ethumb_Client *ec;
 static int cur_val;
 static Ecore_Thread *thread = NULL;
+static Evas_Object *toolbar, *dir_label, *thumb_slider, *thbox;
 
 /*Create the thumbnail browser object*/
 void
@@ -31,29 +33,29 @@ ephoto_create_thumb_browser(void)
 
 	getcwd(buf, PATH_MAX);
 
-	em->toolbar = elm_toolbar_add(em->win);
-	elm_toolbar_icon_size_set(em->toolbar, 32);
-	elm_toolbar_homogenous_set(em->toolbar, EINA_TRUE);
-	evas_object_size_hint_weight_set(em->toolbar, EVAS_HINT_EXPAND, 0.0);
-	evas_object_size_hint_align_set(em->toolbar, EVAS_HINT_FILL, 0.5);
-	elm_box_pack_end(em->box, em->toolbar);
-	evas_object_show(em->toolbar);
+	toolbar = elm_toolbar_add(em->win);
+	elm_toolbar_icon_size_set(toolbar, 24);
+	elm_toolbar_homogenous_set(toolbar, EINA_TRUE);
+	evas_object_size_hint_weight_set(toolbar, EVAS_HINT_EXPAND, 0.0);
+	evas_object_size_hint_align_set(toolbar, EVAS_HINT_FILL, 0.5);
+	elm_box_pack_end(em->box, toolbar);
+	evas_object_show(toolbar);
 
 	o = elm_icon_add(em->win);
 	elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/change_directory.png", NULL);
-	elm_toolbar_item_add(em->toolbar, o, "Change Directory", NULL, NULL);
+	elm_toolbar_item_add(toolbar, o, "Change Directory", NULL, NULL);
 
 	o = elm_icon_add(em->win);
 	elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/filter.png", NULL);
-        elm_toolbar_item_add(em->toolbar, o, "Filter", NULL, NULL);
+        elm_toolbar_item_add(toolbar, o, "Filter", NULL, NULL);
 
 	o = elm_icon_add(em->win);
 	elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/view_presentation.png", NULL);
-        elm_toolbar_item_add(em->toolbar, o, "View Presentation", NULL, NULL);
+        elm_toolbar_item_add(toolbar, o, "View Large", _ephoto_view_large, NULL);
 
 	o = elm_icon_add(em->win);
 	elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/play_slideshow.png", NULL);
-        elm_toolbar_item_add(em->toolbar, o, "Play Slideshow", NULL, NULL);
+        elm_toolbar_item_add(toolbar, o, "Play Slideshow", NULL, NULL);
 
 	em->thumb_browser = elm_gengrid_add(em->win);
 	elm_gengrid_align_set(em->thumb_browser, 0.5, 0.6);
@@ -66,29 +68,29 @@ ephoto_create_thumb_browser(void)
 	elm_box_pack_end(em->box, em->thumb_browser);
 	evas_object_show(em->thumb_browser);
 
-	em->thbox = elm_box_add(em->win);
-        elm_win_resize_object_add(em->win, em->thbox);
-	elm_box_horizontal_set(em->thbox, EINA_TRUE);
-        evas_object_size_hint_weight_set(em->thbox, EVAS_HINT_EXPAND, EVAS_HINT_FILL);
-        evas_object_size_hint_fill_set(em->thbox, EVAS_HINT_FILL, EVAS_HINT_FILL);
-	elm_box_pack_end(em->box, em->thbox);
-        evas_object_show(em->thbox);
+	thbox = elm_box_add(em->win);
+        elm_win_resize_object_add(em->win, thbox);
+	elm_box_horizontal_set(thbox, EINA_TRUE);
+        evas_object_size_hint_weight_set(thbox, EVAS_HINT_EXPAND, EVAS_HINT_FILL);
+        evas_object_size_hint_fill_set(thbox, EVAS_HINT_FILL, EVAS_HINT_FILL);
+	elm_box_pack_end(em->box, thbox);
+        evas_object_show(thbox);
 
-	em->dir_label = elm_label_add(em->win);
-	elm_label_label_set(em->dir_label, buf);
-	evas_object_size_hint_weight_set(em->dir_label, EVAS_HINT_EXPAND, 0.0);
-        evas_object_size_hint_align_set(em->dir_label, 0.01, 0.5);
-	elm_box_pack_end(em->thbox, em->dir_label);
-	evas_object_show(em->dir_label);
+	dir_label = elm_label_add(em->win);
+	elm_label_label_set(dir_label, buf);
+	evas_object_size_hint_weight_set(dir_label, EVAS_HINT_EXPAND, 0.0);
+        evas_object_size_hint_align_set(dir_label, 0.01, 0.5);
+	elm_box_pack_end(thbox, dir_label);
+	evas_object_show(dir_label);
 
-	em->thumb_slider = elm_slider_add(em->win);
-	elm_slider_label_set(em->thumb_slider, "Thumb Size:");
-	elm_slider_span_size_set(em->thumb_slider, 100);
-	elm_slider_min_max_set(em->thumb_slider, 0, 100);
-	elm_slider_value_set(em->thumb_slider, 50);
-	elm_box_pack_end(em->thbox, em->thumb_slider);
-	evas_object_show(em->thumb_slider);
-	evas_object_smart_callback_add(em->thumb_slider, "changed", 
+	thumb_slider = elm_slider_add(em->win);
+	elm_slider_label_set(thumb_slider, "Thumb Size:");
+	elm_slider_span_size_set(thumb_slider, 100);
+	elm_slider_min_max_set(thumb_slider, 0, 100);
+	elm_slider_value_set(thumb_slider, 50);
+	elm_box_pack_end(thbox, thumb_slider);
+	evas_object_show(thumb_slider);
+	evas_object_smart_callback_add(thumb_slider, "changed", 
 					_ephoto_slider_changed, NULL);
 	cur_val = 50;
 
@@ -103,22 +105,22 @@ ephoto_create_thumb_browser(void)
 void
 ephoto_show_thumb_browser(void)
 {
-	evas_object_show(em->toolbar);
+	evas_object_show(toolbar);
 	evas_object_show(em->thumb_browser);
-	evas_object_show(em->dir_label);
-	evas_object_show(em->thumb_slider);
-	evas_object_show(em->thbox);
+	evas_object_show(dir_label);
+	evas_object_show(thumb_slider);
+	evas_object_show(thbox);
 }
 
 /*Hide the thumbnail browser*/
 void
 ephoto_hide_thumb_browser(void)
 {
-	evas_object_hide(em->toolbar);
+	evas_object_hide(toolbar);
 	evas_object_hide(em->thumb_browser);
-	evas_object_hide(em->dir_label);
-	evas_object_hide(em->thumb_slider);
-	evas_object_hide(em->thbox);
+	evas_object_hide(dir_label);
+	evas_object_hide(thumb_slider);
+	evas_object_hide(thbox);
 }
 
 /*Destroy the thumbnail browser*/
@@ -127,18 +129,18 @@ ephoto_delete_thumb_browser(void)
 {
 	Eina_List *items;
 
-	items = elm_toolbar_item_get_all(em->toolbar);
+	items = elm_toolbar_item_get_all(toolbar);
 	while (items)
 	{
 		evas_object_del(eina_list_data_get(items));
 		items = eina_list_next(items);
 	}
 
-	evas_object_del(em->toolbar);
+	evas_object_del(toolbar);
 	evas_object_del(em->thumb_browser);
-	evas_object_del(em->dir_label);
-	evas_object_del(em->thumb_slider);
-	evas_object_del(em->thbox);
+	evas_object_del(dir_label);
+	evas_object_del(thumb_slider);
+	evas_object_del(thbox);
 	ethumb_client_disconnect(ec);
 }
 
@@ -170,6 +172,7 @@ _ephoto_access_disk(Ecore_Thread *thread, void *data)
 	efreet_mime_shutdown();
 }
 
+/*Done populating images*/
 static void
 _ephoto_populate_end(void *data)
 {
@@ -229,7 +232,7 @@ _ephoto_slider_changed(void *data, Evas_Object *obj, void *event)
 {
 	int w, h, val;
 
-	val = elm_slider_value_get(em->thumb_slider);
+	val = elm_slider_value_get(thumb_slider);
 	elm_gengrid_item_size_get(em->thumb_browser, &w, &h);
 	if (val < cur_val)
 	{
@@ -333,3 +336,12 @@ _ephoto_grid_del(const void *data, Evas_Object *obj)
 	return;
 }
 
+/*Show the flow browser*/
+static void 
+_ephoto_view_large(void *data, Evas_Object *obj, void *event_info)
+{
+	ephoto_hide_thumb_browser();
+	ephoto_show_flow_browser(eina_list_data_get(em->images));
+
+	elm_toolbar_item_unselect_all(toolbar);
+}

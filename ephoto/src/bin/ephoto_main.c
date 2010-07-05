@@ -38,12 +38,14 @@ void ephoto_create_main_window(void)
 	evas_object_show(em->box);
 
 	ephoto_create_thumb_browser();
+	ephoto_create_flow_browser();
 }
 
 /*Delete the main ephoto window*/
 static void _ephoto_delete_main_window(void *data, Evas_Object *obj, void *event_info)
 {
 	ephoto_delete_thumb_browser();
+	ephoto_delete_flow_browser();
 	evas_object_del(em->box);
 	evas_object_del(em->bg);
 	evas_object_del(em->win);
