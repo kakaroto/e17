@@ -156,7 +156,8 @@ _ephoto_access_disk(Ecore_Thread *thread, void *data)
 	{
 		if (ecore_thread_check(thread)) break;
 
-		type = efreet_mime_type_get((const char *)file);
+		if (!(type = efreet_mime_type_get((const char *)file)))
+			continue;
 
 		fprintf(stderr, "[%s] => [%s]\n", file, type);
 		if (!strncmp(type, "image", 5))
