@@ -23,7 +23,7 @@ RDEPEND="
 	 >=dev-libs/ecore-9999[X,evas,inotify,xim]
 	 >=media-libs/edje-9999
 	 >=media-libs/evas-9999[X,eet,jpeg,png,safety-checks]
-	 >=media-libs/elementary-9999
+	 >=media-libs/elementary-9999[thumbnails,xdg]
 	 >=media-libs/ethumb-9999
 "
 DEPEND="${RDEPEND}"
