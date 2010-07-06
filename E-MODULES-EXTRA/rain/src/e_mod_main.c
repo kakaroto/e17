@@ -6,23 +6,23 @@
 /* module private routines */
 static Rain *_rain_init(E_Module *m);
 static void _rain_shutdown(Rain *rain);
-static int _rain_cb_animator(void *data);
+static Eina_Bool _rain_cb_animator(void *data);
 static void _rain_clouds_load(Rain *rain);
 static void _rain_drops_load(char type, Rain *rain);
 
 EAPI E_Module *rain_module = NULL;
 
 /* public module routines. all modules must have these */
-EAPI E_Module_Api e_modapi = {
-   E_MODULE_API_VERSION,
-   "Rain"
+EAPI E_Module_Api e_modapi = 
+{
+   E_MODULE_API_VERSION, "Rain"
 };
 
 EAPI void *
 e_modapi_init(E_Module *m)
 {
    Rain *rain;
-   char buf[4096];
+   char buf[PATH_MAX];
 
    /* Set up module's message catalogue */
    snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
@@ -198,8 +198,8 @@ _rain_canvas_reset(Rain *rain)
 static void
 _rain_clouds_load(Rain *rain)
 {
-   char buf[4096];
    Evas_Object *o;
+   char buf[PATH_MAX];
    int tw, th, i;
 
    o = evas_object_image_add(rain->canvas);
@@ -214,7 +214,8 @@ _rain_clouds_load(Rain *rain)
         if (i != 0)
           {
              o = evas_object_image_add(rain->canvas);
-	     snprintf(buf, sizeof(buf), "%s/cloud.png", e_module_dir_get(rain->module));
+	     snprintf(buf, sizeof(buf), "%s/cloud.png", 
+		      e_module_dir_get(rain->module));
 	     evas_object_image_file_set(o, buf, "");
           }
         evas_object_resize(o, tw, th);
@@ -235,7 +236,7 @@ _rain_drops_load(char type, Rain *rain)
 {
    Evas_Object *o;
    Evas_Coord xx, yy, ww, hh;
-   char buf[4096];
+   char buf[PATH_MAX];
    int tw, th, i;
    Rain_Drop *drop;
 
@@ -284,7 +285,7 @@ _rain_drops_load(char type, Rain *rain)
      }
 }
 
-static int
+static Eina_Bool
 _rain_cb_animator(void *data)
 {
    Rain *rain;
@@ -308,7 +309,7 @@ _rain_cb_animator(void *data)
 
         next = eina_list_next(next);
      }
-   return 1;
+   return EINA_TRUE;
 }
 
 void
@@ -316,8 +317,6 @@ _rain_cb_config_updated(void *data)
 {
    Rain *r;
 
-   r = (Rain *)data;
-   if (!r)
-      return;
+   if (!(r = data)) return;
    _rain_canvas_reset(r);
 }
