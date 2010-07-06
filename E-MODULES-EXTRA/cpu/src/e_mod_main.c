@@ -34,7 +34,7 @@ static char *_gc_label(E_Gadcon_Client_Class *client_class);
 static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
 static const char *_gc_id_new(E_Gadcon_Client_Class *client_class);
 static Config_Item *_config_item_get(const char *id);
-static int _set_cpu_load(void *data);
+static Eina_Bool _set_cpu_load(void *data);
 static int _get_cpu_count(void);
 static int _get_cpu_load(void);
 static void _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -201,7 +201,7 @@ _config_item_get(const char *id)
    return ci;
 }
 
-static int 
+static Eina_Bool 
 _set_cpu_load(void *data) 
 {
    Instance *inst;
@@ -209,10 +209,9 @@ _set_cpu_load(void *data)
    int i = 0;
    char str[100], str_tmp[100];
 
-   if (cpu_count == -1) return 0;
-
-   if (!(inst = data)) return 1;
-   if (!(cpu = inst->cpu)) return 1;
+   if (cpu_count == -1) return EINA_FALSE;
+   if (!(inst = data)) return EINA_TRUE;
+   if (!(cpu = inst->cpu)) return EINA_TRUE;
 
    _get_cpu_load();
 
@@ -220,7 +219,7 @@ _set_cpu_load(void *data)
      {
         snprintf(str, sizeof(str), "<br>%d%%", cpu_stats[0]);
         edje_object_part_text_set(cpu->o_icon, "load", str);
-        return 1;
+        return EINA_TRUE;
      }
    else
      snprintf(str, sizeof(str), "%d%%", cpu_stats[0]);
@@ -233,7 +232,7 @@ _set_cpu_load(void *data)
 	i++;
      }
    edje_object_part_text_set(cpu->o_icon, "load", str);
-   return 1;
+   return EINA_TRUE;
 }
 
 static int
@@ -306,7 +305,15 @@ _get_cpu_load(void)
    */
 
    if (cpu_count > 1) 
-     fscanf(stat, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu", dummy, &new_u, &new_n, &new_s, &new_i, &new_wa, &new_hi, &new_si, &dummy2, &dummy3);
+     {
+	if (fscanf(stat, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu", dummy, 
+		   &new_u, &new_n, &new_s, &new_i, &new_wa, &new_hi, &new_si, 
+		   &dummy2, &dummy3) < 5)
+	  {
+	     fclose(stat);
+	     return -1;
+	  }
+     }
 
    while (i < cpu_count)
      {
