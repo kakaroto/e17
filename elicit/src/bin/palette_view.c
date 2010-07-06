@@ -25,10 +25,10 @@ static void cb_swatch_out(void *data, Evas *evas, Evas_Object *obj, void *event_
 static void cb_swatch_up(void *data, Evas *evas, Evas_Object *obj, void *event_info);
 
 #undef API_ENTRY
-#define API_ENTRY \
+#define API_ENTRY(...) \
   Palette_View *pv; \
   pv = evas_object_smart_data_get(obj); \
-  if (!pv) return
+  if (!pv) return __VA_ARGS__;
 
 /** API **/
 Evas_Object *
@@ -41,7 +41,7 @@ palette_view_add(Evas *evas)
 void
 palette_view_palette_set(Evas_Object *obj, Palette *palette)
 {
-  API_ENTRY;
+  API_ENTRY();
 
   pv->palette = palette;
   pv_layout(obj);
@@ -50,7 +50,7 @@ palette_view_palette_set(Evas_Object *obj, Palette *palette)
 Palette *
 palette_view_palette_get(Evas_Object *obj)
 {
-  API_ENTRY NULL;
+  API_ENTRY(NULL);
 
   return pv->palette;
 }
@@ -58,14 +58,14 @@ palette_view_palette_get(Evas_Object *obj)
 void
 palette_view_changed(Evas_Object *obj)
 {
-  API_ENTRY;
+  API_ENTRY();
   pv_layout(obj);
 }
 
 void
 palette_view_theme_set(Evas_Object *obj, const char *file, const char *group)
 {
-  API_ENTRY;
+  API_ENTRY();
 
   if (pv->theme.file) free(pv->theme.file);
   if (pv->theme.group) free(pv->theme.group);
@@ -78,7 +78,7 @@ palette_view_theme_set(Evas_Object *obj, const char *file, const char *group)
 void
 palette_view_select(Evas_Object *obj, Color *c)
 {
-  API_ENTRY;
+  API_ENTRY();
 
   if (pv->selected) color_unref(pv->selected);
 
@@ -91,7 +91,7 @@ palette_view_select(Evas_Object *obj, Color *c)
 Color *
 palette_view_selected(Evas_Object *obj)
 {
-  API_ENTRY NULL;
+  API_ENTRY(NULL);
 
   return pv->selected;
 }
@@ -136,7 +136,7 @@ pv_del(Evas_Object *obj)
   Eina_List *l;
   Evas_Object *rect;
 
-  API_ENTRY;
+  API_ENTRY();
 
   EINA_LIST_FOREACH(pv->rects, l, rect)
   {
@@ -161,7 +161,7 @@ pv_show(Evas_Object *obj)
 {
   Eina_List *l;
   Evas_Object *rect;
-  API_ENTRY;
+  API_ENTRY();
 
   EINA_LIST_FOREACH(pv->rects, l, rect) {
     evas_object_show(rect);
@@ -175,7 +175,7 @@ pv_hide(Evas_Object *obj)
 {
   Eina_List *l;
   Evas_Object *rect;
-  API_ENTRY;
+  API_ENTRY();
 
   EINA_LIST_FOREACH(pv->rects, l, rect) {
     evas_object_hide(rect);
@@ -187,7 +187,7 @@ pv_hide(Evas_Object *obj)
 static void
 pv_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
 {
-  API_ENTRY;
+  API_ENTRY();
   if (pv->x == x && pv->y == y) return;
   pv->x = x;
   pv->y = y;
@@ -197,7 +197,7 @@ pv_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
 static void
 pv_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
 {
-  API_ENTRY;
+  API_ENTRY();
   if (pv->w == w && pv->h == h) return;
   pv->w = w;
   pv->h = h;
@@ -209,7 +209,7 @@ pv_clip_set(Evas_Object *obj, Evas_Object *clip)
 {
   Eina_List *l;
   Evas_Object *rect;
-  API_ENTRY;
+  API_ENTRY();
 
   EINA_LIST_FOREACH(pv->rects, l, rect) {
     evas_object_clip_set(rect, clip);
@@ -222,7 +222,7 @@ pv_clip_unset(Evas_Object *obj)
 {
   Eina_List *l;
   Evas_Object *rect;
-  API_ENTRY;
+  API_ENTRY();
 
   EINA_LIST_FOREACH(pv->rects, l, rect) {
     evas_object_clip_unset(rect);
@@ -233,7 +233,7 @@ pv_clip_unset(Evas_Object *obj)
 static void
 pv_layout(Evas_Object *obj)
 {
-  API_ENTRY;
+  API_ENTRY();
   if (pv->layout_timer) ecore_timer_del(pv->layout_timer);
   pv->layout_timer = ecore_timer_add(0.01, pv_layout_timer, pv);
 }
