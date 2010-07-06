@@ -36,7 +36,7 @@ news_popup_shutdown(void)
 }
 
 News_Popup *
-news_popup_add(int type, const char *title, const char *text, int timer, int (*func_close) (News_Popup *popw, void *data), void (func_desactivate) (News_Popup *popw, void *data), void *data)
+news_popup_add(int type, const char *title, const char *text, int timer, int (*func_close) (News_Popup *popw, void *data), void (*func_desactivate) (News_Popup *popw, void *data), void *data)
 {
   E_Zone *zone;
   News_Popup *popw;
