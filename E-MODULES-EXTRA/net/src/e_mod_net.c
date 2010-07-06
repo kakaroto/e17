@@ -39,7 +39,7 @@ get_ifmib_general(int row, struct ifmibdata *ifmd)
 }
 #endif
 
-int 
+Eina_Bool 
 _net_cb_poll(void *data) 
 {
    Instance *inst;
@@ -56,8 +56,8 @@ _net_cb_poll(void *data)
    int found = 0;
     
    f = fopen("/proc/net/dev", "r");
-   if (!f) return 1;
-   
+   if (!f) return EINA_TRUE;
+
    while (fgets(buf, 256, f))
      {
 	int i = 0;
@@ -75,7 +75,7 @@ _net_cb_poll(void *data)
 	if (found) break;
      }
    fclose(f);
-   if (!found) return 1;
+   if (!found) return EINA_TRUE;
 #else
    struct ifmibdata *ifmd;
    int i, count, len;
@@ -132,7 +132,7 @@ _net_cb_poll(void *data)
 	edje_object_part_text_set(inst->pop_bg, "e.text.send", popbuf);
      }
    
-   return 1;
+   return EINA_TRUE;
 }
 
 void 

@@ -12,7 +12,7 @@ EAPI E_Module_Api e_modapi = { E_MODULE_API_VERSION, "Net" };
 EAPI void *
 e_modapi_init(E_Module *m) 
 {
-   char buf[4096];
+   char buf[PATH_MAX];
 
    snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
    bindtextdomain(PACKAGE, buf);
