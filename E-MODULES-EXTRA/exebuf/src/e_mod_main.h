@@ -1,6 +1,8 @@
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
+#include <libintl.h>
+
 /* Macros used for config file versioning */
 /* You can increment the EPOCH value if the old configuration is not
  * compatible anymore, it creates an entire new one.

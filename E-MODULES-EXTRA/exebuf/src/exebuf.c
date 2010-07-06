@@ -53,16 +53,16 @@ static void _e_exebuf_cb_eap_item_mouse_in(void *data, Evas *evas, Evas_Object *
 static void _e_exebuf_cb_eap_item_mouse_out(void *data, Evas *evas, Evas_Object *obj, void *event_info);
 static void _e_exebuf_cb_exe_item_mouse_in(void *data, Evas *evas, Evas_Object *obj, void *event_info);
 static void _e_exebuf_cb_exe_item_mouse_out(void *data, Evas *evas, Evas_Object *obj, void *event_info);
-static int _e_exebuf_cb_key_down(void *data, int type, void *event);
-static int _e_exebuf_cb_mouse_down(void *data, int type, void *event);
-static int _e_exebuf_cb_mouse_up(void *data, int type, void *event);
-static int _e_exebuf_cb_mouse_move(void *data, int type, void *event);
-static int _e_exebuf_cb_mouse_wheel(void *data, int type, void *event);
-static int _e_exebuf_exe_scroll_timer(void *data);
-static int _e_exebuf_eap_scroll_timer(void *data);
-static int _e_exebuf_animator(void *data);
-static int _e_exebuf_idler(void *data);
-static int _e_exebuf_update_timer(void *data);
+static Eina_Bool _e_exebuf_cb_key_down(void *data, int type, void *event);
+static Eina_Bool _e_exebuf_cb_mouse_down(void *data, int type, void *event);
+static Eina_Bool _e_exebuf_cb_mouse_up(void *data, int type, void *event);
+static Eina_Bool _e_exebuf_cb_mouse_move(void *data, int type, void *event);
+static Eina_Bool _e_exebuf_cb_mouse_wheel(void *data, int type, void *event);
+static Eina_Bool _e_exebuf_exe_scroll_timer(void *data);
+static Eina_Bool _e_exebuf_eap_scroll_timer(void *data);
+static Eina_Bool _e_exebuf_animator(void *data);
+static Eina_Bool _e_exebuf_idler(void *data);
+static Eina_Bool _e_exebuf_update_timer(void *data);
 
 /* local subsystem globals */
 static E_Config_DD *exelist_exe_edd = NULL;
@@ -231,19 +231,19 @@ e_exebuf_show(E_Zone *zone)
 
    handlers = eina_list_append
      (handlers, ecore_event_handler_add
-      (ECORE_EVENT_KEY_DOWN, _e_exebuf_cb_key_down, NULL));
+	 (ECORE_EVENT_KEY_DOWN, _e_exebuf_cb_key_down, NULL));
    handlers = eina_list_append
      (handlers, ecore_event_handler_add
-      (ECORE_EVENT_MOUSE_BUTTON_DOWN, _e_exebuf_cb_mouse_down, NULL));
+	 (ECORE_EVENT_MOUSE_BUTTON_DOWN, _e_exebuf_cb_mouse_down, NULL));
    handlers = eina_list_append
      (handlers, ecore_event_handler_add
-      (ECORE_EVENT_MOUSE_BUTTON_UP, _e_exebuf_cb_mouse_up, NULL));
+	 (ECORE_EVENT_MOUSE_BUTTON_UP, _e_exebuf_cb_mouse_up, NULL));
    handlers = eina_list_append
      (handlers, ecore_event_handler_add
-      (ECORE_EVENT_MOUSE_MOVE, _e_exebuf_cb_mouse_move, NULL));
+	 (ECORE_EVENT_MOUSE_MOVE, _e_exebuf_cb_mouse_move, NULL));
    handlers = eina_list_append
      (handlers, ecore_event_handler_add
-      (ECORE_EVENT_MOUSE_WHEEL, _e_exebuf_cb_mouse_wheel, NULL));
+	 (ECORE_EVENT_MOUSE_WHEEL, _e_exebuf_cb_mouse_wheel, NULL));
 
    el = e_config_domain_load("exebuf_exelist_cache", exelist_edd);
    if (el)
@@ -1390,13 +1390,12 @@ _e_exebuf_cb_exe_item_mouse_in(void *data, Evas *evas, Evas_Object *obj,
 }
 
 static void 
-_e_exebuf_cb_exe_item_mouse_out(void *data, Evas *evas, Evas_Object *obj, 
-      void *event_info)
+_e_exebuf_cb_exe_item_mouse_out(void *data, Evas *evas, Evas_Object *obj, void *event_info)
 {
    ev_last_mouse_exe = NULL;
 }
 
-static int
+static Eina_Bool
 _e_exebuf_cb_key_down(void *data, int type, void *event)
 {
    Ecore_Event_Key *ev;
@@ -1448,16 +1447,16 @@ _e_exebuf_cb_key_down(void *data, int type, void *event)
 	       }
 	  }
      }
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _e_exebuf_cb_mouse_down(void *data, int type, void *event)
 {
    Ecore_Event_Mouse_Button *ev;
    
    ev = event;
-   if (ev->event_window != input_window) return 1;
+   if (ev->event_window != input_window) return EINA_TRUE;
 
    if (ev_last_mouse_exe && (exe_sel != ev_last_mouse_exe))
      {
@@ -1466,31 +1465,31 @@ _e_exebuf_cb_mouse_down(void *data, int type, void *event)
         _e_exebuf_exe_sel(exe_sel); 
      }   
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _e_exebuf_cb_mouse_up(void *data, int type, void *event)
 {
    Ecore_Event_Mouse_Button *ev;
    
    ev = event;
-   if (ev->event_window != input_window) return 1;
+   if (ev->event_window != input_window) return EINA_TRUE;
    if (ev->buttons == 1) 
      _e_exebuf_exec();
    else if (ev->buttons == 2)
      _e_exebuf_complete();
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int 
+static Eina_Bool 
 _e_exebuf_cb_mouse_move(void *data, int type, void *event)
 {
    Ecore_Event_Mouse_Move *ev;
 
    ev = event;
-   if (ev->event_window != input_window) return 1;
+   if (ev->event_window != input_window) return EINA_TRUE;
 
    if (!ev_last_is_mouse)
      {
@@ -1511,16 +1510,16 @@ _e_exebuf_cb_mouse_move(void *data, int type, void *event)
    evas_event_feed_mouse_move(exebuf->evas, ev->x - exebuf->x,
 			      ev->y - exebuf->y, ev->timestamp, NULL);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _e_exebuf_cb_mouse_wheel(void *data, int type, void *event)
 {
    Ecore_Event_Mouse_Wheel *ev;
    
    ev = event;
-   if (ev->event_window != input_window) return 1;
+   if (ev->event_window != input_window) return EINA_TRUE;
 
    ev_last_is_mouse = 0;
 
@@ -1536,10 +1535,10 @@ _e_exebuf_cb_mouse_wheel(void *data, int type, void *event)
 	
 	for (i = ev->z; i > 0; i--) _e_exebuf_next();
      }
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _e_exebuf_exe_scroll_timer(void *data)
 {
    if (exe_scroll_to)
@@ -1548,13 +1547,13 @@ _e_exebuf_exe_scroll_timer(void *data)
 
 	spd = exebuf_conf->scroll_speed;
 	exe_scroll_align = (exe_scroll_align * (1.0 - spd)) + (exe_scroll_align_to * spd);
-	return 1;
+	return EINA_TRUE;
      }
    exe_scroll_timer = NULL;
-   return 0;
+   return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 _e_exebuf_eap_scroll_timer(void *data)
 {
    if (eap_scroll_to)
@@ -1563,13 +1562,13 @@ _e_exebuf_eap_scroll_timer(void *data)
 
 	spd = exebuf_conf->scroll_speed;
 	eap_scroll_align = (eap_scroll_align * (1.0 - spd)) + (eap_scroll_align_to * spd);
-	return 1;
+	return EINA_TRUE;
      }
    eap_scroll_timer = NULL;
-   return 0;
+   return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 _e_exebuf_animator(void *data)
 {
    if (exe_scroll_to)
@@ -1598,18 +1597,18 @@ _e_exebuf_animator(void *data)
 	  }
 	e_box_align_set(eap_list_object, 0.5, eap_scroll_align);
      }
-   if ((exe_scroll_to) || (eap_scroll_to)) return 1;
+   if ((exe_scroll_to) || (eap_scroll_to)) return EINA_TRUE;
    animator = NULL;
-   return 0;
+   return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 _e_exebuf_idler(void *data)
 {
    struct stat st;
    struct dirent *dp;
    char *dir;
-   char buf[4096];
+   char buf[PATH_MAX];
 
    /* no more path items left - stop scanning */
    if (!exe_path)
@@ -1666,7 +1665,7 @@ _e_exebuf_idler(void *data)
 	       }
 	  }
 	exe_list_idler = NULL;
-	return 0;
+	return EINA_FALSE;
      }
    /* no dir is open - open the first path item */
    if (!exe_dir)
@@ -1715,13 +1714,13 @@ _e_exebuf_idler(void *data)
 	exe_path = eina_list_remove_list(exe_path, exe_path);
      }
    /* we have mroe scannign to do */
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _e_exebuf_update_timer(void *data)
 {
    _e_exebuf_matches_update();
    update_timer = NULL;
-   return 0;
+   return EINA_FALSE;
 }

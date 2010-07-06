@@ -3,12 +3,12 @@
 
 static void _exebuf_conf_new(void);
 static void _exebuf_conf_free(void);
-static int  _exebuf_conf_timer(void *data);
+static Eina_Bool _exebuf_conf_timer(void *data);
 static void _exebuf_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event);
 static void _exebuf_cb_menu_post(void *data, E_Menu *menu);
 static void _exebuf_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
 static void _exebuf_action_exebuf_cb(E_Object *obj, const char *params);
-static int  _exebuf_run_defer_cb(void *data);
+static Eina_Bool _exebuf_run_defer_cb(void *data);
 static void _exebuf_run_cb(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _exebuf_menu_add(void *data, E_Menu *m);
 
@@ -243,12 +243,12 @@ _exebuf_conf_free(void)
 }
 
 /* timer for the config oops dialog (old configuration needs update) */
-static int 
+static Eina_Bool 
 _exebuf_conf_timer(void *data) 
 {
    e_util_dialog_internal(_("Exebuf Configuration Updated"), data);
 
-   return 0;
+   return EINA_FALSE;
 }
 
 /* action callback */
@@ -273,14 +273,14 @@ _exebuf_action_exebuf_cb(E_Object *obj, const char *params)
 }
 
 /* menu item callback(s) */
-static int
+static Eina_Bool
 _exebuf_run_defer_cb(void *data)
 {
    E_Zone *zone;
    
    zone = data;
    if (zone) e_exebuf_show(zone);
-   return 0;
+   return EINA_FALSE;
 }
 
 static void 
