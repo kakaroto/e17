@@ -36,7 +36,7 @@ static void _slide_menu_cb_post(void *data, E_Menu *m);
 static Config_Item *_slide_config_item_get(const char *id);
 static Slideshow *_slide_new(Evas *evas);
 static void _slide_free(Slideshow *ss);
-static int _slide_cb_check(void *data);
+static Eina_Bool _slide_cb_check(void *data);
 static void _slide_get_bg_count(void *data);
 static void _slide_set_bg(void *data, const char *bg);
 static void _slide_set_preview(void *data);
@@ -136,7 +136,7 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 static char *
 _gc_label(E_Gadcon_Client_Class *client_class)
 {
-   return D_ ("Slideshow");
+   return D_("Slideshow");
 }
 
 static Evas_Object *
@@ -410,7 +410,7 @@ _slide_free(Slideshow *ss)
    E_FREE(ss);
 }
 
-static int
+static Eina_Bool 
 _slide_cb_check(void *data)
 {
    Instance *inst;
@@ -441,7 +441,7 @@ _slide_cb_check(void *data)
 	     _slide_set_preview(inst);
 	  }
      }
-   return 1;
+   return EINA_TRUE;
 }
 
 static void
