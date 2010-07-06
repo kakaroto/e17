@@ -433,9 +433,9 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(ngi_conf_item_edd, Config_Item, mouse_over_anim, INT);
    E_CONFIG_VAL(ngi_conf_item_edd, Config_Item, lock_deskswitch, INT);
    E_CONFIG_VAL(ngi_conf_item_edd, Config_Item, ecomorph_features, INT);
-   E_CONFIG_LIST(ngi_conf_item_edd, Config_Item, boxes, ngi_conf_box_edd)
+   E_CONFIG_LIST(ngi_conf_item_edd, Config_Item, boxes, ngi_conf_box_edd);
 
-     ngi_conf_edd = E_CONFIG_DD_NEW("Ngi_Config", Config);
+   ngi_conf_edd = E_CONFIG_DD_NEW("Ngi_Config", Config);
    E_CONFIG_LIST(ngi_conf_edd, Config, items, ngi_conf_item_edd);
 
    ngi_config = (Config*) e_config_domain_load("module.itask-ng", ngi_conf_edd);
