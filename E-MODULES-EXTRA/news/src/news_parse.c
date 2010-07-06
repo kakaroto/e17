@@ -108,7 +108,7 @@ news_parse_shutdown(void)
 
 void
 news_parse_go(News_Feed_Document *doc,
-              void (cb_func) (News_Feed_Document *doc, News_Parse_Error error, int changes))
+              void (*cb_func) (News_Feed_Document *doc, News_Parse_Error error, int changes))
 {
    News_Parse *parser;
 
