@@ -16,6 +16,7 @@
 
 /* Gettext: you need to use the D_ prefix for all your messages,
  * like  printf D_("Hello World\n");  so can be replaced by gettext */
+#include <libintl.h>
 #define D_(str) dgettext(PACKAGE, str)
 
 /* We create a structure config for our module, and also a config structure

@@ -11,7 +11,7 @@ static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
 
 static void _skel_conf_new(void);
 static void _skel_conf_free(void);
-static int _skel_conf_timer(void *data);
+static Eina_Bool _skel_conf_timer(void *data);
 static Config_Item *_skel_conf_item_get(const char *id);
 static void _skel_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event);
 static void _skel_cb_menu_post(void *data, E_Menu *menu);
@@ -379,11 +379,11 @@ _skel_conf_free(void)
 }
 
 /* timer for the config oops dialog (old configuration needs update) */
-static int 
+static Eina_Bool 
 _skel_conf_timer(void *data) 
 {
-   e_util_dialog_show( D_("Skeleton Configuration Updated"), data);
-   return 0;
+   e_util_dialog_internal( D_("Skeleton Configuration Updated"), data);
+   return EINA_FALSE;
 }
 
 /* function to search for any Config_Item struct for this Item
