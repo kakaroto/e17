@@ -54,8 +54,8 @@ static void _mail_menu_cb_exec (void *data, E_Menu * m, E_Menu_Item * mi);
 static Config_Item *_mail_config_item_get (const char *id);
 static Mail *_mail_new (Evas * evas);
 static void _mail_free (Mail * mail);
-static int _mail_cb_check (void *data);
-static int _mail_cb_exe_exit (void *data, int type, void *event);
+static Eina_Bool _mail_cb_check (void *data);
+static Eina_Bool _mail_cb_exe_exit (void *data, int type, void *event);
 
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
@@ -601,15 +601,14 @@ _mail_free (Mail * mail)
   mail = NULL;
 }
 
-static int
+static Eina_Bool
 _mail_cb_check (void *data)
 {
   Instance *inst = data;
   Eina_List *l;
   int have_imap = 0, have_pop = 0, have_mbox = 0;
 
-  if (!inst)
-    return 1;
+  if (!inst) return EINA_TRUE;
 
   for (l = inst->ci->boxes; l; l = l->next)
     {
@@ -643,7 +642,7 @@ _mail_cb_check (void *data)
      _mail_pop_check_mail (inst);     
    if (have_mbox)
      _mail_mbox_check_mail (inst);
-   return 1;
+   return EINA_TRUE;
 }
 
 void
@@ -694,17 +693,16 @@ _mail_start_exe (void *data)
   cb->exe = ecore_exe_run (cb->exec, cb);
 }
 
-static int
+static Eina_Bool
 _mail_cb_exe_exit (void *data, int type, void *event)
 {
   Config_Box *cb;
 
   cb = data;
-  if (!cb)
-    return 0;
+  if (!cb) return EINA_FALSE;
   cb->exe = NULL;
   ecore_event_handler_del (exit_handler);
-  return 0;
+  return EINA_FALSE;
 }
 
 void

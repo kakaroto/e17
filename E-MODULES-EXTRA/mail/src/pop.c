@@ -2,9 +2,9 @@
 #include "e_mod_main.h"
 #include "pop.h"
 
-static int _mail_pop_server_add (void *data, int type, void *event);
-static int _mail_pop_server_del (void *data, int type, void *event);
-static int _mail_pop_server_data (void *data, int type, void *event);
+static Eina_Bool _mail_pop_server_add (void *data, int type, void *event);
+static Eina_Bool _mail_pop_server_del (void *data, int type, void *event);
+static Eina_Bool _mail_pop_server_data (void *data, int type, void *event);
 static PopClient *_mail_pop_client_get (void *data);
 static PopClient *_mail_pop_client_get_from_server (void *data);
 static void _mail_pop_client_quit (void *data);
@@ -119,29 +119,27 @@ _mail_pop_shutdown ()
 }
 
 /* PRIVATES */
-static int
+static Eina_Bool
 _mail_pop_server_add (void *data, int type, void *event)
 {
   Ecore_Con_Event_Server_Add *ev = event;
   PopClient *pc;
 
   pc = _mail_pop_client_get_from_server (ev->server);
-  if (!pc)
-    return 1;
+  if (!pc) return EINA_TRUE;
 
   pc->state = POP_STATE_CONNECTED;
-  return 0;
+  return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 _mail_pop_server_del (void *data, int type, void *event)
 {
   Ecore_Con_Event_Server_Del *ev = event;
   PopClient *pc;
 
   pc = _mail_pop_client_get_from_server (ev->server);
-  if (!pc)
-    return 1;
+  if (!pc) return EINA_TRUE;
 
   if (pc->state == POP_STATE_DISCONNECTED)
     printf ("Pop Server Disconnected\n");
@@ -150,10 +148,10 @@ _mail_pop_server_del (void *data, int type, void *event)
   pc->server = NULL;
   pc->state = POP_STATE_DISCONNECTED;
 
-  return 0;
+  return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 _mail_pop_server_data (void *data, int type, void *event)
 {
   Ecore_Con_Event_Server_Data *ev = event;
@@ -162,10 +160,8 @@ _mail_pop_server_data (void *data, int type, void *event)
   int len, num = 0, total = 0;
 
   pc = _mail_pop_client_get_from_server (ev->server);
-  if (!pc)
-    return 1;
-  if (pc->state == POP_STATE_DISCONNECTED)
-    return 1;
+  if (!pc) return EINA_TRUE;
+  if (pc->state == POP_STATE_DISCONNECTED) return EINA_TRUE;
 
   len = sizeof (in) - 1;
   len = (((len) > (ev->size)) ? ev->size : len);
@@ -176,13 +172,13 @@ _mail_pop_server_data (void *data, int type, void *event)
     {
       printf ("ERROR: %s\n", in);
       _mail_pop_client_quit (pc);
-      return 0;
+      return EINA_FALSE;
     }
   else if (strncmp (in, "+OK", 3))
     {
       printf ("Unexpected reply: %s\n", in);
       _mail_pop_client_quit (pc);
-      return 0;
+      return EINA_FALSE;
     }
 
   pc->state++;
@@ -213,7 +209,7 @@ _mail_pop_server_data (void *data, int type, void *event)
     default:
       break;
     }
-  return 0;
+  return EINA_FALSE;
 }
 
 static PopClient *

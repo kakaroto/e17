@@ -19,15 +19,15 @@
 
 static ImapClient *_mail_imap_client_find (Ecore_Con_Server *server);
 static ImapClient *_mail_imap_client_get (Config_Box *cb);
-static int _mail_imap_server_add (void *data, int type, void *event);
-static int _mail_imap_server_del (void *data, int type, void *event);
-static int _mail_imap_server_data (void *data, int type, void *event);
+static Eina_Bool _mail_imap_server_add (void *data, int type, void *event);
+static Eina_Bool _mail_imap_server_del (void *data, int type, void *event);
+static Eina_Bool _mail_imap_server_data (void *data, int type, void *event);
 static int _mail_imap_server_data_parse (ImapClient *ic, char *line);
 static void _mail_imap_client_logout (ImapClient *ic);
 static void _mail_imap_server_idle (ImapClient *ic);
 static void _mail_imap_server_noop (ImapClient *ic);
 
-static int   elements (char *p);
+static int elements (char *p);
 static char *find_rn (char *data, unsigned int size);
 
 static Eina_List *iclients = NULL;
@@ -210,31 +210,29 @@ _mail_imap_client_get (Config_Box *cb)
    return ic;
 }
 
-static int
+static Eina_Bool
 _mail_imap_server_add (void *data, int type, void *event)
 {
    Ecore_Con_Event_Server_Add *ev = event;
    ImapClient *ic;
 
    ic = _mail_imap_client_find (ev->server);
-   if (!ic)
-     return 1;
+   if (!ic) return EINA_TRUE;
 
    D ("Connect to %s:%s\n", ic->config->host, ic->config->new_path);
    ic->state = IMAP_STATE_CONNECTED;
    ic->cmd = 1;
-   return 0;
+   return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 _mail_imap_server_del (void *data, int type, void *event)
 {
    Ecore_Con_Event_Server_Del *ev = event;
    ImapClient *ic;
 
    ic = _mail_imap_client_find (ev->server);
-   if (!ic)
-     return 1;
+   if (!ic) return EINA_TRUE;
 
    D ("Disconnect from %s:%s\n", ic->config->host, ic->config->new_path);
    if (ic->state != IMAP_STATE_DISCONNECTED)
@@ -253,10 +251,10 @@ _mail_imap_server_del (void *data, int type, void *event)
        && (ic->config->use_exec) && (ic->config->exec))
      _mail_start_exe (ic->config);
 
-   return 0;
+   return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 _mail_imap_server_data (void *data, int type, void *event)
 {
    Ecore_Con_Event_Server_Data *ev = event;
@@ -266,10 +264,8 @@ _mail_imap_server_data (void *data, int type, void *event)
    unsigned int len, size;
 
    ic = _mail_imap_client_find (ev->server);
-   if (!ic)
-     return 1;
-   if (ic->state == IMAP_STATE_DISCONNECTED)
-     return 1;
+   if (!ic) return EINA_TRUE;
+   if (ic->state == IMAP_STATE_DISCONNECTED) return EINA_TRUE;
 
    D ("Data from %s:%s\n", ic->config->host, ic->config->new_path);
 
@@ -282,7 +278,7 @@ _mail_imap_server_data (void *data, int type, void *event)
 	memcpy (ic->prev.data + ic->prev.size, ev->data, ev->size);
 	ic->prev.size += ev->size;
 	E_FREE (ev->data);
-	if (ic->prev.size < 2) return 0;
+	if (ic->prev.size < 2) return EINA_FALSE;
 
 	reply = ic->prev.data;
 	size = ic->prev.size;
@@ -333,7 +329,7 @@ _mail_imap_server_data (void *data, int type, void *event)
 	       {
 		  printf ("Imap Failure: Couldn't find EOL\n");
 		  _mail_imap_client_logout (ic);
-		  return 0;
+		  return EINA_FALSE;
 	       }
 	     *pp = '\0';
 	     /* parse data */
@@ -341,7 +337,7 @@ _mail_imap_server_data (void *data, int type, void *event)
 	       {
 		  printf ("Imap Failure: Couldn't parse data\n");
 		  _mail_imap_client_logout (ic);
-		  return 0;
+		  return EINA_FALSE;
 	       }
 	     /* next */
 	     p = pp + 2;
@@ -408,7 +404,7 @@ _mail_imap_server_data (void *data, int type, void *event)
      ic->cmd = 1;
    _mail_set_text (ic->data);
    D ("\n");
-   return 0;
+   return EINA_FALSE;
 }
 
 static int
