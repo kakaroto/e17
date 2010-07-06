@@ -6,23 +6,23 @@
 /* module private routines */
 static Snow *_snow_init(E_Module *m);
 static void _snow_shutdown(Snow *snow);
-static int _snow_cb_animator(void *data);
+static Eina_Bool _snow_cb_animator(void *data);
 static void _snow_trees_load(Snow *snow);
 static void _snow_flakes_load(char type, Snow *snow);
 
 EAPI E_Module *snow_module = NULL;
 
 /* public module routines. all modules must have these */
-EAPI E_Module_Api e_modapi = {
-   E_MODULE_API_VERSION,
-   "Snow"
+EAPI E_Module_Api e_modapi = 
+{
+   E_MODULE_API_VERSION, "Snow"
 };
 
 EAPI void *
 e_modapi_init(E_Module *m)
 {
    Snow *snow;
-   char buf[4096];
+   char buf[PATH_MAX];
 
    /* Set up module's message catalogue */
    snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
@@ -36,7 +36,7 @@ e_modapi_init(E_Module *m)
 				 buf, e_int_config_snow_module);
 
    snow = _snow_init(m);
-snow_module = m;
+   snow_module = m;
    return snow;
 }
 
@@ -66,9 +66,7 @@ e_modapi_save(E_Module *m)
 {
    Snow *snow;
 
-   snow = m->data;
-   if (!snow)
-      return 1;
+   if (!(snow = m->data)) return 1;
    e_config_domain_save("module.snow", snow->conf_edd, snow->conf);
    return 1;
 }
@@ -81,8 +79,7 @@ _snow_init(E_Module *m)
    Eina_List *managers, *l, *l2;
 
    snow = calloc(1, sizeof(Snow));
-   if (!snow)
-      return NULL;
+   if (!snow) return NULL;
 
    snow->module = m;
    snow->conf_edd = E_CONFIG_DD_NEW("Snow_Config", Config);
@@ -200,9 +197,9 @@ _snow_canvas_reset(Snow *snow)
 static void
 _snow_trees_load(Snow *snow)
 {
-   char buf[4096];
    Evas_Object *o;
    int tw, th, i;
+   char buf[PATH_MAX];
 
    o = evas_object_image_add(snow->canvas);
    snprintf(buf, sizeof(buf), "%s/tree.png", e_module_dir_get(snow->module));
@@ -237,7 +234,7 @@ _snow_flakes_load(char type, Snow *snow)
 {
    Evas_Object *o;
    Evas_Coord xx, yy, ww, hh;
-   char buf[4096];
+   char buf[PATH_MAX];
    int tw, th, i;
    Snow_Flake *flake;
 
@@ -285,7 +282,7 @@ _snow_flakes_load(char type, Snow *snow)
 
 }
 
-static int
+static Eina_Bool
 _snow_cb_animator(void *data)
 {
    Snow *snow;
@@ -309,7 +306,7 @@ _snow_cb_animator(void *data)
 
         next = eina_list_next(next);
      }
-   return 1;
+   return EINA_TRUE;
 }
 
 void
@@ -317,8 +314,6 @@ _snow_cb_config_updated(void *data)
 {
    Snow *s;
 
-   s = (Snow *)data;
-   if (!s)
-      return;
+   if (!(s = data)) return;
    _snow_canvas_reset(s);
 }
