@@ -77,7 +77,7 @@ e_modapi_init(E_Module *m)
     E_CONFIG_VAL(D, T, id, STR);
     E_CONFIG_VAL(D, T, mode, INT);
     E_CONFIG_VAL(D, T, notification, INT);
-    E_CONFIG_VAL(D, T, save_network, INT)
+    E_CONFIG_VAL(D, T, save_network, INT);
 
     conf_edd = E_CONFIG_DD_NEW("Config", Config);
 #undef T
