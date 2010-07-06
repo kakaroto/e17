@@ -27,7 +27,7 @@ e_int_config_eooorg_module(E_Container *con, const char *params)
    char buf[4096];
 
    /* is this config dialog already visible ? */
-   if (e_config_dialog_find("Skel", "advanced/eooorg")) return NULL;
+   if (e_config_dialog_find("eooorg", "advanced/eooorg")) return NULL;
 
    v = E_NEW(E_Config_Dialog_View, 1);
    if (!v) return NULL;
@@ -41,7 +41,7 @@ e_int_config_eooorg_module(E_Container *con, const char *params)
    snprintf(buf, sizeof(buf), "%s/e-module-eooorg.edj", eooorg_conf->module->dir);
 
    /* create our config dialog */
-   cfd = e_config_dialog_new(con, D_("Skeleton Module"), "Skel", 
+   cfd = e_config_dialog_new(con, D_("OpenOffice.org Quickstart"), "eooorg", 
                              "advanced/eooorg", buf, 0, v, NULL);
 
    e_dialog_resizable_set(cfd->dia, 1);

@@ -54,7 +54,7 @@ static const E_Gadcon_Client_Class _gc_class =
 };
 
 /* We set the version and the name, check e_mod_main.h for more details */
-EAPI E_Module_Api e_modapi = {E_MODULE_API_VERSION, "Skel"};
+EAPI E_Module_Api e_modapi = {E_MODULE_API_VERSION, "eooorg"};
 
 /*
  * Module Functions
@@ -80,7 +80,7 @@ e_modapi_init(E_Module *m)
    e_configure_registry_category_add("advanced", 80, "Advanced", 
                                      NULL, "preferences-advanced");
    /* add right-side item */
-   e_configure_registry_item_add("advanced/eooorg", 110, D_("Skel"), 
+   e_configure_registry_item_add("advanced/eooorg", 110, D_("OpenOffice.org Quickstart"), 
                                  NULL, buf, e_int_config_eooorg_module);
 
    /* Define EET Data Storage for the config file */
@@ -303,7 +303,7 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 static char *
 _gc_label(E_Gadcon_Client_Class *client_class) 
 {
-   return D_("Skeleton");
+   return D_("OpenOffice.org Quickstart");
 }
 
 /* so E can keep a unique instance per-container */
@@ -388,7 +388,7 @@ _eooorg_conf_free(void)
 static int 
 _eooorg_conf_timer(void *data) 
 {
-   e_util_dialog_show( D_("Skeleton Configuration Updated"), data);
+   e_util_dialog_show( D_("OpenOffice.org Quickstart Configuration Updated"), data);
    return 0;
 }
 

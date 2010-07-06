@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-06-30 23:53+0200\n"
+"POT-Creation-Date: 2010-07-01 01:03+0200\n"
 "PO-Revision-Date: 2009-11-07 18:18+0000\n"
 "Last-Translator: MixCool <lars.thoms@mixcool.de>\n"
 "Language-Team: German <de@li.org>\n"
@@ -28,13 +28,14 @@ msgstr "Allgemein"
 msgid "Use Switch 1"
 msgstr "Schalter eins benutzen"
 
-#: src/e_mod_main.c:82
+#: src/e_mod_main.c:83
 msgid "Skel"
 msgstr ""
 
-#: src/e_mod_main.c:113
+#: src/e_mod_main.c:114
+#, fuzzy
 msgid ""
-"Skeleton Module Configuration data needed upgrading. Your old "
+"eOOorg Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
 "This<br>will happen regularly during development, so don't report a<br>bug. "
 "This simply means the module needs new configuration<br>data by default for "
@@ -52,9 +53,10 @@ msgstr ""
 "können die<br>Einstellungen nun nach ihrem Belieben neu anpassen. "
 "Entschuldigen Sie die Umstände.<br>"
 
-#: src/e_mod_main.c:133
+#: src/e_mod_main.c:134
+#, fuzzy
 msgid ""
-"Your Skeleton Module configuration is NEWER than the module version. This is "
+"Your eOOorg Module configuration is NEWER than the module version. This is "
 "very<br>strange. This should not happen unless you downgraded<br>the module "
 "or copied the configuration from a place where<br>a newer version of the "
 "module was running. This is bad and<br>as a precaution your configuration "
@@ -67,14 +69,14 @@ msgstr ""
 "Einstellungen wurden vorbeugend auf Standardwerte<br>zurückgesetzt. "
 "Entschuldigen Sie die Umstände.<br>"
 
-#: src/e_mod_main.c:300
+#: src/e_mod_main.c:306
 msgid "Skeleton"
 msgstr ""
 
-#: src/e_mod_main.c:385
+#: src/e_mod_main.c:391
 msgid "Skeleton Configuration Updated"
 msgstr "Skeleton Einstellungen aktualisiert"
 
-#: src/e_mod_main.c:443
+#: src/e_mod_main.c:449
 msgid "Configuration"
 msgstr "Einstellungen"
