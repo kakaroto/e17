@@ -47,6 +47,9 @@
 #include "curl.h"
 #include "elmdentica.h"
 
+#define TWITTER_CONSUMER_KEY    "8EH13DnoxtuFMdklYeZCbQ"
+#define TWITTER_CONSUMER_SECRET "5Ve6mE3AL0eR9ZBUIA1xSNBkY48n1tKQxUrCYizM"
+
 char * avatar=NULL;
 extern struct sqlite3 *ed_DB;
 extern int debug;
