@@ -56,7 +56,7 @@ void photo_popup_info_shutdown(void)
    _popups_info = NULL;
 }
 
-Popup_Info *photo_popup_info_add(Photo_Item *pi, const char *title, const char *text, Picture *picture, int timer, int placement, void (cb_func) (void *data), void *data)
+Popup_Info *photo_popup_info_add(Photo_Item *pi, const char *title, const char *text, Picture *picture, int timer, int placement, void (*cb_func) (void *data), void *data)
 {
   E_Zone *zone;
   Popup_Info *popi;
