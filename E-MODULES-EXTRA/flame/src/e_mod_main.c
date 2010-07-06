@@ -33,8 +33,8 @@ static void _flame_zero_set (Flame_Face * ff);
 static void _flame_base_random_set (Flame_Face * ff);
 static void _flame_base_random_modify (Flame_Face * ff);
 static void _flame_process (Flame_Face * ff);
-static int _flame_cb_draw (void *data);
-static int _flame_cb_event_container_resize (void *data, int type, void *event);
+static Eina_Bool _flame_cb_draw (void *data);
+static Eina_Bool _flame_cb_event_container_resize (void *data, int type, void *event);
 
 static int powerof (unsigned int n);
 
@@ -706,7 +706,7 @@ _flame_process (Flame_Face * ff)
 }
 
 /* draw a flame on the evas */
-static int
+static Eina_Bool
 _flame_cb_draw (void *data)
 {
   Flame_Face *ff;
@@ -751,10 +751,10 @@ _flame_cb_draw (void *data)
 				     ff->flame->conf->height);
 
   /* we loop indefinitely */
-  return 1;
+  return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _flame_cb_event_container_resize (void *data, int type, void *event)
 {
   Flame_Face *ff;
@@ -780,12 +780,12 @@ _flame_cb_event_container_resize (void *data, int type, void *event)
     free (ff->f_array1);
   ff->f_array1 = (unsigned int *) malloc (size);
   if (!ff->f_array1)
-    return 0;
+    return EINA_FALSE;
   if (ff->f_array2)
     free (ff->f_array2);
   ff->f_array2 = (unsigned int *) malloc (size);
   if (!ff->f_array2)
-    return 0;
+    return EINA_FALSE;
 
   /* allocation of the image */
   ff->ims = powerof (ff->ww);
@@ -793,7 +793,7 @@ _flame_cb_event_container_resize (void *data, int type, void *event)
 			      ff->flame->conf->height);
   evas_object_image_fill_set (o, 0, 0, 1 << ff->ims, ff->flame->conf->height);
   ff->im = (unsigned int *) evas_object_image_data_get (ff->flame_object, 1);
-  return 1;
+  return EINA_TRUE;
 }
 
 /* return the power of a number (eg powerof(8)==3, powerof(256)==8,
