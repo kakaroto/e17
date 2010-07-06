@@ -40,7 +40,7 @@ static void _wlan_menu_cb_post (void *data, E_Menu * m);
 static Config_Item *_wlan_config_item_get (const char *id);
 static Wlan *_wlan_new (Evas * evas);
 static void _wlan_free (Wlan * wlan);
-static int _wlan_cb_check (void *data);
+static Eina_Bool _wlan_cb_check (void *data);
 static void _wlan_update_qual (void *data, double value);
 static void _wlan_update_level (void *data, double value);
 
@@ -49,10 +49,13 @@ static E_Config_DD *conf_item_edd = NULL;
 
 Config *wlan_config = NULL;
 
-static const E_Gadcon_Client_Class _gc_class = {
-  GADCON_CLIENT_CLASS_VERSION,
-  "wlan", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL, NULL},
-  E_GADCON_CLIENT_STYLE_PLAIN
+static const E_Gadcon_Client_Class _gc_class = 
+{
+   GADCON_CLIENT_CLASS_VERSION, "wlan", 
+ {
+    _gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL, NULL
+ },
+   E_GADCON_CLIENT_STYLE_PLAIN
 };
 
 static E_Gadcon_Client *
@@ -111,7 +114,7 @@ static Evas_Object *
 _gc_icon (E_Gadcon_Client_Class *client_class, Evas * evas)
 {
   Evas_Object *o;
-  char buf[4096];
+  char buf[PATH_MAX];
 
   o = edje_object_add (evas);
   snprintf (buf, sizeof (buf), "%s/e-module-wlan.edj",
@@ -139,8 +142,7 @@ _gc_shutdown (E_Gadcon_Client * gcc)
     ecore_timer_del (inst->check_timer);
   wlan_config->instances = eina_list_remove (wlan_config->instances, inst);
   _wlan_free (inst->wlan);
-  free (inst);
-  inst = NULL;
+   E_FREE(inst);
 }
 
 static void
@@ -184,10 +186,9 @@ _wlan_cb_mouse_down (void *data, Evas * e, Evas_Object * obj, void *event_info)
 static void
 _wlan_menu_cb_post (void *data, E_Menu * m)
 {
-  if (!wlan_config->menu)
-    return;
-  e_object_del (E_OBJECT (wlan_config->menu));
-  wlan_config->menu = NULL;
+   if (!wlan_config->menu) return;
+   e_object_del (E_OBJECT (wlan_config->menu));
+   wlan_config->menu = NULL;
 }
 
 static void
@@ -204,8 +205,7 @@ _wlan_config_updated (Config_Item *ci)
 {
   Eina_List *l;
 
-  if (!wlan_config)
-    return;
+  if (!wlan_config) return;
   for (l = wlan_config->instances; l; l = l->next)
     {
       Instance *inst;
@@ -239,6 +239,7 @@ _wlan_config_item_get (const char *id)
 	if (wlan_config->items)
 	  {
 	     const char *p;
+
 	     ci = eina_list_last (wlan_config->items)->data;
 	     p = strrchr (ci->id, '.');
 	     if (p) num = atoi (p + 1) + 1;
@@ -251,14 +252,13 @@ _wlan_config_item_get (const char *id)
 	for (l = wlan_config->items; l; l = l->next)
 	  {
 	     ci = l->data;
-	     if (!ci->id)
-	       continue;
+	     if (!ci->id) continue;
 	     if (!strcmp (ci->id, id)) 
 	       {
 		  if (!ci->device)
 		    ci->device = eina_stringshare_add ("wlan0");
 		  return ci;
-	       }       
+	       }
 	  }
      }
    ci = E_NEW (Config_Item, 1);
@@ -272,15 +272,15 @@ _wlan_config_item_get (const char *id)
    return ci;
 }
 
-EAPI E_Module_Api e_modapi = {
-  E_MODULE_API_VERSION,
-  "Wlan"
+EAPI E_Module_Api e_modapi = 
+{
+  E_MODULE_API_VERSION, "Wlan"
 };
 
 EAPI void *
 e_modapi_init (E_Module * m)
 {
-  char buf[4096];
+  char buf[PATH_MAX];
 
   snprintf (buf, sizeof (buf), "%s/locale", e_module_dir_get (m));
   bindtextdomain (PACKAGE, buf);
@@ -349,14 +349,11 @@ e_modapi_shutdown (E_Module * m)
 	eina_stringshare_del (ci->id);
       if (ci->device)
 	eina_stringshare_del (ci->device);
-	
-      free (ci);
-      ci = NULL;
+       E_FREE(ci);
     }
-  free (wlan_config);
-  wlan_config = NULL;
-  E_CONFIG_DD_FREE (conf_item_edd);
-  E_CONFIG_DD_FREE (conf_edd);
+   E_FREE(wlan_config);
+   E_CONFIG_DD_FREE (conf_item_edd);
+   E_CONFIG_DD_FREE (conf_edd);
   return 1;
 }
 
@@ -371,7 +368,7 @@ static Wlan *
 _wlan_new (Evas * evas)
 {
   Wlan *wlan;
-  char buf[4096];
+  char buf[PATH_MAX];
 
   wlan = E_NEW (Wlan, 1);
 
@@ -389,9 +386,8 @@ _wlan_new (Evas * evas)
 static void
 _wlan_free (Wlan * m)
 {
-  evas_object_del (m->wlan_obj);
-  free (m);
-  m = NULL;
+   evas_object_del (m->wlan_obj);
+   E_FREE(m);
 }
 
 static void
@@ -413,7 +409,7 @@ _wlan_cb_mouse_out (void *data, Evas * e, Evas_Object * obj, void *event_info)
     edje_object_signal_emit (inst->wlan_obj, "label_passive", "");
 }
 
-static int
+static Eina_Bool
 _wlan_cb_check (void *data)
 {
    Instance *inst;
@@ -427,13 +423,11 @@ _wlan_cb_check (void *data)
    int wlan_link = 0;
    int wlan_level = 0;
    int wlan_noise = 0;
-
    char omsg[100];
    char in_str[100];
 
    stat = fopen("/proc/net/wireless", "r");
-   if (!stat)
-      return 1;
+   if (!stat) return EINA_TRUE;
 
    inst = data;
    
@@ -461,10 +455,9 @@ _wlan_cb_check (void *data)
      }
    fclose(stat);
 
-   if (!found_dev)
-      return 1;
+   if (!found_dev) return EINA_TRUE;
 
-  snprintf(in_str, sizeof(in_str), "LNK: %d%%", wlan_link);
+   snprintf(in_str, sizeof(in_str), "LNK: %d%%", wlan_link);
 
    double link_send = ((double)wlan_link / (double)100.0);
    double level_send = ((double)wlan_level / (double)100.0);
@@ -478,7 +471,7 @@ _wlan_cb_check (void *data)
    snprintf(omsg,sizeof(omsg),"Lvl: %d%%", wlan_level);
    edje_object_part_text_set(inst->wlan_obj, "level_label", omsg);
 
-  return 1;
+  return EINA_TRUE;
 }
 
 static void 
@@ -499,7 +492,7 @@ _wlan_update_level(void *data, double value)
 {
    Instance *inst;
    Edje_Message_Float *val;
-   
+
    inst = data;
    val = malloc(sizeof(Edje_Message_Float));
    val->val = value;   
