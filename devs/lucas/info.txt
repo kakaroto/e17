@@ -3,5 +3,6 @@ IRC Nick:       demarchi/lucasdemarchi
 Name:           Lucas De Marchi
 Location:       Campinas, Brazil
 E-Mail:         lucas.demarchi@profusion.mobi
-Contributing:   e, e_dbus, elementary
+WWW:            www.politreco.com
+Contributing:   e, e_dbus, elementary, ecore, eina, test_suites
 Platform:       Arch (Linux)
