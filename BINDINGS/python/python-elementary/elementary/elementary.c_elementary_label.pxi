@@ -21,8 +21,27 @@ cdef class Label(Object):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_label_add(parent.obj))
 
-    def label_set(self, label):
-        elm_label_label_set(self.obj,label)
+    def label_get(self):
+        """Returns the label string set.
+
+        @rtype: str
+        """
+        cdef char *l
+        l = elm_label_label_get(self.obj)
+        if l == NULL:
+            return None
+        return l
+
+    def label_set(self, char *label):
+        """Set the label string"""
+        elm_label_label_set(self.obj, label)
+
+    property label:
+        def __get__(self):
+            return self.label_get()
+
+        def __set__(self, label):
+            self.label_set(label)
 
 
 _elm_widget_type_register("label", Label)
