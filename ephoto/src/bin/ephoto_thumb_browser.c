@@ -18,7 +18,7 @@ static void _ephoto_change_directory(void *data, Evas_Object *obj, void *event_i
 /*Inline Variables*/
 static Elm_Gengrid_Item_Class eg;
 static Ethumb_Client *ec;
-static char *current_directory;
+static const char *current_directory;
 static int cur_val;
 static Ecore_Thread *thread = NULL;
 static Evas_Object *toolbar, *dir_label, *thumb_slider, *thbox;
@@ -35,7 +35,7 @@ ephoto_create_thumb_browser(void)
 	ec = ethumb_client_connect(_ephoto_thumber_connected, NULL, NULL);
 
 	getcwd(buf, PATH_MAX);
-	current_directory = strdup(buf);
+	current_directory = eina_stringshare_add(buf);
 
 	toolbar = elm_toolbar_add(em->win);
 	elm_toolbar_icon_size_set(toolbar, 24);
@@ -138,7 +138,7 @@ ephoto_delete_thumb_browser(void)
 		evas_object_del(eina_list_data_get(items));
 		items = eina_list_next(items);
 	}
-	free(current_directory);
+	eina_stringshare_del(current_directory);
 	evas_object_del(toolbar);
 	evas_object_del(em->thumb_browser);
 	evas_object_del(dir_label);
@@ -218,7 +218,7 @@ ephoto_populate_thumbnails(void)
 
 	it = eina_file_ls(current_directory);
 	if (!it) return ;
-
+	printf("%s\n", current_directory);
 	thread = ecore_long_run(_ephoto_access_disk,
 				_ephoto_populate_notify,
 				_ephoto_populate_end,
@@ -382,8 +382,8 @@ _ephoto_directory_chosen(void *data, Evas_Object *obj, void *event_info)
 	if (directory && strcmp(directory, current_directory))
 	{
 		elm_gengrid_clear(em->thumb_browser);
-		free(current_directory);
-		current_directory = strdup(directory);
+		eina_stringshare_del(current_directory);
+		current_directory = eina_stringshare_add(directory);
 		eina_list_free(em->images);
 		em->images = NULL;
 		ephoto_populate_thumbnails();
