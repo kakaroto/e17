@@ -13,10 +13,12 @@ static Eina_Bool _ephoto_get_state(const void *data, Evas_Object *obj, const cha
 static void _ephoto_grid_del(const void *data, Evas_Object *obj);
 static void _ephoto_thumb_clicked(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _ephoto_view_large(void *data, Evas_Object *obj, void *event_info);
+static void _ephoto_change_directory(void *data, Evas_Object *obj, void *event_info);
 
 /*Inline Variables*/
 static Elm_Gengrid_Item_Class eg;
 static Ethumb_Client *ec;
+static char *current_directory;
 static int cur_val;
 static Ecore_Thread *thread = NULL;
 static Evas_Object *toolbar, *dir_label, *thumb_slider, *thbox;
@@ -33,6 +35,7 @@ ephoto_create_thumb_browser(void)
 	ec = ethumb_client_connect(_ephoto_thumber_connected, NULL, NULL);
 
 	getcwd(buf, PATH_MAX);
+	current_directory = strdup(buf);
 
 	toolbar = elm_toolbar_add(em->win);
 	elm_toolbar_icon_size_set(toolbar, 24);
@@ -44,7 +47,7 @@ ephoto_create_thumb_browser(void)
 
 	o = elm_icon_add(em->win);
 	elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/change_directory.png", NULL);
-	elm_toolbar_item_add(toolbar, o, "Change Directory", NULL, NULL);
+	elm_toolbar_item_add(toolbar, o, "Change Directory", _ephoto_change_directory, NULL);
 
 	o = elm_icon_add(em->win);
 	elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/filter.png", NULL);
@@ -135,7 +138,7 @@ ephoto_delete_thumb_browser(void)
 		evas_object_del(eina_list_data_get(items));
 		items = eina_list_next(items);
 	}
-
+	free(current_directory);
 	evas_object_del(toolbar);
 	evas_object_del(em->thumb_browser);
 	evas_object_del(dir_label);
@@ -210,12 +213,10 @@ void
 ephoto_populate_thumbnails(void)
 {
 	Eina_Iterator *it;
-	char *dir, cwd[PATH_MAX];
 
-	dir = getcwd(cwd, PATH_MAX);
-	if (!dir) return ;
+	if (!current_directory) return ;
 
-	it = eina_file_ls(dir);
+	it = eina_file_ls(current_directory);
 	if (!it) return ;
 
 	thread = ecore_long_run(_ephoto_access_disk,
@@ -359,6 +360,39 @@ _ephoto_thumb_clicked(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	}
 }
 
+/*File Selector is show*/
+static void
+_ephoto_fileselector_shown(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+	elm_fileselector_path_set(obj, current_directory);
+	evas_render(em->e);
+}
+
+/*Directory has been chosen*/
+static void
+_ephoto_directory_chosen(void *data, Evas_Object *obj, void *event_info)
+{
+	Evas_Object *win;
+	const char *directory;
+
+	win = (Evas_Object *)data;
+
+	directory = elm_fileselector_selected_get(obj);
+
+	if (directory && strcmp(directory, current_directory))
+	{
+		elm_gengrid_clear(em->thumb_browser);
+		free(current_directory);
+		current_directory = strdup(directory);
+		eina_list_free(em->images);
+		em->images = NULL;
+		ephoto_populate_thumbnails();
+	}
+	evas_object_del(obj);
+	evas_object_del(win);
+	elm_toolbar_item_unselect_all(toolbar);
+}
+
 /*Show the flow browser*/
 static void 
 _ephoto_view_large(void *data, Evas_Object *obj, void *event_info)
@@ -384,3 +418,28 @@ _ephoto_view_large(void *data, Evas_Object *obj, void *event_info)
 
 	elm_toolbar_item_unselect_all(toolbar);
 }
+
+/*Change directory*/
+static void
+_ephoto_change_directory(void *data, Evas_Object *obj, void *event_info)
+{
+	Evas_Object *win, *fsel;
+
+	win = elm_win_inwin_add(em->win);
+	
+	fsel = elm_fileselector_add(em->win);
+	elm_fileselector_folder_only_set(fsel, EINA_TRUE);
+	elm_fileselector_expandable_set(fsel, EINA_TRUE);
+	elm_fileselector_buttons_ok_cancel_set(fsel, EINA_TRUE);
+	evas_object_event_callback_add(fsel, EVAS_CALLBACK_SHOW, 
+					_ephoto_fileselector_shown, NULL);
+	evas_object_smart_callback_add(fsel, "done", 
+					_ephoto_directory_chosen, win);
+
+	elm_win_inwin_content_set(win, fsel);
+	elm_win_inwin_activate(win);
+
+	evas_object_show(fsel);
+	evas_object_show(win);
+}
+
