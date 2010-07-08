@@ -22,7 +22,7 @@ IUSE="exchange pam alsa tracker pm-utils debug xinerama xscreensaver opengl blue
 	+conf-startup +conf-theme +conf-winlist \
 	connman +cpufreq +dropshadow +everything \
 	+everything-files +everything-apps +everything-calc +everything-aspell +everything-settings +everything-windows \
-	+fileman +ibar +ibox +illume2 +illume ofono +pager +start +syscon +systray \
+	+fileman +ibar +ibox +illume2 +illume ofono +pager +start +sysactions +syscon +systray \
 	+temperature +winlist +wizard"
 EVRY_MODS=(everything-files everything-apps everything-calc everything-aspell everything-settings everything-windows)
 CONF_MODS=(conf-borders conf-colors conf-desklock conf-desk conf-desks \
@@ -73,6 +73,7 @@ src_configure() {
 	  --disable-install-sysactions
 	  $(use_enable hal device-hal)
 	  $(use_enable udev device-udev)
+	  $(use_enable sysactions install-sysactions)
 	  $(use_enable pam)
 	  $(use_enable alsa mixer)
 	  $(use_enable exchange)
