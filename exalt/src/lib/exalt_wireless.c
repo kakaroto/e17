@@ -13,7 +13,7 @@ int _exalt_wireless_save_essid_set(Exalt_Wireless* w,const char* essid);
 int _exalt_wireless_scan(Exalt_Wireless *w);
 
 void _exalt_wireless_wpa_connect(Exalt_Wireless *w);
-int _exalt_wireless_wpa_cb(void *data, Ecore_Fd_Handler *fd_handler);
+Eina_Bool _exalt_wireless_wpa_cb(void *data, Ecore_Fd_Handler *fd_handler);
 
 /**
  * @addtogroup Exalt_Wireless
@@ -527,7 +527,7 @@ void _exalt_wireless_wpa_connect(Exalt_Wireless *w)
 /**
  * Retrieve notification from the wpa_supplicant daemon
  */
-int _exalt_wireless_wpa_cb(void *data, Ecore_Fd_Handler *fd_handler)
+Eina_Bool _exalt_wireless_wpa_cb(void *data, Ecore_Fd_Handler *fd_handler)
 {
     Exalt_Wireless *w = data;
     Exalt_Ethernet *eth = exalt_wireless_eth_get(w);
@@ -589,7 +589,7 @@ int _exalt_wireless_wpa_cb(void *data, Ecore_Fd_Handler *fd_handler)
 
     }
 
-    return 1;
+    return EINA_TRUE;
 }
 
 /**

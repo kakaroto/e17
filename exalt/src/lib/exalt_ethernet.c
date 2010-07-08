@@ -32,7 +32,7 @@ void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error);
 int _exalt_eth_udi_remove(const char* udi);
 
 
-int _exalt_apply_timer(void *data);
+Eina_Bool _exalt_apply_timer(void *data);
 int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth);
 int _exalt_eth_apply_static(Exalt_Ethernet *eth);
 
@@ -1085,7 +1085,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
  * When it's done, the callback function is called
  * @param data the Exalt_Ethernet struct of the interface
  */
-int _exalt_apply_timer(void *data)
+Eina_Bool _exalt_apply_timer(void *data)
 {
     Exalt_Ethernet* eth = data;
     int res;
@@ -1094,7 +1094,7 @@ int _exalt_apply_timer(void *data)
 
     if(eth->apply_pid!=-1 && res == 0)
     {
-        return 1;
+        return EINA_TRUE;
     }
 
 
@@ -1118,7 +1118,7 @@ int _exalt_apply_timer(void *data)
     if(exalt_eth_interfaces.eth_cb)
         exalt_eth_interfaces.eth_cb(eth,EXALT_IFACE_ACTION_CONF_APPLY_DONE,exalt_eth_interfaces.eth_cb_user_data);
 
-    return 0;
+    return EINA_FALSE;
 }
 
 /**
