@@ -460,7 +460,6 @@ _ephoto_change_directory(void *data, Evas_Object *obj, void *event_info)
 	
 	fsel = elm_fileselector_add(em->win);
 	elm_fileselector_folder_only_set(fsel, EINA_TRUE);
-	elm_fileselector_expandable_set(fsel, EINA_TRUE);
 	elm_fileselector_buttons_ok_cancel_set(fsel, EINA_TRUE);
 	evas_object_event_callback_add(fsel, EVAS_CALLBACK_SHOW, 
 					_ephoto_fileselector_shown, NULL);
