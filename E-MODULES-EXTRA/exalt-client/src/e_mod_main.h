@@ -1,9 +1,9 @@
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
+#include <e.h>
 #include <Exalt_DBus.h>
 #include <Exalt.h>
-#include <e.h>
 #include <E_Notify.h>
 
 /* Macros used for config file versioning */
@@ -411,7 +411,7 @@ void popup_iface_label_create(Popup_Elt *elt, char *buf, int buf_size, const cha
 void popup_notify_scan(char* iface, Eina_List* networks, void* user_data );
 void popup_network_interval_get(Instance* inst, const char* iface, int *id_first, int* id_last, Eina_List** first, Eina_List** last);
 void popup_iface_essid_create(Popup_Elt *elt, char *buf, int buf_size, int quality);
-int popup_scan_timer_cb(void *data);
+Eina_Bool popup_scan_timer_cb(void *data);
 void popup_elt_free(Popup_Elt* elt);
 
 #ifdef ELIVE
