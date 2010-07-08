@@ -14,22 +14,22 @@ char *data1 = "data1";
 char *data2 = "data2";
 char *data3 = "data3";
    
-int timer3_tick(void *data) {
+Eina_Bool timer3_tick(void *data) {
   printf("Tick timer %3.2f\n", ecore_time_get());
-  return 1;
+  return EINA_TRUE;
 }
  
-int timer2_tick(void *data) {
+Eina_Bool timer2_tick(void *data) {
   printf("Repeat timer called at %3.2f seconds, data %p\n",
          ecore_time_get(), data);
-  return 1;
+  return EINA_TRUE;
 }
  
-int timer1_tick(void *data) {
+Eina_Bool timer1_tick(void *data) {
   printf("Once only timer called at %3.2f seconds, data %p\n", 
           ecore_time_get(), data);
   ecore_timer_del(timer2);
-  return 0;
+  return EINA_FALSE;
 }
  
 int main(int argc, char **argv) {

@@ -3,8 +3,8 @@
  */
 #include "ecore_dbus_test.h"
 
-static int ecore_dbus_event_server_add(void *udata, int ev_type, void *ev);
-static int ecore_dbus_event_server_del(void *udata, int ev_type, void *ev);
+static Eina_Bool ecore_dbus_event_server_add(void *udata, int ev_type, void *ev);
+static Eina_Bool ecore_dbus_event_server_del(void *udata, int ev_type, void *ev);
 
 static void ecore_dbus_method_list_names_cb(void *data, Ecore_DBus_Method_Return *reply);
 static void ecore_dbus_method_test_cb(void *data, Ecore_DBus_Method_Return *reply);
@@ -49,7 +49,7 @@ main(int argc, char **argv)
    return 0;
 }
 
-static int
+static Eina_Bool
 ecore_dbus_event_server_add(void *udata, int ev_type, void *ev)
 {
    Ecore_DBus_Event_Server_Add *event;
@@ -82,10 +82,10 @@ ecore_dbus_event_server_add(void *udata, int ev_type, void *ev)
 				      5, "hello", ids, "goodbye");
 
    ecore_list_destroy(ids);
-   return 0;
+   return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 ecore_dbus_event_server_del(void *udata, int ev_type, void *ev)
 {
    Ecore_DBus_Event_Server_Del *event;
@@ -94,7 +94,7 @@ ecore_dbus_event_server_del(void *udata, int ev_type, void *ev)
    printf("ecore_dbus_event_server_del\n");
    svr = NULL;
    ecore_main_loop_quit();
-   return 0;
+   return EINA_FALSE;
 }
 
 static void

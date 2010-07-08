@@ -3,14 +3,14 @@
  */
 #include "ecore_dbus_test.h"
 
-static int ecore_dbus_event_server_add(void *udata, int ev_type, void *ev);
-static int ecore_dbus_event_server_del(void *udata, int ev_type, void *ev);
+static Eina_Bool ecore_dbus_event_server_add(void *udata, int ev_type, void *ev);
+static Eina_Bool ecore_dbus_event_server_del(void *udata, int ev_type, void *ev);
 
 static void ecore_dbus_method_name_has_owner_cb(void *data, Ecore_DBus_Method_Return *reply);
 static void ecore_dbus_method_add_match_cb(void *data, Ecore_DBus_Method_Return *reply);
 static void ecore_dbus_method_error_cb(void *data, const char *error);
 
-static int ecore_dbus_event_server_signal(void *udata, int ev_type, void *ev);
+static Eina_Bool ecore_dbus_event_server_signal(void *udata, int ev_type, void *ev);
 
 static const char *event_type_get(Ecore_DBus_Message_Type type);
 
@@ -51,7 +51,7 @@ main(int argc, char **argv)
    return 0;
 }
 
-static int
+static Eina_Bool
 ecore_dbus_event_server_add(void *udata, int ev_type, void *ev)
 {
    Ecore_DBus_Event_Server_Add *event;
@@ -61,10 +61,10 @@ ecore_dbus_event_server_add(void *udata, int ev_type, void *ev)
    ecore_dbus_method_name_has_owner(event->server, "org.freedesktop.Hal",
 				    ecore_dbus_method_name_has_owner_cb,
 				    ecore_dbus_method_error_cb, NULL);
-   return 0;
+   return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 ecore_dbus_event_server_del(void *udata, int ev_type, void *ev)
 {
    Ecore_DBus_Event_Server_Del *event;
@@ -73,7 +73,7 @@ ecore_dbus_event_server_del(void *udata, int ev_type, void *ev)
    printf("ecore_dbus_event_server_del\n");
    svr = NULL;
    ecore_main_loop_quit();
-   return 0;
+   return EINA_FALSE;
 }
 
 static void
@@ -120,7 +120,7 @@ ecore_dbus_method_error_cb(void *data, const char *error)
    ecore_main_loop_quit();
 }
 
-static int
+static Eina_Bool
 ecore_dbus_event_server_signal(void *udata, int ev_type, void *ev)
 {
    Ecore_DBus_Event_Signal *event;
@@ -137,7 +137,7 @@ ecore_dbus_event_server_signal(void *udata, int ev_type, void *ev)
      {
 	printf("Device removed: %s\n", (char *)event->args[0].value);
      }
-   return 0;
+   return EINA_FALSE;
 }
 
 static const char *

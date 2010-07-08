@@ -22,7 +22,7 @@ Ecore_Exe          *exe2 = NULL;
 Ecore_Exe          *exe3 = NULL;
 Ecore_Exe          *exe4 = NULL;
 
-static int
+static Eina_Bool
 exe_data(void *data, int type, void *event)
 {
    Ecore_Exe_Event_Data *ev;
@@ -47,10 +47,10 @@ exe_data(void *data, int type, void *event)
 	   putchar(((unsigned char *)ev->data)[i]);
      }
    printf("\n");
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 exe_data_count(void *data, int type, void *event)
 {
    Ecore_Exe_Event_Data *ev;
@@ -81,10 +81,10 @@ exe_data_count(void *data, int type, void *event)
 	ecore_exe_terminate(exe0);
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 exe_exit(void *data, int type, void *event)
 {
    Ecore_Exe_Event_Del *ev;
@@ -94,10 +94,10 @@ exe_exit(void *data, int type, void *event)
    exe_count--;
    if (exe_count <= 0)
       ecore_main_loop_quit();
-   return 1;
+   return EINA_TRUE;
 }
 
-int
+Eina_Bool
 timer_once(void *data)
 {
    int                 argc;
@@ -139,7 +139,7 @@ timer_once(void *data)
 	ecore_exe_close_stdin(exe0);	/* /bin/cat should stop when it's stdin closes. */
      }
 
-   return 0;
+   return EINA_FALSE;
 }
 
 int

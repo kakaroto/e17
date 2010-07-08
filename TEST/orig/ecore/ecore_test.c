@@ -14,7 +14,7 @@
 /* APP GLOBALS */
 double start_time = 0;
 
-int
+Eina_Bool
 handler_signal_exit(void *data, int ev_type, void *ev)
 {
    Ecore_Event_Signal_Exit *e;
@@ -24,7 +24,7 @@ handler_signal_exit(void *data, int ev_type, void *ev)
    if (e->quit)      printf("exit: quit\n");
    if (e->terminate) printf("exit: terminate\n");
    ecore_main_loop_quit();
-   return 1;
+   return EINA_TRUE;
 }
 
 
@@ -32,28 +32,28 @@ handler_signal_exit(void *data, int ev_type, void *ev)
 
 
 
-int
+Eina_Bool
 handler_ipc_client_add(void *data, int type, void *event)
 {
    Ecore_Ipc_Event_Client_Add *e;
    
    e = event;
    printf("!!! client %p connected to server!\n", e->client);
-   return 1;
+   return EINA_TRUE;
 }
 
-int
+Eina_Bool
 handler_ipc_client_del(void *data, int type, void *event)
 {
    Ecore_Ipc_Event_Client_Del *e;
    
    e = event;
    printf("!!! client %p disconnected from server!\n", e->client);
-   return 1;
+   return EINA_TRUE;
 }
 
 
-int
+Eina_Bool
 handler_ipc_client_data(void *data, int type, void *event)
 {
    Ecore_Ipc_Event_Client_Data *e;
@@ -65,21 +65,21 @@ handler_ipc_client_data(void *data, int type, void *event)
    /* ecore_ipc_client_del(e->client); */
    /* or we can end a server by: */
    /* ecore_ipc_server_del(ecore_ipc_client_server_get(e->client)); */
-   return 1;
+   return EINA_TRUE;
 }
 
 
-int
+Eina_Bool
 handler_ipc_server_add(void *data, int type, void *event)
 {
    Ecore_Ipc_Event_Server_Add *e;
    
    e = event;
    printf("!!! client made successful connect to server %p!\n", e->server);
-   return 1;
+   return EINA_TRUE;
 }
 
-int
+Eina_Bool
 handler_ipc_server_del(void *data, int type, void *event)
 {
    Ecore_Ipc_Event_Server_Del *e;
@@ -88,10 +88,10 @@ handler_ipc_server_del(void *data, int type, void *event)
    printf("!!! server went away!\n");
    /* clean up our server connection since it went away */
    ecore_ipc_server_del(e->server);
-   return 1;
+   return EINA_TRUE;
 }
 
-int
+Eina_Bool
 handler_ipc_server_data(void *data, int type, void *event)
 {
    Ecore_Ipc_Event_Server_Data *e;
@@ -106,7 +106,7 @@ handler_ipc_server_data(void *data, int type, void *event)
 	printf("!!! go & disconnect from server!\n");
 	ecore_ipc_server_del(e->server);
      }
-   return 1;
+   return EINA_TRUE;
 }
 
 /**** ECORE_CON TEST CODE */
@@ -209,7 +209,7 @@ idler(void *data)
    return 1;
 }
 
-int
+Eina_Bool
 timer(void *data)
 {
    printf("Q- Timer tick %3.8f\n", ecore_time_get() - start_time);
@@ -217,7 +217,7 @@ timer(void *data)
    ecore_job_add(job_call, "1");
    ecore_job_add(job_call, "2");
    ecore_job_add(job_call, "3");
-   return 1;
+   return EINA_TRUE;
 }
 
 void
@@ -232,107 +232,107 @@ setup_ecore_test(void)
 
 Ecore_X_Window win = 0;
 
-int
+Eina_Bool
 handler_x_key_down(void *data, int type, void *event)
 {
    Ecore_X_Event_Key_Down *e;
    
    e = event;
    printf("Key down %s\n", e->keyname);
-   return 1;
+   return EINA_TRUE;
 }
 
-int
+Eina_Bool
 handler_x_key_up(void *data, int type, void *event)
 {
    Ecore_X_Event_Key_Up *e;
    
    e = event;
    printf("Key up %s\n", e->keyname);
-   return 1;
+   return EINA_TRUE;
 }
 
-int
+Eina_Bool
 handler_x_mouse_button_down(void *data, int type, void *event)
 {
    Ecore_X_Event_Mouse_Button_Down *e;
    
    e = event;
    printf("Mouse down %i [%i][%i]\n", e->button, e->double_click, e->triple_click);
-   return 1;
+   return EINA_TRUE;
 }
 
-int
+Eina_Bool
 handler_x_mouse_button_up(void *data, int type, void *event)
 {
    Ecore_X_Event_Mouse_Button_Up *e;
    
    e = event;
    printf("Mouse up %i\n", e->button);
-   return 1;
+   return EINA_TRUE;
 }
 
-int
+Eina_Bool
 handler_x_mouse_move(void *data, int type, void *event)
 {
    Ecore_X_Event_Mouse_Move *e;
    
    e = event;
    printf("Mouse move to %i %i\n", e->x, e->y);
-   return 1;
+   return EINA_TRUE;
 }
 
-int
+Eina_Bool
 handler_x_mouse_in(void *data, int type, void *event)
 {
    Ecore_X_Event_Mouse_In *e;
    
    e = event;
    printf("Mouse in\n");
-   return 1;
+   return EINA_TRUE;
 }
 
-int
+Eina_Bool
 handler_x_mouse_out(void *data, int type, void *event)
 {
    Ecore_X_Event_Mouse_Out *e;
    
    e = event;
    printf("Mouse out\n");
-   return 1;
+   return EINA_TRUE;
 }
 
-int
+Eina_Bool
 handler_x_window_focus_in(void *data, int type, void *event)
 {
    Ecore_X_Event_Window_Focus_In *e;
    
    e = event;
    printf("Focus in\n");
-   return 1;
+   return EINA_TRUE;
 }
 
-int
+Eina_Bool
 handler_x_window_focus_out(void *data, int type, void *event)
 {
    Ecore_X_Event_Window_Focus_Out *e;
    
    e = event;
    printf("Focus out\n");
-   return 1;
+   return EINA_TRUE;
 }
 
-int
+Eina_Bool
 handler_x_window_damage(void *data, int type, void *event)
 {
    Ecore_X_Event_Window_Damage *e;
    
    e = event;
    printf("Damage %i %i, %ix%i\n", e->x, e->y, e->w, e->h);
-   return 1;
+   return EINA_TRUE;
 }
 
-int
+Eina_Bool
 handler_x_window_destroy(void *data, int type, void *event)
 {
    Ecore_X_Event_Window_Destroy *e;
@@ -340,10 +340,10 @@ handler_x_window_destroy(void *data, int type, void *event)
    e = event;
    printf("Destroy\n");
    ecore_main_loop_quit();   
-   return 1;
+   return EINA_TRUE;
 }
 
-int
+Eina_Bool
 handler_x_window_configure(void *data, int type, void *event)
 {
    Ecore_X_Event_Window_Configure *e;
@@ -353,10 +353,10 @@ handler_x_window_configure(void *data, int type, void *event)
    printf("Configure %i %i, %ix%i\n", e->x, e->y, e->w, e->h);
    printf("Switching desktops to %d\n", desktop);
    ecore_x_netwm_desktop_request_send(e->win, 0, desktop);
-   return 1;
+   return EINA_TRUE;
 }
 
-int
+Eina_Bool
 handler_x_window_delete_request(void *data, int type, void *event)
 {
    Ecore_X_Event_Window_Delete_Request *e;
@@ -364,7 +364,7 @@ handler_x_window_delete_request(void *data, int type, void *event)
    e = event;
    printf("Delete Request\n");
    ecore_main_loop_quit();   
-   return 1;
+   return EINA_TRUE;
 }
 
 int
@@ -560,7 +560,7 @@ Ecore_Evas  *ee = NULL;
 Evas        *evas = NULL;
 Evas_Object *objects[64];
 
-int
+Eina_Bool
 obj_timer(void *data)
 {
    Evas_Object *o;
@@ -583,7 +583,7 @@ obj_timer(void *data)
 	y = sin(t * (double)n / 12) * ((h - oh) / 2);
 	evas_object_move(o, (w / 2) - (ow / 2) + x, (h / 2) - (oh / 2) + y);
      }
-   return 1;
+   return EINA_TRUE;
 }
 
 void

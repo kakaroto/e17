@@ -65,11 +65,11 @@ client_del (void *data,
   return 1;
 }
 
-int event_hup(void *data, int ev_type, void *ev)
+Eina_Bool event_hup(void *data, int ev_type, void *ev)
 {
   printf("Hup signal! Remove the server.\n");
   ecore_con_server_del(svr);
-  return 1;
+  return EINA_TRUE;
 }
 
 int main (int argc, char *argv[]) {

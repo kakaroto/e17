@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
  
-int timer_once(void *data)
+Eina_Bool timer_once(void *data)
 {
   int argc;
   char **argv;
@@ -14,7 +14,7 @@ int timer_once(void *data)
   ecore_app_args_get(&argc, &argv);
   for (i = 0; i < argc; i++) printf("ARG %i: %s\n", i, argv[i]);
   ecore_main_loop_quit();
-  return 1;
+  return EINA_TRUE;
 }
  
 int main(int argc, char **argv)

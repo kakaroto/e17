@@ -17,7 +17,7 @@ Evas_Object *o_bar_shad_1[3];
 Evas_Object *o_bar_shad_2[2];
 Evas_Object *o_bg = NULL;
 
-static int bg_animate_obj_timer(void *data);
+static Eina_Bool bg_animate_obj_timer(void *data);
 static void bg_cb_key_up(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void bg_cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
@@ -173,7 +173,7 @@ bg_go(void)
    anim_timer = ecore_timer_add(0.01, bg_animate_obj_timer, NULL);
 }
 
-static int
+static Eina_Bool
 bg_animate_obj_timer(void *data)
 {
    Evas_Object *o;
@@ -269,7 +269,7 @@ bg_animate_obj_timer(void *data)
 			 (h / 2) - (oh / 2) + y + sy);
 	evas_object_show(o);	
      }
-   return 1;
+   return EINA_TRUE;
 }
 
 /* NB: on ipaq

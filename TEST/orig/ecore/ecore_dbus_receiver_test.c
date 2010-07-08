@@ -3,9 +3,9 @@
  */
 #include "ecore_dbus_test.h"
 
-static int ecore_dbus_event_server_add(void *udata, int ev_type, void *ev);
-static int ecore_dbus_event_server_del(void *udata, int ev_type, void *ev);
-static int ecore_dbus_event_method_call(void *udata, int ev_type, void *ev);
+static Eina_Bool ecore_dbus_event_server_add(void *udata, int ev_type, void *ev);
+static Eina_Bool ecore_dbus_event_server_del(void *udata, int ev_type, void *ev);
+static Eina_Bool ecore_dbus_event_method_call(void *udata, int ev_type, void *ev);
 
 static void ecore_dbus_method_error_cb(void *data, const char *error);
 
@@ -49,7 +49,7 @@ main(int argc, char **argv)
    return 0;
 }
 
-static int
+static Eina_Bool
 ecore_dbus_event_server_add(void *udata, int ev_type, void *ev)
 {
    Ecore_DBus_Event_Server_Add *event;
@@ -59,11 +59,11 @@ ecore_dbus_event_server_add(void *udata, int ev_type, void *ev)
 
    ecore_dbus_method_request_name(event->server, "org.enlightenment.Test", 0, NULL, ecore_dbus_method_error_cb, NULL);
    _test_object_init(event->server);
-   return 0;
+   return EINA_FALSE;
 }
 
 
-static int
+static Eina_Bool
 ecore_dbus_event_method_call(void *udata, int ev_type, void *ev)
 {
    Ecore_DBus_Event_Method_Call *event;
@@ -71,10 +71,10 @@ ecore_dbus_event_method_call(void *udata, int ev_type, void *ev)
    event = ev;
    printf("ecore_dbus_event_method_call\n");
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 ecore_dbus_event_server_del(void *udata, int ev_type, void *ev)
 {
    Ecore_DBus_Event_Server_Del *event;
@@ -83,7 +83,7 @@ ecore_dbus_event_server_del(void *udata, int ev_type, void *ev)
    printf("ecore_dbus_event_server_del\n");
    svr = NULL;
    ecore_main_loop_quit();
-   return 0;
+   return EINA_FALSE;
 }
 
 static void

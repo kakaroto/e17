@@ -10,7 +10,7 @@ Ecore_Timer        *timer1 = NULL;
 
 char               *data1 = "data1";
 
-int
+Eina_Bool
 timer1_tick(void *data)
 {
    printf("Once only timer called at %3.2f seconds, data %p\n",
@@ -114,7 +114,7 @@ timer1_tick(void *data)
 	   "with sub Lists. Choices are Lists where the selected item is usually all that is\n");
    fprintf(stderr, "\n");
    ecore_main_loop_quit();
-   return 0;
+   return EINA_FALSE;
 }
 
 int

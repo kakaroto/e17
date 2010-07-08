@@ -38,7 +38,7 @@ struct _Collection
 static int  main_start(int argc, char **argv);
 static void main_stop(void);
 static void main_resize(Ecore_Evas *ee);
-static int  main_signal_exit(void *data, int ev_type, void *ev);
+static Eina_Bool  main_signal_exit(void *data, int ev_type, void *ev);
 static void main_delete_request(Ecore_Evas *ee);
 static void main_pre_rend(Ecore_Evas *ee);
 static void main_post_rend(Ecore_Evas *ee);
@@ -157,11 +157,11 @@ main_resize(Ecore_Evas *ee)
    bg_resize(w, h);
 }
 
-static int
+static Eina_Bool
 main_signal_exit(void *data, int ev_type, void *ev)
 {
    ecore_main_loop_quit();
-   return 1;
+   return EINA_TRUE;
 }
 
 static void

@@ -6,7 +6,7 @@
  
 Ecore_Event_Handler *handler1 = NULL, *handler2 = NULL;
  
-int event_hup(void *data, int ev_type, void *ev)
+Eina_Bool event_hup(void *data, int ev_type, void *ev)
 {
    printf("Hup signal! Remove the exit handler.\n");
    if (handler1)
@@ -14,10 +14,10 @@ int event_hup(void *data, int ev_type, void *ev)
 	ecore_event_handler_del(handler1);
 	handler1 = NULL;
      }
-   return 0;
+   return EINA_FALSE;
 }
 
-int event_exit(void *data, int ev_type, void *ev)
+Eina_Bool event_exit(void *data, int ev_type, void *ev)
 {
    Ecore_Event_Signal_Exit *e;
    
@@ -28,7 +28,7 @@ int event_exit(void *data, int ev_type, void *ev)
    if (e->quit)      printf("Exit: quit\n");
    if (e->terminate) printf("Exit: terminate\n");
    ecore_main_loop_quit();
-   return 1;
+   return EINA_TRUE;
 }
 
 int main(int argc, char **argv)
