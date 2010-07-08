@@ -23,6 +23,13 @@ static int cur_val;
 static Ecore_Thread *thread = NULL;
 static Evas_Object *toolbar, *dir_label, *thumb_slider, *thbox;
 
+typedef struct _Ephoto_Thumb_Data Ephoto_Thumb_Data;
+struct _Ephoto_Thumb_Data
+{
+	const char *thumb_path;
+	const char *file;
+};
+
 /*Create the thumbnail browser object*/
 void
 ephoto_create_thumb_browser(void)
@@ -130,7 +137,9 @@ ephoto_hide_thumb_browser(void)
 void
 ephoto_delete_thumb_browser(void)
 {
-	Eina_List *items;
+	const Eina_List *items, *l, *iter;
+	Elm_Gengrid_Item *item;
+	Ephoto_Thumb_Data *etd;
 
 	items = elm_toolbar_item_get_all(toolbar);
 	while (items)
@@ -138,6 +147,14 @@ ephoto_delete_thumb_browser(void)
 		evas_object_del(eina_list_data_get(items));
 		items = eina_list_next(items);
 	}
+	l = elm_gengrid_items_get(em->thumb_browser);
+        EINA_LIST_FOREACH(l, iter, item)
+        {
+        	etd = (Ephoto_Thumb_Data *)elm_gengrid_item_data_get(item);
+                eina_stringshare_del(etd->thumb_path);
+                eina_stringshare_del(etd->file);
+                free(etd);
+        }
 	eina_stringshare_del(current_directory);
 	evas_object_del(toolbar);
 	evas_object_del(em->thumb_browser);
@@ -274,8 +291,13 @@ _ephoto_thumbnail_generated(void *data, Ethumb_Client *client, int id,
 {
 	if (success)
 	{
-		eina_hash_add(em->thumbs_images, file, eina_stringshare_ref(thumb_path));
-		elm_gengrid_item_append(em->thumb_browser, &eg, file, NULL, NULL);
+		Ephoto_Thumb_Data *etd;
+
+		etd = calloc(1, sizeof(etd));
+		etd->thumb_path = eina_stringshare_add(thumb_path);
+		etd->file = eina_stringshare_add(file);
+
+		elm_gengrid_item_append(em->thumb_browser, &eg, etd, NULL, NULL);
 	}
 }
 
@@ -283,12 +305,12 @@ _ephoto_thumbnail_generated(void *data, Ethumb_Client *client, int id,
 static char *
 _ephoto_get_label(const void *data, Evas_Object *obj, const char *part)
 {
-	char *file;
 	const char *bname;
+	Ephoto_Thumb_Data *etd;
 
-	file = (char *)data;
+	etd = (Ephoto_Thumb_Data *)data;
 
-	bname = basename(file);
+	bname = basename(etd->file);
 
 	return strdup(bname);
 }
@@ -297,12 +319,11 @@ _ephoto_get_label(const void *data, Evas_Object *obj, const char *part)
 static Evas_Object *
 _ephoto_get_icon(const void *data, Evas_Object *obj, const char *part)
 {
-	char *file, *path;
 	Evas_Object *thumb, *o;
+	Ephoto_Thumb_Data *etd;
 
-	file = (char *)data;
-	path = (char *)eina_hash_find(em->thumbs_images, file);
-	
+	etd = (Ephoto_Thumb_Data *)data;
+
 	if (!strcmp(part, "elm.swallow.icon"))
 	{
 		thumb = elm_layout_add(em->win);
@@ -314,7 +335,7 @@ _ephoto_get_icon(const void *data, Evas_Object *obj, const char *part)
 		evas_object_show(thumb);
 
 		o = elm_bg_add(em->win);
-		elm_bg_file_set(o, path, NULL);
+		elm_bg_file_set(o, etd->thumb_path, NULL);
 		evas_object_resize(o, 176, 117);
 
 		elm_layout_content_set(thumb, "ephoto.swallow.content", o);
@@ -343,8 +364,8 @@ _ephoto_grid_del(const void *data, Evas_Object *obj)
 static void 
 _ephoto_thumb_clicked(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-	char *file;
 	const Eina_List *selected;
+	Ephoto_Thumb_Data *etd;
 	Evas_Event_Mouse_Down *emd;
 	Evas_Object *o;
 
@@ -354,9 +375,9 @@ _ephoto_thumb_clicked(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	{
 		selected = elm_gengrid_selected_items_get(em->thumb_browser);
 		o = eina_list_data_get(selected);
-		file = (char *)elm_gengrid_item_data_get((Elm_Gengrid_Item *)o);
+		etd = (Ephoto_Thumb_Data *)elm_gengrid_item_data_get((Elm_Gengrid_Item *)o);
 		ephoto_hide_thumb_browser();
-		ephoto_show_flow_browser(file);
+		ephoto_show_flow_browser(etd->file);
 	}
 }
 
@@ -372,7 +393,10 @@ _ephoto_fileselector_shown(void *data, Evas *e, Evas_Object *obj, void *event_in
 static void
 _ephoto_directory_chosen(void *data, Evas_Object *obj, void *event_info)
 {
+	const Eina_List *l, *iter;
 	Evas_Object *win;
+	Elm_Gengrid_Item *item;
+	Ephoto_Thumb_Data *etd;
 	const char *directory;
 
 	win = (Evas_Object *)data;
@@ -381,6 +405,14 @@ _ephoto_directory_chosen(void *data, Evas_Object *obj, void *event_info)
 
 	if (directory && strcmp(directory, current_directory))
 	{
+		l = elm_gengrid_items_get(em->thumb_browser);
+		EINA_LIST_FOREACH(l, iter, item)
+		{
+			etd = (Ephoto_Thumb_Data *)elm_gengrid_item_data_get(item);
+			eina_stringshare_del(etd->thumb_path);
+			eina_stringshare_del(etd->file);
+			free(etd);
+		}
 		elm_gengrid_clear(em->thumb_browser);
 		eina_stringshare_del(current_directory);
 		current_directory = eina_stringshare_add(directory);
@@ -399,7 +431,7 @@ _ephoto_view_large(void *data, Evas_Object *obj, void *event_info)
 {
 	const Eina_List *selected;
 	Evas_Object *o;
-	char *file;
+	Ephoto_Thumb_Data *etd;
 
 	ephoto_hide_thumb_browser();
 
@@ -408,8 +440,8 @@ _ephoto_view_large(void *data, Evas_Object *obj, void *event_info)
 	if (eina_list_data_get(selected))
 	{
 		o = eina_list_data_get(selected);
-		file = (char *)elm_gengrid_item_data_get((Elm_Gengrid_Item *)o);
-		ephoto_show_flow_browser(file);
+		etd = (Ephoto_Thumb_Data *)elm_gengrid_item_data_get((Elm_Gengrid_Item *)o);
+		ephoto_show_flow_browser(etd->file);
 	}
 	else
 	{

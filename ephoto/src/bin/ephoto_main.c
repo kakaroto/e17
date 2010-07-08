@@ -11,7 +11,6 @@ void
 ephoto_create_main_window(void)
 {
 	em = calloc(1, sizeof(Ephoto));
-	em->thumbs_images = eina_hash_string_superfast_new((Eina_Free_Cb)eina_stringshare_del);
 
 	/*Setup the main window*/
 	em->win = elm_win_add(NULL, "ephoto", ELM_WIN_BASIC);
@@ -51,8 +50,6 @@ _ephoto_delete_main_window(void *data, Evas_Object *obj, void *event_info)
 	evas_object_del(em->box);
 	evas_object_del(em->bg);
 	evas_object_del(em->win);
-	if (em->thumbs_images)
-		eina_hash_free(em->thumbs_images);
 	if (em->images)
 		eina_list_free(em->images);
 	free(em);

@@ -48,7 +48,6 @@ struct _Ephoto
 	Evas_Object *box;
 	Evas_Object *flow_browser;
 	Evas_Object *thumb_browser;
-	Eina_Hash   *thumbs_images;
 	Eina_List   *images;
 };
 typedef struct _Ephoto Ephoto;
