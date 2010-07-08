@@ -1,6 +1,6 @@
 #include "main.h"
 
-static int _ipc_cb_timeout(void *data);
+static Eina_Bool _ipc_cb_timeout(void *data);
 static void _ipc_cb_theme_exit_done(void *data);
 
 static Ecore_Timer *timeout = NULL;
@@ -97,7 +97,7 @@ parse_cmd(char *cmd)
      }
 }
 
-static int
+static Eina_Bool
 fifo_input(void *data, Ecore_Fd_Handler *fd_handler)
 {
    char buf[4096], buf2[4096], *p, *q;
@@ -134,7 +134,7 @@ fifo_input(void *data, Ecore_Fd_Handler *fd_handler)
    return ECORE_CALLBACK_RENEW;
 }
 
-static int
+static Eina_Bool
 socket_input(void *data, int type, void *ev)
 {
    Ecore_Con_Event_Client_Data *cl_data;
@@ -171,7 +171,7 @@ socket_input(void *data, int type, void *ev)
    return ECORE_CALLBACK_RENEW;
 }
 
-static int
+static Eina_Bool
 socket_del(void *data, int type, void *ev)
 {
   Ecore_Con_Event_Client_Del *cl_ev;
@@ -260,11 +260,11 @@ ipc_shutdown(void)
      }
 }
 
-static int
+static Eina_Bool
 _ipc_cb_timeout(void *data)
 {
    theme_exit(_ipc_cb_theme_exit_done, data);
-   return 0;
+   return EINA_FALSE;
 }
 
 static void

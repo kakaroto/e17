@@ -16,7 +16,7 @@ char       *method;
 
 static char *theme = NULL;
 
-static int  _cb_exit(void *data, int ev_type, void *ev);
+static Eina_Bool  _cb_exit(void *data, int ev_type, void *ev);
 static void _cb_delete_request(Ecore_Evas *ee);
 static void _cb_resize(Ecore_Evas *ee);
 static int  _cb_idle_enterer(void *data);
@@ -48,11 +48,11 @@ main(int argc, char **argv)
    return 0;
 }
 
-static int
+static Eina_Bool
 _cb_exit(void *data, int ev_type, void *ev)
 {
    ecore_main_loop_quit();
-   return 1;
+   return EINA_TRUE;
 }
 
 static void
