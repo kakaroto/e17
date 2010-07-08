@@ -1,10 +1,10 @@
 #include "Empower.h"
 
-int grab_keyboard(void *data)
+Eina_Bool grab_keyboard(void *data)
 {
   static int failures = 0;
   Ecore_X_Window ewin;
-  int ret = 0;
+  Eina_Bool ret = 0;
 
   // Get window from elm
   ewin = elm_win_xwindow_get(win);
