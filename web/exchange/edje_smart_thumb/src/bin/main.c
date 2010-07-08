@@ -2,8 +2,8 @@
 
 static void args_parse(void);
 static void help_show(void);
-static int signal_exit(void *data, int ev_type, void *ev);
-static int thumb_grab(void *data);
+static Eina_Bool signal_exit(void *data, int ev_type, void *ev);
+static Eina_Bool thumb_grab(void *data);
 
 Ecore_Evas *ee = NULL, *ee_im = NULL, *ee_im2 = NULL;
 Evas *evas = NULL, *evas_im = NULL, *evas_im2 = NULL;
@@ -382,14 +382,14 @@ help_show(void)
 		);
 }
 
-static int
+static Eina_Bool
 signal_exit(void *data, int ev_type, void *ev)
 {
 	ecore_main_loop_quit();
-	return 1;
+	return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 thumb_grab(void *data)
 {
 	char buf[4096];
@@ -402,5 +402,5 @@ thumb_grab(void *data)
 		exit(-1);
 	}
 	ecore_main_loop_quit();
-	return 0;
+	return EINA_FALSE;
 }
