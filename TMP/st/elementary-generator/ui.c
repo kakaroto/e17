@@ -98,43 +98,41 @@ entry_get(Evas_Object *entry)
    return utf8;
 }
 
-static int
+static Eina_Bool
 on_generator_stdout(void *data, int type, void *event)
 {
    App *app = data;
    Ecore_Exe_Event_Data *e = event;
 
    if (app->exe != e->exe)
-     return 1;
-
-   return 1;
+     return EINA_TRUE;return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 on_generator_stderr(void *data, int type, void *event)
 {
    App *app = data;
    Ecore_Exe_Event_Data *e = event;
    int i;
    if (app->exe != e->exe)
-     return 1;
+     return EINA_TRUE;
 
    printf("XXXX TODO: show inwin with error message: [close] [try again]\n");
 
    for (i = 0; e->lines[i].line != NULL; i++)
        ERR(e->lines[i].line);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 on_generator_del(void *data, int type, void *event)
 {
    App *app = data;
    Ecore_Exe_Event_Del *e = event;
 
    if (app->exe != e->exe)
-     return 1;
+     return EINA_TRUE;
 
    DBG("generator finished with code %d", e->exit_code);
    app->exe = NULL;
@@ -147,7 +145,7 @@ on_generator_del(void *data, int type, void *event)
    elm_entry_entry_set(app->fields.name, NULL);
    elm_entry_entry_set(app->fields.description, NULL);
 
-   return 0;
+   return EINA_FALSE;
 }
 
 static void

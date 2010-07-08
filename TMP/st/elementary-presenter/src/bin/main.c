@@ -316,7 +316,7 @@ load_slide(void *data, Evas_Object *obj, void *event_info)
 //   load_slides();
 }
 static Ecore_Timer *scale_timeout = NULL;
-static int
+static Eina_Bool
 scale_timeout_func(void *data)
 {
    elm_scale_set(elm_slider_value_get(data));
@@ -324,7 +324,7 @@ scale_timeout_func(void *data)
    return NULL;
 }
 static Ecore_Timer *finger_size_timeout = NULL;
-static int
+static Eina_Bool
 finger_size_timeout_func(void *data)
 {
    elm_finger_size_set(elm_slider_value_get(data));

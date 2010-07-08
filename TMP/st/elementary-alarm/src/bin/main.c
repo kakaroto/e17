@@ -194,11 +194,11 @@ static Evas_Object *alarm_win = NULL;
 static void alarm_sound(void);
 static void alarm_sound_end(void);
 
-static int
+static Eina_Bool
 child_exit(void *data, int type, Ecore_Exe_Event_Del *event)
 {
    if ((event->exe) && (event->exe == audio_exe)) alarm_sound();
-   return 1;
+   return EINA_TRUE;
 }
 
 static void

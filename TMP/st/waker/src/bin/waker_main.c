@@ -29,7 +29,7 @@ static void job_del(dbus_uint32_t id);
 static void rtc_clear(void);
 static void rtc_set(dbus_uint64_t time_at);
 
-static int timer_callback(void *data);
+static Eina_Bool timer_callback(void *data);
 static void timer_eval(void);
 
 //// DBUS stuff
@@ -482,15 +482,15 @@ timer_setup(void *data)
    return 0;
 }
 
-static int
+static Eina_Bool
 timer_callback(void *data)
 {
    ticker = NULL;
    timer_eval();
-   return 0;
+   return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 child_exit(void *data, int type, Ecore_Exe_Event_Del *event)
 {
    if (event->exe)
@@ -506,7 +506,7 @@ child_exit(void *data, int type, Ecore_Exe_Event_Del *event)
 	     job_del(j->id);
 	  }
      }
-   return 1;
+   return EINA_TRUE;
 }
 
 static void
