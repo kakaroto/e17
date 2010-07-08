@@ -58,13 +58,13 @@ static void _sdl_surface_new(Eon_SDL *sdoc, int w, int h)
 #endif
 }
 
-static int _sdl_event(void *data)
+static Eina_Bool _sdl_event(void *data)
 {
 	ecore_sdl_feed_events();
-	return 1;
+	return EINA_TRUE;
 }
 
-static int _resize_cb(void *data, int type, void *event)
+static Eina_Bool _resize_cb(void *data, int type, void *event)
 {
 	Ecore_Sdl_Event_Video_Resize *e = event;
 	Eon_SDL *sdoc = data;
@@ -72,57 +72,57 @@ static int _resize_cb(void *data, int type, void *event)
 	eon_document_resize(sdoc->doc, e->w, e->h);
 	_sdl_surface_new(sdoc, e->w, e->h);
 
-	return 1;
+	return EINA_TRUE;
 }
 
-static int _mouse_down_cb(void *data, int type, void *event)
+static Eina_Bool _mouse_down_cb(void *data, int type, void *event)
 {
 	Eon_Input *input = (Eon_Input *)data;
 	eon_input_feed_mouse_down(input);
-	return 1;
+	return EINA_TRUE;
 }
 
-static int _mouse_up_cb(void *data, int type, void *event)
+static Eina_Bool _mouse_up_cb(void *data, int type, void *event)
 {
 	Eon_Input *input = (Eon_Input *)data;
 	eon_input_feed_mouse_up(input);
-	return 1;
+	return EINA_TRUE;
 }
 
-static int _mouse_move_cb(void *data, int type, void *event)
+static Eina_Bool _mouse_move_cb(void *data, int type, void *event)
 {
 	Eon_Input *input = (Eon_Input *)data;
 	Ecore_Event_Mouse_Move *e = event;
 
 	eon_input_feed_mouse_move(input, e->x, e->y);
-	return 1;
+	return EINA_TRUE;
 }
 
-static int _key_down_cb(void *data, int type, void *event)
+static Eina_Bool _key_down_cb(void *data, int type, void *event)
 {
 	Eon_Input *input = (Eon_Input *)data;
 
 	eon_input_feed_key_down(input, 0, 0);
-	return 1;
+	return EINA_TRUE;
 }
 
-static int _key_up_cb(void *data, int type, void *event)
+static Eina_Bool _key_up_cb(void *data, int type, void *event)
 {
 	Eon_Input *input = (Eon_Input *)data;
 
 	eon_input_feed_key_up(input, 0, 0);
-	return 1;
+	return EINA_TRUE;
 }
 
-static int _in_cb(void *data, int type, void *event)
+static Eina_Bool _in_cb(void *data, int type, void *event)
 {
 	Eon_Input *input = (Eon_Input *)data;
-	return 1;
+	return EINA_TRUE;
 }
-static int _out_cb(void *data, int type, void *event)
+static Eina_Bool _out_cb(void *data, int type, void *event)
 {
 	Eon_Input *input = (Eon_Input *)data;
-	return 1;
+	return EINA_TRUE;
 }
 
 static void _root_canvas_create(Eon_Layout *c)

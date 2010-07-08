@@ -55,17 +55,17 @@ typedef struct _Msg_Prop_Change
 static Engine_Remote_Document *rdoc = NULL;
 
 /* Ecore IPC callbacks */
-int handler_server_add(void *data, int ev_type, void *ev)
+Eina_Bool handler_server_add(void *data, int ev_type, void *ev)
 {
 	printf("SERVER ADDDDDDDDDDDDDD\n");
 }
 
-int handler_server_del(void *data, int ev_type, void *ev)
+Eina_Bool handler_server_del(void *data, int ev_type, void *ev)
 {
 	printf("SERVER DELLLL\n");
 }
 
-int handler_server_data(void *data, int ev_type, void *ev)
+Eina_Bool handler_server_data(void *data, int ev_type, void *ev)
 {
 	printf("SERVER DATA!!!\n");
 }

@@ -12,7 +12,7 @@ static void
 document_info_print (Eps_Document *document, Eps_Page *page);
 
 static void app_resize(Ecore_Evas *ee);
-static int  app_signal_exit(void *data, int ev_type, void *ev);
+static Eina_Bool  app_signal_exit(void *data, int ev_type, void *ev);
 static void app_delete_request(Ecore_Evas *ee);
 
 int
@@ -212,11 +212,11 @@ app_resize(Ecore_Evas *ee)
 /*    bg_resize(w, h); */
 }
 
-static int
+static Eina_Bool
 app_signal_exit(void *data, int ev_type, void *ev)
 {
    ecore_main_loop_quit();
-   return 1;
+   return EINA_TRUE;
 }
 
 static void

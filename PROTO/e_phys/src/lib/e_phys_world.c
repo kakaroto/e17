@@ -4,7 +4,7 @@
 static void e_phys_world_accumulate_forces(E_Phys_World *world);
 static void e_phys_world_verlet_integrate(E_Phys_World *world);
 static void e_phys_world_satisfy_constraints(E_Phys_World *world);
-static int e_phys_world_timer(void *data);
+static Eina_Bool e_phys_world_timer(void *data);
 
 /**
  * @param w - The width of the new created world
@@ -54,7 +54,7 @@ e_phys_world_free(E_Phys_World *world)
   }
 }
 
-static int 
+static Eina_Bool 
 e_phys_world_timer(void *data)
 {
   E_Phys_World *world;
@@ -68,7 +68,7 @@ e_phys_world_timer(void *data)
     e_phys_world_satisfy_constraints(world);
 
   if (world->update_func) world->update_func(world->update_data, world);
-  return 1;
+  return EINA_TRUE;
 }
 
 /**

@@ -40,7 +40,7 @@ void *alloca (size_t);
 #include "eyelight_viewer.h"
 
 static int* _eyelight_viewer_thumbnails_create(Eyelight_Viewer* pres,int pos, int w, int h);
-static int _eyelight_viewer_thumbnails_load_idle(void *data);
+static Eina_Bool _eyelight_viewer_thumbnails_load_idle(void *data);
 static int* _eyelight_viewer_thumbnails_resize(const char *file, int index, const int* pixel,int src_w,int src_h,int new_w,int new_h);
 static const Eyelight_Thumb* _eyelight_viewer_thumbnails_get(Eyelight_Viewer* pres, int pos, int w, int h);
 
@@ -274,7 +274,7 @@ static int* _eyelight_viewer_thumbnails_resize(const char *file, int pos, const 
     return new_pixel_copy;
 }
 
-static int _eyelight_viewer_thumbnails_load_idle(void *data)
+static Eina_Bool _eyelight_viewer_thumbnails_load_idle(void *data)
 {
     Eyelight_Viewer* pres = (Eyelight_Viewer*)data;
 
@@ -283,13 +283,13 @@ static int _eyelight_viewer_thumbnails_load_idle(void *data)
     if(i>=pres->size)
     {
         pres->thumbnails.idle = NULL;
-        return 0;
+        return EINA_FALSE;
     }
 
     const Eyelight_Thumb* thumb = _eyelight_viewer_thumbnails_get(pres,i,pres->thumbnails.default_size_w, pres->thumbnails.default_size_h);
 
     pres->thumbnails.idle_current_slide++;
-    return 1;
+    return EINA_TRUE;
 }
 
 

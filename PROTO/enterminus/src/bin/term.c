@@ -143,7 +143,7 @@ term_tcanvas_data_pop(Term *term)
 }
 
 /* look for new characters on the terminal device */
-int
+Eina_Bool
 term_tcanvas_data(void *data, Ecore_Fd_Handler *fd_handler)
 {
    Term_Char *c;
@@ -222,7 +222,7 @@ term_tcanvas_data(void *data, Ecore_Fd_Handler *fd_handler)
    }
    if(term->debug)
    printf("Exiting TCanvas Data handler data_len %d,\n", term->data_len);
-   return 1;
+   return EINA_TRUE;
 }
 
 /* Create a new text canvas */

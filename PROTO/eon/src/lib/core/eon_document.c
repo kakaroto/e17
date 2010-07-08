@@ -80,13 +80,13 @@ static int _idler_cb(void *data)
 	return 1;
 }
 /* Timer callback to tick the etch animation system */
-static int _animation_cb(void *data)
+static Eina_Bool _animation_cb(void *data)
 {
 	Eon_Document *d = data;
 	Eon_Document_Private *prv = PRIVATE(d);
 
 	etch_timer_tick(prv->etch);
-	return 1;
+	return EINA_TRUE;
 }
 
 /* Called whenever a child is appended to the document directly */

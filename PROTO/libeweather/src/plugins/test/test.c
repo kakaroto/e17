@@ -11,7 +11,7 @@ typedef struct Instance Instance;
 static void _init(EWeather *eweather);
 static void _shutdown(EWeather *eweather);
 static void _poll_time_updated(EWeather *eweather);
-static int _weather_cb_check(void *data);
+static Eina_Bool _weather_cb_check(void *data);
 static void _populate(EWeather_Data *e_data, int id);
 
 EAPI EWeather_Plugin _plugin_class =
@@ -81,7 +81,7 @@ static void _poll_time_updated(EWeather *eweather)
 	;
 }
 
-   static int
+   static Eina_Bool
 _weather_cb_check(void *data)
 {
    Instance *inst = data;
@@ -97,7 +97,7 @@ _weather_cb_check(void *data)
    eweather_plugin_update(inst->weather);
 
    ecore_timer_interval_set(inst->check_timer, 5);
-   return 1;
+   return EINA_TRUE;
 }
 
 static void _populate(EWeather_Data *e_data, int id)

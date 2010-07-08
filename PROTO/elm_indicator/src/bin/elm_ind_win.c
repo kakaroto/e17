@@ -7,8 +7,8 @@ static void _cb_win_del(void *data, Evas_Object *obj, void *event);
 static void _cb_btn_home_clicked(void *data, Evas_Object *obj, void *event);
 static void _cb_btn_mode_clicked(void *data, Evas_Object *obj, void *event);
 static void _cb_btn_kbd_clicked(void *data, Evas_Object *obj, void *event);
-static int _cb_client_message(void *data, int type, void *event);
-static int _cb_win_property_change(void *data, int type, void *event);
+static Eina_Bool _cb_client_message(void *data, int type, void *event);
+static Eina_Bool _cb_win_property_change(void *data, int type, void *event);
 static void _cb_rect_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event);
 static void _cb_rect_mouse_move(void *data, Evas *evas, Evas_Object *obj, void *event);
 static void _cb_rect_mouse_up(void *data, Evas *evas, Evas_Object *obj, void *event);
@@ -184,14 +184,14 @@ _cb_btn_kbd_clicked(void *data, Evas_Object *obj, void *event)
    _set_kbd_icon(xwin, obj);
 }
 
-static int 
+static Eina_Bool 
 _cb_client_message(void *data, int type, void *event) 
 {
    Elm_Ind_Win *iwin;
    Ecore_X_Event_Client_Message *ev;
 
    ev = event;
-   if (!(iwin = data)) return 1;
+   if (!(iwin = data)) return EINA_TRUE;
    if (ev->message_type == ECORE_X_ATOM_E_ILLUME_HOME_NEW) 
      {
         Ecore_X_Window zone;
@@ -202,10 +202,10 @@ _cb_client_message(void *data, int type, void *event)
    else if (ev->message_type == ECORE_X_ATOM_E_ILLUME_MODE) 
      _set_mode_icon(iwin);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int 
+static Eina_Bool 
 _cb_win_property_change(void *data, int type, void *event) 
 {
    Ecore_X_Event_Window_Property *ev;
@@ -219,10 +219,10 @@ _cb_win_property_change(void *data, int type, void *event)
 
         btn = data;
         ecore_x_window_prop_window_get(ev->win, ev->atom, &xwin, 1);
-        if (!xwin) return 1;
+        if (!xwin) return EINA_TRUE;
         _set_kbd_icon(xwin, btn);
      }
-   return 1;
+   return EINA_TRUE;
 }
 
 static void 

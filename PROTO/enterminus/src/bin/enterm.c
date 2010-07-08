@@ -31,7 +31,7 @@ enterm_cb_resize(Ecore_Evas *ee)
    term_smart_resize(term, w, h);
 }
 
-int
+Eina_Bool
 enterm_cb_title_change(void *data, int type, void *ev)
 {
    Term_Event_Title_Change *e;
@@ -41,5 +41,5 @@ enterm_cb_title_change(void *data, int type, void *ev)
    ee = data;
    ecore_x_icccm_title_set(ecore_evas_software_x11_window_get(ee),
 			   e->title);
-   return 1;
+   return EINA_TRUE;
 }

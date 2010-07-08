@@ -121,7 +121,7 @@ struct _Eupnp_Ecore_Request {
    const char *body;
 };
 
-static int
+static Eina_Bool
 _ecore_request_data_cb(void *data, int type, void *event)
 {
    Ecore_Con_Event_Url_Data *e = event;
@@ -132,10 +132,10 @@ _ecore_request_data_cb(void *data, int type, void *event)
 
    request->data_cb(e->data, e->size, request->data);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _ecore_request_completed_cb(void *data, int type, void *event)
 {
    Eupnp_Request_Completed_Cb completed_cb = data;
@@ -181,11 +181,11 @@ _ecore_request_completed_cb(void *data, int type, void *event)
 
    eupnp_http_request_free(req);
 
-   return 0;
+   return EINA_FALSE;
 
    headers_mount_error:
      request->completed_cb(((Eupnp_Request)request), request->data, NULL);
-     return 0;
+     return EINA_FALSE;
 }
 
 static Eupnp_Request
@@ -426,7 +426,7 @@ _ecore_srv_find_total_len(Client_Data *d)
    DBG("Found content length header: %d", d->total_len);
 }
 
-static int
+static Eina_Bool
 _ecore_srv_client_data_cb(void *data, int type, void *event)
 {
    Ecore_Con_Event_Client_Data *e = event;
@@ -436,7 +436,7 @@ _ecore_srv_client_data_cb(void *data, int type, void *event)
    if (!d)
      {
 	ERR("Received data event for untracked client %p", e->client);
-	return 1;
+	return EINA_TRUE;
      }
 
    int old_size = d->buf_len;
@@ -445,7 +445,7 @@ _ecore_srv_client_data_cb(void *data, int type, void *event)
    if (!tmp)
      {
 	ERR("Failed to alloc more for client data %p", e->client);
-	return 1;
+	return EINA_TRUE;
      }
 
    memcpy(tmp + old_size, e->data, e->size);
@@ -460,10 +460,10 @@ _ecore_srv_client_data_cb(void *data, int type, void *event)
 
    DBG("Total len is %d, buf len is %d", d->total_len, d->buf_len - _ecore_srv_headers_len(d->buf));
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _ecore_srv_client_add_cb(void *data, int type, void *event)
 {
    Ecore_Con_Event_Client_Add *e = event;
@@ -475,7 +475,7 @@ _ecore_srv_client_add_cb(void *data, int type, void *event)
    if (!d)
      {
 	ERR("Could not alloc for a client %p", e->client);
-	return 1;
+	return EINA_TRUE;
      }
 
    d->buf = NULL;
@@ -485,10 +485,10 @@ _ecore_srv_client_add_cb(void *data, int type, void *event)
 
    srv_clients = eina_list_append(srv_clients, d);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _ecore_srv_client_del_cb(void *data, int type, void *event)
 {
    Ecore_Con_Event_Client_Del *e = event;
@@ -508,7 +508,7 @@ _ecore_srv_client_del_cb(void *data, int type, void *event)
    if (!d)
      {
 	ERR("Del event on untracked client %p", e->client);
-	return 1;
+	return EINA_TRUE;
      }
 
    // Forward event to server
@@ -521,7 +521,7 @@ _ecore_srv_client_del_cb(void *data, int type, void *event)
    free(d->buf);
    free(d);
 
-   return 1;
+   return EINA_TRUE;
 }
 
 /*

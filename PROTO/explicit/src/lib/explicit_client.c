@@ -50,7 +50,7 @@ _explicit_write_cb(const void *data, size_t size, void *user_data)
    return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _explicit_context_add(void *data, __UNUSED__ int type, void *event)
 {
    Ecore_Con_Event_Server_Add *ev;
@@ -60,21 +60,21 @@ _explicit_context_add(void *data, __UNUSED__ int type, void *event)
    ev = event;
 
    if (ev->server != context->server)
-     return 1;
+     return EINA_TRUE;
 
    /* Send waiting request. */
    context->connected = EINA_TRUE;
 
-   return 0;
+   return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 _explicit_restart_idler(void *data)
 {
    Explicit *context = data;
 
    if (context->server || context->conn)
-     return 0;
+     return EINA_FALSE;
 
    context->server = ecore_con_server_connect(ECORE_CON_REMOTE_TCP,
 					      context->remote,
@@ -85,7 +85,7 @@ _explicit_restart_idler(void *data)
 				      context);
    context->idler = NULL;
 
-   return 0;
+   return EINA_FALSE;
 }
 
 static void
@@ -100,7 +100,7 @@ _explicit_restart(Explicit *context)
    context->idler = ecore_idler_add(_explicit_restart_idler, context);
 }
 
-static int
+static Eina_Bool
 _explicit_context_del(void *data, __UNUSED__ int type, void *event)
 {
    Ecore_Con_Event_Server_Del *ev;
@@ -110,7 +110,7 @@ _explicit_context_del(void *data, __UNUSED__ int type, void *event)
    ev = event;
 
    if (ev->server != context->server)
-     return 1;
+     return EINA_TRUE;
 
    /* Cancel all download. */
    eina_hash_free(context->requests_lookup);
@@ -121,10 +121,10 @@ _explicit_context_del(void *data, __UNUSED__ int type, void *event)
 
    _explicit_restart(context);
 
-   return 0;
+   return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 _explicit_context_data(void *data, __UNUSED__ int type, void *event)
 {
    Ecore_Con_Event_Server_Data *ev;
@@ -134,7 +134,7 @@ _explicit_context_data(void *data, __UNUSED__ int type, void *event)
    ev = event;
 
    if (ev->server != context->server)
-     return 1;
+     return EINA_TRUE;
 
    /* Let eet rebuild the message */
    if (eet_connection_received(context->conn, ev->data, ev->size))
@@ -150,7 +150,7 @@ _explicit_context_data(void *data, __UNUSED__ int type, void *event)
 	_explicit_restart(context);
      }
 
-   return 0;
+   return EINA_FALSE;
 }
 
 EAPI Explicit *

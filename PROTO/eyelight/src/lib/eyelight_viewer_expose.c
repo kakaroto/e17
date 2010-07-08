@@ -101,7 +101,7 @@ struct _Eyelight_Viewer_Expose
    const char target[30];
 };
 
-static int
+static Eina_Bool
 _eyelight_viewer_show(void *data)
 {
    Eyelight_Viewer_Expose *msg;
@@ -112,7 +112,7 @@ _eyelight_viewer_show(void *data)
 
    free(msg);
 
-   return 0;
+   return EINA_FALSE;
 }
 
 static void

@@ -5,11 +5,11 @@
 static void _apps_populate(void);
 static void _apps_unpopulate(void);
 static void _desktops_populate(void);
-static int _desktops_list_change(void *data, int type, void *event);
-static int _desktops_run_exit(void *data, int type, void *event);
+static Eina_Bool _desktops_list_change(void *data, int type, void *event);
+static Eina_Bool _desktops_run_exit(void *data, int type, void *event);
 static void _desktops_run(Efreet_Desktop *desktop);
-static int _desktops_run_timeout(void *data);
-static int _desktops_update_deferred(void *data);
+static Eina_Bool _desktops_run_timeout(void *data);
+static Eina_Bool _desktops_update_deferred(void *data);
 static char *_cb_gl_label_get(const void *data, Evas_Object *obj, const char *part);
 static Evas_Object *_cb_gl_icon_get(const void *data, Evas_Object *obj, const char *part);
 static void _cb_gl_item_del(const void *data, Evas_Object *obj);
@@ -173,15 +173,15 @@ _desktops_populate(void)
 #endif
 }
 
-static int 
+static Eina_Bool 
 _desktops_list_change(void *data, int type, void *event) 
 {
    if (defer) ecore_timer_del(defer);
    defer = ecore_timer_add(1.0, _desktops_update_deferred, NULL);
-   return 1;
+   return EINA_TRUE;
 }
 
-static int 
+static Eina_Bool 
 _desktops_run_exit(void *data, int type, void *event) 
 {
    Elm_Home_Exec *exec;
@@ -198,10 +198,10 @@ _desktops_run_exit(void *data, int type, void *event)
              exec->timer = NULL;
              exec->exe = NULL;
              free(exec);
-             return 1;
+             return EINA_TRUE;
           }
      }
-   return 1;
+   return EINA_TRUE;
 }
 
 static void 
@@ -230,30 +230,30 @@ _desktops_run(Efreet_Desktop *desktop)
    exes = eina_list_append(exes, exec);
 }
 
-static int 
+static Eina_Bool 
 _desktops_run_timeout(void *data) 
 {
    Elm_Home_Exec *exec;
 
-   if (!(exec = data)) return 1;
+   if (!(exec = data)) return EINA_TRUE;
    if (!exec->exe) 
      {
         exes = eina_list_remove(exes, exec);
         exec->timer = NULL;
         free(exec);
-        return 0;
+        return EINA_FALSE;
      }
    exec->timer = NULL;
-   return 0;
+   return EINA_FALSE;
 }
 
-static int 
+static Eina_Bool 
 _desktops_update_deferred(void *data) 
 {
    _apps_unpopulate();
    _apps_populate();
    defer = NULL;
-   return 0;
+   return EINA_FALSE;
 }
 
 static char *

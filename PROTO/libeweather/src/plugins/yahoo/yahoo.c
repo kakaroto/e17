@@ -12,12 +12,12 @@ static void _init(EWeather *eweather);
 static void _shutdown(EWeather *eweather);
 static void _poll_time_updated(EWeather *eweather);
 static void _code_updated(EWeather *eweather);
-static int _server_add(void *data, int type, void *event);
-static int _server_del(void *data, int type, void *event);
-static int _server_data(void *data, int type, void *event);
-static int _weather_cb_check(void *data);
+static Eina_Bool _server_add(void *data, int type, void *event);
+static Eina_Bool _server_del(void *data, int type, void *event);
+static Eina_Bool _server_data(void *data, int type, void *event);
+static Eina_Bool _weather_cb_check(void *data);
 static EWeather_Type _weather_type_get(int id);
-static int _server_data(void *data, int type, void *event);
+static Eina_Bool _server_data(void *data, int type, void *event);
 static int _parse(Instance* inst);
 
 
@@ -171,12 +171,12 @@ static void _code_updated(EWeather *eweather)
       ecore_timer_add(0, _weather_cb_check, inst);
 }
 
-   static int
+   static Eina_Bool
 _weather_cb_check(void *data)
 {
    Instance *inst;
 
-   if (!(inst = data)) return 0;
+   if (!(inst = data)) return EINA_FALSE;
    if (inst->server) ecore_con_server_del(inst->server);
    inst->server = NULL;
 
@@ -188,13 +188,13 @@ _weather_cb_check(void *data)
      inst->server =
 	ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, inst->host, 80, inst);
 
-   if (!inst->server) return 0;
+   if (!inst->server) return EINA_FALSE;
 
    ecore_timer_interval_set(inst->check_timer, inst->weather->poll_time);
-   return 1;
+   return EINA_TRUE;
 }
 
-   static int
+   static Eina_Bool
 _server_add(void *data, int type, void *event)
 {
    Instance *inst;
@@ -202,19 +202,19 @@ _server_add(void *data, int type, void *event)
    char buf[1024];
 
 
-   if (!(inst = data)) return 1;
-   if(!inst->weather->code) return 0;
+   if (!(inst = data)) return EINA_TRUE;
+   if(!inst->weather->code) return EINA_FALSE;
 
    ev = event;
-   if ((!inst->server) || (inst->server != ev->server)) return 1;
+   if ((!inst->server) || (inst->server != ev->server)) return EINA_TRUE;
 
    snprintf(buf, sizeof(buf), "GET http://%s/forecastrss?w=%s HTTP/1.1\r\nHost: %s\r\n\r\n",
 	 inst->host, inst->weather->code, inst->host);
    ecore_con_server_send(inst->server, buf, strlen (buf));
-   return 0;
+   return EINA_FALSE;
 }
 
-   static int
+   static Eina_Bool
 _server_del(void *data, int type, void *event)
 {
    Instance *inst;
@@ -223,7 +223,7 @@ _server_del(void *data, int type, void *event)
 
    inst = data;
    ev = event;
-   if ((!inst->server) || (inst->server != ev->server)) return 1;
+   if ((!inst->server) || (inst->server != ev->server)) return EINA_TRUE;
 
    ecore_con_server_del(inst->server);
    inst->server = NULL;
@@ -235,10 +235,10 @@ _server_del(void *data, int type, void *event)
 
    if(inst->buffer) free(inst->buffer);
    inst->buffer = NULL;
-   return 0;
+   return EINA_FALSE;
 }
 
-   static int
+   static Eina_Bool
 _server_data(void *data, int type, void *event)
 {
    Instance *inst;
@@ -247,7 +247,7 @@ _server_data(void *data, int type, void *event)
    inst = data;
    ev = event;
 
-   if ((!inst->server) || (inst->server != ev->server)) return 1;
+   if ((!inst->server) || (inst->server != ev->server)) return EINA_TRUE;
    while ((inst->cursize + ev->size) >= inst->bufsize)
      {
 	inst->bufsize += 4096;
@@ -258,7 +258,7 @@ _server_data(void *data, int type, void *event)
    inst->cursize += ev->size;
    inst->buffer[inst->cursize] = 0;
    _parse(inst);
-   return 0;
+   return EINA_FALSE;
 }
 
    static int
