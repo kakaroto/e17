@@ -117,7 +117,7 @@ static const char *_enlil_flickr_job_type_tostring(Enlil_Flickr_Job_Type type);
 static Enlil_Flickr_Job *_enlil_flickr_job_get_authtoken_prepend(Enlil_Root *root, const char *code);
 static int _connect(Enlil_Root *root, const char *code);
 static int _disconnect();
-static int _idler_upload_cb(void *data);
+static Eina_Bool _idler_upload_cb(void *data);
 
 
 static const char *_enlil_flickr_job_type_tostring(Enlil_Flickr_Job_Type type)
@@ -1311,7 +1311,7 @@ static int _disconnect()
 }
 
 
-static int _idler_upload_cb(void *data)
+static Eina_Bool _idler_upload_cb(void *data)
 {
 #ifdef HAVE_FLICKR
    Enlil_Flickr_Job *job = job_current;
@@ -1358,7 +1358,7 @@ static int _idler_upload_cb(void *data)
 	if(job->upload_progress_cb)
 	  job->upload_progress_cb(job->data, job->photo, -1, -1);
 
-	return 1;
+	return EINA_TRUE;
      }
 
 upload_done:
@@ -1380,11 +1380,11 @@ upload_done:
 upload_error:
    running = 0;
    _job_next();
-   return 0;
+   return EINA_FALSE;
 
 #else
    LOG_ERR("Flickr support is not built !");
-   return 0;
+   return EINA_FALSE;
 #endif
 }
 

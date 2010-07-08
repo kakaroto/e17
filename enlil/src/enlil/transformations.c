@@ -43,7 +43,7 @@ static void _enlil_trans_history_add(Enlil_Trans_History *h, const char *file, E
 static void _job_free(Enlil_Trans_Job *job);
 static void _job_next();
 static void _end_cb(void *data);
-static int _exe_del_cb(void *data, int type, void *event);
+static Eina_Bool _exe_del_cb(void *data, int type, void *event);
 
 static int count = 0;
 static Ecore_Event_Handler *handler_exe_del = NULL;
@@ -310,9 +310,9 @@ end:
 }
 
 
-static int _exe_del_cb(void *data, int type, void *event)
+static Eina_Bool _exe_del_cb(void *data, int type, void *event)
 {
    _end_cb(job_current);
-   return 1;
+   return EINA_TRUE;
 }
 
