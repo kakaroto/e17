@@ -99,16 +99,6 @@ entry_get(Evas_Object *entry)
 }
 
 static Eina_Bool
-on_generator_stdout(void *data, int type, void *event)
-{
-   App *app = data;
-   Ecore_Exe_Event_Data *e = event;
-
-   if (app->exe != e->exe)
-     return EINA_TRUE;return EINA_TRUE;
-}
-
-static Eina_Bool
 on_generator_stderr(void *data, int type, void *event)
 {
    App *app = data;
@@ -715,7 +705,6 @@ elm_main(int argc, char **argv)
 	goto end;
      }
 
-   ecore_event_handler_add(ECORE_EXE_EVENT_DATA, on_generator_stdout, &app);
    ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, on_generator_stderr, &app);
    ecore_event_handler_add(ECORE_EXE_EVENT_DEL, on_generator_del, &app);
 
