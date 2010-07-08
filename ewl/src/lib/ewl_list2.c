@@ -15,7 +15,7 @@ static Ecore_List *ewl_list2_cells_info_generate(Ewl_List2 *list,
 static void ewl_list2_cells_info_generate_range(Ewl_List2 *list,
                                         unsigned int from, unsigned int to,
                                         int *pref_w, int *pref_h);
-static int ewl_list2_size_idler(void *data);
+static Eina_Bool ewl_list2_size_idler(void *data);
 
 #define GROW_STEP 100
 
@@ -422,7 +422,7 @@ ewl_list2_cells_info_generate_range(Ewl_List2 *list, unsigned int from,
  * @internal
  * @param data: the list to use
  * */
-static int
+static Eina_Bool
 ewl_list2_size_idler(void *data)
 {
         Ewl_List2 *list;

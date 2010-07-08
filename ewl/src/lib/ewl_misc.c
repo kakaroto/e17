@@ -88,7 +88,7 @@ static void ewl_init_parse_options(int *argc, char **argv);
 static void ewl_init_remove_option(int *argc, char **argv, int i);
 static void ewl_configure_queue_run(void);
 static void ewl_realize_queue(void);
-static int ewl_garbage_collect_idler(void *data);
+static Eina_Bool ewl_garbage_collect_idler(void *data);
 static void ewl_configure_cancel_request(Ewl_Widget *w);
 
 static int ewl_system_directories_init(void);
@@ -1176,7 +1176,7 @@ ewl_canvas_object_destroy(void *obj)
  * @return Returns TRUE if objects remain to be freed, otherwise false.
  * @brief Free's all widgets that have been marked for destruction.
  */
-static int
+static Eina_Bool
 ewl_garbage_collect_idler(void *data __UNUSED__)
 {
         Evas *evas;

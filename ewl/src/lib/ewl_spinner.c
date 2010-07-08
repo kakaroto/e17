@@ -19,7 +19,7 @@
 #endif /* HAVE_EVIL */
 
 static void ewl_spinner_entry_update(Ewl_Spinner *s);
-static int ewl_spinner_timer(void *data);
+static Eina_Bool ewl_spinner_timer(void *data);
 static void ewl_spinner_child_handle(Ewl_Spinner *s);
 /**
  * @return Returns a new spinner widget on success, NULL on failure.
@@ -610,7 +610,7 @@ ewl_spinner_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_spinner_timer(void *data)
 {
         Ewl_Spinner *s;

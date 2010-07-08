@@ -4,11 +4,11 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
-static int ewl_ev_sdl_key_down(void *data, int type, void *_ev);
-static int ewl_ev_sdl_key_up(void *data, int type, void *_ev);
-static int ewl_ev_sdl_mouse_down(void *data, int type, void *_ev);
-static int ewl_ev_sdl_mouse_up(void *data, int type, void *_ev);
-static int ewl_ev_sdl_mouse_move(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_sdl_key_down(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_sdl_key_up(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_sdl_mouse_down(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_sdl_mouse_up(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_sdl_mouse_move(void *data, int type, void *_ev);
 
 static Ecore_Event_Handler *ee_key_down_handler = NULL;
 static Ecore_Event_Handler *ee_key_up_handler = NULL;
@@ -61,19 +61,19 @@ ewl_engine_create(int *argc __UNUSED__, char ** argv __UNUSED__)
         DRETURN_PTR(EWL_ENGINE(engine), DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_sdl_event(void *data)
 {
         ecore_sdl_feed_events();
-        return 1;
+        return EINA_TRUE;
 }
 
 
-static int
+static Eina_Bool
 ewl_idler_event_setup(void *data __UNUSED__)
 {
         ewl_event = ecore_timer_add(0.008, ewl_sdl_event, NULL);
-        return 0;
+        return EINA_FALSE;
 }
 
 static int
@@ -205,7 +205,7 @@ ee_canvas_setup(Ewl_Window *win, int debug __UNUSED__)
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_sdl_key_down(void *data, int type __UNUSED__, void *e)
 {
         Ewl_Embed *embed;
@@ -226,7 +226,7 @@ ewl_ev_sdl_key_down(void *data, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_sdl_key_up(void *data, int type __UNUSED__, void *e)
 {
         Ewl_Embed *embed;
@@ -247,7 +247,7 @@ ewl_ev_sdl_key_up(void *data, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_sdl_mouse_down(void *data, int type __UNUSED__, void *e)
 {
         int clicks = 1;
@@ -282,7 +282,7 @@ ewl_ev_sdl_mouse_down(void *data, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_sdl_mouse_up(void *data, int type __UNUSED__, void *e)
 {
         int clicks = 1;
@@ -313,7 +313,7 @@ ewl_ev_sdl_mouse_up(void *data, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_sdl_mouse_move(void *data, int type __UNUSED__, void *e)
 {
         Ewl_Embed *embed;

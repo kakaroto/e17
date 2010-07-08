@@ -12,7 +12,7 @@ static void cb_rerun_progressbars(Ewl_Widget *w, void *ev, void *data);
 static void cb_set_new_range(Ewl_Widget *w, void *ev, void *data);
 static void cb_destroy_progressbar_test(Ewl_Widget *w, void *ev,
                                                         void *data);
-static int cb_increment_progress(void *data);
+static Eina_Bool cb_increment_progress(void *data);
 
 static Ecore_Timer *progress_timer[3];
 static Ewl_Widget *progressbar[4];
@@ -116,7 +116,7 @@ create_test(Ewl_Container *box)
         return 1;
 }
 
-static int
+static Eina_Bool
 cb_increment_progress(void *data)
 {
         double val, value, range;
@@ -134,7 +134,7 @@ cb_increment_progress(void *data)
                                 progress_timer[i] = NULL;
                         }
                 }
-                return 0;
+                return EINA_FALSE;
         }
 
         val += 1;
@@ -159,7 +159,7 @@ cb_increment_progress(void *data)
         if (val == 70)
                 ewl_progressbar_label_show(EWL_PROGRESSBAR(r));
 
-        return 1;
+        return EINA_TRUE;
 }
 
 static void

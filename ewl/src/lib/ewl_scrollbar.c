@@ -8,7 +8,7 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
-static int ewl_scrollbar_timer(void *data);
+static Eina_Bool ewl_scrollbar_timer(void *data);
 
 /**
  * @return Returns NULL on failure, or a pointer to a new scrollbar on success.
@@ -534,7 +534,7 @@ ewl_scrollbar_cb_scroll_stop(Ewl_Widget *w __UNUSED__,
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_scrollbar_timer(void *data)
 {
         Ewl_Scrollbar *s;

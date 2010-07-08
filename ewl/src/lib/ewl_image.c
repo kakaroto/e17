@@ -10,7 +10,7 @@
 #include <Epsilon_Request.h>
 
 static Ecore_Event_Handler *ewl_image_epsilon_handler = NULL;
-static int ewl_image_thumbnail_cb_complete(void *data, int type, void *event);
+static Eina_Bool ewl_image_thumbnail_cb_complete(void *data, int type, void *event);
 static void ewl_image_thumbnail_cb_value_changed(Ewl_Widget *w, void *ev, void *data);
 #endif
 
@@ -926,7 +926,7 @@ ewl_image_thumbnail_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 #ifdef BUILD_EPSILON_SUPPORT
-static int
+static Eina_Bool
 ewl_image_thumbnail_cb_complete(void *data __UNUSED__, int type __UNUSED__,
                                                                 void *event)
 {

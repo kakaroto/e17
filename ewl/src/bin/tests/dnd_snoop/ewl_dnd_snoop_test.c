@@ -34,16 +34,16 @@ static void ewl_dnd_snoop_cb_dnd_data(Ewl_Widget *w, void *event, void *data);
 static void ewl_dnd_snoop_cb_dnd_data_request(Ewl_Widget *w, void *event, void *data);
 
 #ifdef ENABLE_EWL_SOFTWARE_X11
-static int ewl_dnd_snoop_cb_enter(void *data, int type, void *ev);
-static int ewl_dnd_snoop_cb_position(void *data, int type, void *ev);
-static int ewl_dnd_snoop_cb_status(void *data, int type, void *ev);
-static int ewl_dnd_snoop_cb_leave(void *data, int type, void *ev);
-static int ewl_dnd_snoop_cb_drop(void *data, int type, void *ev);
-static int ewl_dnd_snoop_cb_finished(void *data, int type, void *ev);
-static int ewl_dnd_snoop_cb_selection_clear(void *data, int type, void *ev);
-static int ewl_dnd_snoop_cb_selection_notify(void *data, int type, void *ev);
-static int ewl_dnd_snoop_cb_selection_request(void *data, int type, void *ev);
-static int ewl_dnd_snoop_cb_client_message(void *data, int type, void *ev);
+static Eina_Bool ewl_dnd_snoop_cb_enter(void *data, int type, void *ev);
+static Eina_Bool ewl_dnd_snoop_cb_position(void *data, int type, void *ev);
+static Eina_Bool ewl_dnd_snoop_cb_status(void *data, int type, void *ev);
+static Eina_Bool ewl_dnd_snoop_cb_leave(void *data, int type, void *ev);
+static Eina_Bool ewl_dnd_snoop_cb_drop(void *data, int type, void *ev);
+static Eina_Bool ewl_dnd_snoop_cb_finished(void *data, int type, void *ev);
+static Eina_Bool ewl_dnd_snoop_cb_selection_clear(void *data, int type, void *ev);
+static Eina_Bool ewl_dnd_snoop_cb_selection_notify(void *data, int type, void *ev);
+static Eina_Bool ewl_dnd_snoop_cb_selection_request(void *data, int type, void *ev);
+static Eina_Bool ewl_dnd_snoop_cb_client_message(void *data, int type, void *ev);
 #endif
 
 static void ewl_dnd_snoop_cb_clear(Ewl_Widget *w, void *ev, void *data);
@@ -212,7 +212,7 @@ ewl_dnd_snoop_cb_dnd_data_request(Ewl_Widget *w, void *event,
 }
 
 #ifdef ENABLE_EWL_SOFTWARE_X11
-static int
+static Eina_Bool
 ewl_dnd_snoop_cb_enter(void *data __UNUSED__, int type __UNUSED__, void *ev)
 {
         int i;
@@ -230,10 +230,10 @@ ewl_dnd_snoop_cb_enter(void *data __UNUSED__, int type __UNUSED__, void *ev)
                 snprintf(buf, sizeof(buf), "\tType: %s\n", event->types[i]);
                 ewl_dnd_snoop_output(buf);
         }
-        return 1;
+        return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 ewl_dnd_snoop_cb_position(void *data __UNUSED__, int type __UNUSED__, void *ev)
 {
         char buf[1024];
@@ -256,10 +256,10 @@ ewl_dnd_snoop_cb_position(void *data __UNUSED__, int type __UNUSED__, void *ev)
         free(name);
         ewl_dnd_snoop_output(buf);
 
-        return 1;
+        return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 ewl_dnd_snoop_cb_status(void *data __UNUSED__, int type __UNUSED__, void *ev)
 {
         char buf[1024];
@@ -288,10 +288,10 @@ ewl_dnd_snoop_cb_status(void *data __UNUSED__, int type __UNUSED__, void *ev)
         free(name);
         ewl_dnd_snoop_output(buf);
 
-        return 1;
+        return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 ewl_dnd_snoop_cb_leave(void *data __UNUSED__, int type __UNUSED__, void *ev)
 {
         char buf[1024];
@@ -304,10 +304,10 @@ ewl_dnd_snoop_cb_leave(void *data __UNUSED__, int type __UNUSED__, void *ev)
                                                 event->win, event->source);
         ewl_dnd_snoop_output(buf);
 
-        return 1;
+        return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 ewl_dnd_snoop_cb_drop(void *data __UNUSED__, int type __UNUSED__, void *ev)
 {
         char buf[1024];
@@ -330,10 +330,10 @@ ewl_dnd_snoop_cb_drop(void *data __UNUSED__, int type __UNUSED__, void *ev)
                                         event->position.x, event->position.y);
         ewl_dnd_snoop_output(buf);
 
-        return 1;
+        return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 ewl_dnd_snoop_cb_finished(void *data __UNUSED__, int type __UNUSED__, void *ev)
 {
         char buf[1024];
@@ -355,10 +355,10 @@ ewl_dnd_snoop_cb_finished(void *data __UNUSED__, int type __UNUSED__, void *ev)
         free(name);
         ewl_dnd_snoop_output(buf);
 
-        return 1;
+        return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 ewl_dnd_snoop_cb_selection_clear(void *data __UNUSED__, int type __UNUSED__,
                                                                 void *ev)
 {
@@ -375,11 +375,11 @@ ewl_dnd_snoop_cb_selection_clear(void *data __UNUSED__, int type __UNUSED__,
         snprintf(buf, sizeof(buf), "\tTime: %d\n", event->time);
         ewl_dnd_snoop_output(buf);
 
-        return 1;
+        return EINA_TRUE;
 
 }
 
-static int
+static Eina_Bool
 ewl_dnd_snoop_cb_selection_request(void *data __UNUSED__, int type __UNUSED__,
                                                                 void *ev)
 {
@@ -414,11 +414,11 @@ ewl_dnd_snoop_cb_selection_request(void *data __UNUSED__, int type __UNUSED__,
         free(name);
         ewl_dnd_snoop_output(buf);
 
-        return 1;
+        return EINA_TRUE;
 
 }
 
-static int
+static Eina_Bool
 ewl_dnd_snoop_cb_selection_notify(void *data __UNUSED__, int type __UNUSED__,
                                                                 void *ev)
 {
@@ -441,11 +441,11 @@ ewl_dnd_snoop_cb_selection_notify(void *data __UNUSED__, int type __UNUSED__,
         snprintf(buf, sizeof(buf), "\tData: %p\n", event->data);
         ewl_dnd_snoop_output(buf);
 
-        return 1;
+        return EINA_TRUE;
 
 }
 
-static int
+static Eina_Bool
 ewl_dnd_snoop_cb_client_message(void *data __UNUSED__, int type __UNUSED__,
                                                                 void *ev)
 {
@@ -466,7 +466,7 @@ ewl_dnd_snoop_cb_client_message(void *data __UNUSED__, int type __UNUSED__,
         snprintf(buf, sizeof(buf), "\tTime: %d\n", event->time);
         ewl_dnd_snoop_output(buf);
 
-        return 1;
+        return EINA_TRUE;
 
 }
 #endif

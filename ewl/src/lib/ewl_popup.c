@@ -7,7 +7,7 @@
 
 static void ewl_popup_position_check(Ewl_Popup *p);
 static void ewl_popup_size_check(Ewl_Popup *p);
-static int ewl_popup_move_timer(void *data);
+static Eina_Bool ewl_popup_move_timer(void *data);
 static unsigned int ewl_popup_move_direction_get(Ewl_Popup *p, int *dx, int *dy);
 static void ewl_popup_move(Ewl_Popup *p, int dx, int dy);
 static void ewl_popup_move_stop(Ewl_Popup *p);
@@ -331,7 +331,7 @@ ewl_popup_cb_mouse_move(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @return Returns true to keep the callback, else false
  * @brief The timer to slide the popup
  */
-static int
+static Eina_Bool
 ewl_popup_move_timer(void *data)
 {
         Ewl_Popup *p;

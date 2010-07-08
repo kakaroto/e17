@@ -15,7 +15,7 @@
 static void ewl_scrollport_kinetic_cb_mouse_down_normal(Ewl_Widget *w, void *ev, void *data);
 static void ewl_scrollport_kinetic_cb_mouse_up_normal(Ewl_Widget *w, void *ev, void *data);
 static void ewl_scrollport_kinetic_cb_mouse_move_normal(Ewl_Widget *w, void *ev, void *data);
-static int ewl_scrollport_kinetic_cb_scroll_timer_normal(void *data);
+static Eina_Bool ewl_scrollport_kinetic_cb_scroll_timer_normal(void *data);
 
 typedef struct Ewl_Scrollport_Kinetic_Info_Normal Ewl_Scrollport_Kinetic_Info_Normal;
 
@@ -60,7 +60,7 @@ static void ewl_scrollport_kinetic_cb_mouse_up_embedded(Ewl_Widget *w,
                                                 void *ev, void *data);
 static void ewl_scrollport_kinetic_cb_mouse_move_embedded(Ewl_Widget *w,
                                                 void *ev, void *data);
-static int ewl_scrollport_kinetic_cb_scroll_timer_embedded(void *data);
+static Eina_Bool ewl_scrollport_kinetic_cb_scroll_timer_embedded(void *data);
 static void ewl_scrollport_kinetic_scroll(Ewl_Scrollport *s, double x,
                                                 double y, int *tx, int *ty);
 static void ewl_scrollport_kinetic_cb_destroy(Ewl_Widget *w, void *ev, void *data);
@@ -574,7 +574,7 @@ ewl_scrollport_kinetic_cb_mouse_up_embedded(Ewl_Widget *w __UNUSED__,
  * @return Returns 1 if the timer is to continue, 0 otherwise
  * @brief Performs some calculations then calls the scroll function
  */
-static int
+static Eina_Bool
 ewl_scrollport_kinetic_cb_scroll_timer_normal(void *data)
 {
         Ewl_Scrollport *s;
@@ -622,7 +622,7 @@ ewl_scrollport_kinetic_cb_scroll_timer_normal(void *data)
  * @return Returns 1 if the timer is to continue, 0 otherwise
  * @brief Performs some calculations then calls the scroll functions
  */
-static int
+static Eina_Bool
 ewl_scrollport_kinetic_cb_scroll_timer_embedded(void *data)
 {
         Ewl_Scrollport *s;

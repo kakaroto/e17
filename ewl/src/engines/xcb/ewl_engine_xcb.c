@@ -15,24 +15,24 @@ static Ewl_Window *ee_current_key_grab_window = NULL;
  * such as copy/paste and DND. These events need to be handled for embedded
  * EWL, but have no equivalent in the Evas callback namespace.
  */
-static int ewl_ev_x_window_expose(void *data, int type, void *_ev);
-static int ewl_ev_x_window_configure(void *data, int type, void *_ev);
-static int ewl_ev_x_window_delete(void *data, int type, void *_ev);
-static int ewl_ev_x_key_down(void *data, int type, void *_ev);
-static int ewl_ev_x_key_up(void *data, int type, void *_ev);
-static int ewl_ev_x_mouse_down(void *data, int type, void *_ev);
-static int ewl_ev_x_mouse_wheel(void *data, int type, void *_ev);
-static int ewl_ev_x_mouse_up(void *data, int type, void *_ev);
-static int ewl_ev_x_mouse_move(void *data, int type, void *_ev);
-static int ewl_ev_x_mouse_out(void *data, int type, void *_ev);
-static int ewl_ev_x_focus_in(void *data, int type, void *_ev);
-static int ewl_ev_x_focus_out(void *data, int type, void *_ev);
-static int ewl_ev_x_data_received(void *data, int type, void *_ev);
-static int ewl_ev_x_data_request(void *data, int type, void *_ev);
-static int ewl_ev_dnd_position(void *data, int type, void *_ev);
-static int ewl_ev_dnd_enter(void *data, int type, void *_ev);
-static int ewl_ev_dnd_leave(void *data, int type, void *_ev);
-static int ewl_ev_dnd_drop(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_x_window_expose(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_x_window_configure(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_x_window_delete(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_x_key_down(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_x_key_up(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_x_mouse_down(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_x_mouse_wheel(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_x_mouse_up(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_x_mouse_move(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_x_mouse_out(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_x_focus_in(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_x_focus_out(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_x_data_received(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_x_data_request(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_dnd_position(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_dnd_enter(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_dnd_leave(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_dnd_drop(void *data, int type, void *_ev);
 
 static Ecore_Event_Handler *ee_expose_handler = NULL;
 static Ecore_Event_Handler *ee_configure_handler = NULL;
@@ -1019,7 +1019,7 @@ ee_pointer_set(Ewl_Embed *embed, int pointer)
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_x_window_expose(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         /*
@@ -1049,7 +1049,7 @@ ewl_ev_x_window_expose(void *data __UNUSED__, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         /*
@@ -1113,7 +1113,7 @@ ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_x_window_delete(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         /*
@@ -1136,7 +1136,7 @@ ewl_ev_x_window_delete(void *data __UNUSED__, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_x_key_down(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         Ewl_Window *window;
@@ -1177,7 +1177,7 @@ ewl_ev_x_key_down(void *data __UNUSED__, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_x_key_up(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         Ewl_Window *window;
@@ -1218,7 +1218,7 @@ ewl_ev_x_key_up(void *data __UNUSED__, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_x_mouse_down(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         int clicks = 1;
@@ -1246,7 +1246,7 @@ ewl_ev_x_mouse_down(void *data __UNUSED__, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_x_mouse_up(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         int clicks = 1;
@@ -1274,7 +1274,7 @@ ewl_ev_x_mouse_up(void *data __UNUSED__, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_x_mouse_move(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         Ewl_Window *window;
@@ -1296,7 +1296,7 @@ ewl_ev_x_mouse_move(void *data __UNUSED__, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_x_mouse_out(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         Ewl_Window *window;
@@ -1316,7 +1316,7 @@ ewl_ev_x_mouse_out(void *data __UNUSED__, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_x_mouse_wheel(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         Ewl_Window *window;
@@ -1337,7 +1337,7 @@ ewl_ev_x_mouse_wheel(void *data __UNUSED__, int type __UNUSED__, void *e)
 }
 
 
-static int
+static Eina_Bool
 ewl_ev_x_focus_in(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         Ewl_Window *window;
@@ -1354,7 +1354,7 @@ ewl_ev_x_focus_in(void *data __UNUSED__, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_x_focus_out(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         Ewl_Window *window;
@@ -1371,7 +1371,7 @@ ewl_ev_x_focus_out(void *data __UNUSED__, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_x_data_received(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         Ecore_X_Event_Selection_Notify *ev;
@@ -1425,7 +1425,7 @@ ewl_ev_x_data_received(void *data __UNUSED__, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_x_data_request(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         Ecore_X_Event_Selection_Request *ev;
@@ -1467,7 +1467,7 @@ ewl_ev_x_data_request(void *data __UNUSED__, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_dnd_position(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         Ewl_Window *window;
@@ -1521,7 +1521,7 @@ ewl_ev_dnd_position(void *data __UNUSED__, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_dnd_enter(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         Ewl_Embed *embed;
@@ -1544,7 +1544,7 @@ ewl_ev_dnd_enter(void *data __UNUSED__, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_dnd_leave(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         Ewl_Embed *embed;
@@ -1571,7 +1571,7 @@ ewl_ev_dnd_leave(void *data __UNUSED__, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
         Ewl_Embed *embed;

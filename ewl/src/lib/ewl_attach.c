@@ -57,7 +57,7 @@ static void ewl_attach_cb_tooltip_win_destroy(Ewl_Widget *w, void *ev, void *dat
 static void ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data);
 static void ewl_attach_cb_tooltip_mouse_down(Ewl_Widget *w, void *ev, void *data);
 static void ewl_attach_cb_tooltip_mouse_out(Ewl_Widget *w, void *ev, void *data);
-static int ewl_attach_cb_tooltip_timer(void *data);
+static Eina_Bool ewl_attach_cb_tooltip_timer(void *data);
 
 static Ewl_Attach_Tooltip *ewl_attach_tooltip = NULL;
 
@@ -682,7 +682,7 @@ ewl_attach_cb_tooltip_mouse_out(Ewl_Widget *w __UNUSED__,
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_attach_cb_tooltip_timer(void *data)
 {
         Ewl_Widget *w;

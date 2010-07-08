@@ -4,11 +4,11 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
-static int ewl_ev_fb_key_down(void *data, int type, void *_ev);
-static int ewl_ev_fb_key_up(void *data, int type, void *_ev);
-static int ewl_ev_fb_mouse_down(void *data, int type, void *_ev);
-static int ewl_ev_fb_mouse_up(void *data, int type, void *_ev);
-static int ewl_ev_fb_mouse_move(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_fb_key_down(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_fb_key_up(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_fb_mouse_down(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_fb_mouse_up(void *data, int type, void *_ev);
+static Eina_Bool ewl_ev_fb_mouse_move(void *data, int type, void *_ev);
 
 static Ecore_Event_Handler *ee_key_down_handler = NULL;
 static Ecore_Event_Handler *ee_key_up_handler = NULL;
@@ -207,7 +207,7 @@ ee_canvas_setup(Ewl_Window *win, int debug __UNUSED__)
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_fb_key_down(void *data, int type __UNUSED__, void *e)
 {
         Ewl_Embed *embed;
@@ -228,7 +228,7 @@ ewl_ev_fb_key_down(void *data, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_fb_key_up(void *data, int type __UNUSED__, void *e)
 {
         Ewl_Embed *embed;
@@ -249,7 +249,7 @@ ewl_ev_fb_key_up(void *data, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_fb_mouse_down(void *data, int type __UNUSED__, void *e)
 {
         int clicks = 1;
@@ -284,7 +284,7 @@ ewl_ev_fb_mouse_down(void *data, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_fb_mouse_up(void *data, int type __UNUSED__, void *e)
 {
         int clicks = 1;
@@ -317,7 +317,7 @@ ewl_ev_fb_mouse_up(void *data, int type __UNUSED__, void *e)
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_ev_fb_mouse_move(void *data, int type __UNUSED__, void *e)
 {
         Ewl_Embed *embed;

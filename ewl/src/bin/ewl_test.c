@@ -80,7 +80,7 @@ static void setup_unit_tests(Ewl_Test *test);
 
 static void statusbar_label_update(Ewl_Widget *w, void *ev, void *data);
 
-static int ewl_test_cb_unit_test_timer(void *data);
+static Eina_Bool ewl_test_cb_unit_test_timer(void *data);
 static void ewl_test_cb_delete_window(Ewl_Widget *w, void *ev, void *data);
 static void ewl_test_cb_exit(Ewl_Widget *w, void *ev, void *data);
 static void ewl_cb_mvc_free(Ewl_Widget *w, void *ev, void *data);
@@ -307,12 +307,12 @@ ewl_test_string_replace(char *string, char replace, char with)
                 *found = with;
 }
 
-static int
+static Eina_Bool
 ewl_test_cb_unit_test_timer(void *data)
 {
         char buf[1024];
         Ewl_Unit_Test *unit_tests;
-        int ret = 1;
+        Eina_Bool ret = 1;
 
         unit_tests = data;
         if (unit_tests[current_unit_test].func)

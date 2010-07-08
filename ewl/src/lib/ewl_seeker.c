@@ -7,7 +7,7 @@
 #include "ewl_debug.h"
 
 static double ewl_seeker_mouse_value_map(Ewl_Seeker *s, int mx, int my);
-static int ewl_seeker_timer(void *data);
+static Eina_Bool ewl_seeker_timer(void *data);
 
 /**
  * @return Returns NULL on failure, or a pointer to the new seeker on success.
@@ -690,7 +690,7 @@ ewl_seeker_mouse_value_map(Ewl_Seeker *s, int mx, int my)
         DRETURN_FLOAT(scale, DLEVEL_STABLE);
 }
 
-static int
+static Eina_Bool
 ewl_seeker_timer(void *data)
 {
         Ewl_Seeker *s;
