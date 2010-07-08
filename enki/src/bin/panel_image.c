@@ -59,7 +59,7 @@ static void _close_save_cb(void *data);
 
 void _panel_select_cb(void *data, Tabpanel *tabpanel, Tabpanel_Item *item);
 
-static int _save_description_name_timer(void *data);
+static Eina_Bool _save_description_name_timer(void *data);
 static void _save_description_name(Panel_Image *panel_image);
 
 static void _panes_clicked_double(void *data, Evas_Object *obj, void *event_info);
@@ -1392,12 +1392,12 @@ static void _entry_name_changed_cb(void *data, Evas_Object *obj, void *event_inf
      }
 }
 
-static int _save_description_name_timer(void *data)
+static Eina_Bool _save_description_name_timer(void *data)
 {
    Panel_Image *panel_image = data;
    _save_description_name(data);
    panel_image->timer_description_name = NULL;
-   return 0;
+   return EINA_FALSE;
 }
 
 static void _save_description_name(Panel_Image *panel_image)
