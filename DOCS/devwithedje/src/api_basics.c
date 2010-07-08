@@ -16,7 +16,7 @@ Evas_Coord width, height;
 //The pointer to an Ecore handler
 Ecore_Event_Handler* close = NULL;
 
-int
+Eina_Bool
 good_bye(void *data, int type, void *event)
 {
     //Remove the handler for no practical reason but showoff the API
