@@ -18,7 +18,7 @@ static void pv_clip_set(Evas_Object *obj, Evas_Object *clip);
 static void pv_clip_unset(Evas_Object *obj);
 
 static void pv_layout(Evas_Object *obj);
-static int pv_layout_timer(void *data);
+static Eina_Bool pv_layout_timer(void *data);
 
 static void cb_swatch_in(void *data, Evas *evas, Evas_Object *obj, void *event_info);
 static void cb_swatch_out(void *data, Evas *evas, Evas_Object *obj, void *event_info);
@@ -238,7 +238,7 @@ pv_layout(Evas_Object *obj)
   pv->layout_timer = ecore_timer_add(0.01, pv_layout_timer, pv);
 }
 
-static int
+static Eina_Bool
 pv_layout_timer(void *data)
 {
   Evas_Object *rect;
@@ -250,7 +250,7 @@ pv_layout_timer(void *data)
   Palette_View *pv;
 
   pv = data;
-  if (!pv) return 0;
+  if (!pv) return EINA_FALSE;
 
   if (pv->theme.changed)
     edje_object_file_set(pv->selector, pv->theme.file, "elicit.palette.selector");
@@ -345,7 +345,7 @@ pv_layout_timer(void *data)
   }
 
   pv->layout_timer = NULL;
-  return 0;
+  return EINA_FALSE;
 }
 
 
