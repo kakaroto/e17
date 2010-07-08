@@ -403,22 +403,24 @@ _ephoto_directory_chosen(void *data, Evas_Object *obj, void *event_info)
 
 	directory = elm_fileselector_selected_get(obj);
 
-	if (directory && strcmp(directory, current_directory))
+	if (directory && directory != current_directory)
 	{
-		l = elm_gengrid_items_get(em->thumb_browser);
-		EINA_LIST_FOREACH(l, iter, item)
+		if (eina_stringshare_replace(&current_directory, directory))
 		{
-			etd = (Ephoto_Thumb_Data *)elm_gengrid_item_data_get(item);
-			eina_stringshare_del(etd->thumb_path);
-			eina_stringshare_del(etd->file);
-			free(etd);
+			l = elm_gengrid_items_get(em->thumb_browser);
+                	EINA_LIST_FOREACH(l, iter, item)
+                	{
+                        	etd = (Ephoto_Thumb_Data *)elm_gengrid_item_data_get(item);
+                        	eina_stringshare_del(etd->thumb_path);
+                        	eina_stringshare_del(etd->file);
+                        	free(etd);
+                	}
+			elm_gengrid_clear(em->thumb_browser);
+			eina_list_free(em->images);
+			em->images = NULL;
+			ephoto_populate_thumbnails();
+			elm_label_label_set(dir_label, current_directory);
 		}
-		elm_gengrid_clear(em->thumb_browser);
-		eina_stringshare_del(current_directory);
-		current_directory = eina_stringshare_add(directory);
-		eina_list_free(em->images);
-		em->images = NULL;
-		ephoto_populate_thumbnails();
 	}
 	evas_object_del(obj);
 	evas_object_del(win);
