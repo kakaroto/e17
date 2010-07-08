@@ -231,12 +231,12 @@ collections
 					rel1 
 					{
 						relative: 0.0  1.0;
-						offset: 0 0;
+						offset: 0 -25;
 					}
 					rel2 
 					{
 						relative: 1.0  1.0;
-						offset: -5 -5;
+						offset: -1 -1;
 					}
 					color: 0 0 0 255;
 					color3: 0 0 0 0;
