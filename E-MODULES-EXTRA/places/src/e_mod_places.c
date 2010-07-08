@@ -8,7 +8,7 @@
 #include "e_mod_places.h"
 
 /* Local Function Prototypes */
-static int _places_poller(void *data);
+static Eina_Bool _places_poller(void *data);
 static void _places_print_volume(Volume *v);
 static void _places_error_show(const char *title, const char *text1, const char *text2, const char *text3);
 static void _places_run_fm(void *data, E_Menu *m, E_Menu_Item *mi);
@@ -488,7 +488,7 @@ places_augmentation(void *data, E_Menu *em)
 }
 
 /* Internals */
-static int
+static Eina_Bool
 _places_poller(void *data)
 {
    Eina_List *l;
@@ -498,7 +498,7 @@ _places_poller(void *data)
      if (vol->valid && vol->mounted)
        _places_update_size(vol->obj, vol);
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static void
@@ -758,7 +758,7 @@ _places_eject_activated_cb(void *data, Evas_Object *o, const char *emission, con
 /***********************/
 /* HAL /DBUS Callbacks */
 /***********************/
-static int
+static Eina_Bool
 _places_open_when_mounted(void *data)
 {
    Volume *vol = data;
@@ -766,10 +766,10 @@ _places_open_when_mounted(void *data)
    if (vol->mount_point)
    {
       _places_run_fm((void*)vol->mount_point, NULL, NULL);
-      return 0;
+      return EINA_FALSE;
    }
 
-   return 1;
+   return EINA_TRUE;
 }
 
 void

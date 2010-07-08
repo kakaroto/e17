@@ -37,7 +37,7 @@ static void	_itask_free(Itask *it);
 static int  _itask_fill(Itask *it);
 static int  _itask_empty(Itask *it);
 static void _itask_orient_set(Itask *it, int horizontal);
-static int  _itask_cb_event_desk_show(void *data, int type, void *event);
+static Eina_Bool  _itask_cb_event_desk_show(void *data, int type, void *event);
 
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
@@ -380,7 +380,7 @@ itask_zone_find(E_Zone *zone)
 }
 
 // TODO hm, this can probably be made simpler
-static int
+static Eina_Bool
 _itask_cb_event_desk_show(void *data, int type, void *event)
 {
    E_Event_Desk_Show *ev;
@@ -466,7 +466,7 @@ _itask_cb_event_desk_show(void *data, int type, void *event)
    while (itask)
      itask = eina_list_remove_list(itask, itask);
   
-   return 1;
+   return EINA_TRUE;
 }
 	
 EAPI Config_Item *

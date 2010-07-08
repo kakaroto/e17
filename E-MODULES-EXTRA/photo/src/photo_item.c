@@ -49,7 +49,7 @@ else                                                             \
 static Picture *_picture_new_get(Photo_Item *pi);
 static void     _picture_detach(Photo_Item *pi, int part);
 
-static int      _cb_timer_change(void *data);
+static Eina_Bool      _cb_timer_change(void *data);
 static void     _cb_edje_change(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void     _cb_edje_mouseover(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void     _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -592,7 +592,7 @@ _picture_detach(Photo_Item *pi, int part)
    photo_picture_local_ev_raise(1);
 }
 
-static int
+static Eina_Bool
 _cb_timer_change(void *data)
 {
    Photo_Item *pi;
@@ -600,7 +600,7 @@ _cb_timer_change(void *data)
    pi = data;
    photo_item_action_change(pi, 1);
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static void

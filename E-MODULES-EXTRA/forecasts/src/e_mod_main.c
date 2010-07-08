@@ -111,14 +111,14 @@ static void _forecasts_cb_mouse_down(void *data, Evas * e, Evas_Object * obj,
 static void _forecasts_menu_cb_configure(void *data, E_Menu * m,
 					E_Menu_Item * mi);
 static void _forecasts_menu_cb_post(void *data, E_Menu * m);
-static int _forecasts_cb_check(void *data);
+static Eina_Bool _forecasts_cb_check(void *data);
 static Config_Item *_forecasts_config_item_get(const char *id);
 static Forecasts *_forecasts_new(Evas * evas);
 static void _forecasts_free(Forecasts * w);
 static void _forecasts_get_proxy(void);
-static int _forecasts_server_add(void *data, int type, void *event);
-static int _forecasts_server_del(void *data, int type, void *event);
-static int _forecasts_server_data(void *data, int type, void *event);
+static Eina_Bool _forecasts_server_add(void *data, int type, void *event);
+static Eina_Bool _forecasts_server_del(void *data, int type, void *event);
+static Eina_Bool _forecasts_server_data(void *data, int type, void *event);
 static int _forecasts_parse(void *data);
 static void _forecasts_converter(Instance *inst);
 static void _forecasts_convert_degrees(int *value, int dir);
@@ -554,13 +554,13 @@ _forecasts_get_proxy(void)
    free(env);
 }
 
-static int
+static Eina_Bool
 _forecasts_cb_check(void *data)
 {
    Instance *inst;
 
    /* check that data is valid */
-   if (!(inst = data)) return 0;
+   if (!(inst = data)) return EINA_FALSE;
 
    /* if we have a previous server, delete it */
    if (inst->server) ecore_con_server_del(inst->server);
@@ -576,11 +576,10 @@ _forecasts_cb_check(void *data)
      inst->server =
 	ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, inst->ci->host, 80, inst);
 
-   if (!inst->server) return 0;
-   return 1;
+   if (!inst->server) return EINA_FALSE;return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _forecasts_server_add(void *data, int type, void *event)
 {
    Instance *inst;
@@ -591,11 +590,11 @@ _forecasts_server_add(void *data, int type, void *event)
 
    inst = data;
    if (!inst)
-     return 1;
+     return EINA_TRUE;
 
    ev = event;
    if ((!inst->server) || (inst->server != ev->server))
-     return 1;
+     return EINA_TRUE;
 
    if (inst->ci->degrees == DEGREES_F)
      degrees = 'f';
@@ -609,10 +608,10 @@ _forecasts_server_add(void *data, int type, void *event)
 	    inst->ci->host, forecast, inst->ci->host);
    DEBUG("Server: %s", buf);
    ecore_con_server_send(inst->server, buf, strlen(buf));
-   return 0;
+   return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 _forecasts_server_del(void *data, int type, void *event)
 {
    Instance *inst;
@@ -622,7 +621,7 @@ _forecasts_server_del(void *data, int type, void *event)
    inst = data;
    ev = event;
    if ((!inst->server) || (inst->server != ev->server))
-     return 1;
+     return EINA_TRUE;
 
    ecore_con_server_del(inst->server);
    inst->server = NULL;
@@ -636,10 +635,10 @@ _forecasts_server_del(void *data, int type, void *event)
    free(inst->buffer);
    inst->buffer = NULL;
 
-   return 0;
+   return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 _forecasts_server_data(void *data, int type, void *event)
 {
    Instance *inst;
@@ -650,7 +649,7 @@ _forecasts_server_data(void *data, int type, void *event)
    ev = event;
 
    if ((!inst->server) || (inst->server != ev->server))
-     return 1;
+     return EINA_TRUE;
    while ((inst->cursize + ev->size) >= inst->bufsize)
 	inst->bufsize += 4096;
 
@@ -659,13 +658,13 @@ _forecasts_server_data(void *data, int type, void *event)
    else
      {
 	DEBUG("realloc() error for size %d", inst->bufsize);
-	return 0;
+	return EINA_FALSE;
      }
 
    memcpy(inst->buffer + inst->cursize, ev->data, ev->size);
    inst->cursize += ev->size;
    inst->buffer[inst->cursize] = 0;
-   return 0;
+   return EINA_FALSE;
 }
 
 static int

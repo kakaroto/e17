@@ -8,9 +8,9 @@
 static ImapServer *_mail_imap_server_find (Ecore_Con_Server *server);
 static ImapServer *_mail_imap_server_get (Config_Box *cb);
 static ImapClient *_mail_imap_client_get (Config_Box *cb);
-static int _mail_imap_server_add (void *data, int type, void *event);
-static int _mail_imap_server_del (void *data, int type, void *event);
-static int _mail_imap_server_data (void *data, int type, void *event);
+static Eina_Bool _mail_imap_server_add (void *data, int type, void *event);
+static Eina_Bool _mail_imap_server_del (void *data, int type, void *event);
+static Eina_Bool _mail_imap_server_data (void *data, int type, void *event);
 static void _mail_imap_server_logout (ImapServer * is);
 
 static Eina_List *iservers = NULL;
@@ -196,7 +196,7 @@ _mail_imap_client_get (Config_Box *cb)
   return ic;
 }
 
-static int
+static Eina_Bool
 _mail_imap_server_add (void *data, int type, void *event)
 {
   Ecore_Con_Event_Server_Add *ev = event;
@@ -204,14 +204,14 @@ _mail_imap_server_add (void *data, int type, void *event)
 
   is = _mail_imap_server_find (ev->server);
   if (!is)
-    return 1;
+    return EINA_TRUE;
 
   is->state = IMAP_STATE_CONNECTED;
   is->cmd = 0;
-  return 0;
+  return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 _mail_imap_server_del (void *data, int type, void *event)
 {
   Ecore_Con_Event_Server_Del *ev = event;
@@ -219,7 +219,7 @@ _mail_imap_server_del (void *data, int type, void *event)
 
   is = _mail_imap_server_find (ev->server);
   if (!is)
-    return 1;
+    return EINA_TRUE;
 
   if (is->state == IMAP_STATE_DISCONNECTED)
     printf ("Imap Server Disconnected\n");
@@ -230,10 +230,10 @@ _mail_imap_server_del (void *data, int type, void *event)
   is->server = NULL;
 
   _mail_set_text (is->data);
-  return 0;
+  return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 _mail_imap_server_data (void *data, int type, void *event)
 {
   Ecore_Con_Event_Server_Data *ev = event;
@@ -245,9 +245,9 @@ _mail_imap_server_data (void *data, int type, void *event)
 
   is = _mail_imap_server_find (ev->server);
   if (!is)
-    return 1;
+    return EINA_TRUE;
   if (is->state == IMAP_STATE_DISCONNECTED)
-    return 1;
+    return EINA_TRUE;
 
   len = sizeof (in) - 1;
   len = (len > ev->size) ? (ev->size) : (len);
@@ -262,17 +262,17 @@ _mail_imap_server_data (void *data, int type, void *event)
 	{
 	  _mail_imap_server_logout (is);
 	  printf ("Imap Failure: %s\n", spc + 4);
-	  return 0;
+	  return EINA_FALSE;
 	}
       else if ((slen > 6) && (!strncmp (spc + 1, "BAD ", 4)))
 	{
 	  _mail_imap_server_logout (is);
 	  printf ("Imap Bad Command: %s\n", spc + 5);
-	  return 0;
+	  return EINA_FALSE;
 	}
     }
 
-  if (!is->current) return 0;
+  if (!is->current) return EINA_FALSE;
   ic = is->current->data;
   is->state++;
 
@@ -316,7 +316,7 @@ _mail_imap_server_data (void *data, int type, void *event)
     default:
       break;
     }
-  return 0;
+  return EINA_FALSE;
 }
 
 static void

@@ -7,7 +7,7 @@
 static int      _ngw_win_free(Ngw_Win *win);
 static Ngw_Win *_ngw_win_new(Ng *ng);
 static void     _ngw_win_position_calc(Ngw_Win *es);
-static int      _ngw_win_container_resize_cb(void *data, int type, void *event);
+static Eina_Bool      _ngw_win_container_resize_cb(void *data, int type, void *event);
 
 
 E_Config_DD *conf_edd = NULL;
@@ -269,12 +269,12 @@ _ngw_win_free(Ngw_Win *win)
    return 1;
 }
 
-static int
+static Eina_Bool
 _ngw_win_container_resize_cb(void *data, int ev_type, void *event_info)
 {
    _ngw_win_position_calc(ngw_config->winlist_cfg->ng->win);
   
-   return 1;
+   return EINA_TRUE;
 }
 
 void

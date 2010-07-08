@@ -58,7 +58,7 @@ static Eina_List *_parsers;
 
 static int              _parse_type(News_Feed_Document *doc);
 
-static int              _idler(void *data);
+static Eina_Bool              _idler(void *data);
 static News_Parse_Error _idler_parse_detect_metas(News_Parse *parser);
 static News_Parse_Error _idler_parse_infos(News_Parse *parser);
 static News_Parse_Error _idler_parse_article_init(News_Parse *parser);
@@ -202,7 +202,7 @@ _parse_type(News_Feed_Document *doc)
    return 0;
 }
 
-static int
+static Eina_Bool
 _idler(void *data)
 {
    News_Parse *parser;
@@ -267,7 +267,7 @@ _idler(void *data)
         break;
      case NEWS_PARSE_OC_END:
         _parse_finished(parser);
-        return 0;
+        return EINA_FALSE;
      }
 
    /* error returned */
@@ -277,7 +277,7 @@ _idler(void *data)
         parser->oc.action = NEWS_PARSE_OC_END;
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static News_Parse_Error

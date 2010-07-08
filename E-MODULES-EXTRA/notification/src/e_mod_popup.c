@@ -31,7 +31,7 @@ static void _notification_theme_cb_find     (void *data,
 					     Evas_Object *obj,
 					     const char *emission,
 					     const char *source);
-static int  _notification_timer_cb          (void *data);
+static Eina_Bool  _notification_timer_cb          (void *data);
 
 static int next_pos = 0;
 
@@ -565,11 +565,11 @@ _notification_theme_cb_find(void *data,
      }
 }
 
-static int
+static Eina_Bool
 _notification_timer_cb(void *data)
 {
    Popup_Data *popup = data;
    _notification_popup_del(e_notification_id_get(popup->notif),
 			   E_NOTIFICATION_CLOSED_EXPIRED);
-   return 0;
+   return EINA_FALSE;
 }

@@ -41,7 +41,7 @@ static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
 static const char *_gc_id_new(E_Gadcon_Client_Class *client_class);
 static Config_Item *_config_item_get(const char *id);
 static void _execwatch_icon(Instance *inst, char *icon);
-static int  _execwatch_status_cmd_exec(void *data);
+static Eina_Bool  _execwatch_status_cmd_exec(void *data);
 static int  _execwatch_status_cmd_exit(void *data, int type, void *event);
 static void _execwatch_popup_content_create(Instance *inst);
 static void _execwatch_popup_destroy(Instance *inst);
@@ -261,18 +261,18 @@ _execwatch_icon(Instance *inst, char *icon)
      }
 }
 
-static int
+static Eina_Bool
 _execwatch_status_cmd_exec(void *data)
 {
    Instance *inst;
    Execwatch *execwatch;
 
    inst = data;
-   if (!inst) return 1;
+   if (!inst) return EINA_TRUE;
    execwatch = inst->execwatch;
-   if (!execwatch) return 1;
-   if (inst->status_exe) return 1;
-   if (!inst->ci->status_cmd || !strlen(inst->ci->status_cmd)) return 1;
+   if (!execwatch) return EINA_TRUE;
+   if (inst->status_exe) return EINA_TRUE;
+   if (!inst->ci->status_cmd || !strlen(inst->ci->status_cmd)) return EINA_TRUE;
 
    _execwatch_icon(inst, "cmd_exec");
    inst->status_exe = ecore_exe_pipe_run(inst->ci->status_cmd,
@@ -281,10 +281,10 @@ _execwatch_status_cmd_exec(void *data)
 				  inst);
    ecore_exe_tag_set(inst->status_exe, STATUS_EXE_TAG);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _execwatch_cmd_exit(void *data, int type, void *event)
 {
    Ecore_Exe_Event_Data_Line *lines;
@@ -293,12 +293,12 @@ _execwatch_cmd_exit(void *data, int type, void *event)
    int i=0, old_popup_state=0, old_popup_pinned_state=0;
 
    ev = event;
-   if (!ev) return 1;
-   if (!ev->exe) return 1;
-   if (!ecore_exe_tag_get(ev->exe)) return 1;
+   if (!ev) return EINA_TRUE;
+   if (!ev->exe) return EINA_TRUE;
+   if (!ecore_exe_tag_get(ev->exe)) return EINA_TRUE;
    inst = ecore_exe_data_get(ev->exe);
-   if (!inst) return 1;
-   if (!inst->ci) return 1;
+   if (!inst) return EINA_TRUE;
+   if (!inst->ci) return EINA_TRUE;
 
    if (!strcmp(ecore_exe_tag_get(ev->exe), STATUS_EXE_TAG))
      {
@@ -361,7 +361,7 @@ _execwatch_cmd_exit(void *data, int type, void *event)
 	if (inst->ci->refresh_after_dblclk_cmd) _execwatch_status_cmd_exec(inst);
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static void

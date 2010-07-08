@@ -46,10 +46,10 @@ static void _win_menu_icon_cb(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _win_menu_item_drag(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _win_menu_free_hook(void *obj);
 static void _win_menu_item_create(E_Border *bd, E_Menu *m);
-static int _window_cb_focus_in(void *data, int type, void *event);
-static int _window_cb_focus_out(void *data, int type, void *event);
-static int _window_cb_icon_change(void *data, int type, void *event);
-static int _window_cb_border_remove(void *data, int type, void *event);
+static Eina_Bool _window_cb_focus_in(void *data, int type, void *event);
+static Eina_Bool _window_cb_focus_out(void *data, int type, void *event);
+static Eina_Bool _window_cb_icon_change(void *data, int type, void *event);
+static Eina_Bool _window_cb_border_remove(void *data, int type, void *event);
 static void _focus_in(E_Border *bd, Instance *inst);
 static void _focus_out(Instance *inst);
 static void _win_menu_fill_separator(E_Menu *m);
@@ -445,7 +445,7 @@ _menu_cb_post(void *data, E_Menu *m)
    inst->win_menu = NULL;
 }
 
-static int _window_cb_focus_in(void *data, int type, void *event)
+static Eina_Bool _window_cb_focus_in(void *data, int type, void *event)
 {
    Ecore_X_Event_Window_Focus_In *ev;
    E_Border *bd;
@@ -454,13 +454,13 @@ static int _window_cb_focus_in(void *data, int type, void *event)
    ev = event;
    inst = data;
    if (!(bd = e_border_find_by_client_window(ev->win)))
-     return 1;
+     return EINA_TRUE;
 
    _focus_in(bd, inst);
-   return 1;
+   return EINA_TRUE;
 }
 
-static int _window_cb_focus_out(void *data, int type, void *event)
+static Eina_Bool _window_cb_focus_out(void *data, int type, void *event)
 { 
    Ecore_X_Event_Window_Focus_In *ev;
    E_Border *bd;
@@ -469,14 +469,14 @@ static int _window_cb_focus_out(void *data, int type, void *event)
    ev = event;
    inst = data;
    if (!(bd = e_border_find_by_client_window(ev->win)))
-     return 1;
+     return EINA_TRUE;
 
    _focus_out(inst);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _window_cb_icon_change(void *data, int type, void *event)
 {
    E_Event_Border_Icon_Change *ev;
@@ -485,13 +485,13 @@ _window_cb_icon_change(void *data, int type, void *event)
 
    ev = event;
    inst = data;
-   if (!(bd = ev->border)) return 1;
+   if (!(bd = ev->border)) return EINA_TRUE;
 
    _focus_in(bd, inst);
-   return 1;
+   return EINA_TRUE;
 }
 
-static int _window_cb_border_remove(void *data, int type, void *event)
+static Eina_Bool _window_cb_border_remove(void *data, int type, void *event)
 { 
    E_Event_Border_Remove *ev;
    E_Border *bd;
@@ -499,11 +499,11 @@ static int _window_cb_border_remove(void *data, int type, void *event)
 
    ev = event;
    inst = data;
-   if (!(bd = ev->border)) return 1;
+   if (!(bd = ev->border)) return EINA_TRUE;
 
    _focus_out(inst);
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static void _focus_in(E_Border *bd, Instance *inst)

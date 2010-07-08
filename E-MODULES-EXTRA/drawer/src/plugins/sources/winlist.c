@@ -52,13 +52,13 @@ static void _winlist_border_focus_in(Instance *inst, E_Border *bd);
 static void _winlist_event_update(Instance *inst);
 static int  _winlist_sort_alpha_cb(const void *d1, const void *d2);
 static int  _winlist_sort_z_order_cb(const void *d1, const void *d2);
-static int  _winlist_border_focus_in_cb(void *data, int type, void *event);
-static int  _winlist_border_focus_out_cb(void *data, int type, void *event);
-static int  _winlist_border_add_cb(void *data, int type, void *event);
-static int  _winlist_border_remove_cb(void *data, int type, void *event);
-static int  _winlist_border_icon_change_cb(void *data, int type, void *event);
-static int  _winlist_border_desk_set_cb(void *data, int type, void *event);
-static int  _winlist_border_window_prop_cb(void *data, int type, void *event);
+static Eina_Bool  _winlist_border_focus_in_cb(void *data, int type, void *event);
+static Eina_Bool  _winlist_border_focus_out_cb(void *data, int type, void *event);
+static Eina_Bool  _winlist_border_add_cb(void *data, int type, void *event);
+static Eina_Bool  _winlist_border_remove_cb(void *data, int type, void *event);
+static Eina_Bool  _winlist_border_icon_change_cb(void *data, int type, void *event);
+static Eina_Bool  _winlist_border_desk_set_cb(void *data, int type, void *event);
+static Eina_Bool  _winlist_border_window_prop_cb(void *data, int type, void *event);
 /*
 static int  _winlist_desk_show_cb(void *data, int type, void *event);
 */
@@ -464,7 +464,7 @@ _winlist_sort_z_order_cb(const void *d1, const void *d2)
    return 0;   
 }
 
-static int
+static Eina_Bool
 _winlist_border_focus_in_cb(void *data, int type, void *event)
 {
    E_Event_Border_Focus_In *ev;
@@ -474,14 +474,14 @@ _winlist_border_focus_in_cb(void *data, int type, void *event)
    ev = event;
    inst = data;
    if (!(bd = ev->border))
-     return 1;
+     return EINA_TRUE;
 
    _winlist_border_focus_in(inst, bd);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _winlist_border_focus_out_cb(void *data, int type, void *event)
 {
    E_Event_Border_Focus_Out *ev;
@@ -490,7 +490,7 @@ _winlist_border_focus_out_cb(void *data, int type, void *event)
 
    ev = event;
    inst = data;
-   if (!ev->border) return 1;
+   if (!ev->border) return EINA_TRUE;
 
    ev2 = E_NEW(Drawer_Event_Source_Main_Icon_Update, 1);
    ev2->source = inst->source;
@@ -500,10 +500,10 @@ _winlist_border_focus_out_cb(void *data, int type, void *event)
        DRAWER_EVENT_SOURCE_MAIN_ICON_UPDATE, ev2,
        _winlist_event_update_icon_free, NULL);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _winlist_border_add_cb(void *data, int type, void *event)
 {
    E_Event_Border_Add *evt;
@@ -513,17 +513,17 @@ _winlist_border_add_cb(void *data, int type, void *event)
 
    evt = event;
    inst = data;
-   if (!(bd = evt->border)) return 1;
-   if (_winlist_border_filter(bd, zone)) return 1;
+   if (!(bd = evt->border)) return EINA_TRUE;
+   if (_winlist_border_filter(bd, zone)) return EINA_TRUE;
 
    inst->actions.added = bd;
    if (_winlist_items_update(inst))
      _winlist_event_update(inst);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _winlist_border_remove_cb(void *data, int type, void *event)
 {
    E_Event_Border_Remove *evt;
@@ -533,17 +533,17 @@ _winlist_border_remove_cb(void *data, int type, void *event)
 
    evt = event;
    inst = data;
-   if (!(bd = evt->border)) return 1;
-   if (_winlist_border_filter(bd, zone)) return 1;
+   if (!(bd = evt->border)) return EINA_TRUE;
+   if (_winlist_border_filter(bd, zone)) return EINA_TRUE;
 
    inst->actions.removed = bd;
    if (_winlist_items_update(inst))
      _winlist_event_update(inst);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _winlist_border_icon_change_cb(void *data, int type, void *event)
 {
    E_Event_Border_Icon_Change *ev;
@@ -551,14 +551,14 @@ _winlist_border_icon_change_cb(void *data, int type, void *event)
 
    ev = event;
    inst = data;
-   if (!ev->border) return 1;
+   if (!ev->border) return EINA_TRUE;
 
    _winlist_event_update(inst);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _winlist_border_desk_set_cb(void *data, int type, void *event)
 {
    E_Event_Border_Icon_Change *ev;
@@ -570,7 +570,7 @@ _winlist_border_desk_set_cb(void *data, int type, void *event)
 
    ev = event;
    inst = data;
-   if (!(bd = ev->border)) return 1;
+   if (!(bd = ev->border)) return EINA_TRUE;
 
    si = _winlist_item_from_border(inst, bd);
    if (si)
@@ -599,10 +599,10 @@ _winlist_border_desk_set_cb(void *data, int type, void *event)
    if (changed)
      _winlist_event_update(inst);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _winlist_border_window_prop_cb(void *data, int type, void *event)
 {
    E_Border *bd;
@@ -616,8 +616,8 @@ _winlist_border_window_prop_cb(void *data, int type, void *event)
    ev = event;
    inst = data;
    bd = e_border_find_by_client_window(ev->win);
-   if (!bd) return 1;
-   if (_winlist_border_filter(bd, zone)) return 1;
+   if (!bd) return EINA_TRUE;
+   if (_winlist_border_filter(bd, zone)) return EINA_TRUE;
    if (ev->atom == ECORE_X_ATOM_WM_NAME)
      {
 	if ((!bd->client.netwm.name) &&
@@ -689,7 +689,7 @@ _winlist_border_window_prop_cb(void *data, int type, void *event)
    if (changed)
      _winlist_event_update(inst);
 
-   return 1;
+   return EINA_TRUE;
 }
 
 /*

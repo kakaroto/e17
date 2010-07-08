@@ -449,7 +449,7 @@ _icon_get(Evry_Item *it, Evas *e)
    return o;
 }
 
-static int
+static Eina_Bool
 _update_timer(void *data)
 {
    Plugin *p = data;
@@ -469,7 +469,7 @@ _update_timer(void *data)
      }
 
    p->update_timer = NULL;
-   return 0;
+   return EINA_FALSE;
 }
 
 static void

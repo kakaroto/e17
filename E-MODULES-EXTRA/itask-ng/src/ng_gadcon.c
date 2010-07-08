@@ -7,7 +7,7 @@ static Evas_Object *_ngi_gadcon_cb_gadcon_frame_request(void *data, E_Gadcon_Cli
 static void *_create_data(E_Config_Dialog *cfd);
 static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static Evas_Object *_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
-static int _cb_mod_update(void *data, int type, void *event);
+static Eina_Bool _cb_mod_update(void *data, int type, void *event);
 static void _avail_list_cb_change(void *data, Evas_Object *obj);
 static void _sel_list_cb_change(void *data, Evas_Object *obj);
 static void _load_avail_gadgets(void *data);
@@ -330,16 +330,16 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    return o;
 }
 
-static int
+static Eina_Bool
 _cb_mod_update(void *data, int type, void *event)
 {
    E_Config_Dialog_Data *cfdata = NULL;
 
-   if (type != E_EVENT_MODULE_UPDATE) return 1;
-   if (!(cfdata = data)) return 1;
+   if (type != E_EVENT_MODULE_UPDATE) return EINA_TRUE;
+   if (!(cfdata = data)) return EINA_TRUE;
    _load_avail_gadgets(cfdata);
    _load_sel_gadgets(cfdata);
-   return 1;
+   return EINA_TRUE;
 }
 
 static void

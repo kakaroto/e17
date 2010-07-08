@@ -28,7 +28,7 @@ struct _Import
 };
 
 static void _import_edj_gen(Import *import);
-static int _import_cb_edje_cc_exit(void *data, int type, void *event);
+static Eina_Bool _import_cb_edje_cc_exit(void *data, int type, void *event);
 
 static const Evry_API *evry = NULL;
 static Evry_Module *evry_module = NULL;
@@ -370,7 +370,7 @@ _import_edj_gen(Import *import)
   import->exe = ecore_exe_run(cmd, NULL);
 }
 
-static int
+static Eina_Bool
 _import_cb_edje_cc_exit(void *data, int type, void *event)
 {
   Import *import;
@@ -381,9 +381,9 @@ _import_cb_edje_cc_exit(void *data, int type, void *event)
   ev = event;
   import = data;
 
-  if (!ev->exe) return 1;
+  if (!ev->exe) return EINA_TRUE;
 
-  if (ev->exe != import->exe) return 1;
+  if (ev->exe != import->exe) return EINA_TRUE;
 
   if (ev->exit_code != 0)
     {
@@ -403,7 +403,7 @@ _import_cb_edje_cc_exit(void *data, int type, void *event)
 
   E_FREE(fdest);
 
-  return 0;
+  return EINA_FALSE;
 }
 
 /***************************************************************************/

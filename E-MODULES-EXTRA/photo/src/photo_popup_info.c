@@ -28,7 +28,7 @@ static Eina_List *_popups_info;
 
 static void _placement(Photo_Item *pi, int placement, int popi_w, int popi_h, int *popi_x, int *popi_y);
 static void _close(Popup_Info *popi);
-static int  _cb_timer(void *data);;
+static Eina_Bool  _cb_timer(void *data);;
 static void _cb_edje_close(void *data, Evas_Object *obj, const char *emission, const char *source);
 
 /*
@@ -270,7 +270,7 @@ _close(Popup_Info *popi)
    photo_popup_info_del(popi);
 }
 
-static int
+static Eina_Bool
 _cb_timer(void *data)
 {
    Popup_Info *popi;
@@ -278,7 +278,7 @@ _cb_timer(void *data)
    popi = data;
    _close(popi);
 
-   return 0;
+   return EINA_FALSE;
 }
 
 static void

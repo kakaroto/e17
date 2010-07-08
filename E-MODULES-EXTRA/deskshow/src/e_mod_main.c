@@ -7,7 +7,7 @@ static void             _gc_orient(E_Gadcon_Client * gcc, E_Gadcon_Orient orient
 static char            *_gc_label(E_Gadcon_Client_Class *client_class);
 static                  Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas * evas);
 static const char      *_gc_id_new(E_Gadcon_Client_Class *client_class);
-static int              _deskshow_cb_event_desk_show(void *data, int type, void *event);
+static Eina_Bool              _deskshow_cb_event_desk_show(void *data, int type, void *event);
 
 /* and actually define the gadcon class that this module provides (just 1) */
 static const E_Gadcon_Client_Class _gadcon_class = {
@@ -136,7 +136,7 @@ _button_cb_mouse_down (void *data, Evas *e, Evas_Object *obj, void *event_info)
     }
 }
 
-static int
+static Eina_Bool
 _deskshow_cb_event_desk_show(void *data, int type, void *event)
 {
    E_Event_Desk_Show *ev;
@@ -151,7 +151,7 @@ _deskshow_cb_event_desk_show(void *data, int type, void *event)
      edje_object_signal_emit(inst->o_button, "active", "");
    else
      edje_object_signal_emit(inst->o_button, "passive", "");
-   return 1;
+   return EINA_TRUE;
 }
 
 /* module setup */

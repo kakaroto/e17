@@ -74,18 +74,18 @@ static void _taskbar_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _taskbar_cb_item_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _taskbar_cb_item_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
-static int _taskbar_cb_event_border_add(void *data, int type, void *event);
-static int _taskbar_cb_event_border_remove(void *data, int type, void *event);
-static int _taskbar_cb_event_border_iconify(void *data, int type, void *event);
-static int _taskbar_cb_event_border_uniconify(void *data, int type, void *event);
-static int _taskbar_cb_event_border_icon_change(void *data, int type, void *event);
-static int _taskbar_cb_event_border_zone_set(void *data, int type, void *event);
-static int _taskbar_cb_event_border_desk_set(void *data, int type, void *event);
-static int _taskbar_cb_window_focus_in(void *data, int type, void *event);
-static int _taskbar_cb_window_focus_out(void *data, int type, void *event);
-static int _taskbar_cb_event_border_property(void *data, int type, void *event);
-static int _taskbar_cb_event_desk_show(void *data, int type, void *event);
-static int _taskbar_cb_event_border_urgent_change(void *data, int type, void *event);
+static Eina_Bool _taskbar_cb_event_border_add(void *data, int type, void *event);
+static Eina_Bool _taskbar_cb_event_border_remove(void *data, int type, void *event);
+static Eina_Bool _taskbar_cb_event_border_iconify(void *data, int type, void *event);
+static Eina_Bool _taskbar_cb_event_border_uniconify(void *data, int type, void *event);
+static Eina_Bool _taskbar_cb_event_border_icon_change(void *data, int type, void *event);
+static Eina_Bool _taskbar_cb_event_border_zone_set(void *data, int type, void *event);
+static Eina_Bool _taskbar_cb_event_border_desk_set(void *data, int type, void *event);
+static Eina_Bool _taskbar_cb_window_focus_in(void *data, int type, void *event);
+static Eina_Bool _taskbar_cb_window_focus_out(void *data, int type, void *event);
+static Eina_Bool _taskbar_cb_event_border_property(void *data, int type, void *event);
+static Eina_Bool _taskbar_cb_event_desk_show(void *data, int type, void *event);
+static Eina_Bool _taskbar_cb_event_border_urgent_change(void *data, int type, void *event);
 
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
@@ -752,7 +752,7 @@ _taskbar_cb_item_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_inf
 
 /************ BORDER CALLBACKS *********************/
 
-static int
+static Eina_Bool
 _taskbar_cb_event_border_add(void *data, int type, void *event)
 {
    E_Event_Border_Add *ev;
@@ -760,10 +760,10 @@ _taskbar_cb_event_border_add(void *data, int type, void *event)
    ev = event;
    taskbar_config->borders = eina_list_append(taskbar_config->borders, ev->border);
    _taskbar_refill_all();
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _taskbar_cb_event_border_remove(void *data, int type, void *event)
 {
    E_Event_Border_Remove *ev;
@@ -771,50 +771,50 @@ _taskbar_cb_event_border_remove(void *data, int type, void *event)
    ev = event;
    taskbar_config->borders = eina_list_remove(taskbar_config->borders, ev->border);
    _taskbar_refill_all();
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _taskbar_cb_event_border_iconify(void *data, int type, void *event)
 {
    E_Event_Border_Iconify *ev;
 
    ev = event;
    _taskbar_signal_emit(ev->border, "iconified", "");
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _taskbar_cb_event_border_uniconify(void *data, int type, void *event)
 {
    E_Event_Border_Uniconify *ev;
 
    ev = event;
    _taskbar_signal_emit(ev->border, "uniconified", "");
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _taskbar_cb_window_focus_in(void *data, int type, void *event)
 {
    E_Event_Border_Focus_In *ev;
 
    ev = event;
    _taskbar_signal_emit(ev->border, "focused", "");
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _taskbar_cb_window_focus_out(void *data, int type, void *event)
 {
    E_Event_Border_Focus_Out *ev;
 
    ev = event;
    _taskbar_signal_emit(ev->border, "unfocused", "");
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _taskbar_cb_event_border_urgent_change(void *data, int type, void *event)
 {
    E_Event_Border_Urgent_Change *ev;
@@ -824,10 +824,10 @@ _taskbar_cb_event_border_urgent_change(void *data, int type, void *event)
       _taskbar_signal_emit(ev->border, "urgent", "");
    else
       _taskbar_signal_emit(ev->border, "not_urgent", "");
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _taskbar_cb_event_border_property(void *data, int type, void *event)
 {
    E_Event_Border_Property *ev;
@@ -837,10 +837,10 @@ _taskbar_cb_event_border_property(void *data, int type, void *event)
   border = ev->border;
    if (border)
       _taskbar_refill_border(border);
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _taskbar_cb_event_border_icon_change(void *data, int type, void *event)
 {
    E_Event_Border_Icon_Change *ev;
@@ -850,28 +850,28 @@ _taskbar_cb_event_border_icon_change(void *data, int type, void *event)
   border = ev->border;
    if (border)
       _taskbar_refill_border(border);
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _taskbar_cb_event_border_zone_set(void *data, int type, void *event)
 {
    _taskbar_refill_all();
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _taskbar_cb_event_border_desk_set(void *data, int type, void *event)
 {
    _taskbar_refill_all();
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _taskbar_cb_event_desk_show(void *data, int type, void *event)
 {
    _taskbar_refill_all();
-   return 1;
+   return EINA_TRUE;
 }
 
 /***************************************************************************/

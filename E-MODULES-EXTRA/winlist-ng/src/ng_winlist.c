@@ -3,11 +3,11 @@
 
 static void _ngw_winlist_activate               (void);
 static void _ngw_winlist_deactivate             (void);
-static int  _ngw_winlist_cb_event_border_add    (void *data, int type,  void *event);
-static int  _ngw_winlist_cb_event_border_remove (void *data, int type,  void *event);
-static int  _ngw_winlist_cb_key_down            (void *data, int type, void *event);
-static int  _ngw_winlist_cb_key_up              (void *data, int type, void *event);
-static int  _ngw_winlist_cb_mouse_wheel         (void *data, int type, void *event);
+static Eina_Bool  _ngw_winlist_cb_event_border_add    (void *data, int type,  void *event);
+static Eina_Bool  _ngw_winlist_cb_event_border_remove (void *data, int type,  void *event);
+static Eina_Bool  _ngw_winlist_cb_key_down            (void *data, int type, void *event);
+static Eina_Bool  _ngw_winlist_cb_key_up              (void *data, int type, void *event);
+static Eina_Bool  _ngw_winlist_cb_mouse_wheel         (void *data, int type, void *event);
 
 
 static int  _ngw_winlist_warp_timer             (void *data);
@@ -26,8 +26,8 @@ static void _ngw_winlist_show_all_toggle        (void);
 
 static E_Border *_ngw_winlist_border_above_get  (E_Border *bd);
 static int _ngw_winlist_check_border            (E_Border *bd);
-static int _ngw_winlist_window_show_timer_cb    (void *data);
-static int _ngw_winlist_fade_out_timer          (void *data);
+static Eina_Bool _ngw_winlist_window_show_timer_cb    (void *data);
+static Eina_Bool _ngw_winlist_fade_out_timer          (void *data);
 static void _ngw_winlist_move_mouse_to_boder    (E_Border *bd);
 
 
@@ -611,7 +611,7 @@ _ngw_winlist_create_list(int initial)
   _ngw_winlist_activate();
 }
 
-static int 
+static Eina_Bool 
 _ngw_winlist_window_show_timer_cb(void *data)
 {
   show_timer = NULL;
@@ -621,7 +621,7 @@ _ngw_winlist_window_show_timer_cb(void *data)
 
   fade_step = 5; // TODO: Config
   
-  return 0;
+  return EINA_FALSE;
 }
 
 static void
@@ -648,7 +648,7 @@ _ngw_winlist_to_desk(void)
     }
 }
 
-static int
+static Eina_Bool
 _ngw_winlist_fade_out_timer(void *data)
 {
   int a;
@@ -672,7 +672,7 @@ _ngw_winlist_fade_out_timer(void *data)
       ngw_remove_items(winlist); 
             
       fade_out_timer = NULL;
-      return 0;
+      return EINA_FALSE;
     }
  
   if(fade_out_timer &&  ecore_time_get() - fade_out_time > 0.08) 
@@ -683,7 +683,7 @@ _ngw_winlist_fade_out_timer(void *data)
 
   fade_out_time = ecore_time_get();
   
-  return 1;
+  return EINA_TRUE;
 }
 
 static void 
@@ -801,13 +801,13 @@ _ngw_winlist_bring_to_front(void)
     }
 }
 
-static int
+static Eina_Bool
 _ngw_winlist_bring_to_front_cb(void *data)
 {
   _ngw_winlist_bring_to_front();
   activate_timer = NULL;
   
-  return 0;
+  return EINA_FALSE;
 }
 
 static void
@@ -877,7 +877,7 @@ _ngw_winlist_deactivate(void)
 
 }
 
-static int
+static Eina_Bool
 _ngw_winlist_cb_event_border_add(void *data, int type,  void *event)
 {
   E_Event_Border_Add *ev;
@@ -885,7 +885,7 @@ _ngw_winlist_cb_event_border_add(void *data, int type,  void *event)
   ev = (E_Event_Border_Add*) event;
 
   if(!_ngw_winlist_check_border(ev->border))
-    return 1;
+    return EINA_TRUE;
    
   _ngw_winlist_deactivate();
 
@@ -896,15 +896,15 @@ _ngw_winlist_cb_event_border_add(void *data, int type,  void *event)
   if(!winlist->items)
     {
       ngw_winlist_hide();
-      return 1;
+      return EINA_TRUE;
     }
   
   _ngw_winlist_activate();
 
-  return 1;
+  return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _ngw_winlist_cb_event_border_remove(void *data, int type,  void *event)
 {
   E_Event_Border_Remove *ev;
@@ -913,7 +913,7 @@ _ngw_winlist_cb_event_border_remove(void *data, int type,  void *event)
   Eina_List *l;
   Ngw_Item *tmp;
   
-  if(!winlist_active) return 1;
+  if(!winlist_active) return EINA_TRUE;
 
   for(l = winlist->items; l; l = l->next)
     {
@@ -931,22 +931,22 @@ _ngw_winlist_cb_event_border_remove(void *data, int type,  void *event)
           if(!winlist->items)
             {
               ngw_winlist_hide();
-              return 1;
+              return EINA_TRUE;
             }
   
           _ngw_winlist_activate();
         }      
     }
-  return 1;
+  return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _ngw_winlist_cb_key_down(void *data, int type, void *event)
 {
   Ecore_Event_Key *ev;
    
   ev = (Ecore_Event_Key*) event;
-  if (ev->window != input_window) return 1;
+  if (ev->window != input_window) return EINA_TRUE;
 
   if(!strcmp(ev->key, "s"))
     {
@@ -1031,16 +1031,16 @@ _ngw_winlist_cb_key_down(void *data, int type, void *event)
             }
         }
     }
-  return 1;
+  return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _ngw_winlist_cb_key_up(void *data, int type, void *event)
 {
   Ecore_Event_Key *ev;
 
   ev = (Ecore_Event_Key*) event;
-  if (!winlist_active) return 1;
+  if (!winlist_active) return EINA_TRUE;
   
   if (hold_mod)
     {
@@ -1063,12 +1063,12 @@ _ngw_winlist_cb_key_up(void *data, int type, void *event)
       if (hold_count <= 0)
 	{
 	  ngw_winlist_hide();
-	  return 1;
+	  return EINA_TRUE;
 	}
     }
   e_bindings_key_up_event_handle(E_BINDING_CONTEXT_WINLIST,
 				 E_OBJECT(winlist->zone), ev);
-  return 1;
+  return EINA_TRUE;
 }
 
 static int
@@ -1116,13 +1116,13 @@ _ngw_winlist_animator (void *data)
   return 0;
 }
 
-static int
+static Eina_Bool
 _ngw_winlist_cb_mouse_wheel(void *data, int type, void *event)
 {
    Ecore_Event_Mouse_Wheel *ev;
    
    ev = event;
-   if (ev->window != input_window) return 1;
+   if (ev->window != input_window) return EINA_TRUE;
    //e_bindings_wheel_event_handle(E_BINDING_CONTEXT_ANY,
    //				 E_OBJECT(winlist->zone), ev);
    if (ev->z < 0) /* up */
@@ -1137,6 +1137,6 @@ _ngw_winlist_cb_mouse_wheel(void *data, int type, void *event)
 	
 	for (i = ev->z; i > 0; i--) ngw_winlist_next();
      }
-   return 1;
+   return EINA_TRUE;
 }
 

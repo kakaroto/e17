@@ -60,7 +60,7 @@ static void          _moon_timer_init();
 static void          _moon_timer_shutdown();
 static void          _moon_timer_client_register(Evas_Object *moon);
 static void          _moon_timer_client_unregister(Evas_Object *moon);
-static int           _moon_timer_cb_update(void *data);
+static Eina_Bool           _moon_timer_cb_update(void *data);
 
 static Moon_Config_Msg *_moon_config_msg_prepare();
 static void             _moon_config_msg_send(Evas_Object *o, Moon_Config_Msg *msg);
@@ -314,14 +314,14 @@ _moon_timer_client_unregister(Evas_Object *moon)
 }
 
 /* Timer event - update all moon objects */
-static int
+static Eina_Bool
 _moon_timer_cb_update(void *data)
 {
    Moon_Update_Msg *msg;
    Eina_List *l;
 
    if (!_moon_timer->clients)
-     return 1;
+     return EINA_TRUE;
  
    msg = _moon_update_msg_prepare();
    for (l = _moon_timer->clients; l; l = l->next)
@@ -331,7 +331,7 @@ _moon_timer_cb_update(void *data)
 	_moon_update_msg_send(gadget, msg);
      }
    _moon_update_msg_free(msg);
-   return 1;
+   return EINA_TRUE;
 }
 
 /* Update the specified instance with the latest configuration */

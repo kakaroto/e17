@@ -72,7 +72,7 @@ static Evas_Object *_drawer_gc_icon(E_Gadcon_Client_Class *client_class, Evas *e
 static void _drawer_conf_new(void);
 static void _drawer_conf_free(void);
 static void _drawer_conf_item_free(Config_Item *ci);
-static int _drawer_conf_timer(void *data);
+static Eina_Bool _drawer_conf_timer(void *data);
 static Config_Item *_drawer_conf_item_get(const char *id);
 
 static Instance *_drawer_instance_get(Config_Item *ci);
@@ -83,7 +83,7 @@ static void _drawer_popup_create(Instance *inst);
 static void _drawer_popup_show(Instance *inst);
 static void _drawer_popup_hide(Instance *inst);
 static void _drawer_popup_update(Instance *inst);
-static int  _drawer_container_init_timer(void *data);
+static Eina_Bool  _drawer_container_init_timer(void *data);
 static void _drawer_container_update(Instance *inst);
 static Evas_Object * _drawer_content_generate(Instance *inst, Evas *evas);
 static void _drawer_container_setup(Instance *inst, E_Gadcon_Orient orient);
@@ -101,11 +101,11 @@ static void _drawer_thumb_process(Drawer_Thumb_Data *td);
 static void _drawer_thumb_data_free(void *data);
 static void _drawer_content_recalc(Instance *inst, Evas_Object *obj);
 
-static int _drawer_source_update_cb(void *data __UNUSED__, int ev_type, void *event);
-static int _drawer_source_main_icon_update_cb(void *data __UNUSED__, int ev_type, void *event);
-static int _drawer_view_activate_cb(void *data __UNUSED__, int ev_type, void *event);
-static int _drawer_view_context_cb(void *data __UNUSED__, int ev_type, void *event);
-static int _drawer_global_mouse_down_cb(void *data, int type, void *event);
+static Eina_Bool _drawer_source_update_cb(void *data __UNUSED__, int ev_type, void *event);
+static Eina_Bool _drawer_source_main_icon_update_cb(void *data __UNUSED__, int ev_type, void *event);
+static Eina_Bool _drawer_view_activate_cb(void *data __UNUSED__, int ev_type, void *event);
+static Eina_Bool _drawer_view_context_cb(void *data __UNUSED__, int ev_type, void *event);
+static Eina_Bool _drawer_global_mouse_down_cb(void *data, int type, void *event);
 
 static void _drawer_popup_hidden_cb(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__);
 static void _drawer_popup_shown_cb(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__);
@@ -1408,19 +1408,19 @@ _drawer_conf_item_free(Config_Item *ci)
    E_FREE(ci);
 }
 
-static int
+static Eina_Bool
 _drawer_container_init_timer(void *data)
 {
    _drawer_container_update((Instance *) data);
-   return 0;
+   return EINA_FALSE;
 }
 
 /* timer for the config oops dialog */
-static int 
+static Eina_Bool 
 _drawer_conf_timer(void *data) 
 {
    e_util_dialog_internal(D_("Drawer Configuration Updated"), (char *) data);
-   return 0;
+   return EINA_FALSE;
 }
 
 /* function to search for any Config_Item struct for this Item
@@ -1596,15 +1596,15 @@ _drawer_content_recalc(Instance *inst, Evas_Object *obj)
    evas_object_size_hint_min_set(obj, w, h);
 }
 
-static int
+static Eina_Bool
 _drawer_source_update_cb(void *data __UNUSED__, int ev_type, void *event)
 {
    Instance *inst = NULL;
    Drawer_Event_Source_Update *ev;
 
    ev = event;
-   if (ev_type != DRAWER_EVENT_SOURCE_UPDATE) return 1;
-   if (!(inst = _drawer_instance_get(_drawer_conf_item_get(ev->id)))) return 1;
+   if (ev_type != DRAWER_EVENT_SOURCE_UPDATE) return EINA_TRUE;
+   if (!(inst = _drawer_instance_get(_drawer_conf_item_get(ev->id)))) return EINA_TRUE;
 
    if (inst->flags.is_floating)
      {
@@ -1615,28 +1615,28 @@ _drawer_source_update_cb(void *data __UNUSED__, int ev_type, void *event)
    else if (inst->popup)
      _drawer_popup_update(inst);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _drawer_source_main_icon_update_cb(void *data __UNUSED__, int ev_type, void *event)
 {
    Instance *inst = NULL;
    Drawer_Event_Source_Main_Icon_Update *ev;
 
    ev = event;
-   if (ev_type != DRAWER_EVENT_SOURCE_MAIN_ICON_UPDATE) return 1;
-   if (!(inst = _drawer_instance_get(_drawer_conf_item_get(ev->id)))) return 1;
+   if (ev_type != DRAWER_EVENT_SOURCE_MAIN_ICON_UPDATE) return EINA_TRUE;
+   if (!(inst = _drawer_instance_get(_drawer_conf_item_get(ev->id)))) return EINA_TRUE;
 
    if (inst->flags.is_floating)
-     return 1;
+     return EINA_TRUE;
 
    _drawer_shelf_update(inst, ev->si);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _drawer_view_activate_cb(void *data __UNUSED__, int ev_type, void *event)
 {
    Drawer_Source *s = NULL;
@@ -1644,8 +1644,8 @@ _drawer_view_activate_cb(void *data __UNUSED__, int ev_type, void *event)
    Instance *inst = NULL;
 
    ev = event;
-   if (ev_type != DRAWER_EVENT_VIEW_ITEM_ACTIVATE) return 1;
-   if (!(inst = _drawer_instance_get(_drawer_conf_item_get(ev->id)))) return 1;
+   if (ev_type != DRAWER_EVENT_VIEW_ITEM_ACTIVATE) return EINA_TRUE;
+   if (!(inst = _drawer_instance_get(_drawer_conf_item_get(ev->id)))) return EINA_TRUE;
    s = DRAWER_SOURCE(inst->source);
 
    if (s->func.activate)
@@ -1654,10 +1654,10 @@ _drawer_view_activate_cb(void *data __UNUSED__, int ev_type, void *event)
    if (inst->popup)
      _drawer_popup_hide(inst);
 
-   return 0;
+   return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 _drawer_view_context_cb(void *data __UNUSED__, int ev_type, void *event)
 {
    Drawer_Source *s = NULL;
@@ -1665,8 +1665,8 @@ _drawer_view_context_cb(void *data __UNUSED__, int ev_type, void *event)
    Instance *inst = NULL;
 
    ev = event;
-   if (ev_type != DRAWER_EVENT_VIEW_ITEM_CONTEXT) return 1;
-   if (!(inst = _drawer_instance_get(_drawer_conf_item_get(ev->id)))) return 1;
+   if (ev_type != DRAWER_EVENT_VIEW_ITEM_CONTEXT) return EINA_TRUE;
+   if (!(inst = _drawer_instance_get(_drawer_conf_item_get(ev->id)))) return EINA_TRUE;
    s = DRAWER_SOURCE(inst->source);
 
    if (inst->popup)
@@ -1678,10 +1678,10 @@ _drawer_view_context_cb(void *data __UNUSED__, int ev_type, void *event)
    if (s->func.context)
      s->func.context(s, ev->data, inst->gcc->gadcon->zone, ev);
 
-   return 0;
+   return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 _drawer_global_mouse_down_cb(void *data, int type, void *event)
 {
    Ecore_Event_Mouse_Button *ev;
@@ -1689,12 +1689,12 @@ _drawer_global_mouse_down_cb(void *data, int type, void *event)
 
    ev = event;
    inst = data;
-   if (!inst->popup || !inst->popup->win->visible || inst->flags.pop_showing) return 1;
-   if (ev->event_window == inst->popup->win->evas_win) return 1;
+   if (!inst->popup || !inst->popup->win->visible || inst->flags.pop_showing) return EINA_TRUE;
+   if (ev->event_window == inst->popup->win->evas_win) return EINA_TRUE;
 
    _drawer_popup_hide(inst);
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static void

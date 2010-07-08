@@ -16,7 +16,7 @@ static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
 
 static void _places_conf_new(void);
 static void _places_conf_free(void);
-static int _places_conf_timer(void *data);
+static Eina_Bool _places_conf_timer(void *data);
 static Config_Item *_places_conf_item_get(const char *id);
 static void _places_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event);
 static void _places_cb_menu_post(void *data, E_Menu *menu);
@@ -366,11 +366,11 @@ _places_conf_free(void)
    E_FREE(places_conf);
 }
 
-static int 
+static Eina_Bool 
 _places_conf_timer(void *data) 
 {
    e_util_dialog_show("Places Configuration Updated", data);
-   return 0;
+   return EINA_FALSE;
 }
 
 static Config_Item *

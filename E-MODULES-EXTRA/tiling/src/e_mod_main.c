@@ -806,14 +806,14 @@ _e_module_tiling_cb_hook(void *data, void *border)
    rearrange_windows(bd, 0);
 }
 
-static int
+static Eina_Bool
 _e_module_tiling_hide_hook(void *data, int type, void *event)
 {
    DBG("hide-hook\n");
    E_Event_Border_Hide *ev = event;
    rearrange_windows(ev->border, 1);
 
-   if (currently_switching_desktop) return 1;
+   if (currently_switching_desktop) return EINA_TRUE;
 
    /* Ensure that the border is deleted from all available desks */
    static Tiling_Info *_tinfo = NULL;
@@ -837,25 +837,25 @@ _e_module_tiling_hide_hook(void *data, int type, void *event)
 	      }
 	 }
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _e_module_tiling_desk_show(void *data, int type, void *event)
 {
    E_Event_Desk_Show *ev = event;
    _desk_show(ev->desk);
    currently_switching_desktop = 0;
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _e_module_tiling_desk_before_show(void *data, int type, void *event)
 {
    E_Event_Desk_Before_Show *ev = event;
    _desk_before_show(ev->desk);
    currently_switching_desktop = 1;
-   return 1;
+   return EINA_TRUE;
 }
 
 static Eina_Bool
@@ -887,7 +887,7 @@ _clear_bd_from_info_hash(const Eina_Hash *hash, const void *key, void *data, voi
    return 1;
 }
 
-static int
+static Eina_Bool
 _e_module_tiling_desk_set(void *data, int type, void *event)
 {
    /* We use this event to ensure that border desk changes are done correctly because
@@ -904,10 +904,10 @@ _e_module_tiling_desk_set(void *data, int type, void *event)
    eina_hash_foreach(info_hash, _clear_bd_from_info_hash, ev);
    DBG("desk set\n");
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _e_module_tiling_mouse_move(void *data, int type, void *event)
 {
    Ecore_Event_Mouse_Move *ev = event;
@@ -921,7 +921,7 @@ _e_module_tiling_mouse_move(void *data, int type, void *event)
 	_desk_show(desk);
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
 

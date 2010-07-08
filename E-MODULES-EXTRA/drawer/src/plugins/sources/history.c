@@ -54,7 +54,7 @@ static Drawer_Source_Item *_history_source_item_fill(Instance *inst, Efreet_Desk
 static void _history_source_items_free(Instance *inst);
 static void _history_event_update_free(void *data __UNUSED__, void *event);
 static void _history_event_update_icon_free(void *data __UNUSED__, void *event);
-static int  _history_efreet_desktop_list_change_cb(void *data, int ev_type __UNUSED__, void *event __UNUSED__);
+static Eina_Bool  _history_efreet_desktop_list_change_cb(void *data, int ev_type __UNUSED__, void *event __UNUSED__);
 static void _history_cb_menu_post(void *data, E_Menu *menu);
 static void _history_cb_menu_item_properties(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _history_cb_menu_item_remove(void *data, E_Menu *m, E_Menu_Item *mi);
@@ -363,7 +363,7 @@ _history_event_update_icon_free(void *data __UNUSED__, void *event)
    free(ev);
 }
 
-static int
+static Eina_Bool
 _history_efreet_desktop_list_change_cb(void *data, int ev_type __UNUSED__, void *event __UNUSED__)
 {
    Instance *inst = data;
@@ -374,7 +374,7 @@ _history_efreet_desktop_list_change_cb(void *data, int ev_type __UNUSED__, void 
    ev->id = eina_stringshare_add(inst->conf->id);
    ecore_event_add(DRAWER_EVENT_SOURCE_UPDATE, ev, _history_event_update_free, NULL);
    
-   return 1;
+   return EINA_TRUE;
 }
 
 static void 

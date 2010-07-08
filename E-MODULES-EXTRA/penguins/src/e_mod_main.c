@@ -18,7 +18,7 @@
 static int        _is_inside_any_win(Population *pop, int x, int y, int ret_value);
 static Population *_population_init(E_Module *m);
 static void       _population_shutdown(Population *pop);
-static int        _cb_animator(void *data);
+static Eina_Bool        _cb_animator(void *data);
 static void       _population_load(Population *pop);
 static void       _theme_load(Population *pop);
 static void       _start_walking_at(Penguin *tux, int at_y);
@@ -34,7 +34,7 @@ static void       _cb_click_l (void *data, Evas_Object *o, const char *emi, cons
 static void       _cb_click_r (void *data, Evas_Object *o, const char *emi, const char *src);
 static void       _cb_click_c (void *data, Evas_Object *o, const char *emi, const char *src);
 static void       _start_bombing_at(Penguin *tux, int at_y);
-static int        _delay_born(void *data);
+static Eina_Bool        _delay_born(void *data);
 
 /* public module routines. all modules must have these */
 EAPI E_Module_Api e_modapi = {
@@ -443,7 +443,7 @@ _population_load(Population *pop)
    }
 }
 
-static int
+static Eina_Bool
 _delay_born(void *data)
 {
    Penguin *tux = data;
@@ -490,7 +490,7 @@ _reborn(Penguin *tux)
    evas_object_show(tux->obj);
 }
 
-static int
+static Eina_Bool
 _cb_animator(void *data)
 {
    Population *pop;

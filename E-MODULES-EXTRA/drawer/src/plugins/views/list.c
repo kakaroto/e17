@@ -83,8 +83,8 @@ static Entry * _list_vertical_cat_create(Instance *inst, Drawer_Source_Item *si)
 static void _list_item_pack_options(Instance *inst, Entry *e);
 static void _list_autoscroll_update(Instance *inst, Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h);
 
-static int _list_scroll_timer(void *data);
-static int _list_scroll_animator(void *data);
+static Eina_Bool _list_scroll_timer(void *data);
+static Eina_Bool _list_scroll_animator(void *data);
 static void _list_cb_list_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static int  _list_sort_by_category_cb(const void *d1, const void *d2);
 static void _list_entry_select_cb(void *data, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__);
@@ -640,7 +640,7 @@ _list_autoscroll_update(Instance *inst, Evas_Coord x, Evas_Coord y, Evas_Coord w
    inst->scroll_wanted = d;
 }
 
-static int
+static Eina_Bool
 _list_scroll_timer(void *data)
 {
    Instance *inst = NULL;
@@ -653,13 +653,13 @@ _list_scroll_timer(void *data)
      {
 	inst->scroll_pos =  inst->scroll_wanted;
 	inst->scroll_timer = NULL;
-	return 0;
+	return EINA_FALSE;
      }
    inst->scroll_pos = (inst->scroll_pos * 0.95) + (inst->scroll_wanted * 0.05);
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _list_scroll_animator(void *data)
 {
    Instance *inst = NULL;
@@ -672,12 +672,12 @@ _list_scroll_animator(void *data)
    if (!inst->scroll_timer)
      {
 	inst->scroll_animator = NULL;
-	return 0;
+	return EINA_FALSE;
      }
 
    /* Have scroll_cb func if d&d is ever implemented. See e_gadcon.c */
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static void

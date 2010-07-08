@@ -699,7 +699,7 @@ void popup_notify_scan(char* iface, Eina_List* networks, void* user_data )
     elt->scan_timer  = ecore_timer_add(2,popup_scan_timer_cb,elt);
 }
 
-int popup_scan_timer_cb(void *data)
+Eina_Bool popup_scan_timer_cb(void *data)
 {
     Popup_Elt* elt = data;
 

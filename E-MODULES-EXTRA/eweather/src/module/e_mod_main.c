@@ -5,7 +5,7 @@
 #include "e_mod_gadcon.h"
 
 /* local function variables */
-static int _cb_cfg_timer(void *data);
+static Eina_Bool _cb_cfg_timer(void *data);
 
 /* local variables */
 static E_Config_DD *conf_edd = NULL;
@@ -122,10 +122,10 @@ e_modapi_save(E_Module *m)
 }
 
 /* local functions */
-static int 
+static Eina_Bool 
 _cb_cfg_timer(void *data) 
 {
     //function not found
    //e_util_dialog_show_internal(D_("Weather Configuration Updated"), data);
-   return 0;
+   return EINA_FALSE;
 }

@@ -11,12 +11,12 @@ static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
 
 static void _diskio_conf_new(void);
 static void _diskio_conf_free(void);
-static int _diskio_conf_timer(void *data);
+static Eina_Bool _diskio_conf_timer(void *data);
 static Config_Item *_diskio_conf_item_get(const char *id);
 static void _diskio_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event);
 static void _diskio_cb_menu_post(void *data, E_Menu *menu);
 static void _diskio_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
-static int  _diskio_set(void *data);
+static Eina_Bool  _diskio_set(void *data);
 
 /* Local Structures */
 typedef struct _Instance Instance;
@@ -240,7 +240,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 }
 
 /* Set disk i/o */
-static int
+static Eina_Bool
 _diskio_set(void *data)
 {
    FILE *statfile;
@@ -253,8 +253,8 @@ _diskio_set(void *data)
 				 dummy6, dummy7, dummy8, bytes_r_new=0, bytes_w_new=0;
 
    inst = data;
-   if (!inst) return 1;
-   if (!inst->conf_item) return 1;
+   if (!inst) return EINA_TRUE;
+   if (!inst->conf_item) return EINA_TRUE;
 
    edje_object_part_text_set(inst->o_diskio, "e.text.display_name",
                              inst->conf_item->disk);
@@ -265,7 +265,7 @@ _diskio_set(void *data)
 	 { 
         edje_object_signal_emit(inst->o_diskio, "read,off", "");
         edje_object_signal_emit(inst->o_diskio, "write,off", "");
-		return 1;
+		return EINA_TRUE;
 	 }
 
    fgets(buffer, sizeof(buffer), statfile);
@@ -277,7 +277,7 @@ _diskio_set(void *data)
      {
         edje_object_signal_emit(inst->o_diskio, "read,off", "");
         edje_object_signal_emit(inst->o_diskio, "write,off", "");
-	    return 1;
+	    return EINA_TRUE;
 	 }
 
    if (inst->bytes_r != bytes_r_new)
@@ -296,7 +296,7 @@ _diskio_set(void *data)
    else
      edje_object_signal_emit(inst->o_diskio, "write,off", "");
 
-   return 1;
+   return EINA_TRUE;
 }
 
 /* Called when Gadget_Container says stop */
@@ -421,11 +421,11 @@ _diskio_conf_free(void)
 }
 
 /* timer for the config oops dialog */
-static int 
+static Eina_Bool 
 _diskio_conf_timer(void *data) 
 {
    e_util_dialog_show( D_("DiskIO Configuration Updated"), data);
-   return 0;
+   return EINA_FALSE;
 }
 
 /* function to search for any Config_Item struct for this Item

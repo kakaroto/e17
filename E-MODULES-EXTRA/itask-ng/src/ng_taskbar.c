@@ -4,8 +4,8 @@
 static int       _ngi_taskbar_border_check          (Ngi_Box *box, E_Border *bd);
 static Ngi_Item *_ngi_taskbar_border_find           (Ngi_Box *box, E_Border *bd);
 
-static int       _ngi_taskbar_cb_border_event       (void *data, int type, void *event);
-static int       _ngi_taskbar_cb_desk_show          (void *data, int type, void *event);
+static Eina_Bool       _ngi_taskbar_cb_border_event       (void *data, int type, void *event);
+static Eina_Bool       _ngi_taskbar_cb_desk_show          (void *data, int type, void *event);
 
 static void      _ngi_taskbar_item_new              (Ngi_Box *box, E_Border *bd);
 static void      _ngi_taskbar_item_set_icon         (Ngi_Item *it);
@@ -17,7 +17,7 @@ static void      _ngi_taskbar_item_cb_drag_start    (Ngi_Item *it);
 
 static void      _ngi_taskbar_item_cb_drag_end      (E_Drag *drag, int dropped);
 
-static int       _ngi_taskbar_cb_show_window        (void *data);
+static Eina_Bool       _ngi_taskbar_cb_show_window        (void *data);
 static void      _ngi_taskbar_cb_drop_enter         (void *data, const char *type, void *event_info);
 static void      _ngi_taskbar_cb_drop_move          (void *data, const char *type, void *event_info);
 static void      _ngi_taskbar_cb_drop_end           (void *data, const char *type, void *event_info);
@@ -239,7 +239,7 @@ _ngi_taskbar_cb_drop_end(void *data, const char *type, void *event_info)
    ngi_mouse_out(ng);
 }
 
-static int
+static Eina_Bool
 _ngi_taskbar_cb_show_window(void *data)
 {
    Ngi_Box *box = (Ngi_Box*) data;
@@ -247,7 +247,7 @@ _ngi_taskbar_cb_show_window(void *data)
    Ng *ng = box->ng;
    Ngi_Item *it = ng->item_active;
 
-   if (!it) return 0;
+   if (!it) return EINA_FALSE;
 
    desk = e_desk_current_get(it->border->zone);
 
@@ -278,12 +278,12 @@ _ngi_taskbar_cb_show_window(void *data)
    e_border_focus_set(it->border, 1, 1);
 
    box->dnd_timer = NULL;
-   return 0;
+   return EINA_FALSE;
 }
 
 /* ************************** BORDER CALLBACKS ************************* */
 
-static int
+static Eina_Bool
 _ngi_taskbar_cb_border_event(void *data, int type, void *event)
 {
    E_Event_Border_Add *ev = event;
@@ -393,7 +393,7 @@ _ngi_taskbar_cb_border_event(void *data, int type, void *event)
 		  /* XXX workaround for e sending event after the
 		   * border_remove event
 		   */
-		  if (bd->already_unparented) return 1;
+		  if (bd->already_unparented) return EINA_TRUE;
 
 		  if (it && it->usable)
 		    {
@@ -409,10 +409,10 @@ _ngi_taskbar_cb_border_event(void *data, int type, void *event)
 	       }
 	  }
      }
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _ngi_taskbar_cb_desk_show(void *data, int type, void *event)
 {
    /* E_Event_Desk_Show *ev = (E_Event_Desk_Show*) event; */
@@ -448,7 +448,7 @@ _ngi_taskbar_cb_desk_show(void *data, int type, void *event)
 	     changed = 0;
 	  }
      }
-   return 1;
+   return EINA_TRUE;
 }
 
 /* ***************************  TASKBAR  ITEM  *************************** */
@@ -938,7 +938,7 @@ _ngi_taskbar_zoom_function(Ng *ng)
 
 }
 
-static int
+static Eina_Bool
 _ngi_taskbar_cb_preview_hide(void *data)
 {
    Ng *ng = data;
@@ -949,7 +949,7 @@ _ngi_taskbar_cb_preview_hide(void *data)
 				 ECORE_X_ATOM_NET_WM_ICON_GEOMETRY,
 				 SubstructureNotifyMask,
 				 0, 0, 0, 0, 0);
-   return 0;
+   return EINA_FALSE;
 }
 
 static void

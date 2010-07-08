@@ -62,10 +62,10 @@ static Picture_Local_List *pictures_local;
 
 static void _pictures_old_del(int force, int force_now);
 
-static int  _load_idler(void *data);
-static int  _load_timer(void *data);
+static Eina_Bool  _load_idler(void *data);
+static Eina_Bool  _load_timer(void *data);
 static void _load_idler_stop(void);
-static int  _load_cb_ev_fill(void *data, int type, void *event);
+static Eina_Bool  _load_cb_ev_fill(void *data, int type, void *event);
 
 static void _thumb_generate_cb(void *data, Evas_Object *obj, void *event_info);
 static void _thumb_generate_stop(void);
@@ -299,7 +299,7 @@ _pictures_old_del(int force, int force_now)
      }
 }
 
-static int
+static Eina_Bool
 _load_idler(void *data)
 {
    Picture_Local_List *pl;
@@ -315,7 +315,7 @@ _load_idler(void *data)
    DD(("o"));
 
    /* if the E thumbnailer is too busy, wait */
-   if (pl->thumb.nb >= 2) return 1;
+   if (pl->thumb.nb >= 2) return EINA_TRUE;
 
    /* no more dirs in the current_dir */
    if (!eina_list_count(pl->loader.dirs))
@@ -343,7 +343,7 @@ _load_idler(void *data)
                   DPICL(("Going to read %s", d->path));
 		  if (photo->config_dialog)
 		    photo_config_dialog_refresh_local_dirs();
-                  return 1;
+                  return EINA_TRUE;
                }
           }
         /* no more directories to load */
@@ -370,7 +370,7 @@ _load_idler(void *data)
                   ecore_timer_del(pl->loader.timer);
                }
              pl->loader.timer = ecore_timer_add(0.0001, _load_timer, NULL);
-             return 0;
+             return EINA_FALSE;
           }
      }
 
@@ -388,23 +388,23 @@ _load_idler(void *data)
         free(eina_list_data_get(pl->loader.dirs));
         pl->loader.dirs = eina_list_remove_list(pl->loader.dirs,
                                                 pl->loader.dirs);
-        return 1;
+        return EINA_TRUE;
      }
 
    if ( (!strcmp(fs->d_name, ".")) || (!strcmp(fs->d_name, "..")) ||
         (!pl->loader.current_dir->read_hidden && (fs->d_name[0] == '.')) )
-     return 1;
+     return EINA_TRUE;
 
    snprintf(file, sizeof(file),
             "%s/%s", (char *)eina_list_data_get(pl->loader.dirs), fs->d_name);
 
-   if (stat(file, &fs_stat) < 0) return 1;
+   if (stat(file, &fs_stat) < 0) return EINA_TRUE;
 
    if ( (S_ISLNK(fs_stat.st_mode)) &&
         (file_tmp = ecore_file_readlink(file)) )
      {
         strncpy(file, file_tmp, sizeof(file));
-        if (stat(file, &fs_stat) < 0) return 0;
+        if (stat(file, &fs_stat) < 0) return EINA_FALSE;
      }
 
    if ( pl->loader.current_dir->recursive &&
@@ -412,16 +412,16 @@ _load_idler(void *data)
      {
         pl->loader.dirs = eina_list_append(pl->loader.dirs, strdup(file));
         DPICL(("added %s to loader dirs", file));
-        return 1;
+        return EINA_TRUE;
      }
 
    /* enqueue the file */
    pl->loader.queue = eina_list_append(pl->loader.queue, strdup(file));
    
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _load_timer(void *data)
 {
    Picture_Local_List *pl;
@@ -472,10 +472,10 @@ _load_timer(void *data)
    if (!pl->loader.idler)
      {
         pl->loader.timer = NULL;
-        return 0;
+        return EINA_FALSE;
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static void
@@ -528,7 +528,7 @@ _load_idler_stop(void)
      }
 }
 
-static int
+static Eina_Bool
 _load_cb_ev_fill(void *data, int type, void *event)
 {
    Photo_Item *pi;
@@ -549,9 +549,7 @@ _load_cb_ev_fill(void *data, int type, void *event)
 
    ev->new--;
    if (!ev->new)
-     return 0;
- 
-   return 1;
+     return EINA_FALSE;return EINA_TRUE;
 }
 
 static void

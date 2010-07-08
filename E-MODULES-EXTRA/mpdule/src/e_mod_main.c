@@ -77,7 +77,7 @@ struct _Instance
 static void _mpdule_connect (Instance * inst);
 static void _mpdule_disconnect (Instance * inst);
 static void _mpdule_update_song (Instance * inst);
-static int  _mpdule_update_song_cb (void *data);
+static Eina_Bool  _mpdule_update_song_cb (void *data);
 static void _mpdule_popup_destroy (Instance * inst);
 static void _mpdule_popup_create (Instance * inst, const char *dir);
 
@@ -469,14 +469,14 @@ _mpdule_disconnect (Instance * inst)
     }
 }
 
-static int
+static Eina_Bool
 _mpdule_update_song_cb (void *data)
 {
   Instance *inst;
 
   inst = data;
   _mpdule_update_song (inst);
-  return 1;
+  return EINA_TRUE;
 }
 
 static void

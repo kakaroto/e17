@@ -223,54 +223,54 @@ _url_data_send(Url_Data *dd, const char *url)
    return ecore_con_url_send(dd->con_url, NULL, 0, NULL);
 }
 
-static int
+static Eina_Bool
 _common_data_cb(void *data, int ev_type, void *event)
 {
    Ecore_Con_Event_Url_Data *ev = event;
    Url_Data *dd;
 
    if (!ev || !data || !(data == _conf))
-     return 1;
+     return EINA_TRUE;
 
    if (!(dd = ecore_con_url_data_get(ev->url_con)))
-     return 1;
+     return EINA_TRUE;
 
    dd->data = realloc(dd->data, sizeof(char) * (dd->size + ev->size));
    memcpy(dd->data + dd->size, ev->data, ev->size);
    dd->size += ev->size;
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _common_progress_cb(void *data, int ev_type, void *event)
 {
    Ecore_Con_Event_Url_Progress *ev = event;
    Url_Data *dd;
 
    if (!ev || !data || !(data == _conf))
-     return 1;
+     return EINA_TRUE;
 
    if (!(dd = ecore_con_url_data_get(ev->url_con)))
-     return 1;
+     return EINA_TRUE;
 
    if (dd->progress_cb)
      dd->progress_cb(dd, ev);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _common_complete_cb(void *data, int ev_type, void *event)
 {
    Ecore_Con_Event_Url_Complete *ev = event;
    Url_Data *dd;
 
    if (!ev || !data || !(data == _conf))
-     return 1;
+     return EINA_TRUE;
 
    if (!(dd = ecore_con_url_data_get(ev->url_con)))
-     return 1;
+     return EINA_TRUE;
 
    if (!dd->data_cb(dd))
      {
@@ -278,7 +278,7 @@ _common_complete_cb(void *data, int ev_type, void *event)
 	/* XXX free here ?*/
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static int
@@ -576,15 +576,15 @@ _finish(Evry_Plugin *plugin)
    E_FREE(p);
 }
 
-static int
+static Eina_Bool
 _send_request(void *data)
 {
    Plugin *p = data;
    char buf[1024];
    char *query;
-   int active;
+   Eina_Bool active;
 
-   if (!p->input) return 0;
+   if (!p->input) return EINA_FALSE;
 
    query = evry->util_url_escape(p->input, 0);
 
@@ -750,7 +750,7 @@ _youtube_dl_finish(Youtube_Data *yd, int abort)
    _youtube_dl_dequeue();
 }
 
-static int
+static Eina_Bool
 _youtube_dl_timer(void *d)
 {
    Youtube_Data *yd = d;
@@ -759,7 +759,7 @@ _youtube_dl_timer(void *d)
    if (yd->ready || yd->tries++ > 10)
      {
 	_youtube_dl_finish(yd, 1);
-	return 0;
+	return EINA_FALSE;
      }
 
    if (stat(yd->filepath, &s) == 0)
@@ -769,7 +769,7 @@ _youtube_dl_timer(void *d)
 	     if (!yd->ready && yd->tries > 5 && s.st_size < 1024)
 	       {
 		  _youtube_dl_finish(yd, 1);
-		  return 0;
+		  return EINA_FALSE;
 	       }
 
 	     char buf[128];
@@ -777,7 +777,7 @@ _youtube_dl_timer(void *d)
 		      ((unsigned int)s.st_size / 1024));
 
 	     _send_notification(yd->id, "emblem-sound", buf, yd->label, 5000);
-	     return 1;
+	     return EINA_TRUE;
 	  }
 
 	Evry_Item_File *f = E_NEW(Evry_Item_File, 1);
@@ -808,20 +808,20 @@ _youtube_dl_timer(void *d)
 
 	/* after five minutes it should be finished */
 	yd->timer = ecore_timer_add(15 * 60.0, _youtube_dl_timer, yd);
-	return 0;
+	return EINA_FALSE;
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _youtube_dl_cb_del(void *data, int type __UNUSED__, void *event)
 {
    Youtube_Data *yd = data;
    Ecore_Exe_Event_Del *e = event;
 
    if (e->exe != yd->exe1 && e->exe != yd->exe2)
-     return 1;
+     return EINA_TRUE;
 
    if (e->exe == yd->exe1) ecore_exe_kill(yd->exe2);
    if (e->exe == yd->exe2) ecore_exe_kill(yd->exe1);
@@ -833,7 +833,7 @@ _youtube_dl_cb_del(void *data, int type __UNUSED__, void *event)
 
    _youtube_dl_finish(yd, 0);
 
-   return 0;
+   return EINA_FALSE;
 }
 
 static int

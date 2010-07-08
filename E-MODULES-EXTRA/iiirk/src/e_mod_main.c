@@ -119,14 +119,14 @@ static void _iiirk_inst_cb_leave(void *data, const char *type, void *event_info)
 static void _iiirk_inst_cb_drop(void *data, const char *type, void *event_info);
 static void _iiirk_drop_position_update(Instance *inst, Evas_Coord x, Evas_Coord y);
 static void _iiirk_inst_cb_scroll(void *data);
-static int _iiirk_cb_event_border_property(void *data, int type, void *event);
-static int _iiirk_cb_event_border_add(void *data, int type, void *event);
-static int _iiirk_cb_event_border_remove(void *data, int type, void *event);
-static int _iiirk_cb_event_border_iconify(void *data, int type, void *event);
-static int _iiirk_cb_event_border_uniconify(void *data, int type, void *event);
-static int _iiirk_cb_event_border_icon_change(void *data, int type, void *event);
-static int _iiirk_cb_event_border_urgent_change(void *data, int type, void *event);
-static int _iiirk_cb_event_desk_show(void *data, int type, void *event);
+static Eina_Bool _iiirk_cb_event_border_property(void *data, int type, void *event);
+static Eina_Bool _iiirk_cb_event_border_add(void *data, int type, void *event);
+static Eina_Bool _iiirk_cb_event_border_remove(void *data, int type, void *event);
+static Eina_Bool _iiirk_cb_event_border_iconify(void *data, int type, void *event);
+static Eina_Bool _iiirk_cb_event_border_uniconify(void *data, int type, void *event);
+static Eina_Bool _iiirk_cb_event_border_icon_change(void *data, int type, void *event);
+static Eina_Bool _iiirk_cb_event_border_urgent_change(void *data, int type, void *event);
+static Eina_Bool _iiirk_cb_event_desk_show(void *data, int type, void *event);
 static Config_Item *_iiirk_config_item_get(const char *id);
 
 static E_Config_DD *conf_edd = NULL;
@@ -1136,7 +1136,7 @@ _iiirk_inst_cb_drop(void *data, const char *type, void *event_info)
    _gc_orient(inst->gcc, -1);
 }
 
-static int
+static Eina_Bool
 _iiirk_cb_event_border_property(void *data, int type, void *event)
 {
    E_Event_Border_Property *ev;
@@ -1161,10 +1161,10 @@ _iiirk_cb_event_border_property(void *data, int type, void *event)
 
    while (iiirk)
      iiirk = eina_list_remove_list(iiirk, iiirk);
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _iiirk_cb_event_border_add(void *data, int type, void *event)
 {
    E_Event_Border_Add *ev;
@@ -1175,7 +1175,7 @@ _iiirk_cb_event_border_add(void *data, int type, void *event)
    Eina_List *l, *iiirk;
 
    ev = event;
-   if (!ev || !ev->border || !ev->border->desktop) return 1;
+   if (!ev || !ev->border || !ev->border->desktop) return EINA_TRUE;
    /* add if the border's desktop icon match one of our list */
 
    desk = e_desk_current_get(ev->border->zone);
@@ -1207,10 +1207,10 @@ _iiirk_cb_event_border_add(void *data, int type, void *event)
 
    while (iiirk)
      iiirk = eina_list_remove_list(iiirk, iiirk);
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _iiirk_cb_event_border_remove(void *data, int type, void *event)
 {
    E_Event_Border_Remove *ev;
@@ -1235,10 +1235,10 @@ _iiirk_cb_event_border_remove(void *data, int type, void *event)
    while (iiirk)
      iiirk = eina_list_remove_list(iiirk, iiirk);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _iiirk_cb_event_border_iconify(void *data, int type, void *event)
 {
    E_Event_Border_Iconify *ev;
@@ -1264,10 +1264,10 @@ _iiirk_cb_event_border_iconify(void *data, int type, void *event)
 
    while (iiirk)
      iiirk = eina_list_remove_list(iiirk, iiirk);
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _iiirk_cb_event_border_uniconify(void *data, int type, void *event)
 {
    E_Event_Border_Uniconify *ev;
@@ -1292,10 +1292,10 @@ _iiirk_cb_event_border_uniconify(void *data, int type, void *event)
    while (iiirk)
      iiirk = eina_list_remove_list(iiirk, iiirk);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _iiirk_cb_event_border_icon_change(void *data, int type, void *event)
 {
    E_Event_Border_Icon_Change *ev;
@@ -1318,10 +1318,10 @@ _iiirk_cb_event_border_icon_change(void *data, int type, void *event)
    while (iiirk)
      iiirk = eina_list_remove_list(iiirk, iiirk);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _iiirk_cb_event_border_urgent_change(void *data, int type, void *event)
 {
    E_Event_Border_Urgent_Change *ev;
@@ -1349,10 +1349,10 @@ _iiirk_cb_event_border_urgent_change(void *data, int type, void *event)
 	  }
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _iiirk_cb_event_desk_show(void *data, int type, void *event)
 {
    E_Event_Desk_Show *ev;
@@ -1377,7 +1377,7 @@ _iiirk_cb_event_desk_show(void *data, int type, void *event)
    while (iiirk)
      iiirk = eina_list_remove_list(iiirk, iiirk);
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static Config_Item *

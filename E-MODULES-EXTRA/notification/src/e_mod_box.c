@@ -61,7 +61,7 @@ static void  _notification_box_cb_icon_mouse_down   (void *data,
                                                      Evas_Object *obj, 
                                                      void *event_info);
 
-static int   _notification_box_cb_icon_mouse_still_in  (void *data);
+static Eina_Bool   _notification_box_cb_icon_mouse_still_in  (void *data);
 static void  _notification_box_cb_menu_configuration   (void *data, 
                                                         E_Menu *m, 
                                                         E_Menu_Item *mi);
@@ -838,7 +838,7 @@ _notification_box_cb_icon_mouse_down(void *data,
     }
 }
 
-static int
+static Eina_Bool
 _notification_box_cb_icon_mouse_still_in(void *data)
 {
   Notification_Box_Icon *ic;
@@ -852,7 +852,7 @@ _notification_box_cb_icon_mouse_still_in(void *data)
                                         e_notification_app_name_get(ic->notif));
   ecore_timer_del(ic->mouse_in_timer);
   ic->mouse_in_timer = NULL;
-  return 0;
+  return EINA_FALSE;
 }
 
 static void

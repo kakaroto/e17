@@ -44,7 +44,7 @@ static char *_gc_label(E_Gadcon_Client_Class *client_class);
 static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
 static const char *_gc_id_new(E_Gadcon_Client_Class *client_class);
 static Config_Item *_config_item_get(const char *id);
-static int _update_date(void *data);
+static Eina_Bool _update_date(void *data);
 static void _update_calendar_sheet(Instance *inst);
 static void _calendar_popup_content_create(Instance *inst);
 static void _calendar_popup_content_populate(Instance *inst, struct tm *time);
@@ -239,7 +239,7 @@ _config_item_get(const char *id)
    return ci;
 }
 
-static int
+static Eina_Bool
 _update_date(void *data)
 {
    Instance *inst;
@@ -248,12 +248,12 @@ _update_date(void *data)
    struct tm *local_time;
    static int prev_day=0;
 
-   if (!calendar_conf->instances) return 1;
+   if (!calendar_conf->instances) return EINA_TRUE;
 
    current_time = time (NULL);
    local_time = localtime (&current_time);
    if (prev_day == local_time->tm_mday)
-     return 1;
+     return EINA_TRUE;
    else
      prev_day = local_time->tm_mday;
 
@@ -263,7 +263,7 @@ _update_date(void *data)
 	_update_calendar_sheet(inst);
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static void

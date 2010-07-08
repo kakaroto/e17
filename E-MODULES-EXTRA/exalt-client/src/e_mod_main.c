@@ -10,7 +10,7 @@ static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
 
 static void _exalt_conf_new(void);
 static void _exalt_conf_free(void);
-static int _exalt_conf_timer(void *data);
+static Eina_Bool _exalt_conf_timer(void *data);
 static Config_Item *_exalt_conf_item_get(const char *id);
 static void _exalt_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event);
 static void _exalt_cb_menu_post(void *data, E_Menu *menu);
@@ -447,11 +447,11 @@ _exalt_conf_free(void)
 }
 
 /* timer for the config oops dialog */
-    static int
+    static Eina_Bool
 _exalt_conf_timer(void *data)
 {
     e_util_dialog_show( D_("exalt Configuration Updated"), data);
-    return 0;
+    return EINA_FALSE;
 }
 
 /* function to search for any Config_Item struct for this Item

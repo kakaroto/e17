@@ -249,7 +249,7 @@ _notification_show_offline(Eina_Bool enabled)
    _notification_show_common(summary, body, 0);
 }
 
-static int
+static Eina_Bool
 _notification_cb_config_mode_changed(void *data, int type __UNUSED__, void *event __UNUSED__)
 {
    Config *m_cfg = data;
@@ -266,10 +266,10 @@ _notification_cb_config_mode_changed(void *data, int type __UNUSED__, void *even
 	_notification_show_offline(e_config->mode.offline);
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _notification_cb_initial_mode_timer(void *data)
 {
    Config *m_cfg = data;
@@ -280,7 +280,7 @@ _notification_cb_initial_mode_timer(void *data)
      _notification_show_offline(1);
 
    m_cfg->initial_mode_timer = NULL;
-   return 0;
+   return EINA_FALSE;
 }
 
 /* Module Api Functions */

@@ -7,7 +7,7 @@
 static int _ngi_win_free(Ngi_Win *win);
 static Ngi_Win *_ngi_win_new(Ng *ng);
 
-static int _ngi_cb_container_resize(void *data, int type, void *event);
+static Eina_Bool _ngi_cb_container_resize(void *data, int type, void *event);
 /* static int _ngi_cb_desk_change(void *data, int type, void *event); */
 
 static void _ngi_win_cb_drop_enter(void *data, const char *type, void *event_info);
@@ -15,15 +15,15 @@ static void _ngi_win_cb_drop_move(void *data, const char *type, void *event_info
 static void _ngi_win_cb_drop_end(void *data, const char *type, void *event_info);
 static void _ngi_win_cb_drop_leave(void *data, const char *type, void *event_info);
 
-static int _ngi_win_cb_mouse_in(void *data, int type, void *event);
-static int _ngi_win_cb_mouse_out(void *data, int type, void *event);
-static int _ngi_win_cb_mouse_down(void *data, int type, void *event);
-static int _ngi_win_cb_mouse_up(void *data, int type, void *event);
-static int _ngi_win_cb_mouse_move(void *data, int type, void *event);
-static int _ngi_win_cb_mouse_wheel(void *data, int type, void *event);
+static Eina_Bool _ngi_win_cb_mouse_in(void *data, int type, void *event);
+static Eina_Bool _ngi_win_cb_mouse_out(void *data, int type, void *event);
+static Eina_Bool _ngi_win_cb_mouse_down(void *data, int type, void *event);
+static Eina_Bool _ngi_win_cb_mouse_up(void *data, int type, void *event);
+static Eina_Bool _ngi_win_cb_mouse_move(void *data, int type, void *event);
+static Eina_Bool _ngi_win_cb_mouse_wheel(void *data, int type, void *event);
 
-static int _ngi_win_cb_desk_show(void *data, int type, void *event);
-static int _ngi_win_cb_border_event(void *data, int type, void *event);
+static Eina_Bool _ngi_win_cb_desk_show(void *data, int type, void *event);
+static Eina_Bool _ngi_win_cb_border_event(void *data, int type, void *event);
 
 static void _ngi_zoom_in(Ng *ng);
 static void _ngi_zoom_out(Ng *ng);
@@ -31,7 +31,7 @@ static void _ngi_item_appear(Ng *ng, Ngi_Item *it);
 static void _ngi_item_disappear(Ng *ng, Ngi_Item *it);
 static void _ngi_zoom_function(Ng *ng, double d, double *zoom, double *disp);
 static int _ngi_zoom_function2(Ng *ng);
-static int _ngi_animator(void *data);
+static Eina_Bool _ngi_animator(void *data);
 static void _ngi_redraw(Ng *ng);
 static int _ngi_autohide(Ng *ng, int hide);
 
@@ -74,7 +74,7 @@ _ngi_check_fullscreen(E_Desk *desk)
 }
 
 
-static int
+static Eina_Bool
 _ngi_win_cb_desk_show(void *data, int type, void *event)
 {
   E_Event_Desk_Show *ev = event;
@@ -87,10 +87,10 @@ _ngi_win_cb_desk_show(void *data, int type, void *event)
 
   ng->hide_fullscreen = fullscreen;
 
-  return 1;
+  return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _ngi_win_cb_border_event(void *data, int type, void *event)
 {
   E_Event_Border_Property *ev = event;
@@ -98,7 +98,7 @@ _ngi_win_cb_border_event(void *data, int type, void *event)
 
   E_Desk *desk = e_desk_current_get(e_util_zone_current_get(e_manager_current_get()));
 
-  if (ev->border->desk != desk) return 1;
+  if (ev->border->desk != desk) return EINA_TRUE;
 
   int fullscreen = _ngi_check_fullscreen(desk);
 
@@ -107,7 +107,7 @@ _ngi_win_cb_border_event(void *data, int type, void *event)
 
   ng->hide_fullscreen = fullscreen;
 
-  return 1;
+  return EINA_TRUE;
 }
 
 
@@ -705,7 +705,7 @@ _ngi_win_free(Ngi_Win *win)
    return 1;
 }
 
-static int
+static Eina_Bool
 _ngi_cb_container_resize(void *data, int ev_type, void *event_info)
 {
    Config_Item *ci;
@@ -713,7 +713,7 @@ _ngi_cb_container_resize(void *data, int ev_type, void *event_info)
    Eina_List *l;
    Ng *ng;
 
-   if (!initialized) return 1;
+   if (!initialized) return EINA_TRUE;
 
    EINA_LIST_FOREACH (ngi_config->items, l, ci)
      {
@@ -736,7 +736,7 @@ _ngi_cb_container_resize(void *data, int ev_type, void *event_info)
 	ngi_input_extents_calc(ng, 1);
 	ngi_thaw(ng);
      }
-   return 1;
+   return EINA_TRUE;
 }
 
 void
@@ -801,12 +801,12 @@ ngi_win_position_calc(Ngi_Win *win)
      }
 }
 
-static int
+static Eina_Bool
 _ngi_mouse_in_timer(void *data)
 {
    Ng *ng = data;
 
-   if (!ng->mouse_in) return 0;
+   if (!ng->mouse_in) return EINA_FALSE;
 
    if (ng->cfg->autohide && ng->hide_state != show)
      _ngi_autohide(ng, 0);
@@ -825,7 +825,7 @@ _ngi_mouse_in_timer(void *data)
    ng->zoom_out = 0;
    ngi_animate(ng);
 
-   return 0;
+   return EINA_FALSE;
 }
 
 void
@@ -851,12 +851,12 @@ ngi_mouse_in(Ng *ng)
      }
 }
 
-static int
+static Eina_Bool
 _ngi_mouse_out_timer(void *data)
 {
    Ng *ng = data;
 
-   if (ng->mouse_in) return 0;
+   if (ng->mouse_in) return EINA_FALSE;
 
    ng->mouse_out_timer = NULL;
 
@@ -869,10 +869,10 @@ _ngi_mouse_out_timer(void *data)
 
    ngi_animate(ng);
 
-   return 0;
+   return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 _ngi_mouse_out_wait(void *data)
 {
    Ng *ng = data;
@@ -882,7 +882,7 @@ _ngi_mouse_out_wait(void *data)
    ng->mouse_out_timer = ecore_timer_add
      (ng->cfg->hide_timeout, _ngi_mouse_out_timer, ng);
 
-   return 0;
+   return EINA_FALSE;
 }
 
 void
@@ -897,14 +897,14 @@ ngi_mouse_out(Ng *ng)
      (0.01, _ngi_mouse_out_wait, ng);
 }
 
-static int
+static Eina_Bool
 _ngi_win_cb_mouse_in(void *data, int type, void *event)
 {
    Ecore_X_Event_Mouse_In *ev = event;
    Ng *ng = data;
 
    if (ev->win != ng->win->input && ev->win != ng->win->edge)
-     return 1;
+     return EINA_TRUE;
 
    ng->pos = ng->horizontal ?
      (ev->root.x - ng->zone->x):
@@ -915,27 +915,27 @@ _ngi_win_cb_mouse_in(void *data, int type, void *event)
    evas_event_feed_mouse_in(ng->win->evas, 0, NULL);
    evas_object_focus_set(ng->bg_clip, 1);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _ngi_win_cb_mouse_out(void *data, int type, void *event)
 {
    Ecore_X_Event_Mouse_Out *ev = event;
    Ng *ng = data;
 
    if (ev->win != ng->win->input && ev->win != ng->win->edge)
-     return 1;
+     return EINA_TRUE;
 
    ngi_mouse_out(ng);
 
    if (ng->cfg->stacking != on_desk)
      evas_event_feed_mouse_out(ng->win->evas, 0, NULL);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _ngi_menu_wait_after_timer_cb(void *data)
 {
    Ng *ng = data;
@@ -943,24 +943,24 @@ _ngi_menu_wait_after_timer_cb(void *data)
    ng->menu_wait_timer = NULL;
    ngi_animate(ng);
 
-   return 0;
+   return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 _ngi_menu_wait_timer_cb(void *data)
 {
    Ng *ng = data;
 
    if (e_menu_grab_window_get())
-     return 1;
+     return EINA_TRUE;
 
    ng->menu_wait_timer =
      ecore_timer_add(1.0, _ngi_menu_wait_after_timer_cb, ng);
 
-   return 0;
+   return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 _ngi_win_cb_mouse_down(void *data, int type, void *event)
 {
    Ecore_Event_Mouse_Button *ev = event;
@@ -968,14 +968,14 @@ _ngi_win_cb_mouse_down(void *data, int type, void *event)
 
    if ((ev->event_window != ng->win->input) &&
        (ev->event_window != ng->win->edge))
-     return 1;
+     return EINA_TRUE;
 
    Ngi_Item *it = ng->item_active;
 
    if (ev->buttons == 2)
      {
 	ngi_configure_module(ng->cfg);
-	return 1;
+	return EINA_TRUE;
      }
    else if (ng->item_active && ev->buttons == 1)
      {
@@ -1001,11 +1001,11 @@ _ngi_win_cb_mouse_down(void *data, int type, void *event)
    ng->menu_wait_timer =
      ecore_timer_add(0.1, _ngi_menu_wait_timer_cb, ng);
 
-   return 1;
+   return EINA_TRUE;
 }
 
 
-static int
+static Eina_Bool
 _ngi_win_cb_mouse_up(void *data, int type, void *event)
 {
    Ecore_Event_Mouse_Button *ev = event;
@@ -1013,7 +1013,7 @@ _ngi_win_cb_mouse_up(void *data, int type, void *event)
 
    if ((ev->event_window != ng->win->input) &&
        (ev->event_window != ng->win->edge))
-     return 1;
+     return EINA_TRUE;
 
    if (ng->item_active)
      {
@@ -1030,10 +1030,10 @@ _ngi_win_cb_mouse_up(void *data, int type, void *event)
 	  }
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _ngi_win_cb_mouse_wheel(void *data, int type, void *event)
 {
    Ecore_Event_Mouse_Wheel *ev = event;
@@ -1041,17 +1041,17 @@ _ngi_win_cb_mouse_wheel(void *data, int type, void *event)
 
    if ((ev->event_window != ng->win->input) &&
        (ev->event_window != ng->win->edge))
-     return 1;
+     return EINA_TRUE;
 
    if (ng->cfg->stacking != on_desk)
      evas_event_feed_mouse_wheel
        (ng->win->evas, 0, ev->z, ev->timestamp, NULL);
 
-   return 1;
+   return EINA_TRUE;
 }
 
 
-static int
+static Eina_Bool
 _ngi_win_cb_mouse_move(void *data, int type, void *event)
 {
    Ecore_Event_Mouse_Move *ev = event;
@@ -1059,7 +1059,7 @@ _ngi_win_cb_mouse_move(void *data, int type, void *event)
 
    if ((ev->event_window != ng->win->input) &&
        (ev->event_window != ng->win->edge))
-     return 1;
+     return EINA_TRUE;
 
    int pos = ng->horizontal ? ev->root.x : ev->root.y;
 
@@ -1108,7 +1108,7 @@ _ngi_win_cb_mouse_move(void *data, int type, void *event)
 
    ngi_animate(ng);
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static void
@@ -1602,11 +1602,11 @@ ngi_animate(Ng *ng)
    ng->animator = ecore_timer_add(1.0/(double)e_config->framerate*2, _ngi_animator, ng);
 }
 
-static int
+static Eina_Bool
 _ngi_animator(void *data)
 {
    Ng *ng = (Ng*) data;
-   int cont = 0; /* continue */
+   Eina_Bool cont = 0; /* continue */
    Eina_List *l;
    Ngi_Item *it;
 

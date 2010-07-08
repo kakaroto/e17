@@ -24,11 +24,11 @@ static char      *_get_file_from_url(const char *url);
 static void       _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void       _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void       _cb_feed_open(void *data, Evas_Object *obj, const char *emission, const char *source);
-static int        _cb_feed_server_add(void *data, int type, void *event);
-static int        _cb_feed_server_del(void *data, int type, void *event);
-static int        _cb_feed_server_data(void *data, int type, void *event);
+static Eina_Bool        _cb_feed_server_add(void *data, int type, void *event);
+static Eina_Bool        _cb_feed_server_del(void *data, int type, void *event);
+static Eina_Bool        _cb_feed_server_data(void *data, int type, void *event);
 static void       _cb_feed_parse(News_Feed_Document *doc, News_Parse_Error error, int changes);
-static int        _cb_feeds_timer(void *data);
+static Eina_Bool        _cb_feeds_timer(void *data);
 static int        _cb_sort_cats(void *d1, void *d2);
 static int        _cb_sort_feeds(void *d1, void *d2);
 
@@ -1215,7 +1215,7 @@ _cb_feed_open(void *data, Evas_Object *obj, const char *emission, const char *so
      }
 }
 
-static int
+static Eina_Bool
 _cb_feed_server_add(void *data, int type, void *event)
 {
    News_Feed_Document *doc;
@@ -1227,7 +1227,7 @@ _cb_feed_server_add(void *data, int type, void *event)
 
    /* check if the event is our event */
    if (doc->server.conn != ev->server)
-     return 1;
+     return EINA_TRUE;
 
    DFEED(("Connection established after %d tries, sending request", doc->server.nb_tries));
 
@@ -1240,10 +1240,10 @@ _cb_feed_server_add(void *data, int type, void *event)
 
    doc->server.waiting_reply = 1;
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _cb_feed_server_del(void *data, int type, void *event)
 {
    News_Feed_Document *doc;
@@ -1254,7 +1254,7 @@ _cb_feed_server_del(void *data, int type, void *event)
 
    /* check if the event is our event */
    if (doc->server.conn != ev->server)
-     return 1;
+     return EINA_TRUE;
 
    ecore_con_server_del(doc->server.conn);
    doc->server.conn = NULL;
@@ -1266,7 +1266,7 @@ _cb_feed_server_del(void *data, int type, void *event)
         // TODO: error popup
         if (doc->feed->item)
           news_item_loadingstate_refresh(doc->feed->item);
-        return 1;
+        return EINA_TRUE;
      }
 
    doc->server.buffer_size++;
@@ -1278,10 +1278,10 @@ _cb_feed_server_del(void *data, int type, void *event)
 
    news_parse_go(doc, _cb_feed_parse);
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _cb_feed_server_data(void *data, int type, void *event)
 {
    News_Feed_Document *doc;
@@ -1294,14 +1294,14 @@ _cb_feed_server_data(void *data, int type, void *event)
 
    /* check if the event is our event */
    if (doc->server.conn != ev->server)
-     return 1;
+     return EINA_TRUE;
 
    doc->server.buffer = realloc(doc->server.buffer,
  				doc->server.buffer_size + ev->size);
    memcpy(doc->server.buffer + doc->server.buffer_size, ev->data, ev->size);
    doc->server.buffer_size += ev->size;
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static void
@@ -1351,7 +1351,7 @@ _cb_feed_parse(News_Feed_Document *doc, News_Parse_Error error, int changes)
      }
 }
 
-static int
+static Eina_Bool
 _cb_feeds_timer(void *data)
 {
    NEWS_FEED_FOREACH_BEG();
@@ -1359,7 +1359,7 @@ _cb_feeds_timer(void *data)
      news_feed_update(_feed);
    NEWS_FEED_FOREACH_END();
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static int

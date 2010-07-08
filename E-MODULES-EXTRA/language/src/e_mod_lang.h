@@ -67,10 +67,10 @@ int	    lang_language_xorg_values_get(Language *l);
 
 /*************** border callback handlers *****************/
 
-int lang_cb_event_desk_show(void *data, int type, void *ev);
-int lang_cb_event_border_focus_in(void *data, int type, void *ev);
-int lang_cb_event_border_remove(void *data, int type, void *ev);
-int lang_cb_event_border_iconify(void *data, int type, void *ev);
+Eina_Bool lang_cb_event_desk_show(void *data, int type, void *ev);
+Eina_Bool lang_cb_event_border_focus_in(void *data, int type, void *ev);
+Eina_Bool lang_cb_event_border_remove(void *data, int type, void *ev);
+Eina_Bool lang_cb_event_border_iconify(void *data, int type, void *ev);
 
 #if 0
 int lang_cb_event_border_zone_set(void *data, int type, void *event);

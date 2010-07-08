@@ -5,7 +5,7 @@ static Eina_List *_popups_warn;
 static void _check_overlap(int *px, int *py, int *pw, int *ph, int tries, int org_x, int org_y);
 static void _try_close(News_Popup *popw);
 
-static int  _cb_timer(void *data);
+static Eina_Bool  _cb_timer(void *data);
 static void _cb_edje_close(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _cb_edje_desactivate(void *data, Evas_Object *obj, const char *emission, const char *source);
 /*
@@ -204,7 +204,7 @@ _try_close(News_Popup *popw)
      news_popup_del(popw);
 }
 
-static int
+static Eina_Bool
 _cb_timer(void *data)
 {
    News_Popup *popw;
@@ -212,7 +212,7 @@ _cb_timer(void *data)
    popw = data;
    _try_close(popw);
 
-   return 0;
+   return EINA_FALSE;
 }
 
 static void

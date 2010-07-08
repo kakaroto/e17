@@ -4,16 +4,16 @@
 #include "itask_items.h"
 
 
-static int  _itask_items_cb_event_border_add(void *data, int type, void *event);
-static int  _itask_items_cb_event_border_remove(void *data, int type, void *event);
-static int  _itask_items_cb_event_border_iconify(void *data, int type, void *event);
-static int  _itask_items_cb_event_border_uniconify(void *data, int type, void *event);
-static int  _itask_items_cb_event_border_icon_change(void *data, int type, void *event);
-static int  _itask_items_cb_event_border_property(void *data, int type, void *event);
-static int  _itask_items_cb_event_border_zone_set(void *data, int type, void *event);
-static int  _itask_items_cb_event_border_focus_in(void *data, int type, void *event);
-static int  _itask_items_cb_event_border_focus_out(void *data, int type, void *event);
-static int  _itask_items_cb_event_border_stack(void *data, int type, void *event);
+static Eina_Bool  _itask_items_cb_event_border_add(void *data, int type, void *event);
+static Eina_Bool  _itask_items_cb_event_border_remove(void *data, int type, void *event);
+static Eina_Bool  _itask_items_cb_event_border_iconify(void *data, int type, void *event);
+static Eina_Bool  _itask_items_cb_event_border_uniconify(void *data, int type, void *event);
+static Eina_Bool  _itask_items_cb_event_border_icon_change(void *data, int type, void *event);
+static Eina_Bool  _itask_items_cb_event_border_property(void *data, int type, void *event);
+static Eina_Bool  _itask_items_cb_event_border_zone_set(void *data, int type, void *event);
+static Eina_Bool  _itask_items_cb_event_border_focus_in(void *data, int type, void *event);
+static Eina_Bool  _itask_items_cb_event_border_focus_out(void *data, int type, void *event);
+static Eina_Bool  _itask_items_cb_event_border_stack(void *data, int type, void *event);
 static Itask_Item *_itask_items_find_item(Itask *it, E_Border *bd);
 static Itask_Item *_itask_items_find_item_in_menu(Itask *it, E_Border *bd);
 static Itask_Item *_itask_items_find_item_in_bar(Itask *it, E_Border *bd);
@@ -107,7 +107,7 @@ _itask_items_find_item_in_bar(Itask *it, E_Border *bd)
 
 
 
-static int
+static Eina_Bool
 _itask_items_cb_event_border_add(void *data, int type, void *event)
 {
    E_Event_Border_Add *ev;
@@ -128,12 +128,12 @@ _itask_items_cb_event_border_add(void *data, int type, void *event)
    while (itask)
       itask = eina_list_remove_list(itask, itask);
 
-   return 1;
+   return EINA_TRUE;
 }
 
 
 
-static int
+static Eina_Bool
 _itask_items_cb_event_border_remove(void *data, int type, void *event)
 {
    //printf("_itask_items_cb_event_border_remove\n");
@@ -160,12 +160,12 @@ _itask_items_cb_event_border_remove(void *data, int type, void *event)
    while (itask)
       itask = eina_list_remove_list(itask, itask);
 
-   return 1;
+   return EINA_TRUE;
 }
 
 
 
-static int
+static Eina_Bool
 _itask_items_cb_event_border_uniconify(void *data, int type, void *event)
 {
    E_Event_Border_Iconify *ev;
@@ -188,12 +188,12 @@ _itask_items_cb_event_border_uniconify(void *data, int type, void *event)
    while (itask)
       itask = eina_list_remove_list(itask, itask);
 
-   return 1;
+   return EINA_TRUE;
 }
 
 
 
-static int
+static Eina_Bool
 _itask_items_cb_event_border_iconify(void *data, int type, void *event)
 {
    E_Event_Border_Uniconify *ev;
@@ -215,12 +215,12 @@ _itask_items_cb_event_border_iconify(void *data, int type, void *event)
    while (itask)
       itask = eina_list_remove_list(itask, itask);
 
-   return 1;
+   return EINA_TRUE;
 }
 
 
 
-static int
+static Eina_Bool
 _itask_items_cb_event_border_icon_change(void *data, int type, void *event)
 {
    E_Event_Border_Icon_Change *ev;
@@ -243,11 +243,11 @@ _itask_items_cb_event_border_icon_change(void *data, int type, void *event)
    while (itask)
       itask = eina_list_remove_list(itask, itask);
 
-   return 1;
+   return EINA_TRUE;
 }
 
 
-static int
+static Eina_Bool
 _itask_items_cb_event_border_property(void *data, int type, void *event)
 {
    E_Event_Border_Property *ev;
@@ -299,12 +299,12 @@ _itask_items_cb_event_border_property(void *data, int type, void *event)
    while (itask)
       itask = eina_list_remove_list(itask, itask);
 
-   return 1;
+   return EINA_TRUE;
 }
 
 
 
-static int
+static Eina_Bool
 _itask_items_cb_event_border_focus_in(void *data, int type, void *event)
 {
 //	printf("_itask_items_cb_event_border_focus\n");
@@ -347,12 +347,12 @@ _itask_items_cb_event_border_focus_in(void *data, int type, void *event)
    while (itask)
       itask = eina_list_remove_list(itask, itask);
 
-   return 1;
+   return EINA_TRUE;
 }
 
 
 
-static int
+static Eina_Bool
 _itask_items_cb_event_border_focus_out(void *data, int type, void *event)
 {
    E_Event_Border_Focus_Out *ev;
@@ -373,12 +373,12 @@ _itask_items_cb_event_border_focus_out(void *data, int type, void *event)
    while (itask)
       itask = eina_list_remove_list(itask, itask);
 
-   return 1;
+   return EINA_TRUE;
 }
 
 
 
-static int
+static Eina_Bool
 _itask_items_cb_event_border_zone_set(void *data, int type, void *event)
 {
    E_Event_Border_Zone_Set *ev;
@@ -415,11 +415,11 @@ _itask_items_cb_event_border_zone_set(void *data, int type, void *event)
       }
    }
 
-   return 1;
+   return EINA_TRUE;
 }
 
 
-static int 
+static Eina_Bool 
 _itask_items_cb_event_border_stack(void *data, int type, void *event)
 {
    E_Event_Border_Stack *ev;
@@ -450,6 +450,6 @@ _itask_items_cb_event_border_stack(void *data, int type, void *event)
    while (itask)
       itask = eina_list_remove_list(itask, itask);
 
-   return 1;
+   return EINA_TRUE;
 }
 

@@ -56,8 +56,8 @@ static void   _menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 static void   _cb_edje_alarm_state_on(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void   _cb_edje_alarm_state_off(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void   _cb_edje_alarm_ring_stop(void *data, Evas_Object *obj, const char *emission, const char *source);
-static int    _cb_alarms_ring_etimer(void *data);
-static int    _cb_alarm_snooze_time(void *data);
+static Eina_Bool    _cb_alarms_ring_etimer(void *data);
+static Eina_Bool    _cb_alarm_snooze_time(void *data);
 
 static E_Config_DD *_conf_edd = NULL;
 static E_Config_DD *_alarms_edd = NULL;
@@ -949,7 +949,7 @@ _cb_edje_alarm_ring_stop(void *data, Evas_Object *obj, const char *emission, con
    alarm_alarm_ring_stop(NULL, 1);
 }
 
-static int
+static Eina_Bool
 _cb_alarms_ring_etimer(void *data)
 {
    Eina_List *l;
@@ -958,7 +958,7 @@ _cb_alarms_ring_etimer(void *data)
    if (alarm_config->alarms_state == ALARM_STATE_OFF)
      {
         alarm_config->alarms_ring_etimer = NULL;
-        return 0;
+        return EINA_FALSE;
      }
 
    now = ecore_time_get();
@@ -975,10 +975,10 @@ _cb_alarms_ring_etimer(void *data)
           alarm_alarm_ring(al, 0);
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _cb_alarm_snooze_time(void *data)
 {
    Alarm *al;
@@ -988,7 +988,7 @@ _cb_alarm_snooze_time(void *data)
 
    alarm_alarm_ring(al, 0);
 
-   return 0;
+   return EINA_FALSE;
 }
 
 
