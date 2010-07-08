@@ -16,8 +16,8 @@ static void video_stopped_cb(void *data, Evas_Object *obj, void *event_info);
 static void video_resize(void);
 static void args_parse(void);
 static void help_show(void);
-static int signal_exit(void *data, int ev_type, void *ev);
-static int frame_grab(void *data);
+static Eina_Bool signal_exit(void *data, int ev_type, void *ev);
+static Eina_Bool frame_grab(void *data);
 
 char *module_filename = "xine";
 Ecore_Evas *ee = NULL, *ee_im = NULL, *ee_im2 = NULL;
@@ -194,14 +194,14 @@ help_show(void)
 	  );
 }
 
-static int
+static Eina_Bool
 signal_exit(void *data, int ev_type, void *ev)
 {
    ecore_main_loop_quit();
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 frame_grab(void *data)
 {
    char buf[4096];
@@ -211,7 +211,7 @@ frame_grab(void *data)
    if (pos == 0)
      {
 	len = emotion_object_play_length_get(video);
-	if (len <= 0.0) return 1;
+	if (len <= 0.0) return EINA_TRUE;
 	p1 = (len * 1.0) / 4.0;
 	p2 = (len * 2.0) / 4.0;
 	p3 = (len * 3.0) / 4.0;
@@ -248,9 +248,9 @@ frame_grab(void *data)
    p = emotion_object_position_get(video);
    printf("fr %i pos %i p %3.3f\n", frnum, pos, p);
    if (!ef) ef = eet_open(outfile, EET_FILE_MODE_WRITE);
-   if ((pos == 1) && (p <= (p1 - snip))) return 1;
-   else if ((pos == 2) && (p <= (p2 - snip))) return 1;
-   else if ((pos == 3) && (p <= (p3 - snip))) return 1;
+   if ((pos == 1) && (p <= (p1 - snip))) return EINA_TRUE;
+   else if ((pos == 2) && (p <= (p2 - snip))) return EINA_TRUE;
+   else if ((pos == 3) && (p <= (p3 - snip))) return EINA_TRUE;
    if (ef)
      {
 	pixels = ecore_evas_buffer_pixels_get(ee);
@@ -298,5 +298,5 @@ frame_grab(void *data)
      {
 	ecore_main_loop_quit();
      }
-   return 1;
+   return EINA_TRUE;
 }

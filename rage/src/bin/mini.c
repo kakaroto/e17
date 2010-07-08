@@ -19,8 +19,8 @@ struct _Mini
 
 static void _mini_free(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _mini_resize(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static int _mini_timer(void *data);
-static int _mini_exe_exit(void *data, int ev_type, void *ev);
+static Eina_Bool _mini_timer(void *data);
+static Eina_Bool _mini_exe_exit(void *data, int ev_type, void *ev);
 
 static Ecore_Timer *timer = NULL;
 static Eina_List *minis = NULL;
@@ -133,7 +133,7 @@ _mini_resize(void *data, Evas *e, Evas_Object *obj, void *event_info)
    evas_object_image_fill_set(obj, 0, 0, w, h);
 }
 
-static int
+static Eina_Bool
 _mini_overtime_timer(void *data)
 {
    Mini *mini;
@@ -152,10 +152,10 @@ _mini_overtime_timer(void *data)
 	mini->handler = NULL;
      }
    mini->timer = NULL;
-   return 0;
+   return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 _mini_timer(void *data)
 {
    Mini *mini;
@@ -228,10 +228,10 @@ _mini_timer(void *data)
 	     mini->frame++;
 	  }
      }
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _mini_exe_exit(void *data, int ev_type, void *ev)
 {
    Ecore_Exe_Event_Del *e;
@@ -254,5 +254,5 @@ _mini_exe_exit(void *data, int ev_type, void *ev)
 	     mini->timer = NULL;
 	  }
      }
-   return 1;
+   return EINA_TRUE;
 }

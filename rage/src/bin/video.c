@@ -7,9 +7,9 @@ static Ecore_Timer *jump_reset_timer = NULL;
 static Ecore_Job *video_stopped_job = NULL;
 static Ecore_Timer *_hide_timer = NULL;
 
-static int video_menu_bg_hide_tmer_cb(void *data);
+static Eina_Bool video_menu_bg_hide_tmer_cb(void *data);
 static void video_resize(void);
-static int video_jump_reset_timer_cb(void *data);
+static Eina_Bool video_jump_reset_timer_cb(void *data);
 static void video_obj_frame_decode_cb(void *data, Evas_Object *obj, void *event_info);
 static void video_obj_frame_resize_cb(void *data, Evas_Object *obj, void *event_info);
 static void video_obj_length_change_cb(void *data, Evas_Object *obj, void *event_info);
@@ -297,14 +297,14 @@ video_key(Evas_Event_Key_Down *ev)
 
 
 /***/
-static int
+static Eina_Bool
 video_menu_bg_hide_tmer_cb(void *data)
 {
    background_hide();
    menu_hide();
    mini_pause_set(1);
    _hide_timer = NULL;
-   return 0;
+   return EINA_FALSE;
 }
 
 static void
@@ -328,13 +328,13 @@ video_resize(void)
    edje_object_part_swallow(o_video_bg, "video", o_video);
 }
 
-static int
+static Eina_Bool
 video_jump_reset_timer_cb(void *data)
 {
    if (jump > 0.0) jump = 10.0;
    else if (jump < 0.0) jump = -10.0;
    jump_reset_timer = NULL;
-   return 0;
+   return EINA_FALSE;
 };
 
 static void

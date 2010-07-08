@@ -20,8 +20,8 @@ struct _Scan
 
 static char *volume_list_exists(Eina_List *list, char *vol);
 static void volume_file_change(void *data, Ecore_File_Monitor *fmon, Ecore_File_Event ev, const char *path);
-static int volume_timer(void *data);
-static int volume_idler(void *data);
+static Eina_Bool volume_timer(void *data);
+static Eina_Bool volume_idler(void *data);
 static Volume_Item *volume_file_scan(char *file);
 static Volume_Item *volume_dir_scan(char *dir);
 static int volume_item_sort(void *d1, void *d2);
@@ -237,7 +237,7 @@ volume_file_change(void *data, Ecore_File_Monitor *fmon, Ecore_File_Event ev, co
    volumes_load_timer = ecore_timer_add(SCANDELAY, volume_timer, NULL);
 }
 
-static int
+static Eina_Bool
 volume_timer(void *data)
 {
    char buf[4096];
@@ -247,10 +247,10 @@ volume_timer(void *data)
    if (volumes_file_mon) ecore_file_monitor_del(volumes_file_mon);
    snprintf(buf, sizeof(buf), "%s/volumes", config);
    volumes_file_mon = ecore_file_monitor_add(buf, volume_file_change, NULL);
-   return 0;
+   return EINA_FALSE;
 }
 
-static int
+static Eina_Bool
 volume_idler(void *data)
 {
    Scan *s;
@@ -271,7 +271,7 @@ volume_idler(void *data)
 	ecore_event_add(VOLUME_SCAN_STOP, strdup(s->vol), NULL, NULL);
 	volume_items_sort(s);
 	s->timer = NULL;
-	return 0;
+	return EINA_FALSE;
      }
    dp = eina_list_data_get(eina_list_last(s->dirstack));
    if (!dp)
@@ -279,7 +279,7 @@ volume_idler(void *data)
 	ecore_event_add(VOLUME_SCAN_STOP, strdup(s->vol), NULL, NULL);
 	volume_items_sort(s);
 	s->timer = NULL;
-	return 0;
+	return EINA_FALSE;
      }
    de = readdir(dp);
    if (de)
@@ -382,10 +382,10 @@ volume_idler(void *data)
 	ecore_event_add(VOLUME_SCAN_STOP, strdup(s->vol), NULL, NULL);
 	volume_items_sort(s);
 	s->timer = NULL;
-	return 0;
+	return EINA_FALSE;
      }
    s->timer = ecore_timer_add(SCANSPEED, volume_idler, s);
-   return 0;
+   return EINA_FALSE;
 }
 
 static Volume_Item *

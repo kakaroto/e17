@@ -91,38 +91,38 @@ _node_del(Node *nd)
    free(nd);
 }
 
-static int
+static Eina_Bool
 _client_cb_add(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Ipc_Event_Server_Add *e;
    Node *nd;
    
    nd = ecore_ipc_server_data_get(e->server);
-   if (!nd) return 1;
+   if (!nd) return EINA_TRUE;
    nd->connected = 1;
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _client_cb_del(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Ipc_Event_Server_Del *e;
    Node *nd;
    
    nd = ecore_ipc_server_data_get(e->server);
-   if (!nd) return 1;
+   if (!nd) return EINA_TRUE;
    _node_del(nd);
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _client_cb_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Ipc_Event_Server_Data *e;
    Node *nd;
    
    nd = ecore_ipc_server_data_get(e->server);
-   if (!nd) return 1;
+   if (!nd) return EINA_TRUE;
    switch (e->major)
      {
       case OP_VERSION: /* version info from client */
@@ -223,10 +223,10 @@ _client_cb_data(void *data __UNUSED__, int type __UNUSED__, void *event)
       default:
 	break;
      }
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _server_cb_add(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Ipc_Event_Client_Add *e;
@@ -235,9 +235,9 @@ _server_cb_add(void *data __UNUSED__, int type __UNUSED__, void *event)
    e = event;
    if (!((ecore_ipc_client_server_get(e->client) == _server_local) ||
 	 (ecore_ipc_client_server_get(e->client) == _server_remote))) 
-     return 1;
+     return EINA_TRUE;
    cl = calloc(1, sizeof(Client));
-   if (!cl) return 1;
+   if (!cl) return EINA_TRUE;
    
    cl->client = e->client;
    if (ecore_ipc_client_server_get(e->client) == _server_local)
@@ -248,10 +248,10 @@ _server_cb_add(void *data __UNUSED__, int type __UNUSED__, void *event)
    ecore_ipc_client_send(cl->client, OP_VERSION, _version,
 			 _version_magic1, _version_magic2, _version_magic3,
 			 NULL, 0);
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 _server_cb_del(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Ipc_Event_Client_Del *e;
@@ -260,15 +260,15 @@ _server_cb_del(void *data __UNUSED__, int type __UNUSED__, void *event)
    e = event;
    if (!((ecore_ipc_client_server_get(e->client) == _server_local) ||
 	 (ecore_ipc_client_server_get(e->client) == _server_remote))) 
-     return 1;
+     return EINA_TRUE;
    /* delete client sruct */
    cl = ecore_ipc_client_data_get(e->client);
-   if (!cl) return 1;
+   if (!cl) return EINA_TRUE;
    _client_del(cl);
-   return 1;
+   return EINA_TRUE;
 }              
 
-static int
+static Eina_Bool
 _server_cb_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Ipc_Event_Client_Data *e;
@@ -277,9 +277,9 @@ _server_cb_data(void *data __UNUSED__, int type __UNUSED__, void *event)
    e = event;
    if (!((ecore_ipc_client_server_get(e->client) == _server_local) ||
 	 (ecore_ipc_client_server_get(e->client) == _server_remote))) 
-     return 1;
+     return EINA_TRUE;
    cl = ecore_ipc_client_data_get(e->client);
-   if (!cl) return 1;
+   if (!cl) return EINA_TRUE;
    switch (e->major)
      {
       case OP_VERSION: /* version info from client */
@@ -416,7 +416,7 @@ _server_cb_data(void *data __UNUSED__, int type __UNUSED__, void *event)
       default:
 	break;
      }
-   return 1;
+   return EINA_TRUE;
 }
 
 

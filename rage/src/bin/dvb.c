@@ -10,7 +10,7 @@ static int channel = 0;
 static char *mdl = NULL;
 static char *swal = NULL;
 
-static int dvb_menu_bg_hide_tmer_cb(void *data);
+static Eina_Bool dvb_menu_bg_hide_tmer_cb(void *data);
 static void dvb_resize(void);
 static int dvb_jump_reset_timer_cb(void *data);
 static void dvb_obj_frame_decode_cb(void *data, Evas_Object *obj, void *event_info);
@@ -286,14 +286,14 @@ dvb_key(Evas_Event_Key_Down *ev)
 
 
 /***/
-static int
+static Eina_Bool
 dvb_menu_bg_hide_tmer_cb(void *data)
 {
    background_hide();
    menu_hide();
    mini_pause_set(1);
    _hide_timer = NULL;
-   return 0;
+   return EINA_FALSE;
 }
 
 static void

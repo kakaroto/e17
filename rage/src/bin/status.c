@@ -1,12 +1,12 @@
 #include "main.h"
 
-static int status_volume_add(void *data, int type, void *ev);
-static int status_volume_del(void *data, int type, void *ev);
-static int status_volume_type_add(void *data, int type, void *ev);
-static int status_volume_type_del(void *data, int type, void *ev);
-static int status_volume_scan_start(void *data, int type, void *ev);
-static int status_volume_scan_stop(void *data, int type, void *ev);
-static int status_volume_scan_go(void *data, int type, void *ev);
+static Eina_Bool status_volume_add(void *data, int type, void *ev);
+static Eina_Bool status_volume_del(void *data, int type, void *ev);
+static Eina_Bool status_volume_type_add(void *data, int type, void *ev);
+static Eina_Bool status_volume_type_del(void *data, int type, void *ev);
+static Eina_Bool status_volume_scan_start(void *data, int type, void *ev);
+static Eina_Bool status_volume_scan_stop(void *data, int type, void *ev);
+static Eina_Bool status_volume_scan_go(void *data, int type, void *ev);
 
 static Evas_Object *o_busy = NULL;
 static Evas_Object *o_status = NULL;
@@ -38,19 +38,19 @@ status_init(void)
    evas_object_show(o_status);
 }
 
-static int
+static Eina_Bool
 status_volume_add(void *data, int type, void *ev)
 {
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 status_volume_del(void *data, int type, void *ev)
 {
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 status_volume_type_add(void *data, int type, void *ev)
 {
    char buf[256];
@@ -73,10 +73,10 @@ status_volume_type_add(void *data, int type, void *ev)
    edje_object_part_text_set(o_status, "audio_text", buf);
    snprintf(buf, sizeof(buf), "%i", have_photo);
    edje_object_part_text_set(o_status, "photo_text", buf);
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 status_volume_type_del(void *data, int type, void *ev)
 {
    char buf[256];
@@ -99,10 +99,10 @@ status_volume_type_del(void *data, int type, void *ev)
    edje_object_part_text_set(o_status, "audio_text", buf);
    snprintf(buf, sizeof(buf), "%i", have_photo);
    edje_object_part_text_set(o_status, "photo_text", buf);
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 status_volume_scan_start(void *data, int type, void *ev)
 {
    busy_count++;
@@ -111,10 +111,10 @@ status_volume_scan_start(void *data, int type, void *ev)
 	edje_object_signal_emit(o_status, "busy", "start");
 	edje_object_signal_emit(o_busy, "busy", "start");
      }
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 status_volume_scan_stop(void *data, int type, void *ev)
 {
    busy_count--;
@@ -123,11 +123,11 @@ status_volume_scan_stop(void *data, int type, void *ev)
 	edje_object_signal_emit(o_busy, "busy", "stop");
 	edje_object_signal_emit(o_status, "busy", "stop");
      }
-   return 1;
+   return EINA_TRUE;
 }
 
-static int
+static Eina_Bool
 status_volume_scan_go(void *data, int type, void *ev)
 {
-   return 1;
+   return EINA_TRUE;
 }
