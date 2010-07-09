@@ -19,6 +19,16 @@ public:
   
   void setLabel (const std::string &label);
 
+  const std::string getLabel () const;
+
+  void setLineWrap (bool wrap);
+
+  bool getLineWrap () const;
+
+  void setWrapWidth (Evas_Coord w);
+
+  Evas_Coord getWrapWidth () const;
+  
 private:
   Label (); // forbid standard constructor
   Label (const Label&); // forbid copy constructor
