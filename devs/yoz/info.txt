@@ -1,0 +1,12 @@
+Login:		yoz
+IRC Nick:	yoz
+Cloak:          developer/yoz
+Name:		Michael BOUCHAUD
+Location:	Villejuif, France
+E-Mail:		michael.bouchaud@gmail.com
+WWW:		none
+Managing:	elsa
+Contributing:	elsa
+Group:		Applications
+Platform:	Gentoo (Linux)
+GeoData:	
