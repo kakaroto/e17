@@ -8,4 +8,4 @@ Description: The Enlightened way to get stuffs
 @pkgconfig_requires_private@: @requirements_exchange@
 Version: @VERSION@
 Libs: -L${libdir} -lexchange
-Cflags: -I${includedir}/exchange
+Cflags: -I${includedir}/exchange-@VMAJ@

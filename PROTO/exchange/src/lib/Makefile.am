@@ -33,8 +33,8 @@ $(EXCHANGEHEADERS)
 libexchange_la_SOURCES = \
 	$(EXCHANGESOURCES)
 
-installed_headersdir = $(prefix)/include/exchange
-installed_headers_DATA = $(EXCHANGEHEADERS)
+includes_HEADERS = $(EXCHANGEHEADERS)
+includesdir = $(includedir)/exchange-@VMAJ@
 
 libexchange_la_LIBADD = @EXCHANGE_LIBS@
 libexchange_la_LDFLAGS = -no-undefined @lt_enable_auto_import@ -version-info @version_info@
