@@ -67,23 +67,21 @@ e_dbus_connman_test_api_LDADD = $(top_builddir)/src/lib/connman/libeconnman.la
 endif
 
 if BUILD_ENOTIFY
-e_dbus_notify_SOURCES = \
-	notify.c
 
-e_dbus_notify_CPPFLAGS = $(EDBUS_CPPFLAGS)
-e_dbus_notify_LDADD = $(top_builddir)/src/lib/notification/libenotify.la
+ENOTIFY_CPPFLAGS = $(EDBUS_CPPFLAGS) $(EVAS_CFLAGS)
+ENOTIFY_LIBS = $(top_builddir)/src/lib/notification/libenotify.la
 
-e_dbus_notification_daemon_SOURCES = \
-	notification_daemon.c
+e_dbus_notify_SOURCES = notify.c
+e_dbus_notify_CPPFLAGS = $(ENOTIFY_CPPFLAGS)
+e_dbus_notify_LDADD = $(ENOTIFY_LIBS)
 
-e_dbus_notification_daemon_CPPFLAGS = $(EDBUS_CPPFLAGS)
-e_dbus_notification_daemon_LDADD = $(top_builddir)/src/lib/notification/libenotify.la
+e_dbus_notification_daemon_SOURCES = notification_daemon.c
+e_dbus_notification_daemon_CPPFLAGS = $(ENOTIFY_CPPFLAGS)
+e_dbus_notification_daemon_LDADD = $(ENOTIFY_LIBS)
 
-e_notify_send_SOURCES = \
-	notify-send.c
-
-e_notify_send_CPPFLAGS = $(EDBUS_CPPFLAGS)
-e_notify_send_LDADD = $(top_builddir)/src/lib/notification/libenotify.la
+e_notify_send_SOURCES = notify-send.c
+e_notify_send_CPPFLAGS = $(ENOTIFY_CPPFLAGS)
+e_notify_send_LDADD =  $(ENOTIFY_LIBS)
 endif
 
 if BUILD_EOFONO
