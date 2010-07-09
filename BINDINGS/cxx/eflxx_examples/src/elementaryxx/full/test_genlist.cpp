@@ -541,13 +541,8 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
   win->resize (size320x320);
   win->show ();
 }
-#if 0
-/*************/
 
-void gl2_del(const void *data, Evas_Object *obj)
-{
-}
-#endif
+/*************/
 
 static void my_gl_update (Evasxx::Object &obj, void *event_info, TestItem *tit)
 {
