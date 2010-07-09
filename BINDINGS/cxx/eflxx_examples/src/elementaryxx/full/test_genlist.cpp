@@ -232,105 +232,60 @@ static void my_gl_add (Evasxx::Object &obj, void *event_info, GenList *gl)
   i++;
 }
 
-#if 0
-
-
-static void
-my_gl_add(void *data, Evas_Object *obj, void *event_info)
+static void my_gl_insert_before (Evasxx::Object &obj, void *event_info, GenList *gl)
 {
-   Evas_Object *gl = data;
-   Elm_Genlist_Item *gli;
-   static int i = 0;
+  static int i = 0;
+  GenListItem *gliSel = gl->getItemSelected ();
+  
+  if (!gliSel)
+  {
+	  cout << "no item selected" << endl;
+	  return;
+  }
 
-   itc1.item_style     = "default";
-   itc1.func.label_get = gl_label_get;
-   itc1.func.icon_get  = gl_icon_get;
-   itc1.func.state_get = gl_state_get;
-   itc1.func.del       = gl_del;
+  // FIXME: constructor/selector is never deleted...
+  GenListColumnConstructor1 *construct1 = new GenListColumnConstructor1 ();
+  construct1->setItemNum (i);
+  GenListColumnSelector1 *select1 = new GenListColumnSelector1 ();
+  select1->setItemNum (i*10);
+  
+  GenListItem *gli = gl->insertBefore (construct1, gliSel, ELM_GENLIST_ITEM_NONE, select1);
 
-   gli = elm_genlist_item_append(gl, &itc1,
-				 (void *)i/* item data */,
-				 NULL/* parent */,
-				 ELM_GENLIST_ITEM_NONE,
-				 gl_sel/* func */,
-				 (void *)(i * 10)/* func data */);
-   i++;
+  i++;
 }
 
-static void
-my_gl_insert_before(void *data, Evas_Object *obj, void *event_info)
+static void my_gl_insert_after (Evasxx::Object &obj, void *event_info, GenList *gl)
 {
-   Evas_Object *gl = data;
-   Elm_Genlist_Item *gli;
-   static int i = 0;
-   Elm_Genlist_Item *gli_selected;
+  static int i = 0;
+  GenListItem *gliSel = gl->getItemSelected ();
+  
+  if (!gliSel)
+  {
+	  cout << "no item selected" << endl;
+	  return;
+  }
 
-   itc1.item_style     = "default";
-   itc1.func.label_get = gl_label_get;
-   itc1.func.icon_get  = gl_icon_get;
-   itc1.func.state_get = gl_state_get;
-   itc1.func.del       = gl_del;
+  // FIXME: constructor/selector is never deleted...
+  GenListColumnConstructor1 *construct1 = new GenListColumnConstructor1 ();
+  construct1->setItemNum (i);
+  GenListColumnSelector1 *select1 = new GenListColumnSelector1 ();
+  select1->setItemNum (i*10);
+  
+  GenListItem *gli = gl->insertAfter (construct1, gliSel, ELM_GENLIST_ITEM_NONE, select1);
 
-   gli_selected = elm_genlist_selected_item_get(gl);
-   if(!gli_selected)
-   {
-       printf("no item selected\n");
-       return ;
-   }
-
-   gli = elm_genlist_item_insert_before(gl, &itc1,
-				 (void *)i/* item data */,
-				 gli_selected /* item before */,
-				 ELM_GENLIST_ITEM_NONE,
-				 gl_sel/* func */,
-				 (void *)(i * 10)/* func data */);
-   i++;
+  i++;
 }
 
-static void
-my_gl_insert_after(void *data, Evas_Object *obj, void *event_info)
+static void my_gl_del(Evasxx::Object &obj, void *event_info, GenList *gl)
 {
-   Evas_Object *gl = data;
-   Elm_Genlist_Item *gli;
-   static int i = 0;
-   Elm_Genlist_Item *gli_selected;
-
-   itc1.item_style     = "default";
-   itc1.func.label_get = gl_label_get;
-   itc1.func.icon_get  = gl_icon_get;
-   itc1.func.state_get = gl_state_get;
-   itc1.func.del       = gl_del;
-
-   gli_selected = elm_genlist_selected_item_get(gl);
-   if(!gli_selected)
-   {
-       printf("no item selected\n");
-       return ;
-   }
-
-   gli = elm_genlist_item_insert_after(gl, &itc1,
-				 (void *)i/* item data */,
-				 gli_selected /* item after */,
-				 ELM_GENLIST_ITEM_NONE,
-				 gl_sel/* func */,
-				 (void *)(i * 10)/* func data */);
-   i++;
+  GenListItem *gli = gl->getItemSelected ();
+  if (!gli)
+  {
+	  cout << "no item selected" << endl;
+	  return;
+  }
+  gl->del (*gli);
 }
-
-static void
-my_gl_del(void *data, Evas_Object *obj, void *event_info)
-{
-   Evas_Object *gl = data;
-   Elm_Genlist_Item *gli = elm_genlist_selected_item_get(gl);
-   if (!gli)
-     {
-	printf("no item selected\n");
-	return;
-     }
-   elm_genlist_item_del(gli);
-}
-
-#endif
 
 static void my_gl_disable (Evasxx::Object &obj, void *event_info, GenList *gl)
 {
@@ -385,21 +340,17 @@ static void my_gl_last (Evasxx::Object &obj, void *event_info, GenList *gl)
   gli->setSelected (true);
 }
 
-#if 0
-
-static int
-my_gl_flush_delay(void *data)
+static Eina_Bool my_gl_flush_delay (void *data)
 {
-   elm_all_flush();
+   Elmxx::Application::flushAll ();
    return 0;
 }
 
-static void
-my_gl_flush(void *data, Evas_Object *obj, void *event_info)
+static void my_gl_flush (Evasxx::Object &obj, void *event_info)
 {
-   ecore_timer_add(1.2, my_gl_flush_delay, NULL);
+   ecore_timer_add (1.2, my_gl_flush_delay, NULL); // TODO: C++ port
 }
-#endif
+
 void
 test_genlist2(void *data, Evas_Object *obj, void *event_info)
 {
@@ -432,7 +383,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
 
   gl->signalSelect.connect (sigc::ptr_fun (&glSelected));
 
-  // FIXME: the constructor/selector is never deleted...
+  // FIXME: the constructor/selector is never deleted... (maybe CountedPrt?)
 
   GenListColumnConstructor1 *construct1 = new GenListColumnConstructor1 ();
   construct1->setItemNum (1001);
@@ -545,8 +496,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
 
   bt = Button::factory (*win);
   bt->setLabel ("-");
-  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_del));
-  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_del, gl);
+  bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_del), gl));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   bx2->packEnd (*bt);
@@ -563,8 +513,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
   
   bt = Button::factory (*win);
   bt->setLabel ("+ before");
-  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_insert_before));
-  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_insert_before, gl);
+  bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_insert_before), gl));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   bx3->packEnd (*bt);
@@ -572,8 +521,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
 
   bt = Button::factory (*win);
   bt->setLabel ("+ after");
-  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_insert_after));
-  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_insert_after, gl);
+  bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_insert_after), gl));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   bx3->packEnd (*bt);
@@ -581,8 +529,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
 
   bt = Button::factory (*win);
   bt->setLabel ("Flush");
-  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_flush));
-  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_flush, gl);
+  bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_flush));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   bx3->packEnd (*bt);
@@ -600,15 +547,13 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
 void gl2_del(const void *data, Evas_Object *obj)
 {
 }
-
-static void
-my_gl_update(void *data, Evas_Object *obj, void *event_info)
-{
-   Testitem *tit = data;
-   tit->mode++;
-   elm_genlist_item_update(tit->item);
-}
 #endif
+
+static void my_gl_update (Evasxx::Object &obj, void *event_info, TestItem *tit)
+{
+   tit->mode++;
+   tit->item->update ();
+}
 
 class GenListColumnConstructor3 : public GenListColumnConstructor
 {
@@ -762,29 +707,6 @@ void test_genlist3(void *data, Evas_Object *obj, void *event_info)
   tit[2].mode = 2;
   tit[2].item = gl->append (construct3, NULL, ELM_GENLIST_ITEM_NONE, select3);
 
-  
-#if 0
-
-   itc2.item_style     = "default";
-   itc2.func.label_get = gl2_label_get;
-   itc2.func.icon_get  = gl2_icon_get;
-   itc2.func.state_get = gl2_state_get;
-   itc2.func.del       = gl2_del;
-
-   tit[0].mode = 0;
-   tit[0].item = elm_genlist_item_append(gl, &itc2,
-					 &(tit[0])/* item data */, NULL/* parent */, ELM_GENLIST_ITEM_NONE, gl_sel/* func */,
-					 NULL/* func data */);
-   tit[1].mode = 1;
-   tit[1].item = elm_genlist_item_append(gl, &itc2,
-					 &(tit[1])/* item data */, NULL/* parent */, ELM_GENLIST_ITEM_NONE, gl_sel/* func */,
-					 NULL/* func data */);
-   tit[2].mode = 2;
-   tit[2].item = elm_genlist_item_append(gl, &itc2,
-					 &(tit[2])/* item data */, NULL/* parent */, ELM_GENLIST_ITEM_NONE, gl_sel/* func */,
-					 NULL/* func data */);
-#endif
-
   bx2 = Box::factory (*win);
   bx2->setOrientation (Box::Horizontal);
   bx2->setHomogenous (true);
@@ -793,8 +715,7 @@ void test_genlist3(void *data, Evas_Object *obj, void *event_info)
 
   bt = Button::factory (*win);
   bt->setLabel ("[1]");
-  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_update));
-  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[0]));
+  bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update), &(tit[0])));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   bx2->packEnd (*bt);
@@ -802,8 +723,7 @@ void test_genlist3(void *data, Evas_Object *obj, void *event_info)
 
   bt = Button::factory (*win);
   bt->setLabel ("[2]");
-  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_update));
-  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[1]));
+  bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update), &(tit[1])));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   bx2->packEnd (*bt);
@@ -811,8 +731,7 @@ void test_genlist3(void *data, Evas_Object *obj, void *event_info)
 
   bt = Button::factory (*win);
   bt->setLabel ("[3]");
-  //bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_update));
-  // TODO: evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[2]));
+  bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update), &(tit[2])));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
   bx2->packEnd (*bt);
