@@ -7,7 +7,8 @@ AM_CPPFLAGS = \
 if BUILD_EBLUEZ
 
 lib_LTLIBRARIES = libebluez.la
-include_HEADERS = E_Bluez.h
+includes_HEADERS = E_Bluez.h
+includesdir = $(includedir)/e_dbus-@VMAJ@
 
 libebluez_la_SOURCES = \
 e_bluez.c \

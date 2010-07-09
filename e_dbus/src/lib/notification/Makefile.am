@@ -8,7 +8,8 @@ AM_CPPFLAGS = \
 if BUILD_ENOTIFY
 
 lib_LTLIBRARIES = libenotify.la
-include_HEADERS = E_Notify.h E_Notification_Daemon.h
+includes_HEADERS = E_Notify.h E_Notification_Daemon.h
+includesdir = $(includedir)/e_dbus-@VMAJ@
 
 libenotify_la_SOURCES = \
 notification.c \

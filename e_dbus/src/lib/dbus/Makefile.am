@@ -7,7 +7,8 @@ AM_CPPFLAGS = \
 
 
 lib_LTLIBRARIES = libedbus.la
-include_HEADERS = E_DBus.h
+includes_HEADERS = E_DBus.h
+includesdir = $(includedir)/e_dbus-@VMAJ@
 
 libedbus_la_SOURCES = \
 e_dbus.c \

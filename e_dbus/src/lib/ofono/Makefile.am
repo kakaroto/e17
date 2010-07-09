@@ -7,7 +7,8 @@ AM_CPPFLAGS = \
 if BUILD_EOFONO
 
 lib_LTLIBRARIES = libeofono.la
-include_HEADERS = E_Ofono.h
+includes_HEADERS = E_Ofono.h
+includesdir = $(includedir)/e_dbus-@VMAJ@
 
 libeofono_la_SOURCES = \
 e_ofono.c \

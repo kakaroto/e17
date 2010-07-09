@@ -7,7 +7,8 @@ AM_CPPFLAGS = \
 if BUILD_ECONNMAN
 
 lib_LTLIBRARIES = libeconnman.la
-include_HEADERS = E_Connman.h
+includes_HEADERS = E_Connman.h
+includesdir = $(includedir)/e_dbus-@VMAJ@
 
 libeconnman_la_SOURCES = \
 e_connman.c \

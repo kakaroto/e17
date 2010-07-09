@@ -7,7 +7,8 @@ AM_CPPFLAGS = \
 if BUILD_EHAL
 
 lib_LTLIBRARIES = libehal.la
-include_HEADERS = E_Hal.h
+includes_HEADERS = E_Hal.h
+includesdir = $(includedir)/e_dbus-@VMAJ@
 
 libehal_la_SOURCES = \
 e_hal_device.c  \

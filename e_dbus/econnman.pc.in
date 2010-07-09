@@ -8,4 +8,4 @@ Description: network connection manager (connman)
 @pkgconfig_requires_private@: @requirement_econnman@
 Version: @VERSION@
 Libs: -L${libdir} -leconnman
-Cflags: -I${includedir}
+Cflags: -I${includedir}/e_dbus-@VMAJ@

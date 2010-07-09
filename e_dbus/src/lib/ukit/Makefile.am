@@ -7,7 +7,8 @@ AM_CPPFLAGS = \
 if BUILD_EUKIT
 
 lib_LTLIBRARIES = libeukit.la
-include_HEADERS = E_Ukit.h
+includes_HEADERS = E_Ukit.h
+includesdir = $(includedir)/e_dbus-@VMAJ@
 
 libeukit_la_SOURCES = \
 e_udisks.c  \

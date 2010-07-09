@@ -8,4 +8,4 @@ Description: oFono D-Bus wrappers
 @pkgconfig_requires_private@: @requirement_eofono@
 Version: @VERSION@
 Libs: -L${libdir} -leofono
-Cflags: -I${includedir}
+Cflags: -I${includedir}/e_dbus-@VMAJ@
