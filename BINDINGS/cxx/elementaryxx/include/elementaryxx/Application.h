@@ -20,11 +20,16 @@ public:
   // EAPI void         elm_need_efreet(void);
   // EAPI void         elm_need_e_dbus(void);
   
-  double getScale ();
-  void setScale (double scale);
+  static double getScale ();
+  static void setScale (double scale);
   
    // EAPI Evas_Coord   elm_finger_size_get(void);
    // EAPI void         elm_finger_size_set(Evas_Coord size);
+
+  /*!
+   * Flush all caches & dump all data that can be to lean down to use less memory
+   */
+  static void flushAll ();
 };
 
 } // end namespace Elmxx

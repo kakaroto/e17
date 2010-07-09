@@ -147,6 +147,26 @@ void GenList::glSelected (GenListColumnSelector &selection, const Evasxx::Object
 
 GenListItem *GenList::append (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
 {
+  insertInternal (construction, GenList::Append, parent, flags, selection);
+}
+
+GenListItem *GenList::prepend (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
+{
+  insertInternal (construction, GenList::Prepend, parent, flags, selection);
+}
+
+GenListItem *GenList::insertBefore (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
+{
+  insertInternal (construction, GenList::InsertBefore, parent, flags, selection);
+}
+
+GenListItem *GenList::insertAfter (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
+{
+  insertInternal (construction, GenList::InsertAfter, parent, flags, selection);
+}
+
+GenListItem *GenList::insertInternal (GenListColumnConstructor *construction, GenList::InsertOperation op, const GenListItem *opItem, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
+{
   assert (mModel);
   
   Elm_Genlist_Item *gli;
@@ -172,12 +192,44 @@ GenListItem *GenList::append (GenListColumnConstructor *construction, const GenL
   construction->mDataModel = mModel;
   selection->mGenList = this;
 
-  gli = elm_genlist_item_append (o, &mModel->mGLIC,
-                                 construction /* item data */,
-                                 parent ? parent->mItem : NULL /* parent */,
-                                 flags,
-                                 GenList::gl_sel/* func */,
-                                 selection /* func data */);
+  switch (op)
+  {
+    case Append:
+      gli = elm_genlist_item_append (o, &mModel->mGLIC,
+                                     construction /* item data */,
+                                     opItem ? opItem->mItem : NULL /* parent */,
+                                     flags,
+                                     GenList::gl_sel/* func */,
+                                     selection /* func data */);
+      break;
+      
+    case Prepend:
+      gli = elm_genlist_item_prepend (o, &mModel->mGLIC,
+                                     construction /* item data */,
+                                     opItem ? opItem->mItem : NULL /* parent */,
+                                     flags,
+                                     GenList::gl_sel/* func */,
+                                     selection /* func data */);
+      break;
+      
+    case InsertBefore:
+      gli = elm_genlist_item_insert_before (o, &mModel->mGLIC,
+                                            construction /* item data */,
+                                            opItem ? opItem->mItem : NULL /* parent */,
+                                            flags,
+                                            GenList::gl_sel/* func */,
+                                            selection /* func data */);
+      break;
+
+    case InsertAfter:
+      gli = elm_genlist_item_insert_after (o, &mModel->mGLIC,
+                                            construction /* item data */,
+                                            opItem ? opItem->mItem : NULL /* parent */,
+                                            flags,
+                                            GenList::gl_sel/* func */,
+                                            selection /* func data */);
+      break;
+  }
 
   GenListItem *item = GenListItem::wrap (*gli, *mModel);
   
@@ -198,6 +250,11 @@ GenListItem *GenList::append (GenListColumnConstructor *construction, const GenL
   }
   
   return item;
+}
+
+void GenList::del (GenListItem &item)
+{
+  elm_genlist_item_del (item.mItem);
 }
 
 GenListItem *GenList::getItemSelected () const

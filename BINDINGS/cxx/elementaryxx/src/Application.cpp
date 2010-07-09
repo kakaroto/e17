@@ -40,5 +40,10 @@ void Application::setScale (double scale)
 {
   elm_scale_set (scale);
 }
+
+void Application::flushAll ()
+{
+  elm_all_flush ();
+}
   
 } // end namespace Elmxx

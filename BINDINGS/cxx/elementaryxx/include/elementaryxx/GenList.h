@@ -316,6 +316,14 @@ public:
    */
   GenListItem *append (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
 
+  GenListItem *prepend (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
+
+  GenListItem *insertBefore (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
+
+  GenListItem *insertAfter (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
+
+  void del (GenListItem &item);
+  
   GenListItem *getItemSelected () const;
 
   /*!
@@ -352,6 +360,16 @@ private:
   GenList (const GenList&); // forbid copy constructor
   GenList (Evasxx::Object &parent); // private construction -> use factory ()
   ~GenList (); // forbid direct delete -> use Object::destroy()
+
+  enum InsertOperation
+  {
+    Append,
+    Prepend,
+    InsertAfter,
+    InsertBefore
+  };
+
+  GenListItem *insertInternal (GenListColumnConstructor *construction, GenList::InsertOperation op, const GenListItem *opItem, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
   
   static void gl_sel (void *data, Evas_Object *obj, void *event_info);
 
