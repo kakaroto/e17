@@ -32,7 +32,7 @@ struct _Ephoto_Thumb_Data
 
 /*Create the thumbnail browser object*/
 void
-ephoto_create_thumb_browser(void)
+ephoto_create_thumb_browser(const char *directory)
 {
 	Evas_Object *o;
 	char buf[PATH_MAX];
@@ -41,16 +41,22 @@ ephoto_create_thumb_browser(void)
 
 	ec = ethumb_client_connect(_ephoto_thumber_connected, NULL, NULL);
 
-	getcwd(buf, PATH_MAX);
-	current_directory = eina_stringshare_add(buf);
-
+	if (!directory)
+	{
+		getcwd(buf, PATH_MAX);
+		current_directory = eina_stringshare_add(buf);
+	}
+	else
+	{
+		current_directory = eina_stringshare_add(directory);
+	}
 	toolbar = elm_toolbar_add(em->win);
 	elm_toolbar_icon_size_set(toolbar, 24);
 	elm_toolbar_homogenous_set(toolbar, EINA_TRUE);
 	evas_object_size_hint_weight_set(toolbar, EVAS_HINT_EXPAND, 0.0);
 	evas_object_size_hint_align_set(toolbar, EVAS_HINT_FILL, 0.5);
 	elm_box_pack_end(em->box, toolbar);
-	evas_object_show(toolbar);
+//	evas_object_show(toolbar);
 
 	o = elm_icon_add(em->win);
 	elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/change_directory.png", NULL);
@@ -77,21 +83,21 @@ ephoto_create_thumb_browser(void)
 	evas_object_size_hint_fill_set(em->thumb_browser, EVAS_HINT_FILL, EVAS_HINT_FILL);
 	elm_object_style_set(em->thumb_browser, "ephoto");
 	elm_box_pack_end(em->box, em->thumb_browser);
-	evas_object_show(em->thumb_browser);
+//	evas_object_show(em->thumb_browser);
 
 	thbox = elm_box_add(em->win);
 	elm_box_horizontal_set(thbox, EINA_TRUE);
         evas_object_size_hint_weight_set(thbox, EVAS_HINT_EXPAND, EVAS_HINT_FILL);
         evas_object_size_hint_fill_set(thbox, EVAS_HINT_FILL, EVAS_HINT_FILL);
 	elm_box_pack_end(em->box, thbox);
-        evas_object_show(thbox);
+//        evas_object_show(thbox);
 
 	dir_label = elm_label_add(em->win);
 	elm_label_label_set(dir_label, buf);
 	evas_object_size_hint_weight_set(dir_label, EVAS_HINT_EXPAND, 0.0);
         evas_object_size_hint_align_set(dir_label, 0.01, 0.5);
 	elm_box_pack_end(thbox, dir_label);
-	evas_object_show(dir_label);
+//	evas_object_show(dir_label);
 
 	thumb_slider = elm_slider_add(em->win);
 	elm_slider_label_set(thumb_slider, "Thumb Size:");
@@ -99,7 +105,7 @@ ephoto_create_thumb_browser(void)
 	elm_slider_min_max_set(thumb_slider, 0, 100);
 	elm_slider_value_set(thumb_slider, 50);
 	elm_box_pack_end(thbox, thumb_slider);
-	evas_object_show(thumb_slider);
+//	evas_object_show(thumb_slider);
 	evas_object_smart_callback_add(thumb_slider, "changed", 
 					_ephoto_slider_changed, NULL);
 	cur_val = 50;

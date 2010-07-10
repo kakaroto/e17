@@ -24,7 +24,7 @@
 #include "config.h"
 
 /*Main Functions*/
-void ephoto_create_main_window(void);
+void ephoto_create_main_window(const char *directory, const char *image);
 
 /*Ephoto Flow Browser*/
 void ephoto_create_flow_browser(void);
@@ -33,7 +33,7 @@ void ephoto_hide_flow_browser(void);
 void ephoto_delete_flow_browser(void);
 
 /*Ephoto Thumb Browser*/
-void ephoto_create_thumb_browser(void);
+void ephoto_create_thumb_browser(const char *directory);
 void ephoto_show_thumb_browser(void);
 void ephoto_hide_thumb_browser(void);
 void ephoto_delete_thumb_browser(void);

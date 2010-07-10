@@ -70,10 +70,35 @@ void
 ephoto_show_flow_browser(const char *current_image)
 {
 	const char *file_type;
+	Elm_Toolbar_Item *o;
 
 	iter = eina_list_data_find_list(em->images, current_image);
 	if (iter == NULL)
-		iter = eina_list_nth_list(em->images, 0);
+	{
+		o = elm_toolbar_item_find_by_label(toolbar, "First");
+		elm_toolbar_item_disabled_set(o, EINA_TRUE);
+		o = elm_toolbar_item_find_by_label(toolbar, "Previous");
+		elm_toolbar_item_disabled_set(o, EINA_TRUE);
+		o = elm_toolbar_item_find_by_label(toolbar, "Next");
+		elm_toolbar_item_disabled_set(o, EINA_TRUE);
+		o = elm_toolbar_item_find_by_label(toolbar, "Last");
+		elm_toolbar_item_disabled_set(o, EINA_TRUE);
+		o = elm_toolbar_item_find_by_label(toolbar, "Slideshow");
+		elm_toolbar_item_disabled_set(o, EINA_TRUE);
+	}
+	else
+	{
+		o = elm_toolbar_item_find_by_label(toolbar, "First");
+                elm_toolbar_item_disabled_set(o, EINA_FALSE);
+                o = elm_toolbar_item_find_by_label(toolbar, "Previous");
+                elm_toolbar_item_disabled_set(o, EINA_FALSE);
+                o = elm_toolbar_item_find_by_label(toolbar, "Next");
+                elm_toolbar_item_disabled_set(o, EINA_FALSE);
+                o = elm_toolbar_item_find_by_label(toolbar, "Last");
+                elm_toolbar_item_disabled_set(o, EINA_FALSE);
+                o = elm_toolbar_item_find_by_label(toolbar, "Slideshow");
+                elm_toolbar_item_disabled_set(o, EINA_FALSE);
+	}
 
 	elm_box_unpack(em->flow_browser, image);
 	elm_box_unpack(em->flow_browser, image2);

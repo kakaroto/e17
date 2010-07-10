@@ -8,7 +8,7 @@ static void _ephoto_delete_main_window(void *data, Evas_Object *obj, void *event
 
 /*Create the main ephoto window*/
 void 
-ephoto_create_main_window(void)
+ephoto_create_main_window(const char *directory, const char *image)
 {
 	em = calloc(1, sizeof(Ephoto));
 
@@ -35,14 +35,21 @@ ephoto_create_main_window(void)
 	elm_win_resize_object_add(em->win, em->box);
 	evas_object_size_hint_weight_set(em->box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	evas_object_size_hint_fill_set(em->box, EVAS_HINT_FILL, EVAS_HINT_FILL);
-	evas_object_show(em->box);
+	evas_object_show(em->box);	
 
-	ephoto_create_thumb_browser();
+	ephoto_create_thumb_browser(directory);
 	ephoto_create_flow_browser();
+	if (image)
+	{
+		ephoto_show_flow_browser(image);
+		eina_stringshare_del(image);
+	}
+	else
+		ephoto_show_thumb_browser();
 }
 
 /*Delete the main ephoto window*/
-static void 
+static void
 _ephoto_delete_main_window(void *data, Evas_Object *obj, void *event_info)
 {
 	ephoto_delete_thumb_browser();
