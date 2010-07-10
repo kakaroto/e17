@@ -354,6 +354,20 @@ cdef class List(Object):
             itr = itr.next
         return ret
 
+    def items_get(self):
+        cdef evas.c_evas.Eina_List *lst, *itr
+        cdef void *data
+        ret = []
+        lst = elm_list_items_get(self.obj)
+        itr = lst
+        while itr:
+            data = elm_list_item_data_get(<Elm_List_Item *>itr.data)
+            if data != NULL:
+                (o, callback, it, a, ka) = <object>data
+                ret.append(it)
+            itr = itr.next
+        return ret
+
     def callback_clicked_add(self, func, *args, **kwargs):
         self._callback_add_full("clicked", _list_item_conv,
                                 func, *args, **kwargs)
