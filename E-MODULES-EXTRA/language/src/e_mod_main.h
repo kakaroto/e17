@@ -6,13 +6,13 @@
 #include <e.h>
 #include <libxml/xmlreader.h>
 
-static int _log_dom = -1;
+extern int _language_log_dom;
 
-#define ERR(...) EINA_LOG_DOM_ERR(_log_dom, __VA_ARGS__)
-#define DBG(...) EINA_LOG_DOM_DBG(_log_dom, __VA_ARGS__)
-#define WARN(...) EINA_LOG_DOM_WARN(_log_dom, __VA_ARGS__)
-#define CRIT(...) EINA_LOG_DOM_CRIT(_log_dom, __VA_ARGS__)
-#define INFO(...) EINA_LOG_DOM_INFO(_log_dom, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(_language_log_dom, __VA_ARGS__)
+#define DBG(...) EINA_LOG_DOM_DBG(_language_log_dom, __VA_ARGS__)
+#define WARN(...) EINA_LOG_DOM_WARN(_language_log_dom, __VA_ARGS__)
+#define CRIT(...) EINA_LOG_DOM_CRIT(_language_log_dom, __VA_ARGS__)
+#define INFO(...) EINA_LOG_DOM_INFO(_language_log_dom, __VA_ARGS__)
 
 
 #undef E_FREE

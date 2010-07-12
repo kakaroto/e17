@@ -79,7 +79,7 @@ static Eina_Bool _lng_start(Language_XML *xml)
 
   if (!xml)
     {
-      ERR("One of values is NULL, returning with error.");
+      DBG("One of values is NULL, returning with error.");
       return EINA_FALSE;
     }
 
@@ -110,7 +110,7 @@ static Eina_Bool _lng_set(Language_XML *xml, char *value, char *attrvalue, const
 {
   if ((!xml) || (!value))
     {
-      ERR("One of values is NULL, returning with error.");
+      DBG("One of values is NULL, returning with error.");
       return EINA_FALSE;
     }
 
@@ -144,7 +144,7 @@ Language_XML *languages_load()
   xml = calloc(sizeof(Language_XML), 1);
   if (!xml)
     {
-      ERR("One of values is NULL, returning with error.");
+      DBG("One of values is NULL, returning with error.");
       return NULL;
     }
 
@@ -164,7 +164,7 @@ Eina_Bool language_next(Language_XML *xml)
 
 	if (!xml)
       {
-        ERR("One of values is NULL, returning with error.");
+        DBG("One of values is NULL, returning with error.");
         return EINA_FALSE;
       }
 
@@ -193,7 +193,7 @@ Eina_Bool language_first(Language_XML *xml)
   Eina_Bool ret;
   if (!xml)
   {
-    ERR("One of values is NULL, returning with error.");
+    DBG("One of values is NULL, returning with error.");
     return EINA_FALSE;
   }
 
@@ -219,7 +219,7 @@ void language_xml_clear(Language_XML *xml)
 
   if ((!xml) || (!xml->current))
     {
-      ERR("One of values is NULL, returning with error.");
+      DBG("One of values is NULL, returning with error.");
       return;
     }
 
@@ -228,7 +228,7 @@ void language_xml_clear(Language_XML *xml)
   n_cur = xml->current;
   if (!n_cur)
     {
-      ERR("One of values is NULL, returning with error.");
+      DBG("One of values is NULL, returning with error.");
       return;
     }
 

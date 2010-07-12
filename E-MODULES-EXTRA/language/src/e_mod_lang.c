@@ -740,7 +740,7 @@ _lang_apply_language_conponent_names(Language *l)
    return 1;
 }
 /********************** event callbacks ***************************************/
-int
+Eina_Bool
 lang_cb_event_desk_show(void *data, int type, void *event)
 {
    E_Event_Desk_Show *ev;
@@ -779,7 +779,7 @@ lang_cb_event_desk_show(void *data, int type, void *event)
    return 1;
 }
 
-int
+Eina_Bool
 lang_cb_event_border_focus_in(void *data, int type, void *ev)
 {
    Border_Language_Settings *bls;
@@ -821,7 +821,8 @@ lang_cb_event_border_focus_in(void *data, int type, void *ev)
 
    return 1;
 }
-int 
+
+Eina_Bool
 lang_cb_event_border_remove(void *data, int type, void *ev)
 {
    E_Event_Border_Remove      *e;
@@ -852,7 +853,7 @@ lang_cb_event_border_remove(void *data, int type, void *ev)
    return 1;
 }
 
-int
+Eina_Bool
 lang_cb_event_border_iconify(void *data, int type, void *ev)
 {
    E_Event_Border_Iconify *e;

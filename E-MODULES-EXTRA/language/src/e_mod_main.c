@@ -13,6 +13,8 @@
 /*********** variables ***********************/
 static	 E_Config_DD *conf_edd = NULL;
 static	 E_Config_DD *conf_langlist_edd = NULL;
+int _language_log_dom = -1;
+
 /*********************************************/
 
 /************ private funcs **************************/
@@ -164,9 +166,9 @@ e_modapi_init(E_Module *m)
 	"/usr/X11R6/lib/X11/xkb/rules/base"
    };
 
-   if (_log_dom < 0) {
-      _log_dom = eina_log_domain_register("language", NULL);
-      if (_log_dom < 0) {
+   if (_language_log_dom < 0) {
+      _language_log_dom = eina_log_domain_register("language", NULL);
+      if (_language_log_dom < 0) {
          EINA_LOG_CRIT("failed to register domain for language module.");
          eina_shutdown();
          return EINA_FALSE;
@@ -290,9 +292,9 @@ e_modapi_shutdown(E_Module *m)
 {
    Eina_List *l;
    
-    if (_log_dom >= 0) {
-       eina_log_domain_unregister(_log_dom);
-       _log_dom = -1;
+    if (_language_log_dom >= 0) {
+       eina_log_domain_unregister(_language_log_dom);
+       _language_log_dom = -1;
     }
 
    e_gadcon_provider_unregister((E_Gadcon_Client_Class *)(&_gadcon_class));
