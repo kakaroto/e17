@@ -137,7 +137,7 @@ enedj_load(const char *filename){
 
 	count = eina_list_count(file->image_dir->entries);
 	images = calloc(1,sizeof(struct enedj));
-	images->file = strdup(filename);
+	images->file = eina_stringshare_add(filename);
 	images->images = calloc(count + 1, sizeof(char *));
 	images->nitems = count;
 	images->nalloc = count + 1;
@@ -150,7 +150,7 @@ enedj_load(const char *filename){
 			continue;
 		}
 		/* FIXME: Check it's in range */
-		images->images[ei->id] = strdup(ei->entry);
+		images->images[ei->id] = eina_stringshare_add(ei->entry);
 	}
 
 	return 0;

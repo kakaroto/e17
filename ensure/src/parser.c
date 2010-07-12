@@ -37,7 +37,6 @@ static int parse_edje(struct enobj *eno, const char *prefix, char **linep);
 static int parse_edje_err(struct enobj *eno, const char *prefix, char **linep);
 
 
-
 static const struct parser {
 	const char *prefix;
 	int (*parser)(struct enobj *eno, const char *prefix, char **linep);
@@ -275,7 +274,7 @@ parse_text(struct enobj *eno, const char *prefix ensure_unused, char **linep){
 	p ++; p ++;
 	start = p;
 	while (*p != ']') p ++;
-	eno->data.text.text = strndup(start, p - start);
+	eno->data.text.text = eina_stringshare_add_length(start, p - start);
 	p ++; p ++;
 
 	*linep = p;

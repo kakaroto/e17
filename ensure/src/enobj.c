@@ -72,12 +72,12 @@ void
 enobj_free(void *enobjv){
 	struct enobj *enobj = enobjv;
 	struct bug *bug;
-	printf("Free! %p\n",enobj);
 
 	if (!enobj) return;
-	if (enobj->name) free(enobj->name);
+	if (enobj->name) eina_stringshare_del(enobj->name);
 	if (streq(enobj->type, "text")){
-		if (enobj->data.text.text) free(enobj->data.text.text);
+		if (enobj->data.text.text)
+			eina_stringshare_del(enobj->data.text.text);
 		if (enobj->data.text.font)
 			eina_stringshare_del(enobj->data.text.font);
 		if (enobj->data.text.source)
@@ -97,7 +97,7 @@ enobj_free(void *enobjv){
 		if (enobj->data.edje.err)
 			eina_stringshare_del(enobj->data.edje.err);
 	}
-	eina_stringshare_del(enobj->name);
+	eina_stringshare_del(enobj->type);
 
 	/* Genlist item */
 //	elm_genlist_item_del(enobj->genitem);
@@ -107,11 +107,11 @@ enobj_free(void *enobjv){
 		free(bug->desc);
 	}
 
-	evas_object_del(enobj->win);
+	if (enobj->win) evas_object_del(enobj->win);
 
 	eina_stringshare_del(enobj->type);
 
-
+	free(enobj);
 }
 
 
