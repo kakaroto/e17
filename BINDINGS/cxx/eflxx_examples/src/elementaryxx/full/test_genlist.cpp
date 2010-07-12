@@ -39,8 +39,7 @@ public:
     
   Elmxx::Object *getIcon (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
   {
-    Window *win = static_cast <Window*> (&obj);
-    Icon *ic = Icon::factory (*win);
+    Icon *ic = Icon::factory (obj);
     ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
     ic->setAspectHintSize (EVAS_ASPECT_CONTROL_VERTICAL, Eflxx::Size (1, 1));
     
@@ -599,8 +598,7 @@ public:
     GenListColumnConstructor3 *construct1 = static_cast <GenListColumnConstructor3*> (construction);
     int mode = construct1->getTestItem ()->mode;
     
-    Window *win = static_cast <Window*> (&obj);
-    Icon *ic = Icon::factory (*win);
+    Icon *ic = Icon::factory (obj);
 
     string iconName;
 
@@ -749,7 +747,6 @@ static void my_gl_item_check_changed (Evasxx::Object &obj, void *event_info, Tes
   printf("item %p onoff = %i\n", tit, tit->onoff);
 }
 
-
 class GenListDataModel4 : public GenListDataModel
 {
 public:
@@ -771,12 +768,9 @@ public:
     GenListColumnConstructor3 *construct1 = static_cast <GenListColumnConstructor3*> (construction);
     TestItem *tit = construct1->getTestItem ();
     
-    Window *win = static_cast <Window*> (&obj);
-    
-
     if (part == "elm.swallow.icon")
     {
-      Label *lb = Label::factory (*win);
+      Label *lb = Label::factory (obj);
 
       lb->setLineWrap (true);      
       lb->setWrapWidth (201);
@@ -787,17 +781,15 @@ public:
     }
     else if (part == "elm.swallow.end")
     {
-      Check *ck = Check::factory (*win);
+      Check *ck = Check::factory (obj);
       
       ck->setEventsPropagate (false);
     	ck->setState (tit->onoff);
       ck->getEventSignal ("changed")->connect (sigc::bind (sigc::ptr_fun (&my_gl_item_check_changed), tit));
-	    //evas_object_smart_callback_add(ck, "changed", my_gl_item_check_changed, data);
       ck->show ();
     	return ck;
     }
 
-    // should never reach NULL!
     return NULL;
   }
 
@@ -834,6 +826,8 @@ void test_genlist4 (void *data, Evas_Object *obj, void *event_info)
 
   gl->show ();
 
+  gl->signalSelect.connect (sigc::ptr_fun (&glSelected3));
+  
   gl->setDataModel (model4);
 
   GenListColumnConstructor3 *construct1 = new GenListColumnConstructor3 ();
@@ -890,221 +884,224 @@ void test_genlist4 (void *data, Evas_Object *obj, void *event_info)
   win->resize (size320x320);
   win->show ();
 }
+
+/*************/
+
+static void my_gl_item_check_changed2 (Evasxx::Object &obj, void *event_info, TestItem *tit)
+{
+  Check *check = static_cast <Check*> (&obj);
+  
+  tit->onoff = check->getState ();
+  printf("item %p onoff = %i\n", tit, tit->onoff);
+}
+
+static void item_drag_up (Evasxx::Object &obj, void *event_info)
+{
+  cout << "drag up" << endl;
+}
+
+static void item_drag_down (Evasxx::Object &obj, void *event_info)
+{
+  cout << "drag down" << endl;
+}
+
+static void item_drag_left (Evasxx::Object &obj, void *event_info)
+{
+  cout << "drag left" << endl;
+}
+
+static void item_drag_right (Evasxx::Object &obj, void *event_info)
+{
+  cout << "drag right" << endl;
+}
+
+static void item_drag (Evasxx::Object &obj, void *event_info)
+{
+  cout << "drag" << endl;
+}
+
+static void item_drag_stop (Evasxx::Object &obj, void *event_info)
+{
+  cout << "drag stop" << endl;
+}
+
+static void item_longpress (Evasxx::Object &obj, void *event_info)
+{
+  cout << "longpress" << endl;
+}
+
+class GenListDataModel5 : public GenListDataModel
+{
+public:
+  GenListDataModel5 (const std::string &style) :
+    GenListDataModel (style) {}
+
+  ~GenListDataModel5 () {}
+
+  std::string getLabel (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part) const
+  { 
+    GenListColumnConstructor3 *construct1 = static_cast <GenListColumnConstructor3*> (construction);
+    const TestItem *tit = construct1->getTestItem ();
+    string buf;
+    
+    if (part == "elm.text")
+    {
+      buf = "Item mode " + toString <int> (tit->mode);
+    }
+    else if (part == "elm.text.sub")
+    {
+      buf = toString <int> (tit->mode) + " bottles on the wall";
+    }
+
+    return buf;
+  }
+    
+  Elmxx::Object *getIcon (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
+  {
+    GenListColumnConstructor3 *construct1 = static_cast <GenListColumnConstructor3*> (construction);
+    TestItem *tit = construct1->getTestItem ();
+    
+    if (part == "elm.swallow.icon")
+    {
+      Box *bx = Box::factory (obj);
+      Icon *ic = Icon::factory (obj);
+
+      bx->setOrientation (Box::Horizontal);
+      ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
+      ic->setScale (0,0);
+      ic->show ();
+      bx->packEnd (*ic);
+      bx->show ();
+
+      return bx;
+    }
+    else if (part == "elm.swallow.end")
+    {
+      Check *ck = Check::factory (obj);
+      
+      ck->setEventsPropagate (false);
+    	ck->setState (tit->onoff);
+      ck->getEventSignal ("changed")->connect (sigc::bind (sigc::ptr_fun (&my_gl_item_check_changed2), tit));
+      ck->show ();
+    	return ck;
+    }
+    
+    return NULL;
+  }
+
+  bool getState (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
+  {
+    return false;
+  }
+};
+
+static GenListDataModel5 model5 ("double_label");
+
+void test_genlist5 (void *data, Evas_Object *obj, void *event_info)
+{
+  Button *bt = NULL;
+  Box *bx2 = NULL;
+  static TestItem tit[3];
+
+  Window *win = Window::factory ("genlist-5", ELM_WIN_BASIC);
+  win->setTitle ("GenList 5");
+  win->setAutoDel (true);
+  
+  Background *bg = Background::factory (*win);
+  win->addObjectResize (*bg);
+  bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  bg->show ();
+  
+  Box *bx = Box::factory (*win);
+  bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  win->addObjectResize (*bx);
+  bx->show ();
+
+  GenList *gl = GenList::factory (*win);
+  gl->setAlwaysSelectMode (true);
+  gl->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  gl->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  gl->show ();
+
+  gl->setDataModel (model5);
+
+  gl->signalSelect.connect (sigc::ptr_fun (&glSelected3));
+
+  GenListColumnConstructor3 *construct1 = new GenListColumnConstructor3 ();
+  construct1->setTestItem (&(tit[0]));
+  GenListColumnSelector3 *select1 = new GenListColumnSelector3 ();
+  select1->setTestItem (&(tit[0]));
+  tit[0].mode = 0;
+  tit[0].item = gl->append (construct1, NULL, ELM_GENLIST_ITEM_NONE, select1);
+
+  GenListColumnConstructor3 *construct2 = new GenListColumnConstructor3 ();
+  construct2->setTestItem (&(tit[1]));
+  GenListColumnSelector3 *select2 = new GenListColumnSelector3 ();
+  select1->setTestItem (&(tit[1]));
+  tit[1].mode = 1;
+  tit[1].item = gl->append (construct2, NULL, ELM_GENLIST_ITEM_NONE, select2);
+
+  GenListColumnConstructor3 *construct3 = new GenListColumnConstructor3 ();
+  construct3->setTestItem (&(tit[2]));
+  GenListColumnSelector3 *select3 = new GenListColumnSelector3 ();
+  select1->setTestItem (&(tit[2]));
+  tit[2].mode = 2;
+  tit[2].item = gl->append (construct3, NULL, ELM_GENLIST_ITEM_NONE, select3);
+
+  bx->packEnd (*gl);
+  bx->show ();
+
+  gl->getEventSignal ("drag,start,up")->connect (sigc::ptr_fun (&item_drag_up));
+  gl->getEventSignal ("drag,start,down")->connect (sigc::ptr_fun (&item_drag_down));
+  gl->getEventSignal ("drag,start,left")->connect (sigc::ptr_fun (&item_drag_left));
+  gl->getEventSignal ("drag,start,right")->connect (sigc::ptr_fun (&item_drag_right));
+  gl->getEventSignal ("drag")->connect (sigc::ptr_fun (&item_drag));
+  gl->getEventSignal ("drag,stop")->connect (sigc::ptr_fun (&item_drag_stop));
+  gl->getEventSignal ("longpressed")->connect (sigc::ptr_fun (&item_longpress));
+
+  bx2 = Box::factory (*win);
+  bx2->setOrientation (Box::Horizontal);
+  bx2->setHomogenous (true);
+  bx2->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+  bt = Button::factory (*win);
+  bt->setLabel ("[1]");
+  bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update), &(tit[0])));
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show ();
+
+  bt = Button::factory (*win);
+  bt->setLabel ("[2]");
+  bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update), &(tit[1])));
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show ();
+
+  bt = Button::factory (*win);
+  bt->setLabel ("[3]");
+  bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update), &(tit[2])));
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show ();
+
+  bx->packEnd (*bx2);
+  bx2->show ();
+
+  win->resize (size320x320);
+  win->show ();
+}
+
+/*************/
+
+static void gl4_exp (Evasxx::Object &obj, void *event_info, GenList *gl)
+{
+  // TODO: why is event_info used as container for Elm_Genlist_Item?
 #if 0
-
-/*************/
-static void
-my_gl_item_check_changed2(void *data, Evas_Object *obj, void *event_info)
-{
-   Testitem *tit = data;
-   tit->onoff = elm_check_state_get(obj);
-   printf("item %p onoff = %i\n", tit, tit->onoff);
-}
-
-static Elm_Genlist_Item_Class itc5;
-char *gl5_label_get(const void *data, Evas_Object *obj, const char *part)
-{
-   const Testitem *tit = data;
-   char buf[256];
-   if (!strcmp(part, "elm.text"))
-     {
-	snprintf(buf, sizeof(buf), "Item mode %i", tit->mode);
-     }
-   else if (!strcmp(part, "elm.text.sub"))
-     {
-	snprintf(buf, sizeof(buf), "%i bottles on the wall", tit->mode);
-     }
-   return strdup(buf);
-}
-Evas_Object *gl5_icon_get(const void *data, Evas_Object *obj, const char *part)
-{
-   const Testitem *tit = data;
-   char buf[PATH_MAX];
-   if (!strcmp(part, "elm.swallow.icon"))
-     {
-	Evas_Object *bx = elm_box_add(obj);
-	Evas_Object *ic;
-	elm_box_horizontal_set(bx, 1);
-	ic = elm_icon_add(obj);
-	snprintf(buf, sizeof(buf), "%s/images/logo_small.png", PACKAGE_DATA_DIR);
-	elm_icon_file_set(ic, buf, NULL);
-	elm_icon_scale_set(ic, 0, 0);
-	evas_object_show(ic);
-	elm_box_pack_end(bx, ic);
-	ic = elm_icon_add(obj);
-	elm_icon_file_set(ic, buf, NULL);
-	elm_icon_scale_set(ic, 0, 0);
-	evas_object_show(ic);
-	elm_box_pack_end(bx, ic);
-        elm_box_horizontal_set(bx, 1);
-	evas_object_show(bx);
-	return bx;
-     }
-   else if (!strcmp(part, "elm.swallow.end"))
-     {
-	Evas_Object *ck;
-	ck = elm_check_add(obj);
-	evas_object_propagate_events_set(ck, 0);
-	elm_check_state_set(ck, tit->onoff);
-	evas_object_smart_callback_add(ck, "changed", my_gl_item_check_changed2, data);
-	evas_object_show(ck);
-	return ck;
-     }
-   return NULL;
-}
-Eina_Bool gl5_state_get(const void *data, Evas_Object *obj, const char *part)
-{
-   return EINA_FALSE;
-}
-void gl5_del(const void *data, Evas_Object *obj)
-{
-}
-
-static void
-item_drag_up(void *data, Evas_Object *obj, void *event_info)
-{
-   printf("drag up\n");
-}
-
-static void
-item_drag_down(void *data, Evas_Object *obj, void *event_info)
-{
-   printf("drag down\n");
-}
-
-static void
-item_drag_left(void *data, Evas_Object *obj, void *event_info)
-{
-   printf("drag left\n");
-}
-
-static void
-item_drag_right(void *data, Evas_Object *obj, void *event_info)
-{
-   printf("drag right\n");
-}
-
-static void
-item_drag(void *data, Evas_Object *obj, void *event_info)
-{
-   printf("drag\n");
-}
-
-static void
-item_drag_stop(void *data, Evas_Object *obj, void *event_info)
-{
-   printf("drag stop\n");
-}
-
-static void
-item_longpress(void *data, Evas_Object *obj, void *event_info)
-{
-   printf("longpress\n");
-}
-
-void
-test_genlist5(void *data, Evas_Object *obj, void *event_info)
-{
-   Evas_Object *win, *bg, *gl, *bx, *bx2, *bt;
-   static Testitem tit[3];
-
-   win = elm_win_add(NULL, "genlist-5", ELM_WIN_BASIC);
-   elm_win_title_set(win, "Genlist 5");
-   elm_win_autodel_set(win, 1);
-
-   bg = elm_bg_add(win);
-   elm_win_resize_object_add(win, bg);
-   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(bg);
-
-   bx = elm_box_add(win);
-   evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(win, bx);
-   evas_object_show(bx);
-
-   gl = elm_genlist_add(win);
-   elm_genlist_always_select_mode_set(gl, 1);
-   evas_object_size_hint_align_set(gl, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(gl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(gl);
-   itc5.item_style     = "double_label";
-   itc5.func.label_get = gl5_label_get;
-   itc5.func.icon_get  = gl5_icon_get;
-   itc5.func.state_get = gl5_state_get;
-   itc5.func.del       = gl5_del;
-
-   tit[0].mode = 0;
-   tit[0].item = elm_genlist_item_append(gl, &itc5,
-					 &(tit[0])/* item data */, NULL/* parent */, ELM_GENLIST_ITEM_NONE, gl_sel/* func */,
-					 NULL/* func data */);
-   tit[1].mode = 1;
-   tit[1].item = elm_genlist_item_append(gl, &itc5,
-					 &(tit[1])/* item data */, NULL/* parent */, ELM_GENLIST_ITEM_NONE, gl_sel/* func */,
-					 NULL/* func data */);
-   tit[2].mode = 2;
-   tit[2].item = elm_genlist_item_append(gl, &itc5,
-					 &(tit[2])/* item data */, NULL/* parent */, ELM_GENLIST_ITEM_NONE, gl_sel/* func */,
-					 NULL/* func data */);
-
-   elm_box_pack_end(bx, gl);
-   evas_object_show(bx);
-
-   evas_object_smart_callback_add(gl, "drag,start,up", item_drag_up, NULL);
-   evas_object_smart_callback_add(gl, "drag,start,down", item_drag_down, NULL);
-   evas_object_smart_callback_add(gl, "drag,start,left", item_drag_left, NULL);
-   evas_object_smart_callback_add(gl, "drag,start,right", item_drag_right, NULL);
-   evas_object_smart_callback_add(gl, "drag", item_drag, NULL);
-   evas_object_smart_callback_add(gl, "drag,stop", item_drag_stop, NULL);
-   evas_object_smart_callback_add(gl, "longpressed", item_longpress, NULL);
-
-   bx2 = elm_box_add(win);
-   elm_box_horizontal_set(bx2, 1);
-   elm_box_homogenous_set(bx2, 1);
-   evas_object_size_hint_weight_set(bx2, EVAS_HINT_EXPAND, 0.0);
-   evas_object_size_hint_align_set(bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
-
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "[1]");
-   evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[0]));
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
-
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "[2]");
-   evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[1]));
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
-
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "[3]");
-   evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[2]));
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
-
-   elm_box_pack_end(bx, bx2);
-   evas_object_show(bx2);
-
-   evas_object_resize(win, 320, 320);
-   evas_object_show(win);
-}
-
-/*************/
-
-static Elm_Genlist_Item_Class itc4;
-
-static void
-gl4_sel(void *data, Evas_Object *obj, void *event_info)
-{
-}
-static void
-gl4_exp(void *data, Evas_Object *obj, void *event_info)
-{
    Elm_Genlist_Item *it = event_info;
    Evas_Object *gl = elm_genlist_item_genlist_get(it);
    int val = (int)elm_genlist_item_data_get(it);
@@ -1118,145 +1115,156 @@ gl4_exp(void *data, Evas_Object *obj, void *event_info)
    elm_genlist_item_append(gl, &itc4,
 			   (void *)(val + 3)/* item data */, it/* parent */, ELM_GENLIST_ITEM_SUBITEMS, gl4_sel/* func */,
 			   NULL/* func data */);
+#endif
 }
-static void
-gl4_con(void *data, Evas_Object *obj, void *event_info)
+static void gl4_con (Evasxx::Object &obj, void *event_info, GenList *gl)
 {
-   Elm_Genlist_Item *it = event_info;
-   elm_genlist_item_subitems_clear(it);
+   //Elm_Genlist_Item *it = event_info;
+   //elm_genlist_item_subitems_clear(it);
 }
 
-static void
-gl4_exp_req(void *data, Evas_Object *obj, void *event_info)
+static void gl4_exp_req (Evasxx::Object &obj, void *event_info, GenList *gl)
 {
-   Elm_Genlist_Item *it = event_info;
-   elm_genlist_item_expanded_set(it, 1);
+   //Elm_Genlist_Item *it = event_info;
+   //elm_genlist_item_expanded_set(it, 1);
 }
-static void
-gl4_con_req(void *data, Evas_Object *obj, void *event_info)
+static void gl4_con_req (Evasxx::Object &obj, void *event_info, GenList *gl)
 {
-   Elm_Genlist_Item *it = event_info;
-   elm_genlist_item_expanded_set(it, 0);
+   //Elm_Genlist_Item *it = event_info;
+   //elm_genlist_item_expanded_set(it, 0);
 }
 
-char *gl4_label_get(const void *data, Evas_Object *obj, const char *part)
+class GenListDataModel6 : public GenListDataModel
 {
-   char buf[256];
-   snprintf(buf, sizeof(buf), "Item mode %i", (int)data);
-   return strdup(buf);
-}
-Evas_Object *gl4_icon_get(const void *data, Evas_Object *obj, const char *part)
+public:
+  GenListDataModel6 (const std::string &style) :
+    GenListDataModel (style) {}
+
+  ~GenListDataModel6 () {}
+
+  std::string getLabel (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part) const
+  { 
+    GenListColumnConstructor1 *construct1 = static_cast <GenListColumnConstructor1*> (construction);
+            
+    return "Item mode " + toString <int> (construct1->getItemNum ());
+  }
+    
+  Elmxx::Object *getIcon (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
+  {
+    GenListColumnConstructor1 *construct1 = static_cast <GenListColumnConstructor1*> (construction);
+    
+    if (part == "elm.swallow.icon")
+    {
+      Icon *ic = Icon::factory (obj);
+
+      ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
+      ic->setAspectHintSize (EVAS_ASPECT_CONTROL_VERTICAL, Eflxx::Size (1, 1));
+      ic->show ();
+
+      return ic;
+    }
+    else if (part == "elm.swallow.end")
+    {
+      Check *ck = Check::factory (obj);
+      
+      ck->setEventsPropagate (false);
+      ck->show ();
+    	return ck;
+    }
+    
+    return NULL;
+  }
+
+  bool getState (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
+  {
+    return false;
+  }
+};
+
+static GenListDataModel6 model6 ("default");
+
+void test_genlist6(void *data, Evas_Object *obj, void *event_info)
 {
-   char buf[PATH_MAX];
-   if (!strcmp(part, "elm.swallow.icon"))
-     {
-	Evas_Object *ic = elm_icon_add(obj);
-	snprintf(buf, sizeof(buf), "%s/images/logo_small.png", PACKAGE_DATA_DIR);
-	elm_icon_file_set(ic, buf, NULL);
-	evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-	evas_object_show(ic);
-	return ic;
-     }
-   else if (!strcmp(part, "elm.swallow.end"))
-     {
-	Evas_Object *ck;
-	ck = elm_check_add(obj);
-	evas_object_show(ck);
-	return ck;
-     }
-   return NULL;
-}
-Eina_Bool gl4_state_get(const void *data, Evas_Object *obj, const char *part)
-{
-   return EINA_FALSE;
-}
-void gl4_del(const void *data, Evas_Object *obj)
-{
-}
+  Button *bt = NULL;
+  Box *bx2 = NULL;
 
-void
-test_genlist6(void *data, Evas_Object *obj, void *event_info)
-{
-   Evas_Object *win, *bg, *gl, *bx, *bx2, *bt;
+  Window *win = Window::factory ("genlist-tree", ELM_WIN_BASIC);
+  win->setTitle ("GenList Tree");
+  win->setAutoDel (true);
+  
+  Background *bg = Background::factory (*win);
+  win->addObjectResize (*bg);
+  bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  bg->show ();
+  
+  Box *bx = Box::factory (*win);
+  bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  win->addObjectResize (*bx);
+  bx->show ();
 
-   win = elm_win_add(NULL, "genlist-tree", ELM_WIN_BASIC);
-   elm_win_title_set(win, "Genlist Tree");
-   elm_win_autodel_set(win, 1);
+  GenList *gl = GenList::factory (*win);
+  gl->setAlwaysSelectMode (true);
+  gl->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  gl->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  gl->show ();
 
-   bg = elm_bg_add(win);
-   elm_win_resize_object_add(win, bg);
-   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(bg);
+  gl->setDataModel (model6);
 
-   bx = elm_box_add(win);
-   evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(win, bx);
-   evas_object_show(bx);
+  // TODO: clean up GenListColumnConstructor
+  GenListColumnConstructor1 *construct1 = new GenListColumnConstructor1 ();
+  construct1->setItemNum (1);
+  gl->append (construct1, NULL, ELM_GENLIST_ITEM_NONE, NULL);
 
-   gl = elm_genlist_add(win);
-   evas_object_size_hint_align_set(gl, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(gl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(gl);
+  GenListColumnConstructor1 *construct2 = new GenListColumnConstructor1 ();
+  construct2->setItemNum (2);
+  gl->append (construct2, NULL, ELM_GENLIST_ITEM_NONE, NULL);
 
-   itc4.item_style     = "default";
-   itc4.func.label_get = gl4_label_get;
-   itc4.func.icon_get  = gl4_icon_get;
-   itc4.func.state_get = gl4_state_get;
-   itc4.func.del       = gl4_del;
+  GenListColumnConstructor1 *construct3 = new GenListColumnConstructor1 ();
+  construct3->setItemNum (3);
+  gl->append (construct3, NULL, ELM_GENLIST_ITEM_NONE, NULL);
 
-   elm_genlist_item_append(gl, &itc4,
-			   (void *)1/* item data */, NULL/* parent */, ELM_GENLIST_ITEM_SUBITEMS, gl4_sel/* func */,
-			   NULL/* func data */);
-   elm_genlist_item_append(gl, &itc4,
-			   (void *)2/* item data */, NULL/* parent */, ELM_GENLIST_ITEM_SUBITEMS, gl4_sel/* func */,
-			   NULL/* func data */);
-   elm_genlist_item_append(gl, &itc4,
-			   (void *)3/* item data */, NULL/* parent */, ELM_GENLIST_ITEM_NONE, gl4_sel/* func */,
-			   NULL/* func data */);
+  bt->getEventSignal ("expand,request")->connect (sigc::bind (sigc::ptr_fun (&gl4_exp_req), gl));
+  bt->getEventSignal ("contract,request")->connect (sigc::bind (sigc::ptr_fun (&gl4_con_req), gl));
+  bt->getEventSignal ("expanded")->connect (sigc::bind (sigc::ptr_fun (&gl4_exp), gl));
+  bt->getEventSignal ("contracted")->connect (sigc::bind (sigc::ptr_fun (&gl4_con), gl));
+  
+  bx->packEnd (*gl);
+  bx->show ();
 
-   evas_object_smart_callback_add(gl, "expand,request", gl4_exp_req, gl);
-   evas_object_smart_callback_add(gl, "contract,request", gl4_con_req, gl);
-   evas_object_smart_callback_add(gl, "expanded", gl4_exp, gl);
-   evas_object_smart_callback_add(gl, "contracted", gl4_con, gl);
+  bx2 = Box::factory (*win);
+  bx2->setOrientation (Box::Horizontal);
+  bx2->setHomogenous (true);
+  bx2->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
 
-   elm_box_pack_end(bx, gl);
-   evas_object_show(bx);
+  bt = Button::factory (*win);
+  bt->setLabel ("[1]");
+  //bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update), &(tit[0])));
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show ();
 
-   bx2 = elm_box_add(win);
-   elm_box_horizontal_set(bx2, 1);
-   elm_box_homogenous_set(bx2, 1);
-   evas_object_size_hint_weight_set(bx2, EVAS_HINT_EXPAND, 0.0);
-   evas_object_size_hint_align_set(bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt = Button::factory (*win);
+  bt->setLabel ("[2]");
+  //bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update), &(tit[1])));
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show ();
 
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "[1]");
-//   evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[0]));
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
+  bt = Button::factory (*win);
+  bt->setLabel ("[3]");
+  //bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update), &(tit[2])));
+  bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
+  bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
+  bx2->packEnd (*bt);
+  bt->show ();
 
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "[2]");
-//   evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[1]));
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
-
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "[3]");
-//   evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[2]));
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
-   elm_box_pack_end(bx2, bt);
-   evas_object_show(bt);
-
-   elm_box_pack_end(bx, bx2);
-   evas_object_show(bx2);
-
-   evas_object_resize(win, 320, 320);
-   evas_object_show(win);
+  bx->packEnd (*bx2);
+  bx2->show ();
+  
+  win->resize (size320x320);
+  win->show ();
 }
 
-#endif // 0
