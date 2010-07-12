@@ -3352,7 +3352,7 @@ Epplet_draw_hbar(Epplet_gadget eg)
 Epplet_gadget
 Epplet_create_vbar(int x, int y, int w, int h, char dir, int *val)
 {
-   GadHBar            *g;
+   GadVBar            *g;
    XSetWindowAttributes attr;
 
    g = malloc(sizeof(GadVBar));
@@ -3649,9 +3649,9 @@ Epplet_add_sized_popup_entry(Epplet_gadget gadget, char *label, char *pixmap,
    GADGET_CONFIRM_TYPE(gadget, E_POPUP);
    g->entry_num++;
    if (g->entry)
-      g->entry = realloc(g->entry, sizeof(GadPopup) * g->entry_num);
+      g->entry = realloc(g->entry, sizeof(*g->entry) * g->entry_num);
    else
-      g->entry = malloc(sizeof(GadPopup));
+      g->entry = malloc(sizeof(*g->entry));
    g->entry[g->entry_num - 1].label = Estrdup(label);
    g->entry[g->entry_num - 1].image = Estrdup(pixmap);
    g->entry[g->entry_num - 1].w = 0;
