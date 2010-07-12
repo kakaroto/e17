@@ -214,7 +214,7 @@ cdef class Exe:
     =======================
 
     To make use easier, there are methods that automatically filter
-    events for this instance and deletes theme when the L{Exe} is
+    events for this instance and deletes them when the L{Exe} is
     deleted:
 
      - L{on_add_event_add()}
