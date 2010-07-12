@@ -9,6 +9,26 @@ enum edjemember {
 	EDJEMEMBER_FALSE
 };
 
+/**
+ * An ensure window
+ */
+struct enwin {
+	/** Data magic */
+	int	magic; // FIXME: Use and check ;-)
+
+	/** Window ID */
+	uintptr_t id;
+
+	/** Name of window */
+	const char *name;
+
+	/** Size of the window */
+	int w,h;
+
+	/** The genlist item for this window: May be NULL if no items with
+	 * bugs */
+	Elm_Genlist_Item *genitem;
+};
 
 /**
  *
@@ -20,6 +40,9 @@ struct enobj {
 
 	/** ID of object (its address normally) */
 	uintptr_t	id;
+
+	/** Window this object belongs too */
+	struct enwin *enwin;
 
 	/** Name: Optional */
 	char *name;
@@ -42,7 +65,7 @@ struct enobj {
 	/** Files */
 	union {
 		struct {
-			char *text;
+			const char *text;
 			const char *font;
 			const char *source;
 			int size;

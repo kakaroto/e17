@@ -20,7 +20,7 @@
 
 static char *parse_string(char **p, bool shared);
 
-static int parse_object(char *line, struct enobj *eno);
+static struct enobj *parse_object(char *line, struct enobj *eno);
 static void parse_line(struct ensure *ensure, char *line);
 
 static int parse_objid(struct enobj *eno, const char *prefix, char **linep);
@@ -106,22 +106,28 @@ child_data(void *data, Ecore_Fd_Handler *hdlr){
 
 static void
 parse_line(struct ensure *ensure, char *line){
+	static struct enwin *enwin = NULL;
+	struct enobj *obj;
+
 	if (strncmp(line,"Object", 6) == 0){
-		parse_object(line,NULL);
+		obj = parse_object(line,NULL);
+		obj->enwin = enwin;
 	} else if (strncmp(line, "Ensure done",11) == 0){
 		printf("Got to the end...\n");
 		enasn_check(ensure);
 	} else if (strncmp(line, "E: ",3) == 0){
+		enwin = calloc(1,sizeof(struct enwin));
 		line += 3;
-		strtoll(line,&line,0);
-		ensure->w = strtol(line,&line,0);
-		ensure->h = strtol(line,&line,0);
+		enwin->id = strtoll(line,&line,0);
+		enwin->name = parse_string(&line, true);
+		enwin->w = strtol(line,&line,0);
+		enwin->h = strtol(line,&line,0);
 	} else {
 		printf("Line was nothing...'%s'\n",line);
 	}
 }
 
-static int
+static struct enobj *
 parse_object(char *line, struct enobj *eno){
 	char *p;
 	int i;
@@ -156,8 +162,7 @@ parse_object(char *line, struct enobj *eno){
 	assert(eno->id);
 	enobj_add(eno);
 
-	return 0;
-
+	return eno;
 }
 
 

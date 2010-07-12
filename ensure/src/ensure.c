@@ -93,6 +93,11 @@ static void asn_del(const void *data, Evas_Object *obj);
 static void asn_select(void *data, Evas_Object *obj, void *event);
 static void asn_select_toggle(void *data, Evas_Object *obj, void *event);
 
+static char *enwin_label_get(const void *data, Evas_Object *, const char *);
+//static Evas_Object *enwin_icon_get(const void *data, Evas_Object *, const char *);
+static Eina_Bool enwin_state_get(const void *data, Evas_Object *, const char *);
+static void enwin_select(void *data, Evas_Object *obj, void *event);
+static void enwin_del(const void *data, Evas_Object *obj);
 
 
 
@@ -206,9 +211,9 @@ window_add(char **args){
 	evas_object_show(ctrls);
 
 
+	evas_object_resize(win, 320, 480);
+	evas_object_show(win);
 
-evas_object_resize(win, 300, 300);
-evas_object_show(win);
         /* Urh.. the list widget for now */
         return gl;
 
@@ -243,6 +248,14 @@ static const Elm_Genlist_Item_Class objc = {
 	}
 };
 
+static const Elm_Genlist_Item_Class windowclass = {
+	.item_style = "default",
+	.func = {
+		.label_get = enwin_label_get,
+		.state_get = enwin_state_get,
+		.del = enwin_del,
+	},
+};
 
 static void
 config_add_classes(Evas_Object *gl){
@@ -301,8 +314,8 @@ generic_exp_req(void *data ensure_unused, Evas_Object *obj ensure_unused, void *
 }
 static void
 generic_con_req(void *data ensure_unused, Evas_Object *obj ensure_unused, void *event){
-   Elm_Genlist_Item *it = event;
-   elm_genlist_item_expanded_set(it, 0);
+	Elm_Genlist_Item *it = event;
+	elm_genlist_item_expanded_set(it, 0);
 }
 static void
 cfg_del(const void *data ensure_unused, Evas_Object *obj ensure_unused){
@@ -365,7 +378,9 @@ asn_state_get(const void *data, Evas_Object *obj ensure_unused,
 }
 static void
 asn_del(const void *data ensure_unused, Evas_Object *obj ensure_unused){
-	/* FIXME: Remove  item ref */
+	struct enwin *enwin = data;
+
+	enwin->genitem = NULL;
 }
 
 static void
@@ -383,10 +398,65 @@ asn_select_toggle(void *data, Evas_Object *obj ensure_unused, void *event ensure
 }
 
 
+static char *
+enwin_label_get(const void *data, Evas_Object *obj ensure_unused,
+		const char *part ensure_unused){
+	const struct enwin *enwin;
+	const char *fmt = "Untitled Window '%p'";
+	char *buf;
+	int len;
+
+	enwin = data;
+
+	if (enwin->name && strlen(enwin->name) > 1){
+		return strdup(enwin->name);
+	}
+
+	len = snprintf(NULL,0,fmt,enwin->id);
+	if (len < 1) return NULL;
+	len ++;
+	buf = malloc(len);
+	if (!buf) return NULL;
+	/* remmeber to update both snprintfs if you change it */
+	snprintf(buf,len,fmt,enwin->id);
+	return buf;
+}
+/*
+static Evas_Object *
+enwin_icon_get(const void *data, Evas_Object *obj ensure_unused,
+		const char *part ensure_unused){
+	return NULL;
+}*/
+static Eina_Bool
+enwin_state_get(const void *data ensure_unused, Evas_Object *obj ensure_unused,
+		const char *state ensure_unused){
+	return false;
+}
+static void
+enwin_select(void *data, Evas_Object *obj, void *event){
+	/* FIXME: Do something or delete this */
+	printf("Select... ignoring\n");
+}
+static void enwin_del(const void *data, Evas_Object *obj){
+	/* FIXME: Do something or delete this */
+}
+
+
+
+
 int
 ensure_enobj_err_list_add(struct enobj *enobj){
+
+	/* Does the window have an item */
+	if (!enobj->enwin->genitem){
+		enobj->enwin->genitem = elm_genlist_item_append(objlist,
+				&windowclass, enobj->enwin, NULL,
+				ELM_GENLIST_ITEM_SUBITEMS, enwin_select,
+				enobj->enwin);
+	}
+
 	enobj->genitem = elm_genlist_item_append(objlist, &objc,
-			enobj, NULL/*No parent*/, ELM_GENLIST_ITEM_SUBITEMS,
+			enobj, enobj->enwin->genitem, ELM_GENLIST_ITEM_SUBITEMS,
 			enobj_select, enobj);
 	return 0;
 }

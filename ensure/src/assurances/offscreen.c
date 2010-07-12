@@ -12,19 +12,22 @@ struct assurance assurance = {
 
 static int
 object_check(struct ensure *en, struct enobj *obj, void *data ensure_unused){
+	struct enwin *enwin;
 	assert(obj);
 
 	assert(en);
-	assert(en->w && en->h);
+	assert(obj->enwin);
+	assert(obj->enwin->w && obj->enwin->h);
+	enwin = obj->enwin;
 
-	if (obj->x >= en->w){
+	if (obj->x >= enwin->w){
 		ensure_bug(obj, ENSURE_BADFORM,
 				"Object offscreen (obj.x (%d) > W (%d))",
-				obj->x,en->w);
-	} else if (obj->y >= en->h){
+				obj->x,enwin->w);
+	} else if (obj->y >= enwin->h){
 		ensure_bug(obj, ENSURE_BADFORM,
 				"Object offscreen (obj.y (%d) > h (%d))",
-				obj->y,en->h);
+				obj->y,enwin->h);
 	} else if (obj->x + obj->w < 0){
 		ensure_bug(obj, ENSURE_BADFORM,
 				"Object offscreen (obj.x (%d) + obj.w (%d) <0)",

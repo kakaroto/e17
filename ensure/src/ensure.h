@@ -11,8 +11,8 @@ struct assurance;
 
 
 struct ensure {
-	/* Size of target canvas */
-	int w,h;
+	int magic;
+
 };
 
 int ensure_assurance_add(struct assurance *);
