@@ -3,10 +3,10 @@ MAINTAINERCLEANFILES = Makefile.in
 
 SUBDIRS = themes
 
-pamdir = /etc/pam.d/
+pamdir = $(sysconfdir)/pam.d/
 pam_DATA = elsa
 
-confdir = /etc
+confdir = $(sysconfdir)
 conf_DATA = elsa.conf
 
 EXTRA_DIST = elsa elsa.conf
