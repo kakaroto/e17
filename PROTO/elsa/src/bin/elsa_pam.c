@@ -1,6 +1,6 @@
-#include <security/pam_appl.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "elsa.h"
 
  /*

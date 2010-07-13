@@ -1,5 +1,11 @@
 
-AM_CFLAGS = -Wall -W -g -D_GNU_SOURCE @ELSA_CFLAGS@
+MAINTAINERCLEANFILES = Makefile.in
+
+AM_CPPFLAGS = \
+-I$(top_srcdir)/src/bin \
+-I$(top_builddir)/src/bin \
+-DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
+@ELSA_CFLAGS@
 
 bin_PROGRAMS = elsa
 
@@ -15,10 +21,5 @@ elsa_gui.c         \
 elsa.h             \
 elsa.c
 
-
-elsa_INCLUDES =
-
 elsa_LDFLAGS =
 elsa_LDADD = @ELSA_LIBS@ -lpam
-
-MAINTAINERCLEANFILES = Makefile.in

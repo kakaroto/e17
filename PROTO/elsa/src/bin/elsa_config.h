@@ -1,6 +1,5 @@
 #ifndef ELSA_CONFIG_H_
 #define ELSA_CONFIG_H_
-#include <Elementary.h>
 
 #define ELSA_CONFIG_FILE        "elsa.cfg"
 #define ELSA_SESSION_PATH       "config/session/path"

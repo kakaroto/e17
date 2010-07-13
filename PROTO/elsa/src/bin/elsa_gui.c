@@ -1,5 +1,3 @@
-#include <Elementary.h>
-#include <Ecore_X.h>
 #include "elsa.h"
 
 typedef struct Elsa_Gui_ {

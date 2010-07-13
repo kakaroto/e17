@@ -1,6 +1,5 @@
 #ifdef ELSA_SESSION_H_
 #define ELSA_SESSION_H_
-//#include <Elementary.h>
 
 void elsa_session_init(struct passwd *pwd);
 void elsa_session_run(struct passwd *pwd);

@@ -1,6 +1,6 @@
 #include <unistd.h>
 #include <sys/types.h>
-#include <X11/Xlib.h>
+
 #include "elsa.h"
 
 

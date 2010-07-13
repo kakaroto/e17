@@ -1,5 +1,6 @@
 #ifndef ELSA_PAM_H_
 #define ELSA_PAM_H_
+
 #include <security/pam_appl.h>
 
 typedef enum ELSA_PAM_ITEM_TYPE_ {
