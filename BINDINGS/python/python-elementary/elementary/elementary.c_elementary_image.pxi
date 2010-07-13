@@ -21,7 +21,7 @@ cdef class Image(Object):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_image_add(parent.obj))
 
-    def file_set(self, filename, group):
+    def file_set(self, filename, group = ""):
         elm_image_file_set(self.obj, filename, group)
 
     def smooth_set(self, smooth):
