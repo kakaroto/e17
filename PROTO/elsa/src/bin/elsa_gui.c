@@ -56,7 +56,7 @@ _elsa_gui_login_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const cha
    }
    free(hostname);
    free(password);
-#ifdef USE_PAM
+#ifdef HAVE_PAM
    int status;
    status = elsa_pam_authenticate();
    if (status) {
@@ -143,7 +143,7 @@ void
 elsa_gui_shutdown() {
    fprintf(stderr, "Gui shutdown");
    fprintf(stderr, ".\n");
-//#ifdef USE_PAM
+//#ifdef HAVE_PAM
 //   elsa_pam_shutdown();
 //#endif
 //   elm_exit();

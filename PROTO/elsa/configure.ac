@@ -46,6 +46,21 @@ AC_DEFINE_UNQUOTED(USE_PAM, "${use_pam}", [Use pam authentification])
 
 ### Additional options to configure
 
+# Pam
+AC_ARG_ENABLE([pam],
+   [AC_HELP_STRING([--disable-pam], [disable pam support. @<:@default=enabled@:>@])],
+   [
+    if test "x${enableval}" = "xyes" ; then
+       enable_pam="yes"
+    else
+       enable_pam="no"
+    fi
+   ],
+   [enable_pam="yes"])
+
+AC_MSG_CHECKING([whether to support pam])
+AC_MSG_RESULT([${enable_pam}])
+
 # Set edje_cc path
 AC_ARG_WITH([edje-cc],
    [AC_HELP_STRING([ --with-edje-cc=PATH], [specify a specific path to edje_cc])],
@@ -69,17 +84,21 @@ PKG_PROG_PKG_CONFIG
 
 PKG_CHECK_MODULES([ELSA], [elementary >= 0.5.0.0])
 
-AC_CHECK_LIB([pam], [pam_start],
-   [dummy="yes"],
-   [AC_MSG_ERROR([libpam not found.])])
+if test "x${enable_pam}" = "xyes" ; then
+   AC_CHECK_LIB([pam], [pam_start],
+      [have_pam="yes"],
+      [have_pam="no"])
+fi
 
 
 ### Checks for header files
 
 # Pam
-AC_CHECK_HEADER([security/pam_appl.h],
-   [dummy="yes"],
-   [AC_MSG_ERROR("Cannot find security/pam_appl.h. Make sure your CPPFLAGS environment variable contains include lines for the location of this file")])
+if test "x${have_pam}" = "xyes" ; then
+   AC_CHECK_HEADER([security/pam_appl.h],
+      [AC_DEFINE([HAVE_PAM], [1], [Set to 1 if pam is installed.])],
+      [have_pam="no"])
+fi
 
 
 ### Checks for types
@@ -129,6 +148,8 @@ echo "$PACKAGE_NAME $PACKAGE_VERSION"
 echo "------------------------------------------------------------------------"
 echo
 echo "Configuration Options Summary:"
+echo
+echo "  pam..................: ${have_pam}"
 echo
 echo "  edje_cc..............: ${edje_cc}"
 echo

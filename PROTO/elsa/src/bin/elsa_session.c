@@ -80,7 +80,7 @@ elsa_session_init(struct passwd *pwd) {
 
 void
 elsa_session_run(struct passwd *pwd) {
-#ifdef USE_PAM
+#ifdef HAVE_PAM
    char buf[4096];
    pid_t pid;
    pid = fork();
