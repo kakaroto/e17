@@ -95,12 +95,6 @@ PKG_CHECK_MODULES(ELSA, [
    elementary >= 0.5.0.0
 ])
 
-if test X"$enable_shared" = Xyes; then
- DLLDFLAGS=-export-dynamic
- AC_SUBST(DLLDFLAGS)
-fi
-
-
 AC_OUTPUT([Makefile
            src/Makefile
            src/bin/Makefile

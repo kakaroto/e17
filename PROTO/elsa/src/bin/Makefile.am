@@ -18,7 +18,7 @@ elsa.c
 
 elsa_INCLUDES =
 
-elsa_LDFLAGS = @DLLDFLAGS@
+elsa_LDFLAGS =
 elsa_LDADD = @ELSA_LIBS@ -lpam
 
 MAINTAINERCLEANFILES = Makefile.in
