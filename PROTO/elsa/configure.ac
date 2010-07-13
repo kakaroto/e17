@@ -1,7 +1,3 @@
-# FIXME:
-#  * what about USE_PAM and pam not found ?
-#  * DISPLAY should not be set here but in source instead
-#  * what about LOCALEDIR ?
 
 AC_INIT([elsa], [0.0.1], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ([2.59])
@@ -34,10 +30,6 @@ AC_SUBST(LTLIBINTL)
 
 # Set the localedir var for gettext
 AC_DEFINE([LOCALEDIR], ["/usr/share/locale/"], ["locales"])
-
-# Set USE_PAM in config.h.
-usepam=""
-AC_DEFINE_UNQUOTED(USE_PAM, "${use_pam}", [Use pam authentification])
 
 
 ### Additional options to configure
