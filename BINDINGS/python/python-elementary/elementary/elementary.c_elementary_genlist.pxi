@@ -367,6 +367,19 @@ cdef class GenlistItem:
         def __get__(self):
             return self.object_get()
 
+    def data_get(self):
+        cdef void* data
+        data = elm_genlist_item_data_get(self.obj)
+        if data == NULL:
+            return None
+        else:
+            (item_class, item_data, ret, func) = <object>data
+            return item_data
+
+    property data:
+        def __get__(self):
+            return self.data_get()
+
     def delete(self):
         elm_genlist_item_del(self.obj)
 
@@ -447,7 +460,14 @@ cdef class GenlistItem:
         elm_genlist_item_middle_bring_in(self.obj)
 
 
-
+def _genlist_item_conv(long addr):
+    cdef Elm_Genlist_Item *it = <Elm_Genlist_Item *>addr
+    cdef void *data = elm_genlist_item_data_get(it)
+    if data == NULL:
+        return None
+    else:
+        prm = <object>data
+        return prm[2]
 
 cdef Elm_Genlist_Item *_elm_genlist_item_from_python(GenlistItem item):
     if item is None:
@@ -777,6 +797,27 @@ cdef class Genlist(Object):
         cdef Elm_Genlist_Item *it
         it = elm_genlist_at_xy_item_get(self.obj, x, y, NULL)
         return _elm_genlist_item_to_python(it)
+
+    def callback_clicked_add(self, func, *args, **kwargs):
+        self._callback_add_full("clicked", _genlist_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_clicked_del(self, func):
+        self._callback_del_full("clicked",  _genlist_item_conv, func)
+
+    def callback_selected_add(self, func, *args, **kwargs):
+        self._callback_add_full("selected", _genlist_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_selected_del(self, func):
+        self._callback_del_full("selected",  _genlist_item_conv, func)
+
+    def callback_longpressed_add(self, func, *args, **kwargs):
+        self._callback_add_full("longpressed", _genlist_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_longpressed_del(self, func):
+        self._callback_del_full("longpressed", _genlist_item_conv, func)
 
 
 _elm_widget_type_register("genlist", Genlist)

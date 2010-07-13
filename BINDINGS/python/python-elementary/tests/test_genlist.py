@@ -18,7 +18,7 @@ def gl_icon_get(obj, part, data):
 def gl_state_get(obj, part, item_data):
     return False
 
-def gl_sel(gli, gl):
+def gl_sel(gli, gl, *args, **kwargs):
     print "sel item %s on genlist %s" % (gli, gl)
 # -}}}-
 
@@ -39,15 +39,15 @@ def genlist_clicked(obj, it):
     bx.show()
 
     gl = elementary.Genlist(win)
-    def _gl_selected(item, gl, item_data):
+    def _gl_selected(gl, gli, *args, **kwargs):
         print "selected"
-    gl._callback_add("selected", _gl_selected, gl)
-    def _gl_clicked(item, gl, item_data):
+    gl.callback_selected_add(_gl_selected)
+    def _gl_clicked(gl, gli):
         print "clicked"
-    gl._callback_add("clicked", _gl_clicked, gl)
-    def _gl_longpressed(item, gl, item_data):
+    gl.callback_clicked_add(_gl_clicked)
+    def _gl_longpressed(gl, gli, *args, **kwargs):
         print "longpressed"
-    gl._callback_add("longpressed", _gl_longpressed, gl)
+    gl.callback_longpressed_add(_gl_longpressed)
     gl.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     gl.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bx.pack_end(gl)
