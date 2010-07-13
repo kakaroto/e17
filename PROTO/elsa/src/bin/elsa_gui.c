@@ -10,10 +10,8 @@ int elsa_session_run(void *data);
 
 static Evas_Object *_elsa_gui_theme_get(Evas_Object *win, const char *group);
 static void _elsa_gui_shutdown(void *data, Evas_Object *obj, void *event_info);
-static void _elsa_gui_test_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 
 static Elsa_Gui *_gui;
-static const char *_display = DISPLAY;
 
 static Evas_Object *
 _elsa_gui_theme_get (Evas_Object *win, const char *group) {
@@ -30,11 +28,6 @@ _elsa_gui_theme_get (Evas_Object *win, const char *group) {
 static void
 _elsa_gui_shutdown(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__) {
    elsa_gui_shutdown(NULL);
-}
-
-static void
-_elsa_gui_test_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *emission, const char *source) {
-   fprintf(stderr, "%s: signal %s - %s\n", PACKAGE, emission, source);
 }
 
 static void
@@ -85,9 +78,6 @@ _elsa_gui_login_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const cha
 
 static void
 _elsa_gui_callback_add() {
-/*   edje_object_signal_callback_add(elm_layout_edje_get(_gui->edj), "*", "*", 
-                                   _elsa_gui_test_cb, NULL);
-*/
    edje_object_signal_callback_add(elm_layout_edje_get(_gui->edj), "clicked", "login",
                                    _elsa_gui_login_cb, NULL);
 }
@@ -107,8 +97,7 @@ elsa_gui_init() {
 #ifdef XNEST_DEBUG
    char *tmp = getenv("DISPLAY");
    if (tmp && *tmp) {
-      _display = tmp;
-      fprintf(stderr, "Using display name %s", _display);
+      fprintf(stderr, PACKAGE": Using display name %s", tmp);
    }
 #endif
 

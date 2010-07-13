@@ -35,10 +35,6 @@ AC_SUBST(LTLIBINTL)
 # Set the localedir var for gettext
 AC_DEFINE([LOCALEDIR], ["/usr/share/locale/"], ["locales"])
 
-# Set DISPLAY in config.h.
-display=":0.0"
-AC_DEFINE_UNQUOTED(DISPLAY, "${display}", [Display to use])
-
 # Set USE_PAM in config.h.
 usepam=""
 AC_DEFINE_UNQUOTED(USE_PAM, "${use_pam}", [Use pam authentification])

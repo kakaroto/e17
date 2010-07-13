@@ -3,6 +3,7 @@
 
 #include "elsa.h"
 
+#define ELSA_DISPLAY ":0.0"
 
 static Ecore_Event_Handler *_del_handler = NULL;
 static Ecore_Event_Handler *_exit_handler = NULL;
@@ -54,18 +55,19 @@ _start_xserver(char *dname) {
       sleep(1);
    }
    ecore_exe_hup(x_exec);
-   putenv("DISPLAY=:0.0");
+   snprintf(buf, sizeof(buf), "DISPLAY=%s", dname);
+   putenv(buf);
 }
 
 static Eina_Bool
 _open_log() {
-   FILE *log;
-   log = fopen(elsa_config->logfile, "a");
-   if (!log) {
+   FILE *elog;
+   elog = fopen(elsa_config->logfile, "a");
+   if (!elog) {
       fprintf(stderr, PACKAGE": could not open logfile !!!\n");
       return EINA_FALSE;
    }
-   fclose(log);
+   fclose(elog);
    freopen(elsa_config->logfile, "a", stdout);
    setvbuf(stdout, NULL, _IOLBF, BUFSIZ);
    freopen(elsa_config->logfile, "a", stderr);
@@ -77,6 +79,7 @@ static Eina_Bool
 _close_log() {
    fclose(stderr);
    fclose(stdout);
+   return EINA_TRUE;
 }
 
 static void
@@ -100,7 +103,7 @@ elsa_main(int argc, char **argv) {
 int
 main (int argc, char ** argv) {
    char tmp;
-   char *dname = DISPLAY;
+   char *dname = ELSA_DISPLAY;
    pid_t pid;
 
    while((tmp = getopt(argc, argv, "vhp:n:d?")) != EOF) {
