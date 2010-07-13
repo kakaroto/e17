@@ -1,14 +1,28 @@
 rm -f config.cache
 
 AC_INIT(configure.ac)
+AC_PREREQ([2.63])
+AM_CONFIG_HEADER(config.h)
+AC_CONFIG_MACRO_DIR([m4])
 
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 
 AM_INIT_AUTOMAKE(elsa, 0.0.1)
-AC_PREREQ([2.63])
-AM_CONFIG_HEADER(config.h)
+
+m4_ifdef([AM_GNU_GETTEXT_VERSION], [
+AM_GNU_GETTEXT_VERSION([0.12.1])
+])
+
+m4_ifdef([AM_GNU_GETTEXT], [
+AM_GNU_GETTEXT([external])
+po_makefile_in=po/Makefile.in
+AM_CONDITIONAL([HAVE_PO], [true])
+],[
+AM_CONDITIONAL([HAVE_PO], [false])
+])
+AC_SUBST(LTLIBINTL)
 
 AC_ISC_POSIX
 AC_PROG_CC
@@ -17,10 +31,6 @@ AM_PROG_CC_STDC
 AC_HEADER_STDC
 AC_C_CONST
 AC_FUNC_MALLOC
-
-AM_GNU_GETTEXT([external])
-
-AC_CONFIG_MACRO_DIR([m4])
 
 
 dnl Set the localedir var for gettext
