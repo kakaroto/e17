@@ -1,0 +1,23 @@
+What elsa do:
+open session with pam with the username and her password
+
+
+TODO:
+complete TODOLIST
+configuration file parsing
+configuration file save
+review the login algorithm
+authentification with fingerprint and others
+multisession
+lockfile
+support option passed on commandline
+support the fullscreen window (elm_win_fullscreen_set doesn't work)
+fix warning
+
+
+build and install:
+autoreconf -v -i -f
+make
+make install
+
+

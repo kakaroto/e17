@@ -1,0 +1,228 @@
+externals {
+external: "elm";
+}
+
+images {
+   image: "elsa_background.jpg" COMP;
+}
+
+collections {
+   group { name: "elsa";
+      parts {
+         part { name: "base";
+	    type: IMAGE;
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       image.normal: "elsa_background.jpg";
+	    }
+	 }
+	 
+	 part { name: "label";
+	    type: TEXT;
+	    mouse_events: 0;
+	    effect: SOFT_SHADOW;
+	    scale: 1;
+	    description { state: "default" 0.0;
+	       fixed: 1 1;
+	       rel1.relative: 0.5 0.0;
+	       rel1.offset: 0 50;
+	       rel2.relative: 0.5 0.0;
+	       rel2.offset: 0 50;
+	       text {
+		  text: "Welcome";
+		  font: "Sans";
+		  size: 18;
+		  min: 1 1;
+		  align: 0.5 0.5;
+	       }
+	    }
+	 }
+	 part { name: "error";
+	    type: TEXT;
+	    mouse_events: 0;
+	    effect: SOFT_SHADOW;
+	    scale: 1;
+	    description { state: "default" 0.0;
+	       color: 255 255 255 0;
+	       fixed: 1 1;
+	       rel1.to: "password";
+	       rel1.relative: 0.5 0.0;
+	       rel1.offset: 0 50;
+	       rel2.to: "password";
+	       rel2.relative: 0.5 0.0;
+	       rel2.offset: 0 50;
+	       text {
+	          text: "Error on login ! Maybee wrong password ?";
+		  font: "Sans";
+		  size: 18;
+		  min: 1 1;
+		  align: 0.5 0.5;
+	       }
+	    }
+	    description { state: "visible" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part { name: "button";
+	    type: EXTERNAL;
+	    repeat_events: 0;
+	    source: "elm/hoversel";
+	    description {
+	       min: 170 20;
+	       max: 170 20;
+	       align: 0.1 1.0;
+	       params {
+	          string: "label" "se connecter";
+	       }
+	    }
+	 }
+	 part { name: "sessions";
+	    type: EXTERNAL;
+	    repeat_events: 0;
+	    source: "elm/hoversel";
+	    description {
+	       min: 170 40;
+	       max: 170 40;
+	       align: 0.1 1.0;
+	       params {
+	          string: "label" "sessions";
+	       }
+	    }
+	 }
+
+	 part { name: "clock";
+	    type: EXTERNAL;
+	    source: "elm/clock";
+	    mouse_events: 0;
+	    description {
+	       min: 80 20;
+	       max: 80 20;
+	       align: 0.0 0.0;
+	       params {
+	          bool: "show seconds" "1";
+	       }
+	    }
+	 }
+
+         part { name: "bg_entry_hostname";
+	    type: RECT;
+	    mouse_events: 0;
+	    description {
+	       rel1.to: "hostname";
+	       rel2.to: "hostname";
+	       color: 255 255 255 255;
+	       visible: 1;
+	    }
+	 }
+
+         part { name: "bg_entry_password";
+	    type: RECT;
+	    mouse_events: 0;
+	    description {
+	       rel1.to: "password";
+	       rel2.to: "password";
+	       color: 255 255 255 255;
+	       visible: 1;
+	    }
+	 }
+	 part { name: "lbl_hostname";
+	    type: TEXT;
+	    mouse_events: 0;
+	    effect: SOFT_SHADOW;
+	    description { state: "default" 0.0;
+	       align: 1.0 0.5;
+	       rel1.to_y : "hostname";
+	       rel2.to: "hostname";
+	       rel2.offset: -25 -1;
+	       text {
+	          font: "Sans";
+		  size: 18;
+		  text: "Hostname :";
+	       }
+	    }
+	 }
+
+	 part { name: "hostname";
+
+	    type: EXTERNAL;
+	    repeat_events: 0;
+	//    clip_to: "bg_entry";
+	    source: "elm/scrolled_entry";
+	    description {
+	       min: 160 20;
+	       max: 160 20;
+	       align: 0.5 0.3;
+	       params {
+	          bool: "single_line" "1";
+	          bool: "editable" "1";
+	       }
+	    }
+	 }
+
+	 part { name: "lbl_password";
+	    type: TEXT;
+	    effect: SOFT_SHADOW;
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       align: 1.0 0.5;
+	       rel1.to_y : "password";
+	       rel2.to: "password";
+	       rel2.offset: -17 -1;
+	       text {
+	          font: "Sans";
+		  size: 18;
+		  text: "Password :";
+	       }
+	    }
+	 }
+
+
+	 part { name: "password";
+	    type: EXTERNAL;
+	    repeat_events: 0;
+	//    clip_to: "bg_entry";
+	    source: "elm/scrolled_entry";
+	    description {
+	       min: 160 20;
+	       max: 160 20;
+	       align: 0.5 0.6;
+	       params {
+	          bool: "single_line" "1";
+	          bool: "editable" "1";
+	          bool: "password" "1";
+	       }
+	    }
+	 }
+
+	 part {name: "login";
+	    type: EXTERNAL;
+	    source: "elm/button";
+	    description {
+	       align: 0.5 0.5;
+	       min: 80 20;
+	       max: 80 20;
+	       rel1 {
+	          to: "hostname";
+		  relative: 1.0 0.0;
+		  offset: 20 0;
+	       }
+	       rel2.to_y: "password";
+	       params {
+	          string: "label" "Login";
+	       }
+            }
+	 }
+      }
+      programs {
+	 program { name: "login_error";
+	    signal: "elsa.auth.error";
+	    source: "";
+	    action: STATE_SET "visible" 0.0;
+	    transition: LINEAR 0.4;
+	    target: "error";
+	 }
+      }
+   }
+}
+
