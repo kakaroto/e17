@@ -81,7 +81,7 @@ collections
 	}
 	group 
 	{
-		name: "elm/gengrid/item/default/ephoto";
+		name: "elm/gengrid/item/ephoto/default";
 		data.item: "labels" "elm.text";
 		data.item: "icons" "elm.swallow.icon elm.swallow.end";
 		images 

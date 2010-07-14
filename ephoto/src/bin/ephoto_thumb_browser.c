@@ -11,7 +11,8 @@ static char *_ephoto_get_label(const void *data, Evas_Object *obj, const char *p
 static Evas_Object *_ephoto_get_icon(const void *data, Evas_Object *obj, const char *part);
 static Eina_Bool _ephoto_get_state(const void *data, Evas_Object *obj, const char *part);
 static void _ephoto_grid_del(const void *data, Evas_Object *obj);
-static void _ephoto_thumb_clicked(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _ephoto_thumb_clicked_job(void *data);
+static void _ephoto_thumb_clicked(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_view_large(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_change_directory(void *data, Evas_Object *obj, void *event_info);
 
@@ -56,7 +57,6 @@ ephoto_create_thumb_browser(const char *directory)
 	evas_object_size_hint_weight_set(toolbar, EVAS_HINT_EXPAND, 0.0);
 	evas_object_size_hint_align_set(toolbar, EVAS_HINT_FILL, 0.5);
 	elm_box_pack_end(em->box, toolbar);
-//	evas_object_show(toolbar);
 
 	o = elm_icon_add(em->win);
 	elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/change_directory.png", NULL);
@@ -82,22 +82,20 @@ ephoto_create_thumb_browser(const char *directory)
 	evas_object_size_hint_weight_set(em->thumb_browser, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	evas_object_size_hint_fill_set(em->thumb_browser, EVAS_HINT_FILL, EVAS_HINT_FILL);
 	elm_object_style_set(em->thumb_browser, "ephoto");
+	evas_object_smart_callback_add(em->thumb_browser, "clicked", _ephoto_thumb_clicked, NULL);
 	elm_box_pack_end(em->box, em->thumb_browser);
-//	evas_object_show(em->thumb_browser);
 
 	thbox = elm_box_add(em->win);
 	elm_box_horizontal_set(thbox, EINA_TRUE);
         evas_object_size_hint_weight_set(thbox, EVAS_HINT_EXPAND, EVAS_HINT_FILL);
         evas_object_size_hint_fill_set(thbox, EVAS_HINT_FILL, EVAS_HINT_FILL);
 	elm_box_pack_end(em->box, thbox);
-//        evas_object_show(thbox);
 
 	dir_label = elm_label_add(em->win);
 	elm_label_label_set(dir_label, buf);
 	evas_object_size_hint_weight_set(dir_label, EVAS_HINT_EXPAND, 0.0);
         evas_object_size_hint_align_set(dir_label, 0.01, 0.5);
 	elm_box_pack_end(thbox, dir_label);
-//	evas_object_show(dir_label);
 
 	thumb_slider = elm_slider_add(em->win);
 	elm_slider_label_set(thumb_slider, "Thumb Size:");
@@ -105,7 +103,6 @@ ephoto_create_thumb_browser(const char *directory)
 	elm_slider_min_max_set(thumb_slider, 0, 100);
 	elm_slider_value_set(thumb_slider, 50);
 	elm_box_pack_end(thbox, thumb_slider);
-//	evas_object_show(thumb_slider);
 	evas_object_smart_callback_add(thumb_slider, "changed", 
 					_ephoto_slider_changed, NULL);
 	cur_val = 50;
@@ -336,8 +333,6 @@ _ephoto_get_icon(const void *data, Evas_Object *obj, const char *part)
 		elm_layout_file_set(thumb, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
 				"/ephoto/thumb");
 		evas_object_size_hint_weight_set(thumb, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-		evas_object_event_callback_add(thumb, EVAS_CALLBACK_MOUSE_DOWN,
-						_ephoto_thumb_clicked, NULL);
 		evas_object_show(thumb);
 
 		o = elm_bg_add(em->win);
@@ -366,25 +361,30 @@ _ephoto_grid_del(const void *data, Evas_Object *obj)
 	return;
 }
 
+/*Thumb clicked job*/
+static void
+_ephoto_thumb_clicked_job(void *data)
+{
+	const char *file;
+
+	file = data;
+
+	ephoto_hide_thumb_browser();
+        ephoto_show_flow_browser(file);
+}
+
 /*Check to see if the thumbnail was double clicked*/
 static void 
-_ephoto_thumb_clicked(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_ephoto_thumb_clicked(void *data, Evas_Object *obj, void *event_info)
 {
 	const Eina_List *selected;
 	Ephoto_Thumb_Data *etd;
-	Evas_Event_Mouse_Down *emd;
 	Evas_Object *o;
 
-	emd = event_info;
-	if (emd->flags == EVAS_BUTTON_DOUBLE_CLICK || 
-		emd->flags == EVAS_BUTTON_TRIPLE_CLICK)
-	{
-		selected = elm_gengrid_selected_items_get(em->thumb_browser);
-		o = eina_list_data_get(selected);
-		etd = (Ephoto_Thumb_Data *)elm_gengrid_item_data_get((Elm_Gengrid_Item *)o);
-		ephoto_hide_thumb_browser();
-		ephoto_show_flow_browser(etd->file);
-	}
+	selected = elm_gengrid_selected_items_get(em->thumb_browser);
+	o = eina_list_data_get(selected);
+	etd = (Ephoto_Thumb_Data *)elm_gengrid_item_data_get((Elm_Gengrid_Item *)o);
+	ecore_job_add(_ephoto_thumb_clicked_job, etd->file);
 }
 
 /*File Selector is show*/
