@@ -14,3 +14,9 @@ Remove duplicate fonts, put all fonts in ttfonts/.
 --- 1.0.0 ---
 Rename font configuration files to match e16 changes. Remove obsolete localised ones.
 BrushedMetal-Tigert: Remove reference to non-existing synclaves.wav.
+
+--- 1.0.1 ---
+Autofoo cleanups, switch to non-deprecated macros.
+Remove use of font-*-italic (only used by Ganymede).
+Ganymede: Remove incorrect __FLAGS in transient border.
+ShinyMetal: Fix backgrounds.
