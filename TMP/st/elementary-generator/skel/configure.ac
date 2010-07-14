@@ -47,32 +47,32 @@ AC_ARG_WITH([edje-cc],
    ],[edje_cc=$(pkg-config --variable=prefix edje)/bin/edje_cc])
 AC_SUBST(edje_cc)
 
-enable_quicklaunch="auto"
+want_quicklaunch="auto"
 AC_ARG_ENABLE([quicklaunch],
    [AC_HELP_STRING([--disable-quicklaunch],
                    [disable build of quicklaunch (default=auto)])],
    [if test "x${enableval}" = "xno"; then
-       enable_quicklaunch="no"
+       want_quicklaunch="no"
     elif test "x${enableval}" = "xyes"; then
-       enable_quicklaunch="yes"
+       want_quicklaunch="yes"
     else
-       enable_quicklaunch="auto"
+       want_quicklaunch="auto"
     fi
    ],
-   [enable_quicklaunch="auto"])
+   [want_quicklaunch="auto"])
 
-if test "x${enable_quicklaunch}" = "xauto"; then
+if test "x${want_quicklaunch}" = "xauto"; then
    AC_MSG_CHECKING([checking for elementary_quicklaunch binary...])
    if test -x $(pkg-config --variable=prefix elementary)/bin/elementary_quicklaunch; then
       AC_MSG_RESULT([found, enable quicklaunch.])
-      enable_quicklaunch="yes"
+      want_quicklaunch="yes"
    else
       AC_MSG_RESULT([not found, disable quicklaunch.])
-      enable_quicklaunch="no"
+      want_quicklaunch="no"
    fi
 fi
 
-if test "x${enable_quicklaunch}" = "xyes"; then
+if test "x${want_quicklaunch}" = "xyes"; then
    AC_ARG_WITH([quicklauncher-libdir],
       [AC_HELP_STRING([--with-quicklauncher-libdir=PATH],
                       [specify a specific path to install quicklauncher binaries])],
@@ -83,7 +83,7 @@ if test "x${enable_quicklaunch}" = "xyes"; then
    AC_SUBST(quicklauncher_libdir)
 fi
 
-AM_CONDITIONAL(BUILD_QUICKLAUNCH, test "x${enable_quicklaunch}" = "xyes")
+AM_CONDITIONAL(BUILD_QUICKLAUNCH, test "x${want_quicklaunch}" = "xyes")
 
 AC_OUTPUT([
 Makefile
@@ -109,10 +109,10 @@ Flags:
 Installation:
    PREFIX..............: $prefix
 
-Quick Launcher: ${enable_quicklaunch}
+Quick Launcher: ${want_quicklaunch}
 EOF
 
-if test "x${enable_quicklaunch}" = "xyes"; then
+if test "x${want_quicklaunch}" = "xyes"; then
 cat << EOF_QL
    quicklauncher_libdir: $quicklauncher_libdir
 
