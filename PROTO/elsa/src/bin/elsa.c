@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <sys/types.h>
+#include <wait.h>
 
 #include "elsa.h"
 
@@ -13,14 +14,14 @@ static Eina_Bool _testing = EINA_FALSE;
 static void _elsa_help ();
 static Eina_Bool _event_del_cb(void *data, int type, void *event);
 static Eina_Bool _event_exit_cb(void *data, int type, void *event);
-static Eina_Bool _open_log(); 
+static Eina_Bool _open_log();
 static Eina_Bool _close_log();
 
 
 Ecore_Exe *x_exec;
 
 static Eina_Bool
-_event_del_cb(void *data, int type __UNUSED__, void *event __UNUSED__) {
+_event_del_cb(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__) {
    fprintf(stderr, PACKAGE": del cb received\n");
    elsa_session_shutdown();
    /* plz check here if X are still running */
@@ -89,13 +90,12 @@ _elsa_help() {
 }
 
 int
-elsa_main(int argc, char **argv) {
-   elm_init(argc, argv);
-   fprintf(stderr, "%s: Init\n", PACKAGE);
+elsa_main() {
+   fprintf(stderr, PACKAGE": Init\n");
    if (elsa_gui_init()) return 1;
-   fprintf(stderr, "%s: Run\n", PACKAGE);
+   fprintf(stderr, PACKAGE": Run\n");
    elm_run();
-   fprintf(stderr, "%s: Shutdown\n", PACKAGE);
+   fprintf(stderr, PACKAGE": Shutdown\n");
    return 0;
 }
 
@@ -139,7 +139,8 @@ main (int argc, char ** argv) {
 
 #endif
    _start_xserver(dname);
-   elsa_main(argc, argv);
+   elm_init(argc, argv);
+   elsa_main();
    {
       int status;
       pid_t wpid = -1;

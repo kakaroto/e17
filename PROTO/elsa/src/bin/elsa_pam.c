@@ -22,10 +22,7 @@
   *   pam_close_session(...);        Tear-down session using the "session" modules
   *   pam_end(...);
   *   */
-
-//static int  _elsa_pam_open_session();
-static void _elsa_pam_close_session();
-static int  _elsa_pam_authenticate();
+static int _elsa_pam_conv(int num_msg, const struct pam_message **msg, struct pam_response **resp, void *appdata_ptr);
 
 static struct pam_conv _pam_conversation;
 static pam_handle_t* _pam_handle;
@@ -35,7 +32,7 @@ static int last_result;
 
 static int
 _elsa_pam_conv(int num_msg, const struct pam_message **msg,
-     struct pam_response **resp, void *appdata_ptr) {
+     struct pam_response **resp, void *appdata_ptr __UNUSED__) {
      int i, result = PAM_SUCCESS;
      *resp = (struct pam_response *) calloc(num_msg, sizeof(struct pam_response));
      for (i = 0; i < num_msg; ++i){

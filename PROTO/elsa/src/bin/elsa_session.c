@@ -13,7 +13,7 @@
 #include "elsa.h"
 
 
-char *mcookie;
+char *_mcookie;
 char **env;
 char *_user;
 static pid_t _session_pid;
@@ -58,7 +58,7 @@ _elsa_session_userid_set(struct passwd *pwd) {
    return 0;
 }
 
-int
+Eina_Bool
 elsa_session_init(struct passwd *pwd) {
    char buf[4096];
    char **tmp;
@@ -67,15 +67,15 @@ elsa_session_init(struct passwd *pwd) {
    elsa_pam_end();
    for (tmp = env; *tmp; ++tmp)
       fprintf(stderr, "%s: env %s\n", PACKAGE, *tmp);
-   if(_elsa_session_userid_set(pwd)) return 1;
+   if(_elsa_session_userid_set(pwd)) return EINA_FALSE;
    if (pwd->pw_shell[0] == '\0') {
       setusershell();
       strcpy(pwd->pw_shell, getusershell());
       endusershell();
    }
    snprintf(buf, sizeof(buf), "%s/.Xauthority", pwd->pw_dir);
-   _elsa_session_cookie_add(mcookie, ":0", elsa_config->command.xauth.path, buf);
-   return 0;
+   _elsa_session_cookie_add(_mcookie, ":0", elsa_config->command.xauth.path, buf);
+   return EINA_TRUE;
 }
 
 void
@@ -129,7 +129,6 @@ elsa_session_pid_get() {
 
 void
 elsa_session_shutdown() {
-   struct passwd *pwd = NULL;
    char buf[4096];
    fprintf(stderr, PACKAGE": Session Shutdown\n");
    if (_user) {
@@ -151,7 +150,7 @@ elsa_session_auth(const char *file) {
    int i;
    char buf[4096];
 
-   mcookie = calloc(32, sizeof(char));
+   _mcookie = calloc(32, sizeof(char));
 
    const char *dig = "0123456789abcdef";
    srand(elsa_session_seed_get());
@@ -159,15 +158,15 @@ elsa_session_auth(const char *file) {
       word = rand() & 0xffff;
       lo = word & 0xff;
       hi = word >> 8;
-      mcookie[i] = dig[lo & 0x0f];
-      mcookie[i+1] = dig[lo >> 4];
-      mcookie[i+2] = dig[hi & 0x0f];
-      mcookie[i+3] = dig[hi >> 4];
+      _mcookie[i] = dig[lo & 0x0f];
+      _mcookie[i+1] = dig[lo >> 4];
+      _mcookie[i+2] = dig[hi & 0x0f];
+      _mcookie[i+3] = dig[hi >> 4];
    }
    remove(file);
    snprintf(buf, sizeof(buf), "XAUTHORITY=%s", file);
    putenv(buf);
-   fprintf(stderr, "Elsa: cookie %s \n", mcookie);
-   _elsa_session_cookie_add(mcookie, ":0", "/usr/bin/xauth", file);
+   fprintf(stderr, "Elsa: cookie %s \n", _mcookie);
+   _elsa_session_cookie_add(_mcookie, ":0", "/usr/bin/xauth", file);
 }
 

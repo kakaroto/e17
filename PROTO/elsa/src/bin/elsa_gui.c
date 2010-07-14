@@ -1,12 +1,11 @@
 #include "elsa.h"
+#include "Ecore_X.h"
 
 typedef struct Elsa_Gui_ {
    Evas_Object *win;
    Evas_Object *bg;
    Evas_Object *edj;
 } Elsa_Gui;
-
-int elsa_session_run(void *data);
 
 static Evas_Object *_elsa_gui_theme_get(Evas_Object *win, const char *group);
 static void _elsa_gui_shutdown(void *data, Evas_Object *obj, void *event_info);
@@ -85,8 +84,7 @@ _elsa_gui_callback_add() {
 
 int
 elsa_gui_init() {
-   fprintf(stderr, "Gui init");
-   fprintf(stderr, ".\n");
+   fprintf(stderr, PACKAGE": Gui init\n");
 
    _gui = calloc(1, sizeof(Elsa_Gui));
    if (!_gui) {
@@ -118,7 +116,6 @@ elsa_gui_init() {
 
    _elsa_gui_callback_add();
 
-
    evas_object_show(_gui->edj);
    evas_object_resize(_gui->win, 1024, 768);
    evas_object_show(_gui->win);
@@ -130,8 +127,7 @@ elsa_gui_init() {
 
 void
 elsa_gui_shutdown() {
-   fprintf(stderr, "Gui shutdown");
-   fprintf(stderr, ".\n");
+   fprintf(stderr, PACKAGE": Gui shutdown\n");
 //#ifdef HAVE_PAM
 //   elsa_pam_shutdown();
 //#endif

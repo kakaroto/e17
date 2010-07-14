@@ -9,9 +9,11 @@ configuration file save
 review the login algorithm
 authentification with fingerprint and others
 multisession
+autologin
 lockfile
 support option passed on commandline
 support the fullscreen window (elm_win_fullscreen_set doesn't work)
+improve X launch
 fix warning
 
 

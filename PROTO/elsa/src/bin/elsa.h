@@ -14,4 +14,6 @@
 #include "elsa_gui.h"
 #include "elsa_config.h"
 
+int elsa_main();
+
 #endif /* ELSA_H_ */

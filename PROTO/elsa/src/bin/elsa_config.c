@@ -29,15 +29,15 @@ _defaults_set(Elsa_Config *config) {
 
 
 static void
-_users_get(Elsa_Config *config) {
+_users_get(Elsa_Config *config __UNUSED__) {
    FILE *f;
-   char buf[4096];
+/*   char buf[4096];*/
 
    f = fopen("/etc/elsa.conf", "r");
    if (!f) return;
+      /*
    while (fgets (buf, sizeof(buf), f)) {
       if (!*buf || *buf == '#') continue;
-      /*
       if (buf == strstr(buf, "default_path")) {
          ELSA_CONFIG_UPDATE(config->session_path, buf);
          continue;
@@ -94,8 +94,8 @@ _users_get(Elsa_Config *config) {
          ELSA_CONFIG_UPDATE(config->logfile, buf);
          continue;
       }
-      */
    }
+      */
    fclose(f);
 }
 
@@ -134,13 +134,6 @@ _config_save(Elsa_Config *config) {
       fprintf(stderr, "Error: can't open %s \n", buf);
    eet_write(file, ELSA_SESSION_PATH, config->session_path,
              strlen(config->session_path) + 1, 1);
-/*
-//   eet_write(file, MPD_PORT_KEY, config->port, sizeof(config->port), 0);
-   eet_write(file, MPD_PASSWORD_KEY, config->password,
-             config->password?strlen(config->password) + 1:0, 1);
-   eet_write(file, MPD_COVERPATH_KEY, config->cover,
-             strlen(config->cover) + 1, 1);
-*/
    eet_close(file);
 }
 
