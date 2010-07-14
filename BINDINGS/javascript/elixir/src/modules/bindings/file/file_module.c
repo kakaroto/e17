@@ -56,13 +56,13 @@ elixir_fopen(JSContext *cx, uintN argc, jsval *vp)
    file = elixir_get_string_bytes(val[0].v.str, NULL);
 
    safe_file = elixir_file_canonicalize(file);
+   if (!safe_file) goto error_safe_file;
    fl = malloc(sizeof (mmaped_file_t) + strlen(safe_file) + 1);
-   if (!fl || !safe_file)
-     goto error;
+   if (!fl) goto error_fl;
 
    fd = open(safe_file, O_RDONLY);
    if (fd == -1)
-     goto failed;
+     goto failed_fd;
 
    if (fstat(fd, &stf) != 0)
      goto failed;
@@ -85,21 +85,17 @@ elixir_fopen(JSContext *cx, uintN argc, jsval *vp)
    elixir_return_ptr(cx, vp, fl, elixir_class_request("FILE", NULL));
    return JS_TRUE;
 
-  failed:
-   if (fd != -1)
-     close(fd);
-   if (fl)
-     free(fl);
-   if (safe_file)
-     free(safe_file);
+failed:
+   close(fd);
+failed_fd:
+   free(fl);
+   free(safe_file);
    elixir_return_ptr(cx, vp, NULL, elixir_class_request("FILE", NULL));
    return JS_TRUE;
 
-  error:
-   if (fl)
-     free(fl);
-   if (safe_file)
-     free(safe_file);
+error_fl:
+   free(safe_file);
+error_safe_file:
    return JS_FALSE;
 }
 

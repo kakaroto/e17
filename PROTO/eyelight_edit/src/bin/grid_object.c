@@ -649,10 +649,11 @@ _smart_del(Evas_Object * obj)
     sd = evas_object_smart_data_get(obj);
     if (!sd) return;
 
+    evas_object_smart_data_set(obj, NULL);
     EINA_LIST_FREE(sd->objs, item)
         if(item) free(item);
     eina_list_free(sd->objs);
-    if(sd)free(sd);
+    free(sd);
 }
 
     static void
