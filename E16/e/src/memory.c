@@ -89,7 +89,7 @@ Estrdupcat2(char *ss, const char *s1, const char *s2)
    if (!ss)
       return Estrdup(s2);
 
-   len = (ss) ? strlen(ss) : 0;
+   len = strlen(ss);
    l1 = (s1) ? strlen(s1) : 0;
    l2 = (s2) ? strlen(s2) : 0;
 

@@ -38,7 +38,7 @@ main(int argc, char **argv)
   ecore_main_loop_begin();
 
   elicit_config_save(el);
-  if (el) elicit_free(el);
+  elicit_free(el);
   elicit_libs_shutdown();
 
   return 0;

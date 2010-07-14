@@ -23,7 +23,6 @@ object_check(struct ensure *en ensure_unused, struct enobj *obj,
 	parent = enobj_parent_get(obj);
 	clip = enobj_clip_get(obj);
 	if (!parent || !clip) return 0;
-	if (!clip) return 0;
 
 	clipp = enobj_parent_get(clip);
 

@@ -676,8 +676,7 @@ __imlib_TrimLoaderList(char **list, int *num)
         if (list[i])
            free(list[i]);
      }
-   if (list)
-      free(list);
+   free(list);
    *num = size;
    return ret;
 }

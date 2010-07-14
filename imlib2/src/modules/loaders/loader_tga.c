@@ -156,8 +156,7 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
                   l = y - pl;
                   if (!progress(im, per, 0, (y - l), im->w, l))
                     {
-                       if (buf)
-                          free(buf);
+		       free(buf);
                        fclose(f);
                        return 2;
                     }
@@ -173,8 +172,7 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
    /* write the image data */
    fwrite(buf, 1, im->w * im->h * ((im->flags & F_HAS_ALPHA) ? 4 : 3), f);
 
-   if (buf)
-      free(buf);
+   free(buf);
    fclose(f);
    return 1;
 }

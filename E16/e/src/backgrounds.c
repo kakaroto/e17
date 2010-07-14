@@ -278,7 +278,7 @@ BackgroundDelete(Background * bg)
 #if 0
    Eprintf("%s: %s\n", __func__, bg->name);
 #endif
-   if (!bg || bg->ref_count > 0)
+   if (bg->ref_count > 0)
       return;
 
    /* And delete the actual image files */

@@ -279,8 +279,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
                               if (!progress(im, per, 0, pl, im->w, l))
                                 {
-                                   if (idata)
-                                      free(idata);
+				   free(idata);
                                    fclose(f);
                                    return 2;
                                 }
@@ -372,8 +371,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
                               if (!progress(im, per, 0, pl, im->w, l))
                                 {
-                                   if (idata)
-                                      free(idata);
+				   free(idata);
                                    fclose(f);
                                    return 2;
                                 }
@@ -465,8 +463,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
                               if (!progress(im, per, 0, pl, im->w, l))
                                 {
-                                   if (data)
-                                      free(data);
+				   free(data);
                                    fclose(f);
                                    return 2;
                                 }
@@ -533,8 +530,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
                               if (!progress(im, per, 0, pl, im->w, l))
                                 {
-                                   if (data)
-                                      free(data);
+				   free(data);
                                    fclose(f);
                                    return 2;
                                 }
@@ -591,8 +587,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
                               if (!progress(im, per, 0, pl, im->w, l))
                                 {
-                                   if (data)
-                                      free(data);
+				   free(data);
                                    fclose(f);
                                    return 2;
                                 }
@@ -660,8 +655,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
                               if (!progress(im, per, 0, pl, im->w, l))
                                 {
-                                   if (data)
-                                      free(data);
+				   free(data);
                                    fclose(f);
                                    return 2;
                                 }

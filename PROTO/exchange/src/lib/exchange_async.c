@@ -354,7 +354,7 @@ exchange_query(const char *group_title, const char *group_name,
                        NULL, state, &job);
    if (!job)
    {
-      if (state) free(state);
+      free(state);
       return NULL;
    }
 

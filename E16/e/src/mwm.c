@@ -170,8 +170,7 @@ MWM_GetHints(EWin * ewin, Atom atom_change)
       ewin->props.no_border = 1;
 
  done:
-   if (mwmhints)
-      XFree(mwmhints);
+   XFree(mwmhints);
 }
 
 void

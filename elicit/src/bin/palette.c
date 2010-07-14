@@ -143,7 +143,6 @@ palette_load(Palette *palette, const char *filename)
   if (!f) return -1;
 
   buf[0] = 0;
-  ;
   if (fgets(buf, sizeof(buf), f) && strncmp("GIMP Palette", buf, 12)) return -2;
 
   palette_clear(palette);
@@ -174,7 +173,7 @@ palette_load(Palette *palette, const char *filename)
   return 0;
 error:
 
-  if (f) fclose(f);
+  fclose(f);
   return -3;
 }
 
