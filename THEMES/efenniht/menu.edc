@@ -1,0 +1,670 @@
+collections {
+   group {
+      name: "e/widgets/menu/default/background";
+      images {
+         image: "menu_frame_title_bg.png" COMP;
+         image: "separator_vert.png" COMP;
+      }
+      parts {
+         part { name: "bg";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
+               visible: 0;
+            }
+         }
+         BG_GRADIENT("bg")
+         BG_BORDER("bg")
+         part {
+            name: "title_bg";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 255;
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -1 0;
+               }
+            }
+            description {
+               state: "active" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 4;
+               }
+               rel2 {
+                  to_y: "e.text.title";
+                  relative: 1.0 1.0;
+                  offset: -1 4;
+               }
+               image.normal: "menu_frame_title_bg.png";
+            }
+         }
+         part {
+            name: "e.text.title";
+            /* e sets the text of this to the title
+             * if there is any */
+   type: TEXT;
+   mouse_events: 0;
+   scale: 1;
+   description {
+      state: "default" 0.0;
+      fixed: 1 1;
+      visible: 0;
+      align: 0.5 0.0;
+      min: 0 12;
+      rel1 {
+         relative: 0.0 0.0;
+         offset: 0 8;
+      }
+      rel2 {
+         relative: 1.0 0.0;
+         offset: -1 8;
+      }
+      color_class: "menu_title";
+      text {
+         text_source: "e.text.title";
+         font: "DejaVu Sans:style=Bold,Sans:style=Bold";
+         size: 10;
+         align: 0.5 0.0;
+         min: 0 0;
+         text_class: "menu_title";
+      }
+   }
+   description {
+      state: "active" 0.0;
+      inherit: "default" 0.0;
+      visible: 1;
+      color_class: "menu_title_active";
+      text.min: 1 1;
+   }
+         }
+         part {
+            name: "title_separator";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               align: 0.5 0.5;
+               visible: 0;
+               min: 0 1;
+               max: 9999 1;
+               rel1 {
+                  to_y: "title_bg";
+                  relative: 0.0 1.0;
+                  offset: 0 -1;
+               }
+               rel2 {
+                  to_y: "title_bg";
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+               image.normal: "separator_vert.png";
+               fill.smooth: 1;
+            }
+            description {
+               state: "active" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part {
+            name: "e.swallow.content";
+            /* this swallow part determines
+             * where in the menu the vertical
+             * list of menu items is put */
+   type: SWALLOW;
+   description {
+      state: "default" 0.0;
+      rel1 {
+         to_y: "title_separator";
+         relative: 0.0 1.0;
+         offset: 1 3;
+      }
+      rel2 {
+         relative: 1.0 1.0;
+         offset: -2 -4;
+      }
+   }
+         }
+      }
+      programs {
+         program {
+            name: "on";
+            /* this program is run when e emits a signal
+             * to display a title. e will also set the
+             * title text */
+   signal: "e,action,show,title";
+   source: "e";
+   action: STATE_SET "active" 0.0;
+   target: "title_bg";
+   target: "title_separator";
+   target: "e.text.title";
+         }
+         program {
+            name: "off";
+            /* run when the title is removed */
+            signal: "e,action,hide,title";
+            source: "e";
+            action: STATE_SET "default" 0.0;
+            target: "title_bg";
+            target: "title_separator";
+            target: "e.text.title";
+         }
+      }
+   }
+   /* this is placed as a horizontal separator between menu items in the
+    * vertical menu item list. it has no functionality other than being
+    * a visual separator */
+   group {
+      name: "e/widgets/menu/default/separator";
+      images {
+         image: "separator_vert.png" COMP;
+      }
+      parts {
+         part {
+            name: "separator";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               align: 0.5 0.5;
+               min: 0 1;
+               max: 9999 1;
+               image.normal: "separator_vert.png";
+               fill.smooth: 1;
+            }
+         }
+      }
+   }
+   /* this is used for regular menu items. this is what swallows/holds the
+    * whole line of the menu item, icon, check/radio mark, label and submenu
+    * indicator, where applicable */
+   group {
+      name: "e/widgets/menu/default/item_bg";
+      /* this is idential to the regular menu item above, but used only for
+       * items that have a submenu. this is to allow for a possible different
+       * look for submenu holding items. here this is identical to to the
+       * normal menu item, thus we are making use of the alias directive that
+       * gives a group the ability to go by manu names */
+   alias: "e/widgets/menu/default/submenu_bg";
+   images {
+      image: "menu_selected_bg.png" COMP;
+   }
+   parts {
+      part {
+         name: "bg";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            image {
+               normal: "menu_selected_bg.png";
+               border: 0 0 4 4;
+            }
+            fill.smooth: 1;
+         }
+         description {
+            state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+      }
+      part {
+         name: "e.swallow.content";
+         /* all item content will go here */
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            align: 0.0 0.5;
+            rel1.offset: 9 4;
+            rel2.offset: -3 -5;
+         }
+      }
+   }
+   programs {
+      program { name: "sel";
+         signal: "e,state,selected";
+         source: "e";
+         action: STATE_SET "selected" 0.0;
+         in: 0.05 0.0;
+         transition: LINEAR 0.2;
+         target: "bg";
+      }
+      program { name: "unsel";
+         signal: "e,state,unselected";
+         source: "e";
+         action: ACTION_STOP;
+         target: "sel";
+         after: "unsel-2";
+      }
+      program { name: "unsel-2";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 0.2;
+         target: "bg";
+      }
+   }
+   }
+   /* this group holds a menu icon. here we just use it to add padding around
+    * the icon. And to gray-out when disabled */
+   group {
+      name: "e/widgets/menu/default/icon";
+      /*programs {
+      program {
+      name: "enable";
+      signal: "e,state,enable";
+      source: "e";
+      }
+         program {
+         name: "disable";
+         signal: "e,state,disable";
+         source: "e";
+         }
+         }*/
+   }
+   /* this is the actual text label for the menu item */
+   group {
+      name: "e/widgets/menu/default/label";
+      parts {
+         part {
+            name: "e.text.label";
+            /* e sets the text of this */
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               min: 130 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 7 2;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -8 -3;
+               }
+               color_class: "menu_item";
+               text {
+                  font: "DejaVu Sans,Sans";
+                  size: 10;
+                  min: 1 1;
+                  align: 0.0 0.5;
+                  text_class: "menu_item";
+               }
+            }
+            description {
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color_class: "menu_item_active";
+            }
+            description {
+               state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color_class: "menu_item_disabled";
+            }
+         }
+      }
+      programs {
+         program {
+            name: "sel";
+            /* when the menu item is actually selected */
+            signal: "e,state,selected";
+            source: "e";
+            action: STATE_SET "selected" 0.0;
+            transition: LINEAR 0.2;
+            target: "e.text.label";
+         }
+         program {
+            name: "unsel";
+            /* on de-select */
+            signal: "e,state,unselected";
+            source: "e";
+            action: STATE_SET "default" 0.0;
+            transition: LINEAR 0.3;
+            target: "e.text.label";
+         }
+         program {
+            name: "enable";
+            /* enable */
+            signal: "e,state,enable";
+            source: "e";
+            action: STATE_SET "default" 0.0;
+            transition: LINEAR 0.3;
+            target: "e.text.label";
+         }
+         program {
+            name: "disable";
+            /* disable */
+            signal: "e,state,disable";
+            source: "e";
+            action: STATE_SET "disabled" 0.0;
+                    //transition: LINEAR 0.3;
+            target: "e.text.label";
+         }
+      }
+   }
+   /* this is a small arrow on the right of the menu item to indicate that it
+    * has a submenu after it */
+   group {
+      name: "e/widgets/menu/default/submenu";
+      images {
+         image: "icon_arrow_right_solid.png" COMP;
+      }
+      parts {
+         part {
+            name: "arrow";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 10 10;
+               max: 10 10;
+               color: 128 128 128 255;
+               align: 1.0 0.5;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -8 -1;
+               }
+               image.normal: "icon_arrow_right_solid.png";
+            }
+            description {
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+            }
+         }
+      }
+      programs {
+         program {
+            name: "sel";
+            signal: "e,state,selected";
+            source: "e";
+            action: STATE_SET "selected" 0.0;
+            target: "arrow";
+         }
+         program {
+            name: "unsel";
+            signal: "e,state,unselected";
+            source: "e";
+            action: STATE_SET "default" 0.0;
+            target: "arrow";
+         }
+      }
+   }
+   /* this is placed left of the icon in a menu item (if any icon) or left
+    * of the label if no icon is present. this is a checkbox to indicate if
+    * the menu item is enabled or disabled */
+   group {
+      name: "e/widgets/menu/default/check";
+      images {
+         image: "check_enabled.png" COMP;
+         image: "check_disabled.png" COMP;
+         image: "check_over.png" COMP;
+         image: "check_mark.png" COMP;
+      }
+      parts {
+         part {
+            name: "base";
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 12 12;
+               max: 12 12;
+               image.normal: "check_enabled.png";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "check_disabled.png";
+            }
+         }
+
+         part {
+            name: "over_clipper";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1 {
+                  to: "base";
+                  relative: 0.0 0.0;
+                  offset: -2 -2;
+               }
+               rel2 {
+                  to: "base";
+                  relative: 1.0 1.0;
+                  offset: 1 1;
+               }
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 0;
+               visible: 0;
+            }
+         }
+         part {
+            name: "over";
+            mouse_events: 0;
+            clip_to: "over_clipper";
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               min: 16 16;
+               max: 16 16;
+               rel1.to: "over_clipper";
+               rel2.to: "over_clipper";
+               image.normal: "check_over.png";
+               color: 255 255 255 0;
+               visible: 0;
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+               visible: 1;
+            }
+         }
+         part {
+            name: "mark";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 15 14;
+               max: 15 14;
+               rel1 {
+                  to: "base";
+                  relative: 0.0 0.0;
+                  offset: 0 -2;
+               }
+               rel2 {
+                  to: "base";
+                  relative: 1.0 1.0;
+                  offset: 2 -1;
+               }
+               image.normal: "check_mark.png";
+               color: 255 255 255 0;
+               visible: 0;
+            }
+            description { state: "on" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+               visible: 1;
+            }
+         }
+      }
+      programs {
+         program { name: "selected";
+            signal: "e,state,selected";
+            source: "e";
+            action: STATE_SET "selected" 0.0;
+            transition: LINEAR 0.2;
+            in: 0.05 0.0;
+            target: "over";
+         }
+         program { name: "unselected";
+            signal: "e,state,unselected";
+            source: "e";
+            action: ACTION_STOP;
+            target: "selected";
+            after: "unselected2";
+         }
+         program { name: "unselected2";
+            action: STATE_SET "default" 0.0;
+            transition: LINEAR 0.2;
+            target: "over";
+         }
+         program { name: "on";
+            signal: "e,state,on";
+            source: "e";
+            action: STATE_SET "on" 0.0;
+            transition: LINEAR 0.15;
+            target: "mark";
+         }
+         program { name: "off";
+            signal: "e,state,off";
+            source: "e";
+            action: STATE_SET "default" 0.0;
+            transition: LINEAR 0.2;
+            target: "mark";
+         }
+      }
+   }
+   /* for a radio menu item - same as check, but only one of a group of radio
+    * menu item can be selected at any one time */
+   group {
+      name: "e/widgets/menu/default/radio";
+      images {
+         image: "radio_enabled.png" COMP;
+         image: "radio_disabled.png" COMP;
+         image: "radio_over.png" COMP;
+         image: "radio_mark.png" COMP;
+      }
+      parts {
+         part {
+            name: "base";
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               min: 12 12;
+               max: 12 12;
+               image.normal: "radio_enabled.png";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "radio_disabled.png";
+            }
+         }
+
+         part {
+            name: "over_clipper";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1 {
+                  to: "base";
+                  relative: 0.0 0.0;
+                  offset: -1 -1;
+               }
+               rel2 {
+                  to: "base";
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+               }
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 0;
+               visible: 0;
+            }
+         }
+         part {
+            name: "over";
+            mouse_events: 0;
+            clip_to: "over_clipper";
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               min: 14 14;
+               max: 14 14;
+               rel1.to: "over_clipper";
+               rel2.to: "over_clipper";
+               image.normal: "radio_over.png";
+               color: 255 255 255 0;
+               visible: 0;
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+               visible: 1;
+            }
+         }
+         part {
+            name: "mark";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 16 14;
+               max: 16 14;
+               align: 0.5 0.5;
+               rel1 {
+                  to: "base";
+                  relative: 0.0 0.0;
+                  offset: -1 -1;
+               }
+               rel2 {
+                  to: "base";
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+               }
+               image.normal: "radio_mark.png";
+               color: 255 255 255 0;
+               visible: 0;
+            }
+            description { state: "on" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+               visible: 1;
+            }
+         }
+      }
+      programs {
+         program { name: "selected";
+            signal: "e,state,selected";
+            source: "e";
+            action: STATE_SET "selected" 0.0;
+            transition: LINEAR 0.2;
+            in: 0.05 0.0;
+            target: "over";
+         }
+         program { name: "unselected";
+            signal: "e,state,unselected";
+            source: "e";
+            action: ACTION_STOP;
+            target: "selected";
+            after: "unselected2";
+         }
+         program { name: "unselected2";
+            action: STATE_SET "default" 0.0;
+            transition: LINEAR 0.2;
+            target: "over";
+         }
+         program { name: "on";
+            signal: "e,state,on";
+            source: "e";
+            action: STATE_SET "on" 0.0;
+            transition: LINEAR 0.15;
+            target: "mark";
+         }
+         program { name: "off";
+            signal: "e,state,off";
+            source: "e";
+            action: STATE_SET "default" 0.0;
+            transition: LINEAR 0.2;
+            target: "mark";
+         }
+      }
+   }
+}

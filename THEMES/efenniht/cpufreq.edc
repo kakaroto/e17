@@ -1,0 +1,247 @@
+collections {
+   /////////////////////////////////////////////////////////////////////////////
+   /*** MOD: CPUFREQ ***/
+
+   group {
+      name: "e/modules/cpufreq/main";
+      images {
+         image: "cpufreq.png" COMP;
+      }
+      min: 16 16;
+      max: 128 128;
+      script {
+         public available_frequencies;
+         public available_governors;
+         public message(Msg_Type:type, id, ...) {
+            if ((type == MSG_INT_SET) && (id == 1)) {
+               while (count(available_frequencies) > 0) {
+                  remove(available_frequencies, 0);
+               }
+               for (new i = 2; i < numargs(); i++) {
+                  append_int(available_frequencies, getarg(i));
+               }
+            }
+            else if ((type == MSG_STRING_SET) && (id == 2)) {
+               new text[100];
+               while (count(available_governors) > 0) {
+                  remove(available_governors, 0);
+               }
+               for (new i = 2; i < numargs(); i++) {
+                  snprintf(text, 100, "%s", getarg(i));
+                  append_str(available_governors, text);
+               }
+            }
+            else if ((type == MSG_INT_SET) && (id == 3)) {
+               new f = getarg(2);
+               //new use_buttons = getarg(3);
+               new Float:freq, Float:min_freq, Float:max_freq;
+               new text[100];
+               freq = f;
+               min_freq = fetch_int(available_frequencies, 0);
+               max_freq = fetch_int(available_frequencies,
+               count(available_frequencies) - 1);
+               freq = (freq - min_freq) / (max_freq - min_freq);
+               set_drag(PART:"cpu_top", 0.0, freq);
+               if (f < 1000000) {
+                  snprintf(text, 100, "%i", f / 1000);
+               }
+               else {
+                  snprintf(text, 100, "%i.%i", f / 1000000,
+                  (f % 1000000) / 100000);
+               }
+               set_text(PART:"e.text.reading", text);
+            }
+            else if((type == MSG_STRING) && (id == 4)) {
+               new text[100];
+               snprintf(text, 100, "%s", getarg(2));
+               set_text(PART:"e.text.governor", text);
+            }
+         }
+      }
+      parts {
+         part { name: "clipper";
+            mouse_events: 0;
+            type: RECT;
+            description { state: "default" 0.0;
+               color_class: "shelf_secondary_icon";
+            }
+         }
+         part { name: "base";
+            clip_to: "clipper";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               aspect: 0.5 0.5;
+               aspect_preference: BOTH;
+               align: 0.5 0.5;
+               min: 20 20;
+               max: 20 20;
+               color: 0 0 0 0;
+            }
+         }
+         part { name: "cpu";
+            clip_to: "cpu_clip";
+            type: RECT;
+            description { state: "default" 0.0;
+               rel1.to: "base";
+               rel1.offset: 5 5;
+               rel2.to: "base";
+               rel2.offset: -6 -6;
+               color: 190 190 190 255;
+            }
+         }
+         part { name: "overlay";
+            clip_to: "clipper";
+            description { state: "default" 0.0;
+               rel1.to: "base";
+               rel2.to: "base";
+               image.normal: "cpufreq.png";
+            }
+         }
+         part { name: "e.text.reading";
+            type: TEXT;
+            scale: 1;
+            mouse_events: 0;
+            effect: OUTLINE_SOFT_SHADOW;
+            description { state: "default" 0.0;
+               align: 0.5 0.0;
+               color: 255 255 255 0;
+               color2: 0 0 0 0;
+               color3: 0 0 0 0;
+               color_class: "module_label";
+               text {
+                  font: "Sans:style=Bold";
+                  size: 8;
+                  min: 1 1;
+                  align: 0.5 0.0;
+                  text: "??? Ghz";
+                  text_class: "module_small";
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+               color2: 0 0 0 128;
+               color3: 0 0 0 32;
+            }
+            program { name: "hover";
+               signal: "mouse,in";
+               source: "over";
+               action: STATE_SET "visible" 0.0;
+               transition: LINEAR 0.2;
+               in: 0.5 0.0;
+               target: "e.text.reading";
+               target: "e.text.governor";
+            }
+            program { name: "unhover";
+               signal: "mouse,out";
+               source: "over";
+               action: ACTION_STOP;
+               target: "hover";
+               after: "unhover2";
+            }
+            program { name: "unhover2";
+               action: STATE_SET "default" 0.0;
+               transition: LINEAR 0.5;
+               target: "e.text.reading";
+               target: "e.text.governor";
+            }
+         }
+         part { name: "e.text.governor";
+            type: TEXT;
+            scale: 1;
+            mouse_events: 0;
+            effect: OUTLINE_SOFT_SHADOW;
+            description { state: "default" 0.0;
+               align: 0.5 1.0;
+               color: 255 255 255 0;
+               color2: 0 0 0 0;
+               color3: 0 0 0 0;
+               color_class: "module_label";
+               text {
+                  font: "Sans:style=Bold";
+                  size: 8;
+                  min: 1 1;
+                  align: 0.5 1.0;
+                  text_class: "module_small";
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+               color2: 0 0 0 128;
+               color3: 0 0 0 32;
+            }
+         }
+         part { name: "cpu_clip";
+            clip_to: "clipper";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1.to_x: "cpu";
+               rel1.to_y: "cpu_top";
+               rel2.to: "cpu";
+            }
+            description { state: "unknown" 0.0;
+               inherit: "default" 0.0;
+               rel1.to_y: "cpu";
+               rel1.relative: 0.0 1.0;
+            }
+         }
+         part { name: "cpu_top";
+            type: RECT;
+            dragable {
+               x: 0 0 0;
+               y: -1 1 0;
+               confine: "cpu";
+            }
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               visible: 0;
+               rel1.to: "cpu";
+               rel2.to: "cpu";
+            }
+         }
+         part { name: "over";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         }
+      }
+      programs {
+         //program { name: "next_governor";
+         //	signal: "mouse,down,1";
+         //	source: "cpu";
+         //	action: SIGNAL_EMIT "e,action,governor,next" "";
+         //}
+         //program { name: "increase_frequency";
+         //	signal: "mouse,down,1";
+         //	source: "increase";
+         //	action: SIGNAL_EMIT "e,action,frequency,increase" "";
+         //}
+         //program { name: "decrease_frequency";
+         //	signal: "mouse,down,1";
+         //	source: "decrease";
+         //	action: SIGNAL_EMIT "e,action,frequency,decrease" "";
+         //}
+         //program {
+         //	name: "enabled";
+         //	signal: "e,state,enabled";
+         //	source: "e";
+         //	action: STATE_SET "default" 0.0;
+         //	target: "fade_clip";
+         //}
+         //program {
+         //	name: "disabled";
+         //	signal: "e,state,disabled";
+         //	source: "e";
+         //	action: STATE_SET "faded" 0.0;
+         //	target: "fade_clip";
+         //}
+      }
+   }
+}

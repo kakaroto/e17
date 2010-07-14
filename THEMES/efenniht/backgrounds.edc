@@ -1,0 +1,255 @@
+images {
+   image: "bg_gradient_bottom.png" COMP;
+   image: "bg_gradient_top.png" COMP;
+}
+
+#define BG_GRADIENT(RELATIVE)						                                 \
+part { name: "_bg_gradient_clipper";                                          \
+   mouse_events: 0;                                                           \
+   type: RECT;                                                                \
+   description { state: "default" 0.0;                                        \
+      color: 255 255 255 255;                                                 \
+      rel1.to: RELATIVE;                                                      \
+      rel2.to: RELATIVE;                                                      \
+   }                                                                          \
+}                                                                             \
+part { name: "_bg_gradient_bg";                                               \
+   mouse_events: 0;                                                           \
+   type: RECT;                                                                \
+   description { state: "default" 0.0;                                        \
+      color: 0 0 0 255;                                                       \
+      rel1.to: RELATIVE;                                                      \
+      rel2.to: RELATIVE;                                                      \
+   }                                                                          \
+}                                                                             \
+part { name: "_bg_gradient_top";                                              \
+   clip_to: "_bg_gradient_clipper";                                           \
+   mouse_events: 0;                                                           \
+   description { state: "default" 0.0;                                        \
+      image.normal: "bg_gradient_top.png";                                    \
+      min: 0 184;                                                             \
+      max: 9999 184;                                                          \
+      rel1 {                                                                  \
+         to: "_bg_gradient_bottom";                                           \
+         relative: 0.0 0.0;                                                   \
+         offset: 0 -184;                                                      \
+      }                                                                       \
+      rel2 {                                                                  \
+         to: "_bg_gradient_bottom";                                           \
+         relative: 1.0 0.0;                                                   \
+         offset: -1 -1;                                                       \
+      }                                                                       \
+   }                                                                          \
+   description { state: "fixed" 0.0;                                          \
+      inherit: "default" 0.0;                                                 \
+      rel1 {                                                                  \
+         to: "_bg_gradient_clipper";                                          \
+         relative: 0.0 0.0;                                                   \
+         offset: 0 0;                                                         \
+      }                                                                       \
+      rel2 {                                                                  \
+         to: "_bg_gradient_clipper";                                          \
+         relative: 1.0 0.0;                                                   \
+         offset: -1 184;                                                      \
+      }                                                                       \
+   }                                                                          \
+}                                                                             \
+part { name: "_bg_gradient_bottom";                                           \
+   clip_to: "_bg_gradient_clipper";                                           \
+   mouse_events: 0;                                                           \
+   description { state: "default" 0.0;                                        \
+      min: 0 184;                                                             \
+      max: 9999 184;                                                          \
+      rel1 {                                                                  \
+         to: "_bg_gradient_clipper";                                          \
+         relative: 0.0 1.0;                                                   \
+         offset: 0 -185;                                                      \
+      }                                                                       \
+      rel2 {                                                                  \
+         to: "_bg_gradient_clipper";                                          \
+         relative: 1.0 1.0;                                                   \
+         offset: -1 -1;                                                       \
+      }                                                                       \
+      image.normal: "bg_gradient_bottom.png";                                 \
+   }                                                                          \
+}                                                                             \
+programs {                                                                    \
+   program { name: "_bg_gradient_resize";                                     \
+      signal: "resize";                                                       \
+      script {                                                                \
+         new x, y, w, h;                                                      \
+         get_geometry(PART:"_bg_gradient_clipper", x, y, w, h);		         \
+         if ( h >= 368 )							                                 \
+         set_state(PART:"_bg_gradient_top", "fixed", 0.0);	                  \
+         else								                                          \
+         set_state(PART:"_bg_gradient_top", "default", 0.0);                  \
+      }                                                                       \
+   }                                                                          \
+   program { name: "_bg_gradient_show";                                       \
+      signal: "show";                                                         \
+      after: "_bg_gradient_resize";                                           \
+   }                                                                          \
+}                                                                             \
+
+
+
+images {
+   image: "bg_box.png" COMP;
+}
+
+#define BG_BOX(RELATIVE, MIDDLE)                                              \
+part { name: "_bg_box_image";                                                 \
+   mouse_events: 0;                                                           \
+   description { state: "default" 0.0;                                        \
+      rel1.to: RELATIVE;                                                      \
+      rel2.to: RELATIVE;                                                      \
+      image {                                                                 \
+         normal: "bg_box.png";                                                \
+         border: 1 1 1 2;                                                     \
+         middle: MIDDLE;                                                      \
+      }                                                                       \
+   }                                                                          \
+}
+
+images {
+   image: "bg_border_hlines.png" COMP;
+   image: "bg_border_vline.png" COMP;
+}
+
+#define BG_BORDER_BOTTOM(RELATIVE)                                            \
+part { name: "_bg_border_bottom";                                             \
+   mouse_events: 0;                                                           \
+   description { state: "default" 0.0;                                        \
+      min: 1 4;                                                               \
+      max: 9999 4;                                                            \
+      rel1 {                                                                  \
+         to: RELATIVE;                                                        \
+         relative: 0.0 1.0;                                                   \
+         offset: 0 -4;                                                        \
+      }                                                                       \
+      rel2.to: RELATIVE;                                                      \
+      image.normal: "bg_border_hlines.png";                                   \
+      fill.smooth: 0;                                                         \
+   }                                                                          \
+}
+
+#define BG_BORDER(RELATIVE)                                                   \
+part { name: "_bg_border_top";                                                \
+   mouse_events: 0;                                                           \
+   description { state: "default" 0.0;                                        \
+      min: 1 4;                                                               \
+      max: 9999 4;                                                            \
+      rel1.to: RELATIVE;                                                      \
+      rel2 {                                                                  \
+         to: RELATIVE;                                                        \
+         relative: 1.0 0.0;                                                   \
+         offset: -1 3;                                                        \
+      }                                                                       \
+      image.normal: "bg_border_hlines.png";                                   \
+      fill.smooth: 0;                                                         \
+   }                                                                          \
+}                                                                             \
+BG_BORDER_BOTTOM(RELATIVE)                                                    \
+part { name: "_bg_border_left";                                               \
+   mouse_events: 0;                                                           \
+   description {                                                              \
+      state: "default" 0.0;                                                   \
+      rel1 {                                                                  \
+         relative: 0.0 0.0;                                                   \
+         offset: 0 0;                                                         \
+      }                                                                       \
+      rel2 {                                                                  \
+         relative: 0.0 1.0;                                                   \
+         offset: 0 -1;                                                        \
+      }                                                                       \
+      image.normal: "bg_border_vline.png";                                    \
+      fill.smooth: 1;                                                         \
+   }                                                                          \
+}                                                                             \
+part { name: "_bg_border_right";                                              \
+   mouse_events: 0;                                                           \
+   description {                                                              \
+      state: "default" 0.0;                                                   \
+      rel1 {                                                                  \
+         relative: 1.0 0.0;                                                   \
+         offset: -1 0;                                                        \
+      }                                                                       \
+      rel2 {                                                                  \
+         relative: 1.0 1.0;                                                   \
+         offset: -1 -1;                                                       \
+      }                                                                       \
+      image.normal: "bg_border_vline.png";                                    \
+      fill.smooth: 1;                                                         \
+   }                                                                          \
+}
+
+images {
+   image: "wallpaper_bg.png" COMP;
+   image: "wallpaper_gradient.png" COMP;
+}
+
+#define BG_MAIN                                                               \
+part { name: "_bg_main_image";                                                \
+   mouse_events: 0;                                                           \
+   description { state: "default" 0.0;                                        \
+      image.normal: "wallpaper_bg.png";                                       \
+      fill {                                                                  \
+         size {                                                               \
+            relative: 0 0;                                                    \
+            offset: 75 20;                                                    \
+         }                                                                    \
+      }                                                                       \
+   }                                                                          \
+}                                                                             \
+part { name: "_bg_main_grad";                                                 \
+   mouse_events: 0;                                                           \
+   description { state: "default" 0.0;                                        \
+      image.normal: "wallpaper_gradient.png";                                 \
+   }                                                                          \
+}
+
+collections {
+   group { name: "e/desktop/background";
+      images {
+         image: "efenniht.png" COMP;
+      }
+      parts {
+         BG_MAIN
+         part { name: "logo";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               image.normal: "efenniht.png";
+               image.scale_hint: STATIC;
+               max: 298 298;
+               fill.smooth: 1;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               align: 0.0 0.0;
+               rel1.offset: 50 50;
+            }
+         }
+      }
+   }
+   group { name: "e/desktop/background/scrollframe";
+      parts {
+         BG_GRADIENT("clipper")
+         part { name: "clipper";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+            }
+         }
+         part { name: "e.swallow.content";
+            clip_to: "clipper";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               rel1.offset: 0 0;
+               rel2 {
+                  relative: 0.0  0.0;
+                  offset: -1   -1;
+               }
+            }
+         }
+      }
+   }
+}

@@ -1,0 +1,128 @@
+collections {
+   group { name: "e/modules/mixer/main";
+      min: 30 30;
+      max: 30 30;
+      images {
+         image: "audio_on.png" COMP;
+         image: "audio_mute.png" COMP;
+         image: "audio_none.png" COMP;
+         image: "audio_low.png" COMP;
+         image: "audio_medium.png" COMP;
+         image: "audio_high.png" COMP;
+      }
+      script {
+         public message(Msg_Type:type, id, ...) {
+            if ((type == MSG_INT_SET) && (id == 0)) {
+               new mute, left, right, total;
+               mute = getarg(2);
+               left = getarg(3);
+               right = getarg(4);
+               total = left + right;
+
+               if (mute)
+               run_program(PROGRAM:"mute");
+               else
+               run_program(PROGRAM:"on");
+
+               if (total <= 0)
+               run_program(PROGRAM:"none");
+               else if (total < 70)
+               run_program(PROGRAM:"low");
+               else if (total < 150)
+               run_program(PROGRAM:"medium");
+               else
+               run_program(PROGRAM:"high");
+            }
+         }
+      }
+      parts {
+         part { name: "bg";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               min: 24 20;
+               max: 24 20;
+               color: 0 0 0 0;
+            }
+         }
+         SHELF_OVER_ITEM("over", SHELF_OVER_OVER)
+         SHELF_HILIGHT_ITEM("over",SHELF_HILIGHT_OVER)
+         part { name: "speaker";
+            type: IMAGE;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               align: 0.0 0.5;
+               rel1.to: "bg";
+               rel2.to: "bg";
+               min: 10 20;
+               max: 10 20;
+               color_class: "shelf_secondary_icon";
+               image.normal: "audio_mute.png";
+            }
+            description { state: "on" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "audio_on.png";
+            }
+         }
+         part { name: "audio";
+            type: IMAGE;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               align: 1.0 0.5;
+               rel1.to: "bg";
+               rel2.to: "bg";
+               min: 12 18;
+               max: 12 18;
+               color_class: "shelf_secondary_icon";
+               image.normal: "audio_none.png";
+            }
+            description { state: "low" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "audio_low.png";
+            }
+            description { state: "medium" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "audio_medium.png";
+            }
+            description { state: "high" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "audio_high.png";
+            }
+         }
+         part { name: "over";
+            type: RECT;
+            description { state: "default" 0.0;
+               rel1.to: "bg";
+               rel2.to: "bg";
+               color: 255 255 255 0;
+            }
+         }
+      }
+      programs {
+         program { name: "mute";
+            action: STATE_SET "default" 0.0;
+            target: "speaker";
+         }
+         program { name: "on";
+            action: STATE_SET "on" 0.0;
+            target: "speaker";
+         }
+         program { name: "none";
+            action: STATE_SET "default" 0.0;
+            target: "audio";
+         }
+         program { name: "low";
+            action: STATE_SET "low" 0.0;
+            target: "audio";
+         }
+         program { name: "medium";
+            action: STATE_SET "medium" 0.0;
+            target: "audio";
+         }
+         program { name: "high";
+            action: STATE_SET "high" 0.0;
+            target: "audio";
+         }
+      }
+   }
+}

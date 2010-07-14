@@ -1,0 +1,193 @@
+
+/* color classes are used to control the colors of text and also apply
+ * tints to images. These can be controlled with the colors dialog. Below
+ * are the standard color_class names that the module looks for in a
+ * theme. Consider color classes as a style that can be applied to many
+ * different items without tinkering with the theme.
+ *
+ * color: Font color     (Defaults to black)
+ * color2: Outline color  (Defaults to transparent)
+ * color3: Shadow color   (defaults to transparent)
+ *
+ */
+
+color_classes {
+   color_class { name: "border_bg";
+      color: 0 0 0 255;
+   }
+   color_class { name: "border_title";
+      color: 200 200 200 255;
+   }
+   color_class { name: "border_title_active";
+      color: 255 255 255 255;
+   }
+   color_class { name: "menu_title";
+      color: 170 170 170 255;
+   }
+   color_class { name: "menu_title_active";
+      color: 190 190 190 255;
+   }
+   color_class { name: "menu_item";
+      color: 170 170 170 255;
+   }
+   color_class { name: "menu_item_active";
+      color: 220 220 220 255;
+   }
+   color_class { name: "menu_item_disabled";
+      color: 150 150 150 255;
+   }
+   color_class { name: "shelf_base";
+      color: 255 255 255 255;
+   }
+   color_class { name: "shelf_secondary_icon";
+      color: 170 170 170 255;
+   }
+   color_class { name: "pager_icon_selected";
+      color: 255 255 255 255;
+   }
+   color_class { name: "pager_icon_unselected";
+      color: 130 130 130 255;
+   }
+   color_class { name: "systray_overlay";
+      color: 0 0 0 30;
+   }
+   color_class { name: "scrollframe_base";
+      color: 255 255 0 255;
+   }
+   color_class { name: "battery_low";
+      color: 200 120 120 255;
+   }
+   color_class { name: "winlist_label";
+      color: 255 255 255 255;
+   }
+   color_class { name: "winlist_item";
+      color: 170 170 170 255;
+   }
+   color_class { name: "winlist_item_active";
+      color: 220 220 220 255;
+   }
+   color_class { name: "button_text";
+      color: 224 224 224 255;
+   }
+   color_class { name: "button_text_over";
+      color: 255 255 255 255;
+   }
+   color_class { name: "button_text_disabled";
+      color: 70 70 70 255;
+   }
+   color_class { name: "fileman_base";
+      color: 255 255 255 255;
+   }
+   color_class { name: "fileman_icon_label";
+      color: 180 180 180 255;
+   }
+   color_class { name: "fileman_icon_label_selected";
+      color: 255 255 255 255;
+   }
+   color_class { name: "ilist_item_base";
+      color: 0 0 0 255;
+   }
+   color_class { name: "ilist_item_odd_base";
+      color: 0 0 0 255;
+   }
+   color_class { name: "ilist_item_header_base";
+      color: 0 0 0 255;
+   }
+   color_class { name: "ilist_item_header_odd_base";
+      color: 0 0 0 255;
+   }
+   color_class { name: "ilist_item";
+      color: 180 180 180 255;
+   }
+   color_class { name: "ilist_item_odd";
+      color: 180 180 180 255;
+   }
+   color_class { name: "ilist_item_selected";
+      color: 255 255 255 255;
+   }
+   color_class { name: "ilist_item_header";
+      color: 25 25 25 255;
+   }
+   color_class { name: "ilist_item_header_odd";
+      color: 25 25 25 255;
+   }
+   color_class { name: "dialog_base";
+      color: 255 255 255 255;
+   }
+   color_class { name: "move_text";
+      color: 0 0 0 255;
+   }
+   color_class { name: "resize_text";
+      color: 0 0 0 255;
+   }
+   color_class { name: "check_text";
+      color: 128 128 128 255;
+   }
+   color_class { name: "check_text_disabled";
+      color: 70 70 70 255;
+   }
+   color_class { name: "check_mark";
+      color: 255 255 255 255;
+   }
+   color_class { name: "check_mark_disabled";
+      color: 70 70 70 255;
+   }
+   color_class { name: "radio_text";
+      color: 128 128 128 255;
+   }
+   color_class { name: "radio_text_disabled";
+      color: 70 70 70 255;
+   }
+   color_class { name: "radio_mark";
+      color: 255 255 255 255;
+   }
+   color_class { name: "radio_mark_disabled";
+      color: 70 70 70 255;
+   }
+   color_class { name: "entry_text";
+      color: 0 0 0 255;
+   }
+   color_class { name: "entry_text_disabled";
+      color: 80 80 80 255;
+   }
+   color_class { name: "slider_enable";
+      color: 255 255 255 255;
+   }
+   color_class { name: "slider_disabled";
+      color: 150 150 150 255;
+   }
+   color_class { name: "slider_text";
+      color: 0 0 0 255;
+   }
+   color_class { name: "frame_base";
+      color: 255 255 255 255;
+   }
+   color_class { name: "label_text";
+      color: 128 128 128 255;
+   }
+   color_class { name: "label_text_disabled";
+      color: 70 70 70 128;
+   }
+   color_class { name: "comp_focus-out_color";
+      color: 180 180 180 255;
+   }
+   color_class { name: "clock_time";
+      color: 200 200 200 255;
+   }
+   color_class { name: "clock_date";
+      color: 100 100 100 255;
+   }
+   color_class { name: "battery_popup_text";
+      color: 180 180 180 255;
+   }
+   color_class { name: "toolbar_text";
+      color: 180 180 180 255;
+      color2: 0 200 0 100;
+      color3: 200 0 0 100;
+   }
+   color_class { name: "toolbar_text_selected";
+      color: 224 224 224 255;
+      color2: 0 200 0 255;
+      color3: 200 0 0 255;
+   }
+}

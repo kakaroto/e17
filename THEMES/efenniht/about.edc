@@ -1,0 +1,61 @@
+collections {
+   /////////////////////////////////////////////////////////////////////////////
+   /*** THEME ABOUT ***/
+
+   group { name: "e/theme/about";
+      images {
+         image: "efenniht.png" COMP;
+      }
+      styles {
+         style {
+            name: "theme_about_style";
+            base: "font=Sans:style=Bold font_size=12 align=left color=#ccccccff style=soft_shadow shadow_color=#0000001f wrap=word";
+            tag: "br" "\n";
+         }
+      }
+      //data.item: "borderless" "1";
+      //data.item: "shaped" "1";
+      min: 500 150;
+      max: 500 150;
+      parts {
+         BG_MAIN
+         part { name: "about";
+            type: TEXTBLOCK;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               align: 0.0 0.5;
+               rel1 {
+                  to_x: "logo";
+                  relative: 1.0 0.5;
+                  offset: 10 0;
+               }
+               rel2 {
+                  relative: 1.0 0.5;
+                  offset: -4 0;
+               }
+               text {
+                  style: "theme_about_style";
+                  min: 1 1;
+                  text:
+                  "Version: "THEME_VERSION"<br>"
+                  "License: "THEME_LICENSE"<br>"
+                  "Author: "THEME_AUTHOR"<br>"
+                  "The new theme for Enlightenment";
+               }
+            }
+         }
+         part { name: "logo";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               image.normal: "efenniht.png";
+               image.scale_hint: STATIC;
+               min: 298 298;
+               max: 298 298;
+               rel1.offset: -60 0;
+               align: 0.0 0.5;
+               aspect: 1.0 1.0;
+            }
+         }
+      }
+   }
+}

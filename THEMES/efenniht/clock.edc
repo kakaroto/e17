@@ -1,0 +1,85 @@
+collections {
+   group { name: "e/modules/clock/main";
+      script {
+         public clock_cb(val) {
+            new buffer[6];
+            new year, month, day, yearday, weekday, hour, minute;
+            new Float:second;
+
+            date(year, month, day, yearday, weekday, hour, minute, second);
+            timer(60.0 - (second), "clock_cb", 1);
+
+            buffer[0] = 0;
+
+            if (minute < 10 && hour < 10) { snprintf(buffer, 10, "0%i:0%i", hour, minute); }
+            else if (minute < 10)         { snprintf(buffer, 10, "%i:0%i", hour, minute); }
+            else if (hour < 10)           { snprintf(buffer, 10, "0%i:%i", hour, minute); }
+            else                          { snprintf(buffer, 10, "%i:%i", hour, minute); }
+            set_text(PART:"time", buffer);
+
+            buffer[0] = 0;
+
+            if (day < 10 && month < 10) { snprintf(buffer, 10, "0%i/0%i", day, month); }
+            else if (day < 10)         { snprintf(buffer, 10, "0%i/%i", day, month); }
+            else if (month < 10)           { snprintf(buffer, 10, "%i/0%i", day, month); }
+            else                          { snprintf(buffer, 10, "%i/%i", day, month); }
+            set_text(PART:"date", buffer);
+
+         }
+      }
+      parts {
+         part { name: "eventarea";
+            type: RECT;
+            mouse_events: 1;
+            description { state: "default" 0.0;
+               min: 45 1;
+               color: 0 0 0 0;
+               visible: 0;
+            }
+         }
+         part { name: "date";
+            type: TEXT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               align: 0.5 1.0;
+               rel1.to_y: "eventarea";
+               rel2.to_y: "eventarea";
+               color_class: "clock_date";
+               text {
+                  font: "DejaVu Sans,Sans";
+                  size: 10;
+                  min: 1 1;
+                  align: 0.5 1.0;
+                  text_class: "clock_date";
+               }
+            }
+         }
+         part { name: "time";
+            type: TEXT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               align: 0.5 0.0;
+               rel1.to_y: "eventarea";
+               rel2.to_y: "eventarea";
+               color_class: "clock_time";
+               text {
+                  font: "DejaVu Sans,Sans";
+                  size: 14;
+                  min: 1 1;
+                  align: 0.5 0.0;
+                  text_class: "clock_time";
+               }
+            }
+         }
+      }
+      programs {
+         program { name: "init";
+            signal: "load";
+            source: "";
+            script {
+               clock_cb(0);
+            }
+         }
+      }
+   }
+}

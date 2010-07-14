@@ -1,0 +1,426 @@
+
+images {
+   image: "shelf_hilight.png" COMP;
+   image: "shelf_over.png" COMP;
+}
+
+#define SHELF_HILIGHT_OVER 3
+#define SHELF_OVER_OVER 1
+
+#define SHELF_OVER_ITEM(AREA, OVER)                                              \
+part { name: "_shelf_over";                                             \
+   mouse_events: 0;                                                     \
+   description { state: "default" 0.0;                                  \
+      visible: 0;                                                       \
+      color: 255 255 255 0;                                             \
+      image.normal: "shelf_over.png";                                   \
+      image.border: 7 7 0 0;                                            \
+      rel1.offset: -OVER 0;                                             \
+      rel2.offset: (OVER-1) -1;                                         \
+      fill.smooth: 0;                                                   \
+   }                                                                    \
+   description { state: "active" 0.0;                                   \
+      inherit: "default" 0.0;                                           \
+      visible: 1;                                                       \
+      color: 255 255 255 255;                                           \
+   }                                                                    \
+   program { name: "_shelf_mouse_down";                                 \
+      signal: "mouse,down,1";                                           \
+      source: AREA;                                                     \
+      action: STATE_SET "active" 0.0;                                   \
+      transition: LINEAR 0.1;                                           \
+      target: "_shelf_over";                                            \
+   }                                                                    \
+   program { name: "_shelf_mouse_up";                                   \
+      signal: "mouse,up,1";                                             \
+      source: AREA;                                                     \
+      action: STATE_SET "default" 0.0;                                  \
+      transition: LINEAR 0.6;                                           \
+      target: "_shelf_over";                                            \
+   }                                                                    \
+}
+#define SHELF_HILIGHT_ITEM(AREA, OVER)                                           \
+part { name: "_shelf_hilight";                                          \
+   mouse_events: 0;                                                     \
+   description { state: "default" 0.0;                                  \
+      visible: 0;                                                       \
+      color: 255 255 255 0;                                             \
+      image.normal: "shelf_hilight.png";                                \
+      image.border: 0 0 1 1;                                            \
+      rel1.offset: -OVER 0;                                             \
+      rel2.offset: (OVER-1) -1;                                         \
+      fill.smooth: 0;                                                   \
+   }                                                                    \
+   description { state: "active" 0.0;                                   \
+      inherit: "default" 0.0;                                           \
+      visible: 1;                                                       \
+      color: 255 255 255 255;                                           \
+   }                                                                    \
+   program { name: "_shelf_hover_in";                                   \
+      signal: "mouse,in";                                               \
+      source: AREA;                                                     \
+      action: STATE_SET "active" 0.0;                                   \
+      transition: LINEAR 0.1;                                           \
+      in: 0.05 0.0;                                                     \
+      target: "_shelf_hilight";                                         \
+   }                                                                    \
+   program { name: "_shelf_hover_out";                                  \
+      signal: "mouse,out";                                              \
+      source: AREA;                                                     \
+      action: ACTION_STOP;                                              \
+      target: "_shelf_hover_in";                                        \
+      after: "_shelf_hover_out2";                                       \
+   }                                                                    \
+   program { name: "_shelf_hover_out2";                                 \
+      action: STATE_SET "default" 0.0;                                  \
+      transition: LINEAR 0.2;                                           \
+      target: "_shelf_hilight";                                         \
+   }                                                                    \
+}
+
+
+images {
+   image: "shelf_bg_normal.png" COMP;
+}
+
+#define SHELF_BASE                                                              \
+part { name: "base";                                                   \
+   mouse_events: 0;                                                    \
+   description { state: "default" 0.0;                                 \
+      image.normal: "shelf_bg_normal.png";                             \
+      image.border: 0 0 4 6;                                           \
+      fill.smooth: 0;                                                  \
+   }                                                                   \
+}
+
+#define SHELF_BASE_RELATIVE(RELATIVE)                                           \
+part { name: "_shelf_base_"RELATIVE;                                   \
+   mouse_events: 0;                                                    \
+   description { state: "default" 0.0;                                 \
+      image.normal: "shelf_bg_normal.png";                             \
+      image.border: 0 0 4 6;                                           \
+      rel1.to: RELATIVE;                                               \
+      rel2.to: RELATIVE;                                               \
+      fill.smooth: 0;                                                  \
+   }                                                                   \
+}
+
+
+
+collections {
+   /////////////////////////////////////////////////////////////////////////////
+   /*** SHELF ***/
+
+   /* Shelves are "panels" that  are placed around the edges of the screen
+    * to hold useful gadgets to control things - like switch desktops
+    * (the pager module and its gadget), launch programs, and anything else
+    * someone wants to put in there. The way to add gadgets to a shelf is to
+    * write a module that places a gadget there. This means that it might end
+    * up containing all sorts of things and the artist needs to be aware of
+    * that and make sure the shelf border and background etc. won't interfere
+    * with all manner of things that may get placed there */
+
+group {
+   name: "e/shelf/default/base";
+   alias: "modules/illume-indicator/window";
+   data {
+      //    item: "shaped" "1";
+      item: "hidden_state_size" "1";
+            //    item: "instant_delay" "3.0";
+   }
+   parts {
+      SHELF_BASE
+      part { name: "e.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 5 3;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -6 -5;
+            }
+         }
+      }
+   }
+   programs {
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,top";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,top_left";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,top_right";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,bottom";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,bottom_left";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,bottom_right";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,left";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,left_top";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,left_bottom";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,right";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,right_top";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,right_bottom";
+      //    source: "e";
+      //      }
+      // tell us we became a visible shelf. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,visible";
+      //    source: "e";
+      //      }
+      // tell us we became a hidden shelf. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,hidden";
+      //    source: "e";
+      //      }
+   }
+}
+/* This is put around gadgets in the shelf if they ask for an "inset" style
+ * framing. This puts some sort of bordering around them to make them look
+ * "inset" into the shelf or screen. this is meant to go with the default
+ * shelf style as implied in the group name */
+group {
+   name: "e/shelf/default/inset";
+   parts {
+      part {
+         name: "base";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            rel1.offset: 1 0;
+            rel2.offset: -2 -1;
+            color: 0 0 0 0;
+         }
+      }
+      part {
+         name: "clip";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            rel1.to: "base";
+            rel2.to: "base";
+            color: 255 255 255 255;
+         }
+      }
+      part {
+         name: "e.swallow.content";
+         type: SWALLOW;
+         clip_to: "clip";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               to: "base";
+               offset: 0 0;
+            }
+            rel2 {
+               to: "base";
+               offset: -1 -1;
+            }
+         }
+      }
+   }
+   programs {
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,top";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,top_left";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,top_right";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,bottom";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,bottom_left";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,bottom_right";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,left";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,left_top";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,left_bottom";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,right";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,right_top";
+      //    source: "e";
+      //      }
+      // tell us what oriantation we are in. not used here
+      //      program { name: "xx";
+      //    signal: "e,state,orientation,right_bottom";
+      //    source: "e";
+      //      }
+   }
+}
+/* Same as inset, but meant to be with no decorations that are visible. here
+ * we simply make the content swallow inset a bit from the edges to align
+ * with any plain style inset boxes */
+group {
+   name: "e/shelf/default/plain";
+   parts {
+      part {
+         name: "e.swallow.content";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+         }
+      }
+   }
+}
+/* This is the "invisible" shelf. Yes. Even it has visual config in edje.
+ * The idea is that it will remain invisible, BUT will allow the designer
+ * to do some layout and padding. This gets the same signals as the
+ * default shelf and can provide the same data items */
+group {
+   name: "e/shelf/invisible/base";
+   data.item: "shaped" "1";
+   parts {
+      part {
+         name: "e.swallow.content";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 0 0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+         }
+      }
+   }
+}
+group {
+   name: "e/shelf/invisible/inset";
+   parts {
+      part {
+         name: "base";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               to: "inset";
+               offset: 1 1;
+            }
+            rel2 {
+               to: "inset";
+               offset: -2 -2;
+            }
+            color: 0 0 0 32;
+         }
+      }
+      part {
+         name: "clip";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            rel1.to: "base";
+            rel2.to: "base";
+            color: 255 255 255 255;
+         }
+      }
+      part {
+         name: "e.swallow.content";
+         type: SWALLOW;
+         clip_to: "clip";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               to: "base";
+               offset: 1 1;
+            }
+            rel2 {
+               to: "base";
+               offset: -2 -2;
+            }
+         }
+      }
+      part {
+         name: "inset";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            rel1.offset: 1 1;
+            rel2.offset: -2 -2;
+            image.middle: 0;
+            image.border: 7 7 7 7;
+            fill.smooth: 0;
+         }
+      }
+   }
+}
+}

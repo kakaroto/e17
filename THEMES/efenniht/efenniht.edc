@@ -1,0 +1,57 @@
+#define THEME_NAME "Efenniht"
+#define THEME_VERSION "0.2"
+#define THEME_LICENSE "GPL"
+#define THEME_AUTHOR "ProFUSION Embedded Systems"
+
+
+
+data {
+   item: "theme/name"    THEME_NAME;
+   item: "theme/version" THEME_VERSION;
+   item: "theme/license" THEME_LICENSE;
+   item: "theme/author"  THEME_AUTHOR;
+}
+
+
+#include "colors.edc"
+#include "icons.edc"
+#include "backgrounds.edc"
+#include "borders.edc"
+#include "menu.edc"
+#include "shelf.edc"
+#include "toolbar.edc"
+//#include "mouse.edc"
+#include "connman.edc"
+#include "bluez.edc"
+#include "pager.edc"
+#include "battery.edc"
+#include "temperature.edc"
+#include "clock.edc"
+#include "cpufreq.edc"
+#include "ibox.edc"
+#include "ibar.edc"
+#include "systray.edc"
+#include "mixer.edc"
+#include "start.edc"
+#include "winlist.edc"
+#include "about.edc"
+#include "gadman.edc"
+#include "check.edc"
+#include "radio.edc"
+#include "ilist.edc"
+#include "scrollframe.edc"
+#include "frame.edc"
+#include "slider.edc"
+#include "dialog.edc"
+#include "button.edc"
+#include "config.edc"
+#include "label.edc"
+#include "textblock.edc"
+#include "entry.edc"
+#include "fileman.edc"
+#include "desklock.edc"
+#include "everything.edc"
+#include "syscon.edc"
+#include "illume.edc"
+#include "init.edc"
+#include "system.edc"

@@ -1,0 +1,89 @@
+collections {
+   group { name: "e/modules/ibar/icon";
+      parts {
+         part {
+            name: "item_clip";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+            }
+         }
+         part {
+            name: "e.swallow.content";
+            type: SWALLOW;
+            clip_to: "item_clip";
+            description {
+               state: "default" 0.0;
+               rel1.offset: 5 5;
+               rel2.offset: -6 -6;
+            }
+         }
+         SHELF_OVER_ITEM("eventarea", SHELF_OVER_OVER)
+         SHELF_HILIGHT_ITEM("eventarea", SHELF_HILIGHT_OVER)
+         part {
+            name: "eventarea";
+            type: RECT;
+            repeat_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         }
+      }
+   }
+   group { name: "e/modules/ibar/icon_overlay";
+      alias: "e/modules/ibox/icon_overlay";
+      parts {
+         part { name: "e.text.label";
+            type: TEXT;
+            effect: SOFT_OUTLINE;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               color: 255 255 255 0;
+               color2: 0 0 0 0;
+               color3: 0 0 0 0;
+               text {
+                  font: "Sans:style=Bold";
+                  size: 10;
+                  min: 1 1;
+                  align: 0.5 0.5;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+               color2: 0 0 0 255;
+               color3: 0 0 0 255;
+            }
+            description { state: "no_shadow" 0.0;
+               inherit: "visible" 0.0;
+               color3: 0 0 0 0;
+               color2: 0 0 0 0;
+            }
+            program { name: "show_label";
+               signal: "e,action,show,label";
+               source: "e";
+               action: STATE_SET "visible" 0.0;
+               transition: LINEAR 0.1;
+               in: 0.05 0.0;
+               target: "e.text.label";
+            }
+            program { name: "hide_label";
+               signal: "e,action,hide,label";
+               source: "e";
+               action: ACTION_STOP;
+               target: "show_label";
+               after: "hide_label2";
+            }
+            program { name: "hide_label2";
+               action: STATE_SET "default" 0.0;
+               transition: LINEAR 0.2;
+               target: "e.text.label";
+            }
+         }
+      }
+   }
+}
