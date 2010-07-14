@@ -264,16 +264,19 @@ struct cpp_reader {
 /* Append string STR (of length N) to PFILE's output buffer.
    Assume there is enough space. */
 #define CPP_PUTS_Q(PFILE, STR, N) \
-  (memcpy ((PFILE)->limit, STR, (N)), (PFILE)->limit += (N))
+  do { memcpy ((PFILE)->limit, STR, (N)); (PFILE)->limit += (N); } while(0)
 /* Append string STR (of length N) to PFILE's output buffer.  Make space. */
-#define CPP_PUTS(PFILE, STR, N) CPP_RESERVE(PFILE, N), CPP_PUTS_Q(PFILE, STR,N)
+#define CPP_PUTS(PFILE, STR, N) \
+  do { CPP_RESERVE(PFILE, N); CPP_PUTS_Q(PFILE, STR,N); } while(0)
 /* Append character CH to PFILE's output buffer.  Assume sufficient space. */
 #define CPP_PUTC_Q(PFILE, CH) (*(PFILE)->limit++ = (CH))
 /* Append character CH to PFILE's output buffer.  Make space if need be. */
-#define CPP_PUTC(PFILE, CH) (CPP_RESERVE (PFILE, 1), CPP_PUTC_Q (PFILE, CH))
+#define CPP_PUTC(PFILE, CH) \
+  do { CPP_RESERVE (PFILE, 1); CPP_PUTC_Q (PFILE, CH); } while(0)
 /* Make sure PFILE->limit is followed by '\0'. */
 #define CPP_NUL_TERMINATE_Q(PFILE) (*(PFILE)->limit = 0)
-#define CPP_NUL_TERMINATE(PFILE) (CPP_RESERVE(PFILE, 1), *(PFILE)->limit = 0)
+#define CPP_NUL_TERMINATE(PFILE) \
+  do { CPP_RESERVE(PFILE, 1); *(PFILE)->limit = 0; } while(0)
 #define CPP_ADJUST_WRITTEN(PFILE,DELTA) ((PFILE)->limit += (DELTA))
 #define CPP_SET_WRITTEN(PFILE,N) ((PFILE)->limit = (PFILE)->token_buffer + (N))
 
