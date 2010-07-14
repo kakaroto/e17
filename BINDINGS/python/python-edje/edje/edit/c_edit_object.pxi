@@ -267,30 +267,6 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
     def image_del(self, char *name):
         return bool(edje_edit_image_del(self.obj, name))
 
-    # Spectrum
-
-    property spectrum:
-        def __get__(self):
-            "@rtype: list of str"
-            cdef evas.c_evas.Eina_List *lst, *itr
-            ret = []
-            lst = edje_edit_spectrum_list_get(self.obj)
-            itr = lst
-            while itr:
-                ret.append(<char*>itr.data)
-                itr = itr.next
-            edje_edit_string_list_free(lst)
-            return ret
-
-    def spectra_get(self, char *name):
-        return Spectra(self, name)
-
-    def spectra_add(self, char *name):
-        return bool(edje_edit_spectra_add(self.obj, name))
-
-    def spectra_del(self, char *name):
-        return bool(edje_edit_spectra_del(self.obj, name))
-
     # Programs
 
     property programs:
