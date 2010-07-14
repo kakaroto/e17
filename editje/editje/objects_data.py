@@ -356,60 +356,6 @@ class StateImage(State):
         return ret
 
 
-class StateGradient(State):
-    def __init__(self, obj):
-        State.__init__(self, obj)
-
-        #TODO: Bindings
-        """
-        fill = dict()
-        self["fill"] = fill
-        fill["smooth"] =
-        fill["angle"] =
-
-        origin = dict()
-        fill["origin"] = origin
-        origin["relative"] =
-        origin["offset"] =
-
-        size = dict()
-        fill["size"] = object()
-        size["relative"] =
-        size["offset"] =
-        """
-
-        gradient = dict()
-        self["gradient"] = gradient
-        type = obj.gradient_type_get()
-        if type is None:
-            type = ""
-        gradient["type"] = type
-        spec = obj.gradient_spectra_get()
-        if spec is None:
-            spec = ""
-        gradient["spectrum"] = spec
-
-    def apply_to(self, obj):
-        if obj.part_get().type != edje.EDJE_PART_TYPE_GRADIENT:
-            return False
-
-        State.apply_to(self, obj)
-
-        gradient = self["gradient"]
-        obj.gradient_type_set(gradient["type"])
-        obj.gradient_spectra_set(gradient["spectrum"])
-
-        return True
-
-    def _source_get(self, indent=""):
-        gradient = self["gradient"]
-        ret = indent + '   gradient {\n'
-        ret += indent + '      type: "%s";\n' % gradient["type"]
-        ret += indent + '      spectrun: "%s";\n' % gradient["spectrum"]
-        ret += indent + '   }\n'
-        return ret
-
-
 class StateExternal(State):
     def __init__(self, obj):
         State.__init__(self, obj)
@@ -526,10 +472,6 @@ class ColorClass(Object):
     pass
 
 
-class Spectra(Object):
-    pass
-
-
 class Style(Object):
     pass
 
@@ -640,8 +582,6 @@ def state_class_from_part_type_get(part):
     st_class = State
     if part.type == edje.EDJE_PART_TYPE_IMAGE:
         st_class = StateImage
-    elif part.type == edje.EDJE_PART_TYPE_GRADIENT:
-        st_class = StateGradient
     elif part.type == edje.EDJE_PART_TYPE_TEXT:
         st_class = StateText
     elif part.type == edje.EDJE_PART_TYPE_EXTERNAL:
