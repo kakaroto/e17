@@ -788,6 +788,7 @@ _elixir_ecore_evas_callback(const char *name, Ecore_Evas *ee)
    JSContext *cx;
    JSObject *parent;
    void *data;
+   Eina_Bool suspended;
    jsval js_return;
    jsval argv[1];
 
@@ -800,7 +801,9 @@ _elixir_ecore_evas_callback(const char *name, Ecore_Evas *ee)
    if (!cx || !parent || !cb)
      return ;
 
-   elixir_function_start(cx);
+   suspended = elixir_function_suspended(cx);
+   if (suspended)
+     elixir_function_start(cx);
 
    argv[0] = _elixir_ecore_evas_to_jsval(cx, ee);
 
@@ -808,7 +811,8 @@ _elixir_ecore_evas_callback(const char *name, Ecore_Evas *ee)
 
    elixir_rval_delete(cx, argv + 0);
 
-   elixir_function_stop(cx);
+   if (suspended)
+     elixir_function_stop(cx);
 }
 
 static JSBool

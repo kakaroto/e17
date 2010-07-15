@@ -139,12 +139,10 @@ _elixir_layout_data_get(void *data)
      return NULL;
 
    elixir_function_start(cx);
-   elixir_lock_cx(cx);
 
    if (elixir_function_run(cx, cb[1], parent, 1, argv, &result))
      res = elixir_void_new(cx, parent, result, cb[2]);
 
-   elixir_unlock_cx(cx);
    elixir_function_stop(cx);
 
    return res;
@@ -167,14 +165,12 @@ _elixir_layout_data_free(void *data)
    argv[0] = elixir_void_get_jsval(data);
 
    elixir_function_start(cx);
-   elixir_lock_cx(cx);
 
    if (cb)
      elixir_function_run(cx, cb, parent, 1, argv, &result);
 
    elixir_void_free(data);
 
-   elixir_unlock_cx(cx);
    elixir_function_stop(cx);
 }
 

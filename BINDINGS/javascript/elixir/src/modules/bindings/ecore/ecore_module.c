@@ -266,6 +266,7 @@ _ecore_event_handler_func(void *data, int type, void *event)
    JSContext *cx;
    JSObject *parent;
    Eina_Bool ret = EINA_FALSE;
+   Eina_Bool suspended;
    jsval js_return;
    jsval argv[3];
 
@@ -276,7 +277,9 @@ _ecore_event_handler_func(void *data, int type, void *event)
    if (!cx || !parent || !cb)
      return 0;
 
-   elixir_function_start(cx);
+   suspended = elixir_function_suspended(cx);
+   if (suspended)
+     elixir_function_start(cx);
 
    argv[0] = elixir_void_get_jsval(data);
    argv[1] = INT_TO_JSVAL(type);
@@ -288,7 +291,8 @@ _ecore_event_handler_func(void *data, int type, void *event)
    ret = _ecore_jsval_to_boolean(cx, js_return);
 
   end:
-   elixir_function_stop(cx);
+   if (suspended)
+     elixir_function_stop(cx);
    return ret;
 }
 

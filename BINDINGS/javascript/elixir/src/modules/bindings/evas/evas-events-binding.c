@@ -237,6 +237,7 @@ elixir_evas_event_callback(void *data, Evas *e, void *event_info)
    struct _js_callback *cb;
    JSObject *parent;
    JSContext *cx;
+   Eina_Bool suspended;
    jsval js_event = JSVAL_NULL;
    jsval js_return;
    jsval js_data;
@@ -252,7 +253,9 @@ elixir_evas_event_callback(void *data, Evas *e, void *event_info)
    if (!cx || !parent)
      return ;
 
-   elixir_function_start(cx);
+   suspended = elixir_function_suspended(cx);
+   if (suspended)
+     elixir_function_start(cx);
 
    switch (cb->type)
      {
@@ -297,7 +300,8 @@ elixir_evas_event_callback(void *data, Evas *e, void *event_info)
    if (obj_event)
      elixir_object_unregister(cx, &obj_event);
 
-   elixir_function_stop(cx);
+   if (suspended)
+     elixir_function_stop(cx);
 }
 
 static void
@@ -309,6 +313,7 @@ elixir_object_event_callback(void *data, Evas *e, Evas_Object *obj, void *event)
    struct _js_callback *cb;
    JSObject *parent;
    JSContext *cx;
+   Eina_Bool suspended;
    jsval js_event = JSVAL_NULL;
    jsval js_return;
    jsval js_data;
@@ -325,7 +330,9 @@ elixir_object_event_callback(void *data, Evas *e, Evas_Object *obj, void *event)
    if (!cx || !parent)
      return ;
 
-   elixir_function_start(cx);
+   suspended = elixir_function_suspended(cx);
+   if (suspended)
+     elixir_function_start(cx);
 
    switch (cb->type)
      {
@@ -354,9 +361,9 @@ elixir_object_event_callback(void *data, Evas *e, Evas_Object *obj, void *event)
 	fct = elixir_new_event_key_up;
         break;
      /* Folowing event dont have an event parameter */
-     case EVAS_CALLBACK_FREE:
      case EVAS_CALLBACK_FOCUS_IN:
      case EVAS_CALLBACK_FOCUS_OUT:
+     case EVAS_CALLBACK_FREE:
      case EVAS_CALLBACK_SHOW:
      case EVAS_CALLBACK_HIDE:
      case EVAS_CALLBACK_MOVE:
@@ -404,7 +411,8 @@ elixir_object_event_callback(void *data, Evas *e, Evas_Object *obj, void *event)
    if (obj_event)
      elixir_object_unregister(cx, &obj_event);
 
-   elixir_function_stop(cx);
+   if (suspended)
+     elixir_function_stop(cx);
 }
 
 /* Crach when last arg is undefined. */

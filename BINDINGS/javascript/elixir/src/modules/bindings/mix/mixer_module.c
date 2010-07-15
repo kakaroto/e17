@@ -253,17 +253,22 @@ _channel_callback(__UNUSED__ void *data, void *buffer, unsigned int nbyte)
    fct = elixir_void_get_private(callback_context);
    if (fct)
      {
+	Eina_Bool suspended;
+
         parent = elixir_void_get_parent(callback_context);
         cx = elixir_void_get_cx(callback_context);
         if (!parent || !cx)
           return ;
 
-	elixir_function_start(cx);
+	suspended = elixir_function_suspended(cx);
+	if (suspended)
+	  elixir_function_start(cx);
 
         argv[0] = INT_TO_JSVAL(channel);
         elixir_function_run(cx, fct, parent,  1, argv, &js_return);
 
-	elixir_function_stop(cx);
+	if (suspended)
+	  elixir_function_stop(cx);
      }
 
    return ;
