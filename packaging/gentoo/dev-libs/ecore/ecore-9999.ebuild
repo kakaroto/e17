@@ -3,6 +3,8 @@
 # $Header: $
 
 EAPI="2"
+EFL_PKG_IUSE="doc nls"
+
 inherit efl
 
 DESCRIPTION="Enlightenment's core event abstraction layer and OS abstraction layer"

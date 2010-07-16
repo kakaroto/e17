@@ -28,7 +28,6 @@ else
 	# TODO: project did not release any tarball or snapshot!
 fi
 
-RDEPEND=""
 DEPEND="
 	dev-util/pkgconfig
 	doc? ( app-doc/doxygen )"

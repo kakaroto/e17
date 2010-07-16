@@ -3,7 +3,8 @@
 # $Header: $
 
 EAPI="2"
-E_NO_NLS="1"
+EFL_PKG_IUSE="doc"
+
 inherit efl
 
 DESCRIPTION="library for handling of freedesktop.org specs (desktop/icon/theme/etc...)"

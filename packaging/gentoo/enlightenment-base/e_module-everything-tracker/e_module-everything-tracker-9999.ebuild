@@ -3,9 +3,10 @@
 # $Header: $
 
 EAPI="2"
+EFL_PKG_IUSE="nls"
 ESVN_SUB_PROJECT="E-MODULES-EXTRA"
 ESVN_URI_APPEND="${PN#e_module-}"
-E_NO_DOC="1"
+
 inherit efl
 
 DESCRIPTION="Tracker search for Everything. requires tracker 0.8"

@@ -3,8 +3,9 @@
 # $Header: $
 
 EAPI="2"
-E_NO_NLS="1"
+EFL_PKG_IUSE="doc"
 ESVN_SUB_PROJECT="TMP/st"
+
 inherit efl
 
 DESCRIPTION="Basic widget set, based on EFL with focus mobile touch-screen devices."

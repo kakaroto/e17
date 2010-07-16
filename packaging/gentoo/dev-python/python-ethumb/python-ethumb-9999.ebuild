@@ -3,9 +3,8 @@
 # $Header: $
 
 EAPI="2"
+EFL_PKG_IUSE="examples"
 E_CYTHON="1"
-E_NO_NLS="1"
-E_NO_DOC="1"
 ESVN_SUB_PROJECT="BINDINGS/python"
 
 inherit efl
@@ -18,7 +17,7 @@ LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS=""
 
-IUSE="+dbus examples"
+IUSE="+dbus"
 
 RDEPEND=">=media-libs/ethumb-9999[dbus?]"
 

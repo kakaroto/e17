@@ -3,7 +3,9 @@
 # $Header: $
 
 EAPI="2"
+EFL_PKG_IUSE="doc nls"
 ESVN_URI_APPEND="e"
+
 inherit efl
 
 DESCRIPTION="Enlightenment DR17 window manager"

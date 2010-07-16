@@ -1,67 +1,99 @@
 # Copyright 1999-2010 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
-#
+
 # Author: vapier@gentoo.org
 # Modified: barbieri@profusion.mobi
 # Modified: NightNord@gmail.com
+# Modified: gentoo.sera@bluewin.ch
+# Modified: mike@zentific.com
+
+# @ECLASS: efl.eclass
+# @MAINTAINER:
+# barbieri@profusion.mobi
+# mike@zentific.com
+# @BLURB: Provides common code for EFL package based ebuilds.
+# @DESCRIPTION:
+# Exports ebuild phase functions: src_unpack src_prepare src_configure
+#   src_compile src_install src_test
+#
+# Reqires EAPI 2 or later.
+#
+# @CODE
+# E_STATE's:
+#   release      [default]
+#
+#   snap
+#
+#   live         $PV has a 9999 marker
+#       S        $WORKDIR/$E_S_APPEND
+#
+# Overrides:
+#    S           EURI_STATE
+# @CODE
 
 inherit eutils libtool flag-o-matic
 
-# E_STATE's:
-#	release      [default]
-#		KEYWORDS arch
-#		SRC_URI  $P.tar.gz
-#		S        $WORKDIR/$P
-#
-#	snap         $PV has .200##### datestamp or .### counter
-#		KEYWORDS ~arch
-#		SRC_URI  $P.tar.bz2
-#		S        $WORKDIR/$P
-#
-#	live         $PV has a 9999 marker
-#		KEYWORDS ""
-#		SRC_URI  svn/etc... up
-#		S        $WORKDIR/$E_S_APPEND
-#
-# Overrides:
-#	KEYWORDS    EKEY_STATE
-#	SRC_URI     EURI_STATE
-#	S           EURI_STATE
-#
-# E_NO_NLS: if defined, the package do not support NLS (gettext)
-# E_NO_DOC: if defined, the package do not support documentation (doxygen)
-# E_NO_VISIBILITY: if defined, the package do not support -fvisibility=hidden
-# E_NO_DISABLE_STATIC: if defined, do not append --disable-static
-#
-# Python support:
-# E_PYTHON: if defined, the package is Python/distutils
-# E_CYTHON: if defined, the package is Cython bindings (implies E_PYTHON)
-# E_NO_EXAMPLES: if defined, the Python package does not provide examples
+# @ECLASS-VARIABLE: E_NO_VISIBILITY
+# @DESCRIPTION:
+# if defined, the package does not support -fvisibility=hidden
 
+# @ECLASS-VARIABLE: E_NO_DISABLE_STATIC
+# @DESCRIPTION:
+# if defined, do not append --disable-static
+
+# Python support:
+# @ECLASS-VARIABLE: E_PYTHON
+# @DESCRIPTION:
+# if defined, the package is Python/distutils
+
+# @ECLASS-VARIABLE: E_CYTHON
+# @DESCRIPTION:
+# if defined, the package is Cython bindings (implies E_PYTHON)
+
+# @ECLASS-VARIABLE: EFL_PKG_IUSE
+# @DESCRIPTION:
+# Use EFL_PKG_IUSE instead of IUSE for doc, examples, nls and test so that the
+# eclass can automagically add the needed dependencies and or perform the
+# required actions.
+IUSE="${EFL_PKG_IUSE}"
+
+# @ECLASS-VARIABLE: E_LIVE_SERVER_DEFAULT_SVN
+# @DESCRIPTION:
+# Default svn repository to use.
 E_LIVE_SERVER_DEFAULT_SVN="http://svn.enlightenment.org/svn/e/trunk"
 
 E_STATE="release"
 
 if [[ ${PV/9999} != ${PV} ]] ; then
 	E_STATE="live"
+	# TODO live is not a permitted token according to pms.
+	# Switch to the mechanism to denote live packages once decided upon and
+	# available.
 	PROPERTIES="live"
 
 	: ${WANT_AUTOTOOLS:=yes}
 
+# @ECLASS-VARIABLE: E_LIVE_OFFLINE
+# @DESCRIPTION:
+# Deprecated: It's far more likely a users knows of ESCM_OFFLINE than
+# E_LIVE_OFFLINE and so this variable is kinda pointless.
+# Users should migrate to use ESCM_OFFLINE="yes"
 	[[ -n ${E_LIVE_OFFLINE} ]] && ESCM_OFFLINE="yes"
 
+# @ECLASS-VARIABLE: E_LIVE_SERVER
+# @DESCRIPTION:
+# Use another server than the default svn repo
 	E_LIVE_SERVER=${E_LIVE_SERVER:-${E_LIVE_SERVER_DEFAULT_SVN}}
 	ESVN_URI_APPEND=${ESVN_URI_APPEND:-${PN}}
 	ESVN_PROJECT="enlightenment/${ESVN_SUB_PROJECT}"
 	ESVN_REPO_URI=${E_LIVE_SERVER}/${ESVN_SUB_PROJECT}/${ESVN_URI_APPEND}
 
 	E_S_APPEND=${ESVN_URI_APPEND}
+
 	inherit subversion
-elif [[ -n ${E_SNAP_DATE} ]] ; then
-	E_STATE="snap"
-else
-	E_STATE="release"
+
+	S="${WORKDIR}/${E_S_APPEND}"
 fi
 
 if [[ ! -z "${E_CYTHON}" ]]; then
@@ -89,8 +121,7 @@ fi
 
 DEPEND="${DEPEND} dev-util/pkgconfig"
 
-if [[ -z "${E_NO_NLS}" ]]; then
-	IUSE="${IUSE} nls"
+if has nls "${IUSE}"; then
 	DEPEND="${DEPEND} nls? ( sys-devel/gettext )"
 
 	# gettext (via `autopoint`) needs to run cvs #245073
@@ -99,9 +130,12 @@ if [[ -z "${E_NO_NLS}" ]]; then
 	fi
 fi
 
-if [[ -z "${E_NO_DOC}" ]]; then
-	IUSE="${IUSE} doc"
+if has doc "${IUSE}"; then
 	DEPEND="${DEPEND} doc? ( app-doc/doxygen )"
+fi
+
+if [[ -z "${E_PYTHON}" ]] && has test "${IUSE}"; then
+	DEPEND="${DEPEND} test? ( dev-libs/check )"
 fi
 
 if [[ ! -z "${E_CYTHON}" ]]; then
@@ -110,33 +144,22 @@ fi
 
 if [[ ! -z "${E_PYTHON}" ]]; then
 	DEPEND="${DEPEND} >=dev-python/setuptools-0.6_rc9"
-
-	if [[ -z "${E_NO_EXAMPLES}" ]]; then
-		IUSE="${IUSE} examples"
-	fi
 fi
 
 if [[ -z "${E_NO_VISIBILITY}" ]] && [[ $(gcc-major-version) -ge 4 ]]; then
 	append-flags -fvisibility=hidden
 fi
 
-case ${EURI_STATE:-${E_STATE}} in
-	release) S=${WORKDIR}/${P};;
-	snap)    S=${WORKDIR}/${P};;
-	live)    S=${WORKDIR}/${E_S_APPEND};;
-esac
-
+# @FUNCTION: efl_warning_msg
+# @USAGE:
+# @DESCRIPTION:
+# print server used and what to do if things go haywire
 efl_warning_msg() {
 	if [[ -n ${E_LIVE_SERVER} ]] ; then
 		einfo "Using user server for live sources: ${E_LIVE_SERVER}"
 	fi
 
-	if [[ ${E_STATE} == "snap" ]] ; then
-		ewarn "Please do not contact the E team about bugs in Gentoo."
-		ewarn "Only contact enlightenment@gentoo.org via e-mail or bugzilla."
-		ewarn "Remember, this stuff is DEV only code so dont cry when"
-		ewarn "I break you :)."
-	elif [[ ${E_STATE} == "live" ]] ; then
+	if [[ ${E_STATE} == "live" ]] ; then
 		eerror "This is a LIVE SOURCES ebuild."
 		eerror "That means there are NO promises it will work."
 		eerror "If it fails to build, contact the enlightenment mailing list"
@@ -144,52 +167,77 @@ efl_warning_msg() {
 	fi
 }
 
+# @FUNCTION: efl_die
+# @USAGE:
+# @DESCRIPTION:
+# calls efl_warning_msg and then die
+# TODO fix die message. Using SEND_BUG_REPORTS_TO variable?
 efl_die() {
 	efl_warning_msg
 	die "$@"$'\n'"!!! SEND BUG REPORTS TO enlightenment@gentoo.org NOT THE E TEAM"
 }
 
+# @FUNCTION: efl_src_test
+# @USAGE:
+# @DESCRIPTION:
+# calls emake check on non python packages with test in EFL_PKG_IUSE
 efl_src_test() {
 	if [[ -z "${E_PYTHON}" ]]; then
-		if use test; then
+		if has test "${IUSE}"; then
 			emake -j1 check || die "Make check failed. see above for details"
 		fi
 	fi
 }
 
+# @FUNCTION: gettext_modify
+# @USAGE:
+# @DESCRIPTION:
 # the stupid gettextize script prevents non-interactive mode, so we hax it
 gettext_modify() {
-	[[ -z "${E_NO_NLS}" ]] || return 0
-	use nls || return 0
-	cp $(type -P gettextize) "${T}"/ || die "could not copy gettextize"
-	sed -i \
-		-e 's:read dummy < /dev/tty::' \
-		"${T}"/gettextize
+	if has nls "${IUSE}" && use nls; then
+		cp $(type -P gettextize) "${T}"/ || die "could not copy gettextize"
+		sed -i \
+			-e 's:read dummy < /dev/tty::' \
+			"${T}"/gettextize
+	fi
 }
 
+# @FUNCTION: efl_src_unpack
+# @USAGE:
+# @DESCRIPTION:
+# calls subversion_src_unpack for live packages otherwise default_src_unpack
 efl_src_unpack() {
+	# The elass expects the ebuilds to use EAPI 2 or later, so make sure this is
+	# the case.
+	case "${EAPI}" in
+		2|3|4) ;;
+		*) die "EAPI 2 or later required";;
+	esac
+
 	if [[ ${E_STATE} == "live" ]] ; then
 		subversion_src_unpack
 	else
-		unpack ${A}
+		default_src_unpack
 	fi
-
-	cd "${S}"
 }
 
+# @FUNCTION: efl_src_prepare
+# @USAGE:
+# @DESCRIPTION:
+# Applys the gettext_modifiy hack and runs the autotools stuff.
 efl_src_prepare() {
 	gettext_modify
 
 	[[ -s gendoc ]] && chmod a+rx gendoc
 
 	if [[ -z "${E_PYTHON}" ]]; then
-		if [[ -e configure.ac || -e configure.in ]] && \
+		if [[ -e configure.ac ]] && \
 			[[ "${WANT_AUTOTOOLS}" == "yes" ]]; then
 
 			export SVN_REPO_PATH="$ESVN_WC_PATH"
 
-			if [[ -z "${E_NO_NLS}" ]] && \
-				grep -qE '^[[:space:]]*AM_GNU_GETTEXT_VERSION' configure.{ac,in}; then
+			if has nls "${IUSE}" \
+				grep -qE '^[[:space:]]*AM_GNU_GETTEXT_VERSION' configure.ac; then
 				local autopoint_log_file="${T}/autopoint.$$"
 
 				ebegin "Running autopoint"
@@ -202,6 +250,12 @@ efl_src_prepare() {
 					ewarn "(it makes sense only when compile fails afterwards)"
 				fi
 
+				# TODO in case this happens we failed to depend on cvs and
+				# should probably call die.
+				# added use nls as condition to get here. Which garantees cvs
+				# to be installed. See DEPEND.
+				# Having use nls set and letting autopoint fail is not what a
+				# user likely wants.
 				if grep -qi 'cvs program not found' "${autopoint_log_file}"; then
 					ewarn "This error seems to be due missing CVS"
 					ewarn "(it's usage hardcoded into autopoint code)"
@@ -210,25 +264,27 @@ efl_src_prepare() {
 				fi
 			fi
 
-			# autotools expect README, when README.in is around, but README
-			# is created later in configure step
-			[[ -f README.in ]] && touch README
-
+			#avoid having to touch a bunch of files by telling automake not to expect them
+			AM_OPTS="--foreign"
 			eautoreconf
 			local x
 		fi
 
 		epunt_cxx
-		elibtoolize
+#		elibtoolize
 	fi
 }
 
+# @FUNCTION: efl_src_configure
+# @USAGE:
+# @DESCRIPTION:
+# efl's default src_configure
 efl_src_configure() {
 	if [[ -z "${E_PYTHON}" ]]; then
 		export SVN_REPO_PATH="$ESVN_WC_PATH"
 		if [[ -x ${ECONF_SOURCE:-.}/configure ]]; then
-			[[ -z "${E_NO_NLS}" ]] && MY_ECONF="${MY_ECONF} $(use_enable nls)"
-			[[ -z "${E_NO_DOC}" ]] && MY_ECONF="${MY_ECONF} $(use_enable doc)"
+			has nls "${IUSE}" && MY_ECONF="${MY_ECONF} $(use_enable nls)"
+			has doc "${IUSE}" && MY_ECONF="${MY_ECONF} $(use_enable doc)"
 			[[ -z "${E_NO_DISABLE_STATIC}" ]] && MY_ECONF="${MY_ECONF} --disable-static"
 
 			econf ${MY_ECONF} || efl_die "configure failed"
@@ -236,11 +292,15 @@ efl_src_configure() {
 	fi
 }
 
+# @FUNCTION: efl_src_compile
+# @USAGE:
+# @DESCRIPTION:
+# efl's default src_compile
 efl_src_compile() {
 	if [[ -z "${E_PYTHON}" ]]; then
 		emake || efl_die "emake failed"
 
-		if [[ -z "${E_NO_DOC}" ]] && use doc; then
+		if has doc "${IUSE}" && use doc; then
 			if [[ -x ./gendoc ]]; then
 				./gendoc || efl_die "gendoc failed"
 			else
@@ -249,7 +309,7 @@ efl_src_compile() {
 		fi
 	else
 		distutils_src_compile
-		if [[ -z "${E_NO_DOC}" ]] && use doc; then
+		if has doc "${IUSE}" && use doc; then
 			if [[ -x ./gendoc ]]; then
 				./gendoc || efl_die "gendoc failed"
 			fi
@@ -257,6 +317,10 @@ efl_src_compile() {
 	fi
 }
 
+# @FUNCTION: efl_src_install
+# @USAGE:
+# @DESCRIPTION:
+# efl's default src_install
 efl_src_install() {
 	if [[ -z "${E_PYTHON}" ]]; then
 
@@ -271,7 +335,7 @@ efl_src_install() {
 	else
 		distutils_src_install
 
-		if [[ -z "${E_NO_EXAMPLES}" ]] && use examples; then
+		if has examples "${IUSE}" && use examples; then
 			insinto /usr/share/doc/${PF}
 			doins -r examples
 
@@ -279,7 +343,7 @@ efl_src_install() {
 		fi
 	fi
 
-	if [[ -z "${E_NO_DOC}" ]] && use doc && [[ -d doc ]]; then
+	if has doc "${IUSE}" && use doc && [[ -d doc ]]; then
 		if [[ -d doc/html ]]; then
 			dohtml -r doc/html/*
 		else

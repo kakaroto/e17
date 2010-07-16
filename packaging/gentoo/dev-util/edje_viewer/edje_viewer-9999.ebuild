@@ -3,9 +3,8 @@
 # $Header: $
 
 EAPI="2"
-E_NO_NLS="1"
-E_NO_DOC="1"
 E_NO_DISABLE_STATIC="1"
+
 inherit efl
 
 DESCRIPTION="Edje viewer based on Elementary"

@@ -3,7 +3,8 @@
 # $Header: $
 
 EAPI="2"
-E_NO_NLS="1"
+EFL_PKG_IUSE="doc"
+
 inherit efl
 
 DESCRIPTION="load and control programs compiled in embryo language (small/pawn variant)"

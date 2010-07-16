@@ -3,9 +3,8 @@
 # $Header: $
 
 EAPI="2"
+EFL_PKG_IUSE="examples"
 E_CYTHON="1"
-E_NO_NLS="1"
-E_NO_DOC="1"
 ESVN_SUB_PROJECT="BINDINGS/python"
 
 inherit efl
@@ -18,7 +17,7 @@ LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS=""
 
-IUSE="+evas +X +xscreensaver examples"
+IUSE="+evas +X +xscreensaver"
 
 RDEPEND=">=dev-libs/ecore-9999[evas?,X?,xscreensaver?]"
 

@@ -4,9 +4,6 @@
 
 EAPI="2"
 E_PYTHON="1"
-E_NO_DOC="1"
-E_NO_NLS="1"
-E_NO_EXAMPLES="1"
 ESVN_SUB_PROJECT="BINDINGS/python"
 
 inherit efl

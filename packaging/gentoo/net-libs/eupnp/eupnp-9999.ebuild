@@ -3,7 +3,7 @@
 # $Header: $
 
 EAPI="2"
-E_NO_NLS="1"
+EFL_PKG_IUSE="doc test"
 ESVN_SUB_PROJECT="PROTO"
 
 inherit efl
@@ -16,16 +16,14 @@ LICENSE="LGPL-3"
 SLOT="0"
 KEYWORDS=""
 
-IUSE="examples test"
+IUSE="examples"
 
 RDEPEND="
 	>=dev-libs/eina-9999
 	dev-libs/libxml2
 	>=dev-libs/ecore-9999[curl]
 	examples? ( >=media-libs/elementary-9999 )"
-DEPEND="
-	${RDEPEND}
-	test? ( dev-libs/check )"
+DEPEND="${RDEPEND}"
 
 src_configure() {
 	export MY_ECONF="
