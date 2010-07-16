@@ -3,7 +3,8 @@
 # $Header: $
 
 EAPI="2"
-E_NO_NLS="1"
+EFL_PKG_IUSE="doc test"
+
 inherit efl
 
 DESCRIPTION="Enlightenment's data types library (List, hash, etc) in C."
@@ -14,14 +15,15 @@ LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS=""
 
-IUSE="mmx sse sse2 altivec +threads test +safety-checks +mempool-chained mempool-ememoa-fixed mempool-ememoa-unknown mempool-fixed-bitmap +mempool-pass-through mempool-buddy default-mempool +static-modules debug"
+IUSE="mmx sse sse2 altivec +threads +safety-checks +mempool-chained mempool-ememoa-fixed mempool-ememoa-unknown mempool-fixed-bitmap +mempool-pass-through mempool-buddy default-mempool +static-modules debug"
 
 RDEPEND="
 	mempool-ememoa-fixed? ( sys-libs/ememoa )
 	mempool-ememoa-unknown? ( sys-libs/ememoa )"
+
 DEPEND="
 	${RDEPEND}
-	test? ( dev-libs/glib dev-libs/check )"
+	test? ( dev-libs/glib )"
 
 src_configure() {
 	local DEBUG_FLAGS="" SAFETY_CHECKS_FLAGS="" TEST_FLAGS="" EMEMOA_FLAGS=""
@@ -91,7 +93,7 @@ src_configure() {
 	  $(use_enable sse cpu-sse)
 	  $(use_enable sse2 cpu-sse2)
 	  $(use_enable altivec cpu-altivec)
-	  $(use_enable threads pthread)
+	  $(use_enable threads posix-threads)
 	  $(use_enable mempool-chained mempool-chained-pool $MODULE_ARGUMENT)
 	  $(use_enable mempool-ememoa-fixed mempool-ememoa-fixed $MODULE_ARGUMENT)
 	  $(use_enable mempool-ememoa-unknown mempool-ememoa-unknown $MODULE_ARGUMENT)

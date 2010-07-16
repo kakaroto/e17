@@ -3,7 +3,8 @@
 # $Header: $
 
 EAPI="2"
-E_NO_NLS="1"
+EFL_PKG_IUSE="doc test"
+
 inherit efl
 
 DESCRIPTION="E file chunk reading/writing library"
@@ -14,15 +15,14 @@ LICENSE="BSD"
 SLOT="0"
 KEYWORDS=""
 
-IUSE="+threads debug test gnutls ssl"
+IUSE="+threads debug gnutls ssl"
 
 RDEPEND="media-libs/jpeg
 	>=dev-libs/eina-9999
 	sys-libs/zlib
 	gnutls? ( net-libs/gnutls )
 	!gnutls? ( ssl? ( dev-libs/openssl ) )"
-DEPEND="${RDEPEND}
-	test? ( dev-libs/check )"
+DEPEND="${RDEPEND}"
 
 src_configure() {
 	local SSL_FLAGS="" DEBUG_FLAGS="" TEST_FLAGS=""
@@ -76,7 +76,7 @@ src_configure() {
 
 	export MY_ECONF="
 	  ${MY_ECONF}
-	  $(use_enable threads pthread)
+	  $(use_enable threads posix-threads)
 	  ${SSL_FLAGS}
 	  ${DEBUG_FLAGS}
 	  ${TEST_FLAGS}

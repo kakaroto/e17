@@ -3,7 +3,8 @@
 # $Header: $
 
 EAPI="2"
-E_NO_NLS="1"
+EFL_PKG_IUSE="doc test"
+
 inherit efl
 
 SRC_URI="http://download.enlightenment.org/releases/${P}.tar.bz2"
@@ -16,15 +17,15 @@ LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd"
 
-IUSE="+threads debug test gnutls ssl"
+IUSE="+threads debug gnutls ssl"
 
 RDEPEND="media-libs/jpeg
 	dev-libs/eina
 	sys-libs/zlib
 	gnutls? ( net-libs/gnutls )
 	!gnutls? ( ssl? ( dev-libs/openssl ) )"
-DEPEND="${RDEPEND}
-	test? ( dev-libs/check )"
+
+DEPEND="${RDEPEND}"
 
 src_configure() {
 	local SSL_FLAGS="" DEBUG_FLAGS="" TEST_FLAGS=""
@@ -78,7 +79,7 @@ src_configure() {
 
 	export MY_ECONF="
 	  ${MY_ECONF}
-	  $(use_enable threads pthread)
+	  $(use_enable threads posix-threads)
 	  ${SSL_FLAGS}
 	  ${DEBUG_FLAGS}
 	  ${TEST_FLAGS}
