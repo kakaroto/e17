@@ -53,6 +53,7 @@
  <flag name="ofono">Enable the Ofono module.</flag>
  <flag name="pager">Enable the Pager module.</flag>
  <flag name="start">Enable the Start module.</flag>
+ <flag name="sysactions">Install the /etc/enlightenment/sysactions.conf file.</flag>
  <flag name="syscon">Enable the Syscon module.</flag>
  <flag name="systray">Enable the Systray module.</flag>
  <flag name="winlist">Enable the Window Listing (alt-tab) module.</flag>
