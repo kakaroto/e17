@@ -34,6 +34,7 @@ from test_panel import panel_clicked
 from test_layout import layout_clicked
 from test_spinner import spinner_clicked
 from test_genlist import genlist_clicked
+from test_flip import flip_clicked
 
 #----- Main -{{{-
 def destroy(obj, str1, str2, str3, str4):
@@ -85,6 +86,7 @@ if __name__ == "__main__":
              ("Hover 2", hover2_clicked),
              ("Entry", entry_clicked),
              ("Entry Scrolled", entry_scrolled_clicked),
+             ("Flip", flip_clicked),
              ("Notepad", notepad_clicked),
              ("Anchorview", anchorview_clicked),
              ("Anchorblock", anchorblock_clicked),

@@ -17,7 +17,7 @@
 #
 
 from c_elementary import Object, Window, Background, Icon, \
-    Box, Button, Scroller, Label, Toggle, Frame, Table, \
+    Box, Button, Scroller, Label, Toggle, Frame, Flip, Table, \
     Clock, Layout, Hover, Entry, AnchorView, AnchorBlock, Bubble, \
     Photo, Hoversel, Toolbar, ToolbarItem, List, ListItem, Slider, \
     Radio, Check, Pager, InnerWindow, Image, Spinner, Fileselector, Notify, \
@@ -86,5 +86,12 @@ ELM_PANEL_ORIENT_RIGHT = 3
 
 ELM_GENLIST_ITEM_NONE = 0
 ELM_GENLIST_ITEM_SUBITEMS = 1
+
+ELM_FLIP_ROTATE_Y_CENTER_AXIS = 0
+ELM_FLIP_ROTATE_X_CENTER_AXIS = 1
+ELM_FLIP_ROTATE_XZ_CENTER_AXIS = 2
+ELM_FLIP_ROTATE_YZ_CENTER_AXIS = 3
+ELM_FLIP_CUBE_LEFT = 4
+ELM_FLIP_CUBE_RIGHT = 5
 
 c_elementary.init()

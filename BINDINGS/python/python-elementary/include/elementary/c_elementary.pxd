@@ -73,6 +73,14 @@ cdef enum Elementary_List_Mode:
     ELM_LIST_SCROLL
     ELM_LIST_LIMIT
 
+cdef enum Elm_Flip_Mode:
+    ELM_FLIP_ROTATE_Y_CENTER_AXIS
+    ELM_FLIP_ROTATE_X_CENTER_AXIS
+    ELM_FLIP_ROTATE_XZ_CENTER_AXIS
+    ELM_FLIP_ROTATE_YZ_CENTER_AXIS
+    ELM_FLIP_CUBE_LEFT
+    ELM_FLIP_CUBE_RIGHT
+
 cdef enum Elm_Genlist_Item_Flags:
     ELM_GENLIST_ITEM_NONE
     ELM_GENLIST_ITEM_SUBITEMS
@@ -328,6 +336,12 @@ cdef extern from "Elementary.h":
     evas.c_evas.Evas_Object* elm_frame_add(evas.c_evas.Evas_Object *parent)
     void elm_frame_label_set(evas.c_evas.Evas_Object *obj, char *label)
     void elm_frame_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
+
+    # Flip object
+    evas.c_evas.Evas_Object* elm_flip_add(evas.c_evas.Evas_Object *parent)
+    void elm_flip_content_front_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
+    void elm_flip_content_back_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
+    void elm_flip_go(evas.c_evas.Evas_Object *obj, Elm_Flip_Mode mode)
 
     # Table object
     evas.c_evas.Evas_Object *elm_table_add(evas.c_evas.Evas_Object *parent)
