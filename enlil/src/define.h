@@ -12,7 +12,6 @@
 #define FLICKR_SECRET "0fcf42e527115702"
 #define FLICKR_AUTH_URL "http://www.flickr.com/auth-72157622943823433"
 
-#define PATH_MAX 2048
 #define TEMP "/tmp/"
 #define FREE(p) do { if(p){ free(p); p=NULL;} }while(0)
 #define PCLOSE(p) do {if(p){pclose(p); p=NULL;} }while(0)
