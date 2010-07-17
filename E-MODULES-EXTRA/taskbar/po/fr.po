@@ -5,32 +5,36 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taskbar module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-25 17:14+0800\n"
-"PO-Revision-Date: 2009-04-24 10:58+0400\n"
+"POT-Creation-Date: 2010-07-17 08:46+0400\n"
+"PO-Revision-Date: 2010-07-17 09:22+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
-"Language-Team: French <Enlightenment i18n French>\n"
+"Language-Team: Enlightenment French Team <pourunmondesansgourou@gmail.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: utf-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
+"Plural-Forms: nplurals=2; plural=n>1;\n"
+"X-Poedit-SourceCharset: utf-8\n"
 
-#: ../src/e_mod_config.c:30
+#: src/e_mod_config.c:30
 msgid "Taskbar Configuration"
 msgstr "Configuration de la barre des tâches"
 
-#: ../src/e_mod_config.c:71
+#: src/e_mod_config.c:71
 msgid "Display"
 msgstr "Affichage"
 
-#: ../src/e_mod_config.c:72
+#: src/e_mod_config.c:72
 msgid "Show windows from all desktops"
-msgstr "Afficher les fenêtres des autres bureaux"
+msgstr "Afficher les fenêtres de tous les bureaux"
 
-#: ../src/e_mod_main.c:294 ../src/e_mod_main.c:667
+#: src/e_mod_main.c:294
+#: src/e_mod_main.c:667
 msgid "Taskbar"
 msgstr "Barre des tâches"
 
-#: ../src/e_mod_main.c:656
+#: src/e_mod_main.c:656
 msgid "Configuration"
 msgstr "Configuration"
+
