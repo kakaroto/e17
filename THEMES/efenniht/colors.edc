@@ -157,7 +157,7 @@ color_classes {
       color: 150 150 150 255;
    }
    color_class { name: "slider_text";
-      color: 0 0 0 255;
+      color: 128 128 128 255;
    }
    color_class { name: "frame_base";
       color: 255 255 255 255;
