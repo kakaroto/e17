@@ -15,7 +15,48 @@ group { 											\
         } 											\
         } 											\
    }
-        
+   
+#define spinner(_name, _label_format, _min, _max, _step, _value)\
+group { 											\
+		name: _name; 								\
+		parts {										\
+		part {										\
+            name: _name; 							\
+            type: EXTERNAL;							\
+            source: "elm/spinner";					\
+            description {							\
+                state : "default" 0.0;				\
+                params {							\
+                	string: "label format" _label_format; \
+                	double: "min" _min;				\
+                	double: "max" _max;				\
+                	double: "step" _step;			\
+                	double: "value" _value; 		\
+                }									\
+            }										\
+        } 											\
+        } 											\
+   }
+ 
+  
+#define hoversel(_name, _label)\
+group { 											\
+		name: _name; 								\
+		parts {										\
+		part {										\
+            name: _name; 							\
+            type: EXTERNAL;							\
+            source: "elm/hoversel";					\
+            description {							\
+                state : "default" 0.0;				\
+                params {							\
+                	string: "label" _label; 		\
+                }									\
+            }										\
+        } 											\
+        } 											\
+   }     
+   
 #define button(_name, text, icon) 			\
 	group { 								\
 		name: _name; 						\
@@ -34,4 +75,6 @@ group { 											\
 	    }									\
 	    }									\
     }
+    
+ 
  
