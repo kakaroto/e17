@@ -310,15 +310,13 @@ generic visual element evas handles and draws. \texttt{Evas\_Objects}
 have, naturally, a \emph{type} associated with them, so that
 specialization is possible.
 
-Evas has a set of built-in object types\footnote{Actually there are
- two implementations of gradients and an object for multi-line text
- entries, too.}:
+Evas has a set of built-in object types\footnote{Actually there is an
+  object for multi-line text entries, too.}:
 \begin{itemize}
 \item rectangle,
 \item line,
 \item polygon,
 \item text,
-\item gradient and
 \item image.
 \end{itemize}
 
@@ -561,7 +559,7 @@ to the point that visual elements (which translate, in edje, to groups
 and parts, as will be further explained) exist in one of them but not
 on the other. The themes could signal that in the form of a data
 field, and the back-end would them interact with the right visual
-parts for every case.
+parts for each case.
 
 The properties defined for this block have two possible forms:
 \begin{description}
@@ -742,7 +740,6 @@ Some properties one can define at a \texttt{part} are:
   \item \texttt{IMAGE}
   \item \texttt{SWALLOW}
   \item \texttt{TEXTBLOCK}
-  \item \texttt{GRADIENT}
   \item \texttt{GROUP}
   \item \texttt{BOX}
   \item \texttt{TABLE}
@@ -929,9 +926,9 @@ value for a \texttt{RECT}'s color.
 \subsubsection{Sizing and positioning in edje}
 \label{sec:positioning}
 
-\begin{lstlisting}
-
 % TODO: place a "to:" property in the example
+
+\begin{lstlisting}
 
 description {
     rel1 {
