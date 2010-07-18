@@ -76,7 +76,7 @@ typedef struct {
    void                (*init) (int avaliable);
 } EServerExt;
 
-static EServerExtData ExtData[10];
+static EServerExtData ExtData[11];
 
 #define event_base_shape ExtData[XEXT_SHAPE].event_base
 #define event_base_randr ExtData[XEXT_RANDR].event_base
