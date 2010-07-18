@@ -342,6 +342,9 @@ cdef extern from "Elementary.h":
     void elm_flip_content_front_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
     void elm_flip_content_back_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
     void elm_flip_go(evas.c_evas.Evas_Object *obj, Elm_Flip_Mode mode)
+    void elm_flip_go(evas.c_evas.Evas_Object *obj, Elm_Flip_Mode mode)
+    evas.c_evas.Eina_Bool elm_flip_front_get(evas.c_evas.Evas_Object *obj)
+    void elm_flip_perspective_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord foc, evas.c_evas.Evas_Coord x, evas.c_evas.Evas_Coord y)
 
     # Table object
     evas.c_evas.Evas_Object *elm_table_add(evas.c_evas.Evas_Object *parent)

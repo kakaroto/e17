@@ -27,7 +27,19 @@ cdef class Flip(Object):
     def content_back_set(self, c_evas.Object content):
         elm_flip_content_back_set(self.obj, content.obj)
 
+    def front_get(self):
+        return elm_flip_front_get(self.obj)
+
+    def perspective_set(self, foc, x, y):
+        elm_flip_perspective_set(self.obj, foc, x, y)
+
     def go(self, flip_mode):
         elm_flip_go(self.obj, flip_mode)
+
+    def callback_animate_done_add(self, func, *args, **kwargs):
+        self._callback_add("animate,done", func, *args, **kwargs)
+
+    def callback_animate_done_del(self, func):
+        self._callback_del("animate,done", func)
 
 _elm_widget_type_register("flip", Flip)
