@@ -47,7 +47,7 @@
 
 static Ecore_List  *border_list = NULL;
 
-static void         BorderDestroy(const Border * b);
+static void         BorderDestroy(Border * b);
 static void         BorderWinpartHandleEvents(Win win, XEvent * ev, void *prm);
 static void         BorderFrameHandleEvents(Win win, XEvent * ev, void *prm);
 static Border      *BorderGetFallback(void);
@@ -683,7 +683,7 @@ BorderCreate(const char *name)
 }
 
 static void
-BorderDestroy(const Border * b)
+BorderDestroy(Border * b)
 {
    int                 i;
 
@@ -710,6 +710,7 @@ BorderDestroy(const Border * b)
    Efree(b->name);
    Efree(b->group_border_name);
    ActionclassFree(b->aclass);
+   Efree(b);
 }
 
 static int
