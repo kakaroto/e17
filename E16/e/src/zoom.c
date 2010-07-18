@@ -162,28 +162,14 @@ SwitchRes(char inout, int x, int y, int w, int h)
    return mode;
 }
 
-EWin               *
-GetZoomEWin(void)
-{
-   return zoom_last_ewin;
-}
-
 void
 ReZoom(EWin * ewin)
 {
    if (zoom_last_ewin && ewin == zoom_last_ewin)
      {
-	Zoom(NULL);
-	Zoom(ewin);
+	Zoom(ewin, 0);
+	Zoom(ewin, 1);
      }
-}
-
-char
-InZoom(void)
-{
-   if (zoom_last_ewin)
-      return 1;
-   return 0;
 }
 
 static void
@@ -220,7 +206,7 @@ ZoomMask(int x, int y, int w, int h)
 }
 
 void
-Zoom(EWin * ewin)
+Zoom(EWin * ewin, int on)
 {
    const XF86VidModeModeInfo *mode;
 
@@ -230,7 +216,7 @@ Zoom(EWin * ewin)
    if (zoom_can <= 0)
       return;
 
-   if (!ewin)
+   if (!on)
      {
 	if (zoom_last_ewin)
 	  {
@@ -247,6 +233,7 @@ Zoom(EWin * ewin)
 		EDestroyWindow(zoom_mask_4);
 	     SwitchRes(0, 0, 0, 0, 0);
 	     EwinWarpTo(ewin, 1);
+	     ewin->state.zoomed = 0;
 	     ESync(0);
 	     zoom_last_ewin = NULL;
 	  }
@@ -289,6 +276,7 @@ Zoom(EWin * ewin)
 	EwinRaise(ewin);
 	EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
 	EwinMove(ewin, -bl + x1, -bt + y1);
+	ewin->state.zoomed = 1;
 	FocusToEWin(ewin, FOCUS_SET);
 	EwinWarpTo(ewin, 1);
 #if 0				/* Doesn't work as intended */
@@ -309,22 +297,10 @@ Zoom(EWin * ewin)
 
 #else
 
-EWin               *
-GetZoomEWin(void)
-{
-   return NULL;
-}
-
 void
 ReZoom(EWin * ewin)
 {
    ewin = NULL;
-}
-
-char
-InZoom(void)
-{
-   return 0;
 }
 
 void

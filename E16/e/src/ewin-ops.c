@@ -534,9 +534,6 @@ EwinIconify(EWin * ewin)
    if (!ewin)
       return;
 
-   if (GetZoomEWin() == ewin)
-      Zoom(NULL);
-
    if (ewin->state.inhibit_iconify)
       return;
 
@@ -546,6 +543,8 @@ EwinIconify(EWin * ewin)
    if (call_depth > 256)
       return;
    call_depth++;
+
+   Zoom(ewin, 0);
 
    /* Save position at which the window was iconified */
    EwinRememberPositionSet(ewin);
@@ -751,7 +750,7 @@ EwinInstantShade(EWin * ewin, int force)
    if ((ewin->border->border.left == 0) && (ewin->border->border.right == 0)
        && (ewin->border->border.top == 0) && (ewin->border->border.bottom == 0))
       return;
-   if (GetZoomEWin() == ewin)
+   if (ewin->state.zoomed)
       return;
    if (ewin->state.shaded && !force)
       return;
@@ -801,7 +800,7 @@ EwinInstantUnShade(EWin * ewin)
    XSetWindowAttributes att;
    int                 x, y, w, h;
 
-   if (GetZoomEWin() == ewin)
+   if (ewin->state.zoomed)
       return;
    if (!ewin->state.shaded)
       return;
@@ -1036,7 +1035,7 @@ EwinShade(EWin * ewin)
    if ((ewin->border->border.left == 0) && (ewin->border->border.right == 0) &&
        (ewin->border->border.top == 0) && (ewin->border->border.bottom == 0))
       return;
-   if (GetZoomEWin() == ewin)
+   if (ewin->state.zoomed)
       return;
    if (ewin->state.shaded || ewin->state.shading || ewin->state.iconified)
       return;
@@ -1258,7 +1257,7 @@ EwinUnShade(EWin * ewin)
 {
    _ewin_shade_data   *esd;
 
-   if (GetZoomEWin() == ewin)
+   if (ewin->state.zoomed)
       return;
    TIMER_DEL(ewin->timer);
    if (!ewin->state.shaded || ewin->state.shading || ewin->state.iconified)

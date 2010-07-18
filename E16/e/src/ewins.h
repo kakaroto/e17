@@ -92,6 +92,7 @@ struct _ewin {
       unsigned            maximized_horz:1;
       unsigned            maximized_vert:1;
       unsigned            fullscreen:1;
+      unsigned            zoomed:1;
 
       unsigned            active:1;
       unsigned            modal:1;
@@ -475,9 +476,7 @@ int                 EwinListStackIsRaised(const EWin * ewin);
 #define EwinListGetAll EwinListStackGet
 
 /* zoom.c */
-EWin               *GetZoomEWin(void);
+void                Zoom(EWin * ewin, int on);
 void                ReZoom(EWin * ewin);
-char                InZoom(void);
-void                Zoom(EWin * ewin);
 
 #endif /* _EWIN_H_ */

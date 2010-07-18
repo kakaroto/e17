@@ -1019,8 +1019,7 @@ EwinUnmap1(EWin * ewin)
 {
    /* The client may have been unmapped but the frame is not yet */
 
-   if (GetZoomEWin() == ewin)
-      Zoom(NULL);
+   Zoom(ewin, 0);
 
    MoveResizeEnd(ewin);
 }

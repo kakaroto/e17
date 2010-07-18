@@ -669,10 +669,9 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	break;
 
      case EWIN_OP_ZOOM:
-	if (InZoom())
-	   Zoom(NULL);
-	else
-	   Zoom(ewin);
+	on = ewin->state.zoomed;
+	if (SetEwinBoolean(wop->name, &on, param1, 1))
+	   Zoom(ewin, on);
 	break;
 
      case EWIN_OP_LAYER:
