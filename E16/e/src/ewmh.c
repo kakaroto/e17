@@ -26,6 +26,7 @@
 #include "E.h"
 #include "desktops.h"
 #include "e16-ecore_hints.h"
+#include "events.h"
 #include "ewins.h"
 #include "hints.h"
 
@@ -1028,6 +1029,9 @@ EWMH_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * ev)
    if (ev->message_type == ECORE_X_ATOM_NET_WM_MOVERESIZE)
      {
 /*	source = OPSRC(ev->data.l[4]); */
+
+	EventsUpdateXY(NULL, NULL);
+
 	switch (ev->data.l[2])
 	  {
 	  case _NET_WM_MOVERESIZE_SIZE_TOPLEFT:

@@ -400,9 +400,11 @@ EventsUpdateXY(int *px, int *py)
 {
    int                 ss;
 
-   ss = EQueryPointer(NULL, px, py, NULL, NULL);
-   Mode.events.cx = *px;
-   Mode.events.cy = *py;
+   ss = EQueryPointer(NULL, &Mode.events.cx, &Mode.events.cy, NULL, NULL);
+   if (px)
+      *px = Mode.events.cx;
+   if (py)
+      *py = Mode.events.cy;
 
    return ss;
 }
