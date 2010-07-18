@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Uptime module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2010-07-17 08:47+0400\n"
-"PO-Revision-Date: 2010-07-17 10:45+0400\n"
+"PO-Revision-Date: 2010-07-18 10:11+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: Enlightenment French Team <pourunmondesansgourou@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr "Configuration de l'uptime"
 
 #: src/e_mod_config.c:105
 msgid "Uptime Settings"
-msgstr "Paramètres  de l'uptime"
+msgstr "Paramètres de l'uptime"
 
 #: src/e_mod_config.c:107
 msgid "Update Interval:"
