@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2003-2009 Kim Woelders
+ * Copyright (C) 2003-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -26,9 +26,6 @@
 #include "ipc.h"
 #include "screen.h"
 #include "xwin.h"
-#ifdef USE_XINERAMA
-#include <X11/extensions/Xinerama.h>
-#endif
 
 typedef struct {
    int                 type;
@@ -41,6 +38,8 @@ static EScreen     *p_screens = NULL;
 static int          n_screens = 0;
 
 #ifdef USE_XINERAMA
+#include <X11/extensions/Xinerama.h>
+
 static XineramaScreenInfo *
 EXineramaQueryScreens(int *number)
 {
@@ -53,6 +52,62 @@ EXineramaQueryScreens(int *number)
 
    return XineramaQueryScreens(disp, number);
 }
+
+static void
+ScreenInitX(void)
+{
+   XineramaScreenInfo *screens;
+   int                 i, num_screens;
+
+   screens = EXineramaQueryScreens(&num_screens);
+
+   Mode.display.xinerama_active = (XineramaIsActive(disp)) ? 1 : 0;
+   if (!Mode.display.xinerama_active && num_screens > 1)
+      Mode.display.xinerama_active = 2;
+
+   if (num_screens > 1)
+     {
+	for (i = 0; i < num_screens; i++)
+	   ScreenAdd(0, screens[i].screen_number, screens[i].x_org,
+		     screens[i].y_org, screens[i].width, screens[i].height);
+     }
+
+   if (screens)
+      XFree(screens);
+}
+
+static void
+ScreenShowInfoX(void)
+{
+   static const char  *const mt[] = { "Off", "On", "TV", "???" };
+   XineramaScreenInfo *scrns;
+   int                 i, num, mode;
+
+   scrns = EXineramaQueryScreens(&num);
+
+   mode = (XineramaIsActive(disp)) ? 1 : 0;
+   if (!mode && num > 1)
+      mode = 2;
+
+   IpcPrintf("Xinerama mode: %s\n", mt[mode]);
+
+   if (scrns)
+     {
+	IpcPrintf("Xinerama screens:\n");
+	for (i = 0; i < num; i++)
+	   IpcPrintf(" %2d     %2d       %5d     %5d     %5d     %5d\n",
+		     i, scrns[i].screen_number,
+		     scrns[i].x_org, scrns[i].y_org, scrns[i].width,
+		     scrns[i].height);
+	XFree(scrns);
+     }
+}
+
+#else
+
+#define ScreenInitX()
+#define ScreenShowInfoX()
+
 #endif
 
 void
@@ -75,33 +130,13 @@ ScreenAdd(int type, int head, int x, int y, unsigned int w, unsigned int h)
 void
 ScreenInit(void)
 {
-#ifdef USE_XINERAMA
-   XineramaScreenInfo *screens;
-   int                 i, num_screens;
-#endif
 
    n_screens = 0;		/* Causes reconfiguration */
 
-#ifdef USE_XINERAMA
    if (Mode.wm.window)
       return;
 
-   screens = EXineramaQueryScreens(&num_screens);
-
-   Mode.display.xinerama_active = (XineramaIsActive(disp)) ? 1 : 0;
-   if (!Mode.display.xinerama_active && num_screens > 1)
-      Mode.display.xinerama_active = 2;
-
-   if (num_screens > 1)
-     {
-	for (i = 0; i < num_screens; i++)
-	   ScreenAdd(0, screens[i].screen_number, screens[i].x_org,
-		     screens[i].y_org, screens[i].width, screens[i].height);
-     }
-
-   if (screens)
-      XFree(screens);
-#endif
+   ScreenInitX();
 }
 
 void
@@ -132,37 +167,12 @@ ScreenShowInfo(const char *prm __UNUSED__)
 {
    int                 i;
 
-#ifdef USE_XINERAMA
-   static const char  *const mt[] = { "Off", "On", "TV", "???" };
-   XineramaScreenInfo *scrns;
-   int                 num, mode;
-#endif
-
    IpcPrintf("Head  Screen  X-Origin  Y-Origin     Width    Height\n");
    IpcPrintf("Screen:\n");
    IpcPrintf(" %2d     %2d       %5d     %5d     %5d     %5d\n",
 	     0, Dpy.screen, 0, 0, WinGetW(VROOT), WinGetH(VROOT));
 
-#ifdef USE_XINERAMA
-   scrns = EXineramaQueryScreens(&num);
-
-   mode = (XineramaIsActive(disp)) ? 1 : 0;
-   if (!mode && num > 1)
-      mode = 2;
-
-   IpcPrintf("Xinerama mode: %s\n", mt[mode]);
-
-   if (scrns)
-     {
-	IpcPrintf("Xinerama screens:\n");
-	for (i = 0; i < num; i++)
-	   IpcPrintf(" %2d     %2d       %5d     %5d     %5d     %5d\n",
-		     i, scrns[i].screen_number,
-		     scrns[i].x_org, scrns[i].y_org, scrns[i].width,
-		     scrns[i].height);
-	XFree(scrns);
-     }
-#endif
+   ScreenShowInfoX();
 
    if (n_screens)
      {
