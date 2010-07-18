@@ -265,18 +265,4 @@ Zoom(EWin * ewin, int on)
      }
 }
 
-#else
-
-void
-ReZoom(EWin * ewin)
-{
-   ewin = NULL;
-}
-
-void
-Zoom(EWin * ewin)
-{
-   ewin = NULL;
-}
-
-#endif
+#endif /* WITH_ZOOM */
