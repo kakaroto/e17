@@ -23,10 +23,11 @@
  */
 #include "E.h"
 #include "ewins.h"
-#include "focus.h"
-#include "xwin.h"
 
 #ifdef WITH_ZOOM
+#include "borders.h"
+#include "focus.h"
+#include "xwin.h"
 #include <X11/extensions/xf86vmode.h>
 #if USE_XRANDR
 #include <X11/extensions/Xrandr.h>
@@ -36,12 +37,7 @@ static int          std_vid_modes_num = 0;
 static int          std_vid_mode_cur = 0;
 static XF86VidModeModeInfo **std_vid_modes = NULL;
 
-static Win          zoom_mask_1 = 0;
-static Win          zoom_mask_2 = 0;
-static Win          zoom_mask_3 = 0;
-static Win          zoom_mask_4 = 0;
 static EWin        *zoom_last_ewin = NULL;
-static int          zoom_last_x, zoom_last_y;
 static signed char  zoom_can = 0;
 
 static XF86VidModeModeInfo *
@@ -189,22 +185,6 @@ ZoomInit(void)
       zoom_can = 1;
 }
 
-static              Win
-ZoomMask(int x, int y, int w, int h)
-{
-   Win                 win;
-
-   if (x < 0 || y < 0 || w <= 0 || h <= 0)
-      return 0;
-
-   win = ECreateWindow(VROOT, x, y, w, h, 0);
-   ESetWindowBackground(win, Dpy.pixel_black);
-   ERaiseWindow(win);
-   EMapWindow(win);
-
-   return win;
-}
-
 void
 Zoom(EWin * ewin, int on)
 {
@@ -218,36 +198,37 @@ Zoom(EWin * ewin, int on)
 
    if (!on)
      {
-	if (zoom_last_ewin)
-	  {
-	     ewin = zoom_last_ewin;
-/*           XUngrabPointer(disp, CurrentTime); */
-	     EwinMove(ewin, zoom_last_x, zoom_last_y);
-	     if (zoom_mask_1)
-		EDestroyWindow(zoom_mask_1);
-	     if (zoom_mask_2)
-		EDestroyWindow(zoom_mask_2);
-	     if (zoom_mask_3)
-		EDestroyWindow(zoom_mask_3);
-	     if (zoom_mask_4)
-		EDestroyWindow(zoom_mask_4);
-	     SwitchRes(0, 0, 0, 0, 0);
-	     EwinWarpTo(ewin, 1);
-	     ewin->state.zoomed = 0;
-	     ESync(0);
-	     zoom_last_ewin = NULL;
-	  }
+	/* Unzoom */
+
+	if (ewin && ewin != zoom_last_ewin)
+	   return;
+	ewin = zoom_last_ewin;
+	if (!ewin)
+	   return;
+
+	zoom_last_ewin = NULL;
+
+	SwitchRes(0, 0, 0, 0, 0);
+	EwinBorderSetTo(ewin, ewin->normal_border);
+	EwinMoveResize(ewin, ewin->save_fs.x, ewin->save_fs.y,
+		       ewin->client.w, ewin->client.h);
+	ewin->state.zoomed = 0;
+	EwinWarpTo(ewin, 1);
+	ESync(0);
 	return;
      }
+
+   if (ewin->state.fullscreen)
+      return;
 
    mode = SwitchRes(1, 0, 0, ewin->client.w, ewin->client.h);
    if (mode)
      {
-	int                 x1, y1, x2, y2, bl, br, bt, bb, dw, dh;
+	int                 x1, y1, x2, y2, dw, dh;
 
 	zoom_last_ewin = ewin;
-	zoom_last_x = EoGetX(ewin);
-	zoom_last_y = EoGetY(ewin);
+	ewin->save_fs.x = EoGetX(ewin);
+	ewin->save_fs.y = EoGetY(ewin);
 #if USE_XRANDR
 	if ((Mode.screen.rotation == RR_Rotate_90) ||
 	    (Mode.screen.rotation == RR_Rotate_270))
@@ -274,23 +255,12 @@ Zoom(EWin * ewin, int on)
 	if (y2 < 0)
 	   y2 = 0;
 	EwinRaise(ewin);
-	EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
-	EwinMove(ewin, -bl + x1, -bt + y1);
+	EwinBorderSetTo(ewin, BorderCreateFiller(ewin->client.w,
+						 ewin->client.h, dw, dh));
+	EwinMoveResize(ewin, 0, 0, ewin->client.w, ewin->client.h);
 	ewin->state.zoomed = 1;
 	FocusToEWin(ewin, FOCUS_SET);
 	EwinWarpTo(ewin, 1);
-#if 0				/* Doesn't work as intended */
-	XGrabPointer(disp, EwinGetClientXwin(ewin), True,
-		     ButtonPressMask | ButtonReleaseMask |
-		     PointerMotionMask | ButtonMotionMask |
-		     EnterWindowMask | LeaveWindowMask,
-		     GrabModeAsync, GrabModeAsync,
-		     EwinGetClientXwin(ewin), None, CurrentTime);
-#endif
-	zoom_mask_1 = ZoomMask(0, 0, x1, dh);
-	zoom_mask_2 = ZoomMask(0, 0, dw, y1);
-	zoom_mask_3 = ZoomMask(x1 + ewin->client.w, 0, x2, dh);
-	zoom_mask_4 = ZoomMask(0, y1 + ewin->client.h, dw, y2);
 	ESync(0);
      }
 }

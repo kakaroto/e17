@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -96,8 +96,7 @@ void                EwinBorderChange(EWin * ewin, const Border * b, int normal);
 void                EwinBorderSetInitially(EWin * ewin, const char *name);
 int                 BorderWinpartIndex(EWin * ewin, Win win);
 void                BorderCheckState(EWin * ewin, XEvent * ev);
-Border             *BorderCreateFiller(int left, int right, int top,
-				       int bottom);
+Border             *BorderCreateFiller(int w, int h, int sw, int sh);
 void                BordersForeach(void (*func) (Border * b, void *data),
 				   void *data);
 Border            **BordersGetList(int *pnum);

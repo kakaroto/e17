@@ -1286,6 +1286,8 @@ EwinOpFullscreen(EWin * ewin, int source __UNUSED__, int on)
 
    if (ewin->state.fullscreen == (unsigned)on)
       return;
+   if (ewin->state.zoomed)
+      return;
 
    if (on)
      {
@@ -1309,13 +1311,7 @@ EwinOpFullscreen(EWin * ewin, int source __UNUSED__, int on)
 	  }
 	else
 	  {
-	     int                 l, t;
-
-	     l = (w - ww) / 2;
-	     l = (l < 0) ? 0 : l;
-	     t = (h - hh) / 2;
-	     t = (t < 0) ? 0 : t;
-	     b = BorderCreateFiller(l, w - ww - l, t, h - hh - t);
+	     b = BorderCreateFiller(ww, hh, w, h);
 	     w = ww;
 	     h = hh;
 	  }

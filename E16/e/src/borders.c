@@ -1296,13 +1296,21 @@ BorderConfigLoad(FILE * fs)
 }
 
 Border             *
-BorderCreateFiller(int left, int right, int top, int bottom)
+BorderCreateFiller(int w, int h, int sw, int sh)
 {
    Border             *b;
+   int                 left, right, top, bottom;
 
    b = BorderCreate("__FILLER");
    if (!b)
       return b;
+
+   left = (sw - w) / 2;
+   left = (left < 0) ? 0 : left;
+   right = sw - w - left;
+   top = (sh - h) / 2;
+   top = (top < 0) ? 0 : top;
+   bottom = sh - h - top;
 
    b->throwaway = 1;
 
