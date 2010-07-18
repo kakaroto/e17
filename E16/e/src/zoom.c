@@ -42,14 +42,7 @@ static Win          zoom_mask_3 = 0;
 static Win          zoom_mask_4 = 0;
 static EWin        *zoom_last_ewin = NULL;
 static int          zoom_last_x, zoom_last_y;
-static char         zoom_can = 0;
-
-static void
-FillStdVidModes(void)
-{
-   XF86VidModeGetAllModeLines(disp, Dpy.screen,
-			      &std_vid_modes_num, &std_vid_modes);
-}
+static signed char  zoom_can = 0;
 
 static XF86VidModeModeInfo *
 FindMode(int w, int h)
@@ -169,17 +162,6 @@ SwitchRes(char inout, int x, int y, int w, int h)
    return mode;
 }
 
-static char
-XHasDGA(void)
-{
-   int                 ev_base, er_base;
-
-   if (XF86VidModeQueryExtension(disp, &ev_base, &er_base))
-      return 1;
-   else
-      return 0;
-}
-
 EWin               *
 GetZoomEWin(void)
 {
@@ -204,15 +186,21 @@ InZoom(void)
    return 0;
 }
 
-void
+static void
 ZoomInit(void)
 {
-   if (XHasDGA())
-     {
-	FillStdVidModes();
-	if (std_vid_modes_num > 1)
-	   zoom_can = 1;
-     }
+   int                 ev_base, er_base;
+
+   zoom_can = -1;
+
+   if (!XF86VidModeQueryExtension(disp, &ev_base, &er_base))
+      return;
+
+   XF86VidModeGetAllModeLines(disp, Dpy.screen,
+			      &std_vid_modes_num, &std_vid_modes);
+
+   if (std_vid_modes_num > 1)
+      zoom_can = 1;
 }
 
 static              Win
@@ -236,7 +224,10 @@ Zoom(EWin * ewin)
 {
    const XF86VidModeModeInfo *mode;
 
-   if (!zoom_can)
+   if (zoom_can == 0)
+      ZoomInit();
+
+   if (zoom_can <= 0)
       return;
 
    if (!ewin)
@@ -334,11 +325,6 @@ char
 InZoom(void)
 {
    return 0;
-}
-
-void
-ZoomInit(void)
-{
 }
 
 void

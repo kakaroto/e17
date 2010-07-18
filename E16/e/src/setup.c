@@ -232,5 +232,4 @@ SetupX(const char *dstr)
    }
 
    ScreenInit();
-   ZoomInit();
 }

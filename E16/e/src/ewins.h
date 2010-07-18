@@ -478,7 +478,6 @@ int                 EwinListStackIsRaised(const EWin * ewin);
 EWin               *GetZoomEWin(void);
 void                ReZoom(EWin * ewin);
 char                InZoom(void);
-void                ZoomInit(void);
 void                Zoom(EWin * ewin);
 
 #endif /* _EWIN_H_ */
