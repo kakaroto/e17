@@ -40,6 +40,9 @@
 #if USE_XRANDR
 #include <X11/extensions/Xrandr.h>
 #endif
+#if USE_XINERAMA
+#include <X11/extensions/Xinerama.h>
+#endif
 #if USE_COMPOSITE
 #include <X11/extensions/Xcomposite.h>
 #include <X11/extensions/Xdamage.h>
@@ -260,6 +263,9 @@ static const EServerExt Extensions[] = {
 #endif
 #if USE_XRANDR
    {"RANDR", XEXT_RANDR, XRRQueryVersion, ExtInitRR},
+#endif
+#if USE_XINERAMA
+   {"XINERAMA", XEXT_XINERAMA, XineramaQueryVersion, NULL},
 #endif
 #if USE_COMPOSITE
    {"Composite", XEXT_COMPOSITE, XCompositeQueryVersion, NULL},

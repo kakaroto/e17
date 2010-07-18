@@ -119,15 +119,16 @@
 
 /* Server extensions */
 #define XEXT_SHAPE       0
-#define XEXT_SYNC        1
-#define XEXT_SCRSAVER    2
-#define XEXT_RANDR       3
-#define XEXT_COMPOSITE   4
-#define XEXT_DAMAGE      5
-#define XEXT_FIXES       6
-#define XEXT_RENDER      7
-#define XEXT_GLX         8
-#define XEXT_XI          9
+#define XEXT_XINERAMA    1
+#define XEXT_SYNC        2
+#define XEXT_SCRSAVER    3
+#define XEXT_RANDR       4
+#define XEXT_COMPOSITE   5
+#define XEXT_DAMAGE      6
+#define XEXT_FIXES       7
+#define XEXT_RENDER      8
+#define XEXT_GLX         9
+#define XEXT_XI         10
 
 #define XEXT_CM_ALL     16
 
