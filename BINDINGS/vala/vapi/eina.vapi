@@ -68,7 +68,7 @@ namespace Eina
         public List<G> nth_list(int n);
 
         [CCode (cname = "eina_list_nth")]
-        public unowned G @get(uint n);
+        public unowned G get(uint n);
 
         public bool contains (G item)
         {
@@ -348,7 +348,7 @@ namespace Eina
 
     //=======================================================================
     [Compact]
-    [CCode (free_function = "eina_hash_free")]
+    [CCode (free_function = "eina_hash_free", simple_generics = true)]
     public class Hash<K,V>
     {
         public static int superfast(void* key, int len);
@@ -392,12 +392,12 @@ namespace Eina
 
         public bool add(K key, V data);
         [CCode (cname = "eina_hash_add")]
-        public bool @set(K key, owned V data);
+        public bool set(K key, owned V data);
         public bool direct_add(K key, V data);
         public bool del(K key, V data);
         public V? find(K key);
         [CCode (cname = "eina_hash_find")]
-        public unowned V? @get(K key);
+        public unowned V? get(K key);
         public V? modify(K key, V data);
         public int population();
         public bool add_by_hash(K key, int key_length, int key_hash, V data);
