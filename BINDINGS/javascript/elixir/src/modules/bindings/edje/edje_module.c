@@ -2001,7 +2001,7 @@ elixir_edje_object_item_provider_set(JSContext *cx, uintN argc, jsval *vp)
 
    /* Prevent leaking by linking the callback to the object lifetime */
    lst = evas_object_data_get(eo, "elixir_jsmap");
-   lst = elixir_jsmap_add(lst, cx, elixir_void_get_jsval(data), data);
+   lst = elixir_jsmap_add(lst, cx, elixir_void_get_jsval(data), data, -2);
    evas_object_data_set(eo, "elixir_jsmap", lst);
 
    edje_object_item_provider_set(eo, _elixir_edje_object_item_provider_set, data);
@@ -2080,7 +2080,7 @@ elixir_edje_object_text_insert_filter_callback_add(JSContext *cx, uintN argc, js
 
    /* Prevent leaking by linking the callback to the object lifetime */
    lst = evas_object_data_get(eo, "elixir_jsmap");
-   lst = elixir_jsmap_add(lst, cx, elixir_void_get_jsval(data), data);
+   lst = elixir_jsmap_add(lst, cx, elixir_void_get_jsval(data), data, -5);
    evas_object_data_set(eo, "elixir_jsmap", lst);
 
    edje_object_text_insert_filter_callback_add(eo, part, _elixir_edje_object_text_insert_filter_cb, data);
@@ -2105,11 +2105,11 @@ elixir_edje_object_text_insert_filter_callback_del(JSContext *cx, uintN argc, js
 
    /* Prevent leaking by linking the callback to the object lifetime */
    lst = evas_object_data_get(eo, "elixir_jsmap");
-   data = elixir_jsmap_find(&lst, val[3].v.any);
+   data = elixir_jsmap_find(&lst, val[3].v.any, -5);
 
    edje_object_text_insert_filter_callback_del(eo, part, _elixir_edje_object_text_insert_filter_cb, data);
 
-   lst = elixir_jsmap_del(lst, cx, val[3].v.any);
+   lst = elixir_jsmap_del(lst, cx, val[3].v.any, -5);
    evas_object_data_set(eo, "elixir_jsmap", lst);
 
    return JS_TRUE;
@@ -2170,7 +2170,7 @@ elixir_edje_object_text_change_cb_set(JSContext *cx, uintN argc, jsval *vp)
 
    /* Prevent leaking by linking the callback to the object lifetime */
    lst = evas_object_data_get(eo, "elixir_jsmap");
-   lst = elixir_jsmap_add(lst, cx, elixir_void_get_jsval(data), data);
+   lst = elixir_jsmap_add(lst, cx, elixir_void_get_jsval(data), data, -2);
    evas_object_data_set(eo, "elixir_jsmap", lst);
 
    edje_object_text_change_cb_set(eo, _elixir_edje_object_text_change_cb, data);
@@ -2245,7 +2245,7 @@ elixir_edje_object_signal_callback_add(JSContext *cx, uintN argc, jsval *vp)
 
    /* Prevent leaking by linking the callback to the object lifetime */
    lst = evas_object_data_get(eo, "elixir_jsmap");
-   lst = elixir_jsmap_add(lst, cx, elixir_void_get_jsval(data), data);
+   lst = elixir_jsmap_add(lst, cx, elixir_void_get_jsval(data), data, -3);
    evas_object_data_set(eo, "elixir_jsmap", lst);
 
    edje_object_signal_callback_add(eo, emission, source, _elixir_edje_object_signal_cb, data);
@@ -2274,7 +2274,7 @@ elixir_edje_object_signal_callback_del(JSContext *cx, uintN argc, jsval *vp)
 
    /* Prevent leaking by linking the callback to the object lifetime */
    lst = evas_object_data_get(eo, "elixir_jsmap");
-   lst = elixir_jsmap_del(lst, cx, elixir_void_get_jsval(data));
+   lst = elixir_jsmap_del(lst, cx, elixir_void_get_jsval(data), -3);
    evas_object_data_set(eo, "elixir_jsmap", lst);
 
    JS_SET_RVAL(cx, vp, elixir_void_free(data));
@@ -2815,7 +2815,7 @@ elixir_edje_object_message_handler_set(JSContext *cx, uintN argc, jsval *vp)
 
    /* Prevent leaking by linking the callback to the object lifetime */
    lst = evas_object_data_get(eo, "elixir_jsmap");
-   lst = elixir_jsmap_add(lst, cx, elixir_void_get_jsval(data), data);
+   lst = elixir_jsmap_add(lst, cx, elixir_void_get_jsval(data), data, -4);
    evas_object_data_set(eo, "elixir_jsmap", lst);
 
    edje_object_message_handler_set(eo, _elixir_edje_object_message_handler_cb, data);

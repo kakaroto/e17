@@ -441,7 +441,7 @@ elixir_evas_object_event_callback_add(JSContext *cx, uintN argc, jsval *vp)
 
    /* Prevent leaking by linking the callback to the object lifetime */
    lst = evas_object_data_get(know, "elixir_jsmap");
-   lst = elixir_jsmap_add(lst, cx, elixir_void_get_jsval(cdata), cdata);
+   lst = elixir_jsmap_add(lst, cx, elixir_void_get_jsval(cdata), cdata, type);
    evas_object_data_set(know, "elixir_jsmap", lst);
 
    evas_object_event_callback_add(know, type, elixir_object_event_callback, cdata);
@@ -493,13 +493,13 @@ elixir_evas_object_event_callback_del(JSContext *cx, uintN argc, jsval *vp)
 
    /* Prevent leaking */
    lst = evas_object_data_get(know, "elixir_jsmap");
-   cdata = elixir_jsmap_find(&lst, val[3].v.any);
+   cdata = elixir_jsmap_find(&lst, val[3].v.any, type);
 
    cdata = evas_object_event_callback_del_full(know, type, elixir_object_event_callback, cdata);
    if (elixir_void_get_private(cdata))
      free(elixir_void_get_private(cdata));
 
-   lst = elixir_jsmap_del(lst, cx, elixir_void_get_jsval(cdata));
+   lst = elixir_jsmap_del(lst, cx, elixir_void_get_jsval(cdata), type);
    evas_object_data_set(know, "elixir_jsmap", lst);
 
    ret = elixir_void_free(cdata);

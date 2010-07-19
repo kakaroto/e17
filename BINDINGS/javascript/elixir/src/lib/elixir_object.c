@@ -287,7 +287,7 @@ elixir_get_fct(JSContext *cx, jsval arg)
 }
 
 Eina_List *
-elixir_jsmap_add(Eina_List *list, JSContext *cx, jsval val, void *data)
+elixir_jsmap_add(Eina_List *list, JSContext *cx, jsval val, void *data, int type)
 {
    Elixir_Jsmap *m;
 
@@ -296,6 +296,7 @@ elixir_jsmap_add(Eina_List *list, JSContext *cx, jsval val, void *data)
 
    m->val = val;
    m->data = data;
+   m->type = type;
 
    if (!elixir_rval_register(cx, &m->val))
      {
@@ -307,13 +308,13 @@ elixir_jsmap_add(Eina_List *list, JSContext *cx, jsval val, void *data)
 }
 
 Eina_List *
-elixir_jsmap_del(Eina_List *list, JSContext *cx, jsval val)
+elixir_jsmap_del(Eina_List *list, JSContext *cx, jsval val, int type)
 {
    Elixir_Jsmap *m;
    Eina_List *l;
 
    EINA_LIST_FOREACH(list, l, m)
-     if (m->val == val)
+     if (m->val == val && m->type == type)
        {
 	  elixir_rval_delete(cx, &m->val);
 	  free(m);
@@ -325,13 +326,13 @@ elixir_jsmap_del(Eina_List *list, JSContext *cx, jsval val)
 }
 
 void *
-elixir_jsmap_find(Eina_List **list, jsval val)
+elixir_jsmap_find(Eina_List **list, jsval val, int type)
 {
    Elixir_Jsmap *m;
    Eina_List *l;
 
    EINA_LIST_FOREACH(*list, l, m)
-     if (m->val == val)
+     if (m->val == val && m->type == type)
        {
 	  *list = eina_list_promote_list(*list, l);
 	  return m->data;

@@ -599,12 +599,13 @@ typedef struct _Elixir_Jsmap Elixir_Jsmap;
 struct _Elixir_Jsmap
 {
    jsval val;
+   int type;
    void *data;
 };
 
-Eina_List *elixir_jsmap_add(Eina_List *list, JSContext *cx, jsval val, void *data);
-Eina_List *elixir_jsmap_del(Eina_List *list, JSContext *cx, jsval val);
-void *elixir_jsmap_find(Eina_List **list, jsval val);
+Eina_List *elixir_jsmap_add(Eina_List *list, JSContext *cx, jsval val, void *data, int type);
+Eina_List *elixir_jsmap_del(Eina_List *list, JSContext *cx, jsval val, int type);
+void *elixir_jsmap_find(Eina_List **list, jsval val, int type);
 void elixir_jsmap_free(Eina_List *list, JSContext *cx);
 
 #endif          /* ELIXIR_H__ */
