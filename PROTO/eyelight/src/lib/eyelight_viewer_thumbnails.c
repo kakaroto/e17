@@ -245,25 +245,37 @@ static int* _eyelight_viewer_thumbnails_resize(const char *file, int pos, const 
     if (file)
       {
 	 char buffer[10];
-	 Eet_File *ef;
-	 char *tmp;
-	 int bytes;
 
 	 eina_convert_itoa(pos, buffer);
 
-	 tmp = alloca(strlen(buffer) + 16);
-
-	 strcpy(tmp, "eyelight/thumb/");
-	 strcat(tmp, buffer);
-
-	 ef = eet_open(file, EET_FILE_MODE_READ_WRITE);
-
-	 if (ef)
+	 if (strchr(file, '.') != NULL)
 	   {
-	      bytes = eet_data_image_write(ef, tmp, new_pixel, new_w, new_h, 0, 1, 0, 0);
-	      DBG("Inserting thumb %i (%i, %i)", pos, new_w, new_h);
+	      Eet_File *ef;
+	      char *tmp;
+	      int bytes;
 
-	      eet_close(ef);
+	      tmp = alloca(strlen(buffer) + 16);
+
+	      strcpy(tmp, "eyelight/thumb/");
+	      strcat(tmp, buffer);
+
+	      ef = eet_open(file, EET_FILE_MODE_READ_WRITE);
+
+	      if (ef)
+		{
+		   bytes = eet_data_image_write(ef, tmp, new_pixel, new_w, new_h, 0, 1, 0, 0);
+		   DBG("Inserting thumb %i (%i, %i)", pos, new_w, new_h);
+		   eet_close(ef);
+		}
+	   }
+	 else
+	   {
+	      char *tmp;
+
+	      tmp = alloca(strlen(buffer) + strlen(file) + 6);
+	      sprintf(tmp, "%s.%s.jpg", file, buffer);
+
+	      evas_object_image_save(o_image, tmp, NULL, "quality=90");
 	   }
       }
 
