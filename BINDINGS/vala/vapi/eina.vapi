@@ -392,7 +392,7 @@ namespace Eina
 
         public bool add(K key, V data);
         [CCode (cname = "eina_hash_add")]
-        public bool set(K key, owned V data);
+        public void set(K key, owned V data);
         public bool direct_add(K key, V data);
         public bool del(K key, V data);
         public V? find(K key);
