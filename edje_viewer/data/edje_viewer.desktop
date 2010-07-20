@@ -1,10 +1,12 @@
 [Desktop Entry]
 Name=Edje Viewer
 Name[eo]=Edje-rigardilo
+Name[fr]=Edje-Visio
 Comment=A simple viewer for Edje files
 Comment[cs]=Nástroj pro zobrazování edje souborù
 Comment[eo]=Simpla rigardilo por Edje-dosieroj
 Comment[it]=Un semplice visualizzatore di file edje
+Comment[fr]=Simple visionneur de fichiers edj
 Exec=edje_viewer %F
 Terminal=false
 Type=Application
