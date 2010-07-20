@@ -37,14 +37,6 @@ _key_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
      }
 }
 
-   static void
-_notify_show(void *data, Evas *e, Evas_Object *obj, void *event_info)
-{
-   evas_object_show(data);
-
-   elm_notify_timer_init(data);
-}
-
 
 static void _bt_layout_cb(void *data, Evas_Object *obj, void *event_info)
 {
@@ -69,7 +61,6 @@ _next(void *data, Evas_Object *obj, void *event_info)
 
 static void _previous(void *data, Evas_Object *obj, void *event)
 {
-	printf("PREVIOUS\n");
    elm_slideshow_previous(slideshow);
 }
 
