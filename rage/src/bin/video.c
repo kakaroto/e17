@@ -267,7 +267,8 @@ video_key(Evas_Event_Key_Down *ev)
         c = emotion_object_spu_channel_get(o_video);
         for (c = 0; c < cnum; c++)
           {
-             printf("%i: %s\n", emotion_object_spu_channel_name_get(o_video, c));
+             printf("%i: %s\n", c, 
+		    emotion_object_spu_channel_name_get(o_video, c));
           }
         c++;
         if (c >= cnum) c = 0;

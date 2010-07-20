@@ -12,7 +12,7 @@ typedef struct _Scan Scan;
 struct _Scan
 {
    char *vol;
-   Ecore_Idler *timer;
+   Ecore_Timer *timer;
    Eina_List *dirstack;
    Eina_List *items;
    char curdir[4096];
@@ -24,7 +24,7 @@ static Eina_Bool volume_timer(void *data);
 static Eina_Bool volume_idler(void *data);
 static Volume_Item *volume_file_scan(char *file);
 static Volume_Item *volume_dir_scan(char *dir);
-static int volume_item_sort(void *d1, void *d2);
+static int volume_item_sort(const void *d1, const void *d2);
 static void volume_items_sort(Scan *s);
 
 static Eina_List *volumes = NULL;
@@ -142,7 +142,7 @@ void
 volume_index(char *vol)
 {
    Scan *s;
-   
+
    s = calloc(1, sizeof(Scan));
    s->vol = strdup(vol);
    s->timer = ecore_timer_add(SCANSPEED, volume_idler, s);
@@ -546,10 +546,10 @@ volume_dir_scan(char *dir)
 }
 
 static int
-volume_item_sort(void *d1, void *d2)
+volume_item_sort(const void *d1, const void *d2)
 {
-   Volume_Item *vi1, *vi2;
-   
+   const Volume_Item *vi1, *vi2;
+
    vi1 = d1;
    vi2 = d2;
    return strcmp(vi1->path, vi2->path);
@@ -559,7 +559,7 @@ static void
 volume_items_sort(Scan *s)
 {
    Eina_List *l;
-   
+
    s->items = eina_list_sort(s->items, eina_list_count(s->items),
 			     volume_item_sort);
    for (l = s->items; l; l = l->next)
