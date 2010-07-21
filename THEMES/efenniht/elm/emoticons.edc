@@ -1,0 +1,64 @@
+#define EMOTICON(NAME)                                                        \
+   group { name: "elm/entry/emoticon/"NAME"/default";                         \
+      images.image: "emo-"NAME".png" COMP;                                    \
+      parts {                                                                 \
+         part { name: "icon";                                                 \
+            mouse_events: 0;                                                  \
+            description { state: "default" 0.0;                               \
+               max: 64 64;                                                    \
+               image.normal: "emo-"NAME".png";                                \
+               aspect: 1.0 1.0;                                               \
+            }                                                                 \
+         }                                                                    \
+      }                                                                       \
+   }                                                                          \
+
+collections {
+///////////////////////////////////////////////////////////////////////////////
+// emoticon images from:
+// Tanya - Latvia
+// http://lazycrazy.deviantart.com/
+// http://lazycrazy.deviantart.com/art/Very-Emotional-Emoticons-144461621
+
+   EMOTICON("angry")
+   EMOTICON("angry-shout")
+   EMOTICON("crazy-laugh")
+   EMOTICON("evil-laugh")
+   EMOTICON("evil")
+   EMOTICON("goggle-smile")
+   EMOTICON("grumpy")
+   EMOTICON("grumpy-smile")
+   EMOTICON("guilty")
+   EMOTICON("guilty-smile")
+   EMOTICON("haha")
+   EMOTICON("half-smile")
+   EMOTICON("happy-panting")
+   EMOTICON("happy")
+   EMOTICON("indifferent")
+   EMOTICON("kiss")
+   EMOTICON("knowing-grin")
+   EMOTICON("laugh")
+   EMOTICON("little-bit-sorry")
+   EMOTICON("love-lots")
+   EMOTICON("love")
+   EMOTICON("minimal-smile")
+   EMOTICON("not-happy")
+   EMOTICON("not-impressed")
+   EMOTICON("omg")
+   EMOTICON("opensmile")
+   EMOTICON("smile")
+   EMOTICON("sorry")
+   EMOTICON("squint-laugh")
+   EMOTICON("surprised")
+   EMOTICON("suspicious")
+   EMOTICON("tongue-dangling")
+   EMOTICON("tongue-poke")
+   EMOTICON("uh")
+   EMOTICON("unhappy")
+   EMOTICON("very-sorry")
+   EMOTICON("what")
+   EMOTICON("wink")
+   EMOTICON("worried")
+   EMOTICON("wtf")
+}
+

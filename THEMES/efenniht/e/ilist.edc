@@ -57,7 +57,7 @@ collections {
                   relative: 1.0  1.0;
                   offset: -11 -11;
                }
-               color_class: "ilist_item";
+               color_class: "list_item";
                text {
                   font: "DejaVu Sans,Sans";
                   size: 10;
@@ -68,7 +68,7 @@ collections {
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color_class: "ilist_item_selected";
+               color_class: "list_item_selected";
             }
          }
          part { name: "e.swallow.end";
@@ -231,7 +231,7 @@ collections {
                   relative: 1.0  1.0;
                   offset: -11 -11;
                }
-               color_class: "ilist_item";
+               color_class: "list_item";
                text {
                   font: "DejaVu Sans:style=Bold,Sans:style=Bold";
                   size: 12;
@@ -242,7 +242,7 @@ collections {
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color_class: "ilist_item_selected";
+               color_class: "list_item_selected";
             }
          }
          part { name: "e.swallow.end";

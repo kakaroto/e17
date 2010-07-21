@@ -1,0 +1,87 @@
+collections {
+   group { name: "elm/label/base/default";
+      styles
+      {
+         style { name: "textblock_style";
+            base: "font=Sans font_size=10 align=left color=#FFF wrap=word";
+            tag:  "br" "\n";
+            tag:  "hilight" "+ font=Sans:style=Bold";
+            tag:  "b" "+ font=Sans:style=Bold";
+            tag:  "tab" "\t";
+         }
+      }
+      parts {
+         part { name: "elm.text";
+            type: TEXTBLOCK;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               text {
+                  style: "textblock_style";
+                  min: 1 1;
+               }
+            }
+         }
+      }
+   }
+
+   group { name: "elm/label/base_wrap/default";
+      parts {
+         part { name: "elm.text";
+            type: TEXTBLOCK;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               text {
+                  style: "textblock_style";
+                  min: 0 1;
+               }
+            }
+         }
+      }
+   }
+
+   group { name: "elm/label/base/marker";
+      styles
+      {
+         style { name: "textblock_style2";
+            base: "font=Sans:style=Bold font_size=10 align=center color=#fff wrap=word";
+
+            tag:  "br" "\n";
+            tag:  "hilight" "+ color=#ffff";
+            tag:  "b" "+ color=#ffff";
+            tag:  "tab" "\t";
+         }
+      }
+      parts {
+         part { name: "elm.text";
+            type: TEXTBLOCK;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               text {
+                  style: "textblock_style2";
+                  min: 1 1;
+               }
+            }
+         }
+      }
+   }
+
+   group { name: "elm/label/base_wrap/marker";
+      parts {
+         part { name: "elm.text";
+            type: TEXTBLOCK;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               text {
+                  style: "textblock_style2";
+                  min: 0 1;
+               }
+            }
+         }
+      }
+   }
+}
+
