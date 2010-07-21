@@ -5312,3 +5312,18 @@ Fix logic in ReZoom().
 Add force parameter to EwinWarpTo().
 Fix zooming when screen is rotated using randr (based on patch by Daniel Manjarres).
 
+-------------------------------------------------------------------------------
+
+Wed Jul 21 22:57:09 CEST 2010
+
+--- 1.0.3 ---
+Remove unneeded code with notnull.cocci script.
+Fix warnings when using gcc 4.5.
+Fix potential memory leak when window leaves fullscreen mode.
+Fix trouble with move/resize operations started by _NET_WM_MOVERESIZE.
+Simplify ZoomInit(), make static.
+Eliminate GetZoomEWin() and InZoom().
+Use "filler" border in stead of zoom masks when zooming.
+Change functions to macros (when compiling without zoom).
+Do xinerama extension test just like other extension tests.
+Collect xinerama stuff.
