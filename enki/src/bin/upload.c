@@ -1,5 +1,6 @@
 
 #include "main.h"
+#include "upload.h"
 
 static int _progress_cb(void *data, Enlil_Photo *photo, long int ultotal, long int ulnow);
 static void _done_cb(void *data, Enlil_Photo *photo, int status);

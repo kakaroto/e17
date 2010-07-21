@@ -5,7 +5,7 @@ AM_CFLAGS = \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 -Wall -g @ENKI_CFLAGS@
 
-bin_PROGRAMS = enki
+bin_PROGRAMS = enki enki-slideshow
 
 enki_SOURCES = \
 								main.c \
@@ -35,3 +35,9 @@ enki_SOURCES = \
 								evas_object/tabpanel.c
 
 enki_LDADD = @ENKI_LIBS@
+
+
+enki_slideshow_SOURCES = \
+				main_slideshow.c  \
+				slideshow.c
+enki_slideshow_LDADD = @ENKI_LIBS@

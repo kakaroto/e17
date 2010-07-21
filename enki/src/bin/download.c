@@ -1,5 +1,6 @@
 
 #include "main.h"
+#include "download.h"
 
 static void _done_cb(void *data, Enlil_Photo *photo, int status);
 static int _progress_cb(void *data, Enlil_Photo *photo, long int dltotal, long int dlnow);

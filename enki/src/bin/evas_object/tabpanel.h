@@ -1,6 +1,11 @@
 // vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
 
+#ifndef TABPANEL_H_
+#define TABPANEL_H_
+
+
 #include <Elementary.h>
+
 
 typedef struct tabpanel Tabpanel;
 typedef struct tabpanel_item Tabpanel_Item;
@@ -17,3 +22,4 @@ void tabpanel_del(Tabpanel *tab);
 void tabpanel_item_select(Tabpanel_Item *item);
 void tabpanel_item_label_set(Tabpanel_Item *item, const char *label);
 
+#endif

@@ -2,6 +2,7 @@
 
 #include "main.h"
 #include "evas_object/photos_list_object.h"
+#include "evas_object/photo_object.h"
 
 static Evas_Object *inwin, *inwin2, *fs, *photos, *gl_albums, *bt_import, *bt_close, *pb, *radio_copy, *radio_move;
 static PL_Header_Item *header;

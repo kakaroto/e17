@@ -1,5 +1,6 @@
 
 #include "main.h"
+#include "slideshow.h"
 
 static Evas_Object *inwin = NULL;
 

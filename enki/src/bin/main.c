@@ -2,6 +2,7 @@
 
 #include "main.h"
 #include "evas_object/slideshow_object.h"
+#include "slideshow.h"
 
 int APP_LOG_DOMAIN;
 

@@ -1,6 +1,7 @@
 // vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
 
 #include "main.h"
+#include "evas_object/photo_object.h"
 
 static void _album_new(void *data, Enlil_Album *album)
 {

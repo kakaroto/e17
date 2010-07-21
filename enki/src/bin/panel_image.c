@@ -2,6 +2,7 @@
 
 #include "main.h"
 #include "evas_object/slideshow_object.h"
+#include "evas_object/photo_object.h"
 
 static Elm_Genlist_Item_Class itc_exifs;
 static char *_gl_exifs_label_get(const void *data, Evas_Object *obj, const char *part);

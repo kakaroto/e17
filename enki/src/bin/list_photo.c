@@ -1,6 +1,8 @@
 // vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
 
 #include "main.h"
+#include "evas_object/photo_object.h"
+#include "slideshow.h"
 
 #define DEFAULT_W 128
 #define DEFAULT_H 96
