@@ -6,6 +6,7 @@ static void _ephoto_go_first(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_go_last(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_go_next(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_go_previous(void *data, Evas_Object *obj, void *event_info);
+static void _ephoto_key_pressed(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 /*Inline variables*/
 static Eina_List *iter;
@@ -38,7 +39,7 @@ ephoto_create_flow_browser(void)
         evas_object_size_hint_weight_set(toolbar, EVAS_HINT_EXPAND, 0.0);
         evas_object_size_hint_align_set(toolbar, EVAS_HINT_FILL, 0.5);
         elm_box_pack_end(em->flow_browser, toolbar);
-        evas_object_show(toolbar);
+	evas_object_show(toolbar);
 
 	o = elm_icon_add(em->win);
         elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/go_back.png", NULL);
@@ -71,6 +72,13 @@ ephoto_show_flow_browser(const char *current_image)
 {
 	const char *file_type;
 	Elm_Toolbar_Item *o;
+
+	if(!evas_object_key_grab(em->flow_browser, "Left", 0, 0, 1))
+		printf("Couldn't grab key: Left\n");
+	if(!evas_object_key_grab(em->flow_browser, "Right", 0, 0, 1))
+		printf("Couldn't grab key: Right\n");
+	evas_object_event_callback_add(em->flow_browser, EVAS_CALLBACK_KEY_UP,
+					_ephoto_key_pressed, NULL);
 
 	iter = eina_list_data_find_list(em->images, current_image);
 	if (iter == NULL)
@@ -127,6 +135,8 @@ ephoto_show_flow_browser(const char *current_image)
 void 
 ephoto_hide_flow_browser(void)
 {
+	evas_object_key_ungrab(em->flow_browser, "Left", 0, 0);
+	evas_object_key_ungrab(em->flow_browser, "Right", 0, 0);
 	evas_object_hide(image);
 	evas_object_hide(image2);
 	evas_object_hide(toolbar);
@@ -150,6 +160,20 @@ ephoto_delete_flow_browser(void)
 	evas_object_del(image2);
 	evas_object_del(toolbar);
 	evas_object_del(em->flow_browser);
+}
+
+/*A key has been pressed*/
+static void
+_ephoto_key_pressed(void *data, Evas *e, Evas_Object *obj, void *event_data)
+{
+	Evas_Event_Key_Up *eku;
+
+	eku = (Evas_Event_Key_Up *)event_data;
+	if (!strncmp(eku->keyname, "Left", 4))
+		_ephoto_go_previous(NULL, NULL, NULL);
+	if (!strncmp(eku->keyname, "Right", 5))
+		_ephoto_go_next(NULL, NULL, NULL);
+	printf("%s\n", eku->keyname);
 }
 
 /*Go back to the thumbnail viewer*/
