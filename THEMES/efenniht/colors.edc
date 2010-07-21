@@ -44,6 +44,7 @@ color_classes {
    color_class { name: "battery_low";
       color: 200 120 120 255;
    }
+   // WinList
    color_class { name: "winlist_label";
       color: 255 255 255 255;
    }
@@ -145,8 +146,8 @@ color_classes {
    color_class { name: "slider_text";
       color: 128 128 128 255;
    }
-   color_class { name: "frame_base";
-      color: 255 255 255 255;
+   color_class { name: "frame_title";
+      color: 180 180 180 255;
    }
    color_class { name: "label_text";
       color: 128 128 128 255;
@@ -166,6 +167,7 @@ color_classes {
    color_class { name: "battery_popup_text";
       color: 180 180 180 255;
    }
+   // Toolbar
    color_class { name: "toolbar_text";
       color: 180 180 180 255;
       color2: 0 200 0 100;
@@ -176,6 +178,7 @@ color_classes {
       color2: 0 200 0 255;
       color3: 200 0 0 255;
    }
+   // Index
    color_class { name: "index_text";
       color: 224 224 224 255;
    }

@@ -12,4 +12,5 @@
 #include "elm/scroller.edc"
 #include "elm/entry.edc"
 #include "elm/emoticons.edc"
+#include "elm/frame.edc"
 #include "elm/old.edc"
