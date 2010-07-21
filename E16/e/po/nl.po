@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-06-15 21:34+0200\n"
+"POT-Creation-Date: 2010-07-18 19:49+0200\n"
 "PO-Revision-Date: 2009-11-09 14:39+0000\n"
 "Last-Translator: Yentl <y.v.t@scarlet.be>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -173,7 +173,7 @@ msgstr "Stop Enlightenment"
 msgid "Attention !!!"
 msgstr "Attentie !!!!"
 
-#: src/alert.c:581 src/dialog.c:694 src/dialog.c:1900 src/events.c:90
+#: src/alert.c:581 src/dialog.c:694 src/dialog.c:1900 src/events.c:93
 #: src/setup.c:159 src/sound.c:310
 msgid "OK"
 msgstr "OK"
@@ -717,11 +717,11 @@ msgstr ""
 "Composite, Damage, Fixes, en Render\n"
 "extensies geladen zijn."
 
-#: src/events.c:90
+#: src/events.c:93
 msgid "X server setup error"
 msgstr "X server instellingsfout"
 
-#: src/events.c:91
+#: src/events.c:94
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -1127,28 +1127,28 @@ msgstr "Icoonbox Opties"
 msgid "Iconbox Settings"
 msgstr "Icoonbox instellingen"
 
-#: src/ipc.c:195 src/ipc.c:1462 src/ipc.c:1469 src/theme.c:379
+#: src/ipc.c:195 src/ipc.c:1461 src/ipc.c:1468 src/theme.c:379
 msgid "Message"
 msgstr "Bericht"
 
-#: src/ipc.c:1462 src/ipc.c:1469
+#: src/ipc.c:1461 src/ipc.c:1468
 #, c-format
 msgid "e16 was built without %s support"
 msgstr "e16 is gebouwd zonder %s ondersteuning"
 
-#: src/ipc.c:1463
+#: src/ipc.c:1462
 msgid "composite"
 msgstr "composiet"
 
-#: src/ipc.c:1470
+#: src/ipc.c:1469
 msgid "sound"
 msgstr "geluid"
 
-#: src/ipc.c:1814
+#: src/ipc.c:1813
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC Commando's hulp\n"
 
-#: src/ipc.c:1818
+#: src/ipc.c:1817
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1158,20 +1158,20 @@ msgstr ""
 "Gebruik \"help <commando>\" voor een individuele beschrijving\n"
 "\n"
 
-#: src/ipc.c:1820 src/ipc.c:1840 src/ipc.c:1852
+#: src/ipc.c:1819 src/ipc.c:1839 src/ipc.c:1851
 msgid "Commands currently available:\n"
 msgstr "Commando's momenteel beschikbaar:\n"
 
-#: src/ipc.c:1838
+#: src/ipc.c:1837
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 "Gebruik \"help full\" voor een volledige beschrijving van elk commando\n"
 
-#: src/ipc.c:1839
+#: src/ipc.c:1838
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "Gebruik \"help <commando>\" voor een individuele beschrijving\n"
 
-#: src/ipc.c:1841 src/ipc.c:1853
+#: src/ipc.c:1840 src/ipc.c:1852
 msgid "         <command>     : <description>\n"
 msgstr "         <commando>     : <beschrijving>\n"
 

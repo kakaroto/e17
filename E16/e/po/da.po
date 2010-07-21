@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-06-15 21:34+0200\n"
+"POT-Creation-Date: 2010-07-18 19:49+0200\n"
 "PO-Revision-Date: 2010-05-09 01:23+0000\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Danish\n"
@@ -172,7 +172,7 @@ msgstr "Afslut Enlightenment"
 msgid "Attention !!!"
 msgstr "Vigtigt !!!"
 
-#: src/alert.c:581 src/dialog.c:694 src/dialog.c:1900 src/events.c:90
+#: src/alert.c:581 src/dialog.c:694 src/dialog.c:1900 src/events.c:93
 #: src/setup.c:159 src/sound.c:310
 msgid "OK"
 msgstr "Ok"
@@ -692,11 +692,11 @@ msgstr ""
 "Composite, Damage, Fixes, og Render\n"
 "extensions er til rådighed."
 
-#: src/events.c:90
+#: src/events.c:93
 msgid "X server setup error"
 msgstr "X-server opsætningsfejl"
 
-#: src/events.c:91
+#: src/events.c:94
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -1054,28 +1054,28 @@ msgstr "Ikonboks..."
 msgid "Iconbox Settings"
 msgstr "Ikonboksindstillinger"
 
-#: src/ipc.c:195 src/ipc.c:1462 src/ipc.c:1469 src/theme.c:379
+#: src/ipc.c:195 src/ipc.c:1461 src/ipc.c:1468 src/theme.c:379
 msgid "Message"
 msgstr "Meddelelse"
 
-#: src/ipc.c:1462 src/ipc.c:1469
+#: src/ipc.c:1461 src/ipc.c:1468
 #, c-format
 msgid "e16 was built without %s support"
 msgstr "e16 er bygget uden understøttelse for %s"
 
-#: src/ipc.c:1463
+#: src/ipc.c:1462
 msgid "composite"
 msgstr "composite"
 
-#: src/ipc.c:1470
+#: src/ipc.c:1469
 msgid "sound"
 msgstr "lyd"
 
-#: src/ipc.c:1814
+#: src/ipc.c:1813
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC kommandohjælp\n"
 
-#: src/ipc.c:1818
+#: src/ipc.c:1817
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1085,19 +1085,19 @@ msgstr ""
 "Brug \"help <kommando>\" for en individuel beskrivelse\n"
 "\n"
 
-#: src/ipc.c:1820 src/ipc.c:1840 src/ipc.c:1852
+#: src/ipc.c:1819 src/ipc.c:1839 src/ipc.c:1851
 msgid "Commands currently available:\n"
 msgstr "Kommandoer tilgængelige lige nu:\n"
 
-#: src/ipc.c:1838
+#: src/ipc.c:1837
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "Brug \"help full\" for den fulde beskrivelse af alle kommandoer\n"
 
-#: src/ipc.c:1839
+#: src/ipc.c:1838
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "Brug \"help <kommando>\" for individuel beskrivelse\n"
 
-#: src/ipc.c:1841 src/ipc.c:1853
+#: src/ipc.c:1840 src/ipc.c:1852
 msgid "         <command>     : <description>\n"
 msgstr "         <kommando> : <beskrivelse>\n"
 
