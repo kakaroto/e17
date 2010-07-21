@@ -96,7 +96,8 @@ _client_cb_add(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Ipc_Event_Server_Add *e;
    Node *nd;
-   
+
+   e = event;
    nd = ecore_ipc_server_data_get(e->server);
    if (!nd) return EINA_TRUE;
    nd->connected = 1;
@@ -108,7 +109,8 @@ _client_cb_del(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Ipc_Event_Server_Del *e;
    Node *nd;
-   
+
+   e = event;
    nd = ecore_ipc_server_data_get(e->server);
    if (!nd) return EINA_TRUE;
    _node_del(nd);
@@ -120,7 +122,8 @@ _client_cb_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Ipc_Event_Server_Data *e;
    Node *nd;
-   
+
+   e = event;
    nd = ecore_ipc_server_data_get(e->server);
    if (!nd) return EINA_TRUE;
    switch (e->major)
@@ -231,7 +234,7 @@ _server_cb_add(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Ipc_Event_Client_Add *e;
    Client *cl;
-   
+
    e = event;
    if (!((ecore_ipc_client_server_get(e->client) == _server_local) ||
 	 (ecore_ipc_client_server_get(e->client) == _server_remote))) 
