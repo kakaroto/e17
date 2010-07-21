@@ -7,10 +7,12 @@ BUILDDIR := .
 DESTDIR := $(shell $(PKG_CONFIG) --variable=prefix enlightenment)/share/enlightenment/data/themes
 HOMEDIR := ~/.e/e/themes
 
-EDCS := $(wildcard $(SRCDIR)/*.edc)
+COMMON_EDCS := $(wildcard $(SRCDIR)/*.edc)
+E_EDCS := $(wildcard $(SRCDIR)/e/*.edc)
+ELM_EDCS := $(wildcard $(SRCDIR)/*.edc)
 IMAGES := $(wildcard $(SRCDIR)/images/*.png $(SRCDIR)/images/*.jpg)
 
-efenniht.edj: $(EDCS) $(IMAGES) Makefile
+efenniht.edj: $(COMMON_EDCS) $(E_EDCS) $(IMAGES) Makefile
 	$(EDJE_CC) -v -id images/ \
 		$(SRCDIR)/efenniht.edc \
 		$(BUILDDIR)/efenniht.edj
