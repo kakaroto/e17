@@ -205,8 +205,8 @@ echo "  Efreet_Mime .....: $have_efreet_mime"
 echo "  Eina.............: $have_eina"
 echo "  Ethumb...........: $have_ethumb"
 echo "  Elementary.......: $have_elementary"
+echo "  Eio..............: $have_eio"
 echo "  Libexif .........: $have_exif"
-echo "  Eio...........: $have_eio"
 echo
 echo "Installation Path.........: $prefix"
 echo
