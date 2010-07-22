@@ -21,7 +21,7 @@ static Elm_Gengrid_Item_Class eg;
 static Ethumb_Client *ec;
 static const char *current_directory;
 static int cur_val;
-static Ecore_Thread *thread = NULL;
+static Eio_List *list = NULL;
 static Evas_Object *toolbar, *dir_label, *thumb_slider, *thbox;
 
 typedef struct _Ephoto_Thumb_Data Ephoto_Thumb_Data;
@@ -169,52 +169,40 @@ ephoto_delete_thumb_browser(void)
 
 /* Use ecore thread facility to avoid lock completly */
 
-/* List image in a directory from another thread */
-static void
-_ephoto_access_disk(Ecore_Thread *thread, void *data)
+/* Check image type from another thread */
+static Eina_Bool
+_ephoto_populate_filter(const char *file, void *data)
 {
-	Eina_Iterator *it = data;
-	const char *file;
 	const char *type;
-	if (!efreet_mime_init())
-		fprintf(stderr, "Could not init efreet_mime!\n");
 
-	EINA_ITERATOR_FOREACH(it, file)
-	{
-		if (ecore_thread_check(thread)) break;
+	if (!(type = efreet_mime_type_get((const char *)file)))
+		return EINA_FALSE;
 
-		if (!(type = efreet_mime_type_get((const char *)file)))
-			continue;
+	if (!strncmp(type, "image", 5))
+		return EINA_TRUE;
 
-		fprintf(stderr, "[%s] => [%s]\n", file, type);
-		if (!strncmp(type, "image", 5))
-			if (ecore_thread_notify(thread, file))
-				continue ;
-		eina_stringshare_del(file);
-	}
-	efreet_mime_shutdown();
+	return EINA_FALSE;
 }
 
 /*Done populating images*/
 static void
 _ephoto_populate_end(void *data)
 {
-	Eina_Iterator *it = data;
+	list = NULL;
 
-	eina_iterator_free(it);
-
-	thread = NULL;
+	efreet_mime_shutdown();
 }
 
-/* Build the interface component after detection from listing thread */
+/* Build the interface component after detection from main thread */
 static void
-_ephoto_populate_notify(Ecore_Thread *thread, void *msg_data, void *data)
+_ephoto_populate_main(const char *file, void *data)
 {
 	const char *thumb;
-	char *path = msg_data;
 
-	em->images = eina_list_append(em->images, path);
-	ethumb_client_file_set(ec, path, NULL);
+	file = eina_stringshare_ref(file);
+
+	em->images = eina_list_append(em->images, file);
+	ethumb_client_file_set(ec, file, NULL);
 	if (!ethumb_client_thumb_exists(ec))
 	{
 		ethumb_client_generate(ec, _ephoto_thumbnail_generated, NULL, NULL);
@@ -222,9 +210,8 @@ _ephoto_populate_notify(Ecore_Thread *thread, void *msg_data, void *data)
 	else
 	{
 		ethumb_client_thumb_path_get(ec, &thumb, NULL);
-		_ephoto_thumbnail_generated(NULL, ec, 0, path, NULL,
+		_ephoto_thumbnail_generated(NULL, ec, 0, file, NULL,
 					    thumb, NULL, EINA_TRUE);
-
 	}
 }
 
@@ -232,19 +219,16 @@ _ephoto_populate_notify(Ecore_Thread *thread, void *msg_data, void *data)
 void
 ephoto_populate_thumbnails(void)
 {
-	Eina_Iterator *it;
-
 	if (!current_directory) return ;
 
-	it = eina_file_ls(current_directory);
-	if (!it) return ;
-	printf("%s\n", current_directory);
-	thread = ecore_long_run(_ephoto_access_disk,
-				_ephoto_populate_notify,
-				_ephoto_populate_end,
-				_ephoto_populate_end,
-				it,
-				EINA_FALSE);
+	if (!efreet_mime_init())
+		fprintf(stderr, "Could not init efreet_mime!\n");
+
+	list = eio_file_ls(current_directory,
+			   _ephoto_populate_filter,
+			   _ephoto_populate_main,
+			   _ephoto_populate_end,
+			   NULL);
 }
 
 /*Change the thumbnail size*/

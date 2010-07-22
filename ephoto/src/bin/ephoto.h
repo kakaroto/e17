@@ -15,12 +15,11 @@
 #include <Evas.h>
 #include <Ethumb.h>
 #include <Ethumb_Client.h>
-#include <dirent.h>
+#include <Eio.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>
 #include "config.h"
 
 /*Main Functions*/

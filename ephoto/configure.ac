@@ -153,6 +153,17 @@ PKG_CHECK_MODULES([ELEMENTARY], elementary,
    ]
 )
 
+PKG_CHECK_MODULES([EIO], eio,
+   [
+      have_eio="Yes"
+   ],
+   [
+      have_eio="No"
+      echo "Eio was not found by pkg-config!";
+      AC_MSG_ERROR([Ephoto needs eio to compile.])
+   ]
+)
+
 AC_OUTPUT([
 Makefile
 ephoto.spec
@@ -195,6 +206,7 @@ echo "  Eina.............: $have_eina"
 echo "  Ethumb...........: $have_ethumb"
 echo "  Elementary.......: $have_elementary"
 echo "  Libexif .........: $have_exif"
+echo "  Eio...........: $have_eio"
 echo
 echo "Installation Path.........: $prefix"
 echo
