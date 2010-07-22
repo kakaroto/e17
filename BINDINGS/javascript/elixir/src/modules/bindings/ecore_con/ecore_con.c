@@ -114,6 +114,12 @@ static const elixir_parameter_t*        _ecore_con_client_eet_data_params[3] = {
   &eet_parameter,
   NULL
 };
+static const elixir_parameter_t *_string_func_any_params[4] = {
+  &string_parameter,
+  &function_parameter,
+  &any_parameter,
+  NULL
+};
 
 static int                      _elixir_ecore_con_init = 0;
 static int                      _elixir_ecore_con_url_init = 0;
@@ -393,7 +399,7 @@ _elixir_con_event_url_complete_cb(__UNUSED__ void *data, __UNUSED__ int type, vo
 }
 
 static Eina_Bool
-_elixir_con_event_url_progress_cb(void *data, int type, void *event)
+_elixir_con_event_url_progress_cb(__UNUSED__ void *data, __UNUSED__ int type, void *event)
 {
    Ecore_Con_Event_Url_Progress *eceup;
    JSContext *cx;
@@ -590,7 +596,6 @@ _elixir_con_event_server_del_cb(__UNUSED__ void *data, __UNUSED__ int type, void
    JSObject                     *obj_ecesd;
    void                         *new;
    void                         *private_data;
-   Eina_Bool                     ret = ECORE_CALLBACK_PASS_ON;
 
    ecesd = event;
    private_data = ecore_con_server_data_get(ecesd->server);
@@ -1603,6 +1608,73 @@ elixir_ecore_con_url_ftp_upload(JSContext *cx, uintN argc, jsval *vp)
    return JS_TRUE;
 }
 
+static void
+_elixir_ecore_con_lookup_cb(const char *canonname,
+			    const char *ip,
+			    __UNUSED__ struct sockaddr *addr,
+			    __UNUSED__ int addrlen,
+			    void *data)
+{
+   JSFunction *cb;
+   JSContext *cx;
+   JSObject *parent;
+   JSString *js_canonname;
+   JSString *js_ip;
+   jsval js_return;
+   jsval argv[3];
+
+   cb = elixir_void_get_private(data);
+   cx = elixir_void_get_cx(data);
+   parent = elixir_void_get_parent(data);
+
+   if (!cx || !parent || !cb)
+     return ;
+
+   elixir_function_start(cx);
+
+   js_canonname = elixir_dup(cx, canonname);
+   if (!elixir_string_register(cx, &js_canonname))
+     goto on_canon_error;
+
+   js_ip =  elixir_dup(cx, ip);
+   if (!elixir_string_register(cx, &js_ip))
+     goto on_ip_error;
+
+   argv[0] = STRING_TO_JSVAL(js_canonname);
+   argv[1] = STRING_TO_JSVAL(js_ip);
+   argv[2] = elixir_void_get_jsval(data);
+
+   elixir_function_run(cx, cb, parent, 4, argv, &js_return);
+
+   elixir_string_unregister(cx, &js_ip);
+ on_ip_error:
+   elixir_string_unregister(cx, &js_canonname);
+
+ on_canon_error:
+   elixir_function_stop(cx);
+}
+
+static JSBool
+elixir_ecore_con_lookup(JSContext *cx, uintN argc, jsval *vp)
+{
+   const char *name;
+   void *data;
+   Eina_Bool res;
+   elixir_value_t val[3];
+
+   if (!elixir_params_check(cx, _string_func_any_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   name = elixir_get_string_bytes(val[0].v.str, NULL);
+
+   data = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), val[2].v.any, val[1].v.fct);
+   res = ecore_con_lookup(name, _elixir_ecore_con_lookup_cb, data);
+
+   JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(res));
+   return JS_TRUE;
+}
+
+
 static JSFunctionSpec           ecore_con_functions[] = {
   ELIXIR_FN(ecore_con_init, 0, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_shutdown, 0, JSPROP_ENUMERATE, 0 ),
@@ -1641,6 +1713,7 @@ static JSFunctionSpec           ecore_con_functions[] = {
   ELIXIR_FN(ecore_con_url_received_bytes_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_time, 3, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_ftp_upload, 4, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(ecore_con_lookup, 3, JSPROP_ENUMERATE, 0),
   JS_FS_END
 };
 
