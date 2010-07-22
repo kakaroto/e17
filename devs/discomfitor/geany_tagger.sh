@@ -13,6 +13,9 @@ progname="$(basename $0)"
 if [[ -z $header ]] || [[ -z $tagfile ]];then
 	echo "Usage: $progname header_file tag_file"
 	exit
+elif [[ "${tagfile/.c.tags}" = "$tagfile" ]];then
+	echo "tag_file must end with .c.tags!"
+	exit
 fi
 
 stdheaders=(assert.h complex.h ctype.h errno.h fenv.h float.h inttypes.h iso646.h limits.h locale.h math.h setjmp.h signal.h stdarg.h stdbool.h stddef.h stdint.h stdio.h stdlib.h string.h time.h wchar.h wctype.h)
@@ -80,7 +83,7 @@ while [[ -n "${new[@]}" ]];do
 	grab_headers
 done
 echo -e "***Generating tags for the following headers: ${headers[@]}\n"
-geany -g "$tagfile" ${headers[@]}
+geany -P -g "$tagfile" ${headers[@]}
 
 #remove static variables
 sed -i '/^_/d' "$tagfile"
