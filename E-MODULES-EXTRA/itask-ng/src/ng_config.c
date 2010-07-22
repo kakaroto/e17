@@ -33,7 +33,7 @@ struct _E_Config_Dialog_Data
   Config_Item *cfg;
   E_Config_Dialog *cfd;
 
-  char *app_dir;
+  const char *app_dir;
 };
 
 /* Protos */
@@ -640,7 +640,7 @@ _basic_create_box_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data
 	cfdata->app_dir = eina_stringshare_add(cfdata->cfg_box->launcher_app_dir);
 
 	of = e_widget_frametable_add(evas, D_("Launcher Settings"), 0);
-	ol = e_widget_ilist_add(evas, 0, 0, (const char**)(&(cfdata->app_dir)));
+	ol = e_widget_ilist_add(evas, 0, 0, &cfdata->app_dir);
 	cfdata->tlist_box = ol;
 	_load_ilist(cfdata);
 	e_widget_size_min_set(ol, 140, 140);
@@ -692,14 +692,10 @@ _basic_create_box_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data
 static int
 _basic_apply_box_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-  if (cfdata->cfg_box->launcher_app_dir)
-    eina_stringshare_del(cfdata->cfg_box->launcher_app_dir);
-  cfdata->cfg_box->launcher_app_dir = eina_stringshare_add(cfdata->app_dir);
+   eina_stringshare_replace(&cfdata->cfg_box->launcher_app_dir, cfdata->app_dir);
 
-  _update_boxes(cfdata->cfg->ng);
-  
+   _update_boxes(cfdata->cfg->ng);
    return 1;
-
 }
 
 /* urgh */
@@ -712,7 +708,7 @@ _create_box_data(E_Config_Dialog *cfd)
 static void
 _free_box_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   /* free app_dir ?*/
+   eina_stringshare_del(cfdata->app_dir);
 }
 
 static void
