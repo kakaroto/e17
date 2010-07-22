@@ -12,8 +12,16 @@ static void _ephoto_key_pressed(void *data, Evas *e, Evas_Object *obj, void *eve
 static Eina_List *iter;
 static Evas_Object *image, *image2, *toolbar;
 
+static const char *toolbar_items[] = {
+	"First",
+	"Previous",
+	"Next",
+	"Last",
+	"Slideshow"
+};
+
 /*Create the flow browser*/
-void 
+void
 ephoto_create_flow_browser(void)
 {
 	Evas_Object *o;
@@ -32,7 +40,7 @@ ephoto_create_flow_browser(void)
 	elm_image_smooth_set(image2, EINA_TRUE);
         evas_object_size_hint_weight_set(image2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
         evas_object_size_hint_align_set(image2, EVAS_HINT_FILL, EVAS_HINT_FILL);
-        
+
 	toolbar = elm_toolbar_add(em->win);
         elm_toolbar_icon_size_set(toolbar, 24);
         elm_toolbar_homogenous_set(toolbar, EINA_TRUE);
@@ -67,45 +75,21 @@ ephoto_create_flow_browser(void)
 }
 
 /*Show the flow browser*/
-void 
+void
 ephoto_show_flow_browser(const char *current_image)
 {
 	const char *file_type;
 	Elm_Toolbar_Item *o;
+	int i;
 
-	if(!evas_object_key_grab(em->flow_browser, "Left", 0, 0, 1))
-		printf("Couldn't grab key: Left\n");
-	if(!evas_object_key_grab(em->flow_browser, "Right", 0, 0, 1))
-		printf("Couldn't grab key: Right\n");
 	evas_object_event_callback_add(em->flow_browser, EVAS_CALLBACK_KEY_UP,
 					_ephoto_key_pressed, NULL);
 
 	iter = eina_list_data_find_list(em->images, current_image);
-	if (iter == NULL)
+	for (i = 0; i < (sizeof (toolbar_items) / sizeof (char*)); ++i)
 	{
-		o = elm_toolbar_item_find_by_label(toolbar, "First");
-		elm_toolbar_item_disabled_set(o, EINA_TRUE);
-		o = elm_toolbar_item_find_by_label(toolbar, "Previous");
-		elm_toolbar_item_disabled_set(o, EINA_TRUE);
-		o = elm_toolbar_item_find_by_label(toolbar, "Next");
-		elm_toolbar_item_disabled_set(o, EINA_TRUE);
-		o = elm_toolbar_item_find_by_label(toolbar, "Last");
-		elm_toolbar_item_disabled_set(o, EINA_TRUE);
-		o = elm_toolbar_item_find_by_label(toolbar, "Slideshow");
-		elm_toolbar_item_disabled_set(o, EINA_TRUE);
-	}
-	else
-	{
-		o = elm_toolbar_item_find_by_label(toolbar, "First");
-                elm_toolbar_item_disabled_set(o, EINA_FALSE);
-                o = elm_toolbar_item_find_by_label(toolbar, "Previous");
-                elm_toolbar_item_disabled_set(o, EINA_FALSE);
-                o = elm_toolbar_item_find_by_label(toolbar, "Next");
-                elm_toolbar_item_disabled_set(o, EINA_FALSE);
-                o = elm_toolbar_item_find_by_label(toolbar, "Last");
-                elm_toolbar_item_disabled_set(o, EINA_FALSE);
-                o = elm_toolbar_item_find_by_label(toolbar, "Slideshow");
-                elm_toolbar_item_disabled_set(o, EINA_FALSE);
+		o = elm_toolbar_item_find_by_label(toolbar, toolbar_items[i]);
+		elm_toolbar_item_disabled_set(o, iter == NULL ? EINA_TRUE : EINA_FALSE);
 	}
 
 	elm_box_unpack(em->flow_browser, image);
@@ -129,14 +113,13 @@ ephoto_show_flow_browser(const char *current_image)
 	elm_box_pack_end(em->flow_browser, toolbar);
 	evas_object_show(toolbar);
 	evas_object_show(em->flow_browser);
+	evas_object_focus_set(em->flow_browser, 1);
 }
 
 /*Hide the flow browser*/
 void 
 ephoto_hide_flow_browser(void)
 {
-	evas_object_key_ungrab(em->flow_browser, "Left", 0, 0);
-	evas_object_key_ungrab(em->flow_browser, "Right", 0, 0);
 	evas_object_hide(image);
 	evas_object_hide(image2);
 	evas_object_hide(toolbar);
@@ -163,16 +146,28 @@ ephoto_delete_flow_browser(void)
 }
 
 /*A key has been pressed*/
+static const struct
+{
+	const char *name;
+	void (*func)(void *data, Evas_Object *obj, void *event_info);
+} keys[] = {
+	{ "Left", _ephoto_go_previous },
+	{ "Right", _ephoto_go_next },
+	{ "space", _ephoto_go_next },
+	{ "Escape", _ephoto_go_back },
+	{ NULL, NULL }
+};
+
 static void
 _ephoto_key_pressed(void *data, Evas *e, Evas_Object *obj, void *event_data)
 {
 	Evas_Event_Key_Up *eku;
+	int i;
 
 	eku = (Evas_Event_Key_Up *)event_data;
-	if (!strncmp(eku->keyname, "Left", 4))
-		_ephoto_go_previous(NULL, NULL, NULL);
-	if (!strncmp(eku->keyname, "Right", 5))
-		_ephoto_go_next(NULL, NULL, NULL);
+	for (i = 0; keys[i].name != NULL; ++i)
+		if (!strcmp(eku->keyname, keys[i].name))
+			keys[i].func(NULL, NULL, NULL);
 	printf("%s\n", eku->keyname);
 }
 
