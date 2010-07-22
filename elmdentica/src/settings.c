@@ -317,6 +317,7 @@ void on_account_type_chose_twitter(void *data, Evas_Object *obj, void *event_inf
 	evas = evas_object_evas_get(obj);
 	if(evas) {
 
+		// prefix screen_name_entry with oauth-
 		eo = evas_object_name_find(evas, "screen_name_entry");
 		if(eo) {
 			screen_name = (char*)elm_entry_entry_get(eo);

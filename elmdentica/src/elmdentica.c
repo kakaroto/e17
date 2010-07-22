@@ -516,7 +516,7 @@ static void user_free(UserProfile *user) {
 
 static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 	AnchorData *anchor = (AnchorData*)data;
-	Evas_Object *icon=NULL, *box=NULL, *table=NULL, *button=NULL, *buttons=NULL, *frame=NULL, *label=NULL, *bubble=anchor->bubble;
+	Evas_Object *icon=NULL, *bg=NULL, *table=NULL, *button=NULL, *buttons=NULL, *label=NULL, *bubble=anchor->bubble;
 	UserProfile *user;
 	ub_Bubble * ubBubble = eina_hash_find(status2user, &bubble);
 	char *description=NULL,*home, *path=NULL;
@@ -534,93 +534,96 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
     user->description=NULL;
     user->tmp=NULL;
 
-	url_win = elm_win_inwin_add(win);
-		elm_object_style_set(url_win, "minimal_vertical");
-
-		box = elm_box_add(win);
-			evas_object_size_hint_weight_set(box, 1, 1);
-			evas_object_size_hint_align_set(box, -1, 0);
-
-			frame = elm_frame_add(win);
-				evas_object_size_hint_weight_set(frame, 1, 1);
-				evas_object_size_hint_align_set(frame, -1, -1);
-				elm_frame_label_set(frame, user->screen_name);
-
-				table=elm_table_add(win);
-					evas_object_size_hint_weight_set(table, 1, 1);
-					evas_object_size_hint_align_set(table, -1, 0);
-
-					label = elm_label_add(win);
-						evas_object_size_hint_weight_set(label, 1, 1);
-						evas_object_size_hint_align_set(label, -1, 0);
-						elm_table_pack(table, label, 1, 0, 1, 1);
-					evas_object_show(label);
-
-					elm_frame_content_set(frame, table);
-				evas_object_show(table);
-
-				elm_box_pack_end(box, frame);
-			evas_object_show(frame);
-
-			elm_win_inwin_content_set(url_win, box);
-		evas_object_show(box);
-	evas_object_show(url_win);
-
 	user_info_get(ubBubble, user);
 
-	buttons = elm_box_add(win);
-		elm_box_horizontal_set(buttons, EINA_TRUE);
+	follow_user=user->screen_name;
 
-		res = asprintf(&description, "%s is following %d and has %d followers.", user->name, user->friends_count, user->followers_count);
-		elm_label_line_wrap_set(label, EINA_TRUE);
-		if(res!=-1)
-			elm_label_label_set(label, description);
-		else
-			elm_label_label_set(label, _("Couldn't parse user info message..."));
+	url_win = elm_win_add(NULL, user->screen_name, ELM_WIN_BASIC);
+		evas_object_size_hint_min_set(url_win, 480, 480);
+		evas_object_size_hint_max_set(url_win, 640, 640);
+		elm_win_title_set(url_win, user->screen_name);
+		elm_win_autodel_set(url_win, EINA_TRUE);
 
-		home=getenv("HOME");
-		if(home)
-			res = asprintf(&path, "%s/.elmdentica/cache/icons/%s", home, user->screen_name);
-		else
-			res = asprintf(&path, ".elmdentica/cache/icons/%s", user->screen_name);
+		bg = elm_bg_add(url_win);
+			evas_object_size_hint_weight_set(bg, 1, 1);
+			evas_object_size_hint_align_set(bg, -1, -1);
+			elm_win_resize_object_add(url_win, bg);
+		evas_object_show(bg);
 
-		if(res!=-1 && stat(path, &buf) == 0 ) {
-			icon = elm_icon_add(win);
-				evas_object_size_hint_weight_set(icon, 1, 1);
-				evas_object_size_hint_align_set(icon, -1, -1);
-				elm_icon_file_set(icon, path, "fubar?");
-				elm_table_pack(table, icon, 0, 0, 1, 1);
-			evas_object_show(icon);
-			free(path);
-		}
+		table=elm_table_add(url_win);
+			evas_object_size_hint_weight_set(table, 1, 0);
+			evas_object_size_hint_align_set(table, -1, 0);
+			elm_win_resize_object_add(url_win, table);
+			elm_table_padding_set(table, 20, 20);
 
-		follow_user=user->screen_name;
+			home=getenv("HOME");
+			if(home)
+				res = asprintf(&path, "%s/.elmdentica/cache/icons/%s", home, user->screen_name);
+			else
+				res = asprintf(&path, ".elmdentica/cache/icons/%s", user->screen_name);
 
-		if(!user->following && !user->protected) {
-			button = elm_button_add(win);
-				elm_button_label_set(button, _("Follow"));
-				evas_object_smart_callback_add(button, "clicked", on_user_follow, ubBubble);
-				elm_box_pack_end(buttons, button);
-			evas_object_show(button);
-		} else {
-			button = elm_button_add(win);
-				elm_button_label_set(button, _("Stop following"));
-				evas_object_smart_callback_add(button, "clicked", on_user_abandon, ubBubble);
-				elm_box_pack_end(buttons, button);
-			evas_object_show(button);
-		}
+			if(res!=-1 && stat(path, &buf) == 0 ) {
+				icon = elm_icon_add(url_win);
+					evas_object_size_hint_weight_set(icon, 1, 1);
+					evas_object_size_hint_align_set(icon, -1, -1);
+					elm_icon_file_set(icon, path, "fubar?");
+					elm_table_pack(table, icon, 0, 0, 1, 2);
+				evas_object_show(icon);
+				free(path);
+			}
 
-		user_free(user);
+			label = elm_entry_add(url_win);
+				evas_object_size_hint_weight_set(label, 1, 1);
+				evas_object_size_hint_align_set(label, -1, -1);
 
-		button = elm_button_add(win);
-			elm_button_label_set(button, _("Close"));
-			evas_object_smart_callback_add(button, "clicked", on_user_info_close, NULL);
-			elm_box_pack_end(buttons, button);
-		evas_object_show(button);
+				res = asprintf(&description, "%s is following %d and has %d followers.", user->name, user->friends_count, user->followers_count);
+				elm_entry_line_wrap_set(label, EINA_TRUE);
+				if(res!=-1) {
+					elm_entry_entry_set(label, description);
+					free(description);
+				} else
+					elm_entry_entry_set(label, _("Couldn't parse user info message..."));
+
+				elm_table_pack(table, label, 1, 0, 1, 1);
+			evas_object_show(label);
+
+			buttons = elm_box_add(url_win);
+				elm_box_horizontal_set(buttons, EINA_TRUE);
+				evas_object_size_hint_weight_set(buttons, 1, 1);
+				evas_object_size_hint_align_set(buttons, 0.5, 0);
+
+				button = elm_button_add(url_win);
+					evas_object_size_hint_weight_set(button, 1, 1);
+					evas_object_size_hint_align_set(button, -1, -1);
+
+					if(!user->following && !user->protected) {
+						elm_button_label_set(button, _("Follow"));
+						evas_object_smart_callback_add(button, "clicked", on_user_follow, ubBubble);
+					} else {
+						elm_button_label_set(button, _("Stop following"));
+						evas_object_smart_callback_add(button, "clicked", on_user_abandon, ubBubble);
+					}
+					elm_box_pack_end(buttons, button);
+				evas_object_show(button);
 
 
-		elm_table_pack(table, buttons, 0, 1, 2, 1);
-	evas_object_show(buttons);
+				button = elm_button_add(url_win);
+					evas_object_size_hint_weight_set(button, 1, 1);
+					evas_object_size_hint_align_set(button, -1, -1);
+					elm_button_label_set(button, _("Close"));
+					evas_object_smart_callback_add(button, "clicked", on_user_info_close, NULL);
+					elm_box_pack_end(buttons, button);
+				evas_object_show(button);
+
+				elm_table_pack(table, buttons, 1, 1, 1, 1);
+			evas_object_show(buttons);
+
+		evas_object_show(table);
+
+	    evas_object_resize(url_win, 300, 300);
+	evas_object_show(url_win);
+
+	user_free(user);
 }
 
 static void on_handle_group(void *data, Evas_Object *obj, char *group) {
