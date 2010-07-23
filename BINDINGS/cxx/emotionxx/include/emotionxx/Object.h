@@ -1,6 +1,8 @@
 #ifndef EMOTIONXX_OBJECT_H
 #define EMOTIONXX_OBJECT_H
 
+/* EFL */
+#include <Emotion.h>
 
 /* EFL++ */
 #include <eflxx/Common.h>
@@ -33,11 +35,70 @@ public:
   *
   * @param module_filename	name of viedo engine to be used
   */
-  void engineInit(const std::string &module_filename);
+  bool engineInit (const std::string &module_filename);
 
-  void setFile( const std::string &filename );
-  void setPlay( bool b );
-  void setSmoothScale( bool b );
+  void setFile (const std::string &filename);
+  std::string getFile ();
+  void setPlay (bool play);
+  bool getPlay ();
+  void setPosition (double sec);
+  double getPosition ();
+  bool getVideoHandled ();
+  bool getAudioHandled ();
+  bool getSeekable ();
+  double getPlayLengh ();
+  Eflxx::Size getSize ();
+  void setSmoothScale (bool smooth);
+  bool getSmoothScale ();
+  double getRatio ();
+  void sendSimpleEvent (Emotion_Event ev);
+  void setAudioVolume (double vol);
+  double getAudioVolume ();
+  void setAudioMute (bool mute);
+  bool getAudioMute ();
+  int countAudioChannel ();
+  string getChannelName (int channel);
+  void setAudioChannel (int channel);
+  int getAudioChannel ();
+  void setVideoMute (bool mute);
+  bool getVideoMute ();
+  int countVideoChannel ();
+  string getVideoChannelName (int channel);
+  void setVideoChannel (int channel);
+  int getVideoChannel ();
+  void setSPUMute (bool mute);
+  bool getSPUMute ();
+  int countSPUChannel ();
+  std::string getSPUChannelName (int channel);
+  void setSPUChannel (int channel);
+  int getSPUChannel ();
+  int countChapter ();
+  void setChapter (int chapter);
+  int getChapter ();
+  std::string getChapterName (int chapter);
+  void setPlaySpeed (double speed);
+  double getPlaySpeed ();
+  void eject ();
+  std::string getTitle ();
+  string getProgressInfo ();
+  double getProgressStatus ();
+  string getRefFile ();
+  int getRefNum ();
+  int getSPUButtonCount ();
+  int getSPUButton ();
+  string getMetaInfo (Emotion_Meta_Info meta);
+
+  void setVIS (Emotion_Vis visualization);
+  Emotion_Vis getVIS ();
+  bool isVISSupported (Emotion_Vis visualization);
+
+/*
+
+
+
+
+
+*/
 };
 
 } // end namespace Emotionxx
