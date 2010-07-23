@@ -509,6 +509,8 @@ static void user_free(UserProfile *user) {
 	if(user) {
 		if(user->name) free(user->name);
 		if(user->tmp) free(user->tmp);
+		if(user->text) free(user->text);
+		if(user->created_at) free(user->created_at);
 
 		free(user);
 	}
@@ -516,7 +518,7 @@ static void user_free(UserProfile *user) {
 
 static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 	AnchorData *anchor = (AnchorData*)data;
-	Evas_Object *icon=NULL, *bg=NULL, *table=NULL, *button=NULL, *buttons=NULL, *label=NULL, *bubble=anchor->bubble;
+	Evas_Object *icon=NULL, *bg=NULL, *table=NULL, *button=NULL, *buttons=NULL, *label=NULL, *bubble=anchor->bubble, *message=NULL;
 	UserProfile *user;
 	ub_Bubble * ubBubble = eina_hash_find(status2user, &bubble);
 	char *description=NULL,*home, *path=NULL;
@@ -617,6 +619,25 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 
 				elm_table_pack(table, buttons, 1, 1, 1, 1);
 			evas_object_show(buttons);
+
+			if(user->text) {
+				button = elm_bubble_add(url_win);
+					evas_object_size_hint_weight_set(button, 1, 1);
+					evas_object_size_hint_align_set(button, -1, 0);
+
+					elm_bubble_label_set(button, user->screen_name);
+					if(user->created_at) elm_bubble_info_set(button, user->created_at);
+
+					message = elm_anchorblock_add(url_win);
+						elm_anchorblock_text_set(message, user->text);
+					evas_object_show(message);
+
+					elm_bubble_content_set(button, message);
+				
+					elm_table_pack(table, button, 0, 2, 2, 1);
+
+				evas_object_show(button);
+			}
 
 		evas_object_show(table);
 
@@ -926,7 +947,7 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 
 	ub_Bubble * ubBubble = calloc(1, sizeof(ub_Bubble));
 	Evas_Object *message=NULL, *bubble=NULL, *icon=NULL;
-	struct tm *date_tm;
+	struct tm date_tm;
 	char *tmp=NULL, datestr[19];
 	char * file_path=NULL, *home=NULL;
 
@@ -957,9 +978,8 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 
 	elm_bubble_label_set(bubble, name);
 
-	date_tm = gmtime((time_t*)&date);
-	if(date_tm != NULL) {
-		strftime(datestr, sizeof(datestr), "%F %R", date_tm);
+	if(localtime_r((time_t*)&date, &date_tm)) {
+		strftime(datestr, sizeof(datestr), "%F %R", &date_tm);
 		elm_bubble_info_set(bubble, datestr);
 	}
 

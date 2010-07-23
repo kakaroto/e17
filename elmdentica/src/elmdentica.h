@@ -98,6 +98,8 @@ typedef struct _User_Profile {
 	char		*name;
 	char		*screen_name;
 	char		*description;
+	char		*text;
+	char		*created_at;
 	char		*tmp;
 	Eina_Bool	protected;
 	int			followers_count;

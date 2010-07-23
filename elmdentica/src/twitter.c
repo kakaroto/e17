@@ -421,7 +421,10 @@ void ed_twitter_favorite_destroy(int account_id, char *screen_name, char *passwo
 }
 
 void json_user_show(UserProfile *user, char *stream) {
-	json_object *json_stream, *obj, *screen_name_obj;
+	json_object *json_stream, *obj, *screen_name_obj, *status_obj;
+	time_t t;
+	struct tm tm;
+	char datestr[19];
 	enum json_type json_stream_type;
 
 	json_stream = json_tokener_parse(stream);
@@ -480,6 +483,27 @@ void json_user_show(UserProfile *user, char *stream) {
 			if(obj) {
 				user->followers_count = (int)json_object_get_int(obj);
 				json_object_put(obj);
+			}
+
+			status_obj = json_object_object_get(json_stream, "status");
+			if(status_obj) {
+				obj = json_object_object_get(status_obj, "text");
+				if(obj) {
+					user->text = strndup(json_object_get_string(obj), PIPE_BUF);
+					json_object_put(obj);
+				}
+
+				obj = json_object_object_get(status_obj, "created_at");
+				if(obj) {
+					t = curl_getdate(json_object_get_string(obj), NULL);
+
+					if(localtime_r((time_t*)&t, &tm)) {
+						strftime(datestr, sizeof(datestr), "%F %R", &tm);
+						user->created_at = strdup(datestr);
+					}
+					json_object_put(obj);
+				}
+				json_object_put(status_obj);
 			}
 		}
 	}
