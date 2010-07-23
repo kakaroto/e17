@@ -377,6 +377,62 @@ static void on_open_url(void *data, Evas_Object *obj, void *event_info) {
 	}
 }
 
+static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_info);
+static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void on_bubble_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
+
+Evas_Object *ed_make_message(char *text, Evas_Object *bubble, Evas_Object *window) {
+	Evas_Object *message = NULL;
+	char *status_message = NULL, *tmp = NULL;
+	int res = 0;
+
+	message = elm_anchorblock_add(window);
+
+		res = asprintf(&status_message, "%s", text);
+		if(res == -1) {
+			elm_anchorblock_text_set(message, "");
+		} else {
+			if(!re_amp)
+				re_amp = g_regex_new("&(?!amp;)", 0, 0, &re_err);
+			tmp = g_regex_replace(re_amp, status_message, -1, 0, "&amp;", 0, &re_err);
+			if(tmp) {
+				free(status_message);
+				status_message = tmp;
+			}
+
+			if(!re_link)
+				re_link = g_regex_new("([a-z]+://.*?)(\\s|$)", 0, 0, &re_err);
+			tmp = g_regex_replace(re_link, status_message, -1, 0, "<a href='\\1'>[link]</a>\\2", 0, &re_err);
+			if(tmp) {
+				free(status_message);
+				status_message = tmp;
+			}
+
+			if(!re_user)
+				re_user = g_regex_new("(@[a-zA-Z0-9_]+)", 0, 0, &re_err);
+			tmp = g_regex_replace(re_user, status_message, -1, 0, "<a href='\\1'>\\1</a>", 0, &re_err);
+			if(tmp) {
+				free(status_message);
+				status_message = tmp;
+			}
+
+			if(!re_group)
+				re_group = g_regex_new("(![a-zA-Z0-9_]+)", 0, 0, &re_err);
+			tmp = g_regex_replace(re_group, status_message, -1, 0, "<a href='\\1'>\\1</a>", 0, &re_err);
+			if(tmp) {
+				free(status_message);
+				status_message = tmp;
+			}
+
+			elm_anchorblock_text_set(message, status_message);
+			evas_object_smart_callback_add(message, "anchor,clicked", on_message_anchor_clicked, bubble);
+ 			evas_object_event_callback_add(message, EVAS_CALLBACK_MOUSE_DOWN, on_bubble_mouse_down, bubble);
+ 			evas_object_event_callback_add(message, EVAS_CALLBACK_MOUSE_UP, on_bubble_mouse_up, bubble);
+		}
+	evas_object_show(message);
+	return(message);
+}
+
 
 static void ed_statusnet_user_get(int account_id, UserProfile *user) {
 }
@@ -501,10 +557,6 @@ static void on_user_abandon(void *data, Evas_Object *obj, void *event_info) {
 	}
 }
 
-static void on_user_info_close(void *data, Evas_Object *obj, void *event_info) {
-	if(url_win) evas_object_del(url_win);
-}
-
 static void user_free(UserProfile *user) {
 	if(user) {
 		if(user->name) free(user->name);
@@ -518,7 +570,7 @@ static void user_free(UserProfile *user) {
 
 static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 	AnchorData *anchor = (AnchorData*)data;
-	Evas_Object *icon=NULL, *bg=NULL, *table=NULL, *button=NULL, *buttons=NULL, *label=NULL, *bubble=anchor->bubble, *message=NULL;
+	Evas_Object *icon=NULL, *bg=NULL, *table=NULL, *button=NULL, *label=NULL, *bubble=anchor->bubble, *message=NULL;
 	UserProfile *user;
 	ub_Bubble * ubBubble = eina_hash_find(status2user, &bubble);
 	char *description=NULL,*home, *path=NULL;
@@ -589,36 +641,19 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 				elm_table_pack(table, label, 1, 0, 1, 1);
 			evas_object_show(label);
 
-			buttons = elm_box_add(url_win);
-				elm_box_horizontal_set(buttons, EINA_TRUE);
-				evas_object_size_hint_weight_set(buttons, 1, 1);
-				evas_object_size_hint_align_set(buttons, 0.5, 0);
+			button = elm_button_add(url_win);
+				evas_object_size_hint_weight_set(button, 1, 1);
+				evas_object_size_hint_align_set(button, 0.5, 0);
 
-				button = elm_button_add(url_win);
-					evas_object_size_hint_weight_set(button, 1, 1);
-					evas_object_size_hint_align_set(button, -1, -1);
-
-					if(!user->following && !user->protected) {
-						elm_button_label_set(button, _("Follow"));
-						evas_object_smart_callback_add(button, "clicked", on_user_follow, ubBubble);
-					} else {
-						elm_button_label_set(button, _("Stop following"));
-						evas_object_smart_callback_add(button, "clicked", on_user_abandon, ubBubble);
-					}
-					elm_box_pack_end(buttons, button);
-				evas_object_show(button);
-
-
-				button = elm_button_add(url_win);
-					evas_object_size_hint_weight_set(button, 1, 1);
-					evas_object_size_hint_align_set(button, -1, -1);
-					elm_button_label_set(button, _("Close"));
-					evas_object_smart_callback_add(button, "clicked", on_user_info_close, NULL);
-					elm_box_pack_end(buttons, button);
-				evas_object_show(button);
-
-				elm_table_pack(table, buttons, 1, 1, 1, 1);
-			evas_object_show(buttons);
+				if(!user->following && !user->protected) {
+					elm_button_label_set(button, _("Follow"));
+					evas_object_smart_callback_add(button, "clicked", on_user_follow, ubBubble);
+				} else {
+					elm_button_label_set(button, _("Stop following"));
+					evas_object_smart_callback_add(button, "clicked", on_user_abandon, ubBubble);
+				}
+				elm_table_pack(table, button, 1, 1, 1, 1);
+			evas_object_show(button);
 
 			if(user->text) {
 				button = elm_bubble_add(url_win);
@@ -628,9 +663,7 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 					elm_bubble_label_set(button, user->screen_name);
 					if(user->created_at) elm_bubble_info_set(button, user->created_at);
 
-					message = elm_anchorblock_add(url_win);
-						elm_anchorblock_text_set(message, user->text);
-					evas_object_show(message);
+					message = ed_make_message(user->text, button, url_win);
 
 					elm_bubble_content_set(button, message);
 				
@@ -948,7 +981,7 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 	ub_Bubble * ubBubble = calloc(1, sizeof(ub_Bubble));
 	Evas_Object *message=NULL, *bubble=NULL, *icon=NULL;
 	struct tm date_tm;
-	char *tmp=NULL, datestr[19];
+	char datestr[19];
 	char * file_path=NULL, *home=NULL;
 
 	/* In this query handler, these are the current fields:
@@ -998,49 +1031,7 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 		elm_bubble_icon_set(bubble, icon);
 	}
 
-	message = elm_anchorblock_add(win);
-
-		res = asprintf(&status_message, "%s", argv[5]);
-		if(res == -1) {
-			elm_anchorblock_text_set(message, "");
-		} else {
-			if(!re_amp)
-				re_amp = g_regex_new("&(?!amp;)", 0, 0, &re_err);
-			tmp = g_regex_replace(re_amp, status_message, -1, 0, "&amp;", 0, &re_err);
-			if(tmp) {
-				free(status_message);
-				status_message = tmp;
-			}
-
-			if(!re_link)
-				re_link = g_regex_new("([a-z]+://.*?)(\\s|$)", 0, 0, &re_err);
-			tmp = g_regex_replace(re_link, status_message, -1, 0, "<a href='\\1'>[link]</a>\\2", 0, &re_err);
-			if(tmp) {
-				free(status_message);
-				status_message = tmp;
-			}
-
-			if(!re_user)
-				re_user = g_regex_new("(@[a-zA-Z0-9_]+)", 0, 0, &re_err);
-			tmp = g_regex_replace(re_user, status_message, -1, 0, "<a href='\\1'>\\1</a>", 0, &re_err);
-			if(tmp) {
-				free(status_message);
-				status_message = tmp;
-			}
-
-			if(!re_group)
-				re_group = g_regex_new("(![a-zA-Z0-9_]+)", 0, 0, &re_err);
-			tmp = g_regex_replace(re_group, status_message, -1, 0, "<a href='\\1'>\\1</a>", 0, &re_err);
-			if(tmp) {
-				free(status_message);
-				status_message = tmp;
-			}
-
-			elm_anchorblock_text_set(message, status_message);
-			evas_object_smart_callback_add(message, "anchor,clicked", on_message_anchor_clicked, bubble);
- 			evas_object_event_callback_add(message, EVAS_CALLBACK_MOUSE_DOWN, on_bubble_mouse_down, bubble);
- 			evas_object_event_callback_add(message, EVAS_CALLBACK_MOUSE_UP, on_bubble_mouse_up, bubble);
-		}
+	message = ed_make_message(argv[5], bubble, win);
 
 	elm_bubble_content_set(bubble, message);
 
