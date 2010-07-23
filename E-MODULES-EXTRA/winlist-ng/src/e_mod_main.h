@@ -1,5 +1,5 @@
 #include <e.h>
-#include <efreet/Efreet.h>
+#include <Efreet.h>
 
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
