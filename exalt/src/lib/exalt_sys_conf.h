@@ -17,7 +17,6 @@
 #include <Ecore_File.h>
 #include "Exalt.h"
 #include <Eet.h>
-#include <Evas.h>
 
 /** the directory of the file configuration of wpa_supplicant */
 #define EXALT_WPA_CONF_FILE_DIR "/etc/wpa_supplicant"

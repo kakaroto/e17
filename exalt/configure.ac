@@ -112,7 +112,6 @@ fi
 requirements="ecore eet ecore-file ehal edbus evas dbus-1"
 
 PKG_CHECK_MODULES(EXALT, [
-  evas >= 0.9.9.9.037,
   ecore >= 0.9.9.037,
   eet >= 0.9.9.038,
   ecore-file >= 0.9.9,
