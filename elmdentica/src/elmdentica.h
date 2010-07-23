@@ -21,41 +21,6 @@
 
 #define ELMDENTICA_H
 
-typedef enum _TimeLineStates {
-	HASH,
-	HASH_ERROR,
-	HASH_REQUEST,
-	FT_NULL,
-	FT_START,
-	FT_STATUS,
-	FT_ID,
-	FT_USER,
-	FT_NAME,
-	FT_AVATAR,
-	FT_SCREEN_NAME,
-	FT_TEXT,
-	FT_CREATED_AT,
-	FT_RT,
-	FT_PLACE
-} TimeLineStates;
-
-typedef enum _UsersShowStates {
-	US_HASH,
-	US_HASH_ERROR,
-	US_HASH_REQUEST,
-	US_ERROR,
-	US_NULL,
-	US_START,
-	US_NAME,
-	US_DESCRIPTION,
-	US_PROFILE_IMAGE,
-	US_PROTECTED,
-	US_FOLLOWERS_COUNT,
-	US_FRIENDS_COUNT,
-	US_FOLLOWING,
-	US_TEXT,
-} UsersShowStates;
-
 typedef struct _ub_Status {
 	char * screen_name;
 	char * name;
@@ -88,13 +53,11 @@ typedef struct gag_data {
 typedef struct _StatusesList {
 	Eina_List	*list;
 	ub_Status 	*current;
-	TimeLineStates	state;
 	char		*hash_error;
 	char		*hash_request;
 } StatusesList;
 
 typedef struct _User_Profile {
-	UsersShowStates	state;
 	char		*name;
 	char		*screen_name;
 	char		*description;

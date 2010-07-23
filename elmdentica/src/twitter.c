@@ -308,8 +308,6 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 		default:				{ timeline_str="friends"; break; }
 	}
 
-	statuses->state = FT_NULL;
-
 	ed_twitter_max_status_id(account_id, &since_id, timeline);
 
 	if(timeline < TIMELINE_FAVORITES) {
@@ -343,12 +341,8 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 				if (debug) fprintf(stderr,"%s\n",request->content.memory);
 			}
 
-			if(statuses->state != HASH) {
-				now = time(NULL);
-				messages_insert(account_id, statuses->list, timeline);
-			} else {
-				//show_error(statuses);
-			}
+			now = time(NULL);
+			messages_insert(account_id, statuses->list, timeline);
 		} else {
 			res = asprintf(&notify_message, _("%s@%s had HTTP response: %ld"), screen_name, domain, request->response_code);
 			if(res != -1) {

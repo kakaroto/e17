@@ -60,6 +60,7 @@
 #include "elmdentica.h"
 #include "settings.h"
 #include "twitter.h"
+#include "statusnet.h"
 #include "curl.h"
 
 Evas_Object *status_list=NULL, *scroller=NULL, *status=NULL, *win=NULL, *error_win=NULL, *entry=NULL, *fs=NULL, *count=NULL, *url_win=NULL, *zoom=NULL, *hv=NULL;
@@ -283,11 +284,11 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 
 	if(status) {
 		if(!re_nouser)
-			re_nouser = g_regex_new("<a href='@.*?'>(@[a-zA-Z0-9_]+)</a>", 0, 0, &re_err);
+			re_nouser = g_regex_new("<a href='user://.*?'>(@[a-zA-Z0-9_]+)</a>", 0, 0, &re_err);
 		tmp = g_regex_replace(re_nouser, status->message, -1, 0, "\\1", 0, &re_err);
 
 		if(!re_nogroup)
-			re_nogroup = g_regex_new("<a href='!.*?'>(![a-zA-Z0-9_]+)</a>", 0, 0, &re_err);
+			re_nogroup = g_regex_new("<a href='group://.*?'>(![a-zA-Z0-9_]+)</a>", 0, 0, &re_err);
 		tmp2 = g_regex_replace(re_nogroup, tmp, -1, 0, "\\1", 0, &re_err);
 		free(tmp); tmp=NULL;
 
@@ -409,16 +410,16 @@ Evas_Object *ed_make_message(char *text, Evas_Object *bubble, Evas_Object *windo
 			}
 
 			if(!re_user)
-				re_user = g_regex_new("(@[a-zA-Z0-9_]+)", 0, 0, &re_err);
-			tmp = g_regex_replace(re_user, status_message, -1, 0, "<a href='\\1'>\\1</a>", 0, &re_err);
+				re_user = g_regex_new("@([a-zA-Z0-9_]+)", 0, 0, &re_err);
+			tmp = g_regex_replace(re_user, status_message, -1, 0, "<a href='user://\\1'>@\\1</a>", 0, &re_err);
 			if(tmp) {
 				free(status_message);
 				status_message = tmp;
 			}
 
 			if(!re_group)
-				re_group = g_regex_new("(![a-zA-Z0-9_]+)", 0, 0, &re_err);
-			tmp = g_regex_replace(re_group, status_message, -1, 0, "<a href='\\1'>\\1</a>", 0, &re_err);
+				re_group = g_regex_new("!([a-zA-Z0-9_]+)", 0, 0, &re_err);
+			tmp = g_regex_replace(re_group, status_message, -1, 0, "<a href='group://\\1'>!\\1</a>", 0, &re_err);
 			if(tmp) {
 				free(status_message);
 				status_message = tmp;
@@ -681,7 +682,29 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 }
 
 static void on_handle_group(void *data, Evas_Object *obj, char *group) {
-	printf("Will do something about group '%s' in the near future!\n", group);
+	Evas_Object *group_win=NULL, *bg=NULL, *label=NULL;
+
+	group_win = elm_win_add(NULL, group, ELM_WIN_BASIC);
+		elm_win_title_set(group_win, group);
+		elm_win_autodel_set(group_win, EINA_TRUE);
+
+		bg = elm_bg_add(group_win);
+			evas_object_size_hint_weight_set(bg, 1, 1);
+			evas_object_size_hint_align_set(bg, -1, -1);
+			elm_win_resize_object_add(group_win, bg);
+		evas_object_show(bg);
+
+		scroller = elm_scroller_add(group_win);
+			evas_object_size_hint_weight_set(scroller, 1, 1);
+			evas_object_size_hint_align_set(scroller, -1, -1);
+
+			label = elm_label_add(group_win);
+				evas_object_size_hint_weight_set(label, 1, 1);
+				evas_object_size_hint_align_set(label, -1, -1);
+				elm_label_label_set(label, group);
+			evas_object_show(label);
+		evas_object_show(scroller);
+	evas_object_show(group_win);
 }
 
 static void on_handle_url(void *data, Evas_Object *obj, void *event_info) {
@@ -778,7 +801,7 @@ static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_
 
 	url = strndup(1+(char*)info->name,strlen((char*)info->name)-2);
 
-	if(url[0] == '@') {
+	if(strncmp(url, "user://", 7) == 0) {
 		frame = elm_frame_add(win);
 			evas_object_size_hint_weight_set(frame, 1, 1);
 			evas_object_size_hint_align_set(frame, 0.5, 0);
@@ -786,7 +809,7 @@ static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_
 			elm_frame_label_set(frame, _("View details?"));
 
 			anchor->bubble = bubble;
-			anchor->url = url+1;
+			anchor->url = url+7;
 
 			button = elm_button_add(win);
 				elm_button_label_set(button, url);
@@ -796,8 +819,8 @@ static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_
 			elm_frame_content_set(frame, button);
 			elm_hover_content_set(info->hover, "middle", frame);
 		evas_object_show(frame);
-	} else if(url[0] == '!') {
-		on_handle_group(data, obj, url+1);
+	} else if(strncmp(url, "group://", 8) == 0) {
+		on_handle_group(data, obj, url+8);
 	} else {
 		on_handle_url(data, obj, event_info);
 	}

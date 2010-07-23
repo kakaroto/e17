@@ -25,6 +25,7 @@ bin_PROGRAMS = elmdentica
 elmdentica_SOURCES =	\
 	curl.c		\
 	twitter.c	\
+	statusnet.c	\
 	settings.c	\
 	elmdentica.c
 
@@ -32,5 +33,6 @@ EXTRA_DIST=		\
 	curl.h		\
 	gettext.h	\
 	twitter.h	\
+	statusnet.h	\
 	settings.h	\
 	elmdentica.h
