@@ -21,7 +21,7 @@ static Elm_Gengrid_Item_Class eg;
 static Ethumb_Client *ec;
 static const char *current_directory;
 static int cur_val;
-static Eio_List *list = NULL;
+static Eio_File *list = NULL;
 static Evas_Object *toolbar, *dir_label, *thumb_slider, *thbox;
 
 typedef struct _Ephoto_Thumb_Data Ephoto_Thumb_Data;
@@ -228,6 +228,7 @@ ephoto_populate_thumbnails(void)
 			   _ephoto_populate_filter,
 			   _ephoto_populate_main,
 			   _ephoto_populate_end,
+			   _ephoto_populate_end, /* We don't handle error case in ephoto */
 			   NULL);
 }
 
