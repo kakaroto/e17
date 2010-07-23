@@ -7,7 +7,7 @@ EFL_PKG_IUSE="doc"
 
 inherit efl
 
-DESCRIPTION="Enlightenment's integration to various libraries"
+DESCRIPTION="Enlightenment's integration to devices"
 HOMEPAGE="http://www.enlightenment.org"
 SRC_URI=""
 
@@ -24,8 +24,5 @@ RDEPEND="
 DEPEND="${RDEPEND}"
 
 src_configure() {
-	export MY_ECONF="
-	  ${MY_ECONF}
-	"
 	efl_src_configure
 }
