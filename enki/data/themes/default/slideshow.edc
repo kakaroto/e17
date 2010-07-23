@@ -10,7 +10,7 @@ group {
 	name: "object.slideshow.bt_layout"; 								
 	parts {												
 												
-     } 											
+     }							
   }
    
 
@@ -74,22 +74,22 @@ group {
                 rel2.relative: 0.95 0.02;
                 align: 1.0 0.0;
                 fixed: 1 1;
-                params {
-					string: "icon" "arrow_down";
-					string: "label" "layout";
-				}
-            }	
-            description {
-				state: "fullscreen" 0.0;
-				inherit: "default" 0.0;
-			}
-			description {
-				state: "fullscreen" 0.0;
-				inherit: "default" 0.0;
 				params {
 					string: "icon" "arrow_up";
 					string: "label" "fullscreen";
 				}
+            }	
+            description {
+				state: "windowed" 0.0;
+				inherit: "default" 0.0;
+                params {
+					string: "icon" "arrow_down";
+					string: "label" "windowed";
+				}
+			}
+			description {
+				state: "fullscreen" 0.0;
+				inherit: "default" 0.0;
 			}		
         } 	
         					
@@ -212,18 +212,18 @@ group {
 
 	}
 	programs {
-		/*program {
+		program {
 			name: "fullscreen";
 			signal: "fullscreen";
-			action: STATE_SET "default" 0.0;
-			target: "layouts[bt_layout]:object.bt_layout";
+			action: STATE_SET "windowed" 0.0;
+			target: "object.layout";
 		}
 		program {
 			name: "windowed";
 			signal: "windowed";
-			action: STATE_SET "windowed" 0.0;
-			target: "layouts[bt_layout]:object.bt_layout";
-		}*/
+			action: STATE_SET "fullscreen" 0.0;
+			target: "object.layout";
+		}
 	
 		program {
 			name: "mouse_move";

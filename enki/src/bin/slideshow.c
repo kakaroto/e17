@@ -44,12 +44,12 @@ static void _bt_layout_cb(void *data, Evas_Object *obj, void *event_info)
 	if(!strcmp(elm_slideshow_layout_get(data), "fullscreen"))
 	{
 		elm_slideshow_layout_set(data, "not_fullscreen");
-		edje_object_signal_emit(layout, "windowed", "");
+		edje_object_signal_emit(elm_layout_edje_get(layout), "windowed", "");
 	}
 	else
 	{
 		elm_slideshow_layout_set(data, "fullscreen");
-		edje_object_signal_emit(layout, "fullscreen", "");
+		edje_object_signal_emit(elm_layout_edje_get(layout), "fullscreen", "");
 	}
 }
 
