@@ -3,8 +3,9 @@
 # $Header: $
 
 EAPI="2"
+EFL_PKG_IUSE=""
 
-inherit eutils
+inherit efl
 
 DESCRIPTION="Fast memory pool allocator"
 HOMEPAGE="http://code.google.com/p/ememoa/"
@@ -14,29 +15,13 @@ LICENSE="BSD"
 SLOT="0"
 KEYWORDS=""
 
-IUSE="debug doc threads"
+IUSE="debug threads"
 
-if [[ "${PV}" == "9999" ]]; then
-	inherit subversion autotools
-
-	SRC_URI=""
-	ESVN_REPO_URI="http://ememoa.googlecode.com/svn/trunk/"
-	S="${WORKDIR}/trunk"
-	KEYWORDS=""
-else
-	KEYWORDS="~amd64 ~x86"
-	# TODO: project did not release any tarball or snapshot!
-fi
-
+ESVN_REPO_URI="http://ememoa.googlecode.com/svn/trunk/"
+E_NO_DOC="1"
 DEPEND="
 	dev-util/pkgconfig
 	doc? ( app-doc/doxygen )"
-
-src_prepare() {
-	[[ "${PV}" == "9999" ]] && eautoreconf
-	epunt_cxx
-	elibtoolize
-}
 
 src_configure() {
 	if use debug; then
@@ -47,23 +32,11 @@ src_configure() {
 		fi
 	fi
 
-	export MY_ECONF="
+	MY_ECONF="
 	  --disable-static
 	  $(use_enable debug)
 	  $(use_enable threads pthread)
 	"
 
-	if ! use doc; then
-		export MY_ECONF="${MY_ECONF} DOXYGEN=/bin/true"
-	fi
-	econf "${MY_ECONF}" || die "econf failed"
-}
-
-src_compile() {
-	emake || die "emake failed"
-
-	if use doc; then
-		(cd doc && doxygen doc.doxy) || die "doxygen doc.doxy"
-		dohtml doc/doxygen_html/*
-	fi
+	efl_src_configure
 }
