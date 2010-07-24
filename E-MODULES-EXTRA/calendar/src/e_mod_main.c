@@ -135,6 +135,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    if (calendar->o_icon) evas_object_del(calendar->o_icon);
    
    calendar_conf->instances = eina_list_remove(calendar_conf->instances, inst);
+   free(inst->edje_module);
    E_FREE(calendar);
    E_FREE(inst);
 }
