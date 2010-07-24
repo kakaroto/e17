@@ -84,16 +84,12 @@ if [[ ${PV/9999} != ${PV} ]] ; then
 # @ECLASS-VARIABLE: E_LIVE_SERVER
 # @DESCRIPTION:
 # Use another server than the default svn repo
-	E_LIVE_SERVER=${E_LIVE_SERVER:-${E_LIVE_SERVER_DEFAULT_SVN}}
-	ESVN_URI_APPEND=${ESVN_URI_APPEND:-${PN}}
-	ESVN_PROJECT="enlightenment/${ESVN_SUB_PROJECT}"
-	ESVN_REPO_URI=${E_LIVE_SERVER}/${ESVN_SUB_PROJECT}/${ESVN_URI_APPEND}
-
-	E_S_APPEND=${ESVN_URI_APPEND}
-
+	E_PN=${PN/e_module-}
+	ESVN_REPO_URI=${E_LIVE_SERVER_DEFAULT_SVN}/${E_SVN_SUB_PROJECT}/${E_PN/enlightenment/e}
+	ESVN_PROJECT=enlightenment/${E_SVN_SUB_PROJECT/"TMP/st"}
 	inherit subversion
 
-	S="${WORKDIR}/${E_S_APPEND}"
+	S="${WORKDIR}/trunk/${E_PN/enlightenment/e}"
 fi
 
 if [[ ! -z "${E_CYTHON}" ]]; then
@@ -175,18 +171,6 @@ efl_warning_msg() {
 efl_die() {
 	efl_warning_msg
 	die "$@"$'\n'"!!! SEND BUG REPORTS TO enlightenment@gentoo.org NOT THE E TEAM"
-}
-
-# @FUNCTION: efl_src_test
-# @USAGE:
-# @DESCRIPTION:
-# calls emake check on non python packages with test in EFL_PKG_IUSE
-efl_src_test() {
-	if [[ -z "${E_PYTHON}" ]]; then
-		if has test "${IUSE}"; then
-			emake -j1 check || die "Make check failed. see above for details"
-		fi
-	fi
 }
 
 # @FUNCTION: gettext_modify
@@ -317,6 +301,18 @@ efl_src_compile() {
 	fi
 }
 
+# @FUNCTION: efl_src_test
+# @USAGE:
+# @DESCRIPTION:
+# calls emake check on non python packages with test in EFL_PKG_IUSE
+efl_src_test() {
+	if [[ -z "${E_PYTHON}" ]]; then
+		if has test "${IUSE}"; then
+			emake -j1 check || die "Make check failed. see above for details"
+		fi
+	fi
+}
+
 # @FUNCTION: efl_src_install
 # @USAGE:
 # @DESCRIPTION:
@@ -326,7 +322,6 @@ efl_src_install() {
 
 		emake install DESTDIR="${D}" || efl_die
 
-		find "${D}" -name .svn -type d -exec rm -rf '{}' \; 2>/dev/null
 		find "${D}" -name '*.la' -delete
 
 		for d in AUTHORS ChangeLog NEWS README TODO ${EDOCS}; do
@@ -338,8 +333,6 @@ efl_src_install() {
 		if has examples "${IUSE}" && use examples; then
 			insinto /usr/share/doc/${PF}
 			doins -r examples
-
-			find "${D}/usr/share/doc/${PF}" -name .svn -type d -exec rm -rf '{}' \; 2>/dev/null
 		fi
 	fi
 
@@ -349,8 +342,9 @@ efl_src_install() {
 		else
 			dohtml -r doc/*
 		fi
-		find "${D}/usr/share/doc/${PF}" -name .svn -type d -exec rm -rf '{}' \; 2>/dev/null
 	fi
+
+	find "${D}" -name .svn -type d -exec rm -rf '{}' \; 2>/dev/null
 }
 
 EXPORT_FUNCTIONS src_unpack src_prepare src_configure src_compile src_install src_test
