@@ -5,7 +5,7 @@
 EAPI="2"
 EFL_PKG_IUSE="examples"
 E_CYTHON="1"
-ESVN_SUB_PROJECT="BINDINGS/python"
+E_SVN_SUB_PROJECT="BINDINGS/python"
 
 inherit efl
 

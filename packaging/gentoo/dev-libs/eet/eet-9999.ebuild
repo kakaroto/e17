@@ -17,12 +17,16 @@ KEYWORDS=""
 
 IUSE="+threads debug gnutls ssl"
 
-RDEPEND="media-libs/jpeg
+RDEPEND="
+	media-libs/jpeg
 	>=dev-libs/eina-9999
 	sys-libs/zlib
 	gnutls? ( net-libs/gnutls )
 	!gnutls? ( ssl? ( dev-libs/openssl ) )"
-DEPEND="${RDEPEND}"
+DEPEND="
+	${RDEPEND}
+	test? ( dev-util/lcov )
+	"
 
 src_configure() {
 	local SSL_FLAGS="" DEBUG_FLAGS="" TEST_FLAGS=""

@@ -4,7 +4,7 @@
 
 EAPI="2"
 EFL_PKG_IUSE="doc"
-ESVN_SUB_PROJECT="TMP/st"
+E_SVN_SUB_PROJECT="TMP/st"
 
 inherit efl
 

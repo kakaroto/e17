@@ -23,7 +23,10 @@ RDEPEND="
 
 DEPEND="
 	${RDEPEND}
-	test? ( dev-libs/glib )"
+	test? (
+		dev-libs/glib
+		dev-util/lcov
+	)"
 
 src_configure() {
 	local DEBUG_FLAGS="" SAFETY_CHECKS_FLAGS="" TEST_FLAGS="" EMEMOA_FLAGS=""

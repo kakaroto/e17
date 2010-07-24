@@ -3,7 +3,7 @@
 # $Header: $
 
 EAPI="2"
-ESVN_SUB_PROJECT="PROTO"
+E_SVN_SUB_PROJECT="PROTO"
 
 inherit efl
 

@@ -4,9 +4,9 @@
 
 EAPI="2"
 EFL_PKG_IUSE="nls"
-ESVN_SUB_PROJECT="E-MODULES-EXTRA"
+E_SVN_SUB_PROJECT="E-MODULES-EXTRA"
 ESVN_URI_APPEND="${PN#e_module-}"
-E_NO_DOC="1"
+
 inherit efl
 
 DESCRIPTION="weather forecasts module for enlightenment"

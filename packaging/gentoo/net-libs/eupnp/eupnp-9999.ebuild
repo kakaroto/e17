@@ -4,7 +4,7 @@
 
 EAPI="2"
 EFL_PKG_IUSE="doc test"
-ESVN_SUB_PROJECT="PROTO"
+E_SVN_SUB_PROJECT="PROTO"
 
 inherit efl
 
