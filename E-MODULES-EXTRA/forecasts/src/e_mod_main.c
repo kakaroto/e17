@@ -82,9 +82,9 @@ struct _Instance
 	char desc[256];
    } forecast[FORECASTS];
 
-   char *buffer, *location;
+   Eina_Strbuf *buffer;
+   const char *location;
    const char *area;
-   int bufsize, cursize;
 
    E_Gadcon_Popup *popup;
    Config_Item    *ci;
@@ -146,6 +146,7 @@ _gc_init(E_Gadcon * gc, const char *name, const char *id, const char *style)
 
    inst->ci = _forecasts_config_item_get(id);
    inst->area = eina_stringshare_add(inst->ci->code);
+   inst->buffer = eina_strbuf_new();
 
    w = _forecasts_new(gc->evas);
    w->inst = inst;
@@ -215,6 +216,7 @@ _gc_shutdown(E_Gadcon_Client * gcc)
      ecore_con_server_del(inst->server);
    if (inst->area)
      eina_stringshare_del(inst->area);
+   eina_strbuf_free(inst->buffer);
 
    inst->server = NULL;
    forecasts_config->instances =
@@ -351,7 +353,7 @@ _forecasts_config_item_get(const char *id)
 	     const char *p;
 	     ci = eina_list_last(forecasts_config->items)->data;
 	     p = strrchr(ci->id, '.');
-	     if (p) num = atoi(p + 1) + 1;
+	     if (p) num = strtol(p + 1, NULL, 10) + 1;
 	  }
 	snprintf(buf, sizeof(buf), "%s.%d", _gadcon_class.name, num);
 	id = buf;
@@ -524,9 +526,9 @@ _forecasts_free(Forecasts * w)
 static void
 _forecasts_get_proxy(void)
 {
-   char *env;
-   char *host = NULL;
-   char *p;
+   const char *env;
+   const char *host = NULL;
+   const char *p;
    int port = 0;
 
    env = getenv ("http_proxy");
@@ -534,24 +536,20 @@ _forecasts_get_proxy(void)
    if ((!env) || (!*env)) return;
    if (strncmp (env, "http://", 7)) return;
 
-   env = strdup(env);
    host = strchr(env, ':');
    host += 3;
    p = strchr(host, ':');
    if (p)
      {
-	*p = 0;
-	p++;
-	if (sscanf(p, "%d", &port) != 1)
+	if (sscanf(p + 1, "%d", &port) != 1)
 	  port = 0;
      }
    if ((host) && (port))
      {
 	if (proxy.host) eina_stringshare_del(proxy.host);
-	proxy.host = eina_stringshare_add(host);
+	proxy.host = eina_stringshare_add_length(host, (p - 1) - host);
 	proxy.port = port;
      }
-   free(env);
 }
 
 static Eina_Bool
@@ -630,10 +628,7 @@ _forecasts_server_del(void *data, int type, void *event)
    _forecasts_converter(inst);
    _forecasts_display_set(inst, ret);
 
-   inst->bufsize = 0;
-   inst->cursize = 0;
-   free(inst->buffer);
-   inst->buffer = NULL;
+   eina_strbuf_string_free(inst->buffer);
 
    return EINA_FALSE;
 }
@@ -650,20 +645,7 @@ _forecasts_server_data(void *data, int type, void *event)
 
    if ((!inst->server) || (inst->server != ev->server))
      return EINA_TRUE;
-   while ((inst->cursize + ev->size) >= inst->bufsize)
-	inst->bufsize += 4096;
-
-   if (tmp = realloc(inst->buffer, inst->bufsize))
-     inst->buffer = tmp;
-   else
-     {
-	DEBUG("realloc() error for size %d", inst->bufsize);
-	return EINA_FALSE;
-     }
-
-   memcpy(inst->buffer + inst->cursize, ev->data, ev->size);
-   inst->cursize += ev->size;
-   inst->buffer[inst->cursize] = 0;
+   eina_strbuf_append_n(inst->buffer, ev->data, ev->size);
    return EINA_FALSE;
 }
 
@@ -685,7 +667,7 @@ _forecasts_parse(void *data)
      return 0;
 
    /* Location */
-   needle = strstr(inst->buffer, "<yweather:location city=");
+   needle = strstr(eina_strbuf_string_get(inst->buffer), "<yweather:location city=");
    if (!needle) goto error;
    needle = strstr(needle, "\"");
    sscanf(needle, "\"%255[^\"]\"", city);
@@ -700,11 +682,10 @@ _forecasts_parse(void *data)
    else
      snprintf(location, 512, "%s", city);
 
-   E_FREE(inst->location);
-   inst->location = strdup(location);
+   eina_stringshare_replace(&inst->location, location);
 
    /* Units */
-   needle = strstr(inst->buffer, "<yweather:units temperature=");
+   needle = strstr(eina_strbuf_string_get(inst->buffer), "<yweather:units temperature=");
    if (!needle)
      goto error;
    needle = strstr(needle, "\"");
@@ -723,7 +704,7 @@ _forecasts_parse(void *data)
    sscanf(needle, "\"%3[^\"]\"", inst->units.speed);
 
    /* Current conditions */
-   needle = strstr(inst->buffer, "<yweather:condition  text=");
+   needle = strstr(eina_strbuf_string_get(inst->buffer), "<yweather:condition  text=");
    if (!needle) goto error;
    needle = strstr(needle, "\"");
    sscanf(needle, "\"%255[^\"]\"", inst->condition.desc);
@@ -742,7 +723,7 @@ _forecasts_parse(void *data)
 
    /* Details */
    /* Wind */
-   needle = strstr(inst->buffer, "<yweather:wind chill=");
+   needle = strstr(eina_strbuf_string_get(inst->buffer), "<yweather:wind chill=");
    if (!needle) goto error;
    needle = strstr(needle, "\"");
    sscanf(needle, "\"%d\"", &inst->details.wind.chill);
@@ -756,7 +737,7 @@ _forecasts_parse(void *data)
    sscanf(needle, "\"%d\"", &inst->details.wind.speed);
 
    /* Atmosphere */
-   needle = strstr(inst->buffer, "<yweather:atmosphere humidity=");
+   needle = strstr(eina_strbuf_string_get(inst->buffer), "<yweather:atmosphere humidity=");
    if (!needle) goto error;
    needle = strstr(needle, "\"");
    sscanf(needle, "\"%d\"", &inst->details.atmosphere.humidity);
@@ -775,7 +756,7 @@ _forecasts_parse(void *data)
    sscanf(needle, "\"%d\"", &inst->details.atmosphere.rising);
 
    /* Astronomy */
-   needle = strstr(inst->buffer, "<yweather:astronomy sunrise=");
+   needle = strstr(eina_strbuf_string_get(inst->buffer), "<yweather:astronomy sunrise=");
    if (!needle) goto error;
    needle = strstr(needle, "\"");
    sscanf(needle, "\"%8[^\"]\"", inst->details.astronomy.sunrise);
@@ -1010,8 +991,7 @@ _forecasts_popup_content_create(Instance *inst)
 
    evas = inst->popup->win->evas;
    o = e_widget_list_add(evas, 0, 0);
-   snprintf(buf, sizeof(buf), "%s", inst->location);
-   of = e_widget_frametable_add(evas, buf, 0);
+   of = e_widget_frametable_add(evas, inst->location, 0);
 
    snprintf(buf, sizeof(buf), "%s: %d°%c", inst->condition.desc, inst->condition.temp, inst->units.temp);
    ob = e_widget_label_add(evas, buf);
@@ -1082,11 +1062,9 @@ _forecasts_popup_content_create(Instance *inst)
      {
 	int row = 0;
 
-	snprintf(buf, sizeof(buf), "%s", inst->forecast[i].date);
-	of = e_widget_frametable_add(evas, buf, 0);
+	of = e_widget_frametable_add(evas, inst->forecast[i].date, 0);
 
-	snprintf(buf, sizeof(buf), "%s", inst->forecast[i].desc);
-	ob = e_widget_label_add(evas, buf);
+	ob = e_widget_label_add(evas, inst->forecast[i].desc);
 	e_widget_frametable_object_append(of, ob, 0, row, 3, 1, 0, 0, 1, 0);
 
 	ob = e_widget_label_add(evas, D_("High"));
