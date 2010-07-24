@@ -234,14 +234,12 @@ static int ed_mark_favorite(void *data, int argc, char **argv, char **azColName)
 	if(status->favorite) {
 		switch(atoi(argv[2])) {
 			case ACCOUNT_TYPE_TWITTER: { ed_twitter_favorite_destroy(id, screen_name, password, proto, domain, port, base_url, status->status_id); break; }
-			case ACCOUNT_TYPE_TWITTER_OAUTH: { ed_twitter_favorite_destroy(id, screen_name, password, proto, domain, port, base_url, status->status_id); break; }
 			case ACCOUNT_TYPE_STATUSNET:
 			default: { ed_statusnet_favorite_destroy(id, screen_name, password, proto, domain, port, base_url, status->status_id); break; }
 		}
 	} else {
 		switch(atoi(argv[2])) {
 			case ACCOUNT_TYPE_TWITTER: { ed_twitter_favorite_create(id, screen_name, password, proto, domain, port, base_url, status->status_id); break; }
-			case ACCOUNT_TYPE_TWITTER_OAUTH: { ed_twitter_favorite_create(id, screen_name, password, proto, domain, port, base_url, status->status_id); break; }
 			case ACCOUNT_TYPE_STATUSNET:
 			default: { ed_statusnet_favorite_create(id, screen_name, password, proto, domain, port, base_url, status->status_id); break; }
 		}
@@ -441,7 +439,6 @@ static void ed_statusnet_user_get(int account_id, UserProfile *user) {
 static void user_info_get(ub_Bubble *ubBubble, UserProfile *user) {
 	switch(ubBubble->account_type) {
 		case ACCOUNT_TYPE_TWITTER: { ed_twitter_user_get(ubBubble->account_id, user) ; break; }
-		case ACCOUNT_TYPE_TWITTER_OAUTH: { ed_twitter_user_get(ubBubble->account_id, user) ; break; }
 		case ACCOUNT_TYPE_STATUSNET:
 		default: { ed_statusnet_user_get(ubBubble->account_id, user); break; }
 	}
@@ -475,7 +472,6 @@ static int ed_user_follow(void *data, int argc, char **argv, char **azColName) {
 
 	switch(atoi(argv[2])) {
 		case ACCOUNT_TYPE_TWITTER: { ed_twitter_user_follow(id, screen_name, password, proto, domain, port, base_url, follow_user); break; }
-		case ACCOUNT_TYPE_TWITTER_OAUTH: { ed_twitter_user_follow(id, screen_name, password, proto, domain, port, base_url, follow_user); break; }
 		case ACCOUNT_TYPE_STATUSNET:
 		default: { ed_statusnet_user_follow(id, screen_name, password, proto, domain, port, base_url, follow_user); break; }
 	}
@@ -530,7 +526,6 @@ static int ed_user_abandon(void *data, int argc, char **argv, char **azColName) 
 
 	switch(atoi(argv[2])) {
 		case ACCOUNT_TYPE_TWITTER: { ed_twitter_user_abandon(id, screen_name, password, proto, domain, port, base_url, follow_user); break; }
-		case ACCOUNT_TYPE_TWITTER_OAUTH: { ed_twitter_user_abandon(id, screen_name, password, proto, domain, port, base_url, follow_user); break; }
 		case ACCOUNT_TYPE_STATUSNET:
 		default: { ed_statusnet_user_abandon(id, screen_name, password, proto, domain, port, base_url, follow_user); break; }
 	}
@@ -683,11 +678,12 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 
 static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 	AnchorData *anchor = (AnchorData*)data;
-	Evas_Object *group_win=NULL, *bg=NULL, *label=NULL, *s=NULL, *table=NULL, *bubble=anchor->bubble;
+	Evas_Object *group_win=NULL, *bg=NULL, *label=NULL, *s=NULL, *table=NULL, *bubble=anchor->bubble, *icon=NULL;
 	ub_Bubble * ubBubble = eina_hash_find(status2user, &bubble);
 	GroupProfile *gp = (GroupProfile*)calloc(1, sizeof(GroupProfile));
-	char *m;
+	char *m, *home, *path;
 	int res = 0;
+	struct stat buf;
 
 	gp->name=strndup(anchor->url+8, PIPE_BUF);
 
@@ -716,31 +712,50 @@ typedef struct _Group_Profile {
 		table = elm_table_add(group_win);
 			evas_object_size_hint_weight_set(table, 1, 1);
 			evas_object_size_hint_align_set(table, -1, -1);
+			elm_table_padding_set(table, 20, 20);
+			elm_table_homogenous_set(table, EINA_TRUE);
 			elm_win_resize_object_add(group_win, table);
+
+			home=getenv("HOME");
+			if(home)
+				res = asprintf(&path, "%s/.elmdentica/cache/icons/%s", home, gp->name);
+			else
+				res = asprintf(&path, ".elmdentica/cache/icons/%s", gp->name);
+
+			if(res != -1 && stat(path, &buf) == 0 ) {
+				icon = elm_icon_add(group_win);
+					evas_object_size_hint_weight_set(icon, 1, 1);
+					evas_object_size_hint_align_set(icon, -1, -1);
+					elm_icon_file_set(icon, path, "fubar?");
+					elm_table_pack(table, icon, 0, 0, 1, 1);
+				evas_object_show(icon);
+				free(path);
+			}
+
+			if(gp->member)
+				res = asprintf(&m, _("You are a member of group %s along with %d other people.<br>«%s»"), gp->fullname, gp->member_count -1, gp->description);
+			else
+				res = asprintf(&m, _("You are not a member of group %s but %d people are.<br>«%s»"), gp->fullname, gp->member_count, gp->description);
+
+			if(res != -1) {
+				label = elm_label_add(group_win);
+					evas_object_size_hint_weight_set(label, 1, 1);
+					evas_object_size_hint_align_set(label, -1, -1);
+					elm_label_line_wrap_set(label, EINA_TRUE);
+
+					elm_label_label_set(label, m);
+					free(m);
+				evas_object_show(label);
+
+				elm_table_pack(table, label, 1, 0, 1, 1);
+			}
 
 			s = elm_scroller_add(group_win);
 				evas_object_size_hint_weight_set(s, 1, 1);
 				evas_object_size_hint_align_set(s, -1, -1);
 
-				if(gp->member)
-					res = asprintf(&m, _("You are a member of group %s along with %d other people.<br>%s"), gp->fullname, gp->member_count -1, gp->description);
-				else
-					res = asprintf(&m, _("You are not a member of group %s but %d people are.<br>%s"), gp->fullname, gp->member_count -1, gp->description);
-
-				if(res != -1) {
-					label = elm_label_add(group_win);
-						evas_object_size_hint_weight_set(label, 1, 1);
-						evas_object_size_hint_align_set(label, -1, -1);
-						elm_label_line_wrap_set(label, EINA_TRUE);
-
-						elm_label_label_set(label, m);
-						free(m);
-					evas_object_show(label);
-
-					elm_scroller_content_set(s, label);
-				}
-
-				elm_table_pack(table, s, 0, 2, 1, 1);
+				//elm_scroller_content_set(s, label);
+				elm_table_pack(table, s, 0, 1, 2, 1);
 
 			evas_object_show(s);
 
@@ -1223,11 +1238,11 @@ static int get_messages_for_account(void *pTimeline, int argc, char **argv, char
 	id = atoi(argv[7]);
 
 	switch(atoi(argv[2])) {
-		case ACCOUNT_TYPE_TWITTER: { ed_twitter_timeline_get(id, screen_name, password, proto, domain, port, base_url, timeline) ; break; }
-		case ACCOUNT_TYPE_TWITTER_OAUTH: { ed_twitter_timeline_get(id, screen_name, password, proto, domain, port, base_url, timeline) ; break; }
+		case ACCOUNT_TYPE_TWITTER: { ed_twitter_timeline_get(id, screen_name, password, proto, domain, port, base_url, timeline); break; }
 		case ACCOUNT_TYPE_STATUSNET:
 		default: { ed_statusnet_timeline_get(id, screen_name, password, proto, domain, port, base_url, timeline); break; }
 	}
+
 	return(0);
 }
 
@@ -1349,7 +1364,6 @@ static int do_post(void *notUsed, int argc, char **argv, char **azColName) {
 
 	switch(type) {
 		case ACCOUNT_TYPE_TWITTER: { res = ed_twitter_post(id, screen_name, password, proto, domain, port, base_url, msg) ; break; }
-		case ACCOUNT_TYPE_TWITTER_OAUTH: { res = ed_twitter_post(id, screen_name, password, proto, domain, port, base_url, msg) ; break; }
 		case ACCOUNT_TYPE_STATUSNET:
 		default: { res = ed_statusnet_post(id, screen_name, password, proto, domain, port, base_url, msg); break; }
 	}

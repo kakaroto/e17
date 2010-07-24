@@ -47,9 +47,6 @@
 #include "curl.h"
 #include "elmdentica.h"
 
-#define TWITTER_CONSUMER_KEY    "8EH13DnoxtuFMdklYeZCbQ"
-#define TWITTER_CONSUMER_SECRET "5Ve6mE3AL0eR9ZBUIA1xSNBkY48n1tKQxUrCYizM"
-
 char * avatar=NULL;
 extern struct sqlite3 *ed_DB;
 extern int debug;
@@ -371,7 +368,6 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 	if(request->url) free(request->url);
 	if(request->content.memory) free(request->content.memory);
 	if(request) free(request);
-
 }
 
 void ed_twitter_favorite_create(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, long int status_id) {

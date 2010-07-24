@@ -73,7 +73,6 @@ typedef struct _User_Profile {
 #define ACCOUNT_TYPE_NONE 0
 #define ACCOUNT_TYPE_STATUSNET 1
 #define ACCOUNT_TYPE_TWITTER 2
-#define ACCOUNT_TYPE_TWITTER_OAUTH 3
 
 #define TIMELINE_FRIENDS 0
 #define TIMELINE_USER 1
