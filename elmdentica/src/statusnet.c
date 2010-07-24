@@ -222,7 +222,8 @@ void ed_statusnet_group_get(int account_id, GroupProfile *group) {
 	
 	gg.group=group;
 	gg.account_id=account_id;
-	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE id = %d and type = %d and enabled = 1;", account_id, ACCOUNT_TYPE_STATUSNET);
+	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE id = %d and type = %d and enabled = 1;", account_id, ACCOUNT_TYPE_TWITTER);
+
 	if(sqlite_res != -1) {
 		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_group_get_handler, (void*)&gg, &db_err);
 		if(sqlite_res != 0) {

@@ -584,7 +584,7 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 	if(!user) return;
 
 	memset(user, 0, sizeof(UserProfile));
-	user->screen_name=anchor->url;
+	user->screen_name=anchor->url+7;
     user->name=NULL;
     user->description=NULL;
     user->tmp=NULL;
@@ -681,11 +681,30 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 	user_free(user);
 }
 
-static void on_handle_group(void *data, Evas_Object *obj, char *group) {
-	Evas_Object *group_win=NULL, *bg=NULL, *label=NULL;
+static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
+	AnchorData *anchor = (AnchorData*)data;
+	Evas_Object *group_win=NULL, *bg=NULL, *label=NULL, *s=NULL, *table=NULL, *bubble=anchor->bubble;
+	ub_Bubble * ubBubble = eina_hash_find(status2user, &bubble);
+	GroupProfile *gp = (GroupProfile*)calloc(1, sizeof(GroupProfile));
+	char *m;
+	int res = 0;
 
-	group_win = elm_win_add(NULL, group, ELM_WIN_BASIC);
-		elm_win_title_set(group_win, group);
+	gp->name=strndup(anchor->url+8, PIPE_BUF);
+
+/*
+typedef struct _Group_Profile {
+    char        *name;
+    char        *fullname;
+    Eina_Bool   member;
+    int         member_count;
+    char        *original_logo;
+    char        *description;
+} GroupProfile;
+*/
+	ed_statusnet_group_get(ubBubble->account_id, gp);
+
+	group_win = elm_win_add(NULL, gp->name, ELM_WIN_BASIC);
+		elm_win_title_set(group_win, gp->name);
 		elm_win_autodel_set(group_win, EINA_TRUE);
 
 		bg = elm_bg_add(group_win);
@@ -694,17 +713,44 @@ static void on_handle_group(void *data, Evas_Object *obj, char *group) {
 			elm_win_resize_object_add(group_win, bg);
 		evas_object_show(bg);
 
-		scroller = elm_scroller_add(group_win);
-			evas_object_size_hint_weight_set(scroller, 1, 1);
-			evas_object_size_hint_align_set(scroller, -1, -1);
+		table = elm_table_add(group_win);
+			evas_object_size_hint_weight_set(table, 1, 1);
+			evas_object_size_hint_align_set(table, -1, -1);
+			elm_win_resize_object_add(group_win, table);
 
-			label = elm_label_add(group_win);
-				evas_object_size_hint_weight_set(label, 1, 1);
-				evas_object_size_hint_align_set(label, -1, -1);
-				elm_label_label_set(label, group);
-			evas_object_show(label);
-		evas_object_show(scroller);
+			s = elm_scroller_add(group_win);
+				evas_object_size_hint_weight_set(s, 1, 1);
+				evas_object_size_hint_align_set(s, -1, -1);
+
+				if(gp->member)
+					res = asprintf(&m, _("You are a member of group %s along with %d other people.<br>%s"), gp->fullname, gp->member_count -1, gp->description);
+				else
+					res = asprintf(&m, _("You are not a member of group %s but %d people are.<br>%s"), gp->fullname, gp->member_count -1, gp->description);
+
+				if(res != -1) {
+					label = elm_label_add(group_win);
+						evas_object_size_hint_weight_set(label, 1, 1);
+						evas_object_size_hint_align_set(label, -1, -1);
+						elm_label_line_wrap_set(label, EINA_TRUE);
+
+						elm_label_label_set(label, m);
+						free(m);
+					evas_object_show(label);
+
+					elm_scroller_content_set(s, label);
+				}
+
+				elm_table_pack(table, s, 0, 2, 1, 1);
+
+			evas_object_show(s);
+
+
+		evas_object_show(table);
+
+	evas_object_resize(group_win, 300, 300);
 	evas_object_show(group_win);
+
+	//ed_statusnet_group_free(gp);
 }
 
 static void on_handle_url(void *data, Evas_Object *obj, void *event_info) {
@@ -809,10 +855,10 @@ static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_
 			elm_frame_label_set(frame, _("View details?"));
 
 			anchor->bubble = bubble;
-			anchor->url = url+7;
+			anchor->url = url;
 
 			button = elm_button_add(win);
-				elm_button_label_set(button, url);
+				elm_button_label_set(button, anchor->url+7);
 				evas_object_smart_callback_add(button, "clicked", on_handle_user, anchor);
 			evas_object_show(button);
 
@@ -820,7 +866,23 @@ static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_
 			elm_hover_content_set(info->hover, "middle", frame);
 		evas_object_show(frame);
 	} else if(strncmp(url, "group://", 8) == 0) {
-		on_handle_group(data, obj, url+8);
+		frame = elm_frame_add(win);
+			evas_object_size_hint_weight_set(frame, 1, 1);
+			evas_object_size_hint_align_set(frame, 0.5, 0);
+
+			elm_frame_label_set(frame, _("View group?"));
+
+			anchor->bubble = bubble;
+			anchor->url = url;
+
+			button = elm_button_add(win);
+				elm_button_label_set(button, anchor->url+8);
+				evas_object_smart_callback_add(button, "clicked", on_handle_group, anchor);
+			evas_object_show(button);
+
+			elm_frame_content_set(frame, button);
+			elm_hover_content_set(info->hover, "middle", frame);
+		evas_object_show(frame);
 	} else {
 		on_handle_url(data, obj, event_info);
 	}
