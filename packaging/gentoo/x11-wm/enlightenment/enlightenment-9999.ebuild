@@ -33,7 +33,6 @@ CONF_MODS=(conf-borders conf-colors conf-desklock conf-desk conf-desks \
 	conf-startup conf-theme conf-winlist)
 
 # TODO: pm-utils changes /etc/enlightenment/sysactions.conf
-# TODO: patch to not require -i-really-know-what-i-am-doing-and-accept-full-responsibility-for-it
 # TODO: patch to make e17 "e_alert()" inform how to compile with debug in gentoo
 RDEPEND="
 	 exchange? ( >=net-libs/exchange-9999 )
@@ -69,6 +68,8 @@ pkg_setup() {
 }
 
 src_configure() {
+	#remove useless startup checks since we know we have the deps
+	epatch ${FILESDIR}/quickstart.diff
 	# NOTE: mixer is plugin-able, but just alsa is provided atm.
 	export MY_ECONF="
 	  ${MY_ECONF}
