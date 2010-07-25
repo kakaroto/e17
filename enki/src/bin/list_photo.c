@@ -26,7 +26,7 @@ static void _tg_multiselect_changed_cb(void *data, Evas_Object *obj, void *event
 static void _album_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _photo_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
-List_Photo *list_photo_new(Evas_Object *win)
+List_Photo *list_photo_new(Evas_Object *edje)
 {
    Evas_Object *bx, *sl, *bx2, *lbl, *bt, *tg;
    List_Photo *enlil_photo = calloc(1, sizeof(List_Photo));
@@ -34,13 +34,13 @@ List_Photo *list_photo_new(Evas_Object *win)
    enlil_photo->photo_w = DEFAULT_W;
    enlil_photo->photo_h = DEFAULT_H;
 
-   bx = elm_box_add(win);
+   bx = elm_box_add(edje);
    evas_object_size_hint_weight_set(bx, 1.0, 1.0);
    evas_object_size_hint_align_set(bx, -1.0, -1.0);
    evas_object_show(bx);
    enlil_photo->bx = bx;
 
-   enlil_photo->o_list = photos_list_object_add(win);
+   enlil_photo->o_list = photos_list_object_add(edje);
    photos_list_object_sub_items_size_set(enlil_photo->o_list, DEFAULT_W, DEFAULT_H);
    evas_object_smart_callback_add(enlil_photo->o_list, "open", _open, enlil_photo);
    evas_object_smart_callback_add(enlil_photo->o_list, "clicked,right", _right_click, enlil_photo);
@@ -53,21 +53,21 @@ List_Photo *list_photo_new(Evas_Object *win)
    itc_album.func.icon_get = _album_icon_get;
    itc_photo.func.icon_get = _photo_icon_get;
 
-   bx2 = elm_box_add(win);
+   bx2 = elm_box_add(edje);
    elm_box_horizontal_set(bx2, 1);
    evas_object_size_hint_weight_set(bx2, 1.0, -1.0);
    evas_object_size_hint_align_set(bx2, -1.0, 1.0);
    elm_box_pack_end(bx, bx2);
    evas_object_show(bx2);
 
-   lbl = elm_label_add(win);
+   lbl = elm_label_add(edje);
    enlil_photo->lbl_nb_albums_photos = lbl;
    evas_object_show(lbl);
    evas_object_size_hint_weight_set(lbl, 1.0, 0.0);
    evas_object_size_hint_align_set(lbl, 0.0, 0.5);
    elm_box_pack_end(bx2, lbl);
 
-   tg = elm_toggle_add(win);
+   tg = elm_toggle_add(edje);
    enlil_photo->multiselection = tg;
    evas_object_size_hint_weight_set(tg, -1.0, -1.0);
    evas_object_size_hint_align_set(tg, 1.0, -1.0);
@@ -78,7 +78,7 @@ List_Photo *list_photo_new(Evas_Object *win)
    elm_box_pack_end(bx2, tg);
    evas_object_show(tg);
 
-   bt = elm_button_add(win);
+   bt = elm_button_add(edje);
    elm_object_style_set(bt, "anchor");
    evas_object_size_hint_weight_set(bt, -1.0, -1.0);
    evas_object_size_hint_align_set(bt, 1.0, -1.0);
@@ -87,7 +87,7 @@ List_Photo *list_photo_new(Evas_Object *win)
    evas_object_show(bt);
 
    elm_box_pack_end(bx2, bt);
-   sl = elm_slider_add(win);
+   sl = elm_slider_add(edje);
    elm_slider_label_set(sl, "Zoom");
    elm_slider_indicator_format_set(sl, "%3.0f");
    elm_slider_min_max_set(sl, 1, 100);

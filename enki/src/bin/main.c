@@ -203,7 +203,7 @@ static void _panes_clicked_double(void *data, Evas_Object *obj, void *event_info
 
 int elm_main(int argc, char **argv)
 {
-   Evas_Object *panels, *tabs, *page_1, *bx;
+   Evas_Object *panels, *tabs, *page_1, *bx, *ly, *edje;
    Tabpanel_Item *tp_item;
    unsigned char exit_option = 0;
    char *root_path = NULL;
@@ -301,24 +301,33 @@ int elm_main(int argc, char **argv)
    list_left_data_set(list_album, enlil_data);
    elm_panes_content_left_set(page_1, list_album->obj);
 
-   elm_panes_content_right_set(page_1, list_album->panels_map);
+
+   //
+   ly = elm_layout_add(win->win);
+   elm_layout_file_set(ly, THEME, "main_panel");
+   evas_object_size_hint_weight_set(ly, -1.0, -1.0);
+   evas_object_size_hint_align_set(ly, -1.0, -1.0);
+   evas_object_show(ly);
+
+   edje = elm_layout_edje_get(ly);
+
+   main_menu_new(edje);
+   tp_item = tabpanel_item_add_with_signal(list_album->tb_liste_map, D_("Menu"), edje, "menu,show", _menu_select_cb, enlil_data);
 
 
-   Evas_Object *main_menu = main_menu_new(win->win);
-   enlil_data->main_menu = main_menu;
-   tp_item = tabpanel_item_add(list_album->tb_liste_map, D_("Menu"), main_menu, _menu_select_cb, enlil_data);
-
-
-   List_Photo *list_photo = list_photo_new(win->win);
+   List_Photo *list_photo = list_photo_new(edje);
    list_photo_data_set(list_photo, enlil_data);
-   tp_list_photo = tabpanel_item_add(list_album->tb_liste_map, D_("Liste"), list_photo->bx,
-	 _photos_list_select_cb, enlil_data);
+   edje_object_part_swallow(edje, "photos", list_photo->bx);
+   tp_list_photo = tabpanel_item_add_with_signal(list_album->tb_liste_map, D_("Liste"), edje, "photos,show",_photos_list_select_cb, enlil_data);
 
-   Map *map = map_new(win->win);
+   Map *map = map_new(edje);
    enlil_data->map = map;
-   tabpanel_item_add(list_album->tb_liste_map, D_("Map"), map->bx, _map_select_cb, enlil_data);
+   edje_object_part_swallow(edje, "map", map->bx);
+   tabpanel_item_add_with_signal(list_album->tb_liste_map, D_("Map"), edje, "map,show", _map_select_cb, enlil_data);
 
    tabpanel_item_select(tp_item);
+
+   elm_panes_content_right_set(page_1, edje);
    //
 
    //

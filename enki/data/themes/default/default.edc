@@ -69,6 +69,7 @@ images {
 	
 collections {
 	#include "main_menu.edc"
+	#include "main_panel.edc"
 	#include "slideshow.edc"
 	#include "list_left.edc"
 	

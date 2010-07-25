@@ -25,17 +25,9 @@ static void _preferences_cb(void *data, Evas_Object *obj, void *event_info);
 static void _quit_cb(void *data, Evas_Object *obj, void *event_info);
 
 
-Evas_Object *main_menu_new(Evas_Object *parent)
+void main_menu_new(Evas_Object *edje)
 {
-    Evas_Object *ly, *bt, *edje;
-
-    ly = elm_layout_add(parent);
-    elm_layout_file_set(ly, THEME, "main_menu");
-    evas_object_size_hint_weight_set(ly, -1.0, -1.0);
-    evas_object_size_hint_align_set(ly, -1.0, -1.0);
-    evas_object_show(ly);
-
-    edje = elm_layout_edje_get(ly);
+    Evas_Object *bt;
 
     //Libraries
     libraries_list = edje_object_part_external_object_get(edje, "object.main_menu.list_libraries");
@@ -80,7 +72,6 @@ Evas_Object *main_menu_new(Evas_Object *parent)
         FREE(string);
     }
 
-    return ly;
 }
 
 void main_menu_loading_disable_set(Eina_Bool disabled)

@@ -26,20 +26,20 @@ static void _tg_geocaching_changed_cb(void *data, Evas_Object *obj, void *event_
 static void _tg_photos_changed_cb(void *data, Evas_Object *obj, void *event_info);
 static void _bt_geocaching_cb(void *data, Evas_Object *obj, void *event_info);
 
-Map *map_new(Evas_Object *win)
+Map *map_new(Evas_Object *edje)
 {
    Evas_Object  *sl, *rect, *tg, *bx;
    Map *map = calloc(1, sizeof(Map));
 
    //
-   map->bx = elm_box_add(win);
+   map->bx = elm_box_add(edje);
    evas_object_size_hint_weight_set(map->bx, 1.0, 1.0);
    evas_object_size_hint_align_set(map->bx, -1.0, -1.0);
    evas_object_show(map->bx);
    //
 
    //
-   map->map = elm_map_add(win);
+   map->map = elm_map_add(edje);
    evas_object_size_hint_weight_set(map->map, 1.0, 1.0);
    evas_object_size_hint_align_set(map->map, -1.0, -1.0);
    evas_object_show(map->map);
@@ -63,7 +63,7 @@ Map *map_new(Evas_Object *win)
    elm_map_marker_class_style_set(itc_gp, "empty");
 
    //
-   bx = elm_box_add(win);
+   bx = elm_box_add(edje);
    elm_box_horizontal_set(bx, EINA_TRUE);
    evas_object_size_hint_weight_set(bx, 1.0, 0.0);
    evas_object_size_hint_align_set(bx, -1.0, -1.0);
@@ -72,7 +72,7 @@ Map *map_new(Evas_Object *win)
    //
 
    //
-   tg = elm_toggle_add(win);
+   tg = elm_toggle_add(edje);
    map->display_photos = tg;
    evas_object_size_hint_weight_set(tg, -1.0, -1.0);
    evas_object_size_hint_align_set(tg, 0.0, -1.0);
@@ -85,7 +85,7 @@ Map *map_new(Evas_Object *win)
    //
 
    //
-   tg = elm_toggle_add(win);
+   tg = elm_toggle_add(edje);
    map->display_geocaching = tg;
    evas_object_size_hint_weight_set(tg, -1.0, -1.0);
    evas_object_size_hint_align_set(tg, 0.0, -1.0);
@@ -98,7 +98,7 @@ Map *map_new(Evas_Object *win)
    //
 
    //
-   sl = elm_slider_add(win);
+   sl = elm_slider_add(edje);
    evas_object_size_hint_weight_set(sl, 1.0, 0.0);
    evas_object_size_hint_align_set(sl, 1.0, -1.0);
    elm_slider_label_set(sl, "Zoom");
@@ -113,7 +113,7 @@ Map *map_new(Evas_Object *win)
    //
 
    //
-   rect = evas_object_rectangle_add(evas_object_evas_get(win));
+   rect = evas_object_rectangle_add(evas_object_evas_get(edje));
    map->rect = rect;
    evas_object_color_set(rect, 0, 0, 0, 0);
    evas_object_repeat_events_set(rect,1);
