@@ -33,24 +33,22 @@ static void _tabpanel_tag_select_cb(void *data, Tabpanel *tabpanel, Tabpanel_Ite
 
 List_Left *list_left_new(Evas_Object *win)
 {
-    Evas_Object *gl, *panels, *tabs, *bx;
+    Evas_Object *gl, *ly, *edje;
     Tabpanel_Item *tp_item;
     List_Left *list_left = calloc(1,sizeof(List_Left));
 
-    bx = elm_box_add(win);
-    list_left->bx = bx;
-    evas_object_size_hint_weight_set(bx, 1.0, 1.0);
-    evas_object_size_hint_align_set(bx, -1.0, -1.0);
-    evas_object_show(bx);
+    //
+    ly = elm_layout_add(win);
+    list_left->obj = ly;
+    elm_layout_file_set(ly, THEME, "list_left");
+    evas_object_size_hint_weight_set(ly, 1.0, 1.0);
+    evas_object_size_hint_align_set(ly, -1.0, -1.0);
+    evas_object_show(ly);
+
+    edje = elm_layout_edje_get(ly);
 
     //
-    list_left->tb_liste_map = tabpanel_add(win);
-
-    tabs = tabpanel_tabs_obj_get(list_left->tb_liste_map);
-    evas_object_size_hint_weight_set(tabs, -1.0, -1.0);
-    evas_object_size_hint_align_set(tabs, -1.0, 0.0);
-    elm_box_pack_end(bx, tabs);
-    evas_object_show(tabs);
+    list_left->tb_liste_map = tabpanel_add_with_edje(win, edje_object_part_external_object_get(edje, "object.menu.lvl1"));
 
     list_left->panels_map = tabpanel_panels_obj_get(list_left->tb_liste_map);
     evas_object_size_hint_weight_set(list_left->panels_map, 1.0, 1.0);
@@ -59,28 +57,12 @@ List_Left *list_left_new(Evas_Object *win)
     //
 
     //
-    list_left->tabpanel = tabpanel_add(win);
-
-    tabs = tabpanel_tabs_obj_get(list_left->tabpanel);
-    evas_object_size_hint_weight_set(tabs, -1.0, -1.0);
-    evas_object_size_hint_align_set(tabs, -1.0, 0.0);
-    elm_box_pack_end(bx, tabs);
-    evas_object_show(tabs);
-
-    panels = tabpanel_panels_obj_get(list_left->tabpanel);
-    evas_object_size_hint_weight_set(panels, 1.0, 1.0);
-    evas_object_size_hint_align_set(panels, -1.0, -1.0);
-    evas_object_show(panels);
-    elm_box_pack_end(bx, panels);
+    list_left->tabpanel = tabpanel_add_with_edje(win, edje_object_part_external_object_get(edje, "object.menu.lvl2"));
     //
 
 
-    gl = elm_genlist_add(win);
+    gl = edje_object_part_external_object_get(edje, "object.list.albums");
     list_left->gl_albums = gl;
-    elm_genlist_horizontal_mode_set(gl, ELM_LIST_SCROLL);
-    evas_object_size_hint_weight_set(gl, 1.0, 1.0);
-    evas_object_size_hint_align_set(gl, -1.0, -1.0);
-    evas_object_show(gl);
 
     itc_album.item_style     = "default";
     itc_album.func.label_get = _gl_label_get;
@@ -88,14 +70,10 @@ List_Left *list_left_new(Evas_Object *win)
     itc_album.func.state_get = NULL;
     itc_album.func.del       = NULL;
 
-    tp_item = tabpanel_item_add(list_left->tabpanel, D_("Albums"), gl, _tabpanel_album_select_cb, list_left);
+    tp_item = tabpanel_item_add_with_signal(list_left->tabpanel, D_("Albums"), edje, "albums,show", _tabpanel_album_select_cb, list_left);
 
-    gl = elm_genlist_add(win);
+    gl = edje_object_part_external_object_get(edje, "object.list.collections");
     list_left->gl_collections = gl;
-    elm_genlist_horizontal_mode_set(gl, ELM_LIST_SCROLL);
-    evas_object_size_hint_weight_set(gl, 1.0, 1.0);
-    evas_object_size_hint_align_set(gl, -1.0, -1.0);
-    evas_object_show(gl);
 
     itc_col.item_style     = "default";
     itc_col.func.label_get = _gl_col_label_get;
@@ -114,14 +92,10 @@ List_Left *list_left_new(Evas_Object *win)
     evas_object_smart_callback_add(gl, "expand,request", _gl_col_exp_req, gl);
     evas_object_smart_callback_add(gl, "contract,request", _gl_col_con_req, gl);
 
-    tabpanel_item_add(list_left->tabpanel, D_("Collections"), gl, _tabpanel_collection_select_cb, list_left);
+    tabpanel_item_add_with_signal(list_left->tabpanel, D_("Collections"), edje, "collections,show", _tabpanel_collection_select_cb, list_left);
 
-    gl = elm_genlist_add(win);
+    gl = edje_object_part_external_object_get(edje, "object.list.tags");
     list_left->gl_tags = gl;
-    elm_genlist_horizontal_mode_set(gl, ELM_LIST_SCROLL);
-    evas_object_size_hint_weight_set(gl, 1.0, 1.0);
-    evas_object_size_hint_align_set(gl, -1.0, -1.0);
-    evas_object_show(gl);
 
     itc_tag.item_style     = "default";
     itc_tag.func.label_get = _gl_tag_label_get;
@@ -129,7 +103,7 @@ List_Left *list_left_new(Evas_Object *win)
     itc_tag.func.state_get = NULL;
     itc_tag.func.del       = NULL;
 
-    tabpanel_item_add(list_left->tabpanel, D_("Tags"), gl, _tabpanel_tag_select_cb, list_left);
+    tabpanel_item_add_with_signal(list_left->tabpanel, D_("Tags"), edje, "tags,show", _tabpanel_tag_select_cb, list_left);
 
     tabpanel_item_select(tp_item);
 

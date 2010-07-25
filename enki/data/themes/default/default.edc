@@ -70,6 +70,7 @@ images {
 collections {
 	#include "main_menu.edc"
 	#include "slideshow.edc"
+	#include "list_left.edc"
 	
     group {
         name: "photo_simple";

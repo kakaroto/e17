@@ -30,8 +30,8 @@ struct list_left
     Enlil_Data *enlil_data;
 
     Eina_Bool is_map;
+    Evas_Object *obj;
 
-    Evas_Object *bx;
     Tabpanel *tabpanel;
 
     Tabpanel *tb_liste_map;

@@ -297,15 +297,9 @@ int elm_main(int argc, char **argv)
    enlil_data->library_item =
       tabpanel_item_add(enlil_data->tabpanel, D_("Library"), page_1, _tabpanel_select_page1_cb, enlil_data);
 
-   bx = elm_box_add(win->win);
-   evas_object_size_hint_weight_set(bx, 1.0, 1.0);
-   evas_object_size_hint_align_set(bx, -1.0, -1.0);
-   evas_object_show(bx);
-   elm_panes_content_left_set(page_1, bx);
-
    List_Left *list_album = list_left_new(win->win);
    list_left_data_set(list_album, enlil_data);
-   elm_box_pack_end(bx, list_album->bx);
+   elm_panes_content_left_set(page_1, list_album->obj);
 
    elm_panes_content_right_set(page_1, list_album->panels_map);
 
