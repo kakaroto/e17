@@ -16,7 +16,10 @@ lib_LTLIBRARIES = \
 	libemotionxx.la
 
 libemotionxx_la_SOURCES = \
-	Object.cpp
+	Object.cpp       \
+	SPUObject.cpp       \
+	VideoObject.cpp       \
+	AudioObject.cpp
 
 libemotionxx_la_LIBADD = \
 	$(EFL_LIBS)

@@ -8,6 +8,9 @@
  */
 
 #include "Object.h"
+#include "AudioObject.h"
+#include "VideoObject.h"
+#include "SPUObject.h"
 
 #endif // EMOTIONXX_H
 

@@ -1,7 +1,10 @@
 
 libemotionxx_HEADERS = \
 	Object.h \
-	Emotionxx.h
+	Emotionxx.h \
+	SPUObject.h \
+	VideoObject.h \
+	AudioObject.h
 
 libemotionxxdir = \
 	$(pkgincludedir)
