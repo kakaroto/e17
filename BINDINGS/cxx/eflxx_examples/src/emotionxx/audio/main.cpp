@@ -3,16 +3,11 @@
 #include <edjexx/Edjexx.h>
 #include <emotionxx/Emotionxx.h>
 #include "../../common/searchFile.h"
+#include <iostream>
+#include <assert.h>
 
 using namespace Eflxx;
-
-#define WIDTH 320
-#define HEIGHT 240
-
-#include <iostream>
 using namespace std;
-
-#include <assert.h>
 
 int main( int argc, const char **argv )
 {
@@ -20,22 +15,19 @@ int main( int argc, const char **argv )
   Ecorexx::Application* app = new Ecorexx::Application( argc, argv, "Simple Emotion Test" );
   if ( argc < 2 )
   {
-      cerr << "Usage: " << argv[0] << "<video file>" << endl;
+      cerr << "Usage: " << argv[0] << "<audio file>" << endl;
       return 1;
   }
   /* Create the main window, a window with an embedded canvas */
-  Ecorexx::EvasWindowSoftwareX11* mw = new Ecorexx::EvasWindowSoftwareX11( Size (WIDTH, HEIGHT) );
+  Ecorexx::EvasWindowSoftwareX11* mw = new Ecorexx::EvasWindowSoftwareX11 (Size (0, 0));
   Evasxx::Canvas &evas = mw->getCanvas();
-  evas.appendFontPath( searchDataDir () + "/fonts" );
 
   /* Create Emotionxx::Object object using xine engine */
-  Emotionxx::SPUObject* emotion = new Emotionxx::SPUObject( evas, Rect (0, 0, 320, 240), argv[1], "xine" );
-  emotion->setSmoothScale( 1 );
+  Emotionxx::AudioObject* emotion = new Emotionxx::AudioObject (evas, argv[1], "xine" );
 
   emotion->setPlay( true );
-  emotion->show();
 
-  mw->show();
+  // don't show the window!
 
   /* Enter the application main loop */
   app->exec();
