@@ -322,7 +322,6 @@ int elm_main(int argc, char **argv)
 
    Map *map = map_new(edje);
    enlil_data->map = map;
-   edje_object_part_swallow(edje, "map", map->bx);
    tabpanel_item_add_with_signal(list_album->tb_liste_map, D_("Map"), edje, "map,show", _map_select_cb, enlil_data);
 
    tabpanel_item_select(tp_item);

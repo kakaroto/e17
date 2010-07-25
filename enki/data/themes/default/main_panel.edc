@@ -16,6 +16,14 @@ group {
     	alias: "object.main_menu.list_libraries" 	"menu[menu]:libraries[list_libraries]:object.main_menu.libraries";
     	//
     	
+    	//map
+    	alias: "object.map.map"						"map[map]:object.map";
+    	alias: "object.map.display_photos"			"map[map]:object.display_photos";
+    	alias: "object.map.display_geocaching"		"map[map]:object.display_geocaching";
+    	alias: "object.map.zoom"					"map[map]:object.zoom";
+    	alias: "object.map.rect_zoom"				"map[map]:object.rect_zoom";
+    	//
+    	
     	part {
     		name: "menu_clipper";
     		type: RECT;
@@ -117,11 +125,25 @@ group {
     	
         part {
             name: "map";
-            type: SWALLOW;
+            type: BOX;
             clip_to: "map_clipper";
             description {
                 state : "default" 0.0;
+                box {
+                    layout: "vertical";    
+                }
             }
+            box {
+            	items {
+            		item {
+                        type: GROUP;
+                        source: "map";
+                        name: "map";
+                        align: -1 -1;
+                        weight: 1 1;
+                    }
+               }
+           }
         }
         
         part {

@@ -12,7 +12,6 @@ Elm_Map_Group_Class *itc_gp_group;
 static void _slider_zoom_cb(void *data, Evas_Object *obj, void *event_info);
 
 static void _mouse_wheel_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void _move_resize_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 static Evas_Object *_marker_get(Evas_Object *obj, Elm_Map_Marker *marker, void *data);
 static Evas_Object *_gp_marker_get(Evas_Object *obj, Elm_Map_Marker *marker, void *data);
@@ -28,23 +27,10 @@ static void _bt_geocaching_cb(void *data, Evas_Object *obj, void *event_info);
 
 Map *map_new(Evas_Object *edje)
 {
-   Evas_Object  *sl, *rect, *tg, *bx;
    Map *map = calloc(1, sizeof(Map));
 
    //
-   map->bx = elm_box_add(edje);
-   evas_object_size_hint_weight_set(map->bx, 1.0, 1.0);
-   evas_object_size_hint_align_set(map->bx, -1.0, -1.0);
-   evas_object_show(map->bx);
-   //
-
-   //
-   map->map = elm_map_add(edje);
-   evas_object_size_hint_weight_set(map->map, 1.0, 1.0);
-   evas_object_size_hint_align_set(map->map, -1.0, -1.0);
-   evas_object_show(map->map);
-   elm_box_pack_end(map->bx, map->map);
-   //
+   map->map = edje_object_part_external_object_get(edje, "object.map.map");
 
    itc_group = elm_map_group_class_new(map->map);
 
@@ -61,69 +47,27 @@ Map *map_new(Evas_Object *edje)
    elm_map_marker_class_get_cb_set(itc_gp, _gp_marker_get);
    elm_map_marker_class_icon_cb_set(itc_gp, _gp_marker_icon_get);
    elm_map_marker_class_style_set(itc_gp, "empty");
-
-   //
-   bx = elm_box_add(edje);
-   elm_box_horizontal_set(bx, EINA_TRUE);
-   evas_object_size_hint_weight_set(bx, 1.0, 0.0);
-   evas_object_size_hint_align_set(bx, -1.0, -1.0);
-   elm_box_pack_end(map->bx, bx);
-   evas_object_show(bx);
    //
 
+
    //
-   tg = elm_toggle_add(edje);
-   map->display_photos = tg;
-   evas_object_size_hint_weight_set(tg, -1.0, -1.0);
-   evas_object_size_hint_align_set(tg, 0.0, -1.0);
-   elm_toggle_label_set(tg, "Display Photos");
-   elm_toggle_state_set(tg, 1);
-   elm_toggle_states_labels_set(tg, "Yes", "No");
-   evas_object_smart_callback_add(tg, "changed", _tg_photos_changed_cb, map);
-   elm_box_pack_end(bx, tg);
-   evas_object_show(tg);
+   map->display_photos = edje_object_part_external_object_get(edje, "object.map.display_photos");
+   evas_object_smart_callback_add(map->display_photos, "changed", _tg_photos_changed_cb, map);
    //
 
    //
-   tg = elm_toggle_add(edje);
-   map->display_geocaching = tg;
-   evas_object_size_hint_weight_set(tg, -1.0, -1.0);
-   evas_object_size_hint_align_set(tg, 0.0, -1.0);
-   elm_toggle_label_set(tg, "Display Geocaching");
-   elm_toggle_state_set(tg, 0);
-   elm_toggle_states_labels_set(tg, "Yes", "No");
-   evas_object_smart_callback_add(tg, "changed", _tg_geocaching_changed_cb, map);
-   elm_box_pack_end(bx, tg);
-   evas_object_show(tg);
+   map->display_geocaching = edje_object_part_external_object_get(edje, "object.map.display_geocaching");
+   evas_object_smart_callback_add(map->display_geocaching, "changed", _tg_geocaching_changed_cb, map);
    //
 
    //
-   sl = elm_slider_add(edje);
-   evas_object_size_hint_weight_set(sl, 1.0, 0.0);
-   evas_object_size_hint_align_set(sl, 1.0, -1.0);
-   elm_slider_label_set(sl, "Zoom");
-   elm_slider_indicator_format_set(sl, "%3.0f");
-   elm_slider_min_max_set(sl, 0, 18);
-   elm_slider_value_set(sl, 0);
-   elm_slider_unit_format_set(sl, "%4.0f");
-   evas_object_smart_callback_add(sl, "delay,changed", _slider_zoom_cb, map);
-   evas_object_show(sl);
-   elm_box_pack_end(bx, sl);
-   map->sl = sl;
+   map->sl = edje_object_part_external_object_get(edje, "object.map.zoom");
+   evas_object_smart_callback_add(map->sl, "delay,changed", _slider_zoom_cb, map);
    //
 
    //
-   rect = evas_object_rectangle_add(evas_object_evas_get(edje));
-   map->rect = rect;
-   evas_object_color_set(rect, 0, 0, 0, 0);
-   evas_object_repeat_events_set(rect,1);
-   evas_object_show(rect);
-   evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_WHEEL, _mouse_wheel_cb, map);
-   evas_object_raise(rect);
-   evas_object_smart_member_add(map->rect, map->map);
-
-   evas_object_event_callback_add(map->map ,EVAS_CALLBACK_RESIZE, _move_resize_cb, map);
-   evas_object_event_callback_add(map->map, EVAS_CALLBACK_MOVE, _move_resize_cb, map);
+   map->rect = (Evas_Object*)edje_object_part_object_get(edje, "object.map.rect_zoom");
+   evas_object_event_callback_add(map->rect, EVAS_CALLBACK_MOUSE_WHEEL, _mouse_wheel_cb, map);
    //
 
    return map;
@@ -256,16 +200,6 @@ _mouse_wheel_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
      }
 }
 
-   static void
-_move_resize_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
-{
-   int x,y,w,h;
-   Map *map = data;
-
-   evas_object_geometry_get(map->map,&x,&y,&w,&h);
-   evas_object_resize(map->rect,w,h);
-   evas_object_move(map->rect,x,y);
-}
 
 static Evas_Object *_marker_get(Evas_Object *obj, Elm_Map_Marker *marker, void *data)
 {
