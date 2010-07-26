@@ -21,16 +21,21 @@ Visual             *vis;
 Colormap            cm;
 int                 depth;
 int                 image_width = 0, image_height = 0;
+int                 window_width = 0, window_height = 0;
+double              scale = 1.;
 Imlib_Image         bg_im = NULL;
 
-static int
-                    progress(Imlib_Image im, char percent, int update_x, int update_y,
-                             int update_w, int update_h);
+static Atom         ATOM_WM_DELETE_WINDOW = None;
+static Atom         ATOM_WM_PROTOCOLS = None;
+
+#define SCALE(x) (int)(scale * (x) + .5)
 
 static int
 progress(Imlib_Image im, char percent, int update_x, int update_y,
          int update_w, int update_h)
 {
+   int                 up_wx, up_wy, up_ww, up_wh;
+
    /* first time it's called */
    imlib_context_set_drawable(pm);
    imlib_context_set_anti_alias(0);
@@ -43,9 +48,11 @@ progress(Imlib_Image im, char percent, int update_x, int update_y,
         imlib_context_set_image(im);
         image_width = imlib_image_get_width();
         image_height = imlib_image_get_height();
+        window_width = SCALE(image_width);
+        window_height = SCALE(image_height);
         if (pm)
            XFreePixmap(disp, pm);
-        pm = XCreatePixmap(disp, win, image_width, image_height, depth);
+        pm = XCreatePixmap(disp, win, window_width, window_height, depth);
         imlib_context_set_drawable(pm);
         if (bg_im)
           {
@@ -71,26 +78,30 @@ progress(Imlib_Image im, char percent, int update_x, int update_y,
           }
         imlib_render_image_part_on_drawable_at_size(0, 0, image_width,
                                                     image_height, 0, 0,
-                                                    image_width, image_height);
+                                                    window_width,
+                                                    window_height);
         XSetWindowBackgroundPixmap(disp, win, pm);
-        XResizeWindow(disp, win, image_width, image_height);
+        XResizeWindow(disp, win, window_width, window_height);
         XMapWindow(disp, win);
         XSync(disp, False);
      }
+
    imlib_context_set_anti_alias(0);
    imlib_context_set_dither(0);
    imlib_context_set_blend(1);
    imlib_blend_image_onto_image(im, 0,
-                                update_x, update_y,
-                                update_w, update_h,
+                                update_x, update_y, update_w, update_h,
                                 update_x, update_y, update_w, update_h);
+
+   up_wx = SCALE(update_x);
+   up_wy = SCALE(update_y);
+   up_ww = SCALE(update_w);
+   up_wh = SCALE(update_h);
    imlib_context_set_blend(0);
    imlib_render_image_part_on_drawable_at_size(update_x, update_y,
                                                update_w, update_h,
-                                               update_x, update_y,
-                                               update_w, update_h);
-   XSetWindowBackgroundPixmap(disp, win, pm);
-   XClearArea(disp, win, update_x, update_y, update_w, update_h, False);
+                                               up_wx, up_wy, up_ww, up_wh);
+   XClearArea(disp, win, up_wx, up_wy, up_ww, up_wh, False);
    XFlush(disp);
    return 1;
 }
@@ -98,36 +109,61 @@ progress(Imlib_Image im, char percent, int update_x, int update_y,
 int
 main(int argc, char **argv)
 {
+   char               *s;
    Imlib_Image        *im = NULL;
    char               *file = NULL;
    int                 no = 1;
-   const char         *display_name = getenv("DISPLAY");
 
-   if (argc < 2)
-      return 1;
-
-   file = argv[no];
-   if (display_name == NULL)
-      display_name = ":0";
-   disp = XOpenDisplay(display_name);
-   if (disp == NULL)
+   for (no = 1; no < argc; no++)
      {
-        fprintf(stderr, "Can't open display %s\n", display_name);
+        s = argv[no];
+        if (*s++ != '-')
+           break;
+        switch (*s)
+          {
+          default:
+             break;
+          case 's':            /* Scale (window size wrt. image size) */
+             if (++no < argc)
+                scale = atof(argv[no]);
+             break;
+          }
+     }
+
+   if (no >= argc)
+     {
+        fprintf(stderr, "imlib2_view [-s <scale factor>] file...\n");
         return 1;
      }
+
+   disp = XOpenDisplay(NULL);
+   if (disp == NULL)
+     {
+        fprintf(stderr, "Cannot open display\n");
+        return 1;
+     }
+
    vis = DefaultVisual(disp, DefaultScreen(disp));
    depth = DefaultDepth(disp, DefaultScreen(disp));
    cm = DefaultColormap(disp, DefaultScreen(disp));
+
    win = XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 10, 10,
                              0, 0, 0);
-   XSelectInput(disp, win, ButtonPressMask | ButtonReleaseMask |
+   XSelectInput(disp, win, KeyPressMask | ButtonPressMask | ButtonReleaseMask |
                 ButtonMotionMask | PointerMotionMask);
+
+   ATOM_WM_PROTOCOLS = XInternAtom(disp, "WM_PROTOCOLS", False);
+   ATOM_WM_DELETE_WINDOW = XInternAtom(disp, "WM_DELETE_WINDOW", False);
+   XSetWMProtocols(disp, win, &ATOM_WM_DELETE_WINDOW, 1);
+
    imlib_context_set_display(disp);
    imlib_context_set_visual(vis);
    imlib_context_set_colormap(cm);
    imlib_context_set_progress_function(progress);
    imlib_context_set_progress_granularity(10);
    imlib_context_set_drawable(win);
+
+   file = argv[no];
    im = imlib_load_image(file);
    while (!im)
      {
@@ -156,11 +192,22 @@ main(int argc, char **argv)
         struct timeval      tval;
         fd_set              fdset;
         double              t1;
+        KeySym              key;
 
         XFlush(disp);
         XNextEvent(disp, &ev);
         switch (ev.type)
           {
+          case ClientMessage:
+             if (ev.xclient.message_type == ATOM_WM_PROTOCOLS &&
+                 (Atom) ev.xclient.data.l[0] == ATOM_WM_DELETE_WINDOW)
+                return 0;
+             break;
+          case KeyPress:
+             key = XLookupKeysym(&ev.xkey, 0);
+             if (key == XK_q)
+                return 0;
+             break;
           case ButtonPress:
              b = ev.xbutton.button;
              x = ev.xbutton.x;
@@ -177,8 +224,7 @@ main(int argc, char **argv)
                   imlib_context_set_blend(0);
                   imlib_render_image_part_on_drawable_at_size
                      (0, 0, image_width, image_height,
-                      0, 0, image_width, image_height);
-                  XSetWindowBackgroundPixmap(disp, win, pm);
+                      0, 0, window_width, window_height);
                   XClearWindow(disp, win);
                }
              break;
@@ -254,8 +300,8 @@ main(int argc, char **argv)
                     {
                        dx = 0;
                        dy = 0;
-                       dw = image_width;
-                       dh = image_height;
+                       dw = window_width;
+                       dh = window_height;
 
                        sx = zx - (zx / zoom);
                        sy = zy - (zy / zoom);
@@ -266,8 +312,8 @@ main(int argc, char **argv)
                     {
                        dx = zx - (zx * zoom);
                        dy = zy - (zy * zoom);
-                       dw = image_width * zoom;
-                       dh = image_height * zoom;
+                       dw = window_width * zoom;
+                       dh = window_height * zoom;
 
                        sx = 0;
                        sy = 0;
@@ -280,7 +326,6 @@ main(int argc, char **argv)
                   imlib_context_set_image(bg_im);
                   imlib_render_image_part_on_drawable_at_size
                      (sx, sy, sw, sh, dx, dy, dw, dh);
-                  XSetWindowBackgroundPixmap(disp, win, pm);
                   XClearWindow(disp, win);
                   XFlush(disp);
                   timeout = 1;
@@ -314,8 +359,8 @@ main(int argc, char **argv)
                     {
                        dx = 0;
                        dy = 0;
-                       dw = image_width;
-                       dh = image_height;
+                       dw = window_width;
+                       dh = window_height;
 
                        sx = zx - (zx / zoom);
                        sy = zy - (zy / zoom);
@@ -326,8 +371,8 @@ main(int argc, char **argv)
                     {
                        dx = zx - (zx * zoom);
                        dy = zy - (zy * zoom);
-                       dw = image_width * zoom;
-                       dh = image_height * zoom;
+                       dw = window_width * zoom;
+                       dh = window_height * zoom;
 
                        sx = 0;
                        sy = 0;
@@ -340,7 +385,6 @@ main(int argc, char **argv)
                   imlib_context_set_image(bg_im);
                   imlib_render_image_part_on_drawable_at_size
                      (sx, sy, sw, sh, dx, dy, dw, dh);
-                  XSetWindowBackgroundPixmap(disp, win, pm);
                   XClearWindow(disp, win);
                   XFlush(disp);
                   timeout = 0;
