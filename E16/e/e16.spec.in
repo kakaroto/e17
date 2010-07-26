@@ -15,7 +15,7 @@ BuildRequires: imlib2-devel freetype-devel
 #BuildSuggests: esound-devel
 Obsoletes: enlightenment < 0.16.8
 Requires: imlib2 >= 1.2.0
-Provides: e16-edox
+Provides: e16-edox = @VERSION@
 
 %description
 Enlightenment is a window manager for the X Window System that
@@ -31,14 +31,14 @@ define their own policy, down to every last detail.
 This package will install the Enlightenment window manager.
 
 %prep
-%setup -n %{name}-%{version}
+%setup -q
 
 %build
 %{configure} %{?acflags}
 %{__make} %{?_smp_mflags} %{?mflags}
 
 %install
-test "x$RPM_BUILD_ROOT" != "x" && rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT
 %{__make} install DESTDIR=$RPM_BUILD_ROOT %{?mflags_install}
 rm -f $RPM_BUILD_ROOT/usr/lib*/e16/*.la
 rm -rf $RPM_BUILD_ROOT/usr/share/doc
@@ -46,7 +46,7 @@ mkdir -p $RPM_BUILD_ROOT/etc/X11/xinit/Xclients.d
 cp $RPM_BUILD_ROOT/usr/share/e16/misc/Xclients.* $RPM_BUILD_ROOT/etc/X11/xinit/Xclients.d/
 
 %clean
-test "x$RPM_BUILD_ROOT" != "x" && rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)

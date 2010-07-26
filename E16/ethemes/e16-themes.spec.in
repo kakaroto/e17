@@ -11,7 +11,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
 URL:		http://www.enlightenment.org/
 
 Requires: e16 >= 0.16.8
-Obsoletes: etheme-BlueSteel enlightenment-theme-BlueSteel
+Obsoletes: enlightenment-theme-BlueSteel enlightenment-theme-BrushedMetal-Tigert enlightenment-theme-Ganymede enlightenment-theme-ShinyMetal
 Obsoletes: e16-theme-BlueSteel e16-theme-BrushedMetal-Tigert e16-theme-Ganymede e16-theme-ShinyMetal
 
 %description
@@ -19,7 +19,7 @@ The BlueSteel, BrushedMetal-Tigert, Ganymede, and ShinyMetal themes for Enlighte
 This is part of the Enlightenment distribution.
 
 %prep
-%setup -n %{name}-%{version}
+%setup -q
 
 %build
 %{configure} %{?acflags}
@@ -27,7 +27,6 @@ This is part of the Enlightenment distribution.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
 make DESTDIR=$RPM_BUILD_ROOT install
 
 %clean
