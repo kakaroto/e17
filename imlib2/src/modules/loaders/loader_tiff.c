@@ -48,7 +48,7 @@ put_separate_and_raster(TIFFRGBAImage * img, uint32 * rast,
    raster((TIFFRGBAImage_Extra *) img, rast, x, y, w, h);
 }
 
-/* needs orientation code */
+#define PIM(_x, _y) buffer + ((_x) + image_width * (_y))
 
 static void
 raster(TIFFRGBAImage_Extra * img, uint32 * rast,
@@ -56,14 +56,18 @@ raster(TIFFRGBAImage_Extra * img, uint32 * rast,
 {
    int                 image_width, image_height;
    uint32             *pixel, pixel_value;
-   int                 i, j, dy, rast_offset;
+   int                 i, j, k;
    DATA32             *buffer_pixel, *buffer = img->image->data;
    int                 alpha_premult;
+   int                 a, r, g, b;
 
    image_width = img->image->w;
    image_height = img->image->h;
 
-   dy = h > y ? -1 : y - h;
+#if 0
+   printf("%s: x,y=%d,%d wxh=%dx%d (image %dx%d)\n", __func__,
+          x, y, w, h, image_width, image_height);
+#endif
 
    /* rast seems to point to the beginning of the last strip processed */
    /* so you need use negative offsets. Bizzare. Someone please check this */
@@ -72,56 +76,182 @@ raster(TIFFRGBAImage_Extra * img, uint32 * rast,
 
    if (img->rgba.alpha == EXTRASAMPLE_UNASSALPHA)
       alpha_premult = 1;
-   for (i = y, rast_offset = 0; i > dy; i--, rast_offset--)
+   switch (img->rgba.orientation)
      {
-        pixel = rast + (rast_offset * image_width);
-        buffer_pixel = buffer + ((((image_height - 1) - i) * image_width) + x);
-
-        for (j = 0; j < w; j++)
+     default:
+     case ORIENTATION_TOPLEFT:
+     case ORIENTATION_TOPRIGHT:
+        for (j = 0; j < h; j++)
           {
-             int                 a, r, g, b;
+             pixel = rast - j * image_width;
 
-             pixel_value = (*(pixel++));
-             a = TIFFGetA(pixel_value);
-             r = TIFFGetR(pixel_value);
-             g = TIFFGetG(pixel_value);
-             b = TIFFGetB(pixel_value);
-             if ((a > 0) && (a < 255) && (alpha_premult))
+             for (i = 0; i < w; i++)
                {
-                  r = (r * 255) / a;
-                  g = (g * 255) / a;
-                  b = (b * 255) / a;
+                  pixel_value = *pixel++;
+                  a = TIFFGetA(pixel_value);
+                  r = TIFFGetR(pixel_value);
+                  g = TIFFGetG(pixel_value);
+                  b = TIFFGetB(pixel_value);
+                  if ((a > 0) && (a < 255) && (alpha_premult))
+                    {
+                       r = (r * 255) / a;
+                       g = (g * 255) / a;
+                       b = (b * 255) / a;
+                    }
+                  k = x + i;
+                  if (img->rgba.orientation == ORIENTATION_TOPRIGHT)
+                     k = image_width - 1 - k;
+                  buffer_pixel = PIM(k, image_height - 1 - (y - j));
+                  *buffer_pixel = (a << 24) | (r << 16) | (g << 8) | b;
                }
-             (*(buffer_pixel++)) = (a << 24) | (r << 16) | (g << 8) | b;
           }
+        break;
+     case ORIENTATION_BOTRIGHT:
+     case ORIENTATION_BOTLEFT:
+        for (j = 0; j < h; j++)
+          {
+             pixel = rast + j * image_width;
+
+             for (i = 0; i < w; i++)
+               {
+                  pixel_value = *pixel++;
+                  a = TIFFGetA(pixel_value);
+                  r = TIFFGetR(pixel_value);
+                  g = TIFFGetG(pixel_value);
+                  b = TIFFGetB(pixel_value);
+                  if ((a > 0) && (a < 255) && (alpha_premult))
+                    {
+                       r = (r * 255) / a;
+                       g = (g * 255) / a;
+                       b = (b * 255) / a;
+                    }
+                  k = x + i;
+                  if (img->rgba.orientation == ORIENTATION_BOTRIGHT)
+                     k = image_width - 1 - k;
+                  buffer_pixel = PIM(k, image_height - 1 - (y + j));
+                  *buffer_pixel = (a << 24) | (r << 16) | (g << 8) | b;
+               }
+          }
+        break;
+
+     case ORIENTATION_LEFTTOP:
+     case ORIENTATION_RIGHTTOP:
+        for (i = 0; i < h; i++)
+          {
+             pixel = rast - i * image_height;
+
+             for (j = 0; j < w; j++)
+               {
+                  pixel_value = *pixel++;
+                  a = TIFFGetA(pixel_value);
+                  r = TIFFGetR(pixel_value);
+                  g = TIFFGetG(pixel_value);
+                  b = TIFFGetB(pixel_value);
+                  if ((a > 0) && (a < 255) && (alpha_premult))
+                    {
+                       r = (r * 255) / a;
+                       g = (g * 255) / a;
+                       b = (b * 255) / a;
+                    }
+                  k = y - i;
+                  if (img->rgba.orientation == ORIENTATION_LEFTTOP)
+                     k = image_width - 1 - k;
+                  buffer_pixel = PIM(k, x + j);
+                  *buffer_pixel = (a << 24) | (r << 16) | (g << 8) | b;
+               }
+          }
+        break;
+     case ORIENTATION_RIGHTBOT:
+     case ORIENTATION_LEFTBOT:
+        for (i = 0; i < h; i++)
+          {
+             pixel = rast + i * image_height;
+
+             for (j = 0; j < w; j++)
+               {
+                  pixel_value = *pixel++;
+                  a = TIFFGetA(pixel_value);
+                  r = TIFFGetR(pixel_value);
+                  g = TIFFGetG(pixel_value);
+                  b = TIFFGetB(pixel_value);
+                  if ((a > 0) && (a < 255) && (alpha_premult))
+                    {
+                       r = (r * 255) / a;
+                       g = (g * 255) / a;
+                       b = (b * 255) / a;
+                    }
+                  k = y + i;
+                  if (img->rgba.orientation == ORIENTATION_RIGHTBOT)
+                     k = image_width - 1 - k;
+                  buffer_pixel = PIM(k, image_height - 1 - (x + j));
+                  *buffer_pixel = (a << 24) | (r << 16) | (g << 8) | b;
+               }
+          }
+        break;
      }
 
    if (img->progress)
      {
         char                per;
-        uint32              real_y = (image_height - 1) - y;
 
-        if (w >= image_width)
+        switch (img->rgba.orientation)
           {
-             per = (char)(((real_y + h - 1) * 100) / image_height);
-
-             if (((per - img->pper) >= img->progress_granularity) ||
-                 (real_y + h) >= image_height)
+          default:
+          case ORIENTATION_TOPLEFT:
+             if (w >= image_width)
                {
-                  (*img->progress) (img->image, per, 0, img->py, w,
-                                    (real_y + h) - img->py);
-                  img->py = real_y + h;
-                  img->pper = per;
+                  uint32              real_y = (image_height - 1) - y;
+
+                  per = (char)(((real_y + h - 1) * 100) / image_height);
+
+                  if (((per - img->pper) >= img->progress_granularity) ||
+                      (real_y + h) >= image_height)
+                    {
+                       img->progress(img->image, per, 0, img->py, w,
+                                     (real_y + h) - img->py);
+                       img->py = real_y + h;
+                       img->pper = per;
+                    }
                }
-          }
-        else
-          {
-             /* for tile based images, we just progress each tile because */
-             /* of laziness. Couldn't think of a good way to do this */
+             else
+               {
+                  /* for tile based images, we just progress each tile because */
+                  /* of laziness. Couldn't think of a good way to do this */
+                  y = image_height - 1 - y;
+                  goto progress_a;
+               }
+             break;
+          case ORIENTATION_TOPRIGHT:
+             y = image_height - 1 - y;
+             goto progress_a;
+          case ORIENTATION_BOTRIGHT:
+             y = image_height - y - h;
+             goto progress_a;
+          case ORIENTATION_BOTLEFT:
+             y = image_height - y - h;
+             goto progress_a;
+           progress_a:
              per = (char)((w * h * 100) / img->num_pixels);
              img->pper += per;
-             (*img->progress) (img->image, img->pper, x,
-                               (image_height - 1) - y, w, h);
+             img->progress(img->image, img->pper, x, y, w, h);
+             break;
+
+          case ORIENTATION_LEFTTOP:
+             y = image_width - 1 - y;
+             goto progress_b;
+          case ORIENTATION_RIGHTTOP:
+             y = y + 1 - h;
+             goto progress_b;
+          case ORIENTATION_RIGHTBOT:
+             y = image_width - y - h;
+             goto progress_b;
+          case ORIENTATION_LEFTBOT:
+             goto progress_b;
+           progress_b:
+             per = (char)((w * h * 100) / img->num_pixels);
+             img->pper += per;
+             img->progress(img->image, img->pper, y, x, h, w);
+             break;
           }
      }
 }
@@ -136,7 +266,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
    uint16              magic_number;
    TIFFRGBAImage_Extra rgba_image;
    uint32             *rast = NULL;
-   uint32              width, height, num_pixels;
+   uint32              num_pixels;
    char                txt[1024];
 
    ok = 0;
@@ -176,11 +306,27 @@ load(ImlibImage * im, ImlibProgressFunction progress,
       goto quit1;
 
    rgba_image.image = im;
-   im->w = width = rgba_image.rgba.width;
-   im->h = height = rgba_image.rgba.height;
-   if (!IMAGE_DIMENSIONS_OK(width, height))
+   switch (rgba_image.rgba.orientation)
+     {
+     default:
+     case ORIENTATION_TOPLEFT:
+     case ORIENTATION_TOPRIGHT:
+     case ORIENTATION_BOTRIGHT:
+     case ORIENTATION_BOTLEFT:
+        im->w = rgba_image.rgba.width;
+        im->h = rgba_image.rgba.height;
+        break;
+     case ORIENTATION_LEFTTOP:
+     case ORIENTATION_RIGHTTOP:
+     case ORIENTATION_RIGHTBOT:
+     case ORIENTATION_LEFTBOT:
+        im->w = rgba_image.rgba.height;
+        im->h = rgba_image.rgba.width;
+        break;
+     }
+   if (!IMAGE_DIMENSIONS_OK(im->w, im->h))
       goto quit2;
-   rgba_image.num_pixels = num_pixels = width * height;
+   rgba_image.num_pixels = num_pixels = im->w * im->h;
    if (rgba_image.rgba.alpha != EXTRASAMPLE_UNSPECIFIED)
       SET_FLAG(im->flags, F_HAS_ALPHA);
    else
@@ -231,8 +377,8 @@ load(ImlibImage * im, ImlibProgressFunction progress,
              rgba_image.rgba.put.separate = put_separate_and_raster;
           }
 
-        if (!TIFFRGBAImageGet((TIFFRGBAImage *) & rgba_image,
-                              rast, width, height))
+        if (!TIFFRGBAImageGet((TIFFRGBAImage *) & rgba_image, rast,
+                              rgba_image.rgba.width, rgba_image.rgba.height))
           {
              _TIFFfree(rast);
              free(im->data);
