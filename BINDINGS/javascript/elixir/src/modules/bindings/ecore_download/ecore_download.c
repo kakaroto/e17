@@ -57,6 +57,8 @@ static const elixir_parameter_t*        _ecore_download_file_any_params[3] = {
   NULL
 };
 
+static Eina_Bool		_no_reuse = EINA_FALSE;
+
 static int                      _ecore_download_init = 0;
 
 static int                      ELIXIR_DOWNLOAD_EVENT_CANCEL = 0;
@@ -494,6 +496,30 @@ elixir_chdir(JSContext *cx, uintN argc, jsval *vp)
    return JS_TRUE;
 }
 
+static JSFunctionSpec ecore_download_functions[];
+
+static JSBool
+elixir_ecore_download_no_reuse(JSContext *cx, uintN argc, jsval *vp)
+{
+   JSObject *parent;
+   JSObject *func;
+   jsval jsfn;
+   unsigned int i;
+
+   if (!elixir_params_check(cx, void_params, NULL, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   jsfn = JS_CALLEE(cx, vp);
+   func = JSVAL_TO_OBJECT(jsfn);
+   parent = JS_GetParent(cx, func);
+
+   i = 0;
+   while (ecore_download_functions[i].name != NULL)
+     JS_DeleteProperty(cx, parent, ecore_download_functions[i++].name);
+
+   return JS_TRUE;
+}
+
 static JSFunctionSpec           ecore_download_functions[] = {
   ELIXIR_FN(ecore_download_init, 0, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_download_shutdown, 0, JSPROP_ENUMERATE, 0 ),
@@ -509,6 +535,7 @@ static JSFunctionSpec           ecore_download_functions[] = {
   ELIXIR_FN(ecore_download_file_data_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(mkdir, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(chdir, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(ecore_download_no_reuse, 1, JSPROP_ENUMERATE, 0 ),
   JS_FS_END
 };
 
@@ -519,6 +546,9 @@ module_open(Elixir_Module *em, JSContext *cx, JSObject *parent)
 
    if (em->data)
      return EINA_TRUE;
+
+   if (_no_reuse)
+     return EINA_FALSE;
 
    em->data = parent;
    tmp = &em->data;
@@ -554,12 +584,16 @@ module_close(Elixir_Module *em, JSContext *cx)
    parent = (JSObject*) em->data;
    tmp = &em->data;
 
+   elixir_object_unregister(cx, (JSObject**) tmp);
+   em->data = NULL;
+
+   if (_no_reuse)
+     return EINA_TRUE;
+
    i = 0;
    while (ecore_download_functions[i].name != NULL)
      JS_DeleteProperty(cx, parent, ecore_download_functions[i++].name);
 
-   elixir_object_unregister(cx, (JSObject**) tmp);
-   em->data = NULL;
    return EINA_TRUE;
 }
 
