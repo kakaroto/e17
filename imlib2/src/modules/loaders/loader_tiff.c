@@ -132,18 +132,19 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 {
    TIFF               *tif = NULL;
    FILE               *file;
-   int                 fd;
+   int                 fd, ok;
    uint16              magic_number;
    TIFFRGBAImage_Extra rgba_image;
    uint32             *rast = NULL;
    uint32              width, height, num_pixels;
    char                txt[1024];
 
+   ok = 0;
+
    if (im->data)
       return 0;
 
    file = fopen(im->real_file, "rb");
-
    if (!file)
       return 0;
 
@@ -164,32 +165,21 @@ load(ImlibImage * im, ImlibProgressFunction progress,
    fclose(file);
 
    tif = TIFFFdOpen(fd, im->real_file, "r");
-
    if (!tif)
       return 0;
 
    strcpy(txt, "Cannot be processed by libtiff");
    if (!TIFFRGBAImageOK(tif, txt))
-     {
-        TIFFClose(tif);
-        return 0;
-     }
+      goto quit1;
    strcpy(txt, "Cannot begin reading tiff");
    if (!TIFFRGBAImageBegin((TIFFRGBAImage *) & rgba_image, tif, 1, txt))
-     {
-        TIFFClose(tif);
-        return 0;
-     }
+      goto quit1;
 
    rgba_image.image = im;
    im->w = width = rgba_image.rgba.width;
    im->h = height = rgba_image.rgba.height;
    if (!IMAGE_DIMENSIONS_OK(width, height))
-     {
-        TIFFRGBAImageEnd((TIFFRGBAImage *) & rgba_image);
-        TIFFClose(tif);
-        return 0;
-     }
+      goto quit2;
    rgba_image.num_pixels = num_pixels = width * height;
    if (rgba_image.rgba.alpha != EXTRASAMPLE_UNSPECIFIED)
       SET_FLAG(im->flags, F_HAS_ALPHA);
@@ -217,11 +207,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                   free(im->data);
                   im->data = NULL;
                }
-
-             TIFFRGBAImageEnd((TIFFRGBAImage *) & rgba_image);
-             TIFFClose(tif);
-
-             return 0;
+             goto quit2;
           }
 
         if (rgba_image.rgba.put.any == NULL)
@@ -231,23 +217,18 @@ load(ImlibImage * im, ImlibProgressFunction progress,
              _TIFFfree(rast);
              free(im->data);
              im->data = NULL;
-             TIFFRGBAImageEnd((TIFFRGBAImage *) & rgba_image);
-             TIFFClose(tif);
+             goto quit2;
+          }
 
-             return 0;
+        if (rgba_image.rgba.isContig)
+          {
+             rgba_image.put_contig = rgba_image.rgba.put.contig;
+             rgba_image.rgba.put.contig = put_contig_and_raster;
           }
         else
           {
-             if (rgba_image.rgba.isContig)
-               {
-                  rgba_image.put_contig = rgba_image.rgba.put.contig;
-                  rgba_image.rgba.put.contig = put_contig_and_raster;
-               }
-             else
-               {
-                  rgba_image.put_separate = rgba_image.rgba.put.separate;
-                  rgba_image.rgba.put.separate = put_separate_and_raster;
-               }
+             rgba_image.put_separate = rgba_image.rgba.put.separate;
+             rgba_image.rgba.put.separate = put_separate_and_raster;
           }
 
         if (!TIFFRGBAImageGet((TIFFRGBAImage *) & rgba_image,
@@ -256,19 +237,19 @@ load(ImlibImage * im, ImlibProgressFunction progress,
              _TIFFfree(rast);
              free(im->data);
              im->data = NULL;
-             TIFFRGBAImageEnd((TIFFRGBAImage *) & rgba_image);
-             TIFFClose(tif);
-
-             return 0;
+             goto quit2;
           }
 
         _TIFFfree(rast);
      }
 
+   ok = 1;
+ quit2:
    TIFFRGBAImageEnd((TIFFRGBAImage *) & rgba_image);
+ quit1:
    TIFFClose(tif);
 
-   return 1;
+   return ok;
 }
 
 /* this seems to work, except the magic number isn't written. I'm guessing */
