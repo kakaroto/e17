@@ -13,4 +13,6 @@
 #include "elm/entry.edc"
 #include "elm/emoticons.edc"
 #include "elm/frame.edc"
+#include "elm/inwin.edc"
+#include "elm/notify.edc"
 #include "elm/old.edc"
