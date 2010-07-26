@@ -8,6 +8,7 @@
 #include "elm/button.edc"
 #include "elm/radio.edc"
 #include "elm/check.edc"
+#include "elm/slider.edc"
 #include "elm/index.edc"
 #include "elm/scroller.edc"
 #include "elm/entry.edc"

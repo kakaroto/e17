@@ -137,15 +137,23 @@ color_classes {
    color_class { name: "entry_text_disabled";
       color: 80 80 80 255;
    }
+   // Slider
+   color_class { name: "slider_label";
+      color: 180 180 180 255;
+   }
    color_class { name: "slider_enable";
       color: 255 255 255 255;
    }
    color_class { name: "slider_disabled";
       color: 150 150 150 255;
    }
-   color_class { name: "slider_text";
+   color_class { name: "slider_units";
       color: 128 128 128 255;
    }
+   color_class { name: "slider_indicator";
+      color: 180 180 180 255;
+   }
+   // Frame
    color_class { name: "frame_title";
       color: 180 180 180 255;
    }
