@@ -6,7 +6,7 @@ includedir=include
 Name: @PACKAGE@
 Description: Edje (EFL) C++ Wrapper, Not installed
 Version: @VERSION@
-Requires: sigc++-2.0 evasxx einaxx
+Requires: sigc++-2.0 evasxx einaxx edje
 Conflicts: 
 Libs: ${pcfiledir}/${libdir}/libedjexx.la
 Cflags: -I${pcfiledir}/${includedir} 

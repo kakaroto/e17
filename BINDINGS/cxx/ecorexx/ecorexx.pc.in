@@ -6,7 +6,7 @@ includedir=@prefix@/include
 Name: @PACKAGE@
 Description: Ecore (EFL) C++ Wrapper
 Version: @VERSION@
-Requires: sigc++-2.0 eflxx evasxx
+Requires: sigc++-2.0 eflxx evasxx ecore
 Conflicts: 
 Libs: -L${libdir} -lecorexx
 Cflags: -I${includedir}

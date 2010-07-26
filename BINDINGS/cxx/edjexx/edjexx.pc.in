@@ -6,7 +6,7 @@ includedir=@prefix@/include
 Name: @PACKAGE@
 Description: Edje (EFL) C++ Wrapper
 Version: @VERSION@
-Requires: sigc++-2.0 evasxx einaxx
+Requires: sigc++-2.0 evasxx einaxx edje
 Conflicts: 
 Libs: -L${libdir} -ledjexx
 Cflags: -I${includedir}
