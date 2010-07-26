@@ -116,7 +116,6 @@ src_configure() {
 		  --disable-ecore-evas-direct3d
 		  --disable-ecore-evas-opengl-glew
 		  --disable-ecore-evas-software-16-ddraw
-		  --disable-ecore-evas-quartz
 		  --disable-ecore-evas-software-16-wince
 		  --disable-ecore-evas-directfb
 		  --disable-ecore-evas-fb
