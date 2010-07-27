@@ -16,4 +16,5 @@
 #include "elm/frame.edc"
 #include "elm/inwin.edc"
 #include "elm/notify.edc"
+#include "elm/genlist.edc"
 #include "elm/old.edc"
