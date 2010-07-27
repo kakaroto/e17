@@ -178,13 +178,18 @@ color_classes {
    // Toolbar
    color_class { name: "toolbar_text";
       color: 180 180 180 255;
-      color2: 0 200 0 100;
-      color3: 200 0 0 100;
+      color2: 0 0 0 100;
+      color3: 0 0 0 100;
    }
    color_class { name: "toolbar_text_selected";
       color: 224 224 224 255;
-      color2: 0 200 0 255;
-      color3: 200 0 0 255;
+      color2: 0 0 0 255;
+      color3: 0 0 0 255;
+   }
+   color_class { name: "toolbar_text_disabled";
+      color: 130 130 130 255;
+      color2: 0 0 0 255;
+      color3: 0 0 0 255;
    }
    // Index
    color_class { name: "index_text";

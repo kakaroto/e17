@@ -1,6 +1,7 @@
 #include "about.edc"
 #include "colors.edc"
 #include "backgrounds.edc"
+#include "icons.edc"
 
 #include "elm/background.edc"
 #include "elm/label.edc"
@@ -17,4 +18,5 @@
 #include "elm/inwin.edc"
 #include "elm/notify.edc"
 #include "elm/genlist.edc"
+#include "elm/toolbar.edc"
 #include "elm/old.edc"

@@ -1,6 +1,7 @@
 #include "about.edc"
 #include "colors.edc"
 #include "backgrounds.edc"
+#include "icons.edc"
 
 #include "e/icons.edc"
 #include "e/backgrounds.edc"
