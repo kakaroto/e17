@@ -16,6 +16,7 @@
  <flag name="mempool-buddy">Compile "buddy" memory pool allocation.</flag>
  <flag name="default-mempool">By default use system's allocator (pass-through) instead of custom choice for Eina's own data structures.</flag>
  <flag name="static-modules">Build modules built-in, avoiding dynamically loading and linking them.</flag>
+ <flag name="voltron">DEFENDER OF THE UNIVERSE</flag>
 </use>
 <longdescription>
 Eina is a multi-platform library that provides optimized data types

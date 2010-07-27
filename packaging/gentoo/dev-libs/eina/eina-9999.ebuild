@@ -15,7 +15,10 @@ LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS=""
 
-IUSE="mmx sse sse2 altivec +threads +safety-checks +mempool-chained mempool-ememoa-fixed mempool-ememoa-unknown mempool-fixed-bitmap +mempool-pass-through mempool-buddy default-mempool +static-modules debug"
+IUSE="mmx sse sse2 altivec +threads +safety-checks
+	+mempool-chained mempool-fixed-bitmap +mempool-pass-through mempool-buddy
+	mempool-ememoa-fixed mempool-ememoa-unknown
+	default-mempool +static-modules debug voltron"
 
 RDEPEND="
 	mempool-ememoa-fixed? ( sys-libs/ememoa )
@@ -92,6 +95,7 @@ src_configure() {
 
 	export MY_ECONF="
 	  ${MY_ECONF}
+	  $(use_enable voltron)
 	  $(use_enable mmx cpu-mmx)
 	  $(use_enable sse cpu-sse)
 	  $(use_enable sse2 cpu-sse2)
