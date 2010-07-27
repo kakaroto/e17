@@ -151,12 +151,12 @@
       else if (file_exists("p/$b/link")) {
 	  $h = read_var("p/$b/link");
       }
-      if ((strncasecmp($page,$l,strlen($l)) == 0) OR 
+      if ((strncasecmp($page,$l,strlen($l)) == 0) OR
           (($page == "index") AND ($l == "Home") )) {
       	  $c = "active";
-          return "<td class='nav_$c'>$l</td>\n";
+          return "<li class='current'><a href='#'>$l</a></li>\n";
       }
-      return "<td class='nav_$c'><a class='nav_$c' href='$h'>$l</a></td>\n";
+      return "<li><a href='$h'>$l</a></li>\n";
   }
 
   function nav_subs() {
@@ -172,7 +172,7 @@
       if (file_exists("p/$p/subs")) {
 	  $handle = fopen("p/$p/subs", "r");
 	  if ($handle) {
-	      echo("<ul class='navul'>\n");
+	      echo("<ul class='submenu'>\n");
 	      $item = 0;
 	      while (!feof($handle)) {
 		  $fl = fgets($handle, 4096);
@@ -192,7 +192,7 @@
 			  if ($h == "") {
 			    $h = "p.php?p=$p/$fl&amp;l=$lang";
                           }
-			  echo("<li class='navul$class'><a class='navul' href='$h'>$l</a></li>\n");
+			  echo("<li class='$class'><a href='$h'>$l</a></li>\n");
 			  $item++;
 		      }
 		      else if (file_exists("p/$p/$fl/en-label")) {
@@ -200,7 +200,7 @@
 			  if ($h == "") {
 			    $h = "p.php?p=$p/$fl&amp;l=$lang";
                           }
-			  echo("<li class='navul$class'><a class='navul' href='$h'>$l</a></li>\n");
+			  echo("<li class='$class'><a href='$h'>$l</a></li>\n");
 			  $item++;
 		      }
 		  }
@@ -210,4 +210,4 @@
       }
       }
   }
-?>	
+?>

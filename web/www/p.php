@@ -4,6 +4,8 @@
 <title><?php echo $title; ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="/theme/css/screen.css">
+<!--[if lt IE 7]> <link rel="stylesheet" type="text/css" href="/theme/ie/ie6.css"> <![endif]-->
 <link rel="icon" href="favicon.png" type="image/x-icon">
 <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
 <link rel="icon" href="favicon.png" type="image/ico">
@@ -20,54 +22,60 @@ if (is_file("p/$page/$lang-rss"))
 
 <body>
 
-  <div id="wrapper">
-    <div id="layout">
+<div id="wrapper">
+
+    <div id="header">
+    <div class="layout">
+
+        <?php $class = "logo"; if ($page == "index") $class = "logo current" ?>
+        <h1 class="<?php echo $class ?>">
+            <a href="/" title="Homepage" name="Homepage"><span>Enlightenment.org</span></a>
+        </h1>
+
+        <ul class="menu">
+            <?php echo(nav_button("main2", ""));?>
+            <?php echo(nav_button("main3", ""));?>
+            <?php echo(nav_button("main4", ""));?>
+            <?php echo(nav_button("main5", ""));?>
+            <?php echo(nav_button("main6", ""));?>
+            <?php echo(nav_button("main7", ""));?>
+            <?php echo(nav_button("main8", ""));?>
+            <?php echo(nav_button("docs", ""));?>
+        </ul>
+
+        <?php nav_subs(); ?>
+
+    </div>
+    </div>
+
+    <div id="middle">
+    <div class="layout">
+
+        <div id="content">
+            <?php include "p/$page/$lang-body" ?>
+        </div>
 
 
+    </div>
+    </div>
 
-      <!-- Custom Header -->
-      <table cellspacing="0" cellpadding="0" width="100%"><tr>
-        <td id="header_logo">
-          <a href="http://www.enlightenment.org"></a>
-        </td>
-        <td id="header_menu">
-	  <table cellspacing="0" cellpadding="0" align="right"><tr>
-	    <?php echo(nav_button("main1", ""));?>
-	    <?php echo(nav_button("main2", ""));?>
-	    <?php echo(nav_button("main3", ""));?>
-	    <?php echo(nav_button("main4", ""));?>
-	    <?php echo(nav_button("main5", ""));?>
-	    <?php echo(nav_button("main6", ""));?>
-	    <?php echo(nav_button("main7", ""));?>
-	    <?php echo(nav_button("main8", ""));?>
-	    <?php echo(nav_button("docs", ""));?>
-	  </tr></table>
-        </td>
-        <td id="header_last"></td>
-      </tr></table>
+    <div id="push"></div>
 
-     <div id="submenu">
-       <?php nav_subs(); ?>
-     </div>
-
-      <!-- CM contents -->
-      <div id="content">
-        <?php include "p/$page/$lang-body" ?>
-      </div>
-      
-      <div id="push"></div>
-    </div><!-- /layout -->
-  </div><!-- /wrapper -->
+</div>
 
 
-  <!-- Custom Footer -->
-  <div id="sitefooter">
-    <table width="100%"><tr>
-      <td width="100%" align="center">Copyright &copy; Enlightenment.org</td>
-    </tr></table>
-  </div><!-- /sitefooter -->
+    <div id="sitefooter">
+    <div class="layout">
 
+        <table width="100%">
+        <tr>
+        <td width="100%" align="center">Copyright &copy; Enlightenment.org</td>
+        </tr>
+        </table>
+
+    </div>
+    </div>
 
 </body>
 </html>
-	
+

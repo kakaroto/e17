@@ -1,0 +1,9 @@
+/* Transparent PNGs. Use specific selectors (id, classes) to avoid slowdowns */
+img,
+#header .logo span
+{
+    behavior: url('/theme/ie/iepngfix.htc')
+}
+
+/* Hide text in the logo */
+#header h1.logo a span { text-indent: 0; padding: 999px }
