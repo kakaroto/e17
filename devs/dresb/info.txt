@@ -1,0 +1,10 @@
+Login:          dresb
+IRC Nick:       dresb
+Name:           Andres Blanc
+Location:       La Plata, Buenos Aries, Argentina
+E-Mail:         andresblanc@gmail.com
+WWW:            http://www.dresb.com.ar/
+Managing:
+Contributing:   Documentation.
+Group:
+Platform:	archlinux
