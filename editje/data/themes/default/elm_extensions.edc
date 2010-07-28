@@ -868,6 +868,15 @@
       }
       programs {
          program {
+            name: "push_start";
+            signal: "elm,action,push";
+            source: "elm";
+            action: STATE_SET "hidden" 0.0;
+            target: "base";
+            target: "clip";
+            after: "show_start2";
+         }
+         program {
             name: "show_start";
             signal: "elm,action,show";
             source: "elm";
@@ -887,6 +896,15 @@
          program {
             name: "show_end";
             action: SIGNAL_EMIT "elm,action,show,finished" "";
+         }
+         program {
+            name: "pop_start";
+            signal: "elm,action,pop";
+            source: "elm";
+            action: STATE_SET "visible" 0.0;
+            target: "base";
+            target: "clip";
+            after: "hide_start2";
          }
          program {
             name: "hide_start";
@@ -992,6 +1010,15 @@
       }
       programs {
          program {
+            name: "push_start";
+            signal: "elm,action,push";
+            source: "elm";
+            action: STATE_SET "hidden" 0.0;
+            target: "base";
+            target: "clip";
+            after: "show_start2";
+         }
+         program {
             name: "show_start";
             signal: "elm,action,show";
             source: "elm";
@@ -1011,6 +1038,15 @@
          program {
             name: "show_end";
             action: SIGNAL_EMIT "elm,action,show,finished" "";
+         }
+         program {
+            name: "pop_start";
+            signal: "elm,action,pop";
+            source: "elm";
+            action: STATE_SET "visible" 0.0;
+            target: "base";
+            target: "clip";
+            after: "hide_start2";
          }
          program {
             name: "hide_start";
@@ -1116,6 +1152,15 @@
       }
       programs {
          program {
+            name: "push_start";
+            signal: "elm,action,push";
+            source: "elm";
+            action: STATE_SET "hidden" 0.0;
+            target: "base";
+            target: "clip";
+            after: "show_start2";
+         }
+         program {
             name: "show_start";
             signal: "elm,action,show";
             source: "elm";
@@ -1135,6 +1180,15 @@
          program {
             name: "show_end";
             action: SIGNAL_EMIT "elm,action,show,finished" "";
+         }
+         program {
+            name: "pop_start";
+            signal: "elm,action,pop";
+            source: "elm";
+            action: STATE_SET "visible" 0.0;
+            target: "base";
+            target: "clip";
+            after: "hide_start2";
          }
          program {
             name: "hide_start";
