@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 PREFIX="$HOME/.uncrustify"
 UNC="$PREFIX/bin/uncrustify"
 if [ -z "$1" ]; then
