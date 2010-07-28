@@ -31,6 +31,12 @@ void ephoto_show_flow_browser(const char *current_image);
 void ephoto_hide_flow_browser(void);
 void ephoto_delete_flow_browser(void);
 
+/*Ephoto Slideshow*/
+void ephoto_create_slideshow(void);
+void ephoto_show_slideshow(int view, const char *current_image);
+void ephoto_hide_slideshow(void);
+void ephoto_delete_slideshow(void);
+
 /*Ephoto Thumb Browser*/
 void ephoto_create_thumb_browser(const char *directory);
 void ephoto_show_thumb_browser(void);
@@ -46,6 +52,7 @@ struct _Ephoto
 	Evas_Object *bg;
 	Evas_Object *box;
 	Evas_Object *flow_browser;
+	Evas_Object *slideshow;
 	Evas_Object *thumb_browser;
 	Eina_List   *images;
 };

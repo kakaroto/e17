@@ -15,6 +15,7 @@ static void _ephoto_thumb_clicked_job(void *data);
 static void _ephoto_thumb_clicked(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_view_large(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_change_directory(void *data, Evas_Object *obj, void *event_info);
+static void _ephoto_view_slideshow(void *data, Evas_Object *obj, void *event_info);
 
 /*Inline Variables*/
 static Elm_Gengrid_Item_Class eg;
@@ -72,7 +73,7 @@ ephoto_create_thumb_browser(const char *directory)
 
 	o = elm_icon_add(em->win);
 	elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/play_slideshow.png", NULL);
-        elm_toolbar_item_add(toolbar, o, "Play Slideshow", NULL, NULL);
+        elm_toolbar_item_add(toolbar, o, "Play Slideshow", _ephoto_view_slideshow, NULL);
 
 	em->thumb_browser = elm_gengrid_add(em->win);
 	elm_gengrid_align_set(em->thumb_browser, 0.5, 0.6);
@@ -372,7 +373,7 @@ _ephoto_thumb_clicked(void *data, Evas_Object *obj, void *event_info)
 	ecore_job_add(_ephoto_thumb_clicked_job, etd->file);
 }
 
-/*File Selector is show*/
+/*File Selector is shown*/
 static void
 _ephoto_fileselector_shown(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
@@ -464,3 +465,11 @@ _ephoto_change_directory(void *data, Evas_Object *obj, void *event_info)
 	evas_object_show(win);
 }
 
+/*Show slideshow*/
+static void
+_ephoto_view_slideshow(void *data, Evas_Object *obj, void *event_info)
+{
+	ephoto_hide_thumb_browser();
+	ephoto_show_slideshow(0, NULL);
+	elm_toolbar_item_unselect_all(toolbar);
+}

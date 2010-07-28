@@ -6,11 +6,13 @@ static void _ephoto_go_first(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_go_last(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_go_next(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_go_previous(void *data, Evas_Object *obj, void *event_info);
+static void _ephoto_go_slideshow(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_key_pressed(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 /*Inline variables*/
 static Eina_List *iter;
 static Evas_Object *image, *image2, *toolbar;
+static const char *cur_image;
 
 static const char *toolbar_items[] = {
 	"First",
@@ -71,7 +73,7 @@ ephoto_create_flow_browser(void)
 
 	o = elm_icon_add(em->win);
         elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/play_slideshow.png", NULL);
-        elm_toolbar_item_add(toolbar, o, "Slideshow", NULL, NULL);
+        elm_toolbar_item_add(toolbar, o, "Slideshow", _ephoto_go_slideshow, NULL);
 }
 
 /*Show the flow browser*/
@@ -81,6 +83,8 @@ ephoto_show_flow_browser(const char *current_image)
 	const char *file_type;
 	Elm_Toolbar_Item *o;
 	int i;
+
+	cur_image = current_image;
 
 	evas_object_event_callback_add(em->flow_browser, EVAS_CALLBACK_KEY_UP,
 					_ephoto_key_pressed, NULL);
@@ -208,6 +212,7 @@ _ephoto_go_first(void *data, Evas_Object *obj, void *event_info)
 		elm_box_pack_end(em->flow_browser, image);
 		evas_object_show(image);
         }
+	cur_image = eina_list_data_get(iter);
 
         elm_box_pack_end(em->flow_browser, toolbar);
 
@@ -241,6 +246,7 @@ _ephoto_go_last(void *data, Evas_Object *obj, void *event_info)
 		elm_box_pack_end(em->flow_browser, image);
 		evas_object_show(image);
         }
+	cur_image = eina_list_data_get(iter);
 
         elm_box_pack_end(em->flow_browser, toolbar);
 
@@ -276,6 +282,7 @@ _ephoto_go_next(void *data, Evas_Object *obj, void *event_info)
 		elm_box_pack_end(em->flow_browser, image);
 		evas_object_show(image);
         }
+	cur_image = eina_list_data_get(iter);
 
         elm_box_pack_end(em->flow_browser, toolbar);	
 
@@ -311,9 +318,19 @@ _ephoto_go_previous(void *data, Evas_Object *obj, void *event_info)
 		elm_box_pack_end(em->flow_browser, image);
 		evas_object_show(image);
         }
+	cur_image = eina_list_data_get(iter);
 
         elm_box_pack_end(em->flow_browser, toolbar);
 
+	elm_toolbar_item_unselect_all(toolbar);
+}
+
+/*Go to the slideshow*/
+static void
+_ephoto_go_slideshow(void *data, Evas_Object *obj, void *event_info)
+{
+	ephoto_hide_flow_browser();
+	ephoto_show_slideshow(1, cur_image);
 	elm_toolbar_item_unselect_all(toolbar);
 }
 
