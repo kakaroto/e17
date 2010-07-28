@@ -1,5 +1,6 @@
 #!/bin/sh
-UNC="$HOME/bin/uncrustify"
+PREFIX="$HOME/.uncrustify"
+UNC="$PREFIX/bin/uncrustify"
 if [ -z "$1" ]; then
   echo "==================================================================="
   echo " Checking if uncrustify installed already and is the right version"
@@ -12,7 +13,7 @@ if [ -z "$1" ]; then
   echo "==================================================================="
     tar zxf uncrustify-0.56.tar.gz
     cd uncrustify-0.56
-      ./configure --prefix=$HOME
+      ./configure --prefix=$PREFIX
       make
       make install
     cd ..
