@@ -1,5 +1,5 @@
 #!/bin/sh
-PREFIX="$HOME"
+PREFIX="$HOME/.uncrustify"
 UNC="$PREFIX/bin/uncrustify"
 if [ -z "$1" ]; then
   echo "==================================================================="
@@ -8,7 +8,7 @@ if [ -z "$1" ]; then
   VER=`$UNC --version | awk '{printf("%s\n", $2);}'`
   if [ "$VER" != "0.56" ]; then
     echo "==================================================================="
-    echo " Not there or wrong version. Need to install it in ~/bin"
+    echo " Not there or wrong version. Need to install it in ~/.uncrustify"
     echo " Doing that now."
     echo "==================================================================="
     pushd `dirname $0`
