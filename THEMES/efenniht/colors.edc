@@ -198,4 +198,23 @@ color_classes {
    color_class { name: "index_text_selected";
       color: 255 255 255 255;
    }
+   // Toggle
+   color_class { name: "toggle_text";
+      color: 180 180 180 255;
+   }
+   color_class { name: "toggle_disable_clipper";
+      color: 80 80 80 255;
+   }
+   color_class { name: "toggle_text_on";
+      color: 224 224 224 255;
+   }
+   color_class { name: "toggle_text_on_disabled";
+      color: 70 70 70 255;
+   }
+   color_class { name: "toggle_text_off";
+      color: 224 224 224 255;
+   }
+   color_class { name: "toggle_text_off_disabled";
+      color: 70 70 70 255;
+   }
 }

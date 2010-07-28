@@ -19,4 +19,5 @@
 #include "elm/notify.edc"
 #include "elm/genlist.edc"
 #include "elm/toolbar.edc"
+#include "elm/toggle.edc"
 #include "elm/old.edc"
