@@ -32,7 +32,7 @@ echo "==================================================================="
 echo " Uncrustifying your source to match EFL programming guidelines for"
 echo " formatting etc."
 echo "==================================================================="
-F=`find $1 -name '*.[ch]' -print`
+F=`find $1 -name '*.[chx]' -print`
 if [ -n "$F" ]; then $UNC --no-backup --replace -l C $F; fi
 F=`find $1 -name '*.h.in' -print`
 if [ -n "$F" ]; then $UNC --no-backup --replace -l C $F; fi
