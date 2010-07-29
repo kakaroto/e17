@@ -1,8 +1,11 @@
+#include "../../config.h"
+
 #include <Ecore_Getopt.h>
+#include <Ecore_Evas.h>
+#include <Evas.h>
 
 #include "Enlil.h"
 #include "../define.h"
-#include "../../config.h"
 
 typedef void (*Trans_CB) (Evas *evas, const char *file, const char *res);
 int LOG_DOMAIN;
