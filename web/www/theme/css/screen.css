@@ -1,12 +1,7 @@
 #header .layout { display: inline-block; }
 #header .menu { background: url("/theme/img/header-menu-background.png") repeat-x; }
 #header .submenu { background: url("/theme/img/header-submenu-background.png") repeat-x; }
-#header h1.logo { float: left; background: url("/theme/img/menu-default-right.png") no-repeat right top; margin: 0; }
-#header h1.logo a { display: inline-block; background: url("/theme/img/menu-default-left.png") no-repeat left top; }
-#header h1.logo a span { display: inline-block; height: 72px; width: 112px; overflow: hidden; /* Replace text with image */ text-indent: -999px; background: url("/theme/img/logo-default.png") no-repeat; }
-#header h1.logo:hover, #header h1.logo.current { background-image: url("/theme/img/menu-selected-right.png"); }
-#header h1.logo:hover a, #header h1.logo.current a { background-image: url("/theme/img/menu-selected-left.png"); }
-#header h1.logo:hover a span, #header h1.logo.current a span { background-image: url("/theme/img/logo-selected.png"); }
+#header .titles { display: none; }
 #header ul.menu { text-align: right; list-style: none inside none; margin: 0; padding: 0; }
 #header ul.menu li { display: inline-block !important; display: inline; height: 72px; line-height: 72px; text-align: center; }
 #header ul.menu li a { display: inline-block; height: 72px; text-decoration: none; }
@@ -15,6 +10,12 @@
 #header ul.menu li.current, #header ul.menu li:hover { background: url("/theme/img/menu-selected-right.png") no-repeat right top; }
 #header ul.menu li.current a, #header ul.menu li:hover a { background: url("/theme/img/menu-selected-left.png") no-repeat left top; color: #f3f3f3; }
 #header ul.menu li.current a { /* "- $gutter * 2"" removes the padding set above */ min-width: 80px; max-width: 192px; }
+#header ul.menu li.index { float: left; background: url("/theme/img/menu-default-right.png") no-repeat right top; margin: 0; }
+#header ul.menu li.index a { display: inline-block; background: url("/theme/img/menu-default-left.png") no-repeat left top; padding: 0; }
+#header ul.menu li.index a span { display: inline-block; height: 72px; width: 112px; overflow: hidden; /* Replace text with image */ text-indent: -999px; background: url("/theme/img/logo-default.png") no-repeat; }
+#header ul.menu li.index:hover, #header ul.menu li.index.current { background-image: url("/theme/img/menu-selected-right.png"); }
+#header ul.menu li.index:hover a, #header ul.menu li.index.current a { background-image: url("/theme/img/menu-selected-left.png"); }
+#header ul.menu li.index:hover a span, #header ul.menu li.index.current a span { background-image: url("/theme/img/logo-selected.png"); }
 #header ul.submenu { text-align: right; list-style: none inside none; margin: 0; padding: 0; float: right; clear: right; }
 #header ul.submenu li { display: inline-block !important; display: inline; height: 36px; line-height: 36px; text-align: center; }
 #header ul.submenu li a { display: inline-block; height: 36px; text-decoration: none; }

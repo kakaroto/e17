@@ -26,15 +26,20 @@ if (is_file("p/$page/$lang-rss"))
 
     <div id="header">
 
+        <div class="titles">
+        <div class="layout">
+
+            <h1><span>Englightenment<span></h1>
+            <h2><span>Beauty at your fingertips</span></h2>
+
+        </div>
+        </div>
+
         <div class="menu">
         <div class="layout">
 
-            <?php $class = "logo"; if ($page == "index") $class = "logo current" ?>
-            <h1 class="<?php echo $class ?>">
-                <a href="/" title="Homepage" name="Homepage"><span>Enlightenment.org</span></a>
-            </h1>
-
             <ul class="menu">
+                <?php echo(nav_button("main1", ""));?>
                 <?php echo(nav_button("main2", ""));?>
                 <?php echo(nav_button("main3", ""));?>
                 <?php echo(nav_button("main4", ""));?>

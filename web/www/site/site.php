@@ -141,11 +141,12 @@
       $c = "passive";
 
       if (file_exists("p/$b/$lang-label"))
-	$l = read_var("p/$b/$lang-label");
+      $l = read_var("p/$b/$lang-label");
       else
-	$l = read_var("p/$b/en-label");
+      $l = read_var("p/$b/en-label");
       if (file_exists("p/$b/page")) {
 	  $h = read_var("p/$b/page");
+	  $pname = $h;
 	  $h = "p.php?p=$h&amp;l=$lang";
       }
       else if (file_exists("p/$b/link")) {
@@ -154,9 +155,9 @@
       if ((strncasecmp($page,$l,strlen($l)) == 0) OR
           (($page == "index") AND ($l == "Home") )) {
       	  $c = "active";
-          return "<li class='current'><a href='#'>$l</a></li>\n";
+          return "<li class='$pname current'><a><span>$l</span></a></li>\n";
       }
-      return "<li><a href='$h'>$l</a></li>\n";
+      return "<li class='$pname'><a href='$h'><span>$l</span></a></li>\n";
   }
 
   function nav_subs() {
@@ -192,7 +193,7 @@
 			  if ($h == "") {
 			    $h = "p.php?p=$p/$fl&amp;l=$lang";
                           }
-			  echo("<li class='$class'><a href='$h'>$l</a></li>\n");
+			  echo("<li class='$class'><a href='$h'><span>$l</span></a></li>\n");
 			  $item++;
 		      }
 		      else if (file_exists("p/$p/$fl/en-label")) {
@@ -200,7 +201,7 @@
 			  if ($h == "") {
 			    $h = "p.php?p=$p/$fl&amp;l=$lang";
                           }
-			  echo("<li class='$class'><a href='$h'>$l</a></li>\n");
+			  echo("<li class='$class'><a href='$h'><span>$l</span></a></li>\n");
 			  $item++;
 		      }
 		  }
