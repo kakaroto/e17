@@ -25,27 +25,37 @@ if (is_file("p/$page/$lang-rss"))
 <div id="wrapper">
 
     <div id="header">
-    <div class="layout">
 
-        <?php $class = "logo"; if ($page == "index") $class = "logo current" ?>
-        <h1 class="<?php echo $class ?>">
-            <a href="/" title="Homepage" name="Homepage"><span>Enlightenment.org</span></a>
-        </h1>
+        <div class="menu">
+        <div class="layout">
 
-        <ul class="menu">
-            <?php echo(nav_button("main2", ""));?>
-            <?php echo(nav_button("main3", ""));?>
-            <?php echo(nav_button("main4", ""));?>
-            <?php echo(nav_button("main5", ""));?>
-            <?php echo(nav_button("main6", ""));?>
-            <?php echo(nav_button("main7", ""));?>
-            <?php echo(nav_button("main8", ""));?>
-            <?php echo(nav_button("docs", ""));?>
-        </ul>
+            <?php $class = "logo"; if ($page == "index") $class = "logo current" ?>
+            <h1 class="<?php echo $class ?>">
+                <a href="/" title="Homepage" name="Homepage"><span>Enlightenment.org</span></a>
+            </h1>
 
-        <?php nav_subs(); ?>
+            <ul class="menu">
+                <?php echo(nav_button("main2", ""));?>
+                <?php echo(nav_button("main3", ""));?>
+                <?php echo(nav_button("main4", ""));?>
+                <?php echo(nav_button("main5", ""));?>
+                <?php echo(nav_button("main6", ""));?>
+                <?php echo(nav_button("main7", ""));?>
+                <?php echo(nav_button("docs", ""));?>
+                <?php echo(nav_button("main8", ""));?>
+            </ul>
 
-    </div>
+        </div>
+        </div>
+
+        <div class="submenu">
+        <div class="layout">
+
+            <?php nav_subs(); ?>
+
+        </div>
+        </div>
+
     </div>
 
     <div id="middle">
@@ -55,7 +65,6 @@ if (is_file("p/$page/$lang-rss"))
             <?php include "p/$page/$lang-body" ?>
         </div>
 
-
     </div>
     </div>
 
@@ -63,18 +72,17 @@ if (is_file("p/$page/$lang-rss"))
 
 </div>
 
+<div id="sitefooter">
+<div class="layout">
 
-    <div id="sitefooter">
-    <div class="layout">
-
-        <table width="100%">
+    <table width="100%">
         <tr>
-        <td width="100%" align="center">Copyright &copy; Enlightenment.org</td>
+            <td width="100%" align="center">Copyright &copy; Enlightenment.org</td>
         </tr>
-        </table>
+    </table>
 
-    </div>
-    </div>
+</div>
+</div>
 
 </body>
 </html>
