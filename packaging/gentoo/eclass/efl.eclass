@@ -118,11 +118,11 @@ fi
 DEPEND="${DEPEND} dev-util/pkgconfig"
 
 if has nls "${IUSE}"; then
-	DEPEND="${DEPEND} nls? ( sys-devel/gettext )"
+	DEPEND="${DEPEND} nls? ( >=sys-devel/gettext-0.18 )"
 
 	# gettext (via `autopoint`) needs to run cvs #245073
 	if [[ ${E_STATE} == "live" ]] && [[ ${WANT_AUTOTOOLS} == "yes" ]]; then
-		DEPEND="${DEPEND} dev-vcs/cvs"
+		DEPEND="${DEPEND} dev-vcs/git"
 	fi
 fi
 
