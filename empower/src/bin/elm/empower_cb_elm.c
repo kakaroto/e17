@@ -51,8 +51,8 @@ void key_down_cb(void *data, Evas *e, Evas_Object *w, void *event)
       {
         ewl_widget_focus_send(entry);
         /*Check for single alpha or numeric value*/
-        if(ev->base.keyname[1] == '\0' && 
-          (isalpha(*(ev->base.keyname)) || 
+        if(ev->base.keyname[1] == '\0' &&
+          (isalpha(*(ev->base.keyname)) ||
             isdigit(*(ev->base.keyname))))
           ewl_text_text_set(EWL_TEXT(entry),ev->base.keyname);
         failure = 0;
@@ -61,8 +61,8 @@ void key_down_cb(void *data, Evas *e, Evas_Object *w, void *event)
       {
         ewl_widget_focus_send(exec);
         /*Check for single alpha or numeric value*/
-        if(ev->base.keyname[1] == '\0' && 
-          (isalpha(*(ev->base.keyname)) || 
+        if(ev->base.keyname[1] == '\0' &&
+          (isalpha(*(ev->base.keyname)) ||
             isdigit(*(ev->base.keyname))))
           ewl_text_text_set(EWL_TEXT(exec),ev->base.keyname);
       }
@@ -87,8 +87,11 @@ void check_pass_cb(void *data, Evas_Object *w, void *event)
 
   if(!auth_passed)
   {
-    pass = elm_entry_markup_to_utf8(elm_entry_entry_get(entry));
-    prog = elm_entry_markup_to_utf8(elm_entry_entry_get(exec));
+    if(entry)
+      pass = elm_entry_markup_to_utf8(elm_entry_entry_get(entry));
+
+    if(exec)
+      prog = elm_entry_markup_to_utf8(elm_entry_entry_get(exec));
 
     if((exec != NULL) && (entry != NULL) && (!pass || (pass[0] == 0)))
     {
@@ -102,7 +105,7 @@ void check_pass_cb(void *data, Evas_Object *w, void *event)
     if(pass && (pass[0] != 0))
     {
       evas_object_hide(win);
-      
+
       if(mode == SUDO || mode == SUDOPROG)
       {
         authorize(pass);
@@ -136,9 +139,9 @@ int sudo_done_cb(void *data, int type, void *event)
   Ecore_Exe_Event_Del *ev = event;
   int* code = data;
   char *e = NULL;
-  
+
   sudo = NULL;
-  
+
   if((ev->exit_code))
   {
     elm_exit();
@@ -172,10 +175,10 @@ int sudo_done_cb(void *data, int type, void *event)
 int sudo_data_cb(void *data, int type, void *event)
 {
   Ecore_Exe_Event_Data *ev = event;
-  
+
   if(ev->size > 1)
     display_window();
-  
+
   return 0;
 }
 
