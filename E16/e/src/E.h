@@ -294,6 +294,7 @@ typedef struct {
       char                warpfocused;
       char                raise_on_select;
       char                warp_on_select;
+      char                show_shape;
       int                 icon_mode;
    } warplist;
 

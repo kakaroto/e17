@@ -45,6 +45,30 @@
 #include "xwin.h"
 #include <X11/keysym.h>
 
+static void
+WarpShapeDraw(EWin * ewin)
+{
+   static ShapeWin    *shape_win = NULL;
+   int                 md = 2, bl, br, bt, bb;
+
+   if (!ewin)
+     {
+	ShapewinDestroy(shape_win);
+	shape_win = NULL;
+	return;
+     }
+
+   if (!shape_win)
+      shape_win = ShapewinCreate(md);
+   if (!shape_win)
+      return;
+
+   EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
+   ShapewinShapeSet(shape_win, md, EoGetX(ewin), EoGetY(ewin),
+		    ewin->client.w, ewin->client.h, bl, br, bt, bb, 0);
+   EoMap(shape_win, 0);
+}
+
 typedef struct {
    EWin               *ewin;
    Win                 win;
@@ -360,6 +384,9 @@ WarpFocus(int delta)
    if (!EwinIsOnScreen(ewin))
       return;
 
+   if (Conf.warplist.show_shape)
+      WarpShapeDraw(ewin);
+
    if (Conf.focus.raise_on_next)
       EwinRaise(ewin);
    if (Conf.focus.warp_on_next)
@@ -400,6 +427,7 @@ WarpFocusFinish(void)
 
    ewin = warplist[warpFocusIndex].ewin;
 
+   WarpShapeDraw(NULL);
    WarpFocusHide();
 
    if (!EwinFindByPtr(ewin))
@@ -492,6 +520,7 @@ static const CfgItem WarplistCfgItems[] = {
    CFG_ITEM_BOOL(Conf.warplist, warpfocused, 1),
    CFG_ITEM_BOOL(Conf.warplist, raise_on_select, 1),
    CFG_ITEM_BOOL(Conf.warplist, warp_on_select, 0),
+   CFG_ITEM_BOOL(Conf.warplist, show_shape, 0),
    CFG_ITEM_INT(Conf.warplist, icon_mode, EWIN_ICON_MODE_APP_IMG),
 };
 #define N_CFG_ITEMS (sizeof(WarplistCfgItems)/sizeof(CfgItem))

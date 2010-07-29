@@ -733,6 +733,7 @@ typedef struct {
       char                showiconified;
       char                showalldesks;
       char                warpfocused;
+      char                show_shape;
       int                 icon_mode;
    } focuslist;
 } FocusDlgData;
@@ -768,6 +769,7 @@ CB_ConfigureFocus(Dialog * d, int val, void *data __UNUSED__)
    Conf.warplist.showiconified = dd->focuslist.showiconified;
    Conf.warplist.showalldesks = dd->focuslist.showalldesks;
    Conf.warplist.warpfocused = dd->focuslist.warpfocused;
+   Conf.warplist.show_shape = dd->focuslist.show_shape;
    Conf.warplist.icon_mode = dd->focuslist.icon_mode;
 
    ClickGrabsUpdate();
@@ -808,6 +810,7 @@ _DlgFillFocus(Dialog * d, DItem * table, void *data __UNUSED__)
    dd->focuslist.showiconified = Conf.warplist.showiconified;
    dd->focuslist.showalldesks = Conf.warplist.showalldesks;
    dd->focuslist.warpfocused = Conf.warplist.warpfocused;
+   dd->focuslist.show_shape = Conf.warplist.show_shape;
    dd->focuslist.icon_mode = Conf.warplist.icon_mode;
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
@@ -934,6 +937,11 @@ _DlgFillFocus(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Focus windows while switching"));
    DialogItemCheckButtonSetPtr(di, &dd->focuslist.warpfocused);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetText(di, _("Outline windows while switching"));
+   DialogItemCheckButtonSetPtr(di, &dd->focuslist.show_shape);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
