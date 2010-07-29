@@ -224,7 +224,7 @@ Zoom(EWin * ewin, int on)
    mode = SwitchRes(1, 0, 0, ewin->client.w, ewin->client.h);
    if (mode)
      {
-	int                 x1, y1, x2, y2, dw, dh;
+	int                 dw, dh;
 
 	zoom_last_ewin = ewin;
 	ewin->save_fs.x = EoGetX(ewin);
@@ -242,18 +242,6 @@ Zoom(EWin * ewin, int on)
 	     dw = mode->hdisplay;
 	     dh = mode->vdisplay;
 	  }
-	x1 = (dw - ewin->client.w) / 2;
-	if (x1 < 0)
-	   x1 = 0;
-	y1 = (dh - ewin->client.h) / 2;
-	if (y1 < 0)
-	   y1 = 0;
-	x2 = dw - ewin->client.w - x1;
-	if (x2 < 0)
-	   x2 = 0;
-	y2 = dh - ewin->client.h - y1;
-	if (y2 < 0)
-	   y2 = 0;
 	EwinRaise(ewin);
 	EwinBorderSetTo(ewin, BorderCreateFiller(ewin->client.w,
 						 ewin->client.h, dw, dh));
