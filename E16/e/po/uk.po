@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-07-18 19:49+0200\n"
+"POT-Creation-Date: 2010-07-29 21:25+0200\n"
 "PO-Revision-Date: 2010-01-25 00:46+0000\n"
 "Last-Translator: Sergiy Gavrylov <sergiovana@bigmir.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -498,7 +498,7 @@ msgstr "З обох боків"
 msgid "End"
 msgstr "В кінці"
 
-#: src/container.c:1657 src/focus.c:971
+#: src/container.c:1657 src/focus.c:979
 msgid "None"
 msgstr "Немає"
 
@@ -743,113 +743,118 @@ msgstr ""
 "\n"
 "Вихід.\n"
 
-#: src/focus.c:817
+#: src/focus.c:820
 msgid "Focus follows pointer"
 msgstr "Фокус слідує за вказівником"
 
-#: src/focus.c:823
+#: src/focus.c:826
 msgid "Focus follows pointer sloppily"
 msgstr "Фокус слідує за вказівником із затримкою"
 
-#: src/focus.c:829
+#: src/focus.c:832
 msgid "Focus follows mouse clicks"
 msgstr "Фокусування клацанням кнопкою миші"
 
-#: src/focus.c:839
+#: src/focus.c:842
 msgid "Clicking in a window always raises it"
 msgstr "Клацання у вікні завжди піднімає його"
 
-#: src/focus.c:847
+#: src/focus.c:850
 msgid "All new windows first get the focus"
 msgstr "Всі нові вікна отримують фокус"
 
-#: src/focus.c:854
+#: src/focus.c:857
 msgid "New windows get the focus if their window group is focused"
 msgstr ""
 
-#: src/focus.c:859
+#: src/focus.c:862
 msgid "Only new dialog windows get the focus"
 msgstr "Лише нові діалоги отримують фокус"
 
-#: src/focus.c:866
+#: src/focus.c:869
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Лише нові діалоги сфокусованих вікон, отримують фокус"
 
-#: src/focus.c:871
+#: src/focus.c:874
 msgid "Raise windows while switching focus"
 msgstr "Піднімати вікна після передачі фокусу"
 
-#: src/focus.c:877
+#: src/focus.c:880
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Переслати вказівник у вікно під час отримання фокусу"
 
-#: src/focus.c:883
+#: src/focus.c:886
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Завжди переслати вказівник у вікно під час отримання фокусу"
 
-#: src/focus.c:891
+#: src/focus.c:894
 msgid "Raise windows automatically"
 msgstr "Піднімати вікна автоматично"
 
-#: src/focus.c:897
+#: src/focus.c:900
 msgid "Autoraise delay:"
 msgstr "Затримка авто-підйому:"
 
-#: src/focus.c:910
+#: src/focus.c:913
 msgid "Display and use focus list"
 msgstr "Відобразити і використовувати список сфокусованих вікон"
 
-#: src/focus.c:915
+#: src/focus.c:918
 msgid "Include sticky windows in focus list"
 msgstr "Включати прикріплені вікна в список сфокусованих вікон"
 
-#: src/focus.c:920
+#: src/focus.c:923
 msgid "Include shaded windows in focus list"
 msgstr "Включати затінені вікна в список сфокусованих вікон"
 
-#: src/focus.c:925
+#: src/focus.c:928
 msgid "Include iconified windows in focus list"
 msgstr "Включати згорнуті вікна в список сфокусованих вікон"
 
-#: src/focus.c:930
+#: src/focus.c:933
 msgid "Include windows on other desks in focus list"
 msgstr "Включати вікна з інших столів в список сфокусованих вікон"
 
-#: src/focus.c:935
+#: src/focus.c:938
 msgid "Focus windows while switching"
 msgstr "Фокусувати вікна після перемикання"
 
-#: src/focus.c:940
+#: src/focus.c:943
+#, fuzzy
+msgid "Outline windows while switching"
+msgstr "Фокусувати вікна після перемикання"
+
+#: src/focus.c:948
 msgid "Raise windows after focus switch"
 msgstr "Піднімати вікна після отримання фокусу"
 
-#: src/focus.c:945
+#: src/focus.c:953
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Посилати вказівник у вікно після отримання фокусу"
 
-#: src/focus.c:955
+#: src/focus.c:963
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 "Поведінка відображення піктограм в списку сфокусованих вікон (якщо дія не "
 "вдала, спробуйте наступну):"
 
-#: src/focus.c:959
+#: src/focus.c:967
 msgid "First E Icon, then App Icon"
 msgstr "Спочатку піктограма E, потім піктограма програми"
 
-#: src/focus.c:965
+#: src/focus.c:973
 msgid "First App Icon, then E Icon"
 msgstr "Спочатку піктограма програми, потім піктограма E"
 
-#: src/focus.c:979
+#: src/focus.c:987
 msgid "Focus"
 msgstr "Фокусування"
 
-#: src/focus.c:980
+#: src/focus.c:988
 msgid "Focus Settings"
 msgstr "Налаштування фокусування"
 
-#: src/focus.c:983
+#: src/focus.c:991
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-07-18 19:49+0200\n"
+"POT-Creation-Date: 2010-07-29 21:25+0200\n"
 "PO-Revision-Date: 2009-12-02 09:48+0000\n"
 "Last-Translator: Michael Kim <Unknown>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -463,7 +463,7 @@ msgstr "양쪽 끝"
 msgid "End"
 msgstr "끝"
 
-#: src/container.c:1657 src/focus.c:971
+#: src/container.c:1657 src/focus.c:979
 msgid "None"
 msgstr "없음"
 
@@ -703,111 +703,116 @@ msgstr ""
 "\n"
 "종료.\n"
 
-#: src/focus.c:817
+#: src/focus.c:820
 msgid "Focus follows pointer"
 msgstr "포커스가 포인터 따라감"
 
-#: src/focus.c:823
+#: src/focus.c:826
 msgid "Focus follows pointer sloppily"
 msgstr "포커스가 포인터를 적당히 따라감"
 
-#: src/focus.c:829
+#: src/focus.c:832
 msgid "Focus follows mouse clicks"
 msgstr "포커스가 마우스 클릭을 따라감"
 
-#: src/focus.c:839
+#: src/focus.c:842
 msgid "Clicking in a window always raises it"
 msgstr "창안에서 클릭하면 항상 창을 위로 올림"
 
-#: src/focus.c:847
+#: src/focus.c:850
 msgid "All new windows first get the focus"
 msgstr "모든 새로운 창이 먼저 포커스를 가짐"
 
-#: src/focus.c:854
+#: src/focus.c:857
 msgid "New windows get the focus if their window group is focused"
 msgstr ""
 
-#: src/focus.c:859
+#: src/focus.c:862
 msgid "Only new dialog windows get the focus"
 msgstr "오직 새로운 대화상자 창만 포커스 가짐"
 
-#: src/focus.c:866
+#: src/focus.c:869
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "오직 포커스를 가진 창의 새로운 대화상자만 포커스 가짐"
 
-#: src/focus.c:871
+#: src/focus.c:874
 msgid "Raise windows while switching focus"
 msgstr ""
 
-#: src/focus.c:877
+#: src/focus.c:880
 msgid "Send mouse pointer to window while switching focus"
 msgstr ""
 
-#: src/focus.c:883
+#: src/focus.c:886
 msgid "Always send mouse pointer to window on focus switch"
 msgstr ""
 
-#: src/focus.c:891
+#: src/focus.c:894
 msgid "Raise windows automatically"
 msgstr "창을 자동으로 올리기"
 
-#: src/focus.c:897
+#: src/focus.c:900
 msgid "Autoraise delay:"
 msgstr "자동올리기 지연:"
 
-#: src/focus.c:910
+#: src/focus.c:913
 msgid "Display and use focus list"
 msgstr "포커스 목록을 표시하고 사용"
 
-#: src/focus.c:915
+#: src/focus.c:918
 msgid "Include sticky windows in focus list"
 msgstr "포커스 목록에 스틱키 창 포함"
 
-#: src/focus.c:920
+#: src/focus.c:923
 msgid "Include shaded windows in focus list"
 msgstr "포커스 목록에 음영 창 포함"
 
-#: src/focus.c:925
+#: src/focus.c:928
 msgid "Include iconified windows in focus list"
 msgstr "포커스 목록에 아이콘 창 포함"
 
-#: src/focus.c:930
+#: src/focus.c:933
 msgid "Include windows on other desks in focus list"
 msgstr ""
 
-#: src/focus.c:935
+#: src/focus.c:938
 msgid "Focus windows while switching"
 msgstr "바꾸는 동안에 창 포커스"
 
-#: src/focus.c:940
+#: src/focus.c:943
+#, fuzzy
+msgid "Outline windows while switching"
+msgstr "바꾸는 동안에 창 포커스"
+
+#: src/focus.c:948
 msgid "Raise windows after focus switch"
 msgstr "포커스가 바뀐 후에 창 올리기"
 
-#: src/focus.c:945
+#: src/focus.c:953
 msgid "Send mouse pointer to window after focus switch"
 msgstr "포커스가 바뀐 후 마우스 포인터를 그 창으로 보냄"
 
-#: src/focus.c:955
+#: src/focus.c:963
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 
-#: src/focus.c:959
+#: src/focus.c:967
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:965
+#: src/focus.c:973
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:979
+#: src/focus.c:987
 msgid "Focus"
 msgstr ""
 
-#: src/focus.c:980
+#: src/focus.c:988
 msgid "Focus Settings"
 msgstr "포커스 설정"
 
-#: src/focus.c:983
+#: src/focus.c:991
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog"
