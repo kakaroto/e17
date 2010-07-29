@@ -153,6 +153,16 @@ color_classes {
    color_class { name: "slider_indicator";
       color: 180 180 180 255;
    }
+   // Spinner
+   color_class { name: "spinner_text";
+      color: 220 220 220 255;
+   }
+   color_class { name: "spinner_text_disabled";
+      color: 150 150 150 255;
+   }
+   color_class { name: "slider_disable_clipper";
+      color: 80 80 80 255;
+   }
    // Frame
    color_class { name: "frame_title";
       color: 180 180 180 255;

@@ -20,4 +20,5 @@
 #include "elm/genlist.edc"
 #include "elm/toolbar.edc"
 #include "elm/toggle.edc"
+#include "elm/spinner.edc"
 #include "elm/old.edc"
