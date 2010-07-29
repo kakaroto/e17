@@ -1754,7 +1754,8 @@ EDisplayDisconnect(void)
    disp = NULL;
 }
 
-static void         (*EXErrorFunc) (const XErrorEvent * ev) = NULL;
+static EXErrorHandler *EXErrorFunc = NULL;
+static EXIOErrorHandler *EXIOErrorFunc = NULL;
 
 static int
 HandleXError(Display * dpy __UNUSED__, XErrorEvent * ev)
@@ -1766,8 +1767,6 @@ HandleXError(Display * dpy __UNUSED__, XErrorEvent * ev)
 
    return 0;
 }
-
-static void         (*EXIOErrorFunc) (void) = NULL;
 
 static int
 HandleXIOError(Display * dpy __UNUSED__)
@@ -1781,8 +1780,7 @@ HandleXIOError(Display * dpy __UNUSED__)
 }
 
 void
-EDisplaySetErrorHandlers(void (*error) (const XErrorEvent *),
-			 void (*fatal) (void))
+EDisplaySetErrorHandlers(EXErrorHandler * error, EXIOErrorHandler * fatal)
 {
    /* set up an error handler for then E would normally have fatal X errors */
    EXErrorFunc = error;
