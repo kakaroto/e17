@@ -54,12 +54,6 @@ static Pixmap       b2 = None;	/* Used in modes 3,4 */
 static Pixmap       b3 = None;	/* Used in mode 3 */
 #endif /* ENABLE_MODE_34 */
 
-typedef struct {
-   EObj                o;
-   Pixmap              mask;
-   GC                  gc;
-} ShapeWin;
-
 static Font         font = None;	/* Used in mode 1 (technical) */
 
 static void
@@ -102,7 +96,7 @@ draw_v_arrow(Drawable dr, GC gc, int y1, int y2, int x1)
      }
 }
 
-static void
+void
 do_draw_mode_1(Drawable dr, GC gc,
 	       int a, int b, int c, int d, int bl, int br, int bt, int bb)
 {
@@ -175,119 +169,6 @@ do_draw_mode_4(Drawable dr, GC gc,
 }
 #endif /* ENABLE_MODE_34 */
 
-#define _SHAPE_SET_RECT(rl, _x, _y, _w, _h) \
-  do { \
-    rl[0].x = (_x);        rl[0].y = (_y);        rl[0].width = (_w); rl[0].height = 1; \
-    rl[1].x = (_x);        rl[1].y = (_y)+(_h)-1; rl[1].width = (_w); rl[1].height = 1; \
-    rl[2].x = (_x);        rl[2].y = (_y)+1;      rl[2].width = 1;    rl[2].height = (_h)-2; \
-    rl[3].x = (_x)+(_w)-1; rl[3].y = (_y)+1;      rl[3].width = 1;    rl[3].height = (_h)-2; \
-  } while(0)
-
-static unsigned int
-_ShapeGetColor(void)
-{
-   static char         color_valid = 0;
-   static unsigned int color_value = 0;
-   static unsigned int color_pixel;
-
-   if (color_valid && color_value == Conf.movres.color)
-      goto done;
-
-   color_value = Conf.movres.color;
-   color_pixel = EAllocColor(WinGetCmap(VROOT), color_value);
-   color_valid = 1;
-
- done:
-   return color_pixel;
-}
-
-static void
-_ShapeWinDestroy(ShapeWin * sw)
-{
-   EoUnmap(sw);
-   EoFini(sw);
-   EXFreeGC(sw->gc);
-   if (sw->mask != None)
-      EFreePixmap(sw->mask);
-   Efree(sw);
-}
-
-static ShapeWin    *
-_ShapeWinCreate(int md)
-{
-   ShapeWin           *sw;
-
-   sw = ECALLOC(ShapeWin, 1);
-   if (!sw)
-      return NULL;
-
-   EoInit(sw, EOBJ_TYPE_MISC, None,
-	  0, 0, WinGetW(VROOT), WinGetH(VROOT), 2, "Wires");
-   if (!EoGetWin(sw))
-      goto bail_out;
-
-   EoSetFloating(sw, 1);
-   EoSetLayer(sw, 18);
-   ESetWindowBackground(EoGetWin(sw), _ShapeGetColor());
-#ifdef ShapeInput		/* Should really check server too */
-   XShapeCombineRectangles(disp, EoGetXwin(sw),
-			   ShapeInput, 0, 0, NULL, 0, ShapeSet, Unsorted);
-#endif
-
-   if (md == 1)
-     {
-	sw->mask =
-	   ECreatePixmap(EoGetWin(sw), WinGetW(VROOT), WinGetH(VROOT), 1);
-	sw->gc = EXCreateGC(sw->mask, 0, NULL);
-	if (sw->mask == None || !sw->gc)
-	   goto bail_out;
-     }
-
-   return sw;
-
- bail_out:
-   _ShapeWinDestroy(sw);
-   return NULL;
-}
-
-static void
-_ShapeSet(ShapeWin * sw, int md, int x, int y, int w, int h,
-	  int bl, int br, int bt, int bb, int seqno)
-{
-   int                 w2, h2;
-
-   w2 = w + bl + br;
-   h2 = h + bt + bb;
-
-   if (md == 1)
-     {
-	XSetForeground(disp, sw->gc, 0);
-	XFillRectangle(disp, sw->mask, sw->gc,
-		       0, 0, WinGetW(VROOT), WinGetH(VROOT));
-	XSetForeground(disp, sw->gc, 1);
-	do_draw_mode_1(sw->mask, sw->gc, x, y, w, h, bl, br, bt, bb);
-	if (seqno == 0)
-	   EShapeSetMask(EoGetWin(sw), 0, 0, sw->mask);
-	else
-	   EShapeUnionMask(EoGetWin(sw), 0, 0, sw->mask);
-     }
-   else
-     {
-	XRectangle          rl[8];
-
-	_SHAPE_SET_RECT((&rl[0]), x, y, w2, h2);
-	w = (w > 5) ? w - 2 : 3;
-	h = (h > 5) ? h - 2 : 3;
-	_SHAPE_SET_RECT((&rl[4]), x + bl + 1, y + bt + 1, w, h);
-
-	if (seqno == 0)
-	   EShapeSetRects(EoGetWin(sw), 0, 0, rl, 8);
-	else
-	   EShapeUnionRects(EoGetWin(sw), 0, 0, rl, 8);
-     }
-   EoShapeUpdate(sw, 0);
-}
-
 typedef struct {
    EWin               *ewin;
    Window              root;
@@ -308,19 +189,19 @@ _ShapeDrawNograb1_2(ShapeData * psd, int md, int firstlast,
    static ShapeWin    *shape_win = NULL;
 
    if (firstlast == 0 && !shape_win)
-      shape_win = _ShapeWinCreate(md);
+      shape_win = ShapewinCreate(md);
    if (!shape_win)
       return;
 
-   _ShapeSet(shape_win, md, xn, yn, wn, hn, psd->bl, psd->br, psd->bt, psd->bb,
-	     seqno);
+   ShapewinShapeSet(shape_win, md, xn, yn, wn, hn, psd->bl, psd->br, psd->bt,
+		    psd->bb, seqno);
    EoMap(shape_win, 0);
 
    CoordsShow(psd->ewin);
 
    if (firstlast == 2)
      {
-	_ShapeWinDestroy(shape_win);
+	ShapewinDestroy(shape_win);
 	shape_win = NULL;
      }
 }

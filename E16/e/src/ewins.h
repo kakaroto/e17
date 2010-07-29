@@ -484,4 +484,21 @@ void                ReZoom(EWin * ewin);
 #define Zoom(ewin, on) do {} while(0)
 #endif
 
+typedef struct _ShapeWin ShapeWin;
+struct _ShapeWin {
+   EObj                o;
+   Pixmap              mask;
+   GC                  gc;
+};
+
+ShapeWin           *ShapewinCreate(int md);
+void                ShapewinDestroy(ShapeWin * sw);
+void                ShapewinShapeSet(ShapeWin * sw, int md, int x, int y, int w,
+				     int h, int bl, int br, int bt, int bb,
+				     int seqno);
+
+void                do_draw_mode_1(Drawable dr, GC gc,
+				   int a, int b, int c, int d, int bl, int br,
+				   int bt, int bb);
+
 #endif /* _EWIN_H_ */

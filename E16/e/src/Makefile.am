@@ -88,6 +88,7 @@ e16_SOURCES = \
 	session.c               session.h               \
 	settings.c              settings.h              \
 	setup.c			\
+	shapewin.c		\
 	size.c			\
 	slideout.c		\
 	snaps.c                 snaps.h			\
