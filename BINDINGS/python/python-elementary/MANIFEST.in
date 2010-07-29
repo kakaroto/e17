@@ -3,4 +3,5 @@ recursive-include tests *.py *.png *.jpg *.edj
 recursive-include include *.pxd *.py
 include elementary/elementary.c_elementary.[ch]
 include AUTHORS COPYING README
+include setup.py ez_setup.py
 prune debian
