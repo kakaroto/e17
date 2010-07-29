@@ -52,10 +52,25 @@ collections {
                fixed: 1 1;
                rel1.to: "bg";
                rel2.to: "bg";
-               min: 25 30;
-               max: 25 30;
+               min: 30 30;
+               max: 30 30;
                aspect: 1.0 1.0;
                aspect_preference: VERTICAL;
+               color: 0 0 0 0;
+            }
+         }
+         part { name: "button_events";
+            type: RECT;
+            dragable {
+               events: "button";
+            }
+            description { state: "default" 0.0;
+               rel1.to_x: "bg";
+               rel1.offset: 0 0;
+               rel1.relative: 0.0 0.0;
+               rel2.to_x: "bg";
+               rel2.offset: -1 -1;
+               rel2.relative: 1.0 1.0;
                color: 0 0 0 0;
             }
          }
