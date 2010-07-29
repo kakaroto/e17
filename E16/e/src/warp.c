@@ -310,6 +310,7 @@ WarpFocus(int delta)
 
    if (!warplist)
      {
+	warplist_num = 0;	/* Not necessary but silences clang */
 	lst = EwinListFocusGet(&num);
 	for (i = 0; i < num; i++)
 	  {
