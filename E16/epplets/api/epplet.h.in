@@ -109,7 +109,7 @@ void                Epplet_show(void);
 /* to for some special reason - call it */
 void                Epplet_remember(void);
 
-/* if you dont want E to rememebr anything abotu you or start you up anymore */
+/* if you dont want E to remember anything abotu you or start you up anymore */
 /* call this - this is a good call to make if you want to exit and never */
 /* have yourself started up again by E */
 void                Epplet_unremember(void);
