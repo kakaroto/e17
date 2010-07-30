@@ -3,6 +3,7 @@
 #include <Ecore_Evas.h>
 #include <Ecore_Con.h>
 #include <Ecore_Ipc.h>
+#include <Ecore_Input.h>
 
 #include <math.h>
 #include <stdlib.h>
@@ -235,7 +236,7 @@ Ecore_X_Window win = 0;
 Eina_Bool
 handler_x_key_down(void *data, int type, void *event)
 {
-   Ecore_X_Event_Key_Down *e;
+   Ecore_Event_Key *e;
    
    e = event;
    printf("Key down %s\n", e->keyname);
@@ -245,7 +246,7 @@ handler_x_key_down(void *data, int type, void *event)
 Eina_Bool
 handler_x_key_up(void *data, int type, void *event)
 {
-   Ecore_X_Event_Key_Up *e;
+   Ecore_Event_Key *e;
    
    e = event;
    printf("Key up %s\n", e->keyname);
@@ -255,27 +256,27 @@ handler_x_key_up(void *data, int type, void *event)
 Eina_Bool
 handler_x_mouse_button_down(void *data, int type, void *event)
 {
-   Ecore_X_Event_Mouse_Button_Down *e;
+   Ecore_Event_Mouse_Button *e;
    
    e = event;
-   printf("Mouse down %i [%i][%i]\n", e->button, e->double_click, e->triple_click);
+   printf("Mouse down %i [%i][%i]\n", e->buttons, e->double_click, e->triple_click);
    return EINA_TRUE;
 }
 
 Eina_Bool
 handler_x_mouse_button_up(void *data, int type, void *event)
 {
-   Ecore_X_Event_Mouse_Button_Up *e;
+   Ecore_Event_Mouse_Button *e;
    
    e = event;
-   printf("Mouse up %i\n", e->button);
+   printf("Mouse up %i\n", e->buttons);
    return EINA_TRUE;
 }
 
 Eina_Bool
 handler_x_mouse_move(void *data, int type, void *event)
 {
-   Ecore_X_Event_Mouse_Move *e;
+   Ecore_Event_Mouse_Move *e;
    
    e = event;
    printf("Mouse move to %i %i\n", e->x, e->y);
@@ -525,11 +526,11 @@ setup_ecore_x_test(void)
    ecore_x_window_show(win);
    ecore_x_flush();
    
-   ecore_event_handler_add(ECORE_X_EVENT_KEY_DOWN, handler_x_key_down, NULL);
-   ecore_event_handler_add(ECORE_X_EVENT_KEY_UP, handler_x_key_up, NULL);
-   ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_DOWN, handler_x_mouse_button_down, NULL);
-   ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, handler_x_mouse_button_up, NULL);
-   ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, handler_x_mouse_move, NULL);
+   ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, handler_x_key_down, NULL);
+   ecore_event_handler_add(ECORE_EVENT_KEY_UP, handler_x_key_up, NULL);
+   ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN, handler_x_mouse_button_down, NULL);
+   ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_UP, handler_x_mouse_button_up, NULL);
+   ecore_event_handler_add(ECORE_EVENT_MOUSE_MOVE, handler_x_mouse_move, NULL);
    ecore_event_handler_add(ECORE_X_EVENT_MOUSE_IN, handler_x_mouse_in, NULL);
    ecore_event_handler_add(ECORE_X_EVENT_MOUSE_OUT, handler_x_mouse_out, NULL);
    ecore_event_handler_add(ECORE_X_EVENT_WINDOW_FOCUS_IN, handler_x_window_focus_in, NULL);

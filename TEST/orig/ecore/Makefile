@@ -1,7 +1,7 @@
-FLAGS = `pkg-config ecore ecore-evas ecore-job ecore-config ecore-x evas --cflags`
-LIBS  = `pkg-config ecore ecore-evas ecore-job ecore-config ecore-x evas --libs`
+FLAGS = `pkg-config ecore ecore-evas ecore-x ecore-input evas ecore-con ecore-ipc --cflags`
+LIBS  = `pkg-config ecore ecore-evas ecore-x ecore-input evas ecore-con ecore-ipc --libs`
 
-BINS  = ecore_config ecore_evas_test ecore_test con_client_udp_example con_mcast_example con_server_udp_example con_tcp_example con_udp_example con_tcp_client_example con_udp_client_example
+BINS  = ecore_evas_test ecore_test con_tcp_example con_tcp_client_example 
 all: $(BINS)
 
 ecore_config_SRCS = ecore_config.c
