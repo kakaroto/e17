@@ -120,7 +120,9 @@
      <li><a href=http://trac.enlightenment.org/e/wiki/Eet>Eet</a></li>
      <li><a href=http://trac.enlightenment.org/e/wiki/Ecore>Ecore</a></li>
      <li><a href=http://trac.enlightenment.org/e/wiki/Efreet>Efreet</a></li>
-     <li><a href=http://trac.enlightenment.org/e/wiki/Edbus>Edbus</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/E_Dbus>E_Dbus</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Embryo>Embryo</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Eeze>Eeze</a></li>
      <li><a href=http://trac.enlightenment.org/e/wiki/Elementary>Elementary</a> (window manager will use this in 0.18)</li>
     </ul>
    </p>
@@ -132,16 +134,21 @@
    <p>
     <ul>
      <li><a href=http://trac.enlightenment.org/e/wiki/Python>Python</a></li>
+     <li>Javascript</li>
+     <li>Perl</li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/EFLxx>C++</a></li>
+     <li>Ruby</li>
+<!--
      <li><a href=http://trac.enlightenment.org/e/wiki/Javascript>Javascript</a></li>
      <li><a href=http://trac.enlightenment.org/e/wiki/Perl>Perl</a></li>
-     <li><a href=http://trac.enlightenment.org/e/wiki/C++>C++</a></li>
      <li><a href=http://trac.enlightenment.org/e/wiki/Ruby>Ruby</a></li>
+-->
     </ul>
    </p>
    
    <p>
-    There are other libraries and applications that build on core EFL and
-    other systems too, to provide more functionality, examples and utility:
+    There are other libraries and applications which build on core EFL and
+    function on other systems too, providing more functionality, examples, and utility:
    </p>
    
    <p>
@@ -149,16 +156,28 @@
      <li><a href=http://trac.enlightenment.org/e/wiki/Emotion>Emotion</a></li>
      <li><a href=http://trac.enlightenment.org/e/wiki/Ethumb>Ethumb</a></li>
      <li><a href=http://trac.enlightenment.org/e/wiki/Exquisite>Exquisite</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Eve>Eve</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/EdjeEditor>Edje Editor</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Eupnp>E UPnP</a></li>
+     <li><a href=http://trac.enlightenment.org/e/wiki/Enesim>Enesim</a></li>
+     <li>Expedite</li>
+     <li>Epdf</li>
+     <li>Exchange</li>
+     <li>Eweather</li>
+     <li>Rage</li>
+     <li>Evil</li>
+     <li>Exalt</li>
+     <li>Esmart</li>
+<!--
      <li><a href=http://trac.enlightenment.org/e/wiki/Expedite>Expedite</a></li>
      <li><a href=http://trac.enlightenment.org/e/wiki/Epdf>Epdf</a></li>
-     <li><a href=http://trac.enlightenment.org/e/wiki/Eve>Eve</a></li>
      <li><a href=http://trac.enlightenment.org/e/wiki/Exchange>Exchange</a></li>
      <li><a href=http://trac.enlightenment.org/e/wiki/Eweather>Eweather</a></li>
-     <li><a href=http://trac.enlightenment.org/e/wiki/Shellementary>Shellementary</a></li>
      <li><a href=http://trac.enlightenment.org/e/wiki/Rage>Rage</a></li>
      <li><a href=http://trac.enlightenment.org/e/wiki/Evil>Evil</a></li>
      <li><a href=http://trac.enlightenment.org/e/wiki/Exalt>Exalt</a></li>
      <li><a href=http://trac.enlightenment.org/e/wiki/Esmart>Esmart</a></li>
+-->
     </ul>
    </p>
    
