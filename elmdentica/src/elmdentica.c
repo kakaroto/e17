@@ -851,22 +851,21 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 				evas_object_size_hint_weight_set(box2, 1, 1);
 				evas_object_size_hint_align_set(box2, -1, 0);
 				elm_box_horizontal_set(box2, EINA_TRUE);
-				elm_box_homogenous_set(box2, EINA_TRUE);
 
 				button = elm_button_add(group_win);
 					evas_object_size_hint_weight_set(button, 1, 1);
 					evas_object_size_hint_align_set(button, -1, 0);
 					if(gp->member) {
-						elm_button_label_set(button, _("Leave group"));
+						elm_button_label_set(button, _("Leave"));
 						evas_object_smart_callback_add(button, "clicked", on_group_leave, ubBubble);
 					} else {
-						elm_button_label_set(button, _("Join group"));
+						elm_button_label_set(button, _("Join"));
 						evas_object_smart_callback_add(button, "clicked", on_group_join, ubBubble);
 					}
 					elm_box_pack_end(box2, button);
 				evas_object_show(button);
 				
-				res = asprintf(&m, _("View last %d group messages"), settings->max_messages);
+				res = asprintf(&m, _("Last %d messages"), settings->max_messages);
 				if(res != -1) {
 					button = elm_button_add(group_win);
 						evas_object_size_hint_weight_set(button, 1, 1);
