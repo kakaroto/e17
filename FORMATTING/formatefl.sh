@@ -32,12 +32,17 @@ echo "==================================================================="
 echo " Uncrustifying your source to match EFL programming guidelines for"
 echo " formatting etc."
 echo "==================================================================="
+FMT1="true"
+FMT2="$UNC --no-backup --replace -l C"
+FMT3="$UNC --no-backup --replace -l CPP"
+#FMT2="indent -kr"
+#FMT3="indent -kr"
 F=`find $1 -name '*.[chx]' -print`
-if [ -n "$F" ]; then $UNC --no-backup --replace -l C $F; fi
+if [ -n "$F" ]; then $FMT1 $F; $FMT2 $F; fi
 F=`find $1 -name '*.h.in' -print`
-if [ -n "$F" ]; then $UNC --no-backup --replace -l C $F; fi
+if [ -n "$F" ]; then $FMT1 $F; $FMT2 $F; fi
 F=`find $1 -name '*.cpp' -print`
-if [ -n "$F" ]; then $UNC --no-backup --replace -l CPP $F; fi
+if [ -n "$F" ]; then $FMT1 $F; $FMT3 $F; fi
   echo "==================================================================="
   echo " DONE"
   echo "==================================================================="
