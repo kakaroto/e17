@@ -143,7 +143,7 @@ CURL * ed_curl_init(char *screen_name, char *password, http_request * request, i
 		curl_easy_setopt(ua, CURLOPT_ENCODING,          ""              );
 
 		if(account_id >= 0 && screen_name != NULL && password != NULL) {
-			curl_easy_setopt(ua, CURLOPT_HTTPAUTH,   CURLAUTH_ANY        );
+			curl_easy_setopt(ua, CURLOPT_HTTPAUTH,   CURLAUTH_BASIC      );
 			curl_easy_setopt(ua, CURLOPT_USERNAME,   screen_name         );
 			curl_easy_setopt(ua, CURLOPT_PASSWORD,   password            );
 		}

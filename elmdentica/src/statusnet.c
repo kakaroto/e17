@@ -234,7 +234,7 @@ void ed_statusnet_group_get(int account_id, GroupProfile *group) {
 	}
 }
 
-static void group_free(GroupProfile *group) {
+void ed_statusnet_group_free(GroupProfile *group) {
     if(group) {
         if(group->name) free(group->name);
         if(group->fullname) free(group->fullname);

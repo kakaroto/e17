@@ -63,7 +63,7 @@
 #include "statusnet.h"
 #include "curl.h"
 
-Evas_Object *status_list=NULL, *scroller=NULL, *status=NULL, *win=NULL, *error_win=NULL, *entry=NULL, *fs=NULL, *count=NULL, *url_win=NULL, *zoom=NULL, *hv=NULL;
+Evas_Object *status_list=NULL, *scroller=NULL, *status=NULL, *win=NULL, *error_win=NULL, *entry=NULL, *fs=NULL, *count=NULL, *url_win=NULL, *hv=NULL;
 char * dm_to=NULL;
 
 StatusesList	*statuses=NULL;
@@ -86,7 +86,6 @@ extern Settings *settings;
 extern CURL * user_agent;
 
 double mouse_held_down=0;
-double icon_zoom_init=0;
 
 struct sqlite3 *ed_DB=NULL;
 
@@ -558,15 +557,85 @@ static void user_free(UserProfile *user) {
 		if(user->name) free(user->name);
 		if(user->tmp) free(user->tmp);
 		if(user->text) free(user->text);
-		if(user->created_at) free(user->created_at);
 
 		free(user);
 	}
 }
 
+static void on_zoomed_icon_clicked(void *data, Evas_Object *obj, void *event_info) {
+	Evas_Object *zoom = (Evas_Object*)data;
+
+	if(zoom)
+		evas_object_del(zoom);
+}
+
+static void on_bubble_icon_clicked(void *data, Evas_Object *obj, void *event_info) {
+	ub_Bubble * ubBubble = eina_hash_find(status2user, &data);
+	char *home, *file_path = NULL;
+	Evas_Object *zoom=NULL, *icon=NULL;
+	int res = 0;
+
+	home = getenv("HOME");
+	if(home)
+		res = asprintf(&file_path, "%s/.elmdentica/cache/icons/%s", home, ubBubble->screen_name);
+	else
+		res = asprintf(&file_path, ".elmdentica/cache/icons/%s", ubBubble->screen_name);
+
+	if(res != -1) {
+		zoom = elm_win_inwin_add(win);
+
+			icon = elm_icon_add(win);
+				evas_object_size_hint_weight_set(icon, 1, 1);
+				evas_object_size_hint_align_set(icon, -1, -1);
+				elm_icon_file_set(icon, file_path, "fubar?");
+				evas_object_smart_callback_add(icon, "clicked", on_zoomed_icon_clicked, zoom);
+			evas_object_show(icon);
+
+			elm_win_inwin_content_set(zoom, icon);
+		evas_object_show(zoom);
+		free(file_path);
+	}
+}
+
+Evas_Object *ed_make_bubble(Evas_Object *parent, char *nick, time_t date, char *corner) {
+	Evas_Object *bubble = NULL, *icon = NULL;
+	char *home, *file_path, datestr[19];
+	struct tm date_tm;
+	int res = 0;
+
+	if(nick && (bubble = elm_bubble_add(parent))) {
+		evas_object_size_hint_weight_set(bubble, 1, 0);
+		evas_object_size_hint_align_set(bubble, -1, -1);
+
+		if(localtime_r((time_t*)&date, &date_tm)) {
+			strftime(datestr, sizeof(datestr), "%F %R", &date_tm);
+			elm_bubble_info_set(bubble, datestr);
+		}
+
+		elm_bubble_label_set(bubble, nick);
+
+		if(corner) elm_bubble_corner_set(bubble, corner);
+
+
+		home = getenv("HOME");
+		if(home)
+			res = asprintf(&file_path, "%s/.elmdentica/cache/icons/%s", home, nick);
+		else
+			res = asprintf(&file_path, ".elmdentica/cache/icons/%s", nick);
+		if(res != -1 && (icon = elm_icon_add(parent))) {
+			elm_icon_file_set(icon, file_path, "fubar?");
+			evas_object_show(icon);
+			evas_object_smart_callback_add(icon, "clicked", on_bubble_icon_clicked, bubble);
+			elm_bubble_icon_set(bubble, icon);
+			free(file_path);
+		}
+	}
+	return(bubble);
+}
+
 static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 	AnchorData *anchor = (AnchorData*)data;
-	Evas_Object *icon=NULL, *bg=NULL, *table=NULL, *button=NULL, *label=NULL, *bubble=anchor->bubble, *message=NULL;
+	Evas_Object *user_win=NULL, *icon=NULL, *bg=NULL, *table=NULL, *button=NULL, *label=NULL, *bubble=anchor->bubble, *message=NULL;
 	UserProfile *user;
 	ub_Bubble * ubBubble = eina_hash_find(status2user, &bubble);
 	char *description=NULL,*home, *path=NULL;
@@ -588,22 +657,22 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 
 	follow_user=user->screen_name;
 
-	url_win = elm_win_add(NULL, user->screen_name, ELM_WIN_BASIC);
-		evas_object_size_hint_min_set(url_win, 480, 480);
-		evas_object_size_hint_max_set(url_win, 640, 640);
-		elm_win_title_set(url_win, user->screen_name);
-		elm_win_autodel_set(url_win, EINA_TRUE);
+	user_win = elm_win_add(NULL, user->screen_name, ELM_WIN_BASIC);
+		evas_object_size_hint_min_set(user_win, 480, 480);
+		evas_object_size_hint_max_set(user_win, 640, 640);
+		elm_win_title_set(user_win, user->screen_name);
+		elm_win_autodel_set(user_win, EINA_TRUE);
 
-		bg = elm_bg_add(url_win);
+		bg = elm_bg_add(user_win);
 			evas_object_size_hint_weight_set(bg, 1, 1);
 			evas_object_size_hint_align_set(bg, -1, -1);
-			elm_win_resize_object_add(url_win, bg);
+			elm_win_resize_object_add(user_win, bg);
 		evas_object_show(bg);
 
-		table=elm_table_add(url_win);
+		table=elm_table_add(user_win);
 			evas_object_size_hint_weight_set(table, 1, 0);
 			evas_object_size_hint_align_set(table, -1, 0);
-			elm_win_resize_object_add(url_win, table);
+			elm_win_resize_object_add(user_win, table);
 			elm_table_padding_set(table, 20, 20);
 
 			home=getenv("HOME");
@@ -613,7 +682,7 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 				res = asprintf(&path, ".elmdentica/cache/icons/%s", user->screen_name);
 
 			if(res!=-1 && stat(path, &buf) == 0 ) {
-				icon = elm_icon_add(url_win);
+				icon = elm_icon_add(user_win);
 					evas_object_size_hint_weight_set(icon, 1, 1);
 					evas_object_size_hint_align_set(icon, -1, -1);
 					elm_icon_file_set(icon, path, "fubar?");
@@ -622,7 +691,7 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 				free(path);
 			}
 
-			label = elm_entry_add(url_win);
+			label = elm_entry_add(user_win);
 				evas_object_size_hint_weight_set(label, 1, 1);
 				evas_object_size_hint_align_set(label, -1, -1);
 
@@ -637,7 +706,7 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 				elm_table_pack(table, label, 1, 0, 1, 1);
 			evas_object_show(label);
 
-			button = elm_button_add(url_win);
+			button = elm_button_add(user_win);
 				evas_object_size_hint_weight_set(button, 1, 1);
 				evas_object_size_hint_align_set(button, 0.5, 0);
 
@@ -651,34 +720,54 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 				elm_table_pack(table, button, 1, 1, 1, 1);
 			evas_object_show(button);
 
-			if(user->text) {
-				button = elm_bubble_add(url_win);
-					evas_object_size_hint_weight_set(button, 1, 1);
-					evas_object_size_hint_align_set(button, -1, 0);
-
-					elm_bubble_label_set(button, user->screen_name);
-					if(user->created_at) elm_bubble_info_set(button, user->created_at);
-
-					message = ed_make_message(user->text, button, url_win);
-
-					elm_bubble_content_set(button, message);
-				
-					elm_table_pack(table, button, 0, 2, 2, 1);
-
-				evas_object_show(button);
+			if(user->text && (button = ed_make_bubble(user_win, user->screen_name, user->status_created_at, NULL))) {
+					message = ed_make_message(user->text, button, user_win);
+					evas_object_show(button);
+					if(message) {
+						elm_bubble_content_set(button, message);
+						elm_table_pack(table, button, 0, 2, 2, 1);
+					} else evas_object_del(bubble);
 			}
 
 		evas_object_show(table);
 
-	    evas_object_resize(url_win, 300, 300);
-	evas_object_show(url_win);
+	    evas_object_resize(user_win, 300, 300);
+	evas_object_show(user_win);
 
 	user_free(user);
 }
 
+static void on_group_messages_view(void *data, Evas_Object *obj, void *event_info) {
+	Evas_Object *s = (Evas_Object*)data, *label=NULL, *group_win = evas_object_smart_parent_get(obj);
+
+	label = elm_label_add(group_win);
+		evas_object_size_hint_weight_set(label, 1, 1);
+		evas_object_size_hint_align_set(label, -1, -1);
+		elm_label_line_wrap_set(label, EINA_TRUE);
+		elm_label_label_set(label, _("Not implemented yet"));
+		elm_scroller_content_set(s, label);
+	evas_object_show(s);
+}
+
+static void on_group_join(void *data, Evas_Object *obj, void *event_info) {
+	ub_Bubble * ubBubble = (ub_Bubble*)data;
+	Evas *e = evas_object_evas_get(obj);
+	Evas_Object *group_win = evas_object_name_find(e, "group_win"), *frame = evas_object_name_find(e, "group");
+	printf("JOIN GROUP %s from account %d\n", elm_frame_label_get(frame), ubBubble->account_id);
+	evas_object_del(group_win);
+}
+
+static void on_group_leave(void *data, Evas_Object *obj, void *event_info) {
+	ub_Bubble * ubBubble = (ub_Bubble*)data;
+	Evas *e = evas_object_evas_get(obj);
+	Evas_Object *group_win = evas_object_name_find(e, "group_win"), *frame = evas_object_name_find(e, "group");
+	printf("LEAVE GROUP %s from account %d\n", elm_frame_label_get(frame), ubBubble->account_id);
+	evas_object_del(group_win);
+}
+
 static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 	AnchorData *anchor = (AnchorData*)data;
-	Evas_Object *group_win=NULL, *bg=NULL, *label=NULL, *s=NULL, *table=NULL, *bubble=anchor->bubble, *icon=NULL;
+	Evas_Object *group_win=NULL, *bg=NULL, *box=NULL, *label=NULL, *s=NULL, *box2=NULL, *bubble=anchor->bubble, *icon=NULL, *button=NULL, *frame=NULL;
 	ub_Bubble * ubBubble = eina_hash_find(status2user, &bubble);
 	GroupProfile *gp = (GroupProfile*)calloc(1, sizeof(GroupProfile));
 	char *m, *home, *path;
@@ -687,85 +776,120 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 
 	gp->name=strndup(anchor->url+8, PIPE_BUF);
 
-/*
-typedef struct _Group_Profile {
-    char        *name;
-    char        *fullname;
-    Eina_Bool   member;
-    int         member_count;
-    char        *original_logo;
-    char        *description;
-} GroupProfile;
-*/
 	ed_statusnet_group_get(ubBubble->account_id, gp);
 
 	group_win = elm_win_add(NULL, gp->name, ELM_WIN_BASIC);
+		evas_object_name_set(frame, "group_win");
 		elm_win_title_set(group_win, gp->name);
 		elm_win_autodel_set(group_win, EINA_TRUE);
 
 		bg = elm_bg_add(group_win);
 			evas_object_size_hint_weight_set(bg, 1, 1);
-			evas_object_size_hint_align_set(bg, -1, -1);
+			evas_object_size_hint_align_set(bg, -1, 0);
 			elm_win_resize_object_add(group_win, bg);
 		evas_object_show(bg);
 
-		table = elm_table_add(group_win);
-			evas_object_size_hint_weight_set(table, 1, 1);
-			evas_object_size_hint_align_set(table, -1, -1);
-			elm_table_padding_set(table, 20, 20);
-			elm_table_homogenous_set(table, EINA_TRUE);
-			elm_win_resize_object_add(group_win, table);
+		box = elm_box_add(group_win);
+			evas_object_size_hint_weight_set(box, 1, 1);
+			evas_object_size_hint_align_set(box, -1, 0);
+			elm_win_resize_object_add(group_win, box);
 
-			home=getenv("HOME");
-			if(home)
-				res = asprintf(&path, "%s/.elmdentica/cache/icons/%s", home, gp->name);
-			else
-				res = asprintf(&path, ".elmdentica/cache/icons/%s", gp->name);
+			frame = elm_frame_add(group_win);
+				evas_object_name_set(frame, "group");
+				evas_object_size_hint_weight_set(frame, 1, 1);
+				evas_object_size_hint_align_set(frame, -1, 0);
+				elm_frame_label_set(frame, gp->name);
 
-			if(res != -1 && stat(path, &buf) == 0 ) {
-				icon = elm_icon_add(group_win);
-					evas_object_size_hint_weight_set(icon, 1, 1);
-					evas_object_size_hint_align_set(icon, -1, -1);
-					elm_icon_file_set(icon, path, "fubar?");
-					elm_table_pack(table, icon, 0, 0, 1, 1);
-				evas_object_show(icon);
-				free(path);
-			}
+			box2 = elm_box_add(group_win);
+				evas_object_size_hint_weight_set(box2, 1, 1);
+				evas_object_size_hint_align_set(box2, -1, 0);
+				elm_box_horizontal_set(box2, EINA_TRUE);
 
-			if(gp->member)
-				res = asprintf(&m, _("You are a member of group %s along with %d other people.<br>«%s»"), gp->fullname, gp->member_count -1, gp->description);
-			else
-				res = asprintf(&m, _("You are not a member of group %s but %d people are.<br>«%s»"), gp->fullname, gp->member_count, gp->description);
+				home=getenv("HOME");
+				if(home)
+					res = asprintf(&path, "%s/.elmdentica/cache/icons/%s", home, gp->name);
+				else
+					res = asprintf(&path, ".elmdentica/cache/icons/%s", gp->name);
 
-			if(res != -1) {
-				label = elm_label_add(group_win);
-					evas_object_size_hint_weight_set(label, 1, 1);
-					evas_object_size_hint_align_set(label, -1, -1);
-					elm_label_line_wrap_set(label, EINA_TRUE);
+				if(res != -1 && stat(path, &buf) == 0 ) {
+					icon = elm_icon_add(group_win);
+						evas_object_size_hint_weight_set(icon, 1, 1);
+						evas_object_size_hint_align_set(icon, -1, -1);
+						elm_icon_file_set(icon, path, "fubar?");
+						elm_box_pack_end(box2, icon);
+						free(path);
+					evas_object_show(icon);
+				}
 
-					elm_label_label_set(label, m);
-					free(m);
-				evas_object_show(label);
+				if(gp->member)
+					res = asprintf(&m, _("You are a member of group %s along with %d other people.<br>«%s»"), gp->fullname, gp->member_count -1, gp->description);
+				else
+					res = asprintf(&m, _("You are not a member of group %s but %d people are.<br>«%s»"), gp->fullname, gp->member_count, gp->description);
 
-				elm_table_pack(table, label, 1, 0, 1, 1);
-			}
+				if(res != -1) {
+					label = elm_label_add(group_win);
+						evas_object_size_hint_weight_set(label, 1, 1);
+						evas_object_size_hint_align_set(label, -1, -1);
+						elm_label_line_wrap_set(label, EINA_TRUE);
+
+						elm_label_label_set(label, m);
+						free(m);
+						elm_box_pack_end(box2, label);
+					evas_object_show(label);
+
+				}
+				elm_frame_content_set(frame, box2);
+				elm_box_pack_end(box, frame);
+			evas_object_show(frame);
 
 			s = elm_scroller_add(group_win);
 				evas_object_size_hint_weight_set(s, 1, 1);
 				evas_object_size_hint_align_set(s, -1, -1);
 
-				//elm_scroller_content_set(s, label);
-				elm_table_pack(table, s, 0, 1, 2, 1);
 
-			evas_object_show(s);
+			box2 = elm_box_add(group_win);
+				evas_object_size_hint_weight_set(box2, 1, 1);
+				evas_object_size_hint_align_set(box2, -1, 0);
+				elm_box_horizontal_set(box2, EINA_TRUE);
+				elm_box_homogenous_set(box2, EINA_TRUE);
+
+				button = elm_button_add(group_win);
+					evas_object_size_hint_weight_set(button, 1, 1);
+					evas_object_size_hint_align_set(button, -1, 0);
+					if(gp->member) {
+						elm_button_label_set(button, _("Leave group"));
+						evas_object_smart_callback_add(button, "clicked", on_group_leave, ubBubble);
+					} else {
+						elm_button_label_set(button, _("Join group"));
+						evas_object_smart_callback_add(button, "clicked", on_group_join, ubBubble);
+					}
+					elm_box_pack_end(box2, button);
+				evas_object_show(button);
+				
+				res = asprintf(&m, _("View last %d group messages"), settings->max_messages);
+				if(res != -1) {
+					button = elm_button_add(group_win);
+						evas_object_size_hint_weight_set(button, 1, 1);
+						evas_object_size_hint_align_set(button, -1, 0);
+						elm_button_label_set(button, m);
+						evas_object_smart_callback_add(button, "clicked", on_group_messages_view, s);
+						elm_box_pack_end(box2, button);
+					evas_object_show(button);
+					free(m);
+				}
+
+				elm_box_pack_start(box, box2);
+				elm_box_pack_end(box, s);
+			evas_object_show(box2);
 
 
-		evas_object_show(table);
+		evas_object_show(box);
+
 
 	evas_object_resize(group_win, 300, 300);
 	evas_object_show(group_win);
 
-	//ed_statusnet_group_free(gp);
+	ed_statusnet_group_free(gp);
 }
 
 static void on_handle_url(void *data, Evas_Object *obj, void *event_info) {
@@ -903,47 +1027,6 @@ static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_
 	}
 }
 
-static void on_zoomed_icon_clicked(void *data, Evas_Object *obj, void *event_info) {
-	if(zoom)
-		evas_object_del(zoom);
-	zoom=NULL;
-}
-
-static void zoom_icon(void *data) {
-	char *file_path = (char*)data;
-	Evas_Object *icon=NULL;
-
-	zoom = elm_win_inwin_add(win);
-
-		icon = elm_icon_add(win);
-			evas_object_size_hint_weight_set(icon, 1, 1);
-			evas_object_size_hint_align_set(icon, -1, -1);
-			elm_icon_file_set(icon, file_path, "fubar?");
-			evas_object_smart_callback_add(icon, "clicked", on_zoomed_icon_clicked, NULL);
-		evas_object_show(icon);
-
-		elm_win_inwin_content_set(zoom, icon);
-	evas_object_show(zoom);
-}
-
-static void on_bubble_icon_mouse_down(void *data, Evas *e, Evas_Object *icon, void *event_info) {
-	struct timeval tv;
-
-	gettimeofday(&tv, NULL);
-	icon_zoom_init = (double)tv.tv_sec + (double)tv.tv_usec/1000000;
-}
-static void on_bubble_icon_mouse_up(void *data, Evas *e, Evas_Object *icon, void *event_info) {
-	struct timeval tv;
-	double now=0, delta;
-
-	gettimeofday(&tv, NULL);
-	now = (double)tv.tv_sec + (double)tv.tv_usec/1000000;
-	delta = now - icon_zoom_init;
-	if( delta <= 1 )
-		zoom_icon(data);
-	icon_zoom_init = 0;
-}
-
 static void on_bubble_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info) {
 	struct timeval tv;
 
@@ -1074,15 +1157,12 @@ Eina_Bool ed_check_gag(char *screen_name, char *name, char *message) {
 
 static int add_status(void *data, int argc, char **argv, char **azColName) {
 	char *screen_name=NULL, *name=NULL, *status_message=NULL;
-	int id=0, account_id=0, res=0, type;
+	int id=0, account_id=0, type;
 	Eina_Bool timeline=data?(int)(long)data:0;
 	time_t date;
 
 	ub_Bubble * ubBubble = calloc(1, sizeof(ub_Bubble));
-	Evas_Object *message=NULL, *bubble=NULL, *icon=NULL;
-	struct tm date_tm;
-	char datestr[19];
-	char * file_path=NULL, *home=NULL;
+	Evas_Object *message=NULL, *bubble=NULL;
 
 	/* In this query handler, these are the current fields:
 		argv[0] == id INTEGER
@@ -1105,52 +1185,28 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 
 	if(ed_check_gag(argv[3], argv[4], argv[5])) return(0);
 
-	bubble = elm_bubble_add(win);
-	evas_object_size_hint_weight_set(bubble, 1, 0);
-	evas_object_size_hint_align_set(bubble, -1, -1);
+	if((bubble = ed_make_bubble(win, screen_name, date, NULL))) {
+		elm_box_pack_end(status_list, bubble);
+		evas_object_show(bubble);
 
-	elm_bubble_label_set(bubble, name);
+		ubBubble->account_id = account_id;
+		ubBubble->account_type = type;
+		if(screen_name)
+			ubBubble->screen_name = strndup(screen_name, 1024);
+		else
+			ubBubble->screen_name = strdup("");
+		ubBubble->message = status_message;
 
-	if(localtime_r((time_t*)&date, &date_tm)) {
-		strftime(datestr, sizeof(datestr), "%F %R", &date_tm);
-		elm_bubble_info_set(bubble, datestr);
+		if(timeline == TIMELINE_FAVORITES)
+			ubBubble->favorite = TRUE;
+
+		message = ed_make_message(argv[5], bubble, win);
+		
+		if(message) {
+			elm_bubble_content_set(bubble, message);
+			eina_hash_add(status2user, (void*)&bubble, (void*)ubBubble);
+		} else evas_object_del(bubble);
 	}
-
-	icon = elm_icon_add(win);
-
-	home = getenv("HOME");
-	if(home)
-		res = asprintf(&file_path, "%s/.elmdentica/cache/icons/%s", home, screen_name);
-	else
-		res = asprintf(&file_path, ".elmdentica/cache/icons/%s", screen_name);
-	if(res != -1) {
-		elm_icon_file_set(icon, file_path, "fubar?");
-		evas_object_show(icon);
- 		evas_object_event_callback_add(icon, EVAS_CALLBACK_MOUSE_DOWN, on_bubble_icon_mouse_down, file_path);
- 		evas_object_event_callback_add(icon, EVAS_CALLBACK_MOUSE_UP, on_bubble_icon_mouse_up, file_path);
-		elm_bubble_icon_set(bubble, icon);
-	}
-
-	message = ed_make_message(argv[5], bubble, win);
-
-	elm_bubble_content_set(bubble, message);
-
-	evas_object_show(bubble);
-
-	elm_box_pack_end(status_list, bubble);
-
-	ubBubble->account_id = account_id;
-	ubBubble->account_type = type;
-	if(screen_name)
-		ubBubble->screen_name = strndup(screen_name, 1024);
-	else
-		ubBubble->screen_name = strdup("");
-	ubBubble->message = status_message;
-
-	if(timeline == TIMELINE_FAVORITES)
-		ubBubble->favorite = TRUE;
-
-	eina_hash_add(status2user, (void*)&bubble, (void*)ubBubble);
 
 	return(0);
 }
