@@ -1396,7 +1396,7 @@ void on_settings(void *data, Evas_Object *obj, void *event_info) {
 
 void display_help(void) {
 	printf(_("\nUsage:\n"\
-		"   -d   Debug mode (extra yummy output)\n"
+		"   -d   Debug mode (for extra yummy output, use multiple times)\n"
 		"   -h   Help (what you're reading right now)\n"
 		"   -m N Show N messages at a time\n"
 		"\n")
@@ -1491,7 +1491,8 @@ void ed_settings_init(int argc, char ** argv) {
 	while((option = getopt(argc,argv,options)) != -1) {
 		switch(option) {
 			case 'd': {
-				debug=1;
+				debug++;
+				if(debug) printf("Debug level: %d\n", debug);
 				break;
 			}
 			case 'h': {

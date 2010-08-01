@@ -54,6 +54,12 @@ extern Evas_Object *win;
 
 extern char * avatar;
 
+int ed_statusnet_post(int id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *msg) {
+	return(0);
+}
+void ed_statusnet_timeline_get(int id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline) {
+}
+
 void ed_statusnet_statuses_get_avatar(char *screen_name) {
 	http_request *request = NULL;
 	int file, res=0;

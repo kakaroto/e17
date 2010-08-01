@@ -1118,7 +1118,7 @@ static int ed_check_gag_message(void *user_data, int argc, char **argv, char **a
 			sn = gd->screen_name;
 	}
 
-	if(debug) printf("(%s|%s|%s) ~ %s ?", sn, gd->name, gd->message, pattern);
+	if(debug > 2) printf("(%s|%s|%s) ~ %s ?", sn, gd->name, gd->message, pattern);
 
 	// only do costly matches if there's isn't a match already
 	if(	gd->match == EINA_FALSE &&
@@ -1262,12 +1262,6 @@ void del_status(gpointer data, gpointer user_data) {
 	free(status->text);
 	free(status);
 
-}
-
-int ed_statusnet_post(int id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *msg) {
-return(0);
-}
-void ed_statusnet_timeline_get(int id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline) {
 }
 
 static int get_messages_for_account(void *pTimeline, int argc, char **argv, char **azColName) {
