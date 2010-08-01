@@ -1203,6 +1203,7 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 		
 		if(message) {
 			elm_bubble_content_set(bubble, message);
+			ubBubble->message = strdup(argv[5]);
 			eina_hash_add(status2user, (void*)&bubble, (void*)ubBubble);
 		} else evas_object_del(bubble);
 	}
@@ -1313,14 +1314,26 @@ static void get_messages(int timeline) {
 	sqlite3_free(db_err);
 }
 
+void clear_status_hash_data(void *data) {
+	ub_Bubble *bubble = (ub_Bubble*)data;
+
+	if(bubble) {
+		if(bubble->screen_name) free(bubble->screen_name);
+		if(bubble->message) free(bubble->message);
+		free(bubble);
+	}
+}
+
 void fill_message_list(int timeline) {
 	int sqlite_res=0;
 	char *db_err=NULL, *query=NULL;
 
 	if(status2user) {
-	} else {
-		status2user = eina_hash_pointer_new(free);
+		eina_hash_free(status2user);
+		status2user = NULL;
 	}
+
+	status2user = eina_hash_pointer_new(clear_status_hash_data);
 
 	sqlite_res = asprintf(&query, "SELECT messages.id,messages.status_id,messages.account_id,messages.screen_name,messages.name,messages.message,messages.date,accounts.type,accounts.id as accid,accounts.enabled FROM messages,accounts where messages.timeline = %d and messages.account_id=accid and accounts.enabled=1 ORDER BY messages.date DESC LIMIT %d;", timeline, settings->max_messages);
 	if(sqlite_res != -1) {

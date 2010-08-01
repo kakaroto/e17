@@ -188,10 +188,12 @@ gint ed_curl_get(char *screen_name, char *password, http_request * request, int 
 
 	if(debug) printf("Prepping URL\n");
 	curl_easy_setopt(ua, CURLOPT_URL,		request->url	);
+	if(debug) printf("Prepping content destination\n");
 	curl_easy_setopt(ua, CURLOPT_WRITEDATA, (void *)&(request->content)	);
 
-	if(debug) printf("Fetching URL\n");
+	if(debug) printf("Fetching URL...\n");
 	res = curl_easy_perform(ua);
+	if(debug) printf("... done.\n");
 
 	if(res == 0) {
 		res = curl_easy_getinfo(ua, CURLINFO_RESPONSE_CODE, &request->response_code);
