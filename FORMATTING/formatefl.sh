@@ -4,9 +4,11 @@ SCRIPTDIR="$0"
 PREFIX="$HOME/.uncrustify"
 
 if which uncrustify &> /dev/null ;then
-	UNC="$(which uncrustify)"
+  UNC="$(which uncrustify)"
+  VER=$($UNC --version | awk '{printf("%s\n", $2);}')
+  [[ "$VER" = "0.56" ]] || UNC="$PREFIX/bin/uncrustify"
 else
-	UNC="$PREFIX/bin/uncrustify"
+  UNC="$PREFIX/bin/uncrustify"
 fi
 if [[ -z "$DIR" ]]; then
   echo "==================================================================="
