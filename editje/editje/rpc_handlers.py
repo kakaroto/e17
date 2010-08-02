@@ -210,6 +210,12 @@ class ReportsHandler(object):
 
         self._handlers = {self._edit_grp:
                               [("parts.changed",
+                                self._parts_changed_event_handler)],
+                          self._edit_grp.part:
+                              [("part.api.changed",
+                                self._parts_changed_event_handler)],
+                          self._edit_grp.signal:
+                              [("program.api.changed",
                                 self._parts_changed_event_handler)]}
 
         self._handlers_register()
@@ -262,4 +268,4 @@ class ReportsHandler(object):
         self._clients_call("partsChanged", parts)
 
     def _parts_changed_event_handler(self, emissor, data):
-        self.parts_changed(data)
+        self.parts_changed([])

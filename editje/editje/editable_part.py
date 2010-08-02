@@ -159,7 +159,9 @@ class EditablePart(Manager):
         if not self.name:
             return
 
+        old_val = self._part.api
         self._part.api = value
+        self.event_emit("part.api.changed", (old_val, value))
 
     def _api_get(self):
         if not self.name:

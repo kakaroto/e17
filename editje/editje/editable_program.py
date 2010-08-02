@@ -204,7 +204,9 @@ class EditableProgram(Manager, object):
         if not self.name:
             return
 
+        old_val = self._program.api
         self._program.api = value
+        self.event_emit("program.api.changed", (old_val, value))
 
     def _api_get(self):
         if not self.name:
