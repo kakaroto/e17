@@ -1,10 +1,6 @@
 #!/bin/bash
 PREFIX="$HOME/.uncrustify"
-if which uncrustify &> /dev/null ;then
-	UNC="$(which uncrustify)"
-else
-	UNC="$PREFIX/bin/uncrustify"
-fi
+UNC="$PREFIX/bin/uncrustify"
 if [ -z "$1" ]; then
   echo "==================================================================="
   echo " Checking if uncrustify installed already and is the right version"
