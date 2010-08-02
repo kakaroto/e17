@@ -607,6 +607,8 @@ class Editable(Manager):
     def _signals_init(self):
         self._signals = None
         self.callback_add("programs.changed", self._signals_reload_cb)
+        self.callback_add("signal.added", self._signals_reload_cb)
+        self.callback_add("signal.removed", self._signals_reload_cb)
 
     def _signals_reload_cb(self, emissor, data):
         self._signals = [e for e in self.programs if not e.startswith("@")]
@@ -618,8 +620,6 @@ class Editable(Manager):
 
         if not self.program_add(name):
             return False
-
-        self._signals.append(name)
 
         return True
 
@@ -653,7 +653,6 @@ class Editable(Manager):
         if not self.program_del(name):
             return False
 
-        self._signals.remove(name)
         self.event_emit("signal.removed", name)
 
         return True
