@@ -176,9 +176,9 @@ _ephoto_populate_filter(const void *data, const char *file)
 {
 	const char *type;
 
-	if (!(type = efreet_mime_type_get((const char *)file)))
+	printf("%s\n", file);
+	if (!(type = efreet_mime_type_get(file)))
 		return EINA_FALSE;
-
 	if (!strncmp(type, "image", 5))
 		return EINA_TRUE;
 
@@ -187,7 +187,7 @@ _ephoto_populate_filter(const void *data, const char *file)
 
 /*Done populating images*/
 static void
-_ephoto_populate_end(void *data)
+_ephoto_populate_end(const void *data)
 {
 	list = NULL;
 
