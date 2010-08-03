@@ -21,6 +21,7 @@ RDEPEND="
 	 >=dev-libs/eina-9999[safety-checks]
 	 >=dev-libs/embryo-9999
 	 >=dev-libs/ecore-9999[X,evas,inotify,xim]
+	 >=dev-libs/eio-9999
 	 >=media-libs/edje-9999
 	 >=media-libs/evas-9999[X,eet,jpeg,png,safety-checks]
 	 >=media-libs/elementary-9999[thumbnails,xdg]
