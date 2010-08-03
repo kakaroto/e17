@@ -1,0 +1,16 @@
+ecocci.h is the file to be passed to Coccinelle as -macro_file_builtins.
+It's easier to run against all code base, but you'll achieve better results
+if you run individually for each project
+
+
+Basic usage:
+
+spatch -sp your-semantic-patch.cocci -macro_file_builtins /path-to/ecocci.h \
+       -all_includes -relax_include_path -dir ./
+
+ -sp <file>: give the semantic patch to apply
+ -macro_file_builtins <file>: give the .h file with macro definitions
+ -all_includes: needed in order to correctly handle #include "file.h"
+ -relax_include_path: needed in order to search for header also on current dir
+ -dir: the directory to patch
+
