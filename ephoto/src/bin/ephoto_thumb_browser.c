@@ -172,7 +172,7 @@ ephoto_delete_thumb_browser(void)
 
 /* Check image type from another thread */
 static Eina_Bool
-_ephoto_populate_filter(const char *file, void *data)
+_ephoto_populate_filter(const void *data, const char *file)
 {
 	const char *type;
 
@@ -196,7 +196,7 @@ _ephoto_populate_end(void *data)
 
 /* Build the interface component after detection from main thread */
 static void
-_ephoto_populate_main(const char *file, void *data)
+_ephoto_populate_main(const void *data, const char *file)
 {
 	const char *thumb;
 
