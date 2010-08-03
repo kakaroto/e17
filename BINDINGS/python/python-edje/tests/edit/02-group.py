@@ -55,6 +55,7 @@ class Basics(unittest.TestCase):
         self.assertFalse(self.edj.group_exist("g1"))
 
 edje.file_cache_set(0)
-unittest.main()
+suite = unittest.TestLoader().loadTestsFromTestCase(Basics)
+unittest.TextTestRunner(verbosity=2).run(suite)
 edje.shutdown()
 ecore.evas.shutdown()

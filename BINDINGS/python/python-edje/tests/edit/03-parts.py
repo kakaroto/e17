@@ -49,31 +49,31 @@ class Basics(unittest.TestCase):
         self.assertTrue(self.edj.part_get(self.parts[1]).restack_below())
         self.assertFalse(self.edj.part_get(self.parts[1]).restack_below())
         self.assertTrue(self.edj.part_get(self.parts[0]).restack_below())
-        self.assertTrue(self.edj.part_get(self.parts[8]).restack_below())
-        self.assertTrue(self.edj.part_get(self.parts[8]).restack_below())
-        self.assertTrue(self.edj.part_get(self.parts[8]).restack_below())
-        self.assertEqual(self.edj.parts, ['main_rect', 'main_text', 'main_image', 'main_swallow', 'main_textblock', 'main_table', 'main_gradient', 'main_group', 'main_box'])
+        self.assertTrue(self.edj.part_get(self.parts[-1]).restack_below())
+        self.assertTrue(self.edj.part_get(self.parts[-1]).restack_below())
+        self.assertEqual(self.edj.parts, ['main_rect', 'main_text', 'main_image', 'main_swallow', 'main_textblock', 'main_table', 'main_group', 'main_box'])
 
     def test_restack_above(self):
         # You can't pre-load parts
-        self.assertFalse(self.edj.part_get(self.parts[8]).restack_above())
-        self.assertTrue(self.edj.part_get(self.parts[7]).restack_above())
-        self.assertFalse(self.edj.part_get(self.parts[7]).restack_above())
-        self.assertTrue(self.edj.part_get(self.parts[8]).restack_above())
+        self.assertFalse(self.edj.part_get(self.parts[-1]).restack_above())
+        self.assertTrue(self.edj.part_get(self.parts[-2]).restack_above())
+        self.assertFalse(self.edj.part_get(self.parts[-2]).restack_above())
+        self.assertTrue(self.edj.part_get(self.parts[-1]).restack_above())
         self.assertTrue(self.edj.part_get(self.parts[0]).restack_above())
         self.assertTrue(self.edj.part_get(self.parts[0]).restack_above())
         self.assertTrue(self.edj.part_get(self.parts[0]).restack_above())
-        self.assertEqual(self.edj.parts, ['main_text', 'main_image', 'main_swallow', 'main_rect', 'main_textblock', 'main_gradient', 'main_group', 'main_box', 'main_table'])
+        self.assertEqual(self.edj.parts, ['main_text', 'main_image', 'main_swallow', 'main_rect', 'main_textblock', 'main_group', 'main_box', 'main_table'])
 
     def test_rename(self):
         for part_name in self.parts[:-1]:
             part = self.edj.part_get(part_name)
-            self.assertFalse(part.rename(self.parts[8]))
+            self.assertFalse(part.rename(self.parts[-1]))
             self.assertTrue(part.rename(part_name))
             self.assertTrue(part.rename("New Part"))
             self.assertTrue(part.rename(part_name))
 
 edje.file_cache_set(0)
-unittest.main()
+suite = unittest.TestLoader().loadTestsFromTestCase(Basics)
+unittest.TextTestRunner(verbosity=2).run(suite)
 edje.shutdown()
 ecore.evas.shutdown()

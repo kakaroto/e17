@@ -5,6 +5,7 @@ import edje.edit
 import ecore.evas
 import unittest
 
+
 class Basics(unittest.TestCase):
     def setUp(self):
         import shutil
@@ -14,7 +15,6 @@ class Basics(unittest.TestCase):
 
     def tearDown(self):
         self.edj.delete()
-        del self.canvas
         self.canvas = None
         self.edj = None
         import os
@@ -30,7 +30,6 @@ class Basics(unittest.TestCase):
         self.assertTrue(self.edj.part_del("main_image"))
         self.assertTrue(self.edj.part_del("main_swallow"))
         self.assertTrue(self.edj.part_del("main_textblock"))
-        self.assertTrue(self.edj.part_del("main_gradient"))
         self.assertTrue(self.edj.part_del("main_group"))
         self.assertTrue(self.edj.part_del("main_box"))
         self.assertTrue(self.edj.part_del("main_table"))
@@ -50,6 +49,7 @@ class Basics(unittest.TestCase):
         self.assertFalse(self.edj.group_add("new"))
         new = edje.edit.EdjeEdit(self.canvas.evas, file="test.edj", group="new")
         new.save()
+	new.delete()
         self.assertTrue("new" in edje.file_collection_list("test.edj"))
         self.assertTrue(self.edj.group_add("new2"))
         self.assertTrue(self.edj.group_add(""))
@@ -107,7 +107,7 @@ class Basics(unittest.TestCase):
     # Part
 
     def test_parts(self):
-        self.assertEqual(self.edj.parts, ['main_rect', 'main_text', 'main_image', 'main_swallow', 'main_textblock', 'main_gradient', 'main_group', 'main_box', 'main_table'])
+        self.assertEqual(self.edj.parts, ['main_rect', 'main_text', 'main_image', 'main_swallow', 'main_textblock', 'main_group', 'main_box', 'main_table'])
 
     def test_part_get(self):
 #        self.assertEqual(self.edj.part_get(""), None)
@@ -124,20 +124,20 @@ class Basics(unittest.TestCase):
         self.assertTrue(self.edj.part_add("new_swallow", edje.EDJE_PART_TYPE_SWALLOW))
 
     def test_part_exist(self):
-#        self.assertFalse(self.edj.part_exist(""))
+#        self.assertFalse(self.edj.part_add("", edje.EDJE_PART_TYPE_RECTANGLE))
+        self.assertFalse(self.edj.part_exist(""))
         self.assertFalse(self.edj.part_exist("fail"))
         self.assertTrue(self.edj.part_add("new_rect", edje.EDJE_PART_TYPE_RECTANGLE))
         self.assertTrue(self.edj.part_exist("new_rect"))
-        self.assertTrue(self.edj.part_exist("main_gradient"))
 
     def test_part_del(self):
         self.assertFalse(self.edj.part_exist(""))
         self.assertFalse(self.edj.part_exist("fail"))
         self.assertTrue(self.edj.part_add("new_rect", edje.EDJE_PART_TYPE_RECTANGLE))
         self.assertTrue(self.edj.part_del("new_rect"))
-        self.assertTrue(self.edj.part_del("main_gradient"))
 
 edje.file_cache_set(0)
-unittest.main()
+suite = unittest.TestLoader().loadTestsFromTestCase(Basics)
+unittest.TextTestRunner(verbosity=2).run(suite)
 edje.shutdown()
 ecore.evas.shutdown()
