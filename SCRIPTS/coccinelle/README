@@ -1,9 +1,22 @@
+Introduction
+============
+
+Coccinelle is a tool for making semantic patches, finding patterns in code (and
+thus, bugs), maitaining the API/ABI of a library -- also known as collateral
+evolutions -- and so on. In Raster's words: "a smart search and replace".
+
+More details about Coccinelle, documentation, example patches, howtos,
+presentations etc can be found at http://coccinelle.lip6.fr/
+
 ecocci.h is the file to be passed to Coccinelle as -macro_file_builtins.
 It's easier to run against all code base, but you'll achieve better results
-if you run individually for each project
+if you run individually for each project.
 
 
-Basic usage:
+Q&A
+===
+
+1) How do I use it?
 
 spatch -sp your-semantic-patch.cocci -macro_file_builtins /path-to/ecocci.h \
        -all_includes -relax_include_path -dir ./
@@ -14,3 +27,28 @@ spatch -sp your-semantic-patch.cocci -macro_file_builtins /path-to/ecocci.h \
  -relax_include_path: needed in order to search for header also on current dir
  -dir: the directory to patch
 
+2) How do I know if a macro should be added to ecocci.h?
+
+Run spatch with -parse_c option, it will output something like
+
+        NB total files = 14; perfect = 14; pbs = 0; timeout = 0; =========> 100%
+        nb good = 16093,  nb passed = 636 =========> 3.952029% passed
+        nb good = 16093,  nb bad = 0 =========> 100.000000% good
+
+If it's not 100% good, then you have some parsing issues. Go up in the parsing
+output and find out which macro is causing problems. Then run with
+-verbose_parsing with only the file containing that macro. This will give you
+a clue on how to fix it.
+
+3) spatch output is too verbose, isn't it?
+
+Yes, I think so. You can get a quiet one with -very_quiet option
+
+4) Where are all the options detailed?
+
+spatch -longhelp is your friend.
+
+5) I've made a patch and I'm almost sure there are some places Coccinelle is
+not working as it should. What's happening?
+
+See (2).
