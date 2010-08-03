@@ -312,26 +312,32 @@ elixir_template(const unsigned char *file_data, unsigned int file_length, unsign
    if (!p)
      return NULL;
 
-   do {
-      if (used > size - BUFFER_SIZE / 2) {
-         size += BUFFER_SIZE;
-         buffer = realloc(buffer, size);
-      }
+   do
+     {
+	if (used > size - BUFFER_SIZE / 2)
+	  {
+	     char *tmp;
+	     size += BUFFER_SIZE;
+	     tmp = realloc(buffer, size);
+	     if (!tmp) goto exit_clean;
+	     buffer = tmp;
+	  }
 
-      len = _elixir_template_parse(p, buffer + used, size - used);
-      used += len;
-   } while (len > 0);
+	len = _elixir_template_parse(p, buffer + used, size - used);
+	used += len;
+     }
+   while (len > 0);
+
+   if (len < 0) goto exit_clean;
 
    _elixir_template_parser_destroy(p);
-
-   if (len < 0)
-     {
-        free(buffer);
-        return NULL;
-     }
-
    *template_length = used;
 
    return buffer;
+exit_clean:
+   _elixir_template_parser_destroy(p);
+   free(buffer);
+   *template_length = 0;
+   return NULL;
 }
 
