@@ -19,8 +19,10 @@ d	- Fixed Point
 	- Add REVERSE to edje possible program action
 	- Add continue: (ABORT|CONTINUE|CHAIN) to edje STATE_SET argument
 	- Make it possible to catch requested file and to rewrite it
-	- Optimize file format
+h	- Optimize file format
 h	- Optimize memory layout thanks to new file format
+	- Reuse match automate between edje object of the same type
+	- Add specialized task for each match automate case
 
 * Elixir
 h	- add eet -> js object
@@ -50,6 +52,9 @@ h	- add client library
 * Eyelight
 	- write own layout function
 h	- fix expose and thumbnail display to be fully async
+
+* Eio
+	- provide a completly asynchronous IO API using ecore thread infra
 
 h: half done
 d: done
