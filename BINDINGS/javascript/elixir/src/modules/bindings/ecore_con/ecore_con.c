@@ -226,7 +226,7 @@ _elixir_con_data_handler(void *private_data, int *data, int size)
 	       }
 
 	     ecd->size = count;
-	     ecd->current = size - sizeof (int);
+	     ecd->current = size - sizeof (int) * 2;
 
 	     memcpy(ecd->data, data + 2, ecd->current);
 
