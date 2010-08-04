@@ -1,6 +1,3 @@
-/*
- * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>3
- */
 #include "term.h"
 
 struct winsize *get_font_dim(Term *term)

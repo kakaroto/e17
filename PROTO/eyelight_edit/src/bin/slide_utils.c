@@ -1,4 +1,3 @@
-
 #include "main.h"
 #include <Ecore_X.h>
 

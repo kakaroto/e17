@@ -1,5 +1,3 @@
-/* vim: set sw=4 ts=4 sts=4 expandtab: */
-
 #ifdef __cplusplus
 extern "C" {
 #endif

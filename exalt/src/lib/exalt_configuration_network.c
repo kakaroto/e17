@@ -1,4 +1,3 @@
-
 /** @file exalt_configuration_network.c */
 
 #include "exalt_configuration_network.h"

@@ -1,4 +1,3 @@
-
 /**
  * @mainpage EPhoto Manager
  * @author Jonathan Atton

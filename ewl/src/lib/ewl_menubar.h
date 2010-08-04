@@ -1,4 +1,3 @@
-/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_MENUBAR_H
 #define EWL_MENUBAR_H
 

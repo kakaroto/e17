@@ -1,4 +1,3 @@
-/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_COLORPICKER_H
 #define EWL_COLORPICKER_H
 

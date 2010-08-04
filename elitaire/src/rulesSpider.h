@@ -1,4 +1,3 @@
-
 class spider : public cardGame
 {
 	protected:

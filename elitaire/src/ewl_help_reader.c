@@ -1,4 +1,3 @@
-/* vim: set sw=4 ts=4 sts=4 expandtab: */
 #include <Ewl.h>
 #include <stdio.h>
 #include <stdlib.h>

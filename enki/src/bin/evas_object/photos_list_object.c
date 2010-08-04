@@ -1,4 +1,3 @@
-
 #include "photos_list_object.h"
 
 #define NB_ITEMS_MAX 30

@@ -1,4 +1,3 @@
-
 #include "libexalt_dbus_private.h"
 
 int exalt_dbus_msg_id_next(Exalt_DBus_Conn* conn)

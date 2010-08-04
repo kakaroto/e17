@@ -1,4 +1,3 @@
-/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #include <time.h>
 #include "ewl_base.h"
 #include "ewl_calendar.h"

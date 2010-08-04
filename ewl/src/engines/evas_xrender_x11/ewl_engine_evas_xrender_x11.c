@@ -1,4 +1,3 @@
-/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #include "Ewl_Engine_Evas_Xrender_X11.h"
 #include <Evas_Engine_XRender_X11.h>
 #include "ewl_private.h"

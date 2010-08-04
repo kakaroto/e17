@@ -63,4 +63,3 @@ Eina_Bool db_sync(Db *db);
 
 #endif
 
-/* vim: set ts=8 noexpandtab cin cino=>5n-3f0^-2{2(0W1st0 sw=3 sts=8 nolist: */

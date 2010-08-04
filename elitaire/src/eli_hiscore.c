@@ -1,4 +1,3 @@
-/* vim: set sw=4 ts=4 sts=4 expandtab: */
 #include <Eet.h>
 #include <Ecore_Data.h>
 #include <Evas.h>

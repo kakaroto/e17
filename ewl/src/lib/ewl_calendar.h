@@ -1,4 +1,3 @@
-/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_CALENDAR_H
 #define EWL_CALENDAR_H
 

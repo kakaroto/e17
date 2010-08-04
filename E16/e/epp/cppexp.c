@@ -1,4 +1,3 @@
-
 /* Parse C expressions for CCCP.
  * Copyright (C) 1987, 1992, 1994, 1995 Free Software Foundation.
  * 

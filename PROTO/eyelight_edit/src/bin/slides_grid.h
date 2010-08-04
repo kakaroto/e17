@@ -1,4 +1,3 @@
-
 #ifndef  SLIDES_GRID_INC
 #define  SLIDES_GRID_INC
 

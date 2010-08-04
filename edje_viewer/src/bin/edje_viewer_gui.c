@@ -1,7 +1,3 @@
-/*
- * vim:ts=8:sw=3:sts=8:et:cino=>5n-3f0^-2{2(0W4
- */
-
 #include <edje_viewer_main.h>
 
 typedef struct _Hoversel_Item_Data Hoversel_Item_Data;

@@ -1,4 +1,3 @@
-
 #include "define.h"
 #include "enum.h"
 #include "function.h"

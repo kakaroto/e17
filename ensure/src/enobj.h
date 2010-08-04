@@ -1,4 +1,3 @@
-
 #ifndef ENOBJMAGIC
 #define ENOBJMAGIC 0x8d882abc
 #endif

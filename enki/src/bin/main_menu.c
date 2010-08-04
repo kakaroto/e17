@@ -1,4 +1,3 @@
-
 #include "main.h"
 #include "slideshow.h"
 

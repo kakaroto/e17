@@ -1,4 +1,3 @@
-/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_IO_MANAGER_H
 #define EWL_IO_MANAGER_H
 

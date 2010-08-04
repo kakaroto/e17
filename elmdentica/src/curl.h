@@ -1,4 +1,3 @@
-/* vim:tabstop=4
  * Copyright © 2009 Rui Miguel Silva Seabra <rms@1407.org>
  *
  * This program is free software: you can redistribute it and/or modify

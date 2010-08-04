@@ -1,7 +1,4 @@
 /*
- * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
- */
-/*
  * Copyright (C) 2006 Christopher Michael
  *
  * Portions of this code Copyright (C) 2004 Embrace project.

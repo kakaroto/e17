@@ -1,5 +1,3 @@
-// vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
-
 #include "main.h"
 static void _menu_dismiss_cb(void *data, Evas_Object *obj, void *event_info);
 static void _collection_del_cb(void *data, Evas_Object *obj, void *event_info);

@@ -1,4 +1,3 @@
-
 #ifndef  EYELIGHT_EDIT_INC
 #define  EYELIGHT_EDIT_INC
 

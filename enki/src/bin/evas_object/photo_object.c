@@ -1,5 +1,3 @@
-// vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
-
 #include "photo_object.h"
 #include <locale.h>
 
@@ -56,7 +54,6 @@ struct _Smart_Data
 	if (!_e_smart_str) return; \
 	if (strcmp(_e_smart_str, type)) return; \
 		}
-// vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
 
 #define E_OBJ_NAME "photo_object"
 static Evas_Smart  *smart = NULL;

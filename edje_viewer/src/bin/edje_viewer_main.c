@@ -1,7 +1,3 @@
-/*
- * vim:ts=8:sw=3:sts=8:et:cino=>5n-3f0^-2{2(0W4
- */
-
 #include "edje_viewer_main.h"
 
 int __log_domain = -1;

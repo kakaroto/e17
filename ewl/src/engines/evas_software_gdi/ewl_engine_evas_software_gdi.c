@@ -1,4 +1,3 @@
-/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #include "Ewl_Engine_Evas_Software_Gdi.h"
 #include "ewl_private.h"
 #include "ewl_debug.h"

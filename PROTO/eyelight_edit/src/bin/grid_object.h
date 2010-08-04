@@ -1,4 +1,3 @@
-
 #ifndef  GRID_OBJECT_INC
 #define  GRID_OBJECT_INC
 

@@ -1,4 +1,3 @@
-
 #include "main.h"
 
 Elm_Menu_Item *mi_save;

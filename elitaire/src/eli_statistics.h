@@ -1,4 +1,3 @@
-
 typedef struct _Eli_Statistics 
 {
 	int won_games;

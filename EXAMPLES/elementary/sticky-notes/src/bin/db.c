@@ -207,4 +207,3 @@ db_sync(Db *db)
       (_db_file, _list_edd, DB_CONFIG_DB_NAME, db, 1);
 }
 
-/* vim: set ts=8 noexpandtab cin cino=>5n-3f0^-2{2(0W1st0 sw=3 sts=8 nolist: */

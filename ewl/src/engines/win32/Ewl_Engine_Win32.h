@@ -1,4 +1,3 @@
-/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef __EWL_ENGINE_WIN32_H__
 #define __EWL_ENGINE_WIN32_H__
 

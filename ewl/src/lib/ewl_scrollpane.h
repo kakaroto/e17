@@ -1,4 +1,3 @@
-/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_SCROLLPANE_H
 #define EWL_SCROLLPANE_H
 

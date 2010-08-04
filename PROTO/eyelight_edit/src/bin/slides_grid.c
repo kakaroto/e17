@@ -1,4 +1,3 @@
-
 #include "slides_grid.h"
 
 #define SLIDER_ZOOM_MAX 0.5

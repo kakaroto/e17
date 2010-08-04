@@ -1,5 +1,3 @@
-/* vim: set sw=4 ts=4 sts=4 expandtab: */
-
 typedef enum Eli_Help_Reader_Node_Type Eli_Help_Reader_Node_Type;
 
 enum Eli_Help_Reader_Node_Type

@@ -1,4 +1,3 @@
-
 /** @file exalt_configuration.c */
 
 #include "exalt_configuration.h"

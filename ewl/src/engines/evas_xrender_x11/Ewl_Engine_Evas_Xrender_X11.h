@@ -1,4 +1,3 @@
-/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_ENGINE_EVAS_XRENDER_X11_H
 #define EWL_ENGINE_EVAS_XRENDER_X11_H
 

@@ -1,4 +1,3 @@
-
 /* Definitions for CPP library.
    Copyright (C) 1995 Free Software Foundation, Inc.
    Written by Per Bothner, 1994-95.

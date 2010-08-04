@@ -1,4 +1,3 @@
-
 #include "grid_object.h"
 
 typedef struct _Smart_Data Smart_Data;

@@ -1,4 +1,3 @@
-
 #include <Ecore_Getopt.h>
 
 #include "Enlil.h"

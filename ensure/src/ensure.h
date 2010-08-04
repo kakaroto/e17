@@ -1,4 +1,3 @@
-
 #ifndef ensure_unused
 #define ensure_unused	__attribute__((unused))
 #define ensure_restrict	__restrict__

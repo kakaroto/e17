@@ -1,4 +1,3 @@
-
 #include "main.h"
 
 static Evas_Object *_pager;

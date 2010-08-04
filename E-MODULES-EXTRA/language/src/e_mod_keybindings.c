@@ -1,4 +1,3 @@
-
 #include <e.h>
 #include "e_mod_lang.h"
 #include "e_mod_keybindings.h"

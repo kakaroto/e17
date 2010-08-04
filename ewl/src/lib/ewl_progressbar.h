@@ -1,4 +1,3 @@
-/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_PROGRESSBAR_H
 #define EWL_PROGRESSBAR_H
 

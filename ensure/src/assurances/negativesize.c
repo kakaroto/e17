@@ -1,4 +1,3 @@
-
 #include "assurance.h"
 
 static int object_check(struct ensure*,struct enobj*,void *data);

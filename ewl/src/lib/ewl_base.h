@@ -1,4 +1,3 @@
-/* vim: set sw=8 ts=8 sts=8 expandtab: */
 /*
  * Header that wraps the core widget functionality includes to insure they are
  * included in the proper order.
