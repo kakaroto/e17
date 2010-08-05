@@ -282,7 +282,7 @@ _ephoto_thumbnail_generated(void *data, Ethumb_Client *client, int id,
 	{
 		Ephoto_Thumb_Data *etd;
 
-		etd = calloc(1, sizeof(etd));
+		etd = calloc(1, sizeof(*etd));
 		etd->thumb_path = eina_stringshare_add(thumb_path);
 		etd->file = eina_stringshare_add(file);
 
