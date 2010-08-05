@@ -138,16 +138,17 @@ _DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Semi-Solid"));
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 4);
-   DialogItemRadioButtonGroupSetValPtr(radio2, &dd->resize);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Translucent"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 5);
-   DialogItemRadioButtonGroupSetValPtr(radio1, &dd->move);
 
    DialogAddItem(table, DITEM_NONE);
 #endif /* ENABLE_OLDMOVRES */
+
+   DialogItemRadioButtonGroupSetValPtr(radio1, &dd->move);
+   DialogItemRadioButtonGroupSetValPtr(radio2, &dd->resize);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
