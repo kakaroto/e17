@@ -1301,6 +1301,9 @@ BorderCreateFiller(int w, int h, int sw, int sh)
    Border             *b;
    int                 left, right, top, bottom;
 
+   if (w > sw || h > sh)	/* Borders must be >= 0 */
+      return NULL;
+
    b = BorderCreate("__FILLER");
    if (!b)
       return b;
