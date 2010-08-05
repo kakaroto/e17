@@ -67,7 +67,7 @@ Object::Object( Evas_Object* object)
 
 Object::~Object()
 {
-  //FIXME: Remove callbacks?
+	disconnectAll ();
   evas_object_del( o );
 }
 
@@ -115,12 +115,35 @@ Eflxx::CountedPtr <Part> Object::getPart( const std::string &partname )
   throw PartNotExistingException (partname);
 }
 
-void Object::connect( const std::string &emission, const std::string &source, const SignalSlot& slot )
+void Object::connect (const std::string &emission, const std::string &source, const SignalSlot& slot)
 {
   SignalSignal* signal = new SignalSignal();
+	mSignalList[std::pair <std::string, std::string> (emission, source)] = signal;
   AllocTag( signal, emission );
   signal->connect( slot );
   edje_object_signal_callback_add( o, emission.c_str (), source.c_str (), &_edje_signal_handler_callback, static_cast<void*>( signal ) );
+}
+
+void Object::disconnect (const std::string &emission, const std::string &source)
+{
+	SignalSignal *signal = mSignalList[std::pair <std::string, std::string> (emission, source)];
+  edje_object_signal_callback_del (o, emission.c_str (), source.c_str (), _edje_signal_handler_callback);
+	delete signal;
+}
+
+void Object::disconnectAll ()
+{
+	for (std::map <std::pair <std::string, std::string>, SignalSignal*>::iterator s_it = mSignalList.begin ();
+	     s_it != mSignalList.end ();
+	     ++s_it)
+	{
+		std::pair <std::string, std::string> emission_source = (*s_it).first;
+		SignalSignal *signal = (*s_it).second;
+
+		edje_object_signal_callback_del (o, emission_source.first.c_str (), emission_source.second.c_str (),
+		                                 _edje_signal_handler_callback);
+		delete signal;
+	}
 }
 
 void Object::emit( const std::string &emission, const std::string &source )

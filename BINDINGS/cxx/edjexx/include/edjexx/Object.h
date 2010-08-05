@@ -3,6 +3,7 @@
 
 /* STL */
 #include <string>
+#include <map>
 
 /* EFL++ */
 #include <eflxx/Common.h>
@@ -77,8 +78,10 @@ public:
   Eflxx::CountedPtr <Part> getPart( const std::string &partname );
 
   /* signals and slots */
-  void connect( const std::string &emission, const std::string &source, const SignalSlot& slot );
-  void emit( const std::string &emission, const std::string &source );
+  void connect (const std::string &emission, const std::string &source, const SignalSlot& slot);
+	void disconnect (const std::string &emission, const std::string &source);
+	void disconnectAll ();
+  void emit (const std::string &emission, const std::string &source);
 
   static Object *wrap( Evas_Object* o );
 
@@ -94,6 +97,8 @@ private:
 
   bool operator=( const Object& );
   bool operator==( const Object& );
+
+	std::map <std::pair <std::string, std::string>, SignalSignal*> mSignalList;
 };
 
 
