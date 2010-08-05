@@ -451,7 +451,7 @@ static const struct {
    { "utE",  "config" },
    { "ute",   NULL    },
    { "UuE",  "menus"  },
-   { "UE",   "icons"  }
+   { "UuE",  "icons"  }
 };
 /* *INDENT-ON* */
 
