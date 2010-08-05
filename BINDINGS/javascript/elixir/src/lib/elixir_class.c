@@ -111,6 +111,9 @@ elixir_class_request_parent(const JSClass *cl)
 {
    const elixir_class_t *current;
 
+   current = eina_hash_find(class, cl->name);
+   if ((void*) current != (void*) cl) return NULL;
+
    current = (const elixir_class_t*) cl;
    if (!current)
      return NULL;
