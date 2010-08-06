@@ -37,6 +37,54 @@ class Basics(unittest.TestCase):
             self.assertTrue(self.edj.part_add(str(count), edje.EDJE_PART_TYPE_RECTANGLE))
         self.assertTrue(self.edj.save())
 
+        self.edj.delete()
+	self.edj = None
+        self.edj = edje.edit.EdjeEdit(self.canvas.evas, file="test.edj", group="main")
+
+        self.assertFalse(self.edj.part_exist("main_rect"))
+        self.assertFalse(self.edj.part_exist("main_text"))
+        self.assertFalse(self.edj.part_exist("main_image"))
+        self.assertFalse(self.edj.part_exist("main_swallow"))
+        self.assertFalse(self.edj.part_exist("main_textblock"))
+        self.assertFalse(self.edj.part_exist("main_group"))
+        self.assertFalse(self.edj.part_exist("main_box"))
+        self.assertFalse(self.edj.part_exist("main_table"))
+        for count in xrange(1000):
+            self.assertTrue(self.edj.part_exist(str(count)))
+
+    def test_save_all(self):
+        self.assertTrue(self.edj.save_all())
+        self.assertTrue(self.edj.part_del("main_rect"))
+        self.assertTrue(self.edj.part_del("main_text"))
+        self.assertTrue(self.edj.part_del("main_image"))
+        self.assertTrue(self.edj.part_del("main_swallow"))
+        self.assertTrue(self.edj.part_del("main_textblock"))
+        self.assertTrue(self.edj.part_del("main_group"))
+        self.assertTrue(self.edj.part_del("main_box"))
+        self.assertTrue(self.edj.part_del("main_table"))
+        other = edje.edit.EdjeEdit(self.canvas.evas, file="test.edj", group="g1")
+        for count in xrange(1000):
+            self.assertTrue(other.part_add(str(count), edje.EDJE_PART_TYPE_RECTANGLE))
+        self.assertTrue(other.save_all())
+
+        self.edj.delete()
+        other.delete()
+	self.edj = None
+	other = None
+        self.edj = edje.edit.EdjeEdit(self.canvas.evas, file="test.edj", group="main")
+        other = edje.edit.EdjeEdit(self.canvas.evas, file="test.edj", group="g1")
+
+        self.assertFalse(self.edj.part_exist("main_rect"))
+        self.assertFalse(self.edj.part_exist("main_text"))
+        self.assertFalse(self.edj.part_exist("main_image"))
+        self.assertFalse(self.edj.part_exist("main_swallow"))
+        self.assertFalse(self.edj.part_exist("main_textblock"))
+        self.assertFalse(self.edj.part_exist("main_group"))
+        self.assertFalse(self.edj.part_exist("main_box"))
+        self.assertFalse(self.edj.part_exist("main_table"))
+        for count in xrange(1000):
+            self.assertTrue(other.part_exist(str(count)))
+
     # Group
 
     def test_current_group(self):
