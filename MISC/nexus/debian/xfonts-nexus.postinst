@@ -4,11 +4,6 @@
 
 set -e
 
-if [ "$1" = "configure" ]; then
-    ( cd /usr/share/fonts/X11/misc && /usr/bin/mkfontdir )
-    update-fonts-alias misc
-fi
-
 exit 0
 
 

@@ -1,3 +1,11 @@
+xfonts-nexus (0.0.2-16) unstable; urgency=low
+
+  * Remove spurious commands from postinst and postrm,
+    dh_installxfonts adds everything that is needed.
+    (closes: #591864)
+
+ -- Simon Horman <horms@debian.org>  Fri, 06 Aug 2010 11:02:48 +0900
+
 xfonts-nexus (0.0.2-15) unstable; urgency=low
 
   * Replace build-indep dependency on obsolte xutils package with
