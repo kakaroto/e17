@@ -205,9 +205,13 @@ class Basics(unittest.TestCase):
         self.assertTrue(self.edj.part_del("main_group"))
         self.assertTrue(self.edj.part_del("main_box"))
         self.assertTrue(self.edj.part_del("main_table"))
+        self.assertTrue(self.edj.part_del("main_textblock"))
+        self.assertEqual(self.edj.parts, [])
         self.assertTrue(
             self.edj.part_add("new_rect", edje.EDJE_PART_TYPE_RECTANGLE))
+        self.assertEqual(self.edj.parts, ["new_rect"])
         self.assertTrue(self.edj.part_del("new_rect"))
+        self.assertEqual(self.edj.parts, [])
 
 edje.file_cache_set(0)
 suite = unittest.TestLoader().loadTestsFromTestCase(Basics)
