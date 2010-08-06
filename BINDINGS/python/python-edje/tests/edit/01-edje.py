@@ -179,8 +179,17 @@ class Basics(unittest.TestCase):
         self.assertTrue(self.edj.part_exist("new_rect"))
 
     def test_part_del(self):
-        self.assertFalse(self.edj.part_exist(""))
-        self.assertFalse(self.edj.part_exist("fail"))
+        self.assertFalse(self.edj.part_del(""))
+        self.assertFalse(self.edj.part_del("fail"))
+        self.assertTrue(self.edj.part_del("main_rect"))
+        self.assertTrue(self.edj.part_del("main_text"))
+        self.assertTrue(self.edj.part_del("main_image"))
+        self.assertTrue(self.edj.part_add("new_rect", edje.EDJE_PART_TYPE_RECTANGLE))
+        self.assertTrue(self.edj.part_del("new_rect"))
+        self.assertTrue(self.edj.part_del("main_swallow"))
+        self.assertTrue(self.edj.part_del("main_group"))
+        self.assertTrue(self.edj.part_del("main_box"))
+        self.assertTrue(self.edj.part_del("main_table"))
         self.assertTrue(self.edj.part_add("new_rect", edje.EDJE_PART_TYPE_RECTANGLE))
         self.assertTrue(self.edj.part_del("new_rect"))
 
