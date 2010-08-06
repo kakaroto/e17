@@ -10,7 +10,8 @@ class Basics(unittest.TestCase):
         import shutil
         shutil.copyfile("theme.edj","test.edj")
         self.canvas = ecore.evas.Buffer(300, 300)
-        self.edj = edje.edit.EdjeEdit(self.canvas.evas, file="test.edj", group="main")
+        self.edj = edje.edit.EdjeEdit(
+            self.canvas.evas, file="test.edj", group="main")
         self.group = self.edj.current_group
 
     def tearDown(self):

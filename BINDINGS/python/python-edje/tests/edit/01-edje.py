@@ -11,7 +11,8 @@ class Basics(unittest.TestCase):
         import shutil
         shutil.copyfile("theme.edj","test.edj")
         self.canvas = ecore.evas.Buffer(300, 300)
-        self.edj = edje.edit.EdjeEdit(self.canvas.evas, file="test.edj", group="main")
+        self.edj = edje.edit.EdjeEdit(
+            self.canvas.evas, file="test.edj", group="main")
 
     def tearDown(self):
         self.edj.delete()
@@ -34,12 +35,14 @@ class Basics(unittest.TestCase):
         self.assertTrue(self.edj.part_del("main_box"))
         self.assertTrue(self.edj.part_del("main_table"))
         for count in xrange(1000):
-            self.assertTrue(self.edj.part_add(str(count), edje.EDJE_PART_TYPE_RECTANGLE))
+            self.assertTrue(
+                self.edj.part_add(str(count), edje.EDJE_PART_TYPE_RECTANGLE))
         self.assertTrue(self.edj.save())
 
         self.edj.delete()
 	self.edj = None
-        self.edj = edje.edit.EdjeEdit(self.canvas.evas, file="test.edj", group="main")
+        self.edj = edje.edit.EdjeEdit(
+            self.canvas.evas, file="test.edj", group="main")
 
         self.assertFalse(self.edj.part_exist("main_rect"))
         self.assertFalse(self.edj.part_exist("main_text"))
@@ -62,17 +65,21 @@ class Basics(unittest.TestCase):
         self.assertTrue(self.edj.part_del("main_group"))
         self.assertTrue(self.edj.part_del("main_box"))
         self.assertTrue(self.edj.part_del("main_table"))
-        other = edje.edit.EdjeEdit(self.canvas.evas, file="test.edj", group="g1")
+        other = edje.edit.EdjeEdit(
+            self.canvas.evas, file="test.edj", group="g1")
         for count in xrange(1000):
-            self.assertTrue(other.part_add(str(count), edje.EDJE_PART_TYPE_RECTANGLE))
+            self.assertTrue(
+                other.part_add(str(count), edje.EDJE_PART_TYPE_RECTANGLE))
         self.assertTrue(other.save_all())
 
         self.edj.delete()
         other.delete()
 	self.edj = None
 	other = None
-        self.edj = edje.edit.EdjeEdit(self.canvas.evas, file="test.edj", group="main")
-        other = edje.edit.EdjeEdit(self.canvas.evas, file="test.edj", group="g1")
+        self.edj = edje.edit.EdjeEdit(
+            self.canvas.evas, file="test.edj", group="main")
+        other = edje.edit.EdjeEdit(
+            self.canvas.evas, file="test.edj", group="g1")
 
         self.assertFalse(self.edj.part_exist("main_rect"))
         self.assertFalse(self.edj.part_exist("main_text"))
@@ -155,7 +162,10 @@ class Basics(unittest.TestCase):
     # Part
 
     def test_parts(self):
-        self.assertEqual(self.edj.parts, ['main_rect', 'main_text', 'main_image', 'main_swallow', 'main_textblock', 'main_group', 'main_box', 'main_table'])
+        self.assertEqual(self.edj.parts,
+                         ['main_rect', 'main_text', 'main_image',
+                          'main_swallow', 'main_textblock', 'main_group',
+                          'main_box', 'main_table'])
 
     def test_part_get(self):
 #        self.assertEqual(self.edj.part_get(""), None)
@@ -167,15 +177,19 @@ class Basics(unittest.TestCase):
 #        self.assertFalse(self.edj.part_add("fail2", edje.EDJE_PART_TYPE_LAST))
 #        self.assertFalse(self.edj.part_add("fail3", edje.EDJE_PART_TYPE_LAST + 1))
 #        self.assertFalse(self.edj.part_add("", edje.EDJE_PART_TYPE_RECTANGLE))
-        self.assertTrue(self.edj.part_add("new_rect", edje.EDJE_PART_TYPE_RECTANGLE))
-        self.assertTrue(self.edj.part_add("new_image", edje.EDJE_PART_TYPE_IMAGE))
-        self.assertTrue(self.edj.part_add("new_swallow", edje.EDJE_PART_TYPE_SWALLOW))
+        self.assertTrue(
+            self.edj.part_add("new_rect", edje.EDJE_PART_TYPE_RECTANGLE))
+        self.assertTrue(
+            self.edj.part_add("new_image", edje.EDJE_PART_TYPE_IMAGE))
+        self.assertTrue(
+            self.edj.part_add("new_swallow", edje.EDJE_PART_TYPE_SWALLOW))
 
     def test_part_exist(self):
 #        self.assertFalse(self.edj.part_add("", edje.EDJE_PART_TYPE_RECTANGLE))
         self.assertFalse(self.edj.part_exist(""))
         self.assertFalse(self.edj.part_exist("fail"))
-        self.assertTrue(self.edj.part_add("new_rect", edje.EDJE_PART_TYPE_RECTANGLE))
+        self.assertTrue(
+            self.edj.part_add("new_rect", edje.EDJE_PART_TYPE_RECTANGLE))
         self.assertTrue(self.edj.part_exist("new_rect"))
 
     def test_part_del(self):
@@ -184,13 +198,15 @@ class Basics(unittest.TestCase):
         self.assertTrue(self.edj.part_del("main_rect"))
         self.assertTrue(self.edj.part_del("main_text"))
         self.assertTrue(self.edj.part_del("main_image"))
-        self.assertTrue(self.edj.part_add("new_rect", edje.EDJE_PART_TYPE_RECTANGLE))
+        self.assertTrue(
+            self.edj.part_add("new_rect", edje.EDJE_PART_TYPE_RECTANGLE))
         self.assertTrue(self.edj.part_del("new_rect"))
         self.assertTrue(self.edj.part_del("main_swallow"))
         self.assertTrue(self.edj.part_del("main_group"))
         self.assertTrue(self.edj.part_del("main_box"))
         self.assertTrue(self.edj.part_del("main_table"))
-        self.assertTrue(self.edj.part_add("new_rect", edje.EDJE_PART_TYPE_RECTANGLE))
+        self.assertTrue(
+            self.edj.part_add("new_rect", edje.EDJE_PART_TYPE_RECTANGLE))
         self.assertTrue(self.edj.part_del("new_rect"))
 
 edje.file_cache_set(0)
