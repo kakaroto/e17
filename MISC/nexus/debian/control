@@ -4,7 +4,7 @@ Build-Depends: debhelper (>= 6)
 Section: x11
 Priority: optional
 Maintainer: Simon Horman <horms@debian.org>
-Standards-Version: 3.8.4
+Standards-Version: 3.9.1
 
 Package: xfonts-nexus
 Architecture: all

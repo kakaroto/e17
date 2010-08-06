@@ -5,8 +5,9 @@ xfonts-nexus (0.0.2-16) unstable; urgency=low
     (closes: #591864)
   * Include license directly in copyright file
     See: http://lintian.debian.org/tags/copyright-refers-to-deprecated-bsd-license-file.html
+  * Update standards version from 3.8.4 to 3.9.1
 
- -- Simon Horman <horms@debian.org>  Fri, 06 Aug 2010 11:51:16 +0900
+ -- Simon Horman <horms@debian.org>  Fri, 06 Aug 2010 11:52:20 +0900
 
 xfonts-nexus (0.0.2-15) unstable; urgency=low
 
