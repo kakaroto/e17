@@ -3,8 +3,10 @@ xfonts-nexus (0.0.2-16) unstable; urgency=low
   * Remove spurious commands from postinst and postrm,
     dh_installxfonts adds everything that is needed.
     (closes: #591864)
+  * Include license directly in copyright file
+    See: http://lintian.debian.org/tags/copyright-refers-to-deprecated-bsd-license-file.html
 
- -- Simon Horman <horms@debian.org>  Fri, 06 Aug 2010 11:02:48 +0900
+ -- Simon Horman <horms@debian.org>  Fri, 06 Aug 2010 11:51:16 +0900
 
 xfonts-nexus (0.0.2-15) unstable; urgency=low
 
