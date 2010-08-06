@@ -137,8 +137,6 @@
 // It's better to separate this to specific projects and call each one with it's
 // own macros.
 
-#define assert(x) if(x) exit(1)
-
 // libcheck
 #define END_TEST
 #define fail_if(x) if(x) return
