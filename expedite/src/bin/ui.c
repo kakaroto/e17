@@ -209,6 +209,7 @@ _ui_all(void)
         else snprintf(datestr, sizeof(datestr), "unknown");
 //        printf("%5.2f , EVAS SPEED\n", fps / t_count);
         printf("%5.2f , EVAS SPEED (WEIGHTED), "
+               "tn, %i , "
                "t, %s , "
                "ev , %i.%i.%i.%i , "
                "p , %s , "
@@ -218,6 +219,7 @@ _ui_all(void)
                "fs , %i\n"
                ,
                wfps / (t_count * avgw),
+               t_count,
                datestr,
                evas_version->major, evas_version->minor, evas_version->micro, evas_version->revision,
                profile,
@@ -524,7 +526,7 @@ _ui_setup(void)
    evas_object_move(o, x, y);
    o_menu_title = o;
 
-   _ui_menu_item_add("e.png", "About Enlightenment", about_start);
+   _ui_menu_item_add("e.png", "About", about_start);
    _ui_menu_item_add("e.png", "All Tests", _ui_all);
 #define UI
 #include "tests.h"
