@@ -8,4 +8,4 @@ char *elsa_gui_user_get();
 char *elsa_gui_password_get();
 void elsa_gui_auth_error();
 
-#endif
+#endif /* ELSA_GUI_H_ */

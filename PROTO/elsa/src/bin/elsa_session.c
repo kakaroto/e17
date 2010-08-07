@@ -73,7 +73,8 @@ elsa_session_init(struct passwd *pwd) {
       endusershell();
    }
    snprintf(buf, sizeof(buf), "%s/.Xauthority", pwd->pw_dir);
-   _elsa_session_cookie_add(_mcookie, ":0", elsa_config->command.xauth.path, buf);
+   _elsa_session_cookie_add(_mcookie, ":0",
+                            elsa_config->command.xauth_path, buf);
    return EINA_TRUE;
 }
 
@@ -91,7 +92,7 @@ elsa_session_run(struct passwd *pwd) {
       fprintf(stderr, "%s: Session Run\n", PACKAGE);
       snprintf(buf, sizeof(buf),
                "%s %s ",
-               elsa_config->command.session.start,
+               elsa_config->command.session_start,
                pwd->pw_name);
       system(buf);
       chdir(pwd->pw_dir);
@@ -101,7 +102,7 @@ elsa_session_run(struct passwd *pwd) {
       remove(buf);
       snprintf(buf, sizeof(buf),
                "%s > %s/.elsa_session.log",
-               elsa_config->command.session.login,
+               elsa_config->command.session_login,
                pwd->pw_dir);
       execle(pwd->pw_shell, pwd->pw_shell, "-c",
              buf, NULL, env);
@@ -133,7 +134,7 @@ elsa_session_shutdown() {
    if (_user) {
       snprintf(buf, sizeof(buf),
                "%s %s ",
-               elsa_config->command.session.stop,
+               elsa_config->command.session_stop,
                _user);
       free(_user);
       system(buf);

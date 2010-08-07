@@ -21,7 +21,8 @@ static Eina_Bool _close_log();
 Ecore_Exe *x_exec;
 
 static Eina_Bool
-_event_del_cb(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__) {
+_event_del_cb(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
+{
    fprintf(stderr, PACKAGE": del cb received\n");
    elsa_session_shutdown();
    /* plz check here if X are still running */
@@ -30,7 +31,8 @@ _event_del_cb(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__
 }
 
 static Eina_Bool
-_event_exit_cb(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__) {
+_event_exit_cb(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
+{
    fprintf(stderr, PACKAGE": daemon quit\n");
    elsa_session_shutdown();
    if (x_exec) ecore_exe_terminate(x_exec);
@@ -43,31 +45,36 @@ _event_exit_cb(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED_
 
 
 static void
-_start_xserver(char *dname) {
+_start_xserver(char *dname)
+{
    char buf[4096];
    snprintf(buf, sizeof(buf),
             "%s %s",
-            elsa_config->command.xinit.path,
-            elsa_config->command.xinit.args);
+            elsa_config->command.xinit_path,
+            elsa_config->command.xinit_args);
    x_exec = ecore_exe_run(buf, NULL);
    sleep(1);
-   while (!XOpenDisplay(dname)) {
-      fprintf(stderr, PACKAGE": could not open display %s\n", dname);
-      sleep(1);
-   }
+   while (!XOpenDisplay(dname))
+     {
+        fprintf(stderr, PACKAGE": could not open display %s\n", dname);
+        sleep(1);
+     }
    ecore_exe_hup(x_exec);
    snprintf(buf, sizeof(buf), "DISPLAY=%s", dname);
    putenv(buf);
 }
 
 static Eina_Bool
-_open_log() {
+_open_log()
+{
    FILE *elog;
    elog = fopen(elsa_config->logfile, "a");
-   if (!elog) {
-      fprintf(stderr, PACKAGE": could not open logfile !!!\n");
-      return EINA_FALSE;
-   }
+   if (!elog)
+     {
+        fprintf(stderr, PACKAGE": could not open logfile %s!!!\n",
+                elsa_config->logfile);
+        return EINA_FALSE;
+     }
    fclose(elog);
    freopen(elsa_config->logfile, "a", stdout);
    setvbuf(stdout, NULL, _IOLBF, BUFSIZ);
@@ -77,7 +84,8 @@ _open_log() {
 }
 
 static Eina_Bool
-_close_log() {
+_close_log()
+{
    fclose(stderr);
    fclose(stdout);
    return EINA_TRUE;
@@ -135,7 +143,7 @@ main (int argc, char ** argv) {
    /* Initialise event handler */
 #ifndef XNEST_DEBUG
    elsa_pam_init(PACKAGE, dname);
-   elsa_session_auth(elsa_config->command.xauth.file);
+   elsa_session_auth(elsa_config->command.xauth_file);
 
 #endif
    _start_xserver(dname);

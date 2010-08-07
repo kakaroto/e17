@@ -23,4 +23,5 @@ int elsa_pam_open_session();
 void elsa_pam_close_session();
 int elsa_pam_authenticate();
 int elsa_pam_end();
-#endif
+
+#endif /* ELSA_PAM_H_ */

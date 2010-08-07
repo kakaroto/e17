@@ -1,26 +1,27 @@
 #include "elsa.h"
 
-#define ELSA_CONFIG_UPDATE(conf,update) free(conf); conf = strdup(update)
-
+#define ELSA_CONFIG_KEY "config"
 
 static void _defaults_set(Elsa_Config *config);
-static void _users_get(Elsa_Config *config);
-static void _config_save(Elsa_Config *config);
+static void _users_get();
+static void _config_free(Elsa_Config *config);
+static Elsa_Config *_cache_get(Eet_Data_Descriptor *edd);
 
 static void
-_defaults_set(Elsa_Config *config) {
+_defaults_set(Elsa_Config *config)
+{
    config->session_path = strdup("./:/bin:/usr/bin:/usr/local/bin");
-   config->command.xinit.path = strdup("/usr/bin/X");
-   config->command.xinit.args = strdup("-nolisten tcp -br -deferglyphs 16");
-   config->command.xauth.path = strdup("/usr/bin/xauth");
-   config->command.xauth.file = strdup("/var/run/elsa.auth");
-   config->command.session.start = strdup("/usr/bin/sessreg -a -l :0.0" );
-   config->command.session.login = strdup("exec /bin/bash -login /etc/X11/xinit/xinitrc");
-   config->command.session.stop = strdup("/usr/bin/sessreg -d -l :0.0");
+   config->command.xinit_path = strdup("/usr/bin/X");
+   config->command.xinit_args = strdup("-nolisten tcp -br -deferglyphs 16");
+   config->command.xauth_path = strdup("/usr/bin/xauth");
+   config->command.xauth_file = strdup("/var/run/elsa.auth");
+   config->command.session_start = strdup("/usr/bin/sessreg -a -l :0.0" );
+   config->command.session_login = strdup("exec /bin/bash -login /etc/X11/xinit/xinitrc");
+   config->command.session_stop = strdup("/usr/bin/sessreg -d -l :0.0");
    config->command.shutdown = strdup("/usr/bin/shutdown -h now");
    config->command.reboot = strdup("/usr/bin/shutdown -r now");
    config->command.suspend = strdup("/usr/sbin/suspend");
-   config->daemonize = EINA_TRUE;
+   config->daemonize = EINA_FALSE;
    config->numlock = EINA_FALSE;
    config->sessions = strdup("enlightenment,xfce4,icewm,wmaker,blackbox");
    config->lockfile = strdup("/var/run/elsa.run");
@@ -29,157 +30,145 @@ _defaults_set(Elsa_Config *config) {
 
 
 static void
-_users_get(Elsa_Config *config __UNUSED__) {
+_users_get()
+{
+   Eet_File *ef;
    FILE *f;
-/*   char buf[4096];*/
+   int textlen;
+   char *text;
 
-   f = fopen("/etc/elsa.conf", "r");
-   if (!f) return;
-      /*
-   while (fgets (buf, sizeof(buf), f)) {
-      if (!*buf || *buf == '#') continue;
-      if (buf == strstr(buf, "default_path")) {
-         ELSA_CONFIG_UPDATE(config->session_path, buf);
-         continue;
-      }
-      if (buf == strstr(buf, "default_xserver")) {
-         ELSA_CONFIG_UPDATE(config->command.xinit.path, buf);
-         continue;
-      }
-      if (buf == strstr(buf, "xserver_arguments")) {
-         ELSA_CONFIG_UPDATE(config->command.xinit.args, buf);
-         continue;
-      }
-      if (buf == strstr(buf, "halt_cmd")) {
-         ELSA_CONFIG_UPDATE(config->command.shutdown, buf);
-         continue;
-      }
-      if (buf == strstr(buf, "reboot_cmd")) {
-         ELSA_CONFIG_UPDATE(config->command.reboot, buf);
-         continue;
-      }
-      if (buf == strstr(buf, "suspend_cmd")) {
-         ELSA_CONFIG_UPDATE(config->command.suspend, buf);
-         continue;
-      }
-      if (buf == strstr(buf, "xauth_path")) {
-         ELSA_CONFIG_UPDATE(config->command.xauth.path, buf);
-         continue;
-      }
-      if (buf == strstr(buf, "authfile")) {
-         ELSA_CONFIG_UPDATE(config->command.xauth.file, buf);
-         continue;
-      }
-      if (buf == strstr(buf, "sessionstart_cmd")) {
-         ELSA_CONFIG_UPDATE(config->command.session.start, buf);
-         continue;
-      }
-      if (buf == strstr(buf, "sessionstop_cmd")) {
-         ELSA_CONFIG_UPDATE(config->command.session.stop, buf);
-         continue;
-      }
-      if (buf == strstr(buf, "login_cmd")) {
-         ELSA_CONFIG_UPDATE(config->command.session.login, buf);
-         continue;
-      }
-      if (buf == strstr(buf, "sessions")) {
-         ELSA_CONFIG_UPDATE(config->sessions, buf);
-         continue;
-      }
-      if (buf == strstr(buf, "lockfile")) {
-         ELSA_CONFIG_UPDATE(config->lockfile, buf);
-         continue;
-      }
-      if (buf == strstr(buf, "logfile")) {
-         ELSA_CONFIG_UPDATE(config->logfile, buf);
-         continue;
-      }
-   }
-      */
+   if (!ecore_file_is_dir("/var/cache/"PACKAGE))
+     ecore_file_mkdir("/var/cache/"PACKAGE);
+   ef = eet_open("/var/cache/"PACKAGE"/"ELSA_CONFIG_FILE, EET_FILE_MODE_READ_WRITE);
+   if (!ef)
+     ef = eet_open("/var/cache/"PACKAGE"/"ELSA_CONFIG_FILE,
+                   EET_FILE_MODE_WRITE);
+   f = fopen("/etc/elsa.conf", "rb");
+   if (!f)
+     {
+        fprintf(stderr, PACKAGE": Could not open /etc/elsa.conf\n");
+        return;
+     }
+
+   fseek(f, 0, SEEK_END);
+   textlen = ftell(f);
+   rewind(f);
+   text = (char *)malloc(textlen);
+   if (!text)
+     {
+        fclose(f);
+        eet_close(ef);
+        return;
+     }
+
+   if (fread(text, textlen, 1, f) != 1)
+     {
+        free(text);
+        fclose(f);
+        eet_close(ef);
+        return;
+     }
+
    fclose(f);
+   if (eet_data_undump(ef, ELSA_CONFIG_KEY, text, textlen, 1))
+     fprintf(stderr, PACKAGE": Updating configuration\n");
+   free(text);
+   eet_close(ef);
 }
 
-static void
-_cache_get(Elsa_Config *config) {
+static Elsa_Config *
+_cache_get(Eet_Data_Descriptor *edd)
+{
+   Elsa_Config *config = NULL;
    Eet_File *file;
-   char buf[4096];
-   char *ret = NULL ;
-   int size = 0;
 
-   snprintf(buf, sizeof(buf), "/var/cache/"PACKAGE"/%s" , ELSA_CONFIG_FILE);
    if (!ecore_file_is_dir("/var/cache/"PACKAGE))
      ecore_file_mkdir("/var/cache/"PACKAGE);
-   file = eet_open(buf, EET_FILE_MODE_READ);
-   if (!file) return;
+   file = eet_open("/var/cache/"PACKAGE"/"ELSA_CONFIG_FILE,
+                   EET_FILE_MODE_READ);
 
-   ret = eet_read(file, ELSA_SESSION_PATH, &size);
-   if (size && ret) {
-      free(config->session_path);
-      config->session_path = ret;
-   }
+   config = eet_data_read(file, edd, ELSA_CONFIG_KEY);
+   if (!config)
+     {
+        fprintf(stderr, PACKAGE": Warning no configuration found! This must not append, we will go back to default configuration\n" );
+        config = (Elsa_Config *) calloc(1, sizeof(Elsa_Config));
+        _defaults_set(config);
+     }
+
    eet_close(file);
+   return config;
 }
 
 static void
-_config_save(Elsa_Config *config) {
-   Eet_File *file; 
-   char buf[4096];
-
-   snprintf(buf, sizeof(buf), "/var/cache/"PACKAGE"/%s" , ELSA_CONFIG_FILE);
-   if (!ecore_file_is_dir("/var/cache/"PACKAGE))
-     ecore_file_mkdir("/var/cache/"PACKAGE);
-
-   file = eet_open(buf, EET_FILE_MODE_WRITE);
-   if (!file)
-      fprintf(stderr, "Error: can't open %s \n", buf);
-   eet_write(file, ELSA_SESSION_PATH, config->session_path,
-             strlen(config->session_path) + 1, 1);
-   eet_close(file);
+_config_free(Elsa_Config *config)
+{
+   free(config->session_path);
+   free(config->command.xinit_path);
+   free(config->command.xinit_args);
+   free(config->command.xauth_path);
+   free(config->command.xauth_file);
+   free(config->command.session_start);
+   free(config->command.session_login);
+   free(config->command.session_stop);
+   free(config->command.shutdown);
+   free(config->command.reboot);
+   free(config->command.suspend);
+   free(config->sessions);
+   free(config->lockfile);
+   free(config->logfile);
+   free(config);
 }
 
 void
-elsa_config_init() {
+elsa_config_init()
+{
+   eet_init();
+   Eet_Data_Descriptor *edd;
+   Eet_Data_Descriptor_Class eddc;
    struct stat cache;
    struct stat conf;
-   char buf[1024];
 
-   elsa_config = (Elsa_Config *) calloc(1, sizeof(Elsa_Config));
-   if(!elsa_config) return;
-   _defaults_set(elsa_config);
-   snprintf(buf, sizeof(buf), "/var/cache/"PACKAGE"/%s" , ELSA_CONFIG_FILE);
-   if (stat(buf, &cache) == -1) {
-      _users_get(elsa_config);
-      _config_save(elsa_config);
-      return;
-   }
-   stat("/etc/elsa.conf", &conf);
-   if (cache.st_mtime < conf.st_mtime) {
-      _users_get(elsa_config);
-      _config_save(elsa_config);
-   }
+
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Elsa_Config);
+   edd = eet_data_descriptor_stream_new(&eddc);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "session_path", session_path, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "xinit_path", command.xinit_path, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "xinit_args", command.xinit_args, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "xauth_path", command.xauth_path, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "xauth_file", command.xauth_file, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "session_start", command.session_start, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "session_login", command.session_login, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "session_stop", command.session_stop, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "shutdown", command.shutdown, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "reboot", command.shutdown, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "suspend", command.shutdown, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "daemonize", daemonize, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "numlock", numlock, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "sessions", session_path, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "lockfile", lockfile, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "logfile", logfile, EET_T_STRING);
+
+   if (stat( "/var/cache/"PACKAGE"/"ELSA_CONFIG_FILE, &cache) == -1)
+     {
+        _users_get();
+     }
    else
-      _cache_get(elsa_config);
+     {
+        stat("/etc/elsa.conf", &conf);
+        if (cache.st_mtime < conf.st_mtime)
+          {
+             _users_get();
+          }
+     }
+   elsa_config = _cache_get(edd);
 
    return;
 }
 
 
 void
-elsa_config_shutdown() {
-   free(elsa_config->session_path);
-   free(elsa_config->command.xinit.path);
-   free(elsa_config->command.xinit.args);
-   free(elsa_config->command.xauth.path);
-   free(elsa_config->command.xauth.file);
-   free(elsa_config->command.session.start);
-   free(elsa_config->command.session.login);
-   free(elsa_config->command.session.stop);
-   free(elsa_config->command.shutdown);
-   free(elsa_config->command.reboot);
-   free(elsa_config->command.suspend);
-   free(elsa_config->sessions);
-   free(elsa_config->lockfile);
-   free(elsa_config->logfile);
-   free(elsa_config);
+elsa_config_shutdown()
+{
+   _config_free(elsa_config);
 }
 
