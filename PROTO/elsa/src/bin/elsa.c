@@ -38,7 +38,6 @@ _event_exit_cb(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED_
    if (x_exec) ecore_exe_terminate(x_exec);
    elsa_pam_shutdown();
    _close_log();
-   elsa_config_shutdown();
    ecore_shutdown();
    return ECORE_CALLBACK_DONE;
 }

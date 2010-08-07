@@ -102,6 +102,7 @@ _cache_get(Eet_Data_Descriptor *edd)
 static void
 _config_free(Elsa_Config *config)
 {
+
    free(config->session_path);
    free(config->command.xinit_path);
    free(config->command.xinit_args);
@@ -122,13 +123,13 @@ _config_free(Elsa_Config *config)
 void
 elsa_config_init()
 {
-   eet_init();
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
    struct stat cache;
    struct stat conf;
 
 
+   eet_init();
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Elsa_Config);
    edd = eet_data_descriptor_stream_new(&eddc);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "session_path", session_path, EET_T_STRING);
@@ -161,6 +162,7 @@ elsa_config_init()
           }
      }
    elsa_config = _cache_get(edd);
+   eet_shutdown();
 
    return;
 }
