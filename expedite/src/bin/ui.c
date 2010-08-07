@@ -143,6 +143,12 @@ _ui_exit(void)
    engine_abort();
 }
 
+extern const char *profile;
+extern int win_w, win_h;
+extern const char *engine;
+extern int loops;
+extern int fullscreen;
+
 static void
 _ui_all(void)
 {
@@ -190,11 +196,36 @@ _ui_all(void)
      }
    for (i = 1; i < ((sizeof(weights) / sizeof(double)) - 1); i++)
      avgw += weights[i];
-   avgw /= (i - 1);   
+   avgw /= (i - 1);
    if (t_count > 0)
      {
+        char datestr[1024];
+        struct tm *tim;
+        time_t now;
+        
+        now = time(NULL);
+        tim = localtime(&now);
+        if (tim) strftime(datestr, sizeof(datestr), "%F %T", tim);
+        else snprintf(datestr, sizeof(datestr), "unknown");
 //        printf("%5.2f , EVAS SPEED\n", fps / t_count);
-        printf("%5.2f , EVAS SPEED (WEIGHTED)\n", wfps / (t_count * avgw));
+        printf("%5.2f , EVAS SPEED (WEIGHTED), "
+               "t, %s , "
+               "ev , %i.%i.%i.%i , "
+               "p , %s , "
+               "sz , %i , %i , "
+               "c , %i , "
+               "e , %s , "
+               "fs , %i\n"
+               ,
+               wfps / (t_count * avgw),
+               datestr,
+               evas_version->major, evas_version->minor, evas_version->micro, evas_version->revision,
+               profile,
+               win_w, win_h,
+               loops,
+               engine,
+               fullscreen
+              );
      }
 }
 

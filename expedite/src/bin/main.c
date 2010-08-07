@@ -1,7 +1,9 @@
 #include "main.h"
 
 Evas *evas = NULL;
+const char *profile = "n800";
 int win_w = 720, win_h = 420;
+const char *engine = NULL;
 int loops = LOOPS;
 int fullscreen = 0;
 
@@ -1318,6 +1320,7 @@ _engine_args(int argc, char **argv)
 	  for (j = 0; engines[j].name != NULL; ++j)
 	    if (!strcmp(argv[i], engines[j].name))
 	      {
+                 engine = engines[j].name;
 		 if (engines[j].init(engines[j].name, win_w, win_h))
 		   {
 		      loop_func = engines[j].loop;
