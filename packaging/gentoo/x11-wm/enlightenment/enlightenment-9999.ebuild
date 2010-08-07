@@ -65,6 +65,10 @@ pkg_setup() {
 			use $x && die "USE=${x} requires USE=conf"
 		done
 	fi
+
+	if use illume2;then
+		use illume && die "illume and illume2 modules cannot be built together!"
+	fi
 }
 
 src_configure() {
