@@ -1,5 +1,8 @@
 #include "widgets_file_icons.c"
 #include "widgets_file_icons_2.c"
+#include "widgets_file_icons_2_grouped.c"
+#include "widgets_file_icons_2_same.c"
+#include "widgets_file_icons_2_same_grouped.c"
 #include "widgets_file_icons_3.c"
 #include "widgets_file_icons_4.c"
 #include "image_blend_unscaled.c"

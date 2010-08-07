@@ -24,6 +24,9 @@ about.c about.h \
 tests.h \
 widgets_file_icons.c \
 widgets_file_icons_2.c \
+widgets_file_icons_2_grouped.c \
+widgets_file_icons_2_same.c \
+widgets_file_icons_2_same_grouped.c \
 widgets_file_icons_3.c \
 widgets_file_icons_4.c \
 image_blend_unscaled.c \
