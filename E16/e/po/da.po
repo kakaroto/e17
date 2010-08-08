@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-07-29 21:25+0200\n"
+"POT-Creation-Date: 2010-08-05 19:38+0200\n"
 "PO-Revision-Date: 2010-05-09 01:23+0000\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Danish\n"
@@ -498,7 +498,7 @@ msgid "Whirl"
 msgstr "Spiral"
 
 #: src/container.c:1689 src/settings.c:112 src/settings.c:117
-#: src/settings.c:385
+#: src/settings.c:386
 msgid "Box"
 msgstr "Boks"
 
@@ -1248,7 +1248,7 @@ msgstr "E dialoger:"
 msgid "Tooltips:"
 msgstr "Værktøjstips:"
 
-#: src/mod-trans.c:172 src/settings.c:92 src/settings.c:97 src/settings.c:375
+#: src/mod-trans.c:172 src/settings.c:92 src/settings.c:97 src/settings.c:376
 msgid "Opaque"
 msgstr "Ugennemsigtig"
 
@@ -1465,79 +1465,79 @@ msgstr "Flyttemetoder:"
 msgid "Resize Methods:"
 msgstr "Størrelsesændrings metoder:"
 
-#: src/settings.c:102 src/settings.c:107 src/settings.c:380
+#: src/settings.c:102 src/settings.c:107 src/settings.c:381
 msgid "Technical"
 msgstr "Teknisk"
 
-#: src/settings.c:123 src/settings.c:128 src/settings.c:390
+#: src/settings.c:123 src/settings.c:128 src/settings.c:391
 msgid "Shaded"
 msgstr "Oprullet"
 
-#: src/settings.c:133 src/settings.c:138 src/settings.c:395
+#: src/settings.c:133 src/settings.c:138 src/settings.c:396
 msgid "Semi-Solid"
 msgstr "Semi-solid"
 
-#: src/settings.c:144
+#: src/settings.c:143
 msgid "Translucent"
 msgstr "Gennemsigtig"
 
-#: src/settings.c:154
+#: src/settings.c:155
 msgid "Avoid server grab"
 msgstr "Undgå X-server lås"
 
-#: src/settings.c:164
+#: src/settings.c:165
 msgid "Move/Resize Geometry Info Postion:"
 msgstr "Geometriinformationsposition:"
 
-#: src/settings.c:168
+#: src/settings.c:169
 msgid "Window Center (O/T/B Methods)"
 msgstr "Centrum af vindue"
 
-#: src/settings.c:174
+#: src/settings.c:175
 msgid "Always Screen corner"
 msgstr "Hjørne af skærmen"
 
-#: src/settings.c:180
+#: src/settings.c:181
 msgid "Don't show"
 msgstr "Vis ikke"
 
-#: src/settings.c:192
+#: src/settings.c:193
 msgid "Default Resize Policy:"
 msgstr "Standard modus for ændring af position/størrelse:"
 
-#: src/settings.c:196
+#: src/settings.c:197
 msgid "Conservative"
 msgstr "Konservativ"
 
-#: src/settings.c:202
+#: src/settings.c:203
 msgid "Available"
 msgstr "Til rådighed"
 
-#: src/settings.c:208
+#: src/settings.c:209
 msgid "Absolute"
 msgstr "Absolut"
 
-#: src/settings.c:218
+#: src/settings.c:219
 msgid "Update window while moving"
 msgstr "Opdater vindue mens det flyttes"
 
-#: src/settings.c:223
+#: src/settings.c:224
 msgid "Synchronize move/resize with application"
 msgstr "Synkroniser flytning/størrelsesændring med applikationen"
 
-#: src/settings.c:228
+#: src/settings.c:229
 msgid "Do not cover dragbar"
 msgstr "Dæk ikke skrivebordstræklinien"
 
-#: src/settings.c:234
+#: src/settings.c:235
 msgid "Move/Resize"
 msgstr "Flytning/Størrelse"
 
-#: src/settings.c:235
+#: src/settings.c:236
 msgid "Move & Resize Settings"
 msgstr "Indstillinger for flytning og størrelsesændring"
 
-#: src/settings.c:238
+#: src/settings.c:239
 msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog"
@@ -1545,105 +1545,105 @@ msgstr ""
 "Indstillinger for\n"
 "flytning og størrelsesændring"
 
-#: src/settings.c:334
+#: src/settings.c:335
 msgid "Dialog windows appear together with their owner"
 msgstr "Dialogvinduer kommer frem ved siden af deres ejer"
 
-#: src/settings.c:339
+#: src/settings.c:340
 msgid "Switch to desktop where dialog appears"
 msgstr "Skift til skrivebord hvor dialog dukker op"
 
-#: src/settings.c:347
+#: src/settings.c:348
 msgid "Place windows manually"
 msgstr "Placér vinduer manuelt"
 
-#: src/settings.c:352
+#: src/settings.c:353
 msgid "Place windows under mouse"
 msgstr "Placér vinduer under markør"
 
-#: src/settings.c:357
+#: src/settings.c:358
 msgid "Center windows when desk is full"
 msgstr "Centrér vinduer når skrivebordet er fuldt"
 
-#: src/settings.c:362
+#: src/settings.c:363
 msgid "Slide windows in when they appear"
 msgstr "Vinduer glider ind på skærmen når de oprettes"
 
-#: src/settings.c:367
+#: src/settings.c:368
 msgid "Slide windows around when cleaning up"
 msgstr "Vinduer glider rundt når der ryddes op på skrivebordet"
 
-#: src/settings.c:372
+#: src/settings.c:373
 msgid "Slide Method:"
 msgstr "Glidningsmetode:"
 
-#: src/settings.c:405
+#: src/settings.c:406
 msgid "Appear Slide speed:"
 msgstr "Glidehastighed ved oprettelse:"
 
-#: src/settings.c:416
+#: src/settings.c:417
 msgid "Cleanup Slide speed:"
 msgstr "Glidehastighed ved oprydning:"
 
-#: src/settings.c:429
+#: src/settings.c:430
 msgid "Animate shading and unshading of windows"
 msgstr "Animeret op/nedrulning af vinduer"
 
-#: src/settings.c:435
+#: src/settings.c:436
 msgid "Window Shading speed:"
 msgstr "Op/nedrulninghastighed:"
 
-#: src/settings.c:448
+#: src/settings.c:449
 msgid "Ignore struts"
 msgstr "Ignorér 'struts'"
 
-#: src/settings.c:453
+#: src/settings.c:454
 msgid "Raise fullscreen windows"
 msgstr "Løft fuldskærmsvinduer"
 
-#: src/settings.c:461
+#: src/settings.c:462
 msgid "Place windows on another head when full"
 msgstr "Placér vinduer på anden skærm hvis fuld"
 
-#: src/settings.c:469
+#: src/settings.c:470
 msgid "Placement"
 msgstr "Placering"
 
-#: src/settings.c:470
+#: src/settings.c:471
 msgid "Window Placement Settings"
 msgstr "Indstillinger for vinduesplacering"
 
-#: src/settings.c:473
+#: src/settings.c:474
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog"
 msgstr "Indstillinger for vinduesplacering"
 
-#: src/settings.c:520
+#: src/settings.c:521
 msgid "Enable Dialog Headers"
 msgstr "Aktivér dialoghoveder"
 
-#: src/settings.c:526
+#: src/settings.c:527
 msgid "Enable Button Images"
 msgstr "Aktivér billeder i knapper"
 
-#: src/settings.c:535
+#: src/settings.c:536
 msgid "Enable sliding startup windows"
 msgstr "Aktivér glidende vinduer under start"
 
-#: src/settings.c:543
+#: src/settings.c:544
 msgid "Use saveunders to reduce window exposures"
 msgstr "Brug saveunders til at reducere vindueseksponeringer"
 
-#: src/settings.c:549 config/strings.c:136 config/strings.c:152
+#: src/settings.c:550 config/strings.c:136 config/strings.c:152
 msgid "Miscellaneous"
 msgstr "Diverse"
 
-#: src/settings.c:550
+#: src/settings.c:551
 msgid "Miscellaneous Settings"
 msgstr "Diverse indstillinger"
 
-#: src/settings.c:553
+#: src/settings.c:554
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog"
@@ -1651,61 +1651,61 @@ msgstr ""
 "Indstillinger for\n"
 "diverse funktioner"
 
-#: src/settings.c:597
+#: src/settings.c:598
 msgid "Enable Composite"
 msgstr "Aktivér composite"
 
-#: src/settings.c:605
+#: src/settings.c:606
 msgid "Enable Fading"
 msgstr "Aktivér fading"
 
-#: src/settings.c:611
+#: src/settings.c:612
 msgid "Fading Speed:"
 msgstr "Fadinghastighed:"
 
-#: src/settings.c:624
+#: src/settings.c:625
 msgid "Shadows Off"
 msgstr "Ingen skygger"
 
-#: src/settings.c:630
+#: src/settings.c:631
 msgid "Shadows Sharp"
 msgstr "Skarpe skygger"
 
-#: src/settings.c:636
+#: src/settings.c:637
 msgid "Shadows Sharp2"
 msgstr "Skarpe skygger(2)"
 
-#: src/settings.c:642
+#: src/settings.c:643
 msgid "Shadows Blurred"
 msgstr "Uskarpe skygger"
 
-#: src/settings.c:653
+#: src/settings.c:654
 msgid "Default focused window opacity:"
 msgstr "Standard uigennemsigtighed for aktivt vindue:"
 
-#: src/settings.c:664
+#: src/settings.c:665
 msgid "Default unfocused window opacity:"
 msgstr "Standard uigennemsigtighed for inaktivt vindue:"
 
-#: src/settings.c:675
+#: src/settings.c:676
 msgid "Default pop-up window opacity:"
 msgstr "Standard uigennemsigtighed for pop-op vinduer:"
 
-#: src/settings.c:686
+#: src/settings.c:687
 msgid "Composite"
 msgstr "Composite"
 
-#: src/settings.c:687
+#: src/settings.c:688
 msgid "Composite Settings"
 msgstr "Compositeindstillinger"
 
-#: src/settings.c:690
+#: src/settings.c:691
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog"
 msgstr "Indstillinger for composite"
 
-#: src/settings.c:775
+#: src/settings.c:776
 msgid "Enlightenment Settings"
 msgstr "Enlightenment indstillinger"
 

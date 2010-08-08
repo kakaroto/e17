@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-07-29 21:25+0200\n"
+"POT-Creation-Date: 2010-08-05 19:38+0200\n"
 "PO-Revision-Date: 2009-12-02 09:49+0000\n"
 "Last-Translator: Daniel Vieira Pereira <Unknown>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -483,7 +483,7 @@ msgid "Whirl"
 msgstr ""
 
 #: src/container.c:1689 src/settings.c:112 src/settings.c:117
-#: src/settings.c:385
+#: src/settings.c:386
 msgid "Box"
 msgstr "Caixa"
 
@@ -1267,7 +1267,7 @@ msgstr ""
 msgid "Tooltips:"
 msgstr ""
 
-#: src/mod-trans.c:172 src/settings.c:92 src/settings.c:97 src/settings.c:375
+#: src/mod-trans.c:172 src/settings.c:92 src/settings.c:97 src/settings.c:376
 msgid "Opaque"
 msgstr "Opaco"
 
@@ -1495,243 +1495,243 @@ msgstr "Métodos de Movimentação:"
 msgid "Resize Methods:"
 msgstr "Métodos de Modificação:"
 
-#: src/settings.c:102 src/settings.c:107 src/settings.c:380
+#: src/settings.c:102 src/settings.c:107 src/settings.c:381
 msgid "Technical"
 msgstr "Técnico"
 
-#: src/settings.c:123 src/settings.c:128 src/settings.c:390
+#: src/settings.c:123 src/settings.c:128 src/settings.c:391
 msgid "Shaded"
 msgstr "Sombreado"
 
-#: src/settings.c:133 src/settings.c:138 src/settings.c:395
+#: src/settings.c:133 src/settings.c:138 src/settings.c:396
 msgid "Semi-Solid"
 msgstr "Semi-Solido"
 
-#: src/settings.c:144
+#: src/settings.c:143
 msgid "Translucent"
 msgstr "Translucido"
 
-#: src/settings.c:154
+#: src/settings.c:155
 msgid "Avoid server grab"
 msgstr ""
 
-#: src/settings.c:164
+#: src/settings.c:165
 msgid "Move/Resize Geometry Info Postion:"
 msgstr ""
 
-#: src/settings.c:168
+#: src/settings.c:169
 msgid "Window Center (O/T/B Methods)"
 msgstr ""
 
-#: src/settings.c:174
+#: src/settings.c:175
 msgid "Always Screen corner"
 msgstr ""
 
-#: src/settings.c:180
+#: src/settings.c:181
 msgid "Don't show"
 msgstr ""
 
-#: src/settings.c:192
+#: src/settings.c:193
 msgid "Default Resize Policy:"
 msgstr ""
 
-#: src/settings.c:196
+#: src/settings.c:197
 msgid "Conservative"
 msgstr ""
 
-#: src/settings.c:202
+#: src/settings.c:203
 msgid "Available"
 msgstr ""
 
-#: src/settings.c:208
+#: src/settings.c:209
 msgid "Absolute"
 msgstr ""
 
-#: src/settings.c:218
+#: src/settings.c:219
 msgid "Update window while moving"
 msgstr ""
 
-#: src/settings.c:223
+#: src/settings.c:224
 msgid "Synchronize move/resize with application"
 msgstr ""
 
-#: src/settings.c:228
+#: src/settings.c:229
 msgid "Do not cover dragbar"
 msgstr ""
 
-#: src/settings.c:234
+#: src/settings.c:235
 msgid "Move/Resize"
 msgstr ""
 
-#: src/settings.c:235
+#: src/settings.c:236
 msgid "Move & Resize Settings"
 msgstr "Opções de Movimentação e Modificação:"
 
-#: src/settings.c:238
+#: src/settings.c:239
 msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog"
 msgstr ""
 
-#: src/settings.c:334
+#: src/settings.c:335
 msgid "Dialog windows appear together with their owner"
 msgstr "Janela de diálogo aparece sempre com o seu proprietário"
 
-#: src/settings.c:339
+#: src/settings.c:340
 msgid "Switch to desktop where dialog appears"
 msgstr "Mudar para o desktop onde apareçe a janela de diálogo"
 
-#: src/settings.c:347
+#: src/settings.c:348
 msgid "Place windows manually"
 msgstr "Colocar janelas manualmente"
 
-#: src/settings.c:352
+#: src/settings.c:353
 msgid "Place windows under mouse"
 msgstr ""
 
-#: src/settings.c:357
+#: src/settings.c:358
 msgid "Center windows when desk is full"
 msgstr ""
 
-#: src/settings.c:362
+#: src/settings.c:363
 msgid "Slide windows in when they appear"
 msgstr "Deslizar janelas quando aparecem"
 
-#: src/settings.c:367
+#: src/settings.c:368
 msgid "Slide windows around when cleaning up"
 msgstr "Deslizar janelas aquando limpeza"
 
-#: src/settings.c:372
+#: src/settings.c:373
 msgid "Slide Method:"
 msgstr "Método de Deslize:"
 
-#: src/settings.c:405
+#: src/settings.c:406
 msgid "Appear Slide speed:"
 msgstr ""
 
-#: src/settings.c:416
+#: src/settings.c:417
 msgid "Cleanup Slide speed:"
 msgstr ""
 
-#: src/settings.c:429
+#: src/settings.c:430
 msgid "Animate shading and unshading of windows"
 msgstr "Animar enrolar e desenrolar das janelas"
 
-#: src/settings.c:435
+#: src/settings.c:436
 msgid "Window Shading speed:"
 msgstr ""
 
-#: src/settings.c:448
+#: src/settings.c:449
 msgid "Ignore struts"
 msgstr ""
 
-#: src/settings.c:453
+#: src/settings.c:454
 msgid "Raise fullscreen windows"
 msgstr ""
 
-#: src/settings.c:461
+#: src/settings.c:462
 msgid "Place windows on another head when full"
 msgstr ""
 
-#: src/settings.c:469
+#: src/settings.c:470
 msgid "Placement"
 msgstr ""
 
-#: src/settings.c:470
+#: src/settings.c:471
 msgid "Window Placement Settings"
 msgstr "Opções de Posicionamento de Janelas"
 
-#: src/settings.c:473
+#: src/settings.c:474
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog"
 msgstr ""
 
-#: src/settings.c:520
+#: src/settings.c:521
 msgid "Enable Dialog Headers"
 msgstr ""
 
-#: src/settings.c:526
+#: src/settings.c:527
 msgid "Enable Button Images"
 msgstr ""
 
-#: src/settings.c:535
+#: src/settings.c:536
 msgid "Enable sliding startup windows"
 msgstr ""
 
-#: src/settings.c:543
+#: src/settings.c:544
 msgid "Use saveunders to reduce window exposures"
 msgstr "Usar saveunders para reduzir exposições da janela"
 
-#: src/settings.c:549 config/strings.c:136 config/strings.c:152
+#: src/settings.c:550 config/strings.c:136 config/strings.c:152
 msgid "Miscellaneous"
 msgstr ""
 
-#: src/settings.c:550
+#: src/settings.c:551
 msgid "Miscellaneous Settings"
 msgstr ""
 
-#: src/settings.c:553
+#: src/settings.c:554
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog"
 msgstr ""
 
-#: src/settings.c:597
+#: src/settings.c:598
 msgid "Enable Composite"
 msgstr ""
 
-#: src/settings.c:605
+#: src/settings.c:606
 msgid "Enable Fading"
 msgstr ""
 
-#: src/settings.c:611
+#: src/settings.c:612
 msgid "Fading Speed:"
 msgstr ""
 
-#: src/settings.c:624
+#: src/settings.c:625
 msgid "Shadows Off"
 msgstr ""
 
-#: src/settings.c:630
+#: src/settings.c:631
 msgid "Shadows Sharp"
 msgstr ""
 
-#: src/settings.c:636
+#: src/settings.c:637
 msgid "Shadows Sharp2"
 msgstr ""
 
-#: src/settings.c:642
+#: src/settings.c:643
 msgid "Shadows Blurred"
 msgstr ""
 
-#: src/settings.c:653
+#: src/settings.c:654
 msgid "Default focused window opacity:"
 msgstr ""
 
-#: src/settings.c:664
+#: src/settings.c:665
 msgid "Default unfocused window opacity:"
 msgstr ""
 
-#: src/settings.c:675
+#: src/settings.c:676
 msgid "Default pop-up window opacity:"
 msgstr ""
 
-#: src/settings.c:686
+#: src/settings.c:687
 msgid "Composite"
 msgstr ""
 
-#: src/settings.c:687
+#: src/settings.c:688
 msgid "Composite Settings"
 msgstr ""
 
-#: src/settings.c:690
+#: src/settings.c:691
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog"
 msgstr ""
 
-#: src/settings.c:775
+#: src/settings.c:776
 msgid "Enlightenment Settings"
 msgstr ""
 

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-07-29 21:25+0200\n"
+"POT-Creation-Date: 2010-08-05 19:38+0200\n"
 "PO-Revision-Date: 2010-05-09 01:21+0000\n"
 "Last-Translator: Massimo Maiurana <Unknown>\n"
 "Language-Team: none\n"
@@ -519,7 +519,7 @@ msgid "Whirl"
 msgstr "Vortice"
 
 #: src/container.c:1689 src/settings.c:112 src/settings.c:117
-#: src/settings.c:385
+#: src/settings.c:386
 msgid "Box"
 msgstr "Box"
 
@@ -1340,7 +1340,7 @@ msgstr "Finestre di dialogo:"
 msgid "Tooltips:"
 msgstr "Popup suggerimenti:"
 
-#: src/mod-trans.c:172 src/settings.c:92 src/settings.c:97 src/settings.c:375
+#: src/mod-trans.c:172 src/settings.c:92 src/settings.c:97 src/settings.c:376
 msgid "Opaque"
 msgstr "Opaco"
 
@@ -1574,79 +1574,79 @@ msgstr "Metodi di spostamento:"
 msgid "Resize Methods:"
 msgstr "Metodi di ridimensionamento:"
 
-#: src/settings.c:102 src/settings.c:107 src/settings.c:380
+#: src/settings.c:102 src/settings.c:107 src/settings.c:381
 msgid "Technical"
 msgstr "Tecnico"
 
-#: src/settings.c:123 src/settings.c:128 src/settings.c:390
+#: src/settings.c:123 src/settings.c:128 src/settings.c:391
 msgid "Shaded"
 msgstr "Contratto"
 
-#: src/settings.c:133 src/settings.c:138 src/settings.c:395
+#: src/settings.c:133 src/settings.c:138 src/settings.c:396
 msgid "Semi-Solid"
 msgstr "Semi-pieno"
 
-#: src/settings.c:144
+#: src/settings.c:143
 msgid "Translucent"
 msgstr "Translucido"
 
-#: src/settings.c:154
+#: src/settings.c:155
 msgid "Avoid server grab"
 msgstr "Evita coinvolgimento server"
 
-#: src/settings.c:164
+#: src/settings.c:165
 msgid "Move/Resize Geometry Info Postion:"
 msgstr "Posizione informazioni spostamento/ridimensionamento:"
 
-#: src/settings.c:168
+#: src/settings.c:169
 msgid "Window Center (O/T/B Methods)"
 msgstr "Centro finestra (Metodi O/T/B)"
 
-#: src/settings.c:174
+#: src/settings.c:175
 msgid "Always Screen corner"
 msgstr "Sempre angolo dello schermo"
 
-#: src/settings.c:180
+#: src/settings.c:181
 msgid "Don't show"
 msgstr "Non mostrare"
 
-#: src/settings.c:192
+#: src/settings.c:193
 msgid "Default Resize Policy:"
 msgstr "Regola predefinita ridimensionamento:"
 
-#: src/settings.c:196
+#: src/settings.c:197
 msgid "Conservative"
 msgstr "Conservativa"
 
-#: src/settings.c:202
+#: src/settings.c:203
 msgid "Available"
 msgstr "Disponibile"
 
-#: src/settings.c:208
+#: src/settings.c:209
 msgid "Absolute"
 msgstr "Assoluta"
 
-#: src/settings.c:218
+#: src/settings.c:219
 msgid "Update window while moving"
 msgstr "Aggiorna finestra durante spostamento"
 
-#: src/settings.c:223
+#: src/settings.c:224
 msgid "Synchronize move/resize with application"
 msgstr "Sincronizza spostamento/ridimensionamento con applicazione"
 
-#: src/settings.c:228
+#: src/settings.c:229
 msgid "Do not cover dragbar"
 msgstr "Non coprire barra trascinamento"
 
-#: src/settings.c:234
+#: src/settings.c:235
 msgid "Move/Resize"
 msgstr "Spostamento/ridimensionamento"
 
-#: src/settings.c:235
+#: src/settings.c:236
 msgid "Move & Resize Settings"
 msgstr "Impostazioni spostamento e ridimensionamento"
 
-#: src/settings.c:238
+#: src/settings.c:239
 msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog"
@@ -1654,75 +1654,75 @@ msgstr ""
 "Finestra configurazione spostamento\n"
 "e ridimensionamento di Enlightenment"
 
-#: src/settings.c:334
+#: src/settings.c:335
 msgid "Dialog windows appear together with their owner"
 msgstr "Posiziona finestre di dialogo insieme a proprietario"
 
-#: src/settings.c:339
+#: src/settings.c:340
 msgid "Switch to desktop where dialog appears"
 msgstr "Vai al desktop dove appare la finestra di dialogo"
 
-#: src/settings.c:347
+#: src/settings.c:348
 msgid "Place windows manually"
 msgstr "Posiziona finestre manualmente"
 
-#: src/settings.c:352
+#: src/settings.c:353
 msgid "Place windows under mouse"
 msgstr "Posiziona finestre sotto il puntatore"
 
-#: src/settings.c:357
+#: src/settings.c:358
 msgid "Center windows when desk is full"
 msgstr "Centra finestre quando lo schermo é pieno"
 
-#: src/settings.c:362
+#: src/settings.c:363
 msgid "Slide windows in when they appear"
 msgstr "Animazione apparizione finestre"
 
-#: src/settings.c:367
+#: src/settings.c:368
 msgid "Slide windows around when cleaning up"
 msgstr "Animazione riordinamento finestre"
 
-#: src/settings.c:372
+#: src/settings.c:373
 msgid "Slide Method:"
 msgstr "Metodi di animazione:"
 
-#: src/settings.c:405
+#: src/settings.c:406
 msgid "Appear Slide speed:"
 msgstr "Velocitá animazione apparizione:"
 
-#: src/settings.c:416
+#: src/settings.c:417
 msgid "Cleanup Slide speed:"
 msgstr "Velocitá animazione riordinamento:"
 
-#: src/settings.c:429
+#: src/settings.c:430
 msgid "Animate shading and unshading of windows"
 msgstr "Animazione contrazione/decontrazione finestre"
 
-#: src/settings.c:435
+#: src/settings.c:436
 msgid "Window Shading speed:"
 msgstr "Velocitá contrazione finestre:"
 
-#: src/settings.c:448
+#: src/settings.c:449
 msgid "Ignore struts"
 msgstr "Ignora strutture"
 
-#: src/settings.c:453
+#: src/settings.c:454
 msgid "Raise fullscreen windows"
 msgstr "Eleva finestre a tutto schermo"
 
-#: src/settings.c:461
+#: src/settings.c:462
 msgid "Place windows on another head when full"
 msgstr "Posiziona finestre su altro schermo se pieno"
 
-#: src/settings.c:469
+#: src/settings.c:470
 msgid "Placement"
 msgstr "Posizionamento"
 
-#: src/settings.c:470
+#: src/settings.c:471
 msgid "Window Placement Settings"
 msgstr "Impostazioni posizionamento finestre"
 
-#: src/settings.c:473
+#: src/settings.c:474
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog"
@@ -1730,31 +1730,31 @@ msgstr ""
 "Finestra configurazione posizionamento\n"
 "finestre di Enlightenment"
 
-#: src/settings.c:520
+#: src/settings.c:521
 msgid "Enable Dialog Headers"
 msgstr "Abilita intestazioni di dialogo"
 
-#: src/settings.c:526
+#: src/settings.c:527
 msgid "Enable Button Images"
 msgstr "Abilita immagini dei bottoni"
 
-#: src/settings.c:535
+#: src/settings.c:536
 msgid "Enable sliding startup windows"
 msgstr "Abilita animazione finestre di avvio"
 
-#: src/settings.c:543
+#: src/settings.c:544
 msgid "Use saveunders to reduce window exposures"
 msgstr "Usa saveunder per ridurre esposizione finestre"
 
-#: src/settings.c:549 config/strings.c:136 config/strings.c:152
+#: src/settings.c:550 config/strings.c:136 config/strings.c:152
 msgid "Miscellaneous"
 msgstr "Varie"
 
-#: src/settings.c:550
+#: src/settings.c:551
 msgid "Miscellaneous Settings"
 msgstr "Impostazioni varie"
 
-#: src/settings.c:553
+#: src/settings.c:554
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog"
@@ -1762,55 +1762,55 @@ msgstr ""
 "Finestra configurazioni\n"
 "varie di Enlightenment"
 
-#: src/settings.c:597
+#: src/settings.c:598
 msgid "Enable Composite"
 msgstr "Abilita estensioni composite"
 
-#: src/settings.c:605
+#: src/settings.c:606
 msgid "Enable Fading"
 msgstr "Abilita dissolvenza"
 
-#: src/settings.c:611
+#: src/settings.c:612
 msgid "Fading Speed:"
 msgstr "Velocitá dissolvenza:"
 
-#: src/settings.c:624
+#: src/settings.c:625
 msgid "Shadows Off"
 msgstr "Ombre disattivate"
 
-#: src/settings.c:630
+#: src/settings.c:631
 msgid "Shadows Sharp"
 msgstr "Ombre contrastate"
 
-#: src/settings.c:636
+#: src/settings.c:637
 msgid "Shadows Sharp2"
 msgstr "Ombre contrastate 2"
 
-#: src/settings.c:642
+#: src/settings.c:643
 msgid "Shadows Blurred"
 msgstr "Ombre sfuocate"
 
-#: src/settings.c:653
+#: src/settings.c:654
 msgid "Default focused window opacity:"
 msgstr "Opacitá predefinita finestra con fuoco:"
 
-#: src/settings.c:664
+#: src/settings.c:665
 msgid "Default unfocused window opacity:"
 msgstr "Opacitá predefinita finestra senza fuoco:"
 
-#: src/settings.c:675
+#: src/settings.c:676
 msgid "Default pop-up window opacity:"
 msgstr "Opacitá predefinita finestra popup:"
 
-#: src/settings.c:686
+#: src/settings.c:687
 msgid "Composite"
 msgstr "Estensioni composite"
 
-#: src/settings.c:687
+#: src/settings.c:688
 msgid "Composite Settings"
 msgstr "Impostazione estensioni composite"
 
-#: src/settings.c:690
+#: src/settings.c:691
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog"
@@ -1818,7 +1818,7 @@ msgstr ""
 "Finestra configurazione estensioni\n"
 "composite di Enlightenment"
 
-#: src/settings.c:775
+#: src/settings.c:776
 msgid "Enlightenment Settings"
 msgstr "Impostazioni di Enlightenment"
 
