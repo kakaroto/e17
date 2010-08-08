@@ -1,15 +1,20 @@
 things I am/will be working on:
-___URGENT___
-*fixmes in e17 ebuild
+___URGENT___ (pre 1.0 hopefully?)
 *finish elm_config
-*fix fuzzy mode for when plugged in
+*fix battery fuzzy mode for when plugged in
 *update battery fuzzy mode to do rolling averages
 *hal detection in efm to only attempt hal actions when hal is active
-*mount actions for eeze
-*eeze integration into efm to replace hal
+*evas textblock optimizing ("rejiggering") for large tbs
 
 
-___EVENTUAL___
+___SOON___ (whenever I feel like it)
+**mount actions for eeze: will use libmount so wait a month or two
+**eeze integration into efm to replace hal
+**ecore xcb updates
+
+
+
+___EVENTUAL___ (hahahahahaha)
 efl guake+vte lib clones
 efl comix clone
 efl gmpc clone
