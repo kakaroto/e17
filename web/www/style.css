@@ -157,7 +157,7 @@ li.navul {
 }
 
 li.selected {
-   text-decoration        : underline;
+/*    text-decoration        : underline; */
 }
 
 li.navul:last-child {
@@ -251,7 +251,7 @@ h2 {
    font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
    color                  : #000000;
    font-size              : 1.3em;
-   margin                 : 0; 
+   margin                 : 0;
    padding                : 0;
 }
 
@@ -259,7 +259,7 @@ h3 {
    font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
    color                  : #000000;
    font-size              : 1.1em;
-   margin                 : 0; 
+   margin                 : 0;
    padding                : 0;
 }
 
@@ -267,7 +267,7 @@ p {
    font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
    color                  : #444444;
    font-size              : 0.9em;
-   margin-top: 2px; 
+   margin-top: 2px;
    margin-bottom: 10px;
    padding: 0;
 }
@@ -338,32 +338,32 @@ blockquote {
 }
 
 table.n {
-   width                  : 100px; 
-   height                 : 100px; 
-   clear                  : both; 
-   border                 : 0px; 
-   margin                 : 0px; 
-   padding                : 0px; 
+   width                  : 100px;
+   height                 : 100px;
+   clear                  : both;
+   border                 : 0px;
+   margin                 : 0px;
+   padding                : 0px;
    border-collapse        : collapse;
 }
 
 table.nl {
-   float                  : left; 
+   float                  : left;
 }
 
 table.nr {
-   float                  : right; 
+   float                  : right;
 }
 
 table.h {
-   width                  : 100%; 
-   padding                : 0px; 
-   margin                 : 0px; 
+   width                  : 100%;
+   padding                : 0px;
+   margin                 : 0px;
    border-collapse        : collapse;
 }
 
 div.l {
-   clear                  : both; 
+   clear                  : both;
    padding                : 7px 8px;
 }
 
@@ -378,7 +378,7 @@ div.lr {
 table.tab {
    width                  : 90%;
    padding                : 0px;
-   margin                 : 5px; 
+   margin                 : 5px;
    border                 : 1px solid #cccccc;
    font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
    color                  : #444444;
@@ -412,9 +412,9 @@ td.tab2 {
 }
 
 table.b {
-   padding                : 0px; 
-   margin                 : 0px; 
-   border                 : 0px; 
+   padding                : 0px;
+   margin                 : 0px;
+   border                 : 0px;
    border-spacing         : 0px;
    border-style           : none;
    border-collapse        : collapse;
@@ -522,7 +522,7 @@ a.b:hover {
 }
 
 .section-plug .left-border {
-    margin: 0px;    
+    margin: 0px;
     background-image      : url('i/section-plug-header-left.png');
     background-repeat     : no-repeat;
 }

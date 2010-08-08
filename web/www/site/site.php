@@ -6,6 +6,11 @@
   else
     $page = '';
 
+  if(isset($_GET['theme']))
+    $theme = $_GET['theme'];
+  else
+    $theme = 'default';
+
   if(isset($_GET['l']))
     $lang = $_GET['l'];
   else

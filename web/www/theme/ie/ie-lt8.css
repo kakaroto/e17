@@ -5,5 +5,7 @@ img,
     behavior: url('/theme/ie/iepngfix.htc')
 }
 
-/* Hide text in the logo */
-#header h1.logo a span { text-indent: 0; padding: 999px }
+#header .menu .layout ul li a
+{
+    vertical-align: top;
+}

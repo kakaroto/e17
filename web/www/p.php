@@ -1,11 +1,13 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
 <?php include 'site/site.php'; ?>
 <html>
 <head>
 <title><?php echo $title; ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="style.css">
-<link rel="stylesheet" type="text/css" href="/theme/css/screen.css">
-<!--[if lt IE 7]> <link rel="stylesheet" type="text/css" href="/theme/ie/ie6.css"> <![endif]-->
+<link rel="stylesheet" type="text/css" href="/theme/css/<?php echo $theme ?>.css">
+<!--[if lt IE 8]> <link rel="stylesheet" type="text/css" href="/theme/ie/ie-lt8.css"> <![endif]-->
 <link rel="icon" href="favicon.png" type="image/x-icon">
 <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
 <link rel="icon" href="favicon.png" type="image/ico">
@@ -26,15 +28,6 @@ if (is_file("p/$page/$lang-rss"))
 
     <div id="header">
 
-        <div class="titles">
-        <div class="layout">
-
-            <h1><span>Englightenment<span></h1>
-            <h2><span>Beauty at your fingertips</span></h2>
-
-        </div>
-        </div>
-
         <div class="menu">
         <div class="layout">
 
@@ -47,7 +40,8 @@ if (is_file("p/$page/$lang-rss"))
                 <?php echo(nav_button("main6", ""));?>
                 <?php echo(nav_button("main7", ""));?>
                 <?php echo(nav_button("docs", ""));?>
-                <?php echo(nav_button("main8", ""));?>
+                <!-- <?php echo(nav_button("main8", "")); ?> -->
+                <li class="tracker"><a href="http://trac.enlightenment.org/e"><span>Tracker</span></a></li>
             </ul>
 
         </div>
