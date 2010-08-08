@@ -89,7 +89,7 @@ double mouse_held_down=0;
 
 struct sqlite3 *ed_DB=NULL;
 
-GRegex *re_link=NULL, *re_link_content=NULL, *re_amp=NULL, *re_user=NULL, *re_nouser=NULL, *re_group=NULL, *re_nogroup=NULL;
+GRegex *re_link=NULL, *re_link_content=NULL, *re_amp=NULL, *re_user=NULL, *re_nouser=NULL, *re_group=NULL, *re_nogroup=NULL, *re_nl;
 GError *re_err=NULL;
 
 static int count_accounts(void *notUsed, int argc, char **argv, char **azColName) {
@@ -417,6 +417,14 @@ Evas_Object *ed_make_message(char *text, Evas_Object *bubble, Evas_Object *windo
 			if(!re_group)
 				re_group = g_regex_new("!([a-zA-Z0-9_]+)", 0, 0, &re_err);
 			tmp = g_regex_replace(re_group, status_message, -1, 0, "<a href='group://\\1'>!\\1</a>", 0, &re_err);
+			if(tmp) {
+				free(status_message);
+				status_message = tmp;
+			}
+
+			if(!re_nl)
+				re_nl = g_regex_new("\n", 0, G_REGEX_MATCH_NOTEOL, &re_err);
+			tmp = g_regex_replace(re_nl, status_message, -1, 0, "<br>", 0, &re_err);
 			if(tmp) {
 				free(status_message);
 				status_message = tmp;
@@ -1126,8 +1134,8 @@ static int ed_check_gag_message(void *user_data, int argc, char **argv, char **a
 			 g_regex_match_simple(pattern, gd->name, G_REGEX_CASELESS, 0)        ||
 			 g_regex_match_simple(pattern, gd->message, G_REGEX_CASELESS, 0))) {
 		gd->match = EINA_TRUE;
-		if(debug) printf(" %s\n", "Yes");
-	} else if(debug) printf(" %s\n", "No");
+		if(debug > 2) printf(" %s\n", "Yes");
+	} else if(debug > 2) printf(" %s\n", "No");
 
 	if(res != -1) free(sn);
 
