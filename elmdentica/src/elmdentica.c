@@ -89,7 +89,7 @@ double mouse_held_down=0;
 
 struct sqlite3 *ed_DB=NULL;
 
-GRegex *re_link=NULL, *re_link_content=NULL, *re_amp=NULL, *re_user=NULL, *re_nouser=NULL, *re_group=NULL, *re_nogroup=NULL, *re_nl;
+GRegex *re_link=NULL, *re_link_content=NULL, *re_entities=NULL, *re_user=NULL, *re_nouser=NULL, *re_group=NULL, *re_nogroup=NULL, *re_nl;
 GError *re_err=NULL;
 
 static int count_accounts(void *notUsed, int argc, char **argv, char **azColName) {
@@ -379,6 +379,29 @@ static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_
 static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void on_bubble_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
+gboolean ed_replace_entities(const GMatchInfo *match_info, GString *result, gpointer user_data) {
+	char *matched_str = (char*)g_match_info_fetch(match_info, 1);
+
+	// append the replacement to result
+	if(matched_str) {
+		if(strncmp(matched_str, "amp", 3) == 0)
+			g_string_append(result, "&");
+		else if(strncmp(matched_str, "quot", 4) == 0)
+			g_string_append(result, "\"");
+		else if(strncmp(matched_str, "apos", 4) == 0)
+			g_string_append(result, "\"");
+		else if(strncmp(matched_str, "lt", 2) == 0)
+			g_string_append(result, "<");
+		else if(strncmp(matched_str, "gt", 2) == 0)
+			g_string_append(result, ">");
+		else if(strncmp(matched_str, "laquo", 5) == 0)
+			g_string_append(result, "«");
+		else if(strncmp(matched_str, "raquo", 5) == 0)
+			g_string_append(result, "»");
+	}
+	return(EINA_TRUE);
+}
+
 Evas_Object *ed_make_message(char *text, Evas_Object *bubble, Evas_Object *window) {
 	Evas_Object *message = NULL;
 	char *status_message = NULL, *tmp = NULL;
@@ -390,9 +413,17 @@ Evas_Object *ed_make_message(char *text, Evas_Object *bubble, Evas_Object *windo
 		if(res == -1) {
 			elm_anchorblock_text_set(message, "");
 		} else {
-			if(!re_amp)
-				re_amp = g_regex_new("&(?!amp;)", 0, 0, &re_err);
-			tmp = g_regex_replace(re_amp, status_message, -1, 0, "&amp;", 0, &re_err);
+			if(!re_nl)
+				re_nl = g_regex_new("[\r\n]+", G_REGEX_MULTILINE, 0, &re_err);
+			tmp = g_regex_replace(re_nl, status_message, -1, 0, "<br>", 0, &re_err);
+			if(tmp) {
+				free(status_message);
+				status_message = tmp;
+			}
+
+			if(!re_entities)
+				re_entities = g_regex_new("&([a-zA-Z0-9]+);", 0, 0, &re_err);
+			tmp = g_regex_replace_eval(re_entities, status_message, -1, 0, 0, ed_replace_entities, NULL, &re_err);
 			if(tmp) {
 				free(status_message);
 				status_message = tmp;
@@ -417,14 +448,6 @@ Evas_Object *ed_make_message(char *text, Evas_Object *bubble, Evas_Object *windo
 			if(!re_group)
 				re_group = g_regex_new("!([a-zA-Z0-9_]+)", 0, 0, &re_err);
 			tmp = g_regex_replace(re_group, status_message, -1, 0, "<a href='group://\\1'>!\\1</a>", 0, &re_err);
-			if(tmp) {
-				free(status_message);
-				status_message = tmp;
-			}
-
-			if(!re_nl)
-				re_nl = g_regex_new("\n", 0, G_REGEX_MATCH_NOTEOL, &re_err);
-			tmp = g_regex_replace(re_nl, status_message, -1, 0, "<br>", 0, &re_err);
 			if(tmp) {
 				free(status_message);
 				status_message = tmp;
@@ -1771,7 +1794,8 @@ EAPI int elm_main(int argc, char **argv)
 	if(re_link) g_regex_unref(re_link);
 	if(re_user) g_regex_unref(re_user);
 	if(re_link_content) g_regex_unref(re_link_content);
-	if(re_amp) g_regex_unref(re_amp);
+	if(re_nl) g_regex_unref(re_nl);
+	if(re_entities) g_regex_unref(re_entities);
 
 	return 0;
 }
