@@ -54,6 +54,9 @@ static double weights[] =
      
      50.4851, // test 1
      37.3703, // test 2
+     37.3703, // test 3
+     27.3703, // test 4
+     27.3703, // test 5
      10.6493, // ...
      38.4818,
      40.7314,
@@ -219,6 +222,7 @@ _ui_all(void)
                "fs , %i\n"
                ,
                wfps / (t_count * avgw),
+//               fps / t_count,
                t_count,
                datestr,
                evas_version->major, evas_version->minor, evas_version->micro, evas_version->revision,
