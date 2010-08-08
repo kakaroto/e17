@@ -2892,6 +2892,7 @@ static const CfgItem DesksCfgItems[] = {
  * Module descriptor
  */
 extern const EModule ModDesktops;
+
 const EModule       ModDesktops = {
    "desktops", "desk",
    DesksSighan,

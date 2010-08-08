@@ -495,6 +495,7 @@ static const IpcItem TextclassIpcArray[] = {
  * Module descriptor
  */
 extern const EModule ModTextclass;
+
 const EModule       ModTextclass = {
    "textclass", "tc",
    NULL,

@@ -2532,6 +2532,7 @@ static const IpcItem EwinsIpcArray[] = {
  * Module descriptor
  */
 extern const EModule ModEwins;
+
 const EModule       ModEwins = {
    "ewins", NULL,
    EwinsSighan,

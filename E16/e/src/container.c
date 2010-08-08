@@ -2014,6 +2014,7 @@ static const CfgItem ContainersCfgItems[] = {
  * Module descriptor
  */
 extern const EModule ModIconboxes;
+
 const EModule       ModIconboxes = {
    "iconboxes", "ibox",
    ContainersSighan,

@@ -346,6 +346,7 @@ _sound_pa_Init(void)
 }
 
 __EXPORT__ extern const SoundOps SoundOps_pa;
+
 const SoundOps      SoundOps_pa = {
    _sound_pa_Init, _sound_pa_Exit, _sound_pa_Load, _sound_pa_Destroy,
    _sound_pa_Play,

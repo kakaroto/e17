@@ -1442,6 +1442,7 @@ static const IpcItem AclassIpcArray[] = {
  * Module descriptor
  */
 extern const EModule ModAclass;
+
 const EModule       ModAclass = {
    "aclass", "ac",
    AclassSighan,

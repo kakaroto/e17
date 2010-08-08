@@ -501,6 +501,7 @@ static const IpcItem SlideoutsIpcArray[] = {
  * Module descriptor
  */
 extern const EModule ModSlideouts;
+
 const EModule       ModSlideouts = {
    "slideouts", "slideout",
    SlideoutsSighan,

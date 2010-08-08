@@ -508,6 +508,7 @@ static const IpcItem MagwinIpcArray[] = {
  * Module descriptor
  */
 extern const EModule ModMagwin;
+
 const EModule       ModMagwin = {
    "magwin", NULL,
    NULL,

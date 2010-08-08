@@ -419,6 +419,7 @@ static const IpcItem CursorIpcArray[] = {
  * Module descriptor
  */
 extern const EModule ModCursors;
+
 const EModule       ModCursors = {
    "cursor", "csr",
    NULL,

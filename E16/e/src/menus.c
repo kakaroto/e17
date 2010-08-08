@@ -2251,6 +2251,7 @@ static const CfgItem MenusCfgItems[] = {
  * Module descriptor
  */
 extern const EModule ModMenus;
+
 const EModule       ModMenus = {
    "menus", "menu",
    MenusSighan,

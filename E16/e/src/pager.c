@@ -2179,6 +2179,7 @@ static const CfgItem PagersCfgItems[] = {
  * Module descriptor
  */
 extern const EModule ModPagers;
+
 const EModule       ModPagers = {
    "pagers", "pg",
    PagersSighan,

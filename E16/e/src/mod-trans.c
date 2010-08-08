@@ -300,6 +300,7 @@ static const CfgItem TransCfgItems[] = {
  * Module descriptor
  */
 extern const EModule ModTransparency;
+
 const EModule       ModTransparency = {
    "transparency", "tr",
    TransparencySighan,

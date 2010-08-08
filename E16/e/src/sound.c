@@ -548,6 +548,7 @@ static const CfgItem SoundCfgItems[] = {
  * Module descriptor
  */
 extern const EModule ModSound;
+
 const EModule       ModSound = {
    "sound", "audio",
    SoundSighan,

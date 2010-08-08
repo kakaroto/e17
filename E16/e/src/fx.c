@@ -865,6 +865,7 @@ static const CfgItem FxCfgItems[] = {
  * Module descriptor
  */
 extern const EModule ModEffects;
+
 const EModule       ModEffects = {
    "effects", "fx",
    FxSighan,

@@ -494,6 +494,7 @@ static const CfgItem ThemeCfgItems[] = {
  * Module descriptor
  */
 extern const EModule ModTheme;
+
 const EModule       ModTheme = {
    "theme", "th",
    NULL,

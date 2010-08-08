@@ -1375,6 +1375,7 @@ static const CfgItem GroupsCfgItems[] = {
 #define N_CFG_ITEMS (sizeof(GroupsCfgItems)/sizeof(CfgItem))
 
 extern const EModule ModGroups;
+
 const EModule       ModGroups = {
    "groups", "grp",
    NULL,

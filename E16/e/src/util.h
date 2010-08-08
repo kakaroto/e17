@@ -36,11 +36,11 @@
 
 /* Inspired by Xfuncproto.h */
 #if defined(__GNUC__) && ((__GNUC__ * 100 + __GNUC_MINOR__) >= 303)
-# define __EXPORT__      __attribute__((visibility("default")))
+#define __EXPORT__      __attribute__((visibility("default")))
 #elif defined(__SUNPRO_C) && (__SUNPRO_C >= 0x550)
-# define __EXPORT__      __global
+#define __EXPORT__      __global
 #else /* not gcc >= 3.3 and not Sun Studio >= 8 */
-# define __EXPORT__
+#define __EXPORT__
 #endif
 
 #if HAVE___ATTRIBUTE__

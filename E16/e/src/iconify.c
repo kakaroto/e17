@@ -609,6 +609,7 @@ IconboxObjPlace(Container * ct __UNUSED__, ContainerObject * cto, EImage * im)
 }
 
 extern const ContainerOps IconboxOps;
+
 const ContainerOps  IconboxOps = {
    IconboxInit,
    IconboxExit,

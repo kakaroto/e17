@@ -73,7 +73,7 @@ typedef struct {
 
 typedef struct {
    Win                 check_win;
-   int                 check_orig_w, check_orig_h;
+   int                 orig_w, orig_h;
    char                onoff;
    char               *onoff_ptr;
 } DItemCheckButton;
@@ -97,7 +97,7 @@ typedef struct {
 
 typedef struct {
    Win                 radio_win;
-   int                 radio_orig_w, radio_orig_h;
+   int                 orig_w, orig_h;
    char                onoff;
    int                 val;
    int                *val_ptr;
@@ -613,8 +613,8 @@ DialogAddItem(DItem * dii, int type)
      case DITEM_CHECKBUTTON:
 	di->item.check_button.onoff = 0;
 	di->item.check_button.onoff_ptr = &(di->item.check_button.onoff);
-	di->item.check_button.check_orig_w = 10;
-	di->item.check_button.check_orig_h = 10;
+	di->item.check_button.orig_w = 10;
+	di->item.check_button.orig_h = 10;
 	break;
      case DITEM_TABLE:
 	di->item.table.num_columns = 1;
@@ -626,8 +626,8 @@ DialogAddItem(DItem * dii, int type)
 	di->item.separator.horizontal = 0;
 	break;
      case DITEM_RADIOBUTTON:
-	di->item.radio_button.radio_orig_w = 10;
-	di->item.radio_button.radio_orig_h = 10;
+	di->item.radio_button.orig_w = 10;
+	di->item.radio_button.orig_h = 10;
 	break;
      case DITEM_SLIDER:
 	di->item.slider.horizontal = 1;
@@ -954,14 +954,14 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	im = ImageclassGetImage(di->iclass, 0, 0, 0);
 	if (im)
 	  {
-	     EImageGetSize(im, &di->item.check_button.check_orig_w,
-			   &di->item.check_button.check_orig_h);
+	     EImageGetSize(im, &di->item.check_button.orig_w,
+			   &di->item.check_button.orig_h);
 	     EImageFree(im);
 	  }
 	TextSize(di->tclass, 0, 0, STATE_NORMAL, di->text, &iw, &ih, 17);
-	if (ih < di->item.check_button.check_orig_h)
-	   ih = di->item.check_button.check_orig_h;
-	iw += di->item.check_button.check_orig_w + pad->left;
+	if (ih < di->item.check_button.orig_h)
+	   ih = di->item.check_button.orig_h;
+	iw += di->item.check_button.orig_w + pad->left;
 	di->item.check_button.check_win =
 	   ECreateWindow(d->win, -20, -20, 2, 2, 0);
 	di->win = ECreateEventWindow(d->win, -20, -20, 2, 2);
@@ -1004,14 +1004,14 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	im = ImageclassGetImage(di->iclass, 0, 0, 0);
 	if (im)
 	  {
-	     EImageGetSize(im, &di->item.radio_button.radio_orig_w,
-			   &di->item.radio_button.radio_orig_h);
+	     EImageGetSize(im, &di->item.radio_button.orig_w,
+			   &di->item.radio_button.orig_h);
 	     EImageFree(im);
 	  }
 	TextSize(di->tclass, 0, 0, STATE_NORMAL, di->text, &iw, &ih, 17);
-	if (ih < di->item.radio_button.radio_orig_h)
-	   ih = di->item.radio_button.radio_orig_h;
-	iw += di->item.radio_button.radio_orig_w + pad->left;
+	if (ih < di->item.radio_button.orig_h)
+	   ih = di->item.radio_button.orig_h;
+	iw += di->item.radio_button.orig_w + pad->left;
 	di->item.radio_button.radio_win =
 	   ECreateWindow(d->win, -20, -20, 2, 2, 0);
 	di->win = ECreateEventWindow(d->win, -20, -20, 2, 2);
@@ -1171,27 +1171,21 @@ DialogRealizeItem(Dialog * d, DItem * di)
 			     EMoveResizeWindow(dii->win, dii->x, dii->y,
 					       dii->w, dii->h);
 			  if (dii->type == DITEM_CHECKBUTTON)
-			     EMoveResizeWindow(dii->item.check_button.
-					       check_win, dii->x,
+			     EMoveResizeWindow(dii->item.check_button.check_win,
+					       dii->x,
 					       dii->y +
-					       ((dii->h -
-						 dii->item.check_button.
-						 check_orig_h) / 2),
-					       dii->item.check_button.
-					       check_orig_w,
-					       dii->item.check_button.
-					       check_orig_h);
+					       (dii->h -
+						dii->item.check_button.orig_h) /
+					       2, dii->item.check_button.orig_w,
+					       dii->item.check_button.orig_h);
 			  if (dii->type == DITEM_RADIOBUTTON)
-			     EMoveResizeWindow(dii->item.radio_button.
-					       radio_win, dii->x,
+			     EMoveResizeWindow(dii->item.radio_button.radio_win,
+					       dii->x,
 					       dii->y +
-					       ((dii->h -
-						 dii->item.radio_button.
-						 radio_orig_h) / 2),
-					       dii->item.radio_button.
-					       radio_orig_w,
-					       dii->item.radio_button.
-					       radio_orig_h);
+					       (dii->h -
+						dii->item.radio_button.orig_h) /
+					       2, dii->item.radio_button.orig_w,
+					       dii->item.radio_button.orig_h);
 			  if (dii->type == DITEM_AREA)
 			    {
 			       pad = ImageclassGetPadding(dii->iclass);
@@ -1225,13 +1219,10 @@ DialogRealizeItem(Dialog * d, DItem * di)
 			       if (dii->win)
 				  EMoveResizeWindow(dii->win,
 						    dii->x +
-						    dii->item.slider.
-						    numeric_x,
+						    dii->item.slider.numeric_x,
 						    dii->y +
-						    dii->item.slider.
-						    numeric_y,
-						    dii->item.slider.
-						    numeric_w,
+						    dii->item.slider.numeric_y,
+						    dii->item.slider.numeric_w,
 						    dii->item.slider.numeric_h);
 			    }
 		       }
@@ -1293,12 +1284,12 @@ MoveTableBy(Dialog * d, DItem * di, int dx, int dy)
 	  case DITEM_CHECKBUTTON:
 	     EMoveWindow(dii->item.check_button.check_win, dii->x,
 			 dii->y +
-			 ((dii->h - dii->item.check_button.check_orig_h) / 2));
+			 ((dii->h - dii->item.check_button.orig_h) / 2));
 	     break;
 	  case DITEM_RADIOBUTTON:
 	     EMoveWindow(dii->item.radio_button.radio_win, dii->x,
 			 dii->y +
-			 ((dii->h - dii->item.radio_button.radio_orig_h) / 2));
+			 ((dii->h - dii->item.radio_button.orig_h) / 2));
 	     break;
 	  case DITEM_SLIDER:
 	     {
@@ -1505,8 +1496,8 @@ DialogDrawItem(Dialog * d, DItem * di)
 	     TextclassGetTextState(di->tclass, state, 0, 0)))
 	   break;
 	pad = ImageclassGetPadding(di->iclass);
-	x = di->x + di->item.check_button.check_orig_w + pad->left;
-	w = di->w - di->item.check_button.check_orig_w - pad->left;
+	x = di->x + di->item.check_button.orig_w + pad->left;
+	w = di->w - di->item.check_button.orig_w - pad->left;
 	goto draw_text;
 
      case DITEM_RADIOBUTTON:
@@ -1524,8 +1515,8 @@ DialogDrawItem(Dialog * d, DItem * di)
 	     TextclassGetTextState(di->tclass, state, 0, 0)))
 	   break;
 	pad = ImageclassGetPadding(di->iclass);
-	x = di->x + di->item.radio_button.radio_orig_w + pad->left;
-	w = di->w - di->item.radio_button.radio_orig_w - pad->left;
+	x = di->x + di->item.radio_button.orig_w + pad->left;
+	w = di->w - di->item.radio_button.orig_w - pad->left;
 	goto draw_text;
 
      default:

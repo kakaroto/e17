@@ -2549,6 +2549,7 @@ static const CfgItem BackgroundsCfgItems[] = {
  * Module descriptor
  */
 extern const EModule ModBackgrounds;
+
 const EModule       ModBackgrounds = {
    "backgrounds", "bg",
    BackgroundsSighan,

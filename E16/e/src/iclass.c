@@ -1559,6 +1559,7 @@ static const IpcItem ImageclassIpcArray[] = {
  * Module descriptor
  */
 extern const EModule ModImageclass;
+
 const EModule       ModImageclass = {
    "imageclass", "ic",
    NULL,

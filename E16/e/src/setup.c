@@ -186,6 +186,7 @@ SetupX(const char *dstr)
       KeyCode             nl, sl;
       unsigned int        numlock, scrollock;
       int                 i;
+
       int                 masks[8] = {
 	 ShiftMask, LockMask, ControlMask, Mod1Mask, Mod2Mask, Mod3Mask,
 	 Mod4Mask, Mod5Mask

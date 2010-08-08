@@ -491,6 +491,7 @@ SystrayObjPlace(Container * ct __UNUSED__, ContainerObject * cto,
 }
 
 extern const ContainerOps SystrayOps;
+
 const ContainerOps  SystrayOps = {
    SystrayInit,
    SystrayExit,

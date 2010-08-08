@@ -1085,6 +1085,7 @@ static const CfgItem ButtonsCfgItems[] = {
  * Module descriptor
  */
 extern const EModule ModButtons;
+
 const EModule       ModButtons = {
    "buttons", "btn",
    ButtonsSighan,

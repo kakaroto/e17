@@ -890,6 +890,7 @@ static const CfgItem TooltipsCfgItems[] = {
  * Module descriptor
  */
 extern const EModule ModTooltips;
+
 const EModule       ModTooltips = {
    "tooltips", "tt",
    TooltipsSighan,

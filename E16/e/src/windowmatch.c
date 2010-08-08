@@ -982,6 +982,7 @@ static const IpcItem WindowMatchIpcArray[] = {
  * Module descriptor
  */
 extern const EModule ModWindowMatch;
+
 const EModule       ModWindowMatch = {
    "winmatch", NULL,
    WindowMatchSighan,

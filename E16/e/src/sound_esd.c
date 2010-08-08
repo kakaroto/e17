@@ -141,6 +141,7 @@ _sound_esd_Exit(void)
 }
 
 __EXPORT__ extern const SoundOps SoundOps_esd;
+
 const SoundOps      SoundOps_esd = {
    _sound_esd_Init, _sound_esd_Exit, _sound_esd_Load, _sound_esd_Destroy,
    _sound_esd_Play,

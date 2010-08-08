@@ -10,7 +10,7 @@ sub x() {
   $TAT = 0;
 
   if (/__TOOLTIP_TEXT\s+\"(.*)\"/) {
-  # print "_(\"$1\"),\n"
+  # print "   _(\"$1\"),\n"
     if ($ttt) {
       $ttt = "$ttt\\n$1";
     } else {
@@ -18,18 +18,18 @@ sub x() {
     }
     $TTT = 1;
   } elsif (/__TOOLTIP_ACTION_TEXT\s+\"(.*)\"/) {
-  # print "_(\"$1\"),\n";
+  # print "   _(\"$1\"),\n";
     $tat = "$1";
     $TAT = 1;
   }
 
   if (!($TTT) && $ttt) {
-    print "_(\"$ttt\"),\n";
+    print "   _(\"$ttt\"),\n";
     $ttt = "";
   }
 
   if (!($TAT) && $tat) {
-    print "_(\"$tat\"),\n";
+    print "   _(\"$tat\"),\n";
     $tat = "";
   }
 
@@ -37,7 +37,7 @@ sub x() {
   $TDT = 0;
 
   if (/^Tooltip\s+(.*)$/) {
-  # print "_(\"$1\"),\n"
+  # print "   _(\"$1\"),\n"
     if ($tdt) {
       $tdt = "$tdt\\n$1";
     } else {
@@ -47,23 +47,23 @@ sub x() {
   }
 
   if (!($TDT) && $tdt) {
-    print "_(\"$tdt\"),\n";
+    print "   _(\"$tdt\"),\n";
     $tdt = "";
   }
 
   # menus.cfg
   if (/ADD_MENU_TITLE\s*\(\s*(\".*\")/) {
     $t = "$1";
-    print "_($t),\n";
+    print "   _($t),\n";
   }
   elsif (/ADD_.*MENU_TEXT_ITEM\s*\(\s*(\".*\"),/) {
     $t = "$1";
-    print "_($t),\n";
+    print "   _($t),\n";
   }
 
   # *.menu
   if (/^"([^"]+)"/) {
-    print "_(\"$1\"),\n";
+    print "   _(\"$1\"),\n";
   }
 }
 
@@ -81,7 +81,7 @@ sub x() {
 # Start
 #
 print "#define _(x) x\n\n";
-print "const char *txt[] = {\n";
+print "const char         *txt[] = {\n";
 
 for ($i=0; $i <= $#ARGV; $i++) {
   $f = $ARGV[$i];
@@ -96,7 +96,7 @@ for ($i=0; $i <= $#ARGV; $i++) {
 # Other strings.
 print "\n";
 foreach $s (@sl) {
-  print "_(\"$s\"),\n";
+  print "   _(\"$s\"),\n";
 }
 
 print "};\n";

@@ -552,8 +552,9 @@ enum node_type {
      { (0, 1), (1, 1), (1, 1), ..., (1, 1), NULL }
    where (x, y) means (nchars, argno). */
 
+typedef struct reflist reflist;
 struct reflist {
-   struct reflist     *next;
+   reflist            *next;
    char                stringify;	/* nonzero if this arg was preceded by a
 					 * # operator. */
    char                raw_before;	/* Nonzero if a ## operator before arg. */
@@ -574,7 +575,7 @@ struct definition {
    int                 line;	/* Line number of definition */
    const char         *file;	/* File of definition */
    char                rest_args;	/* Nonzero if last arg. absorbs the rest */
-   struct reflist     *pattern;
+   reflist            *pattern;
    union {
       /* Names of macro args, concatenated in reverse order
        * with comma-space between them.

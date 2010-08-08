@@ -241,22 +241,22 @@ typedef struct {
 } MACRODEF;
 
 /* Forward declarations.  */
+typedef struct file_name_list file_name_list;
 
 static void         add_import(cpp_reader * pfile, int fd, char *fname);
 static int          finclude(cpp_reader * pfile, int f, const char *fname,
-			     int system_header_p,
-			     struct file_name_list *dirptr);
+			     int system_header_p, file_name_list * dirptr);
 static void         validate_else(cpp_reader * pfile, const char *directive);
 static int          comp_def_part(int first, unsigned char *beg1, int len1,
 				  unsigned char *beg2, int len2, int last);
 static int          lookup_import(cpp_reader * pfile, char *filename,
-				  struct file_name_list *searchptr);
+				  file_name_list * searchptr);
 static int          redundant_include_p(cpp_reader * pfile, char *name);
 
 static int          is_system_include(cpp_reader * pfile, char *filename);
 
 static int          open_include_file(cpp_reader * pfile, char *filename,
-				      struct file_name_list *searchptr);
+				      file_name_list * searchptr);
 static int          check_macro_name(cpp_reader * pfile, unsigned char *symname,
 				     const char *usage);
 
@@ -364,7 +364,7 @@ static void         parse_move_mark(struct parse_marker *pmark,
 				    cpp_reader * pfile);
 
 struct file_name_list {
-   struct file_name_list *next;
+   file_name_list     *next;
    char               *fname;
    /* If the following is nonzero, it is a macro name.
     * Don't include the file again if that macro is defined.  */
@@ -380,7 +380,7 @@ struct file_name_list {
 
 /* If a buffer's dir field is SELF_DIR_DUMMY, it means the file was found
  * via the same directory as the file that #included it. */
-#define SELF_DIR_DUMMY ((struct file_name_list*)(~0))
+#define SELF_DIR_DUMMY ((file_name_list*)(~0))
 
 /* #include "file" looks in source file dir, then stack. */
 /* #include <file> just looks in the stack. */
@@ -676,16 +676,16 @@ make_assertion(cpp_reader * pfile, const char *option, const char *str)
    cpp_pop_buffer(pfile);
 }
 
-/* Append a chain of `struct file_name_list's
+/* Append a chain of `file_name_list's
  * to the end of the main include chain.
  * FIRST is the beginning of the chain to append, and LAST is the end.  */
 
 static void
-append_include_chain(cpp_reader * pfile, struct file_name_list *first,
-		     struct file_name_list *last)
+append_include_chain(cpp_reader * pfile, file_name_list * first,
+		     file_name_list * last)
 {
    struct cpp_options *opts = CPP_OPTIONS(pfile);
-   struct file_name_list *dir;
+   file_name_list     *dir;
 
    if (!first || !last)
       return;
@@ -766,7 +766,7 @@ path_include(cpp_reader * pfile, char *path)
 	{
 	   char               *q = p;
 	   char               *name;
-	   struct file_name_list *dirtmp;
+	   file_name_list     *dirtmp;
 
 	   /* Find the end of this name.  */
 	   while (*q != 0 && *q != PATH_SEPARATOR)
@@ -786,8 +786,7 @@ path_include(cpp_reader * pfile, char *path)
 		name[q - p] = 0;
 	     }
 
-	   dirtmp =
-	      (struct file_name_list *)xmalloc(sizeof(struct file_name_list));
+	   dirtmp = (file_name_list *) xmalloc(sizeof(file_name_list));
 
 	   dirtmp->next = 0;	/* New one goes on the end */
 	   dirtmp->control_macro = 0;
@@ -1201,7 +1200,7 @@ collect_expansion(cpp_reader * pfile, unsigned char *buf, unsigned char *limit,
 {
    DEFINITION         *defn;
    unsigned char      *p, *lastp, *exp_p;
-   struct reflist     *endpat = NULL;
+   reflist            *endpat = NULL;
 
    /* Pointer to first nonspace after last ## seen.  */
    unsigned char      *concat = 0;
@@ -1388,7 +1387,7 @@ collect_expansion(cpp_reader * pfile, unsigned char *buf, unsigned char *limit,
 
 		  for (arg = arglist; arg != NULL; arg = arg->next)
 		    {
-		       struct reflist     *tpat;
+		       reflist            *tpat;
 
 		       if (arg->name[0] == c
 			   && arg->length == id_len
@@ -1416,9 +1415,7 @@ collect_expansion(cpp_reader * pfile, unsigned char *buf, unsigned char *limit,
 			       break;
 			    /* make a pat node for this arg and append it to the end of
 			     * the pat list */
-			    tpat =
-			       (struct reflist *)
-			       xmalloc(sizeof(struct reflist));
+			    tpat = (reflist *) xmalloc(sizeof(reflist));
 
 			    tpat->next = NULL;
 			    tpat->raw_before = concat == id_beg;
@@ -1758,7 +1755,7 @@ check_macro_name(cpp_reader * pfile, unsigned char *symname, const char *usage)
 static int
 compare_defs(DEFINITION * d1, DEFINITION * d2)
 {
-   struct reflist     *a1, *a2;
+   reflist            *a1, *a2;
    unsigned char      *p1 = d1->expansion;
    unsigned char      *p2 = d2->expansion;
    int                 first = 1;
@@ -2825,8 +2822,7 @@ macroexpand(cpp_reader * pfile, HASHNODE * hp)
 	int                 offset;	/* offset in expansion,
 					 * copied a piece at a time */
 	int                 totlen;	/* total amount of exp buffer filled so far */
-
-	struct reflist     *ap, *last_ap;
+	reflist            *ap, *last_ap;
 
 	/* Macro really takes args.  Compute the expansion of this call.  */
 
@@ -3182,9 +3178,9 @@ do_include(cpp_reader * pfile, struct directive *keyword,
    enum cpp_token      token;
 
    /* Chain of dirs to search */
-   struct file_name_list *search_start = CPP_OPTIONS(pfile)->include;
-   struct file_name_list dsp[1];	/* First in chain, if #include "..." */
-   struct file_name_list *searchptr = 0;
+   file_name_list     *search_start = CPP_OPTIONS(pfile)->include;
+   file_name_list      dsp[1];	/* First in chain, if #include "..." */
+   file_name_list     *searchptr = 0;
    long                old_written = CPP_WRITTEN(pfile);
 
    int                 flen;
@@ -3482,7 +3478,7 @@ do_include(cpp_reader * pfile, struct directive *keyword,
 	/* Check to see if this include file is a once-only include file.
 	 * If so, give up.  */
 
-	struct file_name_list *ptr;
+	file_name_list     *ptr;
 
 	for (ptr = pfile->dont_repeat_files; ptr; ptr = ptr->next)
 	  {
@@ -3504,8 +3500,7 @@ do_include(cpp_reader * pfile, struct directive *keyword,
 	     /* This is the first time for this file.  */
 	     /* Add it to list of files included.  */
 
-	     ptr =
-		(struct file_name_list *)xmalloc(sizeof(struct file_name_list));
+	     ptr = (file_name_list *) xmalloc(sizeof(file_name_list));
 
 	     ptr->control_macro = 0;
 	     ptr->c_system_include_path = 0;
@@ -3561,7 +3556,7 @@ do_include(cpp_reader * pfile, struct directive *keyword,
 static int
 redundant_include_p(cpp_reader * pfile, char *name)
 {
-   struct file_name_list *l = pfile->all_include_files;
+   file_name_list     *l = pfile->all_include_files;
 
    for (; l; l = l->next)
       if (!strcmp(name, l->fname)
@@ -3585,7 +3580,7 @@ redundant_include_p(cpp_reader * pfile, char *name)
 static int
 is_system_include(cpp_reader * pfile, char *filename)
 {
-   struct file_name_list *searchptr;
+   file_name_list     *searchptr;
 
    for (searchptr = CPP_OPTIONS(pfile)->first_system_include; searchptr;
 	searchptr = searchptr->next)
@@ -3953,7 +3948,7 @@ static int
 do_once(cpp_reader * pfile)
 {
    cpp_buffer         *ip = NULL;
-   struct file_name_list *new_;
+   file_name_list     *new_;
 
    for (ip = CPP_BUFFER(pfile);; ip = CPP_PREV_BUFFER(ip))
      {
@@ -3963,7 +3958,7 @@ do_once(cpp_reader * pfile)
 	   break;
      }
 
-   new_ = (struct file_name_list *)xmalloc(sizeof(struct file_name_list));
+   new_ = (file_name_list *) xmalloc(sizeof(file_name_list));
 
    new_->next = pfile->dont_repeat_files;
    pfile->dont_repeat_files = new_;
@@ -4019,7 +4014,7 @@ do_pragma(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
      {
 	/* Be quiet about `#pragma implementation' for a file only if it hasn't
 	 * been included yet.  */
-	struct file_name_list *ptr;
+	file_name_list     *ptr;
 	char               *p = (char *)buf + 14, *fname, *inc_fname;
 	int                 fname_len;
 
@@ -4517,7 +4512,7 @@ do_endif(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
 		   * Do not do this for the top-level file in a -include or any
 		   * file in a -imacros.  */
 		  {
-		     struct file_name_list *ifile = pfile->all_include_files;
+		     file_name_list     *ifile = pfile->all_include_files;
 
 		     for (; ifile != NULL; ifile = ifile->next)
 		       {
@@ -5284,8 +5279,7 @@ import_hash(char *f)
  * or -1 if unsuccessful.  */
 
 static int
-lookup_import(cpp_reader * pfile, char *filename,
-	      struct file_name_list *searchptr)
+lookup_import(cpp_reader * pfile, char *filename, file_name_list * searchptr)
 {
    struct import_file *i;
    int                 h;
@@ -5493,7 +5487,7 @@ read_name_map(cpp_reader * pfile, const char *dirname)
 
 static int
 open_include_file(cpp_reader * pfile, char *filename,
-		  struct file_name_list *searchptr)
+		  file_name_list * searchptr)
 {
    struct file_name_map *map;
    const char         *from;
@@ -5562,7 +5556,7 @@ open_include_file(cpp_reader * pfile, char *filename,
 
 static int
 open_include_file(cpp_reader * pfile, char *filename,
-		  struct file_name_list *searchptr)
+		  file_name_list * searchptr)
 {
    pfile = NULL;
    searchptr = NULL;
@@ -5584,7 +5578,7 @@ open_include_file(cpp_reader * pfile, char *filename,
 
 static int
 finclude(cpp_reader * pfile, int f, const char *fname, int system_header_p,
-	 struct file_name_list *dirptr)
+	 file_name_list * dirptr)
 {
    int                 st_mode;
    long                st_size;
@@ -5932,10 +5926,9 @@ push_parse_file(cpp_reader * pfile, const char *fname)
 		     if (!strncmp(di->fname, default_prefix, default_len))
 		       {
 			  /* Yes; change prefix and add to search list.  */
-			  struct file_name_list *new_
+			  file_name_list     *new_
 			     =
-			     (struct file_name_list *)
-			     xmalloc(sizeof(struct file_name_list));
+			     (file_name_list *) xmalloc(sizeof(file_name_list));
 			  int                 this_len =
 			     strlen(specd_prefix) + strlen(di->fname) -
 			     default_len;
@@ -5961,9 +5954,8 @@ push_parse_file(cpp_reader * pfile, const char *fname)
 	     if (!di->cplusplus
 		 || (opts->cplusplus && !opts->no_standard_cplusplus_includes))
 	       {
-		  struct file_name_list *new_
-		     = (struct file_name_list *)
-		     xmalloc(sizeof(struct file_name_list));
+		  file_name_list     *new_
+		     = (file_name_list *) xmalloc(sizeof(file_name_list));
 
 		  new_->control_macro = 0;
 		  new_->c_system_include_path = !di->cxx_aware;
@@ -5983,7 +5975,7 @@ push_parse_file(cpp_reader * pfile, const char *fname)
    /* With -v, print the list of dirs to search.  */
    if (opts->verbose)
      {
-	struct file_name_list *fl;
+	file_name_list     *fl;
 
 	fprintf(stderr, "#include \"...\" search starts here:\n");
 	for (fl = opts->include; fl; fl = fl->next)
@@ -6271,14 +6263,13 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
 		    }
 		  if (!strcmp(argv[i], "-isystem"))
 		    {
-		       struct file_name_list *dirtmp;
+		       file_name_list     *dirtmp;
 
 		       if (i + 1 == argc)
 			  cpp_fatal("Filename missing after `-isystem' option");
 
 		       dirtmp =
-			  (struct file_name_list
-			   *)xmalloc(sizeof(struct file_name_list));
+			  (file_name_list *) xmalloc(sizeof(file_name_list));
 
 		       dirtmp->next = 0;
 		       dirtmp->control_macro = 0;
@@ -6297,7 +6288,7 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
 		   * with the default prefix at the front of its name.  */
 		  if (!strcmp(argv[i], "-iwithprefix"))
 		    {
-		       struct file_name_list *dirtmp;
+		       file_name_list     *dirtmp;
 		       char               *prefix;
 
 		       if (opts->include_prefix != 0)
@@ -6312,8 +6303,7 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
 			 }
 
 		       dirtmp =
-			  (struct file_name_list
-			   *)xmalloc(sizeof(struct file_name_list));
+			  (file_name_list *) xmalloc(sizeof(file_name_list));
 
 		       dirtmp->next = 0;	/* New one goes on the end */
 		       dirtmp->control_macro = 0;
@@ -6338,7 +6328,7 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
 		   * with the default prefix at the front of its name.  */
 		  if (!strcmp(argv[i], "-iwithprefixbefore"))
 		    {
-		       struct file_name_list *dirtmp;
+		       file_name_list     *dirtmp;
 		       char               *prefix;
 
 		       if (opts->include_prefix != 0)
@@ -6353,8 +6343,7 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
 			 }
 
 		       dirtmp =
-			  (struct file_name_list
-			   *)xmalloc(sizeof(struct file_name_list));
+			  (file_name_list *) xmalloc(sizeof(file_name_list));
 
 		       dirtmp->next = 0;	/* New one goes on the end */
 		       dirtmp->control_macro = 0;
@@ -6374,11 +6363,10 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
 		  /* Add directory to end of path for includes.  */
 		  if (!strcmp(argv[i], "-idirafter"))
 		    {
-		       struct file_name_list *dirtmp;
+		       file_name_list     *dirtmp;
 
 		       dirtmp =
-			  (struct file_name_list
-			   *)xmalloc(sizeof(struct file_name_list));
+			  (file_name_list *) xmalloc(sizeof(file_name_list));
 
 		       dirtmp->next = 0;	/* New one goes on the end */
 		       dirtmp->control_macro = 0;
@@ -6660,7 +6648,7 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
 
 	       case 'I':	/* Add directory to path for includes.  */
 		  {
-		     struct file_name_list *dirtmp;
+		     file_name_list     *dirtmp;
 
 		     if (!CPP_OPTIONS(pfile)->ignore_srcdir
 			 && !strcmp(argv[i] + 2, "-"))
@@ -6672,8 +6660,7 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
 		     else
 		       {
 			  dirtmp =
-			     (struct file_name_list
-			      *)xmalloc(sizeof(struct file_name_list));
+			     (file_name_list *) xmalloc(sizeof(file_name_list));
 
 			  dirtmp->next = 0;	/* New one goes on the end */
 			  dirtmp->control_macro = 0;

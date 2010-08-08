@@ -1168,6 +1168,7 @@ static const CfgItem FocusCfgItems[] = {
  * Module descriptor
  */
 extern const EModule ModFocus;
+
 const EModule       ModFocus = {
    "focus", NULL,
    FocusSighan,

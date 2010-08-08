@@ -2636,6 +2636,7 @@ static const CfgItem CompMgrCfgItems[] = {
  * Module descriptor
  */
 extern const EModule ModCompMgr;
+
 const EModule       ModCompMgr = {
    "compmgr", "cm",
    ECompMgrSighan,
