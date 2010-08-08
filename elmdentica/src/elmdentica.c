@@ -381,24 +381,29 @@ static void on_bubble_mouse_down(void *data, Evas *e, Evas_Object *obj, void *ev
 
 gboolean ed_replace_entities(const GMatchInfo *match_info, GString *result, gpointer user_data) {
 	char *matched_str = (char*)g_match_info_fetch(match_info, 1);
+	char *replacement = NULL;
 
-	// append the replacement to result
 	if(matched_str) {
 		if(strncmp(matched_str, "amp", 3) == 0)
-			g_string_append(result, "&");
+			replacement = "&";
 		else if(strncmp(matched_str, "quot", 4) == 0)
-			g_string_append(result, "\"");
+			replacement = "\"";
 		else if(strncmp(matched_str, "apos", 4) == 0)
-			g_string_append(result, "\"");
+			replacement = "\"";
 		else if(strncmp(matched_str, "lt", 2) == 0)
-			g_string_append(result, "<");
+			replacement = "<";
 		else if(strncmp(matched_str, "gt", 2) == 0)
-			g_string_append(result, ">");
+			replacement = ">";
 		else if(strncmp(matched_str, "laquo", 5) == 0)
-			g_string_append(result, "«");
+			replacement = "«";
 		else if(strncmp(matched_str, "raquo", 5) == 0)
-			g_string_append(result, "»");
+			replacement = "»";
 	}
+	if(replacement) {
+		g_string_append(result, replacement);
+		if(debug > 2) printf("Replaced %s with %s\n", matched_str, replacement);
+	}
+
 	return(EINA_TRUE);
 }
 
