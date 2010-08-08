@@ -276,31 +276,12 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 	Evas *e;
 	Evas_Object *hover;
 	ub_Bubble * status = (ub_Bubble*)data;
-	char * entry_str=NULL, *tmp=NULL, *tmp2=NULL;
-	int res = 0;
 
 	if(status) {
-		if(!re_nouser)
-			re_nouser = g_regex_new("<a href='user://.*?'>(@[a-zA-Z0-9_]+)</a>", 0, 0, &re_err);
-		tmp = g_regex_replace(re_nouser, status->message, -1, 0, "\\1", 0, &re_err);
-
-		if(!re_nogroup)
-			re_nogroup = g_regex_new("<a href='group://.*?'>(![a-zA-Z0-9_]+)</a>", 0, 0, &re_err);
-		tmp2 = g_regex_replace(re_nogroup, tmp, -1, 0, "\\1", 0, &re_err);
-		free(tmp); tmp=NULL;
-
-		if(!re_link_content)
-			re_link_content = g_regex_new("<a href='(.*?)('>\\[link\\]</a>)", 0, 0, &re_err);
-		tmp = g_regex_replace(re_link_content, tmp2, -1, 0, "\\1", 0, &re_err);
-		free(tmp2); tmp2=NULL;
-
-		res = asprintf(&entry_str, "♺ @%s: %s", status->screen_name, tmp);
-		if(res != -1) {
-			elm_entry_entry_set(entry, entry_str);
-			free(entry_str);
-			free(tmp);
-			elm_object_focus(entry);
-			elm_entry_cursor_end_set(entry);
+		switch(status->account_type) {
+			case ACCOUNT_TYPE_TWITTER: { ed_twitter_repeat(status->account_id, status->status_id); break; }
+			case ACCOUNT_TYPE_STATUSNET:
+			default: { break; }
 		}
 	}
 
@@ -309,8 +290,6 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 		hover = evas_object_name_find(e, "hover_actions");
 		if(hover) evas_object_del(hover);
 	}
-
-	evas_object_show(hv);
 }
 
 static void on_reply(void *data, Evas_Object *obj, void *event_info) {

@@ -35,5 +35,6 @@ void ed_twitter_init_friends(void);
 void ed_twitter_user_get(int account_id, UserProfile *user);
 void ed_twitter_user_follow(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *user_screen_name);
 void ed_twitter_user_abandon(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *user_screen_name);
+void ed_twitter_repeat(int account_id, long int status_id);
 
 #endif

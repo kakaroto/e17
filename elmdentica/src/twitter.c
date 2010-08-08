@@ -537,6 +537,7 @@ static int ed_twitter_user_get_handler(void *data, int argc, char **argv, char *
 
 	return(0);
 }
+
 void ed_twitter_user_get(int account_id, UserProfile *user) {
 	char *query=NULL, *db_err=NULL;
 	int sqlite_res;
@@ -580,4 +581,60 @@ void ed_twitter_user_abandon(int account_id, char *screen_name, char *password, 
 		free(request->url);
 	}
 	if(request) free(request);
+}
+
+static int ed_twitter_repeat_handler(void *data, int argc, char **argv, char **azColName) {
+    char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
+    int port=0, id=0, res;
+	http_request * request=calloc(1, sizeof(http_request));
+    /* In this query handler, these are the current fields:
+        argv[0] == name TEXT
+        argv[1] == password TEXT
+        argv[2] == type INTEGER
+        argv[3] == proto TEXT
+        argv[4] == domain TEXT
+        argv[5] == port INTEGER
+        argv[6] == base_url TEXT
+        argv[7] == id INTEGER
+    */
+
+    screen_name = argv[0];
+    password = argv[1];
+    proto = argv[3];
+    domain = argv[4];
+    port = atoi(argv[5]);
+    base_url = argv[6];
+    id = atoi(argv[7]);
+
+
+	if(request == NULL) return(-1);
+
+	res = asprintf(&request->url, "%s://%s:%d%s/statuses/retweet/%ld.json", proto, domain, port, base_url, *(long int*)data);
+
+	if(res != -1) {
+		if (debug) printf("gnome-open %s\n", request->url);
+
+		res = ed_curl_post(screen_name, password, request, "", id);
+	}
+
+	if(request->url) free(request->url);
+	if(request->content.memory) free(request->content.memory);
+	free(request);
+
+	return(0);
+}
+
+void ed_twitter_repeat(int account_id, long int status_id) {
+	char *query=NULL, *db_err=NULL;
+	int sqlite_res;
+	
+	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE id = %d and type = %d and enabled = 1;", account_id, ACCOUNT_TYPE_TWITTER);
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_twitter_repeat_handler, (void*)&status_id, &db_err);
+		if(sqlite_res != 0) {
+			fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
+			sqlite3_free(db_err);
+		}
+		free(query);
+	}
 }
