@@ -27,7 +27,7 @@
        <tr class="team-dark">
         <td class='tab1'>Enlightenment Source Code TAR.GZ</td>
         <td class='tab1'>
-         <a href="http://prdownloads.sourceforge.net/enlightenment/e16-1.0.2.tar.gz?download">e16-1.0.2.tar.gz</a>
+         <a href="http://prdownloads.sourceforge.net/enlightenment/e16-1.0.4.tar.gz?download">e16-1.0.4.tar.gz</a>
         </td>
         <td class='tab1'>&nbsp;</td>
        </tr>
@@ -35,15 +35,15 @@
        <tr class="team-light">
         <td class='tab2'>Source Package RPM</td>
         <td class='tab2'>
-         <a href="http://prdownloads.sourceforge.net/enlightenment/e16-1.0.2-1.fc11.src.rpm?download">e16-1.0.2-1.fc11.src.rpm</a>
+         <a href="http://prdownloads.sourceforge.net/enlightenment/e16-1.0.4-1.fc12.src.rpm?download">e16-1.0.4-1.fc12.src.rpm</a>
         </td>
         <td class='tab2'>&nbsp;</td>
        </tr>
 
        <tr class="team-dark">
-        <td class='tab1'>Linux i386 Binary RPM</td>
+        <td class='tab1'>Linux ix86 Binary RPM</td>
         <td class='tab1'>
-         <a href="http://prdownloads.sourceforge.net/enlightenment/e16-1.0.2-1.fc11.i386.rpm?download">e16-1.0.2-1.fc11.i386.rpm</a>
+         <a href="http://prdownloads.sourceforge.net/enlightenment/e16-1.0.4-1.fc12.i686.rpm?download">e16-1.0.4-1.fc12.i686.rpm</a>
         </td>
         <td class='tab1'>&nbsp;</td>
        </tr>
@@ -62,12 +62,6 @@
          <a href="http://packages.debian.org/e16">e16 packages</a>
         </td>
         <td class='tab1'>&nbsp;</td>
-       </tr>
-
-       <tr class="team-light">
-        <td class='tab2'>SUSE Linux (PackMan)</td>
-        <td class='tab2'><a href="http://packman.links2linux.de/index.php4?action=638">E DR16.8</a></td>
-        <td class='tab2'>&nbsp;</td>
        </tr>
 
       </tbody>
