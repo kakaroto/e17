@@ -5327,3 +5327,19 @@ Use "filler" border in stead of zoom masks when zooming.
 Change functions to macros (when compiling without zoom).
 Do xinerama extension test just like other extension tests.
 Collect xinerama stuff.
+
+-------------------------------------------------------------------------------
+
+Sun Aug  8 16:12:19 CEST 2010
+
+--- 1.0.4 ---
+Spec file cleanups.
+Silence clang.
+Remove obsolete code.
+Cosmetics.
+Move "shape window" code to separate file.
+Enable showing outline for window selected in focuslist.
+FORMATTING
+Add sanity check in BorderCreateFiller().
+Fix changing move/resize modes in dialog.
+Re-add ~/.e16 to icon search path.
