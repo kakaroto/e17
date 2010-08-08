@@ -64,6 +64,55 @@ _start_xserver(char *dname)
 }
 
 static Eina_Bool
+_get_lock()
+{
+   FILE *f;
+   char buf[128];
+
+   f = fopen(elsa_config->lockfile, "r");
+   if (!f)
+     {
+        /* No lockfile, so create one */
+        f = fopen(elsa_config->lockfile, "w");
+        if (!f)
+          {
+             fprintf(stderr, PACKAGE": Couldn't create lockfile %s!\n",
+                     elsa_config->lockfile);
+             return (EINA_FALSE);
+          }
+        snprintf(buf, sizeof(buf), "%d\n", getpid());
+        fwrite(buf, strlen(buf), 1, f);
+        fclose(f);
+     }
+   else
+     {
+        /* read the lockfile */
+        fclose(f);
+        fprintf(stderr, "A lock file are present another instance are present ?\n");
+        return EINA_FALSE;
+     }
+
+   return EINA_TRUE;
+}
+
+static void
+_update_lock()
+{
+   FILE *f;
+   char buf[128];
+   f = fopen(elsa_config->lockfile, "w");
+   snprintf(buf, sizeof(buf), "%d\n", getpid());
+   fwrite(buf, strlen(buf), 1, f);
+   fclose(f);
+}
+
+static void
+_remove_lock()
+{
+   remove(elsa_config->lockfile);
+}
+
+static Eina_Bool
 _open_log()
 {
    FILE *elog;
@@ -108,34 +157,49 @@ elsa_main() {
 
 
 int
-main (int argc, char ** argv) {
+main (int argc, char ** argv)
+{
    char tmp;
    char *dname = ELSA_DISPLAY;
    pid_t pid;
 
-   while((tmp = getopt(argc, argv, "vhp:n:d?")) != EOF) {
-      switch (tmp) {
-         case 'h' : _elsa_help();
-                    return (1);
-         default : continue;
-      }
-   }
-   if(getuid() != 0 && !_testing) {
-      fprintf(stderr, "Only root can run this program\n");
-      return 1;
-   }
+   while((tmp = getopt(argc, argv, "vhp:n:d?")) != EOF)
+     {
+        switch (tmp)
+          {
+           case 'h' : _elsa_help();
+                      return (1);
+           default : continue;
+          }
+     }
+
+   if(getuid() != 0 && !_testing)
+     {
+        fprintf(stderr, "Only root can run this program\n");
+        return 1;
+     }
+
    _del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
                                           _event_del_cb, NULL);
    _exit_handler = ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT,
                                            _event_exit_cb, NULL);
    ecore_init();
    elsa_config_init();
-   if (elsa_config->daemonize) {
-      if (daemon(0, 1) == -1) {
-         fprintf(stderr, "Elsa: Error on daemonize !");
-         exit(1);
-      }
-   }
+   if (!_get_lock())
+     {
+        exit(1);
+     }
+
+   if (elsa_config->daemonize)
+     {
+        if (daemon(0, 1) == -1)
+          {
+             fprintf(stderr, "Elsa: Error on daemonize !");
+             exit(1);
+          }
+        _update_lock();
+     }
+
    if (!_open_log())
       exit(1);
 
@@ -148,17 +212,19 @@ main (int argc, char ** argv) {
    _start_xserver(dname);
    elm_init(argc, argv);
    elsa_main();
-   {
-      int status;
-      pid_t wpid = -1;
-      pid = elsa_session_pid_get();
-      fprintf(stderr, PACKAGE": wait pid %d\n", pid);
-      while (wpid != pid) {
-         pid = wait(&status);
-         fprintf(stderr, PACKAGE": pid %d quit\n", wpid);
-      }
-   }
+     {
+        int status;
+        pid_t wpid = -1;
+        pid = elsa_session_pid_get();
+        fprintf(stderr, PACKAGE": wait pid %d\n", pid);
+        while (wpid != pid)
+          {
+             pid = wait(&status);
+             fprintf(stderr, PACKAGE": pid %d quit\n", wpid);
+          }
+     }
    elsa_pam_shutdown();
+   _remove_lock();
    _close_log();
    elsa_config_shutdown();
    ecore_shutdown();

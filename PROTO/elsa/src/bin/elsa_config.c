@@ -21,10 +21,10 @@ _defaults_set(Elsa_Config *config)
    config->command.shutdown = strdup("/usr/bin/shutdown -h now");
    config->command.reboot = strdup("/usr/bin/shutdown -r now");
    config->command.suspend = strdup("/usr/sbin/suspend");
-   config->daemonize = EINA_FALSE;
+   config->daemonize = EINA_TRUE;
    config->numlock = EINA_FALSE;
    config->sessions = strdup("enlightenment,xfce4,icewm,wmaker,blackbox");
-   config->lockfile = strdup("/var/run/elsa.run");
+   config->lockfile = strdup("/var/run/elsa.pid");
    config->logfile = strdup("/var/log/elsa.log");
 }
 
