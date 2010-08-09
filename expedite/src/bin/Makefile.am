@@ -29,6 +29,14 @@ widgets_file_icons_2_same.c \
 widgets_file_icons_2_same_grouped.c \
 widgets_file_icons_3.c \
 widgets_file_icons_4.c \
+widgets_list_1.c \
+widgets_list_1_grouped.c \
+widgets_list_2.c \
+widgets_list_2_grouped.c \
+widgets_list_3.c \
+widgets_list_3_grouped.c \
+widgets_list_4.c \
+widgets_list_4_grouped.c \
 image_blend_unscaled.c \
 image_blend_solid_middle_unscaled.c \
 image_blend_fade_unscaled.c \
