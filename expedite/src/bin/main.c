@@ -1263,6 +1263,7 @@ _profile_parse(int argc, char **argv)
 	     for (j = 0; resolutions[j].name != NULL; ++j)
 	       if (!strcmp(argv[i], resolutions[j].name))
 		 {
+                    profile = resolutions[j].name;
 		    win_w = resolutions[j].width;
 		    win_h = resolutions[j].height;
 		    break;
