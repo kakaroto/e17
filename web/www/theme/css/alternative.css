@@ -1,69 +1,41 @@
-/*
-Syntax error: File to import not found or unreadable: ../../shared/horizontal-menu.scss.
-              Load paths:
-                targets/website
-                .
-        on line 4 of targets/website/alternative.scss
+#header { /*  CSS Reset */ /*  http://meyerweb.com/eric/tools/css/reset/ */ /*  v1.0 | 20080212 */ /* remember to define focus styles! */ /* remember to highlight inserts somehow! */ /* tables still need 'cellspacing="0"' in the markup */ }
+#header html, #header body, #header div, #header span, #header applet, #header object, #header iframe, #header h1, #header h2, #header h3, #header h4, #header h5, #header h6, #header p, #header blockquote, #header pre, #header a, #header abbr, #header acronym, #header address, #header big, #header cite, #header code, #header del, #header dfn, #header em, #header font, #header img, #header ins, #header kbd, #header q, #header s, #header samp, #header small, #header strike, #header strong, #header sub, #header sup, #header tt, #header var, #header b, #header u, #header i, #header center, #header dl, #header dt, #header dd, #header ol, #header ul, #header li, #header fieldset, #header form, #header label, #header legend, #header table, #header caption, #header tbody, #header tfoot, #header thead, #header tr, #header th, #header td { margin: 0; padding: 0; border: 0; outline: 0; font-size: 100%; vertical-align: baseline; background: transparent; }
+#header body { line-height: 1; }
+#header ol, #header ul { list-style: none; }
+#header blockquote, #header q { quotes: none; }
+#header blockquote:before, #header blockquote:after, #header q:before, #header q:after { content: ''; content: none; }
+#header :focus { outline: 0; }
+#header ins { text-decoration: none; }
+#header del { text-decoration: line-through; }
+#header table { border-collapse: collapse; border-spacing: 0; }
+#header .layout { margin: 0 auto; }
+#header ul.menu { text-align: right; list-style: none inside none; white-space: nowrap; letter-spacing: -5px; }
+#header ul.menu li { display: inline-block; letter-spacing: normal; }
+#header ul.menu li a { display: inline-block; vertical-align: top; text-align: center; }
+#header ul.menu li a span { display: inline-block; height: 54px; line-height: 52px; text-transform: uppercase; font-size: 13px; color: #333333; margin: 0 8px; word-spacing: -0.1em; }
+#header ul.menu li a:hover { background: #ccc; }
+#header ul.menu li.current { position: relative; z-index: 1; margin: 0 -8px; }
+#header ul.menu li.current a { background: black; }
+#header ul.menu li.current a span { color: white; width: 104px; }
+#header ul.menu li.current a:hover { background: black; }
+#header ul.menu li.index { float: left; height: 72px; margin: 0; }
+#header ul.menu li.index a { height: 72px; }
+#header ul.menu li.index a span { width: 120px !important; height: 72px; line-height: 72px; color: white; background-color: black; margin: 0; }
+#header ul.submenu { text-align: right; list-style: none inside none; white-space: nowrap; letter-spacing: -5px; }
+#header ul.submenu li { display: inline-block; letter-spacing: normal; }
+#header ul.submenu li a { display: inline-block; vertical-align: top; text-align: center; }
+#header ul.submenu li { margin-left: 16px; }
+#header ul.submenu li a span { line-height: 36px; text-transform: capitalize; font-size: 11px; color: #333333; }
+#header div.menu { height: 54px; }
+#header div.submenu { height: 36px; margin-bottom: 36px; }
 
-1: @import "../../shared/reset.scss";
-2: @import "../../shared/grid.scss";
-3: @import "../../shared/type.scss";
-4: @import "../../shared/horizontal-menu.scss";
-5: @import "../../shared/colors.scss";
-6: 
-7: $menu-height:         $line * 3;
-8: $menu-option-height:  $line * 3;
-9: $submenu-height:      $line * 2;
+/* ******************* Changes to the Original Stylesheet ****************** */
+body { background: #f3f3f3; }
 
-Backtrace:
-targets/website/alternative.scss:4
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/tree/import_node.rb:98:in `rescue in import'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/tree/import_node.rb:96:in `import'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/tree/import_node.rb:28:in `full_filename'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/tree/import_node.rb:63:in `_perform'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/tree/node.rb:209:in `perform'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/tree/root_node.rb:37:in `perform'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/tree/node.rb:322:in `block in perform_children'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/tree/node.rb:322:in `map'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/tree/node.rb:322:in `perform_children'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/tree/node.rb:313:in `perform!'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/tree/root_node.rb:59:in `perform!'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/tree/node.rb:301:in `_perform'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/tree/node.rb:209:in `perform'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/tree/root_node.rb:37:in `perform'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/tree/root_node.rb:29:in `render'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/plugin.rb:220:in `update_stylesheet'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/plugin.rb:85:in `block (2 levels) in update_stylesheets'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/plugin.rb:78:in `each'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/plugin.rb:78:in `block in update_stylesheets'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/plugin.rb:76:in `each'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/plugin.rb:76:in `update_stylesheets'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/plugin.rb:171:in `block (4 levels) in watch'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/vendor/fssm/lib/fssm/path.rb:71:in `call'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/vendor/fssm/lib/fssm/path.rb:71:in `run_callback'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/vendor/fssm/lib/fssm/path.rb:54:in `callback_action'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/vendor/fssm/lib/fssm/path.rb:34:in `update'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/vendor/fssm/lib/fssm/state/directory.rb:32:in `block in modified'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/vendor/fssm/lib/fssm/state/directory.rb:31:in `each'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/vendor/fssm/lib/fssm/state/directory.rb:31:in `modified'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/vendor/fssm/lib/fssm/state/directory.rb:16:in `refresh'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/vendor/fssm/lib/fssm/backends/polling.rb:17:in `block (2 levels) in run'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/vendor/fssm/lib/fssm/backends/polling.rb:17:in `each'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/vendor/fssm/lib/fssm/backends/polling.rb:17:in `block in run'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/vendor/fssm/lib/fssm/backends/polling.rb:15:in `loop'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/vendor/fssm/lib/fssm/backends/polling.rb:15:in `run'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/vendor/fssm/lib/fssm/monitor.rb:24:in `run'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/vendor/fssm/lib/fssm.rb:17:in `monitor'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/sass/plugin.rb:164:in `watch'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/haml/exec.rb:437:in `watch_or_update'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/haml/exec.rb:349:in `process_result'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/haml/exec.rb:41:in `parse'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/lib/haml/exec.rb:21:in `parse!'
-/home/andres/.gem/ruby/1.9.1/gems/haml-3.0.15/bin/sass:8:in `<top (required)>'
-/home/andres/.gem/ruby/1.9.1/bin/sass:19:in `load'
-/home/andres/.gem/ruby/1.9.1/bin/sass:19:in `<main>'
-*/
-body:before {
-  white-space: pre;
-  font-family: monospace;
-  content: "Syntax error: File to import not found or unreadable: ../../shared/horizontal-menu.scss.\A               Load paths:\A                 targets/website\A                 .\A         on line 4 of targets/website/alternative.scss\A \A 1: @import \"../../shared/reset.scss\";\A 2: @import \"../../shared/grid.scss\";\A 3: @import \"../../shared/type.scss\";\A 4: @import \"../../shared/horizontal-menu.scss\";\A 5: @import \"../../shared/colors.scss\";\A 6: \A 7: $menu-height:         $line * 3;\A 8: $menu-option-height:  $line * 3;\A 9: $submenu-height:      $line * 2;"; }
+#content { margin: 0 -8px; }
+
+.layout { margin: 0 auto; /*     min-width: $page; */ width: 90%; width: 996px; }
+
+table.main h1, td.main { margin-top: 0; padding-top: 0; }
+
+p { color: #333333; }

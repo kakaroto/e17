@@ -24,10 +24,9 @@
 #header ul.menu li.index a span { overflow: hidden; /* Replace text with image */ text-indent: -999px; }
 #header ul.menu li.index a:hover { background: url("/ti/logo.png") no-repeat; }
 #header ul.menu li.index a:hover span { background: none; }
-#header ul.submenu { height: 36px; text-align: right; list-style: none inside none; white-space: nowrap; letter-spacing: -0.4em; /*     word-spacing: -1em; */ }
-#header ul.submenu * { margin: 0; padding: 0; }
-#header ul.submenu li { display: inline; text-align: center; letter-spacing: normal; /*         word-spacing: normal; */ }
-#header ul.submenu li a { display: inline-block; height: 36px; text-align: center; vertical-align: middle; }
+#header ul.submenu { text-align: right; list-style: none inside none; white-space: nowrap; letter-spacing: -5px; }
+#header ul.submenu li { display: inline-block; letter-spacing: normal; }
+#header ul.submenu li a { display: inline-block; vertical-align: top; text-align: center; }
 #header ul.submenu li { margin-right: 17px; }
 #header ul.submenu li a { text-decoration: none; color: #888888; }
 #header ul.submenu li a span { line-height: 36px; font-weight: bold; text-transform: capitalize; font-size: 10px; }
