@@ -5,7 +5,4 @@ img,
     behavior: url('/theme/ie/iepngfix.htc')
 }
 
-#header .menu .layout ul li a
-{
-    vertical-align: top;
-}
+#header ul.menu li{ display: inline }

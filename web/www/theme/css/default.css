@@ -1,167 +1,49 @@
-#header {
-  /*  CSS Reset */
-  /*  http://meyerweb.com/eric/tools/css/reset/ */
-  /*  v1.0 | 20080212 */
-  /* remember to define focus styles! */
-  /* remember to highlight inserts somehow! */
-  /* tables still need 'cellspacing="0"' in the markup */ }
-  #header html, #header body, #header div, #header span, #header applet, #header object, #header iframe,
-  #header h1, #header h2, #header h3, #header h4, #header h5, #header h6, #header p, #header blockquote, #header pre,
-  #header a, #header abbr, #header acronym, #header address, #header big, #header cite, #header code,
-  #header del, #header dfn, #header em, #header font, #header img, #header ins, #header kbd, #header q, #header s, #header samp,
-  #header small, #header strike, #header strong, #header sub, #header sup, #header tt, #header var,
-  #header b, #header u, #header i, #header center,
-  #header dl, #header dt, #header dd, #header ol, #header ul, #header li,
-  #header fieldset, #header form, #header label, #header legend,
-  #header table, #header caption, #header tbody, #header tfoot, #header thead, #header tr, #header th, #header td {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    outline: 0;
-    font-size: 100%;
-    vertical-align: baseline;
-    background: transparent; }
-  #header body {
-    line-height: 1; }
-  #header ol, #header ul {
-    list-style: none; }
-  #header blockquote, #header q {
-    quotes: none; }
-  #header blockquote:before, #header blockquote:after,
-  #header q:before, #header q:after {
-    content: '';
-    content: none; }
-  #header :focus {
-    outline: 0; }
-  #header ins {
-    text-decoration: none; }
-  #header del {
-    text-decoration: line-through; }
-  #header table {
-    border-collapse: collapse;
-    border-spacing: 0; }
-  #header .layout {
-    margin: 0 auto; }
-  #header ul.menu {
-    height: 63px;
-    text-align: right;
-    list-style: none inside none;
-    white-space: nowrap;
-    letter-spacing: -0.4em;
-    /*     word-spacing: -1em; */
-    background: url("/ti/header_menu_background_last.png") no-repeat right;
-    padding-right: 17px; }
-    #header ul.menu * {
-      margin: 0;
-      padding: 0; }
-    #header ul.menu li {
-      display: inline;
-      text-align: center;
-      letter-spacing: normal;
-      /*         word-spacing: normal; */ }
-      #header ul.menu li a {
-        display: inline-block;
-        height: 63px;
-        text-align: center;
-        vertical-align: middle; }
-    #header ul.menu li a {
-      background: url("/ti/header_menu_unselected_background.png") no-repeat;
-      text-decoration: none; }
-      #header ul.menu li a span {
-        display: inline-block;
-        height: 63px;
-        line-height: 63px;
-        text-transform: capitalize;
-        color: silver;
-        font-size: 10px;
-        padding: 0 14px; }
-      #header ul.menu li a:hover {
-        background: url("/ti/header_menu_hover_background.png") no-repeat center top; }
-        #header ul.menu li a:hover span {
-          color: #f3f3f3;
-          background: url("/ti/header_menu_hover_background_left.png") no-repeat; }
-    #header ul.menu li.current a {
-      background: url("/ti/header_menu_current_background.png") no-repeat; }
-      #header ul.menu li.current a span {
-        font-weight: bold;
-        color: #333333; }
-      #header ul.menu li.current a:hover span {
-        background: none; }
-    #header ul.menu li.index {
-      float: left;
-      height: 63px;
-      margin: 0; }
-      #header ul.menu li.index a {
-        height: 63px;
-        line-height: 63px;
-        width: 63px;
-        background: url("/ti/logo.png") no-repeat; }
-        #header ul.menu li.index a span {
-          overflow: hidden;
-          /* Replace text with image */
-          text-indent: -999px; }
-        #header ul.menu li.index a:hover {
-          background: url("/ti/logo.png") no-repeat; }
-          #header ul.menu li.index a:hover span {
-            background: none; }
-  #header ul.submenu {
-    height: 36px;
-    text-align: right;
-    list-style: none inside none;
-    white-space: nowrap;
-    letter-spacing: -0.4em;
-    /*     word-spacing: -1em; */ }
-    #header ul.submenu * {
-      margin: 0;
-      padding: 0; }
-    #header ul.submenu li {
-      display: inline;
-      text-align: center;
-      letter-spacing: normal;
-      /*         word-spacing: normal; */ }
-      #header ul.submenu li a {
-        display: inline-block;
-        height: 36px;
-        text-align: center;
-        vertical-align: middle; }
-    #header ul.submenu li {
-      margin-right: 17px; }
-      #header ul.submenu li a {
-        text-decoration: none;
-        color: #888888; }
-        #header ul.submenu li a span {
-          line-height: 36px;
-          font-weight: bold;
-          text-transform: capitalize;
-          font-size: 10px; }
-        #header ul.submenu li a:hover span {
-          color: #333333; }
-    #header ul.submenu li.selected a {
-      color: #666666;
-      text-decoration: underline; }
-  #header div.menu {
-    height: 63px; }
-  #header div.menu .layout {
-    background: url("/ti/header_menu_background.png"); }
-  #header div.submenu {
-    height: 36px;
-    margin-bottom: 36px; }
+#header { /*  CSS Reset */ /*  http://meyerweb.com/eric/tools/css/reset/ */ /*  v1.0 | 20080212 */ /* remember to define focus styles! */ /* remember to highlight inserts somehow! */ /* tables still need 'cellspacing="0"' in the markup */ }
+#header html, #header body, #header div, #header span, #header applet, #header object, #header iframe, #header h1, #header h2, #header h3, #header h4, #header h5, #header h6, #header p, #header blockquote, #header pre, #header a, #header abbr, #header acronym, #header address, #header big, #header cite, #header code, #header del, #header dfn, #header em, #header font, #header img, #header ins, #header kbd, #header q, #header s, #header samp, #header small, #header strike, #header strong, #header sub, #header sup, #header tt, #header var, #header b, #header u, #header i, #header center, #header dl, #header dt, #header dd, #header ol, #header ul, #header li, #header fieldset, #header form, #header label, #header legend, #header table, #header caption, #header tbody, #header tfoot, #header thead, #header tr, #header th, #header td { margin: 0; padding: 0; border: 0; outline: 0; font-size: 100%; vertical-align: baseline; background: transparent; }
+#header body { line-height: 1; }
+#header ol, #header ul { list-style: none; }
+#header blockquote, #header q { quotes: none; }
+#header blockquote:before, #header blockquote:after, #header q:before, #header q:after { content: ''; content: none; }
+#header :focus { outline: 0; }
+#header ins { text-decoration: none; }
+#header del { text-decoration: line-through; }
+#header table { border-collapse: collapse; border-spacing: 0; }
+#header .layout { margin: 0 auto; }
+#header ul.menu { text-align: right; list-style: none inside none; white-space: nowrap; letter-spacing: -5px; background: url("/ti/header_menu_background_last.png") no-repeat right; padding-right: 17px; }
+#header ul.menu li { display: inline-block; letter-spacing: normal; }
+#header ul.menu li a { display: inline-block; vertical-align: top; text-align: center; }
+#header ul.menu li a { background: url("/ti/header_menu_unselected_background.png") no-repeat; text-decoration: none; }
+#header ul.menu li a span { display: inline-block; height: 63px; line-height: 63px; text-transform: capitalize; color: silver; font-size: 10px; padding: 0 14px; }
+#header ul.menu li a:hover { background: url("/ti/header_menu_hover_background.png") no-repeat center top; }
+#header ul.menu li a:hover span { color: #f3f3f3; background: url("/ti/header_menu_hover_background_left.png") no-repeat; }
+#header ul.menu li.current a { background: url("/ti/header_menu_current_background.png") no-repeat; }
+#header ul.menu li.current a span { font-weight: bold; color: #333333; }
+#header ul.menu li.current a:hover span { background: none; }
+#header ul.menu li.index { float: left; height: 63px; margin: 0; }
+#header ul.menu li.index a { height: 63px; line-height: 63px; width: 63px; background: url("/ti/logo.png") no-repeat; }
+#header ul.menu li.index a span { overflow: hidden; /* Replace text with image */ text-indent: -999px; }
+#header ul.menu li.index a:hover { background: url("/ti/logo.png") no-repeat; }
+#header ul.menu li.index a:hover span { background: none; }
+#header ul.submenu { height: 36px; text-align: right; list-style: none inside none; white-space: nowrap; letter-spacing: -0.4em; /*     word-spacing: -1em; */ }
+#header ul.submenu * { margin: 0; padding: 0; }
+#header ul.submenu li { display: inline; text-align: center; letter-spacing: normal; /*         word-spacing: normal; */ }
+#header ul.submenu li a { display: inline-block; height: 36px; text-align: center; vertical-align: middle; }
+#header ul.submenu li { margin-right: 17px; }
+#header ul.submenu li a { text-decoration: none; color: #888888; }
+#header ul.submenu li a span { line-height: 36px; font-weight: bold; text-transform: capitalize; font-size: 10px; }
+#header ul.submenu li a:hover span { color: #333333; }
+#header ul.submenu li.selected a { color: #666666; text-decoration: underline; }
+#header div.menu { height: 63px; }
+#header div.menu .layout { background: url("/ti/header_menu_background.png"); }
+#header div.submenu { height: 36px; margin-bottom: 36px; }
 
 /* ******************* Changes to the Original Stylesheet ****************** */
-#middle {
-  margin-top: -18px; }
+#middle { margin-top: -18px; }
 
-#content {
-  margin: 0 -8px; }
+#content { margin: 0 -8px; }
 
-.layout {
-  margin: 0 auto;
-  /*     min-width: $page; */
-  width: 90%; }
+.layout { margin: 0 auto; /*     min-width: $page; */ width: 90%; }
 
-table.main h1, td.main {
-  margin-top: 0;
-  padding-top: 0; }
+table.main h1, td.main { margin-top: 0; padding-top: 0; }
 
-p {
-  color: #333333; }
+p { color: #333333; }
