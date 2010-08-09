@@ -86,7 +86,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    if (inst->obj)
      {
         evas_object_event_callback_del(inst->obj, EVAS_CALLBACK_MOUSE_DOWN,
-                                       _gc_cb_mouse_down, inst);
+                                       _gc_cb_mouse_down);
         evas_object_del(inst->obj);
      }
    E_FREE(inst);
