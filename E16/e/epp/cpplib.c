@@ -690,12 +690,12 @@ append_include_chain(cpp_reader * pfile, file_name_list * first,
    if (!first || !last)
       return;
 
-   if (opts->include == 0)
+   if (opts->include == NULL)
       opts->include = first;
    else
       opts->last_include->next = first;
 
-   if (opts->first_bracket_include == 0)
+   if (opts->first_bracket_include == NULL)
       opts->first_bracket_include = first;
 
    for (dir = first;; dir = dir->next)
@@ -1632,7 +1632,7 @@ create_definition(MACRODEF * mdef, unsigned char *buf, unsigned char *limit,
 	     {
 		memcpy(&defn->args.argnames[i], temp->name, temp->length);
 		i += temp->length;
-		if (temp->next != 0)
+		if (temp->next != NULL)
 		  {
 		     defn->args.argnames[i++] = ',';
 		     defn->args.argnames[i++] = ' ';
@@ -1852,7 +1852,7 @@ do_define(cpp_reader * pfile, struct directive *keyword,
    HASHNODE           *hp;
 
    create_definition(&mdef, buf, limit, pfile, keyword == NULL);
-   if (mdef.defn == 0)
+   if (mdef.defn == NULL)
       return 1;
 
    hashcode = hashf(mdef.symnam, mdef.symlen, HASHSIZE);
@@ -3495,7 +3495,7 @@ do_include(cpp_reader * pfile, struct directive *keyword,
 		break;		/* This file was included before. */
 	  }
 
-	if (ptr == 0)
+	if (ptr == NULL)
 	  {
 	     /* This is the first time for this file.  */
 	     /* Add it to list of files included.  */
@@ -3835,7 +3835,7 @@ do_line(cpp_reader * pfile, struct directive *keyword,
 		ip->nominal_fname = hp->value.cpval;
 		break;
 	     }
-	if (hp == 0)
+	if (hp == NULL)
 	  {
 	     /* Didn't find it; cons up a new one.  */
 	     hp = (HASHNODE *) xcalloc(1, sizeof(HASHNODE) + fname_length + 1);
@@ -4483,7 +4483,7 @@ do_endif(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
 	IF_STACK_FRAME     *temp = pfile->if_stack;
 
 	pfile->if_stack = temp->next;
-	if (temp->control_macro != 0)
+	if (temp->control_macro != NULL)
 	  {
 	     /* This #endif matched a #ifndef at the start of the file.
 	      * See if it is at the end of the file.  */
@@ -4577,7 +4577,7 @@ cpp_get_token(cpp_reader * pfile)
 	     cpp_buffer         *next_buf = CPP_PREV_BUFFER(CPP_BUFFER(pfile));
 
 	     CPP_BUFFER(pfile)->seen_eof = 1;
-	     if (CPP_BUFFER(pfile)->nominal_fname && next_buf != 0)
+	     if (CPP_BUFFER(pfile)->nominal_fname && next_buf != NULL)
 	       {
 		  /* We're about to return from an #include file.
 		   * Emit #line information now (as part of the CPP_POP) result.
@@ -5693,7 +5693,7 @@ push_parse_file(cpp_reader * pfile, const char *fname)
     * but that seems pointless: it comes before them, so it overrides them
     * anyway.  */
    p = (char *)getenv("CPATH");
-   if (p != 0 && !opts->no_standard_includes)
+   if (p != NULL && !opts->no_standard_includes)
       path_include(pfile, p);
 
    /* Now that dollars_in_ident is known, initialize is_idchar.  */
@@ -5914,7 +5914,7 @@ push_parse_file(cpp_reader * pfile, const char *fname)
 	  }
 	/* Search "translated" versions of GNU directories.
 	 * These have /usr/local/lib/gcc... replaced by specd_prefix.  */
-	if (specd_prefix != 0 && default_len != 0)
+	if (specd_prefix != NULL && default_len != 0)
 	   for (di = include_defaults; di->fname; di++)
 	     {
 		/* Some standard dirs are only for C++.  */
@@ -5942,7 +5942,7 @@ push_parse_file(cpp_reader * pfile, const char *fname)
 			  new_->c_system_include_path = !di->cxx_aware;
 			  new_->got_name_map = 0;
 			  append_include_chain(pfile, new_, new_);
-			  if (opts->first_system_include == 0)
+			  if (opts->first_system_include == NULL)
 			     opts->first_system_include = new_;
 		       }
 		  }
@@ -5962,14 +5962,14 @@ push_parse_file(cpp_reader * pfile, const char *fname)
 		  new_->fname = (char *)di->fname;
 		  new_->got_name_map = 0;
 		  append_include_chain(pfile, new_, new_);
-		  if (opts->first_system_include == 0)
+		  if (opts->first_system_include == NULL)
 		     opts->first_system_include = new_;
 	       }
 	  }
      }
    /* Tack the after_include chain at the end of the include chain.  */
    append_include_chain(pfile, opts->after_include, opts->last_after_include);
-   if (opts->first_system_include == 0)
+   if (opts->first_system_include == NULL)
       opts->first_system_include = opts->after_include;
 
    /* With -v, print the list of dirs to search.  */
@@ -6041,7 +6041,7 @@ push_parse_file(cpp_reader * pfile, const char *fname)
 	char               *s;
 	char               *output_file;
 
-	if (spec == 0)
+	if (spec == NULL)
 	  {
 	     spec = getenv("SUNPRO_DEPENDENCIES");
 	     opts->print_deps = 2;
@@ -6278,7 +6278,7 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
 		       strcpy(dirtmp->fname, argv[++i]);
 		       dirtmp->got_name_map = 0;
 
-		       if (opts->before_system == 0)
+		       if (opts->before_system == NULL)
 			  opts->before_system = dirtmp;
 		       else
 			  opts->last_before_system->next = dirtmp;
@@ -6291,7 +6291,7 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
 		       file_name_list     *dirtmp;
 		       char               *prefix;
 
-		       if (opts->include_prefix != 0)
+		       if (opts->include_prefix != NULL)
 			  prefix = opts->include_prefix;
 		       else
 			 {
@@ -6318,7 +6318,7 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
 		       strcat(dirtmp->fname, argv[++i]);
 		       dirtmp->got_name_map = 0;
 
-		       if (opts->after_include == 0)
+		       if (opts->after_include == NULL)
 			  opts->after_include = dirtmp;
 		       else
 			  opts->last_after_include->next = dirtmp;
@@ -6331,7 +6331,7 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
 		       file_name_list     *dirtmp;
 		       char               *prefix;
 
-		       if (opts->include_prefix != 0)
+		       if (opts->include_prefix != NULL)
 			  prefix = opts->include_prefix;
 		       else
 			 {
@@ -6378,7 +6378,7 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
 			  dirtmp->fname = argv[++i];
 		       dirtmp->got_name_map = 0;
 
-		       if (opts->after_include == 0)
+		       if (opts->after_include == NULL)
 			  opts->after_include = dirtmp;
 		       else
 			  opts->last_after_include->next = dirtmp;
@@ -6729,7 +6729,7 @@ cpp_finish(cpp_reader * pfile)
 	     const char         *deps_mode =
 		opts->print_deps_append ? "a" : "w";
 
-	     if (opts->deps_file == 0)
+	     if (opts->deps_file == NULL)
 		deps_stream = stdout;
 	     else if ((deps_stream = fopen(opts->deps_file, deps_mode)) == 0)
 		cpp_pfatal_with_name(pfile, opts->deps_file);
@@ -6779,7 +6779,7 @@ do_assert(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
       tokens = read_token_list(pfile, &error_flag);
       if (error_flag)
 	 goto error;
-      if (tokens == 0)
+      if (tokens == NULL)
 	{
 	   cpp_error(pfile, "empty token-sequence in `#assert'");
 	   goto error;
@@ -6856,7 +6856,7 @@ do_unassert(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
 	tokens = read_token_list(pfile, &error_flag);
 	if (error_flag)
 	   goto error;
-	if (tokens == 0)
+	if (tokens == NULL)
 	  {
 	     cpp_error(pfile, "empty token list in `#unassert'");
 	     goto error;

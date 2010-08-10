@@ -37,7 +37,7 @@ xmalloc(unsigned size)
 {
    char               *ptr = (char *)malloc(size);
 
-   if (ptr != 0)
+   if (ptr != NULL)
       return (ptr);
    memory_full();
    /*NOTREACHED */
@@ -49,7 +49,7 @@ xrealloc(void *old, unsigned size)
 {
    char               *ptr = (char *)realloc(old, size);
 
-   if (ptr == 0)
+   if (ptr == NULL)
       memory_full();
    return ptr;
 }
@@ -59,7 +59,7 @@ xcalloc(unsigned number, unsigned size)
 {
    char               *ptr = (char *)calloc(number, size);
 
-   if (ptr == 0)
+   if (ptr == NULL)
       memory_full();
    return ptr;
 }
