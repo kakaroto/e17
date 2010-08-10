@@ -21,8 +21,6 @@ cb_sent(void *data __UNUSED__, void *ret, DBusError *err)
   {
     printf("Error: %s\n", err->message);
   }
-
-  free(notify);
 }
 
 Eina_Bool
