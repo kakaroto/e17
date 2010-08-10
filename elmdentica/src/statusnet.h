@@ -29,6 +29,8 @@ typedef struct _Group_Profile {
     int         member_count;
     char        *original_logo;
     char        *description;
+	Eina_Bool	failed;
+	char		*error;
 } GroupProfile;
 
 typedef struct _group_get {

@@ -1390,7 +1390,7 @@ void on_settings(void *data, Evas_Object *obj, void *event_info) {
 		elm_toolbar_item_select(item);
 
 	evas_object_show(box);
-	evas_object_resize(settings_win, 300, 300);
+	evas_object_resize(settings_win, 480, 640);
 	evas_object_show(settings_win);
 }
 

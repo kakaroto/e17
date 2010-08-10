@@ -746,7 +746,7 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 
 		evas_object_show(table);
 
-	    evas_object_resize(user_win, 300, 300);
+	    evas_object_resize(user_win, 480, 640);
 	evas_object_show(user_win);
 
 	user_free(user);
@@ -782,7 +782,7 @@ static void on_group_leave(void *data, Evas_Object *obj, void *event_info) {
 
 static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 	AnchorData *anchor = (AnchorData*)data;
-	Evas_Object *group_win=NULL, *bg=NULL, *box=NULL, *label=NULL, *s=NULL, *box2=NULL, *bubble=anchor->bubble, *icon=NULL, *button=NULL, *frame=NULL;
+	Evas_Object *group_win=NULL, *bg=NULL, *box=NULL, *label=NULL, *notify=NULL, *s=NULL, *box2=NULL, *bubble=anchor->bubble, *icon=NULL, *button=NULL, *frame=NULL;
 	ub_Bubble * ubBubble = eina_hash_find(status2user, &bubble);
 	GroupProfile *gp = (GroupProfile*)calloc(1, sizeof(GroupProfile));
 	char *m, *home, *path;
@@ -792,6 +792,25 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 	gp->name=strndup(anchor->url+8, PIPE_BUF);
 
 	ed_statusnet_group_get(ubBubble->account_id, gp);
+	if(gp->failed) {
+		notify = elm_notify_add(win);
+			evas_object_size_hint_weight_set(notify, 1, 1);
+			evas_object_size_hint_align_set(notify, -1, -1);
+			label = elm_label_add(win);
+				evas_object_size_hint_weight_set(label, 1, 1);
+				evas_object_size_hint_align_set(label, -1, -1);
+				elm_label_label_set(label, gp->error);
+				elm_label_line_wrap_set(label, EINA_TRUE);
+			evas_object_show(label);
+			elm_notify_content_set(notify, label);
+			elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_TOP_RIGHT);
+			elm_notify_parent_set(notify, win);
+			elm_notify_timeout_set(notify, 5);
+			elm_notify_timer_init(notify);
+		evas_object_show(notify);
+
+		return;
+	}
 
 	group_win = elm_win_add(NULL, gp->name, ELM_WIN_BASIC);
 		evas_object_name_set(frame, "group_win");
@@ -900,7 +919,7 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 		evas_object_show(box);
 
 
-	evas_object_resize(group_win, 300, 300);
+	evas_object_resize(group_win, 480, 640);
 	evas_object_show(group_win);
 
 	ed_statusnet_group_free(gp);
@@ -1760,7 +1779,7 @@ EAPI int elm_main(int argc, char **argv)
 
 	evas_object_show(box);
 
-	evas_object_resize(win, 300, 300);
+	evas_object_resize(win, 480, 640);
 	evas_object_show(win);
 
 

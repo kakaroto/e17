@@ -171,7 +171,7 @@ void json_group_show(GroupProfile *group, char *stream) {
 			group->member_count = (int)json_object_get_int(obj);
 			json_object_put(obj);
 		}
-	}
+	} else { printf("oopsie\n"); }
 	json_object_put(json_stream);
 }
 
@@ -181,6 +181,7 @@ static int ed_statusnet_group_get_handler(void *data, int argc, char **argv, cha
     char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
     int port=0, id=0, res;
 	http_request * request=calloc(1, sizeof(http_request));
+	json_object *json_stream, *obj;
     /* In this query handler, these are the current fields:
         argv[0] == name TEXT
         argv[1] == password TEXT
@@ -211,7 +212,17 @@ static int ed_statusnet_group_get_handler(void *data, int argc, char **argv, cha
 		res = ed_curl_get(screen_name, password, request, gg->account_id);
 		if((res == 0) && (request->response_code == 200))
 			json_group_show(group, request->content.memory);
-
+		else {
+			group->failed = EINA_TRUE;
+			json_stream = json_tokener_parse(request->content.memory);
+			if(json_object_get_type(json_stream) == json_type_object) {
+				obj = json_object_object_get(json_stream, "error");
+				if(obj) {
+					group->error = strdup(json_object_get_string(obj));
+					json_object_put(obj);
+				}
+			}
+		}
 	}
 
 	if(request->url) free(request->url);
@@ -246,6 +257,7 @@ void ed_statusnet_group_free(GroupProfile *group) {
         if(group->fullname) free(group->fullname);
         if(group->description) free(group->description);
         if(group->original_logo) free(group->original_logo);
+		if(group->error) free(group->error);
 
         free(group);
     }
