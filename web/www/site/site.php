@@ -178,7 +178,6 @@
       if (file_exists("p/$p/subs")) {
 	  $handle = fopen("p/$p/subs", "r");
 	  if ($handle) {
-	      echo("<ul class='submenu'>\n");
 	      $item = 0;
 	      while (!feof($handle)) {
 		  $fl = fgets($handle, 4096);
@@ -211,7 +210,6 @@
 		      }
 		  }
 	      }
-	      echo("</ul>");
 	  }
       }
       }

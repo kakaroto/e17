@@ -1,8 +1,0 @@
-/* Transparent PNGs. Use specific selectors (id, classes) to avoid slowdowns */
-img
-{
-    behavior: url('/theme/ie/iepngfix.htc')
-}
-
-/* IE6 and 7 do not support inline-block for block elements like <li> */
-#header ul.menu li { display: inline }

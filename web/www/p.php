@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="style.css">
 <link rel="stylesheet" type="text/css" href="/theme/css/<?php echo $theme ?>.css">
-<!--[if lt IE 8]> <link rel="stylesheet" type="text/css" href="/theme/ie/ie-lt8.css"> <![endif]-->
+<!--[if lt IE 8]> <link rel="stylesheet" type="text/css" href="/theme/css/ie-lt8.css"> <![endif]-->
 <link rel="icon" href="favicon.png" type="image/x-icon">
 <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
 <link rel="icon" href="favicon.png" type="image/ico">
@@ -50,7 +50,9 @@ if (is_file("p/$page/$lang-rss"))
         <div class="submenu">
         <div class="layout">
 
-            <?php nav_subs(); ?>
+            <ul class="submenu">
+                <?php nav_subs(); ?>
+            </ul>
 
         </div>
         </div>
