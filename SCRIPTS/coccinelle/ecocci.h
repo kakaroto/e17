@@ -313,3 +313,14 @@ static void _x ()\
 #define DBUS_TYPE_STRING_AS_STRING ""
 #define DBUS_DICT_ENTRY_END_CHAR_AS_STRING ""
 
+
+
+// embryo
+#define __const const
+#define __THROW
+#define __nonnull(x)
+#define SWITCH(x) switch (x) {
+#define SWITCHEND }
+#define CASE(x) case x:
+#define BREAK break
+
