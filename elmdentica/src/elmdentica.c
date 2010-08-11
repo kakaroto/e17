@@ -764,20 +764,68 @@ static void on_group_messages_view(void *data, Evas_Object *obj, void *event_inf
 	evas_object_show(s);
 }
 
+static void on_group_leave(void *data, Evas_Object *obj, void *event_info);
+
 static void on_group_join(void *data, Evas_Object *obj, void *event_info) {
 	ub_Bubble * ubBubble = (ub_Bubble*)data;
 	Evas *e = evas_object_evas_get(obj);
-	Evas_Object *group_win = evas_object_name_find(e, "group_win"), *frame = evas_object_name_find(e, "group");
-	printf("JOIN GROUP %s from account %d\n", elm_frame_label_get(frame), ubBubble->account_id);
-	evas_object_del(group_win);
+	Evas_Object *frame = evas_object_name_find(e, "group"), *group_desc = NULL;
+	GroupProfile *gp = (GroupProfile*)calloc(1, sizeof(GroupProfile));
+	char *m;
+	int res = 0;
+
+	gp->name=strndup(elm_frame_label_get(frame), PIPE_BUF);
+
+	ed_statusnet_group_join(ubBubble->account_id, gp);
+
+	if(gp->failed) {
+		printf("Error joining group %s: %s\n", gp->name, gp->error);
+	} else {
+		if(gp->member)
+			res = asprintf(&m, _("You are a member of group %s along with %d other people.<br>«%s»"), gp->fullname, gp->member_count -1, gp->description);
+		else
+			res = asprintf(&m, _("You are not a member of group %s but %d people are.<br>«%s»"), gp->fullname, gp->member_count, gp->description);
+
+		if(res != -1) {
+			group_desc = evas_object_name_find(e, "group_desc");
+			elm_label_label_set(group_desc, m);
+			elm_button_label_set(obj, _("Leave"));
+			evas_object_smart_callback_add(obj, "clicked", on_group_leave, ubBubble);
+			free(m);
+		}
+	}
+
+	ed_statusnet_group_free(gp);
 }
 
 static void on_group_leave(void *data, Evas_Object *obj, void *event_info) {
 	ub_Bubble * ubBubble = (ub_Bubble*)data;
 	Evas *e = evas_object_evas_get(obj);
-	Evas_Object *group_win = evas_object_name_find(e, "group_win"), *frame = evas_object_name_find(e, "group");
-	printf("LEAVE GROUP %s from account %d\n", elm_frame_label_get(frame), ubBubble->account_id);
-	evas_object_del(group_win);
+	Evas_Object *frame = evas_object_name_find(e, "group"), *group_desc = NULL;
+	GroupProfile *gp = (GroupProfile*)calloc(1, sizeof(GroupProfile));
+	char *m;
+	int res = 0;
+
+	gp->name=strndup(elm_frame_label_get(frame), PIPE_BUF);
+
+	ed_statusnet_group_leave(ubBubble->account_id, gp);
+
+	if(gp->failed && debug)
+		printf("Error leaving group %s: %s\n", gp->name, gp->error);
+	else {
+		if(gp->member)
+			res = asprintf(&m, _("You are a member of group %s along with %d other people.<br>«%s»"), gp->fullname, gp->member_count -1, gp->description);
+		else
+			res = asprintf(&m, _("You are not a member of group %s but %d people are.<br>«%s»"), gp->fullname, gp->member_count, gp->description);
+
+		if(res != -1) {
+			group_desc = evas_object_name_find(e, "group_desc");
+			elm_label_label_set(group_desc, m);
+			elm_button_label_set(obj, _("Join"));
+			evas_object_smart_callback_add(obj, "clicked", on_group_join, ubBubble);
+			free(m);
+		}
+	}
 }
 
 static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
@@ -813,7 +861,7 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 	}
 
 	group_win = elm_win_add(NULL, gp->name, ELM_WIN_BASIC);
-		evas_object_name_set(frame, "group_win");
+		evas_object_name_set(group_win, "group_win");
 		elm_win_title_set(group_win, gp->name);
 		elm_win_autodel_set(group_win, EINA_TRUE);
 
@@ -862,6 +910,7 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 
 				if(res != -1) {
 					label = elm_label_add(group_win);
+						evas_object_name_set(label, "group_desc");
 						evas_object_size_hint_weight_set(label, 1, 1);
 						evas_object_size_hint_align_set(label, -1, -1);
 						elm_label_line_wrap_set(label, EINA_TRUE);

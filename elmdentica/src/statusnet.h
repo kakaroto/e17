@@ -44,4 +44,7 @@ void ed_statusnet_timeline_get(int id, char *screen_name, char *password, char *
 
 void ed_statusnet_group_free(GroupProfile *group);
 
+void ed_statusnet_group_join(int account_id, GroupProfile *group);
+void ed_statusnet_group_leave(int account_id, GroupProfile *group);
+
 #endif

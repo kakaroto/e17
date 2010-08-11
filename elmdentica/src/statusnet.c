@@ -262,3 +262,153 @@ void ed_statusnet_group_free(GroupProfile *group) {
         free(group);
     }
 }
+
+static int ed_statusnet_group_join_handler(void *data, int argc, char **argv, char **azColName) {
+	GroupGet *gg=(GroupGet*)data;
+	GroupProfile *group = gg->group;
+    char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
+    int port=0, id=0, res;
+	http_request * request=calloc(1, sizeof(http_request));
+	json_object *json_stream, *obj;
+    /* In this query handler, these are the current fields:
+        argv[0] == name TEXT
+        argv[1] == password TEXT
+        argv[2] == type INTEGER
+        argv[3] == proto TEXT
+        argv[4] == domain TEXT
+        argv[5] == port INTEGER
+        argv[6] == base_url TEXT
+        argv[7] == id INTEGER
+    */
+
+    screen_name = argv[0];
+    password = argv[1];
+    proto = argv[3];
+    domain = argv[4];
+    port = atoi(argv[5]);
+    base_url = argv[6];
+    id = atoi(argv[7]);
+
+	if(request == NULL) return(-1);
+
+	res = asprintf(&request->url, "%s://%s:%d%s/statusnet/groups/join.json?id=%s", proto, domain, port, base_url, group->name);
+
+	if(res != -1) {
+		if (debug) printf("gnome-open %s\n", request->url);
+
+		res = ed_curl_post(screen_name, password, request, "",  gg->account_id);
+		if((res == 0) && (request->response_code == 200))
+			json_group_show(group, request->content.memory);
+		else {
+			group->failed = EINA_TRUE;
+			json_stream = json_tokener_parse(request->content.memory);
+			if(json_object_get_type(json_stream) == json_type_object) {
+				obj = json_object_object_get(json_stream, "error");
+				if(obj) {
+					group->error = strdup(json_object_get_string(obj));
+					json_object_put(obj);
+				}
+			}
+		}
+	}
+
+	if(request->url) free(request->url);
+	if(request->content.memory) free(request->content.memory);
+	free(request);
+
+	return(0);
+}
+
+void ed_statusnet_group_join(int account_id, GroupProfile *group) {
+	char *query=NULL, *db_err=NULL;
+	int sqlite_res;
+	GroupGet gg;
+	
+	gg.group=group;
+	gg.account_id=account_id;
+
+	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE id = %d and type = %d and enabled = 1;", account_id, ACCOUNT_TYPE_TWITTER);
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_group_join_handler, (void*)&gg, &db_err);
+		if(sqlite_res != 0) {
+			fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
+			sqlite3_free(db_err);
+		}
+		free(query);
+	}
+}
+
+static int ed_statusnet_group_leave_handler(void *data, int argc, char **argv, char **azColName) {
+	GroupGet *gg=(GroupGet*)data;
+	GroupProfile *group = gg->group;
+    char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
+    int port=0, id=0, res;
+	http_request * request=calloc(1, sizeof(http_request));
+	json_object *json_stream, *obj;
+    /* In this query handler, these are the current fields:
+        argv[0] == name TEXT
+        argv[1] == password TEXT
+        argv[2] == type INTEGER
+        argv[3] == proto TEXT
+        argv[4] == domain TEXT
+        argv[5] == port INTEGER
+        argv[6] == base_url TEXT
+        argv[7] == id INTEGER
+    */
+
+    screen_name = argv[0];
+    password = argv[1];
+    proto = argv[3];
+    domain = argv[4];
+    port = atoi(argv[5]);
+    base_url = argv[6];
+    id = atoi(argv[7]);
+
+	if(request == NULL) return(-1);
+
+	res = asprintf(&request->url, "%s://%s:%d%s/statusnet/groups/leave.json?id=%s", proto, domain, port, base_url, group->name);
+
+	if(res != -1) {
+		if (debug) printf("gnome-open %s\n", request->url);
+
+		res = ed_curl_post(screen_name, password, request, "",  gg->account_id);
+		if((res == 0) && (request->response_code == 200))
+			json_group_show(group, request->content.memory);
+		else {
+			group->failed = EINA_TRUE;
+			json_stream = json_tokener_parse(request->content.memory);
+			if(json_object_get_type(json_stream) == json_type_object) {
+				obj = json_object_object_get(json_stream, "error");
+				if(obj) {
+					group->error = strdup(json_object_get_string(obj));
+					json_object_put(obj);
+				}
+			}
+		}
+	}
+
+	if(request->url) free(request->url);
+	if(request->content.memory) free(request->content.memory);
+	free(request);
+
+	return(0);
+}
+
+void ed_statusnet_group_leave(int account_id, GroupProfile *group) {
+	char *query=NULL, *db_err=NULL;
+	int sqlite_res;
+	GroupGet gg;
+	
+	gg.group=group;
+	gg.account_id=account_id;
+
+	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE id = %d and type = %d and enabled = 1;", account_id, ACCOUNT_TYPE_TWITTER);
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_group_leave_handler, (void*)&gg, &db_err);
+		if(sqlite_res != 0) {
+			fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
+			sqlite3_free(db_err);
+		}
+		free(query);
+	}
+}
