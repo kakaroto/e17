@@ -271,7 +271,7 @@ class FontSelectionWizard(FileSelectionWizard):
                 font_file.endswith(".ttf")
 
     def _get_title_text(self):
-        self.title_text = "Image preview - \"%s\"" % self._selection
+        self.title_text = "Font preview - \"%s\"" % self._selection
 
     def _add_files_to_preview(self):
         self._preview_file = self._preview_method()
