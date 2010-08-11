@@ -5,8 +5,11 @@
 // Based on: badzero.cocci
 //      http://coccinelle.lip6.fr/rules/badzero.html
 
+// This version of badnull plugin does not rely on expression being a pointer.
+// Run badnull.cocci and watch for false positives here
 //
 // run badzero.cocci first
+// run badnull.cocci first
 //
 
 // There are some exceptions ('good' rules), that could be handled by
@@ -14,7 +17,7 @@
 
 // Returning a comparison to NULL is good.
 @good1@
-expression *E;
+expression E;
 position p;
 @@
 
@@ -22,7 +25,7 @@ position p;
 
 // Assignments are good, do not change them
 @good4 disable is_zero,isnt_zero@
-expression *E;
+expression E;
 position p2;
 identifier x;
 @@
@@ -34,7 +37,7 @@ identifier x;
 
 // Boolean comparison as a function parameter is good too.
 @good2 disable is_zero,isnt_zero @
-expression *E;
+expression E;
 identifier f;
 position p;
 @@
@@ -46,7 +49,7 @@ position p;
 )
 
 @fix disable is_zero,isnt_zero @
-expression *E;
+expression E;
 position p != {good1.p, good2.p};
 position p2 != {good4.p2};
 @@
