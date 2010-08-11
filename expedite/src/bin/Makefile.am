@@ -87,6 +87,7 @@ text_styles_different_strings.c \
 text_change.c \
 textblock_basic.c \
 textblock_intl.c \
+textblock_auto_align.c \
 rect_blend.c \
 rect_blend_pow2.c \
 rect_solid.c \

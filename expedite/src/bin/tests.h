@@ -63,6 +63,7 @@
 #include "text_change.c"
 #include "textblock_basic.c"
 #include "textblock_intl.c"
+#include "textblock_auto_align.c"
 #include "rect_blend.c"
 #include "rect_blend_pow2.c"
 #include "rect_solid.c"
