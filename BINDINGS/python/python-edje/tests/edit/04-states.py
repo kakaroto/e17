@@ -25,33 +25,45 @@ class Basics(unittest.TestCase):
 
     def test_state_add(self):
         for p in self.parts:
-            part = self.edj.part_get(self.parts[0])
-            part.state_add("test_state_add", 0.0)
+            part = self.edj.part_get(p)
+            self.assertFalse(part.state_exist("test_state_add", 0.0))
+            self.assertTrue(part.state_add("test_state_add", 0.0))
             self.assertTrue(part.state_exist("test_state_add", 0.0))
-            part.state_add("test_state_add", 0.0)
-            self.assertTrue(part.state_exist("test_state_add", 0.0))
-            part.state_add("default", 0.0)
+            self.assertFalse(part.state_add("test_state_add", 0.0))
             self.assertTrue(part.state_exist("default", 0.0))
+            self.assertFalse(part.state_add("default", 0.0))
 
     def test_state_copy(self):
         for p in self.parts:
-            part = self.edj.part_get(self.parts[0])
+            part = self.edj.part_get(p)
+            self.assertTrue(part.state_exist("default", 0.0))
+            self.assertFalse(part.state_exist("new_state", 0))
             self.assertTrue(part.state_copy("default", 0.0, "new_state", 0))
-            self.assertTrue(part.state_copy("new_state", 0, "another_new_state", 0))
-            self.assertTrue(part.state_copy("another_new_state", 0.0, "default", 0))
-            self.assertFalse(part.state_copy("non-existing", 0.0, "new_state", 0))
+            self.assertTrue(part.state_exist("new_state", 0.0))
+            self.assertFalse(part.state_exist("another_new_state", 0.0))
+            self.assertTrue(
+                    part.state_copy("new_state", 0, "another_new_state", 0))
+            self.assertTrue(part.state_exist("another_new_state", 0.0))
+            self.assertTrue(
+                    part.state_copy("another_new_state", 0.0, "default", 0))
+            self.assertFalse(part.state_exist("non-existing", 0.0))
+            self.assertFalse(
+                    part.state_copy("non-existing", 0.0, "non-existing2", 0))
+            self.assertFalse(part.state_exist("non-existing2", 0.0))
 
     def test_state_del(self):
         for p in self.parts:
-            part = self.edj.part_get(self.parts[0])
-            part.state_add("test_state_del", 0.0)
-            part.state_del("test_state_del", 0)
+            part = self.edj.part_get(p)
+            self.assertTrue(part.state_add("test_state_del", 0.0))
+            self.assertTrue(part.state_exist("test_state_del", 0.0))
+            self.assertTrue(part.state_del("test_state_del", 0))
             self.assertFalse(part.state_exist("test_state_del", 0.0))
-            part.state_del("test_state_del", 0)
-            self.assertFalse(part.state_exist("test_state_del", 0.0))
+            self.assertFalse(part.state_del("test_state_del", 0.0))
             #we can't del "default" 0.0 state
-            part.state_del("default", 0.0)
             self.assertTrue(part.state_exist("default", 0.0))
+            self.assertFalse(part.state_del("default", 0.0))
+            self.assertTrue(part.state_exist("default", 0.0))
+
 
 edje.file_cache_set(0)
 suite = unittest.TestLoader().loadTestsFromTestCase(Basics)
