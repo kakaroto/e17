@@ -684,6 +684,9 @@ ECreateWinFromXwin(Window xwin)
    win->depth = depth;
    win->visual = WinGetVisual(VROOT);
    win->cmap = WinGetCmap(VROOT);
+#if DEBUG_XWIN
+   Eprintf("EXidWFX: %p %#lx\n", win, win->xwin);
+#endif
 
    return win;
 }
