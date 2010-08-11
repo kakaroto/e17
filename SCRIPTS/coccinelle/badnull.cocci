@@ -40,33 +40,15 @@ position p;
 @@
 
 (
-  f(..., E@p == NULL, ...)
+  f(<+...E@p == NULL ...+>)
 |
-  f(..., E@p != NULL, ...)
+  f(<+...E@p != NULL...+>)
 )
-
-// weird, it does not work if I merge this with previous rule
-@good3 disable is_zero,isnt_zero @
-expression *E;
-identifier f != assert;
-position p2;
-@@
-
-(
-  f(NULL ==@p2 E, ...)
-|
-  f(..., NULL ==@p2 E, ...)
-|
-  f(NULL !=@p2 E, ...)
-|
-  f(..., NULL !=@p2 E, ...)
-)
-
 
 @fix disable is_zero,isnt_zero @
 expression *E;
 position p != {good1.p, good2.p};
-position p2 != {good3.p2, good4.p2};
+position p2 != {good4.p2};
 @@
 
 (
