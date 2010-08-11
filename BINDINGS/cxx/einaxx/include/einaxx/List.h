@@ -26,7 +26,7 @@ public:
 EAPI void *eina_iterator_container_get (Eina_Iterator *iterator);
 
 EAPI void eina_iterator_foreach        (Eina_Iterator *iterator,
-                                        Eina_Each callback,
+                                        Eina_Each_Cb callback,
                                         const void *fdata);
 
 */
