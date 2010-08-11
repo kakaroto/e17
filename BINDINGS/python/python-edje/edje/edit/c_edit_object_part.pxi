@@ -83,10 +83,12 @@ cdef class Part:
             return State(self, sname, value)
 
     def state_add(self, char *sname, double value=0.0):
-        edje_edit_state_add(self.edje.obj, self.name, sname, value)
+        return bool(edje_edit_state_add(self.edje.obj, self.name, sname,
+                                        value))
 
     def state_del(self, char *sname, double value=0.0):
-        edje_edit_state_del(self.edje.obj, self.name, sname, value)
+        return bool(edje_edit_state_del(self.edje.obj, self.name, sname,
+                                        value))
 
     def state_exist(self, char *sname, double value=0.0):
         return bool(edje_edit_state_exist(self.edje.obj, self.name, sname,

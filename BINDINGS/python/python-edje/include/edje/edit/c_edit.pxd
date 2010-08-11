@@ -156,8 +156,8 @@ cdef extern from "Edje_Edit.h":
     # STATES API
     evas.c_evas.Eina_List * edje_edit_part_states_list_get(evas.c_evas.Evas_Object *obj, char *part)
     int edje_edit_state_name_set(evas.c_evas.Evas_Object *obj, char *part, char *state, double value, char *new_name, double new_value)
-    void edje_edit_state_add(evas.c_evas.Evas_Object *obj, char *part, char *name, double value)
-    void edje_edit_state_del(evas.c_evas.Evas_Object *obj, char *part, char *state, double value)
+    evas.c_evas.Eina_Bool edje_edit_state_add(evas.c_evas.Evas_Object *obj, char *part, char *name, double value)
+    evas.c_evas.Eina_Bool edje_edit_state_del(evas.c_evas.Evas_Object *obj, char *part, char *state, double value)
     evas.c_evas.Eina_Bool edje_edit_state_exist(evas.c_evas.Evas_Object *obj, char *part, char *state, double value)
     evas.c_evas.Eina_Bool edje_edit_state_copy(evas.c_evas.Evas_Object *obj, char *part, char *sfrom, double vfrom, char *sto, double vto)
     double edje_edit_state_rel1_relative_x_get(evas.c_evas.Evas_Object *obj, char *part, char *state, double value)
