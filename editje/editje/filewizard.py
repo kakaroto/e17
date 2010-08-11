@@ -232,7 +232,7 @@ class ImageSelectionWizard(FileSelectionWizard):
             return
         filename = self._workfile_name_get_cb()
         image_id = self._img_id_get_cb(selection)
-        key = "images/" + str(image_id)
+        key = "edje/images/" + str(image_id)
         self._preview_file.file_set(filename, key)
         self._fix_image_size(self._preview_file)
 
