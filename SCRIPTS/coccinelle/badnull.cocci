@@ -9,42 +9,31 @@
 // run badzero.cocci first
 //
 
+// There are some exceptions ('good' rules), that could be handled by
+// using !!E/!E, but here we let them as is.
+
+// Returning a comparison to NULL is good.
 @good1@
 expression *E;
 position p;
 @@
+
   return <+...E@p...+>;
 
-// a cast to a certain type complicates a bit,
-// but here we are searching for expressions such as
-//
-// if ((a = test_fun()) == NULL)
-//
-// These ones will not be converted to E/!E
-@good2 disable is_zero, isnt_zero@
+// Assignments are good, do not change them
+@good4@
 expression *E;
-identifier f;
 position p2;
-position p;
+identifier x;
 @@
 (
- (E@p = f(...)) ==@p2 NULL
+  x = (E ==@p2 NULL);
 |
- (E@p = f(...)) !=@p2 NULL
-|
- NULL ==@p2 (E@p = f(...))
-|
- NULL !=@p2 (E@p = f(...))
+  x = (E !=@p2 NULL);
 )
 
-
-@script:python@
-p << good2.p;
-@@
-
-print "%s:%s" % (p[0].line, p[0].column)
-
-@good3 disable is_zero,isnt_zero @
+// Boolean comparison as a function parameter is good too.
+@good2 disable is_zero,isnt_zero @
 expression *E;
 identifier f;
 position p;
@@ -56,7 +45,8 @@ position p;
   f(..., E@p != NULL, ...)
 )
 
-@good4 disable is_zero,isnt_zero @
+// weird, it does not work if I merge this with previous rule
+@good3 disable is_zero,isnt_zero @
 expression *E;
 identifier f != assert;
 position p2;
@@ -75,8 +65,8 @@ position p2;
 
 @fix disable is_zero,isnt_zero @
 expression *E;
-position p != {good2.p, good1.p, good3.p};
-position p2 != {good4.p2, good2.p2};
+position p != {good1.p, good2.p};
+position p2 != {good3.p2, good4.p2};
 @@
 
 (
@@ -92,10 +82,4 @@ position p2 != {good4.p2, good2.p2};
 - NULL !=@p2 E@p
 +  E
 )
-
-@script:python@
-p << fix.p2;
-@@
-
-print "fix %s:%s" % (p[0].line, p[0].column)
 
