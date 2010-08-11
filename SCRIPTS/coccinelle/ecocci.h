@@ -328,3 +328,10 @@ static void _x ()\
 #define __nonnull(x)
 #define __const const
 #define __attribute_malloc__
+#define __attribute_warn_unused_result__
+#define __wur
+#define __restrict
+#define __extern_always_inline
+#define __extern_inline
+#define __BEGIN_DECLS
+#define __BEGIN_NAMESPACE_STD
