@@ -119,17 +119,8 @@ FAST_CALL_PARAMS(evas_textblock_cursor_text_prepend, elixir_evas_textblock_curso
 FAST_CALL_PARAMS(evas_textblock_cursor_format_append, elixir_evas_textblock_cursor_string_params);
 FAST_CALL_PARAMS(evas_textblock_cursor_format_prepend, elixir_evas_textblock_cursor_string_params);
 
-FAST_CALL_PARAMS(evas_textblock_cursor_node_first, elixir_evas_textblock_cursor_params);
-FAST_CALL_PARAMS(evas_textblock_cursor_node_last, elixir_evas_textblock_cursor_params);
-FAST_CALL_PARAMS(evas_textblock_cursor_char_first, elixir_evas_textblock_cursor_params);
-FAST_CALL_PARAMS(evas_textblock_cursor_char_last, elixir_evas_textblock_cursor_params);
-FAST_CALL_PARAMS(evas_textblock_cursor_line_first, elixir_evas_textblock_cursor_params);
-FAST_CALL_PARAMS(evas_textblock_cursor_line_last, elixir_evas_textblock_cursor_params);
-FAST_CALL_PARAMS(evas_textblock_cursor_node_delete, elixir_evas_textblock_cursor_params);
 FAST_CALL_PARAMS(evas_textblock_cursor_char_delete, elixir_evas_textblock_cursor_params);
 
-FAST_CALL_PARAMS(evas_textblock_cursor_node_next, elixir_bool_evas_textblock_cursor_params);
-FAST_CALL_PARAMS(evas_textblock_cursor_node_prev, elixir_bool_evas_textblock_cursor_params);
 FAST_CALL_PARAMS(evas_textblock_cursor_char_next, elixir_bool_evas_textblock_cursor_params);
 FAST_CALL_PARAMS(evas_textblock_cursor_char_prev, elixir_bool_evas_textblock_cursor_params);
 
@@ -387,51 +378,6 @@ elixir_evas_textblock_cursor_range_delete(JSContext *cx, uintN argc, jsval *vp)
 }
 
 static JSBool
-elixir_evas_textblock_cursor_node_text_get(JSContext *cx, uintN argc, jsval *vp)
-{
-   Evas_Textblock_Cursor *know;
-   elixir_value_t val[1];
-
-   if (!elixir_params_check(cx, _evas_textblock_cursor_params, val, argc, JS_ARGV(cx, vp)))
-     return JS_FALSE;
-
-   GET_PRIVATE(cx, val[0].v.obj, know);
-
-   elixir_return_str(cx, vp, evas_textblock_cursor_node_text_get(know));
-   return JS_TRUE;
-}
-
-static JSBool
-elixir_evas_textblock_cursor_node_text_length_get(JSContext *cx, uintN argc, jsval *vp)
-{
-   Evas_Textblock_Cursor *know;
-   elixir_value_t val[1];
-
-   if (!elixir_params_check(cx, _evas_textblock_cursor_params, val, argc, JS_ARGV(cx, vp)))
-     return JS_FALSE;
-
-   GET_PRIVATE(cx, val[0].v.obj, know);
-
-   JS_SET_RVAL(cx, vp, INT_TO_JSVAL(evas_textblock_cursor_node_text_length_get(know)));
-   return JS_TRUE;
-}
-
-static JSBool
-elixir_evas_textblock_cursor_node_format_get(JSContext *cx, uintN argc, jsval *vp)
-{
-   Evas_Textblock_Cursor *know;
-   elixir_value_t val[1];
-
-   if (!elixir_params_check(cx, _evas_textblock_cursor_params, val, argc, JS_ARGV(cx, vp)))
-     return JS_FALSE;
-
-   GET_PRIVATE(cx, val[0].v.obj, know);
-
-   elixir_return_str(cx, vp, evas_textblock_cursor_node_format_get(know));
-   return JS_TRUE;
-}
-
-static JSBool
 elixir_evas_textblock_cursor_range_text_get(JSContext *cx, uintN argc, jsval *vp)
 {
    Evas_Textblock_Cursor *know;
@@ -634,16 +580,7 @@ static JSFunctionSpec	evas_textblock_functions[] = {
   ELIXIR_FN(evas_textblock_cursor_text_prepend, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_textblock_cursor_format_append, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_textblock_cursor_format_prepend, 2, JSPROP_ENUMERATE, 0 ),
-  ELIXIR_FN(evas_textblock_cursor_node_first, 1, JSPROP_ENUMERATE, 0 ),
-  ELIXIR_FN(evas_textblock_cursor_node_last, 1, JSPROP_ENUMERATE, 0 ),
-  ELIXIR_FN(evas_textblock_cursor_char_first, 1, JSPROP_ENUMERATE, 0 ),
-  ELIXIR_FN(evas_textblock_cursor_char_last, 1, JSPROP_ENUMERATE, 0 ),
-  ELIXIR_FN(evas_textblock_cursor_line_first, 1, JSPROP_ENUMERATE, 0 ),
-  ELIXIR_FN(evas_textblock_cursor_line_last, 1, JSPROP_ENUMERATE, 0 ),
-  ELIXIR_FN(evas_textblock_cursor_node_delete, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_textblock_cursor_char_delete, 1, JSPROP_ENUMERATE, 0 ),
-  ELIXIR_FN(evas_textblock_cursor_node_next, 1, JSPROP_ENUMERATE, 0 ),
-  ELIXIR_FN(evas_textblock_cursor_node_prev, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_textblock_cursor_char_next, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_textblock_cursor_char_prev, 1, JSPROP_ENUMERATE, 0 ),
 
@@ -661,9 +598,6 @@ static JSFunctionSpec	evas_textblock_functions[] = {
   ELIXIR_FN(evas_textblock_cursor_compare, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_textblock_cursor_copy, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_textblock_cursor_range_delete, 2, JSPROP_ENUMERATE, 0 ),
-  ELIXIR_FN(evas_textblock_cursor_node_text_get, 1, JSPROP_ENUMERATE, 0 ),
-  ELIXIR_FN(evas_textblock_cursor_node_text_length_get, 1, JSPROP_ENUMERATE, 0 ),
-  ELIXIR_FN(evas_textblock_cursor_node_format_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_textblock_cursor_range_text_get, 3, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_textblock_cursor_char_geometry_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_textblock_cursor_line_geometry_get, 1, JSPROP_ENUMERATE, 0 ),
