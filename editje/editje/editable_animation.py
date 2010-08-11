@@ -207,7 +207,8 @@ class EditableAnimation(Manager, object):
             st = progname + " 0.00"
             prog = self._edit_grp.program_get(progname)
             prog.target_del(part)
-            p.state_del(st)
+            if not p.state_del(st):
+                return
 
         del self.parts[part]
         self.event_emit("part.removed", part)
@@ -271,7 +272,8 @@ class EditableAnimation(Manager, object):
         for p in self.parts.iterkeys():
             prog.target_add(p)
             part = self._edit_grp.part_get(p)
-            part.state_add(name)
+            if not part.state_add(name):
+                return
             state = part.state_get(statename)
             state.copy_from(prevstatename)
 
@@ -331,7 +333,8 @@ class EditableAnimation(Manager, object):
         statename = progname
         for p in self.parts.iterkeys():
             part = self._edit_grp.part_get(p)
-            part.state_del(statename, 0.0)
+            if not part.state_del(statename, 0.0):
+                return
 
         self.timestops.pop(idx)
         self.event_emit("state.removed", time)

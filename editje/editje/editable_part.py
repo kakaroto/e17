@@ -128,7 +128,8 @@ class EditablePart(Manager):
         if not self.name:
             return False
 
-        self._part.state_add(name, value)
+        if not self._part.state_add(name, value):
+            return False
         self.event_emit("state.added", (name, value))
         return True
 
@@ -136,7 +137,9 @@ class EditablePart(Manager):
         if not self.name:
             return False
 
-        self._part.state_del(name, value)
+        if not self._part.state_del(name, value):
+            return False
+
         self.event_emit("state.removed", (name, value))
         return True
 

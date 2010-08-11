@@ -107,8 +107,7 @@ class WidgetStates(WidgetEntryButton):
 
         if state == self._edit_grp.part.state.name:
             self._edit_grp.part.state.name = ("default", 0.00)
-        self._edit_grp.part.state_del(*state)
-        return True
+        return self._edit_grp.part.state_del(*state)
 
     def _states_added_cb(self, popup, data):
         new_state = self.newstate_entry.entry
@@ -147,7 +146,8 @@ class WidgetStates(WidgetEntryButton):
         st_name = (state_save.name, state_save.value)
 
         if readd:
-            self._edit_grp.part.state_add(*st_name)
+            if not self._edit_grp.part.state_add(*st_name):
+                return
 
         state = self._edit_grp.part_get(part_name).state_get(*st_name)
         state_save.apply_to(state)

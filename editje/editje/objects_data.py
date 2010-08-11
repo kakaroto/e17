@@ -117,7 +117,8 @@ class Part(Object):
         for state in self["states"]:
             name, val = state.name, state.value
             if not obj.state_exist(name, val):
-                obj.state_add(name, val)
+                if not obj.state_add(name, val):
+                    return False
             state.apply_to(obj.state_get(name, val))
 
         obj.state_selected_set(*self["state"])
@@ -569,7 +570,8 @@ class AnimationFrame(Object):
             if not part:
                 continue
 
-            part.state_add(state_name)
+            if not part.state_add(state_name):
+               continue
 
             state = part.state_get(state_name)
             if not state:

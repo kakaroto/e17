@@ -559,7 +559,8 @@ class Editable(Manager):
         for p in parts:
             prog.target_add(p)
             part = self.__edje.part_get(p)
-            part.state_add(startname)
+            if not part.state_add(startname):
+                return False
             state = part.state_get(statename)
             state.copy_from(prevstatename)
 
@@ -589,7 +590,8 @@ class Editable(Manager):
                 part = self.__edje.part_get(pp)
                 if part:
                     part.state_selected_set("default")
-                    part.state_del(p)
+                    if not part.state_del(p):
+                        return False
             self.program_del(p)
         self.program_del(stopname)
         self.event_emit("animation.removed", name)
