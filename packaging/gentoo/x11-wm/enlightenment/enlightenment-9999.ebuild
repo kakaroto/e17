@@ -24,7 +24,7 @@ IUSE="exchange pam alsa tracker pm-utils debug xinerama xscreensaver opengl blue
 	+conf-startup +conf-theme +conf-winlist \
 	connman +cpufreq +dropshadow +everything \
 	+everything-files +everything-apps +everything-calc +everything-aspell +everything-settings +everything-windows \
-	+fileman +ibar +ibox +illume2 +illume ofono +pager +start +sysactions +syscon +systray \
+	+fileman +ibar +ibox +illume2 -illume ofono +pager +start +sysactions +syscon +systray \
 	+temperature +winlist +wizard"
 EVRY_MODS=(everything-files everything-apps everything-calc everything-aspell everything-settings everything-windows)
 CONF_MODS=(conf-borders conf-colors conf-desklock conf-desk conf-desks \
