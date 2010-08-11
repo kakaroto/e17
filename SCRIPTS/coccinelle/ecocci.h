@@ -316,11 +316,14 @@ static void _x ()\
 
 
 // embryo
-#define __const const
-#define __THROW
-#define __nonnull(x)
 #define SWITCH(x) switch (x) {
 #define SWITCHEND }
 #define CASE(x) case x:
 #define BREAK break
 
+
+// system headers
+#define __attribute_pure__
+#define __THROW
+#define __nonnull(x)
+#define __const const
