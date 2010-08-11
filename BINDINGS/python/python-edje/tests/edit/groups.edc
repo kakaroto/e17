@@ -1,5 +1,8 @@
    group {
       name: "g1";
+      data {
+         item: "pref_size" "10x10";
+      }
       parts {
          part {
             name: "g1_p1";

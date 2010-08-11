@@ -3,7 +3,9 @@ collections {
       name: "main";
       min: 123 456;
       max: 789 999;
-
+      data {
+	 item: "pref_size" "10x17";
+      }
       parts {
          part {
             name: "main_rect";

@@ -123,13 +123,36 @@ class Basics(unittest.TestCase):
     # Data
 
     def test_data(self):
-        pass
+        self.assertEqual(self.edj.group_data_get("pref_size"), "10x17")
+        self.assertFalse(self.edj.group_data_get("foo"))
+        self.assertTrue(self.edj.group_data_add("foo", "bar"))
+        self.assertTrue(self.edj.group_data_set("pref_size", "100x100"))
+        self.edj.save()
+        other = edje.edit.EdjeEdit(self.canvas.evas, file="test.edj", group="main")
+        self.assertEqual(other.group_data_get("pref_size"), "100x100")
+        self.assertTrue(other.group_data_get("foo"))
+        self.assertEqual(other.group_data_get("foo"), "bar")
+        other.delete()
 
     def test_data_add(self):
-        pass
+        self.assertFalse(self.edj.group_data_get("foo"))
+        self.assertTrue(self.edj.group_data_add("foo", "bar"))
+        self.assertFalse(self.edj.group_data_add("foo", "bar"))
+        self.assertEqual(self.edj.group_data_get("foo"), "bar")
+        for count in xrange(1000):
+            self.assertTrue(self.edj.group_data_add(str(count), str(count)))
+            self.assertFalse(self.edj.group_data_add(str(count), str(count)))
+            self.assertEqual(self.edj.group_data_get(str(count)), str(count))
 
     def test_data_del(self):
-        pass
+        self.assertTrue(self.edj.group_data_get("pref_size"))
+        self.assertTrue(self.edj.group_data_del("pref_size"))
+        self.assertFalse(self.edj.group_data_get("pref_size"))
+        self.assertTrue(self.edj.group_data_add("foo", "bar"))
+        self.assertEqual(self.edj.group_data_get("foo"), "bar")
+        self.assertTrue(self.edj.group_data_del("foo"))
+        self.assertFalse(self.edj.group_data_get("get"))
+
 
     # Text Style
 
@@ -218,3 +241,4 @@ suite = unittest.TestLoader().loadTestsFromTestCase(Basics)
 unittest.TextTestRunner(verbosity=2).run(suite)
 edje.shutdown()
 ecore.evas.shutdown()
+
