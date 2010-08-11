@@ -18,7 +18,7 @@
 import os
 import xmlrpclib
 from SimpleXMLRPCServer import SimpleXMLRPCServer, \
-    SimpleXMLRPCRequestHandler, Fault
+    SimpleXMLRPCRequestHandler
 
 import edje
 from edje.edit import EdjeEdit
