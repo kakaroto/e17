@@ -327,3 +327,4 @@ static void _x ()\
 #define __THROW
 #define __nonnull(x)
 #define __const const
+#define __attribute_malloc__
