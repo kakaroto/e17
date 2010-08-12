@@ -1,38 +1,43 @@
-# Portuguese translation for enlightenment
-# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# Portuguese translation for calendar
 # This file is distributed under the same license as the enlightenment package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+# Sérgio Marques <smarquespt@gmail.com>, 2010
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-06-06 00:26+0800\n"
-"PO-Revision-Date: 2009-08-10 00:39+0000\n"
-"Last-Translator: Pedro Saraiva <pdro.saraiva@gmail.com>\n"
-"Language-Team: Portuguese <pt@li.org>\n"
+"Project-Id-Version: calendar\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2009-08-28 02:00-0700\n"
+"PO-Revision-Date: 2010-08-11 15:36-0000\n"
+"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
+"Language-Team: Portuguese\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2009-08-27 10:01+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-Language: Portuguese\n"
+"X-Poedit-Country: Portugal\n"
 
-#: ../e_mod_main.c:457
+#: ../src/e_mod_main.c:450
 msgid "Sunday"
 msgstr "Domingo"
 
-#: ../e_mod_main.c:464
+#: ../src/e_mod_main.c:457
 msgid "Monday"
 msgstr "Segunda-Feira"
 
-#: ../e_mod_main.c:476
+#: ../src/e_mod_main.c:469
 msgid "First Day of Week"
 msgstr "Primeiro Dia da Semana"
 
-#: ../e_mod_main.c:577 ../e_mod_main.c:593
+#: ../src/e_mod_main.c:570
+#: ../src/e_mod_main.c:586
 msgid "Calendar"
 msgstr "Calendário"
 
-#: ../e_mod_main.c:577 ../e_mod_main.c:593
+#: ../src/e_mod_main.c:570
+#: ../src/e_mod_main.c:586
 msgid "Monthview Popup (Show/Hide)"
-msgstr ""
+msgstr "Alerta de Vista Mensal (Mostrar/Ocultar)"
+

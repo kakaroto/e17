@@ -1,0 +1,315 @@
+# Portuguese translation for ewl
+# This file is distributed under the same license as the enlightenment package.
+# Sérgio Marques <smarquespt@gmail.com>, 2010
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ewl\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e/\n"
+"POT-Creation-Date: 2010-08-11 03:00-0700\n"
+"PO-Revision-Date: 2010-08-11 19:21-0000\n"
+"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-Language: Portuguese\n"
+"X-Poedit-Country: Portugal\n"
+
+#: ../src/lib/ewl_stock.c:18
+msgid "STOCK|About"
+msgstr "Sobre"
+
+#: ../src/lib/ewl_stock.c:19
+msgid "STOCK|Add"
+msgstr "Adicionar"
+
+#: ../src/lib/ewl_stock.c:20
+msgid "STOCK|Apply"
+msgstr "Aplicar"
+
+#. Arrow
+#: ../src/lib/ewl_stock.c:21
+msgid "STOCK|Bottom"
+msgstr "Inferior"
+
+#. Arrow
+#: ../src/lib/ewl_stock.c:22
+msgid "STOCK|Down"
+msgstr "Baixo"
+
+#. Arrow
+#: ../src/lib/ewl_stock.c:23
+msgid "STOCK|First"
+msgstr "Primeiro"
+
+#. Arrow
+#: ../src/lib/ewl_stock.c:24
+msgid "STOCK|Last"
+msgstr "Último"
+
+#. Arrow
+#: ../src/lib/ewl_stock.c:25
+msgid "STOCK|Left"
+msgstr "Esquerda"
+
+#. Arrow
+#: ../src/lib/ewl_stock.c:26
+msgid "STOCK|Right"
+msgstr "Direita"
+
+#. Arrow
+#: ../src/lib/ewl_stock.c:27
+msgid "STOCK|Top"
+msgstr "Superior"
+
+#. Arrow
+#: ../src/lib/ewl_stock.c:28
+msgid "STOCK|Up"
+msgstr "Cima"
+
+#: ../src/lib/ewl_stock.c:29
+msgid "STOCK|Bold"
+msgstr "Negrito"
+
+#: ../src/lib/ewl_stock.c:30
+msgid "STOCK|Cancel"
+msgstr "Cancelar"
+
+#: ../src/lib/ewl_stock.c:31
+msgid "STOCK|Clear"
+msgstr "Limpar"
+
+#: ../src/lib/ewl_stock.c:32
+msgid "STOCK|Close"
+msgstr "Fechar"
+
+#: ../src/lib/ewl_stock.c:33
+msgid "STOCK|Copy"
+msgstr "Copiar"
+
+#: ../src/lib/ewl_stock.c:34
+msgid "STOCK|Cut"
+msgstr "Cortar"
+
+#: ../src/lib/ewl_stock.c:35
+msgid "STOCK|Delete"
+msgstr "Apagar"
+
+#: ../src/lib/ewl_stock.c:36
+msgid "STOCK|Edit"
+msgstr "Editar"
+
+#: ../src/lib/ewl_stock.c:37
+msgid "STOCK|Execute"
+msgstr "Executar"
+
+#: ../src/lib/ewl_stock.c:38
+msgid "STOCK|Find"
+msgstr "Encontrar"
+
+#: ../src/lib/ewl_stock.c:39
+msgid "STOCK|Find and replace"
+msgstr "encontrar e substituir"
+
+#: ../src/lib/ewl_stock.c:40
+msgid "STOCK|Flip horizontal"
+msgstr "Inverter na horizontal"
+
+#: ../src/lib/ewl_stock.c:41
+msgid "STOCK|Flip vertical"
+msgstr "Inverter na vertical"
+
+#: ../src/lib/ewl_stock.c:42
+msgid "STOCK|Fullscreen"
+msgstr "Ecrã Completo"
+
+#: ../src/lib/ewl_stock.c:43
+msgid "STOCK|Help"
+msgstr "Ajuda"
+
+#: ../src/lib/ewl_stock.c:44
+msgid "STOCK|Home"
+msgstr "Pasta Pessoal"
+
+#: ../src/lib/ewl_stock.c:45
+msgid "STOCK|Indent"
+msgstr "Avançar"
+
+#: ../src/lib/ewl_stock.c:46
+msgid "STOCK|Italic"
+msgstr "Ítálico"
+
+#: ../src/lib/ewl_stock.c:47
+msgid "STOCK|Justify center"
+msgstr "Justificar ao centro"
+
+#: ../src/lib/ewl_stock.c:48
+msgid "STOCK|Justify fill"
+msgstr "Justificar para preencher"
+
+#: ../src/lib/ewl_stock.c:49
+msgid "STOCK|Justify left"
+msgstr "Justificar à esquerda"
+
+#: ../src/lib/ewl_stock.c:50
+msgid "STOCK|Justify right"
+msgstr "Justificar à direita"
+
+#: ../src/lib/ewl_stock.c:51
+msgid "STOCK|FF"
+msgstr "FF"
+
+#: ../src/lib/ewl_stock.c:52
+msgid "STOCK|Next"
+msgstr "seguinte"
+
+#: ../src/lib/ewl_stock.c:53
+msgid "STOCK|Pause"
+msgstr "pausa"
+
+#: ../src/lib/ewl_stock.c:54
+msgid "STOCK|Play"
+msgstr "Reproduzir"
+
+#: ../src/lib/ewl_stock.c:55
+msgid "STOCK|Previous"
+msgstr "Anterior"
+
+#: ../src/lib/ewl_stock.c:56
+msgid "STOCK|Record"
+msgstr "Gravar"
+
+#: ../src/lib/ewl_stock.c:57
+msgid "STOCK|Rewind"
+msgstr "Retroceder"
+
+#: ../src/lib/ewl_stock.c:58
+msgid "STOCK|Stop"
+msgstr "Parar"
+
+#: ../src/lib/ewl_stock.c:59
+msgid "STOCK|New"
+msgstr "Novo"
+
+#: ../src/lib/ewl_stock.c:60
+msgid "STOCK|Ok"
+msgstr "Ok"
+
+#: ../src/lib/ewl_stock.c:61
+msgid "STOCK|Open"
+msgstr "Abrir"
+
+#: ../src/lib/ewl_stock.c:62
+msgid "STOCK|Paste"
+msgstr "Colar"
+
+#: ../src/lib/ewl_stock.c:63
+msgid "STOCK|Preferences"
+msgstr "preferências"
+
+#: ../src/lib/ewl_stock.c:64
+msgid "STOCK|Print"
+msgstr "Imprimir"
+
+#: ../src/lib/ewl_stock.c:65
+msgid "STOCK|Print preview"
+msgstr "Antever impressão"
+
+#: ../src/lib/ewl_stock.c:66
+msgid "STOCK|Properties"
+msgstr "Propriedades"
+
+#: ../src/lib/ewl_stock.c:67
+msgid "STOCK|Quit"
+msgstr "sair"
+
+#: ../src/lib/ewl_stock.c:68
+msgid "STOCK|Redo"
+msgstr "Refazer"
+
+#: ../src/lib/ewl_stock.c:69
+msgid "STOCK|Refresh"
+msgstr "Actualizar"
+
+#: ../src/lib/ewl_stock.c:70
+msgid "STOCK|Remove"
+msgstr "Remover"
+
+#: ../src/lib/ewl_stock.c:71
+msgid "STOCK|Rotate left"
+msgstr "Rodar à esquerda"
+
+#: ../src/lib/ewl_stock.c:72
+msgid "STOCK|Rotate right"
+msgstr "Rodar à direita"
+
+#: ../src/lib/ewl_stock.c:73
+msgid "STOCK|Save"
+msgstr "Gravar"
+
+#: ../src/lib/ewl_stock.c:74
+msgid "STOCK|Save as"
+msgstr "Gravar como"
+
+#: ../src/lib/ewl_stock.c:75
+msgid "STOCK|Select all"
+msgstr "seleccionar tudo"
+
+#: ../src/lib/ewl_stock.c:76
+msgid "STOCK|Sort ascending"
+msgstr "Ordenação ascendente"
+
+#: ../src/lib/ewl_stock.c:77
+msgid "STOCK|Sort descending"
+msgstr "Ordenarção descendente"
+
+#: ../src/lib/ewl_stock.c:78
+msgid "STOCK|Spell check"
+msgstr "Verificação ortográfica"
+
+#: ../src/lib/ewl_stock.c:79
+msgid "STOCK|Strikethrough"
+msgstr "Riscar"
+
+#: ../src/lib/ewl_stock.c:80
+msgid "STOCK|Underline"
+msgstr "Sublinhar"
+
+#: ../src/lib/ewl_stock.c:81
+msgid "STOCK|Undo"
+msgstr "Desfazer"
+
+#: ../src/lib/ewl_stock.c:82
+msgid "STOCK|Unindent"
+msgstr "Retirar avanço"
+
+#: ../src/lib/ewl_stock.c:83
+msgid "STOCK|Zoom 1:1"
+msgstr "Ampliação 1:1"
+
+#: ../src/lib/ewl_stock.c:84
+msgid "STOCK|Zoom fit"
+msgstr "Ajustar ao tamanho"
+
+#: ../src/lib/ewl_stock.c:85
+msgid "STOCK|Zoom in"
+msgstr "Ampliar"
+
+#: ../src/lib/ewl_stock.c:86
+msgid "STOCK|Zoom out"
+msgstr "Reduzir"
+
+#: ../src/lib/ewl_colordialog.c:57
+msgid "Ewl Colordialog"
+msgstr "Cor do diálogo ewl"
+
+#: ../src/lib/ewl_colorpicker.c:192
+msgid "COLOR|Current:"
+msgstr "Actual:"
+
+#: ../src/lib/ewl_colorpicker.c:210
+msgid "COLOR|Previous:"
+msgstr "Anterior:"
+
