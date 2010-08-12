@@ -1,0 +1,160 @@
+# Portuguese translation for e16menuedit
+# This file is distributed under the same license as the enlightenment package.
+# Sérgio Marques <smarquespt@gmail.com>, 2010
+msgid ""
+msgstr ""
+"Project-Id-Version: e16menuedit\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-05-09 08:51+0800\n"
+"PO-Revision-Date: 2010-08-11 11:29-0000\n"
+"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-08-11 01:14+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+"X-Poedit-Language: Portuguese\n"
+"X-Poedit-Country: Portugal\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: ../src/callbacks.c:53
+msgid "Save"
+msgstr "Gravar"
+
+#: ../src/callbacks.c:60
+#: ../src/treeview.c:149
+#: ../e16menuedit2.glade.h:11
+msgid "New Entry"
+msgstr "Nova Entrada"
+
+#: ../src/callbacks.c:67
+#: ../e16menuedit2.glade.h:4
+msgid "Choose Icon"
+msgstr "Escolha o Ícone"
+
+#: ../src/callbacks.c:74
+#: ../e16menuedit2.glade.h:6
+msgid "Delete Entry"
+msgstr "Apagar Entrada"
+
+#: ../src/callbacks.c:81
+msgid "Quit"
+msgstr "Sair"
+
+#: ../src/callbacks.c:310
+msgid "No help file found!"
+msgstr "Ficheiro de ajuda não encontrado!"
+
+#: ../src/callbacks.c:314
+msgid "No help application found"
+msgstr "Aplicação de ajuda não encontrada"
+
+#: ../src/e16menuedit2.c:119
+msgid "Menu successfully loaded!"
+msgstr "Menu carregado com sucesso!"
+
+#: ../src/icon_chooser.c:66
+msgid "Select Icon..."
+msgstr "Seleccione o Ícone..."
+
+#: ../src/icon_chooser.c:102
+msgid "Icon size:"
+msgstr "Tamanho do ícone:"
+
+#: ../src/treeview.c:57
+msgid "Description"
+msgstr "Descrição"
+
+#: ../src/treeview.c:64
+msgid "Icon"
+msgstr "Ícone"
+
+#: ../src/treeview.c:86
+msgid "Parameters"
+msgstr "Parâmetros"
+
+#: ../src/treeview.c:203
+msgid "Menu saved!"
+msgstr "Menu gravado!"
+
+#: ../src/treeview.c:222
+msgid "Submenu must have a name! -> menu not saved!"
+msgstr "O sub-menu tem que ter um nome! -> menu não gravado"
+
+#: ../src/treeview.c:226
+msgid "Unknown error occurred while checking menu -> menu not saved!"
+msgstr "Ocorreu um erro desconhecido ao verificar o menu -> menu não gravado!"
+
+#: ../e16menuedit2.glade.h:1
+msgid "<b>Properties:</b>"
+msgstr "<b>Propriedades:</b>"
+
+#: ../e16menuedit2.glade.h:2
+msgid ""
+"<span font_desc=\"Sans 22\">E16 Menu Editor II</span>\n"
+"e16menuedit2 v0.0.3"
+msgstr ""
+"<span font_desc=\"Sans 22\">Editor de Menu II do E16</span>\n"
+"e16menuedit2 v0.0.3"
+
+#: ../e16menuedit2.glade.h:5
+msgid "Choose _Icon"
+msgstr "Escolha o Í_cone"
+
+#: ../e16menuedit2.glade.h:7
+msgid "E16 Menu Editor"
+msgstr "Editor de Menus do E16"
+
+#: ../e16menuedit2.glade.h:8
+msgid "Fallback Help-Browser:"
+msgstr "Navegador de Recurso para a Ajuda:"
+
+#: ../e16menuedit2.glade.h:9
+msgid "Info"
+msgstr "Info"
+
+#: ../e16menuedit2.glade.h:10
+msgid "Info about E16 Menu Editor"
+msgstr "Info sobre o editor de menus do E16"
+
+#: ../e16menuedit2.glade.h:12
+msgid "Properties"
+msgstr "Propriedades"
+
+#: ../e16menuedit2.glade.h:13
+msgid "_Contents"
+msgstr "_Conteúdos"
+
+#: ../e16menuedit2.glade.h:14
+msgid "_Delete Entry"
+msgstr "_Apagar Entrada"
+
+#: ../e16menuedit2.glade.h:15
+msgid "_Edit"
+msgstr "_Editar"
+
+#: ../e16menuedit2.glade.h:16
+msgid "_File"
+msgstr "_Ficheiro"
+
+#: ../e16menuedit2.glade.h:17
+msgid "_Help"
+msgstr "A_juda"
+
+#: ../e16menuedit2.glade.h:18
+msgid "_New Entry"
+msgstr "_Nova Entrada"
+
+#: ../e16menuedit2.glade.h:19
+msgid ""
+"mozilla\n"
+"firefox\n"
+"epiphany\n"
+"konqueror"
+msgstr ""
+"mozilla\n"
+"firefox\n"
+"epiphany\n"
+"konqueror"
+
