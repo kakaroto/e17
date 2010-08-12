@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=eve
+Comment=WebKit-EFL demo application
+Exec=eve
+Icon=eve
+Terminal=false
+Type=Application
+Categories=Application;Utility;

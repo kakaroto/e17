@@ -1,0 +1,1036 @@
+#define TOP_PANEL_HEIGHT 64
+#define BOTTOM_PANEL_HEIGHT 85
+#define TOOLBAR_ITEMS 5
+#define TOOLBAR_PADDING 0.03
+#define TOOLBAR_ITEM_SIZE 90
+#define URLBAR_PADDING 0.03
+
+#define TOOLBAR_SPACE_AVAILABLE (1.0-TOOLBAR_PADDING*2)
+#define TOOLBAR_POSITION(_item_number) ((TOOLBAR_SPACE_AVAILABLE/TOOLBAR_ITEMS)*_item_number)
+#define TOOLBAR_BUTTON(_button_name,_button_title,_xpos) \
+    part { name: "button-"_button_name"-normal"; \
+        type: IMAGE; \
+        description { state: "default" 0.0; \
+            min: TOOLBAR_ITEM_SIZE TOOLBAR_ITEM_SIZE; \
+            max: TOOLBAR_ITEM_SIZE TOOLBAR_ITEM_SIZE; \
+            fixed: 1 1; \
+            rel1 { \
+                to_y: "panel-bottom"; \
+                relative: (_xpos+TOOLBAR_PADDING) 1.0; \
+                offset: -45 -46; \
+            } \
+            rel2 { \
+                to_y: "panel-bottom"; \
+                relative: (_xpos+TOOLBAR_PADDING) 1.0; \
+                offset: (-TOOLBAR_ITEM_SIZE/2) (-TOOLBAR_ITEM_SIZE/2); \
+            } \
+            image.normal: "bt_"_button_name"_normal.png"; \
+        } \
+    } \
+    part { name: "button-"_button_name"-selected"; \
+        type: IMAGE; \
+        mouse_events: 0; \
+        description { state: "default" 0.0; \
+            visible: 0; \
+            min: TOOLBAR_ITEM_SIZE TOOLBAR_ITEM_SIZE; \
+            max: TOOLBAR_ITEM_SIZE TOOLBAR_ITEM_SIZE; \
+            fixed: 1 1; \
+            rel1 { \
+                to_y: "panel-bottom"; \
+                relative: (_xpos+TOOLBAR_PADDING) 1.0; \
+                offset: -45 -46; \
+            } \
+            rel2 { \
+                to_y: "panel-bottom"; \
+                relative: (_xpos+TOOLBAR_PADDING) 1.0; \
+                offset: (-TOOLBAR_ITEM_SIZE/2) (-TOOLBAR_ITEM_SIZE/2); \
+            } \
+            image.normal: "bt_"_button_name"_selected.png"; \
+            color: 255 255 255 0; \
+        } \
+        description { state: "visible" 0.0; \
+            inherit: "default" 0.0; \
+            visible: 1; \
+            color: 255 255 255 255; \
+        } \
+    } \
+    part { name: "button-"_button_name"-left-separator"; \
+        type: RECT; \
+        description { state: "default" 0.0; \
+            fixed: 1 1; \
+            min: 2 90; \
+            max: 2 90; \
+            rel1 { \
+                to: "button-"_button_name"-normal"; \
+                relative: 0.0 0.0; \
+                offset: -1 12; \
+            } \
+            rel2 { \
+                to: "button-"_button_name"-normal"; \
+                relative: 0.0 1.0; \
+                offset: -1 -1; \
+            } \
+            color: 0 0 0 128; \
+        } \
+    } \
+    part { name: "button-"_button_name"-label"; \
+        type: TEXT; \
+        effect: GLOW; \
+        mouse_events: 0; \
+        description { state: "default" 0.0; \
+            rel1 { \
+                to: "button-"_button_name"-normal"; \
+                relative: 0.0 0.0; \
+                offset: 0 5; \
+            } \
+            rel2 { \
+                to: "button-"_button_name"-normal"; \
+                relative: 1.0 1.0; \
+                offset: -1 -1; \
+            } \
+            text { \
+                font: "Sans,Edje-Vera"; \
+                size: 12; \
+                text: _button_title; \
+                align: 0.5 0.5; \
+            } \
+            color: 190 190 190 255; \
+            color2: 20 20 20 255; \
+        } \
+    } \
+    programs { \
+        program { name: _button_name"-pressed"; \
+            signal: "mouse,down,*"; \
+            source: "button-"_button_name"-normal"; \
+            action: STATE_SET "visible" 0.0; \
+            target: "button-"_button_name"-selected"; \
+            transition: ACCELERATE 0.3; \
+        } \
+        program { name: _button_name"-released"; \
+            signal: "mouse,up,*"; \
+            source: "button-"_button_name"-normal"; \
+            action: STATE_SET "default" 0.0; \
+            target: "button-"_button_name"-selected"; \
+            transition: DECELERATE 0.6; \
+        } \
+        program { name: _button_name"-clicked"; \
+            signal: "mouse,clicked,*"; \
+            source: "button-"_button_name"-normal"; \
+            action: SIGNAL_EMIT "action,"_button_name _button_name; \
+        } \
+    }
+
+#define URLBAR_BUTTON(_button_name,_pos) \
+    part { name: "button-"_button_name"-normal"; \
+        type: IMAGE; \
+        description { state: "default" 0.0; \
+            min: 40 40; \
+            max: 40 40; \
+            fixed: 1 1; \
+            rel1 { \
+                to_y: "panel-top"; \
+                relative: _pos 0.0; \
+                offset: 0 -5; \
+            } \
+            rel2 { \
+                to_y: "panel-top"; \
+                relative: _pos 1.0; \
+                offset: -1 -1; \
+            } \
+            image.normal: "bt_"_button_name"_normal.png"; \
+        } \
+    } \
+    part { name: "button-"_button_name"-selected"; \
+        type: IMAGE; \
+        mouse_events: 0; \
+        description { state: "default" 0.0; \
+            min: 40 40; \
+            max: 40 40; \
+            fixed: 1 1; \
+            visible: 0; \
+            rel1 { \
+                to_y: "panel-top"; \
+                relative: _pos 0.0; \
+                offset: 0 -5; \
+            } \
+            rel2 { \
+                to_y: "panel-top"; \
+                relative: _pos 1.0; \
+                offset: -1 -1; \
+            } \
+            image.normal: "bt_"_button_name"_selected.png"; \
+            color: 255 255 255 0; \
+        } \
+        description { state: "visible" 0.0; \
+            inherit: "default" 0.0; \
+            visible: 1; \
+            color: 255 255 255 255; \
+        } \
+    } \
+    programs { \
+        program { name: _button_name"-pressed"; \
+            signal: "mouse,down,*"; \
+            source: "button-"_button_name"-normal"; \
+            action: STATE_SET "visible" 0.0; \
+            target: "button-"_button_name"-selected"; \
+            transition: ACCELERATE 0.3; \
+        } \
+        program { name: _button_name"-released"; \
+            signal: "mouse,up,*"; \
+            source: "button-"_button_name"-normal"; \
+            action: STATE_SET "default" 0.0; \
+            target: "button-"_button_name"-selected"; \
+            transition: DECELERATE 0.6; \
+        } \
+        program { name: _button_name"-clicked"; \
+            signal: "mouse,clicked,*"; \
+            source: "button-"_button_name"-normal"; \
+            action: SIGNAL_EMIT "action,"_button_name _button_name; \
+        } \
+    }
+
+collections {
+#include "elm-scroller.edc"
+#include "elm-list.edc"
+#include "elm-gengrid.edc"
+#include "elm-notify.edc"
+#include "elm-pager.edc"
+#include "elm-entry.edc"
+    group { name: "bg";
+        parts {
+            part { name: "bg";
+                type: RECT;
+                description { state: "default" 0.0;
+                    color: 0 0 0 255;
+                    min: 480 800;
+                }
+            }
+        }
+    }
+    group { name: "chrome";
+        images {
+            image: "bt_back_normal.png" COMP;
+            image: "bt_back_selected.png" COMP;
+            image: "bt_bookmark_normal.png" COMP;
+            image: "bt_bookmark_selected.png" COMP;
+            image: "bt_forward_normal.png" COMP;
+            image: "bt_forward_selected.png" COMP;
+            image: "bt_reload_normal.png" COMP;
+            image: "bt_reload_selected.png" COMP;
+            image: "bt_tab_normal.png" COMP;
+            image: "bt_tab_selected.png" COMP;
+            image: "bt_home_normal.png" COMP;
+            image: "bt_home_selected.png" COMP;
+            image: "bt_fav_normal.png" COMP;
+            image: "bt_fav_selected.png" COMP;
+            image: "toolbar-background-bottom.png" COMP;
+            image: "toolbar-background-top.png" COMP;
+            image: "url-entry.png" COMP;
+            image: "bookmark-list-title.png" COMP;
+            image: "bookmark-list-back-button.png" COMP;
+            image: "tab-header.png" COMP;
+            image: "panel-top-triangle.png" COMP;
+            image: "progress-bar-background.png" COMP;
+        }
+        script {
+            public bookmark_list_visible;
+            public tab_grid_visible;
+            public favorited;
+            public panel_top_visible;
+            public progress_bar_visible;
+
+            public fav_off() {
+                set_int(favorited, 0);
+                emit("action,fav_off", "");
+            }
+            public fav_on() {
+                set_state(PART:"button-fav-selected", "visible", 0.0);
+                set_int(favorited, 1);
+                emit("action,fav_on", "");
+            }
+            public fav_toggle() {
+                if (get_int(favorited) == 1) fav_off();
+                else fav_on();
+            }
+            public panel_top_hide() {
+                run_program(PROGRAM:"hide-view-mask");
+                run_program(PROGRAM:"hide-top-panel");
+                emit("view,mask,hidden", "");
+                set_int(panel_top_visible, 0);
+            }
+            public panel_top_show() {
+                if (get_int(bookmark_list_visible) != 1 && get_int(tab_grid_visible) != 1)
+                    run_program(PROGRAM:"show-white-view-mask");
+                run_program(PROGRAM:"show-top-panel");
+                emit("view,mask,visible", "");
+                set_int(panel_top_visible, 1);
+            }
+            public panel_top_toggle() {
+                if (get_int(panel_top_visible) == 1) panel_top_hide();
+                else panel_top_show();
+            }
+            public tab_grid_hide() {
+                run_program(PROGRAM:"hide-tab-grid");
+                set_state(PART:"button-tab-selected", "default", 0.0);
+                set_int(tab_grid_visible, 0);
+                if (get_int(bookmark_list_visible) != 1) run_program(PROGRAM:"show-white-view-mask");
+                emit("tab,hide", "");
+            }
+            public tab_grid_show() {
+                set_int(tab_grid_visible, 1);
+                if (get_int(bookmark_list_visible) == 1) bookmark_list_hide();
+                run_program(PROGRAM:"show-tab-grid");
+                set_state(PART:"button-tab-selected", "visible", 0.0);
+                run_program(PROGRAM:"show-black-view-mask");
+                emit("tab,show", "");
+            }
+            public tab_grid_toggle() {
+                if (get_int(tab_grid_visible) == 1) tab_grid_hide();
+                else tab_grid_show();
+            }
+            public bookmark_list_hide() {
+                run_program(PROGRAM:"hide-bookmark-list");
+                set_state(PART:"button-bookmark-selected", "default", 0.0);
+                set_int(bookmark_list_visible, 0);
+                if (get_int(tab_grid_visible) != 1) run_program(PROGRAM:"show-white-view-mask");
+                emit("bookmark,hide", "");
+            }
+            public bookmark_list_show() {
+                set_int(bookmark_list_visible, 1);
+                if (get_int(tab_grid_visible) == 1) tab_grid_hide();
+                run_program(PROGRAM:"show-bookmark-list");
+                set_state(PART:"button-bookmark-selected", "visible", 0.0);
+                run_program(PROGRAM:"show-black-view-mask");
+                emit("bookmark,show", "");
+            }
+            public bookmark_list_toggle() {
+                if (get_int(bookmark_list_visible) == 1) bookmark_list_hide();
+                else bookmark_list_show();
+            }
+            public progress_bar_set_value(Float:value) {
+                if (value < 0.0) value = 0.0;
+                else if (value >= 1.0) value = 1.0;
+
+                if (value >= 0.95) {
+                    run_program(PROGRAM:"progress-bar-hide");
+                    set_int(progress_bar_visible, 0);
+                } else {
+                    if (get_int(progress_bar_visible) == 0) {
+                        set_int(progress_bar_visible, 1);
+                        run_program(PROGRAM:"progress-bar-show");
+                    }
+                    custom_state(PART:"progress-bar-mask", "visible", 0.0);
+                    set_state_val(PART:"progress-bar-mask", STATE_REL2, value, 1.0);
+                    set_state(PART:"progress-bar-mask", "custom", 0.0);
+                }
+            }
+            public message(Msg_Type:type, id, ...) {
+                if ((type == MSG_FLOAT) && (id == 1)) {
+                    progress_bar_set_value(getfarg(2));
+                }
+            }
+        }
+        parts {
+            part { name: "bg";
+                type: RECT;
+                description { state: "default" 0.0;
+                    color: 0 0 0 255;
+                    min: 480 800;
+                }
+            }
+            part { name: "view";
+                type: SWALLOW;
+                description { state: "default" 0.0;
+                    rel1 {
+                        relative: 0.0 0.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        to_y: "panel-bottom";
+                        relative: 1.0 0.0;
+                        offset: -1 5;
+                    }
+                }
+            }
+            part { name: "view-mask";
+                type: RECT;
+                description { state: "default" 0.0;
+                    rel1 {
+                        to_y: "panel-top";
+                        relative: 0.0 1.0;
+                        offset: 0 -10;
+                    }
+                    rel2 {
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                    color: 0 0 0 0;
+                }
+                description { state: "hidden" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 0;
+                }
+                description { state: "masking-white" 0.0;
+                    inherit: "default" 0.0;
+                    color: 255 255 255 0;
+                }
+                description { state: "masking-black" 0.0;
+                    inherit: "default" 0.0;
+                    color: 0 0 0 200;
+                }
+            }
+            part { name: "bookmark-list-header";
+                type: IMAGE;
+                clip_to: "bookmark-list";
+                description { state: "default" 0.0;
+                    max: 99999 55;
+                    rel1 {
+                        to: "bookmark-list";
+                        relative: 0.0 0.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        to: "bookmark-list";
+                        relative: 1.0 0.0;
+                        offset: -1 55;
+                    }
+                    image.normal: "bookmark-list-title.png";
+                }
+            }
+            part { name: "bookmark-list-bg";
+                type: RECT;
+                description { state: "default" 0.0;
+                    rel1 {
+                        to: "bookmark-list-header";
+                        relative: 0.0 1.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        to: "bookmark-list";
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                    color: 0 0 0 255;
+                }
+            }
+            part { name: "bookmark-list-swallow";
+                type: SWALLOW;
+                description { state: "default" 0.0;
+                    fixed: 1 1;
+                    rel1 {
+                        to: "bookmark-list-header";
+                        relative: 0.0 1.0;
+                        offset: 0 -1;
+                    }
+                    rel2 {
+                        to: "bookmark-list";
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                }
+                description { state: "hide-left" 0.0;
+                    inherit: "default" 0.0;
+                    rel1 {
+                        to: "bookmark-list-header";
+                        relative: -1.0 1.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        to: "bookmark-list";
+                        relative: 0.0 1.0;
+                        offset: -1 -1;
+                    }
+                }
+                description { state: "hide-right" 0.0;
+                    inherit: "default" 0.0;
+                    rel1 {
+                        to: "bookmark-list-header";
+                        relative: 1.0 1.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        to: "bookmark-list";
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                }
+            }
+            part { name: "bookmark-list-title";
+                type: TEXT;
+                clip_to: "bookmark-list";
+                description { state: "default" 0.0;
+                    rel1 {
+                        to_y: "bookmark-list-header";
+                        to_x: "bookmark-list-swallow";
+                        relative: 0.0 0.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        to_y: "bookmark-list-header";
+                        to_x: "bookmark-list-swallow";
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                    text {
+                        font: "Sans,Edje-Vera";
+                        size: 12;
+                        text: "Untitled";
+                        min: 0 1;
+                        align: 0.5 0.7;
+                    }
+                    color: 190 190 190 255;
+                }
+            }
+            part { name: "bookmark-list-back-button-text";
+                type: TEXT;
+                mouse_events: 0;
+                description { state: "default" 0.0;
+                    rel1 {
+                        to: "bookmark-list-back-button";
+                        relative: 0.0 0.0;
+                        offset: 24 0;
+                    }
+                    rel2 {
+                        to: "bookmark-list-back-button";
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                    text {
+                        font: "Sans,Edje-Vera";
+                        size: 9; /* 12 */
+                        text: "Back";
+                        min: 0 1;
+                        align: 0.0 0.5;
+                    }
+                    color: 130 130 130 255;
+                }
+                description { state: "pressed" 0.0;
+                    inherit: "default" 0.0;
+                }
+            }
+            part { name: "bookmark-list-back-arrow";
+                type: IMAGE;
+                mouse_events: 0;
+                description { state: "default" 0.0;
+                    min: 13 16;
+                    max: 13 16;
+                    fixed: 1 1;
+                    rel1 {
+                        to: "bookmark-list-back-button";
+                        relative: 0.0 0.0;
+                        offset: 13 0;
+                    }
+                    rel2 {
+                        to: "bookmark-list-back-button";
+                        relative: 0.0 1.0;
+                        offset: 0 -1;
+                    }
+                    image.normal: "bookmark-list-back-button.png";
+                }
+                description { state: "pressed" 0.0;
+                    inherit: "default" 0.0;
+                }
+            }
+            part { name: "bookmark-list-back-button";
+                type: RECT;
+                clip_to: "bookmark-list";
+                description { state: "default" 0.0;
+                    rel1 {
+                        to: "bookmark-list-header";
+                        relative: 0.0 0.0;
+                        offset: 45 14;
+                    }
+                    rel2 {
+                        to: "bookmark-list-header";
+                        relative: 0.0 1.0;
+                        offset: 145 -2;
+                    }
+                    color: 0 0 0 0;
+                }
+                description { state: "hidden" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 0;
+                    rel1 {
+                        to: "bookmark-list-header";
+                        relative: -1.0 0.0;
+                    }
+                    rel2 {
+                        to: "bookmark-list-header";
+                        relative: -1.0 1.0;
+                    }
+                }
+                description { state: "pressed" 0.0;
+                    inherit: "default" 0.0;
+                    color: 0 0 0 128;
+                }
+            }
+            part { name: "bookmark-list";
+                type: RECT;
+                description { state: "default" 0.0;
+                    fixed: 1 1;
+                    visible: 0;
+                    rel1 {
+                        to_y: "panel-bottom";
+                        relative: 0.0 0.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                }
+                description { state: "visible" 0.0;
+                    rel1 {
+                        relative: 0.0 0.25;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        to_y: "panel-bottom";
+                        relative: 1.0 0.0;
+                        offset: -1 5;
+                    }
+                }
+            }
+            part { name: "tab-grid-swallow";
+                type: SWALLOW;
+                description { state: "default" 0.0;
+                    rel1 {
+                        to: "tab-grid";
+                        relative: 0.0 0.0;
+                        offset: 0 8;
+                    }
+                    rel2 {
+                        to: "tab-grid";
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                }
+            }
+            part { name: "tab-grid-header";
+                type: IMAGE;
+                clip_to: "tab-grid";
+                description { state: "default" 0.0;
+                    min: 1 14;
+                    max: 99999 14;
+                    fixed: 1 1;
+                    rel1 {
+                        to: "tab-grid";
+                        relative: 0.0 0.0;
+                        offset: 0 10;
+                    }
+                    rel2 {
+                        to: "tab-grid";
+                        relative: 1.0 0.0;
+                        offset: -1 0;
+                    }
+                    image.normal: "tab-header.png";
+                }
+            }
+            part { name: "tab-grid";
+                type: RECT;
+                description { state: "default" 0.0;
+                    fixed: 1 1;
+                    visible: 0;
+                    rel1 {
+                        to_y: "panel-bottom";
+                        relative: 0.0 0.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                }
+                description { state: "visible" 0.0;
+                    rel1 {
+                        relative: 0.0 0.25;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        to_y: "panel-bottom";
+                        relative: 1.0 0.0;
+                        offset: -1 5;
+                    }
+                }
+            }
+            part { name: "panel-top-triangle";
+                type: IMAGE;
+                description { state: "default" 0.0;
+                    visible: 0;
+                    min: 30 27;
+                    max: 30 27;
+                    fixed: 1 1;
+                    image.normal: "panel-top-triangle.png";
+                    rel1 {
+                        relative: 1.0 0.0;
+                        offset: 60 60;
+                    }
+                    rel2 {
+                        relative: 1.0 0.0;
+                        offset: 60 60;
+                    }
+                }
+                description { state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                    image.normal: "panel-top-triangle.png";
+                    rel1 {
+                        relative: 1.0 0.0;
+                        offset: -15 13;
+                    }
+                    rel2 {
+                        relative: 1.0 0.0;
+                        offset: -15 13;
+                    }
+                }
+                description { state: "pressed" 0.0;
+                    inherit: "visible" 0.0;
+                    color: 255 255 255 128;
+                }
+            }
+            part { name: "panel-top";
+                type: IMAGE;
+                description { state: "default" 0.0;
+                    max: 99999 TOP_PANEL_HEIGHT;
+                    rel1 {
+                        relative: 0.0 0.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        relative: 1.0 0.0;
+                        offset: 0 TOP_PANEL_HEIGHT;
+                    }
+                    image.normal: "toolbar-background-top.png";
+                }
+                description { state: "hidden" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 0;
+                    rel1 {
+                        relative: 0.0 -1.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        relative: 1.0 0.0;
+                        offset: -1 -TOP_PANEL_HEIGHT;
+                    }
+                }
+            }
+            part { name: "panel-bottom";
+                type: IMAGE;
+                description { state: "default" 0.0;
+                    min: 480 (BOTTOM_PANEL_HEIGHT+5);
+                    fixed: 1 1;
+                    rel1 {
+                        relative: 0.0 1.0;
+                        offset: 0 -BOTTOM_PANEL_HEIGHT;
+                    }
+                    rel2 {
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                    image.normal: "toolbar-background-bottom.png";
+                }
+            }
+            TOOLBAR_BUTTON("back", "Back", TOOLBAR_POSITION(1))
+            TOOLBAR_BUTTON("forward", "Forward", TOOLBAR_POSITION(2))
+            TOOLBAR_BUTTON("reload", "Reload", TOOLBAR_POSITION(3))
+            TOOLBAR_BUTTON("tab", "Tabs", TOOLBAR_POSITION(4))
+            TOOLBAR_BUTTON("bookmark", "Bookmarks", TOOLBAR_POSITION(5))
+            URLBAR_BUTTON("home", 0.1)
+            URLBAR_BUTTON("fav", 0.9)
+            part { name: "button-bookmark-right-separator";
+                type: RECT;
+                description { state: "default" 0.0;
+                    fixed: 1 1;
+                    min: 2 90;
+                    max: 2 90;
+                    rel1 {
+                        to: "button-bookmark-normal";
+                        relative: 1.0 0.0;
+                        offset: -2 12;
+                    }
+                    rel2 {
+                        to: "button-bookmark-normal";
+                        relative: 1.0 1.0;
+                        offset: -2 -1;
+                    }
+                    color: 0 0 0 128;
+                }
+            }
+            part { name: "url-entry-bg";
+                type: IMAGE;
+                description { state: "default" 0.0;
+                    fixed: 1 1;
+                    min: 10 26;
+                    max: 99999 26;
+                    rel1 {
+                        to_y: "panel-top";
+                        relative: 0.1 0.0;
+                        offset: 45 57;
+                    }
+                    rel2 {
+                        to_y: "panel-top";
+                        relative: 0.9 0.0;
+                        offset: -45 -1;
+                    }
+                    image.normal: "url-entry.png";
+                    image.border: 4 4 4 4;
+                }
+            }
+            part { name: "progress-bar-mask";
+                type: IMAGE;
+                description { state: "default" 0.0;
+                    fixed: 1 1;
+                    visible: 0;
+                    rel1 {
+                        to: "url-entry-bg";
+                        relative: 0.0 0.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        to: "url-entry-bg";
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                    image.normal: "progress-bar-background.png";
+                    image.border: 2 2 2 2;
+                    color: 255 255 255 0;
+                }
+                description { state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                    color: 255 255 255 255;
+                }
+            }
+            part { name: "url-entry";
+                type: SWALLOW;
+                description { state: "default" 0.0;
+                    fixed: 1 1;
+                    rel1 {
+                        to: "url-entry-bg";
+                        relative: 0.0 0.0;
+                        offset: 5 1;
+                    }
+                    rel2 {
+                        to: "url-entry-bg";
+                        relative: 1.0 1.0;
+                        offset: -6 -2;
+                    }
+                }
+            }
+            programs {
+                program { name: "theme-load";
+                    signal: "load";
+                    script {
+                        set_int(bookmark_list_visible, 0);
+                        set_int(tab_grid_visible, 0);
+                        set_int(favorited, 0);
+                        set_int(panel_top_visible, 1);
+                        set_int(progress_bar_visible, 0);
+
+                        set_state(PART:"view-mask", "masking-white", 0.0);
+                    }
+                }
+                program { name: "list-back-clicked";
+                    signal: "mouse,clicked,*";
+                    source: "bookmark-list-back-button";
+                    action: SIGNAL_EMIT "list,back,clicked" "";
+                }
+                program { name: "press-view-mask";
+                    signal: "mouse,down,*";
+                    source: "view-mask";
+                    script {
+                        if (get_int(bookmark_list_visible) == 1) {
+                            bookmark_list_hide();
+                        } else if (get_int(tab_grid_visible) == 1) {
+                            tab_grid_hide();
+                        } else {
+                            run_program(PROGRAM:"hide-view-mask");
+                            panel_top_hide();
+                        }
+                    }
+                }
+                program { name: "press-panel-top-triangle";
+                    signal: "mouse,down,*";
+                    source: "panel-top-triangle";
+                    action: STATE_SET "pressed" 0.0;
+                    target: "panel-top-triangle";
+                    transition: ACCELERATE 0.2;
+                }
+                program { name: "restore-top-panel";
+                    script { panel_top_show(); }
+                }
+                program { name: "release-panel-top-triangle";
+                    signal: "mouse,up,*";
+                    source: "panel-top-triangle";
+                    action: STATE_SET "visible" 0.0;
+                    target: "panel-top-triangle";
+                    transition: ACCELERATE 0.2;
+                    after: "restore-top-panel";
+                }
+                program { name: "hide-view-mask";
+                    action: STATE_SET "hidden" 0.0;
+                    target: "view-mask";
+                    transition: ACCELERATE 0.2;
+                }
+                program { name: "show-white-view-mask";
+                    action: STATE_SET "masking-white" 0.0;
+                    target: "view-mask";
+                    transition: DECELERATE 0.2;
+                }
+                program { name: "show-black-view-mask";
+                    action: SIGNAL_EMIT "view,mask,show" "";
+                    action: STATE_SET "masking-black" 0.0;
+                    target: "view-mask";
+                    transition: DECELERATE 0.2;
+                }
+                program { name: "show-top-triangle";
+                    action: STATE_SET "visible" 0.0;
+                    target: "panel-top-triangle";
+                    transition: ACCELERATE 0.2;
+                }
+                program { name: "hide-top-triangle";
+                    action: STATE_SET "default" 0.0;
+                    target: "panel-top-triangle";
+                    transition: DECELERATE 0.2;
+                }
+                program { name: "show-top-panel";
+                    action: STATE_SET "default" 0.0;
+                    target: "panel-top";
+                    transition: DECELERATE 0.3;
+                    after: "hide-top-triangle";
+                }
+                program { name: "hide-top-panel";
+                    action: STATE_SET "hidden" 0.0;
+                    target: "panel-top";
+                    transition: ACCELERATE 0.3;
+                    after: "show-top-triangle";
+                }
+                program { name: "show-bookmark-list";
+                    action: STATE_SET "visible" 0.0;
+                    target: "bookmark-list";
+                    transition: ACCELERATE 0.2;
+                }
+                program { name: "hide-bookmark-list";
+                    action: STATE_SET "default" 0.0;
+                    target: "bookmark-list";
+                    transition: DECELERATE 0.2;
+                }
+                program { name: "toggle-bookmark-list";
+                    signal: "mouse,clicked,*";
+                    source: "button-bookmark-normal";
+                    script { bookmark_list_toggle(); }
+                }
+                program { name: "show-tab-grid";
+                    action: STATE_SET "visible" 0.0;
+                    target: "tab-grid";
+                    transition: ACCELERATE 0.2;
+                }
+                program { name: "hide-tab-grid";
+                    action: STATE_SET "default" 0.0;
+                    target: "tab-grid";
+                    transition: DECELERATE 0.2;
+                }
+                program { name: "toggle-tab-grid";
+                    signal: "mouse,clicked,*";
+                    source: "button-tab-normal";
+                    script { tab_grid_toggle(); }
+                }
+                program { name: "toggle-fav";
+                    signal: "mouse,clicked,*";
+                    source: "button-fav-normal";
+                    script { fav_toggle(); }
+                }
+                program { name: "press-bookmark-list-button";
+                    signal: "mouse,down,*";
+                    source: "bookmark-list-back-button";
+                    action: STATE_SET "pressed" 0.0;
+                    target: "bookmark-list-back-button";
+                    target: "bookmark-list-back-button-text";
+                    target: "bookmark-list-back-arrow";
+                    transition: ACCELERATE 0.2;
+                }
+                program { name: "release-bookmark-list-button";
+                    signal: "mouse,up,*";
+                    source: "bookmark-list-back-button";
+                    action: STATE_SET "default" 0.0;
+                    target: "bookmark-list-back-button";
+                    target: "bookmark-list-back-button-text";
+                    target: "bookmark-list-back-arrow";
+                    transition: DECELERATE 0.2;
+                }
+                program { name: "list-animate-left";
+                    signal: "list,animate,left";
+                    action: STATE_SET "hide-left" 0.0;
+                    target: "bookmark-list-swallow";
+                    transition: ACCELERATE 0.1;
+                    after: "list-animate-left-2";
+                }
+                program { name: "list-animate-left-2";
+                    action: STATE_SET "hide-right" 0.0;
+                    target: "bookmark-list-swallow";
+                    after: "list-animate-final";
+                }
+                program { name: "list-animate-right";
+                    signal: "list,animate,right";
+                    action: STATE_SET "hide-right" 0.0;
+                    target: "bookmark-list-swallow";
+                    transition: ACCELERATE 0.1;
+                    after: "list-animate-right-2";
+                }
+                program { name: "list-animate-right-2";
+                    action: STATE_SET "hide-left" 0.0;
+                    target: "bookmark-list-swallow";
+                    after: "list-animate-final";
+                }
+                program { name: "list-animate-final";
+                    action: STATE_SET "default" 0.0;
+                    target: "bookmark-list-swallow";
+                    transition: DECELERATE 0.2;
+                }
+                program { name: "bookmark-item-clicked";
+                    signal: "bookmark,item,clicked";
+                    script { bookmark_list_hide(); }
+                }
+                program { name: "tab-item-clicked";
+                    signal: "tab,item,clicked";
+                    script { tab_grid_hide(); }
+                }
+                program { name: "list-back-show";
+                    signal: "list,back,show";
+                    action: STATE_SET "default" 0.0;
+                    target: "bookmark-list-back-button";
+                    transition: DECELERATE 0.3;
+                }
+                program { name: "list-back-hide";
+                    signal: "list,back,hide";
+                    action: STATE_SET "hidden" 0.0;
+                    target: "bookmark-list-back-button";
+                    transition: ACCELERATE 0.5;
+                }
+                program { name: "favorite-hilight";
+                    signal: "favorite,hilight";
+                    action: STATE_SET "visible" 0.0;
+                    target: "button-fav-selected";
+                    transition: ACCELERATE 0.5;
+                }
+                program { name: "favorite-default";
+                    signal: "favorite,default";
+                    action: STATE_SET "default" 0.0;
+                    target: "button-fav-selected";
+                    transition: DECELERATE 0.5;
+                }
+                program { name: "progress-bar-hide";
+                    action: STATE_SET "default" 0.0;
+                    target: "progress-bar-mask";
+                    transition: ACCELERATE 0.5;
+                }
+                program { name: "progress-bar-show";
+                    action: STATE_SET "visible" 0.0;
+                    target: "progress-bar-mask";
+                    transition: DECELERATE 0.5;
+                }
+            }
+        }
+    }
+}

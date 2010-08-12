@@ -1,0 +1,15 @@
+release 0.2.0.0:
+	better zoom handing:
+
+	 * auto fit (double-click some element) will keep whole object in
+	   viewport.
+
+	 * click over links will not go immediately, so it's possible to
+	   click and zoom over links as well
+
+	 * both auto-fit and interactive zoom modes will not choose or
+	   allow levels of zoom that makes contents smaller than viewport.
+
+
+release 0.1.0.0:
+	Initial release.

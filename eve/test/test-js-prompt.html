@@ -1,0 +1,23 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<title>Test JS prompt</title>
+		<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+			function show_prompt() {
+				var name;
+				name = prompt ("what's your name?", "my default value defined in html");
+				alert ("Your name is "+name);
+			}
+		</SCRIPT>
+	</head>
+	<body>
+		<h1>test JS prompt</h1>
+		<br>
+		This test shows a prompt message, asking for user to enter text. Tipically it is implemented
+		as a dialog. The default handling function is to print to stdout and answer 'test'.
+
+
+		<p><input type='button' value='Show prompt' onClick='show_prompt()'></p>
+	</body>
+</html>

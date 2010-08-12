@@ -1,0 +1,7 @@
+DOMAIN = eve
+subdir = po
+top_builddir = ..
+XGETTEXT_OPTIONS = --keyword=_ --keyword=N_
+COPYRIGHT_HOLDER = Gustavo Sverzut Barbieri
+MSGID_BUGS_ADDRESS = barbieri@profusion.mobi
+EXTRA_LOCALE_CATEGORIES =

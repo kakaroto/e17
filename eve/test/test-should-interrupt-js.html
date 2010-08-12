@@ -1,0 +1,23 @@
+<html>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+function test_infinite_loop() {
+	var name;
+	document.write("Running stupid infinite loop...");
+	var i=1;
+	while(i) {
+		document.write("stupid script")
+		i++;
+	}
+	alert ("I should never reach this");
+}
+</SCRIPT>
+
+<h1>test should interrupt javascript</h1>
+<br>
+This test shows a prompt message, asking for user to enter text. Tipically it is implemented
+as a dialog. The default handling function is to print to stdout and answer 'test'.
+
+
+<p><input type='button' value='Run infinite loop' onClick='test_infinite_loop()'></p>
+
+</html>
