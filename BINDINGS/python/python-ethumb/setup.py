@@ -119,7 +119,7 @@ else:
           "by ETHUMB_BUILD_CLIENT=0!"
 
 setup(name='python-ethumb',
-      version='0.2',
+      version='0.2.0',
       license='LGPL',
       author='Rafael Antognolli',
       author_email='antognolli@profusion.mobi',
