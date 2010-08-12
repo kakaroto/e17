@@ -1,0 +1,9 @@
+Login:        acidx
+IRC Nick:     acidx
+Name:         Leandro Pereira
+Location:     Campinas, Brazil
+E-Mail:       -leandro@profusion.mobi
+Contributing: Edje Eve
+Group:        Libraries
+Platform:     Arch (Linux)
+
