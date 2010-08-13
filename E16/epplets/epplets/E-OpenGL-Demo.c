@@ -246,7 +246,7 @@ cb_close(void *data)
    cx = (GLXContext *) data;
    Epplet_unremember();
    Esync();
-   if (cx != NULL)
+   if (cx)
       Epplet_unbind_GL(*cx);
    exit(0);
 }
@@ -465,7 +465,7 @@ main(int argc, char **argv)
    /* This could also be done as: 
     * cx = Epplet_bind_double_GL(da, 1, 1, 1, 0, 0, 8, 0, 0, 0, 0, 0); */
 
-   if (cx == NULL)
+   if (!cx)
       cb_close(NULL);
 
    /* To properly center the viewport, -2, -2 isntead of 0, 0 must be used.
@@ -485,7 +485,7 @@ main(int argc, char **argv)
 
    /* Lets load teh texture */
    Esnprintf(buf, sizeof(buf), "%s/cube_texture.RGB", Epplet_data_dir());
-   if ((textureFile = fopen(buf, "rb")) == NULL)
+   if (!(textureFile = fopen(buf, "rb")))
      {
 	printf("Failed to load the cube texture file!\n");
      }

@@ -388,7 +388,7 @@ get_url_from_file_list(char *file, int position)
 
    D(("In get_url_from_file_list\n"));
 
-   if ((fp = fopen(file, "r")) == NULL)
+   if (!(fp = fopen(file, "r")))
      {
 	fprintf(stderr, "Unable to open file -->%s<-- for reading\n", file);
 	return "Error opening url file!";
@@ -427,7 +427,7 @@ display_url_from_file(char *url)
 {
    char               *validurl;
 
-   if ((validurl = validate_url(url)) == NULL)
+   if (!(validurl = validate_url(url)))
       return;
 
    /* Perform new url command (eg play a sound) */
@@ -498,19 +498,19 @@ validate_url(char *url)
    /* First, try searching for http://, in case there is a lot of text,
     * with an embedded url somewhere inside... */
    p = strstr(ret, "http://");
-   if (p != NULL)
+   if (p)
       ret = p;
    else
      {
 	/* Ok. No "http://", maybe a "www." ? */
 	p = strstr(ret, "http://");
-	if (p != NULL)
+	if (p)
 	   ret = p;
      }
 
    /* Kill at end of line */
    p = strchr(ret, '\n');
-   if (p != NULL)
+   if (p)
       *p = '\0';
 
    /* Skip first spaces */
@@ -521,7 +521,7 @@ validate_url(char *url)
 
    /* Kill at next space */
    p = strchr(ret, ' ');
-   if (p != NULL)
+   if (p)
       *p = '\0';
 
    /* If just www.blah, add the http:// to avoid confusing nutscrape */
@@ -551,7 +551,7 @@ save_url(char *url)
 {
    FILE               *fp;
 
-   if ((fp = fopen(opt.url_save_file, "a")) != NULL)
+   if ((fp = fopen(opt.url_save_file, "a")))
      {
 	fprintf(fp, "%s\n", url);
 	fclose(fp);
@@ -663,7 +663,7 @@ handle_url(char *url, char *type)
    char               *sys = NULL;
    int                 len = 0;
 
-   if (url == NULL)
+   if (!url)
       return;
 
    D(("In handle_url: url -->%s<--\n", url));
@@ -721,7 +721,7 @@ cb_shoot(void *data)
 
    D(("In cb_shoot: url -->%s<--\n", url));
 
-   if ((validurl = validate_url(url)) == NULL)
+   if (!(validurl = validate_url(url)))
       return;
 
    D(("In cb_shoot: valid url -->%s<--\n", validurl));

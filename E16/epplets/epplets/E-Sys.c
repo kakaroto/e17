@@ -71,7 +71,7 @@ timer_cb(void *data)
 
    FILE               *fp;
 
-   if ((fp = fopen("/proc/uptime", "r")) == NULL)
+   if (!(fp = fopen("/proc/uptime", "r")))
      {
 	D(("Failed to open /proc/uptime -- %s\n", strerror(errno)));
 	return;

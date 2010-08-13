@@ -56,11 +56,11 @@ get_load_average(double *one, double *five, double *fifteen)
    kstat_t            *ks;
    kstat_named_t      *d1, *d5, *d15;
 
-   if ((kc = kstat_open()) == NULL)
+   if (!(kc = kstat_open()))
      {
 	SET_AND_RETURN(0, 0, 0);
      }
-   if ((ks = kstat_lookup(kc, "unix", 0, "system_misc")) == NULL)
+   if (!(ks = kstat_lookup(kc, "unix", 0, "system_misc")))
      {
 	SET_AND_RETURN(0, 0, 0);
      }
@@ -86,7 +86,7 @@ get_load_average(double *one, double *five, double *fifteen)
    char                buff[64];
    double              a, b, c;
 
-   if ((fp = fopen("/proc/loadavg", "rt")) == NULL)
+   if (!(fp = fopen("/proc/loadavg", "rt")))
      {
 	SET_AND_RETURN(0, 0, 0);
      }
@@ -105,7 +105,7 @@ get_load_average(double *one, double *five, double *fifteen)
    char                buff[128], *p;
    double              a, b, c;
 
-   if ((pp = popen("uptime", "r")) == NULL)
+   if (!(pp = popen("uptime", "r")))
      {
 	SET_AND_RETURN(0, 0, 0);
      }

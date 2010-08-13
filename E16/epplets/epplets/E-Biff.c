@@ -122,7 +122,7 @@ mailcheck_cb(void *data)
 	       {
 		  XBell(Epplet_get_display(), 0);
 	       }
-	     else if (sound != NULL)
+	     else if (sound)
 	       {
 		  Epplet_run_command(sound);
 	       }
@@ -469,9 +469,9 @@ main(int argc, char **argv)
 	       argc, argv, 0);
    Epplet_load_config();
    process_conf();
-   if (folder_path == NULL)
+   if (!folder_path)
      {
-	if ((folder_path = getenv("MAIL")) != NULL)
+	if ((folder_path = getenv("MAIL")))
 	  {
 	     Epplet_modify_config("mailbox", folder_path);
 	     folder_path = Epplet_query_config("mailbox");

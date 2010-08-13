@@ -300,7 +300,7 @@ cpp_lex(struct operation *op, cpp_reader * pfile)
 
      case CPP_VSPACE:
      case CPP_POP:
-	if (CPP_BUFFER(pfile)->fname != NULL)
+	if (CPP_BUFFER(pfile)->fname)
 	  {
 	     op->op = 0;
 	     break;
@@ -449,7 +449,7 @@ cpp_lex(struct operation *op, cpp_reader * pfile)
 	/* See if it is a special token of length 2.  */
 	if (tok_start + 2 == tok_end)
 	  {
-	     for (toktab = tokentab2; toktab->oper != NULL; toktab++)
+	     for (toktab = tokentab2; toktab->oper; toktab++)
 		if (tok_start[0] == toktab->oper[0]
 		    && tok_start[1] == toktab->oper[1])
 		   break;

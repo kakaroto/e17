@@ -265,7 +265,7 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
 #ifdef WRITE_FILE
     menu_ptr = fopen (menu_file[depth-1], "a+");
 #endif /* WRITE_FILE */
-    if (menu_ptr == NULL)
+    if (!menu_ptr)
     {
       printf ("Couldn't save menu to: %s\n", menu_file[depth-1]);
     }
@@ -274,7 +274,7 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
     {
 #ifdef WRITE_FILE
       menu_ptr2 = fopen (menu_file[depth], "w");
-      if (menu_ptr2 == NULL)
+      if (!menu_ptr2)
       {
         printf ("Couldn't save menu to: %s\n", menu_file[depth]);
       }
@@ -318,7 +318,7 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
   {
 #ifdef WRITE_FILE
     menu_ptr2 = fopen (menu_file[depth], "w");
-    if (menu_ptr2 == NULL)
+    if (!menu_ptr2)
     {
       printf ("Couldn't save menu to: %s\n", menu_file[depth]);
     }

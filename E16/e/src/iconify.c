@@ -379,7 +379,7 @@ SelectIconboxForEwin(EWin * ewin)
 	for (i = 0; i < num; i++)
 	  {
 	     ct = lst[i];
-	     if (ct->ewin == NULL || ct->type != IB_TYPE_ICONBOX)
+	     if (!ct->ewin || ct->type != IB_TYPE_ICONBOX)
 		continue;
 
 	     dx = (EoGetX(ct->ewin) + (EoGetW(ct->ewin) / 2)) -

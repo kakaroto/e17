@@ -527,7 +527,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 	  {
 	     for (i = 0; i < num; i++)
 	       {
-		  if (lst[i] == NULL)
+		  if (!lst[i])
 		     continue;
 
 		  if ((EoGetDesk(ewin) == EoGetDesk(lst[i]) ||
@@ -566,7 +566,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 	  {
 	     for (i = 0; i < num; i++)
 	       {
-		  if (lst[i] == NULL)
+		  if (!lst[i])
 		     continue;
 
 		  if ((EoGetDesk(ewin) == EoGetDesk(lst[i]) ||
@@ -603,7 +603,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 	  {
 	     for (i = 0; i < num; i++)
 	       {
-		  if (lst[i] == NULL)
+		  if (!lst[i])
 		     continue;
 
 		  if ((EoGetDesk(ewin) == EoGetDesk(lst[i]) ||
@@ -643,7 +643,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 	  {
 	     for (i = 0; i < num; i++)
 	       {
-		  if (lst[i] == NULL)
+		  if (!lst[i])
 		     continue;
 
 		  if ((EoGetDesk(ewin) == EoGetDesk(lst[i]) ||

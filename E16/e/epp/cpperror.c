@@ -44,7 +44,7 @@ cpp_print_containing_files(cpp_reader * pfile)
    ip = cpp_file_buffer(pfile);
 
    /* Give up if we don't find a source file.  */
-   if (ip == NULL)
+   if (!ip)
       return;
 
    /* Find the other, outer source files.  */
@@ -53,7 +53,7 @@ cpp_print_containing_files(cpp_reader * pfile)
 	long                line, col;
 
 	cpp_buf_line_and_col(ip, &line, &col);
-	if (ip->fname != NULL)
+	if (ip->fname)
 	  {
 	     if (first)
 	       {

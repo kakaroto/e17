@@ -101,7 +101,7 @@ SetEwinBoolean(const char *txt, char *item, const char *value, int set)
 
    vnew = vold = *item != 0;	/* Remember old value */
 
-   if (value == NULL || value[0] == '\0')
+   if (!value || value[0] == '\0')
       vnew = !vold;
    else if (!strcmp(value, "on"))
       vnew = 1;
@@ -1224,7 +1224,7 @@ IPC_Reparent(const char *params)
    char                param2[FILEPATH_LEN_MAX];
    EWin               *ewin, *enew;
 
-   if (params == NULL)
+   if (!params)
       return;
 
    sscanf(params, "%100s %100s", param1, param2);
@@ -1867,7 +1867,7 @@ IPC_Help(const char *params)
 	  {
 	     ipc = lst[i];
 	     if (strcmp(params, ipc->name) &&
-		 (ipc->nick == NULL || strcmp(params, ipc->nick)))
+		 (!ipc->nick || strcmp(params, ipc->nick)))
 		continue;
 
 	     nick = (ipc->nick) ? ipc->nick : "";

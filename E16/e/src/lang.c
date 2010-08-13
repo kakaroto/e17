@@ -112,7 +112,7 @@ EstrLoc2Int(const char *str, int len)
 char               *
 EstrUtf82Int(const char *str, int len)
 {
-   if (str == NULL)
+   if (!str)
       return NULL;
 
 #if HAVE_ICONV
@@ -133,7 +133,7 @@ EstrInt2Enc(const char *str, int want_utf8)
    if (Mode.locale.utf8_int == want_utf8)
       return str;
 
-   if (str == NULL)
+   if (!str)
       return NULL;
 
    if (want_utf8)

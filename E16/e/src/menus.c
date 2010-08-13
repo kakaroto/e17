@@ -1205,7 +1205,7 @@ MenuFindNextItem(Menu * m, MenuItem * mi, int inc)
 {
    int                 i;
 
-   if (mi == NULL)
+   if (!mi)
      {
 	if (m->num > 0)
 	   return m->items[0];
@@ -1284,13 +1284,13 @@ MenuEventKeyPress(Menu * m, XEvent * ev)
 	goto check_activate;
 
      case XK_Right:
-	if (mi == NULL)
+	if (!mi)
 	   goto check_next;
 	m = mi->child;
 	if (!m || m->num <= 0)
 	   break;
 	ewin = m->ewin;
-	if (ewin == NULL || !EwinIsMapped(ewin))
+	if (!ewin || !EwinIsMapped(ewin))
 	   break;
 	mi = MenuFindItemByChild(m, m->child);
 	goto check_activate;

@@ -557,7 +557,7 @@ parse_config(void)
    char               *tmp, buff[1024];
    int                 new_w, new_h;
 
-   if (Epplet_query_config("button_0") == NULL)
+   if (!Epplet_query_config("button_0"))
      {
 	Esnprintf(buff, sizeof(buff), "%s/default.cfg", Epplet_data_dir());
 	Epplet_load_config_file(buff);

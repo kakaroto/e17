@@ -205,7 +205,7 @@ _ecore_list_append_0(Ecore_List * list, Ecore_List_Node * end)
 
    list->last = end;
 
-   if (list->first == NULL)
+   if (!list->first)
      {
 	list->first = end;
 	list->index = 0;
@@ -251,7 +251,7 @@ _ecore_list_prepend_0(Ecore_List * list, Ecore_List_Node * start)
    list->first = start;
 
    /* If no last node, then the first node is the last node */
-   if (list->last == NULL)
+   if (!list->last)
       list->last = list->first;
 
    list->nodes++;
@@ -292,7 +292,7 @@ _ecore_list_insert(Ecore_List * list, Ecore_List_Node * new_node)
    if (list->current == list->first)
       return _ecore_list_prepend_0(list, new_node);
 
-   if (list->current == NULL)
+   if (!list->current)
      {
 	int                 ret_value;
 
@@ -751,7 +751,7 @@ ecore_list_items_get(Ecore_List * list, int *pnum)
       return NULL;
 
    for (i = 0, ecore_list_first_goto(list);
-	(b = ecore_list_next(list)) != NULL;)
+	(b = ecore_list_next(list));)
       lst[i++] = b;
 
    *pnum = num;

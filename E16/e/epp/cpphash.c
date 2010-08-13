@@ -101,9 +101,9 @@ void
 delete_macro(HASHNODE * hp)
 {
 
-   if (hp->prev != NULL)
+   if (hp->prev)
       hp->prev->next = hp->next;
-   if (hp->next != NULL)
+   if (hp->next)
       hp->next->prev = hp->prev;
 
    /* make sure that the bucket chain header that
@@ -116,7 +116,7 @@ delete_macro(HASHNODE * hp)
 	DEFINITION         *d = hp->value.defn;
 	struct reflist     *ap, *nextap;
 
-	for (ap = d->pattern; ap != NULL; ap = nextap)
+	for (ap = d->pattern; ap; ap = nextap)
 	  {
 	     nextap = ap->next;
 	     free(ap);
@@ -166,7 +166,7 @@ install(const char *name, int len, enum node_type type, int ivalue, char *value,
    hp->next = hashtab[bucket];
    hashtab[bucket] = hp;
    hp->prev = NULL;
-   if (hp->next != NULL)
+   if (hp->next)
       hp->next->prev = hp;
    hp->type = type;
    hp->length = len;

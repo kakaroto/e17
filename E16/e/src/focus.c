@@ -310,7 +310,7 @@ doFocusToEwin(EWin * ewin, int why)
      case FOCUS_CLICK:
 	if (ewin && ewin == Mode.focuswin)
 	   return;
-	if (ewin == NULL)	/* Unfocus */
+	if (!ewin)	/* Unfocus */
 	   break;
 	if (!FocusEwinValid(ewin, 1, why == FOCUS_CLICK, 0))
 	   return;

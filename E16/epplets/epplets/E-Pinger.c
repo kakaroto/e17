@@ -123,7 +123,7 @@ bg_system(char *command)
    /* Set reaper so we don't get zombies */
    signal(SIGCHLD, (void (*)(int))pinger_reaper);
 
-   if (command == NULL || *command == '\0')
+   if (!command || *command == '\0')
      {
 	return 1;
      }
@@ -252,7 +252,7 @@ add_log(char *button_string, char *entry_string)
 {
    char               *tmp;
 
-   if (button_string != NULL)
+   if (button_string)
      {
 	tmp = strdup(button_string);
 	if (strlen(tmp) > LABEL_CHAR)
@@ -266,7 +266,7 @@ add_log(char *button_string, char *entry_string)
 	Epplet_change_popbutton_label(pb_log_small, tmp);
 	free(tmp);
      }
-   if (entry_string != NULL)
+   if (entry_string)
      {
 	Epplet_add_popup_entry(p_log, entry_string, NULL, NULL, NULL);
 	if (log_entries >= LOG_LEN)
@@ -294,12 +294,12 @@ set_host(char *new_host)
 {
    char               *c_p, *last_p;
 
-   if (new_host == NULL || *new_host == '\0')
+   if (!new_host || *new_host == '\0')
      {
 	return (0);
      }
 
-   if (host != NULL)
+   if (host)
      {
 	free(host);
      }
@@ -313,7 +313,7 @@ set_host(char *new_host)
 	  }
      }
 
-   if ((host = strdup(new_host)) == NULL)
+   if (!(host = strdup(new_host)))
      {
 	perror("set_host: strdup");
 	return (-1);
@@ -332,7 +332,7 @@ set_pause(char *new_pause)
    char               *c_p;
    char               *last_p;
 
-   if (new_pause == NULL || *new_pause == '\0')
+   if (!new_pause || *new_pause == '\0')
      {
 	return (0);
      }
@@ -504,13 +504,13 @@ main(int argc, char **argv)
    b_help = Epplet_create_button(NULL, NULL,
 				 82, 2, 0, 0, "HELP", win, NULL, cb_help, NULL);
 
-   if ((result = (char *)malloc(BUF_LEN)) == NULL)
+   if (!(result = (char *)malloc(BUF_LEN)))
      {
 	perror("main: malloc result");
 	return (-1);
      }
    *result = '\0';
-   if ((new_result = (char *)malloc(BUF_LEN)) == NULL)
+   if (!(new_result = (char *)malloc(BUF_LEN)))
      {
 	perror("main: malloc new_result");
 	return (-1);

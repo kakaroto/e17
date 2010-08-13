@@ -105,7 +105,7 @@ dirscan(char *dir, unsigned long *num)
 	return ((char **)NULL);
      }
    /* count # of entries in dir (worst case) */
-   for (dirlen = 0; (dp = readdir(dirp)) != NULL; dirlen++);
+   for (dirlen = 0; (dp = readdir(dirp)); dirlen++);
    D((" -> Got %d entries.\n", dirlen));
    if (!dirlen)
      {
@@ -122,7 +122,7 @@ dirscan(char *dir, unsigned long *num)
 	return ((char **)NULL);
      }
    rewinddir(dirp);
-   for (i = 0; (dp = readdir(dirp)) != NULL;)
+   for (i = 0; (dp = readdir(dirp));)
      {
 	if ((strcmp(dp->d_name, ".")) && (strcmp(dp->d_name, "..")))
 	  {
@@ -229,7 +229,7 @@ set_background(int tiled, int keep_aspect)
    reply = Epplet_wait_for_ipc();
    if (!reply)
       return;
-   if ((ptr = strchr(reply, ':')) != NULL)
+   if ((ptr = strchr(reply, ':')))
      {
 	current_desk = atoi(++ptr);
      }
@@ -278,8 +278,8 @@ change_image(void *data)
 
    /* Test-load each image to make sure it's a valid image file. */
    for (;
-	((filenames[idx] == NULL)
-	 || ((im = imlib_load_image(filenames[idx])) == NULL));)
+	((!filenames[idx])
+	 || (!(im = imlib_load_image(filenames[idx]))));)
      {
 	/* It isn't, so NULL out its name. */
 	filenames[idx] = NULL;
@@ -666,7 +666,7 @@ parse_config(void)
    char                buff[1024], *s;
 
    path = Epplet_query_config("image_dir");
-   if (path == NULL)
+   if (!path)
      {
 	Esnprintf(buff, sizeof(buff), "%s/backgrounds", Epplet_e16_user_dir());
 	path = strdup(buff);
@@ -677,7 +677,7 @@ parse_config(void)
 	path = strdup(path);
      }
    s = Epplet_query_config("delay");
-   if (s != NULL)
+   if (s)
      {
 	delay = atof(s);
      }

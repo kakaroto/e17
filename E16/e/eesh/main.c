@@ -35,7 +35,7 @@ static Window       my_win, comms_win;
 static void
 process_line(char *line)
 {
-   if (line == NULL)
+   if (!line)
       exit(0);
    if (*line == '\0')
       return;
@@ -166,7 +166,7 @@ main(int argc, char **argv)
 /* CommsSend(e, "set pixmap 0"); */
 #endif
 
-   if (command == NULL && i < argc)
+   if (!command && i < argc)
      {
 	mode = 1;
 	len = 0;

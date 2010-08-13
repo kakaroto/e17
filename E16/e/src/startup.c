@@ -168,7 +168,7 @@ doStartupWindowsOpen(void *data __UNUSED__)
 void
 StartupWindowsOpen(void)
 {
-   if (init_win1 == NULL || init_win2 == NULL)
+   if (!init_win1 || !init_win2)
       return;
 
    Mode.place.enable_features--;

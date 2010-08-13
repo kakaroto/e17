@@ -549,7 +549,7 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
    if (ewin->border == b)
       return;
 
-   if (b == NULL)
+   if (!b)
      {
 	b = ewin->border;
 	ewin->border = NULL;

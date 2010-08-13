@@ -27,7 +27,7 @@ open_pty()
    if (-1 == (master = getpt()))
       return -1;
    if (-1 == grantpt(master) || -1 == unlockpt(master)
-       || NULL == (slave = ptsname(master)))
+       || !(slave = ptsname(master)))
      {
 	close(master);
 	return -1;
@@ -160,7 +160,7 @@ ftp_recv()
 	for (p = line; p && *p; p = n)
 	  {
 	     /* split into lines */
-	     if (NULL != (n = strchr(p, '\n')) || NULL != (n = strchr(p, '\r')))
+	     if ((n = strchr(p, '\n')) || (n = strchr(p, '\r')))
 		*(n++) = 0;
 	     else
 		n = NULL;
@@ -168,18 +168,18 @@ ftp_recv()
 		fprintf(stderr, "<< %s\n", p);
 
 	     /* prompt? */
-	     if (NULL != strstr(p, "ftp>"))
+	     if (strstr(p, "ftp>"))
 	       {
 		  done = 1;
 	       }
 
 	     /* line dropped ? */
-	     if (NULL != strstr(p, "closed connection"))
+	     if (strstr(p, "closed connection"))
 	       {
 		  fprintf(stderr, "ftp: lost connection\n");
 		  ftp_connected = 0;
 	       }
-	     if (NULL != strstr(p, "Not connected"))
+	     if (strstr(p, "Not connected"))
 	       {
 		  if (ftp_connected)
 		     fprintf(stderr, "ftp: lost connection\n");

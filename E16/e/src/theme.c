@@ -53,7 +53,7 @@ ThemeCheckPath(const char *path)
    int                 i;
    char                s[4096];
 
-   for (i = 0; (tf = theme_files[i]) != NULL; i++)
+   for (i = 0; (tf = theme_files[i]); i++)
      {
 	Esnprintf(s, sizeof(s), "%s/%s", path, tf);
 	if (!isfile(s))
@@ -171,7 +171,7 @@ ThemeGetPath(const char *path, char *buf, unsigned int len)
 
    /* We only attempt to dereference a DEFAULT link */
    s = strstr(path, "/DEFAULT");
-   if (s == NULL)
+   if (!s)
       return path;
 
    l = readlink(path, s1, sizeof(s1) - 1);

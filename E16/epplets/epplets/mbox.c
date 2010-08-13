@@ -173,7 +173,7 @@ read_rfc822_line(FILE * f, char *line, size_t * linelen)
 
    for (; 1;)
      {
-	if (fgets(buf, *linelen - offset, f) == NULL ||	/* end of file or */
+	if (!fgets(buf, *linelen - offset, f) ||	/* end of file or */
 	    (ISSPACE(*line) && !offset))
 	  {			/* end of headers */
 	     *line = 0;
@@ -292,7 +292,7 @@ is_from(const char *s, char *path, size_t pathlen)
 	  }
 	else
 	  {
-	     if ((p = strchr(s, ' ')) == NULL)
+	     if (!(p = strchr(s, ' ')))
 		return 0;
 	  }
 	if (path)
@@ -393,7 +393,7 @@ parse_mime_header(FILE * fp)
    int                 status = FALSE;
    int                 is_new = FALSE;
 
-   if (buffer == NULL)
+   if (!buffer)
       buffer = (char *)malloc(buflen);
 
    while (*(buffer = read_rfc822_line(fp, buffer, &buflen)) != 0)
@@ -464,7 +464,7 @@ mbox_folder_count(char *path, int force)
 
    D(("mbox_folder_count(%s, %d) called.\n", NONULL(path), force));
 
-   if (path == NULL)
+   if (!path)
       return 0;
 
    if (stat(path, &s) != 0)
@@ -497,7 +497,7 @@ mbox_folder_count(char *path, int force)
 	     return 1;
 	  }
      }
-   if ((fp = fopen(path, "r")) == NULL)
+   if (!(fp = fopen(path, "r")))
      {
 	D((" -> Mailbox cannot be opened for reading.\n"));
 	return 0;
@@ -517,7 +517,7 @@ mbox_folder_count(char *path, int force)
    file_size = s.st_size;
 
    parse_mime_header(fp);
-   while (fgets(buffer, sizeof(buffer), fp) != 0)
+   while (fgets(buffer, sizeof(buffer), fp))
      {
 	if (is_from(buffer, garbage, sizeof(garbage)))
 	  {
@@ -558,7 +558,7 @@ maildir_count_dir(char *dir)
 	return ULONG_MAX;
      }
 
-   while ((dent = readdir(dp)) != NULL)
+   while ((dent = readdir(dp)))
       count++;
 
    /* Discard . and .. - maybe we should check each file name as we read them?
@@ -583,7 +583,7 @@ maildir_folder_count(char *path, int force)
 
    D(("maildir_folder_count(%s, %d) called.\n", NONULL(path), force));
 
-   if (path == NULL)
+   if (!path)
       return 0;
 
    if (stat(path, &s) != 0)

@@ -690,12 +690,12 @@ append_include_chain(cpp_reader * pfile, file_name_list * first,
    if (!first || !last)
       return;
 
-   if (opts->include == NULL)
+   if (!opts->include)
       opts->include = first;
    else
       opts->last_include->next = first;
 
-   if (opts->first_bracket_include == NULL)
+   if (!opts->first_bracket_include)
       opts->first_bracket_include = first;
 
    for (dir = first;; dir = dir->next)
@@ -1385,7 +1385,7 @@ collect_expansion(cpp_reader * pfile, unsigned char *buf, unsigned char *limit,
 	       {
 		  struct arglist     *arg;
 
-		  for (arg = arglist; arg != NULL; arg = arg->next)
+		  for (arg = arglist; arg; arg = arg->next)
 		    {
 		       reflist            *tpat;
 
@@ -1425,7 +1425,7 @@ collect_expansion(cpp_reader * pfile, unsigned char *buf, unsigned char *limit,
 					       ? expected_delimiter != '\0'
 					       : stringify == id_beg);
 
-			    if (endpat == NULL)
+			    if (!endpat)
 			       defn->pattern = tpat;
 			    else
 			       endpat->next = tpat;
@@ -1596,7 +1596,7 @@ create_definition(MACRODEF * mdef, unsigned char *buf, unsigned char *limit,
 	     {
 		struct arglist     *otemp;
 
-		for (otemp = temp->next; otemp != NULL; otemp = otemp->next)
+		for (otemp = temp->next; otemp; otemp = otemp->next)
 		   if (temp->length == otemp->length &&
 		       strncmp((const char *)temp->name,
 			       (const char *)otemp->name, temp->length) == 0)
@@ -1632,7 +1632,7 @@ create_definition(MACRODEF * mdef, unsigned char *buf, unsigned char *limit,
 	     {
 		memcpy(&defn->args.argnames[i], temp->name, temp->length);
 		i += temp->length;
-		if (temp->next != NULL)
+		if (temp->next)
 		  {
 		     defn->args.argnames[i++] = ',';
 		     defn->args.argnames[i++] = ' ';
@@ -1851,13 +1851,13 @@ do_define(cpp_reader * pfile, struct directive *keyword,
    MACRODEF            mdef;
    HASHNODE           *hp;
 
-   create_definition(&mdef, buf, limit, pfile, keyword == NULL);
-   if (mdef.defn == NULL)
+   create_definition(&mdef, buf, limit, pfile, !keyword);
+   if (!mdef.defn)
       return 1;
 
    hashcode = hashf(mdef.symnam, mdef.symlen, HASHSIZE);
 
-   if ((hp = cpp_lookup(mdef.symnam, mdef.symlen, hashcode)) != NULL)
+   if ((hp = cpp_lookup(mdef.symnam, mdef.symlen, hashcode)))
      {
 	int                 ok = 0;
 
@@ -2061,7 +2061,7 @@ update_position(cpp_buffer * pbuf)
    unsigned char      *new_pos = pbuf->cur;
    struct parse_marker *mark;
 
-   for (mark = pbuf->marks; mark != NULL; mark = mark->next)
+   for (mark = pbuf->marks; mark; mark = mark->next)
      {
 	if (pbuf->buf + mark->position < new_pos)
 	   new_pos = pbuf->buf + mark->position;
@@ -2075,7 +2075,7 @@ cpp_buf_line_and_col(cpp_buffer * pbuf, long *linep, long *colp)
 {
    long                dummy;
 
-   if (colp == NULL)
+   if (!colp)
       colp = &dummy;
    if (pbuf)
      {
@@ -2098,7 +2098,7 @@ cpp_file_buffer(cpp_reader * pfile)
    cpp_buffer         *ip = CPP_BUFFER(pfile);
 
    for (; ip != CPP_NULL_BUFFER(pfile); ip = CPP_PREV_BUFFER(ip))
-      if (ip->fname != NULL)
+      if (ip->fname)
 	 return ip;
    return NULL;
 }
@@ -2134,7 +2134,7 @@ output_line_command(cpp_reader * pfile, int conditional,
    cpp_buffer         *ip = CPP_BUFFER(pfile);
 
    if (CPP_OPTIONS(pfile)->no_line_commands
-       || ip->fname == NULL || CPP_OPTIONS(pfile)->no_output)
+       || !ip->fname || CPP_OPTIONS(pfile)->no_output)
      {
 	return;
      }
@@ -2342,12 +2342,12 @@ special_symbol(HASHNODE * hp, cpp_reader * pfile)
 
    for (ip = CPP_BUFFER(pfile);; ip = CPP_PREV_BUFFER(ip))
      {
-	if (ip == NULL)
+	if (!ip)
 	  {
 	     cpp_error(pfile, "cccp error: not in any file?!");
 	     return;		/* the show must go on */
 	  }
-	if (ip->fname != NULL)
+	if (ip->fname)
 	   break;
      }
 
@@ -2374,8 +2374,8 @@ special_symbol(HASHNODE * hp, cpp_reader * pfile)
 
      case T_INCLUDE_LEVEL:
 	true_indepth = 0;
-	for (ip = CPP_BUFFER(pfile); ip != NULL; ip = CPP_PREV_BUFFER(ip))
-	   if (ip->fname != NULL)
+	for (ip = CPP_BUFFER(pfile); ip; ip = CPP_PREV_BUFFER(ip))
+	   if (ip->fname)
 	      true_indepth++;
 
 	bufx = (char *)alloca(8);	/* Eight bytes ought to be more than enough */
@@ -2829,7 +2829,7 @@ macroexpand(cpp_reader * pfile, HASHNODE * hp)
 	/* Compute length in characters of the macro's expansion.
 	 * Also count number of times each arg is used.  */
 	xbuf_len = defn->length;
-	for (ap = defn->pattern; ap != NULL; ap = ap->next)
+	for (ap = defn->pattern; ap; ap = ap->next)
 	  {
 	     if (ap->stringify)
 	       {
@@ -2946,7 +2946,7 @@ macroexpand(cpp_reader * pfile, HASHNODE * hp)
 	 * OFFSET is the index in the definition
 	 * of where we are copying from.  */
 	offset = totlen = 0;
-	for (last_ap = NULL, ap = defn->pattern; ap != NULL;
+	for (last_ap = NULL, ap = defn->pattern; ap;
 	     last_ap = ap, ap = ap->next)
 	  {
 	     struct argdata     *arg = &args[ap->argno];
@@ -2960,7 +2960,7 @@ macroexpand(cpp_reader * pfile, HASHNODE * hp)
 	      * delete the last run of nonwhite chars.  */
 	     if (rest_zero && totlen > count_before
 		 && ((ap->rest_args && ap->raw_before)
-		     || (last_ap != NULL && last_ap->rest_args
+		     || (last_ap && last_ap->rest_args
 			 && last_ap->raw_after)))
 	       {
 		  /* Delete final whitespace.  */
@@ -3066,7 +3066,7 @@ macroexpand(cpp_reader * pfile, HASHNODE * hp)
 	     /* if we've reached the end of the macro */
 	     if (exp[i] == ')')
 		rest_zero = 0;
-	     if (!(rest_zero && last_ap != NULL && last_ap->rest_args
+	     if (!(rest_zero && last_ap && last_ap->rest_args
 		   && last_ap->raw_after))
 		xbuf[totlen++] = exp[i];
 	  }
@@ -3240,12 +3240,12 @@ do_include(cpp_reader * pfile, struct directive *keyword,
 	     /* We have "filename".  Figure out directory this source
 	      * file is coming from and put it on the front of the list. */
 
-	     for (fp = CPP_BUFFER(pfile); fp != NULL; fp = CPP_PREV_BUFFER(fp))
+	     for (fp = CPP_BUFFER(pfile); fp; fp = CPP_PREV_BUFFER(fp))
 	       {
 		  int                 n;
 		  const char         *ep, *nam;
 
-		  if ((nam = fp->nominal_fname) != NULL)
+		  if ((nam = fp->nominal_fname))
 		    {
 		       /* Found a named file.  Figure out dir of the file,
 		        * and put it in front of the search list.  */
@@ -3255,14 +3255,14 @@ do_include(cpp_reader * pfile, struct directive *keyword,
 		       ep = strrchr(nam, '/');
 #else /* VMS */
 		       ep = strrchr(nam, ']');
-		       if (ep == NULL)
+		       if (!ep)
 			  ep = strrchr(nam, '>');
-		       if (ep == NULL)
+		       if (!ep)
 			  ep = strrchr(nam, ':');
-		       if (ep != NULL)
+		       if (ep)
 			  ep++;
 #endif /* VMS */
-		       if (ep != NULL)
+		       if (ep)
 			 {
 			    n = ep - nam;
 			    dsp[0].fname = (char *)alloca(n + 1);
@@ -3305,8 +3305,8 @@ do_include(cpp_reader * pfile, struct directive *keyword,
      {
 	cpp_buffer         *fp;
 
-	for (fp = CPP_BUFFER(pfile); fp != NULL; fp = CPP_PREV_BUFFER(fp))
-	   if (fp->fname != NULL)
+	for (fp = CPP_BUFFER(pfile); fp; fp = CPP_PREV_BUFFER(fp))
+	   if (fp->fname)
 	     {
 		/* fp->dir is null if the containing file was specified with
 		 * an absolute file name.  In that case, don't skip anything.  */
@@ -3388,7 +3388,7 @@ do_include(cpp_reader * pfile, struct directive *keyword,
 		  strncpy(fname, fbeg, flen);
 		  fname[flen] = 0;
 		  /* if it's '#include filename', add the missing .h */
-		  if (strchr(fname, '.') == NULL)
+		  if (!strchr(fname, '.'))
 		    {
 		       strcat(fname, ".h");
 		    }
@@ -3495,7 +3495,7 @@ do_include(cpp_reader * pfile, struct directive *keyword,
 		break;		/* This file was included before. */
 	  }
 
-	if (ptr == NULL)
+	if (!ptr)
 	  {
 	     /* This is the first time for this file.  */
 	     /* Add it to list of files included.  */
@@ -3519,7 +3519,7 @@ do_include(cpp_reader * pfile, struct directive *keyword,
 	  {
 	     cpp_buffer         *buf = CPP_BUFFER(pfile);
 
-	     while ((buf = CPP_PREV_BUFFER(buf)) != NULL)
+	     while ((buf = CPP_PREV_BUFFER(buf)))
 		putc('.', stderr);
 	     fprintf(stderr, "%s\n", fname);
 	  }
@@ -3622,7 +3622,7 @@ assertion_install(cpp_reader * pfile, const char *name, int len, int hash)
    hp->next = pfile->assertion_hashtab[bucket];
    pfile->assertion_hashtab[bucket] = hp;
    hp->prev = NULL;
-   if (hp->next != NULL)
+   if (hp->next)
       hp->next->prev = hp;
    hp->length = len;
    hp->value = 0;
@@ -3662,9 +3662,9 @@ delete_assertion(ASSERTION_HASHNODE * hp)
 {
    struct tokenlist_list *tail;
 
-   if (hp->prev != NULL)
+   if (hp->prev)
       hp->prev->next = hp->next;
-   if (hp->next != NULL)
+   if (hp->next)
       hp->next->prev = hp->prev;
 
    for (tail = hp->value; tail;)
@@ -3783,7 +3783,7 @@ do_line(cpp_reader * pfile, struct directive *keyword,
 	 * into a null-terminated string.  Do this in place.  */
 	end_name =
 	   convert_string(pfile, fname, fname, (char *)CPP_PWRITTEN(pfile), 1);
-	if (end_name == NULL)
+	if (!end_name)
 	  {
 	     cpp_error(pfile, "invalid format `#line' command");
 	     goto bad_line_directive;
@@ -3828,14 +3828,14 @@ do_line(cpp_reader * pfile, struct directive *keyword,
 	       }
 	  }
 	hash_bucket = &fname_table[hashf(fname, fname_length, FNAME_HASHSIZE)];
-	for (hp = *hash_bucket; hp != NULL; hp = hp->next)
+	for (hp = *hash_bucket; hp; hp = hp->next)
 	   if (hp->length == fname_length &&
 	       strncmp(hp->value.cpval, fname, fname_length) == 0)
 	     {
 		ip->nominal_fname = hp->value.cpval;
 		break;
 	     }
-	if (hp == NULL)
+	if (!hp)
 	  {
 	     /* Didn't find it; cons up a new one.  */
 	     hp = (HASHNODE *) xcalloc(1, sizeof(HASHNODE) + fname_length + 1);
@@ -3878,7 +3878,7 @@ do_undef(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
    SKIP_WHITE_SPACE(buf);
    sym_length = check_macro_name(pfile, buf, "macro");
 
-   while ((hp = cpp_lookup((const char *)buf, sym_length, -1)) != NULL)
+   while ((hp = cpp_lookup((const char *)buf, sym_length, -1)))
      {
 	/* If we are generating additional info for debugging (with -g) we
 	 * need to pass through all effective #undef commands.  */
@@ -3952,9 +3952,9 @@ do_once(cpp_reader * pfile)
 
    for (ip = CPP_BUFFER(pfile);; ip = CPP_PREV_BUFFER(ip))
      {
-	if (ip == NULL)
+	if (!ip)
 	   return 0;
-	if (ip->fname != NULL)
+	if (ip->fname)
 	   break;
      }
 
@@ -4025,7 +4025,7 @@ do_pragma(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
 	fname = p + 1;
 	p = strchr(fname, '\"');
 	fname_len =
-	   (int)(((int)(p != NULL)) ? ((int)(p - fname))
+	   (int)(((int)(p)) ? ((int)(p - fname))
 		 : ((int)(strlen(fname))));
 
 	for (ptr = pfile->all_include_files; ptr; ptr = ptr->next)
@@ -4089,8 +4089,8 @@ do_elif(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
 	if (pfile->if_stack->type != T_IF && pfile->if_stack->type != T_ELIF)
 	  {
 	     cpp_error(pfile, "`#elif' after `#else'");
-	     if (pfile->if_stack->fname != NULL
-		 && CPP_BUFFER(pfile)->fname != NULL
+	     if (pfile->if_stack->fname
+		 && CPP_BUFFER(pfile)->fname
 		 && strcmp(pfile->if_stack->fname,
 			   CPP_BUFFER(pfile)->nominal_fname) != 0)
 		fprintf(stderr, ", file %s", pfile->if_stack->fname);
@@ -4184,7 +4184,7 @@ do_xifdef(cpp_reader * pfile, struct directive *keyword, unsigned char *unused1,
      {
 	HASHNODE           *hp = cpp_lookup(ident, ident_length, -1);
 
-	skip = (hp == NULL) ^ (keyword->type == T_IFNDEF);
+	skip = (!hp) ^ (keyword->type == T_IFNDEF);
 	if (start_of_file && !skip)
 	  {
 	     control_macro = (unsigned char *)xmalloc(ident_length + 1);
@@ -4483,7 +4483,7 @@ do_endif(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
 	IF_STACK_FRAME     *temp = pfile->if_stack;
 
 	pfile->if_stack = temp->next;
-	if (temp->control_macro != NULL)
+	if (temp->control_macro)
 	  {
 	     /* This #endif matched a #ifndef at the start of the file.
 	      * See if it is at the end of the file.  */
@@ -4514,7 +4514,7 @@ do_endif(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
 		  {
 		     file_name_list     *ifile = pfile->all_include_files;
 
-		     for (; ifile != NULL; ifile = ifile->next)
+		     for (; ifile; ifile = ifile->next)
 		       {
 			  if (!strcmp(ifile->fname, CPP_BUFFER(pfile)->fname))
 			    {
@@ -4577,7 +4577,7 @@ cpp_get_token(cpp_reader * pfile)
 	     cpp_buffer         *next_buf = CPP_PREV_BUFFER(CPP_BUFFER(pfile));
 
 	     CPP_BUFFER(pfile)->seen_eof = 1;
-	     if (CPP_BUFFER(pfile)->nominal_fname && next_buf != NULL)
+	     if (CPP_BUFFER(pfile)->nominal_fname && next_buf)
 	       {
 		  /* We're about to return from an #include file.
 		   * Emit #line information now (as part of the CPP_POP) result.
@@ -5693,7 +5693,7 @@ push_parse_file(cpp_reader * pfile, const char *fname)
     * but that seems pointless: it comes before them, so it overrides them
     * anyway.  */
    p = (char *)getenv("CPATH");
-   if (p != NULL && !opts->no_standard_includes)
+   if (p && !opts->no_standard_includes)
       path_include(pfile, p);
 
    /* Now that dollars_in_ident is known, initialize is_idchar.  */
@@ -5702,7 +5702,7 @@ push_parse_file(cpp_reader * pfile, const char *fname)
    /* Do partial setup of input buffer for the sake of generating
     * early #line directives (when -g is in effect).  */
    fp = cpp_push_buffer(pfile, NULL, 0);
-   if (opts->in_fname == NULL)
+   if (!opts->in_fname)
       opts->in_fname = "";
    fp->nominal_fname = fp->fname = opts->in_fname;
    fp->lineno = 0;
@@ -5801,7 +5801,7 @@ push_parse_file(cpp_reader * pfile, const char *fname)
 
    for (pend = opts->pending; pend; pend = pend->next)
      {
-	if (pend->cmd != NULL && pend->cmd[0] == '-')
+	if (pend->cmd && pend->cmd[0] == '-')
 	  {
 	     switch (pend->cmd[1])
 	       {
@@ -5914,7 +5914,7 @@ push_parse_file(cpp_reader * pfile, const char *fname)
 	  }
 	/* Search "translated" versions of GNU directories.
 	 * These have /usr/local/lib/gcc... replaced by specd_prefix.  */
-	if (specd_prefix != NULL && default_len != 0)
+	if (specd_prefix && default_len != 0)
 	   for (di = include_defaults; di->fname; di++)
 	     {
 		/* Some standard dirs are only for C++.  */
@@ -5942,7 +5942,7 @@ push_parse_file(cpp_reader * pfile, const char *fname)
 			  new_->c_system_include_path = !di->cxx_aware;
 			  new_->got_name_map = 0;
 			  append_include_chain(pfile, new_, new_);
-			  if (opts->first_system_include == NULL)
+			  if (!opts->first_system_include)
 			     opts->first_system_include = new_;
 		       }
 		  }
@@ -5962,14 +5962,14 @@ push_parse_file(cpp_reader * pfile, const char *fname)
 		  new_->fname = (char *)di->fname;
 		  new_->got_name_map = 0;
 		  append_include_chain(pfile, new_, new_);
-		  if (opts->first_system_include == NULL)
+		  if (!opts->first_system_include)
 		     opts->first_system_include = new_;
 	       }
 	  }
      }
    /* Tack the after_include chain at the end of the include chain.  */
    append_include_chain(pfile, opts->after_include, opts->last_after_include);
-   if (opts->first_system_include == NULL)
+   if (!opts->first_system_include)
       opts->first_system_include = opts->after_include;
 
    /* With -v, print the list of dirs to search.  */
@@ -5994,7 +5994,7 @@ push_parse_file(cpp_reader * pfile, const char *fname)
    pfile->no_record_file++;
    for (pend = opts->pending; pend; pend = pend->next)
      {
-	if (pend->cmd != NULL && strcmp(pend->cmd, "-imacros") == 0)
+	if (pend->cmd && strcmp(pend->cmd, "-imacros") == 0)
 	  {
 	     int                 fd = open(pend->arg, O_RDONLY, 0666);
 
@@ -6013,7 +6013,7 @@ push_parse_file(cpp_reader * pfile, const char *fname)
 
    /* Copy the entire contents of the main input file into
     * the stacked input buffer previously allocated for it.  */
-   if (fname == NULL || *fname == 0)
+   if (!fname || *fname == 0)
      {
 	fname = "";
 	f = 0;
@@ -6041,7 +6041,7 @@ push_parse_file(cpp_reader * pfile, const char *fname)
 	char               *s;
 	char               *output_file;
 
-	if (spec == NULL)
+	if (!spec)
 	  {
 	     spec = getenv("SUNPRO_DEPENDENCIES");
 	     opts->print_deps = 2;
@@ -6090,9 +6090,9 @@ push_parse_file(cpp_reader * pfile, const char *fname)
 	     int                 len;
 
 	     /* Discard all directory prefixes from filename.  */
-	     if ((q = (char *)strrchr(opts->in_fname, '/')) != NULL
+	     if ((q = (char *)strrchr(opts->in_fname, '/'))
 #ifdef DIR_SEPARATOR
-		 && (q = strrchr(opts->in_fname, DIR_SEPARATOR)) != NULL
+		 && (q = strrchr(opts->in_fname, DIR_SEPARATOR))
 #endif
 		)
 		++q;
@@ -6138,7 +6138,7 @@ push_parse_file(cpp_reader * pfile, const char *fname)
    opts->pending = nreverse_pending(opts->pending);
    for (pend = opts->pending; pend; pend = pend->next)
      {
-	if (pend->cmd != NULL && strcmp(pend->cmd, "-include") == 0)
+	if (pend->cmd && strcmp(pend->cmd, "-include") == 0)
 	  {
 	     int                 fd = open(pend->arg, O_RDONLY, 0666);
 
@@ -6228,9 +6228,9 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
      {
 	if (argv[i][0] != '-')
 	  {
-	     if (opts->out_fname != NULL)
+	     if (opts->out_fname)
 		cpp_fatal("Usage: %s [switches] input output", argv[0]);
-	     else if (opts->in_fname != NULL)
+	     else if (opts->in_fname)
 		opts->out_fname = argv[i];
 	     else
 		opts->in_fname = argv[i];
@@ -6278,7 +6278,7 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
 		       strcpy(dirtmp->fname, argv[++i]);
 		       dirtmp->got_name_map = 0;
 
-		       if (opts->before_system == NULL)
+		       if (!opts->before_system)
 			  opts->before_system = dirtmp;
 		       else
 			  opts->last_before_system->next = dirtmp;
@@ -6291,7 +6291,7 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
 		       file_name_list     *dirtmp;
 		       char               *prefix;
 
-		       if (opts->include_prefix != NULL)
+		       if (opts->include_prefix)
 			  prefix = opts->include_prefix;
 		       else
 			 {
@@ -6318,7 +6318,7 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
 		       strcat(dirtmp->fname, argv[++i]);
 		       dirtmp->got_name_map = 0;
 
-		       if (opts->after_include == NULL)
+		       if (!opts->after_include)
 			  opts->after_include = dirtmp;
 		       else
 			  opts->last_after_include->next = dirtmp;
@@ -6331,7 +6331,7 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
 		       file_name_list     *dirtmp;
 		       char               *prefix;
 
-		       if (opts->include_prefix != NULL)
+		       if (opts->include_prefix)
 			  prefix = opts->include_prefix;
 		       else
 			 {
@@ -6378,7 +6378,7 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
 			  dirtmp->fname = argv[++i];
 		       dirtmp->got_name_map = 0;
 
-		       if (opts->after_include == NULL)
+		       if (!opts->after_include)
 			  opts->after_include = dirtmp;
 		       else
 			  opts->last_after_include->next = dirtmp;
@@ -6387,7 +6387,7 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
 		  break;
 
 	       case 'o':
-		  if (opts->out_fname != NULL)
+		  if (opts->out_fname)
 		     cpp_fatal("Output filename specified twice");
 		  if (i + 1 == argc)
 		     cpp_fatal("Filename missing after -o option");
@@ -6600,7 +6600,7 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
 			   * that were passed automatically in from GCC.  */
 
 			  opts->inhibit_predefs = 1;
-			  for (ptr = &opts->pending; *ptr != NULL;)
+			  for (ptr = &opts->pending; *ptr;)
 			    {
 			       struct cpp_pending *pend = *ptr;
 
@@ -6695,12 +6695,12 @@ cpp_handle_options(cpp_reader * pfile, int argc, char **argv)
 		  break;
 
 	       case '\0':	/* JF handle '-' as file name meaning stdin or stdout */
-		  if (opts->in_fname == NULL)
+		  if (!opts->in_fname)
 		    {
 		       opts->in_fname = "";
 		       break;
 		    }
-		  else if (opts->out_fname == NULL)
+		  else if (!opts->out_fname)
 		    {
 		       opts->out_fname = "";
 		       break;
@@ -6729,9 +6729,9 @@ cpp_finish(cpp_reader * pfile)
 	     const char         *deps_mode =
 		opts->print_deps_append ? "a" : "w";
 
-	     if (opts->deps_file == NULL)
+	     if (!opts->deps_file)
 		deps_stream = stdout;
-	     else if ((deps_stream = fopen(opts->deps_file, deps_mode)) == 0)
+	     else if (!(deps_stream = fopen(opts->deps_file, deps_mode)))
 		cpp_pfatal_with_name(pfile, opts->deps_file);
 	     fputs(pfile->deps_buffer, deps_stream);
 	     putc('\n', deps_stream);
@@ -6779,7 +6779,7 @@ do_assert(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
       tokens = read_token_list(pfile, &error_flag);
       if (error_flag)
 	 goto error;
-      if (tokens == NULL)
+      if (!tokens)
 	{
 	   cpp_error(pfile, "empty token-sequence in `#assert'");
 	   goto error;
@@ -6803,7 +6803,7 @@ do_assert(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
 	 (struct tokenlist_list *)xmalloc(sizeof(struct tokenlist_list));
 
       hp = assertion_lookup(pfile, symname, sym_length, hashcode);
-      if (hp == NULL)
+      if (!hp)
 	{
 	   if (sym_length == 7 && !strncmp(symname, "defined", sym_length))
 	      cpp_error(pfile, "`defined' redefined as assertion");
@@ -6856,7 +6856,7 @@ do_unassert(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
 	tokens = read_token_list(pfile, &error_flag);
 	if (error_flag)
 	   goto error;
-	if (tokens == NULL)
+	if (!tokens)
 	  {
 	     cpp_error(pfile, "empty token list in `#unassert'");
 	     goto error;
@@ -6877,7 +6877,7 @@ do_unassert(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
       struct tokenlist_list *tail, *prev;
 
       hp = assertion_lookup(pfile, symname, sym_length, hashcode);
-      if (hp == NULL)
+      if (!hp)
 	 return 1;
 
       /* If no token list was specified, then eliminate this assertion
@@ -6936,7 +6936,7 @@ check_assertion(cpp_reader * pfile, const char *name, int sym_length,
       cpp_pedwarn(pfile, "ANSI C does not allow testing assertions");
 
    hp = assertion_lookup(pfile, name, sym_length, hashcode);
-   if (hp == NULL)
+   if (!hp)
       /* It is not an assertion; just return false.  */
       return 0;
 
@@ -7170,7 +7170,7 @@ parse_clear_mark(struct parse_marker *pmark)
 
    for (;; pp = &(*pp)->next)
      {
-	if (*pp == NULL)
+	if (!*pp)
 	   cpp_fatal("internal error", "in parse_set_mark");
 	if (*pp == pmark)
 	   break;
@@ -7238,7 +7238,7 @@ cpp_print_file_and_line(cpp_reader * pfile)
 {
    cpp_buffer         *ip = cpp_file_buffer(pfile);
 
-   if (ip != NULL)
+   if (ip)
      {
 	long                line, col;
 
@@ -7320,7 +7320,7 @@ cpp_error_with_line(cpp_reader * pfile, int line, int column, const char *msg)
 
    cpp_print_containing_files(pfile);
 
-   if (ip != NULL)
+   if (ip)
       cpp_file_line_for_message(pfile, ip->nominal_fname, line, column);
 
    cpp_message(pfile, 1, msg, NULL, NULL, NULL);
@@ -7341,7 +7341,7 @@ cpp_warning_with_line(cpp_reader * pfile, int line, int column, const char *msg)
 
    ip = cpp_file_buffer(pfile);
 
-   if (ip != NULL)
+   if (ip)
       cpp_file_line_for_message(pfile, ip->nominal_fname, line, column);
 
    cpp_message(pfile, 0, msg, NULL, NULL, NULL);
@@ -7368,7 +7368,7 @@ cpp_pedwarn_with_file_and_line(cpp_reader * pfile,
    if (!CPP_OPTIONS(pfile)->pedantic_errors
        && CPP_OPTIONS(pfile)->inhibit_warnings)
       return;
-   if (file != NULL)
+   if (file)
       cpp_file_line_for_message(pfile, file, line, -1);
    cpp_message(pfile, CPP_OPTIONS(pfile)->pedantic_errors,
 	       msg, arg1, arg2, arg3);
@@ -7423,7 +7423,7 @@ cpp_error_from_errno(cpp_reader * pfile, const char *name)
 
    cpp_print_containing_files(pfile);
 
-   if (ip != NULL)
+   if (ip)
       cpp_file_line_for_message(pfile, ip->nominal_fname, ip->lineno, -1);
 
    cpp_message(pfile, 1, "%s: %s", name, my_strerror(errno), NULL);

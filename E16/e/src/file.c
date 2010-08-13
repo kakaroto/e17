@@ -246,7 +246,7 @@ fileext(const char *file)
    const char         *p;
 
    p = strrchr(file, '.');
-   if (p != NULL)
+   if (p)
      {
 	return p + 1;
      }

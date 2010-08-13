@@ -80,9 +80,9 @@ timer_cb(void *data)
    unsigned long       in_blks = 0, out_blks = 0;
    static unsigned long last_in = 0, last_out = 0, in_delta = 0, out_delta = 0;
 
-   if ((fp = fopen("/proc/diskstats", "r")) == NULL)
+   if (!(fp = fopen("/proc/diskstats", "r")))
      {
-	if ((fp = fopen("/proc/stat", "r")) == NULL)
+	if (!(fp = fopen("/proc/stat", "r")))
 	  {
 	     D(("Failed to open /proc/stat -- %s\n", strerror(errno)));
 	     return;

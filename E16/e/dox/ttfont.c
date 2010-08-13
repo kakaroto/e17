@@ -98,7 +98,7 @@ Efont_load(const char *file, int size)
 
    Esnprintf(s, sizeof(s), "%s/%d", file, size);
    ff = imlib_load_font(s);
-   if (ff == NULL)
+   if (!ff)
       return NULL;
 
    f = EMALLOC(Efont, 1);

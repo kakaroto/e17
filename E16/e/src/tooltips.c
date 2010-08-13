@@ -92,7 +92,7 @@ TooltipCreate(const char *name, const char *ic0, const char *ic1,
    ToolTip            *tt;
    ImageClass         *ic;
 
-   if (ic0 == NULL || tclass == NULL)
+   if (!ic0 || !tclass)
       return NULL;
 
    ic = ImageclassAlloc(ic0, 0);

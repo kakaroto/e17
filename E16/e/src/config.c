@@ -75,11 +75,11 @@ GetLine(char *s, int size, FILE * f)
    const char         *si;
    size_t              nr;
 
-   if (buffer == NULL)
+   if (!buffer)
      {
 	buffer = EMALLOC(char, LINE_BUFFER_SIZE);
 
-	if (buffer == NULL)
+	if (!buffer)
 	   return NULL;
 	buffer[LINE_BUFFER_SIZE - 1] = '\0';
      }
@@ -91,7 +91,7 @@ GetLine(char *s, int size, FILE * f)
    for (;;)
      {
 	/* Get a line from the input file */
-	if (si == NULL)
+	if (!si)
 	  {
 	     nr = fread(buffer, 1, LINE_BUFFER_SIZE - 1, f);
 	     if (nr == 0)
@@ -151,7 +151,7 @@ GetLine(char *s, int size, FILE * f)
 
  done:
    bufptr = si;
-   if (si == NULL)
+   if (!si)
      {
 	/* EOF */
 	Efree(buffer);

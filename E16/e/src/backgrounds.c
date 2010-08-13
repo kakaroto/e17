@@ -871,7 +871,7 @@ BrackgroundCreateFromImage(const char *bgid, const char *file,
 void
 BackgroundIncRefcount(Background * bg)
 {
-   if (bg == NULL)
+   if (!bg)
       return;
    bg->ref_count++;
 }
@@ -879,7 +879,7 @@ BackgroundIncRefcount(Background * bg)
 void
 BackgroundDecRefcount(Background * bg)
 {
-   if (bg == NULL)
+   if (!bg)
       return;
    bg->ref_count--;
    if (bg->ref_count <= 0)
@@ -889,7 +889,7 @@ BackgroundDecRefcount(Background * bg)
 void
 BackgroundTouch(Background * bg)
 {
-   if (bg == NULL)
+   if (!bg)
       return;
    bg->last_viewed = time(NULL);
 }
@@ -1300,7 +1300,7 @@ BackgroundsCheckDups(void)
 	bg = (Background *) ecore_list_next(bg_list);
 	if (!bg)
 	   break;
-	for (; (bgx = (Background *) ecore_list_next(bg_list)) != NULL;)
+	for (; (bgx = (Background *)ecore_list_next(bg_list));)
 	  {
 	     if (bgx->ref_count > 0 || bgx->referenced)
 		continue;
@@ -2337,7 +2337,7 @@ BackgroundSet2(const char *name, const char *params)
    int                 xjust, yjust, xperc, yperc;
    int                 txjust, tyjust, txperc, typerc;
 
-   if (params == NULL)
+   if (!params)
       return;
 
    bgf[0] = topf[0] = '\0';

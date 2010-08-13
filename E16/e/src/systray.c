@@ -119,7 +119,7 @@ SystrayObjManage(Container * ct, Window xwin)
    Eprintf("SystrayObjManage %#lx\n", xwin);
 #endif
    win = ERegisterWindow(xwin, NULL);
-   if (win == NULL)
+   if (!win)
       return win;
 
    ESelectInput(win, StructureNotifyMask | PropertyChangeMask);
@@ -184,7 +184,7 @@ SystrayObjAdd(Container * ct, Window xwin)
       goto bail_out;
 
    win = SystrayObjManage(ct, xwin);
-   if (win == NULL)
+   if (!win)
       goto bail_out;
 
    swin->win = win;

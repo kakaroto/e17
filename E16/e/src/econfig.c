@@ -256,7 +256,7 @@ ConfigurationSave(void)
       Eprintf("ConfigurationSave\n");
 
    ecf = e16_db_open(ConfigurationGetFile(buf, sizeof(buf)));
-   if (ecf == NULL)
+   if (!ecf)
       return;
 
    /* Load module configs */

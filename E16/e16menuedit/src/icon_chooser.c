@@ -132,7 +132,7 @@ void open_icon_chooser (GtkWidget *treeview_menu)
       select = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview_menu));
 
       if (gtk_tree_selection_get_selected (select, &model, &iter)
-	&& filename != NULL)
+	&& filename)
       {
         const gchar *entry_select;
         gint width, height;
@@ -238,7 +238,7 @@ void open_icon_chooser (GtkWidget *treeview_menu)
           gdk_pixbuf_save (icon_pixbuf, filename, "png", NULL, NULL);
         }
 
-        if (icon_pixbuf != NULL)
+        if (icon_pixbuf)
         {
           gtk_tree_store_set (GTK_TREE_STORE (model), &iter,
                               COL_ICON, icon_pixbuf,
@@ -263,7 +263,7 @@ void open_icon_chooser (GtkWidget *treeview_menu)
                             COL_ICON, &icon_pixbuf,
                             -1);
 
-        if (icon_pixbuf != NULL)
+        if (icon_pixbuf)
         {
           g_object_unref (icon_pixbuf);
         }
@@ -292,7 +292,7 @@ void update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
   preview = GTK_WIDGET (data);
   filename = gtk_file_chooser_get_preview_filename (file_chooser);
 
-  if (filename != NULL)
+  if (filename)
   {
     gchar *right;
 

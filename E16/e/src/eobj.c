@@ -270,7 +270,7 @@ EobjWindowCreate(int type, int x, int y, int w, int h, int su, const char *name)
    eo->floating = 1;
    EobjSetLayer(eo, 20);
    EobjInit(eo, type, EobjGetWin(eo), x, y, w, h, su, name);
-   if (eo->win == NULL)
+   if (!eo->win)
      {
 	Efree(eo);
 	eo = NULL;

@@ -60,7 +60,7 @@ net_get_devices(unsigned long *count)
 
 #ifdef linux
    fp = fopen("/proc/net/dev", "r");
-   if (fp == NULL)
+   if (!fp)
      {
 	return ((char **)NULL);
      }
@@ -109,27 +109,27 @@ net_get_bytes_inout(const char *device, double *in_bytes, double *out_bytes)
       NULL, dev[64], in_str[64], out_str[64];
 #endif
 
-   if (device == NULL)
+   if (!device)
      {
 	return (EFAULT);
      }
 #ifdef __sun__
    kc = kstat_open();
-   if (kc == NULL)
+   if (!kc)
      {
 	return (EACCES);
      }
    ksp = kstat_lookup(kc, 0, -1, device);
-   if (ksp == NULL)
+   if (!ksp)
      {
 	return (ENODEV);
      }
    kstat_read(kc, ksp, &kned);
-   if (in_bytes != NULL)
+   if (in_bytes)
      {
 	*in_bytes = (double)kned[0].value.ul;
      }
-   if (out_bytes != NULL)
+   if (out_bytes)
      {
 	*out_bytes = (double)kned[2].value.ul;
      }
@@ -137,7 +137,7 @@ net_get_bytes_inout(const char *device, double *in_bytes, double *out_bytes)
    return 0;
 #elif defined(linux)
    fp = fopen("/proc/net/dev", "r");
-   if (fp == NULL)
+   if (!fp)
      {
 	return (ENOENT);
      }
@@ -160,11 +160,11 @@ net_get_bytes_inout(const char *device, double *in_bytes, double *out_bytes)
 	if (!strcmp(dev, device))
 	  {
 	     match = 1;
-	     if (in_bytes != NULL)
+	     if (in_bytes)
 	       {
 		  *in_bytes = atof(in_str);
 	       }
-	     if (out_bytes != NULL)
+	     if (out_bytes)
 	       {
 		  *out_bytes = atof(out_str);
 	       }
@@ -175,11 +175,11 @@ net_get_bytes_inout(const char *device, double *in_bytes, double *out_bytes)
    return ((match) ? (0) : (ENODEV));
 #else
    /* Unsupported platform. */
-   if (in_bytes != NULL)
+   if (in_bytes)
      {
 	*in_bytes = -1.0;
      }
-   if (out_bytes != NULL)
+   if (out_bytes)
      {
 	*out_bytes = -1.0;
      }

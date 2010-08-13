@@ -186,7 +186,7 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
      {
 	if (floating == 0)
 	  {
-	     dsk = (pdesk == NULL) ? EoGetDesk(ewin) : pdesk;
+	     dsk = (!pdesk) ? EoGetDesk(ewin) : pdesk;
 	     floating = 1;
 	  }
 	else if (floating == 1)

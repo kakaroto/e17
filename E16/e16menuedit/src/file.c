@@ -211,7 +211,7 @@ int mkdir_with_parent (const char *pathname, mode_t mode)
 
     i++;
   }
-  while (tok != NULL);
+  while (tok);
 
   free (pathname_copy);
 
@@ -253,7 +253,7 @@ char *strtok_left (char *s, const char *delim, unsigned int number)
     s_new = s;
   }
 
-  for (i = 0; pos != NULL; i++)
+  for (i = 0; pos; i++)
   {
     pos = strstr (s_new, delim);
 
@@ -286,17 +286,17 @@ int version_cmp (char *ver1, char *ver2)
   ver1_token = strtok_r (ver1, ".", &ver1_ptr);
   ver2_token = strtok_r (ver2, ".", &ver2_ptr);
 
-  while ((ver1_token != NULL) || (ver2_token != NULL))
+  while ((ver1_token) || (ver2_token))
   {
     int ver1_i;
     int ver2_i;
 
-    if (ver1_token == NULL)
+    if (!ver1_token)
       ver1_i = 0;
     else
       ver1_i = atoi (ver1_token);
 
-    if (ver2_token == NULL)
+    if (!ver2_token)
       ver2_i = 0;
     else
       ver2_i = atoi (ver2_token);

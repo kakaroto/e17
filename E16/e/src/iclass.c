@@ -98,7 +98,7 @@ TransparencyMakeColorModifier(void)
 	alpha[i] = 255 - Conf.trans.alpha;
      }
 
-   if (icm == NULL)
+   if (!icm)
       icm = EImageColorModifierCreate();
    EImageColorModifierSetTables(icm, gray, gray, gray, alpha);
 }
@@ -693,7 +693,7 @@ ImageclassGetImage(ImageClass * ic, int active, int sticky, int state)
    if (!is)
       return NULL;
 
-   if (is->im == NULL)
+   if (!is->im)
       ImagestateRealize(is);
 
    im = is->im;
@@ -805,7 +805,7 @@ ImageclassGetImageBlended(ImageClass * ic, Win win, int w, int h, int active,
    if (!is)
       return NULL;
 
-   if (is->im == NULL)
+   if (!is->im)
       ImagestateRealize(is);
    im = is->im;
    if (!im)
@@ -1097,7 +1097,7 @@ ITApply(Win win, ImageClass * ic, ImageState * is,
 {
    int                 w, h;
 
-   if (win == NULL || !ic)
+   if (!win || !ic)
       return;
 
    w = WinGetW(win);
@@ -1116,7 +1116,7 @@ ITApply(Win win, ImageClass * ic, ImageState * is,
 	   ts = TextclassGetTextState(tc, state, active, sticky);
      }
 
-   if (is->im == NULL)
+   if (!is->im)
       ImagestateRealize(is);
 
    /* Imlib2 will not render pixmaps with dimensions > 8192 */
@@ -1240,7 +1240,7 @@ ImageclassApplyCopy(ImageClass * ic, Win win, int w, int h,
 {
    ImageState         *is;
 
-   if (pmm == NULL)
+   if (!pmm)
       return;
 
    pmm->type = 0;
@@ -1253,7 +1253,7 @@ ImageclassApplyCopy(ImageClass * ic, Win win, int w, int h,
    if (!is)
       return;
 
-   if (is->im == NULL)
+   if (!is->im)
       ImagestateRealize(is);
 
    /* Imlib2 will not render pixmaps with dimensions > 8192 */

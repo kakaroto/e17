@@ -614,7 +614,7 @@ ESavePrefixSetup(void)
 
    Mode.conf.prefix = Estrdup(buf);
 
-   for (s = Mode.conf.prefix; (s = strchr(s, ':')) != NULL; *s = '-')
+   for (s = Mode.conf.prefix; (s = strchr(s, ':')); *s = '-')
       ;
 }
 

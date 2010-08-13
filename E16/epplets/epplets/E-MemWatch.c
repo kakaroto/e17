@@ -77,7 +77,7 @@ timer_cb(void *data)
 #else
    FILE               *fp;
 
-   if ((fp = fopen("/proc/meminfo", "r")) == NULL)
+   if (!(fp = fopen("/proc/meminfo", "r")))
      {
 	D(("Failed to open /proc/meminfo -- %s\n", strerror(errno)));
 	return;
@@ -278,7 +278,7 @@ main(int argc, char **argv)
    FILE               *fp;
    char                version[8], buff[1024];
 
-   if ((fp = fopen("/proc/version", "r")) == NULL)
+   if (!(fp = fopen("/proc/version", "r")))
      {
 	D(("Failed to open /proc/version -- %s\nWill assume not 2.6 kernel",
 	   strerror(errno)));

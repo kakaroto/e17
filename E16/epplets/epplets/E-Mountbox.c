@@ -937,7 +937,7 @@ AddMountPoint(char *device, char *path)
 		       type = type->next;
 		    }
 
-		  if (tail_tile->image == NULL)
+		  if (!tail_tile->image)
 		    {
 		       s = Epplet_query_config("DEFAULT");
 
@@ -1008,7 +1008,7 @@ AddMountPointType(char *key, char *image)
 
    if (types)
      {
-	if ((types->key == NULL) && (types->image == NULL))
+	if ((!types->key) && (!types->image))
 	  {
 	     if (key)
 		types->key = strdup(key);
@@ -1244,7 +1244,7 @@ ParseFstab(void)
    char               *info[4];
    int                 i;
 
-   if ((f = fopen(FSTAB, "r")) == NULL)
+   if (!(f = fopen(FSTAB, "r")))
       return 0;
    *s = 0;
    for (; fgets(s, sizeof(s), f);)
@@ -1293,7 +1293,7 @@ ParseProcMounts(void)
    char               *token = NULL, *device = NULL, *path = NULL;
    Tile               *tile;
 
-   if ((f = fopen(PROCMOUNTS, "r")) == NULL)
+   if (!(f = fopen(PROCMOUNTS, "r")))
       return 0;
    *s = 0;
    for (; fgets(s, sizeof(s), f);)
@@ -1349,7 +1349,7 @@ ParseEtcMtab(void)
    char               *token = NULL, *device = NULL, *path = NULL;
    Tile               *tile;
 
-   if ((f = fopen(ETCMTAB, "r")) == NULL)
+   if (!(f = fopen(ETCMTAB, "r")))
       return 0;
    *s = 0;
    for (; fgets(s, sizeof(s), f);)
@@ -1417,7 +1417,7 @@ VisitMountPoints(void)
 		  if (dir)
 		    {
 		       num_entries = 0;
-		       for (num_entries = 0; (dp = readdir(dir)) != NULL;
+		       for (num_entries = 0; (dp = readdir(dir));
 			    num_entries++);
 		       if (num_entries > 2)
 			 {

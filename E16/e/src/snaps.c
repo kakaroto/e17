@@ -1502,7 +1502,7 @@ SnapshotEwinUnmatch(EWin * ewin)
    Snapshot           *sn;
 
    sn = ewin->snap;
-   if (sn == NULL)
+   if (!sn)
       return;
 
    ewin->snap = NULL;

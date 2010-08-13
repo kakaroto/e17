@@ -322,7 +322,7 @@ main(int argc, char **argv)
 	else
 	   docdir = strdup(argv[i]);
      }
-   if (docdir == NULL)
+   if (!docdir)
       docdir = strdup(doxdir);
    s = EMALLOC(char, strlen(docdir) + strlen(docfile) + 2 + 20);
 
@@ -342,7 +342,7 @@ main(int argc, char **argv)
 
    LoadFile(s, docfile);
 
-   if ((disp = XOpenDisplay(NULL)) == NULL)
+   if (!(disp = XOpenDisplay(NULL)))
      {
 	printf("%s: Cannot open X display.\n", argv[0]);
 	exit(0);

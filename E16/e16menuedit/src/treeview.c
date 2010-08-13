@@ -203,7 +203,7 @@ void save_table_to_menu (GtkWidget *treeview_menu)
     print_statusbar (_("Menu saved!"));
 
     /* free allocated menu files */
-    while (menu_file[i] != NULL)
+    while (menu_file[i])
     {
       g_free (menu_file[i]);
       i++;

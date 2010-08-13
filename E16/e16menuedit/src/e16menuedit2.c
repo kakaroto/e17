@@ -123,7 +123,7 @@ int main (int argc, char *argv[])
                                          homedir (getuid ()), APP_HOME);
 
   fz_properties = fopen (filename_properties, "r");
-  if (fz_properties != NULL)
+  if (fz_properties)
   {
     fscanf (fz_properties, "%s = %s", key, value);
 

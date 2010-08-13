@@ -280,7 +280,7 @@ parse_answers(char *path)
    unsigned long       len;
 
    fp = fopen(path, "r");
-   if (fp == NULL)
+   if (!fp)
      {
 	return 0;
      }
@@ -351,7 +351,7 @@ parse_config(void)
      }
 
    s = Epplet_query_config("delay");
-   if (s != NULL)
+   if (s)
      {
 	delay = atof(s);
      }

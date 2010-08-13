@@ -30,7 +30,7 @@ _Strjoin(const char *separator, ...)
    int                 len;
    int                 separator_len;
 
-   if (separator == NULL)
+   if (!separator)
       separator = "";
 
    separator_len = strlen(separator);

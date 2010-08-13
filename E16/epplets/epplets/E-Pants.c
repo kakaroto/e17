@@ -158,7 +158,7 @@ add_log(char *button_string, char *entry_string)
 {
    char               *tmp;
 
-   if (button_string != NULL)
+   if (button_string)
      {
 	tmp = strdup(button_string);
 	if (strlen(tmp) > LABEL_CHAR)
@@ -172,7 +172,7 @@ add_log(char *button_string, char *entry_string)
 	Epplet_change_popbutton_label(pb_log_small, tmp);
 	free(tmp);
      }
-   if (entry_string != NULL)
+   if (entry_string)
      {
 	Epplet_add_popup_entry(p_log, entry_string, NULL, NULL, NULL);
 	if (log_entries >= LOG_LEN)

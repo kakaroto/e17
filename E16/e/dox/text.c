@@ -99,7 +99,7 @@ TextStateLoadFont(TextState * ts)
      }
 
 #if USE_XFONT
-   if ((!ts->xfont) && (strchr(ts->fontname, ',') == NULL))
+   if ((!ts->xfont) && (!strchr(ts->fontname, ',')))
      {
 	ts->xfont = XLoadQueryFont(disp, ts->fontname);
 	if (ts->xfont)

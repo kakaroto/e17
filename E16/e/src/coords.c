@@ -49,7 +49,7 @@ _CoordsShow(EWin * ewin, int mode)
 
    if (!Conf.movres.mode_info)
       return;
-   if (ewin == NULL || !ewin->state.show_coords)
+   if (!ewin || !ewin->state.show_coords)
       return;
 
    tc = TextclassFind("COORDS", 1);

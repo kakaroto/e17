@@ -849,7 +849,7 @@ Epplet_window_destroy(Window newwin)
    Epplet_window       win;
 
    win = Epplet_window_get_from_Window(newwin);
-   if (win == NULL)
+   if (!win)
       return;
 
    Epplet_unregister_window(win);
@@ -909,13 +909,10 @@ Epplet_window_push_context(Window newwin)
    Epplet_window       win;
 
    win = Epplet_window_get_from_Window(newwin);
-   if (win == NULL)
+   if (!win)
       return;
 
-   if (((window_stack
-	 =
-	 realloc(window_stack,
-		 sizeof(Epplet_window) * (window_stack_pos + 1))) == NULL))
+   if ((!(window_stack = realloc(window_stack, sizeof(Epplet_window) * (window_stack_pos + 1)))))
       exit(1);
    window_stack[window_stack_pos] = win;
    window_stack_pos++;
@@ -929,10 +926,7 @@ Epplet_window_pop_context(void)
 
    window_stack_pos--;
    ret = window_stack[window_stack_pos];
-   if (((window_stack
-	 =
-	 realloc(window_stack,
-		 sizeof(Epplet_window) * (window_stack_pos))) == NULL))
+   if ((!(window_stack = realloc(window_stack, sizeof(Epplet_window) * (window_stack_pos)))))
       exit(1);
    /* Window stack pos == 0 corresponds to the main epplet window */
    if (window_stack_pos < 1)
@@ -2289,7 +2283,7 @@ Epplet_change_textbox(Epplet_gadget eg, char *new_contents)
 
    if (g->contents == new_contents)
       return;
-   else if (g->contents != NULL)
+   else if (g->contents)
       free(g->contents);
 
    if ((s = strchr(new_contents, '\n')))
@@ -2336,7 +2330,7 @@ Epplet_draw_textbox(Epplet_gadget eg)
    GC                  gc;
 
    GADGET_CONFIRM_TYPE(eg, E_TEXTBOX);
-   if ((g = (GadTextBox *) eg) == NULL)
+   if (!(g = (GadTextBox *)eg))
       return;
 
    if (g->hilited)
@@ -2656,7 +2650,7 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
      }
    else
      {
-	if (g->contents != NULL)
+	if (g->contents)
 	  {
 	     g->contents =
 		(char *)realloc(g->contents, (strlen(g->contents) + len + 1));
@@ -4294,7 +4288,7 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 
 		g = (GadTextBox *) gadget;
 
-		if (g->contents == NULL)
+		if (!g->contents)
 		   break;
 
 		XTranslateCoordinates(disp, g->win, root, 0, 0, &tmp_x, &tmp_y,
@@ -4681,7 +4675,7 @@ Epplet_background_properties(char vertical, Window newwin)
    Epplet_window       win;
 
    win = Epplet_window_get_from_Window(newwin);
-   if (win == NULL)
+   if (!win)
       return;
 
    if (win->bg_pmap)
@@ -5746,7 +5740,7 @@ Epplet_load_config_file(const char *file)
    memset(config_dict, 0, sizeof(ConfigDict));
    config_dict->entries = malloc(sizeof(ConfigItem));
 
-   if ((f = fopen(file, "r")) == NULL)
+   if (!(f = fopen(file, "r")))
       return;
    for (; fgets(s, sizeof(s), f);)
      {
