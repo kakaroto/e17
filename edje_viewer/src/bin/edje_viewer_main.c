@@ -167,9 +167,9 @@ config_init(Viewer *v)
 #define C_VAL(edd, type, member, dtype) EET_DATA_DESCRIPTOR_ADD_BASIC(edd, type, #member, member, dtype)
 #define C_LIST(edd, type, member, dtype) EET_DATA_DESCRIPTOR_ADD_LIST(edd, type, #member, member, dtype)
 
-   if (!eet_eina_stream_data_descriptor_class_set(&eddc, "Config", sizeof(Config)))
+   if (!EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Config))
      return;
-   if (!eet_eina_stream_data_descriptor_class_set(&eddc2, "Groups", sizeof(Config_Group)))
+   if (!eet_eina_stream_data_descriptor_class_set(&eddc2, sizeof (eddc2), "Groups", sizeof(Config_Group)))
      return;
    v->groups_edd = eet_data_descriptor_stream_new(&eddc2);
 #undef T

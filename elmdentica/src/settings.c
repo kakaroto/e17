@@ -105,6 +105,8 @@ static Eet_Data_Descriptor_Class settings_edd_class = {
 		(void * (*) (void *, const char *, void *)) eet_eina_hash_add,
 		(void  (*) (void *)) eina_hash_free,
 		NULL,
+		NULL,
+		NULL,
 		NULL
 	}
 };

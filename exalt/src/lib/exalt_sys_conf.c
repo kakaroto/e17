@@ -239,6 +239,7 @@ int _exalt_eet_eth_save(const char* file, Exalt_Eth_Save* s, const char* udi)
  */
 Eet_Data_Descriptor * _exalt_eth_save_edd_new(Eet_Data_Descriptor* edd_conf)
 {
+    Eet_Data_Descriptor_Class eddc;
     Eet_Data_Descriptor *edd;
     /*Eet_Data_Descriptor_Class eddc;
 
@@ -246,14 +247,8 @@ Eet_Data_Descriptor * _exalt_eth_save_edd_new(Eet_Data_Descriptor* edd_conf)
     edd = eet_data_descriptor_file_new(&eddc);
     */
 
-    edd = eet_data_descriptor_new("Interface", sizeof(Exalt_Eth_Save),
-            (void*(*)(void*))eina_list_next,
-            (void*(*)(void*,void*))eina_list_append,
-            (void*(*)(void*))eina_list_data_get,
-            (void*(*)(void*))eina_list_free,
-            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))eina_hash_foreach,
-            (void*(*)(void*,const char*,void*))eina_hash_add,
-            (void(*)(void*))eina_hash_free);
+    eet_eina_stream_data_descriptor_class_set(&eddc, sizeof (eddc),
+					      "Interface", sizeof(Exalt_Eth_Save));
 
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Eth_Save, "up", state, EET_T_INT);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Eth_Save, "driver", driver, EET_T_STRING);
