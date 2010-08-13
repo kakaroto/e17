@@ -30,6 +30,7 @@ typedef struct _http_request {
 	char			*url;
 	MemoryStruct	content;
 	long			response_code;
+	char			*redir_url;
 } http_request;
 
 int ed_curl_get(char *screen_name, char *password, http_request * request, int account_id);

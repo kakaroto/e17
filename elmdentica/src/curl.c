@@ -160,7 +160,7 @@ CURL * ed_curl_init(char *screen_name, char *password, http_request * request, i
 gint ed_curl_get(char *screen_name, char *password, http_request * request, int account_id) {
 	CURLcode res;
 	CURL *ua=NULL;
-	char *key=NULL;
+	char *key=NULL, *redir_url=NULL;
 
 	if(request ==NULL)
 		return 2;
@@ -196,6 +196,8 @@ gint ed_curl_get(char *screen_name, char *password, http_request * request, int 
 
 	if(res == 0) {
 		res = curl_easy_getinfo(ua, CURLINFO_RESPONSE_CODE, &request->response_code);
+		if(CURLE_OK == curl_easy_getinfo(ua, CURLINFO_REDIRECT_URL, &redir_url) && redir_url != NULL)
+			request->redir_url = strdup(redir_url);
 		if(debug > 3) printf("Response code: %ld\n", request->response_code);
 		return(request->content.size>0?0:-1);
 	}
@@ -240,6 +242,7 @@ gint ed_curl_post(char *screen_name, char *password, http_request * request, cha
 	res = curl_easy_perform(ua);
 
 	curl_easy_getinfo(ua, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &content_length);
+	curl_easy_getinfo(ua, CURLINFO_REDIRECT_URL, &request->redir_url);
 	if((res == 18 && content_length != -1) || res != 0) {
 		show_curl_error(res, &(request->content));
 		return(4);

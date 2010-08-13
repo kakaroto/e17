@@ -141,6 +141,13 @@ void json_group_show(GroupProfile *group, char *stream) {
 			return;
 		}
 
+		obj = json_object_object_get(json_stream, "nickname");
+		if(obj) {
+			if(group->name) free(group->name);
+			group->name = strndup(json_object_get_string(obj), PIPE_BUF);
+			json_object_put(obj);
+		}
+
 		obj = json_object_object_get(json_stream, "fullname");
 		if(obj) {
 			group->fullname = strndup(json_object_get_string(obj), PIPE_BUF);
@@ -179,7 +186,7 @@ static int ed_statusnet_group_get_handler(void *data, int argc, char **argv, cha
 	GroupGet *gg=(GroupGet*)data;
 	GroupProfile *group = gg->group;
     char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
-    int port=0, id=0, res;
+    int port=0, id=0, res, redir=3;
 	http_request * request=calloc(1, sizeof(http_request));
 	json_object *json_stream, *obj;
     /* In this query handler, these are the current fields:
@@ -210,6 +217,16 @@ static int ed_statusnet_group_get_handler(void *data, int argc, char **argv, cha
 		if (debug) printf("gnome-open %s\n", request->url);
 
 		res = ed_curl_get(screen_name, password, request, gg->account_id);
+		while(request->redir_url != NULL && redir--) {
+			free(request->url);
+			request->url = request->redir_url;
+			request->redir_url = NULL;
+			free(request->content.memory);
+			request->content.size = 0;
+			request->content.memory = NULL;
+			res = ed_curl_get(screen_name, password, request, gg->account_id);
+		}
+		
 		if((res == 0) && (request->response_code == 200))
 			json_group_show(group, request->content.memory);
 		else {
