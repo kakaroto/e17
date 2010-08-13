@@ -205,8 +205,7 @@ draw_flame(void)
 	vspread = malloc(40 * sizeof(int));
 	hspread = malloc(40 * sizeof(int));
 	residual = malloc(40 * sizeof(int));
-	flame = malloc(sizeof(int) * 40 * 40);
-	memset(flame, 0, sizeof(int) * 40 * 40);
+	flame = calloc(40 * 40, sizeof(int));
      }
 
    ptr = flame + (39 * 40);

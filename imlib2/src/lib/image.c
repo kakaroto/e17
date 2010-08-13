@@ -142,8 +142,7 @@ __imlib_ProduceImage(void)
 {
    ImlibImage         *im;
 
-   im = malloc(sizeof(ImlibImage));
-   memset(im, 0, sizeof(ImlibImage));
+   im = calloc(1, sizeof(ImlibImage));
    im->data = NULL;
    im->file = NULL;
    im->real_file = NULL;
@@ -393,8 +392,7 @@ __imlib_ProduceImagePixmap(void)
 {
    ImlibImagePixmap   *ip;
 
-   ip = malloc(sizeof(ImlibImagePixmap));
-   memset(ip, 0, sizeof(ImlibImagePixmap));
+   ip = calloc(1, sizeof(ImlibImagePixmap));
    ip->display = NULL;
    ip->visual = NULL;
    ip->image = NULL;

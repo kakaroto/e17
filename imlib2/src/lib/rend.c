@@ -587,8 +587,7 @@ __imlib_RenderImageSkewed(Display * d, ImlibImage * im, Drawable w, Drawable m,
    ct = __imlib_GetContext(d, v, cm, depth);
 
    back = __imlib_CreateImage(dw, dh, NULL);
-   back->data = malloc(dw * dh * sizeof(DATA32));
-   memset(back->data, 0, dw * dh * sizeof(DATA32));
+   back->data = calloc(dw * dh, sizeof(DATA32));
    __imlib_GrabDrawableToRGBA(back->data, 0, 0, dw, dh, d, w, 0, v, cm,
                               depth, dx1, dy1, dw, dh, 0, 1);
 
