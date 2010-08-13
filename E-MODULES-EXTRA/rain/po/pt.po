@@ -1,0 +1,55 @@
+# Portuguese Translation of rain
+# This file is distributed under the same license as Enlightenment package.
+# Sérgio Marques<smarquespt@gmail.com>, 2010
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: rain\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2010-08-12 08:00-0700\n"
+"PO-Revision-Date: 2010-08-13 11:03-0000\n"
+"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-Language: Portuguese\n"
+"X-Poedit-Country: PORTUGAL\n"
+
+#: ../src/e_mod_config.c:42
+msgid "Rain Module"
+msgstr "Módulo Chuva"
+
+#: ../src/e_mod_config.c:100
+msgid "General Settings"
+msgstr "Definições Gerais"
+
+#: ../src/e_mod_config.c:101
+msgid "Show Clouds"
+msgstr "Mostrar Nuvens"
+
+#: ../src/e_mod_config.c:105
+msgid "Rain Density"
+msgstr "Densidade da Chuva"
+
+#: ../src/e_mod_config.c:107
+msgid "Sprinkle"
+msgstr "Chuviscos"
+
+#: ../src/e_mod_config.c:109
+msgid "Drizzle"
+msgstr "Chuva Ligeira"
+
+#: ../src/e_mod_config.c:111
+msgid "Downpour"
+msgstr "Chuva Intensa"
+
+#: ../src/e_mod_main.c:33
+msgid "Appearance"
+msgstr "Aparência"
+
+#: ../src/e_mod_main.c:35
+msgid "Rain"
+msgstr "Chuva"
+

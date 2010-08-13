@@ -1,4 +1,3 @@
-
 [Desktop Entry]
 Type=Link
 Name=Exalt
@@ -11,6 +10,6 @@ Comment[it]=Una utilità per configurare e gestire le interfacce di rete.
 Comment[el]=Ένα φιίκό στο χρήστη εργαλείο για οργάνωση και διαχείρηση των διεπαφών δικτύου.
 Comment[eo]=
 Comment[fr]=Un outil pour configurer simplement vos interfaces réseau.
-
+Comment[pt]=Uma ferramenta para configurar e gerir interfaces de rede.
 #Several different types available here. NEED TO DOC THESE.
 X-Enlightenment-ModuleType=system
