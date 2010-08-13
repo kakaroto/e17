@@ -89,7 +89,7 @@ double mouse_held_down=0;
 
 struct sqlite3 *ed_DB=NULL;
 
-GRegex *re_link=NULL, *re_link_content=NULL, *re_entities=NULL, *re_user=NULL, *re_nouser=NULL, *re_group=NULL, *re_nogroup=NULL, *re_nl;
+GRegex *re_link=NULL, *re_link_content=NULL, *re_entities=NULL, *re_user=NULL, *re_nouser=NULL, *re_group=NULL, *re_nogroup=NULL, *re_amp=NULL, *re_nl;
 GError *re_err=NULL;
 
 static int count_accounts(void *notUsed, int argc, char **argv, char **azColName) {
@@ -363,20 +363,20 @@ gboolean ed_replace_entities(const GMatchInfo *match_info, GString *result, gpoi
 	char *replacement = NULL;
 
 	if(matched_str) {
-		if(strncmp(matched_str, "amp", 3) == 0)
-			replacement = "&";
-		else if(strncmp(matched_str, "quot", 4) == 0)
+		if(strncmp(matched_str, "&quot;", 6) == 0)
 			replacement = "\"";
-		else if(strncmp(matched_str, "apos", 4) == 0)
+		else if(strncmp(matched_str, "&apos;", 6) == 0)
 			replacement = "\"";
-		else if(strncmp(matched_str, "lt", 2) == 0)
+		else if(strncmp(matched_str, "&lt;", 4) == 0)
 			replacement = "<";
-		else if(strncmp(matched_str, "gt", 2) == 0)
+		else if(strncmp(matched_str, "&gt;", 4) == 0)
 			replacement = ">";
-		else if(strncmp(matched_str, "laquo", 5) == 0)
+		else if(strncmp(matched_str, "&laquo;", 7) == 0)
 			replacement = "«";
-		else if(strncmp(matched_str, "raquo", 5) == 0)
+		else if(strncmp(matched_str, "&raquo;", 7) == 0)
 			replacement = "»";
+		else
+			replacement = matched_str;
 	}
 	if(replacement) {
 		g_string_append(result, replacement);
@@ -406,8 +406,16 @@ Evas_Object *ed_make_message(char *text, Evas_Object *bubble, Evas_Object *windo
 			}
 
 			if(!re_entities)
-				re_entities = g_regex_new("&([a-zA-Z0-9]+);", 0, 0, &re_err);
+				re_entities = g_regex_new("(&[a-zA-Z0-9]+;)", 0, 0, &re_err);
 			tmp = g_regex_replace_eval(re_entities, status_message, -1, 0, 0, ed_replace_entities, NULL, &re_err);
+			if(tmp) {
+				free(status_message);
+				status_message = tmp;
+			}
+
+			if(!re_amp)
+				re_amp = g_regex_new("&(?!amp;)", 0, 0, &re_err);
+			tmp = g_regex_replace(re_amp, status_message, -1, 0, "&amp;", 0, &re_err);
 			if(tmp) {
 				free(status_message);
 				status_message = tmp;
@@ -1843,6 +1851,7 @@ EAPI int elm_main(int argc, char **argv)
 
 	ed_settings_shutdown();
 
+	if(re_amp) g_regex_unref(re_amp);
 	if(re_link) g_regex_unref(re_link);
 	if(re_user) g_regex_unref(re_user);
 	if(re_link_content) g_regex_unref(re_link_content);
