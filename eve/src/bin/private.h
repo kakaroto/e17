@@ -56,6 +56,7 @@ struct _App
    Eina_Bool is_fullscreen;
    Eina_Bool disable_plugins;
    Eina_Bool disable_mouse;
+   unsigned int rotate;
 };
 
 struct _View_Zoom_Interactive

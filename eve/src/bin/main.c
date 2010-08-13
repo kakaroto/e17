@@ -198,6 +198,7 @@ add_win(App * app, const char *url)
      }
 
    elm_win_title_set(win->win, PACKAGE_STRING);
+   elm_win_rotation_set(win->win, app->rotate);
    elm_win_fullscreen_set(win->win, app->is_fullscreen);
    if (app->disable_mouse)
       win_mouse_disable(win->win);
@@ -292,8 +293,9 @@ static const Ecore_Getopt options = {
 				"disable mouse (hide it).", 1),
     ECORE_GETOPT_STORE_STR('U', "user-agent",
 			   "user agent string to use. Special case=iphone."),
+    ECORE_GETOPT_STORE_DEF_UINT('R', "rotate", "Screen Rotation in degrees", 0),
     ECORE_GETOPT_VERSION('V', "version"),
-    ECORE_GETOPT_COPYRIGHT('R', "copyright"),
+    ECORE_GETOPT_COPYRIGHT('C', "copyright"),
     ECORE_GETOPT_LICENSE('L', "license"),
     ECORE_GETOPT_HELP('h', "help"),
     ECORE_GETOPT_SENTINEL}
@@ -314,6 +316,7 @@ elm_main(int argc, char **argv)
       ECORE_GETOPT_VALUE_BOOL(app.disable_plugins),
       ECORE_GETOPT_VALUE_BOOL(app.disable_mouse),
       ECORE_GETOPT_VALUE_STR(user_agent),
+      ECORE_GETOPT_VALUE_UINT(app.rotate),
       ECORE_GETOPT_VALUE_BOOL(quit_option),
       ECORE_GETOPT_VALUE_BOOL(quit_option),
       ECORE_GETOPT_VALUE_BOOL(quit_option),
