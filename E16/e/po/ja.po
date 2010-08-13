@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.8.15-0.01\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-08-05 19:38+0200\n"
-"PO-Revision-Date: 2010-05-05 20:07+0900\n"
+"POT-Creation-Date: 2010-08-13 16:28+0900\n"
+"PO-Revision-Date: 2010-08-13 16:37+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -176,7 +176,7 @@ msgstr "Enlightenment 終了"
 msgid "Attention !!!"
 msgstr "注意 !!!"
 
-#: src/alert.c:581 src/dialog.c:694 src/dialog.c:1900 src/events.c:93
+#: src/alert.c:581 src/dialog.c:694 src/dialog.c:1891 src/events.c:93
 #: src/setup.c:159 src/sound.c:310
 msgid "OK"
 msgstr "了解"
@@ -430,7 +430,7 @@ msgstr "閉じる"
 msgid "Create New Iconbox"
 msgstr "新しいアイコンボックスを作る"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2116
+#: src/container.c:1507 src/container.c:1583 src/menus.c:2117
 #, c-format
 msgid "Icon size: %2d"
 msgstr "アイコンサイズ: %2d"
@@ -830,9 +830,8 @@ msgid "Focus windows while switching"
 msgstr "切り替わったらウィンドウにフォーカスを移す"
 
 #: src/focus.c:943
-#, fuzzy
 msgid "Outline windows while switching"
-msgstr "切り替わったらウィンドウにフォーカスを移す"
+msgstr "フォーカスリストで選択中(Alt+tab)はウィンドウの枠線を表示する"
 
 #: src/focus.c:948
 msgid "Raise windows after focus switch"
@@ -1298,30 +1297,30 @@ msgstr "このグループをアイコン化する"
 msgid "Group %i"
 msgstr "グループ %i"
 
-#: src/menus.c:2139
+#: src/menus.c:2140
 msgid "Animated display of menus"
 msgstr "メニューをアニメーション表示する"
 
-#: src/menus.c:2144
+#: src/menus.c:2145
 msgid "Always pop up menus on screen"
 msgstr "メニューが画面からはみ出る場合は必ず収まるようにメニューを動かす"
 
-#: src/menus.c:2149
+#: src/menus.c:2150
 msgid "Warp pointer after moving menus"
 msgstr "マウスポインタはメニューの移動に追随する"
 
 #
-#: src/menus.c:2166
+#: src/menus.c:2167
 msgid "Menus"
 msgstr "メニュー"
 
 #
-#: src/menus.c:2167
+#: src/menus.c:2168
 msgid "Menu Settings"
 msgstr "メニューの設定"
 
 #
-#: src/menus.c:2170
+#: src/menus.c:2171
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"
