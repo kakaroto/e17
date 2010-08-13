@@ -1780,7 +1780,7 @@ config_init(IV *iv)
 {
    Eet_Data_Descriptor_Class eddc;
    
-   if (!eet_eina_file_data_descriptor_class_set(&eddc, "IV_Config", sizeof(IV_Config)))
+   if (!eet_eina_file_data_descriptor_class_set(&eddc, sizeof (eddc), "IV_Config", sizeof(IV_Config)))
      {
 	ERR("Unable to create the config data descriptor!");
 	return iv_exit(iv);
