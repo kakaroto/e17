@@ -24,12 +24,17 @@ position p;
 @good4 disable is_zero,isnt_zero@
 expression *E;
 position p2;
-identifier x;
+identifier x, x2;
+type T;
 @@
 (
   x = (E ==@p2 NULL);
 |
+  T x2 = (E ==@p2 NULL);
+|
   x = (E !=@p2 NULL);
+|
+  T x2 = (E !=@p2 NULL);
 )
 
 // Boolean comparison as a function parameter is good too.
