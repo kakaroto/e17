@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-08-05 19:38+0200\n"
-"PO-Revision-Date: 2010-05-09 01:21+0000\n"
+"POT-Creation-Date: 2010-08-13 12:54+0200\n"
+"PO-Revision-Date: 2010-08-13 12:58+0200\n"
 "Last-Translator: Massimo Maiurana <Unknown>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -175,7 +175,7 @@ msgstr "Arresta Enlightenment"
 msgid "Attention !!!"
 msgstr "Attenzione !!!"
 
-#: src/alert.c:581 src/dialog.c:694 src/dialog.c:1900 src/events.c:93
+#: src/alert.c:581 src/dialog.c:694 src/dialog.c:1891 src/events.c:93
 #: src/setup.c:159 src/sound.c:310
 msgid "OK"
 msgstr "OK"
@@ -429,7 +429,7 @@ msgstr "Chiudi"
 msgid "Create New Iconbox"
 msgstr "Crea nuovo Iconbox"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2116
+#: src/container.c:1507 src/container.c:1583 src/menus.c:2117
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Dimensione icone: %2d"
@@ -765,7 +765,7 @@ msgstr "Tutte le finestre nuove prendono il fuoco"
 
 #: src/focus.c:857
 msgid "New windows get the focus if their window group is focused"
-msgstr ""
+msgstr "Le nuove finestre prendono il fuoco se il loro gruppo lo ha"
 
 #: src/focus.c:862
 msgid "Only new dialog windows get the focus"
@@ -820,9 +820,8 @@ msgid "Focus windows while switching"
 msgstr "Dai fuoco alle finestre mentre cambi"
 
 #: src/focus.c:943
-#, fuzzy
 msgid "Outline windows while switching"
-msgstr "Dai fuoco alle finestre mentre cambi"
+msgstr "Traccia contorno delle finestre mentre cambi"
 
 #: src/focus.c:948
 msgid "Raise windows after focus switch"
@@ -1279,27 +1278,27 @@ msgstr "Iconifica questo gruppo"
 msgid "Group %i"
 msgstr "Gruppo %i"
 
-#: src/menus.c:2139
+#: src/menus.c:2140
 msgid "Animated display of menus"
 msgstr "Visualizzazione menú animata"
 
-#: src/menus.c:2144
+#: src/menus.c:2145
 msgid "Always pop up menus on screen"
 msgstr "Mostra sempre menú popup sullo schermo"
 
-#: src/menus.c:2149
+#: src/menus.c:2150
 msgid "Warp pointer after moving menus"
 msgstr "Invia puntatore dopo spostamento menú"
 
-#: src/menus.c:2166
+#: src/menus.c:2167
 msgid "Menus"
 msgstr "Menú:"
 
-#: src/menus.c:2167
+#: src/menus.c:2168
 msgid "Menu Settings"
 msgstr "Impostazioni menú"
 
-#: src/menus.c:2170
+#: src/menus.c:2171
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"
