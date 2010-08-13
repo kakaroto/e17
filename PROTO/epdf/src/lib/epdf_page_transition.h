@@ -26,7 +26,7 @@
  *
  * Delete an Epdf_Page_Transition object @p transition
  */
-void epdf_page_transition_delete (Epdf_Page_Transition *transition);
+EAPI void epdf_page_transition_delete (Epdf_Page_Transition *transition);
 
 /**
  * @brief Return the type of a transition
@@ -37,7 +37,7 @@ void epdf_page_transition_delete (Epdf_Page_Transition *transition);
  * Return the type of the transition @p transition, as an
  * Epdf_Page_Transition_Type
  */
-Epdf_Page_Transition_Type epdf_page_transition_type_get (Epdf_Page_Transition *transition);
+EAPI Epdf_Page_Transition_Type epdf_page_transition_type_get (Epdf_Page_Transition *transition);
 
 /**
  * @brief Return the duration of a transition
@@ -47,7 +47,7 @@ Epdf_Page_Transition_Type epdf_page_transition_type_get (Epdf_Page_Transition *t
  *
  * Return the duration of the transition @p transition
  */
-int epdf_page_transition_duration_get (Epdf_Page_Transition *transition);
+EAPI int epdf_page_transition_duration_get (Epdf_Page_Transition *transition);
 
 /**
  * @brief Return the alignment of a transition
@@ -57,7 +57,7 @@ int epdf_page_transition_duration_get (Epdf_Page_Transition *transition);
  *
  * Return the alignment of the transition @p transition
  */
-Epdf_Page_Transition_Alignment epdf_page_transition_alignment_get (Epdf_Page_Transition *transition);
+EAPI Epdf_Page_Transition_Alignment epdf_page_transition_alignment_get (Epdf_Page_Transition *transition);
 
 /**
  * @brief Return the direction of a transition
@@ -67,7 +67,7 @@ Epdf_Page_Transition_Alignment epdf_page_transition_alignment_get (Epdf_Page_Tra
  *
  * Return the direction of the transition @p transition
  */
-Epdf_Page_Transition_Direction epdf_page_transition_direction_get (Epdf_Page_Transition *transition);
+EAPI Epdf_Page_Transition_Direction epdf_page_transition_direction_get (Epdf_Page_Transition *transition);
 
 /**
  * @brief Return the angle of a transition
@@ -77,7 +77,7 @@ Epdf_Page_Transition_Direction epdf_page_transition_direction_get (Epdf_Page_Tra
  *
  * Return the angle of the transition @p transition
  */
-int epdf_page_transition_angle_get (Epdf_Page_Transition *transition);
+EAPI int epdf_page_transition_angle_get (Epdf_Page_Transition *transition);
 
 /**
  * @brief Return the scale of a transition
@@ -87,7 +87,7 @@ int epdf_page_transition_angle_get (Epdf_Page_Transition *transition);
  *
  * Return the scale of the transition @p transition
  */
-double epdf_page_transition_scale_get (Epdf_Page_Transition *transition);
+EAPI double epdf_page_transition_scale_get (Epdf_Page_Transition *transition);
 
 /**
  * @brief Whether the transition is rectangular or not
@@ -97,7 +97,7 @@ double epdf_page_transition_scale_get (Epdf_Page_Transition *transition);
  *
  * Whether the transition is rectangular or not
  */
-unsigned char epdf_page_transition_is_rectangular_get (Epdf_Page_Transition *transition);
+EAPI unsigned char epdf_page_transition_is_rectangular_get (Epdf_Page_Transition *transition);
 
 /**
  * @}

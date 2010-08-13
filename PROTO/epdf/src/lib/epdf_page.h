@@ -39,7 +39,7 @@ typedef struct
  * corresponding to the page @p index. It must be freed with
  * epdf_page_delete()
  */
-Epdf_Page *epdf_page_new (const Epdf_Document *doc);
+EAPI Epdf_Page *epdf_page_new (const Epdf_Document *doc);
 
 /**
  * @brief Delete an Epdf_Page object
@@ -49,7 +49,7 @@ Epdf_Page *epdf_page_new (const Epdf_Document *doc);
  * Delete the Epdf_Page object @p page, created with
  * epdf_page_new()
  */
-void epdf_page_delete (Epdf_Page *page);
+EAPI void epdf_page_delete (Epdf_Page *page);
 
 /**
  * @brief Render a page on an Evas_Object
@@ -60,8 +60,8 @@ void epdf_page_delete (Epdf_Page *page);
  * Render page @p page on the Evas_Object @p o with the current
  * properties of @p page.
  */
-void epdf_page_render (Epdf_Page   *page,
-                       Evas_Object *o);
+EAPI void epdf_page_render (Epdf_Page   *page,
+                            Evas_Object *o);
 
 /**
  * @brief Render a page on an Evas_Object
@@ -80,12 +80,12 @@ void epdf_page_render (Epdf_Page   *page,
  * If @p w is less than 0, the original width is choosen.
  * If @p h is less than 0, the original height is choosen.
  */
-void epdf_page_render_slice (Epdf_Page   *page,
-                             Evas_Object *o,
-                             int          x,
-                             int          y,
-                             int          w,
-                             int          h);
+EAPI void epdf_page_render_slice (Epdf_Page   *page,
+                                  Evas_Object *o,
+                                  int          x,
+                                  int          y,
+                                  int          w,
+                                  int          h);
 
 /**
  * @brief Set the page number
@@ -95,7 +95,7 @@ void epdf_page_render_slice (Epdf_Page   *page,
  *
  * Set the page number of the page @p page to @p p
  */
-void epdf_page_page_set (Epdf_Page *page, int p);
+EAPI void epdf_page_page_set (Epdf_Page *page, int p);
 
 /**
  * @brief Return the current page number
@@ -105,7 +105,7 @@ void epdf_page_page_set (Epdf_Page *page, int p);
  *
  * Return the current number of the page @p page
  */
-int epdf_page_page_get (const Epdf_Page *page);
+EAPI int epdf_page_page_get (const Epdf_Page *page);
 
 /**
  * @brief Return the text of a page contained in a rectangle
@@ -117,8 +117,8 @@ int epdf_page_page_get (const Epdf_Page *page);
  * Return the text of the page @p contained in the rectangle @p r. The
  * result must be freed
  */
-char *epdf_page_text_get (Epdf_Page     *page,
-                          Epdf_Rectangle r);
+EAPI char *epdf_page_text_get (Epdf_Page     *page,
+                               Epdf_Rectangle r);
 
 /**
  * @brief Return a list of rectangle in tha page, all of them containing a given text
@@ -134,9 +134,9 @@ char *epdf_page_text_get (Epdf_Page     *page,
  * into account. The list must be destroyed with a call to
  * ecore_list_destroy()
  */
-Eina_List *epdf_page_text_find (const Epdf_Page *page,
-                                const char      *text,
-                                unsigned char    is_case_sensitive);
+EAPI Eina_List *epdf_page_text_find (const Epdf_Page *page,
+                                     const char      *text,
+                                     unsigned char    is_case_sensitive);
 
 /**
  * Return the transition of a page
@@ -146,7 +146,7 @@ Eina_List *epdf_page_text_find (const Epdf_Page *page,
  *
  * Return the transition of the page @p page
  */
-Epdf_Page_Transition *epdf_page_transition_get (const Epdf_Page *page);
+EAPI Epdf_Page_Transition *epdf_page_transition_get (const Epdf_Page *page);
 
 /**
  * @brief Return the size of a page
@@ -159,7 +159,7 @@ Epdf_Page_Transition *epdf_page_transition_get (const Epdf_Page *page);
  * On failure, @p width and @p height store both 0. @p width or
  * @p height can be @c NULL.
  */
-void epdf_page_size_get (const Epdf_Page *page, int *width, int *height);
+EAPI void epdf_page_size_get (const Epdf_Page *page, int *width, int *height);
 
 /**
  * @brief Set the scale of a page
@@ -172,9 +172,9 @@ void epdf_page_size_get (const Epdf_Page *page, int *width, int *height);
  * the @p page, in pixel per points. A value of 1.0 and 1.0 (resp.)
  * means that the original size of the document is choosen.
  */
-void epdf_page_scale_set (Epdf_Page *page,
-                          double     hscale,
-                          double     vscale);
+EAPI void epdf_page_scale_set (Epdf_Page *page,
+                               double     hscale,
+                               double     vscale);
 
 /**
  * @brief Get the scale of a page
@@ -186,9 +186,9 @@ void epdf_page_scale_set (Epdf_Page *page,
  * Store the horizontal and vertical scale of the page @p page respectively
  * in the buffers @p hscale and vertical scale @p vscale, in pixel per points.
  */
-void epdf_page_scale_get (const Epdf_Page *page,
-                          double          *hscale,
-                          double          *vscale);
+EAPI void epdf_page_scale_get (const Epdf_Page *page,
+                               double          *hscale,
+                               double          *vscale);
 
 /**
  * @brief Set the orientation of a page
@@ -198,8 +198,8 @@ void epdf_page_scale_get (const Epdf_Page *page,
  *
  * Set the orientation of @p page to @p orientation.
  */
-void epdf_page_orientation_set (Epdf_Page            *page,
-                                Epdf_Page_Orientation orientation);
+EAPI void epdf_page_orientation_set (Epdf_Page            *page,
+                                     Epdf_Page_Orientation orientation);
 
 /**
  * @brief Return the orientation of a page
@@ -209,7 +209,7 @@ void epdf_page_orientation_set (Epdf_Page            *page,
  *
  * Return the orientation of the page @p page
  */
-Epdf_Page_Orientation epdf_page_orientation_get (const Epdf_Page *page);
+EAPI Epdf_Page_Orientation epdf_page_orientation_get (const Epdf_Page *page);
 
 /**
  * @}

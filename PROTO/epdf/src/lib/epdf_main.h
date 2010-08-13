@@ -14,9 +14,9 @@
  * @ingroup Epdf
  */
 
-int epdf_init (void);
+EAPI int epdf_init (void);
 
-int epdf_shutdown();
+EAPI int epdf_shutdown();
 
 /**
  * @brief Return the version of Poppler.
@@ -27,7 +27,7 @@ int epdf_shutdown();
  *
  * @ingroup Epdf_Main
  */
-const char *epdf_backend_version_get (void);
+EAPI const char *epdf_backend_version_get (void);
 
 /**
  * @brief Return the state of fonts antialiasing in Poppler
@@ -39,7 +39,7 @@ const char *epdf_backend_version_get (void);
  *
  * @ingroup Epdf_Main
  */
-Eina_Bool epdf_fonts_antialias_get (void);
+EAPI Eina_Bool epdf_fonts_antialias_get (void);
 
 /**
  * @brief Sets fonts antialiasing mode in Poppler
@@ -49,7 +49,7 @@ Eina_Bool epdf_fonts_antialias_get (void);
  * Set @p on to EINA_TRUE to enable fonts antialiasing in Poppler,
  * EINA_FALSE to disable it.
  */
-void epdf_fonts_antialias_set (Eina_Bool on);
+EAPI void epdf_fonts_antialias_set (Eina_Bool on);
 
 /**
  * @brief Return the state of lines antialiasing in Poppler
@@ -61,7 +61,7 @@ void epdf_fonts_antialias_set (Eina_Bool on);
  *
  * @ingroup Epdf_Main
  */
-Eina_Bool epdf_lines_antialias_get (void);
+EAPI Eina_Bool epdf_lines_antialias_get (void);
 
 /**
  * @brief Sets lines antialiasing mode in Poppler
@@ -71,7 +71,7 @@ Eina_Bool epdf_lines_antialias_get (void);
  * Set @p on to EINA_TRUE to enable lines antialiasing in Poppler,
  * EINA_FALSE to disable it.
  */
-void epdf_lines_antialias_set (Eina_Bool on);
+EAPI void epdf_lines_antialias_set (Eina_Bool on);
 
 
 #endif /* __EPDF_MAIN_H__ */

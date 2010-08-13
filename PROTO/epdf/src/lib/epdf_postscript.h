@@ -39,10 +39,10 @@
  * that pages count is used. The returned value must be freed with
  * epdf_postscript_delete()
  */
-Epdf_Postscript *epdf_postscript_new (const Epdf_Document *document,
-                                      const char          *filename,
-                                      int                  first_page,
-                                      int                  last_page);
+EAPI Epdf_Postscript *epdf_postscript_new (const Epdf_Document *document,
+                                           const char          *filename,
+                                           int                  first_page,
+                                           int                  last_page);
 
 /**
  * @brief Delete an Epdf_Postscript object
@@ -52,7 +52,7 @@ Epdf_Postscript *epdf_postscript_new (const Epdf_Document *document,
  * Delete the Epdf_Postscript @p postscript that has been created
  * with epdf_postscript_new()
  */
-void epdf_postscript_delete (Epdf_Postscript *postscript);
+EAPI void epdf_postscript_delete (Epdf_Postscript *postscript);
 
 /**
  * @brief Set the size of an Epdf_Postscript object
@@ -64,9 +64,9 @@ void epdf_postscript_delete (Epdf_Postscript *postscript);
  * Set the width @p width and the height @p height of the postscipt
  * file @p postscript. The sizes are in 1/72 inch.
  */
-void epdf_postscript_size_set (Epdf_Postscript *postscript,
-                               int              width,
-                               int              height);
+EAPI void epdf_postscript_size_set (Epdf_Postscript *postscript,
+                                    int              width,
+                                    int              height);
 
 /**
  * @brief Set if a Epdf_Postscript object prints in duplex mode or not
@@ -78,8 +78,8 @@ void epdf_postscript_size_set (Epdf_Postscript *postscript,
  * mode or not. Set @p duplex to @c 0 to not print in duplex mode, non
  * 0 otherwise
  */
-void epdf_postscript_duplex_set (Epdf_Postscript *postscript,
-                                 int              duplex);
+EAPI void epdf_postscript_duplex_set (Epdf_Postscript *postscript,
+                                      int              duplex);
 
 /**
  * @brief Print a Epdf_Postscript object
@@ -88,7 +88,7 @@ void epdf_postscript_duplex_set (Epdf_Postscript *postscript,
  *
  * Print a Postscript file described by @p postscript
  */
-void epdf_postscript_print (const Epdf_Postscript *postscript);
+EAPI void epdf_postscript_print (const Epdf_Postscript *postscript);
 
 /**
  * @}

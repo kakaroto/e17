@@ -30,7 +30,7 @@
  * PDF file whose name is @p filename. The result must be freed with
  * epdf_document_delete().
  */
-Epdf_Document *epdf_document_new (const char *filename);
+EAPI Epdf_Document *epdf_document_new (const char *filename);
 
 /**
  * @brief Delete an Epdf_Document object
@@ -40,7 +40,7 @@ Epdf_Document *epdf_document_new (const char *filename);
  * Delete the Epdf_Document @p document that has been created
  * with epdf_document_new().
  */
-void epdf_document_delete (Epdf_Document *document);
+EAPI void epdf_document_delete (Epdf_Document *document);
 
 /**
  * @brief Return the count of the pages of the document
@@ -50,7 +50,7 @@ void epdf_document_delete (Epdf_Document *document);
  *
  * Return the count of the pages of the document @p document
  */
-int epdf_document_page_count_get (const Epdf_Document *document);
+EAPI int epdf_document_page_count_get (const Epdf_Document *document);
 
 /**
  * @brief Return the page mode of the document
@@ -60,7 +60,7 @@ int epdf_document_page_count_get (const Epdf_Document *document);
  *
  * Return the page mode of the document @p document
  */
-Epdf_Document_Page_Mode epdf_document_page_mode_get (const Epdf_Document *document);
+EAPI Epdf_Document_Page_Mode epdf_document_page_mode_get (const Epdf_Document *document);
 
 /**
  * @brief Unlock the document
@@ -71,7 +71,8 @@ Epdf_Document_Page_Mode epdf_document_page_mode_get (const Epdf_Document *docume
  *
  * Unlock the document @p document with the password @p password
  */
-unsigned char epdf_document_unlock (Epdf_Document *document, const char *password);
+EAPI unsigned char epdf_document_unlock (Epdf_Document *document,
+                                         const char *password);
 
 /**
  * @brief Return whether the document is locked
@@ -81,7 +82,7 @@ unsigned char epdf_document_unlock (Epdf_Document *document, const char *passwor
  *
  * Return whether the document @p document is locked
  */
-unsigned char epdf_document_is_locked (const Epdf_Document *document);
+EAPI unsigned char epdf_document_is_locked (const Epdf_Document *document);
 
 /**
  * @brief To be implemented
@@ -92,7 +93,8 @@ unsigned char epdf_document_is_locked (const Epdf_Document *document);
  *
  * Return NULL
  */
-const char *epdf_document_info_get (const Epdf_Document *document, const char *data);
+EAPI const char *epdf_document_info_get (const Epdf_Document *document,
+                                         const char *data);
 
 /**
  * @brief Return wheter the document is encrypted
@@ -102,7 +104,7 @@ const char *epdf_document_info_get (const Epdf_Document *document, const char *d
  *
  * Return wheter the document @p document is encrypted
  */
-unsigned char epdf_document_is_encrypted (const Epdf_Document *document);
+EAPI unsigned char epdf_document_is_encrypted (const Epdf_Document *document);
 
 /**
  * @brief Return wheter the document is linearized
@@ -112,7 +114,7 @@ unsigned char epdf_document_is_encrypted (const Epdf_Document *document);
  *
  * Return wheter the document @p document is linearized
  */
-unsigned char epdf_document_is_linearized (const Epdf_Document *document);
+EAPI unsigned char epdf_document_is_linearized (const Epdf_Document *document);
 
 /**
  * @brief Return wheter the document is printable
@@ -122,7 +124,7 @@ unsigned char epdf_document_is_linearized (const Epdf_Document *document);
  *
  * Return wheter the document @p document is printable
  */
-unsigned char epdf_document_is_printable (const Epdf_Document *document);
+EAPI unsigned char epdf_document_is_printable (const Epdf_Document *document);
 
 /**
  * @brief Return wheter the document is changeable
@@ -132,7 +134,7 @@ unsigned char epdf_document_is_printable (const Epdf_Document *document);
  *
  * Return wheter the document @p document is changeable
  */
-unsigned char epdf_document_is_changeable (const Epdf_Document *document);
+EAPI unsigned char epdf_document_is_changeable (const Epdf_Document *document);
 
 /**
  * @brief Return wheter the document is copyable
@@ -142,7 +144,7 @@ unsigned char epdf_document_is_changeable (const Epdf_Document *document);
  *
  * Return wheter the document @p document is copyable
  */
-unsigned char epdf_document_is_copyable (const Epdf_Document *document);
+EAPI unsigned char epdf_document_is_copyable (const Epdf_Document *document);
 
 /**
  * @brief Return wheter the document is notable
@@ -152,7 +154,7 @@ unsigned char epdf_document_is_copyable (const Epdf_Document *document);
  *
  * Return wheter the document @p document is notable
  */
-unsigned char epdf_document_is_notable (const Epdf_Document *document);
+EAPI unsigned char epdf_document_is_notable (const Epdf_Document *document);
 
 /**
  * @brief Return the version of the pdf used in the document
@@ -164,7 +166,9 @@ unsigned char epdf_document_is_notable (const Epdf_Document *document);
  * Return the major and minor version of the pdf used in the document
  * @p document respectively in @p major and @p minor.
  */
-void epdf_document_pdf_version_get (const Epdf_Document *document, int *major, int *minor);
+EAPI void epdf_document_pdf_version_get (const Epdf_Document *document, 
+                                        int *major, 
+                                        int *minor);
 
 /**
  * @brief Return a list of the fonts used in the document
@@ -174,7 +178,7 @@ void epdf_document_pdf_version_get (const Epdf_Document *document, int *major, i
  *
  * Return a list of the fonts used in the document @p document
  */
-Eina_List *epdf_document_fonts_get (const Epdf_Document *document);
+EAPI Eina_List *epdf_document_fonts_get (const Epdf_Document *document);
 
 /**
  * @brief Return a list of the fonts used in a page of the document
@@ -186,8 +190,8 @@ Eina_List *epdf_document_fonts_get (const Epdf_Document *document);
  * Return a list of the fonts used in the document @p document in the
  * page number @p page_count
  */
-Eina_List * epdf_document_scan_for_fonts (const Epdf_Document *document,
-                                          int                  page_count);
+EAPI Eina_List * epdf_document_scan_for_fonts (const Epdf_Document *document,
+                                               int                  page_count);
 
 
 /* Metadata information functions. Used for display */
@@ -200,7 +204,7 @@ Eina_List * epdf_document_scan_for_fonts (const Epdf_Document *document,
  *
  * Return the filename of the document @p document as a string
  */
-const char *epdf_document_filename_get (const Epdf_Document *document);
+EAPI const char *epdf_document_filename_get (const Epdf_Document *document);
 
 /**
  * @brief Return the title as a string
@@ -211,7 +215,7 @@ const char *epdf_document_filename_get (const Epdf_Document *document);
  * Return the title of the document @p document as a string. The
  * result must be freed
  */
-char *epdf_document_title_get (const Epdf_Document *document);
+EAPI char *epdf_document_title_get (const Epdf_Document *document);
 
 /**
  * @brief Return the author as a string
@@ -222,7 +226,7 @@ char *epdf_document_title_get (const Epdf_Document *document);
  * Return the author of the document @p document as a string. The
  * result must be freed
  */
-char *epdf_document_author_get (const Epdf_Document *document);
+EAPI char *epdf_document_author_get (const Epdf_Document *document);
 
 /**
  * @brief Return the subject as a string
@@ -233,7 +237,7 @@ char *epdf_document_author_get (const Epdf_Document *document);
  * Return the subject of the document @p document as a string. The
  * result must be freed.
  */
-char *epdf_document_subject_get (const Epdf_Document *document);
+EAPI char *epdf_document_subject_get (const Epdf_Document *document);
 
 /**
  * @brief Return the keywords as a string
@@ -244,7 +248,7 @@ char *epdf_document_subject_get (const Epdf_Document *document);
  * Return the keywords of the document @p document as a string. The
  * result must be freed
  */
-char *epdf_document_keywords_get (const Epdf_Document *document);
+EAPI char *epdf_document_keywords_get (const Epdf_Document *document);
 
 /**
  * @brief Return the creator as a string
@@ -255,7 +259,7 @@ char *epdf_document_keywords_get (const Epdf_Document *document);
  * Return the creator of the document @p document as a string. The
  * result must be freed
  */
-char *epdf_document_creator_get (const Epdf_Document *document);
+EAPI char *epdf_document_creator_get (const Epdf_Document *document);
 
 /**
  * @brief Return the producer as a string
@@ -266,7 +270,7 @@ char *epdf_document_creator_get (const Epdf_Document *document);
  * Return the producer of the document @p document as a string. The
  * result must be freed
  */
-char *epdf_document_producer_get (const Epdf_Document *document);
+EAPI char *epdf_document_producer_get (const Epdf_Document *document);
 
 /**
  * @brief Return the creation date as a string
@@ -277,7 +281,7 @@ char *epdf_document_producer_get (const Epdf_Document *document);
  * Return the creation date of the document @p document as a
  * string. The result must be freed.
  */
-char *epdf_document_creation_date_get (const Epdf_Document *document);
+EAPI char *epdf_document_creation_date_get (const Epdf_Document *document);
 
 /**
  * @brief Return the modification date as a string
@@ -288,7 +292,7 @@ char *epdf_document_creation_date_get (const Epdf_Document *document);
  * Return the modification date of the document @p document as a
  * string. The result must be freed.
  */
-char *epdf_document_mod_date_get (const Epdf_Document *document);
+EAPI char *epdf_document_mod_date_get (const Epdf_Document *document);
 
 /**
  * @brief Return whether the document is linearized, as a string
@@ -299,7 +303,7 @@ char *epdf_document_mod_date_get (const Epdf_Document *document);
  * Return whether the document @p document is linearized, as a
  * string. The result must not be freed.
  */
-const char *epdf_document_linearized_get (const Epdf_Document *document);
+EAPI const char *epdf_document_linearized_get (const Epdf_Document *document);
 
 /**
  * @brief Return the page mode of the document
@@ -310,7 +314,7 @@ const char *epdf_document_linearized_get (const Epdf_Document *document);
  * Return the page mode of the document @p document, as a string. The
  * result must not be freed.
  */
-const char *epdf_document_page_mode_string_get (const Epdf_Document *document);
+EAPI const char *epdf_document_page_mode_string_get (const Epdf_Document *document);
 
 /**
  * @brief Return the page layout of the document
@@ -321,7 +325,7 @@ const char *epdf_document_page_mode_string_get (const Epdf_Document *document);
  * Return the page layout of the document @p document, as a string. The
  * result must not be freed.
  */
-const char *epdf_document_page_layout_string_get (const Epdf_Document *document);
+EAPI const char *epdf_document_page_layout_string_get (const Epdf_Document *document);
 
 /**
  * @}

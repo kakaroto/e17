@@ -5,7 +5,8 @@ if BUILD_EPDF_EWL
 EPDF_EWL_TEST = epdf_ewl_test
 endif
 
-bin_PROGRAMS = epdf_evas_test epdf_esmart_test $(EPDF_EWL_TEST)
+#bin_PROGRAMS = epdf_evas_test epdf_esmart_test $(EPDF_EWL_TEST)
+bin_PROGRAMS = epdf_evas_test
 
 ## evas test
 

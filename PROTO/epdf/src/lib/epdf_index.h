@@ -28,7 +28,7 @@
  * Return a newly created Epdf_Index_Item object. This is
  * mainly used for internal usage. You surely don't need to use it
  */
-Epdf_Index_Item * epdf_index_item_new ();
+EAPI Epdf_Index_Item * epdf_index_item_new ();
 
 /**
  * @brief Return the title of an item
@@ -38,7 +38,7 @@ Epdf_Index_Item * epdf_index_item_new ();
  *
  * Return the title of the item @p item
  */
-const char *epdf_index_item_title_get (const Epdf_Index_Item *item);
+EAPI const char *epdf_index_item_title_get (const Epdf_Index_Item *item);
 
 /**
  * @brief Return the children of an item
@@ -49,7 +49,7 @@ const char *epdf_index_item_title_get (const Epdf_Index_Item *item);
  * Return a list of all the children of the item @p item (that is, the
  * subsection), or NULL if no child.
  */
-Eina_List *epdf_index_item_children_get (const Epdf_Index_Item *item);
+EAPI Eina_List *epdf_index_item_children_get (const Epdf_Index_Item *item);
 
 /**
  * @brief Return the action kind of an item
@@ -59,7 +59,7 @@ Eina_List *epdf_index_item_children_get (const Epdf_Index_Item *item);
  *
  * Return the kind of action of the item @p item
  */
-Epdf_Link_Action_Kind epdf_index_item_action_kind_get (const Epdf_Index_Item *item);
+EAPI Epdf_Link_Action_Kind epdf_index_item_action_kind_get (const Epdf_Index_Item *item);
 
 /**
  * @brief Return the destination page of an item
@@ -70,8 +70,8 @@ Epdf_Link_Action_Kind epdf_index_item_action_kind_get (const Epdf_Index_Item *it
  *
  * Return the destination of the item @p item. The first page is @c 0
  */
-int
-epdf_index_item_page_get (const Epdf_Document *document, const Epdf_Index_Item *item);
+EAPI int epdf_index_item_page_get (const Epdf_Document *document, 
+                                   const Epdf_Index_Item *item);
 
 /**
  * @brief Return a newly created Epdf_Index object
@@ -84,7 +84,7 @@ epdf_index_item_page_get (const Epdf_Document *document, const Epdf_Index_Item *
  * documant (a kind of Table of Contents). The result must be freed with
  * epdf_index_delete()
  */
-Eina_List *epdf_index_new (const Epdf_Document *document);
+EAPI Eina_List *epdf_index_new (const Epdf_Document *document);
 
 /**
  * @brief Delete an Epdf_Index object
@@ -95,7 +95,7 @@ Eina_List *epdf_index_new (const Epdf_Document *document);
  * with epdf_index_new()
  *
  */
-void epdf_index_delete (Eina_List *index);
+EAPI void epdf_index_delete (Eina_List *index);
 
 /**
  * @}
