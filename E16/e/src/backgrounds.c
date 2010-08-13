@@ -1300,7 +1300,7 @@ BackgroundsCheckDups(void)
 	bg = (Background *) ecore_list_next(bg_list);
 	if (!bg)
 	   break;
-	for (; (bgx = (Background *)ecore_list_next(bg_list));)
+	for (; (bgx = (Background *) ecore_list_next(bg_list));)
 	  {
 	     if (bgx->ref_count > 0 || bgx->referenced)
 		continue;

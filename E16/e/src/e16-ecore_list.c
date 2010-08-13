@@ -750,8 +750,7 @@ ecore_list_items_get(Ecore_List * list, int *pnum)
    if (!lst)
       return NULL;
 
-   for (i = 0, ecore_list_first_goto(list);
-	(b = ecore_list_next(list));)
+   for (i = 0, ecore_list_first_goto(list); (b = ecore_list_next(list));)
       lst[i++] = b;
 
    *pnum = num;

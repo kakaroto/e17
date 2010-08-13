@@ -2960,8 +2960,7 @@ macroexpand(cpp_reader * pfile, HASHNODE * hp)
 	      * delete the last run of nonwhite chars.  */
 	     if (rest_zero && totlen > count_before
 		 && ((ap->rest_args && ap->raw_before)
-		     || (last_ap && last_ap->rest_args
-			 && last_ap->raw_after)))
+		     || (last_ap && last_ap->rest_args && last_ap->raw_after)))
 	       {
 		  /* Delete final whitespace.  */
 		  while (totlen > count_before && is_space[xbuf[totlen - 1]])
@@ -4025,8 +4024,7 @@ do_pragma(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
 	fname = p + 1;
 	p = strchr(fname, '\"');
 	fname_len =
-	   (int)(((int)(p)) ? ((int)(p - fname))
-		 : ((int)(strlen(fname))));
+	   (int)(((int)(p)) ? ((int)(p - fname)) : ((int)(strlen(fname))));
 
 	for (ptr = pfile->all_include_files; ptr; ptr = ptr->next)
 	  {

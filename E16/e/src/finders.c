@@ -238,7 +238,7 @@ ListWinGroupMembersForEwin(const EWin * ewin, int action, char nogroup,
       goto done;
 
    ewins = EwinListGetAll(&num);
-   if (!ewins)		/* Should not be possible */
+   if (!ewins)			/* Should not be possible */
       goto done;
 
    /* Loop through window stack, bottom up */
