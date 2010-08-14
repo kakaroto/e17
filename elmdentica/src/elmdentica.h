@@ -34,7 +34,7 @@ typedef struct _ub_bubble {
 	char *message;
 	int   account_id;
 	int   account_type;
-	long int   status_id;
+	long long int   status_id;
 	Eina_Bool	favorite;
 } ub_Bubble;
 

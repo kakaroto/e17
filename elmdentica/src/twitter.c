@@ -50,7 +50,8 @@
 char * avatar=NULL;
 extern struct sqlite3 *ed_DB;
 extern int debug;
-extern char *dm_to, *reply_id;
+extern char *dm_to;
+extern long long int reply_id;
 extern Evas_Object *win;
 
 long long max_status_id=0;
@@ -128,9 +129,9 @@ int ed_twitter_post(int account_id, char *screen_name, char *password, char *pro
 	request = calloc(1, sizeof(http_request));
 
 	if(request && strlen(msg) > 0) {
-		if(reply_id) {
-			res = asprintf(&ub_status, "source=%s&status=%s&in_reply_to_status_id=%s", PACKAGE, msg, reply_id);
-			reply_id=NULL;
+		if(reply_id>0) {
+			res = asprintf(&ub_status, "source=%s&status=%s&in_reply_to_status_id=%lld", PACKAGE, msg, reply_id);
+			reply_id=0;
 		} else
 			res = asprintf(&ub_status, "source=%s&status=%s", PACKAGE, msg);
 

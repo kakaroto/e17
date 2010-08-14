@@ -74,7 +74,7 @@ time_t now;
 
 Eina_Hash * status2user=NULL;
 
-char * reply_id=NULL;
+long long int reply_id=0;
 char * url_post = NULL;
 char * url_friends = NULL;
 extern char * browsers[];
@@ -305,7 +305,7 @@ static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 			elm_entry_entry_set(entry, entry_str);
 			free(entry_str);
 			elm_object_focus(entry);
-			reply_id=status->screen_name;
+			reply_id=status->status_id;
 			elm_entry_cursor_end_set(entry);
 		}
 	}
