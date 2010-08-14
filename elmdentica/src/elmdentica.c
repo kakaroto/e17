@@ -1456,6 +1456,13 @@ static void on_timeline_user_reload(void *data, Evas_Object *obj, void *event_in
 	evas_object_hide((Evas_Object*)data);
 }
 
+static void on_timeline_dmsgs_reload(void *data, Evas_Object *obj, void *event_info) {
+	if(settings->online) get_messages(TIMELINE_DMSGS);
+	make_status_list(TIMELINE_DMSGS);
+	fill_message_list(TIMELINE_DMSGS);
+	evas_object_hide((Evas_Object*)data);
+}
+
 static void on_timeline_public_reload(void *data, Evas_Object *obj, void *event_info) {
 	if(settings->online) get_messages(TIMELINE_PUBLIC);
 	make_status_list(TIMELINE_PUBLIC);
@@ -1702,6 +1709,13 @@ EAPI int elm_main(int argc, char **argv)
 	timelines_panel = elm_box_add(win);
 		elm_box_homogenous_set(timelines_panel, 1);
 		evas_object_size_hint_align_set(timelines_panel, -1, 0);
+
+		bt = elm_button_add(win);
+			evas_object_size_hint_align_set(bt, -1, 0);
+			elm_button_label_set(bt, _("Direct Messages"));
+			evas_object_smart_callback_add(bt, "clicked", on_timeline_dmsgs_reload, NULL);
+			elm_box_pack_end(timelines_panel, bt);
+		evas_object_show(bt);
 
 		bt = elm_button_add(win);
 			evas_object_size_hint_align_set(bt, -1, 0);

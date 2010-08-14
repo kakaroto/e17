@@ -218,8 +218,8 @@ void ed_twitter_statuses_get_avatar(char *screen_name) {
 }
 
 
-void json_timeline_handle(StatusesList *statuses, json_object *json_stream) {
-	json_object *status, *id, *text, *created_at, *user, *screen_name, *name, *profile_image_url;
+void json_timeline_handle(int timeline, StatusesList *statuses, json_object *json_stream) {
+	json_object *status, *id, *text, *created_at, *user, *screen_name, *name, *profile_image_url, *tmp;
 	int size,pos=0;
     ub_Status *ubstatus=NULL;
 
@@ -232,7 +232,10 @@ void json_timeline_handle(StatusesList *statuses, json_object *json_stream) {
 		id = json_object_object_get(status, "id");
 		text = json_object_object_get(status, "text");
 		created_at = json_object_object_get(status, "created_at");
-		user = json_object_object_get(status, "user");
+		if(timeline == TIMELINE_DMSGS)
+			user = json_object_object_get(status, "sender");
+		else
+			user = json_object_object_get(status, "user");
 		name = json_object_object_get(user, "name");
 		screen_name = json_object_object_get(user, "screen_name");
 		profile_image_url = json_object_object_get(user, "profile_image_url");
@@ -257,7 +260,7 @@ void json_timeline_handle(StatusesList *statuses, json_object *json_stream) {
 	}
 }
 
-void json_timeline(StatusesList *statuses, char *stream) {
+void json_timeline(int timeline, StatusesList *statuses, char *stream) {
 	json_object *json_stream, *obj;
 	enum json_type json_stream_type;
 
@@ -280,7 +283,7 @@ void json_timeline(StatusesList *statuses, char *stream) {
 			break;
 		}
 		case json_type_array: {
-			json_timeline_handle(statuses, json_stream);
+			json_timeline_handle(timeline, statuses, json_stream);
 			break;
 		}
 		default: {
@@ -323,6 +326,11 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 			res = asprintf(&request->url, "%s://%s:%d%s/statuses/mentions.json?since_id=%lld", proto, domain, port, base_url, since_id);
 		else
 			res = asprintf(&request->url, "%s://%s:%d%s/statuses/mentions.json", proto, domain, port, base_url);
+	} else if(timeline == TIMELINE_DMSGS) {
+		if(since_id > 0)
+			res = asprintf(&request->url, "%s://%s:%d%s/direct_messages.json?since_id=%lld", proto, domain, port, base_url, since_id);
+		else
+			res = asprintf(&request->url, "%s://%s:%d%s/direct_messages.json", proto, domain, port, base_url);
 	}
 
 	if(res != -1) {
@@ -331,8 +339,7 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 		res = ed_curl_get(screen_name, password, request, account_id);
 
 		if((res == 0) && (request->response_code == 200)) {
-
-			json_timeline(statuses, request->content.memory);
+			json_timeline(timeline, statuses, request->content.memory);
 
 			if(res != 0) {
 				fprintf(stderr,_("FAILED TO SAX FRIENDS: %d\n"),res);
