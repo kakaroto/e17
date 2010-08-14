@@ -4,9 +4,7 @@ AC_PREREQ([2.59])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
 
-AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
-AC_CANONICAL_TARGET
 
 AM_INIT_AUTOMAKE([1.6 dist-bzip2])
 AM_CONFIG_HEADER([config.h])
@@ -60,13 +58,16 @@ AC_ARG_WITH([edje-cc],
    [edje_cc=$(pkg-config --variable=prefix edje)/bin/edje_cc])
 AC_SUBST(edje_cc)
 
-
 ### Checks for programs
 AC_PROG_CC
 
-# pkg-config
-PKG_PROG_PKG_CONFIG
-
+### Checks for compiler characteristics
+AC_USE_SYSTEM_EXTENSIONS
+AC_ISC_POSIX
+AC_PROG_CC_STDC
+AC_HEADER_STDC
+AC_C_CONST
+AC_C___ATTRIBUTE__
 
 ### Checks for libraries
 
@@ -95,13 +96,6 @@ fi
 ### Checks for structures
 
 
-### Checks for compiler characteristics
-AC_ISC_POSIX
-AC_PROG_CC_STDC
-AC_HEADER_STDC
-AC_C_CONST
-AC_GNU_SOURCE
-AC_C___ATTRIBUTE__
 
 EFL_COMPILER_FLAG([-Wall])
 EFL_COMPILER_FLAG([-W])
