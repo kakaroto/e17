@@ -1,3 +1,8 @@
+2010-08-15  trunk -- lots of changes
+	* gag lists (use regular expressions to block content -- trolls, for instance, when mentioned by those you subscribe)
+	* groups support
+	* receives direct messages
+
 2010-06-12  release 0.9.9
 	* Reorder UI for bottom posting and get more screen used for the messages list
 	* Fix a couple of common crasher bugs
