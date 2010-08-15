@@ -52,6 +52,7 @@ extern struct sqlite3 *ed_DB;
 extern int debug;
 extern char *dm_to;
 extern long long int reply_id;
+extern long long int user_id;
 extern Evas_Object *win;
 
 long long max_status_id=0;
@@ -76,6 +77,7 @@ void message_insert(void *list_item, void *user_data) {
 		sqlite3_bind_text(*insert_stmt, 3, status->name, -1, NULL);
 		sqlite3_bind_text(*insert_stmt, 4, status->text, -1, NULL);
 		sqlite3_bind_int64(*insert_stmt, 5, status->created_at);
+		sqlite3_bind_int64(*insert_stmt, 6, status->user_id);
 
 		sqlite_res = sqlite3_step(*insert_stmt);
 		if(sqlite_res != 0 && sqlite_res != 101 ) printf("ERROR: %d while inserting message:\n(%s) %s\n",sqlite_res, status->screen_name,status->text);
@@ -103,7 +105,7 @@ void messages_insert(int account_id, Eina_List *list, int timeline) {
 		free(query);
 	}
 
-	sqlite_res = asprintf(&query, "INSERT INTO messages (status_id, account_id, screen_name, name, message, date, timeline) VALUES (?, %d, ?, ?, ?, ?, %d);", account_id, timeline);;
+	sqlite_res = asprintf(&query, "INSERT INTO messages (status_id, account_id, screen_name, name, message, date, timeline, user_id) VALUES (?, %d, ?, ?, ?, ?, %d, ?);", account_id, timeline);;
 	if(sqlite_res != -1) {
 		sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
 		if(sqlite_res == 0) {
@@ -122,21 +124,23 @@ int ed_twitter_post(int account_id, char *screen_name, char *password, char *pro
 	int res=0;
 	http_request * request=NULL;
 
-	if(dm_to) {
-		printf("Direct message to %s\n", dm_to);
-	}
-
 	request = calloc(1, sizeof(http_request));
 
 	if(request && strlen(msg) > 0) {
 		if(reply_id>0) {
 			res = asprintf(&ub_status, "source=%s&status=%s&in_reply_to_status_id=%lld", PACKAGE, msg, reply_id);
 			reply_id=0;
-		} else
+		} else if(user_id>0)
+			res = asprintf(&ub_status, "source=%s&text=%s", PACKAGE, msg);
+		else
 			res = asprintf(&ub_status, "source=%s&status=%s", PACKAGE, msg);
 
 		if(res != -1) {
-			res  = asprintf(&request->url,"%s://%s:%d%s/statuses/update.json", proto, domain, port, base_url);
+			if(user_id) {
+				res  = asprintf(&request->url,"%s://%s:%d%s/direct_messages/new.json?user_id=%lld", proto, domain, port, base_url, user_id);
+				user_id = 0;
+			} else
+				res  = asprintf(&request->url,"%s://%s:%d%s/statuses/update.json", proto, domain, port, base_url);
 			if(res != -1) {
 				res = ed_curl_post(screen_name, password, request, ub_status, account_id);
 
@@ -219,7 +223,7 @@ void ed_twitter_statuses_get_avatar(char *screen_name) {
 
 
 void json_timeline_handle(int timeline, StatusesList *statuses, json_object *json_stream) {
-	json_object *status, *id, *text, *created_at, *user, *screen_name, *name, *profile_image_url, *tmp;
+	json_object *status, *id, *text, *created_at, *user, *screen_name, *name, *profile_image_url, *user_id;
 	int size,pos=0;
     ub_Status *ubstatus=NULL;
 
@@ -237,10 +241,12 @@ void json_timeline_handle(int timeline, StatusesList *statuses, json_object *jso
 		else
 			user = json_object_object_get(status, "user");
 		name = json_object_object_get(user, "name");
+		user_id = json_object_object_get(user, "id");
 		screen_name = json_object_object_get(user, "screen_name");
 		profile_image_url = json_object_object_get(user, "profile_image_url");
 
 		ubstatus->id = json_object_get_int(id);
+		ubstatus->user_id = json_object_get_int(user_id);
 		ubstatus->name = strndup(json_object_get_string(name), PIPE_BUF);
 		ubstatus->screen_name = strndup(json_object_get_string(screen_name), PIPE_BUF);
 		ubstatus->text = strndup(json_object_get_string(text), PIPE_BUF);

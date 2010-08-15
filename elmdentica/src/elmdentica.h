@@ -27,6 +27,7 @@ typedef struct _ub_Status {
 	char * text;
 	time_t created_at;
 	long long int    id;
+	long long int   user_id;
 } ub_Status;
 
 typedef struct _ub_bubble {
@@ -35,6 +36,7 @@ typedef struct _ub_bubble {
 	int   account_id;
 	int   account_type;
 	long long int   status_id;
+	long long int   user_id;
 	Eina_Bool	favorite;
 } ub_Bubble;
 

@@ -75,6 +75,7 @@ time_t now;
 Eina_Hash * status2user=NULL;
 
 long long int reply_id=0;
+long long int user_id=0;
 char * url_post = NULL;
 char * url_friends = NULL;
 extern char * browsers[];
@@ -141,6 +142,9 @@ void elmdentica_init(void) {
 	}
 
 	query = "ALTER TABLE messages ADD COLUMN timeline INTEGER;";
+	sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
+
+	query = "ALTER TABLE messages ADD COLUMN user_id INTEGER;";
 	sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
 
 	query = "CREATE TABLE IF NOT EXISTS posts (account_id INTEGER CONSTRAINT account_id_ref REFERENCES accounts (id), dm_to TEXT, message TEXT);";
@@ -308,6 +312,25 @@ static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 			reply_id=status->status_id;
 			elm_entry_cursor_end_set(entry);
 		}
+	}
+
+	e = evas_object_evas_get(win);
+	if(e) {
+		hover = evas_object_name_find(e, "hover_actions");
+		if(hover) evas_object_del(hover);
+	}
+
+	evas_object_show(hv);
+}
+
+static void on_dm(void *data, Evas_Object *obj, void *event_info) {
+	Evas *e;
+	Evas_Object *hover;
+	ub_Bubble * status = (ub_Bubble*)data;
+
+	if(status) {
+		elm_object_focus(entry);
+		user_id=status->user_id;
 	}
 
 	e = evas_object_evas_get(win);
@@ -1174,12 +1197,20 @@ static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *even
 				button = elm_button_add(win);
 					evas_object_size_hint_weight_set(button, 1, 1);
 					evas_object_size_hint_align_set(button, -1, 0);
+					elm_button_label_set(button, _("DM"));
+					evas_object_smart_callback_add(button, "clicked", on_dm, ubBubble);
+					elm_table_pack(table, button, 2, 0, 1, 1);
+				evas_object_show(button);
+
+				button = elm_button_add(win);
+					evas_object_size_hint_weight_set(button, 1, 1);
+					evas_object_size_hint_align_set(button, -1, 0);
 					if(ubBubble->favorite)
 						elm_button_label_set(button, _("Unmark favorite"));
 					else
 						elm_button_label_set(button, _("Mark favorite"));
 					evas_object_smart_callback_add(button, "clicked", on_mark_favorite, ubBubble);
-					elm_table_pack(table, button, 0, 1, 2, 1);
+					elm_table_pack(table, button, 0, 1, 3, 1);
 				evas_object_show(button);
 
 				evas_object_show(table);
@@ -1263,6 +1294,7 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 		argv[5] == message TEXT
 		argv[6] == date INTEGER
 		argv[7] == type INTEGER
+		argv[10] == user_id INTEGER
 	*/
 
 	id=atoi(argv[0]);
@@ -1280,6 +1312,7 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 		evas_object_show(bubble);
 
 		ubBubble->account_id = account_id;
+		ubBubble->user_id=atol(argv[10]);
 		ubBubble->account_type = type;
 		if(screen_name)
 			ubBubble->screen_name = strndup(screen_name, 1024);
@@ -1420,7 +1453,7 @@ void fill_message_list(int timeline) {
 
 	status2user = eina_hash_pointer_new(clear_status_hash_data);
 
-	sqlite_res = asprintf(&query, "SELECT messages.id,messages.status_id,messages.account_id,messages.screen_name,messages.name,messages.message,messages.date,accounts.type,accounts.id as accid,accounts.enabled FROM messages,accounts where messages.timeline = %d and messages.account_id=accid and accounts.enabled=1 ORDER BY messages.date DESC LIMIT %d;", timeline, settings->max_messages);
+	sqlite_res = asprintf(&query, "SELECT messages.id,messages.status_id,messages.account_id,messages.screen_name,messages.name,messages.message,messages.date,accounts.type,accounts.id as accid,accounts.enabled, messages.user_id FROM messages,accounts where messages.timeline = %d and messages.account_id=accid and accounts.enabled=1 ORDER BY messages.date DESC LIMIT %d;", timeline, settings->max_messages);
 	if(sqlite_res != -1) {
 		sqlite_res = 0;
 		sqlite3_exec(ed_DB, query, add_status, (void*)(long)timeline, &db_err);
