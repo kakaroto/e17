@@ -179,16 +179,16 @@ ICCCM_SizeMatch(const EWin * ewin, int wi, int hi, int *pwo, int *pho)
 	     if (Mode.mode == MODE_RESIZE_H)
 	       {
 		  if (aspect < ewin->icccm.aspect_min)
-		     w = (int)((double)h * ewin->icccm.aspect_min + dw);
+		     h = (int)((double)w / ewin->icccm.aspect_min + dh);
 		  else if (aspect > ewin->icccm.aspect_max)
-		     w = (int)((double)h * ewin->icccm.aspect_max + dw);
+		     h = (int)((double)w / ewin->icccm.aspect_max + dh);
 	       }
 	     else if (Mode.mode == MODE_RESIZE_V)
 	       {
 		  if (aspect < ewin->icccm.aspect_min)
-		     h = (int)((double)w / ewin->icccm.aspect_min + dh);
+		     w = (int)((double)h * ewin->icccm.aspect_min + dw);
 		  else if (aspect > ewin->icccm.aspect_max)
-		     h = (int)((double)w / ewin->icccm.aspect_max + dh);
+		     w = (int)((double)h * ewin->icccm.aspect_max + dw);
 	       }
 	     else
 	       {
