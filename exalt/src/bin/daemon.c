@@ -287,7 +287,7 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
             if(!str)
                 str=strdup("wext");
             exalt_wireless_wpasupplicant_driver_set(w,str);
-            EXALT_FREE(str);
+           eina_stringshare_del(str);
 
             if( exalt_eth_state_load(CONF_FILE, exalt_eth_udi_get(eth)) == 1) //up
             {

@@ -50,7 +50,7 @@ int exalt_eth_state_load(const char* file, const char* udi)
     Exalt_Eth_Save *s = _exalt_eet_eth_load(file, udi);
     EXALT_ASSERT_RETURN(s!=NULL);
     int st = s->state;
-    EXALT_FREE(s->driver);
+    eina_stringshare_del(s->driver);
     exalt_conf_free(&(s->conf));
     EXALT_FREE(s);
     return st;
@@ -72,7 +72,7 @@ Exalt_Configuration* exalt_eth_conf_load(const char* file, const char* udi)
     Exalt_Eth_Save *s = _exalt_eet_eth_load(file, udi);
     EXALT_ASSERT_RETURN(s!=NULL);
     Exalt_Configuration *c = s->conf;
-    EXALT_FREE(s->driver);
+   eina_stringshare_del(s->driver);
     EXALT_FREE(s);
     return c;
 }
