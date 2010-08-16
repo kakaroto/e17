@@ -440,4 +440,3 @@ def Window_from_xid(unsigned long xid):
     w = Window.__new__(Window)
     w._set_xid(xid)
     return w
-

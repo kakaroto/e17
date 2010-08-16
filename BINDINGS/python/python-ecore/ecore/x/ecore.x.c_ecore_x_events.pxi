@@ -382,8 +382,16 @@ cdef class EventScreenChange(ecore.c_ecore.Event):
         obj = <Ecore_X_Event_Screen_Change *>o
         self.win = Window_from_xid(obj.win)
         self.root = Window_from_xid(obj.root)
-        self.width = obj.width
-        self.height = obj.height
+
+        mmsize = (obj.size.width, obj.size.height,
+                  obj.size.width_mm, obj.size.height_mm)
+
+        self.size = mmsize
+        self.time = obj.time
+        self.config_time = obj.config_time
+        self.orientation = obj.orientation
+        self.subpixel_order = obj.subpixel_order
+        self.size_id = obj.size_id
         return 1
 
 

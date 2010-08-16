@@ -116,6 +116,7 @@ cdef extern from "Ecore_X.h":
     ctypedef void Ecore_X_Screen
     ctypedef Ecore_X_ID Ecore_X_Sync_Counter
     ctypedef Ecore_X_ID Ecore_X_Sync_Alarm
+    ctypedef unsigned short Ecore_X_Randr_Size_ID
 
     ctypedef struct Ecore_X_Rectangle:
         int x
@@ -127,6 +128,22 @@ cdef extern from "Ecore_X.h":
         unsigned int  width
         unsigned int height
         unsigned int *data
+
+    ctypedef enum Ecore_X_Randr_Orientation:
+        ECORE_X_RANDR_ORIENTATION_ROT_0
+        ECORE_X_RANDR_ORIENTATION_ROT_90
+        ECORE_X_RANDR_ORIENTATION_ROT_180
+        ECORE_X_RANDR_ORIENTATION_ROT_270
+        ECORE_X_RANDR_ORIENTATION_FLIP_X
+        ECORE_X_RANDR_ORIENTATION_FLIP_Y
+
+    ctypedef enum Ecore_X_Render_Subpixel_Order:
+        ECORE_X_RENDER_SUBPIXEL_ORDER_UNKNOWN
+        ECORE_X_RENDER_SUBPIXEL_ORDER_HORIZONTAL_RGB
+        ECORE_X_RENDER_SUBPIXEL_ORDER_HORIZONTAL_BGR
+        ECORE_X_RENDER_SUBPIXEL_ORDER_VERTICAL_RGB
+        ECORE_X_RENDER_SUBPIXEL_ORDER_VERTICAL_BGR
+        ECORE_X_RENDER_SUBPIXEL_ORDER_NONE
 
     ctypedef enum Ecore_X_Window_State:
         ECORE_X_WINDOW_STATE_ICONIFIED
@@ -504,11 +521,22 @@ cdef extern from "Ecore_X.h":
         Ecore_X_Sync_Alarm alarm
 
 
+    ctypedef struct Ecore_X_Randr_Screen_Size_MM:
+        int width
+        int height
+        int width_mm
+        int height_mm
+
+
     ctypedef struct Ecore_X_Event_Screen_Change:
         Ecore_X_Window win
         Ecore_X_Window root
-        int width
-        int height
+        Ecore_X_Randr_Screen_Size_MM size
+        Ecore_X_Time time
+        Ecore_X_Time config_time
+        Ecore_X_Randr_Orientation orientation
+        Ecore_X_Render_Subpixel_Order subpixel_order
+        Ecore_X_Randr_Size_ID size_id
 
 
     ctypedef struct Ecore_X_Event_Window_Delete_Request:
@@ -636,6 +664,8 @@ cdef extern from "Ecore_X.h":
        unsigned int desk
        int source
 
+    int ECORE_X_EVENT_MOUSE_IN
+    int ECORE_X_EVENT_MOUSE_OUT
     int ECORE_X_EVENT_WINDOW_FOCUS_IN
     int ECORE_X_EVENT_WINDOW_FOCUS_OUT
     int ECORE_X_EVENT_WINDOW_KEYMAP
@@ -665,6 +695,9 @@ cdef extern from "Ecore_X.h":
     int ECORE_X_EVENT_SYNC_COUNTER
     int ECORE_X_EVENT_SYNC_ALARM
     int ECORE_X_EVENT_SCREEN_CHANGE
+    int ECORE_X_EVENT_RANDR_CRTC_CHANGE
+    int ECORE_X_EVENT_RANDR_OUTPUT_CHANGE
+    int ECORE_X_EVENT_RANDR_OUTPUT_PROPERTY_NOTIFY
     int ECORE_X_EVENT_DAMAGE_NOTIFY
 
     int ECORE_X_EVENT_WINDOW_DELETE_REQUEST
