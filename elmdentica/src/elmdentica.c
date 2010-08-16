@@ -81,6 +81,7 @@ char * url_friends = NULL;
 extern char * browsers[];
 extern char * browserNames[];
 char * follow_user=NULL;
+char * home=NULL;
 
 extern Settings *settings;
 
@@ -617,15 +618,11 @@ static void on_zoomed_icon_clicked(void *data, Evas_Object *obj, void *event_inf
 
 static void on_bubble_icon_clicked(void *data, Evas_Object *obj, void *event_info) {
 	ub_Bubble * ubBubble = eina_hash_find(status2user, &data);
-	char *home, *file_path = NULL;
+	char *file_path = NULL;
 	Evas_Object *zoom=NULL, *icon=NULL;
 	int res = 0;
 
-	home = getenv("HOME");
-	if(home)
-		res = asprintf(&file_path, "%s/.elmdentica/cache/icons/%s", home, ubBubble->screen_name);
-	else
-		res = asprintf(&file_path, ".elmdentica/cache/icons/%s", ubBubble->screen_name);
+	res = asprintf(&file_path, "%s/cache/icons/%s", home, ubBubble->screen_name);
 
 	if(res != -1) {
 		zoom = elm_win_inwin_add(win);
@@ -645,7 +642,7 @@ static void on_bubble_icon_clicked(void *data, Evas_Object *obj, void *event_inf
 
 Evas_Object *ed_make_bubble(Evas_Object *parent, char *nick, time_t date, char *corner) {
 	Evas_Object *bubble = NULL, *icon = NULL;
-	char *home, *file_path, datestr[19];
+	char *file_path, datestr[19];
 	struct tm date_tm;
 	int res = 0;
 
@@ -663,11 +660,8 @@ Evas_Object *ed_make_bubble(Evas_Object *parent, char *nick, time_t date, char *
 		if(corner) elm_bubble_corner_set(bubble, corner);
 
 
-		home = getenv("HOME");
-		if(home)
-			res = asprintf(&file_path, "%s/.elmdentica/cache/icons/%s", home, nick);
-		else
-			res = asprintf(&file_path, ".elmdentica/cache/icons/%s", nick);
+		res = asprintf(&file_path, "%s/cache/icons/%s", home, nick);
+
 		if(res != -1 && (icon = elm_icon_add(parent))) {
 			elm_icon_file_set(icon, file_path, "fubar?");
 			evas_object_show(icon);
@@ -684,7 +678,7 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 	Evas_Object *user_win=NULL, *icon=NULL, *bg=NULL, *table=NULL, *button=NULL, *label=NULL, *bubble=anchor->bubble, *message=NULL;
 	UserProfile *user;
 	ub_Bubble * ubBubble = eina_hash_find(status2user, &bubble);
-	char *description=NULL,*home, *path=NULL;
+	char *description=NULL, *path=NULL;
 	int res=0;
 	struct stat buf;
 
@@ -721,11 +715,7 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 			elm_win_resize_object_add(user_win, table);
 			elm_table_padding_set(table, 20, 20);
 
-			home=getenv("HOME");
-			if(home)
-				res = asprintf(&path, "%s/.elmdentica/cache/icons/%s", home, user->screen_name);
-			else
-				res = asprintf(&path, ".elmdentica/cache/icons/%s", user->screen_name);
+			res = asprintf(&path, "%s/cache/icons/%s", home, user->screen_name);
 
 			if(res!=-1 && stat(path, &buf) == 0 ) {
 				icon = elm_icon_add(user_win);
@@ -864,7 +854,7 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 	Evas_Object *group_win=NULL, *bg=NULL, *box=NULL, *label=NULL, *notify=NULL, *s=NULL, *box2=NULL, *bubble=anchor->bubble, *icon=NULL, *button=NULL, *frame=NULL;
 	ub_Bubble * ubBubble = eina_hash_find(status2user, &bubble);
 	GroupProfile *gp = (GroupProfile*)calloc(1, sizeof(GroupProfile));
-	char *m, *home, *path;
+	char *m, *path;
 	int res = 0;
 	struct stat buf;
 
@@ -918,11 +908,7 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 				evas_object_size_hint_align_set(box2, -1, 0);
 				elm_box_horizontal_set(box2, EINA_TRUE);
 
-				home=getenv("HOME");
-				if(home)
-					res = asprintf(&path, "%s/.elmdentica/cache/icons/%s", home, gp->name);
-				else
-					res = asprintf(&path, ".elmdentica/cache/icons/%s", gp->name);
+				res = asprintf(&path, "%s/cache/icons/%s", home, gp->name);
 
 				if(res != -1 && stat(path, &buf) == 0 ) {
 					icon = elm_icon_add(group_win);
@@ -1724,10 +1710,19 @@ static void on_entry_clicked(void *data, Evas_Object *entry, void *event_info) {
 EAPI int elm_main(int argc, char **argv)
 {
 	Evas_Object *bg=NULL, *box=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *box2=NULL, *hoversel=NULL, *edit_panel=NULL, *timelines=NULL, *timelines_panel=NULL;
+	char *tmp=NULL;
+	int res = 0;
 
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, LOCALEDIR);
 	textdomain(PACKAGE);
+
+	if((tmp = getenv("HOME")))
+		res = asprintf(&home, "%s/.elmdentica", tmp);
+	else
+		home = ".elmdentica";
+	if(res == -1)
+		home = ".elmdentica";
 
 	ed_settings_init(argc, argv);
 

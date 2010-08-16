@@ -60,6 +60,7 @@ char *conf_file_path=NULL;
 int current_account_type = ACCOUNT_TYPE_NONE;
 int current_account = 0;
 int current_gag = 0;
+extern char * home;
 extern char * url_post;
 extern char * url_friends;
 
@@ -1417,18 +1418,14 @@ void ed_settings_init(int argc, char ** argv) {
 	static char options[] = "dhm:";
 	int option, res;
 	long int mm=0;
-	char *home,*path;
+	char *path;
 
-	home = getenv("HOME");
 	if(!ecore_file_init()) {
 			fprintf(stderr, _("Can't run ecore_file_init()\n"));
 			exit(1);
 	}
 
-	if(home)
-		res = asprintf(&path, "%s/.elmdentica/cache/icons", home);
-	else
-		res = asprintf(&path, ".elmdentica/cache/icons");
+	res = asprintf(&path, "%s/cache/icons", home);
 	if( res == -1 || !ecore_file_mkpath(path)) {
 		fprintf(stderr, (res==-1)?_("Can't create preferences directories since asprintf failed\n"):_("Can't create preferences directories since ecore_file_mkpath failed\n"));
 		ecore_file_shutdown();
@@ -1436,10 +1433,7 @@ void ed_settings_init(int argc, char ** argv) {
 	}
 	free(path);
 
-	if(home)
-		res = asprintf(&conf_file_path, "%s/.elmdentica/conf.eet", home);
-	else
-		res = asprintf(&conf_file_path, ".elmdentica/conf.eet");
+	res = asprintf(&conf_file_path, "%s/conf.eet", home);
 	if( res==-1 ) {
 		fprintf(stderr, _("Not enough memory to define conf.eet path"));
 		ecore_file_shutdown();

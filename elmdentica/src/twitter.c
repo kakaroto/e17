@@ -50,6 +50,7 @@
 char * avatar=NULL;
 extern struct sqlite3 *ed_DB;
 extern int debug;
+extern char *home;
 extern char *dm_to;
 extern long long int reply_id;
 extern long long int user_id;
@@ -186,15 +187,10 @@ void ed_twitter_statuses_get_avatar(char *screen_name) {
 	http_request *request = NULL;
 	int file, res=0;
 	char * file_path=NULL;
-	char * home=NULL;
 
 
 	// properly check if it's already cached (FIXME: this cache doesn't support updating)
-	home = getenv("HOME");
-	if(home)
-		res = asprintf(&file_path, "%s/.elmdentica/cache/icons/%s", home, screen_name);
-	else
-		res = asprintf(&file_path, ".elmdentica/cache/icons/%s", screen_name);
+	res = asprintf(&file_path, "%s/cache/icons/%s", home, screen_name);
 
 	if(res != 0) {
 		file = open(file_path, O_RDONLY);
