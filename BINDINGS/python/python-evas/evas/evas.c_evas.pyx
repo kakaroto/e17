@@ -148,7 +148,6 @@ object_mapping = {
     "textblock": Textblock,
     "rectangle": Rectangle,
     "line": Line,
-    "gradient": Gradient,
     "polygon": Polygon,
     }
 
@@ -409,7 +408,6 @@ include "evas.c_evas_object_smart.pxi"
 include "evas.c_evas_object_rectangle.pxi"
 include "evas.c_evas_object_line.pxi"
 include "evas.c_evas_object_image.pxi"
-include "evas.c_evas_object_gradient.pxi"
 include "evas.c_evas_object_polygon.pxi"
 include "evas.c_evas_object_text.pxi"
 include "evas.c_evas_object_textblock.pxi"
