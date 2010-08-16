@@ -83,14 +83,14 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Directory])
 
-PKG_CHECK_MODULES([EET], eet)
-PKG_CHECK_MODULES([EVAS], evas)
-PKG_CHECK_MODULES([EDJE], edje)
+PKG_CHECK_MODULES([EET], eet >= 1.4.0)
+PKG_CHECK_MODULES([EVAS], evas >= 1.0.0)
+PKG_CHECK_MODULES([EDJE], edje >= 1.0.0)
 PKG_CHECK_MODULES([ECORE], [
-   ecore-con
-   ecore-evas
-   ecore-ipc
-   ecore-file])
+   ecore-con >= 1.0.0
+   ecore-evas >= 1.0.0
+   ecore-ipc >= 1.0.0
+   ecore-file >= 1.0.0])
 PKG_CHECK_MODULES([EMOTION], emotion)
 
 my_libs="-lm "$dlopen_libs""
