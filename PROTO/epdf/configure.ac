@@ -30,7 +30,7 @@ AC_SUBST(version_info)
 
 ### Default options with respect to host
 
-requirements_epdf="evas ecore"
+requirements_epdf="evas >= 1.0.0 ecore >= 1.0.0"
 
 ### Additional options to configure
 
@@ -108,13 +108,13 @@ EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 BUILD_MUPDF_CJK_FONTS=""
 if test "x${want_mupdf}" = "xyes" ; then
    PKG_CHECK_MODULES(FREETYPE, [freetype2])
-   PKG_CHECK_MODULES(EPDF, [evas >= 0.9.9 eina-0])
+   PKG_CHECK_MODULES(EPDF, [evas >= 1.0.0 eina >= 1.0.0])
    backend="mupdf"
    if ! test "x${want_mupdf_cjk}" = "xyes" ; then
       BUILD_MUPDF_CJK_FONTS="-DNOCJK"
    fi
 else
-   PKG_CHECK_MODULES(EPDF, [poppler evas >= 0.9.9 eina-0])
+   PKG_CHECK_MODULES(EPDF, [poppler evas >= 1.0.0 eina >= 1.0.0])
    POPPLER_VERSION=`${PKG_CONFIG} --modversion poppler`
    AC_DEFINE_UNQUOTED([POPPLER_VERSION], ["${POPPLER_VERSION}"], [Poppler version.])
    requirements_epdf="poppler ${requirements_epdf}"
@@ -125,7 +125,7 @@ AC_SUBST(BUILD_MUPDF_CJK_FONTS)
 AM_CONDITIONAL([BUILD_MUPDF_CJK_FONTS], [test "x${want_mupdf_cjk}" = "xyes"])
 AM_CONDITIONAL([BUILD_EPDF_MUPDF], [test "x${want_mupdf}" = "xyes"])
 
-PKG_CHECK_MODULES(EPDFBIN, [ecore-evas >= 0.9.9 ecore >= 0.9.9])
+PKG_CHECK_MODULES(EPDFBIN, [ecore-evas >= 1.0.0 ecore >= 1.0.0])
 
 # Ewl
 
