@@ -33,7 +33,7 @@ AC_SUBST(MODULE_ARCH)
 AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
 
 # Find edje_cc
-PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
+PKG_CHECK_MODULES(EDJE, [edje >= 1.0.0])
 AC_ARG_WITH(edje-cc,
   AC_HELP_STRING([--with-edje-cc=PATH], [specify a specific path to edje_cc]),
   [
@@ -45,7 +45,7 @@ AC_ARG_WITH(edje-cc,
 )
 PKG_CHECK_MODULES(EXALT, [exalt >= 0.0.1])
 PKG_CHECK_MODULES(EXALT_DBUS, [exalt_dbus >= 0.0.1])
-PKG_CHECK_MODULES(E_NOTIFY, [enotify >= 0.5])
+PKG_CHECK_MODULES(E_NOTIFY, [enotify >= 1.0.0])
 AC_SUBST(EDJE_CC)
 AC_MSG_CHECKING([Which edje_cc to use])
 AC_MSG_RESULT(${EDJE_CC})
