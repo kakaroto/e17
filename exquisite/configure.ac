@@ -98,14 +98,14 @@ else
   AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}", [Install Location for Libraries])
 fi
 
-PKG_CHECK_MODULES([EET], eet)
-PKG_CHECK_MODULES([EVAS], evas)
-PKG_CHECK_MODULES([EDJE], edje)
+PKG_CHECK_MODULES([EET], eet >= 1.4.0)
+PKG_CHECK_MODULES([EVAS], evas >= 1.0.0)
+PKG_CHECK_MODULES([EDJE], edje >= 1.0.0)
 PKG_CHECK_MODULES([ECORE], [
-   ecore-evas
-   ecore-con])
+   ecore-evas >= 1.0.0
+   ecore-con >= 1.0.0])
 
-PKG_CHECK_MODULES([ECORE_FB], [ecore-fb], [
+PKG_CHECK_MODULES([ECORE_FB], [ecore-fb >= 1.0.0], [
   AC_DEFINE(HAVE_ECORE_FB, 1, [Have Ecore-Fb support])
 ], [have_ecore_fb=xno])
 
