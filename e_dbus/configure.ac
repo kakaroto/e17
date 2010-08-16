@@ -1,15 +1,15 @@
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
-m4_define([v_maj], [0])
-m4_define([v_min], [5])
+m4_define([v_maj], [1])
+m4_define([v_min], [0])
 m4_define([v_mic], [0])
 m4_define([v_rev], m4_esyscmd([(svnversion "${SVN_REPO_PATH:-.}" | grep -v exported || echo 0) | awk -F : '{printf("%s\n", $1);}' | tr -d ' :MSP\n']))
 m4_if(v_rev, [0], [m4_define([v_rev], m4_esyscmd([git log 2> /dev/null | (grep -m1 git-svn-id || echo 0) | sed -e 's/.*@\([0-9]*\).*/\1/' | tr -d '\n']))])
 ##--   When released, remove the dnl on the below line
-dnl m4_undefine([v_rev])
+m4_undefine([v_rev])
 ##--   When doing snapshots - change soname. remove dnl on below line
-m4_define([relname], [ver-pre-svn-07])
-m4_define([v_rel], [-release relname])
+dnl m4_define([relname], [ver-pre-svn-07])
+dnl m4_define([v_rel], [-release relname])
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 m4_ifdef([v_rev], [m4_define([v_ver], [v_maj.v_min.v_mic.v_rev])],
 [m4_define([v_ver], [v_maj.v_min.v_mic])])
@@ -19,7 +19,7 @@ m4_define([lt_age], v_min)
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 
-AC_INIT([e_dbus], [v_ver], [enlightenment-devel@lists.sourceforge.net])
+AC_INIT([e_dbus], [v_ver-alpha], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ([2.52])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
@@ -72,13 +72,13 @@ case "$host_os" in
       ;;
 esac
 
-requirement_ebluez="edbus"
-requirement_econnman="edbus"
-requirement_edbus="ecore eina-0 dbus-1"
-requirement_ehal="edbus"
-requirement_enotify="edbus"
-requirement_eofono="edbus"
-requirement_eukit="edbus"
+requirement_ebluez="edbus >= 1.0.0"
+requirement_econnman="edbus >= 1.0.0"
+requirement_edbus="ecore >= 1.0.0 eina >= 1.0.0 dbus-1"
+requirement_ehal="edbus >= 1.0.0"
+requirement_enotify="edbus >= 1.0.0"
+requirement_eofono="edbus >= 1.0.0"
+requirement_eukit="edbus >= 1.0.0"
 
 ### Additional options to configure
 
@@ -140,7 +140,7 @@ EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 PKG_CHECK_MODULES([DBUS], [dbus-1 >= 0.62])
 AC_SUBST(DBUS_LIBS)
 
-PKG_CHECK_MODULES([EDBUS], [ecore >= 0.9.9 eina-0 dbus-1 >= 0.62])
+PKG_CHECK_MODULES([EDBUS], [ecore >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62])
 
 # Find out the version of DBUS we're using
 dbus_version=`pkg-config --modversion dbus-1`
@@ -168,8 +168,8 @@ AC_SUBST(DBUS_VERSION_CFLAGS)
 # evas
 if test "x${enable_enotify}" = "xyes" ; then
    PKG_CHECK_MODULES(EVAS,
-      [evas >= 0.9.9],
-      [requirement_enotify="evas ${requirement_enotify}"],
+      [evas >= 1.0.0],
+      [requirement_enotify="evas >= 1.0.0 ${requirement_enotify}"],
       [enable_enotify="no"])
 fi
 

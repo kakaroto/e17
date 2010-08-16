@@ -8,6 +8,9 @@
 
 #include "e_dbus_private.h"
 
+static E_DBus_Version _version = { VMAJ, VMIN, VMIC, VREV };
+EAPI E_DBus_Version *e_dbus_version = &_version;
+
 #define NUM_BUS_TYPES 3
 
 /*

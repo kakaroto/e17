@@ -99,6 +99,20 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+   
+#define E_DBUS_VERSION_MAJOR 1
+#define E_DBUS_VERSION_MINOR 0
+   
+   typedef struct _E_DBus_Version
+     {
+        int major;
+        int minor;
+        int micro;
+        int revision;
+     } E_DBus_Version;
+   
+   EAPI extern E_DBus_Version *e_dbus_version;
+   
    EAPI extern int E_DBUS_DOMAIN_GLOBAL;
    EAPI extern int E_DBUS_EVENT_SIGNAL;
 
