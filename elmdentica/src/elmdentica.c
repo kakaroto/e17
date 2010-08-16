@@ -1,7 +1,7 @@
 /*
  * vim:ts=4
  * 
- * Copyright © 2009 Rui Miguel Silva Seabra <rms@1407.org>
+ * Copyright © 2009-2010 Rui Miguel Silva Seabra <rms@1407.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1589,6 +1589,60 @@ static int do_post(void *notUsed, int argc, char **argv, char **azColName) {
 	return(0);
 }
 
+static void on_post_dm_set(void *data, Evas_Object *obj, void *event_info) {
+	Evas *e = evas_object_evas_get(obj);
+	Evas_Object *dm_entry = e?evas_object_name_find(e, "dm_entry"):NULL;
+	const char* dm_entry_str = dm_entry?elm_entry_entry_get(dm_entry):NULL;
+
+	if(dm_entry_str && strlen(dm_entry_str) > 0) {
+		dm_to = strdup(dm_entry_str);
+		if(debug) printf("Sending a DM to %s\n", dm_to);
+	}
+	evas_object_del((Evas_Object*)data);
+}
+
+static void on_post_dm_cancel(void *data, Evas_Object *obj, void *event_info) {
+	evas_object_del((Evas_Object*)data);
+}
+
+static void on_post_dm(void *data, Evas_Object *obj, void *event_info) {
+	//Evas_Object *entry = data;
+	Evas_Object *inwin=NULL, *frame=NULL, *entry=NULL, *box=NULL, *buttons=NULL, *button=NULL;
+
+	inwin = elm_win_inwin_add(win);
+		elm_object_style_set(inwin, "minimal_vertical");
+
+		frame = elm_frame_add(win);
+			elm_frame_label_set(frame, _("Send a DM to..."));
+			box = elm_box_add(win);
+				entry = elm_entry_add(win);
+					evas_object_name_set(entry, "dm_entry");
+					elm_box_pack_end(box, entry);
+				evas_object_show(entry);
+
+				buttons = elm_box_add(win);
+					elm_box_horizontal_set(buttons, EINA_TRUE);
+					elm_box_homogenous_set(buttons, EINA_TRUE);
+
+					button = elm_button_add(win);
+						elm_button_label_set(button, _("OK"));
+						evas_object_smart_callback_add(button, "clicked", on_post_dm_set, inwin);
+						elm_box_pack_end(buttons, button);
+					evas_object_show(button);
+
+					button = elm_button_add(win);
+						elm_button_label_set(button, _("Cancel"));
+						evas_object_smart_callback_add(button, "clicked", on_post_dm_cancel, inwin);
+						elm_box_pack_end(buttons, button);
+					evas_object_show(button);
+
+					elm_box_pack_end(box, buttons);
+				evas_object_show(buttons);
+			elm_frame_content_set(frame, box);
+		elm_win_inwin_content_set(inwin, frame);
+	evas_object_show(inwin);
+}
+
 static void on_post_clear(void *data, Evas_Object *obj, void *event_info) {
 	Evas_Object *entry = data;
 	elm_entry_entry_set(entry, "");
@@ -1845,6 +1899,19 @@ EAPI int elm_main(int argc, char **argv)
 				elm_button_label_set(bt, _("Send"));
 				elm_button_icon_set(bt, icon);
 				evas_object_smart_callback_add(bt, "clicked", on_post, hv);
+				elm_box_pack_end(box2, bt);
+			evas_object_show(bt);
+
+			icon = elm_photo_add(win);
+			elm_photo_file_set(icon, "head.png");
+			evas_object_show(icon);
+
+			bt = elm_button_add(win);
+				evas_object_size_hint_weight_set(bt, 1, 1);
+				evas_object_size_hint_align_set(bt, -1, 0);
+				elm_button_label_set(bt, _("DM"));
+				elm_button_icon_set(bt, icon);
+				evas_object_smart_callback_add(bt, "clicked", on_post_dm, hv);
 				elm_box_pack_end(box2, bt);
 			evas_object_show(bt);
 

@@ -1,5 +1,5 @@
 /* vim:tabstop=4
- * Copyright © 2009 Rui Miguel Silva Seabra <rms@1407.org>
+ * Copyright © 2009-2010 Rui Miguel Silva Seabra <rms@1407.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -130,7 +130,7 @@ int ed_twitter_post(int account_id, char *screen_name, char *password, char *pro
 		if(reply_id>0) {
 			res = asprintf(&ub_status, "source=%s&status=%s&in_reply_to_status_id=%lld", PACKAGE, msg, reply_id);
 			reply_id=0;
-		} else if(user_id>0)
+		} else if(user_id>0 || dm_to)
 			res = asprintf(&ub_status, "source=%s&text=%s", PACKAGE, msg);
 		else
 			res = asprintf(&ub_status, "source=%s&status=%s", PACKAGE, msg);
@@ -139,6 +139,9 @@ int ed_twitter_post(int account_id, char *screen_name, char *password, char *pro
 			if(user_id) {
 				res  = asprintf(&request->url,"%s://%s:%d%s/direct_messages/new.json?user_id=%lld", proto, domain, port, base_url, user_id);
 				user_id = 0;
+			} else if(dm_to) {
+				res  = asprintf(&request->url,"%s://%s:%d%s/direct_messages/new.json?screen_name=%s", proto, domain, port, base_url, dm_to);
+				dm_to = NULL;
 			} else
 				res  = asprintf(&request->url,"%s://%s:%d%s/statuses/update.json", proto, domain, port, base_url);
 			if(res != -1) {
