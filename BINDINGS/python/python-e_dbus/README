@@ -3,8 +3,8 @@
 REQUIREMENTS
 ============
 
- * E_Dbus >= 0.5.0.49539
- * Ecore >= 0.9.9.49539  (indirect, E_DBus dependency)
+ * E_Dbus >= 1.0.0
+ * Ecore >= 1.0.0        (indirect, E_DBus dependency)
  * D-Bus >= 0.62         (indirect, E_DBus dependency)
  * Python >= 2.4
  * Python-setuptools >= 0.6_rc9

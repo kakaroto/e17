@@ -3,10 +3,10 @@
 REQUIREMENTS
 ============
 
- * Elementary >= 0.6.0.49539
- * Evas >= 0.9.9.49539  (indirect, Elementary dependency)
- * Ecore >= 0.9.9.49539 (indirect, Elementary dependency)
- * Python-Evas >= 0.5.0
+ * Elementary >= 0.6.0.51191
+ * Evas >= 1.0.0  (indirect, Elementary dependency)
+ * Ecore >= 1.0.0 (indirect, Elementary dependency)
+ * Python-Evas >= 0.6.0
  * Cython >= 0.12.1
  * Python >= 2.4
  * Python-setuptools >= 0.6_rc9

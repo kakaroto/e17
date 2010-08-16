@@ -3,10 +3,10 @@
 REQUIREMENTS
 ============
 
- * Ethumb >= 0.1
- * Evas >= 0.9.9.063   (indirect, Ethumb dependency)
- * Ecore >= 0.9.9.063  (indirect, Ethumb dependency)
- * E_Dbus >= 0.5.0.063 (indirect, Ethumb dependency if client is compiled)
+ * Ethumb >= 0.1.0
+ * Evas >= 1.0.0   (indirect, Ethumb dependency)
+ * Ecore >= 1.0.0  (indirect, Ethumb dependency)
+ * E_Dbus >= 1.0.0 (indirect, Ethumb dependency if client is compiled)
  * Cython >= 0.12.1
  * Python-Evas
  * Python >= 2.4

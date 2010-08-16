@@ -64,7 +64,7 @@ edjemodule = Extension('edje.c_edje',
                                 'edje/edje.c_edje_message.pxi',
                                 'include/edje/c_edje.pxd',
                                 ],
-                       **pkgconfig('"edje >= 0.9.9.49539"'))
+                       **pkgconfig('"edje >= 1.0.0"'))
 
 edjeeditmodule = Extension('edje.edit.c_edit',
                        sources=['edje/edit/c_edit.pyx',
@@ -77,7 +77,7 @@ edjeeditmodule = Extension('edje.edit.c_edit',
                                 'edje/edit/c_edit_object_state.pxi',
                                 'include/edje/edit/c_edit.pxd',
                                 ],
-                       **pkgconfig('"edje >= 0.9.9.49539"'))
+                       **pkgconfig('"edje >= 1.0.0"'))
 
 
 trove_classifiers = [
@@ -146,7 +146,7 @@ class edje_build_ext(build_ext):
 
 
 setup(name='python-edje',
-      version='0.5.0',
+      version='0.6.0',
       license='LGPL',
       author='Gustavo Sverzut Barbieri',
       author_email='barbieri@gmail.com',
@@ -156,8 +156,8 @@ setup(name='python-edje',
       keywords='wrapper binding enlightenment graphics raster evas canvas theme',
       classifiers=trove_classifiers,
       packages=find_packages(),
-      install_requires=['python-evas>=0.5.0'],
-      setup_requires=['python-evas>=0.5.0'],
+      install_requires=['python-evas>=0.6.0'],
+      setup_requires=['python-evas>=0.6.0'],
       ext_modules=[edjemodule, edjeeditmodule],
       zip_safe=False,
       cmdclass={'build_ext': edje_build_ext,},

@@ -62,7 +62,7 @@ ethumbmodule = Extension('ethumb.c_ethumb',
                                    ],
                           depends=['include/ethumb/c_ethumb.pxd',
                                    ],
-                          **pkgconfig('"ethumb >= 0.1"'))
+                          **pkgconfig('"ethumb >= 0.1.0"'))
 
 
 trove_classifiers = [
@@ -112,14 +112,14 @@ if int(os.environ.get("ETHUMB_BUILD_CLIENT", 1)):
         depends=['include/ethumb/c_ethumb.pxd',
                  'include/ethumb/client.pxd',
                  ],
-        **pkgconfig('"ethumb >= 0.1" "ethumb_client >= 0.1"'))
+        **pkgconfig('"ethumb >= 0.1.0" "ethumb_client >= 0.1.0"'))
     module_list.append(ethumbclientmodule)
 else:
     print "NOTICE: not building ethumb.client module as requested " \
           "by ETHUMB_BUILD_CLIENT=0!"
 
 setup(name='python-ethumb',
-      version='0.2.0',
+      version='0.6.0',
       license='LGPL',
       author='Rafael Antognolli',
       author_email='antognolli@profusion.mobi',
