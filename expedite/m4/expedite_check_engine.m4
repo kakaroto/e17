@@ -16,7 +16,7 @@ AC_MSG_CHECKING([whether $2 engine is to be built])
 AC_MSG_RESULT($want_[]DOWN)
 
 if test "x$want_[]DOWN" = "xyes"; then
-  PKG_CHECK_EXISTS([evas-$1],
+  PKG_CHECK_EXISTS([evas-$1 >= 1.0.0],
     [
       AC_DEFINE(HAVE_EVAS_[]UP, 1, [Evas $2 Engine Support])
       have_[]DOWN="yes"
