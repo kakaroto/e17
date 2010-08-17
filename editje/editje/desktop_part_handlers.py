@@ -126,7 +126,7 @@ class PartHandler_T(PartHandler):
             return
 
         if dh != 0:
-            op = Operation("part resing (from top)")
+            op = Operation("part resizing (from top)")
 
             args = self._operation_args_get()
 
@@ -161,7 +161,7 @@ class PartHandler_TL(PartHandler):
             return
 
         if (dw, dh) != (0, 0):
-            op = Operation("part resing (from top-left)")
+            op = Operation("part resizing (from top-left)")
 
             args = self._operation_args_get()
 
@@ -196,7 +196,7 @@ class PartHandler_TR(PartHandler):
             return
 
         if (dw, dh) != (0, 0):
-            op = Operation("part resing (from top-left)")
+            op = Operation("part resizing (from top-left)")
 
             args = self._operation_args_get()
 
@@ -237,7 +237,7 @@ class PartHandler_B(PartHandler):
             return
 
         if dh != 0:
-            op = Operation("part resing (from bottom)")
+            op = Operation("part resizing (from bottom)")
 
             args = self._operation_args_get()
 
@@ -272,7 +272,7 @@ class PartHandler_BR(PartHandler):
             return
 
         if (dw, dh) != (0, 0):
-            op = Operation("part resing (from bottom-right)")
+            op = Operation("part resizing (from bottom-right)")
 
             args = self._operation_args_get()
 
@@ -307,7 +307,7 @@ class PartHandler_BL(PartHandler):
             return
 
         if (dw, dh) != (0, 0):
-            op = Operation("part resing (from bottom-left)")
+            op = Operation("part resizing (from bottom-left)")
 
             args = self._operation_args_get()
 
@@ -348,7 +348,7 @@ class PartHandler_L(PartHandler):
             return
 
         if dw != 0:
-            op = Operation("part resing (from left)")
+            op = Operation("part resizing (from left)")
 
             args = self._operation_args_get()
 
@@ -386,7 +386,7 @@ class PartHandler_R(PartHandler):
             return
 
         if dw != 0:
-            op = Operation("part resing (from right)")
+            op = Operation("part resizing (from right)")
 
             args = self._operation_args_get()
 
