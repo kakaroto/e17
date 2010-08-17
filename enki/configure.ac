@@ -44,7 +44,7 @@ AC_ARG_WITH(edje-cc,
 )
 
 PKG_CHECK_MODULES(ENKI, [
-                             eina-0 >= 0.0.2.062
+                             eina >= 0.0.2.062
                              ecore >= 0.9.9.062
                              ecore-file >= 0.9.9.062
                              eet >= 1.2.2

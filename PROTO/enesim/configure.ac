@@ -36,7 +36,7 @@ AC_PROG_CC
 
 # Eina
 
-PKG_CHECK_MODULES(EINA, [eina-0 >= 0.0.1])
+PKG_CHECK_MODULES(EINA, [eina >= 0.0.1])
 
 # Libpng
 

@@ -38,7 +38,7 @@ case "$host_os" in
 esac
 AC_SUBST(create_shared_lib)
 
-PKG_CHECK_MODULES(EINA, [eina-0])
+PKG_CHECK_MODULES(EINA, [eina])
 
 ## Make the debug preprocessor configurable
 EKEKO_CFLAGS="$EINA_CFLAGS"

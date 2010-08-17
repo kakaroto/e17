@@ -5,7 +5,7 @@ includedir=@includedir@
 
 Name: eupnp
 Description: UPnP library
-Requires: eina-0 libxml-2.0
+Requires: eina libxml-2.0
 Version: @VERSION@
 Libs: -L${libdir} -leupnp
 Cflags: -I${includedir}/eupnp-0

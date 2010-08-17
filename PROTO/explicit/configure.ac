@@ -31,7 +31,7 @@ AC_SUBST(version_info)
 
 AC_PROG_CC
 
-PKG_CHECK_MODULES([EXPLICIT], [eina-0 ecore ecore-con ecore-file])
+PKG_CHECK_MODULES([EXPLICIT], [eina ecore ecore-con ecore-file])
 PKG_CHECK_MODULES([EVAS], [evas])
 PKG_CHECK_MODULES([EDJE], [edje], [have_edje="yes"], [have_edje="no"])
 

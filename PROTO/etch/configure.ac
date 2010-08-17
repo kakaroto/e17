@@ -37,7 +37,7 @@ case "$host_os" in
 esac
 AC_SUBST(create_shared_lib)
 
-PKG_CHECK_MODULES(EINA, [eina-0 >= 0.0.1])
+PKG_CHECK_MODULES(EINA, [eina >= 0.0.1])
 ETCH_CFLAGS="$EINA_CFLAGS"
 ETCH_LIBS="$EINA_LIBS"
 AC_SUBST(ETCH_CFLAGS)

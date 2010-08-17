@@ -5,7 +5,7 @@ includedir=@includedir@
 
 Name: Ekeko
 Description: Ekeko
-Requires: eina-0
+Requires: eina
 Version: @VERSION@
 Libs: -L${libdir} -lekeko
 Cflags: -I${includedir} -I${includedir}/ekeko

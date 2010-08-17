@@ -18,7 +18,7 @@ PKG_CHECK_MODULES(ELICIT, [
   ecore
   ecore-evas
   ecore-file
-  eina-0
+  eina
   edje
 ])
 

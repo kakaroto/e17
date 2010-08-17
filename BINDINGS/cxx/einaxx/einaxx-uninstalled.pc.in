@@ -6,7 +6,7 @@ includedir=include
 Name: @PACKAGE@
 Description: Eina (EFL) C++ Wrapper, Not installed
 Version: @VERSION@
-Requires: sigc++-2.0 eflxx eina-0
+Requires: sigc++-2.0 eflxx eina
 Conflicts: 
 Libs: ${pcfiledir}/${libdir}/libeinaxx.la
 Cflags: -I${pcfiledir}/${includedir} 

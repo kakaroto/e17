@@ -120,7 +120,7 @@ PKG_CHECK_MODULES([EFREET_MIME], efreet-mime,
    ]
 )
 
-PKG_CHECK_MODULES([EINA], eina-0,
+PKG_CHECK_MODULES([EINA], eina,
    [
       have_eina="Yes"
    ],

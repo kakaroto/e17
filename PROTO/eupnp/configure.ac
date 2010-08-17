@@ -41,9 +41,9 @@ AC_SUBST(E_UPNP_BUILD)
 
 
 # Required modules
-PKG_CHECK_MODULES(EINA, [eina-0])
+PKG_CHECK_MODULES(EINA, [eina])
 PKG_CHECK_MODULES(LIBXML2, [libxml-2.0])
-PKG_CHECK_MODULES(EUPNP, eina-0 libxml-2.0)
+PKG_CHECK_MODULES(EUPNP, eina libxml-2.0)
 
 
 # Tests and coverage
@@ -73,7 +73,7 @@ AC_OPTIONAL_MODULE([eupnp_ecore], true, [CHECK_MODULE_ECORE])
 AM_CONDITIONAL(HAVE_AV, false)
 define([CHECK_MODULE_AV],
 [
-AC_CHECK_PKG(EINA, eina-0, [], [EINA=false])
+AC_CHECK_PKG(EINA, eina, [], [EINA=false])
 ])
 AC_OPTIONAL_MODULE([eupnp_av], true, [CHECK_MODULE_AV])
 

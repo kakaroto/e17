@@ -368,7 +368,7 @@ AM_CONDITIONAL(BUILD_MODULE_MIX, test x"$have_mix" = x"yes")
 
 ################################
 # Strong dependency
-PKG_CHECK_MODULES([EINA], [eina-0])
+PKG_CHECK_MODULES([EINA], [eina])
 
 ################################
 # Binding with nice PKG
@@ -460,7 +460,7 @@ elixir_libs="${EDJE_LIBS} ${EET_LIBS} ${zlib_libs} ${gcrypt_libs} ${tomcrypt_lib
 AC_SUBST(elixir_cflags)
 AC_SUBST(elixir_libs)
 
-requirements="eina-0"
+requirements="eina"
 AC_SUBST(requirements)
 
 ###############################
