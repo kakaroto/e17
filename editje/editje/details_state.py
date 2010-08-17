@@ -463,7 +463,7 @@ class PartStateDetails(EditjeDetails):
         self._update()
 
     def _state_common_props_changed_cb(self, emissor, data):
-        self._update_common()
+        self._update()
 
     def _state_entry_changed_cb(self, st_widget, *args, **kwargs):
 
@@ -517,9 +517,12 @@ class PartStateDetails(EditjeDetails):
     def _update_do(self):
         self._update_schedule = None
         self._hide_all()
-        if not self.e.part.state.name:
+
+        if not self.e.part.state.name[0]:
             return
+
         self._update_common()
+
         self.main_show()
         self.group_show("rel1")
         self.group_show("rel2")
