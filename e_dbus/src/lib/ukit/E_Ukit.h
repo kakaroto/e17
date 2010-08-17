@@ -159,6 +159,11 @@ extern "C" {
    EAPI DBusPendingCall *e_upower_get_all_properties(E_DBus_Connection *conn, const char *udi, E_DBus_Callback_Func cb_func, void *data);
    EAPI DBusPendingCall *e_upower_get_all_devices(E_DBus_Connection *conn, E_DBus_Callback_Func cb_func, void *data);
 
+   EAPI DBusPendingCall * e_upower_suspend_allowed(E_DBus_Connection *conn, E_DBus_Callback_Func cb_func, void *data);
+   EAPI DBusPendingCall * e_upower_suspend(E_DBus_Connection *conn, E_DBus_Callback_Func cb_func, void *data);
+   EAPI DBusPendingCall * e_upower_hibernate(E_DBus_Connection *conn, E_DBus_Callback_Func cb_func, void *data);
+   EAPI DBusPendingCall * e_upower_hibernate_allowed(E_DBus_Connection *conn, E_DBus_Callback_Func cb_func, void *data);
+
 /* utility functions */
    EAPI void                e_ukit_property_free(E_Ukit_Property *prop);
    EAPI const char         *e_ukit_property_string_get(E_Ukit_Properties *properties, const char *key, int *err);

@@ -82,52 +82,41 @@ struct _E_Bluez_Element_Dict_Entry
 #define ERR(...) EINA_LOG_DOM_ERR(_e_dbus_bluez_log_dom , __VA_ARGS__)
 
 static inline Eina_Bool
-__dbus_callback_check_and_init(const char *file, int line, const char *function, DBusMessage *msg, DBusMessageIter *itr, DBusError *err)
+_dbus_callback_check_and_init(DBusMessage *msg, DBusMessageIter *itr, DBusError *err)
 {
    if (!msg)
      {
 	if (err)
-	  eina_log_print(_e_dbus_bluez_log_dom, EINA_LOG_LEVEL_ERR,
-			 file, function, line,
-			 "an error was reported by server: "
-			 "name=\"%s\", message=\"%s\"",
-			 err->name, err->message);
+	  ERR("an error was reported by server: "
+			"name=\"%s\", message=\"%s\"",
+			err->name, err->message);
 	else
-	  eina_log_print(_e_dbus_bluez_log_dom, EINA_LOG_LEVEL_ERR,
-			 file, function, line,
-			 "callback without message arguments!");
+	  ERR("callback without message arguments!");
 
 	return 0;
      }
 
    if (!dbus_message_iter_init(msg, itr))
      {
-	  eina_log_print(_e_dbus_bluez_log_dom, EINA_LOG_LEVEL_ERR,
-			 file, function, line,
-			 "could not init iterator.");
+	  ERR("could not init iterator.");
 	return 0;
      }
 
    return 1;
 }
 
-#define _dbus_callback_check_and_init(msg, itr, err)			\
-  __dbus_callback_check_and_init(__FILE__, __LINE__, __FUNCTION__,	\
-				 msg, itr, err)
-
 static inline Eina_Bool
-__dbus_iter_type_check(const char *file, int line, const char *function, int type, int expected, const char *expected_name)
+__dbus_iter_type_check(int type, int expected, const char *expected_name)
 {
    if (type == expected)
      return 1;
 
-   ERR(file, function, line,
-       "expected type %s (%c) but got %c instead!",
+   ERR("expected type %s (%c) but got %c instead!",
        expected_name, expected, type);
 
    return 0;
-}
-#define _dbus_iter_type_check(t, e) __dbus_iter_type_check(__FILE__, __LINE__, __FUNCTION__, t, e, #e)
+} 
+#define _dbus_iter_type_check(t, e) __dbus_iter_type_check(t, e, #e)
 
 extern E_DBus_Connection *e_bluez_conn;
 

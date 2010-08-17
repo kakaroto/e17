@@ -1878,7 +1878,7 @@ struct e_bluez_elements_for_each_data
    void *data;
 };
 
-Eina_Bool
+static Eina_Bool
 _e_bluez_elements_for_each(Eina_Hash *hash __UNUSED__, const char *key, void *data, void *fdata)
 {
    struct e_bluez_elements_for_each_data *each_data = fdata;
@@ -1926,7 +1926,7 @@ _e_bluez_elements_get_allocate(unsigned int *count, E_Bluez_Element ***p_element
    return 1;
 }
 
-Eina_Bool
+static Eina_Bool
 _e_bluez_elements_get_all(Eina_Hash *hash __UNUSED__, const char *key __UNUSED__, void *data, void *fdata)
 {
    E_Bluez_Element *element = data;
@@ -1975,7 +1975,7 @@ struct e_bluez_elements_get_all_str_data
    const char *str;
 };
 
-Eina_Bool
+static Eina_Bool
 _e_bluez_elements_get_all_type(Eina_Hash *hash __UNUSED__, const char *key __UNUSED__, void *e, void *user_data)
 {
    struct e_bluez_elements_get_all_str_data *data = user_data;
