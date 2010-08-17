@@ -335,6 +335,8 @@ class GroupSelectionWizard(Wizard):
     def _delete_group(self):
         grp_name = self._groups_list.selection
 
+        self._preview.group_release()
+
         # We have to call it *before* deletion, as it may change the active
         # group to None, in the case of current group deletion
         current = self._select_get_cb()
@@ -345,8 +347,6 @@ class GroupSelectionWizard(Wizard):
             self.notify("Error while deleting this group "
                         "(only group in the file?)")
             return
-
-        self._preview.group_release()
 
         if grp_name == current:
             self.action_disabled_set("group_list", "Cancel", True)
