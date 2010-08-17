@@ -88,10 +88,12 @@ class Editable(Manager):
             self.__edje = None
             self._edje_group = None
         else:
+            old_group = self.__edje
             self.__edje = EdjeEdit(
                 self._canvas, file=self._swapfile.workfile, group=value)
             self._edje_group = self.__edje.current_group
             self.event_emit("group.changed", value)
+            old_group and old_group.delete()
 
         self._group = value
 
