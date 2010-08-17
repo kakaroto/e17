@@ -472,6 +472,8 @@ class Editable(Manager):
 
     # Programs
     def _programs_get(self):
+        if not self.__edje:
+            return []
         return self.__edje.programs
 
     programs = property(_programs_get)
