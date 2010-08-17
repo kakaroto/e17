@@ -17,7 +17,7 @@
 #header ul.menu li a:hover { background: url("/ti/header_menu_hover_background.png") no-repeat center top; }
 #header ul.menu li a:hover span { color: #f3f3f3; background: url("/ti/header_menu_hover_background_left.png") no-repeat; }
 #header ul.menu li.current a { background: url("/ti/header_menu_current_background.png") no-repeat; }
-#header ul.menu li.current a span { font-weight: bold; color: #333333; }
+#header ul.menu li.current a span { font-weight: bold; color: #444444; }
 #header ul.menu li.current a:hover span { background: none; }
 #header ul.menu li.index { float: left; height: 63px; margin: 0; }
 #header ul.menu li.index a { height: 63px; line-height: 63px; width: 63px; background: url("/ti/logo.png") no-repeat; }
@@ -28,10 +28,10 @@
 #header ul.submenu li { display: inline-block; letter-spacing: normal; }
 #header ul.submenu li a { display: inline-block; vertical-align: top; text-align: center; }
 #header ul.submenu li { margin-right: 17px; }
-#header ul.submenu li a { text-decoration: none; color: #888888; }
+#header ul.submenu li a { text-decoration: none; color: #999999; }
 #header ul.submenu li a span { line-height: 36px; font-weight: bold; text-transform: capitalize; font-size: 10px; }
-#header ul.submenu li a:hover span { color: #333333; }
-#header ul.submenu li.selected a { color: #666666; text-decoration: underline; }
+#header ul.submenu li a:hover span { color: #444444; }
+#header ul.submenu li.selected a { color: #777777; text-decoration: underline; }
 #header div.menu { height: 63px; }
 #header div.menu .layout { background: url("/ti/header_menu_background.png"); }
 #header div.submenu { height: 36px; margin-bottom: 36px; }
@@ -45,4 +45,8 @@
 
 table.main h1, td.main { margin-top: 0; padding-top: 0; }
 
-p { color: #333333; }
+p { color: #444444; }
+
+table.b { line-height: 1; }
+
+#sitefooter p { text-align: center; padding-top: 18px; font-size: 11px; }
