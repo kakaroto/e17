@@ -1107,7 +1107,7 @@ Enlil_Photo * enlil_photo_eet_load(const char *eet_path, const char *key)
 int enlil_photo_eet_remove(const char *eet_path, const char* key)
 {
    Eet_File *f;
-   char buf[1024];
+   char buf[PATH_MAX];
 
    ASSERT_RETURN(eet_path!=NULL);
    ASSERT_RETURN(key!=NULL);
