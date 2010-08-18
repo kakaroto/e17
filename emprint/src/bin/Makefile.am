@@ -1,4 +1,5 @@
 MAINTAINERCLEANFILES = Makefile.in
+ACLOCAL_AMFLAGS = -I m4
 
 INCLUDES = -I. \
 	 -I$(top_srcdir) \

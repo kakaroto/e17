@@ -39,11 +39,11 @@ static void _em_do_window(void);
 static void _em_do_region(void);
 static void _em_do_thumb(void *data);
 static void _em_take_shot(int x, int y, int w, int h);
-static Eina_Bool _em_cb_key_down(void *data, int type, void *event);
-static Eina_Bool _em_cb_mouse_move(void *data, int type, void *event);
-static Eina_Bool _em_cb_mouse_up(void *data, int type, void *event);
-static Eina_Bool _em_cb_mouse_down(void *data, int type, void *event);
-static Eina_Bool _em_cb_timer(void *data);
+static Eina_Bool _em_cb_key_down(void *data __UNUSED__, int type __UNUSED__, void *event);
+static Eina_Bool _em_cb_mouse_move(void *data __UNUSED__, int type __UNUSED__, void *event);
+static Eina_Bool _em_cb_mouse_up(void *data __UNUSED__, int type __UNUSED__, void *event);
+static Eina_Bool _em_cb_mouse_down(void *data __UNUSED__, int type __UNUSED__, void *event);
+static Eina_Bool _em_cb_timer(void *data __UNUSED__);
 static void _em_band_show(void);
 static void _em_band_move(int x, int y);
 static void _em_band_hide(void);
@@ -631,7 +631,7 @@ _em_take_shot(int x, int y, int w, int h)
 }
 
 static Eina_Bool 
-_em_cb_key_down(void *data, int type, void *event) 
+_em_cb_key_down(void *data __UNUSED__, int type __UNUSED__, void *event) 
 {
    Ecore_Event_Key *ev;
 
@@ -663,7 +663,7 @@ _em_cb_key_down(void *data, int type, void *event)
 }
 
 static Eina_Bool 
-_em_cb_mouse_move(void *data, int type, void *event) 
+_em_cb_mouse_move(void *data __UNUSED__, int type __UNUSED__, void *event) 
 {
    Ecore_Event_Mouse_Move *ev;
    int x, y, w, h;
@@ -699,7 +699,7 @@ _em_cb_mouse_move(void *data, int type, void *event)
 }
 
 static Eina_Bool 
-_em_cb_mouse_up(void *data, int type, void *event) 
+_em_cb_mouse_up(void *data __UNUSED__, int type __UNUSED__, void *event) 
 {
    Ecore_Event_Mouse_Button *ev;
    Ecore_X_Display *disp;
@@ -762,7 +762,7 @@ _em_cb_mouse_up(void *data, int type, void *event)
 }
 
 static Eina_Bool 
-_em_cb_mouse_down(void *data, int type, void *event) 
+_em_cb_mouse_down(void *data __UNUSED__, int type __UNUSED__, void *event) 
 {
    Ecore_Event_Mouse_Button *ev;
 
@@ -779,7 +779,7 @@ _em_cb_mouse_down(void *data, int type, void *event)
 }
 
 static Eina_Bool 
-_em_cb_timer(void *data) 
+_em_cb_timer(void *data __UNUSED__) 
 {
    static int count = 0;
 
