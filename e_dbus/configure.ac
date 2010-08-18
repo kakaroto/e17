@@ -138,9 +138,6 @@ EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
 ### Checks for libraries
 
-PKG_CHECK_MODULES([DBUS], [dbus-1 >= 0.62])
-AC_SUBST(DBUS_LIBS)
-
 PKG_CHECK_MODULES([EDBUS], [ecore >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62])
 
 # Find out the version of DBUS we're using
