@@ -613,16 +613,16 @@ FocusHandleEnter(EWin * ewin, XEvent * ev)
 {
    Mode.mouse_over_ewin = ewin;
 
+   if (ev->xcrossing.mode == NotifyUngrab &&
+       ev->xcrossing.detail == NotifyNonlinearVirtual)
+      return;
+
    if (!ewin)
      {
 	/* Entering root may mean entering this screen */
 	FocusToEWin(NULL, FOCUS_DESK_ENTER);
 	return;
      }
-
-   if (ev->xcrossing.mode == NotifyUngrab &&
-       ev->xcrossing.detail == NotifyNonlinearVirtual)
-      return;
 
    if ((int)ev->xcrossing.serial - focus_request < 0)
      {
