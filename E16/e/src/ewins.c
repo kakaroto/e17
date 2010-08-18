@@ -35,6 +35,7 @@
 #include "grabs.h"
 #include "groups.h"
 #include "hints.h"
+#include "screen.h"
 #include "snaps.h"
 #include "timers.h"
 #include "windowmatch.h"
@@ -855,7 +856,7 @@ AddToFamily(EWin * ewin, Window xwin, int startup)
 	/* Place the window below the mouse pointer */
 	if (Conf.place.manual_mouse_pointer)
 	  {
-	     int                 cx, cy;
+	     int                 cx, cy, sx, sy, sw, sh;
 
 	     /* if the loser has manual placement on and the app asks to be on */
 	     /*  a desktop, then send E to that desktop so the user can place */
@@ -863,20 +864,17 @@ AddToFamily(EWin * ewin, Window xwin, int startup)
 	     DeskGoto(dsk);
 
 	     EventsUpdateXY(&cx, &cy);
+	     ScreenGetAvailableArea(cx, cy, &sx, &sy, &sw, &sh);
 
 	     /* try to center the window on the mouse pointer */
-	     cx -= EoGetW(ewin) / 2;
-	     cy -= EoGetH(ewin) / 2;
+	     x = cx - EoGetW(ewin) / 2;
+	     y = cy - EoGetH(ewin) / 2;
 
 	     /* keep it all on this screen if possible */
-	     cx = MIN(cx, WinGetW(VROOT) - EoGetW(ewin));
-	     cy = MIN(cy, WinGetH(VROOT) - EoGetH(ewin));
-	     cx = MAX(cx, 0);
-	     cy = MAX(cy, 0);
-
-	     /* this works for me... */
-	     x = cx;
-	     y = cy;
+	     x = MIN(x, sx + sw - EoGetW(ewin));
+	     y = MIN(y, sy + sh - EoGetH(ewin));
+	     x = MAX(x, sx);
+	     y = MAX(y, sy);
 	  }
 	else if (ewin->ewmh.type.b.dialog)
 	  {
