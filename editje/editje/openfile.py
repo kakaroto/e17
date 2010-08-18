@@ -138,7 +138,7 @@ class OpenFile(elementary.Window):
         sf.new = True
         sf.open()
 
-	from editje import Editje
+        from editje import Editje
         editje = Editje(sf)
         editje.group = "main"
         editje.show()
@@ -146,7 +146,7 @@ class OpenFile(elementary.Window):
 
     def _cancel(self, bt):
         self.hide()
-	self.delete()
+        self.delete()
 
     def _notify_del(self):
         if self._notification:

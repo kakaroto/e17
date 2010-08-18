@@ -282,8 +282,9 @@ class EditjeDetails(edje.Edje):
 
         old_values = self._prop_old_values_get(prop_attrs, is_external)
 
-        is_valid = set_property(part_name, state_name, anim_name, frame, sig_name,
-                     prop_attrs, prop_names, prop_values, is_external, filters)
+        is_valid = set_property(part_name, state_name, anim_name, frame,
+                                sig_name, prop_attrs, prop_names, prop_values,
+                                is_external, filters)
 
         if is_valid is not True:
             self["external"][prop_attrs[is_valid]].value = old_values[is_valid]

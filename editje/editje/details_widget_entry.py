@@ -16,11 +16,10 @@
 # License along with Editje.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-import evas
 import elementary
 
 from details_widget import Widget
-from misc import validator_str, validator_int, validator_int_pos, validator_float, validator_float_pos
+from misc import validator_int, validator_float
 
 
 class WidgetEntryValidator(object):

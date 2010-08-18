@@ -209,7 +209,8 @@ class State(Object):
         return True
 
     def source_get(self, indent=""):
-        ret = indent + 'description { state: "%s" %.f;\n' % (self.name, self.value)
+        ret = indent + 'description { state: "%s" %.f;\n' % \
+            (self.name, self.value)
         ret += indent + '   visible: %d;\n' % int(self["visible"])
         ret += indent + '   align: %f %f;\n' % self["align"]
         ret += indent + '   min: %d %d;\n' % self["min"]
@@ -430,7 +431,7 @@ class Program(Object):
         in_from, in_range = self["in"]
         obj.in_from_set(in_from)
         obj.in_range_set(in_range)
-        obj.api= self["api"]
+        obj.api = self["api"]
 
         obj.targets_clear()
         for target in self["targets"]:
@@ -571,7 +572,7 @@ class AnimationFrame(Object):
                 continue
 
             if not part.state_add(state_name):
-               continue
+                continue
 
             state = part.state_get(state_name)
             if not state:

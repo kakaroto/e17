@@ -151,7 +151,6 @@ class EditableAnimation(Manager, object):
         if time:
             self.state = float(time)
 
-
     # Parts
     def _parts_init(self):
         self.parts = {}

@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
-import os
 import xmlrpclib
 from SimpleXMLRPCServer import SimpleXMLRPCServer, \
     SimpleXMLRPCRequestHandler
@@ -160,7 +159,6 @@ class EditjeServer(SimpleXMLRPCServer):
             editable = self._edit_grp
 
         for k in tuple(ret.iterkeys()):
-            p = editable.part_get(k)
             api = editable.part_get(k).api
             if api == (None, None):
                 ret.pop(k)

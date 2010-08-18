@@ -19,8 +19,6 @@ import evas
 import edje
 import elementary
 
-from details_widget import Widget
-from floater import Floater
 import colorpicker
 from details_widget_entry import WidgetEntry
 from floater_opener import FloaterOpener

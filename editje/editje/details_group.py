@@ -18,7 +18,6 @@
 from details import EditjeDetails
 from details_widget_entry import WidgetEntry
 from prop import Property
-from operation import Operation
 
 
 class GroupDetails(EditjeDetails):
