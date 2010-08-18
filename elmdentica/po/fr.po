@@ -7,19 +7,21 @@ msgstr ""
 "Project-Id-Version: Elmdentica\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
 "POT-Creation-Date: 2010-08-08 17:26+0100\n"
-"PO-Revision-Date: 2010-06-27 08:56+0400\n"
+"PO-Revision-Date: 2010-08-18 10:12+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <pourunmondesansgourou@gmail.com>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: src/curl.c:86 src/elmdentica.c:979 src/elmdentica.c:1263
+#: src/curl.c:86
+#: src/elmdentica.c:979
+#: src/elmdentica.c:1263
 msgid "Close"
 msgstr "Fermer"
 
@@ -37,7 +39,7 @@ msgstr "Mes favoris..."
 
 #: src/elmdentica.c:173
 msgid "Replies / mentions..."
-msgstr ""
+msgstr "Réponses / Mentions..."
 
 #: src/elmdentica.c:175
 msgid "My friends..."
@@ -67,30 +69,30 @@ msgstr "Ne plus suivre"
 
 #: src/elmdentica.c:762
 msgid "Not implemented yet"
-msgstr ""
+msgstr "Pas encore disponible"
 
 #: src/elmdentica.c:840
 #, c-format
 msgid "You are a member of group %s along with %d other people.<br>«%s»"
-msgstr ""
+msgstr "Vous êtes membre du groupe %s avec %d autres personnes.<br>« %s »"
 
 #: src/elmdentica.c:842
 #, c-format
 msgid "You are not a member of group %s but %d people are.<br>«%s»"
-msgstr ""
+msgstr "Vous n'êtes pas membre du groupe %s mais %d personnes le sont.<br>« %s »"
 
 #: src/elmdentica.c:874
 msgid "Leave"
-msgstr ""
+msgstr "Quitter"
 
 #: src/elmdentica.c:877
 msgid "Join"
-msgstr ""
+msgstr "Rejoindre"
 
 #: src/elmdentica.c:883
-#, fuzzy, c-format
+#, c-format
 msgid "Last %d messages"
-msgstr "Derniers messages..."
+msgstr "%d derniers messages"
 
 #: src/elmdentica.c:929
 msgid "Visit website?"
@@ -111,7 +113,7 @@ msgstr "Voir les détails ?"
 
 #: src/elmdentica.c:1026
 msgid "View group?"
-msgstr ""
+msgstr "Voir le groupe ?"
 
 #: src/elmdentica.c:1085
 msgid "Reply"
@@ -135,9 +137,10 @@ msgstr "Erreur"
 
 #: src/elmdentica.c:1234
 msgid "µ-blog Error"
-msgstr "Erreur µ-blog"
+msgstr "Erreur du microblogue"
 
-#: src/elmdentica.c:1541 src/elmdentica.c:1610
+#: src/elmdentica.c:1541
+#: src/elmdentica.c:1610
 msgid "Type your status here..."
 msgstr "Entrer votre statut ici..."
 
@@ -155,16 +158,15 @@ msgstr "Favoris"
 
 #: src/elmdentica.c:1653
 msgid "Replies/Mentions"
-msgstr ""
+msgstr "Réponses/Mentions"
 
 #: src/elmdentica.c:1660
 msgid "Friends & I"
 msgstr "Amis & moi"
 
 #: src/elmdentica.c:1683
-#, fuzzy
 msgid "Timelines"
-msgstr "Chronologie"
+msgstr "Chronologies"
 
 #: src/elmdentica.c:1704
 msgid "Post"
@@ -186,7 +188,8 @@ msgstr "Plus..."
 msgid "Fullscreen"
 msgstr "Plein écran"
 
-#: src/elmdentica.c:1752 src/settings.c:1343
+#: src/elmdentica.c:1752
+#: src/settings.c:1343
 msgid "Settings"
 msgstr "Configuration"
 
@@ -203,7 +206,7 @@ msgstr "ÉCHEC SAX POUR LES AMIS : %d\n"
 #: src/twitter.c:344
 #, c-format
 msgid "%s@%s had HTTP response: %ld"
-msgstr ""
+msgstr "%s@%s a reçu la réponse HTTP : %ld"
 
 #: src/settings.c:345
 msgid "Screen name"
@@ -241,11 +244,13 @@ msgstr "Recevoir ?"
 msgid "Send?"
 msgstr "Envoyer ?"
 
-#: src/settings.c:489 src/settings.c:1178
+#: src/settings.c:489
+#: src/settings.c:1178
 msgid "OK"
 msgstr "O.K."
 
-#: src/settings.c:497 src/settings.c:1187
+#: src/settings.c:497
+#: src/settings.c:1187
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -253,35 +258,40 @@ msgstr "Annuler"
 msgid "Accounts..."
 msgstr "Comptes..."
 
-#: src/settings.c:705 src/settings.c:1294
+#: src/settings.c:705
+#: src/settings.c:1294
 msgid "Add"
 msgstr "Ajouter"
 
-#: src/settings.c:718 src/settings.c:1307
+#: src/settings.c:718
+#: src/settings.c:1307
 msgid "Edit"
 msgstr "Éditer"
 
-#: src/settings.c:732 src/settings.c:1320
+#: src/settings.c:732
+#: src/settings.c:1320
 msgid "Delete"
 msgstr "Supprimer"
 
-#: src/settings.c:759 src/settings.c:782
+#: src/settings.c:759
+#: src/settings.c:782
 msgid "No posts<br>in cache."
-msgstr "Aucun post<br>en cache."
+msgstr "Aucun post<br>dans le cache."
 
 #: src/settings.c:761
 #, c-format
 msgid "Currently remembering<br>%d posts."
-msgstr "En mémoire :<br>%d posts."
+msgstr "%d posts<br>en mémoire."
 
-#: src/settings.c:797 src/settings.c:820
+#: src/settings.c:797
+#: src/settings.c:820
 msgid "No messages<br>in cache."
-msgstr "Aucun message<br>en cache."
+msgstr "Aucun message<br>dans le cache."
 
 #: src/settings.c:799
 #, c-format
 msgid "Currently remembering<br>%d messages."
-msgstr "En mémoire :<br>%d messages."
+msgstr "%d messages<br>en mémoire."
 
 #: src/settings.c:898
 msgid "Displayed messages"
@@ -313,11 +323,11 @@ msgstr "Hors ligne"
 
 #: src/settings.c:1158
 msgid "Pattern..."
-msgstr ""
+msgstr "Motif..."
 
 #: src/settings.c:1260
 msgid "Gag patterns..."
-msgstr ""
+msgstr "Motifs pour bâillons..."
 
 #: src/settings.c:1344
 msgid "ElmDentica settings..."
@@ -337,10 +347,10 @@ msgstr "Options"
 
 #: src/settings.c:1387
 msgid "Gag"
-msgstr ""
+msgstr "Bâillon"
 
 #: src/settings.c:1398
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Usage:\n"
@@ -351,7 +361,7 @@ msgid ""
 msgstr ""
 "\n"
 "Usage :\n"
-"   -d    Débogage (super bavard)\n"
+"   -d    Débogage (super bavard, en utilisation multiple)\n"
 "   -h    Help (l'aide que vous êtes en train de lire)\n"
 "   -m  N Afficher N messages à la fois\n"
 
@@ -368,9 +378,7 @@ msgstr "La création des dossiers de préférences a échoué à cause de asprin
 #: src/settings.c:1431
 #, c-format
 msgid "Can't create preferences directories since ecore_file_mkpath failed\n"
-msgstr ""
-"La création des dossiers de préférences a échoué à cause de "
-"ecore_file_mkpath\n"
+msgstr "La création des dossiers de préférences a échoué à cause de ecore_file_mkpath\n"
 
 #: src/settings.c:1442
 #, c-format
@@ -394,16 +402,13 @@ msgstr "Impossible d'initialiser settings_edd."
 
 #: src/settings.c:1480
 #, c-format
-msgid ""
-"Not enough memory for settings, no doubt for anything else either, surely..."
-msgstr ""
-"Mémoire insuffisante pour la configuration, ou quoi que ce soit d'autre..."
+msgid "Not enough memory for settings, no doubt for anything else either, surely..."
+msgstr "Mémoire insuffisante pour la configuration, ou quoi que ce soit d'autre..."
 
 #~ msgid "Error fetching user info: %s"
 #~ msgstr "Échec de récupération de l'info pour : %s"
-
 #~ msgid "Unknown error fetching user info."
 #~ msgstr "Erreur inconnue lors de la récupération de l'info utilisateur."
-
 #~ msgid "FAILED TO SAX USERS SHOW: %d\n"
 #~ msgstr "ÉCHEC SAX POUR LES UTILISATEURS : %d\n"
+
