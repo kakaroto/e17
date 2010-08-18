@@ -74,11 +74,12 @@ esac
 
 requirement_ebluez="edbus >= 1.0.0"
 requirement_econnman="edbus >= 1.0.0"
-requirement_edbus="ecore >= 1.0.0 eina >= 1.0.0 dbus-1"
+requirement_edbus="ecore >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62"
 requirement_ehal="edbus >= 1.0.0"
 requirement_enotify="edbus >= 1.0.0"
 requirement_eofono="edbus >= 1.0.0"
 requirement_eukit="edbus >= 1.0.0"
+requirement_dbus="dbus-1 >= 0.62"
 
 ### Additional options to configure
 
@@ -234,6 +235,7 @@ AC_SUBST(requirement_ehal)
 AC_SUBST(requirement_enotify)
 AC_SUBST(requirement_eofono)
 AC_SUBST(requirement_eukit)
+AC_SUBST(requirement_dbus)
 
 AC_OUTPUT([
 e_dbus.spec

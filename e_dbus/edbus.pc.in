@@ -5,6 +5,7 @@ includedir=@includedir@
 
 Name: edbus
 Description: DBus convenience library
+Requires: @requirement_dbus@
 @pkgconfig_requires_private@: @requirement_edbus@
 Version: @VERSION@
 Libs: -L${libdir} -ledbus @DBUS_LIBS@
