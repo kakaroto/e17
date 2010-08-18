@@ -143,10 +143,10 @@ class OpenFile(elementary.Window):
         editje.group = "main"
         editje.show()
         self._cancel(bt)
-#        self._templates_load()
 
     def _cancel(self, bt):
         self.hide()
+	self.delete()
 
     def _notify_del(self):
         if self._notification:
