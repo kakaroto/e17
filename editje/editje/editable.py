@@ -401,12 +401,13 @@ class Editable(Manager):
         self.event_emit("part.added", name)
         return True
 
-    def part_add_bydata(self, part_data, relatives=None):
+    def part_add_bydata(self, part_data, relatives=None, name=None):
         source = part_data["source"]
         if source is None:
             source = ''
 
-        name = part_data.name
+        if not name:
+            name = part_data.name
 
         if not self._part_add(name, part_data.type, source):
             return False

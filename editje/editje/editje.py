@@ -629,12 +629,13 @@ class Editje(elementary.Window, OpenFileManager):
         if not self._clipboard:
             return
 
-        self._clipboard.name = \
+        new_part_name = \
             name_generate(self._clipboard.name, self.e.parts)
 
-        op = Operation("paste part: " + self._clipboard.name)
-        op.undo_callback_add(self.e.part_del, self._clipboard.name)
-        op.redo_callback_add(self.e.part_add_bydata, self._clipboard)
+        op = Operation("paste part: " + new_part_name)
+        op.undo_callback_add(self.e.part_del, new_part_name)
+        op.redo_callback_add(self.e.part_add_bydata, self._clipboard, \
+                                 name=new_part_name)
         self._operation_stack(op)
         op.redo()
 
