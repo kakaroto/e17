@@ -138,6 +138,7 @@ class OpenFile(elementary.Window):
         sf.new = True
         sf.open()
 
+	from editje import Editje
         editje = Editje(sf)
         editje.group = "main"
         editje.show()
