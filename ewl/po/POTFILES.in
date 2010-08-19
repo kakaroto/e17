@@ -1,4 +1,0 @@
-# List of source files containing translatable strings.
-src/lib/ewl_stock.c
-src/lib/ewl_colordialog.c
-src/lib/ewl_colorpicker.c

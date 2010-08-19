@@ -1,6 +1,0 @@
-.deps
-.libs
-evas_software_x11.la
-ewl_engine_evas_software_x11.lo
-Makefile
-Makefile.in

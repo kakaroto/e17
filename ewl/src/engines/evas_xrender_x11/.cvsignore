@@ -1,6 +1,0 @@
-.deps
-.libs
-Makefile
-Makefile.in
-evas_xrender_x11.la
-ewl_engine_evas_xrender_x11.lo
