@@ -12,7 +12,7 @@ _defaults_set(Elsa_Config *config)
 {
    config->session_path = strdup("./:/bin:/usr/bin:/usr/local/bin");
    config->command.xinit_path = strdup("/usr/bin/X");
-   config->command.xinit_args = strdup("-nolisten tcp -br -deferglyphs 16");
+   config->command.xinit_args = strdup("-nolisten tcp -br vt7");
    config->command.xauth_path = strdup("/usr/bin/xauth");
    config->command.xauth_file = strdup("/var/run/elsa.auth");
    config->command.session_start = strdup("/usr/bin/sessreg -a -l :0.0" );

@@ -7,7 +7,8 @@ AM_CPPFLAGS = \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 @ELSA_CFLAGS@
 
-bin_PROGRAMS = elsa
+sbin_PROGRAMS = elsa
+bin_PROGRAMS = elsa_test
 
 elsa_SOURCES =     \
 elsa_config.h      \
@@ -21,5 +22,10 @@ elsa_gui.c         \
 elsa.h             \
 elsa.c
 
+elsa_test_SOURCES = \
+elsa_test.c
+
 elsa_LDFLAGS =
 elsa_LDADD = @ELSA_LIBS@ -lpam
+
+elsa_test_LDADD = @ELSA_LIBS@

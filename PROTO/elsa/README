@@ -3,23 +3,9 @@ open session with pam with the username and her password
 Integrate with the rc script of your discribution.
 
 
-TODO:
-support the desktop files from /usr/share/xsession
-Make a better, and this time beautiful, theme
-review the login algorithm
-authentification with fingerprint and others
-multisession
-autologin
-support option passed on commandline
-support the fullscreen window (elm_win_fullscreen_set doesn't work)
-improve X launch
-Add code to don't use pam login (Nowadays, important?)
-fix warning
-
-
 build and install:
 autoreconf -v -i -f
-./configure
+./configure --sysconfdir=/etc --prefix=/usr
 make
 make install
 

@@ -8,5 +8,6 @@ long elsa_session_seed_get();
 void elsa_session_auth(const char *file);
 void elsa_session_pid_set(pid_t pid);
 pid_t elsa_session_pid_get();
+Eina_Bool elsa_session_login(void *data);
 
 #endif /* ELSA_SESSION_H_ */

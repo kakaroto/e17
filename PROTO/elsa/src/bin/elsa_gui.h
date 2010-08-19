@@ -7,5 +7,6 @@ void elsa_gui_shutdown();
 char *elsa_gui_user_get();
 char *elsa_gui_password_get();
 void elsa_gui_auth_error();
+void elsa_gui_auth_valid();
 
 #endif /* ELSA_GUI_H_ */

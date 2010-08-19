@@ -1,4 +1,3 @@
-
 AC_INIT([elsa], [0.0.1], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ([2.59])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -94,9 +93,6 @@ fi
 
 
 ### Checks for structures
-
-
-
 EFL_COMPILER_FLAG([-Wall])
 EFL_COMPILER_FLAG([-W])
 EFL_COMPILER_FLAG([-Wshadow])
@@ -143,5 +139,4 @@ echo
 echo "Installation...........: make install (as root if needed, with 'su' or 'sudo')"
 echo "  prefix...............: $prefix"
 echo
-
 

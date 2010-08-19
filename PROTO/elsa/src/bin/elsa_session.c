@@ -201,3 +201,38 @@ elsa_session_auth(const char *file)
    _elsa_session_cookie_add(_mcookie, ":0", "/usr/bin/xauth", file);
 }
 
+Eina_Bool
+elsa_session_login(void *data)
+{
+#ifdef HAVE_PAM
+   struct passwd *pwd;
+   char buf[4096];
+   char *term;
+   int status;
+   status = elsa_pam_authenticate();
+   if (status)
+     {
+        elsa_gui_auth_error();
+        return ECORE_CALLBACK_CANCEL;
+     }
+   if (!elsa_pam_open_session())
+     {
+        pwd = getpwnam(elsa_pam_item_get(ELSA_PAM_ITEM_USER));
+        endpwent();
+        term = getenv("TERM");
+        if (term) elsa_pam_env_set("TERM", term);
+        elsa_pam_env_set("HOME", pwd->pw_dir);
+        elsa_pam_env_set("SHELL", pwd->pw_shell);
+        elsa_pam_env_set("USER", pwd->pw_name);
+        elsa_pam_env_set("LOGNAME", pwd->pw_name);
+        elsa_pam_env_set("PATH", "./:/bin:/usr/bin:/usr/local/bin");
+        elsa_pam_env_set("DISPLAY", ":0.0");
+        elsa_pam_env_set("MAIL", "");
+        snprintf(buf, sizeof(buf), "%s/.Xauthority", pwd->pw_dir);
+        elsa_pam_env_set("XAUTHORITY", buf);
+        elsa_gui_auth_valid(pwd);
+     }
+     return ECORE_CALLBACK_CANCEL;
+#endif
+}
+

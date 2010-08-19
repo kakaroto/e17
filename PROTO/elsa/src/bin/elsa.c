@@ -16,6 +16,7 @@ static Eina_Bool _event_del_cb(void *data, int type, void *event);
 static Eina_Bool _event_exit_cb(void *data, int type, void *event);
 static Eina_Bool _open_log();
 static Eina_Bool _close_log();
+static void _remove_lock();
 
 
 Ecore_Exe *x_exec;
@@ -37,6 +38,7 @@ _event_exit_cb(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED_
    elsa_session_shutdown();
    if (x_exec) ecore_exe_terminate(x_exec);
    elsa_pam_shutdown();
+   _remove_lock();
    _close_log();
    ecore_shutdown();
    return ECORE_CALLBACK_DONE;
@@ -58,6 +60,7 @@ _start_xserver(char *dname)
         fprintf(stderr, PACKAGE": could not open display %s\n", dname);
         sleep(1);
      }
+
    ecore_exe_hup(x_exec);
    snprintf(buf, sizeof(buf), "DISPLAY=%s", dname);
    putenv(buf);
