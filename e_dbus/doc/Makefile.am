@@ -8,7 +8,7 @@ if EFL_BUILD_DOC
 
 doc-clean:
 	rm -rf html/ latex/ $(PACKAGE_DOCNAME).tar*
-        
+
 doc: all
 	$(efl_doxygen)
 	cp images/* html/
