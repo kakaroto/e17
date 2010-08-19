@@ -41,6 +41,7 @@ char* exalt_vpnc_get_name(Exalt_Vpnc* vpnc)
     return vpnc->name;
 #else
     EXALT_ASSERT_ADV(0,return NULL,"You can not use this function if you don't have the support of vpnc\n");
+    (void) vpnc;
 #endif
 }
 
@@ -52,6 +53,7 @@ char* exalt_vpnc_get_ipsec_gateway(Exalt_Vpnc* vpnc)
     return vpnc->ipsec_gateway;
 #else
   EXALT_ASSERT_ADV(0,return NULL,"You can not use this function if you don't have the support of vpnc\n");
+  (void) vpnc;
 #endif
 }
 
@@ -62,6 +64,7 @@ char* exalt_vpnc_get_ipsec_id(Exalt_Vpnc* vpnc)
     return vpnc->ipsec_id;
 #else
   EXALT_ASSERT_ADV(0,return NULL,"You can not use this function if you don't have the support of vpnc\n");
+  (void) vpnc;
 #endif
 }
 
@@ -72,6 +75,7 @@ char* exalt_vpnc_get_ipsec_secret(Exalt_Vpnc* vpnc)
     return vpnc->ipsec_secret;
 #else
   EXALT_ASSERT_ADV(0,return NULL,"You can not use this function if you don't have the support of vpnc\n");
+  (void) vpnc;
 #endif
 }
 
@@ -83,6 +87,7 @@ char* exalt_vpnc_get_xauth_username(Exalt_Vpnc* vpnc)
     return vpnc->xauth_username;
 #else
  EXALT_ASSERT_ADV(0,return NULL,"You can not use this function if you don't have the support of vpnc\n");
+ (void) vpnc;
 #endif
 }
 
@@ -94,6 +99,7 @@ char* exalt_vpnc_get_xauth_password(Exalt_Vpnc* vpnc)
     return vpnc->xauth_password;
 #else
  EXALT_ASSERT_ADV(0,return NULL,"You can not use this function if you don't have the support of vpnc\n");
+ (void) vpnc;
 #endif
 }
 
@@ -106,6 +112,8 @@ int exalt_vpnc_set_name(Exalt_Vpnc* vpnc, char* name)
     return 1;
 #else
   EXALT_ASSERT_ADV(0,return 0,"You can not use this function if you don't have the support of vpnc\n");
+  (void) vpnc;
+  (void) name;
 #endif
 }
 
@@ -118,6 +126,8 @@ int exalt_vpnc_set_ipsec_gateway(Exalt_Vpnc* vpnc, char* ipsec_gateway)
     return 1;
 #else
   EXALT_ASSERT_ADV(0,return 0,"You can not use this function if you don't have the support of vpnc\n");
+  (void) vpnc;
+  (void) ipsec_gateway;
 #endif
 }
 
@@ -131,6 +141,8 @@ int exalt_vpnc_set_ipsec_id(Exalt_Vpnc* vpnc, char* ipsec_id)
     return 1;
 #else
   EXALT_ASSERT_ADV(0,return 0,"You can not use this function if you don't have the support of vpnc\n");
+  (void) vpnc;
+  (void) ipsec_id;
 #endif
 }
 
@@ -143,6 +155,8 @@ int exalt_vpnc_set_ipsec_secret(Exalt_Vpnc* vpnc, char* ipsec_secret)
     return 1;
 #else
   EXALT_ASSERT_ADV(0,return 0,"You can not use this function if you don't have the support of vpnc\n");
+  (void) vpnc;
+  (void) ipsec_secret;
 #endif
 }
 
@@ -155,6 +169,8 @@ int exalt_vpnc_set_xauth_username(Exalt_Vpnc* vpnc, char* xauth_username)
     return 1;
 #else
   EXALT_ASSERT_ADV(0,return 0,"You can not use this function if you don't have the support of vpnc\n");
+  (void) vpnc;
+  (void) xauth_username;
 #endif
 }
 
@@ -167,6 +183,8 @@ int exalt_vpnc_set_xauth_password(Exalt_Vpnc* vpnc, char* xauth_password)
     return 1;
 #else
   EXALT_ASSERT_ADV(0,return 0,"You can not use this function if you don't have the support of vpnc\n");
+  (void) vpnc;
+  (void) xauth_password;
 #endif
 }
 

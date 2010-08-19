@@ -110,18 +110,13 @@ EXALT_GET(network,Exalt_Configuration_Network*)
 
 Eet_Data_Descriptor * exalt_conf_edd_new(Eet_Data_Descriptor* edd_network)
 {
+    Eet_Data_Descriptor_Class eddc;
     Eet_Data_Descriptor *edd;
 
     EXALT_ASSERT_RETURN(edd_network!=NULL);
 
-    edd = eet_data_descriptor_new("Configuration", sizeof(Exalt_Configuration),
-            (void*(*)(void*))eina_list_next,
-            (void*(*)(void*,void*))eina_list_append,
-            (void*(*)(void*))eina_list_data_get,
-            (void*(*)(void*))eina_list_free,
-            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))eina_hash_foreach,
-            (void*(*)(void*,const char*,void*))eina_hash_add,
-            (void(*)(void*))eina_hash_free);
+    eet_eina_stream_data_descriptor_class_set(&eddc, sizeof (eddc), "Configuration", sizeof(Exalt_Configuration));
+    edd = eet_data_descriptor_stream_new(&eddc);
 
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Configuration, "dhcp", mode, EET_T_INT);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Configuration, "ip", ip, EET_T_STRING);

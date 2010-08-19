@@ -1,4 +1,9 @@
-#define print_response_error() \
+
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#define print_response_error()		       \
     if(exalt_dbus_response_error_is(response)) \
     { \
         printf("Response error: (%d), %s\n", \
@@ -372,7 +377,7 @@ void wireless(int argc, char** argv)
     }
 }
 
-void _connect_cb(void *data, Exalt_DBus_Conn *conn, Eina_Bool success)
+void _connect_cb(void *data __UNUSED__, Exalt_DBus_Conn *conn __UNUSED__, Eina_Bool success)
 {
     if(!success) return ;
 

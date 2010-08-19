@@ -1,3 +1,7 @@
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 /** @file exalt_ethernet.c */
 #include "exalt_ethernet.h"
 #include "../config.h"
@@ -311,10 +315,13 @@ short exalt_eth_configuration_set(Exalt_Ethernet* eth, Exalt_Configuration* c)
 
 char* exalt_eth_ip_get(Exalt_Ethernet* eth)
 {
-    struct sockaddr_in sin = { AF_INET };
+    struct sockaddr_in sin;
     struct ifreq ifr;
 
     EXALT_ASSERT_RETURN(eth!=NULL);
+
+    memset(&sin, 0, sizeof (sin));
+    sin.sin_family = AF_INET;
 
     strncpy(ifr.ifr_name,exalt_eth_name_get(eth),sizeof(ifr.ifr_name));
     ifr.ifr_addr = *(struct sockaddr *) &sin;
@@ -331,10 +338,13 @@ char* exalt_eth_ip_get(Exalt_Ethernet* eth)
 
 char* exalt_eth_netmask_get(Exalt_Ethernet* eth)
 {
-    struct sockaddr_in sin = { AF_INET };
+    struct sockaddr_in sin;
     struct ifreq ifr;
 
     EXALT_ASSERT_RETURN(eth!=NULL);
+
+    memset(&sin, 0, sizeof (sin));
+    sin.sin_family = AF_INET;
 
     strncpy(ifr.ifr_name,exalt_eth_name_get(eth),sizeof(ifr.ifr_name));
     ifr.ifr_addr = *(struct sockaddr *) &sin;
@@ -398,8 +408,11 @@ int exalt_eth_gateway_delete(Exalt_Ethernet* eth)
     Default_Route* route;
     int done = 0;
     struct rtentry rt;
-    struct sockaddr_in sin = { AF_INET };
+    struct sockaddr_in sin;
     Eina_List *l;
+
+    memset(&sin, 0, sizeof (sin));
+    sin.sin_family = AF_INET;
 
     memset((char *) &rt, 0, sizeof(struct rtentry));
     rt.rt_flags = ( RTF_UP | RTF_GATEWAY );
@@ -898,7 +911,7 @@ int _exalt_eth_udi_remove(const char* udi)
  * @brief called when the kernel send an piece of information
  * An interface is link, has a new address ...
  */
-int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
+Eina_Bool _exalt_rtlink_watch_cb(void *data __UNUSED__, Ecore_Fd_Handler *fd_handler __UNUSED__)
 {
     int fd;
     ssize_t bin;
@@ -932,8 +945,8 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                 ifmsg = NLMSG_DATA(nh);
                 rtlen = RTM_PAYLOAD(nh);
                 EXALT_ASSERT_ADV(rtlen>=sizeof(struct ifinfomsg),break,
-                        "Bad rtnetlink packet (%d < %d)\n", rtlen,
-                        sizeof(struct ifinfomsg));
+				 "Bad rtnetlink packet (%d < %d)\n", rtlen,
+				 (int) sizeof(struct ifinfomsg));
 
                 //printf("ifmsg: { %d, %d, %d, 0x%x, 0x%x }\n",
                 //        ifmsg->ifi_family, ifmsg->ifi_type,
@@ -973,8 +986,8 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                 ifaddr = NLMSG_DATA(nh);
                 rtlen = RTM_PAYLOAD(nh);
                 EXALT_ASSERT_ADV(rtlen>=sizeof(struct ifaddrmsg),break,
-                        "Bad rtnetlink packet (%d < %d)\n", rtlen,
-                        sizeof(struct ifaddrmsg));
+				 "Bad rtnetlink packet (%d < %d)\n", rtlen,
+				 (int) sizeof(struct ifaddrmsg));
 
                 eth = exalt_eth_get_ethernet_byifindex(ifaddr->ifa_index);
                 if(!eth)
@@ -1008,8 +1021,8 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                 ifroute = NLMSG_DATA(nh);
                 rtlen = RTM_PAYLOAD(nh);
                 EXALT_ASSERT_ADV(rtlen>=sizeof(struct rtmsg),break,
-                        "Bad rtnetlink packet (%d < %d)\n", rtlen,
-                        sizeof(struct rtmsg));
+				 "Bad rtnetlink packet (%d < %d)\n", rtlen,
+				 (int) sizeof(struct rtmsg));
 
                 //test for each interface if the route has been modified
                 l = exalt_eth_list_get();
@@ -1030,7 +1043,10 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
                             Eina_List* l3 = exalt_eth_list_get();
                             Eina_List *l4;
                             Exalt_Ethernet* eth2;
-                            struct sockaddr_in sin = { AF_INET };
+                            struct sockaddr_in sin;
+
+			    memset(&sin, 0, sizeof (sin));
+			    sin.sin_family = AF_INET;
 
                             //we have a new route for this interface
                             //first: we remove the others default route because
@@ -1077,7 +1093,7 @@ int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler)
             default: /*printf("hd cb default!\n");*/break;
         }
     }
-    return 1;
+    return ECORE_CALLBACK_RENEW;
 }
 
 /**
@@ -1128,7 +1144,7 @@ Eina_Bool _exalt_apply_timer(void *data)
  */
 int _exalt_eth_apply_static(Exalt_Ethernet *eth)
 {
-    struct sockaddr_in sin = { AF_INET };
+    struct sockaddr_in sin;
     struct ifreq ifr;
     struct rtentry rt;
     Exalt_Configuration *c;
@@ -1136,6 +1152,9 @@ int _exalt_eth_apply_static(Exalt_Ethernet *eth)
     EXALT_ASSERT_RETURN(eth!=NULL);
     c = exalt_eth_configuration_get(eth);
     EXALT_ASSERT_RETURN(c!=NULL);
+
+    memset(&sin, 0, sizeof (sin));
+    sin.sin_family = AF_INET;
 
     strncpy(ifr.ifr_name,exalt_eth_name_get(eth),sizeof(ifr.ifr_name));
 
@@ -1302,7 +1321,7 @@ void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
     E_Hal_Properties *ret = reply_data;
     int err = 0;
     Exalt_Ethernet* eth;
-    char *str, *str2;
+    const char *str, *str2;
 
     EXALT_ASSERT_RETURN_VOID(!dbus_error_is_set(error));
     str = e_hal_property_string_get(ret, "info.category", &err);
@@ -1358,7 +1377,7 @@ void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
 /**
  * @brief load the net device list from Hal
  */
-void _exalt_cb_find_device_by_capability_net(void *user_data, void *reply_data, DBusError *error)
+void _exalt_cb_find_device_by_capability_net(void *user_data __UNUSED__, void *reply_data, DBusError *error)
 {
     E_Hal_Manager_Find_Device_By_Capability_Return *ret = reply_data;
     char *device;
@@ -1381,7 +1400,7 @@ void _exalt_cb_find_device_by_capability_net(void *user_data, void *reply_data, 
 /**
  * @brief call when a new device is added
  */
-void _exalt_cb_signal_device_added(void *data, DBusMessage *msg)
+void _exalt_cb_signal_device_added(void *data __UNUSED__, DBusMessage *msg)
 {
     DBusError err;
     char *udi;
@@ -1395,7 +1414,7 @@ void _exalt_cb_signal_device_added(void *data, DBusMessage *msg)
 /**
  * @brief call when a device is removed
  */
-void _exalt_cb_signal_device_removed(void *data, DBusMessage *msg)
+void _exalt_cb_signal_device_removed(void *data __UNUSED__, DBusMessage *msg)
 {
     DBusError err;
     char *udi;

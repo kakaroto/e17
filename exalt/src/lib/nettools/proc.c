@@ -2,6 +2,10 @@
 /* $Id: proc.c,v 1.1 2007/06/05 18:36:55 watchwolf Exp $ */ 
 /* Fixme: cannot currently cope with removed fields */ 
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <string.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -53,7 +57,7 @@ char *proc_gen_fmt(char *name, int more, FILE * fh,...)
  * this will generate a bitmask of present/missing fields in the header of
  * a /proc file.
  */
-int proc_guess_fmt(char *name, FILE *fh, ...)
+int proc_guess_fmt(char *name __UNUSED__, FILE *fh, ...)
 {
     char buf[512];
     char *tmp;

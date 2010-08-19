@@ -117,15 +117,11 @@ EXALT_IS(favoris, int)
 
 Eet_Data_Descriptor * exalt_conf_network_edd_new()
 {
+    Eet_Data_Descriptor_Class eddc;
     Eet_Data_Descriptor *edd;
-    edd = eet_data_descriptor_new("Network", sizeof(Exalt_Configuration_Network),
-            (void*(*)(void*))eina_list_next,
-            (void*(*)(void*,void*))eina_list_append,
-            (void*(*)(void*))eina_list_data_get,
-            (void*(*)(void*))eina_list_free,
-            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))eina_hash_foreach,
-            (void*(*)(void*,const char*,void*))eina_hash_add,
-            (void(*)(void*))eina_hash_free);
+
+    eet_eina_stream_data_descriptor_class_set(&eddc, sizeof (eddc), "Network", sizeof(Exalt_Configuration_Network));
+    edd = eet_data_descriptor_stream_new(&eddc);
 
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Configuration_Network, "essid", essid, EET_T_STRING);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Configuration_Network, "encryption", encryption, EET_T_INT);

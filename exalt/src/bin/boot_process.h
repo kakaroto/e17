@@ -4,7 +4,6 @@
 #include "daemon.h"
 #include "Ecore.h"
 
-
 typedef struct Boot_Process_Elt
 {
     char *interface;
@@ -25,7 +24,7 @@ Boot_Process_List* waiting_iface_load(const char* file);
 int waiting_iface_is(const Boot_Process_List* l, Exalt_Ethernet* eth);
 void waiting_iface_done(Boot_Process_List* l, Exalt_Ethernet* eth);
 int waiting_iface_is_done(const Boot_Process_List* l );
-int waiting_iface_stop(void* data);
+Eina_Bool waiting_iface_stop(void* data);
 
 int waiting_iface_add(const char* interface,const char* file);
 int waiting_iface_remove(const char* interface,const char* file);

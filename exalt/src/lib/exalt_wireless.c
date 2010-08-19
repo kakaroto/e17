@@ -1,3 +1,7 @@
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 /** @file exalt_wireless.c */
 #include "exalt_wireless.h"
 #include "libexalt_private.h"
@@ -527,7 +531,7 @@ void _exalt_wireless_wpa_connect(Exalt_Wireless *w)
 /**
  * Retrieve notification from the wpa_supplicant daemon
  */
-Eina_Bool _exalt_wireless_wpa_cb(void *data, Ecore_Fd_Handler *fd_handler)
+Eina_Bool _exalt_wireless_wpa_cb(void *data, Ecore_Fd_Handler *fd_handler __UNUSED__)
 {
     Exalt_Wireless *w = data;
     Exalt_Ethernet *eth = exalt_wireless_eth_get(w);

@@ -184,7 +184,7 @@ int waiting_iface_is_done(const Boot_Process_List* l)
  * @param data the list of interfaces
  * @return Returns 0
  */
-int waiting_iface_stop(void* data)
+Eina_Bool waiting_iface_stop(void* data)
 {
     Boot_Process_List *l = data;
 
@@ -197,7 +197,7 @@ int waiting_iface_stop(void* data)
         waiting_iface_free(&l);
 
     ecore_main_loop_quit();
-    return 0;
+    return ECORE_CALLBACK_CANCEL;
 }
 
 
@@ -348,27 +348,14 @@ int waiting_iface_is_inconf(const char* interface,const char* file)
 Eet_Data_Descriptor * waiting_iface_edd_new()
 {
     Eet_Data_Descriptor *edd_elt, *edd_l;
+    Eet_Data_Descriptor_Class eddc;
 
-    edd_elt = eet_data_descriptor_new("elt", sizeof(Boot_Process_Elt),
-            (void*(*)(void*))eina_list_next,
-            (void*(*)(void*,void*))eina_list_append,
-            (void*(*)(void*))eina_list_data_get,
-            (void*(*)(void*))eina_list_free,
-            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))eina_hash_foreach,
-            (void*(*)(void*,const char*,void*))eina_hash_add,
-            (void(*)(void*))eina_hash_free);
+    eet_eina_stream_data_descriptor_class_set(&eddc, sizeof (eddc), "elt", sizeof(Boot_Process_Elt));
+    edd_elt = eet_data_descriptor_stream_new(&eddc);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd_elt, Boot_Process_Elt, "interface", interface, EET_T_STRING);
 
-
-
-    edd_l = eet_data_descriptor_new("boot process interface list", sizeof(Boot_Process_List),
-            (void*(*)(void*))eina_list_next,
-            (void*(*)(void*,void*))eina_list_append,
-            (void*(*)(void*))eina_list_data_get,
-            (void*(*)(void*))eina_list_free,
-            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))eina_hash_foreach,
-            (void*(*)(void*,const char*,void*))eina_hash_add,
-            (void(*)(void*))eina_hash_free);
+    eet_eina_stream_data_descriptor_class_set(&eddc, sizeof (eddc), "boot process interface list", sizeof(Boot_Process_List));
+    edd_l = eet_data_descriptor_stream_new(&eddc);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd_l, Boot_Process_List, "timeout (sec)", timeout, EET_T_INT);
     EET_DATA_DESCRIPTOR_ADD_LIST(edd_l, Boot_Process_List, "interface list", l, edd_elt);
 

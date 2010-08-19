@@ -45,6 +45,7 @@ Exalt_Ioctl_Key exalt_ioctl_key[] =
  */
 short exalt_ioctl(void* argp, int request)
 {
+    unsigned int i;
     int fd;
     short busy = 0;
     char ioctl_msg_buf[1024];
@@ -53,7 +54,6 @@ short exalt_ioctl(void* argp, int request)
     snprintf(ioctl_msg_buf,1024,"%d",request);
     ioctl_msg = ioctl_msg_buf;
 
-    int i;
     for (i = 0; i < sizeof (exalt_ioctl_key) / sizeof (Exalt_Ioctl_Key); ++i)
         if (request == exalt_ioctl_key[i].key)
         {

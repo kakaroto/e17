@@ -93,7 +93,7 @@ typedef struct exalt_ioctl_key
 void _exalt_cb_signal_device_added(void *data, DBusMessage *msg);
 void _exalt_cb_signal_device_removed(void *data, DBusMessage *msg);
 void _exalt_cb_find_device_by_capability_net(void *user_data, void *reply_data, DBusError *error);
-int _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler);
+Eina_Bool _exalt_rtlink_watch_cb(void *data, Ecore_Fd_Handler *fd_handler);
 
 
 char *str_remove (const char *s, const char *ct);

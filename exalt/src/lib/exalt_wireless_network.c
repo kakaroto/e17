@@ -137,17 +137,12 @@ Exalt_Wireless_Network_Eap_List exalt_wireless_network_eap_tab[]=
 
 Eet_Data_Descriptor * exalt_wireless_network_ie_edd_new()
 {
+    Eet_Data_Descriptor_Class eddc;
     Eet_Data_Descriptor *edd;
     Exalt_Wireless_Network_IE ie;
-    edd = eet_data_descriptor_new("ie", sizeof(Exalt_Wireless_Network_IE),
-            (void*(*)(void*))eina_list_next,
-            (void*(*)(void*,void*))eina_list_append,
-            (void*(*)(void*))eina_list_data_get,
-            (void*(*)(void*))eina_list_free,
-            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))eina_hash_foreach,
-            (void*(*)(void*,const char*,void*))eina_hash_add,
-            (void(*)(void*))eina_hash_free);
 
+    eet_eina_stream_data_descriptor_class_set(&eddc, sizeof (eddc), "ie", sizeof(Exalt_Wireless_Network_IE));
+    edd = eet_data_descriptor_stream_new(&eddc);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "description", description, EET_T_STRING);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "wpa_type", wpa_type, EET_T_INT);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network_IE, "group_cypher", group_cypher, EET_T_INT);
@@ -169,18 +164,13 @@ Eet_Data_Descriptor * exalt_wireless_network_ie_edd_new()
 
 Eet_Data_Descriptor * exalt_wireless_network_edd_new(Eet_Data_Descriptor* edd_ie)
 {
+    Eet_Data_Descriptor_Class eddc;
     Eet_Data_Descriptor *edd;
 
     EXALT_ASSERT_RETURN(edd_ie!=NULL);
 
-    edd = eet_data_descriptor_new("Network", sizeof(Exalt_Wireless_Network),
-            (void*(*)(void*))eina_list_next,
-            (void*(*)(void*,void*))eina_list_append,
-            (void*(*)(void*))eina_list_data_get,
-            (void*(*)(void*))eina_list_free,
-            (void(*)(void*,int(*)(void*,const char*,void*,void*),void*))eina_hash_foreach,
-            (void*(*)(void*,const char*,void*))eina_hash_add,
-            (void(*)(void*))eina_hash_free);
+    eet_eina_stream_data_descriptor_class_set(&eddc, sizeof (eddc), "Network", sizeof(Exalt_Wireless_Network));
+    edd = eet_data_descriptor_stream_new(&eddc);
 
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "address", address, EET_T_STRING);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Exalt_Wireless_Network, "essid", essid, EET_T_STRING);
@@ -296,7 +286,7 @@ EXALT_GET(eap,Exalt_Wireless_Network_Eap)
 const char* exalt_wireless_network_name_from_mode_id(
         int id)
 {
-    int i;
+    unsigned int i;
     for(i = 0; i < sizeof(exalt_wireless_network_mode_tab) / sizeof(Exalt_Wireless_Network_Mode_List);i++)
         if(exalt_wireless_network_mode_tab[i].id == id)
             return exalt_wireless_network_mode_tab[i].name;
@@ -307,7 +297,7 @@ const char* exalt_wireless_network_name_from_mode_id(
 Exalt_Wireless_Network_Mode exalt_wireless_network_mode_from_mode_id(
         int id)
 {
-    int i;
+    unsigned int i;
     for(i = 0; i < sizeof(exalt_wireless_network_mode_tab) / sizeof(Exalt_Wireless_Network_Mode_List);i++)
         if(exalt_wireless_network_mode_tab[i].id == id)
             return exalt_wireless_network_mode_tab[i].mode;
@@ -318,7 +308,7 @@ Exalt_Wireless_Network_Mode exalt_wireless_network_mode_from_mode_id(
 const char* exalt_wireless_network_name_from_mode(
         Exalt_Wireless_Network_Mode mode)
 {
-    int i;
+    unsigned int i;
     for(i = 0; i < sizeof(exalt_wireless_network_mode_tab) / sizeof(Exalt_Wireless_Network_Mode_List);i++)
         if(exalt_wireless_network_mode_tab[i].mode == mode)
             return exalt_wireless_network_mode_tab[i].name;
@@ -330,7 +320,7 @@ const char* exalt_wireless_network_name_from_mode(
 const char* exalt_wireless_network_name_from_wpa_type(
         Exalt_Wireless_Network_Wpa_Type wpa_type)
 {
-    int i;
+    unsigned int i;
     for(i = 0; i < sizeof(exalt_wireless_network_wpa_type_tab) / sizeof(Exalt_Wireless_Network_Wpa_Type_List);i++)
         if(exalt_wireless_network_wpa_type_tab[i].wpa_type == wpa_type)
             return exalt_wireless_network_wpa_type_tab[i].name;
@@ -341,7 +331,7 @@ const char* exalt_wireless_network_name_from_wpa_type(
 const char* exalt_wireless_network_name_from_cypher_name(
         Exalt_Wireless_Network_Cypher_Name cypher_name)
 {
-    int i;
+    unsigned int i;
     for(i = 0; i < sizeof(exalt_wireless_network_cypher_name_tab) / sizeof(Exalt_Wireless_Network_Cypher_Name_List);i++)
         if(exalt_wireless_network_cypher_name_tab[i].cypher_name == cypher_name)
             return exalt_wireless_network_cypher_name_tab[i].name;
@@ -352,7 +342,7 @@ const char* exalt_wireless_network_name_from_cypher_name(
 const char* exalt_wireless_network_name_from_auth_suites(
         Exalt_Wireless_Network_Auth_Suites auth_suites)
 {
-    int i;
+    unsigned int i;
     for(i = 0; i < sizeof(exalt_wireless_network_auth_suites_tab) / sizeof(Exalt_Wireless_Network_Auth_Suites_List);i++)
         if(exalt_wireless_network_auth_suites_tab[i].auth_suites == auth_suites)
             return exalt_wireless_network_auth_suites_tab[i].name;
@@ -364,7 +354,7 @@ const char* exalt_wireless_network_name_from_auth_suites(
 const char* exalt_wireless_network_name_from_security(
         Exalt_Wireless_Network_Security security)
 {
-    int i;
+    unsigned int i;
     for(i = 0; i < sizeof(exalt_wireless_network_security_tab) / sizeof(Exalt_Wireless_Network_Security_List);i++)
         if(exalt_wireless_network_security_tab[i].security == security)
             return exalt_wireless_network_security_tab[i].name;
@@ -375,7 +365,7 @@ const char* exalt_wireless_network_name_from_security(
 const char* exalt_wireless_network_name_from_eap(
         Exalt_Wireless_Network_Eap eap)
 {
-    int i;
+    unsigned int i;
     for(i = 0; i < sizeof(exalt_wireless_network_eap_tab) / sizeof(Exalt_Wireless_Network_Eap_List);i++)
         if(exalt_wireless_network_eap_tab[i].eap == eap)
             return exalt_wireless_network_eap_tab[i].name;
