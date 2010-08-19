@@ -66,7 +66,7 @@ int proc_guess_fmt(char *name, FILE *fh, ...)
     va_start(ap, fh);
     while((tmp = va_arg(ap, char *))) {
       int f = va_arg(ap, int);
-      if (strstr(buf,tmp) != 0)
+      if (strstr(buf,tmp) != NULL)
         flag |= f;
     }
     va_end(ap);
