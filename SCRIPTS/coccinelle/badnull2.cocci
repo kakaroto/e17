@@ -12,65 +12,45 @@
 // run badnull.cocci first
 //
 
-// There are some exceptions ('good' rules), that could be handled by
-// using !!E/!E, but here we let them as is.
-
-// Returning a comparison to NULL is good.
-@good1@
+@fix disable is_null,isnt_null1 @
 expression E;
-position p;
-@@
-
-  return <+...E@p...+>;
-
-// Assignments are good, do not change them
-@good4 disable is_zero,isnt_zero@
-expression E;
-position p2;
-identifier x2;
-expression x;
+identifier x, x2;
+identifier fn;
 type T;
 @@
-(
-  x = (E ==@p2 NULL);
-|
-  T x2 = (E ==@p2 NULL);
-|
-  x = (E !=@p2 NULL);
-|
-  T x2 = (E !=@p2 NULL);
-)
-
-// Boolean comparison as a function parameter is good too.
-@good2 disable is_zero,isnt_zero @
-expression E;
-identifier f;
-position p;
-@@
 
 (
-  f(<+...E@p == NULL ...+>)
+  return
+	<+...
+-               E != NULL
++               !!E
+        ...+>;
 |
-  f(<+...E@p != NULL...+>)
-)
-
-@fix disable is_zero,isnt_zero @
-expression E;
-position p != {good1.p, good2.p};
-position p2 != {good4.p2};
-@@
-
-(
--  E@p ==@p2 NULL
+-  x = (E != NULL);
++  x = !!E;
+|
+-  T x2 = (E != NULL);
++  T x2 = !!E;
+|
+-  E == NULL
 +  !E
 |
--  E@p !=@p2 NULL
-+  E
+ fn(<+...
+-       E != NULL
++       !!E
+    ...+>, ...)
 |
-- NULL ==@p2 E@p
-+  !E
+ fn(<+...
+-       E != NULL
++       !!E
+    ...+>)
 |
-- NULL !=@p2 E@p
+ fn(..., <+...
+-       E != NULL
++       !!E
+    ...+>)
+|
+-  E != NULL
 +  E
 )
 
