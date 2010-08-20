@@ -1303,6 +1303,8 @@ EwinOpFullscreen(EWin * ewin, int source __UNUSED__, int on)
 	  }
 	ScreenGetAvailableArea(EoGetX(ewin), EoGetY(ewin), &x, &y, &w, &h);
 
+	ewin->state.fullscreen = 1;
+
 	/* Fixup if available space doesn't match ICCCM size constraints */
 	ICCCM_SizeMatch(ewin, w, h, &ww, &hh);
 	if (w == ww && h == hh)
@@ -1334,7 +1336,6 @@ EwinOpFullscreen(EWin * ewin, int source __UNUSED__, int on)
 	ewin->state.maximizing = 1;
 	EwinMoveResize(ewin, x, y, w, h);
 	ewin->state.maximizing = 0;
-	ewin->state.fullscreen = 1;
 	EwinStateUpdate(ewin);
      }
    else

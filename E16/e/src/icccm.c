@@ -167,11 +167,16 @@ ICCCM_SizeMatch(const EWin * ewin, int wi, int hi, int *pwo, int *pho)
       h = ewin->icccm.height_min;
    if (h > ewin->icccm.height_max)
       h = ewin->icccm.height_max;
+
+   if (w <= 0 || h <= 0)
+      return;
+
+   w -= ewin->icccm.base_w;
+   h -= ewin->icccm.base_h;
    if ((w > 0) && (h > 0))
      {
-	w -= ewin->icccm.base_w;
-	h -= ewin->icccm.base_h;
-	if ((w > 0) && (h > 0))
+	/* Ignore aspect ratio constraints when fullscreening */
+	if (!ewin->state.fullscreen)
 	  {
 	     aspect = ((double)w) / ((double)h);
 	     dw = ewin->icccm.w_inc / 4.;
@@ -207,14 +212,14 @@ ICCCM_SizeMatch(const EWin * ewin, int wi, int hi, int *pwo, int *pho)
 			  w = (int)((double)h * ewin->icccm.aspect_max + dw);
 		    }
 	       }
-	     i = w / ewin->icccm.w_inc;
-	     j = h / ewin->icccm.h_inc;
-	     w = i * ewin->icccm.w_inc;
-	     h = j * ewin->icccm.h_inc;
 	  }
-	w += ewin->icccm.base_w;
-	h += ewin->icccm.base_h;
+	i = w / ewin->icccm.w_inc;
+	j = h / ewin->icccm.h_inc;
+	w = i * ewin->icccm.w_inc;
+	h = j * ewin->icccm.h_inc;
      }
+   w += ewin->icccm.base_w;
+   h += ewin->icccm.base_h;
 
    *pwo = w;
    *pho = h;
