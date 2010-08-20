@@ -13,8 +13,8 @@
 //
 
 @fix disable is_null,isnt_null1 @
-expression E;
-identifier x, x2;
+expression E, x;
+identifier x2;
 identifier fn;
 type T;
 @@
