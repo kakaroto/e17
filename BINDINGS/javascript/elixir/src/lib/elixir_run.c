@@ -238,12 +238,12 @@ elixir_function_start(JSContext *cx)
    gccx = elixir_get_gccx(cx);
    if (gccx && gccx->save >= 0)
      {
-	JS_SetContextThread(cx);
-	JS_ResumeRequest(cx, gccx->save);
-	gccx->save = -1;
 	pthread_mutex_lock(&suspended_lock);
 	suspended_cx = eina_list_remove(suspended_cx, cx);
 	pthread_mutex_unlock(&suspended_lock);
+	JS_SetContextThread(cx);
+	JS_ResumeRequest(cx, gccx->save);
+	gccx->save = -1;
      }
    elixir_lock_cx(cx);
 }
@@ -259,6 +259,7 @@ elixir_function_stop(JSContext *cx)
    if (gccx) {
       JS_SetContextThread(cx);
       gccx->save = JS_SuspendRequest(cx);
+      JS_ClearContextThread(cx);
       pthread_mutex_lock(&suspended_lock);
       suspended_cx = eina_list_append(suspended_cx, cx);
       pthread_mutex_unlock(&suspended_lock);
