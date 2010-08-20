@@ -20,7 +20,7 @@ type T;
   return
 	<+...
 -               E != NULL
-+               !E
++               !!E
         ...+>;
 |
 -  x = (E != NULL);
