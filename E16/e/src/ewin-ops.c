@@ -26,6 +26,7 @@
 #include "desktops.h"
 #include "emodule.h"
 #include "eobj.h"
+#include "events.h"
 #include "ewins.h"
 #include "ewin-ops.h"
 #include "focus.h"
@@ -1301,7 +1302,16 @@ EwinOpFullscreen(EWin * ewin, int source __UNUSED__, int on)
 	     ewin->save_fs.h = ewin->client.h;
 	     ewin->save_fs.layer = EoGetLayer(ewin);
 	  }
-	ScreenGetAvailableArea(EoGetX(ewin), EoGetY(ewin), &x, &y, &w, &h);
+	if (ewin->state.placed)
+	  {
+	     x = EoGetX(ewin);
+	     y = EoGetY(ewin);
+	  }
+	else
+	  {
+	     EventsUpdateXY(&x, &y);
+	  }
+	ScreenGetAvailableArea(x, y, &x, &y, &w, &h);
 
 	ewin->state.fullscreen = 1;
 
