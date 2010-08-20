@@ -129,8 +129,9 @@ pushd edje
 [[ $AUTOGEN -eq 1 ]] && ./autogen.sh
 spatch -sp $SCRIPT -macro_file_builtins ../SCRIPTS/coccinelle/ecocci.h \
        -I /usr/include/ \
-       -I ../eina/src/include/ -I ../evas/src/lib/ \
-       $(for i in ../ecore/src/lib/ecore{,_evas,_file}/; do echo -I $i; done) \
+       -I ../eina/src/include/ -I ../evas/src/lib/ ../eet/src/lib/ \
+       -I ../embryo/src/lib/ \
+       $(for i in ../ecore/src/lib/ecore*; do echo -I $i; done) \
        -I src/lib/ \
        -all_includes -relax_include_path -in_place $ARGS -dir ./
 popd
