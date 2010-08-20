@@ -1,4 +1,4 @@
-sed -r 's/^([a-zA-Z].*\*?) \t?([a-z][a-zA-Z0-9_]*\()/\1\n\2/'
+sed -r 's/^([a-zA-Z].*\*?) ([a-z][a-zA-Z0-9_]*\()/\1\n\2/'
 #for changing something like 
 const inline stupid attribute variable defined function_has_a_long_name_off_thescreen_oh_my_god_its_solong(aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)
 #to
