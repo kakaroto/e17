@@ -28,17 +28,20 @@
 #include "borders.h"
 #include "focus.h"
 #include "xwin.h"
-#include <X11/extensions/xf86vmode.h>
 #if USE_XRANDR
 #include <X11/extensions/Xrandr.h>
 #endif
 
+static EWin        *zoom_last_ewin = NULL;
+static signed char  zoom_can = 0;
+
+#define USE_xf86vmode 1
+#if USE_xf86vmode
+#include <X11/extensions/xf86vmode.h>
+
 static int          std_vid_modes_num = 0;
 static int          std_vid_mode_cur = 0;
 static XF86VidModeModeInfo **std_vid_modes = NULL;
-
-static EWin        *zoom_last_ewin = NULL;
-static signed char  zoom_can = 0;
 
 static XF86VidModeModeInfo *
 FindMode(int w, int h)
@@ -89,11 +92,11 @@ GetModeIndex(unsigned int dotclock, XF86VidModeModeLine * line)
    return 0;
 }
 
-static const XF86VidModeModeInfo *
-SwitchRes(char inout, int x, int y, int w, int h)
+static int
+SwitchRes(char inout, int x, int y, int w, int h, int *dw, int *dh)
 {
    static int          vp_x, vp_y;
-   XF86VidModeModeInfo *mode = NULL;
+   XF86VidModeModeInfo *mode;
    int                 scr;
 
    scr = Dpy.screen;
@@ -105,7 +108,7 @@ SwitchRes(char inout, int x, int y, int w, int h)
 	int                 rx, ry;
 
 	if (!XF86VidModeGetModeLine(disp, scr, &dotclock, &curmode))
-	   return mode;
+	   return 0;
 	XF86VidModeGetViewPort(disp, scr, &vp_x, &vp_y);
 
 	mode = FindMode(w, h);
@@ -138,11 +141,25 @@ SwitchRes(char inout, int x, int y, int w, int h)
 		  rx = x;
 		  ry = y;
 	       }
+#if USE_XRANDR
+	     if ((Mode.screen.rotation == RR_Rotate_90) ||
+		 (Mode.screen.rotation == RR_Rotate_270))
+	       {
+		  *dw = mode->vdisplay;
+		  *dh = mode->hdisplay;
+	       }
+	     else
+#endif
+	       {
+		  *dw = mode->hdisplay;
+		  *dh = mode->vdisplay;
+	       }
 	     XF86VidModeLockModeSwitch(disp, scr, 0);
 	     std_vid_mode_cur = GetModeIndex(dotclock, &curmode);
 	     XF86VidModeSwitchToMode(disp, scr, mode);
 	     XF86VidModeSetViewPort(disp, scr, rx, ry);
 	     XF86VidModeLockModeSwitch(disp, scr, 1);
+	     return 1;
 	  }
      }
    else
@@ -155,17 +172,7 @@ SwitchRes(char inout, int x, int y, int w, int h)
 	XF86VidModeLockModeSwitch(disp, scr, 1);
 #endif
      }
-   return mode;
-}
-
-void
-ReZoom(EWin * ewin)
-{
-   if (zoom_last_ewin && ewin == zoom_last_ewin)
-     {
-	Zoom(ewin, 0);
-	Zoom(ewin, 1);
-     }
+   return 0;
 }
 
 static void
@@ -185,10 +192,28 @@ ZoomInit(void)
       zoom_can = 1;
 }
 
+#else
+
+static int
+SwitchRes(char inout, int x, int y, int w, int h, int *dw, int *dh)
+{
+   inout = 0;
+   x = y = w = h = 0;
+   *dw = *dh = 0;
+   return 0;
+}
+
+static void
+ZoomInit(void)
+{
+}
+
+#endif
+
 void
 Zoom(EWin * ewin, int on)
 {
-   const XF86VidModeModeInfo *mode;
+   int                 dw, dh;
 
    if (zoom_can == 0)
       ZoomInit();
@@ -208,11 +233,11 @@ Zoom(EWin * ewin, int on)
 
 	zoom_last_ewin = NULL;
 
-	SwitchRes(0, 0, 0, 0, 0);
+	SwitchRes(0, 0, 0, 0, 0, NULL, NULL);
 	EwinBorderSetTo(ewin, ewin->normal_border);
+	ewin->state.zoomed = 0;
 	EwinMoveResize(ewin, ewin->save_fs.x, ewin->save_fs.y,
 		       ewin->client.w, ewin->client.h);
-	ewin->state.zoomed = 0;
 	EwinWarpTo(ewin, 1);
 	ESync(0);
 	return;
@@ -221,27 +246,12 @@ Zoom(EWin * ewin, int on)
    if (ewin->state.fullscreen)
       return;
 
-   mode = SwitchRes(1, 0, 0, ewin->client.w, ewin->client.h);
-   if (mode)
+   on = SwitchRes(1, 0, 0, ewin->client.w, ewin->client.h, &dw, &dh);
+   if (on)
      {
-	int                 dw, dh;
-
 	zoom_last_ewin = ewin;
 	ewin->save_fs.x = EoGetX(ewin);
 	ewin->save_fs.y = EoGetY(ewin);
-#if USE_XRANDR
-	if ((Mode.screen.rotation == RR_Rotate_90) ||
-	    (Mode.screen.rotation == RR_Rotate_270))
-	  {
-	     dw = mode->vdisplay;
-	     dh = mode->hdisplay;
-	  }
-	else
-#endif
-	  {
-	     dw = mode->hdisplay;
-	     dh = mode->vdisplay;
-	  }
 	EwinRaise(ewin);
 	EwinBorderSetTo(ewin, BorderCreateFiller(ewin->client.w,
 						 ewin->client.h, dw, dh));
@@ -250,6 +260,16 @@ Zoom(EWin * ewin, int on)
 	FocusToEWin(ewin, FOCUS_SET);
 	EwinWarpTo(ewin, 1);
 	ESync(0);
+     }
+}
+
+void
+ReZoom(EWin * ewin)
+{
+   if (zoom_last_ewin && ewin == zoom_last_ewin)
+     {
+	Zoom(ewin, 0);
+	Zoom(ewin, 1);
      }
 }
 
