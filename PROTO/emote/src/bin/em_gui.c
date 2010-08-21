@@ -26,6 +26,7 @@ em_gui_init(void)
    /* create window */
    gui->win = elm_win_add(NULL, "emote", ELM_WIN_BASIC);
    elm_win_title_set(gui->win, "Emote");
+   elm_win_keyboard_mode_set(gui->win, ELM_WIN_KEYBOARD_ALPHA);
    evas_object_smart_callback_add(gui->win, "delete-request", 
                                   _em_gui_cb_win_del, NULL);
 
