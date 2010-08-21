@@ -1,4 +1,4 @@
-PROJ="eina evas ecore embryo edje efreet e_dbus e TMP/st/elementary"
+PROJ="e TMP/st/elementary"
 if test "$#" -eq 1; then
   if test -n "$1"; then
     PROJ="$1"
