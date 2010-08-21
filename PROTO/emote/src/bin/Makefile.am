@@ -7,7 +7,9 @@ MAINTAINERCLEANFILES = \
 INCLUDES = \
   -I$(top_srcdir) \
   -I$(top_srcdir)/src/bin \
-  @emote_cflags@
+  -DPACKAGE_LOCALE_DIR=\"$(datadir)/locale\" \
+  -DUSE_EMOTE_CONFIG_H \
+  @EMOTE_CFLAGS@
 
 bin_PROGRAMS = \
   emote
@@ -33,4 +35,5 @@ emote_SOURCES = \
   em_irc_parse.c \
   main.c
 
-emote_LDFLAGS = -export-dynamic @emote_libs@
+emote_LDADD = @EMOTE_LIBS@ @LTLIBINTL@
+emote_LDFLAGS = -export-dynamic

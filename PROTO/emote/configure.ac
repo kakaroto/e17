@@ -34,31 +34,6 @@ PKG_PROG_PKG_CONFIG
 
 EFL_CHECK_PATH_MAX
 
-if test "x${prefix}" = "xNONE"; then
-   PACKAGE_PREFIX="${ac_default_prefix}"
-else
-   PACKAGE_PREFIX="${prefix}"
-fi
-AC_DEFINE_UNQUOTED(PACKAGE_PREFIX, "$PACKAGE_PREFIX", Installation Prefix)
-
-if test "x${prefix}" = "xNONE"; then
-  PACKAGE_DATA_DIR="${ac_default_prefix}/share/${PACKAGE}"
-else
-  PACKAGE_DATA_DIR="${prefix}/share/${PACKAGE}"
-fi
-AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "$PACKAGE_DATA_DIR", Data Installation Prefix)
-
-if test "x${prefix}" = "xNONE"; then
-  PACKAGE_LOCALE_DIR="${ac_default_prefix}/share/locale"
-else
-  PACKAGE_LOCALE_DIR="${prefix}/share/locale"
-fi
-AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "$PACKAGE_LOCALE_DIR", Locale Installation Prefix)
-
-AC_DEFINE_UNQUOTED(PACKAGE_BUGREPORT, "<devilhorns@comcast.net>", Send bug reports here)
-AC_DEFINE_UNQUOTED(PACKAGE_TARNAME, "$PACKAGE")
-AC_DEFINE_UNQUOTED(PACKAGE_VERSION, "$VERSION")
-
 m4_ifdef([AM_GNU_GETTEXT_VERSION], [
 AM_GNU_GETTEXT_VERSION([0.17])
 ])
@@ -70,18 +45,8 @@ AM_CONDITIONAL([HAVE_PO], [true])
 AM_CONDITIONAL([HAVE_PO], [false])
 ])
 AC_SUBST(LTLIBINTL)
-if test "x$LIBINTL" = "x"; then
-  LIBINTL="$INTLLIBS"
-fi
 
-PKG_CHECK_MODULES(EMOTE, [
-  elementary
-])
-
-emote_libs=$EMOTE_LIBS" "$LIBINTL" "
-emote_cflags="-DUSE_EMOTE_CONFIG_H "$EMOTE_CFLAGS" "
-AC_SUBST(emote_libs)
-AC_SUBST(emote_cflags)
+PKG_CHECK_MODULES(EMOTE, [elementary])
 
 AC_OUTPUT([
 Makefile
