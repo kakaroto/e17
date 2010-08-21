@@ -59,7 +59,7 @@ images {
    image: "focus.png" COMP;
 
    /* Backgrounds */
-   image: "rhein-dom.jpg" LOSSY 100;
+   image: "chrono_leak_1280.jpg" LOSSY 100;
    image: "pan3-lock.jpg" COMP;
 
    /* Battery */
