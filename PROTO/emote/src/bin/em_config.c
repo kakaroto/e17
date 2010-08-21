@@ -6,6 +6,7 @@ static void *_em_config_domain_load(const char *domain, Em_Config_DD *edd);
 static int _em_config_domain_save(const char *domain, Em_Config_DD *edd, const void *data);
 static void _em_config_win_create(Evas_Object *parent);
 static void _em_config_cb_win_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__);
+static void _em_config_cb_close(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__);
 
 /* local variables */
 static Em_Config_DD *_em_config_edd = NULL;
@@ -157,7 +158,7 @@ _em_config_domain_save(const char *domain, Em_Config_DD *edd, const void *data)
 static void 
 _em_config_win_create(Evas_Object *parent) 
 {
-   Evas_Object *o;
+   Evas_Object *o, *bx, *bbx, *tb;
 
    _em_config_win = 
      elm_win_add(parent, "emote::config", ELM_WIN_DIALOG_BASIC);
@@ -172,12 +173,61 @@ _em_config_win_create(Evas_Object *parent)
    elm_win_resize_object_add(_em_config_win, o);
    evas_object_show(o);
 
+   bx = elm_box_add(_em_config_win);
+   elm_box_horizontal_set(bx, EINA_FALSE);
+   elm_box_homogenous_set(bx, EINA_FALSE);
+   evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(bx, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_win_resize_object_add(_em_config_win, bx);
+   evas_object_show(bx);
+
+   tb = elm_toolbar_add(_em_config_win);
+   elm_toolbar_icon_size_set(tb, 16);
+   elm_toolbar_align_set(tb, 0.0);
+   elm_toolbar_scrollable_set(tb, EINA_TRUE);
+   evas_object_size_hint_weight_set(tb, EVAS_HINT_EXPAND, 0.0);
+   evas_object_size_hint_align_set(tb, EVAS_HINT_FILL, 0.5);
+   elm_box_pack_end(bx, tb);
+   evas_object_show(tb);
+
+   o = em_util_icon_add(_em_config_win, "preferences-system");
+   elm_toolbar_item_add(tb, o, _("General"), NULL, NULL);
+
+   o = em_util_icon_add(_em_config_win, "go-home");
+   elm_toolbar_item_add(tb, o, _("Servers"), NULL, NULL);
+
+   bbx = elm_box_add(_em_config_win);
+   elm_box_horizontal_set(bbx, EINA_TRUE);
+   elm_box_homogenous_set(bbx, EINA_TRUE);
+   evas_object_size_hint_weight_set(bbx, EVAS_HINT_EXPAND, 0.0);
+   evas_object_size_hint_align_set(bbx, EVAS_HINT_FILL, 0.5);
+   elm_box_pack_end(bx, bbx);
+   evas_object_show(bbx);
+
+   o = elm_button_add(_em_config_win);
+   elm_button_label_set(o, _("Apply"));
+   elm_box_pack_end(bbx, o);
+   evas_object_show(o);
+
+   o = elm_button_add(_em_config_win);
+   elm_button_label_set(o, _("Close"));
+   evas_object_smart_callback_add(o, "clicked", _em_config_cb_close, NULL);
+   elm_box_pack_end(bbx, o);
+   evas_object_show(o);
+
    evas_object_size_hint_min_set(_em_config_win, 200, 100);
    evas_object_resize(_em_config_win, 200, 100);
 }
 
 static void 
 _em_config_cb_win_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__) 
+{
+   evas_object_del(_em_config_win);
+   _em_config_win = NULL;
+}
+
+static void 
+_em_config_cb_close(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__) 
 {
    evas_object_del(_em_config_win);
    _em_config_win = NULL;
