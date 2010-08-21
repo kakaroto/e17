@@ -4023,8 +4023,7 @@ do_pragma(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
 
 	fname = p + 1;
 	p = strchr(fname, '\"');
-	fname_len =
-	   (int)(((int)(p)) ? ((int)(p - fname)) : ((int)(strlen(fname))));
+	fname_len = (p) ? (int)(p - fname) : (int)strlen(fname);
 
 	for (ptr = pfile->all_include_files; ptr; ptr = ptr->next)
 	  {
