@@ -35,7 +35,7 @@ main (int argc,
   // Try to conect to server.
   svr = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, "www.enlightenment.org",
 				 80, NULL);
-  if (NULL == svr) {
+  if (!svr) {
     printf("*** ERROR: Unable to connect to server.\n");
     printf("*** Start con_server_example before running this program.\n");
     return 0;

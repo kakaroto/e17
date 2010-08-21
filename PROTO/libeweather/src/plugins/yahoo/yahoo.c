@@ -272,7 +272,7 @@ _parse(Instance *inst)
 
    location[0] = 0;
 
-   if (inst->buffer == NULL) return 0;
+   if (!inst->buffer) return 0;
 
    //printf("%s\n", inst->buffer);
    needle = strstr(inst->buffer, "<yweather:location");

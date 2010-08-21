@@ -206,7 +206,7 @@ void if_network_dialog_basic_set(Instance *inst, Popup_Elt* network)
     {
         Eina_List* l_ie;
 
-        if( (l_ie=exalt_wireless_network_ie_get(network->n))==NULL)
+        if( !(l_ie = exalt_wireless_network_ie_get(network->n)))
         {
             //WEP encryption
             Evas_Object* fr = if_network_dialog_basic_wep_new(inst,network->n);

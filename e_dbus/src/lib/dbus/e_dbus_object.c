@@ -342,7 +342,7 @@ e_dbus_object_interface_detach(E_DBus_Object *obj, E_DBus_Interface *iface)
 
   DBG("e_dbus_object_interface_detach (%s, %s) ", obj->path, iface->name);
   found = eina_list_data_find(obj->interfaces, iface);
-  if (found == NULL) return;
+  if (!found) return;
 
   obj->interfaces = eina_list_remove(obj->interfaces, iface);
   obj->introspection_dirty = 1;

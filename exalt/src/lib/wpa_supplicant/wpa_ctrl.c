@@ -63,7 +63,7 @@ struct wpa_ctrl * wpa_ctrl_open(const char *ctrl_path)
 #endif /* CONFIG_CTRL_IFACE_UDP */
 
 	ctrl = malloc(sizeof(*ctrl));
-	if (ctrl == NULL)
+	if (!ctrl)
 		return NULL;
 	memset(ctrl, 0, sizeof(*ctrl));
 
@@ -161,7 +161,7 @@ int wpa_ctrl_request(struct wpa_ctrl *ctrl, const char *cmd, size_t cmd_len,
 		char *pos;
 		_cmd_len = strlen(ctrl->cookie) + 1 + cmd_len;
 		cmd_buf = malloc(_cmd_len );
-		if (cmd_buf == NULL)
+		if (!cmd_buf)
 			return -1;
 		_cmd = cmd_buf;
 		pos = cmd_buf;

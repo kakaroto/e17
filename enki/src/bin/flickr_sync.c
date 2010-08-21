@@ -126,7 +126,7 @@ void flickr_sync_update(Enlil_Album *album)
 
 	evas_object_smart_callback_add(bt, "clicked", _album_notinflickr_cb, album);
 
-	if(enlil_album_photos_get(album) == NULL)
+	if(!enlil_album_photos_get(album))
 	  {
 	     elm_button_label_set(bt, D_("The album has no photos"));
 	     elm_object_disabled_set(bt, EINA_TRUE);

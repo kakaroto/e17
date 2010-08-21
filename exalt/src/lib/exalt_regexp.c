@@ -52,7 +52,7 @@ void exalt_regex_set_debug(Exalt_Regex *r, short debug)
 
 void exalt_regex_clear_result(Exalt_Regex* r)
 {
-    if(r!= NULL && r->res!=NULL)
+    if(r && r->res)
     {
         unsigned int i;
         for(i=0;i<r->nmatch;i++)
@@ -70,7 +70,7 @@ void exalt_regex_clear_result(Exalt_Regex* r)
 
 void exalt_regex_free(Exalt_Regex **r)
 {
-    if(r!=NULL && *r!=NULL)
+    if(r && *r)
     {
 	Exalt_Regex* r2 = *r;
 	exalt_regex_clear_result(r2);
@@ -94,7 +94,7 @@ int exalt_regex_execute(Exalt_Regex* r)
     int match;
     regmatch_t *pmatch = NULL;
 
-    if(r==NULL)
+    if(!r)
         return -1;
 
     exalt_regex_clear_result(r);

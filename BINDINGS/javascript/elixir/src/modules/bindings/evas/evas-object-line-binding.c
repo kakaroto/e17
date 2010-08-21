@@ -76,7 +76,7 @@ unload_evas_object_line_binding(JSContext *cx, JSObject *parent)
 {
    unsigned int i = 0;
 
-   while (evas_object_line_functions[i].name != NULL)
+   while (evas_object_line_functions[i].name)
      JS_DeleteProperty(cx, parent, evas_object_line_functions[i++].name);
 
    return EINA_TRUE;

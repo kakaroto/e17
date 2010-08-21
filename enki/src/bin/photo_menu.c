@@ -178,7 +178,7 @@ static void _photo_move_album_cb(void *data, Evas_Object *obj, void *event_info)
      {
 	Enlil_Album *album = enlil_root_album_search_name(enlil_album_root_get(enlil_photo_album_get(photo)),
 	      elm_menu_item_label_get(mi));
-	ASSERT_RETURN_VOID(album != NULL);
+	ASSERT_RETURN_VOID(!!album);
 
 	snprintf(buf, PATH_MAX, "%s/%s", enlil_photo_path_get(photo),
 	      enlil_photo_file_name_get(photo));
@@ -259,7 +259,7 @@ static void _wall_app_set_cb(void *data, Evas_Object *obj, void *event_info)
 
 void photo_menu_free(Photo_Menu *photo_menu)
 {
-   ASSERT_RETURN_VOID(photo_menu != NULL);
+   ASSERT_RETURN_VOID(!!photo_menu);
 
    if(photo_menu->photos)
      eina_list_free(photo_menu->photos);

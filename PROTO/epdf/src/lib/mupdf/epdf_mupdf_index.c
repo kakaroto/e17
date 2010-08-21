@@ -144,7 +144,7 @@ epdf_index_new(const Epdf_Document *doc)
    if (!doc)
      return index;
 
-   if (doc->outline == NULL)
+   if (!doc->outline)
      return index;
 
    epdf_index_fill(index, doc->outline);

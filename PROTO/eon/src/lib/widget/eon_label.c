@@ -57,7 +57,7 @@ void label_text_set(Label *label, char *text)
 {
 	Ekeko_Value v;
 
-	RETURN_IF(label == NULL);
+	RETURN_IF(!label);
 	/* FIXME how to inform the property system that this property has changed ?
 	 * for now we do this way but is slow because we need to get the property
 	 * from the hash even knowing what offset we are working with
@@ -70,7 +70,7 @@ char *label_text_get(Label *label)
 {
 	Label_Private *private;
 
-	RETURN_NULL_IF(label == NULL);
+	RETURN_NULL_IF(!label);
 
 	private = PRIVATE(label);
 	return private->text;

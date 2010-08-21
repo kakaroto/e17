@@ -57,14 +57,14 @@ _br_find_exe (BrInitError *error)
 	else
 		buf_size = PATH_MAX - 1;
 	path = (char *) malloc (buf_size);
-	if (path == NULL) {
+	if (!path) {
 		/* Cannot allocate memory. */
 		if (error)
 			*error = BR_INIT_ERROR_NOMEM;
 		return NULL;
 	}
 	path2 = (char *) malloc (buf_size);
-	if (path2 == NULL) {
+	if (!path2) {
 		/* Cannot allocate memory. */
 		if (error)
 			*error = BR_INIT_ERROR_NOMEM;
@@ -113,7 +113,7 @@ _br_find_exe (BrInitError *error)
 
 	buf_size = PATH_MAX + 128;
 	line = (char *) realloc (path, buf_size);
-	if (line == NULL) {
+	if (!line) {
 		/* Cannot allocate memory. */
 		free (path);
 		if (error)
@@ -122,7 +122,7 @@ _br_find_exe (BrInitError *error)
 	}
 
 	f = fopen ("/proc/self/maps", "r");
-	if (f == NULL) {
+	if (!f) {
 		free (line);
 		if (error)
 			*error = BR_INIT_ERROR_OPEN_MAPS;
@@ -131,7 +131,7 @@ _br_find_exe (BrInitError *error)
 
 	/* The first entry should be the executable name. */
 	result = fgets (line, (int) buf_size, f);
-	if (result == NULL) {
+	if (!result) {
 		fclose (f);
 		free (line);
 		if (error)
@@ -156,7 +156,7 @@ _br_find_exe (BrInitError *error)
 	path = strchr (line, '/');
 
 	/* Sanity check. */
-	if (strstr (line, " r-xp ") == NULL || path == NULL) {
+	if (!strstr(line, " r-xp ") || !path) {
 		fclose (f);
 		free (line);
 		if (error)
@@ -189,11 +189,11 @@ _br_find_exe_for_symbol (const void *symbol, BrInitError *error)
 	size_t address_string_len;
 	char *address_string, line[SIZE], *found;
 
-	if (symbol == NULL)
+	if (!symbol)
 		return (char *) NULL;
 
 	f = fopen ("/proc/self/maps", "r");
-	if (f == NULL)
+	if (!f)
 		return (char *) NULL;
 
 	address_string_len = 4;
@@ -205,11 +205,11 @@ _br_find_exe_for_symbol (const void *symbol, BrInitError *error)
 		void *start_addr_p, *end_addr_p;
 		size_t len;
 
-		if (fgets (line, SIZE, f) == NULL)
+		if (!fgets(line, SIZE, f))
 			break;
 
 		/* Sanity check. */
-		if (strstr (line, " r-xp ") == NULL || strchr (line, '/') == NULL)
+		if (!strstr(line, " r-xp ") || !strchr(line, '/'))
 			continue;
 
 		/* Parse line. */
@@ -218,13 +218,13 @@ _br_find_exe_for_symbol (const void *symbol, BrInitError *error)
 		file = strchr (line, '/');
 
 		/* More sanity check. */
-		if (!(file > end_addr && end_addr != NULL && end_addr[0] == '-'))
+		if (!(file > end_addr && end_addr && end_addr[0] == '-'))
 			continue;
 
 		end_addr[0] = '\0';
 		end_addr++;
 		end_addr_end = strchr (end_addr, ' ');
-		if (end_addr_end == NULL)
+		if (!end_addr_end)
 			continue;
 
 		end_addr_end[0] = '\0';
@@ -272,7 +272,7 @@ _br_find_exe_for_symbol (const void *symbol, BrInitError *error)
 	free (address_string);
 	fclose (f);
 
-	if (found == NULL)
+	if (!found)
 		return (char *) NULL;
 	else
 		return strdup (found);
@@ -306,7 +306,7 @@ int
 br_init (BrInitError *error)
 {
 	exe = _br_find_exe (error);
-	return exe != NULL;
+	return !!exe;
 }
 
 
@@ -328,7 +328,7 @@ int
 br_init_lib (BrInitError *error)
 {
 	exe = _br_find_exe_for_symbol ((const void *) "", error);
-	return exe != NULL;
+	return !!exe;
 }
 
 
@@ -372,9 +372,9 @@ br_find_exe (const char *default_exe)
 char *
 br_find_exe_dir (const char *default_dir)
 {
-	if (exe == NULL) {
+	if (!exe) {
 		/* BinReloc not initialized. */
-		if (default_dir != NULL)
+		if (default_dir)
 			return strdup (default_dir);
 		else
 			return NULL;
@@ -665,9 +665,9 @@ br_strcat (const char *str1, const char *str2)
 	char *result;
 	size_t len1, len2;
 
-	if (str1 == NULL)
+	if (!str1)
 		str1 = "";
-	if (str2 == NULL)
+	if (!str2)
 		str2 = "";
 
 	len1 = strlen (str1);

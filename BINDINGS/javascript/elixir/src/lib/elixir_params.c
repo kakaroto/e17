@@ -264,7 +264,7 @@ elixir_params_get_object(JSContext* cx, jsval arg, const JSClass *class, JSObjec
 
    if (class)
      {
-        if (lobj == NULL)
+        if (!lobj)
           {
              JS_ReportError(cx, "Arg %i is NULL instead of %s", index, class->name);
              return 0;

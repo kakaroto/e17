@@ -65,7 +65,7 @@ const char* enlil_thumb_photo_get(Enlil_Photo *photo, Enlil_Thumb_Job_Type type,
    const char *path;
    Enlil_Thumb_Job *job;
 
-   ASSERT_RETURN(photo!=NULL);
+   ASSERT_RETURN(!!photo);
 
    switch(type)
      {
@@ -140,7 +140,7 @@ void enlil_thumb_photo_clear(const Enlil_Photo *photo)
 
 static void _job_free(Enlil_Thumb_Job *job)
 {
-   ASSERT_RETURN_VOID(job != NULL);
+   ASSERT_RETURN_VOID(!!job);
 
    free(job);
 }

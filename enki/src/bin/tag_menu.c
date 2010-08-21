@@ -38,7 +38,7 @@ static void _tag_del_cb(void *data, Evas_Object *obj, void *event_info)
 
 void tag_menu_free(Tag_Menu *tag_menu)
 {
-   ASSERT_RETURN_VOID(tag_menu != NULL);
+   ASSERT_RETURN_VOID(!!tag_menu);
 
    evas_object_del(tag_menu->menu);
 }

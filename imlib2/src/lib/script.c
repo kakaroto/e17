@@ -35,7 +35,7 @@ IVariable          *vars, *current_var, *curtail;
 static int
 __imlib_find_string(const char *haystack, const char *needle)
 {
-   if (strstr(haystack, needle) != NULL)
+   if (strstr(haystack, needle))
       return (strstr(haystack, needle) - haystack);
    return 0;
 }
@@ -91,7 +91,7 @@ __imlib_script_tidyup_params(IFunctionParam * param)
 static void
 __imlib_script_delete_variable(IVariable * var)
 {
-   if (var->next != NULL)
+   if (var->next)
       __imlib_script_delete_variable(var->next);
    free(var);
 }
@@ -105,9 +105,9 @@ __imlib_script_tidyup(void)
 void               *
 __imlib_script_get_next_var(void)
 {
-   if (current_var != NULL)
+   if (current_var)
       current_var = current_var->next;
-   if (current_var != NULL)
+   if (current_var)
       return current_var->ptr;
    else
       return NULL;
@@ -174,7 +174,7 @@ __imlib_script_parse_parameters(Imlib_Image im, char *parameters)
                   if (strcmp(value, "[]") == 0)
                     {
                        ptr->data = __imlib_script_get_next_var();
-                       if (ptr->data == NULL)
+                       if (!ptr->data)
                          {
                             D("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEK");
                          }
@@ -216,7 +216,7 @@ __imlib_script_parse_function(Imlib_Image im, char *function)
    params = __imlib_script_parse_parameters(im, funcparams);
    /* excute the filter */
    filter = __imlib_get_dynamic_filter(funcname);
-   if (filter != NULL)
+   if (filter)
      {
 #ifdef FDEBUG
         printf("DEBUG: (--)   Executing Filter \"%s\".\n", funcname);
@@ -249,7 +249,7 @@ __imlib_script_parse(Imlib_Image im, char *script, va_list param_list)
    char               *scriptbuf = NULL, *function;
 
    D("(--) Script Parser Start.");
-   if (script != NULL && script[0] != 0)
+   if (script && script[0] != 0)
      {
         vars = malloc(sizeof(IVariable));
         vars->ptr = NULL;

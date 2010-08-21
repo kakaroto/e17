@@ -33,10 +33,10 @@ main(int argc, char **argv)
    /**
     * First tests to determine which rendering task to perform
     */
-   if (display_name == NULL)
+   if (!display_name)
        display_name = ":0";
    disp = XOpenDisplay(display_name);
-   if (disp == NULL)
+   if (!disp)
      {
        fprintf(stderr, "Can't open display %s\n", display_name);
        return 1;

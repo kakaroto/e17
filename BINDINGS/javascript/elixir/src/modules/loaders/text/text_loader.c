@@ -50,7 +50,7 @@ _elixir_text_request(int param, const char **params)
 
    madvise(data, stf.st_size, MADV_WILLNEED);
 
-   if (memchr(data, '\0', stf.st_size) != NULL)
+   if (memchr(data, '\0', stf.st_size))
      goto on_error;
 
    elf = malloc(sizeof (Elixir_Loader_File));

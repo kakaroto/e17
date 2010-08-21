@@ -561,7 +561,7 @@ void enlil_geocaching_data_free(Enlil_Geocaching *gp, void *_data)
 
 const char *album_flickr_edje_signal_get(Enlil_Album *album)
 {
-   ASSERT_RETURN(album != NULL);
+   ASSERT_RETURN(!!album);
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
    Eina_List *l;
    Enlil_Photo *photo;

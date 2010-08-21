@@ -243,7 +243,7 @@ ani_load (MsAni *ani)
   if (!last_chunk)
     return;
 
-  while ( (chunk = ani_load_chunk(ani)) != NULL)
+  while ( (chunk = ani_load_chunk(ani)))
     {
       last_chunk->next = chunk;
       last_chunk = chunk;
@@ -257,10 +257,10 @@ ani_save_ico (MsChunk *chunk)
   char *temp;
   FILE *f;
 
-  if ( (temp = tempnam(NULL, "ico_")) == NULL)
+  if ( !(temp = tempnam(NULL, "ico_")))
     return NULL;
 
-  if ( (f = fopen(temp, "w+")) == NULL)
+  if ( !(f = fopen(temp, "w+")))
     {
       free(temp);
       return NULL;
@@ -306,7 +306,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 	      ImlibImage *temp_im;
 	      char *filename;
 
-	      if ( (filename = ani_save_ico(chunk)) == NULL)
+	      if ( !(filename = ani_save_ico(chunk)))
 		return 0;
 
 	      temp_im = __imlib_LoadImage(filename, progress, progress_granularity,

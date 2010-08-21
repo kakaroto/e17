@@ -15,7 +15,7 @@ static const char *texttype;
 
 static void *
 init_test(struct ensure *en ensure_unused){
-	if (texttype == NULL)
+	if (!texttype)
 		texttype = eina_stringshare_add("text");
 	return NULL;
 }
@@ -27,7 +27,7 @@ object_check(struct ensure *en ensure_unused, struct enobj *obj,
 
 	if (obj->type != texttype) return 0;
 
-	if (obj->data.text.text == NULL || strlen(obj->data.text.text) == 0){
+	if (!obj->data.text.text || strlen(obj->data.text.text) == 0){
 		ensure_bug(obj, ENSURE_PEDANTIC,
 				"Empty text string,");
 		return 1;

@@ -159,9 +159,9 @@ void list_left_col_add(List_Left *list_left, Enlil_Collection *col)
 
 void list_left_col_album_add(List_Left *list_left, Enlil_Collection *col, Enlil_Album *album)
 {
-   ASSERT_RETURN_VOID(list_left != NULL);
-   ASSERT_RETURN_VOID(col!= NULL);
-   ASSERT_RETURN_VOID(album!= NULL);
+   ASSERT_RETURN_VOID(!!list_left);
+   ASSERT_RETURN_VOID(!!col);
+   ASSERT_RETURN_VOID(!!album);
 
    Enlil_Collection_Data *col_data = enlil_collection_user_data_get(col);
 
@@ -186,9 +186,9 @@ void list_left_col_album_remove(List_Left *list_left, Enlil_Collection *col, Enl
 {
    Eina_List *l;
    Enlil_Album *_album;
-   ASSERT_RETURN_VOID(list_left != NULL);
-   ASSERT_RETURN_VOID(col!= NULL);
-   ASSERT_RETURN_VOID(album!= NULL);
+   ASSERT_RETURN_VOID(!!list_left);
+   ASSERT_RETURN_VOID(!!col);
+   ASSERT_RETURN_VOID(!!album);
 
    Enlil_Collection_Data *col_data = enlil_collection_user_data_get(col);
 

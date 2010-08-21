@@ -28,7 +28,7 @@ int exalt_dbus_wireless_list_get(Exalt_DBus_Conn* conn)
     DBusMessage *msg;
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(!!conn);
 
     msg_id->id = exalt_dbus_msg_id_next(conn);
     msg_id->conn = conn;
@@ -59,8 +59,8 @@ int exalt_dbus_wireless_scan(Exalt_DBus_Conn* conn, const char* iface)
 
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(iface!=NULL);
+    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(!!iface);
 
     snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
     snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
@@ -92,8 +92,8 @@ int exalt_dbus_wireless_essid_get(Exalt_DBus_Conn* conn, const char* iface)
     char interface[PATH_MAX];
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(iface!=NULL);
+    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(!!iface);
 
     snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
     snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
@@ -123,8 +123,8 @@ int exalt_dbus_wireless_disconnect(Exalt_DBus_Conn* conn, const char* iface)
     char interface[PATH_MAX];
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(iface!=NULL);
+    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(!!iface);
 
     snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
     snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
@@ -154,8 +154,8 @@ int exalt_dbus_wireless_wpasupplicant_driver_get(Exalt_DBus_Conn* conn, const ch
     char interface[PATH_MAX];
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(iface!=NULL);
+    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(!!iface);
 
     snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
     snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
@@ -188,9 +188,9 @@ int exalt_dbus_wireless_wpasupplicant_driver_set(Exalt_DBus_Conn* conn, const ch
     char interface[PATH_MAX];
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(eth!=NULL);
-    EXALT_ASSERT_RETURN(driver!=NULL);
+    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(!!eth);
+    EXALT_ASSERT_RETURN(!!driver);
 
     snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
     snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);

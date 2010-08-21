@@ -117,14 +117,14 @@ get_host_ip(const char *name)
 	return NULL;
    }
 
-   for (ifa = ifa_list; ifa != NULL; ifa = ifa->ifa_next)
+   for (ifa = ifa_list; ifa; ifa = ifa->ifa_next)
      {
 	char ip[INET6_ADDRSTRLEN];
 	const char *p;
 	struct sockaddr_in *s4;
 	struct sockaddr_in6 *s6;
 
-	if (ifa->ifa_addr == NULL) continue;
+	if (!ifa->ifa_addr) continue;
 
 	if ((ifa->ifa_flags & IFF_LOOPBACK) || !(ifa->ifa_flags & IFF_UP)) continue;
 
@@ -147,7 +147,7 @@ get_host_ip(const char *name)
 	       continue; /* Unknown: ignore */
 	  }
 
-	if (p != NULL)
+	if (p)
 	  {
 	    ret = strdup(p);
 	    break;

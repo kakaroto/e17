@@ -316,7 +316,7 @@ NP_Initialize(NPNetscapeFuncs* nsTable, NPPluginFuncs* pluginFuncs)
 
 	/* validate input parameters */
 
-	if ((nsTable == NULL) || (pluginFuncs == NULL))
+	if ((!nsTable) || (!pluginFuncs))
 		err = NPERR_INVALID_FUNCTABLE_ERROR;
 
 	/*

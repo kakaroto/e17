@@ -547,7 +547,7 @@ _weather_parse(void *data)
    location[0] = 0;
 
    if (!(inst = data)) return 0;
-   if (inst->buffer == NULL) return 0;
+   if (!inst->buffer) return 0;
 
    needle = strstr(inst->buffer, "<title");
    if (!needle) goto error;

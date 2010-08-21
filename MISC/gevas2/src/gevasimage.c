@@ -260,7 +260,7 @@ static void gevasimage_destroy(GtkObject * object)
 {
 	GtkgEvasImage *ev;
 
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASIMAGE(object));
 
 	ev = GTK_GEVASIMAGE(object);
@@ -278,7 +278,7 @@ static void gevasimage_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 	GtkgEvasImage *ev;
 	gchar *gstr;
 
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASIMAGE(object));
 
 //    fprintf(stderr,"   gevasimage_set_arg() \n");
@@ -362,7 +362,7 @@ static void __gevasimage_load_from_rgba32data( GtkgEvasImage* object,
 /*              x, y, w, h, layer ); */
     GtkgEvasImage *ev;
     Evas_Object* eo;
-    g_return_if_fail(object != NULL);
+    g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASIMAGE(object));
     ev = GTK_GEVASIMAGE(object);
     
@@ -420,7 +420,7 @@ static void gevasimage_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasImage *ev;
 
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASIMAGE(object));
 
 	ev = GTK_GEVASIMAGE(object);
@@ -445,7 +445,7 @@ setup_attribs( GtkgEvasImage* ev, GHashTable* hash_args )
     gint x=0;
     gint y=0;
 
-    g_return_if_fail(ev != NULL);
+    g_return_if_fail(!!ev);
 	g_return_if_fail(GTK_IS_GEVASIMAGE(ev));
 
     x = url_args_lookup_int(hash_args, "x", 0 );
@@ -501,8 +501,8 @@ load_from_metadata(
     GHashTable* hash_args = 0;
 /*     E_DB_File* edb = 0; */
     
-    g_return_if_fail(ev != NULL);
-	g_return_if_fail(fully_qualified_prefix!= NULL);
+    g_return_if_fail(!!ev);
+	g_return_if_fail(!!fully_qualified_prefix);
     g_return_if_fail(GTK_IS_GEVASIMAGE(ev));
 
     if( ev->metadata_load_loaded )
@@ -557,7 +557,7 @@ gevasimage_load_from_metadata( GtkgEvasObj * object, const char* loc )
     char* no_prefix = "";
     GHashTable* h=0;
 
-    g_return_val_if_fail(object != NULL,0);
+    g_return_val_if_fail(!!object,0);
 	g_return_val_if_fail(GTK_IS_GEVASIMAGE(object),0);
 	g_return_val_if_fail(GTK_IS_GEVAS(gevasobj_get_gevas(GTK_OBJECT(object))),0);
     
@@ -618,7 +618,7 @@ GtkgEvasImage *gevasimage_new_from_metadata( GtkgEvas* gevas, const char* loc )
         return 0;
     }
 
-    g_return_val_if_fail(o != NULL,0);
+    g_return_val_if_fail(!!o,0);
 	g_return_val_if_fail(GTK_IS_GEVASIMAGE(o),0);
 	g_return_val_if_fail(GTK_IS_GEVAS(gevasobj_get_gevas((GtkObject*)o)),0);
     return o;

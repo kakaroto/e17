@@ -47,7 +47,7 @@ exec(char *filter, void *im, pIFunctionParam params)
         w = imlib_image_get_width();
         h = imlib_image_get_height();
 
-        for (ptr = params; ptr != NULL; ptr = ptr->next)
+        for (ptr = params; ptr; ptr = ptr->next)
           {
              ASSIGN_DATA8("red", r);
              ASSIGN_DATA8("blue", b);
@@ -94,7 +94,7 @@ exec(char *filter, void *im, pIFunctionParam params)
      {
         int                 angle = 0;
 
-        for (ptr = params; ptr != NULL; ptr = ptr->next)
+        for (ptr = params; ptr; ptr = ptr->next)
           {
              ASSIGN_INT("angle", angle);
           }

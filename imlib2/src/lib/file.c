@@ -258,7 +258,7 @@ __imlib_FileDir(char *dir, int *num)
         return (NULL);
      }
    /* count # of entries in dir (worst case) */
-   for (dirlen = 0; (dp = readdir(dirp)) != NULL; dirlen++);
+   for (dirlen = 0; (dp = readdir(dirp)); dirlen++);
    if (!dirlen)
      {
         closedir(dirp);
@@ -391,9 +391,9 @@ __imlib_FileHomeDir(int uid)
         return (s);
      }
 #else
-   if ((s = getenv("HOME")) != NULL)
+   if ((s = getenv("HOME")))
       return strdup(s);
-   else if ((s = getenv("TMP")) != NULL)
+   else if ((s = getenv("TMP")))
       return strdup(s);
 #endif
    return NULL;

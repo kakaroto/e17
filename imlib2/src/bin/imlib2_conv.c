@@ -26,7 +26,7 @@ main(int argc, char **argv)
       n = strchr(++oldn, '/');
    if (argc < 3 || !strcmp(argv[1], "-h"))
       usage(-1);
-   if ((im = imlib_load_image(argv[1])) == NULL)
+   if (!(im = imlib_load_image(argv[1])))
      {
         fprintf(stderr, PROG_NAME ": Error loading image: %s\n", argv[1]);
         exit(-1);

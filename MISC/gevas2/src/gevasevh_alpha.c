@@ -84,7 +84,7 @@ gevasev_alpha_mouse_in(GtkObject * object, GtkObject * gevasobj, int _b, int _x,
 					   int _y)
 {
 	GtkgEvasEvHAlpha *ev;
-	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_ALPHA(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_ALPHA(object);
@@ -100,7 +100,7 @@ gevasev_alpha_mouse_out(GtkObject * object, GtkObject * gevasobj, int _b,
 						int _x, int _y)
 {
 	GtkgEvasEvHAlpha *ev;
-	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_ALPHA(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_ALPHA(object);
@@ -204,7 +204,7 @@ GtkObject *gevasevh_alpha_new(void)
 static void gevasevh_alpha_destroy(GtkObject * object)
 {
 	GtkgEvasEvHAlpha *ev;
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASEVH_ALPHA(object));
 	ev = GTK_GEVASEVH_ALPHA(object);
 
@@ -217,7 +217,7 @@ static void
 gevasevh_alpha_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasEvHAlpha *ev;
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASEVH_ALPHA(object));
 	ev = GTK_GEVASEVH_ALPHA(object);
 
@@ -236,7 +236,7 @@ static void
 gevasevh_alpha_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasEvHAlpha *ev;
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASEVH_ALPHA(object));
 	ev = GTK_GEVASEVH_ALPHA(object);
 

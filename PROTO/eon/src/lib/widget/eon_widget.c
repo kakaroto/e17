@@ -97,7 +97,7 @@ char *widget_theme_get(Widget *widget)
 {
 	Widget_Private *private;
 
-	RETURN_NULL_IF(widget == NULL);
+	RETURN_NULL_IF(!widget);
 
 	private = PRIVATE(widget);
 	return private->theme;

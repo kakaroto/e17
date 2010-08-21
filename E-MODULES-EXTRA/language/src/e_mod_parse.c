@@ -83,7 +83,7 @@ static Eina_Bool _lng_start(Language_XML *xml)
       return EINA_FALSE;
     }
 
-  if (xml->current == NULL && xml->top) return EINA_FALSE;
+  if (!xml->current && xml->top) return EINA_FALSE;
 
   node = calloc(sizeof(Language_XML_Node), 1);
   if (!node)
@@ -95,7 +95,7 @@ static Eina_Bool _lng_start(Language_XML *xml)
   node->attributes = eina_hash_string_superfast_new(free);
   node->parent = xml->current;
 
-  if (xml->top == NULL)
+  if (!xml->top)
     xml->current = xml->top = node;
   else
     {
@@ -177,7 +177,7 @@ Eina_Bool language_next(Language_XML *xml)
 
 			p_list = eina_list_data_find_list(p_list, xml->current);
 			p_list = eina_list_next( p_list );
-			if ((xml->current = eina_list_data_get(p_list)) == NULL) {
+			if (!(xml->current = eina_list_data_get(p_list))) {
 				xml->current = cur;
 				return EINA_FALSE;
 			}
@@ -242,8 +242,8 @@ void language_xml_clear(Language_XML *xml)
 
       c_list = eina_list_data_find_list(c_list, xml->current);
       EINA_LIST_FREE(c_list, data) E_FREE(data);
-      if ((n_cur = eina_list_data_get(c_list)) == NULL)
-        if ((n_cur = eina_list_last( c_list )) == NULL) n_cur = c_parent;
+      if (!(n_cur = eina_list_data_get(c_list)))
+        if (!(n_cur = eina_list_last(c_list))) n_cur = c_parent;
     }
   else
     {

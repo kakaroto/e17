@@ -178,7 +178,7 @@ void slideshow_object_item_del(Slideshow_Item *item)
 	    evas_object_del(item->icon);
 	free(item);
 
-	if(sd->current_item == NULL)
+	if(!sd->current_item)
 		_done(obj);
 	else
 		_update(obj);
@@ -226,7 +226,7 @@ static void _update(Evas_Object *obj)
 
 	Slideshow_Item* items[7] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 
-	if(sd->current_item == NULL)
+	if(!sd->current_item)
 		sd->current_item = sd->items;
 
 	i = 4;

@@ -35,7 +35,7 @@ int exalt_dbus_eth_list_get(Exalt_DBus_Conn* conn)
     DBusMessage *msg;
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(!!conn);
 
     msg_id->id = exalt_dbus_msg_id_next(conn);
     msg_id->conn = conn;
@@ -61,7 +61,7 @@ int exalt_dbus_eth_all_disconnected_is(Exalt_DBus_Conn* conn)
     DBusMessage *msg;
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(!!conn);
 
     msg_id->id = exalt_dbus_msg_id_next(conn);
     msg_id->conn = conn;
@@ -91,8 +91,8 @@ int exalt_dbus_eth_ip_get(Exalt_DBus_Conn* conn, const char* iface)
     char interface[PATH_MAX];
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(iface!=NULL);
+    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(!!iface);
 
     snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
     snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
@@ -124,8 +124,8 @@ int exalt_dbus_eth_netmask_get(Exalt_DBus_Conn* conn, const char* iface)
     char interface[PATH_MAX];
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(iface!=NULL);
+    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(!!iface);
 
     snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
     snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
@@ -155,8 +155,8 @@ int exalt_dbus_eth_gateway_get(Exalt_DBus_Conn* conn, const char* iface)
     char interface[PATH_MAX];
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(iface!=NULL);
+    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(!!iface);
 
     snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
     snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
@@ -188,8 +188,8 @@ int exalt_dbus_eth_wireless_is(Exalt_DBus_Conn* conn, const char* iface)
     char interface[PATH_MAX];
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(iface!=NULL);
+    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(!!iface);
 
     snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
     snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
@@ -222,8 +222,8 @@ int exalt_dbus_eth_up_is(Exalt_DBus_Conn* conn, const char* iface)
     char interface[PATH_MAX];
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(iface!=NULL);
+    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(!!iface);
 
     snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
     snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
@@ -255,8 +255,8 @@ int exalt_dbus_eth_dhcp_is(Exalt_DBus_Conn* conn, const char* iface)
     char interface[PATH_MAX];
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(iface!=NULL);
+    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(!!iface);
 
     snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
     snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
@@ -289,8 +289,8 @@ int exalt_dbus_eth_link_is(Exalt_DBus_Conn* conn, const char* iface)
     char interface[PATH_MAX];
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(iface!=NULL);
+    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(!!iface);
 
     snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
     snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
@@ -323,8 +323,8 @@ int exalt_dbus_eth_connected_is(Exalt_DBus_Conn* conn, const char* iface)
     char interface[PATH_MAX];
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(iface!=NULL);
+    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(!!iface);
 
     snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
     snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
@@ -356,8 +356,8 @@ int exalt_dbus_eth_up(Exalt_DBus_Conn* conn, const char* iface)
     char interface[PATH_MAX];
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(iface!=NULL);
+    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(!!iface);
 
     snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
     snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
@@ -389,8 +389,8 @@ int exalt_dbus_eth_down(Exalt_DBus_Conn* conn, const char* iface)
     char interface[PATH_MAX];
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(iface!=NULL);
+    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(!!iface);
 
     snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,iface);
     snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,iface);
@@ -423,8 +423,8 @@ int exalt_dbus_eth_conf_apply(Exalt_DBus_Conn* conn, const char* iface, Exalt_Co
     char interface[PATH_MAX];
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(iface!=NULL);
+    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(!!iface);
 
     EXALT_ASSERT_RETURN(exalt_conf_valid_is(c));
 
@@ -461,8 +461,8 @@ int exalt_dbus_eth_command_get(Exalt_DBus_Conn* conn, const char* eth)
     char interface[PATH_MAX];
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(!!eth);
 
     snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
     snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
@@ -496,9 +496,9 @@ int exalt_dbus_eth_command_set(Exalt_DBus_Conn* conn, const char* eth, const cha
     char interface[PATH_MAX];
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(conn!=NULL);
-    EXALT_ASSERT_RETURN(eth!=NULL);
-    EXALT_ASSERT_RETURN(cmd!=NULL);
+    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(!!eth);
+    EXALT_ASSERT_RETURN(!!cmd);
 
     snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
     snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);

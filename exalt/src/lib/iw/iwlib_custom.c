@@ -304,7 +304,7 @@ iw_process_scanning_token(struct iw_event *	    event,
         case SIOCGIWAP:
             /* New cell description. Allocate new cell descriptor, zero it. */
             wscan = exalt_wireless_network_new(w);
-            if(wscan == NULL)
+            if(!wscan)
                 return(wscan);
             (*networks) = eina_list_append(*networks,wscan);
 
@@ -411,7 +411,7 @@ iw_process_scan(int		skfd,
 realloc:
     /* (Re)allocate the buffer - realloc(NULL, len) == malloc(len) */
     newbuf = realloc(buffer, buflen);
-    if(newbuf == NULL)
+    if(!newbuf)
     {
         /* man says : If realloc() fails the original block is left untouched */
         if(buffer)
@@ -491,7 +491,7 @@ realloc:
                 /* Convert to wireless_scan struct */
                 wscan = iw_process_scanning_token(&iwe, wscan, networks, w);
                 /* Check problems */
-                if(wscan == NULL)
+                if(!wscan)
                 {
                     free(buffer);
                     errno = ENOMEM;

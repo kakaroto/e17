@@ -248,7 +248,7 @@ elixir_modules_init(void)
    /* Loading dynamic module first make static one overloadable. */
    eina_module_list_load(eina);
 
-   for (i = 0; ems[i].init != NULL; ++i)
+   for (i = 0; ems[i].init; ++i)
      ems[i].init();
 }
 
@@ -295,7 +295,7 @@ elixir_modules_shutdown(void)
 {
    int i;
 
-   for (i = 0; ems[i].init != NULL; ++i)
+   for (i = 0; ems[i].init; ++i)
      ems[i].shutdown();
 
    eina_module_list_unload(eina);

@@ -27,7 +27,7 @@ DBusMessage * dbus_cb_network_configuration_get(E_DBus_Object *obj __UNUSED__, D
     else
         dbus_message_iter_get_basic(&args, &essid);
 
-    EXALT_ASSERT_CUSTOM_RET(essid!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!essid,
             dbus_args_error_append(reply,
                 EXALT_DBUS_ARGUMENT_NOT_STRING_ID,
                 EXALT_DBUS_ARGUMENT_NOT_STRING);
@@ -35,7 +35,7 @@ DBusMessage * dbus_cb_network_configuration_get(E_DBus_Object *obj __UNUSED__, D
             );
 
     c = exalt_conf_network_load(CONF_FILE, essid);
-    EXALT_ASSERT_CUSTOM_RET(c!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!c,
             dbus_args_error_append(reply,
                 EXALT_DBUS_NETWORK_UNKNOWN_ID,
                 EXALT_DBUS_NETWORK_UNKNOWN);
@@ -205,7 +205,7 @@ DBusMessage * dbus_cb_network_favoris_set(E_DBus_Object *obj __UNUSED__, DBusMes
     else
         dbus_message_iter_get_basic(&args, &essid);
 
-    EXALT_ASSERT_CUSTOM_RET(essid!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!essid,
             dbus_args_error_append(reply,
                 EXALT_DBUS_ARGUMENT_NOT_STRING_ID,
                 EXALT_DBUS_ARGUMENT_NOT_STRING);
@@ -225,7 +225,7 @@ DBusMessage * dbus_cb_network_favoris_set(E_DBus_Object *obj __UNUSED__, DBusMes
 
 
     c = exalt_conf_network_load(CONF_FILE, essid);
-    EXALT_ASSERT_CUSTOM_RET(c!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!c,
             dbus_args_error_append(reply,
                 EXALT_DBUS_NETWORK_UNKNOWN_ID,
                 EXALT_DBUS_NETWORK_UNKNOWN);
@@ -263,7 +263,7 @@ DBusMessage * dbus_cb_network_delete(E_DBus_Object *obj __UNUSED__, DBusMessage 
     else
         dbus_message_iter_get_basic(&args, &essid);
 
-    EXALT_ASSERT_CUSTOM_RET(essid!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!essid,
             dbus_args_error_append(reply,
                 EXALT_DBUS_ARGUMENT_NOT_STRING_ID,
                 EXALT_DBUS_ARGUMENT_NOT_STRING);

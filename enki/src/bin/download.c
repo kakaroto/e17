@@ -49,18 +49,18 @@ Download *download_new(Evas_Object *parent)
 
 void download_free(Download **_dl)
 {
-    ASSERT_RETURN_VOID(_dl != NULL);
+    ASSERT_RETURN_VOID(!!_dl);
     Download *dl = *_dl;
 
-    ASSERT_RETURN_VOID(dl != NULL);
+    ASSERT_RETURN_VOID(!!dl);
     evas_object_del(dl->main);
 }
 
 void download_add(Download *dl, const char *source, Enlil_Photo *photo)
 {
-    ASSERT_RETURN_VOID(dl != NULL);
-    ASSERT_RETURN_VOID(source != NULL);
-    ASSERT_RETURN_VOID(photo != NULL);
+    ASSERT_RETURN_VOID(!!dl);
+    ASSERT_RETURN_VOID(!!source);
+    ASSERT_RETURN_VOID(!!photo);
 
     enlil_download_add(photo, source, _start_cb, _progress_cb, _done_cb, dl);
 }

@@ -207,7 +207,7 @@ iw_get_ifname(char *	name,	/* Where to store the name */
 #endif
 
     /* Not found ??? To big ??? */
-    if((end == NULL) || (((end - buf) + 1) > nsize))
+    if((!end) || (((end - buf) + 1) > nsize))
         return(NULL);
 
     /* Copy */
@@ -246,7 +246,7 @@ iw_enum_devices(int		skfd,
     fh = fopen(PROC_NET_WIRELESS, "r");
 #endif
 
-    if(fh != NULL)
+    if(fh)
     {
         /* Success : use data from /proc/net/wireless */
 
@@ -327,7 +327,7 @@ iw_get_kernel_we_version(void)
     /* Check if /proc/net/wireless is available */
     fh = fopen(PROC_NET_WIRELESS, "r");
 
-    if(fh == NULL)
+    if(!fh)
     {
         fprintf(stderr, "Cannot read " PROC_NET_WIRELESS "\n");
         return(-1);
@@ -336,12 +336,12 @@ iw_get_kernel_we_version(void)
     /* Read the first line of buffer */
     ret = fgets(buff, sizeof(buff), fh);
 
-    if(strstr(buff, "| WE") == NULL)
+    if(!strstr(buff, "| WE"))
     {
         /* Prior to WE16, so explicit version not present */
 
         /* Black magic */
-        if(strstr(buff, "| Missed") == NULL)
+        if(!strstr(buff, "| Missed"))
             v = 11;
         else
             v = 15;
@@ -354,7 +354,7 @@ iw_get_kernel_we_version(void)
 
     /* Get to the last separator, to get the version */
     p = strrchr(buff, '|');
-    if((p == NULL) || (sscanf(p + 1, "%d", &v) != 1))
+    if((!p) || (sscanf(p + 1, "%d", &v) != 1))
     {
         fprintf(stderr, "Cannot parse " PROC_NET_WIRELESS "\n");
         fclose(fh);
@@ -441,7 +441,7 @@ iw_print_version_info(const char *	toolname)
     }
 
     /* Information about the tools themselves */
-    if(toolname != NULL)
+    if(toolname)
         printf("%-8.16s  Wireless-Tools version %d\n", toolname, WT_VERSION);
     printf("          Compatible with Wireless Extension v11 to v%d.\n\n",
             WE_MAX_VERSION);
@@ -609,7 +609,7 @@ iw_get_priv_info(int		skfd,
     {
         /* (Re)allocate the buffer */
         newpriv = realloc(priv, maxpriv * sizeof(priv[0]));
-        if(newpriv == NULL)
+        if(!newpriv)
         {
             fprintf(stderr, "%s: Allocation failed\n", __FUNCTION__);
             break;
@@ -900,9 +900,9 @@ iw_protocol_compare(const char *	protocol1,
         /* Check if we find the magic letters telling it's DS compatible */
         for(i = 0; i < strlen(dot11_ds); i++)
         {
-            if(strchr(sub1, dot11_ds[i]) != NULL)
+            if(strchr(sub1, dot11_ds[i]))
                 isds1 = 1;
-            if(strchr(sub2, dot11_ds[i]) != NULL)
+            if(strchr(sub2, dot11_ds[i]))
                 isds2 = 1;
         }
         if(isds1 && isds2)
@@ -911,9 +911,9 @@ iw_protocol_compare(const char *	protocol1,
         /* Check if we find the magic letters telling it's 5GHz compatible */
         for(i = 0; i < strlen(dot11_5g); i++)
         {
-            if(strchr(sub1, dot11_5g[i]) != NULL)
+            if(strchr(sub1, dot11_5g[i]))
                 is5g1 = 1;
-            if(strchr(sub2, dot11_5g[i]) != NULL)
+            if(strchr(sub2, dot11_5g[i]))
                 is5g2 = 1;
         }
         if(is5g1 && is5g2)
@@ -1286,7 +1286,7 @@ iw_get_stats(int		skfd,
         char *	bp;
         int	t;
 
-        if(f==NULL)
+        if(!f)
             return -1;
         /* Loop on all devices */
         while(fgets(buf,255,f))
@@ -1306,19 +1306,19 @@ iw_get_stats(int		skfd,
                 stats->status = (unsigned short) t;
                 /* -- link quality -- */
                 bp = strtok(NULL, " ");
-                if(strchr(bp,'.') != NULL)
+                if(strchr(bp, '.'))
                     stats->qual.updated |= 1;
                 sscanf(bp, "%d", &t);
                 stats->qual.qual = (unsigned char) t;
                 /* -- signal level -- */
                 bp = strtok(NULL, " ");
-                if(strchr(bp,'.') != NULL)
+                if(strchr(bp, '.'))
                     stats->qual.updated |= 2;
                 sscanf(bp, "%d", &t);
                 stats->qual.level = (unsigned char) t;
                 /* -- noise level -- */
                 bp = strtok(NULL, " ");
-                if(strchr(bp,'.') != NULL)
+                if(strchr(bp, '.'))
                     stats->qual.updated += 4;
                 sscanf(bp, "%d", &t);
                 stats->qual.noise = (unsigned char) t;
@@ -1676,7 +1676,7 @@ iw_in_key_full(int		skfd,
 
         /* Separate the two strings */
         p = strchr((char *) key, ':');
-        if(p == NULL)
+        if(!p)
         {
             fprintf(stderr, "Error: Invalid login format\n");
             return(-1);
@@ -2231,7 +2231,7 @@ iw_in_addr(int		skfd,
         struct sockaddr *sap)
 {
     /* Check if it is a hardware or IP address */
-    if(strchr(bufp, ':') == NULL)
+    if(!strchr(bufp, ':'))
     {
         struct sockaddr	if_address;
         struct arpreq	arp_query;
@@ -2750,7 +2750,7 @@ iw_extract_event_stream(struct stream_descr *	stream,	/* Stream of events */
         if(cmd_index < standard_event_num)
             descr = &(standard_event_descr[cmd_index]);
     }
-    if(descr != NULL)
+    if(descr)
         event_type = descr->header_type;
     /* Unknown events -> event_type=0 => IW_EV_LCP_PK_LEN */
     event_len = event_type_size[event_type];
@@ -2768,7 +2768,7 @@ iw_extract_event_stream(struct stream_descr *	stream,	/* Stream of events */
     event_len -= IW_EV_LCP_PK_LEN;
 
     /* Set pointer on data */
-    if(stream->value != NULL)
+    if(stream->value)
         pointer = stream->value;			/* Next value in event */
     else
         pointer = stream->current + IW_EV_LCP_PK_LEN;	/* First value in event */
@@ -2807,7 +2807,7 @@ iw_extract_event_stream(struct stream_descr *	stream,	/* Stream of events */
             iwe->u.data.pointer = pointer;
 
             /* Check that we have a descriptor for the command */
-            if(descr == NULL)
+            if(!descr)
                 /* Can't check payload -> unsafe... */
                 iwe->u.data.pointer = NULL;	/* Discard paylod */
             else
@@ -2873,7 +2873,7 @@ iw_extract_event_stream(struct stream_descr *	stream,	/* Stream of events */
          * If the kernel is 64 bits and userspace 32 bits,
          * we have an extra 4 bytes.
          * Fixing that in the kernel would break 64 bits userspace. */
-        if((stream->value == NULL)
+        if((!stream->value)
                 && ((((iwe->len - IW_EV_LCP_PK_LEN) % event_len) == 4)
                     || ((iwe->len == 12) && ((event_type == IW_HEADER_TYPE_UINT) ||
                             (event_type == IW_HEADER_TYPE_QUAL))) ))

@@ -339,7 +339,7 @@ _sound_pa_Init(void)
       goto quit;
 
  done:
-   return pa_ctx == NULL;
+   return !pa_ctx;
  quit:
    _sound_pa_Exit();
    goto done;

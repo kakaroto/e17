@@ -70,7 +70,7 @@ int main (int argc, char *argv[]) {
                           event_hup, NULL);
 
   svr = ecore_con_server_connect(ECORE_CON_REMOTE_UDP, argv[1], atoi(argv[2]), NULL);
-  if( NULL == svr )
+  if( !svr )
     {
       printf("Unable to add server\n");
       return 1;

@@ -93,7 +93,7 @@ ephoto_show_flow_browser(const char *current_image)
 	for (i = 0; i < (sizeof (toolbar_items) / sizeof (char*)); ++i)
 	{
 		o = elm_toolbar_item_find_by_label(toolbar, toolbar_items[i]);
-		elm_toolbar_item_disabled_set(o, iter == NULL ? EINA_TRUE : EINA_FALSE);
+		elm_toolbar_item_disabled_set(o, !iter ? EINA_TRUE : EINA_FALSE);
 	}
 
 	elm_box_unpack(em->flow_browser, image);
@@ -169,7 +169,7 @@ _ephoto_key_pressed(void *data, Evas *e, Evas_Object *obj, void *event_data)
 	int i;
 
 	eku = (Evas_Event_Key_Up *)event_data;
-	for (i = 0; keys[i].name != NULL; ++i)
+	for (i = 0; keys[i].name; ++i)
 		if (!strcmp(eku->keyname, keys[i].name))
 			keys[i].func(NULL, NULL, NULL);
 	printf("%s\n", eku->keyname);

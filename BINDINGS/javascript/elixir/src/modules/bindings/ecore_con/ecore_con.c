@@ -822,7 +822,7 @@ elixir_ecore_con_init(JSContext *cx, uintN argc, jsval *vp)
         eeh_elixir_con_event[4] = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, _elixir_con_event_server_data_cb, NULL);
         eeh_elixir_con_event[5] = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, _elixir_con_event_server_del_cb, NULL);
 
-        while (ecore_con_event_properties[i].name != NULL)
+        while (ecore_con_event_properties[i].name)
           {
              jsval        property;
 
@@ -855,7 +855,7 @@ elixir_ecore_con_shutdown(JSContext *cx, uintN argc, jsval *vp)
         for (i = 0; i < sizeof (eeh_elixir_con_event) / sizeof (Ecore_Event_Handler*); ++i)
           ecore_event_handler_del(eeh_elixir_con_event[i]);
 
-        for (i = 0; ecore_con_event_properties[i].name != NULL; ++i)
+        for (i = 0; ecore_con_event_properties[i].name; ++i)
           JS_DeleteProperty(cx, JS_THIS_OBJECT(cx, vp), ecore_con_event_properties[i].name);
 
 	ecore_con_shutdown();
@@ -887,7 +887,7 @@ elixir_ecore_con_url_init(JSContext *cx, uintN argc, jsval *vp)
         eeh_elixir_con_url_event[1] = ecore_event_handler_add(ECORE_CON_EVENT_URL_COMPLETE, _elixir_con_event_url_complete_cb, NULL);
         eeh_elixir_con_url_event[2] = ecore_event_handler_add(ECORE_CON_EVENT_URL_PROGRESS, _elixir_con_event_url_progress_cb, NULL);
 
-        while (ecore_con_url_event_properties[i].name != NULL)
+        while (ecore_con_url_event_properties[i].name)
           {
              jsval        property;
 
@@ -921,7 +921,7 @@ elixir_ecore_con_url_shutdown(JSContext *cx, uintN argc, jsval *vp)
           ecore_event_handler_del(eeh_elixir_con_url_event[i]);
 
 	i = 0;
-        while (ecore_con_url_event_properties[i].name != NULL)
+        while (ecore_con_url_event_properties[i].name)
           {
              JS_DeleteProperty(cx, JS_THIS_OBJECT(cx, vp), ecore_con_url_event_properties[i].name);
              ++i;
@@ -1759,7 +1759,7 @@ module_open(Elixir_Module* em, JSContext* cx, JSObject* parent)
    if (!JS_DefineFunctions(cx, *((JSObject**) tmp), ecore_con_functions))
      goto on_error;
 
-   while (ecore_con_properties[i].name != NULL)
+   while (ecore_con_properties[i].name)
      {
         property = INT_TO_JSVAL(ecore_con_properties[i].value);
         if (!JS_DefineProperty(cx, parent,
@@ -1799,11 +1799,11 @@ module_close(Elixir_Module *em, JSContext *cx)
    tmp = &em->data;
 
    i = 0;
-   while (ecore_con_functions[i].name != NULL)
+   while (ecore_con_functions[i].name)
      JS_DeleteProperty(cx, parent, ecore_con_functions[i++].name);
 
    i = 0;
-   while (ecore_con_properties[i].name != NULL)
+   while (ecore_con_properties[i].name)
      JS_DeleteProperty(cx, parent, ecore_con_properties[i++].name);
 
    elixir_object_unregister(cx, (JSObject**) tmp);

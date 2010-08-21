@@ -81,7 +81,7 @@ Exalt_Ethernet* exalt_eth_new(const char* name, const char* device)
     Exalt_Ethernet* eth;
 
     eth = (Exalt_Ethernet*)calloc(1, sizeof(Exalt_Ethernet));
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
 
     _exalt_eth_name_set(eth,name);
     _exalt_eth_device_set(eth,device);
@@ -161,7 +161,7 @@ int exalt_eth_ethernet_is(char* name)
 {
     struct ifreq ifr;
 
-    EXALT_ASSERT_RETURN(name!=NULL);
+    EXALT_ASSERT_RETURN(!!name);
 
     strncpy(ifr.ifr_name,name,sizeof(ifr.ifr_name));
     if(!exalt_ioctl(&ifr, SIOCGIFHWADDR))
@@ -174,7 +174,7 @@ void exalt_eth_up(Exalt_Ethernet* eth)
 {
     struct ifreq ifr;
 
-    EXALT_ASSERT_RETURN_VOID(eth!=NULL);
+    EXALT_ASSERT_RETURN_VOID(!!eth);
 
     strncpy(ifr.ifr_name,exalt_eth_name_get(eth),sizeof(ifr.ifr_name));
 
@@ -190,7 +190,7 @@ void exalt_eth_down(Exalt_Ethernet* eth)
 {
     struct ifreq ifr;
 
-    EXALT_ASSERT_RETURN_VOID(eth!=NULL);
+    EXALT_ASSERT_RETURN_VOID(!!eth);
 
     strncpy(ifr.ifr_name,exalt_eth_name_get(eth),sizeof(ifr.ifr_name));
 
@@ -219,7 +219,7 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byname(const char* name)
 {
     Exalt_Ethernet* eth;
     Eina_List *l;
-    EXALT_ASSERT_RETURN(name!=NULL);
+    EXALT_ASSERT_RETURN(!!name);
 
     EINA_LIST_FOREACH(exalt_eth_interfaces.ethernets,l,eth)
     {
@@ -234,7 +234,7 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byudi(const char* udi)
 {
     Exalt_Ethernet* eth;
     Eina_List *l;
-    EXALT_ASSERT_RETURN(udi!=NULL);
+    EXALT_ASSERT_RETURN(!!udi);
 
     EINA_LIST_FOREACH(exalt_eth_interfaces.ethernets,l,eth)
     {
@@ -286,7 +286,7 @@ short exalt_eth_link_is(Exalt_Ethernet* eth)
     int res;
 
 
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
 
     if(exalt_eth_wireless_is(eth))
         return 1;
@@ -304,8 +304,8 @@ short exalt_eth_link_is(Exalt_Ethernet* eth)
 
 short exalt_eth_configuration_set(Exalt_Ethernet* eth, Exalt_Configuration* c)
 {
-    EXALT_ASSERT_RETURN(eth!=NULL);
-    EXALT_ASSERT_RETURN(c!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
+    EXALT_ASSERT_RETURN(!!c);
 
     if(eth->configuration && eth->configuration != c)
         exalt_conf_free(&(eth->configuration));
@@ -318,7 +318,7 @@ char* exalt_eth_ip_get(Exalt_Ethernet* eth)
     struct sockaddr_in sin;
     struct ifreq ifr;
 
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
 
     memset(&sin, 0, sizeof (sin));
     sin.sin_family = AF_INET;
@@ -341,7 +341,7 @@ char* exalt_eth_netmask_get(Exalt_Ethernet* eth)
     struct sockaddr_in sin;
     struct ifreq ifr;
 
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
 
     memset(&sin, 0, sizeof (sin));
     sin.sin_family = AF_INET;
@@ -368,10 +368,10 @@ char* exalt_eth_gateway_get(Exalt_Ethernet* eth)
     char mask_addr[128];
     short find = 0;
 
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
 
     f = fopen(EXALT_PATH_ROUTE,"r");
-    EXALT_ASSERT_RETURN(f!=NULL);
+    EXALT_ASSERT_RETURN(!!f);
     fmt = proc_gen_fmt(EXALT_PATH_ROUTE, 0, f,
             "Iface", "%16s",
             "Destination", "%128s",
@@ -484,7 +484,7 @@ int exalt_eth_gateway_delete(Exalt_Ethernet* eth)
 int exalt_eth_dhcp_is(Exalt_Ethernet* eth)
 {
     Exalt_Configuration *c;
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
 
     if( (c=exalt_eth_configuration_get(eth)))
         return exalt_conf_mode_get(c) == EXALT_DHCP;
@@ -498,7 +498,7 @@ int exalt_eth_up_is(Exalt_Ethernet* eth)
 {
     struct ifreq ifr;
 
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
 
     strncpy(ifr.ifr_name,exalt_eth_name_get(eth),sizeof(ifr.ifr_name));
 
@@ -517,8 +517,8 @@ int exalt_eth_up_is(Exalt_Ethernet* eth)
 
 int exalt_eth_wireless_is(Exalt_Ethernet* eth)
 {
-    EXALT_ASSERT_RETURN(eth!=NULL);
-    return eth->wireless != NULL;
+    EXALT_ASSERT_RETURN(!!eth);
+    return !!eth->wireless;
 }
 
 
@@ -538,7 +538,7 @@ int exalt_eth_conf_apply(Exalt_Ethernet* eth, Exalt_Configuration *c)
 {
     int res;
 
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
     //if the configuration is not valid, we send the information as the configuration is done
     //else an application will wait a very long time the end of the configuration
     //(_exalt_apply_timer())
@@ -596,7 +596,7 @@ void exalt_eth_printf()
         printf("ip: %s\n",exalt_eth_ip_get(eth));
         printf("mask: %s\n",exalt_eth_netmask_get(eth));
         printf("gateway: %s\n",exalt_eth_gateway_get(eth));
-        printf("Wifi: %s\n",(eth->wireless==NULL?"no":"yes"));
+        printf("Wifi: %s\n",(!eth->wireless?"no":"yes"));
     }
 }
 
@@ -618,7 +618,7 @@ void exalt_eth_printf()
  */
 const char* _exalt_eth_save_ip_get(Exalt_Ethernet* eth)
 {
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
     return eth->_save_ip;
 }
 
@@ -629,7 +629,7 @@ const char* _exalt_eth_save_ip_get(Exalt_Ethernet* eth)
  */
 const char* _exalt_eth_save_gateway_get(Exalt_Ethernet* eth)
 {
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
     return eth->_save_gateway;
 }
 
@@ -640,7 +640,7 @@ const char* _exalt_eth_save_gateway_get(Exalt_Ethernet* eth)
  */
 const char* _exalt_eth_save_netmask_get(Exalt_Ethernet* eth)
 {
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
     return eth->_save_netmask;
 }
 
@@ -651,7 +651,7 @@ const char* _exalt_eth_save_netmask_get(Exalt_Ethernet* eth)
  */
 int _exalt_eth_save_link_get(Exalt_Ethernet* eth)
 {
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
     return eth->_save_link;
 }
 
@@ -662,7 +662,7 @@ int _exalt_eth_save_link_get(Exalt_Ethernet* eth)
  */
 int _exalt_eth_save_up_get(Exalt_Ethernet* eth)
 {
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
 
     return eth->_save_up;
 }
@@ -676,8 +676,8 @@ int _exalt_eth_save_up_get(Exalt_Ethernet* eth)
  */
 int _exalt_eth_save_ip_set(Exalt_Ethernet* eth,const char* ip)
 {
-    EXALT_ASSERT_RETURN(eth!=NULL);
-    EXALT_ASSERT_RETURN(exalt_address_is(ip) || ip==NULL);
+    EXALT_ASSERT_RETURN(!!eth);
+    EXALT_ASSERT_RETURN(exalt_address_is(ip) || !ip);
 
     EXALT_FREE(eth->_save_ip);
     if(ip)
@@ -694,7 +694,7 @@ int _exalt_eth_save_ip_set(Exalt_Ethernet* eth,const char* ip)
 */
 void _exalt_eth_connected_status_update(Exalt_Ethernet *eth)
 {
-    EXALT_ASSERT_RETURN_VOID(eth!=NULL);
+    EXALT_ASSERT_RETURN_VOID(!!eth);
 
     //the connected status of a wireless interface
     //is managed by wpa_supplicant
@@ -758,8 +758,8 @@ void _exalt_eth_connected_status_update(Exalt_Ethernet *eth)
  */
 int _exalt_eth_save_netmask_set(Exalt_Ethernet* eth,const char* netmask)
 {
-    EXALT_ASSERT_RETURN(eth!=NULL);
-    EXALT_ASSERT_RETURN(exalt_address_is(netmask) || netmask==NULL);
+    EXALT_ASSERT_RETURN(!!eth);
+    EXALT_ASSERT_RETURN(exalt_address_is(netmask) || !netmask);
 
     EXALT_FREE(eth->_save_netmask);
     if(netmask)
@@ -775,8 +775,8 @@ int _exalt_eth_save_netmask_set(Exalt_Ethernet* eth,const char* netmask)
  */
 int _exalt_eth_save_gateway_set(Exalt_Ethernet* eth,const char* gateway)
 {
-    EXALT_ASSERT_RETURN(eth!=NULL);
-    EXALT_ASSERT_RETURN(exalt_address_is(gateway) || gateway==NULL);
+    EXALT_ASSERT_RETURN(!!eth);
+    EXALT_ASSERT_RETURN(exalt_address_is(gateway) || !gateway);
 
     EXALT_FREE(eth->_save_gateway);
     if(gateway)
@@ -792,7 +792,7 @@ int _exalt_eth_save_gateway_set(Exalt_Ethernet* eth,const char* gateway)
  */
 int _exalt_eth_save_link_set(Exalt_Ethernet* eth,short link)
 {
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
     eth->_save_link=link;
     _exalt_eth_connected_status_update(eth);
 
@@ -806,7 +806,7 @@ int _exalt_eth_save_link_set(Exalt_Ethernet* eth,short link)
  */
 int _exalt_eth_save_up_set(Exalt_Ethernet* eth,short up)
 {
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
     eth->_save_up=up;
     _exalt_eth_connected_status_update(eth);
 
@@ -822,8 +822,8 @@ int _exalt_eth_save_up_set(Exalt_Ethernet* eth,short up)
  */
 int _exalt_eth_name_set(Exalt_Ethernet* eth, const char* name)
 {
-    EXALT_ASSERT_RETURN(eth!=NULL);
-    EXALT_ASSERT_RETURN(name!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
+    EXALT_ASSERT_RETURN(!!name);
 
     EXALT_FREE(eth->name);
     eth->name=strdup(name);
@@ -838,8 +838,8 @@ int _exalt_eth_name_set(Exalt_Ethernet* eth, const char* name)
  */
 int _exalt_eth_device_set(Exalt_Ethernet* eth, const char* device)
 {
-    EXALT_ASSERT_RETURN(eth!=NULL);
-    EXALT_ASSERT_RETURN(device!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
+    EXALT_ASSERT_RETURN(!!device);
 
     EXALT_FREE(eth->device);
     eth->device=strdup(device);
@@ -854,8 +854,8 @@ int _exalt_eth_device_set(Exalt_Ethernet* eth, const char* device)
  */
 int _exalt_eth_udi_set(Exalt_Ethernet* eth,const char* udi)
 {
-    EXALT_ASSERT_RETURN(eth!=NULL);
-    EXALT_ASSERT_RETURN(udi!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
+    EXALT_ASSERT_RETURN(!!udi);
 
     EXALT_FREE(eth->udi);
     eth->udi=strdup(udi);
@@ -870,7 +870,7 @@ int _exalt_eth_udi_set(Exalt_Ethernet* eth,const char* udi)
  */
 int _exalt_eth_ifindex_set(Exalt_Ethernet* eth,int ifindex)
 {
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
     eth->ifindex=ifindex;
     return 1;
 }
@@ -1121,7 +1121,7 @@ Eina_Bool _exalt_apply_timer(void *data)
         Ecore_Exe * exe;
         int status;
 
-        EXALT_ASSERT_RETURN(eth!=NULL);
+        EXALT_ASSERT_RETURN(!!eth);
 
         EXALT_LOG_INFO("Run command : %s",cmd);
         exe = ecore_exe_run(cmd, NULL);
@@ -1149,9 +1149,9 @@ int _exalt_eth_apply_static(Exalt_Ethernet *eth)
     struct rtentry rt;
     Exalt_Configuration *c;
 
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
     c = exalt_eth_configuration_get(eth);
-    EXALT_ASSERT_RETURN(c!=NULL);
+    EXALT_ASSERT_RETURN(!!c);
 
     memset(&sin, 0, sizeof (sin));
     sin.sin_family = AF_INET;
@@ -1209,7 +1209,7 @@ int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
     pid_t pid;
     int metric;
    
-    EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(!!eth);
 
     metric = 100; // XXX: need to have interfaces have metrics for preferential
     // routing. eg - metric == 100 vs mertic == 40 - the 50 will be preferred

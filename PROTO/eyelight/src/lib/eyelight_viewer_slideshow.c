@@ -247,7 +247,7 @@ void _eyelight_viewer_slideshow_next_end_cb(void *data, Evas_Object *o, const ch
     char buf[EYELIGHT_BUFLEN];
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
 
-    if(pres->slideshow_image_thumbnails[0]!=NULL)
+    if(pres->slideshow_image_thumbnails[0])
     {
         evas_object_image_data_set(pres->slideshow_image_thumbnails[0],NULL);
         evas_object_del(pres->slideshow_image_thumbnails[0]);
@@ -282,7 +282,7 @@ void _eyelight_viewer_slideshow_previous_end_cb(void *data, Evas_Object *o, cons
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
 
     int size = pres->slideshow_nb_slides;
-    if(pres->slideshow_image_thumbnails[size-1]!=NULL)
+    if(pres->slideshow_image_thumbnails[size - 1])
     {
         evas_object_image_data_set(pres->slideshow_image_thumbnails[size-1],NULL);
         evas_object_del(pres->slideshow_image_thumbnails[size-1]);

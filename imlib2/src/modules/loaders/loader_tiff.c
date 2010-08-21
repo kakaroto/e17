@@ -356,7 +356,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
              goto quit2;
           }
 
-        if (rgba_image.rgba.put.any == NULL)
+        if (!rgba_image.rgba.put.any)
           {
              fprintf(stderr, "imlib2-tiffloader: No put function");
 

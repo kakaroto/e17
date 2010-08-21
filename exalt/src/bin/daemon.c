@@ -421,10 +421,10 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
 
     //send a broadcast
     msg = dbus_message_new_signal(EXALTD_PATH_NOTIFY,EXALTD_INTERFACE_NOTIFY, "notify");
-    EXALT_ASSERT_RETURN_VOID(msg!=NULL);
+    EXALT_ASSERT_RETURN_VOID(!!msg);
 
     name = exalt_eth_name_get(eth);
-    EXALT_ASSERT_RETURN_VOID(name!=NULL);
+    EXALT_ASSERT_RETURN_VOID(!!name);
 
     dbus_args_valid_append(msg);
 
@@ -448,7 +448,7 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Eina_List* networks, void* data)
     Eina_List *l, *l2;
 
     conn = (E_DBus_Connection*) data;
-    EXALT_ASSERT_RETURN_VOID(conn!=NULL);
+    EXALT_ASSERT_RETURN_VOID(!!conn);
 
     //search if we search a favorite network for this interface
     if(eina_list_data_find(iface_wireless_search_favorite, eth))
@@ -500,10 +500,10 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Eina_List* networks, void* data)
 
     //send a broadcast
     msg = dbus_message_new_signal(EXALTD_PATH_NOTIFY,EXALTD_INTERFACE_NOTIFY, "scan_notify");
-    EXALT_ASSERT_RETURN_VOID(msg!=NULL);
+    EXALT_ASSERT_RETURN_VOID(!!msg);
 
     name = exalt_eth_name_get(eth);
-    EXALT_ASSERT_ADV(name!=NULL,
+    EXALT_ASSERT_ADV(!!name,
             dbus_message_unref(msg);return,
             "name!=NULL failed\n");
 
@@ -513,7 +513,7 @@ void wireless_scan_cb(Exalt_Ethernet* eth,Eina_List* networks, void* data)
     EXALT_ASSERT_RETURN_VOID(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &name));
 
 
-    if(networks!=NULL)
+    if(networks)
     {
         EXALT_ASSERT_RETURN_VOID(dbus_message_iter_open_container(&args,
                     DBUS_TYPE_ARRAY,
@@ -895,8 +895,8 @@ int dbus_args_error_append(DBusMessage *msg, int id_error, const char* error)
     DBusMessageIter args;
     int err = EXALT_DBUS_ERROR;
 
-    EXALT_ASSERT_RETURN(msg!=NULL);
-    EXALT_ASSERT_RETURN(error!=NULL);
+    EXALT_ASSERT_RETURN(!!msg);
+    EXALT_ASSERT_RETURN(!!error);
 
     dbus_message_iter_init_append(msg, &args);
     dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &err);

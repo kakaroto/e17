@@ -210,7 +210,7 @@ _elixir_eet_request(int param, const char **params)
 	  }
      }
 
-   if (memchr(content, '\0', content_length) != NULL)
+   if (memchr(content, '\0', content_length))
      goto on_error;
 
    if (compiled)

@@ -667,7 +667,7 @@ elixir_ecore_del(JSContext *cx, uintN argc, jsval *vp,
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, handler);
-   if (handler != NULL) data = func(handler);
+   if (handler) data = func(handler);
 
    eeh = elixir_void_get_private(data);
    if (eeh)
@@ -1012,7 +1012,7 @@ elixir_ecore_thread_run(JSContext *cx, uintN argc, jsval *vp)
    elixir_object_register(dt->runtime->cx, &dt->obj_end, NULL);
    elixir_object_register(dt->runtime->cx, &dt->obj_cancel, NULL);
 
-   if (JS_GetParent(cx, dt->obj_heavy) == NULL)
+   if (!JS_GetParent(cx, dt->obj_heavy))
      JS_SetParent(cx, dt->obj_heavy, JS_THIS_OBJECT(cx, vp));
 
    new = elixir_void_new(dt->runtime->cx, JS_THIS_OBJECT(cx, vp), val[3].v.any, dt);
@@ -1044,7 +1044,7 @@ elixir_ecore_thread_cancel(JSContext *cx, uintN argc, jsval *vp)
 
    GET_PRIVATE(cx, val[0].v.obj, et);
 
-   if (et == NULL) JS_SET_RVAL(cx, vp, JSVAL_TRUE);
+   if (!et) JS_SET_RVAL(cx, vp, JSVAL_TRUE);
    else JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(ecore_thread_cancel(et)));
    return JS_TRUE;
 }
@@ -1193,7 +1193,7 @@ module_open(Elixir_Module *em, JSContext *cx, JSObject *parent)
    if (!JS_DefineFunctions(cx, *((JSObject**) tmp), ecore_functions))
      goto on_error;
 
-   while (ecore_const_properties[i].name != NULL)
+   while (ecore_const_properties[i].name)
      {
         property = INT_TO_JSVAL(ecore_const_properties[i].value);
         if (!JS_DefineProperty(cx, parent,
@@ -1238,11 +1238,11 @@ module_close(Elixir_Module *em, JSContext *cx)
    tmp = &em->data;
 
    i = 0;
-   while (ecore_functions[i].name != NULL)
+   while (ecore_functions[i].name)
      JS_DeleteProperty(cx, parent, ecore_functions[i++].name);
 
    i = 0;
-   while (ecore_const_properties[i].name != NULL)
+   while (ecore_const_properties[i].name)
      JS_DeleteProperty(cx, parent, ecore_const_properties[i++].name);
 
    elixir_object_unregister(cx, (JSObject**) tmp);

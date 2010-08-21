@@ -325,12 +325,12 @@ evas_object_to_elixir_object(Evas_Object *obj)
    const char *evas_name;
    unsigned int  i;
 
-   if (obj == NULL)
+   if (!obj)
      return "evas_object";
 
    evas_name = evas_object_type_get(obj);
 
-   for (i = 0; _matching_evas_object[i].evas_name != NULL; ++i)
+   for (i = 0; _matching_evas_object[i].evas_name; ++i)
      if (strcmp(_matching_evas_object[i].evas_name, evas_name) == 0)
        return _matching_evas_object[i].elixir_name;
 
@@ -528,7 +528,7 @@ module_open(Elixir_Module *em, JSContext *cx, JSObject *parent)
    if (!JS_DefineFunctions(cx, parent, evas_functions))
      return EINA_FALSE;
 
-   while (sub_module[i].load != NULL)
+   while (sub_module[i].load)
      if (!sub_module[i++].load(cx, parent))
        goto on_error;
 
@@ -560,10 +560,10 @@ module_close(Elixir_Module *em, JSContext *cx)
      return EINA_FALSE;
    parent = em->data;
 
-   while (evas_functions[i].name != NULL)
+   while (evas_functions[i].name)
      JS_DeleteProperty(cx, parent, evas_functions[i++].name);
 
-   for (i = 0; sub_module[i].unload != NULL; ++i)
+   for (i = 0; sub_module[i].unload; ++i)
      sub_module[i].unload(cx, parent);
 
    for (i = 0; i < sizeof (evas_types) / sizeof(*evas_types); i++)

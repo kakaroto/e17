@@ -1304,8 +1304,8 @@ _bt_close(void *data, Evas_Object *obj, void *event_info)
 static Eina_Bool
 _run_dialog(Evas_Object *parent, enum dialog_type type, const char *message, const char *default_entry_value, char **entry_value)
 {
-   EINA_SAFETY_ON_TRUE_RETURN_VAL((type != DIALOG_PROMPT) && (default_entry_value != NULL), EINA_FALSE);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL((type != DIALOG_PROMPT) && (entry_value != NULL), EINA_FALSE);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL((type != DIALOG_PROMPT) && (!!default_entry_value), EINA_FALSE);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL((type != DIALOG_PROMPT) && (!!entry_value), EINA_FALSE);
 
    struct _dialog_data *dialog_data = calloc(1, sizeof(*dialog_data));
    Eina_Bool response = EINA_FALSE;
@@ -1464,7 +1464,7 @@ static void
 _view_smart_window_close(Ewk_View_Smart_Data *esd)
 {
    View_Smart_Data *sd = (View_Smart_Data *)esd;
-   EINA_SAFETY_ON_TRUE_RETURN(sd->idler_close_window != NULL);
+   EINA_SAFETY_ON_TRUE_RETURN(!!sd->idler_close_window);
    sd->idler_close_window =  ecore_idler_add(_window_close_delayed, sd);
 }
 

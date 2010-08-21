@@ -1138,9 +1138,9 @@ elixir_sqlite3_create_function(JSContext *cx, uintN argc, jsval *vp)
      }
 
    if (!elixir_params_check(cx, _sqlite3_create_function_reset, val, argc, JS_ARGV(cx, vp))
-       && func == NULL
-       && step == NULL
-       && final == NULL)
+       && !func
+       && !step
+       && !final)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, db);
@@ -1785,7 +1785,7 @@ module_close(Elixir_Module *em, JSContext *cx)
 
    /* FIXME: Destroy all callback and their refering data. */
 
-   while (sqlite_functions[i].name != NULL)
+   while (sqlite_functions[i].name)
      JS_DeleteProperty(cx, (JSObject*) em->data, sqlite_functions[i++].name);
 
    tmp = &em->data;

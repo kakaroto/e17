@@ -253,16 +253,12 @@ term_smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h)
       }
    }
 
-   if ((term->grid = realloc(term->grid,
-			     num_chars_h
-			     * sizeof(Term_EGlyph *))) == NULL) {
+   if (!(term->grid = realloc(term->grid, num_chars_h * sizeof(Term_EGlyph *)))) {
       fprintf(stderr, "Fatal: Couldn't not reallocate evas grid!\n");
       exit(-1);
    }
 
-   if ((term->grid[0] = realloc(term->grid[0],
-				num_chars_h * num_chars_w
-			       	* sizeof(Term_EGlyph))) == NULL) {
+   if (!(term->grid[0] = realloc(term->grid[0], num_chars_h * num_chars_w * sizeof(Term_EGlyph)))) {
       fprintf(stderr, "Fatal: Couldn't not reallocate evas grid!\n");
       exit(-1);
    }

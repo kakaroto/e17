@@ -104,7 +104,7 @@ char *ft_errorstring(int err)
 {
 	const struct ft_error *e;
 
-	for (e = ft_errors; e->str != NULL; e++)
+	for (e = ft_errors; e->str; e++)
 		if (e->err == err)
 			return e->str;
 

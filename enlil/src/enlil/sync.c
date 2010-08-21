@@ -147,19 +147,19 @@ Enlil_Sync *enlil_sync_new(const char *path,
       Enlil_Sync_Error_Cb error_cb,
       void *user_data)
 {
-   ASSERT_RETURN(path!=NULL);
-   ASSERT_RETURN(album_new_cb!=NULL);
-   ASSERT_RETURN(album_update_cb!=NULL);
-   ASSERT_RETURN(album_disappear_cb!=NULL);
-   ASSERT_RETURN(photo_new_cb!=NULL);
-   ASSERT_RETURN(photo_update_cb!=NULL);
-   ASSERT_RETURN(photo_disappear_cb!=NULL);
-   ASSERT_RETURN(done_cb!=NULL);
-   ASSERT_RETURN(start_cb!=NULL);
-   ASSERT_RETURN(error_cb!=NULL);
+   ASSERT_RETURN(!!path);
+   ASSERT_RETURN(!!album_new_cb);
+   ASSERT_RETURN(!!album_update_cb);
+   ASSERT_RETURN(!!album_disappear_cb);
+   ASSERT_RETURN(!!photo_new_cb);
+   ASSERT_RETURN(!!photo_update_cb);
+   ASSERT_RETURN(!!photo_disappear_cb);
+   ASSERT_RETURN(!!done_cb);
+   ASSERT_RETURN(!!start_cb);
+   ASSERT_RETURN(!!error_cb);
 
    Enlil_Sync *sync = calloc(1, sizeof(Enlil_Sync));
-   ASSERT_RETURN(sync!=NULL);
+   ASSERT_RETURN(!!sync);
 
    sync->path = eina_stringshare_add(path);
    sync->sync.album_new_cb = album_new_cb;
@@ -177,7 +177,7 @@ Enlil_Sync *enlil_sync_new(const char *path,
    pthread_mutex_lock(&(sync->mutex));
 
    sync->pipe.thread_main = ecore_pipe_add(_enlil_sync_message_cb, sync);
-   ASSERT_CUSTOM_RET(sync->pipe.thread_main != NULL, enlil_sync_free(&sync); return NULL;);
+   ASSERT_CUSTOM_RET(!!sync->pipe.thread_main, enlil_sync_free(&sync); return NULL;);
 
    return sync;
 }
@@ -188,9 +188,9 @@ Enlil_Sync *enlil_sync_new(const char *path,
  */
 void enlil_sync_free(Enlil_Sync **sync)
 {
-   ASSERT_RETURN_VOID(sync != NULL);
+   ASSERT_RETURN_VOID(!!sync);
    Enlil_Sync *_sync = *sync;
-   ASSERT_RETURN_VOID(_sync!=NULL);
+   ASSERT_RETURN_VOID(!!_sync);
 
    if(_sync->is_running)
      {
@@ -208,7 +208,7 @@ void enlil_sync_free(Enlil_Sync **sync)
 
 int enlil_sync_jobs_count_get(Enlil_Sync *sync)
 {
-   ASSERT_RETURN(sync != NULL);
+   ASSERT_RETURN(!!sync);
 
    return eina_list_count(sync->jobs);
 }
@@ -221,7 +221,7 @@ void enlil_sync_job_all_add(Enlil_Sync *sync)
 {
    Enlil_Sync_Job *job, *_job;
 
-   ASSERT_RETURN_VOID(sync != NULL);
+   ASSERT_RETURN_VOID(!!sync);
 
    job = calloc(1, sizeof(Enlil_Sync_Job));
    job->type = Enlil_SYNC_JOB_ALL;
@@ -248,8 +248,8 @@ void enlil_sync_job_album_folder_add(Enlil_Sync *sync, const char *folder)
 {
    Enlil_Sync_Job *job, *_job;
 
-   ASSERT_RETURN_VOID(sync != NULL);
-   ASSERT_RETURN_VOID(folder != NULL);
+   ASSERT_RETURN_VOID(!!sync);
+   ASSERT_RETURN_VOID(!!folder);
 
    job = calloc(1, sizeof(Enlil_Sync_Job));
    job->type = Enlil_SYNC_JOB_ALBUM;
@@ -278,8 +278,8 @@ void enlil_sync_job_photo_file_add(Enlil_Sync *sync, const char *folder, const c
 {
    Enlil_Sync_Job *job, *_job;
 
-   ASSERT_RETURN_VOID(sync != NULL);
-   ASSERT_RETURN_VOID(file != NULL);
+   ASSERT_RETURN_VOID(!!sync);
+   ASSERT_RETURN_VOID(!!file);
 
    job = calloc(1, sizeof(Enlil_Sync_Job));
    job->type = Enlil_SYNC_JOB_PHOTO;
@@ -304,8 +304,8 @@ static Enlil_Sync_Job *_enlil_sync_job_equivalent_search(Enlil_Sync *sync, Enlil
    Eina_List *l;
    Enlil_Sync_Job *_job = NULL;
 
-   ASSERT_RETURN(sync != NULL);
-   ASSERT_RETURN(job != NULL);
+   ASSERT_RETURN(!!sync);
+   ASSERT_RETURN(!!job);
 
    EINA_LIST_FOREACH(sync->jobs, l, _job)
      {
@@ -320,9 +320,9 @@ static Enlil_Sync_Job *_enlil_sync_job_equivalent_search(Enlil_Sync *sync, Enlil
 
 static void _enlil_sync_job_free(Enlil_Sync_Job **job)
 {
-   ASSERT_RETURN_VOID(job != NULL);
+   ASSERT_RETURN_VOID(!!job);
    Enlil_Sync_Job *_job = * job;
-   ASSERT_RETURN_VOID(_job!=NULL);
+   ASSERT_RETURN_VOID(!!_job);
    switch(_job->type)
      {
       case Enlil_SYNC_JOB_ALBUM:
@@ -341,7 +341,7 @@ static void _enlil_sync_next_job_process(Enlil_Sync *sync)
 {
    Enlil_Sync_Job *job;
 
-   ASSERT_RETURN_VOID(sync != NULL);
+   ASSERT_RETURN_VOID(!!sync);
 
    if(!sync->jobs)
      {
@@ -370,7 +370,7 @@ static void _enlil_sync_next_job_process(Enlil_Sync *sync)
 
 static void _enlil_sync_run(Enlil_Sync *sync)
 {
-   ASSERT_RETURN_VOID(sync!=NULL);
+   ASSERT_RETURN_VOID(!!sync);
 
    ecore_thread_run(_enlil_sync_all_start, _enlil_sync_end_cb, NULL, sync);
    LOG_INFO("Synchronisation start on the library : %s", sync->path);
@@ -379,8 +379,8 @@ static void _enlil_sync_run(Enlil_Sync *sync)
 
 static void _enlil_sync_album_folder_run(Enlil_Sync *sync, const char *folder)
 {
-   ASSERT_RETURN_VOID(sync!=NULL);
-   ASSERT_RETURN_VOID(folder!=NULL);
+   ASSERT_RETURN_VOID(!!sync);
+   ASSERT_RETURN_VOID(!!folder);
 
    sync->extra.folder = folder;
    ecore_thread_run(_enlil_sync_album_folder_thread, _enlil_sync_end_cb, NULL, sync);
@@ -399,8 +399,8 @@ static void _enlil_sync_album_folder_thread(void *data)
 
 static void _enlil_sync_photo_file_run(Enlil_Sync *sync, const char *folder, const char *file)
 {
-   ASSERT_RETURN_VOID(sync!=NULL);
-   ASSERT_RETURN_VOID(file!=NULL);
+   ASSERT_RETURN_VOID(!!sync);
+   ASSERT_RETURN_VOID(!!file);
 
    sync->extra.file = file;
    sync->extra.folder = folder;
@@ -452,8 +452,8 @@ static void _enlil_sync_photo_file_start(Enlil_Sync *sync, const char *folder, c
 	  } \
    }while(0)
 
-   ASSERT_RETURN_VOID(folder != NULL);
-   ASSERT_RETURN_VOID(file != NULL);
+   ASSERT_RETURN_VOID(!!folder);
+   ASSERT_RETURN_VOID(!!file);
 
    root = enlil_root_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
    enlil_root_path_set(root, sync->path);
@@ -715,8 +715,8 @@ static void _enlil_sync_all_photo_new(Enlil_Sync *sync, Enlil_Album *album, cons
 	  } \
    }while (0);
 
-   ASSERT_RETURN_VOID(album != NULL);
-   ASSERT_RETURN_VOID(file != NULL);
+   ASSERT_RETURN_VOID(!!album);
+   ASSERT_RETURN_VOID(!!file);
 
    snprintf(buf_path,PATH_MAX,"%s/%s",enlil_album_path_get(album),enlil_album_file_name_get(album));
    snprintf(buf_file, PATH_MAX, "%s/%s", buf_path, file);
@@ -774,8 +774,8 @@ static int _enlil_sync_all_photo_update(Enlil_Sync *sync, Enlil_Album *album, En
 	  } \
    }while (0);
 
-   ASSERT_RETURN(album != NULL);
-   ASSERT_RETURN(_photo != NULL);
+   ASSERT_RETURN(!!album);
+   ASSERT_RETURN(!!_photo);
 
    snprintf(buf_path,PATH_MAX,"%s/%s",enlil_album_path_get(album),enlil_album_file_name_get(album));
    snprintf(buf_file, PATH_MAX, "%s/%s", buf_path, enlil_photo_file_name_get(_photo));

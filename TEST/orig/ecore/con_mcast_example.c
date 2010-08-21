@@ -44,7 +44,7 @@ int main (int argc, char *argv[]) {
                           event_hup, NULL);
 
   svr = ecore_con_server_add(ECORE_CON_REMOTE_MCAST, argv[1], atoi(argv[2]), NULL);
-  if( NULL == svr )
+  if( !svr )
     {
       printf("Unable to add server.  Bad port?  No route to the multicast network?\n");
       return 1;

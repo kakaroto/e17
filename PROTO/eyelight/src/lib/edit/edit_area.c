@@ -24,7 +24,7 @@ void *alloca (size_t);
 
 void eyelight_edit_area_geometry_get(Eyelight_Edit *edit, double *rel1_x, double *rel1_y, double *rel2_x, double *rel2_y)
 {
-    EYELIGHT_ASSERT_RETURN_VOID(edit != NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!edit);
     EYELIGHT_ASSERT_RETURN_VOID(edit->node->name == EYELIGHT_NAME_CUSTOM_AREA
             || edit->node->name == EYELIGHT_NAME_THEME_AREA);
 
@@ -38,7 +38,7 @@ const char* eyelight_edit_area_layout_get(Eyelight_Edit *edit)
 {
     Eyelight_Node *node_layout, *node_area;
 
-    EYELIGHT_ASSERT_RETURN(edit != NULL);
+    EYELIGHT_ASSERT_RETURN(!!edit);
     EYELIGHT_ASSERT_RETURN(edit->node->name == EYELIGHT_NAME_CUSTOM_AREA
             || edit->node->name == EYELIGHT_NAME_THEME_AREA);
 
@@ -58,10 +58,10 @@ void eyelight_edit_area_layout_set(Eyelight_Edit *edit, const char *layout)
     Eyelight_Area *e_area;
     char buf[EYELIGHT_BUFLEN];
 
-    EYELIGHT_ASSERT_RETURN_VOID(edit != NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!edit);
     EYELIGHT_ASSERT_RETURN_VOID(edit->node->name == EYELIGHT_NAME_CUSTOM_AREA
             || edit->node->name == EYELIGHT_NAME_THEME_AREA);
-    EYELIGHT_ASSERT_RETURN_VOID(layout!=NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!layout);
 
     node_area = _get_area_from_area(edit->slide, edit->node);
     if(!node_area) return;
@@ -90,7 +90,7 @@ void eyelight_edit_area_move(Eyelight_Edit *edit, double rel1_x, double rel1_y, 
     char buf[EYELIGHT_BUFLEN];
     Eyelight_Node *data;
 
-    EYELIGHT_ASSERT_RETURN_VOID(edit != NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!edit);
     EYELIGHT_ASSERT_RETURN_VOID(edit->node->name == EYELIGHT_NAME_CUSTOM_AREA
             || edit->node->name == EYELIGHT_NAME_THEME_AREA);
 
@@ -135,7 +135,7 @@ void eyelight_edit_area_up(Eyelight_Edit *edit)
     Eyelight_Node *node;
     int find_current = 0;
 
-    EYELIGHT_ASSERT_RETURN_VOID(edit != NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!edit);
     EYELIGHT_ASSERT_RETURN_VOID(edit->node->name == EYELIGHT_NAME_CUSTOM_AREA
             || edit->node->name == EYELIGHT_NAME_THEME_AREA);
 
@@ -187,7 +187,7 @@ void eyelight_edit_area_down(Eyelight_Edit *edit)
     Eyelight_Node *prev = NULL;
     Eyelight_Node *node;
 
-    EYELIGHT_ASSERT_RETURN_VOID(edit != NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!edit);
     EYELIGHT_ASSERT_RETURN_VOID(edit->node->name == EYELIGHT_NAME_CUSTOM_AREA
             || edit->node->name == EYELIGHT_NAME_THEME_AREA);
 
@@ -224,7 +224,7 @@ void eyelight_edit_area_add(Eyelight_Viewer *pres, int id_slide)
     Eina_List *l;
     Eyelight_Area *area;
 
-    EYELIGHT_ASSERT_RETURN_VOID(pres!=NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!pres);
     EYELIGHT_ASSERT_RETURN_VOID(id_slide>=0);
     EYELIGHT_ASSERT_RETURN_VOID(id_slide<eyelight_viewer_size_get(pres));
 
@@ -307,12 +307,12 @@ void eyelight_edit_area_delete(Eyelight_Edit *edit)
     Eyelight_Node *node;
     Eina_List *l;
 
-    EYELIGHT_ASSERT_RETURN_VOID(edit != NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!edit);
     EYELIGHT_ASSERT_RETURN_VOID(edit->node->name == EYELIGHT_NAME_CUSTOM_AREA
             || edit->node->name == EYELIGHT_NAME_THEME_AREA);
 
     char *name = eyelight_retrieve_value_of_prop(edit->node,0);
-    EYELIGHT_ASSERT_RETURN_VOID(name != NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!name);
 
     evas_object_del(edit->obj);
 
@@ -363,12 +363,12 @@ void eyelight_edit_area_delete(Eyelight_Edit *edit)
 Eyelight_Node *_get_area_from_area(Eyelight_Slide *slide, Eyelight_Node *area)
 {
     Eyelight_Area *e_area = eyelight_retrieve_area_from_node(slide, area);
-    EYELIGHT_ASSERT_RETURN(e_area!=NULL);
+    EYELIGHT_ASSERT_RETURN(!!e_area);
 
     if(!e_area->node_area)
     {
         const char* area_name = eyelight_retrieve_value_of_prop(area,0);
-        EYELIGHT_ASSERT_RETURN(area_name!=NULL);
+        EYELIGHT_ASSERT_RETURN(!!area_name);
 
         //Create the area
         Eyelight_Node *node_area = eyelight_node_new(EYELIGHT_NODE_TYPE_BLOCK, EYELIGHT_NAME_AREA,slide->node);

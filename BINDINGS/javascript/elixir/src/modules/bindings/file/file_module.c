@@ -252,7 +252,7 @@ elixir_fstat(JSContext *cx, uintN argc, jsval *vp)
           path = fl->filename;
        }
 
-   if (path == NULL)
+   if (!path)
      return JS_FALSE;
 
    efs = elixir_file_stat(path);
@@ -348,7 +348,7 @@ module_close(Elixir_Module *em, JSContext *cx)
 
    tmp = &em->data;
 
-   while (file_functions[i].name != NULL)
+   while (file_functions[i].name)
      JS_DeleteProperty(cx, *((JSObject**) tmp), file_functions[i++].name);
 
    for (i = 0; i < sizeof (file_types) / sizeof(*file_types); i++)

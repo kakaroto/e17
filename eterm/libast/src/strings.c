@@ -318,8 +318,8 @@ spiftool_regexp_match_r(register const spif_charptr_t str, register const spif_c
     register int result;
     char errbuf[256];
 
-    ASSERT_RVAL(rexp != NULL, FALSE);
-    if (*rexp == NULL) {
+    ASSERT_RVAL(!!rexp, FALSE);
+    if (!*rexp) {
         *rexp = (regex_t *) MALLOC(sizeof(regex_t));
     }
 
@@ -342,7 +342,7 @@ spiftool_regexp_match_r(register const spif_charptr_t str, register const spif_c
 }
 #endif
 
-#define IS_DELIM(c)  ((delim != NULL) ? (strchr((char *) delim, (c)) != NULL) : (isspace(c)))
+#define IS_DELIM(c)  ((delim) ? (strchr((char *)delim, (c))) : (isspace(c)))
 #define IS_QUOTE(c)  (quote && quote == (c))
 
 spif_charptr_t *
@@ -355,9 +355,9 @@ spiftool_split(const spif_charptr_t delim, const spif_charptr_t str)
     unsigned short cnt = 0;
     unsigned long len;
 
-    REQUIRE_RVAL(str != NULL, (spif_charptr_t *) NULL);
+    REQUIRE_RVAL(!!str, (spif_charptr_t *) NULL);
 
-    if ((slist = (spif_charptr_t *) MALLOC(sizeof(spif_charptr_t))) == NULL) {
+    if (!(slist = (spif_charptr_t *)MALLOC(sizeof(spif_charptr_t)))) {
         libast_print_error("split():  Unable to allocate memory -- %s\n", strerror(errno));
         return ((spif_charptr_t *) NULL);
     }
@@ -370,7 +370,7 @@ spiftool_split(const spif_charptr_t delim, const spif_charptr_t str)
     for (; *pstr; cnt++) {
         /* First, resize the list to two bigger than our count.  Why two?
            One for the string we're about to do, and one for a trailing NULL. */
-        if ((slist = (spif_charptr_t *) REALLOC(slist, sizeof(spif_charptr_t) * (cnt + 2))) == NULL) {
+        if (!(slist = (spif_charptr_t *)REALLOC(slist, sizeof(spif_charptr_t) * (cnt + 2)))) {
             libast_print_error("split():  Unable to allocate memory -- %s\n", strerror(errno));
             return ((spif_charptr_t *) NULL);
         }
@@ -378,7 +378,7 @@ spiftool_split(const spif_charptr_t delim, const spif_charptr_t str)
         /* The string we're about to create can't possibly be larger than the remainder
            of the string we have yet to parse, so allocate that much space to start. */
         len = strlen((char *) pstr) + 1;
-        if ((slist[cnt] = (spif_charptr_t) MALLOC(len)) == NULL) {
+        if (!(slist[cnt] = (spif_charptr_t)MALLOC(len))) {
             libast_print_error("split():  Unable to allocate memory -- %s.\n", strerror(errno));
             return ((spif_charptr_t *) NULL);
         }
@@ -446,7 +446,7 @@ spiftool_join(spif_charptr_t sep, spif_charptr_t *slist)
 
     ASSERT_RVAL(slist != (spif_ptr_t) NULL, (spif_ptr_t) NULL);
     REQUIRE_RVAL(*slist != (spif_ptr_t) NULL, (spif_ptr_t) NULL);
-    if (sep == NULL) {
+    if (!sep) {
         sep = SPIF_CHARPTR("");
     }
     slen = strlen((char *) sep);
@@ -478,7 +478,7 @@ spiftool_get_word(unsigned long index, const spif_charptr_t str)
 
     ASSERT_RVAL(str != (spif_ptr_t) NULL, (spif_ptr_t) NULL);
     k = strlen((char *) str) + 1;
-    if ((tmpstr = (spif_charptr_t) MALLOC(k)) == NULL) {
+    if (!(tmpstr = (spif_charptr_t)MALLOC(k))) {
         libast_print_error("get_word(%lu, %s):  Unable to allocate memory -- %s.\n", index, str, strerror(errno));
         return ((spif_charptr_t) NULL);
     }
@@ -594,7 +594,7 @@ spiftool_chomp(spif_charptr_t s)
 {
     register spif_charptr_t front, back;
 
-    ASSERT_RVAL(s != NULL, NULL);
+    ASSERT_RVAL(!!s, NULL);
     REQUIRE_RVAL(*s, s);
 
     for (front = s; *front && isspace(*front); front++);

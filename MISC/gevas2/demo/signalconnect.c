@@ -63,9 +63,9 @@ static gint raptor_moved(
     Evas_Coord* x, Evas_Coord* y,
 	gpointer user_data )
 {
-    g_return_val_if_fail(o     != NULL, GEVASOBJ_SIG_VETO);
-	g_return_val_if_fail(x     != NULL, GEVASOBJ_SIG_VETO);
-	g_return_val_if_fail(y     != NULL, GEVASOBJ_SIG_VETO);
+    g_return_val_if_fail(!!o, GEVASOBJ_SIG_VETO);
+	g_return_val_if_fail(!!x, GEVASOBJ_SIG_VETO);
+	g_return_val_if_fail(!!y, GEVASOBJ_SIG_VETO);
     g_return_val_if_fail( GTK_IS_GEVASOBJ(o), GEVASOBJ_SIG_VETO);
 
 /*     printf("raptor_moved() x:%d y:%d\n", *x, *y ); */

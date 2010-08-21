@@ -550,7 +550,7 @@ elixir_virtual(JSContext *cx, uintN argc, jsval *vp)
    real = elixir_get_string_bytes(val[0].v.str, NULL);
    virtual = elixir_get_string_bytes(val[1].v.str, NULL);
 
-   if (real == NULL || virtual == NULL)
+   if (!real || !virtual)
      return JS_FALSE;
 
    new = malloc(sizeof(struct elixir_virtual_dir_s));
@@ -629,7 +629,7 @@ module_close(Elixir_Module* em, JSContext* cx)
      return EINA_FALSE;
    esmd = em->data;
 
-   while (dir_functions[i].name != NULL)
+   while (dir_functions[i].name)
      JS_DeleteProperty(cx, esmd->item, dir_functions[i++].name);
 
    while (virtuals)

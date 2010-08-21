@@ -193,7 +193,7 @@ void sync_album_update_cb(void *data, Enlil_Sync *sync,Enlil_Root *root, Enlil_A
    Enlil_Root *_root= enlil_data->root;
 
    Enlil_Album *_album = enlil_root_album_search_file_name(_root, enlil_album_file_name_get(album));
-   ASSERT_RETURN_VOID(_album != NULL);
+   ASSERT_RETURN_VOID(!!_album);
 
    enlil_album_copy(album, _album);
 
@@ -218,7 +218,7 @@ void sync_album_disappear_cb(void *data, Enlil_Sync *sync,Enlil_Root *root, Enli
    Enlil_Data *enlil_data = (Enlil_Data*) data;
    Enlil_Root *_root = enlil_data->root;
    Enlil_Album *_album = enlil_root_album_search_file_name(_root, enlil_album_file_name_get(album));
-   ASSERT_RETURN_VOID(_album != NULL);
+   ASSERT_RETURN_VOID(!!_album);
 
    //snprintf(buf, PATH_MAX, "%s %s",D_("Delete Album : "), enlil_album_name_get(album));
    //notify_sync_content_set(enlil_data, buf);
@@ -239,7 +239,7 @@ void sync_photo_new_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Ph
 
    Enlil_Album *_album = enlil_root_album_search_file_name(_root, enlil_album_file_name_get(album));
    Enlil_Album_Data *album_data = enlil_album_user_data_get(_album);
-   ASSERT_RETURN_VOID(_album != NULL);
+   ASSERT_RETURN_VOID(!!_album);
 
    Enlil_Photo *_photo = enlil_album_photo_search_file_name(_album, enlil_photo_file_name_get(photo));
 
@@ -303,7 +303,7 @@ void sync_photo_update_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil
    Enlil_Root *_root = enlil_data->root;
 
    Enlil_Album *_album = enlil_root_album_search_file_name(_root, enlil_album_file_name_get(album));
-   ASSERT_RETURN_VOID(_album != NULL);
+   ASSERT_RETURN_VOID(!!_album);
 
    Enlil_Photo *_photo = enlil_album_photo_search_file_name(_album, enlil_photo_file_name_get(photo));
    enlil_photo_copy(photo, _photo);
@@ -345,7 +345,7 @@ void sync_photo_disappear_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, En
    Enlil_Root *_root = enlil_data->root;
 
    Enlil_Album *_album = enlil_root_album_search_file_name(_root, enlil_album_file_name_get(album));
-   ASSERT_RETURN_VOID(_album != NULL);
+   ASSERT_RETURN_VOID(!!_album);
    Enlil_Photo *_photo = enlil_album_photo_search_file_name(_album, enlil_photo_file_name_get(photo));
 
    //snprintf(buf, PATH_MAX, D_("Delete Photo %s from the album %s"), enlil_photo_name_get(_photo), enlil_album_name_get(_album));
@@ -766,7 +766,7 @@ void flickr_photo_known_cb(void *data, Enlil_Album *album, Enlil_Photo *photo)
 void flickr_photo_flickrnotuptodate_cb(void *data, Enlil_Photo *photo)
 {
    Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-   ASSERT_RETURN_VOID(photo_data != NULL);
+   ASSERT_RETURN_VOID(!!photo_data);
    photo_data->flickr_sync.state = PHOTO_FLICKR_FLICKRNOTUPTODATE;
 
    Evas_Object *o = (Evas_Object *)photos_list_object_item_object_get(photo_data->list_photo_item);
@@ -788,7 +788,7 @@ void flickr_photo_notuptodate_cb(void *data, Enlil_Photo *photo)
 void flickr_photo_uptodate_cb(void *data, Enlil_Photo *photo)
 {
    Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-   ASSERT_RETURN_VOID(photo_data != NULL);
+   ASSERT_RETURN_VOID(!!photo_data);
    photo_data->flickr_sync.state = PHOTO_FLICKR_NONE;
 
    Evas_Object *o = (Evas_Object *)photos_list_object_item_object_get(photo_data->list_photo_item);

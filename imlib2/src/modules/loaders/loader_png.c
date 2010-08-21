@@ -259,7 +259,7 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
         return 0;
      }
    info_ptr = png_create_info_struct(png_ptr);
-   if (info_ptr == NULL)
+   if (!info_ptr)
      {
         fclose(f);
         png_destroy_write_struct(&png_ptr, (png_infopp) NULL);

@@ -100,7 +100,7 @@ gevasev_handler_mouse_down(GtkObject * object, GtkObject * gevasobj, int _b,
 						   int _x, int _y)
 {
 	GtkgEvasEvH *ev;
-	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH(object), GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH(object);
 
@@ -191,7 +191,7 @@ static void gevasevh_destroy(GtkObject * object)
 {
 	GtkgEvasEvH *ev;
 
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASEVH(object));
 
 	ev = GTK_GEVASEVH(object);
@@ -208,7 +208,7 @@ static void gevasevh_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasEvH *ev;
 
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASEVH(object));
 
 	ev = GTK_GEVASEVH(object);
@@ -227,7 +227,7 @@ static void gevasevh_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasEvH *ev;
 
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVAS(object));
 
 	ev = GTK_GEVASEVH(object);

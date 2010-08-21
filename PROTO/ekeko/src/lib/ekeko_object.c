@@ -316,7 +316,7 @@ EAPI Eina_Bool ekeko_object_child_append(Ekeko_Object *p, Ekeko_Object *o)
 #endif
 		if (oprv->parent == p)
 			return;
-		if (oprv->parent != NULL)
+		if (oprv->parent)
 			ekeko_object_child_remove(oprv->parent, o);
 #if 0
 		/* check if the object has some pending changes */

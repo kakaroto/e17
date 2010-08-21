@@ -142,7 +142,7 @@ CURL * ed_curl_init(char *screen_name, char *password, http_request * request, i
 		curl_easy_setopt(ua, CURLOPT_WRITEFUNCTION,     write_data      );
 		curl_easy_setopt(ua, CURLOPT_ENCODING,          ""              );
 
-		if(account_id >= 0 && screen_name != NULL && password != NULL) {
+		if(account_id >= 0 && screen_name && password) {
 			curl_easy_setopt(ua, CURLOPT_HTTPAUTH,   CURLAUTH_BASIC      );
 			curl_easy_setopt(ua, CURLOPT_USERNAME,   screen_name         );
 			curl_easy_setopt(ua, CURLOPT_PASSWORD,   password            );
@@ -162,10 +162,10 @@ gint ed_curl_get(char *screen_name, char *password, http_request * request, int 
 	CURL *ua=NULL;
 	char *key=NULL, *redir_url=NULL;
 
-	if(request ==NULL)
+	if(!request)
 		return 2;
 
-	if(request->url == NULL || strlen(request->url) <= 0)
+	if(!request->url || strlen(request->url) <= 0)
 		return 3;
 
 	if(!user_agents) user_agents = eina_hash_string_superfast_new(user_agent_free);
@@ -196,7 +196,7 @@ gint ed_curl_get(char *screen_name, char *password, http_request * request, int 
 
 	if(res == 0) {
 		res = curl_easy_getinfo(ua, CURLINFO_RESPONSE_CODE, &request->response_code);
-		if(CURLE_OK == curl_easy_getinfo(ua, CURLINFO_REDIRECT_URL, &redir_url) && redir_url != NULL)
+		if(CURLE_OK == curl_easy_getinfo(ua, CURLINFO_REDIRECT_URL, &redir_url) && redir_url)
 			request->redir_url = strdup(redir_url);
 		if(debug > 3) printf("Response code: %ld\n", request->response_code);
 		return(request->content.size>0?0:-1);
@@ -211,10 +211,10 @@ gint ed_curl_post(char *screen_name, char *password, http_request * request, cha
 	double content_length=0;
 	char *key=NULL;
 
-	if(request ==NULL)
+	if(!request)
 		return 2;
 
-	if(request->url == NULL || strlen(request->url) <= 0)
+	if(!request->url || strlen(request->url) <= 0)
 		return 3;
 
 	if(!user_agents) user_agents = eina_hash_int32_new(user_agent_free);

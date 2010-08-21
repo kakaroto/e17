@@ -7,22 +7,22 @@
 
 Eyelight_Node_Name eyelight_edit_name_get(Eyelight_Edit *edit)
 {
-    EYELIGHT_ASSERT_RETURN(edit!=NULL);
+    EYELIGHT_ASSERT_RETURN(!!edit);
 
     return edit->node->name;
 }
 
 int eyelight_edit_save(Eyelight_Viewer *pres, const char *file)
 {
-    EYELIGHT_ASSERT_RETURN(pres!=NULL);
-    EYELIGHT_ASSERT_RETURN(file!=NULL);
+    EYELIGHT_ASSERT_RETURN(!!pres);
+    EYELIGHT_ASSERT_RETURN(!!file);
 
     return eyelight_save(pres->compiler->root, file);
 }
 
 void eyelight_edit_obj_unselect(Eyelight_Edit *edit)
 {
-    EYELIGHT_ASSERT_RETURN_VOID(edit != NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!edit);
     edje_object_signal_emit(edit->obj, "unselect", "eyelight");
 }
 
@@ -33,8 +33,8 @@ void eyelight_edit_object_down(Eyelight_Viewer *pres, Eyelight_Edit *edit)
     int find = 0;
     char buf[EYELIGHT_BUFLEN];
 
-    EYELIGHT_ASSERT_RETURN_VOID(edit != NULL);
-    EYELIGHT_ASSERT_RETURN_VOID(pres != NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!edit);
+    EYELIGHT_ASSERT_RETURN_VOID(!!pres);
 
     Eyelight_Node *n_area = _get_area_of_obj(edit);
     Eyelight_Node *n_area_name = eyelight_retrieve_node_prop(n_area, EYELIGHT_NAME_NAME);
@@ -84,8 +84,8 @@ void eyelight_edit_object_up(Eyelight_Viewer *pres, Eyelight_Edit *edit)
     Eina_List *l;
     char buf[EYELIGHT_BUFLEN];
 
-    EYELIGHT_ASSERT_RETURN_VOID(edit != NULL);
-    EYELIGHT_ASSERT_RETURN_VOID(pres != NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!edit);
+    EYELIGHT_ASSERT_RETURN_VOID(!!pres);
 
     Eyelight_Node *n_area = _get_area_of_obj(edit);
     Eyelight_Node *n_area_name = eyelight_retrieve_node_prop(n_area, EYELIGHT_NAME_NAME);
@@ -124,7 +124,7 @@ void eyelight_edit_object_up(Eyelight_Viewer *pres, Eyelight_Edit *edit)
 
 void eyelight_edit_object_delete(Eyelight_Edit *edit)
 {
-    EYELIGHT_ASSERT_RETURN_VOID(edit != NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!edit);
 
     Eyelight_Node *father = edit->node->father;
     Eyelight_Slide *slide = edit->slide;

@@ -121,7 +121,7 @@ load_sqlite_const_binding(JSContext *cx, JSObject *parent)
    unsigned int	i = 0;
    jsval property;
 
-   while (sqlite_const_properties[i].name != NULL)
+   while (sqlite_const_properties[i].name)
      {
 	property = INT_TO_JSVAL(sqlite_const_properties[i].value);
 	if (!JS_DefineProperty(cx, parent,
@@ -140,7 +140,7 @@ unload_sqlite_const_binding(JSContext *cx, JSObject *parent)
 {
    unsigned int i = 0;
 
-   while (sqlite_const_properties[i].name != NULL)
+   while (sqlite_const_properties[i].name)
      JS_DeleteProperty(cx, parent, sqlite_const_properties[i++].name);
 
    return EINA_TRUE;

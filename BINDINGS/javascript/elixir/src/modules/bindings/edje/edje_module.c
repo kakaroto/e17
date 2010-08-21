@@ -244,12 +244,12 @@ _elixir_evas_object_to_elixir_object(Evas_Object *obj)
    const char   *evas_name;
    unsigned int  i;
 
-   if (obj == NULL)
+   if (!obj)
      return "evas_object";
 
    evas_name = evas_object_type_get(obj);
 
-   for (i = 0; _matching_evas_object[i].evas_name != NULL; ++i)
+   for (i = 0; _matching_evas_object[i].evas_name; ++i)
      if (strcmp(_matching_evas_object[i].evas_name, evas_name) == 0)
        return _matching_evas_object[i].elixir_name;
 
@@ -2313,7 +2313,7 @@ elixir_edje_object_message_send(JSContext *cx, uintN argc, jsval *vp)
 
         str = NULL;
         ems = alloca(sizeof (Edje_Message_String));
-        if (emsg != NULL)
+        if (emsg)
           if (!elixir_object_get_str(cx, emsg, "str", &str))
             return JS_FALSE;
 
@@ -2337,7 +2337,7 @@ elixir_edje_object_message_send(JSContext *cx, uintN argc, jsval *vp)
         Edje_Message_Int*               emi;
 
         emi = alloca(sizeof (Edje_Message_Int));
-        if (emsg != NULL)
+        if (emsg)
           {
              if (!elixir_object_get_int(cx, emsg, "val", &emi->val))
                return JS_FALSE;
@@ -2353,7 +2353,7 @@ elixir_edje_object_message_send(JSContext *cx, uintN argc, jsval *vp)
         Edje_Message_Float*             emf;
 
         emf = alloca(sizeof (Edje_Message_Float));
-        if (emsg != NULL)
+        if (emsg)
           {
              if (!elixir_object_get_dbl(cx, emsg, "val", &emf->val))
                return JS_FALSE;
@@ -3082,7 +3082,7 @@ module_open(Elixir_Module *em, JSContext *cx, JSObject *parent)
    if (!JS_DefineFunctions(cx, *((JSObject**) tmp), edje_functions))
      goto on_error;
 
-   while (edje_const_properties[i].name != NULL)
+   while (edje_const_properties[i].name)
      {
         property = INT_TO_JSVAL(edje_const_properties[i].value);
         if (!JS_DefineProperty(cx, parent,
@@ -3122,11 +3122,11 @@ module_close(Elixir_Module *em, JSContext *cx)
    tmp = &em->data;
 
    i = 0;
-   while (edje_functions[i].name != NULL)
+   while (edje_functions[i].name)
      JS_DeleteProperty(cx, parent, edje_functions[i++].name);
 
    i = 0;
-   while (edje_const_properties[i].name != NULL)
+   while (edje_const_properties[i].name)
      JS_DeleteProperty(cx, parent, edje_const_properties[i++].name);
 
    elixir_object_unregister(cx, (JSObject**) tmp);

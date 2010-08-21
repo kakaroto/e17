@@ -123,7 +123,7 @@ load_evas_const_binding(JSContext *cx, JSObject *parent)
 {
    unsigned int	i;
 
-   for (i = 0; evas_const_properties[i].name != NULL; ++i)
+   for (i = 0; evas_const_properties[i].name; ++i)
      if (!elixir_add_int_prop(cx, parent,
                              evas_const_properties[i].name,
                              evas_const_properties[i].value))
@@ -137,7 +137,7 @@ unload_evas_const_binding(JSContext *cx, JSObject *parent)
 {
    unsigned int i = 0;
 
-   while (evas_const_properties[i].name != NULL)
+   while (evas_const_properties[i].name)
      JS_DeleteProperty(cx, parent, evas_const_properties[i++].name);
 
    return EINA_TRUE;

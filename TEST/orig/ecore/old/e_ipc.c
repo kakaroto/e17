@@ -22,7 +22,7 @@ ecore_ev_ipc_init(char *path)
   int                 fd, len;
   struct sockaddr_un  saun;
 
-  if (path == NULL)
+  if (!path)
     return;
 
   /* a UNIX domain, stream socket */

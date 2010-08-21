@@ -28,7 +28,7 @@ elixir_current(JSContext *cx, uintN argc, jsval *vp)
 
    if (!elixir_add_str_prop(cx, result, "filename", elixir_id_filename()))
      return JS_FALSE;
-   if (elixir_id_section() != NULL)
+   if (elixir_id_section())
      {
 	if (!elixir_add_str_prop(cx, result, "section", elixir_id_section()))
 	  return JS_FALSE;
@@ -220,7 +220,7 @@ elixir_include(JSContext *cx, uintN argc, jsval *vp)
      {
 	if (val[i].v.str) params[i] = elixir_get_string_bytes(val[i].v.str, NULL);
 	else params[i] = NULL;
-	if (params[i] != NULL) count = i + 1;
+	if (params[i]) count = i + 1;
      }
 
    params[3] = NULL;
@@ -270,7 +270,7 @@ elixir_parse(JSContext *cx, uintN argc, jsval *vp)
    for (count = 0, i = 0; i < 3; ++i)
      {
 	params[i] = elixir_get_string_bytes(val[i].v.str, NULL);
-	if (params[i] != NULL) count = i + 1;
+	if (params[i]) count = i + 1;
      }
 
    params[3] = NULL;

@@ -31,7 +31,7 @@ static void * neko_init(void)
 	args[0] = alloc_string("nekeko@object_init");
 	args[1] = alloc_int(0);
 	ret = val_callEx(loader, val_field(loader, val_id("loadprim")), args, 2, &exc);
-	if (exc != NULL)
+	if (exc)
 	{
 
 		buffer b = alloc_buffer(NULL);
@@ -43,7 +43,7 @@ static void * neko_init(void)
 	args[0] = alloc_string("/home/jl/c/efl-research/eon/src/lib/script/neko/ekeko.n");
 	args[1] = loader;
 	ret = val_callEx(loader, val_field(loader, val_id("loadmodule")), args, 2, &exc);
-	if (exc != NULL)
+	if (exc)
 	{
 
 		buffer b = alloc_buffer(NULL);
@@ -96,7 +96,7 @@ static Eina_Bool neko_execute(void *d, char *fname, Ekeko_Object *dis)
 	printf("nobj created correctly!!!\n");
 	val_callEx(nobj, f, NULL, 0, &exc);
 	printf("function called!!!\n");
-	if (exc != NULL)
+	if (exc)
 	{
 
 		buffer b = alloc_buffer(NULL);
@@ -119,7 +119,7 @@ static Eina_Bool neko_load(void *data, char *file)
 	args[0] = alloc_string(file);
 	args[1] = loader;
 	ret = val_callEx(loader, val_field(loader, val_id("loadmodule")), args, 2, &exc);
-	if (exc != NULL)
+	if (exc)
 	{
 
 		buffer b = alloc_buffer(NULL);

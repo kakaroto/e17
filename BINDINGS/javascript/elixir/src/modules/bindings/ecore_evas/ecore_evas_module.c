@@ -834,7 +834,7 @@ _elixir_ecore_evas_callback_set(const char* desc,
    if (data)
      {
 	elixir_void_free(data);
-	if (val[1].v.fct != NULL)
+	if (val[1].v.fct)
 	  {
 	     data = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), JSVAL_VOID, val[1].v.fct);
 	     ecore_evas_data_set(ee, desc, data);
@@ -843,14 +843,14 @@ _elixir_ecore_evas_callback_set(const char* desc,
 	  }
      }
 
-   if (val[1].v.fct != NULL)
+   if (val[1].v.fct)
      data = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), JSVAL_VOID, val[1].v.fct);
    else
      data = NULL;
 
    ecore_evas_data_set(ee, desc, data);
 
-   func_call(ee, val[1].v.fct != NULL ? func_eeecb : NULL);
+   func_call(ee, !!val[1].v.fct ? func_eeecb : NULL);
 
    return JS_TRUE;
 }
@@ -1012,7 +1012,7 @@ module_open(Elixir_Module *em, JSContext *cx, JSObject *parent)
    if (!JS_DefineFunctions(cx, *((JSObject**) tmp), ecore_evas_functions))
      goto on_error;
 
-   while (ecore_evas_const_properties[i].name != NULL)
+   while (ecore_evas_const_properties[i].name)
      {
         property = INT_TO_JSVAL(ecore_evas_const_properties[i].value);
         if (!JS_DefineProperty(cx, parent,
@@ -1050,11 +1050,11 @@ module_close(Elixir_Module *em, JSContext *cx)
    tmp = &em->data;
 
    i = 0;
-   while (ecore_evas_functions[i].name != NULL)
+   while (ecore_evas_functions[i].name)
      JS_DeleteProperty(cx, parent, ecore_evas_functions[i++].name);
 
    i = 0;
-   while (ecore_evas_const_properties[i].name != NULL)
+   while (ecore_evas_const_properties[i].name)
      JS_DeleteProperty(cx, parent, ecore_evas_const_properties[i++].name);
 
    elixir_object_unregister(cx, (JSObject**) tmp);

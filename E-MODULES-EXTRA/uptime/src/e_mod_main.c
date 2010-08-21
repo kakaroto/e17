@@ -136,7 +136,7 @@ _gc_shutdown (E_Gadcon_Client * gcc)
    inst = gcc->data;
    if (!(ut = inst->ut)) return;
 
-   if (inst->monitor != NULL) ecore_timer_del (inst->monitor);
+   if (inst->monitor) ecore_timer_del (inst->monitor);
 
    ut_config->instances = eina_list_remove (ut_config->instances, inst);
    evas_object_event_callback_del (ut->ut_obj, EVAS_CALLBACK_MOUSE_DOWN,
@@ -189,7 +189,7 @@ _ut_cb_mouse_down (void *data, Evas * e, Evas_Object * obj, void *event_info)
    Instance *inst;
    Evas_Event_Mouse_Down *ev;
 
-   if (ut_config->menu != NULL) return;
+   if (ut_config->menu) return;
 
    inst = data;
    ev = event_info;
@@ -227,7 +227,7 @@ _ut_cb_mouse_down (void *data, Evas * e, Evas_Object * obj, void *event_info)
 static void
 _ut_menu_cb_post (void *data, E_Menu * m)
 {
-   if (ut_config->menu == NULL) return;
+   if (!ut_config->menu) return;
    e_object_del (E_OBJECT (ut_config->menu));
    ut_config->menu = NULL;
 }
@@ -269,7 +269,7 @@ _ut_config_item_get (const char *id)
 	for (l = ut_config->items; l; l = l->next)
 	  {
 	     ci = l->data;
-	     if (ci->id == NULL) continue;
+	     if (!ci->id) continue;
 	     if (strcmp (ci->id, id) == 0) return ci;
 	  }
      }
@@ -289,7 +289,7 @@ _ut_config_updated (Config_Item *ci)
 {
    Eina_List *l;
 
-   if (ut_config == NULL) return;
+   if (!ut_config) return;
 
    for (l = ut_config->instances; l; l = l->next)
      {
@@ -297,7 +297,7 @@ _ut_config_updated (Config_Item *ci)
 
 	inst = l->data;
 	if (inst->ci != ci) continue;
-	if (inst->monitor != NULL)
+	if (inst->monitor)
 	  ecore_timer_del (inst->monitor);
 	inst->monitor =
 	  ecore_timer_add (ci->update_interval, _ut_cb_check, inst);
@@ -335,7 +335,7 @@ e_modapi_init (E_Module * m)
    E_CONFIG_LIST (D, T, items, conf_item_edd);
 
    ut_config = e_config_domain_load ("module.uptime", conf_edd);
-   if (ut_config == NULL)
+   if (!ut_config)
      {
 	Config_Item *ci;
 
@@ -358,7 +358,7 @@ e_modapi_shutdown (E_Module * m)
    ut_config->module = NULL;
    e_gadcon_provider_unregister (&_gc_class);
 
-   if (ut_config->config_dialog != NULL)
+   if (ut_config->config_dialog)
      e_object_del (E_OBJECT (ut_config->config_dialog));
 
    if (ut_config->menu)
@@ -375,7 +375,7 @@ e_modapi_shutdown (E_Module * m)
 	ut_config->items =
 	  eina_list_remove_list (ut_config->items, ut_config->items);
 
-	if (ci->id != NULL) eina_stringshare_del (ci->id);
+	if (ci->id) eina_stringshare_del (ci->id);
 
 	E_FREE(ci);
     }
@@ -489,7 +489,7 @@ update_counters (Instance * inst)
 
   /* retrive number of active users */
    utmp = fopen (_PATH_UTMP, "r");
-   if (utmp == NULL)
+   if (!utmp)
      inst->nusers = -1;
    else
      {

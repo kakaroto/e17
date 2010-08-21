@@ -316,7 +316,7 @@ _execwatch_cmd_exit(void *data, int type, void *event)
 		  int icon_set = 0;
 
 		  lines = inst->read->lines;
-		  for (i = 0; lines[i].line != NULL; i++)
+		  for (i = 0; lines[i].line; i++)
 		    {
 		       if (inst->ci->okstate_mode == 1)
 			 {
@@ -379,13 +379,13 @@ _execwatch_popup_content_create(Instance *inst)
    if (inst->read && inst->read->lines)
      {
 	lines = inst->read->lines;
-	for (i = 0; lines[i].line != NULL; i++)
+	for (i = 0; lines[i].line; i++)
 	  textlen += lines[i].size + 1;
 	text = alloca(textlen + 1);
 	if (!text) return;
 
 	text[0] = '\0';
-	for (i = 0; lines[i].line != NULL; i++)
+	for (i = 0; lines[i].line; i++)
 	  {
 	     strcat(text, lines[i].line);
 	     strcat(text, "\n");

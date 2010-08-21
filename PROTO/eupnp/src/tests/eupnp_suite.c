@@ -40,7 +40,7 @@ eupnp_build_suite(void)
 
    s = suite_create("Eupnp");
 
-   for (i = 0; cases[i].name != NULL; ++i)
+   for (i = 0; cases[i].name; ++i)
      {
 	t = tcase_create(cases[i].name);
 	cases[i].build(t);

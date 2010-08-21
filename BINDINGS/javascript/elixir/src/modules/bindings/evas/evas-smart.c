@@ -516,7 +516,7 @@ unload_evas_smart_params(JSContext *cx, JSObject *parent)
 {
    unsigned int i = 0;
 
-   while (evas_smart_function[i].name != NULL)
+   while (evas_smart_function[i].name)
      JS_DeleteProperty(cx, parent, evas_smart_function[i++].name);
 
    return EINA_TRUE;

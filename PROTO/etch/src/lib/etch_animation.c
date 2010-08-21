@@ -93,7 +93,7 @@ Etch_Interpolator *_interpolators[ETCH_DATATYPES] = {
 
 static Eina_Bool _iterator_next(Etch_Animation_Iterator *it, void **data)
 {
-	if (it->current == NULL) return EINA_FALSE;
+	if (!it->current) return EINA_FALSE;
 	if (data) *data = (void*) it->current;
 
 	it->current = it->current->next;

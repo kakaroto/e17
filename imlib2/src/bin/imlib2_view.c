@@ -137,7 +137,7 @@ main(int argc, char **argv)
      }
 
    disp = XOpenDisplay(NULL);
-   if (disp == NULL)
+   if (!disp)
      {
         fprintf(stderr, "Cannot open display\n");
         return 1;

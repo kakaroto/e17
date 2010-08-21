@@ -28,7 +28,7 @@ static const char *edjetype;
  */
 static void *
 init_test(struct ensure *en ensure_unused){
-	if (edjetype == NULL)
+	if (!edjetype)
 		edjetype = eina_stringshare_add("edje");
 	return NULL;
 }

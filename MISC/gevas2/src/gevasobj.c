@@ -152,7 +152,7 @@ Evas* _gevas_evas(GtkObject * object)
 {
 	GtkgEvasObj *ev;
 
-	g_return_val_if_fail(object != NULL, NULL);
+	g_return_val_if_fail(!!object, NULL);
 	g_return_val_if_fail(GTK_IS_GEVASOBJ(object), NULL);
 
 	ev = GTK_GEVASOBJ(object);
@@ -163,7 +163,7 @@ void _gevas_set_obj(GtkObject * object, Evas_Object* eobj)
 {
 	GtkgEvasObj *ev;
 
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASOBJ(object));
 
 	ev = GTK_GEVASOBJ(object);
@@ -187,7 +187,7 @@ void _gevas_set_obj(GtkObject * object, Evas_Object* eobj)
 Evas_Object* _gevas_get_obj(GtkObject * object)
 {
 	GtkgEvasObj *ev;
-	g_return_val_if_fail(object != NULL, NULL);
+	g_return_val_if_fail(!!object, NULL);
 	g_return_val_if_fail(GTK_IS_GEVASOBJ(object), NULL);
 	ev = GTK_GEVASOBJ(object);
 	return ev->eobj;
@@ -212,7 +212,7 @@ gevasobj_from_evasobj( Evas_Object* eo )
 GtkgEvas *gevasobj_get_gevas(GtkObject * object)
 {
 	GtkgEvasObj *ev;
-	g_return_val_if_fail(object != NULL, NULL);
+	g_return_val_if_fail(!!object, NULL);
 	g_return_val_if_fail(GTK_IS_GEVASOBJ(object), NULL);
 	ev = GTK_GEVASOBJ(object);
 
@@ -230,7 +230,7 @@ void _gevasobj_ensure_obj_free(GtkObject * object)
 {
 	GtkgEvasObj *ev;
 
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASOBJ(object));
 
 	ev = GTK_GEVASOBJ(object);
@@ -363,8 +363,8 @@ void _gevasobj_add_evhandler(GtkgEvasObj * object, GtkObject * h)
 {
 	GtkgEvasObj *ev;
     GtkgEvasEvHClass* k;
-	g_return_if_fail(h != NULL);
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!h);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASEVH(h));
 	g_return_if_fail(GTK_IS_GEVASOBJ(object));
 	ev = GTK_GEVASOBJ(object);
@@ -401,7 +401,7 @@ void _gevasobj_add_evhandler(GtkgEvasObj * object, GtkObject * h)
 void _gevasobj_remove_evhandler(GtkgEvasObj * object, GtkObject * h)
 {
 	GtkgEvasObj *ev;
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASOBJ(object));
 	ev = GTK_GEVASOBJ(object);
 	ev->ev_handlers = g_slist_remove(ev->ev_handlers, h);
@@ -411,7 +411,7 @@ GSList *gevasobj_get_evhandlers(GtkgEvasObj * object )
 {
 	GtkgEvasObj *ev;
 
-	g_return_val_if_fail(object != NULL, NULL);
+	g_return_val_if_fail(!!object, NULL);
 	g_return_val_if_fail(GTK_IS_GEVASOBJ(object), NULL);
 	ev = GTK_GEVASOBJ(object);
 	return ev->ev_handlers;
@@ -613,7 +613,7 @@ static void gevasobj_destroy(GtkObject * object)
 {
     
 	GtkgEvasObj *ev;
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASOBJ(object));
 	ev = GTK_GEVASOBJ(object);
 
@@ -633,7 +633,7 @@ static void gevasobj_destroy(GtkObject * object)
 static void gevasobj_finalize(GObject * object)
 {
 	GtkgEvasObj *ev;
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASOBJ(object));
 	ev = GTK_GEVASOBJ(object);
 
@@ -655,11 +655,11 @@ void gevasobj_set_color(GtkgEvasObj * object, int r, int g, int b, int a)
 }
 void gevasobj_set_color_from_string(GtkgEvasObj * object, const gchar* s )
 {
-	g_return_if_fail( s != NULL);
+	g_return_if_fail( !!s);
 	g_return_if_fail( strlen(s) );
     
     GtkgEvasObj *ev;
-    g_return_if_fail(object != NULL);
+    g_return_if_fail(!!object);
     g_return_if_fail(GTK_IS_GEVASOBJ(object));
     ev = GTK_GEVASOBJ(object);
 
@@ -686,14 +686,14 @@ void gevasobj_set_zoom_scale(GtkgEvasObj * object, int scale)
 }
 void gevasobj_set_layer(GtkgEvasObj * object, int l)
 {
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASOBJ(object));
     
 	VTAB->set_layer(object, l);
 }
 int gevasobj_get_layer(GtkgEvasObj * object)
 {
-	g_return_val_if_fail(object != NULL,0);
+	g_return_val_if_fail(!!object,0);
 	g_return_val_if_fail(GTK_IS_GEVASOBJ(object),0);    
     
 	return VTAB->get_layer(object);
@@ -705,7 +705,7 @@ void gevasobj_set_layer_store(GtkgEvasObj * object, int l, int store)
 
 void gevasobj_raise(GtkgEvasObj * object)
 {
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASOBJ(object));
 
 	VTAB->raise(object);
@@ -713,7 +713,7 @@ void gevasobj_raise(GtkgEvasObj * object)
 
 void gevasobj_lower(GtkgEvasObj * object)
 {
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASOBJ(object));
 
 	VTAB->lower(object);
@@ -835,7 +835,7 @@ static void gevasobj_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasObj *ev;
 
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASOBJ(object));
 
 	ev = GTK_GEVASOBJ(object);
@@ -857,7 +857,7 @@ static void gevasobj_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasObj *ev;
 
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVAS(object));
 
 	ev = GTK_GEVASOBJ(object);

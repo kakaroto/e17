@@ -92,7 +92,7 @@ struct passwd *find_user(void)
       exit(2);
    }
 
-   if((pw = getpwuid(uid)) == NULL) {
+   if(!(pw = getpwuid(uid))) {
       fprintf(stderr, "Couldn't find password entry for user %d: %m\n", uid);
       exit(2);
    }

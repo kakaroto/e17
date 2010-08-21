@@ -204,7 +204,7 @@ void _exalt_dbus_notify(void *data, DBusMessage *msg)
     Exalt_DBus_Conn *conn;
 
     conn = (Exalt_DBus_Conn*)data;
-    EXALT_ASSERT_RETURN_VOID(conn!=NULL);
+    EXALT_ASSERT_RETURN_VOID(!!conn);
 
     EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
             ,
@@ -228,7 +228,7 @@ void _exalt_dbus_scan_notify(void *data, DBusMessage *msg)
     DBusMessageIter iter;
 
     conn = (Exalt_DBus_Conn*)data;
-    EXALT_ASSERT_RETURN_VOID(conn!=NULL);
+    EXALT_ASSERT_RETURN_VOID(!!conn);
 
     EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
             ,

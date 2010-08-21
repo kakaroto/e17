@@ -225,33 +225,33 @@ e_ofono_system_init(E_DBus_Connection *edbus_conn)
    if (E_OFONO_EVENT_ELEMENT_UPDATED == 0)
      E_OFONO_EVENT_ELEMENT_UPDATED = ecore_event_type_new();
 
-   if (e_ofono_iface_manager == NULL)
+   if (!e_ofono_iface_manager)
      e_ofono_iface_manager = eina_stringshare_add("org.ofono.Manager");
-   if (e_ofono_prop_modems == NULL)
+   if (!e_ofono_prop_modems)
      e_ofono_prop_modems = eina_stringshare_add("Modems");
-   if (e_ofono_iface_modem == NULL)
+   if (!e_ofono_iface_modem)
      e_ofono_iface_modem = eina_stringshare_add("org.ofono.Modem");
-   if (e_ofono_prop_name == NULL)
+   if (!e_ofono_prop_name)
      e_ofono_prop_name = eina_stringshare_add("Name");
-   if (e_ofono_prop_powered == NULL)
+   if (!e_ofono_prop_powered)
      e_ofono_prop_powered = eina_stringshare_add("Powered");
-   if (e_ofono_prop_interfaces == NULL)
+   if (!e_ofono_prop_interfaces)
      e_ofono_prop_interfaces = eina_stringshare_add("Interfaces");
-   if (e_ofono_iface_netreg == NULL)
+   if (!e_ofono_iface_netreg)
      e_ofono_iface_netreg = eina_stringshare_add("org.ofono.NetworkRegistration");
-   if (e_ofono_prop_mode == NULL)
+   if (!e_ofono_prop_mode)
      e_ofono_prop_mode = eina_stringshare_add("Mode");
-   if (e_ofono_prop_status == NULL)
+   if (!e_ofono_prop_status)
      e_ofono_prop_status = eina_stringshare_add("Status");
-   if (e_ofono_prop_operator == NULL)
+   if (!e_ofono_prop_operator)
      e_ofono_prop_operator = eina_stringshare_add("Operator");
-   if (e_ofono_prop_strength == NULL)
+   if (!e_ofono_prop_strength)
      e_ofono_prop_strength = eina_stringshare_add("Strength");
-   if (e_ofono_iface_sms == NULL)
+   if (!e_ofono_iface_sms)
    e_ofono_iface_sms = eina_stringshare_add("org.ofono.SmsManager");
-   if (e_ofono_prop_sca == NULL)
+   if (!e_ofono_prop_sca)
    e_ofono_prop_sca = eina_stringshare_add("ServiceCenterAddress");
-   if (e_ofono_method_send_sms == NULL)
+   if (!e_ofono_method_send_sms)
      e_ofono_method_send_sms = eina_stringshare_add("SendMessage");
 
    e_ofono_conn = edbus_conn;

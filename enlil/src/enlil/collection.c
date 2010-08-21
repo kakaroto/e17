@@ -19,9 +19,9 @@ void enlil_collection_free(Enlil_Collection **col)
 {
     Enlil_Album *album;
 
-    ASSERT_RETURN_VOID(col != NULL);
+    ASSERT_RETURN_VOID(!!col);
     Enlil_Collection *_col = *col;
-    ASSERT_RETURN_VOID(_col != NULL);
+    ASSERT_RETURN_VOID(!!_col);
 
     if(_col->free_cb)
       _col->free_cb(_col, _col->user_data);
@@ -47,7 +47,7 @@ GET(user_data, void *)
 
 void enlil_collection_user_data_set(Enlil_Collection *col, void *user_data, Enlil_Collection_Free_Cb cb)
 {
-    ASSERT_RETURN_VOID(col!=NULL);
+    ASSERT_RETURN_VOID(!!col);
     col->user_data = user_data;
     col->free_cb = cb;
 }
@@ -55,16 +55,16 @@ void enlil_collection_user_data_set(Enlil_Collection *col, void *user_data, Enli
 
 void enlil_collection_album_add(Enlil_Collection *col, Enlil_Album *album)
 {
-   ASSERT_RETURN_VOID(col != NULL);
-   ASSERT_RETURN_VOID(album != NULL);
+   ASSERT_RETURN_VOID(!!col);
+   ASSERT_RETURN_VOID(!!album);
 
    col->albums = eina_list_append(col->albums, album);
 }
 
 void enlil_collection_album_remove(Enlil_Collection *col, Enlil_Album *album)
 {
-   ASSERT_RETURN_VOID(col != NULL);
-   ASSERT_RETURN_VOID(album != NULL);
+   ASSERT_RETURN_VOID(!!col);
+   ASSERT_RETURN_VOID(!!album);
 
    col->albums = eina_list_remove(col->albums, album);
 }

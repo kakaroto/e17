@@ -241,7 +241,7 @@ elixir_ecore_download_init(JSContext *cx, uintN argc, jsval *vp)
         eeh_elixir_download_event[1] = ecore_event_handler_add(ECORE_DOWNLOAD_EVENT_COMPLETE, _elixir_download_event_complete_cb, NULL);
         eeh_elixir_download_event[2] = ecore_event_handler_add(ECORE_DOWNLOAD_EVENT_PROGRESS, _elixir_download_event_progress_cb, NULL);
 
-        while (ecore_download_properties[i].name != NULL)
+        while (ecore_download_properties[i].name)
           {
              jsval      property;
 
@@ -274,7 +274,7 @@ elixir_ecore_download_shutdown(JSContext *cx, uintN argc, jsval *vp)
         for (i = 0; i < sizeof(eeh_elixir_download_event) / sizeof (Ecore_Event_Handler*); ++i)
           ecore_event_handler_del(eeh_elixir_download_event[i]);
 
-        for (i = 0; ecore_download_properties[i].name != NULL; ++i)
+        for (i = 0; ecore_download_properties[i].name; ++i)
           JS_DeleteProperty(cx, JS_THIS_OBJECT(cx, vp), ecore_download_properties[i].name);
      }
 
@@ -378,7 +378,7 @@ elixir_ecore_download_file_add(JSContext *cx, uintN argc, jsval *vp)
    url = elixir_get_string_bytes(val[2].v.str, NULL);
 
    edf = ecore_download_file_add(dir, file, url);
-   if (edf != NULL)
+   if (edf)
      ecore_download_file_data_set(edf, elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), JSVAL_NULL, NULL));
 
    elixir_return_ptr(cx, vp, edf, elixir_class_request("Ecore_Download_File", NULL));
@@ -514,7 +514,7 @@ elixir_ecore_download_no_reuse(JSContext *cx, uintN argc, jsval *vp)
    parent = JS_GetParent(cx, func);
 
    i = 0;
-   while (ecore_download_functions[i].name != NULL)
+   while (ecore_download_functions[i].name)
      JS_DeleteProperty(cx, parent, ecore_download_functions[i++].name);
 
    return JS_TRUE;
@@ -591,7 +591,7 @@ module_close(Elixir_Module *em, JSContext *cx)
      return EINA_TRUE;
 
    i = 0;
-   while (ecore_download_functions[i].name != NULL)
+   while (ecore_download_functions[i].name)
      JS_DeleteProperty(cx, parent, ecore_download_functions[i++].name);
 
    return EINA_TRUE;

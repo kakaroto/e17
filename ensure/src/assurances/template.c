@@ -27,7 +27,7 @@ static const char *texttype;
  */
 static void *
 init_test(struct ensure *en ensure_unused){
-	if (texttype == NULL)
+	if (!texttype)
 		texttype = eina_stringshare_add("text");
 	return NULL;
 }

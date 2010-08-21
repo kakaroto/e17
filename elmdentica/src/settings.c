@@ -1164,7 +1164,7 @@ Evas_Object * gag_edit_widgets(char *pattern) {
 					evas_object_size_hint_align_set(entry, -1, 1);
 					evas_object_name_set(entry, "gag-pattern");
 
-					if(pattern == NULL)
+					if(!pattern)
 						elm_entry_entry_set(entry, "");
 					else
 						elm_entry_entry_set(entry, pattern);
@@ -1179,7 +1179,7 @@ Evas_Object * gag_edit_widgets(char *pattern) {
 
 				button = elm_button_add(settings_win);
 					elm_button_label_set(button, _("OK"));
-					if(pattern == NULL)
+					if(!pattern)
 						evas_object_smart_callback_add(button, "clicked", on_gag_pattern_add, inwin);
 					else
 						evas_object_smart_callback_add(button, "clicked", on_gag_pattern_edit, inwin);

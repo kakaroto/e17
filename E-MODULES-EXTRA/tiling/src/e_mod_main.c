@@ -827,7 +827,7 @@ _e_module_tiling_hide_hook(void *data, int type, void *event)
 	    for (i = 0; i < (zone->desk_x_count * zone->desk_y_count); i++)
 	      {
 		 desk = zone->desks[i];
-		 if ((_tinfo = eina_hash_find(info_hash, desk_hash_key(desk))) == NULL)
+		 if (!(_tinfo = eina_hash_find(info_hash, desk_hash_key(desk))))
 		   continue;
 		 if (eina_list_data_find(_tinfo->client_list, ev->border) == ev->border)
 		   _tinfo->client_list = eina_list_remove(_tinfo->client_list, ev->border);

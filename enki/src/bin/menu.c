@@ -28,7 +28,7 @@ Evas_Object *menu_photo_new(Evas_Object *parent)
 {
    Evas_Object *menu, *icon;
    Elm_Menu_Item *mi;
-   ASSERT_RETURN(parent != NULL);
+   ASSERT_RETURN(!!parent);
 
    menu = elm_menu_add(parent);
    evas_object_smart_callback_add(menu, "clicked", NULL, menu);

@@ -139,7 +139,7 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    ci->all_desks = cfdata->all_desks;
 
    if (ci->dir) eina_stringshare_del (ci->dir);
-   if (cfdata->dir != NULL)
+   if (cfdata->dir)
      ci->dir = eina_stringshare_add (cfdata->dir);
    else
      {

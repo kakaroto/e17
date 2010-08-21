@@ -211,7 +211,7 @@ void enlil_geocaching_free(Enlil_Geocaching *gp)
    Enlil_Geocaching_Travelbug *tb;
    Enlil_Geocaching_Log *log;
 
-   ASSERT_RETURN_VOID(gp != NULL);
+   ASSERT_RETURN_VOID(!!gp);
 
    if( gp->free_cb )
      gp->free_cb(gp, gp->user_data);
@@ -252,7 +252,7 @@ void enlil_geocaching_free(Enlil_Geocaching *gp)
 
 void enlil_geocaching_user_data_set(Enlil_Geocaching *gp, void *user_data, Enlil_Geocaching_Free_Cb cb)
 {
-   ASSERT_RETURN_VOID(gp!=NULL);
+   ASSERT_RETURN_VOID(!!gp);
    gp->user_data = user_data;
    gp->free_cb = cb;
 }
@@ -266,7 +266,7 @@ Enlil_Geocaching_Log *enlil_geocaching_log_new()
 
 void enlil_geocaching_log_free(Enlil_Geocaching_Log *gp_log)
 {
-   ASSERT_RETURN_VOID(gp_log != NULL);
+   ASSERT_RETURN_VOID(!!gp_log);
 
    EINA_STRINGSHARE_DEL(gp_log->id);
    EINA_STRINGSHARE_DEL(gp_log->date);
@@ -288,7 +288,7 @@ Enlil_Geocaching_Travelbug *enlil_geocaching_tb_new()
 
 void enlil_geocaching_tb_free(Enlil_Geocaching_Travelbug *gp_tb)
 {
-   ASSERT_RETURN_VOID(gp_tb != NULL);
+   ASSERT_RETURN_VOID(!!gp_tb);
 
    EINA_STRINGSHARE_DEL(gp_tb->id);
    EINA_STRINGSHARE_DEL(gp_tb->ref);
@@ -304,7 +304,7 @@ static void _import_end_cb(void *data);
 
 void enlil_geocaching_get(Enlil_Geocaching_Done_Cb done_cb, void *data)
 {
-   ASSERT_RETURN_VOID(done_cb != NULL);
+   ASSERT_RETURN_VOID(!!done_cb);
 
    _db.done_cb = done_cb;
    _db.data = data;
@@ -324,8 +324,8 @@ void enlil_geocaching_get(Enlil_Geocaching_Done_Cb done_cb, void *data)
 void enlil_geocaching_import(const char *file, Enlil_Geocaching_Done_Cb done_cb, void *data)
 {
    ASSERT_RETURN_VOID(running != EINA_TRUE);
-   ASSERT_RETURN_VOID(done_cb != NULL);
-   ASSERT_RETURN_VOID(file != NULL);
+   ASSERT_RETURN_VOID(!!done_cb);
+   ASSERT_RETURN_VOID(!!file);
 
    _db.done_cb = done_cb;
    _db.data = data;
@@ -353,7 +353,7 @@ static void _load()
    char path[PATH_MAX];
    Enlil_Geocaching_Db *db;
 
-   ASSERT_RETURN_VOID(_db.hash==NULL);
+   ASSERT_RETURN_VOID(!_db.hash);
 
    snprintf(path,PATH_MAX,"%s/"EET_FOLDER_ROOT_DB, getenv("HOME"));
 
@@ -364,7 +364,7 @@ static void _load()
    strcat(path, EET_FILE_GROUNDSPEAK_DB);
 
    f = enlil_file_manager_open(path);
-   ASSERT_RETURN_VOID(f!=NULL);
+   ASSERT_RETURN_VOID(!!f);
 
    edd_log = _enlil_geocaching_log_edd_new();
    edd_tb = _enlil_geocaching_tb_edd_new();
@@ -404,7 +404,7 @@ static int _save()
    strcat(path, EET_FILE_GROUNDSPEAK_DB);
 
    f = enlil_file_manager_open(path);
-   ASSERT_RETURN(f!=NULL);
+   ASSERT_RETURN(!!f);
 
    edd_log = _enlil_geocaching_log_edd_new();
    edd_tb = _enlil_geocaching_tb_edd_new();
@@ -816,8 +816,8 @@ static Eet_Data_Descriptor * _enlil_geocaching_edd_new(Eet_Data_Descriptor *edd_
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
 
-   ASSERT_RETURN(edd_log != NULL);
-   ASSERT_RETURN(edd_tb != NULL);
+   ASSERT_RETURN(!!edd_log);
+   ASSERT_RETURN(!!edd_tb);
 
    EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, Enlil_Geocaching);
    eddc.func.str_direct_alloc = NULL;
@@ -864,7 +864,7 @@ static Eet_Data_Descriptor * _enlil_hashtable_edd_new(Eet_Data_Descriptor *edd_g
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
 
-   ASSERT_RETURN(edd_gp != NULL);
+   ASSERT_RETURN(!!edd_gp);
 
    EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, Enlil_Geocaching_Db);
    eddc.func.str_direct_alloc = NULL;

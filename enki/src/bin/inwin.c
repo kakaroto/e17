@@ -40,9 +40,9 @@ Inwin *inwin_tag_new_new(Inwin_Del del_cb, void *data, Eina_List *photos)
 {
    Evas_Object *hbox, *fr, *fr2, *lbl, *text, *sc, *bt, *tb;
 
-   ASSERT_RETURN(del_cb != NULL);
-   ASSERT_RETURN(data != NULL);
-   ASSERT_RETURN(photos != NULL);
+   ASSERT_RETURN(!!del_cb);
+   ASSERT_RETURN(!!data);
+   ASSERT_RETURN(!!photos);
 
    Inwin *inwin = calloc(1, sizeof(Inwin));
    inwin->type = INWIN_TAG_NEW;
@@ -139,9 +139,9 @@ Inwin *inwin_album_tag_new_new(Inwin_Del del_cb, void *data, Enlil_Album *album)
 {
    Evas_Object *hbox, *fr, *fr2, *lbl, *text, *sc, *bt, *tb;
 
-   ASSERT_RETURN(del_cb != NULL);
-   ASSERT_RETURN(data != NULL);
-   ASSERT_RETURN(album != NULL);
+   ASSERT_RETURN(!!del_cb);
+   ASSERT_RETURN(!!data);
+   ASSERT_RETURN(!!album);
 
    Inwin *inwin = calloc(1, sizeof(Inwin));
    inwin->type = INWIN_ALBUM_TAG_NEW;
@@ -238,9 +238,9 @@ Inwin *inwin_collection_new_new(Inwin_Del del_cb, void *data, Enlil_Album *album
 {
    Evas_Object *hbox, *fr, *fr2, *lbl, *sc, *bt, *tb, *text;
 
-   ASSERT_RETURN(del_cb != NULL);
-   ASSERT_RETURN(data != NULL);
-   ASSERT_RETURN(album != NULL);
+   ASSERT_RETURN(!!del_cb);
+   ASSERT_RETURN(!!data);
+   ASSERT_RETURN(!!album);
 
    Inwin *inwin = calloc(1, sizeof(Inwin));
    inwin->type = INWIN_COLLECTION_NEW;
@@ -418,7 +418,7 @@ Inwin *inwin_photo_delete_new(Evas_Object *win, Inwin_Del del_cb, void *data, Ei
    Eina_List *l;
    Enlil_Photo *photo;
 
-   ASSERT_RETURN(photos != NULL);
+   ASSERT_RETURN(!!photos);
 
    Inwin *inwin = calloc(1, sizeof(Inwin));
    inwin->type = INWIN_PHOTO_DELETE;
@@ -492,7 +492,7 @@ Inwin *inwin_save_as_file_exists_new(Inwin_Del del_cb, Inwin_Apply apply_cb, voi
    Evas_Object *hbox, *fr, *bt, *tb, *lbl;
    char buf[PATH_MAX];
 
-   ASSERT_RETURN(file != NULL);
+   ASSERT_RETURN(!!file);
 
    Inwin *inwin = calloc(1, sizeof(Inwin));
    inwin->type = INWIN_SAVE_AS_FILE_EXISTS;
@@ -561,7 +561,7 @@ Inwin *inwin_album_delete_new(Inwin_Del del_cb, void *data, Enlil_Album *album)
    Evas_Object *hbox, *fr, *bt, *tb, *lbl;
    char buf[PATH_MAX];
 
-   ASSERT_RETURN(album != NULL);
+   ASSERT_RETURN(!!album);
 
    Inwin *inwin = calloc(1, sizeof(Inwin));
    inwin->type = INWIN_ALBUM_DELETE;
@@ -628,9 +628,9 @@ Inwin *inwin_album_rename_new(Inwin_Del del_cb, void *data, Enlil_Album *album)
    Evas_Object *hbox, *fr, *fr2, *lbl, *text, *sc, *bt, *tb;
    char buf[PATH_MAX];
 
-   ASSERT_RETURN(del_cb != NULL);
-   ASSERT_RETURN(data != NULL);
-   ASSERT_RETURN(album != NULL);
+   ASSERT_RETURN(!!del_cb);
+   ASSERT_RETURN(!!data);
+   ASSERT_RETURN(!!album);
 
    Inwin *inwin = calloc(1, sizeof(Inwin));
    inwin->type = INWIN_ALBUM_RENAME;
@@ -732,9 +732,9 @@ Inwin *inwin_photo_move_album_new(Inwin_Del del_cb, void *data, Eina_List *photo
    Enlil_Album *album;
    Enlil_Photo *photo;
 
-   ASSERT_RETURN(del_cb != NULL);
-   ASSERT_RETURN(data != NULL);
-   ASSERT_RETURN(photos != NULL);
+   ASSERT_RETURN(!!del_cb);
+   ASSERT_RETURN(!!data);
+   ASSERT_RETURN(!!photos);
 
    Inwin *inwin = calloc(1, sizeof(Inwin));
    inwin->type = INWIN_PHOTO_MOVE_ALBUM;
@@ -916,10 +916,10 @@ Inwin *inwin_photo_save_new(Inwin_Del del_cb, Inwin_Apply apply_cb, Inwin_Close 
    Evas_Object *hbox, *fr, *fr2, *lbl, *bt, *tb;
    char buf[PATH_MAX];
 
-   ASSERT_RETURN(apply_cb != NULL);
-   ASSERT_RETURN(close_cb != NULL);
-   ASSERT_RETURN(data != NULL);
-   ASSERT_RETURN(photo != NULL);
+   ASSERT_RETURN(!!apply_cb);
+   ASSERT_RETURN(!!close_cb);
+   ASSERT_RETURN(!!data);
+   ASSERT_RETURN(!!photo);
 
    Inwin *inwin = calloc(1, sizeof(Inwin));
    inwin->type = INWIN_PHOTO_SAVE;
@@ -1250,7 +1250,7 @@ static void _bt_photo_move_album_apply_cb(void *data, Evas_Object *obj, void *ev
    Enlil_Photo *photo;
    if(!item) return ;
    Enlil_Album *album = (Enlil_Album *)elm_genlist_item_data_get(item);
-   ASSERT_RETURN_VOID(album != NULL);
+   ASSERT_RETURN_VOID(!!album);
 
    EINA_LIST_FOREACH(inwin->photos, l, photo)
      {
@@ -1327,7 +1327,7 @@ static void _bt_save_as_file_exists_apply_cb(void *data, Evas_Object *obj, void 
 
 void inwin_free(Inwin *inwin)
 {
-   ASSERT_RETURN_VOID(inwin != NULL);
+   ASSERT_RETURN_VOID(!!inwin);
 
    if(inwin->del_cb)
      inwin->del_cb(inwin->data);

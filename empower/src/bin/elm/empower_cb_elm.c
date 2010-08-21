@@ -93,7 +93,7 @@ void check_pass_cb(void *data, Evas_Object *w, void *event)
     if(exec)
       prog = elm_entry_markup_to_utf8(elm_entry_entry_get(exec));
 
-    if((exec != NULL) && (entry != NULL) && (!pass || (pass[0] == 0)))
+    if((exec) && (entry) && (!pass || (pass[0] == 0)))
     {
       if(prog && (prog[0] != 0))
         elm_object_focus(entry);

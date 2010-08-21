@@ -80,7 +80,7 @@ cb_name_owner(void *data, DBusMessage *msg, DBusError *err)
 static int
 _match_append(char *buf, int size, int *used, const char *keyword, int keyword_size, const char *value, int value_size)
 {
-   if(value == NULL)
+   if(!value)
 	return 1;
 
    if ((int) (*used + keyword_size + value_size + sizeof(",=''")) >= size)

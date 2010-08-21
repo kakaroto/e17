@@ -118,10 +118,10 @@ static gint col_item_move_relative(
 
 /*     printf("col_item_move_relative(1) x:%p y:%p ev:%p o:%p\n", x,y,ev,o ); */
     
-    g_return_val_if_fail(x     != NULL, GEVASOBJ_SIG_VETO);
-	g_return_val_if_fail(y     != NULL, GEVASOBJ_SIG_VETO);
-	g_return_val_if_fail(ev    != NULL, GEVASOBJ_SIG_VETO);
-	g_return_val_if_fail(o     != NULL, GEVASOBJ_SIG_VETO);
+    g_return_val_if_fail(!!x, GEVASOBJ_SIG_VETO);
+	g_return_val_if_fail(!!y, GEVASOBJ_SIG_VETO);
+	g_return_val_if_fail(!!ev, GEVASOBJ_SIG_VETO);
+	g_return_val_if_fail(!!o, GEVASOBJ_SIG_VETO);
 
 	g_return_val_if_fail( GTK_IS_GEVASOBJ(o), GEVASOBJ_SIG_VETO);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_SELECTABLE(ev), GEVASOBJ_SIG_VETO);
@@ -174,7 +174,7 @@ gevas_selectable_get_backref(
     GtkgEvas* gevas,
     GtkgEvasObj* o)
 {
-	g_return_val_if_fail(gevas != NULL, 0);
+	g_return_val_if_fail(!!gevas, 0);
 	g_return_val_if_fail(GTK_IS_GEVAS(gevas), 0);
 
     if(!o)
@@ -193,9 +193,9 @@ gevas_selectable_get_backref(
 
 void gevas_selectable_set_backref(GtkgEvasEvHSelectable * ev, GtkgEvasObj* o )
 {
-	g_return_if_fail(o != NULL);
-	g_return_if_fail(o->gevas != NULL);
-	g_return_if_fail(ev != NULL);
+	g_return_if_fail(!!o);
+	g_return_if_fail(!!o->gevas);
+	g_return_if_fail(!!ev);
 	g_return_if_fail(GTK_IS_GEVASEVH_SELECTABLE(ev));
 	g_return_if_fail(GTK_IS_GEVASOBJ(o));
 	g_return_if_fail(GTK_IS_GEVAS(o->gevas));
@@ -283,9 +283,9 @@ void gevasevh_selectable_set_selector( GtkgEvasEvHSelectable* evh, GtkObject* ev
 /**/
 void gevas_selectable_select( GtkgEvasEvHSelectable * ev, gboolean s )
 {
-	g_return_if_fail(ev != NULL);
+	g_return_if_fail(!!ev);
 	g_return_if_fail(GTK_IS_GEVASEVH_SELECTABLE(ev));
-	g_return_if_fail(ev->gevas != NULL);
+	g_return_if_fail(!!ev->gevas);
 	g_return_if_fail(GTK_IS_GEVAS(ev->gevas));
 
 	if( s )
@@ -337,9 +337,9 @@ gevasevh_selectable_to_collection( GtkgEvasEvHSelectable* ev )
 {
     GtkgEvasObjCollection* c = 0;
 
-	g_return_val_if_fail(ev != NULL,0);
+	g_return_val_if_fail(!!ev,0);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_SELECTABLE(ev),0);
-	g_return_val_if_fail(ev->gevas != NULL,0);
+	g_return_val_if_fail(!!ev->gevas,0);
     
     c = gevas_obj_collection_new( ev->gevas );
 
@@ -370,7 +370,7 @@ gevasev_selectable_mouse_in(GtkObject * object, GtkObject * gevasobj, int _b,
 							 int _x, int _y)
 {
 	GtkgEvasEvHSelectable *ev;
-	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_SELECTABLE(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_SELECTABLE(object);
@@ -384,7 +384,7 @@ gevasev_selectable_mouse_out(GtkObject * object, GtkObject * gevasobj, int _b,
 							  int _x, int _y)
 {
 	GtkgEvasEvHSelectable *ev;
-	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_SELECTABLE(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_SELECTABLE(object);
@@ -404,13 +404,13 @@ gevasev_selectable_mouse_down(GtkObject * object, GtkObject * gevasobj, int _b,
 	if( _b != 1 )
 		return GEVASEV_HANDLER_RET_NEXT;
 
-	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_SELECTABLE(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_SELECTABLE(object);
     evh_sel = GTK_GEVASEVH_GROUP_SELECTOR(ev->evh_selector);
-	g_return_val_if_fail(ev != NULL, GEVASEV_HANDLER_RET_NEXT);
-	g_return_val_if_fail(evh_sel != NULL, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(!!ev, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(!!evh_sel, GEVASEV_HANDLER_RET_NEXT);
 
     gevasevh_group_selector_dragging(
         GTK_GEVASEVH_GROUP_SELECTOR(ev->evh_selector), 1 );
@@ -474,7 +474,7 @@ gevasev_selectable_mouse_up(GtkObject * object, GtkObject * gevasobj, int _b,
 	if( _b != 1 )
 		return GEVASEV_HANDLER_RET_NEXT;
 
-	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_SELECTABLE(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_SELECTABLE(object);
@@ -497,7 +497,7 @@ gevasev_selectable_mouse_move(GtkObject * object, GtkObject * gevasobj, int _b,
 	GtkgEvasEvHSelectable *ev;
     GtkgEvasEvHGroupSelector *evh_sel;
 
-    g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
+    g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_SELECTABLE(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_SELECTABLE(object);
@@ -619,7 +619,7 @@ GtkObject *gevasevh_selectable_new( GtkObject* _evh_selector )
 static void gevasevh_selectable_destroy(GtkObject * object)
 {
 	GtkgEvasEvHSelectable *ev;
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASEVH_SELECTABLE(object));
 	ev = GTK_GEVASEVH_SELECTABLE(object);
 
@@ -638,10 +638,10 @@ static gint col_item_move_absolute(
 
 //    printf("col_item_move_absolute(1) x:%p y:%p ev:%p o:%p\n", x,y,ev,o );
     
-	g_return_val_if_fail(o     != NULL, GEVASOBJ_SIG_VETO);
-	g_return_val_if_fail(x     != NULL, GEVASOBJ_SIG_VETO);
-	g_return_val_if_fail(y     != NULL, GEVASOBJ_SIG_VETO);
-	g_return_val_if_fail(ev    != NULL, GEVASOBJ_SIG_VETO);
+	g_return_val_if_fail(!!o, GEVASOBJ_SIG_VETO);
+	g_return_val_if_fail(!!x, GEVASOBJ_SIG_VETO);
+	g_return_val_if_fail(!!y, GEVASOBJ_SIG_VETO);
+	g_return_val_if_fail(!!ev, GEVASOBJ_SIG_VETO);
     
 	g_return_val_if_fail( GTK_IS_GEVASOBJ(o), GEVASOBJ_SIG_VETO);
 	g_return_val_if_fail( GTK_IS_GEVASEVH_SELECTABLE(ev), GEVASOBJ_SIG_VETO);
@@ -665,7 +665,7 @@ static void
 gevasevh_selectable_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasEvHSelectable *ev;
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASEVH_SELECTABLE(object));
 	ev = GTK_GEVASEVH_SELECTABLE(object);
 
@@ -691,7 +691,7 @@ static void
 gevasevh_selectable_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasEvHSelectable *ev;
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASEVH_SELECTABLE(object));
 	ev = GTK_GEVASEVH_SELECTABLE(object);
 

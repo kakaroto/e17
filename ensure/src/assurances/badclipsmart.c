@@ -26,7 +26,7 @@ object_check(struct ensure *en ensure_unused, struct enobj *obj,
 
 	clipp = enobj_parent_get(clip);
 
-	if (clipp == NULL){
+	if (!clipp){
 		ensure_bug(obj, assurance.severity,
 				"Object's clip not smart member");
 		return 1;

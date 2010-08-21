@@ -90,7 +90,7 @@ unload_void_params(JSContext *cx, JSObject *parent)
 {
    unsigned int i = 0;
 
-   while (void_params_function[i].name != NULL)
+   while (void_params_function[i].name)
      JS_DeleteProperty(cx, parent, void_params_function[i++].name);
 
    return EINA_TRUE;

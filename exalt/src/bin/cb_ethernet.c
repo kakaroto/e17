@@ -20,7 +20,7 @@ DBusMessage * dbus_cb_eth_wireless_list_get(E_DBus_Object *obj __UNUSED__, DBusM
     reply = dbus_message_new_method_return(msg);
 
     interfaces = exalt_eth_list_get();
-    EXALT_ASSERT_CUSTOM_RET(interfaces!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!interfaces,
             dbus_args_error_append(reply,
                 EXALT_DBUS_INTERFACE_LIST_ERROR_ID,
                 EXALT_DBUS_INTERFACE_LIST_ERROR);
@@ -41,7 +41,7 @@ DBusMessage * dbus_cb_eth_wireless_list_get(E_DBus_Object *obj __UNUSED__, DBusM
         if(is_wireless == exalt_eth_wireless_is(eth))
         {
             interface = exalt_eth_name_get(eth);
-            EXALT_ASSERT_CUSTOM_RET(interface!=NULL,
+            EXALT_ASSERT_CUSTOM_RET(!!interface,
                     dbus_args_error_append(reply,
                         EXALT_DBUS_INTERFACE_LIST_ERROR_ID,
                         EXALT_DBUS_INTERFACE_LIST_ERROR);
@@ -71,7 +71,7 @@ DBusMessage * dbus_cb_eth_all_disconnected_is(E_DBus_Object *obj __UNUSED__, DBu
     reply = dbus_message_new_method_return(msg);
 
     interfaces = exalt_eth_list_get();
-    EXALT_ASSERT_CUSTOM_RET(interfaces!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!interfaces,
             dbus_args_error_append(reply,
                 EXALT_DBUS_INTERFACE_LIST_ERROR_ID,
                 EXALT_DBUS_INTERFACE_LIST_ERROR);
@@ -109,7 +109,7 @@ DBusMessage * dbus_cb_eth_ip_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg
     dbus_message_set_path(reply,dbus_message_get_path(msg));
 
     eth= dbus_get_eth(msg);
-    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!eth,
             dbus_args_error_append(reply,
                 EXALT_DBUS_INTERFACE_ERROR_ID,
                 EXALT_DBUS_INTERFACE_ERROR);
@@ -148,7 +148,7 @@ DBusMessage * dbus_cb_eth_netmask_get(E_DBus_Object *obj __UNUSED__, DBusMessage
     reply = dbus_message_new_method_return(msg);
     dbus_message_set_path(reply,dbus_message_get_path(msg));
     eth= dbus_get_eth(msg);
-    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!eth,
             dbus_args_error_append(reply,
                 EXALT_DBUS_INTERFACE_ERROR_ID,
                 EXALT_DBUS_INTERFACE_ERROR);
@@ -187,7 +187,7 @@ DBusMessage * dbus_cb_eth_gateway_get(E_DBus_Object *obj __UNUSED__, DBusMessage
     reply = dbus_message_new_method_return(msg);
     dbus_message_set_path(reply,dbus_message_get_path(msg));
     eth= dbus_get_eth(msg);
-    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!eth,
             dbus_args_error_append(reply,
                 EXALT_DBUS_INTERFACE_ERROR_ID,
                 EXALT_DBUS_INTERFACE_ERROR);
@@ -225,7 +225,7 @@ DBusMessage * dbus_cb_eth_wireless_is(E_DBus_Object *obj __UNUSED__, DBusMessage
     reply = dbus_message_new_method_return(msg);
     dbus_message_set_path(reply,dbus_message_get_path(msg));
     eth= dbus_get_eth(msg);
-    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!eth,
             dbus_args_error_append(reply,
                 EXALT_DBUS_INTERFACE_ERROR_ID,
                 EXALT_DBUS_INTERFACE_ERROR);
@@ -254,7 +254,7 @@ DBusMessage * dbus_cb_eth_connected_is(E_DBus_Object *obj __UNUSED__, DBusMessag
     dbus_message_set_path(reply,dbus_message_get_path(msg));
 
     eth= dbus_get_eth(msg);
-    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!eth,
             dbus_args_error_append(reply,
                 EXALT_DBUS_INTERFACE_ERROR_ID,
                 EXALT_DBUS_INTERFACE_ERROR);
@@ -280,7 +280,7 @@ DBusMessage * dbus_cb_eth_link_is(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
     reply = dbus_message_new_method_return(msg);
     dbus_message_set_path(reply,dbus_message_get_path(msg));
     eth= dbus_get_eth(msg);
-    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!eth,
             dbus_args_error_append(reply,
                 EXALT_DBUS_INTERFACE_ERROR_ID,
                 EXALT_DBUS_INTERFACE_ERROR);
@@ -308,7 +308,7 @@ DBusMessage * dbus_cb_eth_dhcp_is(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
     reply = dbus_message_new_method_return(msg);
     dbus_message_set_path(reply,dbus_message_get_path(msg));
     eth= dbus_get_eth(msg);
-    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!eth,
             dbus_args_error_append(reply,
                 EXALT_DBUS_INTERFACE_ERROR_ID,
                 EXALT_DBUS_INTERFACE_ERROR);
@@ -336,7 +336,7 @@ DBusMessage * dbus_cb_eth_up_is(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
     reply = dbus_message_new_method_return(msg);
     dbus_message_set_path(reply,dbus_message_get_path(msg));
     eth= dbus_get_eth(msg);
-    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!eth,
             dbus_args_error_append(reply,
                 EXALT_DBUS_INTERFACE_ERROR_ID,
                 EXALT_DBUS_INTERFACE_ERROR);
@@ -366,7 +366,7 @@ DBusMessage * dbus_cb_eth_up(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 
     //search the interface
     eth = dbus_get_eth(msg);
-    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!eth,
             dbus_args_error_append(reply,
                 EXALT_DBUS_INTERFACE_ERROR_ID,
                 EXALT_DBUS_INTERFACE_ERROR);
@@ -390,7 +390,7 @@ DBusMessage * dbus_cb_eth_down(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 
     //search the interface
     eth = dbus_get_eth(msg);
-    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!eth,
             dbus_args_error_append(reply,
                 EXALT_DBUS_INTERFACE_ERROR_ID,
                 EXALT_DBUS_INTERFACE_ERROR);
@@ -413,7 +413,7 @@ DBusMessage * dbus_cb_eth_conf_apply(E_DBus_Object *obj __UNUSED__, DBusMessage 
     dbus_message_set_path(reply,dbus_message_get_path(msg));
 
     c = exalt_conf_new();
-    EXALT_ASSERT_CUSTOM_RET(c!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!c,
             dbus_args_error_append(reply,
                 EXALT_DBUS_CONN_NEW_ERROR_ID,
                 EXALT_DBUS_CONN_NEW_ERROR);
@@ -421,7 +421,7 @@ DBusMessage * dbus_cb_eth_conf_apply(E_DBus_Object *obj __UNUSED__, DBusMessage 
 
     eth = dbus_get_eth(msg);
 
-    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!eth,
             dbus_args_error_append(reply,
                 EXALT_DBUS_INTERFACE_ERROR_ID,
                 EXALT_DBUS_INTERFACE_ERROR);
@@ -461,7 +461,7 @@ DBusMessage * dbus_cb_eth_cmd_get(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
     dbus_message_set_path(reply,dbus_message_get_path(msg));
 
     eth= dbus_get_eth(msg);
-    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!eth,
             dbus_args_error_append(reply,
                 EXALT_DBUS_INTERFACE_ERROR_ID,
                 EXALT_DBUS_INTERFACE_ERROR);
@@ -501,7 +501,7 @@ DBusMessage * dbus_cb_eth_cmd_set(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
     dbus_message_set_path(reply,dbus_message_get_path(msg));
 
     eth= dbus_get_eth(msg);
-    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!eth,
             dbus_args_error_append(reply,
                 EXALT_DBUS_INTERFACE_ERROR_ID,
                 EXALT_DBUS_INTERFACE_ERROR);
@@ -518,7 +518,7 @@ DBusMessage * dbus_cb_eth_cmd_set(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
     else
         dbus_message_iter_get_basic(&args, &cmd);
 
-    EXALT_ASSERT_CUSTOM_RET(cmd!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(!!cmd,
          dbus_args_error_append(reply,
                 EXALT_DBUS_ARGUMENT_NOT_STRING_ID,
                 EXALT_DBUS_ARGUMENT_NOT_STRING);

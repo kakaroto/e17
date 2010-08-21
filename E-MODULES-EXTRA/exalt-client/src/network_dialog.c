@@ -153,7 +153,7 @@ void if_network_dialog_set(Instance *inst, Popup_Elt* network)
         evas_object_show(inst->network.lbl_pwd);
         evas_object_show(inst->network.entry_pwd);
 
-        if( (l_ie=exalt_wireless_network_ie_get(network->n))==NULL)
+        if( !(l_ie = exalt_wireless_network_ie_get(network->n)))
         {
             //WEP encryption
             Evas_Object* fr = if_network_dialog_wep_new(inst,network->n);

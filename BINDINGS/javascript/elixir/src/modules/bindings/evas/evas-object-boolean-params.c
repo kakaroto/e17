@@ -133,7 +133,7 @@ unload_evas_object_boolean_params(JSContext *cx, JSObject *parent)
 {
    unsigned int i = 0;
 
-   while (evas_object_params_function[i].name != NULL)
+   while (evas_object_params_function[i].name)
      JS_DeleteProperty(cx, parent, evas_object_params_function[i++].name);
 
    return EINA_TRUE;

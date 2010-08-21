@@ -31,11 +31,11 @@ elixir_object_create(Elixir_Runtime* er, JSObject* parent, const char* name,
      while (1)
        {
           handle = callback(handle, &key, &value, context);
-          if (key == NULL)
+          if (!key)
             break ;
           if (elixir_add_str_prop(er->cx, obj, key, value) == JS_FALSE)
             break ;
-          if (handle == NULL)
+          if (!handle)
             break ;
        }
 
@@ -156,7 +156,7 @@ elixir_object_get_fct(JSContext *cx, JSObject *obj, const char *name, JSFunction
      return EINA_FALSE;
 
    *fct = elixir_get_fct(cx, propertie);
-   if (*fct == NULL)
+   if (!*fct)
      return EINA_FALSE;
    return EINA_TRUE;
 }

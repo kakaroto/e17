@@ -127,8 +127,8 @@ int main(int argc, char **argv)
 
 static void _trans_rotate_180(Evas *evas, const char *file, const char *res)
 {
-    ASSERT_RETURN_VOID(file !=NULL);
-    ASSERT_RETURN_VOID(res !=NULL);
+    ASSERT_RETURN_VOID(!!file);
+    ASSERT_RETURN_VOID(!!res);
 
     unsigned int   *data;
     unsigned int   *p1, *p2, tmp;
@@ -165,8 +165,8 @@ static void _trans_rotate_180(Evas *evas, const char *file, const char *res)
 
 static void _enlil_trans_rotate_90(Evas *evas, const char *file, const char *res)
 {
-    ASSERT_RETURN_VOID(file !=NULL);
-    ASSERT_RETURN_VOID(res !=NULL);
+    ASSERT_RETURN_VOID(!!file);
+    ASSERT_RETURN_VOID(!!res);
 
     unsigned int *im_data, *im_data_new;
     int index, ind, i, j, ni, nj, ew, eh, nw, nh;
@@ -213,8 +213,8 @@ static void _enlil_trans_rotate_90(Evas *evas, const char *file, const char *res
 
 static void _enlil_trans_rotate_R90(Evas *evas, const char *file, const char *res)
 {
-    ASSERT_RETURN_VOID(file !=NULL);
-    ASSERT_RETURN_VOID(res !=NULL);
+    ASSERT_RETURN_VOID(!!file);
+    ASSERT_RETURN_VOID(!!res);
 
     unsigned int *im_data, *im_data_new;
     int index, ind, i, j, ni, nj, ew, eh, nw, nh;
@@ -261,8 +261,8 @@ static void _enlil_trans_rotate_R90(Evas *evas, const char *file, const char *re
 
 static void _enlil_trans_flip_vertical(Evas *evas, const char *file, const char *res)
 {
-    ASSERT_RETURN_VOID(file !=NULL);
-    ASSERT_RETURN_VOID(res !=NULL);
+    ASSERT_RETURN_VOID(!!file);
+    ASSERT_RETURN_VOID(!!res);
 
     unsigned int   *data;
     unsigned int   *p1, *p2, tmp;
@@ -301,8 +301,8 @@ static void _enlil_trans_flip_vertical(Evas *evas, const char *file, const char 
 
 static void _enlil_trans_flip_horizontal(Evas *evas, const char *file, const char *res)
 {
-    ASSERT_RETURN_VOID(file !=NULL);
-    ASSERT_RETURN_VOID(res !=NULL);
+    ASSERT_RETURN_VOID(!!file);
+    ASSERT_RETURN_VOID(!!res);
 
     unsigned int   *data;
     unsigned int   *p1, *p2, tmp;
@@ -341,8 +341,8 @@ static void _enlil_trans_flip_horizontal(Evas *evas, const char *file, const cha
 
 static void _enlil_trans_blur(Evas *evas, const char *file, const char *res)
 {
-    ASSERT_RETURN_VOID(file !=NULL);
-    ASSERT_RETURN_VOID(res !=NULL);
+    ASSERT_RETURN_VOID(!!file);
+    ASSERT_RETURN_VOID(!!res);
 
     unsigned int *im_data, *im_data_new, *p1, *p2;
     int *as, *rs, *gs, *bs;
@@ -449,8 +449,8 @@ static void _enlil_trans_blur(Evas *evas, const char *file, const char *res)
 
 static void _enlil_trans_sharpen(Evas *evas, const char *file, const char *res)
 {
-    ASSERT_RETURN_VOID(file !=NULL);
-    ASSERT_RETURN_VOID(res !=NULL);
+    ASSERT_RETURN_VOID(!!file);
+    ASSERT_RETURN_VOID(!!res);
 
     unsigned int *im_data, *im_data_new, *p1, *p2;
     int a, r, g, b, x, y, w, h;
@@ -525,8 +525,8 @@ static void _enlil_trans_sharpen(Evas *evas, const char *file, const char *res)
 
 static void _enlil_trans_grayscale(Evas *evas, const char *file, const char *res)
 {
-    ASSERT_RETURN_VOID(file !=NULL);
-    ASSERT_RETURN_VOID(res !=NULL);
+    ASSERT_RETURN_VOID(!!file);
+    ASSERT_RETURN_VOID(!!res);
 
     unsigned int *im_data, *im_data_new;
     int gray, i, r, g, b, a, ew, eh;
@@ -575,8 +575,8 @@ static void _enlil_trans_grayscale(Evas *evas, const char *file, const char *res
 
 static void _enlil_trans_sepia(Evas *evas, const char *file, const char *res)
 {
-    ASSERT_RETURN_VOID(file !=NULL);
-    ASSERT_RETURN_VOID(res !=NULL);
+    ASSERT_RETURN_VOID(!!file);
+    ASSERT_RETURN_VOID(!!res);
 
     unsigned int *im_data, *im_data_new;
     int i, r, rr, g, gg, b, bb, a, ew, eh;

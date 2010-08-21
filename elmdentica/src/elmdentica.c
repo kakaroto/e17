@@ -182,7 +182,7 @@ void make_status_list(int timeline) {
 
 	elm_win_title_set(win, label);
 
-	if(status_list != NULL)
+	if(status_list)
 		evas_object_del(status_list);
 	status_list = elm_box_add(win);
 	evas_object_size_hint_weight_set(status_list, 1.0, 1.0);
@@ -1080,7 +1080,7 @@ static void on_message_anchor_clicked(void *data, Evas_Object *obj, void *event_
 	AnchorData  *anchor=calloc(1, sizeof(AnchorData));
 	char *url=NULL;
 
-	if(info->name == NULL || strlen(info->name) <= 9)
+	if(!info->name || strlen(info->name) <= 9)
 		return;
 
 	url = strndup(1+(char*)info->name,strlen((char*)info->name)-2);
@@ -1670,7 +1670,7 @@ static void on_entry_changed(void *data, Evas_Object *entry, void *event_info) {
 
 	entry_text = (char*)elm_entry_entry_get(entry);
 
-	if(entry_text == NULL) {
+	if(!entry_text) {
 		len=0;
 		if(debug) printf("Entry content was NULL?!\n");
 	} else {

@@ -320,7 +320,7 @@ _elixir_file_type(const char *filename, const char *mime)
      lookup = eina_hash_find(magics, mime);
 #endif
 
-   if (lookup == NULL)
+   if (!lookup)
      {
         ext = strrchr(filename, '.');
         if (ext)

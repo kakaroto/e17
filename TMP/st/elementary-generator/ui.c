@@ -109,7 +109,7 @@ on_generator_stderr(void *data, int type, void *event)
 
    printf("XXXX TODO: show inwin with error message: [close] [try again]\n");
 
-   for (i = 0; e->lines[i].line != NULL; i++)
+   for (i = 0; e->lines[i].line; i++)
        ERR(e->lines[i].line);
 
    return EINA_TRUE;
@@ -318,7 +318,7 @@ create_license(App *app, int row)
 	return NULL;
      }
 
-   while ((de = readdir(dir)) != NULL)
+   while ((de = readdir(dir)))
      {
 	if (de->d_name[0] == '.')
 	  continue;
@@ -418,7 +418,7 @@ create_template(App *app, int row)
 	return NULL;
      }
 
-   while ((de = readdir(dir)) != NULL)
+   while ((de = readdir(dir)))
      {
 	const char *p;
 	char buf[NAME_MAX];

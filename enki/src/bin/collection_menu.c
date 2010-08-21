@@ -37,7 +37,7 @@ static void _collection_del_cb(void *data, Evas_Object *obj, void *event_info)
 
 void collection_menu_free(Collection_Menu *col_menu)
 {
-   ASSERT_RETURN_VOID(col_menu != NULL);
+   ASSERT_RETURN_VOID(!!col_menu);
 
    evas_object_del(col_menu->menu);
 }

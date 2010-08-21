@@ -764,7 +764,7 @@ eupnp_http_request_parse(const char *msg, void *resource, void (*resource_free)(
 
    next_header = headers_start;
 
-   while (next_header != NULL)
+   while (next_header)
      {
 	if (eupnp_http_datagram_header_next_parse(&next_header, &hkey_begin, &hk_len, &hv_begin, &hv_len, &payload))
 	  {
@@ -847,7 +847,7 @@ eupnp_http_response_parse(const char *msg, void *resource, void (*resource_free)
 
    next_header = headers_start;
 
-   while (next_header != NULL)
+   while (next_header)
      {
 	if (eupnp_http_datagram_header_next_parse(&next_header, &hkey_begin, &hk_len, &hv_begin, &hv_len, &payload))
 	  {

@@ -24,10 +24,10 @@ void *alloca (size_t);
 
 void eyelight_edit_area_image_add(Eyelight_Viewer *pres, Eyelight_Edit *edit, const char* image)
 {
-    EYELIGHT_ASSERT_RETURN_VOID(edit != NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!edit);
     EYELIGHT_ASSERT_RETURN_VOID(edit->node->name == EYELIGHT_NAME_CUSTOM_AREA
             || edit->node->name == EYELIGHT_NAME_THEME_AREA);
-    EYELIGHT_ASSERT_RETURN_VOID(image!=NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!image);
 
     char *area_name = eyelight_retrieve_value_of_prop(edit->node,0);
 
@@ -44,7 +44,7 @@ void eyelight_edit_area_image_add(Eyelight_Viewer *pres, Eyelight_Edit *edit, co
 void eyelight_edit_image_properties_get(Eyelight_Edit *edit, char **file, int *border, int *shadow, int *keep_aspect)
 {
     Eyelight_Node *node;
-    EYELIGHT_ASSERT_RETURN_VOID(edit != NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!edit);
     EYELIGHT_ASSERT_RETURN_VOID(edit->node->name == EYELIGHT_NAME_IMAGE);
 
     if(edit->node->type == EYELIGHT_NODE_TYPE_PROP)
@@ -107,7 +107,7 @@ void eyelight_edit_image_properties_set(Eyelight_Viewer *pres, Eyelight_Edit *ed
     Eyelight_Node *node;
     char buf[EYELIGHT_BUFLEN];
 
-    EYELIGHT_ASSERT_RETURN_VOID(edit != NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!edit);
     EYELIGHT_ASSERT_RETURN_VOID(edit->node->name == EYELIGHT_NAME_IMAGE);
 
     if(edit->node->type == EYELIGHT_NODE_TYPE_PROP)

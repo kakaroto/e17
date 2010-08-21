@@ -189,7 +189,7 @@ elixir_evas_object_image_data_set(JSContext *cx, uintN argc, jsval *vp)
    if (JS_GetArrayLength(cx, array, &length) == JS_FALSE)
      return JS_FALSE;
 
-   if ((data = JS_GetPrivate(cx, array)) == NULL)
+   if (!(data = JS_GetPrivate(cx, array)))
      return JS_FALSE;
 
    evas_object_image_size_get(know, &w, &h);
@@ -310,7 +310,7 @@ unload_evas_object_image_bindings(JSContext *cx, JSObject *parent)
 {
    unsigned int i = 0;
 
-   while (evas_object_image_functions[i].name != NULL)
+   while (evas_object_image_functions[i].name)
      JS_DeleteProperty(cx, parent, evas_object_image_functions[i++].name);
 
    return EINA_TRUE;

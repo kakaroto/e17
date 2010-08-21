@@ -50,7 +50,7 @@ elixir_get_gccx(JSContext *cx)
    gc_cx_t      *gccx;
 
    gccx = JS_GetContextPrivate(cx);
-   if (gccx == NULL)
+   if (!gccx)
      return NULL;
 
    if (gccx->magic != MAGIC_GCCX)
@@ -64,11 +64,11 @@ elixir_register_cx(JSContext *cx)
 {
    gc_cx_t      *gccx;
 
-   if (cx == NULL)
+   if (!cx)
      return ;
 
    gccx = malloc(sizeof(gc_cx_t));
-   if (gccx == NULL)
+   if (!gccx)
      return ;
 
    gccx->magic = MAGIC_GCCX;
@@ -90,11 +90,11 @@ elixir_unregister_cx(JSContext *cx, Eina_Bool force)
 {
    gc_cx_t      *gccx;
 
-   if (cx == NULL)
+   if (!cx)
      return NULL;
 
    gccx = elixir_get_gccx(cx);
-   if (gccx == NULL)
+   if (!gccx)
      return NULL;
 
    if (gccx->dying)
@@ -303,7 +303,7 @@ elixir_decrease_count(JSContext *cx)
    gc_cx_t      *gccx;
 
    gccx = elixir_get_gccx(cx);
-   if (gccx == NULL)
+   if (!gccx)
      return ;
 
    gccx->count--;
@@ -317,7 +317,7 @@ elixir_increase_count(JSContext *cx)
    gc_cx_t      *gccx;
 
    gccx = elixir_get_gccx(cx);
-   if (gccx == NULL)
+   if (!gccx)
      return ;
 
    gccx->count++;
@@ -372,7 +372,7 @@ elixir_object_register(JSContext *cx, JSObject **obj, void *data)
    elixir_lock_cx(cx);
    if (!JS_AddRoot(cx, obj))
      goto on_first_error;
-   if (data != NULL)
+   if (data)
      if (!JS_SetPrivate(cx, *obj, data))
        goto on_error;
    elixir_unlock_cx(cx);
@@ -515,7 +515,7 @@ elixir_function_run(JSContext *cx, JSFunction *callback, JSObject *parent, int a
    obj = JS_GetFunctionObject(callback);
    elixir_object_register(cx, &obj, NULL);
 
-   if (JS_GetParent(cx, obj) == NULL)
+   if (!JS_GetParent(cx, obj))
      JS_SetParent(cx, obj, parent);
 
    if (JS_CallFunction(cx, parent, callback, argc, argv, rval) == JS_FALSE)

@@ -744,7 +744,7 @@ void eyelight_viewer_transitions_stop(Eyelight_Viewer* pres)
     int i;
     for(i=0;i<2;i++)
     {
-        if(pres->slide_with_transition[i]!=NULL)
+        if(pres->slide_with_transition[i])
         {
             edje_object_signal_emit(pres->slide_with_transition[i]->obj,"stop,transition","eyelight");
             Eyelight_Slide *current_slide = eina_list_nth(pres->slides, pres->current);
@@ -843,7 +843,7 @@ void eyelight_viewer_slide_previous(Eyelight_Viewer*pres)
 
 void eyelight_viewer_slide_goto(Eyelight_Viewer* pres, int slide_id)
 {
-    EYELIGHT_ASSERT_RETURN_VOID(pres!=NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!pres);
     EYELIGHT_ASSERT_RETURN_VOID(slide_id>=0);
     EYELIGHT_ASSERT_RETURN_VOID(slide_id<eyelight_viewer_size_get(pres));
 

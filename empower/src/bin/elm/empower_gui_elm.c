@@ -177,7 +177,7 @@ void display_window()
     setup_window();
   }
 
-  if(exec != NULL)
+  if(exec)
   {
     elm_object_focus(exec);
   }

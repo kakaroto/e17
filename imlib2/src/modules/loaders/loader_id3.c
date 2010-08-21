@@ -95,12 +95,12 @@ static context* context_create (const char* filename)
 		ptr = ptr->next;
 	}
 	/* Paranoid! this can occur only if there are INT_MAX contexts :) */
-	if (UNLIKELY (ptr == NULL)) {
+	if (UNLIKELY (!ptr)) {
 		fprintf (stderr, "Too many open ID3 contexts\n");
 		goto fail_close;
 	}
 	node->id = ptr->id + 1;
-	if (UNLIKELY (last != NULL)) {
+	if (UNLIKELY (!!last)) {
 		node->next = last->next;
 		last->next = node;
 	} else {

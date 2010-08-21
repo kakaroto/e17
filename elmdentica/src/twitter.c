@@ -59,7 +59,7 @@ extern Evas_Object *win;
 long long max_status_id=0;
 
 static int set_max_status_id(void *notUsed, int argc, char **argv, char **azColName) {
-	if(argv[0] == NULL)
+	if(!argv[0])
 		max_status_id = 0;
 	else
 		max_status_id = atoi(argv[0]);
@@ -161,7 +161,7 @@ int ed_twitter_post(int account_id, char *screen_name, char *password, char *pro
 static int ed_twitter_max_status_id_handler(void *data, int argc, char **argv, char **azColName) {
 	long long int *since_id = (long long int*)data;
 
-	if(argv[0] == NULL)
+	if(!argv[0])
 		*since_id = 0;
 	else
 		*since_id = atoll(argv[0]);
@@ -271,7 +271,7 @@ void json_timeline(int timeline, StatusesList *statuses, char *stream) {
 
 	json_stream = json_tokener_parse(stream);
 
-	if(json_stream == NULL) {
+	if(!json_stream) {
 		fprintf(stderr, "ERROR parsing json stream:\n%s\n", stream);
 		return;
 	}
@@ -430,7 +430,7 @@ void json_user_show(UserProfile *user, char *stream) {
 	json_stream = json_tokener_parse(stream);
 	if(debug) printf("About to parse\n%s\n", stream);
 
-	if(json_stream == NULL) {
+	if(!json_stream) {
 		fprintf(stderr, "ERROR parsing json stream:\n%s\n", stream);
 		return;
 	}
@@ -531,7 +531,7 @@ static int ed_twitter_user_get_handler(void *data, int argc, char **argv, char *
     id = atoi(argv[7]);
 
 
-	if(request == NULL) return(-1);
+	if(!request) return(-1);
 
 	res = asprintf(&request->url, "%s://%s:%d%s/users/show.json?screen_name=%s", proto, domain, port, base_url, user->screen_name);
 
@@ -620,7 +620,7 @@ static int ed_twitter_repeat_handler(void *data, int argc, char **argv, char **a
     id = atoi(argv[7]);
 
 
-	if(request == NULL) return(-1);
+	if(!request) return(-1);
 
 	res = asprintf(&request->url, "%s://%s:%d%s/statuses/retweet/%ld.json", proto, domain, port, base_url, *(long int*)data);
 

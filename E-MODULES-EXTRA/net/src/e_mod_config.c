@@ -81,9 +81,9 @@ _net_config_devices_get(void)
    d = opendir("/dev/net");
    if (!d) return NULL;
 
-   while ((dentry = readdir(d)) != NULL) 
+   while ((dentry = readdir(d))) 
      {
-	if (strstr(dentry->d_name,".") == NULL)     
+	if (!strstr(dentry->d_name, "."))     
 	  devs = eina_list_append(devs, strdup(dentry->d_name));
      } 
    closedir(d);

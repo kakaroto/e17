@@ -2296,7 +2296,7 @@ e_ofono_manager_clear_elements(void)
 void
 e_ofono_elements_init(void)
 {
-   EINA_SAFETY_ON_FALSE_RETURN(elements == NULL);
+   EINA_SAFETY_ON_FALSE_RETURN(!elements);
    elements =
      eina_hash_string_superfast_new
      (EINA_FREE_CB(_e_ofono_element_unregister_internal));
@@ -2305,7 +2305,7 @@ e_ofono_elements_init(void)
 void
 e_ofono_elements_shutdown(void)
 {
-   EINA_SAFETY_ON_FALSE_RETURN(elements != NULL);
+   EINA_SAFETY_ON_FALSE_RETURN(!!elements);
    eina_hash_free(elements);
    elements = NULL;
 }

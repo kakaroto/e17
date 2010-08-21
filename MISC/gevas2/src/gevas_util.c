@@ -43,8 +43,8 @@ const char* gevas_trim_prefix( const char* prefix, const char* s )
 {
     const char* ret = s;
 
-    g_return_if_fail (s      != NULL);
-    g_return_if_fail (prefix != NULL);
+    g_return_if_fail (!!s);
+    g_return_if_fail (!!prefix);
 
     if( !g_strncasecmp(s, prefix, strlen(prefix)))
     {
@@ -65,7 +65,7 @@ char* url_file_name_part_new( const char* _full_url )
     char* start = g_strdup(_full_url);
     char* s     = start;
 
-    g_return_if_fail (_full_url != NULL);
+    g_return_if_fail (!!_full_url);
     
     while( *s && *s != '?' && *s != '#' ) s++;
     *s='\0';
@@ -98,7 +98,7 @@ GHashTable* url_args_to_hash( const char* _args )
     gchar** p           = 0;    /* temp */
 
     
-    g_return_if_fail (_args != NULL);
+    g_return_if_fail (!!_args);
 
     /* ensure we start on '?' char + 1 */
     while( *args && *args != '?' )
@@ -150,9 +150,9 @@ const char* url_args_lookup_str( GHashTable* h, const char* key, const char* def
 {
     char* ret = g_hash_table_lookup(h,key);
 
-    g_return_if_fail (h   != NULL);
-    g_return_if_fail (key != NULL);
-    g_return_if_fail (def != NULL);
+    g_return_if_fail (!!h);
+    g_return_if_fail (!!key);
+    g_return_if_fail (!!def);
 
     if(!ret) ret = g_hash_table_lookup(h,"_");
     if(!ret) ret = (char*)def;
@@ -175,8 +175,8 @@ gint url_args_lookup_int( GHashTable* h, const char* key, gint def )
 {
     char* ret = g_hash_table_lookup(h,key);
 
-    g_return_if_fail (h   != NULL);
-    g_return_if_fail (key != NULL);
+    g_return_if_fail (!!h);
+    g_return_if_fail (!!key);
 
     if(!ret) ret = g_hash_table_lookup(h,"_");
     if(!ret) ret = "";
@@ -203,8 +203,8 @@ gint edb_lookup_int( E_DB_File* edb, gint def, const char* fmt, ... )
     va_list args;
     gchar* key = NULL;
 
-    g_return_if_fail (edb   != NULL);
-    g_return_if_fail (fmt   != NULL);
+    g_return_if_fail (!!edb);
+    g_return_if_fail (!!fmt);
 
     va_start (args, fmt);
     key = g_strdup_vprintf( fmt, args );
@@ -237,9 +237,9 @@ char* edb_lookup_str( E_DB_File* edb, const char* def, const char* fmt, ... )
     va_list args;
     gchar* key = NULL;
 
-    g_return_if_fail (edb   != NULL);
-    g_return_if_fail (fmt   != NULL);
-    g_return_if_fail (def   != NULL);
+    g_return_if_fail (!!edb);
+    g_return_if_fail (!!fmt);
+    g_return_if_fail (!!def);
 
     
     va_start (args, fmt);
@@ -281,10 +281,10 @@ void edb_to_hash_int( E_DB_File* edb, GHashTable* hash,
 {
     gint n=def;
 
-    g_return_if_fail (edb   != NULL);
-    g_return_if_fail (hash  != NULL);
-    g_return_if_fail (key   != NULL);
-    g_return_if_fail (prefix!= NULL);
+    g_return_if_fail (!!edb);
+    g_return_if_fail (!!hash);
+    g_return_if_fail (!!key);
+    g_return_if_fail (!!prefix);
 
     n = edb_lookup_int( edb, def, "%s/%s", prefix, key);
     g_hash_table_insert(hash, g_strdup(key), g_strdup_printf("%d",n,0));
@@ -307,7 +307,7 @@ static void hash_str_str_clean_f(gpointer key, gpointer value, gpointer user_dat
  */
 void hash_str_str_clean(GHashTable *hash)
 {
-    g_return_if_fail (hash  != NULL);
+    g_return_if_fail (!!hash);
     
 /*     g_hash_table_foreach( hash, hash_str_str_clean_f, 0 ); */
     g_hash_table_destroy( hash );

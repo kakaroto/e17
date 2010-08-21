@@ -57,7 +57,7 @@ _fill_data (Config_Item * ci, E_Config_Dialog_Data * cfdata)
   cfdata->show_percent = ci->show_percent;
    
    cfdata->device = NULL;
-   if (ci->device != NULL) 
+   if (ci->device) 
      cfdata->device = eina_stringshare_add(ci->device);
    
    if (!cfdata->device) return;
@@ -172,7 +172,7 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
      {
     cfdata->devs = eina_list_nth_list(cfdata->devs, cfdata->dev_num);
 	tmp = eina_list_data_get(cfdata->devs);
-	if (tmp != NULL) 
+	if (tmp) 
 	  {
 	     if (ci->device) eina_stringshare_del(ci->device);
 

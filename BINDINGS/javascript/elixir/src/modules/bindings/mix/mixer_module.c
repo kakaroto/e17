@@ -244,7 +244,7 @@ _channel_callback(__UNUSED__ void *data, void *buffer, unsigned int nbyte)
    void *tmp;
    int channel;
 
-   if (callback_context == NULL) return ;
+   if (!callback_context) return ;
 
    if (nbyte != sizeof (void*)) return ;
    tmp = *(void**) buffer;
@@ -369,7 +369,7 @@ module_open(Elixir_Module *em, JSContext *cx, JSObject *parent)
    if (!JS_DefineFunctions(cx, *((JSObject**) tmp), mixer_functions))
      goto on_error;
 
-   while (mixer_const_properties[i].name != NULL)
+   while (mixer_const_properties[i].name)
      {
         property = INT_TO_JSVAL(mixer_const_properties[i].value);
         if (!JS_DefineProperty(cx, parent,
@@ -413,11 +413,11 @@ module_close(Elixir_Module *em, JSContext *cx)
    if (!em->data)
      return EINA_FALSE;
 
-   while (mixer_functions[i].name != NULL)
+   while (mixer_functions[i].name)
      JS_DeleteProperty(cx, (JSObject*) em->data, mixer_functions[i++].name);
 
    i = 0;
-   while (mixer_const_properties[i].name != NULL)
+   while (mixer_const_properties[i].name)
      JS_DeleteProperty(cx, (JSObject*) em->data, mixer_const_properties[i++].name);
 
    if (callback_context)

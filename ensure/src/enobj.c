@@ -25,7 +25,7 @@ enobj_clear(void){
 int
 enobj_add(struct enobj *eno){
 
-	if (objdb == NULL)
+	if (!objdb)
 		objdb = eina_hash_pointer_new(enobj_free);
 
 	if (eno->magic != ENOBJMAGIC)

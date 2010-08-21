@@ -143,7 +143,7 @@ _net_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
    ev = event;
    if ((ev->button == 1) && (ev->flags & EVAS_BUTTON_DOUBLE_CLICK)) 
      {
-	if (inst->ci->app != NULL) 
+	if (inst->ci->app) 
 	  {
 	     x = ecore_exe_run(inst->ci->app, NULL);
 	     if (x) ecore_exe_free(x);
@@ -187,7 +187,7 @@ _net_cb_mouse_in(void *data, Evas_Object *obj, const char *emission, const char 
    char buf[PATH_MAX], tmp[100];
 
    inst = data;
-   if (inst->popup != NULL) return;
+   if (inst->popup) return;
    if (!inst->ci->show_popup) return;
    
    inst->popup = e_gadcon_popup_new(inst->gcc);

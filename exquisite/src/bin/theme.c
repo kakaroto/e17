@@ -32,7 +32,7 @@ theme_update_text(int signal)
         buf2[0] = 0;
      }
 
-   for(l = messages, i = 0; l != NULL && i < 8192; l = l->next)
+   for(l = messages, i = 0; l && i < 8192; l = l->next)
      {
        t = (Exquisite_Text_Line*)l->data;
        snprintf(p, strlen(t->message)+8, "<p>%s</p>", t->message);
@@ -229,7 +229,7 @@ theme_text_clear()
       Eina_List *l = NULL;
       Exquisite_Text_Line *t = NULL;
    
-      for(l = messages; l != NULL; l = l->next)
+      for(l = messages; l; l = l->next)
         {
           t = l->data;
           eina_stringshare_del(t->message);

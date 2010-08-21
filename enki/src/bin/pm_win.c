@@ -30,7 +30,7 @@ void enlil_win_bg_set(Enlil_Win *win, const char *file)
 {
    Evas_Object *bg;
 
-   ASSERT_RETURN_VOID(win != NULL);
+   ASSERT_RETURN_VOID(!!win);
 
    bg = elm_bg_add(win->win);
    evas_object_lower(bg);

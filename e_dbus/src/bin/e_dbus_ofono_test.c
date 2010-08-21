@@ -456,21 +456,21 @@ _on_input(void *data __UNUSED__, Ecore_Fd_Handler *fd_handler)
 	if (args)
 	  {
 	     printf("Commands with '%s' in the name:\n", args);
-	     for (itr = maps; itr->cmd != NULL; itr++)
+	     for (itr = maps; itr->cmd; itr++)
 	       if (strstr(itr->cmd, args))
 		 printf("\t%s\n", itr->cmd);
 	  }
 	else
 	  {
 	     fputs("Commands:\n", stdout);
-	     for (itr = maps; itr->cmd != NULL; itr++)
+	     for (itr = maps; itr->cmd; itr++)
 	       printf("\t%s\n", itr->cmd);
 	  }
 	fputc('\n', stdout);
 	return 1;
      }
 
-   for (itr = maps; itr->cmd != NULL; itr++)
+   for (itr = maps; itr->cmd; itr++)
      if (strcmp(itr->cmd, cmd) == 0)
        return itr->cb(cmd, args);
 

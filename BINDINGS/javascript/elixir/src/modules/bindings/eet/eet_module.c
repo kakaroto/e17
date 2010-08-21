@@ -112,7 +112,7 @@ module_close(Elixir_Module *em, JSContext *cx)
 
    tmp = &em->data;
 
-   while (eet_functions[i].name != NULL)
+   while (eet_functions[i].name)
      JS_DeleteProperty(cx, *((JSObject**) tmp), eet_functions[i++].name);
 
    elixir_object_unregister(cx, (JSObject**) tmp);

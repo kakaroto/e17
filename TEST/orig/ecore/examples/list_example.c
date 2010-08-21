@@ -6,7 +6,7 @@ void print_list (Ecore_List *list) {
 
   printf("--- Current List ---\n");
   ecore_list_first_goto(list);
-  while((list_item = (char*)ecore_list_next(list)) != NULL) {
+  while((list_item = (char *)ecore_list_next(list))) {
     printf("\t%s\n", list_item);
   }
 }

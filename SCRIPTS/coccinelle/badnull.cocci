@@ -10,7 +10,8 @@
 //
 
 @fix disable is_null,isnt_null1 @
-expression *E, *x;
+expression *E;
+expression *x;
 identifier x2;
 identifier fn;
 type T;

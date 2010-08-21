@@ -660,7 +660,7 @@ _forecasts_parse(void *data)
    inst = data;
    if (!inst)
      return 0;
-   if (inst->buffer == NULL)
+   if (!inst->buffer)
      return 0;
 
    /* Location */

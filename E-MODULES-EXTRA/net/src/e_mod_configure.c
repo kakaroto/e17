@@ -157,7 +157,7 @@ _apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    
    ci = cfd->data;
    tmp = eina_list_nth(cfdata->devs, cfdata->num);
-   if (tmp != NULL) 
+   if (tmp) 
      {
 	eina_stringshare_del(ci->device);
 	ci->device = eina_stringshare_add(tmp);
@@ -167,7 +167,7 @@ _apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    ci->show_popup = cfdata->show_popup;
    
    if (ci->app) eina_stringshare_del(ci->app);
-   if (cfdata->app != NULL)
+   if (cfdata->app)
      ci->app = eina_stringshare_add(cfdata->app);
    
    e_config_save_queue();

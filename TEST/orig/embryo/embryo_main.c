@@ -101,11 +101,11 @@ custom_printf(Embryo_Program * ep, Embryo_Cell *cstr, Embryo_Cell *params, int n
 	     process_escape_char(ep, c);
 	     inesc = 0;
 	  }
-	else if ((params != NULL) && (c == '%'))
+	else if ((params) && (c == '%'))
 	  {
 	     informat = 1;
 	  }
-	else if ((params != NULL) && (c == '\\'))
+	else if ((params) && (c == '\\'))
 	  {
 	     inesc = 1;
 	  }

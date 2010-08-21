@@ -72,7 +72,7 @@ main(int argc, char **argv)
 
    /* allocate a structure to hold our options */
    opts = calloc(1, sizeof(Options));
-   if (opts  == NULL)
+   if (!opts)
      {
 	printf("Cannot allocate memory for Options structure.\n");
 	exit(EXIT_FAILURE);
@@ -288,7 +288,7 @@ _em_get_filename(void)
    loctime = localtime(&t);
 
    /* if no filename given, create one based on time */
-   if ((!opts->filename) || (opts->filename == NULL))
+   if ((!opts->filename) || (!opts->filename))
      strftime(buf, sizeof(buf), "%Y-%m-%d-%H%M%S.png", loctime);
    else 
      {

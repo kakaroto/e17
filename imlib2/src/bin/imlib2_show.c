@@ -265,10 +265,10 @@ main(int argc, char **argv)
    if (!blendtest)
      {
         const char         *display_name = getenv("DISPLAY");
-        if (display_name == NULL)
+        if (!display_name)
             display_name = ":0";
         disp = XOpenDisplay(display_name);
-        if (disp == NULL)
+        if (!disp)
           {
             fprintf(stderr, "Can't open display %s\n", display_name);
             return 1;
@@ -917,7 +917,7 @@ main(int argc, char **argv)
                   int                 i;
 
                   f = fn;
-                  if (fn != NULL && f->type & 2)
+                  if (fn && f->type & 2)
                      for (i = 0; i < f->font_count; i++)
                         printf("xfont%d: %s\n", i, f->font_name[i]);
                }

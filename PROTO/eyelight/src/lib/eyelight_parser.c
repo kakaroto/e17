@@ -514,7 +514,7 @@ int eyelight_save(Eyelight_Node *root, const char *file)
     buf[0] = '\0';
 
     f = fopen(file,"w");
-    EYELIGHT_ASSERT_RETURN(f != NULL);
+    EYELIGHT_ASSERT_RETURN(!!f);
     _eyelight_save(root,f, buf);
     fclose(f);
 

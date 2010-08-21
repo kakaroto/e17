@@ -325,7 +325,7 @@ void update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
       height = 1;
 
     pixbuf = gdk_pixbuf_new_from_file_at_size (filename, width, height, NULL);
-    have_preview = (pixbuf != NULL);
+    have_preview = (pixbuf);
     g_free (filename);
 
     gtk_image_set_from_pixbuf (GTK_IMAGE (preview), pixbuf);

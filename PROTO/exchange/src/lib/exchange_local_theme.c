@@ -104,7 +104,7 @@ exchange_local_theme_check_update(const char *file)
    local_ver = exchange_local_theme_version_get(file);
    remote_ver = exchange_remote_theme_version_get(local_name);
 
-   if ((local_ver == NULL) || (remote_ver == NULL))
+   if ((!local_ver) || (!remote_ver))
       return -1;
 
    if (strcmp(remote_ver, local_ver) > 0)

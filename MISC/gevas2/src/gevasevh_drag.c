@@ -87,7 +87,7 @@ gevasev_drag_mouse_down(GtkObject * object, GtkObject * gevasobj, int _b,
 						int _x, int _y)
 {
 	GtkgEvasEvHDrag *ev;
-	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_DRAG(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_DRAG(object);
@@ -114,7 +114,7 @@ gevasev_drag_mouse_up(GtkObject * object, GtkObject * gevasobj, int _b, int _x,
 					  int _y)
 {
 	GtkgEvasEvHDrag *ev;
-	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_DRAG(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_DRAG(object);
@@ -129,7 +129,7 @@ gevasev_drag_mouse_move(GtkObject * object, GtkObject * gevasobj, int _b,
 						int _x, int _y)
 {
 	GtkgEvasEvHDrag *ev;
-	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_DRAG(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_DRAG(object);
@@ -222,7 +222,7 @@ GtkObject *gevasevh_drag_new(void)
 static void gevasevh_drag_destroy(GtkObject * object)
 {
 	GtkgEvasEvHDrag *ev;
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASEVH_DRAG(object));
 	ev = GTK_GEVASEVH_DRAG(object);
 

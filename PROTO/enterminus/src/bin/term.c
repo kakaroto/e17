@@ -248,7 +248,7 @@ term_tcanvas_new(Term *term)
 
    canvas->pos = 0;
 
-   if (canvas->grid == NULL || canvas->changed_rows == NULL) {
+   if (!canvas->grid || !canvas->changed_rows) {
       fprintf(stderr, "Could not allocate memory for grid!");
       exit(-1);
    }

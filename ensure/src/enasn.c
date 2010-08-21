@@ -40,7 +40,7 @@ enasn_load(const char *path){
 	DIR *dir;
 	char buf[BUFSIZ];
 
-	if (path == NULL) path = PACKAGE_MODULE_DIR;
+	if (!path) path = PACKAGE_MODULE_DIR;
 
 	dir = opendir(path);
 	if (!dir) return -1;
@@ -64,7 +64,7 @@ enasn_load(const char *path){
 			printf("Unable to find 'assurance' in %s (%s)\n",buf,
 					dlerror());
 			err++;
-		} else if (asn->summary == NULL){
+		} else if (!asn->summary){
 			printf("Need summary in assurance '%s'\n",buf);
 			err ++;
 		} else if (!asn->object && !asn->init && !asn->fini){

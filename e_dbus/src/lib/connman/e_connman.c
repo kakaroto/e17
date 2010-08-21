@@ -272,132 +272,132 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
    if (E_CONNMAN_EVENT_ELEMENT_UPDATED == 0)
      E_CONNMAN_EVENT_ELEMENT_UPDATED = ecore_event_type_new();
 
-   if (e_connman_iface_manager == NULL)
+   if (!e_connman_iface_manager)
      e_connman_iface_manager = eina_stringshare_add("org.moblin.connman.Manager");
-   if (e_connman_iface_network == NULL)
+   if (!e_connman_iface_network)
      e_connman_iface_network = eina_stringshare_add("org.moblin.connman.Network");
-   if (e_connman_iface_profile == NULL)
+   if (!e_connman_iface_profile)
      e_connman_iface_profile = eina_stringshare_add("org.moblin.connman.Profile");
-   if (e_connman_iface_service == NULL)
+   if (!e_connman_iface_service)
      e_connman_iface_service = eina_stringshare_add("org.moblin.connman.Service");
-   if (e_connman_iface_device == NULL)
+   if (!e_connman_iface_device)
      e_connman_iface_device = eina_stringshare_add("org.moblin.connman.Device");
-   if (e_connman_iface_connection == NULL)
+   if (!e_connman_iface_connection)
      e_connman_iface_connection = eina_stringshare_add("org.moblin.connman.Connection");
-   if (e_connman_iface_technology == NULL)
+   if (!e_connman_iface_technology)
      e_connman_iface_technology = eina_stringshare_add("org.moblin.connman.Technology");
 
-   if (e_connman_prop_available == NULL)
+   if (!e_connman_prop_available)
      e_connman_prop_available = eina_stringshare_add("Available");
-   if (e_connman_prop_connected == NULL)
+   if (!e_connman_prop_connected)
      e_connman_prop_connected = eina_stringshare_add("Connected");
-   if (e_connman_prop_connections == NULL)
+   if (!e_connman_prop_connections)
      e_connman_prop_connections = eina_stringshare_add("Connections");
-   if (e_connman_prop_default == NULL)
+   if (!e_connman_prop_default)
      e_connman_prop_default = eina_stringshare_add("Default");
-   if (e_connman_prop_device == NULL)
+   if (!e_connman_prop_device)
      e_connman_prop_device = eina_stringshare_add("Device");
-   if (e_connman_prop_devices == NULL)
+   if (!e_connman_prop_devices)
      e_connman_prop_devices = eina_stringshare_add("Devices");
-   if (e_connman_prop_interface == NULL)
+   if (!e_connman_prop_interface)
      e_connman_prop_interface = eina_stringshare_add("Interface");
-   if (e_connman_prop_ipv4 == NULL)
+   if (!e_connman_prop_ipv4)
      e_connman_prop_ipv4 = eina_stringshare_add("IPv4");
-   if (e_connman_prop_ipv4_configuration == NULL)
+   if (!e_connman_prop_ipv4_configuration)
      e_connman_prop_ipv4_configuration = eina_stringshare_add("IPv4.Configuration");
-   if (e_connman_prop_ethernet == NULL)
+   if (!e_connman_prop_ethernet)
      e_connman_prop_ethernet = eina_stringshare_add("Ethernet");
-   if (e_connman_prop_method == NULL)
+   if (!e_connman_prop_method)
      e_connman_prop_method = eina_stringshare_add("Method");
-   if (e_connman_prop_address == NULL)
+   if (!e_connman_prop_address)
      e_connman_prop_address = eina_stringshare_add("Address");
-   if (e_connman_prop_gateway == NULL)
+   if (!e_connman_prop_gateway)
      e_connman_prop_gateway = eina_stringshare_add("Gateway");
-   if (e_connman_prop_netmask == NULL)
+   if (!e_connman_prop_netmask)
      e_connman_prop_netmask = eina_stringshare_add("Netmask");
-   if (e_connman_prop_mtu == NULL)
+   if (!e_connman_prop_mtu)
      e_connman_prop_mtu = eina_stringshare_add("MTU");
-   if (e_connman_prop_name == NULL)
+   if (!e_connman_prop_name)
      e_connman_prop_name = eina_stringshare_add("Name");
-   if (e_connman_prop_network == NULL)
+   if (!e_connman_prop_network)
      e_connman_prop_network = eina_stringshare_add("Network");
-   if (e_connman_prop_networks == NULL)
+   if (!e_connman_prop_networks)
      e_connman_prop_networks = eina_stringshare_add("Networks");
-   if (e_connman_prop_offline_mode == NULL)
+   if (!e_connman_prop_offline_mode)
      e_connman_prop_offline_mode = eina_stringshare_add("OfflineMode");
-   if (e_connman_prop_policy == NULL)
+   if (!e_connman_prop_policy)
      e_connman_prop_policy = eina_stringshare_add("Policy");
-   if (e_connman_prop_powered == NULL)
+   if (!e_connman_prop_powered)
      e_connman_prop_powered = eina_stringshare_add("Powered");
-   if (e_connman_prop_priority == NULL)
+   if (!e_connman_prop_priority)
      e_connman_prop_priority = eina_stringshare_add("Priority");
-   if (e_connman_prop_profiles == NULL)
+   if (!e_connman_prop_profiles)
      e_connman_prop_profiles = eina_stringshare_add("Profiles");
-   if (e_connman_prop_profile_active == NULL)
+   if (!e_connman_prop_profile_active)
      e_connman_prop_profile_active = eina_stringshare_add("ActiveProfile");
-   if (e_connman_prop_services == NULL)
+   if (!e_connman_prop_services)
      e_connman_prop_services = eina_stringshare_add("Services");
-   if (e_connman_prop_technologies == NULL)
+   if (!e_connman_prop_technologies)
      e_connman_prop_technologies = eina_stringshare_add("Technologies");
-   if (e_connman_prop_remember == NULL)
+   if (!e_connman_prop_remember)
      e_connman_prop_remember = eina_stringshare_add("Remember");
-   if (e_connman_prop_scan_interval == NULL)
+   if (!e_connman_prop_scan_interval)
      e_connman_prop_scan_interval = eina_stringshare_add("ScanInterval");
-   if (e_connman_prop_scanning == NULL)
+   if (!e_connman_prop_scanning)
      e_connman_prop_scanning = eina_stringshare_add("Scanning");
-   if (e_connman_prop_state == NULL)
+   if (!e_connman_prop_state)
      e_connman_prop_state = eina_stringshare_add("State");
-   if (e_connman_prop_strength == NULL)
+   if (!e_connman_prop_strength)
      e_connman_prop_strength = eina_stringshare_add("Strength");
-   if (e_connman_prop_frequency == NULL)
+   if (!e_connman_prop_frequency)
      e_connman_prop_frequency = eina_stringshare_add("Frequency");
-   if (e_connman_prop_type == NULL)
+   if (!e_connman_prop_type)
      e_connman_prop_type = eina_stringshare_add("Type");
-   if (e_connman_prop_wifi_mode == NULL)
+   if (!e_connman_prop_wifi_mode)
      e_connman_prop_wifi_mode = eina_stringshare_add("WiFi.Mode");
-   if (e_connman_prop_wifi_passphrase == NULL)
+   if (!e_connman_prop_wifi_passphrase)
      e_connman_prop_wifi_passphrase = eina_stringshare_add("WiFi.Passphrase");
-   if (e_connman_prop_wifi_security == NULL)
+   if (!e_connman_prop_wifi_security)
      e_connman_prop_wifi_security = eina_stringshare_add("WiFi.Security");
-   if (e_connman_prop_wifi_ssid == NULL)
+   if (!e_connman_prop_wifi_ssid)
      e_connman_prop_wifi_ssid = eina_stringshare_add("WiFi.SSID");
-   if (e_connman_prop_wifi_channel == NULL)
+   if (!e_connman_prop_wifi_channel)
      e_connman_prop_wifi_channel = eina_stringshare_add("WiFi.Channel");
-   if (e_connman_prop_wifi_eap == NULL)
+   if (!e_connman_prop_wifi_eap)
      e_connman_prop_wifi_eap = eina_stringshare_add("WiFi.EAP");
-   if (e_connman_prop_error == NULL)
+   if (!e_connman_prop_error)
      e_connman_prop_error = eina_stringshare_add("Error");
-   if (e_connman_prop_mode == NULL)
+   if (!e_connman_prop_mode)
      e_connman_prop_mode = eina_stringshare_add("Mode");
-   if (e_connman_prop_security == NULL)
+   if (!e_connman_prop_security)
      e_connman_prop_security = eina_stringshare_add("Security");
-   if (e_connman_prop_passphrase == NULL)
+   if (!e_connman_prop_passphrase)
      e_connman_prop_passphrase = eina_stringshare_add("Passphrase");
-   if (e_connman_prop_passphrase_required == NULL)
+   if (!e_connman_prop_passphrase_required)
      e_connman_prop_passphrase_required = eina_stringshare_add("PassphraseRequired");
-   if (e_connman_prop_favorite == NULL)
+   if (!e_connman_prop_favorite)
      e_connman_prop_favorite = eina_stringshare_add("Favorite");
-   if (e_connman_prop_immutable == NULL)
+   if (!e_connman_prop_immutable)
      e_connman_prop_immutable = eina_stringshare_add("Immutable");
-   if (e_connman_prop_auto_connect == NULL)
+   if (!e_connman_prop_auto_connect)
      e_connman_prop_auto_connect = eina_stringshare_add("AutoConnect");
-   if (e_connman_prop_setup_required == NULL)
+   if (!e_connman_prop_setup_required)
      e_connman_prop_setup_required = eina_stringshare_add("SetupRequired");
-   if (e_connman_prop_apn == NULL)
+   if (!e_connman_prop_apn)
      e_connman_prop_apn = eina_stringshare_add("APN");
-   if (e_connman_prop_mcc == NULL)
+   if (!e_connman_prop_mcc)
      e_connman_prop_mcc = eina_stringshare_add("MCC");
-   if (e_connman_prop_mnc == NULL)
+   if (!e_connman_prop_mnc)
      e_connman_prop_mnc = eina_stringshare_add("MCN");
-   if (e_connman_prop_roaming == NULL)
+   if (!e_connman_prop_roaming)
      e_connman_prop_roaming = eina_stringshare_add("Roaming");
-   if (e_connman_prop_technology_default == NULL)
+   if (!e_connman_prop_technology_default)
      e_connman_prop_technology_default = eina_stringshare_add("DefaultTechnology");
-   if (e_connman_prop_technologies_available == NULL)
+   if (!e_connman_prop_technologies_available)
      e_connman_prop_technologies_available = eina_stringshare_add("AvailableTechnologies");
-   if (e_connman_prop_technologies_enabled == NULL)
+   if (!e_connman_prop_technologies_enabled)
      e_connman_prop_technologies_enabled = eina_stringshare_add("EnabledTechnologies");
-   if (e_connman_prop_technologies_connected == NULL)
+   if (!e_connman_prop_technologies_connected)
      e_connman_prop_technologies_connected = eina_stringshare_add("ConnectedTechnologies");
 
    e_connman_conn = edbus_conn;

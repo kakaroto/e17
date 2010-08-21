@@ -115,7 +115,7 @@ gevasev_clicks_mouse_up(GtkObject * object, GtkObject * gevasobj, int _b,
 	GdkEvent *gev;
 	gboolean return_val = FALSE;
 	GtkgEvasEvHClicks *ev;
-	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_CLICKS_SIGNAL(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_CLICKS_SIGNAL(object);
@@ -242,7 +242,7 @@ GtkObject *gevasevh_clicks_new(void)
 static void gevasevh_clicks_destroy(GtkObject * object)
 {
 	GtkgEvasEvHClicks *ev;
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASEVH_CLICKS_SIGNAL(object));
 	ev = GTK_GEVASEVH_CLICKS_SIGNAL(object);
 
@@ -255,7 +255,7 @@ static void
 gevasevh_clicks_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasEvHClicks *ev;
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASEVH_CLICKS_SIGNAL(object));
 	ev = GTK_GEVASEVH_CLICKS_SIGNAL(object);
 
@@ -274,7 +274,7 @@ static void
 gevasevh_clicks_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasEvHClicks *ev;
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASEVH_CLICKS_SIGNAL(object));
 	ev = GTK_GEVASEVH_CLICKS_SIGNAL(object);
 

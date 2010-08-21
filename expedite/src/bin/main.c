@@ -1236,14 +1236,14 @@ _help(void)
 	   "  -f use netwm fullscreen request (requires x11 + wm)\n"
 	   "\n"
 	   "Where ENGINE can be one of:\n");
-   for (i = 0; engines[i].name != NULL; ++i)
+   for (i = 0; engines[i].name; ++i)
      fprintf(stderr, " %s", engines[i].name);
 
    fprintf(stderr,
 	   "\n"
 	   "Where PROFILE can be one of:\n");
 
-   for (i = 0; resolutions[i].name != NULL; ++i)
+   for (i = 0; resolutions[i].name; ++i)
      fprintf(stderr, " %s", resolutions[i].name);
 
    fprintf(stderr, "\n");
@@ -1260,7 +1260,7 @@ _profile_parse(int argc, char **argv)
 	if ((!strcmp(argv[i], "-p")) && (i < (argc - 1)))
 	  {
 	     i++;
-	     for (j = 0; resolutions[j].name != NULL; ++j)
+	     for (j = 0; resolutions[j].name; ++j)
 	       if (!strcmp(argv[i], resolutions[j].name))
 		 {
                     profile = resolutions[j].name;
@@ -1269,7 +1269,7 @@ _profile_parse(int argc, char **argv)
 		    break;
 		 }
 
-	     if (resolutions[j].name == NULL)
+	     if (!resolutions[j].name)
 	       _help();
 	  }
 	else if ((!strcmp(argv[i], "-c")) && (i < (argc - 1)))
@@ -1318,7 +1318,7 @@ _engine_args(int argc, char **argv)
        {
 	  ++i;
 
-	  for (j = 0; engines[j].name != NULL; ++j)
+	  for (j = 0; engines[j].name; ++j)
 	    if (!strcmp(argv[i], engines[j].name))
 	      {
                  engine = engines[j].name;

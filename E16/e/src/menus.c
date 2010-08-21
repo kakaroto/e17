@@ -1168,7 +1168,7 @@ MenusShowNamed(const char *name, const char *param)
 int
 MenusActive(void)
 {
-   return Mode_menus.first != NULL;
+   return !!Mode_menus.first;
 }
 
 static void

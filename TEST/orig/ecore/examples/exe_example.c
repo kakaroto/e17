@@ -36,7 +36,7 @@ exe_data(void *data, int type, void *event)
      {
 	int                 i;
 
-	for (i = 0; ev->lines[i].line != NULL; i++)
+	for (i = 0; ev->lines[i].line; i++)
 	  {
 	     printf("%d %s\n", ev->lines[i].size, ev->lines[i].line);
 	  }
@@ -60,7 +60,7 @@ exe_data_count(void *data, int type, void *event)
 
    if (ev->lines)
      {
-	for (i = 0; ev->lines[i].line != NULL; i++)
+	for (i = 0; ev->lines[i].line; i++)
 	   line_count++;
 	/* printf("%d ", i);   This is for testing the number of lines per event. */
      }

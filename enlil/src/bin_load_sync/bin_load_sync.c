@@ -192,7 +192,7 @@ static void _sync_album_update_cb(void *data, Enlil_Sync *sync,Enlil_Root *root,
     Enlil_Root *_root = (Enlil_Root*) data;
 
     Enlil_Album *_album = enlil_root_album_search_file_name(_root, enlil_album_file_name_get(album));
-    ASSERT_RETURN_VOID(_album != NULL);
+    ASSERT_RETURN_VOID(!!_album);
 
     enlil_album_copy(album, _album);
 }
@@ -202,7 +202,7 @@ static void _sync_album_disappear_cb(void *data, Enlil_Sync *sync,Enlil_Root *ro
     Enlil_Root *_root = (Enlil_Root*) data;
 
     Enlil_Album *_album = enlil_root_album_search_file_name(_root, enlil_album_file_name_get(album));
-    ASSERT_RETURN_VOID(_album != NULL);
+    ASSERT_RETURN_VOID(!!_album);
 
     enlil_root_album_remove(_root, _album);
     enlil_album_free(&_album);
@@ -213,7 +213,7 @@ static void _sync_photo_new_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, 
     Enlil_Root *_root = (Enlil_Root*) data;
 
     Enlil_Album *_album = enlil_root_album_search_file_name(_root, enlil_album_file_name_get(album));
-    ASSERT_RETURN_VOID(_album != NULL);
+    ASSERT_RETURN_VOID(!!_album);
 
     Enlil_Photo *_photo = enlil_photo_copy_new(photo);
     enlil_album_photo_add(_album, _photo);
@@ -224,7 +224,7 @@ static void _sync_photo_update_cb(void *data, Enlil_Sync *sync,Enlil_Album *albu
     Enlil_Root *_root = (Enlil_Root*) data;
 
     Enlil_Album *_album = enlil_root_album_search_file_name(_root, enlil_album_file_name_get(album));
-    ASSERT_RETURN_VOID(_album != NULL);
+    ASSERT_RETURN_VOID(!!_album);
 
     Enlil_Photo *_photo = enlil_album_photo_search_file_name(_album, enlil_photo_file_name_get(photo));
     enlil_photo_copy(photo, _photo);
@@ -235,7 +235,7 @@ static void _sync_photo_disappear_cb(void *data, Enlil_Sync *sync,Enlil_Album *a
     Enlil_Root *_root = (Enlil_Root*) data;
 
     Enlil_Album *_album = enlil_root_album_search_file_name(_root, enlil_album_file_name_get(album));
-    ASSERT_RETURN_VOID(_album != NULL);
+    ASSERT_RETURN_VOID(!!_album);
 
     Enlil_Photo *_photo = enlil_album_photo_search_file_name(_album, enlil_photo_file_name_get(photo));
     enlil_album_photo_remove(_album, _photo);

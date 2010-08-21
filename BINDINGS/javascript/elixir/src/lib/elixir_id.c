@@ -232,7 +232,7 @@ elixir_id_push(const Elixir_Loaded_File *file)
    cid[id_active_size] = strdup(destination);
    id[id_active_size++] = file;
 
-   if (gid == NULL)
+   if (!gid)
      {
 	gid = strdup(destination);
 	return EINA_TRUE;

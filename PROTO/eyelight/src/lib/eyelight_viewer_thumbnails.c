@@ -248,7 +248,7 @@ static int* _eyelight_viewer_thumbnails_resize(const char *file, int pos, const 
 
 	 eina_convert_itoa(pos, buffer);
 
-	 if (strchr(file, '.') != NULL)
+	 if (strchr(file, '.'))
 	   {
 	      Eet_File *ef;
 	      char *tmp;

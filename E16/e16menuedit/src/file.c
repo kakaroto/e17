@@ -54,7 +54,7 @@ char *homedir (int uid)
     return (s);
   }
   return (g_strdup
-          ((getenv ("TMPDIR") == NULL) ? "/tmp" : getenv ("TMPDIR")));
+          ((!getenv("TMPDIR")) ? "/tmp" : getenv ("TMPDIR")));
 }
 
 void compile_regex ()

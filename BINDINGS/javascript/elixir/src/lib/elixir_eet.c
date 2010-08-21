@@ -213,7 +213,7 @@ elixir_object_to_eet_node(JSContext *cx, jsval data, const char *name, JSObject 
 
    if (JS_ValueToObject(cx, data, &obj) == JS_FALSE)
      return NULL;
-   if (obj == NULL)
+   if (!obj)
      return NULL;
 
    ida = JS_Enumerate(cx, descriptor);
@@ -640,7 +640,7 @@ elixir_eet_init(JSContext *cx, JSObject *parent)
 
    eet_init();
 
-   for (i = 0; eet_const_properties[i].name != NULL; ++i)
+   for (i = 0; eet_const_properties[i].name; ++i)
      {
 	property = INT_TO_JSVAL(eet_const_properties[i].value);
 	JS_DefineProperty(cx, parent,
@@ -656,7 +656,7 @@ elixir_eet_shutdown(JSContext *cx, JSObject *parent)
 {
    unsigned int i = 0;
 
-   while (eet_const_properties[i].name != NULL)
+   while (eet_const_properties[i].name)
      JS_DeleteProperty(cx, parent, eet_const_properties[i++].name);
 
    eet_shutdown();

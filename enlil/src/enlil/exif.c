@@ -46,7 +46,7 @@ Enlil_Exif *enlil_exif_new()
 
 Enlil_Exif *enlil_exif_copy_new(Enlil_Exif *exif)
 {
-   ASSERT_RETURN(exif!=NULL);
+   ASSERT_RETURN(!!exif);
 
    Enlil_Exif *_exif = enlil_exif_new();
 
@@ -56,8 +56,8 @@ Enlil_Exif *enlil_exif_copy_new(Enlil_Exif *exif)
 
 void enlil_exif_copy(Enlil_Exif *exif_src, Enlil_Exif *exif_dest)
 {
-   ASSERT_RETURN_VOID(exif_src!=NULL);
-   ASSERT_RETURN_VOID(exif_dest!=NULL);
+   ASSERT_RETURN_VOID(!!exif_src);
+   ASSERT_RETURN_VOID(!!exif_dest);
 
    exif_dest->tag = eina_stringshare_add(exif_src->tag);
    exif_dest->value = eina_stringshare_add(exif_src->value);
@@ -66,9 +66,9 @@ void enlil_exif_copy(Enlil_Exif *exif_src, Enlil_Exif *exif_dest)
 
 void enlil_exif_free(Enlil_Exif **exif)
 {
-   ASSERT_RETURN_VOID(exif != NULL);
+   ASSERT_RETURN_VOID(!!exif);
    Enlil_Exif *_exif = *exif;
-   ASSERT_RETURN_VOID(_exif != NULL);
+   ASSERT_RETURN_VOID(!!_exif);
 
    if(_exif->tag)
      eina_stringshare_del(_exif->tag);
@@ -82,19 +82,19 @@ void enlil_exif_free(Enlil_Exif **exif)
 
 const char *enlil_exif_tag_get(Enlil_Exif *exif)
 {
-   ASSERT_RETURN(exif != NULL);
+   ASSERT_RETURN(!!exif);
    return exif->tag;
 }
 
 const char *enlil_exif_value_get(Enlil_Exif *exif)
 {
-   ASSERT_RETURN(exif != NULL);
+   ASSERT_RETURN(!!exif);
    return exif->value;
 }
 
 const char *enlil_exif_description_get(Enlil_Exif *exif)
 {
-   ASSERT_RETURN(exif != NULL);
+   ASSERT_RETURN(!!exif);
    return exif->description;
 }
 
@@ -118,7 +118,7 @@ Eet_Data_Descriptor * _enlil_exif_edd_new()
 
 Enlil_Exif_Job *enlil_exif_job_append(Enlil_Photo *photo, Enlil_Exif_Done_Cb cb, void *data)
 {
-    ASSERT_RETURN(photo!=NULL);
+    ASSERT_RETURN(!!photo);
     Eina_List *l;
     Enlil_Exif_Job *job;
 
@@ -143,7 +143,7 @@ Enlil_Exif_Job *enlil_exif_job_append(Enlil_Photo *photo, Enlil_Exif_Done_Cb cb,
 
 Enlil_Exif_Job *enlil_exif_job_prepend(Enlil_Photo *photo, Enlil_Exif_Done_Cb cb, void *data)
 {
-    ASSERT_RETURN(photo!=NULL);
+    ASSERT_RETURN(!!photo);
     Eina_List *l;
     Enlil_Exif_Job *job;
 
@@ -170,7 +170,7 @@ Enlil_Exif_Job *enlil_exif_job_prepend(Enlil_Photo *photo, Enlil_Exif_Done_Cb cb
 
 void enlil_exif_job_del(Enlil_Exif_Job *job)
 {
-    ASSERT_RETURN_VOID(job != NULL);
+    ASSERT_RETURN_VOID(!!job);
 
     if(job == job_current)
     {
@@ -184,7 +184,7 @@ void enlil_exif_job_del(Enlil_Exif_Job *job)
 
 static void _job_free(Enlil_Exif_Job *job)
 {
-    ASSERT_RETURN_VOID(job != NULL);
+    ASSERT_RETURN_VOID(!!job);
 
     FREE(job);
 }

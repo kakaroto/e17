@@ -37,7 +37,7 @@ main (int argc,
 
   // Try to conect to server.
   svr = ecore_con_server_connect(ECORE_CON_REMOTE_UDP, "127.0.0.1",6767, NULL);
-  if (NULL == svr) {
+  if (!svr) {
     printf("*** This really shouldn't happen.  Bad port?  DNS lookup couldn't fork? \n");
     return 0;
   }
@@ -45,7 +45,7 @@ main (int argc,
 
   // Try to conect to server.
   mcast = ecore_con_server_connect(ECORE_CON_REMOTE_UDP, "239.255.2.1", 1199, NULL);
-  if (NULL == svr) {
+  if (!svr) {
     printf("*** This really shouldn't happen.  Bad port?  DNS lookup couldn't fork? \n");
     return 0;
   }

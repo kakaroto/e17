@@ -28,7 +28,7 @@ static const char *imagetype;
  */
 static void *
 init_test(struct ensure *en ensure_unused){
-	if (imagetype == NULL)
+	if (!imagetype)
 		imagetype = eina_stringshare_add("image");
 	return NULL;
 }

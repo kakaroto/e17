@@ -373,7 +373,7 @@ static void __drag_data_get(GtkWidget          *widget,
     Eina_List* el = 0;
 
     printf("testgevas.c __drag_data_get() info:%d\n",info);
-    if((data == NULL) || (context == NULL))
+    if((!data) || (!context))
         return;
 
     switch( info )
@@ -489,7 +489,7 @@ static void __drag_data_received(
 	GtkgEvasImage *gi;
     
    	/* Important, check if we got data. */
-	if(selection_data == NULL)
+	if(!selection_data)
 		return;
     if(selection_data->length < 0)
         return;

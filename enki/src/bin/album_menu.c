@@ -384,7 +384,7 @@ static void _sort_by_date_cb(void *data, Evas_Object *obj, void *event_info)
 
 void album_menu_free(Album_Menu *album_menu)
 {
-   ASSERT_RETURN_VOID(album_menu != NULL);
+   ASSERT_RETURN_VOID(!!album_menu);
 
    evas_object_del(album_menu->menu);
 

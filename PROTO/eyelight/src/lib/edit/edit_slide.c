@@ -11,7 +11,7 @@ const char* eyelight_edit_slide_title_get(Eyelight_Viewer *pres, int id_slide)
     Eyelight_Node *node_slide, *node;
     Eina_List *l;
 
-    EYELIGHT_ASSERT_RETURN(pres!=NULL);
+    EYELIGHT_ASSERT_RETURN(!!pres);
     EYELIGHT_ASSERT_RETURN(id_slide>=0);
     EYELIGHT_ASSERT_RETURN(id_slide<eyelight_viewer_size_get(pres));
 
@@ -61,7 +61,7 @@ const char* eyelight_edit_slide_title_get(Eyelight_Viewer *pres, int id_slide)
 
 void eyelight_edit_slide_insert(Eyelight_Viewer *pres, int after)
 {
-    EYELIGHT_ASSERT_RETURN_VOID(pres!=NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!pres);
 
     Eyelight_Slide *slide = calloc(1,sizeof(Eyelight_Slide));
 
@@ -148,7 +148,7 @@ void eyelight_edit_slide_insert(Eyelight_Viewer *pres, int after)
 
 void eyelight_edit_slide_delete(Eyelight_Viewer *pres, int id_slide)
 {
-    EYELIGHT_ASSERT_RETURN_VOID(pres!=NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!pres);
     EYELIGHT_ASSERT_RETURN_VOID(id_slide>=0);
     EYELIGHT_ASSERT_RETURN_VOID(id_slide<eyelight_viewer_size_get(pres));
 
@@ -200,7 +200,7 @@ void eyelight_edit_slide_delete(Eyelight_Viewer *pres, int id_slide)
 
 void eyelight_edit_slide_move(Eyelight_Viewer *pres, int id_slide, int id_after)
 {
-    EYELIGHT_ASSERT_RETURN_VOID(pres!=NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!pres);
     EYELIGHT_ASSERT_RETURN_VOID(id_slide>=0);
     EYELIGHT_ASSERT_RETURN_VOID(id_slide<eyelight_viewer_size_get(pres));
 
@@ -268,7 +268,7 @@ void eyelight_edit_slide_move(Eyelight_Viewer *pres, int id_slide, int id_after)
 
 void eyelight_edit_edit_mode_set(Eyelight_Viewer *pres, Edje_Signal_Cb cb, void *data)
 {
-    EYELIGHT_ASSERT_RETURN_VOID(pres != NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!pres);
 
     pres->edit_mode = 1;
     pres->edit_cb = cb;
@@ -282,7 +282,7 @@ void eyelight_edit_slide_default_areas_reinit(Eyelight_Viewer *pres, int id_slid
     Eyelight_Node *node;
     Eyelight_Area *area;
 
-    EYELIGHT_ASSERT_RETURN_VOID(pres!=NULL);
+    EYELIGHT_ASSERT_RETURN_VOID(!!pres);
     EYELIGHT_ASSERT_RETURN_VOID(id_slide>=0);
     EYELIGHT_ASSERT_RETURN_VOID(id_slide<eyelight_viewer_size_get(pres));
 

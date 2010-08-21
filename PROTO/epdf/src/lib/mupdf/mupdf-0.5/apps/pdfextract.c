@@ -97,7 +97,7 @@ static void saveimage(fz_obj *obj, int num, int gen)
 	sprintf(name, "img-%04d.pnm", num);
 
 	f = fopen(name, "wb");
-	if (f == NULL)
+	if (!f)
 		die(fz_throw("Error creating image file"));
 
 	fprintf(f, "P6\n%d %d\n%d\n", w, h, 255);
@@ -189,7 +189,7 @@ static void savefont(fz_obj *dict, int num, int gen)
 	sprintf(name, "%s-%04d.%s", fontname, num, ext);
 
 	f = fopen(name, "wb");
-	if (f == NULL)
+	if (!f)
 		die(fz_throw("Error creating image file"));
 
 	for (p = buf->rp; p < buf->wp; p ++)

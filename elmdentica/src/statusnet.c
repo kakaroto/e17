@@ -121,7 +121,7 @@ void json_group_show(GroupProfile *group, char *stream) {
 	json_stream = json_tokener_parse(stream);
 	if(debug) printf("About to parse\n%s\n", stream);
 
-	if(json_stream == NULL) {
+	if(!json_stream) {
 		fprintf(stderr, "ERROR parsing json stream:\n%s\n", stream);
 		return;
 	}
@@ -203,7 +203,7 @@ static int ed_statusnet_group_get_handler(void *data, int argc, char **argv, cha
     id = atoi(argv[7]);
 
 
-	if(request == NULL) return(-1);
+	if(!request) return(-1);
 
 	res = asprintf(&request->url, "%s://%s:%d%s/statusnet/groups/show.json?id=%s", proto, domain, port, base_url, group->name);
 
@@ -211,7 +211,7 @@ static int ed_statusnet_group_get_handler(void *data, int argc, char **argv, cha
 		if (debug) printf("gnome-open %s\n", request->url);
 
 		res = ed_curl_get(screen_name, password, request, gg->account_id);
-		while(request->redir_url != NULL && redir--) {
+		while(request->redir_url && redir--) {
 			free(request->url);
 			request->url = request->redir_url;
 			request->redir_url = NULL;
@@ -300,7 +300,7 @@ static int ed_statusnet_group_join_handler(void *data, int argc, char **argv, ch
     base_url = argv[6];
     id = atoi(argv[7]);
 
-	if(request == NULL) return(-1);
+	if(!request) return(-1);
 
 	res = asprintf(&request->url, "%s://%s:%d%s/statusnet/groups/join.json?id=%s", proto, domain, port, base_url, group->name);
 
@@ -375,7 +375,7 @@ static int ed_statusnet_group_leave_handler(void *data, int argc, char **argv, c
     base_url = argv[6];
     id = atoi(argv[7]);
 
-	if(request == NULL) return(-1);
+	if(!request) return(-1);
 
 	res = asprintf(&request->url, "%s://%s:%d%s/statusnet/groups/leave.json?id=%s", proto, domain, port, base_url, group->name);
 

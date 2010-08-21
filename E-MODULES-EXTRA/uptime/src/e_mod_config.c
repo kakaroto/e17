@@ -35,7 +35,7 @@ _config_ut_module (Config_Item * ci)
     return;
 
   v = E_NEW (E_Config_Dialog_View, 1);
-  if (v == NULL)
+  if (!v)
     {
       warn ("malloc()");
       return;
@@ -73,7 +73,7 @@ _create_data (E_Config_Dialog * cfd)
 
   ci = cfd->data;
   cfdata = E_NEW (E_Config_Dialog_Data, 1);
-  if (cfdata == NULL)
+  if (!cfdata)
     {
       warn ("malloc()");
       return NULL;
@@ -87,7 +87,7 @@ _create_data (E_Config_Dialog * cfd)
 static void
 _free_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 {
-  if (ut_config == NULL)
+  if (!ut_config)
     return;
   ut_config->config_dialog = NULL;
 

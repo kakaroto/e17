@@ -268,7 +268,7 @@ static void gevastext_destroy(GtkObject * object)
 {
 	GtkgEvasText *ev;
 
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASTEXT(object));
 
 	ev = GTK_GEVASTEXT(object);
@@ -284,7 +284,7 @@ static void gevastext_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasText *ev;
 
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASTEXT(object));
 
 	ev = GTK_GEVASTEXT(object);
@@ -315,7 +315,7 @@ static void gevastext_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasText *ev;
 
-	g_return_if_fail(object != NULL);
+	g_return_if_fail(!!object);
 	g_return_if_fail(GTK_IS_GEVASTEXT(object));
 
 	ev = GTK_GEVASTEXT(object);

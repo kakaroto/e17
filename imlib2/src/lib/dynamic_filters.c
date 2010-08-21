@@ -101,7 +101,7 @@ __imlib_dynamic_filters_init()
         for (i = num_filters - 1; i >= 0; i--)
           {
              tptr = NULL;
-             if ((tptr = __imlib_LoadFilter(list[i])) != NULL)
+             if ((tptr = __imlib_LoadFilter(list[i])))
                {
                   ptr->next = tptr;
                   ptr = ptr->next;
@@ -130,7 +130,7 @@ __imlib_get_dynamic_filter(char *name)
    int                 i = 0;
 
    /* scan the filters */
-   for (f_ptr = filters->next; f_ptr != NULL; f_ptr = f_ptr->next)
+   for (f_ptr = filters->next; f_ptr; f_ptr = f_ptr->next)
      {
         /* scan the methods provided */
         for (i = 0; i < f_ptr->num_filters; i++)

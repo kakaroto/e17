@@ -423,12 +423,12 @@ _slide_cb_check(void *data)
    if (inst->index <= inst->bg_count)
      {
         bg = eina_list_nth(inst->bg_list, inst->index);
-	if (bg == NULL)
+	if (!bg)
 	  {
 	     inst->index = 0;
              bg = eina_list_nth(inst->bg_list, inst->index);
 	  }
-	if (bg != NULL)
+	if (bg)
 	  {
 	     _slide_set_bg(inst, bg);
 	     if(inst->ci->random_order)

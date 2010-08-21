@@ -505,7 +505,7 @@ MenuCheckShowEwinDesk(EWin * ewin, void *prm)
 {
    if (!EwinGetTitle(ewin) || ewin->props.skip_winlist)
       return 0;
-   return prm == NULL || EwinGetDesk(ewin) == prm;
+   return !prm || EwinGetDesk(ewin) == prm;
 }
 
 static void

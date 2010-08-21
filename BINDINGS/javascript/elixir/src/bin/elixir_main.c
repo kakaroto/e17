@@ -30,12 +30,12 @@ elixir_env(void* handle, const char** name, const char** value, void* context)
 
    (void) context ;
 
-   start = (handle == NULL) ? environ : handle;
+   start = (!handle) ? environ : handle;
 
-   while (*start != NULL && strncmp(*start, "ELX_", 4) != 0)
+   while (*start && strncmp(*start, "ELX_", 4) != 0)
      ++start;
 
-   if (*start != NULL)
+   if (*start)
      {
         const char*     tmpv = strchr(*start, '=');
 
@@ -205,10 +205,10 @@ main(int argc, char **argv)
               elixir_file_virtual_chroot_set(optarg);
               break;
            case 'l': /* Log file. */
-              if (fl != NULL)
+              if (fl)
                 fclose(fl);
               fl = fopen(optarg, "a");
-              if (fl == NULL)
+              if (!fl)
                 {
                    fprintf(stderr, "Unable to open `%s'.\n\n", optarg);
                    elixir_help();
@@ -219,7 +219,7 @@ main(int argc, char **argv)
               break;
            case 'u':
               pw = getpwnam(optarg);
-              if (pw == NULL)
+              if (!pw)
                 {
                    fprintf(stderr, "Unable to get user `%s' information.\n\n", optarg);
                    elixir_help();
@@ -228,7 +228,7 @@ main(int argc, char **argv)
               break;
 	   case 'g':
 	      grp = getgrnam(optarg);
-	      if (grp == NULL)
+	      if (!grp)
 		{
 		   fprintf(stderr, "Unable to get group `%s' information.\n\n", optarg);
 		   elixir_help();

@@ -107,7 +107,7 @@ explicit_object_url_get(Explicit *context, Evas_Object *obj, const char *url, co
    else if (strcmp(evas_object_type_get(obj), "edje") == 0)
      {
 	ox->type = EDJE_OBJECT;
-	if (destination.key == NULL)
+	if (!destination.key)
 	  goto on_error;
      }
    else goto on_error;

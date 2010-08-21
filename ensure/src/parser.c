@@ -132,7 +132,7 @@ parse_object(char *line, struct enobj *eno){
 	char *p;
 	int i;
 
-	if (eno == NULL){
+	if (!eno){
 		eno = calloc(1,sizeof(struct enobj));
 
 		assert(eno);

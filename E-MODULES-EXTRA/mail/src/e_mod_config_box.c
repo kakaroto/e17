@@ -291,7 +291,7 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   Config_Box *cb;
   int is_new = 0;
 
-  if (cfdata->name == NULL)
+  if (!cfdata->name)
     return 0;
 
   cb = cfd->data;
@@ -308,7 +308,7 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 
   if (cb->name)
     eina_stringshare_del (cb->name);
-  if (cfdata->name != NULL)
+  if (cfdata->name)
     cb->name = eina_stringshare_add (cfdata->name);
   else
     cb->name = eina_stringshare_add ("");
@@ -326,42 +326,42 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 
   if (cb->exec)
     eina_stringshare_del (cb->exec);
-  if (cfdata->exec != NULL)
+  if (cfdata->exec)
     cb->exec = eina_stringshare_add (cfdata->exec);
   else
     cb->exec = eina_stringshare_add ("");
 
   if (cb->host)
     eina_stringshare_del (cb->host);
-  if (cfdata->host != NULL)
+  if (cfdata->host)
     cb->host = eina_stringshare_add (cfdata->host);
   else
     cb->host = eina_stringshare_add ("");
 
   if (cb->user)
     eina_stringshare_del (cb->user);
-  if (cfdata->user != NULL)
+  if (cfdata->user)
     cb->user = eina_stringshare_add (cfdata->user);
   else
     cb->user = eina_stringshare_add ("");
 
   if (cb->pass)
     eina_stringshare_del (cb->pass);
-  if (cfdata->pass != NULL)
+  if (cfdata->pass)
     cb->pass = eina_stringshare_add (cfdata->pass);
   else
     cb->pass = eina_stringshare_add ("");
 
   if (cb->new_path)
     eina_stringshare_del (cb->new_path);
-  if (cfdata->new_path != NULL)
+  if (cfdata->new_path)
     cb->new_path = eina_stringshare_add (cfdata->new_path);
   else
     cb->new_path = eina_stringshare_add ("");
 
   if (cb->cur_path)
     eina_stringshare_del (cb->cur_path);
-  if (cfdata->cur_path != NULL)
+  if (cfdata->cur_path)
     cb->cur_path = eina_stringshare_add (cfdata->cur_path);
   else
     cb->cur_path = eina_stringshare_add ("");
