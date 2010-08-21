@@ -31,6 +31,14 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
    sigemptyset(&action.sa_mask);
    sigaction(SIGINT, &action, NULL);
 
+   /* init ecore */
+   if (!ecore_init()) _em_main_shutdown(EXIT_FAILURE);
+   _em_main_shutdown_push(ecore_shutdown);
+
+   /* init ecore_con */
+   if (!ecore_con_init()) _em_main_shutdown(EXIT_FAILURE);
+   _em_main_shutdown_push(ecore_con_shutdown);
+
    /* init our config subsystem */
    if (!em_config_init()) _em_main_shutdown(EXIT_FAILURE);
    _em_main_shutdown_push(em_config_shutdown);
@@ -38,6 +46,16 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
    /* init our gui subsystem */
    if (!em_gui_init()) _em_main_shutdown(EXIT_FAILURE);
    _em_main_shutdown_push(em_gui_shutdown);
+
+   /* init our irc subsystem */
+   if (!em_irc_init()) _em_main_shutdown(EXIT_FAILURE);
+   _em_main_shutdown_push(em_irc_shutdown);
+
+   em_irc_connect("irc.freenode.net", 6667);
+   em_irc_pass("irc.freenode.net", "emote88");
+   em_irc_nick("irc.freenode.net", "emote");
+   em_irc_user("irc.freenode.net", "emote");
+   em_irc_join("irc.freenode.net", "#emote");
 
    /* start main loop */
    elm_run();

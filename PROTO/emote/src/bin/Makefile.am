@@ -19,6 +19,8 @@ EMOTEHEADERS = \
   em_utils.h \
   em_config.h \
   em_gui.h \
+  em_irc.h \
+  em_irc_parse.h \
   emote.h
 
 emote_SOURCES = \
@@ -27,6 +29,8 @@ emote_SOURCES = \
   em_utils.c \
   em_config.c \
   em_gui.c \
+  em_irc.c \
+  em_irc_parse.c \
   main.c
 
 emote_LDFLAGS = -export-dynamic @emote_libs@

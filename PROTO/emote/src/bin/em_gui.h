@@ -17,6 +17,7 @@ struct _Em_Gui
 };
 
 EM_INTERN int em_gui_init(void);
+EM_INTERN void em_gui_message_add(const char *text);
 EM_INTERN int em_gui_shutdown(void);
 
 # endif

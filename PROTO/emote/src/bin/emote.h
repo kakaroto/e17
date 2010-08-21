@@ -39,7 +39,10 @@ void *alloca (size_t);
 #  define N_(str) (str)
 # endif
 
+# include <Ecore.h>
+# include <Ecore_Con.h>
 # include <Elementary.h>
+
 
 # ifdef EMAPI
 #  undef EMAPI

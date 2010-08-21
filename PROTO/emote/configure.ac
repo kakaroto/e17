@@ -78,14 +78,7 @@ PKG_CHECK_MODULES(EMOTE, [
   elementary
 ])
 
-# Check for libircclient
-CHECK_LIB_IRCCLIENT
-if test -z "$LIBIRCCLIENT_LIBS"; then
-  echo "*** libircclient is missing.  It is required to build emote!"
-  exit -1
-fi
-
-emote_libs=$EMOTE_LIBS" "$LIBINTL" "$LIBIRCCLIENT_LIBS
+emote_libs=$EMOTE_LIBS" "$LIBINTL" "
 emote_cflags="-DUSE_EMOTE_CONFIG_H "$EMOTE_CFLAGS" "
 AC_SUBST(emote_libs)
 AC_SUBST(emote_cflags)

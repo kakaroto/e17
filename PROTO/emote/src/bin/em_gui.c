@@ -8,6 +8,7 @@ static void _em_gui_cb_free(void);
 static void _em_gui_cb_win_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__);
 static void _em_gui_cb_settings(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__);
 static void _em_gui_cb_quit(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__);
+static void _em_gui_entry_cb_enter(void *data __UNUSED__, Evas_Object *obj, void *event __UNUSED__);
 
 /* local variables */
 static Em_Gui *gui;
@@ -72,6 +73,8 @@ em_gui_init(void)
    evas_object_size_hint_align_set(gui->o_entry, 
                                    EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_box_pack_end(box, gui->o_entry);
+   evas_object_smart_callback_add(gui->o_entry, "activated",
+                                 _em_gui_entry_cb_enter, NULL);
    evas_object_show(gui->o_entry);
 
    /* create main toolbar */
@@ -95,6 +98,13 @@ em_gui_init(void)
    evas_object_show(gui->win);
 
    return 1;
+}
+
+EM_INTERN void
+em_gui_message_add(const char *text)
+{
+   elm_scrolled_entry_entry_insert(gui->o_chantxt, text);
+   elm_scrolled_entry_cursor_end_set(gui->o_chantxt);
 }
 
 EM_INTERN int 
@@ -127,4 +137,20 @@ static void
 _em_gui_cb_quit(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__) 
 {
    elm_exit();
+}
+
+static void
+_em_gui_entry_cb_enter(void *data __UNUSED__, Evas_Object *obj, void *event __UNUSED__)
+{
+   const char *text;
+
+   text = elm_scrolled_entry_entry_get(obj);
+
+   em_irc_message("irc.freenode.net", "#emote", text);
+   elm_scrolled_entry_cursor_end_set(gui->o_chantxt);
+   elm_scrolled_entry_entry_insert(gui->o_chantxt, text);
+   elm_scrolled_entry_cursor_end_set(gui->o_chantxt);
+   elm_scrolled_entry_entry_insert(gui->o_chantxt, "<br>");
+   elm_scrolled_entry_cursor_end_set(gui->o_chantxt);
+   elm_scrolled_entry_entry_set(obj, NULL);
 }
