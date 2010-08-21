@@ -239,7 +239,7 @@ int _exalt_eet_eth_save(const char* file, Exalt_Eth_Save* s, const char* udi)
  */
 Eet_Data_Descriptor * _exalt_eth_save_edd_new(Eet_Data_Descriptor* edd_conf)
 {
-    Eet_Data_Descriptor_Class eddc;
+    static Eet_Data_Descriptor_Class eddc;
     Eet_Data_Descriptor *edd;
 
     eet_eina_stream_data_descriptor_class_set(&eddc, sizeof (eddc),

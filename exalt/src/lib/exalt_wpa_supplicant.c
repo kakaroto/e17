@@ -325,6 +325,8 @@ void exalt_wpa_parse_flag(char* buf, Exalt_Wireless_Network_IE *ie)
             if(p_end[0]=='[')
                 break;
             p_end++;
+            if(p_end>=end)
+                break;
         }
         p_end[0]='\0';
         if(param_id==0 && strcmp(p,"WPA")==0)

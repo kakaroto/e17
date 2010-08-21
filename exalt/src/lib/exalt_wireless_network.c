@@ -137,7 +137,7 @@ Exalt_Wireless_Network_Eap_List exalt_wireless_network_eap_tab[]=
 
 Eet_Data_Descriptor * exalt_wireless_network_ie_edd_new()
 {
-    Eet_Data_Descriptor_Class eddc;
+    static Eet_Data_Descriptor_Class eddc;
     Eet_Data_Descriptor *edd;
     Exalt_Wireless_Network_IE ie;
 
@@ -164,7 +164,7 @@ Eet_Data_Descriptor * exalt_wireless_network_ie_edd_new()
 
 Eet_Data_Descriptor * exalt_wireless_network_edd_new(Eet_Data_Descriptor* edd_ie)
 {
-    Eet_Data_Descriptor_Class eddc;
+    static Eet_Data_Descriptor_Class eddc;
     Eet_Data_Descriptor *edd;
 
     EXALT_ASSERT_RETURN(edd_ie!=NULL);

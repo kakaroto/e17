@@ -117,7 +117,7 @@ EXALT_IS(favoris, int)
 
 Eet_Data_Descriptor * exalt_conf_network_edd_new()
 {
-    Eet_Data_Descriptor_Class eddc;
+    static Eet_Data_Descriptor_Class eddc;
     Eet_Data_Descriptor *edd;
 
     eet_eina_stream_data_descriptor_class_set(&eddc, sizeof (eddc), "Network", sizeof(Exalt_Configuration_Network));

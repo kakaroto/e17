@@ -285,7 +285,7 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
             Exalt_Wireless* w = exalt_eth_wireless_get(eth);
             str = exalt_eth_driver_load(CONF_FILE,exalt_eth_udi_get(eth));
             if(!str)
-                str=strdup("wext");
+                str=eina_stringshare_add("wext");
             exalt_wireless_wpasupplicant_driver_set(w,str);
            eina_stringshare_del(str);
 

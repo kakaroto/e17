@@ -110,7 +110,7 @@ EXALT_GET(network,Exalt_Configuration_Network*)
 
 Eet_Data_Descriptor * exalt_conf_edd_new(Eet_Data_Descriptor* edd_network)
 {
-    Eet_Data_Descriptor_Class eddc;
+    static Eet_Data_Descriptor_Class eddc;
     Eet_Data_Descriptor *edd;
 
     EXALT_ASSERT_RETURN(edd_network!=NULL);

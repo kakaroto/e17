@@ -1224,7 +1224,7 @@ int _exalt_eth_apply_dhcp(Exalt_Ethernet* eth)
     snprintf(buf,1024,DHCLIENT_EXALT_PID_FILE,exalt_eth_name_get(eth));
     FILE *f_exalt_pid = fopen(buf,"w");
     snprintf(buf2,1024,"%d",pid);
-    fwrite(buf2,1,sizeof(buf2),f_exalt_pid);
+    fwrite(buf2,1,strlen(buf2),f_exalt_pid);
     fclose(f_exalt_pid);
 
     waitpid(pid, &status, 0);
