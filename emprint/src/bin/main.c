@@ -288,7 +288,7 @@ _em_get_filename(void)
    loctime = localtime(&t);
 
    /* if no filename given, create one based on time */
-   if ((!opts->filename) || (!opts->filename))
+   if (!opts->filename)
      strftime(buf, sizeof(buf), "%Y-%m-%d-%H%M%S.png", loctime);
    else 
      {
