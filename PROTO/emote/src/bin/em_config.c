@@ -4,9 +4,12 @@
 static void _em_config_cb_free(void);
 static void *_em_config_domain_load(const char *domain, Em_Config_DD *edd);
 static int _em_config_domain_save(const char *domain, Em_Config_DD *edd, const void *data);
+static void _em_config_win_create(Evas_Object *parent);
+static void _em_config_cb_win_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__);
 
 /* local variables */
 static Em_Config_DD *_em_config_edd = NULL;
+static Evas_Object *_em_config_win;
 
 /* global variables */
 EM_INTERN Em_Config *em_config = NULL;
@@ -88,6 +91,14 @@ em_config_save(void)
    return _em_config_domain_save("emote", _em_config_edd, em_config);
 }
 
+EM_INTERN void 
+em_config_show(Evas_Object *parent) 
+{
+   if (!_em_config_win) _em_config_win_create(parent);
+   evas_object_show(_em_config_win);
+   elm_win_activate(_em_config_win);
+}
+
 /* local functions */
 static void 
 _em_config_cb_free(void) 
@@ -141,4 +152,33 @@ _em_config_domain_save(const char *domain, Em_Config_DD *edd, const void *data)
         ret = ecore_file_mv(buff, buff2);
      }
    return ret;
+}
+
+static void 
+_em_config_win_create(Evas_Object *parent) 
+{
+   Evas_Object *o;
+
+   _em_config_win = 
+     elm_win_add(parent, "emote::config", ELM_WIN_DIALOG_BASIC);
+   elm_win_title_set(_em_config_win, _("Emote - Configuration"));
+   elm_win_keyboard_mode_set(_em_config_win, ELM_WIN_KEYBOARD_ALPHA);
+   evas_object_smart_callback_add(_em_config_win, "delete-request", 
+                                  _em_config_cb_win_del, NULL);
+
+   o = elm_bg_add(_em_config_win);
+   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_win_resize_object_add(_em_config_win, o);
+   evas_object_show(o);
+
+   evas_object_size_hint_min_set(_em_config_win, 200, 100);
+   evas_object_resize(_em_config_win, 200, 100);
+}
+
+static void 
+_em_config_cb_win_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__) 
+{
+   evas_object_del(_em_config_win);
+   _em_config_win = NULL;
 }

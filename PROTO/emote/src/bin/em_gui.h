@@ -10,7 +10,7 @@ struct _Em_Gui
 {
    Em_Object em_obj_inherit;
 
-   Evas_Object *win;
+   Evas_Object *win, *o_tb;
    Evas_Object *o_chansel;
    Evas_Object *o_chantxt;
    Evas_Object *o_entry;

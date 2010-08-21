@@ -43,6 +43,7 @@ EM_INTERN int em_config_shutdown(void);
 EM_INTERN Em_Config_DD *em_config_descriptor_new(const char *name, int size);
 EM_INTERN void em_config_load(void);
 EM_INTERN int em_config_save(void);
+EM_INTERN void em_config_show(Evas_Object *parent);
 
 extern EM_INTERN Em_Config *em_config;
 

@@ -17,7 +17,7 @@ static Em_Gui *gui;
 EM_INTERN int 
 em_gui_init(void) 
 {
-   Evas_Object *o, *box, *tb;
+   Evas_Object *o, *box;
 
    /* allocate our object */
    gui = EM_OBJECT_ALLOC(Em_Gui, EM_GUI_TYPE, _em_gui_cb_free);
@@ -79,19 +79,19 @@ em_gui_init(void)
    evas_object_show(gui->o_entry);
 
    /* create main toolbar */
-   tb = elm_toolbar_add(gui->win);
-   elm_toolbar_icon_size_set(tb, 16);
-   elm_toolbar_align_set(tb, 0.0);
-   elm_toolbar_scrollable_set(tb, EINA_FALSE);
-   evas_object_size_hint_weight_set(tb, EVAS_HINT_EXPAND, 0.0);
-   evas_object_size_hint_align_set(tb, EVAS_HINT_FILL, 0.0);
-   elm_box_pack_end(box, tb);
-   evas_object_show(tb);
+   gui->o_tb = elm_toolbar_add(gui->win);
+   elm_toolbar_icon_size_set(gui->o_tb, 16);
+   elm_toolbar_align_set(gui->o_tb, 0.0);
+   elm_toolbar_scrollable_set(gui->o_tb, EINA_FALSE);
+   evas_object_size_hint_weight_set(gui->o_tb, EVAS_HINT_EXPAND, 0.0);
+   evas_object_size_hint_align_set(gui->o_tb, EVAS_HINT_FILL, 0.0);
+   elm_box_pack_end(box, gui->o_tb);
+   evas_object_show(gui->o_tb);
 
    o = em_util_icon_add(gui->win, "preferences-system");
-   elm_toolbar_item_add(tb, o, _("Settings"), _em_gui_cb_settings, NULL);
+   elm_toolbar_item_add(gui->o_tb, o, _("Settings"), _em_gui_cb_settings, NULL);
    o = em_util_icon_add(gui->win, "application-exit");
-   elm_toolbar_item_add(tb, o, _("Quit"), _em_gui_cb_quit, NULL);
+   elm_toolbar_item_add(gui->o_tb, o, _("Quit"), _em_gui_cb_quit, NULL);
 
    /* set min size of window and show it */
    evas_object_size_hint_min_set(gui->win, MIN_WIN_WIDTH, MIN_WIN_HEIGHT);
@@ -131,7 +131,8 @@ _em_gui_cb_win_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *eve
 static void 
 _em_gui_cb_settings(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__) 
 {
-   printf("Show Settings Window\n");
+   elm_toolbar_item_unselect_all(gui->o_tb);
+   em_config_show(gui->win);
 }
 
 static void 
