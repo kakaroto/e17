@@ -1008,7 +1008,7 @@ ecore_x_netwm_name_get(Ecore_X_Window win, char **name)
    s = _ecore_x_window_prop_string_utf8_get(win, ECORE_X_ATOM_NET_WM_NAME);
    *name = s;
 
-   return !!s;
+   return ! !s;
 }
 
 void
@@ -1027,7 +1027,7 @@ ecore_x_netwm_visible_name_get(Ecore_X_Window win, char **name)
 					    ECORE_X_ATOM_NET_WM_VISIBLE_NAME);
    *name = s;
 
-   return !!s;
+   return ! !s;
 }
 
 void
@@ -1045,7 +1045,7 @@ ecore_x_netwm_icon_name_get(Ecore_X_Window win, char **name)
    s = _ecore_x_window_prop_string_utf8_get(win, ECORE_X_ATOM_NET_WM_ICON_NAME);
    *name = s;
 
-   return !!s;
+   return ! !s;
 }
 
 void
@@ -1065,7 +1065,7 @@ ecore_x_netwm_visible_icon_name_get(Ecore_X_Window win, char **name)
 					    ECORE_X_ATOM_NET_WM_VISIBLE_ICON_NAME);
    *name = s;
 
-   return !!s;
+   return ! !s;
 }
 
 void
@@ -1119,7 +1119,7 @@ ecore_x_netwm_startup_id_get(Ecore_X_Window win, char **id)
    s = _ecore_x_window_prop_string_utf8_get(win, ECORE_X_ATOM_NET_STARTUP_ID);
    *id = s;
 
-   return !!s;
+   return ! !s;
 }
 
 #endif /* USE_ECORE_X */

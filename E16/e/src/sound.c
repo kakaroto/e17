@@ -281,7 +281,7 @@ SoundFree(const char *name)
    sclass = SclassFind(name);
    SclassDestroy(sclass);
 
-   return !!sclass;
+   return ! !sclass;
 }
 
 static void
