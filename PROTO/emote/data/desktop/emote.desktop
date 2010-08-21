@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Emote
+Comment=Emote IRC Application
+Exec=emote
+Icon=emote
+Terminal=false
+Type=Application
+Categories=Network;Application;
+StartupWMClass=emote
