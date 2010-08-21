@@ -47,8 +47,8 @@ void exalt_conf_network_free(Exalt_Configuration_Network **cn)
     if(!cn) return ;
     if(!(*cn)) return ;
 
-    EXALT_FREE( (*cn)->essid );
-    EXALT_FREE( (*cn)->key );
+    eina_stringshare_del( (*cn)->essid );
+    eina_stringshare_del( (*cn)->key );
     EXALT_FREE( *cn );
 }
 

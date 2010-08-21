@@ -45,11 +45,11 @@ void exalt_conf_free(Exalt_Configuration** conf)
     c = *conf;
     EXALT_ASSERT_RETURN_VOID(c!=NULL);
 
-    EXALT_FREE(c->ip);
-    EXALT_FREE(c->gateway);
-    EXALT_FREE(c->netmask);
+    eina_stringshare_del(c->ip);
+    eina_stringshare_del(c->gateway);
+    eina_stringshare_del(c->netmask);
 
-    EXALT_FREE(c->cmd_after_apply);
+    eina_stringshare_del(c->cmd_after_apply);
 
     exalt_conf_network_free( &( c->network));
     EXALT_FREE(c);
