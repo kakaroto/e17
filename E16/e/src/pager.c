@@ -360,6 +360,10 @@ doPagerUpdate(Pager * p)
    int                 pager_mode = PagersGetMode();
    Pixmap              pmap;
 
+#if USE_COMPOSITE
+   Picture             pager_pict, pict, alpha;
+#endif
+
    p->update_phase = 0;
    DesksGetAreaSize(&ax, &ay);
    DeskGetArea(p->dsk, &cx, &cy);
@@ -425,6 +429,9 @@ doPagerUpdate(Pager * p)
 	  }
      }
 
+#if USE_COMPOSITE
+   pager_pict = EPictureCreate(NULL, pmap);
+#endif
    for (i = num - 1; i >= 0; i--)
      {
 	EWin               *ewin;
@@ -441,6 +448,7 @@ doPagerUpdate(Pager * p)
 
 	if (ewin->mini_pmm.pmap)
 	  {
+#if 0				/* Mask is currently not set anywhere */
 	     if (ewin->mini_pmm.mask)
 	       {
 		  XSetClipMask(disp, gc, ewin->mini_pmm.mask);
@@ -450,6 +458,22 @@ doPagerUpdate(Pager * p)
 		       ww, wh, wx, wy);
 	     if (ewin->mini_pmm.mask)
 		XSetClipMask(disp, gc, None);
+#else
+#if USE_COMPOSITE
+	     pict = EPictureCreate(NULL, ewin->mini_pmm.pmap);
+	     alpha = ECompMgrWinGetAlphaPict(EoObj(ewin));
+	     if (alpha)
+		XRenderComposite(disp, PictOpOver, pict, alpha, pager_pict,
+				 0, 0, 0, 0, wx, wy, ww, wh);
+	     else
+		XRenderComposite(disp, PictOpSrc, pict, None, pager_pict,
+				 0, 0, 0, 0, wx, wy, ww, wh);
+	     EPictureDestroy(pict);
+#else
+	     XCopyArea(disp, ewin->mini_pmm.pmap, pmap, gc, 0, 0,
+		       ww, wh, wx, wy);
+#endif
+#endif
 	  }
 	else
 	  {
@@ -459,6 +483,9 @@ doPagerUpdate(Pager * p)
 	     XFillRectangle(disp, pmap, gc, wx, wy, ww, wh);
 	  }
      }
+#if USE_COMPOSITE
+   EPictureDestroy(pager_pict);
+#endif
 
    if (!update_screen_included)
      {
