@@ -321,12 +321,12 @@ void                ERegionShow(const char *txt, XserverRegion rgn,
 				void (*prf) (const char *fmt, ...));
 
 #include <X11/extensions/Xrender.h>
-#if 0
-Picture             EPictureCreate(Window win, int depth, Visual * vis);
-#endif
+
+Picture             EPictureCreate(Win win, Drawable draw);
 Picture             EPictureCreateSolid(Window xwin, int argb,
 					unsigned int a, unsigned int rgb);
 Picture             EPictureCreateBuffer(Win win, int w, int h, Pixmap * ppmap);
+void                EPictureDestroy(Picture pict);
 void                EPictureSetClip(Picture pict, XserverRegion clip);
 
 Pixmap              EWindowGetPixmap(const Win win);

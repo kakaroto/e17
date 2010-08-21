@@ -1953,19 +1953,19 @@ EWindowGetPixmap(const Win win)
 #define _G(x) (((x) >>  8) & 0xff)
 #define _B(x) (((x)      ) & 0xff)
 
-#if 0
 Picture
-EPictureCreate(Window win, int depth, Visual * vis)
+EPictureCreate(Win win, Drawable draw)
 {
    Picture             pict;
    XRenderPictFormat  *pictfmt;
 
-   pictfmt = XRenderFindVisualFormat(disp, vis);
-   pict = XRenderCreatePicture(disp, win, pictfmt, 0, 0);
+   if (!win)
+      win = VROOT;
+   pictfmt = XRenderFindVisualFormat(disp, WinGetVisual(win));
+   pict = XRenderCreatePicture(disp, draw, pictfmt, 0, 0);
 
    return pict;
 }
-#endif
 
 Picture
 EPictureCreateSolid(Window xwin, int argb, unsigned int a, unsigned int rgb)
@@ -2011,6 +2011,12 @@ EPictureCreateBuffer(Win win, int w, int h, Pixmap * ppmap)
       XFreePixmap(disp, pmap);
 
    return pict;
+}
+
+void
+EPictureDestroy(Picture pict)
+{
+   XRenderFreePicture(disp, pict);
 }
 
 void
