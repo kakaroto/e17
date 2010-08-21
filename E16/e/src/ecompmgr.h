@@ -58,6 +58,7 @@ void                ECompMgrWinChangeShape(EObj * eo);
 void                ECompMgrWinChangeOpacity(EObj * eo, unsigned int opacity);
 void                ECompMgrWinChangeShadow(EObj * eo, int shadow);
 Pixmap              ECompMgrWinGetPixmap(const EObj * eo);
+Picture             ECompMgrWinGetAlphaPict(const EObj * eo);
 void                ECompMgrWinClipToGC(EObj * eo, GC gc);
 
 void                ECompMgrConfigGet(cfg_composite * cfg);

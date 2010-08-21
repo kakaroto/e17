@@ -891,6 +891,12 @@ ECompMgrWinGetPixmap(const EObj * eo)
    return cw->pixmap;
 }
 
+Picture
+ECompMgrWinGetAlphaPict(const EObj * eo)
+{
+   return (eo->cmhook) ? eo->cmhook->pict_alpha : None;
+}
+
 static void
 ECompMgrWinInvalidate(EObj * eo, int what)
 {
