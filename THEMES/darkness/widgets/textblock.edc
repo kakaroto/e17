@@ -1,0 +1,36 @@
+styles
+{
+   style {
+      name: "textblock_style";
+      base: "font=DejaVu font_size=10 align=left color=#ffffffc8 style=shadow shadow_color=#263e5780 wrap=word";
+      
+      tag:  "br" "\n";
+      tag:  "hilight" "+ font=DejaVu-Bold style=glow color=#fff glow2_color=#38526DA0 glow_color=#263E57EA";
+      tag:  "title" "+ font_size=12 font=DejaVu-Bold style=soft_shadow color=#fff shadow_color=#00000020";
+      tag:  "/title" "- \n \n";
+   }
+}
+
+group {
+   name: "e/widgets/textblock";
+   parts {
+      part {
+	 name:          "e.textblock.text";
+	 type:          TEXTBLOCK;
+	 mouse_events:  0;
+	 description {
+	    state:    "default" 0.0;
+	    rel1 {
+	       offset: 4 4;
+	    }
+	    rel2 {
+	       offset: -5 -5;
+	    }
+	    text {
+	       style:    "textblock_style";
+	       min:      1 1;
+	    }
+	 }
+      }
+   }
+}

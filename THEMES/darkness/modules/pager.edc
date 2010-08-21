@@ -1,0 +1,580 @@
+/* vim: set sw=3: */
+group {
+   name: "e/modules/pager/popup";
+   parts {
+      part {
+	 name:          "base";
+	 type:		RECT;
+	 mouse_events:  0;
+	 description {
+	    color: DARKNESS_BLUE 255;
+	    state:    "default" 0.0;
+	    rel1 {
+	       relative: 0.0  0.0;
+	    }
+	    rel2 {
+	       relative: 1.0  1.0;
+	    }
+	 }
+      }
+      part {
+	 name:          "base2";
+	 mouse_events:  0;
+	 description {
+	    state:    "default" 0.0;
+	    rel1 {
+	       relative: 0.0  0.0;
+	       offset:   1    1;
+	    }
+	    rel2 {
+	       relative: 1.0  1.0;
+	       offset:   -2   -2;
+	    }
+	    image {
+	       normal: "dialog_background.png";
+	    }
+	    fill {
+	       smooth: 0;
+	       size {
+	          relative: 0.0 0.0;
+	          offset: 5 4;
+	       }
+	    }
+	 }
+      }
+      part {
+	 name:          "title_bg";
+	 description {
+	    state:    "default" 0.0;
+	    rel1 {
+	       to:       "title_overlay";
+	    }
+	    rel2 {
+	       to:       "title_overlay";
+	    }
+	    image {
+	       normal: "ibar_bg_h.png";
+	       border: 6 6 6 6;
+	    }
+	    fill {
+	       smooth: 0;
+	    }
+	 }
+      }
+      part {
+	 name: "e.text.label";
+	 type: TEXT;
+	 effect: SOFT_SHADOW;
+	 mouse_events: 0;
+	 description {
+	    state: "default" 0.0;
+	    align: 0.5 0.0;
+	    fixed: 0 1;
+	    rel1 {
+	       relative: 0.0 0.0;
+	       offset:  26 24;
+	    }
+	    rel2 {
+	       relative: 1.0 0.0;
+	       offset:   -26  24;
+	    }
+	    color: 255 255 255 255;
+	    color3: DARKNESS_BLUE 32;
+	    text {
+	       text: "Title goes here";
+	       font: "DejaVu-Bold";
+	       size: 12;
+	       min:  1 1;
+	       align: 0.5 0.5;
+               text_class: "module_large_s";	       
+	    }
+	 }
+      }
+      part {
+	 name:          "title_overlay";
+	 mouse_events:  0;
+	 description {
+	    state:    "default" 0.0;
+	    align:    0.5 1.0;
+	    color:    DARKNESS_DARK_BLUE 255;
+	    rel1 {
+	       relative: 0.0 0.0;
+	       offset:  16   -7;
+	       to_y: "e.text.label";
+	    }
+	    rel2 {
+	       relative: 1.0 1.0;
+	       offset:  -17  6;
+	       to_y: "e.text.label";
+	    }
+	    image {
+	       normal: "ibar_over_h.png";
+	       border: 13 13 13 13;
+	       middle: 0;
+	    }
+	    fill {
+	       smooth: 0;
+	    }
+	 }
+      }
+      part {
+	 name:          "background";
+	 mouse_events:  0;
+	 description {
+	    state:    "default" 0.0;
+	    rel1 {
+	       to:       "overlay";
+	    }
+	    rel2 {
+	       to:       "overlay";
+	    }
+	    image {
+	       normal: "ibar_bg_h.png";
+	       border: 6 6 6 6;
+	    }
+	    fill {
+	       smooth: 0;
+	    }
+	 }
+      }
+      part {
+	 name:          "items_clip";
+	 type:          RECT;
+	 mouse_events:  0;
+	 description {
+	    state:    "default" 0.0;
+	    rel1 {
+	       to:       "background";
+	       offset:   4    4;
+	    }
+	    rel2 {
+	       to:       "background";
+	       offset:   -5    -5;
+	    }
+	    color: 255 255 255 255;
+	 }
+      }
+      part {
+	 name:          "e.swallow.content";
+	 type:          SWALLOW;
+	 clip_to:       "items_clip";
+	 description {
+	    state:    "default" 0.0;
+	    rel1 {
+	       to: "overlay";
+	       offset:   4    4;
+	    }
+	    rel2 {
+	       to: "overlay";
+	       offset:   -5    -5;
+	    }
+	 }
+      }
+      part {
+	 name:          "overlay";
+	 mouse_events:  0;
+	 description {
+	    state:    "default" 0.0;
+	    color:    DARKNESS_DARK_BLUE 255;
+	    rel1 {
+	       to_y: "title_overlay";
+	       relative: 0.0 1.0;
+	       offset:   16   6;
+	    }
+	    rel2 {
+	       relative: 1.0   1.0;
+	       offset:   -17    -17;
+	    }
+	    image {
+	       normal: "ibar_over_h.png";
+	       border: 13 13 13 13;
+	       middle: 0;
+	    }
+	    fill {
+	       smooth: 0;
+	    }
+	 }
+      }
+   }
+}
+
+group {
+   name: "e/modules/pager/desk";
+   script {
+      public active;
+      public drag;
+      public urgent;
+   }
+   parts {
+      part {
+	 name:          "clip";
+	 mouse_events:  0;
+	 type:          RECT;
+	 description {
+	    state:    "default" 0.0;
+	    rel1 {
+	       offset:   2    2;
+	    }
+	    rel2 {
+	       offset:   -3   -3;
+	    }
+	    color: DARKNESS_LIGHT_BLUE 200;
+	 }
+	 description {
+	    state:    "active" 0.0;
+	    inherit:  "default" 0.0;
+	    color: 255 255 255 255;
+	 }
+      }
+      part {
+	 name:          "sel";
+	 mouse_events:  0;
+	 description {
+	    state:    "default" 0.0;
+	    visible:  0;
+	    rel1 {
+	       offset:   2    2;
+	    }
+	    rel2 {
+	       offset:   -3   -3;
+	    }
+	    image {
+	       normal: "pager_desk_sel.png";
+	    }
+	    color:    255 255 255 0;
+	 }
+	 description {
+	    state:    "active" 0.0;
+	    inherit:  "default" 0.0;
+	    visible:  1;
+	    color:    255 255 255 255;
+	 }
+	 description {
+	    state:   "urgent" 0.0;
+	    inherit: "default" 0.0;
+	    visible: 1;
+	    color:   DARKNESS_TITLE_BLUE 200;
+	 }
+	 description {
+	    state:   "urgent2" 0.0;
+	    inherit: "default" 0.0;
+	    visible: 1;
+	    color:   DARKNESS_BRIGHT_BLUE 200;
+	 }
+      }
+      part {
+	 name:          "overlay";
+//	 repeat_events: 1;
+	 mouse_events:  1;
+	 description {
+	    state:    "default" 0.0;
+	    rel1 {
+	       offset:   1    1;
+	    }
+	    rel2 {
+	       offset:   -2   -2;
+	    }
+	    image {
+	       normal: "pager_desk.png";
+	       border: 2 2 2 2;
+	       middle: 0;
+	    }
+	    fill {
+	       smooth: 0;
+	    }
+	    color: 255 255 255 64;
+	 }
+	 description {
+	    state:    "active" 0.0;
+	    inherit:  "default" 0.0;
+	    color: 255 255 255 255;
+	 }
+	 description {
+	    state:    "drag" 0.0;
+	    inherit:  "default" 0.0;
+	    color: 255 255 255 164;
+	 }
+      }
+      part {
+	 name:          "e.swallow.content";
+	 type:          SWALLOW;
+	 clip_to:       "clip";
+         description {
+	    state:    "default" 0.0;
+	    rel1 {
+	       offset:   2    2;
+	    }
+	    rel2 {
+	       offset:   -3    -3;
+	    }
+	 }
+      }
+   }
+   programs {
+      program {
+	 name:    "go_active_content";
+	 signal:  "e,state,selected";
+	 source:  "e";
+	 action:  STATE_SET "active" 0.0;
+         transition: SINUSOIDAL 0.25;
+	 target:  "clip";
+	 target:  "sel";
+	 target:  "overlay";
+      }
+      program {
+	 name:    "go_passive";
+	 signal:  "e,state,unselected";
+	 source:  "e";
+	 action:  STATE_SET "default" 0.0;
+         transition: SINUSOIDAL 1.0;
+	 target:  "clip";
+	 target:  "sel";
+	 target:  "overlay";
+      }
+      program {
+	 name:    "set_active";
+	 signal:  "e,state,selected";
+	 source:  "e";
+	 script {
+	    set_int(active, 1);
+	 }
+      }
+      program {
+	 name:    "set_passive";
+	 signal:  "e,state,unselected";
+	 source:  "e";
+	 script {
+	    if (get_int(urgent) == 1) {
+	       run_program(PROGRAM:"go_urgent_pre");
+	    }
+	    set_int(active, 0);
+	 }
+      }
+      program {
+	 name:   "drag_in";
+	 signal: "drag";
+	 source: "in";
+	 script {
+      	    if (get_int(drag) == 0) {
+	       set_state(PART:"overlay", "drag", 0.0);
+	       set_int(drag, 1);
+	    }
+	 }
+      }
+      program {
+	 name:   "drag_out";
+	 signal: "drag";
+	 source: "out";
+	 script {
+	    if (get_int(drag) == 1) {
+	       if (get_int(active) == 1)
+	      	  set_state(PART:"overlay", "active", 0.0);
+	       else
+	      	  set_state(PART:"overlay", "default", 0.0);
+	       set_int(drag, 0);
+	    }
+	 }
+      }
+      program {
+	 name: "init";
+	 signal: "load";
+	 source: "";
+	 script {
+	    set_int(active, 0);
+	    set_int(drag, 0);
+	    set_int(urgent, 0);
+	 }
+      }
+      program {
+	 name: "set_urgent";
+	 signal: "e,state,urgent";
+	 source: "e";
+	 script {
+	    set_int(urgent, 1);
+	 }
+      }
+      program {
+	 name:    "go_urgent_pre";
+	 signal:  "e,state,urgent";
+	 source:  "e";
+	 script {
+	    if (get_int(active) == 1)
+	       set_state(PART:"sel", "active", 0.0);
+	    else
+	       set_state(PART:"sel", "default", 0.0);
+
+	    run_program(PROGRAM:"go_urgent");
+	 }
+      }
+      program {
+	 name:    "go_urgent";
+	 action:  STATE_SET "urgent" 0.0;
+	 transition: SINUSOIDAL 0.7;
+	 target:  "sel";
+	 after:   "go_urgent2";
+      }
+      program {
+	 name:    "go_urgent2";
+	 action:  STATE_SET "urgent2" 0.0;
+	 transition: SINUSOIDAL 0.7;
+	 target:  "sel";
+	 after:   "go_urgent";
+      }
+      program {
+	 name: "unset_urgent";
+	 signal: "e,state,not_urgent";
+	 source: "e";
+	 script {
+	    set_int(urgent, 0);
+	 }
+      }
+      program {
+	 name:    "go_unurgent";
+	 signal:  "e,state,not_urgent";
+	 source:  "e";
+	 action:  ACTION_STOP;
+	 target:  "go_urgent";
+	 target:  "go_urgent2";
+	 after:   "go_unurgent2";
+      } 
+      program {
+	 name:    "go_unurgent2";
+	 action:  STATE_SET "active" 0.0;
+	 transition: DECELERATE 0.7;
+	 target:  "sel";
+      }
+   }
+}
+
+group {
+   name: "e/modules/pager/window";
+   parts {
+      part {
+	 name:          "overlay";
+	 description {
+	    state:    "default" 0.0;
+	    rel1 {
+	       relative: 0.0  0.0;
+	       offset:   -1   -1;
+	    }
+	    rel2 {
+	       relative: 1.0  1.0;
+	       offset:   2   2;
+	    }
+	    image {
+	       normal: "pager_window.png";
+	       border: 6 13 7 5;
+	    }
+	 }
+	 description {
+	    state: "urgent" 0.0;
+	    inherit: "default" 0.0;
+	    rel1 {
+	       relative: -0.2 -0.2;
+	       offset: -4 -1;
+	    }
+	    rel2 {
+	       relative: 1.2 1.2;
+	       offset: 1 2;
+	    }
+	 }
+	 description {
+	    state: "urgent2" 0.0;
+	    inherit: "default" 0.0;
+	    rel1 {
+	       relative: -0.2 -0.2;
+	       offset: 2 -1;
+	    }
+	    rel2 {
+	       relative: 1.2 1.2;
+	       offset: 5 2;
+	    }
+	 }
+      }
+      part {
+	 name:           "e.swallow.icon";
+	 type:           SWALLOW;
+	 description {
+	    state:       "default" 0.0;
+	    align:       1.0 1.0;
+	    max:         24  24;
+	    aspect:      1.0 1.0;
+	    aspect_preference: BOTH;
+	    rel1 {
+	       offset:   1   5;
+	    }
+	    rel2 {
+	       offset:   -2  -2;
+	    }
+	 }
+	 description {
+	    state: "urgent" 0.0;
+	    inherit: "default" 0.0;
+	    rel1 {
+	       relative: -0.2 -0.2;
+	       offset: -2  5;
+	    }
+	    rel2 {
+	       relative: 1.2 1.2;
+	       offset: -5 -2;
+	    }
+	 }
+	 description {
+	    state: "urgent2" 0.0;
+	    inherit: "default" 0.0;
+	    rel1 {
+	       relative: -0.2 -0.2;
+	       offset: 4  5;
+	    }
+	    rel2 {
+	       relative: 1.2 1.2;
+	       offset: 1 -2;
+	    }
+	 }
+      }
+   }
+   programs {
+      program {
+	 name:    "go_urgent_pre";
+	 signal:  "e,state,urgent";
+	 source:  "e";
+	 action:  STATE_SET "default" 0.0;
+	 target:  "overlay";
+	 target:  "e.swallow.icon";
+	 after:   "go_urgent";
+      }
+      program {
+	 name:    "go_urgent";
+	 action:  STATE_SET "urgent" 0.0;
+	 transition: SINUSOIDAL 0.07;
+	 target:  "overlay";
+	 target:  "e.swallow.icon";
+	 after:   "go_urgent2";
+      }
+      program {
+	 name:    "go_urgent2";
+	 action:  STATE_SET "urgent2" 0.0;
+	 transition: SINUSOIDAL 0.07;
+	 target:  "overlay";
+	 target:  "e.swallow.icon";
+	 after:   "go_urgent";
+      }
+      program {
+	 name:    "go_unurgent";
+	 signal:  "e,state,not_urgent";
+	 source:  "e";
+	 action:  ACTION_STOP;
+	 target:  "go_urgent";
+	 target:  "go_urgent2";
+	 after:   "go_unurgent2";
+      } 
+      program {
+	 name:    "go_unurgent2";
+	 action:  STATE_SET "default" 0.0;
+	 transition: SINUSOIDAL 0.3;
+	 target:  "overlay";
+	 target:  "e.swallow.icon";
+      }
+   }
+}
+

@@ -1,0 +1,228 @@
+group {
+   name: "e/widgets/entry";
+   min: 18 18;
+   parts {
+      part {
+	 mouse_events: 0;
+         name: "entry_bg";
+         description {
+            state: "default" 0.0;
+	    color: 0 0 0 160;
+            rel1 {
+			to: "entry";
+               relative: 0 0;
+               offset: 1 1;
+            }
+            rel2 {
+			to: "entry";
+               relative: 1 1;
+               offset: -2 -2;
+            }
+            image {
+               normal: "entry_under.png";
+               border: 3 3 3 3;
+            }
+         }
+
+          description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+	    color: 255 255 255 210;
+         }
+      }
+
+
+      part {
+         name: "entry";
+         description {
+            state: "default" 0.0;
+             color: 255 255 255 255 ;
+            rel1 {
+               relative: 0 0.5;
+               offset: 0 -9;
+            }
+            rel2 {
+               relative: 1 0.5;
+               offset: -1 8;
+            }
+            image {
+               normal: "entry_over.png";
+               border: 7 7 7 7;
+            }
+         }
+      }
+      part {
+         name: "entry_focus";
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+	    image {
+	       normal: "focus.png";
+	       border: 7 7 7 7;
+	       middle: 0;
+	    }
+	    fill {
+	       smooth: 0;
+	    }
+         }
+         description {
+            state: "focus" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+      }
+      part {
+         name: "e.swallow.text";
+	 mouse_events: 0;
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+	    fixed: 1 1;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 4 3;
+               to: "entry_bg";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -5 -3;
+               to: "entry_bg";
+            }
+         }
+      }
+   }
+   programs {
+      program {
+         name: "entry_focus";
+         signal: "e,state,focused";
+         source: "e";
+         action: STATE_SET "focus" 0.0;
+         transition: LINEAR 0.2;
+         target: "entry_bg";
+      }
+      program {
+         name: "entry_unfocus";
+         signal: "e,state,unfocused";
+         source: "e";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 0.2;
+         target: "entry_bg";
+      }
+   }
+}
+
+group {
+   name: "e/widgets/entry/text";
+   parts {
+      part {
+         name: "e.text.text";
+	 type: TEXT;
+	 mouse_events: 0;
+	 description {
+	    state: "default" 0.0;
+	    color: 255 255 255 255;
+	    color_class: "entry_text";
+	    text {
+	       text: "Entry";
+	       font: "DejaVu";
+	       size: 11;
+	       min: 1 1;
+	       align: 0.0 0.0;
+               text_class: "entry";
+	    }
+	 }
+      }
+   }
+}
+
+group {
+   name: "e/widgets/entry/cursor";
+   min: 1 0;
+   parts {
+      part {
+         name: "cursor";
+	 mouse_events:  0;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+	    min: 5 12;
+	    /*max: 7 18;
+	    align: 0.0 0.5;
+	    fixed: 1 1;*/
+            rel1 {
+               relative: 0 0;
+               offset: 0 0;
+            }
+            rel2 {
+               relative: 1 1;
+               offset: 0 0;
+            }
+	    image {
+	       normal: "entry_cursor.png";
+	    }
+	    fill {
+	       smooth: 1;
+	    }
+         }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+   }
+   programs {
+      program {
+         name: "on_cursor_show";
+	 signal:  "e,action,show,cursor";
+	 source:  "e";
+         action: ACTION_STOP;
+         target: "cursor_show";
+         target: "cursor_hide";
+         target: "cursor_show_timer";
+         target: "cursor_hide_timer";
+         after: "cursor_show";
+      }
+      program {
+         name: "cursor_show";
+         action: STATE_SET "visible" 0.0;
+         target: "cursor";
+         after: "cursor_show_timer";
+      }
+      program {
+         name: "cursor_hide";
+         action: STATE_SET "default" 0.0;
+         target: "cursor";
+         after: "cursor_hide_timer";
+      }
+      program {
+         name: "cursor_show_timer";
+         in: 1.0 0.0;
+         after: "cursor_hide";
+      }
+      program {
+         name: "cursor_hide_timer";
+         in: 0.25 0.0;
+         after: "cursor_show";
+      }
+   }
+}
+
+group {
+   name: "e/widgets/entry/selection";
+   data {
+      item: "on_foreground" "1";
+   }
+   parts {
+      part {
+         name: "selection";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color: DARKNESS_BRIGHT_BLUE 102;
+         }
+      }
+   }
+}

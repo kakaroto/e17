@@ -1,0 +1,62 @@
+/* vim: set sw=3: */
+group {
+   name: "e/toolbar/default/base";
+   parts {
+      part {
+         name: "outer_bg";
+         mouse_events: 0;
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 255;
+         }
+      }
+      part {
+         name: "border";
+         mouse_events: 0;
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color: DARKNESS_DARK_BLUE 100;
+         }
+      }
+      part {
+         name: "inner_bg";
+         mouse_events: 0;
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            rel1.offset: 2 2;
+            rel2.offset: -3 -3;
+            color: 15 15 15 255;
+         }
+      }
+      part {
+         name: "e.swallow.content";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            rel1.offset: 3 3;
+            rel2.offset: -4 -4;
+         }
+         description {
+            state: "bottom" 0.0;
+            inherit: "default" 0.0;
+            rel1.offset: 3 3;
+            rel2.offset: -4 -4;
+         }
+         description {
+            state: "left" 0.0;
+            inherit: "default" 0.0;
+            rel1.offset: 3 3;
+            rel2.offset: -4 -4;
+         }
+         description {
+            state: "right" 0.0;
+            inherit: "default" 0.0;
+            rel1.offset: 3 3;
+            rel2.offset: -4 -4;
+         }
+      }
+   }
+}

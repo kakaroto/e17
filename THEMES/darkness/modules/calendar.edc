@@ -1,0 +1,77 @@
+group {
+    name: "modules/calendar/main";
+    parts {
+        part {
+            name: "calendar";
+            mouse_events: 1;
+            description {
+                state: "default" 0.0;
+                aspect: 1.0 1.0;
+                aspect_preference: BOTH;
+                rel1.relative: 0.0 0.0;
+                rel2.relative: 1.0 1.0;
+                image.normal: "calendar.png";
+            }
+        }
+        part {
+            name: "monthday";
+            type: TEXT;
+            effect: SOFT_SHADOW;
+            mouse_events: 1;
+            description {
+                state: "default" 0.0;
+                align: 0.5 0.5;
+                fixed: 1 1;
+                rel1 {
+                    relative: 0.0 0.0;
+                    offset: 5 20;
+                    to: "calendar";
+                }
+                rel2 {
+                    relative: 1.0 0.5;
+                    to: "calendar";
+                }
+                color: DARKNESS_DARK_BLUE 200;
+                color3: DARKNESS_VERY_DARK_BLUE 100;
+                color_class: "module_label";
+                text {
+                    font: "DejaVu-Bold";
+                    size: 24;
+                    min: 1 1;
+                    align: 0.5 0.5;
+                    text_class: "module_large";
+                }
+            }
+        }
+        part {
+            name: "weekday";
+            type: TEXT;
+            effect: SOFT_OUTLINE;
+            mouse_events: 1;
+            description {
+                state: "default" 0.0;
+                align: 0.5 0.5;
+                fixed: 1 1;
+                rel1 {
+                    relative: 0.0 0.5;
+                    offset: 5 0;
+                    to: "calendar";
+                }
+                rel2 {
+                    relative: 1.0 1.0;
+                    to: "calendar";
+                }
+                color: DARKNESS_TITLE_BLUE 200;
+                color2: DARKNESS_MARINE_BLUE 25;
+                color_class: "module_label";
+                text {
+                    font: "DejaVu-Bold";
+                    size: 16;
+                    min: 1 1;
+                    align: 0.5 0.5;
+                    text_class: "module_normal";
+                }
+            }
+        }
+    }
+}

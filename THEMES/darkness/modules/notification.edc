@@ -1,0 +1,244 @@
+/* vim: set sw=3: */
+/* Module icon */
+styles {
+   style {
+      name: "notification_style";
+      base: "font=DejaVu font_size=12 text_class=tb_plain align=left color=#ffffff style=shadow shadow_color=#263e5780 wrap=word";
+      
+      tag:  "br" "\n";
+      tag:  "subject"  "+ text_class=module_large font_size=14"; 
+      tag:  "/subject" "- text_class=module_large font_size=14"; 
+      tag:  "body"  "+ text_class=module_normal font_size=12"; 
+      tag:  "/body" "- text_class=module_normal"; 
+   }
+}
+
+group {
+   name: "icon";
+   max: 256 256;
+   parts {
+      part {
+         name: "image";
+         mouse_events: 0;
+         type: IMAGE;
+         description {
+            state: "default" 0.0;
+            image.normal: "icon_info.png";
+         }
+      }
+   }
+}
+
+/* Popup Theme */
+group {
+   data {
+      item: "shaped" "1";
+   }
+   name: "modules/notification/main";
+   parts {
+      /* Background */
+      part {
+         name: "base";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset:   0   0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset:   -1  -1;
+            }
+         }
+      }
+      part {
+         name:          "bg";
+         mouse_events:  1;
+         description {
+            state:    "default" 0.0;
+            rel1 {
+               to: "base";
+            }
+            rel2 {
+               to: "base";
+            }
+            image {
+               normal: "forecasts_bg.png";
+               border: 10 10 10 10;
+            }
+            color: 255 255 255 220;
+         }
+      }
+      part {
+         name: "clipper";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 255;
+            visible: 1;
+         }
+         description {
+            state: "hidden" 0.0;
+            color: 0 0 0 0;
+            visible: 0;
+         }
+      }
+
+      part {
+         name: "icon_clipper";
+         type: RECT;
+         clip_to: "clipper";
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+            visible: 0;
+         }
+         description {
+            state: "inter" 0.0;
+            color: DARKNESS_BLUE 255;
+            visible: 1;
+         }
+         description {
+            state: "final" 0.0;
+            color: 255 255 255 220;
+            visible: 1;
+         }
+      }
+      /* App Icon */
+      part {
+         name: "notification.swallow.app_icon";
+         type: SWALLOW;
+         mouse_events:  0;
+         clip_to: "icon_clipper";
+
+         description {
+            state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            aspect: 1 1;
+            aspect_preference: BOTH;
+
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 15 15;
+            }
+
+            rel2 {
+               relative: 0.0 1.0;
+               offset: 95 -15;
+            }
+         }
+      }
+
+      /* Message text */
+      part {
+         name: "notification.textblock.message";
+         type: TEXTBLOCK;
+         mouse_events: 0;
+         clip_to: "clipper";
+
+         description {
+            state: "default" 0.0;
+            align: 0.0 0.5;
+            min:  260 80;
+                   //	fixed: 1 1;
+
+            rel1 { 
+               to_x: "notification.swallow.app_icon";
+               relative: 1.0 0.0;
+               offset: 15 10; 
+            }
+
+            rel2 { 
+               relative: 1.0 1.0;
+               offset: -5 -10; 
+            }
+
+            text {
+               style: "notification_style";
+               min: 1 1;
+            }
+         }
+      }
+      part {
+         name: "overlay";
+         repeat_events: 1;
+         description {
+            state: "default" 0.0;
+            rel1.offset: 1 1;
+            rel2.offset: -2 -2;
+            image {
+               normal: "forecasts_overlay.png";
+               border: 10 10 25 10;
+            }
+            fill.smooth: 1;
+         }
+      }
+   }
+   programs {
+      program {
+         name: "appear";
+         signal: "notification,new";
+         source: "notification";
+         action: STATE_SET "default" 0.0;
+         target: "icon_clipper";
+         after: "appear2";
+      }
+      program {
+         name: "appear2";
+         action: STATE_SET "inter" 0.0;
+         transition: ACCELERATE 0.3;
+         target: "icon_clipper";
+         after: "appear3";
+      }
+      program {
+         name: "appear3";
+         action: STATE_SET "final" 0.0;
+         transition: DECELERATE 0.2;
+         target: "icon_clipper";
+      }
+
+      program {
+         name: "fade";
+         signal: "notification,del";
+         source: "notification";
+         action: STATE_SET "final" 0.0;
+         target: "icon_clipper";
+         after: "fade2";
+      }
+      program {
+         name: "fade2";
+         action: STATE_SET "inter" 0.0;
+         transition: ACCELERATE 0.4;
+         target: "icon_clipper";
+         after: "fade3";
+      }
+      program {
+         name: "fade3";
+         action: STATE_SET "default" 0.0;
+         transition: DECELERATE 0.2;
+         target: "icon_clipper";
+         after: "fade4";
+      }
+      program {
+         name: "fade4";
+         action: SIGNAL_EMIT "notification,deleted" "theme";
+      }
+
+      program {
+         name: "close";
+         signal: "mouse,down,1";
+         source: "bg";
+         action: SIGNAL_EMIT "notification,close" "theme";
+      }
+
+      program {
+         name: "find";
+         signal: "mouse,down,1";
+         source: "bg";
+         action: SIGNAL_EMIT "notification,find" "theme";
+      }
+   }
+}

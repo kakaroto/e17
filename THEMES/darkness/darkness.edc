@@ -1,0 +1,109 @@
+/* vim: set sw=3: */
+#ifdef E17_PROFILE
+# if E17_PROFILE == LOWRES_PDA
+#  define SM "sm_"
+# elif E17_PROFILE == MEDIUMRES_PDA
+#  define SM "sm_"
+# elif E17_PROFILE == HIRES_PDA
+#  define SM "sm_"
+# elif E17_PROFILE == SLOW_PC
+#  define SM "sm_"
+# elif E17_PROFILE == MEDIUM_PC
+#  define SM
+# elif E17_PROFILE == FAST_PC
+#  define SM
+# endif
+#else
+# define E17_PROFILE MEDIUM_PC
+# define SM
+#endif
+
+#define DARKNESS_VERY_DARK_BLUE 17 23 29
+#define DARKNESS_DARK_BLUE 38 62 87
+#define DARKNESS_BLUE 56 82 109
+#define DARKNESS_LIGHT_BLUE 145 169 195
+#define DARKNESS_VERY_LIGHT_BLUE 201 212 225
+#define DARKNESS_TITLE_BLUE 27 40 174
+#define DARKNESS_BUTTON_BLUE 68 156 200
+#define DARKNESS_BRIGHT_BLUE 61 124 195
+#define DARKNESS_MARINE_BLUE 5 119 248
+/*#define DARKNESS_BUTTON_RED 200 76 68 */
+#define DARKNESS_BUTTON_RED 255 0 0
+#define DARKNESS_DIALOG_BG 18 18 18
+#define DARKNESS_FRAME_BORDER 25 67 98
+
+data {
+   item: "theme/name"     "Darkness";
+   item: "theme/version"  "0.99.042";
+   item: "theme/author"   "Viktor Kojouharov";
+   item: "theme/license"  "Artistic 2.0";
+}
+
+fonts {
+   font: "fonts/DejaVuSans.ttf"   "DejaVu";
+   font: "fonts/DejaVuSans-Bold.ttf" "DejaVu-Bold";
+   font: "fonts/DejaVuSansMono.ttf" "DejaVu-Mono";
+}
+
+#include "images/images.edc"
+
+collections {
+#include "e/background.edc"
+#include "e/desklock.edc"
+#include "e/gadman.edc"
+#include "e/icons.edc"
+#include "e/pointer.edc"
+#include "e/shelf.edc"
+#include "e/sys.edc"
+#include "e/theme_about.edc"
+#include "e/toolbar.edc"
+#include "e/transitions.edc"
+
+#include "modules/battery.edc"
+#include "modules/calendar.edc"
+#include "modules/clock.edc"
+#include "modules/cpu.edc"
+#include "modules/deskshow.edc"
+#include "modules/efm_nav.edc"
+#include "modules/efm_path.edc"
+#include "modules/forecasts.edc"
+#include "modules/ibar.edc"
+#include "modules/ibox.edc"
+#include "modules/itask-ng.edc"
+#include "modules/language.edc"
+#include "modules/mem.edc"
+#include "modules/net.edc"
+#include "modules/notification.edc"
+#include "modules/pager.edc"
+#include "modules/slideshow.edc"
+#include "modules/start.edc"
+#include "modules/taskbar.edc"
+#include "modules/temperature.edc"
+#include "modules/winselector.edc"
+
+#include "widgets/about.edc"
+#include "widgets/border.edc"
+#include "widgets/button.edc"
+#include "widgets/check.edc"
+#include "widgets/configure.edc"
+#include "widgets/dialog.edc"
+#include "widgets/entry.edc"
+#include "widgets/error.edc"
+#include "widgets/exebuf.edc"
+#include "widgets/filesel.edc"
+#include "widgets/fileman.edc"
+#include "widgets/frame.edc"
+#include "widgets/ilist.edc"
+#include "widgets/label.edc"
+#include "widgets/menu.edc"
+#include "widgets/move.edc"
+#include "widgets/preview.edc"
+#include "widgets/radio.edc"
+#include "widgets/resize.edc"
+#include "widgets/scrollframe.edc"
+#include "widgets/slider.edc"
+#include "widgets/textblock.edc"
+#include "widgets/tlist.edc"
+#include "widgets/winlist.edc"
+}
+

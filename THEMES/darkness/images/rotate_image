@@ -1,0 +1,58 @@
+#! /usr/local/bin/perl
+# vim: set autoindent shiftwidth=4 tabstop=4:
+# Copyright (C) 2001, Imperia AG, all rights reserved.
+# (w) Guido Flohr, backported from Scheme by Peter Reimann.
+
+use strict;
+use Gimp qw (:auto);
+use Gimp::Fu;
+
+use constant PI => 3.1415927;
+
+sub rotate {
+	my ($filename, $degrees) = @_;
+
+	my $angle = (PI * $degrees) / 180;
+	my $img = Gimp->file_png_load (0, $filename, $filename);
+	my $width = Gimp->gimp_image_width ($img);
+	my $height = Gimp->gimp_image_height ($img);
+	my $drawable = Gimp->gimp_image_get_active_drawable ($img);
+	my $rotate = Gimp->gimp_drawable_transform_rotate_default ($drawable, $angle, 1, 0, 0, 1, 1);
+
+	# $img = Gimp->gimp_drawable_get_image ($rotate);
+#    Gimp->gimp_image_crop ($img, $width, $height, 0, 0);
+
+	return $img;
+}
+
+# register the script
+register
+    "rotate",
+    "Rotate an image 60 times",
+    "See the embedded pod documentation",
+    "Guido Flohr (guido\@imperia.net)",
+    "Copyright (C) 2001-2007 Imperia AG",
+    "2007-02-06",
+    "<Toolbox>/Xtns/Imperia/Rotate60",
+    "*",
+    [
+     [PF_FILE, infile => "File to rotate"],
+     [PF_FLOAT, angle => "Rotate by what angle (0-360)", 180],
+	  ],
+	 \&rotate;
+#Gimp::set_trace(TRACE_ALL);
+# Handle over control to gimp
+exit main();
+
+__END__
+
+Local Variables:
+mode: perl
+perl-indent-level: 4
+perl-continued-statement-offset: 4
+perl-continued-brace-offset: 0
+perl-brace-offset: -4
+perl-brace-imaginary-offset: 0
+perl-label-offset: -4
+tab-width: 4
+End:

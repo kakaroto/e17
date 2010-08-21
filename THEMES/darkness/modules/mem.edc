@@ -1,0 +1,224 @@
+group {
+    name: "modules/mem/main";
+    min: 4 4;
+    max: 128 128;
+    script {
+        public message(Msg_Type:type, id, ...) {
+            if ((type == MSG_FLOAT) && (id == 1)) {
+                new Float:value;
+
+                value = getfarg(2);
+                set_state(PART:"real_label", "visible", value);
+            }
+            if ((type == MSG_FLOAT) && (id == 2)) {
+                new Float:value;
+
+                value = getfarg(2);
+                set_state(PART:"swap_label", "visible", value);
+            }		  
+        }	     
+    }
+
+    parts {
+        part {
+            name: "fade_clip";
+            type: RECT;
+            description {
+                state: "default" 0.0;
+                color: 255 255 255 255;
+                rel1 {
+                    relative: 0.0 0.0;
+                    offset: 0 0;
+                }
+                rel2 {
+                    relative: 1.0 1.0;
+                    offset: -1 -1;
+                }
+            }
+        }
+        part {
+            name: "mem";
+            type: TEXT;
+            clip_to: "fade_clip";
+            effect: SOFT_SHADOW;
+            mouse_events: 1;
+            description {
+                state: "default" 0.0;
+                aspect: 1.0 1.0;
+                align: 0.5 0.5;
+                rel1.relative: 0.5 0.5;
+                rel2.relative: 0.5 0.5;
+                color: 255 255 255 192;
+                color3: DARKNESS_BLUE 60;
+                text {
+                    text: "Mem:";
+                    size: 10;
+                    font: "DejaVu-Mono";
+                    min: 1 1;
+                    align: 0.5 0.5;
+                    text_class: "module_small";	       
+                }
+            }
+        }
+        part {
+            name: "real_label";
+            type: TEXT;
+            clip_to: "fade_clip";
+            effect: SOFT_SHADOW;
+            description {
+                state: "default" 0.0;
+                color: 255 255 255 0;
+                color3: 0 0 0 0;
+                align: 1.0 0.0;
+                visible: 1;
+                rel1.relative: 0.0 0.25;
+                rel2.relative: 1.0 0.25;
+                text {
+                    text: "Real:";
+                    font: "DejaVu-Mono";
+                    size: 9;
+                    min: 1 1;
+                    align: 0.5 0.0;
+                    text_class: "module_small";
+                }
+            }
+            description {
+                state: "visible" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                color: 255 255 255 255;
+                color3: 0 0 0 42;
+            }
+            description {
+                state: "visible" 0.1;
+                inherit: "visible" 0.0;
+                color: DARKNESS_VERY_LIGHT_BLUE 255;
+            }
+            description {
+                state: "visible" 0.2;
+                inherit: "visible" 0.0;
+                color: 161 187 214 255;
+            }
+            description {
+                state: "visible" 0.3;
+                inherit: "visible" 0.0;
+                color: DARKNESS_LIGHT_BLUE 255;
+            }
+            description {
+                state: "visible" 0.4;
+                inherit: "visible" 0.0;
+                color: 130 141 162 255;
+            }
+            description {
+                state: "visible" 0.5;
+                inherit: "visible" 0.0;
+                color: 64 107 151 255;
+            }
+            description {
+                state: "visible" 0.6;
+                inherit: "visible" 0.0;
+                color: 64 64 151 255;
+            }
+            description {
+                state: "visible" 0.7;
+                inherit: "visible" 0.0;
+                color: 88 64 151 255;
+            }
+            description {
+                state: "visible" 0.8;
+                inherit: "visible" 0.0;
+                color: 151 96 64 255;
+            }
+            description {
+                state: "visible" 0.9;
+                inherit: "visible" 0.0;
+                color: 151 72 64 255;
+            }
+            description {
+                state: "visible" 1.0;
+                inherit: "visible" 0.0;
+                color: 220 39 21 255;
+            }
+        }
+        part {
+            name: "swap_label";
+            type: TEXT;
+            clip_to: "fade_clip";
+            effect: SOFT_SHADOW;
+            description {
+                state: "default" 0.0;
+                color: 255 255 255 0;
+                color3: 0 0 0 0;
+                visible: 1;
+                align: 1.0 1.0;
+                rel1.relative: 0.0 0.75;
+                rel2.relative: 1.0 0.75;
+                text {
+                    text: "Swap:";
+                    font: "DejaVu-Mono";
+                    size: 9;
+                    min: 1 1;
+                    align: 0.5 1.0;
+                    text_class: "module_small";
+                }
+            }
+            description {
+                state: "visible" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                color: 255 255 255 255;
+                color3: 0 0 0 42;
+            }
+            description {
+                state: "visible" 0.1;
+                inherit: "visible" 0.0;
+                color: 224 236 212 255;
+            }
+            description {
+                state: "visible" 0.2;
+                inherit: "visible" 0.0;
+                color: 162 206 136 255;
+            }
+            description {
+                state: "visible" 0.3;
+                inherit: "visible" 0.0;
+                color: 140 224 92 255;
+            }
+            description {
+                state: "visible" 0.4;
+                inherit: "visible" 0.0;
+                color: 164 224 92 255;
+            }
+            description {
+                state: "visible" 0.5;
+                inherit: "visible" 0.0;
+                color: 157 190 53 255;
+            }
+            description {
+                state: "visible" 0.6;
+                inherit: "visible" 0.0;
+                color: 184 190 53 255;
+            }
+            description {
+                state: "visible" 0.7;
+                inherit: "visible" 0.0;
+                color: 216 186 54 255;
+            }
+            description {
+                state: "visible" 0.8;
+                inherit: "visible" 0.0;
+                color: 216 156 54 255;
+            }
+            description {
+                state: "visible" 0.9;
+                inherit: "visible" 0.0;
+                color: 228 113 27 255;
+            }
+            description {
+                state: "visible" 1.0;
+                inherit: "visible" 0.0;
+                color: 228 41 27 255;
+            }
+        }	     
+    }
+}

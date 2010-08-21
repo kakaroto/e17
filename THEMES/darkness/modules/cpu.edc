@@ -1,0 +1,768 @@
+/* vim: set sw=3: */
+styles {
+   style {
+      name: "cpu_style";
+      base: "font=DejaVu-Bold font_size=10 text_class=module_large align=right color=#fff style=soft_shadow shadow_color=#91a9c3 wrap=word";
+      tag:  "br" "\n";
+   }
+}
+
+group {
+   name: "modules/cpu/main";
+   parts {
+      part {
+         name: "fade_clip";
+         type: RECT;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 255;
+         }
+      }
+      part {
+         name: "cpu";
+         type: TEXT;
+         clip_to: "fade_clip";
+         effect: SOFT_SHADOW;
+         description {
+            state: "default" 0.0;
+            aspect: 1.0 1.0;
+            align: 0.0 0.5;
+            rel1 {
+               relative: 0.0 0.5;
+               offset: 5 0;
+            }
+            rel2 {
+               relative: 0.0 0.5;
+            }
+            color: 255 255 255 192;
+            color3: DARKNESS_BLUE 60;
+            text {
+               text: "CPU:";
+               size: 10;
+               font: "DejaVu-Bold";
+               min: 1 1;
+               align: 0.0 0.5;
+               text_class: "module_small";	       
+            }
+         }
+      }
+      part {
+         name:           "load";
+         type:           TEXTBLOCK;
+         effect:         SOFT_SHADOW;
+         mouse_events: 1;
+         clip_to: "fade_clip";
+         description {
+            state: "default" 0.0;
+            aspect: 1.0 1.0;
+            align: 1.0 0.5;
+            color: 255 255 255 252;
+            color3: DARKNESS_LIGHT_BLUE 90;
+            visible: 1;
+            rel1.relative: 1.0 0.5;
+            rel2 {
+               relative: 1.0 0.5;
+               offset: -5 0;
+            }
+            text {
+               style: "cpu_style";
+               min:     1 1;
+            }
+         }
+      }
+      part {
+         name: "event_rect";
+         type: RECT;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+   }
+}
+
+group {
+    name: "modules/cpu/popup";
+    data {
+        item: "chart_color1" "0 59 179 100";
+        item: "chart_color2" "4 179 0 100";
+        item: "chart_color3" "180 0 0 100";
+        item: "chart_color4" "179 55 0 100";
+    }
+
+    parts {
+        part {
+            name: "bg";
+            type: RECT;
+
+            description {
+                state: "default" 0.0;
+                min: 100 100;
+                color: 0 0 0 0;
+            }
+            description {
+                state: "cpu_count_2" 0.0;
+                inherit: "default" 0.0;
+                min: 200 100;
+            }
+            description {
+                state: "cpu_count_3" 0.0;
+                inherit: "default" 0.0;
+                min: 150 100;
+            }
+            description {
+                state: "cpu_count_4" 0.0;
+                inherit: "default" 0.0;
+                min: 150 150;
+            }
+        }
+
+        part {
+            name: "chart1";
+            type: SWALLOW;
+
+            description {
+                state: "default" 0.0;
+                rel1 {
+                    relative: 0.04 0.04;
+                    offset: 0 0;
+                }
+                rel2 {
+                    relative: 0.96 0.96;
+                    offset: -1 -1;
+                }
+                color: 255 255 255 255;
+            }
+            description {
+                state: "cpu_count_2" 0.0;
+                inherit: "default" 0.0;
+                rel1.relative: 0.04 0.04;
+                rel2.relative: 0.48 0.96;
+            }
+            description {
+                state: "cpu_count_3" 0.0;
+                inherit: "default" 0.0;
+                rel1.relative: 0.04 0.04;
+                rel2.relative: 0.6 0.96;
+            }
+            description {
+                state: "cpu_count_4" 0.0;
+                inherit: "default" 0.0;
+                rel1.relative: 0.04 0.04;
+                rel2.relative: 0.48 0.48;
+            }
+        }
+        part {
+            name: "chart2";
+            type: SWALLOW;
+
+            description {
+                state: "default" 0.0;
+                visible: 0;
+                color: 255 255 255 255;
+            }
+            description {
+                state: "cpu_count_2" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.52 0.04;
+                rel2.relative: 0.96 0.96;
+            }
+            description {
+                state: "cpu_count_3" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.62 0.04;
+                rel2.relative: 0.96 0.48;
+            }
+            description {
+                state: "cpu_count_4" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.52 0.04;
+                rel2.relative: 0.96 0.48;
+            }
+        }
+        part {
+            name: "chart3";
+            type: SWALLOW;
+
+            description {
+                state: "default" 0.0;
+                visible: 0;
+                color: 255 255 255 255;
+            }
+            description {
+                state: "cpu_count_2" 0.0;
+                inherit: "default" 0.0;
+            }
+            description {
+                state: "cpu_count_3" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.62 0.52;
+                rel2.relative: 0.96 0.96;
+            }
+            description {
+                state: "cpu_count_4" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.04 0.52;
+                rel2.relative: 0.48 0.96;
+            }
+        }
+        part {
+            name: "chart4";
+            type: SWALLOW;
+
+            description {
+                state: "default" 0.0;
+                visible: 0;
+                color: 255 255 255 255;
+            }
+            description {
+                state: "cpu_count_2" 0.0;
+                inherit: "default" 0.0;
+            }
+            description {
+                state: "cpu_count_3" 0.0;
+                inherit: "default" 0.0;
+            }
+            description {
+                state: "cpu_count_4" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.52 0.52;
+                rel2.relative: 0.96 0.96;
+            }
+        }
+
+        part {
+            name: "num1";
+            type: TEXT;
+            effect: SOFT_SHADOW;
+
+            description {
+                state: "default" 0.0;
+                fixed: 1 1;
+                rel1.relative: 0.5 0.5;
+                rel2.relative: 0.5 0.5;
+                color: 255 255 255 255;
+                color3: DARKNESS_LIGHT_BLUE 90;
+                text {
+                    text:     "1";
+                    min:      1 1;
+                    size:     30;
+                    font:     "DejaVu-Bold";
+                    align:    0.5 0.5;
+                }
+            }
+            description {
+                state: "cpu_count_2" 0.0;
+                inherit: "default" 0.0;
+                rel1.relative: 0.25 0.5;
+                rel2.relative: 0.25 0.5;
+            }
+            description {
+                state: "cpu_count_3" 0.0;
+                inherit: "default" 0.0;
+                rel1.relative: 0.33333 0.5;
+                rel2.relative: 0.33333 0.5;
+            }
+            description {
+                state: "cpu_count_4" 0.0;
+                inherit: "default" 0.0;
+                rel1.relative: 0.25 0.25;
+                rel2.relative: 0.25 0.25;
+                text.size: 20;
+            }
+        }
+        part {
+            name: "num2";
+            type: TEXT;
+            effect: SOFT_SHADOW;
+
+            description {
+                state: "default" 0.0;
+                fixed: 1 1;
+                visible: 0;
+                color: 255 255 255 255;
+                color3: DARKNESS_LIGHT_BLUE 90;
+                text {
+                    text:     "2";
+                    min:      1 1;
+                    size:     30;
+                    font:     "DejaVu-Bold";
+                    align:    0.5 0.5;
+                }
+            }
+            description {
+                state: "cpu_count_2" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.75 0.5;
+                rel2.relative: 0.75 0.5;
+            }
+            description {
+                state: "cpu_count_3" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.833333 0.25;
+                rel2.relative: 0.833333 0.25;
+                text.size: 20;
+            }
+            description {
+                state: "cpu_count_4" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.75 0.25;
+                rel2.relative: 0.75 0.25;
+                text.size: 20;
+            }
+        }
+        part {
+            name: "num3";
+            type: TEXT;
+            effect: SOFT_SHADOW;
+
+            description {
+                state: "default" 0.0;
+                fixed: 1 1;
+                color: 255 255 255 255;
+                color3: DARKNESS_LIGHT_BLUE 90;
+                visible: 0;
+                text {
+                    text:     "3";
+                    min:      1 1;
+                    size:     30;
+                    font:     "DejaVu-Bold";
+                    align:    0.5 0.5;
+                }
+            }
+            description {
+                state: "cpu_count_2" 0.0;
+                inherit: "default" 0.0;
+            }
+            description {
+                state: "cpu_count_3" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.833333 0.75;
+                rel2.relative: 0.833333 0.75;
+                text.size: 20;
+            }
+            description {
+                state: "cpu_count_4" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.25 0.75;
+                rel2.relative: 0.25 0.75;
+                text.size: 20;
+            }
+        }
+        part {
+            name: "num4";
+            type: TEXT;
+            effect: SOFT_SHADOW;
+
+            description {
+                state: "default" 0.0;
+                fixed: 1 1;
+                color: 255 255 255 255;
+                color3: DARKNESS_LIGHT_BLUE 90;
+                visible: 0;
+                text {
+                    text:     "4";
+                    min:      1 1;
+                    size:     30;
+                    font:     "DejaVu-Bold";
+                    align:    0.5 0.5;
+                }
+            }
+            description {
+                state: "cpu_count_2" 0.0;
+                inherit: "default" 0.0;
+            }
+            description {
+                state: "cpu_count_3" 0.0;
+                inherit: "default" 0.0;
+            }
+            description {
+                state: "cpu_count_4" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.75 0.75;
+                rel2.relative: 0.75 0.75;
+                text.size: 20;
+            }
+        }
+        part {
+            name: "y1";
+            type: RECT;
+
+            description {
+                state: "default" 0.0;
+                min: 1 1;
+                max: 1 9999;
+                fixed: 1 1;
+                rel1 {
+                    relative: 0.04 0.04;
+                    offset: -1 -4;
+                }
+                rel2 {
+                    relative: 0.04 0.96;
+                    offset: -1 2;
+                }
+                color: DARKNESS_FRAME_BORDER 100;
+            }
+            description {
+                state: "cpu_count_2" 0.0;
+                inherit: "default" 0.0;
+                rel1.relative: 0.04 0.04;
+                rel2.relative: 0.04 0.96;
+            }
+            description {
+                state: "cpu_count_3" 0.0;
+                inherit: "default" 0.0;
+                rel1.relative: 0.04 0.04;
+                rel2.relative: 0.04 0.96;
+            }
+            description {
+                state: "cpu_count_4" 0.0;
+                inherit: "default" 0.0;
+                rel1.relative: 0.04 0.04;
+                rel2.relative: 0.04 0.48;
+            }
+        }
+        part {
+            name: "y2";
+            type: RECT;
+
+            description {
+                state: "default" 0.0;
+                min: 1 1;
+                max: 1 9999;
+                fixed: 1 1;
+                visible: 0;
+                rel1.offset: -1 -4;
+                rel2.offset: -1 2;
+                color: DARKNESS_FRAME_BORDER 100;
+            }
+            description {
+                state: "cpu_count_2" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.52 0.04;
+                rel2.relative: 0.52 0.96;
+            }
+            description {
+                state: "cpu_count_3" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.62 0.04;
+                rel2.relative: 0.62 0.48;
+            }
+            description {
+                state: "cpu_count_4" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.52 0.04;
+                rel2.relative: 0.52 0.48;
+            }
+        }
+        part {
+            name: "y3";
+            type: RECT;
+
+            description {
+                state: "default" 0.0;
+                min: 1 1;
+                max: 1 9999;
+                fixed: 1 1;
+                visible: 0;
+                rel1.offset: -1 -4;
+                rel2.offset: -1 2;
+                color: DARKNESS_FRAME_BORDER 100;
+            }
+            description {
+                state: "cpu_count_2" 0.0;
+                inherit: "default" 0.0;
+            }
+            description {
+                state: "cpu_count_3" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.62 0.52;
+                rel2.relative: 0.62 0.96;
+            }
+            description {
+                state: "cpu_count_4" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.04 0.52;
+                rel2.relative: 0.04 0.96;
+            }
+        }
+        part {
+            name: "y4";
+            type: RECT;
+
+            description {
+                state: "default" 0.0;
+                min: 1 1;
+                max: 1 9999;
+                fixed: 1 1;
+                visible: 0;
+                rel1.offset: -1 -4;
+                rel2.offset: -1 2;
+                color: DARKNESS_FRAME_BORDER 100;
+            }
+            description {
+                state: "cpu_count_2" 0.0;
+                inherit: "default" 0.0;
+            }
+            description {
+                state: "cpu_count_3" 0.0;
+                inherit: "default" 0.0;
+            }
+            description {
+                state: "cpu_count_4" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.52 0.52;
+                rel2.relative: 0.52 0.96;
+            }
+        }
+        part {
+            name: "x1";
+            type: RECT;
+
+            description {
+                state: "default" 0.0;
+                min: 1 1;
+                max: 9999 1;
+                fixed: 1 1;
+                rel1 {
+                    relative: 0.04 0.96;
+                    offset: -4 0;
+                }
+                rel2 {
+                    relative: 0.96 0.96;
+                    offset: 2 0;
+                }
+                color: DARKNESS_FRAME_BORDER 100;
+            }
+            description {
+                state: "cpu_count_2" 0.0;
+                inherit: "default" 0.0;
+                rel2.relative: 0.48 0.96;
+            }
+            description {
+                state: "cpu_count_3" 0.0;
+                inherit: "default" 0.0;
+                rel2.relative: 0.6 0.96;
+            }
+            description {
+                state: "cpu_count_4" 0.0;
+                inherit: "default" 0.0;
+                rel1.relative: 0.04 0.48;
+                rel2.relative: 0.48 0.48;
+            }
+        }
+        part {
+            name: "x2";
+            type: RECT;
+
+            description {
+                state: "default" 0.0;
+                min: 1 1;
+                max: 9999 1;
+                fixed: 1 1;
+                visible: 0;
+                rel1.offset: -4 0;
+                rel2.offset: 2 0;
+                color: DARKNESS_FRAME_BORDER 100;
+            }
+            description {
+                state: "cpu_count_2" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.52 0.96;
+                rel2.relative: 0.96 0.96;
+            }
+            description {
+                state: "cpu_count_3" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.62 0.48;
+                rel2.relative: 0.96 0.48;
+            }
+            description {
+                state: "cpu_count_4" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.52 0.48;
+                rel2.relative: 0.96 0.48;
+            }
+        }
+        part {
+            name: "x3";
+            type: RECT;
+
+            description {
+                state: "default" 0.0;
+                min: 1 1;
+                max: 9999 1;
+                fixed: 1 1;
+                visible: 0;
+                rel1.offset: -4 0;
+                rel2.offset: 2 0;
+                color: DARKNESS_FRAME_BORDER 100;
+            }
+            description {
+                state: "cpu_count_2" 0.0;
+                inherit: "default" 0.0;
+            }
+            description {
+                state: "cpu_count_3" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.62 0.96;
+                rel2.relative: 0.96 0.96;
+            }
+            description {
+                state: "cpu_count_4" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.04 0.96;
+                rel2.relative: 0.48 0.96;
+            }
+        }
+        part {
+            name: "x4";
+            type: RECT;
+
+            description {
+                state: "default" 0.0;
+                min: 1 1;
+                max: 9999 1;
+                fixed: 1 1;
+                visible: 0;
+                rel1.offset: -4 0;
+                rel2.offset: 2 0;
+                color: DARKNESS_FRAME_BORDER 100;
+            }
+            description {
+                state: "cpu_count_2" 0.0;
+                inherit: "default" 0.0;
+            }
+            description {
+                state: "cpu_count_3" 0.0;
+                inherit: "default" 0.0;
+            }
+            description {
+                state: "cpu_count_4" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                rel1.relative: 0.52 0.96;
+                rel2.relative: 0.96 0.96;
+            }
+        }
+    }
+    programs {
+        program {
+            name: "1_cpu";
+            signal: "e,state,orientation,1";
+            source: "e";
+            action: STATE_SET "default" 0.0;
+            target: "bg";
+            target: "chart1";
+            target: "chart2";
+            target: "chart3";
+            target: "chart4";
+            target: "num1";
+            target: "num2";
+            target: "num3";
+            target: "num4";
+            target: "x1";
+            target: "x2";
+            target: "x3";
+            target: "x4";
+            target: "y1";
+            target: "y2";
+            target: "y3";
+            target: "y4";
+        }
+        program {
+            name: "2_cpu";
+            signal: "e,state,orientation,2";
+            source: "e";
+            action: STATE_SET "cpu_count_2" 0.0;
+            target: "bg";
+            target: "chart1";
+            target: "chart2";
+            target: "chart3";
+            target: "chart4";
+            target: "num1";
+            target: "num2";
+            target: "num3";
+            target: "num4";
+            target: "x1";
+            target: "x2";
+            target: "x3";
+            target: "x4";
+            target: "y1";
+            target: "y2";
+            target: "y3";
+            target: "y4";
+        }
+        program {
+            name: "3_cpu";
+            signal: "e,state,orientation,3";
+            source: "e";
+            action: STATE_SET "cpu_count_3" 0.0;
+            target: "bg";
+            target: "chart1";
+            target: "chart2";
+            target: "chart3";
+            target: "chart4";
+            target: "num1";
+            target: "num2";
+            target: "num3";
+            target: "num4";
+            target: "x1";
+            target: "x2";
+            target: "x3";
+            target: "x4";
+            target: "y1";
+            target: "y2";
+            target: "y3";
+            target: "y4";
+        }
+        program {
+            name: "4_cpu";
+            signal: "e,state,orientation,4";
+            source: "e";
+            action: STATE_SET "cpu_count_4" 0.0;
+            target: "bg";
+            target: "chart1";
+            target: "chart2";
+            target: "chart3";
+            target: "chart4";
+            target: "num1";
+            target: "num2";
+            target: "num3";
+            target: "num4";
+            target: "x1";
+            target: "x2";
+            target: "x3";
+            target: "x4";
+            target: "y1";
+            target: "y2";
+            target: "y3";
+            target: "y4";
+        }
+    }
+}
