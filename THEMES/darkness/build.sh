@@ -1,8 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 edje_cc -id images/ -fd . darkness.edc -o darkness.edj
-if [[ $? != 0 ]]; then
-    exit 1;
-fi
+[[ $? != 0 ]] && exit 1
 case "$1" in
     '-p')
     edje_viewer darkness.edj
