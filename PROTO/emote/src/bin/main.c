@@ -2,7 +2,7 @@
 
 #ifndef ELM_LIB_QUICKLAUNCH
 
-# define EM_MAX_LEVEL 2
+# define EM_MAX_LEVEL 3
 
 /* local function prototypes */
 static void _em_main_shutdown_push(int (*func)(void));
