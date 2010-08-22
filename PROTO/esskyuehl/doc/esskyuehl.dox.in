@@ -1,0 +1,20 @@
+/**
+@file esskyuehl.dox
+@brief Esskyuehl Device Library
+*/
+
+/**
+@mainpage Esskyuehl
+@image html  esskyuehl.png
+@version @PACKAGE_VERSION@
+@author Mike Blumenkrantz (zmike/discomfitor) <mike@zentific.com>
+@date 2010
+
+@section intro What is Esskyuehl?
+
+Esskyuehl is a library for easily performing asynchronous sql queries.
+
+@verbatim
+Pants
+@endverbatim
+*/
