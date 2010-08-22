@@ -10,7 +10,7 @@ static Eina_Bool _emote_protocol_hash_cb_free(const Eina_Hash *hash __UNUSED__, 
 /* local variables */
 static Eina_Hash *_emote_protocols = NULL;
 
-int
+EM_INTERN int 
 emote_protocol_init(void)
 {
    char *irc, *aim;
@@ -44,7 +44,7 @@ emote_protocol_init(void)
    return 1;
 }
 
-int
+EM_INTERN int 
 emote_protocol_shutdown(void)
 {
    /* shutdown loaded protocols */

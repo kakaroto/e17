@@ -73,7 +73,6 @@ AC_SUBST(dlopen_libs)
 
 PKG_CHECK_MODULES(LIBEMOTE,
   [eina]
-  [ecore]
   [ecore-file]
 )
 
@@ -88,7 +87,6 @@ PKG_CHECK_MODULES(AIM,
 )
 
 PKG_CHECK_MODULES(EMOTE,
-  [eina]
   [elementary]
 )
 

@@ -40,7 +40,6 @@ void *alloca (size_t);
 # endif
 
 # include <Elementary.h>
-# include <Ecore.h>
 # include <Emote.h>
 
 # ifdef EMAPI

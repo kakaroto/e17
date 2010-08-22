@@ -73,6 +73,19 @@ void *alloca (size_t);
 #  endif
 # endif
 
+# ifdef EM_INTERN
+#  undef EM_INTERN
+# endif
+# ifdef __GNUC__
+#  if __GNUC__ >= 4
+#   define EM_INTERN __attribute__ ((visibility("hidden")))
+#  else
+#   define EM_INTERN
+#  endif
+# else
+#  define EM_INTERN
+# endif
+
 # define EMOTE_PROTOCOL_API_VERSION 1
 
 # include <Eina.h>

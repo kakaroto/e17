@@ -43,20 +43,20 @@ struct _Em_Object
    unsigned char deleted : 1;
 };
 
-void *em_object_alloc(int size, int type, Em_Object_Cleanup_Func cleanup_func);
-void em_object_del(Em_Object *obj);
-int em_object_is_del(Em_Object *obj);
-void em_object_del_func_set(Em_Object *obj, Em_Object_Cleanup_Func del_func);
-void em_object_type_set(Em_Object *obj, int type);
-void em_object_free(Em_Object *obj);
-int em_object_ref(Em_Object *obj);
-int em_object_unref(Em_Object *obj);
-int em_object_ref_get(Em_Object *obj);
-int em_object_error(Em_Object *obj);
-void em_object_data_set(Em_Object *obj, void *data);
-void *em_object_data_get(Em_Object *obj);
-void em_object_free_attach_func_set(Em_Object *obj, void (*func) (void *obj));
-void em_object_del_attach_func_set(Em_Object *obj, void (*func) (void *obj));
+EM_INTERN void *em_object_alloc(int size, int type, Em_Object_Cleanup_Func cleanup_func);
+EM_INTERN void em_object_del(Em_Object *obj);
+EM_INTERN int em_object_is_del(Em_Object *obj);
+EM_INTERN void em_object_del_func_set(Em_Object *obj, Em_Object_Cleanup_Func del_func);
+EM_INTERN void em_object_type_set(Em_Object *obj, int type);
+EM_INTERN void em_object_free(Em_Object *obj);
+EM_INTERN int em_object_ref(Em_Object *obj);
+EM_INTERN int em_object_unref(Em_Object *obj);
+EM_INTERN int em_object_ref_get(Em_Object *obj);
+EM_INTERN int em_object_error(Em_Object *obj);
+EM_INTERN void em_object_data_set(Em_Object *obj, void *data);
+EM_INTERN void *em_object_data_get(Em_Object *obj);
+EM_INTERN void em_object_free_attach_func_set(Em_Object *obj, void (*func) (void *obj));
+EM_INTERN void em_object_del_attach_func_set(Em_Object *obj, void (*func) (void *obj));
 
 # endif
 #endif
