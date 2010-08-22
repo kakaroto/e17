@@ -46,12 +46,41 @@ AM_CONDITIONAL([HAVE_PO], [false])
 ])
 AC_SUBST(LTLIBINTL)
 
-PKG_CHECK_MODULES(EMOTE, [elementary])
+PKG_CHECK_MODULES(EMOTE,
+  [eina]
+  [elementary]
+  )
+
+# dlopen
+dlopen_libs=""
+case "$host_os" in
+  mingw*)
+# nothing on mingw platform
+  ;;
+  *)
+    AC_CHECK_FUNCS(dlopen, res=yes, res=no)
+    if test "x$res" = "xyes"; then
+      AC_CHECK_FUNCS(dladdr, AC_DEFINE(HAVE_DLADDR))
+    else
+      AC_CHECK_LIB(dl, dlopen, res=yes, res=no)
+      if test "x$res" = "xyes"; then
+        AC_CHECK_LIB(dl, dladdr, AC_DEFINE(HAVE_DLADDR))
+        dlopen_libs=-ldl
+      else
+        AC_MSG_ERROR(Cannot find dlopen)
+      fi
+    fi
+esac
+AC_SUBST(dlopen_libs)
 
 AC_OUTPUT([
 Makefile
 src/Makefile
 src/bin/Makefile
+src/lib/Makefile
+src/lib/protocols/Makefile
+src/lib/protocols/aim/Makefile
+src/lib/protocols/irc/Makefile
 data/Makefile
 data/desktop/Makefile
 po/Makefile.in
