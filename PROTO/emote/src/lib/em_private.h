@@ -1,7 +1,9 @@
 #ifndef EMOTE_MAIN_H
 #define EMOTE_MAIN_H
 
-#include "config.h"
+# ifdef HAVE_CONFIG_H
+#  include "config.h"
+# endif
 
 #include "Emote.h"
 
@@ -11,16 +13,38 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
-#include <netdb.h>
 #include <sys/types.h>
 #include <ctype.h>
-#include <sys/time.h>
-#include <time.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <alloca.h>
-#include <linux/limits.h>
+
+#if TIME_WITH_SYS_TIME
+# include <sys/time.h>
+# include <time.h>
+#else
+# if HAVE_SYS_TIME_H
+#  include <sys/time.h>
+# else
+#  include <time.h>
+# endif
+
+# ifdef HAVE_ALLOCA_H
+#  include <alloca.h>
+# elif defined __GNUC__
+#  define alloca __builtin_alloca
+# elif defined _AIX
+#  define alloca __alloca
+# elif defined _MSC_VER
+#  include <malloc.h>
+#  define alloca _alloca
+# else
+#  include <stddef.h>
+#  ifdef  __cplusplus
+extern "C"
+#  endif
+void *alloca (size_t);
+# endif
+
+#include <limits.h>
+
 #if HAVE_DLFCN_H
 #include <dlfcn.h>
 #endif
