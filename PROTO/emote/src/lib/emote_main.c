@@ -2,7 +2,6 @@
 #include "emote_private.h"
 
 #include <libgen.h>
-#include <sys/stat.h>
 #include <string.h>
 
 #if HAVE_DLFCN_H
