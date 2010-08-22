@@ -6,8 +6,10 @@ MAINTAINERCLEANFILES = \
 
 INCLUDES = \
   -I$(top_srcdir) \
+  -I$(top_srcdir)/src/lib \
   -I$(top_srcdir)/src/bin \
   -DPACKAGE_LOCALE_DIR=\"$(datadir)/locale\" \
+  -DPACKAGE_LIB_DIR=\"$(libdir)/emote/protocols\" \
   -DUSE_EMOTE_CONFIG_H \
   @EMOTE_CFLAGS@
 
@@ -21,6 +23,7 @@ EMOTEHEADERS = \
   em_utils.h \
   em_config.h \
   em_gui.h \
+  em_protocol.h \
   emote.h
 
 emote_SOURCES = \
@@ -29,6 +32,7 @@ emote_SOURCES = \
   em_utils.c \
   em_config.c \
   em_gui.c \
+  em_protocol.c \
   main.c
 
 emote_LDADD = @EMOTE_LIBS@ @LTLIBINTL@
