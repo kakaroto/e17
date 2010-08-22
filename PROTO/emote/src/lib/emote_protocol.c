@@ -7,6 +7,7 @@
 /* local function prototypes */
 static char *_emote_protocol_find(const char *name);
 static int _emote_protocol_load(const char *file);
+static int _emote_protocol_is_valid(Emote_Protocol *p);
 static void _emote_protocol_cb_free(Emote_Protocol *p);
 static Eina_Bool _emote_protocol_hash_cb_free(const Eina_Hash *hash __UNUSED__, const void *key __UNUSED__, void *data, void *fdata __UNUSED__);
 
@@ -16,7 +17,7 @@ static Eina_Hash *_emote_protocols = NULL;
 int
 emote_protocol_init(void)
 {
-   char *irc;
+   char *irc, *aim;
 
    _emote_protocols = eina_hash_string_superfast_new(NULL);
 
@@ -30,6 +31,16 @@ emote_protocol_init(void)
      {
         printf("Failed to load: %s\n", irc);
         if (irc) free(irc);
+        return 0;
+     }
+
+   if (!(aim = _emote_protocol_find("aim"))) return 0;
+   printf("Found Protocol: %s\n", aim);
+
+   if (!(_emote_protocol_load(aim)))
+     {
+        printf("Failed to load: %s\n", aim);
+        if (aim) free(aim);
         return 0;
      }
 
@@ -104,9 +115,35 @@ _emote_protocol_load(const char *file)
    p->api = dlsym(p->handle, "protocol_api");
    p->funcs.init = dlsym(p->handle, "protocol_init");
    p->funcs.shutdown = dlsym(p->handle, "protocol_shutdown");
+   p->funcs.connect = dlsym(p->handle, "protocol_connect");
+   p->funcs.disconnect = dlsym(p->handle, "protocol_disconnect");
 
+   if (!_emote_protocol_is_valid(p)) return 0;
+
+   /* do init */
+   if (!p->funcs.init())
+     {
+        printf("Protocol failed to initialize\n");
+        em_object_del(EM_OBJECT(p));
+        return 0;
+     }
+
+   /* add to hash */
+   eina_hash_add(_emote_protocols, file, p);
+
+   return 1;
+}
+
+static int _emote_protocol_is_valid(Emote_Protocol *p)
+{
    /* check support for needed functions */
-   if ((!p->api) || (!p->funcs.init) || (!p->funcs.shutdown))
+   if (
+       (!p->api) ||
+       (!p->funcs.init) ||
+       (!p->funcs.shutdown) ||
+       (!p->funcs.connect) ||
+       (!p->funcs.disconnect)
+      )
      {
         printf("Protocol does not support needed functions\n");
         printf("Error: %s\n", dlerror());
@@ -122,17 +159,6 @@ _emote_protocol_load(const char *file)
         return 0;
      }
 
-   /* do init */
-   if (!p->funcs.init(p))
-     {
-        printf("Protocol failed to initialize\n");
-        em_object_del(EM_OBJECT(p));
-        return 0;
-     }
-
-   /* add to hash */
-   eina_hash_add(_emote_protocols, file, p);
-
    return 1;
 }
 
@@ -141,7 +167,7 @@ _emote_protocol_cb_free(Emote_Protocol *p)
 {
    if (!p) return;
 
-   if (p->funcs.shutdown) p->funcs.shutdown(p);
+   if (p->funcs.shutdown) p->funcs.shutdown();
    p->funcs.shutdown = NULL;
    p->funcs.init = NULL;
    p->api = NULL;

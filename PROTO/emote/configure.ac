@@ -82,6 +82,11 @@ PKG_CHECK_MODULES(IRC,
   [ecore-con]
 )
 
+PKG_CHECK_MODULES(AIM,
+  [ecore]
+  [ecore-con]
+)
+
 PKG_CHECK_MODULES(EMOTE,
   [eina]
   [elementary]
@@ -95,6 +100,7 @@ src/bin/Makefile
 src/lib/Makefile
 src/lib/protocols/Makefile
 src/lib/protocols/irc/Makefile
+src/lib/protocols/aim/Makefile
 data/Makefile
 data/desktop/Makefile
 po/Makefile.in

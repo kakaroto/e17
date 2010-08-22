@@ -88,8 +88,10 @@ typedef struct _Emote_Protocol_Api Emote_Protocol_Api;
 typedef struct _Emote_Protocol Emote_Protocol;
 typedef struct _Emote_Paths Emote_Paths;
 
-typedef int (*emote_protocol_init_t)(Emote_Protocol *);
-typedef int (*emote_protocol_shutdown_t)(Emote_Protocol *);
+typedef int (*emote_protocol_init_t)(void);
+typedef int (*emote_protocol_shutdown_t)(void);
+typedef int (*emote_protocol_connect_t)(const char*,int,const char*,const char*);
+typedef int (*emote_protocol_disconnect_t)(void);
 
 struct _Emote_Protocol_Api
 {
@@ -106,6 +108,8 @@ struct _Emote_Protocol
      {
         emote_protocol_init_t init; // required
         emote_protocol_shutdown_t shutdown; // required
+        emote_protocol_connect_t connect;
+        emote_protocol_disconnect_t disconnect;
 
         /* TODO: Implement generic functions */
      } funcs;

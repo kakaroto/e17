@@ -28,6 +28,6 @@
 # endif
 
 EMAPI int emote_init();
-EMAPI void emote_shutdown();
+EMAPI int emote_shutdown();
 
 #endif

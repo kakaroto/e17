@@ -1,10 +1,10 @@
 #include "libemote.h"
-#include "irc.h"
+#include "aim.h"
 
 EMAPI Emote_Protocol_Api protocol_api =
 {
    /* version, name, label */
-   EMOTE_PROTOCOL_API_VERSION, "irc", "IRC"
+   EMOTE_PROTOCOL_API_VERSION, "aim", "AIM"
 };
 
 EMAPI int

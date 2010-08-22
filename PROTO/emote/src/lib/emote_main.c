@@ -25,7 +25,7 @@ emote_init()
    return ret;
 }
 
-EMAPI void
+EMAPI int
 emote_shutdown()
 {
    emote_protocol_shutdown();

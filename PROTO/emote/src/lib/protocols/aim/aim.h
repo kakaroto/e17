@@ -1,5 +1,5 @@
-#ifndef IRC_H
-# define IRC_H
+#ifndef AIM_H
+# define AIM_H
 
 #include <Ecore.h>
 #include <Ecore_Con.h>
