@@ -91,7 +91,7 @@ typedef struct _Emote_Paths Emote_Paths;
 typedef int (*emote_protocol_init_t)(void);
 typedef int (*emote_protocol_shutdown_t)(void);
 typedef int (*emote_protocol_connect_t)(const char *, int, const char *, const char *);
-typedef int (*emote_protocol_disconnect_t)(void);
+typedef int (*emote_protocol_disconnect_t)(const char *);
 
 struct _Emote_Protocol_Api
 {

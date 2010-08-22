@@ -9,6 +9,6 @@ EMAPI extern Emote_Protocol_Api protocol_api;
 EMAPI int protocol_init(void);
 EMAPI int protocol_shutdown(void);
 EMAPI int protocol_connect(const char *server, int port, const char *user, const char *pass);
-EMAPI int protocol_disconnect(void);
+EMAPI int protocol_disconnect(const char *server);
 
 #endif

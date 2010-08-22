@@ -26,7 +26,7 @@ protocol_connect(const char *server, int port, const char *user, const char *pas
 }
 
 EMAPI int
-protocol_disconnect(void)
+protocol_disconnect(const char *server)
 {
    return 1;
 }
