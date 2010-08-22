@@ -10,6 +10,10 @@ collections {
          image: "check.png" COMP;
          image: "arrow_left.png" COMP;
       }
+      script {
+         public valid;
+      }
+
       parts {
          part { name: "base";
             type: RECT;
@@ -41,18 +45,113 @@ collections {
                visible: 1;
             }
          }
+         part { name: "button_cancel";
+            type: IMAGE;
+            clip_to: "clip_button";
+            description { state: "default" 0.0;
+               rel1.to: "cancel";
+               rel1.offset: -5 -10;
+               rel2.to: "cancel";
+               rel2.offset: 4 4;
+               image {
+                  normal: "box_login.png";
+                  border: 15 15 15 15;
+               }
+               fill.smooth: 0;
+            }
+         }
+         part { name: "cancel";
+            type: IMAGE;
+            repeat_events: 0;
+            clip_to: "clip_button";
+            description { state: "default" 0.0;
+               min: 32 32;
+               max: 32 32;
+               rel1.to: "background_login";
+               rel2.to: "background_login";
+               rel2.offset: -6 -10;
+               align: 0.1 1.0;
+               image.normal: "arrow_left.png";
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               rel2.offset: -6 28;
+            }
+         }
+
+         part { name: "button_valid";
+            type: IMAGE;
+            clip_to: "clip_button";
+            description { state: "default" 0.0;
+               rel1.to: "valid";
+               rel1.offset: -5 -10;
+               rel2.to: "valid";
+               rel2.offset: 4 4;
+               image {
+                  normal: "box_login.png";
+                  border: 15 15 15 15;
+               }
+               fill.smooth: 0;
+            }
+         }
+         part { name: "valid";
+            type: IMAGE;
+            repeat_events: 0;
+            clip_to: "clip_button";
+            description { state: "default" 0.0;
+               min: 32 32;
+               max: 32 32;
+               rel1.to: "background_login";
+               rel2.to: "background_login";
+               rel2.offset: -6 -10;
+               align: 0.9 1.0;
+               image.normal: "check.png";
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               rel2.offset: -6 28;
+            }
+         }
 
 
          part { name: "box_login";
+            type: RECT;
+            description { state: "default" 0.0;
+               rel1.relative: 0.3 0.57;
+               rel2.relative: 0.7 0.77;
+               visible: 0;
+            }
+         }
+         part { name: "clip_button";
+            type: RECT;
+            clip_to: "wall";
+            description { state: "default" 0.0;
+               rel1 {
+                  to_y: "background_login";
+                  relative: 0.0 1.0;
+                  offset: -5 -5;
+               }
+               color: 255 255 255 255;
+            }
+         }
+         part { name: "background_login";
             type: IMAGE;
             mouse_events: 0;
             clip_to: "wall";
             description { state: "default" 0.0;
-               rel1.relative: 0.3 0.57;
-               rel2.relative: 0.7 0.77;
+               rel1 {
+                  to_y: "hostname";
+                  relative: 0.3 0.0;
+                  offset: -5 -5;
+               }
+               rel2 {
+                  to_y: "hostname";
+                  relative: 0.7 1.0;
+                  offset: 4 4;
+               }
                image {
                   normal: "box_login.png";
-                  border: 10 10 10 10;
+                  border: 15 15 15 15;
                }
                fill.smooth: 0;
             }
@@ -64,11 +163,11 @@ collections {
             description { state: "default" 0.0;
                rel1 {
                   to: "box_login";
-                  offset: 1 1;
+                  offset: 6 6;
                }
                rel2 {
                   to: "box_login";
-                  offset: -2 -2;
+                  offset: -7 -7;
                }
 
                color: 255 255 255 255;
@@ -161,15 +260,13 @@ collections {
             mouse_events: 0;
             description { state: "default" 0.0;
                rel1.to: "box_login";
-               rel2.to_x: "box_login";
-               rel2.to_y: "valid";
-               rel2.relative: 1.0 0.0;
+               rel2.to: "box_login";
                visible: 0;
             }
             description { state: "auth" 0.0;
                inherit: "default" 0.0;
                rel1.relative: -1.0 0.0;
-               rel2.relative: 0.0 0.0;
+               rel2.relative: 0.0 1.0;
             }
          }
 
@@ -188,7 +285,7 @@ collections {
                text {
                   font: "Sans";
                   size: 18;
-                  text: "Hostname :";
+                  text: "Login :";
                   min: 1 1;
                }
             }
@@ -226,16 +323,15 @@ collections {
                   relative: 1.0 0.0;
                }
                rel2 {
-                  to_x: "box_login";
-                  to_y: "valid";
-                  relative: 2.0 0.0;
+                  to: "box_login";
+                  relative: 2.0 1.0;
                }
                visible: 0;
             }
             description { state: "auth" 0.0;
                inherit: "default" 0.0;
                rel1.relative: 0.0 0.0;
-               rel2.relative: 1.0 0.0;
+               rel2.relative: 1.0 1.0;
             }
          }
 
@@ -287,36 +383,16 @@ collections {
                rel2.relative: 1.0 1.0;
             }
          }
-         part { name: "cancel";
-            type: IMAGE;
-            repeat_events: 0;
-            clip_to: "wall";
-            description { state: "default" 0.0;
-               min: 32 32;
-               max: 32 32;
-               rel1.to: "box_login";
-               rel2.to: "box_login";
-               align: 0.0 1.0;
-               image.normal: "arrow_left.png";
-            }
-         }
-         part { name: "valid";
-            type: IMAGE;
-            repeat_events: 0;
-            clip_to: "wall";
-            description { state: "default" 0.0;
-               min: 32 32;
-               max: 32 32;
-               rel1.to: "box_login";
-               rel2.to: "box_login";
-               align: 1.0 1.0;
-               image.normal: "check.png";
-            }
-         }
-
       }
       programs {
          program { name: "init";
+            signal: "load";
+            source: "";
+            script {
+               set_int(valid, 0);
+            }
+         }
+         program { name: "show";
             signal: "show";
             source: "";
             action: STATE_SET "visible" 0.0;
@@ -345,6 +421,9 @@ collections {
             transition: LINEAR 0.5;
             target: "box_hostname";
             target: "box_password";
+            after: "init";
+            after: "show_cancel";
+            after: "hide_valid";
          }
          program { name: "go_to_start";
             signal: "elsa.auth.disable";
@@ -353,6 +432,9 @@ collections {
             transition: LINEAR 0.5;
             target: "box_hostname";
             target: "box_password";
+            after: "init";
+            after: "hide_cancel";
+            after: "hide_valid";
          }
          program { name: "login";
             signal: "elsa.auth.valid";
@@ -362,10 +444,43 @@ collections {
             target: "wall";
             after: "close";
          }
+         program { name: "show_cancel";
+            action: STATE_SET "visible" 0.0;
+            transition: SINUSOIDAL 0.6;
+            target: "cancel";
+         }
+         program { name: "hide_cancel";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.4;
+            target: "cancel";
+         }
          program { name: "login_cancel";
             signal: "mouse,down,*";
             source: "cancel";
             action: SIGNAL_EMIT "elsa.auth.cancel" "";
+            after: "hide_cancel";
+         }
+         program { name: "show_valid_script";
+            signal: "cursor,changed";
+            source: "*";
+            script {
+               new val;
+               val = get_int(valid);
+               if (val == 0) {
+                  run_program(PROGRAM:"show_valid");
+                  set_int(valid, 1);
+               }
+            }
+         }
+         program { name: "show_valid";
+            action: STATE_SET "visible" 0.0;
+            transition: SINUSOIDAL 0.8;
+            target: "valid";
+         }
+         program { name: "hide_valid";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.4;
+            target: "valid";
          }
          program { name: "login_valid";
             signal: "mouse,down,*";
@@ -688,20 +803,18 @@ collections {
             name: "update_shine";
             signal: "show";
             source: "";
-            transition: LINEAR 2.0;
             script {
                new a;
                a = round(sin(randf()) * 224) + 31;
                custom_state(PART:"star", "default", 0.0);
                set_state_val(PART:"star", STATE_COLOR, 255, 255, 255, a);
-               set_state(PART:"star", "custom", 0.0);
             }
             after: "shine";
          }
          program {
             name: "shine";
+            transition: ACCELERATE 1.2;
             action: STATE_SET "custom" 0.0;
-            transition: ACCELERATE 0.8;
             target: "star";
             after: "update_shine";
          }

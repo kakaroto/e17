@@ -14,6 +14,13 @@ _theme_get(Evas_Object *win, const char *group)
 }
 
 static void
+_signal(void *data, Evas_Object *obj, const char *sig, const char *src)
+{
+   printf("Event: %s - %s \n", sig, src);
+}
+
+
+static void
 _shutdown(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    elm_shutdown();
@@ -32,6 +39,9 @@ elm_main (int argc, char **argv)
    evas_object_size_hint_weight_set(o,
                                     EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
+   edje_object_signal_callback_add(elm_layout_edje_get(o),
+                                   "*", "*",
+                                   _signal, NULL);
    elm_win_resize_object_add(win, o);
    evas_object_show(o);
    evas_object_resize(win, 640, 480);
