@@ -4,4 +4,3 @@
 #include "em_utils.h"
 #include "em_config.h"
 #include "em_gui.h"
-#include "em_protocol.h"

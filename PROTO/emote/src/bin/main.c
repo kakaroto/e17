@@ -1,4 +1,4 @@
-#include "emote.h"
+#include "em_global.h"
 
 #ifndef ELM_LIB_QUICKLAUNCH
 
@@ -14,8 +14,8 @@ static int (*_em_main_shutdown_func[EM_MAX_LEVEL])(void);
 static int _em_main_level = 0;
 
 /* public functions */
-EAPI int 
-elm_main(int argc __UNUSED__, char **argv __UNUSED__) 
+EAPI int
+elm_main(int argc __UNUSED__, char **argv __UNUSED__)
 {
    struct sigaction action;
 
@@ -36,8 +36,8 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
    _em_main_shutdown_push(em_config_shutdown);
 
    /* init protocol subsystem */
-   if (!em_protocol_init()) _em_main_shutdown(EXIT_FAILURE);
-   _em_main_shutdown_push(em_protocol_shutdown);
+   if (!emote_init()) _em_main_shutdown(EXIT_FAILURE);
+   _em_main_shutdown_push(emote_shutdown);
 
    /* init our gui subsystem */
    if (!em_gui_init()) _em_main_shutdown(EXIT_FAILURE);
@@ -56,11 +56,11 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
 }
 
 /* local functions */
-static void 
-_em_main_shutdown_push(int (*func)(void)) 
+static void
+_em_main_shutdown_push(int (*func)(void))
 {
    _em_main_level++;
-   if (_em_main_level > EM_MAX_LEVEL) 
+   if (_em_main_level > EM_MAX_LEVEL)
      {
         _em_main_level--;
         return;
@@ -68,8 +68,8 @@ _em_main_shutdown_push(int (*func)(void))
    _em_main_shutdown_func[_em_main_level - 1] = func;
 }
 
-static void 
-_em_main_shutdown(int errcode) 
+static void
+_em_main_shutdown(int errcode)
 {
    int i = 0;
 
@@ -81,17 +81,17 @@ _em_main_shutdown(int errcode)
    if (errcode < 0) exit(errcode);
 }
 
-static void 
-_em_main_interrupt(int x __UNUSED__, siginfo_t *info __UNUSED__, void *data __UNUSED__) 
+static void
+_em_main_interrupt(int x __UNUSED__, siginfo_t *info __UNUSED__, void *data __UNUSED__)
 {
    printf("\nEmote: Caught Interrupt Signal, Exiting\n");
 
    /* if we are finished with init, then we need to call elm_exit
-    * as the app is in a 'running' state else we have not completed our init 
+    * as the app is in a 'running' state else we have not completed our init
     * function(s) so call our own shutdown */
    if (_em_main_level == EM_MAX_LEVEL)
      elm_exit();
-   else 
+   else
      {
         _em_main_shutdown(EXIT_SUCCESS);
         exit(EXIT_SUCCESS);

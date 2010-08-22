@@ -81,3 +81,6 @@ filesdir = $(datadir)/emote
 files_DATA = AUTHORS COPYING
 
 ACLOCAL_AMFLAGS = -I m4
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = emote.pc

@@ -71,11 +71,13 @@ case "$host_os" in
 esac
 AC_SUBST(dlopen_libs)
 
-PKG_CHECK_MODULES(LIBEMOTE, 
+PKG_CHECK_MODULES(LIBEMOTE,
   [eina]
+  [ecore]
+  [ecore-file]
 )
 
-PKG_CHECK_MODULES(IRC, 
+PKG_CHECK_MODULES(IRC,
   [ecore]
   [ecore-con]
 )
@@ -87,6 +89,7 @@ PKG_CHECK_MODULES(EMOTE,
 
 AC_OUTPUT([
 Makefile
+emote.pc
 src/Makefile
 src/bin/Makefile
 src/lib/Makefile

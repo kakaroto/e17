@@ -9,7 +9,6 @@ INCLUDES = \
   -I$(top_srcdir)/src/lib \
   -I$(top_srcdir)/src/bin \
   -DPACKAGE_LOCALE_DIR=\"$(datadir)/locale\" \
-  -DPACKAGE_LIB_DIR=\"$(libdir)/emote/protocols\" \
   -DUSE_EMOTE_CONFIG_H \
   @EMOTE_CFLAGS@
 
@@ -23,8 +22,7 @@ EMOTEHEADERS = \
   em_utils.h \
   em_config.h \
   em_gui.h \
-  em_protocol.h \
-  emote.h
+  em_global.h
 
 emote_SOURCES = \
   $(EMOTEHEADERS) \
@@ -32,8 +30,7 @@ emote_SOURCES = \
   em_utils.c \
   em_config.c \
   em_gui.c \
-  em_protocol.c \
   main.c
 
-emote_LDADD = @EMOTE_LIBS@ @LTLIBINTL@
+emote_LDADD = @EMOTE_LIBS@ @LTLIBINTL@ $(top_srcdir)/src/lib/libemote.la
 emote_LDFLAGS = -export-dynamic

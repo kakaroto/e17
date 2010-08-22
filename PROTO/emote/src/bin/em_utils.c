@@ -1,7 +1,7 @@
-#include "emote.h"
+#include "em_global.h"
 
 EM_INTERN Evas_Object *
-em_util_icon_add(Evas_Object *obj, const char *icon) 
+em_util_icon_add(Evas_Object *obj, const char *icon)
 {
    Evas_Object *ow;
    char *path;
@@ -12,14 +12,14 @@ em_util_icon_add(Evas_Object *obj, const char *icon)
 #ifdef ELM_EFREET
    /* tell elm that we need efreet */
    elm_need_efreet();
-   if (!(path = efreet_icon_path_find(getenv("E_ICON_THEME"), icon, 48))) 
+   if (!(path = efreet_icon_path_find(getenv("E_ICON_THEME"), icon, 48)))
      {
-        if (!(path = efreet_icon_path_find("default", icon, 48))) 
-          if (!(path = efreet_icon_path_find("hicolor", icon, 48))) 
-            if (!(path = efreet_icon_path_find("gnome", icon, 48))) 
+        if (!(path = efreet_icon_path_find("default", icon, 48)))
+          if (!(path = efreet_icon_path_find("hicolor", icon, 48)))
+            if (!(path = efreet_icon_path_find("gnome", icon, 48)))
               path = efreet_icon_path_find("Human", icon, 48);
      }
-   if (path) 
+   if (path)
      {
         elm_icon_file_set(ow, path, NULL);
         free(path);
@@ -30,11 +30,11 @@ em_util_icon_add(Evas_Object *obj, const char *icon)
 }
 
 EM_INTERN const char *
-em_util_user_dir_get(void) 
+em_util_user_dir_get(void)
 {
    static char dir[PATH_MAX];
 
-   if (!dir[0]) 
+   if (!dir[0])
      {
         const char *home;
 

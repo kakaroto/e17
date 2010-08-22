@@ -1,5 +1,5 @@
-#ifndef EMOTE_H
-# define EMOTE_H
+#ifndef EM_GLOBAL_H
+# define EM_GLOBAL_H
 
 # ifdef HAVE_CONFIG_H
 #  include "config.h"
@@ -40,7 +40,8 @@ void *alloca (size_t);
 # endif
 
 # include <Elementary.h>
-# include "libemote.h"
+# include <Ecore.h>
+# include <Emote.h>
 
 # ifdef EMAPI
 #  undef EMAPI

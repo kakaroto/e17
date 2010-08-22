@@ -5,6 +5,9 @@
 #  include "config.h"
 # endif
 
+# include <stdlib.h>
+# include <limits.h>
+
 # ifdef HAVE_ALLOCA_H
 #  include <alloca.h>
 # elif defined __GNUC__
@@ -67,27 +70,56 @@ void *alloca (size_t);
 
 # define EMOTE_PROTOCOL_API_VERSION 1
 
+#include <Eina.h>
+#include <Ecore_File.h>
+
+#include "emote_types.h"
+
+# define EM_TYPEDEFS
+# include "emote_object.h"
+# undef EM_TYPEDEFS
+# include "emote_object.h"
+
+# define EMOTE_NEW(s, n) (s *)malloc(n * sizeof(s))
+# define EMOTE_FREE(p) do { if (p) {free(p); p = NULL;} } while (0)
+# define EMOTE_CLAMP(x, min, max) (x < min ? min : (x > max ? max : x))
+
 typedef struct _Emote_Protocol_Api Emote_Protocol_Api;
 typedef struct _Emote_Protocol Emote_Protocol;
+typedef struct _Emote_Paths Emote_Paths;
 
-struct _Emote_Protocol_Api 
+typedef int (*emote_protocol_init_t)(Emote_Protocol *);
+typedef int (*emote_protocol_shutdown_t)(Emote_Protocol *);
+
+struct _Emote_Protocol_Api
 {
    int version;
    const char *name, *label;
 };
 
-struct _Emote_Protocol 
+struct _Emote_Protocol
 {
    Emote_Protocol_Api *api;
    void *handle;
 
-   struct 
+   struct
      {
-        void *(*init) (Emote_Protocol *p); // required
-        int (*shutdown) (Emote_Protocol *p); // required
+        emote_protocol_init_t init; // required
+        emote_protocol_shutdown_t shutdown; // required
 
         /* TODO: Implement generic functions */
      } funcs;
 };
+
+struct _Emote_Paths
+{
+   char libdir[PATH_MAX];
+   char protocoldir[PATH_MAX];
+};
+
+Emote_Paths emote_paths;
+
+int emote_protocol_init(void);
+int emote_protocol_shutdown(void);
 
 #endif

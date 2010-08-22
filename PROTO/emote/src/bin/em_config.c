@@ -1,4 +1,4 @@
-#include "emote.h"
+#include "em_global.h"
 
 /* local function prototypes */
 static void _em_config_cb_free(void);
@@ -15,8 +15,8 @@ static Evas_Object *_em_config_win;
 /* global variables */
 EM_INTERN Em_Config *em_config = NULL;
 
-EM_INTERN int 
-em_config_init(void) 
+EM_INTERN int
+em_config_init(void)
 {
    _em_config_edd = EM_CONFIG_DD_NEW("Em_Config", Em_Config);
    #undef T
@@ -30,8 +30,8 @@ em_config_init(void)
    return 1;
 }
 
-EM_INTERN int 
-em_config_shutdown(void) 
+EM_INTERN int
+em_config_shutdown(void)
 {
    _em_config_cb_free();
    EM_CONFIG_DD_FREE(_em_config_edd);
@@ -39,35 +39,35 @@ em_config_shutdown(void)
 }
 
 EM_INTERN Em_Config_DD *
-em_config_descriptor_new(const char *name, int size) 
+em_config_descriptor_new(const char *name, int size)
 {
    Eet_Data_Descriptor_Class eddc;
 
-   if (!eet_eina_stream_data_descriptor_class_set(&eddc, sizeof(eddc), 
+   if (!eet_eina_stream_data_descriptor_class_set(&eddc, sizeof(eddc),
                                                   name, size))
      return NULL;
    return (Em_Config_DD *)eet_data_descriptor_stream_new(&eddc);
 }
 
-EM_INTERN void 
-em_config_load(void) 
+EM_INTERN void
+em_config_load(void)
 {
    em_config = _em_config_domain_load("emote", _em_config_edd);
-   if (em_config) 
+   if (em_config)
      {
         int reload;
 
-        if ((em_config->version >> 16) < EM_CONFIG_FILE_EPOCH) 
+        if ((em_config->version >> 16) < EM_CONFIG_FILE_EPOCH)
           {
              /* config too old */
              reload = 1;
           }
-        else if (em_config->version > EM_CONFIG_FILE_VERSION) 
+        else if (em_config->version > EM_CONFIG_FILE_VERSION)
           {
              /* config too new, WTF ? */
              reload = 1;
           }
-        if (reload) 
+        if (reload)
           em_config = _em_config_domain_load("emote", _em_config_edd);
      }
    if (!em_config) em_config = EM_NEW(Em_Config, 1);
@@ -86,14 +86,14 @@ em_config_load(void)
    em_config->version = EM_CONFIG_FILE_VERSION;
 }
 
-EM_INTERN int 
-em_config_save(void) 
+EM_INTERN int
+em_config_save(void)
 {
    return _em_config_domain_save("emote", _em_config_edd, em_config);
 }
 
-EM_INTERN void 
-em_config_show(Evas_Object *parent) 
+EM_INTERN void
+em_config_show(Evas_Object *parent)
 {
    if (!_em_config_win) _em_config_win_create(parent);
    evas_object_show(_em_config_win);
@@ -101,23 +101,23 @@ em_config_show(Evas_Object *parent)
 }
 
 /* local functions */
-static void 
-_em_config_cb_free(void) 
+static void
+_em_config_cb_free(void)
 {
    EM_FREE(em_config);
 }
 
 static void *
-_em_config_domain_load(const char *domain, Em_Config_DD *edd) 
+_em_config_domain_load(const char *domain, Em_Config_DD *edd)
 {
    Eet_File *ef;
    char buff[PATH_MAX];
 
    if (!domain) return NULL;
-   snprintf(buff, sizeof(buff), 
+   snprintf(buff, sizeof(buff),
             "%s/config/%s.cfg", em_util_user_dir_get(), domain);
    ef = eet_open(buff, EET_FILE_MODE_READ);
-   if (ef) 
+   if (ef)
      {
         void *data;
 
@@ -128,8 +128,8 @@ _em_config_domain_load(const char *domain, Em_Config_DD *edd)
    return NULL;
 }
 
-static int 
-_em_config_domain_save(const char *domain, Em_Config_DD *edd, const void *data) 
+static int
+_em_config_domain_save(const char *domain, Em_Config_DD *edd, const void *data)
 {
    Eet_File *ef;
    char buff[PATH_MAX];
@@ -142,7 +142,7 @@ _em_config_domain_save(const char *domain, Em_Config_DD *edd, const void *data)
    if (!ecore_file_exists(buff)) ecore_file_mkpath(buff);
    snprintf(buff, sizeof(buff), "%s/config/%s.tmp", userdir, domain);
    ef = eet_open(buff, EET_FILE_MODE_WRITE);
-   if (ef) 
+   if (ef)
      {
         char buff2[PATH_MAX];
         int err;
@@ -155,16 +155,16 @@ _em_config_domain_save(const char *domain, Em_Config_DD *edd, const void *data)
    return ret;
 }
 
-static void 
-_em_config_win_create(Evas_Object *parent) 
+static void
+_em_config_win_create(Evas_Object *parent)
 {
    Evas_Object *o, *bx, *bbx, *tb;
 
-   _em_config_win = 
+   _em_config_win =
      elm_win_add(parent, "emote::config", ELM_WIN_DIALOG_BASIC);
    elm_win_title_set(_em_config_win, _("Emote - Configuration"));
    elm_win_keyboard_mode_set(_em_config_win, ELM_WIN_KEYBOARD_ALPHA);
-   evas_object_smart_callback_add(_em_config_win, "delete-request", 
+   evas_object_smart_callback_add(_em_config_win, "delete-request",
                                   _em_config_cb_win_del, NULL);
 
    o = elm_bg_add(_em_config_win);
@@ -219,15 +219,15 @@ _em_config_win_create(Evas_Object *parent)
    evas_object_resize(_em_config_win, 200, 100);
 }
 
-static void 
-_em_config_cb_win_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__) 
+static void
+_em_config_cb_win_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__)
 {
    evas_object_del(_em_config_win);
    _em_config_win = NULL;
 }
 
-static void 
-_em_config_cb_close(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__) 
+static void
+_em_config_cb_close(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__)
 {
    evas_object_del(_em_config_win);
    _em_config_win = NULL;
