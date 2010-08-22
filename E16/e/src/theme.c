@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2010 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -334,7 +334,7 @@ ThemePathFind(void)
     * Mode.theme.path may be assigned on the command line.
     */
    name = (Mode.theme.path) ? Mode.theme.path : Conf.theme.name;
-   s = (name) ? strchr(name, '.') : NULL;
+   s = (name) ? strchr(name, '=') : NULL;
    if (s)
      {
 	*s = 0;
