@@ -19,9 +19,8 @@ emote_protocol_init(void)
 {
    char *irc, *aim;
 
-   _emote_protocols = eina_hash_string_superfast_new(NULL);
-
    /* TODO: loop config and load needed protocols */
+   _emote_protocols = eina_hash_string_superfast_new(NULL);
 
    /* load irc protocol as a test */
    if (!(irc = _emote_protocol_find("irc"))) return 0;
@@ -33,6 +32,7 @@ emote_protocol_init(void)
         if (irc) free(irc);
         return 0;
      }
+   if (irc) free(irc);
 
    if (!(aim = _emote_protocol_find("aim"))) return 0;
    printf("Found Protocol: %s\n", aim);
@@ -43,6 +43,7 @@ emote_protocol_init(void)
         if (aim) free(aim);
         return 0;
      }
+   if (aim) free(aim);
 
    return 1;
 }
@@ -118,7 +119,12 @@ _emote_protocol_load(const char *file)
    p->funcs.connect = dlsym(p->handle, "protocol_connect");
    p->funcs.disconnect = dlsym(p->handle, "protocol_disconnect");
 
-   if (!_emote_protocol_is_valid(p)) return 0;
+   if (!_emote_protocol_is_valid(p)) 
+     {
+        printf("Protocol is not valid\n");
+        em_object_del(EM_OBJECT(p));
+        return 0;
+     }
 
    /* do init */
    if (!p->funcs.init())
@@ -143,7 +149,6 @@ _emote_protocol_is_valid(Emote_Protocol *p)
      {
         printf("Protocol does not support needed functions\n");
         printf("Error: %s\n", dlerror());
-        em_object_del(EM_OBJECT(p));
         return 0;
      }
 
@@ -151,7 +156,6 @@ _emote_protocol_is_valid(Emote_Protocol *p)
    if (p->api->version < EMOTE_PROTOCOL_API_VERSION)
      {
         printf("Protocol too old\n");
-        em_object_del(EM_OBJECT(p));
         return 0;
      }
 
