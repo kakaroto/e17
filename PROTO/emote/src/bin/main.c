@@ -35,6 +35,10 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
    if (!em_config_init()) _em_main_shutdown(EXIT_FAILURE);
    _em_main_shutdown_push(em_config_shutdown);
 
+   /* init protocol subsystem */
+   if (!em_protocol_init()) _em_main_shutdown(EXIT_FAILURE);
+   _em_main_shutdown_push(em_protocol_shutdown);
+
    /* init our gui subsystem */
    if (!em_gui_init()) _em_main_shutdown(EXIT_FAILURE);
    _em_main_shutdown_push(em_gui_shutdown);

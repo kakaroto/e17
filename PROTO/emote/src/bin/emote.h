@@ -40,7 +40,7 @@ void *alloca (size_t);
 # endif
 
 # include <Elementary.h>
-
+# include "libemote.h"
 
 # ifdef EMAPI
 #  undef EMAPI
