@@ -70,10 +70,10 @@ void *alloca (size_t);
 
 # define EMOTE_PROTOCOL_API_VERSION 1
 
-#include <Eina.h>
-#include <Ecore_File.h>
+# include <Eina.h>
+# include <Ecore_File.h>
 
-#include "emote_types.h"
+# include "emote_types.h"
 
 # define EM_TYPEDEFS
 # include "emote_object.h"
@@ -90,7 +90,7 @@ typedef struct _Emote_Paths Emote_Paths;
 
 typedef int (*emote_protocol_init_t)(void);
 typedef int (*emote_protocol_shutdown_t)(void);
-typedef int (*emote_protocol_connect_t)(const char*,int,const char*,const char*);
+typedef int (*emote_protocol_connect_t)(const char *, int, const char *, const char *);
 typedef int (*emote_protocol_disconnect_t)(void);
 
 struct _Emote_Protocol_Api

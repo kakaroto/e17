@@ -27,7 +27,7 @@
 #  endif
 # endif
 
-EMAPI int emote_init();
-EMAPI int emote_shutdown();
+EMAPI int emote_init(void);
+EMAPI int emote_shutdown(void);
 
 #endif

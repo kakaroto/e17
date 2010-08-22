@@ -67,7 +67,7 @@ _emote_protocol_find(const char *name)
    Eina_List *files;
    char buff[PATH_MAX], dir[PATH_MAX], *file;
 
-   snprintf(dir, sizeof(dir), emote_paths.protocoldir);
+   snprintf(dir, sizeof(dir), "%s", emote_paths.protocoldir);
    snprintf(buff, sizeof(buff), "%s.so", name);
 
    if (!(files = ecore_file_ls(dir))) return NULL;
@@ -134,16 +134,12 @@ _emote_protocol_load(const char *file)
    return 1;
 }
 
-static int _emote_protocol_is_valid(Emote_Protocol *p)
+static int 
+_emote_protocol_is_valid(Emote_Protocol *p)
 {
    /* check support for needed functions */
-   if (
-       (!p->api) ||
-       (!p->funcs.init) ||
-       (!p->funcs.shutdown) ||
-       (!p->funcs.connect) ||
-       (!p->funcs.disconnect)
-      )
+   if ((!p->api) || (!p->funcs.init) || (!p->funcs.shutdown) ||
+       (!p->funcs.connect) || (!p->funcs.disconnect))
      {
         printf("Protocol does not support needed functions\n");
         printf("Error: %s\n", dlerror());

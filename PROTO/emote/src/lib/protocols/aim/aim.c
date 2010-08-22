@@ -20,10 +20,7 @@ protocol_shutdown(void)
 }
 
 EMAPI int
-protocol_connect(const char* server,
-                 int port,
-                 const char* user,
-                 const char* pass)
+protocol_connect(const char *server, int port, const char *user, const char *pass)
 {
    return 1;
 }

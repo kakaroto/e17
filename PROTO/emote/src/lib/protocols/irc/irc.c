@@ -16,14 +16,13 @@ protocol_init(void)
 EMAPI int
 protocol_shutdown(void)
 {
+   printf("IRC Shutdown\n");
+   /* p->funcs.<something> = NULL */
    return 1;
 }
 
 EMAPI int
-protocol_connect(const char* server,
-                 int port,
-                 const char* user,
-                 const char* pass)
+protocol_connect(const char *server, int port, const char *user, const char *pass)
 {
    return 1;
 }
