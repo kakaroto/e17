@@ -144,6 +144,7 @@ _em_gui_cb_quit(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event 
 static void
 _em_gui_entry_cb_enter(void *data __UNUSED__, Evas_Object *obj, void *event __UNUSED__)
 {
+   /*
    const char *text;
 
    text = elm_scrolled_entry_entry_get(obj);
@@ -155,4 +156,5 @@ _em_gui_entry_cb_enter(void *data __UNUSED__, Evas_Object *obj, void *event __UN
    elm_scrolled_entry_entry_insert(gui->o_chantxt, "<br>");
    elm_scrolled_entry_cursor_end_set(gui->o_chantxt);
    elm_scrolled_entry_entry_set(obj, NULL);
+    */
 }
