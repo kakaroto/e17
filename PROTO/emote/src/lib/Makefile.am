@@ -15,8 +15,13 @@ AM_CPPFLAGS=-DPACKAGE_LIB_DIR=\"$(libdir)\"
 pkgdir = $(libdir)
 pkg_LTLIBRARIES = libemote.la
 
-libemote_la_SOURCES = libemote.h Emote.h emote_object.c \
-                      emote_main.c emote_protocol.c
+libemote_la_SOURCES = \
+  emote_private.h \
+  Emote.h \
+  emote_object.c \
+  emote_main.c \
+  emote_protocol.c
+
 libemote_la_LDFLAGS = -version-info 0:1:0
 libemote_la_LIBADD = @dlopen_libs@ @LIBEMOTE_LIBS@
 

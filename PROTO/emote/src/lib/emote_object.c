@@ -1,4 +1,4 @@
-#include "libemote.h"
+#include "emote_private.h"
 
 /* public functions */
 void *

@@ -1,4 +1,4 @@
-#include "libemote.h"
+#include "emote_private.h"
 #include "aim.h"
 
 EMAPI Emote_Protocol_Api protocol_api =

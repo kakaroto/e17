@@ -1,10 +1,11 @@
-#ifndef LIBEMOTE_H
-# define LIBEMOTE_H
+#ifndef EMOTE_PRIVATE_H
+# define EMOTE_PRIVATE_H
 
 # ifdef HAVE_CONFIG_H
 #  include "config.h"
 # endif
 
+# include <stdio.h>
 # include <stdlib.h>
 # include <limits.h>
 

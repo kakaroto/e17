@@ -1,4 +1,4 @@
-#include "libemote.h"
+#include "emote_private.h"
 
 #if HAVE_DLFCN_H
 # include <dlfcn.h>
