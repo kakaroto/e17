@@ -16,8 +16,6 @@ protocol_init(void)
 EMAPI int
 protocol_shutdown(void)
 {
-   printf("IRC Shutdown\n");
-   /* p->funcs.<something> = NULL */
    return 1;
 }
 
