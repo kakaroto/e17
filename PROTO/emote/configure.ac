@@ -46,11 +46,6 @@ AM_CONDITIONAL([HAVE_PO], [false])
 ])
 AC_SUBST(LTLIBINTL)
 
-PKG_CHECK_MODULES(EMOTE,
-  [eina]
-  [elementary]
-  )
-
 # dlopen
 dlopen_libs=""
 case "$host_os" in
@@ -72,6 +67,11 @@ case "$host_os" in
     fi
 esac
 AC_SUBST(dlopen_libs)
+
+PKG_CHECK_MODULES(EMOTE,
+  [eina]
+  [elementary]
+)
 
 AC_OUTPUT([
 Makefile
