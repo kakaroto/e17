@@ -1,9 +1,5 @@
 #include "emote_private.h"
 
-#if HAVE_DLFCN_H
-# include <dlfcn.h>
-#endif
-
 /* local function prototypes */
 static char *_emote_protocol_find(const char *name);
 static int _emote_protocol_load(const char *file);

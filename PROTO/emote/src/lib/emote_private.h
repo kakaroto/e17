@@ -9,6 +9,10 @@
 # include <stdlib.h>
 # include <limits.h>
 
+#if HAVE_DLFCN_H
+# include <dlfcn.h>
+#endif
+
 # ifdef HAVE_ALLOCA_H
 #  include <alloca.h>
 # elif defined __GNUC__

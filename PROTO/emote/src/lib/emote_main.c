@@ -4,10 +4,6 @@
 #include <libgen.h>
 #include <string.h>
 
-#if HAVE_DLFCN_H
-# include <dlfcn.h>
-#endif
-
 /* local function prototypes */
 static void _emote_locate_paths(void);
 
