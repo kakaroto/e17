@@ -155,7 +155,7 @@ _emote_protocol_load_file(const char *file)
      }
 
    /* add to hash */
-   eina_hash_add(_emote_protocols, strdup(p->api->label), p);
+   eina_hash_add(_emote_protocols, file, p);
 
    return p;
 }
