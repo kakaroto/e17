@@ -59,7 +59,6 @@ static void
 _emote_event_free(void *data __UNUSED__, void *event)
 {
    EMOTE_FREE(event);
-   return;
 }
 
 static void

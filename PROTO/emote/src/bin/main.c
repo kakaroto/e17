@@ -21,7 +21,6 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
    struct sigaction action;
    Eina_List *protocols, *n;
    const char *name;
-   Emote_Protocol *p;
 
 # ifdef ENABLE_NLS
    setlocale(LC_ALL, "");
@@ -52,9 +51,11 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
    protocols = emote_protocol_list();
    EINA_LIST_FOREACH(protocols, n, name)
      {
+        Emote_Protocol *p;
+
         printf("Name: %s\n", name);
-        p = emote_protocol_load(name);
-        emote_event_send(EMOTE_EVENT_MSG_SEND, p, "Testing");
+        if ((p = emote_protocol_load(name)))
+          emote_event_send(EMOTE_EVENT_MSG_SEND, p, "Testing");
      }
 
    /* start main loop */

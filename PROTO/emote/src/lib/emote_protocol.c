@@ -14,9 +14,7 @@ static Eina_Hash *_emote_protocols = NULL;
 EM_INTERN int
 emote_protocol_init(void)
 {
-   /* TODO: loop config and load needed protocols */
    _emote_protocols = eina_hash_pointer_new(NULL);
-
    return 1;
 }
 
@@ -68,14 +66,9 @@ emote_protocol_load(const char *name)
    Emote_Protocol *p;
 
    if (!(f = _emote_protocol_find(name))) return NULL;
-   printf("Found Protocol: %s\n", f);
 
    if (!(p = _emote_protocol_load_file(f)))
-     {
-        printf("Failed to load: %s\n", f);
-        if (f) free(f);
-        return NULL;
-     }
+     printf("Failed to load: %s\n", f);
 
    if (f) free(f);
    return p;
@@ -84,8 +77,8 @@ emote_protocol_load(const char *name)
 EMAPI void
 emote_protocol_unload(Emote_Protocol *p)
 {
-   em_object_del(EM_OBJECT(p));
    eina_hash_del(_emote_protocols, NULL, p);
+   em_object_del(EM_OBJECT(p));
 }
 
 /* local functions */
@@ -162,7 +155,7 @@ _emote_protocol_load_file(const char *file)
      }
 
    /* add to hash */
-   eina_hash_add(_emote_protocols, file, p);
+   eina_hash_add(_emote_protocols, strdup(p->api->label), p);
 
    return p;
 }
