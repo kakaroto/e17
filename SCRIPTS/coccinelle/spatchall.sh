@@ -50,7 +50,7 @@ popd
 
 # eet
 #========================
-pushd eina
+pushd eet
 [[ $AUTOGEN -eq 1 ]] && ./autogen.sh
 spatch -sp $SCRIPT -macro_file_builtins ../SCRIPTS/coccinelle/ecocci.h \
 	-I /usr/include/ -I ../eina/src/include/  \
@@ -231,7 +231,7 @@ popd
 # remaining dirs
 #========================
 # !@##$&#@$##&% -- don't bother about includes, let's hope it works
-for d in BINDINGS editje edje_viewer eio elicit elitaire elmdentica emotion empower emprint enki enlil ensure ephoto eterm ethumb eve ewl exalt EXAMPLES expedite exquisite imlib2 imlib2_loaders MISC PROTO rage TEST
+for d in BINDINGS editje edje_viewer eio elicit elitaire elmdentica emotion empower emprint enki enlil ensure ephoto eterm ethumb eve exalt EXAMPLES expedite exquisite imlib2 imlib2_loaders MISC PROTO rage TEST
 do
 	pushd $d
 	spatch -sp $SCRIPT -macro_file_builtins ../SCRIPTS/coccinelle/ecocci.h \
