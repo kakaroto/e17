@@ -379,10 +379,8 @@ _calendar_popup_content_populate(Instance *inst, struct tm *time)
    month = time->tm_mon;
    year = time->tm_year + 1900;
 
-   if (!(year % 4))
-     maxdays = days_in_month[(!(year % 4) && (year % 100))][month];
-   else
-     maxdays = days_in_month[(!(year % 400))][month];
+   maxdays = days_in_month[(!(year % 4) && (!(year % 400) || (year % 100)))]
+      [month];
 
    current_time = mktime(time);
    start_time = current_time - ((today-1) * 86400);
