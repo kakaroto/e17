@@ -16,7 +16,6 @@ emote_init(void)
 {
    int ret;
 
-   ecore_init();
    EMOTE_EVENT_MSG_RECEIVED = ecore_event_type_new();
 
    /* hmm, may want to consider multiple entrance ideas wrt this.
@@ -34,8 +33,6 @@ emote_init(void)
 EMAPI int
 emote_shutdown(void)
 {
-   ecore_shutdown();
-
    emote_protocol_shutdown();
    return 1;
 }
