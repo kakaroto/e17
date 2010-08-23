@@ -617,19 +617,19 @@ FocusHandleEnter(EWin * ewin, XEvent * ev)
        ev->xcrossing.detail == NotifyNonlinearVirtual)
       return;
 
-   if (!ewin)
-     {
-	/* Entering root may mean entering this screen */
-	FocusToEWin(NULL, FOCUS_DESK_ENTER);
-	return;
-     }
-
    if ((int)ev->xcrossing.serial - focus_request < 0)
      {
 	/* This event was caused by a request older than the latest
 	 * focus assignment request - ignore */
 	if (EDebug(EDBUG_TYPE_FOCUS))
 	   Eprintf("FocusHandleEnter: Ignore serial < %#x\n", focus_request);
+	return;
+     }
+
+   if (!ewin)
+     {
+	/* Entering root may mean entering this screen */
+	FocusToEWin(NULL, FOCUS_DESK_ENTER);
 	return;
      }
 
