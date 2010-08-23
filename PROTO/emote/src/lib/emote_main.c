@@ -1,16 +1,23 @@
 #include "Emote.h"
 #include "emote_private.h"
 
+#include <Ecore.h>
 #include <libgen.h>
 #include <string.h>
 
 /* local function prototypes */
 static void _emote_locate_paths(void);
+static void _emote_event_free(void *data __UNUSED__, void *ev);
+
+EMAPI int EMOTE_EVENT_MSG_RECEIVED = 0;
 
 EMAPI int
 emote_init(void)
 {
    int ret;
+
+   ecore_init();
+   EMOTE_EVENT_MSG_RECEIVED = ecore_event_type_new();
 
    /* hmm, may want to consider multiple entrance ideas wrt this.
     * ie: someone else calls init on the emote lib again (for whatever reason)
@@ -27,11 +34,25 @@ emote_init(void)
 EMAPI int
 emote_shutdown(void)
 {
+   ecore_shutdown();
+
    emote_protocol_shutdown();
    return 1;
 }
 
+EMAPI void 
+emote_event_send(int type, void *protocol, void *data)
+{
+   ecore_event_add(type, protocol, _emote_event_free, data);
+}
+
 /* local functions */
+static void
+_emote_event_free(void *data __UNUSED__, void *event)
+{
+   return;
+}
+
 static void
 _emote_locate_paths(void)
 {

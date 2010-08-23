@@ -8,6 +8,7 @@
 static void _em_main_shutdown_push(int (*func)(void));
 static void _em_main_shutdown(int errcode);
 static void _em_main_interrupt(int x __UNUSED__, siginfo_t *info __UNUSED__, void *data __UNUSED__);
+static Eina_Bool _em_main_ecore_event(void *data, int type, void *event);
 
 /* local variables */
 static int (*_em_main_shutdown_func[EM_MAX_LEVEL])(void);
@@ -42,6 +43,8 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
    /* init our gui subsystem */
    if (!em_gui_init()) _em_main_shutdown(EXIT_FAILURE);
    _em_main_shutdown_push(em_gui_shutdown);
+
+   ecore_event_handler_add(EMOTE_EVENT_MSG_RECEIVED, _em_main_ecore_event, NULL);
 
    /* start main loop */
    elm_run();
@@ -96,6 +99,19 @@ _em_main_interrupt(int x __UNUSED__, siginfo_t *info __UNUSED__, void *data __UN
         _em_main_shutdown(EXIT_SUCCESS);
         exit(EXIT_SUCCESS);
      }
+}
+
+static Eina_Bool
+_em_main_ecore_event(void *data, int type, void *event)
+{
+   const char *ev;
+
+   ev = event;
+
+   if (type == EMOTE_EVENT_MSG_RECEIVED)
+     printf("Received EMOTE_EVENT_MSG_RECEIVED"
+            " from %s\n", ev);
+   return EINA_TRUE;
 }
 
 #endif

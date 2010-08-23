@@ -27,7 +27,10 @@
 #  endif
 # endif
 
+EMAPI extern int EMOTE_EVENT_MSG_RECEIVED;
+
 EMAPI int emote_init(void);
 EMAPI int emote_shutdown(void);
+EMAPI void emote_event_send(int type, void *protocol, void *data);
 
 #endif

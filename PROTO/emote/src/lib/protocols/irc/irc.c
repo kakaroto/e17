@@ -1,3 +1,4 @@
+#include "Emote.h"
 #include "emote_private.h"
 #include "irc.h"
 
@@ -10,6 +11,13 @@ EMAPI Emote_Protocol_Api protocol_api =
 EMAPI int
 protocol_init(void)
 {
+   char *protocol;
+
+   protocol = "irc";
+
+   printf("Firing event!\n");
+   emote_event_send(EMOTE_EVENT_MSG_RECEIVED, (void *)protocol, NULL);
+
    return 1;
 }
 
