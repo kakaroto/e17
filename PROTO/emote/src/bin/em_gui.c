@@ -6,10 +6,9 @@
 /* local function prototypes */
 static void _em_gui_cb_free(void);
 static void _em_gui_cb_win_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__);
-static void _em_gui_cb_protocol_selected(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__);
-static void _em_gui_cb_protocols(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__);
 static void _em_gui_cb_settings(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__);
 static void _em_gui_cb_quit(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__);
+static void _em_gui_entry_cb_enter(void *data __UNUSED__, Evas_Object *obj, void *event __UNUSED__);
 
 /* local variables */
 static Em_Gui *gui;
@@ -47,16 +46,37 @@ em_gui_init(void)
    elm_win_resize_object_add(gui->win, box);
    evas_object_show(box);
 
-   /* create connected protocols list */
-   /* TODO FIX ME: If the buddy lists for aim clients
-    * is to be housed here, it probably needs to be a
-    * genlist tree! */
-   gui->o_proto = elm_list_add(gui->win);
-   evas_object_size_hint_weight_set(gui->o_proto, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(gui->o_proto, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_pack_end(box, gui->o_proto);
-   evas_object_show(gui->o_proto); 
-   elm_list_go(gui->o_proto);
+   /* create hover select at top for quick channel change */
+   gui->o_chansel = elm_hoversel_add(gui->win);
+   elm_hoversel_label_set(gui->o_chansel, _("Channels"));
+   elm_hoversel_hover_parent_set(gui->o_chansel, gui->win);
+   evas_object_size_hint_weight_set(gui->o_chansel, 0.0, 0.0);
+   evas_object_size_hint_align_set(gui->o_chansel, 0.0, EVAS_HINT_FILL);
+   elm_box_pack_end(box, gui->o_chansel);
+   evas_object_show(gui->o_chansel);
+
+   /* create scrolled entry for channel text */
+   gui->o_chantxt = elm_scrolled_entry_add(gui->win);
+   elm_scrolled_entry_editable_set(gui->o_chantxt, EINA_FALSE);
+   elm_scrolled_entry_line_wrap_set(gui->o_chantxt, EINA_TRUE);
+   evas_object_size_hint_weight_set(gui->o_chantxt,
+                                    EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(gui->o_chantxt,
+                                   EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_pack_end(box, gui->o_chantxt);
+   evas_object_show(gui->o_chantxt);
+
+   /* create entry for user input */
+   gui->o_entry = elm_scrolled_entry_add(gui->win);
+   elm_scrolled_entry_single_line_set(gui->o_entry, EINA_TRUE);
+   evas_object_size_hint_weight_set(gui->o_entry,
+                                    EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_align_set(gui->o_entry,
+                                   EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_pack_end(box, gui->o_entry);
+   evas_object_smart_callback_add(gui->o_entry, "activated",
+                                 _em_gui_entry_cb_enter, NULL);
+   evas_object_show(gui->o_entry);
 
    /* create main toolbar */
    gui->o_tb = elm_toolbar_add(gui->win);
@@ -68,8 +88,6 @@ em_gui_init(void)
    elm_box_pack_end(box, gui->o_tb);
    evas_object_show(gui->o_tb);
 
-   o = em_util_icon_add(gui->win, "preferences-system-network");
-   elm_toolbar_item_add(gui->o_tb, o, _("Protocols"), _em_gui_cb_protocols, NULL);
    o = em_util_icon_add(gui->win, "preferences-system");
    elm_toolbar_item_add(gui->o_tb, o, _("Settings"), _em_gui_cb_settings, NULL);
    o = em_util_icon_add(gui->win, "application-exit");
@@ -81,6 +99,13 @@ em_gui_init(void)
    evas_object_show(gui->win);
 
    return 1;
+}
+
+EM_INTERN void
+em_gui_message_add(const char *text)
+{
+   elm_scrolled_entry_entry_insert(gui->o_chantxt, text);
+   elm_scrolled_entry_cursor_end_set(gui->o_chantxt);
 }
 
 EM_INTERN int
@@ -104,93 +129,6 @@ _em_gui_cb_win_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *eve
 }
 
 static void
-_em_gui_cb_protocol_selected(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__)
-{
-   const char *name;
-   const Eina_List *protocols, *n;
-   const Elm_List_Item *selected;
-   Evas_Object *icon, *list, *win;
-
-   list = data;
-   protocols = elm_list_selected_items_get(list);
-
-   if (!protocols)
-     return;
-
-   EINA_LIST_FOREACH(protocols, n, selected)
-     {
-        name = elm_list_item_label_get(selected);
-        icon = em_util_icon_add(gui->win, "applications-internet");
-        evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-        elm_list_item_append(gui->o_proto, name, icon, NULL, NULL, NULL);
-        elm_list_go(gui->o_proto);
-     }
-     win = elm_object_top_widget_get(obj);
-     evas_object_del(win);
-}
-
-static void
-_em_gui_cb_protocols(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__)
-{
-   const char *name;
-   Eina_List *protocols, *n;
-   Evas_Object *win, *box, *list, *o, *icon;
-
-   elm_toolbar_item_unselect_all(gui->o_tb);
-
-   win = elm_win_add(NULL, "emote", ELM_WIN_DIALOG_BASIC);
-   elm_win_title_set(win, "Emote Protocols");
-   elm_win_autodel_set(win, EINA_TRUE);
-   evas_object_show(win);
-
-   o = elm_bg_add(win);
-   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_min_set(o, MIN_WIN_WIDTH, MIN_WIN_HEIGHT);
-   elm_win_resize_object_add(win, o);
-   evas_object_show(o);
-
-   box = elm_box_add(win);
-   elm_box_horizontal_set(box, EINA_FALSE);
-   elm_box_homogenous_set(box, EINA_FALSE);
-   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_win_resize_object_add(win, box);
-   evas_object_show(box);
-
-   list = elm_list_add(win);
-   elm_list_multi_select_set(list, EINA_TRUE);
-   evas_object_size_hint_weight_set(list, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(list, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_pack_end(box, list);
-   evas_object_show(list);
-   elm_list_go(list);
-
-   protocols = emote_protocol_list();
-   EINA_LIST_FOREACH(protocols, n, name)
-     {
-        icon = em_util_icon_add(win, "applications-internet");
-        evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-        elm_list_item_append(list, name, icon, NULL, NULL, NULL);
-        elm_list_go(list);
-     }
-
-   icon = em_util_icon_add(win, "preferences-system-network");
-   evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-
-   o = elm_button_add(win);
-   elm_button_label_set(o, "Connect");
-   elm_button_icon_set(o, icon);
-   elm_box_pack_end(box, o);
-   evas_object_smart_callback_add(o, "clicked", _em_gui_cb_protocol_selected, list);
-   evas_object_show(o);
-   evas_object_show(icon);
-
-   evas_object_size_hint_min_set(win, MIN_WIN_WIDTH, MIN_WIN_HEIGHT);
-   evas_object_resize(win, MIN_WIN_WIDTH, MIN_WIN_HEIGHT);
-   evas_object_show(win);
-}
-
-static void
 _em_gui_cb_settings(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__)
 {
    elm_toolbar_item_unselect_all(gui->o_tb);
@@ -203,3 +141,20 @@ _em_gui_cb_quit(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event 
    elm_exit();
 }
 
+static void
+_em_gui_entry_cb_enter(void *data __UNUSED__, Evas_Object *obj, void *event __UNUSED__)
+{
+   /*
+   const char *text;
+
+   text = elm_scrolled_entry_entry_get(obj);
+
+   em_irc_message("irc.freenode.net", "#emote", text);
+   elm_scrolled_entry_cursor_end_set(gui->o_chantxt);
+   elm_scrolled_entry_entry_insert(gui->o_chantxt, text);
+   elm_scrolled_entry_cursor_end_set(gui->o_chantxt);
+   elm_scrolled_entry_entry_insert(gui->o_chantxt, "<br>");
+   elm_scrolled_entry_cursor_end_set(gui->o_chantxt);
+   elm_scrolled_entry_entry_set(obj, NULL);
+    */
+}
