@@ -40,7 +40,7 @@ struct _Em_Object
    void (*free_att_func) (void *obj);
    void (*del_att_func) (void *obj);
    void *data;
-   unsigned char deleted : 1;
+   Eina_Bool deleted : 1;
 };
 
 EM_INTERN void *em_object_alloc(int size, int type, Em_Object_Cleanup_Func cleanup_func);

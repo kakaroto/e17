@@ -50,8 +50,8 @@ EM_INTERN void
 em_object_free(Em_Object *obj)
 {
    EM_OBJECT_CHECK(obj);
+   if (obj->free_att_func) obj->free_att_func(obj);
    obj->cleanup_func(obj);
-   obj->magic = EM_OBJECT_MAGIC_FREED;
 }
 
 EM_INTERN int 
