@@ -7,6 +7,7 @@ em_object_alloc(int size, int type, Em_Object_Cleanup_Func cleanup_func)
    Em_Object *obj = NULL;
 
    if (!(obj = calloc(1, size))) return NULL;
+   obj->deleted = EINA_FALSE;
    obj->magic = EM_OBJECT_MAGIC;
    obj->type = type;
    obj->references = 1;
