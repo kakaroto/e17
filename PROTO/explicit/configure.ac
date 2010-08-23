@@ -33,11 +33,6 @@ AC_PROG_CC
 
 PKG_CHECK_MODULES([EXPLICIT], [eina ecore ecore-con ecore-file])
 PKG_CHECK_MODULES([EVAS], [evas])
-PKG_CHECK_MODULES([EDJE], [edje], [have_edje="yes"], [have_edje="no"])
-
-if test "x$have_edje" = "xyes"; then
-   AC_DEFINE(HAVE_EDJE, 1, [We are building with Edje object support])
-fi
 
 ### Checks for header files
 AC_HEADER_ASSERT
@@ -76,8 +71,4 @@ echo
 echo "------------------------------------------------------------------------"
 echo "$PACKAGE_NAME $PACKAGE_VERSION"
 echo "------------------------------------------------------------------------"
-echo
-echo "Configuration Options Summary:"
-echo
-echo "  edje.........: ${have_edje}"
 echo

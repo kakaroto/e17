@@ -40,7 +40,6 @@ typedef Eina_Bool (*Explicit_Callback)(Explicit *context,
 EAPI Eina_Bool explicit_callback_add(Explicit *context, Explicit_Callback_Type type, Explicit_Callback cb, const void *data);
 EAPI Eina_Bool explicit_callback_del(Explicit *context, Explicit_Callback_Type type, Explicit_Callback cb, const void *data);
 
-/* Explicit support Evas_Object_Image and Edje_Object */
 EAPI Eina_Bool explicit_object_url_get(Explicit *context, Evas_Object *obj, const char *url, const char *key);
 /* Download multiple files without testing them, but report progress to obj */
 EAPI Eina_Bool explicit_object_list_url_get(Explicit *context, Evas_Object *obj, Eina_List *urls);

@@ -14,13 +14,6 @@ typedef struct _Explicit_Object Explicit_Object;
 typedef struct _Explicit_Object_Request Explicit_Object_Request;
 typedef struct _Explicit_Client_Request Explicit_Client_Request;
 
-typedef enum _Explicit_Object_Type
-{
-  EVAS_OBJECT_IMAGE,
-  EDJE_OBJECT,
-  ANY
-} Explicit_Object_Type;
-
 struct _Explicit
 {
    EINA_MAGIC;
@@ -65,7 +58,6 @@ struct _Explicit_Object
 
    Eina_List *object_requests;
 
-   Explicit_Object_Type type;
    Eina_Bool single_request;
 };
 

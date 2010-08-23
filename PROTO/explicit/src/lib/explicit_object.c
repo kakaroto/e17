@@ -2,10 +2,6 @@
 # include <config.h>
 #endif
 
-#ifdef HAVE_EDJE
-# include <Edje.h>
-#endif
-
 #include "explicit_client.h"
 
 static void
@@ -68,7 +64,9 @@ _explicit_object_del(__UNUSED__ void *data,
    explicit_object_url_cancel(obj, EXPLICIT_CANCEL_OBJECT_DEL);
 }
 
-/* Explicit support Evas_Object_Image and Edje_Object */
+/* Explicit ask callback approval before requesting,
+   this callback should check that the object that receive the url_set
+   is supported. */
 EAPI Eina_Bool
 explicit_object_url_get(Explicit *context, Evas_Object *obj, const char *url, const char *key)
 {
@@ -101,16 +99,6 @@ explicit_object_url_get(Explicit *context, Evas_Object *obj, const char *url, co
    ox->context = context;
    ox->object = obj;
    ox->single_request = EINA_TRUE;
-
-   if (strcmp(evas_object_type_get(obj), "image") == 0)
-     ox->type = EVAS_OBJECT_IMAGE;
-   else if (strcmp(evas_object_type_get(obj), "edje") == 0)
-     {
-	ox->type = EDJE_OBJECT;
-	if (!destination.key)
-	  goto on_error;
-     }
-   else goto on_error;
 
    request = calloc(1, sizeof (Explicit_Object_Request));
    if (!request) goto on_error;
@@ -168,13 +156,6 @@ explicit_object_list_url_get(Explicit *context, Evas_Object *obj, Eina_List *url
    ox->context = context;
    ox->object = obj;
    ox->single_request = EINA_FALSE;
-
-   if (strcmp(evas_object_type_get(obj), "image") == 0)
-     ox->type = EVAS_OBJECT_IMAGE;
-   else if (strcmp(evas_object_type_get(obj), "edje") == 0)
-     ox->type = EDJE_OBJECT;
-   else
-     ox->type = ANY;
 
    EINA_LIST_FOREACH(urls, l, url)
      {
@@ -270,6 +251,10 @@ _explicit_object_downloaded(Explicit *context, int id, const char *file, size_t 
      {
 	if (request->obj->single_request)
 	  {
+	     /* FIXME: use callback to set the file and key according to the right type.
+		Cleaner and easier to extend.
+	      */
+#if 0
 	     /* One download for this object, so we need to set directly
 		the right value. */
 	     switch (request->obj->type)
@@ -306,6 +291,7 @@ _explicit_object_downloaded(Explicit *context, int id, const char *file, size_t 
 		   /* Something is wrong here. Cancel for this object. */
 		   _explicit_object_cancel(request, EXPLICIT_CANCEL_UNRECOGNIZED_FILE);
 		   break;
+#endif
 	       }
 	  }
 	else
