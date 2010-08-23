@@ -6,7 +6,7 @@ static char *_emote_protocol_find(const char *name);
 static Emote_Protocol *_emote_protocol_load_file(const char *file);
 static int _emote_protocol_is_valid(Emote_Protocol *p);
 static void _emote_protocol_cb_free(Emote_Protocol *p);
-static Eina_Bool _emote_protocol_hash_cb_free(const Eina_Hash *hash __UNUSED__, const void *key __UNUSED__, void *data, void *fdata __UNUSED__);
+static Eina_Bool _emote_protocol_hash_cb_free(const Eina_Hash *hash __UNUSED__, const void *key, void *data, void *fdata __UNUSED__);
 
 /* local variables */
 static Eina_Hash *_emote_protocols = NULL;
@@ -14,7 +14,7 @@ static Eina_Hash *_emote_protocols = NULL;
 EM_INTERN int
 emote_protocol_init(void)
 {
-   _emote_protocols = eina_hash_pointer_new(NULL);
+   _emote_protocols = eina_hash_string_small_new(NULL);
    return 1;
 }
 
@@ -153,7 +153,7 @@ _emote_protocol_load_file(const char *file)
      }
 
    /* add to hash */
-   eina_hash_add(_emote_protocols, strdup(file), p);
+   eina_hash_add(_emote_protocols, file, p);
 
    return p;
 }
