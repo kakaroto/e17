@@ -73,16 +73,15 @@ AC_SUBST(dlopen_libs)
 
 PKG_CHECK_MODULES(LIBEMOTE,
   [eina]
+  [ecore]
   [ecore-file]
 )
 
 PKG_CHECK_MODULES(IRC,
-  [ecore]
   [ecore-con]
 )
 
 PKG_CHECK_MODULES(AIM,
-  [ecore]
   [ecore-con]
 )
 

@@ -35,24 +35,20 @@ EMAPI Eina_List *
 emote_protocol_list(void)
 {
    Eina_List *files, *out;
-   Emote_Protocol *p;
-   char buf[PATH_MAX], *file, *c;
+   char buf[PATH_MAX], *file;
 
    if (!(files = ecore_file_ls(emote_paths.protocoldir))) return NULL;
 
    out = NULL;
    EINA_LIST_FREE(files, file)
      {
+        char *c;
+
         strncpy(buf, file, sizeof(buf));
-        if ((c = strstr(buf, ".so")) != NULL)
+        if ((c = strstr(buf, ".so")))
           {
              *c = 0;
-
-             if ((p = emote_protocol_load(buf)) != NULL)
-               {
-                  out = eina_list_append(out, strdup(buf));
-                  emote_protocol_unload(p);
-               }
+             out = eina_list_append(out, strdup(buf));
           }
      }
 
@@ -62,9 +58,10 @@ emote_protocol_list(void)
 EMAPI Emote_Protocol *
 emote_protocol_load(const char *name)
 {
-   char *f;
    Emote_Protocol *p;
+   char *f;
 
+   if (!name) return NULL;
    if (!(f = _emote_protocol_find(name))) return NULL;
 
    if (!(p = _emote_protocol_load_file(f)))
@@ -97,7 +94,8 @@ _emote_protocol_find(const char *name)
         if (!strcmp(file, buff))
           {
              /* could proally use a strcat here */
-             snprintf(dir, sizeof(dir), "%s/%s", emote_paths.protocoldir, file);
+             snprintf(dir, sizeof(dir), "%s/%s", 
+                      emote_paths.protocoldir, file);
              break;
           }
         free(file);
@@ -155,7 +153,7 @@ _emote_protocol_load_file(const char *file)
      }
 
    /* add to hash */
-   eina_hash_add(_emote_protocols, file, p);
+   eina_hash_add(_emote_protocols, strdup(file), p);
 
    return p;
 }

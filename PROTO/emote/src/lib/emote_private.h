@@ -112,7 +112,7 @@ struct _Emote_Paths
 
 Emote_Paths emote_paths;
 
-int emote_protocol_init(void);
-int emote_protocol_shutdown(void);
+EM_INTERN int emote_protocol_init(void);
+EM_INTERN int emote_protocol_shutdown(void);
 
 #endif
