@@ -78,9 +78,9 @@ void *alloca (size_t);
 #  define EM_INTERN
 # endif
 
-#if HAVE_DLFCN_H
-# include <dlfcn.h>
-#endif
+# if HAVE_DLFCN_H
+#  include <dlfcn.h>
+# endif
 
 # include <stdio.h>
 # include <stdlib.h>

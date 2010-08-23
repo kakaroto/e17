@@ -76,6 +76,6 @@ EMAPI void emote_event_send(int type, Emote_Protocol *p, void *data);
 
 EMAPI Emote_Protocol *emote_protocol_load(const char *name);
 EMAPI void emote_protocol_unload(Emote_Protocol *p);
-EMAPI Eina_List *emote_protocol_list();
+EMAPI Eina_List *emote_protocol_list(void);
 
 #endif

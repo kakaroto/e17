@@ -50,7 +50,6 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
    ecore_event_handler_add(EMOTE_EVENT_MSG_RECEIVED, _em_main_ecore_event, NULL);
 
    protocols = emote_protocol_list();
-
    EINA_LIST_FOREACH(protocols, n, name)
      {
         printf("Name: %s\n", name);
@@ -114,14 +113,15 @@ _em_main_interrupt(int x __UNUSED__, siginfo_t *info __UNUSED__, void *data __UN
 }
 
 static Eina_Bool
-_em_main_ecore_event(void *data, int type, void *event)
+_em_main_ecore_event(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Emote_Event_Data *d;
 
    d = event;
 
    if (type == EMOTE_EVENT_MSG_RECEIVED)
-     printf("Message Recvd From %s (%s)\n", d->protocol->api->label, (const char *)d->data);
+     printf("Message Recvd From %s (%s)\n", d->protocol->api->label, 
+            (const char *)d->data);
 
    return EINA_TRUE;
 }

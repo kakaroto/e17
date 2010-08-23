@@ -34,10 +34,9 @@ emote_protocol_shutdown(void)
 }
 
 EMAPI Eina_List *
-emote_protocol_list()
+emote_protocol_list(void)
 {
-   Eina_List *files;
-   Eina_List *out;
+   Eina_List *files, *out;
    Emote_Protocol *p;
    char buf[PATH_MAX], *file, *c;
 
@@ -49,14 +48,13 @@ emote_protocol_list()
         strncpy(buf, file, sizeof(buf));
         if ((c = strstr(buf, ".so")) != NULL)
           {
-            *c = 0;
+             *c = 0;
 
-            if ((p = emote_protocol_load(buf)) != NULL)
-              {
-                 out = eina_list_append(out, strdup(buf));
-
-                 emote_protocol_unload(p);
-              }
+             if ((p = emote_protocol_load(buf)) != NULL)
+               {
+                  out = eina_list_append(out, strdup(buf));
+                  emote_protocol_unload(p);
+               }
           }
      }
 
@@ -80,7 +78,6 @@ emote_protocol_load(const char *name)
      }
 
    if (f) free(f);
-
    return p;
 }
 
@@ -88,7 +85,6 @@ EMAPI void
 emote_protocol_unload(Emote_Protocol *p)
 {
    em_object_del(EM_OBJECT(p));
-
    eina_hash_del(_emote_protocols, NULL, p);
 }
 

@@ -18,9 +18,7 @@ EMAPI int
 protocol_init(Emote_Protocol *p)
 {
    m = p;
-
    ecore_event_handler_add(EMOTE_EVENT_MSG_SEND, _aim_msg_send, NULL);
-
    return 1;
 }
 
@@ -43,18 +41,16 @@ protocol_disconnect(const char *server)
 }
 
 static Eina_Bool
-_aim_msg_send(void *data, int type, void *event)
+_aim_msg_send(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Emote_Event_Data *d;
 
    d = event;
-
    if(d->protocol != m) return EINA_TRUE;
 
    printf("Message Sent To %s (%s)\n", d->protocol->api->label,
-                                     (const char *)d->data);
+          (const char *)d->data);
 
    emote_event_send(EMOTE_EVENT_MSG_RECEIVED, m, d->data);
-
    return EINA_TRUE;
 }

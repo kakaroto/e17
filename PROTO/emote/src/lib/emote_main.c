@@ -20,16 +20,16 @@ emote_init(void)
 
    ret = 1;
    if (!ref_count)
-   {
-      EMOTE_EVENT_MSG_RECEIVED = ecore_event_type_new();
-      EMOTE_EVENT_MSG_SEND = ecore_event_type_new();
+     {
+        EMOTE_EVENT_MSG_RECEIVED = ecore_event_type_new();
+        EMOTE_EVENT_MSG_SEND = ecore_event_type_new();
 
-      _emote_locate_paths();
+        _emote_locate_paths();
 
-      ret &= emote_protocol_init();
+        ret &= emote_protocol_init();
 
-      ref_count++;
-   }
+        ref_count++;
+     }
 
    return ret;
 }
@@ -59,7 +59,6 @@ static void
 _emote_event_free(void *data __UNUSED__, void *event)
 {
    EMOTE_FREE(event);
-
    return;
 }
 
