@@ -1,5 +1,5 @@
-#include "Emote.h"
 #include "emote_private.h"
+#include "Emote.h"
 
 /* local function prototypes */
 static char *_emote_protocol_find(const char *name);

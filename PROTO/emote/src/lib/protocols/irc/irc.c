@@ -41,7 +41,7 @@ protocol_disconnect(const char *server)
 }
 
 static Eina_Bool
-_irc_msg_send(void *data, int type __UNUSED__, void *event)
+_irc_msg_send(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Emote_Event_Data *d;
 

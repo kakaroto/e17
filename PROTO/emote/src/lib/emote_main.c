@@ -1,9 +1,7 @@
 #include "emote_private.h"
 #include "Emote.h"
 
-#include <Ecore.h>
 #include <libgen.h>
-#include <string.h>
 
 /* local function prototypes */
 static void _emote_locate_paths(void);
@@ -12,6 +10,7 @@ static void _emote_event_free(void *data, void *event);
 int EMOTE_EVENT_MSG_RECEIVED;
 int EMOTE_EVENT_MSG_SEND;
 
+/* public functions */
 EMAPI int
 emote_init(void)
 {

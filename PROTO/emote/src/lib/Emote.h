@@ -27,7 +27,7 @@
 #  endif
 # endif
 
-#include <Eina.h>
+# include <Eina.h>
 
 extern int EMOTE_EVENT_MSG_RECEIVED;
 extern int EMOTE_EVENT_MSG_SEND;

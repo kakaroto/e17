@@ -84,9 +84,10 @@ void *alloca (size_t);
 
 # include <stdio.h>
 # include <stdlib.h>
+# include <string.h>
 # include <limits.h>
 
-# include <Eina.h>
+# include <Ecore.h>
 # include <Ecore_File.h>
 
 # include "emote_types.h"
