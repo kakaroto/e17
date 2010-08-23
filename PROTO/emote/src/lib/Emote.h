@@ -27,10 +27,55 @@
 #  endif
 # endif
 
-EMAPI extern int EMOTE_EVENT_MSG_RECEIVED;
+#include <Eina.h>
+
+extern int EMOTE_EVENT_MSG_RECEIVED;
+extern int EMOTE_EVENT_MSG_SEND;
+
+typedef struct _Emote_Protocol_Api Emote_Protocol_Api;
+typedef struct _Emote_Protocol Emote_Protocol;
+typedef struct _Emote_Event_Data Emote_Event_Data;
+
+typedef int (*emote_protocol_init_t)(Emote_Protocol *p);
+typedef int (*emote_protocol_shutdown_t)(void);
+typedef int (*emote_protocol_connect_t)(const char *, int, const char *, const char *);
+typedef int (*emote_protocol_disconnect_t)(const char *);
+
+struct _Emote_Protocol_Api
+{
+   int version;
+   const char *name, *label;
+};
+
+struct _Emote_Protocol
+{
+   Emote_Protocol_Api *api;
+   void *handle;
+
+   struct
+     {
+        emote_protocol_init_t init; // required
+        emote_protocol_shutdown_t shutdown; // required
+        emote_protocol_connect_t connect;
+        emote_protocol_disconnect_t disconnect;
+
+        /* TODO: Implement generic functions */
+     } funcs;
+};
+
+struct _Emote_Event_Data
+{
+   Emote_Protocol *protocol;
+   void *data;
+};
 
 EMAPI int emote_init(void);
 EMAPI int emote_shutdown(void);
-EMAPI void emote_event_send(int type, void *protocol, void *data);
+
+EMAPI void emote_event_send(int type, Emote_Protocol *p, void *data);
+
+EMAPI Emote_Protocol *emote_protocol_load(const char *name);
+EMAPI void emote_protocol_unload(Emote_Protocol *p);
+EMAPI Eina_List *emote_protocol_list();
 
 #endif

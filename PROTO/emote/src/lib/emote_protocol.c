@@ -1,8 +1,9 @@
+#include "Emote.h"
 #include "emote_private.h"
 
 /* local function prototypes */
 static char *_emote_protocol_find(const char *name);
-static int _emote_protocol_load(const char *file);
+static Emote_Protocol *_emote_protocol_load_file(const char *file);
 static int _emote_protocol_is_valid(Emote_Protocol *p);
 static void _emote_protocol_cb_free(Emote_Protocol *p);
 static Eina_Bool _emote_protocol_hash_cb_free(const Eina_Hash *hash __UNUSED__, const void *key __UNUSED__, void *data, void *fdata __UNUSED__);
@@ -10,41 +11,16 @@ static Eina_Bool _emote_protocol_hash_cb_free(const Eina_Hash *hash __UNUSED__, 
 /* local variables */
 static Eina_Hash *_emote_protocols = NULL;
 
-EM_INTERN int 
+EM_INTERN int
 emote_protocol_init(void)
 {
-   char *irc, *aim;
-
    /* TODO: loop config and load needed protocols */
-   _emote_protocols = eina_hash_string_superfast_new(NULL);
-
-   /* load irc protocol as a test */
-   if (!(irc = _emote_protocol_find("irc"))) return 0;
-   printf("Found Protocol: %s\n", irc);
-
-   if (!(_emote_protocol_load(irc)))
-     {
-        printf("Failed to load: %s\n", irc);
-        if (irc) free(irc);
-        return 0;
-     }
-   if (irc) free(irc);
-
-   if (!(aim = _emote_protocol_find("aim"))) return 0;
-   printf("Found Protocol: %s\n", aim);
-
-   if (!(_emote_protocol_load(aim)))
-     {
-        printf("Failed to load: %s\n", aim);
-        if (aim) free(aim);
-        return 0;
-     }
-   if (aim) free(aim);
+   _emote_protocols = eina_hash_pointer_new(NULL);
 
    return 1;
 }
 
-EM_INTERN int 
+EM_INTERN int
 emote_protocol_shutdown(void)
 {
    /* shutdown loaded protocols */
@@ -55,6 +31,65 @@ emote_protocol_shutdown(void)
      }
 
    return 1;
+}
+
+EMAPI Eina_List *
+emote_protocol_list()
+{
+   Eina_List *files;
+   Eina_List *out;
+   Emote_Protocol *p;
+   char buf[PATH_MAX], *file, *c;
+
+   if (!(files = ecore_file_ls(emote_paths.protocoldir))) return NULL;
+
+   out = NULL;
+   EINA_LIST_FREE(files, file)
+     {
+        strncpy(buf, file, sizeof(buf));
+        if ((c = strstr(buf, ".so")) != NULL)
+          {
+            *c = 0;
+
+            if ((p = emote_protocol_load(buf)) != NULL)
+              {
+                 out = eina_list_append(out, strdup(buf));
+
+                 emote_protocol_unload(p);
+              }
+          }
+     }
+
+   return out;
+}
+
+EMAPI Emote_Protocol *
+emote_protocol_load(const char *name)
+{
+   char *f;
+   Emote_Protocol *p;
+
+   if (!(f = _emote_protocol_find(name))) return NULL;
+   printf("Found Protocol: %s\n", f);
+
+   if (!(p = _emote_protocol_load_file(f)))
+     {
+        printf("Failed to load: %s\n", f);
+        if (f) free(f);
+        return NULL;
+     }
+
+   if (f) free(f);
+
+   return p;
+}
+
+EMAPI void
+emote_protocol_unload(Emote_Protocol *p)
+{
+   em_object_del(EM_OBJECT(p));
+
+   eina_hash_del(_emote_protocols, NULL, p);
 }
 
 /* local functions */
@@ -87,16 +122,16 @@ _emote_protocol_find(const char *name)
      return NULL;
 }
 
-static int
-_emote_protocol_load(const char *file)
+static Emote_Protocol *
+_emote_protocol_load_file(const char *file)
 {
    Emote_Protocol *p;
 
-   if (!file) return 0;
+   if (!file) return NULL;
 
    p = EM_OBJECT_ALLOC(Emote_Protocol, EMOTE_PROTOCOL_TYPE,
                        _emote_protocol_cb_free);
-   if (!p) return 0;
+   if (!p) return NULL;
 
    /* clear any existing errors in dynamic loader */
    dlerror();
@@ -105,7 +140,7 @@ _emote_protocol_load(const char *file)
      {
         printf("Cannot dlopen protocol: %s\n", dlerror());
         em_object_del(EM_OBJECT(p));
-        return 0;
+        return NULL;
      }
 
    /* try to link to needed functions */
@@ -115,28 +150,28 @@ _emote_protocol_load(const char *file)
    p->funcs.connect = dlsym(p->handle, "protocol_connect");
    p->funcs.disconnect = dlsym(p->handle, "protocol_disconnect");
 
-   if (!_emote_protocol_is_valid(p)) 
+   if (!_emote_protocol_is_valid(p))
      {
         printf("Protocol is not valid\n");
         em_object_del(EM_OBJECT(p));
-        return 0;
+        return NULL;
      }
 
    /* do init */
-   if (!p->funcs.init())
+   if (!p->funcs.init(p))
      {
         printf("Protocol failed to initialize\n");
         em_object_del(EM_OBJECT(p));
-        return 0;
+        return NULL;
      }
 
    /* add to hash */
    eina_hash_add(_emote_protocols, file, p);
 
-   return 1;
+   return p;
 }
 
-static int 
+static int
 _emote_protocol_is_valid(Emote_Protocol *p)
 {
    /* check support for needed functions */

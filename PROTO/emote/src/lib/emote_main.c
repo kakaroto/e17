@@ -1,5 +1,5 @@
-#include "Emote.h"
 #include "emote_private.h"
+#include "Emote.h"
 
 #include <Ecore.h>
 #include <libgen.h>
@@ -7,25 +7,29 @@
 
 /* local function prototypes */
 static void _emote_locate_paths(void);
-static void _emote_event_free(void *data __UNUSED__, void *ev);
+static void _emote_event_free(void *data, void *event);
 
-EMAPI int EMOTE_EVENT_MSG_RECEIVED = 0;
+int EMOTE_EVENT_MSG_RECEIVED;
+int EMOTE_EVENT_MSG_SEND;
 
 EMAPI int
 emote_init(void)
 {
+   static int ref_count = 0;
    int ret;
 
-   EMOTE_EVENT_MSG_RECEIVED = ecore_event_type_new();
+   ret = 1;
+   if (!ref_count)
+   {
+      EMOTE_EVENT_MSG_RECEIVED = ecore_event_type_new();
+      EMOTE_EVENT_MSG_SEND = ecore_event_type_new();
 
-   /* hmm, may want to consider multiple entrance ideas wrt this.
-    * ie: someone else calls init on the emote lib again (for whatever reason)
-    * ... rather than trying to relocate paths, should we make them static 
-    * as in they get filled in only once...Perhaps we keep an init count ? */
-   _emote_locate_paths();
+      _emote_locate_paths();
 
-   ret = 0;
-   ret |= emote_protocol_init();
+      ret &= emote_protocol_init();
+
+      ref_count++;
+   }
 
    return ret;
 }
@@ -37,16 +41,25 @@ emote_shutdown(void)
    return 1;
 }
 
-EMAPI void 
-emote_event_send(int type, void *protocol, void *data)
+EMAPI void
+emote_event_send(int type, Emote_Protocol *p, void *data)
 {
-   ecore_event_add(type, protocol, _emote_event_free, data);
+   Emote_Event_Data *d;
+
+   d = EMOTE_NEW(Emote_Event_Data, 1);
+
+   d->protocol = p;
+   d->data = data;
+
+   ecore_event_add(type, d, _emote_event_free, NULL);
 }
 
 /* local functions */
 static void
 _emote_event_free(void *data __UNUSED__, void *event)
 {
+   EMOTE_FREE(event);
+
    return;
 }
 
@@ -57,8 +70,11 @@ _emote_locate_paths(void)
    Dl_info emote_dl;
 #endif
 
+   // Avoid filling paths multiple times
+   if (emote_paths.libdir[0]) return;
+
    if (getenv("em_LIBDIR"))
-     strncpy(emote_paths.libdir, getenv("em_LIBDIR"), 
+     strncpy(emote_paths.libdir, getenv("em_LIBDIR"),
              sizeof(emote_paths.libdir));
 
    // Attempt to use dladdr

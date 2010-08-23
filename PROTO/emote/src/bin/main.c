@@ -19,6 +19,9 @@ EAPI int
 elm_main(int argc __UNUSED__, char **argv __UNUSED__)
 {
    struct sigaction action;
+   Eina_List *protocols, *n;
+   const char *name;
+   Emote_Protocol *p;
 
 # ifdef ENABLE_NLS
    setlocale(LC_ALL, "");
@@ -45,6 +48,15 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
    _em_main_shutdown_push(em_gui_shutdown);
 
    ecore_event_handler_add(EMOTE_EVENT_MSG_RECEIVED, _em_main_ecore_event, NULL);
+
+   protocols = emote_protocol_list();
+
+   EINA_LIST_FOREACH(protocols, n, name)
+     {
+        printf("Name: %s\n", name);
+        p = emote_protocol_load(name);
+        emote_event_send(EMOTE_EVENT_MSG_SEND, p, "Testing");
+     }
 
    /* start main loop */
    elm_run();
@@ -104,13 +116,13 @@ _em_main_interrupt(int x __UNUSED__, siginfo_t *info __UNUSED__, void *data __UN
 static Eina_Bool
 _em_main_ecore_event(void *data, int type, void *event)
 {
-   const char *ev;
+   Emote_Event_Data *d;
 
-   ev = event;
+   d = event;
 
    if (type == EMOTE_EVENT_MSG_RECEIVED)
-     printf("Received EMOTE_EVENT_MSG_RECEIVED"
-            " from %s\n", ev);
+     printf("Message Recvd From %s (%s)\n", d->protocol->api->label, (const char *)d->data);
+
    return EINA_TRUE;
 }
 
