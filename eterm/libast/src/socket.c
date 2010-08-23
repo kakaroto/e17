@@ -651,8 +651,8 @@ spif_url_init_from_ipaddr(spif_url_t self, spif_ipsockaddr_t ipaddr)
     do {
         tries++;
         hinfo = gethostbyaddr((const char *) &(ipaddr->sin_addr), sizeof(ipaddr->sin_addr), AF_INET);
-    } while ((tries <= 3) && (!hinfo) && (h_errno == TRY_AGAIN));
-    if (!hinfo || !hinfo->h_name) {
+    } while ((tries <= 3) && (hinfo == NULL) && (h_errno == TRY_AGAIN));
+    if (hinfo == NULL || hinfo->h_name == NULL) {
         spif_charptr_t buff;
 
         buff = SPIF_CHARPTR(inet_ntoa(ipaddr->sin_addr));
@@ -691,7 +691,7 @@ spif_url_init_from_unixaddr(spif_url_t self, spif_unixsockaddr_t unixaddr)
     self->port = (spif_str_t) NULL;
     self->query = (spif_str_t) NULL;
 
-    if (unixaddr->sun_path) {
+    if (unixaddr->sun_path != NULL) {
         self->path = spif_str_new_from_ptr(SPIF_CHARPTR(unixaddr->sun_path));
     } else {
         self->path = (spif_str_t) NULL;
@@ -719,13 +719,13 @@ spif_url_get_ipaddr(spif_url_t self)
     do {
         tries++;
         hinfo = gethostbyname((char *) SPIF_STR_STR(hostname));
-    } while ((tries <= 3) && (!hinfo) && (h_errno == TRY_AGAIN));
-    if (!hinfo) {
+    } while ((tries <= 3) && (hinfo == NULL) && (h_errno == TRY_AGAIN));
+    if (hinfo == NULL) {
         libast_print_error("Unable to resolve hostname \"%s\" -- %s\n", SPIF_STR_STR(hostname), hstrerror(h_errno));
         return (spif_ipsockaddr_t) NULL;
     }
 
-    if (!hinfo->h_addr_list) {
+    if (hinfo->h_addr_list == NULL) {
         libast_print_error("Invalid address list returned by gethostbyname()\n");
         return (spif_ipsockaddr_t) NULL;
     }
@@ -811,19 +811,19 @@ spif_socket_get_proto(spif_socket_t self)
             /* IP socket.  See if they gave us a protocol name. */
             SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_FAMILY_INET);
             proto = getprotobyname((char *) SPIF_STR_STR(proto_str));
-            if (!proto) {
+            if (proto == NULL) {
                 /* If it's not a protocol, it's probably a service. */
                 serv = getservbyname((char *) SPIF_STR_STR(proto_str), "tcp");
-                if (!serv) {
+                if (serv == NULL) {
                     serv = getservbyname((char *) SPIF_STR_STR(proto_str), "udp");
                 }
-                if (serv) {
+                if (serv != NULL) {
                     /* If we found one, get the protocol info too. */
                     proto = getprotobyname(serv->s_proto);
-                    REQUIRE_RVAL(!!proto, FALSE);
+                    REQUIRE_RVAL(proto != NULL, FALSE);
                 }
             }
-            if (proto) {
+            if (proto != NULL) {
                 /* Bingo.  Set the flags appropriately. */
                 self->proto = proto->p_proto;
                 if (!strcmp(proto->p_name, "tcp")) {

@@ -230,7 +230,8 @@ spif_ustr_init_from_fp(spif_ustr_t self, FILE *fp)
     self->s = (spif_charptr_t) MALLOC(self->size);
 
     for (p = self->s; fgets((char *)p, buff_inc, fp); p += buff_inc) {
-        if (!(end = (spif_charptr_t)strchr((const char *)p, '\n'))) {
+        if ((end = (spif_charptr_t)
+             strchr((const char *)p, '\n')) == NULL) {
             self->size += buff_inc;
             self->s = (spif_charptr_t) REALLOC(self->s, self->size);
         } else {

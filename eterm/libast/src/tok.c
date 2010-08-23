@@ -275,7 +275,7 @@ spif_tok_type(spif_tok_t self)
     return SPIF_OBJ_CLASSNAME(self);
 }
 
-#define IS_DELIM(c)  ((delim) ? (strchr(delim, (c))) : (isspace(c)))
+#define IS_DELIM(c)  ((delim != NULL) ? (strchr(delim, (c)) != NULL) : (isspace(c)))
 #define IS_QUOTE(c)  (quote && quote == (c))
 
 spif_bool_t

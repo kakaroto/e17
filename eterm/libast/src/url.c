@@ -262,7 +262,7 @@ spif_url_parse(spif_url_t self)
 
     /* Check for "proto:" at the beginning. */
     pend = SPIF_CHARPTR(strchr((char *) s, ':'));
-    if (pend) {
+    if (pend != NULL) {
         for (; pstr < pend; pstr++) {
             if (!isalnum(*pstr)) {
                 break;
@@ -284,16 +284,16 @@ spif_url_parse(spif_url_t self)
 
     /* Knock out the path and query if they're there. */
     pend = SPIF_CHARPTR(strchr((char *) pstr, '/'));
-    if (pend) {
+    if (pend != NULL) {
         spif_charptr_t tmp = SPIF_CHARPTR(strchr((char *) pend, '?'));
 
-        if (tmp) {
+        if (tmp != NULL) {
             self->query = spif_str_new_from_ptr(tmp + 1);
             self->path = spif_str_new_from_buff(pend, tmp - pend);
         } else {
           self->path = spif_str_new_from_ptr(pend);
         }
-    } else if ((pend = SPIF_CHARPTR(strchr((char *)pstr, '?')))) {
+    } else if ((pend = SPIF_CHARPTR(strchr((char *) pstr, '?'))) != NULL) {
         self->query = spif_str_new_from_ptr(pend + 1);
     } else {
         for (pend = pstr; *pend; pend++);
@@ -302,10 +302,10 @@ spif_url_parse(spif_url_t self)
 
     /* Check for an @ sign, which would mean we have auth info. */
     ptmp = SPIF_CHARPTR(strchr((char *) pstr, '@'));
-    if ((ptmp) && (ptmp < pend)) {
+    if ((ptmp != NULL) && (ptmp < pend)) {
         spif_charptr_t tmp = SPIF_CHARPTR(strchr((char *) pstr, ':'));
 
-        if ((tmp) && (tmp < ptmp)) {
+        if ((tmp != NULL) && (tmp < ptmp)) {
             /* Both username and password. */
             self->user = spif_str_new_from_buff(pstr, tmp - pstr);
             self->passwd = spif_str_new_from_buff((tmp + 1), ptmp - tmp - 1);
@@ -317,7 +317,7 @@ spif_url_parse(spif_url_t self)
 
     /* All that remains now between pstr and pend is host and maybe port. */
     ptmp = SPIF_CHARPTR(strchr((char *) pstr, ':'));
-    if ((ptmp) && (ptmp < pend)) {
+    if ((ptmp != NULL) && (ptmp < pend)) {
         self->host = spif_str_new_from_buff(pstr, ptmp - pstr);
         self->port = spif_str_new_from_buff((ptmp + 1), pend - ptmp - 1);
     } else if (pstr != pend) {
@@ -330,18 +330,18 @@ spif_url_parse(spif_url_t self)
         spif_servinfo_t serv;
 
         proto = getprotobyname((char *) SPIF_STR_STR(self->proto));
-        if (!proto) {
+        if (proto == NULL) {
             /* If it's not a protocol, it's probably a service. */
             serv = getservbyname((char *) SPIF_STR_STR(self->proto), "tcp");
-            if (!serv) {
+            if (serv == NULL) {
                 serv = getservbyname((char *) SPIF_STR_STR(self->proto), "udp");
             }
-            if (serv) {
+            if (serv != NULL) {
                 proto = getprotobyname(serv->s_proto);
-                REQUIRE_RVAL(!!proto, FALSE);
+                REQUIRE_RVAL(proto != NULL, FALSE);
             }
         }
-        if (proto) {
+        if (proto != NULL) {
             spif_char_t buff[32];
 
             snprintf((char *) buff, sizeof(buff), "%d", ntohs(serv->s_port));

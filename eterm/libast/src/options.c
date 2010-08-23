@@ -257,7 +257,7 @@ find_value_long(spif_charptr_t arg, spif_charptr_t next_arg, spif_charptr_t hase
 {
     spif_charptr_t val_ptr;
 
-    if ((val_ptr = SPIF_CHARPTR(strchr((char *)arg, '=')))) {
+    if ((val_ptr = SPIF_CHARPTR(strchr((char *) arg, '='))) != NULL) {
         val_ptr++;
         *hasequal = 1;
     } else {
@@ -291,7 +291,7 @@ find_value_short(spif_charptr_t arg, spif_charptr_t next_arg)
 
     if (arg[1]) {
         val_ptr = arg + 1;
-    } else if (next_arg) {
+    } else if (next_arg != NULL) {
         val_ptr = next_arg;
     }
     D_OPTIONS(("val_ptr == %10.8p \"%s\"\n", val_ptr, NONULL(val_ptr)));
@@ -335,7 +335,7 @@ is_boolean_value(spif_charptr_t val_ptr)
 static spif_bool_t
 is_valid_option(spif_charptr_t opt)
 {
-    REQUIRE_RVAL(!!opt, FALSE);
+    REQUIRE_RVAL(opt != NULL, FALSE);
 
     if (*opt != '-') {
         return FALSE;
@@ -527,7 +527,7 @@ spifopt_parse(int argc, char *argv[])
     spif_charptr_t opt;
 
     REQUIRE(argc > 1);
-    REQUIRE(!!argv);
+    REQUIRE(argv != NULL);
 
     /* Process each command line arg one-by-one. */
     for (i = 1, opt = SPIF_CHARPTR(argv[1]); i < argc; ) {
@@ -608,7 +608,7 @@ spifopt_parse(int argc, char *argv[])
 
         /* Make sure that options which require a parameter have them. */
         if (SPIFOPT_OPT_NEEDS_VALUE(j)) {
-            if (!val_ptr) {
+            if (val_ptr == NULL) {
                 if (islong) {
                     libast_print_error("long option --%s requires a%s value\n", SPIFOPT_OPT_LONG(j),
                                 (SPIFOPT_OPT_IS_INTEGER(j)
@@ -632,10 +632,10 @@ spifopt_parse(int argc, char *argv[])
                 continue;
             }
             /* Also make sure we know what to do with the value. */
-            if (!SPIFOPT_OPT_VALUE(j)) {
+            if (SPIFOPT_OPT_VALUE(j) == NULL) {
                 NEXT_LOOP();
             }
-        } else if (SPIFOPT_OPT_IS_ABSTRACT(j) && !SPIFOPT_OPT_VALUE(j)) {
+        } else if (SPIFOPT_OPT_IS_ABSTRACT(j) && SPIFOPT_OPT_VALUE(j) == NULL) {
             /* Also make sure that abstract options have a function pointer. */
             NEXT_LOOP();
         }

@@ -322,7 +322,7 @@ save_theme(char *theme_name)
 
   printf("theme_file = %s\n", theme_file);
 
-  if((fPtr = fopen(theme_file, "w"))){
+  if((fPtr = fopen(theme_file, "w")) != NULL){
     fprintf(fPtr, "<Eterm-0.9>\n");
     fprintf(fPtr, "begin main\n");
     fprintf(fPtr, "   begin color\n");
