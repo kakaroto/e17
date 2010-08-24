@@ -87,11 +87,16 @@ emote_protocol_connect(const char *name, const char *server, int port, const cha
    if (!name) return;
    if (!(f = _emote_protocol_find(name))) return;
 
-   if (!(p = eina_hash_find(_emote_protocols, f)))
-     printf("Could not connect to %s, "
-            "Are you sure the protocol is loaded?\n", f);
-   p->funcs.connect(server, port, username, password);
+   if (!(p = eina_hash_find(_emote_protocols, f))) 
+     {
+        printf("Could not connect to %s, "
+               "Are you sure the protocol is loaded?\n", f);
+        if (f) free(f);
+        return;
+     }
+
    if (f) free(f);
+   p->funcs.connect(server, port, username, password);
 }
 
 EMAPI void
@@ -103,11 +108,15 @@ emote_protocol_disconnect(const char *name, const char *server)
    if (!name) return;
    if (!(f = _emote_protocol_find(name))) return;
 
-   if (!(p = eina_hash_find(_emote_protocols, f)))
-     printf("Could not connect to %s, "
-            "Are you sure the protocol is loaded?\n", f);
-   p->funcs.disconnect(server);
+   if (!(p = eina_hash_find(_emote_protocols, f))) 
+     {
+        printf("Could not connect to %s, "
+               "Are you sure the protocol is loaded?\n", f);
+        if (f) free(f);
+        return;
+     }
    if (f) free(f);
+   p->funcs.disconnect(server);
 }
 
 /* loical functions */
