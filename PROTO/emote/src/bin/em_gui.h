@@ -10,6 +10,7 @@ struct _Em_Gui
 {
    Em_Object em_obj_inherit;
 
+   Eina_Hash *chantxt;
    Evas_Object *win, *o_tb;
    Evas_Object *o_chansel;
    Evas_Object *o_chantxt;
@@ -17,7 +18,9 @@ struct _Em_Gui
 };
 
 EM_INTERN int em_gui_init(void);
-EM_INTERN void em_gui_message_add(const char *text);
+EM_INTERN void em_gui_server_add(const char *server);
+EM_INTERN void em_gui_channel_add(const char *server, const char *channel);
+EM_INTERN void em_gui_message_add(const char *server, const char *channel, const char *text);
 EM_INTERN int em_gui_shutdown(void);
 
 # endif

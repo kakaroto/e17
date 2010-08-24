@@ -8,7 +8,7 @@
 static void _em_main_shutdown_push(int (*func)(void));
 static void _em_main_shutdown(int errcode);
 static void _em_main_interrupt(int x __UNUSED__, siginfo_t *info __UNUSED__, void *data __UNUSED__);
-static Eina_Bool _em_main_ecore_event(void *data, int type, void *event);
+static Eina_Bool _em_main_chat_events_handler(void *data, int type, void *event);
 
 /* local variables */
 static int (*_em_main_shutdown_func[EM_MAX_LEVEL])(void);
@@ -46,17 +46,17 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
    if (!em_gui_init()) _em_main_shutdown(EXIT_FAILURE);
    _em_main_shutdown_push(em_gui_shutdown);
 
-   ecore_event_handler_add(EMOTE_EVENT_MSG_RECEIVED, _em_main_ecore_event, NULL);
+   ecore_event_handler_add(EMOTE_EVENT_CHAT_SERVER_CONNECTED, _em_main_chat_events_handler, NULL);
+   ecore_event_handler_add(EMOTE_EVENT_CHAT_SERVER_DISCONNECTED, _em_main_chat_events_handler, NULL);
+   ecore_event_handler_add(EMOTE_EVENT_CHAT_SERVER_MESSAGE_RECEIVED, _em_main_chat_events_handler, NULL);
 
    protocols = emote_protocol_list();
    EINA_LIST_FOREACH(protocols, n, name)
      {
-        Emote_Protocol *p;
-
         printf("Name: %s\n", name);
-        if ((p = emote_protocol_load(name)))
-          emote_event_send(EMOTE_EVENT_MSG_SEND, p, "Testing");
+        emote_protocol_load(name);
      }
+   emote_protocol_connect("irc", "irc.freenode.net", 6667, NULL, NULL);
 
    /* start main loop */
    elm_run();
@@ -88,6 +88,7 @@ _em_main_shutdown(int errcode)
 {
    int i = 0;
 
+   emote_protocol_disconnect("irc", "irc.freenode.net");
    /* loop the shutdown functions and call each one on the stack */
    for (i = (_em_main_level - 1); i >= 0; i--)
      (*_em_main_shutdown_func[i])();
@@ -114,15 +115,32 @@ _em_main_interrupt(int x __UNUSED__, siginfo_t *info __UNUSED__, void *data __UN
 }
 
 static Eina_Bool
-_em_main_ecore_event(void *data __UNUSED__, int type __UNUSED__, void *event)
+_em_main_chat_events_handler(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
-   Emote_Event_Data *d;
+   if (type == EMOTE_EVENT_CHAT_SERVER_CONNECTED)
+     {
+        Emote_Event_Chat_Server *d;
 
-   d = event;
+        d = event;
+        printf("Server %s from protocol %s is now connected.\n", 
+               d->server, d->protocol->api->label);
+        em_gui_server_add(d->server);
+     }
+   else if (type == EMOTE_EVENT_CHAT_SERVER_DISCONNECTED)
+     {
+        Emote_Event_Chat_Server *d;
 
-   if (type == EMOTE_EVENT_MSG_RECEIVED)
-     printf("Message Recvd From %s (%s)\n", d->protocol->api->label, 
-            (const char *)d->data);
+        d = event;
+        printf("Server %s from protocol %s is now disconnected.\n", 
+               d->server, d->protocol->api->label);
+     }
+   else if (type == EMOTE_EVENT_CHAT_SERVER_MESSAGE_RECEIVED)
+     {
+        Emote_Event_Chat_Server_Message *d;
+
+        d = event;
+        em_gui_message_add(d->server, NULL, d->message);
+     }
 
    return EINA_TRUE;
 }

@@ -23,6 +23,8 @@ em_gui_init(void)
    gui = EM_OBJECT_ALLOC(Em_Gui, EM_GUI_TYPE, _em_gui_cb_free);
    if (!gui) return 0;
 
+   gui->chantxt = eina_hash_string_superfast_new(NULL);
+
    /* create window */
    gui->win = elm_win_add(NULL, "emote", ELM_WIN_BASIC);
    elm_win_title_set(gui->win, "Emote");
@@ -102,15 +104,34 @@ em_gui_init(void)
 }
 
 EM_INTERN void
-em_gui_message_add(const char *text)
+em_gui_server_add(const char *server)
 {
-   elm_scrolled_entry_entry_insert(gui->o_chantxt, text);
-   elm_scrolled_entry_cursor_end_set(gui->o_chantxt);
+   elm_hoversel_item_add(gui->o_chansel, server, NULL, ELM_ICON_NONE, NULL, NULL);
+   if (!(eina_hash_population(gui->chantxt)))
+     eina_hash_add(gui->chantxt, server, gui->o_chantxt);
+}
+
+EM_INTERN void
+em_gui_message_add(const char *server, const char *channel, const char *text)
+{
+   char buf[5012];
+   Evas_Object *o;
+
+   if (!channel)
+     o = eina_hash_find(gui->chantxt, server);
+   else
+     {
+        snprintf(buf, sizeof(buf), "%s+%s", server, channel);
+        o = eina_hash_find(gui->chantxt, buf);
+     }
+   elm_scrolled_entry_entry_insert(o, text);
+   elm_scrolled_entry_cursor_end_set(o);
 }
 
 EM_INTERN int
 em_gui_shutdown(void)
 {
+   eina_hash_free(gui->chantxt);
    if (gui) em_object_del(EM_OBJECT(gui));
    return 1;
 }
