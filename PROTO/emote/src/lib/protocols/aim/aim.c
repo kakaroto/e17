@@ -1,7 +1,6 @@
 #include "aim.h"
 #include "emote_private.h"
 
-#include <Ecore.h>
 #include <Ecore_Con.h>
 
 EMAPI Emote_Protocol_Api protocol_api =
