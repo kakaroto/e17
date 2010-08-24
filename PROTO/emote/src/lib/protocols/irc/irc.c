@@ -78,7 +78,7 @@ protocol_disconnect(const char *server)
    return 1;
 }
 
-EMAPI int
+int
 protocol_irc_pass(const char *server, const char *pass)
 {
    Ecore_Con_Server *serv = NULL;
@@ -93,7 +93,7 @@ protocol_irc_pass(const char *server, const char *pass)
    return 1;
 }
 
-EMAPI int
+int
 protocol_irc_nick(const char *server, const char *nick)
 {
    Ecore_Con_Server *serv = NULL;
@@ -108,7 +108,7 @@ protocol_irc_nick(const char *server, const char *nick)
    return 1;
 }
 
-EMAPI int
+int
 protocol_irc_user(const char *server, const char *nick)
 {
    Ecore_Con_Server *serv = NULL;
@@ -125,7 +125,7 @@ protocol_irc_user(const char *server, const char *nick)
    return 1;
 }
 
-EMAPI int
+int
 protocol_irc_join(const char *server, const char *chan)
 {
    Ecore_Con_Server *serv = NULL;
@@ -140,7 +140,7 @@ protocol_irc_join(const char *server, const char *chan)
    return 1;
 }
 
-EMAPI int
+int
 protocol_irc_message(const char *server, const char *chan, const char *message)
 {
    Ecore_Con_Server *serv = NULL;
@@ -155,7 +155,7 @@ protocol_irc_message(const char *server, const char *chan, const char *message)
    return 1;
 }
 
-EMAPI int 
+int 
 protocol_irc_identify(const char *server, const char *pass) 
 {
    Ecore_Con_Server *serv = NULL;
@@ -170,7 +170,7 @@ protocol_irc_identify(const char *server, const char *pass)
    return 1;
 }
 
-EMAPI int 
+int 
 protocol_irc_ghost(const char *server, const char *nick, const char *pass) 
 {
    Ecore_Con_Server *serv = NULL;
@@ -185,7 +185,7 @@ protocol_irc_ghost(const char *server, const char *nick, const char *pass)
    return 1;
 }
 
-EMAPI int 
+int 
 protocol_irc_part(const char *server, const char *channel, const char *reason) 
 {
    Ecore_Con_Server *serv = NULL;
@@ -203,7 +203,7 @@ protocol_irc_part(const char *server, const char *channel, const char *reason)
    return 1;
 }
 
-EMAPI int 
+int 
 protocol_irc_back(const char *server) 
 {
    Ecore_Con_Server *serv = NULL;
@@ -218,7 +218,7 @@ protocol_irc_back(const char *server)
    return 1;
 }
 
-EMAPI int 
+int 
 protocol_irc_away(const char *server, const char *reason) 
 {
    Ecore_Con_Server *serv = NULL;
@@ -239,7 +239,7 @@ protocol_irc_away(const char *server, const char *reason)
    return 1;
 }
 
-EMAPI int 
+int 
 protocol_irc_away_status(const char *server, const char *channel) 
 {
    Ecore_Con_Server *serv = NULL;
@@ -254,7 +254,7 @@ protocol_irc_away_status(const char *server, const char *channel)
    return 1;
 }
 
-EMAPI int 
+int 
 protocol_irc_kick(const char *server, const char *channel, const char *nick, const char *reason) 
 {
    Ecore_Con_Server *serv = NULL;
@@ -273,7 +273,7 @@ protocol_irc_kick(const char *server, const char *channel, const char *nick, con
    return 1;
 }
 
-EMAPI int 
+int 
 protocol_irc_invite(const char *server, const char *channel, const char *nick) 
 {
    Ecore_Con_Server *serv = NULL;
@@ -288,7 +288,7 @@ protocol_irc_invite(const char *server, const char *channel, const char *nick)
    return 1;
 }
 
-EMAPI int 
+int 
 protocol_irc_mode(const char *server, const char *channel, const char *mode) 
 {
    Ecore_Con_Server *serv = NULL;
@@ -303,7 +303,7 @@ protocol_irc_mode(const char *server, const char *channel, const char *mode)
    return 1;
 }
 
-EMAPI int 
+int 
 protocol_irc_user_list(const char *server, const char *channel) 
 {
    Ecore_Con_Server *serv = NULL;
@@ -318,7 +318,7 @@ protocol_irc_user_list(const char *server, const char *channel)
    return 1;
 }
 
-EMAPI int 
+int 
 protocol_irc_user_host(const char *server, const char *nick) 
 {
    Ecore_Con_Server *serv = NULL;
@@ -333,7 +333,7 @@ protocol_irc_user_host(const char *server, const char *nick)
    return 1;
 }
 
-EMAPI int 
+int 
 protocol_irc_user_whois(const char *server, const char *nick) 
 {
    Ecore_Con_Server *serv = NULL;
@@ -348,7 +348,7 @@ protocol_irc_user_whois(const char *server, const char *nick)
    return 1;
 }
 
-EMAPI int 
+int 
 protocol_irc_action(const char *server, const char *channel, const char *action) 
 {
    Ecore_Con_Server *serv = NULL;
@@ -364,7 +364,7 @@ protocol_irc_action(const char *server, const char *channel, const char *action)
    return 1;
 }
 
-EMAPI int 
+int 
 protocol_irc_notice(const char *server, const char *channel, const char *notice) 
 {
    Ecore_Con_Server *serv = NULL;
@@ -379,7 +379,7 @@ protocol_irc_notice(const char *server, const char *channel, const char *notice)
    return 1;
 }
 
-EMAPI int 
+int 
 protocol_irc_topic(const char *server, const char *channel, const char *topic) 
 {
    Ecore_Con_Server *serv = NULL;
@@ -399,7 +399,7 @@ protocol_irc_topic(const char *server, const char *channel, const char *topic)
    return 1;
 }
 
-EMAPI int 
+int 
 protocol_irc_channels_list(const char *server, const char *arg) 
 {
    Ecore_Con_Server *serv = NULL;
@@ -417,7 +417,7 @@ protocol_irc_channels_list(const char *server, const char *arg)
    return 1;
 }
 
-EMAPI int 
+int 
 protocol_irc_names(const char *server, const char *channel) 
 {
    Ecore_Con_Server *serv = NULL;
@@ -432,7 +432,7 @@ protocol_irc_names(const char *server, const char *channel)
    return 1;
 }
 
-EMAPI int 
+int 
 protocol_irc_ping(const char *server, const char *to, const char *timestring) 
 {
    Ecore_Con_Server *serv = NULL;
@@ -451,7 +451,7 @@ protocol_irc_ping(const char *server, const char *to, const char *timestring)
    return 1;
 }
 
-EMAPI int 
+int 
 protocol_irc_pong(const char *server, const char *msg) 
 {
    Ecore_Con_Server *serv = NULL;
