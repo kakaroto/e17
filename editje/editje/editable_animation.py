@@ -203,7 +203,7 @@ class EditableAnimation(Manager, object):
             self._edit_grp.part.state.name = None
         for t in self.timestops:
             progname = "@%s@%.2f" % (self._name, t)
-            st = progname + " 0.00"
+            st = progname
             prog = self._edit_grp.program_get(progname)
             prog.target_del(part)
             if not p.state_del(st):
