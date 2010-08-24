@@ -2,7 +2,6 @@
 #include "irc_parse.h"
 #include "emote_private.h"
 
-#include <Ecore.h>
 #include <Ecore_Con.h>
 #include <unistd.h>
 
@@ -12,8 +11,8 @@ EMAPI Emote_Protocol_Api protocol_api =
    EMOTE_PROTOCOL_API_VERSION, "irc", "IRC"
 };
 
-static Eina_Bool _irc_cb_server_add(void *data, int type __UNUSED__, void *event);
-static Eina_Bool _irc_cb_server_del(void *data, int type __UNUSED__, void *event);
+static Eina_Bool _irc_cb_server_add(void *data, int type __UNUSED__, void *event __UNUSED__);
+static Eina_Bool _irc_cb_server_del(void *data, int type __UNUSED__, void *event __UNUSED__);
 static Eina_Bool _irc_cb_server_data(void *data, int type __UNUSED__, void *event);
 static Eina_Bool _irc_event_handler(void *data __UNUSED__, int type, void *event);
 
@@ -46,8 +45,7 @@ protocol_connect(const char *server, int port, const char *user, const char *pas
    if (!server) return 0;
    if (!(serv = eina_hash_find(_irc_servers, server)))
      {
-        if (port <= 0)
-          port = 6667;
+        if (port <= 0) port = 6667;
         serv = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM,
                                         server, port, NULL);
         ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD,
@@ -467,7 +465,7 @@ protocol_irc_pong(const char *server, const char *msg)
 }
 
 static Eina_Bool 
-_irc_cb_server_add(void *data, int type __UNUSED__, void *event)
+_irc_cb_server_add(void *data, int type __UNUSED__, void *event __UNUSED__)
 {
    const char *server;
    Emote_Event_Chat_Server *d;
@@ -482,7 +480,7 @@ _irc_cb_server_add(void *data, int type __UNUSED__, void *event)
 }
 
 static Eina_Bool 
-_irc_cb_server_del(void *data, int type __UNUSED__, void *event)
+_irc_cb_server_del(void *data, int type __UNUSED__, void *event __UNUSED__)
 {
    const char *server;
    Emote_Event_Chat_Server *d;
