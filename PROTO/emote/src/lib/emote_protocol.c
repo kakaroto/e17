@@ -78,7 +78,39 @@ emote_protocol_unload(Emote_Protocol *p)
    em_object_del(EM_OBJECT(p));
 }
 
-/* local functions */
+EMAPI void
+emote_protocol_connect(const char *name, const char *server, int port, const char *username, const char *password)
+{
+   Emote_Protocol *p;
+   char *f;
+
+   if (!name) return;
+   if (!(f = _emote_protocol_find(name))) return;
+
+   if (!(p = eina_hash_find(_emote_protocols, f)))
+     printf("Could not connect to %s, "
+            "Are you sure the protocol is loaded?\n", f);
+   p->funcs.connect(server, port, username, password);
+   if (f) free(f);
+}
+
+EMAPI void
+emote_protocol_disconnect(const char *name, const char *server)
+{
+   Emote_Protocol *p;
+   char *f;
+
+   if (!name) return;
+   if (!(f = _emote_protocol_find(name))) return;
+
+   if (!(p = eina_hash_find(_emote_protocols, f)))
+     printf("Could not connect to %s, "
+            "Are you sure the protocol is loaded?\n", f);
+   p->funcs.disconnect(server);
+   if (f) free(f);
+}
+
+/* loical functions */
 static char *
 _emote_protocol_find(const char *name)
 {

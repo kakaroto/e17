@@ -17,7 +17,9 @@ ircdir = $(protocoldir)
 irc_LTLIBRARIES = irc.la
 irc_la_SOURCES = \
   irc.h \
-  irc.c
+  irc.c \
+  irc_parse.c \
+  irc_parse.h
 
 irc_la_LIBADD = @IRC_CFLAGS@
 irc_la_LDFLAGS = -module -avoid-version
