@@ -16,6 +16,7 @@
 # License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import errno
 
 import evas
 import elementary
@@ -49,6 +50,8 @@ class FileSelector(Manager, elementary.Table):
         self.multi = False
         self.path = os.getenv("PWD")
         self.__actions_list = {}
+
+        self._notification = None
 
     def _navigator_init(self):
         bx = elementary.Box(self)
@@ -254,12 +257,17 @@ class FileSelector(Manager, elementary.Table):
         hidden = self._hidden.state_get()
         filter = self._filter.state_get()
 
-        path = self.path
-        list = os.listdir(path)
+        try:
+            list = os.listdir(self.path)
+        except OSError, e:
+            if e.errno == errno.EACCES:
+                self._notify("Permission denied: \'%s\'" % self.path)
+                self.path = self.path.rsplit("/", 1)[0]
+                return
         list.sort(key=str.lower)
         for file in list:
             if hidden or not file.startswith("."):
-                full = os.path.join(path, file)
+                full = os.path.join(self.path, file)
                 if os.path.isdir(full):
                     ic = elementary.Icon(self)
                     ic.standard_set("folder")
@@ -407,6 +415,25 @@ class FileSelector(Manager, elementary.Table):
 
     def action_disabled_set(self, label, disabled):
         self.__actions_list[label].disabled_set(disabled)
+
+    def _notify_del(self):
+        if self._notification:
+            self._notification.hide()
+            self._notification.delete()
+            self._notification = None
+
+    def _notify(self, message):
+        self._notify_del()
+        self._notification = elementary.Notify(self)
+        self._notification.timeout_set(1)
+        self._notification.orient_set(elementary.ELM_NOTIFY_ORIENT_BOTTOM)
+
+        lb = elementary.Label(self)
+        lb.label_set(message)
+        self._notification.content_set(lb)
+        lb.show()
+
+        self._notification.show()
 
 if __name__ == "__main__":
     elementary.init()
