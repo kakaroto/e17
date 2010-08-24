@@ -29,27 +29,31 @@
 
 # include <Eina.h>
 
+extern int EMOTE_EVENT_CHAT_SERVER_CONNECT;
+extern int EMOTE_EVENT_CHAT_SERVER_DISCONNECT;
 extern int EMOTE_EVENT_CHAT_SERVER_CONNECTED;
 extern int EMOTE_EVENT_CHAT_SERVER_DISCONNECTED;
 extern int EMOTE_EVENT_CHAT_SERVER_MESSAGE_SEND;
 extern int EMOTE_EVENT_CHAT_SERVER_MESSAGE_RECEIVED;
-extern int EMOTE_EVENT_CHAT_CHANNEL_ADD;
+extern int EMOTE_EVENT_CHAT_CHANNEL_JOIN;
+extern int EMOTE_EVENT_CHAT_CHANNEL_JOINED;
 extern int EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_SEND;
 extern int EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_RECEIVED;
 
 typedef struct _Emote_Protocol_Api Emote_Protocol_Api;
 typedef struct _Emote_Protocol Emote_Protocol;
 
-typedef struct _Emote_Event Emote_Event;
-typedef struct _Emote_Event_Chat_Server Emote_Event_Chat_Server;
-typedef struct _Emote_Event_Chat_Server_Message Emote_Event_Chat_Server_Message;
-typedef struct _Emote_Event_Chat_Channel_Add Emote_Event_Chat_Channel_Add;
-typedef struct _Emote_Event_Chat_Channel_Message Emote_Event_Chat_Channel_Message;
-
 typedef int (*emote_protocol_init_t)(Emote_Protocol *p);
 typedef int (*emote_protocol_shutdown_t)(void);
 typedef int (*emote_protocol_connect_t)(const char *, int, const char *, const char *);
 typedef int (*emote_protocol_disconnect_t)(const char *);
+
+typedef struct _Emote_Event Emote_Event;
+typedef struct _Emote_Event_Chat_Server Emote_Event_Chat_Server;
+typedef struct _Emote_Event_Chat_Server_Connect Emote_Event_Chat_Server_Connect;
+typedef struct _Emote_Event_Chat_Server_Message Emote_Event_Chat_Server_Message;
+typedef struct _Emote_Event_Chat_Channel Emote_Event_Chat_Channel;
+typedef struct _Emote_Event_Chat_Channel_Message Emote_Event_Chat_Channel_Message;
 
 struct _Emote_Protocol_Api
 {
@@ -66,10 +70,6 @@ struct _Emote_Protocol
      {
         emote_protocol_init_t init; // required
         emote_protocol_shutdown_t shutdown; // required
-        emote_protocol_connect_t connect;
-        emote_protocol_disconnect_t disconnect;
-
-        /* TODO: Implement generic functions */
      } funcs;
 };
 
@@ -85,6 +85,15 @@ struct _Emote_Event_Chat_Server
    const char *server;
 };
 
+struct _Emote_Event_Chat_Server_Connect
+{
+   Emote_Protocol *protocol;
+   const char *server;
+   const char *username;
+   const char *password;
+   int port;
+};
+
 struct _Emote_Event_Chat_Server_Message
 {
    Emote_Protocol *protocol;
@@ -92,7 +101,7 @@ struct _Emote_Event_Chat_Server_Message
    const char *message;
 };
 
-struct _Emote_Event_Chat_Channel_Add
+struct _Emote_Event_Chat_Channel
 {
    Emote_Protocol *protocol;
    const char *server;
@@ -108,15 +117,11 @@ struct _Emote_Event_Chat_Channel_Message
    const char *message;
 };
 
-EMAPI int emote_init(void);
-EMAPI int emote_shutdown(void);
-
-EMAPI void emote_event_send(int type, void *event_data);
-
+EMAPI int             emote_init(void);
+EMAPI int             emote_shutdown(void);
+EMAPI void            emote_event_send(int type, void *event_data);
 EMAPI Emote_Protocol *emote_protocol_load(const char *name);
-EMAPI void emote_protocol_unload(Emote_Protocol *p);
-EMAPI Eina_List *emote_protocol_list(void);
-EMAPI void emote_protocol_connect(const char *name, const char *server, int port, const char *username, const char *password);
-EMAPI void emote_protocol_disconnect(const char *name, const char *server);
+EMAPI void            emote_protocol_unload(Emote_Protocol *p);
+EMAPI Eina_List      *emote_protocol_list(void);
 
 #endif

@@ -7,11 +7,14 @@
 static void _emote_locate_paths(void);
 static void _emote_event_free(void *data, void *event);
 
+int EMOTE_EVENT_CHAT_SERVER_CONNECT;
+int EMOTE_EVENT_CHAT_SERVER_DISCONNECT;
 int EMOTE_EVENT_CHAT_SERVER_CONNECTED;
 int EMOTE_EVENT_CHAT_SERVER_DISCONNECTED;
 int EMOTE_EVENT_CHAT_SERVER_MESSAGE_SEND;
 int EMOTE_EVENT_CHAT_SERVER_MESSAGE_RECEIVED;
-int EMOTE_EVENT_CHAT_CHANNEL_ADD;
+int EMOTE_EVENT_CHAT_CHANNEL_JOIN;
+int EMOTE_EVENT_CHAT_CHANNEL_JOINED;
 int EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_SEND;
 int EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_RECEIVED;
 
@@ -25,11 +28,14 @@ emote_init(void)
    ret = 1;
    if (!ref_count)
      {
+        EMOTE_EVENT_CHAT_SERVER_CONNECT = ecore_event_type_new();
+        EMOTE_EVENT_CHAT_SERVER_DISCONNECT = ecore_event_type_new();
         EMOTE_EVENT_CHAT_SERVER_CONNECTED = ecore_event_type_new();
         EMOTE_EVENT_CHAT_SERVER_DISCONNECTED = ecore_event_type_new();
         EMOTE_EVENT_CHAT_SERVER_MESSAGE_SEND = ecore_event_type_new();
         EMOTE_EVENT_CHAT_SERVER_MESSAGE_RECEIVED = ecore_event_type_new();
-        EMOTE_EVENT_CHAT_CHANNEL_ADD = ecore_event_type_new();
+        EMOTE_EVENT_CHAT_CHANNEL_JOIN = ecore_event_type_new();
+        EMOTE_EVENT_CHAT_CHANNEL_JOINED = ecore_event_type_new();
         EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_RECEIVED = ecore_event_type_new();
         EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_SEND = ecore_event_type_new();
 
@@ -53,13 +59,16 @@ emote_shutdown(void)
 EMAPI void
 emote_event_send(int type, void *event_data)
 {
-   ecore_event_add(type, event_data, _emote_event_free, NULL);
+   ecore_event_add(type, event_data, _emote_event_free, (void *)type);
 }
 
 /* local functions */
 static void
-_emote_event_free(void *data __UNUSED__, void *event)
+_emote_event_free(void *data, void *event)
 {
+   int type;
+
+   type = (int)data;
    EMOTE_FREE(event);
 }
 

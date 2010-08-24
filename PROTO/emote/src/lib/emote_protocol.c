@@ -78,48 +78,7 @@ emote_protocol_unload(Emote_Protocol *p)
    em_object_del(EM_OBJECT(p));
 }
 
-EMAPI void
-emote_protocol_connect(const char *name, const char *server, int port, const char *username, const char *password)
-{
-   Emote_Protocol *p;
-   char *f;
-
-   if (!name) return;
-   if (!(f = _emote_protocol_find(name))) return;
-
-   if (!(p = eina_hash_find(_emote_protocols, f))) 
-     {
-        printf("Could not connect to %s, "
-               "Are you sure the protocol is loaded?\n", f);
-        if (f) free(f);
-        return;
-     }
-
-   if (f) free(f);
-   p->funcs.connect(server, port, username, password);
-}
-
-EMAPI void
-emote_protocol_disconnect(const char *name, const char *server)
-{
-   Emote_Protocol *p;
-   char *f;
-
-   if (!name) return;
-   if (!(f = _emote_protocol_find(name))) return;
-
-   if (!(p = eina_hash_find(_emote_protocols, f))) 
-     {
-        printf("Could not connect to %s, "
-               "Are you sure the protocol is loaded?\n", f);
-        if (f) free(f);
-        return;
-     }
-   if (f) free(f);
-   p->funcs.disconnect(server);
-}
-
-/* loical functions */
+/* local functions */
 static char *
 _emote_protocol_find(const char *name)
 {
@@ -175,8 +134,6 @@ _emote_protocol_load_file(const char *file)
    p->api = dlsym(p->handle, "protocol_api");
    p->funcs.init = dlsym(p->handle, "protocol_init");
    p->funcs.shutdown = dlsym(p->handle, "protocol_shutdown");
-   p->funcs.connect = dlsym(p->handle, "protocol_connect");
-   p->funcs.disconnect = dlsym(p->handle, "protocol_disconnect");
 
    if (!_emote_protocol_is_valid(p))
      {
@@ -203,8 +160,7 @@ static int
 _emote_protocol_is_valid(Emote_Protocol *p)
 {
    /* check support for needed functions */
-   if ((!p->api) || (!p->funcs.init) || (!p->funcs.shutdown) ||
-       (!p->funcs.connect) || (!p->funcs.disconnect))
+   if ((!p->api) || (!p->funcs.init) || (!p->funcs.shutdown))
      {
         printf("Protocol does not support needed functions\n");
         printf("Error: %s\n", dlerror());

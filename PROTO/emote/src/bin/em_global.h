@@ -90,4 +90,6 @@ void *alloca (size_t);
 # define EM_FREE(p) do { if (p) {free(p); p = NULL;} } while (0)
 # define EM_CLAMP(x, min, max) (x < min ? min : (x > max ? max : x))
 
+extern Eina_Hash *em_protocols;
+
 #endif

@@ -1,8 +1,9 @@
+#include "irc.h"
+#include "emote_private.h"
+
 #include <ctype.h>
 #include <Evas.h>
-
-#include "irc_parse.h"
-#include "emote_private.h"
+#include <unistd.h>
 
 /* local function prototypes */
 static Eina_List *_irc_parse_split_input(const char *input);
@@ -43,7 +44,7 @@ irc_parse_input(char *input, const char *server, Emote_Protocol *m)
 
         if (strstr(line, "PING")) 
           {
-             //irc_pong(server, eina_strbuf_string_get(prefix));
+             protocol_irc_pong(server, eina_strbuf_string_get(prefix));
              goto reset;
           }
 
@@ -66,6 +67,11 @@ irc_parse_input(char *input, const char *server, Emote_Protocol *m)
              if (!strcmp(str, "353")) goto reset;
 
              p = eina_strbuf_string_get(params);
+             /* Append tail to username if it is in use */
+             if (!strcmp(str, "433"))
+               {
+                  /* TODO Reconnect with different username */
+               }
              if (!strcmp(str, "NOTICE")) 
                {
                   if ((msg = _irc_parse_utf8_to_markup(p)))
@@ -84,14 +90,17 @@ irc_parse_input(char *input, const char *server, Emote_Protocol *m)
                }
              else if (!strcmp(str, "JOIN"))
                {
-                  Emote_Event_Chat_Channel_Add *d;
+                  char *channel, chan[5012];
+                  Emote_Event_Chat_Channel *d;
 
-                  d = EMOTE_NEW(Emote_Event_Chat_Channel_Add, 1);
+                  channel = strrchr(p, ':');
+                  channel++;
+                  snprintf(chan, sizeof(chan), "%s", channel);
+                  d = EMOTE_NEW(Emote_Event_Chat_Channel, 1);
                   d->protocol = m;
                   d->server = server;
-                  d->channel = p;
-                  emote_event_send(EMOTE_EVENT_CHAT_CHANNEL_ADD, d);
-                  goto reset;
+                  d->channel = chan;
+                  emote_event_send(EMOTE_EVENT_CHAT_CHANNEL_JOINED, d);
                }
              else if (
                       ((atoi(str) >= 001) && (atoi(str) <= 003)) ||
@@ -120,6 +129,19 @@ irc_parse_input(char *input, const char *server, Emote_Protocol *m)
                   d->message = msg;
                   emote_event_send(EMOTE_EVENT_CHAT_SERVER_MESSAGE_RECEIVED, d);
                   eina_strbuf_free(tmp);
+               }
+             else if (!(strcmp(str, "PRIVMSG")))
+               {
+                  Emote_Event_Chat_Channel_Message *d;
+                  
+                  msg = _irc_parse_utf8_to_markup(p);
+                  d = EMOTE_NEW(Emote_Event_Chat_Channel_Message, 1);
+                  d->protocol = m;
+                  d->server = server;
+                  d->channel = NULL;
+                  d->user = NULL;
+                  d->message = msg; 
+                  emote_event_send(EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_RECEIVED, d);
                }
              else
                {
