@@ -68,7 +68,7 @@ _explicitd_idler_save(void *data)
 	  goto on_error_closed;
 
 	/* Then make all backup file older. */
-	for (i = 9; i >= 0; -i)
+	for (i = 9; i >= 0; --i)
 	  {
 	     char buffer_in[PATH_MAX];
 	     char buffer_out[PATH_MAX];
