@@ -20,7 +20,8 @@ libemote_la_SOURCES = \
   Emote.h \
   emote_object.c \
   emote_main.c \
-  emote_protocol.c
+  emote_protocol.c \
+  emote_event.c
 
 libemote_la_LDFLAGS = -version-info 0:1:0
 libemote_la_LIBADD = @dlopen_libs@ @LIBEMOTE_LIBS@

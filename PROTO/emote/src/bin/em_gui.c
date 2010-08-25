@@ -66,7 +66,7 @@ em_gui_init(void)
                                    EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_box_pack_end(gui->o_box, gui->o_chantxt);
    evas_object_show(gui->o_chantxt);
-   
+
    /* create entry for user input */
    gui->o_entry = elm_scrolled_entry_add(gui->win);
    elm_scrolled_entry_single_line_set(gui->o_entry, EINA_TRUE);
@@ -105,14 +105,14 @@ em_gui_init(void)
 EM_INTERN void
 em_gui_server_add(const char *server, Emote_Protocol *p)
 {
-   elm_hoversel_item_add(gui->o_chansel, server, NULL, ELM_ICON_NONE, 
+   elm_hoversel_item_add(gui->o_chansel, server, NULL, ELM_ICON_NONE,
                          _em_gui_hoversel_cb_item_clicked, server);
 }
 
 EM_INTERN void
 em_gui_channel_add(const char *server, const char *channel, Emote_Protocol *p)
 {
-   elm_hoversel_item_add(gui->o_chansel, channel, NULL, ELM_ICON_NONE, 
+   elm_hoversel_item_add(gui->o_chansel, channel, NULL, ELM_ICON_NONE,
                          _em_gui_hoversel_cb_item_clicked, server);
 }
 
@@ -159,25 +159,33 @@ _em_gui_cb_quit(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event 
 static void
 _em_gui_hoversel_cb_item_clicked(void *data, Evas_Object *obj, void *event)
 {
-}  
+}
 
 static void
 _em_gui_entry_cb_enter(void *data __UNUSED__, Evas_Object *obj, void *event __UNUSED__)
 {
    const char *text;
    char msg[5012];
-   Emote_Event_Chat_Channel_Message *d;
+   Emote_Event *d;
 
    text = elm_scrolled_entry_entry_get(obj);
    snprintf(msg, sizeof(msg), "%s", text);
 
-   d = EM_NEW(Emote_Event_Chat_Channel_Message, 1);
+   /*d = EM_NEW(Emote_Event_Chat_Channel_Message, 1);
    d->protocol = eina_hash_find(em_protocols, "irc");
    d->server = "irc.freenode.net";
    d->channel = "#emote";
-   d->message = msg;
-   emote_event_send(EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_SEND, d);
-   
+   d->message = msg;*/
+   d = emote_event_new(
+                         eina_hash_find(em_protocols, "irc"),
+                         EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_SEND,
+                         "irc.freenode.net",
+                         "#emote",
+                         msg
+                      );
+   //emote_event_send(EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_SEND, d);
+   emote_event_send(d);
+
    elm_scrolled_entry_cursor_end_set(gui->o_chantxt);
    elm_scrolled_entry_entry_insert(gui->o_chantxt, text);
    elm_scrolled_entry_cursor_end_set(gui->o_chantxt);

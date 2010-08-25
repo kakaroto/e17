@@ -20,7 +20,7 @@ Eina_Hash *em_protocols;
 EAPI int
 elm_main(int argc __UNUSED__, char **argv __UNUSED__)
 {
-   Emote_Event_Chat_Server_Connect *d;
+   Emote_Event *d;
    struct sigaction action;
    Emote_Protocol *p;
 
@@ -48,15 +48,15 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
    if (!em_gui_init()) _em_main_shutdown(EXIT_FAILURE);
    _em_main_shutdown_push(em_gui_shutdown);
 
-   ecore_event_handler_add(EMOTE_EVENT_CHAT_SERVER_CONNECTED, 
+   emote_event_handler_add(EMOTE_EVENT_SERVER_CONNECTED,
                            _em_main_chat_events_handler, NULL);
-   ecore_event_handler_add(EMOTE_EVENT_CHAT_SERVER_DISCONNECTED, 
+   emote_event_handler_add(EMOTE_EVENT_SERVER_DISCONNECTED,
                            _em_main_chat_events_handler, NULL);
-   ecore_event_handler_add(EMOTE_EVENT_CHAT_CHANNEL_JOINED, 
+   emote_event_handler_add(EMOTE_EVENT_CHAT_CHANNEL_JOINED,
                            _em_main_chat_events_handler, NULL);
-   ecore_event_handler_add(EMOTE_EVENT_CHAT_SERVER_MESSAGE_RECEIVED, 
+   emote_event_handler_add(EMOTE_EVENT_SERVER_MESSAGE_RECEIVED,
                            _em_main_chat_events_handler, NULL);
-   ecore_event_handler_add(EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_RECEIVED, 
+   emote_event_handler_add(EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_RECEIVED,
                            _em_main_chat_events_handler, NULL);
 
    em_protocols = eina_hash_string_superfast_new(NULL);
@@ -64,13 +64,24 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
    p = emote_protocol_load("irc");
    eina_hash_add(em_protocols, "irc", p);
 
-   d = EM_NEW(Emote_Event_Chat_Server_Connect, 1);
+   /*d = EM_NEW(Emote_Event_Chat_Server_Connect, 1);
    d->protocol = eina_hash_find(em_protocols, "irc");
    d->server = "irc.freenode.net";
    d->username = "emote";
    d->password = "emote";
-   d->port = 6667;
-   emote_event_send(EMOTE_EVENT_CHAT_SERVER_CONNECT, d);
+   d->port = 6667;*/
+   d = emote_event_new
+       (
+          eina_hash_find(em_protocols, "irc"),
+          EMOTE_EVENT_SERVER_CONNECT,
+          "irc.freenode.net",
+          6667,
+          "emote",
+          "emote"
+       );
+
+   //emote_event_send(EMOTE_EVENT_CHAT_SERVER_CONNECT, d);
+   emote_event_send(d);
 
    /* start main loop */
    elm_run();
@@ -131,51 +142,71 @@ _em_main_interrupt(int x __UNUSED__, siginfo_t *info __UNUSED__, void *data __UN
 static Eina_Bool
 _em_main_chat_events_handler(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
-   if (type == EMOTE_EVENT_CHAT_SERVER_CONNECTED)
-     {
-        Emote_Event_Chat_Server *d;
-        Emote_Event_Chat_Channel *c;
+   switch(EMOTE_EVENT_T(event)->type)
+   {
+      case EMOTE_EVENT_SERVER_CONNECTED:
+        {
+           Emote_Event_Server *d;
+           Emote_Event *c;
 
-        d = event;
-        printf("Server %s from protocol %s is now connected.\n", 
-               d->server, d->protocol->api->label);
-        em_gui_server_add(d->server, d->protocol);
+           d = event;
+           printf("Server %s from protocol %s is now connected.\n",
+                  d->server, EMOTE_EVENT_T(d)->protocol->api->label);
+           em_gui_server_add(d->server, EMOTE_EVENT_T(d)->protocol);
 
-        c = EM_NEW(Emote_Event_Chat_Channel, 1);
-        c->protocol = d->protocol;
-        c->server = d->server;
-        c->channel = "#emote";
-        emote_event_send(EMOTE_EVENT_CHAT_CHANNEL_JOIN, c);
-     }
-   else if (type == EMOTE_EVENT_CHAT_SERVER_DISCONNECTED)
-     {
-        Emote_Event_Chat_Server *d;
+           /*c = EM_NEW(Emote_Event_Chat_Channel, 1);
+           c->protocol = d->protocol;
+           c->server = d->server;
+           c->channel = "#emote";*/
+           c = emote_event_new
+               (
+                  EMOTE_EVENT_T(d)->protocol,
+                  EMOTE_EVENT_CHAT_CHANNEL_JOIN,
+                  d->server,
+                  "#emote"
+               );
+            //emote_event_send(EMOTE_EVENT_CHAT_CHANNEL_JOIN, c);
+            emote_event_send(c);
+            break;
+        }
+      case EMOTE_EVENT_SERVER_DISCONNECTED:
+        {
+           Emote_Event_Server *d;
 
-        d = event;
-        printf("Server %s from protocol %s is now disconnected.\n", 
-               d->server, d->protocol->api->label);
-     }
-   else if (type == EMOTE_EVENT_CHAT_CHANNEL_JOINED)
-     {
-        Emote_Event_Chat_Channel *d;
+           d = event;
+           printf("Server %s from protocol %s is now disconnected.\n",
+                  d->server, EMOTE_EVENT_T(d)->protocol->api->label);
+           break;
+        }
+      case EMOTE_EVENT_CHAT_CHANNEL_JOINED:
+        {
+           Emote_Event_Chat_Channel *d;
 
-        d = event;
-        em_gui_channel_add(d->server, d->channel, d->protocol);
-     }
-   else if (type == EMOTE_EVENT_CHAT_SERVER_MESSAGE_RECEIVED)
-     {
-        Emote_Event_Chat_Server_Message *d;
+           d = event;
+           em_gui_channel_add(EMOTE_EVENT_SERVER_T(d)->server, d->channel, EMOTE_EVENT_T(d)->protocol);
+           break;
+        }
+      case EMOTE_EVENT_SERVER_MESSAGE_RECEIVED:
+        {
+           Emote_Event_Server_Message *d;
 
-        d = event;
-        em_gui_message_add(d->server, NULL, d->message);
-     }
-   else if (type == EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_RECEIVED)
-     {
-        Emote_Event_Chat_Channel_Message *d;
+           d = event;
+           em_gui_message_add(EMOTE_EVENT_SERVER_T(d)->server, NULL, d->message);
+           break;
+        }
+      case EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_RECEIVED:
+        {
+           Emote_Event_Chat_Channel_Message *d;
 
-        d = event;
-        em_gui_message_add(d->server, d->channel, d->message);
-     }
+           d = event;
+           em_gui_message_add(EMOTE_EVENT_SERVER_T(d)->server, EMOTE_EVENT_CHAT_CHANNEL_T(d)->channel, d->message);
+           break;
+        }
+      default:
+         printf("Unhandled Event!\n");
+         return EINA_FALSE;
+   }
+
    return EINA_TRUE;
 }
 

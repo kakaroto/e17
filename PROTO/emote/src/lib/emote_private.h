@@ -117,4 +117,6 @@ Emote_Paths emote_paths;
 EM_INTERN int emote_protocol_init(void);
 EM_INTERN int emote_protocol_shutdown(void);
 
+EM_INTERN int emote_event_init(void);
+
 #endif

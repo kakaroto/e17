@@ -25,10 +25,10 @@ protocol_init(Emote_Protocol *p)
    m = p;
    ecore_con_init();
    _irc_servers = eina_hash_string_superfast_new(NULL);
-   ecore_event_handler_add(EMOTE_EVENT_CHAT_SERVER_CONNECT, _irc_event_handler, NULL);
-   ecore_event_handler_add(EMOTE_EVENT_CHAT_SERVER_DISCONNECT, _irc_event_handler, NULL);
-   ecore_event_handler_add(EMOTE_EVENT_CHAT_CHANNEL_JOIN, _irc_event_handler, NULL);
-   ecore_event_handler_add(EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_SEND, _irc_event_handler, NULL);
+   emote_event_handler_add(EMOTE_EVENT_SERVER_CONNECT, _irc_event_handler, NULL);
+   emote_event_handler_add(EMOTE_EVENT_SERVER_DISCONNECT, _irc_event_handler, NULL);
+   emote_event_handler_add(EMOTE_EVENT_CHAT_CHANNEL_JOIN, _irc_event_handler, NULL);
+   emote_event_handler_add(EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_SEND, _irc_event_handler, NULL);
    return 1;
 }
 
@@ -142,10 +142,25 @@ protocol_irc_join(const char *server, const char *chan)
    int len = 0;
 
    if ((!server) || (!chan)) return 0;
+
+   printf("Joining %s on %s\n", chan, server);
+
    if (!(serv = eina_hash_find(_irc_servers, server))) return 0;
+
+   printf("Joining %s on %s\n", chan, server);
+
    if (!ecore_con_server_connected_get(serv)) return 0;
+
+   printf("Joining %s on %s\n", chan, server);
+
    len = snprintf(buf, sizeof(buf), "JOIN %s\r\n", chan);
+
+   printf("Buffer: %s\n", buf);
+
    ecore_con_server_send(serv, buf, len);
+
+   printf("Success!\n");
+
    return 1;
 }
 
@@ -164,8 +179,8 @@ protocol_irc_message(const char *server, const char *chan, const char *message)
    return 1;
 }
 
-int 
-protocol_irc_identify(const char *server, const char *pass) 
+int
+protocol_irc_identify(const char *server, const char *pass)
 {
    Ecore_Con_Server *serv = NULL;
    char buf[512];
@@ -179,8 +194,8 @@ protocol_irc_identify(const char *server, const char *pass)
    return 1;
 }
 
-int 
-protocol_irc_ghost(const char *server, const char *nick, const char *pass) 
+int
+protocol_irc_ghost(const char *server, const char *nick, const char *pass)
 {
    Ecore_Con_Server *serv = NULL;
    char buf[512];
@@ -194,8 +209,8 @@ protocol_irc_ghost(const char *server, const char *nick, const char *pass)
    return 1;
 }
 
-int 
-protocol_irc_part(const char *server, const char *channel, const char *reason) 
+int
+protocol_irc_part(const char *server, const char *channel, const char *reason)
 {
    Ecore_Con_Server *serv = NULL;
    char buf[512];
@@ -212,8 +227,8 @@ protocol_irc_part(const char *server, const char *channel, const char *reason)
    return 1;
 }
 
-int 
-protocol_irc_back(const char *server) 
+int
+protocol_irc_back(const char *server)
 {
    Ecore_Con_Server *serv = NULL;
    char buf[512];
@@ -227,8 +242,8 @@ protocol_irc_back(const char *server)
    return 1;
 }
 
-int 
-protocol_irc_away(const char *server, const char *reason) 
+int
+protocol_irc_away(const char *server, const char *reason)
 {
    Ecore_Con_Server *serv = NULL;
    char buf[512];
@@ -237,7 +252,7 @@ protocol_irc_away(const char *server, const char *reason)
    if (!server) return 0;
    if (!(serv = eina_hash_find(_irc_servers, server))) return 0;
    if (!ecore_con_server_connected_get(serv)) return 0;
-   if (reason) 
+   if (reason)
      {
         if (!reason[0]) reason = " ";
      }
@@ -248,8 +263,8 @@ protocol_irc_away(const char *server, const char *reason)
    return 1;
 }
 
-int 
-protocol_irc_away_status(const char *server, const char *channel) 
+int
+protocol_irc_away_status(const char *server, const char *channel)
 {
    Ecore_Con_Server *serv = NULL;
    char buf[512];
@@ -263,8 +278,8 @@ protocol_irc_away_status(const char *server, const char *channel)
    return 1;
 }
 
-int 
-protocol_irc_kick(const char *server, const char *channel, const char *nick, const char *reason) 
+int
+protocol_irc_kick(const char *server, const char *channel, const char *nick, const char *reason)
 {
    Ecore_Con_Server *serv = NULL;
    char buf[512];
@@ -273,8 +288,8 @@ protocol_irc_kick(const char *server, const char *channel, const char *nick, con
    if ((!server) || (!channel) || (!nick)) return 0;
    if (!(serv = eina_hash_find(_irc_servers, server))) return 0;
    if (!ecore_con_server_connected_get(serv)) return 0;
-   if (reason[0]) 
-     len = snprintf(buf, sizeof(buf), "KICK %s %s :%s\r\n", 
+   if (reason[0])
+     len = snprintf(buf, sizeof(buf), "KICK %s %s :%s\r\n",
                     channel, nick, reason);
    else
      len = snprintf(buf, sizeof(buf), "KICK %s %s\r\n", channel, nick);
@@ -282,8 +297,8 @@ protocol_irc_kick(const char *server, const char *channel, const char *nick, con
    return 1;
 }
 
-int 
-protocol_irc_invite(const char *server, const char *channel, const char *nick) 
+int
+protocol_irc_invite(const char *server, const char *channel, const char *nick)
 {
    Ecore_Con_Server *serv = NULL;
    char buf[512];
@@ -297,8 +312,8 @@ protocol_irc_invite(const char *server, const char *channel, const char *nick)
    return 1;
 }
 
-int 
-protocol_irc_mode(const char *server, const char *channel, const char *mode) 
+int
+protocol_irc_mode(const char *server, const char *channel, const char *mode)
 {
    Ecore_Con_Server *serv = NULL;
    char buf[512];
@@ -312,8 +327,8 @@ protocol_irc_mode(const char *server, const char *channel, const char *mode)
    return 1;
 }
 
-int 
-protocol_irc_user_list(const char *server, const char *channel) 
+int
+protocol_irc_user_list(const char *server, const char *channel)
 {
    Ecore_Con_Server *serv = NULL;
    char buf[512];
@@ -327,8 +342,8 @@ protocol_irc_user_list(const char *server, const char *channel)
    return 1;
 }
 
-int 
-protocol_irc_user_host(const char *server, const char *nick) 
+int
+protocol_irc_user_host(const char *server, const char *nick)
 {
    Ecore_Con_Server *serv = NULL;
    char buf[512];
@@ -342,8 +357,8 @@ protocol_irc_user_host(const char *server, const char *nick)
    return 1;
 }
 
-int 
-protocol_irc_user_whois(const char *server, const char *nick) 
+int
+protocol_irc_user_whois(const char *server, const char *nick)
 {
    Ecore_Con_Server *serv = NULL;
    char buf[512];
@@ -357,8 +372,8 @@ protocol_irc_user_whois(const char *server, const char *nick)
    return 1;
 }
 
-int 
-protocol_irc_action(const char *server, const char *channel, const char *action) 
+int
+protocol_irc_action(const char *server, const char *channel, const char *action)
 {
    Ecore_Con_Server *serv = NULL;
    char buf[512];
@@ -367,14 +382,14 @@ protocol_irc_action(const char *server, const char *channel, const char *action)
    if ((!server) || (!channel) || (!action)) return 0;
    if (!(serv = eina_hash_find(_irc_servers, server))) return 0;
    if (!ecore_con_server_connected_get(serv)) return 0;
-   len = snprintf(buf, sizeof(buf), 
+   len = snprintf(buf, sizeof(buf),
                   "PRIVMSG %s :\001ACTION %s\001\r\n", channel, action);
    ecore_con_server_send(serv, buf, len);
    return 1;
 }
 
-int 
-protocol_irc_notice(const char *server, const char *channel, const char *notice) 
+int
+protocol_irc_notice(const char *server, const char *channel, const char *notice)
 {
    Ecore_Con_Server *serv = NULL;
    char buf[512];
@@ -388,8 +403,8 @@ protocol_irc_notice(const char *server, const char *channel, const char *notice)
    return 1;
 }
 
-int 
-protocol_irc_topic(const char *server, const char *channel, const char *topic) 
+int
+protocol_irc_topic(const char *server, const char *channel, const char *topic)
 {
    Ecore_Con_Server *serv = NULL;
    char buf[512];
@@ -408,8 +423,8 @@ protocol_irc_topic(const char *server, const char *channel, const char *topic)
    return 1;
 }
 
-int 
-protocol_irc_channels_list(const char *server, const char *arg) 
+int
+protocol_irc_channels_list(const char *server, const char *arg)
 {
    Ecore_Con_Server *serv = NULL;
    char buf[512];
@@ -418,7 +433,7 @@ protocol_irc_channels_list(const char *server, const char *arg)
    if (!server) return 0;
    if (!(serv = eina_hash_find(_irc_servers, server))) return 0;
    if (!ecore_con_server_connected_get(serv)) return 0;
-   if (arg[0]) 
+   if (arg[0])
      len = snprintf(buf, sizeof(buf), "LIST %s\r\n", arg);
    else
      len = snprintf(buf, sizeof(buf), "LIST\r\n");
@@ -426,8 +441,8 @@ protocol_irc_channels_list(const char *server, const char *arg)
    return 1;
 }
 
-int 
-protocol_irc_names(const char *server, const char *channel) 
+int
+protocol_irc_names(const char *server, const char *channel)
 {
    Ecore_Con_Server *serv = NULL;
    char buf[512];
@@ -441,8 +456,8 @@ protocol_irc_names(const char *server, const char *channel)
    return 1;
 }
 
-int 
-protocol_irc_ping(const char *server, const char *to, const char *timestring) 
+int
+protocol_irc_ping(const char *server, const char *to, const char *timestring)
 {
    Ecore_Con_Server *serv = NULL;
    char buf[512];
@@ -452,7 +467,7 @@ protocol_irc_ping(const char *server, const char *to, const char *timestring)
    if (!(serv = eina_hash_find(_irc_servers, server))) return 0;
    if (!ecore_con_server_connected_get(serv)) return 0;
    if ((to) && (to[0]))
-     len = snprintf(buf, sizeof(buf), 
+     len = snprintf(buf, sizeof(buf),
                     "PRIVMSG %s :\001PING %s\001\r\n", to, timestring);
    else
      len = snprintf(buf, sizeof(buf), "PING %s\r\n", timestring);
@@ -460,8 +475,8 @@ protocol_irc_ping(const char *server, const char *to, const char *timestring)
    return 1;
 }
 
-int 
-protocol_irc_pong(const char *server, const char *msg) 
+int
+protocol_irc_pong(const char *server, const char *msg)
 {
    Ecore_Con_Server *serv = NULL;
    char buf[512];
@@ -475,36 +490,41 @@ protocol_irc_pong(const char *server, const char *msg)
    return 1;
 }
 
-static Eina_Bool 
+static Eina_Bool
 _irc_cb_server_add(void *data, int type __UNUSED__, void *event __UNUSED__)
 {
    const char *server;
-   Emote_Event_Chat_Server *d;
+   Emote_Event *d;
 
    if (!(server = data)) return EINA_FALSE;
-   d = EMOTE_NEW(Emote_Event_Chat_Server, 1);
+   /*d = EMOTE_NEW(Emote_Event_Chat_Server, 1);
    d->protocol = m;
-   d->server = server;
-   emote_event_send(EMOTE_EVENT_CHAT_SERVER_CONNECTED, d); 
+   d->server = server;*/
+   d = emote_event_new(m, EMOTE_EVENT_SERVER_CONNECTED, server);
+   //emote_event_send(EMOTE_EVENT_CHAT_SERVER_CONNECTED, d);
+   emote_event_send(d);
    return EINA_FALSE;
 }
 
-static Eina_Bool 
+static Eina_Bool
 _irc_cb_server_del(void *data, int type __UNUSED__, void *event __UNUSED__)
 {
    const char *server;
-   Emote_Event_Chat_Server *d;
+   Emote_Event *d;
 
    if (!(server = data)) return EINA_FALSE;
-   d = EMOTE_NEW(Emote_Event_Chat_Server, 1);
+   /*d = EMOTE_NEW(Emote_Event_Chat_Server, 1);
    d->protocol = m;
-   d->server = server;
+   d->server = server;*/
    eina_hash_del_by_key(_irc_servers, server);
-   emote_event_send(EMOTE_EVENT_CHAT_SERVER_DISCONNECTED, d);
+
+   d = emote_event_new(m, EMOTE_EVENT_SERVER_DISCONNECTED, server);
+   //emote_event_send(EMOTE_EVENT_CHAT_SERVER_DISCONNECTED, d);
+   emote_event_send(d);
    return EINA_FALSE;
 }
 
-static Eina_Bool 
+static Eina_Bool
 _irc_cb_server_data(void *data, int type __UNUSED__, void *event)
 {
    Ecore_Con_Event_Server_Data *ev;
@@ -521,43 +541,58 @@ _irc_cb_server_data(void *data, int type __UNUSED__, void *event)
 }
 
 static Eina_Bool
-_irc_event_handler(void *data __UNUSED__, int type, void *event)
+_irc_event_handler(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
-   if (type == EMOTE_EVENT_CHAT_SERVER_CONNECT)
-     {
-        Emote_Event_Chat_Server_Connect *d;
+   if (EMOTE_EVENT_T(event)->protocol != m)
+      return EINA_FALSE;
 
-        d = event;
-        if (!(d->protocol == m))
-          return EINA_FALSE;
-        protocol_irc_connect(d->server, d->port, d->username, d->password);
-     }
-   if (type == EMOTE_EVENT_CHAT_SERVER_DISCONNECT)
-     {
-        Emote_Event_Chat_Server *d;
+   printf("%s Received Event %u\n", m->api->label, EMOTE_EVENT_T(event)->type);
 
-        d = event;
-        if (!(d->protocol == m))
-          return EINA_FALSE;
-        protocol_irc_disconnect(d->server);
-     }
-   if (type == EMOTE_EVENT_CHAT_CHANNEL_JOIN)
-     {
-        Emote_Event_Chat_Channel *d;
+   switch(EMOTE_EVENT_T(event)->type)
+   {
+      case EMOTE_EVENT_SERVER_CONNECT:
+        {
+           Emote_Event_Server_Connect *d;
 
-        d = event;
-        if (!(d->protocol == m))
-          return EINA_FALSE;
-        protocol_irc_join(d->server, d->channel);
-     }
-   else if (type == EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_SEND)
-     {
-        Emote_Event_Chat_Channel_Message *d;
+           d = event;
+           protocol_irc_connect(
+                                  EMOTE_EVENT_SERVER_T(d)->server,
+                                  d->port,
+                                  d->username,
+                                  d->password
+                               );
+           break;
+        }
+      case EMOTE_EVENT_SERVER_DISCONNECT:
+        {
+           Emote_Event_Server *d;
 
-        d = event;
-        if (!(d->protocol == m))
-          return EINA_FALSE;
-        protocol_irc_message(d->server, d->channel, d->message);
-     }
+           d = event;
+           protocol_irc_disconnect(d->server);
+           break;
+        }
+      case EMOTE_EVENT_CHAT_CHANNEL_JOIN:
+        {
+           Emote_Event_Chat_Channel *d;
+
+           d = event;
+           protocol_irc_join(EMOTE_EVENT_SERVER_T(d)->server, d->channel);
+           break;
+        }
+      case EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_SEND:
+        {
+           Emote_Event_Chat_Channel_Message *d;
+
+           d = event;
+           protocol_irc_message(EMOTE_EVENT_SERVER_T(d)->server,
+                              EMOTE_EVENT_CHAT_CHANNEL_T(d)->channel,
+                              d->message);
+           break;
+        }
+      default:
+         printf("Unhandled Event!\n");
+         return EINA_FALSE;
+   }
+
    return EINA_TRUE;
 }
