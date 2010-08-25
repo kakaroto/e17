@@ -20,9 +20,9 @@ Eina_Hash *em_protocols;
 EAPI int
 elm_main(int argc __UNUSED__, char **argv __UNUSED__)
 {
+   Emote_Event_Chat_Server_Connect *d;
    struct sigaction action;
-   Eina_List *protocols, *n;
-   const char *name;
+   Emote_Protocol *p;
 
 # ifdef ENABLE_NLS
    setlocale(LC_ALL, "");
@@ -61,16 +61,8 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
 
    em_protocols = eina_hash_string_superfast_new(NULL);
 
-   protocols = emote_protocol_list();
-   EINA_LIST_FOREACH(protocols, n, name)
-     {
-        Emote_Protocol *p;
-
-        printf("Name: %s\n", name);
-        p = emote_protocol_load(name);
-        eina_hash_add(em_protocols, name, p);
-     }
-   Emote_Event_Chat_Server_Connect *d;
+   p = emote_protocol_load("irc");
+   eina_hash_add(em_protocols, "irc", p);
 
    d = EM_NEW(Emote_Event_Chat_Server_Connect, 1);
    d->protocol = eina_hash_find(em_protocols, "irc");
