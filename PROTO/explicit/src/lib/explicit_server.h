@@ -41,6 +41,8 @@ struct _Explicit_Cache
    Eina_Hash *done;
    Eina_List *files;
    Eina_List *empty;
+
+   Eina_Bool changed : 1;
 };
 
 struct _Explicit_Reference

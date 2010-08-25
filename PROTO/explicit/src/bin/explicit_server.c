@@ -13,7 +13,10 @@
 
 #include <explicit_server.h>
 
-const Ecore_Getopt optdesc = {
+static char *cf = NULL;
+static int cf_length = 0;
+
+static const Ecore_Getopt optdesc = {
   "Explicit Daemon",
   NULL,
   PACKAGE_VERSION,
@@ -38,11 +41,69 @@ const Ecore_Getopt optdesc = {
   }
 };
 
-static int
+static Eina_Bool
 _explicitd_idler_save(void *data)
 {
+   Explicit_Cache *cache = data;
+
    /* Check if we need to save eet files databases. */
-   /* And save it. */
+   if (cache->changed)
+     {
+	Eet_File *sync_cache;
+	char buffer[PATH_MAX];
+	char buffer_final[PATH_MAX];
+	int i;
+
+	/* First try to save the cache. */
+	strcpy(buffer, cf);
+	strcat(buffer, "-tmp");
+	sync_cache = eet_open(buffer, EET_FILE_MODE_WRITE);
+	if (!sync_cache)
+	  return 0;
+
+	if (!eet_data_write(sync_cache, _explicit_cache_descriptor, "explicit", cache, 1))
+	  goto on_error;
+
+	if (eet_close(sync_cache) != EET_ERROR_NONE)
+	  goto on_error_closed;
+
+	/* Then make all backup file older. */
+	for (i = 9; i >= 0; -i)
+	  {
+	     char buffer_in[PATH_MAX];
+	     char buffer_out[PATH_MAX];
+
+	     strcpy(buffer_in, cf);
+	     eina_convert_itoa(i, buffer_in + cf_length);
+
+	     strcpy(buffer_out, cf);
+	     eina_convert_itoa(i + 1, buffer_out + cf_length);
+
+	     rename(buffer_in, buffer_out);
+	  }
+
+	/* Move the newly saved file to first backup file. */
+	strcpy(buffer_final, cf);
+	eina_convert_itoa(0, buffer_final + cf_length);
+
+	rename(buffer, buffer_final);
+
+	/* Remove backup 10 if everything succeeded. */
+	strcpy(buffer, cf);
+	eina_convert_itoa(10, buffer + cf_length);
+
+	unlink(buffer);
+
+	cache->changed = EINA_FALSE;
+
+	return 1;
+
+     on_error:
+	eet_close(sync_cache);
+     on_error_closed:
+	unlink(buffer);
+	return 0;
+     }
 
    return 0;
 }
@@ -54,14 +115,12 @@ main(int argc, char **argv)
    Ecore_Con_Server *conn = NULL;
    Explicit_Cache *cache = NULL;
    Eet_File *cache_file = NULL;
-   char *cf = NULL;
    char *server = EXPLICIT_REMOTE_SERVER;
    char *chroot_dir = NULL;
    char *user = NULL;
    char *cf_dir = NULL;
    Eina_Bool quit_option = EINA_FALSE;
    int port = EXPLICIT_REMOTE_PORT;
-   int cf_length = 0;
    int i;
 
    Ecore_Getopt_Value values[] = {
@@ -140,13 +199,15 @@ main(int argc, char **argv)
 
    /* Start listening server */
    conn = ecore_con_server_add(ECORE_CON_REMOTE_TCP, server, port,
-			       /* Pointer to root cache needed */ NULL);
+			       /* Pointer to root cache needed */ cache);
 
+   /* FIXME: setup the idler when cache changed. */
    /* Setup idler to save eet files databases update */
    idler = ecore_idle_enterer_add(_explicitd_idler_save,
-				  /* Pointer to root cache needed */ NULL);
+				  /* Pointer to root cache needed */ cache);
 
    /* Wait for request and download */
+   ecore_main_loop_begin();
 
    explicit_edd_file_shutdown();
 
