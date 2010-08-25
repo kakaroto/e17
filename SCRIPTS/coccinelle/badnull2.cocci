@@ -15,6 +15,7 @@
 @fix disable is_null,isnt_null1 @
 expression E, x;
 identifier x2;
+identifier fnassert ~= "\(EXALT_ASSERT.*\|ASSERT.*\|assert\|fail_if\|fail_unless\|g_return_if_fail\|g_return_val_if_fail\|REQUIRE_RVAL\|REQUIRE\|TEST_FAIL_IF\)";
 identifier fn;
 type T;
 @@
@@ -31,6 +32,8 @@ type T;
 |
 -  T x2 = (E != NULL);
 +  T x2 = !!E;
+|
+   fnassert(...)
 |
 -  E == NULL
 +  !E
