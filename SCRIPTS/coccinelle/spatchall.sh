@@ -85,7 +85,7 @@ for d in $TARGETS; do
 	#  config.h, stdarg.h, stddef.h, Evil.h
 		;;
 	evas)
-		call_spatch $d -I /usr/include/valgrind/ -I /usr/include/librsvg-2 -I ${TOPDIR}/eet/src/lib/ -I src/lib/ -I src/modules/engines/buffer/ $(for i in src/lib/{include,file,cserve}; do echo -I $i; done)
+		call_spatch $d -I /usr/include/valgrind/ -I /usr/include/librsvg-2 -I ${TOPDIR}/eet/src/lib/ -I src/lib/ -I src/modules/engines/buffer/ $(for i in ${TOPDIR}/evas/src/lib/{include,file,cserve}; do echo -I $i; done)
 	# missing headers:
 	#  windows.h, config.h, Evil.h, altivec.h, Edb.h,
 	#  pixman.h, GL/wglew.h, ApplicationServices/ApplicationServices.h
@@ -93,7 +93,7 @@ for d in $TARGETS; do
 
 		;;
         ecore)
-		call_spatch $d -I /usr/include/glib-2.0/ -I ${TOPDIR}/eina/src/include/ -I ${TOPDIR}/eet/src/lib/ $(for i in src/lib/ecore*; do echo -I $i; done) 
+		call_spatch $d -I /usr/include/glib-2.0/ -I ${TOPDIR}/eina/src/include/ -I ${TOPDIR}/eet/src/lib/ $(for i in ${TOPDIR}/ecore/src/lib/ecore*; do echo -I $i; done) 
 	# missing headers:
 	#  windows.h, config.h, Evas_Engine_SDL.h, Evas_Engine_GL_SDL.h,
 	#  Evil.h, float.h, ieeefp.h, winsock2.h, process.h, winsock2.h,
@@ -112,7 +112,7 @@ for d in $TARGETS; do
 	#  config.h, stddef.h
 		;;
 	e_dbus)
-		call_spatch $d -I ${TOPDIR}/eina/src/include/ $(for i in ${TOPDIR}/ecore/src/lib/ecore*; do echo -I $i; done) $(for i in src/lib/{bluez,connman,dbus,hal,notification,ofono,ukit}; do echo -I $i; done) \
+		call_spatch $d -I ${TOPDIR}/eina/src/include/ $(for i in ${TOPDIR}/ecore/src/lib/ecore*; do echo -I $i; done) $(for i in ${TOPDIR}/e_dbus/src/lib/{bluez,connman,dbus,hal,notification,ofono,ukit}; do echo -I $i; done) \
 	# missing headers:
 	#  config.h, stddef.h
 		;;
