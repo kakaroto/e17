@@ -612,7 +612,7 @@ _places_free_space_get(const char *mount)
 static void
 _places_error_show(const char *title, const char *text1, const char *text2, const char *text3)
 {
-   char str[4096];
+   char str[PATH_MAX];
    E_Dialog *dia;
 
    snprintf(str, sizeof(str),"%s<br><br>%s<br>%s", text1, text2, text3);
