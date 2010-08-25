@@ -2,7 +2,7 @@
 #include "config.h"
 #include "e_mod_main.h"
 
-struct _E_Config_Dialog_Data 
+struct _E_Config_Dialog_Data
 {
    int auto_mount;
    int auto_open;
@@ -27,7 +27,7 @@ static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
 /* External Functions */
 E_Config_Dialog *
-e_int_config_places_module(E_Container *con, const char *params) 
+e_int_config_places_module(E_Container *con, const char *params)
 {
    E_Config_Dialog *cfd = NULL;
    E_Config_Dialog_View *v = NULL;
@@ -48,7 +48,7 @@ e_int_config_places_module(E_Container *con, const char *params)
    snprintf(buf, sizeof(buf), "%s/e-module-places.edj", places_conf->module->dir);
 
    /* create new config dialog */
-   cfd = e_config_dialog_new(con, D_("Places Configuration"), "Places", 
+   cfd = e_config_dialog_new(con, D_("Places Configuration"), "Places",
                              "fileman/places", buf, 0, v, NULL);
    places_conf->cfd = cfd;
    return cfd;
@@ -56,7 +56,7 @@ e_int_config_places_module(E_Container *con, const char *params)
 
 /* Local Functions */
 static void *
-_create_data(E_Config_Dialog *cfd) 
+_create_data(E_Config_Dialog *cfd)
 {
    E_Config_Dialog_Data *cfdata = NULL;
 
@@ -65,16 +65,16 @@ _create_data(E_Config_Dialog *cfd)
    return cfdata;
 }
 
-static void 
-_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
+static void
+_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    free(cfdata->fm);
    places_conf->cfd = NULL;
    E_FREE(cfdata);
 }
 
-static void 
-_fill_data(E_Config_Dialog_Data *cfdata) 
+static void
+_fill_data(E_Config_Dialog_Data *cfdata)
 {
    /* load a temp copy of the config variables */
    cfdata->auto_mount = places_conf->auto_mount;
@@ -87,7 +87,7 @@ _fill_data(E_Config_Dialog_Data *cfdata)
    cfdata->show_root = places_conf->show_root;
    cfdata->show_temp = places_conf->show_temp;
    cfdata->show_bookm = places_conf->show_bookm;
-   
+
    if (places_conf->fm)
      cfdata->fm = strdup(places_conf->fm);
    else
@@ -99,16 +99,16 @@ void _custom_fm_click(void *data, Evas_Object *obj)
    E_Config_Dialog_Data *cfdata = data;
 
    if (e_widget_check_checked_get(obj))
-      e_widget_disabled_set(cfdata->entry, 0);
+     e_widget_disabled_set(cfdata->entry, 0);
    else
-   {
-      e_widget_disabled_set(cfdata->entry, 1);
-      e_widget_entry_text_set(cfdata->entry, "");
-   }
+     {
+        e_widget_disabled_set(cfdata->entry, 1);
+        e_widget_entry_text_set(cfdata->entry, "");
+     }
 }
 
 static Evas_Object *
-_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata) 
+_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o = NULL, *of = NULL, *ow = NULL;
 
@@ -169,8 +169,8 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    return o;
 }
 
-static int 
-_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
+static int
+_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    places_conf->show_menu = cfdata->show_menu;
    places_conf->auto_mount = cfdata->auto_mount;

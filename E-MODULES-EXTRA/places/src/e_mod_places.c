@@ -48,10 +48,10 @@ void
 places_init(void)
 {
    volumes = NULL;
-   
+
    /* theme file (maybe check if found in the current theme) */
    snprintf(theme_file, PATH_MAX, "%s/e-module-places.edj", places_conf->module->dir);
-   
+
    conn = e_dbus_bus_get(DBUS_BUS_SYSTEM);
    if (!conn)
    {
@@ -82,14 +82,14 @@ places_shutdown(void)
 {
    if (poller) ecore_timer_del(poller);
 
-   if (conn) 
+   if (conn)
      {
         e_dbus_signal_handler_del(conn, sh_added);
         e_dbus_signal_handler_del(conn, sh_removed);
      }
 
    while (volumes)
-      _places_volume_del((Volume*)volumes->data);
+     _places_volume_del((Volume*)volumes->data);
 
    if (conn) e_dbus_connection_close(conn);
 }
@@ -128,28 +128,28 @@ _places_custom_volume(Evas_Object *box, const char *label, const char *icon, con
    /* volume object */
    o = edje_object_add(evas_object_evas_get(box));
    edje_object_file_set(o, theme_file, "modules/places/main");
-   
+
    /* icon */
    i = edje_object_add(evas_object_evas_get(box));
    //edje_object_file_set(icon, theme_file, vol->icon);
    edje_object_file_set(i, e_theme_edje_file_get("base/theme/fileman", icon),
                         icon);
    edje_object_part_swallow(o, "icon", i);
-   
+
    /* label */
    edje_object_part_text_set(o, "volume_label", label);
-   
+
    /* gauge */
    edje_object_signal_emit(o, "gauge,hide", "places");
    edje_object_part_text_set(o, "size_label", "");
-   
-   
+
+
    /* orient the separator*/
    if (!e_box_orientation_get(box))
       edje_object_signal_emit(o, "separator,set,horiz", "places");
    else
       edje_object_signal_emit(o, "separator,set,vert", "places");
-   
+
    /* connect signals from edje */
    edje_object_signal_callback_add(o, "icon,activated", "places",
                                    _places_custom_icon_activated_cb, (void*)uri);
@@ -158,16 +158,13 @@ _places_custom_volume(Evas_Object *box, const char *label, const char *icon, con
    evas_object_show(o);
    edje_object_size_min_get(o, &min_w, &min_h);
    edje_object_size_max_get(o, &max_w, &max_h);
-   //if (!strcmp(vol->mount_point, "/"))
-   //   e_box_pack_start(box, o);
-   //else
-      e_box_pack_end(box, o);
+   e_box_pack_end(box, o);
    e_box_pack_options_set(o,
-                           1, 0, /* fill */
-                           1, 0, /* expand */
-                           0.5, 0.0, /* align */
-                           min_w, min_h, /* min */
-                           max_w, max_h /* max */
+                          1, 0, /* fill */
+                          1, 0, /* expand */
+                          0.5, 0.0, /* align */
+                          min_w, min_h, /* min */
+                          max_w, max_h /* max */
                          );
 }
 
@@ -194,102 +191,102 @@ places_fill_box(Evas_Object *box)
 
    volumes = eina_list_sort(volumes, 0, _places_volume_sort_cb);
    for (l = volumes; l; l = l->next)
-   {
-      Volume *vol = l->data;
+     {
+        Volume *vol = l->data;
 
-      if (!vol->valid) continue;
+        if (!vol->valid) continue;
 
-      /* volume object */
-      o = edje_object_add(evas_object_evas_get(box));
-      edje_object_file_set(o, theme_file, "modules/places/main");
-      vol->obj = o;
+        /* volume object */
+        o = edje_object_add(evas_object_evas_get(box));
+        edje_object_file_set(o, theme_file, "modules/places/main");
+        vol->obj = o;
 
-      //set volume label
-      if (vol->label && strlen(vol->label) > 0)
-         edje_object_part_text_set(o, "volume_label", vol->label);
-      else if (vol->mount_point && !strcmp(vol->mount_point, "/"))
-         edje_object_part_text_set(o, "volume_label", D_("Filesystem"));
-      else if (vol->mount_point && strlen(vol->mount_point) > 0)
-         edje_object_part_text_set(o, "volume_label",
-                                   ecore_file_file_get(vol->mount_point));
-      else
-         edje_object_part_text_set(o, "volume_label", D_("No Name"));
+        //set volume label
+        if (vol->label && strlen(vol->label) > 0)
+          edje_object_part_text_set(o, "volume_label", vol->label);
+        else if (vol->mount_point && !strcmp(vol->mount_point, "/"))
+          edje_object_part_text_set(o, "volume_label", D_("Filesystem"));
+        else if (vol->mount_point && strlen(vol->mount_point) > 0)
+          edje_object_part_text_set(o, "volume_label",
+                                    ecore_file_file_get(vol->mount_point));
+        else
+          edje_object_part_text_set(o, "volume_label", D_("No Name"));
 
-      //set free label e gauge
-      _places_update_size(o, vol);
+        //set free label e gauge
+        _places_update_size(o, vol);
 
-      //choose icon
-      vol->icon = "e/icons/drive-harddisk";
-      if (!strcmp(vol->drive_type, "cdrom"))
-         vol->icon = "e/icons/drive-optical";
-      else if (!strcmp(vol->model, "\"PSP\" MS"))
-         vol->icon = "modules/places/icon/psp";
-      else if (!strcmp(vol->drive_type, "sd_mmc"))
-         vol->icon = "modules/places/icon/sdmmc";
-      else if (!strcmp(vol->drive_type, "memory_stick"))
-         vol->icon = "modules/places/icon/ms";
-      else if (!strcmp(vol->model, "iPod"))
-         vol->icon = "modules/places/icon/ipod";
-      else if (!strcmp(vol->bus, "usb") && !strcmp(vol->drive_type, "disk"))
-         vol->icon = "e/icons/drive-removable-media";
+        //choose icon
+        vol->icon = "e/icons/drive-harddisk";
+        if (!strcmp(vol->drive_type, "cdrom"))
+          vol->icon = "e/icons/drive-optical";
+        else if (!strcmp(vol->model, "\"PSP\" MS"))
+          vol->icon = "modules/places/icon/psp";
+        else if (!strcmp(vol->drive_type, "sd_mmc"))
+          vol->icon = "modules/places/icon/sdmmc";
+        else if (!strcmp(vol->drive_type, "memory_stick"))
+          vol->icon = "modules/places/icon/ms";
+        else if (!strcmp(vol->model, "iPod"))
+          vol->icon = "modules/places/icon/ipod";
+        else if (!strcmp(vol->bus, "usb") && !strcmp(vol->drive_type, "disk"))
+          vol->icon = "e/icons/drive-removable-media";
 
-      //set partition type tag
-      if (!strcmp(vol->fstype, "ext2") || !strcmp(vol->fstype, "ext3") ||
-          !strcmp(vol->fstype, "ext4") || !strcmp(vol->fstype, "reiserfs"))
-         edje_object_signal_emit(o, "icon,tag,ext3", "places");
-      else if (!strcmp(vol->fstype, "vfat") || !strcmp(vol->fstype, "ntfs") ||
-               !strcmp(vol->fstype, "ntfs-3g"))
-         edje_object_signal_emit(o, "icon,tag,fat", "places");
-      else if (!strcmp(vol->fstype, "hfs") || !strcmp(vol->fstype, "hfsplus"))
-         edje_object_signal_emit(o, "icon,tag,hfs", "places");
-      else if (!strcmp(vol->fstype, "udf"))
-            edje_object_signal_emit(o, "icon,tag,dvd", "places");
+        //set partition type tag
+        if (!strcmp(vol->fstype, "ext2") || !strcmp(vol->fstype, "ext3") ||
+            !strcmp(vol->fstype, "ext4") || !strcmp(vol->fstype, "reiserfs"))
+          edje_object_signal_emit(o, "icon,tag,ext3", "places");
+        else if (!strcmp(vol->fstype, "vfat") || !strcmp(vol->fstype, "ntfs") ||
+                 !strcmp(vol->fstype, "ntfs-3g"))
+          edje_object_signal_emit(o, "icon,tag,fat", "places");
+        else if (!strcmp(vol->fstype, "hfs") || !strcmp(vol->fstype, "hfsplus"))
+          edje_object_signal_emit(o, "icon,tag,hfs", "places");
+        else if (!strcmp(vol->fstype, "udf"))
+          edje_object_signal_emit(o, "icon,tag,dvd", "places");
 
-      //set icon
-      icon = edje_object_add(evas_object_evas_get(box));
-      if (strncmp(vol->icon, "e/", 2))
-         edje_object_file_set(icon, theme_file, vol->icon);
-      else
-         edje_object_file_set(icon,
-                              e_theme_edje_file_get("base/theme/fileman",
-                                                    vol->icon), vol->icon);
-      edje_object_part_swallow(o, "icon", icon);
+        //set icon
+        icon = edje_object_add(evas_object_evas_get(box));
+        if (strncmp(vol->icon, "e/", 2))
+          edje_object_file_set(icon, theme_file, vol->icon);
+        else
+          edje_object_file_set(icon,
+                               e_theme_edje_file_get("base/theme/fileman",
+                                                     vol->icon), vol->icon);
+        edje_object_part_swallow(o, "icon", icon);
 
-      //set mount/eject icon
-      if (vol->requires_eject || (vol->mounted && strcmp(vol->mount_point, "/")) ||
-          !strcmp(vol->bus, "usb")) //Some usb key don't have requires_eject set (probably an hal error)
-        edje_object_signal_emit(o, "icon,eject,show", "places");
-      else
-        edje_object_signal_emit(o, "icon,eject,hide", "places");
+        //set mount/eject icon
+        if (vol->requires_eject || (vol->mounted && strcmp(vol->mount_point, "/")) ||
+            !strcmp(vol->bus, "usb")) //Some usb key don't have requires_eject set (probably an hal error)
+          edje_object_signal_emit(o, "icon,eject,show", "places");
+        else
+          edje_object_signal_emit(o, "icon,eject,hide", "places");
 
-      /* orient the separator*/
-      if (!e_box_orientation_get(box))
-         edje_object_signal_emit(o, "separator,set,horiz", "places");
-      else
-         edje_object_signal_emit(o, "separator,set,vert", "places");
-      
-      /* connect signals from edje */
-      edje_object_signal_callback_add(o, "icon,activated", "places",
-                                      _places_icon_activated_cb, vol);
-      edje_object_signal_callback_add(o, "eject,activated", "places",
-                                      _places_eject_activated_cb, vol);
+        /* orient the separator*/
+        if (!e_box_orientation_get(box))
+          edje_object_signal_emit(o, "separator,set,horiz", "places");
+        else
+          edje_object_signal_emit(o, "separator,set,vert", "places");
 
-      /* pack the volume in the box */
-      evas_object_show(o);
-      edje_object_size_min_get(o, &min_w, &min_h);
-      edje_object_size_max_get(o, &max_w, &max_h);
-      if (!strcmp(vol->mount_point, "/"))
-         e_box_pack_start(box, o);
-      else
-         e_box_pack_end(box, o);
-      e_box_pack_options_set(o,
-                              1, 0, /* fill */
-                              1, 0, /* expand */
-                              0.5, 0.0, /* align */
-                              min_w, min_h, /* min */
-                              max_w, max_h /* max */
-                            );
-   }
+        /* connect signals from edje */
+        edje_object_signal_callback_add(o, "icon,activated", "places",
+                                        _places_icon_activated_cb, vol);
+        edje_object_signal_callback_add(o, "eject,activated", "places",
+                                        _places_eject_activated_cb, vol);
+
+        /* pack the volume in the box */
+        evas_object_show(o);
+        edje_object_size_min_get(o, &min_w, &min_h);
+        edje_object_size_max_get(o, &max_w, &max_h);
+        if (!strcmp(vol->mount_point, "/"))
+          e_box_pack_start(box, o);
+        else
+          e_box_pack_end(box, o);
+        e_box_pack_options_set(o,
+                               1, 0, /* fill */
+                               1, 0, /* expand */
+                               0.5, 0.0, /* align */
+                               min_w, min_h, /* min */
+                               max_w, max_h /* max */
+                              );
+     }
 }
 
 void
@@ -300,23 +297,23 @@ places_empty_box(Evas_Object *box)
    e_box_freeze(box);
    count = e_box_pack_count_get(box);
    while (count >= 0)
-   {
-      Evas_Object *o;
-      Evas_Object *swal;
+     {
+        Evas_Object *o;
+        Evas_Object *swal;
 
-      o = e_box_pack_object_nth(box, count);
-      swal = edje_object_part_swallow_get(o, "icon");
-      if (swal)
-      {
-         edje_object_part_unswallow(o, swal);
-         evas_object_del(swal);
-      }
+        o = e_box_pack_object_nth(box, count);
+        swal = edje_object_part_swallow_get(o, "icon");
+        if (swal)
+          {
+             edje_object_part_unswallow(o, swal);
+             evas_object_del(swal);
+          }
 
-      e_box_unpack(o);
-      evas_object_del(o);
+        e_box_unpack(o);
+        evas_object_del(o);
 
-      count--;
-   }
+        count--;
+     }
    e_box_thaw(box);
 }
 
@@ -333,33 +330,34 @@ places_parse_bookmarks(E_Menu *em)
    snprintf(buf, sizeof(buf), "%s/.gtk-bookmarks", e_user_homedir_get());
    fp = fopen(buf, "r");
    if (fp)
-   {
-      while(fgets(line, sizeof(line), fp))
-      {
-         alias = NULL;
-         line[strlen(line) - 1] = '\0';
-         alias = strchr(line, ' ');
-         if (alias)
-         {
-            line[alias-line] =  '\0';
-            alias++;
-         }
-         uri = efreet_uri_decode(line);
-         if (uri && uri->path)
-         {
-            if (ecore_file_exists(uri->path))
-            {
-               mi = e_menu_item_new(em);
-               e_menu_item_label_set(mi, alias ? alias :
-                                        ecore_file_file_get(uri->path));
-               e_util_menu_item_theme_icon_set(mi, "folder");
-               e_menu_item_callback_set(mi, _places_run_fm, strdup(uri->path)); //TODO free somewhere
-            }
-         }
-         if (uri) efreet_uri_free(uri);
-      }
-      fclose(fp);
-   }
+     {
+        while(fgets(line, sizeof(line), fp))
+          {
+             alias = NULL;
+             line[strlen(line) - 1] = '\0';
+             alias = strchr(line, ' ');
+             if (alias)
+               {
+                  line[alias-line] =  '\0';
+                  alias++;
+               }
+             uri = efreet_uri_decode(line);
+             if (uri && uri->path)
+               {
+                  if (ecore_file_exists(uri->path))
+                    {
+                       mi = e_menu_item_new(em);
+                       e_menu_item_label_set(mi, alias ? alias :
+                                             ecore_file_file_get(uri->path));
+                       e_util_menu_item_theme_icon_set(mi, "folder");
+                       e_menu_item_callback_set(mi, _places_run_fm,
+                                                strdup(uri->path)); //TODO free somewhere
+                    }
+               }
+             if (uri) efreet_uri_free(uri);
+          }
+        fclose(fp);
+     }
 }
 
 void
@@ -376,97 +374,97 @@ places_generate_menu(void *data, E_Menu *em)
 
    /* Home */
    if (places_conf->show_home)
-   {
-      mi = e_menu_item_new(em);
-      e_menu_item_label_set(mi, D_("Home"));
-      e_util_menu_item_theme_icon_set(mi, "user-home");
-      e_menu_item_callback_set(mi, _places_run_fm, (char*)e_user_homedir_get());
-   }
+     {
+        mi = e_menu_item_new(em);
+        e_menu_item_label_set(mi, D_("Home"));
+        e_util_menu_item_theme_icon_set(mi, "user-home");
+        e_menu_item_callback_set(mi, _places_run_fm, (char*)e_user_homedir_get());
+     }
 
    /* Desktop */
    if (places_conf->show_desk)
-   {
-      mi = e_menu_item_new(em);
-      e_menu_item_label_set(mi, D_("Desktop"));
-      e_util_menu_item_theme_icon_set(mi, "user-desktop");
-      snprintf(buf, sizeof(buf), "%s/Desktop", (char*)e_user_homedir_get());
-      e_menu_item_callback_set(mi, _places_run_fm, strdup(buf)); //TODO free somewhere
-   }
+     {
+        mi = e_menu_item_new(em);
+        e_menu_item_label_set(mi, D_("Desktop"));
+        e_util_menu_item_theme_icon_set(mi, "user-desktop");
+        snprintf(buf, sizeof(buf), "%s/Desktop", (char*)e_user_homedir_get());
+        e_menu_item_callback_set(mi, _places_run_fm, strdup(buf)); //TODO free somewhere
+     }
 
    /* Trash */
    if (places_conf->show_trash)
-   {
-      mi = e_menu_item_new(em);
-      e_menu_item_label_set(mi, D_("Trash"));
-      e_util_menu_item_theme_icon_set(mi, "folder");
-      e_menu_item_callback_set(mi, _places_run_fm, "trash:///");
-   }
+     {
+        mi = e_menu_item_new(em);
+        e_menu_item_label_set(mi, D_("Trash"));
+        e_util_menu_item_theme_icon_set(mi, "folder");
+        e_menu_item_callback_set(mi, _places_run_fm, "trash:///");
+     }
 
    /* File System */
    if (places_conf->show_root)
-   {
-      mi = e_menu_item_new(em);
-      e_menu_item_label_set(mi, D_("Filesystem"));
-      e_util_menu_item_theme_icon_set(mi, "drive-harddisk");
-      e_menu_item_callback_set(mi, _places_run_fm, "/");
-   }
+     {
+        mi = e_menu_item_new(em);
+        e_menu_item_label_set(mi, D_("Filesystem"));
+        e_util_menu_item_theme_icon_set(mi, "drive-harddisk");
+        e_menu_item_callback_set(mi, _places_run_fm, "/");
+     }
 
    /* Temp */
    if (places_conf->show_temp)
-   {
-      mi = e_menu_item_new(em);
-      e_menu_item_label_set(mi, D_("Temp"));
-      e_util_menu_item_theme_icon_set(mi, "user-temp");
-      e_menu_item_callback_set(mi, _places_run_fm, "/tmp");
-   }
+     {
+        mi = e_menu_item_new(em);
+        e_menu_item_label_set(mi, D_("Temp"));
+        e_util_menu_item_theme_icon_set(mi, "user-temp");
+        e_menu_item_callback_set(mi, _places_run_fm, "/tmp");
+     }
 
    //separator
    if (places_conf->show_home || places_conf->show_desk ||
        places_conf->show_trash || places_conf->show_root ||
        places_conf->show_temp)
-   {
-      mi = e_menu_item_new(em);
-      e_menu_item_separator_set(mi, 1);
-   }
+     {
+        mi = e_menu_item_new(em);
+        e_menu_item_separator_set(mi, 1);
+     }
 
    /* Volumes */
    Eina_Bool volumes_visible = 0;
    const Eina_List *l;
    Volume *vol;
    EINA_LIST_FOREACH(volumes, l, vol)
-   {
-      if (!vol->valid) continue;
-      if (vol->mount_point && !strcmp(vol->mount_point, "/")) continue;
+     {
+        if (!vol->valid) continue;
+        if (vol->mount_point && !strcmp(vol->mount_point, "/")) continue;
 
-      mi = e_menu_item_new(em);
-      if ((vol->label) && (vol->label[0] != '\0'))
-         e_menu_item_label_set(mi, vol->label);
-      else
-         e_menu_item_label_set(mi, ecore_file_file_get(vol->mount_point));
+        mi = e_menu_item_new(em);
+        if ((vol->label) && (vol->label[0] != '\0'))
+          e_menu_item_label_set(mi, vol->label);
+        else
+          e_menu_item_label_set(mi, ecore_file_file_get(vol->mount_point));
 
-      if (vol->icon)
-      {
-         if (strncmp(vol->icon, "e/", 2))
-            e_menu_item_icon_edje_set(mi, theme_file, vol->icon);
-         else
-            e_menu_item_icon_edje_set(mi,
-                                      e_theme_edje_file_get("base/theme/fileman",
-                                                            vol->icon), vol->icon);
-      }
-      e_menu_item_callback_set(mi, places_menu_click_cb, (void*)vol);
-      volumes_visible = 1;
-   }
+        if (vol->icon)
+          {
+             if (strncmp(vol->icon, "e/", 2))
+               e_menu_item_icon_edje_set(mi, theme_file, vol->icon);
+             else
+               e_menu_item_icon_edje_set(mi,
+                                    e_theme_edje_file_get("base/theme/fileman",
+                                                          vol->icon), vol->icon);
+          }
+        e_menu_item_callback_set(mi, places_menu_click_cb, (void*)vol);
+        volumes_visible = 1;
+     }
 
    /* Favorites */
    if (places_conf->show_bookm)
-   {
-      if (volumes_visible)
-	{
-	   mi = e_menu_item_new(em);
-	   e_menu_item_separator_set(mi, 1);
-	}
-      places_parse_bookmarks(em);
-   }
+     {
+        if (volumes_visible)
+          {
+             mi = e_menu_item_new(em);
+             e_menu_item_separator_set(mi, 1);
+          }
+        places_parse_bookmarks(em);
+     }
 
    e_menu_pre_activate_callback_set(em, NULL, NULL);
 }
@@ -523,7 +521,7 @@ _places_volume_add(const char *udi)
 {
    Volume *v;
    if (!udi) return;
-   
+
    v = E_NEW(Volume, 1);
    if (!v) return;
 
@@ -533,16 +531,16 @@ _places_volume_add(const char *udi)
    v->icon = NULL;
    v->to_mount = 0;
    v->force_open = 0;
-   
+
    if (places_conf->auto_mount)
-      v->to_mount = 1;
-   
+     v->to_mount = 1;
+
    if (places_conf->auto_open)
-      v->force_open = 1;
-   
+     v->force_open = 1;
+
    volumes = eina_list_append(volumes, v);
    e_hal_device_get_all_properties(conn, v->udi, _places_volume_properties_cb, v);
-   
+
    v->sh_prop = e_dbus_signal_handler_add(conn, "org.freedesktop.Hal", v->udi,
                                           "org.freedesktop.Hal.Device",
                                           "PropertyModified",
@@ -571,28 +569,28 @@ _places_human_size_get(unsigned long long size)
 {
    double dsize;
    char hum[32], *suffix;
-   
+
    dsize = (double)size;
    if (dsize < 1024)
-      snprintf(hum, sizeof(hum), "%.0fb", dsize);
+     snprintf(hum, sizeof(hum), "%.0fb", dsize);
    else
-   {
-      dsize /= 1024.0;
-      if (dsize < 1024)
-         suffix = "KB";
-      else
-      {
-         dsize /= 1024.0;
-         if (dsize < 1024)
-            suffix = "MB";
-         else
-         {
-            dsize /= 1024.0;
-            suffix = "GB";
-         }
-      }
-      snprintf(hum, sizeof(hum), "%.1f%s", dsize, suffix);
-   }
+     {
+        dsize /= 1024.0;
+        if (dsize < 1024)
+          suffix = "KB";
+        else
+          {
+             dsize /= 1024.0;
+             if (dsize < 1024)
+               suffix = "MB";
+             else
+               {
+                  dsize /= 1024.0;
+                  suffix = "GB";
+               }
+          }
+        snprintf(hum, sizeof(hum), "%.1f%s", dsize, suffix);
+     }
 
    return eina_stringshare_add(hum);
 }
@@ -604,7 +602,7 @@ _places_free_space_get(const char *mount)
 //printf("GET SPACE of %s\n", mount);
    if (!mount) return 0;
    if (statvfs(mount, &s) != 0)
-      return 0;
+     return 0;
 //printf("   SPACE %d\n", (s.f_bfree * s.f_bsize));
    return (unsigned long long)s.f_bavail * (unsigned long long)s.f_bsize;
 }
@@ -616,7 +614,7 @@ _places_error_show(const char *title, const char *text1, const char *text2, cons
    E_Dialog *dia;
 
    snprintf(str, sizeof(str),"%s<br><br>%s<br>%s", text1, text2, text3);
-   
+
    dia = e_dialog_new(NULL, "E", "_places_error");
    e_dialog_title_set(dia, title);
    e_dialog_icon_set(dia, "drive-harddisk", 64);
@@ -641,8 +639,8 @@ _places_run_fm(void *data, E_Menu *m, E_Menu_Item *mi)
 
    if (places_conf->fm && (places_conf->fm[0] != '\0'))
      {
-	_places_run_fm_external(places_conf->fm, directory);
-	return;
+        _places_run_fm_external(places_conf->fm, directory);
+        return;
      }
 
    E_Action *act = e_action_find("fileman");
@@ -661,44 +659,44 @@ _places_update_size(Evas_Object *obj, Volume *vol)
    char buf2[16];
    const char *tot_h, *free_h;
    unsigned long long free;
-   
+
    //Free label
    tot_h = _places_human_size_get(vol->size);
    if (vol->mounted)
-   {
-      free = _places_free_space_get(vol->mount_point);
-      free_h = _places_human_size_get(free);
-      snprintf(buf, sizeof(buf), "%s %s %s",free_h, D_("free of"),tot_h);
-      edje_object_part_text_set(obj, "size_label", buf);
-      eina_stringshare_del(free_h);
-   }
+     {
+        free = _places_free_space_get(vol->mount_point);
+        free_h = _places_human_size_get(free);
+        snprintf(buf, sizeof(buf), "%s %s %s", free_h, D_("free of"), tot_h);
+        edje_object_part_text_set(obj, "size_label", buf);
+        eina_stringshare_del(free_h);
+     }
    else
-   {
-      snprintf(buf, sizeof(buf), D_("%s Not Mounted"), tot_h);
-      edje_object_part_text_set(obj, "size_label", buf);
-   }
+     {
+        snprintf(buf, sizeof(buf), D_("%s Not Mounted"), tot_h);
+        edje_object_part_text_set(obj, "size_label", buf);
+     }
    eina_stringshare_del(tot_h);
 
    //Gauge
    int percent;
    Edje_Message_Float msg_float;
-   
+
    if (vol->mounted)
-   {
-      percent = 100 - (((long double)free / (long double)vol->size) * 100);
-      snprintf(buf2, sizeof(buf2), "%d%%", percent);
-      edje_object_part_text_set(obj, "percent_label", buf2);
-   
-      msg_float.val = (float)percent / 100;
-      edje_object_message_send(obj, EDJE_MESSAGE_FLOAT, 1, &msg_float);
-      edje_object_part_text_set(obj, "eject_label", D_("unmount"));
-   }
+     {
+        percent = 100 - (((long double)free / (long double)vol->size) * 100);
+        snprintf(buf2, sizeof(buf2), "%d%%", percent);
+        edje_object_part_text_set(obj, "percent_label", buf2);
+
+        msg_float.val = (float)percent / 100;
+        edje_object_message_send(obj, EDJE_MESSAGE_FLOAT, 1, &msg_float);
+        edje_object_part_text_set(obj, "eject_label", D_("unmount"));
+     }
    else
-   {
-      edje_object_signal_emit(obj, "gauge,hide", "places");
-      edje_object_part_text_set(obj, "percent_label", "");
-      edje_object_part_text_set(obj, "eject_label", D_("eject"));
-   }
+     {
+        edje_object_signal_emit(obj, "gauge,hide", "places");
+        edje_object_part_text_set(obj, "percent_label", "");
+        edje_object_part_text_set(obj, "eject_label", D_("eject"));
+     }
 }
 
 static void
@@ -708,11 +706,12 @@ _places_mount_volume(Volume *vol)
    char buf[256];
 
    if ((!strcmp(vol->fstype, "vfat")) || (!strcmp(vol->fstype, "ntfs")))
-   {
-      snprintf(buf, sizeof(buf), "uid=%i", (int)getuid());
-      opt = eina_list_append(opt, buf);
-   }
-   e_hal_device_volume_mount(conn, vol->udi, vol->mount_point, vol->fstype, opt, _places_mount_cb, vol);
+     {
+        snprintf(buf, sizeof(buf), "uid=%i", (int)getuid());
+        opt = eina_list_append(opt, buf);
+     }
+   e_hal_device_volume_mount(conn, vol->udi, vol->mount_point, vol->fstype,
+                             opt, _places_mount_cb, vol);
    vol->to_mount = 0;
    eina_list_free(opt);
 }
@@ -728,12 +727,12 @@ _places_icon_activated_cb(void *data, Evas_Object *o, const char *emission, cons
    vol = data;
 
    if (vol->mounted)
-      _places_run_fm((void*)vol->mount_point, NULL, NULL);
+     _places_run_fm((void*)vol->mount_point, NULL, NULL);
    else
-   {
-      vol->force_open = 1;
-      _places_mount_volume(vol);
-   }
+     {
+        vol->force_open = 1;
+        _places_mount_volume(vol);
+     }
 }
 
 void
@@ -749,10 +748,10 @@ _places_eject_activated_cb(void *data, Evas_Object *o, const char *emission, con
    Volume *vol = data;
 
    if (vol->mounted)
-      e_hal_device_volume_unmount(conn, vol->udi, NULL, _places_unmount_cb, vol);
+     e_hal_device_volume_unmount(conn, vol->udi, NULL, _places_unmount_cb, vol);
    else
-      e_hal_device_volume_eject(conn, vol->udi, NULL, _places_eject_cb, vol);
-   
+     e_hal_device_volume_eject(conn, vol->udi, NULL, _places_eject_cb, vol);
+
 }
 
 /***********************/
@@ -764,10 +763,10 @@ _places_open_when_mounted(void *data)
    Volume *vol = data;
 
    if (vol->mount_point)
-   {
-      _places_run_fm((void*)vol->mount_point, NULL, NULL);
-      return EINA_FALSE;
-   }
+     {
+        _places_run_fm((void*)vol->mount_point, NULL, NULL);
+        return EINA_FALSE;
+     }
 
    return EINA_TRUE;
 }
@@ -778,17 +777,17 @@ _places_mount_cb(void *user_data, void *method_return, DBusError *error)
    Volume *vol = user_data;
 
    if (dbus_error_is_set(error))
-   {
-      _places_error_show("Mount Error", "Can't mount device.",error->name, error->message);
-      dbus_error_free(error);
-      return;
-   }
+     {
+        _places_error_show("Mount Error", "Can't mount device.",error->name, error->message);
+        dbus_error_free(error);
+        return;
+     }
 
    if (vol->force_open)
-   {
-      ecore_timer_add(0.1, _places_open_when_mounted, vol);
-      vol->force_open = 0;
-   }
+     {
+        ecore_timer_add(0.1, _places_open_when_mounted, vol);
+        vol->force_open = 0;
+     }
 }
 
 void
@@ -797,10 +796,10 @@ _places_unmount_cb(void *user_data, void *method_return, DBusError *error)
    Volume *vol = user_data;
 
    if (dbus_error_is_set(error))
-   {
-      _places_error_show("Unmount Error", "Can't unmount device.",error->name, error->message);
-      dbus_error_free(error);
-   }
+     {
+        _places_error_show("Unmount Error", "Can't unmount device.",error->name, error->message);
+        dbus_error_free(error);
+     }
 }
 
 void
@@ -809,10 +808,11 @@ _places_eject_cb(void *user_data, void *method_return, DBusError *error)
    Volume *vol = user_data;
 
    if (dbus_error_is_set(error))
-   {
-      _places_error_show("Eject Error", "Can't eject device.",error->name, error->message);
-      dbus_error_free(error);
-   }
+     {
+        _places_error_show("Eject Error", "Can't eject device.",
+                           error->name, error->message);
+        dbus_error_free(error);
+     }
 }
 
 /* Dbus CB - Generic device added */
@@ -826,8 +826,7 @@ _places_device_add_cb(void *data, DBusMessage *msg)
    dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &udi, DBUS_TYPE_INVALID);
 
    //printf("PLACES DBUS CB UDI:%s\n", udi);
-   e_hal_device_query_capability(conn, udi, "volume",
-                                 _places_volume_cb,
+   e_hal_device_query_capability(conn, udi, "volume", _places_volume_cb,
                                  (void*)eina_stringshare_add(udi));
 }
 
@@ -844,13 +843,13 @@ _places_device_rem_cb(void *data, DBusMessage *msg)
    dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &udi, DBUS_TYPE_INVALID);
 
    EINA_LIST_FOREACH(volumes, l, v)
-      if (!strcmp(v->udi, udi))
-      {
-         //~ printf("PLACES Removed %s\n", v->udi);
-         _places_volume_del(v);
-         places_update_all_gadgets();
-         return;
-      }
+     if (!strcmp(v->udi, udi))
+       {
+          //~ printf("PLACES Removed %s\n", v->udi);
+          _places_volume_del(v);
+          places_update_all_gadgets();
+          return;
+       }
 }
 
 /* Dbus CB - Called when a device change some properties */
@@ -869,19 +868,19 @@ _places_volume_all_cb(void *user_data, void *reply_data, DBusError *error)
    E_Hal_Manager_Find_Device_By_Capability_Return *ret = reply_data;
    Eina_List *l;
    char *udi;
-  
+
    if (!ret || !ret->strings) return;
 
-   if (dbus_error_is_set(error)) 
-   {
-      // XXX handle...
-      dbus_error_free(error);
-      return;
-   }
+   if (dbus_error_is_set(error))
+     {
+        // XXX handle...
+        dbus_error_free(error);
+        return;
+     }
 
    EINA_LIST_FOREACH(ret->strings, l, udi)
-      _places_volume_add(udi);
-   
+     _places_volume_add(udi);
+
    //TODO free ret??
 }
 
@@ -894,10 +893,10 @@ _places_volume_cb(void *user_data, void *reply_data, DBusError *error)
    E_Hal_Device_Query_Capability_Return *ret = reply_data;
 
    if (ret && ret->boolean)
-   {
-      //~ printf("PLACES DBUS CB UDI:%s\n", udi);
-      _places_volume_add(udi);
-   }
+     {
+        //~ printf("PLACES DBUS CB UDI:%s\n", udi);
+        _places_volume_add(udi);
+     }
 
    eina_stringshare_del(udi);
 }
@@ -913,12 +912,12 @@ _places_volume_properties_cb(void *data, void *reply_data, DBusError *error)
 
    /* skip volumes with volume.ignore set */
    if (e_hal_property_bool_get(reply, "volume.ignore", &err) || err)
-      return;
+     return;
 
    /* skip volumes that aren't filesystems */
    str = e_hal_property_string_get(reply, "volume.fsusage", &err);
    if (err || !str || strcmp(str, "filesystem"))
-      return;
+     return;
    //~ v->uuid = e_hal_property_string_get(ret, "volume.uuid", &err);
   //~ if (err) goto error;
 
@@ -934,7 +933,7 @@ _places_volume_properties_cb(void *data, void *reply_data, DBusError *error)
    if (!err) v->fstype = eina_stringshare_add(str);
 
    v->size = e_hal_property_uint64_get(reply, "volume.size", &err);
-   
+
   //~ v->partition = e_hal_property_bool_get(ret, "volume.is_partition", &err);
   //~ if (err) goto error;
 
@@ -946,9 +945,10 @@ _places_volume_properties_cb(void *data, void *reply_data, DBusError *error)
 
    str = e_hal_property_string_get(reply, "info.parent", &err);
    if (!err && str)
-   {
-      e_hal_device_get_all_properties(conn, str, _places_storage_properties_cb, v);
-   }
+     {
+        e_hal_device_get_all_properties(conn, str,
+                                        _places_storage_properties_cb, v);
+     }
 
    return;
 }
@@ -963,15 +963,15 @@ _places_storage_properties_cb(void *data, void *reply_data, DBusError *error)
    const char *str;
 
    if (!v) return;
-   if (dbus_error_is_set(error)) 
-   {
-      dbus_error_free(error);
-      return;
-   }
-   
+   if (dbus_error_is_set(error))
+     {
+        dbus_error_free(error);
+        return;
+     }
+
    str = e_hal_property_string_get(ret, "storage.bus", &err);
    if (!err) v->bus = eina_stringshare_add(str);
-   
+
    str = e_hal_property_string_get(ret, "storage.drive_type", &err);
    if (!err) v->drive_type = eina_stringshare_add(str);
 
@@ -993,29 +993,31 @@ _places_storage_properties_cb(void *data, void *reply_data, DBusError *error)
       //~ s->media_size = e_hal_property_uint64_get(ret, "storage.removable.media_size", &err);
    //~ }
 
-   
+
    //~ s->hotpluggable = e_hal_property_bool_get(ret, "storage.hotpluggable", &err);
    //~ s->media_check_enabled = e_hal_property_bool_get(ret, "storage.media_check_enabled", &err);
 
    //~ s->icon.drive = e_hal_property_string_get(ret, "storage.icon.drive", &err);
    //~ s->icon.volume = e_hal_property_string_get(ret, "storage.icon.volume", &err);
-   
+
    //_places_print_volume(v);  //Use this for debug
    v->valid = 1;
-   
+
    if (v->to_mount && !v->mounted)
      {
-	Eina_Bool enabled;
+        Eina_Bool enabled;
 
-	enabled = e_hal_property_bool_get(ret, "storage.automount_enabled_hint", &err);
-	if (err)
-	  enabled = 1; /* assume no property it is enabled */
+        enabled = e_hal_property_bool_get(ret, "storage.automount_enabled_hint",
+                                          &err);
+        if (err)
+          enabled = 1; /* assume no property it is enabled */
 
-	if (enabled)
-	  _places_mount_volume(v);
+        if (enabled)
+          _places_mount_volume(v);
      }
    v->to_mount = 0;
-   
+
    places_update_all_gadgets(); //TODO Update only this volume, not all
    return;
 }
+
