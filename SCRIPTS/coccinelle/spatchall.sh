@@ -50,7 +50,7 @@ function call_spatch {
 	spatch -sp $SCRIPT -macro_file_builtins ${TOPDIR}/SCRIPTS/coccinelle/ecocci.h \
 	       -I /usr/include/ -I /usr/local/include/ \
 	       $includes \
-	       -all_includes -relax_include_path -in_place $ARGS -dir ./
+	       -all_includes -include_headers -relax_include_path -in_place $ARGS -dir ./
 	popd
 }
 
