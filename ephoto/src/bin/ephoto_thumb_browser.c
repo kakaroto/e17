@@ -60,7 +60,7 @@ ephoto_create_thumb_browser(const char *directory)
         elm_box_pack_end(em->box, thbox);
 
         dir_label = elm_label_add(em->win);
-        elm_label_label_set(dir_label, buf);
+        elm_label_label_set(dir_label, current_directory);
         evas_object_size_hint_weight_set(dir_label, EVAS_HINT_EXPAND, 0.0);
         evas_object_size_hint_align_set(dir_label, 0.01, 0.5);
         elm_box_pack_end(thbox, dir_label);
