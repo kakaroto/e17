@@ -249,7 +249,7 @@ libast_fatal_error(const char *fmt, ...)
     va_list arg_ptr;
 
     ASSERT(!SPIF_PTR_ISNULL(fmt));
-    if ((!silent) && (libast_program_name != NULL)) {
+    if ((!silent) && (libast_program_name)) {
         va_start(arg_ptr, fmt);
         fprintf(stderr, "%s:  FATAL:  ", libast_program_name);
         vfprintf(stderr, fmt, arg_ptr);

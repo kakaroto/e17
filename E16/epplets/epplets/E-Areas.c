@@ -85,7 +85,7 @@ Epplet_gadget
 epp_create_std_button(int x, int y, char *std,
 		      void (*func) (void *data), void *data)
 {
-   assert(!!func);
+   assert(func != NULL);
    return Epplet_create_button(NULL, NULL, x, y, 0, 0, std, 0, NULL, func,
 			       data);
 }

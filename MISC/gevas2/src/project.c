@@ -55,7 +55,7 @@ gtk_marshal_INT__POINTER_POINTER (GClosure     *closure,
   register gpointer data1, data2;
   gint v_return;
 
-  g_return_if_fail (!!return_value);
+  g_return_if_fail (return_value != NULL);
   g_return_if_fail (n_param_values == 3);
 
   if (G_CCLOSURE_SWAP_DATA (closure))
@@ -122,7 +122,7 @@ gtk_marshal_BOOL__POINTER_INT_INT_INT (GClosure     *closure,
   register gpointer data1, data2;
   gint v_return = 0;
 
-  g_return_if_fail (!!return_value);
+  g_return_if_fail (return_value != NULL);
   g_return_if_fail (n_param_values == 5);
 
   if (G_CCLOSURE_SWAP_DATA (closure))
@@ -171,7 +171,7 @@ gtk_marshal_BOOL__INT_INT_INT (GClosure     *closure,
   register gpointer data1, data2;
   gint v_return;
 
-  g_return_if_fail (!!return_value);
+  g_return_if_fail (return_value != NULL);
   g_return_if_fail (n_param_values == 4);
 
   if (G_CCLOSURE_SWAP_DATA (closure))

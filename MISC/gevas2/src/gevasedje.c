@@ -179,7 +179,7 @@ static void gevasedje_destroy(GtkObject * object)
 {
 	GtkgEvasEdje *ev;
 
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEDJE(object));
 
 	ev = GTK_GEVASEDJE(object);
@@ -195,7 +195,7 @@ static void gevasedje_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasEdje *ev;
 
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEDJE(object));
 
 //    fprintf(stderr,"   gevasedje_set_arg() \n");
@@ -218,7 +218,7 @@ static void gevasedje_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasEdje *ev;
 
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEDJE(object));
 
 	ev = GTK_GEVASEDJE(object);

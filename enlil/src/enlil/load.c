@@ -66,13 +66,13 @@ Enlil_Load *enlil_load_new(Enlil_Root *root,
         Enlil_Load_Conf_Error_Cb error_cb,
         void *user_data)
 {
-    ASSERT_RETURN(!!root);
-    ASSERT_RETURN(!!album_done_cb);
-    ASSERT_RETURN(!!done_cb);
-    ASSERT_RETURN(!!error_cb);
+    ASSERT_RETURN(root!=NULL);
+    ASSERT_RETURN(album_done_cb!=NULL);
+    ASSERT_RETURN(done_cb!=NULL);
+    ASSERT_RETURN(error_cb!=NULL);
 
     Enlil_Load *load = calloc(1, sizeof(Enlil_Load));
-    ASSERT_RETURN(!!load);
+    ASSERT_RETURN(load!=NULL);
 
     load->root = root;
     load->conf.album_done_cb = album_done_cb;
@@ -84,7 +84,7 @@ Enlil_Load *enlil_load_new(Enlil_Root *root,
     pthread_mutex_lock(&(load->mutex));
 
     load->pipe.thread_main = ecore_pipe_add(_enlil_load_message_cb, load);
-    ASSERT_CUSTOM_RET(!!load->pipe.thread_main, enlil_load_free(&load); return NULL;);
+    ASSERT_CUSTOM_RET(load->pipe.thread_main != NULL, enlil_load_free(&load); return NULL;);
 
     return load;
 }
@@ -95,9 +95,9 @@ Enlil_Load *enlil_load_new(Enlil_Root *root,
  */
 void enlil_load_free(Enlil_Load **load)
 {
-    ASSERT_RETURN_VOID(!!load);
+    ASSERT_RETURN_VOID(load != NULL);
     Enlil_Load *_load = *load;
-    ASSERT_RETURN_VOID(!!_load);
+    ASSERT_RETURN_VOID(_load!=NULL);
 
     if(_load->is_running)
       {
@@ -117,7 +117,7 @@ void enlil_load_free(Enlil_Load **load)
  */
 void enlil_load_run(Enlil_Load *load)
 {
-    ASSERT_RETURN_VOID(!!load);
+    ASSERT_RETURN_VOID(load!=NULL);
     ASSERT_RETURN_VOID(load->is_running != 1);
 
     load->is_running = 1;

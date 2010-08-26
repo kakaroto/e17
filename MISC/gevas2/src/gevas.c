@@ -644,7 +644,7 @@ static void gevas_destroy(GtkObject*  object)
 
 //    fprintf(stderr,"gevas_destroy() 1 p:%p\n",object); 
 
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(object));
 	ev = GTK_GEVAS(object);
 
@@ -660,7 +660,7 @@ static void gevas_destroy(GtkObject*  object)
 static void gevas_finalize(GObject* object)
 {
 	GtkgEvas *ev;
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(object));
 	ev = GTK_GEVAS(object);
 
@@ -699,7 +699,7 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 {
 	GtkgEvas *ev;
     
-    g_return_val_if_fail(!!widget, FALSE);
+    g_return_val_if_fail(widget != NULL, FALSE);
 	g_return_val_if_fail(GTK_IS_GEVAS(widget), FALSE);
 
 	ev = GTK_GEVAS(widget);
@@ -940,7 +940,7 @@ static void gevas_map(GtkWidget * widget)
 {
 	GtkgEvas *ev;
 
-	g_return_if_fail(!!widget);
+	g_return_if_fail(widget != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(widget));
 	ev = GTK_GEVAS(widget);
 
@@ -965,7 +965,7 @@ static void gevas_realize(GtkWidget * widget)
 //    printf("gevas_realize()\n");
     
     
-	g_return_if_fail(!!widget);
+	g_return_if_fail(widget != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(widget));
 
 	ev = GTK_GEVAS(widget);
@@ -1080,7 +1080,7 @@ static void gevas_unrealize(GtkWidget * widget)
 //	fprintf(stderr,"gevas_unrealize() 1\n"); 
     
 //	printf("gevas_unrealize() start\n");
-	g_return_if_fail(!!widget);
+	g_return_if_fail(widget != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(widget));
 
 	ev = GTK_GEVAS(widget);
@@ -1150,7 +1150,7 @@ static void gevas_size_request(GtkWidget * widget, GtkRequisition * requisition)
 {
 	GtkgEvas *ev;
 
-	g_return_if_fail(!!widget);
+	g_return_if_fail(widget != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(widget));
 	ev = GTK_GEVAS(widget);
 
@@ -1169,7 +1169,7 @@ static void gevas_size_allocate(GtkWidget * widget, GtkAllocation * allocation)
 {
 	GtkgEvas *ev;
 
-	g_return_if_fail(!!widget);
+	g_return_if_fail(widget != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(widget));
 
 
@@ -1202,7 +1202,7 @@ static void gevas_draw(GtkWidget * widget, GdkRectangle * area)
 	 */
 	GtkgEvas *ev;
 
-	g_return_if_fail(!!widget);
+	g_return_if_fail(widget != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(widget));
 
 	ev = GTK_GEVAS(widget);
@@ -1221,7 +1221,7 @@ static void gevas_draw_focus(GtkWidget * widget)
 	GdkRectangle rect;
 	GtkgEvas *ev;
 
-	g_return_if_fail(!!widget);
+	g_return_if_fail(widget != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(widget));
 
 	ev = GTK_GEVAS(widget);
@@ -1239,7 +1239,7 @@ static gint gevas_expose(GtkWidget * widget, GdkEventExpose * event)
 {
 	GtkgEvas *ev;
 
-	g_return_val_if_fail(!!widget, 0);
+	g_return_val_if_fail(widget != NULL, 0);
 	g_return_val_if_fail(GTK_IS_GEVAS(widget), 0);
 
 	ev = GTK_GEVAS(widget);
@@ -1255,7 +1255,7 @@ static gint gevas_expose(GtkWidget * widget, GdkEventExpose * event)
 
 static gint gevas_focus_in(GtkWidget * widget, GdkEventFocus * event)
 {
-	g_return_val_if_fail(!!widget, FALSE);
+	g_return_val_if_fail(widget != NULL, FALSE);
 	g_return_val_if_fail(GTK_IS_GEVAS(widget), FALSE);
 
 	GTK_WIDGET_SET_FLAGS(widget, GTK_HAS_FOCUS);
@@ -1266,7 +1266,7 @@ static gint gevas_focus_in(GtkWidget * widget, GdkEventFocus * event)
 
 static gint gevas_focus_out(GtkWidget * widget, GdkEventFocus * event)
 {
-	g_return_val_if_fail(!!widget, FALSE);
+	g_return_val_if_fail(widget != NULL, FALSE);
 	g_return_val_if_fail(GTK_IS_GEVAS(widget), FALSE);
 
 	GTK_WIDGET_UNSET_FLAGS(widget, GTK_HAS_FOCUS);
@@ -1281,7 +1281,7 @@ static void gevas_paint(GtkgEvas * ev, GdkRectangle * area)
 {
     GtkWidget *widget;
 
-	g_return_if_fail(!!ev);
+	g_return_if_fail(ev != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(ev));
 
 //    printf("gevas_paint()\n");
@@ -1426,7 +1426,7 @@ gint gevas_edje_animate_timer_cb( gpointer data )
         return 1;
 
 	GtkgEvas *ev;
-    g_return_val_if_fail(!!data, 1);
+    g_return_val_if_fail(data != NULL, 1);
 	g_return_val_if_fail(GTK_IS_GEVAS(data), 1);
     ev = GTK_GEVAS(data);
     
@@ -1599,7 +1599,7 @@ static void gevas_set_arg(GtkObject*  object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvas *ev;
 
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(object));
 
 	ev = GTK_GEVAS(object);
@@ -1671,7 +1671,7 @@ static void gevas_get_arg(GtkObject* object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvas *ev;
 
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(object));
 
 	ev = GTK_GEVAS(object);
@@ -1751,8 +1751,8 @@ static void gevas_get_arg(GtkObject* object, GtkArg * arg, guint arg_id)
 static void
 add_string_to_list( GtkgEvas * ev, const char* p, GList **li )
 {
-	g_return_if_fail(!!ev);
-	g_return_if_fail(!!p);
+	g_return_if_fail(ev != NULL);
+	g_return_if_fail(p  != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(ev));
 
     if(!strlen(p))
@@ -1766,8 +1766,8 @@ remove_string_from_list( GtkgEvas * ev, const char* p, GList **li )
 {
     GList *t = 0;
     
-    g_return_if_fail(!!ev);
-	g_return_if_fail(!!p);
+    g_return_if_fail(ev != NULL);
+	g_return_if_fail(p  != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(ev));
 
     if(!strlen(p))
@@ -1784,8 +1784,8 @@ remove_string_from_list( GtkgEvas * ev, const char* p, GList **li )
 
 void gevas_add_metadata_prefix( GtkgEvas * ev, const char* p )
 {
-	g_return_if_fail(!!ev);
-	g_return_if_fail(!!p);
+	g_return_if_fail(ev != NULL);
+	g_return_if_fail(p  != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(ev));
 
     if(!strlen(p))
@@ -1796,8 +1796,8 @@ void gevas_add_metadata_prefix( GtkgEvas * ev, const char* p )
 
 void gevas_remove_metadata_prefix ( GtkgEvas * ev, const char* p )
 {
-    g_return_if_fail(!!ev);
-	g_return_if_fail(!!p);
+    g_return_if_fail(ev != NULL);
+	g_return_if_fail(p  != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(ev));
 
     if(!strlen(p))
@@ -1813,8 +1813,8 @@ void gevas_remove_metadata_prefix ( GtkgEvas * ev, const char* p )
 
 void gevas_add_image_prefix( GtkgEvas * ev, const char* p )
 {
-    g_return_if_fail(!!ev);
-	g_return_if_fail(!!p);
+    g_return_if_fail(ev != NULL);
+	g_return_if_fail(p  != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(ev));
     if(!strlen(p))
         return;
@@ -1823,8 +1823,8 @@ void gevas_add_image_prefix( GtkgEvas * ev, const char* p )
 
 void gevas_remove_image_prefix ( GtkgEvas * ev, const char* p )
 {
-    g_return_if_fail(!!ev);
-	g_return_if_fail(!!p);
+    g_return_if_fail(ev != NULL);
+	g_return_if_fail(p  != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(ev));
     if(!strlen(p))
         return;
@@ -1835,7 +1835,7 @@ void gevas_remove_image_prefix ( GtkgEvas * ev, const char* p )
 
 GList* gevas_get_metadata_prefix_list( GtkgEvas *ev )
 {
-    g_return_val_if_fail(!!ev, NULL);
+    g_return_val_if_fail(ev != NULL, NULL);
 	g_return_val_if_fail(GTK_IS_GEVAS(ev), NULL);
     return ev->metadata_prefix_list;
 }
@@ -1843,7 +1843,7 @@ GList* gevas_get_metadata_prefix_list( GtkgEvas *ev )
 
 GList* gevas_get_image_prefix_list   ( GtkgEvas *ev )
 {
-    g_return_val_if_fail(!!ev, NULL);
+    g_return_val_if_fail(ev != NULL, NULL);
 	g_return_val_if_fail(GTK_IS_GEVAS(ev), NULL);
     return ev->image_prefix_list;
 }
@@ -1917,8 +1917,8 @@ metadata_find_edb_cb(
     gboolean ok       = 1;
 
     /* Assert and init */
-    g_return_if_fail(!!d);
-	g_return_if_fail(!!fully_qualified_prefix);
+    g_return_if_fail(d != NULL);
+	g_return_if_fail(fully_qualified_prefix!= NULL);
     g_return_if_fail(GTK_IS_GEVAS(d->gevas));
     if( d->loaded )
     {
@@ -1991,8 +1991,8 @@ gevas_metadata_find_edb_with_data( GtkgEvas *ev, gevas_metadata_find_edb_data* d
 {
     char* no_prefix = "";
 
-    g_return_if_fail(!!ev);
-    g_return_if_fail(!!data);
+    g_return_if_fail(ev   != NULL);
+    g_return_if_fail(data != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(ev));
 
     data->loaded        = 0;
@@ -2016,8 +2016,8 @@ gevas_metadata_find_edb( GtkgEvas *ev, const gchar* loc )
     char* no_prefix = "";
     gevas_metadata_find_edb_data data;
 
-    g_return_if_fail(!!ev);
-    g_return_if_fail(!!loc);
+    g_return_if_fail(ev  != NULL);
+    g_return_if_fail(loc != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(ev));
 
     memset( &data, 0, sizeof(gevas_metadata_find_edb_data));
@@ -2066,7 +2066,7 @@ gevas_metadata_lookup_x(gevas_metadata_find_edb_data* d)
 
 //    printf("gevas_metadata_lookup_x() %d\n",data->loaded);
 
-    g_return_if_fail(!!d);
+    g_return_if_fail(d != NULL);
     if(data->loaded)
         return;
     
@@ -2125,8 +2125,8 @@ gevas_metadata_lookup_string(
     va_list args;
     gchar* key = NULL;
 
-    g_return_if_fail(!!ev);
-    g_return_if_fail(!!loc);
+    g_return_if_fail(ev  != NULL);
+    g_return_if_fail(loc != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(ev));
 
     va_start (args, fmt);
@@ -2166,8 +2166,8 @@ gevas_metadata_lookup_int(
     va_list args;
     gchar* key = NULL;
 
-    g_return_if_fail(!!ev);
-    g_return_if_fail(!!loc);
+    g_return_if_fail(ev  != NULL);
+    g_return_if_fail(loc != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(ev));
 
     va_start (args, fmt);

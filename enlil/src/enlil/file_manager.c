@@ -137,7 +137,7 @@ Eet_File *enlil_file_manager_open(const char *file)
      }
    eina_stringshare_del(file);
 
-   ASSERT(!!f_data->f);
+   ASSERT(f_data->f != NULL);
    return f_data->f;
 }
 

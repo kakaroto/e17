@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 #define EMOTE_EVENT_ALLOC_STRING(type, e, param, data) \
-  ((type*)e)->param = ((data != NULL) ? eina_stringshare_add(data) : NULL)
+  ((type*)e)->param = ((data) ? eina_stringshare_add(data) : NULL)
 
 static int _emote_events[EMOTE_EVENT_COUNT];
 

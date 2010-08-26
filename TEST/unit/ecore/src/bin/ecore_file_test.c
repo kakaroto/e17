@@ -199,7 +199,7 @@ START_TEST (ecore_file_test_readlink)
                "Can not create a link from /tmp/ecore_file_test1.txt to /tmp/ecore_file_test2.txt");
 
    path = ecore_file_readlink("/tmp/ecore_file_test2.txt");
-   fail_unless(!!path,
+   fail_unless(path != NULL,
                "Can not retrieve the path of the link /tmp/ecore_file_test2.txt (return NULL)");
    if (path)
      {
@@ -349,7 +349,7 @@ START_TEST (ecore_file_test_strip_ext)
    ecore_file_init();
 
    file = ecore_file_strip_ext(PACKAGE_DATA_DIR "/ecore_unit_test/ecore_file_test.txt");
-   fail_unless(!!file,
+   fail_unless(file != NULL,
                "Can not strip the extension of ecore_file_test.txt (return NULL)");
    if (file)
      {
@@ -383,7 +383,7 @@ START_TEST (ecore_file_test_dir_get)
    ecore_file_init();
 
    path = ecore_file_dir_get("/home/foo/bar.c");
-   fail_unless(!!path,
+   fail_unless(path != NULL,
                "Can not retrieve the path of the link /tmp/ecore_file_test2.txt (return NULL)");
    if (path)
      {

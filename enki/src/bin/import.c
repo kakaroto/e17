@@ -398,7 +398,7 @@ static void _bt_import_cb(void *data, Evas_Object *obj, void *event_info)
    PL_Child_Item *pl_item;
    Eina_List *items;
    Elm_Genlist_Item *item = elm_genlist_selected_item_get(gl_albums);
-   ASSERT_RETURN_VOID(!!item);
+   ASSERT_RETURN_VOID(item != NULL);
    album = (Enlil_Album *)elm_genlist_item_data_get(item);
 
    items = photos_list_object_selected_get(photos);

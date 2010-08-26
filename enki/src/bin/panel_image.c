@@ -579,7 +579,7 @@ void panel_image_exifs_update(Enlil_Photo *photo)
    char buf[PATH_MAX];
    const Eina_List *l;
    Enlil_Exif *exif;
-   ASSERT_RETURN_VOID(!!photo);
+   ASSERT_RETURN_VOID(photo != NULL);
 
    Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
    if(!photo_data->panel_image) return;
@@ -614,7 +614,7 @@ void panel_image_iptcs_update(Enlil_Photo *photo)
 {
    const Eina_List *l;
    Enlil_IPTC *iptc;
-   ASSERT_RETURN_VOID(!!photo);
+   ASSERT_RETURN_VOID(photo != NULL);
 
    Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
    if(!photo_data->panel_image) return;

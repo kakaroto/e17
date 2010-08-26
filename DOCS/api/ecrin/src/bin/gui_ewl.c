@@ -149,7 +149,7 @@ _define_display (Ewl_Widget *w, void *ev_data, void *user_data)
   iter = define->value;
   if (define->value)
     {
-      while ((p = strchr(iter, '\\')))
+      while ((p = strchr (iter, '\\')) != NULL)
         {
           char *string;
           int   l;

@@ -200,7 +200,7 @@ void enlil_flickr_job_done_cb_set(Enlil_Flickr_Job_Done_Cb done_cb, void *data)
 
 void enlil_flickr_job_del(Enlil_Flickr_Job *job)
 {
-    ASSERT_RETURN_VOID(!!job);
+    ASSERT_RETURN_VOID(job != NULL);
 
     LOG_INFO("Delete Flickr's job : %s", _enlil_flickr_job_type_tostring(job->type));
 
@@ -244,7 +244,7 @@ Enlil_Flickr_Job *enlil_flickr_job_sync_album_header_update_flickr_append(Enlil_
    Enlil_Flickr_Job *job;
    Eina_List *l;
 
-   ASSERT_RETURN(!!album);
+   ASSERT_RETURN(album != NULL);
 
    EINA_LIST_FOREACH(l_jobs, l, job)
       if(job->album == album && job->type == ENLIL_FLICKR_JOB_SYNC_ALBUM_HEADER_UPDATE_FLICKR)
@@ -275,7 +275,7 @@ Enlil_Flickr_Job *enlil_flickr_job_sync_album_header_update_local_append(Enlil_A
    Enlil_Flickr_Job *job;
    Eina_List *l;
 
-   ASSERT_RETURN(!!album);
+   ASSERT_RETURN(album != NULL);
 
    EINA_LIST_FOREACH(l_jobs, l, job)
       if(job->album == album && job->type == ENLIL_FLICKR_JOB_SYNC_ALBUM_HEADER_UPDATE_LOCAL)
@@ -310,7 +310,7 @@ Enlil_Flickr_Job *enlil_flickr_job_sync_album_header_create_flickr_append(Enlil_
    Eina_List *l;
    Enlil_Photo *photo;
 
-   ASSERT_RETURN(!!album);
+   ASSERT_RETURN(album != NULL);
 
    EINA_LIST_FOREACH(l_jobs, l, job)
       if(job->album == album && (
@@ -373,7 +373,7 @@ Enlil_Flickr_Job *enlil_flickr_job_sync_album_header_append(Enlil_Album *album,
    Enlil_Flickr_Job *job;
    Eina_List *l;
 
-   ASSERT_RETURN(!!album);
+   ASSERT_RETURN(album != NULL);
 
    EINA_LIST_FOREACH(l_jobs, l, job)
       if(job->type == ENLIL_FLICKR_JOB_CMP_ALBUM_HEADER && job->album == album)
@@ -413,7 +413,7 @@ Enlil_Flickr_Job *enlil_flickr_job_sync_albums_append(Enlil_Root *root,
    Enlil_Flickr_Job *job;
    Eina_List *l;
 
-   ASSERT_RETURN(!!root);
+   ASSERT_RETURN(root != NULL);
 
    EINA_LIST_FOREACH(l_jobs, l, job)
       if(job->type == ENLIL_FLICKR_JOB_CMP_ALBUMS_HEADER)
@@ -450,7 +450,7 @@ Enlil_Flickr_Job *enlil_flickr_job_sync_album_photos_append(Enlil_Album *album,
    Enlil_Flickr_Job *job;
    Eina_List *l;
 
-   ASSERT_RETURN(!!album);
+   ASSERT_RETURN(album != NULL);
 
    EINA_LIST_FOREACH(l_jobs, l, job)
       if(job->type == ENLIL_FLICKR_JOB_CMP_ALBUM_PHOTOS && job->album == album)
@@ -487,8 +487,8 @@ Enlil_Flickr_Job *enlil_flickr_job_cmp_photo_append(
    Enlil_Flickr_Job *job;
    Eina_List *l;
 
-   ASSERT_RETURN(!!photo);
-   ASSERT_RETURN(!!enlil_photo_flickr_id_get(photo));
+   ASSERT_RETURN(photo != NULL);
+   ASSERT_RETURN(enlil_photo_flickr_id_get(photo) != NULL);
 
    EINA_LIST_FOREACH(l_jobs, l, job)
       if(job->type == ENLIL_FLICKR_JOB_CMP_PHOTO && job->photo == photo)
@@ -522,8 +522,8 @@ Enlil_Flickr_Job *enlil_flickr_job_set_photo_times_flickr_fs_prepend(
    Enlil_Flickr_Job *job;
    Eina_List *l;
 
-   ASSERT_RETURN(!!photo);
-   ASSERT_RETURN(!!enlil_photo_flickr_id_get(photo));
+   ASSERT_RETURN(photo != NULL);
+   ASSERT_RETURN(enlil_photo_flickr_id_get(photo) != NULL);
 
    EINA_LIST_FOREACH(l_jobs, l, job)
       if(job->type == ENLIL_FLICKR_JOB_SET_PHOTO_TIMES_FLICKR_FS && job->photo == photo)
@@ -557,7 +557,7 @@ Enlil_Flickr_Job *enlil_flickr_job_sync_photo_update_flickr_append(
    Enlil_Flickr_Job *job;
    Eina_List *l;
 
-   ASSERT_RETURN(!!photo);
+   ASSERT_RETURN(photo != NULL);
 
    EINA_LIST_FOREACH(l_jobs, l, job)
       if(job->type == ENLIL_FLICKR_JOB_SYNC_PHOTO_UPDATE_FLICKR && job->photo == photo)
@@ -594,7 +594,7 @@ Enlil_Flickr_Job *enlil_flickr_job_sync_photo_upload_flickr_append(
    Enlil_Flickr_Job *job;
    Eina_List *l;
 
-   ASSERT_RETURN(!!photo);
+   ASSERT_RETURN(photo != NULL);
 
    EINA_LIST_FOREACH(l_jobs, l, job)
       if(job->type == ENLIL_FLICKR_JOB_SYNC_PHOTO_UPLOAD_FLICKR && job->photo == photo)
@@ -627,7 +627,7 @@ Enlil_Flickr_Job *enlil_flickr_job_get_photo_sizes_append(const char *photo_id,
    Enlil_Flickr_Job *job;
    Eina_List *l;
 
-   ASSERT_RETURN(!!photo_id);
+   ASSERT_RETURN(photo_id != NULL);
 
    EINA_LIST_FOREACH(l_jobs, l, job)
       if(job->type == ENLIL_FLICKR_JOB_GET_PHOTO_SIZES && job->photo_id == photo_id)
@@ -652,7 +652,7 @@ Enlil_Flickr_Job *enlil_flickr_job_get_photo_sizes_append(const char *photo_id,
 
 static void _job_free(Enlil_Flickr_Job *job)
 {
-   ASSERT_RETURN_VOID(!!job);
+   ASSERT_RETURN_VOID(job != NULL);
 
 
 #ifdef HAVE_FLICKR
@@ -1268,8 +1268,8 @@ static Enlil_Flickr_Job *_enlil_flickr_job_get_authtoken_prepend(Enlil_Root *roo
 
 static int _connect(Enlil_Root *root, const char *frob)
 {
-   ASSERT_RETURN(!!frob);
-   ASSERT_RETURN(!!root);
+   ASSERT_RETURN(frob != NULL);
+   ASSERT_RETURN(root != NULL);
 
 #ifdef HAVE_FLICKR
    flickcurl_init();
@@ -1392,44 +1392,44 @@ upload_error:
 
 const char* enlil_flickr_size_label_get(Enlil_Flickr_Photo_Size *size)
 {
-   ASSERT_RETURN(!!size);
+   ASSERT_RETURN(size != NULL);
    return size->label;
 }
 
 const char* enlil_flickr_size_source_get(Enlil_Flickr_Photo_Size *size)
 {
-   ASSERT_RETURN(!!size);
+   ASSERT_RETURN(size != NULL);
    return size->source;
 }
 
 
 const char* enlil_flickr_size_url_get(Enlil_Flickr_Photo_Size *size)
 {
-   ASSERT_RETURN(!!size);
+   ASSERT_RETURN(size != NULL);
    return size->url;
 }
 
 const char* enlil_flickr_size_media_get(Enlil_Flickr_Photo_Size *size)
 {
-   ASSERT_RETURN(!!size);
+   ASSERT_RETURN(size != NULL);
    return size->media;
 }
 
 int enlil_flickr_size_width_get(Enlil_Flickr_Photo_Size *size)
 {
-   ASSERT_RETURN(!!size);
+   ASSERT_RETURN(size != NULL);
    return size->width;
 }
 
 int enlil_flickr_size_height_get(Enlil_Flickr_Photo_Size *size)
 {
-   ASSERT_RETURN(!!size);
+   ASSERT_RETURN(size != NULL);
    return size->height;
 }
 
 int enlil_flickr_size_order_get(Enlil_Flickr_Photo_Size *size)
 {
-   ASSERT_RETURN(!!size);
+   ASSERT_RETURN(size != NULL);
    return size->order;
 }
 

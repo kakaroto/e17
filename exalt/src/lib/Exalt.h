@@ -95,9 +95,9 @@
             EXALT_STRUCT_TYPE *s,                       \
             const char* attribut)                       \
     {                                                   \
-        EXALT_ASSERT_RETURN_VOID(!!s);              \
+        EXALT_ASSERT_RETURN_VOID(s!=NULL);              \
         EXALT_FREE(s->attribut);                        \
-        if(attribut)                              \
+        if(attribut!=NULL)                              \
             s->attribut = strdup(attribut);             \
         else                                            \
             s->attribut=NULL;                           \
@@ -116,7 +116,7 @@
             EXALT_STRUCT_TYPE *s,                       \
             type attribut)                              \
     {                                                   \
-        EXALT_ASSERT_RETURN_VOID(!!s);              \
+        EXALT_ASSERT_RETURN_VOID(s!=NULL);              \
         s->attribut=attribut;                           \
     }
 /// @endcond
@@ -134,7 +134,7 @@
             type attribut,                              \
             int i)                                      \
     {                                                   \
-        EXALT_ASSERT_RETURN_VOID(!!s);              \
+        EXALT_ASSERT_RETURN_VOID(s!=NULL);              \
         s->attribut[i]=attribut;                        \
     }
 /// @endcond
@@ -150,7 +150,7 @@
     type exalt_file_name##_##attribut##_get(            \
             EXALT_STRUCT_TYPE *s)                       \
     {                                                   \
-        EXALT_ASSERT_RETURN(!!s);                   \
+        EXALT_ASSERT_RETURN(s!=NULL);                   \
         return s->attribut;                             \
     }
 /// @endcond
@@ -165,7 +165,7 @@
             EXALT_STRUCT_TYPE *s,                       \
             int i)                                      \
     {                                                   \
-        EXALT_ASSERT_RETURN(!!s);                   \
+        EXALT_ASSERT_RETURN(s!=NULL);                   \
         return s->attribut[i];                          \
     }
 /// @endcond
@@ -180,7 +180,7 @@
     type exalt_file_name##_##attribut##_is(             \
             EXALT_STRUCT_TYPE *s)                       \
     {                                                   \
-        EXALT_ASSERT_RETURN(!!s);                   \
+        EXALT_ASSERT_RETURN(s!=NULL);                   \
         return s->attribut;                             \
     }
 /// @endcond

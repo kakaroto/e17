@@ -239,7 +239,7 @@ fmtstr(char *value, int ljust, int len, int zpad, int precision)
     int padlen, strlen, i, c;   /* amount to pad */
 
     zpad = 0;
-    if (value == NULL) {
+    if (!value) {
         value = "<NULL>";
     }
     if (precision > 0) {
@@ -382,7 +382,7 @@ dostr(char *str)
 static void
 dopr_outch(int c)
 {
-    if (end == NULL || output < end) {
+    if (!end || output < end) {
         *output++ = c;
     }
 }

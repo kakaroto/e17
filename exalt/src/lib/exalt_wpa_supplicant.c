@@ -14,7 +14,7 @@ struct wpa_ctrl * exalt_wpa_open_connection(Exalt_Wireless *w)
     char buf[2048];
     Exalt_Ethernet* eth;
 
-    EXALT_ASSERT_RETURN(!!w);
+    EXALT_ASSERT_RETURN(w!=NULL);
     eth = exalt_wireless_eth_get(w);
 
     flen = strlen(EXALT_WPA_IFACE_DIR) + strlen(exalt_eth_name_get(eth)) + 2;
@@ -64,7 +64,7 @@ struct wpa_ctrl * exalt_wpa_open_connection(Exalt_Wireless *w)
         ecore_exe_free(exe);
         EXALT_LOG_INFO("Re-try to connect to wpa_supplicant");
         ctrl_conn = wpa_ctrl_open(cfile);
-        EXALT_ASSERT_CUSTOM_RET(!!ctrl_conn,free(cfile);return NULL);
+        EXALT_ASSERT_CUSTOM_RET(ctrl_conn!=NULL,free(cfile);return NULL);
         EXALT_LOG_INFO("Connection succesfull");
     }
 
@@ -82,7 +82,7 @@ void exalt_wpa_stop(Exalt_Wireless* w)
     struct wpa_ctrl *ctrl_conn;
     char buf[2048];
     int buf_len = sizeof(buf)-1;
-    EXALT_ASSERT_RETURN_VOID(!!w);
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
 
     ctrl_conn = exalt_wpa_open_connection(w);
     if(ctrl_conn)
@@ -102,7 +102,7 @@ void exalt_wpa_disconnect(Exalt_Wireless* w)
     struct wpa_ctrl *ctrl_conn;
     char buf[2048];
     int buf_len = sizeof(buf)-1;
-    EXALT_ASSERT_RETURN_VOID(!!w);
+    EXALT_ASSERT_RETURN_VOID(w!=NULL);
 
     ctrl_conn = exalt_wpa_open_connection(w);
     if(ctrl_conn)
@@ -123,7 +123,7 @@ int exalt_wpa_ctrl_command(struct wpa_ctrl *ctrl_conn, char *cmd, char*buf, size
 {
     int ret;
 
-    EXALT_ASSERT_RETURN(!!ctrl_conn);
+    EXALT_ASSERT_RETURN(ctrl_conn!=NULL);
     EXALT_LOG_DBG("Send WPA command : %s", cmd);
     ret = wpa_ctrl_request(ctrl_conn, cmd, strlen(cmd), buf, &buf_len,
             /*wpa_cli_msg_cb*/ NULL);

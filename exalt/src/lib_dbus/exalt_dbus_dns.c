@@ -28,7 +28,7 @@ int exalt_dbus_dns_list_get(Exalt_DBus_Conn* conn)
     DBusMessage *msg;
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(conn!=NULL);
 
     msg_id -> id = exalt_dbus_msg_id_next(conn);
     msg_id->conn = conn;
@@ -57,8 +57,8 @@ int exalt_dbus_dns_add(Exalt_DBus_Conn* conn, const char* dns)
     DBusMessageIter args;
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(!!conn);
-    EXALT_ASSERT_RETURN(!!dns);
+    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(dns!=NULL);
 
     msg_id->id = exalt_dbus_msg_id_next(conn);
     msg_id->conn = conn;
@@ -88,8 +88,8 @@ int exalt_dbus_dns_delete(Exalt_DBus_Conn* conn, const char* dns)
     DBusMessageIter args;
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(!!conn);
-    EXALT_ASSERT_RETURN(!!dns);
+    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(dns!=NULL);
 
     msg = exalt_dbus_dns_call_new("delete");
     dbus_message_iter_init_append(msg, &args);
@@ -120,9 +120,9 @@ int exalt_dbus_dns_replace(Exalt_DBus_Conn* conn, const char* old_dns, const cha
     DBusMessageIter args;
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(!!conn);
-    EXALT_ASSERT_RETURN(!!old_dns);
-    EXALT_ASSERT_RETURN(!!new_dns);
+    EXALT_ASSERT_RETURN(conn!=NULL);
+    EXALT_ASSERT_RETURN(old_dns!=NULL);
+    EXALT_ASSERT_RETURN(new_dns!=NULL);
 
     msg = exalt_dbus_dns_call_new("replace");
     dbus_message_iter_init_append(msg, &args);

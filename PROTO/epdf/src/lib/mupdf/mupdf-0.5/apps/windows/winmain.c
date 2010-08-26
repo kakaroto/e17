@@ -326,7 +326,7 @@ void winopen()
 
 	/* Init DIB info for buffer */
 	dibinf = malloc(sizeof(BITMAPINFO) + 12);
-	assert(!!dibinf);
+	assert(dibinf != NULL);
 	dibinf->bmiHeader.biSize = sizeof(dibinf->bmiHeader);
 	dibinf->bmiHeader.biPlanes = 1;
 	dibinf->bmiHeader.biBitCount = 24;

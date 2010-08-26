@@ -56,7 +56,7 @@ int exalt_dbus_exalt_service_exists(Exalt_DBus_Conn *conn)
  */
 int exalt_dbus_service_exists(Exalt_DBus_Conn *conn, const char* service_name)
 {
-    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(conn!=NULL);
 
     DBusMessageIter args;
     int bool;
@@ -127,11 +127,11 @@ Exalt_DBus_Conn* exalt_dbus_connect(Exalt_DBus_Connect_Cb connect_cb, void *data
     dbus_error_init(&err);
     // connect to the bus
     conn->conn = dbus_bus_get_private(DBUS_BUS_SYSTEM, &err);
-    EXALT_ASSERT_CUSTOM_RET(!!conn->conn,
+    EXALT_ASSERT_CUSTOM_RET(conn->conn != NULL,
             EXALT_FREE(conn); return NULL;);
 
     conn->e_conn = e_dbus_connection_setup(conn->conn);
-    EXALT_ASSERT_CUSTOM_RET(!!conn->e_conn,
+    EXALT_ASSERT_CUSTOM_RET(conn->e_conn != NULL,
             EXALT_FREE(conn); return NULL;);
 
     conn->name_owner_changed_handler = e_dbus_signal_handler_add(
@@ -169,7 +169,7 @@ Exalt_DBus_Conn* exalt_dbus_connect(Exalt_DBus_Connect_Cb connect_cb, void *data
  */
 void exalt_dbus_on_server_die_callback_set(Exalt_DBus_Conn *conn, Exalt_DBus_Die_Cb server_die_cb, const void *data, Eina_Free_Cb free_data)
 {
-    EXALT_ASSERT_RETURN_VOID(!!conn);
+    EXALT_ASSERT_RETURN_VOID(conn != NULL);
 
     if (conn->die.free_data)
         conn->die.free_data(conn->die.data);
@@ -184,9 +184,9 @@ void exalt_dbus_on_server_die_callback_set(Exalt_DBus_Conn *conn, Exalt_DBus_Die
  */
 void exalt_dbus_free(Exalt_DBus_Conn** conn)
 {
-    EXALT_ASSERT_RETURN_VOID(!!conn);
-    EXALT_ASSERT_RETURN_VOID(!!*conn);
-    EXALT_ASSERT_RETURN_VOID( !!(*conn)->e_conn);
+    EXALT_ASSERT_RETURN_VOID(conn != NULL);
+    EXALT_ASSERT_RETURN_VOID(*conn != NULL);
+    EXALT_ASSERT_RETURN_VOID( (*conn)->e_conn != NULL);
 
     if ((*conn)->die.free_data)
         (*conn)->die.free_data((*conn)->die.data);
@@ -230,7 +230,7 @@ void exalt_dbus_shutdown()
  */
 int exalt_dbus_notify_set(Exalt_DBus_Conn* conn, exalt_notify_cb *cb, void* user_data)
 {
-    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(conn!=NULL);
 
     if(conn->notify_handler)
         e_dbus_signal_handler_del(conn->e_conn, conn->notify_handler);
@@ -259,7 +259,7 @@ int exalt_dbus_notify_set(Exalt_DBus_Conn* conn, exalt_notify_cb *cb, void* user
  */
 int exalt_dbus_scan_notify_set(Exalt_DBus_Conn* conn, exalt_scan_notify_cb *cb, void* user_data)
 {
-    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(conn!=NULL);
 
     if(conn->scan_notify_handler)
         e_dbus_signal_handler_del(conn->e_conn, conn->scan_notify_handler);
@@ -287,7 +287,7 @@ int exalt_dbus_scan_notify_set(Exalt_DBus_Conn* conn, exalt_scan_notify_cb *cb, 
  */
 void exalt_dbus_response_notify_set(Exalt_DBus_Conn* conn, exalt_response_notify_cb *cb, void* user_data)
 {
-    EXALT_ASSERT_RETURN_VOID(!!conn);
+    EXALT_ASSERT_RETURN_VOID(conn!=NULL);
 
     conn -> response_notify -> cb = cb;
     conn -> response_notify -> user_data = user_data;
@@ -316,11 +316,11 @@ _exalt_dbus_start_server_cb(void *data, DBusMessage *msg, DBusError *error)
     dbus_uint32_t ret;
     int t;
 
-    EXALT_ASSERT_RETURN_VOID(!!conn);
+    EXALT_ASSERT_RETURN_VOID(conn != NULL);
 
     EXALT_DBUS_ERROR_PRINT(error);
 
-    EXALT_ASSERT_RETURN_VOID(!!msg);
+    EXALT_ASSERT_RETURN_VOID(msg != NULL);
 
     conn->pending_start_service_by_name = NULL;
 

@@ -66,7 +66,7 @@ Enlil_Album *enlil_album_new()
  */
 Enlil_Album *enlil_album_copy_new(const Enlil_Album *album)
 {
-    ASSERT_RETURN(!!album);
+    ASSERT_RETURN(album!=NULL);
 
     Enlil_Album *_album = enlil_album_new();
 
@@ -85,8 +85,8 @@ void enlil_album_copy(const Enlil_Album *album_src, Enlil_Album *album_dest)
    const Eina_List *l;
    const Enlil_Album_Collection *album_col;
 
-   ASSERT_RETURN_VOID(!!album_src);
-   ASSERT_RETURN_VOID(!!album_dest);
+   ASSERT_RETURN_VOID(album_src!=NULL);
+   ASSERT_RETURN_VOID(album_dest!=NULL);
 
    enlil_album_name_set(album_dest, enlil_album_name_get(album_src));
    enlil_album_file_name_set(album_dest, enlil_album_file_name_get(album_src));
@@ -109,8 +109,8 @@ void enlil_album_free(Enlil_Album **album)
     Enlil_Photo *photo;
     Enlil_Album_Collection *album_col;
 
-    ASSERT_RETURN_VOID(!!album);
-    ASSERT_RETURN_VOID(!!(*album));
+    ASSERT_RETURN_VOID(album!=NULL);
+    ASSERT_RETURN_VOID((*album)!=NULL);
 
     EINA_LIST_FREE( (*album)->photos, photo)
         enlil_photo_free(&photo);
@@ -143,7 +143,7 @@ void enlil_album_list_print(Eina_List *l_enlil)
 {
     Eina_List *l;
     Enlil_Album *album;
-    ASSERT_RETURN_VOID(!!l_enlil);
+    ASSERT_RETURN_VOID(l_enlil!=NULL);
     EINA_LIST_FOREACH(l_enlil, l, album)
     {
         printf("\n");
@@ -153,7 +153,7 @@ void enlil_album_list_print(Eina_List *l_enlil)
 
 void enlil_album_print(Enlil_Album *album)
 {
-    ASSERT_RETURN_VOID(!!album);
+    ASSERT_RETURN_VOID(album!=NULL);
     printf("\t## ALBUM ##\n");
     printf("\t###########\n");
     printf("Name\t:\t%s\n", album->name);
@@ -166,17 +166,17 @@ void enlil_album_monitor_start(Enlil_Album *album)
 {
     char buf[PATH_MAX];
 
-    ASSERT_RETURN_VOID(!!album);
-    ASSERT_RETURN_VOID(!album->monitor);
+    ASSERT_RETURN_VOID(album!=NULL);
+    ASSERT_RETURN_VOID(album->monitor==NULL);
 
     snprintf(buf,PATH_MAX,"%s/%s", enlil_album_path_get(album), enlil_album_file_name_get(album));
     album->monitor = ecore_file_monitor_add(buf, _album_monitor_cb, album);
-    ASSERT_RETURN_VOID(!!album->monitor);
+    ASSERT_RETURN_VOID(album->monitor!=NULL);
 }
 
 void enlil_album_monitor_stop(Enlil_Album *album)
 {
-    ASSERT_RETURN_VOID(!!album);
+    ASSERT_RETURN_VOID(album!=NULL);
 
     if(album->monitor)
         ecore_file_monitor_del(album->monitor);
@@ -206,8 +206,8 @@ GET(photos_sort, Enlil_Photo_Sort)
 
 void enlil_album_name_set(Enlil_Album *album, const char *name)
 {
-   ASSERT_RETURN_VOID(!!album);
-   ASSERT_RETURN_VOID(!!name);
+   ASSERT_RETURN_VOID(album!=NULL);
+   ASSERT_RETURN_VOID(name != NULL);
 
    EINA_STRINGSHARE_DEL(album->name);
    album->name = eina_stringshare_add(name);
@@ -220,7 +220,7 @@ void enlil_album_name_set(Enlil_Album *album, const char *name)
 
 void enlil_album_photos_sort_set(Enlil_Album *album, Enlil_Photo_Sort photos_sort)
 {
-    ASSERT_RETURN_VOID(!!album);
+    ASSERT_RETURN_VOID(album!=NULL);
     album->photos_sort = photos_sort;
     enlil_album_eet_header_save(album);
     _sort_photos(album);
@@ -228,15 +228,15 @@ void enlil_album_photos_sort_set(Enlil_Album *album, Enlil_Photo_Sort photos_sor
 
 void enlil_album_user_data_set(Enlil_Album *album, void *user_data, Enlil_Album_Free_Cb cb)
 {
-    ASSERT_RETURN_VOID(!!album);
+    ASSERT_RETURN_VOID(album!=NULL);
     album->user_data = user_data;
     album->free_cb = cb;
 }
 
 void enlil_album_path_set(Enlil_Album *album, const char *path)
 {
-    ASSERT_RETURN_VOID(!!album);
-    ASSERT_RETURN_VOID(!!path);
+    ASSERT_RETURN_VOID(album!=NULL);
+    ASSERT_RETURN_VOID(path!=NULL);
 
     EINA_STRINGSHARE_DEL(album->path);
 
@@ -251,14 +251,14 @@ void enlil_album_path_set(Enlil_Album *album, const char *path)
 
 const char *enlil_album_flickr_id_get(Enlil_Album *album)
 {
-    ASSERT_RETURN(!!album);
+    ASSERT_RETURN(album!=NULL);
 
     return album->flickr.id;
 }
 
 void _enlil_album_flickr_id_set(Enlil_Album *album, const char *id)
 {
-   ASSERT_RETURN_VOID(!!album);
+   ASSERT_RETURN_VOID(album != NULL);
 
    EINA_STRINGSHARE_DEL(album->flickr.id);
 
@@ -270,21 +270,21 @@ void _enlil_album_flickr_id_set(Enlil_Album *album, const char *id)
 
 Eina_Bool enlil_album_flickr_need_sync_get(Enlil_Album *album)
 {
-    ASSERT_RETURN(!!album);
+    ASSERT_RETURN(album!=NULL);
 
     return album->flickr.need_sync;
 }
 
 void enlil_album_flickr_need_sync_set(Enlil_Album *album, Eina_Bool need_sync)
 {
-   ASSERT_RETURN_VOID(!!album);
+   ASSERT_RETURN_VOID(album != NULL);
 
    album->flickr.need_sync = need_sync;
 }
 
 Eina_List * enlil_album_photos_get(Enlil_Album *album)
 {
-    ASSERT_RETURN(!!album);
+    ASSERT_RETURN(album!=NULL);
     ALBUM_PHOTOS_LOAD(album);
 
     return album->photos;
@@ -292,7 +292,7 @@ Eina_List * enlil_album_photos_get(Enlil_Album *album)
 
 int enlil_album_photos_count_get(Enlil_Album *album)
 {
-    ASSERT_RETURN(!!album);
+    ASSERT_RETURN(album!=NULL);
     ALBUM_PHOTOS_LOAD(album);
 
     return eina_list_count(album->photos);
@@ -308,8 +308,8 @@ void enlil_album_collection_process(Enlil_Album *album)
 {
    Eina_List *l;
    Enlil_Album_Collection *album_col;
-   ASSERT_RETURN_VOID(!!album);
-   ASSERT_RETURN_VOID(!!album->root);
+   ASSERT_RETURN_VOID(album != NULL);
+   ASSERT_RETURN_VOID(album->root != NULL);
 
    EINA_LIST_FOREACH(album->collections, l, album_col)
      {
@@ -331,8 +331,8 @@ void enlil_album_collection_process(Enlil_Album *album)
 void enlil_album_collection_add(Enlil_Album *album, const char *col_name)
 {
    Enlil_Album_Collection *album_col;
-   ASSERT_RETURN_VOID(!!album);
-   ASSERT_RETURN_VOID(!!col_name);
+   ASSERT_RETURN_VOID(album != NULL);
+   ASSERT_RETURN_VOID(col_name != NULL);
 
    album_col = calloc(1, sizeof(Enlil_Album_Collection));
    album_col->name = eina_stringshare_add(col_name);
@@ -357,8 +357,8 @@ void enlil_album_collection_add(Enlil_Album *album, const char *col_name)
  */
 void enlil_album_collection_remove(Enlil_Album *album, Enlil_Album_Collection *album_col)
 {
-   ASSERT_RETURN_VOID(!!album);
-   ASSERT_RETURN_VOID(!!album_col);
+   ASSERT_RETURN_VOID(album != NULL);
+   ASSERT_RETURN_VOID(album_col != NULL);
 
    album->collections = eina_list_remove(album->collections, album_col);
 
@@ -379,8 +379,8 @@ Enlil_Photo *enlil_album_photo_search_file_name(Enlil_Album *album, const char *
 {
     Eina_List *l;
     Enlil_Photo *photo;
-    ASSERT_RETURN(!!album);
-    ASSERT_RETURN(!!file_name);
+    ASSERT_RETURN(album!=NULL);
+    ASSERT_RETURN(file_name!=NULL);
 
     enlil_album_photos_get(album);
 
@@ -395,8 +395,8 @@ Enlil_Photo *enlil_album_photo_search_file_name(Enlil_Album *album, const char *
 
 void enlil_album_photo_add(Enlil_Album *album, Enlil_Photo *photo)
 {
-   ASSERT_RETURN_VOID(!!album);
-   ASSERT_RETURN_VOID(!!photo);
+   ASSERT_RETURN_VOID(album!=NULL);
+   ASSERT_RETURN_VOID(photo!=NULL);
 
    enlil_album_photos_get(album);
 
@@ -416,8 +416,8 @@ void enlil_album_photo_add(Enlil_Album *album, Enlil_Photo *photo)
 
 void _enlil_album_photo_name_changed(Enlil_Album *album, Enlil_Photo *photo)
 {
-   ASSERT_RETURN_VOID(!!album);
-   ASSERT_RETURN_VOID(!!photo);
+   ASSERT_RETURN_VOID(album != NULL);
+   ASSERT_RETURN_VOID(photo != NULL);
 
    if(album->photos_sort == ENLIL_PHOTO_SORT_NAME)
      {
@@ -429,8 +429,8 @@ void _enlil_album_photo_name_changed(Enlil_Album *album, Enlil_Photo *photo)
 
 void _enlil_album_photo_datetimeoriginal_changed(Enlil_Album *album, Enlil_Photo *photo)
 {
-   ASSERT_RETURN_VOID(!!album);
-   ASSERT_RETURN_VOID(!!photo);
+   ASSERT_RETURN_VOID(album != NULL);
+   ASSERT_RETURN_VOID(photo != NULL);
 
    if(album->photos_sort == ENLIL_PHOTO_SORT_DATE)
      {
@@ -442,8 +442,8 @@ void _enlil_album_photo_datetimeoriginal_changed(Enlil_Album *album, Enlil_Photo
 
 Enlil_Photo *enlil_album_photo_prev_get(Enlil_Album *album, Enlil_Photo *photo)
 {
-   ASSERT_RETURN(!!album);
-   ASSERT_RETURN(!!photo);
+   ASSERT_RETURN(album != NULL);
+   ASSERT_RETURN(photo != NULL);
 
    Eina_List *l = eina_list_data_find_list(album->photos, photo);
    return eina_list_data_get(eina_list_prev(l));
@@ -452,8 +452,8 @@ Enlil_Photo *enlil_album_photo_prev_get(Enlil_Album *album, Enlil_Photo *photo)
 
 void enlil_album_photo_remove(Enlil_Album *album, Enlil_Photo *photo)
 {
-    ASSERT_RETURN_VOID(!!album);
-    ASSERT_RETURN_VOID(!!photo);
+    ASSERT_RETURN_VOID(album!=NULL);
+    ASSERT_RETURN_VOID(photo!=NULL);
 
     enlil_album_photos_get(album);
 
@@ -463,7 +463,7 @@ void enlil_album_photo_remove(Enlil_Album *album, Enlil_Photo *photo)
 
 int enlil_album_eet_photos_save(Enlil_Album *album)
 {
-    ASSERT_RETURN(!!album);
+    ASSERT_RETURN(album!=NULL);
 
     return _album_eet_photos_save(album);
 }
@@ -475,13 +475,13 @@ int enlil_album_eet_header_save(Enlil_Album *album)
     char path[PATH_MAX];
     int res;
 
-    ASSERT_RETURN(!!album);
+    ASSERT_RETURN(album!=NULL);
 
     snprintf(path,PATH_MAX,"%s/%s/"EET_FILE,enlil_album_path_get(album),
             enlil_album_file_name_get(album));
 
     f = enlil_file_manager_open(path);
-    ASSERT_RETURN(!!f);
+    ASSERT_RETURN(f!=NULL);
 
     edd_collection =  _enlil_album_collection_edd_new();
     edd = _enlil_album_header_edd_new(edd_collection);
@@ -497,7 +497,7 @@ int enlil_album_eet_header_save(Enlil_Album *album)
 
 static void _sort_photos(Enlil_Album *album)
 {
-   ASSERT_RETURN_VOID(!!album);
+   ASSERT_RETURN_VOID(album != NULL);
    enlil_album_photos_get(album);
 
    switch(album->photos_sort)
@@ -543,7 +543,7 @@ static void _album_monitor_cb(void *data, Ecore_File_Monitor *em, Ecore_File_Eve
     Enlil_Album *album = (Enlil_Album*)data;
     Enlil_Root *enlil = album->root;
 
-    ASSERT_RETURN_VOID(!!enlil);
+    ASSERT_RETURN_VOID(enlil != NULL);
 
     Enlil_Configuration conf = enlil_conf_get(enlil);
 
@@ -575,11 +575,11 @@ static Enlil_Album *_enlil_album_eet_photos_list_load(Enlil_Album *album)
     Enlil_Album *data;
     char path[PATH_MAX];
 
-    ASSERT_RETURN(!!album);
+    ASSERT_RETURN(album!=NULL);
 
     snprintf(path,PATH_MAX,"%s/%s/"EET_FILE,enlil_album_path_get(album), enlil_album_file_name_get(album));
     f = enlil_file_manager_open(path);
-    ASSERT_RETURN(!!f);
+    ASSERT_RETURN(f!=NULL);
 
     edd_photo = _enlil_photo_file_name_edd_new();
     edd = _enlil_album_photos_file_name_edd_new(edd_photo);
@@ -602,11 +602,11 @@ int enlil_album_eet_photos_list_save(Enlil_Album *album)
     Eet_File *f;
     char path[PATH_MAX];
 
-    ASSERT_RETURN(!!album);
+    ASSERT_RETURN(album!=NULL);
 
     snprintf(path,PATH_MAX,"%s/%s/"EET_FILE,enlil_album_path_get(album), enlil_album_file_name_get(album));
     f = enlil_file_manager_open(path);
-    ASSERT_RETURN(!!f);
+    ASSERT_RETURN(f!=NULL);
 
     edd_photo = _enlil_photo_file_name_edd_new();
     edd = _enlil_album_photos_file_name_edd_new(edd_photo);
@@ -628,12 +628,12 @@ static void _album_eet_photos_load(Enlil_Album *album)
     Enlil_Album *album_list;
     Enlil_Photo *photo_list;
 
-    ASSERT_RETURN_VOID(!!album);
+    ASSERT_RETURN_VOID(album!=NULL);
 
     album->photos_load_is  = 1;
 
     album_list = _enlil_album_eet_photos_list_load(album);
-    ASSERT_RETURN_VOID(!!album_list);
+    ASSERT_RETURN_VOID(album_list!=NULL);
 
     snprintf(path,1024,"%s/%s/"EET_FILE,enlil_album_path_get(album), enlil_album_file_name_get(album));
     EINA_LIST_FOREACH(enlil_album_photos_get(album_list), l, photo_list)
@@ -652,7 +652,7 @@ static int _album_eet_photos_save(Enlil_Album *album)
     char path[PATH_MAX];
     int res = 1;
 
-    ASSERT_RETURN(!!album);
+    ASSERT_RETURN(album!=NULL);
 
     snprintf(path,PATH_MAX,"%s/%s/"EET_FILE,enlil_album_path_get(album), enlil_album_file_name_get(album));
 
@@ -705,7 +705,7 @@ Eet_Data_Descriptor * _enlil_album_header_edd_new(Eet_Data_Descriptor *edd_colle
     Eet_Data_Descriptor *edd;
     Eet_Data_Descriptor_Class eddc;
 
-    ASSERT_RETURN(!!edd_collection);
+    ASSERT_RETURN(edd_collection != NULL);
 
     EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, Enlil_Album);
     eddc.func.str_direct_alloc = NULL;

@@ -33,7 +33,7 @@ int exalt_eth_save(const char* file, Exalt_Ethernet* eth)
 {
     Exalt_Eth_Save s;
 
-    EXALT_ASSERT_RETURN(!!eth);
+    EXALT_ASSERT_RETURN(eth!=NULL);
 
     s.state = exalt_eth_up_is(eth);
     s.conf = exalt_eth_configuration_get(eth);
@@ -48,7 +48,7 @@ int exalt_eth_save(const char* file, Exalt_Ethernet* eth)
 int exalt_eth_state_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *s = _exalt_eet_eth_load(file, udi);
-    EXALT_ASSERT_RETURN(!!s);
+    EXALT_ASSERT_RETURN(s!=NULL);
     int st = s->state;
     eina_stringshare_del(s->driver);
     exalt_conf_free(&(s->conf));
@@ -59,7 +59,7 @@ int exalt_eth_state_load(const char* file, const char* udi)
 char* exalt_eth_driver_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *s = _exalt_eet_eth_load(file,  udi);
-    EXALT_ASSERT_RETURN(!!s);
+    EXALT_ASSERT_RETURN(s!=NULL);
     char* driver = s->driver;
     exalt_conf_free(&(s->conf));
     EXALT_FREE(s);
@@ -70,7 +70,7 @@ char* exalt_eth_driver_load(const char* file, const char* udi)
 Exalt_Configuration* exalt_eth_conf_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *s = _exalt_eet_eth_load(file, udi);
-    EXALT_ASSERT_RETURN(!!s);
+    EXALT_ASSERT_RETURN(s!=NULL);
     Exalt_Configuration *c = s->conf;
    eina_stringshare_del(s->driver);
     EXALT_FREE(s);
@@ -116,7 +116,7 @@ Exalt_Configuration *exalt_conf_network_load(const char *file,const char *networ
     edd = exalt_conf_edd_new(edd_network);
 
     f = eet_open(file, EET_FILE_MODE_READ);
-    EXALT_ASSERT_RETURN(!!f);
+    EXALT_ASSERT_RETURN(f!=NULL);
 
     data = eet_data_read(f, edd, buf);
 
@@ -136,7 +136,7 @@ Eina_List *exalt_conf_network_list_load(const char* file)
     Eina_List *l = NULL;
 
     f = eet_open(file, EET_FILE_MODE_READ);
-    EXALT_ASSERT_RETURN(!!f);
+    EXALT_ASSERT_RETURN(f!=NULL);
 
     res = eet_list(f,"wireless_network_*",&nb_res);
 
@@ -158,7 +158,7 @@ void exalt_conf_network_delete(const char* file, const char *network)
     f = eet_open(file, EET_FILE_MODE_READ_WRITE);
     if(!f)
         f = eet_open(file, EET_FILE_MODE_WRITE);
-    EXALT_ASSERT_RETURN_VOID(!!f);
+    EXALT_ASSERT_RETURN_VOID(f!=NULL);
 
     snprintf(buf, 1024, "wireless_network_%s", network);
     eet_delete(f,buf);
@@ -191,7 +191,7 @@ Exalt_Eth_Save* _exalt_eet_eth_load(const char* file, const char* udi)
     edd = _exalt_eth_save_edd_new(edd_conf);
 
     f = eet_open(file, EET_FILE_MODE_READ);
-    EXALT_ASSERT_RETURN(!!f);
+    EXALT_ASSERT_RETURN(f!=NULL);
 
     data = eet_data_read(f, edd, udi);
 

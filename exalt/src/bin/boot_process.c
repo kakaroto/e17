@@ -17,7 +17,7 @@ Boot_Process_List *waiting_iface_load(const char* file)
     edd = waiting_iface_edd_new();
     f = eet_open(file, EET_FILE_MODE_READ);
 
-    EXALT_ASSERT_ADV(!!f,
+    EXALT_ASSERT_ADV(f!=NULL,
                             data = malloc(sizeof(Boot_Process_List));
                             data->timeout = 30;
                             data->l=NULL,
@@ -27,7 +27,7 @@ Boot_Process_List *waiting_iface_load(const char* file)
     eet_close(f);
     eet_data_descriptor_free(edd);
 
-    EXALT_ASSERT_ADV(!!data,
+    EXALT_ASSERT_ADV(data!=NULL,
                             data = malloc(sizeof(Boot_Process_List));
                             data->timeout = 30;
                             data->l=NULL,
@@ -47,8 +47,8 @@ void waiting_iface_save(const Boot_Process_List* l, const char* file)
     Eet_Data_Descriptor* edd;
     Eet_File* f;
 
-    EXALT_ASSERT_RETURN_VOID(!!l);
-    EXALT_ASSERT_RETURN_VOID(!!file);
+    EXALT_ASSERT_RETURN_VOID(l!=NULL);
+    EXALT_ASSERT_RETURN_VOID(file!=NULL);
 
     edd = waiting_iface_edd_new();
     f = eet_open(file, EET_FILE_MODE_READ_WRITE);
@@ -65,8 +65,8 @@ void waiting_iface_save(const Boot_Process_List* l, const char* file)
 
 void waiting_iface_free(Boot_Process_List** l)
 {
-    EXALT_ASSERT_RETURN_VOID(!!l);
-    EXALT_ASSERT_RETURN_VOID(!!(*l));
+    EXALT_ASSERT_RETURN_VOID(l!=NULL);
+    EXALT_ASSERT_RETURN_VOID((*l)!=NULL);
 
     //eina_list_free() doesn't free the data, we free them
     {
@@ -95,10 +95,10 @@ int waiting_iface_is(const Boot_Process_List* l,Exalt_Ethernet* eth)
     Eina_List *elt;
     Boot_Process_Elt *data;
 
-    EXALT_ASSERT_RETURN(!!l);
-    EXALT_ASSERT_RETURN(!!eth);
+    EXALT_ASSERT_RETURN(l!=NULL);
+    EXALT_ASSERT_RETURN(eth!=NULL);
 
-    EXALT_ASSERT_RETURN(!!l->l);
+    EXALT_ASSERT_RETURN(l->l!=NULL);
 
 	for(elt = l->l; elt; elt = eina_list_next(elt))
 	{
@@ -121,8 +121,8 @@ void waiting_iface_done(Boot_Process_List* l,Exalt_Ethernet* eth)
     Eina_List *elt;
     Boot_Process_Elt *data;
 
-    EXALT_ASSERT_RETURN_VOID(!!l);
-    EXALT_ASSERT_RETURN_VOID(!!l->l);
+    EXALT_ASSERT_RETURN_VOID(l!=NULL);
+    EXALT_ASSERT_RETURN_VOID(l->l!=NULL);
 
     for(elt = l->l; elt; elt = eina_list_next(elt))
     {
@@ -153,7 +153,7 @@ int waiting_iface_is_done(const Boot_Process_List* l)
         return 1;
 
 	// by bentejuy
-    EXALT_ASSERT_RETURN(!!l->l);
+    EXALT_ASSERT_RETURN(l->l!=NULL);
 /*
     elt = l->l;
 
@@ -212,8 +212,8 @@ int waiting_iface_add(const char* interface,const char* file)
     Exalt_Ethernet* eth;
     Boot_Process_List *l;
 
-    EXALT_ASSERT_RETURN(!!interface);
-    EXALT_ASSERT_RETURN(!!file);
+    EXALT_ASSERT_RETURN(interface!=NULL);
+    EXALT_ASSERT_RETURN(file!=NULL);
 
     l= waiting_iface_load(file);
     //add the new interface
@@ -245,7 +245,7 @@ int waiting_timeout_set(int timeout, const char* file)
     Exalt_Ethernet* eth;
     Boot_Process_List *l;
 
-    EXALT_ASSERT_RETURN(!!file);
+    EXALT_ASSERT_RETURN(file!=NULL);
 
     l= waiting_iface_load(file);
     l->timeout = timeout;
@@ -277,7 +277,7 @@ int waiting_timeout_get(const char* file)
     int timeout;
     Boot_Process_List *l;
 
-    EXALT_ASSERT_RETURN(!!file);
+    EXALT_ASSERT_RETURN(file!=NULL);
 
     l = waiting_iface_load(file);
     timeout = l->timeout;
@@ -298,8 +298,8 @@ int waiting_iface_remove(const char* interface,const char* file)
     Exalt_Ethernet* eth;
     Boot_Process_List *l = waiting_iface_load(file);
 
-    EXALT_ASSERT_RETURN(!!file);
-    EXALT_ASSERT_RETURN(!!interface);
+    EXALT_ASSERT_RETURN(file!=NULL);
+    EXALT_ASSERT_RETURN(interface!=NULL);
 
     l = waiting_iface_load(file);
     eth = exalt_eth_get_ethernet_byname(interface);
@@ -330,8 +330,8 @@ int waiting_iface_is_inconf(const char* interface,const char* file)
     int is;
     Boot_Process_List *l;
 
-    EXALT_ASSERT_RETURN(!!file);
-    EXALT_ASSERT_RETURN(!!interface);
+    EXALT_ASSERT_RETURN(file!=NULL);
+    EXALT_ASSERT_RETURN(interface!=NULL);
 
     l = waiting_iface_load(file);
     eth = exalt_eth_get_ethernet_byname(interface);

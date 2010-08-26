@@ -29,7 +29,7 @@ int exalt_dbus_network_configuration_get(Exalt_DBus_Conn *conn, const char *essi
     DBusMessageIter iter;
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(conn!=NULL);
 
     msg_id->id = exalt_dbus_msg_id_next(conn);
     msg_id->conn = conn;
@@ -60,7 +60,7 @@ int exalt_dbus_network_list_get(Exalt_DBus_Conn *conn)
     DBusMessage *msg;
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(conn!=NULL);
 
     msg_id->id = exalt_dbus_msg_id_next(conn);
     msg_id->conn = conn;
@@ -91,7 +91,7 @@ int exalt_dbus_network_favoris_set(Exalt_DBus_Conn *conn, const char *essid, int
     DBusMessageIter iter;
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(conn!=NULL);
 
     msg_id->id = exalt_dbus_msg_id_next(conn);
     msg_id->conn = conn;
@@ -127,7 +127,7 @@ int exalt_dbus_network_delete(Exalt_DBus_Conn *conn, const char *essid)
     DBusMessageIter iter;
     Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
-    EXALT_ASSERT_RETURN(!!conn);
+    EXALT_ASSERT_RETURN(conn!=NULL);
 
     msg_id->id = exalt_dbus_msg_id_next(conn);
     msg_id->conn = conn;

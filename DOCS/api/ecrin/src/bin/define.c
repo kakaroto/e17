@@ -22,7 +22,7 @@ ecrin_define_display (Ecrin_Define *define)
   iter = define->value;
   if (define->value)
     {
-      while ((p = strchr(iter, '\\')))
+      while ((p = strchr (iter, '\\')) != NULL)
         {
           char *str;
           int   l;

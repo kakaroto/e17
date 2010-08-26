@@ -29,7 +29,7 @@ Exalt_Configuration* exalt_conf_new()
     Exalt_Configuration* c;
 
     c = calloc(1,sizeof(Exalt_Configuration));
-    EXALT_ASSERT_RETURN(!!c);
+    EXALT_ASSERT_RETURN(c!=NULL);
 
     c->mode = EXALT_DHCP;
 
@@ -40,10 +40,10 @@ Exalt_Configuration* exalt_conf_new()
 void exalt_conf_free(Exalt_Configuration** conf)
 {
     Exalt_Configuration *c;
-    EXALT_ASSERT_RETURN_VOID(!!conf);
+    EXALT_ASSERT_RETURN_VOID(conf!=NULL);
 
     c = *conf;
-    EXALT_ASSERT_RETURN_VOID(!!c);
+    EXALT_ASSERT_RETURN_VOID(c!=NULL);
 
     eina_stringshare_del(c->ip);
     eina_stringshare_del(c->gateway);
@@ -58,7 +58,7 @@ void exalt_conf_free(Exalt_Configuration** conf)
 short exalt_conf_valid_is(Exalt_Configuration* c)
 {
     short valid = 1;
-    EXALT_ASSERT_RETURN(!!c);
+    EXALT_ASSERT_RETURN(c!=NULL);
 
     if(exalt_conf_mode_get(c) == EXALT_STATIC)
     {
@@ -113,7 +113,7 @@ Eet_Data_Descriptor * exalt_conf_edd_new(Eet_Data_Descriptor* edd_network)
     static Eet_Data_Descriptor_Class eddc;
     Eet_Data_Descriptor *edd;
 
-    EXALT_ASSERT_RETURN(!!edd_network);
+    EXALT_ASSERT_RETURN(edd_network!=NULL);
 
     eet_eina_stream_data_descriptor_class_set(&eddc, sizeof (eddc), "Configuration", sizeof(Exalt_Configuration));
     edd = eet_data_descriptor_stream_new(&eddc);

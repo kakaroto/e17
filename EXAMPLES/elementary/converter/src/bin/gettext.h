@@ -202,7 +202,7 @@ dcpgettext_expr (const char *domain,
     (msgctxt_len + msgid_len <= sizeof (buf)
      ? buf
      : (char *) malloc (msgctxt_len + msgid_len));
-  if (msg_ctxt_id != NULL)
+  if (msg_ctxt_id)
 #endif
     {
       memcpy (msg_ctxt_id, msgctxt, msgctxt_len - 1);
@@ -248,7 +248,7 @@ dcnpgettext_expr (const char *domain,
     (msgctxt_len + msgid_len <= sizeof (buf)
      ? buf
      : (char *) malloc (msgctxt_len + msgid_len));
-  if (msg_ctxt_id != NULL)
+  if (msg_ctxt_id)
 #endif
     {
       memcpy (msg_ctxt_id, msgctxt, msgctxt_len - 1);

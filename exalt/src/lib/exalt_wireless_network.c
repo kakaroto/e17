@@ -167,7 +167,7 @@ Eet_Data_Descriptor * exalt_wireless_network_edd_new(Eet_Data_Descriptor* edd_ie
     static Eet_Data_Descriptor_Class eddc;
     Eet_Data_Descriptor *edd;
 
-    EXALT_ASSERT_RETURN(!!edd_ie);
+    EXALT_ASSERT_RETURN(edd_ie!=NULL);
 
     eet_eina_stream_data_descriptor_class_set(&eddc, sizeof (eddc), "Network", sizeof(Exalt_Wireless_Network));
     edd = eet_data_descriptor_stream_new(&eddc);
@@ -189,7 +189,7 @@ Exalt_Wireless_Network* exalt_wireless_network_new(
         Exalt_Wireless* w)
 {
     Exalt_Wireless_Network* wn = calloc(1,sizeof(Exalt_Wireless_Network));
-    EXALT_ASSERT_RETURN(!!wn);
+    EXALT_ASSERT_RETURN(wn!=NULL);
     wn->iface = w;
     wn->ie = NULL;
     return wn;
@@ -202,9 +202,9 @@ void exalt_wireless_network_free(
     Exalt_Wireless_Network_IE *ie;
     Eina_List *l,*l_next;
 
-    EXALT_ASSERT_RETURN_VOID(!!wn);
+    EXALT_ASSERT_RETURN_VOID(wn!=NULL);
     wn2 = *wn;
-    EXALT_ASSERT_RETURN_VOID(!!wn2);
+    EXALT_ASSERT_RETURN_VOID(wn2!=NULL);
     EXALT_FREE(wn2->address);
     EXALT_FREE(wn2->essid);
     EXALT_FREE(wn2->description);
@@ -222,14 +222,14 @@ void exalt_wireless_network_free(
 Exalt_Wireless_Network_IE* exalt_wireless_network_ie_new()
 {
     Exalt_Wireless_Network_IE* ie = calloc(1,sizeof(Exalt_Wireless_Network_IE));
-    EXALT_ASSERT_RETURN(!!ie);
+    EXALT_ASSERT_RETURN(ie!=NULL);
     return ie;
 }
 
 void exalt_wireless_network_ie_free(
         Exalt_Wireless_Network_IE** ie)
 {
-    EXALT_ASSERT_RETURN_VOID(!!ie);
+    EXALT_ASSERT_RETURN_VOID(ie!=NULL);
     EXALT_FREE((*ie)->description);
     EXALT_FREE(*ie);
 }

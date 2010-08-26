@@ -100,7 +100,7 @@
             STRUCT_TYPE *s,                       \
             const char* attribut)                       \
     {                                                   \
-        ASSERT_RETURN_VOID(!!s);              \
+        ASSERT_RETURN_VOID(s!=NULL);              \
         EINA_STRINGSHARE_DEL(s->attribut) ;\
         if(attribut)                              \
             s->attribut = eina_stringshare_add(attribut);             \
@@ -120,7 +120,7 @@
             STRUCT_TYPE *s,                       \
             type attribut)                              \
     {                                                   \
-        ASSERT_RETURN_VOID(!!s);              \
+        ASSERT_RETURN_VOID(s!=NULL);              \
         s->attribut=attribut;                           \
     }
 
@@ -136,7 +136,7 @@
             type attribut,                              \
             int i)                                      \
     {                                                   \
-        ASSERT_RETURN_VOID(!!s);              \
+        ASSERT_RETURN_VOID(s!=NULL);              \
         s->attribut[i]=attribut;                        \
     }
 
@@ -152,7 +152,7 @@
     type file_name##_##attribut##_get(            \
             const STRUCT_TYPE *s)                       \
     {                                                   \
-        ASSERT_RETURN(!!s);                   \
+        ASSERT_RETURN(s!=NULL);                   \
         return s->attribut;                             \
     }
 
@@ -167,7 +167,7 @@
             const STRUCT_TYPE *s,                       \
             int i)                                      \
     {                                                   \
-        ASSERT_RETURN(!!s);                   \
+        ASSERT_RETURN(s!=NULL);                   \
         return s->attribut[i];                          \
     }
 
@@ -182,7 +182,7 @@
     type file_name##_##attribut##_is(             \
             STRUCT_TYPE *s)                       \
     {                                                   \
-        ASSERT_RETURN(!!s);                   \
+        ASSERT_RETURN(s!=NULL);                   \
         return s->attribut;                             \
     }
 

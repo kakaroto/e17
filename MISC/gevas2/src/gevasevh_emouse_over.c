@@ -87,7 +87,7 @@ gevasev_emouse_over_mouse_in(GtkObject * object, GtkObject * gevasobj, int _b,
     double sw = 0, sh = 0;
 	GtkgEvasEvHEMouseOver *ev;
 	GtkgEvasObj *ggobj = GTK_GEVASOBJ(gevasobj);
-	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_EMOUSE_OVER(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_EMOUSE_OVER(object);
@@ -116,7 +116,7 @@ gevasev_emouse_over_mouse_out(GtkObject * object, GtkObject * gevasobj, int _b,
 	Evas_Coord x = 0, y = 0, w = 0, h = 0;
 	GtkgEvasEvHEMouseOver *ev;
 	GtkgEvasObj *ggobj = GTK_GEVASOBJ(gevasobj);
-	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_EMOUSE_OVER(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_EMOUSE_OVER(object);
@@ -226,7 +226,7 @@ GtkObject *gevasevh_emouse_over_new(void)
 static void gevasevh_emouse_over_destroy(GtkObject * object)
 {
 	GtkgEvasEvHEMouseOver *ev;
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_EMOUSE_OVER(object));
 	ev = GTK_GEVASEVH_EMOUSE_OVER(object);
 
@@ -241,7 +241,7 @@ gevasevh_emouse_over_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasEvHEMouseOver *ev;
 
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_EMOUSE_OVER(object));
 	ev = GTK_GEVASEVH_EMOUSE_OVER(object);
 
@@ -263,7 +263,7 @@ static void
 gevasevh_emouse_over_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasEvHEMouseOver *ev;
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_EMOUSE_OVER(object));
 	ev = GTK_GEVASEVH_EMOUSE_OVER(object);
 

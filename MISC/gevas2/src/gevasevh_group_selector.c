@@ -127,7 +127,7 @@ enum {
  */
 Eina_List* gevasevh_group_selector_get_selection_objs(GtkgEvasEvHGroupSelector* ev )
 {
-	g_return_val_if_fail(!!ev,0);
+	g_return_val_if_fail(ev != NULL,0);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(ev),0);
     
     return gevas_obj_collection_to_eina_list( ev->col );
@@ -142,7 +142,7 @@ Eina_List* gevasevh_group_selector_get_selected_selectables(GtkgEvasEvHGroupSele
     Eina_List* tl = 0;
     GtkgEvasEvHSelectable* s = 0;
     
-	g_return_val_if_fail(!!ev,0);
+	g_return_val_if_fail(ev != NULL,0);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(ev),0);
 
 	for(tl = gevas_obj_collection_to_eina_list( ev->col ); tl; tl = tl->next)
@@ -168,7 +168,7 @@ gevasevh_group_selector_flushsel( GtkgEvasEvHGroupSelector* ev )
 	Eina_List* tl = 0;
     GtkgEvasEvHSelectable* s=0;
     
-	g_return_if_fail(!!ev);
+	g_return_if_fail(ev != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(ev));
 
     gevas_obj_collection_clear( ev->col );
@@ -181,7 +181,7 @@ gevasevh_group_selector_flushsel( GtkgEvasEvHGroupSelector* ev )
 void gevasevh_group_selector_movesel(GtkgEvasEvHGroupSelector* ev, gint32 dx, gint32 dy )
 {
 
-	g_return_if_fail(!!ev);
+	g_return_if_fail(ev != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(ev));
 
 /*     printf("gevasevh_group_selector_movesel() col.sz:%ld \n", */
@@ -209,9 +209,9 @@ gboolean gevasevh_group_selector_isinsel(
     GtkgEvasObjCollection* c = 0;
     gboolean ret = 0;
 
-	g_return_if_fail(!!ev);
+	g_return_if_fail(ev != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(ev));
-	g_return_if_fail(!!ev->col);
+	g_return_if_fail(ev->col != NULL);
 
     c = gevasevh_selectable_to_collection( o );
     ret = gevas_obj_collection_contains_all( ev->col, c );
@@ -227,7 +227,7 @@ gevasevh_group_selector_addtosel( GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelec
 {
     GtkgEvasObjCollection* c = 0;
     
-	g_return_if_fail(!!ev);
+	g_return_if_fail(ev != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(ev));
 
     
@@ -268,7 +268,7 @@ void gevasevh_group_selector_remfromsel(
 {
     GtkgEvasObjCollection* c = 0;
     
-	g_return_if_fail(!!ev);
+	g_return_if_fail(ev != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(ev));
 
     gevas_selectable_select( o , 0 );
@@ -373,9 +373,9 @@ static gboolean col_add_predicate_cb(
 {
     GtkgEvasEvHGroupSelector* ev=0;
     
-    g_return_if_fail(!!o);
-	g_return_if_fail(!!col);
-	g_return_if_fail(!!udata);
+    g_return_if_fail(o     != NULL);
+	g_return_if_fail(col   != NULL);
+	g_return_if_fail(udata != NULL);
     
 	g_return_if_fail( GTK_IS_GEVAS_OBJ_COLLECTION(col));
 	g_return_if_fail( GTK_IS_GEVASOBJ(o));
@@ -401,9 +401,9 @@ static void col_item_add(
 {
     GtkgEvasEvHSelectable* s = 0;
 
-	g_return_if_fail(!!col);
-	g_return_if_fail(!!o);
-	g_return_if_fail(!!ev);
+	g_return_if_fail(col   != NULL);
+	g_return_if_fail(o     != NULL);
+	g_return_if_fail(ev    != NULL);
     
 	g_return_if_fail( GTK_IS_GEVAS_OBJ_COLLECTION(col) );
 	g_return_if_fail( GTK_IS_GEVASOBJ(o));
@@ -425,9 +425,9 @@ static void col_item_remove(
 {
     GtkgEvasEvHSelectable* s = 0;
 
-	g_return_if_fail(!!col);
-	g_return_if_fail(!!o);
-	g_return_if_fail(!!ev);
+	g_return_if_fail(col   != NULL);
+	g_return_if_fail(o     != NULL);
+	g_return_if_fail(ev    != NULL);
     
 	g_return_if_fail( GTK_IS_GEVAS_OBJ_COLLECTION(col) );
 	g_return_if_fail( GTK_IS_GEVASOBJ(o));
@@ -456,7 +456,7 @@ void gevasevh_group_selector_set_object( GtkgEvasEvHGroupSelector* object, GtkgE
     GtkgEvas* gevas = 0;
 
 //    fprintf(stderr,"gevasevh_group_selector_set_object(top)\n");
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(object));
 
 	ev = object;
@@ -523,7 +523,7 @@ gevasev_group_selector_mouse_in(GtkObject * object, GtkObject * gevasobj, int _b
 {
 //    fprintf(stderr,"gevasev_group_selector_mouse_in()\n");
 	GtkgEvasEvHGroupSelector *ev;
-	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_GROUP_SELECTOR(object);
@@ -540,7 +540,7 @@ gevasev_group_selector_mouse_out(GtkObject * object, GtkObject * gevasobj, int _
 							  int _x, int _y)
 {
     GtkgEvasEvHGroupSelector *ev;
-	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_GROUP_SELECTOR(object);
@@ -561,7 +561,7 @@ gevasev_group_selector_mouse_down(GtkObject * object, GtkObject * gevasobj, int 
 	GtkgEvasEvHGroupSelector *ev = 0;
 	GdkEvent *gdkev;
 
-    g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
+    g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_GROUP_SELECTOR(object);
@@ -643,7 +643,7 @@ gevasev_group_selector_mouse_up(GtkObject * object, GtkObject * gevasobj, int _b
 	if( _b != 1 )
 		return GEVASEV_HANDLER_RET_NEXT;
 
-    g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
+    g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_GROUP_SELECTOR(object);
@@ -715,7 +715,7 @@ gevasev_group_selector_mouse_move(GtkObject * object, GtkObject * gevasobj, int 
 							   int _x, int _y)
 {
 	GtkgEvasEvHGroupSelector *ev;
-	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_GROUP_SELECTOR(object);
@@ -824,7 +824,7 @@ GtkObject *gevasevh_group_selector_new(void)
 static void gevasevh_group_selector_destroy(GtkObject * object)
 {
 	GtkgEvasEvHGroupSelector *ev;
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(object));
 	ev = GTK_GEVASEVH_GROUP_SELECTOR(object);
 
@@ -839,7 +839,7 @@ static void
 gevasevh_group_selector_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasEvHGroupSelector *ev;
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(object));
 	ev = GTK_GEVASEVH_GROUP_SELECTOR(object);
 
@@ -859,7 +859,7 @@ static void
 gevasevh_group_selector_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasEvHGroupSelector *ev;
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(object));
 	ev = GTK_GEVASEVH_GROUP_SELECTOR(object);
 /*

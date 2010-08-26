@@ -108,7 +108,7 @@ GtkgEvasGrad *gevasgrad_new(GtkgEvas * gevas)
 void gevasgrad_set_angle( GtkgEvasObj* object, double angle)
 {
 	GtkgEvasGrad *ev;
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASGRAD(object));
 	ev = GTK_GEVASGRAD(object);
 
@@ -119,7 +119,7 @@ void gevasgrad_set_angle( GtkgEvasObj* object, double angle)
 void gevasgrad_clear_gradient(GtkgEvasObj * object)
 {
 	GtkgEvasGrad *ev;
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASGRAD(object));
 	ev = GTK_GEVASGRAD(object);
 
@@ -138,7 +138,7 @@ void
 gevasgrad_add_color(GtkgEvasObj * object, int r, int g, int b, int a, int dist)
 {
 	GtkgEvasGrad *ev;
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASGRAD(object));
 	ev = GTK_GEVASGRAD(object);
 
@@ -212,7 +212,7 @@ static void gevasgrad_destroy(GtkObject * object)
 {
 	GtkgEvasGrad *ev;
 
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASGRAD(object));
 
 	ev = GTK_GEVASGRAD(object);
@@ -228,7 +228,7 @@ static void gevasgrad_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasGrad *ev;
 
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASGRAD(object));
 
 	ev = GTK_GEVASGRAD(object);
@@ -259,7 +259,7 @@ static void gevasgrad_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasGrad *ev;
 
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASGRAD(object));
 
 	ev = GTK_GEVASGRAD(object);

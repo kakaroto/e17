@@ -71,7 +71,7 @@ Enlil_IPTC *enlil_iptc_new_from_name(const char *name)
 
 Enlil_IPTC *enlil_iptc_copy_new(Enlil_IPTC *iptc)
 {
-   ASSERT_RETURN(!!iptc);
+   ASSERT_RETURN(iptc!=NULL);
 
    Enlil_IPTC *_iptc = enlil_iptc_new();
 
@@ -81,8 +81,8 @@ Enlil_IPTC *enlil_iptc_copy_new(Enlil_IPTC *iptc)
 
 void enlil_iptc_copy(Enlil_IPTC *iptc_src, Enlil_IPTC *iptc_dest)
 {
-   ASSERT_RETURN_VOID(!!iptc_src);
-   ASSERT_RETURN_VOID(!!iptc_dest);
+   ASSERT_RETURN_VOID(iptc_src!=NULL);
+   ASSERT_RETURN_VOID(iptc_dest!=NULL);
 
    iptc_dest->record = iptc_src->record;
    iptc_dest->tag = iptc_src->tag;
@@ -93,9 +93,9 @@ void enlil_iptc_copy(Enlil_IPTC *iptc_src, Enlil_IPTC *iptc_dest)
 
 void enlil_iptc_free(Enlil_IPTC **iptc)
 {
-   ASSERT_RETURN_VOID(!!iptc);
+   ASSERT_RETURN_VOID(iptc != NULL);
    Enlil_IPTC *_iptc = *iptc;
-   ASSERT_RETURN_VOID(!!_iptc);
+   ASSERT_RETURN_VOID(_iptc != NULL);
 
    if(_iptc->name)
      eina_stringshare_del(_iptc->name);
@@ -146,7 +146,7 @@ Eet_Data_Descriptor * _enlil_iptc_edd_new()
 
 Enlil_IPTC_Job *enlil_iptc_job_append(Enlil_Photo *photo, Enlil_IPTC_Done_Cb cb, void *data)
 {
-    ASSERT_RETURN(!!photo);
+    ASSERT_RETURN(photo!=NULL);
     Eina_List *l;
     Enlil_IPTC_Job *job;
 
@@ -171,7 +171,7 @@ Enlil_IPTC_Job *enlil_iptc_job_append(Enlil_Photo *photo, Enlil_IPTC_Done_Cb cb,
 
 Enlil_IPTC_Job *enlil_iptc_job_prepend(Enlil_Photo *photo, Enlil_IPTC_Done_Cb cb, void *data)
 {
-    ASSERT_RETURN(!!photo);
+    ASSERT_RETURN(photo!=NULL);
     Eina_List *l;
     Enlil_IPTC_Job *job;
 
@@ -198,7 +198,7 @@ Enlil_IPTC_Job *enlil_iptc_job_prepend(Enlil_Photo *photo, Enlil_IPTC_Done_Cb cb
 
 void enlil_iptc_job_del(Enlil_IPTC_Job *job)
 {
-    ASSERT_RETURN_VOID(!!job);
+    ASSERT_RETURN_VOID(job != NULL);
 
     if(job == job_current)
     {
@@ -212,7 +212,7 @@ void enlil_iptc_job_del(Enlil_IPTC_Job *job)
 
 static void _job_free(Enlil_IPTC_Job *job)
 {
-    ASSERT_RETURN_VOID(!!job);
+    ASSERT_RETURN_VOID(job != NULL);
 
     FREE(job);
 }

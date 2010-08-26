@@ -301,7 +301,7 @@ GtkObject *gevasevh_to_gtk_signal_new(void)
 static void gevasevh_to_gtk_signal_destroy(GtkObject * object)
 {
 	GtkgEvasEvHToGtkSignals *ev;
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_TO_GTK_SIGNAL(object));
 	ev = GTK_GEVASEVH_TO_GTK_SIGNAL(object);
 

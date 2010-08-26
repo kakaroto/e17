@@ -29,7 +29,7 @@ static Eina_Bool running = EINA_FALSE;
 
 static void _job_free(Enlil_Download_Job *job)
 {
-    ASSERT_RETURN_VOID(!!job);
+    ASSERT_RETURN_VOID(job != NULL);
 
     EINA_STRINGSHARE_DEL(job->source);
     free(job);
@@ -44,8 +44,8 @@ void enlil_download_add(Enlil_Photo *photo, const char *source,
 {
     Enlil_Download_Job *job;
 
-    ASSERT_RETURN_VOID(!!photo);
-    ASSERT_RETURN_VOID(!!source);
+    ASSERT_RETURN_VOID(photo!=NULL);
+    ASSERT_RETURN_VOID(source != NULL);
 
     //maybe the job is already in the list
     Eina_List *l;
@@ -72,8 +72,8 @@ void enlil_download_add(Enlil_Photo *photo, const char *source,
 
 Eina_Bool enlil_download_image_in_list(const char *src, const Enlil_Album *album)
 {
-    ASSERT_RETURN(!!src);
-    ASSERT_RETURN(!!album);
+    ASSERT_RETURN(src != NULL);
+    ASSERT_RETURN(album != NULL);
 
     const char *src_share = eina_stringshare_add(src);
 
@@ -106,7 +106,7 @@ Eina_Bool enlil_download_image_in_list(const char *src, const Enlil_Album *album
 
 Eina_Bool enlil_download_photos_of_album_in_list(const Enlil_Album *album, Eina_Bool test_current)
 {
-    ASSERT_RETURN(!!album);
+    ASSERT_RETURN(album != NULL);
 
     Eina_Bool find = EINA_FALSE;
     Eina_List *l;

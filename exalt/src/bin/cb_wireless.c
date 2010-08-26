@@ -18,7 +18,7 @@ DBusMessage * dbus_cb_wireless_essid_get(E_DBus_Object *obj __UNUSED__, DBusMess
     dbus_message_set_path(reply,dbus_message_get_path(msg));
 
     eth= dbus_get_eth(msg);
-    EXALT_ASSERT_CUSTOM_RET(!!eth,
+    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
             dbus_args_error_append(reply,
                 EXALT_DBUS_INTERFACE_ERROR_ID,
                 EXALT_DBUS_INTERFACE_ERROR);
@@ -31,7 +31,7 @@ DBusMessage * dbus_cb_wireless_essid_get(E_DBus_Object *obj __UNUSED__, DBusMess
             return reply);
 
     essid = exalt_wireless_essid_get(exalt_eth_wireless_get(eth));
-    EXALT_ASSERT_CUSTOM_RET(!!essid,
+    EXALT_ASSERT_CUSTOM_RET(essid!=NULL,
             dbus_args_error_append(reply,
                 EXALT_DBUS_ESSID_ERROR_ID,
                 EXALT_DBUS_ESSID_ERROR);
@@ -56,7 +56,7 @@ DBusMessage * dbus_cb_wireless_disconnect(E_DBus_Object *obj __UNUSED__, DBusMes
     dbus_message_set_path(reply,dbus_message_get_path(msg));
 
     eth= dbus_get_eth(msg);
-    EXALT_ASSERT_CUSTOM_RET(!!eth,
+    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
             dbus_args_error_append(reply,
                 EXALT_DBUS_INTERFACE_ERROR_ID,
                 EXALT_DBUS_INTERFACE_ERROR);
@@ -87,7 +87,7 @@ DBusMessage * dbus_cb_wireless_wpasupplicant_driver_get(E_DBus_Object *obj __UNU
     dbus_message_set_path(reply,dbus_message_get_path(msg));
 
     eth= dbus_get_eth(msg);
-    EXALT_ASSERT_CUSTOM_RET(!!eth,
+    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
             dbus_args_error_append(reply,
                 EXALT_DBUS_INTERFACE_ERROR_ID,
                 EXALT_DBUS_INTERFACE_ERROR);
@@ -100,7 +100,7 @@ DBusMessage * dbus_cb_wireless_wpasupplicant_driver_get(E_DBus_Object *obj __UNU
             return reply);
 
     essid = exalt_wireless_wpasupplicant_driver_get(exalt_eth_wireless_get(eth));
-    EXALT_ASSERT_CUSTOM_RET(!!essid,
+    EXALT_ASSERT_CUSTOM_RET(essid!=NULL,
             dbus_args_error_append(reply,
                 EXALT_DBUS_ESSID_ERROR_ID,
                 EXALT_DBUS_ESSID_ERROR);
@@ -124,7 +124,7 @@ DBusMessage * dbus_cb_wireless_wpasupplicant_driver_set(E_DBus_Object *obj __UNU
     reply = dbus_message_new_method_return(msg);
     dbus_message_set_path(reply,dbus_message_get_path(msg));
     eth= dbus_get_eth(msg);
-    EXALT_ASSERT_CUSTOM_RET(!!eth,
+    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
             dbus_args_error_append(reply,
                 EXALT_DBUS_INTERFACE_ERROR_ID,
                 EXALT_DBUS_INTERFACE_ERROR);
@@ -150,7 +150,7 @@ DBusMessage * dbus_cb_wireless_wpasupplicant_driver_set(E_DBus_Object *obj __UNU
     else
         dbus_message_iter_get_basic(&args, &driver);
 
-    EXALT_ASSERT_CUSTOM_RET(!!driver,
+    EXALT_ASSERT_CUSTOM_RET(driver!=NULL,
             dbus_args_error_append(reply,
                 EXALT_DBUS_ARGUMENT_NOT_STRING_ID,
                 EXALT_DBUS_ARGUMENT_NOT_STRING);
@@ -174,7 +174,7 @@ DBusMessage * dbus_cb_wireless_scan(E_DBus_Object *obj __UNUSED__, DBusMessage *
     reply = dbus_message_new_method_return(msg);
     dbus_message_set_path(reply,dbus_message_get_path(msg));
     eth= dbus_get_eth(msg);
-    EXALT_ASSERT_CUSTOM_RET(!!eth,
+    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
             dbus_args_error_append(reply,
                 EXALT_DBUS_INTERFACE_ERROR_ID,
                 EXALT_DBUS_INTERFACE_ERROR);

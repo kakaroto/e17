@@ -100,7 +100,7 @@
     {                                                   \
         ASSERT_RETURN_VOID(s!=NULL);              \
         EINA_STRINGSHARE_DEL(s->attribut) ;\
-        if(attribut!=NULL)                              \
+        if(attribut)                              \
             s->attribut = eina_stringshare_add(attribut);             \
         else                                            \
             s->attribut=NULL;                           \

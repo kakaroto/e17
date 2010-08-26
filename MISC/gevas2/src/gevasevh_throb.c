@@ -220,7 +220,7 @@ gevasev_throb_mouse_in(GtkObject * object, GtkObject * gevasobj, int _b,
     GtkgEvasEvH* evh;
     GtkgEvasObj* go;
 	GtkgEvasEvHThrob *ev;
-	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_THROB(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_THROB(object);
@@ -247,7 +247,7 @@ gevasev_throb_mouse_out(GtkObject * object, GtkObject * gevasobj, int _b,
 							  int _x, int _y)
 {
 	GtkgEvasEvHThrob *ev;
-	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_THROB(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_THROB(object);
@@ -387,7 +387,7 @@ GtkgEvasEvHThrob* gevasevh_throb_new_for_twin( GtkgEvasTwin* twin, GtkgEvasObj* 
 static void gevasevh_throb_destroy(GtkObject * object)
 {
 	GtkgEvasEvHThrob *ev;
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_THROB(object));
 	ev = GTK_GEVASEVH_THROB(object);
 
@@ -405,7 +405,7 @@ gevasevh_throb_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasEvHThrob *ev;
 
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_THROB(object));
 	ev = GTK_GEVASEVH_THROB(object);
 
@@ -420,7 +420,7 @@ static void
 gevasevh_throb_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasEvHThrob *ev;
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_THROB(object));
 	ev = GTK_GEVASEVH_THROB(object);
 

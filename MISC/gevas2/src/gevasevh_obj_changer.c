@@ -108,7 +108,7 @@ gevasev_obj_changer_mouse_in(GtkObject * object, GtkObject * gevasobj, int _b,
 							 int _x, int _y)
 {
 	GtkgEvasEvHObjChanger *ev;
-	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_OBJ_CHANGER(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_OBJ_CHANGER(object);
@@ -122,7 +122,7 @@ gevasev_obj_changer_mouse_out(GtkObject * object, GtkObject * gevasobj, int _b,
 							  int _x, int _y)
 {
 	GtkgEvasEvHObjChanger *ev;
-	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_OBJ_CHANGER(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_OBJ_CHANGER(object);
@@ -136,7 +136,7 @@ gevasev_obj_changer_mouse_down(GtkObject * object, GtkObject * gevasobj, int _b,
 							   int _x, int _y)
 {
 	GtkgEvasEvHObjChanger *ev;
-	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_OBJ_CHANGER(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_OBJ_CHANGER(object);
@@ -149,7 +149,7 @@ gevasev_obj_changer_mouse_up(GtkObject * object, GtkObject * gevasobj, int _b,
 							 int _x, int _y)
 {
 	GtkgEvasEvHObjChanger *ev;
-	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_OBJ_CHANGER(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_OBJ_CHANGER(object);
@@ -250,7 +250,7 @@ GtkObject *gevasevh_obj_changer_new(void)
 static void gevasevh_obj_changer_destroy(GtkObject * object)
 {
 	GtkgEvasEvHObjChanger *ev;
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_OBJ_CHANGER(object));
 	ev = GTK_GEVASEVH_OBJ_CHANGER(object);
 
@@ -263,7 +263,7 @@ static void
 gevasevh_obj_changer_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasEvHObjChanger *ev;
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_OBJ_CHANGER(object));
 	ev = GTK_GEVASEVH_OBJ_CHANGER(object);
 
@@ -300,7 +300,7 @@ static void
 gevasevh_obj_changer_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasEvHObjChanger *ev;
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_OBJ_CHANGER(object));
 	ev = GTK_GEVASEVH_OBJ_CHANGER(object);
 

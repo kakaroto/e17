@@ -106,7 +106,7 @@ gevasev_to_popup_mouse_down(GtkObject * object, GtkObject * gevasobj, int _b,
 {
 	gboolean return_val;
 	GtkgEvasEvHPopup *ev;
-	g_return_val_if_fail(!!object, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_POPUP_SIGNAL(object),
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_POPUP_SIGNAL(object);
@@ -249,7 +249,7 @@ GtkObject *gevasevh_popup_new(void)
 static void gevasevh_popup_destroy(GtkObject * object)
 {
 	GtkgEvasEvHPopup *ev;
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_POPUP_SIGNAL(object));
 	ev = GTK_GEVASEVH_POPUP_SIGNAL(object);
 
@@ -262,7 +262,7 @@ static void
 gevasevh_popup_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasEvHPopup *ev;
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_POPUP_SIGNAL(object));
 	ev = GTK_GEVASEVH_POPUP_SIGNAL(object);
 
@@ -281,7 +281,7 @@ static void
 gevasevh_popup_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasEvHPopup *ev;
-	g_return_if_fail(!!object);
+	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_POPUP_SIGNAL(object));
 	ev = GTK_GEVASEVH_POPUP_SIGNAL(object);
 

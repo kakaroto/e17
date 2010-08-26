@@ -257,7 +257,7 @@ find_value_long(spif_charptr_t arg, spif_charptr_t next_arg, spif_charptr_t hase
 {
     spif_charptr_t val_ptr;
 
-    if ((val_ptr = SPIF_CHARPTR(strchr((char *) arg, '='))) != NULL) {
+    if ((val_ptr = SPIF_CHARPTR(strchr((char *)arg, '=')))) {
         val_ptr++;
         *hasequal = 1;
     } else {
@@ -291,7 +291,7 @@ find_value_short(spif_charptr_t arg, spif_charptr_t next_arg)
 
     if (arg[1]) {
         val_ptr = arg + 1;
-    } else if (next_arg != NULL) {
+    } else if (next_arg) {
         val_ptr = next_arg;
     }
     D_OPTIONS(("val_ptr == %10.8p \"%s\"\n", val_ptr, NONULL(val_ptr)));
@@ -608,7 +608,7 @@ spifopt_parse(int argc, char *argv[])
 
         /* Make sure that options which require a parameter have them. */
         if (SPIFOPT_OPT_NEEDS_VALUE(j)) {
-            if (val_ptr == NULL) {
+            if (!val_ptr) {
                 if (islong) {
                     libast_print_error("long option --%s requires a%s value\n", SPIFOPT_OPT_LONG(j),
                                 (SPIFOPT_OPT_IS_INTEGER(j)
@@ -632,10 +632,10 @@ spifopt_parse(int argc, char *argv[])
                 continue;
             }
             /* Also make sure we know what to do with the value. */
-            if (SPIFOPT_OPT_VALUE(j) == NULL) {
+            if (!SPIFOPT_OPT_VALUE(j)) {
                 NEXT_LOOP();
             }
-        } else if (SPIFOPT_OPT_IS_ABSTRACT(j) && SPIFOPT_OPT_VALUE(j) == NULL) {
+        } else if (SPIFOPT_OPT_IS_ABSTRACT(j) && !SPIFOPT_OPT_VALUE(j)) {
             /* Also make sure that abstract options have a function pointer. */
             NEXT_LOOP();
         }

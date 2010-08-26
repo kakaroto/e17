@@ -277,7 +277,7 @@ spifconf_put_var(spif_charptr_t var, spif_charptr_t val)
             ((loc) ? (loc->var) : ((spif_charptr_t) "-beginning-")),
             ((v) ? (v->var) : ((spif_charptr_t) "-end-"))));
     tmp = spifconf_new_var();
-    if (loc == NULL) {
+    if (!loc) {
         tmp->next = spifconf_vars;
         spifconf_vars = tmp;
     } else {
@@ -338,7 +338,7 @@ builtin_exec(spif_charptr_t param)
     strcat((char *) Command, " >");
     strcat((char *) Command, (char *) OutFile);
     system((char *) Command);
-    if ((fp = fdopen(fd, "rb")) != NULL) {
+    if ((fp = fdopen(fd, "rb"))) {
         fseek(fp, 0, SEEK_END);
         fsize = ftell(fp);
         rewind(fp);
@@ -437,7 +437,7 @@ builtin_dirscan(spif_charptr_t param)
     *buff = 0;
     n = CONFIG_BUFF;
 
-    for (i = 0; (dp = readdir(dirp)) != NULL;) {
+    for (i = 0; (dp = readdir(dirp));) {
         spif_char_t fullname[PATH_MAX];
 
         snprintf((char *) fullname, sizeof(fullname), "%s/%s", dir, dp->d_name);
@@ -557,7 +557,7 @@ spifconf_shell_expand(spif_charptr_t s)
               break;
           case '%':
               D_CONF(("%% detected.\n"));
-              for (k = 0, pbuff++; builtins[k].name != NULL; k++) {
+              for (k = 0, pbuff++; builtins[k].name; k++) {
                   D_PARSE(("Checking for function %%%s, pbuff == \"%s\"\n", builtins[k].name, pbuff));
                   l = strlen((char *) builtins[k].name);
                   if (!strncasecmp((char *) builtins[k].name, (char *) pbuff, l)
@@ -567,7 +567,7 @@ spifconf_shell_expand(spif_charptr_t s)
                       break;
                   }
               }
-              if (builtins[k].name == NULL) {
+              if (!builtins[k].name) {
                   newbuff[j] = *pbuff;
               } else {
                   D_CONF(("Call to built-in function %s detected.\n", builtins[k].name));
@@ -765,11 +765,11 @@ spifconf_find_file(const spif_charptr_t file, const spif_charptr_t dir, const sp
         return ((spif_charptr_t) NULL);
     }
 
-    for (path = pathlist; path != NULL && *path != '\0'; path = p) {
+    for (path = pathlist; path && *path != '\0'; path = p) {
         short n;
 
         /* Calculate the length of the next directory in the path */
-        if ((p = (spif_charptr_t) strchr((char *) path, ':')) != NULL) {
+        if ((p = (spif_charptr_t)strchr((char *)path, ':'))) {
             n = p++ - path;
         } else {
             n = strlen((char *) path);
@@ -862,7 +862,7 @@ spifconf_parse_line(FILE * fp, spif_charptr_t buff)
     if (!(*buff) || *buff == '\n' || *buff == '#' || *buff == '<') {
         SPIFCONF_PARSE_RET();
     }
-    if (fp == NULL) {
+    if (!fp) {
         file_push(NULL, (spif_charptr_t) "<argv>", NULL, 0, 0);
         ctx_begin(1);
         buff = spiftool_get_pword(2, buff);
@@ -884,7 +884,7 @@ spifconf_parse_line(FILE * fp, spif_charptr_t buff)
 
               spifconf_shell_expand((spif_charptr_t) buff);
               path = spiftool_get_word(2, buff + 1);
-              if ((fp = spifconf_open_file(path)) == NULL) {
+              if (!(fp = spifconf_open_file(path))) {
                   libast_print_error("Parsing file %s, line %lu:  Unable to locate %%included config file %s (%s), continuing\n", file_peek_path(),
                               file_peek_line(), path, strerror(errno));
               } else {
@@ -906,7 +906,7 @@ spifconf_parse_line(FILE * fp, spif_charptr_t buff)
                        spiftool_get_pword(2, buff), file_peek_path(), fname);
               system((char *) cmd);
               fp = fdopen(fd, "rt");
-              if (fp != NULL) {
+              if (fp) {
                   fclose(file_peek_fp());
                   file_poke_fp(fp);
                   file_poke_preproc(1);
@@ -957,8 +957,8 @@ spifconf_parse(spif_charptr_t conf_name, const spif_charptr_t dir, const spif_ch
 
     *orig_dir = 0;
     if (path) {
-        if ((name = spifconf_find_file(conf_name, dir, path)) != NULL) {
-            if ((p = (spif_charptr_t) strrchr((char *) name, '/')) != NULL) {
+        if ((name = spifconf_find_file(conf_name, dir, path))) {
+            if ((p = (spif_charptr_t)strrchr((char *)name, '/'))) {
                 getcwd((char *) orig_dir, PATH_MAX);
                 *p = 0;
                 p = name;
@@ -970,7 +970,7 @@ spifconf_parse(spif_charptr_t conf_name, const spif_charptr_t dir, const spif_ch
             return NULL;
         }
     }
-    if ((fp = spifconf_open_file(conf_name)) == NULL) {
+    if (!(fp = spifconf_open_file(conf_name))) {
         return NULL;
     }
 	/* Line count starts at 1 because spifconf_open_file() parses the first line. */

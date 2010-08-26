@@ -191,9 +191,9 @@ geTransAlphaWipe *gevastrans_alphawipe_new()
 void gevastrans_perform( geTransAlphaWipe* thisp, GtkgEvasObj* fobj, GtkgEvasObj* tobj )
 {
 	geTransAlphaWipe* ev;
-	g_return_if_fail(!!thisp);
-	g_return_if_fail(!!fobj);
-	g_return_if_fail(!!tobj);
+	g_return_if_fail(thisp != NULL);
+	g_return_if_fail(fobj  != NULL);
+	g_return_if_fail(tobj  != NULL);
 	g_return_if_fail(GTK_IS_GEVTRANS_ALPHAWIPE(thisp));
     ev = GTK_GEVTRANS_ALPHAWIPE( thisp );
 

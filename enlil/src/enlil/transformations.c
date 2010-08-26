@@ -64,8 +64,8 @@ int enlil_trans_shutdown()
 
 Enlil_Trans_Job *enlil_trans_job_add(Enlil_Trans_History *h, const char *file, Enlil_Trans_Job_Type type, Enlil_Trans_Done_Cb cb, void *data)
 {
-    ASSERT_RETURN(!!h);
-    ASSERT_RETURN(!!file);
+    ASSERT_RETURN(h != NULL);
+    ASSERT_RETURN(file!=NULL);
 
     Enlil_Trans_Job *job = calloc(1, sizeof(Enlil_Trans_Job));
     job->file =  eina_stringshare_add(file);
@@ -83,7 +83,7 @@ Enlil_Trans_Job *enlil_trans_job_add(Enlil_Trans_History *h, const char *file, E
 
 void enlil_trans_job_del(Enlil_Trans_Job *job)
 {
-    ASSERT_RETURN_VOID(!!job);
+    ASSERT_RETURN_VOID(job != NULL);
 
     if(job == job_current)
     {
@@ -102,7 +102,7 @@ Enlil_Trans_History *enlil_trans_history_new(const char *file)
     char buf[PATH_MAX];
     int i = 0;
 
-    ASSERT_RETURN(!!file);
+    ASSERT_RETURN(file!= NULL);
 
     Enlil_Trans_History *h = calloc(1, sizeof(Enlil_Trans_History));
 
@@ -129,7 +129,7 @@ Enlil_Trans_History *enlil_trans_history_new(const char *file)
 
 void enlil_trans_history_free(Enlil_Trans_History *h)
 {
-    ASSERT_RETURN_VOID(!!h);
+    ASSERT_RETURN_VOID(h != NULL);
 
     enlil_trans_history_clear(h);
     ecore_file_recursive_rm(h->folder);
@@ -139,13 +139,13 @@ void enlil_trans_history_free(Enlil_Trans_History *h)
 
 const Eina_List *enlil_trans_history_get(const Enlil_Trans_History *h)
 {
-    ASSERT_RETURN(!!h);
+    ASSERT_RETURN(h != NULL);
     return h->history;
 }
 
 const Enlil_Trans_History_Item *enlil_trans_history_current_get(const Enlil_Trans_History *h)
 {
-    ASSERT_RETURN(!!h);
+    ASSERT_RETURN(h != NULL);
     return h->current;
 }
 
@@ -153,7 +153,7 @@ const Enlil_Trans_History_Item *enlil_trans_history_current_get(const Enlil_Tran
 void enlil_trans_history_clear(Enlil_Trans_History *h)
 {
     Enlil_Trans_History_Item *item;
-    ASSERT_RETURN_VOID(!!h);
+    ASSERT_RETURN_VOID(h != NULL);
 
     EINA_LIST_FREE(h->history, item)
     {
@@ -166,7 +166,7 @@ void enlil_trans_history_clear(Enlil_Trans_History *h)
 
 const char *enlil_trans_history_goto(Enlil_Trans_History *h, int pos)
 {
-    ASSERT_RETURN(!!h);
+    ASSERT_RETURN(h != NULL);
     ASSERT_RETURN(pos >= 0 && pos < eina_list_count(h->history));
 
     h->current = eina_list_nth(h->history, pos);
@@ -175,13 +175,13 @@ const char *enlil_trans_history_goto(Enlil_Trans_History *h, int pos)
 
 const char *enlil_trans_history_item_file_get(const Enlil_Trans_History_Item *item)
 {
-    ASSERT_RETURN(!!item);
+    ASSERT_RETURN(item != NULL);
     return item->file;
 }
 
 Enlil_Trans_Job_Type enlil_trans_history_item_type_get(const Enlil_Trans_History_Item *item)
 {
-    ASSERT_RETURN(!!item);
+    ASSERT_RETURN(item != NULL);
     return item->type;
 }
 
@@ -190,8 +190,8 @@ static void _enlil_trans_history_add(Enlil_Trans_History *h, const char *file, E
     Enlil_Trans_History_Item *item;
     Eina_List *l, *l2;
 
-    ASSERT_RETURN_VOID(!!h);
-    ASSERT_RETURN_VOID(!!file);
+    ASSERT_RETURN_VOID(h != NULL);
+    ASSERT_RETURN_VOID(file != NULL);
 
     l = eina_list_data_find_list(h->history, h->current);
     l = eina_list_next(l);
@@ -214,7 +214,7 @@ static void _enlil_trans_history_add(Enlil_Trans_History *h, const char *file, E
 
 static void _job_free(Enlil_Trans_Job *job)
 {
-    ASSERT_RETURN_VOID(!!job);
+    ASSERT_RETURN_VOID(job != NULL);
 
     EINA_STRINGSHARE_DEL(job->file);
     EINA_STRINGSHARE_DEL(job->res_file);

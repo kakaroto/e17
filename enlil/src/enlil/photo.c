@@ -105,7 +105,7 @@ Enlil_Photo *enlil_photo_new()
 
 Enlil_Photo *enlil_photo_copy_new(Enlil_Photo *photo)
 {
-   ASSERT_RETURN(!!photo);
+   ASSERT_RETURN(photo!=NULL);
 
    Enlil_Photo *_photo = enlil_photo_new();
 
@@ -122,8 +122,8 @@ void enlil_photo_copy(Enlil_Photo *photo_src, Enlil_Photo *photo_dest)
    const Eina_List *l, *l2;
    Eina_List *tags;
    Eina_Bool find;
-   ASSERT_RETURN_VOID(!!photo_src);
-   ASSERT_RETURN_VOID(!!photo_dest);
+   ASSERT_RETURN_VOID(photo_src!=NULL);
+   ASSERT_RETURN_VOID(photo_dest!=NULL);
 
    photo_dest->eet_save = photo_src->eet_save;
    photo_dest->type = photo_src->type;
@@ -172,8 +172,8 @@ void enlil_photo_free(Enlil_Photo **photo)
    Enlil_Photo_Tag *photo_tag;
    Enlil_Exif *exif;
    Enlil_IPTC *iptc;
-   ASSERT_RETURN_VOID(!!photo);
-   ASSERT_RETURN_VOID(!!(*photo));
+   ASSERT_RETURN_VOID(photo!=NULL);
+   ASSERT_RETURN_VOID((*photo)!=NULL);
 
    EINA_LIST_FREE( (*photo)->tags, photo_tag)
      {
@@ -216,7 +216,7 @@ void enlil_photo_list_print(Eina_List *l_photos)
 {
    Eina_List *l;
    Enlil_Photo *photo;
-   ASSERT_RETURN_VOID(!!l_photos);
+   ASSERT_RETURN_VOID(l_photos!=NULL);
    EINA_LIST_FOREACH(l_photos, l, photo)
      {
 	enlil_photo_print(photo);
@@ -225,7 +225,7 @@ void enlil_photo_list_print(Eina_List *l_photos)
 
 void enlil_photo_print(Enlil_Photo *photo)
 {
-   ASSERT_RETURN_VOID(!!photo);
+   ASSERT_RETURN_VOID(photo!=NULL);
    printf("# Photo %s\n", photo->name);
    printf("\tFile name\t:\t%s\n", photo->file_name);
    printf("\tpath\t\t:\t%s\n", photo->path);
@@ -233,7 +233,7 @@ void enlil_photo_print(Enlil_Photo *photo)
 
 void enlil_photo_album_set(Enlil_Photo *photo, Enlil_Album *album)
 {
-   ASSERT_RETURN_VOID(!!photo);
+   ASSERT_RETURN_VOID(photo != NULL);
    photo->album = album;
 }
 
@@ -274,14 +274,14 @@ GET(size_h, int)
 
 const char *enlil_photo_flickr_id_get(Enlil_Photo *photo)
 {
-    ASSERT_RETURN(!!photo);
+    ASSERT_RETURN(photo!=NULL);
 
     return photo->flickr.id;
 }
 
 void enlil_photo_flickr_id_set(Enlil_Photo *photo, const char *id)
 {
-   ASSERT_RETURN_VOID(!!photo);
+   ASSERT_RETURN_VOID(photo != NULL);
 
    EINA_STRINGSHARE_DEL(photo->flickr.id);
 
@@ -293,19 +293,19 @@ void enlil_photo_flickr_id_set(Enlil_Photo *photo, const char *id)
 
 long long int _enlil_photo_flickr_last_change_get(Enlil_Photo *photo)
 {
-    ASSERT_RETURN(!!photo);
+    ASSERT_RETURN(photo!=NULL);
     return photo->flickr.last_change;
 }
 
 void _enlil_photo_flickr_last_change_set(Enlil_Photo *photo, long long last_change)
 {
-   ASSERT_RETURN_VOID(!!photo);
+   ASSERT_RETURN_VOID(photo != NULL);
    photo->flickr.last_change = last_change;
 }
 
 long long _enlil_photo_flickr_fs_time_get(Enlil_Photo *photo)
 {
-   ASSERT_RETURN(!!photo);
+   ASSERT_RETURN(photo!=NULL);
    return photo->flickr.fs_time;
 }
 
@@ -314,7 +314,7 @@ void _enlil_photo_flickr_fs_time_calc(Enlil_Photo *photo)
    char buf[PATH_MAX];
    time_t time;
    int size;
-   ASSERT_RETURN_VOID(!!photo);
+   ASSERT_RETURN_VOID(photo!=NULL);
 
    snprintf(buf, sizeof(buf), "%s/%s", enlil_photo_path_get(photo), enlil_photo_file_name_get(photo));
    FILE_INFO_GET(buf, time, size);
@@ -324,14 +324,14 @@ void _enlil_photo_flickr_fs_time_calc(Enlil_Photo *photo)
 
 void enlil_photo_flickr_last_change_set(Enlil_Photo *photo, long long last_change)
 {
-   ASSERT_RETURN_VOID(!!photo);
+   ASSERT_RETURN_VOID(photo != NULL);
    photo->flickr.last_change = last_change;
 }
 
 void enlil_photo_name_set(Enlil_Photo *photo, const char *name)
 {
-   ASSERT_RETURN_VOID(!!photo);
-   ASSERT_RETURN_VOID(!!name);
+   ASSERT_RETURN_VOID(photo!=NULL);
+   ASSERT_RETURN_VOID(name != NULL);
 
    EINA_STRINGSHARE_DEL(photo->name);
    photo->name = eina_stringshare_add(name);
@@ -344,8 +344,8 @@ void enlil_photo_name_set(Enlil_Photo *photo, const char *name)
 
 void enlil_photo_description_set(Enlil_Photo *photo, const char *desc)
 {
-   ASSERT_RETURN_VOID(!!photo);
-   ASSERT_RETURN_VOID(!!desc);
+   ASSERT_RETURN_VOID(photo!=NULL);
+   ASSERT_RETURN_VOID(desc != NULL);
 
    const char *old = photo->description;
    //EINA_STRINGSHARE_DEL(photo->description);
@@ -360,7 +360,7 @@ void enlil_photo_exif_clear(Enlil_Photo *photo)
 {
    Enlil_Exif *exif;
 
-   ASSERT_RETURN_VOID(!!photo);
+   ASSERT_RETURN_VOID(photo!=NULL);
 
    if( photo->exifs )
      {
@@ -376,7 +376,7 @@ void enlil_photo_iptc_clear(Enlil_Photo *photo)
 {
    Enlil_IPTC *iptc;
 
-   ASSERT_RETURN_VOID(!!photo);
+   ASSERT_RETURN_VOID(photo!=NULL);
 
    if( photo->iptcs )
      {
@@ -393,7 +393,7 @@ void enlil_photo_iptc_clear(Enlil_Photo *photo)
  */
 double enlil_photo_longitude_get(const Enlil_Photo *photo)
 {
-   ASSERT_RETURN(!!photo);
+   ASSERT_RETURN(photo!=NULL);
 
    return photo->exif_data.longitude;
 }
@@ -403,7 +403,7 @@ double enlil_photo_longitude_get(const Enlil_Photo *photo)
  */
 double enlil_photo_latitude_get(const Enlil_Photo *photo)
 {
-   ASSERT_RETURN(!!photo);
+   ASSERT_RETURN(photo!=NULL);
 
    return photo->exif_data.latitude;
 }
@@ -411,7 +411,7 @@ double enlil_photo_latitude_get(const Enlil_Photo *photo)
 
 const Eina_List *enlil_photo_exifs_get(const Enlil_Photo *photo)
 {
-   ASSERT_RETURN(!!photo);
+   ASSERT_RETURN(photo!=NULL);
 
    PHOTO_EXIF_LOAD(photo);
    return photo->exifs->l;
@@ -419,7 +419,7 @@ const Eina_List *enlil_photo_exifs_get(const Enlil_Photo *photo)
 
 const Eina_List *enlil_photo_iptcs_get(const Enlil_Photo *photo)
 {
-   ASSERT_RETURN(!!photo);
+   ASSERT_RETURN(photo!=NULL);
 
    PHOTO_IPTC_LOAD(photo);
    return photo->iptcs->l;
@@ -433,8 +433,8 @@ Enlil_Exif *enlil_photo_exif_get_from_tag(const Enlil_Photo *photo, const char *
    const Eina_List *l;
    Enlil_Exif *exif;
 
-   ASSERT_RETURN(!!photo);
-   ASSERT_RETURN(!!tag);
+   ASSERT_RETURN(photo != NULL);
+   ASSERT_RETURN(tag != NULL);
 
    enlil_photo_exifs_get(photo);
 
@@ -455,8 +455,8 @@ Enlil_IPTC *enlil_photo_iptc_get_from_name_and_value(const Enlil_Photo *photo, c
    const Eina_List *l;
    Enlil_IPTC *iptc;
 
-   ASSERT_RETURN(!!photo);
-   ASSERT_RETURN(!!name);
+   ASSERT_RETURN(photo != NULL);
+   ASSERT_RETURN(name != NULL);
 
    enlil_photo_exifs_get(photo);
 
@@ -476,8 +476,8 @@ void enlil_photo_copy_exif_in_file(Enlil_Photo *photo, const char *file)
    JPEGData *data;
    ExifData *ed;
 
-   ASSERT_RETURN_VOID(!!photo);
-   ASSERT_RETURN_VOID(!!file);
+   ASSERT_RETURN_VOID(photo != NULL);
+   ASSERT_RETURN_VOID(file != NULL);
 
    snprintf(buf, PATH_MAX, "%s/%s", enlil_photo_path_get(photo),
 	 enlil_photo_file_name_get(photo));
@@ -498,7 +498,7 @@ void enlil_photo_save_iptc_in_file(Enlil_Photo *photo)
 {
    char buf[PATH_MAX];
 
-   ASSERT_RETURN_VOID(!!photo);
+   ASSERT_RETURN_VOID(photo != NULL);
    snprintf(buf, PATH_MAX, "%s/%s", enlil_photo_path_get(photo), enlil_photo_file_name_get(photo));
    enlil_photo_save_iptc_in_custom_file(photo, buf);
 }
@@ -520,8 +520,8 @@ void enlil_photo_save_iptc_in_custom_file(Enlil_Photo *photo, const char *file)
    char tmpfile[PATH_MAX];
    int v;
 
-   ASSERT_RETURN_VOID(!!photo);
-   ASSERT_RETURN_VOID(!!file);
+   ASSERT_RETURN_VOID(photo != NULL);
+   ASSERT_RETURN_VOID(file != NULL);
 
    if(!photo->iptcs) return ;
 
@@ -625,7 +625,7 @@ void enlil_photo_exifs_set(Enlil_Photo *photo, Eina_List *exifs)
    const char *slat2_ref = eina_stringshare_add("InteroperabilityIndex");
 
 
-   ASSERT_RETURN_VOID(!!photo);
+   ASSERT_RETURN_VOID(photo != NULL);
 
    if(photo->exifs)
      {
@@ -743,7 +743,7 @@ void enlil_photo_iptcs_set(Enlil_Photo *photo, Eina_List *iptcs)
    Eina_List *tags;
    Eina_Bool find;
 
-   ASSERT_RETURN_VOID(!!photo);
+   ASSERT_RETURN_VOID(photo != NULL);
 
    if(photo->iptcs)
      {
@@ -819,15 +819,15 @@ void enlil_photo_iptcs_set(Enlil_Photo *photo, Eina_List *iptcs)
 
 void enlil_photo_user_data_set(Enlil_Photo *photo, void *user_data, Enlil_Photo_Free_Cb cb)
 {
-   ASSERT_RETURN_VOID(!!photo);
+   ASSERT_RETURN_VOID(photo!=NULL);
    photo->user_data = user_data;
    photo->free_cb = cb;
 }
 
 void enlil_photo_path_set(Enlil_Photo *photo, const char *path)
 {
-   ASSERT_RETURN_VOID(!!photo);
-   ASSERT_RETURN_VOID(!!path);
+   ASSERT_RETURN_VOID(photo!=NULL);
+   ASSERT_RETURN_VOID(path!=NULL);
 
    EINA_STRINGSHARE_DEL(photo->path);
 
@@ -842,7 +842,7 @@ void enlil_photo_path_set(Enlil_Photo *photo, const char *path)
 
 void enlil_photo_thumb_fdo_normal_set(Enlil_Photo *photo,const char *thumb)
 {
-   ASSERT_RETURN_VOID(!!photo);
+   ASSERT_RETURN_VOID(photo != NULL);
 
    photo->thumb_fdo_normal = eina_stringshare_add(thumb);
 
@@ -852,7 +852,7 @@ void enlil_photo_thumb_fdo_normal_set(Enlil_Photo *photo,const char *thumb)
 
 void enlil_photo_thumb_fdo_large_set(Enlil_Photo *photo,const char *thumb)
 {
-   ASSERT_RETURN_VOID(!!photo);
+   ASSERT_RETURN_VOID(photo != NULL);
 
    photo->thumb_fdo_large = eina_stringshare_add(thumb);
 
@@ -861,7 +861,7 @@ void enlil_photo_thumb_fdo_large_set(Enlil_Photo *photo,const char *thumb)
 
 int enlil_photo_is(const char *file)
 {
-   ASSERT_RETURN(!!file);
+   ASSERT_RETURN(file!=NULL);
 
    char *strip_ext = ecore_file_strip_ext(file);
    const char *ext = file + strlen(strip_ext);
@@ -880,7 +880,7 @@ int enlil_photo_is(const char *file)
 
 int enlil_video_is(const char *file)
 {
-   ASSERT_RETURN(!!file);
+   ASSERT_RETURN(file!=NULL);
 
    char *strip_ext = ecore_file_strip_ext(file);
    const char *ext = file + strlen(strip_ext);
@@ -901,7 +901,7 @@ int enlil_video_is(const char *file)
 
 int enlil_photo_jpg_is(const char *file)
 {
-   ASSERT_RETURN(!!file);
+   ASSERT_RETURN(file!=NULL);
 
    char *strip_ext = ecore_file_strip_ext(file);
    const char *ext = file + strlen(strip_ext);
@@ -926,9 +926,9 @@ void enlil_photo_tag_process(Enlil_Photo *photo)
 {
    Eina_List *l;
    Enlil_Photo_Tag *photo_tag;
-   ASSERT_RETURN_VOID(!!photo);
-   ASSERT_RETURN_VOID(!!photo->album);
-   ASSERT_RETURN_VOID(!!enlil_album_root_get(photo->album));
+   ASSERT_RETURN_VOID(photo != NULL);
+   ASSERT_RETURN_VOID(photo->album != NULL);
+   ASSERT_RETURN_VOID(enlil_album_root_get(photo->album) != NULL);
 
    EINA_LIST_FOREACH(photo->tags, l, photo_tag)
      {
@@ -951,8 +951,8 @@ void enlil_photo_tag_add(Enlil_Photo *photo, const char *tag_name)
 {
    Enlil_Photo_Tag *photo_tag;
    Eina_List *l;
-   ASSERT_RETURN_VOID(!!photo);
-   ASSERT_RETURN_VOID(!!tag_name);
+   ASSERT_RETURN_VOID(photo != NULL);
+   ASSERT_RETURN_VOID(tag_name != NULL);
 
    tag_name = eina_stringshare_add(tag_name);
 
@@ -984,8 +984,8 @@ Eina_Bool enlil_photo_iptc_add(Enlil_Photo *photo, const char *name, const char 
 {
    Enlil_IPTC *iptc, *iptc1;
 
-   ASSERT_RETURN(!!photo);
-   ASSERT_RETURN(!!name);
+   ASSERT_RETURN(photo != NULL);
+   ASSERT_RETURN(name != NULL);
 
    iptc = enlil_iptc_new_from_name(name);
    if(check_value)
@@ -1024,8 +1024,8 @@ Eina_Bool enlil_photo_iptc_add(Enlil_Photo *photo, const char *name, const char 
  */
 void enlil_photo_tag_remove(Enlil_Photo *photo, Enlil_Photo_Tag *photo_tag)
 {
-   ASSERT_RETURN_VOID(!!photo);
-   ASSERT_RETURN_VOID(!!photo_tag);
+   ASSERT_RETURN_VOID(photo != NULL);
+   ASSERT_RETURN_VOID(photo_tag != NULL);
 
    photo->tags = eina_list_remove(photo->tags, photo_tag);
 
@@ -1045,8 +1045,8 @@ Eina_Bool enlil_photo_iptc_remove(Enlil_Photo *photo, const char *name, const ch
 {
    Enlil_IPTC *iptc;
 
-   ASSERT_RETURN(!!photo);
-   ASSERT_RETURN(!!name);
+   ASSERT_RETURN(photo != NULL);
+   ASSERT_RETURN(name != NULL);
 
    name = eina_stringshare_add(name);
    iptc = enlil_photo_iptc_get_from_name_and_value(photo, name, value);
@@ -1077,8 +1077,8 @@ Enlil_Photo * enlil_photo_eet_load(const char *eet_path, const char *key)
    Enlil_Photo *data;
    char buf[PATH_MAX];
 
-   ASSERT_RETURN(!!key);
-   ASSERT_RETURN(!!eet_path);
+   ASSERT_RETURN(key!=NULL);
+   ASSERT_RETURN(eet_path!=NULL);
 
    if(key[0]!='/')
      snprintf(buf, PATH_MAX, "/photo %s", key);
@@ -1086,7 +1086,7 @@ Enlil_Photo * enlil_photo_eet_load(const char *eet_path, const char *key)
      strncpy(buf, key, PATH_MAX);
 
    f = enlil_file_manager_open(eet_path);
-   ASSERT_RETURN(!!f);
+   ASSERT_RETURN(f!=NULL);
 
    edd_tag = _enlil_photo_tag_edd_new();
    edd = enlil_photo_edd_new(edd_tag);
@@ -1109,8 +1109,8 @@ int enlil_photo_eet_remove(const char *eet_path, const char* key)
    Eet_File *f;
    char buf[PATH_MAX];
 
-   ASSERT_RETURN(!!eet_path);
-   ASSERT_RETURN(!!key);
+   ASSERT_RETURN(eet_path!=NULL);
+   ASSERT_RETURN(key!=NULL);
 
    if(key[0]!='/')
      snprintf(buf, PATH_MAX, "/photo %s", key);
@@ -1118,7 +1118,7 @@ int enlil_photo_eet_remove(const char *eet_path, const char* key)
      strncpy(buf, key, PATH_MAX);
 
    f = enlil_file_manager_open(eet_path);
-   ASSERT_RETURN(!!f);
+   ASSERT_RETURN(f!=NULL);
 
    eet_delete(f, buf);
    enlil_file_manager_close(eet_path);
@@ -1134,14 +1134,14 @@ int enlil_photo_eet_save(Enlil_Photo *photo)
    char buf[PATH_MAX], path[PATH_MAX];
    int res;
 
-   ASSERT_RETURN(!!photo);
+   ASSERT_RETURN(photo!=NULL);
 
    if(!photo->eet_save) return 0;
 
    snprintf(path, PATH_MAX, "%s/"EET_FILE, enlil_photo_path_get(photo));
    f = enlil_file_manager_open(path);
 
-   ASSERT_RETURN(!!f);
+   ASSERT_RETURN(f!=NULL);
 
    edd_tag = _enlil_photo_tag_edd_new();
    edd = enlil_photo_edd_new(edd_tag);
@@ -1163,7 +1163,7 @@ int enlil_photo_eet_save(Enlil_Photo *photo)
  */
 const char *_enlil_photo_exif_datetimeoriginal_get(const Enlil_Photo *photo)
 {
-   ASSERT_RETURN(!!photo);
+   ASSERT_RETURN(photo != NULL);
 
    return photo->exif_data.DateTimeOriginal;
 }
@@ -1176,13 +1176,13 @@ static Enlil_Photo_Exif *_photo_eet_exifs_load(Enlil_Photo *photo)
    char buf[PATH_MAX];
    char path[PATH_MAX];
 
-   ASSERT_RETURN(!!photo);
+   ASSERT_RETURN(photo!=NULL);
 
    snprintf(buf, PATH_MAX, "/exif %s", enlil_photo_file_name_get(photo));
    snprintf(path, PATH_MAX, "%s/"EET_FILE, enlil_photo_path_get(photo));
 
    f = enlil_file_manager_open(path);
-   ASSERT_RETURN(!!f);
+   ASSERT_RETURN(f!=NULL);
 
    edd_exif = _enlil_exif_edd_new();
    edd = enlil_photo_exif_edd_new(edd_exif);
@@ -1209,14 +1209,14 @@ static int _photo_eet_exif_save(Enlil_Photo *photo)
    char buf[PATH_MAX], path[PATH_MAX];
    int res;
 
-   ASSERT_RETURN(!!photo);
+   ASSERT_RETURN(photo!=NULL);
 
    if(!photo->eet_save) return 0;
 
    snprintf(path, PATH_MAX, "%s/"EET_FILE, enlil_photo_path_get(photo));
    f = enlil_file_manager_open(path);
 
-   ASSERT_RETURN(!!f);
+   ASSERT_RETURN(f!=NULL);
 
    edd_exif = _enlil_exif_edd_new();
    edd = enlil_photo_exif_edd_new(edd_exif);
@@ -1239,13 +1239,13 @@ static Enlil_Photo_IPTC *_photo_eet_iptcs_load(Enlil_Photo *photo)
    char buf[PATH_MAX];
    char path[PATH_MAX];
 
-   ASSERT_RETURN(!!photo);
+   ASSERT_RETURN(photo!=NULL);
 
    snprintf(buf, PATH_MAX, "/iptc %s", enlil_photo_file_name_get(photo));
    snprintf(path, PATH_MAX, "%s/"EET_FILE, enlil_photo_path_get(photo));
 
    f = enlil_file_manager_open(path);
-   ASSERT_RETURN(!!f);
+   ASSERT_RETURN(f!=NULL);
 
    edd_iptc = _enlil_iptc_edd_new();
    edd = enlil_photo_iptc_edd_new(edd_iptc);
@@ -1272,14 +1272,14 @@ static int _photo_eet_iptc_save(Enlil_Photo *photo)
    char buf[PATH_MAX], path[PATH_MAX];
    int res;
 
-   ASSERT_RETURN(!!photo);
+   ASSERT_RETURN(photo!=NULL);
 
    if(!photo->eet_save) return 0;
 
    snprintf(path, PATH_MAX, "%s/"EET_FILE, enlil_photo_path_get(photo));
    f = enlil_file_manager_open(path);
 
-   ASSERT_RETURN(!!f);
+   ASSERT_RETURN(f!=NULL);
 
    edd_iptc = _enlil_iptc_edd_new();
    edd = enlil_photo_iptc_edd_new(edd_iptc);
@@ -1318,7 +1318,7 @@ Eet_Data_Descriptor * enlil_photo_edd_new(Eet_Data_Descriptor *edd_tag)
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
 
-   ASSERT_RETURN(!!edd_tag);
+   ASSERT_RETURN(edd_tag != NULL);
 
    EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, Enlil_Photo);
    eddc.func.str_direct_alloc = NULL;
@@ -1358,7 +1358,7 @@ static Eet_Data_Descriptor * enlil_photo_exif_edd_new(Eet_Data_Descriptor *edd_e
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
 
-   ASSERT_RETURN(!!edd_exif);
+   ASSERT_RETURN(edd_exif != NULL);
 
    EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, Enlil_Photo_Exif);
    eddc.func.str_direct_alloc = NULL;
@@ -1376,7 +1376,7 @@ static Eet_Data_Descriptor * enlil_photo_iptc_edd_new(Eet_Data_Descriptor *edd_i
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
 
-   ASSERT_RETURN(!!edd_iptc);
+   ASSERT_RETURN(edd_iptc != NULL);
 
    EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, Enlil_Photo_IPTC);
    eddc.func.str_direct_alloc = NULL;

@@ -148,7 +148,7 @@ memrec_add_var(memrec_t *memrec, const spif_charptr_t filename, unsigned long li
 
     ASSERT(memrec != NULL);
     memrec->cnt++;
-    if ((memrec->ptrs = (ptr_t *) realloc(memrec->ptrs, sizeof(ptr_t) * memrec->cnt)) == NULL) {
+    if (!(memrec->ptrs = (ptr_t *)realloc(memrec->ptrs, sizeof(ptr_t) * memrec->cnt))) {
         D_MEM(("Unable to reallocate pointer list -- %s\n", strerror(errno)));
     }
     p = memrec->ptrs + memrec->cnt - 1;
@@ -220,7 +220,7 @@ memrec_rem_var(memrec_t *memrec, const spif_charptr_t var, const spif_charptr_t 
     USE_VAR(filename);
     USE_VAR(line);
 
-    if ((p = memrec_find_var(memrec, ptr)) == NULL) {
+    if (!(p = memrec_find_var(memrec, ptr))) {
         D_MEM(("ERROR:  File %s, line %d attempted to free variable %s (%10p) which was not allocated with MALLOC/REALLOC\n",
                filename, line, var, ptr));
         return;
@@ -259,7 +259,7 @@ memrec_chg_var(memrec_t *memrec, const spif_charptr_t var, const spif_charptr_t 
     ASSERT(memrec != NULL);
     USE_VAR(var);
 
-    if ((p = memrec_find_var(memrec, oldp)) == NULL) {
+    if (!(p = memrec_find_var(memrec, oldp))) {
         D_MEM(("ERROR:  File %s, line %d attempted to realloc variable %s (%10p) which was not allocated with MALLOC/REALLOC\n", filename,
                line, var, oldp));
         return;
@@ -471,7 +471,7 @@ spifmem_realloc(const spif_charptr_t var, const spif_charptr_t filename, unsigne
 #endif
 
     D_MEM(("Variable %s (%10p -> %lu) at %s:%lu\n", var, ptr, (unsigned long) size, NONULL(filename), line));
-    if (ptr == NULL) {
+    if (!ptr) {
         temp = (void *) spifmem_malloc(filename, line, size);
     } else if (size == 0) {
         spifmem_free(var, filename, line, ptr);

@@ -10,8 +10,7 @@
 //
 
 @fix disable is_null,isnt_null1 @
-expression *E;
-expression *x;
+expression *E, *x;
 identifier x2;
 identifier fnassert ~= "\(EXALT_ASSERT.*\|ASSERT.*\|assert\|fail_if\|fail_unless\|g_return_if_fail\|g_return_val_if_fail\|REQUIRE_RVAL\|REQUIRE\|TEST_FAIL_IF\)";
 identifier fn;

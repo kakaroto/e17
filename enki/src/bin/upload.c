@@ -51,17 +51,17 @@ Upload *upload_new(Evas_Object *parent)
 
 void upload_free(Upload **_ul)
 {
-    ASSERT_RETURN_VOID(!!_ul);
+    ASSERT_RETURN_VOID(_ul != NULL);
     Upload *ul = *_ul;
 
-    ASSERT_RETURN_VOID(!!ul);
+    ASSERT_RETURN_VOID(ul != NULL);
     evas_object_del(ul->main);
 }
 
 void upload_add(Upload *ul, Enlil_Photo *photo)
 {
-    ASSERT_RETURN_VOID(!!ul);
-    ASSERT_RETURN_VOID(!!photo);
+    ASSERT_RETURN_VOID(ul != NULL);
+    ASSERT_RETURN_VOID(photo != NULL);
 
     Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
 
@@ -88,8 +88,8 @@ void upload_add(Upload *ul, Enlil_Photo *photo)
  */
 void upload_album_create_add(Upload *ul, Enlil_Album *album)
 {
-    ASSERT_RETURN_VOID(!!ul);
-    ASSERT_RETURN_VOID(!!album);
+    ASSERT_RETURN_VOID(ul != NULL);
+    ASSERT_RETURN_VOID(album != NULL);
 
     Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 

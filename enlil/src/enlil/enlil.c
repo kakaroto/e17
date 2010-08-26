@@ -63,13 +63,13 @@ int enlil_eet_app_data_save(Eet_Data_Descriptor *edd, const char *key, void *dat
    Eet_File *f;
    char path[PATH_MAX], buf[PATH_MAX];
 
-   ASSERT_RETURN(!!edd);
-   ASSERT_RETURN(!!key);
-   ASSERT_RETURN(!!data);
+   ASSERT_RETURN(edd != NULL);
+   ASSERT_RETURN(key != NULL);
+   ASSERT_RETURN(data != NULL);
 
    snprintf(path,PATH_MAX,"%s/"EET_FOLDER_ROOT_DB"/"EET_FILE_ROOT_DB, getenv("HOME"));
    f = enlil_file_manager_open(path);
-   ASSERT_RETURN(!!f);
+   ASSERT_RETURN(f!=NULL);
 
    snprintf(buf,PATH_MAX,"/app %s",key);
    res = eet_data_write(f, edd, buf, data, 0);
@@ -93,12 +93,12 @@ void *enlil_eet_app_data_load(Eet_Data_Descriptor *edd, const char *key)
    Eet_File *f;
    char path[PATH_MAX], buf[PATH_MAX];
 
-   ASSERT_RETURN(!!edd);
-   ASSERT_RETURN(!!key);
+   ASSERT_RETURN(edd != NULL);
+   ASSERT_RETURN(key != NULL);
 
    snprintf(path,PATH_MAX,"%s/"EET_FOLDER_ROOT_DB"/"EET_FILE_ROOT_DB, getenv("HOME"));
    f = enlil_file_manager_open(path);
-   ASSERT_RETURN(!!f);
+   ASSERT_RETURN(f!=NULL);
 
    snprintf(buf,PATH_MAX,"/app %s",key);
    res = eet_data_read(f, edd, buf);
