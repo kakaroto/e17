@@ -41,12 +41,16 @@ SCRIPT=$1
 shift
 ARGS="$*"
 
+function die {
+	echo "$1: dir not found. Exiting..."
+	exit 1
+}
 
 function call_spatch {
 	local proj=$1
 	local includes=$*
-	pushd $proj
-	[[ $AUTOGEN -eq 1 ]] && ./autogen.sh
+	pushd $proj || die
+	[[ $AUTOGEN -eq 1 && -x autogen.sh ]] && ./autogen.sh
 	spatch -sp $SCRIPT -macro_file_builtins ${TOPDIR}/SCRIPTS/coccinelle/ecocci.h \
 	       -I /usr/include/ -I /usr/local/include/ \
 	       $includes \
@@ -58,7 +62,7 @@ function call_spatch {
 if [ ! -z "$TARGET" ]; then
 	TARGETS=$TARGET
 else
-	TARGETS="eina eet embryo evas ecore efreet edje e_dbus eeze e TMP/st/elementary E16 E-MODULES-EXTRA BINDINGS editje edje_viewer eio elicit elitaire elmdentica emotion empower emprint enki enlil ensure ephoto eterm ethumb eve exalt EXAMPLES expedite exquisite imlib2 imlib2_loaders MISC $(ls PROTO | grep -v emote) rage TEST"
+	TARGETS="eina eet embryo evas ecore efreet edje e_dbus eeze e TMP/st/elementary E16 E-MODULES-EXTRA BINDINGS editje edje_viewer eio elicit elitaire elmdentica emotion empower emprint enki enlil ensure ephoto eterm ethumb eve exalt EXAMPLES expedite exquisite imlib2 imlib2_loaders MISC $(ls PROTO | grep -v emote | while read d; do echo PROTO/$a; done) rage TEST"
 fi
 
 
@@ -141,7 +145,6 @@ for d in $TARGETS; do
 		;;
 	*)
 		# !@##$&#@$##&% -- don't bother about includes, let's hope it works
-		#BINDINGS editje edje_viewer eio elicit elitaire elmdentica emotion empower emprint enki enlil ensure ephoto eterm ethumb eve exalt EXAMPLES expedite exquisite imlib2 imlib2_loaders MISC PROTO rage TEST"
 		call_spatch $d $(for i in ${TOPDIR}/ecore/src/lib/ecore*; do echo -I $i; done) $(for i in ${TOPDIR}/e_dbus/src/lib/{bluez,connman,dbus,hal,notification,ofono,ukit}; do echo -I $i; done) -I ${TOPDIR}/eina/src/include/ -I ${TOPDIR}/eet/src/lib/ -I ${TOPDIR}/evas/src/lib/ -I ${TOPDIR}/edje/src/lib
 		;;
 	esac
