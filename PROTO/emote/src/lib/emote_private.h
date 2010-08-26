@@ -119,4 +119,6 @@ EM_INTERN int emote_protocol_shutdown(void);
 
 EM_INTERN int emote_event_init(void);
 
+EM_INTERN int em_object_init();
+
 #endif

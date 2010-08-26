@@ -93,34 +93,34 @@ struct _Emote_Event
 struct _Emote_Event_Server
 {
    Emote_Event e;
-   char *server;
+   const char *server;
 };
 
 struct _Emote_Event_Server_Connect
 {
    Emote_Event_Server s;
    int port;
-   char *username;
-   char *password;
+   const char *username;
+   const char *password;
 };
 
 struct _Emote_Event_Server_Message
 {
    Emote_Event_Server s;
-   char *message;
+   const char *message;
 };
 
 struct _Emote_Event_Chat_Channel
 {
    Emote_Event_Server s;
-   char *channel;
+   const char *channel;
 };
 
 struct _Emote_Event_Chat_Channel_Message
 {
    Emote_Event_Chat_Channel c;
-   char *user;
-   char *message;
+   const char *user;
+   const char *message;
 };
 
 // Main

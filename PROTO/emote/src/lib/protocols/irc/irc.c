@@ -497,11 +497,7 @@ _irc_cb_server_add(void *data, int type __UNUSED__, void *event __UNUSED__)
    Emote_Event *d;
 
    if (!(server = data)) return EINA_FALSE;
-   /*d = EMOTE_NEW(Emote_Event_Chat_Server, 1);
-   d->protocol = m;
-   d->server = server;*/
    d = emote_event_new(m, EMOTE_EVENT_SERVER_CONNECTED, server);
-   //emote_event_send(EMOTE_EVENT_CHAT_SERVER_CONNECTED, d);
    emote_event_send(d);
    return EINA_FALSE;
 }
@@ -513,13 +509,10 @@ _irc_cb_server_del(void *data, int type __UNUSED__, void *event __UNUSED__)
    Emote_Event *d;
 
    if (!(server = data)) return EINA_FALSE;
-   /*d = EMOTE_NEW(Emote_Event_Chat_Server, 1);
-   d->protocol = m;
-   d->server = server;*/
+   d = emote_event_new(m, EMOTE_EVENT_SERVER_DISCONNECTED, server);
+
    eina_hash_del_by_key(_irc_servers, server);
 
-   d = emote_event_new(m, EMOTE_EVENT_SERVER_DISCONNECTED, server);
-   //emote_event_send(EMOTE_EVENT_CHAT_SERVER_DISCONNECTED, d);
    emote_event_send(d);
    return EINA_FALSE;
 }

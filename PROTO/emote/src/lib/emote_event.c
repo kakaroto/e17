@@ -9,9 +9,8 @@
 
 static int _emote_events[EMOTE_EVENT_COUNT];
 
-static void _emote_event_data_free(void *data, void *event);
+static void _emote_event_free(void *data, void *event);
 
-static void _emote_event_free(void *e);
 static void _emote_event_server_free(void *e);
 static void _emote_event_server_connect_free(void *e);
 static void _emote_event_server_message_free(void *e);
@@ -127,12 +126,9 @@ emote_event_new(Emote_Protocol *p, int type, ...)
 
    if (ev)
      {
-       ev->protocol = p;
-       ev->type = type;
+       EMOTE_EVENT_T(ev)->protocol = p;
+       EMOTE_EVENT_T(ev)->type = type;
      }
-   else
-
-   printf("Created event %u @ %p\n", ev->type, ev);
 
    return ev;
 }
@@ -142,7 +138,7 @@ emote_event_send(Emote_Event *ev)
 {
    printf("Sending Event:\n\tType: %u(%u)\n\tProtocol: %s\n", ev->type, _emote_events[ev->type], ev->protocol->api->label);
 
-   ecore_event_add(_emote_events[ev->type], ev, _emote_event_data_free, (void*)ev);
+   ecore_event_add(_emote_events[ev->type], ev, _emote_event_free, (void*)ev);
 }
 
 EMAPI void
@@ -153,17 +149,9 @@ emote_event_handler_add(int type, Eina_Bool (*cb)(void*,int,void*), void *data)
 
 /* local functions */
 static void
-_emote_event_data_free(void *data , void *event)
+_emote_event_free(void *data __UNUSED__, void *event)
 {
-  printf("Freeing event %u @ %p\n", EMOTE_EVENT_T(event)->type, event);
-
   em_object_del(event);
-}
-
-static void
-_emote_event_free(void *e)
-{
-   free(e);
 }
 
 static void
@@ -173,12 +161,8 @@ _emote_event_server_free(void *e)
 
   ee = e;
 
-  printf("Freeing server %s\n", ee->server);
-
   if (ee->server)
     eina_stringshare_del(ee->server);
-
-  _emote_event_free(e);
 }
 
 static void
@@ -187,8 +171,6 @@ _emote_event_server_connect_free(void *e)
   Emote_Event_Server_Connect *ee;
 
   ee = e;
-
-  printf("Freeing Server Connect\n");
 
   if (ee->username)
     eina_stringshare_del(ee->username);
@@ -207,8 +189,6 @@ _emote_event_server_message_free(void *e)
 
   ee = e;
 
-  printf("Freeing Server Message\n");
-
   if (ee->message)
     eina_stringshare_del(ee->message);
 
@@ -221,8 +201,6 @@ _emote_event_chat_channel_free(void *e)
   Emote_Event_Chat_Channel *ee;
 
   ee = e;
-
-  printf("Freeing Channel %s\n", ee->channel);
 
   if (ee->channel)
     eina_stringshare_del(ee->channel);
@@ -237,10 +215,6 @@ _emote_event_chat_channel_message_free(void *e)
 
   ee = e;
 
-return;
-
-  printf("Freeing Channel Message %s\n", ee->message);
-return;
   if (ee->user)
     eina_stringshare_del(ee->user);
 

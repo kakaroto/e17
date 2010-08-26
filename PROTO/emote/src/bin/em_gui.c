@@ -171,19 +171,14 @@ _em_gui_entry_cb_enter(void *data __UNUSED__, Evas_Object *obj, void *event __UN
    text = elm_scrolled_entry_entry_get(obj);
    snprintf(msg, sizeof(msg), "%s", text);
 
-   /*d = EM_NEW(Emote_Event_Chat_Channel_Message, 1);
-   d->protocol = eina_hash_find(em_protocols, "irc");
-   d->server = "irc.freenode.net";
-   d->channel = "#emote";
-   d->message = msg;*/
    d = emote_event_new(
                          eina_hash_find(em_protocols, "irc"),
                          EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_SEND,
                          "irc.freenode.net",
                          "#emote",
+                         "emote",
                          msg
                       );
-   //emote_event_send(EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_SEND, d);
    emote_event_send(d);
 
    elm_scrolled_entry_cursor_end_set(gui->o_chantxt);

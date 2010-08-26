@@ -18,6 +18,7 @@ emote_init(void)
      {
         _emote_locate_paths();
 
+        ret &= em_object_init();
         ret &= emote_event_init();
         ret &= emote_protocol_init();
 

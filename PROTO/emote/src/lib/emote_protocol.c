@@ -94,7 +94,7 @@ _emote_protocol_find(const char *name)
         if (!strcmp(file, buff))
           {
              /* could proally use a strcat here */
-             snprintf(dir, sizeof(dir), "%s/%s", 
+             snprintf(dir, sizeof(dir), "%s/%s",
                       emote_paths.protocoldir, file);
              break;
           }

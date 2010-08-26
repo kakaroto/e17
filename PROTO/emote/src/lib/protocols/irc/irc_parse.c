@@ -80,17 +80,12 @@ irc_parse_input(char *input, const char *server, Emote_Protocol *m)
                        Emote_Event *d;
 
                        snprintf(fmt, sizeof(fmt), " <color=#ff0000>%s</> ", msg);
-                       /*d = EMOTE_NEW(Emote_Event_Chat_Server_Message, 1);
-                       d->protocol = m;
-                       d->server = server;
-                       d->message = msg;*/
                        d = emote_event_new(
                               m,
                               EMOTE_EVENT_SERVER_MESSAGE_RECEIVED,
                               server,
                               msg
                            );
-                       //emote_event_send(EMOTE_EVENT_CHAT_SERVER_MESSAGE_RECEIVED, d);
                        emote_event_send(d);
                     }
                   goto reset;
@@ -103,10 +98,6 @@ irc_parse_input(char *input, const char *server, Emote_Protocol *m)
                   channel = strrchr(p, ':');
                   channel++;
                   snprintf(chan, sizeof(chan), "%s", channel);
-                  /*d = EMOTE_NEW(Emote_Event_Chat_Channel, 1);
-                  d->protocol = m;
-                  d->server = server;
-                  d->channel = chan;*/
                   d = emote_event_new
                       (
                          m,
@@ -114,7 +105,6 @@ irc_parse_input(char *input, const char *server, Emote_Protocol *m)
                          server,
                          chan
                       );
-                  //emote_event_send(EMOTE_EVENT_CHAT_CHANNEL_JOINED, d);
                   emote_event_send(d);
                }
              else if (
@@ -138,10 +128,6 @@ irc_parse_input(char *input, const char *server, Emote_Protocol *m)
                   pos2 = _irc_parse_remove_username(txt, 0, &tmp);
                   p = eina_strbuf_string_get(tmp);
                   msg = _irc_parse_utf8_to_markup(p);
-                  /*d = EMOTE_NEW(Emote_Event_Chat_Server_Message, 1);
-                  d->protocol = m;
-                  d->server = server;
-                  d->message = msg;*/
                   d = emote_event_new
                       (
                          m,
@@ -149,7 +135,6 @@ irc_parse_input(char *input, const char *server, Emote_Protocol *m)
                          server,
                          msg
                       );
-                  //emote_event_send(EMOTE_EVENT_CHAT_SERVER_MESSAGE_RECEIVED, d);
                   emote_event_send(d);
                   eina_strbuf_free(tmp);
                }
@@ -158,35 +143,6 @@ irc_parse_input(char *input, const char *server, Emote_Protocol *m)
                   Emote_Event *d;
 
                   msg = _irc_parse_utf8_to_markup(p);
-                  /*d = EMOTE_NEW(Emote_Event_Chat_Channel_Message, 1);
-                  d->protocol = m;
-                  d->server = server;
-                  d->channel = NULL;
-                  d->user = NULL;
-                  d->message = msg;*/
-                  d = emote_event_new
-                      (
-                         m,
-                         EMOTE_EVENT_SERVER_MESSAGE_RECEIVED,
-                         server,
-                         NULL,
-                         NULL,
-                         msg
-                      );
-                  //emote_event_send(EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_RECEIVED, d);
-                  emote_event_send(d);
-               }
-             else
-               {
-                  Emote_Event *d;
-
-                  msg = _irc_parse_utf8_to_markup(p);
-                  /*d = EMOTE_NEW(Emote_Event_Chat_Channel_Message, 1);
-                  d->protocol = m;
-                  d->server = server;
-                  d->channel = NULL;
-                  d->user = NULL;
-                  d->message = msg;*/
                   d = emote_event_new
                       (
                          m,
@@ -196,7 +152,22 @@ irc_parse_input(char *input, const char *server, Emote_Protocol *m)
                          NULL,
                          msg
                       );
-                  //emote_event_send(EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_RECEIVED, d);
+                  emote_event_send(d);
+               }
+             else
+               {
+                  Emote_Event *d;
+
+                  msg = _irc_parse_utf8_to_markup(p);
+                  d = emote_event_new
+                      (
+                         m,
+                         EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_RECEIVED,
+                         server,
+                         NULL,
+                         NULL,
+                         msg
+                      );
                   emote_event_send(d);
                }
           }

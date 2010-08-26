@@ -64,12 +64,6 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
    p = emote_protocol_load("irc");
    eina_hash_add(em_protocols, "irc", p);
 
-   /*d = EM_NEW(Emote_Event_Chat_Server_Connect, 1);
-   d->protocol = eina_hash_find(em_protocols, "irc");
-   d->server = "irc.freenode.net";
-   d->username = "emote";
-   d->password = "emote";
-   d->port = 6667;*/
    d = emote_event_new
        (
           eina_hash_find(em_protocols, "irc"),
@@ -79,8 +73,6 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
           "emote",
           "emote"
        );
-
-   //emote_event_send(EMOTE_EVENT_CHAT_SERVER_CONNECT, d);
    emote_event_send(d);
 
    /* start main loop */
@@ -154,10 +146,6 @@ _em_main_chat_events_handler(void *data __UNUSED__, int type __UNUSED__, void *e
                   d->server, EMOTE_EVENT_T(d)->protocol->api->label);
            em_gui_server_add(d->server, EMOTE_EVENT_T(d)->protocol);
 
-           /*c = EM_NEW(Emote_Event_Chat_Channel, 1);
-           c->protocol = d->protocol;
-           c->server = d->server;
-           c->channel = "#emote";*/
            c = emote_event_new
                (
                   EMOTE_EVENT_T(d)->protocol,
@@ -165,7 +153,6 @@ _em_main_chat_events_handler(void *data __UNUSED__, int type __UNUSED__, void *e
                   d->server,
                   "#emote"
                );
-            //emote_event_send(EMOTE_EVENT_CHAT_CHANNEL_JOIN, c);
             emote_event_send(c);
             break;
         }
@@ -191,6 +178,7 @@ _em_main_chat_events_handler(void *data __UNUSED__, int type __UNUSED__, void *e
            Emote_Event_Server_Message *d;
 
            d = event;
+
            em_gui_message_add(EMOTE_EVENT_SERVER_T(d)->server, NULL, d->message);
            break;
         }
