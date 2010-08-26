@@ -201,9 +201,7 @@ static void _child_append_cb(Ekeko_Object *o, Ekeko_Event *e, void *data)
 	Eon_Paint *prev;
 	int final;
 
-	if ((!ekeko_type_instance_is_of(em->related, EON_TYPE_PAINT_SQUARE)) &&
-			(!ekeko_type_instance_is_of(em->related,
-			EON_TYPE_PAINT_SQUARE)))
+	if ((!ekeko_type_instance_is_of(em->related, EON_TYPE_PAINT_SQUARE)))
 		return;
 
 	prv = PRIVATE(o);

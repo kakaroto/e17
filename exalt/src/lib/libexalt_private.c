@@ -67,7 +67,7 @@ short exalt_ioctl(void* argp, int request)
 
     EXALT_ASSERT_RETURN(!
             (!exalt_admin_is() &&
-             ( request == SIOCSIFFLAGS || request == SIOCSIFFLAGS
+             ( request == SIOCSIFFLAGS
                || request == SIOCDELRT || request == SIOCSIFADDR
                || request == SIOCSIFNETMASK || request == SIOCADDRT
                || request== SIOCETHTOOL )));
