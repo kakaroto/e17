@@ -52,28 +52,27 @@ ephoto_create_thumb_browser(const char *directory)
 	{
 		current_directory = eina_stringshare_add(directory);
 	}
-	toolbar = elm_toolbar_add(em->win);
-	elm_toolbar_icon_size_set(toolbar, 24);
-	elm_toolbar_homogenous_set(toolbar, EINA_TRUE);
-	evas_object_size_hint_weight_set(toolbar, EVAS_HINT_EXPAND, 0.0);
-	evas_object_size_hint_align_set(toolbar, EVAS_HINT_FILL, 0.5);
-	elm_box_pack_end(em->box, toolbar);
 
-	o = elm_icon_add(em->win);
-	elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/change_directory.png", NULL);
-	elm_toolbar_item_add(toolbar, o, "Change Directory", _ephoto_change_directory, NULL);
+        thbox = elm_box_add(em->win);
+        elm_box_horizontal_set(thbox, EINA_TRUE);
+        evas_object_size_hint_weight_set(thbox, EVAS_HINT_EXPAND, EVAS_HINT_FILL);
+        evas_object_size_hint_fill_set(thbox, EVAS_HINT_FILL, EVAS_HINT_FILL);
+        elm_box_pack_end(em->box, thbox);
 
-	o = elm_icon_add(em->win);
-	elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/filter.png", NULL);
-        elm_toolbar_item_add(toolbar, o, "Filter", NULL, NULL);
+        dir_label = elm_label_add(em->win);
+        elm_label_label_set(dir_label, buf);
+        evas_object_size_hint_weight_set(dir_label, EVAS_HINT_EXPAND, 0.0);
+        evas_object_size_hint_align_set(dir_label, 0.01, 0.5);
+        elm_box_pack_end(thbox, dir_label);
 
-	o = elm_icon_add(em->win);
-	elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/view_presentation.png", NULL);
-        elm_toolbar_item_add(toolbar, o, "View Large", _ephoto_view_large, NULL);
-
-	o = elm_icon_add(em->win);
-	elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/play_slideshow.png", NULL);
-        elm_toolbar_item_add(toolbar, o, "Play Slideshow", _ephoto_view_slideshow, NULL);
+        thumb_slider = elm_slider_add(em->win);
+        elm_slider_label_set(thumb_slider, "Thumb Size:");
+        elm_slider_span_size_set(thumb_slider, 100);
+        elm_slider_min_max_set(thumb_slider, 0, 100);
+        elm_slider_value_set(thumb_slider, 50);
+        elm_box_pack_end(thbox, thumb_slider);
+        evas_object_smart_callback_add(thumb_slider, "changed",
+                                        _ephoto_slider_changed, NULL);
 
 	em->thumb_browser = elm_gengrid_add(em->win);
 	elm_gengrid_align_set(em->thumb_browser, 0.5, 0.6);
@@ -86,26 +85,30 @@ ephoto_create_thumb_browser(const char *directory)
 	evas_object_smart_callback_add(em->thumb_browser, "clicked", _ephoto_thumb_clicked, NULL);
 	elm_box_pack_end(em->box, em->thumb_browser);
 
-	thbox = elm_box_add(em->win);
-	elm_box_horizontal_set(thbox, EINA_TRUE);
-        evas_object_size_hint_weight_set(thbox, EVAS_HINT_EXPAND, EVAS_HINT_FILL);
-        evas_object_size_hint_fill_set(thbox, EVAS_HINT_FILL, EVAS_HINT_FILL);
-	elm_box_pack_end(em->box, thbox);
+        toolbar = elm_toolbar_add(em->win);
+        elm_toolbar_icon_size_set(toolbar, 24);
+        elm_toolbar_homogenous_set(toolbar, EINA_TRUE);
+        elm_toolbar_scrollable_set(toolbar, EINA_FALSE);
+        evas_object_size_hint_weight_set(toolbar, EVAS_HINT_EXPAND, 0.0);
+        evas_object_size_hint_align_set(toolbar, EVAS_HINT_FILL, 0.5);
+        elm_box_pack_end(em->box, toolbar);
 
-	dir_label = elm_label_add(em->win);
-	elm_label_label_set(dir_label, buf);
-	evas_object_size_hint_weight_set(dir_label, EVAS_HINT_EXPAND, 0.0);
-        evas_object_size_hint_align_set(dir_label, 0.01, 0.5);
-	elm_box_pack_end(thbox, dir_label);
+        o = elm_icon_add(em->win);
+        elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/change_directory.png", NULL);
+        elm_toolbar_item_add(toolbar, o, "Change Directory", _ephoto_change_directory, NULL);
 
-	thumb_slider = elm_slider_add(em->win);
-	elm_slider_label_set(thumb_slider, "Thumb Size:");
-	elm_slider_span_size_set(thumb_slider, 100);
-	elm_slider_min_max_set(thumb_slider, 0, 100);
-	elm_slider_value_set(thumb_slider, 50);
-	elm_box_pack_end(thbox, thumb_slider);
-	evas_object_smart_callback_add(thumb_slider, "changed", 
-					_ephoto_slider_changed, NULL);
+        o = elm_icon_add(em->win);
+        elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/filter.png", NULL);
+        elm_toolbar_item_add(toolbar, o, "Filter", NULL, NULL);
+
+        o = elm_icon_add(em->win);
+        elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/view_presentation.png", NULL);
+        elm_toolbar_item_add(toolbar, o, "View Large", _ephoto_view_large, NULL);
+
+        o = elm_icon_add(em->win);
+        elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/play_slideshow.png", NULL);
+        elm_toolbar_item_add(toolbar, o, "Play Slideshow", _ephoto_view_slideshow, NULL);
+
 	cur_val = 50;
 
 	eg.item_style = "ephoto";

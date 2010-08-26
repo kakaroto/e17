@@ -84,36 +84,46 @@ ephoto_show_flow_browser(const char *current_image)
 	Elm_Toolbar_Item *o;
 	int i;
 
-	cur_image = current_image;
+	if (current_image)
+        {
+		cur_image = current_image;
 
-	evas_object_event_callback_add(em->flow_browser, EVAS_CALLBACK_KEY_UP,
-					_ephoto_key_pressed, NULL);
+		evas_object_event_callback_add(em->flow_browser, EVAS_CALLBACK_KEY_UP,
+						_ephoto_key_pressed, NULL);
 
-	iter = eina_list_data_find_list(em->images, current_image);
-	for (i = 0; i < (sizeof (toolbar_items) / sizeof (char*)); ++i)
-	{
-		o = elm_toolbar_item_find_by_label(toolbar, toolbar_items[i]);
-		elm_toolbar_item_disabled_set(o, !iter ? EINA_TRUE : EINA_FALSE);
-	}
+		iter = eina_list_data_find_list(em->images, current_image);
+		for (i = 0; i < (sizeof (toolbar_items) / sizeof (char*)); ++i)
+		{
+			o = elm_toolbar_item_find_by_label(toolbar, toolbar_items[i]);
+			elm_toolbar_item_disabled_set(o, !iter ? EINA_TRUE : EINA_FALSE);
+		}
 
-	elm_box_unpack(em->flow_browser, image);
-	elm_box_unpack(em->flow_browser, image2);
-	elm_box_unpack(em->flow_browser, toolbar);
+		elm_box_unpack(em->flow_browser, image);
+		elm_box_unpack(em->flow_browser, image2);
+		elm_box_unpack(em->flow_browser, toolbar);
 
-	file_type = strrchr(current_image, '.');
-	if (strncasecmp(file_type, ".jpg", 4) && strncasecmp(file_type, ".jpeg", 5))
-	{
-		elm_image_file_set(image2, current_image, NULL);
-		elm_box_pack_end(em->flow_browser, image2);
-		evas_object_show(image2);
+		file_type = strrchr(current_image, '.');
+		if (strncasecmp(file_type, ".jpg", 4) && strncasecmp(file_type, ".jpeg", 5))
+		{
+			elm_image_file_set(image2, current_image, NULL);
+			elm_box_pack_end(em->flow_browser, image2);
+			evas_object_show(image2);
+		}
+		else
+		{
+			elm_photocam_file_set(image, current_image);
+			elm_box_pack_end(em->flow_browser, image);
+			evas_object_show(image);
+		}
 	}
 	else
 	{
-		elm_photocam_file_set(image, current_image);
-		elm_box_pack_end(em->flow_browser, image);
-		evas_object_show(image);
+		for (i = 0; i < (sizeof (toolbar_items) / sizeof (char*)); ++i)
+                {
+                        o = elm_toolbar_item_find_by_label(toolbar, toolbar_items[i]);
+                        elm_toolbar_item_disabled_set(o, EINA_TRUE);
+                }
 	}
-
 	elm_box_pack_end(em->flow_browser, toolbar);
 	evas_object_show(toolbar);
 	evas_object_show(em->flow_browser);
