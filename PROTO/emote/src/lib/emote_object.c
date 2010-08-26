@@ -13,6 +13,15 @@ em_object_init()
    return 1;
 }
 
+EM_INTERN int
+em_object_shutdown()
+{
+   eina_hash_free(_emote_object_allocs);
+   _emote_object_allocs = NULL;
+
+   return 1;
+}
+
 /* public functions */
 EM_INTERN void *
 em_object_alloc(int size, int type, Em_Object_Cleanup_Func cleanup_func)

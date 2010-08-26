@@ -17,7 +17,7 @@ static void _emote_event_server_message_free(void *e);
 static void _emote_event_chat_channel_free(void *e);
 static void _emote_event_chat_channel_message_free(void *e);
 
-int
+EM_INTERN int
 emote_event_init()
 {
   unsigned int i;
@@ -25,6 +25,12 @@ emote_event_init()
   for(i = 0; i < sizeof(_emote_events); ++i)
     _emote_events[i] = ecore_event_type_new();
 
+  return 1;
+}
+
+EM_INTERN int
+emote_event_shutdown()
+{
   return 1;
 }
 

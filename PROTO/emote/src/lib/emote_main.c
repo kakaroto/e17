@@ -32,6 +32,8 @@ EMAPI int
 emote_shutdown(void)
 {
    emote_protocol_shutdown();
+   emote_event_shutdown();
+   em_object_shutdown();
    return 1;
 }
 

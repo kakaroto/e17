@@ -36,6 +36,9 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
    sigemptyset(&action.sa_mask);
    sigaction(SIGINT, &action, NULL);
 
+   if (!em_object_init()) _em_main_shutdown(EXIT_FAILURE);
+   _em_main_shutdown_push(em_object_shutdown);
+
    /* init our config subsystem */
    if (!em_config_init()) _em_main_shutdown(EXIT_FAILURE);
    _em_main_shutdown_push(em_config_shutdown);

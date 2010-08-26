@@ -19,10 +19,10 @@
 #  define EM_OBJECT_IF_NOT_TYPE(x, type) \
    if (EM_OBJECT(x)->type != (type))
 # else
-#  define EM_OBJECT_CHECK(x)               
-#  define EM_OBJECT_CHECK_RETURN(x, ret)   
-#  define EM_OBJECT_TYPE_CHECK(x, type)               
-#  define EM_OBJECT_TYPE_CHECK_RETURN(x, type, ret)   
+#  define EM_OBJECT_CHECK(x)
+#  define EM_OBJECT_CHECK_RETURN(x, ret)
+#  define EM_OBJECT_TYPE_CHECK(x, type)
+#  define EM_OBJECT_TYPE_CHECK_RETURN(x, type, ret)
 #  define EM_OBJECT_IF_NOT_TYPE(x, type)
 # endif
 
@@ -33,30 +33,29 @@ typedef struct _Em_Object Em_Object;
 # ifndef EM_OBJECT_H
 #  define EM_OBJECT_H
 
-struct _Em_Object 
+struct _Em_Object
 {
    int magic, type, references;
    Em_Object_Cleanup_Func del_func, cleanup_func;
    void (*free_att_func) (void *obj);
    void (*del_att_func) (void *obj);
-   void *data;
    Eina_Bool deleted : 1;
 };
 
+EM_INTERN int   em_object_init();
+EM_INTERN int   em_object_shutdown();
 EM_INTERN void *em_object_alloc(int size, int type, Em_Object_Cleanup_Func cleanup_func);
-EM_INTERN void em_object_del(Em_Object *obj);
-EM_INTERN int em_object_is_del(Em_Object *obj);
-EM_INTERN void em_object_del_func_set(Em_Object *obj, Em_Object_Cleanup_Func del_func);
-EM_INTERN void em_object_type_set(Em_Object *obj, int type);
-EM_INTERN void em_object_free(Em_Object *obj);
-EM_INTERN int em_object_ref(Em_Object *obj);
-EM_INTERN int em_object_unref(Em_Object *obj);
-EM_INTERN int em_object_ref_get(Em_Object *obj);
-EM_INTERN int em_object_error(Em_Object *obj);
-EM_INTERN void em_object_data_set(Em_Object *obj, void *data);
-EM_INTERN void *em_object_data_get(Em_Object *obj);
-EM_INTERN void em_object_free_attach_func_set(Em_Object *obj, void (*func) (void *obj));
-EM_INTERN void em_object_del_attach_func_set(Em_Object *obj, void (*func) (void *obj));
+EM_INTERN void  em_object_del(Em_Object *o);
+EM_INTERN int   em_object_is_del(Em_Object *o);
+EM_INTERN void  em_object_del_func_set(Em_Object *o, Em_Object_Cleanup_Func del_func);
+EM_INTERN void  em_object_type_set(Em_Object *o, int type);
+EM_INTERN void  em_object_free(Em_Object *o);
+EM_INTERN int   em_object_ref(Em_Object *o);
+EM_INTERN int   em_object_unref(Em_Object *o);
+EM_INTERN int   em_object_ref_get(Em_Object *o);
+EM_INTERN int   em_object_error(Em_Object *o);
+EM_INTERN void  em_object_free_attach_func_set(Em_Object *o, void (*func) (void *obj));
+EM_INTERN void  em_object_del_attach_func_set(Em_Object *o, void (*func) (void *obj));
 
 # endif
 #endif
