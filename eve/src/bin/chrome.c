@@ -11,17 +11,17 @@
 
 #define BOOKMARK_MENU_PREALLOC_SIZE 32
 
-typedef struct _Bookmark_Menu_Item Bookmark_Menu_Item;
-typedef struct _Bookmark_Menu_Filter_Context Bookmark_Menu_Filter_Context;
-typedef Bookmark_Menu_Item *(*Bookmark_Menu_Callback)(Bookmark_Menu_Item *current_item);
+typedef struct _Bookmark_Menu_Item             Bookmark_Menu_Item;
+typedef struct _Bookmark_Menu_Filter_Context   Bookmark_Menu_Filter_Context;
+typedef Bookmark_Menu_Item *(*                 Bookmark_Menu_Callback)(Bookmark_Menu_Item *current_item);
 
-static Bookmark_Menu_Item *bookmark_menu_favorites(Bookmark_Menu_Item*);
-static Bookmark_Menu_Item *bookmark_menu_history_today(Bookmark_Menu_Item*);
-static Bookmark_Menu_Item *bookmark_menu_history_yesterday(Bookmark_Menu_Item*);
-static Bookmark_Menu_Item *bookmark_menu_history_this_week(Bookmark_Menu_Item*);
-static Bookmark_Menu_Item *bookmark_menu_history_most_visited(Bookmark_Menu_Item*);
-static Bookmark_Menu_Item *bookmark_menu_history_least_visited(Bookmark_Menu_Item*);
-static Bookmark_Menu_Item *bookmark_menu_history_by_domain(Bookmark_Menu_Item*);
+static Bookmark_Menu_Item *    bookmark_menu_favorites(Bookmark_Menu_Item *);
+static Bookmark_Menu_Item *    bookmark_menu_history_today(Bookmark_Menu_Item *);
+static Bookmark_Menu_Item *    bookmark_menu_history_yesterday(Bookmark_Menu_Item *);
+static Bookmark_Menu_Item *    bookmark_menu_history_this_week(Bookmark_Menu_Item *);
+static Bookmark_Menu_Item *    bookmark_menu_history_most_visited(Bookmark_Menu_Item *);
+static Bookmark_Menu_Item *    bookmark_menu_history_least_visited(Bookmark_Menu_Item *);
+static Bookmark_Menu_Item *    bookmark_menu_history_by_domain(Bookmark_Menu_Item *);
 
 static Elm_Gengrid_Item_Class gic_default, gic_new_page;
 
@@ -34,16 +34,18 @@ typedef enum {
    ITEM_TYPE_SEPARATOR,
 } Bookmark_Menu_Item_Type;
 
-struct _Bookmark_Menu_Item {
+struct _Bookmark_Menu_Item
+{
    Bookmark_Menu_Item_Type type;
-   const char *text;
-   void *next;
-   Eina_Bool dynamic : 1;
+   const char             *text;
+   void                   *next;
+   Eina_Bool               dynamic : 1;
 };
 
-struct _Bookmark_Menu_Filter_Context {
+struct _Bookmark_Menu_Filter_Context
+{
    Bookmark_Menu_Item *current_bookmark_item;
-   double time;
+   double              time;
 };
 
 static Bookmark_Menu_Item bookmark_menu_history[] =
@@ -74,8 +76,7 @@ static Bookmark_Menu_Item bookmark_menu_root[] =
    { ITEM_TYPE_LAST, NULL, NULL, EINA_FALSE }
 };
 
-
-static Eina_List*
+static Eina_List *
 _eina_hash_sorted_keys_get(Eina_Hash *hash, Eina_Compare_Cb compare_func)
 {
    Eina_List *keyvals = NULL, *keys = NULL, *keyvals_iter;
@@ -83,17 +84,18 @@ _eina_hash_sorted_keys_get(Eina_Hash *hash, Eina_Compare_Cb compare_func)
    Eina_Hash_Tuple *keyval;
 
    EINA_ITERATOR_FOREACH(iter, keyval)
-      keyvals = eina_list_prepend(keyvals, keyval);
+   keyvals = eina_list_prepend(keyvals, keyval);
    keyvals = eina_list_sort(keyvals, 0, compare_func);
    EINA_LIST_FOREACH(keyvals, keyvals_iter, keyval)
-      keys = eina_list_append(keys, keyval->key);
+   keys = eina_list_append(keys, keyval->key);
 
    eina_list_free(keyvals);
    eina_iterator_free(iter);
 
    return keys;
 }
-static Bookmark_Menu_Item*
+
+static Bookmark_Menu_Item *
 _bookmark_menu_history(Eina_Iterator *items, Bookmark_Menu_Item *current_item, Eina_Bool (*filter)(Bookmark_Menu_Filter_Context *ctx, Hist_Item *item))
 {
    Bookmark_Menu_Item *bm_item;
@@ -107,44 +109,49 @@ _bookmark_menu_history(Eina_Iterator *items, Bookmark_Menu_Item *current_item, E
 
    EINA_ITERATOR_FOREACH(items, url)
    {
-       Hist_Item *item = hist_items_get(hist, url);
+      Hist_Item *item = hist_items_get(hist, url);
 
-       if (!filter(&ctx, item)) continue;
+      if (!filter(&ctx, item))
+         continue;
 
-       bm_item = calloc(1, sizeof(Bookmark_Menu_Item));
-       bm_item->type = ITEM_TYPE_PAGE;
-       bm_item->text = eina_stringshare_add(hist_item_title_get(item));
-       bm_item->next = (char *)hist_item_url_get(item);
-       bm_item->dynamic = 1;
+      bm_item = calloc(1, sizeof(Bookmark_Menu_Item));
+      bm_item->type = ITEM_TYPE_PAGE;
+      bm_item->text = eina_stringshare_add(hist_item_title_get(item));
+      bm_item->next = (char *)hist_item_url_get(item);
+      bm_item->dynamic = 1;
 
-       if (!ret)
-          ret = calloc(1, sizeof(*ret) * BOOKMARK_MENU_PREALLOC_SIZE);
-       else if (n_items % BOOKMARK_MENU_PREALLOC_SIZE == 0)
-          {
-             new_ret = realloc(ret, (BOOKMARK_MENU_PREALLOC_SIZE * n_items * sizeof(*ret)));
-             if (new_ret) ret = new_ret;
-             else goto realloc_error;
-          }
+      if (!ret)
+         ret = calloc(1, sizeof(*ret) * BOOKMARK_MENU_PREALLOC_SIZE);
+      else if (n_items % BOOKMARK_MENU_PREALLOC_SIZE == 0)
+        {
+           new_ret = realloc(ret, (BOOKMARK_MENU_PREALLOC_SIZE * n_items * sizeof(*ret)));
+           if (new_ret)
+              ret = new_ret;
+           else
+              goto realloc_error;
+        }
 
-       memcpy(&ret[n_items], bm_item, sizeof(*ret));
-       free(bm_item);
+      memcpy(&ret[n_items], bm_item, sizeof(*ret));
+      free(bm_item);
 
-       n_items++;
+      n_items++;
    }
 
 realloc_error:
 
-   if (!n_items) return NULL;
+   if (!n_items)
+      return NULL;
 
    bm_item = calloc(1, sizeof(Bookmark_Menu_Item));
    bm_item->type = ITEM_TYPE_LAST;
    new_ret = realloc(ret, (1 + n_items) * sizeof(*ret));
    if (!new_ret)
-      {
-         free(bm_item);
-         free(ret);
-         return NULL;
-      }
+     {
+        free(bm_item);
+        free(ret);
+        return NULL;
+     }
+
    ret = new_ret;
    memcpy(&ret[n_items], bm_item, sizeof(*ret));
    free(bm_item);
@@ -158,14 +165,15 @@ _domain_filter(Bookmark_Menu_Filter_Context *ctx, Hist_Item *item)
    char *domain = strstr(hist_item_url_get(item), "://");
    const char *filtered_domain = ctx->current_bookmark_item->text;
    if (domain)
-      {
-         domain += 3;
-         return !strncmp(domain, filtered_domain, strlen(filtered_domain));
-      }
+     {
+        domain += 3;
+        return !strncmp(domain, filtered_domain, strlen(filtered_domain));
+     }
+
    return EINA_FALSE;
 }
 
-static Bookmark_Menu_Item*
+static Bookmark_Menu_Item *
 _bookmark_menu_history_by_domain(Bookmark_Menu_Item *current_item)
 {
    Bookmark_Menu_Item *ret;
@@ -177,7 +185,7 @@ _bookmark_menu_history_by_domain(Bookmark_Menu_Item *current_item)
    return ret;
 }
 
-static Bookmark_Menu_Item*
+static Bookmark_Menu_Item *
 bookmark_menu_history_by_domain(Bookmark_Menu_Item *current_item)
 {
    Bookmark_Menu_Item *bm_item;
@@ -189,61 +197,69 @@ bookmark_menu_history_by_domain(Bookmark_Menu_Item *current_item)
 
    EINA_ITERATOR_FOREACH(items, url)
    {
-       char *urlcopy = strdup(url);
-       char *domain, *end;
+      char *urlcopy = strdup(url);
+      char *domain, *end;
 
-       if ((domain = strcasestr(urlcopy, "http://"))) domain += 7;
-       else if ((domain = strcasestr(urlcopy, "https://"))) domain += 8;
-       else goto unknown_schema;
+      if ((domain = strcasestr(urlcopy, "http://")))
+         domain += 7;
+      else if ((domain = strcasestr(urlcopy, "https://")))
+         domain += 8;
+      else
+         goto unknown_schema;
 
-       if ((end = strchr(domain, '/')))
-          {
-             *end = '\0';
-             eina_hash_set(domains, strdup(domain), (void *)1);
-          }
+      if ((end = strchr(domain, '/')))
+        {
+           *end = '\0';
+           eina_hash_set(domains, strdup(domain), (void *)1);
+        }
+
 unknown_schema:
-       free(urlcopy);
+      free(urlcopy);
    }
    eina_iterator_free(items);
 
    items = eina_hash_iterator_key_new(domains);
    EINA_ITERATOR_FOREACH(items, url)
    {
-       bm_item = calloc(1, sizeof(Bookmark_Menu_Item));
-       bm_item->type = ITEM_TYPE_DYNAMIC_FOLDER;
-       bm_item->text = eina_stringshare_add(url);
-       bm_item->next = _bookmark_menu_history_by_domain;
-       bm_item->dynamic = 1;
+      bm_item = calloc(1, sizeof(Bookmark_Menu_Item));
+      bm_item->type = ITEM_TYPE_DYNAMIC_FOLDER;
+      bm_item->text = eina_stringshare_add(url);
+      bm_item->next = _bookmark_menu_history_by_domain;
+      bm_item->dynamic = 1;
 
-       if (!n_items)
-          ret = calloc(1, sizeof(*ret) * BOOKMARK_MENU_PREALLOC_SIZE);
-       else if (n_items % BOOKMARK_MENU_PREALLOC_SIZE == 0)
-          {
-             new_ret = realloc(ret, (BOOKMARK_MENU_PREALLOC_SIZE * n_items * sizeof(*ret)));
-             if (new_ret) ret = new_ret;
-             else goto realloc_error;
-          }
+      if (!n_items)
+         ret = calloc(1, sizeof(*ret) * BOOKMARK_MENU_PREALLOC_SIZE);
+      else if (n_items % BOOKMARK_MENU_PREALLOC_SIZE == 0)
+        {
+           new_ret = realloc(ret, (BOOKMARK_MENU_PREALLOC_SIZE * n_items * sizeof(*ret)));
+           if (new_ret)
+              ret = new_ret;
+           else
+              goto realloc_error;
+        }
 
-       memcpy(&ret[n_items], bm_item, sizeof(*ret));
-       free(bm_item);
+      memcpy(&ret[n_items], bm_item, sizeof(*ret));
+      free(bm_item);
 
-       n_items++;
+      n_items++;
    }
 realloc_error:
    eina_iterator_free(items);
    eina_hash_free(domains);
 
-   if (!n_items) return NULL;
+   if (!n_items)
+      return NULL;
 
    bm_item = calloc(1, sizeof(Bookmark_Menu_Item));
    bm_item->type = ITEM_TYPE_LAST;
    new_ret = realloc(ret, (1 + n_items) * sizeof(*ret));
    if (!new_ret)
-      {
-         free(bm_item);
-         free(ret);
-         return NULL;
-      }
+     {
+        free(bm_item);
+        free(ret);
+        return NULL;
+     }
+
    ret = new_ret;
    memcpy(&ret[n_items], bm_item, sizeof(*ret));
    free(bm_item);
@@ -267,7 +283,6 @@ _today_filter(Bookmark_Menu_Filter_Context *ctx, Hist_Item *item)
    return (now - item_time) <= 24 * 3600;
 }
 
-
 static Eina_Bool
 _yesterday_filter(Bookmark_Menu_Filter_Context *ctx, Hist_Item *item)
 {
@@ -276,7 +291,7 @@ _yesterday_filter(Bookmark_Menu_Filter_Context *ctx, Hist_Item *item)
    return (now - item_time) > 24 * 3600 && (now - item_time) <= 48 * 3600;
 }
 
-static Bookmark_Menu_Item*
+static Bookmark_Menu_Item *
 bookmark_menu_history_today(Bookmark_Menu_Item *current_item)
 {
    Eina_Iterator *iter = eina_hash_iterator_key_new(hist_items_hash_get(hist));
@@ -285,7 +300,7 @@ bookmark_menu_history_today(Bookmark_Menu_Item *current_item)
    return items;
 }
 
-static Bookmark_Menu_Item*
+static Bookmark_Menu_Item *
 bookmark_menu_history_yesterday(Bookmark_Menu_Item *current_item)
 {
    Eina_Iterator *iter = eina_hash_iterator_key_new(hist_items_hash_get(hist));
@@ -294,7 +309,7 @@ bookmark_menu_history_yesterday(Bookmark_Menu_Item *current_item)
    return items;
 }
 
-static Bookmark_Menu_Item*
+static Bookmark_Menu_Item *
 bookmark_menu_history_this_week(Bookmark_Menu_Item *current_item)
 {
    Eina_Iterator *iter = eina_hash_iterator_key_new(hist_items_hash_get(hist));
@@ -321,7 +336,7 @@ _cb_compare_hist_visit_count_incr(const void *data1, const void *data2)
    return hist_item_visit_count_get(f1) - hist_item_visit_count_get(f2);
 }
 
-static Bookmark_Menu_Item*
+static Bookmark_Menu_Item *
 bookmark_menu_history_least_visited(Bookmark_Menu_Item *current_item)
 {
    Eina_List *keys = _eina_hash_sorted_keys_get(hist_items_hash_get(hist), _cb_compare_hist_visit_count_incr);
@@ -332,7 +347,7 @@ bookmark_menu_history_least_visited(Bookmark_Menu_Item *current_item)
    return items;
 }
 
-static Bookmark_Menu_Item*
+static Bookmark_Menu_Item *
 bookmark_menu_history_most_visited(Bookmark_Menu_Item *current_item)
 {
    Eina_List *keys = _eina_hash_sorted_keys_get(hist_items_hash_get(hist), _cb_compare_hist_visit_count_decr);
@@ -343,7 +358,7 @@ bookmark_menu_history_most_visited(Bookmark_Menu_Item *current_item)
    return items;
 }
 
-static Bookmark_Menu_Item*
+static Bookmark_Menu_Item *
 bookmark_menu_favorites(Bookmark_Menu_Item *current_item)
 {
    Bookmark_Menu_Item *bm_item;
@@ -354,46 +369,49 @@ bookmark_menu_favorites(Bookmark_Menu_Item *current_item)
 
    EINA_ITERATOR_FOREACH(iter, url)
    {
-       Fav_Item *item = fav_items_get(fav, url);
+      Fav_Item *item = fav_items_get(fav, url);
 
-       bm_item = calloc(1, sizeof(Bookmark_Menu_Item));
-       bm_item->type = ITEM_TYPE_PAGE;
-       bm_item->text = eina_stringshare_add(fav_item_title_get(item));
-       bm_item->next = (char *)fav_item_url_get(item);
-       bm_item->dynamic = 1;
+      bm_item = calloc(1, sizeof(Bookmark_Menu_Item));
+      bm_item->type = ITEM_TYPE_PAGE;
+      bm_item->text = eina_stringshare_add(fav_item_title_get(item));
+      bm_item->next = (char *)fav_item_url_get(item);
+      bm_item->dynamic = 1;
 
-       if (!n_items)
-          ret = calloc(1, sizeof(*ret) * BOOKMARK_MENU_PREALLOC_SIZE);
-       else if (n_items % BOOKMARK_MENU_PREALLOC_SIZE == 0)
-          {
-             new_ret = realloc(ret, (BOOKMARK_MENU_PREALLOC_SIZE * n_items * sizeof(*ret)));
-             if (new_ret) ret = new_ret;
-             else goto realloc_error;
-          }
+      if (!n_items)
+         ret = calloc(1, sizeof(*ret) * BOOKMARK_MENU_PREALLOC_SIZE);
+      else if (n_items % BOOKMARK_MENU_PREALLOC_SIZE == 0)
+        {
+           new_ret = realloc(ret, (BOOKMARK_MENU_PREALLOC_SIZE * n_items * sizeof(*ret)));
+           if (new_ret)
+              ret = new_ret;
+           else
+              goto realloc_error;
+        }
 
-       memcpy(&ret[n_items], bm_item, sizeof(*ret));
-       free(bm_item);
+      memcpy(&ret[n_items], bm_item, sizeof(*ret));
+      free(bm_item);
 
-       n_items++;
+      n_items++;
    }
 realloc_error:
    eina_iterator_free(iter);
 
    if (!n_items)
-      {
-         free(ret);
-         return NULL;
-      }
+     {
+        free(ret);
+        return NULL;
+     }
 
    bm_item = calloc(1, sizeof(Bookmark_Menu_Item));
    bm_item->type = ITEM_TYPE_LAST;
    new_ret = realloc(ret, (1 + n_items) * sizeof(*ret));
    if (!new_ret)
-      {
-         free(bm_item);
-         free(ret);
-         return NULL;
-      }
+     {
+        free(bm_item);
+        free(ret);
+        return NULL;
+     }
+
    ret = new_ret;
    memcpy(&ret[n_items], bm_item, sizeof(*ret));
    free(bm_item);
@@ -402,49 +420,50 @@ realloc_error:
 }
 
 static void
-on_view_mask_visible(void *data, Evas_Object * o __UNUSED__,
+on_view_mask_visible(void *data, Evas_Object *o __UNUSED__,
                      const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Browser_Window *win = data;
    Evas_Object *ed = elm_layout_edje_get(win->current_chrome);
    Evas_Object *url_entry = edje_object_part_swallow_get(ed, "url-entry");
-   
+
    evas_object_focus_set(win->current_view, EINA_FALSE);
    evas_object_focus_set(url_entry, EINA_TRUE);
    elm_object_focus(url_entry);
 }
 
 static void
-on_view_mask_hidden(void *data, Evas_Object * o __UNUSED__,
+on_view_mask_hidden(void *data, Evas_Object *o __UNUSED__,
                     const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Browser_Window *win = data;
-   
+
    evas_object_focus_set(win->current_view, EINA_TRUE);
 }
 
 static void
-on_fav_on(void *data, Evas_Object * o __UNUSED__,
-	       const char *emission __UNUSED__, const char *source __UNUSED__)
+on_fav_on(void *data, Evas_Object *o __UNUSED__,
+          const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Evas_Object *view = data;
    const char *url = ewk_view_uri_get(view);
 
    if (url)
-      {
-         const char *title = ewk_view_title_get(view);
-         fav_items_add(fav, url, fav_item_new(url, title, 1));
-      }
+     {
+        const char *title = ewk_view_title_get(view);
+        fav_items_add(fav, url, fav_item_new(url, title, 1));
+     }
 }
 
 static void
-on_fav_off(void *data, Evas_Object * o __UNUSED__,
-	       const char *emission __UNUSED__, const char *source __UNUSED__)
+on_fav_off(void *data, Evas_Object *o __UNUSED__,
+           const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Evas_Object *view = data;
    const char *url = ewk_view_uri_get(view);
 
-   if (url) fav_items_del(fav, url);
+   if (url)
+      fav_items_del(fav, url);
 }
 
 static void
@@ -454,10 +473,10 @@ _is_favorite_check(Evas_Object *chrome, const char *url)
    Fav_Item *item;
 
    if (url && (item = fav_items_get(fav, url)))
-      {
-         fav_item_visit_count_set(item, fav_item_visit_count_get(item) + 1);
-         edje_object_signal_emit(ed, "favorite,hilight", "");
-      }
+     {
+        fav_item_visit_count_set(item, fav_item_visit_count_get(item) + 1);
+        edje_object_signal_emit(ed, "favorite,hilight", "");
+     }
    else
       edje_object_signal_emit(ed, "favorite,default", "");
 }
@@ -467,20 +486,21 @@ _history_update(const char *url, const char *title)
 {
    Hist_Item *item;
 
-   if (!url) return;
+   if (!url)
+      return;
 
    if ((item = hist_items_get(hist, url)))
-      {
-         hist_item_visit_count_set(item, hist_item_visit_count_get(item) + 1);
-         hist_item_last_visit_set(item, ecore_time_get());
-         hist_item_title_set(item, title);
-      }
+     {
+        hist_item_visit_count_set(item, hist_item_visit_count_get(item) + 1);
+        hist_item_last_visit_set(item, ecore_time_get());
+        hist_item_title_set(item, title);
+     }
    else
       hist_items_add(hist, url, hist_item_new(title, url, 1, ecore_time_get()));
 }
 
 static void
-_chrome_state_apply(Evas_Object * chrome, Evas_Object * view)
+_chrome_state_apply(Evas_Object *chrome, Evas_Object *view)
 {
    const char *url = ewk_view_uri_get(view);
    const char *title = ewk_view_title_get(view);
@@ -489,6 +509,7 @@ _chrome_state_apply(Evas_Object * chrome, Evas_Object * view)
 
    if (!title)
       title = url;
+
    edje_object_part_text_set(ed, "text.title", title ? title : "");
 
    text_url = edje_object_part_swallow_get(ed, "url-entry");
@@ -500,8 +521,8 @@ _chrome_state_apply(Evas_Object * chrome, Evas_Object * view)
 }
 
 static void
-on_view_load_progress(void *data, Evas_Object * view __UNUSED__,
-		      void *event_info)
+on_view_load_progress(void *data, Evas_Object *view __UNUSED__,
+                      void *event_info)
 {
    Evas_Object *chrome = data;
    Evas_Object *ed = elm_layout_edje_get(chrome);
@@ -512,8 +533,8 @@ on_view_load_progress(void *data, Evas_Object * view __UNUSED__,
 }
 
 static void
-on_view_title_changed(void *data, Evas_Object * view,
-		      void *event_info __UNUSED__)
+on_view_title_changed(void *data, Evas_Object *view,
+                      void *event_info __UNUSED__)
 {
    Evas_Object *chrome = data;
 
@@ -521,7 +542,7 @@ on_view_title_changed(void *data, Evas_Object * view,
 }
 
 static void
-on_view_uri_changed(void *data, Evas_Object * view, void *event_info __UNUSED__)
+on_view_uri_changed(void *data, Evas_Object *view, void *event_info __UNUSED__)
 {
    Evas_Object *chrome = data;
 
@@ -529,8 +550,8 @@ on_view_uri_changed(void *data, Evas_Object * view, void *event_info __UNUSED__)
 }
 
 static void
-on_view_zoom_interactive(void *data, Evas_Object * view __UNUSED__,
-			 void *event_info)
+on_view_zoom_interactive(void *data, Evas_Object *view __UNUSED__,
+                         void *event_info)
 {
    Evas_Object *chrome = data;
    Evas_Object *ed = elm_layout_edje_get(chrome);
@@ -544,8 +565,8 @@ on_view_zoom_interactive(void *data, Evas_Object * view __UNUSED__,
 }
 
 static void
-on_view_zoom_interactive_start(void *data, Evas_Object * view __UNUSED__,
-			       void *event_info __UNUSED__)
+on_view_zoom_interactive_start(void *data, Evas_Object *view __UNUSED__,
+                               void *event_info __UNUSED__)
 {
    Evas_Object *chrome = data;
    Evas_Object *ed = elm_layout_edje_get(chrome);
@@ -554,8 +575,8 @@ on_view_zoom_interactive_start(void *data, Evas_Object * view __UNUSED__,
 }
 
 static void
-on_view_zoom_interactive_end(void *data, Evas_Object * view __UNUSED__,
-			     void *event_info __UNUSED__)
+on_view_zoom_interactive_end(void *data, Evas_Object *view __UNUSED__,
+                             void *event_info __UNUSED__)
 {
    Evas_Object *chrome = data;
    Evas_Object *ed = elm_layout_edje_get(chrome);
@@ -564,8 +585,8 @@ on_view_zoom_interactive_end(void *data, Evas_Object * view __UNUSED__,
 }
 
 static void
-on_view_statusbar_text_set(void *data, Evas_Object * view __UNUSED__,
-			   void *event_info)
+on_view_statusbar_text_set(void *data, Evas_Object *view __UNUSED__,
+                           void *event_info)
 {
    Evas_Object *chrome = data;
    Evas_Object *ed = elm_layout_edje_get(chrome);
@@ -576,8 +597,8 @@ on_view_statusbar_text_set(void *data, Evas_Object * view __UNUSED__,
 }
 
 static void
-on_view_link_hover_in(void *data, Evas_Object * view __UNUSED__,
-		      void *event_info)
+on_view_link_hover_in(void *data, Evas_Object *view __UNUSED__,
+                      void *event_info)
 {
    Evas_Object *chrome = data;
    Evas_Object *ed = elm_layout_edje_get(chrome);
@@ -588,8 +609,8 @@ on_view_link_hover_in(void *data, Evas_Object * view __UNUSED__,
 }
 
 static void
-on_view_link_hover_out(void *data, Evas_Object * view __UNUSED__,
-		       void *event_info __UNUSED__)
+on_view_link_hover_out(void *data, Evas_Object *view __UNUSED__,
+                       void *event_info __UNUSED__)
 {
    Evas_Object *chrome = data;
    Evas_Object *ed = elm_layout_edje_get(chrome);
@@ -605,13 +626,13 @@ _view_popup_delete(void *notify)
 }
 
 static void
-on_view_popup_delete(void *data, Evas_Object * view, void *event_info)
+on_view_popup_delete(void *data, Evas_Object *view, void *event_info)
 {
    ecore_idler_add(_view_popup_delete, data);
 }
 
 static void
-_popup_item_selected(void *data, Evas_Object * obj, void *event_info)
+_popup_item_selected(void *data, Evas_Object *obj, void *event_info)
 {
    Evas_Object *view = data;
    Elm_List_Item *it = elm_list_selected_item_get(obj);
@@ -622,7 +643,8 @@ _popup_item_selected(void *data, Evas_Object * obj, void *event_info)
    EINA_LIST_FOREACH(list, itr, d)
    {
       if (d == it)
-	 break;
+         break;
+
       i++;
    }
 
@@ -631,7 +653,7 @@ _popup_item_selected(void *data, Evas_Object * obj, void *event_info)
 }
 
 static void
-on_view_popup_new(void *data, Evas_Object * view, void *event_info)
+on_view_popup_new(void *data, Evas_Object *view, void *event_info)
 {
    Ewk_Menu *menu = event_info;
    Ewk_Menu_Item *item;
@@ -652,22 +674,22 @@ on_view_popup_new(void *data, Evas_Object * view, void *event_info)
    evas_object_size_hint_fill_set(li, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    EINA_LIST_FOREACH(menu->items, l, item)
-         elm_list_item_append(li, item->text, NULL, NULL, _popup_item_selected,
-			   view);
+   elm_list_item_append(li, item->text, NULL, NULL, _popup_item_selected,
+                        view);
 
    elm_list_go(li);
    evas_object_show(li);
    elm_notify_content_set(notify, li);
 
    evas_object_smart_callback_add(view, "popup,willdelete",
-				  on_view_popup_delete, notify);
+                                  on_view_popup_delete, notify);
 
    evas_object_show(notify);
 }
 
 static void
-on_tab_close(void *data, Evas_Object * o,
-	     const char *emission __UNUSED__, const char *source __UNUSED__)
+on_tab_close(void *data, Evas_Object *o,
+             const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Browser_Window *win = evas_object_data_get(o, "win");
    Evas_Object *chrome = evas_object_data_get(data, "chrome");
@@ -682,20 +704,20 @@ on_tab_close(void *data, Evas_Object * o,
 }
 
 static void
-on_tab_gengrid_item_realized(void *data, Evas_Object * o, void *event_info)
+on_tab_gengrid_item_realized(void *data, Evas_Object *o, void *event_info)
 {
    Browser_Window *win = data;
-   Evas_Object *item = (Evas_Object *) elm_gengrid_item_object_get(event_info);
+   Evas_Object *item = (Evas_Object *)elm_gengrid_item_object_get(event_info);
 
    evas_object_data_set(item, "item", event_info);
    evas_object_data_set(item, "win", win);
    edje_object_signal_callback_add(item, "tab,close", "", on_tab_close,
-          elm_gengrid_item_data_get(event_info));
+                                   elm_gengrid_item_data_get(event_info));
 }
 
 static void
-on_action_back(void *data, Evas_Object * o __UNUSED__,
-	       const char *emission __UNUSED__, const char *source __UNUSED__)
+on_action_back(void *data, Evas_Object *o __UNUSED__,
+               const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Evas_Object *view = data;
 
@@ -703,62 +725,62 @@ on_action_back(void *data, Evas_Object * o __UNUSED__,
 }
 
 static void
-on_action_forward(void *data, Evas_Object * o __UNUSED__,
-		  const char *emission __UNUSED__,
-		  const char *source __UNUSED__)
+on_action_forward(void *data, Evas_Object *o __UNUSED__,
+                  const char *emission __UNUSED__,
+                  const char *source __UNUSED__)
 {
    Evas_Object *view = data;
 
    ewk_view_forward(view);
 }
 
-static void on_bookmark_item_click(void *data, Evas_Object * obj, void *event_info __UNUSED__);
-static void on_bookmark_item_back_click(void *data, Evas_Object *edje, const char *emission __UNUSED__, const char *source __UNUSED__);
+static void      on_bookmark_item_click(void *data, Evas_Object *obj, void *event_info __UNUSED__);
+static void      on_bookmark_item_back_click(void *data, Evas_Object *edje, const char *emission __UNUSED__, const char *source __UNUSED__);
 
 static void
-bookmark_menu_set(Evas_Object *chrome,
-                  Evas_Object *list,
+bookmark_menu_set(Evas_Object        *chrome,
+                  Evas_Object        *list,
                   Bookmark_Menu_Item *root,
-                  const char *old_text)
+                  const char         *old_text)
 {
    Browser_Window *win = evas_object_data_get(chrome, "win");
    Evas_Object *ed = elm_layout_edje_get(chrome);
    int i;
 
    if (!eina_list_data_find(win->list_history, root))
-      {
-         if (root == bookmark_menu_root || !root)
-            win->list_history = eina_list_prepend(win->list_history, NULL);
-         else
-            win->list_history = eina_list_prepend(win->list_history, root);
-      }
+     {
+        if (root == bookmark_menu_root || !root)
+           win->list_history = eina_list_prepend(win->list_history, NULL);
+        else
+           win->list_history = eina_list_prepend(win->list_history, root);
+     }
 
    elm_list_clear(list);
 
    if (!root || root == bookmark_menu_root)
-      {
-         root = bookmark_menu_root;
-         edje_object_part_text_set(ed, "bookmark-list-title", "Bookmarks");
-         edje_object_signal_emit(ed, "list,back,hide", "");
-      }
+     {
+        root = bookmark_menu_root;
+        edje_object_part_text_set(ed, "bookmark-list-title", "Bookmarks");
+        edje_object_signal_emit(ed, "list,back,hide", "");
+     }
    else
-      {
-         edje_object_part_text_set(ed, "bookmark-list-back-button-text", eina_stringshare_add(old_text ? old_text : "Bookmarks"));
-         edje_object_signal_callback_del(ed, "list,back,clicked", "", on_bookmark_item_back_click);
-         edje_object_signal_callback_add(ed, "list,back,clicked", "", on_bookmark_item_back_click, list);
+     {
+        edje_object_part_text_set(ed, "bookmark-list-back-button-text", eina_stringshare_add(old_text ? old_text : "Bookmarks"));
+        edje_object_signal_callback_del(ed, "list,back,clicked", "", on_bookmark_item_back_click);
+        edje_object_signal_callback_add(ed, "list,back,clicked", "", on_bookmark_item_back_click, list);
 
-         edje_object_signal_emit(ed, "list,back,show", "");
-      }
+        edje_object_signal_emit(ed, "list,back,show", "");
+     }
 
    for (i = 0; root[i].type != ITEM_TYPE_LAST; i++) {
-      if (root[i].type == ITEM_TYPE_SEPARATOR)
-         {
-            Elm_List_Item *item = elm_list_item_append(list, NULL, NULL, NULL, NULL, NULL);
-            elm_list_item_separator_set(item, EINA_TRUE);
-         }
-      else
-          elm_list_item_append(list, root[i].text, NULL, NULL, on_bookmark_item_click, &root[i]);
-   }
+        if (root[i].type == ITEM_TYPE_SEPARATOR)
+          {
+             Elm_List_Item *item = elm_list_item_append(list, NULL, NULL, NULL, NULL, NULL);
+             elm_list_item_separator_set(item, EINA_TRUE);
+          }
+        else
+           elm_list_item_append(list, root[i].text, NULL, NULL, on_bookmark_item_click, &root[i]);
+     }
 
    elm_list_go(list);
 }
@@ -777,10 +799,11 @@ on_bookmark_item_back_click(void *data, Evas_Object *edje,
    eina_stringshare_del(edje_object_part_text_get(edje, "bookmark-list-back-button-text"));
 
    if ((bmi = win->list_history->data) && bmi->dynamic)
-      {
-         eina_stringshare_del(bmi->text);
-         free(bmi);
-      }
+     {
+        eina_stringshare_del(bmi->text);
+        free(bmi);
+     }
+
    win->list_history = eina_list_remove_list(win->list_history, win->list_history);
    win->list_history_titles = eina_list_remove_list(win->list_history_titles, win->list_history_titles);
 
@@ -791,7 +814,7 @@ on_bookmark_item_back_click(void *data, Evas_Object *edje,
 }
 
 static void
-on_bookmark_item_click(void *data, Evas_Object * obj,
+on_bookmark_item_click(void *data, Evas_Object *obj,
                        void *event_info __UNUSED__)
 {
    Evas_Object *chrome = evas_object_data_get(obj, "chrome");
@@ -800,49 +823,60 @@ on_bookmark_item_click(void *data, Evas_Object * obj,
    Browser_Window *win = evas_object_data_get(chrome, "win");
    const char *old_text = edje_object_part_text_get(ed, "bookmark-list-title");
 
-   if (!bmi) return;
+   if (!bmi)
+      return;
 
    switch (bmi->type) {
-   case ITEM_TYPE_STATIC_FOLDER:
-     win->list_history_titles = eina_list_prepend(win->list_history_titles, old_text);
-     edje_object_signal_emit(ed, "list,animate,left", "");
-     edje_object_part_text_set(ed, "bookmark-list-title", bmi->text);
-     bookmark_menu_set(chrome, obj, bmi->next, old_text);
-     break;
-   case ITEM_TYPE_DYNAMIC_FOLDER:
-     {
+      case ITEM_TYPE_STATIC_FOLDER:
+         win->list_history_titles = eina_list_prepend(win->list_history_titles, old_text);
+         edje_object_signal_emit(ed, "list,animate,left", "");
+         edje_object_part_text_set(ed, "bookmark-list-title", bmi->text);
+         bookmark_menu_set(chrome, obj, bmi->next, old_text);
+         break;
+
+      case ITEM_TYPE_DYNAMIC_FOLDER:
+      {
          Bookmark_Menu_Callback callback = bmi->next;
-         if (!callback) return;
+         if (!callback)
+            return;
+
          Bookmark_Menu_Item *new_root = callback(bmi);
          if (new_root)
-            {
-               win->list_history_titles = eina_list_prepend(win->list_history_titles, old_text);
-               edje_object_part_text_set(ed, "bookmark-list-title", bmi->text);
-               edje_object_signal_emit(ed, "list,animate,left", "");
-               bookmark_menu_set(chrome, obj, new_root, old_text);
-            }
-     }
-     break;
-   case ITEM_TYPE_LAST:
-   case ITEM_TYPE_SEPARATOR:
-     break;
-   case ITEM_TYPE_CALLBACK:
-     {
+           {
+              win->list_history_titles = eina_list_prepend(win->list_history_titles, old_text);
+              edje_object_part_text_set(ed, "bookmark-list-title", bmi->text);
+              edje_object_signal_emit(ed, "list,animate,left", "");
+              bookmark_menu_set(chrome, obj, new_root, old_text);
+           }
+      }
+      break;
+
+      case ITEM_TYPE_LAST:
+      case ITEM_TYPE_SEPARATOR:
+         break;
+
+      case ITEM_TYPE_CALLBACK:
+      {
          Bookmark_Menu_Callback callback = bmi->next;
          Evas_Object *ed = elm_layout_edje_get(chrome);
-         if (callback) callback(bmi);
+         if (callback)
+            callback(bmi);
+
          edje_object_signal_emit(ed, "bookmark,item,clicked", "");
-     }
-     break;
-   default:
-     {
+      }
+      break;
+
+      default:
+      {
          Browser_Window *win = evas_object_data_get(chrome, "win");
          Evas_Object *ed = elm_layout_edje_get(chrome);
-         if (win) ewk_view_uri_set(win->current_view, bmi->next);
+         if (win)
+            ewk_view_uri_set(win->current_view, bmi->next);
+
          edje_object_signal_emit(ed, "bookmark,item,clicked", "");
+      }
+      break;
      }
-     break;
-   }
 }
 
 Evas_Object *
@@ -858,8 +892,8 @@ view_screenshot_add(Evas *evas, const Evas_Object *view)
    int stride;
    void *pixels, *dest;
 
-   sd = (Ewk_View_Smart_Data *) evas_object_smart_data_get(view);
-   priv = (Ewk_View_Private_Data *) sd->_priv;
+   sd = (Ewk_View_Smart_Data *)evas_object_smart_data_get(view);
+   priv = (Ewk_View_Private_Data *)sd->_priv;
 
    /* assuming colorspace is EVAS_COLORSPACE_ARGB8888 */
    stride = rect.w * 4;
@@ -874,18 +908,18 @@ view_screenshot_add(Evas *evas, const Evas_Object *view)
 
    surface =
       cairo_image_surface_create_for_data(pixels, format, rect.w, rect.h,
-					  stride);
+                                          stride);
    if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS)
-       goto error_cairo_surface_create;
+      goto error_cairo_surface_create;
 
    cairo = cairo_create(surface);
    if (cairo_status(cairo) != CAIRO_STATUS_SUCCESS)
-       goto error_cairo_create;
+      goto error_cairo_create;
 
    if (!ewk_view_paint_contents(priv, cairo, &rect))
      {
-	evas_object_del(img);
-	img = NULL;
+        evas_object_del(img);
+        img = NULL;
      }
    else
      {
@@ -894,9 +928,9 @@ view_screenshot_add(Evas *evas, const Evas_Object *view)
         evas_object_image_data_set(img, dest);
      }
 
- error_cairo_create:
+error_cairo_create:
    cairo_destroy(cairo);
- error_cairo_surface_create:
+error_cairo_surface_create:
    cairo_surface_destroy(surface);
 
    return img;
@@ -925,9 +959,9 @@ tab_grid_new_tab_click(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-on_action_tab_show(void *data, Evas_Object * o __UNUSED__,
-		   const char *emission __UNUSED__,
-		   const char *source __UNUSED__)
+on_action_tab_show(void *data, Evas_Object *o __UNUSED__,
+                   const char *emission __UNUSED__,
+                   const char *source __UNUSED__)
 {
    Evas_Object *chrome = data;
    Evas_Object *grid = evas_object_data_get(chrome, "tab-grid");
@@ -941,22 +975,22 @@ on_action_tab_show(void *data, Evas_Object * o __UNUSED__,
 
    EINA_LIST_FOREACH(win->chromes, itr, itr_chrome)
    {
-       Evas_Object *itr_view = evas_object_data_get(itr_chrome, "view");
-       elm_gengrid_item_append(grid, &gic_default, itr_view, tab_grid_item_click, itr_chrome);
+      Evas_Object *itr_view = evas_object_data_get(itr_chrome, "view");
+      elm_gengrid_item_append(grid, &gic_default, itr_view, tab_grid_item_click, itr_chrome);
    }
 }
 
 static void
-on_action_tab_hide(void *data, Evas_Object * o __UNUSED__,
-	           const char *emission __UNUSED__,
-		   const char *source __UNUSED__)
+on_action_tab_hide(void *data, Evas_Object *o __UNUSED__,
+                   const char *emission __UNUSED__,
+                   const char *source __UNUSED__)
 {
 }
 
 static void
-on_action_bookmark_hide(void *data, Evas_Object * o __UNUSED__,
-		       const char *emission __UNUSED__,
-		       const char *source __UNUSED__)
+on_action_bookmark_hide(void *data, Evas_Object *o __UNUSED__,
+                        const char *emission __UNUSED__,
+                        const char *source __UNUSED__)
 {
    Evas_Object *chrome = data;
    Evas_Object *edje = elm_layout_edje_get(chrome);
@@ -964,11 +998,12 @@ on_action_bookmark_hide(void *data, Evas_Object * o __UNUSED__,
    Browser_Window *win = evas_object_data_get(chrome, "win");
 
    EINA_LIST_FREE(win->list_history, bmi)
-      if (bmi && bmi->dynamic)
-         {
-            eina_stringshare_del(bmi->text);
-            free(bmi);
-         }
+   if (bmi && bmi->dynamic)
+     {
+        eina_stringshare_del(bmi->text);
+        free(bmi);
+     }
+
    eina_stringshare_del(edje_object_part_text_get(edje, "bookmark-list-back-button-text"));
    eina_list_free(win->list_history_titles);
    win->list_history = NULL;
@@ -976,19 +1011,19 @@ on_action_bookmark_hide(void *data, Evas_Object * o __UNUSED__,
 }
 
 static void
-on_action_bookmark_show(void *data, Evas_Object * o __UNUSED__,
-		       const char *emission __UNUSED__,
-		       const char *source __UNUSED__)
+on_action_bookmark_show(void *data, Evas_Object *o __UNUSED__,
+                        const char *emission __UNUSED__,
+                        const char *source __UNUSED__)
 {
    Evas_Object *chrome = data;
    Evas_Object *hl = evas_object_data_get(chrome, "bookmark-list");
-   
+
    bookmark_menu_set(chrome, hl, NULL, NULL);
 }
 
 static void
-on_action_pause(void *data, Evas_Object * o __UNUSED__,
-		const char *emission __UNUSED__, const char *source __UNUSED__)
+on_action_pause(void *data, Evas_Object *o __UNUSED__,
+                const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Evas_Object *view = data;
 
@@ -996,8 +1031,8 @@ on_action_pause(void *data, Evas_Object * o __UNUSED__,
 }
 
 static void
-on_action_reload(void *data, Evas_Object * o __UNUSED__,
-		 const char *emission __UNUSED__, const char *source __UNUSED__)
+on_action_reload(void *data, Evas_Object *o __UNUSED__,
+                 const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Evas_Object *view = data;
 
@@ -1005,8 +1040,8 @@ on_action_reload(void *data, Evas_Object * o __UNUSED__,
 }
 
 static void
-on_action_home(void *data, Evas_Object * o __UNUSED__,
-	       const char *emission __UNUSED__, const char *source __UNUSED__)
+on_action_home(void *data, Evas_Object *o __UNUSED__,
+               const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Evas_Object *view = data;
 
@@ -1014,7 +1049,7 @@ on_action_home(void *data, Evas_Object * o __UNUSED__,
 }
 
 static void
-on_action_load_page(void *data, Evas_Object * view, void *event_info __UNUSED__)
+on_action_load_page(void *data, Evas_Object *view, void *event_info __UNUSED__)
 {
    Evas_Object *ewk_view = data;
 
@@ -1023,45 +1058,46 @@ on_action_load_page(void *data, Evas_Object * view, void *event_info __UNUSED__)
    char uri[2048];
 
    snprintf(uri, 2048, "%s%s",
-	    (strstr(entry_data, "://") ? "" : "http://"), entry_data);
+            (strstr(entry_data, "://") ? "" : "http://"), entry_data);
 
    ewk_view_uri_set(ewk_view, uri);
    evas_object_focus_set(ewk_view, EINA_TRUE);
 }
 
 static void
-on_view_load_error(void *data __UNUSED__, Evas_Object * view __UNUSED__,
-		   void *event_info)
+on_view_load_error(void *data __UNUSED__, Evas_Object *view __UNUSED__,
+                   void *event_info)
 {
    const Ewk_Frame_Load_Error *error = event_info;
    Evas_Object *frame = error->frame;
    char *msg;
    int len;
    const char template[] = ""
-      "<html>\n"
-      "  <head>\n"
-      "    <title>Error loading page.</title>\n"
-      "  </head>\n"
-      "  <body>\n"
-      "    <h1>Error loading page</h1>\n"
-      "    <p>Error description: <strong>%s</strong></p>\n"
-      "    <p>Failing address: <strong>%s</strong></p>\n"
-      "    <p>Go <a href=\"javascript:history.go(-1);\">back</a></p>"
-      "  </body>\n" "</html>\n";
+                           "<html>\n"
+                           "  <head>\n"
+                           "    <title>Error loading page.</title>\n"
+                           "  </head>\n"
+                           "  <body>\n"
+                           "    <h1>Error loading page</h1>\n"
+                           "    <p>Error description: <strong>%s</strong></p>\n"
+                           "    <p>Failing address: <strong>%s</strong></p>\n"
+                           "    <p>Go <a href=\"javascript:history.go(-1);\">back</a></p>"
+                           "  </body>\n" "</html>\n";
 
    if (error->is_cancellation)
       return;
+
    if (!frame)
      {
-	ERR("error loading '%s': %s", error->failing_url, error->description);
-	return;
+        ERR("error loading '%s': %s", error->failing_url, error->description);
+        return;
      }
 
    len = asprintf(&msg, template, error->description, error->failing_url);
    if (len < 0)
      {
-	ERR("error loading '%s': %s", error->failing_url, error->description);
-	return;
+        ERR("error loading '%s': %s", error->failing_url, error->description);
+        return;
      }
 
    ewk_frame_contents_alternate_set
@@ -1070,8 +1106,8 @@ on_view_load_error(void *data __UNUSED__, Evas_Object * view __UNUSED__,
 }
 
 static void
-on_view_download_request(void *data, Evas_Object * view __UNUSED__,
-			 void *event_info)
+on_view_download_request(void *data, Evas_Object *view __UNUSED__,
+                         void *event_info)
 {
    Ewk_Download *download = event_info;
 
@@ -1079,40 +1115,41 @@ on_view_download_request(void *data, Evas_Object * view __UNUSED__,
 }
 
 static void
-on_inputmethods_changed(void *data, Evas_Object* view, void *event_info)
+on_inputmethods_changed(void *data, Evas_Object *view, void *event_info)
 {
-    Eina_Bool active = (Eina_Bool)(long)event_info;
-    Evas_Object *win = data;
-    unsigned int imh;
-    INF("IM changed: active=%d", active);
+   Eina_Bool active = (Eina_Bool)(long)event_info;
+   Evas_Object *win = data;
+   unsigned int imh;
+   INF("IM changed: active=%d", active);
 
-    if (!active)
-      {
-	 elm_win_keyboard_mode_set(win, ELM_WIN_KEYBOARD_OFF);
-	 return;
-      }
+   if (!active)
+     {
+        elm_win_keyboard_mode_set(win, ELM_WIN_KEYBOARD_OFF);
+        return;
+     }
 
-    imh = ewk_view_imh_get(view);
-    INF("Imh:%d", imh);
-    if (imh & EWK_IMH_TELEPHONE)
+   imh = ewk_view_imh_get(view);
+   INF("Imh:%d", imh);
+   if (imh & EWK_IMH_TELEPHONE)
       elm_win_keyboard_mode_set(win, ELM_WIN_KEYBOARD_PHONE_NUMBER);
-    else if (imh & EWK_IMH_NUMBER)
+   else if (imh & EWK_IMH_NUMBER)
       elm_win_keyboard_mode_set(win, ELM_WIN_KEYBOARD_NUMERIC);
-    else if (imh & EWK_IMH_URL)
+   else if (imh & EWK_IMH_URL)
       elm_win_keyboard_mode_set(win, ELM_WIN_KEYBOARD_URL);
-    else if (imh & EWK_IMH_PASSWORD)
+   else if (imh & EWK_IMH_PASSWORD)
       elm_win_keyboard_mode_set(win, ELM_WIN_KEYBOARD_PASSWORD);
+
 #if 0
-    else if (imh & EWK_IMH_EMAIL)
+   else if (imh & EWK_IMH_EMAIL)
       elm_win_keyboard_mode_set(win, ELM_WIN_KEYBOARD_
 #endif
-    else
+   else
       elm_win_keyboard_mode_set(win, ELM_WIN_KEYBOARD_ON);
 }
 
 #if 0
 static void
-win_title_set(Browser_Window * win)
+win_title_set(Browser_Window *win)
 {
    const char *view_title = ewk_view_title_get(win->view);
    int p = ewk_view_load_progress_get(win->view) * 100;
@@ -1123,17 +1160,17 @@ win_title_set(Browser_Window * win)
 
    if (p < 100)
       snprintf(win_title, sizeof(win_title), "(%d%%) %s  - " PACKAGE_STRING,
-	       p, view_title);
+               p, view_title);
    else
       snprintf(win_title, sizeof(win_title), "%s  - " PACKAGE_STRING,
-	       view_title);
+               view_title);
 
    elm_win_title_set(win->win, win_title);
 }
 
 static void
-on_view_load_progress(void *data, Evas_Object * view __UNUSED__,
-		      void *event_info __UNUSED__)
+on_view_load_progress(void *data, Evas_Object *view __UNUSED__,
+                      void *event_info __UNUSED__)
 {
    Browser_Window *win = data;
 
@@ -1141,19 +1178,19 @@ on_view_load_progress(void *data, Evas_Object * view __UNUSED__,
 }
 
 static void
-on_view_title_changed(void *data, Evas_Object * view __UNUSED__,
-		      void *event_info __UNUSED__)
+on_view_title_changed(void *data, Evas_Object *view __UNUSED__,
+                      void *event_info __UNUSED__)
 {
    Browser_Window *win = data;
 
    win_title_set(win);
 }
+
 #endif
 
-
 static void
-on_key_down(void *data, Evas * e __UNUSED__, Evas_Object * o __UNUSED__,
-	    void *event_info)
+on_key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__,
+            void *event_info)
 {
    Browser_Window *win = data;
    Evas_Object *view = win->current_view;
@@ -1164,55 +1201,55 @@ on_key_down(void *data, Evas * e __UNUSED__, Evas_Object * o __UNUSED__,
    INF("keyname=%s, key=%s, string=%s\n", ev->keyname, ev->key, ev->string);
    if ((strcmp(k, "Keycode-122") == 0) || (strcmp(k, "F5") == 0))
      {
-	ev->event_flags &= EVAS_EVENT_FLAG_ON_HOLD;
-	ewk_frame_scroll_add(frame, 0, 50);
+        ev->event_flags &= EVAS_EVENT_FLAG_ON_HOLD;
+        ewk_frame_scroll_add(frame, 0, 50);
      }
    else if ((strcmp(k, "Keycode-123") == 0) || (strcmp(k, "F6") == 0))
      {
-	ev->event_flags &= EVAS_EVENT_FLAG_ON_HOLD;
-	ewk_frame_scroll_add(frame, 0, -50);
+        ev->event_flags &= EVAS_EVENT_FLAG_ON_HOLD;
+        ewk_frame_scroll_add(frame, 0, -50);
      }
    else if ((strcmp(k, "Keycode-185") == 0) || (strcmp(k, "F7") == 0))
      {
-	ev->event_flags &= EVAS_EVENT_FLAG_ON_HOLD;
-	view_zoom_next_up(view);
+        ev->event_flags &= EVAS_EVENT_FLAG_ON_HOLD;
+        view_zoom_next_up(view);
      }
    else if ((strcmp(k, "Keycode-186") == 0) || (strcmp(k, "F8") == 0))
      {
-	ev->event_flags &= EVAS_EVENT_FLAG_ON_HOLD;
-	view_zoom_next_down(view);
+        ev->event_flags &= EVAS_EVENT_FLAG_ON_HOLD;
+        view_zoom_next_down(view);
      }
 }
 
 static char *
 tab_grid_label_get(const void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
-    if (data)
-       {
-          const char *title = ewk_view_title_get(data);
-          return strdup(title ? title : "");
-       }
+   if (data)
+     {
+        const char *title = ewk_view_title_get(data);
+        return strdup(title ? title : "");
+     }
 
-    return NULL;
+   return NULL;
 }
 
 static Evas_Object *
 tab_grid_icon_get(const void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
-    if (data)
-       {
-          const Evas_Object *view = data;
-          Evas *evas = evas_object_evas_get(view);
-          return view_screenshot_add(evas, view);
-       }
+   if (data)
+     {
+        const Evas_Object *view = data;
+        Evas *evas = evas_object_evas_get(view);
+        return view_screenshot_add(evas, view);
+     }
 
-    return NULL;
+   return NULL;
 }
 
 static Eina_Bool
 tab_grid_state_get(const void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
-    return EINA_FALSE;
+   return EINA_FALSE;
 }
 
 static void
@@ -1221,7 +1258,7 @@ tab_grid_del(const void *data, Evas_Object *obj)
 }
 
 Evas_Object *
-chrome_add(Browser_Window * win, const char *url)
+chrome_add(Browser_Window *win, const char *url)
 {
    Evas_Object *chrome = elm_layout_add(win->win);
    Evas_Object *ed = elm_layout_edje_get(chrome);
@@ -1229,21 +1266,22 @@ chrome_add(Browser_Window * win, const char *url)
 
    if (!elm_layout_file_set(chrome, PACKAGE_DATA_DIR "/default.edj", "chrome"))
      {
-	int err = edje_object_load_error_get(ed);
+        int err = edje_object_load_error_get(ed);
 
-	const char *msg = edje_load_error_str(err);
+        const char *msg = edje_load_error_str(err);
 
-	CRITICAL("Could not load chrome theme: %s", msg);
-	evas_object_del(chrome);
-	return NULL;
+        CRITICAL("Could not load chrome theme: %s", msg);
+        evas_object_del(chrome);
+        return NULL;
      }
 
    view = view_add(win->win);
    if (!view)
      {
-	CRITICAL("Could not create view");
-	goto error_view_create;
+        CRITICAL("Could not create view");
+        goto error_view_create;
      }
+
    evas_object_focus_set(view, 1);
    elm_layout_content_set(chrome, "view", view);
 
@@ -1254,27 +1292,28 @@ chrome_add(Browser_Window * win, const char *url)
 
    if (win->app->user_agent)
      {
-	INF("using custom user agent string: %s\n", win->app->user_agent);
-	ewk_view_setting_user_agent_set(view, win->app->user_agent);
+        INF("using custom user agent string: %s\n", win->app->user_agent);
+        ewk_view_setting_user_agent_set(view, win->app->user_agent);
      }
+
    ewk_view_setting_enable_plugins_set(view, !win->app->disable_plugins);
 
    evas_object_event_callback_add(view, EVAS_CALLBACK_KEY_DOWN, on_key_down,
-				  win);
+                                  win);
    evas_object_smart_callback_add(view, "load,error", on_view_load_error, win);
    evas_object_smart_callback_add(view, "download,request",
-				  on_view_download_request, win);
+                                  on_view_download_request, win);
    evas_object_smart_callback_add(view, "inputmethods,changed",
-				  on_inputmethods_changed, win->win);
+                                  on_inputmethods_changed, win->win);
 #if 0
    evas_object_smart_callback_add(view, "load,progress", on_view_load_progress,
-				  win);
+                                  win);
    evas_object_smart_callback_add(view, "title,changed", on_view_title_changed,
-				  win);
+                                  win);
 #endif
 
    if (url)
-	ewk_view_uri_set(view, url);
+      ewk_view_uri_set(view, url);
 
    Evas_Object *text_url = elm_scrolled_entry_add(ed);
    elm_object_style_set(text_url, "ewebkit/url");
@@ -1301,7 +1340,7 @@ chrome_add(Browser_Window * win, const char *url)
    evas_object_data_set(tab_grid, "win", win);
    elm_layout_content_set(chrome, "tab-grid-swallow", tab_grid);
    evas_object_smart_callback_add(tab_grid, "realized",
-				  on_tab_gengrid_item_realized, win);
+                                  on_tab_gengrid_item_realized, win);
 
    gic_default.func.label_get = tab_grid_label_get;
    gic_default.func.icon_get = tab_grid_icon_get;
@@ -1314,48 +1353,48 @@ chrome_add(Browser_Window * win, const char *url)
 
    edje_object_signal_callback_add(ed, "action,back", "back", on_action_back, view);
    edje_object_signal_callback_add(ed, "action,forward", "forward", on_action_forward,
-				   view);
+                                   view);
    edje_object_signal_callback_add(ed, "action,stop", "stop", on_action_pause,
-				   view);
+                                   view);
    edje_object_signal_callback_add(ed, "action,reload", "reload", on_action_reload,
-				   view);
+                                   view);
    edje_object_signal_callback_add(ed, "action,home", "home", on_action_home,
-				   view);
+                                   view);
 
    edje_object_signal_callback_add(ed, "action,fav_on", "", on_fav_on, view);
    edje_object_signal_callback_add(ed, "action,fav_off", "", on_fav_off, view);
-   
+
    edje_object_signal_callback_add(ed, "view,mask,visible", "", on_view_mask_visible, win);
    edje_object_signal_callback_add(ed, "view,mask,hidden", "", on_view_mask_hidden, win);
 
    edje_object_signal_callback_add(ed, "bookmark,show", "",
-				   on_action_bookmark_show, chrome);
+                                   on_action_bookmark_show, chrome);
    edje_object_signal_callback_add(ed, "bookmark,hide", "",
-				   on_action_bookmark_hide, chrome);
+                                   on_action_bookmark_hide, chrome);
    edje_object_signal_callback_add(ed, "tab,show", "",
-				   on_action_tab_show, chrome);
+                                   on_action_tab_show, chrome);
    edje_object_signal_callback_add(ed, "tab,hide", "",
-				   on_action_tab_hide, chrome);
+                                   on_action_tab_hide, chrome);
    evas_object_smart_callback_add(view, "load,progress", on_view_load_progress,
-				  chrome);
+                                  chrome);
    evas_object_smart_callback_add(view, "title,changed", on_view_title_changed,
-				  chrome);
+                                  chrome);
    evas_object_smart_callback_add(view, "uri,changed", on_view_uri_changed,
-				  chrome);
+                                  chrome);
    evas_object_smart_callback_add(view, "zoom,interactive",
-				  on_view_zoom_interactive, chrome);
+                                  on_view_zoom_interactive, chrome);
    evas_object_smart_callback_add(view, "zoom,interactive,start",
-				  on_view_zoom_interactive_start, chrome);
+                                  on_view_zoom_interactive_start, chrome);
    evas_object_smart_callback_add(view, "zoom,interactive,end",
-				  on_view_zoom_interactive_end, chrome);
+                                  on_view_zoom_interactive_end, chrome);
    evas_object_smart_callback_add(view, "statusbar,text,set",
-				  on_view_statusbar_text_set, chrome);
+                                  on_view_statusbar_text_set, chrome);
    evas_object_smart_callback_add(view, "link,hover,in", on_view_link_hover_in,
-				  chrome);
+                                  chrome);
    evas_object_smart_callback_add(view, "link,hover,out",
-				  on_view_link_hover_out, chrome);
+                                  on_view_link_hover_out, chrome);
    evas_object_smart_callback_add(view, "popup,create", on_view_popup_new,
-				  win);
+                                  win);
 
    edje_object_signal_emit(ed, "panels,reset,hide", "");
    _chrome_state_apply(chrome, view);
@@ -1363,7 +1402,8 @@ chrome_add(Browser_Window * win, const char *url)
    elm_pager_content_push(win->pager, chrome);
    return chrome;
 
- error_view_create:
+error_view_create:
    evas_object_del(chrome);
    return NULL;
 }
+

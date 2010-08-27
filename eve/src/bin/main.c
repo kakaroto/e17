@@ -25,7 +25,7 @@ Hist *hist = NULL;
 App app;
 
 static void
-del_win(App * app, Evas_Object * win)
+del_win(App *app, Evas_Object *win)
 {
    Browser_Window *win_data;
    Eina_List *l;
@@ -42,14 +42,14 @@ del_win(App * app, Evas_Object * win)
 }
 
 static void
-on_win_del_req(void *data, Evas_Object * win, void *event_info __UNUSED__)
+on_win_del_req(void *data, Evas_Object *win, void *event_info __UNUSED__)
 {
    del_win(data, win);
 }
 
 /* this should be in elm_win... */
 static void
-win_mouse_disable(Evas_Object * win)
+win_mouse_disable(Evas_Object *win)
 {
    Evas *e = evas_object_evas_get(win);
    Ecore_Evas *ee = evas_data_attach_get(e);
@@ -61,15 +61,16 @@ win_mouse_disable(Evas_Object * win)
 }
 
 Eina_Bool
-tab_add(Browser_Window * win, const char *url)
+tab_add(Browser_Window *win, const char *url)
 {
    Evas_Object *chrome = chrome_add(win, url);
 
    if (!chrome)
      {
-	CRITICAL("Could not create chrome.");
-	goto error_chrome_create;
+        CRITICAL("Could not create chrome.");
+        goto error_chrome_create;
      }
+
    evas_object_size_hint_weight_set(chrome, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(chrome);
 
@@ -80,14 +81,14 @@ tab_add(Browser_Window * win, const char *url)
 
    return EINA_TRUE;
 
- error_chrome_create:
+error_chrome_create:
    evas_object_del(evas_object_data_get(chrome, "view"));
 
    return EINA_FALSE;
 }
 
 Eina_Bool
-tab_focus_chrome(Browser_Window * win, Evas_Object * chrome)
+tab_focus_chrome(Browser_Window *win, Evas_Object *chrome)
 {
    Eina_List *itr;
    int n;
@@ -95,14 +96,14 @@ tab_focus_chrome(Browser_Window * win, Evas_Object * chrome)
    if (!chrome)
       return EINA_FALSE;
 
-   for (n = 0, itr = win->chromes; itr->data != chrome; n++, itr = itr->next);
+   for (n = 0, itr = win->chromes; itr->data != chrome; n++, itr = itr->next) ;
 
    evas_object_hide(win->current_chrome);
 
    win->current_chrome = chrome;
    win->current_view = evas_object_data_get(chrome, "view");
    win->current_tab = n;
-   
+
    evas_object_show(win->current_chrome);
    evas_object_focus_set(win->current_view, EINA_TRUE);
    elm_pager_content_promote(win->pager, win->current_chrome);
@@ -111,42 +112,44 @@ tab_focus_chrome(Browser_Window * win, Evas_Object * chrome)
 }
 
 Eina_Bool
-tab_focus_nth(Browser_Window * win, unsigned int n)
+tab_focus_nth(Browser_Window *win, unsigned int n)
 {
    return tab_focus_chrome(win, eina_list_nth(win->chromes, n));
 }
 
 Eina_Bool
-tab_focus_next(Browser_Window * win)
+tab_focus_next(Browser_Window *win)
 {
    unsigned int n_tabs = eina_list_count(win->chromes);
 
    if (win->current_tab > n_tabs)
       return EINA_FALSE;
+
    return tab_focus_nth(win, win->current_tab + 1);
 }
 
 Eina_Bool
-tab_focus_prev(Browser_Window * win)
+tab_focus_prev(Browser_Window *win)
 {
    if (win->current_tab == 0)
       return EINA_FALSE;
+
    return tab_focus_nth(win, win->current_tab - 1);
 }
 
 Eina_Bool
-tab_close_chrome(Browser_Window * win, Evas_Object * chrome)
+tab_close_chrome(Browser_Window *win, Evas_Object *chrome)
 {
    Evas_Object *edje;
-   
+
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!win, EINA_FALSE);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!chrome, EINA_FALSE);
-   
+
    if (!win->chromes->next)
-      {
-         del_win(win->app, win->win);
-         return EINA_TRUE;
-      }
+     {
+        del_win(win->app, win->win);
+        return EINA_TRUE;
+     }
 
    evas_object_del(chrome);
    win->chromes = eina_list_remove(win->chromes, chrome);
@@ -160,26 +163,26 @@ tab_close_chrome(Browser_Window * win, Evas_Object * chrome)
 }
 
 Eina_Bool
-tab_close_nth(Browser_Window * win, int n)
+tab_close_nth(Browser_Window *win, int n)
 {
    return tab_close_chrome(win, eina_list_nth(win->chromes, n));
 }
 
 Eina_Bool
-tab_close_view(Browser_Window * win, Evas_Object *view)
+tab_close_view(Browser_Window *win, Evas_Object *view)
 {
    return tab_close_chrome(win, evas_object_data_get(view, "chrome"));
 }
 
 static Browser_Window *
-add_win(App * app, const char *url)
+add_win(App *app, const char *url)
 {
    Browser_Window *win = malloc(sizeof(*win));
 
    if (!win)
      {
-	CRITICAL("Could not create window data.");
-	goto error_win_data;
+        CRITICAL("Could not create window data.");
+        goto error_win_data;
      }
 
    win->app = app;
@@ -193,8 +196,8 @@ add_win(App * app, const char *url)
    win->win = elm_win_add(NULL, "eve", ELM_WIN_BASIC);
    if (!win->win)
      {
-	CRITICAL("Could not create window.");
-	goto error_win_create;
+        CRITICAL("Could not create window.");
+        goto error_win_create;
      }
 
    elm_win_title_set(win->win, PACKAGE_STRING);
@@ -206,33 +209,36 @@ add_win(App * app, const char *url)
    win->bg = edje_object_add(evas_object_evas_get(win->win));
    if (!win->bg)
      {
-	CRITICAL("Could not create background.");
-	goto error_bg_create;
+        CRITICAL("Could not create background.");
+        goto error_bg_create;
      }
+
    if (!edje_object_file_set(win->bg, PACKAGE_DATA_DIR "/default.edj", "bg"))
      {
-	int err = edje_object_load_error_get(win->bg);
+        int err = edje_object_load_error_get(win->bg);
 
-	const char *msg = edje_load_error_str(err);
+        const char *msg = edje_load_error_str(err);
 
-	CRITICAL("Could not load background theme: %s", msg);
-	goto error_bg_theme_set;
+        CRITICAL("Could not load background theme: %s", msg);
+        goto error_bg_theme_set;
      }
+
    evas_object_size_hint_weight_set(win->bg, EVAS_HINT_EXPAND,
-				    EVAS_HINT_EXPAND);
+                                    EVAS_HINT_EXPAND);
    elm_win_resize_object_add(win->win, win->bg);
    evas_object_layer_set(win->bg, EVAS_LAYER_MIN);
    evas_object_show(win->bg);
-   
+
    win->pager = elm_pager_add(win->win);
    if (!win->pager)
-      {
-         CRITICAL("Could not create pager");
-         goto error_pager_create;
-      }
+     {
+        CRITICAL("Could not create pager");
+        goto error_pager_create;
+     }
+
    elm_object_style_set(win->pager, "ewebkit");
    evas_object_size_hint_weight_set(win->pager, EVAS_HINT_EXPAND,
-				    EVAS_HINT_EXPAND);
+                                    EVAS_HINT_EXPAND);
    elm_win_resize_object_add(win->win, win->pager);
    evas_object_show(win->pager);
 
@@ -248,15 +254,15 @@ add_win(App * app, const char *url)
 
    return win;
 
- error_bg_theme_set:
+error_bg_theme_set:
    evas_object_del(win->bg);
- error_bg_create:
+error_bg_create:
    evas_object_del(win->win);
- error_win_create:
+error_win_create:
    free(win);
- error_win_data:
- error_tab_add:
- error_pager_create:
+error_win_data:
+error_tab_add:
+error_pager_create:
    return NULL;
 }
 
@@ -286,19 +292,20 @@ static const Ecore_Getopt options = {
    "WebKit-EFL demo browser for mobile systems with touchscreen.",
    EINA_TRUE,
    {
-    ECORE_GETOPT_STORE_DEF_BOOL('F', "fullscreen", "start in fullscreen.", 1),
-    ECORE_GETOPT_STORE_DEF_BOOL('P', "disable-plugins",
-				"disable plugins (flash, etc).", 1),
-    ECORE_GETOPT_STORE_DEF_BOOL('M', "disable-mouse",
-				"disable mouse (hide it).", 1),
-    ECORE_GETOPT_STORE_STR('U', "user-agent",
-			   "user agent string to use. Special case=iphone."),
-    ECORE_GETOPT_STORE_DEF_UINT('R', "rotate", "Screen Rotation in degrees", 0),
-    ECORE_GETOPT_VERSION('V', "version"),
-    ECORE_GETOPT_COPYRIGHT('C', "copyright"),
-    ECORE_GETOPT_LICENSE('L', "license"),
-    ECORE_GETOPT_HELP('h', "help"),
-    ECORE_GETOPT_SENTINEL}
+      ECORE_GETOPT_STORE_DEF_BOOL('F', "fullscreen", "start in fullscreen.", 1),
+      ECORE_GETOPT_STORE_DEF_BOOL('P', "disable-plugins",
+                                  "disable plugins (flash, etc).", 1),
+      ECORE_GETOPT_STORE_DEF_BOOL('M', "disable-mouse",
+                                  "disable mouse (hide it).", 1),
+      ECORE_GETOPT_STORE_STR('U', "user-agent",
+                             "user agent string to use. Special case=iphone."),
+      ECORE_GETOPT_STORE_DEF_UINT('R', "rotate", "Screen Rotation in degrees", 0),
+      ECORE_GETOPT_VERSION('V', "version"),
+      ECORE_GETOPT_COPYRIGHT('C', "copyright"),
+      ECORE_GETOPT_LICENSE('L', "license"),
+      ECORE_GETOPT_HELP('h', "help"),
+      ECORE_GETOPT_SENTINEL
+   }
 };
 
 EAPI int
@@ -334,21 +341,21 @@ elm_main(int argc, char **argv)
    _log_domain = eina_log_domain_register("eve", NULL);
    if (_log_domain < 0)
      {
-	EINA_LOG_CRIT("could not create log domain 'eve'.");
-	return -1;
+        EINA_LOG_CRIT("could not create log domain 'eve'.");
+        return -1;
      }
 
    args = ecore_getopt_parse(&options, values, argc, argv);
    if (args < 0)
      {
-	ERR("Could not parse command line options.");
-	return -1;
+        ERR("Could not parse command line options.");
+        return -1;
      }
 
    if (quit_option)
      {
-	DBG("Command lines option requires quit.");
-	return 0;
+        DBG("Command lines option requires quit.");
+        return 0;
      }
 
    if (args < argc)
@@ -358,7 +365,7 @@ elm_main(int argc, char **argv)
 
    if (user_agent && strcasecmp(user_agent, "iphone") == 0)
       user_agent =
-	 "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3";
+         "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3";
 
    app.user_agent = eina_stringshare_add(user_agent);
 
@@ -370,49 +377,50 @@ elm_main(int argc, char **argv)
    home = getenv("HOME");
    if (!home || !home[0])
      {
-	CRITICAL("Could not get $HOME");
-	r = -1;
-	goto end;
+        CRITICAL("Could not get $HOME");
+        r = -1;
+        goto end;
      }
 
    snprintf(path, sizeof(path), "%s/.config/ewebkit", home);
    if (!ecore_file_mkpath(path))
      {
-	ERR("Could not create %s", path);
-	r = -1;
-	goto end;
+        ERR("Could not create %s", path);
+        r = -1;
+        goto end;
      }
+
    if (!ewk_settings_icon_database_path_set(path))
      {
-	ERR("Could not set icon database path to %s", path);
-	r = -1;
-	goto end;
+        ERR("Could not set icon database path to %s", path);
+        r = -1;
+        goto end;
      }
 
    snprintf(path, sizeof(path), "%s/.config/ewebkit/favorites.db", home);
    fav = fav_load(path);
    if (!fav)
      {
-       fav = fav_new(0);
-       fav_save(fav, path);
+        fav = fav_new(0);
+        fav_save(fav, path);
      }
 
    snprintf(path, sizeof(path), "%s/.config/ewebkit/history.db", home);
    hist = hist_load(path);
    if (!hist)
      {
-       hist = hist_new(0);
-       hist_save(hist, path);
+        hist = hist_new(0);
+        hist_save(hist, path);
      }
 
    if (!add_win(&app, url))
      {
-	r = -1;
-	goto end;
+        r = -1;
+        goto end;
      }
 
    elm_run();
- end:
+end:
    fav_save(fav, NULL);
    fav_free(fav);
 
@@ -429,5 +437,6 @@ elm_main(int argc, char **argv)
    history_shutdown();
    return r;
 }
+
 #endif
 ELM_MAIN()

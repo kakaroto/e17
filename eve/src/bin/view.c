@@ -9,7 +9,6 @@ static const double LONG_CALCULATE_TIMEOUT = 0.6;
 #include <X11/Xlib.h>
 #endif
 
-
 /* value to consider as double/float error, differences smaller than
  * this are ignored
  */
@@ -24,8 +23,6 @@ static const double KINETIC_FRICTION = 1.0;
 /* Minimum value to consider velocity worth doing kinetic animation */
 static const Evas_Coord KINETIC_VELOCITY_THRESHOLD = 20;
 
-
-
 /* How long the auto zoom animation should take, in seconds */
 static const double ZOOM_AUTO_ANIMATION_DURATION = 0.5;
 
@@ -39,16 +36,15 @@ static const float ZOOM_AUTO_MIN = 0.3;
 static const float ZOOM_AUTO_MAX = 4.0;
 static const float ZOOM_AUTO_MIN_DIFFERENCE = 0.01;
 
-
 /* How long the interactive zoom animation should take, in seconds */
 static const double ZOOM_STEP_ANIMATION_DURATION = 0.8;
 
 /* Threshold in pixels to change zoom step. */
 static const Evas_Coord ZOOM_STEP_THRESHOLD = 50;
 static const float ZOOM_STEPS[] = {
-  0.3, 0.5, 0.67, 0.8, 0.9, 1.0, 1.1, 1.2, 1.33, 1.5, 1.7, 2.0, 2.4, 3.0,
+   0.3, 0.5, 0.67, 0.8, 0.9, 1.0, 1.1, 1.2, 1.33, 1.5, 1.7, 2.0, 2.4, 3.0,
 };
-static const unsigned int ZOOM_STEPS_LAST = sizeof(ZOOM_STEPS)/sizeof(ZOOM_STEPS[0]);
+static const unsigned int ZOOM_STEPS_LAST = sizeof(ZOOM_STEPS) / sizeof(ZOOM_STEPS[0]);
 
 /*
  * Structure filled by ewk_view_single_smart_set() from
@@ -58,30 +54,30 @@ static const unsigned int ZOOM_STEPS_LAST = sizeof(ZOOM_STEPS)/sizeof(ZOOM_STEPS
  */
 static Ewk_View_Smart_Class _parent_sc = EWK_VIEW_SMART_CLASS_INIT_NULL;
 
-typedef struct _View_Smart_Data View_Smart_Data;
+typedef struct _View_Smart_Data   View_Smart_Data;
 
-#define VIEW_SD_GET_OR_RETURN(o, sd, ...)		\
-  View_Smart_Data *sd = evas_object_smart_data_get(o);	\
-  if (!sd)						\
-    {							\
-       CRITICAL("no smart data for object %p [%s]",	\
-		o, evas_object_type_get(o));		\
-       return __VA_ARGS__;				\
-    }
+#define VIEW_SD_GET_OR_RETURN(o, sd, ...)\
+   View_Smart_Data * sd = evas_object_smart_data_get(o);\
+   if (!sd)\
+     {\
+        CRITICAL("no smart data for object %p [%s]",\
+                 o, evas_object_type_get(o));\
+        return __VA_ARGS__;\
+     }
 
-#define EWK_VIEW_SD_GET_OR_RETURN(o, sd, ...)                   \
-  Ewk_View_Smart_Data *sd = evas_object_smart_data_get(o);	\
-  if (!sd)							\
-    {								\
-       CRITICAL("no smart data for object %p [%s]",		\
-		o, evas_object_type_get(o));			\
-       return __VA_ARGS__;					\
-    }
+#define EWK_VIEW_SD_GET_OR_RETURN(o, sd, ...)\
+   Ewk_View_Smart_Data * sd = evas_object_smart_data_get(o);\
+   if (!sd)\
+     {\
+        CRITICAL("no smart data for object %p [%s]",\
+                 o, evas_object_type_get(o));\
+        return __VA_ARGS__;\
+     }
 
 struct point_history
 {
    Evas_Coord x, y;
-   double timestamp;
+   double     timestamp;
 };
 
 /* Extends Ewk_View_Smart_Data to add some members we'll need */
@@ -107,8 +103,8 @@ struct _View_Smart_Data
       /* circular array with collected samples (see _view_smart_mouse_move()) */
 #define PAN_HISTORY_SIZE (20)
       struct point_history history[PAN_HISTORY_SIZE];
-      unsigned int idx; /* index in the circular buffer of the last stored value */
-      unsigned int count; /* total number of samples collected */
+      unsigned int         idx; /* index in the circular buffer of the last stored value */
+      unsigned int         count; /* total number of samples collected */
 
       struct point_history last_move; /* used by _view_animator_pan() */
    } pan;
@@ -119,29 +115,29 @@ struct _View_Smart_Data
    {
       struct
       {
-	 float zoom;
-	 Evas_Coord x, y;
-	 double timestamp;
-	 int step_idx;
+         float      zoom;
+         Evas_Coord x, y;
+         double     timestamp;
+         int        step_idx;
       } start;
 
       struct
       {
-	 Evas_Coord y;
-	 float zoom;
-	 double timestamp;
-	 int step_idx;
+         Evas_Coord y;
+         float      zoom;
+         double     timestamp;
+         int        step_idx;
       } last, next;
 
       struct
       {
-	 float zoom;
-	 double time;
+         float  zoom;
+         double time;
       } diff;
 
-      float min_zoom;
+      float     min_zoom;
 
-       Eina_Bool interactive:1;
+      Eina_Bool interactive : 1;
    } zoom;
 
    /* context used during kinetic animator */
@@ -150,34 +146,33 @@ struct _View_Smart_Data
       /* starting point */
       struct
       {
-	 Evas_Coord dx, dy;
-	 double timestamp;
+         Evas_Coord dx, dy;
+         double     timestamp;
       } start;
 
       /* last run */
       struct
       {
-	 Evas_Coord dx, dy;
+         Evas_Coord dx, dy;
       } last;
 
       /* flags to state we ended animation in those axis */
       struct
       {
-	 Eina_Bool x:1;
-	 Eina_Bool y:1;
+         Eina_Bool x : 1;
+         Eina_Bool y : 1;
       } done;
    } kinetic;
 
    /* general flags */
    struct
    {
-      Eina_Bool first_calculate:1;
-      Eina_Bool animated_zoom:1;
+      Eina_Bool first_calculate : 1;
+      Eina_Bool animated_zoom : 1;
    } flags;
 
    Evas_Object *context_menu;
 };
-
 
 /***********************************************************************
  * Helper functions                                                    *
@@ -194,7 +189,7 @@ _view_zoom_fits_hit(View_Smart_Data *sd, const Ewk_Hit_Test *hit_test)
    float zx, zy, z, old_zoom, zx1, zx2, zy1, zy2;
 
    if (!hit_test)
-     return 0.0;
+      return 0.0;
 
    old_zoom = ewk_frame_zoom_get(sd->base.main_frame);
 
@@ -208,16 +203,16 @@ _view_zoom_fits_hit(View_Smart_Data *sd, const Ewk_Hit_Test *hit_test)
    bh = hit_test->bounding_box.h;
 
    if ((bw <= 0) || (bh <= 0))
-     return 0.0;
+      return 0.0;
 
    ewk_frame_visible_content_geometry_get
-     (sd->base.main_frame, EINA_FALSE, &vx, &vy, &vw, &vh);
+      (sd->base.main_frame, EINA_FALSE, &vx, &vy, &vw, &vh);
    if ((vw <= 0) || (vh <= 0))
-     return 0.0;
+      return 0.0;
 
    ewk_frame_contents_size_get(sd->base.main_frame, &cw, &ch);
    if ((cw <= 0) || (ch <= 0))
-     return 0.0;
+      return 0.0;
 
    /* split width of left and right parts from hit test position */
    bw1 = x - bx;
@@ -238,14 +233,16 @@ _view_zoom_fits_hit(View_Smart_Data *sd, const Ewk_Hit_Test *hit_test)
     * (we actually substract as adding a pad is removing available space)
     */
    if (vw1 > ZOOM_AUTO_PADDING)
-     vw1 -= ZOOM_AUTO_PADDING;
+      vw1 -= ZOOM_AUTO_PADDING;
+
    if (vw2 > ZOOM_AUTO_PADDING)
-     vw2 -= ZOOM_AUTO_PADDING;
+      vw2 -= ZOOM_AUTO_PADDING;
 
    if (vh1 > ZOOM_AUTO_PADDING)
-     vh1 -= ZOOM_AUTO_PADDING;
+      vh1 -= ZOOM_AUTO_PADDING;
+
    if (vh2 > ZOOM_AUTO_PADDING)
-     vh2 -= ZOOM_AUTO_PADDING;
+      vh2 -= ZOOM_AUTO_PADDING;
 
    /* check individual zoom to fit each part */
    zx1 = (bw1 > 0) ? (vw1 / (float)bw1) : 0.0;
@@ -255,62 +252,62 @@ _view_zoom_fits_hit(View_Smart_Data *sd, const Ewk_Hit_Test *hit_test)
    zy2 = (bh2 > 0) ? (vh2 / (float)bh2) : 0.0;
 
    if ((zx1 >= ZOOM_AUTO_MIN_DIFFERENCE) && (zx2 >= ZOOM_AUTO_MIN_DIFFERENCE))
-     zx = (zx1 < zx2) ? zx1 : zx2;
+      zx = (zx1 < zx2) ? zx1 : zx2;
    else if (zx1 >= ZOOM_AUTO_MIN_DIFFERENCE)
-     zx = zx1;
+      zx = zx1;
    else
-     zx = zx2;
+      zx = zx2;
 
    if ((zy1 >= ZOOM_AUTO_MIN_DIFFERENCE) && (zy2 >= ZOOM_AUTO_MIN_DIFFERENCE))
-     zy = (zy1 < zy2) ? zy1 : zy2;
+      zy = (zy1 < zy2) ? zy1 : zy2;
    else if (zy1 >= ZOOM_AUTO_MIN_DIFFERENCE)
-     zy = zy1;
+      zy = zy1;
    else
-     zy = zy2;
+      zy = zy2;
 
    if ((zx >= ZOOM_AUTO_MIN_DIFFERENCE) && (zy >= ZOOM_AUTO_MIN_DIFFERENCE))
-     z = (zx < zy) ? zx : zy;
+      z = (zx < zy) ? zx : zy;
    else if (zx >= ZOOM_AUTO_MIN_DIFFERENCE)
-     z = zx;
+      z = zx;
    else
-     z = zy;
+      z = zy;
 
    /* zoom will make contents be smaller than viewport, limit it */
    if (((int)(z * old_zoom * cw) < vw) || ((int)(z * old_zoom * ch) < vh))
      {
-	float ac = cw / (float)ch;
-	float av = vw / (float)vh;
+        float ac = cw / (float)ch;
+        float av = vw / (float)vh;
 
-	if (ac < av)
-	  z = vw / (float)cw;
-	else
-	  z = vh / (float)ch;
+        if (ac < av)
+           z = vw / (float)cw;
+        else
+           z = vh / (float)ch;
      }
 
 #if 0
    /* debug */
    printf(">>> fit: center=%3d,%3d   box=%3d,%3d+%3dx%3d\n"
-	  "    x:  %3d = %3d + %3d,  %3d = %3d + %3d,  %2.4f  %2.4f  -> %2.4f\n"
-	  "    y:  %3d = %3d + %3d,  %3d = %3d + %3d,  %2.4f  %2.4f  -> %2.4f\n"
-	  "    final: %2.4f   %2.4f (old=%0.3f, difference=%0.3f)\n"
-	  "    contents: %4dx%4d  -> %4dx%4d\n"
-	  "\n",
-	  x, y, bx, by, bw, bh,
-	  bw, bw1, bw2, vw, vw1, vw2, zx1, zx2, zx,
-	  bh, bh1, bh2, vh, vh1, vh2, zy1, zy2, zy,
-	  z, old_zoom * z, old_zoom, fabs(old_zoom - z),
-	  cw, ch, (int)(z * old_zoom * cw), (int)(z * old_zoom * ch));
+          "    x:  %3d = %3d + %3d,  %3d = %3d + %3d,  %2.4f  %2.4f  -> %2.4f\n"
+          "    y:  %3d = %3d + %3d,  %3d = %3d + %3d,  %2.4f  %2.4f  -> %2.4f\n"
+          "    final: %2.4f   %2.4f (old=%0.3f, difference=%0.3f)\n"
+          "    contents: %4dx%4d  -> %4dx%4d\n"
+          "\n",
+          x, y, bx, by, bw, bh,
+          bw, bw1, bw2, vw, vw1, vw2, zx1, zx2, zx,
+          bh, bh1, bh2, vh, vh1, vh2, zy1, zy2, zy,
+          z, old_zoom * z, old_zoom, fabs(old_zoom - z),
+          cw, ch, (int)(z * old_zoom * cw), (int)(z * old_zoom * ch));
 #endif
 
    z *= old_zoom;
 
    if (z < ZOOM_AUTO_MIN)
-     z = ZOOM_AUTO_MIN;
+      z = ZOOM_AUTO_MIN;
    else if (z > ZOOM_AUTO_MAX)
-     z = ZOOM_AUTO_MAX;
+      z = ZOOM_AUTO_MAX;
 
    if (fabs(old_zoom - z) < ZOOM_AUTO_MIN_DIFFERENCE)
-     return 0.0;
+      return 0.0;
 
    return z;
 }
@@ -331,7 +328,7 @@ _view_load_finished(void *data, Evas_Object *view, void *event_info __UNUSED__)
    float zoom = ewk_frame_zoom_get(sd->base.main_frame);
    Evas_Coord x, y, w, h;
    ewk_frame_visible_content_geometry_get
-     (sd->base.main_frame, EINA_TRUE, &x, &y, &w, &h);
+      (sd->base.main_frame, EINA_TRUE, &x, &y, &w, &h);
 
    w *= 2;
    h *= 2;
@@ -348,23 +345,23 @@ _view_uri_changed(void *data, Evas_Object *view, void *event_info __UNUSED__)
 
    if (sd->animator.pan)
      {
-	ecore_animator_del(sd->animator.pan);
-	sd->animator.pan = NULL;
+        ecore_animator_del(sd->animator.pan);
+        sd->animator.pan = NULL;
      }
 
    if (sd->animator.kinetic)
      {
-	ecore_animator_del(sd->animator.kinetic);
-	sd->animator.kinetic = NULL;
+        ecore_animator_del(sd->animator.kinetic);
+        sd->animator.kinetic = NULL;
      }
 
    if (sd->animator.zoom)
      {
-	/* inform  ewk_view that we finished performing zoom animation */
-	ewk_view_zoom_animated_mark_stop(view);
-	evas_object_smart_callback_call(view, "zoom,interactive,end", NULL);
-	ecore_animator_del(sd->animator.zoom);
-	sd->animator.zoom = NULL;
+        /* inform  ewk_view that we finished performing zoom animation */
+        ewk_view_zoom_animated_mark_stop(view);
+        evas_object_smart_callback_call(view, "zoom,interactive,end", NULL);
+        ecore_animator_del(sd->animator.zoom);
+        sd->animator.zoom = NULL;
      }
 }
 
@@ -383,38 +380,38 @@ _view_pan_pre_render(View_Smart_Data *sd, Evas_Coord dx, Evas_Coord dy)
 
    /* where are we now */
    ewk_frame_visible_content_geometry_get
-     (sd->base.main_frame, EINA_TRUE, &x, &y, &w, &h);
+      (sd->base.main_frame, EINA_TRUE, &x, &y, &w, &h);
 
    /* get absolute value for dx and dy, remove it's precision */
    vx = abs(dx) >> 4;
    vy = abs(dy) >> 4;
 
    if (vx == 0 && vy == 0)
-     return; /* motion vector is not significant, don't pre-render */
+      return;  /* motion vector is not significant, don't pre-render */
    else if (vx < vy)
      {
-	/* moving more on Y-axis than X. */
-	weightx = 0.5;
-	weighty = 1.0;
+        /* moving more on Y-axis than X. */
+        weightx = 0.5;
+        weighty = 1.0;
      }
    else if (vx > vy)
      {
-	/* moving more on X-axis than X. */
-	weightx = 1.0;
-	weighty = 0.5;
+        /* moving more on X-axis than X. */
+        weightx = 1.0;
+        weighty = 0.5;
      }
    else
      {
-	/* moving equally on both axis, be more conservative */
-	weightx = 0.6;
-	weighty = 0.6;
+        /* moving equally on both axis, be more conservative */
+        weightx = 0.6;
+        weighty = 0.6;
      }
 
    /* if values were not significant, zero their extra weight */
    if (vx == 0)
-     weightx = 0.0;
+      weightx = 0.0;
    else if (vy == 0)
-     weighty = 0.0;
+      weighty = 0.0;
 
    /* use single region that includes existing viewport.
     *
@@ -430,9 +427,10 @@ _view_pan_pre_render(View_Smart_Data *sd, Evas_Coord dx, Evas_Coord dy)
    py = y;
 
    if (dx > 0)
-     px -= (pw - w);
+      px -= (pw - w);
+
    if (dy > 0)
-     py -= (ph - h);
+      py -= (ph - h);
 
    INF("pre-render region %d,%d+%dx%d at %0.2f (viewport=%d,%d+%dx%d)",
        px, py, pw, ph, zoom, x, y, w, h);
@@ -449,14 +447,14 @@ _view_zoom_closest_index_find(float zoom)
    close_zoom = 999999.99;
    for (i = 0; i < ZOOM_STEPS_LAST; i++)
      {
-	float cur = fabs(zoom - ZOOM_STEPS[i]);
-	if (cur < close_zoom)
-	  {
-	     close_idx = i;
-	     close_zoom = cur;
-	     if (cur < DOUBLE_ERROR) /* close enough */
-	       break;
-	  }
+        float cur = fabs(zoom - ZOOM_STEPS[i]);
+        if (cur < close_zoom)
+          {
+             close_idx = i;
+             close_zoom = cur;
+             if (cur < DOUBLE_ERROR) /* close enough */
+                break;
+          }
      }
 
    return close_idx;
@@ -483,11 +481,11 @@ _view_animator_kinetic(void *data)
    dt = now - sd->kinetic.start.timestamp;
    /* time difference is too small, ignore it */
    if (dt <= DOUBLE_ERROR)
-     goto end;
+      goto end;
 
    dt = dt / KINETIC_FRICTION;
    if (dt > 1.0)
-     dt = 1.0;
+      dt = 1.0;
 
    p = 1.0 - ((1.0 - dt) * (1.0 - dt));
 
@@ -497,61 +495,61 @@ _view_animator_kinetic(void *data)
 
    if (!sd->kinetic.done.x)
      {
-	/* we're not done on x-axis yet, calculate new displacement */
-	Evas_Coord dx = sd->kinetic.start.dx * KINETIC_FRICTION * p;
-	x = sd->kinetic.last.dx - dx;
-	sd->kinetic.last.dx = dx;
+        /* we're not done on x-axis yet, calculate new displacement */
+        Evas_Coord dx = sd->kinetic.start.dx * KINETIC_FRICTION * p;
+        x = sd->kinetic.last.dx - dx;
+        sd->kinetic.last.dx = dx;
 
-	/* check if new displacement fit in scroll area */
-	if (sx + x < 0)
-	  {
-	     x = - sx;
-	     sd->kinetic.done.x = EINA_TRUE;
-	  }
-	else if (sx + x >= sw)
-	  {
-	     x = sw - sx;
-	     sd->kinetic.done.x = EINA_TRUE;
-	  }
+        /* check if new displacement fit in scroll area */
+        if (sx + x < 0)
+          {
+             x = -sx;
+             sd->kinetic.done.x = EINA_TRUE;
+          }
+        else if (sx + x >= sw)
+          {
+             x = sw - sx;
+             sd->kinetic.done.x = EINA_TRUE;
+          }
      }
    else
-     x = 0;
+      x = 0;
 
    if (!sd->kinetic.done.y)
      {
-	/* we're not done on y-axis yet, calculate new displacement */
-	Evas_Coord dy = sd->kinetic.start.dy * KINETIC_FRICTION * p;
-	y = sd->kinetic.last.dy - dy;
-	sd->kinetic.last.dy = dy;
+        /* we're not done on y-axis yet, calculate new displacement */
+        Evas_Coord dy = sd->kinetic.start.dy * KINETIC_FRICTION * p;
+        y = sd->kinetic.last.dy - dy;
+        sd->kinetic.last.dy = dy;
 
-	/* check if new displacement fit in scroll area */
-	if (sy + y < 0)
-	  {
-	     y = - sy;
-	     sd->kinetic.done.y = EINA_TRUE;
-	  }
-	else if (sy + y >= sh)
-	  {
-	     y = sh - sy;
-	     sd->kinetic.done.y = EINA_TRUE;
-	  }
+        /* check if new displacement fit in scroll area */
+        if (sy + y < 0)
+          {
+             y = -sy;
+             sd->kinetic.done.y = EINA_TRUE;
+          }
+        else if (sy + y >= sh)
+          {
+             y = sh - sy;
+             sd->kinetic.done.y = EINA_TRUE;
+          }
      }
    else
-     y = 0;
+      y = 0;
 
    /* if there is anything to scroll, ask it */
    if (x != 0 || y != 0)
-     ewk_frame_scroll_add(sd->base.main_frame, x, y);
+      ewk_frame_scroll_add(sd->base.main_frame, x, y);
 
    /* if we finished our work, just stop the animator */
    if (dt >= 1.0 || (sd->kinetic.done.x && sd->kinetic.done.y))
      {
-	_view_pan_pre_render(sd, sd->kinetic.start.dx, sd->kinetic.start.dy);
-	sd->animator.kinetic = NULL;
-	return ECORE_CALLBACK_CANCEL;
+        _view_pan_pre_render(sd, sd->kinetic.start.dx, sd->kinetic.start.dy);
+        sd->animator.kinetic = NULL;
+        return ECORE_CALLBACK_CANCEL;
      }
 
- end:
+end:
    return ECORE_CALLBACK_RENEW; /* keep running until we finish */
 }
 
@@ -575,11 +573,11 @@ _view_animator_pan(void *data)
 
    /* ignore this sample if it did not change */
    if ((dx == 0) && (dy == 0))
-     goto end;
+      goto end;
 
    timestamp = ecore_loop_time_get();
    if (timestamp <= sd->pan.last_move.timestamp) /* did time went backwards?! */
-     goto end;
+      goto end;
 
    /* request scroll by same displacement */
    ewk_frame_scroll_add(sd->base.main_frame, dx, dy);
@@ -589,7 +587,7 @@ _view_animator_pan(void *data)
    sd->pan.last_move.y = y;
    sd->pan.last_move.timestamp = timestamp;
 
- end:
+end:
    return ECORE_CALLBACK_RENEW; /* keep running until something else remove */
 }
 
@@ -616,7 +614,7 @@ _view_pan_start(View_Smart_Data *sd, const Evas_Event_Mouse_Down *ev)
 
    /* register function to collect samples and apply scrolls at fixed interval*/
    if (!sd->animator.pan)
-     sd->animator.pan = ecore_animator_add(_view_animator_pan, sd);
+      sd->animator.pan = ecore_animator_add(_view_animator_pan, sd);
 }
 
 /* stop pan animation and possible schedule a kinetic scrolling.
@@ -635,13 +633,13 @@ _view_pan_stop(View_Smart_Data *sd, const Evas_Event_Mouse_Up *ev)
    /* Stop pan animator, we're done already. */
    if (sd->animator.pan)
      {
-	ecore_animator_del(sd->animator.pan);
-	sd->animator.pan = NULL;
+        ecore_animator_del(sd->animator.pan);
+        sd->animator.pan = NULL;
      }
 
    /* If we do not have enough samples, just assume it was a click */
    if (sd->pan.count < 2)
-     return EINA_FALSE;
+      return EINA_FALSE;
 
    /* the following code is heavily based on els_scroller.c from Elementary.
     *
@@ -659,26 +657,26 @@ _view_pan_stop(View_Smart_Data *sd, const Evas_Event_Mouse_Up *ev)
 
    for (; todo > 0; todo--)
      {
-	struct point_history *p = sd->pan.history + i;
-	double dt = t - p->timestamp;
+        struct point_history *p = sd->pan.history + i;
+        double dt = t - p->timestamp;
 
-	if (dt > 0.2 && samples > 0)
-	  break;
+        if (dt > 0.2 && samples > 0)
+           break;
 
-	at += dt;
-	ax += p->x;
-	ay += p->y;
-	samples++;
+        at += dt;
+        ax += p->x;
+        ay += p->y;
+        samples++;
 
-	if (i > 0)
-	  i--;
-	else
-	  i = PAN_HISTORY_SIZE - 1;
+        if (i > 0)
+           i--;
+        else
+           i = PAN_HISTORY_SIZE - 1;
      }
 
    /* time was too short, consider it a click */
    if (at <= DOUBLE_ERROR)
-     return EINA_FALSE;
+      return EINA_FALSE;
 
    ax /= samples + 1;
    ay /= samples + 1;
@@ -691,8 +689,8 @@ _view_pan_stop(View_Smart_Data *sd, const Evas_Event_Mouse_Up *ev)
    /* velocity was too short, consider it a click */
    if (vel <= KINETIC_VELOCITY_THRESHOLD)
      {
-	_view_pan_pre_render(sd, dx, dy);
-	return EINA_FALSE;
+        _view_pan_pre_render(sd, dx, dy);
+        return EINA_FALSE;
      }
 
    /* it's really woth animating. setup kinetic animation context and start
@@ -733,12 +731,12 @@ _view_animator_zoom(void *data)
 
    /* wait to know if we're in auto zoom or interactive zooming */
    if (timestamp - sd->zoom.start.timestamp <= ZOOM_AUTO_TIMEOUT)
-     goto end;
+      goto end;
 
    if (!sd->zoom.interactive)
      {
-	evas_object_smart_callback_call(o, "zoom,interactive,start", NULL);
-	sd->zoom.interactive = EINA_TRUE;
+        evas_object_smart_callback_call(o, "zoom,interactive,start", NULL);
+        sd->zoom.interactive = EINA_TRUE;
      }
 
    evas_pointer_canvas_xy_get(sd->base.base.evas, NULL, &y);
@@ -750,62 +748,62 @@ _view_animator_zoom(void *data)
 
    /* check for out of bounds access */
    if (idx < 0)
-     idx = 0;
+      idx = 0;
    else if (idx >= (int)ZOOM_STEPS_LAST)
-     idx = ZOOM_STEPS_LAST - 1;
+      idx = ZOOM_STEPS_LAST - 1;
 
    if (ZOOM_STEPS[idx] < sd->zoom.min_zoom)
-     idx = sd->zoom.next.step_idx;
+      idx = sd->zoom.next.step_idx;
 
    /* Part 1. check if mouse moved enough to change zoom level band */
    if (idx != sd->zoom.next.step_idx)
      {
-	View_Zoom_Interactive data;
-	/* new target (next) values */
-	sd->zoom.next.step_idx = idx;
-	sd->zoom.next.zoom = ZOOM_STEPS[idx];
-	sd->zoom.next.timestamp = timestamp + ZOOM_STEP_ANIMATION_DURATION;
-	sd->zoom.diff.zoom = sd->zoom.next.zoom - sd->zoom.last.zoom;
-	sd->zoom.diff.time = sd->zoom.next.timestamp - sd->zoom.last.timestamp;
+        View_Zoom_Interactive data;
+        /* new target (next) values */
+        sd->zoom.next.step_idx = idx;
+        sd->zoom.next.zoom = ZOOM_STEPS[idx];
+        sd->zoom.next.timestamp = timestamp + ZOOM_STEP_ANIMATION_DURATION;
+        sd->zoom.diff.zoom = sd->zoom.next.zoom - sd->zoom.last.zoom;
+        sd->zoom.diff.time = sd->zoom.next.timestamp - sd->zoom.last.timestamp;
 
-	/* we'll animated, disable smooth scaling in evas so it's faster */
-	ewk_view_zoom_weak_smooth_scale_set(o, EINA_FALSE);
+        /* we'll animated, disable smooth scaling in evas so it's faster */
+        ewk_view_zoom_weak_smooth_scale_set(o, EINA_FALSE);
 
-	/* inform user that new level was requested */
-	data.x = sd->zoom.start.x;
-	data.y = sd->zoom.start.y;
-	data.zoom = sd->zoom.next.zoom;
-	evas_object_smart_callback_call(o, "zoom,interactive", &data);
+        /* inform user that new level was requested */
+        data.x = sd->zoom.start.x;
+        data.y = sd->zoom.start.y;
+        data.zoom = sd->zoom.next.zoom;
+        evas_object_smart_callback_call(o, "zoom,interactive", &data);
      }
 
    if (sd->zoom.next.timestamp < DOUBLE_ERROR)
-     goto end; /* sd->zoom.next.timestamp is zero, we're stopped */
+      goto end;  /* sd->zoom.next.timestamp is zero, we're stopped */
 
    /* Part 2. interpolate values to animate zoom change */
    else if (timestamp >= sd->zoom.next.timestamp)
      {
-	/* we're done, enable smooth scaling so the still image looks better
-	 * and apply the final zoom level
-	 */
-	ewk_view_zoom_weak_smooth_scale_set(o, EINA_TRUE);
-	ewk_view_zoom_weak_set
-	  (o, sd->zoom.next.zoom, sd->zoom.start.x, sd->zoom.start.y);
+        /* we're done, enable smooth scaling so the still image looks better
+         * and apply the final zoom level
+         */
+        ewk_view_zoom_weak_smooth_scale_set(o, EINA_TRUE);
+        ewk_view_zoom_weak_set
+           (o, sd->zoom.next.zoom, sd->zoom.start.x, sd->zoom.start.y);
 
-	sd->zoom.last = sd->zoom.next;
-	sd->zoom.next.timestamp = 0.0; /* say we're stopped, see above */
+        sd->zoom.last = sd->zoom.next;
+        sd->zoom.next.timestamp = 0.0; /* say we're stopped, see above */
      }
    else if (sd->zoom.diff.time > 0.0)
      {
-	/* regular intermediate animation frame, interpolate and apply */
-	float zoom, p;
+        /* regular intermediate animation frame, interpolate and apply */
+        float zoom, p;
 
-	p = (timestamp - sd->zoom.last.timestamp) / sd->zoom.diff.time;
-	zoom = sd->zoom.last.zoom + sd->zoom.diff.zoom * p;
+        p = (timestamp - sd->zoom.last.timestamp) / sd->zoom.diff.time;
+        zoom = sd->zoom.last.zoom + sd->zoom.diff.zoom * p;
 
-	ewk_view_zoom_weak_set(o, zoom, sd->zoom.start.x, sd->zoom.start.y);
+        ewk_view_zoom_weak_set(o, zoom, sd->zoom.start.x, sd->zoom.start.y);
      }
 
- end:
+end:
    return ECORE_CALLBACK_RENEW; /* keep running until something else remove */
 }
 
@@ -852,16 +850,16 @@ _view_zoom_start(View_Smart_Data *sd, const Evas_Event_Mouse_Down *ev)
    z = (zx > zy) ? zx : zy;
    z *= sd->zoom.start.zoom;
    if (z >= ZOOM_STEPS[0])
-     sd->zoom.min_zoom = z;
+      sd->zoom.min_zoom = z;
    else
-     sd->zoom.min_zoom = ZOOM_STEPS[0];
+      sd->zoom.min_zoom = ZOOM_STEPS[0];
 
    /* inform ewk_view that we'll perform an animation with zoom */
    ewk_view_zoom_animated_mark_start(sd->base.self, sd->zoom.start.zoom);
 
    /* register function to query pointer position and apply new zoom */
    if (!sd->animator.zoom)
-     sd->animator.zoom = ecore_animator_add(_view_animator_zoom, sd);
+      sd->animator.zoom = ecore_animator_add(_view_animator_zoom, sd);
 }
 
 /* stop zoom animation.
@@ -881,8 +879,8 @@ _view_zoom_stop(View_Smart_Data *sd, const Evas_Event_Mouse_Up *ev __UNUSED__)
    /* Stop zoom animator, we're done already. */
    if (sd->animator.zoom)
      {
-	ecore_animator_del(sd->animator.zoom);
-	sd->animator.zoom = NULL;
+        ecore_animator_del(sd->animator.zoom);
+        sd->animator.zoom = NULL;
      }
 
    /* inform  ewk_view that we finished performing zoom animation */
@@ -892,18 +890,19 @@ _view_zoom_stop(View_Smart_Data *sd, const Evas_Event_Mouse_Up *ev __UNUSED__)
    /* if it was an auto zoom (zoom to fit some element) */
    if (timestamp - sd->zoom.last.timestamp < ZOOM_AUTO_TIMEOUT)
      {
-	Ewk_Hit_Test *hit_test = ewk_frame_hit_test_new(frame, x, y);
-	float zoom = _view_zoom_fits_hit(sd, hit_test);
-	ewk_frame_hit_test_free(hit_test);
+        Ewk_Hit_Test *hit_test = ewk_frame_hit_test_new(frame, x, y);
+        float zoom = _view_zoom_fits_hit(sd, hit_test);
+        ewk_frame_hit_test_free(hit_test);
 
-	if (zoom > 0.0)
-	  {
-	     /* wait until animation ends (see _view_zoom_animated_end) */
-	     sd->flags.animated_zoom = EINA_TRUE;
-	     ewk_view_zoom_animated_set
-	       (view, zoom, ZOOM_AUTO_ANIMATION_DURATION, x, y);
-	  }
-	return EINA_TRUE;
+        if (zoom > 0.0)
+          {
+             /* wait until animation ends (see _view_zoom_animated_end) */
+             sd->flags.animated_zoom = EINA_TRUE;
+             ewk_view_zoom_animated_set
+                (view, zoom, ZOOM_AUTO_ANIMATION_DURATION, x, y);
+          }
+
+        return EINA_TRUE;
      }
 
    /* otherwise, apply definitive zoom */
@@ -952,8 +951,8 @@ on_view_contextmenu_show(void *data __UNUSED__, Evas_Object *view, void *event_i
 
    if (eina_list_count(items) == 0)
      {
-	WRN("Context Menu with no items. Aborting operation.");
-	ewk_context_menu_destroy(menu);
+        WRN("Context Menu with no items. Aborting operation.");
+        ewk_context_menu_destroy(menu);
      }
 
    notify = elm_notify_add(chrome);
@@ -971,13 +970,13 @@ on_view_contextmenu_show(void *data __UNUSED__, Evas_Object *view, void *event_i
    elm_notify_content_set(notify, li);
 
    evas_object_smart_callback_add(notify, "block,clicked",
-				  _view_contextmenu_cancel, menu);
+                                  _view_contextmenu_cancel, menu);
    evas_object_data_set(li, "view", view);
    EINA_LIST_FOREACH(items, l, item)
    {
-	it = elm_list_item_append(li, ewk_context_menu_item_title_get(item), 0, 0,
-	                          _view_contextmenu_item_selected, item);
-        elm_list_item_separator_set(it, ewk_context_menu_item_type_get(item) == EWK_SEPARATOR_TYPE);
+      it = elm_list_item_append(li, ewk_context_menu_item_title_get(item), 0, 0,
+                                _view_contextmenu_item_selected, item);
+      elm_list_item_separator_set(it, ewk_context_menu_item_type_get(item) == EWK_SEPARATOR_TYPE);
    }
    view_context_menu_set(view, notify, menu);
    elm_list_go(li);
@@ -1003,7 +1002,6 @@ on_view_contextmenu_freed(void *data, Evas_Object *view, void *event_info)
    ewk_context_menu_unref(menu);
    ecore_idler_add(_view_contextmenu_free, notify);
 }
-
 
 /***********************************************************************
  * Smart Class Methods:                                                *
@@ -1036,18 +1034,18 @@ _view_smart_add(Evas_Object *o)
    ewk_view_zoom_weak_smooth_scale_set(o, EINA_FALSE);
 
    evas_object_smart_callback_add
-     (o, "zoom,animated,end", _view_zoom_animated_end, sd);
+      (o, "zoom,animated,end", _view_zoom_animated_end, sd);
    evas_object_smart_callback_add
-     (o, "load,finished", _view_load_finished, sd);
+      (o, "load,finished", _view_load_finished, sd);
    evas_object_smart_callback_add
-     (o, "uri,changed", _view_uri_changed, sd);
+      (o, "uri,changed", _view_uri_changed, sd);
 
    evas_object_smart_callback_add
-     (o, "contextmenu,new", on_view_contextmenu_new, sd);
+      (o, "contextmenu,new", on_view_contextmenu_new, sd);
    evas_object_smart_callback_add
-     (o, "contextmenu,free", on_view_contextmenu_freed, sd);
+      (o, "contextmenu,free", on_view_contextmenu_freed, sd);
    evas_object_smart_callback_add
-     (o, "contextmenu,show", on_view_contextmenu_show, sd);
+      (o, "contextmenu,show", on_view_contextmenu_show, sd);
 }
 
 /* object destructor. receives object that dies when this function returns */
@@ -1060,13 +1058,16 @@ _view_smart_del(Evas_Object *o)
     * as parent's will free View_Smart_Data.
     */
    if (sd->animator.pan)
-     ecore_animator_del(sd->animator.pan);
+      ecore_animator_del(sd->animator.pan);
+
    if (sd->animator.zoom)
-     ecore_animator_del(sd->animator.zoom);
+      ecore_animator_del(sd->animator.zoom);
+
    if (sd->animator.kinetic)
-     ecore_animator_del(sd->animator.kinetic);
+      ecore_animator_del(sd->animator.kinetic);
+
    if (sd->idler_close_window)
-     ecore_idler_del(sd->idler_close_window);
+      ecore_idler_del(sd->idler_close_window);
 
    _parent_sc.sc.del(o);
 }
@@ -1104,10 +1105,11 @@ _view_smart_calculate(Evas_Object *o)
    double elapsed = now - before;
    if (elapsed > LONG_CALCULATE_TIMEOUT)
      {
-	WRN("calulate took too long (%0.3f of %0.3f), ignoring events.",
-	    elapsed, LONG_CALCULATE_TIMEOUT);
-	XSync(dpy, True); /* throw away events received during this timeout */
+        WRN("calulate took too long (%0.3f of %0.3f), ignoring events.",
+            elapsed, LONG_CALCULATE_TIMEOUT);
+        XSync(dpy, True); /* throw away events received during this timeout */
      }
+
 #endif
 }
 
@@ -1129,61 +1131,65 @@ _view_smart_mouse_down(Ewk_View_Smart_Data *esd, const Evas_Event_Mouse_Down *ev
 
    /* do not handle down when doing animated zoom */
    if (sd->flags.animated_zoom)
-     return EINA_FALSE;
+      return EINA_FALSE;
 
    /* mouse down immediately cancels previous kinetic animation */
    if (sd->animator.kinetic)
      {
-	ecore_animator_del(sd->animator.kinetic);
-	sd->animator.kinetic = NULL;
+        ecore_animator_del(sd->animator.kinetic);
+        sd->animator.kinetic = NULL;
      }
 
    /* we just want to start pan on button 1 (left) and not triple click */
    if (ev->button != 1)
-     goto forward_event;
+      goto forward_event;
+
    if (ev->flags & EVAS_BUTTON_TRIPLE_CLICK)
-     goto forward_event;
+      goto forward_event;
 
 #if 0 // at the end, this is not good usability.
-   /* no pan or zoom if click over editable or links */
+      /* no pan or zoom if click over editable or links */
    Ewk_Hit_Test *hit_test = ewk_frame_hit_test_new
-     (esd->main_frame, ev->canvas.x, ev->canvas.y);
+         (esd->main_frame, ev->canvas.x, ev->canvas.y);
    if (hit_test)
      {
-	Eina_Bool skip = (hit_test->flags.editable ||
-			  (hit_test->link.url && hit_test->link.url[0]));
-	ewk_frame_hit_test_free(hit_test);
-	if (skip && !(ev->flags & EVAS_BUTTON_DOUBLE_CLICK))
-	  goto forward_event;
+        Eina_Bool skip = (hit_test->flags.editable ||
+                          (hit_test->link.url && hit_test->link.url[0]));
+        ewk_frame_hit_test_free(hit_test);
+        if (skip && !(ev->flags & EVAS_BUTTON_DOUBLE_CLICK))
+           goto forward_event;
      }
+
 #endif
 
    /* cancel previous animators, if any (there should be none) */
    if (sd->animator.pan)
      {
-	ecore_animator_del(sd->animator.pan);
-	sd->animator.pan = NULL;
+        ecore_animator_del(sd->animator.pan);
+        sd->animator.pan = NULL;
      }
+
    if (sd->animator.zoom)
      {
-	ecore_animator_del(sd->animator.zoom);
-	sd->animator.zoom = NULL;
+        ecore_animator_del(sd->animator.zoom);
+        sd->animator.zoom = NULL;
      }
 
    /* choose if we're zooming or panning */
    if (ev->flags & EVAS_BUTTON_DOUBLE_CLICK)
-     _view_zoom_start(sd, ev);
+      _view_zoom_start(sd, ev);
    else
-     _view_pan_start(sd, ev);
+      _view_pan_start(sd, ev);
 
    /* keep a copy in the case we notice a click instead of drag to pan/scroll */
    sd->mouse_down_copy = *ev;
 
    return EINA_TRUE;
 
- forward_event:
+forward_event:
    if (ev->button == 3) // forward of context menu event is special
-     return ewk_view_context_menu_forward_event(sd->base.self, ev);
+      return ewk_view_context_menu_forward_event(sd->base.self, ev);
+
    /* If we should forward/feed event using parent class method, then
     * just do it and do NOT create an animator. See _view_smart_mouse_up().
     */
@@ -1205,26 +1211,26 @@ _view_smart_mouse_up(Ewk_View_Smart_Data *esd, const Evas_Event_Mouse_Up *ev)
    /* cancel any previous kinetic animation (but should have none) */
    if (sd->animator.kinetic)
      {
-	ecore_animator_del(sd->animator.kinetic);
-	sd->animator.kinetic = NULL;
+        ecore_animator_del(sd->animator.kinetic);
+        sd->animator.kinetic = NULL;
      }
 
    /* do not handle up when doing animated zoom */
    if (sd->flags.animated_zoom)
-     return EINA_FALSE;
+      return EINA_FALSE;
 
    /* if it was not doing pan or zoom (see _view_smart_mouse_down()),
     * then we just feed mouse_up using parent method.
     */
    if (sd->animator.pan)
-     used = _view_pan_stop(sd, ev);
+      used = _view_pan_stop(sd, ev);
    else if (sd->animator.zoom)
-     used = _view_zoom_stop(sd, ev);
+      used = _view_zoom_stop(sd, ev);
    else
-     return _parent_sc.mouse_up(esd, ev);
+      return _parent_sc.mouse_up(esd, ev);
 
    if (used)
-     return EINA_TRUE;
+      return EINA_TRUE;
 
    /* it was not used, so just feed the saved down then
     * mouse up event. This is required to let WebKit process the
@@ -1245,22 +1251,22 @@ _view_smart_mouse_move(Ewk_View_Smart_Data *esd, const Evas_Event_Mouse_Move *ev
 
    if (sd->animator.pan)
      {
-	/* account sample in circular array */
-	struct point_history *p;
-	unsigned int next_idx = (sd->pan.idx + 1) % PAN_HISTORY_SIZE;
-	p = sd->pan.history + next_idx;
-	p->x = ev->cur.canvas.x;
-	p->y = ev->cur.canvas.y;
-	p->timestamp = ecore_loop_time_get();
+        /* account sample in circular array */
+        struct point_history *p;
+        unsigned int next_idx = (sd->pan.idx + 1) % PAN_HISTORY_SIZE;
+        p = sd->pan.history + next_idx;
+        p->x = ev->cur.canvas.x;
+        p->y = ev->cur.canvas.y;
+        p->timestamp = ecore_loop_time_get();
 
-	sd->pan.idx = next_idx;
-	sd->pan.count++;
+        sd->pan.idx = next_idx;
+        sd->pan.count++;
 
-	return EINA_FALSE;
+        return EINA_FALSE;
      }
 
    if (sd->animator.zoom)
-     return EINA_FALSE;
+      return EINA_FALSE;
 
    return _parent_sc.mouse_move(esd, ev);
 }
@@ -1288,7 +1294,7 @@ struct _dialog_data
    Evas_Object *bt_ok, *bt_cancel;
    Evas_Object *entry;
 
-   Eina_Bool *response;
+   Eina_Bool   *response;
 };
 
 static void
@@ -1331,56 +1337,57 @@ _run_dialog(Evas_Object *parent, enum dialog_type type, const char *message, con
 
    if (type == DIALOG_ALERT)
      {
-	dialog_data->bt_ok = elm_button_add(bx_v);
-	elm_button_label_set(dialog_data->bt_ok, "Close");
-	elm_box_pack_end(bx_v, dialog_data->bt_ok);
-	evas_object_size_hint_align_set(dialog_data->bt_ok, EVAS_HINT_FILL, EVAS_HINT_FILL);
-	evas_object_smart_callback_add(dialog_data->bt_ok, "clicked", _bt_close, dialog_data);
-	evas_object_show(dialog_data->bt_ok);
+        dialog_data->bt_ok = elm_button_add(bx_v);
+        elm_button_label_set(dialog_data->bt_ok, "Close");
+        elm_box_pack_end(bx_v, dialog_data->bt_ok);
+        evas_object_size_hint_align_set(dialog_data->bt_ok, EVAS_HINT_FILL, EVAS_HINT_FILL);
+        evas_object_smart_callback_add(dialog_data->bt_ok, "clicked", _bt_close, dialog_data);
+        evas_object_show(dialog_data->bt_ok);
      }
    else
      {
-	if (type == DIALOG_PROMPT)
-	  {
-	     dialog_data->entry = elm_entry_add(bx_v);
-	     elm_entry_entry_set(dialog_data->entry, default_entry_value);
-	     elm_box_pack_end(bx_v, dialog_data->entry);
-	     evas_object_show(dialog_data->entry);
-	  }
-	if (type == DIALOG_PROMPT || type == DIALOG_CONFIRM)
-	  {
-	     Evas_Object *bx_h = elm_box_add(bx_v);
-	     elm_box_horizontal_set(bx_h, 1);
-	     elm_box_pack_end(bx_v, bx_h);
-	     evas_object_size_hint_weight_set(bx_h, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-	     evas_object_size_hint_align_set(bx_h, EVAS_HINT_FILL, EVAS_HINT_FILL);
-	     evas_object_show(bx_h);
+        if (type == DIALOG_PROMPT)
+          {
+             dialog_data->entry = elm_entry_add(bx_v);
+             elm_entry_entry_set(dialog_data->entry, default_entry_value);
+             elm_box_pack_end(bx_v, dialog_data->entry);
+             evas_object_show(dialog_data->entry);
+          }
 
-	     dialog_data->bt_cancel = elm_button_add(bx_h);
-	     elm_button_label_set(dialog_data->bt_cancel, "Cancel");
-	     elm_box_pack_end(bx_h, dialog_data->bt_cancel);
-	     evas_object_size_hint_weight_set(dialog_data->bt_cancel, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-	     evas_object_size_hint_align_set(dialog_data->bt_cancel, EVAS_HINT_FILL, EVAS_HINT_FILL);
-	     evas_object_smart_callback_add(dialog_data->bt_cancel, "clicked", _bt_close, dialog_data);
-	     evas_object_show(dialog_data->bt_cancel);
+        if (type == DIALOG_PROMPT || type == DIALOG_CONFIRM)
+          {
+             Evas_Object *bx_h = elm_box_add(bx_v);
+             elm_box_horizontal_set(bx_h, 1);
+             elm_box_pack_end(bx_v, bx_h);
+             evas_object_size_hint_weight_set(bx_h, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+             evas_object_size_hint_align_set(bx_h, EVAS_HINT_FILL, EVAS_HINT_FILL);
+             evas_object_show(bx_h);
 
-	     dialog_data->bt_ok = elm_button_add(bx_h);
-	     elm_button_label_set(dialog_data->bt_ok, "Ok");
-	     elm_box_pack_end(bx_h, dialog_data->bt_ok);
-	     evas_object_size_hint_weight_set(dialog_data->bt_ok, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-	     evas_object_size_hint_align_set(dialog_data->bt_ok, EVAS_HINT_FILL, EVAS_HINT_FILL);
-	     evas_object_smart_callback_add(dialog_data->bt_ok, "clicked", _bt_close, dialog_data);
-	     evas_object_show(dialog_data->bt_ok);
-	  }
-	else
-	  return EINA_FALSE;
+             dialog_data->bt_cancel = elm_button_add(bx_h);
+             elm_button_label_set(dialog_data->bt_cancel, "Cancel");
+             elm_box_pack_end(bx_h, dialog_data->bt_cancel);
+             evas_object_size_hint_weight_set(dialog_data->bt_cancel, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+             evas_object_size_hint_align_set(dialog_data->bt_cancel, EVAS_HINT_FILL, EVAS_HINT_FILL);
+             evas_object_smart_callback_add(dialog_data->bt_cancel, "clicked", _bt_close, dialog_data);
+             evas_object_show(dialog_data->bt_cancel);
+
+             dialog_data->bt_ok = elm_button_add(bx_h);
+             elm_button_label_set(dialog_data->bt_ok, "Ok");
+             elm_box_pack_end(bx_h, dialog_data->bt_ok);
+             evas_object_size_hint_weight_set(dialog_data->bt_ok, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+             evas_object_size_hint_align_set(dialog_data->bt_ok, EVAS_HINT_FILL, EVAS_HINT_FILL);
+             evas_object_smart_callback_add(dialog_data->bt_ok, "clicked", _bt_close, dialog_data);
+             evas_object_show(dialog_data->bt_ok);
+          }
+        else
+           return EINA_FALSE;
      }
 
    evas_object_show(dialog_data->notify);
    ecore_main_loop_begin();
 
    if ((type == DIALOG_PROMPT) && (response == EINA_TRUE))
-     *entry_value = strdup(elm_entry_entry_get(dialog_data->entry));
+      *entry_value = strdup(elm_entry_entry_get(dialog_data->entry));
 
    evas_object_del(dialog_data->notify);
    free(dialog_data);
@@ -1424,7 +1431,7 @@ _view_smart_run_javascript_prompt(Ewk_View_Smart_Data *esd, Evas_Object *frame, 
 
    confirm = _run_dialog(view, DIALOG_PROMPT, message, default_value, value);
    if (!confirm)
-     *value = NULL;
+      *value = NULL;
 
    return EINA_TRUE;
 }
@@ -1465,7 +1472,7 @@ _view_smart_window_close(Ewk_View_Smart_Data *esd)
 {
    View_Smart_Data *sd = (View_Smart_Data *)esd;
    EINA_SAFETY_ON_TRUE_RETURN(!!sd->idler_close_window);
-   sd->idler_close_window =  ecore_idler_add(_window_close_delayed, sd);
+   sd->idler_close_window = ecore_idler_add(_window_close_delayed, sd);
 }
 
 /**
@@ -1484,40 +1491,41 @@ view_add(Evas_Object *parent)
 
    if (!smart)
      {
-	/* create ewk_view_single subclass, this is done only once! */
-	static Ewk_View_Smart_Class api = EWK_VIEW_SMART_CLASS_INIT_NAME_VERSION("EWK_View_Single_Demo");
+        /* create ewk_view_single subclass, this is done only once! */
+        static Ewk_View_Smart_Class api = EWK_VIEW_SMART_CLASS_INIT_NAME_VERSION("EWK_View_Single_Demo");
 
-	/* set current and parent apis to vanilla ewk_view_single methods */
+        /* set current and parent apis to vanilla ewk_view_single methods */
         ewk_view_single_smart_set(&api);
-	ewk_view_single_smart_set(&_parent_sc);
+        ewk_view_single_smart_set(&_parent_sc);
 
-	/* override methods we want custom behavior */
-	api.sc.add = _view_smart_add;
-	api.sc.del = _view_smart_del;
-	api.sc.calculate = _view_smart_calculate;
-	api.mouse_down = _view_smart_mouse_down;
-	api.mouse_up = _view_smart_mouse_up;
-	api.mouse_move = _view_smart_mouse_move;
-	api.add_console_message = _view_smart_add_console_message;
-	api.window_create = _view_smart_window_create;
-	api.window_close = _view_smart_window_close;
-	api.run_javascript_alert = _view_smart_run_javascript_alert;
-	api.run_javascript_confirm = _view_smart_run_javascript_confirm;
-	api.run_javascript_prompt = _view_smart_run_javascript_prompt;
+        /* override methods we want custom behavior */
+        api.sc.add = _view_smart_add;
+        api.sc.del = _view_smart_del;
+        api.sc.calculate = _view_smart_calculate;
+        api.mouse_down = _view_smart_mouse_down;
+        api.mouse_up = _view_smart_mouse_up;
+        api.mouse_move = _view_smart_mouse_move;
+        api.add_console_message = _view_smart_add_console_message;
+        api.window_create = _view_smart_window_create;
+        api.window_close = _view_smart_window_close;
+        api.run_javascript_alert = _view_smart_run_javascript_alert;
+        api.run_javascript_confirm = _view_smart_run_javascript_confirm;
+        api.run_javascript_prompt = _view_smart_run_javascript_prompt;
 
-	/* create Evas_Smart class for this new smart object type. */
-	smart = evas_smart_class_new(&api.sc);
-	if (!smart)
-	  {
-	     CRITICAL("Could not create smart class");
-	     return NULL;
-	  }
+        /* create Evas_Smart class for this new smart object type. */
+        smart = evas_smart_class_new(&api.sc);
+        if (!smart)
+          {
+             CRITICAL("Could not create smart class");
+             return NULL;
+          }
      }
+
    view = evas_object_smart_add(canvas, smart);
    if (!view)
      {
-	ERR("Could not create smart object object for view");
-	return NULL;
+        ERR("Could not create smart object object for view");
+        return NULL;
      }
 
    return view;
@@ -1530,22 +1538,24 @@ void view_zoom_next_up(Evas_Object *view)
    unsigned int idx = _view_zoom_closest_index_find(zoom);
    Evas_Coord w, h;
    if (sd->flags.animated_zoom || sd->animator.pan || sd->animator.zoom)
-     return;
+      return;
+
    if (idx + 1 >= ZOOM_STEPS_LAST)
-     return;
+      return;
+
    if (sd->animator.kinetic)
      {
-	ecore_animator_del(sd->animator.kinetic);
-	sd->animator.kinetic = NULL;
+        ecore_animator_del(sd->animator.kinetic);
+        sd->animator.kinetic = NULL;
      }
 
    idx++;
    zoom = ZOOM_STEPS[idx];
    sd->flags.animated_zoom = EINA_TRUE;
    ewk_frame_visible_content_geometry_get
-     (sd->base.main_frame, EINA_FALSE, NULL, NULL, &w, &h);
+      (sd->base.main_frame, EINA_FALSE, NULL, NULL, &w, &h);
    ewk_view_zoom_animated_set
-     (view, zoom, ZOOM_AUTO_ANIMATION_DURATION, w / 2, h / 2);
+      (view, zoom, ZOOM_AUTO_ANIMATION_DURATION, w / 2, h / 2);
 }
 
 void view_zoom_next_down(Evas_Object *view)
@@ -1555,21 +1565,24 @@ void view_zoom_next_down(Evas_Object *view)
    unsigned int idx = _view_zoom_closest_index_find(zoom);
    Evas_Coord w, h;
    if (sd->flags.animated_zoom || sd->animator.pan || sd->animator.zoom)
-     return;
+      return;
+
    if (idx == 0)
-     return;
+      return;
+
    if (sd->animator.kinetic)
      {
-	ecore_animator_del(sd->animator.kinetic);
-	sd->animator.kinetic = NULL;
+        ecore_animator_del(sd->animator.kinetic);
+        sd->animator.kinetic = NULL;
      }
+
    idx--;
    zoom = ZOOM_STEPS[idx];
    sd->flags.animated_zoom = EINA_TRUE;
    ewk_frame_visible_content_geometry_get
-     (sd->base.main_frame, EINA_FALSE, NULL, NULL, &w, &h);
+      (sd->base.main_frame, EINA_FALSE, NULL, NULL, &w, &h);
    ewk_view_zoom_animated_set
-     (view, zoom, ZOOM_AUTO_ANIMATION_DURATION, w / 2, h / 2);
+      (view, zoom, ZOOM_AUTO_ANIMATION_DURATION, w / 2, h / 2);
 }
 
 Eina_Bool view_context_menu_set(Evas_Object *view, Evas_Object *widget, Ewk_Context_Menu *menu)
@@ -1577,15 +1590,15 @@ Eina_Bool view_context_menu_set(Evas_Object *view, Evas_Object *widget, Ewk_Cont
    VIEW_SD_GET_OR_RETURN(view, sd, EINA_FALSE);
    if (widget && sd->context_menu)
      {
-	CRITICAL("Trying to overwrite existing menu");
-	return EINA_FALSE;
+        CRITICAL("Trying to overwrite existing menu");
+        return EINA_FALSE;
      }
 
    sd->context_menu = widget;
    if (menu)
-     evas_object_data_set(view, "context-menu", menu);
+      evas_object_data_set(view, "context-menu", menu);
    else
-     evas_object_data_del(view, "context-menu");
+      evas_object_data_del(view, "context-menu");
 
    return EINA_TRUE;
 }
@@ -1600,3 +1613,4 @@ Ewk_Context_Menu *view_context_menu_get(Evas_Object *view)
 {
    return evas_object_data_get(view, "context-menu");
 }
+
