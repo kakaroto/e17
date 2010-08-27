@@ -2,7 +2,7 @@
 #define ELSA_SESSION_H_
 
 Eina_Bool elsa_session_init(struct passwd *pwd);
-void elsa_session_run(struct passwd *pwd);
+void elsa_session_run(struct passwd *pwd, char *cmd);
 void elsa_session_shutdown();
 long elsa_session_seed_get();
 void elsa_session_auth(const char *file);

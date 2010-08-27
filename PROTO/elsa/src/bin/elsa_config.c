@@ -23,7 +23,7 @@ _defaults_set(Elsa_Config *config)
    config->command.suspend = strdup("/usr/sbin/suspend");
    config->daemonize = EINA_TRUE;
    config->numlock = EINA_FALSE;
-   config->sessions = strdup("enlightenment,xfce4,icewm,wmaker,blackbox");
+   config->xsessions = EINA_FALSE;
    config->lockfile = strdup("/var/run/elsa.pid");
    config->logfile = strdup("/var/log/elsa.log");
 }
@@ -114,7 +114,7 @@ _config_free(Elsa_Config *config)
    free(config->command.shutdown);
    free(config->command.reboot);
    free(config->command.suspend);
-   free(config->sessions);
+   free(config->xsessions);
    free(config->lockfile);
    free(config->logfile);
    free(config);
@@ -145,7 +145,7 @@ elsa_config_init()
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "suspend", command.shutdown, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "daemonize", daemonize, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "numlock", numlock, EET_T_UCHAR);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "sessions", session_path, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "xsessions", xsessions, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "lockfile", lockfile, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "logfile", logfile, EET_T_STRING);
 

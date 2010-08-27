@@ -48,7 +48,7 @@ _event_exit_cb(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED_
 static void
 _start_xserver(char *dname)
 {
-   char buf[4096];
+   char buf[PATH_MAX];
    snprintf(buf, sizeof(buf),
             "%s %s",
             elsa_config->command.xinit_path,

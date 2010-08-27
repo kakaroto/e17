@@ -23,7 +23,7 @@ struct _Elsa_Config
      } command;
    Eina_Bool daemonize;// :1;
    Eina_Bool numlock;// :1;
-   char *sessions;
+   Eina_Bool xsessions;
    char *lockfile;
    char *logfile;
 };

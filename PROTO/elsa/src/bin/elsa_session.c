@@ -33,7 +33,7 @@ static int
 _elsa_session_cookie_add(const char *mcookie, const char *display,
                          const char *xauth_cmd, const char *auth_file)
 {
-    char buf[4096];
+    char buf[PATH_MAX];
     FILE *cmd;
     if (!xauth_cmd || !auth_file) return 1;
     snprintf(buf, sizeof(buf), "%s -f %s -q", xauth_cmd, auth_file);
@@ -79,7 +79,7 @@ _elsa_session_userid_set(struct passwd *pwd)
 Eina_Bool
 elsa_session_init(struct passwd *pwd)
 {
-   char buf[4096];
+   char buf[PATH_MAX];
    char **tmp;
    fprintf(stderr, "%s: Session Init\n", PACKAGE);
    env = elsa_pam_env_list_get();
@@ -100,10 +100,11 @@ elsa_session_init(struct passwd *pwd)
 }
 
 void
-elsa_session_run(struct passwd *pwd)
+elsa_session_run(struct passwd *pwd, char *cmd)
 {
 #ifdef HAVE_PAM
-   char buf[4096];
+   char buf[PATH_MAX];
+   const char *c;
    pid_t pid;
    pid = fork();
    if (pid == 0)
@@ -125,18 +126,18 @@ elsa_session_run(struct passwd *pwd)
         snprintf(buf, sizeof(buf), "%s/.elsa_session.log", pwd->pw_dir);
         remove(buf);
         snprintf(buf, sizeof(buf),
-                 "%s > %s/.elsa_session.log",
-                 elsa_config->command.session_login,
-                 pwd->pw_dir);
+                 "%s > %s/.elsa_session.log 2>&1",
+                  cmd,
+                  pwd->pw_dir);
+        free(cmd);
         execle(pwd->pw_shell, pwd->pw_shell, "-c",
                buf, NULL, env);
-        fprintf(stderr, "Enlightenment n'est pas lance\n");
+        fprintf(stderr, PACKAGE"The Xsessions are not launched :(\n");
      }
-   else 
+   else
      {
         elsa_session_pid_set(pid);
         _user = strdup(pwd->pw_name);
-        elsa_gui_shutdown();
      }
 #endif
 }
@@ -157,7 +158,7 @@ elsa_session_pid_get()
 void
 elsa_session_shutdown()
 {
-   char buf[4096];
+   char buf[PATH_MAX];
    fprintf(stderr, PACKAGE": Session Shutdown\n");
    if (_user)
      {
@@ -178,7 +179,7 @@ elsa_session_auth(const char *file)
    uint16_t word;
    uint8_t hi, lo;
    int i;
-   char buf[4096];
+   char buf[PATH_MAX];
 
    _mcookie = calloc(32, sizeof(char));
 
@@ -206,7 +207,7 @@ elsa_session_login(void *data)
 {
 #ifdef HAVE_PAM
    struct passwd *pwd;
-   char buf[4096];
+   char buf[PATH_MAX];
    char *term;
    int status;
    status = elsa_pam_authenticate();
