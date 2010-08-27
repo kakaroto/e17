@@ -37,6 +37,9 @@ typedef int (*emote_protocol_shutdown_t)(void);
 
 typedef enum _Emote_Event_Type Emote_Event_Type;
 
+typedef void (*Emote_Object_Cleanup_Func) (void *obj);
+typedef struct _Emote_Object Emote_Object;
+
 typedef struct _Emote_Event Emote_Event;
 typedef struct _Emote_Event_Server Emote_Event_Server;
 typedef struct _Emote_Event_Server_Connect Emote_Event_Server_Connect;
@@ -57,6 +60,16 @@ enum _Emote_Event_Type
    EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_SEND=8,
    EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_RECEIVED=9,
    EMOTE_EVENT_COUNT=10
+};
+
+struct _Emote_Object
+{
+   int magic, type, references;
+   Emote_Object_Cleanup_Func del_func, cleanup_func;
+   void (*free_att_func) (void *obj);
+   void (*del_att_func) (void *obj);
+   void *data;
+   Eina_Bool deleted : 1;
 };
 
 struct _Emote_Protocol_Api
@@ -86,6 +99,8 @@ struct _Emote_Protocol
 
 struct _Emote_Event
 {
+   Emote_Object Emote_Object_inherit;
+
    Emote_Protocol *protocol;
    Emote_Event_Type type;
 };

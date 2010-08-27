@@ -50,7 +50,7 @@ emote_event_new(Emote_Protocol *p, int type, ...)
       case EMOTE_EVENT_SERVER_DISCONNECT:
       case EMOTE_EVENT_SERVER_CONNECTED:
       case EMOTE_EVENT_SERVER_DISCONNECTED:
-        ev = (Emote_Event*)EM_OBJECT_ALLOC(Emote_Event_Server,
+        ev = (Emote_Event*)EMOTE_OBJECT_ALLOC(Emote_Event_Server,
                                            EMOTE_EVENT_SERVER_TYPE,
                                            _emote_event_server_free
                                           );
@@ -61,7 +61,7 @@ emote_event_new(Emote_Protocol *p, int type, ...)
 
       // Emote_Event_Server_Connect
       case EMOTE_EVENT_SERVER_CONNECT:
-        ev = (Emote_Event*)EM_OBJECT_ALLOC(Emote_Event_Server_Connect,
+        ev = (Emote_Event*)EMOTE_OBJECT_ALLOC(Emote_Event_Server_Connect,
                                            EMOTE_EVENT_SERVER_CONNECT_TYPE,
                                            _emote_event_server_connect_free
                                           );
@@ -79,7 +79,7 @@ emote_event_new(Emote_Protocol *p, int type, ...)
       // Emote_Event_Server_Message
       case EMOTE_EVENT_SERVER_MESSAGE_SEND:
       case EMOTE_EVENT_SERVER_MESSAGE_RECEIVED:
-        ev = (Emote_Event*)EM_OBJECT_ALLOC(Emote_Event_Server_Message,
+        ev = (Emote_Event*)EMOTE_OBJECT_ALLOC(Emote_Event_Server_Message,
                                            EMOTE_EVENT_SERVER_MESSAGE_TYPE,
                                            _emote_event_server_message_free
                                           );
@@ -93,7 +93,7 @@ emote_event_new(Emote_Protocol *p, int type, ...)
       // Emote_Event_Chat_Channel
       case EMOTE_EVENT_CHAT_CHANNEL_JOIN:
       case EMOTE_EVENT_CHAT_CHANNEL_JOINED:
-        ev = (Emote_Event*)EM_OBJECT_ALLOC(Emote_Event_Chat_Channel,
+        ev = (Emote_Event*)EMOTE_OBJECT_ALLOC(Emote_Event_Chat_Channel,
                                            EMOTE_EVENT_CHAT_CHANNEL_TYPE,
                                            _emote_event_chat_channel_free
                                           );
@@ -107,7 +107,7 @@ emote_event_new(Emote_Protocol *p, int type, ...)
       // Emote_Event_Chat_Channel Message
       case EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_SEND:
       case EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_RECEIVED:
-        ev = (Emote_Event*)EM_OBJECT_ALLOC(Emote_Event_Chat_Channel_Message,
+        ev = (Emote_Event*)EMOTE_OBJECT_ALLOC(Emote_Event_Chat_Channel_Message,
                                            EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_TYPE,
                                            _emote_event_chat_channel_message_free
                                           );
@@ -157,7 +157,7 @@ emote_event_handler_add(int type, Eina_Bool (*cb)(void*,int,void*), void *data)
 static void
 _emote_event_free(void *data __UNUSED__, void *event)
 {
-  em_object_del(event);
+  emote_object_del(event);
 }
 
 static void

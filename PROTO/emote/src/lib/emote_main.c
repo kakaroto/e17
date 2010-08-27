@@ -1,5 +1,4 @@
 #include "emote_private.h"
-#include "Emote.h"
 
 #include <libgen.h>
 
@@ -18,7 +17,6 @@ emote_init(void)
      {
         _emote_locate_paths();
 
-        ret &= em_object_init();
         ret &= emote_event_init();
         ret &= emote_protocol_init();
 
@@ -33,7 +31,6 @@ emote_shutdown(void)
 {
    emote_protocol_shutdown();
    emote_event_shutdown();
-   em_object_shutdown();
    return 1;
 }
 

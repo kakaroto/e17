@@ -90,6 +90,7 @@ void *alloca (size_t);
 # include <Ecore.h>
 # include <Ecore_File.h>
 # include <Eina.h>
+# include "Emote.h"
 
 # include "emote_types.h"
 
@@ -119,8 +120,5 @@ EM_INTERN int emote_protocol_shutdown(void);
 
 EM_INTERN int emote_event_init(void);
 EM_INTERN int emote_event_shutdown();
-
-EM_INTERN int em_object_init();
-EM_INTERN int em_object_shutdown();
 
 #endif

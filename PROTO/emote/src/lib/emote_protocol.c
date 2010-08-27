@@ -1,5 +1,4 @@
 #include "emote_private.h"
-#include "Emote.h"
 
 /* local function prototypes */
 static char *_emote_protocol_find(const char *name);
@@ -75,7 +74,7 @@ EMAPI void
 emote_protocol_unload(Emote_Protocol *p)
 {
    eina_hash_del(_emote_protocols, NULL, p);
-   em_object_del(EM_OBJECT(p));
+   emote_object_del(EMOTE_OBJECT(p));
 }
 
 /* local functions */
@@ -116,7 +115,7 @@ _emote_protocol_load_file(const char *file)
 
    if (!file) return NULL;
 
-   p = EM_OBJECT_ALLOC(Emote_Protocol, EMOTE_PROTOCOL_TYPE,
+   p = EMOTE_OBJECT_ALLOC(Emote_Protocol, EMOTE_PROTOCOL_TYPE,
                        _emote_protocol_cb_free);
    if (!p) return NULL;
 
@@ -126,7 +125,7 @@ _emote_protocol_load_file(const char *file)
    if (!(p->handle = dlopen(file, (RTLD_NOW | RTLD_GLOBAL))))
      {
         printf("Cannot dlopen protocol: %s\n", dlerror());
-        em_object_del(EM_OBJECT(p));
+        emote_object_del(EMOTE_OBJECT(p));
         return NULL;
      }
 
@@ -138,7 +137,7 @@ _emote_protocol_load_file(const char *file)
    if (!_emote_protocol_is_valid(p))
      {
         printf("Protocol is not valid\n");
-        em_object_del(EM_OBJECT(p));
+        emote_object_del(EMOTE_OBJECT(p));
         return NULL;
      }
 
@@ -146,7 +145,7 @@ _emote_protocol_load_file(const char *file)
    if (!p->funcs.init(p))
      {
         printf("Protocol failed to initialize\n");
-        em_object_del(EM_OBJECT(p));
+        emote_object_del(EMOTE_OBJECT(p));
         return NULL;
      }
 
@@ -199,6 +198,6 @@ _emote_protocol_hash_cb_free(const Eina_Hash *hash __UNUSED__, const void *key _
    Emote_Protocol *p;
 
    if (!(p = data)) return EINA_TRUE;
-   em_object_del(EM_OBJECT(p));
+   emote_object_del(EMOTE_OBJECT(p));
    return EINA_TRUE;
 }
