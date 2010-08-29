@@ -5343,3 +5343,31 @@ FORMATTING
 Add sanity check in BorderCreateFiller().
 Fix changing move/resize modes in dialog.
 Re-add ~/.e16 to icon search path.
+
+-------------------------------------------------------------------------------
+
+Sun Aug 29 14:58:18 CEST 2010
+
+--- 1.0.5 ---
+Adjustments for indent 2.2.11.
+French translation update (Tristan D.).
+Do not compare pointers to 0
+Fix segv when menu is created shortly after being destroyed (noted by BitJam).
+Italian translation update (Massimo Maiurana).
+Apply badzero.cocci, badnull.cocci and badnull2.cocci
+Japanese translation update (Yasufumi Haga).
+Fix resizing when using H/V handles and client has aspect ratio limits (e.g. pagers).
+Keep windows on one xinerama screen when placing under mouse (suggested by James Bowlin).
+Attempt to fix sloppy focus breakage on desks other than first (noted by Ted Baltz).
+Fix fullscreening when client has bogus aspect ratio hints (noted by James Bowlin).
+Place new fullscreen windows on xinerama screen containing pointer (unless aleady placed) (suggested by James Bowlin).
+Fix warning on 64 bit platforms introduced by badnull.cocci.
+Convert (hopefully) all comparisons to NULL
+Add ECompMgrWinGetAlphaPict().
+Add EPictureCreatePmap() and EPictureDestroy().
+In pager "live" mode (compositing enabled), reflect window transparency in pagers (noted by Ted Baltz).
+Collect XF86VidMode stuff.
+Call XRRUpdateConfiguration on RRScreenChangeNotify.
+Fix unpacking theme from .etheme file. Has been broken since 1.0.2.
+Another attempt to fix pointer focus breakage.
+
