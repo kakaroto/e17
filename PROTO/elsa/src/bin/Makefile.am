@@ -5,6 +5,7 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/src/bin \
 -I$(top_builddir)/src/bin \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
+-DSYSTEM_CONFIG_DIR=\"$(sysconfdir)\" \
 @ELSA_CFLAGS@
 
 sbin_PROGRAMS = elsa

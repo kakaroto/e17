@@ -41,26 +41,24 @@ _elsa_pam_conv(int num_msg, const struct pam_message **msg,
          switch(msg[i]->msg_style){
             case PAM_PROMPT_ECHO_ON:
                  // We assume PAM is asking for the username
-                 printf("echo on\n");
-
-		 resp[i]->resp = elsa_gui_user_get();
-//                 resp[i]->resp=strdup("root");
+                 fprintf(stderr, PACKAGE": echo on\n");
+                 resp[i]->resp = elsa_gui_user_get();
                  break;
 
             case PAM_PROMPT_ECHO_OFF:
-                 printf("echo off\n");
+                 fprintf(stderr, PACKAGE": echo off\n");
                  resp[i]->resp = elsa_gui_password_get();
                  break;
             case PAM_ERROR_MSG:
-                 printf("error msg\n");
+                 fprintf(stderr, PACKAGE": error msg\n");
             case PAM_TEXT_INFO:
-                 printf("info %s\n", msg[i]->msg);
+                 fprintf(stderr, PACKAGE": info %s\n", msg[i]->msg);
                  break;
             case PAM_SUCCESS:
-                 printf("success :)\n");
+                 fprintf(stderr, PACKAGE": success :)\n");
                  break;
             default:
-                 printf("default\n");
+                 fprintf(stderr, PACKAGE": default\n");
 
          }
          if (result != PAM_SUCCESS) break;
@@ -84,15 +82,15 @@ elsa_pam_open_session() {
    switch (last_result) {
       case PAM_CRED_ERR:
       case PAM_USER_UNKNOWN:
-         fprintf(stderr, "PAM user unknow\n");
+         fprintf(stderr, PACKAGE": PAM user unknow\n");
          elsa_gui_auth_error();
          return 1;
       case PAM_AUTH_ERR:
       case PAM_PERM_DENIED:
-         fprintf(stderr, "PAM error on login password\n");
+         fprintf(stderr, PACKAGE": PAM error on login password\n");
          return 1;
       default:
-         fprintf(stderr, "PAM warning unknow error\n");
+         fprintf(stderr, PACKAGE": PAM warning unknow error\n");
          return 1;
       case PAM_SUCCESS:
          break;
@@ -140,24 +138,23 @@ elsa_pam_authenticate() {
    switch (last_result) {
       case PAM_ABORT:
       case PAM_AUTHINFO_UNAVAIL:
-         fprintf(stderr, "PAM error !\n");
+         fprintf(stderr, PACKAGE": PAM error !\n");
          elsa_pam_end();
          return 1;
       case PAM_USER_UNKNOWN:
-         fprintf(stderr, "PAM user unknow error !\n");
+         fprintf(stderr, PACKAGE": PAM user unknow error !\n");
          return 1;
       case PAM_MAXTRIES:
-         fprintf(stderr, "PAM max tries error !\n");
+         fprintf(stderr, PACKAGE": PAM max tries error !\n");
          return 1;
       case PAM_CRED_INSUFFICIENT:
-         fprintf(stderr, "PAM %s don't have sufficient credential to authenticate !\n",
-                 PACKAGE);
+         fprintf(stderr, PACKAGE": PAM %s don't have sufficient credential to authenticate !\n", PACKAGE);
          return 1;
       case PAM_AUTH_ERR:
-         fprintf(stderr, "PAM authenticate error !\n");
+         fprintf(stderr, PACKAGE": PAM authenticate error !\n");
          return 1;
       default:
-         fprintf(stderr, "PAM warning unknow error\n");
+         fprintf(stderr, PACKAGE": PAM warning unknow error\n");
          return 1;
       case PAM_SUCCESS:
          break;
@@ -201,7 +198,7 @@ elsa_pam_item_set(ELSA_PAM_ITEM_TYPE type, const void *value) {
    if (last_result == PAM_SUCCESS) {
       return 0;
    }
-   fprintf(stderr, "PAM error: %d on %d", last_result, type);
+   fprintf(stderr, PACKAGE": PAM error: %d on %d", last_result, type);
    return 1;
 }
 
@@ -213,7 +210,7 @@ elsa_pam_item_get(ELSA_PAM_ITEM_TYPE type) {
       default:
       case PAM_SYSTEM_ERR:
          elsa_pam_end();
-         fprintf(stderr, "Elsa: error on pam item get\n");
+         fprintf(stderr, PACKAGE": error on pam item get\n");
       case PAM_PERM_DENIED: /* Here data was NULL */
       case PAM_SUCCESS:
          break;
@@ -248,6 +245,6 @@ elsa_pam_env_list_get() {
 
 void
 elsa_pam_shutdown() {
-   fprintf(stderr, "Pam shutdown\n");
+   fprintf(stderr, PACKAGE": Pam shutdown\n");
 }
 

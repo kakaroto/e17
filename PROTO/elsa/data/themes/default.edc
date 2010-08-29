@@ -263,9 +263,6 @@ collections {
                min: 170 40;
                max: 170 40;
                align: 0.1 1.0;
-               params {
-                  string: "label" "sessions";
-               }
             }
             description { state: "enabled" 0.0;
                inherit: "default" 0.0;

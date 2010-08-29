@@ -1,6 +1,7 @@
 #include "elsa.h"
 
 #define ELSA_CONFIG_KEY "config"
+#define ELSA_SESSION_KEY "session"
 
 static void _defaults_set(Elsa_Config *config);
 static void _users_get();
@@ -43,10 +44,10 @@ _users_get()
    if (!ef)
      ef = eet_open("/var/cache/"PACKAGE"/"ELSA_CONFIG_FILE,
                    EET_FILE_MODE_WRITE);
-   f = fopen("/etc/elsa.conf", "rb");
+   f = fopen(SYSTEM_CONFIG_DIR"/elsa.conf", "rb");
    if (!f)
      {
-        fprintf(stderr, PACKAGE": Could not open /etc/elsa.conf\n");
+        fprintf(stderr, PACKAGE": Could not open "SYSTEM_CONFIG_DIR"/elsa.conf\n");
         return;
      }
 
@@ -95,14 +96,16 @@ _cache_get(Eet_Data_Descriptor *edd)
         _defaults_set(config);
      }
 
+   config->last_session = eet_read(file, ELSA_SESSION_KEY, NULL);
    eet_close(file);
+
    return config;
 }
 
 static void
 _config_free(Elsa_Config *config)
 {
-
+   if (config->last_session) free(config->last_session);
    free(config->session_path);
    free(config->command.xinit_path);
    free(config->command.xinit_args);
@@ -114,7 +117,6 @@ _config_free(Elsa_Config *config)
    free(config->command.shutdown);
    free(config->command.reboot);
    free(config->command.suspend);
-   free(config->xsessions);
    free(config->lockfile);
    free(config->logfile);
    free(config);
@@ -155,22 +157,39 @@ elsa_config_init()
      }
    else
      {
-        stat("/etc/elsa.conf", &conf);
+        stat(SYSTEM_CONFIG_DIR"/elsa.conf", &conf);
         if (cache.st_mtime < conf.st_mtime)
           {
              _users_get();
           }
      }
    elsa_config = _cache_get(edd);
-   eet_shutdown();
-
-   return;
 }
 
+void
+elsa_config_last_session_set(const char *session)
+{
+   Eet_File *ef;
+   char buf[1024];
+
+   ef = eet_open("/var/cache/"PACKAGE"/"ELSA_CONFIG_FILE,
+                 EET_FILE_MODE_READ_WRITE);
+   if (!ef)
+     return;
+
+   snprintf(buf, sizeof(buf), "%s", session);
+   if (!eet_write(ef, ELSA_SESSION_KEY, buf, strlen(session), 1))
+     fprintf(stderr, PACKAGE": Error on updating last session login\n");
+   eet_close(ef);
+   if (elsa_config->last_session)
+     free(elsa_config->last_session);
+   elsa_config->last_session = strdup(session);
+}
 
 void
 elsa_config_shutdown()
 {
+   eet_shutdown();
    _config_free(elsa_config);
 }
 

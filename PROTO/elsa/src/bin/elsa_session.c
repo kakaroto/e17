@@ -114,14 +114,14 @@ elsa_session_run(struct passwd *pwd, char *cmd)
              fprintf(stderr, "Elsa: couldn't open session\n");
              exit(1);
           }
-        fprintf(stderr, "%s: Session Run\n", PACKAGE);
+        fprintf(stderr, PACKAGE": Session Run\n");
         snprintf(buf, sizeof(buf),
                  "%s %s ",
                  elsa_config->command.session_start,
                  pwd->pw_name);
         system(buf);
         chdir(pwd->pw_dir);
-        fprintf(stderr, "je suis une session de %s\n", pwd->pw_name);
+        fprintf(stderr, PACKAGE": Open %s`s session\n", pwd->pw_name);
 
         snprintf(buf, sizeof(buf), "%s/.elsa_session.log", pwd->pw_dir);
         remove(buf);
@@ -132,7 +132,7 @@ elsa_session_run(struct passwd *pwd, char *cmd)
         free(cmd);
         execle(pwd->pw_shell, pwd->pw_shell, "-c",
                buf, NULL, env);
-        fprintf(stderr, PACKAGE"The Xsessions are not launched :(\n");
+        fprintf(stderr, PACKAGE": The Xsessions are not launched :(\n");
      }
    else
      {
@@ -203,7 +203,7 @@ elsa_session_auth(const char *file)
 }
 
 Eina_Bool
-elsa_session_login(void *data)
+elsa_session_login(void *data __UNUSED__)
 {
 #ifdef HAVE_PAM
    struct passwd *pwd;

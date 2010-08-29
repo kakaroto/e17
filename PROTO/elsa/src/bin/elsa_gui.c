@@ -3,21 +3,24 @@
 
 #define ELSA_GUI_GET(edj, name) edje_object_part_external_object_get(elm_layout_edje_get(edj), name)
 
-typedef struct Elsa_Gui_
+typedef struct Elsa_Gui_ Elsa_Gui;
+typedef struct Elsa_Xsession_ Elsa_Xsession;
+
+struct Elsa_Gui_
 {
    Evas_Object *win;
    Evas_Object *bg;
    Evas_Object *edj;
    Eina_List *xsessions;
-   char *selected_session;
-} Elsa_Gui;
+   Elsa_Xsession *selected_session;
+};
 
-typedef struct Elsa_Xsession_
+struct Elsa_Xsession_
 {
    const char *name;
    const char *command;
    const char *icon;
-} Elsa_Xsession;
+};
 
 static Evas_Object *_elsa_gui_theme_get(Evas_Object *win, const char *group);
 static void _elsa_gui_hostname_activated_cb(void *data, Evas_Object *obj, void *event_info);
@@ -29,12 +32,10 @@ static Elsa_Gui *_gui;
 static Evas_Object *
 _elsa_gui_theme_get (Evas_Object *win, const char *group)
 {
-   char buffer[PATH_MAX];
    Evas_Object *edje = NULL;
 
    edje = elm_layout_add(win);
-   snprintf(buffer, sizeof(buffer), "%s/themes/default.edj", PACKAGE_DATA_DIR);
-   elm_layout_file_set(edje, buffer, group);
+   elm_layout_file_set(edje, PACKAGE_DATA_DIR"/themes/default.edj", group);
 
    return edje;
 }
@@ -52,7 +53,8 @@ _elsa_gui_hostname_activated_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED
      }
    free(txt);
    elm_object_focus(data);
-   edje_object_signal_emit(elm_layout_edje_get(_gui->edj), "elsa.auth.enable", "");
+   edje_object_signal_emit(elm_layout_edje_get(_gui->edj),
+                           "elsa.auth.enable", "");
 }
 
 static void
@@ -119,9 +121,16 @@ _elsa_gui_password_activated_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED
 }
 
 static void
-_elsa_gui_xsessions_clicked_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_elsa_gui_xsessions_clicked_cb(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 {
+   Evas_Object *icon;
+
    _gui->selected_session = data;
+   elm_hoversel_label_set(obj, _gui->selected_session->name);
+   icon = elm_icon_add(_gui->win);
+   elm_icon_file_set(icon, _gui->selected_session->icon, NULL);
+   elm_hoversel_icon_set(obj, icon);
+   evas_object_show(icon);
 }
 
 
@@ -156,7 +165,6 @@ _elsa_gui_scan_desktops_file(const char *path)
    Elsa_Xsession *xsession;
    char *command;
 
-   printf("scanning for desktop file %s\n", path);
    desktop = efreet_desktop_get(path);
    if (!desktop) return;
    EINA_LIST_FOREACH(_gui->xsessions, l, xsession)
@@ -167,7 +175,6 @@ _elsa_gui_scan_desktops_file(const char *path)
               return;
            }
       }
-   printf("find new desktop\n");
 
    commands = efreet_desktop_command_local_get(desktop, NULL);
    if (commands)
@@ -177,7 +184,6 @@ _elsa_gui_scan_desktops_file(const char *path)
         commands = eina_list_next(commands);
         EINA_LIST_FREE(commands, tmp)
            free(tmp);
-        printf("desktop command %s\n", command);
      }
    if (command && desktop->name)
      {
@@ -186,7 +192,7 @@ _elsa_gui_scan_desktops_file(const char *path)
         xsession->name = eina_stringshare_add(desktop->name);
         if (desktop->icon) xsession->icon = eina_stringshare_add(desktop->icon);
         _gui->xsessions = eina_list_append(_gui->xsessions, xsession);
-        printf("Find sessions %s\n", desktop->name);
+        fprintf(stderr, PACKAGE": find sessions %s\n", desktop->name);
         free(command);
      }
    efreet_desktop_free(desktop);
@@ -199,6 +205,7 @@ _elsa_gui_scan_desktops(const char *dir)
    char *filename;
    char path[PATH_MAX];
 
+   fprintf(stderr, PACKAGE": scanning directory %s\n", dir);
    files = ecore_file_ls(dir);
    EINA_LIST_FREE(files, filename)
      {
@@ -217,7 +224,9 @@ _elsa_gui_init_desktops()
 
    efreet_init();
    efreet_desktop_type_alias(EFREET_DESKTOP_TYPE_APPLICATION, "XSession");
-   _elsa_gui_scan_desktops("/usr/share/xsessions");
+   /* Maybee need to scan other directories ?
+    * _elsa_gui_scan_desktops("/usr/share/xsessions");
+    */
    snprintf(buf, sizeof(buf), "%s/xsessions", efreet_data_home_get());
    _elsa_gui_scan_desktops(buf);
    dirs = efreet_data_dirs_get();
@@ -233,17 +242,29 @@ _elsa_gui_init_desktops()
 static void
 _elsa_gui_sessions_populate()
 {
-   Evas_Object *o;
+   Evas_Object *o, *icon;
    Elsa_Xsession *xsession;
    Eina_List *l;
 
    o = ELSA_GUI_GET(_gui->edj, "xsessions");
+
    EINA_LIST_FOREACH(_gui->xsessions, l, xsession)
      {
         elm_hoversel_item_add(o, xsession->name, xsession->icon,
                               ELM_ICON_FILE,
-                              _elsa_gui_xsessions_clicked_cb, xsession->command);
+                              _elsa_gui_xsessions_clicked_cb, xsession);
+        if (elsa_config->last_session)
+          {
+            if (!strcmp(xsession->name ,elsa_config->last_session))
+              _gui->selected_session = xsession;
+          }
+
      }
+   if (!_gui->selected_session) _gui->selected_session = _gui->xsessions->data;
+   elm_hoversel_label_set(o, _gui->selected_session->name);
+   icon = elm_icon_add(_gui->win);
+   elm_icon_file_set(icon, _gui->selected_session->icon, NULL);
+   elm_hoversel_icon_set(o, icon);
 }
 
 int
@@ -294,6 +315,9 @@ elsa_gui_init()
    if (elsa_config->xsessions)
      {
         _elsa_gui_init_desktops();
+     }
+   if (_gui->xsessions)
+     {
         edje_object_signal_emit(elm_layout_edje_get(_gui->edj),
                                 "elsa.xsession.enabled", "");
         _elsa_gui_sessions_populate();
@@ -377,8 +401,11 @@ elsa_gui_auth_valid(void *data)
 const char *
 elsa_gui_login_command_get()
 {
-   if (_gui->selected_session)
-     return strdup(_gui->selected_session);
+   if (elsa_config->xsessions && _gui->selected_session)
+     {
+        elsa_config_last_session_set(_gui->selected_session->name);
+        return strdup(_gui->selected_session->command);
+     }
    return strdup(elsa_config->command.session_login);
 }
 
