@@ -1,16 +1,17 @@
-# This is the Spanish locale definition for Enlightenment.
+# This is the Spanish locale definition for e16.
 # Copyright (C) 1999-2000 Free Software Foundation, Inc.
 # Antonio Ognio Cesti <ognio@altavista.net>, 1999-2000.
 # Federico Vera <Unknown>, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: enlightenment 0.16.6\n"
+"Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-08-05 19:38+0200\n"
+"POT-Creation-Date: 2010-08-29 14:59+0200\n"
 "PO-Revision-Date: 2010-04-23 21:20+0000\n"
 "Last-Translator: Fernando Muñoz <munozferna@gmail.com>\n"
 "Language-Team: \n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -179,12 +180,12 @@ msgstr "Salir de Enlightenment"
 msgid "Attention !!!"
 msgstr "Atención !!!"
 
-#: src/alert.c:581 src/dialog.c:694 src/dialog.c:1900 src/events.c:93
+#: src/alert.c:581 src/dialog.c:694 src/dialog.c:1891 src/events.c:93
 #: src/setup.c:159 src/sound.c:310
 msgid "OK"
 msgstr "OK"
 
-#: src/backgrounds.c:1509
+#: src/backgrounds.c:1510
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -195,11 +196,11 @@ msgstr ""
 "Nombre:  %s\n"
 "Archivo: %s"
 
-#: src/backgrounds.c:1510
+#: src/backgrounds.c:1511
 msgid "-NONE-"
 msgstr "-NINGUNA-"
 
-#: src/backgrounds.c:1677 src/backgrounds.c:1679
+#: src/backgrounds.c:1678 src/backgrounds.c:1680
 msgid ""
 "No\n"
 "Background"
@@ -207,40 +208,40 @@ msgstr ""
 "No usar\n"
 "Fondo"
 
-#: src/backgrounds.c:1771 src/backgrounds.c:2197
+#: src/backgrounds.c:1772 src/backgrounds.c:2198
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Fondos no utilizados son liberados después de %2i:%02i:%02i"
 
-#: src/backgrounds.c:1983
+#: src/backgrounds.c:1984
 msgid "Use background image"
 msgstr "Usar imagen de fondo"
 
-#: src/backgrounds.c:1987
+#: src/backgrounds.c:1988
 msgid "Keep aspect on scale"
 msgstr "Mantener el aspecto al escalar"
 
-#: src/backgrounds.c:1991
+#: src/backgrounds.c:1992
 msgid "Tile image across background"
 msgstr "Aplicar imagen como losetas sobre el fondo"
 
-#: src/backgrounds.c:2000
+#: src/backgrounds.c:2001
 msgid "Move to Front"
 msgstr "Mover al frente"
 
-#: src/backgrounds.c:2005
+#: src/backgrounds.c:2006
 msgid "Duplicate"
 msgstr "Duplicar"
 
-#: src/backgrounds.c:2009
+#: src/backgrounds.c:2010
 msgid "Unlist"
 msgstr "Retirar de lista"
 
-#: src/backgrounds.c:2014
+#: src/backgrounds.c:2015
 msgid "Delete File"
 msgstr "Eliminar Archivo"
 
-#: src/backgrounds.c:2025
+#: src/backgrounds.c:2026
 msgid ""
 "Background\n"
 "Image\n"
@@ -254,59 +255,59 @@ msgstr ""
 "imagen\n"
 "de Fondo\n"
 
-#: src/backgrounds.c:2082
+#: src/backgrounds.c:2083
 msgid "BG Colour"
 msgstr "Color del Fondo"
 
-#: src/backgrounds.c:2087
+#: src/backgrounds.c:2088
 msgid "Red:"
 msgstr "Rojo:"
 
-#: src/backgrounds.c:2098
+#: src/backgrounds.c:2099
 msgid "Green:"
 msgstr "Verde:"
 
-#: src/backgrounds.c:2109
+#: src/backgrounds.c:2110
 msgid "Blue:"
 msgstr "Azul:"
 
-#: src/backgrounds.c:2142
+#: src/backgrounds.c:2143
 msgid "Pre-scan BG's"
 msgstr "Pre-barrido de Fondos"
 
-#: src/backgrounds.c:2150
+#: src/backgrounds.c:2151
 msgid "Sort by File"
 msgstr "Ordenar por Nombre"
 
-#: src/backgrounds.c:2155
+#: src/backgrounds.c:2156
 msgid "Sort by Attr."
 msgstr "Ordenar por Atrib."
 
-#: src/backgrounds.c:2161
+#: src/backgrounds.c:2162
 msgid "Sort by Image"
 msgstr "Ordenar por Imagen"
 
-#: src/backgrounds.c:2181
+#: src/backgrounds.c:2182
 msgid "Use dithering in Hi-Colour"
 msgstr "Usar difuminado en Hi-Colour"
 
-#: src/backgrounds.c:2185
+#: src/backgrounds.c:2186
 msgid "Background overrides theme"
 msgstr "El Fondo reemplaza al del tema"
 
-#: src/backgrounds.c:2190
+#: src/backgrounds.c:2191
 msgid "Enable background transparency compatibility mode"
 msgstr "Habilitar el modo de compatibilidad de transparencia de fondo"
 
-#: src/backgrounds.c:2214 src/mod-trans.c:200
+#: src/backgrounds.c:2215 src/mod-trans.c:200
 msgid "Background"
 msgstr "Fondo de pantalla"
 
-#: src/backgrounds.c:2215
+#: src/backgrounds.c:2216
 msgid "Desktop Background Settings"
 msgstr "Configuración del fondo del escritorio"
 
-#: src/backgrounds.c:2218
+#: src/backgrounds.c:2219
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog"
@@ -424,7 +425,7 @@ msgstr "Iniciando Enlightenment..."
 msgid "Settings..."
 msgstr "Configuraciones..."
 
-#: src/container.c:1191 src/dialog.c:705 src/pager.c:1016 config/strings.c:30
+#: src/container.c:1191 src/dialog.c:705 src/pager.c:1043 config/strings.c:30
 #: config/strings.c:122
 msgid "Close"
 msgstr "Cerrar"
@@ -433,7 +434,7 @@ msgstr "Cerrar"
 msgid "Create New Iconbox"
 msgstr "Crear nueva caja de iconos"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2116
+#: src/container.c:1507 src/container.c:1583 src/menus.c:2117
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Tamaño del Icono: %2d"
@@ -514,7 +515,7 @@ msgstr "Mostrar nombre de iconos"
 msgid "Animation mode:"
 msgstr ""
 
-#: src/container.c:1679 src/desktops.c:2582
+#: src/container.c:1679 src/desktops.c:2583
 msgid "Off"
 msgstr "Apagado"
 
@@ -611,55 +612,55 @@ msgstr ""
 "Pulse aquí para llevar este Escritorio\n"
 "hacia el fondo."
 
-#: src/desktops.c:2343
+#: src/desktops.c:2344
 msgid "Number of virtual desktops:"
 msgstr "Número de Escritorios Virtuales:"
 
-#: src/desktops.c:2368
+#: src/desktops.c:2369
 msgid "Slide desktops around when changing"
 msgstr "Desplazar escritorios al conmutar entre ellos"
 
-#: src/desktops.c:2374
+#: src/desktops.c:2375
 msgid "Desktop Slide speed:"
 msgstr "Velocidad de diapositiva del escritorio:"
 
-#: src/desktops.c:2388
+#: src/desktops.c:2389
 msgid "Wrap desktops around"
 msgstr "Enganchar los escritorios entre ellos"
 
-#: src/desktops.c:2396
+#: src/desktops.c:2397
 msgid "Display desktop dragbar"
 msgstr "Mostrar Barra de Arrastre de Escritorios"
 
-#: src/desktops.c:2402
+#: src/desktops.c:2403
 msgid "Drag bar position:"
 msgstr "Ubicación de la Barra de Arrastre:"
 
-#: src/desktops.c:2406
+#: src/desktops.c:2407
 msgid "Top"
 msgstr "Arriba"
 
-#: src/desktops.c:2412
+#: src/desktops.c:2413
 msgid "Bottom"
 msgstr "Abajo"
 
-#: src/desktops.c:2418 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
+#: src/desktops.c:2419 src/pager.c:1952 src/pager.c:1977 src/pager.c:2002
 msgid "Left"
 msgstr "Izquierdo"
 
-#: src/desktops.c:2424 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
+#: src/desktops.c:2425 src/pager.c:1964 src/pager.c:1989 src/pager.c:2014
 msgid "Right"
 msgstr "Derecho"
 
-#: src/desktops.c:2432 src/menus-misc.c:585
+#: src/desktops.c:2433 src/menus-misc.c:585
 msgid "Desks"
 msgstr "Mesas"
 
-#: src/desktops.c:2433
+#: src/desktops.c:2434
 msgid "Multiple Desktop Settings"
 msgstr "Configurar Escritorios Múltiples"
 
-#: src/desktops.c:2436
+#: src/desktops.c:2437
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog"
@@ -667,39 +668,39 @@ msgstr ""
 "Multiples Escritorios Enlightenment\n"
 "Dálogo de Configuracion"
 
-#: src/desktops.c:2536
+#: src/desktops.c:2537
 msgid "Virtual Desktop size:"
 msgstr "Tamaño de Escritorio Virtual:"
 
-#: src/desktops.c:2572
+#: src/desktops.c:2573
 msgid "Wrap virtual desktops around"
 msgstr "Enganchar escritorios virtuales entre ellos"
 
-#: src/desktops.c:2579
+#: src/desktops.c:2580
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2587
+#: src/desktops.c:2588
 msgid "On"
 msgstr "Encendido"
 
-#: src/desktops.c:2592
+#: src/desktops.c:2593
 msgid "Only when moving window"
 msgstr "Solo cuando se mueve la ventana"
 
-#: src/desktops.c:2598
+#: src/desktops.c:2599
 msgid "Resistance at edge of screen:"
 msgstr "Resistencia al borde de la pantalla:"
 
-#: src/desktops.c:2610
+#: src/desktops.c:2611
 msgid "Areas"
 msgstr "Areas"
 
-#: src/desktops.c:2611
+#: src/desktops.c:2612
 msgid "Virtual Desktop Settings"
 msgstr "Configurar Escritorios Virtuales"
 
-#: src/desktops.c:2614
+#: src/desktops.c:2615
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog"
@@ -711,7 +712,7 @@ msgstr ""
 msgid "Apply"
 msgstr "Aplicar"
 
-#: src/ecompmgr.c:2309
+#: src/ecompmgr.c:2315
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1288,27 +1289,27 @@ msgstr "Iconizar este grupo"
 msgid "Group %i"
 msgstr "Grupo %i"
 
-#: src/menus.c:2139
+#: src/menus.c:2140
 msgid "Animated display of menus"
 msgstr "Mostrar animación de menús"
 
-#: src/menus.c:2144
+#: src/menus.c:2145
 msgid "Always pop up menus on screen"
 msgstr "Siempre hacer aparecer menús en la pantalla"
 
-#: src/menus.c:2149
+#: src/menus.c:2150
 msgid "Warp pointer after moving menus"
 msgstr "Torcer el puntero tras mover los Menus"
 
-#: src/menus.c:2166
+#: src/menus.c:2167
 msgid "Menus"
 msgstr "Menús"
 
-#: src/menus.c:2167
+#: src/menus.c:2168
 msgid "Menu Settings"
 msgstr "Opciones del menú"
 
-#: src/menus.c:2170
+#: src/menus.c:2171
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"
@@ -1373,123 +1374,123 @@ msgstr ""
 "Transparencia Selectiva de Enlightenment\n"
 "Dialogo de Configuracion"
 
-#: src/pager.c:1005 config/strings.c:49 config/strings.c:121
+#: src/pager.c:1032 config/strings.c:49 config/strings.c:121
 msgid "Window Options"
 msgstr "Opciones de Ventanas"
 
-#: src/pager.c:1012 config/strings.c:51 config/strings.c:124
+#: src/pager.c:1039 config/strings.c:51 config/strings.c:124
 msgid "Iconify"
 msgstr "Iconizar"
 
-#: src/pager.c:1020 config/strings.c:123
+#: src/pager.c:1047 config/strings.c:123
 msgid "Annihilate"
 msgstr "Aniquilar"
 
-#: src/pager.c:1024
+#: src/pager.c:1051
 msgid "Stick / Unstick"
 msgstr "Pegar / Despegar"
 
-#: src/pager.c:1031
+#: src/pager.c:1058
 msgid "Desktop Options"
 msgstr "Opciones de Escritorio"
 
-#: src/pager.c:1037
+#: src/pager.c:1064
 msgid "Pager Settings..."
 msgstr "Configurar Conmutador..."
 
-#: src/pager.c:1042
+#: src/pager.c:1069
 msgid "Snapshotting Off"
 msgstr "Miniaturas Inhabilitadas"
 
-#: src/pager.c:1046
+#: src/pager.c:1073
 msgid "High Quality Off"
 msgstr "Calidad Alta Inhabilitada"
 
-#: src/pager.c:1048
+#: src/pager.c:1075
 msgid "High Quality On"
 msgstr "Calidad Alta Habilitada"
 
-#: src/pager.c:1053
+#: src/pager.c:1080
 msgid "Snapshotting On"
 msgstr "Miniaturas Habilitadas"
 
-#: src/pager.c:1057
+#: src/pager.c:1084
 msgid "Zoom Off"
 msgstr "alejar"
 
-#: src/pager.c:1059
+#: src/pager.c:1086
 msgid "Zoom On"
 msgstr "acercar"
 
-#: src/pager.c:1810 src/pager.c:1905
+#: src/pager.c:1837 src/pager.c:1932
 msgid "Pager scanning speed:"
 msgstr "Velocidad de barrido del Conmutador:"
 
-#: src/pager.c:1811 src/pager.c:1906
+#: src/pager.c:1838 src/pager.c:1933
 msgid "lines per second"
 msgstr "líneas por segundo"
 
-#: src/pager.c:1844
+#: src/pager.c:1871
 msgid "Enable pager display"
 msgstr "Habilitar el uso del Conmutador"
 
-#: src/pager.c:1854
+#: src/pager.c:1881
 msgid "Pager Mode:"
 msgstr "Modo de paginación"
 
-#: src/pager.c:1858
+#: src/pager.c:1885
 msgid "Simple"
 msgstr "Simple"
 
-#: src/pager.c:1864
+#: src/pager.c:1891
 msgid "Make miniature snapshots of the screen"
 msgstr "Hacer Miniaturas de la pantalla"
 
-#: src/pager.c:1871
+#: src/pager.c:1898
 msgid "Live Update"
 msgstr "Live Update"
 
-#: src/pager.c:1882
+#: src/pager.c:1909
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Suavizar miniaturas de alta calidad en modo Miniaturas"
 
-#: src/pager.c:1887
+#: src/pager.c:1914
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Realizar acercamiento cuando el ratón está sobre ventanas"
 
-#: src/pager.c:1893
+#: src/pager.c:1920
 msgid "Pop up window title when mouse is over the window"
 msgstr "Mostrar título cuando el ratón está sobre ventanas"
 
-#: src/pager.c:1898
+#: src/pager.c:1925
 msgid "Continuously scan screen to update pager"
 msgstr "Barrer continuamente la pantalla para actualizar el Conmutador"
 
-#: src/pager.c:1921
+#: src/pager.c:1948
 msgid "Mouse button to select and drag windows:"
 msgstr "Botón del ratón para seleccionar y arrastrar ventanas:"
 
-#: src/pager.c:1931 src/pager.c:1956 src/pager.c:1981
+#: src/pager.c:1958 src/pager.c:1983 src/pager.c:2008
 msgid "Middle"
 msgstr "Medio"
 
-#: src/pager.c:1946
+#: src/pager.c:1973
 msgid "Mouse button to select desktops:"
 msgstr "Botón del ratón para seleccionar escritorios:"
 
-#: src/pager.c:1971
+#: src/pager.c:1998
 msgid "Mouse button to display pager menu:"
 msgstr "Botón del ratón para Mostrar menú del Conmutador:"
 
-#: src/pager.c:1995
+#: src/pager.c:2022
 msgid "Pagers"
 msgstr ""
 
-#: src/pager.c:1996
+#: src/pager.c:2023
 msgid "Pager Settings"
 msgstr "Configurar Conmutador"
 
-#: src/pager.c:1999
+#: src/pager.c:2026
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog"
