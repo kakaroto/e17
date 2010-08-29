@@ -156,6 +156,7 @@
       }
       else if (file_exists("p/$b/link")) {
 	  $h = read_var("p/$b/link");
+	  $pname = $h;
       }
       if ((strncasecmp($page,$l,strlen($l)) == 0) OR
           (($page == "index") AND ($l == "Home") )) {
@@ -214,4 +215,6 @@
       }
       }
   }
-?>
+
+
+/* Don't add the ?> */

@@ -6,13 +6,11 @@ body {
   background-color        : #ffffff;
   padding                 : 0;
   margin                  : 0;
-  font-family             : "Bitstream Vera","Vera","Trebuchet MS",Trebuchet,Tahoma,sans-serif;
 }
 
 html, body {
   height: 100%;
 }
-
 
 
 /******************************************************/
@@ -22,7 +20,6 @@ html, body {
   margin                  : 0 auto 0 auto;
   min-width               : 700px;
   width                   : 90%;
-/*  background              : url(ti/main_background.png) no-repeat center 150px; */
 }
 
 #wrapper {
@@ -30,77 +27,10 @@ html, body {
   height                  : auto !important;
   height                  : 100%;
   margin                  : 0 auto -53px;
-  text-align              : center;
-  align                   : center;
 }
 
 #footer, #push {
  height                   : 53px;
-}
-
-#content {
-  margin-top              : 40px;
-   text-align             : left;
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #444444;
-   font-size              : 0.9em;
-}
-
-
-
-/****************************/
-/* Top main menu            */
-/****************************/
-#header_logo {
-  background-image        : url(ti/logo.png);
-  width                   : 61px;
-}
-
-#header_logo a {
-  position                : absolute;
-  border                  : 0px;
-  background-color        : transparent;
-  top                     : 0px;
-  width                   : 60px;
-  height                  : 60px;
-}
-
-#header_menu {
-  background-image        : url(ti/header_menu_background.png);
-  font                    : normal 10pt verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
-  text-align              : right;
-}
-
-#header_last {
-  background-image        : url(ti/header_menu_background_last.png);
-  width                   : 15px;
-}
-
-td.nav_passive {
-  background              : url(ti/header_menu_unselected_background.png) 0 0 no-repeat;
-  height                  : 63px;
-  font-family             : "Bitstream Vera","Vera","Trebuchet MS",Trebuchet,Tahoma,sans-serif;
-  font-size               : 11px;
-  padding                 : 20px 10px 20px 10px;
-  vertical-align          : middle;
-}
-
-td.nav_active {
-  background              : url(ti/header_menu_current_background.png) 0 0 no-repeat;
-  height                  : 63px;
-  color                   : #646464;
-  font-family             : "Bitstream Vera","Vera","Trebuchet MS",Trebuchet,Tahoma,sans-serif;
-  font-size               : 11px;
-  font-weight             : bold;
-  padding                 : 20px 10px 20px 10px;
-  vertical-align          : middle;
-}
-
-#header_menu a {
-  display                 : block;
-  text-decoration         : none;
-  cursor                  : pointer;
-  color                   : #cdcdcd;
 }
 
 /****************************/
@@ -111,81 +41,9 @@ td.nav_active {
   height                  : 53px;
 }
 
-#sitefooter td {
-  color                   : #888888;
-  font-size               : 0.8em;
-  white-space             : nowrap;
-  padding-top             : 10px;
-  border                  : 0px;
-}
-
-#sitefooter a {
-  border                  : 0px;
-  background-color        : transparent;
-}
-
-
-
-/*****************/
-/*  SubMenu      */
-/*****************/
-
-#submenu {
-  text-align              : right;
-  padding-top             : 0px;
-  font                    : normal 10px verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
-  font-weight             : bold;
-}
-
-a.nav:link, a.nav:visited {
-   color                  : #888888;
-}
-
-a.nav:active {
-   color                  : #000000;
-}
-
-a.nav:hover {
-   color                  : #444444;
-}
-
-li.navul {
-   border-right           : 1px solid #ddd;
-   padding-right          : 5px;
-   padding-left           : 3px;
-   display                : inline;
-}
-
-li.selected {
-/*    text-decoration        : underline; */
-}
-
-li.navul:last-child {
-   border: 0px;
-}
-
-a.navul:link, a.navul:visited {
-   color                  : #888888;
-   text-decoration        : none;
-}
-
-a.navul:active {
-   color                  : #000000;
-   text-decoration        : none;
-}
-
-a.navul:hover {
-   color                  : #444444;
-   text-decoration        : none;
-}
-
 /*////////////////////////////////////////////////////////*/
 div.main {
-   text-align             : justify;
    vertical-align         : top;
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #444444;
-   font-size              : 0.9em;
 }
 
 
@@ -223,16 +81,21 @@ div.bod {
 
 
 div.fragment, div.code {
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #000;
-   font-size              : 11px;
-   line-height            : 14px;
    border                 : 1px solid #eee;
    text-align             : left;
    vertical-align         : middle;
    padding                : 8px;
    overflow               : auto;
 }
+
+pre {
+   border                 : 1px dotted #bbb;
+   text-align             : left;
+   vertical-align         : middle;
+   padding                : 5px;
+   overflow               : auto;
+}
+
 
 hr {
    width                  : 200px;
@@ -241,41 +104,20 @@ hr {
    border                 : 0px;
 }
 
-h1 {
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #000000;
-   font-size              : 1.5em;
-}
-
 h2 {
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #000000;
-   font-size              : 1.3em;
    margin                 : 0;
    padding                : 0;
 }
 
 h3 {
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #000000;
-   font-size              : 1.1em;
    margin                 : 0;
    padding                : 0;
 }
 
 p {
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #444444;
-   font-size              : 0.9em;
    margin-top: 2px;
    margin-bottom: 10px;
    padding: 0;
-}
-
-p.tiny {
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #888888;
-   font-size              : 0.7em;
 }
 
 a:link {
@@ -306,35 +148,6 @@ img {
 img.thumb {
    vertical-align         : middle;
    border                 : 1px solid;
-}
-
-ul {
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #444444;
-   font-size              : 0.9em;
-}
-
-li {
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #444444;
-   font-size              : 0.9em;
-}
-
-pre {
-   font-family            : "Bitstream Vera Mono", "Vera Mono", "Trebuchet MS Mono", "Trebuchet Mono", "Tahoma Mono", mono;
-   color                  : #000000;
-   font-size              : 0.9em;
-   border                 : 1px dotted #bbb;
-   text-align             : left;
-   vertical-align         : middle;
-   padding                : 5px;
-   overflow               : auto;
-}
-
-blockquote {
-   color                  : #000000;
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   font-size              : 0.9em;
 }
 
 table.n {
@@ -375,42 +188,6 @@ div.lr {
    float                  : right;
 }
 
-table.tab {
-   width                  : 90%;
-   padding                : 0px;
-   margin                 : 5px;
-   border                 : 1px solid #cccccc;
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #444444;
-   font-size              : 1.0em;
-   border-collapse        : collapse;
-}
-
-th.tab {
-   color                  : #ffffff;
-   background-color       : #000000;
-   padding                : 3px;
-   text-align             : left;
-}
-
-td.tab1 {
-   color                  : #444444;
-   background-color       : #ffffff;
-   padding                : 3px;
-   text-align             : left;
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   font-size              : 0.9em;
-}
-
-td.tab2 {
-   color                  : #444444;
-   background-color       : #eeeeee;
-   padding                : 3px;
-   text-align             : left;
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   font-size              : 0.9em;
-}
-
 table.b {
    padding                : 0px;
    margin                 : 0px;
@@ -432,7 +209,6 @@ td.b4 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, 
 td.b4[class] { background-image:url("i/b4.png"); }
 td.b5 {
    background-image       : url("i/b5.png");
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
    font-size              : 11px;
    color                  : #ffffff;
    text-align             : left;
@@ -450,25 +226,21 @@ td.b9[class] { background-image:url("i/b9.png"); }
 a.b:link {
    color                  : #ffffff;
    text-decoration        : none;
-//   display                : block;
 }
 
 a.b:visited {
    color                  : #ffffff;
    text-decoration        : none;
-//   display                : block;
 }
 
 a.b:active {
    color                  : #ffee88;
    text-decoration        : none;
-//   display                : block;
 }
 
 a.b:hover {
    color                  : #cccccc;
    text-decoration        : none;
-//   display                : block;
 }
 
 /** NEWS STYLE */
@@ -546,12 +318,6 @@ a.b:hover {
     margin                : 0px;
     padding               : 0px;
     text-decoration       : none;
-}
-
-.section-plug p {
-    margin                : 1em 0px;
-    padding               : 0px;
-    text-align            : left;
 }
 
 .section-plug ul {

@@ -1,6 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
 "http://www.w3.org/TR/html4/strict.dtd">
-<?php include 'site/site.php'; ?>
+<?php
+    include 'site/site.php';
+    include 'site/developers.php';
+    include 'site/helpers.php';
+?>
 <html>
 <head>
 <title><?php echo $title; ?></title>
@@ -76,11 +80,7 @@ if (is_file("p/$page/$lang-rss"))
 <div id="sitefooter">
 <div class="layout">
 
-    <table width="100%">
-        <tr>
-            <td width="100%" align="center">Copyright &copy; Enlightenment.org</td>
-        </tr>
-    </table>
+  <p> Copyright &copy; Enlightenment.org</p>
 
 </div>
 </div>

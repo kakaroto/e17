@@ -16,55 +16,47 @@
     from the list of available distributions the one that is right for you.</p>
 
     <center>
-     <table class='tab'>
-      <tbody>
-       <tr>
-        <th class="tab">Distribution/Platform</td>
-        <th class="tab">File</td>
-        <th class="tab">Comments</td>
-       </tr>
-
-       <tr class="team-dark">
-        <td class='tab1'>Enlightenment Source Code TAR.GZ</td>
-        <td class='tab1'>
-         <a href="http://prdownloads.sourceforge.net/enlightenment/e16-1.0.5.tar.gz?download">e16-1.0.5.tar.gz</a>
-        </td>
-        <td class='tab1'>&nbsp;</td>
-       </tr>
-
-       <tr class="team-light">
-        <td class='tab2'>Source Package RPM</td>
-        <td class='tab2'>
-         <a href="http://prdownloads.sourceforge.net/enlightenment/e16-1.0.5-1.fc13.src.rpm?download">e16-1.0.5-1.fc13.src.rpm</a>
-        </td>
-        <td class='tab2'>&nbsp;</td>
-       </tr>
-
-       <tr class="team-dark">
-        <td class='tab1'>Linux ix86 Binary RPM</td>
-        <td class='tab1'>
-         <a href="http://prdownloads.sourceforge.net/enlightenment/e16-1.0.5-1.fc13.i686.rpm?download">e16-1.0.5-1.fc13.i686.rpm</a>
-        </td>
-        <td class='tab1'>&nbsp;</td>
-       </tr>
-
-       <tr class="team-light">
-        <td class='tab2'>Gentoo Linux</td>
-        <td class='tab2'>
-         <a href="http://packages.gentoo.org/package/x11-wm/enlightenment">e16 ebuilds</a>
-        </td>
-        <td class='tab2'>&nbsp;</td>
-       </tr>
-
-       <tr class="team-dark">
-        <td class='tab1'>Debian GNU/Linux DEB</td>
-        <td class='tab1'>
-         <a href="http://packages.debian.org/e16">e16 packages</a>
-        </td>
-        <td class='tab1'>&nbsp;</td>
-       </tr>
-
-      </tbody>
+     <table class='data'>
+        <thead>
+            <tr>
+                <th>Distribution/Platform</th>
+                <th>Archive</th>
+                <th>Comments</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Enlightenment Source Code TAR.GZ</td>
+                <td>
+                    <a href="http://prdownloads.sourceforge.net/enlightenment/e16-1.0.5.tar.gz?download">e16-1.0.5.tar.gz</a>
+                </td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="odd">
+                <td>Source Package RPM</td>
+                <td>
+                    <a href="http://prdownloads.sourceforge.net/enlightenment/e16-1.0.5-1.fc13.src.rpm?download">e16-1.0.5-1.fc13.src.rpm</a>
+                </td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>Linux ix86 Binary RPM</td>
+                <td>
+                    <a href="http://prdownloads.sourceforge.net/enlightenment/e16-1.0.5-1.fc13.i686.rpm?download">e16-1.0.5-1.fc13.i686.rpm</a>
+                </td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="odd">
+                <td>Gentoo Linux</td>
+                <td><a href="http://packages.gentoo.org/package/x11-wm/enlightenment">e16 ebuilds</a></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>Debian GNU/Linux DEB</td>
+                <td><a href="http://packages.debian.org/e16">e16 packages</a></td>
+                <td>&nbsp;</td>
+            </tr>
+        </tbody>
      </table>
     </center>
 
