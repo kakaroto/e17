@@ -350,8 +350,8 @@ BackgroundCmp(const Background * bg, const Background * bgx)
      {
 	if ((strcmp(bg->bg.file, bgx->bg.file)) ||
 	    (bg->bg.keep_aspect != bgx->bg.keep_aspect) ||
-	    (bg->bg.xjust != bgx->bg.xjust) ||
-	    (bg->bg.xperc != bgx->bg.xperc))
+	    (bg->bg.xjust != bgx->bg.xjust) || (bg->bg.yjust != bgx->bg.yjust) ||
+	    (bg->bg.xperc != bgx->bg.xperc) ||(bg->bg.yperc != bgx->bg.yperc))
 	   return 1;
      }
    else if (bg->bg.file || bgx->bg.file)
@@ -361,8 +361,8 @@ BackgroundCmp(const Background * bg, const Background * bgx)
      {
 	if ((strcmp(bg->top.file, bgx->top.file)) ||
 	    (bg->top.keep_aspect != bgx->top.keep_aspect) ||
-	    (bg->top.xjust != bgx->top.xjust) ||
-	    (bg->top.xperc != bgx->top.xperc))
+	    (bg->top.xjust != bgx->top.xjust) || (bg->top.yjust != bgx->top.yjust) ||
+	    (bg->top.xperc != bgx->top.xperc) || (bg->top.yperc != bgx->top.yperc))
 	   return 1;
      }
    else if (bg->top.file || bgx->top.file)
