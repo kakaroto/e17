@@ -1476,8 +1476,8 @@ elixir_p1p2_params_edje_object_string_2double(const char *p1, const char *p2,
    JS_SET_RVAL(cx, vp, OBJECT_TO_JSVAL(js_obj));
 
    elixir_add_str_prop(cx, js_obj, "part", part);
-   elixir_add_int_prop(cx, js_obj, p1, d1);
-   elixir_add_int_prop(cx, js_obj, p2, d2);
+   elixir_add_dbl_prop(cx, js_obj, p1, d1);
+   elixir_add_dbl_prop(cx, js_obj, p2, d2);
 
    return JS_TRUE;
 }
