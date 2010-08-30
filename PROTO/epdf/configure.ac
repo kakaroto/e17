@@ -186,6 +186,14 @@ fi
 ### Checks for compiler characteristics
 AC_C___ATTRIBUTE__
 
+EFL_EPDF_BUILD=""
+case "$host_os" in
+   mingw*)
+      EFL_EPDF_BUILD="-DEFL_EPDF_BUILD"
+   ;;
+esac
+AC_SUBST(EFL_EPDF_BUILD)
+
 
 ### Checks for linker characteristics
 
