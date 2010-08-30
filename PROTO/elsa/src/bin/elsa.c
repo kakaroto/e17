@@ -17,6 +17,7 @@ static Eina_Bool _event_exit_cb(void *data, int type, void *event);
 static Eina_Bool _open_log();
 static Eina_Bool _close_log();
 static void _remove_lock();
+static void _start_xserver(char *dname);
 
 
 Ecore_Exe *x_exec;
@@ -25,7 +26,6 @@ static Eina_Bool
 _event_del_cb(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
 {
    fprintf(stderr, PACKAGE": del cb received\n");
-   elsa_session_shutdown();
    /* plz check here if X are still running */
    elsa_main();
    return ECORE_CALLBACK_PASS_ON;
@@ -36,11 +36,7 @@ _event_exit_cb(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED_
 {
    fprintf(stderr, PACKAGE": daemon quit\n");
    elsa_session_shutdown();
-   if (x_exec) ecore_exe_terminate(x_exec);
-   elsa_pam_shutdown();
-   _remove_lock();
-   _close_log();
-   ecore_shutdown();
+   elm_exit();
    return ECORE_CALLBACK_DONE;
 }
 
@@ -153,8 +149,6 @@ elsa_main() {
    fprintf(stderr, PACKAGE": Init\n");
    if (elsa_gui_init()) return 1;
    fprintf(stderr, PACKAGE": Run\n");
-   elm_run();
-   fprintf(stderr, PACKAGE": Shutdown\n");
    return 0;
 }
 
@@ -182,10 +176,10 @@ main (int argc, char ** argv)
         return 1;
      }
 
-   _del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
-                                          _event_del_cb, NULL);
    _exit_handler = ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT,
                                            _event_exit_cb, NULL);
+   _del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
+                                          _event_del_cb, NULL);
    ecore_init();
    elsa_config_init();
    if (!_get_lock())
@@ -209,28 +203,20 @@ main (int argc, char ** argv)
    /* Initialise event handler */
 #ifndef XNEST_DEBUG
    elsa_pam_init(PACKAGE, dname);
-   elsa_session_auth(elsa_config->command.xauth_file);
+   elsa_session_init(elsa_config->command.xauth_file);
 
 #endif
    _start_xserver(dname);
    elm_init(argc, argv);
    elsa_main();
-     {
-        int status;
-        pid_t wpid = -1;
-        pid = elsa_session_pid_get();
-        fprintf(stderr, PACKAGE": wait pid %d\n", pid);
-        while (wpid != pid)
-          {
-             pid = wait(&status);
-             fprintf(stderr, PACKAGE": pid %d quit\n", wpid);
-          }
-     }
+   elm_run();
+   if (x_exec) ecore_exe_terminate(x_exec);
    elsa_pam_shutdown();
    _remove_lock();
    _close_log();
    elsa_config_shutdown();
    ecore_shutdown();
+   fprintf(stderr, PACKAGE": quit normaly :)\n");
    return 0;
 }
 

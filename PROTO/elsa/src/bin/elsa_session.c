@@ -15,6 +15,7 @@
 char *_mcookie;
 char **env;
 char *_user;
+Ecore_Thread *_running;
 static pid_t _session_pid;
 static int _elsa_session_userid_set(struct passwd *pwd);
 
@@ -76,8 +77,58 @@ _elsa_session_userid_set(struct passwd *pwd)
    return 0;
 }
 
-Eina_Bool
-elsa_session_init(struct passwd *pwd)
+static void
+_elsa_session_end()
+{
+   char buf[PATH_MAX];
+   fprintf(stderr, PACKAGE": Session Shutdown\n");
+   if (_user)
+     {
+        snprintf(buf, sizeof(buf),
+                 "%s %s ",
+                 elsa_config->command.session_stop,
+                 _user);
+        free(_user);
+        system(buf);
+     }
+}
+
+static void
+_elsa_session_run_wait(void *data)
+{
+   int status;
+   pid_t wpid = -1;
+   pid_t pid;
+   pid = elsa_session_pid_get();
+   fprintf(stderr, PACKAGE": wait pid %d\n", pid);
+   while (wpid != pid)
+     {
+        pid = waitpid(pid, &status, 0);
+        fprintf(stderr, PACKAGE": pid %d quit\n", wpid);
+     }
+}
+
+static void
+_elsa_session_run_end(void *data)
+{
+   fprintf(stderr, PACKAGE": session run end\n");
+   _running = NULL;
+   _elsa_session_end();
+   elsa_main();
+}
+
+static void
+_elsa_session_run_cancel(void *data)
+{
+   /* Not called ? why ? this is not important,
+    * to call this when xserver shutdown ?? */
+   fprintf(stderr, PACKAGE": session run cancel\n");
+   _elsa_session_end();
+   _running = NULL;
+}
+
+static Eina_Bool
+_elsa_session_begin(struct passwd *pwd)
 {
    char buf[PATH_MAX];
    char **tmp;
@@ -109,7 +160,7 @@ elsa_session_run(struct passwd *pwd, char *cmd)
    pid = fork();
    if (pid == 0)
      {
-        if (!elsa_session_init(pwd))
+        if (!_elsa_session_begin(pwd))
           {
              fprintf(stderr, "Elsa: couldn't open session\n");
              exit(1);
@@ -138,6 +189,10 @@ elsa_session_run(struct passwd *pwd, char *cmd)
      {
         elsa_session_pid_set(pid);
         _user = strdup(pwd->pw_name);
+        _running = ecore_thread_run(_elsa_session_run_wait,
+                                    _elsa_session_run_end,
+                                    _elsa_session_run_cancel,
+                                    NULL);
      }
 #endif
 }
@@ -155,24 +210,9 @@ elsa_session_pid_get()
    return _session_pid;
 }
 
-void
-elsa_session_shutdown()
-{
-   char buf[PATH_MAX];
-   fprintf(stderr, PACKAGE": Session Shutdown\n");
-   if (_user)
-     {
-        snprintf(buf, sizeof(buf),
-                 "%s %s ",
-                 elsa_config->command.session_stop,
-                 _user);
-        free(_user);
-        system(buf);
-     }
-}
 
 void
-elsa_session_auth(const char *file)
+elsa_session_init(const char *file)
 {
    /* this is the mit cookie */
 
@@ -200,6 +240,13 @@ elsa_session_auth(const char *file)
    putenv(buf);
    fprintf(stderr, "Elsa: cookie %s \n", _mcookie);
    _elsa_session_cookie_add(_mcookie, ":0", "/usr/bin/xauth", file);
+}
+
+void
+elsa_session_shutdown()
+{
+   if (_running)
+     ecore_thread_cancel(_running);
 }
 
 Eina_Bool

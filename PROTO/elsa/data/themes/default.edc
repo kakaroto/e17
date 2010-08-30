@@ -427,7 +427,7 @@ collections {
             signal: "show";
             source: "";
             action: STATE_SET "visible" 0.0;
-            transition: SINUSOIDAL 0.8;
+            transition: LINEAR 0.8;
             target: "wall";
          }
          program { name: "login_error";
@@ -470,7 +470,7 @@ collections {
             signal: "elsa.auth.valid";
             source: "";
             action: STATE_SET "default" 0.0;
-            transition: SINUSOIDAL 0.6;
+            transition: LINEAR 0.7;
             target: "wall";
             after: "close";
          }
