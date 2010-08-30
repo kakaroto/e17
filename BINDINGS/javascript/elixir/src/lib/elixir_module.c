@@ -114,6 +114,11 @@ void sqlite_binding_shutdown(void);
 #ifdef EINA_STATIC_BUILD_ECORE_IPC
 #endif
 
+#ifdef EINA_STATIC_BUILD_EMOTION
+Eina_Bool emotion_binding_init(void);
+void emotion_binding_shutdown(void);
+#endif
+
 #ifdef EINA_STATIC_BUILD_EET
 Eina_Bool eet_loader_init(void);
 void eet_loader_shutdown(void);
@@ -189,6 +194,9 @@ static Elixir_Modules_Static ems[] = {
 #ifdef EINA_STATIC_BUILD_ECORE_FILE
 #endif
 #ifdef EINA_STATIC_BUILD_ECORE_IPC
+#endif
+#ifdef EINA_STATIC_BUILD_EMOTION
+  { emotion_binding_init, emotion_binding_shutdown },
 #endif
 #ifdef EINA_STATIC_BUILD_EET
   { eet_loader_init, eet_loader_shutdown },
