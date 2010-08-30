@@ -57,6 +57,10 @@ if EINA_STATIC_BUILD_SQLITE3
 elixir_compile_LDADD += @SQLITE_LIBS@
 endif
 
+if EINA_STATIC_BUILD_EMOTION
+elixir_compile_LDADD += @EMOTION_LIBS@
+endif
+
 endif
 
 endif
@@ -98,6 +102,10 @@ endif
 
 if EINA_STATIC_BUILD_SQLITE3
 elixir_LDADD += @SQLITE_LIBS@
+endif
+
+if EINA_STATIC_BUILD_EMOTION
+elixir_LDADD += @EMOTION_LIBS@
 endif
 
 endif
