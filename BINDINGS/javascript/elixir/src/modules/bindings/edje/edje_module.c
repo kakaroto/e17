@@ -73,8 +73,14 @@ static const elixir_parameter_t*        _edje_object_2int_params[4] = {
    &int_parameter,
    NULL
 };
-static const elixir_parameter_t*        _edje_object_3int_params[5] = {
-   &_edje_object_parameter,
+static const elixir_parameter_t*        _evas_object_2int_params[4] = {
+   &_evas_object_parameter,
+   &int_parameter,
+   &int_parameter,
+   NULL
+};
+static const elixir_parameter_t*        _evas_object_3int_params[5] = {
+   &_evas_object_parameter,
    &int_parameter,
    &int_parameter,
    &int_parameter,
@@ -621,7 +627,7 @@ elixir_edje_text_class_set(JSContext *cx, uintN argc, jsval *vp)
 }
 
 static JSBool
-elixir_void_params_edje_object_2int(void (*func)(Evas_Object *obj, Evas_Coord w, Evas_Coord h),
+elixir_void_params_evas_object_2int(void (*func)(Evas_Object *obj, Evas_Coord w, Evas_Coord h),
                                     JSContext *cx, uintN argc, jsval *vp)
 {
    Evas_Object *obj;
@@ -629,7 +635,7 @@ elixir_void_params_edje_object_2int(void (*func)(Evas_Object *obj, Evas_Coord w,
    Evas_Coord h;
    elixir_value_t val[3];
 
-   if (!elixir_params_check(cx, _edje_object_2int_params, val, argc, JS_ARGV(cx, vp)))
+   if (!elixir_params_check(cx, _evas_object_2int_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, obj);
@@ -641,8 +647,8 @@ elixir_void_params_edje_object_2int(void (*func)(Evas_Object *obj, Evas_Coord w,
    return JS_TRUE;
 }
 
-FAST_CALL_PARAMS(edje_extern_object_min_size_set, elixir_void_params_edje_object_2int);
-FAST_CALL_PARAMS(edje_extern_object_max_size_set, elixir_void_params_edje_object_2int);
+FAST_CALL_PARAMS(edje_extern_object_min_size_set, elixir_void_params_evas_object_2int);
+FAST_CALL_PARAMS(edje_extern_object_max_size_set, elixir_void_params_evas_object_2int);
 
 static JSBool
 elixir_edje_extern_object_aspect_set(JSContext *cx, uintN argc, jsval *vp)
@@ -653,7 +659,7 @@ elixir_edje_extern_object_aspect_set(JSContext *cx, uintN argc, jsval *vp)
    Evas_Coord ah;
    elixir_value_t val[4];
 
-   if (!elixir_params_check(cx, _edje_object_3int_params, val, argc, JS_ARGV(cx, vp)))
+   if (!elixir_params_check(cx, _evas_object_3int_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, eo);
