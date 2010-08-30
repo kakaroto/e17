@@ -96,7 +96,7 @@ _elixir_evas_object(void *data, Evas *e, Evas_Object *obj, void *event_info)
 }
 
 Eina_Bool
-evas_object_to_jsval(JSContext *cx, Evas_Object *obj, jsval *rval)
+_emotion_evas_object_to_jsval(JSContext *cx, Evas_Object *obj, jsval *rval)
 {
    JSClass *evas_object_class;
    jsval *tmp;
@@ -156,7 +156,7 @@ elixir_emotion_object_add(JSContext *cx, uintN argc, jsval *vp)
 
    obj = emotion_object_add(evas);
 
-   return evas_object_to_jsval(cx, obj, &(JS_RVAL(cx, vp)));
+   return _emotion_evas_object_to_jsval(cx, obj, &(JS_RVAL(cx, vp)));
 }
 
 static JSBool
