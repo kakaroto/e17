@@ -104,6 +104,12 @@ libelixir_la_LIBADD += @SQLITE_LIBS@
 INCLUDES += @SQLITE_CFLAGS@
 endif
 
+if EINA_STATIC_BUILD_EMOTION
+libelixir_la_SOURCES += $(top_srcdir)/src/modules/bindings/emotion/emotion_module.c
+libelixir_la_LIBADD += @EMOTION_LIBS@
+INCLUDES += @EMOTION_CFLAGS@
+endif
+
 if EINA_STATIC_BUILD_TEXT
 libelixir_la_SOURCES += $(top_srcdir)/src/modules/loaders/text/text_loader.c
 endif

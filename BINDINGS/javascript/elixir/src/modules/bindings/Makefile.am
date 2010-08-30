@@ -11,6 +11,7 @@ ecore_con 	\
 ecore_download 	\
 ecore_evas 	\
 edje		\
+emotion		\
 mix 		\
 sqlite
 

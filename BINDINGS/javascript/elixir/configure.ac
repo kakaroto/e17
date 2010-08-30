@@ -403,6 +403,9 @@ EINA_CHECK_STATIC(ecore_download, [ecore-download])
 ELIXIR_CHECK_PKG_MODULE(EDJE, [edje], [Edje binding module support])
 EINA_CHECK_STATIC(edje, [edje])
 
+ELIXIR_CHECK_PKG_MODULE(EMOTION, [emotion], [Emotion binding module support])
+EINA_CHECK_STATIC(emotion, [emotion])
+
 ELIXIR_CHECK_PKG_MODULE([SQLITE], [sqlite3], [SQLite binding module support])
 EINA_CHECK_STATIC([sqlite3], [sqlite])
 
@@ -454,8 +457,8 @@ fi
 
 ###############################
 
-elixir_cflags="${EDJE_CFLAGS} ${EET_CFLAGS} ${EINA_CFLAGS}"
-elixir_libs="${EDJE_LIBS} ${EET_LIBS} ${zlib_libs} ${gcrypt_libs} ${tomcrypt_libs} ${magic_libs} ${EINA_LIBS}"
+elixir_cflags="${EMOTION_CFLAGS} ${EDJE_CFLAGS} ${EET_CFLAGS} ${EINA_CFLAGS}"
+elixir_libs="${EMOTION_LIBS} ${EDJE_LIBS} ${EET_LIBS} ${zlib_libs} ${gcrypt_libs} ${tomcrypt_libs} ${magic_libs} ${EINA_LIBS}"
 
 AC_SUBST(elixir_cflags)
 AC_SUBST(elixir_libs)
@@ -481,6 +484,7 @@ src/modules/bindings/ecore_con/Makefile
 src/modules/bindings/ecore_download/Makefile
 src/modules/bindings/ecore_evas/Makefile
 src/modules/bindings/edje/Makefile
+src/modules/bindings/emotion/Makefile
 src/modules/bindings/mix/Makefile
 src/modules/bindings/sqlite/Makefile
 src/modules/bindings/eet/Makefile
@@ -537,6 +541,7 @@ echo "  Ecore-Evas..........: ${have_ecore_evas}"
 echo "  Ecore-file..........: ${have_ecore_file}"
 echo "  Ecore-ipc...........: ${have_ecore_ipc}"
 echo "  Edje................: $have_edje"
+echo "  Emotion.............: $have_emotion"
 echo "  Eet.................: $have_eet"
 echo
 echo "Loaders modules:"
