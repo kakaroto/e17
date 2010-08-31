@@ -160,12 +160,13 @@ irc_parse_input(char *input, const char *server, Emote_Protocol *m)
              Eina_List *l;
              char *p;
              char buf[8192];
+             int pos;
 
              buf[0] = 0;
+             pos = 0;
              EINA_LIST_FOREACH(ln.params->next, l, p)
                {
-                  strncat(buf, p, sizeof(buf));
-                  strncat(buf, " ", sizeof(buf));
+                  pos += snprintf(&(buf[pos]), (sizeof(buf)-pos), "%s ", p);
                }
 
              d = emote_event_new(
