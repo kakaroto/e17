@@ -6,6 +6,7 @@ struct enlil_album
    const char *path;
 
    const char *name;
+   const char *description;
    long long time;
 
 
@@ -91,6 +92,7 @@ void enlil_album_copy(const Enlil_Album *album_src, Enlil_Album *album_dest)
    enlil_album_name_set(album_dest, enlil_album_name_get(album_src));
    enlil_album_file_name_set(album_dest, enlil_album_file_name_get(album_src));
    enlil_album_path_set(album_dest, enlil_album_path_get(album_src));
+   enlil_album_description_set(album_dest, enlil_album_description_get(album_src));
    enlil_album_time_set(album_dest, enlil_album_time_get(album_src));
 
    EINA_LIST_FOREACH(enlil_album_collections_get(album_src), l, album_col)
@@ -133,6 +135,7 @@ void enlil_album_free(Enlil_Album **album)
     EINA_STRINGSHARE_DEL( (*album)->name);
     EINA_STRINGSHARE_DEL( (*album)->file_name);
     EINA_STRINGSHARE_DEL( (*album)->path);
+    EINA_STRINGSHARE_DEL( (*album)->description);
 
     enlil_album_monitor_stop(*album);
 
@@ -196,6 +199,7 @@ GET(root, Enlil_Root*)
 GET(name, const char*)
 GET(file_name, const char*)
 GET(path, const char*)
+GET(description, const char*)
 GET(time, long long)
 GET(user_data, void *)
 GET(collections, const Eina_List *)
@@ -216,6 +220,15 @@ void enlil_album_name_set(Enlil_Album *album, const char *name)
       _enlil_root_album_name_changed(album->root, album);
 
    enlil_album_flickr_need_sync_set(album, EINA_TRUE);
+}
+
+void enlil_album_description_set(Enlil_Album *album, const char *desc)
+{
+   ASSERT_RETURN_VOID(!!album);
+   ASSERT_RETURN_VOID(!!desc);
+
+   EINA_STRINGSHARE_DEL(album->description);
+   album->description = eina_stringshare_add(desc);
 }
 
 void enlil_album_photos_sort_set(Enlil_Album *album, Enlil_Photo_Sort photos_sort)
@@ -716,6 +729,7 @@ Eet_Data_Descriptor * _enlil_album_header_edd_new(Eet_Data_Descriptor *edd_colle
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Album, "name", name, EET_T_STRING);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Album, "path", path, EET_T_STRING);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Album, "file_name", file_name, EET_T_STRING);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Album, "description", description, EET_T_STRING);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Album, "time", time, EET_T_LONG_LONG);
     EET_DATA_DESCRIPTOR_ADD_LIST(edd, Enlil_Album, "collections", collections, edd_collection);
     EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Album, "photos_sort", photos_sort, EET_T_INT);
