@@ -112,14 +112,28 @@ em_gui_server_add(const char *server, Emote_Protocol *p)
 EM_INTERN void
 em_gui_channel_add(const char *server, const char *channel, Emote_Protocol *p)
 {
+   // FIXME: Need to stash this item somewhere so we can delete it later.
    elm_hoversel_item_add(gui->o_chansel, channel, NULL, ELM_ICON_NONE,
                          _em_gui_hoversel_cb_item_clicked, server);
 }
 
 EM_INTERN void
-em_gui_message_add(const char *server, const char *channel, const char *text)
+em_gui_channel_del(const char *server, const char *channel, Emote_Protocol *p)
 {
-   elm_scrolled_entry_entry_insert(gui->o_chantxt, text);
+  // FIXME: See em_gui_channel_add, need pointer to delete it.
+}
+
+EM_INTERN void
+em_gui_message_add(const char *server, const char *channel, const char *user, const char *text)
+{
+   char buf[4096];
+
+   if (user)
+     snprintf(buf, sizeof(buf), "%s: %s<br>", user, text);
+   else
+     snprintf(buf, sizeof(buf), "*: %s<br>", text);
+
+   elm_scrolled_entry_entry_insert(gui->o_chantxt, buf);
    elm_scrolled_entry_cursor_end_set(gui->o_chantxt);
 }
 
@@ -165,26 +179,36 @@ static void
 _em_gui_entry_cb_enter(void *data __UNUSED__, Evas_Object *obj, void *event __UNUSED__)
 {
    const char *text;
-   char msg[5012];
+   //char msg[5012];
    Emote_Event *d;
 
    text = elm_scrolled_entry_entry_get(obj);
-   snprintf(msg, sizeof(msg), "%s", text);
+   //snprintf(msg, sizeof(msg), "%s", text);
 
    d = emote_event_new(
                          eina_hash_find(em_protocols, "irc"),
-                         EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_SEND,
+                         EMOTE_EVENT_CHAT_MESSAGE_SEND,
                          "irc.freenode.net",
                          "#emote",
                          "emote",
-                         msg
+                         text
                       );
    emote_event_send(d);
 
-   elm_scrolled_entry_cursor_end_set(gui->o_chantxt);
-   elm_scrolled_entry_entry_insert(gui->o_chantxt, text);
-   elm_scrolled_entry_cursor_end_set(gui->o_chantxt);
-   elm_scrolled_entry_entry_insert(gui->o_chantxt, "<br>");
-   elm_scrolled_entry_cursor_end_set(gui->o_chantxt);
+   // Single /, don't print to textblock
+   if (!((text[0] == '/') && (text[1] != '/')))
+   {
+      // We have // at beginning of string
+      if (text[0] == '/') text++;
+
+      // Add message to textblock
+      elm_scrolled_entry_cursor_end_set(gui->o_chantxt);
+      elm_scrolled_entry_entry_insert(gui->o_chantxt, text);
+      elm_scrolled_entry_cursor_end_set(gui->o_chantxt);
+      elm_scrolled_entry_entry_insert(gui->o_chantxt, "<br>");
+      elm_scrolled_entry_cursor_end_set(gui->o_chantxt);
+   }
+
+   // Clear entry
    elm_scrolled_entry_entry_set(obj, NULL);
 }

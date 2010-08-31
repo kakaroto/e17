@@ -6,7 +6,7 @@ typedef struct _Em_Gui Em_Gui;
 # ifndef EM_GUI_H
 #  define EM_GUI_H
 
-struct _Em_Gui 
+struct _Em_Gui
 {
    Em_Object em_obj_inherit;
 
@@ -21,7 +21,8 @@ struct _Em_Gui
 EM_INTERN int em_gui_init(void);
 EM_INTERN void em_gui_server_add(const char *server, Emote_Protocol *p);
 EM_INTERN void em_gui_channel_add(const char *server, const char *channel, Emote_Protocol *p);
-EM_INTERN void em_gui_message_add(const char *server, const char *channel, const char *text);
+EM_INTERN void em_gui_channel_del(const char *server, const char *channel, Emote_Protocol *p);
+EM_INTERN void em_gui_message_add(const char *server, const char *channel, const char *user, const char *text);
 EM_INTERN int em_gui_shutdown(void);
 
 # endif

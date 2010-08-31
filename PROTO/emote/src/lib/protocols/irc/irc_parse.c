@@ -5,319 +5,375 @@
 #include <Evas.h>
 #include <unistd.h>
 
+typedef struct _IRC_Line IRC_Line;
+
+struct _IRC_Line
+{
+   const char *prefix;
+   const char *source;
+   const char *user;
+   const char *host;
+   const char *cmd;
+   Eina_List *params;
+};
+
+typedef enum _PARSE_STATE PARSE_STATE;
+typedef enum _IRC_COMMANDS IRC_COMMANDS;
+
+enum _PARSE_STATE
+{
+   PARSE_PREFIX=0,
+   PARSE_SOURCE=1,
+   PARSE_USER=2,
+   PARSE_HOST=3,
+   PARSE_CMD=4,
+   PARSE_MIDDLE=5,
+   PARSE_TRAILING=6,
+   PARSE_END=7
+};
+
+enum _IRC_COMMANDS
+{
+   RPL_TOPIC=332,
+   RPL_TOPICUSER=333,
+   RPL_NAMREPLY=353,
+   RPL_ENDOFNAMES=366
+};
+
 /* local function prototypes */
 static Eina_List *_irc_parse_split_input(const char *input);
-static int _irc_parse_split_prefix(const char *input, int start, Eina_Strbuf **prefix);
-static int _irc_parse_split_command(const char *input, int start, Eina_Strbuf **cmd);
-static int _irc_parse_split_params(const char *input, int start, Eina_Strbuf **params);
-static int _irc_parse_remove_username(const char *input, int start, Eina_Strbuf **params);
+static void _irc_cleanup_irc_line(IRC_Line *line);
 static char *_irc_parse_utf8_to_markup(const char *text);
 static char *_irc_str_append(char *str, const char *txt, int *len, int *alloc);
+static int _irc_parse_line(const char *line, IRC_Line *out);
 
 void
 irc_parse_input(char *input, const char *server, Emote_Protocol *m)
 {
-   Eina_Strbuf *buff;
-   Eina_Strbuf *prefix, *cmd, *params;
-   Eina_List *lines, *l;
-   char *line;
+   static char buf[8192];
+   static int length = 0;
+   IRC_Line ln;
+   Eina_List *lines, *l, *p;
+   char *line, *param;
+   int size;
 
-   printf("Parse Input: %s\n", input);
+   if ((length == 1) && (buf[0] == 0))
+     length = 0;
+
+   strncpy(&(buf[length]), input, sizeof(buf)-length);
+   length += strlen(input);
 
    /* NB: Any parsing of messages after this split will need to append
-    * a new line if printing to the screen as this split strips them out.
-    *
-    * This is currently handled in the individual _parse_ functions */
-   lines = _irc_parse_split_input(input);
-
-   buff = eina_strbuf_new();
-   prefix = eina_strbuf_new();
-   cmd = eina_strbuf_new();
-   params = eina_strbuf_new();
-
+    * a new line if printing to the screen as this split strips them out
+    */
+   lines = _irc_parse_split_input(buf);
    EINA_LIST_FOREACH(lines, l, line)
      {
-        const char *str;
-        int pos;
+        printf("Parse Line: %s\n", line);
 
-        pos = _irc_parse_split_prefix(line, 0, &prefix);
+        size = strlen(line);
+        length -= size+2;
+        memmove(buf, &(buf[size+2]), length);
+        buf[length] = 0;
 
-        if (strstr(line, "PING"))
+        if(!_irc_parse_line(line, &ln)) continue;
+
+/*        printf("\tPrefix = %s\n\tSource = %s\n\tUser = %s\n\tHost = %s\n\tCmd: %s\n",
+               ln.prefix, ln.source, ln.user, ln.host, ln.cmd);*/
+        /*EINA_LIST_FOREACH(ln.params, p, param)
           {
-             protocol_irc_pong(server, eina_strbuf_string_get(prefix));
-             goto reset;
+             printf("\tParam: %s\n", param);
+          }*/
+
+        if (!strcmp(ln.cmd, "PING"))
+          {
+             protocol_irc_pong(server, ln.prefix);
+          }
+        else if (!strcmp(ln.cmd, "NOTICE"))
+          {
+             Emote_Event *d;
+
+             d = emote_event_new(
+                 m,
+                 EMOTE_EVENT_SERVER_MESSAGE_RECEIVED,
+                 server,
+                 _irc_parse_utf8_to_markup(eina_list_nth(ln.params,1))
+             );
+             emote_event_send(d);
+          }
+        else if (!strcmp(ln.cmd, "PRIVMSG"))
+          {
+             Emote_Event *d;
+
+             d = emote_event_new
+                 (
+                    m,
+                    EMOTE_EVENT_CHAT_MESSAGE_RECEIVED,
+                    server,
+                    _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
+                    _irc_parse_utf8_to_markup(ln.source),
+                    _irc_parse_utf8_to_markup(eina_list_nth(ln.params,1))
+                 );
+             emote_event_send(d);
+          }
+        else if (!strcmp(ln.cmd, "JOIN"))
+          {
+             Emote_Event *d;
+
+             d = emote_event_new
+                 (
+                    m,
+                    EMOTE_EVENT_CHAT_JOINED,
+                    server,
+                    _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
+                    _irc_parse_utf8_to_markup(ln.source)
+                 );
+             emote_event_send(d);
+          }
+        else if (!strcmp(ln.cmd, "PART"))
+          {
+             Emote_Event *d;
+
+             printf("Received PART: %s, %s, %s\n", server, _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)), _irc_parse_utf8_to_markup(ln.source));
+
+             d = emote_event_new
+                 (
+                    m,
+                    EMOTE_EVENT_CHAT_PARTED,
+                    server,
+                    _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
+                    _irc_parse_utf8_to_markup(ln.source)
+                 );
+             emote_event_send(d);
+          }
+        else if (atoi(ln.cmd) ==  RPL_NAMREPLY)
+          {
+            // TODO: Add command for sending channel list
+          }
+        else if (atoi(ln.cmd) == RPL_TOPICUSER)
+          {
+            // Don't really need to show this.
+          }
+        else if (atoi(ln.cmd) != 0)
+          {
+             Emote_Event *d;
+             Eina_List *l;
+             char *p;
+             char buf[8192];
+
+             buf[0] = 0;
+             EINA_LIST_FOREACH(ln.params->next, l, p)
+               {
+                  strncat(buf, p, sizeof(buf));
+                  strncat(buf, " ", sizeof(buf));
+               }
+
+             d = emote_event_new(
+                 m,
+                 EMOTE_EVENT_SERVER_MESSAGE_RECEIVED,
+                 server,
+                 _irc_parse_utf8_to_markup(buf)
+             );
+             emote_event_send(d);
           }
 
-        pos = _irc_parse_split_command(line, pos, &cmd);
-        printf("Command: %s\n", eina_strbuf_string_get(cmd));
-
-        pos = _irc_parse_split_params(line, pos, &params);
-        printf("Params: %s\n", eina_strbuf_string_get(params));
-
-        /* NB: Based on the command, pass off to parsing functions.
-         * The 'params' may need special parsing based on command */
-        if ((str = eina_strbuf_string_get(cmd)))
-          {
-             const char *p;
-             char *msg = NULL;
-
-             /* Don't print Server Info */
-             if (!strcmp(str, "004")) goto reset;
-             /* Don't print current channels user list to the tb */
-             if (!strcmp(str, "353")) goto reset;
-
-             p = eina_strbuf_string_get(params);
-             /* Append tail to username if it is in use */
-             if (!strcmp(str, "433"))
-               {
-                  /* TODO Reconnect with different username */
-               }
-             if (!strcmp(str, "NOTICE"))
-               {
-                  if ((msg = _irc_parse_utf8_to_markup(p)))
-                    {
-                       char fmt[5012];
-                       Emote_Event *d;
-
-                       snprintf(fmt, sizeof(fmt), " <color=#ff0000>%s</> ", msg);
-                       d = emote_event_new(
-                              m,
-                              EMOTE_EVENT_SERVER_MESSAGE_RECEIVED,
-                              server,
-                              msg
-                           );
-                       emote_event_send(d);
-                    }
-                  goto reset;
-               }
-             else if (!strcmp(str, "JOIN"))
-               {
-                  char *channel, chan[5012];
-                  Emote_Event *d;
-
-                  channel = strrchr(p, ':');
-                  channel++;
-                  snprintf(chan, sizeof(chan), "%s", channel);
-                  d = emote_event_new
-                      (
-                         m,
-                         EMOTE_EVENT_CHAT_CHANNEL_JOINED,
-                         server,
-                         chan
-                      );
-                  emote_event_send(d);
-               }
-             else if (
-                      ((atoi(str) >= 001) && (atoi(str) <= 003)) ||
-                      (atoi(str) == 251) || (atoi(str) == 255) ||
-                      (atoi(str) == 250) ||
-                      ((atoi(str) >= 372) && (atoi(str) <= 376))
-                      )
-               {
-                  /* I DON'T LIKE THIS AT ALL :(
-                   * NOT HAPPY WITH THE WAY THIS IS GETTING DONE */
-
-                  Eina_Strbuf *tmp;
-                  const char *txt;
-                  int pos2;
-                  Emote_Event *d;
-
-                  /* NB: For these messages, we need to strip the username :*/
-                  tmp = eina_strbuf_new();
-                  txt = eina_strbuf_string_get(params);
-                  pos2 = _irc_parse_remove_username(txt, 0, &tmp);
-                  p = eina_strbuf_string_get(tmp);
-                  msg = _irc_parse_utf8_to_markup(p);
-                  d = emote_event_new
-                      (
-                         m,
-                         EMOTE_EVENT_SERVER_MESSAGE_RECEIVED,
-                         server,
-                         msg
-                      );
-                  emote_event_send(d);
-                  eina_strbuf_free(tmp);
-               }
-             else if (!(strcmp(str, "PRIVMSG")))
-               {
-                  Emote_Event *d;
-
-                  msg = _irc_parse_utf8_to_markup(p);
-                  d = emote_event_new
-                      (
-                         m,
-                         EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_RECEIVED,
-                         server,
-                         NULL,
-                         NULL,
-                         msg
-                      );
-                  emote_event_send(d);
-               }
-             else
-               {
-                  Emote_Event *d;
-
-                  msg = _irc_parse_utf8_to_markup(p);
-                  d = emote_event_new
-                      (
-                         m,
-                         EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_RECEIVED,
-                         server,
-                         NULL,
-                         NULL,
-                         msg
-                      );
-                  emote_event_send(d);
-               }
-          }
-reset:
-        eina_strbuf_reset(buff);
-        eina_strbuf_reset(prefix);
-        eina_strbuf_reset(cmd);
-        eina_strbuf_reset(params);
+        _irc_cleanup_irc_line(&ln);
      }
 
-   /* clenaup */
-   eina_strbuf_free(buff);
-   eina_strbuf_free(prefix);
-   eina_strbuf_free(cmd);
-   eina_strbuf_free(params);
-
    EINA_LIST_FREE(l, line)
-     free(line);
+   free(line);
 }
 
 /* local functions */
+static int
+_irc_find_token_pos(const char *buf, int pos, int end, const char token, const char token2)
+{
+   int pos2;
+
+   pos2 = pos;
+   while ((pos2 < end) && (buf[++pos2] != token) && (buf[pos2] != token2));
+
+   return pos2;
+}
+
 static Eina_List *
 _irc_parse_split_input(const char *input)
 {
+   char buf[8192];
    Eina_List *l = NULL;
-   char *tok = NULL, *str;
+   char *tok = NULL, *str, *str2;
+   int length, pos, pos2;
+   int i = 0;
 
-   str = strdup(input);
+   str2 = str = strdup(input);
    while ((tok = strsep(&str, "\r\n")))
      {
+        if (!str) break;
         if ((*tok == '\0') || (*tok == '\n')) continue;
         l = eina_list_append(l, strdup(tok));
      }
-   free(str);
+   free(str2);
    return l;
 }
 
-static int
-_irc_parse_split_prefix(const char *input, int start, Eina_Strbuf **prefix)
+static void
+_irc_cleanup_irc_line(IRC_Line *line)
 {
-   int chr, pos = 0;
+   char *param;
 
-   if (!input) return 0;
+   if (!line) return;
 
-   pos = start;
-   while ((pos = evas_string_char_next_get((char *)input, pos, &chr)))
+   if (line->prefix)
+      eina_stringshare_del(line->prefix);
+   if (line->source)
+      eina_stringshare_del(line->source);
+   if (line->user)
+      eina_stringshare_del(line->user);
+   if (line->host)
+      eina_stringshare_del(line->host);
+   if (line->cmd)
+      eina_stringshare_del(line->cmd);
+   if (line->params)
      {
-        if ((chr <= 0) || (pos <= 0)) break;
-        if (chr == ':')
-          {
-             int chr2, pos2 = 0;
-
-             pos2 = pos;
-//             eina_strbuf_append_char(*prefix, chr);
-             while ((pos2 = evas_string_char_next_get((char *)input, pos2, &chr2)))
-               {
-                  if ((chr2 <= 0) || (pos2 <= 0)) break;
-                  if (chr2 != ' ')
-                    eina_strbuf_append_char(*prefix, chr2);
-                  else
-                    return pos2;
-               }
-             pos = pos2;
-          }
+        EINA_LIST_FREE(line->params, param)
+          eina_stringshare_del(param);
      }
-   return pos;
 }
 
 static int
-_irc_parse_split_command(const char *input, int start, Eina_Strbuf **cmd)
+_irc_parse_line(const char *line, IRC_Line *out)
 {
-   int chr, pos = 0;
+   char buf[8192];
+   PARSE_STATE state;
+   int pos, pos2;
+   int length;
 
-   if (!input) return 0;
+   // Check for null or blank line
+   if (!line || !line[0]) return 0;
 
-   pos = start - 1;
-   while ((pos = evas_string_char_next_get((char *)input, pos, &chr)))
+   strncpy(buf, line, sizeof(buf));
+   length = strlen(buf);
+
+   memset(out, 0, sizeof(IRC_Line));
+
+   state = PARSE_PREFIX;
+   pos = pos2 = 0;
+   while(state < PARSE_END)
      {
-        if ((chr <= 0) || (pos <= 0)) break;
-        if (chr != ' ')
+        switch(state)
           {
-             int chr2, pos2 = 0;
+             case PARSE_PREFIX:
+                if (buf[0] != ':')
+                   state = PARSE_CMD;
 
-             pos2 = pos;
-             eina_strbuf_append_char(*cmd, chr);
-             while ((pos2 = evas_string_char_next_get((char *)input, pos2, &chr2)))
-               {
-                  if ((chr2 <= 0) || (pos2 <= 0)) break;
-                  if (chr2 != ' ')
-                    eina_strbuf_append_char(*cmd, chr2);
-                  else
-                    return pos2;
-               }
-             pos = pos2;
-          }
+                pos = 0;
+                pos2 = _irc_find_token_pos(buf, pos, sizeof(buf), 0, ' ');
+
+                state = PARSE_SOURCE;
+
+                buf[pos2] = 0;
+                out->prefix = eina_stringshare_add(&(buf[pos]));
+                buf[pos2] = ' ';
+                break;
+             case PARSE_SOURCE:
+                // Check if there is a prefix or not
+                if (buf[0] != ':')
+                   state = PARSE_CMD;
+
+                pos = 1;
+                pos2 = _irc_find_token_pos(buf, pos, sizeof(buf), '!', ' ');
+
+                if (buf[pos2] == '!')
+                  state = PARSE_USER;
+                else
+                  state = PARSE_CMD;
+
+                buf[pos2] = 0;
+                out->source = eina_stringshare_add(&(buf[pos]));
+
+                pos2++;
+                break;
+
+             case PARSE_USER:
+                pos = pos2;
+                pos2 = _irc_find_token_pos(buf, pos, sizeof(buf), '@', ' ');
+
+                if (buf[pos2] == '@')
+                  state = PARSE_HOST;
+                else
+                  state = PARSE_CMD;
+
+                buf[pos2] = 0;
+                out->user = eina_stringshare_add(&(buf[pos]));
+
+                pos2++;
+                break;
+
+             case PARSE_HOST:
+                pos = pos2;
+                pos2 = _irc_find_token_pos(buf, pos, sizeof(buf), 0, ' ');
+
+                state = PARSE_CMD;
+
+                buf[pos2] = 0;
+                out->host = eina_stringshare_add(&(buf[pos]));
+
+                pos2++;
+                break;
+
+             case PARSE_CMD:
+                pos = pos2;
+                pos2 = _irc_find_token_pos(buf, pos, sizeof(buf), 0, ' ');
+                buf[pos2] = 0;
+                out->cmd = eina_stringshare_add(&(buf[pos]));
+
+                pos2++;
+                if (buf[pos2] == ':')
+                {
+                  pos2++;
+                  state = PARSE_TRAILING;
+                }
+                else
+                  state = PARSE_MIDDLE;
+                break;
+
+             case PARSE_MIDDLE:
+                state = PARSE_END;
+                while (pos2 < length)
+                  {
+                     pos = pos2;
+                     pos2 = _irc_find_token_pos(buf, pos, sizeof(buf), ' ', 0);
+                     buf[pos2] = 0;
+                     out->params = eina_list_append(out->params, eina_stringshare_add(&(buf[pos])));
+
+                     pos2++;
+                     if (buf[pos2] == ':')
+                       {
+                          pos2++;
+                          state = PARSE_TRAILING;
+                          break;
+                       }
+                  }
+                break;
+
+             case PARSE_TRAILING:
+                while (pos2 < length)
+                  {
+                     pos = pos2;
+                     pos2 = _irc_find_token_pos(buf, pos, sizeof(buf), ':', 0);
+                     buf[pos2] = 0;
+                     out->params = eina_list_append(out->params, eina_stringshare_add(&(buf[pos])));
+                  }
+                state = PARSE_END;
+                break;
+
+             case PARSE_END:
+             default:
+                break;
+        }
      }
-   return pos;
-}
 
-static int
-_irc_parse_split_params(const char *input, int start, Eina_Strbuf **params)
-{
-   int chr, pos = 0;
-
-   if (!input) return 0;
-
-   pos = start;
-   while ((pos = evas_string_char_next_get((char *)input, pos, &chr)))
-     {
-        if ((chr <= 0) || (pos <= 0)) break;
-        if (chr == '\r')
-          eina_strbuf_append_char(*params, '\n');
-        else if (!iscntrl(chr))
-          eina_strbuf_append_char(*params, chr);
-     }
-   eina_strbuf_append_char(*params, '\n');
-   return pos;
-}
-
-static int
-_irc_parse_remove_username(const char *input, int start, Eina_Strbuf **params)
-{
-   int chr, pos = 0;
-
-   if (!input) return 0;
-
-   pos = start;
-   while ((pos = evas_string_char_next_get((char *)input, pos, &chr)))
-     {
-        int chr2, pos2 = 0;
-
-        if ((chr <= 0) || (pos < 0)) break;
-
-        /* skip until we hit the : */
-        if (chr != ':') continue;
-
-        pos2 = pos;
-        eina_strbuf_append_char(*params, chr);
-        while ((pos2 = evas_string_char_next_get((char *)input, pos2, &chr2)))
-          {
-             if ((chr2 <= 0) || (pos2 <= 0)) break;
-             if (chr2 == '\r')
-               eina_strbuf_append_char(*params, '\n');
-             else if (!iscntrl(chr2))
-               eina_strbuf_append_char(*params, chr2);
-          }
-        pos = pos2;
-     }
-   eina_strbuf_append_char(*params, '\n');
-   return pos;
+  return 1;
 }
 
 static char *
@@ -330,27 +386,27 @@ _irc_parse_utf8_to_markup(const char *text)
    if (!text) return NULL;
    for (;;)
      {
-	pos = pos2;
+        pos = pos2;
         pos2 = evas_string_char_next_get((char *)(text), pos2, &ch);
         if ((ch <= 0) || (pos2 <= 0)) break;
-	if (ch == '\n')
-          str = _irc_str_append(str, "<br>", &str_len, &str_alloc);
-	else if (ch == '\t')
-          str = _irc_str_append(str, "<\t>", &str_len, &str_alloc);
-	else if (ch == '<')
-          str = _irc_str_append(str, "&lt;", &str_len, &str_alloc);
-	else if (ch == '>')
-          str = _irc_str_append(str, "&gt;", &str_len, &str_alloc);
-	else if (ch == '&')
-          str = _irc_str_append(str, "&amp;", &str_len, &str_alloc);
-	else
-	  {
-	     char tstr[16];
+        if (ch == '\n')
+           str = _irc_str_append(str, "<br>", &str_len, &str_alloc);
+        else if (ch == '\t')
+           str = _irc_str_append(str, "<\t>", &str_len, &str_alloc);
+        else if (ch == '<')
+           str = _irc_str_append(str, "&lt;", &str_len, &str_alloc);
+        else if (ch == '>')
+           str = _irc_str_append(str, "&gt;", &str_len, &str_alloc);
+        else if (ch == '&')
+           str = _irc_str_append(str, "&amp;", &str_len, &str_alloc);
+        else
+          {
+             char tstr[16];
 
-	     strncpy(tstr, text + pos, pos2 - pos);
-	     tstr[pos2 - pos] = 0;
-	     str = _irc_str_append(str, tstr, &str_len, &str_alloc);
-	  }
+             strncpy(tstr, text + pos, pos2 - pos);
+             tstr[pos2 - pos] = 0;
+             str = _irc_str_append(str, tstr, &str_len, &str_alloc);
+          }
      }
    return str;
 }
@@ -363,14 +419,14 @@ _irc_str_append(char *str, const char *txt, int *len, int *alloc)
    if (txt_len <= 0) return str;
    if ((*len + txt_len) >= *alloc)
      {
-	char *str2;
-	int alloc2;
+        char *str2;
+        int alloc2;
 
-	alloc2 = *alloc + txt_len + 128;
-	str2 = realloc(str, alloc2);
-	if (!str2) return str;
-	*alloc = alloc2;
-	str = str2;
+        alloc2 = *alloc + txt_len + 128;
+        str2 = realloc(str, alloc2);
+        if (!str2) return str;
+        *alloc = alloc2;
+        str = str2;
      }
    strcpy(str + *len, txt);
    *len += txt_len;

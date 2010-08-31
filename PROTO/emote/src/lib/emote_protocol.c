@@ -25,6 +25,7 @@ emote_protocol_shutdown(void)
      {
         eina_hash_foreach(_emote_protocols, _emote_protocol_hash_cb_free, NULL);
         eina_hash_free(_emote_protocols);
+        _emote_protocols = NULL;
      }
 
    return 1;
@@ -198,6 +199,7 @@ _emote_protocol_hash_cb_free(const Eina_Hash *hash __UNUSED__, const void *key _
    Emote_Protocol *p;
 
    if (!(p = data)) return EINA_TRUE;
+
    emote_object_del(EMOTE_OBJECT(p));
    return EINA_TRUE;
 }

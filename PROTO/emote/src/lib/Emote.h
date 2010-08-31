@@ -44,8 +44,8 @@ typedef struct _Emote_Event Emote_Event;
 typedef struct _Emote_Event_Server Emote_Event_Server;
 typedef struct _Emote_Event_Server_Connect Emote_Event_Server_Connect;
 typedef struct _Emote_Event_Server_Message Emote_Event_Server_Message;
-typedef struct _Emote_Event_Chat_Channel Emote_Event_Chat_Channel;
-typedef struct _Emote_Event_Chat_Channel_Message Emote_Event_Chat_Channel_Message;
+typedef struct _Emote_Event_Chat Emote_Event_Chat;
+typedef struct _Emote_Event_Chat_Message Emote_Event_Chat_Message;
 
 enum _Emote_Event_Type
 {
@@ -55,11 +55,13 @@ enum _Emote_Event_Type
    EMOTE_EVENT_SERVER_DISCONNECTED=3,
    EMOTE_EVENT_SERVER_MESSAGE_SEND=4,
    EMOTE_EVENT_SERVER_MESSAGE_RECEIVED=5,
-   EMOTE_EVENT_CHAT_CHANNEL_JOIN=6,
-   EMOTE_EVENT_CHAT_CHANNEL_JOINED=7,
-   EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_SEND=8,
-   EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_RECEIVED=9,
-   EMOTE_EVENT_COUNT=10
+   EMOTE_EVENT_CHAT_JOIN=6,
+   EMOTE_EVENT_CHAT_JOINED=7,
+   EMOTE_EVENT_CHAT_PART=8,
+   EMOTE_EVENT_CHAT_PARTED=9,
+   EMOTE_EVENT_CHAT_MESSAGE_SEND=10,
+   EMOTE_EVENT_CHAT_MESSAGE_RECEIVED=11,
+   EMOTE_EVENT_COUNT=12
 };
 
 struct _Emote_Object
@@ -80,6 +82,8 @@ struct _Emote_Protocol_Api
 
 struct _Emote_Protocol
 {
+   Emote_Object em_object_inherit;
+
    Emote_Protocol_Api *api;
    void *handle;
 
@@ -94,8 +98,8 @@ struct _Emote_Protocol
 #define EMOTE_EVENT_SERVER_T(x) ((Emote_Event_Server*)x)
 #define EMOTE_EVENT_SERVER_CONNECT_T(x) ((Emote_Event_Server_Connect*)x)
 #define EMOTE_EVENT_SERVER_MESSAGE_T(x) ((Emote_Event_Server_Message*)x)
-#define EMOTE_EVENT_CHAT_CHANNEL_T(x) ((Emote_Event_Chat_Channel*)x)
-#define EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_T(x) ((Emote_Event_Chat_Channel_Message*)x)
+#define EMOTE_EVENT_CHAT_T(x) ((Emote_Event_Chat*)x)
+#define EMOTE_EVENT_CHAT_MESSAGE_T(x) ((Emote_Event_Chat_Message*)x)
 
 struct _Emote_Event
 {
@@ -125,16 +129,16 @@ struct _Emote_Event_Server_Message
    const char *message;
 };
 
-struct _Emote_Event_Chat_Channel
+struct _Emote_Event_Chat
 {
    Emote_Event_Server s;
    const char *channel;
+   const char *user;
 };
 
-struct _Emote_Event_Chat_Channel_Message
+struct _Emote_Event_Chat_Message
 {
-   Emote_Event_Chat_Channel c;
-   const char *user;
+   Emote_Event_Chat c;
    const char *message;
 };
 

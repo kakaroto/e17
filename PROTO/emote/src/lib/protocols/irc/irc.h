@@ -4,6 +4,8 @@
 #include "Emote.h"
 #include "irc_parse.h"
 
+#define IRC_LINE_TYPE 0xE0E03000
+
 EMAPI extern Emote_Protocol_Api protocol_api;
 
 EMAPI int protocol_init(Emote_Protocol *p);

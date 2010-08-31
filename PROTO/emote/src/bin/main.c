@@ -52,11 +52,13 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
                            _em_main_chat_events_handler, NULL);
    emote_event_handler_add(EMOTE_EVENT_SERVER_DISCONNECTED,
                            _em_main_chat_events_handler, NULL);
-   emote_event_handler_add(EMOTE_EVENT_CHAT_CHANNEL_JOINED,
+   emote_event_handler_add(EMOTE_EVENT_CHAT_JOINED,
+                           _em_main_chat_events_handler, NULL);
+   emote_event_handler_add(EMOTE_EVENT_CHAT_PARTED,
                            _em_main_chat_events_handler, NULL);
    emote_event_handler_add(EMOTE_EVENT_SERVER_MESSAGE_RECEIVED,
                            _em_main_chat_events_handler, NULL);
-   emote_event_handler_add(EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_RECEIVED,
+   emote_event_handler_add(EMOTE_EVENT_CHAT_MESSAGE_RECEIVED,
                            _em_main_chat_events_handler, NULL);
 
    em_protocols = eina_hash_string_superfast_new(NULL);
@@ -149,9 +151,10 @@ _em_main_chat_events_handler(void *data __UNUSED__, int type __UNUSED__, void *e
            c = emote_event_new
                (
                   EMOTE_EVENT_T(d)->protocol,
-                  EMOTE_EVENT_CHAT_CHANNEL_JOIN,
+                  EMOTE_EVENT_CHAT_JOIN,
                   d->server,
-                  "#emote"
+                  "#emote",
+                  "emote"
                );
             emote_event_send(c);
             break;
@@ -165,12 +168,45 @@ _em_main_chat_events_handler(void *data __UNUSED__, int type __UNUSED__, void *e
                   d->server, EMOTE_EVENT_T(d)->protocol->api->label);
            break;
         }
-      case EMOTE_EVENT_CHAT_CHANNEL_JOINED:
+      case EMOTE_EVENT_CHAT_JOINED:
         {
-           Emote_Event_Chat_Channel *d;
+           Emote_Event_Chat *d;
+           char buf[8192];
 
            d = event;
-           em_gui_channel_add(EMOTE_EVENT_SERVER_T(d)->server, d->channel, EMOTE_EVENT_T(d)->protocol);
+           // FIXME: Make this check the actual username based on the server
+           if (!strcmp(d->user, "emote"))
+           {
+             snprintf(buf, sizeof(buf), "You have joined %s", d->channel);
+             em_gui_message_add(EMOTE_EVENT_SERVER_T(d)->server, NULL, NULL, buf);
+             em_gui_channel_add(EMOTE_EVENT_SERVER_T(d)->server, d->channel, EMOTE_EVENT_T(d)->protocol);
+           }
+           else
+           {
+             snprintf(buf, sizeof(buf), "%s has joined %s", d->user, d->channel);
+             em_gui_message_add(EMOTE_EVENT_SERVER_T(d)->server, NULL, NULL, buf);
+           }
+           break;
+        }
+      case EMOTE_EVENT_CHAT_PARTED:
+        {
+           Emote_Event_Chat *d;
+           char buf[8192];
+
+           d = event;
+           // FIXME: Make this check the actual username based on the server
+           if (!strcmp(d->user, "emote"))
+           {
+             snprintf(buf, sizeof(buf), "You have left %s", d->channel);
+             em_gui_message_add(EMOTE_EVENT_SERVER_T(d)->server, NULL, NULL, buf);
+             em_gui_channel_del(EMOTE_EVENT_SERVER_T(d)->server, d->channel, EMOTE_EVENT_T(d)->protocol);
+           }
+           else
+           {
+
+             snprintf(buf, sizeof(buf), "%s has left %s", d->user, d->channel);
+             em_gui_message_add(EMOTE_EVENT_SERVER_T(d)->server, NULL, NULL, buf);
+           }
            break;
         }
       case EMOTE_EVENT_SERVER_MESSAGE_RECEIVED:
@@ -179,15 +215,15 @@ _em_main_chat_events_handler(void *data __UNUSED__, int type __UNUSED__, void *e
 
            d = event;
 
-           em_gui_message_add(EMOTE_EVENT_SERVER_T(d)->server, NULL, d->message);
+           em_gui_message_add(EMOTE_EVENT_SERVER_T(d)->server, NULL, NULL, d->message);
            break;
         }
-      case EMOTE_EVENT_CHAT_CHANNEL_MESSAGE_RECEIVED:
+      case EMOTE_EVENT_CHAT_MESSAGE_RECEIVED:
         {
-           Emote_Event_Chat_Channel_Message *d;
+           Emote_Event_Chat_Message *d;
 
            d = event;
-           em_gui_message_add(EMOTE_EVENT_SERVER_T(d)->server, EMOTE_EVENT_CHAT_CHANNEL_T(d)->channel, d->message);
+           em_gui_message_add(EMOTE_EVENT_SERVER_T(d)->server, EMOTE_EVENT_CHAT_T(d)->channel, EMOTE_EVENT_CHAT_T(d)->user, d->message);
            break;
         }
       default:
