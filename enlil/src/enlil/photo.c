@@ -785,7 +785,7 @@ void enlil_photo_iptcs_set(Enlil_Photo *photo, Eina_List *iptcs)
 	enlil_photo_tag_remove(photo, tag);
      }
 
-   //load the descrption
+   //load the description
    iptc_tag_find_by_name ("Caption", &iptcrecord, &iptctag);
 
    EINA_LIST_FOREACH(photo->iptcs->l, l, iptc)
