@@ -608,9 +608,6 @@ cdef extern from "Evas.h":
     void evas_object_color_set(Evas_Object *obj, int r, int g, int b, int a)
     void evas_object_color_get(Evas_Object *obj, int *r, int *g, int *b, int *a)
 
-    void evas_object_color_interpolation_set(Evas_Object *obj, int color_space)
-    int evas_object_color_interpolation_get(Evas_Object *obj)
-
     void evas_color_argb_premul(int a, int *r, int *g, int *b)
     void evas_color_argb_unpremul(int a, int *r, int *g, int *b)
 

@@ -184,7 +184,6 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     @ivar propagate_events: whenever object should propagate events to its
        parent.
     @ivar render_op: render operation used at drawing.
-    @ivar color_interpolation: color interpolation used.
     @ivar anti_alias: if anti-aliased primitives should be used.
     @ivar pointer_mode: if pointer should be grabbed while processing events.
     @ivar clipees: objects that this object clips.
@@ -215,7 +214,6 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
        on_move_del, on_resize_add, on_resize_del, on_restack_add,
        on_restack_del, on_show_add, on_show_del, on_hold_add, on_hold_del
     @group Often unused: render_op_set, render_op_get, render_op,
-       color_interpolation_set, color_interpolation_get, color_interpolation,
        anti_alias_set, anti_alias_get, anti_alias, pointer_mode_set,
        pointer_mode_get, pointer_mode
     """
@@ -1128,28 +1126,6 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
 
         def __set__(self, color):
             self.color_set(*color)
-
-    def color_interpolation_get(self):
-        """Return color interpolation being used by this object.
-
-        @return: EVAS_COLOR_SPACE_ARGB or EVAS_COLOR_SPACE_AHSV.
-        @rtype: int
-        """
-        return evas_object_color_interpolation_get(self.obj)
-
-    def color_interpolation_set(self, int value):
-        """Set color interpolation to be used by this object.
-
-        @parm: B{value} EVAS_COLOR_SPACE_ARGB or EVAS_COLOR_SPACE_AHSV.
-        """
-        evas_object_color_interpolation_set(self.obj, value)
-
-    property color_interpolation:
-        def __get__(self):
-            return self.color_interpolation_get()
-
-        def __set__(self, int value):
-            self.color_interpolation_set(value)
 
     def clip_get(self):
         """Return the object currently clipping this object, or None.
