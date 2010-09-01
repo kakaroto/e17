@@ -323,9 +323,9 @@ class PartDetails(EditjeDetails):
                 module = "Emotion"
 
             self.edje_get().signal_emit("cl,extra,activate", "")
-            if not self._header_table.has_key("source widget"):
+            if "source widget" not in self._header_table:
                 self._header_table.property_add(self._source_prop)
-            if not self._header_table.has_key("module"):
+            if "module" not in self._header_table:
                 self._header_table.property_add(self._module_prop)
 
             self._header_table["source widget"].value = source
@@ -349,7 +349,7 @@ class PartDetails(EditjeDetails):
     def _header_extra_hide(self):
         self.edje_get().signal_emit("cl,extra,deactivate", "")
         for p in ["source widget", "module"]:
-            if self._header_table.has_key(p):
+            if p in self._header_table:
                 self._header_table.property_del(p)
 
     def _part_removed(self, emissor, data):
@@ -404,12 +404,12 @@ class PartDetails(EditjeDetails):
     def _update_api_props(self, export, api):
         self["api"]["export"].value = export
         if self["api"]["export"].value:
-            if not self["api"].has_key("name"):
+            if "name" not in self["api"]:
                 self["api"].property_add(self._prop_api_name)
                 self["api"].property_add(self._prop_api_description)
             self["api"]["name"].value = api[0]
             self["api"]["description"].value = api[1]
-        elif self["api"].has_key("name"):
+        elif "name" in self["api"]:
             self["api"].property_del("name")
             self["api"].property_del("description")
 

@@ -413,7 +413,7 @@ class SignalDetails(EditjeDetails):
         self.group_hide("api")
         self.group_show("api")
 
-        if self["api"].has_key("name"):
+        if "name" in self["api"]:
             self["api"]["name"].value = None
             self["api"]["description"].value = None
 
@@ -720,11 +720,11 @@ class SignalDetails(EditjeDetails):
     def _update_api_props(self, export, api):
         self["api"]["export"].value = export
         if self["api"]["export"].value:
-            if not self["api"].has_key("name"):
+            if "name" not in self["api"]:
                 self["api"].property_add(self._prop_api_name)
                 self["api"].property_add(self._prop_api_description)
             self["api"]["name"].value = api[0]
             self["api"]["description"].value = api[1]
-        elif self["api"].has_key("name"):
+        elif "name" in self["api"]:
             self["api"].property_del("name")
             self["api"].property_del("description")

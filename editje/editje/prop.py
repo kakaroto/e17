@@ -239,7 +239,7 @@ class PropertyTable(elementary.Table):
     def get(self, key):
         return self._props.get(key)
 
-    def has_key(self, key):
+    def __contains__(self, key):
         return key in self._props
 
     def __getitem__(self, key):

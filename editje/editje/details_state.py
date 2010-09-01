@@ -859,9 +859,9 @@ class PartAnimStateDetails(PartStateDetails):
                 module = "Emotion"
 
             self.edje_get().signal_emit("cl,extra,activate", "")
-            if not self._header_table.has_key("source widget"):
+            if "source widget" not in self._header_table:
                 self._header_table.property_add(self._source_prop)
-            if not self._header_table.has_key("module"):
+            if "module" not in self._header_table:
                 self._header_table.property_add(self._module_prop)
 
             self._header_table["source widget"].value = source
@@ -879,7 +879,7 @@ class PartAnimStateDetails(PartStateDetails):
     def _header_extra_hide(self):
         self.edje_get().signal_emit("cl,extra,deactivate", "")
         for p in ["source widget", "module"]:
-            if self._header_table.has_key(p):
+            if p in self._header_table:
                 self._header_table.property_del(p)
 
     def _hide(self):
