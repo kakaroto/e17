@@ -1,5 +1,8 @@
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <Elementary.h>
-#include <config.h>
 
 static Evas_Object *
 _theme_get(Evas_Object *win, const char *group)
@@ -47,6 +50,7 @@ elm_main (int argc, char **argv)
    evas_object_resize(win, 640, 480);
    evas_object_show(win);
    elm_run();
+   return 0;
 }
 
 ELM_MAIN()

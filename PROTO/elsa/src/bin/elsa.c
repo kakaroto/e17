@@ -2,6 +2,8 @@
 #include <sys/types.h>
 #include <wait.h>
 
+#include <X11/Xlib.h>
+
 #include "elsa.h"
 
 #define ELSA_DISPLAY ":0.0"

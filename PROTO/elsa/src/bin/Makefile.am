@@ -23,10 +23,10 @@ elsa_gui.c         \
 elsa.h             \
 elsa.c
 
-elsa_test_SOURCES = \
-elsa_test.c
-
 elsa_LDFLAGS =
 elsa_LDADD = @ELSA_LIBS@ -lpam
+
+elsa_test_SOURCES = \
+elsa_test.c
 
 elsa_test_LDADD = @ELSA_LIBS@
