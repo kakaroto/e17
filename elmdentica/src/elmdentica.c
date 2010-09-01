@@ -148,6 +148,9 @@ void elmdentica_init(void) {
 	query = "ALTER TABLE messages ADD COLUMN user_id INTEGER;";
 	sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
 
+	query = "ALTER TABLE messages ADD COLUMN in_reply_to INTEGER;";
+	sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
+
 	query = "CREATE TABLE IF NOT EXISTS posts (account_id INTEGER CONSTRAINT account_id_ref REFERENCES accounts (id), dm_to TEXT, message TEXT);";
 	sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
 	if(sqlite_res != 0) {
@@ -295,6 +298,55 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 		hover = evas_object_name_find(e, "hover_actions");
 		if(hover) evas_object_del(hover);
 	}
+}
+
+void ed_popup_status(ub_Status *s) {
+    Evas_Object *inwin=NULL, *bubble=NULL, *message=NULL;
+
+    inwin = elm_win_inwin_add(win);
+        elm_object_style_set(inwin, "minimal_vertical");
+        bubble = ed_make_bubble(win, s->screen_name, s->created_at, NULL);
+			evas_object_size_hint_weight_set(bubble, 1, 1);
+			evas_object_size_hint_align_set(bubble, -1, -1);
+
+			message = ed_make_message(s->text, bubble, win);
+            elm_bubble_content_set(bubble, message);
+
+            evas_object_show(bubble);
+        elm_win_inwin_content_set(inwin, bubble);
+    evas_object_show(inwin);
+
+	free(s->screen_name);
+	free(s->name);
+	free(s->text);
+	free(s);
+}
+
+static void on_view_related(void *data, Evas_Object *obj, void *event_info) {
+	Evas *e;
+	Evas_Object *hover;
+	ub_Bubble *status = (ub_Bubble*)data;
+	ub_Status *related_status=NULL;
+
+	if(status) {
+		switch(status->account_type) {
+			case ACCOUNT_TYPE_TWITTER: { ed_twitter_status_get(status->account_id, status->in_reply_to, &related_status); break; }
+			case ACCOUNT_TYPE_STATUSNET:
+			default: { break; }
+		}
+	}
+
+	if(related_status)
+		ed_popup_status(related_status);
+	else
+		printf(_("Error importing related status\n"));
+
+	e = evas_object_evas_get(win);
+	if(e) {
+		hover = evas_object_name_find(e, "hover_actions");
+		if(hover) evas_object_del(hover);
+	}
+
 }
 
 static void on_reply(void *data, Evas_Object *obj, void *event_info) {
@@ -1199,6 +1251,16 @@ static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *even
 					elm_table_pack(table, button, 0, 1, 3, 1);
 				evas_object_show(button);
 
+				if(ubBubble->in_reply_to != 0) {
+					button = elm_button_add(win);
+						evas_object_size_hint_weight_set(button, 1, 1);
+						evas_object_size_hint_align_set(button, -1, 0);
+						elm_button_label_set(button, _("View related"));
+						evas_object_smart_callback_add(button, "clicked", on_view_related, ubBubble);
+						elm_table_pack(table, button, 0, 2, 3, 1);
+					evas_object_show(button);
+				}
+
 				evas_object_show(table);
 				elm_box_pack_end(box, table);
 
@@ -1281,6 +1343,7 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 		argv[6] == date INTEGER
 		argv[7] == type INTEGER
 		argv[10] == user_id INTEGER
+		argv[11] == in_reply_to INTEGER
 	*/
 
 	id=atoi(argv[0]);
@@ -1299,6 +1362,7 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 
 		ubBubble->account_id = account_id;
 		ubBubble->user_id=atol(argv[10]);
+		ubBubble->in_reply_to=atol(argv[11]);
 		ubBubble->account_type = type;
 		if(screen_name)
 			ubBubble->screen_name = strndup(screen_name, 1024);
@@ -1439,7 +1503,7 @@ void fill_message_list(int timeline) {
 
 	status2user = eina_hash_pointer_new(clear_status_hash_data);
 
-	sqlite_res = asprintf(&query, "SELECT messages.id,messages.status_id,messages.account_id,messages.screen_name,messages.name,messages.message,messages.date,accounts.type,accounts.id as accid,accounts.enabled, messages.user_id FROM messages,accounts where messages.timeline = %d and messages.account_id=accid and accounts.enabled=1 ORDER BY messages.date DESC LIMIT %d;", timeline, settings->max_messages);
+	sqlite_res = asprintf(&query, "SELECT messages.id,messages.status_id,messages.account_id,messages.screen_name,messages.name,messages.message,messages.date,accounts.type,accounts.id as accid,accounts.enabled, messages.user_id, messages.in_reply_to FROM messages,accounts where messages.timeline = %d and messages.account_id=accid and accounts.enabled=1 ORDER BY messages.date DESC LIMIT %d;", timeline, settings->max_messages);
 	if(sqlite_res != -1) {
 		sqlite_res = 0;
 		sqlite3_exec(ed_DB, query, add_status, (void*)(long)timeline, &db_err);

@@ -70,6 +70,7 @@ const char * browserNames[] = {
         "Midori",
         "Woosh",
         "Dillo",
+        "Eve",
 	};
 const char * browser_cmnds[] = {
         "/usr/bin/xdg-open %s &",
@@ -77,8 +78,9 @@ const char * browser_cmnds[] = {
         "/usr/bin/midori %s &",
         "/usr/bin/woosh -u %s &",
         "/usr/bin/dillo %s &",
+        "/usr/bin/eve %s &",
 	};
-int browsersIndex=4;
+int browsersIndex=5;
 
 Settings *settings=NULL;
 

@@ -58,6 +58,33 @@ extern Evas_Object *win;
 
 long long max_status_id=0;
 
+Eina_Hash *userHash=NULL;
+Eina_Hash *statusHash=NULL;
+
+void status_hash_data_free(void *data) {
+	aStatus *s = (aStatus*)data;
+
+    if(s) {
+		if(s->text) free(s->text);
+    	if(s->source) free(s->source);
+		free(s);
+	}
+}
+
+void user_hash_data_free(void *data) {
+	anUser *u = (anUser*)data;
+
+	if(u) {
+		if(u->name) free(u->name);
+		if(u->screen_name) free(u->screen_name);
+		if(u->location) free(u->location);
+		if(u->description) free(u->description);
+		if(u->profile_image_url) free(u->profile_image_url);
+		if(u->url) free(u->url);
+		free(u);
+	}
+}
+
 static int set_max_status_id(void *notUsed, int argc, char **argv, char **azColName) {
 	if(!argv[0])
 		max_status_id = 0;
@@ -68,20 +95,41 @@ static int set_max_status_id(void *notUsed, int argc, char **argv, char **azColN
 
 void message_insert(void *list_item, void *user_data) {
 	struct sqlite3_stmt **insert_stmt = (struct sqlite3_stmt**)user_data;
-	ub_Status *status = (ub_Status*)list_item;
-	int sqlite_res=0;
+	char *sid_str = (char*)list_item, *uid_str=NULL;
+	aStatus *s=NULL;
+	anUser *user=NULL;
+	long long int sid=0;
+	int sqlite_res=0, res=0;
 
-	if(status->id > max_status_id) {
-		max_status_id = status->id;
-		sqlite3_bind_int64(*insert_stmt,  1, status->id);
-		sqlite3_bind_text(*insert_stmt, 2, status->screen_name, -1, NULL);
-		sqlite3_bind_text(*insert_stmt, 3, status->name, -1, NULL);
-		sqlite3_bind_text(*insert_stmt, 4, status->text, -1, NULL);
-		sqlite3_bind_int64(*insert_stmt, 5, status->created_at);
-		sqlite3_bind_int64(*insert_stmt, 6, status->user_id);
+	s = eina_hash_find(statusHash, sid_str);
+	if(!s) {
+		printf(_("Oops, there should be a status here, for %s!\n"), sid_str);
+		return;
+	}
+
+	res = asprintf(&uid_str, "%lld", s->user);
+	if(res != -1) {
+		user = eina_hash_find(userHash, uid_str);
+		if(!user) {
+			printf(_("Oops, there should be an user here for %lld!\n"), s->user);
+			return;
+		}
+		free(uid_str);
+	}
+
+	sid = strtoll(sid_str, NULL, 10);
+	if(sid > max_status_id) {
+		max_status_id = sid;
+		sqlite3_bind_int64(*insert_stmt,  1, sid);
+		sqlite3_bind_text(*insert_stmt, 2, user->screen_name, -1, NULL);
+		sqlite3_bind_text(*insert_stmt, 3, user->name, -1, NULL);
+		sqlite3_bind_text(*insert_stmt, 4, s->text, -1, NULL);
+		sqlite3_bind_int64(*insert_stmt, 5, s->created_at);
+		sqlite3_bind_int64(*insert_stmt, 6, s->in_reply_to_user_id);
+		sqlite3_bind_int64(*insert_stmt, 7, s->in_reply_to_status_id);
 
 		sqlite_res = sqlite3_step(*insert_stmt);
-		if(sqlite_res != 0 && sqlite_res != 101 ) printf("ERROR: %d while inserting message:\n(%s) %s\n",sqlite_res, status->screen_name,status->text);
+		if(sqlite_res != 0 && sqlite_res != 101 ) printf("ERROR: %d while inserting message:\n(%s) %s\n",sqlite_res, user->screen_name,s->text);
 
 		sqlite3_reset(*insert_stmt);
 	}
@@ -106,10 +154,11 @@ void messages_insert(int account_id, Eina_List *list, int timeline) {
 		free(query);
 	}
 
-	sqlite_res = asprintf(&query, "INSERT INTO messages (status_id, account_id, screen_name, name, message, date, timeline, user_id) VALUES (?, %d, ?, ?, ?, ?, %d, ?);", account_id, timeline);;
+	sqlite_res = asprintf(&query, "INSERT INTO messages (status_id, account_id, screen_name, name, message, date, timeline, user_id, in_reply_to) VALUES (?, %d, ?, ?, ?, ?, %d, ?, ?);", account_id, timeline);;
 	if(sqlite_res != -1) {
 		sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
 		if(sqlite_res == 0) {
+			printf("Stored %d statues and %d users\nStatuses:\n", eina_hash_population(statusHash), eina_hash_population(userHash));
 			EINA_LIST_REVERSE_FOREACH(list, l, data)
 				message_insert(data, &insert_stmt);
 			sqlite3_finalize(insert_stmt);
@@ -118,6 +167,7 @@ void messages_insert(int account_id, Eina_List *list, int timeline) {
 		}
 		free(query);
 	}
+	printf("Messages inserted\n");
 }
 
 int ed_twitter_post(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *msg) {
@@ -164,7 +214,7 @@ static int ed_twitter_max_status_id_handler(void *data, int argc, char **argv, c
 	if(!argv[0])
 		*since_id = 0;
 	else
-		*since_id = atoll(argv[0]);
+		*since_id = strtoll(argv[0], NULL, 10);
 
 	return(0);
 }
@@ -221,47 +271,202 @@ void ed_twitter_statuses_get_avatar(char *screen_name) {
 }
 
 
+anUser *json_timeline_user_parse(json_object *user) {
+	anUser *u;
+	json_object *jo = NULL;
+	char *tmp=NULL;
+
+	if(!user) return(NULL);
+
+	u = calloc(1, sizeof(anUser));
+
+	if(!u) return(NULL);
+
+	jo = json_object_object_get(user, "name");
+	if(jo) {
+		u->name = strndup((char*)json_object_get_string(jo), PIPE_BUF);
+		json_object_put(jo);
+	}
+
+	jo = json_object_object_get(user, "screen_name");
+	if(jo) {
+		u->screen_name = strndup((char*)json_object_get_string(jo), PIPE_BUF);
+		json_object_put(jo);
+	}
+
+	jo = json_object_object_get(user, "location");
+	if(jo) {
+		u->location = strndup((char*)json_object_get_string(jo), PIPE_BUF);
+		json_object_put(jo);
+	}
+
+	jo = json_object_object_get(user, "description");
+	if(jo) {
+		u->description = strndup((char*)json_object_get_string(jo), PIPE_BUF);
+		json_object_put(jo);
+	}
+
+	jo = json_object_object_get(user, "profile_image_url");
+	if(jo) {
+		u->profile_image_url = strndup((char*)json_object_get_string(jo), PIPE_BUF);
+		json_object_put(jo);
+	}
+
+	jo = json_object_object_get(user, "url");
+	if(jo) {
+		u->url = strndup((char*)json_object_get_string(jo), PIPE_BUF);
+		json_object_put(jo);
+	}
+
+	jo = json_object_object_get(user, "protected");
+	if(jo) {
+		u->protected = json_object_get_boolean(jo);
+		json_object_put(jo);
+	}
+
+	jo = json_object_object_get(user, "followers_count");
+	if(jo) {
+		u->followers_count = json_object_get_int(jo);
+		json_object_put(jo);
+	}
+
+	jo = json_object_object_get(user, "friends_count");
+	if(jo) {
+		u->friends_count = json_object_get_int(jo);
+		json_object_put(jo);
+	}
+
+	jo = json_object_object_get(user, "created_at");
+	if(jo) {
+		tmp = (char*)json_object_get_string(jo);
+		u->created_at = curl_getdate(tmp, NULL);
+		json_object_put(jo);
+	}
+
+	jo = json_object_object_get(user, "favorites_count");
+	if(jo) {
+		u->favorites_count = json_object_get_int(jo);
+		json_object_put(jo);
+	}
+
+	jo = json_object_object_get(user, "statuses_count");
+	if(jo) {
+		u->statuses_count = json_object_get_int(jo);
+		json_object_put(jo);
+	}
+
+	jo = json_object_object_get(user, "following");
+	if(jo) {
+		u->following = json_object_get_boolean(jo);
+		json_object_put(jo);
+	}
+
+	jo = json_object_object_get(user, "statusnet:blocking");
+	if(jo) {
+		u->statusnet_blocking = json_object_get_boolean(jo);
+		json_object_put(jo);
+	}
+
+	return(u);
+}
+
+Eina_Bool json_timeline_handle_single(int timeline, StatusesList *statuses, json_object *astatus) {
+	json_object *jo, *user=NULL, *user_id;
+	anUser *u=NULL;
+	aStatus *s=NULL;
+	char *tmp=NULL, *uid_str=NULL, *sid_str=NULL;
+	int res=0;
+	long long int uid=0, sid=0;
+
+	if(!astatus) return(EINA_FALSE);
+
+	if(statusHash == NULL)
+		statusHash = eina_hash_string_superfast_new(status_hash_data_free);
+	if(userHash == NULL)
+		userHash = eina_hash_string_superfast_new(user_hash_data_free);
+
+	if(timeline == TIMELINE_DMSGS)
+		user = json_object_object_get(astatus, "sender");
+	else
+		user = json_object_object_get(astatus, "user");
+
+	if(user) {
+		user_id = json_object_object_get(user, "id");
+		uid = json_object_get_int(user_id);
+		json_object_put(user_id);
+
+		res = asprintf(&uid_str, "%lld", uid);
+		if(res != -1) {
+			u = eina_hash_find(userHash, uid_str);
+			if(!u) {
+				u = json_timeline_user_parse(user);
+				if(u && eina_hash_add(userHash, uid_str, (void*)u)) {
+					ed_twitter_statuses_get_avatar(uid_str);
+				} else
+					printf("Failed to parsed data for user %lld\n", uid);
+			}
+		} else uid_str=NULL;
+	}
+
+	s = calloc(1, sizeof(aStatus));
+	// FIXME: what happens if not enough memory? crash, that's what!
+	
+	jo = json_object_object_get(astatus, "id");
+	if(jo) {
+		sid = json_object_get_int(jo);
+		json_object_put(jo);
+	}
+
+	jo = json_object_object_get(astatus, "text");
+	if(jo) {
+		s->text = strndup((char*)json_object_get_string(jo), PIPE_BUF);
+		json_object_put(jo);
+	}
+
+	jo = json_object_object_get(astatus, "created_at");
+	if(jo) {
+		tmp = (char*)json_object_get_string(jo);
+		s->created_at = curl_getdate(tmp, NULL);
+		json_object_put(jo);
+	}
+
+	jo = json_object_object_get(astatus, "in_reply_to_user_id");
+	if(jo) {
+		s->in_reply_to_user_id = json_object_get_int(jo);
+		json_object_put(jo);
+	}
+
+	jo = json_object_object_get(astatus, "in_reply_to_status_id");
+	if(jo) {
+		s->in_reply_to_status_id = json_object_get_int(jo);
+		json_object_put(jo);
+	}
+
+	s->user = uid;
+	if(uid_str) free(uid_str);
+
+	res = asprintf(&sid_str, "%lld", sid);
+	if(res != -1) {
+		eina_hash_add(statusHash, sid_str, (void*)s);
+		statuses->list = eina_list_append(statuses->list, (void*)sid_str);
+	}
+
+
+	//if(user) json_object_put(user);
+
+	return(EINA_TRUE);
+}
+
 void json_timeline_handle(int timeline, StatusesList *statuses, json_object *json_stream) {
-	json_object *status, *id, *text, *created_at, *user, *screen_name, *name, *profile_image_url, *user_id;
+	json_object *astatus;
 	int size,pos=0;
-    ub_Status *ubstatus=NULL;
 
 	size = json_object_array_length(json_stream);
 
 	for(pos=0; pos<size; pos++) {
-    	ubstatus = (ub_Status*)calloc(1, sizeof(ub_Status));
-		status = json_object_array_get_idx(json_stream, pos);
-
-		id = json_object_object_get(status, "id");
-		text = json_object_object_get(status, "text");
-		created_at = json_object_object_get(status, "created_at");
-		if(timeline == TIMELINE_DMSGS)
-			user = json_object_object_get(status, "sender");
-		else
-			user = json_object_object_get(status, "user");
-		name = json_object_object_get(user, "name");
-		user_id = json_object_object_get(user, "id");
-		screen_name = json_object_object_get(user, "screen_name");
-		profile_image_url = json_object_object_get(user, "profile_image_url");
-
-		ubstatus->id = json_object_get_int(id);
-		ubstatus->user_id = json_object_get_int(user_id);
-		ubstatus->name = strndup(json_object_get_string(name), PIPE_BUF);
-		ubstatus->screen_name = strndup(json_object_get_string(screen_name), PIPE_BUF);
-		ubstatus->text = strndup(json_object_get_string(text), PIPE_BUF);
-		avatar = strndup(json_object_get_string(profile_image_url), PIPE_BUF);
-		ubstatus->created_at = curl_getdate(json_object_get_string(created_at), NULL);
-		ed_twitter_statuses_get_avatar(ubstatus->screen_name);
-
-		statuses->list = eina_list_append(statuses->list, (void*)ubstatus);
-
-		json_object_put(id);
-		json_object_put(text);
-		json_object_put(created_at);
-		json_object_put(name);
-		json_object_put(screen_name);
-		json_object_put(profile_image_url);
-		json_object_put(user);
+		astatus = json_object_array_get_idx(json_stream, pos);
+		json_timeline_handle_single(timeline, statuses, astatus);
+		json_object_put(astatus);
 	}
 }
 
@@ -283,7 +488,7 @@ void json_timeline(int timeline, StatusesList *statuses, char *stream) {
 			obj = json_object_object_get(json_stream, "error");
 			if(obj)
 				fprintf(stderr, "ERROR: %s\n", json_object_get_string(obj));
-			else
+			else if(!json_timeline_handle_single(timeline, statuses, json_stream))
 				fprintf(stderr, "ERROR unexpected content in json stream:\n%s\n", stream);
 			break;
 		}
@@ -345,11 +550,6 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 
 		if((res == 0) && (request->response_code == 200)) {
 			json_timeline(timeline, statuses, request->content.memory);
-
-			if(res != 0) {
-				fprintf(stderr,_("FAILED TO SAX FRIENDS: %d\n"),res);
-				if (debug) fprintf(stderr,"%s\n",request->content.memory);
-			}
 
 			now = time(NULL);
 			messages_insert(account_id, statuses->list, timeline);
@@ -622,7 +822,7 @@ static int ed_twitter_repeat_handler(void *data, int argc, char **argv, char **a
 
 	if(!request) return(-1);
 
-	res = asprintf(&request->url, "%s://%s:%d%s/statuses/retweet/%ld.json", proto, domain, port, base_url, *(long int*)data);
+	res = asprintf(&request->url, "%s://%s:%d%s/statuses/retweet/%lld.json", proto, domain, port, base_url, *(long long int*)data);
 
 	if(res != -1) {
 		if (debug) printf("gnome-open %s\n", request->url);
@@ -637,13 +837,127 @@ static int ed_twitter_repeat_handler(void *data, int argc, char **argv, char **a
 	return(0);
 }
 
-void ed_twitter_repeat(int account_id, long int status_id) {
+void ed_twitter_repeat(int account_id, long long int status_id) {
 	char *query=NULL, *db_err=NULL;
 	int sqlite_res;
 	
 	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE id = %d and type = %d and enabled = 1;", account_id, ACCOUNT_TYPE_TWITTER);
 	if(sqlite_res != -1) {
 		sqlite_res = sqlite3_exec(ed_DB, query, ed_twitter_repeat_handler, (void*)&status_id, &db_err);
+		if(sqlite_res != 0) {
+			fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
+			sqlite3_free(db_err);
+		}
+		free(query);
+	}
+}
+
+static int ed_twitter_status_get_handler(void *data, int argc, char **argv, char **azColName) {
+    char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL, *notify_message=NULL;
+    int port=0, id=0, res;
+	long long int in_reply_to;
+
+	http_request * request=calloc(1, sizeof(http_request));
+	StatusesList *statuses=(StatusesList*)calloc(1, sizeof(StatusesList));
+	time_t now;
+	Evas_Object *notify, *label;
+	ub_Status *li=NULL, **prelated_status = (ub_Status**)data, *parsed_status;
+
+    /* In this query handler, these are the current fields:
+        argv[0] == name TEXT
+        argv[1] == password TEXT
+        argv[2] == type INTEGER
+        argv[3] == proto TEXT
+        argv[4] == domain TEXT
+        argv[5] == port INTEGER
+        argv[6] == base_url TEXT
+        argv[7] == id INTEGER
+        argv[8] == in_reply_to INTEGER
+    */
+
+    screen_name = argv[0];
+    password = argv[1];
+    proto = argv[3];
+    domain = argv[4];
+    port = atoi(argv[5]);
+    base_url = argv[6];
+    id = atoi(argv[7]);
+    in_reply_to = strtoll(argv[8], NULL, 10);
+
+
+	if(request == NULL) return(-1);
+
+	res = asprintf(&request->url, "%s://%s:%d%s/statuses/show/%lld.json", proto, domain, port, base_url, in_reply_to);
+
+	if(res != -1) {
+		if (debug) printf("gnome-open %s\n", request->url);
+
+		res = ed_curl_get(screen_name, password, request, id);
+	
+		if((res == 0) && (request->response_code == 200)) {
+			json_timeline(-1, statuses, request->content.memory);
+
+			now = time(NULL);
+			if(eina_list_count(statuses->list) > 1)
+				printf(_("Statuses list should not be longer than 1 when fetching a single status, only first will be used\n"));
+
+			parsed_status = eina_list_data_get(statuses->list);
+
+			if(*prelated_status == NULL) {
+				*prelated_status = calloc(1, sizeof(ub_Status));
+
+				(*prelated_status)->screen_name = strdup(parsed_status->screen_name);
+				(*prelated_status)->name = strdup(parsed_status->name);
+				(*prelated_status)->text = strdup(parsed_status->text);
+				(*prelated_status)->created_at = parsed_status->created_at;
+				(*prelated_status)->id = parsed_status->id;
+				(*prelated_status)->user_id = parsed_status->user_id;
+				(*prelated_status)->in_reply_to = parsed_status->in_reply_to;
+			}
+
+			EINA_LIST_FREE(statuses->list, li) {
+				free(li->screen_name);
+				free(li->name);
+				free(li->text);
+				free(li);
+			}
+		} else {
+			res = asprintf(&notify_message, _("%s@%s had HTTP response: %ld"), screen_name, domain, request->response_code);
+			if(res != -1) {
+				notify = elm_notify_add(win);
+					evas_object_size_hint_weight_set(notify, 1, 1);
+					evas_object_size_hint_align_set(notify, -1, -1);
+					label = elm_label_add(win);
+						evas_object_size_hint_weight_set(label, 1, 1);
+						evas_object_size_hint_align_set(label, -1, -1);
+						elm_label_label_set(label, notify_message);
+						elm_label_line_wrap_set(label, EINA_TRUE);
+					evas_object_show(label);
+					elm_notify_content_set(notify, label);
+					elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_TOP_RIGHT);
+					elm_notify_parent_set(notify, win);
+					elm_notify_timeout_set(notify, 5);
+					elm_notify_timer_init(notify);
+				evas_object_show(notify);
+
+				free(notify_message);
+			}
+		}
+	}
+
+	if(request->url) free(request->url);
+	if(request->content.memory) free(request->content.memory);
+	free(request);
+
+	return(0);
+}
+void ed_twitter_status_get(int account_id, long long int in_reply_to, ub_Status **prelated_status) {
+	char *query=NULL, *db_err=NULL;
+	int sqlite_res;
+	
+	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id,%lld FROM accounts WHERE id = %d and type = %d and enabled = 1;", in_reply_to, account_id, ACCOUNT_TYPE_TWITTER);
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_twitter_status_get_handler, (void**)prelated_status, &db_err);
 		if(sqlite_res != 0) {
 			fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
 			sqlite3_free(db_err);

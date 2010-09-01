@@ -28,6 +28,7 @@ typedef struct _ub_Status {
 	time_t created_at;
 	long long int    id;
 	long long int   user_id;
+	long long int   in_reply_to;
 } ub_Status;
 
 typedef struct _ub_bubble {
@@ -36,6 +37,7 @@ typedef struct _ub_bubble {
 	int   account_id;
 	int   account_type;
 	long long int   status_id;
+	long long int   in_reply_to;
 	long long int   user_id;
 	Eina_Bool	favorite;
 } ub_Bubble;
@@ -88,11 +90,15 @@ typedef struct _User_Profile {
 #define	BROWSER_MIDORI	2
 #define	BROWSER_WOOSH	3
 #define	BROWSER_DILLO	4
+#define	BROWSER_EVE		5
 
 void error_win_del(void *data, Evas_Object *zbr, void *event_info);
 
 void set_urls(void);
 
 void fill_message_list(int timeline);
+
+Evas_Object *ed_make_bubble(Evas_Object *parent, char *nick, time_t date, char *corner);
+Evas_Object *ed_make_message(char *text, Evas_Object *bubble, Evas_Object *window);
 
 #endif
