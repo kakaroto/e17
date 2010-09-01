@@ -3,7 +3,7 @@ import os
 
 SYSTEM_THEMES_DIR = '@prefix@/share/editje/data/themes'
 
-VERSION='@VERSION@'
+VERSION = '@VERSION@'
 
 themedirs = []
 themedirs.append(os.path.join(os.path.dirname(__file__),
@@ -19,12 +19,14 @@ templatedirs.append(os.path.join(os.path.dirname(__file__),
 templatedirs.append(os.path.expanduser("~/.editje/templates"))
 templatedirs.append(SYSTEM_TEMPLATES_DIR)
 
+
 def theme_file_get(name):
     for t in themedirs:
         themepath = os.path.join(t, name + ".edj")
         if os.path.exists(themepath):
             return themepath
     return os.path.join(SYSTEM_THEMES_DIR, "default.edj")
+
 
 def template_file_get(name):
     for t in templatedirs:
