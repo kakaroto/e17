@@ -106,6 +106,13 @@ class Editje(elementary.Window, OpenFileManager):
         editje = Editje(sf)
         editje.show()
 
+    def open_new(self):
+        def ok(sf):
+            editje = Editje(sf)
+            editje.group = "main"
+            editje.show()
+        swapfile.open_new(ok, None)
+
     def _on_key_down_cb(self, win, event):
         if self.mode == "Animations":
             return
@@ -455,6 +462,7 @@ class Editje(elementary.Window, OpenFileManager):
         self._toolbar_group_cb(self, "< none >")
         self.e.callback_add("group.changed", self._toolbar_group_cb)
 
+        self._toolbar_bt_init(self.main_edje, "new.bt", "New", self._new_cb)
         self._toolbar_bt_init(self.main_edje, "open.bt", "Open", self._open_cb)
         self._toolbar_bt_init(self.main_edje, "save.bt", "Save", self._save_cb)
         self._toolbar_bt_init(self.main_edje, "undo.bt", "Undo", self._undo_cb)
@@ -515,6 +523,9 @@ class Editje(elementary.Window, OpenFileManager):
     def _toolbar_bt_init(self, edje, part, name, callback):
         edje.part_text_set(part + ".label", name)
         edje.signal_callback_add("%s,selected" % part, part, callback)
+
+    def _new_cb(self, obj, emission, source):
+        self.open_new()
 
     def _open_cb(self, obj, emission, source):
         self._openfile(self.open, os.path.dirname(self.e.filename))

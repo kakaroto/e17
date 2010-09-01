@@ -43,6 +43,7 @@ collections { group { name: "editje/icon/"_name;            \
 
 ICON("editje")
 ICON("new")
+ICON("new_file")
 ICON("options")
 ICON("animation")
 ICON("fonts")

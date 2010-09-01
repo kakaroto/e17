@@ -152,7 +152,7 @@ collections {
             }
          }
 
-         part { name: "open.bt";
+         part { name: "new.bt";
             type: RECT;
             mouse_events: 1;
             description { state: "default" 0.0;
@@ -167,6 +167,29 @@ collections {
                rel2 {
                   to: "toolbar";
                   relative: 0.0 1.0;
+	          offset: 5 -11;
+               }
+            }
+         }
+         TOOLBAR_BT_MAIN("new.bt", "ico_new_file.png")
+
+         part { name: "open.bt";
+            type: RECT;
+            mouse_events: 1;
+            description { state: "default" 0.0;
+               color: 255 0 0 0;
+               align: 0.0 0.5;
+               aspect: 1.5 1.0;
+               rel1 {
+                  to_x: "new.bt";
+                  to_y: "toolbar";
+                  relative: 1.0 0.0;
+	          offset: 5 5;
+               }
+               rel2 {
+                  to_x: "new.bt";
+                  to_y: "toolbar";
+                  relative: 1.0 1.0;
 	          offset: 5 -11;
                }
             }
