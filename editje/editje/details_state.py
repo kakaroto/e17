@@ -60,8 +60,7 @@ class PartStateDetails(EditjeDetails):
     def __init__(self, parent, operation_stack_cb, img_new_img_cb=None,
                  img_list_get_cb=None, img_id_get_cb=None,
                  fnt_new_fnt_cb=None, fnt_list_get_cb=None,
-                 fnt_id_get_cb=None, workfile_name_get_cb=None,
-                 part_object_get_cb=None,
+                 workfile_name_get_cb=None, part_object_get_cb=None,
                  group="editje/collapsable/part_state"):
         EditjeDetails.__init__(self, parent, operation_stack_cb, group)
 
@@ -72,7 +71,6 @@ class PartStateDetails(EditjeDetails):
         self._img_id_get_cb = img_id_get_cb
         self._fnt_new_fnt_cb = fnt_new_fnt_cb
         self._fnt_list_get_cb = fnt_list_get_cb
-        self._fnt_id_get_cb = fnt_id_get_cb
         self._workfile_name_get_cb = workfile_name_get_cb
         self._part_object_get_cb = part_object_get_cb
 
@@ -268,7 +266,7 @@ class PartStateDetails(EditjeDetails):
         prop = Property(self._parent, "font")
         prop.widget_add("f", WidgetFont(self._parent, \
             self._fnt_new_fnt_cb, self._fnt_list_get_cb, \
-            self._fnt_id_get_cb, self._workfile_name_get_cb))
+            self._workfile_name_get_cb))
         self["text"].property_add(prop)
 
         prop = Property(self._parent, "size")
@@ -787,11 +785,11 @@ class PartAnimStateDetails(PartStateDetails):
     def __init__(
         self, parent, operation_stack_cb, img_new_img_cb=None,
         img_list_get_cb=None, img_id_get_cb=None, fnt_new_fnt_cb=None,
-        fnt_list_get_cb=None, fnt_id_get_cb=None, workfile_name_get_cb=None,
+        fnt_list_get_cb=None, workfile_name_get_cb=None,
         part_object_get_cb=None, group="editje/collapsable/part_properties"):
         PartStateDetails.__init__(
             self, parent, operation_stack_cb, img_new_img_cb, img_list_get_cb,
-            img_id_get_cb, fnt_new_fnt_cb, fnt_list_get_cb, fnt_id_get_cb,
+            img_id_get_cb, fnt_new_fnt_cb, fnt_list_get_cb,
             workfile_name_get_cb, part_object_get_cb, group)
 
     def _context_recall(self, **kargs):

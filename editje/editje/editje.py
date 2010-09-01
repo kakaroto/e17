@@ -416,14 +416,13 @@ class Editje(elementary.Window, OpenFileManager):
     def _font_wizard_new_font_cb(self, fnt):
         self.e.font_add(fnt)
 
-    def _font_wizard_font_list_get_cb(self):
-#        font_list = self.e.fonts_get()
-#        font_list += self.main_layout.edje_get().evas.font_available_list()
-#        return font_list
-        return self.main_edje.evas.font_available_list()
-
-    def _font_wizard_font_id_get_cb(self, name):
-        return self.e.font_id_get(name)
+    # if local == True, we'll get fonts from *edje*
+    # if local == False, we'll get fonts from *system*
+    def _font_wizard_font_list_get_cb(self, local):
+        if local:
+            return self.e.fonts_get()
+        else:
+            return self.main_edje.evas.font_available_list()
 
     def _workfile_name_get_cb(self):
         return self.e.workfile
@@ -963,7 +962,6 @@ class Editje(elementary.Window, OpenFileManager):
             img_id_get_cb=self._image_wizard_image_id_get_cb,
             fnt_new_fnt_cb=self._font_wizard_new_font_cb,
             fnt_list_get_cb=self._font_wizard_font_list_get_cb,
-            fnt_id_get_cb=self._font_wizard_font_id_get_cb,
             workfile_name_get_cb=self._workfile_name_get_cb,
             part_object_get_cb=self._part_object_get_cb)
 
@@ -1098,7 +1096,6 @@ class Editje(elementary.Window, OpenFileManager):
             img_id_get_cb=self._image_wizard_image_id_get_cb,
             fnt_new_fnt_cb=self._font_wizard_new_font_cb,
             fnt_list_get_cb=self._font_wizard_font_list_get_cb,
-            fnt_id_get_cb=self._font_wizard_font_id_get_cb,
             workfile_name_get_cb=self._workfile_name_get_cb,
             part_object_get_cb=self._part_object_get_cb)  # fix
 

@@ -25,12 +25,11 @@ from floater import Wizard
 
 
 class FileSelectionWizard(Wizard):
-    def __init__(self, parent, selected_cb, file_add_cb, file_list_cb):
+    def __init__(self, parent, selected_cb, file_add_cb):
         Wizard.__init__(self, parent)
 
         self._selected_cb = selected_cb
         self._file_add_cb = file_add_cb
-        self._file_list_cb = file_list_cb
 
         self._selection = ""
 
@@ -55,8 +54,6 @@ class FileSelectionWizard(Wizard):
         self.action_add(
             "file_list", "Add New", self._goto_add_new_file, key="n")
 
-        self._file_list.callback_selected_add(self._goto_preview)
-
     def _create_add_new_file_page(self):
     #file selector - page create and populate
         self._add_new_file_page_created = True
@@ -74,13 +71,13 @@ class FileSelectionWizard(Wizard):
         self._file_preview_page_created = True
         self._add_file_preview_header()
 
-        self._add_files_to_preview()
-
         self.action_add("file_preview", "Go To List", self._back, key="Escape")
         self.action_add("file_preview", "Delete", self._delete_file,
                         key="Delete")
         self.action_add("file_preview", "Use", self._file_selected,
                         key="Return")
+
+        self._add_files_to_preview()
 
     def goto(self, page, alt_bg_style=None):
         Wizard.goto(self, page)
@@ -90,11 +87,8 @@ class FileSelectionWizard(Wizard):
             self._create_add_new_file_page()
         self.goto("add_new_file", alt_bg_style=True)
 
-    def _goto_preview(self, obj=None, data=None):
-        if obj:
-            self._selection = data.label_get()
-        else:
-            self._selection = data
+    def _goto_preview(self, obj=None, part=None, item_data=None):
+        self._selection = item_data
 
         if not self._file_preview_page_created:
             self._create_file_preview_page()
@@ -110,7 +104,7 @@ class FileSelectionWizard(Wizard):
 
     def _file_list_add(self):
         self._files = []
-        self._file_list = elementary.List(self)
+        self._file_list = elementary.Genlist(self)
         self._file_list.size_hint_align_set(
             evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
         self._file_list.size_hint_weight_set(
@@ -144,19 +138,8 @@ class FileSelectionWizard(Wizard):
     def _new_file_added(self):
         for i in self._fs.files:
             self._file_add_cb(i)
-        file_ = os.path.basename(i)
-        self._goto_preview(data=file_)
-
-    def _update(self):
-        self._files = self._file_list_cb()
-
-        self._file_list.clear()
-        self._files.sort(key=str.lower)
-
-        for i in self._files:
-            self._file_list.item_append(
-                i.split(',', 1)[0], None, None, None, None)
-        self._file_list.go()
+        new_file = os.path.basename(i)
+        self._goto_preview(item_data=new_file)
 
     def _fs_file_selected_cb(self, obj, data):
         if data:
@@ -187,16 +170,20 @@ class FileSelectionWizard(Wizard):
         self._selected_cb(self._selection)
         self.close()
 
+    def _gl_label_get(self, *kargs):
+        return kargs[-1]
+
 
 class ImageSelectionWizard(FileSelectionWizard):
     def __init__(self, parent, selected_cb, file_add_cb, file_list_cb,
                  img_id_get_cb, workfile_name_get_cb):
 
-        FileSelectionWizard.__init__(
-            self, parent, selected_cb, file_add_cb, file_list_cb)
-
+        self._file_list_cb = file_list_cb
         self._img_id_get_cb = img_id_get_cb
         self._workfile_name_get_cb = workfile_name_get_cb
+
+        FileSelectionWizard.__init__(
+            self, parent, selected_cb, file_add_cb)
 
     def _add_file_list_header(self):
         self.page_add("file_list", "Select an image",
@@ -218,6 +205,22 @@ class ImageSelectionWizard(FileSelectionWizard):
 
     def _get_title_text(self):
         self.title_text = "Image preview - \"%s\"" % self._selection
+
+    def _update(self):
+        itc = elementary.GenlistItemClass(item_style="default",
+                                           label_get_func=self._gl_label_get,
+                                           icon_get_func=None,
+                                           state_get_func=None)
+
+        self._files = self._file_list_cb()
+
+        self._file_list.clear()
+        self._files.sort(key=str.lower)
+
+        for i in self._files:
+            self._file_list.item_append(itc,
+                i.split(',', 1)[0], None, elementary.ELM_GENLIST_ITEM_NONE,
+                self._goto_preview)
 
     def _add_files_to_preview(self):
         self._preview_file = self._preview_method()
@@ -245,17 +248,17 @@ class ImageSelectionWizard(FileSelectionWizard):
 
 class FontSelectionWizard(FileSelectionWizard):
     def __init__(self, parent, selected_cb, file_add_cb,\
-                 file_list_cb, fnt_id_get_cb, workfile_name_get_cb):
+                 file_list_cb, workfile_name_get_cb):
 
-        FileSelectionWizard.__init__(self, parent, selected_cb,\
-                file_add_cb, file_list_cb)
-
-        self._fnt_id_get_cb = fnt_id_get_cb
+        self._file_list_cb = file_list_cb
         self._workfile_name_get_cb = workfile_name_get_cb
 
+        FileSelectionWizard.__init__(self, parent, selected_cb,\
+                file_add_cb)
+
     def _add_file_list_header(self):
-        self.page_add("file_list", "Select an font",
-                      "Select an font in list, or add a new one")
+        self.page_add("file_list", "Select a font",
+                      "Select a font in list, or add a new one")
 
     def _add_add_new_file_header(self):
         self.page_add("add_new_file", "Add a new font",
@@ -273,6 +276,55 @@ class FontSelectionWizard(FileSelectionWizard):
     def _get_title_text(self):
         self.title_text = "Font preview - \"%s\"" % self._selection
 
+    def _update(self):
+        itc = elementary.GenlistItemClass(item_style="default",
+                                            label_get_func=self._gl_label_get,
+                                            icon_get_func=None,
+                                            state_get_func=None)
+        self._file_list.clear()
+        self._files = []
+
+        for local in [True, False]:
+            #if local is True, we'll get fonts from Edje
+            #if local is False, we'll get fonts from System
+            if local:
+                message = "Edje Fonts"
+                self._edje_fonts = self._file_list_cb(local)
+                self._files += self._edje_fonts
+            else:
+                message = "System Fonts"
+                self._system_fonts = self._file_list_cb(local)
+                self._files += self._system_fonts
+
+            self._file_list.item_append(itc, message, None,
+                   elementary.ELM_GENLIST_ITEM_SUBITEMS, self._expand_cb)
+
+    def _expand_cb(self, obj, part, item_data):
+        if obj.expanded:
+            obj.expanded = False
+            obj.subitems_clear()
+            obj.selected = False
+            return
+
+        obj.expanded = True
+        itc = elementary.GenlistItemClass(item_style="default",
+                                            label_get_func=self._gl_label_get,
+                                            icon_get_func=None,
+                                            state_get_func=None)
+
+        if item_data == "Edje Fonts":
+            self._files = self._edje_fonts
+        else:
+            self._files = self._system_fonts
+
+        self._files.sort(key=str.lower)
+
+        for i in self._files:
+            self._file_list.item_append(itc, i.split(',', 1)[0],
+                    obj, elementary.ELM_GENLIST_ITEM_NONE,
+                    self._goto_preview)
+        obj.selected = False
+
     def _add_files_to_preview(self):
         self._preview_file = self._preview_method()
         self._preview_scroller_add()
@@ -282,19 +334,19 @@ class FontSelectionWizard(FileSelectionWizard):
         return evas.Text(self.evas)
 
     def _get_preview_file(self, selection):
-        self._preview_file.text_set(selection + ". Size: 16")
+        self._preview_file.text_set("%s. Size: 16" % selection)
         self._preview_file.color = (0, 0, 0, 255)
-        self._preview_file.font_set(selection, 16)
+        if selection in self._file_list_cb(True):
+            #get font from edje
+            self._preview_file.font_source_set(self._workfile_name_get_cb())
+            self._preview_file.font_set("edje/fonts/%s" % selection, 16)
+            #enable delete button
+            self.action_disabled_set("file_preview", "Delete", False)
+        else:
+            #get font from system
+            self._preview_file.font_set(selection, 16)
+            #disable delete button
+            self.action_disabled_set("file_preview", "Delete", True)
         self._preview_file.size_hint_weight_set(1.0, 1.0)
         self._preview_file.size_hint_align_set(-1.0, -1.0)
         self._preview_file.show()
-
-    def _create_file_list_page(self):
-    #file list - page create and populate
-        self._file_list_page_created = True
-        self._add_file_list_header()
-
-        self.content_add("file_list", self._file_list)
-        self.action_add("file_list", "Cancel", self.close)
-
-        self._file_list.callback_selected_add(self._goto_preview)
