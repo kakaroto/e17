@@ -295,3 +295,11 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
 
     def program_exist(self, char *name):
         return bool(edje_edit_program_exist(self.obj, name))
+
+    property error:
+        def __get__(self):
+            last_error = c_evas.eina_error_get()
+            if last_error:
+               return c_evas.eina_error_msg_get(last_error)
+
+            return None
