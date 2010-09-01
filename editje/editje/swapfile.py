@@ -15,62 +15,112 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
-from os import system, remove, path, getcwd, chdir, listdir, strerror
-from shutil import copyfile, rmtree
+from os import remove, path, strerror
+from shutil import copyfile
 from tempfile import mkstemp, mkdtemp
-from subprocess import Popen, PIPE
 import re
 import errno
 
 import sysconfig
+from edjecc import EdjeCC, EdjeDeCC
+
+_opened_files = dict()
+_opened_swapfiles = dict()
 
 RESTORE = 1
 REPLACE = 2
 
+EDITJE_SWP_SUFIX = ".editje_swp.edj"
 
-class SwapFile(object):
-    __opened_files = {}
 
-    def is_opened(self, filename=None):
-        if not filename:
-            filename = self.__filepath
-        return filename in self.__opened_files
+def _swapfile_path_get(filepath):
+    dir, file = path.split(filepath)
+    return path.join(dir, "." + file + EDITJE_SWP_SUFIX)
 
-    def __init__(self):
-        self.__new = False
-        self.__filepath = ""
-        self.__swapfile = ""
-        self.__compiled_file = False
-        self.__opened = False
 
-    def open(self, mode=None):
-        if self.__new:
-            self.__swapfile = mkstemp(".swp", "editje_")[1]
-            if not self.__filepath:
-                self.__filepath = sysconfig.template_file_get("default")
-            copyfile(self.__filepath, self.__swapfile)
-            self.__compiled_file = True
-            self.__filepath = ""
-            self.__opened = True
+def open_new(success_cb, fail_cb, origin=None, **kargs):
+    #TODO: include checks
+    swapfile = mkstemp(".swp", "editje_")[1]
+    if not origin:
+        origin = sysconfig.template_file_get("default")
+    copyfile(origin, swapfile)
+    success_cb(SwapFile("", swapfile, True), **kargs)
+
+
+def open(filepath, success_cb, fail_cb, mode=None, **kargs):
+    kargs["filepath"] = filepath
+
+    if not path.exists(filepath):
+        fail_cb(IOError(errno.ENOENT, strerror(errno.ENOENT), filepath),
+                **kargs)
+        return
+
+    sf = _opened_files.get(filepath)
+    if sf:
+        success_cb(sf, **kargs)
+        return
+
+    sf = _opened_swapfiles.get(filepath)
+    if sf or filepath.endswith(EDITJE_SWP_SUFIX):
+        fail_cb(FileSwapTypeError(filepath), **kargs)
+        return
+
+    swapfile = _swapfile_path_get(filepath)
+    if path.exists(swapfile):
+        if mode == RESTORE:
+            sf = SwapFile(filepath, swapfile)
+            success_cb(sf, **kargs)
+            return
+        elif mode != REPLACE:
+            fail_cb(IOError(errno.EEXIST, strerror(errno.EEXIST), swapfile),
+                    **kargs)
             return
 
-        if self.__filepath in self.__opened_files:
-            raise FileOpened(self)
+    if filepath.endswith(".edj"):
+        _open_copy(filepath, swapfile, success_cb, fail_cb, kargs)
+    elif filepath.endswith(".edc"):
+        _open_compile(filepath, swapfile, success_cb, fail_cb, kargs)
+    else:
+        fail_cb(UnknownFileTypeError(filepath, swapfile), **kargs)
 
-        if not self.__filepath:
-            raise FileNotSet(self)
 
-        if path.exists(self.__swapfile):
-            if mode == RESTORE:
-                self.__opened = True
-                self.__opened_files[self.__filepath] = self
-                return
-            elif mode != REPLACE:
-                raise CacheAlreadyExists(self)
+def _open_compile(filepath, swapfile, success_cb, fail_cb, kargs):
+    def error_cb(edjecc, **kargs):
+        msg = ""
+        for l in edjecc.stderr:
+            msg += l + "\n"
+        fail_cb(CompileError(edjecc.edc, edjecc.edj, msg), **kargs)
 
-        self.__swap_create()
-        self.__opened = True
-        self.__opened_files[self.__filepath] = self
+    def ok_cb(edjecc, **kargs):
+        sf = SwapFile(edjecc.edc, edjecc.edj, False)
+        success_cb(sf, **kargs)
+
+    EdjeCC(filepath, swapfile, ok_cb, error_cb, **kargs)
+
+
+def _open_copy(filepath, swapfile, success_cb, fail_cb, kargs):
+    #TODO: include checks
+    copyfile(filepath, swapfile)
+    sf = SwapFile(filepath, swapfile, True)
+    success_cb(sf, **kargs)
+
+
+class SwapFile(object):
+
+    def __init__(self, filepath, swapfile, compiled=None):
+        self.__filepath = filepath
+        self.__swapfile = swapfile
+
+        if compiled is None:
+            self.__file_check()
+        else:
+            self.__compiled_file = compiled
+
+        _opened_files[filepath] = self
+        _opened_swapfiles[swapfile] = self
+
+    def is_new(self):
+        return not self.__filepath
 
     def __file_check(self):
         if self.__filepath.endswith(".edj"):
@@ -78,154 +128,104 @@ class SwapFile(object):
         elif self.__filepath.endswith(".edc"):
             self.__compiled_file = False
         else:
-            raise UnknownFileType(self)
+            raise UnknownFileTypeError(self.__filepath)
 
-    def __swap_update(self):
-        dir, file = path.split(self.__filepath)
-        self.__swapfile = path.join(dir, "." + file + ".editje_swp.edj")
-
-    def __swap_create(self):
-        if self.__compiled_file:
-            copyfile(self.__filepath, self.__swapfile)
+    def save(self, success_cb, fail_cb, filepath=None, mode=None):
+        if filepath:
+            opened = _opened_files.get(filepath)
+            if opened and opened != self:
+                fail_cb(FileOpenedError(self))
+                return
+            if self.__filepath in _opened_files:
+                del _opened_files[self.__filepath]
+            if path.exists(filepath) and mode != REPLACE:
+                fail_cb(IOError(errno.EEXIST, strerror(errno.EEXIST),
+                        filepath))
+                return
+            if not path.exists(path.dirname(filepath)):
+                fail_cb(IOError(errno.ENOENT, strerror(errno.ENOENT),
+                        filepath))
+                return
+            self.__filepath = filepath
+            try:
+                self.__file_check()
+            except Exception, e:
+                fail_cb(e)
+                return
+        elif self.__filepath:
+            filepath = self.__filepath
         else:
-            dir, file = path.split(self.__filepath)
-            compiler = Popen(('edje_cc', '-id', 'images', file,
-                              self.__swapfile),
-                             cwd=dir, bufsize=-1, stderr=PIPE)
-            err = compiler.communicate()[1]
-            if not (path.exists(self.__swapfile) and
-                    path.isfile(self.__swapfile)):
-                raise CompileError(self, re.sub('\x1b.*?m', '', err))
-
-    def save(self, filepath=None, mode=None):
-        if not self.__opened:
+            fail_cb(self, FileNotSetError())
             return
 
-        if filepath:
-            opened = self.__opened_files.get(filepath)
-            if opened and opened != self:
-                raise FileOpened(self)
-            if self.__filepath in self.__opened_files:
-                del self.__opened_files[self.__filepath]
-            if path.exists(filepath) and mode != REPLACE:
-                raise FileAlreadyExists(self)
-            if not path.exists(path.dirname(filepath)):
-                raise IOError(errno.ENOENT, filepath, strerror(errno.ENOENT))
-            self.__filepath = filepath
-            self.__file_check()
-        elif self.__new:
-            raise FileNotSet(self)
-
         if self.__compiled_file:
-            copyfile(self.__swapfile, self.__filepath)
+            self.__save_copy(filepath, success_cb, fail_cb)
         else:
-            orig_dir = getcwd()
-            temp_dir = mkdtemp(prefix="editje_")
-            chdir(temp_dir)
-            system('edje_decc ' + self.__swapfile +
-                   ' -no-build-sh -current-dir')
-            copyfile("./generated_source.edc", self.__filepath)
-            remove("./generated_source.edc")
-            dir, file = path.split(self.__filepath)
-            for file in listdir(temp_dir):
-                copyfile(file, path.join(dir, file))
-            chdir(orig_dir)
-            rmtree(temp_dir)
+            self.__save_decc(filepath, success_cb, fail_cb)
 
-        self.__new = False
-        self.__opened_files[self.__filepath] = self
+    def __save_copy(self, filepath, success_cb, fail_cb):
+        copyfile(self.__swapfile, self.__filepath)
+        self.__filepath = filepath
+        _opened_files[self.__filepath] = self
+        success_cb(self)
+
+    def __save_decc(self, filepath, success_cb, fail_cb):
+        def decc_ok(decc):
+            success_cb(self)
+
+        def decc_error(decc):
+            fail_cb(self)
+
+        EdjeDeCC(self.__workfile, filepath, decc_ok, decc_error)
 
     def close(self):
-        if not self.__opened:
-            return
-
         if self.__filepath:
-            del self.__opened_files[self.__filepath]
+            del _opened_files[self.__filepath]
+        del _opened_swapfiles[self.__swapfile]
         remove(self.__swapfile)
         self.__swapfile = None
-        self.__new = True
         self.__filepath = ""
 
     def _file_get(self):
         return self.__filepath
 
-    def _file_set(self, filepath):
-        if self.__opened:
-            return
-
-        if not filepath:
-            self.__filepath = ""
-            self.__swapfile = ""
-            return
-
-        if not (path.exists(filepath) and path.isfile(filepath)):
-            raise FileNotFound(self)
-
-        self.__filepath = filepath
-
-        self.__file_check()
-
-        self.__swap_update()
-
-    file = property(_file_get, _file_set)
+    file = property(_file_get)
 
     def _workfile_get(self):
         return self.__swapfile
 
     workfile = property(_workfile_get)
 
-    def _new_set(self, value):
-        if self.__opened:
-            return
 
-        self.__new = value
-
-    def _new_get(self):
-        return self.__new
-
-    new = property(_new_get, _new_set)
+class FileError(Exception):
+    def __init__(self, file):
+        self.file = file
 
 
-class SwapFileError(Exception):
-    def __init__(self, swapfile):
-        self.swapfile = swapfile
-
-
-class FileNotSet(SwapFileError):
+class FileNotSetError(Exception):
     def __str__(self):
         return "File not set."
 
 
-class UnknownFileType(SwapFileError):
+class UnknownFileTypeError(FileError):
     def __str__(self):
         return "Unknown File type."
 
 
-class CacheAlreadyExists(SwapFileError):
+class FileSwapTypeError(FileError):
     def __str__(self):
-        return self.swapfile.file + " : Swap file (" + \
-            self.swapfile.workfile + ") exists."
+        return "Swap File type."
 
 
-class CompileError(SwapFileError):
-    def __init__(self, swapfile, message):
-        SwapFileError.__init__(self, swapfile)
+class CompileError(FileError):
+    def __init__(self, file, message):
+        FileError.__init__(self, file)
         self.message = message
 
     def __str__(self):
-        return self.swapfile.file + " : Compile Error\n" + self.message
+        return self.file + " : Compile Error\n" + self.message
 
 
-class FileAlreadyExists(SwapFileError):
+class FileOpenedError(FileError):
     def __str__(self):
-        return self.swapfile.file + " : File exists."
-
-
-class FileNotFound(SwapFileError):
-    def __str__(self):
-        return self.swapfile.file + " : File not found."
-
-
-class FileOpened(SwapFileError):
-    def __str__(self):
-        return self.swapfile.file + " : File opened."
+        return self.file + " : File opened."

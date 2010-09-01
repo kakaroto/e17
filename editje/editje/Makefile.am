@@ -40,6 +40,7 @@ editable_part.py \
 editable_program.py \
 editable_state.py \
 editje.py \
+edjecc.py \
 error_notify.py \
 event_manager.py \
 fileselector.py \

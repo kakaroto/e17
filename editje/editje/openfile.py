@@ -99,19 +99,14 @@ class OpenFile(elementary.Window):
 
     path = property(fset=_path_set)
 
-    def _open(self, bt, mode=None):
-        sf = swapfile.SwapFile()
-        try:
-            sf.file = self._fs.file
-            sf.open(mode)
-        except Exception, e:
-            self._notify_err(e)
-            return
-
+    def _open_ok(self, sf, **kargs):
         self.hide()
         open_cb, args, kargs = self._open_cb
         open_cb(sf, *args, **kargs)
         self.delete()
+
+    def _open(self, bt, mode=None):
+        swapfile.open(self._fs.file, self._open_ok, self._notify_err, mode)
 
     def _open_forced(self, bt, data):
         self._open(bt, swapfile.REPLACE)
@@ -133,19 +128,14 @@ class OpenFile(elementary.Window):
         return files
 
     def _new(self, bt):
-        sf = swapfile.SwapFile()
-        sf.file = ""
-        sf.new = True
-        sf.open()
-
-        from editje import Editje
-        editje = Editje(sf)
-        editje.group = "main"
-        editje.show()
-        self._cancel(bt)
+        def ok(sf, **kargs):
+            editje = Editje(sf)
+            editje.group = "main"
+            editje.show()
+            self._cancel(bt)
+        swapfile.open_new(ok, None)
 
     def _cancel(self, bt):
-        self.hide()
         self.delete()
 
     def _notify_del(self):
@@ -175,7 +165,7 @@ class OpenFile(elementary.Window):
 
         self._notification.show()
 
-    def _notify_err(self, err):
+    def _notify_err(self, err, **kargs):
         if self._notification:
             self._notification.hide()
             self._notification.delete()
@@ -183,7 +173,7 @@ class OpenFile(elementary.Window):
 
         self._notification = ErrorNotify(self)
 
-        if isinstance(err, swapfile.CacheAlreadyExists):
+        if isinstance(err, IOError) and err.errno == errno.EEXIST:
             self._notification.title = "Swap file already exists"
             lb = elementary.Label(self._notification)
             lb.label_set(

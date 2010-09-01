@@ -17,6 +17,7 @@
 
 import os
 import sys
+import errno
 
 import evas
 import ecore
@@ -204,34 +205,40 @@ class Editje(elementary.Window, OpenFileManager):
 
         self._window_blocker = None
 
+    # Save
     def save(self):
+
         if not self.e.filename:
             return self.save_as()
 
+        def save_ok(sf):
+            self.block(False)
+
+        def save_error(err):
+            nt = elementary.Notify(self)
+            nt.timeout_set(2)
+            nt.orient_set(elementary.ELM_NOTIFY_ORIENT_BOTTOM)
+            nt.repeat_events_set(True)
+
+            lb = elementary.Label(nt)
+            lb.label_set("Save Error " + str(err))
+            nt.content_set(lb)
+            lb.show()
+
+            nt.show()
+            self.block(False)
+
         self.block(True)
-        self.e.save()
-        self.block(False)
+        self.e.save(save_ok, save_error)
 
     def save_as(self):
         self.callback_destroy_del(self._destroy_cb)
-        self.block(True)
 
-        def cancel(bt):
+        def popup_cancel(bt):
             win.hide()
             win.delete()
             self.block(False)
             self.callback_destroy_add(self._destroy_cb)
-
-        win = elementary.Window("fileselector", elementary.ELM_WIN_BASIC)
-        win.title_set("Save as")
-        win.callback_destroy_add(cancel)
-        win.resize(600, 480)
-        win.maximized_set(True)
-
-        bg = elementary.Background(win)
-        win.resize_object_add(bg)
-        bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
-        bg.show()
 
         def save(bt, mode=None):
             new_file = fs.file
@@ -246,20 +253,20 @@ class Editje(elementary.Window, OpenFileManager):
             if not accepted_filetype(new_file):
                 new_file += ".edj"
 
-            try:
-                self.e.save_as(new_file, mode)
-                cancel(bt)
-            except swapfile.FileAlreadyExists, e:
+            self.e.save_as(new_file, popup_cancel, save_error, mode)
+
+        def save_error(err):
+            if isinstance(err, IOError) and err.errno == errno.EEXIST:
                 notification = ErrorNotify(win)
-                notification.title = str(e).replace(':', '<br>')
+                notification.title = str(err).replace(':', '<br>')
                 notification.action_add("Abort", notify_close,
                                         None, notification)
                 notification.action_add("Overwrite", notify_overwrite,
                                         None, notification)
                 notification.show()
-            except Exception, e:
+            else:
                 notification = ErrorNotify(win)
-                notification.title = str(e).replace(':', '<br>')
+                notification.title = str(err).replace(':', '<br>')
                 notification.action_add("Ok", notify_close, None, notification)
                 notification.show()
 
@@ -272,10 +279,23 @@ class Editje(elementary.Window, OpenFileManager):
             notify_close(bt, notification)
             save(bt, swapfile.REPLACE)
 
+        self.block(True)
+
+        win = elementary.Window("fileselector", elementary.ELM_WIN_BASIC)
+        win.title_set("Save as")
+        win.callback_destroy_add(popup_cancel)
+        win.resize(600, 480)
+        win.maximized_set(True)
+
+        bg = elementary.Background(win)
+        win.resize_object_add(bg)
+        bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+        bg.show()
+
         fs = FileSelector(win)
         fs.filter = accepted_filetype
         fs.save = True
-        fs.action_add("Cancel", cancel)
+        fs.action_add("Cancel", popup_cancel)
         fs.action_add("Save", save)
         win.resize_object_add(fs)
         fs.show()

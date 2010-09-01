@@ -335,26 +335,47 @@ class Editable(Manager):
         for a in anim_del_lst:
             self.animation_del(a)
 
-    def save(self):
+    # Save
+
+    def save(self, success_cb=None, fail_cb=None):
+
+        def save_ok(sf):
+            if success_cb:
+                success_cb(sf)
+            self.event_emit("saved")
+
+        def save_error(err):
+            if fail_cb:
+                fail_cb(err)
+            self.event_emit("save.error")
+
         self._empty_animations_clear()
 
         if self.__edje.save_all():
-            self._swapfile.save()
-            self.event_emit("saved")
+            self._swapfile.save(save_ok, save_error)
         else:
-            self.event_emit("saved.error")
+            self.event_emit("save.error")
 
-    def save_as(self, path, mode=None):
+    def save_as(self, path, success_cb=None, fail_cb=None,  mode=None):
+
+        def save_as_ok(sf):
+            if success_cb:
+                success_cb(sf)
+            self.event_emit("filename.changed", sf.file)
+            self.event_emit("saved")
+
+        def save_as_error(err):
+            if fail_cb:
+                fail_cb(err)
+            self.event_emit("save.error")
+
         self._empty_animations_clear()
 
         if self.__edje.save_all():
-            self._swapfile.save(path, mode)
-            self.event_emit("filename.changed", path)
-            self.event_emit("saved")
-            return True
+            self._swapfile.save(save_as_ok, save_as_error, filepath=path,
+                                mode=mode)
         else:
-            self.event_emit("saved.error")
-            return False
+            self.event_emit("save.error")
 
     # Parts
     def _parts_get(self):

@@ -21,6 +21,7 @@ import os
 import sys
 import re
 from optparse import OptionParser
+import errno
 
 import elementary
 import edje
@@ -66,98 +67,89 @@ def file_and_group_parse(file_, grp):
     return [f, r.group(0)]
 
 
-def open_editje_abort_cb(bt, pop):
+def _open_force_cb(bt, data):
+    pop, mode, filepath, group, slave_mode, in_port = data
+    swapfile.open(filepath, _open_ok_cb, _open_err_cb, mode=mode, group=group,
+                  slave_mode=slave_mode, in_port=in_port)
+    _open_abort_cb(bt, pop)
+
+
+def _open_abort_cb(bt, pop):
     pop.hide()
     pop.delete()
 
 
-def open_editje_on_swap_error_cb(bt, data):
-    pop, option, sf, group, slave_mode = data
-    sf.open(option)
-    pop.hide()
-    open_editje_with_swap_file(sf, group, slave_mode=slave_mode)
-    pop.delete()
-
-
-def open_editje_with_swap_file(sf, group, slave_mode=False, in_port=None):
-    editje = Editje(
-        sf, slave_mode=slave_mode, in_port=in_port)
+def _open_ok_cb(sf, filepath=None, group=None, slave_mode=False, in_port=None):
+    editje = Editje(sf, slave_mode=slave_mode, in_port=in_port)
 
     if group and group in edje.file_collection_list(sf.workfile):
         editje.group = group
+
     editje.show()
 
 
-def open_editje(file_, group, slave_mode=False, in_port=None):
-    try:
-        sf = swapfile.SwapFile()
-        if not slave_mode and not file_:
-            sf.file = ""
-            sf.new = True
-        else:
-            sf.file = os.path.realpath(file_)
+def _open_err_cb(e, filepath=None, group=None, slave_mode=None, in_port=None):
+    if slave_mode:
+        raise RuntimeError(str(e))
 
-        sf.open()
-    except swapfile.CacheAlreadyExists, e:
-        if slave_mode:
-            # sticking to REPLACE action in slave mode
-            sf.open(swapfile.REPLACE)
-            open_editje_with_swap_file(
-                sf, group, slave_mode, in_port)
-        else:
-            pop = PopupWindow()
-            pop.title = "Editje - Swap file already exists"
+    if isinstance(e, IOError) and e.errno == errno.EEXIST:
+        pop = PopupWindow()
+        pop.title = "Editje - Swap file already exists"
 
-            lb = elementary.Label(pop)
-            lb.label_set(
-                "Swap file to " + file_ + " already exists.<br>" +
+        lb = elementary.Label(pop)
+        lb.label_set(
+                "Swap file to " + filepath + " already exists.<br>" +
                 "Another program may be editing the same file<br>" +
                 "or an edition session for this file crashed.")
-            pop.pack_end(lb)
-            lb.show()
+        pop.pack_end(lb)
+        lb.show()
 
-            pop.action_add(
-                "Ignore Swap", open_editje_on_swap_error_cb,
-                data=(pop, swapfile.REPLACE, sf, group, slave_mode))
-            pop.action_add(
-                "Recover", open_editje_on_swap_error_cb,
-                data=(pop, swapfile.RESTORE, sf, group, slave_mode))
-            pop.action_add("Abort", open_editje_abort_cb, data=pop)
-            pop.show()
-    except swapfile.CompileError, e:
-        if slave_mode:
-            raise RuntimeError("compiling error")
-        else:
-            pop = PopupWindow()
-            pop.title = "Editje - Compiler Error"
+        pop.action_add("Ignore Swap", _open_force_cb,
+                       data=(pop, swapfile.RESTORE, filepath, group,
+                             slave_mode, in_port))
+        pop.action_add("Recover", _open_force_cb,
+                       data=(pop, swapfile.RESTORE, filepath, group,
+                             slave_mode, in_port))
+        pop.action_add("Abort", _open_abort_cb, data=pop)
 
-            lb = elementary.Label(pop)
-            lb.label_set("Compile Error: " + file_ + "<br>" + e.message)
-            pop.pack_end(lb)
-            lb.show()
+        pop.show()
+    elif isinstance(e, swapfile.CompileError):
+        pop = PopupWindow()
+        pop.title = "Editje - Compiler Error"
 
-            pop.action_add("OK", open_editje_abort_cb, data=pop)
-            pop.show()
+        lb = elementary.Label(pop)
+        lb.label_set("Compile Error: " + filepath + "<br>" + e.message)
+        pop.pack_end(lb)
+        lb.show()
 
-            return None
-    except Exception, e:
-        if slave_mode:
-            raise RuntimeError("file error")
-        else:
-            pop = PopupWindow()
-            pop.title = "Editje - File Error"
+        pop.action_add("OK", popup_cancel, data=pop)
 
-            lb = elementary.Label(pop)
-            lb.label_set("Error with file: " + file_ + "<br>" + str(e))
-            pop.pack_end(lb)
-            lb.show()
-
-            pop.action_add("OK", open_editje_abort_cb, data=pop)
-            pop.show()
-
-            return None
+        pop.show()
     else:
-        open_editje_with_swap_file(sf, group, slave_mode, in_port)
+        pop = PopupWindow()
+        pop.title = "Editje - File Error"
+
+        lb = elementary.Label(pop)
+        lb.label_set("Error with file: " + filepath + "<br>" + str(e))
+        pop.pack_end(lb)
+        lb.show()
+
+        pop.action_add("OK", popup_cancel, data=pop)
+
+        pop.show()
+
+
+def open_editje(filename, group, slave_mode=False, in_port=None):
+        mode = None
+        if slave_mode:
+            mode = swapfile.REPLACE
+        if not slave_mode and not filename:
+            swapfile.open_new(_open_ok_cb, _open_err_cb, group=group,
+                              slave_mode=slave_mode, in_port=in_port)
+        else:
+            swapfile.open(os.path.realpath(filename), _open_ok_cb,
+                          _open_err_cb, mode=mode, group=group,
+                          slave_mode=slave_mode, in_port=in_port)
 
 
 if __name__ == "__main__":

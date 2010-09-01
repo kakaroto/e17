@@ -303,7 +303,7 @@ class FileSelector(Manager, elementary.Table):
             self.event_emit("file.selection_clear", None)
 
     def _file_clicked(self, li, it):
-        self.event_emit("file.clicked", it.data_get()[0][0])
+	    self.event_emit("file.clicked", it.data_get()[0][0])
 
     def _file_entry_change(self, en):
         if not self.save:
