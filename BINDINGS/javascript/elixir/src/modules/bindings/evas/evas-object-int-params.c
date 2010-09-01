@@ -69,7 +69,6 @@ elixir_evas_object_int_params(void (*func)(Evas_Object *obj, int value),
 }
 
 FAST_CALL_PARAMS_SPEC_CAST(evas_object_layer_set, elixir_evas_object_int_params, _evas_object_int_params);
-FAST_CALL_PARAMS_SPEC(evas_object_color_interpolation_set, elixir_evas_object_int_params, _evas_object_int_params);
 /* We don't have enum in JS. */
 FAST_CALL_PARAMS_SPEC_CAST(evas_object_render_op_set, elixir_evas_object_int_params, _evas_object_int_params);
 FAST_CALL_PARAMS_SPEC_CAST(evas_object_image_border_center_fill_set, elixir_evas_object_int_params, _evas_object_int_params);
@@ -111,7 +110,6 @@ FAST_CALL_PARAMS_SPEC(evas_object_text_char_pos_get, elixir_pos_evas_object_int_
 static JSFunctionSpec     evas_object_params_function[] = {
   ELIXIR_FN(evas_object_image_border_center_fill_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_layer_set, 2, JSPROP_ENUMERATE, 0 ),
-  ELIXIR_FN(evas_object_color_interpolation_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_render_op_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_image_load_scale_down_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_textblock_line_number_geometry_get, 2, JSPROP_ENUMERATE, 0 ),

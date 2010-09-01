@@ -580,7 +580,6 @@ FAST_CALL_PARAMS_SPEC_CAST(evas_object_render_op_get, elixir_int_evas_object_par
 FAST_CALL_PARAMS_SPEC_CAST(evas_object_image_border_center_fill_get, elixir_int_evas_object_params, _evas_object_image_params);
 
 FAST_CALL_PARAMS_SPEC_CAST(evas_object_layer_get, elixir_int_evas_object_params, _evas_object_params);
-FAST_CALL_PARAMS_SPEC(evas_object_color_interpolation_get, elixir_int_evas_object_params, _evas_object_params);
 FAST_CALL_PARAMS_SPEC(evas_object_image_load_error_get, elixir_int_evas_object_params, _evas_object_image_params);
 FAST_CALL_PARAMS_SPEC(evas_object_image_load_scale_down_get, elixir_int_evas_object_params, _evas_object_image_params);
 FAST_CALL_PARAMS_SPEC(evas_object_text_ascent_get, elixir_int_evas_object_params, _evas_object_text_params);
@@ -650,7 +649,6 @@ static JSFunctionSpec     evas_object_params_function[] = {
   ELIXIR_FN(evas_object_below_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_clip_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_layer_get, 1, JSPROP_ENUMERATE, 0 ),
-  ELIXIR_FN(evas_object_color_interpolation_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_render_op_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_visible_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_anti_alias_get, 1, JSPROP_ENUMERATE, 0 ),

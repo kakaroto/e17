@@ -96,7 +96,29 @@ elixir_evas_textblock_cursor_params(void (*func)(Evas_Textblock_Cursor* cur),
 }
 
 static JSBool
-elixir_evas_textblock_cursor_string_params(void (*func)(Evas_Textblock_Cursor* cur, const char* str),
+elixir_int_evas_textblock_cursor_string_params(size_t (*func)(Evas_Textblock_Cursor* cur, const char* str),
+					       JSContext *cx, uintN argc, jsval *vp)
+{
+   Evas_Textblock_Cursor *know;
+   const char *str;
+   elixir_value_t val[2];
+
+   if (!elixir_params_check(cx, _evas_textblock_cursor_string_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, know);
+   str = elixir_get_string_bytes(val[1].v.str, NULL);
+
+   JS_SET_RVAL(cx, vp, INT_TO_JSVAL(func(know, str)));
+
+   return JS_TRUE;
+}
+
+FAST_CALL_PARAMS(evas_textblock_cursor_text_append, elixir_int_evas_textblock_cursor_string_params);
+FAST_CALL_PARAMS(evas_textblock_cursor_text_prepend, elixir_int_evas_textblock_cursor_string_params);
+
+static JSBool
+elixir_evas_textblock_cursor_string_params(Eina_Bool (*func)(Evas_Textblock_Cursor* cur, const char* str),
                                            JSContext *cx, uintN argc, jsval *vp)
 {
    Evas_Textblock_Cursor *know;
@@ -109,13 +131,11 @@ elixir_evas_textblock_cursor_string_params(void (*func)(Evas_Textblock_Cursor* c
    GET_PRIVATE(cx, val[0].v.obj, know);
    str = elixir_get_string_bytes(val[1].v.str, NULL);
 
-   func(know, str);
+   JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(func(know, str)));
 
    return JS_TRUE;
 }
 
-FAST_CALL_PARAMS(evas_textblock_cursor_text_append, elixir_evas_textblock_cursor_string_params);
-FAST_CALL_PARAMS(evas_textblock_cursor_text_prepend, elixir_evas_textblock_cursor_string_params);
 FAST_CALL_PARAMS(evas_textblock_cursor_format_append, elixir_evas_textblock_cursor_string_params);
 FAST_CALL_PARAMS(evas_textblock_cursor_format_prepend, elixir_evas_textblock_cursor_string_params);
 
