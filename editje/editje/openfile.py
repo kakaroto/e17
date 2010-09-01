@@ -66,7 +66,6 @@ class OpenFile(elementary.Window):
 
         self._fs = FileSelector(self)
         self._fs.filter = self._filter
-        self._fs.action_add("New", self._new)
         self._fs.action_add("Cancel", self._cancel)
         self._fs.action_add("Ok", self._open)
         self._fs.action_disabled_set("Ok", True)
@@ -126,14 +125,6 @@ class OpenFile(elementary.Window):
                     if file.endswith(".edj"):
                         files.append(file)
         return files
-
-    def _new(self, bt):
-        def ok(sf, **kargs):
-            editje = Editje(sf)
-            editje.group = "main"
-            editje.show()
-            self._cancel(bt)
-        swapfile.open_new(ok, None)
 
     def _cancel(self, bt):
         self.delete()
