@@ -199,16 +199,43 @@ static JSBool
 elixir_emotion_object_file_set(JSContext *cx, uintN argc, jsval *vp)
 {
    Evas_Object *obj;
-   char *file;
+   const char *uri;
+   char tmp[PATH_MAX];
    elixir_value_t val[2];
 
    if (!elixir_params_check(cx, _emotion_object_string_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, obj);
-   file = elixir_file_canonicalize(elixir_get_string_bytes(val[1].v.str, NULL));
-   emotion_object_file_set(obj, file);
-   free(file);
+   uri = elixir_get_string_bytes(val[1].v.str, NULL);
+
+   if (!strstr(uri, "://"))
+     {
+	char *file;
+
+	file = elixir_file_canonicalize(uri);
+
+	strcpy(tmp, "file://");
+	strncat(tmp, file, PATH_MAX - 8);
+
+	free(file);
+     }
+   else if (!strncmp(uri, "file://", 7))
+     {
+	char *file;
+	file = elixir_file_canonicalize(uri + 7);
+
+	strcpy(tmp, "file://");
+	strncat(tmp, file, PATH_MAX - 8);
+
+	free(file);
+     }
+   else
+     {
+	strncpy(tmp, uri, PATH_MAX - 1);
+     }
+
+   emotion_object_file_set(obj, tmp);
    return JS_TRUE;
 }
 
