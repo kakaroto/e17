@@ -362,7 +362,8 @@ class Editje(elementary.Window, OpenFileManager):
             selected_get_cb=self._group_wizard_selection_get_cb,
             new_grp_cb=self._group_wizard_new_group_cb,
             check_grp_cb=self._group_wizard_check_group_cb,
-            del_grp_cb=self._group_wizard_del_group_cb)
+            del_grp_cb=self._group_wizard_del_group_cb,
+            error_get_cb=self._error_get_cb)
         grp_wiz.file_set(self.e.workfile)
         grp_wiz.open()
 
@@ -384,6 +385,9 @@ class Editje(elementary.Window, OpenFileManager):
 
     def _group_wizard_del_group_cb(self, grp_name):
         return self.e.group_del(grp_name)
+
+    def _error_get_cb(self):
+        return self.e.error
 
     def _group_wizard_selection_set_cb(self, selection):
         if not selection:
@@ -523,7 +527,8 @@ class Editje(elementary.Window, OpenFileManager):
             selected_get_cb=self._group_wizard_selection_get_cb,
             new_grp_cb=self._group_wizard_new_group_cb,
             check_grp_cb=self._group_wizard_check_group_cb,
-            del_grp_cb=self._group_wizard_del_group_cb)
+            del_grp_cb=self._group_wizard_del_group_cb,
+            error_get_cb=self._error_get_cb)
 
         grp_wiz.file_set(self.e.workfile)
         grp_wiz.open()

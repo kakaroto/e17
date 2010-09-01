@@ -55,6 +55,8 @@ class Editable(Manager):
         self._animations_init()
         self._signals_init()
 
+        self._error_msg = None
+
     def _mode_get(self):
         return self._mode_get_cb()
 
@@ -127,6 +129,7 @@ class Editable(Manager):
                 break
 
         if not dummy_grp:
+            self.error = "Can not delete the only group in file"
             return False
 
         if not self.__edje or self._group == grp_name:
@@ -135,10 +138,22 @@ class Editable(Manager):
             dummy_edje = EdjeEdit(
                 self._canvas, file=self._swapfile.workfile, group=dummy_grp)
             r = dummy_edje.group_del(grp_name)
+            self.error = dummy_edje.error
             dummy_edje.delete()
+
             return r
 
-        return self.__edje.group_del(grp_name)
+        r = self.__edje.group_del(grp_name)
+        self.error = self.__edje.error
+        return r
+
+    def _error_set(self, msg=None):
+            self._error_msg = msg
+
+    def _error_get(self):
+        return self._error_msg
+
+    error = property(_error_get, _error_set)
 
     def group_rename(self, name):
         if not self._group:

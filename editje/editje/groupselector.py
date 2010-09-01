@@ -245,7 +245,7 @@ class PreviewFrame(elementary.Scroller):
 class GroupSelectionWizard(Wizard):
     def __init__(self, parent, switch_only=False, selected_set_cb=None,
                  selected_get_cb=None, new_grp_cb=None, check_grp_cb=None,
-                 del_grp_cb=None):
+                 del_grp_cb=None, error_get_cb=None):
         if not selected_set_cb or not selected_get_cb or not new_grp_cb or \
                 not check_grp_cb or not del_grp_cb:
             raise TypeError("You must set callbacks for group" \
@@ -256,6 +256,7 @@ class GroupSelectionWizard(Wizard):
         self._select_get_cb = selected_get_cb
         self._check_group_cb = check_grp_cb
         self._delete_cb = del_grp_cb
+        self._error_get_cb = error_get_cb
 
         self.page_add("group_list", "Select a group",
                       "Select an existing group to edit, or create a new one.")
@@ -341,11 +342,15 @@ class GroupSelectionWizard(Wizard):
         # group to None, in the case of current group deletion
         current = self._select_get_cb()
         r = self._delete_cb(grp_name)
+        error_msg = self._error_get_cb()
         if not r:
             self._preview.group_set(self._groups_list.file,
                                     self._groups_list.selection)
-            self.notify("Error while deleting this group "
-                        "(only group in the file?)")
+
+            if error_msg:
+                self.notify(error_msg)
+            else:
+                self.notify("Error while deleting this group")
             return
 
         if grp_name == current:
