@@ -16,6 +16,7 @@
 # License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import re
 
 import edje
 from edje.edit import EdjeEdit
@@ -143,7 +144,9 @@ class Editable(Manager):
         if not self._group:
             return False
         if not name:
-            return False
+            raise InvalidGroupNameError()
+        if re.match(r'[\s].*|.*[\s]$', name):
+            raise InvalidGroupNameError()
         if self.__edje.group_exist(name):
             return False
 
@@ -712,3 +715,9 @@ class Editable(Manager):
         return edje.file_collection_list(self._swapfile.workfile)
 
     groups = property(_groups_get)
+
+# TODO: Create a file to keep all the Exception classes and move it
+# for that
+class InvalidGroupNameError(Exception):
+    def __str__(self):
+        return "Group's name must not be empty, or, starts or end with spaces"

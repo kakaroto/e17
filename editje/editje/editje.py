@@ -102,6 +102,8 @@ class Editje(elementary.Window, OpenFileManager):
 
         self.main_layout.on_key_down_add(self._on_key_down_cb)
 
+        self.__notification = None
+
     def open(self, sf):
         editje = Editje(sf)
         editje.show()
@@ -483,7 +485,13 @@ class Editje(elementary.Window, OpenFileManager):
     def _group_name_changed(self, obj, *args, **kwargs):
 
         def group_rename(new_name):
-            return self.e.group_rename(new_name)
+            try:
+                self.e.group_rename(new_name)
+            except Exception, e:
+                notification = self.notify(str(e))
+                return False
+                return False
+            return True
 
         old_name = self.e.group
         new_name = obj.entry_get().replace("<br>", "")
@@ -1157,3 +1165,25 @@ class Editje(elementary.Window, OpenFileManager):
         box.pack_end(signal_details)
 
         return self._set_scrolled_contents(box)
+
+    def notify(self, message):
+        if self.__notification:
+            self.__notification.hide()
+            self.__notification.delete()
+            self.__notification = None
+        self.__notification = elementary.Notify(self)
+        self.__notification.timeout_set(1)
+        self.__notification.orient_set(elementary.ELM_NOTIFY_ORIENT_BOTTOM)
+
+        bx = elementary.Box(self)
+        bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+        bx.horizontal_set(True)
+        self.__notification.content_set(bx)
+        bx.show()
+
+        lb = elementary.Label(self)
+        lb.label_set(message)
+        bx.pack_end(lb)
+        lb.show()
+
+        self.__notification.show()

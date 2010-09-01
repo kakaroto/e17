@@ -16,6 +16,8 @@
 # License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
 import edje
+from evas import EVAS_HINT_EXPAND
+from elementary import ELM_NOTIFY_ORIENT_BOTTOM, Notify, Box, Label
 
 from details import EditjeDetails
 from details_widget_entry import WidgetEntry
@@ -33,6 +35,7 @@ class PartDetails(EditjeDetails):
             self, parent, operation_stack_cb,
             group="editje/collapsable/part_properties")
 
+        self.mainwidow = parent
         self.e.part.callback_add("part.changed", self._part_update)
         self.e.part.callback_add("name.changed", self._part_update)
         self.e.part.callback_add("part.unselected", self._part_removed)
@@ -73,6 +76,8 @@ class PartDetails(EditjeDetails):
         self._module_prop.hide()
 
         self.content_set("part_name.swallow", self._header_table)
+
+        self.__notification = None
 
         def parts_get():
             return self.e.parts
@@ -187,7 +192,12 @@ class PartDetails(EditjeDetails):
             self._context_recall(part=old_name)
 
             # rename later
-            return self.e.part.rename(new_name)
+            try:
+                self.e.part.rename(new_name)
+            except Exception, e:
+                notification = self.notify(str(e))
+                return False
+            return True
 
         if prop_name != "name":
             return
@@ -427,3 +437,26 @@ class PartDetails(EditjeDetails):
             self["group"]["source"].value = None
             self["group"]["source"].show_value()
         self.group_show("group")
+
+    def notify(self, message):
+        if self.__notification:
+            self.__notification.hide()
+            self.__notification.delete()
+            self.__notification = None
+
+        self.__notification = Notify(self.mainwidow)
+        self.__notification.timeout_set(1)
+        self.__notification.orient_set(ELM_NOTIFY_ORIENT_BOTTOM)
+
+        bx = Box(self)
+        bx.size_hint_weight_set(EVAS_HINT_EXPAND, EVAS_HINT_EXPAND)
+        bx.horizontal_set(True)
+        self.__notification.content_set(bx)
+        bx.show()
+
+        lb = Label(self)
+        lb.label_set(message)
+        bx.pack_end(lb)
+        lb.show()
+
+        self.__notification.show()

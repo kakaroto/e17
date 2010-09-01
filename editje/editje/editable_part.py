@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
+import re
+
 from event_manager import Manager
 from editable_state import EditableState
 
@@ -77,7 +79,9 @@ class EditablePart(Manager):
 
     def rename(self, name):
         if not self.name or not name:
-            return False
+            raise InvalidPartNameError()
+        if re.match(r'[\s].*|.*[\s]$', name):
+            raise InvalidPartNameError()
         if self._name != name:
             old_name = self._part.name
             self._part.name = name
@@ -211,3 +215,9 @@ class EditablePart(Manager):
             self.event_emit("part.changed", self.name)
 
         return r
+
+# TODO: Create a file to keep all the Exception classes and move it
+# for that
+class InvalidPartNameError(Exception):
+    def __str__(self):
+        return "Part's name must not be empty, or, starts or end with spaces"
