@@ -126,6 +126,7 @@ struct _Emote_Event_Server_Connect
 struct _Emote_Event_Server_Message
 {
    Emote_Event_Server s;
+   const char *user;
    const char *message;
 };
 

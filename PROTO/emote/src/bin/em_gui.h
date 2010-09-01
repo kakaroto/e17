@@ -16,6 +16,7 @@ struct _Em_Gui
    Evas_Object *o_chantxt;
    Evas_Object *o_current_chantxt;
    Evas_Object *o_entry;
+   Elm_Hoversel_Item *o_current_channel;
 };
 
 EM_INTERN int em_gui_init(void);

@@ -29,6 +29,7 @@ protocol_init(Emote_Protocol *p)
    emote_event_handler_add(EMOTE_EVENT_SERVER_DISCONNECT, _irc_event_handler, NULL);
    emote_event_handler_add(EMOTE_EVENT_CHAT_JOIN, _irc_event_handler, NULL);
    emote_event_handler_add(EMOTE_EVENT_CHAT_MESSAGE_SEND, _irc_event_handler, NULL);
+   emote_event_handler_add(EMOTE_EVENT_SERVER_MESSAGE_SEND, _irc_event_handler, NULL);
    return 1;
 }
 
@@ -151,13 +152,13 @@ protocol_irc_join(const char *server, const char *chan)
 }
 
 int
-protocol_irc_command(const char *server, const char *chan, const char *message)
+protocol_irc_command(const char *server, const char *message)
 {
    Ecore_Con_Server *serv = NULL;
    char buf[512];
    int len = 0;
 
-   if ((!server) || (!chan) || (!message)) return 0;
+   if ((!server) || (!message)) return 0;
    if (!(serv = eina_hash_find(_irc_servers, server))) return 0;
    if (!ecore_con_server_connected_get(serv)) return 0;
 
@@ -179,6 +180,9 @@ protocol_irc_message(const char *server, const char *chan, const char *message)
    if (!(serv = eina_hash_find(_irc_servers, server))) return 0;
    if (!ecore_con_server_connected_get(serv)) return 0;
    len = snprintf(buf, sizeof(buf), "PRIVMSG %s :%s\r\n", chan, message);
+
+   printf("Sending %s\n", buf);
+
    ecore_con_server_send(serv, buf, len);
    return 1;
 }
@@ -587,18 +591,17 @@ _irc_event_handler(void *data __UNUSED__, int type __UNUSED__, void *event)
            Emote_Event_Chat_Message *d;
 
            d = event;
-           if ((d->message[0] == '/') && (d->message[1] != '/'))
-             {
-                protocol_irc_command(EMOTE_EVENT_SERVER_T(d)->server,
-                                     EMOTE_EVENT_CHAT_T(d)->channel,
-                                     &(d->message[1]));
-             }
-           else
-             {
-                protocol_irc_message(EMOTE_EVENT_SERVER_T(d)->server,
+           protocol_irc_message(EMOTE_EVENT_SERVER_T(d)->server,
                                      EMOTE_EVENT_CHAT_T(d)->channel,
                                      ((d->message[0] == '/') ? &(d->message[1]) : d->message));
-             }
+           break;
+        }
+      case EMOTE_EVENT_SERVER_MESSAGE_SEND:
+        {
+           Emote_Event_Server_Message *d;
+
+           d = event;
+           protocol_irc_command(EMOTE_EVENT_SERVER_T(d)->server, &(d->message[1]));
            break;
         }
       default:

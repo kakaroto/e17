@@ -147,17 +147,7 @@ _em_main_chat_events_handler(void *data __UNUSED__, int type __UNUSED__, void *e
            printf("Server %s from protocol %s is now connected.\n",
                   d->server, EMOTE_EVENT_T(d)->protocol->api->label);
            em_gui_server_add(d->server, EMOTE_EVENT_T(d)->protocol);
-
-           c = emote_event_new
-               (
-                  EMOTE_EVENT_T(d)->protocol,
-                  EMOTE_EVENT_CHAT_JOIN,
-                  d->server,
-                  "#emote",
-                  "emote"
-               );
-            emote_event_send(c);
-            break;
+           break;
         }
       case EMOTE_EVENT_SERVER_DISCONNECTED:
         {
@@ -215,7 +205,7 @@ _em_main_chat_events_handler(void *data __UNUSED__, int type __UNUSED__, void *e
 
            d = event;
 
-           em_gui_message_add(EMOTE_EVENT_SERVER_T(d)->server, NULL, NULL, d->message);
+           em_gui_message_add(EMOTE_EVENT_SERVER_T(d)->server, NULL, d->user, d->message);
            break;
         }
       case EMOTE_EVENT_CHAT_MESSAGE_RECEIVED:

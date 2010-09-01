@@ -97,6 +97,7 @@ irc_parse_input(char *input, const char *server, Emote_Protocol *m)
                  m,
                  EMOTE_EVENT_SERVER_MESSAGE_RECEIVED,
                  server,
+                 _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
                  _irc_parse_utf8_to_markup(eina_list_nth(ln.params,1))
              );
              emote_event_send(d);
@@ -173,6 +174,7 @@ irc_parse_input(char *input, const char *server, Emote_Protocol *m)
                  m,
                  EMOTE_EVENT_SERVER_MESSAGE_RECEIVED,
                  server,
+                 _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
                  _irc_parse_utf8_to_markup(buf)
              );
              emote_event_send(d);

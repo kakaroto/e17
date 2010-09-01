@@ -87,6 +87,8 @@ emote_event_new(Emote_Protocol *p, int type, ...)
         s = va_arg(args, char*);
         EMOTE_EVENT_ALLOC_STRING(Emote_Event_Server, ev, server, s);
         s = va_arg(args, char*);
+        EMOTE_EVENT_ALLOC_STRING(Emote_Event_Server_Message, ev, user, s);
+        s = va_arg(args, char*);
         EMOTE_EVENT_ALLOC_STRING(Emote_Event_Server_Message, ev, message, s);
         break;
 
