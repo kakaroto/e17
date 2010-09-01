@@ -194,6 +194,8 @@ cdef extern from "Evas.h":
         int w
         int h
 
+    ctypedef int Eina_Error
+
     ctypedef struct Evas_Point:
         int x
         int y
@@ -471,6 +473,14 @@ cdef extern from "Evas.h":
         void *key
         void *data
         unsigned int key_length
+
+    ####################################################################
+    # Eina Error
+    #
+
+    Eina_Error eina_error_get()
+    void eina_error_set(Eina_Error err)
+    char *eina_error_msg_get(Eina_Error error)
 
     ####################################################################
     # Canvas
