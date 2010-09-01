@@ -4,8 +4,7 @@ Integrate with the rc script of your discribution.
 
 
 build and install:
-autoreconf -v -i -f
-./configure --sysconfdir=/etc --prefix=/usr
+./autogen.sh --sysconfdir=/etc --prefix=/usr
 make
 make install
 
