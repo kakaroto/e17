@@ -436,7 +436,7 @@ __imlib_RenderImage(Display * d, ImlibImage * im,
                     }
                   memcpy(buf, im->data + ((y + sy) * im->w),
                          im->w * hh * sizeof(DATA32));
-                  __imlib_DataCmodApply(buf, dw, hh, im->w - dw, NULL, cmod);
+                  __imlib_DataCmodApply(buf, im->w, hh, 0, NULL, cmod);
                   pointer = buf + sx;
                   jump = im->w - sw;
                }
