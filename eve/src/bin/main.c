@@ -283,11 +283,13 @@ window_create()
    return win->current_view;
 }
 
+#define stringify(X) #X
+
 static const Ecore_Getopt options = {
    PACKAGE_NAME,
    "%prog [options] [url]",
-   PACKAGE_VERSION,
-   "(C) 2000 ProFUSION embedded systems",
+   PACKAGE_VERSION "Revision:" stringify(VREV),
+   "(C) 2010 ProFUSION embedded systems",
    "LGPL-3",
    "WebKit-EFL demo browser for mobile systems with touchscreen.",
    EINA_TRUE,
