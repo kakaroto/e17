@@ -225,7 +225,7 @@ _elsa_gui_init_desktops()
    efreet_init();
    efreet_desktop_type_alias(EFREET_DESKTOP_TYPE_APPLICATION, "XSession");
    /* Maybee need to scan other directories ?
-    * _elsa_gui_scan_desktops("/usr/share/xsessions");
+    * _elsa_gui_scan_desktops("/etc/share/xsessions");
     */
    snprintf(buf, sizeof(buf), "%s/xsessions", efreet_data_home_get());
    _elsa_gui_scan_desktops(buf);
@@ -292,7 +292,7 @@ elsa_gui_init()
 
    _gui->win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
    elm_win_title_set(_gui->win, PACKAGE);
-   evas_object_smart_callback_add(_gui->win, "delete_request",
+   evas_object_smart_callback_add(_gui->win, "delete,request",
                                   _elsa_gui_shutdown, NULL);
 
    _gui->edj = _elsa_gui_theme_get(_gui->win, "elsa");
@@ -307,10 +307,6 @@ elsa_gui_init()
                                     EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    elm_win_resize_object_add(_gui->win, _gui->edj);
-
-   /* have a fullscreen window */
-   root = ecore_x_window_root_first_get();
-   ecore_x_window_size_get(root, &w, &h);
 
    if (elsa_config->xsessions)
      {
@@ -328,10 +324,18 @@ elsa_gui_init()
 
    _elsa_gui_callback_add();
 
+   /* Get root window and init pointer. Maybee add theme for this pointer */
+   root = ecore_x_window_root_first_get();
+   ecore_x_window_cursor_show(root, 0);
+   ecore_x_window_cursor_set(root, ECORE_X_CURSOR_ARROW);
+   ecore_x_window_cursor_show(root, 1);
+
+   /* have a fullscreen window */
+   ecore_x_window_size_get(root, &w, &h);
    evas_object_show(_gui->edj);
    evas_object_resize(_gui->win, w, h);
-   evas_object_show(_gui->win);
 
+   evas_object_show(_gui->win);
 
    return 0;
 }

@@ -1,9 +1,6 @@
-++Make a better, and this time beautiful, theme
-++improve X launch
-++review the login algorithm
+++Make a very simple theme, to make a new theme easily
+++theme for cursor
 ++autologin
-++support option passed on commandline
-+support the desktop files from /usr/share/xsession
 +Make a theme switcher on the fly with preview
 +multisession
 +authentification with fingerprint and others

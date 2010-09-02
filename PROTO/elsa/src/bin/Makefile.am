@@ -16,6 +16,8 @@ elsa_config.h      \
 elsa_config.c      \
 elsa_session.h     \
 elsa_session.c     \
+elsa_xserver.h     \
+elsa_xserver.c     \
 elsa_pam.h         \
 elsa_pam.c         \
 elsa_gui.h         \

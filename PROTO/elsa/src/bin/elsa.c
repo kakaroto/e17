@@ -8,30 +8,15 @@
 
 #define ELSA_DISPLAY ":0.0"
 
-static Ecore_Event_Handler *_del_handler = NULL;
 static Ecore_Event_Handler *_exit_handler = NULL;
 
 static Eina_Bool _testing = EINA_FALSE;
 
 static void _elsa_help ();
-static Eina_Bool _event_del_cb(void *data, int type, void *event);
 static Eina_Bool _event_exit_cb(void *data, int type, void *event);
 static Eina_Bool _open_log();
 static Eina_Bool _close_log();
 static void _remove_lock();
-static void _start_xserver(char *dname);
-
-
-Ecore_Exe *x_exec;
-
-static Eina_Bool
-_event_del_cb(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
-{
-   fprintf(stderr, PACKAGE": del cb received\n");
-   /* plz check here if X are still running */
-   elsa_main();
-   return ECORE_CALLBACK_PASS_ON;
-}
 
 static Eina_Bool
 _event_exit_cb(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
@@ -40,28 +25,6 @@ _event_exit_cb(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED_
    elsa_session_shutdown();
    elm_exit();
    return ECORE_CALLBACK_DONE;
-}
-
-
-static void
-_start_xserver(char *dname)
-{
-   char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf),
-            "%s %s",
-            elsa_config->command.xinit_path,
-            elsa_config->command.xinit_args);
-   x_exec = ecore_exe_run(buf, NULL);
-   sleep(1);
-   while (!XOpenDisplay(dname))
-     {
-        fprintf(stderr, PACKAGE": could not open display %s\n", dname);
-        sleep(1);
-     }
-
-   ecore_exe_hup(x_exec);
-   snprintf(buf, sizeof(buf), "DISPLAY=%s", dname);
-   putenv(buf);
 }
 
 static Eina_Bool
@@ -147,7 +110,8 @@ _elsa_help() {
 }
 
 int
-elsa_main() {
+elsa_main()
+{
    fprintf(stderr, PACKAGE": Init\n");
    if (elsa_gui_init()) return 1;
    fprintf(stderr, PACKAGE": Run\n");
@@ -178,11 +142,6 @@ main (int argc, char ** argv)
         return 1;
      }
 
-   _exit_handler = ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT,
-                                           _event_exit_cb, NULL);
-   _del_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
-                                          _event_del_cb, NULL);
-   ecore_init();
    elsa_config_init();
    if (!_get_lock())
      {
@@ -202,20 +161,21 @@ main (int argc, char ** argv)
    if (!_open_log())
       exit(1);
 
+   ecore_init();
    /* Initialise event handler */
+   _exit_handler = ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT,
+                                           _event_exit_cb, NULL);
 #ifndef XNEST_DEBUG
    elsa_pam_init(PACKAGE, dname);
    elsa_session_init(elsa_config->command.xauth_file);
 
 #endif
-   _start_xserver(dname);
-   elm_init(argc, argv);
-   elsa_main();
-   elm_run();
-   if (x_exec) ecore_exe_terminate(x_exec);
+   elsa_xserver_init(elsa_main, dname);
+   ecore_main_loop_begin();
    elsa_pam_shutdown();
    _remove_lock();
    _close_log();
+   elsa_xserver_shutdown();
    elsa_config_shutdown();
    ecore_shutdown();
    fprintf(stderr, PACKAGE": quit normaly :)\n");

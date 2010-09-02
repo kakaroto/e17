@@ -13,6 +13,7 @@
 #include "elsa_pam.h"
 #include "elsa_gui.h"
 #include "elsa_config.h"
+#include "elsa_xserver.h"
 
 int elsa_main();
 

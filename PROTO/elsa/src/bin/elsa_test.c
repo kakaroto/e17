@@ -17,7 +17,7 @@ _theme_get(Evas_Object *win, const char *group)
 }
 
 static void
-_signal(void *data, Evas_Object *obj, const char *sig, const char *src)
+_signal(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *sig, const char *src)
 {
    printf("Event: %s - %s \n", sig, src);
 }
@@ -26,17 +26,18 @@ _signal(void *data, Evas_Object *obj, const char *sig, const char *src)
 static void
 _shutdown(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
-   elm_shutdown();
+   printf("Quit\n");
+   elm_exit();
 }
 
 
 int
-elm_main (int argc, char **argv)
+elm_main (int argc __UNUSED__, char **argv __UNUSED__)
 {
    Evas_Object *o, *win;
    win = elm_win_add(NULL, "theme_test", ELM_WIN_BASIC);
    elm_win_title_set(win, PACKAGE);
-   evas_object_smart_callback_add(win, "delete_request",
+   evas_object_smart_callback_add(win, "delete,request",
                                   _shutdown, NULL);
    o = _theme_get(win, "elsa");
    evas_object_size_hint_weight_set(o,
@@ -50,6 +51,7 @@ elm_main (int argc, char **argv)
    evas_object_resize(win, 640, 480);
    evas_object_show(win);
    elm_run();
+   elm_shutdown();
    return 0;
 }
 

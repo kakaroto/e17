@@ -280,7 +280,7 @@ elsa_session_login(void *data __UNUSED__)
         elsa_pam_env_set("XAUTHORITY", buf);
         elsa_gui_auth_valid(pwd);
      }
-     return ECORE_CALLBACK_CANCEL;
 #endif
+   return ECORE_CALLBACK_CANCEL;
 }
 
