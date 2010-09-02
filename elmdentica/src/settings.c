@@ -961,6 +961,10 @@ Evas_Object *settings_browser_hoversel(void) {
 			elm_hoversel_item_add(hoversel, browserNames[BROWSER_DILLO], NULL, ELM_ICON_NONE, settings_choose_browser, (void*)BROWSER_DILLO);
 			have_browser=1;
 		}
+		if(stat("/usr/bin/eve", &buf) == 0) {
+			elm_hoversel_item_add(hoversel, browserNames[BROWSER_EVE], NULL, ELM_ICON_NONE, settings_choose_browser, (void*)BROWSER_EVE);
+			have_browser=1;
+		}
 		elm_hoversel_hover_end(hoversel);
 
 		if(have_browser) {
