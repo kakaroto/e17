@@ -29,6 +29,7 @@ images {
    image: "ilist_bg0.png" COMP;
    image: "ilist_bg1.png" COMP;
    image: "ilist_header_bg.png" COMP;
+   image: "ilist_active.png" COMP;
    image: "logo.png" COMP;
    image: "menu_arrow.png" COMP;
    image: "menu_bg.png" COMP;
