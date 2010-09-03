@@ -34,8 +34,8 @@
 
 data {
    item: "theme/name"     "Darkness";
-   item: "theme/version"  "0.99.042";
-   item: "theme/author"   "Viktor Kojouharov";
+   item: "theme/version"  VERSION;
+   item: "theme/author"   "Viktor Kojouharov (urandom) & Mike Blumenkrantz (discomfitor)";
    item: "theme/license"  "Artistic 2.0";
 }
 

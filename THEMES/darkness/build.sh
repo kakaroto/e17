@@ -1,5 +1,5 @@
 #!/bin/bash
-edje_cc -id images/ -fd . darkness.edc -o darkness.edj
+edje_cc -v -DVERSION=\"$(svnversion -n .|grep -Eo "^[0-9]+")\" -id images/ -fd . darkness.edc -o darkness.edj
 [[ $? != 0 ]] && exit 1
 case "$1" in
     '-p')
