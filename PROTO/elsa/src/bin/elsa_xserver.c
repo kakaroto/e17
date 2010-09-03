@@ -31,19 +31,57 @@ _env_set(const char *dname)
 static void
 _xserver_start()
 {
-   char buf[PATH_MAX];
+   char *buf;
+   char **args;
    pid_t pid;
 
-   snprintf(buf, sizeof(buf), "%s %s",
-            elsa_config->command.xinit_path,
-            elsa_config->command.xinit_args);
    pid = fork();
    if (!pid)
      {
         signal(SIGUSR1, SIG_IGN);
-        execl(elsa_config->command.xinit_path,
-              buf,
-              NULL);
+        char *token;
+        int num_token = 0;
+
+        if (!(buf = strdup(elsa_config->command.xinit_args)))
+          return;
+        token = strtok(buf, " ");
+        while(token)
+          {
+            ++num_token;
+            token = strtok(NULL, " ");
+          }
+        if (buf) free(buf);
+        if (num_token)
+          {
+             int i;
+             if (!(buf = strdup(elsa_config->command.xinit_args)))
+               return;
+             if (!(args = calloc(num_token + 2, sizeof(char *))))
+               {
+                  if (buf) free(buf);
+                  return;
+               }
+             args[0] = elsa_config->command.xinit_path;
+             token = strtok(buf, " ");
+             ++num_token;
+             for(i = 1; i < num_token; ++i)
+               {
+                  if (token)
+                    args[i] = token;
+                  token = strtok(NULL, " ");
+               }
+             args[num_token] = NULL;
+          }
+        else
+          {
+             if (!(args = calloc(2, sizeof(char*))))
+               return;
+             args[0] = elsa_config->command.xinit_path;
+             args[1] = NULL;
+          }
+        execvp(args[0], args);
+        if (buf) free(buf);
+        if (args) free(args);
         fprintf(stderr, PACKAGE": Couldn't launch Xserver ...\n");
      }
    else

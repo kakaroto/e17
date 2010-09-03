@@ -1,4 +1,5 @@
 ++Make a very simple theme, to make a new theme easily
+++Catch Pam error on login (too many wrong password ...)
 ++theme for cursor
 ++autologin
 +Make a theme switcher on the fly with preview
