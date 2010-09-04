@@ -7,26 +7,26 @@ typedef struct _Elsa_Config Elsa_Config;
 
 struct _Elsa_Config
 {
-   char *session_path;
+   const char *session_path;
    struct
      {
-        char *xinit_path;
-        char *xinit_args;
-        char *xauth_path;
-        char *xauth_file;
-        char *session_start;
-        char *session_login;
-        char *session_stop;
-        char *shutdown;
-        char *reboot;
-        char *suspend;
+        const char *xinit_path;
+        const char *xinit_args;
+        const char *xauth_path;
+        const char *xauth_file;
+        const char *session_start;
+        const char *session_login;
+        const char *session_stop;
+        const char *shutdown;
+        const char *reboot;
+        const char *suspend;
      } command;
    Eina_Bool daemonize;// :1;
    Eina_Bool numlock;// :1;
    Eina_Bool xsessions;
+   const char *lockfile;
+   const char *logfile;
    char *last_session;
-   char *lockfile;
-   char *logfile;
 };
 
 Elsa_Config *elsa_config;

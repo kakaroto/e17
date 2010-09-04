@@ -60,7 +60,8 @@ _elsa_gui_hostname_activated_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED
 static void
 _elsa_gui_login_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *sig __UNUSED__, const char *src __UNUSED__)
 {
-   elsa_session_run(data, elsa_gui_login_command_get());
+   struct passwd *pwd = data;
+   elsa_session_run(pwd, elsa_gui_login_command_get());
    elsa_gui_shutdown();
 }
 
@@ -346,12 +347,6 @@ elsa_gui_shutdown()
 {
    Elsa_Xsession *xsession;
    fprintf(stderr, PACKAGE": Gui shutdown\n");
-/*
-#ifdef HAVE_PAM
-   elsa_pam_shutdown();
-#endif
-   elm_exit();
-*/
    evas_object_del(_gui->win);
    EINA_LIST_FREE(_gui->xsessions, xsession)
      {
@@ -402,7 +397,7 @@ elsa_gui_auth_valid(void *data)
 }
 
 
-const char *
+char *
 elsa_gui_login_command_get()
 {
    if (elsa_config->xsessions && _gui->selected_session)

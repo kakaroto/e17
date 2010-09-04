@@ -31,8 +31,8 @@ _env_set(const char *dname)
 static void
 _xserver_start()
 {
-   char *buf;
-   char **args;
+   char *buf = NULL;
+   char **args = NULL;
    pid_t pid;
 
    pid = fork();
@@ -61,7 +61,7 @@ _xserver_start()
                   if (buf) free(buf);
                   return;
                }
-             args[0] = elsa_config->command.xinit_path;
+             args[0] = (char *)elsa_config->command.xinit_path;
              token = strtok(buf, " ");
              ++num_token;
              for(i = 1; i < num_token; ++i)
@@ -76,10 +76,10 @@ _xserver_start()
           {
              if (!(args = calloc(2, sizeof(char*))))
                return;
-             args[0] = elsa_config->command.xinit_path;
+             args[0] = (char *)elsa_config->command.xinit_path;
              args[1] = NULL;
           }
-        execvp(args[0], args);
+        execv(args[0], args);
         if (buf) free(buf);
         if (args) free(args);
         fprintf(stderr, PACKAGE": Couldn't launch Xserver ...\n");
@@ -90,6 +90,7 @@ _xserver_start()
      }
 }
 
+/*
 static Eina_Bool
 _xserver_stop()
 {
@@ -112,6 +113,7 @@ _xserver_wait(void *data __UNUSED__)
      }
    _xserver_stop();
 }
+*/
 
 static Eina_Bool
 _xserver_started(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
@@ -133,7 +135,9 @@ elsa_xserver_init(Elsa_X_Cb start, const char *dname)
    _xserver->dname = eina_stringshare_add(dname);
    _xserver->start = start;
    _xserver_start();
-   ecore_thread_run(_xserver_wait, NULL, NULL, NULL);
+   /* Why wait Xserver ?
+    * ecore_thread_run(_xserver_wait, NULL, NULL, NULL);
+    */
    _handler_start = ecore_event_handler_add(ECORE_EVENT_SIGNAL_USER,
                                             _xserver_started,
                                             NULL);
@@ -142,6 +146,7 @@ elsa_xserver_init(Elsa_X_Cb start, const char *dname)
 void
 elsa_xserver_shutdown()
 {
+   elm_shutdown();
    kill(_xserver->pid, SIGTERM);
    eina_stringshare_del(_xserver->dname);
    free(_xserver);

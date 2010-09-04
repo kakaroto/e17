@@ -45,7 +45,12 @@ _get_lock()
              return (EINA_FALSE);
           }
         snprintf(buf, sizeof(buf), "%d\n", getpid());
-        fwrite(buf, strlen(buf), 1, f);
+        if (!fwrite(buf, strlen(buf), 1, f))
+          {
+             fclose(f);
+             fprintf(stderr, PACKAGE": Couldn't write the lockfile\n");
+             return EINA_FALSE;
+          }
         fclose(f);
      }
    else
@@ -66,7 +71,8 @@ _update_lock()
    char buf[128];
    f = fopen(elsa_config->lockfile, "w");
    snprintf(buf, sizeof(buf), "%d\n", getpid());
-   fwrite(buf, strlen(buf), 1, f);
+   if (!fwrite(buf, strlen(buf), 1, f))
+     fprintf(stderr, PACKAGE": Coudn't update lockfile\n");
    fclose(f);
 }
 
@@ -88,9 +94,11 @@ _open_log()
         return EINA_FALSE;
      }
    fclose(elog);
-   freopen(elsa_config->logfile, "a", stdout);
+   if (!freopen(elsa_config->logfile, "a", stdout))
+     fprintf(stderr, PACKAGE": Error on reopen stdout\n");
    setvbuf(stdout, NULL, _IOLBF, BUFSIZ);
-   freopen(elsa_config->logfile, "a", stderr);
+   if (!freopen(elsa_config->logfile, "a", stderr))
+     fprintf(stderr, PACKAGE": Error on reopen stderr\n");
    setvbuf(stderr, NULL, _IONBF, BUFSIZ);
    return EINA_TRUE;
 }
@@ -124,7 +132,6 @@ main (int argc, char ** argv)
 {
    char tmp;
    char *dname = ELSA_DISPLAY;
-   pid_t pid;
 
    while((tmp = getopt(argc, argv, "vhp:n:d?")) != EOF)
      {
@@ -174,11 +181,11 @@ main (int argc, char ** argv)
    ecore_main_loop_begin();
    elsa_pam_shutdown();
    _remove_lock();
-   _close_log();
    elsa_xserver_shutdown();
    elsa_config_shutdown();
    ecore_shutdown();
-   fprintf(stderr, PACKAGE": quit normaly :)\n");
+   fprintf(stderr, PACKAGE": Goodbye until next time :)\n\n\n");
+   _close_log();
    return 0;
 }
 

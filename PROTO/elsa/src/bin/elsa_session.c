@@ -89,12 +89,13 @@ _elsa_session_end()
                  elsa_config->command.session_stop,
                  _user);
         free(_user);
-        system(buf);
+        if (-1 == system(buf))
+          fprintf(stderr, PACKAGE": Errore on session stop command %s", buf);
      }
 }
 
 static void
-_elsa_session_run_wait(void *data)
+_elsa_session_run_wait(void *data __UNUSED__)
 {
    int status;
    pid_t wpid = -1;
@@ -109,7 +110,7 @@ _elsa_session_run_wait(void *data)
 }
 
 static void
-_elsa_session_run_end(void *data)
+_elsa_session_run_end(void *data __UNUSED__)
 {
    fprintf(stderr, PACKAGE": session run end\n");
    _running = NULL;
@@ -118,7 +119,7 @@ _elsa_session_run_end(void *data)
 }
 
 static void
-_elsa_session_run_cancel(void *data)
+_elsa_session_run_cancel(void *data __UNUSED__)
 {
    /* Not called ? why ? this is not important,
     * to call this when xserver shutdown ?? */
@@ -155,24 +156,28 @@ elsa_session_run(struct passwd *pwd, char *cmd)
 {
 #ifdef HAVE_PAM
    char buf[PATH_MAX];
-   const char *c;
    pid_t pid;
    pid = fork();
    if (pid == 0)
      {
+        fprintf(stderr, PACKAGE": Session Run\n");
         if (!_elsa_session_begin(pwd))
           {
              fprintf(stderr, "Elsa: couldn't open session\n");
              exit(1);
           }
-        fprintf(stderr, PACKAGE": Session Run\n");
+        fprintf(stderr, PACKAGE": Open %s`s session\n", pwd->pw_name);
         snprintf(buf, sizeof(buf),
                  "%s %s ",
                  elsa_config->command.session_start,
                  pwd->pw_name);
-        system(buf);
-        chdir(pwd->pw_dir);
-        fprintf(stderr, PACKAGE": Open %s`s session\n", pwd->pw_name);
+        if (-1 == system(buf))
+          fprintf(stderr, PACKAGE": Error on session start command %s\n", buf);
+        if (chdir(pwd->pw_dir))
+          {
+             fprintf(stderr, PACKAGE": change directory for user fail\n");
+             return;
+          }
 
         snprintf(buf, sizeof(buf), "%s/.elsa_session.log", pwd->pw_dir);
         remove(buf);

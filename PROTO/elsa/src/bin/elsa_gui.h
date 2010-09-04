@@ -8,6 +8,6 @@ char *elsa_gui_user_get();
 char *elsa_gui_password_get();
 void elsa_gui_auth_error();
 void elsa_gui_auth_valid();
-const char *elsa_gui_login_command_get();
+char *elsa_gui_login_command_get();
 
 #endif /* ELSA_GUI_H_ */

@@ -11,22 +11,22 @@ static Elsa_Config *_cache_get(Eet_Data_Descriptor *edd);
 static void
 _defaults_set(Elsa_Config *config)
 {
-   config->session_path = strdup("./:/bin:/usr/bin:/usr/local/bin");
-   config->command.xinit_path = strdup("/usr/bin/X");
-   config->command.xinit_args = strdup("-nolisten tcp -br vt7");
-   config->command.xauth_path = strdup("/usr/bin/xauth");
-   config->command.xauth_file = strdup("/var/run/elsa.auth");
-   config->command.session_start = strdup("/usr/bin/sessreg -a -l :0.0" );
-   config->command.session_login = strdup("exec /bin/bash -login /etc/X11/xinit/xinitrc");
-   config->command.session_stop = strdup("/usr/bin/sessreg -d -l :0.0");
-   config->command.shutdown = strdup("/usr/bin/shutdown -h now");
-   config->command.reboot = strdup("/usr/bin/shutdown -r now");
-   config->command.suspend = strdup("/usr/sbin/suspend");
+   config->session_path = eina_stringshare_add("./:/bin:/usr/bin:/usr/local/bin");
+   config->command.xinit_path = eina_stringshare_add("/usr/bin/X");
+   config->command.xinit_args = eina_stringshare_add("-nolisten tcp -br vt7");
+   config->command.xauth_path = eina_stringshare_add("/usr/bin/xauth");
+   config->command.xauth_file = eina_stringshare_add("/var/run/elsa.auth");
+   config->command.session_start = eina_stringshare_add("/usr/bin/sessreg -a -l :0.0" );
+   config->command.session_login = eina_stringshare_add("exec /bin/bash -login /etc/X11/xinit/xinitrc");
+   config->command.session_stop = eina_stringshare_add("/usr/bin/sessreg -d -l :0.0");
+   config->command.shutdown = eina_stringshare_add("/usr/bin/shutdown -h now");
+   config->command.reboot = eina_stringshare_add("/usr/bin/shutdown -r now");
+   config->command.suspend = eina_stringshare_add("/usr/sbin/suspend");
    config->daemonize = EINA_TRUE;
    config->numlock = EINA_FALSE;
    config->xsessions = EINA_FALSE;
-   config->lockfile = strdup("/var/run/elsa.pid");
-   config->logfile = strdup("/var/log/elsa.log");
+   config->lockfile = eina_stringshare_add("/var/run/elsa.pid");
+   config->logfile = eina_stringshare_add("/var/log/elsa.log");
 }
 
 
@@ -106,19 +106,19 @@ static void
 _config_free(Elsa_Config *config)
 {
    if (config->last_session) free(config->last_session);
-   free(config->session_path);
-   free(config->command.xinit_path);
-   free(config->command.xinit_args);
-   free(config->command.xauth_path);
-   free(config->command.xauth_file);
-   free(config->command.session_start);
-   free(config->command.session_login);
-   free(config->command.session_stop);
-   free(config->command.shutdown);
-   free(config->command.reboot);
-   free(config->command.suspend);
-   free(config->lockfile);
-   free(config->logfile);
+   eina_stringshare_del(config->session_path);
+   eina_stringshare_del(config->command.xinit_path);
+   eina_stringshare_del(config->command.xinit_args);
+   eina_stringshare_del(config->command.xauth_path);
+   eina_stringshare_del(config->command.xauth_file);
+   eina_stringshare_del(config->command.session_start);
+   eina_stringshare_del(config->command.session_login);
+   eina_stringshare_del(config->command.session_stop);
+   eina_stringshare_del(config->command.shutdown);
+   eina_stringshare_del(config->command.reboot);
+   eina_stringshare_del(config->command.suspend);
+   eina_stringshare_del(config->lockfile);
+   eina_stringshare_del(config->logfile);
    free(config);
 }
 
@@ -189,7 +189,7 @@ elsa_config_last_session_set(const char *session)
 void
 elsa_config_shutdown()
 {
-   eet_shutdown();
    _config_free(elsa_config);
+   eet_shutdown();
 }
 
