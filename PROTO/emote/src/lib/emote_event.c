@@ -48,7 +48,6 @@ emote_event_new(Emote_Protocol *p, int type, ...)
    {
       // Emote_Event_Server
       case EMOTE_EVENT_SERVER_DISCONNECT:
-      case EMOTE_EVENT_SERVER_CONNECTED:
       case EMOTE_EVENT_SERVER_DISCONNECTED:
         ev = (Emote_Event*)EMOTE_OBJECT_ALLOC(Emote_Event_Server,
                                            EMOTE_EVENT_SERVER_TYPE,
@@ -61,6 +60,7 @@ emote_event_new(Emote_Protocol *p, int type, ...)
 
       // Emote_Event_Server_Connect
       case EMOTE_EVENT_SERVER_CONNECT:
+      case EMOTE_EVENT_SERVER_CONNECTED:
         ev = (Emote_Event*)EMOTE_OBJECT_ALLOC(Emote_Event_Server_Connect,
                                            EMOTE_EVENT_SERVER_CONNECT_TYPE,
                                            _emote_event_server_connect_free
@@ -71,6 +71,8 @@ emote_event_new(Emote_Protocol *p, int type, ...)
         i = va_arg(args, int);
         EMOTE_EVENT_SERVER_CONNECT_T(ev)->port = i;
         s = va_arg(args, char*);
+        EMOTE_EVENT_ALLOC_STRING(Emote_Event_Server_Connect, ev, nick, s);
+        s = va_arg(args, char*);
         EMOTE_EVENT_ALLOC_STRING(Emote_Event_Server_Connect, ev, username, s);
         s = va_arg(args, char*);
         EMOTE_EVENT_ALLOC_STRING(Emote_Event_Server_Connect, ev, password, s);
@@ -79,6 +81,7 @@ emote_event_new(Emote_Protocol *p, int type, ...)
       // Emote_Event_Server_Message
       case EMOTE_EVENT_SERVER_MESSAGE_SEND:
       case EMOTE_EVENT_SERVER_MESSAGE_RECEIVED:
+      case EMOTE_EVENT_SERVER_NICK_CHANGED:
         ev = (Emote_Event*)EMOTE_OBJECT_ALLOC(Emote_Event_Server_Message,
                                            EMOTE_EVENT_SERVER_MESSAGE_TYPE,
                                            _emote_event_server_message_free
@@ -113,6 +116,8 @@ emote_event_new(Emote_Protocol *p, int type, ...)
       // Emote_Event_Chat Message
       case EMOTE_EVENT_CHAT_MESSAGE_SEND:
       case EMOTE_EVENT_CHAT_MESSAGE_RECEIVED:
+      case EMOTE_EVENT_CHAT_TOPIC:
+      case EMOTE_EVENT_CHAT_USERS:
         ev = (Emote_Event*)EMOTE_OBJECT_ALLOC(Emote_Event_Chat_Message,
                                            EMOTE_EVENT_CHAT_MESSAGE_TYPE,
                                            _emote_event_chat_message_free

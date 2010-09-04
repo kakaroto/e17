@@ -61,7 +61,10 @@ enum _Emote_Event_Type
    EMOTE_EVENT_CHAT_PARTED=9,
    EMOTE_EVENT_CHAT_MESSAGE_SEND=10,
    EMOTE_EVENT_CHAT_MESSAGE_RECEIVED=11,
-   EMOTE_EVENT_COUNT=12
+   EMOTE_EVENT_SERVER_NICK_CHANGED=12,
+   EMOTE_EVENT_CHAT_TOPIC=13,
+   EMOTE_EVENT_CHAT_USERS=14,
+   EMOTE_EVENT_COUNT
 };
 
 struct _Emote_Object
@@ -119,6 +122,7 @@ struct _Emote_Event_Server_Connect
 {
    Emote_Event_Server s;
    int port;
+   const char *nick;
    const char *username;
    const char *password;
 };

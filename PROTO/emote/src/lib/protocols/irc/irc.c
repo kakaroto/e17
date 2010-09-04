@@ -11,6 +11,8 @@ EMAPI Emote_Protocol_Api protocol_api =
    EMOTE_PROTOCOL_API_VERSION, "irc", "IRC"
 };
 
+typedef struct _IRC_Server_Params IRC_Server_Params;
+
 static Eina_Bool _irc_cb_server_add(void *data, int type __UNUSED__, void *event __UNUSED__);
 static Eina_Bool _irc_cb_server_del(void *data, int type __UNUSED__, void *event __UNUSED__);
 static Eina_Bool _irc_cb_server_data(void *data, int type __UNUSED__, void *event);
@@ -19,17 +21,37 @@ static Eina_Bool _irc_event_handler(void *data __UNUSED__, int type, void *event
 static Emote_Protocol *m;
 static Eina_Hash *_irc_servers = NULL;
 
+static Emote_Event_Type _em_events[] =
+{
+   EMOTE_EVENT_SERVER_CONNECT,
+   EMOTE_EVENT_SERVER_DISCONNECT,
+   EMOTE_EVENT_CHAT_JOIN,
+   EMOTE_EVENT_CHAT_MESSAGE_SEND,
+   EMOTE_EVENT_SERVER_MESSAGE_SEND
+};
+
+struct _IRC_Server_Params
+{
+   const char *name;
+   int port;
+   const char *nick;
+   const char *user;
+   const char *pass;
+};
+
 EMAPI int
 protocol_init(Emote_Protocol *p)
 {
+   unsigned int i;
    m = p;
+
    ecore_con_init();
+
    _irc_servers = eina_hash_string_superfast_new(NULL);
-   emote_event_handler_add(EMOTE_EVENT_SERVER_CONNECT, _irc_event_handler, NULL);
-   emote_event_handler_add(EMOTE_EVENT_SERVER_DISCONNECT, _irc_event_handler, NULL);
-   emote_event_handler_add(EMOTE_EVENT_CHAT_JOIN, _irc_event_handler, NULL);
-   emote_event_handler_add(EMOTE_EVENT_CHAT_MESSAGE_SEND, _irc_event_handler, NULL);
-   emote_event_handler_add(EMOTE_EVENT_SERVER_MESSAGE_SEND, _irc_event_handler, NULL);
+
+   for (i = 0; i < (sizeof(_em_events)/sizeof(Emote_Event_Type)); ++i)
+      emote_event_handler_add(_em_events[i], _irc_event_handler, NULL);
+
    return 1;
 }
 
@@ -43,16 +65,32 @@ protocol_shutdown(void)
 }
 
 int
-protocol_irc_connect(const char *server, int port, const char *user, const char *pass)
+protocol_irc_connect(const char *server, int port, const char *nick, const char *user, const char *pass)
 {
    Ecore_Con_Server *serv = NULL;
+   IRC_Server_Params *params;
 
    if (!server) return 0;
    if (!(serv = eina_hash_find(_irc_servers, server)))
      {
         if (port <= 0) port = 6667;
+        if (!user)
+          user = getlogin();
+        if (!nick)
+          nick = user;
+        if (!pass)
+          pass = user;
+
+        // Create params
+        params = EMOTE_NEW(IRC_Server_Params, 1);
+        params->name = ((server != NULL) ? eina_stringshare_add(server) : NULL);
+        params->nick = ((nick != NULL) ? eina_stringshare_add(nick) : NULL);
+        params->user = ((user != NULL) ? eina_stringshare_add(user) : NULL);
+        params->pass = ((pass != NULL) ? eina_stringshare_add(pass) : NULL);
+        params->port = port;
+
         serv = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM,
-                                        server, port, NULL);
+                                        server, port, params);
         ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD,
                                 _irc_cb_server_add, NULL);
         ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL,
@@ -60,13 +98,10 @@ protocol_irc_connect(const char *server, int port, const char *user, const char 
         ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA,
                                 _irc_cb_server_data, NULL);
         eina_hash_add(_irc_servers, server, serv);
-        if (!user)
-          user = getlogin();
-        if (!pass)
-          pass = user;
+
         protocol_irc_pass(server, pass);
         protocol_irc_user(server, user);
-        protocol_irc_nick(server, user);
+        protocol_irc_nick(server, nick);
      }
    return 1;
 }
@@ -503,11 +538,23 @@ _irc_cb_server_add(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Con_Event_Server_Data *ev;
    Emote_Event *d;
+   IRC_Server_Params *params;
 
    ev = event;
    if (!ev->server) return EINA_FALSE;
 
-   d = emote_event_new(m, EMOTE_EVENT_SERVER_CONNECTED, ecore_con_server_name_get(ev->server));
+
+   params = ecore_con_server_data_get(ev->server);
+   d = emote_event_new
+       (
+          m,
+          EMOTE_EVENT_SERVER_CONNECTED,
+          params->name,
+          params->port,
+          params->nick,
+          params->user,
+          params->pass
+       );
    emote_event_send(d);
 
    return EINA_FALSE;
@@ -518,6 +565,7 @@ _irc_cb_server_del(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Con_Event_Server_Data *ev;
    Emote_Event *d;
+   IRC_Server_Params *params;
 
    ev = event;
    if (!ev->server) return EINA_FALSE;
@@ -525,7 +573,13 @@ _irc_cb_server_del(void *data __UNUSED__, int type __UNUSED__, void *event)
    d = emote_event_new(m, EMOTE_EVENT_SERVER_DISCONNECTED, ecore_con_server_name_get(ev->server));
    emote_event_send(d);
 
-   eina_hash_del_by_key(_irc_servers, ecore_con_server_name_get(ev->server));
+   params = ecore_con_server_data_get(ev->server);
+   eina_hash_del_by_key(_irc_servers, params->name);
+   if (params->name) eina_stringshare_del(params->name);
+   if (params->nick) eina_stringshare_del(params->name);
+   if (params->user) eina_stringshare_del(params->name);
+   if (params->pass) eina_stringshare_del(params->name);
+   EMOTE_FREE(params);
 
    return EINA_FALSE;
 }
@@ -565,6 +619,7 @@ _irc_event_handler(void *data __UNUSED__, int type __UNUSED__, void *event)
            protocol_irc_connect(
                                   EMOTE_EVENT_SERVER_T(d)->server,
                                   d->port,
+                                  d->nick,
                                   d->username,
                                   d->password
                                );

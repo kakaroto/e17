@@ -14,6 +14,8 @@ struct _IRC_Line
    const char *user;
    const char *host;
    const char *cmd;
+   const char *trailing;
+   const char *param_str;
    Eina_List *params;
 };
 
@@ -27,9 +29,11 @@ enum _PARSE_STATE
    PARSE_USER=2,
    PARSE_HOST=3,
    PARSE_CMD=4,
-   PARSE_MIDDLE=5,
-   PARSE_TRAILING=6,
-   PARSE_END=7
+   PARSE_PARAMS=5,
+   PARSE_MIDDLE=6,
+   PARSE_TRAILING_STR=7,
+   PARSE_TRAILING=8,
+   PARSE_END=9
 };
 
 enum _IRC_COMMANDS
@@ -50,12 +54,14 @@ static int _irc_parse_line(const char *line, IRC_Line *out);
 void
 irc_parse_input(char *input, const char *server, Emote_Protocol *m)
 {
+   Emote_Event *event;
    static char buf[8192];
    static int length = 0;
    IRC_Line ln;
    Eina_List *lines, *l, *p;
    char *line, *param;
    int size;
+   int ncmd;
 
    if ((length == 1) && (buf[0] == 0))
      length = 0;
@@ -78,50 +84,45 @@ irc_parse_input(char *input, const char *server, Emote_Protocol *m)
 
         if(!_irc_parse_line(line, &ln)) continue;
 
-/*        printf("\tPrefix = %s\n\tSource = %s\n\tUser = %s\n\tHost = %s\n\tCmd: %s\n",
-               ln.prefix, ln.source, ln.user, ln.host, ln.cmd);*/
-        /*EINA_LIST_FOREACH(ln.params, p, param)
+        printf("\tPrefix = %s\n\tSource = %s\n\tUser = %s\n\tHost = %s\n\tCmd: %s\n\tTrailing: %s\n",
+               ln.prefix, ln.source, ln.user, ln.host, ln.cmd, ln.trailing);
+        EINA_LIST_FOREACH(ln.params, p, param)
           {
              printf("\tParam: %s\n", param);
-          }*/
+          }
+
+        ncmd = atoi(ln.cmd);
+        event = NULL;
 
         if (!strcmp(ln.cmd, "PING"))
           {
-             protocol_irc_pong(server, ln.prefix);
+             protocol_irc_pong(server, eina_list_nth(ln.params,0));
           }
         else if (!strcmp(ln.cmd, "NOTICE"))
           {
-             Emote_Event *d;
-
-             d = emote_event_new(
+             event = emote_event_new(
                  m,
                  EMOTE_EVENT_SERVER_MESSAGE_RECEIVED,
                  server,
                  _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
                  _irc_parse_utf8_to_markup(eina_list_nth(ln.params,1))
              );
-             emote_event_send(d);
           }
         else if (!strcmp(ln.cmd, "PRIVMSG"))
           {
-             Emote_Event *d;
-
-             d = emote_event_new
+             event = emote_event_new
                  (
                     m,
                     EMOTE_EVENT_CHAT_MESSAGE_RECEIVED,
                     server,
                     _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
                     _irc_parse_utf8_to_markup(ln.source),
-                    _irc_parse_utf8_to_markup(eina_list_nth(ln.params,1))
+                    _irc_parse_utf8_to_markup(ln.trailing)
                  );
-             emote_event_send(d);
           }
         else if (!strcmp(ln.cmd, "JOIN"))
           {
-             Emote_Event *d;
-
-             d = emote_event_new
+             event = emote_event_new
                  (
                     m,
                     EMOTE_EVENT_CHAT_JOINED,
@@ -129,15 +130,10 @@ irc_parse_input(char *input, const char *server, Emote_Protocol *m)
                     _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
                     _irc_parse_utf8_to_markup(ln.source)
                  );
-             emote_event_send(d);
           }
         else if (!strcmp(ln.cmd, "PART"))
           {
-             Emote_Event *d;
-
-             printf("Received PART: %s, %s, %s\n", server, _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)), _irc_parse_utf8_to_markup(ln.source));
-
-             d = emote_event_new
+             event = emote_event_new
                  (
                     m,
                     EMOTE_EVENT_CHAT_PARTED,
@@ -145,41 +141,82 @@ irc_parse_input(char *input, const char *server, Emote_Protocol *m)
                     _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
                     _irc_parse_utf8_to_markup(ln.source)
                  );
-             emote_event_send(d);
           }
-        else if (atoi(ln.cmd) ==  RPL_NAMREPLY)
+        else if (!strcmp(ln.cmd, "NICK"))
           {
-            // TODO: Add command for sending channel list
+             event = emote_event_new
+                     (
+                        m,
+                        EMOTE_EVENT_SERVER_NICK_CHANGED,
+                        server,
+                        _irc_parse_utf8_to_markup(ln.source),
+                        _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0))
+                     );
           }
-        else if (atoi(ln.cmd) == RPL_TOPICUSER)
+        else if (ncmd == RPL_TOPIC)
+          {
+             event = emote_event_new
+                     (
+                        m,
+                        EMOTE_EVENT_CHAT_TOPIC,
+                        server,
+                        _irc_parse_utf8_to_markup(eina_list_nth(ln.params,1)),
+                        NULL,
+                        _irc_parse_utf8_to_markup(ln.trailing)
+                     );
+          }
+        else if (!strcmp(ln.cmd, "TOPIC"))
+          {
+             event = emote_event_new
+                     (
+                        m,
+                        EMOTE_EVENT_CHAT_TOPIC,
+                        server,
+                        _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
+                        _irc_parse_utf8_to_markup(ln.source),
+                        _irc_parse_utf8_to_markup(ln.trailing)
+                     );
+          }
+        else if (ncmd ==  RPL_NAMREPLY)
+          {
+            event = emote_event_new
+                    (
+                       m,
+                       EMOTE_EVENT_CHAT_USERS,
+                       server,
+                       _irc_parse_utf8_to_markup(eina_list_nth(ln.params,2)),
+                       NULL,
+                       _irc_parse_utf8_to_markup(ln.trailing)
+                    );
+          }
+        else if (ncmd == RPL_ENDOFNAMES)
+          {
+            event = emote_event_new
+                    (
+                       m,
+                       EMOTE_EVENT_CHAT_USERS,
+                       server,
+                       _irc_parse_utf8_to_markup(eina_list_nth(ln.params,1)),
+                       NULL,
+                       NULL
+                    );
+          }
+        else if (ncmd == RPL_TOPICUSER)
           {
             // Don't really need to show this.
           }
-        else if (atoi(ln.cmd) != 0)
+        else if (ncmd != 0)
           {
-             Emote_Event *d;
-             Eina_List *l;
-             char *p;
-             char buf[8192];
-             int pos;
-
-             buf[0] = 0;
-             pos = 0;
-             EINA_LIST_FOREACH(ln.params->next, l, p)
-               {
-                  pos += snprintf(&(buf[pos]), (sizeof(buf)-pos), "%s ", p);
-               }
-
-             d = emote_event_new(
+             event = emote_event_new(
                  m,
                  EMOTE_EVENT_SERVER_MESSAGE_RECEIVED,
                  server,
-                 _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
-                 _irc_parse_utf8_to_markup(buf)
+                 NULL,
+                 _irc_parse_utf8_to_markup(ln.param_str)
              );
-             emote_event_send(d);
           }
 
+        if (event) emote_event_send(event);
         _irc_cleanup_irc_line(&ln);
      }
 
@@ -202,11 +239,8 @@ _irc_find_token_pos(const char *buf, int pos, int end, const char token, const c
 static Eina_List *
 _irc_parse_split_input(const char *input)
 {
-   char buf[8192];
    Eina_List *l = NULL;
    char *tok = NULL, *str, *str2;
-   int length, pos, pos2;
-   int i = 0;
 
    str2 = str = strdup(input);
    while ((tok = strsep(&str, "\r\n")))
@@ -236,6 +270,8 @@ _irc_cleanup_irc_line(IRC_Line *line)
       eina_stringshare_del(line->host);
    if (line->cmd)
       eina_stringshare_del(line->cmd);
+   if (line->trailing)
+      eina_stringshare_del(line->trailing);
    if (line->params)
      {
         EINA_LIST_FREE(line->params, param)
@@ -248,7 +284,7 @@ _irc_parse_line(const char *line, IRC_Line *out)
 {
    char buf[8192];
    PARSE_STATE state;
-   int pos, pos2;
+   int pos, pos2, pos3;
    int length;
 
    // Check for null or blank line
@@ -267,7 +303,10 @@ _irc_parse_line(const char *line, IRC_Line *out)
           {
              case PARSE_PREFIX:
                 if (buf[0] != ':')
+                {
                    state = PARSE_CMD;
+                   break;
+                }
 
                 pos = 0;
                 pos2 = _irc_find_token_pos(buf, pos, sizeof(buf), 0, ' ');
@@ -334,10 +373,19 @@ _irc_parse_line(const char *line, IRC_Line *out)
                 if (buf[pos2] == ':')
                 {
                   pos2++;
-                  state = PARSE_TRAILING;
+                  state = PARSE_TRAILING_STR;
                 }
                 else
-                  state = PARSE_MIDDLE;
+                  state = PARSE_PARAMS;
+                break;
+
+             case PARSE_PARAMS:
+                pos3 = pos = pos2;
+                pos2 = _irc_find_token_pos(buf, pos, sizeof(buf), 0, 0);
+                out->param_str = eina_stringshare_add(&(buf[pos]));
+
+                state = PARSE_MIDDLE;
+                pos2 = pos3;
                 break;
 
              case PARSE_MIDDLE:
@@ -353,10 +401,19 @@ _irc_parse_line(const char *line, IRC_Line *out)
                      if (buf[pos2] == ':')
                        {
                           pos2++;
-                          state = PARSE_TRAILING;
+                          state = PARSE_TRAILING_STR;
                           break;
                        }
                   }
+                break;
+
+             case PARSE_TRAILING_STR:
+                pos3 = pos = pos2;
+                pos2 = _irc_find_token_pos(buf, pos, sizeof(buf), 0, 0);
+                out->trailing = eina_stringshare_add(&(buf[pos]));
+
+                state = PARSE_TRAILING;
+                pos2 = pos3;
                 break;
 
              case PARSE_TRAILING:
@@ -366,6 +423,7 @@ _irc_parse_line(const char *line, IRC_Line *out)
                      pos2 = _irc_find_token_pos(buf, pos, sizeof(buf), ':', 0);
                      buf[pos2] = 0;
                      out->params = eina_list_append(out->params, eina_stringshare_add(&(buf[pos])));
+                     pos2++;
                   }
                 state = PARSE_END;
                 break;

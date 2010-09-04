@@ -10,7 +10,7 @@ EMAPI extern Emote_Protocol_Api protocol_api;
 
 EMAPI int protocol_init(Emote_Protocol *p);
 EMAPI int protocol_shutdown(void);
-int protocol_irc_connect(const char *server, int port, const char *user, const char *pass);
+int protocol_irc_connect(const char *server, int port, const char *nick, const char *user, const char *pass);
 int protocol_irc_disconnect(const char *server);
 int protocol_irc_pass(const char *server, const char *pass);
 int protocol_irc_nick(const char *server, const char *nick);
