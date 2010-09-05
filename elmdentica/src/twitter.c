@@ -485,6 +485,12 @@ Eina_Bool json_timeline_handle_single(int timeline, StatusesList *statuses, json
 		json_object_put(jo);
 	}
 
+	jo = json_object_object_get(astatus, "favorited");
+	if(jo) {
+		s->favorited = json_object_get_boolean(jo);
+		json_object_put(jo);
+	}
+
 	jo = json_object_object_get(astatus, "in_reply_to_user_id");
 	if(jo) {
 		s->in_reply_to_user_id = json_object_get_int(jo);
@@ -638,23 +644,47 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 	if(request) free(request);
 }
 
-void ed_twitter_favorite_create(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, long int status_id) {
+void ed_twitter_toggle_favorite(int account_id, long long int status_id, Eina_Bool favorite) {
+	char *query=NULL, *db_err=NULL, *sid_str=NULL;
+	int sqlite_res;
+	aStatus *as=NULL;
+
+	sqlite_res = asprintf(&query, "UPDATE messages SET s_favorited=%d WHERE account_id = %d and status_id = %lld;", favorite, account_id, status_id);
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
+		if(sqlite_res != 0) {
+			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, db_err);
+			sqlite3_free(db_err);
+		}
+		free(query);
+	}
+
+	sqlite_res = asprintf(&sid_str, "%lld", status_id);
+	if(sqlite_res != -1) {
+		as = eina_hash_find(statusHash, sid_str);
+		if(as) as->favorited=favorite;
+		free(sid_str);
+	}
+}
+
+void ed_twitter_favorite_create(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, long long int status_id) {
 	http_request * request=calloc(1, sizeof(http_request));
 	int res;
 
-	res = asprintf(&request->url, "%s://%s:%d%s/favorites/create/%ld.json", proto, domain, port, base_url, status_id);
+	res = asprintf(&request->url, "%s://%s:%d%s/favorites/create/%lld.json", proto, domain, port, base_url, status_id);
 	if(res != -1) {
 		ed_curl_post(screen_name, password, request, "", account_id);
 		free(request->url);
+		if(request->response_code == 200) ed_twitter_toggle_favorite(account_id, status_id, EINA_TRUE);
 	}
 	if(request) free(request);
 }
 
-void ed_twitter_favorite_db_remove(int account_id, long int status_id) {
+void ed_twitter_favorite_db_remove(int account_id, long long int status_id) {
 	char *query=NULL, *db_err=NULL;;
 	int sqlite_res;
 
-	sqlite_res = asprintf(&query, "DELETE FROM messages WHERE account_id = %d and status_id = %ld and timeline = %d;", account_id, status_id, TIMELINE_FAVORITES);
+	sqlite_res = asprintf(&query, "DELETE FROM messages WHERE account_id = %d and status_id = %lld and timeline = %d;", account_id, status_id, TIMELINE_FAVORITES);
 	if(sqlite_res != -1) {
 		sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
 		if(sqlite_res != 0) {
@@ -665,15 +695,16 @@ void ed_twitter_favorite_db_remove(int account_id, long int status_id) {
 	}
 }
 
-void ed_twitter_favorite_destroy(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, long int status_id) {
+void ed_twitter_favorite_destroy(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, long long int status_id) {
 	http_request * request=calloc(1, sizeof(http_request));
 	int res;
 
 	ed_twitter_favorite_db_remove(account_id, status_id);
-	res = asprintf(&request->url, "%s://%s:%d%s/favorites/destroy/%ld.json", proto, domain, port, base_url, status_id);
+	res = asprintf(&request->url, "%s://%s:%d%s/favorites/destroy/%lld.json", proto, domain, port, base_url, status_id);
 	if(res != -1) {
 		ed_curl_post(screen_name, password, request, "", account_id);
 		free(request->url);
+		if(request->response_code == 200) ed_twitter_toggle_favorite(account_id, status_id, EINA_FALSE);
 	}
 	if(request) free(request);
 }

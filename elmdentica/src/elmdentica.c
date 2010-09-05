@@ -1440,6 +1440,7 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 		as = (aStatus*)calloc(1, sizeof(aStatus));
 		if(!as) return(-1);
 
+		as->sid = strtoll(argv[1], NULL, 10);
 		as->text = strndup(argv[4], PIPE_BUF);
 		as->created_at = atoi(argv[6]);
 		as->in_reply_to_status_id = strtoll(argv[7], NULL, 10);
@@ -1571,16 +1572,6 @@ static void get_messages(int timeline) {
 	sqlite3_free(db_err);
 }
 
-void clear_status_hash_data(void *data) {
-	ub_Bubble *bubble = (ub_Bubble*)data;
-
-	if(bubble) {
-		if(bubble->screen_name) free(bubble->screen_name);
-		if(bubble->message) free(bubble->message);
-		free(bubble);
-	}
-}
-
 void fill_message_list(int timeline) {
 	int sqlite_res=0;
 	char *db_err=NULL, *query=NULL;
@@ -1590,12 +1581,11 @@ void fill_message_list(int timeline) {
 		bubble2status = NULL;
 	}
 
-	bubble2status = eina_hash_pointer_new(clear_status_hash_data);
+	bubble2status = eina_hash_pointer_new(NULL);
 	if(!statusHash) statusHash = eina_hash_string_superfast_new(status_hash_data_free);
     if(!userHash) userHash = eina_hash_string_superfast_new(user_hash_data_free);
 
 
-	//sqlite_res = asprintf(&query, "SELECT messages.id, messages.account_id, messages.s_id, messages.s_text, messages.s_created_at, messages.s_in_reply_to_status_id, messages.s_in_reply_to_user_id, messages.s_favorited, messages.s_user as s_uid, accounts.type, accounts.id as accid, accounts.enabled FROM messages,accounts,users where messages.timeline = %d and messages.account_id=accid and accounts.enabled=1 and s_uid=users.uid ORDER BY messages.date DESC LIMIT %d;", timeline, settings->max_messages);
 	sqlite_res = asprintf(&query, "SELECT messages.*, accounts.type, accounts.id, accounts.enabled FROM messages,accounts where messages.timeline = %d and messages.account_id=accounts.id and accounts.enabled=1 ORDER BY messages.s_created_at DESC LIMIT %d;", timeline, settings->max_messages);
 	if(sqlite_res != -1) {
 		sqlite_res = 0;
