@@ -56,6 +56,8 @@
 #include "image_data_argb_alpha.c"
 #include "image_data_ycbcr601pl.c"
 #include "image_data_ycbcr601pl_wide_stride.c"
+#include "image_data_ycbcr601pl_map_solid_rotate.c"
+#include "image_data_ycbcr601pl_map_nearest_solid_rotate.c"
 #include "image_crossfade.c"
 #include "text_basic.c"
 #include "text_styles.c"

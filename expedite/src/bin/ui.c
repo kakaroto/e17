@@ -110,6 +110,8 @@ static double weights[] =
      23.4462,
      14.7573,
      36.5261,
+      5.0000,
+      5.0000,
      24.3482,
      10.4611,
      86.0290,
@@ -136,8 +138,12 @@ static double weights[] =
      22.0342,
      38.2952,
      5.5560,
-     
-     0.0 // no final test - add a 0 at the end anyway to pad
+     0.5000,
+   
+     0.0, // no final test - add a 0 at the end anyway to pad
+     0.0,
+     0.0,
+     0.0
 };
 
 static void

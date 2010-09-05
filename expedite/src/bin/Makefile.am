@@ -80,6 +80,8 @@ image_data_argb.c \
 image_data_argb_alpha.c \
 image_data_ycbcr601pl.c \
 image_data_ycbcr601pl_wide_stride.c \
+image_data_ycbcr601pl_map_solid_rotate.c \
+image_data_ycbcr601pl_map_nearest_solid_rotate.c \
 image_crossfade.c \
 text_basic.c \
 text_styles.c \
