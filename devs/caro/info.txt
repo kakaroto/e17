@@ -9,4 +9,4 @@ Managing:     epdf, edvi, eps
 Contributing: eina, evas, ecore, emotion, etk, ewl
 Group:        Core, Libraries
 Platform:     Linux, Windows
-GeoData:      48.803728, 2.430786
+GeoData:      48.803728 2.430786

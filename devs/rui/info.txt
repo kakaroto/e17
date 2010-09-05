@@ -9,5 +9,5 @@ Managing:     elmdentica
 Contributing: elementary (at start)
 Group:        Applications, Libraries, WebSite
 Platform:     GNU/Linux (Debian, Ubuntu, Fedora, OpenEmbedded/OpenMoko)
-GeoData:      38.7,-9.2
+GeoData:      38.7 -9.2
 
