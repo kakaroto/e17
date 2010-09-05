@@ -1,4 +1,4 @@
-#include "`em_global.h"
+#include "em_global.h"
 
 #define MIN_WIN_WIDTH 200
 #define MIN_WIN_HEIGHT 200
