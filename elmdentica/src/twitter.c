@@ -468,6 +468,7 @@ Eina_Bool json_timeline_handle_single(int timeline, StatusesList *statuses, json
 	jo = json_object_object_get(astatus, "id");
 	if(jo) {
 		sid = json_object_get_int(jo);
+		s->sid = sid;
 		json_object_put(jo);
 	}
 

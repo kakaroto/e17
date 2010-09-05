@@ -214,7 +214,8 @@ void ed_statusnet_favorite_destroy(int id, char *screen_name, char *password, ch
 }
 
 static int ed_mark_favorite(void *data, int argc, char **argv, char **azColName) {
-	ub_Bubble * status = (ub_Bubble*)data;
+	Evas_Object *bubble = (Evas_Object*)data;
+	aStatus *as = eina_hash_find(bubble2status, &bubble);
 	char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
 	int port=0, id=0;
 
@@ -237,17 +238,17 @@ static int ed_mark_favorite(void *data, int argc, char **argv, char **azColName)
 	base_url = argv[6];
 	id = atoi(argv[7]);
 
-	if(status->favorite) {
+	if(as->favorited) {
 		switch(atoi(argv[2])) {
-			case ACCOUNT_TYPE_TWITTER: { ed_twitter_favorite_destroy(id, screen_name, password, proto, domain, port, base_url, status->status_id); break; }
+			case ACCOUNT_TYPE_TWITTER: { ed_twitter_favorite_destroy(id, screen_name, password, proto, domain, port, base_url, as->sid); break; }
 			case ACCOUNT_TYPE_STATUSNET:
-			default: { ed_statusnet_favorite_destroy(id, screen_name, password, proto, domain, port, base_url, status->status_id); break; }
+			default: { ed_statusnet_favorite_destroy(id, screen_name, password, proto, domain, port, base_url, as->sid); break; }
 		}
 	} else {
 		switch(atoi(argv[2])) {
-			case ACCOUNT_TYPE_TWITTER: { ed_twitter_favorite_create(id, screen_name, password, proto, domain, port, base_url, status->status_id); break; }
+			case ACCOUNT_TYPE_TWITTER: { ed_twitter_favorite_create(id, screen_name, password, proto, domain, port, base_url, as->sid); break; }
 			case ACCOUNT_TYPE_STATUSNET:
-			default: { ed_statusnet_favorite_create(id, screen_name, password, proto, domain, port, base_url, status->status_id); break; }
+			default: { ed_statusnet_favorite_create(id, screen_name, password, proto, domain, port, base_url, as->sid); break; }
 		}
 	}
 	return(0);
@@ -255,14 +256,14 @@ static int ed_mark_favorite(void *data, int argc, char **argv, char **azColName)
 
 static void on_mark_favorite(void *data, Evas_Object *obj, void *event_info) {
 	Evas *e;
-	Evas_Object *hover;
-	ub_Bubble * status = (ub_Bubble*)data;
+	Evas_Object *hover, *bubble = (Evas_Object*)data;
+	aStatus *as = eina_hash_find(bubble2status, &bubble);
 	int sqlite_res=0;
 	char *db_err=NULL, *query=NULL;
 
-	if(!status) return;
+	if(!as) return;
 
-	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE enabled = 1 and id = %d;", status->account_id);
+	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE enabled = 1 and id = %d;", as->account_id);
 	if(sqlite_res != -1) {
 		sqlite_res = sqlite3_exec(ed_DB, query, ed_mark_favorite, data, &db_err);
 		if(sqlite_res != 0) {
@@ -281,12 +282,12 @@ static void on_mark_favorite(void *data, Evas_Object *obj, void *event_info) {
 
 static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 	Evas *e;
-	Evas_Object *hover;
-	ub_Bubble * status = (ub_Bubble*)data;
+	Evas_Object *hover, *bubble = (Evas_Object*)data;
+	aStatus *as = eina_hash_find(bubble2status, &bubble);
 
-	if(status) {
-		switch(status->account_type) {
-			case ACCOUNT_TYPE_TWITTER: { ed_twitter_repeat(status->account_id, status->status_id); break; }
+	if(as) {
+		switch(as->account_type) {
+			case ACCOUNT_TYPE_TWITTER: { ed_twitter_repeat(as->account_id, as->sid); break; }
 			case ACCOUNT_TYPE_STATUSNET:
 			default: { break; }
 		}
@@ -325,13 +326,13 @@ void ed_popup_status(ub_Status *s) {
 
 static void on_view_related(void *data, Evas_Object *obj, void *event_info) {
 	Evas *e;
-	Evas_Object *hover;
-	ub_Bubble *status = (ub_Bubble*)data;
+	Evas_Object *hover, *bubble = (Evas_Object*)data;
+	aStatus *as = eina_hash_find(bubble2status, &bubble);
 	ub_Status *related_status=NULL;
 
-	if(status) {
-		switch(status->account_type) {
-			case ACCOUNT_TYPE_TWITTER: { ed_twitter_status_get(status->account_id, status->in_reply_to, &related_status); break; }
+	if(as) {
+		switch(as->account_type) {
+			case ACCOUNT_TYPE_TWITTER: { ed_twitter_status_get(as->account_id, as->in_reply_to_status_id, &related_status); break; }
 			case ACCOUNT_TYPE_STATUSNET:
 			default: { break; }
 		}
@@ -352,19 +353,27 @@ static void on_view_related(void *data, Evas_Object *obj, void *event_info) {
 
 static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 	Evas *e;
-	Evas_Object *hover;
-	ub_Bubble * status = (ub_Bubble*)data;
-	char * entry_str=NULL;
+	Evas_Object *hover, *bubble = (Evas_Object*)data;
+	aStatus *as = eina_hash_find(bubble2status, &bubble);
+	anUser *au = NULL;
+	char * entry_str=NULL, *uid_str=NULL;
 	int res = 0;
 
-	if(status) {
-		res = asprintf(&entry_str, "@%s: ", status->screen_name);
+	if(as) {
+		res = asprintf(&uid_str, "%lld", as->user);
 		if(res != -1) {
-			elm_entry_entry_set(entry, entry_str);
-			free(entry_str);
-			elm_object_focus(entry);
-			reply_id=status->status_id;
-			elm_entry_cursor_end_set(entry);
+			au = eina_hash_find(userHash, uid_str);
+			if(au) {
+				res = asprintf(&entry_str, "@%s: ", au->screen_name);
+				if(res != -1) {
+					elm_entry_entry_set(entry, entry_str);
+					free(entry_str);
+					elm_object_focus(entry);
+					reply_id=as->in_reply_to_status_id;
+					elm_entry_cursor_end_set(entry);
+				}
+			}
+			free(uid_str);
 		}
 	}
 
@@ -379,12 +388,12 @@ static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 
 static void on_dm(void *data, Evas_Object *obj, void *event_info) {
 	Evas *e;
-	Evas_Object *hover;
-	ub_Bubble * status = (ub_Bubble*)data;
+	Evas_Object *hover, *bubble = (Evas_Object*)data;
+	aStatus *as = eina_hash_find(bubble2status, &bubble);
 
-	if(status) {
+	if(as) {
 		elm_object_focus(entry);
-		user_id=status->user_id;
+		user_id=as->user;
 	}
 
 	e = evas_object_evas_get(win);
@@ -1201,7 +1210,7 @@ static void on_bubble_mouse_down(void *data, Evas *e, Evas_Object *obj, void *ev
 
 static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info) {
 	Evas_Object *hover=NULL, *box=NULL, *table=NULL, *button=NULL, *bubble=(Evas_Object*)data;
-	ub_Bubble * ubBubble = eina_hash_find(bubble2status, &bubble);
+	aStatus *as = eina_hash_find(bubble2status, &bubble);
 	double time_delta;
 	struct timeval tv;
 	int m_x=0, m_y=0;
@@ -1232,7 +1241,7 @@ static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *even
 					evas_object_size_hint_weight_set(button, 1, 1);
 					evas_object_size_hint_align_set(button, -1, 0);
 					elm_button_label_set(button, _("Reply"));
-					evas_object_smart_callback_add(button, "clicked", on_reply, ubBubble);
+					evas_object_smart_callback_add(button, "clicked", on_reply, bubble);
 					elm_table_pack(table, button, 0, 0, 1, 1);
 				evas_object_show(button);
 
@@ -1240,7 +1249,7 @@ static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *even
 					evas_object_size_hint_weight_set(button, 1, 1);
 					evas_object_size_hint_align_set(button, -1, 0);
 					elm_button_label_set(button, _("Repeat"));
-					evas_object_smart_callback_add(button, "clicked", on_repeat, ubBubble);
+					evas_object_smart_callback_add(button, "clicked", on_repeat, bubble);
 					elm_table_pack(table, button, 1, 0, 1, 1);
 				evas_object_show(button);
 
@@ -1248,27 +1257,27 @@ static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *even
 					evas_object_size_hint_weight_set(button, 1, 1);
 					evas_object_size_hint_align_set(button, -1, 0);
 					elm_button_label_set(button, _("DM"));
-					evas_object_smart_callback_add(button, "clicked", on_dm, ubBubble);
+					evas_object_smart_callback_add(button, "clicked", on_dm, bubble);
 					elm_table_pack(table, button, 2, 0, 1, 1);
 				evas_object_show(button);
 
 				button = elm_button_add(win);
 					evas_object_size_hint_weight_set(button, 1, 1);
 					evas_object_size_hint_align_set(button, -1, 0);
-					if(ubBubble->favorite)
+					if(as->favorited)
 						elm_button_label_set(button, _("Unmark favorite"));
 					else
 						elm_button_label_set(button, _("Mark favorite"));
-					evas_object_smart_callback_add(button, "clicked", on_mark_favorite, ubBubble);
+					evas_object_smart_callback_add(button, "clicked", on_mark_favorite, bubble);
 					elm_table_pack(table, button, 0, 1, 3, 1);
 				evas_object_show(button);
 
-				if(ubBubble->in_reply_to != 0) {
+				if(as->in_reply_to_status_id != 0) {
 					button = elm_button_add(win);
 						evas_object_size_hint_weight_set(button, 1, 1);
 						evas_object_size_hint_align_set(button, -1, 0);
 						elm_button_label_set(button, _("View related"));
-						evas_object_smart_callback_add(button, "clicked", on_view_related, ubBubble);
+						evas_object_smart_callback_add(button, "clicked", on_view_related, bubble);
 						elm_table_pack(table, button, 0, 2, 3, 1);
 					evas_object_show(button);
 				}

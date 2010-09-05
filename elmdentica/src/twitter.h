@@ -47,6 +47,7 @@ typedef struct _ub_Status {
 } ub_Status;
 
 typedef struct _a_Status {
+	long long int sid;
 	char *text;
 	Eina_Bool truncated;
 	time_t	created_at;
