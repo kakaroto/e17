@@ -12,11 +12,12 @@ struct _Em_Gui
 {
    Em_Object em_obj_inherit;
 
-   Evas_Object *win;
-   Evas_Object *o_tb;
-   Evas_Object *o_chansel;
-   Evas_Object *o_box;
-   Evas_Object *o_block;
+   Evas_Object *w_win;
+   Evas_Object *w_tb;
+   Evas_Object *w_chansel;
+   Evas_Object *w_box;
+   Evas_Object *w_block;
+
    Eina_Hash   *servers;
 };
 
@@ -24,13 +25,16 @@ struct _Em_Gui_Server
 {
    Em_Object em_obj_inherit;
 
-   Evas_Object *box;
-   Evas_Object *text;
-   Evas_Object *entry;
-   Evas_Object *nick;
-   Eina_Hash   *channels;
+   Evas_Object *w_box;
+   Evas_Object *w_text;
+   Evas_Object *w_entry;
+   Evas_Object *w_nick;
+   Elm_Hoversel_Item *w_select;
 
-   Elm_Hoversel_Item *select;
+   const char *nick;
+   const char *name;
+
+   Eina_Hash   *channels;
    Emote_Protocol *protocol;
 };
 
@@ -39,12 +43,14 @@ struct _Em_Gui_Channel
    Em_Object em_obj_inherit;
 
    Em_Gui_Server *server;
-   Evas_Object *box;
-   Evas_Object *text;
-   Evas_Object *entry;
-   Evas_Object *nick;
+   Evas_Object *w_box;
+   Evas_Object *w_text;
+   Evas_Object *w_entry;
+   Evas_Object *w_nick;
+   Elm_Hoversel_Item *w_select;
 
-   Elm_Hoversel_Item *select;
+   const char *name;
+
 };
 
 EM_INTERN int em_gui_init(void);

@@ -228,9 +228,10 @@ _em_main_chat_events_handler(void *data __UNUSED__, int type __UNUSED__, void *e
 
            d = event;
            em_gui_user_list_add(EMOTE_EVENT_SERVER_T(d)->server, EMOTE_EVENT_CHAT_T(d)->channel, d->message);
+           break;
         }
       default:
-         printf("Unhandled Event!\n");
+         printf("Unhandled Event (%u)!\n", EMOTE_EVENT_T(event)->type);
          return EINA_FALSE;
    }
 

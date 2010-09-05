@@ -1,4 +1,4 @@
-#include "em_global.h"
+#include "`em_global.h"
 
 #define MIN_WIN_WIDTH 200
 #define MIN_WIN_HEIGHT 200
@@ -39,57 +39,60 @@ em_gui_init(void)
    gui = EM_OBJECT_ALLOC(Em_Gui, EM_GUI_TYPE, _em_gui_cb_free);
    if (!gui) return 0;
 
+   // Set finger size to 4 to avoid huge widgets
+   elm_finger_size_set(4);
+
    /* create window */
-   gui->win = elm_win_add(NULL, "emote", ELM_WIN_BASIC);
-   elm_win_title_set(gui->win, "Emote");
-   elm_win_keyboard_mode_set(gui->win, ELM_WIN_KEYBOARD_ALPHA);
-   evas_object_smart_callback_add(gui->win, "delete-request",
+   gui->w_win = elm_win_add(NULL, "emote", ELM_WIN_BASIC);
+   elm_win_title_set(gui->w_win, "Emote");
+   elm_win_keyboard_mode_set(gui->w_win, ELM_WIN_KEYBOARD_ALPHA);
+   evas_object_smart_callback_add(gui->w_win, "delete-request",
                                   _em_gui_cb_win_del, NULL);
 
    /* create background */
-   o = elm_bg_add(gui->win);
+   o = elm_bg_add(gui->w_win);
    evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_min_set(o, MIN_WIN_WIDTH, MIN_WIN_HEIGHT);
-   elm_win_resize_object_add(gui->win, o);
+   elm_win_resize_object_add(gui->w_win, o);
    evas_object_show(o);
 
    /* create packing box */
-   gui->o_box = elm_box_add(gui->win);
-   elm_box_horizontal_set(gui->o_box, EINA_FALSE);
-   elm_box_homogenous_set(gui->o_box, EINA_FALSE);
-   evas_object_size_hint_weight_set(gui->o_box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(gui->o_box, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_win_resize_object_add(gui->win, gui->o_box);
-   evas_object_show(gui->o_box);
+   gui->w_box = elm_box_add(gui->w_win);
+   elm_box_horizontal_set(gui->w_box, EINA_FALSE);
+   elm_box_homogenous_set(gui->w_box, EINA_FALSE);
+   evas_object_size_hint_weight_set(gui->w_box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(gui->w_box, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_win_resize_object_add(gui->w_win, gui->w_box);
+   evas_object_show(gui->w_box);
 
    /* create hover select at top for quick channel change */
-   gui->o_chansel = elm_hoversel_add(gui->win);
-   elm_hoversel_label_set(gui->o_chansel, _(""));
-   elm_hoversel_hover_parent_set(gui->o_chansel, gui->win);
-   evas_object_size_hint_weight_set(gui->o_chansel, 0.0, 0.0);
-   evas_object_size_hint_align_set(gui->o_chansel, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_pack_end(gui->o_box, gui->o_chansel);
-   evas_object_show(gui->o_chansel);
+   gui->w_chansel = elm_hoversel_add(gui->w_win);
+   elm_hoversel_label_set(gui->w_chansel, _(""));
+   elm_hoversel_hover_parent_set(gui->w_chansel, gui->w_win);
+   evas_object_size_hint_weight_set(gui->w_chansel, 0.0, 0.0);
+   evas_object_size_hint_align_set(gui->w_chansel, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_pack_end(gui->w_box, gui->w_chansel);
+   evas_object_show(gui->w_chansel);
 
    /* create main toolbar */
-   gui->o_tb = elm_toolbar_add(gui->win);
-   elm_toolbar_icon_size_set(gui->o_tb, 16);
-   elm_toolbar_align_set(gui->o_tb, 0.0);
-   elm_toolbar_scrollable_set(gui->o_tb, EINA_FALSE);
-   evas_object_size_hint_weight_set(gui->o_tb, EVAS_HINT_EXPAND, 0.0);
-   evas_object_size_hint_align_set(gui->o_tb, EVAS_HINT_FILL, 0.0);
-   elm_box_pack_end(gui->o_box, gui->o_tb);
-   evas_object_show(gui->o_tb);
+   gui->w_tb = elm_toolbar_add(gui->w_win);
+   elm_toolbar_icon_size_set(gui->w_tb, 0);
+   elm_toolbar_align_set(gui->w_tb, 0.0);
+   elm_toolbar_scrollable_set(gui->w_tb, EINA_FALSE);
+   evas_object_size_hint_weight_set(gui->w_tb, EVAS_HINT_EXPAND, 0.0);
+   evas_object_size_hint_align_set(gui->w_tb, EVAS_HINT_FILL, 0.0);
+   elm_box_pack_end(gui->w_box, gui->w_tb);
+   evas_object_show(gui->w_tb);
 
-   o = em_util_icon_add(gui->win, "preferences-system");
-   elm_toolbar_item_add(gui->o_tb, o, _("Settings"), _em_gui_cb_settings, NULL);
-   o = em_util_icon_add(gui->win, "application-exit");
-   elm_toolbar_item_add(gui->o_tb, o, _("Quit"), _em_gui_cb_quit, NULL);
+   o = em_util_icon_add(gui->w_win, "preferences-system");
+   elm_toolbar_item_add(gui->w_tb, o, _("Settings"), _em_gui_cb_settings, NULL);
+   o = em_util_icon_add(gui->w_win, "application-exit");
+   elm_toolbar_item_add(gui->w_tb, o, _("Quit"), _em_gui_cb_quit, NULL);
 
    /* set min size of window and show it */
-   evas_object_size_hint_min_set(gui->win, MIN_WIN_WIDTH, MIN_WIN_HEIGHT);
-   evas_object_resize(gui->win, MIN_WIN_WIDTH, MIN_WIN_HEIGHT);
-   evas_object_show(gui->win);
+   evas_object_size_hint_min_set(gui->w_win, MIN_WIN_WIDTH, MIN_WIN_HEIGHT);
+   evas_object_resize(gui->w_win, MIN_WIN_WIDTH, MIN_WIN_HEIGHT);
+   evas_object_show(gui->w_win);
 
    gui->servers = eina_hash_string_small_new(_em_gui_server_del);
 
@@ -160,19 +163,19 @@ em_gui_message_add(const char *server, const char *channel, const char *user, co
         c = eina_hash_find(s->channels, channel);
         if (c)
           {
-             elm_scrolled_entry_cursor_end_set(c->text);
-             elm_scrolled_entry_entry_insert(c->text, buf);
+             elm_scrolled_entry_cursor_end_set(c->w_text);
+             elm_scrolled_entry_entry_insert(c->w_text, buf);
           }
         else
           {
-             elm_scrolled_entry_cursor_end_set(s->text);
-             elm_scrolled_entry_entry_insert(s->text, buf);
+             elm_scrolled_entry_cursor_end_set(s->w_text);
+             elm_scrolled_entry_entry_insert(s->w_text, buf);
           }
      }
    else
      {
-        elm_scrolled_entry_cursor_end_set(s->text);
-        elm_scrolled_entry_entry_insert(s->text, buf);
+        elm_scrolled_entry_cursor_end_set(s->w_text);
+        elm_scrolled_entry_entry_insert(s->w_text, buf);
      }
 }
 
@@ -194,12 +197,12 @@ _em_gui_channel_nick_update(const Eina_Hash *hash __UNUSED__, const void *key __
    n = fdata;
 
    snprintf(buf, sizeof(buf), "You are now known as %s", n);
-   em_gui_message_add(elm_hoversel_item_label_get(c->server->select),
-                      elm_hoversel_item_label_get(c->select),
+   em_gui_message_add(c->server->name,
+                      c->name,
                       NULL,
                       buf
                       );
-   elm_label_label_set(c->nick, n);
+   elm_label_label_set(c->w_nick, n);
 
    return EINA_TRUE;
 }
@@ -212,10 +215,13 @@ em_gui_nick_update(const char *server, const char *old, const char *new)
 
    s = eina_hash_find(gui->servers, server);
 
-   if (!old || !strcmp(old, elm_label_label_get(s->nick)))
+   if (!old || !strcmp(old, s->nick))
    {
-     elm_label_label_set(s->nick, new);
+     elm_label_label_set(s->w_nick, new);
      eina_hash_foreach(s->channels, _em_gui_channel_nick_update, new);
+
+     if (s->nick) eina_stringshare_del(s->nick);
+     s->nick = eina_stringshare_add(new);
    }
    else
    {
@@ -234,7 +240,7 @@ em_gui_channel_status_update(const char *server, const char *channel, const char
 
    s = eina_hash_find(gui->servers, server);
 
-   if (!strcmp(user, elm_label_label_get(s->nick)))
+   if (!strcmp(user, s->nick))
      {
         if (joined)
           {
@@ -299,8 +305,14 @@ em_gui_user_list_add(const char *server, const char *channel, const char *users)
    else
      snprintf(buf, sizeof(buf), "%s", users);
 
-   elm_scrolled_entry_cursor_end_set(c->text);
-   elm_scrolled_entry_entry_insert(c->text, buf);
+   if (!c)
+   {
+      printf("Server %p, Channel %p\n", s, c);
+      return;
+   }
+
+   elm_scrolled_entry_cursor_end_set(c->w_text);
+   elm_scrolled_entry_entry_insert(c->w_text, buf);
 
    //em_gui_message_add(server, channel, NULL, buf);
 }
@@ -313,7 +325,7 @@ _em_gui_chansel_add_channel(const Eina_Hash *hash __UNUSED__, const void *key, v
 
   c = data;
 
-  c->select = elm_hoversel_item_add(gui->o_chansel, (const char *)key, NULL, ELM_ICON_NONE,
+  c->w_select = elm_hoversel_item_add(gui->w_chansel, (const char *)key, NULL, ELM_ICON_NONE,
                          _em_gui_hoversel_cb_channel_clicked, c);
 
   return EINA_TRUE;
@@ -326,7 +338,7 @@ _em_gui_chansel_add_server(const Eina_Hash *hash __UNUSED__, const void *key, vo
 
   s = data;
 
-  s->select = elm_hoversel_item_add(gui->o_chansel, (const char *)key, NULL, ELM_ICON_NONE,
+  s->w_select = elm_hoversel_item_add(gui->w_chansel, (const char *)key, NULL, ELM_ICON_NONE,
                          _em_gui_hoversel_cb_server_clicked, s);
 
   eina_hash_foreach(s->channels, _em_gui_chansel_add_channel, NULL);
@@ -337,11 +349,11 @@ _em_gui_chansel_add_server(const Eina_Hash *hash __UNUSED__, const void *key, vo
 static void
 _em_gui_chansel_update(const char *label)
 {
-  elm_hoversel_clear(gui->o_chansel);
+  elm_hoversel_clear(gui->w_chansel);
 
   eina_hash_foreach(gui->servers, _em_gui_chansel_add_server, NULL);
 
-  elm_hoversel_label_set(gui->o_chansel, label);
+  elm_hoversel_label_set(gui->w_chansel, label);
 }
 
 static void
@@ -364,9 +376,9 @@ _em_gui_server_free(void *obj)
    Em_Gui_Server *s;
 
    s = obj;
-   evas_object_del(elm_object_parent_widget_get(s->entry));
-   evas_object_del(s->text);
-   evas_object_del(s->box);
+   evas_object_del(elm_object_parent_widget_get(s->w_entry));
+   evas_object_del(s->w_text);
+   evas_object_del(s->w_box);
 
    eina_hash_free(s->channels);
 }
@@ -383,11 +395,11 @@ _em_gui_channel_free(void *obj)
    Em_Gui_Channel *c;
 
    c = obj;
-   evas_object_del(elm_object_parent_widget_get(c->entry));
-   evas_object_del(c->text);
-   evas_object_del(c->box);
+   evas_object_del(elm_object_parent_widget_get(c->w_entry));
+   evas_object_del(c->w_text);
+   evas_object_del(c->w_box);
 
-   elm_hoversel_item_del(c->select);
+   elm_hoversel_item_del(c->w_select);
 }
 
 static void
@@ -407,8 +419,8 @@ _em_gui_cb_win_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *eve
 static void
 _em_gui_cb_settings(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__)
 {
-   elm_toolbar_item_unselect_all(gui->o_tb);
-   em_config_show(gui->win);
+   elm_toolbar_item_unselect_all(gui->w_tb);
+   em_config_show(gui->w_win);
 }
 
 static void
@@ -423,7 +435,7 @@ _em_gui_hoversel_cb_server_clicked(void *data, Evas_Object *obj __UNUSED__, void
    Em_Gui_Server *s;
 
    s = data;
-   _em_gui_switch(elm_hoversel_item_label_get(s->select), NULL);
+   _em_gui_switch(s->name, NULL);
 }
 
 static void
@@ -432,8 +444,7 @@ _em_gui_hoversel_cb_channel_clicked(void *data, Evas_Object *obj __UNUSED__, voi
    Em_Gui_Channel *c;
 
    c = data;
-   _em_gui_switch(elm_hoversel_item_label_get(c->server->select),
-                 elm_hoversel_item_label_get(c->select));
+   _em_gui_switch(c->server->name, c->name);
 }
 
 static void
@@ -458,15 +469,15 @@ _em_gui_server_entry_cb_enter(void *data, Evas_Object *obj, void *event __UNUSED
    Em_Gui_Server *s;
 
    s = (Em_Gui_Server *)data;
-   printf("Sending message to %s", elm_hoversel_item_label_get(s->select));
+   printf("Sending message to %s", s->name);
 
    text = elm_scrolled_entry_entry_get(obj);
    if ((text[0] == '/') && (text[1] != '/'))
      {
         _em_gui_server_send_message(
                                       s->protocol,
-                                      elm_hoversel_item_label_get(s->select),
-                                      elm_label_label_get(s->nick),
+                                      s->name,
+                                      s->nick,
                                       text
                                    );
      }
@@ -485,8 +496,7 @@ _em_gui_channel_entry_cb_enter(void *data, Evas_Object *obj, void *event __UNUSE
    c = (Em_Gui_Channel *)data;
    text = elm_scrolled_entry_entry_get(obj);
 
-   printf("Sending message to %s->%s", elm_hoversel_item_label_get(c->server->select),
-                                        elm_hoversel_item_label_get(c->select));
+   printf("Sending message to %s->%s", c->server->name, c->name);
 
    // No / or double //
    if (!((text[0] == '/') && (text[1] != '/')))
@@ -494,9 +504,9 @@ _em_gui_channel_entry_cb_enter(void *data, Evas_Object *obj, void *event __UNUSE
         d = emote_event_new(
                               c->server->protocol,
                               EMOTE_EVENT_CHAT_MESSAGE_SEND,
-                              elm_hoversel_item_label_get(c->server->select),
-                              elm_hoversel_item_label_get(c->select),
-                              elm_label_label_get(c->nick),
+                              c->server->name,
+                              c->name,
+                              c->server->nick,
                               text
                            );
         emote_event_send(d);
@@ -505,17 +515,17 @@ _em_gui_channel_entry_cb_enter(void *data, Evas_Object *obj, void *event __UNUSE
         if (text[0] == '/') text++;
 
         // Add message to textblock
-        em_gui_message_add(elm_hoversel_item_label_get(c->server->select),
-                           elm_hoversel_item_label_get(c->select),
-                           elm_label_label_get(c->nick),
+        em_gui_message_add(c->server->name,
+                           c->name,
+                           c->server->nick,
                            text);
      }
    else // Single /, don't print to textblock
      {
         _em_gui_server_send_message(
                                       c->server->protocol,
-                                      elm_hoversel_item_label_get(c->server->select),
-                                      elm_label_label_get(c->server->nick),
+                                      c->server->name,
+                                      c->server->nick,
                                       text
                                    );
      }
@@ -531,30 +541,30 @@ _em_gui_switch(const char *server, const char *channel)
    Em_Gui_Server *s;
    Em_Gui_Channel *c;
 
-   if (gui->o_block)
+   if (gui->w_block)
      {
-        evas_object_hide(gui->o_block);
-        elm_box_unpack(gui->o_box, gui->o_block);
+        evas_object_hide(gui->w_block);
+        elm_box_unpack(gui->w_box, gui->w_block);
      }
 
    s = eina_hash_find(gui->servers, server);
    if (!channel)
      {
-        gui->o_block = s->box;
+        gui->w_block = s->w_box;
         _em_gui_chansel_update(server);
         snprintf(buf, sizeof(buf), "Emote - %s", server);
      }
    else
      {
         c = eina_hash_find(s->channels, channel);
-        gui->o_block = c->box;
+        gui->w_block = c->w_box;
         _em_gui_chansel_update(channel);
         snprintf(buf, sizeof(buf), "Emote - %s : %s", server, channel);
      }
 
-   elm_box_pack_after(gui->o_box, gui->o_block, gui->o_chansel);
-   evas_object_show(gui->o_block);
-   elm_win_title_set(gui->win, buf);
+   elm_box_pack_after(gui->w_box, gui->w_block, gui->w_chansel);
+   evas_object_show(gui->w_block);
+   elm_win_title_set(gui->w_win, buf);
 }
 
 static Em_Gui_Server *
@@ -567,54 +577,56 @@ _em_gui_server_create(const char *server, Emote_Protocol *p)
    s = EM_OBJECT_ALLOC(Em_Gui_Server, EM_GUI_SERVER_TYPE, _em_gui_server_free);
 
    /* create packing box */
-   s->box = elm_box_add(gui->win);
-   elm_box_horizontal_set(s->box, EINA_FALSE);
-   elm_box_homogenous_set(s->box, EINA_FALSE);
-   evas_object_size_hint_weight_set(s->box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(s->box, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_win_resize_object_add(gui->win, s->box);
+   s->w_box = elm_box_add(gui->w_win);
+   elm_box_horizontal_set(s->w_box, EINA_FALSE);
+   elm_box_homogenous_set(s->w_box, EINA_FALSE);
+   evas_object_size_hint_weight_set(s->w_box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(s->w_box, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_win_resize_object_add(gui->w_win, s->w_box);
 
    /* Create textblock for server text */
-   s->text = elm_scrolled_entry_add(gui->win);
-   elm_scrolled_entry_editable_set(s->text, EINA_FALSE);
-   elm_scrolled_entry_line_wrap_set(s->text, EINA_TRUE);
-   evas_object_size_hint_weight_set(s->text, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(s->text, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_pack_end(s->box, s->text);
-   evas_object_show(s->text);
+   s->w_text = elm_scrolled_entry_add(gui->w_win);
+   elm_scrolled_entry_editable_set(s->w_text, EINA_FALSE);
+   elm_scrolled_entry_line_wrap_set(s->w_text, EINA_TRUE);
+   evas_object_size_hint_weight_set(s->w_text, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(s->w_text, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_pack_end(s->w_box, s->w_text);
+   evas_object_show(s->w_text);
 
    /* Create box to hold nick and entry */
-   o = elm_box_add(gui->win);
+   o = elm_box_add(gui->w_win);
    elm_box_horizontal_set(o, EINA_TRUE);
    elm_box_homogenous_set(o, EINA_FALSE);
    evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, 0.0);
-   elm_box_pack_end(s->box, o);
+   elm_box_pack_end(s->w_box, o);
    evas_object_show(o);
 
    /* Create label for nick */
-   s->nick = elm_label_add(gui->win);
-   elm_label_label_set(s->nick, "");
-   elm_label_line_wrap_set(s->nick, 0);
-   evas_object_size_hint_weight_set(s->nick, 0.0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(s->nick, 0.0, EVAS_HINT_FILL);
-   elm_box_pack_end(o, s->nick);
-   evas_object_show(s->nick);
+   s->w_nick = elm_label_add(gui->w_win);
+   elm_label_label_set(s->w_nick, "");
+   elm_label_line_wrap_set(s->w_nick, 0);
+   evas_object_size_hint_weight_set(s->w_nick, 0.0, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(s->w_nick, 0.0, EVAS_HINT_FILL);
+   elm_box_pack_end(o, s->w_nick);
+   evas_object_show(s->w_nick);
 
    /* create entry for user input */
-   s->entry = elm_scrolled_entry_add(gui->win);
-   elm_scrolled_entry_single_line_set(s->entry, EINA_TRUE);
-   evas_object_size_hint_weight_set(s->entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(s->entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_pack_end(o, s->entry);
-   evas_object_smart_callback_add(s->entry, "activated", _em_gui_server_entry_cb_enter, s);
-   evas_object_show(s->entry);
+   s->w_entry = elm_scrolled_entry_add(gui->w_win);
+   elm_scrolled_entry_single_line_set(s->w_entry, EINA_TRUE);
+   evas_object_size_hint_weight_set(s->w_entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(s->w_entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_pack_end(o, s->w_entry);
+   evas_object_smart_callback_add(s->w_entry, "activated", _em_gui_server_entry_cb_enter, s);
+   evas_object_show(s->w_entry);
 
    /* Init channel hash */
    s->channels = eina_hash_string_small_new(_em_gui_channel_del);
 
-   s->select = elm_hoversel_item_add(gui->o_chansel, server, NULL, ELM_ICON_NONE,
+   s->w_select = elm_hoversel_item_add(gui->w_chansel, server, NULL, ELM_ICON_NONE,
                          _em_gui_hoversel_cb_server_clicked, s);
+
+   s->name = eina_stringshare_add(server);
 
    s->protocol = p;
    return s;
@@ -631,51 +643,53 @@ _em_gui_channel_create(const char *server, const char *channel)
    c->server = eina_hash_find(gui->servers, server);
 
    /* create packing box */
-   c->box = elm_box_add(gui->win);
-   elm_box_horizontal_set(c->box, EINA_FALSE);
-   elm_box_homogenous_set(c->box, EINA_FALSE);
-   evas_object_size_hint_weight_set(c->box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(c->box, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_win_resize_object_add(gui->win, c->box);
+   c->w_box = elm_box_add(gui->w_win);
+   elm_box_horizontal_set(c->w_box, EINA_FALSE);
+   elm_box_homogenous_set(c->w_box, EINA_FALSE);
+   evas_object_size_hint_weight_set(c->w_box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(c->w_box, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_win_resize_object_add(gui->w_win, c->w_box);
 
    /* Create textblock for server text */
-   c->text = elm_scrolled_entry_add(gui->win);
-   elm_scrolled_entry_editable_set(c->text, EINA_FALSE);
-   elm_scrolled_entry_line_wrap_set(c->text, EINA_TRUE);
-   evas_object_size_hint_weight_set(c->text, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(c->text, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_pack_end(c->box, c->text);
-   evas_object_show(c->text);
+   c->w_text = elm_scrolled_entry_add(gui->w_win);
+   elm_scrolled_entry_editable_set(c->w_text, EINA_FALSE);
+   elm_scrolled_entry_line_wrap_set(c->w_text, EINA_TRUE);
+   evas_object_size_hint_weight_set(c->w_text, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(c->w_text, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_pack_end(c->w_box, c->w_text);
+   evas_object_show(c->w_text);
 
    /* Create box to hold nick and entry */
-   o = elm_box_add(gui->win);
+   o = elm_box_add(gui->w_win);
    elm_box_horizontal_set(o, EINA_TRUE);
    elm_box_homogenous_set(o, EINA_FALSE);
    evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, 0.0);
-   elm_box_pack_end(c->box, o);
+   elm_box_pack_end(c->w_box, o);
    evas_object_show(o);
 
    /* Create label for nick */
-   c->nick = elm_label_add(gui->win);
-   elm_label_label_set(c->nick, elm_label_label_get(c->server->nick));
-   elm_label_line_wrap_set(c->nick, 0);
-   evas_object_size_hint_weight_set(c->nick, 0.0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(c->nick, 0.0, EVAS_HINT_FILL);
-   elm_box_pack_end(o, c->nick);
-   evas_object_show(c->nick);
+   c->w_nick = elm_label_add(gui->w_win);
+   elm_label_label_set(c->w_nick, c->server->nick);
+   elm_label_line_wrap_set(c->w_nick, 0);
+   evas_object_size_hint_weight_set(c->w_nick, 0.0, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(c->w_nick, 0.0, EVAS_HINT_FILL);
+   elm_box_pack_end(o, c->w_nick);
+   evas_object_show(c->w_nick);
 
    /* create entry for user input */
-   c->entry = elm_scrolled_entry_add(gui->win);
-   elm_scrolled_entry_single_line_set(c->entry, EINA_TRUE);
-   evas_object_size_hint_weight_set(c->entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(c->entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_pack_end(o, c->entry);
-   evas_object_smart_callback_add(c->entry, "activated", _em_gui_channel_entry_cb_enter, c);
-   evas_object_show(c->entry);
+   c->w_entry = elm_scrolled_entry_add(gui->w_win);
+   elm_scrolled_entry_single_line_set(c->w_entry, EINA_TRUE);
+   evas_object_size_hint_weight_set(c->w_entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(c->w_entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_pack_end(o, c->w_entry);
+   evas_object_smart_callback_add(c->w_entry, "activated", _em_gui_channel_entry_cb_enter, c);
+   evas_object_show(c->w_entry);
 
-   c->select = elm_hoversel_item_add(gui->o_chansel, channel, NULL, ELM_ICON_NONE,
+   c->w_select = elm_hoversel_item_add(gui->w_chansel, channel, NULL, ELM_ICON_NONE,
                          _em_gui_hoversel_cb_channel_clicked, c);
+
+   c->name = eina_stringshare_add(channel);
 
    eina_hash_add(c->server->channels, channel, c);
 

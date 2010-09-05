@@ -1,1 +1,6 @@
-
+* Change channel selector to toolbar instead of hoversel?
+* Add way of doing channel/nick notification.  Probably easier with
+  toolbar.
+* User List (store as Eina Hash for quick add/delete, need to figure out
+  sorting as well as where to store it)
+* Nick Completion

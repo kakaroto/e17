@@ -203,7 +203,7 @@ irc_parse_input(char *input, const char *server, Emote_Protocol *m)
           }
         else if (ncmd == RPL_TOPICUSER)
           {
-            // Don't really need to show this.
+             // Don't really need to show this.
           }
         else if (ncmd != 0)
           {
