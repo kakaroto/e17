@@ -72,7 +72,7 @@ Evas_Coord finger_size;
 int first_message=1;
 time_t now;
 
-Eina_Hash * status2user=NULL;
+Eina_Hash * bubble2status=NULL;
 
 long long int reply_id=0;
 long long int user_id=0;
@@ -82,7 +82,8 @@ extern char * browsers[];
 extern char * browserNames[];
 char * follow_user=NULL;
 char * home=NULL;
-
+extern Eina_Hash* statusHash;
+extern Eina_Hash* userHash;
 extern Settings *settings;
 
 extern CURL * user_agent;
@@ -135,21 +136,19 @@ void elmdentica_init(void) {
 		exit(sqlite_res);
 	}
 
-	query = "CREATE TABLE IF NOT EXISTS messages (id INTEGER PRIMARY KEY, status_id INTEGER, account_id INTEGER CONSTRAINT account_id_ref REFERENCES accounts (id), screen_name TEXT, name TEXT, message TEXT, date INTEGER, timeline INTEGER);";
+	query = "CREATE TABLE IF NOT EXISTS messages (id INTEGER PRIMARY KEY, status_id INTEGER, account_id INTEGER CONSTRAINT account_id_ref REFERENCES accounts (id), timeline INTEGER, s_text TEXT, s_truncated INTEGER, s_created_at INTEGER, s_in_reply_to_status_id INTEGER, s_source TEXT, s_in_reply_to_user_id INTEGER, s_favorited INTEGER, s_user INTEGER);";
 	sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
 	if(sqlite_res != 0) {
 		printf("Can't run %s: %d => %s\n", query, sqlite_res, db_err);
 		exit(sqlite_res);
 	}
 
-	query = "ALTER TABLE messages ADD COLUMN timeline INTEGER;";
+	query = "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, uid INTEGER, account_id INTEGER CONSTRAINT account_id_ref REFERENCES accounts (id), name TEXT, screen_name TEXT, location TEXT, description TEXT, profile_image_url TEXT, url TEXT, protected INTEGER, followers_count INTEGER, friends_count INTEGER, created_at INTEGER, favorites_count INTEGER, statuses_count INTEGER, following INTEGER, statusnet_blocking INTEGER);";
 	sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
-
-	query = "ALTER TABLE messages ADD COLUMN user_id INTEGER;";
-	sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
-
-	query = "ALTER TABLE messages ADD COLUMN in_reply_to INTEGER;";
-	sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
+	if(sqlite_res != 0) {
+		printf("Can't run %s: %d => %s\n", query, sqlite_res, db_err);
+		exit(sqlite_res);
+	}
 
 	query = "CREATE TABLE IF NOT EXISTS posts (account_id INTEGER CONSTRAINT account_id_ref REFERENCES accounts (id), dm_to TEXT, message TEXT);";
 	sqlite_res = sqlite3_exec(ed_DB, query, NULL, NULL, &db_err);
@@ -302,10 +301,12 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 
 void ed_popup_status(ub_Status *s) {
     Evas_Object *inwin=NULL, *bubble=NULL, *message=NULL;
+	aStatus *as;
+	anUser *au;
 
     inwin = elm_win_inwin_add(win);
         elm_object_style_set(inwin, "minimal_vertical");
-        bubble = ed_make_bubble(win, s->screen_name, s->created_at, NULL);
+        bubble = ed_make_bubble(win, as, au);
 			evas_object_size_hint_weight_set(bubble, 1, 1);
 			evas_object_size_hint_align_set(bubble, -1, -1);
 
@@ -531,15 +532,20 @@ Evas_Object *ed_make_message(char *text, Evas_Object *bubble, Evas_Object *windo
 }
 
 
-static void ed_statusnet_user_get(int account_id, UserProfile *user) {
+anUser *ed_statusnet_user_get(int account_id, UserProfile *user) {
+	return(NULL);
 }
 
-static void user_info_get(ub_Bubble *ubBubble, UserProfile *user) {
-	switch(ubBubble->account_type) {
-		case ACCOUNT_TYPE_TWITTER: { ed_twitter_user_get(ubBubble->account_id, user) ; break; }
+anUser *user_info_get(aStatus *as, UserProfile *user) {
+	anUser *au=NULL;
+
+	switch(as->account_type) {
+		case ACCOUNT_TYPE_TWITTER: { au = ed_twitter_user_get(as->account_id, user) ; break; }
 		case ACCOUNT_TYPE_STATUSNET:
-		default: { ed_statusnet_user_get(ubBubble->account_id, user); break; }
+		default: { au = ed_statusnet_user_get(as->account_id, user); break; }
 	}
+
+	return(au);
 }
 
 void ed_statusnet_user_follow(int id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *user_screen_name) {
@@ -669,7 +675,7 @@ static void on_zoomed_icon_clicked(void *data, Evas_Object *obj, void *event_inf
 }
 
 static void on_bubble_icon_clicked(void *data, Evas_Object *obj, void *event_info) {
-	ub_Bubble * ubBubble = eina_hash_find(status2user, &data);
+	ub_Bubble * ubBubble = eina_hash_find(bubble2status, &data);
 	char *file_path = NULL;
 	Evas_Object *zoom=NULL, *icon=NULL;
 	int res = 0;
@@ -692,27 +698,24 @@ static void on_bubble_icon_clicked(void *data, Evas_Object *obj, void *event_inf
 	}
 }
 
-Evas_Object *ed_make_bubble(Evas_Object *parent, char *nick, time_t date, char *corner) {
-	Evas_Object *bubble = NULL, *icon = NULL;
+Evas_Object *ed_make_bubble(Evas_Object *parent, aStatus* as, anUser* au) {
+	Evas_Object *bubble = NULL, *icon = NULL, *message = NULL;
 	char *file_path, datestr[19];
 	struct tm date_tm;
 	int res = 0;
 
-	if(nick && (bubble = elm_bubble_add(parent))) {
+	if((bubble = elm_bubble_add(parent))) {
 		evas_object_size_hint_weight_set(bubble, 1, 0);
 		evas_object_size_hint_align_set(bubble, -1, -1);
 
-		if(localtime_r((time_t*)&date, &date_tm)) {
+		if(localtime_r(&(as->created_at), &date_tm)) {
 			strftime(datestr, sizeof(datestr), "%F %R", &date_tm);
 			elm_bubble_info_set(bubble, datestr);
 		}
 
-		elm_bubble_label_set(bubble, nick);
+		elm_bubble_label_set(bubble, au->name);
 
-		if(corner) elm_bubble_corner_set(bubble, corner);
-
-
-		res = asprintf(&file_path, "%s/cache/icons/%s", home, nick);
+		res = asprintf(&file_path, "%s/cache/icons/%lld", home, as->user);
 
 		if(res != -1 && (icon = elm_icon_add(parent))) {
 			elm_icon_file_set(icon, file_path, "fubar?");
@@ -721,38 +724,40 @@ Evas_Object *ed_make_bubble(Evas_Object *parent, char *nick, time_t date, char *
 			elm_bubble_icon_set(bubble, icon);
 			free(file_path);
 		}
+
+		message = ed_make_message(as->text, bubble, win);
+		
+		if(message) {
+			elm_bubble_content_set(bubble, message);
+		} else evas_object_del(bubble);
 	}
 	return(bubble);
 }
 
 static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 	AnchorData *anchor = (AnchorData*)data;
-	Evas_Object *user_win=NULL, *icon=NULL, *bg=NULL, *table=NULL, *button=NULL, *label=NULL, *bubble=anchor->bubble, *message=NULL;
-	UserProfile *user;
-	ub_Bubble * ubBubble = eina_hash_find(status2user, &bubble);
+	Evas_Object *user_win=NULL, *icon=NULL, *bg=NULL, *table=NULL, *button=NULL, *label=NULL, *bubble=anchor->bubble;
+	UserProfile *user=NULL;
+	aStatus *as = eina_hash_find(bubble2status, &bubble);
 	char *description=NULL, *path=NULL;
 	int res=0;
 	struct stat buf;
+	anUser *au=NULL;
 
 	if(!settings->online) return;
 
 	user = calloc(1,sizeof(UserProfile));
-	if(!user) return;
-
-	memset(user, 0, sizeof(UserProfile));
 	user->screen_name=anchor->url+7;
-    user->name=NULL;
-    user->description=NULL;
-    user->tmp=NULL;
+	au = user_info_get(as, user);
 
-	user_info_get(ubBubble, user);
+	if(!au) return;
 
-	follow_user=user->screen_name;
+	follow_user=au->screen_name;
 
-	user_win = elm_win_add(NULL, user->screen_name, ELM_WIN_BASIC);
+	user_win = elm_win_add(NULL, au->screen_name, ELM_WIN_BASIC);
 		evas_object_size_hint_min_set(user_win, 480, 480);
 		evas_object_size_hint_max_set(user_win, 640, 640);
-		elm_win_title_set(user_win, user->screen_name);
+		elm_win_title_set(user_win, au->screen_name);
 		elm_win_autodel_set(user_win, EINA_TRUE);
 
 		bg = elm_bg_add(user_win);
@@ -767,7 +772,7 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 			elm_win_resize_object_add(user_win, table);
 			elm_table_padding_set(table, 20, 20);
 
-			res = asprintf(&path, "%s/cache/icons/%s", home, user->screen_name);
+			res = asprintf(&path, "%s/cache/icons/%s", home, au->screen_name);
 
 			if(res!=-1 && stat(path, &buf) == 0 ) {
 				icon = elm_icon_add(user_win);
@@ -783,7 +788,7 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 				evas_object_size_hint_weight_set(label, 1, 1);
 				evas_object_size_hint_align_set(label, -1, -1);
 
-				res = asprintf(&description, "%s is following %d and has %d followers.", user->name, user->friends_count, user->followers_count);
+				res = asprintf(&description, "%s is following %d and has %d followers.", au->name, au->friends_count, au->followers_count);
 				elm_entry_line_wrap_set(label, EINA_TRUE);
 				if(res!=-1) {
 					elm_entry_entry_set(label, description);
@@ -798,23 +803,24 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 				evas_object_size_hint_weight_set(button, 1, 1);
 				evas_object_size_hint_align_set(button, 0.5, 0);
 
-				if(!user->following && !user->protected) {
+				if(!au->following && !au->protected) {
 					elm_button_label_set(button, _("Follow"));
-					evas_object_smart_callback_add(button, "clicked", on_user_follow, ubBubble);
+					evas_object_smart_callback_add(button, "clicked", on_user_follow, bubble);
 				} else {
 					elm_button_label_set(button, _("Stop following"));
-					evas_object_smart_callback_add(button, "clicked", on_user_abandon, ubBubble);
+					evas_object_smart_callback_add(button, "clicked", on_user_abandon, bubble);
 				}
 				elm_table_pack(table, button, 1, 1, 1, 1);
 			evas_object_show(button);
 
-			if(user->text && (button = ed_make_bubble(user_win, user->screen_name, user->status_created_at, NULL))) {
-					message = ed_make_message(user->text, button, user_win);
-					evas_object_show(button);
-					if(message) {
-						elm_bubble_content_set(button, message);
-						elm_table_pack(table, button, 0, 2, 2, 1);
-					} else evas_object_del(bubble);
+			if(au->description) {
+					label = elm_label_add(user_win);
+						evas_object_size_hint_weight_set(label, 1, 1);
+						evas_object_size_hint_align_set(label, -1, -1);
+						elm_label_line_wrap_set(label, EINA_TRUE);
+						elm_label_label_set(label, au->description);
+					evas_object_show(label);
+					elm_table_pack(table, label, 0, 2, 2, 1);
 			}
 
 		evas_object_show(table);
@@ -822,7 +828,7 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 	    evas_object_resize(user_win, 480, 640);
 	evas_object_show(user_win);
 
-	user_free(user);
+	if(user) user_free(user);
 }
 
 static void on_group_messages_view(void *data, Evas_Object *obj, void *event_info) {
@@ -840,16 +846,19 @@ static void on_group_messages_view(void *data, Evas_Object *obj, void *event_inf
 static void on_group_leave(void *data, Evas_Object *obj, void *event_info);
 
 static void on_group_join(void *data, Evas_Object *obj, void *event_info) {
-	ub_Bubble * ubBubble = (ub_Bubble*)data;
+	Evas_Object *bubble = (Evas_Object*)data;
+	aStatus *as = eina_hash_find(bubble2status, &bubble);
 	Evas *e = evas_object_evas_get(obj);
 	Evas_Object *frame = evas_object_name_find(e, "group"), *group_desc = NULL;
 	GroupProfile *gp = (GroupProfile*)calloc(1, sizeof(GroupProfile));
 	char *m;
 	int res = 0;
 
+	if(!as) return;
+
 	gp->name=strndup(elm_frame_label_get(frame), PIPE_BUF);
 
-	ed_statusnet_group_join(ubBubble->account_id, gp);
+	ed_statusnet_group_join(as->account_id, gp);
 
 	if(gp->failed) {
 		printf("Error joining group %s: %s\n", gp->name, gp->error);
@@ -863,7 +872,7 @@ static void on_group_join(void *data, Evas_Object *obj, void *event_info) {
 			group_desc = evas_object_name_find(e, "group_desc");
 			elm_label_label_set(group_desc, m);
 			elm_button_label_set(obj, _("Leave"));
-			evas_object_smart_callback_add(obj, "clicked", on_group_leave, ubBubble);
+			evas_object_smart_callback_add(obj, "clicked", on_group_leave, bubble);
 			free(m);
 		}
 	}
@@ -872,16 +881,19 @@ static void on_group_join(void *data, Evas_Object *obj, void *event_info) {
 }
 
 static void on_group_leave(void *data, Evas_Object *obj, void *event_info) {
-	ub_Bubble * ubBubble = (ub_Bubble*)data;
+	Evas_Object *bubble = (Evas_Object*)data;
+	aStatus *as = eina_hash_find(bubble2status, &bubble);
 	Evas *e = evas_object_evas_get(obj);
 	Evas_Object *frame = evas_object_name_find(e, "group"), *group_desc = NULL;
 	GroupProfile *gp = (GroupProfile*)calloc(1, sizeof(GroupProfile));
 	char *m;
 	int res = 0;
 
+	if(!as) return;
+
 	gp->name=strndup(elm_frame_label_get(frame), PIPE_BUF);
 
-	ed_statusnet_group_leave(ubBubble->account_id, gp);
+	ed_statusnet_group_leave(as->account_id, gp);
 
 	if(gp->failed && debug)
 		printf("Error leaving group %s: %s\n", gp->name, gp->error);
@@ -895,7 +907,7 @@ static void on_group_leave(void *data, Evas_Object *obj, void *event_info) {
 			group_desc = evas_object_name_find(e, "group_desc");
 			elm_label_label_set(group_desc, m);
 			elm_button_label_set(obj, _("Join"));
-			evas_object_smart_callback_add(obj, "clicked", on_group_join, ubBubble);
+			evas_object_smart_callback_add(obj, "clicked", on_group_join, bubble);
 			free(m);
 		}
 	}
@@ -904,7 +916,7 @@ static void on_group_leave(void *data, Evas_Object *obj, void *event_info) {
 static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 	AnchorData *anchor = (AnchorData*)data;
 	Evas_Object *group_win=NULL, *bg=NULL, *box=NULL, *label=NULL, *notify=NULL, *s=NULL, *box2=NULL, *bubble=anchor->bubble, *icon=NULL, *button=NULL, *frame=NULL;
-	ub_Bubble * ubBubble = eina_hash_find(status2user, &bubble);
+	aStatus *as = eina_hash_find(bubble2status, &bubble);
 	GroupProfile *gp = (GroupProfile*)calloc(1, sizeof(GroupProfile));
 	char *m, *path;
 	int res = 0;
@@ -912,7 +924,7 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 
 	gp->name=strndup(anchor->url+8, PIPE_BUF);
 
-	ed_statusnet_group_get(ubBubble->account_id, gp);
+	ed_statusnet_group_get(as->account_id, gp);
 	if(gp->failed) {
 		notify = elm_notify_add(win);
 			evas_object_size_hint_weight_set(notify, 1, 1);
@@ -1009,10 +1021,10 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 					evas_object_size_hint_align_set(button, -1, 0);
 					if(gp->member) {
 						elm_button_label_set(button, _("Leave"));
-						evas_object_smart_callback_add(button, "clicked", on_group_leave, ubBubble);
+						evas_object_smart_callback_add(button, "clicked", on_group_leave, bubble);
 					} else {
 						elm_button_label_set(button, _("Join"));
-						evas_object_smart_callback_add(button, "clicked", on_group_join, ubBubble);
+						evas_object_smart_callback_add(button, "clicked", on_group_join, bubble);
 					}
 					elm_box_pack_end(box2, button);
 				evas_object_show(button);
@@ -1189,7 +1201,7 @@ static void on_bubble_mouse_down(void *data, Evas *e, Evas_Object *obj, void *ev
 
 static void on_bubble_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info) {
 	Evas_Object *hover=NULL, *box=NULL, *table=NULL, *button=NULL, *bubble=(Evas_Object*)data;
-	ub_Bubble * ubBubble = eina_hash_find(status2user, &bubble);
+	ub_Bubble * ubBubble = eina_hash_find(bubble2status, &bubble);
 	double time_delta;
 	struct timeval tv;
 	int m_x=0, m_y=0;
@@ -1324,63 +1336,131 @@ Eina_Bool ed_check_gag(char *screen_name, char *name, char *message) {
 	return(gd.match);
 }
 
-static int add_status(void *data, int argc, char **argv, char **azColName) {
-	char *screen_name=NULL, *name=NULL, *status_message=NULL;
-	int id=0, account_id=0, type;
-	Eina_Bool timeline=data?(int)(long)data:0;
-	time_t date;
+static int fetch_user_from_db_handler(void *user_data, int argc, char **argv, char **azColName) {
+	anUser **pau = (anUser**)user_data;
+	anUser *au=NULL;
 
-	ub_Bubble * ubBubble = calloc(1, sizeof(ub_Bubble));
-	Evas_Object *message=NULL, *bubble=NULL;
+	if(*pau) return(-1);
+	*pau = calloc(1, sizeof(anUser));
+
+	au = *pau;
+
+/*
+ argv[0]  := id                 INTEGER
+ argv[1]  := uid                INTEGER
+ argv[2]  := account_id         INTEGER
+ argv[3]  := name               TEXT
+ argv[4]  := screen_name        TEXT
+ argv[5]  := location           TEXT
+ argv[6]  := description        TEXT
+ argv[7]  := profile_image_url  TEXT
+ argv[8]  := url                TEXT
+ argv[9]  := protected          INTEGER
+ argv[10] := followers_count    INTEGER
+ argv[11] := friends_count      INTEGER
+ argv[12] := created_at         INTEGER
+ argv[13] := favorites_count    INTEGER
+ argv[14] := statuses_count     INTEGER
+ argv[15] := following          INTEGER
+ argv[16] := statusnet_blocking INTEGER
+
+*/
+
+	if(argv[3]) au->name = strndup(argv[3], PIPE_BUF);
+	if(argv[4]) au->screen_name = strndup(argv[4], PIPE_BUF);
+	if(argv[5]) au->location = strndup(argv[5], PIPE_BUF);
+	if(argv[6]) au->description = strndup(argv[6], PIPE_BUF);
+	if(argv[7]) au->profile_image_url = strndup(argv[7], PIPE_BUF);
+	if(argv[8]) au->url = strndup(argv[8], PIPE_BUF);
+	if(argv[9]) au->protected = atoi(argv[9]);
+	if(argv[10]) au->followers_count = atoi(argv[10]);
+	if(argv[11]) au->friends_count = atoi(argv[11]);
+	if(argv[12]) au->created_at = atoi(argv[12]);
+	if(argv[13]) au->favorites_count = atoi(argv[13]);
+	if(argv[14]) au->statuses_count = atoi(argv[14]);
+	if(argv[15]) au->following = atoi(argv[15]);
+	if(argv[16]) au->statusnet_blocking = atoi(argv[16]);
+	au->in_db = EINA_TRUE;
+
+	return(0);
+}
+
+anUser *fetch_user_from_db(long long int uid) {
+	char *query, *db_err=NULL;
+	int sqlite_res = 0, res = 0;
+	anUser *au = NULL;
+
+	res = asprintf(&query, "SELECT users.* FROM users WHERE uid = %lld LIMIT 1;", uid);
+	if(res != -1) {
+		sqlite_res = sqlite3_exec(ed_DB, query, fetch_user_from_db_handler, &au, &db_err);
+		if(sqlite_res != 0) {
+			printf("Can't run %s: %s\n", query, db_err);
+			sqlite3_free(db_err);
+		}
+	} 
+	return(au);
+}
+static int add_status(void *data, int argc, char **argv, char **azColName) {
+	anUser *au=NULL;
+	aStatus *as=NULL;
+
+	Evas_Object *bubble=NULL;
+	char *uid_str=NULL, *sid_str=NULL;
 
 	/* In this query handler, these are the current fields:
-		argv[0] == id INTEGER
-		argv[1] == status_id INTEGER
-		argv[2] == account_id INTEGER
-		argv[3] == screen_name TEXT
-		argv[4] == name TEXT
-		argv[5] == message TEXT
-		argv[6] == date INTEGER
-		argv[7] == type INTEGER
-		argv[10] == user_id INTEGER
-		argv[11] == in_reply_to INTEGER
+        argv[0]  := messages.id                       INTEGER
+        argv[1]  := messages.s_id                     INTEGER
+        argv[2]  := messages.account_id               INTEGER
+        argv[3]  := messages.timeline                 INTEGER
+        argv[4]  := messages.s_text                   TEXT
+        argv[5]  := messages.s_truncated              INTEGER
+        argv[6]  := messages.s_created_at             INTEGER
+        argv[7]  := messages.s_in_reply_to_status_id  INTEGER
+        argv[8]  := messages.s_source                 TEXT
+        argv[9]  := messages.s_in_reply_to_user_id    INTEGER
+        argv[10] := messages.s_favorited              INTEGER
+        argv[11] := messages.s_user                   INTEGER
+        argv[12] := accounts.type                     INTEGER
+		argv[13] := accounts.id                       INTEGER
+		argv[14] := accounts.enabled                  INTEGER
 	*/
 
-	id=atoi(argv[0]);
-	ubBubble->status_id=atol(argv[1]);
-	account_id=atoi(argv[2]);
-	screen_name=argv[3];
-	name=argv[4];
-	date=(time_t)atoi(argv[6]);
-	type=atoi(argv[7]);
+	sid_str = strndup(argv[1], PIPE_BUF);
+	as = eina_hash_find(statusHash, sid_str);
+	if(!as) {
+		as = (aStatus*)calloc(1, sizeof(aStatus));
+		if(!as) return(-1);
 
-	if(ed_check_gag(argv[3], argv[4], argv[5])) return(0);
+		as->text = strndup(argv[4], PIPE_BUF);
+		as->created_at = atoi(argv[6]);
+		as->in_reply_to_status_id = strtoll(argv[7], NULL, 10);
+		as->in_reply_to_user_id = strtoll(argv[9], NULL, 10);
+		as->favorited = atoi(argv[10]);
+		as->user = strtoll(argv[11], NULL, 10);
+		as->account_type = atoi(argv[12]);
+		as->account_id = atoi(argv[13]);
+		as->in_db = EINA_TRUE;
+		eina_hash_add(statusHash, sid_str, as);
+	}
 
-	if((bubble = ed_make_bubble(win, screen_name, date, NULL))) {
+	uid_str = strndup(argv[11], PIPE_BUF);
+	if(uid_str) {
+		au = eina_hash_find(userHash, uid_str);
+		if(!au) {
+			au = fetch_user_from_db(as->user);
+			if(au) eina_hash_add(userHash, uid_str, au);
+			else return(-3);
+		}
+	} else return(-2);
+
+	if(ed_check_gag(au->screen_name, au->name, as->text)) return(0);
+
+	if((bubble = ed_make_bubble(win, as, au))) {
 		elm_box_pack_end(status_list, bubble);
 		evas_object_show(bubble);
-
-		ubBubble->account_id = account_id;
-		ubBubble->user_id=atol(argv[10]);
-		ubBubble->in_reply_to=atol(argv[11]);
-		ubBubble->account_type = type;
-		if(screen_name)
-			ubBubble->screen_name = strndup(screen_name, 1024);
-		else
-			ubBubble->screen_name = strdup("");
-		ubBubble->message = status_message;
-
-		if(timeline == TIMELINE_FAVORITES)
-			ubBubble->favorite = TRUE;
-
-		message = ed_make_message(argv[5], bubble, win);
-		
-		if(message) {
-			elm_bubble_content_set(bubble, message);
-			ubBubble->message = strdup(argv[5]);
-			eina_hash_add(status2user, (void*)&bubble, (void*)ubBubble);
-		} else evas_object_del(bubble);
 	}
+
+	eina_hash_add(bubble2status, &bubble, as);
 
 	return(0);
 }
@@ -1496,14 +1576,18 @@ void fill_message_list(int timeline) {
 	int sqlite_res=0;
 	char *db_err=NULL, *query=NULL;
 
-	if(status2user) {
-		eina_hash_free(status2user);
-		status2user = NULL;
+	if(bubble2status) {
+		eina_hash_free(bubble2status);
+		bubble2status = NULL;
 	}
 
-	status2user = eina_hash_pointer_new(clear_status_hash_data);
+	bubble2status = eina_hash_pointer_new(clear_status_hash_data);
+	if(!statusHash) statusHash = eina_hash_string_superfast_new(status_hash_data_free);
+    if(!userHash) userHash = eina_hash_string_superfast_new(user_hash_data_free);
 
-	sqlite_res = asprintf(&query, "SELECT messages.id,messages.status_id,messages.account_id,messages.screen_name,messages.name,messages.message,messages.date,accounts.type,accounts.id as accid,accounts.enabled, messages.user_id, messages.in_reply_to FROM messages,accounts where messages.timeline = %d and messages.account_id=accid and accounts.enabled=1 ORDER BY messages.date DESC LIMIT %d;", timeline, settings->max_messages);
+
+	//sqlite_res = asprintf(&query, "SELECT messages.id, messages.account_id, messages.s_id, messages.s_text, messages.s_created_at, messages.s_in_reply_to_status_id, messages.s_in_reply_to_user_id, messages.s_favorited, messages.s_user as s_uid, accounts.type, accounts.id as accid, accounts.enabled FROM messages,accounts,users where messages.timeline = %d and messages.account_id=accid and accounts.enabled=1 and s_uid=users.uid ORDER BY messages.date DESC LIMIT %d;", timeline, settings->max_messages);
+	sqlite_res = asprintf(&query, "SELECT messages.*, accounts.type, accounts.id, accounts.enabled FROM messages,accounts where messages.timeline = %d and messages.account_id=accounts.id and accounts.enabled=1 ORDER BY messages.s_created_at DESC LIMIT %d;", timeline, settings->max_messages);
 	if(sqlite_res != -1) {
 		sqlite_res = 0;
 		sqlite3_exec(ed_DB, query, add_status, (void*)(long)timeline, &db_err);

@@ -21,15 +21,10 @@
 
 #define ELMDENTICA_H
 
-typedef struct _ub_Status {
-	char * screen_name;
-	char * name;
-	char * text;
-	time_t created_at;
-	long long int    id;
-	long long int   user_id;
-	long long int   in_reply_to;
-} ub_Status;
+#include <Elementary.h>
+#include <Ecore_X.h>
+
+#include <twitter.h>
 
 typedef struct _ub_bubble {
 	char *screen_name;
@@ -56,23 +51,9 @@ typedef struct gag_data {
 
 typedef struct _StatusesList {
 	Eina_List	*list;
-	ub_Status 	*current;
 	char		*hash_error;
 	char		*hash_request;
 } StatusesList;
-
-typedef struct _User_Profile {
-	char		*name;
-	char		*screen_name;
-	char		*description;
-	char		*text;
-	time_t		status_created_at;
-	char		*tmp;
-	Eina_Bool	protected;
-	int			followers_count;
-	int			friends_count;
-	Eina_Bool	following;
-} UserProfile;
 
 #define ACCOUNT_TYPE_NONE 0
 #define ACCOUNT_TYPE_STATUSNET 1
@@ -98,7 +79,7 @@ void set_urls(void);
 
 void fill_message_list(int timeline);
 
-Evas_Object *ed_make_bubble(Evas_Object *parent, char *nick, time_t date, char *corner);
+Evas_Object *ed_make_bubble(Evas_Object *parent, aStatus *as, anUser *au);
 Evas_Object *ed_make_message(char *text, Evas_Object *bubble, Evas_Object *window);
 
 #endif

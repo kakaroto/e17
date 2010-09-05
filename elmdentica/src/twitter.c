@@ -120,19 +120,68 @@ void message_insert(void *list_item, void *user_data) {
 	sid = strtoll(sid_str, NULL, 10);
 	if(sid > max_status_id) {
 		max_status_id = sid;
-		sqlite3_bind_int64(*insert_stmt,  1, sid);
-		sqlite3_bind_text(*insert_stmt, 2, user->screen_name, -1, NULL);
-		sqlite3_bind_text(*insert_stmt, 3, user->name, -1, NULL);
-		sqlite3_bind_text(*insert_stmt, 4, s->text, -1, NULL);
-		sqlite3_bind_int64(*insert_stmt, 5, s->created_at);
-		sqlite3_bind_int64(*insert_stmt, 6, s->in_reply_to_user_id);
-		sqlite3_bind_int64(*insert_stmt, 7, s->in_reply_to_status_id);
+		sqlite3_bind_int64(*insert_stmt, 1, sid);
+		sqlite3_bind_text(*insert_stmt,  2, s->text, -1, NULL);
+		sqlite3_bind_int64(*insert_stmt, 3, s->truncated);
+		sqlite3_bind_int64(*insert_stmt, 4, s->created_at);
+		sqlite3_bind_int64(*insert_stmt, 5, s->in_reply_to_status_id);
+		sqlite3_bind_text(*insert_stmt,  6, s->source, -1, NULL);
+		sqlite3_bind_int64(*insert_stmt, 7, s->in_reply_to_user_id);
+		sqlite3_bind_int64(*insert_stmt, 8, s->favorited);
+		sqlite3_bind_int64(*insert_stmt, 9, s->user);
 
 		sqlite_res = sqlite3_step(*insert_stmt);
-		if(sqlite_res != 0 && sqlite_res != 101 ) printf("ERROR: %d while inserting message:\n(%s) %s\n",sqlite_res, user->screen_name,s->text);
+		if(sqlite_res != 0 && sqlite_res != 101 ) printf("ERROR: %d while inserting message:\n(%s) %s\n", sqlite_res, user->screen_name,s->text);
+		else s->in_db = EINA_TRUE;
 
 		sqlite3_reset(*insert_stmt);
 	}
+}
+
+Eina_Bool user_insert(const Eina_Hash *hash, const void *key, void *data, void *fdata) {
+	anUser *au = (anUser*)data;
+	long long int account_id = *(long long int*)fdata;
+	int sqlite_res=0;
+	struct sqlite3_stmt *insert_stmt=NULL;
+	const char *missed=NULL;
+	char *query=NULL;
+
+	if(!au) return(EINA_FALSE);
+
+	if(au->in_db == EINA_TRUE) return(EINA_TRUE);
+
+	sqlite_res = asprintf(&query, "insert into users (uid, account_id, name, screen_name, location, description, profile_image_url, url, protected, followers_count, friends_count, created_at, favorites_count, statuses_count, following, statusnet_blocking) values (%s, %lld, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", (char*)key, account_id);
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
+		if(sqlite_res == 0) {
+			sqlite3_bind_text(insert_stmt,  1,  au->name, -1, NULL);
+			sqlite3_bind_text(insert_stmt,  2,  au->screen_name, -1, NULL);
+			sqlite3_bind_text(insert_stmt,  3,  au->location, -1, NULL);
+			sqlite3_bind_text(insert_stmt,  4,  au->description, -1, NULL);
+			sqlite3_bind_text(insert_stmt,  5,  au->profile_image_url, -1, NULL);
+			sqlite3_bind_text(insert_stmt,  6,  au->url, -1, NULL);
+			sqlite3_bind_int64(insert_stmt, 7,  au->protected);
+			sqlite3_bind_int64(insert_stmt, 8,  au->followers_count);
+			sqlite3_bind_int64(insert_stmt, 9,  au->friends_count);
+			sqlite3_bind_int64(insert_stmt, 10, au->created_at);
+			sqlite3_bind_int64(insert_stmt, 11, au->favorites_count);
+			sqlite3_bind_int64(insert_stmt, 12, au->statuses_count);
+			sqlite3_bind_int64(insert_stmt, 13, au->following);
+			sqlite3_bind_int64(insert_stmt, 14, au->statusnet_blocking);
+			sqlite_res = sqlite3_step(insert_stmt);
+			if(sqlite_res != 0 && sqlite_res != 101 ) printf("ERROR: %d while inserting user:\n(%s)\n", sqlite_res, au->screen_name);
+			else au->in_db = EINA_TRUE;
+
+			sqlite3_reset(insert_stmt);
+			sqlite3_finalize(insert_stmt);
+			return(EINA_TRUE);
+		} else {
+			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, missed);
+		}
+		free(query);
+	}
+	return(EINA_FALSE);
+
 }
 
 void messages_insert(int account_id, Eina_List *list, int timeline) {
@@ -154,20 +203,19 @@ void messages_insert(int account_id, Eina_List *list, int timeline) {
 		free(query);
 	}
 
-	sqlite_res = asprintf(&query, "INSERT INTO messages (status_id, account_id, screen_name, name, message, date, timeline, user_id, in_reply_to) VALUES (?, %d, ?, ?, ?, ?, %d, ?, ?);", account_id, timeline);;
+	sqlite_res = asprintf(&query, "insert into messages (status_id, account_id, timeline, s_text, s_truncated, s_created_at, s_in_reply_to_status_id, s_source, s_in_reply_to_user_id, s_favorited, s_user) values (?, %d, %d, ?, ?, ?, ?, ?, ?, ?, ?);", account_id, timeline);;
 	if(sqlite_res != -1) {
 		sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
 		if(sqlite_res == 0) {
-			printf("Stored %d statues and %d users\nStatuses:\n", eina_hash_population(statusHash), eina_hash_population(userHash));
 			EINA_LIST_REVERSE_FOREACH(list, l, data)
 				message_insert(data, &insert_stmt);
+			eina_hash_foreach(userHash, user_insert, &account_id);
 			sqlite3_finalize(insert_stmt);
 		} else {
 			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, missed);
 		}
 		free(query);
 	}
-	printf("Messages inserted\n");
 }
 
 int ed_twitter_post(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *msg) {
@@ -281,6 +329,12 @@ anUser *json_timeline_user_parse(json_object *user) {
 	u = calloc(1, sizeof(anUser));
 
 	if(!u) return(NULL);
+
+	jo = json_object_object_get(user, "id");
+	if(jo) {
+		u->uid = json_object_get_int(jo);
+		json_object_put(jo);
+	}
 
 	jo = json_object_object_get(user, "name");
 	if(jo) {
@@ -623,8 +677,8 @@ void ed_twitter_favorite_destroy(int account_id, char *screen_name, char *passwo
 	if(request) free(request);
 }
 
-void json_user_show(UserProfile *user, char *stream) {
-	json_object *json_stream, *obj, *screen_name_obj, *status_obj;
+void json_user_show(UserGet *ug, char *stream) {
+	json_object *json_stream, *obj;
 	enum json_type json_stream_type;
 
 	json_stream = json_tokener_parse(stream);
@@ -644,63 +698,8 @@ void json_user_show(UserProfile *user, char *stream) {
 			return;
 		}
 
-		screen_name_obj = json_object_object_get(json_stream, "screen_name");
-		if(screen_name_obj && strncmp(user->screen_name, json_object_get_string(screen_name_obj), strlen(user->screen_name)) == 0 ) {
-			json_object_put(screen_name_obj);
+		ug->au = json_timeline_user_parse(json_stream);
 
-			obj = json_object_object_get(json_stream, "name");
-			if(obj) {
-				user->name = strndup(json_object_get_string(obj), PIPE_BUF);
-				json_object_put(obj);
-			}
-
-			obj = json_object_object_get(json_stream, "profile_image_url");
-			if(obj) {
-				avatar = strndup(json_object_get_string(obj), PIPE_BUF);
-				ed_twitter_statuses_get_avatar(user->screen_name);
-				json_object_put(obj);
-			}
-
-			obj = json_object_object_get(json_stream, "protected");
-			if(obj) {
-				user->protected = (Eina_Bool)json_object_get_boolean(obj);
-				json_object_put(obj);
-			}
-
-			obj = json_object_object_get(json_stream, "following");
-			if(obj) {
-				user->following = (Eina_Bool)json_object_get_boolean(obj);
-				json_object_put(obj);
-			}
-
-			obj = json_object_object_get(json_stream, "friends_count");
-			if(obj) {
-				user->friends_count = (int)json_object_get_int(obj);
-				json_object_put(obj);
-			}
-
-			obj = json_object_object_get(json_stream, "followers_count");
-			if(obj) {
-				user->followers_count = (int)json_object_get_int(obj);
-				json_object_put(obj);
-			}
-
-			status_obj = json_object_object_get(json_stream, "status");
-			if(status_obj) {
-				obj = json_object_object_get(status_obj, "text");
-				if(obj) {
-					user->text = strndup(json_object_get_string(obj), PIPE_BUF);
-					json_object_put(obj);
-				}
-
-				obj = json_object_object_get(status_obj, "created_at");
-				if(obj) {
-					user->status_created_at = curl_getdate(json_object_get_string(obj), NULL);
-					json_object_put(obj);
-				}
-				json_object_put(status_obj);
-			}
-		}
 	}
 	json_object_put(json_stream);
 }
@@ -740,7 +739,7 @@ static int ed_twitter_user_get_handler(void *data, int argc, char **argv, char *
 
 		res = ed_curl_get(screen_name, password, request, ug->account_id);
 		if((res == 0) && (request->response_code == 200))
-			json_user_show(user, request->content.memory);
+			json_user_show(ug, request->content.memory);
 
 	}
 
@@ -751,22 +750,27 @@ static int ed_twitter_user_get_handler(void *data, int argc, char **argv, char *
 	return(0);
 }
 
-void ed_twitter_user_get(int account_id, UserProfile *user) {
+anUser *ed_twitter_user_get(int account_id, UserProfile *user) {
 	char *query=NULL, *db_err=NULL;
 	int sqlite_res;
-	UserGet ug;
+	UserGet *ug=calloc(1, sizeof(UserGet));
+	anUser *au=NULL;
 	
-	ug.user=user;
-	ug.account_id=account_id;
+	ug->user=user;
+	ug->account_id=account_id;
 	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE id = %d and type = %d and enabled = 1;", account_id, ACCOUNT_TYPE_TWITTER);
 	if(sqlite_res != -1) {
-		sqlite_res = sqlite3_exec(ed_DB, query, ed_twitter_user_get_handler, (void*)&ug, &db_err);
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_twitter_user_get_handler, (void*)ug, &db_err);
 		if(sqlite_res != 0) {
 			fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
 			sqlite3_free(db_err);
 		}
 		free(query);
 	}
+
+	au=ug->au;
+	free(ug);
+	return(ug->au);
 }
 
 void ed_twitter_user_follow(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *user_screen_name) {
