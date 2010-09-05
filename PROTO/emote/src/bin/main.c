@@ -40,7 +40,7 @@ elm_main(int argc, char **argv)
 
    if (argc < 3)
    {
-      printf("Usage:\n\temote <server> <nick> [username] [password]");
+      printf("Usage:\n\temote <server> <nick> [username] [password]\n");
       exit(1);
    }
 
