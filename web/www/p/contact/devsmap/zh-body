@@ -126,11 +126,14 @@ function GetValueFromInfoFile($field,$InfoFile)//ex ("Login",$txt)
 	       $Contributing = GetValueFromInfoFile("Contributing","$txt");
 	       $Group = GetValueFromInfoFile("Group","$txt");
 	       $Platform = GetValueFromInfoFile("Platform","$txt");
-	       if($Coords)
+	       
+	       $Coords = explode(" ",$Coords);
+	       if($Coords && ((count($Coords) == 2))
 	       {
 	          $tot_geodata ++;
-	          $Coords = explode(" ",$Coords);
-		  echo "addDeveloperMarker($Coords[0],$Coords[1],'icon_green','$IRC','$Name','$Location','$EMail','$WWW','$Managing','$Contributing','$Group','$Platform');\n";
+		  $lat = floatval($Coords[0]);
+                  $lon = floatval($Coords[1]);
+		  echo "addDeveloperMarker($lat,$lon,'icon_green','$IRC','$Name','$Location','$EMail','$WWW','$Managing','$Contributing','$Group','$Platform');\n";
 		  /* ** DEBUG ************
 		  $Debug .= "**Coords: -$Coords[0]-$Coords[1]<br>";
                   $Debug .= "**NAME: -$Name-<br>";

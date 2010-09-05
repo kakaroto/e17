@@ -127,7 +127,7 @@ Clicking on a marker will open a popup showing all the information about a speci
 	       $Group = GetValueFromInfoFile("Group","$txt");
 	       $Platform = GetValueFromInfoFile("Platform","$txt");
 	       
-	       $Coords = explode(" ",trim($Coords));
+	       $Coords = explode(" ",$Coords);
 	       if($Coords && (count($Coords) == 2))
 	       {
 	          $tot_geodata ++;
