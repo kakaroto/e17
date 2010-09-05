@@ -22,10 +22,10 @@ cdef class Layout(Object):
         self._set_obj(elm_layout_add(parent.obj))
 
     def file_set(self, filename, group):
-        elm_layout_file_set(self.obj, filename, group)
+        return bool(elm_layout_file_set(self.obj, filename, group))
 
     def theme_set(self, clas, group, style):
-        elm_layout_theme_set(self.obj, clas, group, style)
+        return bool(elm_layout_theme_set(self.obj, clas, group, style))
 
     def content_set(self, swallow, c_evas.Object content):
         cdef c_evas.Evas_Object *o

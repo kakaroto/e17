@@ -258,6 +258,7 @@ cdef extern from "Elementary.h":
     # X specific call - wont't work on non-x engines (return 0)
     Ecore_X_Window elm_win_xwindow_get(evas.c_evas.Evas_Object *obj)
 
+    # Inwin object
     evas.c_evas.Evas_Object *elm_win_inwin_add(evas.c_evas.Evas_Object *obj)
     void elm_win_inwin_activate(evas.c_evas.Evas_Object *obj)
     void elm_win_inwin_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
@@ -364,7 +365,7 @@ cdef extern from "Elementary.h":
 
     # Layout object
     evas.c_evas.Evas_Object *elm_layout_add(evas.c_evas.Evas_Object *parent)
-    void elm_layout_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
+    evas.c_evas.Eina_Bool elm_layout_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
     evas.c_evas.Eina_Bool elm_layout_theme_set(evas.c_evas.Evas_Object *obj, char *clas, char *group, char *style)
     void elm_layout_content_set(evas.c_evas.Evas_Object *obj, char *swallow, evas.c_evas.Evas_Object *content)
     evas.c_evas.Evas_Object *elm_layout_edje_get(evas.c_evas.Evas_Object *obj)
