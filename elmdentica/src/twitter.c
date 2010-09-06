@@ -424,7 +424,7 @@ anUser *json_timeline_user_parse(json_object *user) {
 	return(u);
 }
 
-Eina_Bool json_timeline_handle_single(int timeline, StatusesList *statuses, json_object *astatus) {
+aStatus *json_timeline_handle_single(int timeline, StatusesList *statuses, json_object *astatus) {
 	json_object *jo, *user=NULL, *user_id;
 	anUser *u=NULL;
 	aStatus *s=NULL;
@@ -432,7 +432,7 @@ Eina_Bool json_timeline_handle_single(int timeline, StatusesList *statuses, json
 	int res=0;
 	long long int uid=0, sid=0;
 
-	if(!astatus) return(EINA_FALSE);
+	if(!astatus) return(NULL);
 
 	if(statusHash == NULL)
 		statusHash = eina_hash_string_superfast_new(status_hash_data_free);
@@ -509,13 +509,13 @@ Eina_Bool json_timeline_handle_single(int timeline, StatusesList *statuses, json
 	res = asprintf(&sid_str, "%lld", sid);
 	if(res != -1) {
 		eina_hash_add(statusHash, sid_str, (void*)s);
-		statuses->list = eina_list_append(statuses->list, (void*)sid_str);
+		if(statuses) statuses->list = eina_list_append(statuses->list, (void*)sid_str);
 	}
 
 
 	//if(user) json_object_put(user);
 
-	return(EINA_TRUE);
+	return(s);
 }
 
 void json_timeline_handle(int timeline, StatusesList *statuses, json_object *json_stream) {
@@ -892,12 +892,10 @@ static int ed_twitter_status_get_handler(void *data, int argc, char **argv, char
     char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL, *notify_message=NULL;
     int port=0, id=0, res;
 	long long int in_reply_to;
-
+	json_object *json_stream = NULL;
 	http_request * request=calloc(1, sizeof(http_request));
-	StatusesList *statuses=(StatusesList*)calloc(1, sizeof(StatusesList));
-	time_t now;
 	Evas_Object *notify, *label;
-	ub_Status *li=NULL, **prelated_status = (ub_Status**)data, *parsed_status;
+	aStatus **prelated_status = (aStatus**)data;
 
     /* In this query handler, these are the current fields:
         argv[0] == name TEXT
@@ -931,32 +929,14 @@ static int ed_twitter_status_get_handler(void *data, int argc, char **argv, char
 		res = ed_curl_get(screen_name, password, request, id);
 	
 		if((res == 0) && (request->response_code == 200)) {
-			json_timeline(-1, statuses, request->content.memory);
+			json_stream = json_tokener_parse(request->content.memory);
 
-			now = time(NULL);
-			if(eina_list_count(statuses->list) > 1)
-				printf(_("Statuses list should not be longer than 1 when fetching a single status, only first will be used\n"));
-
-			parsed_status = eina_list_data_get(statuses->list);
-
-			if(*prelated_status == NULL) {
-				*prelated_status = calloc(1, sizeof(ub_Status));
-
-				(*prelated_status)->screen_name = strdup(parsed_status->screen_name);
-				(*prelated_status)->name = strdup(parsed_status->name);
-				(*prelated_status)->text = strdup(parsed_status->text);
-				(*prelated_status)->created_at = parsed_status->created_at;
-				(*prelated_status)->id = parsed_status->id;
-				(*prelated_status)->user_id = parsed_status->user_id;
-				(*prelated_status)->in_reply_to = parsed_status->in_reply_to;
+			if(!json_stream) {
+				fprintf(stderr, "ERROR parsing json stream:\n%s\n", request->content.memory);
+				return(-1);
 			}
-
-			EINA_LIST_FREE(statuses->list, li) {
-				free(li->screen_name);
-				free(li->name);
-				free(li->text);
-				free(li);
-			}
+			*prelated_status = json_timeline_handle_single(-1, NULL, json_stream);
+			json_object_put(json_stream);
 		} else {
 			res = asprintf(&notify_message, _("%s@%s had HTTP response: %ld"), screen_name, domain, request->response_code);
 			if(res != -1) {
@@ -987,7 +967,7 @@ static int ed_twitter_status_get_handler(void *data, int argc, char **argv, char
 
 	return(0);
 }
-void ed_twitter_status_get(int account_id, long long int in_reply_to, ub_Status **prelated_status) {
+void ed_twitter_status_get(int account_id, long long int in_reply_to, aStatus **prelated_status) {
 	char *query=NULL, *db_err=NULL;
 	int sqlite_res;
 	

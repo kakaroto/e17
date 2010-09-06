@@ -300,10 +300,17 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 	}
 }
 
-void ed_popup_status(ub_Status *s) {
-    Evas_Object *inwin=NULL, *bubble=NULL, *message=NULL;
-	aStatus *as;
-	anUser *au;
+void ed_popup_status(aStatus *as) {
+    Evas_Object *inwin=NULL, *bubble=NULL;
+	anUser *au=NULL;
+	char *uid_str=NULL;
+	int res=0;
+
+	res = asprintf(&uid_str, "%lld", as->user);
+	if(res != -1) {
+		au = eina_hash_find(userHash, uid_str);
+		free(uid_str);
+	} else return;
 
     inwin = elm_win_inwin_add(win);
         elm_object_style_set(inwin, "minimal_vertical");
@@ -311,24 +318,15 @@ void ed_popup_status(ub_Status *s) {
 			evas_object_size_hint_weight_set(bubble, 1, 1);
 			evas_object_size_hint_align_set(bubble, -1, -1);
 
-			message = ed_make_message(s->text, bubble, win);
-            elm_bubble_content_set(bubble, message);
-
             evas_object_show(bubble);
         elm_win_inwin_content_set(inwin, bubble);
     evas_object_show(inwin);
-
-	free(s->screen_name);
-	free(s->name);
-	free(s->text);
-	free(s);
 }
 
 static void on_view_related(void *data, Evas_Object *obj, void *event_info) {
 	Evas *e;
 	Evas_Object *hover, *bubble = (Evas_Object*)data;
-	aStatus *as = eina_hash_find(bubble2status, &bubble);
-	ub_Status *related_status=NULL;
+	aStatus *as = eina_hash_find(bubble2status, &bubble), *related_status=NULL;
 
 	if(as) {
 		switch(as->account_type) {

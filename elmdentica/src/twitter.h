@@ -96,7 +96,7 @@ anUser *ed_twitter_user_get(int account_id, UserProfile *user);
 void ed_twitter_user_follow(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *user_screen_name);
 void ed_twitter_user_abandon(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *user_screen_name);
 void ed_twitter_repeat(int account_id, long long int status_id);
-void ed_twitter_status_get(int account_id, long long int in_reply_to, ub_Status **related_status);
+void ed_twitter_status_get(int account_id, long long int in_reply_to, aStatus **related_status);
 
 void status_hash_data_free(void *data);
 void user_hash_data_free(void *data);
