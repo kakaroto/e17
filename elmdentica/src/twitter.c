@@ -918,7 +918,6 @@ static int ed_twitter_status_get_handler(void *data, int argc, char **argv, char
     id = atoi(argv[7]);
     in_reply_to = strtoll(argv[8], NULL, 10);
 
-
 	if(request == NULL) return(-1);
 
 	res = asprintf(&request->url, "%s://%s:%d%s/statuses/show/%lld.json", proto, domain, port, base_url, in_reply_to);
@@ -929,13 +928,19 @@ static int ed_twitter_status_get_handler(void *data, int argc, char **argv, char
 		res = ed_curl_get(screen_name, password, request, id);
 	
 		if((res == 0) && (request->response_code == 200)) {
+			printf("Parsing status %lld got...\n%s\n", in_reply_to, request->content.memory);
 			json_stream = json_tokener_parse(request->content.memory);
+
 
 			if(!json_stream) {
 				fprintf(stderr, "ERROR parsing json stream:\n%s\n", request->content.memory);
 				return(-1);
 			}
 			*prelated_status = json_timeline_handle_single(-1, NULL, json_stream);
+			if(*prelated_status) {
+				(*prelated_status)->account_id = id;
+				(*prelated_status)->account_type = atoi(argv[2]);
+			}
 			json_object_put(json_stream);
 		} else {
 			res = asprintf(&notify_message, _("%s@%s had HTTP response: %ld"), screen_name, domain, request->response_code);
