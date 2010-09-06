@@ -300,8 +300,14 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 	}
 }
 
+static void on_close_popup_status(void *data, Evas_Object *obj, void *event_info) {
+	Evas_Object *inwin = (Evas_Object*)data;
+
+	evas_object_del(inwin);
+}
+
 void ed_popup_status(aStatus *as) {
-    Evas_Object *inwin=NULL, *bubble=NULL;
+    Evas_Object *inwin=NULL, *box=NULL, *bubble=NULL, *button=NULL;
 	anUser *au=NULL;
 	char *uid_str=NULL;
 	int res=0;
@@ -314,13 +320,26 @@ void ed_popup_status(aStatus *as) {
 
     inwin = elm_win_inwin_add(win);
         elm_object_style_set(inwin, "minimal_vertical");
-        bubble = ed_make_bubble(win, as, au);
-			evas_object_size_hint_weight_set(bubble, 1, 1);
-			evas_object_size_hint_align_set(bubble, -1, -1);
+		box = elm_box_add(win);
+			evas_object_size_hint_weight_set(box, 1, 1);
+			evas_object_size_hint_align_set(box, -1, -1);
 
+        	bubble = ed_make_bubble(win, as, au);
+				evas_object_size_hint_weight_set(bubble, 1, 1);
+				evas_object_size_hint_align_set(bubble, -1, -1);
+				elm_box_pack_end(box, bubble);
             evas_object_show(bubble);
-        elm_win_inwin_content_set(inwin, bubble);
+
+			button = elm_button_add(win);
+				elm_button_label_set(button, _("Close"));
+				evas_object_smart_callback_add(button, "clicked", on_close_popup_status, inwin);
+				elm_box_pack_end(box, button);
+			evas_object_show(button);
+        elm_win_inwin_content_set(inwin, box);
+		
     evas_object_show(inwin);
+
+	eina_hash_add(bubble2status, &bubble, as);
 }
 
 static void on_view_related(void *data, Evas_Object *obj, void *event_info) {
