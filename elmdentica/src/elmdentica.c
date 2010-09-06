@@ -386,7 +386,7 @@ static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 					elm_entry_entry_set(entry, entry_str);
 					free(entry_str);
 					elm_object_focus(entry);
-					reply_id=as->in_reply_to_status_id;
+					reply_id=as->sid;
 					elm_entry_cursor_end_set(entry);
 				}
 			}
