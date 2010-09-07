@@ -77,11 +77,11 @@ e_modapi_init(E_Module *m)
    /* Display this Modules config info in the main Config Panel */
 
    /* starts with a category, create it if not already exists */
-   e_configure_registry_category_add("advanced", 80, "Advanced", 
-                                     NULL, "preferences-advanced");
+// e_configure_registry_category_add("advanced", 80, "Advanced", 
+//                                   NULL, "preferences-advanced");
    /* add right-side item */
-   e_configure_registry_item_add("advanced/eooorg", 110, D_("OpenOffice.org Quickstart"), 
-                                 NULL, buf, e_int_config_eooorg_module);
+// e_configure_registry_item_add("advanced/eooorg", 110, D_("OpenOffice.org Quickstart"), 
+//                               NULL, buf, e_int_config_eooorg_module);
 
    /* Define EET Data Storage for the config file */
    conf_item_edd = E_CONFIG_DD_NEW("Config_Item", Config_Item);
@@ -154,7 +154,7 @@ e_modapi_init(E_Module *m)
 
    /* Tell any gadget containers (shelves, etc) that we provide a module
     * for the user to enjoy */
-   e_gadcon_provider_register(&_gc_class);
+//   e_gadcon_provider_register(&_gc_class);
 
    eooorg_exe = ecore_exe_run ("openoffice.org -quickstart -nologo", NULL);
 
