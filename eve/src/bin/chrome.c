@@ -696,11 +696,11 @@ on_tab_close(void *data, Evas_Object *o,
    Elm_Gengrid_Item *item = evas_object_data_get(o, "item");
    Evas_Object *ed;
 
-   elm_gengrid_item_del(item);
-   tab_close_chrome(win, chrome);
-
    ed = elm_layout_edje_get(win->current_chrome);
    edje_object_signal_emit(ed, "tab,item,clicked", "");
+
+   elm_gengrid_item_del(item);
+   tab_close_chrome(win, chrome);
 }
 
 static void

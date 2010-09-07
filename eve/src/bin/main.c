@@ -145,14 +145,14 @@ tab_close_chrome(Browser_Window *win, Evas_Object *chrome)
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!win, EINA_FALSE);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!chrome, EINA_FALSE);
 
-   if (!win->chromes->next)
+   evas_object_del(chrome);
+   win->chromes = eina_list_remove(win->chromes, chrome);
+   if (!win->chromes)
      {
         del_win(win->app, win->win);
         return EINA_TRUE;
      }
 
-   evas_object_del(chrome);
-   win->chromes = eina_list_remove(win->chromes, chrome);
    if (win->current_chrome == chrome)
       tab_focus_nth(win, 0);
 
