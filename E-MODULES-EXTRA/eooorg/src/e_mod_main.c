@@ -154,7 +154,7 @@ e_modapi_init(E_Module *m)
 
    /* Tell any gadget containers (shelves, etc) that we provide a module
     * for the user to enjoy */
-//   e_gadcon_provider_register(&_gc_class);
+// e_gadcon_provider_register(&_gc_class);
 
    eooorg_exe = ecore_exe_run ("openoffice.org -quickstart -nologo", NULL);
 
@@ -169,11 +169,11 @@ EAPI int
 e_modapi_shutdown(E_Module *m) 
 {
    /* Unregister the config dialog from the main panel */
-   e_configure_registry_item_del("advanced/eooorg");
+// e_configure_registry_item_del("advanced/eooorg");
 
    /* Remove the config panel category if we can. E will tell us.
     category stays if other items using it */
-   e_configure_registry_category_del("advanced");
+// e_configure_registry_category_del("advanced");
 
    /* Kill the config dialog */
    if (eooorg_conf->cfd) e_object_del(E_OBJECT(eooorg_conf->cfd));
@@ -181,7 +181,7 @@ e_modapi_shutdown(E_Module *m)
 
    /* Tell E the module is now unloaded. Gets removed from shelves, etc. */
    eooorg_conf->module = NULL;
-   e_gadcon_provider_unregister(&_gc_class);
+// e_gadcon_provider_unregister(&_gc_class);
 
    /* Cleanup our item list */
    while (eooorg_conf->conf_items) 
@@ -207,7 +207,7 @@ e_modapi_shutdown(E_Module *m)
    E_FREE(eooorg_conf);
 
    // quit openoffice.org process
-   ecore_exe_quit (eooorg_exe);
+   if (eooorg_exe) ecore_exe_quit (eooorg_exe);
 
    /* Clean EET */
    E_CONFIG_DD_FREE(conf_item_edd);
