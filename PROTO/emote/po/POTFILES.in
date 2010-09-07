@@ -1,1 +1,5 @@
+src/bin/em_config.c
+src/bin/em_gui.c
+src/bin/em_object.c
+src/bin/em_utils.c
 src/bin/main.c
