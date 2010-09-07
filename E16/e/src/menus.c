@@ -1547,7 +1547,8 @@ MenuSelectItem(Menu * m, MenuItem * mi, int focus)
 	  {
 	     Mode_menus.active = m;
 	     GrabKeyboardRelease();
-	     GrabKeyboardSet(m->win);
+	     if (m->win)
+		GrabKeyboardSet(m->win);
 	  }
      }
 
