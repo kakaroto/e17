@@ -319,7 +319,7 @@ static const Ecore_Getopt options = {
       ECORE_GETOPT_STORE_DEF_BOOL('M', "disable-mouse",
                                   "disable mouse (hide it).", 1),
       ECORE_GETOPT_STORE_STR('U', "user-agent",
-                             "user agent string to use. Special case=iphone."),
+                             "user agent string to use. Special cases=iphone,safari,chrome,firefox,ie,ie9,ie8,ie7."),
       ECORE_GETOPT_STORE_DEF_UINT('R', "rotate", "Screen Rotation in degrees", 0),
       ECORE_GETOPT_VERSION('V', "version"),
       ECORE_GETOPT_COPYRIGHT('C', "copyright"),
@@ -384,9 +384,32 @@ elm_main(int argc, char **argv)
    else
       url = DEFAULT_URL;
 
-   if (user_agent && strcasecmp(user_agent, "iphone") == 0)
-      user_agent =
-         "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3";
+
+   if (!user_agent)
+      user_agent = "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3 " PACKAGE_NAME "/" PACKAGE_VERSION;
+   else
+     {
+        /* http://www.useragentstring.com/ */
+
+        if (strcasecmp(user_agent, "iphone") == 0)
+          user_agent = "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3";
+        else if (strcasecmp(user_agent, "safari") == 0)
+          user_agent = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_3; en-US) AppleWebKit/533.17.8 (KHTML, like Gecko) Version/5.0.1 Safari/533.17.8";
+
+        else if (strcasecmp(user_agent, "chrome") == 0)
+          user_agent = "Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.514.0 Safari/534.7";
+        else if (strcasecmp(user_agent, "firefox") == 0)
+          user_agent = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.2) Gecko/20121223 Firefox/3.8";
+
+        else if (strcasecmp(user_agent, "ie") == 0) /* last */
+          user_agent = "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)";
+        else if (strcasecmp(user_agent, "ie9") == 0)
+          user_agent = "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)";
+        else if (strcasecmp(user_agent, "ie8") == 0)
+          user_agent = "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; SLCC1; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET CLR 1.1.4322)";
+        else if (strcasecmp(user_agent, "ie7") == 0)
+          user_agent = "Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 6.0)";
+     }
 
    app.user_agent = eina_stringshare_add(user_agent);
 
