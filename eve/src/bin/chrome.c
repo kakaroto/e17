@@ -499,6 +499,46 @@ _history_update(const char *url, const char *title)
       hist_items_add(hist, url, hist_item_new(title, url, 1, ecore_time_get()));
 }
 
+static const char *
+_chrome_title_get(Evas_Object *chrome, char *buf, size_t bufsize)
+{
+   Browser_Window *win = evas_object_data_get(chrome, "win");
+   Evas_Object *view = evas_object_data_get(chrome, "view");
+   const char *url = ewk_view_uri_get(view);
+   const char *title = ewk_view_title_get(view);
+   int p = ewk_view_load_progress_get(view) * 100;
+
+   if (!title)
+     title = url;
+
+   if (!title)
+     title = "";
+
+   if ((p > 0) && (p < 100))
+     {
+        snprintf(buf, bufsize, "(%d%%) %s", p, title);
+        title = buf;
+     }
+
+   return title;
+}
+
+static void
+_chrome_title_apply(Evas_Object *chrome)
+{
+   Browser_Window *win = evas_object_data_get(chrome, "win");
+   Evas_Object *ed = elm_layout_edje_get(chrome);
+   const char *title;
+   char buf[4096];
+
+   title = _chrome_title_get(chrome, buf, sizeof(buf));
+
+   edje_object_part_text_set(ed, "text.title", title);
+
+   if (win->current_chrome == chrome)
+     window_title_set(win, title);
+}
+
 static void
 _chrome_state_apply(Evas_Object *chrome, Evas_Object *view)
 {
@@ -507,22 +547,18 @@ _chrome_state_apply(Evas_Object *chrome, Evas_Object *view)
    Evas_Object *ed = elm_layout_edje_get(chrome);
    Evas_Object *text_url;
 
-   if (!title)
-      title = url;
-
-   edje_object_part_text_set(ed, "text.title", title ? title : "");
+   _chrome_title_apply(chrome);
 
    text_url = edje_object_part_swallow_get(ed, "url-entry");
    elm_scrolled_entry_entry_set(text_url, url ? url : "");
    _is_favorite_check(chrome, url);
-   _history_update(url, title);
+   _history_update(url, title ? title : url);
 
    // TODO: check if actions are possible: back/forward/pause/reload
 }
 
 static void
-on_view_load_progress(void *data, Evas_Object *view __UNUSED__,
-                      void *event_info)
+on_view_load_progress(void *data, Evas_Object *view, void *event_info)
 {
    Evas_Object *chrome = data;
    Evas_Object *ed = elm_layout_edje_get(chrome);
@@ -530,6 +566,8 @@ on_view_load_progress(void *data, Evas_Object *view __UNUSED__,
    double *progress = event_info;
    Edje_Message_Float msg = { *progress };
    edje_object_message_send(ed, EDJE_MESSAGE_FLOAT, 1, &msg);
+
+   _chrome_title_apply(chrome);
 }
 
 static void
@@ -1147,47 +1185,6 @@ on_inputmethods_changed(void *data, Evas_Object *view, void *event_info)
       elm_win_keyboard_mode_set(win, ELM_WIN_KEYBOARD_ON);
 }
 
-#if 0
-static void
-win_title_set(Browser_Window *win)
-{
-   const char *view_title = ewk_view_title_get(win->view);
-   int p = ewk_view_load_progress_get(win->view) * 100;
-   char win_title[1024];
-
-   if (!view_title)
-      view_title = ewk_view_uri_get(win->view);
-
-   if (p < 100)
-      snprintf(win_title, sizeof(win_title), "(%d%%) %s  - " PACKAGE_STRING,
-               p, view_title);
-   else
-      snprintf(win_title, sizeof(win_title), "%s  - " PACKAGE_STRING,
-               view_title);
-
-   elm_win_title_set(win->win, win_title);
-}
-
-static void
-on_view_load_progress(void *data, Evas_Object *view __UNUSED__,
-                      void *event_info __UNUSED__)
-{
-   Browser_Window *win = data;
-
-   win_title_set(win);
-}
-
-static void
-on_view_title_changed(void *data, Evas_Object *view __UNUSED__,
-                      void *event_info __UNUSED__)
-{
-   Browser_Window *win = data;
-
-   win_title_set(win);
-}
-
-#endif
-
 static void
 on_key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__,
             void *event_info)
@@ -1305,12 +1302,6 @@ chrome_add(Browser_Window *win, const char *url)
                                   on_view_download_request, win);
    evas_object_smart_callback_add(view, "inputmethods,changed",
                                   on_inputmethods_changed, win->win);
-#if 0
-   evas_object_smart_callback_add(view, "load,progress", on_view_load_progress,
-                                  win);
-   evas_object_smart_callback_add(view, "title,changed", on_view_title_changed,
-                                  win);
-#endif
 
    if (url)
       ewk_view_uri_set(view, url);
@@ -1407,3 +1398,14 @@ error_view_create:
    return NULL;
 }
 
+/* notify this chrome is the current focused in its window */
+void
+chrome_focused_notify(Evas_Object *chrome)
+{
+   Browser_Window *win = evas_object_data_get(chrome, "win");
+   const char *title;
+   char buf[4096];
+
+   title = _chrome_title_get(chrome, buf, sizeof(buf));
+   window_title_set(win, title);
+}

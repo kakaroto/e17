@@ -77,7 +77,9 @@ struct _View_Zoom_Interactive
  *  * "zoom,interactive,end" void: report zoom interactive is finished.
  */
 
-Evas_Object *         window_create();
+Evas_Object *         window_create(void);
+void                  window_title_set(Browser_Window *win, const char *title);
+
 Evas_Object *         view_add(Evas_Object *parent);
 void                  view_zoom_next_up(Evas_Object *view);
 void                  view_zoom_next_down(Evas_Object *view);
@@ -86,6 +88,7 @@ Evas_Object *         view_context_menu_widget_get(Evas_Object *view);
 Ewk_Context_Menu *    view_context_menu_get(Evas_Object *view);
 
 Evas_Object *         chrome_add(Browser_Window *win, const char *url);
+void                  chrome_focused_notify(Evas_Object *chrome);
 
 Eina_Bool             tab_add(Browser_Window *win, const char *url);
 Eina_Bool             tab_focus_nth(Browser_Window *win, unsigned int n);

@@ -108,6 +108,8 @@ tab_focus_chrome(Browser_Window *win, Evas_Object *chrome)
    evas_object_focus_set(win->current_view, EINA_TRUE);
    elm_pager_content_promote(win->pager, win->current_chrome);
 
+   chrome_focused_notify(win->current_chrome);
+
    return EINA_TRUE;
 }
 
@@ -273,7 +275,7 @@ error_pager_create:
  * object.
  */
 Evas_Object *
-window_create()
+window_create(void)
 {
    Browser_Window *win = add_win(&app, NULL);
 
@@ -281,6 +283,23 @@ window_create()
       return NULL;
 
    return win->current_view;
+}
+
+void
+window_title_set(Browser_Window *win, const char *title)
+{
+   char buf[4096];
+
+   EINA_SAFETY_ON_NULL_RETURN(win);
+
+   if (!title)
+     {
+        elm_win_title_set(win->win, PACKAGE_STRING);
+        return;
+     }
+
+   snprintf(buf, sizeof(buf), "%s - %s", title, PACKAGE_STRING);
+   elm_win_title_set(win->win, buf);
 }
 
 #define stringify(X) #X
