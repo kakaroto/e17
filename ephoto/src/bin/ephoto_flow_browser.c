@@ -22,6 +22,57 @@ static const char *toolbar_items[] = {
 	"Slideshow"
 };
 
+static void
+_ephoto_set_title(const char *file)
+{
+	char *buffer;
+	int length;
+
+	length = strlen(file) + strlen("Ephoto - ") + 1;
+	buffer = alloca(length);
+	snprintf(buffer, length, "Ephoto - %s", file);
+	elm_win_title_set(em->win, buffer);
+}
+
+static void
+_ephoto_go_update(void)
+{
+	const char *file_type;
+	char *buffer;
+	int length;
+
+	efreet_mime_init();
+
+   	elm_box_unpack(em->flow_browser, image);
+	elm_box_unpack(em->flow_browser, image2);
+	elm_box_unpack(em->flow_browser, toolbar);
+	evas_object_hide(image);
+        evas_object_hide(image2);
+
+	file_type = efreet_mime_type_get(cur_image);
+	if (file_type && !strcmp(file_type, "image/jpeg"))
+	{
+		elm_photocam_file_set(image, cur_image);
+		elm_box_pack_end(em->flow_browser, image);
+		evas_object_show(image);
+	} else {
+		elm_image_file_set(image2, cur_image, NULL);
+		elm_box_pack_end(em->flow_browser, image2);
+		evas_object_show(image2);
+	}
+
+        elm_box_pack_end(em->flow_browser, toolbar);
+
+	elm_toolbar_item_unselect_all(toolbar);
+
+	efreet_mime_shutdown();
+
+	length = strlen(cur_image) + strlen("Ephoto - ") + 1;
+	buffer = alloca(length);
+	snprintf(buffer, length, "Ephoto - %s", cur_image);
+	elm_win_title_set(em->win, buffer);
+}
+
 /*Create the flow browser*/
 void
 ephoto_create_flow_browser(void)
@@ -98,23 +149,9 @@ ephoto_show_flow_browser(const char *current_image)
 			elm_toolbar_item_disabled_set(o, !iter ? EINA_TRUE : EINA_FALSE);
 		}
 
-		elm_box_unpack(em->flow_browser, image);
-		elm_box_unpack(em->flow_browser, image2);
-		elm_box_unpack(em->flow_browser, toolbar);
+		fprintf(stderr, "iter: %p\n", iter);
 
-		file_type = strrchr(current_image, '.');
-		if (strncasecmp(file_type, ".jpg", 4) && strncasecmp(file_type, ".jpeg", 5))
-		{
-			elm_image_file_set(image2, current_image, NULL);
-			elm_box_pack_end(em->flow_browser, image2);
-			evas_object_show(image2);
-		}
-		else
-		{
-			elm_photocam_file_set(image, current_image);
-			elm_box_pack_end(em->flow_browser, image);
-			evas_object_show(image);
-		}
+		_ephoto_go_update();
 	}
 	else
 	{
@@ -182,7 +219,6 @@ _ephoto_key_pressed(void *data, Evas *e, Evas_Object *obj, void *event_data)
 	for (i = 0; keys[i].name; ++i)
 		if (!strcmp(eku->keyname, keys[i].name))
 			keys[i].func(NULL, NULL, NULL);
-	printf("%s\n", eku->keyname);
 }
 
 /*Go back to the thumbnail viewer*/
@@ -199,34 +235,10 @@ _ephoto_go_back(void *data, Evas_Object *obj, void *event_info)
 static void 
 _ephoto_go_first(void *data, Evas_Object *obj, void *event_info)
 {
-	const char *file_type;
+	iter = em->images;
 
-	iter = eina_list_nth_list(em->images, 0);
-
-	elm_box_unpack(em->flow_browser, image);
-	elm_box_unpack(em->flow_browser, image2);
-	elm_box_unpack(em->flow_browser, toolbar);
-	evas_object_hide(image);
-        evas_object_hide(image2);
-
-        file_type = strrchr(eina_list_data_get(iter), '.');
-        if (strncasecmp(file_type, ".jpg", 4) && strncasecmp(file_type, ".jpeg", 5))
-        {
-		elm_image_file_set(image2, eina_list_data_get(iter), NULL);
-		elm_box_pack_end(em->flow_browser, image2);
-		evas_object_show(image2);
-        }
-        else
-        {
-		elm_photocam_file_set(image, eina_list_data_get(iter));
-		elm_box_pack_end(em->flow_browser, image);
-		evas_object_show(image);
-        }
 	cur_image = eina_list_data_get(iter);
-
-        elm_box_pack_end(em->flow_browser, toolbar);
-
-	elm_toolbar_item_unselect_all(toolbar);
+	_ephoto_go_update();
 }
 
 /*Go to the very last image in the list*/
@@ -236,31 +248,9 @@ _ephoto_go_last(void *data, Evas_Object *obj, void *event_info)
 	const char *file_type;
 
 	iter = eina_list_last(em->images);
-
-	elm_box_unpack(em->flow_browser, image);
-	elm_box_unpack(em->flow_browser, image2);
-	elm_box_unpack(em->flow_browser, toolbar);
-	evas_object_hide(image);
-        evas_object_hide(image2);
-
-        file_type = strrchr(eina_list_data_get(iter), '.');
-        if (strncasecmp(file_type, ".jpg", 4) && strncasecmp(file_type, ".jpeg", 5))
-        {
-		elm_image_file_set(image2, eina_list_data_get(iter), NULL);
-		elm_box_pack_end(em->flow_browser, image2);
-		evas_object_show(image2);
-        }
-        else
-        {
-		elm_photocam_file_set(image, eina_list_data_get(iter));
-		elm_box_pack_end(em->flow_browser, image);
-		evas_object_show(image);
-        }
 	cur_image = eina_list_data_get(iter);
 
-        elm_box_pack_end(em->flow_browser, toolbar);
-
-	elm_toolbar_item_unselect_all(toolbar);
+	_ephoto_go_update();
 }
 
 /*Go to the next image in the list*/
@@ -269,34 +259,12 @@ _ephoto_go_next(void *data, Evas_Object *obj, void *event_info)
 {
 	const char *file_type;
 
-	iter = iter->next;
-	if (!iter)
-		iter = eina_list_nth_list(em->images, 0);
+	iter = eina_list_next(iter);
+	if (!iter) iter = em->images;
 
-	elm_box_unpack(em->flow_browser, image);
-	elm_box_unpack(em->flow_browser, image2);
-	elm_box_unpack(em->flow_browser, toolbar);
-	evas_object_hide(image);
-        evas_object_hide(image2);
-
-        file_type = strrchr(eina_list_data_get(iter), '.');
-        if (strncasecmp(file_type, ".jpg", 4) && strncasecmp(file_type, ".jpeg", 5))
-        {
-		elm_image_file_set(image2, eina_list_data_get(iter), NULL);
-		elm_box_pack_end(em->flow_browser, image2);
-		evas_object_show(image2);
-        }
-        else
-        {
-		elm_photocam_file_set(image, eina_list_data_get(iter));
-		elm_box_pack_end(em->flow_browser, image);
-		evas_object_show(image);
-        }
 	cur_image = eina_list_data_get(iter);
 
-        elm_box_pack_end(em->flow_browser, toolbar);	
-
-	elm_toolbar_item_unselect_all(toolbar);
+	_ephoto_go_update();
 }
 
 /*Go to the previous image in the list*/
@@ -305,34 +273,13 @@ _ephoto_go_previous(void *data, Evas_Object *obj, void *event_info)
 {
 	const char *file_type;
 
-	iter = iter->prev;
+	iter = eina_list_prev(iter);
 	if (!iter)
 		iter = eina_list_last(em->images);
 
-	elm_box_unpack(em->flow_browser, image);
-	elm_box_unpack(em->flow_browser, image2);
-	elm_box_unpack(em->flow_browser, toolbar);
-	evas_object_hide(image);
-	evas_object_hide(image2);
-
-        file_type = strrchr(eina_list_data_get(iter), '.');
-        if (strncasecmp(file_type, ".jpg", 4) && strncasecmp(file_type, ".jpeg", 5))
-        {
-		elm_image_file_set(image2, eina_list_data_get(iter), NULL);
-		elm_box_pack_end(em->flow_browser, image2);
-		evas_object_show(image2);
-        }
-        else
-        {
-		elm_photocam_file_set(image, eina_list_data_get(iter));
-		elm_box_pack_end(em->flow_browser, image);
-		evas_object_show(image);
-        }
 	cur_image = eina_list_data_get(iter);
 
-        elm_box_pack_end(em->flow_browser, toolbar);
-
-	elm_toolbar_item_unselect_all(toolbar);
+	_ephoto_go_update();
 }
 
 /*Go to the slideshow*/

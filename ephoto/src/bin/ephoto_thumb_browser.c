@@ -127,6 +127,19 @@ ephoto_show_thumb_browser(void)
 	evas_object_show(dir_label);
 	evas_object_show(thumb_slider);
 	evas_object_show(thbox);
+
+	if (current_directory)
+	{
+		char *buffer;
+		int length;
+
+		length = strlen(current_directory) + strlen("Ephoto - ") + 1;
+		buffer = alloca(length);
+		snprintf(buffer, length, "Ephoto - %s", current_directory);
+		elm_win_title_set(em->win, buffer);
+	} else {
+		elm_win_title_set(em->win, "Ephoto");
+	}
 }
 
 /*Hide the thumbnail browser*/
@@ -179,7 +192,6 @@ _ephoto_populate_filter(const void *data, const char *file)
 {
 	const char *type;
 
-	printf("%s\n", file);
 	if (!(type = efreet_mime_type_get(file)))
 		return EINA_FALSE;
 	if (!strncmp(type, "image", 5))
@@ -192,6 +204,15 @@ _ephoto_populate_filter(const void *data, const char *file)
 static void
 _ephoto_populate_end(const void *data)
 {
+	list = NULL;
+
+	efreet_mime_shutdown();
+}
+
+static void
+_ephoto_populate_error(int error, const void *data)
+{
+	/* We don't handle error case in ephoto */
 	list = NULL;
 
 	efreet_mime_shutdown();
@@ -232,7 +253,7 @@ ephoto_populate_thumbnails(void)
 			   _ephoto_populate_filter,
 			   _ephoto_populate_main,
 			   _ephoto_populate_end,
-			   _ephoto_populate_end, /* We don't handle error case in ephoto */
+			   _ephoto_populate_error,
 			   NULL);
 }
 
@@ -413,6 +434,19 @@ _ephoto_directory_chosen(void *data, Evas_Object *obj, void *event_info)
 		em->images = NULL;
 		ephoto_populate_thumbnails();
 		elm_label_label_set(dir_label, current_directory);
+
+		if (current_directory)
+		{
+			char *buffer;
+			int length;
+
+			length = strlen(current_directory) + strlen("Ephoto - ") + 1;
+			buffer = alloca(length);
+			snprintf(buffer, length, "Ephoto - %s", current_directory);
+			elm_win_title_set(em->win, buffer);
+		} else {
+			elm_win_title_set(em->win, "Ephoto");
+		}
 	}
 	evas_object_del(obj);
 	evas_object_del(win);

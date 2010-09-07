@@ -75,6 +75,8 @@ _ephoto_get_image(void *data, Evas_Object *obj)
 {
 	char *file;
 	Evas_Object *image;
+	char *buffer;
+	int length;
 
 	file = data;
 
@@ -82,6 +84,11 @@ _ephoto_get_image(void *data, Evas_Object *obj)
 	elm_photo_file_set(image, file);
 	elm_photo_fill_inside_set(image, EINA_TRUE);
 	elm_object_style_set(image, "shadow");
+
+	length = strlen(file) + strlen("Ephoto - ") + 1;
+	buffer = alloca(length);
+	snprintf(buffer, length, "Ephoto - %s", file);
+	elm_win_title_set(em->win, buffer);
 
 	return image;
 }
