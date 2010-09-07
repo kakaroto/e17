@@ -616,6 +616,40 @@ EwinGetPosition(const EWin * ewin, int x, int y, int grav, int *px, int *py)
    *py = y;
 }
 
+/*
+ * Keep resizing on-screen window on-screen
+ */
+static void
+EwinKeepOnScreen(const EWin * ewin, int wn, int hn, int *px, int *py)
+{
+   int                 x = *px, y = *py, w, h;
+   int                 sx, sy, sw, sh, xy;
+
+   w = EoGetW(ewin);
+   h = EoGetH(ewin);
+
+   ScreenGetAvailableArea(x, y, &sx, &sy, &sw, &sh);
+
+   /* Quit if not on-screen to begin with */
+   if (x < sx || x + w > sx + sw || y < sy || y + h > sy + sh)
+      return;
+
+   /* Attempt to keep on-screen */
+   xy = sx + sw - (w - ewin->client.w + wn);
+   if (x > xy)
+      x = xy;
+   if (x < sx)
+      x = sx;
+   xy = sy + sh - (h - ewin->client.h + hn);
+   if (y > xy)
+      y = xy;
+   if (y < sy)
+      y = sy;
+
+   *px = x;
+   *py = y;
+}
+
 void
 EwinUpdateShapeInfo(EWin * ewin)
 {
@@ -1277,6 +1311,11 @@ EwinEventConfigureRequest(EWin * ewin, XEvent * ev)
 	  {
 	     /* Correct position taking gravity into account */
 	     EwinGetPosition(ewin, x, y, 0, &x, &y);
+	  }
+	else if (ev->xconfigurerequest.value_mask & (CWWidth | CWHeight))
+	  {
+	     /* Resizing only */
+	     EwinKeepOnScreen(ewin, w, h, &x, &y);
 	  }
 
 	Mode.move.check = 0;	/* Don't restrict client requests */
