@@ -97,6 +97,29 @@ Clicking on a marker will open a popup showing all the information about a speci
    icon_green.shadowSize = new GSize(22, 20);
    icon_green.iconAnchor = new GPoint(6, 20);
    icon_green.infoWindowAnchor = new GPoint(5, 1);
+
+   //Developer specific icons
+   <?php
+      if($dh = opendir($cvs_dir)) 
+      {
+         while (($file = readdir($dh)) !== false)
+	 {
+            if( is_dir("$cvs_dir/$file") && file_exists("$cvs_dir/$file/info.txt"))
+	    {
+                if( file_exists("$cvs_dir/$file/icon-map.png") )
+                {
+                   echo "icon_dev_$file.image = \"http://download.enlightenment.org/devs/$file/icon-map.png\";\n";
+                   echo "icon_dev_$file.shadow = \"http://labs.google.com/ridefinder/images/mm_20_shadow.png\";\n";
+                   echo "icon_dev_$file.iconSize = new GSize(22, 29);\n";
+                   echo "icon_dev_$file.shadowSize = new GSize(22, 20);\n";
+                   echo "icon_dev_$file.iconAnchor = new GPoint(11, 29);\n";
+                   echo "icon_dev_$file.infoWindowAnchor = newGPoint(11, 1);\n";
+                }
+            }
+	 }
+         closedir($dh);
+      }
+   ?>
    
    //set up marker mouseover tooltip div
    var tooltip = document.createElement("div");
@@ -135,12 +158,6 @@ Clicking on a marker will open a popup showing all the information about a speci
 		  $lon = floatval($Coords[1]);
                   if( file_exists("$cvs_dir/$file/icon-map.png") )
                   {
-                     echo "icon_dev_$file.image = 'http://download.enlightenment.org/devs/$file/icon-map.png';\n";
-                     echo "icon_dev_$file.shadow = 'http://labs.google.com/ridefinder/images/mm_20_shadow.png';\n";
-                     echo "icon_dev_$file.iconSize = new GSize(22, 29);\n";
-                     echo "icon_dev_$file.shadowSize = new GSize(22, 20);\n";
-                     echo "icon_dev_$file.iconAnchor = new GPoint(11, 29);\n";
-                     echo "icon_dev_$file.infoWindowAnchor = newGPoint(11, 1);\n";
                      echo "addDeveloperMarker($lat,$lon,'icon_dev_$file','$IRC','$Name','$Location','$EMail','$WWW','$Managing','$Contributing','$Group','$Platform');\n";
                   }else
                   {
