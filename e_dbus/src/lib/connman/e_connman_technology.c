@@ -35,7 +35,7 @@ e_connman_technology_get(const char *path)
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on sucess, 0 otherwise
+ * @return 1 on success, 0 otherwise
  */
 bool
 e_connman_technology_name_get(const E_Connman_Element *technology, const char **name)

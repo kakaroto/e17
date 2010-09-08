@@ -201,7 +201,7 @@
    |                    |   Beyond the core protocol is the hints table. A  |
    |                    | couple of core elements have been moved to hints  |
    |                    | mostly because in a huge number of cases their    |
-   |                    | default values would be sufficent. The elements   |
+   |                    | default values would be sufficient. The elements   |
    |                    | moved to hints are:                               |
    |                    |                                                   |
    |                    | Elements Moved to Hints                           |

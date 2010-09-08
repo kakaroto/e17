@@ -55,7 +55,7 @@ e_udisks_get_all_properties(E_DBus_Connection *conn, const char *udi, E_DBus_Cal
  * @param conn the E_DBus_Connection
  * @param udi the udi of the device object
  * @param fstype the fstype of the device (e.g. volume.fstype property)
- * @param options a list of additional options (not sure... fstype dependant?)
+ * @param options a list of additional options (not sure... fstype dependent?)
  * @param cb_func an optional callback to call when the mount is done
  * @param data custom data pointer for the callback function
  *

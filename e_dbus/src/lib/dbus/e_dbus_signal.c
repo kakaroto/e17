@@ -195,7 +195,10 @@ e_dbus_signal_handler_add(E_DBus_Connection *conn, const char *sender, const cha
        conn->signal_dispatcher = cb_signal_dispatcher;
     }
 
-  /* if we have a sender, and it is not a unique name, we need to know the unique name to match since signals will have the name owner as ther sender. */
+  /* if we have a sender, and it is not a unique name, we need to know the
+   * unique name to match since signals will have the name owner as their
+   * sender.
+   */
   if (sender && sender[0] != ':')
     {
        struct cb_name_owner_data *data_cb;

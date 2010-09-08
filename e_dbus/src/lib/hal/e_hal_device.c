@@ -252,7 +252,7 @@ e_hal_device_query_capability(E_DBus_Connection *conn, const char *udi, const ch
  * @param udi the udi of the device object
  * @param mount_point the path to mount to, or null for default
  * @param fstype the fstype of the device (e.g. volume.fstype property)
- * @param options a list of additional options (not sure... fstype dependant?)
+ * @param options a list of additional options (not sure... fstype dependent?)
  * @param cb_func an optional callback to call when the mount is done
  * @param data custom data pointer for the callback function
  */
@@ -294,7 +294,7 @@ e_hal_device_volume_mount(E_DBus_Connection *conn, const char *udi, const char *
  *
  * @param conn the E_DBus_Connection
  * @param udi the udi of the device object
- * @param options a list of additional options (not sure... fstype dependant?)
+ * @param options a list of additional options (not sure... fstype dependent?)
  * @param cb_func an optional callback to call when the unmount is done
  * @param data cuatom data pointer for the callback function
  */
@@ -331,7 +331,7 @@ e_hal_device_volume_unmount(E_DBus_Connection *conn, const char *udi, Eina_List 
  *
  * @param conn the E_DBus_Connection
  * @param udi the udi of the device object
- * @param options a list of additional options (not sure... fstype dependant?)
+ * @param options a list of additional options (not sure... fstype dependent?)
  * @param cb_func an optional callback to call when the eject is done
  * @param data cuatom data pointer for the callback function
  */
