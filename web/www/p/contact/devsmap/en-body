@@ -133,7 +133,19 @@ Clicking on a marker will open a popup showing all the information about a speci
 	          $tot_geodata ++;
 		  $lat = floatval($Coords[0]);
 		  $lon = floatval($Coords[1]);
-		  echo "addDeveloperMarker($lat,$lon,'icon_green','$IRC','$Name','$Location','$EMail','$WWW','$Managing','$Contributing','$Group','$Platform');\n";
+                  if( file_exists("$cvs_dir/$file/icon-map.png"))
+                  {
+                     echo "icon_dev_$file.image = \"http://download.enlightenment.org/devs/$file/icon-map.png\";"
+                     echo "icon_dev_$file.shadow = \"http://labs.google.com/ridefinder/images/mm_20_shadow.png\";"
+                     echo "icon_dev_$file.iconSize = new GSize(22, 29);"
+                     echo "icon_dev_$file.shadowSize = new GSize(22, 20);"
+                     echo "icon_dev_$file.iconAnchor = new GPoint(11, 29);"
+                     echo "icon_dev_$file.infoWindowAnchor = new GPoint(11, 1);"
+                     echo "addDeveloperMarker($lat,$lon,'icon_dev_$file','$IRC','$Name','$Location','$EMail','$WWW','$Managing','$Contributing','$Group','$Platform');\n";
+                  }else
+                  {
+		     echo "addDeveloperMarker($lat,$lon,'icon_green','$IRC','$Name','$Location','$EMail','$WWW','$Managing','$Contributing','$Group','$Platform');\n";
+                  }
 		  /* ** DEBUG ************
 		  $Debug .= "**Coords: -$Coords[0]-$Coords[1]<br>";
                   $Debug .= "**NAME: -$Name-<br>";
