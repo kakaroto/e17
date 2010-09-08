@@ -296,7 +296,7 @@ _forecasts_cb_mouse_down(void *data, Evas * e, Evas_Object * obj,
 	forecasts_config->menu = mn;
 
 	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, D_("Configuration"));
+	e_menu_item_label_set(mi, D_("Settings"));
 	e_util_menu_item_theme_icon_set(mi, "preferences-system");
 	e_menu_item_callback_set(mi, _forecasts_menu_cb_configure, inst);
 
@@ -988,7 +988,8 @@ _forecasts_popup_content_create(Instance *inst)
 
    evas = inst->popup->win->evas;
    o = e_widget_list_add(evas, 0, 0);
-   of = e_widget_frametable_add(evas, inst->location, 0);
+   snprintf(buf, sizeof(buf), "%s: Current Conditions", inst->location);
+   of = e_widget_frametable_add(evas, buf, 0);
 
    snprintf(buf, sizeof(buf), "%s: %d°%c", inst->condition.desc, inst->condition.temp, inst->units.temp);
    ob = e_widget_label_add(evas, buf);
@@ -1059,7 +1060,13 @@ _forecasts_popup_content_create(Instance *inst)
      {
 	int row = 0;
 
-	of = e_widget_frametable_add(evas, inst->forecast[i].date, 0);
+        if (!i)
+          snprintf (buf, sizeof(buf), "Today");
+        else if (i == 1)
+          snprintf (buf, sizeof(buf), "Tomorrow");
+        else
+          snprintf (buf, sizeof(buf), "%s", inst->forecast[i].date);
+	of = e_widget_frametable_add(evas, buf, 0);
 
 	ob = e_widget_label_add(evas, inst->forecast[i].desc);
 	e_widget_frametable_object_append(of, ob, 0, row, 3, 1, 0, 0, 1, 0);
