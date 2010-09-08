@@ -9,4 +9,4 @@ Managing:     eet, evas, embryo, ecore, edje, e, emotion, rage, imlib2, imlib2_l
 Contributing: efreet, e_dbus, www, entrance
 Group:        Core, Applications, Libraries, WebSite
 Platform:     Ubuntu (Linux), Debian (Linux), Maemo (Linux), Openembedded/Openmoko (Linux)
-GeoData:      -37.566535 -126.977969
+GeoData:      37.566535 126.977969
