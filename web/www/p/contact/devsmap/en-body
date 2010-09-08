@@ -216,7 +216,8 @@ Clicking on a marker will open a popup showing all the information about a speci
 
       var point = new GLatLng(lat, lon)
       if (icon == "icon_red") var marker = new GMarker(point, {icon: icon_red});
-      if (icon == "icon_green") var marker = new GMarker(point, {icon: icon_green});
+      elseif (icon == "icon_green") var marker = new GMarker(point, {icon: icon_green});
+      else var marker = new GMarker(point, {icon: $icon});
       marker.tooltip = '<div class="tooltip"><nobr>'+nickname+'</nobr></div>';
       GEvent.addListener(marker, "click", function() {
             marker.openInfoWindowHtml(html);
