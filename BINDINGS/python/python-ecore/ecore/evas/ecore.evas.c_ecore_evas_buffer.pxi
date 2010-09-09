@@ -40,7 +40,7 @@ cdef class Buffer(EcoreEvas):
             ptrptr[0] = buf
         return self._get_buf_size()
 
-    def __getsegcount__(self, int *lenp):
+    def __getsegcount__(self, Py_ssize_t *lenp):
         if lenp != NULL:
             lenp[0] = self._get_buf_size()
         return 1
