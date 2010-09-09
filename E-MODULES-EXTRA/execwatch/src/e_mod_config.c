@@ -42,7 +42,7 @@ _config_execwatch_module(Config_Item * ci)
    snprintf(buf, sizeof(buf), "%s/module.edj",
 	    e_module_dir_get(execwatch_config->module));
    con = e_container_current_get(e_manager_current_get());
-   cfd = e_config_dialog_new(con, D_("Execwatch Configuration"), "Execwatch",
+   cfd = e_config_dialog_new(con, D_("Execwatch Settings"), "Execwatch",
 			    "_e_modules_execwatch_config_dialog", buf, 0, v, ci);
    execwatch_config->config_dialog = cfd;
 }
