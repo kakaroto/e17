@@ -11,10 +11,9 @@ BUILD REQUIREMENTS
 In order to build modules ensure you have the following installed in
 your machine:
 
- * Pyrex: even if we use Cython, python's setuptools/distutils checks
-   for Pyrex in order to convert .pyx -> .c in extensions.
  * Cython: converts high level definitions of .pyx into .c to be
-   compiled as a loadable module.
+   compiled as a loadable module. As of now, version 0.12.1 is
+   required, not older, not newer.
  * Latest build of EFL
 
 
