@@ -181,15 +181,29 @@ Clicking on a marker will open a popup showing all the information about a speci
                }elseif($Location)
 	       {
 	          $tot_location ++;
-	          echo "
-		     var geocoder = new GClientGeocoder();
-		     geocoder.getLatLng('$Location',
-		           function(point)
-			   {
-			       if (point)
-			          addDeveloperMarker(point.lat(),point.lng(),'icon_red','$IRC','$Name','$Location','$EMail','$WWW','$Managing','$Contributing','$Group','$Platform');
-                           });
-			 ";
+                  if( file_exists("$cvs_dir/$file/icon-map.png") )
+                  {
+	             echo "
+		        var geocoder = new GClientGeocoder();
+		        geocoder.getLatLng('$Location',
+		              function(point)
+			      {
+			          if (point)
+			             addDeveloperMarker(point.lat(),point.lng(),'icon_dev_file','$IRC','$Name','$Location','$EMail','$WWW','$Managing','$Contributing','$Group','$Platform');
+                              });
+			    ";
+                  }else
+                  {
+	             echo "
+		        var geocoder = new GClientGeocoder();
+		        geocoder.getLatLng('$Location',
+		              function(point)
+			      {
+			          if (point)
+			             addDeveloperMarker(point.lat(),point.lng(),'icon_red','$IRC','$Name','$Location','$EMail','$WWW','$Managing','$Contributing','$Group','$Platform');
+                              });
+			    ";
+                  }
 	       }
 	    }
 	 }
