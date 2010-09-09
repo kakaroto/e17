@@ -41,7 +41,7 @@ _config_wlan_module (Config_Item * ci)
   snprintf (buf, sizeof (buf), "%s/e-module-wlan.edj",
 	    e_module_dir_get (wlan_config->module));
   con = e_container_current_get (e_manager_current_get ());
-  cfd = e_config_dialog_new (con, D_ ("Wlan Configuration"), "Wlan", "_e_modules_wlan_config_dialog", buf, 0, v, ci);
+  cfd = e_config_dialog_new (con, D_ ("Wlan Settings"), "Wlan", "_e_modules_wlan_config_dialog", buf, 0, v, ci);
   wlan_config->config_dialog = cfd;
 }
 
