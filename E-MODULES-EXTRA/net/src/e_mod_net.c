@@ -153,26 +153,25 @@ _net_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
      e_gadcon_popup_toggle_pinned(inst->popup);
    else if ((ev->button == 3) && (!net_cfg->menu)) 
      {
-	E_Menu *mn;
+	E_Menu *ma, *mg;
 	E_Menu_Item *mi;
 	int x, y;
 	
-	mn = e_menu_new();
-	e_menu_post_deactivate_callback_set(mn, _cb_post, inst);
-	net_cfg->menu = mn;
+	ma = e_menu_new();
+	e_menu_post_deactivate_callback_set(ma, _cb_post, inst);
+	net_cfg->menu = ma;
 	
-	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, D_("Configuration"));
+	mg = e_menu_new();
+
+	mi = e_menu_item_new(mg);
+	e_menu_item_label_set(mi, D_("Settings"));
 	e_util_menu_item_theme_icon_set(mi, "preferences-system");
 	e_menu_item_callback_set(mi, _cb_configure, inst);
 	
-	mi = e_menu_item_new(mn);
-	e_menu_item_separator_set(mi, 1);
-	
-	e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);
+	e_gadcon_client_util_menu_items_append(inst->gcc, ma, mg, 0);
 	e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &x, &y, 
 					  NULL, NULL);
-	e_menu_activate_mouse(mn, 
+	e_menu_activate_mouse(ma, 
 			      e_util_zone_current_get(e_manager_current_get()),
 			      x + ev->output.x, y + ev->output.y, 1, 1,
 			      E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
