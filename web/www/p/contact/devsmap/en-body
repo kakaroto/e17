@@ -25,7 +25,7 @@ function GetValueFromInfoFile($field,$InfoFile)//ex ("Login",$txt)
 </style>
 <center><h1>Enlightenment Developers World Map</h1></center>
 <p>
-This map shows, in a geographical way, the information of all the people having a svn account. The information is taken direcly from the info.txt file 
+This map shows, in a geographical way, the information of all the people having a svn account. The information is taken directly from the info.txt file 
 in svn. The green markers are the developers that have a 'GeoData' field in their file, on the other side the position of the red one is guessed from the 'Location' field, and will not be as accurate.
 </p>
 <p>
