@@ -46,14 +46,17 @@ news_menu_item_hide(News_Item *ni)
 int
 news_menu_feed_show(News_Feed *f)
 {
-   E_Menu *mn;
+   E_Menu *ma, *mg;
    E_Menu_Item *mi;
 
-   mn = e_menu_new();
-   e_menu_post_deactivate_callback_set(mn, _cb_feed_deactivate_post, f);
+   ma = e_menu_new();
+   e_menu_post_deactivate_callback_set(ma, _cb_feed_deactivate_post, f);
+   f->menu = ma;
 
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, D_("Configure this feed"));
+   mg = e_menu_new();
+
+   mi = e_menu_item_new(mg);
+   e_menu_item_label_set(mi, D_("Configure this Feed"));
    if (f->icon && f->icon[0])
      e_menu_item_icon_file_set(mi, f->icon);
    e_menu_item_callback_set(mi, _cb_configure_feed, f);
@@ -63,7 +66,6 @@ news_menu_feed_show(News_Feed *f)
 
    _menu_append(mn, f->item);
 
-   f->menu = mn;
 
    return 1;
 }
@@ -161,7 +163,7 @@ _menu_append(E_Menu *mn, News_Item *ni)
    e_menu_item_callback_set(mi, _cb_configure_feeds, NULL);
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, D_("Configuration"));
-  e_util_menu_item_theme_icon_set(mi, "preferences-system");
+   e_util_menu_item_theme_icon_set(mi, "preferences-system");
    e_menu_item_submenu_set(mi, mn_conf);
 
    e_gadcon_client_util_menu_items_append(ni->gcc, mn, 0);
