@@ -972,7 +972,7 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
       return NULL;
    /* see if we already have the image cached */
    im = __imlib_FindCachedImage(file);
-   /* if we found a cached image and we shoudl always check that it is */
+   /* if we found a cached image and we should always check that it is */
    /* accurate to the disk conents if they changed since we last loaded */
    /* and that it is still a valid image */
    if ((im) && (IMAGE_IS_VALID(im)))
@@ -1025,7 +1025,7 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
    if (best_loader)
       loader_ret =
          best_loader->load(im, progress, progress_granularity, immediate_load);
-   /* width is still 0 - the loader didnt manage to do anything */
+   /* width is still 0 - the loader didn't manage to do anything */
    if (im->w == 0)
      {
         ImlibLoader        *l, *previous_l = NULL;

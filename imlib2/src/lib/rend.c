@@ -282,7 +282,7 @@ __imlib_RenderImage(Display * d, ImlibImage * im,
    /* if the input rect size < 0 dont render either */
    if ((sw <= 0) || (sh <= 0))
       return;
-   /* if the output is too big (8k arbitary limit here) dont bother */
+   /* if the output is too big (8k arbitrary limit here) dont bother */
    if ((abs(dw) > X_MAX_DIM) || (abs(dh) > X_MAX_DIM))
       return;
    /* clip the source rect to be within the actual image */
@@ -307,7 +307,7 @@ __imlib_RenderImage(Display * d, ImlibImage * im,
    /* if the input rect size < 0 dont render either */
    if ((sw <= 0) || (sh <= 0))
       return;
-   /* if the output is too big (8k arbitary limit here) dont bother */
+   /* if the output is too big (8k arbitrary limit here) dont bother */
    if ((abs(dw) > X_MAX_DIM) || (abs(dh) > X_MAX_DIM))
       return;
    /* if we are scaling the image at all make a scaling buffer */
@@ -479,7 +479,7 @@ __imlib_RenderImage(Display * d, ImlibImage * im,
         XFreeGC(disp, gc);
         gc = 0;
      }
-   /* if we didnt have a gc... create it */
+   /* if we didn't have a gc... create it */
    if (!gc)
      {
         disp = d;

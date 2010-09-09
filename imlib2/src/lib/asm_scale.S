@@ -146,7 +146,7 @@ PR_(imlib_Scale_mmx_AARGBA):
 	punpcklwd %mm0, %mm0
 	punpckldq %mm0, %mm0
 
-	/*\ Load and unpack four pixels in parralel
+	/*\ Load and unpack four pixels in parallel
 	|*| %mm2 = ptr[0],   %mm3 = ptr[1]
 	|*| %mm4 = ptr[sow], %mm5 = ptr[sow + 1]
 	\*/
@@ -212,7 +212,7 @@ PR_(imlib_Scale_mmx_AARGBA):
 	punpcklwd %mm0, %mm0
 	punpckldq %mm0, %mm0
 
-	/*\ Load and unpack two pixels in parralel
+	/*\ Load and unpack two pixels in parallel
 	|*| %mm2 = ptr[0], %mm3 = ptr[1]
 	\*/
 	movq (%esi), %mm2

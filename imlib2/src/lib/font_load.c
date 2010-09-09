@@ -119,7 +119,7 @@ imlib_font_load_joined(const char *fontname)
           }
      }
    free(name);
-   /* didnt find a file? abort */
+   /* didn't find a file? abort */
    if (!file)
       return NULL;
    fn = imlib_font_load(file, faceidx, size);

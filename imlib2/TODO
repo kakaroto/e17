@@ -1,4 +1,4 @@
-* line code doesnt draw nice liens when clipping - fix
+* line code doesn't draw nice liens when clipping - fix
 * filled polygons can break fill bounds on corner cases - fix
 * go thru TODOs and FIXMEs 
 

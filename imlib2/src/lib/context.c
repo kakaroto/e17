@@ -34,7 +34,7 @@ __imlib_FlushContexts(void)
      {
         ctt = ct;
         ct = ct->next;
-        /* it hasnt been referenced in the last max_context_count refernces */
+        /* it hasn't been referenced in the last max_context_count references */
         /* thus old and getrid of it */
         if (ctt->last_use < (context_counter - max_context_count))
           {

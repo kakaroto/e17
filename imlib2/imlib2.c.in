@@ -540,7 +540,7 @@ If the value "red" is not passed to the filter then it will remain at 50, but it
 
 return type - Imlib_Image, this is the result of filter. 
 
-@todo line code doesnt draw nice liens when clipping - fix
+@todo line code doesn't draw nice liens when clipping - fix
 @todo filled polygons can break fill bounds on corner cases - fix
 @todo go thru TODOs and FIXMEs 
 

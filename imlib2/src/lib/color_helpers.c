@@ -1,7 +1,7 @@
 #include "color_helpers.h"
 /*
  * Color space conversion helper routines
- * Convert between rgb and hsv adn between rgb and hls
+ * Convert between rgb and hsv and between rgb and hls
  */
 
 void

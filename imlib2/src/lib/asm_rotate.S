@@ -167,7 +167,7 @@ PR_(imlib_mmx_RotateAA):
 	punpckhwd %mm1, %mm1
 	punpckldq %mm1, %mm1
 
-	/*\ Load and unpack four pixels in parralel
+	/*\ Load and unpack four pixels in parallel
 	|*| %mm2 = ptr[0],   %mm3 = ptr[1]
 	|*| %mm4 = ptr[sow], %mm5 = ptr[sow + 1]
 	\*/
@@ -260,7 +260,7 @@ PR_(imlib_mmx_RotateAA):
 	punpckldq %mm0, %mm0
 	punpckhwd %mm1, %mm1
 	punpckldq %mm1, %mm1
-	/*\ Load and unpack four pixels in parralel
+	/*\ Load and unpack four pixels in parallel
 	|*| %mm2 = ptr[0],   %mm3 = ptr[1]
 	|*| %mm4 = ptr[sow], %mm5 = ptr[sow + 1]
 	\*/

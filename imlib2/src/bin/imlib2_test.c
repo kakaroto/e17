@@ -61,7 +61,7 @@ main(int argc, char **argv)
                 PointerMotionMask | ExposureMask);
    /* show the window */
    XMapWindow(disp, win);
-   /* set our cache to 2 Mb so it doesnt have to go hit the disk as long as */
+   /* set our cache to 2 Mb so it doesn't have to go hit the disk as long as */
    /* the images we use use less than 2Mb of RAM (that is uncompressed) */
    imlib_set_cache_size(2048 * 1024);
    /* set the font cache to 512Kb - again to avoid re-loading */

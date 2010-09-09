@@ -445,7 +445,7 @@ extern "C"
                                                 Imlib_Load_Error * error_return);
 
 /* FIXME: */
-/* need to add arbitary rotation routines */
+/* need to add arbitrary rotation routines */
 
 /* rotation/skewing */
    EAPI Imlib_Image imlib_create_rotated_image(double angle);

@@ -17,7 +17,7 @@
 
 #endif
 
-/* FIXME: endian dependant */
+/* FIXME: endian dependent */
 #define READ_RGB(p, r, g, b)  \
    (r) = R_VAL(p); \
    (g) = G_VAL(p); \

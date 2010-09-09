@@ -13,7 +13,7 @@
 
 # ifndef RTLD_LOCAL
 #  define RTLD_LOCAL 0
-#  warning "your crap box doesnt define RTLD_LOCAL !?"
+#  warning "your crap box doesn't define RTLD_LOCAL !?"
 # endif
 
 typedef struct _imlibimage              ImlibImage;

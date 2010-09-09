@@ -23,7 +23,7 @@ static int          list_max_count = 0;
 /* temporary X error catcher we use later */
 static char         _x_err = 0;
 
-/* the fucntion we use for catching the error */
+/* the function we use for catching the error */
 static int
 TmpXError(Display * d, XErrorEvent * ev)
 {

@@ -535,7 +535,7 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
    XColor              cols[256];
 
    domask = (pdomask) ? *pdomask : 0;
-   /* FIXME: oh isnt used - i wonder if there's a bug looming... */
+   /* FIXME: oh isn't used - i wonder if there's a bug looming... */
    oh = 0;
    origw = w;
    origh = h;

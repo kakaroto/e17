@@ -4755,7 +4755,7 @@ imlib_rotate_image_from_buffer(double angle, Imlib_Image source_image)
    else
       sz = im->w;               // update sz with real width
 
-#if 0                           /* Not neccesary 'cause destination is context */
+#if 0                           /* Not necessary 'cause destination is context */
    im = __imlib_CreateImage(sz, sz, NULL);
    im->data = calloc(sz * sz, sizeof(DATA32));
    if (!(im->data))

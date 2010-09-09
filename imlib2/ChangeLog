@@ -1058,7 +1058,7 @@
 
 2005-10-13 00:09  vapier
 
-	* make sure people know the mmx support is 32bit only so it isnt
+	* make sure people know the mmx support is 32bit only so it isn't
 	  for amd64
 
 2005-10-12 03:17  raster
@@ -1086,7 +1086,7 @@
 
 2005-10-04 22:53  vapier
 
-	* asm_loadimmq.S is included by other files, it isnt supposed to be
+	* asm_loadimmq.S is included by other files, it isn't supposed to be
 	  compiled by itself
 
 2005-10-03 02:29  raster
@@ -1118,7 +1118,7 @@
 
 2005-09-20 17:22  sebastid
 
-	* Add paranthesis to clean up.
+	* Add parenthesis to clean up.
 
 2005-09-20 16:56  sebastid
 
@@ -1173,7 +1173,7 @@
 
 2005-09-03 20:58  vapier
 
-	* fix for cygwin building (and anyone else who doesnt define
+	* fix for cygwin building (and anyone else who doesn't define
 	  RTLD_LOCAL)
 
 2005-09-03 03:55  sebastid
@@ -1321,13 +1321,13 @@
 2005-07-22 10:28  raster
 
 	* 1. id3 album cover loader patches
-	  2. i reduced list note memory usage by 20% - shoudl work better
+	  2. i reduced list note memory usage by 20% - should work better
 	  with malloc
 	  as ti is now a power of 2 as well
 	  3. optimised evas internals to make use of event freezes to make
 	  e17'sw menu
 	  popups a LOT snappier
-	  4. fixed using last member of list nodes - bad - shoudl use api
+	  4. fixed using last member of list nodes - bad - should use api
 	  as this is
 	  private stuff really
 	  5. added config profile stuff to e17 u can literally maintain
@@ -1805,7 +1805,7 @@
 
 	* sorry - mej - you seem to have broken the build on other systems
 	  and
-	  imlib2-config wasnt being installed - also it was deciding it had
+	  imlib2-config wasn't being installed - also it was deciding it had
 	  to
 	  cross-compile and build i686-gnu-linux-imlib2-config etc.
 	  files... had to
@@ -2557,7 +2557,7 @@
 
 2001-08-16 16:10  shamgar
 
-	* Changed --with-freetype to --with-ttf to make it consistant with
+	* Changed --with-freetype to --with-ttf to make it consistent with
 	  the other
 	  modules.
 
@@ -2568,7 +2568,7 @@
 2001-08-13 23:24  raster
 
 	* ooooh that would leak if we added the same path all the time...
-	  which shoudl
+	  which should
 	  be ignored... :)
 
 2001-08-13 18:16  gilbertt
@@ -2640,7 +2640,7 @@
 
 2001-08-11 03:33  raster
 
-	* alright - comprimise. theres a
+	* alright - compromise. theres a
 	  imlib_context_set_filename_raw_mode()
 	  call now - if you want to deal with filenames and not have them
 	  interpreted
@@ -2672,7 +2672,7 @@
 	  now we escpae literal colons with double colons. it's documented
 	  too. (this
 	  was easier to do as i also have to do it for ssving files and you
-	  cant stat
+	  can't stat
 	  to see if a file exisit fi you havent saved it yet)
 
 2001-07-28 00:53  raster
@@ -2931,7 +2931,7 @@
 
 	* fix for the other binary versions in the pnm_loader. Could
 	  someone please
-	  check if the ascii ones work right? I didnt test them. and test
+	  check if the ascii ones work right? I didn't test them. and test
 	  the binary
 	  formats too while youre at it. Thanks :)
 
@@ -2943,10 +2943,10 @@
 
 2001-01-01 11:52  tillsan
 
-	* small fix for the pnm loader. It didnt display the last two lines
+	* small fix for the pnm loader. It didn't display the last two lines
 	  of a file.
 	  Ive only corrected the 24bit RGB one. Ill do the others if raster
-	  doesnt
+	  doesn't
 	  have a more elegant fix for this :).
 
 2000-12-28 06:45  term
@@ -2971,7 +2971,7 @@
 
 2000-12-15 00:03  raster
 
-	* oops - fix soem ascent & descent problems
+	* oops - fix some ascent & descent problems
 
 2000-12-12 21:07  raster
 
@@ -3458,7 +3458,7 @@
 
 2000-09-02 07:27  raster
 
-	* foudn bug in mmx asm blending.. 1 line hihg blends get skipped..
+	* found bug in mmx asm blending.. 1 line hihg blends get skipped..
 	  fix! :)
 	  (ugly fix tho)
 
@@ -3703,7 +3703,7 @@
 
 2000-06-23 19:34  raster
 
-	* apparently clone doesnt lone EVERYTHING.. now it clones all of it
+	* apparently clone doesn't lone EVERYTHING.. now it clones all of it
 	  except
 	  attached data tags...
 
@@ -3762,7 +3762,7 @@
 
 2000-06-05 18:19  raster
 
-	* shoudl in theory handle locks better....
+	* should in theory handle locks better....
 
 2000-06-05 03:15  raster
 
@@ -3830,7 +3830,7 @@
 	  some more
 	  stuff. dox is the start of dox2 the document viewer based on
 	  imlib2. Designed
-	  so that the style of the docs is seperate from the contents. Will
+	  so that the style of the docs is separate from the contents. Will
 	  evolve
 	  rapdily over the next week.
 
@@ -4021,7 +4021,7 @@
 
 2000-05-06 19:37  raster
 
-	* build dither table for masks alwasy... even in depths > 16
+	* build dither table for masks always... even in depths > 16
 
 2000-05-05 16:28  raster
 
@@ -4223,7 +4223,7 @@
 
 	* slight api changes..... problem was we have a useless paramin the
 	  pixmap gen
-	  calls - it shoudl have used the context... :)
+	  calls - it should have used the context... :)
 
 2000-04-25 03:29  mej
 
@@ -4299,7 +4299,7 @@
 
 2000-04-13 20:24  raster
 
-	* foudn evil mmx code overwriting memeory! thanks mej. back to the
+	* found evil mmx code overwriting memeory! thanks mej. back to the
 	  C code for
 	  you!
 
@@ -4309,7 +4309,7 @@
 
 2000-04-13 16:37  raster
 
-	* changelog..... NOOOOOOOOO cant be! :)
+	* changelog..... NOOOOOOOOO can't be! :)
 
 2000-04-13 16:31  raster
 
@@ -4330,7 +4330,7 @@
 
 	* fix corner case for clippign where integer math rounds source
 	  widht to 0 where
-	  it shoudl be 1.
+	  it should be 1.
 
 2000-04-11 23:34  mej
 
@@ -4371,7 +4371,7 @@
 
 2000-04-08 19:15  raster
 
-	* check for i686 artch and only then compile the mmx asm (i586 isnt
+	* check for i686 artch and only then compile the mmx asm (i586 isn't
 	  guaranteed
 	  to have mmx - NB libs built for mmx will NOt work on non mmx
 	  boxes right now
@@ -4423,7 +4423,7 @@
 
 2000-03-28 22:25  raster
 
-	* speedup scaling down....... but i cant seem to get any speedup
+	* speedup scaling down....... but i can't seem to get any speedup
 	  for up scaling
 
 2000-03-28 18:09  raster
@@ -4585,7 +4585,7 @@
 
 2000-03-03 17:24  raster
 
-	* poatch main.c - but rottest doesnt work.. must fix later
+	* poatch main.c - but rottest doesn't work.. must fix later
 
 2000-03-03 17:15  raster
 
@@ -4701,7 +4701,7 @@
 
 2000-01-10 05:41  raster
 
-	* i cant beleieve i missed wrappign the pixmap free function....
+	* i can't beleieve i missed wrappign the pixmap free function....
 
 2000-01-07 18:40  raster
 
@@ -4719,7 +4719,7 @@
 
 2000-01-06 06:32  raster
 
-	* search path for font mroe sanely
+	* search path for font more sanely
 
 2000-01-06 05:58  raster
 
@@ -4864,7 +4864,7 @@
 
 1999-11-16 00:06  raster
 
-	* oop s- clipping problme wiht lines.. fixed :)
+	* oop s- clipping problme with lines.. fixed :)
 
 1999-11-13 18:55  raster
 
@@ -4888,7 +4888,7 @@
 
 1999-11-03 16:21  raster
 
-	* add soem stuff and new blend.c from ryan :)
+	* add some stuff and new blend.c from ryan :)
 
 1999-11-02 15:56  raster
 
@@ -4909,7 +4909,7 @@
 1999-11-02 13:32  raster
 
 	* fix a little of the rend code - never testyed that bit...
-	  andf the imlib2_view works nicely iwth zooming too :)
+	  andf the imlib2_view works nicely with zooming too :)
 
 1999-11-02 11:13  raster
 
@@ -4945,7 +4945,7 @@
 
 1999-11-01 20:50  raster
 
-	* hmm that didnt compile.. ooh fun :)
+	* hmm that didn't compile.. ooh fun :)
 
 1999-11-01 18:46  raster
 
@@ -5052,7 +5052,7 @@
 
 1999-10-31 22:50  raster
 
-	* eeek math error at 255 (becomes 254) not surprising i didnt
+	* eeek math error at 255 (becomes 254) not surprising i didn't
 	  notice.. i
 	  looked at the results rsather than numerically evaluating...
 
@@ -5162,7 +5162,7 @@
 
 1999-10-21 17:07  raster
 
-	* color modifiers in imlib2 now done.. cleaned up soem code...
+	* color modifiers in imlib2 now done.. cleaned up some code...
 
 1999-09-30 16:46  raster
 
@@ -5232,7 +5232,7 @@
 
 1999-09-27 23:09  raster
 
-	* get rid of soem useless fonts...
+	* get rid of some useless fonts...
 
 1999-09-27 22:55  raster
 
@@ -5296,11 +5296,11 @@
 
 1999-09-19 21:22  raster
 
-	* and add soem comments
+	* and add some comments
 
 1999-09-19 21:18  raster
 
-	* and one mroe fix for big endian boxes for imlib png loader
+	* and one more fix for big endian boxes for imlib png loader
 
 1999-09-19 21:00  raster
 
@@ -5322,7 +5322,7 @@
 
 1999-09-18 16:41  raster
 
-	* rewmove files i didnt mean tot add
+	* rewmove files i didn't mean tot add
 
 1999-09-18 16:40  raster
 
@@ -5335,7 +5335,7 @@
 
 1999-09-17 01:47  raster
 
-	* more wokr on updates
+	* more work on updates
 
 1999-09-17 01:31  raster
 
@@ -5343,7 +5343,7 @@
 
 1999-09-15 01:24  raster
 
-	* some mroe echos...
+	* some more echos...
 
 1999-09-15 01:22  raster
 
@@ -5402,7 +5402,7 @@
 	  to add
 	  a bit to the api, and move the stuff nowin api.c off into imlib
 	  backend
-	  sinc ethat stuff doesnt belong in api.c
+	  sinc ethat stuff doesn't belong in api.c
 
 1999-09-09 02:39  raster
 
@@ -5418,7 +5418,7 @@
 
 1999-09-01 17:36  raster
 
-	* remember to not free images made form external data if it wasnt
+	* remember to not free images made form external data if it wasn't
 	  copied.. and
 	  free colors from color cubes once the context is invalid.. :)
 

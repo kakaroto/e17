@@ -1378,7 +1378,7 @@ __imlib_ScaleAARGB(ImlibScaleInfo * isi, DATA32 * dest, int dxx, int dyy,
           }
      }
 #endif
-   /* fully optimized (i think) - onyl change of algorithm can help */
+   /* fully optimized (i think) - only change of algorithm can help */
    /* if we're scaling down horizontally & vertically */
    else
 #ifndef OLD_SCALE_DOWN
