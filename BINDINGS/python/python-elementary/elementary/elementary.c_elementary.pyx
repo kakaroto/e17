@@ -21,6 +21,7 @@ import evas.c_evas
 cimport evas.c_evas as c_evas
 from python_ref cimport PyObject, Py_INCREF, Py_DECREF
 from python_mem cimport PyMem_Malloc, PyMem_Free
+from cpython cimport bool
 import traceback
 
 cdef int PY_REFCOUNT(object o):
