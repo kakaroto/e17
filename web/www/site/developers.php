@@ -47,7 +47,8 @@ function _developer_list ( $paths )
         $developers[$entry['Name']] = $entry;
         if ( file_exists("$path/icon-sml.png") )
         {
-            $developers[$entry['Photo']] = "<img src=http://download.enlightenment.org/devs/$file/icon-sml.png width=40 height=54 border=0>";
+            $f = basename($path);
+            $developers[$entry['Photo']] = "<img src=http://download.enlightenment.org/devs/$f/icon-sml.png width=40 height=54 border=0>";
         } else
         {
             $developers[$entry['Photo']] = "<img src=i/logo-s.png width=40 height=54 border=0>";
