@@ -1,4 +1,4 @@
-/* inline fonts so just in case the system doesnt have any, we have something
+/* inline fonts so just in case the system doesn't have any, we have something
  * to use */
 fonts {                            
    font: "Vera.ttf"   "Edje-Vera";
