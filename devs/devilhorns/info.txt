@@ -8,4 +8,4 @@ WWW: http://home.comcast.net/~devilhorns
 Managing: General E patch monkey, emprint, emodules, illume2
 Group: Core, Applications, Libraries
 Platform: Gentoo/Sabayon
-
+GeoData:      39.8063 -74.7862
