@@ -17,14 +17,15 @@ static void _cb_configure_general(void *data, E_Menu *m, E_Menu_Item *mi);
 
 int photo_menu_show(Photo_Item *pi)
 {
-   E_Menu *mn, *mn2;
+   E_Menu *ma, *mg;
    E_Menu_Item *mi;
    char buf[4096];
 
-   mn = e_menu_new();
-   e_menu_post_deactivate_callback_set(mn, _cb_deactivate_post, pi);
+   ma = e_menu_new();
+   e_menu_post_deactivate_callback_set(ma, _cb_deactivate_post, pi);
+   pi->menu = ma;
 
-   mi = e_menu_item_new(mn);
+   mi = e_menu_item_new(ma);
    if (pi->config->timer_active)
      {
         e_menu_item_label_set(mi, D_("Pause slideshow"));
@@ -36,53 +37,48 @@ int photo_menu_show(Photo_Item *pi)
    photo_util_menu_icon_set(mi, PHOTO_THEME_ICON_RESUME);
      }
    e_menu_item_callback_set(mi, _cb_pause_toggle, pi);
-   mi = e_menu_item_new(mn);
+   mi = e_menu_item_new(ma);
    e_menu_item_label_set(mi, D_("Next picture"));
    photo_util_menu_icon_set(mi, PHOTO_THEME_ICON_NEXT);
    e_menu_item_callback_set(mi, _cb_picture_next, pi);
-   mi = e_menu_item_new(mn);
+   mi = e_menu_item_new(ma);
    e_menu_item_label_set(mi, D_("Previous picture"));
    photo_util_menu_icon_set(mi, PHOTO_THEME_ICON_PREVIOUS);
    e_menu_item_callback_set(mi, _cb_picture_prev, pi);
 
-   photo_picture_histo_menu_append(pi, mn);
+   photo_picture_histo_menu_append(pi, ma);
 
-   mi = e_menu_item_new(mn);
+   mi = e_menu_item_new(ma);
    e_menu_item_separator_set(mi, 1);
 
-   mi = e_menu_item_new(mn);
+   mi = e_menu_item_new(ma);
    e_menu_item_label_set(mi, D_("Picture informations"));
    photo_util_menu_icon_set(mi, PHOTO_THEME_ICON_INFOS);
    e_menu_item_callback_set(mi, _cb_picture_info, pi);
-   mi = e_menu_item_new(mn);
+   mi = e_menu_item_new(ma);
    e_menu_item_label_set(mi, D_("Set as background"));
    photo_util_menu_icon_set(mi, PHOTO_THEME_ICON_SETBG);
    e_menu_item_callback_set(mi, _cb_picture_setbg, pi);
-   mi = e_menu_item_new(mn);
+   mi = e_menu_item_new(ma);
    snprintf(buf, sizeof(buf), "%s %s", D_("Open in"), photo->config->pictures_viewer);
    e_menu_item_label_set(mi, buf);
    photo_util_menu_icon_set(mi, PHOTO_THEME_ICON_VIEWER);
    e_menu_item_callback_set(mi, _cb_picture_viewer, pi);
 
-   mi = e_menu_item_new(mn);
-   e_menu_item_separator_set(mi, 1);
+   mg = e_menu_new();
 
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, D_("Configure Photo module"));
+   mi = e_menu_item_new(mg);
+   e_menu_item_label_set(mi, D_("Module Settings"));
    e_util_menu_item_theme_icon_set(mi, "preferences-system");
    e_menu_item_callback_set(mi, _cb_configure_general, NULL);
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, D_("Configure this Photo gadget"));
-  e_util_menu_item_theme_icon_set(mi, "preferences-system");
+   mi = e_menu_item_new(mg);
+   e_menu_item_separator_set(mi, 1);
+   mi = e_menu_item_new(mg);
+   e_menu_item_label_set(mi, D_("Settings"));
+   e_util_menu_item_theme_icon_set(mi, "preferences-system");
    e_menu_item_callback_set(mi, _cb_configure_item, pi);
 
-   mn2 = e_menu_new();
-   e_gadcon_client_util_menu_items_append(pi->gcc, mn2, 0);
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, D_("Configure Gadget and Shelf"));
-   e_menu_item_submenu_set(mi, mn2);
-
-   pi->menu = mn;
+   e_gadcon_client_util_menu_items_append(pi->gcc, ma, mg, 0);
 
    return 1;
 }
