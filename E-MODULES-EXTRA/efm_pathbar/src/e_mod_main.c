@@ -194,7 +194,7 @@ _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Instance *inst;
    Evas_Event_Mouse_Down *ev;
-   E_Menu *mn;
+   E_Menu *ma, *mg;
    E_Zone *zone;
    int x, y;
 
@@ -202,10 +202,13 @@ _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
    ev = event_info;
    if ((ev->button != 3) || inst->gcc->menu) return;
    zone = e_util_zone_current_get(e_manager_current_get());
-   mn = e_menu_new();
-   e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);
+
+   ma = e_menu_new();
+   mg = e_menu_new();
+
+   e_gadcon_client_util_menu_items_append(inst->gcc, ma, mg, 0);
    ecore_x_pointer_xy_get(zone->container->win, &x, &y);
-   e_menu_activate_mouse(mn, zone, x, y, 1, 1, 
+   e_menu_activate_mouse(ma, zone, x, y, 1, 1, 
 			 E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
 }
 
