@@ -48,7 +48,7 @@ e_int_config_places_module(E_Container *con, const char *params)
    snprintf(buf, sizeof(buf), "%s/e-module-places.edj", places_conf->module->dir);
 
    /* create new config dialog */
-   cfd = e_config_dialog_new(con, D_("Places Configuration"), "Places",
+   cfd = e_config_dialog_new(con, D_("Places Settings"), "Places",
                              "fileman/places", buf, 0, v, NULL);
    places_conf->cfd = cfd;
    return cfd;
