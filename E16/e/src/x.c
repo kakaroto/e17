@@ -1700,27 +1700,25 @@ int
 EDisplayOpen(const char *dstr, int scr)
 {
    char                dbuf[256], *s;
+   unsigned int        ddpy, dscr;
 
-   if (scr >= 0)
-     {
-	/* Override screen */
-	Esnprintf(dbuf, sizeof(dbuf) - 10, "%s", dstr);
-	s = strchr(dbuf, ':');
-	if (s)
-	  {
-	     s = strchr(s, '.');
-	     if (s)
-		*s = '\0';
-	  }
-	Esnprintf(dbuf + strlen(dbuf), 10, ".%d", scr);
-	dstr = dbuf;
-     }
+   Esnprintf(dbuf, sizeof(dbuf), "%.256s", dstr);
+   s = strchr(dbuf, ':');
+   if (!s)
+      return -1;
+   s++;
+
+   ddpy = dscr = 0;
+   sscanf(s, "%u.%u", &ddpy, &dscr);
+   if (scr >= 0)		/* Override screen */
+      dscr = scr;
+   Esnprintf(s, sizeof(dbuf) - (s - dbuf), "%u.%u", ddpy, dscr);
 
 #ifdef USE_ECORE_X
-   ecore_x_init(dstr);
+   ecore_x_init(dbuf);
    disp = ecore_x_display_get();
 #else
-   disp = XOpenDisplay(dstr);
+   disp = XOpenDisplay(dbuf);
 #endif
 
    return (disp) ? 0 : -1;
