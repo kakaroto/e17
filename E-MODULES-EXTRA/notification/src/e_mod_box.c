@@ -663,27 +663,26 @@ _notification_box_cb_empty_mouse_down(void *data,
   b = data;
   if (!notification_cfg->menu)
     {
-      E_Menu *mn;
+      E_Menu *ma, *mg;
       E_Menu_Item *mi;
       int cx, cy, cw, ch;
 
-      mn = e_menu_new();
-      e_menu_post_deactivate_callback_set(mn, _notification_box_cb_menu_post, NULL);
-      notification_cfg->menu = mn;
+      ma = e_menu_new();
+      e_menu_post_deactivate_callback_set(ma, _notification_box_cb_menu_post, NULL);
+      notification_cfg->menu = ma;
 
-      mi = e_menu_item_new(mn);
-      e_menu_item_label_set(mi, D_("Configuration"));
+      mg = e_menu_new();
+
+      mi = e_menu_item_new(mg);
+      e_menu_item_label_set(mi, D_("Settings"));
       e_util_menu_item_theme_icon_set(mi, "preferences-system");
       e_menu_item_callback_set(mi, _notification_box_cb_menu_configuration, b);
 
-      mi = e_menu_item_new(mn);
-      e_menu_item_separator_set(mi, 1);
-
-      e_gadcon_client_util_menu_items_append(b->inst->gcc, mn, 0);
+      e_gadcon_client_util_menu_items_append(b->inst->gcc, ma, mg, 0);
 
       e_gadcon_canvas_zone_geometry_get(b->inst->gcc->gadcon,
                                         &cx, &cy, &cw, &ch);
-      e_menu_activate_mouse(mn,
+      e_menu_activate_mouse(ma,
                             e_util_zone_current_get(e_manager_current_get()),
                             cx + ev->output.x, cy + ev->output.y, 1, 1,
                             E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
@@ -811,27 +810,26 @@ _notification_box_cb_icon_mouse_down(void *data,
   ic = data;
   if ((ev->button == 3) && (!notification_cfg->menu))
     {
-      E_Menu *mn;
+      E_Menu *ma, *mg;
       E_Menu_Item *mi;
       int cx, cy, cw, ch;
 
-      mn = e_menu_new();
-      e_menu_post_deactivate_callback_set(mn, _notification_box_cb_menu_post, NULL);
-      notification_cfg->menu = mn;
+      ma = e_menu_new();
+      e_menu_post_deactivate_callback_set(ma, _notification_box_cb_menu_post, NULL);
+      notification_cfg->menu = ma;
 
-      mi = e_menu_item_new(mn);
-      e_menu_item_label_set(mi, D_("Configuration"));
+      mg = e_menu_new();
+
+      mi = e_menu_item_new(mg);
+      e_menu_item_label_set(mi, D_("Settings"));
       e_util_menu_item_theme_icon_set(mi, "preferences-system");
       e_menu_item_callback_set(mi, _notification_box_cb_menu_configuration, ic->n_box);
 
-      mi = e_menu_item_new(mn);
-      e_menu_item_separator_set(mi, 1);
-
-      e_gadcon_client_util_menu_items_append(ic->n_box->inst->gcc, mn, 0);
+      e_gadcon_client_util_menu_items_append(ic->n_box->inst->gcc, ma, mg, 0);
 
       e_gadcon_canvas_zone_geometry_get(ic->n_box->inst->gcc->gadcon,
                                         &cx, &cy, &cw, &ch);
-      e_menu_activate_mouse(mn,
+      e_menu_activate_mouse(ma,
                             e_util_zone_current_get(e_manager_current_get()),
                             cx + ev->output.x, cy + ev->output.y, 1, 1,
                             E_MENU_POP_DIRECTION_DOWN, ev->timestamp);

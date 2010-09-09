@@ -34,7 +34,7 @@ e_int_config_notification_module(E_Container *con, const char *params __UNUSED__
    v->basic.apply_cfdata = _basic_apply;
 
    snprintf(buf, sizeof(buf), "%s/e-module-notification.edj", notification_mod->dir);
-   cfd = e_config_dialog_new(con, D_("Notification Configuration"), "Notification", 
+   cfd = e_config_dialog_new(con, D_("Notification Settings"), "Notification", 
                              "extensions/notification", buf, 0, v, NULL);
    notification_cfg->cfd = cfd;
    return cfd;
