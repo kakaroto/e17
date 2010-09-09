@@ -346,7 +346,7 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_info)
 {
    Instance *inst = NULL;
    Evas_Event_Mouse_Down *ev;
-   E_Menu *mn = NULL;
+   E_Menu *ma, *mg, *mo;
    E_Menu_Item *mi = NULL;
    E_Zone *zone = NULL;
    int x, y;
@@ -357,49 +357,46 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_info)
      {
 	zone = e_util_zone_current_get(e_manager_current_get());
 
-	mn = e_menu_new();
-	inst->menu_mode = mn;
+	ma = e_menu_new();
+	e_menu_post_deactivate_callback_set(ma, _cb_menu_post, inst);
 
-	mi = e_menu_item_new(mn);
+	mg = e_menu_new();
+	mo = e_menu_new();
+	inst->menu_mode = mo;
+
+	mi = e_menu_item_new(mo);
 	e_menu_item_label_set(mi, D_("Whole Screen"));
 	e_menu_item_radio_group_set(mi, 1);
 	e_menu_item_radio_set(mi, 1);
 	if (ss_cfg->mode == 0) e_menu_item_toggle_set(mi, 1);
 	e_menu_item_callback_set(mi, _cb_normal, inst);
 
-	mi = e_menu_item_new(mn);
+	mi = e_menu_item_new(mo);
 	e_menu_item_label_set(mi, D_("Select Window"));
 	e_menu_item_radio_group_set(mi, 1);
 	e_menu_item_radio_set(mi, 1);
 	if (ss_cfg->mode == 1) e_menu_item_toggle_set(mi, 1);
 	e_menu_item_callback_set(mi, _cb_window, inst);
 
-	mi = e_menu_item_new(mn);
+	mi = e_menu_item_new(mo);
 	e_menu_item_label_set(mi, D_("Select Region"));
 	e_menu_item_radio_group_set(mi, 1);
 	e_menu_item_radio_set(mi, 1);
 	if (ss_cfg->mode == 2) e_menu_item_toggle_set(mi, 1);
 	e_menu_item_callback_set(mi, _cb_region, inst);
 
-	mn = e_menu_new();
-	e_menu_post_deactivate_callback_set(mn, _cb_menu_post, inst);
-	inst->menu = mn;
-
-	mi = e_menu_item_new(mn);
+	mi = e_menu_item_new(mg);
 	e_menu_item_label_set(mi, D_("Capture Mode"));
 	e_menu_item_submenu_set(mi, inst->menu_mode);
 
-	mi = e_menu_item_new(mn);
+	mi = e_menu_item_new(mg);
 	e_menu_item_label_set(mi, D_("Settings"));
 	e_util_menu_item_theme_icon_set(mi, "configure");
 	e_menu_item_callback_set(mi, _cb_menu_cfg, inst);
 
-	mi = e_menu_item_new(mn);
-	e_menu_item_separator_set(mi, 1);
-
-	e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);
+	e_gadcon_client_util_menu_items_append(inst->gcc, ma, mg, 0);
 	e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &x, &y, NULL, NULL);
-	e_menu_activate_mouse(mn, zone, x + ev->output.x, y + ev->output.y, 
+	e_menu_activate_mouse(ma, zone, x + ev->output.x, y + ev->output.y, 
 			      1, 1, E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
      }
 }
