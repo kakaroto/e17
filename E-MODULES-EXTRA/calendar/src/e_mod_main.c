@@ -571,40 +571,41 @@ _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
      }
    if ((ev->button == 3) && (!calendar_conf->menu))
      {
-	E_Menu *mn;
+	E_Menu *ma, *mg, *mo;
 	E_Menu_Item *mi;
 	int cx, cy, cw, ch;
 
-	mn = e_menu_new();
-	calendar_conf->menu_firstweekday = mn;
+	ma = e_menu_new();
+	e_menu_post_deactivate_callback_set(ma, _menu_cb_post, inst);
+	calendar_conf->menu = ma;
 
-	mi = e_menu_item_new(mn);
+	mo = e_menu_new();
+	calendar_conf->menu_firstweekday = mo;
+
+	mi = e_menu_item_new(mo);
 	e_menu_item_label_set(mi, D_("Sunday"));
 	e_menu_item_radio_set(mi, 1);
 	e_menu_item_radio_group_set(mi, 1);
 	if (!inst->ci->firstweekday) e_menu_item_toggle_set(mi, 1);
 	e_menu_item_callback_set(mi, _calendar_firstweekday_su, inst);
 
-	mi = e_menu_item_new(mn);
+	mi = e_menu_item_new(mo);
 	e_menu_item_label_set(mi, D_("Monday"));
 	e_menu_item_radio_set(mi, 1);
 	e_menu_item_radio_group_set(mi, 1);
 	if (inst->ci->firstweekday == 1) e_menu_item_toggle_set(mi, 1);
 	e_menu_item_callback_set(mi, _calendar_firstweekday_mo, inst);
 
-	mn = e_menu_new();
-	calendar_conf->menu = mn;
+	mg = e_menu_new();
 
-	e_menu_post_deactivate_callback_set(mn, _menu_cb_post, inst);
-
-	mi = e_menu_item_new(mn);
+	mi = e_menu_item_new(mg);
 	e_menu_item_label_set(mi, D_("First Day of Week"));
 	e_util_menu_item_theme_icon_set(mi, "preferences-system");
 	e_menu_item_submenu_set(mi, calendar_conf->menu_firstweekday);
 
-	e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);
+	e_gadcon_client_util_menu_items_append(inst->gcc, ma, mg, 0);
 	e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &cx, &cy, &cw, &ch);
-	e_menu_activate_mouse(mn,
+	e_menu_activate_mouse(ma,
 			      e_util_zone_current_get(e_manager_current_get()),
 			      cx + ev->output.x, cy + ev->output.y, 1, 1,
 			      E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
