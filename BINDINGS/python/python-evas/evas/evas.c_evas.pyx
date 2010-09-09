@@ -18,6 +18,7 @@
 from python_ref cimport PyObject, Py_INCREF, Py_DECREF
 from python_method cimport PyMethod_New
 from python_mem cimport PyMem_Malloc
+from cpython cimport bool
 import warnings
 
 __extra_epydoc_fields__ = (
