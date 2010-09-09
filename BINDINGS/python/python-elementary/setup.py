@@ -108,7 +108,7 @@ Elementary, my dear Watson. Elementary.
 
 setup(
     name='python-elementary',
-    version='0.6.0',
+    version='0.7.0',
     license='LGPL',
     author='Simon Busch',
     author_email='morphis@gravedo.de',
@@ -118,8 +118,8 @@ setup(
     keywords='wrapper bindings ui elementary graphics',
     packages=find_packages(),
     classifiers=trove_classifiers,
-    install_requires=['python-evas>=0.6.0'],
-    setup_requires=['python-evas>=0.6.0'],
+    install_requires=['python-evas>=0.7.0'],
+    setup_requires=['python-evas>=0.7.0'],
     zip_safe=False,
     cmdclass={"build_ext": elementary_build_ext},
     ext_modules=[elementary_mod]
