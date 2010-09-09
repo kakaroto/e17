@@ -638,33 +638,34 @@ _taskbar_cb_item_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_i
    ev = event_info;
    if (ev->button == 3) 
      {
-
+        E_Menu *ma, *mg;
+	E_Menu_Item *mi;
         int cx, cy, cw, ch;
 
         e_gadcon_canvas_zone_geometry_get(item->taskbar->gcc->gadcon, &cx, &cy, &cw, &ch);
 
 	e_int_border_menu_create(item->border);
-        E_Menu *mn;
-	E_Menu_Item *mi;
 
-	mn = e_menu_new();
-
-	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, D_("Configuration"));
-	e_util_menu_item_theme_icon_set(mi, "preferences-system");
-	e_menu_item_callback_set(mi, _taskbar_cb_menu_configure, item->taskbar);
-
-
-	e_gadcon_client_util_menu_items_append(item->taskbar->gcc, mn, 0);
+	ma = e_menu_new();
 
 	mi = e_menu_item_new(item->border->border_menu);
 	e_menu_item_separator_set(mi, 1);
 
         mi = e_menu_item_new(item->border->border_menu);
         e_menu_item_label_set(mi, D_("Taskbar"));
-        e_menu_item_submenu_set(mi, mn);
+        e_menu_item_submenu_set(mi, ma);
 	e_util_menu_item_theme_icon_set(mi, "preferences-system");
-			     
+
+	mg = e_menu_new();
+
+        mi = e_menu_item_new(mg);
+	e_menu_item_label_set(mi, D_("Settings"));
+	e_util_menu_item_theme_icon_set(mi, "preferences-system");
+	e_menu_item_callback_set(mi, _taskbar_cb_menu_configure, item->taskbar);
+
+	e_gadcon_client_util_menu_items_append(item->taskbar->gcc, ma, mg, 0);
+
+		     
 	e_menu_activate_mouse(item->border->border_menu,
                                    e_util_zone_current_get(e_manager_current_get()),
                                    cx + ev->output.x, cy + ev->output.y, 1, 1, E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
