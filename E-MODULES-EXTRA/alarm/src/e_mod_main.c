@@ -811,14 +811,14 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
    ev = event_info;
    if ((ev->button == 3) && (!alarm_config->menu))
      {
-	E_Menu *mn;
+	E_Menu *ma, *mg;
 	E_Menu_Item *mi;
 	int cx, cy, cw, ch;
         int nb_snoozed = 0;
 	
-	mn = e_menu_new();
-	e_menu_post_deactivate_callback_set(mn, _menu_cb_deactivate_post, inst);
-	alarm_config->menu = mn;
+	ma = e_menu_new();
+	e_menu_post_deactivate_callback_set(ma, _menu_cb_deactivate_post, inst);
+	alarm_config->menu = ma;
 	
         /* snooze menu */
         if (alarm_config->alarms_state == ALARM_STATE_RINGING)
@@ -833,7 +833,7 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
                     {
                        char buf[30];
                        snprintf(buf, sizeof(buf), D_("Snooze %s"), al->name);
-                       mi = e_menu_item_new(mn);
+                       mi = e_menu_item_new(ma);
                        e_menu_item_label_set(mi, buf);
                        e_menu_item_callback_set(mi, _menu_cb_alarm_snooze, al);
                        if (!alarm_config->theme) e_util_menu_item_edje_icon_set(mi, THEME_ICON_SNOOZE);
@@ -842,7 +842,7 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
                          {
                             snprintf(buf, sizeof(buf), D_("Snooze %.14s of %.2d:%.2d"),
                                      al->name, al->snooze.hour, al->snooze.minute);
-                            mi = e_menu_item_new(mn);
+                            mi = e_menu_item_new(ma);
                             e_menu_item_label_set(mi, buf);
                             e_menu_item_callback_set(mi, _menu_cb_alarm_snooze, al);
                          }
@@ -853,30 +853,31 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
         if (!nb_snoozed)
           {
-             mi = e_menu_item_new(mn);
+             mi = e_menu_item_new(ma);
              e_menu_item_label_set(mi, D_("Snooze (No alarm to delay)"));
              if (!alarm_config->theme) e_util_menu_item_edje_icon_set(mi, THEME_ICON_SNOOZE);
              else e_menu_item_icon_edje_set(mi, alarm_config->theme, THEME_ICON_SNOOZE);
           }
-        mi = e_menu_item_new(mn);
-        e_menu_item_separator_set(mi, 1);
-	mi = e_menu_item_new(mn);
+
+	mg = e_menu_new();
+
+	mi = e_menu_item_new(mg);
 	e_menu_item_label_set(mi, D_("Add an alarm"));
 	e_menu_item_callback_set(mi, _menu_cb_alarm_add, NULL);
         if (!alarm_config->theme) e_util_menu_item_edje_icon_set(mi, THEME_ICON_ALARM_ON);
         else e_menu_item_icon_edje_set(mi, alarm_config->theme, THEME_ICON_ALARM_ON);
-        mi = e_menu_item_new(mn);
+        mi = e_menu_item_new(mg);
         e_menu_item_separator_set(mi, 1);
-	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, D_("Configuration"));
+	mi = e_menu_item_new(mg);
+	e_menu_item_label_set(mi, D_("Settings"));
 	e_util_menu_item_theme_icon_set(mi, "preferences-system");
 	e_menu_item_callback_set(mi, _menu_cb_configure, NULL);
 	
-	e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);
+	e_gadcon_client_util_menu_items_append(inst->gcc, ma, mg, 0);
 	
 	e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon,
 					  &cx, &cy, &cw, &ch);
-	e_menu_activate_mouse(mn,
+	e_menu_activate_mouse(ma,
 			      e_util_zone_current_get(e_manager_current_get()),
 			      cx + ev->output.x, cy + ev->output.y, 1, 1,
 			      E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
