@@ -220,14 +220,14 @@ _mail_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
     return;
   if ((ev->button == 3) && (!mail_config->menu))
     {
-      E_Menu *mn, *sn;
+      E_Menu *ma, *mg;
       E_Menu_Item *mi;
       int x, y, w, h;
       char buf[1024];
 
-      mn = e_menu_new ();
-      e_menu_post_deactivate_callback_set (mn, _mail_menu_cb_post, inst);
-      mail_config->menu = mn;
+      ma = e_menu_new ();
+      e_menu_post_deactivate_callback_set (ma, _mail_menu_cb_post, inst);
+      mail_config->menu = ma;
 
       if ((inst->ci->boxes) && (eina_list_count (inst->ci->boxes) > 0))
 	{
@@ -235,11 +235,7 @@ _mail_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 
 	  snprintf (buf, sizeof (buf), "%s/module.edj",
 		    e_module_dir_get (mail_config->module));
-	  mm = e_menu_item_new (mn);
-	  e_menu_item_label_set (mm, D_("Mailboxes"));
-	  e_menu_item_icon_edje_set (mm, buf, "icon");
 
-	  sn = e_menu_new ();
 	  for (l = inst->ci->boxes; l; l = l->next)
 	    {
 	      Config_Box *cb;
@@ -247,29 +243,25 @@ _mail_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 	      cb = l->data;
 	      if (!cb)
 		continue;
-	      mi = e_menu_item_new (sn);
+	      mi = e_menu_item_new (ma);
 	      snprintf (buf, sizeof (buf), "%s: %d/%d", cb->name, cb->num_new,
 			cb->num_total);
 	      e_menu_item_label_set (mi, buf);
 	      if ((cb->exec) && (cb->use_exec))
 		e_menu_item_callback_set (mi, _mail_menu_cb_exec, cb);
 	    }
-	  e_menu_item_submenu_set (mm, sn);
-	  mi = e_menu_item_new (mn);
-	  e_menu_item_separator_set (mi, 1);
 	}
 
-      mi = e_menu_item_new (mn);
-      e_menu_item_label_set (mi, D_("Configuration"));
+      mg = e_menu_new ();
+
+      mi = e_menu_item_new (mg);
+      e_menu_item_label_set (mi, D_("Settings"));
       e_util_menu_item_theme_icon_set(mi, "preferences-system");
       e_menu_item_callback_set (mi, _mail_menu_cb_configure, inst);
 
-      mi = e_menu_item_new (mn);
-      e_menu_item_separator_set (mi, 1);
-
-      e_gadcon_client_util_menu_items_append (inst->gcc, mn, 0);
+      e_gadcon_client_util_menu_items_append (inst->gcc, ma, mg, 0);
       e_gadcon_canvas_zone_geometry_get (inst->gcc->gadcon, &x, &y, &w, &h);
-      e_menu_activate_mouse (mn,
+      e_menu_activate_mouse (ma,
 			     e_util_zone_current_get (e_manager_current_get
 						      ()), x + ev->output.x,
 			     y + ev->output.y, 1, 1,
