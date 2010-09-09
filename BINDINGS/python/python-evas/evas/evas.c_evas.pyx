@@ -352,7 +352,7 @@ class EvasLoadError(Exception):
         if code == EVAS_LOAD_ERROR_NONE:
             msg = "No error on load"
         elif code == EVAS_LOAD_ERROR_GENERIC:
-            msg = "A non-specific error occured"
+            msg = "A non-specific error occurred"
         elif code == EVAS_LOAD_ERROR_DOES_NOT_EXIST:
             msg = "File (or file path) does not exist"
         elif code == EVAS_LOAD_ERROR_PERMISSION_DENIED:

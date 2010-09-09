@@ -477,7 +477,7 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
         when it is done, see on_image_preloaded_add().
 
         If one calls this function with cancel=True, then preload will
-        be canceled and load will hapen when image is made visible.
+        be canceled and load will happen when image is made visible.
 
         If image is required before preload is done (ie: pixels are
         retrieved by user or when drawing), then it will be

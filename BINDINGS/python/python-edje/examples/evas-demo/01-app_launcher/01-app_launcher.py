@@ -62,7 +62,7 @@ try:
 except Exception, e: # should be EdjeLoadError, but it's wrong on python2.5
     raise SystemExit("Failed to load Edje file: %s" % edje_file)
 
-# resize edje to fit our window, show and remeber it for later use
+# resize edje to fit our window, show and remember it for later use
 edje_obj.size = canvas.size
 edje_obj.show()
 ee.data["edje"] = edje_obj

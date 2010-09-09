@@ -516,7 +516,7 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
         @parm: B{event_info} an event specific info to pass to the callback.
 
         This should be called internally in the smart object when some
-        specific event has occured. The documentation for the smart object
+        specific event has occurred. The documentation for the smart object
         should include a list of possible events and what type of B{event_info}
         to expect.
 

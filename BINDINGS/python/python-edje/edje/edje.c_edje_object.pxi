@@ -916,7 +916,7 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
             raise TypeError("invalid message type '%s'" % type(data).__name__)
 
     def message_handler_set(self, func, *args, **kargs):
-        """Set the handler of messages comming from Embryo.
+        """Set the handler of messages coming from Embryo.
 
         Signature: C{function(object, message, *args, **kargs)}
 

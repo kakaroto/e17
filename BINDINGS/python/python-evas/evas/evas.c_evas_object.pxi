@@ -126,7 +126,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     and redraw...
 
     The most important concept for evas object is B{clipping}
-    (L{clip_set()} and L{clip_unset()}), ususally done by use of
+    (L{clip_set()} and L{clip_unset()}), usually done by use of
     L{Rectangle} as clipper. Clip objects will affect the drawing behavior:
      - Limiting visibility;
      - Limiting geometry;

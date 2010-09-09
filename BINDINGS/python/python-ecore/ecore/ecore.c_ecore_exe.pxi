@@ -391,7 +391,7 @@ cdef class Exe:
         self.delete()
 
     def send(self, buffer, long size=0):
-        """Sends data to the executed process, which it recieves on stdin.
+        """Sends data to the executed process, which it receives on stdin.
 
         This function writes to a child processes standard in, with
         unlimited buffering. This call will never block. It may fail

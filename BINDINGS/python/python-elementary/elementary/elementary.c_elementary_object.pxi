@@ -204,7 +204,7 @@ cdef class Object(evas.c_evas.Object):
 
     def _get_obj_addr(self):
         """
-        Return the adress of the internal save Evas_Object
+        Return the address of the internal save Evas_Object
 
         @return: Address of saved Evas_Object
         """
