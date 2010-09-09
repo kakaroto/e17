@@ -50,7 +50,7 @@ function _developer_list ( $paths )
             $entry['Photo'] = "<img src=http://download.enlightenment.org/devs/$f/icon-sml.png width=40 height=54 border=0>";
         } else
         {
-            $entry['Photo'] = "<img src=i/logo-s.png width=40 height=54 border=0>";
+            $entry['Photo'] = "<img src=i/logo-s.png width=18 height=24 border=0>";
         }
         $developers[$entry['Name']] = $entry;
     }
