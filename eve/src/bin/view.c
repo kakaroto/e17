@@ -230,7 +230,7 @@ _view_zoom_fits_hit(View_Smart_Data *sd, const Ewk_Hit_Test *hit_test)
    vh2 = vh - vh1;
 
    /* check if we can add padding around those sizes, "adding" if possible
-    * (we actually substract as adding a pad is removing available space)
+    * (we actually subtract as adding a pad is removing available space)
     */
    if (vw1 > ZOOM_AUTO_PADDING)
       vw1 -= ZOOM_AUTO_PADDING;
@@ -1105,7 +1105,7 @@ _view_smart_calculate(Evas_Object *o)
    double elapsed = now - before;
    if (elapsed > LONG_CALCULATE_TIMEOUT)
      {
-        WRN("calulate took too long (%0.3f of %0.3f), ignoring events.",
+        WRN("calculate took too long (%0.3f of %0.3f), ignoring events.",
             elapsed, LONG_CALCULATE_TIMEOUT);
         XSync(dpy, True); /* throw away events received during this timeout */
      }
