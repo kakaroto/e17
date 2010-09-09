@@ -108,12 +108,13 @@ Clicking on a marker will open a popup showing all the information about a speci
 	    {
                 if( file_exists("$cvs_dir/$file/icon-map.png") )
                 {
-                   echo "icon_dev_$file.image = \"http://download.enlightenment.org/devs/$file/icon-map.png\";\n";
-                   echo "icon_dev_$file.shadow = \"http://labs.google.com/ridefinder/images/mm_20_shadow.png\";\n";
-                   echo "icon_dev_$file.iconSize = new GSize(22, 29);\n";
-                   echo "icon_dev_$file.shadowSize = new GSize(22, 20);\n";
-                   echo "icon_dev_$file.iconAnchor = new GPoint(11, 29);\n";
-                   echo "icon_dev_$file.infoWindowAnchor = newGPoint(11, 1);\n";
+#                    echo "var icon_dev_$file = new GIcon();\n";
+#                    echo "icon_dev_$file.image = \"http://download.enlightenment.org/devs/$file/icon-map.png\";\n";
+#                    echo "icon_dev_$file.shadow = \"http://labs.google.com/ridefinder/images/mm_20_shadow.png\";\n";
+#                    echo "icon_dev_$file.iconSize = new GSize(22, 29);\n";
+#                    echo "icon_dev_$file.shadowSize = new GSize(22, 20);\n";
+#                    echo "icon_dev_$file.iconAnchor = new GPoint(11, 29);\n";
+#                    echo "icon_dev_$file.infoWindowAnchor = newGPoint(11, 1);\n";
                 }
             }
 	 }
@@ -158,7 +159,8 @@ Clicking on a marker will open a popup showing all the information about a speci
 		  $lon = floatval($Coords[1]);
                   if( file_exists("$cvs_dir/$file/icon-map.png") )
                   {
-                     echo "addDeveloperMarker($lat,$lon,'icon_dev_$file','$IRC','$Name','$Location','$EMail','$WWW','$Managing','$Contributing','$Group','$Platform');\n";
+#                     echo "addDeveloperMarker($lat,$lon,'icon_dev_$file','$IRC','$Name','$Location','$EMail','$WWW','$Managing','$Contributing','$Group','$Platform');\n";
+		     echo "addDeveloperMarker($lat,$lon,'icon_green','$IRC','$Name','$Location','$EMail','$WWW','$Managing','$Contributing','$Group','$Platform');\n";
                   }else
                   {
 		     echo "addDeveloperMarker($lat,$lon,'icon_green','$IRC','$Name','$Location','$EMail','$WWW','$Managing','$Contributing','$Group','$Platform');\n";
@@ -216,8 +218,8 @@ Clicking on a marker will open a popup showing all the information about a speci
 
       var point = new GLatLng(lat, lon)
       if (icon == "icon_red") var marker = new GMarker(point, {icon: icon_red});
-      elseif (icon == "icon_green") var marker = new GMarker(point, {icon: icon_green});
-      else var marker = new GMarker(point, {icon: eval("icon")});
+      else if (icon == "icon_green") var marker = new GMarker(point, {icon: icon_green});
+      else var marker = new GMarker(point, {icon: eval(icon)});
       marker.tooltip = '<div class="tooltip"><nobr>'+nickname+'</nobr></div>';
       GEvent.addListener(marker, "click", function() {
             marker.openInfoWindowHtml(html);
