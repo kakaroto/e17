@@ -44,15 +44,15 @@ function _developer_list ( $paths )
     {
         $file = file("$path/info.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         $entry = _developer_info($file);
-        $developers[$entry['Name']] = $entry;
         if ( file_exists("$path/icon-sml.png") )
         {
             $f = basename($path);
-            $developers[$entry['Photo']] = "<img src=http://download.enlightenment.org/devs/$f/icon-sml.png width=40 height=54 border=0>";
+            $entry['Photo'] = "<img src=http://download.enlightenment.org/devs/$f/icon-sml.png width=40 height=54 border=0>";
         } else
         {
-            $developers[$entry['Photo']] = "<img src=i/logo-s.png width=40 height=54 border=0>";
+            $entry['Photo'] = "<img src=i/logo-s.png width=40 height=54 border=0>";
         }
+        $developers[$entry['Name']] = $entry;
     }
 
     return $developers;
