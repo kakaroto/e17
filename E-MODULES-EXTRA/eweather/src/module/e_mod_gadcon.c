@@ -136,28 +136,27 @@ _gc_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
    ev = event;
    if ((ev->button == 3) && (!inst->menu))
      {
-        E_Menu *mn;
+        E_Menu *ma, *mg;
         E_Menu_Item *mi;
         E_Zone *zone;
         int x = 0, y = 0;
 
         zone = e_util_zone_current_get(e_manager_current_get());
 
-        mn = e_menu_new();
-        e_menu_post_deactivate_callback_set(mn, _gc_cb_menu_post, inst);
-        inst->menu = mn;
+        ma = e_menu_new();
+        e_menu_post_deactivate_callback_set(ma, _gc_cb_menu_post, inst);
+        inst->menu = ma;
 
-        mi = e_menu_item_new(mn);
+        mg = e_menu_new();
+
+        mi = e_menu_item_new(mg);
         e_menu_item_label_set(mi, D_("Settings"));
         e_util_menu_item_theme_icon_set(mi, "configure");
         e_menu_item_callback_set(mi, _menu_cb_configure, inst);
 
-        mi = e_menu_item_new(mn);
-        e_menu_item_separator_set(mi, 1);
-
-        e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);
+        e_gadcon_client_util_menu_items_append(inst->gcc, ma, mg, 0);
         e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &x, &y, NULL, NULL);
-        e_menu_activate_mouse(mn, zone, x + ev->output.x, y + ev->output.y,
+        e_menu_activate_mouse(ma, zone, x + ev->output.x, y + ev->output.y,
                               1, 1, E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
      }
 }
