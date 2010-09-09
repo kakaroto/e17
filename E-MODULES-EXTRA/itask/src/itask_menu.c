@@ -161,7 +161,7 @@ _itask_menu_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_inf
 {
    Evas_Event_Mouse_Down *ev;
    Itask *it;
-   E_Menu *mn = NULL;
+   E_Menu *ma, *mg;
    E_Menu_Item *mi;
 
    int cx, cy, cw, ch;
@@ -176,26 +176,28 @@ _itask_menu_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_inf
 
    if (ev->button == 3)
    {
-      mn = e_menu_new();
-      e_menu_post_deactivate_callback_set(mn, _itask_menu_cb_config_post, NULL);
+      ma = e_menu_new();
+      e_menu_post_deactivate_callback_set(ma, _itask_menu_cb_config_post, NULL);
 
-      mi = e_menu_item_new(mn);
-      e_menu_item_label_set(mi, N_("Configuration"));
+      mg = e_menu_new();
+
+      mi = e_menu_item_new(mg);
+      e_menu_item_label_set(mi, N_("Settings"));
       e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
       e_menu_item_callback_set(mi, _itask_menu_cb_configuration, it);
 
-      e_gadcon_client_util_menu_items_append(it->inst->gcc, mn, 0);
+      e_gadcon_client_util_menu_items_append(it->inst->gcc, ma, mg, 0);
    }
    else if (ev->button == 1)
    {
    	 if(it->menu_all_window)
-   	 	mn = itask_menu_items_menu(it->items);
+   	 	ma = itask_menu_items_menu(it->items);
    	 else
-   	 	mn = itask_menu_items_menu(it->items_menu);
+   	 	ma = itask_menu_items_menu(it->items_menu);
    }
-   if(mn)
+   if(ma)
    {
-   	  e_menu_post_deactivate_callback_set(mn, _itask_menu_cb_post, NULL);
+   	  e_menu_post_deactivate_callback_set(ma, _itask_menu_cb_post, NULL);
       evas_object_geometry_get(it->o_button, &x, &y, &w, &h);
       e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon,
                                         &cx, &cy, &cw, &ch);
@@ -232,7 +234,7 @@ _itask_menu_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_inf
          dir = E_MENU_POP_DIRECTION_AUTO;
          break;
       }
-      e_menu_activate_mouse(mn,
+      e_menu_activate_mouse(ma,
                             e_util_zone_current_get(e_manager_current_get()),
                             x, y, w, h,
                             dir, ev->timestamp);
