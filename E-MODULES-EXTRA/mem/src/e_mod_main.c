@@ -153,25 +153,24 @@ _mem_cb_mouse_down (void *data, Evas * e, Evas_Object * obj, void *event_info)
    ev = event_info;
    if ((ev->button == 3) && (!mem_config->menu))
      {
-	E_Menu *mn;
+	E_Menu *ma, *mg;
 	E_Menu_Item *mi;
 	int x, y, w, h;
 
-	mn = e_menu_new ();
-	e_menu_post_deactivate_callback_set (mn, _mem_menu_cb_post, inst);
-	mem_config->menu = mn;
+	ma = e_menu_new ();
+	e_menu_post_deactivate_callback_set (ma, _mem_menu_cb_post, inst);
+	mem_config->menu = ma;
 
-	mi = e_menu_item_new (mn);
-	e_menu_item_label_set (mi, D_ ("Configuration"));
+	mg = e_menu_new ();
+
+	mi = e_menu_item_new (mg);
+	e_menu_item_label_set (mi, D_ ("Settings"));
 	e_util_menu_item_theme_icon_set(mi, "preferences-system");
 	e_menu_item_callback_set (mi, _mem_menu_cb_configure, inst);
 
-	mi = e_menu_item_new (mn);
-	e_menu_item_separator_set (mi, 1);
-
-	e_gadcon_client_util_menu_items_append (inst->gcc, mn, 0);
+	e_gadcon_client_util_menu_items_append (inst->gcc, ma, mg, 0);
 	e_gadcon_canvas_zone_geometry_get (inst->gcc->gadcon, &x, &y, &w, &h);
-	e_menu_activate_mouse (mn,
+	e_menu_activate_mouse (ma,
 			       e_util_zone_current_get (e_manager_current_get
 							()), x + ev->output.x,
 			       y + ev->output.y, 1, 1,
