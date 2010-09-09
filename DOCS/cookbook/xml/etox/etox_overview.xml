@@ -89,7 +89,7 @@ something that Etox will not do for you.
 <para>
 Your Etox text will always start by adding a new Etox using the <function>etox_new()</function> function which returns a new
 Evas_Object.  Because your Etox is itself an Evas object it can be manipulated as such.  Etox's layout functions
-such as clipping and wrapping are dependant upon the size of the Etox itself, therefore <function>evas_object_resize()</function>
+such as clipping and wrapping are dependent upon the size of the Etox itself, therefore <function>evas_object_resize()</function>
 need to be called to define the proper size of the Etox.  Please note that the area of the object will <emphasis>not</emphasis>
 default to the size of the Evas itself.  
 </para>
@@ -109,7 +109,7 @@ text.  In the example we change the color, font and alignment of our context.
 
 <para>
 Two of the most interesting and simplistic features of Etox is it's ability to intellegently wrap text and to interpret a 
-standard C newline charrector (\n) as a wrap.  These are features that Evas itself does not contain, it is the responsability
+standard C newline charrector (\n) as a wrap.  These are features that Evas itself does not contain, it is the responsibility
 of the coder to ensure text doesn't trail off the canvas.  
 </para>
 
@@ -123,7 +123,7 @@ that work wrapping will not work unless soft wrapping has already been turned on
 
 <para>
 A final note about wrapping is that by default wrapping will insert a <literal>wrap marker</literal> into your output string, a "+" (plus) sign by default.
-This marker indicates that a wrap has occured and is printed  as the first charrector on the next line of the wrap.  Your string will therefore
+This marker indicates that a wrap has occurred and is printed  as the first charrector on the next line of the wrap.  Your string will therefore
 likely look more like this: "This is my (wrap) +string."  If you would prefer that Etox silently wrap without a marker, simply set the marker
 to being nothing using the <function>etox_context_set_wrap_marker()</function> function.
 </para>

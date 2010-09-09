@@ -1617,7 +1617,7 @@ We want this animation to be launched when the program loads and the canvas is s
 </para>
 
 <para>
-Also notice the lack of extra calculations. Mary's requirement of a 5 second transition with 20fps is directly transfered to code. The number of frames shown
+Also notice the lack of extra calculations. Mary's requirement of a 5 second transition with 20fps is directly transferred to code. The number of frames shown
 and the delay between them is automatically calculated by Edje. No need for the programmer to worry about low level stuff. Finally notice the lack of 
 any hardcoded values for sizes. The canvas can be anything and the ball sprite will be 5% of the canvas size. This means that no matter the size of the application
 window, Edje will adjust sizes, delays and frames to satisfy the requirements (20fps for 5 seconds). Extra code is not needed for that. The end result is that

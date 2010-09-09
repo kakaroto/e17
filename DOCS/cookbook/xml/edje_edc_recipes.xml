@@ -8,7 +8,7 @@ Edje Data Collections (EDC) source files allow for easy creation of rich and pow
 graphical interfaces.  Your Edje application is divided into two distinct parts, the
 application code (using calls from <filename>Edje.h</filename>) and the interface 
 description in the EDC.  The only connectivity needed between your interface and
-your application code are signals emited by your interface and are recieved by
+your application code are signals emitted by your interface and are received by
 Edje callbacks in your application code.  
 </para>
 
@@ -37,9 +37,9 @@ example might be that a GTK or QT application will always have a rectangular sha
 it isn't borderless you can't make it borderless via a theme.  However, an Edje application
 could be change from rectangular to an oval shaped border with a simple modification of
 the EDC, or could remove and rearrange all of the elements of the interface without ever
-touching application code.  In this way Edje allows a far greater ammount of control
+touching application code.  In this way Edje allows a far greater amount of control
 and flexablity than provided by any other solution in the Open Source comminity and allows
-the Open programing model to be truely leverage to allow even non-programmers (as many themers are)
+the Open programing model to be truly leverage to allow even non-programmers (as many themers are)
 to contribute and modify things as they see fit.
 </para>
 

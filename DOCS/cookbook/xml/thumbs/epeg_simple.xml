@@ -50,7 +50,7 @@ int main(int argc, char *argv[]){
 </example>
 
 <para>
-This example is fairly simplistic, not checking to ensure the input is truely a JPEG, but adiquately 
+This example is fairly simplistic, not checking to ensure the input is truly a JPEG, but adiquately 
 points out some features of the library.  It can be compiled in the following way:
 </para>
 
@@ -66,7 +66,7 @@ This pointer can then be feed to other Epeg functions for manipulation.
 </para>
 
 <para>
-Two diffrent functions are used here to get some information about the input image: <function>epeg_size_get</function> 
+Two different functions are used here to get some information about the input image: <function>epeg_size_get</function> 
 and <function>epeg_comment_get</function>.  Notice that neither return values from these functions are ever used in other Epeg
 functions, they are simply for informational display.  A good use for these return values might be to intellegently define the
 output thumbnail size, or to modify and pass on a comment to the output thumbnail.

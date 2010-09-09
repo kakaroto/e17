@@ -34,7 +34,7 @@ to program functions to:
 
 * Manipulate the canvas primitives to draw the widget.
 * Register new signal types to emit as a widget.
-* Display information and retreive changes.
+* Display information and retrieve changes.
 * Handle events ocurring in the environment that affect it.
 * Handle events ocurring on its primitives.
 

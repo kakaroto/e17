@@ -4,7 +4,7 @@
 <sect1 id="sec-ObjHierIntro">
 <title>Introduction</title>
 <para>
-The EWL widgets are setup in a hierarcy. The base widget that everything
+The EWL widgets are setup in a hierarchy. The base widget that everything
 extends from is the <literal>Ewl_Object</literal>. The
 <literal>Ewl_Object</literal> provides all of the base functionality for
 each widget including the sizing, alignment, fill policies, padding and

@@ -6,7 +6,7 @@
 <para>
 The Enlightened Widget Library (EWL) is a widget toolkit that builds upon the 
 foundations constructed by the other libs in the EFL. Ewl uses Evas as its rendering
-backend and its appearence is abstracted out for Edje to handle.
+backend and its appearance is abstracted out for Edje to handle.
 </para>
 
 <para>

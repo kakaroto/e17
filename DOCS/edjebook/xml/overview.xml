@@ -5,11 +5,11 @@
 <title>Introduction</title>
 
 <para>
-Edje is a componant of the Enlightenment Foundation Libraries which abstracts
+Edje is a component of the Enlightenment Foundation Libraries which abstracts
 interface design and functionality from the application code itself.   An application using
 Edje is comprised of two componants, the code in the EVAS application which interacts with
 the interface, and a created EET which contains all the elements of the interface itself.
-These EET's are generated from an Edje EDC file in which diffrent parts of the interface
+These EET's are generated from an Edje EDC file in which different parts of the interface
 are described and laid out, and how those parts interact with your application.  This
 allows for the interface to be completely changed simply by creating a new EDC and
 generating the EET for your application to use.  In more popular terms, Edje
@@ -30,7 +30,7 @@ three distinct sections: images, data, and collections.  The image section conta
 a list of all the images your interface will use.  When you compile/generate your
 EDC into an EET all the images specified will be loaded into the EET itself allowing you
 to distribute your interface (or skin if you prefer) as a single file.  When
-specifying your images you can even specify the ammount  you want the images to
+specifying your images you can even specify the amount  you want the images to
 be compressed when adding them into the EET to keep your EETs small and portable.
 The collections section actually describes the interface, how it's laid out and how it
 will interact with your application code. Optionally, a third section, data, can contain
@@ -40,7 +40,7 @@ arbitrary data in key-value pairs to provide data to your application.
 <para>
 The collections in an EDC are comprised of one or more groups.  Each group
 contains parts and programs.  A part is a single element of your interface, such
-as a text element, or a rectangle, or an image.  Each part is throughly described
+as a text element, or a rectangle, or an image.  Each part is thoroughly described
 for one or more states.  For instance, an image part might actually have two images
 in it, each in a different state, one for a normal state and one for a clicked (mouse down)
 state.  A part may have as many states defined as you like.

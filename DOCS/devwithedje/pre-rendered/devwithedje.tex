@@ -283,7 +283,7 @@ TODO.
 So... you want to create a GUI application? I assume so since you choosed this
 book as instructive, or at least bathroom, material. You could google ``GUI'' and
 ``library'' to feel overwhelmed by the large number of development libraries
-avilable. As you look through the source of your (open source) favorites you
+available. As you look through the source of your (open source) favorites you
 will realize that all of them, and the applications that use them, share a
 common structure. In this chapter we will review that structure.
 
@@ -334,7 +334,7 @@ another widget.
 Regardless of the method of choice, the resulting GUI has to provide the same
 resources to the rest of the application. A mechanism to present information
 to the user, a mechanism to know when the user interacts with the interface and
-a mechanism to retreive information that resulted from said interaction.
+a mechanism to retrieve information that resulted from said interaction.
 
 In the case of the plain canvas the application developer must assemble the
 interface elements, know as widgets, using primitive objects. A very simple
@@ -348,7 +348,7 @@ In the case of a toolkit library the application developer would simply include
 a predefined ``text entry'' widget. The events from this object would be dealt
 with in terms of the object as a whole. It wouldn't seem that there is much
 difference between using a canvas or using a toolkit library until we consider
-all the possiblities, like focus, overflowing text, copying, pasting,
+all the possibilities, like focus, overflowing text, copying, pasting,
 selecting, etc.
 
 Deciding which approach to use is, of course, up to the developer to decide as
@@ -417,7 +417,7 @@ the developer only has to include the resulting object and setup the callbacks
 {\hfill\scalebox{0.850000}{\includegraphics{img/workflow.png}}\hfill}
 
 Except for the usage of nested blocks, the sintax of an EDC file is similar to
-CSS. What really sets them appart is that with EDC the designer it's free to
+CSS. What really sets them apart is that with EDC the designer it's free to
 create and layout design elements as he sees fit. With CSS the designer is
 limited to applying style and layout properties to a structure of objects
 defined by the markup. With Edje each design object, know as ``part'', is created
@@ -681,7 +681,7 @@ down any library we initiated:
 \hypertarget{working-with-the-canvas}{}
 \section{Working with the canvas}
 
-Now that we know how to setup the enviroment to display the Edje objects we
+Now that we know how to setup the environment to display the Edje objects we
 will review how to include and interact with the objects themselves. The
 following code is platform independent and can be merged with the example code
 provided before or with the equivalent for any other platform.
@@ -698,7 +698,7 @@ int~main()~{\{}~\\
 ~~~~...
 }\end{quote}
 
-After a pointer to the canvas has been aquired, we need a pointer to a valid
+After a pointer to the canvas has been acquired, we need a pointer to a valid
 Evas object to insert our Edje object:
 \begin{quote}{\ttfamily \raggedright \noindent
 ...~\\
@@ -851,7 +851,7 @@ Hopefully the reader has not been introduced to the concept of software
 frameworks by web based monsters like Ruby on Rails. Personally I think RoR is
 great and my point is that a framework does not necessarily mean large software
 libraries. A framework can be seen as library of functions determined by the
-similiarity in the profile of the applications that use it. In a framework,
+similarity in the profile of the applications that use it. In a framework,
 shorter development time means either more specific profiles or more complex
 library code.
 
@@ -865,7 +865,7 @@ files''. A list of the tasks the framework must perform follow:
 \item[{Configuration (Using Ecore{\_}Config).}] %[visit_definition]
 \begin{itemize}
 \item {} 
-Initialization and shutdown of the necesary services.
+Initialization and shutdown of the necessary services.
 
 \item {} 
 Saving configuration changes on exit.
@@ -1068,7 +1068,7 @@ the additional feeling of certainlity of how an application is going to behave.
 Still, the alternative function \texttt{ecore{\_}config{\_}file{\_}load} could have been used
 to load a configuration file from a custom location.
 
-Before finishing sucessfully we will have to control that at least the default
+Before finishing successfully we will have to control that at least the default
 theme file can be found somewhere. Finding at least one theme file is pretty
 much mandatory for any Edje based application.
 
@@ -1136,7 +1136,7 @@ By now you might be wondering if there is a real reason to abstract functions
 as simple and wildly known such as these? There is no simple answer other than
 that these function set properties that could cause unexpected behaviour later
 in the application. I spent an hour of my life trying to figure out why the
-size calculation of the canvas didn't reflect the size changes that ocurred in
+size calculation of the canvas didn't reflect the size changes that occurred in
 this very initalization function.
 
 Now that I have justified the first part of the function we might as well
@@ -1200,14 +1200,14 @@ parentless window per application.
 \subsection{Simpler theme management}
 
 In the previous section we have seen how to create a window based on parameters
-lifted from a given Edje object refered to as the layout object. If you take
-a look you will see that the layout object was aquired differently than the
+lifted from a given Edje object referred to as the layout object. If you take
+a look you will see that the layout object was acquired differently than the
 common Edje object, the function is names \texttt{simple{\_}object{\_}add} and its used
 in the main function to load the themes for the viewport widget and the minimap
 widget as well.
 
 In this chapter we will review all the functions called to make this simpler
-method of aquiring Edje objects possible:
+method of acquiring Edje objects possible:
 \begin{quote}{\ttfamily \raggedright \noindent
 Evas{\_}Object~*~\\
 simpler{\_}object{\_}add(Evas~*canvas,~const~char~*group)~\\
@@ -1230,7 +1230,7 @@ simpler{\_}object{\_}add(Evas~*canvas,~const~char~*group)~\\
 }\end{quote}
 
 We begin by the most popular \texttt{simpler{\_}object{\_}add}. All this function really
-does is to allocate and initate the object in the choosen canvas with
+does is to allocate and initate the object in the chosen canvas with
 \texttt{edje{\_}object{\_}add}. The rest of the work is done by \texttt{simpler{\_}object{\_}file{\_}set}
 and \texttt{ecore{\_}config{\_}theme{\_}with{\_}path{\_}get}.
 
@@ -1341,7 +1341,7 @@ Manipulate the canvas primitives to draw the widget.
 Register new signal types to emit as a widget.
 
 \item {} 
-Display information and retreive changes.
+Display information and retrieve changes.
 
 \item {} 
 Handle events ocurring in the environment that affect it.
@@ -1466,7 +1466,7 @@ resulted in a library that does \emph{not} limit the themer more often than it d
 In any case, the Enlightened Widget Library provides an special type of
 container know as the ``embed'' container. Widgets included in this container can
 be swallowed into a SWALLOW part in a common Edje interface. Once the widget
-has been included its appereance can be altered in a per-theme basis in order
+has been included its appearance can be altered in a per-theme basis in order
 for the widget to fit the rest of the application as cleanly as possible.
 
 You might not want to use Ewl to create simple interface objects like buttons

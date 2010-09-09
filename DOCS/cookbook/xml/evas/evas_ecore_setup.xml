@@ -17,7 +17,7 @@ Setup an Evas using Ecore_Evas
 Evas is a powerful and simple library to use, but before it can establish a 
 canvas a X11 drawable needs to be setup.  Manually setting up X11 can be a 
 messy and frustrating task which detracts from concentrating on what you really
-want to do: develope an Evas application.  But all this can be avoided
+want to do: develop an Evas application.  But all this can be avoided
 by using the Ecore_Evas module of Ecore to do all the hard work for you.
 </para>
 

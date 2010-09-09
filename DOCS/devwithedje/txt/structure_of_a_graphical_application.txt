@@ -1,7 +1,7 @@
 So... you want to create a GUI application? I assume so since you choosed this 
 book as instructive, or at least bathroom, material. You could google "GUI" and
 "library" to feel overwhelmed by the large number of development libraries
-avilable. As you look through the source of your (open source) favorites you 
+available. As you look through the source of your (open source) favorites you 
 will realize that all of them, and the applications that use them, share a 
 common structure. In this chapter we will review that structure.
 

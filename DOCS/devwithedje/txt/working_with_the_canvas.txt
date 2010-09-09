@@ -1,4 +1,4 @@
-Now that we know how to setup the enviroment to display the Edje objects we 
+Now that we know how to setup the environment to display the Edje objects we 
 will review how to include and interact with the objects themselves. The 
 following code is platform independent and can be merged with the example code
 provided before or with the equivalent for any other platform.
@@ -14,7 +14,7 @@ initializing the libraries::
         if (!edje_init()) return EXIT_FAILURE;
         ...
 
-After a pointer to the canvas has been aquired, we need a pointer to a valid 
+After a pointer to the canvas has been acquired, we need a pointer to a valid 
 Evas object to insert our Edje object::
 
     ...

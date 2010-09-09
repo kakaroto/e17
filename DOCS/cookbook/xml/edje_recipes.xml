@@ -11,7 +11,7 @@ applications interface from the code itself.
 <para>
 An Edje application falls into two parts: the C code that makes up your application and an Edje Data
 Collection (EDC) that describes every element of your interface.  The two are connected by signals
-that are emited from your EDC and recieved by callbacks in your application code.  Using this signal
+that are emitted from your EDC and received by callbacks in your application code.  Using this signal
 model the application code is completely uninterested in exactly what your interface looks like, just
 so long as it gets a signal.  And because signals are proccessed by callbacks, there is no requirement
 that your interface send every signal avalible, making large scale applications and "demo" size applications

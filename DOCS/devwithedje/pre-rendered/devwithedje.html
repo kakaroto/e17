@@ -238,7 +238,7 @@ TODO.</li>
 <p>So... you want to create a GUI application? I assume so since you choosed this
 book as instructive, or at least bathroom, material. You could google &quot;GUI&quot; and
 &quot;library&quot; to feel overwhelmed by the large number of development libraries
-avilable. As you look through the source of your (open source) favorites you
+available. As you look through the source of your (open source) favorites you
 will realize that all of them, and the applications that use them, share a
 common structure. In this chapter we will review that structure.</p>
 <p>At this point it is convenient to note that the concepts seen in this book and
@@ -277,7 +277,7 @@ another widget.</p>
 <p>Regardless of the method of choice, the resulting GUI has to provide the same
 resources to the rest of the application. A mechanism to present information
 to the user, a mechanism to know when the user interacts with the interface and
-a mechanism to retreive information that resulted from said interaction.</p>
+a mechanism to retrieve information that resulted from said interaction.</p>
 <p>In the case of the plain canvas the application developer must assemble the
 interface elements, know as widgets, using primitive objects. A very simple
 text entry widget could consist of a rectangle and a string of text. Besides
@@ -289,7 +289,7 @@ click in the string.</p>
 a predefined &quot;text entry&quot; widget. The events from this object would be dealt
 with in terms of the object as a whole. It wouldn't seem that there is much
 difference between using a canvas or using a toolkit library until we consider
-all the possiblities, like focus, overflowing text, copying, pasting,
+all the possibilities, like focus, overflowing text, copying, pasting,
 selecting, etc.</p>
 <p>Deciding which approach to use is, of course, up to the developer to decide as
 each one provide capabilities useful for different types of applications. But
@@ -345,7 +345,7 @@ the developer only has to include the resulting object and setup the callbacks
 (by the main loop) to the backend functions.</p>
 <div align="center" class="align-center"><img alt="img/workflow.png" class="align-center" src="img/workflow.png" style="width: 1813.05px; height: 1360.0px;" /></div>
 <p>Except for the usage of nested blocks, the sintax of an EDC file is similar to
-CSS. What really sets them appart is that with EDC the designer it's free to
+CSS. What really sets them apart is that with EDC the designer it's free to
 create and layout design elements as he sees fit. With CSS the designer is
 limited to applying style and layout properties to a structure of objects
 defined by the markup. With Edje each design object, know as &quot;part&quot;, is created
@@ -560,7 +560,7 @@ down any library we initiated:</p>
 </pre>
 <div class="section">
 <h2><a class="toc-backref" href="#id8" id="working-with-the-canvas" name="working-with-the-canvas">Working with the canvas</a></h2>
-<p>Now that we know how to setup the enviroment to display the Edje objects we
+<p>Now that we know how to setup the environment to display the Edje objects we
 will review how to include and interact with the objects themselves. The
 following code is platform independent and can be merged with the example code
 provided before or with the equivalent for any other platform.</p>
@@ -575,7 +575,7 @@ int main() {
     if (!edje_init()) return EXIT_FAILURE;
     ...
 </pre>
-<p>After a pointer to the canvas has been aquired, we need a pointer to a valid
+<p>After a pointer to the canvas has been acquired, we need a pointer to a valid
 Evas object to insert our Edje object:</p>
 <pre class="literal-block">
 ...
@@ -708,7 +708,7 @@ of the signal.</p>
 frameworks by web based monsters like Ruby on Rails. Personally I think RoR is
 great and my point is that a framework does not necessarily mean large software
 libraries. A framework can be seen as library of functions determined by the
-similiarity in the profile of the applications that use it. In a framework,
+similarity in the profile of the applications that use it. In a framework,
 shorter development time means either more specific profiles or more complex
 library code.</p>
 <p>In this section and the following subsections we will develop an application
@@ -719,7 +719,7 @@ files&quot;. A list of the tasks the framework must perform follow:</p>
 <li><dl class="first docutils">
 <dt>Configuration (Using Ecore_Config).</dt>
 <dd><ul class="first last simple">
-<li>Initialization and shutdown of the necesary services.</li>
+<li>Initialization and shutdown of the necessary services.</li>
 <li>Saving configuration changes on exit.</li>
 <li>Recall the previously saved values on initialzation.</li>
 <li>Control that the necessary configuration and theme files exist.</li>
@@ -892,7 +892,7 @@ because it eases portability of the application. The user will also apreciate
 the additional feeling of certainlity of how an application is going to behave.
 Still, the alternative function <tt class="docutils literal"><span class="pre">ecore_config_file_load</span></tt> could have been used
 to load a configuration file from a custom location.</p>
-<p>Before finishing sucessfully we will have to control that at least the default
+<p>Before finishing successfully we will have to control that at least the default
 theme file can be found somewhere. Finding at least one theme file is pretty
 much mandatory for any Edje based application.</p>
 </div>
@@ -954,7 +954,7 @@ simpler_window_new(const char *groupName, Ecore_Evas *parent)
 as simple and wildly known such as these? There is no simple answer other than
 that these function set properties that could cause unexpected behaviour later
 in the application. I spent an hour of my life trying to figure out why the
-size calculation of the canvas didn't reflect the size changes that ocurred in
+size calculation of the canvas didn't reflect the size changes that occurred in
 this very initalization function.</p>
 <p>Now that I have justified the first part of the function we might as well
 analyze it! Most of these function have been seen before except for two. The
@@ -1010,13 +1010,13 @@ parentless window per application.</p>
 <div class="section">
 <h3><a class="toc-backref" href="#id13" id="simpler-theme-management" name="simpler-theme-management">Simpler theme management</a></h3>
 <p>In the previous section we have seen how to create a window based on parameters
-lifted from a given Edje object refered to as the layout object. If you take
-a look you will see that the layout object was aquired differently than the
+lifted from a given Edje object referred to as the layout object. If you take
+a look you will see that the layout object was acquired differently than the
 common Edje object, the function is names <tt class="docutils literal"><span class="pre">simple_object_add</span></tt> and its used
 in the main function to load the themes for the viewport widget and the minimap
 widget as well.</p>
 <p>In this chapter we will review all the functions called to make this simpler
-method of aquiring Edje objects possible:</p>
+method of acquiring Edje objects possible:</p>
 <pre class="literal-block">
 Evas_Object *
 simpler_object_add(Evas *canvas, const char *group)
@@ -1038,7 +1038,7 @@ simpler_object_add(Evas *canvas, const char *group)
 }
 </pre>
 <p>We begin by the most popular <tt class="docutils literal"><span class="pre">simpler_object_add</span></tt>. All this function really
-does is to allocate and initate the object in the choosen canvas with
+does is to allocate and initate the object in the chosen canvas with
 <tt class="docutils literal"><span class="pre">edje_object_add</span></tt>. The rest of the work is done by <tt class="docutils literal"><span class="pre">simpler_object_file_set</span></tt>
 and <tt class="docutils literal"><span class="pre">ecore_config_theme_with_path_get</span></tt>.</p>
 <p>As I have said earlier we are going to use Ecore_Config to manage the
@@ -1133,7 +1133,7 @@ to program functions to:</p>
 <ul class="simple">
 <li>Manipulate the canvas primitives to draw the widget.</li>
 <li>Register new signal types to emit as a widget.</li>
-<li>Display information and retreive changes.</li>
+<li>Display information and retrieve changes.</li>
 <li>Handle events ocurring in the environment that affect it.</li>
 <li>Handle events ocurring on its primitives.</li>
 </ul>
@@ -1232,7 +1232,7 @@ resulted in a library that does <em>not</em> limit the themer more often than it
 <p>In any case, the Enlightened Widget Library provides an special type of
 container know as the &quot;embed&quot; container. Widgets included in this container can
 be swallowed into a SWALLOW part in a common Edje interface. Once the widget
-has been included its appereance can be altered in a per-theme basis in order
+has been included its appearance can be altered in a per-theme basis in order
 for the widget to fit the rest of the application as cleanly as possible.</p>
 <p>You might not want to use Ewl to create simple interface objects like buttons
 and check boxes. But it can become an invaluable time saver for complex widgets

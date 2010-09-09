@@ -321,7 +321,7 @@ This works similar to the add handler but the event type passed is an,
 
 <para>
 Now, the del callback will be triggered when we disconnect from the remote
-server. This means that it is our responsiblity to clean up the server
+server. This means that it is our responsibility to clean up the server
 memory. This is done with a call to
 <literal>ecore_con_server_del()</literal>. We, of course, don't have to
 clean up here, we can do it whenever it is convenient for us.

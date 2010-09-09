@@ -213,7 +213,7 @@ ex: state, "default" 0.0;
         </entry>
   <entry>0;
         </entry>
-  <entry>Boolean value specifying whether part is visable or not. Non-visable parts do not generate events.
+  <entry>Boolean value specifying whether part is visible or not. Non-visible parts do not generate events.
         </entry>
 </row>
 
@@ -608,8 +608,8 @@ one signal keyword per program may be used.
         </entry>
   <entry>TYPE LENGTH;
         </entry>
-  <entry>Defines how transistions occur using STATE_SET action.  Where type is the style of the transistion and length is a double specifying the number of
-        seconds in which to preform the transistion.  Valid types are: LINEAR, SINUSOIDAL, ACCELERATE, and DECELERATE
+  <entry>Defines how transistions occur using STATE_SET action.  Where type is the style of the transition and length is a double specifying the number of
+        seconds in which to preform the transition.  Valid types are: LINEAR, SINUSOIDAL, ACCELERATE, and DECELERATE
         </entry>
 </row>
 

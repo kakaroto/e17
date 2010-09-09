@@ -209,8 +209,8 @@ your image.  The LOSSY method is followed by an integer between 0 and 100, defin
 
 <para>
 The next section is collections.  This section contains one or more groups.  Each group contains a complete interface.
-In this way, you could create two groups in your EDC each having a complete interfaces, for either diffrent parts of your
-applications interface or diffrent looks for your one interface, all in one EET for easy distribution.  Each group is given
+In this way, you could create two groups in your EDC each having a complete interfaces, for either different parts of your
+applications interface or different looks for your one interface, all in one EET for easy distribution.  Each group is given
 a name, in this case "test".  Any time you reference your EET you will specify both the EET file name, and the group to use so
 choose your name descriptively.  The next two lines are the min and max size of our interface in pixels.  The arguments to
 min and max are the horizontal size then the verital size.  So our interface has a minimum size of 32x32 and maximum of 1024x768.
@@ -226,12 +226,12 @@ than just these 3 can be used, please refer to the reference for other avalible 
 </para>
 
 <para>
-A part will contain one or more description sections.  Each description is a diffrent state of our part.  The descriptions
+A part will contain one or more description sections.  Each description is a different state of our part.  The descriptions
 define how our part should look, what images or text the part uses, where it should be positioned, how it should be tiled, etc.
 In this case our background only needs one state, which we call default, using the state keyword.  The number following
 the state name defines an index value which is currently unused, simply use 0.0.  Next we see two sections defining the
 positioning of our part, rel1 and rel2.  Each rel
-section will contain the keywords relative and offset, and optionally to.  If the to keyword is omited then the position
+section will contain the keywords relative and offset, and optionally to.  If the to keyword is omitted then the position
 is relative to the full size of the interface as described by min and max in the group section.  rel1 is the positioning of
 the top left corner of the part and rel2 is the positioning of the bottom right
 corner of the part.  The relative keyword is followed by two doubles ranging from 0.0 to 1.0.  As with min and max, the first
@@ -257,7 +257,7 @@ rectangle we will use as a button, or in otherwords, the unclicked state of our 
 state.  You'll notice that the default and clicked states look almost identical, the only change is the color and name.
 This means that when we change from state default to state clicked, the only thing that changes is the color of the rectangle.
 States are changed using programs, which we will discuss later.  You'll notice that the descriptions contain min and max keywords,
-these are used to define the size of the part.  If they are omited, like in the background part, the part will fill the maximum
+these are used to define the size of the part.  If they are omitted, like in the background part, the part will fill the maximum
 amount of avalible space (ie: the whole interface, as limited by rel1 and rel2).  The alignment keyword specifies alignment
 of our part within its available space (container).  Values for align are again horizontal alignment followed by verital alignment,
 using doubles.  So in this case the rectangle will be an absolute 100x50 pixels, with a container the size of the whole interface
@@ -274,13 +274,13 @@ the bottom right corner (rel2) of the part is relative to the bottom right corne
 the bottom right corner of the part by 1 pixel to the left and upwards from that point.  The text section  describes the text
 itself.  The text keyword describes the text to display ("Press Me"), the font to use ("redensek"), the size of that font (14), and
 the alignment of the text within the container as defined by rel1/rel2.  The font specified to be used must be added to
-the EVAS font path in your application, and the font name is the filename minus it's extention (ie: .ttf).
+the EVAS font path in your application, and the font name is the filename minus it's extension (ie: .ttf).
 </para>
 
 <para>
 A word about layering.  There is no specific keyword for layering in EDCs on a part-by-part basis.  Each
 new part is layered on top of the previous part.  Therefore in our sample EDC the text is rendered on top of the button, which
-sits atop the background.  If we had defined the button before the background it would not have been visable.  While
+sits atop the background.  If we had defined the button before the background it would not have been visible.  While
 this is common sense for the mostpart, it can be a common cause of confusion when modifying a large EDC if you aren't
 careful.  Whenever you modify or add parts to your EDCs check whats above and below it.
 </para>

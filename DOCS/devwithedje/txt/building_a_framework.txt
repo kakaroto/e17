@@ -2,7 +2,7 @@ Hopefully the reader has not been introduced to the concept of software
 frameworks by web based monsters like Ruby on Rails. Personally I think RoR is
 great and my point is that a framework does not necessarily mean large software
 libraries. A framework can be seen as library of functions determined by the
-similiarity in the profile of the applications that use it. In a framework, 
+similarity in the profile of the applications that use it. In a framework, 
 shorter development time means either more specific profiles or more complex 
 library code.
 
@@ -12,7 +12,7 @@ that doesn't require any exotic manipulation of its theme or configuration
 files". A list of the tasks the framework must perform follow:
 
 * Configuration (Using Ecore_Config).
-    * Initialization and shutdown of the necesary services.
+    * Initialization and shutdown of the necessary services.
     * Saving configuration changes on exit.
     * Recall the previously saved values on initialzation.
     * Control that the necessary configuration and theme files exist.

@@ -4,7 +4,7 @@
 <title>Epeg &amp; Epsilon </title>
 
 <para>
-In this modern era of digital photography presentation becomes a problem due to the shear volume of images being created.  Unlike the old days when film was used sparingly we are now generating hundreds or thousands of images in a week.  The solution to this presentation problem is the thumbnail, a scaled down images that can be indexed in a table or application and quickly scanned visually to find the images you desire.  But image scaling is a very intensive operation, even though it might only take your mighty AMD Athlon 1 second to scale down a 1600x1200 photo to your desired resolution, if you have 2,000 photos that'll take 30 minutes, and this assumes your not doing the operation manually in an editor such as Photoshop or GIMP.  The problem clearly calls for a tool that can scale images with blazing speed and effeciency, with as much control avalible as possible.  The solution is answered by two libraries in the EFL: Epeg and Epsilon.  
+In this modern era of digital photography presentation becomes a problem due to the shear volume of images being created.  Unlike the old days when film was used sparingly we are now generating hundreds or thousands of images in a week.  The solution to this presentation problem is the thumbnail, a scaled down images that can be indexed in a table or application and quickly scanned visually to find the images you desire.  But image scaling is a very intensive operation, even though it might only take your mighty AMD Athlon 1 second to scale down a 1600x1200 photo to your desired resolution, if you have 2,000 photos that'll take 30 minutes, and this assumes your not doing the operation manually in an editor such as Photoshop or GIMP.  The problem clearly calls for a tool that can scale images with blazing speed and efficiency, with as much control avalible as possible.  The solution is answered by two libraries in the EFL: Epeg and Epsilon.  
 </para>
 
 <para>
@@ -12,7 +12,7 @@ Epeg was written by Raster to handle the exactly problem mentioned above with hi
 </para>
 
 <para>
-Epsilon was written by Atmos, inspired by Epeg's blazing speed but in responce to a need for multi-format thumbnailing capability.  Epsilon can handle JPEG, PNG, XCF, and GIF.  Obviously because it's not a JPEG specific library it doesn't handle JPEG as fast as Epeg, but it can actually use Epeg itself to gain the speed advantages it provides.  Epsilon, unlike Epeg, conforms to the freedesktop.org <ulink url='http://triq.net/~jens/thumbnail-spec/index.html'>Thumbnail Managing Standard</ulink>.  As such, it outputs all thumbnails into the directory structure specified by the standard (~/.thumbnails/) rather than to a coder defined location.
+Epsilon was written by Atmos, inspired by Epeg's blazing speed but in response to a need for multi-format thumbnailing capability.  Epsilon can handle JPEG, PNG, XCF, and GIF.  Obviously because it's not a JPEG specific library it doesn't handle JPEG as fast as Epeg, but it can actually use Epeg itself to gain the speed advantages it provides.  Epsilon, unlike Epeg, conforms to the freedesktop.org <ulink url='http://triq.net/~jens/thumbnail-spec/index.html'>Thumbnail Managing Standard</ulink>.  As such, it outputs all thumbnails into the directory structure specified by the standard (~/.thumbnails/) rather than to a coder defined location.
 </para>
 
 <para>

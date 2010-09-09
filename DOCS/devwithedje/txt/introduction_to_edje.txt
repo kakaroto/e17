@@ -52,7 +52,7 @@ the developer only has to include the resulting object and setup the callbacks
     :align: center
 
 Except for the usage of nested blocks, the sintax of an EDC file is similar to 
-CSS. What really sets them appart is that with EDC the designer it's free to 
+CSS. What really sets them apart is that with EDC the designer it's free to 
 create and layout design elements as he sees fit. With CSS the designer is 
 limited to applying style and layout properties to a structure of objects 
 defined by the markup. With Edje each design object, know as "part", is created

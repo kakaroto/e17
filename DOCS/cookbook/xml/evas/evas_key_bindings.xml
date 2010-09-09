@@ -14,7 +14,7 @@ Setting up key bindings in evas
 <title>Recipe: Key Binds, using EVAS Key Events</title>
 
 <para>
-Many applications can benifit from providing key binds for commonly used
+Many applications can benefit from providing key binds for commonly used
 operations.  Whether accepting text in ways the EFL doesn't normally expect
 or just a way to bind the + key to raise the volume of a mixer, keybinds
 can add just the bit of functionality that makes your app a hit.

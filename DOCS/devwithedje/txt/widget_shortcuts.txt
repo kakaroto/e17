@@ -30,7 +30,7 @@ resulted in a library that does *not* limit the themer more often than it does.
 In any case, the Enlightened Widget Library provides an special type of 
 container know as the "embed" container. Widgets included in this container can
 be swallowed into a SWALLOW part in a common Edje interface. Once the widget
-has been included its appereance can be altered in a per-theme basis in order
+has been included its appearance can be altered in a per-theme basis in order
 for the widget to fit the rest of the application as cleanly as possible.
 
 You might not want to use Ewl to create simple interface objects like buttons

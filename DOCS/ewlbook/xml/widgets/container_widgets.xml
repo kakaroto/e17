@@ -27,7 +27,7 @@ used as a container for other widgets.
    ewl_widget_show(vbox);
   </programlisting>
  </example>
-The box widgets are relativly simple to create and use, only requiring a call to the
+The box widgets are relatively simple to create and use, only requiring a call to the
 new function.
 </para>
 

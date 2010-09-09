@@ -7,7 +7,7 @@ another widget.
 Regardless of the method of choice, the resulting GUI has to provide the same 
 resources to the rest of the application. A mechanism to present information
 to the user, a mechanism to know when the user interacts with the interface and
-a mechanism to retreive information that resulted from said interaction.
+a mechanism to retrieve information that resulted from said interaction.
 
 In the case of the plain canvas the application developer must assemble the 
 interface elements, know as widgets, using primitive objects. A very simple 
@@ -21,7 +21,7 @@ In the case of a toolkit library the application developer would simply include
 a predefined "text entry" widget. The events from this object would be dealt
 with in terms of the object as a whole. It wouldn't seem that there is much
 difference between using a canvas or using a toolkit library until we consider
-all the possiblities, like focus, overflowing text, copying, pasting, 
+all the possibilities, like focus, overflowing text, copying, pasting, 
 selecting, etc.
 
 Deciding which approach to use is, of course, up to the developer to decide as 

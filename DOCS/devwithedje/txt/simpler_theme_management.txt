@@ -1,12 +1,12 @@
 In the previous section we have seen how to create a window based on parameters
-lifted from a given Edje object refered to as the layout object. If you take
-a look you will see that the layout object was aquired differently than the
+lifted from a given Edje object referred to as the layout object. If you take
+a look you will see that the layout object was acquired differently than the
 common Edje object, the function is names ``simple_object_add`` and its used
 in the main function to load the themes for the viewport widget and the minimap
 widget as well.
 
 In this chapter we will review all the functions called to make this simpler 
-method of aquiring Edje objects possible::
+method of acquiring Edje objects possible::
 
     Evas_Object *
     simpler_object_add(Evas *canvas, const char *group)
@@ -28,7 +28,7 @@ method of aquiring Edje objects possible::
     }
 
 We begin by the most popular ``simpler_object_add``. All this function really 
-does is to allocate and initate the object in the choosen canvas with 
+does is to allocate and initate the object in the chosen canvas with 
 ``edje_object_add``. The rest of the work is done by ``simpler_object_file_set``
 and ``ecore_config_theme_with_path_get``.
 

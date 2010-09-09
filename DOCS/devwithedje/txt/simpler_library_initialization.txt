@@ -61,6 +61,6 @@ the additional feeling of certainlity of how an application is going to behave.
 Still, the alternative function ``ecore_config_file_load`` could have been used
 to load a configuration file from a custom location.
 
-Before finishing sucessfully we will have to control that at least the default 
+Before finishing successfully we will have to control that at least the default 
 theme file can be found somewhere. Finding at least one theme file is pretty
 much mandatory for any Edje based application.

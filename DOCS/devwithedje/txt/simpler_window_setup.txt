@@ -55,7 +55,7 @@ By now you might be wondering if there is a real reason to abstract functions
 as simple and wildly known such as these? There is no simple answer other than
 that these function set properties that could cause unexpected behaviour later
 in the application. I spent an hour of my life trying to figure out why the
-size calculation of the canvas didn't reflect the size changes that ocurred in
+size calculation of the canvas didn't reflect the size changes that occurred in
 this very initalization function. 
 
 Now that I have justified the first part of the function we might as well 

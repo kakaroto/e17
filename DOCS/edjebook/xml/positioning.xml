@@ -80,7 +80,7 @@ top left corner (rel1) to 0.0 (left) 0.0 (top) of the interface since no "to" ke
 bottom right corner (rel2) is positioned at 1.0 (far right) 1.0 (far bottom).  No offset is specified
 for either position so the rectangle will stretch from the top left corner of the interface to the
 bottom right corner of the interface, which is the entire interface.  An EVAS has no default background,
-and by extension, neither does an Edje interface, therefore you will always need to do something similiar
+and by extension, neither does an Edje interface, therefore you will always need to do something similar
 to this whether you use an image or a rectangle to fill in the background.
 </para>
 

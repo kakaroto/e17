@@ -112,7 +112,7 @@ buttons relative to the window itself. The possible values are:
 
 <para>
 A <literal>Ewl_Dialog</literal> can optionally have a horizontal line drawn
-to seperate the two sections of the dialog. The line is controlled with the
+to separate the two sections of the dialog. The line is controlled with the
 <function>ewl_dialog_has_separator_set()</function> where 0 means do not
 draw separator and 1 means to draw the separator. There is a corresponding
 <function>ewl_dialog_has_separator_get()</function> returning 1 if there is

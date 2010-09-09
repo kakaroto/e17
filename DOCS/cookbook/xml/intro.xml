@@ -2,7 +2,7 @@
  <title>Introduction</title>
 
  <para>
-Welcome to the enlightened state of programming.  This cookbook is a collection of tips, tricks, tutorials and introductions arranged into recipe style in order to help you quickly become proficient with the Enlightenment Foundation Libraries.  The Enlightement Foundations Libraries, refered to simply as the EFL, is a collection of libraries origionally written for use by the Enlightenment DR17 Window Manager.  However, as these libraries grew and were tested and deployed more and more, general functionality was added bringing us to enjoy a rich and powerful set of libraries that can be used to help solve all sorts of problems and act as a venerable alternative to the currently popular GTK and QT library sets.
+Welcome to the enlightened state of programming.  This cookbook is a collection of tips, tricks, tutorials and introductions arranged into recipe style in order to help you quickly become proficient with the Enlightenment Foundation Libraries.  The Enlightement Foundations Libraries, referred to simply as the EFL, is a collection of libraries origionally written for use by the Enlightenment DR17 Window Manager.  However, as these libraries grew and were tested and deployed more and more, general functionality was added bringing us to enjoy a rich and powerful set of libraries that can be used to help solve all sorts of problems and act as a venerable alternative to the currently popular GTK and QT library sets.
  </para>
 
  <para>
@@ -48,7 +48,7 @@ Welcome to the enlightened state of programming.  This cookbook is a collection 
 
         <listitem>
         <para>
-	A database library capabile of storing strings, values, and data for simple, consistant and centralized configuration handling.
+	A database library capabile of storing strings, values, and data for simple, consistent and centralized configuration handling.
         </para>
         </listitem>
 </varlistentry>
@@ -68,7 +68,7 @@ Welcome to the enlightened state of programming.  This cookbook is a collection 
 
         <listitem>
         <para>
-	An image abstraction library and toolkit based on EVAS, keeping all aspects of the user interface completely seperate from application code through the use of signal passing.
+	An image abstraction library and toolkit based on EVAS, keeping all aspects of the user interface completely separate from application code through the use of signal passing.
         </para>
         </listitem>
 </varlistentry>
@@ -108,7 +108,7 @@ Welcome to the enlightened state of programming.  This cookbook is a collection 
 
         <listitem>
         <para>
-	A lightning fast thunbnailing library for JPEGs independant of other EFL components.
+	A lightning fast thunbnailing library for JPEGs independent of other EFL components.
         </para>
         </listitem>
 </varlistentry>
