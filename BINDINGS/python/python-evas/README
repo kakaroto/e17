@@ -4,7 +4,7 @@ REQUIREMENTS
 ============
 
  * Evas >= 1.0.0
- * Cython >= 0.12.1
+ * Cython >= 0.13
  * Python >= 2.4
  * Python-setuptools >= 0.6_rc9
 

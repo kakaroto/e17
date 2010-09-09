@@ -169,7 +169,7 @@ class evas_install_headers(install_headers):
 
 
 setup(name='python-evas',
-      version='0.6.0',
+      version='0.7.0',
       license='LGPL',
       author='Gustavo Sverzut Barbieri',
       author_email='barbieri@gmail.com',
