@@ -45,6 +45,13 @@ function _developer_list ( $paths )
         $file = file("$path/info.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         $entry = _developer_info($file);
         $developers[$entry['Name']] = $entry;
+        if ( file_exists("$path/icon-sml.png") )
+        {
+            $developers[$entry['Photo']] = "<img src=http://download.enlightenment.org/devs/$file/icon-sml.png width=40 height=54 border=0>";
+        } else
+        {
+            $developers[$entry['Photo']] = "<img src=i/logo-s.png width=40 height=54 border=0>";
+        }
     }
 
     return $developers;
