@@ -18,6 +18,7 @@
 from python_ref cimport PyObject, Py_INCREF, Py_DECREF
 from python_mem cimport PyMem_Malloc, PyMem_Free
 from python_oldbuffer cimport PyBuffer_FromObject
+from cpython cimport bool
 import evas.c_evas
 
 __extra_epydoc_fields__ = (

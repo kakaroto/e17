@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Ecore.  If not, see <http://www.gnu.org/licenses/>.
 
+from cpython cimport bool
+
 cimport ecore.c_ecore
 
 def init():

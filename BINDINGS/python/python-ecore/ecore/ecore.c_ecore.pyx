@@ -18,6 +18,7 @@
 from python_ref cimport PyObject, Py_INCREF, Py_DECREF
 from python_mem cimport PyMem_Malloc, PyMem_Free
 from python_string cimport PyString_FromStringAndSize
+from cpython cimport bool
 
 __extra_epydoc_fields__ = (
     ("parm", "Parameter", "Parameters"), # epydoc don't support pyrex properly
