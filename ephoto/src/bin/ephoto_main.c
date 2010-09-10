@@ -56,7 +56,6 @@ _ephoto_delete_main_window(void *data, Evas_Object *obj, void *event_info)
 	ephoto_delete_flow_browser();
 	evas_object_del(em->box);
 	evas_object_del(em->bg);
-	evas_object_del(em->win);
 	if (em->images)
 		eina_list_free(em->images);
 	free(em);
