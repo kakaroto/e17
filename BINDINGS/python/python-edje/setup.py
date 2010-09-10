@@ -12,6 +12,13 @@ except ImportError:
 if not have_cython and not os.path.exists("edje/edje.c_edje.c"):
     raise SystemExit("You need Cython -- http://cython.org/")
 
+from Cython.Compiler.Version import version as cython_version
+
+req_version = (0, 13)
+cur_version = map(int, cython_version.split('.'))
+if (cur_version[0] < req_version[0]) or (cur_version[1] < req_version[1]):
+    raise SystemExit("You need Cython >= " + '.'.join(map(str, req_version)))
+
 from ez_setup import use_setuptools
 use_setuptools('0.6c9')
 
