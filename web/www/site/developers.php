@@ -1,4 +1,6 @@
 <?php
+/*  DON'T PUT HTML HERE, PUT IT IN HELPERS.PHP */
+
 /**
     @return Multi-level array of developer data in the format:
 
@@ -35,7 +37,6 @@ function _developer_path_filter ( $path )
     return true;
 }
 
-
 function _developer_list ( $paths )
 {
     $developers = array();
@@ -44,14 +45,7 @@ function _developer_list ( $paths )
     {
         $file = file("$path/info.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         $entry = _developer_info($file);
-        if ( file_exists("$path/icon-sml.png") )
-        {
-            $f = basename($path);
-            $entry['Photo'] = "<img src=http://download.enlightenment.org/devs/$f/icon-sml.png width=40 height=54 border=0>";
-        } else
-        {
-            $entry['Photo'] = "<img src=i/logo-s.png width=18 height=24 border=0>";
-        }
+        $entry['Photo'] = file_exists("$path/icon-sml.png");
         $developers[$entry['Name']] = $entry;
     }
 
@@ -76,6 +70,9 @@ function _developer_info ( $file )
 
 /**
     @return Multi-level array of inactive developer data (with less fields).
+
+    @todo Create a "inactive" folder in SVN to move the data of inactive
+          developers there instead of deleting them. Parse that.
 */
 function developers_inactive ()
 {

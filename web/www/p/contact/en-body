@@ -98,7 +98,7 @@ documentation feel free to report it in the <a href="http://trac.enlightenment.o
         <tbody>
             <?php foreach ( developers_active() as $login => $data ): ?>
                 <tr <?php tr_odd() ?>>
-                <td class="photo">    <?php echo $data['Photo']; ?></td>
+                <td class="photo">    <?php echo dev_data_photo($data) ?></td>
                 <td class="name">     <?php td(dev_data_contact($data)) ?></td>
                 <td class="manage">   <?php td(@$data['Managing'] . @$data['Contributing']) ?></td>
                 <td class="irc">      <?php td(dev_data_irc($data)) ?></td>

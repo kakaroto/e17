@@ -71,6 +71,7 @@ table.data tbody tr td { color: #444; background-color: #fff; padding: 3px; text
 table.data tbody tr.odd td { color: #444; background-color: #eee; }
 
 table.developers td.name { width: 12em; }
+table.developers td.photo { text-align: center }
 table.developers td.location { width: 14em; }
 table.developers.active caption { display: none; }
 table.developers td { padding-right: 1ex; }
