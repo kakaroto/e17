@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weather\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-02-09 12:53+0100\n"
-"PO-Revision-Date: 2010-02-09 12:58+0100\n"
+"POT-Creation-Date: 2010-09-10 12:29+0200\n"
+"PO-Revision-Date: 2010-09-10 12:40+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -15,8 +15,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/e_mod_config.c:42
-msgid "Forecasts Configuration"
-msgstr "Configurazione di Forecasts"
+msgid "Forecasts Settings"
+msgstr "Impostazioni di Forecasts"
 
 #: src/e_mod_config.c:90
 msgid "Display Settings"
@@ -61,61 +61,61 @@ msgstr "Codice meteo/codice postale USA"
 
 #: src/e_mod_config.c:117
 msgid "To find the code for your area, go to:"
-msgstr "Per trovare il codice della propria zona vedere:"
+msgstr "Per trovare il codice della propria zona visitate:"
 
 #: src/e_mod_config.c:119
 #, c-format
 msgid "%s, find your area, and look at the URL"
 msgstr "%s, trovate la vostra zona e guardate l'URL"
 
-#: src/e_mod_main.c:255
+#: src/e_mod_main.c:254
 msgid "Forecasts"
 msgstr "Forecasts"
 
-#: src/e_mod_main.c:300
-msgid "Configuration"
-msgstr "Configurazione"
+#: src/e_mod_main.c:301
+msgid "Settings"
+msgstr "Impostazioni"
 
-#: src/e_mod_main.c:1030
+#: src/e_mod_main.c:1009
 msgid "Wind Chill"
 msgstr "Temperatura"
 
-#: src/e_mod_main.c:1036
+#: src/e_mod_main.c:1015
 msgid "Wind Speed"
 msgstr "Velocità vento"
 
-#: src/e_mod_main.c:1042
+#: src/e_mod_main.c:1021
 msgid "Humidity"
 msgstr "Umidità"
 
-#: src/e_mod_main.c:1048
+#: src/e_mod_main.c:1027
 msgid "Visibility"
 msgstr "Visibilità"
 
-#: src/e_mod_main.c:1054
+#: src/e_mod_main.c:1033
 msgid "Pressure"
 msgstr "Pressione"
 
-#: src/e_mod_main.c:1061
+#: src/e_mod_main.c:1040
 msgid "Rising"
 msgstr "In aumento"
 
-#: src/e_mod_main.c:1063
+#: src/e_mod_main.c:1042
 msgid "Falling"
 msgstr "In diminuzione"
 
-#: src/e_mod_main.c:1065
+#: src/e_mod_main.c:1044
 msgid "Steady"
 msgstr "Stabile"
 
-#: src/e_mod_main.c:1069
+#: src/e_mod_main.c:1048
 msgid "Sunrise / Sunset"
 msgstr "Alba / Tramonto"
 
-#: src/e_mod_main.c:1093
+#: src/e_mod_main.c:1076
 msgid "High"
 msgstr "Massima"
 
-#: src/e_mod_main.c:1104
+#: src/e_mod_main.c:1087
 msgid "Low"
 msgstr "Minima"
