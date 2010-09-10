@@ -1824,8 +1824,29 @@ elixir_edje_object_part_text_item_geometry_get(JSContext *cx, uintN argc, jsval 
 }
 
 static JSBool
-elixir_bool_edje_object_string_cursor(Eina_Bool (*func)(const Evas_Object *obj, const char *part, Edje_Cursor cur),
+elixir_bool_edje_object_string_cursor(Eina_Bool (*func)(Evas_Object *obj, const char *part, Edje_Cursor cur),
 				      JSContext *cx, uintN argc, jsval *vp)
+{
+   Evas_Object *eo;
+   const char *part;
+   Eina_Bool ret;
+   elixir_value_t val[3];
+
+   if (!elixir_params_check(cx, _edje_object_string_int_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, eo);
+   part = elixir_get_string_bytes(val[1].v.str, NULL);
+
+   ret = func(eo, part, val[2].v.num);
+
+   JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(ret));
+   return JS_TRUE;
+}
+
+static JSBool
+elixir_bool_const_edje_object_string_cursor(Eina_Bool (*func)(const Evas_Object *obj, const char *part, Edje_Cursor cur),
+					    JSContext *cx, uintN argc, jsval *vp)
 {
    Evas_Object *eo;
    const char *part;
@@ -1848,11 +1869,11 @@ FAST_CALL_PARAMS(edje_object_part_text_cursor_next, elixir_bool_edje_object_stri
 FAST_CALL_PARAMS(edje_object_part_text_cursor_prev, elixir_bool_edje_object_string_cursor);
 FAST_CALL_PARAMS(edje_object_part_text_cursor_up, elixir_bool_edje_object_string_cursor);
 FAST_CALL_PARAMS(edje_object_part_text_cursor_down, elixir_bool_edje_object_string_cursor);
-FAST_CALL_PARAMS(edje_object_part_text_cursor_is_format_get, elixir_bool_edje_object_string_cursor);
-FAST_CALL_PARAMS(edje_object_part_text_cursor_is_visible_format_get, elixir_bool_edje_object_string_cursor);
+FAST_CALL_PARAMS(edje_object_part_text_cursor_is_format_get, elixir_bool_const_edje_object_string_cursor);
+FAST_CALL_PARAMS(edje_object_part_text_cursor_is_visible_format_get, elixir_bool_const_edje_object_string_cursor);
 
 static JSBool
-elixir_void_edje_object_string_cursor(void (*func)(const Evas_Object *obj, const char *part, Edje_Cursor cur),
+elixir_void_edje_object_string_cursor(void (*func)(Evas_Object *obj, const char *part, Edje_Cursor cur),
 				      JSContext *cx, uintN argc, jsval *vp)
 {
    Evas_Object *eo;
@@ -1942,7 +1963,7 @@ _elixir_edje_object_item_provider_set(void *data,
 
    elixir_function_start(cx);
 
-   if (!elixir_rval_new(cx, elixir_class_request("edje_object", "evas_object"), obj, argv + 1))
+   if (!_elixir_evas_object_to_jsval(cx, obj, argv + 1))
      goto on_edje_error;
 
    js_part = elixir_ndup(cx, part, strlen(part));
@@ -2035,7 +2056,7 @@ _elixir_edje_object_text_insert_filter_cb(void *data, Evas_Object *obj, const ch
 
    elixir_function_start(cx);
 
-   if (!elixir_rval_new(cx, elixir_class_request("edje_object", "evas_object"), obj, argv + 1))
+   if (!_elixir_evas_object_to_jsval(cx, obj, argv + 1))
      goto on_edje_error;
 
    spart = elixir_ndup(cx, part, strlen(part));
@@ -2140,7 +2161,7 @@ _elixir_edje_object_text_change_cb(void* data, Evas_Object* obj, const char* par
 
    elixir_function_start(cx);
 
-   if (!elixir_rval_new(cx, elixir_class_request("edje_object", "evas_object"), obj, argv + 1))
+   if (!_elixir_evas_object_to_jsval(cx, obj, argv + 1))
      goto on_firt_error;
 
    str = elixir_ndup(cx, part, strlen(part));
@@ -2204,7 +2225,7 @@ _elixir_edje_object_signal_cb(void* data, Evas_Object* obj,
 
    elixir_function_start(cx);
 
-   if (!elixir_rval_new(cx, elixir_class_request("edje_object", "evas_object"), obj, argv + 1))
+   if (!_elixir_evas_object_to_jsval(cx, obj, argv + 1))
      goto on_finish;
 
    jse = elixir_ndup(cx, emission, strlen(emission));
@@ -2601,7 +2622,7 @@ _elixir_edje_object_message_handler_cb(void *data, Evas_Object *obj, Edje_Messag
 
    elixir_function_start(cx);
 
-   if (!elixir_rval_new(cx, elixir_class_request("edje_object", "evas_object"), obj, argv + 1))
+   if (!_elixir_evas_object_to_jsval(cx, obj, argv + 1))
      goto on_finish;
 
    argv[0] = elixir_void_get_jsval(data);
