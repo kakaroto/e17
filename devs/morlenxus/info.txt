@@ -5,8 +5,8 @@ Name:         Miculcy, Brian
 Location:     Berlin, Germany
 E-Mail:       morlenxus@gmx.net
 WWW:          http://omicron.homeip.net
-Managing:     www.get-e.org
-Contributing: e17, exhibit, e_modules
+Managing:     Easy_e17.sh
+Contributing: e, e_modules
 Group:        -
-Platform:     Crux (Linux), Ubuntu (Linux)
+Platform:     Debian (Linux)
 GeoData:      52.4878 13.3377
