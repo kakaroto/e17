@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weather\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-06 19:13-0500\n"
-"PO-Revision-Date: 2006-05-21 10:22+0200\n"
+"POT-Creation-Date: 2010-09-11 13:56+0200\n"
+"PO-Revision-Date: 2010-09-11 14:06+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -15,8 +15,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/e_mod_config.c:36
-msgid "Weather Configuration"
-msgstr "Configurazione di Weather"
+msgid "Weather Settings"
+msgstr "Impostazioni di Weather"
 
 #: src/e_mod_config.c:78
 msgid "Display Settings"
@@ -67,6 +67,6 @@ msgstr "http://www.weather.gov/tg/siteloc.shtml"
 msgid "Weather"
 msgstr "Weather"
 
-#: src/e_mod_main.c:215
-msgid "Configuration"
-msgstr "Configurazione"
+#: src/e_mod_main.c:217
+msgid "Settings"
+msgstr "Impostazioni"

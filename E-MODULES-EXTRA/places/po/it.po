@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Places\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-02-28 12:14+0100\n"
-"PO-Revision-Date: 2009-06-07 12:49+0200\n"
+"POT-Creation-Date: 2010-09-11 13:56+0200\n"
+"PO-Revision-Date: 2010-09-11 14:00+0200\n"
 "Last-Translator: DaveMDS <dave@gurumeditation.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -15,8 +15,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/e_mod_config.c:51
-msgid "Places Configuration"
-msgstr "Configurazione di Places"
+msgid "Places Settings"
+msgstr "Impostazioni di Places"
 
 #: src/e_mod_config.c:118
 msgid "General"
@@ -42,23 +42,23 @@ msgstr "Usa filemanager personalizzato"
 msgid "Show in menu"
 msgstr "Mostra nel menù"
 
-#: src/e_mod_config.c:149 src/e_mod_places.c:402
+#: src/e_mod_config.c:149 src/e_mod_places.c:379
 msgid "Home"
 msgstr "Home"
 
-#: src/e_mod_config.c:152 src/e_mod_places.c:411
+#: src/e_mod_config.c:152 src/e_mod_places.c:388
 msgid "Desktop"
 msgstr "Desktop"
 
-#: src/e_mod_config.c:155 src/e_mod_places.c:421
+#: src/e_mod_config.c:155 src/e_mod_places.c:398
 msgid "Trash"
 msgstr "Cestino"
 
-#: src/e_mod_config.c:158 src/e_mod_places.c:232 src/e_mod_places.c:430
+#: src/e_mod_config.c:158 src/e_mod_places.c:208 src/e_mod_places.c:407
 msgid "Filesystem"
 msgstr "Filesystem"
 
-#: src/e_mod_config.c:161 src/e_mod_places.c:439
+#: src/e_mod_config.c:161 src/e_mod_places.c:416
 msgid "Temp"
 msgstr "Temporanei"
 
@@ -66,35 +66,35 @@ msgstr "Temporanei"
 msgid "Favorites"
 msgstr "Preferiti"
 
-#: src/e_mod_main.c:75
+#: src/e_mod_main.c:58
 msgid "Files"
 msgstr "File"
 
-#: src/e_mod_main.c:77 src/e_mod_places.c:502
+#: src/e_mod_main.c:60 src/e_mod_places.c:479
 msgid "Places"
 msgstr "Risorse"
 
-#: src/e_mod_main.c:443
-msgid "Configuration"
-msgstr "Configurazione"
+#: src/e_mod_main.c:430
+msgid "Settings"
+msgstr "Impostazioni"
 
-#: src/e_mod_places.c:237
+#: src/e_mod_places.c:213
 msgid "No Name"
 msgstr "Senza nome"
 
-#: src/e_mod_places.c:692
+#: src/e_mod_places.c:669
 msgid "free of"
 msgstr "liberi di"
 
-#: src/e_mod_places.c:698
+#: src/e_mod_places.c:675
 #, c-format
 msgid "%s Not Mounted"
 msgstr "%s non è montato"
 
-#: src/e_mod_places.c:715
+#: src/e_mod_places.c:692
 msgid "unmount"
 msgstr "smonta"
 
-#: src/e_mod_places.c:721
+#: src/e_mod_places.c:698
 msgid "eject"
 msgstr "espelli"
