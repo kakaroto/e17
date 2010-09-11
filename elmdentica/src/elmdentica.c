@@ -611,13 +611,13 @@ static int ed_user_follow(void *data, int argc, char **argv, char **azColName) {
 	return(0);
 }
 static void on_user_follow(void *data, Evas_Object *obj, void *event_info) {
-	ub_Bubble * bubble = (ub_Bubble*)data;
+	aStatus *as = eina_hash_find(bubble2status, &data);
 	int sqlite_res=0;
 	char *db_err=NULL, *query=NULL;
 
-	if(!bubble) return;
+	if(!as) return;
 
-	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE enabled = 1 and id = %d;", bubble->account_id);
+	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE enabled = 1 and id = %d;", as->account_id);
 	if(sqlite_res != -1) {
 		sqlite_res = sqlite3_exec(ed_DB, query, ed_user_follow, NULL, &db_err);
 		if(sqlite_res != 0) {
@@ -665,13 +665,13 @@ static int ed_user_abandon(void *data, int argc, char **argv, char **azColName) 
 	return(0);
 }
 static void on_user_abandon(void *data, Evas_Object *obj, void *event_info) {
-	ub_Bubble * bubble = (ub_Bubble*)data;
+	aStatus *as = eina_hash_find(bubble2status, &data);
 	int sqlite_res=0;
 	char *db_err=NULL, *query=NULL;
 
-	if(!bubble) return;
+	if(!as) return;
 
-	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE enabled = 1 and id = %d;", bubble->account_id);
+	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE enabled = 1 and id = %d;", as->account_id);
 	if(sqlite_res != -1) {
 		sqlite_res = sqlite3_exec(ed_DB, query, ed_user_abandon, NULL, &db_err);
 		if(sqlite_res != 0) {
@@ -701,12 +701,12 @@ static void on_zoomed_icon_clicked(void *data, Evas_Object *obj, void *event_inf
 }
 
 static void on_bubble_icon_clicked(void *data, Evas_Object *obj, void *event_info) {
-	ub_Bubble * ubBubble = eina_hash_find(bubble2status, &data);
+	aStatus *as = eina_hash_find(bubble2status, &data);
 	char *file_path = NULL;
 	Evas_Object *zoom=NULL, *icon=NULL;
 	int res = 0;
 
-	res = asprintf(&file_path, "%s/cache/icons/%s", home, ubBubble->screen_name);
+	res = asprintf(&file_path, "%s/cache/icons/%lld", home, as->user);
 
 	if(res != -1) {
 		zoom = elm_win_inwin_add(win);

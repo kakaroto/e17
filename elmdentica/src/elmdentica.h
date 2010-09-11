@@ -26,17 +26,6 @@
 
 #include <twitter.h>
 
-typedef struct _ub_bubble {
-	char *screen_name;
-	char *message;
-	int   account_id;
-	int   account_type;
-	long long int   status_id;
-	long long int   in_reply_to;
-	long long int   user_id;
-	Eina_Bool	favorite;
-} ub_Bubble;
-
 typedef struct anchor_data {
 	Evas_Object *bubble;
 	char        *url;
