@@ -76,7 +76,7 @@ em_gui_init(void)
 
    /* create main toolbar */
    gui->w_tb = elm_toolbar_add(gui->w_win);
-   elm_toolbar_icon_size_set(gui->w_tb, 0);
+   elm_toolbar_icon_size_set(gui->w_tb, (16 * elm_scale_get()));
    elm_toolbar_align_set(gui->w_tb, 0.0);
    elm_toolbar_scrollable_set(gui->w_tb, EINA_FALSE);
    evas_object_size_hint_weight_set(gui->w_tb, EVAS_HINT_EXPAND, 0.0);
