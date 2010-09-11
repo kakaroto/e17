@@ -21,6 +21,10 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 #include <glib.h>
 #include <glib/gprintf.h>
 
@@ -147,11 +151,10 @@ CURL * ed_curl_init(char *screen_name, char *password, http_request * request, i
 			curl_easy_setopt(ua, CURLOPT_USERNAME,   screen_name         );
 			curl_easy_setopt(ua, CURLOPT_PASSWORD,   password            );
 		}
-	}
 
-	res = asprintf(&key, "%d", account_id);
-	if(res!=-1) {
-		eina_hash_add(user_agents, key, (void*)ua);
+		res = asprintf(&key, "%d", account_id);
+		if(res!=-1)
+			eina_hash_add(user_agents, key, (void*)ua);
 	}
 
 	return(ua);
@@ -191,7 +194,7 @@ gint ed_curl_get(char *screen_name, char *password, http_request * request, int 
 	if(debug > 3) printf("Prepping content destination\n");
 	curl_easy_setopt(ua, CURLOPT_WRITEDATA, (void *)&(request->content)	);
 
-	if(debug > 3) printf("Fetching URL...\n");
+	if(debug > 3) printf("Fetching URL %s...\n", request->url);
 	res = curl_easy_perform(ua);
 
 	if(res == 0) {
@@ -271,4 +274,55 @@ void ed_curl_ua_cleanup(int account_id) {
 		}
 		free(key);
 	}
+}
+
+size_t dump_data(void *ptr, size_t size, size_t nmemb, void *userp) {
+	int file = *(int *)userp;
+	size_t written = 0, realsize = size*nmemb;
+
+	if (realsize == (written = write(file, ptr, realsize))) return(written);
+	else return(realsize - written);
+}
+
+long int ed_curl_dump_url_to_file(char *url, char *file_path) {
+	int file=0;
+	long int ret_val=0;
+	CURL *ua;
+	CURLcode res;
+
+	ua = curl_easy_init();
+
+	if(ua) {
+		file = open(file_path, O_WRONLY | O_CREAT | O_EXCL, S_IRUSR|S_IWUSR);
+		if(file != -1) {
+			if(debug > 3) {
+				printf("open(%s) == %d\n", file_path, file);
+				curl_easy_setopt(ua, CURLOPT_VERBOSE,		1				);
+			} else
+				curl_easy_setopt(ua, CURLOPT_VERBOSE,		0				);
+
+			curl_easy_setopt(ua, CURLOPT_WRITEFUNCTION,     dump_data       );
+			curl_easy_setopt(ua, CURLOPT_ENCODING,          ""              );
+			curl_easy_setopt(ua, CURLOPT_URL,				url				);
+
+			curl_easy_setopt(ua, CURLOPT_WRITEDATA, (void *)&file			);
+
+			res = curl_easy_perform(ua);
+			if(res == CURLE_OK) {
+				curl_easy_getinfo(ua, CURLINFO_RESPONSE_CODE, &ret_val);
+				return(ret_val);
+			} else {
+				curl_easy_cleanup(ua);
+				close(file);
+				fprintf(stderr, _("Can't dump %s into %s:\n(%d) %s\n"), url, file_path, res, curl_easy_strerror(res));
+				return(-3);
+			}
+
+			close(file);
+		} else {
+			curl_easy_cleanup(ua);
+			fprintf(stderr, _("Can't open %s for writing: %s\n"),file_path, strerror(errno));
+			return(-2);
+		}
+	} else return(-1);
 }

@@ -26,7 +26,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include <json.h>
+#include "cJSON.h"
 
 #include <glib.h>
 #include <glib/gprintf.h>
@@ -38,6 +38,7 @@
 
 #include <curl/curl.h>
 
+#include "twitter.h"
 #include "statusnet.h"
 
 #include "gettext.h"
@@ -52,48 +53,14 @@ extern int debug;
 extern char *home, *dm_to, *reply_id;
 extern Evas_Object *win;
 
-extern char * avatar;
-
 int ed_statusnet_post(int id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *msg) {
 	return(0);
 }
 void ed_statusnet_timeline_get(int id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline) {
 }
 
-void ed_statusnet_statuses_get_avatar(char *screen_name) {
-	http_request *request = NULL;
-	int file, res=0;
-	char * file_path=NULL;
-
-	// properly check if it's already cached (FIXME: this cache doesn't support updating)
-	res = asprintf(&file_path, "%s/cache/icons/%s", home, screen_name);
-
-	if(res != 0) {
-		file = open(file_path, O_RDONLY);
-		// if not, then fetch the icon and write it to the cache
-		if(file == -1) {
-			file = open(file_path, O_WRONLY | O_CREAT, S_IRUSR|S_IWUSR);
-			if(file != -1) {
-				request = calloc(1, sizeof(http_request));
-				request->url=avatar;
-				res = ed_curl_get(NULL, NULL, request, -1);
-				if((res == 0) && (request->response_code == 200))
-					res=write(file, request->content.memory, request->content.size);
-				close(file);
-
-				free(request);
-			} else {
-				fprintf(stderr, _("Can't open %s for writing: %s\n"),file_path, strerror(errno));
-			}
-		} else
-			close(file);
-
-		free(file_path);
-
-		free(avatar);
-
-		avatar = NULL;
-	}
+void ed_statusnet_statuses_get_avatar(char *id, char *url) {
+	ed_twitter_statuses_get_avatar(id, url);
 }
 
 // {"id":"8",
@@ -115,10 +82,9 @@ void ed_statusnet_statuses_get_avatar(char *screen_name) {
 // }
 
 void json_group_show(GroupProfile *group, char *stream) {
-	json_object *json_stream, *obj;
-	enum json_type json_stream_type;
+	cJSON *json_stream, *obj;
 
-	json_stream = json_tokener_parse(stream);
+	json_stream = cJSON_Parse(stream);
 	if(debug) printf("About to parse\n%s\n", stream);
 
 	if(!json_stream) {
@@ -126,54 +92,43 @@ void json_group_show(GroupProfile *group, char *stream) {
 		return;
 	}
 
-	json_stream_type = json_object_get_type(json_stream);
-
-	if(json_object_get_type(json_stream) == json_type_object) {
-		obj = json_object_object_get(json_stream, "error");
-		if(obj) {
-			fprintf(stderr, "ERROR: %s\n", json_object_get_string(obj));
+	if(json_stream->type == cJSON_Object) {
+		obj = cJSON_GetObjectItem(json_stream, "error");
+		if(obj && obj->type == cJSON_String) {
+			fprintf(stderr, "ERROR: %s\n", obj->valuestring);
+			cJSON_Delete(json_stream);
 			return;
 		}
 
-		obj = json_object_object_get(json_stream, "nickname");
-		if(obj) {
+		obj = cJSON_GetObjectItem(json_stream, "nickname");
+		if(obj && obj->type == cJSON_String) {
 			if(group->name) free(group->name);
-			group->name = strndup(json_object_get_string(obj), PIPE_BUF);
-			json_object_put(obj);
+			group->name = strndup(obj->valuestring, PIPE_BUF);
 		}
 
-		obj = json_object_object_get(json_stream, "fullname");
-		if(obj) {
-			group->fullname = strndup(json_object_get_string(obj), PIPE_BUF);
-			json_object_put(obj);
+		obj = cJSON_GetObjectItem(json_stream, "fullname");
+		if(obj && obj->type == cJSON_String)
+			group->fullname = strndup(obj->valuestring, PIPE_BUF);
+
+		obj = cJSON_GetObjectItem(json_stream, "description");
+		if(obj && obj->type == cJSON_String)
+			group->description = strndup(obj->valuestring, PIPE_BUF);
+
+		obj = cJSON_GetObjectItem(json_stream, "original_logo");
+		if(obj && obj->type == cJSON_String) {
+			group->original_logo = strndup(obj->valuestring, PIPE_BUF);
+			ed_statusnet_statuses_get_avatar(group->name, group->original_logo);
 		}
 
-		obj = json_object_object_get(json_stream, "description");
-		if(obj) {
-			group->description = strndup(json_object_get_string(obj), PIPE_BUF);
-			json_object_put(obj);
-		}
+		obj = cJSON_GetObjectItem(json_stream, "member");
+		if(obj && (obj->type == cJSON_True || obj->type == cJSON_False))
+			group->member = (Eina_Bool)obj->valueint;
 
-		obj = json_object_object_get(json_stream, "original_logo");
-		if(obj) {
-			avatar = strndup(json_object_get_string(obj), PIPE_BUF);
-			ed_statusnet_statuses_get_avatar(group->name);
-			json_object_put(obj);
-		}
-
-		obj = json_object_object_get(json_stream, "member");
-		if(obj) {
-			group->member = (Eina_Bool)json_object_get_boolean(obj);
-			json_object_put(obj);
-		}
-
-		obj = json_object_object_get(json_stream, "member_count");
-		if(obj) {
-			group->member_count = (int)json_object_get_int(obj);
-			json_object_put(obj);
-		}
+		obj = cJSON_GetObjectItem(json_stream, "member_count");
+		if(obj && obj->type == cJSON_Number)
+			group->member_count = obj->valueint;
 	} else { printf("oopsie\n"); }
-	json_object_put(json_stream);
+	cJSON_Delete(json_stream);
 }
 
 static int ed_statusnet_group_get_handler(void *data, int argc, char **argv, char **azColName) {
@@ -182,7 +137,7 @@ static int ed_statusnet_group_get_handler(void *data, int argc, char **argv, cha
     char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
     int port=0, id=0, res, redir=3;
 	http_request * request=calloc(1, sizeof(http_request));
-	json_object *json_stream, *obj;
+	cJSON *json_stream, *obj;
     /* In this query handler, these are the current fields:
         argv[0] == name TEXT
         argv[1] == password TEXT
@@ -225,12 +180,12 @@ static int ed_statusnet_group_get_handler(void *data, int argc, char **argv, cha
 			json_group_show(group, request->content.memory);
 		else {
 			group->failed = EINA_TRUE;
-			json_stream = json_tokener_parse(request->content.memory);
-			if(json_object_get_type(json_stream) == json_type_object) {
-				obj = json_object_object_get(json_stream, "error");
+			json_stream = cJSON_Parse(request->content.memory);
+			if(json_stream->type == cJSON_Object) {
+				obj = cJSON_GetObjectItem(json_stream, "error");
 				if(obj) {
-					group->error = strdup(json_object_get_string(obj));
-					json_object_put(obj);
+					group->error = strdup(obj->valuestring);
+					cJSON_Delete(obj);
 				}
 			}
 		}
@@ -280,7 +235,7 @@ static int ed_statusnet_group_join_handler(void *data, int argc, char **argv, ch
     char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
     int port=0, id=0, res;
 	http_request * request=calloc(1, sizeof(http_request));
-	json_object *json_stream, *obj;
+	cJSON *json_stream, *obj;
     /* In this query handler, these are the current fields:
         argv[0] == name TEXT
         argv[1] == password TEXT
@@ -312,12 +267,12 @@ static int ed_statusnet_group_join_handler(void *data, int argc, char **argv, ch
 			json_group_show(group, request->content.memory);
 		else {
 			group->failed = EINA_TRUE;
-			json_stream = json_tokener_parse(request->content.memory);
-			if(json_object_get_type(json_stream) == json_type_object) {
-				obj = json_object_object_get(json_stream, "error");
+			json_stream = cJSON_Parse(request->content.memory);
+			if(json_stream->type == cJSON_Object) {
+				obj = cJSON_GetObjectItem(json_stream, "error");
 				if(obj) {
-					group->error = strdup(json_object_get_string(obj));
-					json_object_put(obj);
+					group->error = strdup(obj->valuestring);
+					cJSON_Delete(obj);
 				}
 			}
 		}
@@ -355,7 +310,7 @@ static int ed_statusnet_group_leave_handler(void *data, int argc, char **argv, c
     char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
     int port=0, id=0, res;
 	http_request * request=calloc(1, sizeof(http_request));
-	json_object *json_stream, *obj;
+	cJSON *json_stream, *obj;
     /* In this query handler, these are the current fields:
         argv[0] == name TEXT
         argv[1] == password TEXT
@@ -387,12 +342,12 @@ static int ed_statusnet_group_leave_handler(void *data, int argc, char **argv, c
 			json_group_show(group, request->content.memory);
 		else {
 			group->failed = EINA_TRUE;
-			json_stream = json_tokener_parse(request->content.memory);
-			if(json_object_get_type(json_stream) == json_type_object) {
-				obj = json_object_object_get(json_stream, "error");
+			json_stream = cJSON_Parse(request->content.memory);
+			if(json_stream->type == cJSON_Object) {
+				obj = cJSON_GetObjectItem(json_stream, "error");
 				if(obj) {
-					group->error = strdup(json_object_get_string(obj));
-					json_object_put(obj);
+					group->error = strdup(obj->valuestring);
+					cJSON_Delete(obj);
 				}
 			}
 		}

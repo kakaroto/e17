@@ -43,4 +43,6 @@ void ed_curl_cleanup(CURL * ua);
 
 void ed_curl_ua_cleanup(int account_id);
 
+long int ed_curl_dump_url_to_file(char *url, char *file);
+
 #endif

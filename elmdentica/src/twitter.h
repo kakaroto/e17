@@ -101,4 +101,6 @@ void ed_twitter_status_get(int account_id, long long int in_reply_to, aStatus **
 void status_hash_data_free(void *data);
 void user_hash_data_free(void *data);
 
+void ed_twitter_statuses_get_avatar(char *id, char *url);
+
 #endif

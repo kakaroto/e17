@@ -26,7 +26,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include <json.h>
+#include "cJSON.h"
 
 #include <glib.h>
 #include <glib/gprintf.h>
@@ -47,7 +47,6 @@
 #include "curl.h"
 #include "elmdentica.h"
 
-char * avatar=NULL;
 extern struct sqlite3 *ed_DB;
 extern int debug;
 extern char *home;
@@ -207,8 +206,10 @@ void messages_insert(int account_id, Eina_List *list, int timeline) {
 	if(sqlite_res != -1) {
 		sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
 		if(sqlite_res == 0) {
-			EINA_LIST_REVERSE_FOREACH(list, l, data)
+			EINA_LIST_REVERSE_FOREACH(list, l, data) {
+				if(debug > 3) printf("Inserting: %s\n", (char*)data);
 				message_insert(data, &insert_stmt);
+			}
 			eina_hash_foreach(userHash, user_insert, &account_id);
 			sqlite3_finalize(insert_stmt);
 		} else {
@@ -281,48 +282,24 @@ void ed_twitter_max_status_id(int account_id, long long int*since_id, int timeli
 	}
 }
 
-void ed_twitter_statuses_get_avatar(char *screen_name) {
-	http_request *request = NULL;
-	int file, res=0;
+void ed_twitter_statuses_get_avatar(char *id, char *url) {
+	int res=0;
 	char * file_path=NULL;
 
+	if(!url || !id) return;
 
-	// properly check if it's already cached (FIXME: this cache doesn't support updating)
-	res = asprintf(&file_path, "%s/cache/icons/%s", home, screen_name);
+	res = asprintf(&file_path, "%s/cache/icons/%s", home, id);
 
-	if(res != 0) {
-		file = open(file_path, O_RDONLY);
-		// if not, then fetch the icon and write it to the cache
-		if(file == -1) {
-			file = open(file_path, O_WRONLY | O_CREAT, S_IRUSR|S_IWUSR);
-			if(file != -1) {
-				request = calloc(1, sizeof(http_request));
-				request->url=avatar;
-				res = ed_curl_get(NULL, NULL, request, -1);
-				if((res == 0) && (request->response_code == 200))
-					res=write(file, request->content.memory, request->content.size);
-				close(file);
-
-				free(request);
-			} else {
-				fprintf(stderr, _("Can't open %s for writing: %s\n"),file_path, strerror(errno));
-			}
-		} else
-			close(file);
-
+	if(res != -1) {
+		ed_curl_dump_url_to_file(url, file_path);
 		free(file_path);
-
-		free(avatar);
-
-		avatar = NULL;
 	}
 }
 
 
-anUser *json_timeline_user_parse(json_object *user) {
+anUser *json_timeline_user_parse(cJSON *user) {
 	anUser *u;
-	json_object *jo = NULL;
-	char *tmp=NULL;
+	cJSON *jo = NULL;
 
 	if(!user) return(NULL);
 
@@ -330,107 +307,80 @@ anUser *json_timeline_user_parse(json_object *user) {
 
 	if(!u) return(NULL);
 
-	jo = json_object_object_get(user, "id");
-	if(jo) {
-		u->uid = json_object_get_int(jo);
-		json_object_put(jo);
+	jo = cJSON_GetObjectItem(user, "id");
+	if(jo && jo->type == cJSON_Number)
+		u->uid = (long long int)jo->valuedouble;
+	else {
+		free(u);
+		return(NULL);
 	}
 
-	jo = json_object_object_get(user, "name");
-	if(jo) {
-		u->name = strndup((char*)json_object_get_string(jo), PIPE_BUF);
-		json_object_put(jo);
-	}
+	jo = cJSON_GetObjectItem(user, "name");
+	if(jo && jo->type == cJSON_String)
+		u->name = strndup(jo->valuestring, PIPE_BUF);
 
-	jo = json_object_object_get(user, "screen_name");
-	if(jo) {
-		u->screen_name = strndup((char*)json_object_get_string(jo), PIPE_BUF);
-		json_object_put(jo);
-	}
+	jo = cJSON_GetObjectItem(user, "screen_name");
+	if(jo && jo->type == cJSON_String)
+		u->screen_name = strndup(jo->valuestring, PIPE_BUF);
 
-	jo = json_object_object_get(user, "location");
-	if(jo) {
-		u->location = strndup((char*)json_object_get_string(jo), PIPE_BUF);
-		json_object_put(jo);
-	}
+	jo = cJSON_GetObjectItem(user, "location");
+	if(jo && jo->type == cJSON_String)
+		u->location = strndup(jo->valuestring, PIPE_BUF);
 
-	jo = json_object_object_get(user, "description");
-	if(jo) {
-		u->description = strndup((char*)json_object_get_string(jo), PIPE_BUF);
-		json_object_put(jo);
-	}
+	jo = cJSON_GetObjectItem(user, "description");
+	if(jo && jo->type == cJSON_String)
+		u->description = strndup(jo->valuestring, PIPE_BUF);
 
-	jo = json_object_object_get(user, "profile_image_url");
-	if(jo) {
-		u->profile_image_url = strndup((char*)json_object_get_string(jo), PIPE_BUF);
-		json_object_put(jo);
-	}
+	jo = cJSON_GetObjectItem(user, "profile_image_url");
+	if(jo && jo->type == cJSON_String)
+		u->profile_image_url = strndup((char*)jo->valuestring, PIPE_BUF);
 
-	jo = json_object_object_get(user, "url");
-	if(jo) {
-		u->url = strndup((char*)json_object_get_string(jo), PIPE_BUF);
-		json_object_put(jo);
-	}
+	jo = cJSON_GetObjectItem(user, "url");
+	if(jo && jo->type == cJSON_String)
+		u->url = strndup((char*)jo->valuestring, PIPE_BUF);
 
-	jo = json_object_object_get(user, "protected");
-	if(jo) {
-		u->protected = json_object_get_boolean(jo);
-		json_object_put(jo);
-	}
+	jo = cJSON_GetObjectItem(user, "protected");
+	if(jo && (jo->type == cJSON_True || jo->type == cJSON_False))
+		u->protected = jo->valueint;
 
-	jo = json_object_object_get(user, "followers_count");
-	if(jo) {
-		u->followers_count = json_object_get_int(jo);
-		json_object_put(jo);
-	}
+	jo = cJSON_GetObjectItem(user, "followers_count");
+	if(jo && jo->type == cJSON_Number)
+		u->followers_count = jo->valueint;
 
-	jo = json_object_object_get(user, "friends_count");
-	if(jo) {
-		u->friends_count = json_object_get_int(jo);
-		json_object_put(jo);
-	}
+	jo = cJSON_GetObjectItem(user, "friends_count");
+	if(jo && jo->type == cJSON_Number)
+		u->friends_count = jo->valueint;
 
-	jo = json_object_object_get(user, "created_at");
-	if(jo) {
-		tmp = (char*)json_object_get_string(jo);
-		u->created_at = curl_getdate(tmp, NULL);
-		json_object_put(jo);
-	}
+	jo = cJSON_GetObjectItem(user, "created_at");
+	if(jo && jo->type == cJSON_String)
+		u->created_at = curl_getdate(jo->valuestring, NULL);
 
-	jo = json_object_object_get(user, "favorites_count");
-	if(jo) {
-		u->favorites_count = json_object_get_int(jo);
-		json_object_put(jo);
-	}
+	jo = cJSON_GetObjectItem(user, "favorites_count");
+	if(jo && jo->type == cJSON_Number)
+		u->favorites_count = jo->valueint;
 
-	jo = json_object_object_get(user, "statuses_count");
-	if(jo) {
-		u->statuses_count = json_object_get_int(jo);
-		json_object_put(jo);
-	}
+	jo = cJSON_GetObjectItem(user, "statuses_count");
+	if(jo && jo->type == cJSON_Number)
+		u->statuses_count = jo->valueint;
 
-	jo = json_object_object_get(user, "following");
-	if(jo) {
-		u->following = json_object_get_boolean(jo);
-		json_object_put(jo);
-	}
+	jo = cJSON_GetObjectItem(user, "following");
+	if(jo && (jo->type == cJSON_True || jo->type == cJSON_False))
+		u->following = jo->valueint;
 
-	jo = json_object_object_get(user, "statusnet:blocking");
-	if(jo) {
-		u->statusnet_blocking = json_object_get_boolean(jo);
-		json_object_put(jo);
-	}
+	jo = cJSON_GetObjectItem(user, "statusnet:blocking");
+	if(jo && (jo->type == cJSON_True || jo->type == cJSON_False))
+		u->statusnet_blocking = jo->valueint;
 
 	return(u);
 }
 
-aStatus *json_timeline_handle_single(int timeline, StatusesList *statuses, json_object *astatus) {
-	json_object *jo, *user=NULL, *user_id;
+aStatus *json_timeline_handle_single(int timeline, StatusesList *statuses, cJSON *astatus) {
+	cJSON *jo, *user=NULL;
 	anUser *u=NULL;
 	aStatus *s=NULL;
 	char *tmp=NULL, *uid_str=NULL, *sid_str=NULL;
 	int res=0;
-	long long int uid=0, sid=0;
+	long long int uid=0;
 
 	if(!astatus) return(NULL);
 
@@ -440,128 +390,133 @@ aStatus *json_timeline_handle_single(int timeline, StatusesList *statuses, json_
 		userHash = eina_hash_string_superfast_new(user_hash_data_free);
 
 	if(timeline == TIMELINE_DMSGS)
-		user = json_object_object_get(astatus, "sender");
+		user = cJSON_GetObjectItem(astatus, "sender");
 	else
-		user = json_object_object_get(astatus, "user");
+		user = cJSON_GetObjectItem(astatus, "user");
 
-	if(user) {
-		user_id = json_object_object_get(user, "id");
-		uid = json_object_get_int(user_id);
-		json_object_put(user_id);
+	if(user && user->type == cJSON_Object) {
+		jo = cJSON_GetObjectItem(user, "id");
+		if(jo && jo->type == cJSON_Number) {
+			uid = (long long int)jo->valuedouble;
+			if(debug > 3) printf("Status user is: %lld\n", uid);
 
-		res = asprintf(&uid_str, "%lld", uid);
-		if(res != -1) {
-			u = eina_hash_find(userHash, uid_str);
-			if(!u) {
-				u = json_timeline_user_parse(user);
-				if(u && eina_hash_add(userHash, uid_str, (void*)u)) {
-					ed_twitter_statuses_get_avatar(uid_str);
-				} else
-					printf("Failed to parsed data for user %lld\n", uid);
-			}
-		} else uid_str=NULL;
+			res = asprintf(&uid_str, "%lld", uid);
+			if(res != -1) {
+				u = eina_hash_find(userHash, uid_str);
+				if(!u) {
+					if(debug>3) printf("User is not already known, parsing it's data\n");
+					u = json_timeline_user_parse(user);
+					if(u && eina_hash_add(userHash, uid_str, (void*)u)) {
+						if(debug>3) printf("Fetching avatar for %s at %s\n", uid_str, u->profile_image_url);
+						ed_twitter_statuses_get_avatar(uid_str, u->profile_image_url);
+					} else
+						printf("Failed to parsed data for user %lld\n", uid);
+				} else if(debug > 3) printf("User already known, not parsing it's data\n");
+			} else uid_str=NULL;
+		}
 	}
 
 	s = calloc(1, sizeof(aStatus));
-	// FIXME: what happens if not enough memory? crash, that's what!
+	if(debug>3) printf("Pointer allocated for a status: %ld\n", (long int)s);
+	if(!s) return(NULL);
 	
-	jo = json_object_object_get(astatus, "id");
-	if(jo) {
-		sid = json_object_get_int(jo);
-		s->sid = sid;
-		json_object_put(jo);
+	jo = cJSON_GetObjectItem(astatus, "id");
+	printf("Tipo: %d\n", jo->type);
+
+	if(jo && jo->type == cJSON_Number) {
+		s->sid = (long long int)jo->valuedouble;
+		if(debug>3) printf("Getting status id: %lld\n", s->sid);
 	}
 
-	jo = json_object_object_get(astatus, "text");
-	if(jo) {
-		s->text = strndup((char*)json_object_get_string(jo), PIPE_BUF);
-		json_object_put(jo);
+	jo = cJSON_GetObjectItem(astatus, "text");
+	if(jo && jo->type == cJSON_String) {
+		s->text = strndup((char*)jo->valuestring, PIPE_BUF);
+		if(debug>3) printf("Getting status text: %s\n", s->text);
 	}
 
-	jo = json_object_object_get(astatus, "created_at");
-	if(jo) {
-		tmp = (char*)json_object_get_string(jo);
+	jo = cJSON_GetObjectItem(astatus, "created_at");
+	if(jo && jo->type == cJSON_String) {
+		tmp = (char*)jo->valuestring;
 		s->created_at = curl_getdate(tmp, NULL);
-		json_object_put(jo);
+		if(debug>3) printf("Getting status created_at: %d\n", (int)s->created_at);
 	}
 
-	jo = json_object_object_get(astatus, "favorited");
-	if(jo) {
-		s->favorited = json_object_get_boolean(jo);
-		json_object_put(jo);
+	jo = cJSON_GetObjectItem(astatus, "favorited");
+	if(jo && (jo->type == cJSON_True || jo->type == cJSON_False)) {
+		s->favorited = jo->valueint;
+		if(debug>3) printf("Getting status favorited: %d\n", (int)s->favorited);
 	}
 
-	jo = json_object_object_get(astatus, "in_reply_to_user_id");
-	if(jo) {
-		s->in_reply_to_user_id = json_object_get_int(jo);
-		json_object_put(jo);
+	jo = cJSON_GetObjectItem(astatus, "in_reply_to_user_id");
+	if(jo && jo->type == cJSON_Number) {
+		s->in_reply_to_user_id = (long long int)jo->valuedouble;
+		if(debug>3) printf("Getting status in_reply_to_user_id: %d\n", (int)s->in_reply_to_user_id);
 	}
 
-	jo = json_object_object_get(astatus, "in_reply_to_status_id");
-	if(jo) {
-		s->in_reply_to_status_id = json_object_get_int(jo);
-		json_object_put(jo);
+	jo = cJSON_GetObjectItem(astatus, "in_reply_to_status_id");
+	if(jo && jo->type == cJSON_Number) {
+		s->in_reply_to_status_id = (long long int)jo->valuedouble;
+		if(debug>3) printf("Getting status in_reply_to_status_id: %d\n", (int)s->in_reply_to_status_id);
 	}
 
-	s->user = uid;
+	if(uid) s->user = uid;
 	if(uid_str) free(uid_str);
 
-	res = asprintf(&sid_str, "%lld", sid);
+	res = asprintf(&sid_str, "%lld", s->sid);
 	if(res != -1) {
-		eina_hash_add(statusHash, sid_str, (void*)s);
+		if(eina_hash_add(statusHash, sid_str, (void*)s) && debug>3)
+			printf("Added status %s to statusHash\n", sid_str);
+		else if(debug >3)  printf("Failed to add status %s to statusHash\n", sid_str);
 		if(statuses) statuses->list = eina_list_append(statuses->list, (void*)sid_str);
 	}
-
-
-	//if(user) json_object_put(user);
 
 	return(s);
 }
 
-void json_timeline_handle(int timeline, StatusesList *statuses, json_object *json_stream) {
-	json_object *astatus;
+void json_timeline_handle(int timeline, StatusesList *statuses, cJSON *json_stream) {
+	cJSON *astatus;
 	int size,pos=0;
 
-	size = json_object_array_length(json_stream);
+	size = cJSON_GetArraySize(json_stream);
 
 	for(pos=0; pos<size; pos++) {
-		astatus = json_object_array_get_idx(json_stream, pos);
-		json_timeline_handle_single(timeline, statuses, astatus);
-		json_object_put(astatus);
+		if(debug > 3) printf("Parsing status %d of %d\n", pos+1, size);
+		astatus = cJSON_GetArrayItem(json_stream, pos);
+		if(astatus) {
+			json_timeline_handle_single(timeline, statuses, astatus);
+		}
 	}
 }
 
 void json_timeline(int timeline, StatusesList *statuses, char *stream) {
-	json_object *json_stream, *obj;
-	enum json_type json_stream_type;
+	cJSON *json_stream, *obj;
 
-	json_stream = json_tokener_parse(stream);
+	json_stream = cJSON_Parse(stream);
 
 	if(!json_stream) {
 		fprintf(stderr, "ERROR parsing json stream:\n%s\n", stream);
 		return;
 	}
 
-	json_stream_type = json_object_get_type(json_stream);
-
-	switch(json_stream_type) {
-		case json_type_object: {
-			obj = json_object_object_get(json_stream, "error");
+	switch(json_stream->type) {
+		case cJSON_Array: {
+			if(debug > 3) printf("Got an array of json objects\n");
+			json_timeline_handle(timeline, statuses, json_stream);
+			break;
+		}
+		case cJSON_Object: {
+			obj = cJSON_GetObjectItem(json_stream, "error");
 			if(obj)
-				fprintf(stderr, "ERROR: %s\n", json_object_get_string(obj));
+				fprintf(stderr, "ERROR: %s\n", obj->valuestring);
 			else if(!json_timeline_handle_single(timeline, statuses, json_stream))
 				fprintf(stderr, "ERROR unexpected content in json stream:\n%s\n", stream);
 			break;
 		}
-		case json_type_array: {
-			json_timeline_handle(timeline, statuses, json_stream);
-			break;
-		}
 		default: {
-			fprintf(stderr, "ERROR unsupported json type: %d\n%s\n", json_stream_type, stream);
+			fprintf(stderr, "ERROR unsupported json type: %d\n%s\n", json_stream->type, stream);
 		}
 	}
-	json_object_put(json_stream);
+	cJSON_Delete(json_stream);
 }
 
 void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline) {
@@ -710,10 +665,9 @@ void ed_twitter_favorite_destroy(int account_id, char *screen_name, char *passwo
 }
 
 void json_user_show(UserGet *ug, char *stream) {
-	json_object *json_stream, *obj;
-	enum json_type json_stream_type;
+	cJSON *json_stream, *obj;
 
-	json_stream = json_tokener_parse(stream);
+	json_stream = cJSON_Parse(stream);
 	if(debug) printf("About to parse\n%s\n", stream);
 
 	if(!json_stream) {
@@ -721,19 +675,12 @@ void json_user_show(UserGet *ug, char *stream) {
 		return;
 	}
 
-	json_stream_type = json_object_get_type(json_stream);
-
-	if(json_object_get_type(json_stream) == json_type_object) {
-		obj = json_object_object_get(json_stream, "error");
-		if(obj) {
-			fprintf(stderr, "ERROR: %s\n", json_object_get_string(obj));
-			return;
-		}
-
-		ug->au = json_timeline_user_parse(json_stream);
-
+	if(json_stream->type == cJSON_Object) {
+		obj = cJSON_GetObjectItem(json_stream, "error");
+		if(obj) fprintf(stderr, "ERROR: %s\n", obj->valuestring);
+		else ug->au = json_timeline_user_parse(json_stream);
 	}
-	json_object_put(json_stream);
+	cJSON_Delete(json_stream);
 }
 
 static int ed_twitter_user_get_handler(void *data, int argc, char **argv, char **azColName) {
@@ -892,7 +839,7 @@ static int ed_twitter_status_get_handler(void *data, int argc, char **argv, char
     char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL, *notify_message=NULL;
     int port=0, id=0, res;
 	long long int in_reply_to;
-	json_object *json_stream = NULL;
+	cJSON *json_stream = NULL;
 	http_request * request=calloc(1, sizeof(http_request));
 	Evas_Object *notify, *label;
 	aStatus **prelated_status = (aStatus**)data;
@@ -929,7 +876,7 @@ static int ed_twitter_status_get_handler(void *data, int argc, char **argv, char
 	
 		if((res == 0) && (request->response_code == 200)) {
 			printf("Parsing status %lld got...\n%s\n", in_reply_to, request->content.memory);
-			json_stream = json_tokener_parse(request->content.memory);
+			json_stream = cJSON_Parse(request->content.memory);
 
 
 			if(!json_stream) {
@@ -941,7 +888,7 @@ static int ed_twitter_status_get_handler(void *data, int argc, char **argv, char
 				(*prelated_status)->account_id = id;
 				(*prelated_status)->account_type = atoi(argv[2]);
 			}
-			json_object_put(json_stream);
+			cJSON_Delete(json_stream);
 		} else {
 			res = asprintf(&notify_message, _("%s@%s had HTTP response: %ld"), screen_name, domain, request->response_code);
 			if(res != -1) {

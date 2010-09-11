@@ -3,7 +3,6 @@ NTAINERCLEANFILES = Makefile.in
 AM_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\" \
 		-I ../			\
 		@PTHREAD_CFLAGS@	\
-		@JSON_CFLAGS@		\
 		@GLIB_CFLAGS@		\
 		@SQLITE_CFLAGS@		\
 		`curl-config --cflags`	\
@@ -13,7 +12,6 @@ AM_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\" \
 
 
 AM_LDFLAGS =	@PTHREAD_LIBS@		\
-		@JSON_LIBS@		\
 		@GLIB_LIBS@		\
 		@SQLITE_LIBS@		\
 		`curl-config --libs`	\
@@ -23,6 +21,7 @@ AM_LDFLAGS =	@PTHREAD_LIBS@		\
 bin_PROGRAMS = elmdentica
 
 elmdentica_SOURCES =	\
+	cJSON.c		\
 	curl.c		\
 	twitter.c	\
 	statusnet.c	\
@@ -30,6 +29,7 @@ elmdentica_SOURCES =	\
 	elmdentica.c
 
 EXTRA_DIST=		\
+	cJSON.h		\
 	curl.h		\
 	gettext.h	\
 	twitter.h	\

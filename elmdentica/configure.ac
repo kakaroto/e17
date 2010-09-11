@@ -1,6 +1,6 @@
 AC_PREREQ(2.53)
-AC_INIT(elmdentica, 0.9.9, http://code.google.com/p/elmdentica/)
-AM_INIT_AUTOMAKE(elmdentica, 0.9.9)
+AC_INIT(elmdentica, 0.9.10, http://code.google.com/p/elmdentica/)
+AM_INIT_AUTOMAKE(elmdentica, 0.9.10)
 AC_CONFIG_SRCDIR(src/)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
@@ -21,17 +21,9 @@ PKG_CHECK_MODULES(SQLITE, sqlite3, [],
 		[AC_MSG_FAILURE([sqlite3 not found])]
 		)
 
-PKG_CHECK_MODULES(JSON, json, [], [
-		PKG_CHECK_MODULES(JSON, json, [], [AC_MSG_FAILURE([json not found])])
-		])
-
 PKG_CHECK_MODULES(CURL, libcurl, [],
 		[AC_MSG_FAILURE([libcurl not found])]
 		)
-
-dnl PKG_CHECK_MODULES(OPENSSL, openssl, [],
-dnl		[AC_MSG_FAILURE([openssl not found])]
-dnl		)
 
 PKG_CHECK_MODULES(ELEMENTARY, elementary, [],
 		[AC_MSG_FAILURE([elementary not found])]
