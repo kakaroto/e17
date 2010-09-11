@@ -702,23 +702,46 @@ static void on_zoomed_icon_clicked(void *data, Evas_Object *obj, void *event_inf
 
 static void on_bubble_icon_clicked(void *data, Evas_Object *obj, void *event_info) {
 	aStatus *as = eina_hash_find(bubble2status, &data);
-	char *file_path = NULL;
-	Evas_Object *zoom=NULL, *icon=NULL;
+	anUser *au=NULL;
+	char *file_path=NULL, *uid_str=NULL;
+	Evas_Object *zoom=NULL, *box=NULL, *label=NULL, *icon=NULL;
 	int res = 0;
 
 	res = asprintf(&file_path, "%s/cache/icons/%lld", home, as->user);
 
 	if(res != -1) {
 		zoom = elm_win_inwin_add(win);
+			box = elm_box_add(win);
+				evas_object_size_hint_weight_set(box, 1, 1);
+				evas_object_size_hint_align_set(box, -1, -1);
+				elm_box_homogenous_set(box, EINA_FALSE);
+				res = asprintf(&uid_str, "%lld", as->user);
+				if(res != -1) {
+					au = eina_hash_find(userHash, uid_str);
+					if(au) {
+							free(uid_str);
+							res = asprintf(&uid_str, "Avatar of <b>%s</b> (<b>@%s</b>)", au->name, au->screen_name);
+							if(res != -1) {
+								label = elm_label_add(win);
+									evas_object_size_hint_weight_set(label, 1, 0);
+									evas_object_size_hint_align_set(label, -1, 0);
+									elm_label_line_wrap_set(label, EINA_TRUE);
+									elm_label_label_set(label, uid_str);
+									free(uid_str);
+									elm_box_pack_end(box, label);
+								evas_object_show(label);
+							}
+					}
+				}
+				icon = elm_icon_add(win);
+					evas_object_size_hint_weight_set(icon, 1, 1);
+					evas_object_size_hint_align_set(icon, -1, -1);
+					elm_icon_file_set(icon, file_path, "fubar?");
+					evas_object_smart_callback_add(icon, "clicked", on_zoomed_icon_clicked, zoom);
+					elm_box_pack_end(box, icon);
+				evas_object_show(icon);
 
-			icon = elm_icon_add(win);
-				evas_object_size_hint_weight_set(icon, 1, 1);
-				evas_object_size_hint_align_set(icon, -1, -1);
-				elm_icon_file_set(icon, file_path, "fubar?");
-				evas_object_smart_callback_add(icon, "clicked", on_zoomed_icon_clicked, zoom);
-			evas_object_show(icon);
-
-			elm_win_inwin_content_set(zoom, icon);
+			elm_win_inwin_content_set(zoom, box);
 		evas_object_show(zoom);
 		free(file_path);
 	}

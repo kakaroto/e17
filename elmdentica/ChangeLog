@@ -1,3 +1,9 @@
+2010-09-11  trunk -- lots of changes
+	* fixed lots of crasher bugs, most of them due to problems with json-c, by moving to cjson
+	* more ui fixes
+	* support eve browser
+	* view related messages (in context replies)
+
 2010-08-15  trunk -- lots of changes
 	* gag lists (use regular expressions to block content -- trolls, for instance, when mentioned by those you subscribe)
 	* groups support
