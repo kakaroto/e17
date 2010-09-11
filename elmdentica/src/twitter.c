@@ -374,7 +374,7 @@ anUser *json_timeline_user_parse(cJSON *user) {
 	return(u);
 }
 
-aStatus *json_timeline_handle_single(int timeline, StatusesList *statuses, cJSON *astatus) {
+aStatus *json_timeline_handle_single(int timeline, StatusesList *statuses, cJSON *astatus, int account_id) {
 	cJSON *jo, *user=NULL;
 	anUser *u=NULL;
 	aStatus *s=NULL;
@@ -421,12 +421,16 @@ aStatus *json_timeline_handle_single(int timeline, StatusesList *statuses, cJSON
 	if(!s) return(NULL);
 	
 	jo = cJSON_GetObjectItem(astatus, "id");
-	printf("Tipo: %d\n", jo->type);
-
-	if(jo && jo->type == cJSON_Number) {
-		s->sid = (long long int)jo->valuedouble;
+	if(jo) {
+		if(jo->type == cJSON_Number)
+			s->sid = (long long int)jo->valuedouble;
+		else if(jo->type == cJSON_String)
+			s->sid = strtoll(jo->valuestring, NULL, 10);
 		if(debug>3) printf("Getting status id: %lld\n", s->sid);
 	}
+
+	s->account_id = account_id;
+	s->account_type = ACCOUNT_TYPE_TWITTER;
 
 	jo = cJSON_GetObjectItem(astatus, "text");
 	if(jo && jo->type == cJSON_String) {
@@ -473,7 +477,7 @@ aStatus *json_timeline_handle_single(int timeline, StatusesList *statuses, cJSON
 	return(s);
 }
 
-void json_timeline_handle(int timeline, StatusesList *statuses, cJSON *json_stream) {
+void json_timeline_handle(int timeline, StatusesList *statuses, cJSON *json_stream, int account_id) {
 	cJSON *astatus;
 	int size,pos=0;
 
@@ -483,12 +487,12 @@ void json_timeline_handle(int timeline, StatusesList *statuses, cJSON *json_stre
 		if(debug > 3) printf("Parsing status %d of %d\n", pos+1, size);
 		astatus = cJSON_GetArrayItem(json_stream, pos);
 		if(astatus) {
-			json_timeline_handle_single(timeline, statuses, astatus);
+			json_timeline_handle_single(timeline, statuses, astatus, account_id);
 		}
 	}
 }
 
-void json_timeline(int timeline, StatusesList *statuses, char *stream) {
+void json_timeline(int timeline, StatusesList *statuses, char *stream, int account_id) {
 	cJSON *json_stream, *obj;
 
 	json_stream = cJSON_Parse(stream);
@@ -501,14 +505,14 @@ void json_timeline(int timeline, StatusesList *statuses, char *stream) {
 	switch(json_stream->type) {
 		case cJSON_Array: {
 			if(debug > 3) printf("Got an array of json objects\n");
-			json_timeline_handle(timeline, statuses, json_stream);
+			json_timeline_handle(timeline, statuses, json_stream, account_id);
 			break;
 		}
 		case cJSON_Object: {
 			obj = cJSON_GetObjectItem(json_stream, "error");
 			if(obj)
 				fprintf(stderr, "ERROR: %s\n", obj->valuestring);
-			else if(!json_timeline_handle_single(timeline, statuses, json_stream))
+			else if(!json_timeline_handle_single(timeline, statuses, json_stream, account_id))
 				fprintf(stderr, "ERROR unexpected content in json stream:\n%s\n", stream);
 			break;
 		}
@@ -565,7 +569,7 @@ void ed_twitter_timeline_get(int account_id, char *screen_name, char *password, 
 		res = ed_curl_get(screen_name, password, request, account_id);
 
 		if((res == 0) && (request->response_code == 200)) {
-			json_timeline(timeline, statuses, request->content.memory);
+			json_timeline(timeline, statuses, request->content.memory, account_id);
 
 			now = time(NULL);
 			messages_insert(account_id, statuses->list, timeline);
@@ -875,7 +879,7 @@ static int ed_twitter_status_get_handler(void *data, int argc, char **argv, char
 		res = ed_curl_get(screen_name, password, request, id);
 	
 		if((res == 0) && (request->response_code == 200)) {
-			printf("Parsing status %lld got...\n%s\n", in_reply_to, request->content.memory);
+			if(debug>4) printf("Parsing status %lld got...\n%s\n", in_reply_to, request->content.memory);
 			json_stream = cJSON_Parse(request->content.memory);
 
 
@@ -883,7 +887,7 @@ static int ed_twitter_status_get_handler(void *data, int argc, char **argv, char
 				fprintf(stderr, "ERROR parsing json stream:\n%s\n", request->content.memory);
 				return(-1);
 			}
-			*prelated_status = json_timeline_handle_single(-1, NULL, json_stream);
+			*prelated_status = json_timeline_handle_single(-1, NULL, json_stream, id);
 			if(*prelated_status) {
 				(*prelated_status)->account_id = id;
 				(*prelated_status)->account_type = atoi(argv[2]);
@@ -922,7 +926,8 @@ static int ed_twitter_status_get_handler(void *data, int argc, char **argv, char
 void ed_twitter_status_get(int account_id, long long int in_reply_to, aStatus **prelated_status) {
 	char *query=NULL, *db_err=NULL;
 	int sqlite_res;
-	
+
+	if(debug>3) printf("Importing status %lld with account %d\n", in_reply_to, account_id);
 	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id,%lld FROM accounts WHERE id = %d and type = %d and enabled = 1;", in_reply_to, account_id, ACCOUNT_TYPE_TWITTER);
 	if(sqlite_res != -1) {
 		sqlite_res = sqlite3_exec(ed_DB, query, ed_twitter_status_get_handler, (void**)prelated_status, &db_err);
