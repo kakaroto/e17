@@ -922,6 +922,7 @@ static void settings_choose_browser(void *data, Evas_Object *hoversel, void *eve
 		case BROWSER_MIDORI:	{ settings->browser=b;	break; }
 		case BROWSER_WOOSH:		{ settings->browser=b;	break; }
 		case BROWSER_DILLO:		{ settings->browser=b;	break; }
+		case BROWSER_EVE:		{ settings->browser=b;	break; }
 		case BROWSER_XDG:
 		default:				{ settings->browser=BROWSER_XDG;	break; }
 	}
