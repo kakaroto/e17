@@ -1,0 +1,50 @@
+
+<!-- google map API v3 + map css -->
+
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<style type="text/css">
+  html { height: 100% }
+  body { height: 100% }
+  #maptable {width:90%; height: 500px; }
+  #maptable td { border: 1px solid black; padding: 2px; font-size: 12px; text-align: "left"; }
+</style>
+
+<!-- ####### -->
+
+<center><h1>Enlightenment Developers World Map</h1></center>
+
+<p>This map show, in a geographical way, the information of all the people having a cvs account. The information is taken direcly from the info.txt file
+in cvs. The green markers is the developers that have a 'GeoData' field in his file, on the other side the position of the red one is guessed from the 'Location' field, and should not be as much accurate.</p>
+
+<p>Clicking on a marker will open a popup showing all the information about a specific developer (contacts, in witch project is involved and the used platform). With the control on the left you can zoom, pan and recenter as you wish. You can also switch from satellite photos to street map and also to hibrid view :)</p>
+
+<table align="center" border=0 id="maptable">
+  <tr>
+    <td><div id="lat">Lat: 0</div></td>
+    <td><div id="lon">Lat: 0</div></td>
+    <td><div id="totals" align="right">Total devs: 0 (0 guessed)</div></td>
+  </tr>
+  <tr>
+    <td colspan="3" width="100%" height="100%">
+      <div id="map_canvas" style="width: 100%; height:100%;"></div>
+    </td>
+  </tr>
+</table>
+<br><br>
+
+<!-- ####### -->
+
+<script type="text/javascript">
+
+/* Initialize map canvas */
+var center_pos = new google.maps.LatLng(26, 0);
+var opts = {
+      zoom: 2,
+      center: center_pos,
+      mapTypeId: google.maps.MapTypeId.SATELLITE
+};
+var canvas = document.getElementById("map_canvas");
+var map = new google.maps.Map(canvas, opts);
+
+</script>
+
