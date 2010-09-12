@@ -156,10 +156,8 @@ efl_warning_msg() {
 	fi
 
 	if [[ ${E_STATE} == "live" ]] ; then
-		eerror "This is a LIVE SOURCES ebuild."
-		eerror "That means there are NO promises it will work."
-		eerror "If it fails to build, contact the enlightenment mailing list"
-		eerror "or go to #e on FreeNode irc for support."
+		ewarn "THIS OVERLAY IS DEPRECATED AND WILL BE DELETED SOON!"
+		ewarn "SWITCH TO THE VAPIER OVERLAY IN LAYMAN!!!!!"
 	fi
 }
 
