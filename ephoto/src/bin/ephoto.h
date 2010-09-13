@@ -44,6 +44,7 @@ Evas_Object *ephoto_create_thumb_browser(Evas_Object *parent, const char *direct
 void ephoto_populate_thumbnails(Evas_Object *obj);
 /* smart callbacks called:
  * "selected" - an item in the thumb browser is selected. The selected file is passed as event_info argument.
+ * "directory,changed" - the user selected a new directory. The selected directory is passed as event_info argument.
  */
 
 typedef enum _Ephoto_State Ephoto_State;
@@ -68,6 +69,7 @@ struct _Ephoto
 	Evas_Object *thumb_browser;
 	Eina_List   *images;
         Ephoto_State state;
+        const char *cur_directory;
 };
 typedef struct _Ephoto Ephoto;
 
