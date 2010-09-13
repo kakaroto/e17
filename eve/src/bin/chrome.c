@@ -1152,7 +1152,7 @@ more_menu_set(Evas_Object *chrome, Evas_Object *list, More_Menu_Item *root, cons
         on_list_completely_hidden(params, NULL, NULL, NULL);
       }
    else
-        edje_object_signal_callback_add(ed, "list,completely,hidden", "", on_list_completely_hidden, params);
+      edje_object_signal_callback_add(ed, "list,completely,hidden", "", on_list_completely_hidden, params);
 }
 
 static void

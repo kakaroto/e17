@@ -478,7 +478,7 @@ collections {
                     }
                     rel2 {
                         to: "more-list";
-                        relative: 1.0 1.0;
+                        relative: 2.0 1.0;
                         offset: -1 -1;
                     }
                 }
@@ -1001,8 +1001,7 @@ collections {
                 program { name: "list-animate-left-2";
                     action: STATE_SET "hide-right" 0.0;
                     target: "more-list-swallow";
-                    after: "list-animate-final";
-                    action: SIGNAL_EMIT "list,completely,hidden" "";
+                    after: "list-animate-completely-hidden";
                 }
                 program { name: "list-animate-right";
                     signal: "list,animate,right";
@@ -1014,8 +1013,11 @@ collections {
                 program { name: "list-animate-right-2";
                     action: STATE_SET "hide-left" 0.0;
                     target: "more-list-swallow";
-                    after: "list-animate-final";
+                    after: "list-animate-completely-hidden";
+                }
+                program { name: "list-animate-completely-hidden";
                     action: SIGNAL_EMIT "list,completely,hidden" "";
+                    after: "list-animate-final";
                 }
                 program { name: "list-animate-final";
                     action: STATE_SET "default" 0.0;
