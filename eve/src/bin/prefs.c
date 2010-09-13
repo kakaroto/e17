@@ -18,6 +18,8 @@ struct _Prefs {
     const char * home_page;
     const char * proxy;
     char enable_private_mode;
+    char enable_auto_load_images;
+    char enable_auto_shrink_images;
     const char *__eet_filename;
 };
 
@@ -43,6 +45,8 @@ _prefs_init(void)
     EET_DATA_DESCRIPTOR_ADD_BASIC(_prefs_descriptor, Prefs, "home_page", home_page, EET_T_STRING);
     EET_DATA_DESCRIPTOR_ADD_BASIC(_prefs_descriptor, Prefs, "proxy", proxy, EET_T_STRING);
     EET_DATA_DESCRIPTOR_ADD_BASIC(_prefs_descriptor, Prefs, "enable_private_mode", enable_private_mode, EET_T_CHAR);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(_prefs_descriptor, Prefs, "enable_auto_load_images", enable_auto_load_images, EET_T_CHAR);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(_prefs_descriptor, Prefs, "enable_auto_shrink_images", enable_auto_shrink_images, EET_T_CHAR);
 }
 
 static inline void
@@ -54,7 +58,7 @@ _prefs_shutdown(void)
 }
 
 Prefs *
-prefs_new(char enable_mouse_cursor, char enable_touch_interface, char enable_plugins, char enable_javascript, const char * user_agent, const char * home_page, const char * proxy, char enable_private_mode)
+prefs_new(char enable_mouse_cursor, char enable_touch_interface, char enable_plugins, char enable_javascript, const char * user_agent, const char * home_page, const char * proxy, char enable_private_mode, char enable_auto_load_images, char enable_auto_shrink_images)
 {
     Prefs *prefs = calloc(1, sizeof(Prefs));
     
@@ -72,6 +76,8 @@ prefs_new(char enable_mouse_cursor, char enable_touch_interface, char enable_plu
     prefs->home_page = eina_stringshare_add(home_page ? home_page : "http://www.google.com");
     prefs->proxy = eina_stringshare_add(proxy);
     prefs->enable_private_mode = enable_private_mode;
+    prefs->enable_auto_load_images = enable_auto_load_images;
+    prefs->enable_auto_shrink_images = enable_auto_shrink_images;
 
     return prefs;
 }
@@ -190,6 +196,32 @@ prefs_enable_private_mode_set(Prefs *prefs, char enable_private_mode)
 {
     EINA_SAFETY_ON_NULL_RETURN(prefs);
     prefs->enable_private_mode = enable_private_mode;
+}
+  
+inline char
+prefs_enable_auto_load_images_get(const Prefs *prefs)
+{
+    return prefs->enable_auto_load_images;
+}
+
+inline void
+prefs_enable_auto_load_images_set(Prefs *prefs, char enable_auto_load_images)
+{
+    EINA_SAFETY_ON_NULL_RETURN(prefs);
+    prefs->enable_auto_load_images = enable_auto_load_images;
+}
+  
+inline char
+prefs_enable_auto_shrink_images_get(const Prefs *prefs)
+{
+    return prefs->enable_auto_shrink_images;
+}
+
+inline void
+prefs_enable_auto_shrink_images_set(Prefs *prefs, char enable_auto_shrink_images)
+{
+    EINA_SAFETY_ON_NULL_RETURN(prefs);
+    prefs->enable_auto_shrink_images = enable_auto_shrink_images;
 }
   
 Prefs *

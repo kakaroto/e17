@@ -10,7 +10,7 @@
 typedef struct _Prefs Prefs;
 
 /* Prefs */
-Prefs *prefs_new(char enable_mouse_cursor, char enable_touch_interface, char enable_plugins, char enable_javascript, const char * user_agent, const char * home_page, const char * proxy, char enable_private_mode);
+Prefs *prefs_new(char enable_mouse_cursor, char enable_touch_interface, char enable_plugins, char enable_javascript, const char * user_agent, const char * home_page, const char * proxy, char enable_private_mode, char enable_auto_load_images, char enable_auto_shrink_images);
 void prefs_free(Prefs *prefs);
 
 void prefs_enable_mouse_cursor_set(Prefs *prefs, char enable_mouse_cursor);
@@ -29,6 +29,10 @@ void prefs_proxy_set(Prefs *prefs, const char * proxy);
 const char * prefs_proxy_get(const Prefs *prefs);
 void prefs_enable_private_mode_set(Prefs *prefs, char enable_private_mode);
 char prefs_enable_private_mode_get(const Prefs *prefs);
+void prefs_enable_auto_load_images_set(Prefs *prefs, char enable_auto_load_images);
+char prefs_enable_auto_load_images_get(const Prefs *prefs);
+void prefs_enable_auto_shrink_images_set(Prefs *prefs, char enable_auto_shrink_images);
+char prefs_enable_auto_shrink_images_get(const Prefs *prefs);
 
 Prefs *prefs_load(const char *filename);
 Eina_Bool prefs_save(Prefs *prefs, const char *filename);

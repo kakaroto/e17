@@ -65,6 +65,8 @@ typedef enum {
    EVE_PREF_TOUCH_INTERFACE,
    EVE_PREF_MOUSE_CURSOR,
    EVE_PREF_ENABLE_PRIVATE_MODE,
+   EVE_PREF_AUTO_LOAD_IMAGES,
+   EVE_PREF_AUTO_SHRINK_IMAGES,
    EVE_PREF_LAST
 } Eve_Preference;
 
@@ -158,6 +160,20 @@ static More_Menu_Item more_menu_preferences[] =
              .pref = EVE_PREF_TOUCH_INTERFACE,
              .pref_get = prefs_enable_touch_interface_get,
              .pref_set = prefs_enable_touch_interface_set
+           }}, NULL, ITEM_FLAG_NONE },
+         { ITEM_TYPE_PREFERENCE, "Automatically load images",
+           (More_Menu_Preference[]) {{
+             .type = PREF_TYPE_CHECKBOX,
+             .pref = EVE_PREF_AUTO_LOAD_IMAGES,
+             .pref_get = prefs_enable_auto_load_images_get,
+             .pref_set = prefs_enable_auto_load_images_set
+           }}, NULL, ITEM_FLAG_NONE },
+         { ITEM_TYPE_PREFERENCE, "Automatically shrink images",
+           (More_Menu_Preference[]) {{
+             .type = PREF_TYPE_CHECKBOX,
+             .pref = EVE_PREF_AUTO_SHRINK_IMAGES,
+             .pref_get = prefs_enable_auto_shrink_images_get,
+             .pref_set = prefs_enable_auto_shrink_images_set
            }}, NULL, ITEM_FLAG_NONE },
          { ITEM_TYPE_PREFERENCE, "User agent",
            (More_Menu_Preference[]) {{
@@ -937,6 +953,8 @@ chrome_prefs_apply(Evas_Object *chrome)
    ewk_view_setting_enable_plugins_set(view, prefs_enable_plugins_get(prefs));
    ewk_view_setting_user_agent_set(view, prefs_user_agent_get(prefs));
    ewk_view_setting_private_browsing_set(view, prefs_enable_private_mode_get(prefs));
+   ewk_view_setting_auto_load_images_set(view, prefs_enable_auto_load_images_get(prefs));
+   ewk_view_setting_auto_shrink_images_set(view, prefs_enable_auto_shrink_images_get(prefs));
    window_mouse_enabled_set(win->win, prefs_enable_mouse_cursor_get(prefs));
 }
 
@@ -976,6 +994,16 @@ pref_updated(More_Menu_Preference *p, void *new_value)
    case EVE_PREF_ENABLE_PRIVATE_MODE:
       {
          SET_PREF_TO_ALL_VIEWS(ewk_view_setting_private_browsing_set, *((int *)new_value));
+         break;
+      }
+   case EVE_PREF_AUTO_LOAD_IMAGES:
+      {
+         SET_PREF_TO_ALL_VIEWS(ewk_view_setting_auto_load_images_set, *((int *)new_value));
+         break;
+      }
+   case EVE_PREF_AUTO_SHRINK_IMAGES:
+      {
+         SET_PREF_TO_ALL_VIEWS(ewk_view_setting_auto_shrink_images_set, *((int *)new_value));
          break;
       }
    case EVE_PREF_MOUSE_CURSOR:

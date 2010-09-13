@@ -463,7 +463,9 @@ elm_main(int argc, char **argv)
    prefs = prefs_load(path);
    if (!prefs)
      {
-        prefs = prefs_new(EINA_FALSE, EINA_TRUE, EINA_FALSE, EINA_TRUE, "eve", DEFAULT_URL, NULL, EINA_FALSE);
+        prefs = prefs_new(EINA_FALSE, EINA_TRUE, EINA_FALSE,
+                          EINA_TRUE, "eve", DEFAULT_URL, NULL,
+                          EINA_FALSE, EINA_TRUE, EINA_FALSE);
         prefs_save(prefs, path);
      }
 
