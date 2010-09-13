@@ -1117,9 +1117,8 @@ callback_menu_prefs_list_set(More_Menu_Item *i)
       {
          if (!strcmp(l[item].title, i->text))
             {
-               if (p->pref_set)
+               if ((pref_set = p->pref_set))
                   {
-                     pref_set = p->pref_set;
                      pref_set(prefs, l[item].value);
                      pref_updated(p, (void *)l[item].value);
                   }
@@ -1140,12 +1139,7 @@ more_menu_prefs_list_create(More_Menu_Item *i, More_Menu_Preference *p)
    if (!list) return NULL;
    for (n_items = 0; list[n_items].title; n_items++);
    if (!(mmi = calloc(n_items, sizeof(*mmi)))) return NULL;
-
-   if (p->pref_get)
-      {
-         pref_get = p->pref_get;
-         preference = pref_get(prefs);
-      }
+   if ((pref_get = p->pref_get)) preference = pref_get(prefs);
    
    for (item = 0; item < n_items; item++) {
       mmi[item].text = eina_stringshare_add(list[item].title);
@@ -1164,10 +1158,7 @@ more_menu_prefs_list_create(More_Menu_Item *i, More_Menu_Preference *p)
 static More_Menu_Item *
 more_menu_prefs_create(More_Menu_Item *i, More_Menu_Preference *p)
 {
-   switch (p->type) {
-   case PREF_TYPE_LIST: return more_menu_prefs_list_create(i, p);
-   }
-   
+   if (p->type == PREF_TYPE_LIST) return more_menu_prefs_list_create(i, p);
    return NULL;
 }
 
@@ -1181,8 +1172,7 @@ on_more_item_click(void *data, Evas_Object *obj,
    Browser_Window *win = evas_object_data_get(chrome, "win");
    const char *old_text = edje_object_part_text_get(ed, "more-list-title");
 
-   if (!mmi)
-      return;
+   if (!mmi) return;
 
    switch (mmi->type) {
       case ITEM_TYPE_STATIC_FOLDER:
@@ -1195,8 +1185,7 @@ on_more_item_click(void *data, Evas_Object *obj,
       case ITEM_TYPE_DYNAMIC_FOLDER:
       {
          More_Menu_Callback callback = mmi->next;
-         if (!callback)
-            return;
+         if (!callback) return;
 
          More_Menu_Item *new_root = callback(mmi);
          if (new_root)
@@ -1206,8 +1195,8 @@ on_more_item_click(void *data, Evas_Object *obj,
               edje_object_signal_emit(ed, "list,animate,left", "");
               more_menu_set(chrome, obj, new_root, old_text);
            }
+        break;
       }
-      break;
       
       case ITEM_TYPE_PREFERENCE:
       {
@@ -1222,6 +1211,7 @@ on_more_item_click(void *data, Evas_Object *obj,
                edje_object_part_text_set(ed, "more-list-title", mmi->text);
                more_menu_set(chrome, obj, new_root, old_text);
             }
+         break;
       }
       
       case ITEM_TYPE_LAST:
@@ -1239,8 +1229,8 @@ on_more_item_click(void *data, Evas_Object *obj,
             callback(mmi);
          if (mmi->type == ITEM_TYPE_CALLBACK_NO_HIDE)
             on_more_item_back_click(obj, ed, NULL, NULL);
+         break;
       }
-      break;
 
       default:
       {
