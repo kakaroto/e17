@@ -229,8 +229,8 @@ collections {
                 description { state: "default" 0.0;
                     align: 1.0 0.5;
                     image.normal: "check.png";
-                    min: 32 32;
-                    max: 32 32;
+                    min: 24 24;
+                    max: 24 24;
                 }
             }
         }
