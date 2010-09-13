@@ -7,23 +7,27 @@
 #include <Eina.h>
 
 #include "favorite.h"
+#include "prefs.h"
 #include "private.h"
 
 #define BOOKMARK_MENU_PREALLOC_SIZE 32
 
-typedef struct _Bookmark_Menu_Item             Bookmark_Menu_Item;
-typedef struct _Bookmark_Menu_Filter_Context   Bookmark_Menu_Filter_Context;
-typedef Bookmark_Menu_Item *(*                 Bookmark_Menu_Callback)(Bookmark_Menu_Item *current_item);
+typedef struct _More_Menu_Item More_Menu_Item;
+typedef struct _More_Menu_Filter_Context More_Menu_Filter_Context;
+typedef struct _More_Menu_Preference More_Menu_Preference;
+typedef struct _More_Menu_Preference_List More_Menu_Preference_List;
 
-static Bookmark_Menu_Item *    bookmark_menu_favorites(Bookmark_Menu_Item *);
-static Bookmark_Menu_Item *    bookmark_menu_history_today(Bookmark_Menu_Item *);
-static Bookmark_Menu_Item *    bookmark_menu_history_yesterday(Bookmark_Menu_Item *);
-static Bookmark_Menu_Item *    bookmark_menu_history_this_week(Bookmark_Menu_Item *);
-static Bookmark_Menu_Item *    bookmark_menu_history_most_visited(Bookmark_Menu_Item *);
-static Bookmark_Menu_Item *    bookmark_menu_history_least_visited(Bookmark_Menu_Item *);
-static Bookmark_Menu_Item *    bookmark_menu_history_by_domain(Bookmark_Menu_Item *);
+typedef More_Menu_Item *(*More_Menu_Callback)(More_Menu_Item *current_item);
 
-static Elm_Gengrid_Item_Class gic_default, gic_new_page;
+static More_Menu_Item *more_menu_favorites(More_Menu_Item *);
+static More_Menu_Item *more_menu_history_today(More_Menu_Item *);
+static More_Menu_Item *more_menu_history_yesterday(More_Menu_Item *);
+static More_Menu_Item *more_menu_history_this_week(More_Menu_Item *);
+static More_Menu_Item *more_menu_history_most_visited(More_Menu_Item *);
+static More_Menu_Item *more_menu_history_least_visited(More_Menu_Item *);
+static More_Menu_Item *more_menu_history_by_domain(More_Menu_Item *);
+static void on_more_item_click(void *data, Evas_Object *obj, void *event_info __UNUSED__);
+static void on_more_item_back_click(void *data, Evas_Object *edje, const char *emission __UNUSED__, const char *source __UNUSED__);
 
 typedef enum {
    ITEM_TYPE_LAST,
@@ -31,50 +35,166 @@ typedef enum {
    ITEM_TYPE_DYNAMIC_FOLDER,
    ITEM_TYPE_PAGE,
    ITEM_TYPE_CALLBACK,
+   ITEM_TYPE_CALLBACK_NO_HIDE,
    ITEM_TYPE_SEPARATOR,
-} Bookmark_Menu_Item_Type;
+   ITEM_TYPE_PREFERENCE
+} More_Menu_Item_Type;
 
-struct _Bookmark_Menu_Item
+typedef enum {
+   ITEM_FLAG_NONE     = 0,
+   ITEM_FLAG_DYNAMIC  = 1<<0,
+   ITEM_FLAG_SELECTED = 1<<1,
+   ITEM_FLAG_ARROW    = 1<<2,
+} More_Menu_Item_Flags;
+
+typedef enum {
+   PREF_TYPE_CHECKBOX,
+   PREF_TYPE_LIST,
+   PREF_TYPE_STRING
+} More_Menu_Preference_Type;
+
+typedef enum {
+   EVE_PREF_ENABLE_JAVASCRIPT,
+   EVE_PREF_ENABLE_PLUGINS,
+   EVE_PREF_HOME_PAGE,
+   EVE_PREF_PROXY,
+   EVE_PREF_USER_AGENT,
+   EVE_PREF_TOUCH_INTERFACE,
+   EVE_PREF_MOUSE_CURSOR,
+   EVE_PREF_ENABLE_PRIVATE_MODE,
+   EVE_PREF_LAST
+} Eve_Preference;
+
+struct _More_Menu_Item
 {
-   Bookmark_Menu_Item_Type type;
-   const char             *text;
-   void                   *next;
-   Eina_Bool               dynamic : 1;
+   More_Menu_Item_Type type;
+   const char *text;
+   void *next;
+   void *data;
+   More_Menu_Item_Flags flags;
 };
 
-struct _Bookmark_Menu_Filter_Context
+struct _More_Menu_Filter_Context
 {
-   Bookmark_Menu_Item *current_bookmark_item;
-   double              time;
+   More_Menu_Item *current_item;
+   double time;
 };
 
-static Bookmark_Menu_Item bookmark_menu_history[] =
-{
-   { ITEM_TYPE_DYNAMIC_FOLDER, "Today", bookmark_menu_history_today, EINA_FALSE },
-   { ITEM_TYPE_DYNAMIC_FOLDER, "Yesterday", bookmark_menu_history_yesterday, EINA_FALSE },
-   { ITEM_TYPE_DYNAMIC_FOLDER, "This week", bookmark_menu_history_this_week, EINA_FALSE },
-   { ITEM_TYPE_SEPARATOR, NULL, NULL, EINA_FALSE },
-   { ITEM_TYPE_DYNAMIC_FOLDER, "Most visited", bookmark_menu_history_most_visited, EINA_FALSE },
-   { ITEM_TYPE_DYNAMIC_FOLDER, "Least visited", bookmark_menu_history_least_visited, EINA_FALSE },
-   { ITEM_TYPE_SEPARATOR, NULL, NULL, EINA_FALSE },
-   { ITEM_TYPE_DYNAMIC_FOLDER, "By domain", bookmark_menu_history_by_domain, EINA_FALSE },
-   { ITEM_TYPE_LAST, NULL, NULL, EINA_FALSE }
+struct _More_Menu_Preference {
+   More_Menu_Preference_Type type;
+   Eve_Preference pref;
+   void *pref_get;
+   void *pref_set;
+   void *data;
 };
 
-static Bookmark_Menu_Item bookmark_menu_root[] =
+struct _More_Menu_Preference_List {
+   const char *title;
+   const char *value;
+};
+
+static More_Menu_Item more_menu_history[] =
 {
-   { ITEM_TYPE_STATIC_FOLDER, "History", bookmark_menu_history, EINA_FALSE },
-   { ITEM_TYPE_DYNAMIC_FOLDER, "Favorites", bookmark_menu_favorites, EINA_FALSE },
-   { ITEM_TYPE_SEPARATOR, NULL, NULL, EINA_FALSE },
-   { ITEM_TYPE_PAGE, "ProFUSION", "http://profusion.mobi", EINA_FALSE },
-   { ITEM_TYPE_PAGE, "WebKit", "http://webkit.org", EINA_FALSE },
-   { ITEM_TYPE_PAGE, "Enlightenment", "http://enlightenment.org", EINA_FALSE },
+   { ITEM_TYPE_DYNAMIC_FOLDER, "Today", more_menu_history_today, NULL, ITEM_FLAG_ARROW },
+   { ITEM_TYPE_DYNAMIC_FOLDER, "Yesterday", more_menu_history_yesterday, NULL, ITEM_FLAG_ARROW },
+   { ITEM_TYPE_DYNAMIC_FOLDER, "This week", more_menu_history_this_week, NULL, ITEM_FLAG_ARROW },
+   { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
+   { ITEM_TYPE_DYNAMIC_FOLDER, "Most visited", more_menu_history_most_visited, NULL, ITEM_FLAG_ARROW },
+   { ITEM_TYPE_DYNAMIC_FOLDER, "Least visited", more_menu_history_least_visited, NULL, ITEM_FLAG_ARROW },
+   { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
+   { ITEM_TYPE_DYNAMIC_FOLDER, "By domain", more_menu_history_by_domain, NULL, ITEM_FLAG_ARROW },
+   { ITEM_TYPE_LAST, NULL, NULL, NULL, ITEM_FLAG_NONE }
+};
+
+static More_Menu_Item more_menu_preferences[] =
+{
+   { ITEM_TYPE_PREFERENCE, "Enable JavaScript",
+     (More_Menu_Preference[]) {{
+       .type = PREF_TYPE_CHECKBOX,
+       .pref = EVE_PREF_ENABLE_JAVASCRIPT,
+       .pref_get = prefs_enable_javascript_get,
+       .pref_set = prefs_enable_javascript_set,
+     }}, NULL, ITEM_FLAG_NONE },
+   { ITEM_TYPE_PREFERENCE, "Enable plugins",
+     (More_Menu_Preference[]) {{
+       .type = PREF_TYPE_CHECKBOX,
+       .pref = EVE_PREF_ENABLE_PLUGINS,
+       .pref_get = prefs_enable_plugins_get,
+       .pref_set = prefs_enable_plugins_set,
+     }}, NULL, ITEM_FLAG_NONE },
+   { ITEM_TYPE_PREFERENCE, "Private mode",
+     (More_Menu_Preference[]) {{
+       .type = PREF_TYPE_CHECKBOX,
+       .pref = EVE_PREF_ENABLE_PRIVATE_MODE,
+       .pref_get = prefs_enable_private_mode_get,
+       .pref_set = prefs_enable_private_mode_set,
+     }}, NULL, ITEM_FLAG_NONE },
+   { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
+   { ITEM_TYPE_STATIC_FOLDER, "Privacy",
+     (More_Menu_Item[]) {
+         { ITEM_TYPE_CALLBACK, "Clear everything", NULL, NULL, ITEM_FLAG_NONE },
+         { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
+         { ITEM_TYPE_CALLBACK, "Clear cache", NULL, NULL, ITEM_FLAG_NONE },
+         { ITEM_TYPE_CALLBACK, "Clear history", NULL, NULL, ITEM_FLAG_NONE },
+         { ITEM_TYPE_CALLBACK, "Clear database", NULL, NULL, ITEM_FLAG_NONE },
+         { ITEM_TYPE_LAST, NULL, NULL, NULL, ITEM_FLAG_NONE },
+     }, NULL, ITEM_FLAG_ARROW },
+   { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
+   { ITEM_TYPE_STATIC_FOLDER, "Tweaks",
+     (More_Menu_Item[]) {
+         { ITEM_TYPE_PREFERENCE, "Enable mouse cursor",
+           (More_Menu_Preference[]) {{
+             .type = PREF_TYPE_CHECKBOX,
+             .pref = EVE_PREF_MOUSE_CURSOR,
+             .pref_get = prefs_enable_mouse_cursor_get,
+             .pref_set = prefs_enable_mouse_cursor_set
+           }}, NULL, ITEM_FLAG_NONE },
+         { ITEM_TYPE_PREFERENCE, "Enable touch interface",
+           (More_Menu_Preference[]) {{
+             .type = PREF_TYPE_CHECKBOX,
+             .pref = EVE_PREF_TOUCH_INTERFACE,
+             .pref_get = prefs_enable_touch_interface_get,
+             .pref_set = prefs_enable_touch_interface_set
+           }}, NULL, ITEM_FLAG_NONE },
+         { ITEM_TYPE_PREFERENCE, "User agent",
+           (More_Menu_Preference[]) {{
+             .type = PREF_TYPE_LIST,
+             .pref = EVE_PREF_USER_AGENT,
+             .pref_get = prefs_user_agent_get,
+             .pref_set = prefs_user_agent_set,
+             .data = (More_Menu_Preference_List[]) {
+               { "Eve", "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3 " PACKAGE_NAME "/" PACKAGE_VERSION },
+               { "iPhone", "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3" },
+               { "Safari", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_3; en-US) AppleWebKit/533.17.8 (KHTML, like Gecko) Version/5.0.1 Safari/533.17.8" },
+               { "Chrome", "Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.514.0 Safari/534.7" },
+               { "Firefox", "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.2) Gecko/20121223 Firefox/3.8" },
+               { "Internet Explorer", "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)" },
+               { NULL, NULL }
+             }
+           }}, NULL, ITEM_FLAG_ARROW },
+         { ITEM_TYPE_LAST, NULL, NULL, NULL, ITEM_FLAG_NONE },
+     }, NULL, ITEM_FLAG_ARROW },
+   { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
+   { ITEM_TYPE_LAST, NULL, NULL, NULL, ITEM_FLAG_NONE }
+};
+
+static More_Menu_Item more_menu_root[] =
+{
+   { ITEM_TYPE_STATIC_FOLDER, "History", more_menu_history, NULL, ITEM_FLAG_ARROW },
+   { ITEM_TYPE_DYNAMIC_FOLDER, "Favorites", more_menu_favorites, NULL, ITEM_FLAG_ARROW },
+   { ITEM_TYPE_STATIC_FOLDER, "Preferences", more_menu_preferences, NULL, ITEM_FLAG_ARROW },
+   { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
+   { ITEM_TYPE_PAGE, "ProFUSION", "http://profusion.mobi", NULL, ITEM_FLAG_NONE },
+   { ITEM_TYPE_PAGE, "WebKit", "http://webkit.org", NULL, ITEM_FLAG_NONE },
+   { ITEM_TYPE_PAGE, "Enlightenment", "http://enlightenment.org", NULL, ITEM_FLAG_NONE },
 #ifdef STORM_TROOPER
-   { ITEM_TYPE_SEPARATOR, NULL, NULL, EINA_FALSE },
-   { ITEM_TYPE_PAGE, "", "http://i.imgur.com/cJO3j.gif", EINA_FALSE },
+   { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
+   { ITEM_TYPE_PAGE, "", "http://i.imgur.com/cJO3j.gif", NULL, ITEM_FLAG_NONE },
 #endif
-   { ITEM_TYPE_LAST, NULL, NULL, EINA_FALSE }
+   { ITEM_TYPE_LAST, NULL, NULL, NULL, ITEM_FLAG_NONE }
 };
+
+static Elm_Gengrid_Item_Class gic_default, gic_new_page;
 
 static Eina_List *
 _eina_hash_sorted_keys_get(Eina_Hash *hash, Eina_Compare_Cb compare_func)
@@ -84,10 +204,10 @@ _eina_hash_sorted_keys_get(Eina_Hash *hash, Eina_Compare_Cb compare_func)
    Eina_Hash_Tuple *keyval;
 
    EINA_ITERATOR_FOREACH(iter, keyval)
-   keyvals = eina_list_prepend(keyvals, keyval);
+     keyvals = eina_list_prepend(keyvals, keyval);
    keyvals = eina_list_sort(keyvals, 0, compare_func);
    EINA_LIST_FOREACH(keyvals, keyvals_iter, keyval)
-   keys = eina_list_append(keys, keyval->key);
+     keys = eina_list_append(keys, keyval->key);
 
    eina_list_free(keyvals);
    eina_iterator_free(iter);
@@ -95,17 +215,17 @@ _eina_hash_sorted_keys_get(Eina_Hash *hash, Eina_Compare_Cb compare_func)
    return keys;
 }
 
-static Bookmark_Menu_Item *
-_bookmark_menu_history(Eina_Iterator *items, Bookmark_Menu_Item *current_item, Eina_Bool (*filter)(Bookmark_Menu_Filter_Context *ctx, Hist_Item *item))
+static More_Menu_Item *
+_more_menu_history(Eina_Iterator *items, More_Menu_Item *current_item, Eina_Bool (*filter)(More_Menu_Filter_Context *ctx, Hist_Item *item))
 {
-   Bookmark_Menu_Item *bm_item;
-   Bookmark_Menu_Item *ret = NULL, *new_ret;
-   Bookmark_Menu_Filter_Context ctx;
+   More_Menu_Item *bm_item;
+   More_Menu_Item *ret = NULL, *new_ret;
+   More_Menu_Filter_Context ctx;
    int n_items = 0;
    const char *url;
 
    ctx.time = ecore_time_get();
-   ctx.current_bookmark_item = current_item;
+   ctx.current_item = current_item;
 
    EINA_ITERATOR_FOREACH(items, url)
    {
@@ -114,11 +234,11 @@ _bookmark_menu_history(Eina_Iterator *items, Bookmark_Menu_Item *current_item, E
       if (!filter(&ctx, item))
          continue;
 
-      bm_item = calloc(1, sizeof(Bookmark_Menu_Item));
+      bm_item = calloc(1, sizeof(More_Menu_Item));
       bm_item->type = ITEM_TYPE_PAGE;
       bm_item->text = eina_stringshare_add(hist_item_title_get(item));
       bm_item->next = (char *)hist_item_url_get(item);
-      bm_item->dynamic = 1;
+      bm_item->flags = ITEM_FLAG_DYNAMIC;
 
       if (!ret)
          ret = calloc(1, sizeof(*ret) * BOOKMARK_MENU_PREALLOC_SIZE);
@@ -142,7 +262,7 @@ realloc_error:
    if (!n_items)
       return NULL;
 
-   bm_item = calloc(1, sizeof(Bookmark_Menu_Item));
+   bm_item = calloc(1, sizeof(More_Menu_Item));
    bm_item->type = ITEM_TYPE_LAST;
    new_ret = realloc(ret, (1 + n_items) * sizeof(*ret));
    if (!new_ret)
@@ -160,10 +280,10 @@ realloc_error:
 }
 
 static Eina_Bool
-_domain_filter(Bookmark_Menu_Filter_Context *ctx, Hist_Item *item)
+_domain_filter(More_Menu_Filter_Context *ctx, Hist_Item *item)
 {
    char *domain = strstr(hist_item_url_get(item), "://");
-   const char *filtered_domain = ctx->current_bookmark_item->text;
+   const char *filtered_domain = ctx->current_item->text;
    if (domain)
      {
         domain += 3;
@@ -173,23 +293,23 @@ _domain_filter(Bookmark_Menu_Filter_Context *ctx, Hist_Item *item)
    return EINA_FALSE;
 }
 
-static Bookmark_Menu_Item *
-_bookmark_menu_history_by_domain(Bookmark_Menu_Item *current_item)
+static More_Menu_Item *
+_more_menu_history_by_domain(More_Menu_Item *current_item)
 {
-   Bookmark_Menu_Item *ret;
+   More_Menu_Item *ret;
    Eina_Iterator *items = eina_hash_iterator_key_new(hist_items_hash_get(hist));
 
-   ret = _bookmark_menu_history(items, current_item, _domain_filter);
+   ret = _more_menu_history(items, current_item, _domain_filter);
    eina_iterator_free(items);
 
    return ret;
 }
 
-static Bookmark_Menu_Item *
-bookmark_menu_history_by_domain(Bookmark_Menu_Item *current_item)
+static More_Menu_Item *
+more_menu_history_by_domain(More_Menu_Item *current_item)
 {
-   Bookmark_Menu_Item *bm_item;
-   Bookmark_Menu_Item *ret = NULL, *new_ret;
+   More_Menu_Item *bm_item;
+   More_Menu_Item *ret = NULL, *new_ret;
    Eina_Iterator *items = eina_hash_iterator_key_new(hist_items_hash_get(hist));
    Eina_Hash *domains = eina_hash_string_superfast_new(NULL);
    const char *url;
@@ -221,11 +341,11 @@ unknown_schema:
    items = eina_hash_iterator_key_new(domains);
    EINA_ITERATOR_FOREACH(items, url)
    {
-      bm_item = calloc(1, sizeof(Bookmark_Menu_Item));
+      bm_item = calloc(1, sizeof(More_Menu_Item));
       bm_item->type = ITEM_TYPE_DYNAMIC_FOLDER;
       bm_item->text = eina_stringshare_add(url);
-      bm_item->next = _bookmark_menu_history_by_domain;
-      bm_item->dynamic = 1;
+      bm_item->next = _more_menu_history_by_domain;
+      bm_item->flags = ITEM_FLAG_ARROW | ITEM_FLAG_DYNAMIC;
 
       if (!n_items)
          ret = calloc(1, sizeof(*ret) * BOOKMARK_MENU_PREALLOC_SIZE);
@@ -250,7 +370,7 @@ realloc_error:
    if (!n_items)
       return NULL;
 
-   bm_item = calloc(1, sizeof(Bookmark_Menu_Item));
+   bm_item = calloc(1, sizeof(More_Menu_Item));
    bm_item->type = ITEM_TYPE_LAST;
    new_ret = realloc(ret, (1 + n_items) * sizeof(*ret));
    if (!new_ret)
@@ -268,7 +388,7 @@ realloc_error:
 }
 
 static Eina_Bool
-_this_week_filter(Bookmark_Menu_Filter_Context *ctx, Hist_Item *item)
+_this_week_filter(More_Menu_Filter_Context *ctx, Hist_Item *item)
 {
    double item_time = hist_item_last_visit_get(item);
    double now = ctx->time;
@@ -276,7 +396,7 @@ _this_week_filter(Bookmark_Menu_Filter_Context *ctx, Hist_Item *item)
 }
 
 static Eina_Bool
-_today_filter(Bookmark_Menu_Filter_Context *ctx, Hist_Item *item)
+_today_filter(More_Menu_Filter_Context *ctx, Hist_Item *item)
 {
    double item_time = hist_item_last_visit_get(item);
    double now = ctx->time;
@@ -284,36 +404,36 @@ _today_filter(Bookmark_Menu_Filter_Context *ctx, Hist_Item *item)
 }
 
 static Eina_Bool
-_yesterday_filter(Bookmark_Menu_Filter_Context *ctx, Hist_Item *item)
+_yesterday_filter(More_Menu_Filter_Context *ctx, Hist_Item *item)
 {
    double item_time = hist_item_last_visit_get(item);
    double now = ctx->time;
    return (now - item_time) > 24 * 3600 && (now - item_time) <= 48 * 3600;
 }
 
-static Bookmark_Menu_Item *
-bookmark_menu_history_today(Bookmark_Menu_Item *current_item)
+static More_Menu_Item *
+more_menu_history_today(More_Menu_Item *current_item)
 {
    Eina_Iterator *iter = eina_hash_iterator_key_new(hist_items_hash_get(hist));
-   Bookmark_Menu_Item *items = _bookmark_menu_history(iter, current_item, _today_filter);
+   More_Menu_Item *items = _more_menu_history(iter, current_item, _today_filter);
    eina_iterator_free(iter);
    return items;
 }
 
-static Bookmark_Menu_Item *
-bookmark_menu_history_yesterday(Bookmark_Menu_Item *current_item)
+static More_Menu_Item *
+more_menu_history_yesterday(More_Menu_Item *current_item)
 {
    Eina_Iterator *iter = eina_hash_iterator_key_new(hist_items_hash_get(hist));
-   Bookmark_Menu_Item *items = _bookmark_menu_history(iter, current_item, _yesterday_filter);
+   More_Menu_Item *items = _more_menu_history(iter, current_item, _yesterday_filter);
    eina_iterator_free(iter);
    return items;
 }
 
-static Bookmark_Menu_Item *
-bookmark_menu_history_this_week(Bookmark_Menu_Item *current_item)
+static More_Menu_Item *
+more_menu_history_this_week(More_Menu_Item *current_item)
 {
    Eina_Iterator *iter = eina_hash_iterator_key_new(hist_items_hash_get(hist));
-   Bookmark_Menu_Item *items = _bookmark_menu_history(iter, current_item, _this_week_filter);
+   More_Menu_Item *items = _more_menu_history(iter, current_item, _this_week_filter);
    eina_iterator_free(iter);
    return items;
 }
@@ -336,33 +456,33 @@ _cb_compare_hist_visit_count_incr(const void *data1, const void *data2)
    return hist_item_visit_count_get(f1) - hist_item_visit_count_get(f2);
 }
 
-static Bookmark_Menu_Item *
-bookmark_menu_history_least_visited(Bookmark_Menu_Item *current_item)
+static More_Menu_Item *
+more_menu_history_least_visited(More_Menu_Item *current_item)
 {
    Eina_List *keys = _eina_hash_sorted_keys_get(hist_items_hash_get(hist), _cb_compare_hist_visit_count_incr);
    Eina_Iterator *iter = eina_list_iterator_new(keys);
-   Bookmark_Menu_Item *items = _bookmark_menu_history(iter, current_item, _this_week_filter);
+   More_Menu_Item *items = _more_menu_history(iter, current_item, _this_week_filter);
    eina_list_free(keys);
    eina_iterator_free(iter);
    return items;
 }
 
-static Bookmark_Menu_Item *
-bookmark_menu_history_most_visited(Bookmark_Menu_Item *current_item)
+static More_Menu_Item *
+more_menu_history_most_visited(More_Menu_Item *current_item)
 {
    Eina_List *keys = _eina_hash_sorted_keys_get(hist_items_hash_get(hist), _cb_compare_hist_visit_count_decr);
    Eina_Iterator *iter = eina_list_iterator_new(keys);
-   Bookmark_Menu_Item *items = _bookmark_menu_history(iter, current_item, _this_week_filter);
+   More_Menu_Item *items = _more_menu_history(iter, current_item, _this_week_filter);
    eina_list_free(keys);
    eina_iterator_free(iter);
    return items;
 }
 
-static Bookmark_Menu_Item *
-bookmark_menu_favorites(Bookmark_Menu_Item *current_item)
+static More_Menu_Item *
+more_menu_favorites(More_Menu_Item *current_item)
 {
-   Bookmark_Menu_Item *bm_item;
-   Bookmark_Menu_Item *ret = NULL, *new_ret;
+   More_Menu_Item *bm_item;
+   More_Menu_Item *ret = NULL, *new_ret;
    Eina_Iterator *iter = eina_hash_iterator_key_new(fav_items_hash_get(fav));
    int n_items = 0;
    const char *url;
@@ -371,11 +491,11 @@ bookmark_menu_favorites(Bookmark_Menu_Item *current_item)
    {
       Fav_Item *item = fav_items_get(fav, url);
 
-      bm_item = calloc(1, sizeof(Bookmark_Menu_Item));
+      bm_item = calloc(1, sizeof(More_Menu_Item));
       bm_item->type = ITEM_TYPE_PAGE;
       bm_item->text = eina_stringshare_add(fav_item_title_get(item));
       bm_item->next = (char *)fav_item_url_get(item);
-      bm_item->dynamic = 1;
+      bm_item->flags = ITEM_FLAG_DYNAMIC;
 
       if (!n_items)
          ret = calloc(1, sizeof(*ret) * BOOKMARK_MENU_PREALLOC_SIZE);
@@ -402,7 +522,7 @@ realloc_error:
         return NULL;
      }
 
-   bm_item = calloc(1, sizeof(Bookmark_Menu_Item));
+   bm_item = calloc(1, sizeof(More_Menu_Item));
    bm_item->type = ITEM_TYPE_LAST;
    new_ret = realloc(ret, (1 + n_items) * sizeof(*ret));
    if (!new_ret)
@@ -772,14 +892,67 @@ on_action_forward(void *data, Evas_Object *o __UNUSED__,
    ewk_view_forward(view);
 }
 
-static void      on_bookmark_item_click(void *data, Evas_Object *obj, void *event_info __UNUSED__);
-static void      on_bookmark_item_back_click(void *data, Evas_Object *edje, const char *emission __UNUSED__, const char *source __UNUSED__);
+static void
+pref_updated(More_Menu_Preference *p, void *new_value)
+{
+   Evas_Object *chrome, *view;
+   Browser_Window *win;
+   Eina_List *win_iter, *chrome_iter;
+
+#define SET_PREF_TO_ALL_VIEWS(fn,newvalue) \
+      EINA_LIST_FOREACH(app.windows, win_iter, win) \
+      { \
+         EINA_LIST_FOREACH(win->chromes, chrome_iter, chrome) \
+         { \
+            view = evas_object_data_get(chrome, "view"); \
+            fn(view, newvalue); \
+         } \
+      }
+   
+   switch (p->pref) {
+   case EVE_PREF_ENABLE_JAVASCRIPT:
+      {
+         SET_PREF_TO_ALL_VIEWS(ewk_view_setting_enable_scripts_set, *((int *)new_value));
+         break;
+      }
+   case EVE_PREF_ENABLE_PLUGINS:
+      {
+         SET_PREF_TO_ALL_VIEWS(ewk_view_setting_enable_plugins_set, *((int *)new_value));
+         break;
+      }
+   case EVE_PREF_USER_AGENT:
+      {
+         SET_PREF_TO_ALL_VIEWS(ewk_view_setting_user_agent_set, new_value);
+         break;
+      }
+   case EVE_PREF_ENABLE_PRIVATE_MODE:
+      {
+         SET_PREF_TO_ALL_VIEWS(ewk_view_setting_private_browsing_set, *((int *)new_value));
+         break;
+      }
+   }
+
+#undef SET_PREF_TO_ALL_VIEWS
+}
 
 static void
-bookmark_menu_set(Evas_Object        *chrome,
-                  Evas_Object        *list,
-                  Bookmark_Menu_Item *root,
-                  const char         *old_text)
+cb_pref_bool_changed(void *data, Evas_Object *obj, void *event_info __UNUSED__)
+{
+   More_Menu_Preference *pref = data;
+   void (*pref_set)(Prefs *, Eina_Bool);
+   
+   if ((pref_set = pref->pref_set))
+      {
+         pref_set(prefs, elm_toggle_state_get(obj));
+         pref_updated(pref, (int[]){ elm_toggle_state_get(obj) });
+      }
+}
+
+static void
+more_menu_set(Evas_Object        *chrome,
+              Evas_Object    *list,
+              More_Menu_Item *root,
+              const char     *old_text)
 {
    Browser_Window *win = evas_object_data_get(chrome, "win");
    Evas_Object *ed = elm_layout_edje_get(chrome);
@@ -787,7 +960,7 @@ bookmark_menu_set(Evas_Object        *chrome,
 
    if (!eina_list_data_find(win->list_history, root))
      {
-        if (root == bookmark_menu_root || !root)
+        if (root == more_menu_root || !root)
            win->list_history = eina_list_prepend(win->list_history, NULL);
         else
            win->list_history = eina_list_prepend(win->list_history, root);
@@ -795,48 +968,82 @@ bookmark_menu_set(Evas_Object        *chrome,
 
    elm_list_clear(list);
 
-   if (!root || root == bookmark_menu_root)
+   if (!root || root == more_menu_root)
      {
-        root = bookmark_menu_root;
-        edje_object_part_text_set(ed, "bookmark-list-title", "Bookmarks");
+        root = more_menu_root;
+        edje_object_part_text_set(ed, "more-list-title", "More");
         edje_object_signal_emit(ed, "list,back,hide", "");
      }
    else
      {
-        edje_object_part_text_set(ed, "bookmark-list-back-button-text", eina_stringshare_add(old_text ? old_text : "Bookmarks"));
-        edje_object_signal_callback_del(ed, "list,back,clicked", "", on_bookmark_item_back_click);
-        edje_object_signal_callback_add(ed, "list,back,clicked", "", on_bookmark_item_back_click, list);
+        edje_object_part_text_set(ed, "more-list-back-button-text", eina_stringshare_add(old_text ? old_text : "More"));
+        edje_object_signal_callback_del(ed, "list,back,clicked", "", on_more_item_back_click);
+        edje_object_signal_callback_add(ed, "list,back,clicked", "", on_more_item_back_click, list);
 
         edje_object_signal_emit(ed, "list,back,show", "");
      }
 
-   for (i = 0; root[i].type != ITEM_TYPE_LAST; i++) {
-        if (root[i].type == ITEM_TYPE_SEPARATOR)
-          {
-             Elm_List_Item *item = elm_list_item_append(list, NULL, NULL, NULL, NULL, NULL);
-             elm_list_item_separator_set(item, EINA_TRUE);
-          }
-        else
-           elm_list_item_append(list, root[i].text, NULL, NULL, on_bookmark_item_click, &root[i]);
+   for (i = 0; root[i].type != ITEM_TYPE_LAST; i++)
+     {
+        Evas_Object *icon = NULL, *end = NULL;
+        switch (root[i].type) {
+        case ITEM_TYPE_SEPARATOR:
+           {
+               Elm_List_Item *item = elm_list_item_append(list, NULL, NULL, NULL, NULL, NULL);
+               elm_list_item_separator_set(item, EINA_TRUE);
+               break;
+           }
+        case ITEM_TYPE_PREFERENCE:
+           {
+               More_Menu_Preference *pref = root[i].next;
+               
+               if (!pref->pref_get) break;
+               if (pref->type == PREF_TYPE_CHECKBOX)
+                  {
+                     Eina_Bool (*pref_get)(Prefs *);
+                     Evas_Object *toggle = elm_toggle_add(list);
+                     
+                     pref_get = pref->pref_get;
+                     elm_toggle_state_set(toggle, pref_get(prefs));
+                     evas_object_smart_callback_add(toggle, "changed", cb_pref_bool_changed, pref);
+                     
+                     end = toggle;
+                  }
+           }
+           /* fallthrough */
+        default:
+           if (!icon && root[i].flags & ITEM_FLAG_SELECTED)
+               {
+                  icon = elm_icon_add(list);
+                  elm_icon_file_set(icon, PACKAGE_DATA_DIR "/default.edj", "list-selected");
+               }
+           if (!end && root[i].flags & ITEM_FLAG_ARROW)
+               {
+                  end = elm_icon_add(list);
+                  elm_icon_file_set(end, PACKAGE_DATA_DIR "/default.edj", "list-arrow");
+               }
+        
+           elm_list_item_append(list, root[i].text, icon, end, on_more_item_click, &root[i]);
+        }
      }
 
    elm_list_go(list);
 }
 
 static void
-on_bookmark_item_back_click(void *data, Evas_Object *edje,
-                            const char *emission __UNUSED__,
-                            const char *source __UNUSED__)
+on_more_item_back_click(void *data, Evas_Object *edje,
+                        const char *emission __UNUSED__,
+                        const char *source __UNUSED__)
 {
-   Bookmark_Menu_Item *bmi;
+   More_Menu_Item *bmi;
    Browser_Window *win = evas_object_data_get(edje, "win");
    Evas_Object *list = data;
 
    edje_object_signal_emit(edje, "list,animate,right", "");
-   edje_object_part_text_set(edje, "bookmark-list-title", edje_object_part_text_get(edje, "bookmark-list-back-button-text"));
-   eina_stringshare_del(edje_object_part_text_get(edje, "bookmark-list-back-button-text"));
+   edje_object_part_text_set(edje, "more-list-title", edje_object_part_text_get(edje, "more-list-back-button-text"));
+   eina_stringshare_del(edje_object_part_text_get(edje, "more-list-back-button-text"));
 
-   if ((bmi = win->list_history->data) && bmi->dynamic)
+   if ((bmi = win->list_history->data) && bmi->flags & ITEM_FLAG_DYNAMIC)
      {
         eina_stringshare_del(bmi->text);
         free(bmi);
@@ -846,20 +1053,98 @@ on_bookmark_item_back_click(void *data, Evas_Object *edje,
    win->list_history_titles = eina_list_remove_list(win->list_history_titles, win->list_history_titles);
 
    if (!win->list_history_titles)
-      bookmark_menu_set(win->current_chrome, list, win->list_history->data, "Bookmarks");
+      more_menu_set(win->current_chrome, list, win->list_history->data, "More");
    else
-      bookmark_menu_set(win->current_chrome, list, win->list_history->data, win->list_history_titles->data);
+      more_menu_set(win->current_chrome, list, win->list_history->data, win->list_history_titles->data);
+}
+
+void
+chrome_prefs_apply(Evas_Object *chrome)
+{
+   Evas_Object *view = evas_object_data_get(chrome, "view");
+   
+   ewk_view_setting_enable_scripts_set(view, prefs_enable_javascript_get(prefs));
+   ewk_view_setting_enable_plugins_set(view, prefs_enable_plugins_get(prefs));
+   ewk_view_setting_user_agent_set(view, prefs_user_agent_get(prefs));
+   ewk_view_setting_private_browsing_set(view, prefs_enable_private_mode_get(prefs));
 }
 
 static void
-on_bookmark_item_click(void *data, Evas_Object *obj,
+callback_menu_prefs_list_set(More_Menu_Item *i)
+{
+   More_Menu_Preference *p = i->data;
+   More_Menu_Preference_List *l = p->data;
+   void (*pref_set)(Prefs *, const char *);
+   const char *title = NULL;
+   int item;
+   
+   for (item = 0; l[item].title; item++)
+      {
+         if (!strcmp(l[item].title, i->text))
+            {
+               if (p->pref_set)
+                  {
+                     pref_set = p->pref_set;
+                     pref_set(prefs, l[item].value);
+                     pref_updated(p, (void *)l[item].value);
+                  }
+               break;
+            }
+      }
+}
+
+static More_Menu_Item *
+more_menu_prefs_list_create(More_Menu_Item *i, More_Menu_Preference *p)
+{
+   More_Menu_Preference_List *list = p->data;
+   More_Menu_Item *bmi;
+   const char *(*pref_get)(void *);
+   const char *preference = NULL;
+   int item, n_items;
+   
+   if (!list) return NULL;
+   for (n_items = 0; list[n_items].title; n_items++);
+   if (!(bmi = calloc(n_items, sizeof(*bmi)))) return NULL;
+
+   if (p->pref_get)
+      {
+         pref_get = p->pref_get;
+         preference = pref_get(prefs);
+      }
+   
+   for (item = 0; item < n_items; item++) {
+      bmi[item].text = eina_stringshare_add(list[item].title);
+      bmi[item].next = callback_menu_prefs_list_set;
+      bmi[item].type = ITEM_TYPE_CALLBACK_NO_HIDE;
+      bmi[item].data = p;
+      bmi[item].flags = (preference && !strcmp(list[item].value, preference)) ? ITEM_FLAG_SELECTED : ITEM_FLAG_NONE;
+      bmi[item].flags |= ITEM_FLAG_DYNAMIC;
+   }
+   
+   bmi[item].type = ITEM_TYPE_LAST;
+   
+   return bmi;
+}
+
+static More_Menu_Item *
+more_menu_prefs_create(More_Menu_Item *i, More_Menu_Preference *p)
+{
+   switch (p->type) {
+   case PREF_TYPE_LIST: return more_menu_prefs_list_create(i, p);
+   }
+   
+   return NULL;
+}
+
+static void
+on_more_item_click(void *data, Evas_Object *obj,
                        void *event_info __UNUSED__)
 {
    Evas_Object *chrome = evas_object_data_get(obj, "chrome");
    Evas_Object *ed = elm_layout_edje_get(chrome);
-   Bookmark_Menu_Item *bmi = data;
+   More_Menu_Item *bmi = data;
    Browser_Window *win = evas_object_data_get(chrome, "win");
-   const char *old_text = edje_object_part_text_get(ed, "bookmark-list-title");
+   const char *old_text = edje_object_part_text_get(ed, "more-list-title");
 
    if (!bmi)
       return;
@@ -868,39 +1153,57 @@ on_bookmark_item_click(void *data, Evas_Object *obj,
       case ITEM_TYPE_STATIC_FOLDER:
          win->list_history_titles = eina_list_prepend(win->list_history_titles, old_text);
          edje_object_signal_emit(ed, "list,animate,left", "");
-         edje_object_part_text_set(ed, "bookmark-list-title", bmi->text);
-         bookmark_menu_set(chrome, obj, bmi->next, old_text);
+         edje_object_part_text_set(ed, "more-list-title", bmi->text);
+         more_menu_set(chrome, obj, bmi->next, old_text);
          break;
 
       case ITEM_TYPE_DYNAMIC_FOLDER:
       {
-         Bookmark_Menu_Callback callback = bmi->next;
+         More_Menu_Callback callback = bmi->next;
          if (!callback)
             return;
 
-         Bookmark_Menu_Item *new_root = callback(bmi);
+         More_Menu_Item *new_root = callback(bmi);
          if (new_root)
            {
               win->list_history_titles = eina_list_prepend(win->list_history_titles, old_text);
-              edje_object_part_text_set(ed, "bookmark-list-title", bmi->text);
+              edje_object_part_text_set(ed, "more-list-title", bmi->text);
               edje_object_signal_emit(ed, "list,animate,left", "");
-              bookmark_menu_set(chrome, obj, new_root, old_text);
+              more_menu_set(chrome, obj, new_root, old_text);
            }
       }
       break;
-
+      
+      case ITEM_TYPE_PREFERENCE:
+      {
+         if (!bmi->next)
+            return;
+         
+         More_Menu_Item *new_root = more_menu_prefs_create(bmi, bmi->next);
+         if (new_root)
+            {
+               win->list_history_titles = eina_list_prepend(win->list_history_titles, old_text);
+               edje_object_signal_emit(ed, "list,animate,left", "");
+               edje_object_part_text_set(ed, "more-list-title", bmi->text);
+               more_menu_set(chrome, obj, new_root, old_text);
+            }
+      }
+      
       case ITEM_TYPE_LAST:
       case ITEM_TYPE_SEPARATOR:
-         break;
+      break;
 
       case ITEM_TYPE_CALLBACK:
+         edje_object_signal_emit(ed, "more,item,clicked", "");
+         /* fallthrough */
+      case ITEM_TYPE_CALLBACK_NO_HIDE:
       {
-         Bookmark_Menu_Callback callback = bmi->next;
+         More_Menu_Callback callback = bmi->next;
          Evas_Object *ed = elm_layout_edje_get(chrome);
          if (callback)
             callback(bmi);
-
-         edje_object_signal_emit(ed, "bookmark,item,clicked", "");
+         if (bmi->type == ITEM_TYPE_CALLBACK_NO_HIDE)
+            on_more_item_back_click(obj, ed, NULL, NULL);
       }
       break;
 
@@ -911,7 +1214,7 @@ on_bookmark_item_click(void *data, Evas_Object *obj,
          if (win)
             ewk_view_uri_set(win->current_view, bmi->next);
 
-         edje_object_signal_emit(ed, "bookmark,item,clicked", "");
+         edje_object_signal_emit(ed, "more,item,clicked", "");
       }
       break;
      }
@@ -993,7 +1296,7 @@ tab_grid_new_tab_click(void *data, Evas_Object *obj, void *event_info)
    Evas_Object *ed = elm_layout_edje_get(chrome);
 
    edje_object_signal_emit(ed, "tab,item,clicked", "");
-   tab_add(win, DEFAULT_URL);
+   tab_add(win, prefs_home_page_get(prefs));
 }
 
 static void
@@ -1026,37 +1329,37 @@ on_action_tab_hide(void *data, Evas_Object *o __UNUSED__,
 }
 
 static void
-on_action_bookmark_hide(void *data, Evas_Object *o __UNUSED__,
+on_action_more_hide(void *data, Evas_Object *o __UNUSED__,
                         const char *emission __UNUSED__,
                         const char *source __UNUSED__)
 {
    Evas_Object *chrome = data;
    Evas_Object *edje = elm_layout_edje_get(chrome);
-   Bookmark_Menu_Item *bmi;
+   More_Menu_Item *bmi;
    Browser_Window *win = evas_object_data_get(chrome, "win");
 
    EINA_LIST_FREE(win->list_history, bmi)
-   if (bmi && bmi->dynamic)
+   if (bmi && bmi->flags & ITEM_FLAG_DYNAMIC)
      {
         eina_stringshare_del(bmi->text);
         free(bmi);
      }
 
-   eina_stringshare_del(edje_object_part_text_get(edje, "bookmark-list-back-button-text"));
+   eina_stringshare_del(edje_object_part_text_get(edje, "more-list-back-button-text"));
    eina_list_free(win->list_history_titles);
    win->list_history = NULL;
    win->list_history_titles = NULL;
 }
 
 static void
-on_action_bookmark_show(void *data, Evas_Object *o __UNUSED__,
+on_action_more_show(void *data, Evas_Object *o __UNUSED__,
                         const char *emission __UNUSED__,
                         const char *source __UNUSED__)
 {
    Evas_Object *chrome = data;
-   Evas_Object *hl = evas_object_data_get(chrome, "bookmark-list");
+   Evas_Object *hl = evas_object_data_get(chrome, "more-list");
 
-   bookmark_menu_set(chrome, hl, NULL, NULL);
+   more_menu_set(chrome, hl, NULL, NULL);
 }
 
 static void
@@ -1083,7 +1386,7 @@ on_action_home(void *data, Evas_Object *o __UNUSED__,
 {
    Evas_Object *view = data;
 
-   ewk_view_uri_set(view, DEFAULT_URL);
+   ewk_view_uri_set(view, prefs_home_page_get(prefs));
 }
 
 static void
@@ -1313,14 +1616,14 @@ chrome_add(Browser_Window *win, const char *url)
    evas_object_smart_callback_add
       (text_url, "activated", on_action_load_page, view);
 
-   Evas_Object *bookmark_list = elm_list_add(ed);
-   elm_list_scroller_policy_set(bookmark_list,
+   Evas_Object *more_list = elm_list_add(ed);
+   elm_list_scroller_policy_set(more_list,
                                 ELM_SCROLLER_POLICY_OFF,
                                 ELM_SCROLLER_POLICY_AUTO);
-   elm_object_style_set(bookmark_list, "ewebkit");
-   evas_object_data_set(bookmark_list, "chrome", chrome);
-   evas_object_data_set(chrome, "bookmark-list", bookmark_list);
-   elm_layout_content_set(chrome, "bookmark-list-swallow", bookmark_list);
+   elm_object_style_set(more_list, "ewebkit");
+   evas_object_data_set(more_list, "chrome", chrome);
+   evas_object_data_set(chrome, "more-list", more_list);
+   elm_layout_content_set(chrome, "more-list-swallow", more_list);
 
    Evas_Object *tab_grid = elm_gengrid_add(ed);
    elm_object_style_set(tab_grid, "ewebkit");
@@ -1358,10 +1661,10 @@ chrome_add(Browser_Window *win, const char *url)
    edje_object_signal_callback_add(ed, "view,mask,visible", "", on_view_mask_visible, win);
    edje_object_signal_callback_add(ed, "view,mask,hidden", "", on_view_mask_hidden, win);
 
-   edje_object_signal_callback_add(ed, "bookmark,show", "",
-                                   on_action_bookmark_show, chrome);
-   edje_object_signal_callback_add(ed, "bookmark,hide", "",
-                                   on_action_bookmark_hide, chrome);
+   edje_object_signal_callback_add(ed, "more,show", "",
+                                   on_action_more_show, chrome);
+   edje_object_signal_callback_add(ed, "more,hide", "",
+                                   on_action_more_hide, chrome);
    edje_object_signal_callback_add(ed, "tab,show", "",
                                    on_action_tab_show, chrome);
    edje_object_signal_callback_add(ed, "tab,hide", "",
@@ -1391,6 +1694,7 @@ chrome_add(Browser_Window *win, const char *url)
    _chrome_state_apply(chrome, view);
 
    elm_pager_content_push(win->pager, chrome);
+   chrome_prefs_apply(chrome);
    return chrome;
 
 error_view_create:

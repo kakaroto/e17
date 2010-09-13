@@ -54,11 +54,11 @@
                align: 0.0 0.5;
                rel1 {
                   relative: 0.0  0.0;
-                  offset:   4    4;
+                  offset:   20    3;
                }
                rel2 {
                   relative: 0.0  1.0;
-                  offset:   4   -5;
+                  offset:   21   -12;
                }
             }
          }
@@ -69,11 +69,11 @@
                align: 1.0 0.5;
                rel1 {
                   relative: 1.0  0.0;
-                  offset:   -5    4;
+                  offset:   -15    3;
                }
                rel2 {
                   relative: 1.0  1.0;
-                  offset:   -5   -5;
+                  offset:   -16   -12;
                }
             }
          }

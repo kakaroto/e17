@@ -7,12 +7,12 @@ filesdir = $(datadir)/$(PACKAGE)
 files_DATA = ewebkit.edj default.edj
 
 images = \
-    bookmark-list-back-button.png \
-    bookmark-list-title.png \
+    more-list-back-button.png \
+    more-list-title.png \
     bt_back_normal.png \
     bt_back_selected.png \
-    bt_bookmark_normal.png \
-    bt_bookmark_selected.png \
+    bt_more_normal.png \
+    bt_more_selected.png \
     bt_fav_normal.png \
     bt_fav_selected.png \
     bt_forward_normal.png \
@@ -41,7 +41,9 @@ images = \
     cur_shine.png \
     cur_glow.png \
     cur_shad.png \
-    progress-bar-background.png
+    progress-bar-background.png \
+    arrow_right.png \
+    check.png
 
 fonts = 
 

@@ -8,6 +8,7 @@
 #include <Elementary.h>
 #include <EWebKit.h>
 
+#include "prefs.h"
 #include "favorite.h"
 #include "history.h"
 
@@ -18,6 +19,7 @@ typedef struct _View_Zoom_Interactive   View_Zoom_Interactive;
 extern int _log_domain;
 extern Fav *fav;
 extern Hist *hist;
+extern Prefs *prefs;
 extern App app;
 
 #define CRITICAL(...) EINA_LOG_DOM_CRIT(_log_domain, __VA_ARGS__)

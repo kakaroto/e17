@@ -11,6 +11,7 @@
 #include <Elementary.h>
 #ifndef ELM_LIB_QUICKLAUNCH
 
+#include "prefs.h"
 #include "favorite.h"
 #include "private.h"
 
@@ -22,6 +23,7 @@
 int _log_domain = -1;
 Fav *fav = NULL;
 Hist *hist = NULL;
+Prefs *prefs = NULL;
 App app;
 
 static void
@@ -379,13 +381,7 @@ elm_main(int argc, char **argv)
         return 0;
      }
 
-   if (args < argc)
-      url = argv[args];
-   else
-      url = DEFAULT_URL;
-
-
-   if (!user_agent)
+   if (!user_agent || (user_agent && strcasecmp(user_agent, "eve")))
       user_agent = "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3 " PACKAGE_NAME "/" PACKAGE_VERSION;
    else
      {
@@ -417,6 +413,7 @@ elm_main(int argc, char **argv)
    ewk_init();
    favorite_init();
    history_init();
+   preferences_init();
 
    home = getenv("HOME");
    if (!home || !home[0])
@@ -456,6 +453,19 @@ elm_main(int argc, char **argv)
         hist = hist_new(0);
         hist_save(hist, path);
      }
+   
+   snprintf(path, sizeof(path), "%s/.config/ewebkit/prefs.db", home);
+   prefs = prefs_load(path);
+   if (!prefs)
+     {
+        prefs = prefs_new(EINA_FALSE, EINA_TRUE, EINA_FALSE, EINA_TRUE, "eve", DEFAULT_URL, NULL, EINA_FALSE);
+        prefs_save(prefs, path);
+     }
+
+   if (args < argc)
+      url = argv[args];
+   else
+      url = prefs_home_page_get(prefs);
 
    if (!add_win(&app, url))
      {
@@ -470,6 +480,9 @@ end:
 
    hist_save(hist, NULL);
    hist_free(hist);
+   
+   prefs_save(prefs, NULL);
+   prefs_free(prefs);
 
    eina_stringshare_del(app.user_agent);
 
@@ -479,6 +492,7 @@ end:
    ewk_shutdown();
    favorite_shutdown();
    history_shutdown();
+   preferences_shutdown();
    return r;
 }
 

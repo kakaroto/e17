@@ -15,7 +15,7 @@ bin_PROGRAMS += eve_ql
 endif
 
 eve_LDADD = @ELEMENTARY_LIBS@ @EWEBKIT_LIBS@
-eve_SOURCES = main.c view.c chrome.c favorite.c history.c
+eve_SOURCES = main.c view.c chrome.c favorite.c history.c prefs.c
 
 if BUILD_QUICKLAUNCH
 ############################################################################
@@ -36,5 +36,5 @@ eve_ql_CFLAGS = -DELM_LIB_QUICKLAUNCH=1
 eve_ql_LDFLAGS =
 endif
 
-noinst_HEADERS = gettext.h private.h favorite.h history.h
-EXTRA_DIST = gettext.h private.h favorite.h history.h
+noinst_HEADERS = gettext.h private.h favorite.h history.h prefs.h
+EXTRA_DIST = gettext.h private.h favorite.h history.h prefs.h
