@@ -24,6 +24,11 @@ static More_Menu_Item *more_menu_history_this_week(More_Menu_Item *);
 static More_Menu_Item *more_menu_history_most_visited(More_Menu_Item *);
 static More_Menu_Item *more_menu_history_least_visited(More_Menu_Item *);
 static More_Menu_Item *more_menu_history_by_domain(More_Menu_Item *);
+static More_Menu_Item *more_menu_privacy_clear_everything(More_Menu_Item *);
+static More_Menu_Item *more_menu_privacy_clear_cache(More_Menu_Item *);
+static More_Menu_Item *more_menu_privacy_clear_history(More_Menu_Item *);
+static More_Menu_Item *more_menu_privacy_clear_database(More_Menu_Item *);
+
 static void on_more_item_click(void *data, Evas_Object *obj, void *event_info __UNUSED__);
 static void on_more_item_back_click(void *data, Evas_Object *edje, const char *emission __UNUSED__, const char *source __UNUSED__);
 
@@ -130,11 +135,11 @@ static More_Menu_Item more_menu_preferences[] =
    { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
    { ITEM_TYPE_STATIC_FOLDER, "Privacy",
      (More_Menu_Item[]) {
-         { ITEM_TYPE_CALLBACK, "Clear everything", NULL, NULL, ITEM_FLAG_NONE },
+         { ITEM_TYPE_CALLBACK, "Clear everything", more_menu_privacy_clear_everything, NULL, ITEM_FLAG_NONE },
          { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
-         { ITEM_TYPE_CALLBACK, "Clear cache", NULL, NULL, ITEM_FLAG_NONE },
-         { ITEM_TYPE_CALLBACK, "Clear history", NULL, NULL, ITEM_FLAG_NONE },
-         { ITEM_TYPE_CALLBACK, "Clear database", NULL, NULL, ITEM_FLAG_NONE },
+         { ITEM_TYPE_CALLBACK, "Clear cache", more_menu_privacy_clear_cache, NULL, ITEM_FLAG_NONE },
+         { ITEM_TYPE_CALLBACK, "Clear history", more_menu_privacy_clear_history, NULL, ITEM_FLAG_NONE },
+         { ITEM_TYPE_CALLBACK, "Clear database", more_menu_privacy_clear_database, NULL, ITEM_FLAG_NONE },
          { ITEM_TYPE_LAST, NULL, NULL, NULL, ITEM_FLAG_NONE },
      }, NULL, ITEM_FLAG_ARROW },
    { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
@@ -785,6 +790,38 @@ static void
 on_view_popup_delete(void *data, Evas_Object *view, void *event_info)
 {
    ecore_idler_add(_view_popup_delete, data);
+}
+
+static More_Menu_Item *
+more_menu_privacy_clear_everything(More_Menu_Item *mmi)
+{
+   more_menu_privacy_clear_cache(mmi);
+   more_menu_privacy_clear_history(mmi);
+   more_menu_privacy_clear_database(mmi);
+
+   return NULL;
+}
+
+static More_Menu_Item *
+more_menu_privacy_clear_cache(More_Menu_Item *mmi __UNUSED__)
+{
+   /* FIXME: Eve does not support disk cache yet */
+   return NULL;
+}
+
+static More_Menu_Item *
+more_menu_privacy_clear_history(More_Menu_Item *mmi __UNUSED__)
+{
+  hist_free(hist);
+  hist = hist_new(0);
+  return NULL;
+}
+
+static More_Menu_Item *
+more_menu_privacy_clear_database(More_Menu_Item *mmi __UNUSED__)
+{
+  /* FIXME: Clear HTML5 database */
+  return NULL;
 }
 
 static void
