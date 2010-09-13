@@ -14,6 +14,7 @@ collections
 		name: "/ephoto/thumb";
 		parts
 		{
+                  
 			part
 			{
 				name: "background";
@@ -24,9 +25,24 @@ collections
 					state: "default" 0.0;
 					color: 255 255 255 255;
 					image.normal: "thumb_shadow.png";
-					image.border: 12 12 7 13;
+					image.border: 17 17 17 17;
 				}
 			}
+                        part
+                        {
+                           name: "border";
+                           type: RECT;
+                           mouse_events: 0;
+                           description
+                           {
+                              state: "default" 0.0;
+                              color: 255 255 255 255;
+                              rel1.to: "background";
+                              rel1.offset: 16 16;
+                              rel2.to: "background";
+                              rel2.offset: -15 -15;
+                           }
+                        }
 			part
 			{
 				name: "clipper";
@@ -36,10 +52,10 @@ collections
 				{
 					state: "default" 0.0;
 					visible: 1;
-					rel1.to: "background";
-					rel1.offset: 12 7;
-					rel2.to: "background";
-					rel2.offset: -13 -14;
+					rel1.to: "border";
+                                        rel1.offset: 8  8;
+                                        rel2.to: "border";
+					rel2.offset: -9 -9;
 					color: 255 255 255 255;
 				}
 			}
@@ -375,10 +391,31 @@ collections
 			}
 		}
 	}
-        group
+       group
         {
            name: "ephoto/main/layout";
            parts {
+              part {
+                 name: "ephoto.content.swallow";
+                 type: SWALLOW;
+                 description {
+                    state: "default" 0.0;
+                 }
+              }
+           }
+        }
+        group
+        {
+           name: "ephoto/browser/layout";
+           parts {
+              part {
+                 name: "bg";
+                 type: RECT;
+                 description {
+                    state: "default" 0.0;
+                    color: 10 10 10 0;
+                 }
+              }
               part {
                  name: "ephoto.thumb.swallow";
                  type: SWALLOW;

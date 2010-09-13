@@ -8,11 +8,20 @@ static void _ephoto_go_next(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_go_previous(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_go_slideshow(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_key_pressed(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _ephoto_flow_browser_show_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _ephoto_flow_browser_del_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
-/*Inline variables*/
-static Eina_List *iter;
-static Evas_Object *image, *image2, *toolbar;
-static const char *cur_image;
+typedef struct _Ephoto_Flow_Browser Ephoto_Flow_Browser;
+
+struct _Ephoto_Flow_Browser
+{
+        Evas_Object *flow_browser;
+        Eina_List *iter;
+        Evas_Object *image;
+        Evas_Object *image2;
+        Evas_Object *toolbar;
+        const char *cur_image;
+};
 
 static const char *toolbar_items[] = {
 	"First",
@@ -35,7 +44,7 @@ _ephoto_set_title(const char *file)
 }
 
 static void
-_ephoto_go_update(void)
+_ephoto_go_update(Ephoto_Flow_Browser *ef)
 {
 	const char *file_type;
 	char *buffer;
@@ -43,157 +52,163 @@ _ephoto_go_update(void)
 
 	efreet_mime_init();
 
-	elm_layout_content_unset(em->flow_browser, "ephoto.flow.swallow");
+	elm_layout_content_unset(ef->flow_browser, "ephoto.flow.swallow");
 
-	evas_object_hide(image);
-        evas_object_hide(image2);
+	evas_object_hide(ef->image);
+        evas_object_hide(ef->image2);
 
-	file_type = efreet_mime_type_get(cur_image);
+	file_type = efreet_mime_type_get(ef->cur_image);
 	if (file_type && !strcmp(file_type, "image/jpeg"))
 	{
-		elm_photocam_file_set(image, cur_image);
-		elm_layout_content_set(em->flow_browser, "ephoto.flow.swallow", image);
-		evas_object_show(image);
+		elm_photocam_file_set(ef->image, ef->cur_image);
+		elm_layout_content_set(ef->flow_browser, "ephoto.flow.swallow", ef->image);
+		evas_object_show(ef->image);
 	} else {
-		elm_image_file_set(image2, cur_image, NULL);
-		elm_layout_content_set(em->flow_browser, "ephoto.flow.swallow", image2);
-		evas_object_show(image2);
+		elm_image_file_set(ef->image2, ef->cur_image, NULL);
+		elm_layout_content_set(ef->flow_browser, "ephoto.flow.swallow", ef->image2);
+		evas_object_show(ef->image2);
 	}
 
-	elm_toolbar_item_unselect_all(toolbar);
+	elm_toolbar_item_unselect_all(ef->toolbar);
 
 	efreet_mime_shutdown();
 
-	length = strlen(cur_image) + strlen("Ephoto - ") + 1;
+	length = strlen(ef->cur_image) + strlen("Ephoto - ") + 1;
 	buffer = alloca(length);
-	snprintf(buffer, length, "Ephoto - %s", cur_image);
+	snprintf(buffer, length, "Ephoto - %s", ef->cur_image);
 	elm_win_title_set(em->win, buffer);
 }
 
 /*Create the flow browser*/
-void
-ephoto_create_flow_browser(void)
+Evas_Object *
+ephoto_create_flow_browser(Evas_Object *parent)
 {
 	Evas_Object *o;
+	Ephoto_Flow_Browser *ef;
 
-	em->flow_browser = elm_layout_add(em->win);
-	elm_layout_file_set(em->flow_browser,
+	ef = calloc(1, sizeof(Ephoto_Flow_Browser));
+	
+	ef->flow_browser = elm_layout_add(parent);
+	elm_layout_file_set(ef->flow_browser,
 			    PACKAGE_DATA_DIR "/themes/default/ephoto.edj", 
 			    "ephoto/flow/layout");
-	elm_win_resize_object_add(em->win, em->flow_browser);
-	evas_object_size_hint_weight_set(em->flow_browser, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-	evas_object_size_hint_align_set(em->flow_browser, EVAS_HINT_FILL, EVAS_HINT_FILL);
+	//	elm_win_resize_object_add(em->win, em->flow_browser);
+	evas_object_size_hint_weight_set(ef->flow_browser, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+	evas_object_size_hint_align_set(ef->flow_browser, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
-	image = elm_photocam_add(em->win);
-        elm_photocam_zoom_mode_set(image, ELM_PHOTOCAM_ZOOM_MODE_AUTO_FIT);
-        evas_object_size_hint_weight_set(image, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-        evas_object_size_hint_align_set(image, EVAS_HINT_FILL, EVAS_HINT_FILL);
+	ef->image = elm_photocam_add(ef->flow_browser);
+        elm_photocam_zoom_mode_set(ef->image, ELM_PHOTOCAM_ZOOM_MODE_AUTO_FIT);
+        evas_object_size_hint_weight_set(ef->image, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+        evas_object_size_hint_align_set(ef->image, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
-	image2 = elm_image_add(em->win);
-	elm_image_smooth_set(image2, EINA_TRUE);
-        evas_object_size_hint_weight_set(image2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-        evas_object_size_hint_align_set(image2, EVAS_HINT_FILL, EVAS_HINT_FILL);
+	ef->image2 = elm_image_add(ef->flow_browser);
+	elm_image_smooth_set(ef->image2, EINA_TRUE);
+        evas_object_size_hint_weight_set(ef->image2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+        evas_object_size_hint_align_set(ef->image2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
-	toolbar = elm_toolbar_add(em->win);
-        elm_toolbar_icon_size_set(toolbar, 24);
-        elm_toolbar_homogenous_set(toolbar, EINA_TRUE);
-        evas_object_size_hint_weight_set(toolbar, EVAS_HINT_EXPAND, 0.0);
-        evas_object_size_hint_align_set(toolbar, EVAS_HINT_FILL, 0.5);
-	elm_layout_content_set(em->flow_browser, "ephoto.flow.swallow", toolbar);
-	evas_object_show(toolbar);
+	ef->toolbar = elm_toolbar_add(ef->flow_browser);
+        elm_toolbar_icon_size_set(ef->toolbar, 24);
+        elm_toolbar_homogenous_set(ef->toolbar, EINA_TRUE);
+        evas_object_size_hint_weight_set(ef->toolbar, EVAS_HINT_EXPAND, 0.0);
+        evas_object_size_hint_align_set(ef->toolbar, EVAS_HINT_FILL, 0.5);
+	elm_layout_content_set(ef->flow_browser, "ephoto.flow.swallow", ef->toolbar);
+	evas_object_show(ef->toolbar);
 
-	o = elm_icon_add(em->win);
+	o = elm_icon_add(ef->toolbar);
         elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/go_back.png", NULL);
-        elm_toolbar_item_add(toolbar, o, "Go Back", _ephoto_go_back, NULL);
+        elm_toolbar_item_add(ef->toolbar, o, "Go Back", _ephoto_go_back, ef);
 
-        o = elm_icon_add(em->win);
+        o = elm_icon_add(ef->toolbar);
         elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/first.png", NULL);
-        elm_toolbar_item_add(toolbar, o, "First", _ephoto_go_first, NULL);
+        elm_toolbar_item_add(ef->toolbar, o, "First", _ephoto_go_first, ef);
 
-	o = elm_icon_add(em->win);
+	o = elm_icon_add(ef->toolbar);
         elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/previous.png", NULL);
-        elm_toolbar_item_add(toolbar, o, "Previous", _ephoto_go_previous, NULL);
+        elm_toolbar_item_add(ef->toolbar, o, "Previous", _ephoto_go_previous, ef);
 
-	o = elm_icon_add(em->win);
+	o = elm_icon_add(ef->toolbar);
         elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/next.png", NULL);
-        elm_toolbar_item_add(toolbar, o, "Next", _ephoto_go_next, NULL);
+        elm_toolbar_item_add(ef->toolbar, o, "Next", _ephoto_go_next, ef);
 
-        o = elm_icon_add(em->win);
+        o = elm_icon_add(ef->toolbar);
         elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/last.png", NULL);
-        elm_toolbar_item_add(toolbar, o, "Last", _ephoto_go_last, NULL);
+        elm_toolbar_item_add(ef->toolbar, o, "Last", _ephoto_go_last, ef);
 
-	o = elm_icon_add(em->win);
+	o = elm_icon_add(ef->toolbar);
         elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/play_slideshow.png", NULL);
-        elm_toolbar_item_add(toolbar, o, "Slideshow", _ephoto_go_slideshow, NULL);
+        elm_toolbar_item_add(ef->toolbar, o, "Slideshow", _ephoto_go_slideshow, ef);
+
+	
+	evas_object_event_callback_add(ef->flow_browser, EVAS_CALLBACK_SHOW,
+						_ephoto_flow_browser_show_cb, ef);
+	evas_object_event_callback_add(ef->flow_browser, EVAS_CALLBACK_DEL,
+						_ephoto_flow_browser_del_cb, ef);
+	evas_object_data_set(ef->flow_browser, "flow_browser", ef);
+
+	return ef->flow_browser;
 }
 
 /*Show the flow browser*/
+
 void
-ephoto_show_flow_browser(const char *current_image)
-{
+ephoto_flow_browser_image_set(Evas_Object *obj, const char *current_image)
+{	
+        Ephoto_Flow_Browser *ef;
 	const char *file_type;
 	Elm_Toolbar_Item *o;
 	int i;
 
+        ef = evas_object_data_get(obj, "flow_browser");
+
 	if (current_image)
         {
-		cur_image = current_image;
+		ef->cur_image = current_image;
 
-		evas_object_event_callback_add(em->flow_browser, EVAS_CALLBACK_KEY_UP,
-						_ephoto_key_pressed, NULL);
+		evas_object_event_callback_add(ef->flow_browser, EVAS_CALLBACK_KEY_UP,
+						_ephoto_key_pressed, ef);
 
-		iter = eina_list_data_find_list(em->images, current_image);
+		ef->iter = eina_list_data_find_list(em->images, current_image);
 		for (i = 0; i < (sizeof (toolbar_items) / sizeof (char*)); ++i)
 		{
-			o = elm_toolbar_item_find_by_label(toolbar, toolbar_items[i]);
-			elm_toolbar_item_disabled_set(o, !iter ? EINA_TRUE : EINA_FALSE);
+			o = elm_toolbar_item_find_by_label(ef->toolbar, toolbar_items[i]);
+			elm_toolbar_item_disabled_set(o, !ef->iter ? EINA_TRUE : EINA_FALSE);
 		}
 
-		fprintf(stderr, "iter: %p\n", iter);
+		fprintf(stderr, "iter: %p\n", ef->iter);
 
-		_ephoto_go_update();
+		_ephoto_go_update(ef);
 	}
 	else
 	{
 		for (i = 0; i < (sizeof (toolbar_items) / sizeof (char*)); ++i)
                 {
-                        o = elm_toolbar_item_find_by_label(toolbar, toolbar_items[i]);
+                        o = elm_toolbar_item_find_by_label(ef->toolbar, toolbar_items[i]);
                         elm_toolbar_item_disabled_set(o, EINA_TRUE);
                 }
 	}
-	elm_layout_content_set(em->flow_browser, "ephoto.toolbar.swallow", toolbar);
-	evas_object_show(toolbar);
-	evas_object_show(em->flow_browser);
-	evas_object_focus_set(em->flow_browser, 1);
+	elm_layout_content_set(ef->flow_browser, "ephoto.toolbar.swallow", ef->toolbar);
+	evas_object_show(ef->toolbar);
+	evas_object_show(ef->flow_browser);
+	evas_object_focus_set(ef->flow_browser, 1);
 }
 
-/*Hide the flow browser*/
-void 
-ephoto_hide_flow_browser(void)
+static void
+_ephoto_flow_browser_show_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-	evas_object_hide(image);
-	evas_object_hide(image2);
-	evas_object_hide(toolbar);
-	evas_object_hide(em->flow_browser);
+        Ephoto_Flow_Browser *ef = data;
+	ephoto_flow_browser_image_set(ef->flow_browser, NULL);
 }
+
 
 /*Delete the flow browser*/
-void 
-ephoto_delete_flow_browser(void)
+static void 
+_ephoto_flow_browser_del_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-	Eina_List *items;
+    Ephoto_Flow_Browser *ef = data;
+    Eina_List *items;
 
-	items = elm_toolbar_item_get_all(toolbar);
-        while (items)
-        {
-                evas_object_del(eina_list_data_get(items));
-                items = eina_list_next(items);
-        }
+    
 
-	evas_object_del(image);
-	evas_object_del(image2);
-	evas_object_del(toolbar);
-	evas_object_del(em->flow_browser);
 }
 
 /*A key has been pressed*/
@@ -211,34 +226,40 @@ static const struct
 
 static void
 _ephoto_key_pressed(void *data, Evas *e, Evas_Object *obj, void *event_data)
-{
+{    
+        Ephoto_Flow_Browser *ef = data;
 	Evas_Event_Key_Up *eku;
 	int i;
 
 	eku = (Evas_Event_Key_Up *)event_data;
 	for (i = 0; keys[i].name; ++i)
 		if (!strcmp(eku->keyname, keys[i].name))
-			keys[i].func(NULL, NULL, NULL);
+			keys[i].func(ef, NULL, NULL);
 }
 
 /*Go back to the thumbnail viewer*/
 static void 
 _ephoto_go_back(void *data, Evas_Object *obj, void *event_info)
 {
-	ephoto_hide_flow_browser();
-	ephoto_show_thumb_browser();
-
-	elm_toolbar_item_unselect_all(toolbar);
+        Ephoto_Flow_Browser *ef = data;
+    
+	evas_object_smart_callback_call(ef->flow_browser, "delete,request", NULL);
+	/* elm_toolbar_item_unselect_all(ef->toolbar); */
+	/* em->thumb_browser = ephoto_create_thumb_browser(em->layout, ecore_file_dir_get(ef->cur_image)); */
+	/* elm_layout_content_set(em->layout, "ephoto.content.swallow", em->thumb_browser); */
+    
 }
 
 /*Go to the very first image in the list*/
 static void 
 _ephoto_go_first(void *data, Evas_Object *obj, void *event_info)
 {
-	iter = em->images;
+        Ephoto_Flow_Browser *ef = data;
 
-	cur_image = eina_list_data_get(iter);
-	_ephoto_go_update();
+	ef->iter = em->images;
+
+	ef->cur_image = eina_list_data_get(ef->iter);
+	_ephoto_go_update(ef);
 }
 
 /*Go to the very last image in the list*/
@@ -246,11 +267,12 @@ static void
 _ephoto_go_last(void *data, Evas_Object *obj, void *event_info)
 {
 	const char *file_type;
+        Ephoto_Flow_Browser *ef = data;
 
-	iter = eina_list_last(em->images);
-	cur_image = eina_list_data_get(iter);
+	ef->iter = eina_list_last(em->images);
+	ef->cur_image = eina_list_data_get(ef->iter);
 
-	_ephoto_go_update();
+	_ephoto_go_update(ef);
 }
 
 /*Go to the next image in the list*/
@@ -258,13 +280,14 @@ static void
 _ephoto_go_next(void *data, Evas_Object *obj, void *event_info)
 {
 	const char *file_type;
+	Ephoto_Flow_Browser *ef = data;
 
-	iter = eina_list_next(iter);
-	if (!iter) iter = em->images;
+	ef->iter = eina_list_next(ef->iter);
+	if (!ef->iter) ef->iter = em->images;
 
-	cur_image = eina_list_data_get(iter);
+	ef->cur_image = eina_list_data_get(ef->iter);
 
-	_ephoto_go_update();
+	_ephoto_go_update(ef);
 }
 
 /*Go to the previous image in the list*/
@@ -272,22 +295,25 @@ static void
 _ephoto_go_previous(void *data, Evas_Object *obj, void *event_info)
 {
 	const char *file_type;
+	Ephoto_Flow_Browser *ef = data;
 
-	iter = eina_list_prev(iter);
-	if (!iter)
-		iter = eina_list_last(em->images);
+	ef->iter = eina_list_prev(ef->iter);
+	if (!ef->iter)
+		ef->iter = eina_list_last(em->images);
 
-	cur_image = eina_list_data_get(iter);
+	ef->cur_image = eina_list_data_get(ef->iter);
 
-	_ephoto_go_update();
+	_ephoto_go_update(ef);
 }
 
 /*Go to the slideshow*/
 static void
 _ephoto_go_slideshow(void *data, Evas_Object *obj, void *event_info)
-{
-	ephoto_hide_flow_browser();
-	ephoto_show_slideshow(1, cur_image);
-	elm_toolbar_item_unselect_all(toolbar);
+{   
+        Ephoto_Flow_Browser *ef = data;
+        // FIXME
+	//ephoto_hide_flow_browser();
+	ephoto_show_slideshow(1, ef->cur_image);
+	elm_toolbar_item_unselect_all(ef->toolbar);
 }
 

@@ -5,6 +5,37 @@ Ephoto *em;
 
 /*Inline Callbacks*/
 static void _ephoto_delete_main_window(void *data, Evas_Object *obj, void *event_info);
+static void _ephoto_flow_browser_delete_cb(void *data, Evas_Object *obj, void *event_info);
+static void _ephoto_thumb_browser_selected_cb(void *data, Evas_Object *obj, void *event_info);
+
+/* Objects Callbacks */
+static void 
+_ephoto_flow_browser_delete_cb(void *data, Evas_Object *obj, void *event_info)
+{
+  em->thumb_browser = ephoto_create_thumb_browser(em->layout, NULL/*ecore_file_dir_get(ef->cur_image)*/);
+  elm_layout_content_set(em->layout, "ephoto.content.swallow", em->thumb_browser);
+  evas_object_smart_callback_add(em->thumb_browser, 
+				 "selected",
+				 _ephoto_thumb_browser_selected_cb,
+				 NULL);
+
+  em->state = EPHOTO_STATE_THUMB;
+}
+
+static void 
+_ephoto_thumb_browser_selected_cb(void *data, Evas_Object *obj, void *event_info)
+{
+  const char *file = event_info;
+
+  em->flow_browser = ephoto_create_flow_browser(em->layout);
+  ephoto_flow_browser_image_set(em->flow_browser, file);
+  elm_layout_content_set(em->layout, "ephoto.content.swallow", em->flow_browser);
+  evas_object_smart_callback_add(em->flow_browser, 
+				 "delete,request",
+				 _ephoto_flow_browser_delete_cb,
+				 NULL);
+  em->state = EPHOTO_STATE_FLOW;
+}
 
 /*Create the main ephoto window*/
 void 
@@ -33,33 +64,51 @@ ephoto_create_main_window(const char *directory, const char *image)
 
 	/* Add the main layout to the window */
 	em->layout = elm_layout_add(em->win);
-	elm_layout_file_set(em->layout, 
-			    PACKAGE_DATA_DIR "/themes/default/ephoto.edj", 
+	elm_layout_file_set(em->layout,
+			    PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
 			    "ephoto/main/layout");
 	elm_win_resize_object_add(em->win, em->layout);
 	evas_object_size_hint_weight_set(em->layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	evas_object_size_hint_fill_set(em->layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
 	evas_object_show(em->layout);
 
-	ephoto_create_thumb_browser(directory);
-	ephoto_create_flow_browser();
+
 	if (image)
 	{
-		ephoto_show_flow_browser(image);
-		eina_stringshare_del(image);
+                em->flow_browser = ephoto_create_flow_browser(em->layout);
+		ephoto_flow_browser_image_set(em->flow_browser, image);
+		eina_stringshare_del(image);	
+		elm_layout_content_set(em->layout, "ephoto.content.swallow", em->flow_browser);
+		evas_object_smart_callback_add(em->flow_browser, 
+					       "delete,request",
+					       _ephoto_flow_browser_delete_cb,
+					       NULL);
+		em->state = EPHOTO_STATE_FLOW;
 	}
 	else
-		ephoto_show_thumb_browser();
+        {
+                em->thumb_browser =  ephoto_create_thumb_browser(em->layout, directory);
+		evas_object_show(em->thumb_browser);
+		elm_layout_content_set(em->layout, "ephoto.content.swallow", em->thumb_browser);
+		evas_object_smart_callback_add(em->thumb_browser, 
+					       "selected",
+					       _ephoto_thumb_browser_selected_cb,
+					       NULL);
+		em->state = EPHOTO_STATE_THUMB;
+	}
 
-	evas_object_resize(em->win, 840, 530);
+	evas_object_resize(em->win, 1024, 534);
 }
 
 /*Delete the main ephoto window*/
 static void
 _ephoto_delete_main_window(void *data, Evas_Object *obj, void *event_info)
 {
-	ephoto_delete_thumb_browser();
-	ephoto_delete_flow_browser();
+        if (em->thumb_browser)
+                evas_object_del(em->thumb_browser);
+        if (em->flow_browser)
+	        evas_object_del(em->flow_browser);
+
 	evas_object_del(em->layout);
 	evas_object_del(em->bg);
 	if (em->images)

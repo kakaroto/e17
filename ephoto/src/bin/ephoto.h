@@ -26,10 +26,12 @@
 void ephoto_create_main_window(const char *directory, const char *image);
 
 /*Ephoto Flow Browser*/
-void ephoto_create_flow_browser(void);
-void ephoto_show_flow_browser(const char *current_image);
-void ephoto_hide_flow_browser(void);
-void ephoto_delete_flow_browser(void);
+Evas_Object *ephoto_create_flow_browser(Evas_Object *parent);
+void ephoto_flow_browser_image_set(Evas_Object *obj, const char *current_image);
+ /* smart callbacks called:
+  * "delete,request" - the user requested to delete the flow browser, typically called when go_back button is pressed or Escape key is typed.
+  */
+
 
 /*Ephoto Slideshow*/
 void ephoto_create_slideshow(void);
@@ -38,11 +40,21 @@ void ephoto_hide_slideshow(void);
 void ephoto_delete_slideshow(void);
 
 /*Ephoto Thumb Browser*/
-void ephoto_create_thumb_browser(const char *directory);
-void ephoto_show_thumb_browser(void);
-void ephoto_hide_thumb_browser(void);
-void ephoto_delete_thumb_browser(void);
-void ephoto_populate_thumbnails(void);
+Evas_Object *ephoto_create_thumb_browser(Evas_Object *parent, const char *directory);
+void ephoto_populate_thumbnails(Evas_Object *obj);
+/* smart callbacks called:
+ * "selected" - an item in the thumb browser is selected. The selected file is passed as event_info argument.
+ */
+
+typedef enum _Ephoto_State Ephoto_State;
+
+/* Enum for the state machine */
+enum _Ephoto_State
+{
+        EPHOTO_STATE_THUMB,
+        EPHOTO_STATE_FLOW,
+        EPHOTO_STATE_SLIDESHOW
+};
 
 /*Ephoto Main Structure*/
 struct _Ephoto
@@ -50,14 +62,15 @@ struct _Ephoto
 	Evas *e;
 	Evas_Object *win;
 	Evas_Object *bg;
-        Evas_Object *box;
 	Evas_Object *layout;
 	Evas_Object *flow_browser;
 	Evas_Object *slideshow;
 	Evas_Object *thumb_browser;
 	Eina_List   *images;
+        Ephoto_State state;
 };
 typedef struct _Ephoto Ephoto;
+
 extern Ephoto *em;
 
 #endif

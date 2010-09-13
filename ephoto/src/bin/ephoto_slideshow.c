@@ -34,7 +34,7 @@ ephoto_show_slideshow(int view, const char *current_image)
 	return_view = view;
 	cur_image = current_image;
 
-	evas_object_geometry_get(em->layout, &x, &y, &w, &h);
+	evas_object_geometry_get(em->win, &x, &y, &w, &h);
 	evas_object_resize(em->slideshow, w, h);
 	evas_object_move(em->slideshow, 0, 0);
 
@@ -56,10 +56,12 @@ void
 ephoto_hide_slideshow(void)
 {
 	ephoto_delete_slideshow();
+	// FIXME
+	/*
 	if (return_view == 0)
 		ephoto_show_thumb_browser();
-	else
-		ephoto_show_flow_browser(cur_image);
+		else*/
+	//ephoto_show_flow_browser(cur_image);
 }
 
 /*Delete the slideshow object*/
