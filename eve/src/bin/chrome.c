@@ -710,8 +710,9 @@ _chrome_state_apply(Evas_Object *chrome, Evas_Object *view)
    elm_scrolled_entry_entry_set(text_url, url ? url : "");
    _is_favorite_check(chrome, url);
    _history_update(url, title ? title : url);
-
-   // TODO: check if actions are possible: back/forward/pause/reload
+   
+   edje_object_signal_emit(ed, ewk_view_back_possible(view) ? "button,back,enable" : "button,back,disable", "");
+   edje_object_signal_emit(ed, ewk_view_forward_possible(view) ? "button,forward,enable" : "button,forward,disable", "");
 }
 
 static void

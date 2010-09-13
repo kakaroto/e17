@@ -98,6 +98,20 @@
             color2: 20 20 20 255; \
         } \
     } \
+    part { name: "button-"_button_name"-disable-mask"; \
+        type: RECT; \
+        mouse_events: 1; \
+        description { state: "default" 0.0; \
+            fixed: 1 1; \
+            visible: 0; \
+        } \
+        description { state: "masking" 0.0; \
+            rel1.to: "button-"_button_name"-normal"; \
+            rel1.offset: 0 7; \
+            rel2.to: "button-"_button_name"-normal"; \
+            color: 0 0 0 128; \
+        } \
+    } \
     programs { \
         program { name: _button_name"-pressed"; \
             signal: "mouse,down,*"; \
@@ -117,6 +131,16 @@
             signal: "mouse,clicked,*"; \
             source: "button-"_button_name"-normal"; \
             action: SIGNAL_EMIT "action,"_button_name _button_name; \
+        } \
+        program { name: _button_name"-disable"; \
+            signal: "button,"_button_name",disable"; \
+            action: STATE_SET "masking" 0.0; \
+            target: "button-"_button_name"-disable-mask"; \
+        } \
+        program { name: _button_name"-enable"; \
+            signal: "button,"_button_name",enable"; \
+            action: STATE_SET "default" 0.0; \
+            target: "button-"_button_name"-disable-mask"; \
         } \
     }
 
