@@ -102,6 +102,7 @@ ephoto_create_thumb_browser(Evas_Object *parent, const char *directory)
 
 	tb->thumb_browser = elm_gengrid_add(tb->layout);
 	elm_gengrid_align_set(tb->thumb_browser, 0.5, 0.5);
+        elm_gengrid_bounce_set(tb->thumb_browser, EINA_TRUE, EINA_FALSE);
 	elm_gengrid_item_size_set(tb->thumb_browser, em->config->thumb_size, em->config->thumb_size / THUMB_RATIO);
 	elm_gengrid_horizontal_set(tb->thumb_browser, EINA_TRUE);
 	evas_object_size_hint_align_set(tb->thumb_browser, EVAS_HINT_FILL, EVAS_HINT_FILL);
