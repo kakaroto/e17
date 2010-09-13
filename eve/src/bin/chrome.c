@@ -56,7 +56,8 @@ typedef enum {
 typedef enum {
    PREF_TYPE_CHECKBOX,
    PREF_TYPE_LIST,
-   PREF_TYPE_STRING
+   PREF_TYPE_STRING,
+   PREF_TYPE_SPINNER
 } More_Menu_Preference_Type;
 
 typedef enum {
@@ -100,6 +101,12 @@ struct _More_Menu_Preference {
 struct _More_Menu_Preference_List {
    const char *title;
    const char *value;
+};
+
+struct _More_Menu_Preference_Spinner {
+   const int min;
+   const int max;
+   const char *format;
 };
 
 struct _More_Menu_Set_Params {
@@ -1066,6 +1073,19 @@ cb_pref_bool_changed(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 }
 
 static void
+cb_pref_int_changed(void *data, Evas_Object *obj, void *event_info __UNUSED__)
+{
+   More_Menu_Preference *pref = data;
+   void (*pref_set)(Prefs *, int);
+
+   if ((pref_set = pref->pref_set))
+      {
+         pref_set(prefs, elm_spinner_value_get(obj));
+         pref_updated(pref, (int[]){ elm_spinner_value_get(obj) });
+      }
+}
+
+static void
 on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    More_Menu_Set_Params *params = data;
@@ -1104,19 +1124,37 @@ on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UN
         case ITEM_TYPE_PREFERENCE:
            {
                More_Menu_Preference *pref = params->root[i].next;
-               
+
                if (!pref->pref_get) break;
-               if (pref->type == PREF_TYPE_CHECKBOX)
+               switch (pref->type) {
+               case PREF_TYPE_CHECKBOX:
                   {
                      Eina_Bool (*pref_get)(Prefs *);
                      Evas_Object *toggle = elm_toggle_add(params->list);
-                     
+
                      pref_get = pref->pref_get;
                      elm_toggle_state_set(toggle, pref_get(prefs));
                      evas_object_smart_callback_add(toggle, "changed", cb_pref_bool_changed, pref);
-                     
+
                      end = toggle;
+                     break;
                   }
+               case PREF_TYPE_SPINNER:
+                  {
+                     int (*pref_get)(Prefs *);
+                     Evas_Object *spinner = elm_spinner_add(params->list);
+                     More_Menu_Preference_Spinner *spinner_params = pref->data;
+
+                     pref_get = pref->pref_get;
+                     elm_spinner_min_max_set(spinner, spinner_params->min, spinner_params->max);
+                     if (spinner_params->format) elm_spinner_label_format_set(spinner, spinner_params->format);
+                     elm_spinner_value_set(spinner, pref_get(prefs));
+                     evas_object_smart_callback_add(spinner, "changed", cb_pref_int_changed, pref);
+
+                     end = spinner;
+                     break;
+                  }
+               }
            }
            /* fallthrough */
         default:
