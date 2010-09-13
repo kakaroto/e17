@@ -57,6 +57,7 @@ typedef enum {
    PREF_TYPE_CHECKBOX,
    PREF_TYPE_LIST,
    PREF_TYPE_STRING,
+   PREF_TYPE_PASSWORD,
    PREF_TYPE_SPINNER
 } More_Menu_Preference_Type;
 
@@ -1086,6 +1087,80 @@ cb_pref_int_changed(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 }
 
 static void
+cb_pref_string_changed(void *data, Evas_Object *obj, void *event_info __UNUSED__)
+{
+   More_Menu_Preference *pref = data;
+   void (*pref_set)(Prefs *, const char *);
+
+   if ((pref_set = pref->pref_set))
+      {
+         pref_set(prefs, elm_scrolled_entry_entry_get(obj));
+         pref_updated(pref, (void *)elm_scrolled_entry_entry_get(obj));
+      }
+}
+
+static Evas_Object *
+pref_widget_get(Evas_Object *parent, More_Menu_Preference *pref)
+{
+   if (!pref->pref_get) return NULL;
+
+   switch (pref->type) {
+   case PREF_TYPE_CHECKBOX:
+      {
+         Eina_Bool (*pref_get)(Prefs *);
+         Evas_Object *toggle = elm_toggle_add(parent);
+
+         pref_get = pref->pref_get;
+         elm_toggle_state_set(toggle, pref_get(prefs));
+         evas_object_smart_callback_add(toggle, "changed", cb_pref_bool_changed, pref);
+
+         return toggle;
+      }
+   case PREF_TYPE_SPINNER:
+      {
+         int (*pref_get)(Prefs *);
+         Evas_Object *spinner = elm_spinner_add(parent);
+         More_Menu_Preference_Spinner *spinner_params = pref->data;
+
+         pref_get = pref->pref_get;
+         elm_spinner_min_max_set(spinner, spinner_params->min, spinner_params->max);
+         if (spinner_params->format) elm_spinner_label_format_set(spinner, spinner_params->format);
+         elm_spinner_value_set(spinner, pref_get(prefs));
+         evas_object_smart_callback_add(spinner, "changed", cb_pref_int_changed, pref);
+
+         return spinner;
+      }
+   case PREF_TYPE_STRING:
+      {
+         const char *(*pref_get)(Prefs *);
+         Evas_Object *entry = elm_scrolled_entry_add(parent);
+
+         pref_get = pref->pref_get;
+         elm_scrolled_entry_entry_set(entry, pref_get(prefs));
+         elm_scrolled_entry_single_line_set(entry, EINA_TRUE);
+         evas_object_smart_callback_add(entry, "changed", cb_pref_string_changed, pref);
+
+         return entry;
+      }
+   case PREF_TYPE_PASSWORD:
+      {
+         const char *(*pref_get)(Prefs *);
+         Evas_Object *entry = elm_scrolled_entry_add(parent);
+
+         pref_get = pref->pref_get;
+         elm_scrolled_entry_password_set(entry, EINA_TRUE);
+         elm_scrolled_entry_single_line_set(entry, EINA_TRUE);
+         elm_scrolled_entry_entry_set(entry, pref_get(prefs));
+         evas_object_smart_callback_add(entry, "changed", cb_pref_string_changed, pref);
+
+         return entry;
+      }
+   }
+
+   return NULL;
+}
+
+static void
 on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    More_Menu_Set_Params *params = data;
@@ -1122,40 +1197,7 @@ on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UN
                break;
            }
         case ITEM_TYPE_PREFERENCE:
-           {
-               More_Menu_Preference *pref = params->root[i].next;
-
-               if (!pref->pref_get) break;
-               switch (pref->type) {
-               case PREF_TYPE_CHECKBOX:
-                  {
-                     Eina_Bool (*pref_get)(Prefs *);
-                     Evas_Object *toggle = elm_toggle_add(params->list);
-
-                     pref_get = pref->pref_get;
-                     elm_toggle_state_set(toggle, pref_get(prefs));
-                     evas_object_smart_callback_add(toggle, "changed", cb_pref_bool_changed, pref);
-
-                     end = toggle;
-                     break;
-                  }
-               case PREF_TYPE_SPINNER:
-                  {
-                     int (*pref_get)(Prefs *);
-                     Evas_Object *spinner = elm_spinner_add(params->list);
-                     More_Menu_Preference_Spinner *spinner_params = pref->data;
-
-                     pref_get = pref->pref_get;
-                     elm_spinner_min_max_set(spinner, spinner_params->min, spinner_params->max);
-                     if (spinner_params->format) elm_spinner_label_format_set(spinner, spinner_params->format);
-                     elm_spinner_value_set(spinner, pref_get(prefs));
-                     evas_object_smart_callback_add(spinner, "changed", cb_pref_int_changed, pref);
-
-                     end = spinner;
-                     break;
-                  }
-               }
-           }
+           end = pref_widget_get(params->list, params->root[i].next);
            /* fallthrough */
         default:
            if (!icon && params->root[i].flags & ITEM_FLAG_SELECTED)
