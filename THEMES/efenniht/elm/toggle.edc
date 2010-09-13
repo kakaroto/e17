@@ -110,6 +110,7 @@ collections {
             scale: 1;
             mouse_events: 0;
             description { state: "default" 0.0;
+               fixed: 1 1;
                rel1.to: "bg2";
                rel2 {
                   to: "bg2";
@@ -127,6 +128,7 @@ collections {
             scale: 1;
             mouse_events: 0;
             description { state: "default" 0.0;
+               fixed: 1 1;
                rel1 {
                   to: "bg2";
                   relative: 1.0 0.0;
