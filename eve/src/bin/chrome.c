@@ -710,7 +710,7 @@ _chrome_state_apply(Evas_Object *chrome, Evas_Object *view)
    elm_scrolled_entry_entry_set(text_url, url ? url : "");
    _is_favorite_check(chrome, url);
    _history_update(url, title ? title : url);
-   
+
    edje_object_signal_emit(ed, ewk_view_back_possible(view) ? "button,back,enable" : "button,back,disable", "");
    edje_object_signal_emit(ed, ewk_view_forward_possible(view) ? "button,forward,enable" : "button,forward,disable", "");
 }
@@ -975,7 +975,7 @@ chrome_prefs_apply(Evas_Object *chrome)
 {
    Evas_Object *view = evas_object_data_get(chrome, "view");
    Browser_Window *win = evas_object_data_get(chrome, "win");
-   
+
    ewk_view_setting_enable_scripts_set(view, prefs_enable_javascript_get(prefs));
    ewk_view_setting_enable_plugins_set(view, prefs_enable_plugins_get(prefs));
    ewk_view_setting_user_agent_set(view, prefs_user_agent_get(prefs));
@@ -1002,7 +1002,7 @@ pref_updated(More_Menu_Preference *p, void *new_value)
             fn(view, newvalue); \
          } \
       }
-   
+
    switch (p->pref) {
    case EVE_PREF_ENABLE_JAVASCRIPT:
       {
@@ -1057,7 +1057,7 @@ cb_pref_bool_changed(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 {
    More_Menu_Preference *pref = data;
    void (*pref_set)(Prefs *, Eina_Bool);
-   
+
    if ((pref_set = pref->pref_set))
       {
          pref_set(prefs, elm_toggle_state_get(obj));
@@ -1130,7 +1130,7 @@ on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UN
                   end = elm_icon_add(params->list);
                   elm_icon_file_set(end, PACKAGE_DATA_DIR "/default.edj", "list-arrow");
                }
-        
+
            elm_list_item_append(params->list, params->root[i].text, icon, end, on_more_item_click, &(params->root[i]));
         }
      }
@@ -1147,7 +1147,7 @@ more_menu_set(Evas_Object *chrome, Evas_Object *list, More_Menu_Item *root, cons
 {
    Evas_Object *ed = elm_layout_edje_get(chrome);
    More_Menu_Set_Params *params = calloc(1, sizeof(*params));
-   
+
    if (!params) return;
 
    params->chrome = chrome;
@@ -1206,7 +1206,7 @@ callback_menu_prefs_list_set(More_Menu_Item *i)
    void (*pref_set)(Prefs *, const char *);
    const char *title = NULL;
    int item;
-   
+
    for (item = 0; l[item].title; item++)
       {
          if (!strcmp(l[item].title, i->text))
@@ -1229,12 +1229,12 @@ more_menu_prefs_list_create(More_Menu_Item *i, More_Menu_Preference *p)
    const char *(*pref_get)(void *);
    const char *preference = NULL;
    int item, n_items;
-   
+
    if (!list) return NULL;
    for (n_items = 0; list[n_items].title; n_items++);
    if (!(mmi = calloc(n_items, sizeof(*mmi)))) return NULL;
    if ((pref_get = p->pref_get)) preference = pref_get(prefs);
-   
+
    for (item = 0; item < n_items; item++) {
       mmi[item].text = eina_stringshare_add(list[item].title);
       mmi[item].next = callback_menu_prefs_list_set;
@@ -1243,9 +1243,9 @@ more_menu_prefs_list_create(More_Menu_Item *i, More_Menu_Preference *p)
       mmi[item].flags = (preference && !strcmp(list[item].value, preference)) ? ITEM_FLAG_SELECTED : ITEM_FLAG_NONE;
       mmi[item].flags |= ITEM_FLAG_DYNAMIC;
    }
-   
+
    mmi[item].type = ITEM_TYPE_LAST;
-   
+
    return mmi;
 }
 
@@ -1291,12 +1291,12 @@ on_more_item_click(void *data, Evas_Object *obj,
            }
         break;
       }
-      
+
       case ITEM_TYPE_PREFERENCE:
       {
          if (!mmi->next)
             return;
-         
+
          More_Menu_Item *new_root = more_menu_prefs_create(mmi, mmi->next);
          if (new_root)
             {
@@ -1307,7 +1307,7 @@ on_more_item_click(void *data, Evas_Object *obj,
             }
          break;
       }
-      
+
       case ITEM_TYPE_LAST:
       case ITEM_TYPE_SEPARATOR:
       break;
