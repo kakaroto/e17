@@ -5,6 +5,7 @@
 #define _GNU_SOURCE
 #endif
 
+#include <Eet.h>
 #include <Ecore.h>
 #include <Ecore_Evas.h>
 #include <Ecore_File.h>
@@ -22,8 +23,18 @@
 #include <string.h>
 #include "config.h"
 
+typedef struct _Ephoto_Config Ephoto_Config;
+typedef struct _Ephoto Ephoto;
+
+typedef enum _Ephoto_State Ephoto_State;
+
 /*Main Functions*/
 void ephoto_create_main_window(const char *directory, const char *image);
+
+/* Configuration */
+Eina_Bool ephoto_config_init(Ephoto *em);
+void ephoto_config_save(Ephoto *em);
+void ephoto_config_free(Ephoto *em);
 
 /*Ephoto Flow Browser*/
 Evas_Object *ephoto_create_flow_browser(Evas_Object *parent);
@@ -47,14 +58,19 @@ void ephoto_populate_thumbnails(Evas_Object *obj);
  * "directory,changed" - the user selected a new directory. The selected directory is passed as event_info argument.
  */
 
-typedef enum _Ephoto_State Ephoto_State;
-
 /* Enum for the state machine */
 enum _Ephoto_State
 {
         EPHOTO_STATE_THUMB,
         EPHOTO_STATE_FLOW,
         EPHOTO_STATE_SLIDESHOW
+};
+
+struct _Ephoto_Config
+{
+        int config_version;
+
+        int thumb_size;
 };
 
 /*Ephoto Main Structure*/
@@ -70,10 +86,17 @@ struct _Ephoto
 	Eina_List   *images;
         Ephoto_State state;
         const char *cur_directory;
+
+        Ephoto_Config *config;
+
+        Eet_Data_Descriptor  *config_edd;
+        Ecore_Timer *config_save;
 };
-typedef struct _Ephoto Ephoto;
 
 extern Ephoto *em;
 
-#endif
+extern int __log_domain;
+#define DBG(...) EINA_LOG_DOM_DBG(__log_domain, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(__log_domain, __VA_ARGS__)
 
+#endif

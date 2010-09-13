@@ -15,6 +15,8 @@ AM_PROG_LIBTOOL
 
 AM_WITH_DMALLOC
 
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 if test "x$LIBINTL" = "x"; then
   LIBINTL="$INTLLIBS"
@@ -64,6 +66,17 @@ fi
 dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
+
+PKG_CHECK_MODULES([EET], eet,
+   [
+      have_eet="Yes"
+   ],
+   [
+      have_eet="No"
+      echo "Eet was not found by pkg-config!";
+      AC_MSG_ERROR([Ephoto needs eet to compile.])
+   ]
+)
 
 PKG_CHECK_MODULES([EVAS], evas,
    [
@@ -197,6 +210,7 @@ echo "------------------------------------------------------------------------"
 echo
 echo "Configuration Options Summary:"
 echo
+echo "  Eet .............: $have_eet"
 echo "  Evas ............: $have_evas"
 echo "  Ecore_File.......: $have_ecoref"
 echo "  Ecore_Evas.......: $have_ecoree"

@@ -21,10 +21,10 @@ struct _Ephoto_Thumb_Browser
         Elm_Gengrid_Item_Class eg;
         Ethumb_Client *ec;
         const char *current_directory;
-        int cur_val;
         Eio_File *list;
 };
 
+#define THUMB_RATIO (256 / 192)
 
 /*Callbacks*/
 static void _ephoto_slider_changed(void *data, Evas_Object *obj, void *event_info);
@@ -92,8 +92,8 @@ ephoto_create_thumb_browser(Evas_Object *parent, const char *directory)
         tb->thumb_slider = elm_slider_add(tb->thbox);
         elm_slider_label_set(tb->thumb_slider, "Thumb Size:");
         elm_slider_span_size_set(tb->thumb_slider, 100);
-        elm_slider_min_max_set(tb->thumb_slider, 0, 100);
-        elm_slider_value_set(tb->thumb_slider, 50);
+        elm_slider_min_max_set(tb->thumb_slider, 80, 300);
+        elm_slider_value_set(tb->thumb_slider, em->config->thumb_size);
         elm_box_pack_end(tb->thbox, tb->thumb_slider);
         evas_object_smart_callback_add(tb->thumb_slider, "changed",
                                         _ephoto_slider_changed, tb);
@@ -102,7 +102,7 @@ ephoto_create_thumb_browser(Evas_Object *parent, const char *directory)
 
 	tb->thumb_browser = elm_gengrid_add(tb->layout);
 	elm_gengrid_align_set(tb->thumb_browser, 0.5, 0.5);
-	elm_gengrid_item_size_set(tb->thumb_browser, 256, 192);
+	elm_gengrid_item_size_set(tb->thumb_browser, em->config->thumb_size, em->config->thumb_size / THUMB_RATIO);
 	elm_gengrid_horizontal_set(tb->thumb_browser, EINA_TRUE);
 	evas_object_size_hint_align_set(tb->thumb_browser, EVAS_HINT_FILL, EVAS_HINT_FILL);
 	evas_object_size_hint_weight_set(tb->thumb_browser, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -137,8 +137,6 @@ ephoto_create_thumb_browser(Evas_Object *parent, const char *directory)
         o = elm_icon_add(tb->toolbar);
         elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/play_slideshow.png", NULL);
         elm_toolbar_item_add(tb->toolbar, o, "Play Slideshow", _ephoto_view_slideshow, tb);
-
-	tb->cur_val = 50;
 
 	tb->eg.item_style = "ephoto";
 	tb->eg.func.label_get = _ephoto_get_label;
@@ -261,23 +259,14 @@ ephoto_populate_thumbnails(Evas_Object *obj)
 static void
 _ephoto_slider_changed(void *data, Evas_Object *obj, void *event)
 {
-	int w, h, val;
+	int val;
         Ephoto_Thumb_Browser *tb = data;
 
 	val = elm_slider_value_get(tb->thumb_slider);
-	elm_gengrid_item_size_get(tb->thumb_browser, &w, &h);
-	if (val < tb->cur_val)
-	{
-		w -= tb->cur_val-val;
-		h -= tb->cur_val-val;
-	}
-	else if (val > tb->cur_val)
-	{
-		w += val-tb->cur_val;
-		h += val-tb->cur_val;
-	}
-	elm_gengrid_item_size_set(tb->thumb_browser, w, h);
-	tb->cur_val = val;
+	elm_gengrid_item_size_set(tb->thumb_browser, val, val / THUMB_RATIO);
+
+        em->config->thumb_size = val;
+        ephoto_config_save(em);
 }
 
 /*Callback when the client is connected*/

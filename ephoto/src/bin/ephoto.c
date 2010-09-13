@@ -2,6 +2,9 @@
 
 static void _ephoto_display_usage(void);
 
+/* Global log domain pointer */
+int __log_domain = -1;
+
 int 
 main(int argc, char **argv)
 {
@@ -9,11 +12,25 @@ main(int argc, char **argv)
 	elm_need_efreet();
 	elm_init(argc, argv);
 
+        __log_domain = eina_log_domain_register("Ephoto", EINA_COLOR_BLUE);
+        if (!__log_domain)
+        {
+                EINA_LOG_ERR("Could not register log domain: Ephoto");
+                elm_shutdown();
+                efreet_mime_shutdown();
+                ethumb_client_shutdown();
+
+                return 0;
+        }
+
+
+        DBG("Logging initialized");
 	if (argc > 2)
 	{
 		printf("Too Many Arguments!\n");
 		_ephoto_display_usage();
 		
+                eina_log_domain_unregister(__log_domain);
 		elm_shutdown();
         	efreet_mime_shutdown();
         	ethumb_client_shutdown();
@@ -28,6 +45,7 @@ main(int argc, char **argv)
 	{
 		_ephoto_display_usage();
 
+                eina_log_domain_unregister(__log_domain);
 		elm_shutdown();
         	efreet_mime_shutdown();
         	ethumb_client_shutdown();
@@ -46,12 +64,14 @@ main(int argc, char **argv)
 		image = eina_stringshare_add(argv[1]);
 		directory = ecore_file_dir_get(argv[1]);
 		ephoto_create_main_window(directory, image);
+                free(directory);
 	}
 	else
 	{
 		printf("Incorrect Argument!\n");
 		_ephoto_display_usage();
 		
+                eina_log_domain_unregister(__log_domain);
 		elm_shutdown();
                 efreet_mime_shutdown();
                 ethumb_client_shutdown();

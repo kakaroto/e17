@@ -56,6 +56,8 @@ void
 ephoto_create_main_window(const char *directory, const char *image)
 {
 	em = calloc(1, sizeof(Ephoto));
+        if (!ephoto_config_init(em))
+                _ephoto_delete_main_window(NULL, NULL, NULL);
 
 	/*Setup the main window*/
 	em->win = elm_win_add(NULL, "ephoto", ELM_WIN_BASIC);
@@ -133,6 +135,7 @@ _ephoto_delete_main_window(void *data, Evas_Object *obj, void *event_info)
 	evas_object_del(em->bg);
 	if (em->images)
 		eina_list_free(em->images);
+        ephoto_config_free(em);
 	free(em);
 	elm_exit();
 }
