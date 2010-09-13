@@ -80,6 +80,7 @@ struct _View_Zoom_Interactive
  */
 
 Evas_Object *         window_create(void);
+void                  window_mouse_enabled_set(Evas_Object *win, Eina_Bool setting);
 void                  window_title_set(Browser_Window *win, const char *title);
 
 Evas_Object *         view_add(Evas_Object *parent);

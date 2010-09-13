@@ -927,6 +927,19 @@ on_action_forward(void *data, Evas_Object *o __UNUSED__,
    ewk_view_forward(view);
 }
 
+void
+chrome_prefs_apply(Evas_Object *chrome)
+{
+   Evas_Object *view = evas_object_data_get(chrome, "view");
+   Browser_Window *win = evas_object_data_get(chrome, "win");
+   
+   ewk_view_setting_enable_scripts_set(view, prefs_enable_javascript_get(prefs));
+   ewk_view_setting_enable_plugins_set(view, prefs_enable_plugins_get(prefs));
+   ewk_view_setting_user_agent_set(view, prefs_user_agent_get(prefs));
+   ewk_view_setting_private_browsing_set(view, prefs_enable_private_mode_get(prefs));
+   window_mouse_enabled_set(win->win, prefs_enable_mouse_cursor_get(prefs));
+}
+
 static void
 pref_updated(More_Menu_Preference *p, void *new_value)
 {
@@ -963,6 +976,14 @@ pref_updated(More_Menu_Preference *p, void *new_value)
    case EVE_PREF_ENABLE_PRIVATE_MODE:
       {
          SET_PREF_TO_ALL_VIEWS(ewk_view_setting_private_browsing_set, *((int *)new_value));
+         break;
+      }
+   case EVE_PREF_MOUSE_CURSOR:
+      {
+         EINA_LIST_FOREACH(app.windows, win_iter, win)
+         {
+            window_mouse_enabled_set(win->win, *((int *)new_value));
+         }
          break;
       }
    }
@@ -1091,17 +1112,6 @@ on_more_item_back_click(void *data, Evas_Object *edje,
       more_menu_set(win->current_chrome, list, win->list_history->data, "More");
    else
       more_menu_set(win->current_chrome, list, win->list_history->data, win->list_history_titles->data);
-}
-
-void
-chrome_prefs_apply(Evas_Object *chrome)
-{
-   Evas_Object *view = evas_object_data_get(chrome, "view");
-   
-   ewk_view_setting_enable_scripts_set(view, prefs_enable_javascript_get(prefs));
-   ewk_view_setting_enable_plugins_set(view, prefs_enable_plugins_get(prefs));
-   ewk_view_setting_user_agent_set(view, prefs_user_agent_get(prefs));
-   ewk_view_setting_private_browsing_set(view, prefs_enable_private_mode_get(prefs));
 }
 
 static void

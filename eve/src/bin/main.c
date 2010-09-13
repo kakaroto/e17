@@ -49,17 +49,23 @@ on_win_del_req(void *data, Evas_Object *win, void *event_info __UNUSED__)
    del_win(data, win);
 }
 
-/* this should be in elm_win... */
-static void
-win_mouse_disable(Evas_Object *win)
+void
+window_mouse_enabled_set(Evas_Object *win, Eina_Bool setting)
 {
-   Evas *e = evas_object_evas_get(win);
-   Ecore_Evas *ee = evas_data_attach_get(e);
-   Evas_Object *cursor = evas_object_rectangle_add(e);
+   if (!setting)
+      {
+          Evas *e = evas_object_evas_get(win);
+          Ecore_Evas *ee = evas_data_attach_get(e);
+          Evas_Object *cursor = evas_object_rectangle_add(e);
 
-   evas_object_color_set(cursor, 0, 0, 0, 0);
-   evas_object_resize(cursor, 1, 1);
-   ecore_evas_object_cursor_set(ee, cursor, EVAS_LAYER_MIN, 0, 0);
+          evas_object_color_set(cursor, 0, 0, 0, 0);
+          evas_object_resize(cursor, 1, 1);
+          ecore_evas_object_cursor_set(ee, cursor, EVAS_LAYER_MIN, 0, 0);
+      }
+   else
+      {
+          /* FIXME Add the default cursor? */
+      }
 }
 
 Eina_Bool
@@ -207,8 +213,7 @@ add_win(App *app, const char *url)
    elm_win_title_set(win->win, PACKAGE_STRING);
    elm_win_rotation_set(win->win, app->rotate);
    elm_win_fullscreen_set(win->win, app->is_fullscreen);
-   if (app->disable_mouse)
-      win_mouse_disable(win->win);
+   window_mouse_enabled_set(win->win, !app->disable_mouse);
 
    win->bg = edje_object_add(evas_object_evas_get(win->win));
    if (!win->bg)
