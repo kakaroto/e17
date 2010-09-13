@@ -455,7 +455,7 @@ _ephoto_directory_chosen(void *data, Evas_Object *obj, void *event_info)
 			elm_win_title_set(em->win, "Ephoto");
 		}
 	}
-	printf("before callback\n");
+
 	evas_object_smart_callback_call(tb->layout, "directory,changed", tb->current_directory);
 
 	evas_object_del(tb->fsel_win);
