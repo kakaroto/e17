@@ -11,6 +11,7 @@
 #define BOOKMARK_MENU_PREALLOC_SIZE 32
 
 typedef struct _More_Menu_Item More_Menu_Item;
+typedef struct _More_Menu_Set_Params More_Menu_Set_Params;
 typedef struct _More_Menu_Filter_Context More_Menu_Filter_Context;
 typedef struct _More_Menu_Preference More_Menu_Preference;
 typedef struct _More_Menu_Preference_List More_Menu_Preference_List;
@@ -97,6 +98,13 @@ struct _More_Menu_Preference {
 struct _More_Menu_Preference_List {
    const char *title;
    const char *value;
+};
+
+struct _More_Menu_Set_Params {
+   Evas_Object *chrome;
+   Evas_Object *list;
+   More_Menu_Item *root;
+   const char *old_text;
 };
 
 static More_Menu_Item more_menu_history[] =
@@ -1047,59 +1055,50 @@ cb_pref_bool_changed(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 }
 
 static void
-more_menu_set(Evas_Object        *chrome,
-              Evas_Object    *list,
-              More_Menu_Item *root,
-              const char     *old_text)
+on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
-   Browser_Window *win = evas_object_data_get(chrome, "win");
-   Evas_Object *ed = elm_layout_edje_get(chrome);
+   More_Menu_Set_Params *params = data;
+   Browser_Window *win = evas_object_data_get(params->chrome, "win");
    int i;
 
-   if (!eina_list_data_find(win->list_history, root))
+   if (!eina_list_data_find(win->list_history, params->root))
      {
-        if (root == more_menu_root || !root)
+        if (params->root == more_menu_root || !params->root)
            win->list_history = eina_list_prepend(win->list_history, NULL);
         else
-           win->list_history = eina_list_prepend(win->list_history, root);
+           win->list_history = eina_list_prepend(win->list_history, params->root);
      }
 
-   elm_list_clear(list);
+   elm_list_clear(params->list);
 
-   if (!root || root == more_menu_root)
+   if (params->root != more_menu_root)
      {
-        root = more_menu_root;
-        edje_object_part_text_set(ed, "more-list-title", "More");
-        edje_object_signal_emit(ed, "list,back,hide", "");
-     }
-   else
-     {
-        edje_object_part_text_set(ed, "more-list-back-button-text", eina_stringshare_add(old_text ? old_text : "More"));
+        edje_object_part_text_set(ed, "more-list-back-button-text", eina_stringshare_add(params->old_text ? params->old_text : "More"));
         edje_object_signal_callback_del(ed, "list,back,clicked", "", on_more_item_back_click);
-        edje_object_signal_callback_add(ed, "list,back,clicked", "", on_more_item_back_click, list);
+        edje_object_signal_callback_add(ed, "list,back,clicked", "", on_more_item_back_click, params->list);
 
         edje_object_signal_emit(ed, "list,back,show", "");
      }
 
-   for (i = 0; root[i].type != ITEM_TYPE_LAST; i++)
+   for (i = 0; params->root[i].type != ITEM_TYPE_LAST; i++)
      {
         Evas_Object *icon = NULL, *end = NULL;
-        switch (root[i].type) {
+        switch (params->root[i].type) {
         case ITEM_TYPE_SEPARATOR:
            {
-               Elm_List_Item *item = elm_list_item_append(list, NULL, NULL, NULL, NULL, NULL);
+               Elm_List_Item *item = elm_list_item_append(params->list, NULL, NULL, NULL, NULL, NULL);
                elm_list_item_separator_set(item, EINA_TRUE);
                break;
            }
         case ITEM_TYPE_PREFERENCE:
            {
-               More_Menu_Preference *pref = root[i].next;
+               More_Menu_Preference *pref = params->root[i].next;
                
                if (!pref->pref_get) break;
                if (pref->type == PREF_TYPE_CHECKBOX)
                   {
                      Eina_Bool (*pref_get)(Prefs *);
-                     Evas_Object *toggle = elm_toggle_add(list);
+                     Evas_Object *toggle = elm_toggle_add(params->list);
                      
                      pref_get = pref->pref_get;
                      elm_toggle_state_set(toggle, pref_get(prefs));
@@ -1110,22 +1109,50 @@ more_menu_set(Evas_Object        *chrome,
            }
            /* fallthrough */
         default:
-           if (!icon && root[i].flags & ITEM_FLAG_SELECTED)
+           if (!icon && params->root[i].flags & ITEM_FLAG_SELECTED)
                {
-                  icon = elm_icon_add(list);
+                  icon = elm_icon_add(params->list);
                   elm_icon_file_set(icon, PACKAGE_DATA_DIR "/default.edj", "list-selected");
                }
-           if (!end && root[i].flags & ITEM_FLAG_ARROW)
+           if (!end && params->root[i].flags & ITEM_FLAG_ARROW)
                {
-                  end = elm_icon_add(list);
+                  end = elm_icon_add(params->list);
                   elm_icon_file_set(end, PACKAGE_DATA_DIR "/default.edj", "list-arrow");
                }
         
-           elm_list_item_append(list, root[i].text, icon, end, on_more_item_click, &root[i]);
+           elm_list_item_append(params->list, params->root[i].text, icon, end, on_more_item_click, &(params->root[i]));
         }
      }
 
-   elm_list_go(list);
+   elm_list_go(params->list);
+   edje_object_signal_callback_del(ed, "list,completely,hidden", "", on_list_completely_hidden);
+
+   eina_stringshare_del(params->old_text);
+   free(params);
+}
+
+static void
+more_menu_set(Evas_Object *chrome, Evas_Object *list, More_Menu_Item *root, const char *old_text)
+{
+   Evas_Object *ed = elm_layout_edje_get(chrome);
+   More_Menu_Set_Params *params = calloc(1, sizeof(*params));
+   
+   if (!params) return;
+
+   params->chrome = chrome;
+   params->list = list;
+   params->root = root ? root : more_menu_root;
+   params->old_text = eina_stringshare_add(old_text);
+
+   if (params->root == more_menu_root)
+     {
+        edje_object_part_text_set(ed, "more-list-title", "More");
+        edje_object_signal_emit(ed, "list,back,hide", "");
+
+        on_list_completely_hidden(params, NULL, NULL, NULL);
+      }
+   else
+        edje_object_signal_callback_add(ed, "list,completely,hidden", "", on_list_completely_hidden, params);
 }
 
 static void

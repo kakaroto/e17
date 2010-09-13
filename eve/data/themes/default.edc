@@ -215,8 +215,8 @@ collections {
                 description { state: "default" 0.0;
                     align: 1.0 0.5;
                     image.normal: "arrow_right.png";
-                    min: 24 24;
-                    max: 24 24;
+                    min: 16 16;
+                    max: 16 16;
                 }
             }
         }
@@ -1002,6 +1002,7 @@ collections {
                     action: STATE_SET "hide-right" 0.0;
                     target: "more-list-swallow";
                     after: "list-animate-final";
+                    action: SIGNAL_EMIT "list,completely,hidden" "";
                 }
                 program { name: "list-animate-right";
                     signal: "list,animate,right";
@@ -1014,6 +1015,7 @@ collections {
                     action: STATE_SET "hide-left" 0.0;
                     target: "more-list-swallow";
                     after: "list-animate-final";
+                    action: SIGNAL_EMIT "list,completely,hidden" "";
                 }
                 program { name: "list-animate-final";
                     action: STATE_SET "default" 0.0;
