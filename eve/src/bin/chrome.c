@@ -6,8 +6,6 @@
 
 #include <Eina.h>
 
-#include "favorite.h"
-#include "prefs.h"
 #include "private.h"
 
 #define BOOKMARK_MENU_PREALLOC_SIZE 32
