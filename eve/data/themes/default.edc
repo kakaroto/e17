@@ -89,8 +89,8 @@
                 offset: -1 -1; \
             } \
             text { \
-                font: "Sans,Edje-Vera"; \
-                size: 12; \
+                font: "Sans:style=Bold,Edje-Vera-Bold"; \
+                size: 11; \
                 text: _button_title; \
                 align: 0.5 0.5; \
             } \
@@ -207,12 +207,38 @@ collections {
             }
         }
     }
+    group { name: "list-arrow";
+        images.image: "arrow_right.png" COMP;
+        parts {
+            part { name: "icon";
+                type: IMAGE;
+                description { state: "default" 0.0;
+                    align: 1.0 0.5;
+                    image.normal: "arrow_right.png";
+                    min: 24 24;
+                    max: 24 24;
+                }
+            }
+        }
+    }
+    group { name: "list-selected";
+        images.image: "check.png" COMP;
+        parts {
+            part { name: "icon";
+                type: IMAGE;
+                description { state: "default" 0.0;
+                    align: 1.0 0.5;
+                    image.normal: "check.png";
+                    min: 32 32;
+                    max: 32 32;
+                }
+            }
+        }
+    }
     group { name: "chrome";
         images {
             image: "bt_back_normal.png" COMP;
             image: "bt_back_selected.png" COMP;
-            image: "bt_bookmark_normal.png" COMP;
-            image: "bt_bookmark_selected.png" COMP;
             image: "bt_forward_normal.png" COMP;
             image: "bt_forward_selected.png" COMP;
             image: "bt_reload_normal.png" COMP;
@@ -223,17 +249,19 @@ collections {
             image: "bt_home_selected.png" COMP;
             image: "bt_fav_normal.png" COMP;
             image: "bt_fav_selected.png" COMP;
+            image: "bt_more_normal.png" COMP;
+            image: "bt_more_selected.png" COMP;
             image: "toolbar-background-bottom.png" COMP;
             image: "toolbar-background-top.png" COMP;
             image: "url-entry.png" COMP;
-            image: "bookmark-list-title.png" COMP;
-            image: "bookmark-list-back-button.png" COMP;
+            image: "more-list-title.png" COMP;
+            image: "more-list-back-button.png" COMP;
             image: "tab-header.png" COMP;
             image: "panel-top-triangle.png" COMP;
             image: "progress-bar-background.png" COMP;
         }
         script {
-            public bookmark_list_visible;
+            public more_list_visible;
             public tab_grid_visible;
             public favorited;
             public panel_top_visible;
@@ -259,7 +287,7 @@ collections {
                 set_int(panel_top_visible, 0);
             }
             public panel_top_show() {
-                if (get_int(bookmark_list_visible) != 1 && get_int(tab_grid_visible) != 1)
+                if (get_int(more_list_visible) != 1 && get_int(tab_grid_visible) != 1)
                     run_program(PROGRAM:"show-white-view-mask");
                 run_program(PROGRAM:"show-top-panel");
                 emit("view,mask,visible", "");
@@ -273,12 +301,12 @@ collections {
                 run_program(PROGRAM:"hide-tab-grid");
                 set_state(PART:"button-tab-selected", "default", 0.0);
                 set_int(tab_grid_visible, 0);
-                if (get_int(bookmark_list_visible) != 1) run_program(PROGRAM:"show-white-view-mask");
+                if (get_int(more_list_visible) != 1) run_program(PROGRAM:"show-white-view-mask");
                 emit("tab,hide", "");
             }
             public tab_grid_show() {
                 set_int(tab_grid_visible, 1);
-                if (get_int(bookmark_list_visible) == 1) bookmark_list_hide();
+                if (get_int(more_list_visible) == 1) more_list_hide();
                 run_program(PROGRAM:"show-tab-grid");
                 set_state(PART:"button-tab-selected", "visible", 0.0);
                 run_program(PROGRAM:"show-black-view-mask");
@@ -288,24 +316,24 @@ collections {
                 if (get_int(tab_grid_visible) == 1) tab_grid_hide();
                 else tab_grid_show();
             }
-            public bookmark_list_hide() {
-                run_program(PROGRAM:"hide-bookmark-list");
-                set_state(PART:"button-bookmark-selected", "default", 0.0);
-                set_int(bookmark_list_visible, 0);
+            public more_list_hide() {
+                run_program(PROGRAM:"hide-more-list");
+                set_state(PART:"button-more-selected", "default", 0.0);
+                set_int(more_list_visible, 0);
                 if (get_int(tab_grid_visible) != 1) run_program(PROGRAM:"show-white-view-mask");
-                emit("bookmark,hide", "");
+                emit("more,hide", "");
             }
-            public bookmark_list_show() {
-                set_int(bookmark_list_visible, 1);
+            public more_list_show() {
+                set_int(more_list_visible, 1);
                 if (get_int(tab_grid_visible) == 1) tab_grid_hide();
-                run_program(PROGRAM:"show-bookmark-list");
-                set_state(PART:"button-bookmark-selected", "visible", 0.0);
+                run_program(PROGRAM:"show-more-list");
+                set_state(PART:"button-more-selected", "visible", 0.0);
                 run_program(PROGRAM:"show-black-view-mask");
-                emit("bookmark,show", "");
+                emit("more,show", "");
             }
-            public bookmark_list_toggle() {
-                if (get_int(bookmark_list_visible) == 1) bookmark_list_hide();
-                else bookmark_list_show();
+            public more_list_toggle() {
+                if (get_int(more_list_visible) == 1) more_list_hide();
+                else more_list_show();
             }
             public progress_bar_set_value(Float:value) {
                 if (value < 0.0) value = 0.0;
@@ -379,51 +407,51 @@ collections {
                     color: 0 0 0 200;
                 }
             }
-            part { name: "bookmark-list-header";
+            part { name: "more-list-header";
                 type: IMAGE;
-                clip_to: "bookmark-list";
+                clip_to: "more-list";
                 description { state: "default" 0.0;
                     max: 99999 55;
                     rel1 {
-                        to: "bookmark-list";
+                        to: "more-list";
                         relative: 0.0 0.0;
                         offset: 0 0;
                     }
                     rel2 {
-                        to: "bookmark-list";
+                        to: "more-list";
                         relative: 1.0 0.0;
                         offset: -1 55;
                     }
-                    image.normal: "bookmark-list-title.png";
+                    image.normal: "more-list-title.png";
                 }
             }
-            part { name: "bookmark-list-bg";
+            part { name: "more-list-bg";
                 type: RECT;
                 description { state: "default" 0.0;
                     rel1 {
-                        to: "bookmark-list-header";
+                        to: "more-list-header";
                         relative: 0.0 1.0;
                         offset: 0 0;
                     }
                     rel2 {
-                        to: "bookmark-list";
+                        to: "more-list";
                         relative: 1.0 1.0;
                         offset: -1 -1;
                     }
                     color: 0 0 0 255;
                 }
             }
-            part { name: "bookmark-list-swallow";
+            part { name: "more-list-swallow";
                 type: SWALLOW;
                 description { state: "default" 0.0;
                     fixed: 1 1;
                     rel1 {
-                        to: "bookmark-list-header";
+                        to: "more-list-header";
                         relative: 0.0 1.0;
                         offset: 0 -1;
                     }
                     rel2 {
-                        to: "bookmark-list";
+                        to: "more-list";
                         relative: 1.0 1.0;
                         offset: -1 -1;
                     }
@@ -431,12 +459,12 @@ collections {
                 description { state: "hide-left" 0.0;
                     inherit: "default" 0.0;
                     rel1 {
-                        to: "bookmark-list-header";
+                        to: "more-list-header";
                         relative: -1.0 1.0;
                         offset: 0 0;
                     }
                     rel2 {
-                        to: "bookmark-list";
+                        to: "more-list";
                         relative: 0.0 1.0;
                         offset: -1 -1;
                     }
@@ -444,36 +472,36 @@ collections {
                 description { state: "hide-right" 0.0;
                     inherit: "default" 0.0;
                     rel1 {
-                        to: "bookmark-list-header";
+                        to: "more-list-header";
                         relative: 1.0 1.0;
                         offset: 0 0;
                     }
                     rel2 {
-                        to: "bookmark-list";
+                        to: "more-list";
                         relative: 1.0 1.0;
                         offset: -1 -1;
                     }
                 }
             }
-            part { name: "bookmark-list-title";
+            part { name: "more-list-title";
                 type: TEXT;
-                clip_to: "bookmark-list";
+                clip_to: "more-list";
                 description { state: "default" 0.0;
                     rel1 {
-                        to_y: "bookmark-list-header";
-                        to_x: "bookmark-list-swallow";
+                        to_y: "more-list-header";
+                        to_x: "more-list-swallow";
                         relative: 0.0 0.0;
                         offset: 0 0;
                     }
                     rel2 {
-                        to_y: "bookmark-list-header";
-                        to_x: "bookmark-list-swallow";
+                        to_y: "more-list-header";
+                        to_x: "more-list-swallow";
                         relative: 1.0 1.0;
                         offset: -1 -1;
                     }
                     text {
-                        font: "Sans,Edje-Vera";
-                        size: 12;
+                        font: "Sans:style=Bold,Edje-Vera-Bold";
+                        size: 11;
                         text: "Untitled";
                         min: 0 1;
                         align: 0.5 0.7;
@@ -481,17 +509,17 @@ collections {
                     color: 190 190 190 255;
                 }
             }
-            part { name: "bookmark-list-back-button-text";
+            part { name: "more-list-back-button-text";
                 type: TEXT;
                 mouse_events: 0;
                 description { state: "default" 0.0;
                     rel1 {
-                        to: "bookmark-list-back-button";
+                        to: "more-list-back-button";
                         relative: 0.0 0.0;
                         offset: 24 0;
                     }
                     rel2 {
-                        to: "bookmark-list-back-button";
+                        to: "more-list-back-button";
                         relative: 1.0 1.0;
                         offset: -1 -1;
                     }
@@ -508,7 +536,7 @@ collections {
                     inherit: "default" 0.0;
                 }
             }
-            part { name: "bookmark-list-back-arrow";
+            part { name: "more-list-back-arrow";
                 type: IMAGE;
                 mouse_events: 0;
                 description { state: "default" 0.0;
@@ -516,34 +544,34 @@ collections {
                     max: 13 16;
                     fixed: 1 1;
                     rel1 {
-                        to: "bookmark-list-back-button";
+                        to: "more-list-back-button";
                         relative: 0.0 0.0;
                         offset: 13 0;
                     }
                     rel2 {
-                        to: "bookmark-list-back-button";
+                        to: "more-list-back-button";
                         relative: 0.0 1.0;
                         offset: 0 -1;
                     }
-                    image.normal: "bookmark-list-back-button.png";
+                    image.normal: "more-list-back-button.png";
                 }
                 description { state: "pressed" 0.0;
                     inherit: "default" 0.0;
                 }
             }
-            part { name: "bookmark-list-back-button";
+            part { name: "more-list-back-button";
                 type: RECT;
-                clip_to: "bookmark-list";
+                clip_to: "more-list";
                 description { state: "default" 0.0;
                     rel1 {
-                        to_y: "bookmark-list-header";
-                        to_x: "bookmark-list-swallow";
+                        to_y: "more-list-header";
+                        to_x: "more-list-swallow";
                         relative: 0.0 0.0;
                         offset: 45 14;
                     }
                     rel2 {
-                        to_y: "bookmark-list-header";
-                        to_x: "bookmark-list-swallow";
+                        to_y: "more-list-header";
+                        to_x: "more-list-swallow";
                         relative: 0.0 1.0;
                         offset: 145 -2;
                     }
@@ -553,13 +581,13 @@ collections {
                     inherit: "default" 0.0;
                     visible: 0;
                     rel1 {
-                        to_y: "bookmark-list-header";
-                        to_x: "bookmark-list-swallow";
+                        to_y: "more-list-header";
+                        to_x: "more-list-swallow";
                         relative: -1.0 0.0;
                     }
                     rel2 {
-                        to_y: "bookmark-list-header";
-                        to_x: "bookmark-list-swallow";
+                        to_y: "more-list-header";
+                        to_x: "more-list-swallow";
                         relative: -1.0 1.0;
                     }
                 }
@@ -568,7 +596,7 @@ collections {
                     color: 0 0 0 128;
                 }
             }
-            part { name: "bookmark-list";
+            part { name: "more-list";
                 type: RECT;
                 description { state: "default" 0.0;
                     fixed: 1 1;
@@ -739,22 +767,22 @@ collections {
             TOOLBAR_BUTTON("forward", "Forward", TOOLBAR_POSITION(2))
             TOOLBAR_BUTTON("reload", "Reload", TOOLBAR_POSITION(3))
             TOOLBAR_BUTTON("tab", "Tabs", TOOLBAR_POSITION(4))
-            TOOLBAR_BUTTON("bookmark", "Bookmarks", TOOLBAR_POSITION(5))
+            TOOLBAR_BUTTON("more", "More", TOOLBAR_POSITION(5))
             URLBAR_BUTTON("home", 0.1)
             URLBAR_BUTTON("fav", 0.9)
-            part { name: "button-bookmark-right-separator";
+            part { name: "button-more-right-separator";
                 type: RECT;
                 description { state: "default" 0.0;
                     fixed: 1 1;
                     min: 2 90;
                     max: 2 90;
                     rel1 {
-                        to: "button-bookmark-normal";
+                        to: "button-more-normal";
                         relative: 1.0 0.0;
                         offset: -2 12;
                     }
                     rel2 {
-                        to: "button-bookmark-normal";
+                        to: "button-more-normal";
                         relative: 1.0 1.0;
                         offset: -2 -1;
                     }
@@ -826,7 +854,7 @@ collections {
                 program { name: "theme-load";
                     signal: "load";
                     script {
-                        set_int(bookmark_list_visible, 0);
+                        set_int(more_list_visible, 0);
                         set_int(tab_grid_visible, 0);
                         set_int(favorited, 0);
                         set_int(panel_top_visible, 1);
@@ -837,15 +865,15 @@ collections {
                 }
                 program { name: "list-back-clicked";
                     signal: "mouse,clicked,*";
-                    source: "bookmark-list-back-button";
+                    source: "more-list-back-button";
                     action: SIGNAL_EMIT "list,back,clicked" "";
                 }
                 program { name: "press-view-mask";
                     signal: "mouse,down,*";
                     source: "view-mask";
                     script {
-                        if (get_int(bookmark_list_visible) == 1) {
-                            bookmark_list_hide();
+                        if (get_int(more_list_visible) == 1) {
+                            more_list_hide();
                         } else if (get_int(tab_grid_visible) == 1) {
                             tab_grid_hide();
                         } else {
@@ -910,20 +938,20 @@ collections {
                     transition: ACCELERATE 0.3;
                     after: "show-top-triangle";
                 }
-                program { name: "show-bookmark-list";
+                program { name: "show-more-list";
                     action: STATE_SET "visible" 0.0;
-                    target: "bookmark-list";
+                    target: "more-list";
                     transition: ACCELERATE 0.2;
                 }
-                program { name: "hide-bookmark-list";
+                program { name: "hide-more-list";
                     action: STATE_SET "default" 0.0;
-                    target: "bookmark-list";
+                    target: "more-list";
                     transition: DECELERATE 0.2;
                 }
-                program { name: "toggle-bookmark-list";
+                program { name: "toggle-more-list";
                     signal: "mouse,clicked,*";
-                    source: "button-bookmark-normal";
-                    script { bookmark_list_toggle(); }
+                    source: "button-more-normal";
+                    script { more_list_toggle(); }
                 }
                 program { name: "show-tab-grid";
                     action: STATE_SET "visible" 0.0;
@@ -945,56 +973,56 @@ collections {
                     source: "button-fav-normal";
                     script { fav_toggle(); }
                 }
-                program { name: "press-bookmark-list-button";
+                program { name: "press-more-list-button";
                     signal: "mouse,down,*";
-                    source: "bookmark-list-back-button";
+                    source: "more-list-back-button";
                     action: STATE_SET "pressed" 0.0;
-                    target: "bookmark-list-back-button";
-                    target: "bookmark-list-back-button-text";
-                    target: "bookmark-list-back-arrow";
+                    target: "more-list-back-button";
+                    target: "more-list-back-button-text";
+                    target: "more-list-back-arrow";
                     transition: ACCELERATE 0.2;
                 }
-                program { name: "release-bookmark-list-button";
+                program { name: "release-more-list-button";
                     signal: "mouse,up,*";
-                    source: "bookmark-list-back-button";
+                    source: "more-list-back-button";
                     action: STATE_SET "default" 0.0;
-                    target: "bookmark-list-back-button";
-                    target: "bookmark-list-back-button-text";
-                    target: "bookmark-list-back-arrow";
+                    target: "more-list-back-button";
+                    target: "more-list-back-button-text";
+                    target: "more-list-back-arrow";
                     transition: DECELERATE 0.2;
                 }
                 program { name: "list-animate-left";
                     signal: "list,animate,left";
                     action: STATE_SET "hide-left" 0.0;
-                    target: "bookmark-list-swallow";
+                    target: "more-list-swallow";
                     transition: ACCELERATE 0.1;
                     after: "list-animate-left-2";
                 }
                 program { name: "list-animate-left-2";
                     action: STATE_SET "hide-right" 0.0;
-                    target: "bookmark-list-swallow";
+                    target: "more-list-swallow";
                     after: "list-animate-final";
                 }
                 program { name: "list-animate-right";
                     signal: "list,animate,right";
                     action: STATE_SET "hide-right" 0.0;
-                    target: "bookmark-list-swallow";
+                    target: "more-list-swallow";
                     transition: ACCELERATE 0.1;
                     after: "list-animate-right-2";
                 }
                 program { name: "list-animate-right-2";
                     action: STATE_SET "hide-left" 0.0;
-                    target: "bookmark-list-swallow";
+                    target: "more-list-swallow";
                     after: "list-animate-final";
                 }
                 program { name: "list-animate-final";
                     action: STATE_SET "default" 0.0;
-                    target: "bookmark-list-swallow";
+                    target: "more-list-swallow";
                     transition: DECELERATE 0.2;
                 }
-                program { name: "bookmark-item-clicked";
-                    signal: "bookmark,item,clicked";
-                    script { bookmark_list_hide(); }
+                program { name: "more-item-clicked";
+                    signal: "more,item,clicked";
+                    script { more_list_hide(); }
                 }
                 program { name: "tab-item-clicked";
                     signal: "tab,item,clicked";
@@ -1003,13 +1031,13 @@ collections {
                 program { name: "list-back-show";
                     signal: "list,back,show";
                     action: STATE_SET "default" 0.0;
-                    target: "bookmark-list-back-button";
+                    target: "more-list-back-button";
                     transition: DECELERATE 0.3;
                 }
                 program { name: "list-back-hide";
                     signal: "list,back,hide";
                     action: STATE_SET "hidden" 0.0;
-                    target: "bookmark-list-back-button";
+                    target: "more-list-back-button";
                     transition: ACCELERATE 0.5;
                 }
                 program { name: "favorite-hilight";
