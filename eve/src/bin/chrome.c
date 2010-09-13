@@ -15,6 +15,7 @@ typedef struct _More_Menu_Set_Params More_Menu_Set_Params;
 typedef struct _More_Menu_Filter_Context More_Menu_Filter_Context;
 typedef struct _More_Menu_Preference More_Menu_Preference;
 typedef struct _More_Menu_Preference_List More_Menu_Preference_List;
+typedef struct _More_Menu_Preference_Spinner More_Menu_Preference_Spinner;
 
 typedef More_Menu_Item *(*More_Menu_Callback)(More_Menu_Item *current_item);
 
@@ -155,7 +156,6 @@ static More_Menu_Item more_menu_preferences[] =
          { ITEM_TYPE_CALLBACK_NO_HIDE, "Clear cookies", more_menu_privacy_clear_cookies, NULL, ITEM_FLAG_NONE },
          { ITEM_TYPE_LAST, NULL, NULL, NULL, ITEM_FLAG_NONE },
      }, NULL, ITEM_FLAG_ARROW },
-   { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
    { ITEM_TYPE_STATIC_FOLDER, "Tweaks",
      (More_Menu_Item[]) {
          { ITEM_TYPE_PREFERENCE, "Enable mouse cursor",
@@ -643,7 +643,7 @@ _history_update(const char *url, const char *title)
 {
    Hist_Item *item;
 
-   if (!url)
+   if (!url || prefs_enable_private_mode_get(prefs))
       return;
 
    if ((item = hist_items_get(hist, url)))
