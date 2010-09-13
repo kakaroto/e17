@@ -375,5 +375,67 @@ collections
 			}
 		}
 	}
+        group
+        {
+           name: "ephoto/main/layout";
+           parts {
+              part {
+                 name: "ephoto.thumb.swallow";
+                 type: SWALLOW;
+                 description {
+                    state: "default" 0.0;
+                    rel1.to: "ephoto.location.swallow";
+                    rel1.relative: 0 1;
+                    rel2.to: "ephoto.toolbar.swallow";
+                    rel2.relative: 1 0;
+                 }
+              }
+              part {
+                 name: "ephoto.location.swallow";
+                 type: SWALLOW;
+                 description {
+                    state: "default" 0.0;
+                    rel2.relative: 1 0;
+                    rel2.offset: 0 64;
+                    
+                 }
+              }
+              part {
+                 name: "ephoto.toolbar.swallow";
+                 type: SWALLOW;
+                 description {
+                    color: 0 255 0 255;
+                    state: "default" 0.0; 
+                    rel1.relative: 0 1;
+                    rel1.offset: 0 -63;
+                 }
+              }
+           }     
+        }
+        group
+        {
+           name: "ephoto/flow/layout";
+           parts {
+              part {
+                 name: "ephoto.flow.swallow";
+                 type: SWALLOW;
+                 description {
+                    state: "default" 0.0;
+                    rel2.to: "ephoto.toolbar.swallow";
+                    rel2.relative: 1 0;
+                 }
+              }
+              part {
+                 name: "ephoto.toolbar.swallow";
+                 type: SWALLOW;
+                 description {
+                    color: 0 255 0 255;
+                    state: "default" 0.0; 
+                    rel1.relative: 0 1;
+                    rel1.offset: 0 -63;
+                 }
+              }
+           }     
+        }
 }
 

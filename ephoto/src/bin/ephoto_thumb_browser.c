@@ -57,7 +57,8 @@ ephoto_create_thumb_browser(const char *directory)
         elm_box_horizontal_set(thbox, EINA_TRUE);
         evas_object_size_hint_weight_set(thbox, EVAS_HINT_EXPAND, EVAS_HINT_FILL);
         evas_object_size_hint_fill_set(thbox, EVAS_HINT_FILL, EVAS_HINT_FILL);
-        elm_box_pack_end(em->box, thbox);
+	elm_layout_content_set(em->layout, "ephoto.location.swallow", thbox);
+        //elm_box_pack_end(em->box, thbox);
 
         dir_label = elm_label_add(em->win);
         elm_label_label_set(dir_label, current_directory);
@@ -75,23 +76,26 @@ ephoto_create_thumb_browser(const char *directory)
                                         _ephoto_slider_changed, NULL);
 
 	em->thumb_browser = elm_gengrid_add(em->win);
-	elm_gengrid_align_set(em->thumb_browser, 0.5, 0.6);
+	elm_gengrid_align_set(em->thumb_browser, 0.5, 0.5);
 	elm_gengrid_item_size_set(em->thumb_browser, 208, 146);
 	elm_gengrid_horizontal_set(em->thumb_browser, EINA_TRUE);
 	evas_object_size_hint_align_set(em->thumb_browser, EVAS_HINT_FILL, EVAS_HINT_FILL);
 	evas_object_size_hint_weight_set(em->thumb_browser, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	evas_object_size_hint_fill_set(em->thumb_browser, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
 	elm_object_style_set(em->thumb_browser, "ephoto");
 	evas_object_smart_callback_add(em->thumb_browser, "clicked", _ephoto_thumb_clicked, NULL);
-	elm_box_pack_end(em->box, em->thumb_browser);
+	elm_layout_content_set(em->layout, "ephoto.thumb.swallow", em->thumb_browser);
 
         toolbar = elm_toolbar_add(em->win);
         elm_toolbar_icon_size_set(toolbar, 24);
         elm_toolbar_homogenous_set(toolbar, EINA_TRUE);
         elm_toolbar_scrollable_set(toolbar, EINA_FALSE);
+
         evas_object_size_hint_weight_set(toolbar, EVAS_HINT_EXPAND, 0.0);
         evas_object_size_hint_align_set(toolbar, EVAS_HINT_FILL, 0.5);
-        elm_box_pack_end(em->box, toolbar);
+
+	elm_layout_content_set(em->layout, "ephoto.toolbar.swallow", toolbar);
 
         o = elm_icon_add(em->win);
         elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/change_directory.png", NULL);

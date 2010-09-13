@@ -43,9 +43,8 @@ _ephoto_go_update(void)
 
 	efreet_mime_init();
 
-   	elm_box_unpack(em->flow_browser, image);
-	elm_box_unpack(em->flow_browser, image2);
-	elm_box_unpack(em->flow_browser, toolbar);
+	elm_layout_content_unset(em->flow_browser, "ephoto.flow.swallow");
+
 	evas_object_hide(image);
         evas_object_hide(image2);
 
@@ -53,15 +52,13 @@ _ephoto_go_update(void)
 	if (file_type && !strcmp(file_type, "image/jpeg"))
 	{
 		elm_photocam_file_set(image, cur_image);
-		elm_box_pack_end(em->flow_browser, image);
+		elm_layout_content_set(em->flow_browser, "ephoto.flow.swallow", image);
 		evas_object_show(image);
 	} else {
 		elm_image_file_set(image2, cur_image, NULL);
-		elm_box_pack_end(em->flow_browser, image2);
+		elm_layout_content_set(em->flow_browser, "ephoto.flow.swallow", image2);
 		evas_object_show(image2);
 	}
-
-        elm_box_pack_end(em->flow_browser, toolbar);
 
 	elm_toolbar_item_unselect_all(toolbar);
 
@@ -79,7 +76,10 @@ ephoto_create_flow_browser(void)
 {
 	Evas_Object *o;
 
-	em->flow_browser = elm_box_add(em->win);
+	em->flow_browser = elm_layout_add(em->win);
+	elm_layout_file_set(em->flow_browser,
+			    PACKAGE_DATA_DIR "/themes/default/ephoto.edj", 
+			    "ephoto/flow/layout");
 	elm_win_resize_object_add(em->win, em->flow_browser);
 	evas_object_size_hint_weight_set(em->flow_browser, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	evas_object_size_hint_align_set(em->flow_browser, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -99,7 +99,7 @@ ephoto_create_flow_browser(void)
         elm_toolbar_homogenous_set(toolbar, EINA_TRUE);
         evas_object_size_hint_weight_set(toolbar, EVAS_HINT_EXPAND, 0.0);
         evas_object_size_hint_align_set(toolbar, EVAS_HINT_FILL, 0.5);
-        elm_box_pack_end(em->flow_browser, toolbar);
+	elm_layout_content_set(em->flow_browser, "ephoto.flow.swallow", toolbar);
 	evas_object_show(toolbar);
 
 	o = elm_icon_add(em->win);
@@ -161,7 +161,7 @@ ephoto_show_flow_browser(const char *current_image)
                         elm_toolbar_item_disabled_set(o, EINA_TRUE);
                 }
 	}
-	elm_box_pack_end(em->flow_browser, toolbar);
+	elm_layout_content_set(em->flow_browser, "ephoto.toolbar.swallow", toolbar);
 	evas_object_show(toolbar);
 	evas_object_show(em->flow_browser);
 	evas_object_focus_set(em->flow_browser, 1);

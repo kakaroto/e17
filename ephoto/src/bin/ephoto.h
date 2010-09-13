@@ -50,7 +50,8 @@ struct _Ephoto
 	Evas *e;
 	Evas_Object *win;
 	Evas_Object *bg;
-	Evas_Object *box;
+        Evas_Object *box;
+	Evas_Object *layout;
 	Evas_Object *flow_browser;
 	Evas_Object *slideshow;
 	Evas_Object *thumb_browser;

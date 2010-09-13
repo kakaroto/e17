@@ -34,7 +34,7 @@ ephoto_show_slideshow(int view, const char *current_image)
 	return_view = view;
 	cur_image = current_image;
 
-	evas_object_geometry_get(em->box, &x, &y, &w, &h);
+	evas_object_geometry_get(em->layout, &x, &y, &w, &h);
 	evas_object_resize(em->slideshow, w, h);
 	evas_object_move(em->slideshow, 0, 0);
 

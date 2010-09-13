@@ -15,7 +15,7 @@ ephoto_create_main_window(const char *directory, const char *image)
 	/*Setup the main window*/
 	em->win = elm_win_add(NULL, "ephoto", ELM_WIN_BASIC);
 	elm_win_title_set(em->win, "Ephoto");
-	evas_object_resize(em->win, 840, 530);
+
 	evas_object_show(em->win);
 
 	/*Callback to close the main window*/
@@ -31,11 +31,15 @@ ephoto_create_main_window(const char *directory, const char *image)
 	evas_object_size_hint_weight_set(em->bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	evas_object_show(em->bg);
 
-	em->box = elm_box_add(em->win);
-	elm_win_resize_object_add(em->win, em->box);
-	evas_object_size_hint_weight_set(em->box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-	evas_object_size_hint_fill_set(em->box, EVAS_HINT_FILL, EVAS_HINT_FILL);
-	evas_object_show(em->box);	
+	/* Add the main layout to the window */
+	em->layout = elm_layout_add(em->win);
+	elm_layout_file_set(em->layout, 
+			    PACKAGE_DATA_DIR "/themes/default/ephoto.edj", 
+			    "ephoto/main/layout");
+	elm_win_resize_object_add(em->win, em->layout);
+	evas_object_size_hint_weight_set(em->layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+	evas_object_size_hint_fill_set(em->layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
+	evas_object_show(em->layout);
 
 	ephoto_create_thumb_browser(directory);
 	ephoto_create_flow_browser();
@@ -46,6 +50,8 @@ ephoto_create_main_window(const char *directory, const char *image)
 	}
 	else
 		ephoto_show_thumb_browser();
+
+	evas_object_resize(em->win, 840, 530);
 }
 
 /*Delete the main ephoto window*/
@@ -54,7 +60,7 @@ _ephoto_delete_main_window(void *data, Evas_Object *obj, void *event_info)
 {
 	ephoto_delete_thumb_browser();
 	ephoto_delete_flow_browser();
-	evas_object_del(em->box);
+	evas_object_del(em->layout);
 	evas_object_del(em->bg);
 	if (em->images)
 		eina_list_free(em->images);
