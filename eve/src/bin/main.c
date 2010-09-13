@@ -26,6 +26,12 @@ Hist *hist = NULL;
 Prefs *prefs = NULL;
 App app;
 
+struct Cursor {
+  Evas_Object *object;
+  int layer;
+  int hot_x, hot_y;
+};
+
 static void
 del_win(App *app, Evas_Object *win)
 {
@@ -52,10 +58,19 @@ on_win_del_req(void *data, Evas_Object *win, void *event_info __UNUSED__)
 void
 window_mouse_enabled_set(Evas_Object *win, Eina_Bool setting)
 {
+   Evas *e = evas_object_evas_get(win);
+   Ecore_Evas *ee = evas_data_attach_get(e);
+   static struct Cursor *default_cursor = NULL;
+   
+   if (!default_cursor)
+      {
+         if (!(default_cursor = calloc(1, sizeof(*default_cursor)))) return;
+         ecore_evas_cursor_get(ee, &default_cursor->object, &default_cursor->layer,
+                               &default_cursor->hot_x, &default_cursor->hot_y);
+      }
+   
    if (!setting)
       {
-          Evas *e = evas_object_evas_get(win);
-          Ecore_Evas *ee = evas_data_attach_get(e);
           Evas_Object *cursor = evas_object_rectangle_add(e);
 
           evas_object_color_set(cursor, 0, 0, 0, 0);
@@ -63,9 +78,8 @@ window_mouse_enabled_set(Evas_Object *win, Eina_Bool setting)
           ecore_evas_object_cursor_set(ee, cursor, EVAS_LAYER_MIN, 0, 0);
       }
    else
-      {
-          /* FIXME Add the default cursor? */
-      }
+      ecore_evas_object_cursor_set(ee, default_cursor->object, default_cursor->layer,
+                                   default_cursor->hot_x, default_cursor->hot_y);
 }
 
 Eina_Bool
