@@ -20,6 +20,7 @@ struct _Prefs {
     char enable_private_mode;
     char enable_auto_load_images;
     char enable_auto_shrink_images;
+    char allow_popup;
     const char *__eet_filename;
 };
 
@@ -47,6 +48,7 @@ _prefs_init(void)
     EET_DATA_DESCRIPTOR_ADD_BASIC(_prefs_descriptor, Prefs, "enable_private_mode", enable_private_mode, EET_T_CHAR);
     EET_DATA_DESCRIPTOR_ADD_BASIC(_prefs_descriptor, Prefs, "enable_auto_load_images", enable_auto_load_images, EET_T_CHAR);
     EET_DATA_DESCRIPTOR_ADD_BASIC(_prefs_descriptor, Prefs, "enable_auto_shrink_images", enable_auto_shrink_images, EET_T_CHAR);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(_prefs_descriptor, Prefs, "allow_popup", allow_popup, EET_T_CHAR);
 }
 
 static inline void
@@ -58,7 +60,7 @@ _prefs_shutdown(void)
 }
 
 Prefs *
-prefs_new(char enable_mouse_cursor, char enable_touch_interface, char enable_plugins, char enable_javascript, const char * user_agent, const char * home_page, const char * proxy, char enable_private_mode, char enable_auto_load_images, char enable_auto_shrink_images)
+prefs_new(char enable_mouse_cursor, char enable_touch_interface, char enable_plugins, char enable_javascript, const char * user_agent, const char * home_page, const char * proxy, char enable_private_mode, char enable_auto_load_images, char enable_auto_shrink_images, char allow_popup)
 {
     Prefs *prefs = calloc(1, sizeof(Prefs));
     
@@ -78,6 +80,7 @@ prefs_new(char enable_mouse_cursor, char enable_touch_interface, char enable_plu
     prefs->enable_private_mode = enable_private_mode;
     prefs->enable_auto_load_images = enable_auto_load_images;
     prefs->enable_auto_shrink_images = enable_auto_shrink_images;
+    prefs->allow_popup = allow_popup;
 
     return prefs;
 }
@@ -222,6 +225,19 @@ prefs_enable_auto_shrink_images_set(Prefs *prefs, char enable_auto_shrink_images
 {
     EINA_SAFETY_ON_NULL_RETURN(prefs);
     prefs->enable_auto_shrink_images = enable_auto_shrink_images;
+}
+  
+inline char
+prefs_allow_popup_get(const Prefs *prefs)
+{
+    return prefs->allow_popup;
+}
+
+inline void
+prefs_allow_popup_set(Prefs *prefs, char allow_popup)
+{
+    EINA_SAFETY_ON_NULL_RETURN(prefs);
+    prefs->allow_popup = allow_popup;
 }
   
 Prefs *

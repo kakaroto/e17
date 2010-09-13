@@ -67,6 +67,7 @@ typedef enum {
    EVE_PREF_ENABLE_PRIVATE_MODE,
    EVE_PREF_AUTO_LOAD_IMAGES,
    EVE_PREF_AUTO_SHRINK_IMAGES,
+   EVE_PREF_POPUP_ALLOW,
    EVE_PREF_LAST
 } Eve_Preference;
 
@@ -174,6 +175,13 @@ static More_Menu_Item more_menu_preferences[] =
              .pref = EVE_PREF_AUTO_SHRINK_IMAGES,
              .pref_get = prefs_enable_auto_shrink_images_get,
              .pref_set = prefs_enable_auto_shrink_images_set
+           }}, NULL, ITEM_FLAG_NONE },
+         { ITEM_TYPE_PREFERENCE, "Allow popup windows",
+           (More_Menu_Preference[]) {{
+             .type = PREF_TYPE_CHECKBOX,
+             .pref = EVE_PREF_POPUP_ALLOW,
+             .pref_get = prefs_allow_popup_get,
+             .pref_set = prefs_allow_popup_set
            }}, NULL, ITEM_FLAG_NONE },
          { ITEM_TYPE_PREFERENCE, "User agent",
            (More_Menu_Preference[]) {{
@@ -955,6 +963,7 @@ chrome_prefs_apply(Evas_Object *chrome)
    ewk_view_setting_private_browsing_set(view, prefs_enable_private_mode_get(prefs));
    ewk_view_setting_auto_load_images_set(view, prefs_enable_auto_load_images_get(prefs));
    ewk_view_setting_auto_shrink_images_set(view, prefs_enable_auto_shrink_images_get(prefs));
+   ewk_view_setting_scripts_window_open_set(view, prefs_allow_popup_get(prefs));
    window_mouse_enabled_set(win->win, prefs_enable_mouse_cursor_get(prefs));
 }
 
@@ -1004,6 +1013,11 @@ pref_updated(More_Menu_Preference *p, void *new_value)
    case EVE_PREF_AUTO_SHRINK_IMAGES:
       {
          SET_PREF_TO_ALL_VIEWS(ewk_view_setting_auto_shrink_images_set, *((int *)new_value));
+         break;
+      }
+   case EVE_PREF_POPUP_ALLOW:
+      {
+         SET_PREF_TO_ALL_VIEWS(ewk_view_setting_scripts_window_open_set, *((int *)new_value));
          break;
       }
    case EVE_PREF_MOUSE_CURSOR:
