@@ -1129,6 +1129,14 @@ more_menu_set(Evas_Object        *chrome,
 }
 
 static void
+more_menu_dynamic_destroy(More_Menu_Item *mmi)
+{
+   int i;
+   for (i = 0; mmi[i].type != ITEM_TYPE_LAST; i++) eina_stringshare_del(mmi[i].text);
+   free(mmi);
+}
+
+static void
 on_more_item_back_click(void *data, Evas_Object *edje,
                         const char *emission __UNUSED__,
                         const char *source __UNUSED__)
@@ -1141,11 +1149,7 @@ on_more_item_back_click(void *data, Evas_Object *edje,
    edje_object_part_text_set(edje, "more-list-title", edje_object_part_text_get(edje, "more-list-back-button-text"));
    eina_stringshare_del(edje_object_part_text_get(edje, "more-list-back-button-text"));
 
-   if ((mmi = win->list_history->data) && mmi->flags & ITEM_FLAG_DYNAMIC)
-     {
-        eina_stringshare_del(mmi->text);
-        free(mmi);
-     }
+   if ((mmi = win->list_history->data) && mmi->flags & ITEM_FLAG_DYNAMIC) more_menu_dynamic_destroy(mmi);
 
    win->list_history = eina_list_remove_list(win->list_history, win->list_history);
    win->list_history_titles = eina_list_remove_list(win->list_history_titles, win->list_history_titles);
@@ -1416,11 +1420,7 @@ on_action_more_hide(void *data, Evas_Object *o __UNUSED__,
    Browser_Window *win = evas_object_data_get(chrome, "win");
 
    EINA_LIST_FREE(win->list_history, mmi)
-   if (mmi && mmi->flags & ITEM_FLAG_DYNAMIC)
-     {
-        eina_stringshare_del(mmi->text);
-        free(mmi);
-     }
+     if (mmi && mmi->flags & ITEM_FLAG_DYNAMIC) more_menu_dynamic_destroy(mmi);
 
    eina_stringshare_del(edje_object_part_text_get(edje, "more-list-back-button-text"));
    eina_list_free(win->list_history_titles);
