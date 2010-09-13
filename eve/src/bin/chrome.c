@@ -1033,7 +1033,7 @@ on_more_item_back_click(void *data, Evas_Object *edje,
                         const char *emission __UNUSED__,
                         const char *source __UNUSED__)
 {
-   More_Menu_Item *bmi;
+   More_Menu_Item *mmi;
    Browser_Window *win = evas_object_data_get(edje, "win");
    Evas_Object *list = data;
 
@@ -1041,10 +1041,10 @@ on_more_item_back_click(void *data, Evas_Object *edje,
    edje_object_part_text_set(edje, "more-list-title", edje_object_part_text_get(edje, "more-list-back-button-text"));
    eina_stringshare_del(edje_object_part_text_get(edje, "more-list-back-button-text"));
 
-   if ((bmi = win->list_history->data) && bmi->flags & ITEM_FLAG_DYNAMIC)
+   if ((mmi = win->list_history->data) && mmi->flags & ITEM_FLAG_DYNAMIC)
      {
-        eina_stringshare_del(bmi->text);
-        free(bmi);
+        eina_stringshare_del(mmi->text);
+        free(mmi);
      }
 
    win->list_history = eina_list_remove_list(win->list_history, win->list_history);
@@ -1095,14 +1095,14 @@ static More_Menu_Item *
 more_menu_prefs_list_create(More_Menu_Item *i, More_Menu_Preference *p)
 {
    More_Menu_Preference_List *list = p->data;
-   More_Menu_Item *bmi;
+   More_Menu_Item *mmi;
    const char *(*pref_get)(void *);
    const char *preference = NULL;
    int item, n_items;
    
    if (!list) return NULL;
    for (n_items = 0; list[n_items].title; n_items++);
-   if (!(bmi = calloc(n_items, sizeof(*bmi)))) return NULL;
+   if (!(mmi = calloc(n_items, sizeof(*mmi)))) return NULL;
 
    if (p->pref_get)
       {
@@ -1111,17 +1111,17 @@ more_menu_prefs_list_create(More_Menu_Item *i, More_Menu_Preference *p)
       }
    
    for (item = 0; item < n_items; item++) {
-      bmi[item].text = eina_stringshare_add(list[item].title);
-      bmi[item].next = callback_menu_prefs_list_set;
-      bmi[item].type = ITEM_TYPE_CALLBACK_NO_HIDE;
-      bmi[item].data = p;
-      bmi[item].flags = (preference && !strcmp(list[item].value, preference)) ? ITEM_FLAG_SELECTED : ITEM_FLAG_NONE;
-      bmi[item].flags |= ITEM_FLAG_DYNAMIC;
+      mmi[item].text = eina_stringshare_add(list[item].title);
+      mmi[item].next = callback_menu_prefs_list_set;
+      mmi[item].type = ITEM_TYPE_CALLBACK_NO_HIDE;
+      mmi[item].data = p;
+      mmi[item].flags = (preference && !strcmp(list[item].value, preference)) ? ITEM_FLAG_SELECTED : ITEM_FLAG_NONE;
+      mmi[item].flags |= ITEM_FLAG_DYNAMIC;
    }
    
-   bmi[item].type = ITEM_TYPE_LAST;
+   mmi[item].type = ITEM_TYPE_LAST;
    
-   return bmi;
+   return mmi;
 }
 
 static More_Menu_Item *
@@ -1140,32 +1140,32 @@ on_more_item_click(void *data, Evas_Object *obj,
 {
    Evas_Object *chrome = evas_object_data_get(obj, "chrome");
    Evas_Object *ed = elm_layout_edje_get(chrome);
-   More_Menu_Item *bmi = data;
+   More_Menu_Item *mmi = data;
    Browser_Window *win = evas_object_data_get(chrome, "win");
    const char *old_text = edje_object_part_text_get(ed, "more-list-title");
 
-   if (!bmi)
+   if (!mmi)
       return;
 
-   switch (bmi->type) {
+   switch (mmi->type) {
       case ITEM_TYPE_STATIC_FOLDER:
          win->list_history_titles = eina_list_prepend(win->list_history_titles, old_text);
          edje_object_signal_emit(ed, "list,animate,left", "");
-         edje_object_part_text_set(ed, "more-list-title", bmi->text);
-         more_menu_set(chrome, obj, bmi->next, old_text);
+         edje_object_part_text_set(ed, "more-list-title", mmi->text);
+         more_menu_set(chrome, obj, mmi->next, old_text);
          break;
 
       case ITEM_TYPE_DYNAMIC_FOLDER:
       {
-         More_Menu_Callback callback = bmi->next;
+         More_Menu_Callback callback = mmi->next;
          if (!callback)
             return;
 
-         More_Menu_Item *new_root = callback(bmi);
+         More_Menu_Item *new_root = callback(mmi);
          if (new_root)
            {
               win->list_history_titles = eina_list_prepend(win->list_history_titles, old_text);
-              edje_object_part_text_set(ed, "more-list-title", bmi->text);
+              edje_object_part_text_set(ed, "more-list-title", mmi->text);
               edje_object_signal_emit(ed, "list,animate,left", "");
               more_menu_set(chrome, obj, new_root, old_text);
            }
@@ -1174,15 +1174,15 @@ on_more_item_click(void *data, Evas_Object *obj,
       
       case ITEM_TYPE_PREFERENCE:
       {
-         if (!bmi->next)
+         if (!mmi->next)
             return;
          
-         More_Menu_Item *new_root = more_menu_prefs_create(bmi, bmi->next);
+         More_Menu_Item *new_root = more_menu_prefs_create(mmi, mmi->next);
          if (new_root)
             {
                win->list_history_titles = eina_list_prepend(win->list_history_titles, old_text);
                edje_object_signal_emit(ed, "list,animate,left", "");
-               edje_object_part_text_set(ed, "more-list-title", bmi->text);
+               edje_object_part_text_set(ed, "more-list-title", mmi->text);
                more_menu_set(chrome, obj, new_root, old_text);
             }
       }
@@ -1196,11 +1196,11 @@ on_more_item_click(void *data, Evas_Object *obj,
          /* fallthrough */
       case ITEM_TYPE_CALLBACK_NO_HIDE:
       {
-         More_Menu_Callback callback = bmi->next;
+         More_Menu_Callback callback = mmi->next;
          Evas_Object *ed = elm_layout_edje_get(chrome);
          if (callback)
-            callback(bmi);
-         if (bmi->type == ITEM_TYPE_CALLBACK_NO_HIDE)
+            callback(mmi);
+         if (mmi->type == ITEM_TYPE_CALLBACK_NO_HIDE)
             on_more_item_back_click(obj, ed, NULL, NULL);
       }
       break;
@@ -1210,7 +1210,7 @@ on_more_item_click(void *data, Evas_Object *obj,
          Browser_Window *win = evas_object_data_get(chrome, "win");
          Evas_Object *ed = elm_layout_edje_get(chrome);
          if (win)
-            ewk_view_uri_set(win->current_view, bmi->next);
+            ewk_view_uri_set(win->current_view, mmi->next);
 
          edje_object_signal_emit(ed, "more,item,clicked", "");
       }
@@ -1333,14 +1333,14 @@ on_action_more_hide(void *data, Evas_Object *o __UNUSED__,
 {
    Evas_Object *chrome = data;
    Evas_Object *edje = elm_layout_edje_get(chrome);
-   More_Menu_Item *bmi;
+   More_Menu_Item *mmi;
    Browser_Window *win = evas_object_data_get(chrome, "win");
 
-   EINA_LIST_FREE(win->list_history, bmi)
-   if (bmi && bmi->flags & ITEM_FLAG_DYNAMIC)
+   EINA_LIST_FREE(win->list_history, mmi)
+   if (mmi && mmi->flags & ITEM_FLAG_DYNAMIC)
      {
-        eina_stringshare_del(bmi->text);
-        free(bmi);
+        eina_stringshare_del(mmi->text);
+        free(mmi);
      }
 
    eina_stringshare_del(edje_object_part_text_get(edje, "more-list-back-button-text"));
