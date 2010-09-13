@@ -17,20 +17,22 @@ typedef struct _More_Menu_Preference More_Menu_Preference;
 typedef struct _More_Menu_Preference_List More_Menu_Preference_List;
 typedef struct _More_Menu_Preference_Spinner More_Menu_Preference_Spinner;
 
-typedef More_Menu_Item *(*More_Menu_Callback)(More_Menu_Item *current_item);
+typedef More_Menu_Item *(*More_Menu_Callback)(Browser_Window *win, More_Menu_Item *current_item);
 
-static More_Menu_Item *more_menu_favorites(More_Menu_Item *);
-static More_Menu_Item *more_menu_history_today(More_Menu_Item *);
-static More_Menu_Item *more_menu_history_yesterday(More_Menu_Item *);
-static More_Menu_Item *more_menu_history_this_week(More_Menu_Item *);
-static More_Menu_Item *more_menu_history_most_visited(More_Menu_Item *);
-static More_Menu_Item *more_menu_history_least_visited(More_Menu_Item *);
-static More_Menu_Item *more_menu_history_by_domain(More_Menu_Item *);
-static More_Menu_Item *more_menu_privacy_clear_everything(More_Menu_Item *);
-static More_Menu_Item *more_menu_privacy_clear_cache(More_Menu_Item *);
-static More_Menu_Item *more_menu_privacy_clear_history(More_Menu_Item *);
-static More_Menu_Item *more_menu_privacy_clear_database(More_Menu_Item *);
-static More_Menu_Item *more_menu_privacy_clear_cookies(More_Menu_Item *);
+static More_Menu_Item *more_menu_favorites(Browser_Window *, More_Menu_Item *);
+static More_Menu_Item *more_menu_history_today(Browser_Window *, More_Menu_Item *);
+static More_Menu_Item *more_menu_history_yesterday(Browser_Window *, More_Menu_Item *);
+static More_Menu_Item *more_menu_history_this_week(Browser_Window *, More_Menu_Item *);
+static More_Menu_Item *more_menu_history_most_visited(Browser_Window *, More_Menu_Item *);
+static More_Menu_Item *more_menu_history_least_visited(Browser_Window *, More_Menu_Item *);
+static More_Menu_Item *more_menu_history_by_domain(Browser_Window *, More_Menu_Item *);
+static More_Menu_Item *more_menu_privacy_clear_everything(Browser_Window *, More_Menu_Item *);
+static More_Menu_Item *more_menu_privacy_clear_cache(Browser_Window *, More_Menu_Item *);
+static More_Menu_Item *more_menu_privacy_clear_history(Browser_Window *, More_Menu_Item *);
+static More_Menu_Item *more_menu_privacy_clear_database(Browser_Window *, More_Menu_Item *);
+static More_Menu_Item *more_menu_privacy_clear_cookies(Browser_Window *, More_Menu_Item *);
+static More_Menu_Item *more_menu_home_page_current_set(Browser_Window *, More_Menu_Item *);
+static More_Menu_Item *more_menu_home_page_default_set(Browser_Window *, More_Menu_Item *);
 
 static void on_more_item_click(void *data, Evas_Object *obj, void *event_info __UNUSED__);
 static void on_more_item_back_click(void *data, Evas_Object *edje, const char *emission __UNUSED__, const char *source __UNUSED__);
@@ -154,6 +156,12 @@ static More_Menu_Item more_menu_preferences[] =
        .pref_set = prefs_enable_private_mode_set,
      }}, NULL, ITEM_FLAG_NONE },
    { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
+   { ITEM_TYPE_STATIC_FOLDER, "Home page",
+     (More_Menu_Item[]) {
+         { ITEM_TYPE_CALLBACK_NO_HIDE, "Set to current page", more_menu_home_page_current_set, NULL, ITEM_FLAG_NONE },
+         { ITEM_TYPE_CALLBACK_NO_HIDE, "Set to default", more_menu_home_page_default_set, NULL, ITEM_FLAG_NONE },
+         { ITEM_TYPE_LAST, NULL, NULL, NULL, ITEM_FLAG_NONE },
+     }, NULL, ITEM_FLAG_ARROW },
    { ITEM_TYPE_STATIC_FOLDER, "Privacy",
      (More_Menu_Item[]) {
          { ITEM_TYPE_CALLBACK_NO_HIDE, "Clear everything", more_menu_privacy_clear_everything, NULL, ITEM_FLAG_NONE },
@@ -351,7 +359,7 @@ _more_menu_history_by_domain(More_Menu_Item *current_item)
 }
 
 static More_Menu_Item *
-more_menu_history_by_domain(More_Menu_Item *current_item)
+more_menu_history_by_domain(Browser_Window *win __UNUSED__, More_Menu_Item *current_item)
 {
    More_Menu_Item *bm_item;
    More_Menu_Item *ret = NULL, *new_ret;
@@ -457,7 +465,7 @@ _yesterday_filter(More_Menu_Filter_Context *ctx, Hist_Item *item)
 }
 
 static More_Menu_Item *
-more_menu_history_today(More_Menu_Item *current_item)
+more_menu_history_today(Browser_Window *win __UNUSED__, More_Menu_Item *current_item)
 {
    Eina_Iterator *iter = eina_hash_iterator_key_new(hist_items_hash_get(hist));
    More_Menu_Item *items = _more_menu_history(iter, current_item, _today_filter);
@@ -466,7 +474,7 @@ more_menu_history_today(More_Menu_Item *current_item)
 }
 
 static More_Menu_Item *
-more_menu_history_yesterday(More_Menu_Item *current_item)
+more_menu_history_yesterday(Browser_Window *win __UNUSED__, More_Menu_Item *current_item)
 {
    Eina_Iterator *iter = eina_hash_iterator_key_new(hist_items_hash_get(hist));
    More_Menu_Item *items = _more_menu_history(iter, current_item, _yesterday_filter);
@@ -475,7 +483,7 @@ more_menu_history_yesterday(More_Menu_Item *current_item)
 }
 
 static More_Menu_Item *
-more_menu_history_this_week(More_Menu_Item *current_item)
+more_menu_history_this_week(Browser_Window *win __UNUSED__, More_Menu_Item *current_item)
 {
    Eina_Iterator *iter = eina_hash_iterator_key_new(hist_items_hash_get(hist));
    More_Menu_Item *items = _more_menu_history(iter, current_item, _this_week_filter);
@@ -502,7 +510,7 @@ _cb_compare_hist_visit_count_incr(const void *data1, const void *data2)
 }
 
 static More_Menu_Item *
-more_menu_history_least_visited(More_Menu_Item *current_item)
+more_menu_history_least_visited(Browser_Window *win __UNUSED__, More_Menu_Item *current_item)
 {
    Eina_List *keys = _eina_hash_sorted_keys_get(hist_items_hash_get(hist), _cb_compare_hist_visit_count_incr);
    Eina_Iterator *iter = eina_list_iterator_new(keys);
@@ -513,7 +521,7 @@ more_menu_history_least_visited(More_Menu_Item *current_item)
 }
 
 static More_Menu_Item *
-more_menu_history_most_visited(More_Menu_Item *current_item)
+more_menu_history_most_visited(Browser_Window *win __UNUSED__, More_Menu_Item *current_item)
 {
    Eina_List *keys = _eina_hash_sorted_keys_get(hist_items_hash_get(hist), _cb_compare_hist_visit_count_decr);
    Eina_Iterator *iter = eina_list_iterator_new(keys);
@@ -524,7 +532,7 @@ more_menu_history_most_visited(More_Menu_Item *current_item)
 }
 
 static More_Menu_Item *
-more_menu_favorites(More_Menu_Item *current_item)
+more_menu_favorites(Browser_Window *win __UNUSED__, More_Menu_Item *current_item)
 {
    More_Menu_Item *bm_item;
    More_Menu_Item *ret = NULL, *new_ret;
@@ -836,25 +844,39 @@ on_view_popup_delete(void *data, Evas_Object *view, void *event_info)
 }
 
 static More_Menu_Item *
-more_menu_privacy_clear_everything(More_Menu_Item *mmi)
+more_menu_home_page_current_set(Browser_Window *win, More_Menu_Item *mmi __UNUSED__)
 {
-   more_menu_privacy_clear_cache(mmi);
-   more_menu_privacy_clear_history(mmi);
-   more_menu_privacy_clear_database(mmi);
-   more_menu_privacy_clear_cookies(mmi);
+   prefs_home_page_set(prefs, ewk_view_uri_get(win->current_view));
+   return NULL;
+}
+
+static More_Menu_Item *
+more_menu_home_page_default_set(Browser_Window *win __UNUSED__, More_Menu_Item *mmi __UNUSED__)
+{
+   prefs_home_page_set(prefs, DEFAULT_URL);
+   return NULL;
+}
+
+static More_Menu_Item *
+more_menu_privacy_clear_everything(Browser_Window *win __UNUSED__, More_Menu_Item *mmi)
+{
+   more_menu_privacy_clear_cache(win, mmi);
+   more_menu_privacy_clear_history(win, mmi);
+   more_menu_privacy_clear_database(win, mmi);
+   more_menu_privacy_clear_cookies(win, mmi);
 
    return NULL;
 }
 
 static More_Menu_Item *
-more_menu_privacy_clear_cache(More_Menu_Item *mmi __UNUSED__)
+more_menu_privacy_clear_cache(Browser_Window *win __UNUSED__, More_Menu_Item *mmi __UNUSED__)
 {
    /* FIXME: Eve does not support disk cache yet */
    return NULL;
 }
 
 static More_Menu_Item *
-more_menu_privacy_clear_history(More_Menu_Item *mmi __UNUSED__)
+more_menu_privacy_clear_history(Browser_Window *win __UNUSED__, More_Menu_Item *mmi __UNUSED__)
 {
   hist_free(hist);
   hist = hist_new(0);
@@ -862,14 +884,14 @@ more_menu_privacy_clear_history(More_Menu_Item *mmi __UNUSED__)
 }
 
 static More_Menu_Item *
-more_menu_privacy_clear_database(More_Menu_Item *mmi __UNUSED__)
+more_menu_privacy_clear_database(Browser_Window *win __UNUSED__, More_Menu_Item *mmi __UNUSED__)
 {
   /* FIXME: Clear HTML5 database */
   return NULL;
 }
 
 static More_Menu_Item *
-more_menu_privacy_clear_cookies(More_Menu_Item *mmi __UNUSED__)
+more_menu_privacy_clear_cookies(Browser_Window *win __UNUSED__, More_Menu_Item *mmi __UNUSED__)
 {
   ewk_cookies_clear();
   return NULL;
@@ -1279,7 +1301,7 @@ on_more_item_back_click(void *data, Evas_Object *edje,
 }
 
 static void
-callback_menu_prefs_list_set(More_Menu_Item *i)
+callback_menu_prefs_list_set(Browser_Window *win __UNUSED__, More_Menu_Item *i)
 {
    More_Menu_Preference *p = i->data;
    More_Menu_Preference_List *l = p->data;
@@ -1361,7 +1383,7 @@ on_more_item_click(void *data, Evas_Object *obj,
          More_Menu_Callback callback = mmi->next;
          if (!callback) return;
 
-         More_Menu_Item *new_root = callback(mmi);
+         More_Menu_Item *new_root = callback(win, mmi);
          if (new_root)
            {
               win->list_history_titles = eina_list_prepend(win->list_history_titles, old_text);
@@ -1400,7 +1422,7 @@ on_more_item_click(void *data, Evas_Object *obj,
          More_Menu_Callback callback = mmi->next;
          Evas_Object *ed = elm_layout_edje_get(chrome);
          if (callback)
-            callback(mmi);
+            callback(win, mmi);
          if (mmi->type == ITEM_TYPE_CALLBACK_NO_HIDE)
             on_more_item_back_click(obj, ed, NULL, NULL);
          break;
