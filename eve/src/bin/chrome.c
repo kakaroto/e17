@@ -29,6 +29,7 @@ static More_Menu_Item *more_menu_privacy_clear_everything(More_Menu_Item *);
 static More_Menu_Item *more_menu_privacy_clear_cache(More_Menu_Item *);
 static More_Menu_Item *more_menu_privacy_clear_history(More_Menu_Item *);
 static More_Menu_Item *more_menu_privacy_clear_database(More_Menu_Item *);
+static More_Menu_Item *more_menu_privacy_clear_cookies(More_Menu_Item *);
 
 static void on_more_item_click(void *data, Evas_Object *obj, void *event_info __UNUSED__);
 static void on_more_item_back_click(void *data, Evas_Object *edje, const char *emission __UNUSED__, const char *source __UNUSED__);
@@ -151,6 +152,7 @@ static More_Menu_Item more_menu_preferences[] =
          { ITEM_TYPE_CALLBACK_NO_HIDE, "Clear cache", more_menu_privacy_clear_cache, NULL, ITEM_FLAG_NONE },
          { ITEM_TYPE_CALLBACK_NO_HIDE, "Clear history", more_menu_privacy_clear_history, NULL, ITEM_FLAG_NONE },
          { ITEM_TYPE_CALLBACK_NO_HIDE, "Clear database", more_menu_privacy_clear_database, NULL, ITEM_FLAG_NONE },
+         { ITEM_TYPE_CALLBACK_NO_HIDE, "Clear cookies", more_menu_privacy_clear_cookies, NULL, ITEM_FLAG_NONE },
          { ITEM_TYPE_LAST, NULL, NULL, NULL, ITEM_FLAG_NONE },
      }, NULL, ITEM_FLAG_ARROW },
    { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
@@ -830,6 +832,7 @@ more_menu_privacy_clear_everything(More_Menu_Item *mmi)
    more_menu_privacy_clear_cache(mmi);
    more_menu_privacy_clear_history(mmi);
    more_menu_privacy_clear_database(mmi);
+   more_menu_privacy_clear_cookies(mmi);
 
    return NULL;
 }
@@ -853,6 +856,13 @@ static More_Menu_Item *
 more_menu_privacy_clear_database(More_Menu_Item *mmi __UNUSED__)
 {
   /* FIXME: Clear HTML5 database */
+  return NULL;
+}
+
+static More_Menu_Item *
+more_menu_privacy_clear_cookies(More_Menu_Item *mmi __UNUSED__)
+{
+  ewk_cookies_clear();
   return NULL;
 }
 
