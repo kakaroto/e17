@@ -1,6 +1,5 @@
  * fix UI/Edje scale (enlarge the window to see problems)
  * fix zoom out (seems < 1.0 is not allowed)
- * show page title in theme (edc, simple)
  * fix padding around tab items title (edc, simple)
  * better error reporting page (for 404 and similar)
  * show visual zoom indication (zoom level? some icon?)

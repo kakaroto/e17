@@ -690,7 +690,7 @@ _chrome_title_apply(Evas_Object *chrome)
 
    title = _chrome_title_get(chrome, buf, sizeof(buf));
 
-   edje_object_part_text_set(ed, "text.title", title);
+   edje_object_part_text_set(ed, "page-title", title);
 
    if (win->current_chrome == chrome)
      window_title_set(win, title);

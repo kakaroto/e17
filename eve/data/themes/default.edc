@@ -789,6 +789,28 @@ collections {
                     color: 0 0 0 128;
                 }
             }
+            part { name: "page-title";
+                type: TEXT;
+                description { state: "default" 0.0;
+                    rel1 {
+                        to_y: "panel-top";
+                        relative: 0.0 0.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        to_y: "panel-top";
+                        relative: 1.0 0.0;
+                        offset: -1 24;
+                    }
+                    text {
+                        font: "Sans,Edje-Vera";
+                        size: 8;
+                        text: "Untitled";
+                        min: 0 1;
+                        align: 0.5 0.5;
+                    }
+                }
+            }
             part { name: "url-entry-bg";
                 type: IMAGE;
                 description { state: "default" 0.0;
@@ -798,7 +820,7 @@ collections {
                     rel1 {
                         to_y: "panel-top";
                         relative: 0.1 0.0;
-                        offset: 45 57;
+                        offset: 45 68;
                     }
                     rel2 {
                         to_y: "panel-top";
