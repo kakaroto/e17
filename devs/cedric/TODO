@@ -5,24 +5,18 @@
 	- add _stringshared version for evas_event_feed_*
 	- add joystick support
 	- cleanup sdl engine
-d	- rewrite preload support
 	- add a prepare phase that could be used by all engine when we got many main CPU to prepare font, polygon and load image in parallel (should work also with dsp)
 h	- try quadtree support
 	- fix Evas_Object_Polygon resize issue and API.
 
-* Ecore
-d	- add ecore_long_run with pipe facility (max = CPU - 1, with and without queue)
-d	- replace int by Eina_Bool when it make sense for callback
-
 * Edje
-d	- Fixed Point
 	- Add REVERSE to edje possible program action
 	- Add continue: (ABORT|CONTINUE|CHAIN) to edje STATE_SET argument
 	- Make it possible to catch requested file and to rewrite it
-h	- Optimize file format
+d	- Optimize file format
 h	- Optimize memory layout thanks to new file format
 	- Reuse match automate between edje object of the same type
-	- Add specialized task for each match automate case
+h	- Add specialized task for each match automate case
 
 * Elixir
 h	- add eet -> js object
@@ -54,7 +48,7 @@ h	- add client library
 h	- fix expose and thumbnail display to be fully async
 
 * Eio
-	- provide a completly asynchronous IO API using ecore thread infra
+h	- provide a completly asynchronous IO API using ecore thread infra
 
 h: half done
 d: done

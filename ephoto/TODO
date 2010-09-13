@@ -13,3 +13,7 @@ Possibly Grayscale, Sepia, etc..?
 Make the filter work.
 Sorts possibly?
 Slideshow features.
+Include directory in the listing.
+Use edje external.
+Transition from one directory to another.
+Maybe implement a wallpaper2 like object in elementary and use it in ephoto.
