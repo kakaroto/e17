@@ -160,6 +160,13 @@ static More_Menu_Item more_menu_preferences[] =
      (More_Menu_Item[]) {
          { ITEM_TYPE_CALLBACK_NO_HIDE, "Set to current page", more_menu_home_page_current_set, NULL, ITEM_FLAG_NONE },
          { ITEM_TYPE_CALLBACK_NO_HIDE, "Set to default", more_menu_home_page_default_set, NULL, ITEM_FLAG_NONE },
+         { ITEM_TYPE_PREFERENCE, "Set to an URL",
+           (More_Menu_Preference[]) {{
+             .type = PREF_TYPE_STRING,
+             .pref = EVE_PREF_HOME_PAGE,
+             .pref_get = prefs_home_page_get,
+             .pref_set = prefs_home_page_set,
+           }}, NULL, ITEM_FLAG_ARROW },
          { ITEM_TYPE_LAST, NULL, NULL, NULL, ITEM_FLAG_NONE },
      }, NULL, ITEM_FLAG_ARROW },
    { ITEM_TYPE_STATIC_FOLDER, "Privacy",
@@ -1152,31 +1159,6 @@ pref_widget_get(Evas_Object *parent, More_Menu_Preference *pref)
 
          return spinner;
       }
-   case PREF_TYPE_STRING:
-      {
-         const char *(*pref_get)(Prefs *);
-         Evas_Object *entry = elm_scrolled_entry_add(parent);
-
-         pref_get = pref->pref_get;
-         elm_scrolled_entry_entry_set(entry, pref_get(prefs));
-         elm_scrolled_entry_single_line_set(entry, EINA_TRUE);
-         evas_object_smart_callback_add(entry, "changed", cb_pref_string_changed, pref);
-
-         return entry;
-      }
-   case PREF_TYPE_PASSWORD:
-      {
-         const char *(*pref_get)(Prefs *);
-         Evas_Object *entry = elm_scrolled_entry_add(parent);
-
-         pref_get = pref->pref_get;
-         elm_scrolled_entry_password_set(entry, EINA_TRUE);
-         elm_scrolled_entry_single_line_set(entry, EINA_TRUE);
-         elm_scrolled_entry_entry_set(entry, pref_get(prefs));
-         evas_object_smart_callback_add(entry, "changed", cb_pref_string_changed, pref);
-
-         return entry;
-      }
    }
 
    return NULL;
@@ -1351,10 +1333,105 @@ more_menu_prefs_list_create(More_Menu_Item *i, More_Menu_Preference *p)
    return mmi;
 }
 
-static More_Menu_Item *
-more_menu_prefs_create(More_Menu_Item *i, More_Menu_Preference *p)
+static void
+on_string_ask_ok_click(void *data, Evas_Object *obj, void *event_info)
 {
-   if (p->type == PREF_TYPE_LIST) return more_menu_prefs_list_create(i, p);
+   Eina_Bool *response = data;
+   *response = EINA_TRUE;
+   ecore_main_loop_quit();
+}
+
+static void
+on_string_ask_cancel_click(void *data, Evas_Object *obj, void *event_info)
+{
+   Eina_Bool *response = data;
+   *response = EINA_FALSE;
+   ecore_main_loop_quit();
+}
+
+static void
+more_menu_prefs_string_ask(Evas_Object *parent, More_Menu_Item *item, More_Menu_Preference *pref, Eina_Bool password)
+{
+   Eina_Bool response = EINA_FALSE;
+   Evas_Object *bx_h, *bx_v, *lb;
+   Evas_Object *bt_cancel, *bt_ok;
+   Evas_Object *notify;
+   Evas_Object *entry;
+   const char *(*pref_get)(Prefs *);
+   void (*pref_set)(Prefs *, const char *);
+   
+   if (!(pref_get = pref->pref_get) || !(pref_set = pref->pref_set)) return;
+
+   notify = elm_notify_add(parent);
+   elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_CENTER);
+   evas_object_size_hint_weight_set(notify, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_notify_repeat_events_set(notify, EINA_FALSE);
+
+   bx_v = elm_box_add(parent);
+   elm_notify_content_set(notify, bx_v);
+   elm_box_horizontal_set(bx_v, 0);
+   evas_object_size_hint_weight_set(bx_v, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(bx_v);
+
+   lb = elm_label_add(bx_v);
+   elm_label_label_set(lb, item->text);
+   elm_box_pack_end(bx_v, lb);
+   evas_object_show(lb);
+
+   entry = elm_entry_add(bx_v);
+   elm_entry_password_set(entry, password);
+   elm_entry_single_line_set(entry, EINA_TRUE);
+   elm_entry_entry_set(entry, pref_get(prefs));
+   elm_box_pack_end(bx_v, entry);
+   evas_object_show(entry);
+
+   bx_h = elm_box_add(bx_v);
+   elm_box_horizontal_set(bx_h, 1);
+   elm_box_pack_end(bx_v, bx_h);
+   evas_object_size_hint_weight_set(bx_h, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(bx_h, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(bx_h);
+
+   bt_cancel = elm_button_add(bx_h);
+   elm_button_label_set(bt_cancel, "Cancel");
+   elm_box_pack_end(bx_h, bt_cancel);
+   evas_object_size_hint_weight_set(bt_cancel, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(bt_cancel, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_smart_callback_add(bt_cancel, "clicked", on_string_ask_cancel_click, &response);
+   evas_object_show(bt_cancel);
+
+   bt_ok = elm_button_add(bx_h);
+   elm_button_label_set(bt_ok, "OK");
+   elm_box_pack_end(bx_h, bt_ok);
+   evas_object_size_hint_weight_set(bt_ok, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(bt_ok, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_smart_callback_add(bt_ok, "clicked", on_string_ask_ok_click, &response);
+   evas_object_show(bt_ok);
+
+   evas_object_show(notify);
+   ecore_main_loop_begin();
+   evas_object_hide(notify);
+
+   if (response == EINA_TRUE)
+      pref_set(prefs, elm_entry_entry_get(entry));
+
+   evas_object_del(notify);
+}
+
+static More_Menu_Item *
+more_menu_prefs_create(Evas_Object *parent, More_Menu_Item *item, More_Menu_Preference *pref)
+{
+   switch (pref->type) {
+   case PREF_TYPE_LIST:
+      return more_menu_prefs_list_create(item, pref);
+   case PREF_TYPE_STRING:
+      more_menu_prefs_string_ask(parent, item, pref, EINA_FALSE);
+      break;
+   case PREF_TYPE_PASSWORD:
+      more_menu_prefs_string_ask(parent, item, pref, EINA_TRUE);
+      break;
+   }
+
    return NULL;
 }
 
@@ -1399,7 +1476,7 @@ on_more_item_click(void *data, Evas_Object *obj,
          if (!mmi->next)
             return;
 
-         More_Menu_Item *new_root = more_menu_prefs_create(mmi, mmi->next);
+         More_Menu_Item *new_root = more_menu_prefs_create(win->win, mmi, mmi->next);
          if (new_root)
             {
                win->list_history_titles = eina_list_prepend(win->list_history_titles, old_text);
