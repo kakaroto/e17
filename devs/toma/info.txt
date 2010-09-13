@@ -5,8 +5,8 @@ Name:         Tom Haste
 Location:     Perth, Australia
 E-Mail:       tomhaste@gmail.com
 WWW:          http://edjy.wordpress.com/
-Managing:     
+Managing:     exchange
 Contributing: e
 Group:        Core, WebSite
 Platform:     Ubuntu (Linux)
-GeoData:      -32.119633 115.773368
+GeoData:      -32.112, 115.762
