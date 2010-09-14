@@ -96,7 +96,7 @@ LOG_ERR="$LOG.err"
 
 echo ""
 echo "install: $PRJ prefix=$PREFIX"
-python setup.py develop --prefix="$PREFIX" install_headers >"$LOG_OUT" 2>"$LOG_ERR"
+python setup.py develop --prefix="$PREFIX" install_headers --install-dir="$PYINCDIR" >"$LOG_OUT" 2>"$LOG_ERR"
 if [ $? -eq 0 ]; then
     echo "successfully installed, see $LOG_OUT and $LOG_ERR"
 else
