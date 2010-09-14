@@ -94,7 +94,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
     @see: L{ecore.evas.SoftwareX11}, L{ecore.evas.Buffer}, ...
 
     @group Most used: size_get, size_set, size, rect
-    @group Factories: Rectangle, Line, Image, FilledImage, Gradient,
+    @group Factories: Rectangle, Line, Image, FilledImage,
        Polygon, Text, Textblock
     @group Children manipulation: top_at_xy_get, top_at_pointer_get,
            top_in_rectangle_get, objects_at_xy_get, objects_in_rectangle_get,
@@ -764,12 +764,6 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         @rtype: L{FilledImage<evas.FilledImage>}
         """
         return FilledImage(self, **kargs)
-
-    def Gradient(self, **kargs):
-        """Factory of L{evas.Gradient} associated with this canvas.
-        @rtype: L{Gradient<evas.Gradient>}
-        """
-        return Gradient(self, **kargs)
 
     def Polygon(self, **kargs):
         """Factory of L{evas.Polygon} associated with this canvas.

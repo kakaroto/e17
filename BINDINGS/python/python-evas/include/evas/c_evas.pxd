@@ -1074,11 +1074,6 @@ cdef public class FilledImage(Image) [object PyEvasFilledImage,
     pass
 
 
-cdef public class Gradient(Object) [object PyEvasGradient,
-                                    type PyEvasGradient_Type]:
-    pass
-
-
 cdef public class Polygon(Object) [object PyEvasPolygon,
                                    type PyEvasPolygon_Type]:
     pass

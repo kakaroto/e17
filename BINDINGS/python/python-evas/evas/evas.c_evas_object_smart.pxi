@@ -349,7 +349,7 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
 
     @group Children manipulation: member_add, member_del, members_get,
        members
-    @group Factories: Rectangle, Line, Image, FilledImage, Gradient,
+    @group Factories: Rectangle, Line, Image, FilledImage,
        Polygon, Text
     @group Default implementations: delete, move, calculate, member_add,
        member_del
@@ -668,14 +668,6 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
         @rtype: L{FilledImage<evas.FilledImage>}
         """
         obj = FilledImage(self.evas, **kargs)
-        self.member_add(obj)
-        return obj
-
-    def Gradient(self, **kargs):
-        """Factory of children L{evas.Gradient}.
-        @rtype: L{Gradient<evas.Gradient>}
-        """
-        obj = Gradient(self.evas, **kargs)
         self.member_add(obj)
         return obj
 
