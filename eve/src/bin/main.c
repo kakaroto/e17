@@ -380,7 +380,11 @@ _cb_dbus_request_name(void *data, DBusMessage *msg __UNUSED__, DBusError *err)
    DBusError new_err;
    dbus_uint32_t ret;
 
-   if (dbus_error_is_set(err)) goto cleanup;
+   if (dbus_error_is_set(err))
+      {
+         dbus_error_free(err);
+         goto cleanup;
+      }
 
    dbus_error_init(&new_err);
    dbus_message_get_args(msg, &new_err, DBUS_TYPE_UINT32, &ret, DBUS_TYPE_INVALID);
@@ -389,10 +393,8 @@ _cb_dbus_request_name(void *data, DBusMessage *msg __UNUSED__, DBusError *err)
    case DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER:
    case DBUS_REQUEST_NAME_REPLY_ALREADY_OWNER:
       {
-         E_DBus_Interface *iface;
-         E_DBus_Object *eve_dbus;
-         eve_dbus = e_dbus_object_add(response->conn, "/mobi/profusion/eve", NULL);
-         iface = e_dbus_interface_new("mobi.profusion.eve");
+         E_DBus_Interface *iface e_dbus_interface_new("mobi.profusion.eve");
+         E_DBus_Object *eve_dbus = e_dbus_object_add(response->conn, "/mobi/profusion/eve", NULL);
          e_dbus_interface_method_add(iface, "open_url", "s", "", _cb_dbus_open_url);
          e_dbus_object_interface_attach(eve_dbus, iface);
       }
