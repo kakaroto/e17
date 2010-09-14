@@ -322,6 +322,8 @@ cdef class ListItem(WidgetItem):
         """
         cdef char *style
         style = elm_list_item_tooltip_style_get(self.item)
+        if style == NULL:
+            return None
         return style
 
 

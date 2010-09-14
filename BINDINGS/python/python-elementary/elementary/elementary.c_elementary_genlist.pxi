@@ -514,6 +514,8 @@ cdef class GenlistItem(WidgetItem):
         """
         cdef char *style
         style = elm_genlist_item_tooltip_style_get(self.obj)
+        if style == NULL:
+            return None
         return style
 
 

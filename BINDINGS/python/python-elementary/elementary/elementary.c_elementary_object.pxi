@@ -191,6 +191,8 @@ cdef class Object(evas.c_evas.Object):
         """
         cdef char *style
         style = elm_object_tooltip_style_get(self.obj)
+        if style == NULL:
+            return None
         return style
 
     def _callback_add_full(self, char *event, event_conv, func, *args, **kargs):
