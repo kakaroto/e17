@@ -1,12 +1,11 @@
 #define TOP_PANEL_HEIGHT 64
 #define BOTTOM_PANEL_HEIGHT 85
 #define TOOLBAR_ITEMS 5
-#define TOOLBAR_PADDING 0.03
+#define TOOLBAR_MIDDLE_ITEM 3
 #define TOOLBAR_ITEM_SIZE 90
-#define URLBAR_PADDING 0.03
+#define URLBAR_ITEM_SIZE 40
 
-#define TOOLBAR_SPACE_AVAILABLE (1.0-TOOLBAR_PADDING*2)
-#define TOOLBAR_POSITION(_item_number) ((TOOLBAR_SPACE_AVAILABLE/TOOLBAR_ITEMS)*_item_number)
+#define TOOLBAR_POSITION(_item_number) ((_item_number)*(TOOLBAR_ITEM_SIZE)-((TOOLBAR_ITEM_SIZE)*(TOOLBAR_MIDDLE_ITEM)))
 #define TOOLBAR_BUTTON(_button_name,_button_title,_xpos) \
     part { name: "button-"_button_name"-normal"; \
         type: IMAGE; \
@@ -16,13 +15,13 @@
             fixed: 1 1; \
             rel1 { \
                 to_y: "panel-bottom"; \
-                relative: (_xpos+TOOLBAR_PADDING) 1.0; \
-                offset: -45 -46; \
+                relative: 0.5 1.0; \
+                offset: (_xpos) -46; \
             } \
             rel2 { \
                 to_y: "panel-bottom"; \
-                relative: (_xpos+TOOLBAR_PADDING) 1.0; \
-                offset: (-TOOLBAR_ITEM_SIZE/2) (-TOOLBAR_ITEM_SIZE/2); \
+                relative: 0.5 1.0; \
+                offset: (_xpos) (-TOOLBAR_ITEM_SIZE/2); \
             } \
             image.normal: "bt_"_button_name"_normal.png"; \
         } \
@@ -37,13 +36,13 @@
             fixed: 1 1; \
             rel1 { \
                 to_y: "panel-bottom"; \
-                relative: (_xpos+TOOLBAR_PADDING) 1.0; \
-                offset: -45 -46; \
+                relative: 0.5 1.0; \
+                offset: (_xpos) -46; \
             } \
             rel2 { \
                 to_y: "panel-bottom"; \
-                relative: (_xpos+TOOLBAR_PADDING) 1.0; \
-                offset: (-TOOLBAR_ITEM_SIZE/2) (-TOOLBAR_ITEM_SIZE/2); \
+                relative: 0.5 1.0; \
+                offset: (_xpos) (-TOOLBAR_ITEM_SIZE/2); \
             } \
             image.normal: "bt_"_button_name"_selected.png"; \
             color: 255 255 255 0; \
@@ -144,7 +143,7 @@
         } \
     }
 
-#define URLBAR_BUTTON(_button_name,_pos) \
+#define URLBAR_BUTTON(_button_name,_pos,_offset) \
     part { name: "button-"_button_name"-normal"; \
         type: IMAGE; \
         description { state: "default" 0.0; \
@@ -153,12 +152,12 @@
             fixed: 1 1; \
             rel1 { \
                 to_y: "panel-top"; \
-                relative: _pos 0.0; \
-                offset: 0 -5; \
+                relative: (_pos) 0.0; \
+                offset: (_offset) -5; \
             } \
             rel2 { \
                 to_y: "panel-top"; \
-                relative: _pos 1.0; \
+                relative: (_pos) 1.0; \
                 offset: -1 -1; \
             } \
             image.normal: "bt_"_button_name"_normal.png"; \
@@ -174,8 +173,8 @@
             visible: 0; \
             rel1 { \
                 to_y: "panel-top"; \
-                relative: _pos 0.0; \
-                offset: 0 -5; \
+                relative: (_pos) 0.0; \
+                offset: (_offset) -5; \
             } \
             rel2 { \
                 to_y: "panel-top"; \
@@ -792,8 +791,8 @@ collections {
             TOOLBAR_BUTTON("reload", "Reload", TOOLBAR_POSITION(3))
             TOOLBAR_BUTTON("tab", "Tabs", TOOLBAR_POSITION(4))
             TOOLBAR_BUTTON("more", "More", TOOLBAR_POSITION(5))
-            URLBAR_BUTTON("home", 0.1)
-            URLBAR_BUTTON("fav", 0.9)
+            URLBAR_BUTTON("home", 0.0, URLBAR_ITEM_SIZE + 20)
+            URLBAR_BUTTON("fav", 1.0, -URLBAR_ITEM_SIZE - 20)
             part { name: "button-more-right-separator";
                 type: RECT;
                 description { state: "default" 0.0;
@@ -843,13 +842,13 @@ collections {
                     max: 99999 26;
                     rel1 {
                         to_y: "panel-top";
-                        relative: 0.1 0.0;
-                        offset: 45 68;
+                        relative: 0.0 0.0;
+                        offset: (URLBAR_ITEM_SIZE + 20) 68;
                     }
                     rel2 {
                         to_y: "panel-top";
-                        relative: 0.9 0.0;
-                        offset: -45 -1;
+                        relative: 1.0 0.0;
+                        offset: (-URLBAR_ITEM_SIZE - 20) -1;
                     }
                     image.normal: "url-entry.png";
                     image.border: 4 4 4 4;

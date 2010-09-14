@@ -1,6 +1,5 @@
 UI
 --
- * fix UI/Edje scale (enlarge the window to see problems)
  * bookmarks: fixed "<Back" label intead of "<$PREVIOUS_NAME"?
  * better error reporting page (for 404 and similar)
  * show visual zoom indication (zoom level? some icon?)
