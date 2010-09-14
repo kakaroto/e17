@@ -17,6 +17,8 @@
 
 #include <Ecore_Getopt.h>
 #include <Ecore_File.h>
+#include <E_DBus.h>
+#include <Ecore_X.h>
 #include <stdlib.h>
 #include "gettext.h"
 
@@ -30,6 +32,11 @@ struct Cursor {
   Evas_Object *object;
   int layer;
   int hot_x, hot_y;
+};
+
+struct Eve_DBus_Request_Name_Response {
+  E_DBus_Connection *conn;
+  const char *url;
 };
 
 static void
@@ -61,14 +68,14 @@ window_mouse_enabled_set(Evas_Object *win, Eina_Bool setting)
    Evas *e = evas_object_evas_get(win);
    Ecore_Evas *ee = evas_data_attach_get(e);
    static struct Cursor *default_cursor = NULL;
-   
+
    if (!default_cursor)
       {
          if (!(default_cursor = calloc(1, sizeof(*default_cursor)))) return;
          ecore_evas_cursor_get(ee, &default_cursor->object, &default_cursor->layer,
                                &default_cursor->hot_x, &default_cursor->hot_y);
       }
-   
+
    if (!setting)
       {
           Evas_Object *cursor = evas_object_rectangle_add(e);
@@ -352,6 +359,63 @@ static const Ecore_Getopt options = {
    }
 };
 
+static DBusMessage *
+_cb_dbus_open_url(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+{
+   DBusMessage *reply;
+   Browser_Window *win = eina_list_data_get(app.windows);
+   char *new_url;
+
+   dbus_message_get_args(msg, NULL, DBUS_TYPE_STRING, &new_url, DBUS_TYPE_INVALID);
+   tab_add(win, new_url);
+   ecore_x_window_focus(elm_win_xwindow_get(win->win));
+
+   return dbus_message_new_method_return(msg);
+}
+
+static void
+_cb_dbus_request_name(void *data, DBusMessage *msg __UNUSED__, DBusError *err)
+{
+   struct Eve_DBus_Request_Name_Response *response = data;
+   DBusError new_err;
+   dbus_uint32_t ret;
+
+   if (dbus_error_is_set(err)) return;
+
+   dbus_error_init(&new_err);
+   dbus_message_get_args(msg, &new_err, DBUS_TYPE_UINT32, &ret, DBUS_TYPE_INVALID);
+
+   switch (ret) {
+   case DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER:
+   case DBUS_REQUEST_NAME_REPLY_ALREADY_OWNER:
+      {
+         E_DBus_Interface *iface;
+         E_DBus_Object *eve_dbus;
+         eve_dbus = e_dbus_object_add(response->conn, "/mobi/profusion/eve", NULL);
+         iface = e_dbus_interface_new("mobi.profusion.eve");
+         e_dbus_interface_method_add(iface, "open_url", "s", "", _cb_dbus_open_url);
+         e_dbus_object_interface_attach(eve_dbus, iface);
+      }
+      break;
+   case DBUS_REQUEST_NAME_REPLY_IN_QUEUE:
+   case DBUS_REQUEST_NAME_REPLY_EXISTS:
+      {
+         DBusMessage *open_url = dbus_message_new_method_call("mobi.profusion.eve",
+                                                              "/mobi/profusion/eve",
+                                                              "mobi.profusion.eve",
+                                                              "open_url");
+         DBusMessageIter iter;
+         dbus_message_iter_init_append(open_url, &iter);
+         dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &response->url);
+         e_dbus_message_send(response->conn, open_url, NULL, -1, NULL);
+         dbus_message_unref(open_url);
+      }
+      exit(0);
+   }
+
+   free(response);
+}
+
 EAPI int
 elm_main(int argc, char **argv)
 {
@@ -365,6 +429,7 @@ elm_main(int argc, char **argv)
    Eina_Bool disable_touch_interface = 0xff;
    char *user_agent_option = NULL;
    const char *user_agent_str;
+   E_DBus_Connection *conn;
 
    Ecore_Getopt_Value values[] = {
       ECORE_GETOPT_VALUE_BOOL(app.is_fullscreen),
@@ -441,6 +506,7 @@ elm_main(int argc, char **argv)
    favorite_init();
    history_init();
    preferences_init();
+   e_dbus_init();
 
    home = getenv("HOME");
    if (!home || !home[0])
@@ -480,7 +546,7 @@ elm_main(int argc, char **argv)
         hist = hist_new(0);
         hist_save(hist, path);
      }
-   
+
    snprintf(path, sizeof(path), "%s/.config/ewebkit/prefs.db", home);
    prefs = prefs_load(path);
    if (!prefs)
@@ -534,6 +600,18 @@ elm_main(int argc, char **argv)
    else
       url = prefs_home_page_get(prefs);
 
+   conn = e_dbus_bus_get(DBUS_BUS_SESSION);
+   if (conn)
+     {
+        struct Eve_DBus_Request_Name_Response *response = calloc(1, sizeof(*response));
+        if (!response) goto end;
+
+        response->conn = conn;
+        response->url = url;
+
+        e_dbus_request_name(conn, "mobi.profusion.eve", 0, _cb_dbus_request_name, response);
+     }
+
    if (!add_win(&app, url))
      {
         r = -1;
@@ -547,9 +625,11 @@ end:
 
    hist_save(hist, NULL);
    hist_free(hist);
-   
+
    prefs_save(prefs, NULL);
    prefs_free(prefs);
+
+   if (conn) e_dbus_connection_close(conn);
 
    eina_log_domain_unregister(_log_domain);
    _log_domain = -1;
@@ -558,6 +638,7 @@ end:
    favorite_shutdown();
    history_shutdown();
    preferences_shutdown();
+   e_dbus_shutdown();
    return r;
 }
 

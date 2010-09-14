@@ -44,5 +44,4 @@ Misc
 ----
  * documentation: HTML, provided as a fixed bookmark item
  * download manager?
- * single instance? export dbus, try to acquire name, if not possible (already exists) send request to open url in the existing window and give it x11-focus
  * history + bookmark: remember if rss exist, and request it silently to display feedback when new content is available
