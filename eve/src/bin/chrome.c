@@ -1890,15 +1890,6 @@ chrome_add(Browser_Window *win, const char *url)
    evas_object_data_set(view, "chrome", chrome);
    evas_object_data_set(ed, "win", win);
 
-   if (win->app->user_agent)
-     {
-        INF("using custom user agent string: %s\n", win->app->user_agent);
-        ewk_view_setting_user_agent_set(view, win->app->user_agent);
-     }
-
-   ewk_view_setting_enable_plugins_set(view, !win->app->disable_plugins);
-   view_touch_interface_set(view, !win->app->disable_touch_interface);
-
    evas_object_event_callback_add(view, EVAS_CALLBACK_KEY_DOWN, on_key_down,
                                   win);
    evas_object_smart_callback_add(view, "load,error", on_view_load_error, win);

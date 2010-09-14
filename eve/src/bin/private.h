@@ -53,12 +53,7 @@ struct _Browser_Window
 struct _App
 {
    Eina_List   *windows;
-   const char  *user_agent;
-
    Eina_Bool    is_fullscreen;
-   Eina_Bool    disable_plugins;
-   Eina_Bool    disable_mouse;
-   Eina_Bool    disable_touch_interface;
    unsigned int rotate;
 };
 

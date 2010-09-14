@@ -227,7 +227,7 @@ add_win(App *app, const char *url)
    elm_win_title_set(win->win, PACKAGE_STRING);
    elm_win_rotation_set(win->win, app->rotate);
    elm_win_fullscreen_set(win->win, app->is_fullscreen);
-   window_mouse_enabled_set(win->win, !app->disable_mouse);
+   window_mouse_enabled_set(win->win, prefs_enable_mouse_cursor_get(prefs));
 
    win->bg = edje_object_add(evas_object_evas_get(win->win));
    if (!win->bg)
@@ -339,11 +339,11 @@ static const Ecore_Getopt options = {
                                   "disable plugins (flash, etc).", 1),
       ECORE_GETOPT_STORE_DEF_BOOL('M', "disable-mouse",
                                   "disable mouse (hide it).", 1),
+      ECORE_GETOPT_STORE_DEF_BOOL('T', "disable-touch-interface",
+                                  "disable touch interface handling of mouse events", 1),
       ECORE_GETOPT_STORE_STR('U', "user-agent",
                              "user agent string to use. Special cases=iphone,safari,chrome,firefox,ie,ie9,ie8,ie7."),
       ECORE_GETOPT_STORE_DEF_UINT('R', "rotate", "Screen Rotation in degrees", 0),
-      ECORE_GETOPT_STORE_DEF_BOOL('T', "disable-touch-interface",
-                                  "disable touch interface handling of mouse events", 1),
       ECORE_GETOPT_VERSION('V', "version"),
       ECORE_GETOPT_COPYRIGHT('C', "copyright"),
       ECORE_GETOPT_LICENSE('L', "license"),
@@ -360,15 +360,19 @@ elm_main(int argc, char **argv)
    const char *url;
    char path[PATH_MAX];
    Eina_Bool quit_option = EINA_FALSE;
-   char *user_agent = NULL;
+   Eina_Bool disable_plugins = 0xff;
+   Eina_Bool disable_mouse_cursor = 0xff;
+   Eina_Bool disable_touch_interface = 0xff;
+   char *user_agent_option = NULL;
+   const char *user_agent_str;
 
    Ecore_Getopt_Value values[] = {
       ECORE_GETOPT_VALUE_BOOL(app.is_fullscreen),
-      ECORE_GETOPT_VALUE_BOOL(app.disable_plugins),
-      ECORE_GETOPT_VALUE_BOOL(app.disable_mouse),
-      ECORE_GETOPT_VALUE_STR(user_agent),
+      ECORE_GETOPT_VALUE_BOOL(disable_plugins),
+      ECORE_GETOPT_VALUE_BOOL(disable_mouse_cursor),
+      ECORE_GETOPT_VALUE_BOOL(disable_touch_interface),
+      ECORE_GETOPT_VALUE_STR(user_agent_option),
       ECORE_GETOPT_VALUE_UINT(app.rotate),
-      ECORE_GETOPT_VALUE_BOOL(app.disable_touch_interface),
       ECORE_GETOPT_VALUE_BOOL(quit_option),
       ECORE_GETOPT_VALUE_BOOL(quit_option),
       ECORE_GETOPT_VALUE_BOOL(quit_option),
@@ -403,33 +407,34 @@ elm_main(int argc, char **argv)
         return 0;
      }
 
-   if (!user_agent || (user_agent && strcasecmp(user_agent, "eve")))
-      user_agent = "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3 " PACKAGE_NAME "/" PACKAGE_VERSION;
+   if (!user_agent_option ||
+       (user_agent_option && strcasecmp(user_agent_option, "eve")))
+      user_agent_str = "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3 " PACKAGE_NAME "/" PACKAGE_VERSION;
    else
      {
         /* http://www.useragentstring.com/ */
 
-        if (strcasecmp(user_agent, "iphone") == 0)
-          user_agent = "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3";
-        else if (strcasecmp(user_agent, "safari") == 0)
-          user_agent = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_3; en-US) AppleWebKit/533.17.8 (KHTML, like Gecko) Version/5.0.1 Safari/533.17.8";
+        if (strcasecmp(user_agent_option, "iphone") == 0)
+          user_agent_str = "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3";
+        else if (strcasecmp(user_agent_option, "safari") == 0)
+          user_agent_str = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_3; en-US) AppleWebKit/533.17.8 (KHTML, like Gecko) Version/5.0.1 Safari/533.17.8";
 
-        else if (strcasecmp(user_agent, "chrome") == 0)
-          user_agent = "Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.514.0 Safari/534.7";
-        else if (strcasecmp(user_agent, "firefox") == 0)
-          user_agent = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.2) Gecko/20121223 Firefox/3.8";
+        else if (strcasecmp(user_agent_option, "chrome") == 0)
+          user_agent_str = "Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.514.0 Safari/534.7";
+        else if (strcasecmp(user_agent_option, "firefox") == 0)
+          user_agent_str = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.2) Gecko/20121223 Firefox/3.8";
 
-        else if (strcasecmp(user_agent, "ie") == 0) /* last */
-          user_agent = "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)";
-        else if (strcasecmp(user_agent, "ie9") == 0)
-          user_agent = "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)";
-        else if (strcasecmp(user_agent, "ie8") == 0)
-          user_agent = "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; SLCC1; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET CLR 1.1.4322)";
-        else if (strcasecmp(user_agent, "ie7") == 0)
-          user_agent = "Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 6.0)";
+        else if (strcasecmp(user_agent_option, "ie") == 0) /* last */
+          user_agent_str = "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)";
+        else if (strcasecmp(user_agent_option, "ie9") == 0)
+          user_agent_str = "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)";
+        else if (strcasecmp(user_agent_option, "ie8") == 0)
+          user_agent_str = "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; SLCC1; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET CLR 1.1.4322)";
+        else if (strcasecmp(user_agent_option, "ie7") == 0)
+          user_agent_str = "Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 6.0)";
+        else
+          user_agent_str = user_agent_option;
      }
-
-   app.user_agent = eina_stringshare_add(user_agent);
 
    elm_theme_extension_add(NULL, PACKAGE_DATA_DIR "/default.edj");
    ewk_init();
@@ -480,11 +485,48 @@ elm_main(int argc, char **argv)
    prefs = prefs_load(path);
    if (!prefs)
      {
-        prefs = prefs_new(EINA_TRUE, EINA_TRUE, EINA_FALSE,
-                          EINA_TRUE, "eve", DEFAULT_URL, NULL,
+        Eina_Bool enable_mouse_cursor, enable_touch_interface, enable_plugins;
+
+#define BOOL_OPT(opt)                                                   \
+        enable_##opt = ((disable_##opt == 0xff) ? EINA_TRUE : !disable_##opt)
+        BOOL_OPT(mouse_cursor);
+        BOOL_OPT(touch_interface);
+        BOOL_OPT(plugins);
+#undef BOOL_OPT
+
+        prefs = prefs_new(enable_mouse_cursor, enable_touch_interface,
+                          enable_plugins,
+                          EINA_TRUE, user_agent_str, DEFAULT_URL, NULL,
                           EINA_FALSE, EINA_TRUE, EINA_FALSE,
                           EINA_TRUE);
         prefs_save(prefs, path);
+     }
+
+#define BOOL_OPT(opt)                                           \
+   if (disable_##opt != 0xff)                                   \
+     {                                                          \
+        Eina_Bool old = prefs_enable_##opt##_get(prefs);        \
+        Eina_Bool cur = !disable_##opt;                         \
+        if (old != cur)                                         \
+          {                                                     \
+             INF("Changed preferences to "#opt"=%hhu", cur);    \
+             prefs_enable_##opt##_set(prefs, cur);              \
+          }                                                     \
+     }
+   BOOL_OPT(mouse_cursor);
+   BOOL_OPT(touch_interface);
+   BOOL_OPT(plugins);
+#undef BOOL_OPT
+
+   if (user_agent_option)
+     {
+        const char *old = prefs_user_agent_get(prefs);
+        const char *cur = user_agent_str;
+        if (strcmp(old, cur) != 0)
+          {
+             INF("Changed preferences to user_agent=\"%s\"", cur);
+             prefs_user_agent_set(prefs, cur);
+          }
      }
 
    if (args < argc)
@@ -508,8 +550,6 @@ end:
    
    prefs_save(prefs, NULL);
    prefs_free(prefs);
-
-   eina_stringshare_del(app.user_agent);
 
    eina_log_domain_unregister(_log_domain);
    _log_domain = -1;
