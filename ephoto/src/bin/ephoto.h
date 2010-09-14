@@ -33,7 +33,7 @@ void ephoto_create_main_window(const char *directory, const char *image);
 
 /* Configuration */
 Eina_Bool ephoto_config_init(Ephoto *em);
-void ephoto_config_save(Ephoto *em);
+void ephoto_config_save(Ephoto *em, Eina_Bool instant);
 void ephoto_config_free(Ephoto *em);
 
 /*Ephoto Flow Browser*/

@@ -39,16 +39,20 @@ ephoto_config_init(Ephoto *em)
                 default:
                         return EINA_TRUE;
         }
-        ephoto_config_save(em);
+        ephoto_config_save(em, EINA_FALSE);
         return EINA_TRUE;
 }
 
 void
-ephoto_config_save(Ephoto *em)
+ephoto_config_save(Ephoto *em, Eina_Bool instant)
 {
         if (em->config_save)
                 ecore_timer_del(em->config_save);
-        em->config_save = ecore_timer_add(5, _ephoto_on_config_save, em);
+
+        if (instant)
+                _ephoto_on_config_save(em);
+        else
+                em->config_save = ecore_timer_add(5, _ephoto_on_config_save, em);
 }
 
 void

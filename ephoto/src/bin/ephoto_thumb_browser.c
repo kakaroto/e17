@@ -267,7 +267,7 @@ _ephoto_slider_changed(void *data, Evas_Object *obj, void *event)
 	elm_gengrid_item_size_set(tb->thumb_browser, val, val / THUMB_RATIO);
 
         em->config->thumb_size = val;
-        ephoto_config_save(em);
+        ephoto_config_save(em, EINA_FALSE);
 }
 
 /*Callback when the client is connected*/

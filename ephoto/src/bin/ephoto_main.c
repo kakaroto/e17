@@ -126,6 +126,8 @@ ephoto_create_main_window(const char *directory, const char *image)
 static void
 _ephoto_delete_main_window(void *data, Evas_Object *obj, void *event_info)
 {
+        ephoto_config_save(em, EINA_TRUE);
+
         if (em->thumb_browser)
                 evas_object_del(em->thumb_browser);
         if (em->flow_browser)
