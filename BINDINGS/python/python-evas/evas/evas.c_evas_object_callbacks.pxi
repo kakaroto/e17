@@ -222,10 +222,18 @@ cdef void cb_object_render_flush_post(void *data, Evas *e,
                                       Evas_Object *obj, void *e_inf) with gil:
     print "EVAS_CALLBACK_RENDER_FLUSH_POST is not supported by object."
 
+cdef void cb_object_canvas_object_focus_in(void *data, Evas *e,
+                                           Evas_Object *obj, void *e_inf) with gil:
+    print "EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_IN is not supported by object."
+
+cdef void cb_object_canvas_object_focus_out(void *data, Evas *e,
+                                            Evas_Object *obj, void *e_inf) with gil:
+    print "EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_OUT is not supported by object."
+
 
 cdef int evas_object_event_callbacks_len
-cdef Evas_Object_Event_Cb evas_object_event_callbacks[27]
-evas_object_event_callbacks_len = 27
+cdef Evas_Object_Event_Cb evas_object_event_callbacks[29]
+evas_object_event_callbacks_len = 29
 evas_object_event_callbacks[EVAS_CALLBACK_MOUSE_IN] = cb_object_mouse_in
 evas_object_event_callbacks[EVAS_CALLBACK_MOUSE_OUT] = cb_object_mouse_out
 evas_object_event_callbacks[EVAS_CALLBACK_MOUSE_DOWN] = cb_object_mouse_down
@@ -253,3 +261,5 @@ evas_object_event_callbacks[EVAS_CALLBACK_CANVAS_FOCUS_IN] = cb_object_canvas_fo
 evas_object_event_callbacks[EVAS_CALLBACK_CANVAS_FOCUS_OUT] = cb_object_canvas_focus_out
 evas_object_event_callbacks[EVAS_CALLBACK_RENDER_FLUSH_PRE] = cb_object_render_flush_pre
 evas_object_event_callbacks[EVAS_CALLBACK_RENDER_FLUSH_POST] = cb_object_render_flush_post
+evas_object_event_callbacks[EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_IN] = cb_object_canvas_object_focus_in
+evas_object_event_callbacks[EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_OUT] = cb_object_canvas_object_focus_out

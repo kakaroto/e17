@@ -149,9 +149,21 @@ cdef void cb_canvas_render_flush_post(void *data, Evas *e, void *e_inf) with gil
     cb_canvas_dispatcher2(<Canvas>data, EVAS_CALLBACK_RENDER_FLUSH_POST)
 
 
+cdef void cb_canvas_canvas_object_focus_in(void *data, Evas *e, void *e_inf) with gil:
+    cdef Evas_Object *obj = <Evas_Object*>e_inf
+    o = Object_from_instance(obj)
+    cb_canvas_dispatcher(<Canvas>data, o, EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_IN)
+
+
+cdef void cb_canvas_canvas_object_focus_out(void *data, Evas *e, void *e_inf) with gil:
+    cdef Evas_Object *obj = <Evas_Object*>e_inf
+    o = Object_from_instance(obj)
+    cb_canvas_dispatcher(<Canvas>data, o, EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_OUT)
+
+
 cdef int evas_canvas_event_callbacks_len
-cdef Evas_Event_Cb evas_canvas_event_callbacks[27]
-evas_canvas_event_callbacks_len = 27
+cdef Evas_Event_Cb evas_canvas_event_callbacks[29]
+evas_canvas_event_callbacks_len = 29
 evas_canvas_event_callbacks[EVAS_CALLBACK_MOUSE_IN] = cb_canvas_mouse_in
 evas_canvas_event_callbacks[EVAS_CALLBACK_MOUSE_OUT] = cb_canvas_mouse_out
 evas_canvas_event_callbacks[EVAS_CALLBACK_MOUSE_DOWN] = cb_canvas_mouse_down
@@ -179,3 +191,5 @@ evas_canvas_event_callbacks[EVAS_CALLBACK_CANVAS_FOCUS_IN] = cb_canvas_canvas_fo
 evas_canvas_event_callbacks[EVAS_CALLBACK_CANVAS_FOCUS_OUT] = cb_canvas_canvas_focus_out
 evas_canvas_event_callbacks[EVAS_CALLBACK_RENDER_FLUSH_PRE] = cb_canvas_render_flush_pre
 evas_canvas_event_callbacks[EVAS_CALLBACK_RENDER_FLUSH_POST] = cb_canvas_render_flush_post
+evas_canvas_event_callbacks[EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_IN] = cb_canvas_canvas_object_focus_in
+evas_canvas_event_callbacks[EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_OUT] = cb_canvas_canvas_object_focus_out
