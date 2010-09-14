@@ -264,6 +264,11 @@ elixir_evas_event_callback(void *data, Evas *e, void *event_info)
      case EVAS_CALLBACK_RENDER_FLUSH_PRE:
      case EVAS_CALLBACK_RENDER_FLUSH_POST:
 	break;
+     case EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_IN:
+     case EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_OUT:
+	if (!evas_object_to_jsval(cx, event_info, &js_event))
+	  goto on_error;
+	break;
      case EVAS_CALLBACK_MOUSE_IN:
      case EVAS_CALLBACK_MOUSE_OUT:
      case EVAS_CALLBACK_MOUSE_DOWN:
@@ -374,6 +379,8 @@ elixir_object_event_callback(void *data, Evas *e, Evas_Object *obj, void *event)
      case EVAS_CALLBACK_CANVAS_FOCUS_OUT:
      case EVAS_CALLBACK_RENDER_FLUSH_PRE:
      case EVAS_CALLBACK_RENDER_FLUSH_POST:
+     case EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_IN:
+     case EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_OUT:
 	JS_ReportError(cx, "Unauthorized callback type: %i", cb->type);
 	goto on_error;
      default:
