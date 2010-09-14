@@ -51,7 +51,7 @@ class EditableAnimation(Manager, object):
             self.name = None
         for p in self._edit_grp.parts:
             part = self._edit_grp.part_get(p)
-            part.state_selected_set("default 0.00")
+            part.state_selected_set("default", 0.00)
 
     # Name
     def _name_set(self, value):
@@ -198,7 +198,7 @@ class EditableAnimation(Manager, object):
             return
 
         p = self._edit_grp.part_get(part)
-        p.state_selected_set("default 0.00")
+        p.state_selected_set("default", 0.00)
         if p.name == self._edit_grp.part.name:
             self._edit_grp.part.state.name = None
         for t in self.timestops:
