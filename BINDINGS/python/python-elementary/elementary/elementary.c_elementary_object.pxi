@@ -40,6 +40,8 @@ cdef c_evas.Evas_Object *_tooltip_content_create(void *data, c_evas.Evas_Object 
     obj = <Object>c_evas.evas_object_data_get(o, "python-evas")
     (func, args, kargs) = <object>data
     ret = func(obj, *args, **kargs)
+    if not ret:
+        return NULL
     return ret.obj
 
 cdef void _tooltip_data_del_cb(void *data, c_evas.Evas_Object *o, void *event_info) with gil:

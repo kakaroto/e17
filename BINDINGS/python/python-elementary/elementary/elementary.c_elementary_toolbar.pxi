@@ -175,14 +175,17 @@ cdef class ToolbarItem(WidgetItem):
         """
         elm_toolbar_item_tooltip_unset(self.obj)
 
-    def tooltip_style_set(self, style):
+    def tooltip_style_set(self, style=None):
         """ Sets a different style for this object tooltip.
 
         @note before you set a style you should define a tooltip with
         elm_toolbar_item_tooltip_content_cb_set() or
         elm_toolbar_item_tooltip_text_set()
         """
-        elm_toolbar_item_tooltip_style_set(self.obj, style)
+        if style:
+            elm_toolbar_item_tooltip_style_set(self.obj, style)
+        else:
+            elm_toolbar_item_tooltip_style_set(self.obj, NULL)
 
     def tooltip_style_get(self):
         """ Get the style for this object tooltip.
