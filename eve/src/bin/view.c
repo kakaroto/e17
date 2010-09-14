@@ -169,6 +169,7 @@ struct _View_Smart_Data
    {
       Eina_Bool first_calculate : 1;
       Eina_Bool animated_zoom : 1;
+      Eina_Bool touch_interface : 1;
    } flags;
 
    Evas_Object *context_menu;
@@ -1025,6 +1026,7 @@ _view_smart_add(Evas_Object *o)
    View_Smart_Data *sd = calloc(1, sizeof(View_Smart_Data));
    evas_object_smart_data_set(o, sd);
    sd->flags.first_calculate = EINA_TRUE;
+   sd->flags.touch_interface = EINA_TRUE;
 
    /* call parent and let it do the whole thing */
    _parent_sc.sc.add(o);
@@ -1129,6 +1131,10 @@ _view_smart_mouse_down(Ewk_View_Smart_Data *esd, const Evas_Event_Mouse_Down *ev
 {
    View_Smart_Data *sd = (View_Smart_Data *)esd;
 
+   /* non-touch interface just forwards events */
+   if (!sd->flags.touch_interface)
+     goto forward_event;
+
    /* do not handle down when doing animated zoom */
    if (sd->flags.animated_zoom)
       return EINA_FALSE;
@@ -1207,6 +1213,10 @@ _view_smart_mouse_up(Ewk_View_Smart_Data *esd, const Evas_Event_Mouse_Up *ev)
 {
    View_Smart_Data *sd = (View_Smart_Data *)esd;
    Eina_Bool used;
+
+   /* non-touch interface just forwards events */
+   if (!sd->flags.touch_interface)
+     return _parent_sc.mouse_up(esd, ev);
 
    /* cancel any previous kinetic animation (but should have none) */
    if (sd->animator.kinetic)
@@ -1614,3 +1624,34 @@ Ewk_Context_Menu *view_context_menu_get(Evas_Object *view)
    return evas_object_data_get(view, "context-menu");
 }
 
+void view_touch_interface_set(Evas_Object *view, Eina_Bool setting)
+{
+   Evas_Event_Mouse_Up ev;
+
+   VIEW_SD_GET_OR_RETURN(view, sd);
+   setting = !!setting;
+   if (sd->flags.touch_interface == setting) return;
+   sd->flags.touch_interface = setting;
+   if (setting) return; /* nothing to do to enter touch mode */
+
+   if (sd->animator.kinetic)
+     {
+        ecore_animator_del(sd->animator.kinetic);
+        sd->animator.kinetic = NULL;
+     }
+
+   memset(&ev, 0, sizeof(ev));
+   if (sd->animator.pan)
+     {
+        sd->pan.count = 0; /* avoid loops in _view_pan_stop() */
+        _view_pan_stop(sd, &ev);
+     }
+   else if (sd->animator.zoom)
+     _view_zoom_stop(sd, &ev);
+}
+
+Eina_Bool view_touch_interface_get(const Evas_Object *view)
+{
+   VIEW_SD_GET_OR_RETURN(view, sd, EINA_FALSE);
+   return sd->flags.touch_interface;
+}

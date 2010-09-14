@@ -58,6 +58,7 @@ struct _App
    Eina_Bool    is_fullscreen;
    Eina_Bool    disable_plugins;
    Eina_Bool    disable_mouse;
+   Eina_Bool    disable_touch_interface;
    unsigned int rotate;
 };
 
@@ -89,6 +90,8 @@ void                  view_zoom_next_down(Evas_Object *view);
 Eina_Bool             view_context_menu_set(Evas_Object *view, Evas_Object *widget, Ewk_Context_Menu *menu);
 Evas_Object *         view_context_menu_widget_get(Evas_Object *view);
 Ewk_Context_Menu *    view_context_menu_get(Evas_Object *view);
+void                  view_touch_interface_set(Evas_Object *view, Eina_Bool setting);
+Eina_Bool             view_touch_interface_get(const Evas_Object *view);
 
 Evas_Object *         chrome_add(Browser_Window *win, const char *url);
 void                  chrome_focused_notify(Evas_Object *chrome);

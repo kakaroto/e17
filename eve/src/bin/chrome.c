@@ -1020,6 +1020,7 @@ chrome_prefs_apply(Evas_Object *chrome)
    ewk_view_setting_auto_load_images_set(view, prefs_enable_auto_load_images_get(prefs));
    ewk_view_setting_auto_shrink_images_set(view, prefs_enable_auto_shrink_images_get(prefs));
    ewk_view_setting_scripts_window_open_set(view, prefs_allow_popup_get(prefs));
+   view_touch_interface_set(view, prefs_enable_touch_interface_get(prefs));
    window_mouse_enabled_set(win->win, prefs_enable_mouse_cursor_get(prefs));
 }
 
@@ -1074,6 +1075,11 @@ pref_updated(More_Menu_Preference *p, void *new_value)
    case EVE_PREF_POPUP_ALLOW:
       {
          SET_PREF_TO_ALL_VIEWS(ewk_view_setting_scripts_window_open_set, *((int *)new_value));
+         break;
+      }
+    case EVE_PREF_TOUCH_INTERFACE:
+      {
+         SET_PREF_TO_ALL_VIEWS(view_touch_interface_set, *((int*)new_value));
          break;
       }
    case EVE_PREF_MOUSE_CURSOR:
@@ -1891,6 +1897,7 @@ chrome_add(Browser_Window *win, const char *url)
      }
 
    ewk_view_setting_enable_plugins_set(view, !win->app->disable_plugins);
+   view_touch_interface_set(view, !win->app->disable_touch_interface);
 
    evas_object_event_callback_add(view, EVAS_CALLBACK_KEY_DOWN, on_key_down,
                                   win);
