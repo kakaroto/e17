@@ -11,13 +11,12 @@ except ImportError:
 
 if not have_cython and not os.path.exists("ecore/ecore.c_ecore.c"):
     raise SystemExit("You need Cython -- http://cython.org/")
-
-from Cython.Compiler.Version import version as cython_version
-
-req_version = (0, 13)
-cur_version = map(int, cython_version.split('.'))
-if (cur_version[0] < req_version[0]) or (cur_version[1] < req_version[1]):
-    raise SystemExit("You need Cython >= " + '.'.join(map(str, req_version)))
+elif have_cython and not os.path.exists("ecore/ecore.c_ecore.c"):
+    from Cython.Compiler.Version import version as cython_version
+    req_version = (0, 13)
+    cur_version = map(int, cython_version.split('.'))
+    if (cur_version[0] < req_version[0]) or (cur_version[1] < req_version[1]):
+        raise SystemExit("You need Cython >= " + '.'.join(map(str, req_version)))
 
 from ez_setup import use_setuptools
 use_setuptools('0.6c9')
@@ -194,7 +193,7 @@ else:
           "by ECORE_BUILD_IMF=0!"
 
 setup(name='python-ecore',
-      version='0.7.0',
+      version='0.7.1',
       license='LGPL',
       author='Gustavo Sverzut Barbieri',
       author_email='barbieri@gmail.com',
@@ -204,8 +203,8 @@ setup(name='python-ecore',
       keywords='wrapper binding enlightenment abstraction event ecore',
       classifiers=trove_classifiers,
       packages=find_packages(),
-      install_requires=['python-evas>=0.7.0'],
-      setup_requires=['python-evas>=0.7.0'],
+      install_requires=['python-evas>=0.7.1'],
+      setup_requires=['python-evas>=0.7.1'],
       ext_modules=module_list,
       zip_safe=False,
       cmdclass={'build_ext': ecore_build_ext,},

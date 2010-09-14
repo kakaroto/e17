@@ -6,7 +6,7 @@ REQUIREMENTS
  * Elementary >= 0.7.0.51191
  * Evas >= 1.0.0  (indirect, Elementary dependency)
  * Ecore >= 1.0.0 (indirect, Elementary dependency)
- * Python-Evas >= 0.7.0
+ * Python-Evas >= 0.7.1
  * Cython >= 0.13
  * Python >= 2.4
  * Python-setuptools >= 0.6_rc9

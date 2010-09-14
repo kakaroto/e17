@@ -11,13 +11,12 @@ except ImportError:
 
 if not have_cython and not os.path.exists("elementary/elementary.c_elementary.c"):
     raise SystemExit("You need Cython -- http://cython.org/")
-
-from Cython.Compiler.Version import version as cython_version
-
-req_version = (0, 13)
-cur_version = cython_version.split('.')
-if (cur_version[0] < req_version[0]) or (cur_version[1] < req_version[1]):
-    raise SystemExit("You need Cython >= " + '.'.join(map(str, req_version)))
+elif have_cython and not os.path.exists("elementary/elementary.c_elementary.c"):
+    from Cython.Compiler.Version import version as cython_version
+    req_version = (0, 13)
+    cur_version = cython_version.split('.')
+    if (cur_version[0] < req_version[0]) or (cur_version[1] < req_version[1]):
+        raise SystemExit("You need Cython >= " + '.'.join(map(str, req_version)))
 
 from ez_setup import use_setuptools
 use_setuptools('0.6c9')
@@ -115,7 +114,7 @@ Elementary, my dear Watson. Elementary.
 
 setup(
     name='python-elementary',
-    version='0.7.0',
+    version='0.7.1',
     license='LGPL',
     author='Simon Busch',
     author_email='morphis@gravedo.de',
@@ -125,8 +124,8 @@ setup(
     keywords='wrapper bindings ui elementary graphics',
     packages=find_packages(),
     classifiers=trove_classifiers,
-    install_requires=['python-evas>=0.7.0'],
-    setup_requires=['python-evas>=0.7.0'],
+    install_requires=['python-evas>=0.7.1'],
+    setup_requires=['python-evas>=0.7.1'],
     zip_safe=False,
     cmdclass={"build_ext": elementary_build_ext},
     ext_modules=[elementary_mod]
