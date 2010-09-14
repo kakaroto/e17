@@ -22,10 +22,11 @@ from c_elementary import Object, Window, Background, Icon, \
     Photo, Hoversel, Toolbar, ToolbarItem, List, ListItem, Slider, \
     Radio, Check, Pager, InnerWindow, Image, Spinner, Fileselector, Notify, \
     Separator, Progressbar, Menu, MenuItem, MenuItemSeparator, Panel, \
-    Genlist, GenlistItem, GenlistItemClass, \
+    Genlist, GenlistItem, GenlistItemClass, WidgetItem, \
     init, shutdown, run, exit, scale_get, scale_set, \
     finger_size_get, finger_size_set, coords_finger_size_adjust, \
-    theme_overlay_add, theme_extension_add, policy_set, policy_get
+    theme_overlay_add, theme_extension_add, policy_set, policy_get, \
+    tooltip_delay_set, tooltip_delay_get
 
 ELM_WIN_BASIC = 0
 ELM_WIN_DIALOG_BASIC = 1

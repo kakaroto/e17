@@ -27,7 +27,7 @@ cdef void _toolbar_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_in
     (obj, callback, it, a, ka) = <object>data
     it.__del_cb()
 
-cdef class ToolbarItem:
+cdef class ToolbarItem(WidgetItem):
     """
     A item for the toolbar
     """
@@ -134,6 +134,63 @@ cdef class ToolbarItem:
             return None
         else:
             return Menu(None, <object>menu)
+
+    def tooltip_text_set(self, char *text):
+        """ Set the text to be shown in the tooltip object
+
+        Setup the text as tooltip object. The object can have only one
+        tooltip, so any previous tooltip data is removed.
+        Internaly, this method call @tooltip_content_cb_set
+        """
+        elm_toolbar_item_tooltip_text_set(self.obj, text)
+
+    def tooltip_content_cb_set(self, func, *args, **kargs):
+        """ Set the content to be shown in the tooltip object
+
+        @param: B{func} Function to be create tooltip content, called when
+                need show tooltip.
+
+        Setup the tooltip to object. The object can have only one tooltip,
+        so any previews tooltip data is removed. @func(with @{args,kargs}) will
+        be called every time that need show the tooltip and it should return a
+        valid Evas_Object. This object is then managed fully by tooltip system
+        and is deleted when the tooltip is gone.
+        """
+        cdef void *cbdata
+
+        data = (func, self, args, kargs)
+        Py_INCREF(data)
+        cbdata = <void *>data
+        elm_toolbar_item_tooltip_content_cb_set(self.obj,
+                                                _tooltip_item_content_create,
+                                                cbdata,
+                                                _tooltip_item_data_del_cb)
+
+    def item_tooltip_unset(self):
+        """ Unset tooltip from object
+
+        Remove tooltip from object. If used the @tool_text_set the internal
+        copy of label will be removed correctly. If used
+        @tooltip_content_cb_set, the data will be unreferred but no freed.
+        """
+        elm_toolbar_item_tooltip_unset(self.obj)
+
+    def tooltip_style_set(self, style):
+        """ Sets a different style for this object tooltip.
+
+        @note before you set a style you should define a tooltip with
+        elm_toolbar_item_tooltip_content_cb_set() or
+        elm_toolbar_item_tooltip_text_set()
+        """
+        elm_toolbar_item_tooltip_style_set(self.obj, style)
+
+    def tooltip_style_get(self):
+        """ Get the style for this object tooltip.
+        """
+        cdef char *style
+        style = elm_toolbar_item_tooltip_style_get(self.obj)
+        return style
+
 
 cdef class Toolbar(Object):
     """

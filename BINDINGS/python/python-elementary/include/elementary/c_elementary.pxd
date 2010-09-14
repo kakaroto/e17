@@ -173,7 +173,10 @@ cdef extern from "Elementary.h":
         char *item_style
         Elm_Genlist_Item_Class_Func func
 
+    ctypedef evas.c_evas.Evas_Object *(*Elm_Tooltip_Content_Cb) (void *data, evas.c_evas.Evas_Object *obj)
+    ctypedef evas.c_evas.Evas_Object *(*Elm_Tooltip_Item_Content_Cb) (void *data, evas.c_evas.Evas_Object *obj, void *item)
 
+    cdef struct Elm_Widget_Item
     cdef struct Elm_Hoversel_Item
     cdef struct Elm_Menu_Item
     cdef struct Elm_Toolbar_Item
@@ -219,6 +222,15 @@ cdef extern from "Elementary.h":
     void         elm_object_scroll_freeze_push(evas.c_evas.Evas_Object *obj)
     void         elm_object_scroll_freeze_pop(evas.c_evas.Evas_Object *obj)
 
+    double       elm_tooltip_delay_get()
+    evas.c_evas.Eina_Bool elm_tooltip_delay_set(double delay)
+    void         elm_object_tooltip_show(evas.c_evas.Evas_Object *obj)
+    void         elm_object_tooltip_hide(evas.c_evas.Evas_Object *obj)
+    void         elm_object_tooltip_text_set(evas.c_evas.Evas_Object *obj, char *text)
+    void         elm_object_tooltip_content_cb_set(evas.c_evas.Evas_Object *obj, Elm_Tooltip_Content_Cb func, void *data, evas.c_evas.Evas_Smart_Cb del_cb)
+    void         elm_object_tooltip_unset(evas.c_evas.Evas_Object *obj)
+    void         elm_object_tooltip_style_set(evas.c_evas.Evas_Object *obj, char *style)
+    char*        elm_object_tooltip_style_get(evas.c_evas.Evas_Object *obj)
 
     double       elm_scale_get()
     void         elm_scale_set(double scale)
@@ -526,6 +538,11 @@ cdef extern from "Elementary.h":
     void  elm_toolbar_align_set(evas.c_evas.Evas_Object *obj, double align)
     void  elm_toolbar_item_menu_set(Elm_Toolbar_Item *item, evas.c_evas.Eina_Bool menu)
     evas.c_evas.Evas_Object *elm_toolbar_item_menu_get(Elm_Toolbar_Item *item)
+    void         elm_toolbar_item_tooltip_text_set(Elm_Toolbar_Item *item, char *text)
+    void         elm_toolbar_item_tooltip_content_cb_set(Elm_Toolbar_Item *item, Elm_Tooltip_Item_Content_Cb func, void *data, evas.c_evas.Evas_Smart_Cb del_cb)
+    void         elm_toolbar_item_tooltip_unset(Elm_Toolbar_Item *item)
+    void         elm_toolbar_item_tooltip_style_set(Elm_Toolbar_Item *item, char *style)
+    char*        elm_toolbar_item_tooltip_style_get(Elm_Toolbar_Item *item)
 
     # List object
     evas.c_evas.Evas_Object *elm_list_add(evas.c_evas.Evas_Object *parent)
@@ -556,6 +573,11 @@ cdef extern from "Elementary.h":
     void elm_list_item_label_set(Elm_List_Item *item, char* text)
     Elm_List_Item *elm_list_item_prev(Elm_List_Item *it)
     Elm_List_Item *elm_list_item_next(Elm_List_Item *it)
+    void         elm_list_item_tooltip_text_set(Elm_List_Item *item, char *text)
+    void         elm_list_item_tooltip_content_cb_set(Elm_List_Item *item, Elm_Tooltip_Item_Content_Cb func, void *data, evas.c_evas.Evas_Smart_Cb del_cb)
+    void         elm_list_item_tooltip_unset(Elm_List_Item *item)
+    void         elm_list_item_tooltip_style_set(Elm_List_Item *item, char *style)
+    char*        elm_list_item_tooltip_style_get(Elm_List_Item *item)
     void elm_list_bounce_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool h_bounce, evas.c_evas.Eina_Bool v_bounce)
     void 	elm_list_scroller_policy_set(evas.c_evas.Evas_Object *obj, Elm_Scroller_Policy policy_h, Elm_Scroller_Policy policy_v)
 
@@ -625,6 +647,11 @@ cdef extern from "Elementary.h":
     void elm_genlist_item_data_set(Elm_Genlist_Item *it, void *data)
     evas.c_evas.Evas_Object *elm_genlist_item_object_get(Elm_Genlist_Item *it)
     void elm_genlist_item_update(Elm_Genlist_Item *item)
+    void         elm_genlist_item_tooltip_text_set(Elm_Genlist_Item *item, char *text)
+    void         elm_genlist_item_tooltip_content_cb_set(Elm_Genlist_Item *item, Elm_Tooltip_Item_Content_Cb func, void *data, evas.c_evas.Evas_Smart_Cb del_cb)
+    void         elm_genlist_item_tooltip_unset(Elm_Genlist_Item *item)
+    void         elm_genlist_item_tooltip_style_set(Elm_Genlist_Item *item, char *style)
+    char*        elm_genlist_item_tooltip_style_get(Elm_Genlist_Item *item)
 
     # Check widget
     evas.c_evas.Evas_Object *elm_check_add(evas.c_evas.Evas_Object *parent)

@@ -91,6 +91,12 @@ def finger_size_get():
 def finger_size_set(size):
     elm_finger_size_set(size)
 
+def tooltip_delay_get():
+    return elm_tooltip_delay_get()
+
+def tooltip_delay_set(delay):
+    elm_tooltip_delay_set(delay)
+
 def coords_finger_size_adjust(times_w, w, times_h, h):
     cdef c_evas.Evas_Coord width
     cdef c_evas.Evas_Coord height
@@ -103,7 +109,6 @@ def theme_overlay_add(item):
 
 def theme_extension_add(item):
     elm_theme_extension_add(NULL, item)
-
 
 cdef object _elm_widget_type_mapping
 
@@ -119,6 +124,7 @@ cdef _elm_widget_type_unregister(char *name):
 
 
 include "elementary.c_elementary_object.pxi"
+include "elementary.c_elementary_widget_item.pxi"
 include "elementary.c_elementary_window.pxi"
 include "elementary.c_elementary_innerwindow.pxi"
 include "elementary.c_elementary_background.pxi"

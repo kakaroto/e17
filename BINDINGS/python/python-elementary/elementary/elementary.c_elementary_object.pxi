@@ -34,6 +34,17 @@ cdef void _object_callback(void *data,
         except Exception, e:
             traceback.print_exc()
 
+cdef c_evas.Evas_Object *_tooltip_content_create(void *data, c_evas.Evas_Object *o) with gil:
+    cdef Object ret, obj
+
+    obj = <Object>c_evas.evas_object_data_get(o, "python-evas")
+    (func, args, kargs) = <object>data
+    ret = func(obj, *args, **kargs)
+    return ret.obj
+
+cdef void _tooltip_data_del_cb(void *data, c_evas.Evas_Object *o, void *event_info) with gil:
+    Py_DECREF(<object>data)
+
 cdef class Canvas(evas.c_evas.Canvas):
     def __init__(self):
         pass
@@ -106,6 +117,81 @@ cdef class Object(evas.c_evas.Object):
         object.
         """
         elm_object_scroll_freeze_push(self.obj)
+
+    def tooltip_show(self):
+        """ Force show tooltip of object
+
+        Force show the tooltip and disable hide on mouse_out
+        If another content is set as tooltip, the visible tooltip will hidden
+        and showed again with new content.
+
+        This can force show more than one tooltip at a time.
+        """
+        elm_object_tooltip_show(self.obj)
+
+    def tooltip_hide(self):
+        """ Force hide tooltip of the object
+
+        Force hide tooltip of object and (re)enable future mouse interations.
+        """
+        elm_object_tooltip_hide(self.obj)
+
+    def tooltip_text_set(self, char *text):
+        """ Set the text to be shown in the tooltip object
+
+        Setup the text as tooltip object. The object can have only one
+        tooltip, so any previous tooltip data is removed.
+        Internaly, this method call @tooltip_content_cb_set
+        """
+        elm_object_tooltip_text_set(self.obj, text)
+
+    def tooltip_content_cb_set(self, func, *args, **kargs):
+        """ Set the content to be shown in the tooltip object
+
+        @param: B{func} Function to be create tooltip content, called when
+                need show tooltip.
+
+        Setup the tooltip to object. The object can have only one tooltip,
+        so any previews tooltip data is removed. @func(with @{args,kargs}) will
+        be called every time that need show the tooltip and it should return a
+        valid Evas_Object. This object is then managed fully by tooltip system
+        and is deleted when the tooltip is gone.
+        """
+        cdef void *cbdata
+
+        data = (func, args, kargs)
+        Py_INCREF(data)
+        cbdata = <void *>data
+        elm_object_tooltip_content_cb_set(self.obj, _tooltip_content_create,
+                                          cbdata, _tooltip_data_del_cb)
+
+    def tooltip_unset(self):
+        """ Unset tooltip from object
+
+        Remove tooltip from object. If used the @tool_text_set the internal
+        copy of label will be removed correctly. If used
+        @tooltip_content_cb_set, the data will be unreferred but no freed.
+        """
+        elm_object_tooltip_unset(self.obj)
+
+    def tooltip_style_set(self, style=None):
+        """ Sets a different style for this object tooltip.
+
+        @note before you set a style you should define a tooltip with
+        elm_object_tooltip_content_cb_set() or
+        elm_object_tooltip_text_set()
+        """
+        if style:
+            elm_object_tooltip_style_set(self.obj, style)
+        else:
+            elm_object_tooltip_style_set(self.obj, NULL)
+
+    def tooltip_style_get(self):
+        """ Get the style for this object tooltip.
+        """
+        cdef char *style
+        style = elm_object_tooltip_style_get(self.obj)
+        return style
 
     def _callback_add_full(self, char *event, event_conv, func, *args, **kargs):
         """Add a callback for the smart event specified by event.
