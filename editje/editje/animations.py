@@ -229,10 +229,15 @@ class AnimationsPartsList(PartsList):
 
     def _check_changed_cb(self, obj, part):
         if obj.state:
-            self._edit_grp.animation.part_add(part)
-            self._blocked_parts.remove(part)
-            self._edit_grp.animation.event_emit("parts.blocked.changed",
-                                                self._blocked_parts)
+            self._part_add(part, self._edit_grp.animation.name)
+
+            op = Operation("part (%s) addition into animation (%s)" % \
+                                (part, self._edit_grp.animation.name))
+            op.redo_callback_add(self._part_add, part,
+                                 self._edit_grp.animation.name)
+            op.undo_callback_add(self._part_remove, part,
+                                 self._edit_grp.animation.name)
+            self._operation_stack_cb(op)
         else:
             # FIXME: Take the confirmation out of this function
             self._notification = ErrorNotify(
@@ -249,13 +254,65 @@ class AnimationsPartsList(PartsList):
                                           self._cancel_remove_cb, data=obj)
             self._notification.show()
 
-    def _confirm_remove_cb(self, btn, part):
+    def _context_recall(self, **kargs):
+        if "animation" in kargs:
+            self._edit_grp.animation.name = kargs["animation"]
+            if "time" in kargs:
+                self._edit_grp.animation.state = kargs["time"]
+        if "part" in kargs:
+            self._edit_grp.part.name = kargs["part"]
+            if "state" in kargs:
+                self._edit_grp.part.state.name = kargs["state"]
+
+    def _part_add(self, part, anim_name, saved_states=None):
+
+        def frame_readd(part_name, saved_states):
+            part = self._edit_grp.part_get(part_name)
+            self._edit_grp.part.name = part_name
+            for t, state in saved_states:
+                if not part.state_exist(state.name):
+                    prog = self._edit_grp.program_get(state.name)
+                    prog.target_add(part_name)
+                    part.state_add(state.name, 0.0)
+                st = part.state_get(state.name)
+                state.apply_to(st)
+            if self._edit_grp.animation.program:
+                statename = self._edit_grp.animation.program.name
+                part.state_selected_set(statename)
+
+        self._context_recall(animation=anim_name)
+        self._edit_grp.animation.part_add(part)
+        if saved_states:
+            frame_readd(part, saved_states)
+        self._parts_update_cb(None, self._edit_grp.parts)
+
+    def _part_remove(self, part, anim_name):
+        self._context_recall(animation=anim_name)
         self._edit_grp.animation.part_remove(part)
+        self._parts_update_cb(None, self._edit_grp.parts)
+
+    def _confirm_remove_cb(self, btn, part):
+        saved_states = []
+        p = self._edit_grp.part_get(part)
+        for t in self._edit_grp.animation.timestops:
+            prog = "@%s@%.2f" % (self._edit_grp.animation.name, t)
+            st_obj = p.state_get(prog)
+            if not st_obj:
+                continue
+            st_class = objects_data.state_class_from_part_type_get(p)
+            state_save = st_class(st_obj)
+            saved_states.append([t, state_save])
+
+        self._part_remove(part, self._edit_grp.animation.name)
         self._notification_delete()
-        self._edit_grp.part.name = None
-        self._blocked_parts.append(part)
-        self._edit_grp.animation.event_emit("parts.blocked.changed",
-                                            self._blocked_parts)
+        op = Operation("part (%s) deletion from animation (%s)" % \
+                            (part, self._edit_grp.animation.name))
+        op.redo_callback_add(self._part_remove, part,
+                             self._edit_grp.animation.name)
+        op.undo_callback_add(self._part_add, part,
+                             self._edit_grp.animation.name,
+                             saved_states)
+        self._operation_stack_cb(op)
 
     def _cancel_remove_cb(self, btn, chk):
         self._notification_delete()
