@@ -380,7 +380,7 @@ _cb_dbus_request_name(void *data, DBusMessage *msg __UNUSED__, DBusError *err)
    DBusError new_err;
    dbus_uint32_t ret;
 
-   if (dbus_error_is_set(err)) return;
+   if (dbus_error_is_set(err)) goto cleanup;
 
    dbus_error_init(&new_err);
    dbus_message_get_args(msg, &new_err, DBUS_TYPE_UINT32, &ret, DBUS_TYPE_INVALID);
@@ -413,6 +413,7 @@ _cb_dbus_request_name(void *data, DBusMessage *msg __UNUSED__, DBusError *err)
       exit(0);
    }
 
+cleanup:
    free(response);
 }
 
