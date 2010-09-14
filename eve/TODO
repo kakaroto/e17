@@ -1,7 +1,6 @@
 UI
 --
  * fix UI/Edje scale (enlarge the window to see problems)
- * fix padding around tab items title (edc, simple)
  * bookmarks: fixed "<Back" label intead of "<$PREVIOUS_NAME"?
  * better error reporting page (for 404 and similar)
  * show visual zoom indication (zoom level? some icon?)
@@ -35,7 +34,6 @@ Preferences / State
    - easy access to bookmarks (click and expand the list? root entries?)
    - most visited/recent links?
    - recently closed?
- * getopt: disable touch-interface (immediately forward events to webkit)
 
 View
 ----
