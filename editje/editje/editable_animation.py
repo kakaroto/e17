@@ -206,8 +206,9 @@ class EditableAnimation(Manager, object):
             st = progname
             prog = self._edit_grp.program_get(progname)
             prog.target_del(part)
-            if not p.state_del(st):
-                return
+            if p.state_exist(st):
+                if not p.state_del(st):
+                        return
 
         del self.parts[part]
         self.event_emit("part.removed", part)
