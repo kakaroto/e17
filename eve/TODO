@@ -17,17 +17,9 @@ Preferences / State
 -------------------
  * save state: opened pages, etc. restore on restart
  * preferences (runtime, save at eet):
-   - toggle: disable mouse cursor
-   - toggle: disable touch interface
-   - toggle: disable plugins
-   - toggle: disable javascript
    - toggle: use start page (otherwise home page)
-   - string: user agent (custom or from list pre-defined of options)
-   - string: home page
    - string: proxy
  * privacy (maybe under preferences, maybe add management of each):
-   - clear cache
-   - clear history
    - clear database
  * start page (like chromium, but mobile):
    - click to home URL (with icon and title -- if known)
