@@ -177,6 +177,34 @@ PKG_CHECK_MODULES([EIO], eio,
    ]
 )
 
+AC_ARG_ENABLE([libexif],
+   [AC_HELP_STRING([--enable-libexif], [enable libexif support @<:@default=yes@:>@])],
+   [
+    if test "x${enableval}" = "xyes" ; then
+       _ephoto_enable_libexif="yes"
+    else
+       _ephoto_enable_libexif="no"
+    fi
+   ],
+   [_ephoto_enable_libexif="yes"]
+)
+
+AC_MSG_CHECKING([whether ethumb is built])
+AC_MSG_RESULT([${_ephoto_enable_libexif}])
+
+have_libexif="no"
+
+if test "x${_ephoto_enable_libexif}" = "xyes" ; then
+    PKG_CHECK_MODULES(EXIF, libexif, [
+        have_libexif="yes"
+        AC_DEFINE(HAVE_LIBEXIF, 1, [have libexif support])
+    ],[
+       have_libexif="no"
+    ])
+fi
+
+AM_CONDITIONAL(BUILD_LIBEXIF, test $have_libexif = yes)
+
 AC_OUTPUT([
 Makefile
 ephoto.spec
@@ -220,7 +248,7 @@ echo "  Eina.............: $have_eina"
 echo "  Ethumb...........: $have_ethumb"
 echo "  Elementary.......: $have_elementary"
 echo "  Eio..............: $have_eio"
-echo "  Libexif .........: $have_exif"
+echo "  Libexif .........: $have_libexif"
 echo
 echo "Installation Path.........: $prefix"
 echo

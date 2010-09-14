@@ -460,6 +460,45 @@ collections
                     state: "default" 0.0;
                     rel2.to: "ephoto.toolbar.swallow";
                     rel2.relative: 1 0;
+                    map {
+                        on: 1;
+                    }
+                 }
+                 description {
+                     state: "rotate_0" 0.0;
+                     inherit: "default" 0.0;
+                     map {
+                         rotation {
+                             z: 0;
+                         }
+                     }
+                 }
+                 description {
+                     state: "rotate_90" 0.0;
+                     inherit: "default" 0.0;
+                     map {
+                         rotation {
+                             z: 90;
+                         }
+                     }
+                 }
+                 description {
+                     state: "rotate_180" 0.0;
+                     inherit: "default" 0.0;
+                     map {
+                         rotation {
+                             z: 180;
+                         }
+                     }
+                 }
+                 description {
+                     state: "rotate_270" 0.0;
+                     inherit: "default" 0.0;
+                     map {
+                         rotation {
+                             z: 270;
+                         }
+                     }
                  }
               }
               part {
@@ -473,6 +512,40 @@ collections
                  }
               }
            }     
+           programs {
+               program {
+                   name:    "go_rotate_0";
+                   signal:  "ef,state,rotate,0";
+                   source:  "ef";
+                   action:  STATE_SET "rotate_0" 0.0;
+                   transition: SINUSOIDAL 0.2;
+                   target:  "ephoto.flow.swallow";
+               }
+               program {
+                   name:    "go_rotate_90";
+                   signal:  "ef,state,rotate,90";
+                   source:  "ef";
+                   action:  STATE_SET "rotate_90" 0.0;
+                   transition: SINUSOIDAL 0.2;
+                   target:  "ephoto.flow.swallow";
+               }
+               program {
+                   name:    "go_rotate_180";
+                   signal:  "ef,state,rotate,180";
+                   source:  "ef";
+                   action:  STATE_SET "rotate_180" 0.0;
+                   transition: SINUSOIDAL 0.2;
+                   target:  "ephoto.flow.swallow";
+               }
+               program {
+                   name:    "go_rotate_270";
+                   signal:  "ef,state,rotate,270";
+                   source:  "ef";
+                   action:  STATE_SET "rotate_270" 0.0;
+                   transition: SINUSOIDAL 0.2;
+                   target:  "ephoto.flow.swallow";
+               }
+           }
         }
 }
 

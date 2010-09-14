@@ -27,6 +27,7 @@ typedef struct _Ephoto_Config Ephoto_Config;
 typedef struct _Ephoto Ephoto;
 
 typedef enum _Ephoto_State Ephoto_State;
+typedef enum _Ephoto_Orient Ephoto_Orient;
 
 /*Main Functions*/
 void ephoto_create_main_window(const char *directory, const char *image);
@@ -64,6 +65,14 @@ enum _Ephoto_State
         EPHOTO_STATE_THUMB,
         EPHOTO_STATE_FLOW,
         EPHOTO_STATE_SLIDESHOW
+};
+
+enum _Ephoto_Orient
+{
+        EPHOTO_ORIENT_0,
+        EPHOTO_ORIENT_90,
+        EPHOTO_ORIENT_180,
+        EPHOTO_ORIENT_270
 };
 
 struct _Ephoto_Config

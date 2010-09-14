@@ -1,5 +1,10 @@
 #include "ephoto.h"
 
+#ifdef HAVE_LIBEXIF
+  #include <libexif/exif-data.h>
+#endif
+
+
 /*Callbacks*/
 static void _ephoto_go_back(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_go_first(void *data, Evas_Object *obj, void *event_info);
@@ -7,6 +12,8 @@ static void _ephoto_go_last(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_go_next(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_go_previous(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_go_slideshow(void *data, Evas_Object *obj, void *event_info);
+static void _ephoto_go_rotate_counterclockwise(void *data, Evas_Object *obj, void *event_info);
+static void _ephoto_go_rotate_clockwise(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_key_pressed(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _ephoto_flow_browser_show_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _ephoto_flow_browser_del_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -21,6 +28,8 @@ struct _Ephoto_Flow_Browser
         Evas_Object *image2;
         Evas_Object *toolbar;
         const char *cur_image;
+
+        Ephoto_Orient orient;
 };
 
 static const char *toolbar_items[] = {
@@ -47,8 +56,7 @@ static void
 _ephoto_go_update(Ephoto_Flow_Browser *ef)
 {
 	const char *file_type;
-	char *buffer;
-	int length;
+        int success = 0;
 
 	efreet_mime_init();
 
@@ -60,23 +68,76 @@ _ephoto_go_update(Ephoto_Flow_Browser *ef)
 	file_type = efreet_mime_type_get(ef->cur_image);
 	if (file_type && !strcmp(file_type, "image/jpeg"))
 	{
-		elm_photocam_file_set(ef->image, ef->cur_image);
+		success = elm_photocam_file_set(ef->image, ef->cur_image);
 		elm_layout_content_set(ef->flow_browser, "ephoto.flow.swallow", ef->image);
 		evas_object_show(ef->image);
 	} else {
-		elm_image_file_set(ef->image2, ef->cur_image, NULL);
+		success = elm_image_file_set(ef->image2, ef->cur_image, NULL);
 		elm_layout_content_set(ef->flow_browser, "ephoto.flow.swallow", ef->image2);
 		evas_object_show(ef->image2);
 	}
 
-	elm_toolbar_item_unselect_all(ef->toolbar);
+        if (success)
+        {
+                char *buffer;
+                int length;
+#ifdef HAVE_LIBEXIF
+                int orientation = 0;
 
-	efreet_mime_shutdown();
+                ExifData  *exif = exif_data_new_from_file(ef->cur_image);
+                ExifEntry *entry = NULL;
+                ExifByteOrder bo;
+               
+                if (exif)
+                {
+                        entry = exif_data_get_entry(exif, EXIF_TAG_ORIENTATION);
+                        if (entry)
+                        {
+                                bo = exif_data_get_byte_order(exif);
+                                orientation = exif_get_short(entry->data, bo);
+                        }
+                        exif_data_free(exif);
+                }
 
-	length = strlen(ef->cur_image) + strlen("Ephoto - ") + 1;
-	buffer = alloca(length);
-	snprintf(buffer, length, "Ephoto - %s", ef->cur_image);
-	elm_win_title_set(em->win, buffer);
+                if (orientation > 1 && orientation < 9)
+                {
+                        Evas_Object *o = elm_layout_edje_get(ef->flow_browser);
+
+                        switch (orientation)
+                        {
+                                case 2:		/* Horizontal flip */
+                                        break;
+                                case 3:		/* Rotate 180 clockwise */
+                                        ef->orient = EPHOTO_ORIENT_180;
+                                        edje_object_signal_emit(o, "ef,state,rotate,180", "ef");
+                                        break;
+                                case 4:		/* Vertical flip */
+                                        break;
+                                case 5:		/* Transpose */
+                                        break;
+                                case 6:		/* Rotate 90 clockwise */
+                                        ef->orient = EPHOTO_ORIENT_90;
+                                        edje_object_signal_emit(o, "ef,state,rotate,90", "ef");
+                                        break;
+                                case 7:		/* Transverse */
+                                        break;
+                                case 8:		/* Rotate 90 counter-clockwise */
+                                        ef->orient = EPHOTO_ORIENT_270;
+                                        edje_object_signal_emit(o, "ef,state,rotate,270", "ef");
+                                        break;
+                        }
+                }
+#endif
+
+                length = strlen(ef->cur_image) + strlen("Ephoto - ") + 1;
+                buffer = alloca(length);
+                snprintf(buffer, length, "Ephoto - %s", ef->cur_image);
+                elm_win_title_set(em->win, buffer);
+        }
+
+        elm_toolbar_item_unselect_all(ef->toolbar);
+
+        efreet_mime_shutdown();
 }
 
 /*Create the flow browser*/
@@ -174,7 +235,7 @@ ephoto_flow_browser_image_set(Evas_Object *obj, const char *current_image)
 			elm_toolbar_item_disabled_set(o, !ef->iter ? EINA_TRUE : EINA_FALSE);
 		}
 
-		fprintf(stderr, "iter: %p\n", ef->iter);
+                DBG("iter: %p", ef->iter);
 
 		_ephoto_go_update(ef);
 	}
@@ -221,6 +282,8 @@ static const struct
 	{ "Right", _ephoto_go_next },
 	{ "space", _ephoto_go_next },
 	{ "Escape", _ephoto_go_back },
+        { "bracketleft", _ephoto_go_rotate_counterclockwise },
+        { "bracketright", _ephoto_go_rotate_clockwise },
 	{ NULL, NULL }
 };
 
@@ -232,6 +295,7 @@ _ephoto_key_pressed(void *data, Evas *e, Evas_Object *obj, void *event_data)
 	int i;
 
 	eku = (Evas_Event_Key_Up *)event_data;
+        DBG("Key name: %s", eku->keyname);
 	for (i = 0; keys[i].name; ++i)
 		if (!strcmp(eku->keyname, keys[i].name))
 			keys[i].func(ef, NULL, NULL);
@@ -317,3 +381,56 @@ _ephoto_go_slideshow(void *data, Evas_Object *obj, void *event_info)
 	elm_toolbar_item_unselect_all(ef->toolbar);
 }
 
+static void
+_ephoto_go_rotate_counterclockwise(void *data, Evas_Object *obj, void *event_info)
+{
+        Ephoto_Flow_Browser *ef = data;
+        Evas_Object *o = elm_layout_edje_get(ef->flow_browser);
+
+        switch(ef->orient)
+        {
+                case EPHOTO_ORIENT_0:
+                        ef->orient = EPHOTO_ORIENT_270;
+                        edje_object_signal_emit(o, "ef,state,rotate,270", "ef");
+                        break;
+                case EPHOTO_ORIENT_90:
+                        ef->orient = EPHOTO_ORIENT_0;
+                        edje_object_signal_emit(o, "ef,state,rotate,0", "ef");
+                        break;
+                case EPHOTO_ORIENT_180:
+                        ef->orient = EPHOTO_ORIENT_90;
+                        edje_object_signal_emit(o, "ef,state,rotate,90", "ef");
+                        break;
+                case EPHOTO_ORIENT_270:
+                        ef->orient = EPHOTO_ORIENT_180;
+                        edje_object_signal_emit(o, "ef,state,rotate,180", "ef");
+                        break;
+        }
+}
+
+static void
+_ephoto_go_rotate_clockwise(void *data, Evas_Object *obj, void *event_info)
+{
+        Ephoto_Flow_Browser *ef = data;
+        Evas_Object *o = elm_layout_edje_get(ef->flow_browser);
+
+        switch(ef->orient)
+        {
+                case EPHOTO_ORIENT_0:
+                        ef->orient = EPHOTO_ORIENT_90;
+                        edje_object_signal_emit(o, "ef,state,rotate,90", "ef");
+                        break;
+                case EPHOTO_ORIENT_90:
+                        ef->orient = EPHOTO_ORIENT_180;
+                        edje_object_signal_emit(o, "ef,state,rotate,180", "ef");
+                        break;
+                case EPHOTO_ORIENT_180:
+                        ef->orient = EPHOTO_ORIENT_270;
+                        edje_object_signal_emit(o, "ef,state,rotate,270", "ef");
+                        break;
+                case EPHOTO_ORIENT_270:
+                        ef->orient = EPHOTO_ORIENT_0;
+                        edje_object_signal_emit(o, "ef,state,rotate,0", "ef");
+                        break;
+        }
+}
