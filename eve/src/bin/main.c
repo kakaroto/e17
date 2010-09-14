@@ -393,7 +393,7 @@ _cb_dbus_request_name(void *data, DBusMessage *msg __UNUSED__, DBusError *err)
    case DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER:
    case DBUS_REQUEST_NAME_REPLY_ALREADY_OWNER:
       {
-         E_DBus_Interface *iface e_dbus_interface_new("mobi.profusion.eve");
+         E_DBus_Interface *iface = e_dbus_interface_new("mobi.profusion.eve");
          E_DBus_Object *eve_dbus = e_dbus_object_add(response->conn, "/mobi/profusion/eve", NULL);
          e_dbus_interface_method_add(iface, "open_url", "s", "", _cb_dbus_open_url);
          e_dbus_object_interface_attach(eve_dbus, iface);
