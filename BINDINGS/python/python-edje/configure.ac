@@ -68,7 +68,7 @@ AC_SUBST(pkgconfig_edje_requires_libs)
 PKG_CHECK_MODULES([EDJE], [$pkgconfig_edje_requires_libs])
 CYTHON_EDJE_INCLUDEDIR=`pkg-config --variable=includedir "python-evas >= ${python_evas_version}"`
 AC_SUBST(CYTHON_EDJE_INCLUDEDIR)
-wanted_cython_files="edje/edje.c_edje.pyx edje/edit/c_edit.pyx"
+wanted_cython_files="${srcdir}/edje/edje.c_edje.pyx ${srcdir}/edje/edit/c_edit.pyx"
 
 AM_PATH_PYTHON(2.5)
 AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
@@ -82,7 +82,7 @@ AM_CHECK_CYTHON_PRECOMPILED([$wanted_cython_files],
 if test "x$CYTHON_FOUND" != "xyes"; then
    if test v_rev -ne 0; then
       if test "x$have_cython_precompiled" = "xyes"; then
-         AC_MSG_WARN([Cannot find Cython>=${cython_required_version}, however found a pre-generated file. YOU MAY FIND PROBLEMS, USE A RELEASE TARBALL OR INSTALL CYHON>=${cython_required_version}])
+         AC_MSG_WARN([Cannot find Cython>=${cython_required_version}, however found a pre-generated file. YOU MAY FIND PROBLEMS, USE A RELEASE TARBALL OR INSTALL CYTHON>=${cython_required_version}])
       else
          AC_MSG_ERROR([Cannot find Cython>=${cython_required_version}, and not a release build])
       fi

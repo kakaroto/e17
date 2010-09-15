@@ -100,7 +100,7 @@ else
 $(top_builddir)/evas/evas.c_evas.c $(top_builddir)/evas/evas.c_evas.h: Makefile
 	@echo "NOTE: No cython, using pre-generated evas.c_evas.[ch]"
 	@$(MKDIR_P) $(top_builddir)/evas
-	$(AM_V_GEN)for f in $^; do if ! cmp $(top_srcdir)/$$f $(top_builddir)/$$f >/dev/null; then cp $(top_srcdir)/$$f $(top_builddir)/$$f; fi; done
+	$(AM_V_GEN)for f in evas/evas.c_evas.c evas/evas.c_evas.h; do if ! cmp $(top_srcdir)/$$f $(top_builddir)/$$f >/dev/null; then cp $(top_srcdir)/$$f $(top_builddir)/$$f; fi; done
 endif
 
 AM_CPPFLAGS = \

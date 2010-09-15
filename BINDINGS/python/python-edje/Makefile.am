@@ -155,7 +155,7 @@ else
 $(top_builddir)/edje/edje.c_edje.c $(top_builddir)/edje/edje.c_edje.h $(top_builddir)/edje/edit/c_edit.c $(top_builddir)/edje/edit/c_edit.h: Makefile
 	@echo "NOTE: No cython, using pre-generated edje.c_edje.[ch]"
 	@$(MKDIR_P) $(top_builddir)/edje/edit
-	$(AM_V_GEN)for f in $^; do if ! cmp $(top_srcdir)/$$f $(top_srcdir)/$$f > /dev/null; then cp $(top_srcdir)/$$f $(top_builddir)/$$f; fi; done
+	$(AM_V_GEN)for f in edje/edje.c_edje.c edje/edje.c_edje.h edje/edit/c_edit.c edje/edit/c_edit.h; do if ! cmp $(top_srcdir)/$$f $(top_srcdir)/$$f > /dev/null; then cp $(top_srcdir)/$$f $(top_builddir)/$$f; fi; done
 endif
 
 AM_CPPFLAGS = \

@@ -65,7 +65,7 @@ AC_SUBST(pkgconfig_requires_private)
 pkgconfig_evas_requires_libs="evas >= 1.0.0 eina >= 1.0.0"
 AC_SUBST(pkgconfig_evas_requires_libs)
 PKG_CHECK_MODULES([EVAS], [$pkgconfig_evas_requires_libs])
-wanted_cython_files="evas/evas.c_evas.pyx"
+wanted_cython_files="${srcdir}/evas/evas.c_evas.pyx"
 
 AM_PATH_PYTHON(2.5)
 AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
@@ -79,7 +79,7 @@ AM_CHECK_CYTHON_PRECOMPILED([$wanted_cython_files],
 if test "x$CYTHON_FOUND" != "xyes"; then
    if test v_rev -ne 0; then
       if test "x$have_cython_precompiled" = "xyes"; then
-         AC_MSG_WARN([Cannot find Cython>=${cython_required_version}, however found a pre-generated file. YOU MAY FIND PROBLEMS, USE A RELEASE TARBALL OR INSTALL CYHON>=${cython_required_version}])
+         AC_MSG_WARN([Cannot find Cython>=${cython_required_version}, however found a pre-generated file. YOU MAY FIND PROBLEMS, USE A RELEASE TARBALL OR INSTALL CYTHON>=${cython_required_version}])
       else
          AC_MSG_ERROR([Cannot find Cython>=${cython_required_version}, and not a release build])
       fi

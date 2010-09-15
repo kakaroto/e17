@@ -65,7 +65,7 @@ AC_SUBST(pkgconfig_requires_private)
 pkgconfig_ecore_requires_libs="ecore >= 1.0.0"
 AC_SUBST(pkgconfig_ecore_requires_libs)
 PKG_CHECK_MODULES([ECORE], [$pkgconfig_ecore_requires_libs])
-wanted_cython_files="ecore/ecore.c_ecore.pyx"
+wanted_cython_files="${srcdir}/ecore/ecore.c_ecore.pyx"
 
 have_ecore_x="no"
 want_ecore_x="auto"
@@ -89,7 +89,7 @@ if test "x$want_ecore_x" = "xyes" -a "x$have_ecore_x" = "xno"; then
     AC_MSG_ERROR([ecore-x support requested, but not found by pkg-config: $pkgconfig_ecore_x_requires_libs])
 fi
 if test "x$want_ecore_x" != "xno" -a "x${have_ecore_x}" = "xyes"; then
-   wanted_cython_files="${wanted_cython_files} ecore/x/ecore.x.c_ecore_x.pyx ecore/x/ecore.x.screensaver.pyx"
+   wanted_cython_files="${wanted_cython_files} ${srcdir}/ecore/x/ecore.x.c_ecore_x.pyx ${srcdir}/ecore/x/ecore.x.screensaver.pyx"
 fi
 AM_CONDITIONAL(WANT_ECORE_X,
    [test "x$want_ecore_x" != "xno" -a "x${have_ecore_x}" = "xyes"])
@@ -115,7 +115,7 @@ if test "x$want_ecore_imf" = "xyes" -a "x$have_ecore_imf" = "xno"; then
     AC_MSG_ERROR([ecore-imf support requested, but not found by pkg-config: $pkgconfig_ecore_imf_requires_libs])
 fi
 if test "x$want_ecore_imf" != "xno" -a "x${have_ecore_imf}" = "xyes"; then
-   wanted_cython_files="${wanted_cython_files} ecore/imf/ecore.imf.c_ecore_imf.pyx"
+   wanted_cython_files="${wanted_cython_files} ${srcdir}/ecore/imf/ecore.imf.c_ecore_imf.pyx"
 fi
 AM_CONDITIONAL(WANT_ECORE_IMF,
    [test "x$want_ecore_imf" != "xno" -a "x${have_ecore_imf}" = "xyes"])
@@ -141,7 +141,7 @@ if test "x$want_ecore_win32" = "xyes" -a "x$have_ecore_win32" = "xno"; then
     AC_MSG_ERROR([ecore-win32 support requested, but not found by pkg-config: $pkgconfig_ecore_win32_requires_libs])
 fi
 if test "x$want_ecore_win32" != "xno" -a "x${have_ecore_win32}" = "xyes"; then
-   wanted_cython_files="${wanted_cython_files} ecore/win32/ecore.win32.c_ecore_win32.pyx"
+   wanted_cython_files="${wanted_cython_files} ${srcdir}/ecore/win32/ecore.win32.c_ecore_win32.pyx"
 fi
 AM_CONDITIONAL(WANT_ECORE_WIN32,
    [test "x$want_ecore_win32" != "xno" -a "x${have_ecore_win32}" = "xyes"])
@@ -168,7 +168,7 @@ if test "x$want_ecore_evas" = "xyes" -a "x$have_ecore_evas" = "xno"; then
     AC_MSG_ERROR([ecore-evas support requested, but not found by pkg-config: $pkgconfig_ecore_evas_requires_libs])
 fi
 if test "x$want_ecore_evas" != "xno" -a "x${have_ecore_evas}" = "xyes"; then
-   wanted_cython_files="${wanted_cython_files} ecore/evas/ecore.evas.c_ecore_evas.pyx"
+   wanted_cython_files="${wanted_cython_files} ${srcdir}/ecore/evas/ecore.evas.c_ecore_evas.pyx"
 fi
 AM_CONDITIONAL(WANT_ECORE_EVAS,
    [test "x$want_ecore_evas" != "xno" -a "x${have_ecore_evas}" = "xyes"])
@@ -187,7 +187,7 @@ AM_CHECK_CYTHON_PRECOMPILED([$wanted_cython_files],
 if test "x$CYTHON_FOUND" != "xyes"; then
    if test v_rev -ne 0; then
       if test "x$have_cython_precompiled" = "xyes"; then
-         AC_MSG_WARN([Cannot find Cython>=${cython_required_version}, however found a pre-generated file. YOU MAY FIND PROBLEMS, USE A RELEASE TARBALL OR INSTALL CYHON>=${cython_required_version}])
+         AC_MSG_WARN([Cannot find Cython>=${cython_required_version}, however found a pre-generated file. YOU MAY FIND PROBLEMS, USE A RELEASE TARBALL OR INSTALL CYTHON>=${cython_required_version}])
       else
          AC_MSG_ERROR([Cannot find Cython>=${cython_required_version}, and not a release build])
       fi
