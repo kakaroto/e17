@@ -11,48 +11,49 @@ c_ecore_includes = \
 pyincecore_DATA = $(c_ecore_includes) \
 	ecore/ecore.c_ecore.h
 
+c_ecore_x_includes = \
+	include/ecore/x/c_ecore_x.pxd \
+	include/ecore/x/screensaver.pxd \
+	include/ecore/x/__init__.py
 if WANT_ECORE_X
 cython_ins += ecore/x/ecore.x.c_ecore_x.pyx ecore/x/ecore.x.screensaver.pyx
 cython_outs += ecore/x/ecore.x.c_ecore_x.c ecore/x/ecore.x.screensaver.c
 doc_modules += c_ecore_x screensaver
 pyincecorexdir = $(includedir)/@PACKAGE@/ecore/x
-pyincecorex_DATA = \
-	include/ecore/x/c_ecore_x.pxd \
-	include/ecore/x/screensaver.pxd \
-	include/ecore/x/__init__.py
+pyincecorex_DATA = $(c_ecore_x_includes)
 endif
 
+c_ecore_imf_includes = \
+	include/ecore/imf/c_ecore_imf.pxd \
+	include/ecore/imf/__init__.py
 if WANT_ECORE_IMF
 cython_ins += ecore/imf/ecore.imf.c_ecore_imf.pyx
 cython_outs += ecore/imf/ecore.imf.c_ecore_imf.c
 doc_modules += c_ecore_imf
-
 pyincecoreimfdir = $(includedir)/@PACKAGE@/ecore/imf
-pyincecoreimf_DATA = \
-	include/ecore/imf/c_ecore_imf.pxd \
-	include/ecore/imf/__init__.py
+pyincecoreimf_DATA = $(c_ecore_imf_includes)
 endif
 
+c_ecore_win32_includes = \
+	include/ecore/win32/c_ecore_win32.pxd \
+	include/ecore/win32/__init__.py
 if WANT_ECORE_WIN32
 cython_ins += ecore/win32/ecore.win32.c_ecore_win32.pyx
 cython_outs += ecore/win32/ecore.win32.c_ecore_win32.c
 doc_modules += c_ecore_win32
-
 pyincecorewin32dir = $(includedir)/@PACKAGE@/ecore/win32
-pyincecorewin32_DATA = \
-	include/ecore/win32/c_ecore_win32.pxd \
-	include/ecore/win32/__init__.py
+pyincecorewin32_DATA = $(c_ecore_win32_includes)
 endif
 
+c_ecore_evas_includes = \
+	include/ecore/evas/c_ecore_evas.pxd \
+	include/ecore/evas/__init__.py
 if WANT_ECORE_EVAS
 cython_ins += ecore/evas/ecore.evas.c_ecore_evas.pyx
 cython_outs += ecore/evas/ecore.evas.c_ecore_evas.c
 doc_modules += c_ecore_evas ecore.evas.utils
-
 pyincecoreevasdir = $(includedir)/@PACKAGE@/ecore/evas
-pyincecoreevas_DATA = \
-	include/ecore/evas/c_ecore_evas.pxd \
-	include/ecore/evas/__init__.py
+pyincecoreevas_DATA = $(c_ecore_evas_includes)
 endif
 
 CYTHONFLAGS = @CYTHONFLAGS@
@@ -153,10 +154,10 @@ EXTRA_DIST = \
 	python-ecore-evas.pc.in \
 	$(cython_ins) $(cython_outs) \
 	$(pyincecore_DATA) \
-	$(pyincecorex_DATA) \
-	$(pyincecoreimf_DATA) \
-	$(pyincecorewin32_DATA) \
-	$(pyincecoreevas_DATA) \
+	$(c_ecore_x_includes) \
+	$(c_ecore_imf_includes) \
+	$(c_ecore_win32_includes) \
+	$(c_ecore_evas_includes) \
 	$(c_ecore_deps) \
 	$(c_ecore_x_deps) \
 	$(c_ecore_imf_deps) \
