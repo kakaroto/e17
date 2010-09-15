@@ -1,0 +1,8 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+
+Name: @PACKAGE@
+Description: Python bindings for Enlightenment DBus
+@pkgconfig_requires_private@: @pkgconfig_edbus_requires_libs@
+Version: @VERSION@
