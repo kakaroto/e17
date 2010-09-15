@@ -17,94 +17,110 @@ GetValueFromInfoFile($field, $InfoFile)
    else return "";
 }
 
-$devs = array();
-
-/* loop the 'devs/' dir and parse every info.txt files */
+/* build a list of directory that contain the info.txt file */
+$dirs = array();
 if ($dh = opendir($cvs_dir))
 {
-   $i = 0;
    while (($file = readdir($dh)) !== false)
-   {
-      if (is_dir("$cvs_dir/$file") AND
-          file_exists("$cvs_dir/$file/info.txt"))
-      {
-         /* get user info from info.txt file */
-         $txt = file_get_contents("$cvs_dir/$file/info.txt");
-         $Coords = GetValueFromInfoFile("GeoData", $txt); 
-         $Location = GetValueFromInfoFile("Location", $txt);
-         $IRC =  GetValueFromInfoFile("IRC Nick", $txt);
-
-         /* skip user without a nickname*/
-         if (!$IRC OR $IRC == "N/A")
-            continue;
-
-         /* parse GeoData fields*/
-         $lat = $lon = 0;
-         $Coords = explode(" ",$Coords);
-         if($Coords && (count($Coords) == 2))
-         {
-            $tot_geodata ++;
-            $lat = floatval($Coords[0]);
-            $lon = floatval($Coords[1]);
-         }
-
-         /* create an array entry for this developer */
-         if (($lat AND $lon) OR ($Location))
-         {
-            $devs[$i]["IRC"] = $IRC;
-            $devs[$i]["lat"] = $lat;
-            $devs[$i]["lon"] = $lon;
-            $devs[$i]["Location"] = $Location;
-            $devs[$i]["Name"] = GetvalueFrominfoFile("Name", $txt);
-            $devs[$i]["Email"] = GetvalueFrominfoFile("E-Mail", $txt);
-            if ($devs[$i]["Email"][0] == '-') $devs[$i]["Email"] = ""; 
-            $devs[$i]["WWW"] = GetValueFromInfoFile("WWW", $txt);
-            $devs[$i]["Managing"] = GetValueFromInfoFile("Managing", $txt);
-            $devs[$i]["Contributing"] = GetValueFromInfoFile("Contributing", $txt);
-            $devs[$i]["Group"] = GetValueFromInfoFile("Group", $txt);
-            $devs[$i]["Platform"] = GetValueFromInfoFile("Platform", $txt );
-
-            /* choose the user icon (icon-map.png, green or red) */ 
-            if (file_exists("$cvs_dir/$file/icon-map.png"))
-               $devs[$i]["Icon"] =
-                  "http://download.enlightenment.org/devs/$file/icon-map.png";
-            elseif ($lat AND $lon)
-               $devs[$i]["Icon"] =
-                  "http://labs.google.com/ridefinder/images/mm_20_green.png";
-            else
-               $devs[$i]["Icon"] =
-                  "http://labs.google.com/ridefinder/images/mm_20_red.png";
-
-            /* check the user image (icon-med.png) */
-            if (file_exists("$cvs_dir/$file/icon-med.png"))
-               $devs[$i]["IconBig"] =
-                  "http://download.enlightenment.org/devs/$file/icon-med.png";
-            else
-               $devs[$i]["IconBig"] = "";
- 
-            $i ++;
-         }
-      }
-   }
+      if (is_dir("$cvs_dir/$file") AND file_exists("$cvs_dir/$file/info.txt"))
+         $dirs[] = $file;
 }
-/*** DEBUG ***/
-//print "<pre>"; print_r($devs); print "</pre>";
+
+/* build the devs array, populated by parsing all the info.txt files */
+$devs = array();
+foreach ($dirs as $dir)
+{
+   /* get user info from info.txt file */
+   $txt = file_get_contents("$cvs_dir/$dir/info.txt");
+   $Coords = GetValueFromInfoFile("GeoData", $txt); 
+   $Location = GetValueFromInfoFile("Location", $txt);
+   $IRC =  GetValueFromInfoFile("IRC Nick", $txt);
+
+   /* skip user without a nickname*/
+   if (!$IRC OR $IRC == "N/A")
+      continue;
+
+   /* parse GeoData fields*/
+   $lat = $lon = 0;
+   $Coords = explode(" ",$Coords);
+   if($Coords && (count($Coords) == 2))
+   {
+      $tot_geodata ++;
+      $lat = floatval($Coords[0]);
+      $lon = floatval($Coords[1]);
+   }
+
+   /* skip users without a 'GeoData' or 'Location' field */
+   if (!($lat AND $lon) AND !($Location))
+      continue;
+
+   /* create an array entry for this developer */
+   $dev = array();
+   $dev["IRC"] = $IRC;
+   $dev["lat"] = $lat;
+   $dev["lon"] = $lon;
+   $dev["Location"] = $Location;
+   $dev["Name"] = GetvalueFrominfoFile("Name", $txt);
+   $dev["Email"] = GetvalueFrominfoFile("E-Mail", $txt);
+   if ($dev["Email"][0] == '-') $dev["Email"] = ""; 
+   $dev["WWW"] = GetValueFromInfoFile("WWW", $txt);
+   $dev["Managing"] = GetValueFromInfoFile("Managing", $txt);
+   $dev["Contributing"] = GetValueFromInfoFile("Contributing", $txt);
+   $dev["Group"] = GetValueFromInfoFile("Group", $txt);
+   $dev["Platform"] = GetValueFromInfoFile("Platform", $txt );
+
+   /* choose the user icon (icon-map.png, green or red) */ 
+   if (file_exists("$cvs_dir/$dir/icon-map.png"))
+      $dev["Icon"] =
+         "http://download.enlightenment.org/devs/$dir/icon-map.png";
+   elseif ($lat AND $lon)
+      $dev["Icon"] =
+         "http://labs.google.com/ridefinder/images/mm_20_green.png";
+   else
+      $dev["Icon"] =
+         "http://labs.google.com/ridefinder/images/mm_20_red.png";
+
+   /* check the user image (icon-med.png) */
+   if (file_exists("$cvs_dir/$dir/icon-med.png"))
+      $dev["IconBig"] =
+         "http://download.enlightenment.org/devs/$dir/icon-med.png";
+   else
+      $dev["IconBig"] = "";
+
+   $devs[] = $dev;
+}
+
+/* sort the devs array by IRC */
+function sort_by_irc($a, $b) { return strcasecmp($a["IRC"], $b["IRC"]); }
+usort($devs, "sort_by_irc");
+
+/* debug: print the whole devs array */
+if (isset($_REQUEST["debug"]))
+{
+   print "<pre>";
+   print_r($devs);
+   print "</pre>";
+}
+
 /******************************************************************************/
 ?>
 
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-<script type="text/javascript" src="ClusterMarker.js"></script>
+<!--script type="text/javascript" src="ClusterMarker.js"></script-->
 
 <style type="text/css">
    html { height: 100% }
    body { height: 100% }
    #map_canvas { height: 500px; width: 100% }
-   #map_table { width: 100%; font-size: 12px; border: 1px solid black }
-   .infowin td { font-size: 12px }
+   #map_table { width: 100%; font-size: 11px; border: 1px solid #CCC }
+   .infowin td { font-size: 11px }
+
    #sidebar { height: 500px; overflow-y: scroll }
-   #sidebar a { display: block }
-   #totals { float: right; font-size: 12px; margin-right: 5px }
-   #coords { float: left; font-size: 12px; margin-left: 5px }
+   #sidebar a { display: block ; padding-right: 5px }
+   #sidebar a:nth-child(2n) { background-color: #EEE }
+
+   #totals { float: right; font-size: 11px; margin-right: 5px }
+   #coords { float: left; font-size: 11px; margin-left: 5px }
 </style>
 
 <center><h1>Enlightenment Developers World Map</h1></center>
@@ -127,6 +143,7 @@ you wish.
       <td width="100%"><div id="map_canvas"></div></td>
    </tr>
 </table>
+<br><br><br>
 
 
 <script type="text/javascript">
