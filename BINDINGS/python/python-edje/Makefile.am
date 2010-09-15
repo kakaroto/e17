@@ -117,7 +117,6 @@ EXTRA_DIST = \
 	COPYING \
 	README \
 	autogen.sh \
-	python-edje.pc \
 	python-edje.pc.in \
 	$(cython_ins) $(cython_outs) \
 	$(pyincedje_DATA) \

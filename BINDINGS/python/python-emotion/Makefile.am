@@ -39,7 +39,6 @@ EXTRA_DIST = \
 	COPYING \
 	README \
 	autogen.sh \
-	python-emotion.pc \
 	python-emotion.pc.in \
 	$(cython_ins) $(cython_outs) \
 	$(c_emotion_includes) \

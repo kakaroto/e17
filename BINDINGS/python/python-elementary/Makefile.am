@@ -133,7 +133,6 @@ EXTRA_DIST = \
 	COPYING \
 	README \
 	autogen.sh \
-	python-elementary.pc \
 	python-elementary.pc.in \
 	$(cython_ins) $(cython_outs) \
 	$(c_elementary_includes) \

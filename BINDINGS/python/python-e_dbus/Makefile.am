@@ -33,7 +33,6 @@ EXTRA_DIST = \
 	COPYING \
 	README \
 	autogen.sh \
-	python-edbus.pc \
 	python-edbus.pc.in \
 	$(tests_files)
 

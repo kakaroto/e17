@@ -74,7 +74,6 @@ EXTRA_DIST = \
 	COPYING \
 	README \
 	autogen.sh \
-	python-evas.pc \
 	python-evas.pc.in \
 	$(cython_ins) $(cython_outs) \
 	$(pyincevas_DATA) \

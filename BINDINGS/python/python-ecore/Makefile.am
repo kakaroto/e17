@@ -154,7 +154,6 @@ EXTRA_DIST = \
 	COPYING \
 	README \
 	autogen.sh \
-	python-ecore.pc \
 	python-ecore.pc.in \
 	python-ecore-x.pc.in \
 	python-ecore-imf.pc.in \
