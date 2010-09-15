@@ -15,9 +15,3 @@ your machine:
    compiled as a loadable module. As of now, version 0.13 is
    required, not older, not newer.
  * Latest build of EFL
-
-NOTE:
-There seems to be an annoying bug with distutils in Python 2.6 and maybe later,
-where it decides to ignore the --include-dirs from the command line.
-To build the bindings you will need to set your CFLAGS to use
--Iprefix/include/python2.6

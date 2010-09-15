@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+datarootdir=@datarootdir@
+datadir=@datarootdir@/python-ecore-win32
+
+Name: Python Ecore Win32
+Description: Python bindings for Ecore Windows
+@pkgconfig_requires_private@: @pkgconfig_ecore_win32_requires_libs@
+Version: @VERSION@

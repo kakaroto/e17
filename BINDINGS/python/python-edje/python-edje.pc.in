@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+datarootdir=@datarootdir@
+datadir=@datarootdir@/@PACKAGE@
+
+Name: @PACKAGE@
+Description: Python bindings for Edje
+@pkgconfig_requires_private@: @pkgconfig_edje_requires_libs@
+Version: @VERSION@

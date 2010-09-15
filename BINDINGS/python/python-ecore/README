@@ -6,59 +6,31 @@ REQUIREMENTS
  * Evas >= 1.0.0
  * Ecore >= 1.0.0
  * Cython >= 0.13
- * Python-Evas
+ * Python-Evas >= 0.7.2
  * Python >= 2.4
- * Python-setuptools >= 0.6_rc9
 
 
 BUILDING AND INSTALLING
 =======================
 
-This package uses setuptools, so execute:
+This package uses automake, so execute:
 
 Build::
 
-        python setup.py build
+        ./configure --prefix=/usr
+        make all
 
 Install::
 
-        python setup.py install
+        make install
 
-You can choose where to install by using command options, see output
-of "python setup.py <command> --help", example:
+If you wish to install at alternative locations, then make sure to
+configure your PYTHONPATH to be able to access this location!
 
-        python setup.py install --help
+If you have Cython dependencies that are installed in alternative
+locations and want Cython to find them, please specify CYTHONFLAGS
+variable to ./configure.
 
-Options can also be set in file "setup.cfg".
-
-Ecore provides lots of system-specific modules, such as Win32,
-DirectFB and X11. In order to disable them use the following
-environment variables:
-
-  * ECORE_BUILD_EVAS=0
-  * ECORE_BUILD_X=0
-  * ECORE_BUILD_XSCREENSAVER=0
-  * ECORE_BUILD_IMF=0
-
-
-TROUBLESHOOTING
-===============
-
-If you get the following error during build_ext:
-
-        ecore/evas/ecore.evas.c_ecore_evas.pyx:19:8: 'evas.c_evas.pxd' not found
-
-Means that either evas/c_evas.pxd was not installed or it is placed
-at an non-standard place.
-
-If it's not installed at all, please do so by:
-
-        # copy and extract python-evas to 'src/python-evas', then:
-        cd src/python-evas
-        # read README
-        python setup.py install_headers
-
-If it's installed at a non-standard place, you can specify the same path you
-used to install python-evas to build_ext with "--include-dirs":
-
-        python setup.py build_ext --include-dirs <path>
+The discovery of dependencies is done with pkg-config, thus all your
+packages must be properly accessible with such tool. Ensure your
+PKG_CONFIG_PATH and PKG_CONFIG_LIBDIR (cross-compiles) are configured!

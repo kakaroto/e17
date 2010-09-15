@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+datarootdir=@datarootdir@
+datadir=@datarootdir@/python-ecore-x
+
+Name: Python Ecore X
+Description: Python bindings for Ecore X
+@pkgconfig_requires_private@: @pkgconfig_ecore_x_requires_libs@
+Version: @VERSION@

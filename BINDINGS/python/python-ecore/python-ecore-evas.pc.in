@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+datarootdir=@datarootdir@
+datadir=@datarootdir@/python-ecore-evas
+
+Name: Python Ecore Evas
+Description: Python bindings for Ecore Evas
+@pkgconfig_requires_private@: @pkgconfig_ecore_evas_requires_libs@
+Version: @VERSION@

@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@/@PACKAGE@
+datarootdir=@datarootdir@
+datadir=@datarootdir@/@PACKAGE@
+
+Name: @PACKAGE@
+Description: Python bindings for Evas
+@pkgconfig_requires_private@: @pkgconfig_evas_requires_libs@
+Version: @VERSION@
+Cflags: -I${includedir}

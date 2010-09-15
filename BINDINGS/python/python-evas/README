@@ -6,30 +6,29 @@ REQUIREMENTS
  * Evas >= 1.0.0
  * Cython >= 0.13
  * Python >= 2.4
- * Python-setuptools >= 0.6_rc9
 
 
 BUILDING AND INSTALLING
 =======================
 
-This package uses setuptools, so execute:
+This package uses automake, so execute:
 
 Build::
 
-        python setup.py build
+        ./configure --prefix=/usr
+        make all
 
 Install::
 
-        python setup.py install
-        python setup.py install_headers
+        make install
 
-The last step, "install_headers", is required to enable build of other
-modules that depend on this, like python-ecore, python-edje and python-emotion.
+If you wish to install at alternative locations, then make sure to
+configure your PYTHONPATH to be able to access this location!
 
-You can choose where to install by using command options, see output
-of "python setup.py <command> --help", example:
+If you have Cython dependencies that are installed in alternative
+locations and want Cython to find them, please specify CYTHONFLAGS
+variable to ./configure.
 
-        python setup.py install --help
-        python setup.py install_headers --help
-
-Options can also be set in file "setup.cfg".
+The discovery of dependencies is done with pkg-config, thus all your
+packages must be properly accessible with such tool. Ensure your
+PKG_CONFIG_PATH and PKG_CONFIG_LIBDIR (cross-compiles) are configured!

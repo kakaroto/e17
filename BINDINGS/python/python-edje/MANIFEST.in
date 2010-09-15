@@ -1,7 +1,0 @@
-recursive-include edje *.pyx *.pxi *.py
-recursive-include tests *.py *.edc *.edj
-recursive-include include *.pxd *.py
-include ez_setup.py gen-doc-api.sh
-include AUTHORS COPYING README
-include edje/edje.c_edje.[ch]
-prune debian
