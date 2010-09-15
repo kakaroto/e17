@@ -1062,14 +1062,15 @@ e_connman_service_ipv4_configure_dhcp(E_Connman_Element *service, E_DBus_Method_
  *
  * @param service path to set.
  * @param address IPv4 address.
- * @param netmask IPv4 netmask, or @c NULL for "/32"
+ * @param netmask IPv4 netmask, or @c NULL for "/32".
+ * @param gateway IPv4 gateway address.
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
  * @return 1 on success, 0 otherwise.
  */
 bool
-e_connman_service_ipv4_configure_manual(E_Connman_Element *service, const char *address, const char *netmask, E_DBus_Method_Return_Cb cb, const void *data)
+e_connman_service_ipv4_configure_manual(E_Connman_Element *service, const char *address, const char *netmask, const char *gateway, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "SetProperty";
    const char *method = "manual"; /* not method[] as gcc screws it with dbus */
@@ -1125,6 +1126,16 @@ e_connman_service_ipv4_configure_manual(E_Connman_Element *service, const char *
 	  (&entry, DBUS_TYPE_STRING, &e_connman_prop_netmask);
 	dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &netmask);
 	dbus_message_iter_close_container(&dict, &entry);
+     }
+
+   if (gateway)
+     {
+         dbus_message_iter_open_container
+             (&dict, DBUS_TYPE_DICT_ENTRY, NULL, &entry);
+         dbus_message_iter_append_basic
+             (&entry, DBUS_TYPE_STRING, &e_connman_prop_gateway);
+         dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &gateway);
+         dbus_message_iter_close_container(&dict, &entry);
      }
 
    dbus_message_iter_close_container(&variant, &dict);

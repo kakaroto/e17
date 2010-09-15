@@ -171,7 +171,7 @@ extern "C" {
 
   /* Methods to configure IPv4 service */
   EAPI bool e_connman_service_ipv4_configure_dhcp(E_Connman_Element *service, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-  EAPI bool e_connman_service_ipv4_configure_manual(E_Connman_Element *service, const char *address, const char *netmask, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+  EAPI bool e_connman_service_ipv4_configure_manual(E_Connman_Element *service, const char *address, const char *netmask, const char *gateway, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
   /* Technologies methods */
   EAPI E_Connman_Element *e_connman_technology_get(const char *path) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
