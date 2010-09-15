@@ -6,6 +6,8 @@ CYTHONFLAGS = @CYTHONFLAGS@
 CYTHON_EMOTION_FLAGS = -I@CYTHON_EMOTION_INCLUDEDIR@
 EPYDOC = @EPYDOC@
 
+c_emotion_includes = include/emotion/c_emotion.pxd include/emotion/__init__.py
+
 # emotion tests are not actual unit tests but a test AND a nice example
 examples_files = examples/emotion_test.py
 
@@ -40,6 +42,7 @@ EXTRA_DIST = \
 	python-emotion.pc \
 	python-emotion.pc.in \
 	$(cython_ins) $(cython_outs) \
+	$(c_emotion_includes) \
 	$(examples_files) \
 	$(tests_files)
 
@@ -52,7 +55,7 @@ pkgconfig_DATA = python-emotion.pc
 
 if HAVE_CYTHON
 BUILT_SOURCES = $(cython_outs)
-$(top_builddir)/emotion/emotion.c_emotion.c: $(top_srcdir)/emotion/emotion.c_emotion.pyx Makefile
+$(top_builddir)/emotion/emotion.c_emotion.c: $(top_srcdir)/emotion/emotion.c_emotion.pyx $(c_emotion_includes) Makefile
 	@$(MKDIR_P) $(top_builddir)/emotion
 	$(AM_V_GEN)cd $(top_builddir) && $(PYTHON) -m cython $(CYTHON_EMOTION_FLAGS) -I$(top_srcdir)/include $(CYTHONFLAGS) -o $@ $<
 else
