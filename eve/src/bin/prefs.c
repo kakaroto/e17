@@ -9,6 +9,10 @@
 
 #include "prefs.h"
 
+struct _Prefs_Opened_Tab {
+    const char * address;
+};
+
 struct _Prefs {
     char enable_mouse_cursor;
     char enable_touch_interface;
@@ -21,12 +25,75 @@ struct _Prefs {
     char enable_auto_load_images;
     char enable_auto_shrink_images;
     char allow_popup;
+    char restore_state;
+    Eina_List * state;
     const char *__eet_filename;
 };
 
+static const char PREFS_OPENED_TAB_ENTRY[] = "prefs_opened_tab";
 static const char PREFS_ENTRY[] = "prefs";
 
+static Eet_Data_Descriptor *_prefs_opened_tab_descriptor = NULL;
 static Eet_Data_Descriptor *_prefs_descriptor = NULL;
+
+static inline void
+_prefs_opened_tab_init(void)
+{
+    Eet_Data_Descriptor_Class eddc;
+    
+    if (_prefs_opened_tab_descriptor) return;
+    
+    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Prefs_Opened_Tab);
+    _prefs_opened_tab_descriptor = eet_data_descriptor_stream_new(&eddc);
+
+    EET_DATA_DESCRIPTOR_ADD_BASIC(_prefs_opened_tab_descriptor, Prefs_Opened_Tab, "address", address, EET_T_STRING);
+}
+
+static inline void
+_prefs_opened_tab_shutdown(void)
+{
+    if (!_prefs_opened_tab_descriptor) return;
+    eet_data_descriptor_free(_prefs_opened_tab_descriptor);
+    _prefs_opened_tab_descriptor = NULL;
+}
+
+Prefs_Opened_Tab *
+prefs_opened_tab_new(const char * address)
+{
+    Prefs_Opened_Tab *prefs_opened_tab = calloc(1, sizeof(Prefs_Opened_Tab));
+    
+    if (!prefs_opened_tab)
+       {
+          fprintf(stderr, "ERROR: could not calloc Prefs_Opened_Tab\n");
+          return NULL;
+       }
+
+    prefs_opened_tab->address = eina_stringshare_add(address);
+
+    return prefs_opened_tab;
+}
+
+void
+prefs_opened_tab_free(Prefs_Opened_Tab *prefs_opened_tab)
+{
+    eina_stringshare_del(prefs_opened_tab->address);
+    free(prefs_opened_tab);
+}
+
+inline const char *
+prefs_opened_tab_address_get(const Prefs_Opened_Tab *prefs_opened_tab)
+{
+    return prefs_opened_tab->address;
+}
+
+inline void
+prefs_opened_tab_address_set(Prefs_Opened_Tab *prefs_opened_tab, const char *address)
+{
+    EINA_SAFETY_ON_NULL_RETURN(prefs_opened_tab);
+    eina_stringshare_del(prefs_opened_tab->address);
+    prefs_opened_tab->address = eina_stringshare_add(address);
+}
+  
 
 static inline void
 _prefs_init(void)
@@ -49,6 +116,8 @@ _prefs_init(void)
     EET_DATA_DESCRIPTOR_ADD_BASIC(_prefs_descriptor, Prefs, "enable_auto_load_images", enable_auto_load_images, EET_T_CHAR);
     EET_DATA_DESCRIPTOR_ADD_BASIC(_prefs_descriptor, Prefs, "enable_auto_shrink_images", enable_auto_shrink_images, EET_T_CHAR);
     EET_DATA_DESCRIPTOR_ADD_BASIC(_prefs_descriptor, Prefs, "allow_popup", allow_popup, EET_T_CHAR);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(_prefs_descriptor, Prefs, "restore_state", restore_state, EET_T_CHAR);
+    EET_DATA_DESCRIPTOR_ADD_LIST(_prefs_descriptor, Prefs, "state", state, _prefs_opened_tab_descriptor);
 }
 
 static inline void
@@ -60,7 +129,7 @@ _prefs_shutdown(void)
 }
 
 Prefs *
-prefs_new(char enable_mouse_cursor, char enable_touch_interface, char enable_plugins, char enable_javascript, const char * user_agent, const char * home_page, const char * proxy, char enable_private_mode, char enable_auto_load_images, char enable_auto_shrink_images, char allow_popup)
+prefs_new(char enable_mouse_cursor, char enable_touch_interface, char enable_plugins, char enable_javascript, const char * user_agent, const char * home_page, const char * proxy, char enable_private_mode, char enable_auto_load_images, char enable_auto_shrink_images, char allow_popup, char restore_state, Eina_List * state)
 {
     Prefs *prefs = calloc(1, sizeof(Prefs));
     
@@ -81,6 +150,8 @@ prefs_new(char enable_mouse_cursor, char enable_touch_interface, char enable_plu
     prefs->enable_auto_load_images = enable_auto_load_images;
     prefs->enable_auto_shrink_images = enable_auto_shrink_images;
     prefs->allow_popup = allow_popup;
+    prefs->restore_state = restore_state;
+    prefs->state = state;
 
     return prefs;
 }
@@ -91,6 +162,12 @@ prefs_free(Prefs *prefs)
     eina_stringshare_del(prefs->user_agent);
     eina_stringshare_del(prefs->home_page);
     eina_stringshare_del(prefs->proxy);
+    if (prefs->state)
+       {
+          Prefs_Opened_Tab *state_elem;
+          EINA_LIST_FREE(prefs->state, state_elem)
+             prefs_opened_tab_free(state_elem);
+       }
     free(prefs);
 }
 
@@ -240,6 +317,69 @@ prefs_allow_popup_set(Prefs *prefs, char allow_popup)
     prefs->allow_popup = allow_popup;
 }
   
+inline char
+prefs_restore_state_get(const Prefs *prefs)
+{
+    return prefs->restore_state;
+}
+
+inline void
+prefs_restore_state_set(Prefs *prefs, char restore_state)
+{
+    EINA_SAFETY_ON_NULL_RETURN(prefs);
+    prefs->restore_state = restore_state;
+}
+  
+inline void
+prefs_state_add(Prefs *prefs, Prefs_Opened_Tab *prefs_opened_tab)
+{
+    EINA_SAFETY_ON_NULL_RETURN(prefs);
+    prefs->state = eina_list_append(prefs->state, prefs_opened_tab);
+}
+
+inline void
+prefs_state_del(Prefs *prefs, Prefs_Opened_Tab *prefs_opened_tab)
+{
+    EINA_SAFETY_ON_NULL_RETURN(prefs);
+    prefs->state = eina_list_remove(prefs->state, prefs_opened_tab);
+}
+
+inline Prefs_Opened_Tab *
+prefs_state_get(const Prefs *prefs, unsigned int nth)
+{
+    EINA_SAFETY_ON_NULL_RETURN_VAL(prefs, NULL);
+    return eina_list_nth(prefs->state, nth);
+}
+
+inline unsigned int
+prefs_state_count(const Prefs *prefs)
+{
+    EINA_SAFETY_ON_NULL_RETURN_VAL(prefs, 0);
+    return eina_list_count(prefs->state);
+}
+
+void
+prefs_state_list_clear(Prefs *prefs)
+{
+    EINA_SAFETY_ON_NULL_RETURN(prefs);
+    Prefs_Opened_Tab *data;
+    EINA_LIST_FREE(prefs->state, data) prefs_opened_tab_free(data);
+}
+
+inline Eina_List *
+prefs_state_list_get(const Prefs *prefs)
+{
+    EINA_SAFETY_ON_NULL_RETURN_VAL(prefs, NULL);
+    return prefs->state;
+}
+
+inline void
+prefs_state_list_set(Prefs *prefs, Eina_List *list)
+{
+    EINA_SAFETY_ON_NULL_RETURN(prefs);
+    prefs->state = list;
+}
+
 Prefs *
 prefs_load(const char *filename)
 {
@@ -308,12 +448,14 @@ prefs_save(Prefs *prefs, const char *filename)
 void
 preferences_init(void)
 {
+    _prefs_opened_tab_init();
     _prefs_init();
 }
 
 void
 preferences_shutdown(void)
 {
+    _prefs_opened_tab_shutdown();
     _prefs_shutdown();
 }
 

@@ -14,7 +14,6 @@ UI
 
 Preferences / State
 -------------------
- * save state: opened pages, etc. restore on restart
  * preferences (runtime, save at eet):
    - toggle: use start page (otherwise home page)
    - string: proxy

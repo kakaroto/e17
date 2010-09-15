@@ -419,6 +419,27 @@ cleanup:
    free(response);
 }
 
+static void
+state_save(void)
+{
+   Browser_Window *win;
+   Eina_List *win_iter;
+
+   if (!prefs_restore_state_get(prefs)) return;
+   prefs_state_list_clear(prefs);
+
+   EINA_LIST_FOREACH(app.windows, win_iter, win)
+   {
+      Evas_Object *chrome;
+      Eina_List *chrome_iter;
+      EINA_LIST_FOREACH(win->chromes, chrome_iter, chrome)
+      {
+         Evas_Object *view = evas_object_data_get(chrome, "view");
+         prefs_state_add(prefs, prefs_opened_tab_new(ewk_view_uri_get(view)));
+      }
+   }
+}
+
 EAPI int
 elm_main(int argc, char **argv)
 {
@@ -567,7 +588,7 @@ elm_main(int argc, char **argv)
                           enable_plugins,
                           EINA_TRUE, user_agent_str, DEFAULT_URL, NULL,
                           EINA_FALSE, EINA_TRUE, EINA_FALSE,
-                          EINA_TRUE);
+                          EINA_TRUE, EINA_FALSE, NULL);
         prefs_save(prefs, path);
      }
 
@@ -615,7 +636,24 @@ elm_main(int argc, char **argv)
         e_dbus_request_name(conn, "mobi.profusion.eve", 0, _cb_dbus_request_name, response);
      }
 
-   if (!add_win(&app, url))
+   if (prefs_restore_state_get(prefs) && prefs_state_count(prefs) > 0)
+     {
+        Eina_List *previous_state = prefs_state_list_get(prefs);
+        Eina_List *state_iter;
+        Prefs_Opened_Tab *tab = eina_list_data_get(previous_state);
+        Browser_Window *win;
+
+        if (!add_win(&app, prefs_opened_tab_address_get(tab)))
+          {
+             r = -1;
+             goto end;
+          }
+
+        win = eina_list_data_get(app.windows);
+        EINA_LIST_FOREACH(previous_state->next, state_iter, tab)
+          tab_add(win, prefs_opened_tab_address_get(tab));
+     }
+   else if (!add_win(&app, url))
      {
         r = -1;
         goto end;
@@ -623,6 +661,8 @@ elm_main(int argc, char **argv)
 
    elm_run();
 end:
+   state_save();
+
    fav_save(fav, NULL);
    fav_free(fav);
 

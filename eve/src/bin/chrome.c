@@ -75,6 +75,7 @@ typedef enum {
    EVE_PREF_AUTO_LOAD_IMAGES,
    EVE_PREF_AUTO_SHRINK_IMAGES,
    EVE_PREF_POPUP_ALLOW,
+   EVE_PREF_RESTORE_STATE,
    EVE_PREF_LAST
 } Eve_Preference;
 
@@ -154,6 +155,13 @@ static More_Menu_Item more_menu_preferences[] =
        .pref = EVE_PREF_ENABLE_PRIVATE_MODE,
        .pref_get = prefs_enable_private_mode_get,
        .pref_set = prefs_enable_private_mode_set,
+     }}, NULL, ITEM_FLAG_NONE },
+   { ITEM_TYPE_PREFERENCE, "Save and restore session",
+     (More_Menu_Preference[]) {{
+       .type = PREF_TYPE_CHECKBOX,
+       .pref = EVE_PREF_RESTORE_STATE,
+       .pref_get = prefs_restore_state_get,
+       .pref_set = prefs_restore_state_set,
      }}, NULL, ITEM_FLAG_NONE },
    { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
    { ITEM_TYPE_STATIC_FOLDER, "Home page",

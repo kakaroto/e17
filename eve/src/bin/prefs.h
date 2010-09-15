@@ -7,10 +7,18 @@
 #include <Eina.h>
 #include <Eet.h>
 
+typedef struct _Prefs_Opened_Tab Prefs_Opened_Tab;
 typedef struct _Prefs Prefs;
 
+/* Prefs_Opened_Tab */
+Prefs_Opened_Tab *prefs_opened_tab_new(const char * address);
+void prefs_opened_tab_free(Prefs_Opened_Tab *prefs_opened_tab);
+
+void prefs_opened_tab_address_set(Prefs_Opened_Tab *prefs_opened_tab, const char * address);
+const char * prefs_opened_tab_address_get(const Prefs_Opened_Tab *prefs_opened_tab);
+
 /* Prefs */
-Prefs *prefs_new(char enable_mouse_cursor, char enable_touch_interface, char enable_plugins, char enable_javascript, const char * user_agent, const char * home_page, const char * proxy, char enable_private_mode, char enable_auto_load_images, char enable_auto_shrink_images, char allow_popup);
+Prefs *prefs_new(char enable_mouse_cursor, char enable_touch_interface, char enable_plugins, char enable_javascript, const char * user_agent, const char * home_page, const char * proxy, char enable_private_mode, char enable_auto_load_images, char enable_auto_shrink_images, char allow_popup, char restore_state, Eina_List * state);
 void prefs_free(Prefs *prefs);
 
 void prefs_enable_mouse_cursor_set(Prefs *prefs, char enable_mouse_cursor);
@@ -35,6 +43,15 @@ void prefs_enable_auto_shrink_images_set(Prefs *prefs, char enable_auto_shrink_i
 char prefs_enable_auto_shrink_images_get(const Prefs *prefs);
 void prefs_allow_popup_set(Prefs *prefs, char allow_popup);
 char prefs_allow_popup_get(const Prefs *prefs);
+void prefs_restore_state_set(Prefs *prefs, char restore_state);
+char prefs_restore_state_get(const Prefs *prefs);
+void prefs_state_add(Prefs *prefs, Prefs_Opened_Tab *prefs_opened_tab);
+void prefs_state_del(Prefs *prefs, Prefs_Opened_Tab *prefs_opened_tab);
+Prefs_Opened_Tab *prefs_state_get(const Prefs *prefs, unsigned int nth);
+unsigned int prefs_state_count(const Prefs *prefs);
+Eina_List *prefs_state_list_get(const Prefs *prefs);
+void prefs_state_list_clear(Prefs *prefs);
+void prefs_state_list_set(Prefs *prefs, Eina_List *list);
 
 Prefs *prefs_load(const char *filename);
 Eina_Bool prefs_save(Prefs *prefs, const char *filename);
