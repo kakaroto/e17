@@ -1,5 +1,13 @@
 ACLOCAL_AMFLAGS = -I m4
 
+cython_dist = \
+	ecore/ecore.c_ecore.pyx \
+	ecore/x/ecore.x.c_ecore_x.pyx \
+	ecore/x/ecore.x.screensaver.pyx \
+	ecore/imf/ecore.imf.c_ecore_imf.pyx \
+	ecore/win32/ecore.win32.c_ecore_win32.pyx \
+	ecore/evas/ecore.evas.c_ecore_evas.pyx
+
 cython_ins = ecore/ecore.c_ecore.pyx
 cython_outs = ecore/ecore.c_ecore.c ecore/ecore.c_ecore.h
 doc_modules = c_ecore
@@ -152,7 +160,7 @@ EXTRA_DIST = \
 	python-ecore-imf.pc.in \
 	python-ecore-win32.pc.in \
 	python-ecore-evas.pc.in \
-	$(cython_ins) $(cython_outs) \
+	$(cython_dist) $(cython_outs) \
 	$(pyincecore_DATA) \
 	$(c_ecore_x_includes) \
 	$(c_ecore_imf_includes) \
@@ -277,9 +285,7 @@ pyexececorewin32_LTLIBRARIES = c_ecore_win32.la
 c_ecore_win32_la_LIBADD = @ECORE_WIN32_LIBS@
 c_ecore_win32_la_LDFLAGS = -module -avoid-version
 c_ecore_win32_la_LIBTOOLFLAGS = --tag=disable-static
-#c_ecore_win32_la_SOURCES = $(top_builddir)/ecore/win32/ecore.win32.c_ecore_win32.c
-# NOTE: how to provide generated sources if I can't generate them on linux?
-nodist_c_ecore_win32_la_SOURCES = $(top_builddir)/ecore/win32/ecore.win32.c_ecore_win32.c
+c_ecore_win32_la_SOURCES = $(top_builddir)/ecore/win32/ecore.win32.c_ecore_win32.c
 
 pyecorewin32dir = $(pythondir)/ecore/win32
 pyecorewin32_PYTHON = ecore/win32/__init__.py
