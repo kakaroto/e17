@@ -497,7 +497,7 @@ elm_main(int argc, char **argv)
      }
 
    if (!user_agent_option ||
-       (user_agent_option && strcasecmp(user_agent_option, "eve")))
+       (user_agent_option && (strcasecmp(user_agent_option, "eve") == 0)))
       user_agent_str = "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3 " PACKAGE_NAME "/" PACKAGE_VERSION;
    else
      {
