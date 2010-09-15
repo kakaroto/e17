@@ -1,5 +1,9 @@
 #include "common.h"
 
+/* Define strptime */
+extern char *strptime(const char *s, const char *format, struct tm *tm);
+
+
 // this is a really simple data store for messages. it's a directory in ~/ with
 // 1 message per file in text formats
 
@@ -1049,16 +1053,18 @@ data_contact_name_get(Data_Contact *ctc)
    if (ctc->name.display)
      snprintf(buf, sizeof(buf), "%s", ctc->name.display);
    else if (ctc->name.nicks)
-     snprintf(buf, sizeof(buf), "%s", ctc->name.nicks->data);
+     snprintf(buf, sizeof(buf), "%s", (char *)ctc->name.nicks->data);
    else if ((ctc->name.lasts) && (ctc->name.firsts))
-     snprintf(buf, sizeof(buf), "%s %s", ctc->name.firsts->data, eina_list_data_get(ctc->name.lasts));
+     snprintf(buf, sizeof(buf), "%s %s", (char *)ctc->name.firsts->data,
+		     (char *)eina_list_data_get(ctc->name.lasts));
    else if ((ctc->name.lasts) && (ctc->name.titles))
-     snprintf(buf, sizeof(buf), "%s %s", ctc->name.titles, eina_list_data_get(ctc->name.lasts));
+     snprintf(buf, sizeof(buf), "%s %s", (char *)ctc->name.titles,
+		     (char *)eina_list_data_get(ctc->name.lasts));
    else if (ctc->name.firsts)
-     snprintf(buf, sizeof(buf), "%s", ctc->name.firsts->data);
+     snprintf(buf, sizeof(buf), "%s", (char *)ctc->name.firsts->data);
    else if (ctc->name.lasts)
-     snprintf(buf, sizeof(buf), "%s", ctc->name.lasts->data);
+     snprintf(buf, sizeof(buf), "%s", (char *)ctc->name.lasts->data);
    else if (ctc->name.others)
-     snprintf(buf, sizeof(buf), "%s", ctc->name.others->data);
+     snprintf(buf, sizeof(buf), "%s", (char *)ctc->name.others->data);
    return strdup(buf);
 }
