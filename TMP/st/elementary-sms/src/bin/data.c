@@ -3,6 +3,10 @@
 /* Define strptime */
 extern char *strptime(const char *s, const char *format, struct tm *tm);
 
+/* Define the evas utf8 function replacement */
+extern uint32_t evas_common_encoding_utf8_get_next(const char *, int *);
+
+
 
 // this is a really simple data store for messages. it's a directory in ~/ with
 // 1 message per file in text formats
@@ -213,7 +217,7 @@ _data_message_load(const char *file)
                   int ch, ppos;
                   
                   ppos = pos;
-                  ch = evas_common_font_utf8_get_next(buf, &pos);
+                  ch = evas_common_encoding_utf8_get_next(buf, &pos);
                   if (ch == '\n')
                     body = _buf_append(body, "<br>", &body_len, &body_alloc);
                   else
