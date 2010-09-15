@@ -446,7 +446,7 @@ elm_main(int argc, char **argv)
    int r = 0, args;
    const char *home;
    const char *url;
-   char path[PATH_MAX];
+   char path[PATH_MAX], *basename;
    Eina_Bool quit_option = EINA_FALSE;
    Eina_Bool disable_plugins = 0xff;
    Eina_Bool disable_mouse_cursor = 0xff;
@@ -454,6 +454,7 @@ elm_main(int argc, char **argv)
    char *user_agent_option = NULL;
    const char *user_agent_str;
    E_DBus_Connection *conn;
+   size_t dirlen;
 
    Ecore_Getopt_Value values[] = {
       ECORE_GETOPT_VALUE_BOOL(app.is_fullscreen),
@@ -540,7 +541,14 @@ elm_main(int argc, char **argv)
         goto end;
      }
 
-   snprintf(path, sizeof(path), "%s/.config/ewebkit", home);
+   dirlen = snprintf(path, sizeof(path), "%s/.config/eve", home);
+   if (dirlen >= sizeof(path))
+     {
+        ERR("Path is too long: %s/.config/eve", home);
+        r = -1;
+        goto end;
+     }
+
    if (!ecore_file_mkpath(path))
      {
         ERR("Could not create %s", path);
@@ -555,7 +563,11 @@ elm_main(int argc, char **argv)
         goto end;
      }
 
-   snprintf(path, sizeof(path), "%s/.config/ewebkit/favorites.db", home);
+   basename = path + dirlen;
+   basename[0] = '/';
+   basename++;
+   dirlen++;
+   eina_strlcpy(basename, "favorites.db", sizeof(path) - dirlen);
    fav = fav_load(path);
    if (!fav)
      {
@@ -563,7 +575,7 @@ elm_main(int argc, char **argv)
         fav_save(fav, path);
      }
 
-   snprintf(path, sizeof(path), "%s/.config/ewebkit/history.db", home);
+   eina_strlcpy(basename, "history.db", sizeof(path) - dirlen);
    hist = hist_load(path);
    if (!hist)
      {
@@ -571,7 +583,7 @@ elm_main(int argc, char **argv)
         hist_save(hist, path);
      }
 
-   snprintf(path, sizeof(path), "%s/.config/ewebkit/prefs.db", home);
+   eina_strlcpy(basename, "prefs.db", sizeof(path) - dirlen);
    prefs = prefs_load(path);
    if (!prefs)
      {
