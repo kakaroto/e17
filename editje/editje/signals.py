@@ -282,6 +282,7 @@ class SignalDetails(EditjeDetails):
 
         prop = Property(parent, "name")
         wid = WidgetEntry(self)
+        wid.tooltip_set("Unique signal name.")
         prop.widget_add("n", wid)
         self._header_table.property_add(prop)
 
@@ -291,8 +292,11 @@ class SignalDetails(EditjeDetails):
                               (self.e.signal, "program.changed")]
 
         prop = Property(parent, "signal")
-        prop.widget_add("s", WidgetSignal(
-                self, popup_hide_object_signal_list=popup_hide_cb_list))
+        wid = WidgetSignal(self,
+                           popup_hide_object_signal_list=popup_hide_cb_list)
+        wid.tooltip_set("Signal to be received.", "Click to select one common"
+                        "<br>signal to be received.")
+        prop.widget_add("s", wid)
         self["main"].property_add(prop)
 
         def parts_get():
@@ -303,11 +307,15 @@ class SignalDetails(EditjeDetails):
 
         self._prop_source_parts = Property(parent, "source")
         wid = WidgetSource(self, "Parts list", parts_get, popup_hide_cb_list)
+        wid.tooltip_set("Accepted signal source.", "Click to select one "
+                        "existent<br>part as source.")
         self._prop_source_parts.widget_add("s", wid)
 
         self._prop_source_animations = Property(parent, "source")
         wid = WidgetSource(self, "Animation list",
                            animations_get, popup_hide_cb_list)
+        wid.tooltip_set("Accepted signal source.", "Click to select one "
+                        "existent<br>animation as source.")
         self._prop_source_animations.widget_add("s", wid)
 
         self["main"].property_add(self._prop_source_parts)
@@ -316,22 +324,32 @@ class SignalDetails(EditjeDetails):
         wid = WidgetEntry(self)
         wid.parser_in = lambda x: str(x)
         wid.parser_out = lambda x: float(x)
+        wid.tooltip_set("Fixed delay to do the action in seconds. The<br>total "
+                        "delay is sum off fixed and variable delays.")
         prop.widget_add("delay", wid)
         wid = WidgetEntry(self)
         wid.parser_in = lambda x: str(x)
         wid.parser_out = lambda x: float(x)
+        wid.tooltip_set("Variable delay to do the action in seconds. Will<br>be"
+                        " selected one random value between 0 and this.")
         prop.widget_add("range", wid)
         self["main"].property_add(prop)
 
         self.group_add("api")
         prop = Property(parent, "export")
-        prop.widget_add("export", WidgetBoolean(self))
+        wid = WidgetBoolean(self)
+        wid.tooltip_set("Add this part to exported signals.")
+        prop.widget_add("export", wid)
         self["api"].property_add(prop)
         self._prop_api_name = Property(parent, "name")
-        self._prop_api_name.widget_add("name", WidgetEntry(self))
+        wid = WidgetEntry(self)
+        wid.tooltip_set("Export name of signal.")
+        self._prop_api_name.widget_add("name", wid)
         self["api"].property_add(self._prop_api_name)
         self._prop_api_description = Property(parent, "description")
-        self._prop_api_description.widget_add("description", WidgetEntry(self))
+        wid = WidgetEntry(self)
+        wid.tooltip_set("Description of exported signal.")
+        self._prop_api_description.widget_add("description", wid)
         self["api"].property_add(self._prop_api_description)
 
         self.group_add("actions")
@@ -339,13 +357,18 @@ class SignalDetails(EditjeDetails):
         self.group_add("out")
 
         prop = Property(parent, "signal")
-        prop.widget_add("s", WidgetSignal(
-                self, popup_hide_object_signal_list=popup_hide_cb_list))
+        wid = WidgetSignal(self,
+                           popup_hide_object_signal_list=popup_hide_cb_list)
+        wid.tooltip_set("Signal to be emmited.", "Click to select one common "
+                        "signal to be emmited.")
+        prop.widget_add("s", wid)
         self["out"].property_add(prop)
 
         prop = Property(parent, "source")
-        prop.widget_add("s", WidgetSource(self, "Parts list",
-                                          parts_get, popup_hide_cb_list))
+        wid = WidgetSource(self, "Parts list", parts_get, popup_hide_cb_list)
+        wid.tooltip_set("Name registered as signal source.", "Click to select "
+                        "one existent<br>part as source.")
+        prop.widget_add("s", wid)
         self["out"].property_add(prop)
 
         self.e.callback_add("signal.added", self._update)
@@ -392,8 +415,10 @@ class SignalDetails(EditjeDetails):
                               (self.e.signal, "program.changed")]
 
         prop = Property(self._parent, "action " + str(number))
-        prop.widget_add("a", WidgetActionsList(
-                self, "Animations", programs_get, None, popup_hide_cb_list))
+        wid = WidgetActionsList(self, "Animations", programs_get, None,
+                                popup_hide_cb_list)
+        wid.tooltip_set("Animation to be started.<br>Click to select it.")
+        prop.widget_add("a", wid)
         self["actions"].property_add(prop)
 
     def _removed(self, emissor, data):

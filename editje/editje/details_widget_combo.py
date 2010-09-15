@@ -57,3 +57,6 @@ class WidgetCombo(Widget):
             return
         self.obj.label_set(item)
         self._callback_call("changed")
+
+    def tooltip_set(self, label):
+        self.obj.tooltip_text_set(label)

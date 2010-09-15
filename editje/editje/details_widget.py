@@ -99,3 +99,6 @@ class Widget(object):
         self._out_parser = pout
 
     parser_out = property(fset=parser_out_set)
+
+    def tooltip_set(self, label):
+        print "WARNING: not implemented tooltip support in", self

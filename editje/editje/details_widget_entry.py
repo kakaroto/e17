@@ -79,6 +79,9 @@ class WidgetEntry(Widget, WidgetEntryValidator):
 
         self.obj = self.scr
 
+    def tooltip_set(self, label):
+        self.entry.tooltip_text_set(label)
+
     def disabled_set(self, val):
         self.entry.disabled_set(val)
 

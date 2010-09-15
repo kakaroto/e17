@@ -54,24 +54,28 @@ class PartDetails(EditjeDetails):
 
         prop = Property(parent, "name")
         wid = WidgetEntry(self)
+        wid.tooltip_set("Unique name of part.")
         prop.widget_add("n", wid)
         self._header_table.property_add(prop)
 
         prop = Property(parent, "type")
         wid = WidgetEntry(self)
         wid.disabled_set(True)
+        wid.tooltip_set("Static type of part.")
         prop.widget_add("t", wid)
         self._header_table.property_add(prop)
 
         self._source_prop = Property(parent, "source widget")
         wid = WidgetEntry(self)
         wid.disabled_set(True)
+        wid.tooltip_set("External Widget Type.")
         self._source_prop.widget_add("s", wid)
         self._source_prop.hide()
 
         self._module_prop = Property(parent, "module")
         wid = WidgetEntry(self)
         wid.disabled_set(True)
+        wid.tooltip_set("External Widget Module.")
         self._module_prop.widget_add("m", wid)
         self._module_prop.hide()
 
@@ -108,21 +112,28 @@ class PartDetails(EditjeDetails):
                               (self.e.part, "part.changed")]
 
         prop = Property(parent, "clip_to")
-        prop.widget_add("to", WidgetButtonList(
-                self, "Clipper selection", clippers_get, sel_part_get,
-                popup_hide_cb_list))
+        wid = WidgetButtonList(self, "Clipper selection", clippers_get,
+                               sel_part_get, popup_hide_cb_list)
+        wid.tooltip_set("Reference clipper part.")
+        prop.widget_add("to", wid)
         self["main"].property_add(prop)
 
         prop = Property(parent, "mouse_events")
-        prop.widget_add("me", WidgetBoolean(self))
+        wid = WidgetBoolean(self)
+        wid.tooltip_set("Enable mouse events<br>in this part.")
+        prop.widget_add("me", wid)
         self["main"].property_add(prop)
 
         prop = Property(parent, "repeat_events")
-        prop.widget_add("re", WidgetBoolean(self))
+        wid = WidgetBoolean(self)
+        wid.tooltip_set("Enable repeat mouse events<br>to the parts below.")
+        prop.widget_add("re", wid)
         self["main"].property_add(prop)
 
         prop = Property(parent, "scale")
-        prop.widget_add("s", WidgetBoolean(self))
+        wid = WidgetBoolean(self)
+        wid.tooltip_set("Scalable part.")
+        prop.widget_add("s", wid)
         self["main"].property_add(prop)
         # Missing properties: ignore_flags, pointer_mode,
         # precise_is_inside
@@ -133,6 +144,8 @@ class PartDetails(EditjeDetails):
         wid = WidgetCombo(parent)
         for i in range(len(self._effects)):
             wid.item_add(self._effects[i])
+        wid.tooltip_set("Select text effect.<br>"
+                        "Shadow and Outline options.")
         prop.widget_add("e", wid)
         self["textblock"].property_add(prop)
         # Missing properties: sources of text block, entry_mode,
@@ -153,13 +166,19 @@ class PartDetails(EditjeDetails):
 
         self.group_add("api")
         prop = Property(parent, "export")
-        prop.widget_add("export", WidgetBoolean(self))
+        wid = WidgetBoolean(self)
+        wid.tooltip_set("Add this part to exported parts.")
+        prop.widget_add("export", wid)
         self["api"].property_add(prop)
         self._prop_api_name = Property(parent, "name")
-        self._prop_api_name.widget_add("name", WidgetEntry(self))
+        wid = WidgetEntry(self)
+        wid.tooltip_set("Export name of part.")
+        self._prop_api_name.widget_add("name", wid)
         self["api"].property_add(self._prop_api_name)
         self._prop_api_description = Property(parent, "description")
-        self._prop_api_description.widget_add("description", WidgetEntry(self))
+        wid = WidgetEntry(self)
+        wid.tooltip_set("Description of exported part.")
+        self._prop_api_description.widget_add("description", wid)
         self["api"].property_add(self._prop_api_description)
         self.group_hide("api")
 

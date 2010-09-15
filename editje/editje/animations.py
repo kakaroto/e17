@@ -444,6 +444,7 @@ class AnimationDetails(EditjeDetails):
 
         prop = Property(parent, "name")
         wid = WidgetEntry(self)
+        wid.tooltip_set("Unique animation name.")
         prop.widget_add("n", wid)
         self._header_table.property_add(prop)
 
@@ -453,6 +454,7 @@ class AnimationDetails(EditjeDetails):
         wid.type_float()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: float(x)
+        wid.tooltip_set("Time lenght of animation<br>in seconds.")
         prop.widget_add("l", wid)
         self._header_table.property_add(prop)
 
@@ -461,18 +463,21 @@ class AnimationDetails(EditjeDetails):
         prop = Property(parent, "current")
         wid = WidgetEntry(self)
         wid.disabled_set(True)
+        wid.tooltip_set("Time of current keyframe<br>in seconds.")
         prop.widget_add("c", wid)
         self["main"].property_add(prop)
 
         prop = Property(parent, "previous")
         wid = WidgetEntry(self)
         wid.disabled_set(True)
+        wid.tooltip_set("Time of previous keyframe<br>in seconds.")
         prop.widget_add("p", wid)
         self["main"].property_add(prop)
 
         prop = Property(parent, "next")
         wid = WidgetEntry(self)
         wid.disabled_set(True)
+        wid.tooltip_set("Time of next keyframe<br>in seconds.")
         prop.widget_add("n", wid)
         self["main"].property_add(prop)
 
@@ -480,12 +485,16 @@ class AnimationDetails(EditjeDetails):
         wid = WidgetCombo(parent)
         for null, i in enumerate(self._transitions):
             wid.item_add(i)
+        wid.tooltip_set("Transition effect to interpolation<br>"
+                        "between the previous keyframe<br>and this.")
         prop.widget_add("type", wid)
         wid = WidgetEntry(self)
         wid.disabled_set(True)
         wid.type_float()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: float(x)
+        wid.tooltip_set("Transition time between the<br>"
+                        "previous keyframe and this,<br>in seconds.")
         prop.widget_add("length", wid)
         self["main"].property_add(prop)
 

@@ -459,6 +459,7 @@ class Editje(elementary.Window, OpenFileManager):
         self._group_name_entry.size_hint_align_set(-1.0, -1.0)
         self._group_name_entry.single_line_set(True)
         self._group_name_entry.style_set("editje")
+        self._group_name_entry.tooltip_text_set("Name of current visible group.<br>Click to rename it.")
         self._group_name_entry.callback_activated_add(self._group_name_changed)
         self._group_name_entry.callback_unfocused_add(self._group_name_changed)
         self.main_layout.content_set("details_group.swallow",
@@ -467,23 +468,29 @@ class Editje(elementary.Window, OpenFileManager):
         self._toolbar_group_cb(self, "< none >")
         self.e.callback_add("group.changed", self._toolbar_group_cb)
 
-        self._toolbar_bt_init(self.main_edje, "new.bt", "New", self._new_cb)
-        self._toolbar_bt_init(self.main_edje, "open.bt", "Open", self._open_cb)
-        self._toolbar_bt_init(self.main_edje, "save.bt", "Save", self._save_cb)
-        self._toolbar_bt_init(self.main_edje, "undo.bt", "Undo", self._undo_cb)
-        self._toolbar_bt_init(self.main_edje, "redo.bt", "Redo", self._redo_cb)
-        self._toolbar_bt_init(
-            self.main_edje, "group.bt", "Groups", self._group_cb)
+        self._toolbar_bt_init(self.main_edje, "new.bt", "New", self._new_cb,
+                              "Create new file in<br>another window.")
+        self._toolbar_bt_init(self.main_edje, "open.bt", "Open", self._open_cb,
+                              "Open one file in<br>another window.")
+        self._toolbar_bt_init(self.main_edje, "save.bt", "Save", self._save_cb,
+                              "Save current file.")
+        self._toolbar_bt_init(self.main_edje, "undo.bt", "Undo", self._undo_cb,
+                              "Undo last action.")
+        self._toolbar_bt_init(self.main_edje, "redo.bt", "Redo", self._redo_cb,
+                              "Redo last undone action.")
+        self._toolbar_bt_init(self.main_edje, "group.bt", "Groups",
+                              self._group_cb, "Manage the file groups.")
         if self._slave_mode:
             self.main_edje.signal_emit("group.bt,disable", "")
 
         self.main_edje.signal_emit("undo.bt,disable", "")
         self.main_edje.signal_emit("redo.bt,disable", "")
 
-        self._toolbar_bt_init(self.main_edje, "run.bt", "Run", self._run_cb)
+        self._toolbar_bt_init(self.main_edje, "run.bt", "Run", self._run_cb,
+                              "Execute actual group<br>in new window.")
 
         self._toolbar_bt_init(self.main_edje, "options.bt", "Options",
-                              self._options_cb)
+                              self._options_cb, "Change Editje options.")
 
     def _group_name_changed(self, obj, *args, **kwargs):
 
@@ -532,7 +539,7 @@ class Editje(elementary.Window, OpenFileManager):
         grp_wiz.file_set(self.e.workfile)
         grp_wiz.open()
 
-    def _toolbar_bt_init(self, edje, part, name, callback):
+    def _toolbar_bt_init(self, edje, part, name, callback, tooltip=None):
         edje.part_text_set(part + ".label", name)
         edje.signal_callback_add("%s,selected" % part, part, callback)
 
@@ -746,6 +753,9 @@ class Editje(elementary.Window, OpenFileManager):
 
         self._modes_selector = elementary.Hoversel(self)
         self._modes_selector.hover_parent_set(self)
+        self._modes_selector.tooltip_text_set("Change between the edition"
+                                              " modes:<br>"
+                                              "Parts, Animations and Signals")
         self._modes_selector.label_set("Mode")
         self._modes_selector.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         self._modes_selector.size_hint_align_set(
@@ -899,14 +909,18 @@ class Editje(elementary.Window, OpenFileManager):
 
         # FIXME: these 2 buttons are (#if 0)-ed at edc, decide if we're killing
         # it here soon or not
-        self._toolbar_bt_init(
-            edj, "image_list.bt", "Images", self._image_list_cb)
-        self._toolbar_bt_init(edj, "font_list.bt", "Fonts", self._font_list_cb)
-
-        self._toolbar_bt_init(edj, "cut.bt", "Cut", self._cut_cb)
-        self._toolbar_bt_init(edj, "copy.bt", "Copy", self._copy_cb)
-        self._toolbar_bt_init(edj, "paste.bt", "Paste", self._paste_cb)
-        self._toolbar_bt_init(edj, "about.bt", "About", self._about_cb)
+        self._toolbar_bt_init(edj, "image_list.bt", "Images",
+                              self._image_list_cb, "Manage loaded images.")
+        self._toolbar_bt_init(edj, "font_list.bt", "Fonts", self._font_list_cb,
+                              "Manage fonts.")
+        self._toolbar_bt_init(edj, "cut.bt", "Cut", self._cut_cb,
+                              "Cut current selection.")
+        self._toolbar_bt_init(edj, "copy.bt", "Copy", self._copy_cb,
+                              "Copy current selection.")
+        self._toolbar_bt_init(edj, "paste.bt", "Paste", self._paste_cb,
+                              "Paste current selection,<br>with valid name.")
+        self._toolbar_bt_init(edj, "about.bt", "About", self._about_cb,
+                              "Show about Editje window.")
 
         # Mainbar
         mainbar = CollapsablesBox(self)
@@ -1009,13 +1023,13 @@ class Editje(elementary.Window, OpenFileManager):
 
         self._anim_toolbar_edje = toolbar.edje_get()
         self._toolbar_bt_init(self._anim_toolbar_edje, "previous.bt",
-                              "Previous", previous_cb)
+                              "Previous", previous_cb, "Go to previous keyframe.")
         self._toolbar_bt_init(self._anim_toolbar_edje, "play.bt",
-                              "Play", play_cb)
+                              "Play", play_cb, "Play animation<br>from current keyframe.")
         self._toolbar_bt_init(self._anim_toolbar_edje, "next.bt",
-                              "Next", next_cb)
+                              "Next", next_cb, "Go to next keyframe.")
         self._toolbar_bt_init(self._anim_toolbar_edje, "stop.bt",
-                              "Stop", stop_cb)
+                              "Stop", stop_cb, "Stop animation")
 
         def _animation_changed(it, ti):
             self._animation_toolbar_set("stopped")

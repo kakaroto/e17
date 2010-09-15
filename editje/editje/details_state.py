@@ -137,6 +137,8 @@ class PartStateDetails(EditjeDetails):
 
         prop = Property(parent, "state")
         wid = WidgetStates(self, self.e, self._operation_stack_cb)
+        wid.tooltip_set("Unique state name for part.<br>"
+                        "'default 0.0' is immutable.")
         prop.widget_add("s", wid)
         self._header_table.property_add(prop)
         # FIXME: ugly and dangerous: overriding property_add's behavior on
@@ -192,11 +194,13 @@ class PartStateDetails(EditjeDetails):
         wid.type_int()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: int(x)
+        wid.tooltip_set("Minimum part<br>width in pixels.")
         prop.widget_add("w", wid)
         wid = WidgetEntry(self)
         wid.type_int()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: int(x)
+        wid.tooltip_set("Minimum part<br>height in pixels.")
         prop.widget_add("h", wid)
         self["main"].property_add(prop)
 
@@ -205,11 +209,13 @@ class PartStateDetails(EditjeDetails):
         wid.type_int()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: int(x)
+        wid.tooltip_set("Maximum part<br>width in pixels.<br>0 = disabled")
         prop.widget_add("w", wid)
         wid = WidgetEntry(self)
         wid.type_int()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: int(x)
+        wid.tooltip_set("Maximum part<br>height in pixels.<br>0 = disabled")
         prop.widget_add("h", wid)
         self["main"].property_add(prop)
 
@@ -221,17 +227,21 @@ class PartStateDetails(EditjeDetails):
         wid.type_int()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: int(x)
+        wid.tooltip_set("Current part<br>height in pixels.")
         prop.widget_add("w", wid)
         wid = WidgetEntry(self)
         wid.disabled_set(True)
         wid.type_int()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: int(x)
+        wid.tooltip_set("Current part<br>width in pixels.")
         prop.widget_add("h", wid)
         self["main"].property_add(prop)
 
         prop = Property(self._parent, "visible")
-        prop.widget_add("v", WidgetBoolean(self))
+        wid = WidgetBoolean(self)
+        wid.tooltip_set("Change part's visibility.")
+        prop.widget_add("v", wid)
         self["main"].property_add(prop)
 
         prop = Property(self._parent, "align")
@@ -239,11 +249,13 @@ class PartStateDetails(EditjeDetails):
         wid.type_float()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: float(x)
+        wid.tooltip_set("Part horizontal align.<br>0.0 = left  1.0 = right")
         prop.widget_add("x", wid)
         wid = WidgetEntry(self)
         wid.type_float()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: float(x)
+        wid.tooltip_set("Part vertical align.<br>0.0 = top  1.0 = bottom")
         prop.widget_add("y", wid)
         self["main"].property_add(prop)
 
@@ -251,7 +263,13 @@ class PartStateDetails(EditjeDetails):
         # 'aspect' and 'aspect_preference' missing
 
         prop = Property(self._parent, "color")
-        prop.widget_add("c", WidgetColor(self, self.e))
+        wid = WidgetColor(self, self.e)
+        wid.tooltip_set("Part main color.<br>"
+                        "Enter color in integers or<br>"
+                        "in Hexa notation.",
+                        "Preview of main color.<br>"
+                        "Click to edit it.")
+        prop.widget_add("c", wid)
         self["main"].property_add(prop)
 
     def _text_props_create(self):
@@ -260,13 +278,17 @@ class PartStateDetails(EditjeDetails):
         # not implemented in edje_edit: min, max
 
         prop = Property(self._parent, "text")
-        prop.widget_add("t", WidgetEntry(self))
+        wid = WidgetEntry(self)
+        wid.tooltip_set("Set the text of part.")
+        prop.widget_add("t", wid)
         self["text"].property_add(prop)
 
         prop = Property(self._parent, "font")
-        prop.widget_add("f", WidgetFont(self._parent, \
-            self._fnt_new_fnt_cb, self._fnt_list_get_cb, \
-            self._workfile_name_get_cb))
+        wid = WidgetFont(self._parent, \
+                         self._fnt_new_fnt_cb, self._fnt_list_get_cb, \
+                         self._workfile_name_get_cb)
+        wid.tooltip_set("Change the text's font.")
+        prop.widget_add("f", wid)
         self["text"].property_add(prop)
 
         prop = Property(self._parent, "size")
@@ -274,6 +296,7 @@ class PartStateDetails(EditjeDetails):
         wid.type_int()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: int(x)
+        wid.tooltip_set("Change text font's size.")
         prop.widget_add("s", wid)
         self["text"].property_add(prop)
 
@@ -287,27 +310,44 @@ class PartStateDetails(EditjeDetails):
         wid.type_float()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: float(x)
+        wid.tooltip_set("Text horizontal align.<br>0.0 = left  1.0 = right")
         prop.widget_add("x", wid)
         wid = WidgetEntry(self)
         wid.type_float()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: float(x)
+        wid.tooltip_set("Text vertical align.<br>0.0 = top  1.0 = bottom")
         prop.widget_add("y", wid)
         self["text"].property_add(prop)
 
         prop = Property(self._parent, "elipsis")
         wid = WidgetEntry(self)
         wid.type_float()
+        #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: float(x)
+        wid.tooltip_set("Cut text if biggest then part's area.<br>"
+                        "0.0 = fix the left side  1.0 = right side")
         prop.widget_add("e", wid)
         self["text"].property_add(prop)
 
         prop = Property(self._parent, "color2")
-        prop.widget_add("c", WidgetColor(self, self.e))
+        wid = WidgetColor(self, self.e)
+        wid.tooltip_set("Text shadow color.<br>"
+                        "Enter color in integers or<br>"
+                        "in Hexa notation.",
+                        "Preview of text shadow color.<br>"
+                        "Click to edit it.")
+        prop.widget_add("c", wid)
         self["text"].property_add(prop)
 
         prop = Property(self._parent, "color3")
-        prop.widget_add("c", WidgetColor(self, self.e))
+        wid = WidgetColor(self, self.e)
+        wid.tooltip_set("Text outline color.<br>"
+                        "Enter color in integers or<br>"
+                        "in Hexa notation.",
+                        "Preview of text outline color.<br>"
+                        "Click to edit it.")
+        prop.widget_add("c", wid)
         self["text"].property_add(prop)
 
     def _image_props_create(self):
@@ -316,6 +356,7 @@ class PartStateDetails(EditjeDetails):
         prop = Property(self._parent, "normal")
         wid = WidgetButton(self)
         wid.clicked = self._image_btn_clicked
+        wid.tooltip_set("Actual image.<br>Click to change it.")
         prop.widget_add("n", wid)
         self["image"].property_add(prop)
 
@@ -324,27 +365,37 @@ class PartStateDetails(EditjeDetails):
         wid.type_int()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: int(x)
+        wid.tooltip_set("Lenght of left border in pixels.<br>"
+                        "Left border isn't horizontal scalable.")
         prop.widget_add("l", wid)
         wid = WidgetEntry(self)
         wid.type_int()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: int(x)
+        wid.tooltip_set("Lenght of right border in pixels.<br>"
+                        "Right border isn't horizontal scalable.")
         prop.widget_add("r", wid)
         wid = WidgetEntry(self)
         wid.type_int()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: int(x)
+        wid.tooltip_set("Lenght of top border in pixels.<br>"
+                        "Top border isn't vertical scalable.")
         prop.widget_add("t", wid)
         wid = WidgetEntry(self)
         wid.type_int()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: int(x)
+        wid.tooltip_set("Lenght of bottom border in pixels.<br>"
+                        "Bottom border isn't vertical scalable.")
         prop.widget_add("b", wid)
         self["image"].property_add(prop)
 
         prop = Property(self._parent, "middle")
         wid = WidgetBoolean(self)
         wid.states_set("Solid", "None")
+        wid.tooltip_set("Enables painting of image middle.<br>"
+                        "If 'None', the image middle is hidden.")
         prop.widget_add("m", wid)
         self["image"].property_add(prop)
 #        wid = WidgetBoolean(self)
@@ -367,12 +418,15 @@ class PartStateDetails(EditjeDetails):
                               (self.e.part, "part.changed")]
 
         prop = Property(self._parent, "to")
-        prop.widget_add("x", WidgetButtonList(
+        wid = WidgetButtonList(self, rel_to_box_title, parts_get, sel_part_get,
+                               popup_hide_cb_list)
+        wid.tooltip_set("Left reference part.")
+        prop.widget_add("x", wid)
+        wid = WidgetButtonList(
                 self, rel_to_box_title, parts_get, sel_part_get,
-                popup_hide_cb_list))
-        prop.widget_add("y", WidgetButtonList(
-                self, rel_to_box_title, parts_get, sel_part_get,
-                popup_hide_cb_list))
+                popup_hide_cb_list)
+        wid.tooltip_set("Top reference part.")
+        prop.widget_add("y", wid)
         self["rel1"].property_add(prop)
 
         prop = Property(self._parent, "relative")
@@ -380,11 +434,17 @@ class PartStateDetails(EditjeDetails):
         wid.type_float()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: float(x)
+        wid.tooltip_set("Left relative position to<br>"
+                        "reference part.<br>"
+                        "0.0 = 0%/begining  1.0 = 100%/end")
         prop.widget_add("x", wid)
         wid = WidgetEntry(self)
         wid.type_float()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: float(x)
+        wid.tooltip_set("Top relative position to<br>"
+                        "reference part.<br>"
+                        "0.0 = 0%/begining  1.0 = 100%/end")
         prop.widget_add("y", wid)
         self["rel1"].property_add(prop)
 
@@ -393,11 +453,15 @@ class PartStateDetails(EditjeDetails):
         wid.type_int()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: int(x)
+        wid.tooltip_set("Left offset from relative<br>"
+                        "position in pixels.")
         prop.widget_add("x", wid)
         wid = WidgetEntry(self)
         wid.type_int()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: int(x)
+        wid.tooltip_set("Top offset from relative<br>"
+                        "position in pixels.")
         prop.widget_add("y", wid)
         self["rel1"].property_add(prop)
 
@@ -405,12 +469,16 @@ class PartStateDetails(EditjeDetails):
         self.group_title_set("rel2", "bottom-right")
 
         prop = Property(self._parent, "to")
-        prop.widget_add("x", WidgetButtonList(
+        wid = WidgetButtonList(
                 self, rel_to_box_title, parts_get, sel_part_get,
-                popup_hide_cb_list))
-        prop.widget_add("y", WidgetButtonList(
+                popup_hide_cb_list)
+        wid.tooltip_set("Right reference part.")
+        prop.widget_add("x", wid)
+        wid = WidgetButtonList(
                 self, rel_to_box_title, parts_get, sel_part_get,
-                popup_hide_cb_list))
+                popup_hide_cb_list)
+        wid.tooltip_set("Bottom reference part.")
+        prop.widget_add("y", wid)
         self["rel2"].property_add(prop)
 
         prop = Property(self._parent, "relative")
@@ -418,11 +486,17 @@ class PartStateDetails(EditjeDetails):
         wid.type_float()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: float(x)
+        wid.tooltip_set("Right relative position to<br>"
+                        "reference part.<br>"
+                        "0.0 = 0%/begining  1.0 = 100%/end")
         prop.widget_add("x", wid)
         wid = WidgetEntry(self)
         wid.type_float()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: float(x)
+        wid.tooltip_set("Bottom relative position to<br>"
+                        "reference part.<br>"
+                        "0.0 = 0%/begining  1.0 = 100%/end")
         prop.widget_add("y", wid)
         self["rel2"].property_add(prop)
 
@@ -432,10 +506,16 @@ class PartStateDetails(EditjeDetails):
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: int(x)
         prop.widget_add("x", wid)
+        wid.tooltip_set("Right offset from relative<br>"
+                        "position in pixels.<br>"
+                        "default = -1 (see docs)")
         wid = WidgetEntry(self)
         wid.type_int()
         #wid.parser_in = lambda x: str(x)
         #wid.parser_out = lambda x: int(x)
+        wid.tooltip_set("Bottom offset from relative<br>"
+                        "position in pixels.<br>"
+                        "default = -1 (see docs)")
         prop.widget_add("y", wid)
         self["rel2"].property_add(prop)
 

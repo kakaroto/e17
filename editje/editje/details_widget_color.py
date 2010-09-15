@@ -160,3 +160,6 @@ class WidgetColor(FloaterOpener, WidgetEntry):
 
     def _floater_title_init(self):
         self._floater.title_set("Color")
+
+    def tooltip_set(self, entry, button=None):
+        self.entry.tooltip_text_set(entry)

@@ -70,3 +70,9 @@ class WidgetEntryButton(WidgetEntry):
     def _internal_value_set(self, val):
         WidgetEntry._internal_value_set(self, val)
         self.entry.select_all()
+
+    def tooltip_set(self, entry, button=None):
+        self.entry.tooltip_text_set(entry)
+        if not button:
+            button = entry
+        self.button.tooltip_text_set(button)

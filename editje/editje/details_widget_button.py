@@ -47,3 +47,6 @@ class WidgetButton(Widget):
         self.callback_add("clicked", cb)
 
     clicked = property(fset=_clicked_cb_set)
+
+    def tooltip_set(self, label):
+        self.obj.tooltip_text_set(label)
