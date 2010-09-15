@@ -97,15 +97,11 @@ if [[ ! -z "${E_CYTHON}" ]]; then
 fi
 
 if [[ ! -z "${E_PYTHON}" ]]; then
-	WANT_AUTOTOOLS="no"
-	WANT_AUTOCONF="no"
-	WANT_AUTOMAKE="no"
-
 	E_NO_VISIBILITY="1"
 
 	PYTHON_DEPEND="*:2.4"
 
-	inherit python distutils
+	inherit python
 fi
 
 if [[ ${WANT_AUTOTOOLS} == "yes" ]] ; then
@@ -212,9 +208,7 @@ efl_src_prepare() {
 
 	[[ -s gendoc ]] && chmod a+rx gendoc
 
-	if [[ -z "${E_PYTHON}" ]]; then
-		if [[ -e configure.ac ]] && \
-			[[ "${WANT_AUTOTOOLS}" == "yes" ]]; then
+	if [[ -e configure.ac ]]; then
 
 			export SVN_REPO_PATH="$ESVN_WC_PATH"
 
@@ -254,7 +248,6 @@ efl_src_prepare() {
 
 		epunt_cxx
 #		elibtoolize
-	fi
 }
 
 # @FUNCTION: efl_src_configure
@@ -262,7 +255,6 @@ efl_src_prepare() {
 # @DESCRIPTION:
 # efl's default src_configure
 efl_src_configure() {
-	if [[ -z "${E_PYTHON}" ]]; then
 		export SVN_REPO_PATH="$ESVN_WC_PATH"
 		if [[ -x ${ECONF_SOURCE:-.}/configure ]]; then
 			has nls "${IUSE}" && MY_ECONF="${MY_ECONF} $(use_enable nls)"
@@ -271,7 +263,6 @@ efl_src_configure() {
 
 			econf ${MY_ECONF} || efl_die "configure failed"
 		fi
-	fi
 }
 
 # @FUNCTION: efl_src_compile
@@ -279,22 +270,10 @@ efl_src_configure() {
 # @DESCRIPTION:
 # efl's default src_compile
 efl_src_compile() {
+	emake || efl_die "emake failed"
 	if [[ -z "${E_PYTHON}" ]]; then
-		emake || efl_die "emake failed"
-
 		if has doc "${IUSE}" && use doc; then
-			if [[ -x ./gendoc ]]; then
-				./gendoc || efl_die "gendoc failed"
-			else
-				emake doc
-			fi
-		fi
-	else
-		distutils_src_compile
-		if has doc "${IUSE}" && use doc; then
-			if [[ -x ./gendoc ]]; then
-				./gendoc || efl_die "gendoc failed"
-			fi
+			emake doc
 		fi
 	fi
 }
@@ -316,8 +295,6 @@ efl_src_test() {
 # @DESCRIPTION:
 # efl's default src_install
 efl_src_install() {
-	if [[ -z "${E_PYTHON}" ]]; then
-
 		emake install DESTDIR="${D}" || efl_die
 
 		find "${D}" -name '*.la' -delete
@@ -325,9 +302,8 @@ efl_src_install() {
 		for d in AUTHORS ChangeLog NEWS README TODO ${EDOCS}; do
 			[[ -f ${d} ]] && dodoc ${d}
 		done
-	else
-		distutils_src_install
 
+	if [[ -n ${E_PYTHON} ]];then
 		if has examples "${IUSE}" && use examples; then
 			insinto /usr/share/doc/${PF}
 			doins -r examples
