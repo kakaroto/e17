@@ -8,11 +8,11 @@ EPYDOC = @EPYDOC@
 
 # python-elementary still does not export any public cpython/cython interfaces
 # pyincelementarydir = $(includedir)/@PACKAGE@/elementary
-# c_elementary_includes = \
-# 	include/elementary/c_elementary.pxd \
-# 	include/elementary/__init__.py
-# pyincelementary_DATA = $(c_elementary_includes) \
-# 	elementary/elementary.c_elementary.h
+# pyincelementary_DATA = ... elementary/elementary.c_elementary.h ...
+c_elementary_includes = \
+	include/elementary/c_elementary.pxd \
+	include/elementary/__init__.py
+
 
 c_elementary_deps = \
 	elementary/elementary.c_elementary_anchorblock.pxi \
@@ -136,7 +136,7 @@ EXTRA_DIST = \
 	python-elementary.pc \
 	python-elementary.pc.in \
 	$(cython_ins) $(cython_outs) \
-	$(pyincelementary_DATA) \
+	$(c_elementary_includes) \
 	$(c_elementary_deps) \
 	$(examples_files) \
 	$(examples_images_files) \
