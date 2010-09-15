@@ -7,25 +7,29 @@ REQUIREMENTS
  * Ecore >= 1.0.0        (indirect, E_DBus dependency)
  * D-Bus >= 0.62         (indirect, E_DBus dependency)
  * Python >= 2.4
- * Python-setuptools >= 0.6_rc9
 
 
 BUILDING AND INSTALLING
 =======================
 
-This package uses setuptools, so execute:
+This package uses automake, so execute:
 
 Build::
 
-        python setup.py build
+        ./configure --prefix=/usr
+        make all
 
 Install::
 
-        python setup.py install
+        make install
 
-You can choose where to install by using command options, see output
-of "python setup.py <command> --help", example:
+If you wish to install at alternative locations, then make sure to
+configure your PYTHONPATH to be able to access this location!
 
-        python setup.py install --help
+If you have Cython dependencies that are installed in alternative
+locations and want Cython to find them, please specify CYTHONFLAGS
+variable to ./configure.
 
-Options can also be set in file "setup.cfg".
+The discovery of dependencies is done with pkg-config, thus all your
+packages must be properly accessible with such tool. Ensure your
+PKG_CONFIG_PATH and PKG_CONFIG_LIBDIR (cross-compiles) are configured!
