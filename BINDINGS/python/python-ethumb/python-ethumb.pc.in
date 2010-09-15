@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+datarootdir=@datarootdir@
+datadir=@datarootdir@/@PACKAGE@
+
+Name: @PACKAGE@
+Description: Python bindings for Ethumb
+@pkgconfig_requires_private@: @pkgconfig_ethumb_requires_libs@
+Version: @VERSION@
