@@ -1,13 +1,8 @@
 <?php
 //******* SET THIS TO YOUR e/devs DIRECTORY  ********
 $cvs_dir="/var/www/web/devs";
+$geocache_file="/tmp/e_devs_map_geocache";
 //***************************************************
-
-if (!is_dir($cvs_dir))
-{
-   echo "<div align=center><b>ERROR: can't find cvs devs directory path.</b></div>";
-   exit();
-}
 
 function
 GetValueFromInfoFile($field, $InfoFile)
@@ -15,6 +10,78 @@ GetValueFromInfoFile($field, $InfoFile)
    if ($i=eregi("$field:[ \t]*([ ,@.:/~()!a-zA-Z0-9_-]*)", "$InfoFile", $result))
       return trim($result[1]);
    else return "";
+}
+
+function
+GeoCoordsQuery($address)
+{
+   global $geocache_file;
+   global $geocache;
+
+   $coords['lat'] = 0;
+   $coords['lon'] = 0;
+
+   /* check if address is already in the geocache */
+   if (array_key_exists($address, $geocache))
+   {
+      $coords['lat'] = $geocache[$address][0];
+      $coords['lon'] = $geocache[$address][1];
+      if (isset($_REQUEST["debug"]))
+         print "CACHED: $address COORDS: $coords[lat] $coords[lon]<br><br>";
+      return $coords;
+   }
+
+   /* or perform the heavy query */
+   if (isset($_REQUEST["debug"])) print "GEOCODING: $address<br>";
+   $url = "http://maps.google.com/maps/api/geocode/json?sensor=false&address=".
+          rawurlencode($address);
+   if($result = file_get_contents($url))
+   {
+      $result_parts = json_decode($result);
+      if($result_parts->status == "OK")
+      {
+         $coords['lat'] = $result_parts->results[0]->geometry->location->lat;
+         $coords['lon'] = $result_parts->results[0]->geometry->location->lng;
+         if (isset($_REQUEST["debug"]))
+            print "RES: $coords[lat]   $coords[lon]<br><br>";
+
+         /* store the result in the cache */
+         $line = "$address=$coords[lat]|$coords[lon]\n";
+         file_put_contents($geocache_file, $line, FILE_APPEND);
+      }
+      elseif (isset($_REQUEST["debug"]))
+         print "<font color=red>ERR: $result_parts->status </font><br><br>";
+   }
+   return $coords;
+}
+
+/* check cvs dir */
+if (!is_dir($cvs_dir))
+{
+   echo "<div align=center><b>ERROR: can't find cvs devs directory path.</b></div>";
+   exit();
+}
+
+/* load cache file if present */
+$geocache = array();
+if (file_exists($geocache_file))
+{
+   $blob = file_get_contents($geocache_file);
+   $lines = explode("\n", $blob);
+
+   /* parse lines */
+   foreach ($lines as $line)
+   {
+      /* line format: 'Sant Cugat, Barcelona, Spain=41.4718638|2.0821392' */
+      $fields = explode("=", $line);
+      $geocache[$fields[0]] = explode("|", $fields[1]);
+   }
+
+   /* debug: print the whole cache */
+   if (isset($_REQUEST["debug"]))
+   {
+      print "<b>GEOCACHE:</b><pre>"; print_r($geocache); print "</pre><hr>";
+   }
 }
 
 /* build a list of directory that contain the info.txt file */
@@ -28,6 +95,8 @@ if ($dh = opendir($cvs_dir))
 
 /* build the devs array, populated by parsing all the info.txt files */
 $devs = array();
+$tot_geodata = 0;
+$tot_guessed = 0;
 foreach ($dirs as $dir)
 {
    /* get user info from info.txt file */
@@ -36,11 +105,11 @@ foreach ($dirs as $dir)
    $Location = GetValueFromInfoFile("Location", $txt);
    $IRC =  GetValueFromInfoFile("IRC Nick", $txt);
 
-   /* skip user without a nickname*/
+   /* skip user without a nickname */
    if (!$IRC OR $IRC == "N/A")
       continue;
 
-   /* parse GeoData fields*/
+   /* parse the GeoData fields */
    $lat = $lon = 0;
    $Coords = explode(" ",$Coords);
    if($Coords && (count($Coords) == 2))
@@ -48,10 +117,24 @@ foreach ($dirs as $dir)
       $tot_geodata ++;
       $lat = floatval($Coords[0]);
       $lon = floatval($Coords[1]);
+      $icon = "http://labs.google.com/ridefinder/images/mm_20_green.png";
    }
 
-   /* skip users without a 'GeoData' or 'Location' field */
-   if (!($lat AND $lon) AND !($Location))
+   /* or use the geocoder to guess the position */
+   if (!($lat AND $lon) AND $Location)
+   {
+      $coords = GeoCoordsQuery($Location);
+      if ($coords["lat"] AND $coords["lon"])
+      {
+         $tot_guessed ++;
+         $lat = $coords["lat"];
+         $lon = $coords["lon"];
+         $icon = "http://labs.google.com/ridefinder/images/mm_20_red.png";
+      }
+   }
+   
+   /* skip users without a position */
+   if (!($lat AND $lon))
       continue;
 
    /* create an array entry for this developer */
@@ -69,37 +152,29 @@ foreach ($dirs as $dir)
    $dev["Group"] = GetValueFromInfoFile("Group", $txt);
    $dev["Platform"] = GetValueFromInfoFile("Platform", $txt );
 
-   /* choose the user icon (icon-map.png, green or red) */ 
+   /* check the user icon (icon-map.png, green or red) */ 
    if (file_exists("$cvs_dir/$dir/icon-map.png"))
-      $dev["Icon"] =
-         "http://download.enlightenment.org/devs/$dir/icon-map.png";
-   elseif ($lat AND $lon)
-      $dev["Icon"] =
-         "http://labs.google.com/ridefinder/images/mm_20_green.png";
+      $dev["Icon"] = "http://download.enlightenment.org/devs/$dir/icon-map.png";
    else
-      $dev["Icon"] =
-         "http://labs.google.com/ridefinder/images/mm_20_red.png";
+      $dev["Icon"] = $icon;
 
    /* check the user image (icon-med.png) */
    if (file_exists("$cvs_dir/$dir/icon-med.png"))
-      $dev["IconBig"] =
-         "http://download.enlightenment.org/devs/$dir/icon-med.png";
+      $dev["IconBig"] = "http://download.enlightenment.org/devs/$dir/icon-med.png";
    else
       $dev["IconBig"] = "";
 
    $devs[] = $dev;
 }
 
-/* sort the devs array by IRC */
+/* sort the devs array by nickname */
 function sort_by_irc($a, $b) { return strcasecmp($a["IRC"], $b["IRC"]); }
 usort($devs, "sort_by_irc");
 
 /* debug: print the whole devs array */
 if (isset($_REQUEST["debug"]))
 {
-   print "<pre>";
-   print_r($devs);
-   print "</pre>";
+   print "<hr><b>DEVS ARRAY</b><pre>"; print_r($devs); print "</pre><hr>";
 }
 
 /******************************************************************************/
@@ -136,14 +211,16 @@ you wish.
 </p>
 
 <div id="coords">Coords:</div>
-<div  id="totals">Total devs: 0 (0 guessed)</div>
+<div  id="totals">
+   Total devs: <?=$tot_geodata+$tot_guessed?> (<?=$tot_guessed?> guessed)
+</div>
 <table id="map_table" border=0>
    <tr>
       <td><div id="sidebar"></div></td>
       <td width="100%"><div id="map_canvas"></div></td>
    </tr>
 </table>
-<br><br><br>
+<br><br>
 
 
 <script type="text/javascript">
@@ -156,14 +233,10 @@ var map = new google.maps.Map(canvas, {
       mapTypeId: google.maps.MapTypeId.SATELLITE
     })
 var infowin = new google.maps.InfoWindow()
-var geocoder = new google.maps.Geocoder()
-var tot_geodata = 0
-var tot_location = 0
-var tot_error = 0
 
 /* on mouse-move update the coords div */
 google.maps.event.addListener(map, 'mousemove', function(event) {
-      update_lat_lon(event.latLng);
+      update_coords(event.latLng);
    });
 
 /* Place all the markers (from the php array)*/
@@ -183,14 +256,14 @@ create_dev_marker(lat, lon, IRC, Location, Icon, IconBig, Name, Email, WWW,
    /* set icons sizes */
    if (Icon.match("icon-map.png$") == "icon-map.png")
       var icon = new google.maps.MarkerImage(Icon,
-         new google.maps.Size(22, 29),  // icon size
-         new google.maps.Point(0,0),    // icon origin point
+         new google.maps.Size(22, 29),   // icon size
+         new google.maps.Point(0,0),     // icon origin point
          new google.maps.Point(11, 29))  // icon anchor point
    else
       var icon = new google.maps.MarkerImage(Icon,
-         new google.maps.Size(12, 20),  // icon size
-         new google.maps.Point(0,0),    // icon origin point
-         new google.maps.Point(6, 20))  // icon anchor point
+         new google.maps.Size(12, 20),   // icon size
+         new google.maps.Point(0,0),     // icon origin point
+         new google.maps.Point(6, 20))   // icon anchor point
  
    var shadow = new google.maps.MarkerImage(
          'http://labs.google.com/ridefinder/images/mm_20_shadow.png',
@@ -218,53 +291,11 @@ create_dev_marker(lat, lon, IRC, Location, Icon, IconBig, Name, Email, WWW,
    html += '</td></tr></table>'
    html += '</div>'
 
-   /* create the marker from the GeoData field */
+   /* create the marker */
    if (lat != 0 && lon != 0)
    {
       var latlng = new google.maps.LatLng(lat, lon)
-      tot_geodata ++
-      update_totals()
-      create_dev_marker_real(false, latlng, icon, shadow,IRC, Location, html)
-   }
-   else if (Location)
-   {
-      /* no, geodata, use google geocoder to guess the position */
-      geocoder.geocode({ 'address': Location }, function(results, status) {
-         if (status == google.maps.GeocoderStatus.OK)
-         {
-            var latlng = results[0].geometry.location
-            tot_location ++
-            create_dev_marker_real(true, latlng, icon, shadow, IRC, Location, html)
-            update_totals()
-         }
-         else
-         {
-            //alert ("ERROR: " + status)
-            tot_error++
-         }
-      })
-
-      /* use static HTTP geocoder, it has less limits than the js API */
-      /*var url = 'http://maps.google.com/maps/api/geocode/json?address=milano,italia&sensor=false'
-      var my_JSON_object = {}; 
-      var http_request = new XMLHttpRequest();
-      http_request.open( "GET", url, true );
-      http_request.onreadystatechange = function () {
-            if (http_request.readyState == 4 && http_request.status == 200)
-            {
-               my_JSON_object = JSON.parse( http_request.responseText );
-               alert("DONE")
-            }
-         };
-      http_request.send();*/
-   }
-   update_totals()
-}
-
-function
-create_dev_marker_real(guessed, latlng, icon, shadow, IRC, Location, html)
-{
-   var marker = new google.maps.Marker({
+      var marker = new google.maps.Marker({
          position: latlng,
          title: IRC,
          map: map,
@@ -272,11 +303,14 @@ create_dev_marker_real(guessed, latlng, icon, shadow, IRC, Location, html)
          shadow: shadow
        })
 
-   google.maps.event.addListener(marker, 'click', function() {
-         show_infowin(marker, html)
-       })
+      /* on marker click show the infowin */
+      google.maps.event.addListener(marker, 'click', function() {
+            show_infowin(marker, html)
+         })
 
-   sidebar_add_entry(IRC, marker, html)
+      /* add the marker to the sidebar list */
+      sidebar_add_entry(IRC, marker, html)
+   }
 }
 
 function
@@ -293,24 +327,15 @@ sidebar_add_entry(IRC, marker, html)
    newlink.onclick = function() { show_infowin(marker, html); return false; }
    newlink.innerHTML = IRC
    newlink.setAttribute('href', '#');
-   var sidebar = document.getElementById("sidebar")
-   sidebar.appendChild(newlink)
+   document.getElementById("sidebar").appendChild(newlink)
 }
 
 function
-update_lat_lon(latLng)
+update_coords(latLng)
 {
    var coords_div = document.getElementById("coords")
    var coords = "Coords: " + latLng.toUrlValue(5)
    coords_div.innerHTML = coords.replace(",", " ")
-}
-
-function
-update_totals()
-{
-   var total = document.getElementById('totals')
-   total.innerHTML = 'Total devs: ' + (tot_geodata+tot_location) +
-                     ' (' + tot_location + ' guessed) [ERR: '+tot_error+']'
 }
 
 </script>
