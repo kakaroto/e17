@@ -212,7 +212,7 @@ $(top_builddir)/ecore/win32/ecore.win32.c_ecore_win32.c:
 $(top_builddir)/ecore/ecore.c_ecore.c $(top_builddir)/ecore/ecore.c_ecore.h $(top_builddir)/ecore/x/ecore.x.c_ecore_x.c $(top_builddir)/ecore/x/ecore.x.screensaver.c $(top_builddir)/ecore/imf/ecore.imf.c_ecore_imf.c $(top_builddir)/ecore/evas/ecore.evas.c_ecore_evas.c: Makefile
 	@echo "NOTE: No cython, using pre-generated ecore.c_ecore.[ch]"
 	@$(MKDIR_P) $(top_builddir)/ecore
-	$(AM_V_GEN)for f in $^; do if ! test -f $(top_srcdir)/$$f; then continue; elif cmp $(top_srcdir)/$$f $(top_dstdir)/$$f; then cp $(top_srcdir)/$$f $(top_builddir)/$$f; fi; done
+	$(AM_V_GEN)for f in $^; do if ! test -f $(top_srcdir)/$$f; then continue; elif ! cmp $(top_srcdir)/$$f $(top_srcdir)/$$f >/dev/null; then cp $(top_srcdir)/$$f $(top_builddir)/$$f; fi; done
 endif
 
 AM_CPPFLAGS = \

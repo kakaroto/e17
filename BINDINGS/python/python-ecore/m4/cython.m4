@@ -33,3 +33,45 @@ else
 fi
 ])
 
+dnl AM_CHECK_CYTHON_PRECOMPILED(FILE-LIST [, ACTION-IF-ALL [, ACTION-IF-NOT-ALL]])
+dnl given a list of files ending in .pyx (FILE-LIST), check if their .c
+dnl counterpart exists and is not older than the source.
+dnl    ACTION-IF-ALL is called only if no files failed the check and thus
+dnl       all pre-generated files are usable.
+dnl    ACTION-IF-NOT-ALL is called if some or all failed. If not provided,
+dnl       an error will be issued.
+AC_DEFUN([AM_CHECK_CYTHON_PRECOMPILED],
+[
+_to_check_list="$1"
+_failed_list=""
+_exists_list=""
+
+for inf in $_to_check_list; do
+    outf=`echo "$inf" | sed -e 's/^\(.*\)[.]pyx$/\1.c/'`
+    if test "$outf" = "$inf"; then
+       AC_MSG_WARN([File to check must end in .pyx, but got: $inf -- Skip])
+       continue
+    fi
+
+    AC_MSG_CHECKING([for pre-generated $outf for $inf])
+    if ! test -f "$outf"; then
+       _res=no
+       _failed_list="${_failed_list} $outf"
+    elif ! test "$outf" -nt "$inf"; then
+       _res="no (older)"
+       _failed_list="${_failed_list} $outf"
+    else
+       _res=yes
+       _exists_list="${_exists_list} $outf"
+    fi
+    AC_MSG_RESULT($_res)
+done
+
+if test -z "$_failed_list" -a -n "$_exists_list"; then
+   ifelse([$2], [], [:], [$2])
+else
+   ifelse([$3], [],
+   [AC_MSG_ERROR([Missing pre-generated files: $_failed_list])],
+   [$3])
+fi
+])

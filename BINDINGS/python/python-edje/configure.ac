@@ -68,20 +68,31 @@ AC_SUBST(pkgconfig_edje_requires_libs)
 PKG_CHECK_MODULES([EDJE], [$pkgconfig_edje_requires_libs])
 CYTHON_EDJE_INCLUDEDIR=`pkg-config --variable=includedir "python-evas >= ${python_evas_version}"`
 AC_SUBST(CYTHON_EDJE_INCLUDEDIR)
+wanted_cython_files="edje/edje.c_edje.pyx edje/edit/c_edit.pyx"
 
 AM_PATH_PYTHON(2.5)
 AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
 
 cython_required_version=0.13
 AM_CHECK_CYTHON([$cython_required_version], [:], [:])
-if test v_rev -gt 0 -a "x$CYTHON_FOUND" != "xyes"; then
-   if test -f "edje/edje.c_edje.c"; then
-      AC_MSG_WARN([Cannot find Cython>=${cython_required_version}, however found a pre-generated file. YOU MAY FIND PROBLEMS, USE A RELEASE TARBALL OR INSTALL CYHON>=${cython_required_version}])
+
+have_cython_precompiled=no
+AM_CHECK_CYTHON_PRECOMPILED([$wanted_cython_files],
+   [have_cython_precompiled=yes], [have_cython_precompiled=no])
+if test "x$CYTHON_FOUND" != "xyes"; then
+   if test v_rev -ne 0; then
+      if test "x$have_cython_precompiled" = "xyes"; then
+         AC_MSG_WARN([Cannot find Cython>=${cython_required_version}, however found a pre-generated file. YOU MAY FIND PROBLEMS, USE A RELEASE TARBALL OR INSTALL CYHON>=${cython_required_version}])
+      else
+         AC_MSG_ERROR([Cannot find Cython>=${cython_required_version}, and not a release build])
+      fi
    else
-      AC_MSG_ERROR([Cannot find Cython>=${cython_required_version}, and not a release build])
+      if test "x$have_cython_precompiled" = "xyes"; then
+         AC_MSG_NOTICE([Using pre-generated files from release tarball. Install Cython>=${cython_required_version} if you want to re-generate them.])
+      else
+         AC_MSG_ERROR([PACKAGING ERROR RELEASE BUILD WITHOUT PRE-GENERATED FILES])
+      fi
    fi
-elif test v_rev -eq 0 -a "x$CYTHON_FOUND" != "xyes"; then
-  AC_MSG_NOTICE([Using pre-generated files from release tarball. Install Cython>=${cython_required_version} if you want to re-generate them.])
 fi
 AM_CONDITIONAL(HAVE_CYTHON, [test "x$CYTHON_FOUND" = "xyes"])
 

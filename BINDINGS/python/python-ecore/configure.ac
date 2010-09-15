@@ -65,6 +65,7 @@ AC_SUBST(pkgconfig_requires_private)
 pkgconfig_ecore_requires_libs="ecore >= 1.0.0"
 AC_SUBST(pkgconfig_ecore_requires_libs)
 PKG_CHECK_MODULES([ECORE], [$pkgconfig_ecore_requires_libs])
+wanted_cython_files="ecore/ecore.c_ecore.pyx"
 
 have_ecore_x="no"
 want_ecore_x="auto"
@@ -86,6 +87,9 @@ else
 fi
 if test "x$want_ecore_x" = "xyes" -a "x$have_ecore_x" = "xno"; then
     AC_MSG_ERROR([ecore-x support requested, but not found by pkg-config: $pkgconfig_ecore_x_requires_libs])
+fi
+if test "x$want_ecore_x" != "xno" -a "x${have_ecore_x}" = "xyes"; then
+   wanted_cython_files="${wanted_cython_files} ecore/x/ecore.x.c_ecore_x.pyx ecore/x/ecore.x.screensaver.pyx"
 fi
 AM_CONDITIONAL(WANT_ECORE_X,
    [test "x$want_ecore_x" != "xno" -a "x${have_ecore_x}" = "xyes"])
@@ -110,6 +114,9 @@ fi
 if test "x$want_ecore_imf" = "xyes" -a "x$have_ecore_imf" = "xno"; then
     AC_MSG_ERROR([ecore-imf support requested, but not found by pkg-config: $pkgconfig_ecore_imf_requires_libs])
 fi
+if test "x$want_ecore_imf" != "xno" -a "x${have_ecore_imf}" = "xyes"; then
+   wanted_cython_files="${wanted_cython_files} ecore/imf/ecore.imf.c_ecore_imf.pyx"
+fi
 AM_CONDITIONAL(WANT_ECORE_IMF,
    [test "x$want_ecore_imf" != "xno" -a "x${have_ecore_imf}" = "xyes"])
 
@@ -132,6 +139,9 @@ else
 fi
 if test "x$want_ecore_win32" = "xyes" -a "x$have_ecore_win32" = "xno"; then
     AC_MSG_ERROR([ecore-win32 support requested, but not found by pkg-config: $pkgconfig_ecore_win32_requires_libs])
+fi
+if test "x$want_ecore_win32" != "xno" -a "x${have_ecore_win32}" = "xyes"; then
+   wanted_cython_files="${wanted_cython_files} ecore/win32/ecore.win32.c_ecore_win32.pyx"
 fi
 AM_CONDITIONAL(WANT_ECORE_WIN32,
    [test "x$want_ecore_win32" != "xno" -a "x${have_ecore_win32}" = "xyes"])
@@ -157,6 +167,9 @@ fi
 if test "x$want_ecore_evas" = "xyes" -a "x$have_ecore_evas" = "xno"; then
     AC_MSG_ERROR([ecore-evas support requested, but not found by pkg-config: $pkgconfig_ecore_evas_requires_libs])
 fi
+if test "x$want_ecore_evas" != "xno" -a "x${have_ecore_evas}" = "xyes"; then
+   wanted_cython_files="${wanted_cython_files} ecore/evas/ecore.evas.c_ecore_evas.pyx"
+fi
 AM_CONDITIONAL(WANT_ECORE_EVAS,
    [test "x$want_ecore_evas" != "xno" -a "x${have_ecore_evas}" = "xyes"])
 CYTHON_ECORE_EVAS_INCLUDEDIR=`pkg-config --variable=includedir "python-evas >= ${python_evas_version}"`
@@ -167,14 +180,24 @@ AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
 
 cython_required_version=0.13
 AM_CHECK_CYTHON([$cython_required_version], [:], [:])
-if test v_rev -gt 0 -a "x$CYTHON_FOUND" != "xyes"; then
-   if test -f "ecore/ecore.c_ecore.c"; then
-      AC_MSG_WARN([Cannot find Cython>=${cython_required_version}, however found a pre-generated file. YOU MAY FIND PROBLEMS, USE A RELEASE TARBALL OR INSTALL CYHON>=${cython_required_version}])
+
+have_cython_precompiled=no
+AM_CHECK_CYTHON_PRECOMPILED([$wanted_cython_files],
+   [have_cython_precompiled=yes], [have_cython_precompiled=no])
+if test "x$CYTHON_FOUND" != "xyes"; then
+   if test v_rev -ne 0; then
+      if test "x$have_cython_precompiled" = "xyes"; then
+         AC_MSG_WARN([Cannot find Cython>=${cython_required_version}, however found a pre-generated file. YOU MAY FIND PROBLEMS, USE A RELEASE TARBALL OR INSTALL CYHON>=${cython_required_version}])
+      else
+         AC_MSG_ERROR([Cannot find Cython>=${cython_required_version}, and not a release build])
+      fi
    else
-      AC_MSG_ERROR([Cannot find Cython>=${cython_required_version}, and not a release build])
+      if test "x$have_cython_precompiled" = "xyes"; then
+         AC_MSG_NOTICE([Using pre-generated files from release tarball. Install Cython>=${cython_required_version} if you want to re-generate them.])
+      else
+         AC_MSG_ERROR([PACKAGING ERROR RELEASE BUILD WITHOUT PRE-GENERATED FILES])
+      fi
    fi
-elif test v_rev -eq 0 -a "x$CYTHON_FOUND" != "xyes"; then
-  AC_MSG_NOTICE([Using pre-generated files from release tarball. Install Cython>=${cython_required_version} if you want to re-generate them.])
 fi
 AM_CONDITIONAL(HAVE_CYTHON, [test "x$CYTHON_FOUND" = "xyes"])
 
