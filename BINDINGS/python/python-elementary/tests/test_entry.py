@@ -115,55 +115,26 @@ def entry_scrolled_clicked(obj, it):
     win.resize_object_add(bx)
     bx.show()
 
-    sc = elementary.Scroller(win)
-    sc.content_min_limit(0, 1)
-    sc.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
-                  elementary.ELM_SCROLLER_POLICY_OFF)
-    sc.bounce_set(False, False)
-    sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
-    sc.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
-    bx.pack_end(sc)
-
-    en = elementary.Entry(win)
+    en = elementary.ScrolledEntry(win)
     en.single_line_set(True)
     en.entry_set("Disable entry")
     en.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
     en.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
     en.disabled_set(True)
-    sc.content_set(en)
+    bx.pack_end(en)
     en.show()
 
-    sc.show()
-
-    sc = elementary.Scroller(win)
-    sc.content_min_limit(0, 1)
-    sc.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
-                  elementary.ELM_SCROLLER_POLICY_OFF)
-    sc.bounce_set(False, False)
-    sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
-    sc.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
-    bx.pack_end(sc)
-
-    en = elementary.Entry(win)
+    en = elementary.ScrolledEntry(win)
     en.password_set(True)
+    en.single_line_set(True)
     en.entry_set("Access denied, give up!")
     en.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
     en.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
     en.disabled_set(True)
-    sc.content_set(en)
+    bx.pack_end(en)
     en.show()
 
-    sc.show()
-
-    sc = elementary.Scroller(win)
-    sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
-    sc.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
-    sc.policy_set(elementary.ELM_SCROLLER_POLICY_ON,
-                  elementary.ELM_SCROLLER_POLICY_ON)
-    sc.bounce_set(False, True)
-    bx.pack_end(sc)
-
-    en = elementary.Entry(win)
+    en = elementary.ScrolledEntry(win)
     #TODO
     #en.context_menu_item_add("Hello", None, elementary.ELM_ICON_NONE, None, None)
     #en.context_menu_item_add("World", None, elementary.ELM_ICON_NONE, None, None)
@@ -175,64 +146,33 @@ def entry_scrolled_clicked(obj, it):
     en.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     en.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     en.disabled_set(True)
-    sc.content_set(en)
+    bx.pack_end(en)
     en.show()
-
-    sc.show()
 
     sp = elementary.Separator(win)
     sp.horizontal_set(True)
     bx.pack_end(sp)
     sp.show()
 
-    sc = elementary.Scroller(win)
-    sc.content_min_limit(0, 1)
-    sc.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
-                  elementary.ELM_SCROLLER_POLICY_OFF)
-    sc.bounce_set(False, False)
-    sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
-    sc.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
-    bx.pack_end(sc)
-
-    en = elementary.Entry(win)
+    en = elementary.ScrolledEntry(win)
     en.single_line_set(True)
     en.entry_set("This is a single line")
     en.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
     en.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
     en.select_all()
-    sc.content_set(en)
+    bx.pack_end(en)
     en.show()
 
-    sc.show()
-
-    sc = elementary.Scroller(win)
-    sc.content_min_limit(0, 1)
-    sc.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
-                  elementary.ELM_SCROLLER_POLICY_OFF)
-    sc.bounce_set(False, False)
-    sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
-    sc.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
-    bx.pack_end(sc)
-
-    en = elementary.Entry(win)
+    en = elementary.ScrolledEntry(win)
     en.password_set(True)
+    en.single_line_set(True)
     en.entry_set("Password here")
     en.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
-    en.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
-    sc.content_set(en)
+    en.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
+    bx.pack_end(en)
     en.show()
 
-    sc.show()
-
-    sc = elementary.Scroller(win)
-    sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
-    sc.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
-    sc.policy_set(elementary.ELM_SCROLLER_POLICY_ON,
-                  elementary.ELM_SCROLLER_POLICY_ON)
-    sc.bounce_set(False, True)
-    bx.pack_end(sc)
-
-    en = elementary.Entry(win)
+    en = elementary.ScrolledEntry(win)
     en.entry_set("This is an entry widget in this window that<br>"
                 "uses markup <b>like this</> for styling and<br>"
                 "formatting <em>like this</>, as well as<br>"
@@ -243,10 +183,8 @@ def entry_scrolled_clicked(obj, it):
     en.callback_anchor_clicked_add(my_entry_anchor_test, en)
     en.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     en.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
-    sc.content_set(en)
+    bx.pack_end(en)
     en.show()
-
-    sc.show()
 
     bx2 = elementary.Box(win)
     bx2.horizontal_set(True)
