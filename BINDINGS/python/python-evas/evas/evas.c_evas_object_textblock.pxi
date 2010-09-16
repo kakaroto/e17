@@ -44,7 +44,6 @@ cdef public class Textblock(Object) [object PyEvasTextblock, type PyEvasTextbloc
         cdef char *s
         style = evas_object_textblock_style_get(self.obj)
         s = evas_textblock_style_get(style)
-        evas_textblock_style_free(style)
         if s != NULL:
             return s
 
