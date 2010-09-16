@@ -1330,7 +1330,7 @@ more_menu_prefs_list_create(More_Menu_Item *i, More_Menu_Preference *p)
 
    if (!list) return NULL;
    for (n_items = 0; list[n_items].title; n_items++);
-   if (!(mmi = calloc(n_items, sizeof(*mmi)))) return NULL;
+   if (!(mmi = calloc(n_items + 1, sizeof(*mmi)))) return NULL;
    if ((pref_get = p->pref_get)) preference = pref_get(prefs);
 
    for (item = 0; item < n_items; item++) {
