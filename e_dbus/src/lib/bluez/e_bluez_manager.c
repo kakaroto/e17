@@ -29,5 +29,6 @@ e_bluez_manager_default_adapter(E_DBus_Method_Return_Cb cb, void *data)
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    return e_bluez_element_call_full
-     (element, name, NULL, &element->_pending.properties_get, cb, data);
+             (element, name, NULL, &element->_pending.properties_get, cb, data);
 }
+

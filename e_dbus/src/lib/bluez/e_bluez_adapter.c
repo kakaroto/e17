@@ -9,12 +9,12 @@ e_bluez_adapter_get(const char *path)
 
    adapter = e_bluez_element_get(path);
    if (!adapter)
-     return NULL;
+      return NULL;
 
    if (!e_bluez_element_is_adapter(adapter))
      {
-	WRN("path '%s' is not a adapter!", path);
-	return NULL;
+        WRN("path '%s' is not a adapter!", path);
+        return NULL;
      }
 
    return adapter;
@@ -33,7 +33,7 @@ _device_found_callback(void *data, DBusMessage *msg)
    DBG("Device found %s", element->path);
 
    if (!_dbus_callback_check_and_init(msg, &itr, NULL))
-     return;
+      return;
 
    device = calloc(sizeof(E_Bluez_Device_Found), 1);
    if (!device)
@@ -45,23 +45,24 @@ _device_found_callback(void *data, DBusMessage *msg)
    t = dbus_message_iter_get_arg_type(&itr);
    if (!_dbus_iter_type_check(t, DBUS_TYPE_STRING))
      {
-	ERR("missing device name in DeviceFound");
-	return;
+        ERR("missing device name in DeviceFound");
+        return;
      }
+
    dbus_message_iter_get_basic(&itr, &name);
 
    dbus_message_iter_next(&itr);
    t = dbus_message_iter_get_arg_type(&itr);
    if (!_dbus_iter_type_check(t, DBUS_TYPE_ARRAY))
      {
-	ERR("missing array in DeviceFound");
-	return;
+        ERR("missing array in DeviceFound");
+        return;
      }
 
    value = e_bluez_element_iter_get_array(&itr, name);
 
    if (!value)
-     return;
+      return;
 
    device->name = eina_stringshare_add(name);
    device->adapter = element;
@@ -93,8 +94,8 @@ e_bluez_adapter_agent_register(E_Bluez_Element *element, const char *object_path
    EINA_SAFETY_ON_NULL_RETURN_VAL(object_path, 0);
 
    return e_bluez_element_call_with_path_and_string
-     (element, name, object_path, capability, NULL,
-      &element->_pending.agent_register, cb, data);
+             (element, name, object_path, capability, NULL,
+             &element->_pending.agent_register, cb, data);
 }
 
 /**
@@ -118,8 +119,8 @@ e_bluez_adapter_agent_unregister(E_Bluez_Element *element, const char *object_pa
    EINA_SAFETY_ON_NULL_RETURN_VAL(object_path, 0);
 
    return e_bluez_element_call_with_path
-     (element, name, object_path, NULL,
-      &element->_pending.agent_unregister, cb, data);
+             (element, name, object_path, NULL,
+             &element->_pending.agent_unregister, cb, data);
 }
 
 /**
@@ -143,7 +144,7 @@ e_bluez_adapter_address_get(const E_Bluez_Element *element, const char **address
    EINA_SAFETY_ON_NULL_RETURN_VAL(address, 0);
 
    return e_bluez_element_property_get_stringshared
-     (element, e_bluez_prop_address, NULL, address);
+             (element, e_bluez_prop_address, NULL, address);
 }
 
 /**
@@ -167,7 +168,7 @@ e_bluez_adapter_name_get(const E_Bluez_Element *element, const char **name)
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, 0);
 
    return e_bluez_element_property_get_stringshared
-     (element, e_bluez_prop_name, NULL, name);
+             (element, e_bluez_prop_name, NULL, name);
 }
 
 /**
@@ -189,7 +190,7 @@ e_bluez_adapter_name_set(E_Bluez_Element *element, const char *name, E_DBus_Meth
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    return e_bluez_element_property_set_full
-     (element, e_bluez_prop_name, DBUS_TYPE_STRING, name, cb, data);
+             (element, e_bluez_prop_name, DBUS_TYPE_STRING, name, cb, data);
 }
 
 /**
@@ -212,7 +213,7 @@ e_bluez_adapter_powered_get(const E_Bluez_Element *element, Eina_Bool *powered)
    EINA_SAFETY_ON_NULL_RETURN_VAL(powered, 0);
 
    return e_bluez_element_property_get_stringshared
-     (element, e_bluez_prop_powered, NULL, powered);
+             (element, e_bluez_prop_powered, NULL, powered);
 }
 
 /**
@@ -230,8 +231,8 @@ e_bluez_adapter_powered_set(E_Bluez_Element *element, Eina_Bool powered, E_DBus_
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    return e_bluez_element_property_set_full
-     (element, e_bluez_prop_powered, DBUS_TYPE_BOOLEAN,
-      &powered, cb, data);
+             (element, e_bluez_prop_powered, DBUS_TYPE_BOOLEAN,
+             &powered, cb, data);
 }
 
 /**
@@ -254,7 +255,7 @@ e_bluez_adapter_discoverable_get(const E_Bluez_Element *element, Eina_Bool *disc
    EINA_SAFETY_ON_NULL_RETURN_VAL(discoverable, 0);
 
    return e_bluez_element_property_get_stringshared
-     (element, e_bluez_prop_discoverable, NULL, discoverable);
+             (element, e_bluez_prop_discoverable, NULL, discoverable);
 }
 
 /**
@@ -272,8 +273,8 @@ e_bluez_adapter_discoverable_set(E_Bluez_Element *element, Eina_Bool discoverabl
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    return e_bluez_element_property_set_full
-     (element, e_bluez_prop_discoverable, DBUS_TYPE_BOOLEAN,
-      &discoverable, cb, data);
+             (element, e_bluez_prop_discoverable, DBUS_TYPE_BOOLEAN,
+             &discoverable, cb, data);
 }
 
 /**
@@ -296,7 +297,7 @@ e_bluez_adapter_discoverable_timeout_get(const E_Bluez_Element *element, unsigne
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(timeout, 0);
    return e_bluez_element_property_get_stringshared
-     (element, e_bluez_prop_discoverabletimeout, NULL, timeout);
+             (element, e_bluez_prop_discoverabletimeout, NULL, timeout);
 }
 
 /**
@@ -320,9 +321,10 @@ e_bluez_adapter_discoverable_timeout_set(E_Bluez_Element *element, unsigned int 
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    return e_bluez_element_property_set_full
-     (element, e_bluez_prop_discoverabletimeout, DBUS_TYPE_UINT32,
-      &timeout, cb, data);
+             (element, e_bluez_prop_discoverabletimeout, DBUS_TYPE_UINT32,
+             &timeout, cb, data);
 }
+
 /**
  * Get property "Discovering" value.
  *
@@ -343,7 +345,7 @@ e_bluez_adapter_discovering_get(const E_Bluez_Element *element, Eina_Bool *disco
    EINA_SAFETY_ON_NULL_RETURN_VAL(discovering, 0);
 
    return e_bluez_element_property_get_stringshared
-     (element, e_bluez_prop_discovering, NULL, discovering);
+             (element, e_bluez_prop_discovering, NULL, discovering);
 }
 
 /**
@@ -365,13 +367,13 @@ e_bluez_adapter_start_discovery(E_Bluez_Element *element, E_DBus_Method_Return_C
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
 
    element->device_found_handler =
-     e_dbus_signal_handler_add
-     (e_bluez_conn, e_bluez_system_bus_name_get(),
-      element->path, element->interface, "DeviceFound",
-      _device_found_callback, element);
+      e_dbus_signal_handler_add
+         (e_bluez_conn, e_bluez_system_bus_name_get(),
+         element->path, element->interface, "DeviceFound",
+         _device_found_callback, element);
 
    return e_bluez_element_call_full
-     (element, name, NULL, &element->_pending.start_discovery, cb, data);
+             (element, name, NULL, &element->_pending.start_discovery, cb, data);
 }
 
 /**
@@ -393,7 +395,7 @@ e_bluez_adapter_stop_discovery(E_Bluez_Element *element, E_DBus_Method_Return_Cb
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
 
    return e_bluez_element_call_full
-     (element, name, NULL, &element->_pending.stop_discovery, cb, data);
+             (element, name, NULL, &element->_pending.stop_discovery, cb, data);
 }
 
 /**
@@ -423,11 +425,11 @@ e_bluez_adapter_create_paired_device(E_Bluez_Element *element, const char *objec
    EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
 
    msg = dbus_message_new_method_call
-     (e_bluez_system_bus_name_get(), element->path, element->interface,
-      name);
+         (e_bluez_system_bus_name_get(), element->path, element->interface,
+         name);
 
    if (!msg)
-     return 0;
+      return 0;
 
    dbus_message_iter_init_append(msg, &itr);
    dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &device);
@@ -435,6 +437,7 @@ e_bluez_adapter_create_paired_device(E_Bluez_Element *element, const char *objec
    dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &capability);
 
    return e_bluez_element_message_send
-     (element, name, NULL, msg,
-      &element->_pending.create_paired_device, cb, data);
+             (element, name, NULL, msg,
+             &element->_pending.create_paired_device, cb, data);
 }
+

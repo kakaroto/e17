@@ -4,51 +4,51 @@
 
 static Eina_Hash *elements = NULL;
 
-typedef struct _E_Bluez_Element_Pending E_Bluez_Element_Pending;
-typedef struct _E_Bluez_Element_Call_Data E_Bluez_Element_Call_Data;
-typedef struct _E_Bluez_Element_Property E_Bluez_Element_Property;
-typedef struct _E_Bluez_Element_Listener E_Bluez_Element_Listener;
+typedef struct _E_Bluez_Element_Pending     E_Bluez_Element_Pending;
+typedef struct _E_Bluez_Element_Call_Data   E_Bluez_Element_Call_Data;
+typedef struct _E_Bluez_Element_Property    E_Bluez_Element_Property;
+typedef struct _E_Bluez_Element_Listener    E_Bluez_Element_Listener;
 
 struct _E_Bluez_Element_Pending
 {
-   EINA_INLIST;
-   DBusPendingCall *pending;
-   void *data;
+                           EINA_INLIST;
+   DBusPendingCall        *pending;
+   void                   *data;
    E_DBus_Method_Return_Cb user_cb;
-   void *user_data;
+   void                   *user_data;
 };
 
 struct _E_Bluez_Element_Call_Data
 {
-   E_Bluez_Element *element;
-   E_DBus_Method_Return_Cb cb;
+   E_Bluez_Element         *element;
+   E_DBus_Method_Return_Cb  cb;
    E_Bluez_Element_Pending *pending;
-   Eina_Inlist **p_list;
+   Eina_Inlist            **p_list;
 };
 
 struct _E_Bluez_Element_Property
 {
-   EINA_INLIST;
+               EINA_INLIST;
    const char *name;
-   int type;
+   int         type;
    union {
-      Eina_Bool boolean;
-      const char *str;
+      Eina_Bool      boolean;
+      const char    *str;
       unsigned short u16;
-      unsigned int u32;
-      unsigned char byte;
-      const char *path;
-      void *variant;
+      unsigned int   u32;
+      unsigned char  byte;
+      const char    *path;
+      void          *variant;
       E_Bluez_Array *array;
    } value;
 };
 
 struct _E_Bluez_Element_Listener
 {
-   EINA_INLIST;
-   void (*cb)(void *data, const E_Bluez_Element *element);
+         EINA_INLIST;
+   void  (*cb)(void *data, const E_Bluez_Element *element);
    void *data;
-   void (*free_data)(void *data);
+   void  (*free_data)(void *data);
 };
 
 static void
@@ -63,7 +63,7 @@ e_bluez_element_event_add(int event_type, E_Bluez_Element *element)
 {
    e_bluez_element_ref(element);
    ecore_event_add
-     (event_type, element, _e_bluez_element_event_no_free, element);
+      (event_type, element, _e_bluez_element_event_no_free, element);
 }
 
 static void
@@ -76,10 +76,10 @@ e_bluez_element_call_dispatch_and_free(void *d, DBusMessage *msg, DBusError *err
    pending->pending = NULL;
 
    if (data->cb)
-     data->cb(data->element, msg, err);
+      data->cb(data->element, msg, err);
 
    if (pending->user_cb)
-     pending->user_cb(pending->user_data, msg, err);
+      pending->user_cb(pending->user_data, msg, err);
 
    pending->data = NULL;
    *data->p_list = eina_inlist_remove(*data->p_list, EINA_INLIST_GET(pending));
@@ -92,15 +92,15 @@ e_bluez_element_pending_cancel_and_free(Eina_Inlist **pending)
 {
    while (*pending)
      {
-	E_Bluez_Element_Pending *p = (E_Bluez_Element_Pending *)*pending;
-	DBusError err;
+        E_Bluez_Element_Pending *p = (E_Bluez_Element_Pending *)*pending;
+        DBusError err;
 
-	dbus_pending_call_cancel(p->pending);
+        dbus_pending_call_cancel(p->pending);
 
-	dbus_error_init(&err);
-	dbus_set_error(&err, "Canceled", "Pending method call was canceled.");
-	e_bluez_element_call_dispatch_and_free(p->data, NULL, &err);
-	dbus_error_free(&err);
+        dbus_error_init(&err);
+        dbus_set_error(&err, "Canceled", "Pending method call was canceled.");
+        e_bluez_element_call_dispatch_and_free(p->data, NULL, &err);
+        dbus_error_free(&err);
      }
 }
 
@@ -111,20 +111,21 @@ e_bluez_element_listener_add(E_Bluez_Element *element, void (*cb)(void *data, co
 
    if (!element)
      {
-	ERR("safety check failed: element == NULL");
-	goto error;
+        ERR("safety check failed: element == NULL");
+        goto error;
      }
+
    if (!cb)
      {
-	ERR("safety check failed: cb == NULL");
-	goto error;
+        ERR("safety check failed: cb == NULL");
+        goto error;
      }
 
    l = malloc(sizeof(*l));
    if (!l)
      {
-	ERR("could not allocate E_Bluez_Element_Listener");
-	goto error;
+        ERR("could not allocate E_Bluez_Element_Listener");
+        goto error;
      }
 
    l->cb = cb;
@@ -132,13 +133,13 @@ e_bluez_element_listener_add(E_Bluez_Element *element, void (*cb)(void *data, co
    l->free_data = free_data;
 
    element->_listeners = eina_inlist_append
-     (element->_listeners, EINA_INLIST_GET(l));
+         (element->_listeners, EINA_INLIST_GET(l));
 
    return;
 
- error:
+error:
    if (free_data)
-     free_data((void *)data);
+      free_data((void *)data);
 }
 
 void
@@ -150,14 +151,16 @@ e_bluez_element_listener_del(E_Bluez_Element *element, void (*cb)(void *data, co
    EINA_SAFETY_ON_NULL_RETURN(cb);
 
    EINA_INLIST_FOREACH(element->_listeners, l)
-     if ((l->cb == cb) && (l->data == data))
-       {
-	  element->_listeners = eina_inlist_remove
-	    (element->_listeners, EINA_INLIST_GET(l));
-	  if (l->free_data) l->free_data(l->data);
-	  free(l);
-	  return;
-       }
+   if ((l->cb == cb) && (l->data == data))
+     {
+        element->_listeners = eina_inlist_remove
+              (element->_listeners, EINA_INLIST_GET(l));
+        if (l->free_data)
+           l->free_data(l->data);
+
+        free(l);
+        return;
+     }
 }
 
 static void
@@ -172,20 +175,20 @@ _e_bluez_element_listeners_call_do(E_Bluez_Element *element)
     */
    count = eina_inlist_count(element->_listeners);
    if (count < 1)
-     goto end;
+      goto end;
 
    shadow = alloca(sizeof(*shadow) * count);
    if (!shadow)
-     goto end;
+      goto end;
 
    i = 0;
    EINA_INLIST_FOREACH(element->_listeners, l)
-     shadow[i++] = l;
+   shadow[i++] = l;
 
    for (i = 0; i < count; i++)
-     shadow[i]->cb(shadow[i]->data, element);
+      shadow[i]->cb(shadow[i]->data, element);
 
- end:
+end:
    e_bluez_element_event_add(E_BLUEZ_EVENT_ELEMENT_UPDATED, element);
 }
 
@@ -202,14 +205,15 @@ static void
 _e_bluez_element_listeners_call(E_Bluez_Element *element)
 {
    if (element->_idler.changed)
-     return;
+      return;
+
    element->_idler.changed = ecore_idler_add
-     (_e_bluez_element_listeners_call_idler, element);
+         (_e_bluez_element_listeners_call_idler, element);
 }
 
 /***********************************************************************
- * Property
- ***********************************************************************/
+* Property
+***********************************************************************/
 
 static void
 _e_bluez_element_dict_entry_free(E_Bluez_Element_Dict_Entry *entry)
@@ -221,16 +225,19 @@ _e_bluez_element_dict_entry_free(E_Bluez_Element_Dict_Entry *entry)
       case DBUS_TYPE_INT16:
       case DBUS_TYPE_UINT16:
       case DBUS_TYPE_UINT32:
-	 break;
+         break;
+
       case DBUS_TYPE_OBJECT_PATH:
-	 eina_stringshare_del(entry->value.path);
-	 break;
+         eina_stringshare_del(entry->value.path);
+         break;
+
       case DBUS_TYPE_STRING:
-	 eina_stringshare_del(entry->value.str);
-	 break;
+         eina_stringshare_del(entry->value.str);
+         break;
+
       default:
-	 ERR("don't know how to free dict entry '%s' of type %c (%d)",
-	     entry->name, entry->type, entry->type);
+         ERR("don't know how to free dict entry '%s' of type %c (%d)",
+             entry->name, entry->type, entry->type);
      }
 
    eina_stringshare_del(entry->name);
@@ -251,26 +258,26 @@ _e_bluez_element_dict_entry_new(DBusMessageIter *itr)
    t = dbus_message_iter_get_arg_type(&e_itr);
    if (!_dbus_iter_type_check(t, DBUS_TYPE_STRING))
      {
-	ERR("invalid format for dict entry. first type not a string: %c (%d)",
-	    t, t);
-	return NULL;
+        ERR("invalid format for dict entry. first type not a string: %c (%d)",
+            t, t);
+        return NULL;
      }
 
    dbus_message_iter_get_basic(&e_itr, &key);
    if (!key || !key[0])
      {
-	ERR("invalid format for dict entry. no key.");
-	return NULL;
+        ERR("invalid format for dict entry. no key.");
+        return NULL;
      }
 
    dbus_message_iter_next(&e_itr);
    t = dbus_message_iter_get_arg_type(&e_itr);
    if (!_dbus_iter_type_check(t, DBUS_TYPE_VARIANT))
      {
-	ERR("invalid format for dict entry '%s'. "
-	    "second type not a variant: %c (%d)",
-	    key, t, t);
-	return NULL;
+        ERR("invalid format for dict entry '%s'. "
+            "second type not a variant: %c (%d)",
+            key, t, t);
+        return NULL;
      }
 
    dbus_message_iter_recurse(&e_itr, &v_itr);
@@ -278,47 +285,54 @@ _e_bluez_element_dict_entry_new(DBusMessageIter *itr)
    t = dbus_message_iter_get_arg_type(&v_itr);
    if ((t == DBUS_TYPE_INVALID) || (t == DBUS_TYPE_ARRAY))
      {
-	ERR("invalid type for dict value for entry '%s': %c (%d)",
-	    key, t, t);
-	return NULL;
+        ERR("invalid type for dict value for entry '%s': %c (%d)",
+            key, t, t);
+        return NULL;
      }
 
    entry = calloc(1, sizeof(*entry));
    if (!entry)
      {
-	ERR("could not allocate memory for dict entry.");
-	return NULL;
+        ERR("could not allocate memory for dict entry.");
+        return NULL;
      }
 
    dbus_message_iter_get_basic(&v_itr, &value);
    switch (t)
      {
       case DBUS_TYPE_BOOLEAN:
-	 entry->value.boolean = (Eina_Bool)(long)value;
-	 break;
+         entry->value.boolean = (Eina_Bool)(long)value;
+         break;
+
       case DBUS_TYPE_BYTE:
-	 entry->value.byte = (unsigned char)(long)value;
-	 break;
+         entry->value.byte = (unsigned char)(long)value;
+         break;
+
       case DBUS_TYPE_INT16:
-	 entry->value.i16 = (short)(long)value;
-	 break;
+         entry->value.i16 = (short)(long)value;
+         break;
+
       case DBUS_TYPE_UINT16:
-	 entry->value.u16 = (unsigned short)(long)value;
-	 break;
+         entry->value.u16 = (unsigned short)(long)value;
+         break;
+
       case DBUS_TYPE_UINT32:
-	 entry->value.u32 = (unsigned int)(long)value;
-	 break;
+         entry->value.u32 = (unsigned int)(long)value;
+         break;
+
       case DBUS_TYPE_STRING:
-	 entry->value.str = eina_stringshare_add(value);
-	 break;
+         entry->value.str = eina_stringshare_add(value);
+         break;
+
       case DBUS_TYPE_OBJECT_PATH:
-	 entry->value.path = eina_stringshare_add(value);
-	 break;
+         entry->value.path = eina_stringshare_add(value);
+         break;
+
       default:
-	 ERR("don't know how to create dict entry '%s' for of type %c (%d)",
-	     key, t, t);
-	 free(entry);
-	 return NULL;
+         ERR("don't know how to create dict entry '%s' for of type %c (%d)",
+             key, t, t);
+         free(entry);
+         return NULL;
      }
 
    entry->name = eina_stringshare_add(key);
@@ -334,8 +348,8 @@ e_bluez_element_array_dict_find_stringshared(const E_Bluez_Array *array, const c
    unsigned int i;
 
    EINA_ARRAY_ITER_NEXT(array->array, i, entry, iterator)
-     if (entry->name == key)
-       return entry;
+   if (entry->name == key)
+      return entry;
 
    return NULL;
 }
@@ -348,7 +362,7 @@ e_bluez_element_array_free(E_Bluez_Array *array, E_Bluez_Array *new __UNUSED__)
    void *item;
 
    if (!array)
-     return;
+      return;
 
    switch (array->type)
      {
@@ -357,23 +371,27 @@ e_bluez_element_array_free(E_Bluez_Array *array, E_Bluez_Array *new __UNUSED__)
       case DBUS_TYPE_INT16:
       case DBUS_TYPE_UINT16:
       case DBUS_TYPE_UINT32:
-	 break;
+         break;
+
       case DBUS_TYPE_OBJECT_PATH:
-	 EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
-	   eina_stringshare_del(item);
-	 break;
+         EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
+         eina_stringshare_del(item);
+         break;
+
       case DBUS_TYPE_STRING:
-	 EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
-	   eina_stringshare_del(item);
-	 break;
+         EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
+         eina_stringshare_del(item);
+         break;
+
       case DBUS_TYPE_DICT_ENTRY:
-	 EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
-	   _e_bluez_element_dict_entry_free(item);
-	 break;
+         EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
+         _e_bluez_element_dict_entry_free(item);
+         break;
+
       default:
-	 ERR("don't know how to free array of values of type %c (%d)",
-	     array->type, array->type);
-	 break;
+         ERR("don't know how to free array of values of type %c (%d)",
+             array->type, array->type);
+         break;
      }
    eina_array_free(array->array);
    free(array);
@@ -385,24 +403,29 @@ _e_bluez_element_property_value_free(E_Bluez_Element_Property *property)
    switch (property->type)
      {
       case 0:
-	 return;
+         return;
+
       case DBUS_TYPE_BOOLEAN:
       case DBUS_TYPE_BYTE:
       case DBUS_TYPE_UINT16:
       case DBUS_TYPE_UINT32:
-	 break;
+         break;
+
       case DBUS_TYPE_STRING:
-	 eina_stringshare_del(property->value.str);
-	 break;
+         eina_stringshare_del(property->value.str);
+         break;
+
       case DBUS_TYPE_OBJECT_PATH:
-	 eina_stringshare_del(property->value.path);
-	 break;
+         eina_stringshare_del(property->value.path);
+         break;
+
       case DBUS_TYPE_ARRAY:
-	 e_bluez_element_array_free(property->value.array, NULL);
-	 break;
+         e_bluez_element_array_free(property->value.array, NULL);
+         break;
+
       default:
-	 ERR("don't know how to free value of property type %c (%d)",
-	     property->type, property->type);
+         ERR("don't know how to free value of property type %c (%d)",
+             property->type, property->type);
      }
 }
 
@@ -418,19 +441,23 @@ _e_bluez_element_get_interface(const char *key)
    switch (head)
      {
       case 'A':
-	 if (strcmp(tail, "dapters") == 0)
-	   interface = e_bluez_iface_adapter;
-	 break;
+         if (strcmp(tail, "dapters") == 0)
+            interface = e_bluez_iface_adapter;
+
+         break;
+
       case 'D':
-	 if (strcmp(tail, "evices") == 0)
-	   interface = e_bluez_iface_device;
-	 break;
+         if (strcmp(tail, "evices") == 0)
+            interface = e_bluez_iface_device;
+
+         break;
+
       default:
-	 break;
+         break;
      }
 
    if (!interface)
-     ERR("failed to find interface for property \"%s\"", key);
+      ERR("failed to find interface for property \"%s\"", key);
 
    return interface;
 }
@@ -443,10 +470,11 @@ _e_bluez_element_item_register(const char *key, const char *item)
 
    interface = _e_bluez_element_get_interface(key);
    if (!interface)
-     return;
+      return;
+
    element = e_bluez_element_register(item, interface);
    if ((element) && (!e_bluez_element_properties_sync(element)))
-     WRN("could not get properties of %s", element->path);
+      WRN("could not get properties of %s", element->path);
 }
 
 /* Match 2 arrays to find which are new and which are old elements
@@ -464,87 +492,94 @@ _e_bluez_element_array_match(E_Bluez_Array *old, E_Bluez_Array *new, const char 
    void *data;
 
    if (!old)
-     return;
+      return;
+
    if (old->type != DBUS_TYPE_OBJECT_PATH)
-     return;
+      return;
 
    if ((!new) || (!new->array) || eina_array_count_get(new->array) == 0)
      {
-	if ((!old) || (!old->array) || eina_array_count_get(old->array) == 0)
-	  return;
-	else
-	  {
-	     iter_old = old->array->data;
-	     goto out_remove_remaining;
-	  }
+        if ((!old) || (!old->array) || eina_array_count_get(old->array) == 0)
+          {
+             return;
+          }
+        else
+          {
+             iter_old = old->array->data;
+             goto out_remove_remaining;
+          }
      }
 
    iter_new = new->array->data;
    item_new = *iter_new;
    EINA_ARRAY_ITER_NEXT(old->array, i_old, item_old, iter_old)
-     {
-	if (item_old == item_new)
-	  {
-	     i_new++;
-	     if (i_new >= eina_array_count_get(new->array))
-	       {
-		  i_old++;
-		  break;
-	       }
+   {
+      if (item_old == item_new)
+        {
+           i_new++;
+           if (i_new >= eina_array_count_get(new->array))
+             {
+                i_old++;
+                break;
+             }
 
-	     iter_new++;
-	     item_new = *iter_new;
-	  }
-	else
-	  deleted = eina_list_append(deleted, item_old);
-     }
+           iter_new++;
+           item_new = *iter_new;
+        }
+      else
+        {
+           deleted = eina_list_append(deleted, item_old);
+        }
+   }
 
    for(; i_new < eina_array_count_get(new->array); iter_new++, i_new++)
      {
-	Eina_Bool found = 0;
-	item_new = *iter_new;
-	if (!item_new)
-	  break;
+        Eina_Bool found = 0;
+        item_new = *iter_new;
+        if (!item_new)
+           break;
 
-	EINA_LIST_FOREACH(deleted, l, data)
-	  {
-	     if (data == item_new)
-	       {
-		  deleted = eina_list_remove_list(deleted, l);
-		  found = 1;
-		  break;
-	       }
-	  }
-	if (!found)
-	  {
-	    _e_bluez_element_item_register(prop_name, item_new);
-	    DBG("Add element %s\n", (const char *) item_new);
-	  }
+        EINA_LIST_FOREACH(deleted, l, data)
+        {
+           if (data == item_new)
+             {
+                deleted = eina_list_remove_list(deleted, l);
+                found = 1;
+                break;
+             }
+        }
+        if (!found)
+          {
+             _e_bluez_element_item_register(prop_name, item_new);
+             DBG("Add element %s\n", (const char *)item_new);
+          }
      }
 
    /* everybody after i_old on old->array + everybody from deleted list
       will be removed
     */
    EINA_LIST_FREE(deleted, data)
-     {
-	E_Bluez_Element *e = e_bluez_element_get(data);
-	if (e)
-	  e_bluez_element_unregister(e);
-	DBG("Delete element %s\n", (const char *) data);
-     }
+   {
+      E_Bluez_Element *e = e_bluez_element_get(data);
+      if (e)
+         e_bluez_element_unregister(e);
+
+      DBG("Delete element %s\n", (const char *)data);
+   }
 
 out_remove_remaining:
    for(; i_old < eina_array_count_get(old->array); iter_old++, i_old++)
      {
-	E_Bluez_Element *e;
-	item_old = *iter_old;
-	if (!item_old)
-	  break;
+        E_Bluez_Element *e;
+        item_old = *iter_old;
+        if (!item_old)
+           break;
 
-	e = e_bluez_element_get(item_old);
-	if (e)
-	  e_bluez_element_unregister(e);
-	DBG("Delete element %s\n", (const char *) item_old);
+        e = e_bluez_element_get(item_old);
+        if (e)
+           e_bluez_element_unregister(e);
+
+        DBG("Delete element %s\n", (const char *)item_old);
      }
 }
 
@@ -554,89 +589,110 @@ _e_bluez_element_property_update(E_Bluez_Element_Property *property, int type, v
    int changed = 0;
 
    if ((type == DBUS_TYPE_STRING || type == DBUS_TYPE_OBJECT_PATH) && data)
-     data = (char *)eina_stringshare_add(data);
+      data = (char *)eina_stringshare_add(data);
 
    if (property->type != type)
      {
-	if (property->type)
-	  DBG("property type changed from '%c' to '%c'",
-	      property->type, type);
-	_e_bluez_element_property_value_free(property);
-	memset(&property->value, 0, sizeof(property->value));
-	property->type = type;
-	changed = 1;
+        if (property->type)
+           DBG("property type changed from '%c' to '%c'",
+               property->type, type);
+
+        _e_bluez_element_property_value_free(property);
+        memset(&property->value, 0, sizeof(property->value));
+        property->type = type;
+        changed = 1;
      }
 
    switch (type)
      {
       case DBUS_TYPE_BOOLEAN:
-	 if (changed || property->value.boolean != (Eina_Bool)(long)data)
-	   {
-	      property->value.boolean = (Eina_Bool)(long)data;
-	      changed = 1;
-	   }
-	 break;
+         if (changed || property->value.boolean != (Eina_Bool)(long)data)
+           {
+              property->value.boolean = (Eina_Bool)(long)data;
+              changed = 1;
+           }
+
+         break;
+
       case DBUS_TYPE_BYTE:
-	 if (changed || property->value.byte != (unsigned char)(long)data)
-	   {
-	      property->value.byte = (unsigned char)(long)data;
-	      changed = 1;
-	   }
-	 break;
+         if (changed || property->value.byte != (unsigned char)(long)data)
+           {
+              property->value.byte = (unsigned char)(long)data;
+              changed = 1;
+           }
+
+         break;
+
       case DBUS_TYPE_UINT16:
-	 if (changed || property->value.u16 != (unsigned short)(long)data)
-	   {
-	      property->value.u16 = (unsigned short)(long)data;
-	      changed = 1;
-	   }
-	 break;
+         if (changed || property->value.u16 != (unsigned short)(long)data)
+           {
+              property->value.u16 = (unsigned short)(long)data;
+              changed = 1;
+           }
+
+         break;
+
       case DBUS_TYPE_UINT32:
-	 if (changed || property->value.u32 != (unsigned int)(long)data)
-	   {
-	      property->value.u32 = (unsigned int)(long)data;
-	      changed = 1;
-	   }
-	 break;
+         if (changed || property->value.u32 != (unsigned int)(long)data)
+           {
+              property->value.u32 = (unsigned int)(long)data;
+              changed = 1;
+           }
+
+         break;
+
       case DBUS_TYPE_STRING:
-	 if (changed)
-	   property->value.str = data;
-	 else
-	   {
-	      if (property->value.str)
-		eina_stringshare_del(property->value.str);
-	      if (property->value.str != data)
-		{
-		   property->value.str = data;
-		   changed = 1;
-		}
-	   }
-	 break;
+         if (changed)
+           {
+              property->value.str = data;
+           }
+         else
+           {
+              if (property->value.str)
+                 eina_stringshare_del(property->value.str);
+
+              if (property->value.str != data)
+                {
+                   property->value.str = data;
+                   changed = 1;
+                }
+           }
+
+         break;
+
       case DBUS_TYPE_OBJECT_PATH:
-	 if (changed)
-	   property->value.path = data;
-	 else
-	   {
-	      if (property->value.path)
-		eina_stringshare_del(property->value.path);
-	      if (property->value.path != data)
-		{
-		   property->value.path = data;
-		   changed = 1;
-		}
-	   }
-	 break;
+         if (changed)
+           {
+              property->value.path = data;
+           }
+         else
+           {
+              if (property->value.path)
+                 eina_stringshare_del(property->value.path);
+
+              if (property->value.path != data)
+                {
+                   property->value.path = data;
+                   changed = 1;
+                }
+           }
+
+         break;
+
       case DBUS_TYPE_ARRAY:
-	 if (!changed)
-	   if (property->value.array)
-	     {
-		_e_bluez_element_array_match(property->value.array, data, property->name);
-		e_bluez_element_array_free(property->value.array, data);
-	     }
-	 property->value.array = data;
-	 changed = 1;
-	 break;
+         if (!changed)
+            if (property->value.array)
+              {
+                 _e_bluez_element_array_match(property->value.array, data, property->name);
+                 e_bluez_element_array_free(property->value.array, data);
+              }
+
+         property->value.array = data;
+         changed = 1;
+         break;
+
       default:
-	 ERR("don't know how to update property type %c (%d)", type, type);
+         ERR("don't know how to update property type %c (%d)", type, type);
      }
 
    return changed;
@@ -650,9 +706,9 @@ _e_bluez_element_property_new(const char *name, int type, void *data)
    property = calloc(1, sizeof(*property));
    if (!property)
      {
-	eina_stringshare_del(name);
-	ERR("could not allocate property: %s", strerror(errno));
-	return NULL;
+        eina_stringshare_del(name);
+        ERR("could not allocate property: %s", strerror(errno));
+        return NULL;
      }
 
    property->name = name;
@@ -669,8 +725,8 @@ _e_bluez_element_property_free(E_Bluez_Element_Property *property)
 }
 
 /***********************************************************************
- * Element
- ***********************************************************************/
+* Element
+***********************************************************************/
 unsigned char *
 e_bluez_element_bytes_array_get_stringshared(const E_Bluez_Element *element, const char *property, unsigned int *count)
 {
@@ -687,27 +743,28 @@ e_bluez_element_bytes_array_get_stringshared(const E_Bluez_Element *element, con
    *count = 0;
 
    if (!e_bluez_element_property_get_stringshared
-       (element, property, NULL, &array))
-     return NULL;
+          (element, property, NULL, &array))
+      return NULL;
 
    if ((!array) || (!(array->array)))
-     return NULL;
+      return NULL;
 
    *count = eina_array_count_get(array->array);
    ret = malloc(*count * sizeof(unsigned char));
    if (!ret)
      {
-	ERR("could not allocate return array of %d bytes: %s",
-	    *count, strerror(errno));
-	return NULL;
+        ERR("could not allocate return array of %d bytes: %s",
+            *count, strerror(errno));
+        return NULL;
      }
+
    p = ret;
 
    EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
-     {
-	*p = (unsigned char)(long)item;
-	p++;
-     }
+   {
+      *p = (unsigned char)(long)item;
+      p++;
+   }
    return ret;
 }
 
@@ -730,43 +787,45 @@ e_bluez_element_objects_array_get_stringshared(const E_Bluez_Element *element, c
    *p_elements = NULL;
 
    if (!e_bluez_element_property_get_stringshared
-       (element, property, &type, &array))
-     return 0;
+          (element, property, &type, &array))
+      return 0;
 
    if (type != DBUS_TYPE_ARRAY)
      {
-	ERR("property %s is not an array!", property);
-	return 0;
+        ERR("property %s is not an array!", property);
+        return 0;
      }
 
    if ((!array) || (!array->array) || (array->type == DBUS_TYPE_INVALID))
-     return 0;
+      return 0;
 
    if (array->type != DBUS_TYPE_OBJECT_PATH)
      {
-	ERR("property %s is not an array of object paths!", property);
-	return 0;
+        ERR("property %s is not an array of object paths!", property);
+        return 0;
      }
 
    *count = eina_array_count_get(array->array);
    ret = malloc(*count * sizeof(E_Bluez_Element *));
    if (!ret)
      {
-	ERR("could not allocate return array of %d elements: %s",
-	    *count, strerror(errno));
-	*count = 0;
-	return 0;
+        ERR("could not allocate return array of %d elements: %s",
+            *count, strerror(errno));
+        *count = 0;
+        return 0;
      }
+
    p = ret;
 
    EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
-     {
-	E_Bluez_Element *e = e_bluez_element_get(item);
-	if (!e)
-	  continue;
-	*p = e;
-	p++;
-     }
+   {
+      E_Bluez_Element *e = e_bluez_element_get(item);
+      if (!e)
+         continue;
+
+      *p = e;
+      p++;
+   }
    *count = p - ret;
    *p_elements = ret;
    return 1;
@@ -792,42 +851,44 @@ e_bluez_element_strings_array_get_stringshared(const E_Bluez_Element *element, c
    *strings = NULL;
 
    if (!e_bluez_element_property_get_stringshared
-       (element, property, &type, &array))
-     return 0;
+          (element, property, &type, &array))
+      return 0;
 
    if (type != DBUS_TYPE_ARRAY)
      {
-	ERR("property %s is not an array!", property);
-	return 0;
+        ERR("property %s is not an array!", property);
+        return 0;
      }
 
    if ((!array) || (!array->array) || (array->type == DBUS_TYPE_INVALID))
-     return 0;
+      return 0;
 
    if (array->type != DBUS_TYPE_STRING)
      {
-	ERR("property %s is not an array of strings!", property);
-	return 0;
+        ERR("property %s is not an array of strings!", property);
+        return 0;
      }
 
    *count = eina_array_count_get(array->array);
    ret = malloc(*count * sizeof(char *));
    if (!ret)
      {
-	ERR("could not allocate return array of %d strings: %s",
-	    *count, strerror(errno));
-	*count = 0;
-	return 0;
+        ERR("could not allocate return array of %d strings: %s",
+            *count, strerror(errno));
+        *count = 0;
+        return 0;
      }
+
    p = ret;
 
    EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
-     {
-	if (!item)
-	  continue;
-	*p = item;
-	p++;
-     }
+   {
+      if (!item)
+         continue;
+
+      *p = item;
+      p++;
+   }
    *count = p - ret;
    *strings = ret;
    return 1;
@@ -841,75 +902,88 @@ e_bluez_element_array_print(FILE *fp, E_Bluez_Array *array)
    void *item;
 
    if (!array)
-     return;
+      return;
 
    switch (array->type)
      {
       case DBUS_TYPE_OBJECT_PATH:
-	 EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
-	   fprintf(fp, "\"%s\", ", (const char *)item);
-	 break;
+         EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
+         fprintf(fp, "\"%s\", ", (const char *)item);
+         break;
+
       case DBUS_TYPE_STRING:
-	 EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
-	   fprintf(fp, "\"%s\", ", (const char *)item);
-	 break;
+         EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
+         fprintf(fp, "\"%s\", ", (const char *)item);
+         break;
+
       case DBUS_TYPE_BYTE:
-	 EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
-	   fprintf(fp, "%#02hhx (\"%c\"), ", (unsigned char)(long)item,
-		   (unsigned char)(long)item);
-	 break;
+         EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
+         fprintf(fp, "%#02hhx (\"%c\"), ", (unsigned char)(long)item,
+                 (unsigned char)(long)item);
+         break;
+
       case DBUS_TYPE_UINT16:
-	 EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
-	   fprintf(fp, "%#04hx (%hu), ", (unsigned short)(long)item,
-		   (unsigned short)(long)item);
-	 break;
+         EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
+         fprintf(fp, "%#04hx (%hu), ", (unsigned short)(long)item,
+                 (unsigned short)(long)item);
+         break;
+
       case DBUS_TYPE_UINT32:
-	 EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
-	   fprintf(fp, "%#08x (%u), ", (unsigned int)(long)item,
-		   (unsigned int)(long)item);
-	 break;
+         EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
+         fprintf(fp, "%#08x (%u), ", (unsigned int)(long)item,
+                 (unsigned int)(long)item);
+         break;
+
       case DBUS_TYPE_DICT_ENTRY:
-	 fputs("{ ", fp);
-	 EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
-	   {
-	      E_Bluez_Element_Dict_Entry *entry = item;
-	      fprintf(fp, "%s: ", entry->name);
-	      switch (entry->type)
-		{
-		 case DBUS_TYPE_OBJECT_PATH:
-		    fprintf(fp, "\"%s\", ", entry->value.path);
-		    break;
-		 case DBUS_TYPE_STRING:
-		    fprintf(fp, "\"%s\", ", entry->value.str);
-		    break;
-		 case DBUS_TYPE_BOOLEAN:
-		    fprintf(fp, "%hhu, ",
-			    entry->value.boolean);
-		    break;
-		 case DBUS_TYPE_BYTE:
-		    fprintf(fp, "%#02hhx (\"%c\"), ",
-			    entry->value.byte, entry->value.byte);
-		    break;
-		 case DBUS_TYPE_INT16:
-		    fprintf(fp, "%#04hx (%hi), ",
-			    entry->value.i16, entry->value.i16);
-		    break;
-		 case DBUS_TYPE_UINT16:
-		    fprintf(fp, "%#04hx (%hu), ",
-			    entry->value.u16, entry->value.u16);
-		    break;
-		 case DBUS_TYPE_UINT32:
-		    fprintf(fp, "%#08x (%u), ",
-			    entry->value.u32, entry->value.u32);
-		    break;
-		 default:
-		    fprintf(fp, "<UNKNOWN TYPE '%c'>", entry->type);
-		}
-	   }
-	 fputs("}", fp);
-	 break;
+         fputs("{ ", fp);
+         EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
+         {
+            E_Bluez_Element_Dict_Entry *entry = item;
+            fprintf(fp, "%s: ", entry->name);
+            switch (entry->type)
+              {
+               case DBUS_TYPE_OBJECT_PATH:
+                  fprintf(fp, "\"%s\", ", entry->value.path);
+                  break;
+
+               case DBUS_TYPE_STRING:
+                  fprintf(fp, "\"%s\", ", entry->value.str);
+                  break;
+
+               case DBUS_TYPE_BOOLEAN:
+                  fprintf(fp, "%hhu, ",
+                          entry->value.boolean);
+                  break;
+
+               case DBUS_TYPE_BYTE:
+                  fprintf(fp, "%#02hhx (\"%c\"), ",
+                          entry->value.byte, entry->value.byte);
+                  break;
+
+               case DBUS_TYPE_INT16:
+                  fprintf(fp, "%#04hx (%hi), ",
+                          entry->value.i16, entry->value.i16);
+                  break;
+
+               case DBUS_TYPE_UINT16:
+                  fprintf(fp, "%#04hx (%hu), ",
+                          entry->value.u16, entry->value.u16);
+                  break;
+
+               case DBUS_TYPE_UINT32:
+                  fprintf(fp, "%#08x (%u), ",
+                          entry->value.u32, entry->value.u32);
+                  break;
+
+               default:
+                  fprintf(fp, "<UNKNOWN TYPE '%c'>", entry->type);
+              }
+         }
+         fputs("}", fp);
+         break;
+
       default:
-	 fprintf(fp, "<UNKNOWN ARRAY TYPE '%c'>", array->type);
+         fprintf(fp, "<UNKNOWN ARRAY TYPE '%c'>", array->type);
      }
 }
 
@@ -924,48 +998,55 @@ e_bluez_element_print(FILE *fp, const E_Bluez_Element *element)
    EINA_SAFETY_ON_NULL_RETURN(fp);
    if (!element)
      {
-	fputs("Error: no element to print\n", fp);
-	return;
+        fputs("Error: no element to print\n", fp);
+        return;
      }
 
    fprintf(fp,
-	   "Element %p: %s [%s]\n"
-	   "\tProperties:\n",
-	   element, element->path, element->interface);
+           "Element %p: %s [%s]\n"
+           "\tProperties:\n",
+           element, element->path, element->interface);
 
    EINA_INLIST_FOREACH(element->props, p)
-     {
-	fprintf(fp, "\t\t%s (%c) = ", p->name, p->type);
+   {
+      fprintf(fp, "\t\t%s (%c) = ", p->name, p->type);
 
-	switch (p->type)
-	  {
-	   case DBUS_TYPE_STRING:
-	      fprintf(fp, "\"%s\"", p->value.str);
-	      break;
-	   case DBUS_TYPE_OBJECT_PATH:
-	      fprintf(fp, "\"%s\"", p->value.path);
-	      break;
-	   case DBUS_TYPE_BOOLEAN:
-	      fprintf(fp, "%hhu", p->value.boolean);
-	      break;
-	   case DBUS_TYPE_BYTE:
-	      fprintf(fp, "%#02hhx (%d), ", p->value.byte, p->value.byte);
-	      break;
-	   case DBUS_TYPE_UINT16:
-	      fprintf(fp, "%hu", p->value.u16);
-	      break;
-	   case DBUS_TYPE_UINT32:
-	      fprintf(fp, "%u", p->value.u32);
-	      break;
-	   case DBUS_TYPE_ARRAY:
-	      e_bluez_element_array_print(fp, p->value.array);
-	      break;
-	   default:
-	      fputs("don't know how to print type", fp);
-	  }
+      switch (p->type)
+        {
+         case DBUS_TYPE_STRING:
+            fprintf(fp, "\"%s\"", p->value.str);
+            break;
 
-	fputc('\n', fp);
-     }
+         case DBUS_TYPE_OBJECT_PATH:
+            fprintf(fp, "\"%s\"", p->value.path);
+            break;
+
+         case DBUS_TYPE_BOOLEAN:
+            fprintf(fp, "%hhu", p->value.boolean);
+            break;
+
+         case DBUS_TYPE_BYTE:
+            fprintf(fp, "%#02hhx (%d), ", p->value.byte, p->value.byte);
+            break;
+
+         case DBUS_TYPE_UINT16:
+            fprintf(fp, "%hu", p->value.u16);
+            break;
+
+         case DBUS_TYPE_UINT32:
+            fprintf(fp, "%u", p->value.u32);
+            break;
+
+         case DBUS_TYPE_ARRAY:
+            e_bluez_element_array_print(fp, p->value.array);
+            break;
+
+         default:
+            fputs("don't know how to print type", fp);
+        }
+
+      fputc('\n', fp);
+   }
 }
 
 static E_Bluez_Element *
@@ -976,8 +1057,8 @@ e_bluez_element_new(const char *path, const char *interface)
    element = calloc(1, sizeof(*element));
    if (!element)
      {
-	ERR("could not allocate element: %s",	strerror(errno));
-	return NULL;
+        ERR("could not allocate element: %s",   strerror(errno));
+        return NULL;
      }
 
    element->path = eina_stringshare_add(path);
@@ -992,10 +1073,10 @@ e_bluez_element_extra_properties_free(E_Bluez_Element *element)
 {
    while (element->props)
      {
-	E_Bluez_Element_Property *prop;
-	prop = (E_Bluez_Element_Property *)element->props;
-	element->props = element->props->next;
-	_e_bluez_element_property_free(prop);
+        E_Bluez_Element_Property *prop;
+        prop = (E_Bluez_Element_Property *)element->props;
+        element->props = element->props->next;
+        _e_bluez_element_property_free(prop);
      }
 }
 
@@ -1003,16 +1084,18 @@ static void
 e_bluez_element_free(E_Bluez_Element *element)
 {
    if (element->_idler.changed)
-     ecore_idler_del(element->_idler.changed);
+      ecore_idler_del(element->_idler.changed);
 
    while (element->_listeners)
      {
-	E_Bluez_Element_Listener *l = (void *)element->_listeners;
-	element->_listeners = eina_inlist_remove
-	  (element->_listeners, element->_listeners);
+        E_Bluez_Element_Listener *l = (void *)element->_listeners;
+        element->_listeners = eina_inlist_remove
+              (element->_listeners, element->_listeners);
 
-	if (l->free_data) l->free_data(l->data);
-	free(l);
+        if (l->free_data)
+           l->free_data(l->data);
+
+        free(l);
      }
 
    e_bluez_element_pending_cancel_and_free(&element->_pending.properties_get);
@@ -1049,9 +1132,10 @@ e_bluez_element_unref(E_Bluez_Element *element)
 
    i = --element->_references;
    if (i == 0)
-     e_bluez_element_free(element);
+      e_bluez_element_free(element);
    else if (i < 0)
-     ERR("element %p references %d < 0", element, i);
+      ERR("element %p references %d < 0", element, i);
+
    return i;
 }
 
@@ -1077,20 +1161,20 @@ e_bluez_element_message_send(E_Bluez_Element *element, const char *method_name, 
    data = malloc(sizeof(*data));
    if (!data)
      {
-	ERR("could not alloc e_bluez_element_call_data: %s",
-	    strerror(errno));
-	dbus_message_unref(msg);
-	return 0;
+        ERR("could not alloc e_bluez_element_call_data: %s",
+            strerror(errno));
+        dbus_message_unref(msg);
+        return 0;
      }
 
    p = malloc(sizeof(*p));
    if (!p)
      {
-	ERR("could not alloc E_Bluez_Element_Pending: %s",
-	    strerror(errno));
-	free(data);
-	dbus_message_unref(msg);
-	return 0;
+        ERR("could not alloc E_Bluez_Element_Pending: %s",
+            strerror(errno));
+        free(data);
+        dbus_message_unref(msg);
+        return 0;
      }
 
    data->element = element;
@@ -1101,18 +1185,18 @@ e_bluez_element_message_send(E_Bluez_Element *element, const char *method_name, 
    p->user_data = (void *)user_data;
    p->data = data;
    p->pending = e_dbus_message_send
-     (e_bluez_conn, msg, e_bluez_element_call_dispatch_and_free, -1, data);
+         (e_bluez_conn, msg, e_bluez_element_call_dispatch_and_free, -1, data);
    dbus_message_unref(msg);
 
    if (p->pending)
      {
-	*pending = eina_inlist_append(*pending, EINA_INLIST_GET(p));
-	return 1;
+        *pending = eina_inlist_append(*pending, EINA_INLIST_GET(p));
+        return 1;
      }
 
    ERR("failed to call %s (obj=%s, path=%s, iface=%s)",
-      method_name, e_bluez_system_bus_name_get(),
-      element->path, element->interface);
+       method_name, e_bluez_system_bus_name_get(),
+       element->path, element->interface);
    free(data);
    free(p);
    return 0;
@@ -1128,11 +1212,11 @@ e_bluez_element_call_full(E_Bluez_Element *element, const char *method_name, E_D
    EINA_SAFETY_ON_NULL_RETURN_VAL(pending, 0);
 
    msg = dbus_message_new_method_call
-     (e_bluez_system_bus_name_get(), element->path, element->interface,
-      method_name);
+         (e_bluez_system_bus_name_get(), element->path, element->interface,
+         method_name);
 
    return e_bluez_element_message_send
-     (element, method_name, cb, msg, pending, user_cb, user_data);
+             (element, method_name, cb, msg, pending, user_cb, user_data);
 }
 
 static Eina_Bool
@@ -1142,19 +1226,19 @@ _e_bluez_element_property_value_add(E_Bluez_Element *element, const char *name, 
 
    name = eina_stringshare_add(name);
    EINA_INLIST_FOREACH(element->props, p)
-     {
-	if (p->name == name)
-	  {
-	     eina_stringshare_del(name);
-	     return _e_bluez_element_property_update(p, type, value);
-	  }
-     }
+   {
+      if (p->name == name)
+        {
+           eina_stringshare_del(name);
+           return _e_bluez_element_property_update(p, type, value);
+        }
+   }
 
    p = _e_bluez_element_property_new(name, type, value);
    if (!p)
      {
-	ERR("could not create property %s (%c)", name, type);
-	return 0;
+        ERR("could not create property %s (%c)", name, type);
+        return 0;
      }
 
    element->props = eina_inlist_append(element->props, EINA_INLIST_GET(p));
@@ -1170,72 +1254,77 @@ e_bluez_element_iter_get_array(DBusMessageIter *itr, const char *key)
    array = malloc(sizeof(E_Bluez_Array));
    if (!array)
      {
-	ERR("could not create new e_bluez array.");
-	return NULL;
+        ERR("could not create new e_bluez array.");
+        return NULL;
      }
+
    array->array = eina_array_new(16);
    if (!(array->array))
      {
-	ERR("could not create new eina array.");
-	free(array);
-	return NULL;
+        ERR("could not create new eina array.");
+        free(array);
+        return NULL;
      }
 
    dbus_message_iter_recurse(itr, &e_itr);
    array->type = dbus_message_iter_get_arg_type(&e_itr);
    if (array->type == DBUS_TYPE_INVALID)
      {
-	DBG("array %s is of type 'invalid' (empty?)", key);
-	eina_array_free(array->array);
-	free(array);
-	return NULL;
+        DBG("array %s is of type 'invalid' (empty?)", key);
+        eina_array_free(array->array);
+        free(array);
+        return NULL;
      }
 
    do
      {
-	switch (array->type)
-	  {
-	   case DBUS_TYPE_OBJECT_PATH:
-	     {
-		const char *path;
+        switch (array->type)
+          {
+           case DBUS_TYPE_OBJECT_PATH:
+           {
+              const char *path;
 
-		dbus_message_iter_get_basic(&e_itr, &path);
-		path = eina_stringshare_add(path);
-		eina_array_push(array->array, path);
-		_e_bluez_element_item_register(key, path);
-	     }
-	     break;
-	   case DBUS_TYPE_STRING:
-	     {
-		const char *str;
+              dbus_message_iter_get_basic(&e_itr, &path);
+              path = eina_stringshare_add(path);
+              eina_array_push(array->array, path);
+              _e_bluez_element_item_register(key, path);
+           }
+           break;
 
-		dbus_message_iter_get_basic(&e_itr, &str);
-		str = eina_stringshare_add(str);
-		eina_array_push(array->array, str);
-	     }
-	     break;
-	   case DBUS_TYPE_BYTE:
-	     {
-		unsigned char byte;
-		dbus_message_iter_get_basic(&e_itr, &byte);
-		eina_array_push(array->array, (void *)(long)byte);
-	     }
-	     break;
-	   case DBUS_TYPE_DICT_ENTRY:
-	     {
-		E_Bluez_Element_Dict_Entry *entry;
-		entry = _e_bluez_element_dict_entry_new(&e_itr);
-		if (entry)
-		  eina_array_push(array->array, entry);
-	     }
-	     break;
-	   default:
-	      ERR("don't know how to build array '%s' of type %c (%d)",
-		  key, array->type, array->type);
-	      eina_array_free(array->array);
-	      free(array);
-	      return NULL;
-	  }
+           case DBUS_TYPE_STRING:
+           {
+              const char *str;
+
+              dbus_message_iter_get_basic(&e_itr, &str);
+              str = eina_stringshare_add(str);
+              eina_array_push(array->array, str);
+           }
+           break;
+
+           case DBUS_TYPE_BYTE:
+           {
+              unsigned char byte;
+              dbus_message_iter_get_basic(&e_itr, &byte);
+              eina_array_push(array->array, (void *)(long)byte);
+           }
+           break;
+
+           case DBUS_TYPE_DICT_ENTRY:
+           {
+              E_Bluez_Element_Dict_Entry *entry;
+              entry = _e_bluez_element_dict_entry_new(&e_itr);
+              if (entry)
+                 eina_array_push(array->array, entry);
+           }
+           break;
+
+           default:
+              ERR("don't know how to build array '%s' of type %c (%d)",
+                  key, array->type, array->type);
+              eina_array_free(array->array);
+              free(array);
+              return NULL;
+          }
      }
    while (dbus_message_iter_next(&e_itr));
    return array;
@@ -1251,64 +1340,68 @@ _e_bluez_element_get_properties_callback(void *user_data, DBusMessage *msg, DBus
    DBG("get_properties msg=%p", msg);
 
    if (!_dbus_callback_check_and_init(msg, &itr, err))
-     return;
+      return;
 
    t = dbus_message_iter_get_arg_type(&itr);
    if (!_dbus_iter_type_check(t, DBUS_TYPE_ARRAY))
-     return;
+      return;
 
    changed = 0;
    dbus_message_iter_recurse(&itr, &s_itr);
    do
      {
-	DBusMessageIter e_itr, v_itr;
-	const char *key;
-	void *value = NULL;
-	int r;
+        DBusMessageIter e_itr, v_itr;
+        const char *key;
+        void *value = NULL;
+        int r;
 
-	t = dbus_message_iter_get_arg_type(&s_itr);
-	if (!_dbus_iter_type_check(t, DBUS_TYPE_DICT_ENTRY))
-	  continue;
+        t = dbus_message_iter_get_arg_type(&s_itr);
+        if (!_dbus_iter_type_check(t, DBUS_TYPE_DICT_ENTRY))
+           continue;
 
-	dbus_message_iter_recurse(&s_itr, &e_itr);
+        dbus_message_iter_recurse(&s_itr, &e_itr);
 
-	t = dbus_message_iter_get_arg_type(&e_itr);
-	if (!_dbus_iter_type_check(t, DBUS_TYPE_STRING))
-	  continue;
+        t = dbus_message_iter_get_arg_type(&e_itr);
+        if (!_dbus_iter_type_check(t, DBUS_TYPE_STRING))
+           continue;
 
-	dbus_message_iter_get_basic(&e_itr, &key);
-	dbus_message_iter_next(&e_itr);
-	t = dbus_message_iter_get_arg_type(&e_itr);
-	if (!_dbus_iter_type_check(t, DBUS_TYPE_VARIANT))
-	  continue;
+        dbus_message_iter_get_basic(&e_itr, &key);
+        dbus_message_iter_next(&e_itr);
+        t = dbus_message_iter_get_arg_type(&e_itr);
+        if (!_dbus_iter_type_check(t, DBUS_TYPE_VARIANT))
+           continue;
 
-	dbus_message_iter_recurse(&e_itr, &v_itr);
-	t = dbus_message_iter_get_arg_type(&v_itr);
-	if (t == DBUS_TYPE_ARRAY)
-	  value = e_bluez_element_iter_get_array(&v_itr, key);
-	else if (t != DBUS_TYPE_INVALID)
-	  {
-	  dbus_message_iter_get_basic(&v_itr, &value);
-	}
-	else
-	  {
-	   ERR("property has invalid type %s", key);
-	   continue;
-	}
+        dbus_message_iter_recurse(&e_itr, &v_itr);
+        t = dbus_message_iter_get_arg_type(&v_itr);
+        if (t == DBUS_TYPE_ARRAY)
+          {
+             value = e_bluez_element_iter_get_array(&v_itr, key);
+          }
+        else if (t != DBUS_TYPE_INVALID)
+          {
+             dbus_message_iter_get_basic(&v_itr, &value);
+          }
+        else
+          {
+             ERR("property has invalid type %s", key);
+             continue;
+          }
 
-	r = _e_bluez_element_property_value_add(element, key, t, value);
-	if (r < 0)
-	  ERR("failed to add property value %s (%c)", key, t);
-	else if (r == 1)
-	  {
-	     INF("property value changed %s (%c)", key, t);
-	     changed = 1;
-	  }
+        r = _e_bluez_element_property_value_add(element, key, t, value);
+        if (r < 0)
+          {
+             ERR("failed to add property value %s (%c)", key, t);
+          }
+        else if (r == 1)
+          {
+             INF("property value changed %s (%c)", key, t);
+             changed = 1;
+          }
      }
    while (dbus_message_iter_next(&s_itr));
 
    if (changed)
-     _e_bluez_element_listeners_call(element);
+      _e_bluez_element_listeners_call(element);
 }
 
 /**
@@ -1330,8 +1423,8 @@ e_bluez_element_properties_sync_full(E_Bluez_Element *element, E_DBus_Method_Ret
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    return e_bluez_element_call_full
-     (element, name, _e_bluez_element_get_properties_callback,
-      &element->_pending.properties_get, cb, data);
+             (element, name, _e_bluez_element_get_properties_callback,
+             &element->_pending.properties_get, cb, data);
 }
 
 /**
@@ -1382,34 +1475,34 @@ e_bluez_element_property_dict_set_full(E_Bluez_Element *element, const char *pro
    EINA_SAFETY_ON_NULL_RETURN_VAL(prop, 0);
 
    msg = dbus_message_new_method_call
-     (e_bluez_system_bus_name_get(), element->path, element->interface, name);
+         (e_bluez_system_bus_name_get(), element->path, element->interface, name);
 
    if (!msg)
-     return 0;
+      return 0;
 
    dbus_message_iter_init_append(msg, &itr);
    dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &prop);
 
    if ((size_t)snprintf(typestr, sizeof(typestr),
-			(DBUS_TYPE_ARRAY_AS_STRING
-			 DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
-			 DBUS_TYPE_STRING_AS_STRING
-			 "%c"
-			 DBUS_DICT_ENTRY_END_CHAR_AS_STRING),
-			type) >= sizeof(typestr))
+                        (DBUS_TYPE_ARRAY_AS_STRING
+                         DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+                         DBUS_TYPE_STRING_AS_STRING
+                         "%c"
+                         DBUS_DICT_ENTRY_END_CHAR_AS_STRING),
+                        type) >= sizeof(typestr))
      {
-	ERR("sizeof(typestr) is too small!");
-	return 0;
+        ERR("sizeof(typestr) is too small!");
+        return 0;
      }
 
    dbus_message_iter_open_container(&itr, DBUS_TYPE_VARIANT, typestr, &variant);
 
    snprintf(typestr, sizeof(typestr),
-	    (DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
-	     DBUS_TYPE_STRING_AS_STRING
-	     "%c"
-	     DBUS_DICT_ENTRY_END_CHAR_AS_STRING),
-	    type);
+            (DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+             DBUS_TYPE_STRING_AS_STRING
+             "%c"
+             DBUS_DICT_ENTRY_END_CHAR_AS_STRING),
+            type);
 
    dbus_message_iter_open_container(&variant, DBUS_TYPE_ARRAY, typestr, &dict);
    dbus_message_iter_open_container(&dict, DBUS_TYPE_DICT_ENTRY, NULL, &entry);
@@ -1417,16 +1510,16 @@ e_bluez_element_property_dict_set_full(E_Bluez_Element *element, const char *pro
    dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &key);
 
    if ((type == DBUS_TYPE_STRING) || (type == DBUS_TYPE_OBJECT_PATH))
-     dbus_message_iter_append_basic(&entry, type, &value);
+      dbus_message_iter_append_basic(&entry, type, &value);
    else
-     dbus_message_iter_append_basic(&entry, type, value);
+      dbus_message_iter_append_basic(&entry, type, value);
 
    dbus_message_iter_close_container(&dict, &entry);
    dbus_message_iter_close_container(&variant, &dict);
    dbus_message_iter_close_container(&itr, &variant);
 
    return e_bluez_element_message_send
-     (element, name, NULL, msg, &element->_pending.property_set, cb, data);
+             (element, name, NULL, msg, &element->_pending.property_set, cb, data);
 }
 
 /**
@@ -1457,10 +1550,10 @@ e_bluez_element_property_set_full(E_Bluez_Element *element, const char *prop, in
    EINA_SAFETY_ON_NULL_RETURN_VAL(prop, 0);
 
    msg = dbus_message_new_method_call
-     (e_bluez_system_bus_name_get(), element->path, element->interface, name);
+         (e_bluez_system_bus_name_get(), element->path, element->interface, name);
 
    if (!msg)
-     return 0;
+      return 0;
 
    DBusMessageIter itr, v;
    dbus_message_iter_init_append(msg, &itr);
@@ -1470,18 +1563,23 @@ e_bluez_element_property_set_full(E_Bluez_Element *element, const char *prop, in
    typestr[1] = '\0';
    dbus_message_iter_open_container(&itr, DBUS_TYPE_VARIANT, typestr, &v);
    if ((type == DBUS_TYPE_STRING) || (type == DBUS_TYPE_OBJECT_PATH))
-     dbus_message_iter_append_basic(&v, type, &value);
+     {
+        dbus_message_iter_append_basic(&v, type, &value);
+     }
    else if (type == DBUS_TYPE_BOOLEAN)
      {
-	unsigned int b = *(char *)value;
-	dbus_message_iter_append_basic(&v, type, &b);
+        unsigned int b = *(char *)value;
+        dbus_message_iter_append_basic(&v, type, &b);
      }
    else
-     dbus_message_iter_append_basic(&v, type, value);
+     {
+        dbus_message_iter_append_basic(&v, type, value);
+     }
+
    dbus_message_iter_close_container(&itr, &v);
 
    return e_bluez_element_message_send
-     (element, name, NULL, msg, &element->_pending.property_set, cb, data);
+             (element, name, NULL, msg, &element->_pending.property_set, cb, data);
 }
 
 /**
@@ -1504,7 +1602,7 @@ e_bluez_element_property_set(E_Bluez_Element *element, const char *prop, int typ
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(prop, 0);
    return e_bluez_element_property_set_full
-     (element, prop, type, value, NULL, NULL);
+             (element, prop, type, value, NULL, NULL);
 }
 
 Eina_Bool
@@ -1519,17 +1617,17 @@ e_bluez_element_call_with_path(E_Bluez_Element *element, const char *method_name
    EINA_SAFETY_ON_NULL_RETURN_VAL(pending, 0);
 
    msg = dbus_message_new_method_call
-     (e_bluez_system_bus_name_get(), element->path, element->interface,
-      method_name);
+         (e_bluez_system_bus_name_get(), element->path, element->interface,
+         method_name);
 
    if (!msg)
-     return 0;
+      return 0;
 
    dbus_message_iter_init_append(msg, &itr);
    dbus_message_iter_append_basic(&itr, DBUS_TYPE_OBJECT_PATH, &string);
 
    return e_bluez_element_message_send
-     (element, method_name, cb, msg, pending, user_cb, user_data);
+             (element, method_name, cb, msg, pending, user_cb, user_data);
 }
 
 Eina_Bool
@@ -1544,17 +1642,17 @@ e_bluez_element_call_with_string(E_Bluez_Element *element, const char *method_na
    EINA_SAFETY_ON_NULL_RETURN_VAL(pending, 0);
 
    msg = dbus_message_new_method_call
-     (e_bluez_system_bus_name_get(), element->path, element->interface,
-      method_name);
+         (e_bluez_system_bus_name_get(), element->path, element->interface,
+         method_name);
 
    if (!msg)
-     return 0;
+      return 0;
 
    dbus_message_iter_init_append(msg, &itr);
    dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &string);
 
    return e_bluez_element_message_send
-     (element, method_name, cb, msg, pending, user_cb, user_data);
+             (element, method_name, cb, msg, pending, user_cb, user_data);
 }
 
 Eina_Bool
@@ -1570,18 +1668,18 @@ e_bluez_element_call_with_path_and_string(E_Bluez_Element *element, const char *
    EINA_SAFETY_ON_NULL_RETURN_VAL(pending, 0);
 
    msg = dbus_message_new_method_call
-     (e_bluez_system_bus_name_get(), element->path, element->interface,
-      method_name);
+         (e_bluez_system_bus_name_get(), element->path, element->interface,
+         method_name);
 
    if (!msg)
-     return 0;
+      return 0;
 
    dbus_message_iter_init_append(msg, &itr);
    dbus_message_iter_append_basic(&itr, DBUS_TYPE_OBJECT_PATH, &path);
    dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &string);
 
    return e_bluez_element_message_send
-     (element, method_name, cb, msg, pending, user_cb, user_data);
+             (element, method_name, cb, msg, pending, user_cb, user_data);
 }
 
 /**
@@ -1606,13 +1704,13 @@ e_bluez_element_property_type_get_stringshared(const E_Bluez_Element *element, c
    EINA_SAFETY_ON_NULL_RETURN_VAL(type, 0);
 
    EINA_INLIST_FOREACH(element->props, p)
-     {
-	if (p->name == name)
-	  {
-	     *type = p->type;
-	     return 1;
-	  }
-     }
+   {
+      if (p->name == name)
+        {
+           *type = p->type;
+           return 1;
+        }
+   }
 
    WRN("element %s (%p) has no property with name \"%s\".",
        element->path, element, name);
@@ -1650,33 +1748,38 @@ e_bluez_element_list_properties(const E_Bluez_Element *element, Eina_Bool (*cb)(
    EINA_SAFETY_ON_NULL_RETURN(cb);
 
    EINA_INLIST_FOREACH(element->props, p)
-     {
-	const void *value = NULL;
+   {
+      const void *value = NULL;
 
-	switch (p->type)
-	  {
-	   case DBUS_TYPE_STRING:
-	      value = &p->value.str;
-	      break;
-	   case DBUS_TYPE_OBJECT_PATH:
-	      value = &p->value.path;
-	      break;
-	   case DBUS_TYPE_BOOLEAN:
-	      value = (void *)(unsigned long)p->value.boolean;
-	      break;
-	   case DBUS_TYPE_UINT16:
-	      value = &p->value.u16;
-	      break;
-	   case DBUS_TYPE_UINT32:
-	      value = &p->value.u32;
-	      break;
-	   default:
-	      ERR("unsupported type %c", p->type);
-	  }
+      switch (p->type)
+        {
+         case DBUS_TYPE_STRING:
+            value = &p->value.str;
+            break;
 
-	if (!cb((void *)data, element, p->name, p->type, value))
-	  return;
-     }
+         case DBUS_TYPE_OBJECT_PATH:
+            value = &p->value.path;
+            break;
+
+         case DBUS_TYPE_BOOLEAN:
+            value = (void *)(unsigned long)p->value.boolean;
+            break;
+
+         case DBUS_TYPE_UINT16:
+            value = &p->value.u16;
+            break;
+
+         case DBUS_TYPE_UINT32:
+            value = &p->value.u32;
+            break;
+
+         default:
+            ERR("unsupported type %c", p->type);
+        }
+
+      if (!cb((void *)data, element, p->name, p->type, value))
+         return;
+   }
 }
 
 /**
@@ -1709,66 +1812,77 @@ e_bluez_element_property_dict_get_stringshared(const E_Bluez_Element *element, c
    EINA_SAFETY_ON_NULL_RETURN_VAL(value, 0);
 
    EINA_INLIST_FOREACH(element->props, p)
-     {
-	E_Bluez_Element_Dict_Entry *entry;
-	E_Bluez_Array *array;
+   {
+      E_Bluez_Element_Dict_Entry *entry;
+      E_Bluez_Array *array;
 
-	if (p->name != dict_name)
-	  continue;
-	if (p->type != DBUS_TYPE_ARRAY)
-	  {
-	     WRN("element %s (%p) has property \"%s\" is not an array: %c (%d)",
-		 element->path, element, dict_name, p->type, p->type);
-	     return 0;
-	  }
-	array = p->value.array;
-	if ((!array) || (array->type != DBUS_TYPE_DICT_ENTRY))
-	  {
-	     int t = array ? array->type : DBUS_TYPE_INVALID;
-	     WRN("element %s (%p) has property \"%s\" is not a dict: %c (%d)",
-		 element->path, element, dict_name, t, t);
-	     return 0;
-	  }
-	entry = e_bluez_element_array_dict_find_stringshared(array, key);
-	if (!entry)
-	  {
-	     WRN("element %s (%p) has no dict property with name \"%s\" with "
-		 "key \"%s\".",
-		 element->path, element, dict_name, key);
-	     return 0;
-	  }
+      if (p->name != dict_name)
+         continue;
 
-	if (type) *type = entry->type;
+      if (p->type != DBUS_TYPE_ARRAY)
+        {
+           WRN("element %s (%p) has property \"%s\" is not an array: %c (%d)",
+               element->path, element, dict_name, p->type, p->type);
+           return 0;
+        }
 
-	switch (entry->type)
-	  {
-	   case DBUS_TYPE_BOOLEAN:
-	      *(Eina_Bool *)value = entry->value.boolean;
-	      return 1;
-	   case DBUS_TYPE_BYTE:
-	      *(unsigned char *)value = entry->value.byte;
-	      return 1;
-	   case DBUS_TYPE_INT16:
-	      *(short *)value = entry->value.i16;
-	      return 1;
-	   case DBUS_TYPE_UINT16:
-	      *(unsigned short *)value = entry->value.u16;
-	      return 1;
-	   case DBUS_TYPE_UINT32:
-	      *(unsigned int *)value = entry->value.u32;
-	      return 1;
-	   case DBUS_TYPE_STRING:
-	      *(const char **)value = entry->value.str;
-	      return 1;
-	   case DBUS_TYPE_OBJECT_PATH:
-	      *(const char **)value = entry->value.path;
-	      return 1;
-	   default:
-	      ERR("don't know how to get property %s, key %s type %c (%d)",
-		  dict_name, key, entry->type, entry->type);
-	      return 0;
-	  }
-     }
+      array = p->value.array;
+      if ((!array) || (array->type != DBUS_TYPE_DICT_ENTRY))
+        {
+           int t = array ? array->type : DBUS_TYPE_INVALID;
+           WRN("element %s (%p) has property \"%s\" is not a dict: %c (%d)",
+               element->path, element, dict_name, t, t);
+           return 0;
+        }
+
+      entry = e_bluez_element_array_dict_find_stringshared(array, key);
+      if (!entry)
+        {
+           WRN("element %s (%p) has no dict property with name \"%s\" with "
+               "key \"%s\".",
+               element->path, element, dict_name, key);
+           return 0;
+        }
+
+      if (type)
+         *type = entry->type;
+
+      switch (entry->type)
+        {
+         case DBUS_TYPE_BOOLEAN:
+            *(Eina_Bool *)value = entry->value.boolean;
+            return 1;
+
+         case DBUS_TYPE_BYTE:
+            *(unsigned char *)value = entry->value.byte;
+            return 1;
+
+         case DBUS_TYPE_INT16:
+            *(short *)value = entry->value.i16;
+            return 1;
+
+         case DBUS_TYPE_UINT16:
+            *(unsigned short *)value = entry->value.u16;
+            return 1;
+
+         case DBUS_TYPE_UINT32:
+            *(unsigned int *)value = entry->value.u32;
+            return 1;
+
+         case DBUS_TYPE_STRING:
+            *(const char **)value = entry->value.str;
+            return 1;
+
+         case DBUS_TYPE_OBJECT_PATH:
+            *(const char **)value = entry->value.path;
+            return 1;
+
+         default:
+            ERR("don't know how to get property %s, key %s type %c (%d)",
+                dict_name, key, entry->type, entry->type);
+            return 0;
+        }
+   }
 
    WRN("element %s (%p) has no property with name \"%s\".",
        element->path, element, dict_name);
@@ -1802,41 +1916,49 @@ e_bluez_element_property_get_stringshared(const E_Bluez_Element *element, const 
    EINA_SAFETY_ON_NULL_RETURN_VAL(value, 0);
 
    EINA_INLIST_FOREACH(element->props, p)
-     {
-	if (p->name != name)
-	  continue;
+   {
+      if (p->name != name)
+         continue;
 
-	if (type) *type = p->type;
+      if (type)
+         *type = p->type;
 
-	switch (p->type)
-	  {
-	   case DBUS_TYPE_BOOLEAN:
-	      *(Eina_Bool *)value = p->value.boolean;
-	      return 1;
-	   case DBUS_TYPE_BYTE:
-	      *(unsigned char *)value = p->value.byte;
-	      return 1;
-	   case DBUS_TYPE_UINT16:
-	      *(unsigned short *)value = p->value.u16;
-	      return 1;
-	   case DBUS_TYPE_UINT32:
-	      *(unsigned int *)value = p->value.u32;
-	      return 1;
-	   case DBUS_TYPE_STRING:
-	      *(const char **)value = p->value.str;
-	      return 1;
-	   case DBUS_TYPE_OBJECT_PATH:
-	      *(const char **)value = p->value.path;
-	      return 1;
-	   case DBUS_TYPE_ARRAY:
-	      *(E_Bluez_Array **)value = p->value.array;
-	      return 1;
-	   default:
-	      ERR("don't know how to get property type %c (%d)",
-		  p->type, p->type);
-	      return 0;
-	  }
-     }
+      switch (p->type)
+        {
+         case DBUS_TYPE_BOOLEAN:
+            *(Eina_Bool *)value = p->value.boolean;
+            return 1;
+
+         case DBUS_TYPE_BYTE:
+            *(unsigned char *)value = p->value.byte;
+            return 1;
+
+         case DBUS_TYPE_UINT16:
+            *(unsigned short *)value = p->value.u16;
+            return 1;
+
+         case DBUS_TYPE_UINT32:
+            *(unsigned int *)value = p->value.u32;
+            return 1;
+
+         case DBUS_TYPE_STRING:
+            *(const char **)value = p->value.str;
+            return 1;
+
+         case DBUS_TYPE_OBJECT_PATH:
+            *(const char **)value = p->value.path;
+            return 1;
+
+         case DBUS_TYPE_ARRAY:
+            *(E_Bluez_Array **)value = p->value.array;
+            return 1;
+
+         default:
+            ERR("don't know how to get property type %c (%d)",
+                p->type, p->type);
+            return 0;
+        }
+   }
 
    WRN("element %s (%p) has no property with name \"%s\".",
        element->path, element, name);
@@ -1866,16 +1988,15 @@ e_bluez_element_property_get(const E_Bluez_Element *element, const char *name, i
    Eina_Bool ret;
    name = eina_stringshare_add(name);
    ret = e_bluez_element_property_get_stringshared
-     (element, name, type, value);
+         (element, name, type, value);
    eina_stringshare_del(name);
    return ret;
 }
 
-
 struct e_bluez_elements_for_each_data
 {
    Eina_Hash_Foreach cb;
-   void *data;
+   void             *data;
 };
 
 static Eina_Bool
@@ -1901,8 +2022,8 @@ e_bluez_elements_for_each(Eina_Hash_Foreach cb, const void *user_data)
 
    EINA_SAFETY_ON_NULL_RETURN(cb);
 
-   eina_hash_foreach(elements, (Eina_Hash_Foreach) _e_bluez_elements_for_each,
-		     &data);
+   eina_hash_foreach(elements, (Eina_Hash_Foreach)_e_bluez_elements_for_each,
+                     &data);
 }
 
 static Eina_Bool
@@ -1911,18 +2032,19 @@ _e_bluez_elements_get_allocate(unsigned int *count, E_Bluez_Element ***p_element
    *count = eina_hash_population(elements);
    if (*count == 0)
      {
-	*p_elements = NULL;
-	return 1;
+        *p_elements = NULL;
+        return 1;
      }
 
    *p_elements = malloc(*count * sizeof(E_Bluez_Element *));
    if (!*p_elements)
      {
-	ERR("could not allocate return array of %d elements: %s",
-	    *count, strerror(errno));
-	*count = 0;
-	return 0;
+        ERR("could not allocate return array of %d elements: %s",
+            *count, strerror(errno));
+        *count = 0;
+        return 0;
      }
+
    return 1;
 }
 
@@ -1961,18 +2083,19 @@ e_bluez_elements_get_all(unsigned int *count, E_Bluez_Element ***p_elements)
    EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, 0);
 
    if (!_e_bluez_elements_get_allocate(count, p_elements))
-     return 0;
+      return 0;
+
    p = *p_elements;
-   eina_hash_foreach(elements, (Eina_Hash_Foreach) _e_bluez_elements_get_all,
-		     &p);
+   eina_hash_foreach(elements, (Eina_Hash_Foreach)_e_bluez_elements_get_all,
+                     &p);
    return 1;
 }
 
 struct e_bluez_elements_get_all_str_data
 {
    E_Bluez_Element **elements;
-   int count;
-   const char *str;
+   int               count;
+   const char       *str;
 };
 
 static Eina_Bool
@@ -1982,7 +2105,7 @@ _e_bluez_elements_get_all_type(Eina_Hash *hash __UNUSED__, const char *key __UNU
    E_Bluez_Element *element = e;
 
    if ((data->str) && (element->interface != data->str))
-     return 1;
+      return 1;
 
    data->elements[data->count] = element;
    data->count++;
@@ -2016,14 +2139,14 @@ e_bluez_elements_get_all_type(const char *type, unsigned int *count, E_Bluez_Ele
    EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, 0);
 
    if (!_e_bluez_elements_get_allocate(count, p_elements))
-     return 0;
+      return 0;
 
    data.elements = *p_elements;
    data.count = 0;
    data.str = eina_stringshare_add(type);
    eina_hash_foreach(elements,
-		     (Eina_Hash_Foreach) _e_bluez_elements_get_all_type,
-		     &data);
+                     (Eina_Hash_Foreach)_e_bluez_elements_get_all_type,
+                     &data);
 
    eina_stringshare_del(data.str);
    *count = data.count;
@@ -2060,46 +2183,55 @@ _e_bluez_element_property_changed_callback(void *data, DBusMessage *msg)
    DBG("Property changed in element %s", element->path);
 
    if (!_dbus_callback_check_and_init(msg, &itr, NULL))
-     return;
+      return;
 
    t = dbus_message_iter_get_arg_type(&itr);
    if (!_dbus_iter_type_check(t, DBUS_TYPE_STRING))
      {
-	ERR("missing name in property changed signal");
-	return;
+        ERR("missing name in property changed signal");
+        return;
      }
+
    dbus_message_iter_get_basic(&itr, &name);
 
    dbus_message_iter_next(&itr);
    t = dbus_message_iter_get_arg_type(&itr);
    if (!_dbus_iter_type_check(t, DBUS_TYPE_VARIANT))
      {
-	ERR("missing value in property changed signal");
-	return;
+        ERR("missing value in property changed signal");
+        return;
      }
+
    dbus_message_iter_recurse(&itr, &v_itr);
    t = dbus_message_iter_get_arg_type(&v_itr);
 
    if (t == DBUS_TYPE_ARRAY)
-     value = e_bluez_element_iter_get_array(&v_itr, name);
+     {
+        value = e_bluez_element_iter_get_array(&v_itr, name);
+     }
    else if (t != DBUS_TYPE_INVALID)
-     dbus_message_iter_get_basic(&v_itr, &value);
+     {
+        dbus_message_iter_get_basic(&v_itr, &value);
+     }
    else
      {
-	ERR("property has invalid type %s", name);
-	return;
+        ERR("property has invalid type %s", name);
+        return;
      }
 
    r = _e_bluez_element_property_value_add(element, name, t, value);
    if (r < 0)
-     ERR("failed to add property value %s (%c)", name, t);
+     {
+        ERR("failed to add property value %s (%c)", name, t);
+     }
    else if (r == 1)
      {
-	INF("property value changed %s (%c)", name, t);
-	changed = 1;
+        INF("property value changed %s (%c)", name, t);
+        changed = 1;
      }
+
    if (changed)
-     _e_bluez_element_listeners_call(element);
+      _e_bluez_element_listeners_call(element);
 }
 
 /**
@@ -2125,24 +2257,24 @@ e_bluez_element_register(const char *path, const char *interface)
 
    element = eina_hash_find(elements, path);
    if (element)
-     return element;
+      return element;
 
    element = e_bluez_element_new(path, interface);
    if (!element)
-     return NULL;
+      return NULL;
 
    if (!eina_hash_add(elements, element->path, element))
      {
-	ERR("could not add element %s to hash, delete it.", path);
-	e_bluez_element_free(element);
-	return NULL;
+        ERR("could not add element %s to hash, delete it.", path);
+        e_bluez_element_free(element);
+        return NULL;
      }
 
    element->signal_handler =
-     e_dbus_signal_handler_add
-     (e_bluez_conn, e_bluez_system_bus_name_get(),
-      element->path, element->interface, "PropertyChanged",
-      _e_bluez_element_property_changed_callback, element);
+      e_dbus_signal_handler_add
+         (e_bluez_conn, e_bluez_system_bus_name_get(),
+         element->path, element->interface, "PropertyChanged",
+         _e_bluez_element_property_changed_callback, element);
 
    e_bluez_element_event_add(E_BLUEZ_EVENT_ELEMENT_ADD, element);
 
@@ -2161,12 +2293,12 @@ _e_bluez_element_unregister_internal(E_Bluez_Element *element)
 {
    if (element->signal_handler)
      {
-	e_dbus_signal_handler_del(e_bluez_conn, element->signal_handler);
-	element->signal_handler = NULL;
+        e_dbus_signal_handler_del(e_bluez_conn, element->signal_handler);
+        element->signal_handler = NULL;
      }
 
    ecore_event_add(E_BLUEZ_EVENT_ELEMENT_DEL, element,
-		   _e_bluez_element_event_unregister_and_free, NULL);
+                   _e_bluez_element_event_unregister_and_free, NULL);
 }
 
 /**
@@ -2182,10 +2314,10 @@ void
 e_bluez_element_unregister(E_Bluez_Element *element)
 {
    if (!element)
-     return;
+      return;
 
    if (elements)
-     eina_hash_del_by_key(elements, element->path);
+      eina_hash_del_by_key(elements, element->path);
 }
 
 /**
@@ -2216,8 +2348,8 @@ e_bluez_elements_init(void)
 {
    EINA_SAFETY_ON_FALSE_RETURN(!elements);
    elements =
-     eina_hash_string_superfast_new(EINA_FREE_CB
-				    (_e_bluez_element_unregister_internal));
+      eina_hash_string_superfast_new(EINA_FREE_CB
+                                        (_e_bluez_element_unregister_internal));
 }
 
 void
@@ -2247,3 +2379,4 @@ e_bluez_element_is_device(const E_Bluez_Element *element)
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
    return _e_bluez_element_is(element, e_bluez_iface_device);
 }
+

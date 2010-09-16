@@ -27,10 +27,11 @@ e_bluez_devicefound_alias_get(const E_Bluez_Device_Found *device)
    EINA_SAFETY_ON_NULL_RETURN_VAL(device, NULL);
 
    entry = e_bluez_element_array_dict_find_stringshared
-     (device->array, e_bluez_prop_alias);
+         (device->array, e_bluez_prop_alias);
 
    if ((entry) && (entry->type == DBUS_TYPE_STRING))
-     return entry->value.str;
+      return entry->value.str;
 
    return NULL;
 }
+

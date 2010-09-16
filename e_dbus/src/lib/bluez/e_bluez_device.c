@@ -9,12 +9,12 @@ e_bluez_device_get(const char *path)
 
    device = e_bluez_element_get(path);
    if (!device)
-     return NULL;
+      return NULL;
 
    if (!e_bluez_element_is_device(device))
      {
-	WRN("path '%s' is not a device!", path);
-	return NULL;
+        WRN("path '%s' is not a device!", path);
+        return NULL;
      }
 
    return device;
@@ -41,7 +41,7 @@ e_bluez_device_name_get(const E_Bluez_Element *element, const char **name)
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, 0);
 
    return e_bluez_element_property_get_stringshared
-     (element, e_bluez_prop_name, NULL, name);
+             (element, e_bluez_prop_name, NULL, name);
 }
 
 /**
@@ -65,7 +65,7 @@ e_bluez_device_alias_get(const E_Bluez_Element *element, const char **alias)
    EINA_SAFETY_ON_NULL_RETURN_VAL(alias, 0);
 
    return e_bluez_element_property_get_stringshared
-     (element, e_bluez_prop_alias, NULL, alias);
+             (element, e_bluez_prop_alias, NULL, alias);
 }
 
 /**
@@ -87,5 +87,6 @@ e_bluez_device_paired_get(const E_Bluez_Element *element, Eina_Bool *paired)
    EINA_SAFETY_ON_NULL_RETURN_VAL(paired, 0);
 
    return e_bluez_element_property_get_stringshared
-     (element, e_bluez_prop_paired, NULL, paired);
+             (element, e_bluez_prop_paired, NULL, paired);
 }
+
