@@ -1,220 +1,335 @@
 <?php
 //******* SET THIS TO YOUR e/devs DIRECTORY  ********
 $cvs_dir="/var/www/web/devs";
+$geocache_file="/tmp/e_devs_map_geocache";
 //***************************************************
+
+function
+GetValueFromInfoFile($field, $InfoFile)
+{
+   if ($i=eregi("$field:[ \t]*([ ,@.:/~()!a-zA-Z0-9_-]*)", "$InfoFile", $result))
+      return trim($result[1]);
+   else return "";
+}
+
+function
+GeoCoordsQuery($address)
+{
+   global $geocache_file;
+   global $geocache;
+
+   $coords['lat'] = 0;
+   $coords['lon'] = 0;
+
+   /* check if address is already in the geocache */
+   if (array_key_exists($address, $geocache))
+   {
+      $coords['lat'] = $geocache[$address][0];
+      $coords['lon'] = $geocache[$address][1];
+      if (isset($_REQUEST["debug"]))
+         print "CACHED: $address COORDS: $coords[lat] $coords[lon]<br><br>";
+      return $coords;
+   }
+
+   /* or perform the heavy query */
+   if (isset($_REQUEST["debug"])) print "GEOCODING: $address<br>";
+   $url = "http://maps.google.com/maps/api/geocode/json?sensor=false&address=".
+          rawurlencode($address);
+   if($result = file_get_contents($url))
+   {
+      $result_parts = json_decode($result);
+      if($result_parts->status == "OK")
+      {
+         $coords['lat'] = $result_parts->results[0]->geometry->location->lat;
+         $coords['lon'] = $result_parts->results[0]->geometry->location->lng;
+         if (isset($_REQUEST["debug"]))
+            print "RES: $coords[lat]   $coords[lon]<br><br>";
+
+         /* store the result in the cache */
+         $line = "$address=$coords[lat]|$coords[lon]\n";
+         file_put_contents($geocache_file, $line, FILE_APPEND);
+      }
+      elseif (isset($_REQUEST["debug"]))
+         print "<font color=red>ERR: $result_parts->status </font><br><br>";
+   }
+   return $coords;
+}
+
+/* check cvs dir */
 if (!is_dir($cvs_dir))
-{ 
+{
    echo "<div align=center><b>ERROR: can't find cvs devs directory path.</b></div>";
    exit();
 }
-function GetValueFromInfoFile($field,$InfoFile)//ex ("Login",$txt)
-{
-   if ($i=eregi("$field:[ \t]*([ ,@.:/~()!a-zA-Z0-9_-]*)", "$InfoFile", $result))
-      return $result[1];
-   else return "";
-}
-?>
-<script src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=ABQIAAAARkdgkadRXuzrWwgVzdK5AhToLtqo94m_X43yiUd9C_Li1sgGCRRvCo6FZIXZvbxa9PQHFBEeHkDlKg" type="text/javascript"></script>
-<style type="text/css">
-   .tooltip {
-      background-color: white;
-      border: 1px solid black;
-      font-size: 12px;
-      padding: 2px;
-   }
-</style>
-<center><h1>Enlightenment 开发者地图</h1></center>
-<p>
-此地图以地理图形方式显示了拥有 SVN 帐号的人员的地理位置。信息直接来自于开发者自己的 info.txt。
-绿色代表开发者自己填写了 Geo 数据，红色的则是通过“Location”栏信息匹配的，并不十分精确。
-</p>
-<p>
-点击标记将会显示该开发人员的相关信息。
-</p>
-<table align="center" border=0>
- <tr>
-  <td align="right" width="100">
-   <div id="lat" align="left" style="padding: 2px; border: 1px solid black; font-size: 12px ">Lat: 0</div>
-  </td>
-  <td width="200">
-   <div id="lon" align="left" style="padding: 2px; border: 1px solid black; width: 100px; font-size: 12px ">Lat: 0</div>
-  </td>
-  <td align="right">
-   <div id="totals" align="left" style="padding: 2px; border: 1px solid black; width: 200px; font-size: 12px ">Total devs: 0 (0 guessed)</div>
-  </td>
- </tr>
- <tr>
-  <td colspan="3">
-   <div id="map" style="border: 1px solid black; width: 1030px; height: 550px"></div>
-  </td>
- </tr>
- <tr>
-  <td colspan="3">
-  </td>
- </tr>
-</table>
 
+/* load cache file if present */
+$geocache = array();
+if (file_exists($geocache_file))
+{
+   $blob = file_get_contents($geocache_file);
+   $lines = explode("\n", $blob);
+
+   /* parse lines */
+   foreach ($lines as $line)
+   {
+      /* line format: 'Sant Cugat, Barcelona, Spain=41.4718638|2.0821392' */
+      $fields = explode("=", $line);
+      $geocache[$fields[0]] = explode("|", $fields[1]);
+   }
+
+   /* debug: print the whole cache */
+   if (isset($_REQUEST["debug"]))
+   {
+      print "<b>GEOCACHE:</b><pre>"; print_r($geocache); print "</pre><hr>";
+   }
+}
+
+/* build a list of directory that contain the info.txt file */
+$dirs = array();
+if ($dh = opendir($cvs_dir))
+{
+   while (($file = readdir($dh)) !== false)
+      if (is_dir("$cvs_dir/$file") AND file_exists("$cvs_dir/$file/info.txt"))
+         $dirs[] = $file;
+}
+
+/* build the devs array, populated by parsing all the info.txt files */
+$devs = array();
+$tot_geodata = 0;
+$tot_guessed = 0;
+foreach ($dirs as $dir)
+{
+   /* get user info from info.txt file */
+   $txt = file_get_contents("$cvs_dir/$dir/info.txt");
+   $Coords = GetValueFromInfoFile("GeoData", $txt); 
+   $Location = GetValueFromInfoFile("Location", $txt);
+   $IRC =  GetValueFromInfoFile("IRC Nick", $txt);
+
+   /* skip user without a nickname */
+   if (!$IRC OR $IRC == "N/A")
+      continue;
+
+   /* parse the GeoData fields */
+   $lat = $lon = 0;
+   $Coords = explode(" ",$Coords);
+   if($Coords && (count($Coords) == 2))
+   {
+      $tot_geodata ++;
+      $lat = floatval($Coords[0]);
+      $lon = floatval($Coords[1]);
+      $icon = "http://labs.google.com/ridefinder/images/mm_20_green.png";
+   }
+
+   /* or use the geocoder to guess the position */
+   if (!($lat AND $lon) AND $Location)
+   {
+      $coords = GeoCoordsQuery($Location);
+      if ($coords["lat"] AND $coords["lon"])
+      {
+         $tot_guessed ++;
+         $lat = $coords["lat"];
+         $lon = $coords["lon"];
+         $icon = "http://labs.google.com/ridefinder/images/mm_20_red.png";
+      }
+   }
+   
+   /* skip users without a position */
+   if (!($lat AND $lon))
+      continue;
+
+   /* create an array entry for this developer */
+   $dev = array();
+   $dev["IRC"] = $IRC;
+   $dev["lat"] = $lat;
+   $dev["lon"] = $lon;
+   $dev["Location"] = $Location;
+   $dev["Name"] = GetvalueFrominfoFile("Name", $txt);
+   $dev["Email"] = GetvalueFrominfoFile("E-Mail", $txt);
+   if ($dev["Email"][0] == '-') $dev["Email"] = ""; 
+   $dev["WWW"] = GetValueFromInfoFile("WWW", $txt);
+   $dev["Managing"] = GetValueFromInfoFile("Managing", $txt);
+   $dev["Contributing"] = GetValueFromInfoFile("Contributing", $txt);
+   $dev["Group"] = GetValueFromInfoFile("Group", $txt);
+   $dev["Platform"] = GetValueFromInfoFile("Platform", $txt );
+
+   /* check the user icon (icon-map.png, green or red) */ 
+   if (file_exists("$cvs_dir/$dir/icon-map.png"))
+      $dev["Icon"] = "http://download.enlightenment.org/devs/$dir/icon-map.png";
+   else
+      $dev["Icon"] = $icon;
+
+   /* check the user image (icon-med.png) */
+   if (file_exists("$cvs_dir/$dir/icon-med.png"))
+      $dev["IconBig"] = "http://download.enlightenment.org/devs/$dir/icon-med.png";
+   else
+      $dev["IconBig"] = "";
+
+   $devs[] = $dev;
+}
+
+/* sort the devs array by nickname */
+function sort_by_irc($a, $b) { return strcasecmp($a["IRC"], $b["IRC"]); }
+usort($devs, "sort_by_irc");
+
+/* debug: print the whole devs array */
+if (isset($_REQUEST["debug"]))
+{
+   print "<hr><b>DEVS ARRAY</b><pre>"; print_r($devs); print "</pre><hr>";
+}
+
+/******************************************************************************/
+?>
+
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<!--script type="text/javascript" src="ClusterMarker.js"></script-->
+
+<style type="text/css">
+   html { height: 100% }
+   body { height: 100% }
+   #map_canvas { height: 500px; width: 100% }
+   #map_table { width: 100%; font-size: 11px; border: 1px solid #CCC }
+   .infowin td { font-size: 11px }
+
+   #sidebar { height: 500px; overflow-y: scroll }
+   #sidebar a { display: block ; padding-right: 5px }
+   #sidebar a:nth-child(2n) { background-color: #EEE }
+
+   #totals { float: right; font-size: 11px; margin-right: 5px }
+   #coords { float: left; font-size: 11px; margin-left: 5px }
+</style>
+
+<center><h1>Enlightenment 开发者地图</h1></center>
+<p>此地图以地理图形方式显示了拥有 SVN 帐号的人员的地理位置。信息直接来自于开发者自己的 info.txt。
+绿色代表开发者自己填写了 Geo 数据，红色的则是通过“Location”栏信息匹配的，并不十分精确。</p>
+<p>点击标记将会显示该开发人员的相关信息。
+</p>
+
+<div id="coords">Coords:</div>
+<div  id="totals">
+   Total devs: <?=$tot_geodata+$tot_guessed?> (<?=$tot_guessed?> guessed)
+</div>
+<table id="map_table" border=0>
+   <tr>
+      <td><div id="sidebar"></div></td>
+      <td width="100%"><div id="map_canvas"></div></td>
+   </tr>
+</table>
+<br><br>
 
 
 <script type="text/javascript">
-   
-   var marker = null;
-   
-   if(!GBrowserIsCompatible())
+/******************************************************************************/
+/* Initialize map canvas */
+var canvas = document.getElementById("map_canvas")
+var map = new google.maps.Map(canvas, {
+      zoom: 2,
+      center: new google.maps.LatLng(26, 0),
+      mapTypeId: google.maps.MapTypeId.SATELLITE
+    })
+var infowin = new google.maps.InfoWindow()
+
+/* on mouse-move update the coords div */
+google.maps.event.addListener(map, 'mousemove', function(event) {
+      update_coords(event.latLng);
+   });
+
+/* Place all the markers (from the php array)*/
+<?php 
+foreach ($devs as $dev)
+   echo "create_dev_marker($dev[lat], $dev[lon], '$dev[IRC]', '$dev[Location]',
+                  '$dev[Icon]', '$dev[IconBig]', '$dev[Name]', '$dev[Email]',
+                  '$dev[WWW]', '$dev[Managing]', '$dev[Contributing]',
+                  '$dev[Platform]', '$dev[Group]')\n";   
+?>
+
+/* Create a new developer marker */
+function
+create_dev_marker(lat, lon, IRC, Location, Icon, IconBig, Name, Email, WWW,
+                  Managing, Contributing, Platform, Group)
+{
+   /* set icons sizes */
+   if (Icon.match("icon-map.png$") == "icon-map.png")
+      var icon = new google.maps.MarkerImage(Icon,
+         new google.maps.Size(22, 29),   // icon size
+         new google.maps.Point(0,0),     // icon origin point
+         new google.maps.Point(11, 29))  // icon anchor point
+   else
+      var icon = new google.maps.MarkerImage(Icon,
+         new google.maps.Size(12, 20),   // icon size
+         new google.maps.Point(0,0),     // icon origin point
+         new google.maps.Point(6, 20))   // icon anchor point
+ 
+   var shadow = new google.maps.MarkerImage(
+         'http://labs.google.com/ridefinder/images/mm_20_shadow.png',
+         new google.maps.Size(22, 20),  // shadow size
+         new google.maps.Point(0,0),    // shadow origin point
+         new google.maps.Point(6, 20))  // shadow anchor point
+
+   /* create infowindow html content */
+   var html = ""
+   html += '<div class="infowin">'
+   html += '<table><tr>'
+   if (IconBig)      html += '<td><img src="' + IconBig + '"></td>'
+                     html += '<td><h3>' + IRC
+   if (Name)         html += ' (' + Name + ')'
+                     html += '</h3>'
+   if (Email)        html += Email
+   if (Email && WWW) html += ' - '
+   if (WWW)          html += '<a href="' + WWW + '">' + WWW + '</a>'
+                     html += '<br>'
+   if (Managing)     html += '<b>Managing:</b> ' + Managing + '<br>'
+   if (Contributing) html += '<b>Contributing:</b> ' + Contributing + '<br>'
+   if (Group)        html += '<b>Group:</b> ' + Group + '<br>'
+   if (Platform)     html += '<b>Platform:</b> ' + Platform + '<br>'
+   if (Location)     html += '<b>Location:</b> ' + Location + '<br>'
+   html += '</td></tr></table>'
+   html += '</div>'
+
+   /* create the marker */
+   if (lat != 0 && lon != 0)
    {
-      alert("Sorry, the Google Maps API is not compatible with this browser");
-      exit;
+      var latlng = new google.maps.LatLng(lat, lon)
+      var marker = new google.maps.Marker({
+         position: latlng,
+         title: IRC,
+         map: map,
+         icon: icon,
+         shadow: shadow
+       })
+
+      /* on marker click show the infowin */
+      google.maps.event.addListener(marker, 'click', function() {
+            show_infowin(marker, html)
+         })
+
+      /* add the marker to the sidebar list */
+      sidebar_add_entry(IRC, marker, html)
    }
-   //Create map
-   var map = new GMap2(document.getElementById("map"));
-   map.enableDoubleClickZoom();
-   map.addControl(new GLargeMapControl());
-   map.addControl(new GMapTypeControl());
-   map.setCenter(new GLatLng(20, 11), 2);
-   map.setMapType(G_SATELLITE_MAP);
+}
 
-   //Mouse move callback
-   GEvent.addListener(map, "mousemove", function(point) {
-         var ptr_lat = document.getElementById('lat');
-         var ptr_lon = document.getElementById('lon');
-         ptr_lat.innerHTML = 'Lat: '+Math.round(point.lat()*10000)/10000;
-         ptr_lon.innerHTML = 'Lon: '+Math.round(point.lng()*10000)/10000;
-         });
-   
-   //Create red icon
-   var icon_red = new GIcon();
-   icon_red.image = "http://labs.google.com/ridefinder/images/mm_20_red.png";
-   icon_red.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
-   icon_red.iconSize = new GSize(12, 20);
-   icon_red.shadowSize = new GSize(22, 20);
-   icon_red.iconAnchor = new GPoint(6, 20);
-   icon_red.infoWindowAnchor = new GPoint(5, 1);
-   //Create green icon
-   var icon_green = new GIcon();
-   icon_green.image = "http://labs.google.com/ridefinder/images/mm_20_green.png";
-   icon_green.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
-   icon_green.iconSize = new GSize(12, 20);
-   icon_green.shadowSize = new GSize(22, 20);
-   icon_green.iconAnchor = new GPoint(6, 20);
-   icon_green.infoWindowAnchor = new GPoint(5, 1);
-   
-   //set up marker mouseover tooltip div
-   var tooltip = document.createElement("div");
-   map.getPane(G_MAP_FLOAT_PANE).appendChild(tooltip);
-   tooltip.style.visibility="hidden";
+function
+show_infowin(marker, html)
+{
+   infowin.setContent(html)
+   infowin.open(map, marker)
+}
 
-   //Add developer info one by one from info.txt
-   <?php
-      $Debug = "";
-      $tot_geodata = 0;
-      $tot_location = 0;
-      if($dh = opendir($cvs_dir)) 
-      {
-         while (($file = readdir($dh)) !== false)
-	 {
-            if( is_dir("$cvs_dir/$file") && file_exists("$cvs_dir/$file/info.txt"))
-	    {
-	       $txt = file_get_contents("$cvs_dir/$file/info.txt");
-	       $Coords = GetValueFromInfoFile("GeoData","$txt");
-	       $IRC = GetValueFromInfoFile("IRC Nick","$txt");
-	       $Name = GetValueFromInfoFile("Name","$txt");
-	       $Location = GetValueFromInfoFile("Location","$txt");
-	       $EMail = GetValueFromInfoFile("E-Mail","$txt");
-               if ($EMail[0] == '-')$EMail = ""; 
-	       $WWW = GetValueFromInfoFile("WWW","$txt");
-	       $Managing = GetValueFromInfoFile("Managing","$txt");
-	       $Contributing = GetValueFromInfoFile("Contributing","$txt");
-	       $Group = GetValueFromInfoFile("Group","$txt");
-	       $Platform = GetValueFromInfoFile("Platform","$txt");
-	       
-	       $Coords = explode(" ",$Coords);
-	       if($Coords && ((count($Coords) == 2))
-	       {
-	          $tot_geodata ++;
-		  $lat = floatval($Coords[0]);
-                  $lon = floatval($Coords[1]);
-		  echo "addDeveloperMarker($lat,$lon,'icon_green','$IRC','$Name','$Location','$EMail','$WWW','$Managing','$Contributing','$Group','$Platform');\n";
-		  /* ** DEBUG ************
-		  $Debug .= "**Coords: -$Coords[0]-$Coords[1]<br>";
-                  $Debug .= "**NAME: -$Name-<br>";
-                  $Debug .= "**IRC: -$IRC-<br>";
-                  $Debug .= "**Location: -$Location-<br>";
-                  $Debug .= "**E-Mail: -$EMail-<br>";
-                  $Debug .= "**WWW: -$WWW-<br>";
-                  $Debug .= "**Managing: -$Managing-<br>";
-                  $Debug .= "**Contributing: -$Contributing-<br>";
-                  $Debug .= "**Group: -$Group-<br>";
-                  $Debug .= "**Platform: -$Platform-<br>";
-                  $Debug .= "<hr>";
-                  echo 'document.write("'.$Debug.'");';
-                  //*/
-               }elseif($Location)
-	       {
-	          $tot_location ++;
-	          echo "
-		     var geocoder = new GClientGeocoder();
-		     geocoder.getLatLng('$Location',
-		           function(point)
-			   {
-			       if (point)
-			          addDeveloperMarker(point.lat(),point.lng(),'icon_red','$IRC','$Name','$Location','$EMail','$WWW','$Managing','$Contributing','$Group','$Platform');
-                           });
-			 ";
-	       }
-	    }
-	 }
-         closedir($dh);
-      }
-   ?>
+function
+sidebar_add_entry(IRC, marker, html)
+{
+   var newlink = document.createElement('a')
+   newlink.onclick = function() { show_infowin(marker, html); return false; }
+   newlink.innerHTML = IRC
+   newlink.setAttribute('href', '#');
+   document.getElementById("sidebar").appendChild(newlink)
+}
 
-   //Create a new developer marker
-   function addDeveloperMarker(lat,lon,icon,nickname,name,location,email,www,managing,contributing,group,platform)
-   {
-      if (!lat || !lon)
-         return;
-      var html  = '<div style="white-space:nowrap; font-size: 12px;">';
-      if (name)         html += '<div style="font-size: 14px;"><b>'+nickname+' ('+name+')</b></div><br>';
-      if (email)        html += email;
-      if (email && www) html += ' - ';
-      if (www)          html += '<a href="'+www+'">'+www+'</a>';
-                        html += '<br>';
-      if (managing)     html += '<b>Managing:</b> '+managing+'<br>';
-      if (contributing) html += '<b>Contributing:</b> '+contributing+'<br>';
-      if (group)        html += '<b>Group:</b> '+group+'<br>';
-      if (platform)     html += '<b>Platform:</b> '+platform+'<br>';
-      if (location)     html += '<b>Location:</b> '+location+'<br>';
-      html += '</div>';
-
-      var point = new GLatLng(lat, lon)
-      if (icon == "icon_red") var marker = new GMarker(point, {icon: icon_red});
-      if (icon == "icon_green") var marker = new GMarker(point, {icon: icon_green});
-      marker.tooltip = '<div class="tooltip"><nobr>'+nickname+'</nobr></div>';
-      GEvent.addListener(marker, "click", function() {
-            marker.openInfoWindowHtml(html);
-	 });
-      GEvent.addListener(marker,"mouseover", function() {
-            showTooltip(marker);
-         });        
-      GEvent.addListener(marker,"mouseout", function() {
-            tooltip.style.visibility="hidden";
-         });   
-      map.addOverlay(marker);
-
-      //Update Totals
-      var total = document.getElementById('totals');
-      total.innerHTML = 'Total devs: '+<?=$tot_location+$tot_geodata?>+' (<?=$tot_location?> guessed)';
-   }   
-   //This function displays the tooltip
-   function showTooltip(marker) {
-      tooltip.innerHTML = marker.tooltip;
-      var point=map.getCurrentMapType().getProjection().fromLatLngToPixel(map.fromDivPixelToLatLng(new GPoint(0,0),true),map.getZoom());
-      var offset=map.getCurrentMapType().getProjection().fromLatLngToPixel(marker.getPoint(),map.getZoom());
-      var anchor=marker.getIcon().iconAnchor;
-      var width=marker.getIcon().iconSize.width;
-      var height=tooltip.clientHeight;
-      var pos = new GControlPosition(G_ANCHOR_TOP_LEFT, new GSize(offset.x - point.x - anchor.x + width, offset.y - point.y -anchor.y -height)); 
-      pos.apply(tooltip);
-      tooltip.style.visibility="visible";
-   }
+function
+update_coords(latLng)
+{
+   var coords_div = document.getElementById("coords")
+   var coords = "Coords: " + latLng.toUrlValue(5)
+   coords_div.innerHTML = coords.replace(",", " ")
+}
 
 </script>
