@@ -20,7 +20,7 @@ m4_define([lt_age], v_min)
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 
 AC_INIT([python-ecore], [v_ver], [enlightenment-devel@lists.sourceforge.net])
-AC_PREREQ([2.52])
+AC_PREREQ([2.65])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_BUILD
