@@ -67,9 +67,9 @@ struct _Eupnp_Ecore_Server {
    void *data;
 };
 
-typedef int (*Eupnp_Ecore_Fd_Handler_Cb) (void *data, Ecore_Fd_Handler *handler);
-typedef int (*Eupnp_Ecore_Timer_Cb) (void *data);
-typedef int (*Eupnp_Ecore_Idler_Cb) (void *data);
+typedef Eina_Bool (*Eupnp_Ecore_Fd_Handler_Cb) (void *data, Ecore_Fd_Handler *handler);
+typedef Eina_Bool (*Eupnp_Ecore_Timer_Cb) (void *data);
+typedef Eina_Bool (*Eupnp_Ecore_Idler_Cb) (void *data);
 
 
 static Eupnp_Fd_Handler
