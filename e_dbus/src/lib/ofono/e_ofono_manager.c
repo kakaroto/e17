@@ -36,8 +36,10 @@ e_ofono_manager_modems_get(Eina_Array **array)
 
    element = e_ofono_element_get(manager_path, e_ofono_iface_manager);
    r = e_ofono_element_property_get_stringshared
-      (element, e_ofono_prop_modems, NULL, &a);
+         (element, e_ofono_prop_modems, NULL, &a);
    if (a)
-     *array = a->array;
+      *array = a->array;
+
    return r;
 }
+

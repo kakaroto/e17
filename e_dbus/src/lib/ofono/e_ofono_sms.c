@@ -17,7 +17,7 @@ e_ofono_sms_sca_get(const E_Ofono_Element *element, const char **sca)
    EINA_SAFETY_ON_NULL_RETURN_VAL(sca, 0);
 
    return e_ofono_element_property_get_stringshared
-      (element, e_ofono_prop_sca, NULL, sca);
+             (element, e_ofono_prop_sca, NULL, sca);
 }
 
 /**
@@ -37,7 +37,7 @@ e_ofono_sms_sca_set(E_Ofono_Element *element, const char *sca, E_DBus_Method_Ret
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
 
    return e_ofono_element_property_set_full
-      (element, e_ofono_prop_sca, DBUS_TYPE_STRING, sca, cb, data);
+             (element, e_ofono_prop_sca, DBUS_TYPE_STRING, sca, cb, data);
 }
 
 /**
@@ -63,15 +63,16 @@ e_ofono_sms_send_message(E_Ofono_Element *element, const char *number, const cha
    DBusMessageIter i;
 
    if (!(m = dbus_message_new_method_call(e_ofono_system_bus_name_get(),
-					  element->path, element->interface,
-					  e_ofono_method_send_sms)))
-     return EINA_FALSE;
+                                          element->path, element->interface,
+                                          e_ofono_method_send_sms)))
+      return EINA_FALSE;
 
    dbus_message_iter_init_append(m, &i);
    dbus_message_iter_append_basic(&i, DBUS_TYPE_STRING, &number);
    dbus_message_iter_append_basic(&i, DBUS_TYPE_STRING, &message);
 
    return e_ofono_element_message_send(element, e_ofono_method_send_sms,
-				       e_ofono_iface_sms, NULL, m,
-				       &element->_pending.send_sms, cb, data);
+                                       e_ofono_iface_sms, NULL, m,
+                                       &element->_pending.send_sms, cb, data);
 }
+
