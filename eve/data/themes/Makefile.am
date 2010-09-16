@@ -23,11 +23,12 @@ images = \
     bt_reload_selected.png \
     bt_tab_normal.png \
     bt_tab_selected.png \
+    bt_addtab_normal.png \
+    bt_addtab_selected.png \
     panel-top-triangle.png \
     scrollbar-bg.png \
     scrollbar-knob.png \
     shadow-bottom.png \
-    tab-add.png \
     tab-bg.png \
     tab-bg-selected.png \
     tab-close.png \

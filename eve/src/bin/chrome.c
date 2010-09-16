@@ -262,7 +262,7 @@ static More_Menu_Item more_menu_root[] =
    { ITEM_TYPE_LAST, NULL, NULL, NULL, ITEM_FLAG_NONE }
 };
 
-static Elm_Gengrid_Item_Class gic_default, gic_new_page;
+static Elm_Gengrid_Item_Class gic_default;
 
 static Eina_List *
 _eina_hash_sorted_keys_get(Eina_Hash *hash, Eina_Compare_Cb compare_func)
@@ -1607,7 +1607,8 @@ tab_grid_item_click(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-tab_grid_new_tab_click(void *data, Evas_Object *obj, void *event_info)
+on_action_addtab(void *data, Evas_Object *o __UNUSED__,
+                 const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Evas_Object *chrome = data;
    Browser_Window *win = evas_object_data_get(chrome, "win");
@@ -1629,8 +1630,6 @@ on_action_tab_show(void *data, Evas_Object *o __UNUSED__,
    Evas_Object *itr_chrome;
 
    elm_gengrid_clear(grid);
-
-   elm_gengrid_item_append(grid, &gic_new_page, NULL, tab_grid_new_tab_click, chrome);
 
    EINA_LIST_FOREACH(win->chromes, itr, itr_chrome)
    {
@@ -1947,10 +1946,6 @@ chrome_add(Browser_Window *win, const char *url)
    gic_default.func.state_get = tab_grid_state_get;
    gic_default.func.del = tab_grid_del;
 
-   memcpy(&gic_new_page, &gic_default, sizeof(gic_default));
-   gic_new_page.item_style = "new_page";
-   gic_default.item_style = "default";
-
    edje_object_signal_callback_add(ed, "action,back", "back", on_action_back, view);
    edje_object_signal_callback_add(ed, "action,forward", "forward", on_action_forward,
                                    view);
@@ -1960,6 +1955,8 @@ chrome_add(Browser_Window *win, const char *url)
                                    view);
    edje_object_signal_callback_add(ed, "action,home", "home", on_action_home,
                                    view);
+   edje_object_signal_callback_add(ed, "action,addtab", "addtab", on_action_addtab,
+                                   chrome);
 
    edje_object_signal_callback_add(ed, "action,fav_on", "", on_fav_on, view);
    edje_object_signal_callback_add(ed, "action,fav_off", "", on_fav_off, view);

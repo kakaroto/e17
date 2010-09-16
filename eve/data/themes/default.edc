@@ -24,6 +24,12 @@
                 offset: (_xpos) (-TOOLBAR_ITEM_SIZE/2); \
             } \
             image.normal: "bt_"_button_name"_normal.png"; \
+            color: 255 255 255 255; \
+        } \
+        description { state: "hidden" 0.0; \
+            inherit: "default" 0.0; \
+            color: 255 255 255 0; \
+            visible: 0; \
         } \
     } \
     part { name: "button-"_button_name"-selected"; \
@@ -46,6 +52,7 @@
             } \
             image.normal: "bt_"_button_name"_selected.png"; \
             color: 255 255 255 0; \
+            visible: 0; \
         } \
         description { state: "visible" 0.0; \
             inherit: "default" 0.0; \
@@ -96,19 +103,28 @@
             color: 190 190 190 255; \
             color2: 20 20 20 255; \
         } \
+        description { state: "hidden" 0.0; \
+            inherit: "default" 0.0; \
+            visible: 0; \
+            color: 190 190 190 0; \
+            color2: 20 20 20 0; \
+        } \
     } \
     part { name: "button-"_button_name"-disable-mask"; \
         type: RECT; \
         mouse_events: 1; \
         description { state: "default" 0.0; \
-            fixed: 1 1; \
-            visible: 0; \
-        } \
-        description { state: "masking" 0.0; \
             rel1.to: "button-"_button_name"-normal"; \
             rel1.offset: 0 7; \
             rel2.to: "button-"_button_name"-normal"; \
+            fixed: 1 1; \
+            color: 0 0 0 0; \
+            visible: 0; \
+        } \
+        description { state: "masking" 0.0; \
+            inherit: "default" 0.0; \
             color: 0 0 0 128; \
+            visible: 1; \
         } \
     } \
     programs { \
@@ -135,11 +151,27 @@
             signal: "button,"_button_name",disable"; \
             action: STATE_SET "masking" 0.0; \
             target: "button-"_button_name"-disable-mask"; \
+            transition: ACCELERATE 0.3; \
         } \
         program { name: _button_name"-enable"; \
             signal: "button,"_button_name",enable"; \
             action: STATE_SET "default" 0.0; \
             target: "button-"_button_name"-disable-mask"; \
+            transition: DECELERATE 0.3; \
+        } \
+        program { name: _button_name"-hide"; \
+            action: STATE_SET "hidden" 0.0; \
+            target: "button-"_button_name"-normal"; \
+            target: "button-"_button_name"-label"; \
+            target: "button-"_button_name"-disable-mask"; \
+            transition: ACCELERATE 0.3; \
+        } \
+        program { name: _button_name"-show"; \
+            action: STATE_SET "default" 0.0; \
+            target: "button-"_button_name"-normal"; \
+            target: "button-"_button_name"-label"; \
+            target: "button-"_button_name"-disable-mask"; \
+            transition: DECELERATE 0.3; \
         } \
     }
 
@@ -268,6 +300,8 @@ collections {
             image: "bt_reload_selected.png" COMP;
             image: "bt_tab_normal.png" COMP;
             image: "bt_tab_selected.png" COMP;
+            image: "bt_addtab_normal.png" COMP;
+            image: "bt_addtab_selected.png" COMP;
             image: "bt_home_normal.png" COMP;
             image: "bt_home_selected.png" COMP;
             image: "bt_fav_normal.png" COMP;
@@ -289,6 +323,8 @@ collections {
             public favorited;
             public panel_top_visible;
             public progress_bar_visible;
+            public button_back_disabled;
+            public button_forward_disabled;
 
             public fav_off() {
                 set_int(favorited, 0);
@@ -320,18 +356,48 @@ collections {
                 if (get_int(panel_top_visible) == 1) panel_top_hide();
                 else panel_top_show();
             }
+            public navigation_controls_hide() {
+                new state_dst[31];
+                new Float:state_idx;
+
+                get_state(PART:"button-back-disable-mask", state_dst, 30, state_idx);
+                if (strcmp(state_dst, "masking") == 0) set_int(button_back_disabled, 1);
+                else set_int(button_back_disabled, 0);
+
+                get_state(PART:"button-forward-disable-mask", state_dst, 30, state_idx);
+                if (strcmp(state_dst, "masking") == 0) set_int(button_forward_disabled, 1);
+                else set_int(button_forward_disabled, 0);
+
+                run_program(PROGRAM:"back-hide");
+                run_program(PROGRAM:"forward-hide");
+                run_program(PROGRAM:"reload-hide");
+            }
+            public navigation_controls_show() {
+                run_program(PROGRAM:"back-show");
+                run_program(PROGRAM:"forward-show");
+                run_program(PROGRAM:"reload-show");
+
+                if (get_int(button_back_disabled) == 1) run_program(PROGRAM:"back-disable");
+                if (get_int(button_forward_disabled) == 1) run_program(PROGRAM:"forward-disable");
+            }
             public tab_grid_hide() {
+                run_program(PROGRAM:"addtab-hide");
                 run_program(PROGRAM:"hide-tab-grid");
                 set_state(PART:"button-tab-selected", "default", 0.0);
                 set_int(tab_grid_visible, 0);
-                if (get_int(more_list_visible) != 1) run_program(PROGRAM:"show-white-view-mask");
+                if (get_int(more_list_visible) != 1) {
+                    run_program(PROGRAM:"show-white-view-mask");
+                    navigation_controls_show();
+                }
                 emit("tab,hide", "");
             }
             public tab_grid_show() {
                 set_int(tab_grid_visible, 1);
                 if (get_int(more_list_visible) == 1) more_list_hide();
+                else navigation_controls_hide();
                 run_program(PROGRAM:"show-tab-grid");
                 set_state(PART:"button-tab-selected", "visible", 0.0);
+                run_program(PROGRAM:"addtab-show");
                 run_program(PROGRAM:"show-black-view-mask");
                 emit("tab,show", "");
             }
@@ -343,12 +409,16 @@ collections {
                 run_program(PROGRAM:"hide-more-list");
                 set_state(PART:"button-more-selected", "default", 0.0);
                 set_int(more_list_visible, 0);
-                if (get_int(tab_grid_visible) != 1) run_program(PROGRAM:"show-white-view-mask");
+                if (get_int(tab_grid_visible) != 1) {
+                    run_program(PROGRAM:"show-white-view-mask");
+                    navigation_controls_show();
+                }
                 emit("more,hide", "");
             }
             public more_list_show() {
                 set_int(more_list_visible, 1);
                 if (get_int(tab_grid_visible) == 1) tab_grid_hide();
+                else navigation_controls_hide();
                 run_program(PROGRAM:"show-more-list");
                 set_state(PART:"button-more-selected", "visible", 0.0);
                 run_program(PROGRAM:"show-black-view-mask");
@@ -786,6 +856,7 @@ collections {
                     image.normal: "toolbar-background-bottom.png";
                 }
             }
+            TOOLBAR_BUTTON("addtab", "Add Tab", TOOLBAR_POSITION(1))
             TOOLBAR_BUTTON("back", "Back", TOOLBAR_POSITION(1))
             TOOLBAR_BUTTON("forward", "Forward", TOOLBAR_POSITION(2))
             TOOLBAR_BUTTON("reload", "Reload", TOOLBAR_POSITION(3))
@@ -906,6 +977,7 @@ collections {
                         set_int(progress_bar_visible, 0);
 
                         set_state(PART:"view-mask", "masking-white", 0.0);
+                        run_program(PROGRAM:"addtab-hide");
                     }
                 }
                 program { name: "list-back-clicked";
