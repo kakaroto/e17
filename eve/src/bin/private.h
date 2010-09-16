@@ -48,6 +48,8 @@ struct _Browser_Window
    Evas_Object *current_view;
 
    unsigned int current_tab;
+
+   Eina_Bool creating_tab : 1;
 };
 
 struct _App

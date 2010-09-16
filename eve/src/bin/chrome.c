@@ -989,11 +989,15 @@ on_tab_gengrid_item_realized(void *data, Evas_Object *o, void *event_info)
 {
    Browser_Window *win = data;
    Evas_Object *item = (Evas_Object *)elm_gengrid_item_object_get(event_info);
+   Evas_Object *view = elm_gengrid_item_data_get(event_info);
 
    evas_object_data_set(item, "item", event_info);
    evas_object_data_set(item, "win", win);
-   edje_object_signal_callback_add(item, "tab,close", "", on_tab_close,
-                                   elm_gengrid_item_data_get(event_info));
+   edje_object_signal_callback_add(item, "tab,close", "", on_tab_close, view);
+
+   win->creating_tab = EINA_TRUE;
+   elm_gengrid_item_selected_set(event_info, view == win->current_view);
+   win->creating_tab = EINA_FALSE;
 }
 
 static void
@@ -1594,10 +1598,12 @@ tab_grid_item_click(void *data, Evas_Object *obj, void *event_info)
 {
    Evas_Object *chrome = data;
    Browser_Window *win = evas_object_data_get(chrome, "win");
-   Evas_Object *ed = elm_layout_edje_get(chrome);
-
-   edje_object_signal_emit(ed, "tab,item,clicked", "");
-   tab_focus_chrome(win, chrome);
+   if (!win->creating_tab)
+     {
+        Evas_Object *ed = elm_layout_edje_get(chrome);
+        edje_object_signal_emit(ed, "tab,item,clicked", "");
+        tab_focus_chrome(win, chrome);
+     }
 }
 
 static void
