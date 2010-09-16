@@ -584,7 +584,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
 
     def font_path_list(self):
         "@rtype: list of str"
-        cdef Eina_List *itr
+        cdef const_Eina_List *itr
         lst = []
         itr = evas_font_path_list(self.obj)
         while itr != NULL:

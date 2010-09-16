@@ -143,14 +143,14 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
             self.file_set(*file)
         Object._set_common_params(self, **kargs)
 
-    def file_set(self, char *filename, key=None):
+    def file_set(self, const_char_ptr filename, key=None):
         """Set the image to display a file.
 
         @parm: B{filename} file that contains the image.
         @parm: B{key} required for some file formats, like EET.
         @raise EvasLoadError: on load error.
         """
-        cdef char *k
+        cdef const_char_ptr k
         cdef int err
         if key:
             k = key
@@ -163,7 +163,7 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
 
     def file_get(self):
         "@rtype: tuple of str"
-        cdef char *f, *k
+        cdef const_char_ptr f, k
         evas_object_image_file_get(self.obj, &f, &k)
         if f == NULL:
             file = None
@@ -494,7 +494,7 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
         "Force reload of image data."
         evas_object_image_reload(self.obj)
 
-    def save(self, char *filename, key=None, flags=None):
+    def save(self, const_char_ptr filename, key=None, flags=None):
         """Save image to file.
 
         @parm: B{filename} where to save.
@@ -502,7 +502,7 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
         @parm: B{flags} string of extra flags (separated by space), like
           "quality=85 compress=9".
         """
-        cdef char *k, *f
+        cdef const_char_ptr k, f
         if key:
             k = key
         else:
@@ -566,7 +566,7 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
         @note: that the raw data must be of the same size and colorspace
            of the image. If data is None the current image data will be freed.
         """
-        cdef void *p_data
+        cdef const_void *p_data
         cdef Py_ssize_t size, expected_size
 
         if buf is None:
@@ -580,7 +580,7 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
             if size < expected_size:
                 raise ValueError(("buffer size (%d) is smalled than expected "
                                   "(%d)!") % (size, expected_size))
-        evas_object_image_data_set(self.obj, p_data)
+        evas_object_image_data_set(self.obj,<void *> p_data)
 
     def image_data_update_add(self, x, y, w, h):
         """Mark a sub-region of the image to be redrawn.

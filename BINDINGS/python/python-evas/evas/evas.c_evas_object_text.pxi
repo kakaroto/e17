@@ -64,12 +64,12 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
 
     def font_source_get(self):
         "@rtype: str"
-        cdef char *s
+        cdef const_char_ptr s
         s = evas_object_text_font_source_get(self.obj)
         if s != NULL:
             return s
 
-    def font_source_set(self, char *value):
+    def font_source_set(self, const_char_ptr value):
         "Set where to find the font (ie: EET/Edje)."
         evas_object_text_font_source_set(self.obj, value)
 
@@ -77,12 +77,12 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
         def __get__(self):
             return self.font_source_get()
 
-        def __set__(self, char *value):
+        def __set__(self, const_char_ptr value):
             self.font_source_set(value)
 
     def font_get(self):
         "@rtype: (str, int)"
-        cdef char *f
+        cdef const_char_ptr f
         cdef int size
         evas_object_text_font_get(self.obj, &f, &size)
         if f == NULL:
@@ -91,7 +91,7 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
             font = f
         return (font, size)
 
-    def font_set(self, char *font, int size=10):
+    def font_set(self, const_char_ptr font, int size=10):
         """Set font to use.
 
         @parm: B{font}.
@@ -110,12 +110,12 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
 
     def text_get(self):
         "@rtype: str"
-        cdef char *s
+        cdef const_char_ptr s
         s = evas_object_text_text_get(self.obj)
         if s != NULL:
             return s
 
-    def text_set(self, char *value):
+    def text_set(self, const_char_ptr value):
         "Change text to be used"
         evas_object_text_text_set(self.obj, value)
 
@@ -123,7 +123,7 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
         def __get__(self):
             return self.text_get()
 
-        def __set__(self, char *value):
+        def __set__(self, const_char_ptr value):
             self.text_set(value)
 
     def ascent_get(self):

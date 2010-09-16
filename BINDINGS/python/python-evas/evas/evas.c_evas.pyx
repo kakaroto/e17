@@ -180,7 +180,7 @@ def _extended_object_mapping_unregister(char *name):
 cdef Object Object_from_instance(Evas_Object *obj):
     cdef void *data
     cdef Object o
-    cdef char *t
+    cdef const_char_ptr t
     cdef Canvas c
 
     if obj == NULL:

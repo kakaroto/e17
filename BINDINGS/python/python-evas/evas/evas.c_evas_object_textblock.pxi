@@ -40,14 +40,14 @@ cdef public class Textblock(Object) [object PyEvasTextblock, type PyEvasTextbloc
 
         @rtype: str
         """
-        cdef Evas_Textblock_Style *style
-        cdef char *s
+        cdef const_Evas_Textblock_Style *style
+        cdef const_char_ptr s
         style = evas_object_textblock_style_get(self.obj)
         s = evas_textblock_style_get(style)
         if s != NULL:
             return s
 
-    def style_set(self, char *value):
+    def style_set(self, const_char_ptr value):
         """set the textblock style information
 
         @parm: B{value}
@@ -61,7 +61,7 @@ cdef public class Textblock(Object) [object PyEvasTextblock, type PyEvasTextbloc
         def __get__(self):
             return self.style_get()
 
-        def __set__(self, char *value):
+        def __set__(self, const_char_ptr value):
             self.style_set(value)
 
     def text_markup_get(self):
@@ -69,12 +69,12 @@ cdef public class Textblock(Object) [object PyEvasTextblock, type PyEvasTextbloc
 
         @rtype: str
         """
-        cdef char *s
+        cdef const_char_ptr s
         s = evas_object_textblock_text_markup_get(self.obj)
         if s != NULL:
             return s
 
-    def text_markup_set(self, char *value):
+    def text_markup_set(self, const_char_ptr value):
         """set the textblock markup information
 
         @parm: B{value}
@@ -85,23 +85,23 @@ cdef public class Textblock(Object) [object PyEvasTextblock, type PyEvasTextbloc
         def __get__(self):
             return self.text_markup_get()
 
-        def __set__(self, char *value):
+        def __set__(self, const_char_ptr value):
             self.text_markup_set(value)
 
     def replace_char_get(self):
-        cdef char *s
+        cdef const_char_ptr s
         s = evas_object_textblock_replace_char_get(self.obj)
         if s != NULL:
             return s
 
-    def replace_char_set(self, char *value):
+    def replace_char_set(self, const_char_ptr value):
         evas_object_textblock_replace_char_set(self.obj, value)
 
     property replace_char:
         def __get__(self):
             return self.replace_char_get()
 
-        def __set__(self, char *value):
+        def __set__(self, const_char_ptr value):
             self.replace_char_set(value)
 
     def line_number_geometry_get(self, int index):

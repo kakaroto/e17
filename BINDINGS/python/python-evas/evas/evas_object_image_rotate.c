@@ -474,6 +474,8 @@ evas_object_image_rotate(Evas_Object *image, Evas_Object_Image_Rotation rotation
       case EVAS_COLORSPACE_YCBCR422P709_PL:
 	 fputs("Colorspace YCBCR422P709_PL not handled\n", stderr);
 	 break;
+      default:
+         break;
      }
 
    if ((rotation == ROTATE_90) || (rotation == ROTATE_270))

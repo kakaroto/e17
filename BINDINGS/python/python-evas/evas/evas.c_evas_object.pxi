@@ -334,7 +334,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
 
         @rtype: str
         """
-        cdef char *s
+        cdef const_char_ptr s
         if self.obj:
             s = evas_object_type_get(self.obj)
             if s != NULL:
@@ -1170,7 +1170,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         """Return objects currently clipped by this.
         @rtype: tuple of L{Object}
         """
-        cdef Eina_List *itr
+        cdef const_Eina_List *itr
         cdef Object o
         ret = []
         itr = evas_object_clipees_get(self.obj)
@@ -1186,12 +1186,12 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
 
     def name_get(self):
         "@rtype: str"
-        cdef char *s
+        cdef const_char_ptr s
         s = evas_object_name_get(self.obj)
         if s != NULL:
             return s
 
-    def name_set(self, char *value):
+    def name_set(self, const_char_ptr value):
         """Set the name of one object.
 
         Names have no great utility, you can use them to help debug or even
@@ -1205,7 +1205,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         def __get__(self):
             return self.name_get()
 
-        def __set__(self, char *value):
+        def __set__(self, const_char_ptr value):
             self.name_set(value)
 
     def focus_get(self):
