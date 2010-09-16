@@ -16,7 +16,7 @@
 # ifdef  __cplusplus
 extern "C"
 # endif
-void *alloca (size_t);
+void *    alloca (size_t);
 #endif
 
 #include <stdio.h>
@@ -104,67 +104,67 @@ extern int _e_dbus_connman_log_dom;
 #undef WRN
 #undef ERR
 
-#define DBG(...) EINA_LOG_DOM_DBG(_e_dbus_connman_log_dom , __VA_ARGS__)
-#define INF(...) EINA_LOG_DOM_INFO(_e_dbus_connman_log_dom , __VA_ARGS__)
-#define WRN(...) EINA_LOG_DOM_WARN(_e_dbus_connman_log_dom , __VA_ARGS__)
-#define ERR(...) EINA_LOG_DOM_ERR(_e_dbus_connman_log_dom , __VA_ARGS__)
+#define DBG(...) EINA_LOG_DOM_DBG(_e_dbus_connman_log_dom, __VA_ARGS__)
+#define INF(...) EINA_LOG_DOM_INFO(_e_dbus_connman_log_dom, __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_WARN(_e_dbus_connman_log_dom, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(_e_dbus_connman_log_dom, __VA_ARGS__)
 
 static inline bool
 _dbus_callback_check_and_init(DBusMessage *msg, DBusMessageIter *itr, DBusError *err)
 {
    if (!msg)
      {
-	if (err)
-	  ERR("an error was reported by server: "
-			 "name=\"%s\", message=\"%s\"",
-			 err->name, err->message);
-	else
-	  ERR("callback without message arguments!");
+        if (err)
+           ERR("an error was reported by server: "
+               "name=\"%s\", message=\"%s\"",
+               err->name, err->message);
+        else
+           ERR("callback without message arguments!");
 
-	return 0;
+        return 0;
      }
 
    if (!dbus_message_iter_init(msg, itr))
      {
-	  ERR("could not init iterator.");
-	return 0;
+        ERR("could not init iterator.");
+        return 0;
      }
 
    return 1;
 }
 
-
 static inline bool
 __dbus_iter_type_check(int type, int expected, const char *expected_name)
 {
    if (type == expected)
-     return 1;
+      return 1;
 
    ERR("expected type %s (%c) but got %c instead!",
        expected_name, expected, type);
 
    return 0;
 }
-#define _dbus_iter_type_check(t, e) __dbus_iter_type_check(t, e, #e)
+
+#define _dbus_iter_type_check(t, e) __dbus_iter_type_check(t, e, # e)
 
 extern E_DBus_Connection *e_connman_conn;
 
-const char *e_connman_system_bus_name_get(void);
+const char *           e_connman_system_bus_name_get(void);
 
-void e_connman_manager_clear_elements(void);
+void                   e_connman_manager_clear_elements(void);
 
-void e_connman_elements_init(void);
-void e_connman_elements_shutdown(void);
+void                   e_connman_elements_init(void);
+void                   e_connman_elements_shutdown(void);
 
-E_Connman_Element *e_connman_element_register(const char *path, const char *interface);
-void e_connman_element_unregister(E_Connman_Element *element);
+E_Connman_Element *    e_connman_element_register(const char *path, const char *interface);
+void                   e_connman_element_unregister(E_Connman_Element *element);
 
-bool e_connman_element_objects_array_get_stringshared(const E_Connman_Element *element, const char *property, unsigned int *count, E_Connman_Element ***elements);
-bool e_connman_element_strings_array_get_stringshared(const E_Connman_Element *element, const char *property, unsigned int *count, const char ***strings);
-unsigned char *e_connman_element_bytes_array_get_stringshared(const E_Connman_Element *element, const char *property, unsigned int *count);
+bool                   e_connman_element_objects_array_get_stringshared(const E_Connman_Element *element, const char *property, unsigned int *count, E_Connman_Element ***elements);
+bool                   e_connman_element_strings_array_get_stringshared(const E_Connman_Element *element, const char *property, unsigned int *count, const char ***strings);
+unsigned char *        e_connman_element_bytes_array_get_stringshared(const E_Connman_Element *element, const char *property, unsigned int *count);
 
-bool e_connman_element_message_send(E_Connman_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, DBusMessage *msg, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
+bool                   e_connman_element_message_send(E_Connman_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, DBusMessage *msg, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
 
-bool e_connman_element_call_full(E_Connman_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
-bool e_connman_element_call_with_path(E_Connman_Element *element, const char *method_name, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
-bool e_connman_element_call_with_string(E_Connman_Element *element, const char *method_name, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
+bool                   e_connman_element_call_full(E_Connman_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
+bool                   e_connman_element_call_with_path(E_Connman_Element *element, const char *method_name, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
+bool                   e_connman_element_call_with_string(E_Connman_Element *element, const char *method_name, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);

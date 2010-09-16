@@ -9,12 +9,12 @@ e_connman_device_get(const char *path)
 
    device = e_connman_element_get(path);
    if (!device)
-     return NULL;
+      return NULL;
 
    if (!e_connman_element_is_device(device))
      {
-	WRN("path '%s' is not a device!", path);
-	return NULL;
+        WRN("path '%s' is not a device!", path);
+        return NULL;
      }
 
    return device;
@@ -39,7 +39,7 @@ e_connman_device_propose_scan(E_Connman_Element *device, E_DBus_Method_Return_Cb
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
    return e_connman_element_call_full
-     (device, name, NULL, &device->_pending.device_propose_scan, cb, data);
+             (device, name, NULL, &device->_pending.device_propose_scan, cb, data);
 }
 
 /**
@@ -68,7 +68,7 @@ e_connman_device_address_get(const E_Connman_Element *device, const char **addre
    EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(address, 0);
    return e_connman_element_property_get_stringshared
-     (device, e_connman_prop_address, NULL, address);
+             (device, e_connman_prop_address, NULL, address);
 }
 
 /**
@@ -97,7 +97,7 @@ e_connman_device_name_get(const E_Connman_Element *device, const char **name)
    EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, 0);
    return e_connman_element_property_get_stringshared
-     (device, e_connman_prop_name, NULL, name);
+             (device, e_connman_prop_name, NULL, name);
 }
 
 /**
@@ -123,7 +123,7 @@ e_connman_device_type_get(const E_Connman_Element *device, const char **type)
    EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(type, 0);
    return e_connman_element_property_get_stringshared
-     (device, e_connman_prop_type, NULL, type);
+             (device, e_connman_prop_type, NULL, type);
 }
 
 /**
@@ -152,7 +152,7 @@ e_connman_device_interface_get(const E_Connman_Element *device, const char **int
    EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(interface, 0);
    return e_connman_element_property_get_stringshared
-     (device, e_connman_prop_interface, NULL, interface);
+             (device, e_connman_prop_interface, NULL, interface);
 }
 
 /**
@@ -187,7 +187,7 @@ e_connman_device_powered_get(const E_Connman_Element *device, bool *powered)
    EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(powered, 0);
    return e_connman_element_property_get_stringshared
-     (device, e_connman_prop_powered, NULL, powered);
+             (device, e_connman_prop_powered, NULL, powered);
 }
 
 /**
@@ -222,7 +222,7 @@ e_connman_device_powered_set(E_Connman_Element *device, bool powered, E_DBus_Met
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
    return e_connman_element_property_set_full
-     (device, e_connman_prop_powered, DBUS_TYPE_BOOLEAN, &powered, cb, data);
+             (device, e_connman_prop_powered, DBUS_TYPE_BOOLEAN, &powered, cb, data);
 }
 
 /**
@@ -256,7 +256,7 @@ e_connman_device_scan_interval_get(const E_Connman_Element *device, unsigned sho
    EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(scan_interval, 0);
    return e_connman_element_property_get_stringshared
-     (device, e_connman_prop_scan_interval, NULL, scan_interval);
+             (device, e_connman_prop_scan_interval, NULL, scan_interval);
 }
 
 /**
@@ -290,8 +290,8 @@ e_connman_device_scan_interval_set(E_Connman_Element *device, unsigned short sca
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
    return e_connman_element_property_set_full
-     (device, e_connman_prop_scan_interval, DBUS_TYPE_UINT16,
-      &scan_interval, cb, data);
+             (device, e_connman_prop_scan_interval, DBUS_TYPE_UINT16,
+             &scan_interval, cb, data);
 }
 
 /**
@@ -319,7 +319,7 @@ e_connman_device_scanning_get(const E_Connman_Element *device, bool *scanning)
    EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(scanning, 0);
    return e_connman_element_property_get_stringshared
-     (device, e_connman_prop_scanning, NULL, scanning);
+             (device, e_connman_prop_scanning, NULL, scanning);
 }
 
 /**
@@ -339,5 +339,6 @@ e_connman_device_networks_get(const E_Connman_Element *device, unsigned int *cou
    EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(elements, 0);
    return e_connman_element_objects_array_get_stringshared
-     (device, e_connman_prop_networks, count, elements);
+             (device, e_connman_prop_networks, count, elements);
 }
+

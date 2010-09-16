@@ -9,12 +9,12 @@ e_connman_network_get(const char *path)
 
    network = e_connman_element_get(path);
    if (!network)
-     return NULL;
+      return NULL;
 
    if (!e_connman_element_is_network(network))
      {
-	WRN("path '%s' is not a network!", path);
-	return NULL;
+        WRN("path '%s' is not a network!", path);
+        return NULL;
      }
 
    return network;
@@ -46,7 +46,7 @@ e_connman_network_address_get(const E_Connman_Element *network, const char **add
    EINA_SAFETY_ON_NULL_RETURN_VAL(network, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(address, 0);
    return e_connman_element_property_get_stringshared
-     (network, e_connman_prop_address, NULL, address);
+             (network, e_connman_prop_address, NULL, address);
 }
 
 /**
@@ -74,7 +74,7 @@ e_connman_network_name_get(const E_Connman_Element *network, const char **name)
    EINA_SAFETY_ON_NULL_RETURN_VAL(network, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, 0);
    return e_connman_element_property_get_stringshared
-     (network, e_connman_prop_name, NULL, name);
+             (network, e_connman_prop_name, NULL, name);
 }
 
 /**
@@ -98,7 +98,7 @@ e_connman_network_connected_get(const E_Connman_Element *network, bool *connecte
    EINA_SAFETY_ON_NULL_RETURN_VAL(network, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(connected, 0);
    return e_connman_element_property_get_stringshared
-     (network, e_connman_prop_connected, NULL, connected);
+             (network, e_connman_prop_connected, NULL, connected);
 }
 
 /**
@@ -123,7 +123,7 @@ e_connman_network_strength_get(const E_Connman_Element *network, unsigned char *
    EINA_SAFETY_ON_NULL_RETURN_VAL(network, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(strength, 0);
    return e_connman_element_property_get_stringshared
-     (network, e_connman_prop_strength, NULL, strength);
+             (network, e_connman_prop_strength, NULL, strength);
 }
 
 /**
@@ -147,7 +147,7 @@ e_connman_network_frequency_get(const E_Connman_Element *network, unsigned short
    EINA_SAFETY_ON_NULL_RETURN_VAL(network, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(frequency, 0);
    return e_connman_element_property_get_stringshared
-     (network, e_connman_prop_frequency, NULL, frequency);
+             (network, e_connman_prop_frequency, NULL, frequency);
 }
 
 /**
@@ -168,8 +168,9 @@ e_connman_network_device_get(const E_Connman_Element *network, E_Connman_Element
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
 
    if (!e_connman_element_property_get_stringshared
-       (network, e_connman_prop_device, NULL, &device_path))
-     return 0;
+          (network, e_connman_prop_device, NULL, &device_path))
+      return 0;
+
    *element = e_connman_element_get(device_path);
    return 1;
 }
@@ -198,9 +199,10 @@ e_connman_network_wifi_ssid_get(const E_Connman_Element *network, unsigned int *
    EINA_SAFETY_ON_NULL_RETURN_VAL(wifi_ssid, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
    *wifi_ssid = e_connman_element_bytes_array_get_stringshared
-     (network, e_connman_prop_wifi_ssid, count);
+         (network, e_connman_prop_wifi_ssid, count);
    if (!*wifi_ssid)
-     return 0;
+      return 0;
+
    return 1;
 }
 
@@ -233,7 +235,7 @@ e_connman_network_wifi_mode_get(const E_Connman_Element *network, const char **w
    EINA_SAFETY_ON_NULL_RETURN_VAL(network, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(wifi_mode, 0);
    return e_connman_element_property_get_stringshared
-     (network, e_connman_prop_wifi_mode, NULL, wifi_mode);
+             (network, e_connman_prop_wifi_mode, NULL, wifi_mode);
 }
 
 /**
@@ -267,7 +269,7 @@ e_connman_network_wifi_security_get(const E_Connman_Element *network, const char
    EINA_SAFETY_ON_NULL_RETURN_VAL(network, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(wifi_security, 0);
    return e_connman_element_property_get_stringshared
-     (network, e_connman_prop_wifi_security, NULL, wifi_security);
+             (network, e_connman_prop_wifi_security, NULL, wifi_security);
 }
 
 /**
@@ -298,7 +300,7 @@ e_connman_network_wifi_passphrase_get(const E_Connman_Element *network, const ch
    EINA_SAFETY_ON_NULL_RETURN_VAL(network, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(wifi_passphrase, 0);
    return e_connman_element_property_get_stringshared
-     (network, e_connman_prop_wifi_passphrase, NULL, wifi_passphrase);
+             (network, e_connman_prop_wifi_passphrase, NULL, wifi_passphrase);
 }
 
 /**
@@ -322,7 +324,7 @@ e_connman_network_wifi_channel_get(const E_Connman_Element *network, unsigned sh
    EINA_SAFETY_ON_NULL_RETURN_VAL(network, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(wifi_channel, 0);
    return e_connman_element_property_get_stringshared
-     (network, e_connman_prop_wifi_channel, NULL, wifi_channel);
+             (network, e_connman_prop_wifi_channel, NULL, wifi_channel);
 }
 
 /**
@@ -351,5 +353,6 @@ e_connman_network_wifi_eap_get(const E_Connman_Element *network, const char **wi
    EINA_SAFETY_ON_NULL_RETURN_VAL(network, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(wifi_eap, 0);
    return e_connman_element_property_get_stringshared
-     (network, e_connman_prop_wifi_eap, NULL, wifi_eap);
+             (network, e_connman_prop_wifi_eap, NULL, wifi_eap);
 }
+

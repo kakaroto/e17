@@ -9,12 +9,12 @@ e_connman_technology_get(const char *path)
 
    technology = e_connman_element_get(path);
    if (!technology)
-     return NULL;
+      return NULL;
 
    if (!e_connman_element_is_technology(technology))
      {
-	WRN("path '%s' is not a technology!", path);
-	return NULL;
+        WRN("path '%s' is not a technology!", path);
+        return NULL;
      }
 
    return technology;
@@ -43,7 +43,7 @@ e_connman_technology_name_get(const E_Connman_Element *technology, const char **
    EINA_SAFETY_ON_NULL_RETURN_VAL(technology, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, 0);
    return e_connman_element_property_get_stringshared
-     (technology, e_connman_prop_name, NULL, name);
+             (technology, e_connman_prop_name, NULL, name);
 }
 
 /**
@@ -73,7 +73,7 @@ e_connman_technology_type_get(const E_Connman_Element *technology, const char **
    EINA_SAFETY_ON_NULL_RETURN_VAL(technology, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(type, 0);
    return e_connman_element_property_get_stringshared
-     (technology, e_connman_prop_type, NULL, type);
+             (technology, e_connman_prop_type, NULL, type);
 }
 
 /**
@@ -102,7 +102,7 @@ e_connman_technology_state_get(const E_Connman_Element *technology, const char *
    EINA_SAFETY_ON_NULL_RETURN_VAL(technology, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(state, 0);
    return e_connman_element_property_get_stringshared
-     (technology, e_connman_prop_state, NULL, state);
+             (technology, e_connman_prop_state, NULL, state);
 }
 
 /**
@@ -128,5 +128,6 @@ e_connman_technology_devices_get(const E_Connman_Element *technology, unsigned i
    EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(t_elements, 0);
    return e_connman_element_objects_array_get_stringshared
-     (technology, e_connman_prop_devices, count, t_elements);
+             (technology, e_connman_prop_devices, count, t_elements);
 }
+

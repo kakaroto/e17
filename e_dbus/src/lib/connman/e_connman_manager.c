@@ -33,11 +33,11 @@ e_connman_manager_agent_register(const char *object_path, E_DBus_Method_Return_C
 
    element = e_connman_manager_get();
    if (!element)
-     return 0;
+      return 0;
 
    return e_connman_element_call_with_path
-     (element, name, object_path, NULL,
-      &element->_pending.agent_register, cb, data);
+             (element, name, object_path, NULL,
+             &element->_pending.agent_register, cb, data);
 }
 
 /**
@@ -62,11 +62,11 @@ e_connman_manager_agent_unregister(const char *object_path, E_DBus_Method_Return
 
    element = e_connman_manager_get();
    if (!element)
-     return 0;
+      return 0;
 
    return e_connman_element_call_with_path
-     (element, name, object_path, NULL,
-      &element->_pending.agent_unregister, cb, data);
+             (element, name, object_path, NULL,
+             &element->_pending.agent_unregister, cb, data);
 }
 
 /**
@@ -100,9 +100,10 @@ e_connman_manager_state_get(const char **state)
 
    element = e_connman_manager_get();
    if (!element)
-     return 0;
+      return 0;
+
    return e_connman_element_property_get_stringshared
-     (element, e_connman_prop_state, NULL, state);
+             (element, e_connman_prop_state, NULL, state);
 }
 
 /**
@@ -138,9 +139,10 @@ e_connman_manager_offline_mode_get(bool *offline)
 
    element = e_connman_manager_get();
    if (!element)
-     return 0;
+      return 0;
+
    return e_connman_element_property_get_stringshared
-     (element, e_connman_prop_offline_mode, NULL, offline);
+             (element, e_connman_prop_offline_mode, NULL, offline);
 }
 
 /**
@@ -173,10 +175,11 @@ e_connman_manager_offline_mode_set(bool offline, E_DBus_Method_Return_Cb cb, con
 {
    E_Connman_Element *element = e_connman_manager_get();
    if (!element)
-     return 0;
+      return 0;
+
    return e_connman_element_property_set_full
-     (element, e_connman_prop_offline_mode, DBUS_TYPE_BOOLEAN,
-      &offline, cb, data);
+             (element, e_connman_prop_offline_mode, DBUS_TYPE_BOOLEAN,
+             &offline, cb, data);
 }
 
 /**
@@ -200,9 +203,10 @@ e_connman_manager_profiles_get(unsigned int *count, E_Connman_Element ***p_eleme
 
    element = e_connman_manager_get();
    if (!element)
-     return 0;
+      return 0;
+
    return e_connman_element_objects_array_get_stringshared
-     (element, e_connman_prop_profiles, count, p_elements);
+             (element, e_connman_prop_profiles, count, p_elements);
 }
 
 /**
@@ -240,9 +244,10 @@ e_connman_manager_services_get(unsigned int *count, E_Connman_Element ***p_eleme
 
    element = e_connman_manager_get();
    if (!element)
-     return 0;
+      return 0;
+
    return e_connman_element_objects_array_get_stringshared
-     (element, e_connman_prop_services, count, p_elements);
+             (element, e_connman_prop_services, count, p_elements);
 }
 
 /**
@@ -266,9 +271,10 @@ e_connman_manager_technologies_get(unsigned int *count, E_Connman_Element ***p_e
 
    element = e_connman_manager_get();
    if (!element)
-     return 0;
+      return 0;
+
    return e_connman_element_objects_array_get_stringshared
-     (element, e_connman_prop_technologies, count, p_elements);
+             (element, e_connman_prop_technologies, count, p_elements);
 }
 
 /**
@@ -292,15 +298,15 @@ e_connman_manager_request_scan(const char *type, E_DBus_Method_Return_Cb cb, con
    E_Connman_Element *element;
 
    if (!type)
-     type = "";
+      type = "";
 
    element = e_connman_manager_get();
    if (!element)
-     return 0;
+      return 0;
 
    return e_connman_element_call_with_string
-     (element, name, type, NULL,
-      &element->_pending.request_scan, cb, data);
+             (element, name, type, NULL,
+             &element->_pending.request_scan, cb, data);
 }
 
 /**
@@ -324,11 +330,11 @@ e_connman_manager_technology_enable(const char *type, E_DBus_Method_Return_Cb cb
 
    element = e_connman_manager_get();
    if (!element)
-     return 0;
+      return 0;
 
    return e_connman_element_call_with_string
-     (element, name, type, NULL,
-      &element->_pending.technology_enable, cb, data);
+             (element, name, type, NULL,
+             &element->_pending.technology_enable, cb, data);
 }
 
 /**
@@ -352,11 +358,11 @@ e_connman_manager_technology_disable(const char *type, E_DBus_Method_Return_Cb c
 
    element = e_connman_manager_get();
    if (!element)
-     return 0;
+      return 0;
 
    return e_connman_element_call_with_string
-     (element, name, type, NULL,
-      &element->_pending.technology_disable, cb, data);
+             (element, name, type, NULL,
+             &element->_pending.technology_disable, cb, data);
 }
 
 /**
@@ -384,9 +390,10 @@ e_connman_manager_technology_default_get(const char **type)
 
    element = e_connman_manager_get();
    if (!element)
-     return 0;
+      return 0;
+
    return e_connman_element_property_get_stringshared
-     (element, e_connman_prop_technology_default, NULL, type);
+             (element, e_connman_prop_technology_default, NULL, type);
 }
 
 /**
@@ -416,15 +423,15 @@ e_connman_manager_profile_remove(const E_Connman_Element *profile, E_DBus_Method
    EINA_SAFETY_ON_NULL_RETURN_VAL(profile->path, 0);
 
    if (!e_connman_element_is_profile(profile))
-     return 0;
+      return 0;
 
    element = e_connman_manager_get();
    if (!element)
-     return 0;
+      return 0;
 
    return e_connman_element_call_with_path
-     (element, name, profile->path, NULL,
-      &element->_pending.profile_remove, cb, data);
+             (element, name, profile->path, NULL,
+             &element->_pending.profile_remove, cb, data);
 }
 
 /**
@@ -450,10 +457,12 @@ e_connman_manager_profile_active_get(E_Connman_Element **profile)
 
    element = e_connman_manager_get();
    if (!element)
-     return 0;
+      return 0;
+
    if (!e_connman_element_property_get_stringshared
-       (element, e_connman_prop_profile_active, NULL, &profile_path))
-     return 0;
+          (element, e_connman_prop_profile_active, NULL, &profile_path))
+      return 0;
+
    *profile = e_connman_element_get(profile_path);
    return 1;
 }
@@ -482,16 +491,16 @@ e_connman_manager_profile_active_set(const E_Connman_Element *profile, E_DBus_Me
    EINA_SAFETY_ON_NULL_RETURN_VAL(profile->path, 0);
 
    if (!e_connman_element_is_profile(profile))
-     return 0;
+      return 0;
 
    element = e_connman_manager_get();
    if (!element)
-     return 0;
-   return e_connman_element_property_set_full
-     (element, e_connman_prop_profile_active, DBUS_TYPE_OBJECT_PATH,
-      profile->path, cb, data);
-}
+      return 0;
 
+   return e_connman_element_property_set_full
+             (element, e_connman_prop_profile_active, DBUS_TYPE_OBJECT_PATH,
+             profile->path, cb, data);
+}
 
 /**
  * Get array of strings representing the available technologies.
@@ -517,9 +526,10 @@ e_connman_manager_technologies_available_get(unsigned int *count, const char ***
 
    element = e_connman_manager_get();
    if (!element)
-     return 0;
+      return 0;
+
    return e_connman_element_strings_array_get_stringshared
-     (element, e_connman_prop_technologies_available, count, p_strings);
+             (element, e_connman_prop_technologies_available, count, p_strings);
 }
 
 /**
@@ -546,9 +556,10 @@ e_connman_manager_technologies_enabled_get(unsigned int *count, const char ***p_
 
    element = e_connman_manager_get();
    if (!element)
-     return 0;
+      return 0;
+
    return e_connman_element_strings_array_get_stringshared
-     (element, e_connman_prop_technologies_enabled, count, p_strings);
+             (element, e_connman_prop_technologies_enabled, count, p_strings);
 }
 
 /**
@@ -575,7 +586,9 @@ e_connman_manager_technologies_connected_get(unsigned int *count, const char ***
 
    element = e_connman_manager_get();
    if (!element)
-     return 0;
+      return 0;
+
    return e_connman_element_strings_array_get_stringshared
-     (element, e_connman_prop_technologies_connected, count, p_strings);
+             (element, e_connman_prop_technologies_connected, count, p_strings);
 }
+

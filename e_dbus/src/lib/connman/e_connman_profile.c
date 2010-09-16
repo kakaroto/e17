@@ -9,12 +9,12 @@ e_connman_profile_get(const char *path)
 
    profile = e_connman_element_get(path);
    if (!profile)
-     return NULL;
+      return NULL;
 
    if (!e_connman_element_is_profile(profile))
      {
-	WRN("path '%s' is not a profile!", path);
-	return NULL;
+        WRN("path '%s' is not a profile!", path);
+        return NULL;
      }
 
    return profile;
@@ -44,7 +44,7 @@ e_connman_profile_name_get(const E_Connman_Element *profile, const char **name)
    EINA_SAFETY_ON_NULL_RETURN_VAL(profile, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, 0);
    return e_connman_element_property_get_stringshared
-     (profile, e_connman_prop_name, NULL, name);
+             (profile, e_connman_prop_name, NULL, name);
 }
 
 /**
@@ -66,7 +66,7 @@ e_connman_profile_name_set(E_Connman_Element *profile, const char *name, E_DBus_
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(profile, 0);
    return e_connman_element_property_set_full
-     (profile, e_connman_prop_name, DBUS_TYPE_STRING, name, cb, data);
+             (profile, e_connman_prop_name, DBUS_TYPE_STRING, name, cb, data);
 }
 
 /**
@@ -92,7 +92,7 @@ e_connman_profile_offline_mode_get(const E_Connman_Element *profile, bool *offli
    EINA_SAFETY_ON_NULL_RETURN_VAL(profile, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(offline, 0);
    return e_connman_element_property_get_stringshared
-     (profile, e_connman_prop_offline_mode, NULL, offline);
+             (profile, e_connman_prop_offline_mode, NULL, offline);
 }
 
 /**
@@ -118,8 +118,8 @@ e_connman_profile_offline_mode_set(E_Connman_Element *profile, bool offline, E_D
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(profile, 0);
    return e_connman_element_property_set_full
-     (profile, e_connman_prop_offline_mode, DBUS_TYPE_BOOLEAN,
-      &offline, cb, data);
+             (profile, e_connman_prop_offline_mode, DBUS_TYPE_BOOLEAN,
+             &offline, cb, data);
 }
 
 /**
@@ -138,5 +138,6 @@ e_connman_profile_services_get(const E_Connman_Element *profile, unsigned int *c
    EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, 0);
    return e_connman_element_objects_array_get_stringshared
-     (profile, e_connman_prop_services, count, p_elements);
+             (profile, e_connman_prop_services, count, p_elements);
 }
+
