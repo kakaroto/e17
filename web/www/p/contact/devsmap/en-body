@@ -111,7 +111,7 @@ foreach ($dirs as $dir)
 
    /* parse the GeoData fields */
    $lat = $lon = 0;
-   $Coords = explode(" ",$Coords);
+   $Coords = explode(" ", str_replace(",", " ", $Coords));
    if($Coords && (count($Coords) == 2))
    {
       $tot_geodata ++;
