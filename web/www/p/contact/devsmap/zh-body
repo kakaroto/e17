@@ -1,5 +1,5 @@
 <?php
-//******* SET THIS TO YOUR e/devs DIRECTORY  ********
+/*******   Enlightenment Developers Map   *******/
 $cvs_dir="/var/www/web/devs";
 $geocache_file="/tmp/e_devs_map_geocache";
 //***************************************************
@@ -111,7 +111,7 @@ foreach ($dirs as $dir)
 
    /* parse the GeoData fields */
    $lat = $lon = 0;
-   $Coords = explode(" ",$Coords);
+   $Coords = explode(" ", str_replace(","," ", $Coords));
    if($Coords && (count($Coords) == 2))
    {
       $tot_geodata ++;
@@ -181,7 +181,6 @@ if (isset($_REQUEST["debug"]))
 ?>
 
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-<!--script type="text/javascript" src="ClusterMarker.js"></script-->
 
 <style type="text/css">
    html { height: 100% }
@@ -214,33 +213,51 @@ if (isset($_REQUEST["debug"]))
       <td width="100%"><div id="map_canvas"></div></td>
    </tr>
 </table>
+<div id="cluster_dbg"></div>
 <br><br>
 
 
 <script type="text/javascript">
 /******************************************************************************/
 /* Initialize map canvas */
-var canvas = document.getElementById("map_canvas")
-var map = new google.maps.Map(canvas, {
+var map = new google.maps.Map(document.getElementById("map_canvas"), {
       zoom: 2,
       center: new google.maps.LatLng(26, 0),
       mapTypeId: google.maps.MapTypeId.SATELLITE
     })
 var infowin = new google.maps.InfoWindow()
+var overlay = new google.maps.OverlayView() // used only for coord2pixel conversion
+overlay.draw = function() {}
+overlay.setMap(map)
+var markers = []
 
 /* on mouse-move update the coords div */
 google.maps.event.addListener(map, 'mousemove', function(event) {
-      update_coords(event.latLng);
+      update_coords(event.latLng)
    });
 
-/* Place all the markers (from the php array)*/
+/* on zoom changes rebuild the cluster */
+google.maps.event.addListener(map, 'zoom_changed', function() {
+      clusterize_markers()
+  });
+google.maps.event.addListener(overlay, 'projection_changed', function() {
+      clusterize_markers()
+  });
+
+
+/* add all the markers in js (from the php array)*/
 <?php 
 foreach ($devs as $dev)
    echo "create_dev_marker($dev[lat], $dev[lon], '$dev[IRC]', '$dev[Location]',
                   '$dev[Icon]', '$dev[IconBig]', '$dev[Name]', '$dev[Email]',
                   '$dev[WWW]', '$dev[Managing]', '$dev[Contributing]',
-                  '$dev[Platform]', '$dev[Group]')\n";   
+                  '$dev[Platform]', '$dev[Group]')\n";
+if (isset($_REQUEST["debug"]))
+   echo "var debug = true\n";
+else
+   echo "var debug = false\n";
 ?>
+ 
 
 /* Create a new developer marker */
 function
@@ -296,6 +313,8 @@ create_dev_marker(lat, lon, IRC, Location, Icon, IconBig, Name, Email, WWW,
          icon: icon,
          shadow: shadow
        })
+      marker._original_latlng = latlng
+      markers.push(marker);
 
       /* on marker click show the infowin */
       google.maps.event.addListener(marker, 'click', function() {
@@ -330,6 +349,62 @@ update_coords(latLng)
    var coords_div = document.getElementById("coords")
    var coords = "Coords: " + latLng.toUrlValue(5)
    coords_div.innerHTML = coords.replace(",", " ")
+}
+
+function
+clusterize_markers()
+{
+   var Projection = overlay.getProjection()
+   var M = markers
+   var i, j, x1, x2, y1, y2
+   var pos, base_pos
+   var latlon
+
+   /* mark all marker to be 'checked' */
+   for (i in M)
+      M[i]._checked = false;
+
+   /* DEBUG */
+   if (debug) document.getElementById("cluster_dbg").innerHTML = "<b>Clusterize</b><br>"
+
+   /* loop all unchecked markers */
+   for (i in M)
+   {
+      if (M[i]._checked) continue;
+
+      /* use this marker as the base for a new cluster */
+      M[i].setPosition(M[i]._original_latlng) // move in the original pos
+      M[i]._checked = true
+      base_pos = Projection.fromLatLngToDivPixel(M[i]._original_latlng)
+
+      /* define the cluster 'neighbour' rect (in pixel) */
+      x1 = base_pos.x - 15
+      y1 = base_pos.y - 15
+      x2 = base_pos.x + 15
+      y2 = base_pos.y + 15
+      
+      if (debug) pt = M[i].getTitle() + " " + base_pos /* DEBUG */
+
+      /* check for other (unchecked) marker near this */
+      for (j in M)
+      {
+         if (M[j]._checked) continue
+         pos = Projection.fromLatLngToDivPixel(M[j]._original_latlng)
+
+         /* if in 'neighbour' rect */
+         if ((pos.x > x1) && (pos.x < x2) && (pos.y > y1) && (pos.y < y2))
+         {
+            /* move the marker near the 'base' one */
+            base_pos.x += 7
+            base_pos.y -= 2
+            latlon = Projection.fromDivPixelToLatLng(base_pos)
+            M[j].setPosition(latlon)
+            M[j]._checked = true
+            if (debug) pt += " | " + M[j].getTitle() /* DEBUG */
+         }
+      }
+      if (debug) document.getElementById("cluster_dbg").innerHTML += pt + "<br>" /* DEBUG */
+   }
 }
 
 </script>
