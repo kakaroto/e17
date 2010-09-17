@@ -174,8 +174,6 @@ src_configure() {
 	fi
 
 	export MY_ECONF="
-	  ${MY_ECONF}
-	  --disable-ecore-config
 	  --enable-ecore-con
 	  --enable-ecore-ipc
 	  --enable-ecore-file
