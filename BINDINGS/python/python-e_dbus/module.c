@@ -122,6 +122,10 @@ module_cleanup(void)
 
 PyDoc_STRVAR(module_doc,
 "D-Bus python integration for Ecore main loop.\n");
+
+#if defined(__GNUC__) && (__GNUC__ >= 4)
+__attribute__ ((visibility("default")))
+#endif
 PyMODINIT_FUNC
 inite_dbus(void)
 {
