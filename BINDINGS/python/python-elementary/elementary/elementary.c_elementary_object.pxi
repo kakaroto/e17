@@ -159,6 +159,9 @@ cdef class Object(evas.c_evas.Object):
         valid Evas_Object. This object is then managed fully by tooltip system
         and is deleted when the tooltip is gone.
         """
+        if not callable(func):
+            raise TypeError("func must be callable")
+
         cdef void *cbdata
 
         data = (func, args, kargs)
