@@ -19,9 +19,9 @@
 
 import traceback
 
-cdef int idle_exiter_cb(void *_td) with gil:
+cdef Eina_Bool idle_exiter_cb(void *_td) with gil:
     cdef IdleExiter obj
-    cdef int r
+    cdef Eina_Bool r
 
     obj = <IdleExiter>_td
 

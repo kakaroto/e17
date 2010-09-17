@@ -15,9 +15,9 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Evas.  If not, see <http://www.gnu.org/licenses/>.
 
-from python_ref cimport PyObject, Py_INCREF, Py_DECREF
-from python_method cimport PyMethod_New
-from python_mem cimport PyMem_Malloc
+from cpython cimport PyObject, Py_INCREF, Py_DECREF
+from cpython cimport PyMethod_New
+from cpython cimport PyMem_Malloc
 from cpython cimport bool
 import warnings
 

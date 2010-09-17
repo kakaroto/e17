@@ -71,7 +71,7 @@ cdef class Object(evas.c_evas.Object):
         elm_object_style_set(self.obj, style)
 
     def style_get(self):
-        cdef char *style
+        cdef const_char_ptr style
         style = elm_object_style_get(self.obj)
         return style
 
@@ -194,7 +194,7 @@ cdef class Object(evas.c_evas.Object):
     def tooltip_style_get(self):
         """ Get the style for this object tooltip.
         """
-        cdef char *style
+        cdef const_char_ptr style
         style = elm_object_tooltip_style_get(self.obj)
         if style == NULL:
             return None
@@ -306,7 +306,7 @@ cdef class Object(evas.c_evas.Object):
 
 def __elm_widget_cls_resolver(long ptr):
     cdef c_evas.Evas_Object *obj = <c_evas.Evas_Object *>ptr
-    cdef char *t
+    cdef const_char_ptr t
 
     t = elm_object_widget_type_get(obj)
     assert t != NULL

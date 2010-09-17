@@ -27,12 +27,12 @@ cdef class Part:
         def __set__(self, name):
             self.rename(name)
 
-    def __init__(self, EdjeEdit edje, char *name):
-        self.edje = edje
+    def __init__(self, EdjeEdit e, char *name):
+        self.edje = e
         self._name = name
 
     def above_get(self):
-        cdef char *part
+        cdef const_char_ptr part
         part = edje_edit_part_above_get(self.edje.obj, self.name)
         if part == NULL: return None
         r = part
@@ -40,7 +40,7 @@ cdef class Part:
         return r
 
     def below_get(self):
-        cdef char *part
+        cdef const_char_ptr part
         part = edje_edit_part_below_get(self.edje.obj, self.name)
         if part == NULL: return None
         r = part
@@ -99,7 +99,7 @@ cdef class Part:
                     sfrom, vfrom, sto, vto))
 
     def state_selected_get(self):
-        cdef char *sel
+        cdef const_char_ptr sel
         cdef double val
         sel = edje_edit_part_selected_state_get(self.edje.obj, self.name, &val)
         if sel == NULL: return None
@@ -113,7 +113,7 @@ cdef class Part:
 
     property clip_to:
         def __get__(self):
-            cdef char *clipper
+            cdef const_char_ptr clipper
             clipper = edje_edit_part_clip_to_get(self.edje.obj, self.name)
             if clipper == NULL: return None
             r = clipper
@@ -131,7 +131,7 @@ cdef class Part:
 
     property source:
         def __get__(self):
-            cdef char *source
+            cdef const_char_ptr source
             source = edje_edit_part_source_get(self.edje.obj, self.name)
             if source == NULL: return None
             r = source
@@ -231,7 +231,7 @@ cdef class Part:
 
     property drag_confine:
         def __get__(self):
-            cdef char *confine
+            cdef const_char_ptr confine
             confine = edje_edit_part_drag_confine_get(self.edje.obj, self.name)
             if confine == NULL: return None
             r = confine
@@ -243,7 +243,7 @@ cdef class Part:
 
     property drag_event:
         def __get__(self):
-            cdef char *event
+            cdef const_char_ptr event
             event = edje_edit_part_drag_event_get(self.edje.obj, self.name)
             if event == NULL: return None
             r = event
@@ -255,8 +255,8 @@ cdef class Part:
 
     property api:
         def __get__(self):
-            cdef char *name
-            cdef char *description
+            cdef const_char_ptr name
+            cdef const_char_ptr description
             name = edje_edit_part_api_name_get(self.edje.obj, self.name)
             description = edje_edit_part_api_description_get(self.edje.obj, self.name)
             n, d = None, None
@@ -273,8 +273,8 @@ cdef class Part:
 
         def __set__(self, value):
             name, description = value
-            cdef char *n
-            cdef char *d
+            cdef const_char_ptr n
+            cdef const_char_ptr d
             n, d = NULL, NULL
 
             if name:

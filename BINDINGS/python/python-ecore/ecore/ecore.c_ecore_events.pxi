@@ -35,9 +35,9 @@ def _event_mapping_unregister(int type):
     _event_type_mapping.pop(type)
 
 
-cdef int event_handler_cb(void *data, int type, void *event) with gil:
+cdef Eina_Bool event_handler_cb(void *data, int type, void *event) with gil:
     cdef EventHandler handler
-    cdef int r
+    cdef Eina_Bool r
 
     assert event != NULL
     assert data != NULL
@@ -139,7 +139,7 @@ cdef class EventHandler:
             Py_DECREF(self)
         return 1
 
-    cdef int _exec(self, void *event) except 2:
+    cdef Eina_Bool _exec(self, void *event) except 2:
         cdef Event e
         e = self.event_cls()
         e._set_obj(event)
@@ -211,7 +211,7 @@ cdef class EventHandlerSignalUser(EventHandler):
         EventHandler.__init__(self, ECORE_EVENT_SIGNAL_USER,
                               func, *args, **kargs)
 
-    cdef int _exec(self, void *event) except 2:
+    cdef Eina_Bool _exec(self, void *event) except 2:
         cdef Ecore_Event_Signal_User *obj = <Ecore_Event_Signal_User *>event
         cdef EventSignalUser e
         if obj.number == 1:
@@ -314,7 +314,7 @@ cdef class EventHandlerSignalExit(EventHandler):
         EventHandler.__init__(self, ECORE_EVENT_SIGNAL_EXIT,
                               func, *args, **kargs)
 
-    cdef int _exec(self, void *event) except 2:
+    cdef Eina_Bool _exec(self, void *event) except 2:
         cdef Ecore_Event_Signal_Exit *obj = <Ecore_Event_Signal_Exit *>event
         cdef EventSignalUser e
         if obj.terminate:

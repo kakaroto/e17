@@ -18,7 +18,7 @@
 
 import traceback
 
-cdef _py_elm_genlist_item_call(func, c_evas.Evas_Object *obj, char *part, data) with gil:
+cdef _py_elm_genlist_item_call(func, c_evas.Evas_Object *obj, const_char_ptr part, data) with gil:
     if part != NULL:
         p = part
     else:
@@ -31,7 +31,7 @@ cdef _py_elm_genlist_item_call(func, c_evas.Evas_Object *obj, char *part, data) 
         traceback.print_exc()
         return None
 
-cdef char *_py_elm_genlist_item_label_get(void *data, c_evas.Evas_Object *obj, char *part) with gil:
+cdef char *_py_elm_genlist_item_label_get(void *data, c_evas.Evas_Object *obj, const_char_ptr part) with gil:
     cdef object prm = <object>data
     cdef GenlistItemClass itc = prm[0]
 
@@ -45,7 +45,7 @@ cdef char *_py_elm_genlist_item_label_get(void *data, c_evas.Evas_Object *obj, c
     else:
         return NULL
 
-cdef c_evas.Evas_Object *_py_elm_genlist_item_icon_get(void *data, c_evas.Evas_Object *obj, char *part) with gil:
+cdef c_evas.Evas_Object *_py_elm_genlist_item_icon_get(void *data, c_evas.Evas_Object *obj, const_char_ptr part) with gil:
     cdef object prm = <object>data
     cdef c_evas.Object icon
     cdef GenlistItemClass itc = prm[0]
@@ -65,7 +65,7 @@ cdef c_evas.Evas_Object *_py_elm_genlist_item_icon_get(void *data, c_evas.Evas_O
     else:
         return NULL
 
-cdef c_evas.Eina_Bool _py_elm_genlist_item_state_get(void *data, c_evas.Evas_Object *obj, char *part) with gil:
+cdef c_evas.Eina_Bool _py_elm_genlist_item_state_get(void *data, c_evas.Evas_Object *obj, const_char_ptr part) with gil:
     cdef object prm = <object>data
     cdef GenlistItemClass itc = prm[0]
 
@@ -359,7 +359,7 @@ cdef class GenlistItem(WidgetItem):
             return self.genlist_get()
 
     def object_get(self):
-        cdef c_evas.Evas_Object *o
+        cdef c_evas.const_Evas_Object *o
         o = elm_genlist_item_object_get(self.obj)
         return evas.c_evas._Object_from_instance(<long>o)
 
@@ -518,7 +518,7 @@ cdef class GenlistItem(WidgetItem):
     def tooltip_style_get(self):
         """ Get the style for this object tooltip.
         """
-        cdef char *style
+        cdef const_char_ptr style
         style = elm_genlist_item_tooltip_style_get(self.obj)
         if style == NULL:
             return None
@@ -570,7 +570,7 @@ cdef class Genlist(Object):
     def multi_select_set(self, multi):
         elm_genlist_multi_select_set(self.obj, bool(multi))
 
-    def horizontal_mode_set(self, Elementary_List_Mode mode):
+    def horizontal_mode_set(self, Elm_List_Mode mode):
         elm_genlist_horizontal_mode_set(self.obj, mode)
 
     def always_select_mode_set(self, always_select):
@@ -803,7 +803,7 @@ cdef class Genlist(Object):
 
     def selected_items_get(self):
         cdef Elm_Genlist_Item *it
-        cdef c_evas.Eina_List *lst
+        cdef c_evas.const_Eina_List *lst
 
         lst = elm_genlist_selected_items_get(self.obj)
         ret = []

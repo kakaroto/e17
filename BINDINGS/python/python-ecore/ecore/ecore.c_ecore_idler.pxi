@@ -19,9 +19,9 @@
 
 import traceback
 
-cdef int idler_cb(void *_td) with gil:
+cdef Eina_Bool idler_cb(void *_td) with gil:
     cdef Idler obj
-    cdef int r
+    cdef Eina_Bool r
 
     obj = <Idler>_td
 

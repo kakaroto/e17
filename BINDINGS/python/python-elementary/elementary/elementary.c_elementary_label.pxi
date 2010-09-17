@@ -26,7 +26,7 @@ cdef class Label(Object):
 
         @rtype: str
         """
-        cdef char *l
+        cdef const_char_ptr l
         l = elm_label_label_get(self.obj)
         if l == NULL:
             return None

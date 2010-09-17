@@ -15,9 +15,9 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Ecore.  If not, see <http://www.gnu.org/licenses/>.
 
-from python_ref cimport PyObject, Py_INCREF, Py_DECREF
-from python_mem cimport PyMem_Malloc, PyMem_Free
-from python_oldbuffer cimport PyBuffer_FromObject
+from cpython cimport PyObject, Py_INCREF, Py_DECREF
+from cpython cimport PyMem_Malloc, PyMem_Free
+from cpython cimport PyBuffer_FromObject
 from cpython cimport bool
 import evas.c_evas
 
@@ -158,7 +158,7 @@ def new(engine_name=None, int x=0, int y=0, int w=320, int h=240, extra_options=
     """
     cdef Ecore_Evas *ee
     cdef EcoreEvas o
-    cdef char *en, *eo
+    cdef const_char_ptr en, eo
 
     if engine_name is None:
         en = NULL

@@ -19,9 +19,9 @@
 
 import traceback
 
-cdef int idle_enterer_cb(void *_td) with gil:
+cdef Eina_Bool idle_enterer_cb(void *_td) with gil:
     cdef IdleEnterer obj
-    cdef int r
+    cdef Eina_Bool r
 
     obj = <IdleEnterer>_td
 

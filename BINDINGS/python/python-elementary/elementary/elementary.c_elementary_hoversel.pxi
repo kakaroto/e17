@@ -71,8 +71,8 @@ cdef class HoverselItem:
         elm_hoversel_item_icon_set(self.item, icon_file, icon_group, icon_type)
 
     def icon_get(self):
-        cdef char *cicon_file
-        cdef char *cicon_group
+        cdef const_char_ptr cicon_file
+        cdef const_char_ptr cicon_group
         cdef Elm_Icon_Type cicon_type
         icon_file = None
         icon_group = None
@@ -84,7 +84,7 @@ cdef class HoverselItem:
         return (icon_file, icon_group, cicon_type)
 
     def label_get(self):
-        cdef char *l
+        cdef const_char_ptr l
         l = elm_hoversel_item_label_get(self.item)
         if l == NULL:
             return None
@@ -121,7 +121,7 @@ cdef class Hoversel(Object):
         elm_hoversel_label_set(self.obj, label)
 
     def label_get(self):
-        cdef char *l
+        cdef const_char_ptr l
         l = elm_hoversel_label_get(self.obj)
         if l == NULL:
             return None

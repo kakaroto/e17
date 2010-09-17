@@ -21,8 +21,8 @@ cdef class Color_Class:
     cdef EdjeEdit edje
     cdef object _name
 
-    def __init__(self, EdjeEdit edje, char *name):
-        self.edje = edje
+    def __init__(self, EdjeEdit e, char *name):
+        self.edje = e
         self._name = name
 
     property name:

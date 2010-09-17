@@ -16,13 +16,10 @@
 # along with this Python-Edje.  If not, see <http://www.gnu.org/licenses/>.
 
 from cpython cimport bool
-cimport python
+cimport cpython
 cimport evas.c_evas
 import evas.c_evas
-cimport edje.c_edje
-import edje.c_edje
-cimport edje.edit.c_edit
-import edje.edit.c_edit
+cimport edje.c_edje as c_edje
 
 __extra_epydoc_fields__ = (
     ("parm", "Parameter", "Parameters"), # epydoc don't support pyrex properly

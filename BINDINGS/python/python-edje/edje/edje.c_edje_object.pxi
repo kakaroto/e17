@@ -21,7 +21,8 @@ import traceback
 
 
 cdef void text_change_cb(void *data,
-                         evas.c_evas.Evas_Object *obj, char *part) with gil:
+                         evas.c_evas.Evas_Object *obj,
+                         const_char_ptr part) with gil:
     cdef Edje self
     self = <Edje>data
     if self._text_change_cb is None:
@@ -50,7 +51,7 @@ cdef void message_handler_cb(void *data,
 
 cdef void signal_cb(void *data,
                     evas.c_evas.Evas_Object *obj,
-                    char *emission, char *source) with gil:
+                    const_char_ptr emission, const_char_ptr source) with gil:
     cdef Edje self
     self = <Edje>evas.c_evas._Object_from_instance(<long>obj)
     lst = tuple(<object>data)
@@ -220,7 +221,7 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
           returns data stored on the B{Edje} (.edj), stored inside a
           C{data} section inside the C{group} that defines this object.
         """
-        cdef char *s
+        cdef const_char_ptr s
         s = edje_object_data_get(self.obj, key)
         if s != NULL:
             return s
@@ -234,7 +235,7 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
 
     def file_get(self):
         "@rtype: tuple for str"
-        cdef char *file, *group
+        cdef const_char_ptr file, group
         edje_object_file_get(self.obj, &file, &group)
         if file == NULL:
             f = None
@@ -377,7 +378,7 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
           but you can safely query info about its current state
           (with L{Edje.visible_get()} or L{Edje.color_get()} for example).
         """
-        cdef evas.c_evas.Evas_Object *o
+        cdef evas.c_evas.const_Evas_Object *o
         o = edje_object_part_object_get(self.obj, part)
         return evas.c_evas._Object_from_instance(<long>o)
 
@@ -419,7 +420,7 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
 
     def part_text_get(self, char *part):
         "@rtype: str"
-        cdef char *s
+        cdef const_char_ptr s
         s = edje_object_part_text_get(self.obj, part)
         if s == NULL:
             return None
@@ -459,7 +460,7 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
             return None
         else:
             str = s
-            stdlib.free(s)
+            libc.stdlib.free(s)
             return str
 
     def part_swallow(self, char *part, c_evas.Object obj):
@@ -681,7 +682,7 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
     def part_state_get(self, char *part):
         "@rtype: (name, value)"
         cdef double sv
-        cdef char *sn
+        cdef const_char_ptr sn
         sn = edje_object_part_state_get(self.obj, part, &sv)
         return (sn, sv)
 

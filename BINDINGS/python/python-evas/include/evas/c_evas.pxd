@@ -24,8 +24,8 @@ cdef extern from "Evas.h":
     # Basic Types
     #
 
+    ctypedef unsigned char Eina_Bool
     ctypedef int Evas_Coord
-    ctypedef int Eina_Bool
     ctypedef int Evas_Angle
     ctypedef int Evas_Font_Size
 
@@ -487,6 +487,7 @@ cdef extern from "Evas.h":
         void *key
         void *data
         unsigned int key_length
+    ctypedef Eina_Hash_Tuple const_Eina_Hash_Tuple "const Eina_Hash_Tuple"
 
     ####################################################################
     # Eina Error

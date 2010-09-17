@@ -33,6 +33,6 @@ cdef class WidgetItem:
     """
     An generic item for the widgets
     """
-    cdef Elm_Widget_Item *base
+    cdef void *base
 
 _elm_widget_type_register("widget_item", WidgetItem)

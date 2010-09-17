@@ -15,10 +15,10 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Edje.  If not, see <http://www.gnu.org/licenses/>.
 
-from python_ref cimport PyObject, Py_INCREF, Py_DECREF
-from python_mem cimport PyMem_Malloc, PyMem_Free
+from cpython cimport PyObject, Py_INCREF, Py_DECREF
+from cpython cimport PyMem_Malloc, PyMem_Free
 from cpython cimport bool
-cimport stdlib
+cimport libc.stdlib
 cimport evas.c_evas
 import evas.c_evas
 
@@ -74,7 +74,7 @@ def fontset_append_set(char *fonts):
 
 def fontset_append_get():
     "@rtype: str"
-    cdef char *s
+    cdef const_char_ptr s
     s = edje_fontset_append_get()
     if s != NULL:
         return s
@@ -180,7 +180,7 @@ def color_class_list():
     itr = lst
     while itr:
         ret.append(<char*>itr.data)
-        stdlib.free(itr.data)
+        libc.stdlib.free(itr.data)
         itr = itr.next
     evas.c_evas.eina_list_free(lst)
     return ret
@@ -208,7 +208,7 @@ def text_class_list():
     itr = lst
     while itr:
         ret.append(<char*>itr.data)
-        stdlib.free(itr.data)
+        libc.stdlib.free(itr.data)
         itr = itr.next
     evas.c_evas.eina_list_free(lst)
     return ret
@@ -258,7 +258,7 @@ def extern_object_aspect_set(evas.c_evas.Object obj, int aspect, int w, int h):
     edje_extern_object_aspect_set(obj.obj, <Edje_Aspect_Control>aspect, w, h)
 
 def available_modules_get():
-    cdef evas.c_evas.Eina_List *lst
+    cdef evas.c_evas.const_Eina_List *lst
     lst = edje_available_modules_get()
     ret = []
     while lst:

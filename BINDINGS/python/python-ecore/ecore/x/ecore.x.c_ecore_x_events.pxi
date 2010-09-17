@@ -17,7 +17,7 @@
 
 # This file is included verbatim by c_ecore_x.pyx
 
-cdef object _charp_to_str(char *p):
+cdef object _charp_to_str(const_char_ptr p):
     if p != NULL:
         return p
     else:

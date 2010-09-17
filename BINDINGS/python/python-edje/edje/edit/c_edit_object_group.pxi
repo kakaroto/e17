@@ -21,8 +21,8 @@
 cdef class Group:
     cdef EdjeEdit edje
 
-    def __init__(self, EdjeEdit edje):
-        self.edje = edje
+    def __init__(self, EdjeEdit e):
+        self.edje = e
 
     def delete(self):
         """@rtype: bool"""

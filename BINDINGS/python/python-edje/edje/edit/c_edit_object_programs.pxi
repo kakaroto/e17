@@ -21,8 +21,8 @@ cdef class Program:
     cdef EdjeEdit edje
     cdef object _name
 
-    def __init__(self, EdjeEdit edje, char *name):
-        self.edje = edje
+    def __init__(self, EdjeEdit e, char *name):
+        self.edje = e
         self._name = name
 
     property name:
@@ -47,7 +47,7 @@ cdef class Program:
         return bool(edje_edit_program_run(self.edje.obj, self.name))
 
     def source_get(self):
-        cdef char *s
+        cdef const_char_ptr s
         s = edje_edit_program_source_get(self.edje.obj, self.name)
         if s == NULL:
             return None
@@ -59,7 +59,7 @@ cdef class Program:
         return bool(edje_edit_program_source_set(self.edje.obj, self.name, s))
 
     def signal_get(self):
-        cdef char *s
+        cdef const_char_ptr s
         s = edje_edit_program_signal_get(self.edje.obj, self.name)
         if s == NULL:
             return None
@@ -130,7 +130,7 @@ cdef class Program:
         return bool(edje_edit_program_afters_clear(self.edje.obj, self.name))
 
     def state_get(self):
-        cdef char *s
+        cdef const_char_ptr s
         s = edje_edit_program_state_get(self.edje.obj, self.name)
         if s == NULL:
             return None
@@ -148,7 +148,7 @@ cdef class Program:
         return bool(edje_edit_program_value_set(self.edje.obj, self.name, v))
 
     def state2_get(self):
-        cdef char *s
+        cdef const_char_ptr s
         s = edje_edit_program_state2_get(self.edje.obj, self.name)
         if s == NULL:
             return None
@@ -181,8 +181,8 @@ cdef class Program:
 
     property api:
         def __get__(self):
-            cdef char *name
-            cdef char *description
+            cdef const_char_ptr name
+            cdef const_char_ptr description
             name = edje_edit_program_api_name_get(self.edje.obj, self.name)
             description = edje_edit_program_api_description_get(self.edje.obj, self.name)
             n, d = None, None
@@ -199,8 +199,8 @@ cdef class Program:
 
         def __set__(self, value):
             name, description = value
-            cdef char *n
-            cdef char *d
+            cdef const_char_ptr n
+            cdef const_char_ptr d
             n, d = NULL, NULL
 
             if name:

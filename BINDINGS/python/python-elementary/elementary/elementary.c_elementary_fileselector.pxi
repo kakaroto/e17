@@ -17,11 +17,11 @@
 #
 
 def _fs_callback_conv(long addr):
-    cdef char *str = <char *>addr
-    if str == NULL:
+    cdef const_char_ptr s = <const_char_ptr>addr
+    if s == NULL:
         return None
     else:
-        return str
+        return s
 
 cdef class Fileselector(Object):
     cdef object _cbs
@@ -32,16 +32,20 @@ cdef class Fileselector(Object):
         self._cbs = {}
 
     def selected_get(self):
-        cdef char* path
-        path = elm_fileselector_selected_get(self.obj)
-        return path
+        cdef const_char_ptr p
+        p = elm_fileselector_selected_get(self.obj)
+        if p == NULL:
+            return None
+        return p
 
     def path_set(self, path):
         elm_fileselector_path_set(self.obj, path)
 
     def path_get(self):
-        cdef char *p
+        cdef const_char_ptr p
         p = elm_fileselector_path_get(self.obj)
+        if p == NULL:
+            return None
         return p
 
     def expandable_set(self, expand):

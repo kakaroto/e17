@@ -18,6 +18,9 @@
 cimport evas.c_evas
 import evas.c_evas
 
+cdef extern from *:
+    ctypedef char* const_char_ptr "const char *"
+
 cdef extern from "Edje.h":
     ####################################################################
     # Enumerations
@@ -180,7 +183,8 @@ cdef extern from "Edje.h":
         char *default "def", *accept_fmt, *deny_fmt
 
     ctypedef struct aux_external_param_info_bool:
-        char *default "def", *false_str, *true_str
+        unsigned int default "def"
+        char *false_str, *true_str
 
     ctypedef struct aux_external_param_info_choice:
         char *default "def", **choices
@@ -215,6 +219,8 @@ cdef extern from "Edje.h":
         char *(*translate)(void *data, char *orig)
         Edje_External_Param_Info *parameters_info
         void *data
+
+    ctypedef Edje_External_Type const_Edje_External_Type "const Edje_External_Type"
 
     ####################################################################
     # Engine
@@ -406,7 +412,7 @@ cdef class ExternalParam:
 cdef class ExternalParamInfo:
     cdef Edje_External_Param_Info *obj
     cdef readonly object external_type
-    cdef Edje_External_Type *_external_type_obj
+    cdef const_Edje_External_Type *_external_type_obj
     cdef _set_external_type(self, t)
 
 
@@ -433,7 +439,7 @@ cdef class ExternalParamInfoChoice(ExternalParamInfo):
 cdef class ExternalType:
     cdef object _name
     cdef object _parameters_info
-    cdef Edje_External_Type *_obj
+    cdef const_Edje_External_Type *_obj
 
 
 cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:

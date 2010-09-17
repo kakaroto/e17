@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Emotion.  If not, see <http://www.gnu.org/licenses/>.
 
-from python_ref cimport PyObject
+from cpython cimport PyObject
 
 cimport evas.c_evas as c_evas
 import evas.c_evas
@@ -102,7 +102,7 @@ cdef class Emotion(evas.c_evas.Object):
                 self.layer_get(), self.clip_get(), self.visible_get())
 
     def file_get(self):
-        cdef char *f
+        cdef const_char_ptr f
         f = emotion_object_file_get(self.obj)
         if f != NULL:
             return f
@@ -233,7 +233,7 @@ cdef class Emotion(evas.c_evas.Object):
         return emotion_object_audio_channel_count(self.obj)
 
     def audio_channel_name_get(self, int channel):
-        cdef char *n
+        cdef const_char_ptr n
         n = emotion_object_audio_channel_name_get(self.obj, channel)
         if n != NULL:
             return n
@@ -268,7 +268,7 @@ cdef class Emotion(evas.c_evas.Object):
         return emotion_object_video_channel_count(self.obj)
 
     def video_channel_name_get(self, int channel):
-        cdef char *n
+        cdef const_char_ptr n
         n = emotion_object_video_channel_name_get(self.obj, channel)
         if n != NULL:
             return n
@@ -303,7 +303,7 @@ cdef class Emotion(evas.c_evas.Object):
         return emotion_object_spu_channel_count(self.obj)
 
     def spu_channel_name_get(self, int channel):
-        cdef char *n
+        cdef const_char_ptr n
         n = emotion_object_spu_channel_name_get(self.obj, channel)
         if n != NULL:
             return n
@@ -339,7 +339,7 @@ cdef class Emotion(evas.c_evas.Object):
         return emotion_object_chapter_count(self.obj)
 
     def chapter_name_get(self, int channel):
-        cdef char *n
+        cdef const_char_ptr n
         n = emotion_object_chapter_name_get(self.obj, channel)
         if n != NULL:
             return n
@@ -374,7 +374,7 @@ cdef class Emotion(evas.c_evas.Object):
         emotion_object_eject(self.obj)
 
     def title_get(self):
-        cdef char *t
+        cdef const_char_ptr t
         t = emotion_object_title_get(self.obj)
         if t != NULL:
             return t
@@ -384,7 +384,7 @@ cdef class Emotion(evas.c_evas.Object):
             return self.title_get()
 
     def progress_info_get(self):
-        cdef char *s
+        cdef const_char_ptr s
         s = emotion_object_progress_info_get(self.obj)
         if s != NULL:
             return s
@@ -401,7 +401,7 @@ cdef class Emotion(evas.c_evas.Object):
             return self.progress_status_get()
 
     def ref_file_get(self):
-        cdef char *s
+        cdef const_char_ptr s
         s = emotion_object_ref_file_get(self.obj)
         if s != NULL:
             return s
@@ -418,13 +418,13 @@ cdef class Emotion(evas.c_evas.Object):
             return self.ref_num_get()
 
     def meta_info_get(self, int meta_id):
-        cdef char *s
+        cdef const_char_ptr s
         s = emotion_object_meta_info_get(self.obj, <Emotion_Meta_Info>meta_id)
         if s != NULL:
             return s
 
     def meta_info_dict_get(self):
-        cdef char *info
+        cdef const_char_ptr info
         ret = dict()
         lst = (("title", EMOTION_META_INFO_TRACK_TITLE),
                ("artist", EMOTION_META_INFO_TRACK_ARTIST),

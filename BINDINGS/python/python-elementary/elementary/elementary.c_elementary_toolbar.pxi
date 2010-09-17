@@ -81,7 +81,7 @@ cdef class ToolbarItem(WidgetItem):
         elm_toolbar_item_label_set(self.obj, label)
 
     def label_get(self):
-        cdef char *l
+        cdef const_char_ptr l
         l = elm_toolbar_item_label_get(self.obj)
         if l == NULL:
             return None
@@ -193,7 +193,7 @@ cdef class ToolbarItem(WidgetItem):
     def tooltip_style_get(self):
         """ Get the style for this object tooltip.
         """
-        cdef char *style
+        cdef const_char_ptr style
         style = elm_toolbar_item_tooltip_style_get(self.obj)
         if style == NULL:
             return None

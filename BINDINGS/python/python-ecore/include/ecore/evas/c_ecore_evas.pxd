@@ -17,6 +17,9 @@
 
 cimport evas.c_evas
 
+cdef extern from *:
+    ctypedef char* const_char_ptr "const char *"
+
 cdef extern from "Eina.h":
     ctypedef struct Eina_List:
         void *data
@@ -169,9 +172,9 @@ cdef extern from "Ecore_Evas.h":
     void ecore_evas_lower(Ecore_Evas *ee)
     void ecore_evas_activate(Ecore_Evas *ee)
     void ecore_evas_title_set(Ecore_Evas *ee, char *t)
-    char *ecore_evas_title_get(Ecore_Evas *ee)
+    const_char_ptr ecore_evas_title_get(Ecore_Evas *ee)
     void ecore_evas_name_class_set(Ecore_Evas *ee, char *n, char *c)
-    void ecore_evas_name_class_get(Ecore_Evas *ee, char **n, char **c)
+    void ecore_evas_name_class_get(Ecore_Evas *ee, const_char_ptr *n, const_char_ptr *c)
     void ecore_evas_size_min_set(Ecore_Evas *ee, int w, int h)
     void ecore_evas_size_min_get(Ecore_Evas *ee, int *w, int *h)
     void ecore_evas_size_max_set(Ecore_Evas *ee, int w, int h)

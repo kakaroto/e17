@@ -15,6 +15,12 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Ecore.  If not, see <http://www.gnu.org/licenses/>.
 
+cdef extern from *:
+    ctypedef char* const_char_ptr "const char *"
+    ctypedef void const_void "const void"
+
+cdef extern from "Eina.h":
+    ctypedef unsigned char Eina_Bool
 
 cdef extern from "Ecore.h":
     ctypedef enum Ecore_Fd_Handler_Flags:
@@ -34,6 +40,7 @@ cdef extern from "Ecore.h":
         ECORE_EXE_NOT_LEADER = 256
 
     ctypedef struct Ecore_Exe
+    ctypedef Ecore_Exe const_Ecore_Exe "const Ecore_Exe"
 
     ctypedef struct Ecore_Exe_Event_Add:
         Ecore_Exe *exe
@@ -84,11 +91,11 @@ cdef extern from "Ecore.h":
     int ECORE_EXE_EVENT_DATA
     int ECORE_EXE_EVENT_ERROR
 
-    cdef struct Ecore_Timer
-    cdef struct Ecore_Animator
-    cdef struct Ecore_Idler
-    cdef struct Ecore_Idle_Enterer
-    cdef struct Ecore_Idle_Exiter
+    ctypedef struct Ecore_Timer
+    ctypedef struct Ecore_Animator
+    ctypedef struct Ecore_Idler
+    ctypedef struct Ecore_Idle_Enterer
+    ctypedef struct Ecore_Idle_Exiter
     ctypedef struct Ecore_Fd_Handler
     ctypedef void Ecore_Event_Handler
     ctypedef struct Ecore_Event
@@ -113,32 +120,32 @@ cdef extern from "Ecore.h":
     double ecore_time_get()
     double ecore_loop_time_get()
 
-    Ecore_Timer *ecore_timer_add(double t, int (*func) (void *data), void *data)
+    Ecore_Timer *ecore_timer_add(double t, Eina_Bool (*func) (void *data), void *data)
     void *ecore_timer_del(Ecore_Timer *timer)
     void ecore_timer_interval_set(Ecore_Timer *timer, double t)
 
-    Ecore_Animator *ecore_animator_add(int (*func) (void *data), void *data)
+    Ecore_Animator *ecore_animator_add(Eina_Bool (*func) (void *data), void *data)
     void *ecore_animator_del(Ecore_Animator *animator)
     void ecore_animator_frametime_set(double frametime)
     double ecore_animator_frametime_get()
 
-    Ecore_Idler *ecore_idler_add(int (*func) (void *data), void *data)
+    Ecore_Idler *ecore_idler_add(Eina_Bool (*func) (void *data), void *data)
     void *ecore_idler_del(Ecore_Idler *idler)
 
-    Ecore_Idle_Enterer *ecore_idle_enterer_add(int (*func) (void *data), void *data)
+    Ecore_Idle_Enterer *ecore_idle_enterer_add(Eina_Bool (*func) (void *data), void *data)
     void *ecore_idle_enterer_del(Ecore_Idle_Enterer *idle_enterer)
 
-    Ecore_Idle_Exiter *ecore_idle_exiter_add(int (*func) (void *data), void *data)
+    Ecore_Idle_Exiter *ecore_idle_exiter_add(Eina_Bool (*func) (void *data), void *data)
     void *ecore_idle_exiter_del(Ecore_Idle_Exiter *idle_exiter)
 
-    Ecore_Fd_Handler *ecore_main_fd_handler_add(int fd, Ecore_Fd_Handler_Flags flags, int (*func) (void *data, Ecore_Fd_Handler *fd_handler), void *data, int (*buf_func) (void *buf_data, Ecore_Fd_Handler *fd_handler), void *buf_data)
+    Ecore_Fd_Handler *ecore_main_fd_handler_add(int fd, Ecore_Fd_Handler_Flags flags, Eina_Bool (*func) (void *data, Ecore_Fd_Handler *fd_handler), void *data, Eina_Bool (*buf_func) (void *buf_data, Ecore_Fd_Handler *fd_handler), void *buf_data)
     void ecore_main_fd_handler_prepare_callback_set(Ecore_Fd_Handler *fd_handler, void (*func) (void *data, Ecore_Fd_Handler *fd_handler), void *data)
     void *ecore_main_fd_handler_del(Ecore_Fd_Handler *fd_handler)
     int ecore_main_fd_handler_fd_get(Ecore_Fd_Handler *fd_handler)
     int ecore_main_fd_handler_active_get(Ecore_Fd_Handler *fd_handler, Ecore_Fd_Handler_Flags flags)
     void ecore_main_fd_handler_active_set(Ecore_Fd_Handler *fd_handler, Ecore_Fd_Handler_Flags flags)
 
-    Ecore_Event_Handler *ecore_event_handler_add(int type, int (*func) (void *data, int type, void *event), void *data)
+    Ecore_Event_Handler *ecore_event_handler_add(int type, Eina_Bool (*func) (void *data, int type, void *event), void *data)
     void *ecore_event_handler_del(Ecore_Event_Handler *event_handler)
     int ecore_event_type_new()
     Ecore_Event *ecore_event_add(int type, void *ev, void (*free_func)(void *data, void *ev), void *data)
@@ -148,9 +155,9 @@ cdef extern from "Ecore.h":
     int ecore_exe_run_priority_get()
 
     Ecore_Exe *ecore_exe_pipe_run(char *exe_cmd, Ecore_Exe_Flags flags, void *data)
-    void ecore_exe_callback_pre_free_set(Ecore_Exe *exe, void (*func)(void *data, Ecore_Exe *exe))
+    void ecore_exe_callback_pre_free_set(Ecore_Exe *exe, void (*func)(void *data, const_Ecore_Exe *exe))
 
-    int ecore_exe_send(Ecore_Exe *exe, void *data, int size)
+    int ecore_exe_send(Ecore_Exe *exe, const_void *data, int size)
     void ecore_exe_close_stdin(Ecore_Exe *exe)
     void ecore_exe_auto_limits_set(Ecore_Exe *exe, int start_bytes, int end_bytes, int start_lines, int end_lines)
     Ecore_Exe_Event_Data *ecore_exe_event_data_get(Ecore_Exe *exe, Ecore_Exe_Flags flags)
@@ -158,8 +165,8 @@ cdef extern from "Ecore.h":
     void *ecore_exe_free(Ecore_Exe *exe)
     int ecore_exe_pid_get(Ecore_Exe *exe)
     void ecore_exe_tag_set(Ecore_Exe *exe, char *tag)
-    char *ecore_exe_tag_get(Ecore_Exe *exe)
-    char *ecore_exe_cmd_get(Ecore_Exe *exe)
+    const_char_ptr ecore_exe_tag_get(Ecore_Exe *exe)
+    const_char_ptr ecore_exe_cmd_get(Ecore_Exe *exe)
     void *ecore_exe_data_get(Ecore_Exe *exe)
     Ecore_Exe_Flags ecore_exe_flags_get(Ecore_Exe *exe)
     void ecore_exe_pause(Ecore_Exe *exe)
@@ -303,7 +310,7 @@ cdef class EventHandler:
 
     cdef int _set_obj(self, Ecore_Event_Handler *obj) except 0
     cdef int _unset_obj(self) except 0
-    cdef int _exec(self, void *event) except 2
+    cdef Eina_Bool _exec(self, void *event) except 2
 
 
 cdef class EventHandlerSignalUser(EventHandler):

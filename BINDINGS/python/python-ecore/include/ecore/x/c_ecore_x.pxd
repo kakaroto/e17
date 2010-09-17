@@ -15,6 +15,9 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Ecore.  If not, see <http://www.gnu.org/licenses/>.
 
+cdef extern from *:
+    ctypedef char* const_char_ptr "const char *"
+
 cdef extern from "sys/types.h":
     ctypedef long pid_t
 

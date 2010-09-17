@@ -27,7 +27,7 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
 
     def compiler_get(self):
         """@rtype: str"""
-        cdef char *s
+        cdef const_char_ptr s
         s = edje_edit_compiler_get(self.obj)
         if s != NULL:
             r = s
@@ -81,7 +81,7 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
             return ret
 
     def data_get(self, char *name):
-        cdef char *val
+        cdef const_char_ptr val
         val = edje_edit_data_value_get(self.obj, name)
         if val == NULL:
             return None
@@ -102,7 +102,7 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
         return bool(edje_edit_data_del(self.obj, name))
 
     def group_data_get(self, char *name):
-        cdef char *val
+        cdef const_char_ptr val
         val = edje_edit_group_data_value_get(self.obj, name)
         if val == NULL:
             return None
@@ -214,7 +214,7 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
     def part_add(self, char *name, int type, char *source=""):
         if type != edje.EDJE_PART_TYPE_EXTERNAL:
             return bool(edje_edit_part_add(
-                self.obj, name, <edje.c_edje.Edje_Part_Type>type))
+                self.obj, name, <c_edje.Edje_Part_Type>type))
         else:
             return bool(edje_edit_part_external_add(self.obj, name, source))
 

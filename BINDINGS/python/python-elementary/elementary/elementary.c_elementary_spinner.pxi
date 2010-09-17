@@ -25,11 +25,11 @@ cdef class Spinner(Object):
         elm_spinner_label_format_set(self.obj, format)
 
     def label_format_get(self):
-        cdef char* str
-        str = elm_spinner_label_format_get(self.obj)
-        if str == NULL:
+        cdef const_char_ptr s
+        s = elm_spinner_label_format_get(self.obj)
+        if s == NULL:
             return ""
-        return str
+        return s
 
     def min_max_set(self, min, max):
         elm_spinner_min_max_set(self.obj, min, max)

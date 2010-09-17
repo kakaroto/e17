@@ -125,11 +125,11 @@ cdef class ScrolledEntry(Object):
         return elm_scrolled_entry_entry_get(self.obj)
 
     def selection_get(self):
-        cdef char* str
-        str = elm_scrolled_entry_selection_get(self.obj)
-        if str == NULL:
+        cdef const_char_ptr s
+        s = elm_scrolled_entry_selection_get(self.obj)
+        if s == NULL:
             return ""
-        return str
+        return s
 
     def entry_insert(self, entry):
         elm_scrolled_entry_entry_insert(self.obj, entry)

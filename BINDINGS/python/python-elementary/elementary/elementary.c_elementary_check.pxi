@@ -25,7 +25,7 @@ cdef class Check(Object):
         elm_check_label_set(self.obj, label)
 
     def label_get(self):
-        cdef char *l
+        cdef const_char_ptr l
         l = elm_check_label_get(self.obj)
         if l == NULL:
             return None

@@ -15,9 +15,9 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Ecore.  If not, see <http://www.gnu.org/licenses/>.
 
-from python_ref cimport PyObject, Py_INCREF, Py_DECREF
-from python_mem cimport PyMem_Malloc, PyMem_Free
-from python_string cimport PyString_FromStringAndSize
+from cpython cimport PyObject, Py_INCREF, Py_DECREF
+from cpython cimport PyMem_Malloc, PyMem_Free
+from cpython cimport PyString_FromStringAndSize
 from cpython cimport bool
 
 __extra_epydoc_fields__ = (

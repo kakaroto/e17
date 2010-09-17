@@ -19,92 +19,12 @@
 cimport evas.c_evas
 import evas.c_evas
 
+cdef extern from *:
+    ctypedef char* const_char_ptr "const char *"
 
 cdef extern from "string.h":
     void *memcpy(void *dst, void *src, int n)
     char *strdup(char *str)
-
-cdef enum Elm_Win_Type:
-    ELM_WIN_BASIC
-    ELM_WIN_DIALOG_BASIC
-    ELM_WIN_DESKTOP
-    ELM_WIN_DOCK
-    ELM_WIN_TOOLBAR
-    ELM_WIN_MENU
-    ELM_WIN_UTILITY
-    ELM_WIN_SPLASH
-
-cdef enum Elm_Win_Keyboard_Mode:
-    ELM_WIN_KEYBOARD_OFF
-    ELM_WIN_KEYBOARD_ON
-    ELM_WIN_KEYBOARD_ALPHA
-    ELM_WIN_KEYBOARD_NUMERIC
-    ELM_WIN_KEYBOARD_PIN
-    ELM_WIN_KEYBOARD_PHONE_NUMBER
-    ELM_WIN_KEYBOARD_HEX
-    ELM_WIN_KEYBOARD_TERMINAL
-    ELM_WIN_KEYBOARD_PASSWORD
-
-cdef enum Elm_Policy:
-    ELM_POLICY_QUIT
-    ELM_POLICY_LAST
-
-cdef enum Elm_Policy_Quit:
-    ELM_POLICY_QUIT_NONE
-    ELM_POLICY_QUIT_LAST_WINDOW_CLOSED
-
-cdef enum Elm_Hover_Axis:
-    ELM_HOVER_AXIS_NONE
-    ELM_HOVER_AXIS_HORIZONTAL
-    ELM_HOVER_AXIS_VERTICAL
-    ELM_HOVER_AXIS_BOTH
-
-cdef enum Elm_Text_Format:
-    ELM_TEXT_FORMAT_PLAIN_UTF8
-    ELM_TEXT_FORMAT_MARKUP_UTF8
-
-cdef enum Elm_Icon_Type:
-    ELM_ICON_NONE
-    ELM_ICON_FILE
-    ELM_ICON_STANDARD
-
-cdef enum Elementary_List_Mode:
-    ELM_LIST_COMPRESS
-    ELM_LIST_SCROLL
-    ELM_LIST_LIMIT
-
-cdef enum Elm_Flip_Mode:
-    ELM_FLIP_ROTATE_Y_CENTER_AXIS
-    ELM_FLIP_ROTATE_X_CENTER_AXIS
-    ELM_FLIP_ROTATE_XZ_CENTER_AXIS
-    ELM_FLIP_ROTATE_YZ_CENTER_AXIS
-    ELM_FLIP_CUBE_LEFT
-    ELM_FLIP_CUBE_RIGHT
-
-cdef enum Elm_Genlist_Item_Flags:
-    ELM_GENLIST_ITEM_NONE
-    ELM_GENLIST_ITEM_SUBITEMS
-
-cdef enum Elm_Image_Orient:
-    ELM_IMAGE_ORIENT_NONE
-    ELM_IMAGE_ROTATE_90_CW
-    ELM_IMAGE_ROTATE_180_CW
-    ELM_IMAGE_ROTATE_90_CCW
-    ELM_IMAGE_FLIP_HORIZONTAL
-    ELM_IMAGE_FLIP_VERTICAL
-    ELM_IMAGE_FLIP_TRANSPOSE
-    ELM_IMAGE_FLIP_TRANSVERSE
-
-cdef enum Elm_Scroller_Policy:
-    ELM_SCROLLER_POLICY_AUTO
-    ELM_SCROLLER_POLICY_ON
-    ELM_SCROLLER_POLICY_OFF
-
-cdef enum Elm_Panel_Orient:
-    ELM_PANEL_ORIENT_TOP,
-    ELM_PANEL_ORIENT_BOTTOM,
-    ELM_PANEL_ORIENT_LEFT,
-    ELM_PANEL_ORIENT_RIGHT,
 
 cdef extern from "Ecore_X.h":
     ctypedef unsigned int Ecore_X_ID
@@ -137,7 +57,89 @@ ctypedef struct Elm_Win:
 """
 
 cdef extern from "Elementary.h":
-    cdef struct Elm_Entry_Anchor_Info
+    ctypedef enum Elm_Win_Type:
+        ELM_WIN_BASIC
+        ELM_WIN_DIALOG_BASIC
+        ELM_WIN_DESKTOP
+        ELM_WIN_DOCK
+        ELM_WIN_TOOLBAR
+        ELM_WIN_MENU
+        ELM_WIN_UTILITY
+        ELM_WIN_SPLASH
+
+    ctypedef enum Elm_Win_Keyboard_Mode:
+        ELM_WIN_KEYBOARD_OFF
+        ELM_WIN_KEYBOARD_ON
+        ELM_WIN_KEYBOARD_ALPHA
+        ELM_WIN_KEYBOARD_NUMERIC
+        ELM_WIN_KEYBOARD_PIN
+        ELM_WIN_KEYBOARD_PHONE_NUMBER
+        ELM_WIN_KEYBOARD_HEX
+        ELM_WIN_KEYBOARD_TERMINAL
+        ELM_WIN_KEYBOARD_PASSWORD
+
+    ctypedef enum Elm_Policy:
+        ELM_POLICY_QUIT
+        ELM_POLICY_LAST
+
+    ctypedef enum Elm_Policy_Quit:
+        ELM_POLICY_QUIT_NONE
+        ELM_POLICY_QUIT_LAST_WINDOW_CLOSED
+
+    ctypedef enum Elm_Hover_Axis:
+        ELM_HOVER_AXIS_NONE
+        ELM_HOVER_AXIS_HORIZONTAL
+        ELM_HOVER_AXIS_VERTICAL
+        ELM_HOVER_AXIS_BOTH
+
+    ctypedef enum Elm_Text_Format:
+        ELM_TEXT_FORMAT_PLAIN_UTF8
+        ELM_TEXT_FORMAT_MARKUP_UTF8
+
+    ctypedef enum Elm_List_Mode:
+        ELM_LIST_COMPRESS
+        ELM_LIST_SCROLL
+        ELM_LIST_LIMIT
+
+    ctypedef enum Elm_Flip_Mode:
+        ELM_FLIP_ROTATE_Y_CENTER_AXIS
+        ELM_FLIP_ROTATE_X_CENTER_AXIS
+        ELM_FLIP_ROTATE_XZ_CENTER_AXIS
+        ELM_FLIP_ROTATE_YZ_CENTER_AXIS
+        ELM_FLIP_CUBE_LEFT
+        ELM_FLIP_CUBE_RIGHT
+
+    ctypedef enum Elm_Genlist_Item_Flags:
+        ELM_GENLIST_ITEM_NONE
+        ELM_GENLIST_ITEM_SUBITEMS
+
+    ctypedef enum Elm_Image_Orient:
+        ELM_IMAGE_ORIENT_NONE
+        ELM_IMAGE_ROTATE_90_CW
+        ELM_IMAGE_ROTATE_180_CW
+        ELM_IMAGE_ROTATE_90_CCW
+        ELM_IMAGE_FLIP_HORIZONTAL
+        ELM_IMAGE_FLIP_VERTICAL
+        ELM_IMAGE_FLIP_TRANSPOSE
+        ELM_IMAGE_FLIP_TRANSVERSE
+
+    ctypedef enum Elm_Scroller_Policy:
+        ELM_SCROLLER_POLICY_AUTO
+        ELM_SCROLLER_POLICY_ON
+        ELM_SCROLLER_POLICY_OFF
+
+    ctypedef enum Elm_Panel_Orient:
+        ELM_PANEL_ORIENT_TOP,
+        ELM_PANEL_ORIENT_BOTTOM,
+        ELM_PANEL_ORIENT_LEFT,
+        ELM_PANEL_ORIENT_RIGHT,
+
+    ctypedef enum Elm_Icon_Type:
+        ELM_ICON_NONE
+        ELM_ICON_FILE
+        ELM_ICON_STANDARD
+
+    ctypedef struct Elm_Entry_Anchor_Info
     ctypedef struct Elm_Entry_Anchorview_Info:
         char *name
         int   button
@@ -158,9 +160,9 @@ cdef extern from "Elementary.h":
         evas.c_evas.Eina_Bool hover_top
         evas.c_evas.Eina_Bool hover_bottom
 
-    ctypedef char *(*GenlistItemLabelGetFunc)(void *data, evas.c_evas.Evas_Object *obj, char *part)
-    ctypedef evas.c_evas.Evas_Object *(*GenlistItemIconGetFunc)(void *data, evas.c_evas.Evas_Object *obj, char *part)
-    ctypedef evas.c_evas.Eina_Bool (*GenlistItemStateGetFunc)(void *data, evas.c_evas.Evas_Object *obj, char *part)
+    ctypedef char *(*GenlistItemLabelGetFunc)(void *data, evas.c_evas.Evas_Object *obj, const_char_ptr part)
+    ctypedef evas.c_evas.Evas_Object *(*GenlistItemIconGetFunc)(void *data, evas.c_evas.Evas_Object *obj, const_char_ptr part)
+    ctypedef evas.c_evas.Eina_Bool (*GenlistItemStateGetFunc)(void *data, evas.c_evas.Evas_Object *obj, const_char_ptr part)
     ctypedef void (*GenlistItemDelFunc)(void *data, evas.c_evas.Evas_Object *obj)
 
     ctypedef struct Elm_Genlist_Item_Class_Func:
@@ -176,14 +178,13 @@ cdef extern from "Elementary.h":
     ctypedef evas.c_evas.Evas_Object *(*Elm_Tooltip_Content_Cb) (void *data, evas.c_evas.Evas_Object *obj)
     ctypedef evas.c_evas.Evas_Object *(*Elm_Tooltip_Item_Content_Cb) (void *data, evas.c_evas.Evas_Object *obj, void *item)
 
-    cdef struct Elm_Widget_Item
-    cdef struct Elm_Hoversel_Item
-    cdef struct Elm_Menu_Item
-    cdef struct Elm_Toolbar_Item
-    cdef struct Elm_List_Item
-    cdef struct Elm_Carousel_Item
-    cdef struct Elm_Genlist_Item
-    cdef struct Elm_Theme
+    ctypedef struct Elm_Hoversel_Item
+    ctypedef struct Elm_Menu_Item
+    ctypedef struct Elm_Toolbar_Item
+    ctypedef struct Elm_List_Item
+    ctypedef struct Elm_Carousel_Item
+    ctypedef struct Elm_Genlist_Item
+    ctypedef struct Elm_Theme
 
     # Basic elementary functions
     void elm_init(int argc,char** argv)
@@ -554,8 +555,8 @@ cdef extern from "Elementary.h":
     void         elm_list_go(evas.c_evas.Evas_Object *obj)
     void      elm_list_multi_select_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool multi)
     evas.c_evas.Eina_Bool      elm_list_multi_select_get(evas.c_evas.Evas_Object *obj)
-    void         elm_list_horizontal_mode_set(evas.c_evas.Evas_Object *obj, Elementary_List_Mode mode)
-    Elementary_List_Mode       elm_list_horizontal_mode_get(evas.c_evas.Evas_Object *obj)
+    void         elm_list_horizontal_mode_set(evas.c_evas.Evas_Object *obj, Elm_List_Mode mode)
+    Elm_List_Mode       elm_list_horizontal_mode_get(evas.c_evas.Evas_Object *obj)
     void      elm_list_always_select_mode_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool multi)
     evas.c_evas.Eina_List     *elm_list_items_get(evas.c_evas.Evas_Object *obj)
     Elm_List_Item *elm_list_selected_item_get(evas.c_evas.Evas_Object *obj)
@@ -605,7 +606,7 @@ cdef extern from "Elementary.h":
     evas.c_evas.Evas_Object *elm_genlist_add(evas.c_evas.Evas_Object *parent)
     void elm_genlist_clear(evas.c_evas.Evas_Object *obj)
     void elm_genlist_multi_select_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool multi)
-    void elm_genlist_horizontal_mode_set(evas.c_evas.Evas_Object *obj, Elementary_List_Mode mode)
+    void elm_genlist_horizontal_mode_set(evas.c_evas.Evas_Object *obj, Elm_List_Mode mode)
     void elm_genlist_always_select_mode_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool always_select)
     void elm_genlist_no_select_mode_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool no_select)
     void elm_genlist_compress_mode_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool compress)

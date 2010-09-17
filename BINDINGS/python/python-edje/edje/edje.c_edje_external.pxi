@@ -96,7 +96,7 @@ cdef class ExternalParamInfo:
 
     property translated_name:
         def __get__(self):
-            cdef char *t
+            cdef const_char_ptr t
             if self._external_type_obj == NULL or \
                self._external_type_obj.translate == NULL:
                 return self.name
@@ -200,7 +200,7 @@ cdef class ExternalParamInfoString(ExternalParamInfo):
 
     property translated_default:
         def __get__(self):
-            cdef char *t
+            cdef const_char_ptr t
             if self._external_type_obj == NULL or \
                self._external_type_obj.translate == NULL:
                 return self.default
@@ -236,7 +236,7 @@ cdef class ExternalParamInfoBool(ExternalParamInfo):
 
     property translated_false_string:
         def __get__(self):
-            cdef char *t
+            cdef const_char_ptr t
             if self._external_type_obj == NULL or \
                self._external_type_obj.translate == NULL:
                 return self.false_string
@@ -254,7 +254,7 @@ cdef class ExternalParamInfoBool(ExternalParamInfo):
 
     property translated_true_string:
         def __get__(self):
-            cdef char *t
+            cdef const_char_ptr t
             if self._external_type_obj == NULL or \
                self._external_type_obj.translate == NULL:
                 return self.true_string
@@ -274,7 +274,7 @@ cdef class ExternalParamInfoChoice(ExternalParamInfo):
 
     property translated_default:
         def __get__(self):
-            cdef char *t
+            cdef const_char_ptr t
             if self._external_type_obj == NULL or \
                self._external_type_obj.translate == NULL:
                 return self.default
@@ -300,7 +300,7 @@ cdef class ExternalParamInfoChoice(ExternalParamInfo):
 
     property translated_choices:
         def __get__(self):
-            cdef char *t
+            cdef const_char_ptr t
             if self._external_type_obj == NULL or \
                self._external_type_obj.translate == NULL:
                 return self.choices
@@ -336,7 +336,7 @@ cdef ExternalParamInfo ExternalParamInfo_from_ptr(type, Edje_External_Param_Info
     return p
 
 def external_param_info_get(char *type_name):
-    cdef Edje_External_Type *ext_type
+    cdef const_Edje_External_Type *ext_type
     cdef ExternalType t
 
     warnings.warn("Use ExternalType.parameters_info_get() instead!",
@@ -370,7 +370,7 @@ cdef class ExternalType:
             return self._obj.module_name
 
     def label_get(self):
-        cdef char *l
+        cdef const_char_ptr l
         if self._obj.label_get == NULL:
             return None
         l = self._obj.label_get(self._obj.data)
@@ -380,7 +380,7 @@ cdef class ExternalType:
         return ret
 
     def description_get(self):
-        cdef char *l
+        cdef const_char_ptr l
         if self._obj.description_get == NULL:
             return None
         l = self._obj.description_get(self._obj.data)
@@ -400,7 +400,7 @@ cdef class ExternalType:
         It will always return a string, on errors the parameter text
         is returned untranslated.
         """
-        cdef char *l
+        cdef const_char_ptr l
         if self._obj.translate == NULL:
             return text
         l = self._obj.translate(self._obj.data, text)
@@ -465,12 +465,12 @@ cdef class ExternalIterator:
         return self
 
     def __next__(self):
-        cdef evas.c_evas.Eina_Hash_Tuple *tuple
+        cdef evas.c_evas.const_Eina_Hash_Tuple *tuple
         cdef ExternalType t
         if evas.c_evas.eina_iterator_next(self.obj, <void **>&tuple):
             t = ExternalType()
             t._name = <char*>tuple.key
-            t._obj = <Edje_External_Type*>tuple.data
+            t._obj = <const_Edje_External_Type*>tuple.data
             return t
         else:
             raise StopIteration
@@ -481,7 +481,7 @@ cdef class ExternalIterator:
 
 def external_type_get(char *type_name):
     "Gets the instance that represents an ExternalType of the given name."
-    cdef Edje_External_Type *obj = edje_external_type_get(type_name)
+    cdef const_Edje_External_Type *obj = edje_external_type_get(type_name)
     cdef ExternalType ret
     if obj == NULL:
         return None

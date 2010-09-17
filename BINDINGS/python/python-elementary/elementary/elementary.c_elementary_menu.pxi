@@ -73,7 +73,7 @@ cdef class MenuItem:
         elm_menu_item_label_set(self.obj, label)
 
     def label_get(self):
-        cdef char *l
+        cdef const_char_ptr l
         l = elm_menu_item_label_get(self.obj)
         if l == NULL:
             return None
@@ -118,7 +118,7 @@ cdef class MenuItem:
             return self.data_get()
 
     def subitems_get(self):
-        cdef evas.c_evas.Eina_List *lst, *itr
+        cdef evas.c_evas.const_Eina_List *lst, *itr
         cdef void *data
         ret = []
         lst = elm_menu_item_subitems_get(self.obj)

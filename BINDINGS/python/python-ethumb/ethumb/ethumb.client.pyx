@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Ethumb.  If not, see <http://www.gnu.org/licenses/>.
 
-from python_ref cimport PyObject, Py_INCREF, Py_DECREF
+from cpython cimport PyObject, Py_INCREF, Py_DECREF
 import traceback
 
 __extra_epydoc_fields__ = (
@@ -58,7 +58,7 @@ cdef void _on_server_die_cb(void *data, Ethumb_Client *client) with gil:
     self._on_server_die_callback = None
 
 
-cdef void _generated_cb(void *data, Ethumb_Client *client, int id, char *file, char *key, char *thumb_path, char *thumb_key, Eina_Bool success) with gil:
+cdef void _generated_cb(void *data, Ethumb_Client *client, int id, const_char_ptr file, const_char_ptr key, const_char_ptr thumb_path, const_char_ptr thumb_key, Eina_Bool success) with gil:
     obj = <object>data
     (self, func, args, kargs) = obj
     f = str_from_c(file)
@@ -83,7 +83,7 @@ cdef char *str_to_c(object s):
         mystr = s
     return mystr
 
-cdef object str_from_c(char *mystr):
+cdef object str_from_c(const_char_ptr mystr):
     if mystr != NULL:
         return mystr
 
@@ -468,7 +468,7 @@ cdef class Client:
 
         @rtype: tuple of str
         """
-        cdef char *p, *k
+        cdef const_char_ptr p, k
         ethumb_client_file_get(self.obj, &p, &k)
         return (str_from_c(p), str_from_c(k))
 
@@ -500,7 +500,7 @@ cdef class Client:
         @parm: B{key} path to key inside B{path}, this is used to
            generate thumbnail inside EET files.
         """
-        cdef char *p, *k
+        cdef const_char_ptr p, k
         p = str_to_c(path)
         k = str_to_c(key)
         ethumb_client_thumb_path_set(self.obj, p, k)
@@ -514,7 +514,7 @@ cdef class Client:
 
         @rtype: tuple of str
         """
-        cdef char *p, *k
+        cdef const_char_ptr p, k
         ethumb_client_thumb_path_get(self.obj, &p, &k)
         return (str_from_c(p), str_from_c(k))
 

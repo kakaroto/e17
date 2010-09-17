@@ -44,9 +44,9 @@ cdef flags2str(int value):
     return ", ".join(flags)
 
 
-cdef int fd_handler_cb(void *_td, Ecore_Fd_Handler *fdh) with gil:
+cdef Eina_Bool fd_handler_cb(void *_td, Ecore_Fd_Handler *fdh) with gil:
     cdef FdHandler obj
-    cdef int r
+    cdef Eina_Bool r
 
     obj = <FdHandler>_td
 

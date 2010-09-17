@@ -17,14 +17,14 @@
 #
 
 def Entry_markup_to_utf8(str):
-    cdef char* string
+    cdef const_char_ptr string
     string = elm_entry_markup_to_utf8(str)
     if string == NULL:
         return None
     return string
 
 def Entry_utf8_to_markup(str):
-    cdef char* string
+    cdef const_char_ptr string
     string = elm_entry_utf8_to_markup(str)
     if string == NULL:
         return None
@@ -133,11 +133,11 @@ cdef class Entry(Object):
         return elm_entry_entry_get(self.obj)
 
     def selection_get(self):
-        cdef char* str
-        str = elm_entry_selection_get(self.obj)
-        if str == NULL:
+        cdef const_char_ptr s
+        s = elm_entry_selection_get(self.obj)
+        if s == NULL:
             return ""
-        return str
+        return s
 
     def entry_insert(self, entry):
         elm_entry_entry_insert(self.obj, entry)

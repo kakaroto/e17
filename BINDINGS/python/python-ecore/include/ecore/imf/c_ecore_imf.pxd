@@ -212,7 +212,7 @@ cdef extern from "Ecore_IMF.h":
         char *default_locales
         char *canvas_type
         int  canvas_required
-
+    ctypedef Ecore_IMF_Context_Info const_Ecore_IMF_Context_Info "const Ecore_IMF_Context_Info"
 
     ####################################################################
     # Functions

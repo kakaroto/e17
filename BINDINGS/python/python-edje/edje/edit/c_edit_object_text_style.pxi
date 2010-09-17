@@ -21,8 +21,8 @@ cdef class Text_Style:
     cdef EdjeEdit edje
     cdef object name
 
-    def __init__(self, EdjeEdit edje, char *name):
-        self.edje = edje
+    def __init__(self, EdjeEdit e, char *name):
+        self.edje = e
         self.name = name
 
     property tags:
@@ -58,7 +58,7 @@ cdef class Text_Style_Tag:
 
     property value:
         def __get__(self):
-            cdef char *val
+            cdef const_char_ptr val
             val =  edje_edit_style_tag_value_get(self.text_style.edje.obj, self.text_style.name, self.name)
             if val == NULL: return None
             ret = val

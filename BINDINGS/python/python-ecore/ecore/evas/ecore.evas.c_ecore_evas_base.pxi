@@ -463,7 +463,7 @@ cdef class EcoreEvas:
 
     def title_get(self):
         "@rtype: str"
-        cdef char *s
+        cdef const_char_ptr s
         s = ecore_evas_title_get(self.obj)
         if s != NULL:
             return s
@@ -481,7 +481,7 @@ cdef class EcoreEvas:
 
     def name_class_get(self):
         "@rtype: tuple of str"
-        cdef char *n, *c
+        cdef const_char_ptr n, c
         ecore_evas_name_class_get(self.obj, &n, &c)
         if n == NULL:
             name = None

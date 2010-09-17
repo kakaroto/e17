@@ -172,7 +172,7 @@ cdef class ListItem(WidgetItem):
 
         @rtype: str
         """
-        cdef char *l
+        cdef const_char_ptr l
         l = elm_list_item_label_get(self.item)
         if l == NULL:
             return None
@@ -326,7 +326,7 @@ cdef class ListItem(WidgetItem):
     def tooltip_style_get(self):
         """ Get the style for this object tooltip.
         """
-        cdef char *style
+        cdef const_char_ptr style
         style = elm_list_item_tooltip_style_get(self.item)
         if style == NULL:
             return None
@@ -374,14 +374,14 @@ cdef class List(Object):
         def __set__(self, multi):
             elm_list_multi_select_set(self.obj, multi)
 
-    def horizontal_mode_set(self, Elementary_List_Mode mode):
+    def horizontal_mode_set(self, Elm_List_Mode mode):
         elm_list_horizontal_mode_set(self.obj, mode)
 
     property horizontal_mode:
         def __get__(self):
             return elm_list_horizontal_mode_get(self.obj)
 
-        def __set__(self, Elementary_List_Mode mode):
+        def __set__(self, Elm_List_Mode mode):
             elm_list_horizontal_mode_set(self.obj, mode)
 
     def always_select_mode_set(self, always_select):
@@ -404,7 +404,7 @@ cdef class List(Object):
             return it
 
     def selected_items_get(self):
-        cdef evas.c_evas.Eina_List *lst, *itr
+        cdef evas.c_evas.const_Eina_List *lst, *itr
         cdef void *data
         ret = []
         lst = elm_list_selected_items_get(self.obj)
@@ -418,7 +418,7 @@ cdef class List(Object):
         return ret
 
     def items_get(self):
-        cdef evas.c_evas.Eina_List *lst, *itr
+        cdef evas.c_evas.const_Eina_List *lst, *itr
         cdef void *data
         ret = []
         lst = elm_list_items_get(self.obj)

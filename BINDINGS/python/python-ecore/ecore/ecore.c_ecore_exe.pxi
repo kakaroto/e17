@@ -47,7 +47,7 @@ cdef exe_flags2str(int value):
     return ", ".join(flags)
 
 
-cdef int _exe_event_filter_cb(void *data, int type, void *event) with gil:
+cdef Eina_Bool _exe_event_filter_cb(void *data, int type, void *event) with gil:
     cdef ExeEventFilter self = <ExeEventFilter>data
     cdef Ecore_Exe_Event_Add *e_add
     cdef Ecore_Exe_Event_Del *e_del
@@ -171,7 +171,7 @@ cdef object _ecore_exe_event_mapping
 _ecore_exe_event_mapping = {}
 
 
-cdef void _ecore_exe_pre_free_cb(void *data, Ecore_Exe *exe) with gil:
+cdef void _ecore_exe_pre_free_cb(void *data, const_Ecore_Exe *exe) with gil:
     cdef Exe obj
     try:
         if data == NULL:
@@ -406,7 +406,7 @@ cdef class Exe:
         @raise ValueError: if size is larger than buffer size.
         @return: bool with success or failure.
         """
-        cdef void *b_data
+        cdef const_void *b_data
         cdef Py_ssize_t b_size
 
         # TODO: update to new buffer api
@@ -453,7 +453,7 @@ cdef class Exe:
         @rtype: str or None
         @return: the command line string if execution succeeded, None otherwise.
         """
-        cdef char *cmd = ecore_exe_cmd_get(self.exe)
+        cdef const_char_ptr cmd = ecore_exe_cmd_get(self.exe)
         if cmd != NULL:
             return cmd
         return None
@@ -501,7 +501,7 @@ cdef class Exe:
 
         @rtype: str or None
         """
-        cdef char *tag = ecore_exe_tag_get(self.exe)
+        cdef const_char_ptr tag = ecore_exe_tag_get(self.exe)
         if tag != NULL:
             return tag
         return None
@@ -879,7 +879,7 @@ cdef class EventHandlerExe(EventHandler):
     This class is responsible by filtering out the events created from
     C without associated Python wrappers.
     """
-    cdef int _exec(self, void *event) except 2:
+    cdef Eina_Bool _exec(self, void *event) except 2:
         cdef Event e
         e = self.event_cls()
         if e._set_obj(event) == -1: # no exe

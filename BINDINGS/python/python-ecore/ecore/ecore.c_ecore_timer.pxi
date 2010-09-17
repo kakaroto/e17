@@ -19,9 +19,9 @@
 
 import traceback
 
-cdef int timer_cb(void *_td) with gil:
+cdef Eina_Bool timer_cb(void *_td) with gil:
     cdef Timer obj
-    cdef int r
+    cdef Eina_Bool r
 
     obj = <Timer>_td
 

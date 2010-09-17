@@ -20,7 +20,7 @@ cdef class Toggle(Object):
     """
     A toggle widget
     """
-    cdef int state_ptr
+    cdef c_evas.Eina_Bool state_ptr
 
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)

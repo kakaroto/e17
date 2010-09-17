@@ -60,7 +60,7 @@ def default_id_by_canvas_type(char* canvas_type):
     return ecore_imf_context_default_id_by_canvas_type_get(canvas_type)
 
 def info_by_id(char *id):
-    cdef Ecore_IMF_Context_Info *info
+    cdef const_Ecore_IMF_Context_Info *info
     ret = {}
 
     # Raise exception???

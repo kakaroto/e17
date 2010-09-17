@@ -56,7 +56,7 @@ cdef class State:
                                          self.value))
 
     def rel1_to_get(self):
-        cdef char *tx, *ty
+        cdef const_char_ptr tx, ty
         tx = edje_edit_state_rel1_to_x_get(self.edje.obj, self.part, self.name,
                                            self.value)
         ty = edje_edit_state_rel1_to_y_get(self.edje.obj, self.part, self.name,
@@ -177,7 +177,7 @@ cdef class State:
                                           self.value, y)
 
     def rel2_to_get(self):
-        cdef char *tx, *ty
+        cdef const_char_ptr tx, ty
         tx = edje_edit_state_rel2_to_x_get(self.edje.obj, self.part, self.name,
                                            self.value)
         ty = edje_edit_state_rel2_to_y_get(self.edje.obj, self.part, self.name,
@@ -494,7 +494,7 @@ cdef class State:
                 edje_edit_state_visible_set(self.edje.obj, self.part, self.name,                                            self.value, 0)
 
     def color_class_get(self):
-        cdef char *cc
+        cdef const_char_ptr cc
         cc = edje_edit_state_color_class_get(self.edje.obj, self.part,
                                              self.name, self.value)
         if cc == NULL:
@@ -512,21 +512,21 @@ cdef class State:
                                             self.name, self.value, cc)
 
     def external_params_get(self):
-        cdef evas.c_evas.Eina_List *lst
+        cdef evas.c_evas.const_Eina_List *lst
         ret = []
         lst = edje_edit_state_external_params_list_get(self.edje.obj, self.part,
                                                        self.name, self.value)
         while lst:
-            p = edje.c_edje._ExternalParam_from_ptr(<long>lst.data)
+            p = c_edje._ExternalParam_from_ptr(<long>lst.data)
             if p is not None:
                 ret.append(p)
             lst = lst.next
         return ret
 
     def external_param_get(self, param):
-        cdef edje.c_edje.Edje_External_Param_Type type
+        cdef c_edje.Edje_External_Param_Type type
         cdef void *value
-        cdef char *s
+        cdef const_char_ptr s
 
         if not edje_edit_state_external_param_get(self.edje.obj, self.part,
                                                   self.name, self.value, param,
@@ -556,6 +556,8 @@ cdef class State:
         return None
 
     def external_param_set(self, param, value):
+        cdef const_char_ptr expected
+
         if isinstance(value, bool):
             return self.external_param_bool_set(param, value)
         elif isinstance(value, (long, int)):
@@ -607,17 +609,16 @@ cdef class State:
         return value
 
     def external_param_string_get(self, param):
-        cdef char *value
+        cdef const_char_ptr value
 
-        if not edje_edit_state_external_param_string_get(self.edje.obj, self.part,
-                                                      self.name, self.value,
-                                                      param, &value):
+        if not edje_edit_state_external_param_string_get(
+            self.edje.obj, self.part, self.name, self.value, param, &value):
             return None
         if value != NULL:
             return value
 
     def external_param_choice_get(self, param):
-        cdef char *value
+        cdef const_char_ptr value
 
         if not edje_edit_state_external_param_choice_get(
             self.edje.obj, self.part, self.name, self.value, param, &value):
@@ -652,7 +653,7 @@ cdef class State:
                 self.edje.obj, self.part, self.name, self.value, param, value))
 
     def text_get(self):
-        cdef char *t
+        cdef const_char_ptr t
         t = edje_edit_state_text_get(self.edje.obj, self.part, self.name,
                                      self.value)
         if t == NULL:
@@ -672,7 +673,7 @@ cdef class State:
             self.text_set(text)
 
     def font_get(self):
-        cdef char *f
+        cdef const_char_ptr f
         f = edje_edit_state_font_get(self.edje.obj, self.part, self.name,
                                      self.value)
         if f == NULL:
@@ -767,7 +768,7 @@ cdef class State:
             self.text_fit_set(*value)
 
     def image_get(self):
-        cdef char *img
+        cdef const_char_ptr img
         img = edje_edit_state_image_get(self.edje.obj, self.part, self.name,
                                         self.value)
         if img == NULL:

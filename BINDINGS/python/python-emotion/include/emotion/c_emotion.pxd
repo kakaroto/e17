@@ -18,6 +18,9 @@
 cimport evas.c_evas
 import evas.c_evas
 
+cdef extern from *:
+    ctypedef char* const_char_ptr "const char *"
+
 cdef extern from "Emotion.h":
     ctypedef enum Emotion_Module:
         EMOTION_MODULE_XINE = 0
@@ -67,7 +70,7 @@ cdef extern from "Emotion.h":
         EMOTION_CHANNEL_AUTO = -1
         EMOTION_CHANNEL_DEFAULT = 0
 
-    evas.c_evas.Evas_Object *emotion_object_add(evas.c_evas.Evas *evas)
+    evas.c_evas.Evas_Object *emotion_object_add(evas.c_evas.Evas *e)
     void emotion_object_module_option_set(evas.c_evas.Evas_Object *obj, char *opt, char *val)
     evas.c_evas.Eina_Bool emotion_object_init(evas.c_evas.Evas_Object *obj, char *module_filename)
 

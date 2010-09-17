@@ -19,9 +19,9 @@
 
 import traceback
 
-cdef int animator_cb(void *_td) with gil:
+cdef Eina_Bool animator_cb(void *_td) with gil:
     cdef Animator obj
-    cdef int r
+    cdef Eina_Bool r
 
     obj = <Animator>_td
 
