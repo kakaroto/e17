@@ -3,6 +3,8 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 datarootdir=@datarootdir@
 datadir=@datarootdir@/python-ecore-evas
+pythondir=@pythondir@
+pyexecdir=@pyexecdir@
 
 Name: Python Ecore Evas
 Description: Python bindings for Ecore Evas

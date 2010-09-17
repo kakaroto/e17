@@ -1,6 +1,8 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
+pythondir=@pythondir@
+pyexecdir=@pyexecdir@
 
 Name: @PACKAGE@
 Description: Python bindings for Enlightenment DBus

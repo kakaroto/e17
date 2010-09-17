@@ -3,6 +3,8 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 datarootdir=@datarootdir@
 datadir=@datarootdir@/python-ecore-x
+pythondir=@pythondir@
+pyexecdir=@pyexecdir@
 
 Name: Python Ecore X
 Description: Python bindings for Ecore X

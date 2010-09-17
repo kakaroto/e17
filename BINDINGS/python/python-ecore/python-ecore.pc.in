@@ -4,6 +4,8 @@ libdir=@libdir@
 includedir=@includedir@/@PACKAGE@
 datarootdir=@datarootdir@
 datadir=@datarootdir@/@PACKAGE@
+pythondir=@pythondir@
+pyexecdir=@pyexecdir@
 
 Name: @PACKAGE@
 Description: Python bindings for Ecore

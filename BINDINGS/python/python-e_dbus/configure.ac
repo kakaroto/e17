@@ -68,6 +68,7 @@ PKG_CHECK_MODULES([EDBUS], [$pkgconfig_edbus_requires_libs])
 
 AM_PATH_PYTHON(2.5)
 AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
+AM_CHECK_PYTHONPATH
 
 AC_PATH_PROG([EPYDOC], [epydoc], [no])
 AC_SUBST(EPYDOC)
@@ -99,10 +100,9 @@ echo "Installation...........: make install (as root if needed, with 'su' or 'su
 echo "  prefix...............: $prefix"
 echo
 echo
-echo "To use the local version (as opposed to the installed version) use:"
-echo
-echo "  export PYTHONPATH=\"$PWD:$PWD/.libs:\$PYTHONPATH\""
-echo "  python -c 'import e_dbus; print e_dbus' # test load"
-echo
+
+if test "x$PYTHONPATH_CORRECT" != "xyes"; then
+   AC_MSG_WARN([your \$PYTHONPATH does not contains the required directories to support your desired installation. Please check warnings above.])
+fi
 
 

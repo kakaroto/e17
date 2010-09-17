@@ -76,6 +76,12 @@ AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
 cython_required_version=0.13
 AM_CHECK_CYTHON([$cython_required_version], [:], [:])
 
+FILTER_VAR_REGEXP([CFLAGS], [-fvisibility=hidden])
+FILTER_VAR_REGEXP([LDFLAGS], [-fvisibility=hidden])
+
+AM_CHECK_PYTHONPATH
+PY_EFL_PYTHONPATH([PYTHON_EVAS], [python-evas >= ${python_evas_version}])
+
 have_cython_precompiled=no
 AM_CHECK_CYTHON_PRECOMPILED([$wanted_cython_files],
    [have_cython_precompiled=yes], [have_cython_precompiled=no])
@@ -144,10 +150,13 @@ echo "Installation...........: make install (as root if needed, with 'su' or 'su
 echo "  prefix...............: $prefix"
 echo
 echo
-echo "To use the local version (as opposed to the installed version) use:"
-echo
-echo "  export PYTHONPATH=\"$PWD:$PWD/.libs:\$PYTHONPATH\""
-echo "  python -c 'import elementary; print elementary' # test load"
-echo
+
+if test "x$PYTHONPATH_CORRECT" != "xyes"; then
+   AC_MSG_WARN([your \$PYTHONPATH does not contains the required directories to support your desired installation. Please check warnings above.])
+fi
+
+if test "x${PYTHON_EVAS_PYTHONPATH_CORRECT}" != "xyes"; then
+   AC_MSG_WARN([your \$PYTHONPATH does not includes python-evas, required by elementary module and this may cause runtime problems. Please check warnings above.])
+fi
 
 

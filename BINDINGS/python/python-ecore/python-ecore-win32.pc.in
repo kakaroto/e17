@@ -3,6 +3,8 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 datarootdir=@datarootdir@
 datadir=@datarootdir@/python-ecore-win32
+pythondir=@pythondir@
+pyexecdir=@pyexecdir@
 
 Name: Python Ecore Win32
 Description: Python bindings for Ecore Windows

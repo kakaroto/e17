@@ -3,6 +3,8 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 datarootdir=@datarootdir@
 datadir=@datarootdir@/@PACKAGE@
+pythondir=@pythondir@
+pyexecdir=@pyexecdir@
 
 Name: @PACKAGE@
 Description: Python bindings for Emotion

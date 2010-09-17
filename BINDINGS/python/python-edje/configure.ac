@@ -96,6 +96,12 @@ if test "x$CYTHON_FOUND" != "xyes"; then
 fi
 AM_CONDITIONAL(HAVE_CYTHON, [test "x$CYTHON_FOUND" = "xyes"])
 
+FILTER_VAR_REGEXP([CFLAGS], [-fvisibility=hidden])
+FILTER_VAR_REGEXP([LDFLAGS], [-fvisibility=hidden])
+
+AM_CHECK_PYTHONPATH
+PY_EFL_PYTHONPATH([PYTHON_EVAS], [python-evas >= ${python_evas_version}])
+
 AC_PATH_PROG([EPYDOC], [epydoc], [no])
 AC_SUBST(EPYDOC)
 AM_CONDITIONAL(HAVE_EPYDOC, [test "x$EPYDOC" != "xno"])
@@ -144,10 +150,11 @@ echo "Installation...........: make install (as root if needed, with 'su' or 'su
 echo "  prefix...............: $prefix"
 echo
 echo
-echo "To use the local version (as opposed to the installed version) use:"
-echo
-echo "  export PYTHONPATH=\"$PWD:$PWD/.libs:\$PYTHONPATH\""
-echo "  python -c 'import edje; print edje' # test load"
-echo
 
+if test "x$PYTHONPATH_CORRECT" != "xyes"; then
+   AC_MSG_WARN([your \$PYTHONPATH does not contains the required directories to support your desired installation. Please check warnings above.])
+fi
 
+if test "x${PYTHON_EVAS_PYTHONPATH_CORRECT}" != "xyes"; then
+   AC_MSG_WARN([your \$PYTHONPATH does not includes python-evas, required by edje module and this may cause runtime problems. Please check warnings above.])
+fi

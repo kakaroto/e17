@@ -93,6 +93,11 @@ if test "x$CYTHON_FOUND" != "xyes"; then
 fi
 AM_CONDITIONAL(HAVE_CYTHON, [test "x$CYTHON_FOUND" = "xyes"])
 
+FILTER_VAR_REGEXP([CFLAGS], [-fvisibility=hidden])
+FILTER_VAR_REGEXP([LDFLAGS], [-fvisibility=hidden])
+
+AM_CHECK_PYTHONPATH
+
 AC_PATH_PROG([EPYDOC], [epydoc], [no])
 AC_SUBST(EPYDOC)
 AM_CONDITIONAL(HAVE_EPYDOC, [test "x$EPYDOC" != "xno"])
@@ -141,10 +146,7 @@ echo "Installation...........: make install (as root if needed, with 'su' or 'su
 echo "  prefix...............: $prefix"
 echo
 echo
-echo "To use the local version (as opposed to the installed version) use:"
-echo
-echo "  export PYTHONPATH=\"$PWD:$PWD/.libs:\$PYTHONPATH\""
-echo "  python -c 'import evas; print evas' # test load"
-echo
 
-
+if test "x$PYTHONPATH_CORRECT" != "xyes"; then
+   AC_MSG_WARN([your \$PYTHONPATH does not contains the required directories to support your desired installation. Please check warnings above.])
+fi
