@@ -193,6 +193,15 @@ def tooltip_clicked(obj, it):
     bx.pack_end(bt)
     bt.show()
 
+    en = elementary.ScrolledEntry(win)
+    en.single_line_set(True)
+    en.entry_set("Hello, some scrolled entry here!")
+    en.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+    en.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
+    en.tooltip_text_set("Type something here!")
+    bx.pack_end(en)
+    en.show()
+
     lst = elementary.List(win)
     li = lst.item_append("Hello")
     li.tooltip_text_set("Something useful here?")
