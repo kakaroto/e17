@@ -4,5 +4,5 @@ Name:		Mike Blumenkrantz
 Location:	CT, USA
 E-Mail:		mike@zentific.com
 Managing:	eeze, e_dbus:ukit, esskyuehl
-Contributing:	elementary, e, e_dbus, gentoo ebuilds, anything udev-related
+Contributing:	elementary, e, ecore_con, ecore_thread, e_dbus, gentoo ebuilds, anything udev-related
 Platform:	Gentoo (Linux)
