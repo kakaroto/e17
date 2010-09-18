@@ -241,10 +241,11 @@ engine_software_gdi_args(const char *engine, int width, int height)
      }
 
    einfo->info.window = window;
-   einfo->info.mask = NULL;
    einfo->info.depth = depth;
    einfo->info.rotation = 0;
+   einfo->info.borderless = 0;
    einfo->info.fullscreen = 0;
+   einfo->info.region = 0;
    if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
      {
 	printf("Evas can not setup the informations of the Software GDI Engine\n");
