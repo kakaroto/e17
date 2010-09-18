@@ -5,8 +5,8 @@ typedef struct _Ephoto_Thumb_Browser Ephoto_Thumb_Browser;
 
 struct _Ephoto_Thumb_Data
 {
-    char *thumb_path;
-    char *file;
+    const char *thumb_path;
+    const char *file;
 };
 
 struct _Ephoto_Thumb_Browser
@@ -391,7 +391,7 @@ _ephoto_thumb_clicked(void *data, Evas_Object *obj, void *event_info)
 	selected = elm_gengrid_selected_items_get(tb->thumb_browser);
 	o = eina_list_data_get(selected);
 	etd = (Ephoto_Thumb_Data *)elm_gengrid_item_data_get((Elm_Gengrid_Item *)o);
-	evas_object_smart_callback_call(tb->layout, "selected", etd->file);
+	evas_object_smart_callback_call(tb->layout, "selected", (char *)etd->file);
 	//	ecore_job_add(_ephoto_thumb_clicked_job, etd->file);
 }
 
@@ -446,7 +446,7 @@ _ephoto_directory_chosen(void *data, Evas_Object *obj, void *event_info)
 		}
 	}
 
-	evas_object_smart_callback_call(tb->layout, "directory,changed", tb->current_directory);
+	evas_object_smart_callback_call(tb->layout, "directory,changed", (char *)tb->current_directory);
 
 	evas_object_del(tb->fsel_win);
 	elm_toolbar_item_unselect_all(tb->toolbar);
@@ -470,7 +470,7 @@ _ephoto_view_large(void *data, Evas_Object *obj, void *event_info)
 		o = eina_list_data_get(selected);
 		etd = (Ephoto_Thumb_Data *)elm_gengrid_item_data_get((Elm_Gengrid_Item *)o);
 		/* _ephoto_thumb_clicked_job(etd->file); */
-		evas_object_smart_callback_call(tb->layout, "selected", etd->file);
+		evas_object_smart_callback_call(tb->layout, "selected", (char *)etd->file);
 
 	}
 	else
@@ -524,7 +524,7 @@ static void
 _ephoto_del_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
         Ephoto_Thumb_Browser *tb = data;
-	const Eina_List *items, *l, *iter;
+	const Eina_List *l, *iter;
 	Elm_Gengrid_Item *item;
 	Ephoto_Thumb_Data *etd;
 	

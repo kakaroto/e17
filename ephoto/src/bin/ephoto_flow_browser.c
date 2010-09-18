@@ -215,7 +215,6 @@ void
 ephoto_flow_browser_image_set(Evas_Object *obj, const char *current_image)
 {	
         Ephoto_Flow_Browser *ef;
-	const char *file_type;
 	Elm_Toolbar_Item *o;
 	int i;
 
@@ -265,10 +264,6 @@ _ephoto_flow_browser_show_cb(void *data, Evas *e, Evas_Object *obj, void *event_
 static void 
 _ephoto_flow_browser_del_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-    Ephoto_Flow_Browser *ef = data;
-    Eina_List *items;
-
-    
 
 }
 
@@ -330,7 +325,6 @@ _ephoto_go_first(void *data, Evas_Object *obj, void *event_info)
 static void 
 _ephoto_go_last(void *data, Evas_Object *obj, void *event_info)
 {
-	const char *file_type;
         Ephoto_Flow_Browser *ef = data;
 
 	ef->iter = eina_list_last(em->images);
@@ -343,7 +337,6 @@ _ephoto_go_last(void *data, Evas_Object *obj, void *event_info)
 static void 
 _ephoto_go_next(void *data, Evas_Object *obj, void *event_info)
 {
-	const char *file_type;
 	Ephoto_Flow_Browser *ef = data;
 
 	ef->iter = eina_list_next(ef->iter);
@@ -358,7 +351,6 @@ _ephoto_go_next(void *data, Evas_Object *obj, void *event_info)
 static void 
 _ephoto_go_previous(void *data, Evas_Object *obj, void *event_info)
 {
-	const char *file_type;
 	Ephoto_Flow_Browser *ef = data;
 
 	ef->iter = eina_list_prev(ef->iter);
