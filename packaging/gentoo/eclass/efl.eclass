@@ -101,7 +101,7 @@ if [[ ! -z "${E_PYTHON}" ]]; then
 
 	PYTHON_DEPEND="*:2.4"
 
-	inherit python
+	inherit python distutils
 fi
 
 if [[ ${WANT_AUTOTOOLS} == "yes" ]] ; then
@@ -210,41 +210,40 @@ efl_src_prepare() {
 
 	if [[ -e configure.ac ]]; then
 
-			export SVN_REPO_PATH="$ESVN_WC_PATH"
+		export SVN_REPO_PATH="$ESVN_WC_PATH"
 
-			if has nls "${IUSE}" \
-				grep -qE '^[[:space:]]*AM_GNU_GETTEXT_VERSION' configure.ac; then
-				local autopoint_log_file="${T}/autopoint.$$"
+		if has nls "${IUSE}" \
+			grep -qE '^[[:space:]]*AM_GNU_GETTEXT_VERSION' configure.ac; then
+			local autopoint_log_file="${T}/autopoint.$$"
 
-				ebegin "Running autopoint"
+			ebegin "Running autopoint"
 
-				eautopoint -f &> "${autopoint_log_file}"
+			eautopoint -f &> "${autopoint_log_file}"
 
-				if ! eend $?; then
-					ewarn "Autopoint failed"
-					ewarn "Log in ${autopoint_log_file}"
-					ewarn "(it makes sense only when compile fails afterwards)"
-				fi
-
-				# TODO in case this happens we failed to depend on cvs and
-				# should probably call die.
-				# added use nls as condition to get here. Which garantees cvs
-				# to be installed. See DEPEND.
-				# Having use nls set and letting autopoint fail is not what a
-				# user likely wants.
-				if grep -qi 'cvs program not found' "${autopoint_log_file}"; then
-					ewarn "This error seems to be due missing CVS"
-					ewarn "(it's usage hardcoded into autopoint code)"
-					ewarn "Please 'emerge cvs' if compilation will fail"
-					ebeep 3
-				fi
+			if ! eend $?; then
+				ewarn "Autopoint failed"
+				ewarn "Log in ${autopoint_log_file}"
+				ewarn "(it makes sense only when compile fails afterwards)"
 			fi
 
-			#avoid having to touch a bunch of files by telling automake not to expect them
-			AM_OPTS="--foreign"
-			eautoreconf
-			local x
+			# TODO in case this happens we failed to depend on cvs and
+			# should probably call die.
+			# added use nls as condition to get here. Which garantees cvs
+			# to be installed. See DEPEND.
+			# Having use nls set and letting autopoint fail is not what a
+			# user likely wants.
+			if grep -qi 'cvs program not found' "${autopoint_log_file}"; then
+				ewarn "This error seems to be due missing CVS"
+				ewarn "(it's usage hardcoded into autopoint code)"
+				ewarn "Please 'emerge cvs' if compilation will fail"
+				ebeep 3
+			fi
 		fi
+
+		#avoid having to touch a bunch of files by telling automake not to expect them
+		AM_OPTS="--foreign"
+		eautoreconf
+	fi
 
 		epunt_cxx
 #		elibtoolize
@@ -270,10 +269,19 @@ efl_src_configure() {
 # @DESCRIPTION:
 # efl's default src_compile
 efl_src_compile() {
-	emake || efl_die "emake failed"
-	if [[ -z "${E_PYTHON}" ]]; then
+	if [[ -f configure ]] ; then
+		emake || efl_die "emake failed"
+		if [[ -z "${E_PYTHON}" ]]; then
+			if has doc "${IUSE}" && use doc; then
+				emake doc
+			fi
+		fi
+	else
+		distutils_src_compile
 		if has doc "${IUSE}" && use doc; then
-			emake doc
+			if [[ -x ./gendoc ]]; then
+				./gendoc || efl_die "gendoc failed"
+			fi
 		fi
 	fi
 }
@@ -295,6 +303,7 @@ efl_src_test() {
 # @DESCRIPTION:
 # efl's default src_install
 efl_src_install() {
+	if [[ -f configure ]] ; then
 		emake install DESTDIR="${D}" || efl_die
 
 		find "${D}" -name '*.la' -delete
@@ -302,7 +311,14 @@ efl_src_install() {
 		for d in AUTHORS ChangeLog NEWS README TODO ${EDOCS}; do
 			[[ -f ${d} ]] && dodoc ${d}
 		done
+	else
+		distutils_src_install
 
+		if has examples "${IUSE}" && use examples; then
+			insinto /usr/share/doc/${PF}
+			doins -r examples
+		fi
+	fi
 	if [[ -n ${E_PYTHON} ]];then
 		if has examples "${IUSE}" && use examples; then
 			insinto /usr/share/doc/${PF}
