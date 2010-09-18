@@ -175,7 +175,7 @@ c_elementary_la_LIBTOOLFLAGS = --tag=disable-static
 c_elementary_la_SOURCES = $(top_builddir)/elementary/elementary.c_elementary.c
 
 pyelementarydir = $(pythondir)/elementary
-pyelementary_PYTHON = elementary/__init__.py
+pyelementary_PYTHON = elementary/__init__.py elementary/cursors.py
 
 
 if WANT_EXAMPLES

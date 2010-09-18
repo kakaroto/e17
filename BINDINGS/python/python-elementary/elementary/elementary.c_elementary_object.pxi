@@ -200,6 +200,24 @@ cdef class Object(evas.c_evas.Object):
             return None
         return style
 
+    def cursor_set(self, char *cursor):
+        """ Set the cursor to be shown when mouse is over the object
+
+        Set the cursor that will be displayed when mouse is over the
+        object. The object can have only one cursor set to it, so if
+        this function is called twice for an object, the previous set
+        will be unset.
+        """
+        elm_object_cursor_set(self.obj, cursor)
+
+    def cursor_unset(self):
+        """ Unset cursor for object
+
+        Unset cursor for object, and set the cursor to default if the mouse
+        was over this object.
+        """
+        elm_object_cursor_unset(self.obj)
+
     def _callback_add_full(self, char *event, event_conv, func, *args, **kargs):
         """Add a callback for the smart event specified by event.
 

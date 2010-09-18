@@ -233,6 +233,9 @@ cdef extern from "Elementary.h":
     void         elm_object_tooltip_style_set(evas.c_evas.Evas_Object *obj, char *style)
     char*        elm_object_tooltip_style_get(evas.c_evas.Evas_Object *obj)
 
+    void         elm_object_cursor_set(evas.c_evas.Evas_Object *obj, char *cursor)
+    void         elm_object_cursor_unset(evas.c_evas.Evas_Object *obj)
+
     double       elm_scale_get()
     void         elm_scale_set(double scale)
     evas.c_evas.Evas_Coord elm_finger_size_get()
@@ -544,6 +547,8 @@ cdef extern from "Elementary.h":
     void         elm_toolbar_item_tooltip_unset(Elm_Toolbar_Item *item)
     void         elm_toolbar_item_tooltip_style_set(Elm_Toolbar_Item *item, char *style)
     char*        elm_toolbar_item_tooltip_style_get(Elm_Toolbar_Item *item)
+    void         elm_toolbar_item_cursor_set(Elm_Toolbar_Item *item, char *cursor)
+    void         elm_toolbar_item_cursor_unset(Elm_Toolbar_Item *item)
 
     # List object
     evas.c_evas.Evas_Object *elm_list_add(evas.c_evas.Evas_Object *parent)
@@ -579,6 +584,8 @@ cdef extern from "Elementary.h":
     void         elm_list_item_tooltip_unset(Elm_List_Item *item)
     void         elm_list_item_tooltip_style_set(Elm_List_Item *item, char *style)
     char*        elm_list_item_tooltip_style_get(Elm_List_Item *item)
+    void         elm_list_item_cursor_set(Elm_List_Item *item, char *cursor)
+    void         elm_list_item_cursor_unset(Elm_List_Item *item)
     void elm_list_bounce_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool h_bounce, evas.c_evas.Eina_Bool v_bounce)
     void 	elm_list_scroller_policy_set(evas.c_evas.Evas_Object *obj, Elm_Scroller_Policy policy_h, Elm_Scroller_Policy policy_v)
 
@@ -653,6 +660,8 @@ cdef extern from "Elementary.h":
     void         elm_genlist_item_tooltip_unset(Elm_Genlist_Item *item)
     void         elm_genlist_item_tooltip_style_set(Elm_Genlist_Item *item, char *style)
     char*        elm_genlist_item_tooltip_style_get(Elm_Genlist_Item *item)
+    void         elm_genlist_item_cursor_set(Elm_Genlist_Item *item, char *cursor)
+    void         elm_genlist_item_cursor_unset(Elm_Genlist_Item *item)
 
     # Check widget
     evas.c_evas.Evas_Object *elm_check_add(evas.c_evas.Evas_Object *parent)

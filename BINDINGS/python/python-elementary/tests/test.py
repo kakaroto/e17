@@ -36,6 +36,7 @@ from test_spinner import spinner_clicked
 from test_genlist import genlist_clicked
 from test_flip import flip_clicked
 from test_tooltip import tooltip_clicked
+from test_cursor import cursor_clicked, cursor2_clicked
 
 #----- Main -{{{-
 def destroy(obj, str1, str2, str3, str4):
@@ -109,7 +110,9 @@ if __name__ == "__main__":
              ("Notify", notify_clicked),
              ("Menu", menu_clicked),
              ("Panel", panel_clicked),
-             ("Tooltip", tooltip_clicked)]
+             ("Tooltip", tooltip_clicked),
+             ("Cursor", cursor_clicked),
+             ("Cursor2", cursor2_clicked)]
 
     li = elementary.List(win)
     li.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)

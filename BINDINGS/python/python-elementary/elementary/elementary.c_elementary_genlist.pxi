@@ -524,6 +524,21 @@ cdef class GenlistItem(WidgetItem):
             return None
         return style
 
+    def cursor_set(self, char *cursor):
+        """ Set the cursor to be shown when mouse is over the genlist item
+
+        Set the cursor that will be displayed when mouse is over the
+        item. The item can have only one cursor set to it, so if
+        this function is called twice for an item, the previous set
+        will be unset.
+        """
+        elm_genlist_item_cursor_set(self.obj, cursor)
+
+    def cursor_unset(self):
+        """  Unset the cursor to be shown when mouse is over the genlist item
+        """
+        elm_genlist_item_cursor_unset(self.obj)
+
 
 def _genlist_item_conv(long addr):
     cdef Elm_Genlist_Item *it = <Elm_Genlist_Item *>addr
