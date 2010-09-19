@@ -15,7 +15,7 @@ LICENSE="BSD"
 SLOT="0"
 KEYWORDS=""
 
-IUSE="debug mmx sse altivec +threads +fontconfig bidi +cserve directfb fbcon opengl sdl X xcb +eet gif +jpeg +pnm +png svg +tiff +xpm static-modules +safety-checks"
+IUSE="debug mmx sse altivec +threads +fontconfig bidi +cserve directfb fbcon opengl sdl X xcb +eet gif +jpeg +pnm +png svg +tiff +xpm static-modules +safety-checks 16bpp 8bpp"
 
 RDEPEND="
 	>=dev-libs/eina-9999
@@ -57,10 +57,10 @@ src_configure() {
 
 	if use static-modules; then
 		MODULE_ARGUMENT="static"
-		STATIC_FLAGS="
-		  --enable-static-software-generic
-		  --enable-static-software-16
-		"
+		STATIC_FLAGS="--enable-static-software-generic"
+
+		use 16bpp && STATIC_FLAGS+=" --enable-static-software-16"
+		use 8bpp && STATIC_FLAGS+=" --enable-static-software-8"
 	else
 		MODULE_ARGUMENT="yes"
 	fi
@@ -78,24 +78,31 @@ src_configure() {
 		X_FLAGS="
 		  --enable-software-xlib=${MODULE_ARGUMENT}
 		  --enable-xrender-x11=${MODULE_ARGUMENT}
-		  --enable-software-16-x11=${MODULE_ARGUMENT}
 		  --disable-software-xcb
 		  --disable-xrender-xcb
 		  $(use_enable opengl gl-x11 $MODULE_ARGUMENT)
 		"
+
+		use 16bpp && X_FLAGS+=" --enable-software-16-x11=${MODULE_ARGUMENT}"
+		use 8bpp && warn "8bpp optimized engine not available with X (xlib), use xcb instead"
 	elif use xcb; then
 		X_FLAGS="
 		  --disable-software-xlib
 		  --disable-xrender-x11
 		  --disable-software-16-x11
+		  --disable-software-8-x11
 		  --enable-software-xcb=${MODULE_ARGUMENT}
 		  --enable-xrender-xcb=${MODULE_ARGUMENT}
 		"
+
+		use 16bpp && warn "16bpp optimized engine not available with xcb"
+		use 8bpp && X_FLAGS+=" --enable-software-8-x11=${MODULE_ARGUMENT}"
 	else
 		X_FLAGS="
 		  --disable-software-xlib
 		  --disable-xrender-x11
 		  --disable-software-16-x11
+		  --disable-software-8-x11
 		  --disable-software-xcb
 		  --disable-xrender-xcb
 		  --disable-gl-x11
