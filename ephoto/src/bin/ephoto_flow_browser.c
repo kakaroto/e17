@@ -254,10 +254,8 @@ ephoto_flow_browser_image_set(Evas_Object *obj, const char *current_image)
 static void
 _ephoto_flow_browser_show_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-        Ephoto_Flow_Browser *ef = data;
-	ephoto_flow_browser_image_set(ef->flow_browser, NULL);
-}
 
+}
 
 /*Delete the flow browser*/
 static void 
