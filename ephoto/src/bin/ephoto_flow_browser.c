@@ -66,6 +66,7 @@ _ephoto_go_update(Ephoto_Flow_Browser *ef)
         evas_object_hide(ef->image2);
 
 	file_type = efreet_mime_type_get(ef->cur_image);
+	printf("%s\n", file_type);
 	if (file_type && !strcmp(file_type, "image/jpeg"))
 	{
 		success = elm_photocam_file_set(ef->image, ef->cur_image);
@@ -76,8 +77,7 @@ _ephoto_go_update(Ephoto_Flow_Browser *ef)
 		elm_layout_content_set(ef->flow_browser, "ephoto.flow.swallow", ef->image2);
 		evas_object_show(ef->image2);
 	}
-
-        if (success)
+	if (success)
         {
                 char *buffer;
                 int length;
@@ -153,7 +153,7 @@ ephoto_create_flow_browser(Evas_Object *parent)
 	elm_layout_file_set(ef->flow_browser,
 			    PACKAGE_DATA_DIR "/themes/default/ephoto.edj", 
 			    "ephoto/flow/layout");
-	//	elm_win_resize_object_add(em->win, em->flow_browser);
+	//elm_win_resize_object_add(em->win, em->flow_browser);
 	evas_object_size_hint_weight_set(ef->flow_browser, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	evas_object_size_hint_align_set(ef->flow_browser, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
@@ -172,7 +172,7 @@ ephoto_create_flow_browser(Evas_Object *parent)
         elm_toolbar_homogenous_set(ef->toolbar, EINA_TRUE);
         evas_object_size_hint_weight_set(ef->toolbar, EVAS_HINT_EXPAND, 0.0);
         evas_object_size_hint_align_set(ef->toolbar, EVAS_HINT_FILL, 0.5);
-	elm_layout_content_set(ef->flow_browser, "ephoto.flow.swallow", ef->toolbar);
+	elm_layout_content_set(ef->flow_browser, "ephoto.toolbar.swallow", ef->toolbar);
 	evas_object_show(ef->toolbar);
 
 	o = elm_icon_add(ef->toolbar);
