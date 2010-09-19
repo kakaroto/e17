@@ -333,8 +333,8 @@ void ed_popup_status(aStatus *as) {
 				rel_scroll = elm_scroller_add(win);
 					evas_object_size_hint_weight_set(rel_scroll, 1, 1);
 					evas_object_size_hint_align_set(rel_scroll, -1, -1);
-					elm_scroller_bounce_set(scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-					elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
+					elm_scroller_bounce_set(rel_scroll, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+					elm_scroller_policy_set(rel_scroll, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
 
 					box2 = elm_box_add(win);
 						evas_object_size_hint_weight_set(box2, 1, 1);

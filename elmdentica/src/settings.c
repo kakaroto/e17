@@ -917,15 +917,10 @@ void on_settings_cache(void *data, Evas_Object *toolbar, void *event_info) {
 static void settings_choose_browser(void *data, Evas_Object *hoversel, void *event_info) {
 	int b = (int)(long)data;
 
-	switch(b) {
-		case BROWSER_VENTURA:	{ settings->browser=b;	break; }
-		case BROWSER_MIDORI:	{ settings->browser=b;	break; }
-		case BROWSER_WOOSH:		{ settings->browser=b;	break; }
-		case BROWSER_DILLO:		{ settings->browser=b;	break; }
-		case BROWSER_EVE:		{ settings->browser=b;	break; }
-		case BROWSER_XDG:
-		default:				{ settings->browser=BROWSER_XDG;	break; }
-	}
+	if(b == BROWSER_XDG)
+		settings->browser=BROWSER_XDG;
+	else
+		settings->browser=b;
 
 	settings->browser_name = strdup(browserNames[b]);
 	settings->browser_cmd = strdup(browser_cmnds[b]);
