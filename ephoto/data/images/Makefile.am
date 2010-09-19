@@ -9,6 +9,7 @@ first.png \
 last.png \
 next.png \
 previous.png \
+preferences.png \
 go_back.png
 
 imagesdir = $(pkgdatadir)/images
