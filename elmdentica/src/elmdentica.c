@@ -63,7 +63,7 @@
 #include "statusnet.h"
 #include "curl.h"
 
-Evas_Object *status_list=NULL, *scroller=NULL, *status=NULL, *win=NULL, *error_win=NULL, *entry=NULL, *fs=NULL, *count=NULL, *url_win=NULL, *hv=NULL;
+Evas_Object *status_list=NULL, *scroller=NULL, *status=NULL, *win=NULL, *error_win=NULL, *entry=NULL, *fs=NULL, *count=NULL, *url_win=NULL, *hv=NULL, *related_inwin=NULL;
 char * dm_to=NULL;
 
 StatusesList	*statuses=NULL;
@@ -301,16 +301,18 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 }
 
 static void on_close_popup_status(void *data, Evas_Object *obj, void *event_info) {
-	Evas_Object *inwin = (Evas_Object*)data;
-
-	evas_object_del(inwin);
+	evas_object_del(related_inwin);
+	related_inwin = NULL;
 }
 
 void ed_popup_status(aStatus *as) {
-    Evas_Object *inwin=NULL, *box=NULL, *bubble=NULL, *button=NULL;
+	Evas *e=NULL;
+    Evas_Object *box=NULL, *rel_scroll=NULL, *box2=NULL, *bubble=NULL, *button=NULL;
 	anUser *au=NULL;
 	char *uid_str=NULL;
 	int res=0;
+
+	if(!as) return;
 
 	res = asprintf(&uid_str, "%lld", as->user);
 	if(res != -1) {
@@ -318,26 +320,50 @@ void ed_popup_status(aStatus *as) {
 		free(uid_str);
 	} else return;
 
-    inwin = elm_win_inwin_add(win);
-        elm_object_style_set(inwin, "minimal_vertical");
-		box = elm_box_add(win);
-			evas_object_size_hint_weight_set(box, 1, 1);
-			evas_object_size_hint_align_set(box, -1, -1);
+	bubble = ed_make_bubble(win, as, au);
+		evas_object_size_hint_weight_set(bubble, 1, 1);
+		evas_object_size_hint_align_set(bubble, -1, -1);
+	evas_object_show(bubble);
 
-        	bubble = ed_make_bubble(win, as, au);
-				evas_object_size_hint_weight_set(bubble, 1, 1);
-				evas_object_size_hint_align_set(bubble, -1, -1);
-				elm_box_pack_end(box, bubble);
-            evas_object_show(bubble);
+	if(!related_inwin) {
+		related_inwin = elm_win_inwin_add(win);
+			box = elm_box_add(win);
+				evas_object_size_hint_weight_set(box, 1, 1);
+				evas_object_size_hint_align_set(box, -1, -1);
+				rel_scroll = elm_scroller_add(win);
+					evas_object_size_hint_weight_set(rel_scroll, 1, 1);
+					evas_object_size_hint_align_set(rel_scroll, -1, -1);
+					elm_scroller_bounce_set(scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+					elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
 
-			button = elm_button_add(win);
-				elm_button_label_set(button, _("Close"));
-				evas_object_smart_callback_add(button, "clicked", on_close_popup_status, inwin);
-				elm_box_pack_end(box, button);
-			evas_object_show(button);
-        elm_win_inwin_content_set(inwin, box);
+					box2 = elm_box_add(win);
+						evas_object_size_hint_weight_set(box2, 1, 1);
+						evas_object_size_hint_align_set(box2, -1, -1);
+						evas_object_name_set(box2, "related_box");
 		
-    evas_object_show(inwin);
+            		evas_object_show(box2);
+
+					elm_scroller_content_set(rel_scroll, box2);
+					elm_box_pack_end(box, rel_scroll);
+            	evas_object_show(rel_scroll);
+
+				button = elm_button_add(win);
+					elm_button_label_set(button, _("Close"));
+					evas_object_smart_callback_add(button, "clicked", on_close_popup_status, NULL);
+					elm_box_pack_end(box, button);
+				evas_object_show(button);
+        	elm_win_inwin_content_set(related_inwin, box);
+		
+    	evas_object_show(related_inwin);
+	} else {
+
+		if(!box2) {
+			e = evas_object_evas_get(win);
+			if(e) box2 = evas_object_name_find(e, "related_box");
+		}
+	}
+
+	if(box2) elm_box_pack_end(box2, bubble);
 
 	eina_hash_add(bubble2status, &bubble, as);
 }
