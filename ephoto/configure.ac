@@ -192,18 +192,18 @@ AC_ARG_ENABLE([libexif],
 AC_MSG_CHECKING([whether ethumb is built])
 AC_MSG_RESULT([${_ephoto_enable_libexif}])
 
-have_libexif="no"
+have_libexif="No"
 
 if test "x${_ephoto_enable_libexif}" = "xyes" ; then
     PKG_CHECK_MODULES(EXIF, libexif, [
-        have_libexif="yes"
+        have_libexif="Yes"
         AC_DEFINE(HAVE_LIBEXIF, 1, [have libexif support])
     ],[
-       have_libexif="no"
+       have_libexif="No"
     ])
 fi
 
-AM_CONDITIONAL(BUILD_LIBEXIF, test $have_libexif = yes)
+AM_CONDITIONAL(BUILD_LIBEXIF, test $have_libexif = Yes)
 
 AC_OUTPUT([
 Makefile

@@ -9,6 +9,7 @@ ephoto_SOURCES = \
 		 ephoto.c \
 		 ephoto.h \
 		 ephoto_config.c \
+		 ephoto_preferences.c \
 		 ephoto_flow_browser.c \
 		 ephoto_main.c \
 		 ephoto_slideshow.c \

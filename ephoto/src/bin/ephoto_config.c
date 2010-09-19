@@ -1,6 +1,6 @@
 #include "ephoto.h"
 
-#define CONFIG_VERSION 1
+#define CONFIG_VERSION 2
 
 static int _ephoto_config_load(Ephoto *em);
 static Eina_Bool _ephoto_on_config_save(void *data);
@@ -10,7 +10,7 @@ ephoto_config_init(Ephoto *em)
 {
         Eet_Data_Descriptor_Class eddc;
 
-        if (!eet_eina_file_data_descriptor_class_set(&eddc, sizeof (eddc), "Ephoto_Config", sizeof(Ephoto_Config)))
+        if (!eet_eina_stream_data_descriptor_class_set(&eddc, sizeof (eddc), "Ephoto_Config", sizeof(Ephoto_Config)))
         {
                 ERR("Unable to create the config data descriptor!");
                 return EINA_FALSE;
@@ -24,6 +24,10 @@ ephoto_config_init(Ephoto *em)
 #define C_VAL(edd, type, member, dtype) EET_DATA_DESCRIPTOR_ADD_BASIC(edd, type, #member, member, dtype)
         C_VAL(D, T, config_version, EET_T_INT);
         C_VAL(D, T, thumb_size, EET_T_INT);
+        C_VAL(D, T, remember_directory, EET_T_INT);
+        C_VAL(D, T, directory, EET_T_STRING);
+        C_VAL(D, T, slideshow_timeout, EET_T_DOUBLE);
+        C_VAL(D, T, slideshow_transition, EET_T_STRING);
 
         switch (_ephoto_config_load(em))
         {
@@ -31,8 +35,18 @@ ephoto_config_init(Ephoto *em)
                         /* Start a new config */
                         em->config->config_version = CONFIG_VERSION;
                         em->config->thumb_size = 256;
+                        em->config->remember_directory = 1;
+                        em->config->slideshow_timeout = 4.0;
+                        em->config->slideshow_transition = "fade";
                         break;
                 case -1:
+                        if (em->config->config_version < 2)
+                        {
+                                em->config->remember_directory = 1;
+                                em->config->slideshow_timeout = 4.0;
+                                em->config->slideshow_transition = "fade";
+                        }
+
                         /* Incremental additions */
                         em->config->config_version = CONFIG_VERSION;
                         break;
@@ -47,7 +61,10 @@ void
 ephoto_config_save(Ephoto *em, Eina_Bool instant)
 {
         if (em->config_save)
+        {
                 ecore_timer_del(em->config_save);
+                em->config_save = NULL;
+        }
 
         if (instant)
                 _ephoto_on_config_save(em);

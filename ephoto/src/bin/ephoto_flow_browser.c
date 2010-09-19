@@ -304,7 +304,7 @@ _ephoto_go_back(void *data, Evas_Object *obj, void *event_info)
     
 	evas_object_smart_callback_call(ef->flow_browser, "delete,request", NULL);
 	/* elm_toolbar_item_unselect_all(ef->toolbar); */
-	/* em->thumb_browser = ephoto_create_thumb_browser(em->layout, ecore_file_dir_get(ef->cur_image)); */
+	/* em->thumb_browser = ephoto_create_thumb_browser(em->layout); */
 	/* elm_layout_content_set(em->layout, "ephoto.content.swallow", em->thumb_browser); */
     
 }

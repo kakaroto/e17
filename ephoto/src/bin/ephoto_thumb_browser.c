@@ -20,7 +20,6 @@ struct _Ephoto_Thumb_Browser
         Evas_Object *fsel_win;
         Elm_Gengrid_Item_Class eg;
         Ethumb_Client *ec;
-        const char *current_directory;
         Eio_File *list;
 };
 
@@ -42,14 +41,14 @@ static void _ephoto_thumb_clicked(void *data, Evas_Object *obj, void *event_info
 static void _ephoto_view_large(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_change_directory(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_view_slideshow(void *data, Evas_Object *obj, void *event_info);
+static void _ephoto_preferences(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_del_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _ephoto_show_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 /*Create the thumbnail browser object*/
 Evas_Object *
-ephoto_create_thumb_browser(Evas_Object *parent, const char *directory)
+ephoto_create_thumb_browser(Evas_Object *parent)
 {
 	Evas_Object *o;
-	char buf[PATH_MAX];
         Ephoto_Thumb_Browser *tb;
 
         tb = calloc(1, sizeof(Ephoto_Thumb_Browser));
@@ -67,16 +66,6 @@ ephoto_create_thumb_browser(Evas_Object *parent, const char *directory)
 	evas_object_size_hint_fill_set(tb->layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
 	evas_object_show(tb->layout);
 
-	if (!directory)
-	{
-		getcwd(buf, PATH_MAX);
-		tb->current_directory = eina_stringshare_add(buf);
-	}
-	else
-	{
-		tb->current_directory = eina_stringshare_add(directory);
-	}
-
         tb->thbox = elm_box_add(tb->layout);
         elm_box_horizontal_set(tb->thbox, EINA_TRUE);
         evas_object_size_hint_weight_set(tb->thbox, EVAS_HINT_EXPAND, EVAS_HINT_FILL);
@@ -84,7 +73,7 @@ ephoto_create_thumb_browser(Evas_Object *parent, const char *directory)
 	elm_layout_content_set(tb->layout, "ephoto.location.swallow", tb->thbox);
 
         tb->dir_label = elm_label_add(tb->thbox);
-        elm_label_label_set(tb->dir_label, tb->current_directory);
+        elm_label_label_set(tb->dir_label, em->config->directory);
         evas_object_size_hint_weight_set(tb->dir_label, EVAS_HINT_EXPAND, 0.0);
         evas_object_size_hint_align_set(tb->dir_label, 0.01, 0.5);
         elm_box_pack_end(tb->thbox, tb->dir_label);
@@ -139,6 +128,10 @@ ephoto_create_thumb_browser(Evas_Object *parent, const char *directory)
         elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/play_slideshow.png", NULL);
         elm_toolbar_item_add(tb->toolbar, o, "Play Slideshow", _ephoto_view_slideshow, tb);
 
+        o = elm_icon_add(tb->toolbar);
+        elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/preferences.png", NULL);
+        elm_toolbar_item_add(tb->toolbar, o, "Preferences", _ephoto_preferences, tb);
+
 	tb->eg.item_style = "ephoto";
 	tb->eg.func.label_get = _ephoto_get_label;
 	tb->eg.func.icon_get = _ephoto_get_icon;
@@ -156,7 +149,10 @@ static void
 _ephoto_show_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
 {
-        Ephoto_Thumb_Browser *tb = evas_object_data_get(obj, "thumb_browser");
+        char *buffer;
+        int length;
+
+        /* Ephoto_Thumb_Browser *tb = evas_object_data_get(obj, "thumb_browser"); */
 
 	/* evas_object_show(tb->toolbar); */
 	/* evas_object_show(tb->thumb_browser); */
@@ -164,18 +160,10 @@ _ephoto_show_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	/* evas_object_show(tb->thumb_slider); */
 	/* evas_object_show(tb->thbox); */
 
-	if (tb->current_directory)
-	{
-		char *buffer;
-		int length;
-
-		length = strlen(tb->current_directory) + strlen("Ephoto - ") + 1;
-		buffer = alloca(length);
-		snprintf(buffer, length, "Ephoto - %s", tb->current_directory);
-		elm_win_title_set(em->win, buffer);
-	} else {
-		elm_win_title_set(em->win, "Ephoto");
-	}
+        length = strlen(em->config->directory) + strlen("Ephoto - ") + 1;
+        buffer = alloca(length);
+        snprintf(buffer, length, "Ephoto - %s", em->config->directory);
+        elm_win_title_set(em->win, buffer);
 }
 
 /* Use ecore thread facility to avoid lock completly */
@@ -243,12 +231,10 @@ ephoto_populate_thumbnails(Evas_Object *obj)
 {
         Ephoto_Thumb_Browser *tb = evas_object_data_get(obj, "thumb_browser");
 
-	if (!tb->current_directory) return ;
-
 	if (!efreet_mime_init())
 		fprintf(stderr, "Could not init efreet_mime!\n");
 
-	tb->list = eio_file_ls(tb->current_directory,
+	tb->list = eio_file_ls(em->config->directory,
 			   _ephoto_populate_filter,
 			   _ephoto_populate_main,
 			   _ephoto_populate_end,
@@ -399,8 +385,7 @@ _ephoto_thumb_clicked(void *data, Evas_Object *obj, void *event_info)
 static void
 _ephoto_fileselector_shown(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-        Ephoto_Thumb_Browser *tb = data;
-	elm_fileselector_path_set(obj, tb->current_directory);
+	elm_fileselector_path_set(obj, em->config->directory);
 	evas_render(em->e);
 }
 
@@ -416,8 +401,11 @@ _ephoto_directory_chosen(void *data, Evas_Object *obj, void *event_info)
 
 	directory = elm_fileselector_selected_get(obj);
 
-	if ((directory) && (eina_stringshare_replace(&tb->current_directory, directory)))
+	if ((directory) && (eina_stringshare_replace(&em->config->directory, directory)))
 	{
+                char *buffer;
+                int length;
+
 		l = elm_gengrid_items_get(tb->thumb_browser);
                 EINA_LIST_FOREACH(l, iter, item)
                 {
@@ -430,23 +418,15 @@ _ephoto_directory_chosen(void *data, Evas_Object *obj, void *event_info)
 		eina_list_free(em->images);
 		em->images = NULL;
 		ephoto_populate_thumbnails(tb->layout);
-		elm_label_label_set(tb->dir_label, tb->current_directory);
+		elm_label_label_set(tb->dir_label, em->config->directory);
 
-		if (tb->current_directory)
-		{
-			char *buffer;
-			int length;
-
-			length = strlen(tb->current_directory) + strlen("Ephoto - ") + 1;
-			buffer = alloca(length);
-			snprintf(buffer, length, "Ephoto - %s", tb->current_directory);
-			elm_win_title_set(em->win, buffer);
-		} else {
-			elm_win_title_set(em->win, "Ephoto");
-		}
+                length = strlen(em->config->directory) + strlen("Ephoto - ") + 1;
+                buffer = alloca(length);
+                snprintf(buffer, length, "Ephoto - %s", em->config->directory);
+                elm_win_title_set(em->win, buffer);
 	}
 
-	evas_object_smart_callback_call(tb->layout, "directory,changed", (char *)tb->current_directory);
+	evas_object_smart_callback_call(tb->layout, "directory,changed", (char *) em->config->directory);
 
 	evas_object_del(tb->fsel_win);
 	elm_toolbar_item_unselect_all(tb->toolbar);
@@ -495,7 +475,7 @@ _ephoto_change_directory(void *data, Evas_Object *obj, void *event_info)
 	fsel = elm_fileselector_add(tb->fsel_win);
 	elm_fileselector_folder_only_set(fsel, EINA_TRUE);
 	elm_fileselector_buttons_ok_cancel_set(fsel, EINA_TRUE);
-	elm_fileselector_path_set(fsel, tb->current_directory);
+	elm_fileselector_path_set(fsel, em->config->directory);
 	evas_object_event_callback_add(fsel, EVAS_CALLBACK_SHOW,
 	 				_ephoto_fileselector_shown, tb);
 	evas_object_smart_callback_add(fsel, "done", 
@@ -519,6 +499,16 @@ _ephoto_view_slideshow(void *data, Evas_Object *obj, void *event_info)
 	elm_toolbar_item_unselect_all(tb->toolbar);
 }
 
+/* Show the preferences window */
+static void
+_ephoto_preferences(void *data, Evas_Object *obj, void *event_info)
+{ 
+        Ephoto_Thumb_Browser *tb = data;
+
+        ephoto_show_preferences(em);
+	elm_toolbar_item_unselect_all(tb->toolbar);
+}
+
 /*Destroy the thumbnail browser object itself*/
 static void
 _ephoto_del_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
@@ -536,6 +526,5 @@ _ephoto_del_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 		eina_stringshare_del(etd->file);
 		free(etd);
 	}
-	eina_stringshare_del(tb->current_directory);
 	ethumb_client_disconnect(tb->ec);
 }

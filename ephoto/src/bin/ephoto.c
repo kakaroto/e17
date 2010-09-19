@@ -54,17 +54,23 @@ main(int argc, char **argv)
 	}
 	else if (ecore_file_is_dir(argv[1]))
 	{
-		ephoto_create_main_window(argv[1], NULL);
+                char *real;
+
+                real = ecore_file_realpath(argv[1]);
+		ephoto_create_main_window(real, NULL);
+                free(real);
 	}
 	else if (ecore_file_exists(argv[1]))
 	{
-		char *directory;
+		char *directory, *real;
 		const char *image;
 
 		image = eina_stringshare_add(argv[1]);
 		directory = ecore_file_dir_get(argv[1]);
-		ephoto_create_main_window(directory, image);
+                real = ecore_file_realpath(directory);
+		ephoto_create_main_window(real, image);
                 free(directory);
+                free(real);
 	}
 	else
 	{

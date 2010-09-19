@@ -7,23 +7,17 @@ Ephoto *em;
 static void _ephoto_delete_main_window(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_flow_browser_delete_cb(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_thumb_browser_selected_cb(void *data, Evas_Object *obj, void *event_info);
-static void _ephoto_thumb_browser_directory_changed_cb(void *data, Evas_Object *obj, void *event_info);
 
 /* Objects Callbacks */
 static void 
 _ephoto_flow_browser_delete_cb(void *data, Evas_Object *obj, void *event_info)
 {
-        em->thumb_browser = ephoto_create_thumb_browser(em->layout, em->cur_directory);
+        em->thumb_browser = ephoto_create_thumb_browser(em->layout);
 	elm_layout_content_set(em->layout, "ephoto.content.swallow", em->thumb_browser);
 	evas_object_smart_callback_add(em->thumb_browser, 
 				       "selected",
 				       _ephoto_thumb_browser_selected_cb,
 				       NULL);
-	evas_object_smart_callback_add(em->thumb_browser, 
-				       "directory,changed",
-				       _ephoto_thumb_browser_directory_changed_cb,
-				       NULL);
-	
 	em->state = EPHOTO_STATE_THUMB;
 }
 
@@ -42,19 +36,12 @@ _ephoto_thumb_browser_selected_cb(void *data, Evas_Object *obj, void *event_info
 	em->state = EPHOTO_STATE_FLOW;
 }
 
-static void 
-_ephoto_thumb_browser_directory_changed_cb(void *data, Evas_Object *obj, void *event_info)
-{
-        const char *dir = event_info;
-
-	eina_stringshare_del(em->cur_directory);
-	em->cur_directory = eina_stringshare_add(dir);
-}
-
 /*Create the main ephoto window*/
 void 
 ephoto_create_main_window(const char *directory, const char *image)
 {
+        char current_directory[PATH_MAX];
+
 	em = calloc(1, sizeof(Ephoto));
         if (!ephoto_config_init(em))
                 _ephoto_delete_main_window(NULL, NULL, NULL);
@@ -89,11 +76,36 @@ ephoto_create_main_window(const char *directory, const char *image)
 	evas_object_show(em->layout);
 
 
+        /* Prepare the slideshow beforehand, in order
+         * to obtain the list of transitions */
+	ephoto_create_slideshow();
+
+        if (!directory)
+        {
+                getcwd(current_directory, PATH_MAX);
+        }
+
+        if (!em->config->directory)
+        {
+                if (directory)
+                        em->config->directory = eina_stringshare_add(directory);
+                else
+                        em->config->directory = eina_stringshare_add(current_directory);
+        }
+        else if (directory || !em->config->remember_directory)
+        {
+                if (directory)
+                        eina_stringshare_replace(&em->config->directory,
+                                                 directory);
+                else
+                        eina_stringshare_replace(&em->config->directory,
+                                                 current_directory);
+        }
+
 	if (image)
 	{
                 em->flow_browser = ephoto_create_flow_browser(em->layout);
 		ephoto_flow_browser_image_set(em->flow_browser, image);
-		em->cur_directory = eina_stringshare_add(ecore_file_dir_get(image));
 		eina_stringshare_del(image);	
 		elm_layout_content_set(em->layout, "ephoto.content.swallow", em->flow_browser);
 		evas_object_smart_callback_add(em->flow_browser, 
@@ -104,17 +116,12 @@ ephoto_create_main_window(const char *directory, const char *image)
 	}
 	else
         {
-                em->thumb_browser =  ephoto_create_thumb_browser(em->layout, directory);
-		em->cur_directory = eina_stringshare_add(directory);
+                em->thumb_browser =  ephoto_create_thumb_browser(em->layout);
 		evas_object_show(em->thumb_browser);
 		elm_layout_content_set(em->layout, "ephoto.content.swallow", em->thumb_browser);
 		evas_object_smart_callback_add(em->thumb_browser, 
 					       "selected",
 					       _ephoto_thumb_browser_selected_cb,
-					       NULL);
-		evas_object_smart_callback_add(em->thumb_browser, 
-					       "directory,changed",
-					       _ephoto_thumb_browser_directory_changed_cb,
 					       NULL);
 		em->state = EPHOTO_STATE_THUMB;
 	}

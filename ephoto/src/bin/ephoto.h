@@ -37,6 +37,9 @@ Eina_Bool ephoto_config_init(Ephoto *em);
 void ephoto_config_save(Ephoto *em, Eina_Bool instant);
 void ephoto_config_free(Ephoto *em);
 
+/* Preferences */
+void ephoto_show_preferences(Ephoto *em);
+
 /*Ephoto Flow Browser*/
 Evas_Object *ephoto_create_flow_browser(Evas_Object *parent);
 void ephoto_flow_browser_image_set(Evas_Object *obj, const char *current_image);
@@ -52,7 +55,7 @@ void ephoto_hide_slideshow(void);
 void ephoto_delete_slideshow(void);
 
 /*Ephoto Thumb Browser*/
-Evas_Object *ephoto_create_thumb_browser(Evas_Object *parent, const char *directory);
+Evas_Object *ephoto_create_thumb_browser(Evas_Object *parent);
 void ephoto_populate_thumbnails(Evas_Object *obj);
 /* smart callbacks called:
  * "selected" - an item in the thumb browser is selected. The selected file is passed as event_info argument.
@@ -80,6 +83,12 @@ struct _Ephoto_Config
         int config_version;
 
         int thumb_size;
+
+        int remember_directory;
+        const char *directory;
+
+        double slideshow_timeout;
+        const char *slideshow_transition;
 };
 
 /*Ephoto Main Structure*/
@@ -92,9 +101,9 @@ struct _Ephoto
 	Evas_Object *flow_browser;
 	Evas_Object *slideshow;
 	Evas_Object *thumb_browser;
+        Evas_Object *prefs_win;
 	Eina_List   *images;
         Ephoto_State state;
-        const char *cur_directory;
 
         Ephoto_Config *config;
 

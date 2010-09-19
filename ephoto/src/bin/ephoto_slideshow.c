@@ -14,7 +14,6 @@ ephoto_create_slideshow(void)
 	em->slideshow = elm_slideshow_add(em->win);
 	elm_slideshow_loop_set(em->slideshow, EINA_TRUE);
 	elm_slideshow_layout_set(em->slideshow, "fullscreen");
-	elm_slideshow_transition_set(em->slideshow, "fade");
 	evas_object_size_hint_weight_set(em->slideshow, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	evas_object_size_hint_align_set(em->slideshow, EVAS_HINT_FILL, EVAS_HINT_FILL);
 	evas_object_event_callback_add(em->slideshow, EVAS_CALLBACK_MOUSE_DOWN,
@@ -29,7 +28,8 @@ ephoto_show_slideshow(int view, const char *current_image)
 	const char *image;
 	int x, y, w, h;
 
-	ephoto_create_slideshow();
+	elm_slideshow_transition_set(em->slideshow, em->config->slideshow_transition);
+	elm_slideshow_timeout_set(em->slideshow, em->config->slideshow_timeout);
 
 	return_view = view;
 	cur_image = current_image;
@@ -48,14 +48,13 @@ ephoto_show_slideshow(int view, const char *current_image)
 	}
 	evas_object_show(em->slideshow);
 	elm_win_resize_object_add(em->win, em->slideshow);
-	elm_slideshow_timeout_set(em->slideshow, 4);
 }
 
 /*Hide the slideshow object*/
 void 
 ephoto_hide_slideshow(void)
 {
-	ephoto_delete_slideshow();
+        evas_object_hide(em->slideshow);
 	// FIXME
 	/*
 	if (return_view == 0)
