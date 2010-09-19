@@ -246,7 +246,6 @@ ephoto_flow_browser_image_set(Evas_Object *obj, const char *current_image)
                         elm_toolbar_item_disabled_set(o, EINA_TRUE);
                 }
 	}
-	elm_layout_content_set(ef->flow_browser, "ephoto.toolbar.swallow", ef->toolbar);
 	evas_object_show(ef->toolbar);
 	evas_object_show(ef->flow_browser);
 	evas_object_focus_set(ef->flow_browser, 1);
