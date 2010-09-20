@@ -525,7 +525,6 @@ collections {
    SYSTEM_ICON("system-suspend","suspend")                   // "enlightenment/suspend"
    SYSTEM_ICON("system-suspend-hibernate","hibernate")       // "enlightenment/hibernate"
    SYSTEM_ICON("system-log-out","logout")                    // "enlightenment/logout"
-   SYSTEM_ICON("system-restart","reboot")                     // "enlightenment/reset" "widget/reset"
    SYSTEM_ICON("system-lock-screen","lock")         // "enlightenment/desklock_menu"
 
 
