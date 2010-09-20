@@ -2,7 +2,7 @@ Login:        etrunko
 IRC Nick:     etrunko
 Name:         Eduardo de Barros Lima
 Location:     Campinas, Brazil
-E-Mail:       -eblima@gmail.com
+E-Mail:       eblima@gmail.com
 WWW:          http://etrunko.blogspot.com
 Contributing: General Fixes, Python-EFL, Packaging
 Group:        Core, Libraries, Bindings
