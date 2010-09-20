@@ -51,8 +51,8 @@ struct _Fav {
 struct _Session_Item {
     const char * url;
     unsigned char focused;
-    double scroll_x;
-    double scroll_y;
+    int scroll_x;
+    int scroll_y;
 };
 
 struct _Session_Window {
@@ -803,8 +803,8 @@ _session_item_init(void)
 
     EET_DATA_DESCRIPTOR_ADD_BASIC(_session_item_descriptor, Session_Item, "url", url, EET_T_STRING);
     EET_DATA_DESCRIPTOR_ADD_BASIC(_session_item_descriptor, Session_Item, "focused", focused, EET_T_UCHAR);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(_session_item_descriptor, Session_Item, "scroll_x", scroll_x, EET_T_DOUBLE);
-    EET_DATA_DESCRIPTOR_ADD_BASIC(_session_item_descriptor, Session_Item, "scroll_y", scroll_y, EET_T_DOUBLE);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(_session_item_descriptor, Session_Item, "scroll_x", scroll_x, EET_T_INT);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(_session_item_descriptor, Session_Item, "scroll_y", scroll_y, EET_T_INT);
 }
 
 static inline void
@@ -816,7 +816,7 @@ _session_item_shutdown(void)
 }
 
 Session_Item *
-session_item_new(const char * url, unsigned char focused, double scroll_x, double scroll_y)
+session_item_new(const char * url, unsigned char focused, int scroll_x, int scroll_y)
 {
     Session_Item *session_item = calloc(1, sizeof(Session_Item));
     
@@ -867,27 +867,27 @@ session_item_focused_set(Session_Item *session_item, unsigned char focused)
     session_item->focused = focused;
 }
   
-inline double
+inline int
 session_item_scroll_x_get(const Session_Item *session_item)
 {
     return session_item->scroll_x;
 }
 
 inline void
-session_item_scroll_x_set(Session_Item *session_item, double scroll_x)
+session_item_scroll_x_set(Session_Item *session_item, int scroll_x)
 {
     EINA_SAFETY_ON_NULL_RETURN(session_item);
     session_item->scroll_x = scroll_x;
 }
   
-inline double
+inline int
 session_item_scroll_y_get(const Session_Item *session_item)
 {
     return session_item->scroll_y;
 }
 
 inline void
-session_item_scroll_y_set(Session_Item *session_item, double scroll_y)
+session_item_scroll_y_set(Session_Item *session_item, int scroll_y)
 {
     EINA_SAFETY_ON_NULL_RETURN(session_item);
     session_item->scroll_y = scroll_y;

@@ -24,6 +24,7 @@ int _log_domain = -1;
 Hist *hist = NULL;
 Fav *fav = NULL;
 Config *config = NULL;
+Session *session = NULL;
 App app;
 
 struct Cursor {
@@ -38,7 +39,7 @@ struct Eve_DBus_Request_Name_Response {
 };
 
 static void
-del_win(App *app, Evas_Object *win)
+win_del(App *app, Evas_Object *win)
 {
    Browser_Window *win_data;
    Eina_List *l;
@@ -48,6 +49,7 @@ del_win(App *app, Evas_Object *win)
 
    evas_object_del(win);
    app->windows = eina_list_remove(app->windows, win_data);
+   session_window_tabs_list_clear(win_data->session_window);
    free(win_data);
 
    if (!app->windows)
@@ -57,7 +59,7 @@ del_win(App *app, Evas_Object *win)
 static void
 on_win_del_req(void *data, Evas_Object *win, void *event_info __UNUSED__)
 {
-   del_win(data, win);
+   win_del(data, win);
 }
 
 void
@@ -88,9 +90,9 @@ window_mouse_enabled_set(Evas_Object *win, Eina_Bool setting)
 }
 
 Eina_Bool
-tab_add(Browser_Window *win, const char *url)
+tab_add(Browser_Window *win, const char *url, Session_Item *session_item)
 {
-   Evas_Object *chrome = chrome_add(win, url);
+   Evas_Object *chrome = chrome_add(win, url, session_item);
 
    if (!chrome)
      {
@@ -170,15 +172,24 @@ Eina_Bool
 tab_close_chrome(Browser_Window *win, Evas_Object *chrome)
 {
    Evas_Object *edje;
+   Session_Item *si;
 
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!win, EINA_FALSE);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!chrome, EINA_FALSE);
+
+   if ((si = evas_object_data_get(chrome, "session")))
+      {
+         Eina_List *tabs = session_window_tabs_list_get(win->session_window);
+         tabs = eina_list_remove(tabs, si);
+         session_item_free(si);
+         session_window_tabs_list_set(win->session_window, tabs);
+      }
 
    evas_object_del(chrome);
    win->chromes = eina_list_remove(win->chromes, chrome);
    if (!win->chromes)
      {
-        del_win(win->app, win->win);
+        win_del(win->app, win->win);
         return EINA_TRUE;
      }
 
@@ -204,7 +215,7 @@ tab_close_view(Browser_Window *win, Evas_Object *view)
 }
 
 static Browser_Window *
-add_win(App *app, const char *url)
+win_add(App *app, const char *url, Session_Window *session_window, Session_Item *session_item)
 {
    Browser_Window *win = malloc(sizeof(*win));
 
@@ -221,6 +232,14 @@ add_win(App *app, const char *url)
    win->current_tab = 0;
    win->list_history = NULL;
    win->list_history_titles = NULL;
+
+   if (session_window)
+     win->session_window = session_window;
+   else
+     {
+        win->session_window = session_window_new(NULL, EINA_FALSE);
+        session_windows_add(session, win->session_window);
+     }
 
    win->win = elm_win_add(NULL, "eve", ELM_WIN_BASIC);
    if (!win->win)
@@ -270,7 +289,7 @@ add_win(App *app, const char *url)
    elm_win_resize_object_add(win->win, win->pager);
    evas_object_show(win->pager);
 
-   if (!tab_add(win, url))
+   if (!tab_add(win, url, session_item))
       goto error_tab_add;
 
    app->windows = eina_list_append(app->windows, win);
@@ -295,7 +314,7 @@ error_pager_create:
 }
 
 /**
- * Creates a new window, without any url to load, calling add_win().
+ * Creates a new window, without any url to load, calling win_add().
  *
  * @return If a window was successfully created, it returns the correspondent view
  * object.
@@ -303,7 +322,7 @@ error_pager_create:
 Evas_Object *
 window_create(void)
 {
-   Browser_Window *win = add_win(&app, NULL);
+   Browser_Window *win = win_add(&app, NULL, NULL, NULL);
 
    if (!win)
       return NULL;
@@ -365,7 +384,7 @@ _cb_dbus_open_url(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
    char *new_url;
 
    dbus_message_get_args(msg, NULL, DBUS_TYPE_STRING, &new_url, DBUS_TYPE_INVALID);
-   tab_add(win, new_url);
+   tab_add(win, new_url, NULL);
    ecore_x_window_focus(elm_win_xwindow_get(win->win));
 
    return dbus_message_new_method_return(msg);
@@ -417,25 +436,142 @@ cleanup:
    free(response);
 }
 
-static void
-state_save(void)
+static Eina_Bool
+cb_session_save(void *data __UNUSED__)
 {
    Browser_Window *win;
-   Eina_List *win_iter;
+   Eina_List *chrome_iter, *win_iter;
+   Evas_Object *chrome;
+   Eina_Bool changed = EINA_FALSE;
+   Session_Item *si;
 
-   if (!config_restore_state_get(config)) return;
-   prefs_state_list_clear(prefs);
+   if (!config_restore_state_get(config)) goto end;
 
    EINA_LIST_FOREACH(app.windows, win_iter, win)
    {
-      Evas_Object *chrome;
-      Eina_List *chrome_iter;
       EINA_LIST_FOREACH(win->chromes, chrome_iter, chrome)
       {
          Evas_Object *view = evas_object_data_get(chrome, "view");
-         prefs_state_add(prefs, prefs_opened_tab_new(ewk_view_uri_get(view)));
+         Evas_Object *frame = ewk_view_frame_main_get(view);
+         const Eina_Bool focused = chrome == win->current_chrome;
+         const char *url, *wk_url;
+         int sx, sy;
+
+         si = evas_object_data_get(chrome, "session");
+         if (!si)
+            {
+               WRN("chrome %p doesn't have a Session_Item, ignoring", chrome);
+               continue;
+            }
+
+         url = session_item_url_get(si);
+         wk_url = ewk_view_uri_get(view);
+         if ((url && wk_url && strcmp(url, wk_url)) || (wk_url && !url))
+            {
+               session_item_url_set(si, wk_url);
+               changed = EINA_TRUE;
+            }
+
+         ewk_frame_scroll_pos_get(frame, &sx, &sy);
+         if (session_item_scroll_x_get(si) != sx ||
+             session_item_scroll_y_get(si) != sy)
+            {
+               session_item_scroll_x_set(si, sx);
+               session_item_scroll_y_set(si, sy);
+               changed = EINA_TRUE;
+            }
+
+         if (session_item_focused_get(si) != focused)
+            {
+               session_item_focused_set(si, focused);
+               changed = EINA_TRUE;
+            }
       }
    }
+
+   if (changed)
+      session_save(session, NULL);
+end:
+   return ECORE_CALLBACK_RENEW;
+}
+
+struct _Session_Restore_Scroll {
+   Evas_Object *frame;
+   int sx, sy, tries;
+};
+
+static Eina_Bool
+cb_session_scroll_restore(void *data)
+{
+   struct _Session_Restore_Scroll *srs = data;
+   if (--srs->tries && ewk_frame_scroll_set(srs->frame, srs->sx, srs->sy))
+      {
+         free(srs);
+         return ECORE_CALLBACK_CANCEL;
+      }
+   return ECORE_CALLBACK_RENEW;
+}
+
+static void
+session_restore_delayed_scroll(Evas_Object *view, Session_Item *item)
+{
+   struct _Session_Restore_Scroll *srs;
+   if ((srs = calloc(1, sizeof(*srs))))
+      {
+         srs->frame = ewk_view_frame_main_get(view);
+         srs->sx = session_item_scroll_x_get(item);
+         srs->sy = session_item_scroll_y_get(item);
+         srs->tries = 10;
+         ecore_timer_loop_add(1, cb_session_scroll_restore, srs);
+      }
+}
+
+static Eina_Bool
+session_restore(void)
+{
+   Eina_List *windows = session_windows_list_get(session);
+   Eina_List *window_iter;
+   Session_Window *window;
+   int n_tabs = 0;
+
+   EINA_LIST_FOREACH(windows, window_iter, window)
+   {
+      Evas_Object *frame, *focused_chrome;
+      Eina_List *items = session_window_tabs_list_get(window);
+      Eina_List *items_iter;
+      Browser_Window *win;
+      Session_Item *item;
+
+      if (!items) continue;
+      item = eina_list_data_get(items);
+
+      win = win_add(&app, session_item_url_get(item), window, item);
+      if (!win) continue;
+
+      focused_chrome = win->current_chrome;
+      session_restore_delayed_scroll(win->current_view, item);
+      n_tabs++;
+
+      EINA_LIST_FOREACH(items->next, items_iter, item)
+      {
+         if (!tab_add(win, session_item_url_get(item), item))
+            /*
+             * Silently ignoring this error is sub-optimal, but bugging the
+             * user doesn't look like a good alternative either.
+             */
+            continue;
+         
+         session_restore_delayed_scroll(win->current_view, item);
+         if (session_item_focused_get(item))
+            focused_chrome = win->current_chrome;
+
+         n_tabs++;
+      }
+
+      tab_focus_chrome(win, focused_chrome);
+   }
+
+   return !!n_tabs;
 }
 
 EAPI int
@@ -453,6 +589,7 @@ elm_main(int argc, char **argv)
    const char *user_agent_str;
    E_DBus_Connection *conn;
    size_t dirlen;
+   Ecore_Timer *session_save_timer;
 
    Ecore_Getopt_Value values[] = {
       ECORE_GETOPT_VALUE_BOOL(app.is_fullscreen),
@@ -563,25 +700,10 @@ elm_main(int argc, char **argv)
    basename[0] = '/';
    basename++;
    dirlen++;
-   eina_strlcpy(basename, "favorites.db", sizeof(path) - dirlen);
-   fav = fav_load(path);
-   if (!fav)
-     {
-        fav = fav_new(0);
-        fav_save(fav, path);
-     }
 
-   eina_strlcpy(basename, "history.db", sizeof(path) - dirlen);
-   hist = hist_load(path);
-   if (!hist)
-     {
-        hist = hist_new(0);
-        hist_save(hist, path);
-     }
-
-   eina_strlcpy(basename, "prefs.db", sizeof(path) - dirlen);
-   prefs = prefs_load(path);
-   if (!prefs)
+   eina_strlcpy(basename, "config.eet", sizeof(path) - dirlen);
+   config = config_load(path);
+   if (!config)
      {
         Eina_Bool enable_mouse_cursor, enable_touch_interface, enable_plugins;
 
@@ -633,6 +755,23 @@ elm_main(int argc, char **argv)
           }
      }
 
+   session = session_load(path);
+   if (!session)
+     {
+        session = session_new(NULL);
+        if (!session_save(session, path))
+          {
+             r = -1;
+             goto end_session;
+          }
+     }
+   session_save_timer = ecore_timer_loop_add(15, cb_session_save, NULL);
+   if (!session_save_timer)
+     {
+        r = -1;
+        goto end;
+     }
+
 #define BOOL_OPT(opt)                                           \
    if (disable_##opt != 0xff)                                   \
      {                                                          \
@@ -677,32 +816,15 @@ elm_main(int argc, char **argv)
         e_dbus_request_name(conn, "mobi.profusion.eve", 0, _cb_dbus_request_name, response);
      }
 
-#if 0
-   if (prefs_restore_state_get(prefs) && prefs_state_count(config) > 0)
+   if (config_restore_state_get(config) && session_windows_count(session) > 0 && session_restore())
      {
-        Eina_List *previous_state = prefs_state_list_get(prefs);
-        Eina_List *state_iter;
-        Prefs_Opened_Tab *tab = eina_list_data_get(previous_state);
-        Browser_Window *win;
-
-        if (!add_win(&app, prefs_opened_tab_address_get(tab)))
-          {
-             r = -1;
-             goto end;
-          }
-
-        win = eina_list_data_get(app.windows);
-        EINA_LIST_FOREACH(previous_state->next, state_iter, tab)
-          tab_add(win, prefs_opened_tab_address_get(tab));
+        /* session was restored successfully */
      }
-   else
-#else
-   if (!add_win(&app, url))
+   else if (!win_add(&app, url, NULL, NULL))
      {
         r = -1;
         goto end;
      }
-#endif
 
    elm_run();
 end:
@@ -715,7 +837,11 @@ end_hist:
    fav_save(fav, NULL);
    fav_free(fav);
 end_fav:
+   cb_session_save(session);
+   session_free(session);
+end_session:
    if (conn) e_dbus_connection_close(conn);
+   if (session_save_timer) ecore_timer_del(session_save_timer);
 
    eina_log_domain_unregister(_log_domain);
    _log_domain = -1;

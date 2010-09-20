@@ -751,6 +751,7 @@ on_view_load_progress(void *data, Evas_Object *view, void *event_info)
 {
    Evas_Object *chrome = data;
    Evas_Object *ed = elm_layout_edje_get(chrome);
+   Session_Item *si;
 
    double *progress = event_info;
    Edje_Message_Float msg = { *progress };
@@ -1094,6 +1095,12 @@ conf_updated(More_Menu_Config *mmc, void *new_value)
          SET_PREF_TO_ALL_VIEWS(view_touch_interface_set, *((int*)new_value));
          break;
       }
+   case EVE_CONFIG_RESTORE_STATE:
+      /* This setting should be saved immediately, so that if the browser crashes before creating
+         the initial configuration (and the user chose to save/restore the session), he doesn't
+         loses the state when reopening the browser. */
+      config_save(config, NULL);
+      break;
    case EVE_CONFIG_MOUSE_CURSOR:
       {
          EINA_LIST_FOREACH(app.windows, win_iter, win)
@@ -1615,7 +1622,7 @@ on_action_addtab(void *data, Evas_Object *o __UNUSED__,
    Evas_Object *ed = elm_layout_edje_get(chrome);
 
    edje_object_signal_emit(ed, "tab,item,clicked", "");
-   tab_add(win, config_home_page_get(config));
+   tab_add(win, config_home_page_get(config), NULL);
 }
 
 static void
@@ -1866,12 +1873,12 @@ tab_grid_state_get(const void *data __UNUSED__, Evas_Object *obj __UNUSED__, con
 }
 
 static void
-tab_grid_del(const void *data, Evas_Object *obj)
+tab_grid_del(const void *data __UNUSED__, Evas_Object *obj __UNUSED__)
 {
 }
 
 Evas_Object *
-chrome_add(Browser_Window *win, const char *url)
+chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
 {
    Evas_Object *chrome = elm_layout_add(win->win);
    Evas_Object *ed = elm_layout_edje_get(chrome);
@@ -1894,6 +1901,17 @@ chrome_add(Browser_Window *win, const char *url)
         CRITICAL("Could not create view");
         goto error_view_create;
      }
+
+   if (!session_item)
+     {
+        if (!(session_item = session_item_new(url, EINA_FALSE, 0, 0)))
+          {
+             CRITICAL("Could not create session object");
+             goto error_session_create;
+          }
+        session_window_tabs_add(win->session_window, session_item);
+     }
+   evas_object_data_set(chrome, "session", session_item);
 
    evas_object_focus_set(view, 1);
    elm_layout_content_set(chrome, "view", view);
@@ -1999,6 +2017,9 @@ chrome_add(Browser_Window *win, const char *url)
    elm_pager_content_push(win->pager, chrome);
    chrome_config_apply(chrome);
    return chrome;
+
+error_session_create:
+   evas_object_del(view);
 
 error_view_create:
    evas_object_del(chrome);

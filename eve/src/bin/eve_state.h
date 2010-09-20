@@ -99,17 +99,17 @@ Fav *fav_load(const char *filename);
 Eina_Bool fav_save(Fav *fav, const char *filename);
 
 /* Session_Item */
-Session_Item *session_item_new(const char * url, unsigned char focused, double scroll_x, double scroll_y);
+Session_Item *session_item_new(const char * url, unsigned char focused, int scroll_x, int scroll_y);
 void session_item_free(Session_Item *session_item);
 
 void session_item_url_set(Session_Item *session_item, const char * url);
 const char * session_item_url_get(const Session_Item *session_item);
 void session_item_focused_set(Session_Item *session_item, unsigned char focused);
 unsigned char session_item_focused_get(const Session_Item *session_item);
-void session_item_scroll_x_set(Session_Item *session_item, double scroll_x);
-double session_item_scroll_x_get(const Session_Item *session_item);
-void session_item_scroll_y_set(Session_Item *session_item, double scroll_y);
-double session_item_scroll_y_get(const Session_Item *session_item);
+void session_item_scroll_x_set(Session_Item *session_item, int scroll_x);
+int session_item_scroll_x_get(const Session_Item *session_item);
+void session_item_scroll_y_set(Session_Item *session_item, int scroll_y);
+int session_item_scroll_y_get(const Session_Item *session_item);
 
 /* Session_Window */
 Session_Window *session_window_new(Eina_List * tabs, unsigned char focused);

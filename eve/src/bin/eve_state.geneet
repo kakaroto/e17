@@ -37,8 +37,8 @@ Fav {
 Session_Item {
         url      : str;
         focused  : uchar;
-        scroll_x : double;
-        scroll_y : double;
+        scroll_x : int;
+        scroll_y : int;
 }
 
 Session_Window {

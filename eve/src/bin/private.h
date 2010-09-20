@@ -45,6 +45,8 @@ struct _Browser_Window
    Evas_Object *current_chrome;
    Evas_Object *current_view;
 
+   Session_Window *session_window;
+
    unsigned int current_tab;
 
    Eina_Bool creating_tab : 1;
@@ -88,10 +90,10 @@ Ewk_Context_Menu *    view_context_menu_get(Evas_Object *view);
 void                  view_touch_interface_set(Evas_Object *view, Eina_Bool setting);
 Eina_Bool             view_touch_interface_get(const Evas_Object *view);
 
-Evas_Object *         chrome_add(Browser_Window *win, const char *url);
+Evas_Object *         chrome_add(Browser_Window *win, const char *url, Session_Item *session_item);
 void                  chrome_focused_notify(Evas_Object *chrome);
 
-Eina_Bool             tab_add(Browser_Window *win, const char *url);
+Eina_Bool             tab_add(Browser_Window *win, const char *url, Session_Item *session_item);
 Eina_Bool             tab_focus_nth(Browser_Window *win, unsigned int n);
 Eina_Bool             tab_focus_chrome(Browser_Window *win, Evas_Object *chrome);
 Eina_Bool             tab_focus_next(Browser_Window *win);
