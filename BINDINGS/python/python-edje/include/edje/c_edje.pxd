@@ -318,6 +318,7 @@ cdef extern from "Edje.h":
     evas.c_evas.Eina_Bool edje_object_part_table_unpack(evas.c_evas.Evas_Object *obj, char *part, evas.c_evas.Evas_Object *child)
     evas.c_evas.Eina_Bool edje_object_part_table_col_row_size_get(evas.c_evas.Evas_Object *obj, char *part, int *cols, int *rows)
     evas.c_evas.Eina_Bool edje_object_part_table_clear(evas.c_evas.Evas_Object *obj, char *part, int clear)
+    evas.c_evas.Evas_Object *edje_object_part_table_child_get(evas.c_evas.Evas_Object *obj, char *part, unsigned int col, unsigned int row)
 
     char *edje_object_part_state_get(evas.c_evas.Evas_Object *obj, char *part, double *val_ret)
 

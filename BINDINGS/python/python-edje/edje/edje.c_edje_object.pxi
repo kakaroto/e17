@@ -679,6 +679,19 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
         """
         return bool(edje_object_part_table_clear(self.obj, part, clear))
 
+    def part_table_child_get(self, char *part, int row, int column):
+        """Retrieve a child from a table.
+
+        @parm: B{part} TABLE part to get child from.
+        @parm: B{row} row index of the child.
+        @parm: B{column} column index of the child.
+
+        @rtype: L{evas.c_evas.Object}
+        """
+        cdef evas.c_evas.Evas_Object *o
+        o = edje_object_part_table_child_get(self.obj, part, row, column)
+        return evas.c_evas._Object_from_instance(<long>o)
+
     def part_state_get(self, char *part):
         "@rtype: (name, value)"
         cdef double sv
