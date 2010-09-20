@@ -587,9 +587,9 @@ elm_main(int argc, char **argv)
    Eina_Bool disable_touch_interface = 0xff;
    char *user_agent_option = NULL;
    const char *user_agent_str;
-   E_DBus_Connection *conn;
+   E_DBus_Connection *conn = NULL;
    size_t dirlen;
-   Ecore_Timer *session_save_timer;
+   Ecore_Timer *session_save_timer = NULL;
 
    Ecore_Getopt_Value values[] = {
       ECORE_GETOPT_VALUE_BOOL(app.is_fullscreen),

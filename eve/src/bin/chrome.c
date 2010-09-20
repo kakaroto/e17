@@ -690,7 +690,6 @@ _history_update(const char *url, const char *title)
 static const char *
 _chrome_title_get(Evas_Object *chrome, char *buf, size_t bufsize)
 {
-   Browser_Window *win = evas_object_data_get(chrome, "win");
    Evas_Object *view = evas_object_data_get(chrome, "view");
    const char *url = ewk_view_uri_get(view);
    const char *title = ewk_view_title_get(view);
@@ -1198,7 +1197,10 @@ on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UN
 
    if (!eina_list_data_find(win->list_history, params->root))
      {
-        if (params->root == more_menu_root || !params->root)
+        if (!params->root)
+           params->root = more_menu_root;
+
+        if (params->root == more_menu_root)
            win->list_history = eina_list_prepend(win->list_history, NULL);
         else
            win->list_history = eina_list_prepend(win->list_history, params->root);
