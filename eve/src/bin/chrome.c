@@ -13,9 +13,9 @@
 typedef struct _More_Menu_Item More_Menu_Item;
 typedef struct _More_Menu_Set_Params More_Menu_Set_Params;
 typedef struct _More_Menu_Filter_Context More_Menu_Filter_Context;
-typedef struct _More_Menu_Preference More_Menu_Preference;
-typedef struct _More_Menu_Preference_List More_Menu_Preference_List;
-typedef struct _More_Menu_Preference_Spinner More_Menu_Preference_Spinner;
+typedef struct _More_Menu_Config More_Menu_Config;
+typedef struct _More_Menu_Config_List More_Menu_Config_List;
+typedef struct _More_Menu_Config_Spinner More_Menu_Config_Spinner;
 
 typedef More_Menu_Item *(*More_Menu_Callback)(Browser_Window *win, More_Menu_Item *current_item);
 
@@ -45,7 +45,7 @@ typedef enum {
    ITEM_TYPE_CALLBACK,
    ITEM_TYPE_CALLBACK_NO_HIDE,
    ITEM_TYPE_SEPARATOR,
-   ITEM_TYPE_PREFERENCE
+   ITEM_TYPE_CONFIG
 } More_Menu_Item_Type;
 
 typedef enum {
@@ -56,28 +56,28 @@ typedef enum {
 } More_Menu_Item_Flags;
 
 typedef enum {
-   PREF_TYPE_CHECKBOX,
-   PREF_TYPE_LIST,
-   PREF_TYPE_STRING,
-   PREF_TYPE_PASSWORD,
-   PREF_TYPE_SPINNER
-} More_Menu_Preference_Type;
+   CONFIG_TYPE_CHECKBOX,
+   CONFIG_TYPE_LIST,
+   CONFIG_TYPE_STRING,
+   CONFIG_TYPE_PASSWORD,
+   CONFIG_TYPE_SPINNER
+} More_Menu_Config_Type;
 
 typedef enum {
-   EVE_PREF_ENABLE_JAVASCRIPT,
-   EVE_PREF_ENABLE_PLUGINS,
-   EVE_PREF_HOME_PAGE,
-   EVE_PREF_PROXY,
-   EVE_PREF_USER_AGENT,
-   EVE_PREF_TOUCH_INTERFACE,
-   EVE_PREF_MOUSE_CURSOR,
-   EVE_PREF_ENABLE_PRIVATE_MODE,
-   EVE_PREF_AUTO_LOAD_IMAGES,
-   EVE_PREF_AUTO_SHRINK_IMAGES,
-   EVE_PREF_POPUP_ALLOW,
-   EVE_PREF_RESTORE_STATE,
-   EVE_PREF_LAST
-} Eve_Preference;
+   EVE_CONFIG_ENABLE_JAVASCRIPT,
+   EVE_CONFIG_ENABLE_PLUGINS,
+   EVE_CONFIG_HOME_PAGE,
+   EVE_CONFIG_PROXY,
+   EVE_CONFIG_USER_AGENT,
+   EVE_CONFIG_TOUCH_INTERFACE,
+   EVE_CONFIG_MOUSE_CURSOR,
+   EVE_CONFIG_ENABLE_PRIVATE_MODE,
+   EVE_CONFIG_AUTO_LOAD_IMAGES,
+   EVE_CONFIG_AUTO_SHRINK_IMAGES,
+   EVE_CONFIG_POPUP_ALLOW,
+   EVE_CONFIG_RESTORE_STATE,
+   EVE_CONFIG_LAST
+} Eve_Config;
 
 struct _More_Menu_Item
 {
@@ -94,20 +94,20 @@ struct _More_Menu_Filter_Context
    double time;
 };
 
-struct _More_Menu_Preference {
-   More_Menu_Preference_Type type;
-   Eve_Preference pref;
-   void *pref_get;
-   void *pref_set;
+struct _More_Menu_Config {
+   More_Menu_Config_Type type;
+   Eve_Config conf;
+   void *conf_get;
+   void *conf_set;
    void *data;
 };
 
-struct _More_Menu_Preference_List {
+struct _More_Menu_Config_List {
    const char *title;
    const char *value;
 };
 
-struct _More_Menu_Preference_Spinner {
+struct _More_Menu_Config_Spinner {
    const int min;
    const int max;
    const char *format;
@@ -133,47 +133,47 @@ static More_Menu_Item more_menu_history[] =
    { ITEM_TYPE_LAST, NULL, NULL, NULL, ITEM_FLAG_NONE }
 };
 
-static More_Menu_Item more_menu_preferences[] =
+static More_Menu_Item more_menu_config[] =
 {
-   { ITEM_TYPE_PREFERENCE, "Enable JavaScript",
-     (More_Menu_Preference[]) {{
-       .type = PREF_TYPE_CHECKBOX,
-       .pref = EVE_PREF_ENABLE_JAVASCRIPT,
-       .pref_get = prefs_enable_javascript_get,
-       .pref_set = prefs_enable_javascript_set,
+   { ITEM_TYPE_CONFIG, "Enable JavaScript",
+     (More_Menu_Config[]) {{
+       .type = CONFIG_TYPE_CHECKBOX,
+       .conf = EVE_CONFIG_ENABLE_JAVASCRIPT,
+       .conf_get = config_enable_javascript_get,
+       .conf_set = config_enable_javascript_set,
      }}, NULL, ITEM_FLAG_NONE },
-   { ITEM_TYPE_PREFERENCE, "Enable plugins",
-     (More_Menu_Preference[]) {{
-       .type = PREF_TYPE_CHECKBOX,
-       .pref = EVE_PREF_ENABLE_PLUGINS,
-       .pref_get = prefs_enable_plugins_get,
-       .pref_set = prefs_enable_plugins_set,
+   { ITEM_TYPE_CONFIG, "Enable plugins",
+     (More_Menu_Config[]) {{
+       .type = CONFIG_TYPE_CHECKBOX,
+       .conf = EVE_CONFIG_ENABLE_PLUGINS,
+       .conf_get = config_enable_plugins_get,
+       .conf_set = config_enable_plugins_set,
      }}, NULL, ITEM_FLAG_NONE },
-   { ITEM_TYPE_PREFERENCE, "Private mode",
-     (More_Menu_Preference[]) {{
-       .type = PREF_TYPE_CHECKBOX,
-       .pref = EVE_PREF_ENABLE_PRIVATE_MODE,
-       .pref_get = prefs_enable_private_mode_get,
-       .pref_set = prefs_enable_private_mode_set,
+   { ITEM_TYPE_CONFIG, "Private mode",
+     (More_Menu_Config[]) {{
+       .type = CONFIG_TYPE_CHECKBOX,
+       .conf = EVE_CONFIG_ENABLE_PRIVATE_MODE,
+       .conf_get = config_enable_private_mode_get,
+       .conf_set = config_enable_private_mode_set,
      }}, NULL, ITEM_FLAG_NONE },
-   { ITEM_TYPE_PREFERENCE, "Save and restore session",
-     (More_Menu_Preference[]) {{
-       .type = PREF_TYPE_CHECKBOX,
-       .pref = EVE_PREF_RESTORE_STATE,
-       .pref_get = prefs_restore_state_get,
-       .pref_set = prefs_restore_state_set,
+   { ITEM_TYPE_CONFIG, "Save and restore session",
+     (More_Menu_Config[]) {{
+       .type = CONFIG_TYPE_CHECKBOX,
+       .conf = EVE_CONFIG_RESTORE_STATE,
+       .conf_get = config_restore_state_get,
+       .conf_set = config_restore_state_set,
      }}, NULL, ITEM_FLAG_NONE },
    { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
    { ITEM_TYPE_STATIC_FOLDER, "Home page",
      (More_Menu_Item[]) {
          { ITEM_TYPE_CALLBACK_NO_HIDE, "Set to current page", more_menu_home_page_current_set, NULL, ITEM_FLAG_NONE },
          { ITEM_TYPE_CALLBACK_NO_HIDE, "Set to default", more_menu_home_page_default_set, NULL, ITEM_FLAG_NONE },
-         { ITEM_TYPE_PREFERENCE, "Set to an URL",
-           (More_Menu_Preference[]) {{
-             .type = PREF_TYPE_STRING,
-             .pref = EVE_PREF_HOME_PAGE,
-             .pref_get = prefs_home_page_get,
-             .pref_set = prefs_home_page_set,
+         { ITEM_TYPE_CONFIG, "Set to an URL",
+           (More_Menu_Config[]) {{
+             .type = CONFIG_TYPE_STRING,
+             .conf = EVE_CONFIG_HOME_PAGE,
+             .conf_get = config_home_page_get,
+             .conf_set = config_home_page_set,
            }}, NULL, ITEM_FLAG_ARROW },
          { ITEM_TYPE_LAST, NULL, NULL, NULL, ITEM_FLAG_NONE },
      }, NULL, ITEM_FLAG_ARROW },
@@ -189,48 +189,48 @@ static More_Menu_Item more_menu_preferences[] =
      }, NULL, ITEM_FLAG_ARROW },
    { ITEM_TYPE_STATIC_FOLDER, "Tweaks",
      (More_Menu_Item[]) {
-         { ITEM_TYPE_PREFERENCE, "Enable mouse cursor",
-           (More_Menu_Preference[]) {{
-             .type = PREF_TYPE_CHECKBOX,
-             .pref = EVE_PREF_MOUSE_CURSOR,
-             .pref_get = prefs_enable_mouse_cursor_get,
-             .pref_set = prefs_enable_mouse_cursor_set
+         { ITEM_TYPE_CONFIG, "Enable mouse cursor",
+           (More_Menu_Config[]) {{
+             .type = CONFIG_TYPE_CHECKBOX,
+             .conf = EVE_CONFIG_MOUSE_CURSOR,
+             .conf_get = config_enable_mouse_cursor_get,
+             .conf_set = config_enable_mouse_cursor_set
            }}, NULL, ITEM_FLAG_NONE },
-         { ITEM_TYPE_PREFERENCE, "Enable touch interface",
-           (More_Menu_Preference[]) {{
-             .type = PREF_TYPE_CHECKBOX,
-             .pref = EVE_PREF_TOUCH_INTERFACE,
-             .pref_get = prefs_enable_touch_interface_get,
-             .pref_set = prefs_enable_touch_interface_set
+         { ITEM_TYPE_CONFIG, "Enable touch interface",
+           (More_Menu_Config[]) {{
+             .type = CONFIG_TYPE_CHECKBOX,
+             .conf = EVE_CONFIG_TOUCH_INTERFACE,
+             .conf_get = config_enable_touch_interface_get,
+             .conf_set = config_enable_touch_interface_set
            }}, NULL, ITEM_FLAG_NONE },
-         { ITEM_TYPE_PREFERENCE, "Automatically load images",
-           (More_Menu_Preference[]) {{
-             .type = PREF_TYPE_CHECKBOX,
-             .pref = EVE_PREF_AUTO_LOAD_IMAGES,
-             .pref_get = prefs_enable_auto_load_images_get,
-             .pref_set = prefs_enable_auto_load_images_set
+         { ITEM_TYPE_CONFIG, "Automatically load images",
+           (More_Menu_Config[]) {{
+             .type = CONFIG_TYPE_CHECKBOX,
+             .conf = EVE_CONFIG_AUTO_LOAD_IMAGES,
+             .conf_get = config_enable_auto_load_images_get,
+             .conf_set = config_enable_auto_load_images_set
            }}, NULL, ITEM_FLAG_NONE },
-         { ITEM_TYPE_PREFERENCE, "Automatically shrink images",
-           (More_Menu_Preference[]) {{
-             .type = PREF_TYPE_CHECKBOX,
-             .pref = EVE_PREF_AUTO_SHRINK_IMAGES,
-             .pref_get = prefs_enable_auto_shrink_images_get,
-             .pref_set = prefs_enable_auto_shrink_images_set
+         { ITEM_TYPE_CONFIG, "Automatically shrink images",
+           (More_Menu_Config[]) {{
+             .type = CONFIG_TYPE_CHECKBOX,
+             .conf = EVE_CONFIG_AUTO_SHRINK_IMAGES,
+             .conf_get = config_enable_auto_shrink_images_get,
+             .conf_set = config_enable_auto_shrink_images_set
            }}, NULL, ITEM_FLAG_NONE },
-         { ITEM_TYPE_PREFERENCE, "Allow popup windows",
-           (More_Menu_Preference[]) {{
-             .type = PREF_TYPE_CHECKBOX,
-             .pref = EVE_PREF_POPUP_ALLOW,
-             .pref_get = prefs_allow_popup_get,
-             .pref_set = prefs_allow_popup_set
+         { ITEM_TYPE_CONFIG, "Allow popup windows",
+           (More_Menu_Config[]) {{
+             .type = CONFIG_TYPE_CHECKBOX,
+             .conf = EVE_CONFIG_POPUP_ALLOW,
+             .conf_get = config_allow_popup_get,
+             .conf_set = config_allow_popup_set
            }}, NULL, ITEM_FLAG_NONE },
-         { ITEM_TYPE_PREFERENCE, "User agent",
-           (More_Menu_Preference[]) {{
-             .type = PREF_TYPE_LIST,
-             .pref = EVE_PREF_USER_AGENT,
-             .pref_get = prefs_user_agent_get,
-             .pref_set = prefs_user_agent_set,
-             .data = (More_Menu_Preference_List[]) {
+         { ITEM_TYPE_CONFIG, "User agent",
+           (More_Menu_Config[]) {{
+             .type = CONFIG_TYPE_LIST,
+             .conf = EVE_CONFIG_USER_AGENT,
+             .conf_get = config_user_agent_get,
+             .conf_set = config_user_agent_set,
+             .data = (More_Menu_Config_List[]) {
                { "Eve", "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3 " PACKAGE_NAME "/" PACKAGE_VERSION },
                { "iPhone", "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3" },
                { "Safari", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_3; en-US) AppleWebKit/533.17.8 (KHTML, like Gecko) Version/5.0.1 Safari/533.17.8" },
@@ -250,7 +250,7 @@ static More_Menu_Item more_menu_root[] =
 {
    { ITEM_TYPE_STATIC_FOLDER, "History", more_menu_history, NULL, ITEM_FLAG_ARROW },
    { ITEM_TYPE_DYNAMIC_FOLDER, "Favorites", more_menu_favorites, NULL, ITEM_FLAG_ARROW },
-   { ITEM_TYPE_STATIC_FOLDER, "Preferences", more_menu_preferences, NULL, ITEM_FLAG_ARROW },
+   { ITEM_TYPE_STATIC_FOLDER, "Preferences", more_menu_config, NULL, ITEM_FLAG_ARROW },
    { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
    { ITEM_TYPE_PAGE, "ProFUSION", "http://profusion.mobi", NULL, ITEM_FLAG_NONE },
    { ITEM_TYPE_PAGE, "WebKit", "http://webkit.org", NULL, ITEM_FLAG_NONE },
@@ -674,7 +674,7 @@ _history_update(const char *url, const char *title)
 {
    Hist_Item *item;
 
-   if (!url || prefs_enable_private_mode_get(prefs))
+   if (!url || config_enable_private_mode_get(config))
       return;
 
    if ((item = hist_items_get(hist, url)))
@@ -861,14 +861,14 @@ on_view_popup_delete(void *data, Evas_Object *view, void *event_info)
 static More_Menu_Item *
 more_menu_home_page_current_set(Browser_Window *win, More_Menu_Item *mmi __UNUSED__)
 {
-   prefs_home_page_set(prefs, ewk_view_uri_get(win->current_view));
+   config_home_page_set(config, ewk_view_uri_get(win->current_view));
    return NULL;
 }
 
 static More_Menu_Item *
 more_menu_home_page_default_set(Browser_Window *win __UNUSED__, More_Menu_Item *mmi __UNUSED__)
 {
-   prefs_home_page_set(prefs, DEFAULT_URL);
+   config_home_page_set(config, DEFAULT_URL);
    return NULL;
 }
 
@@ -1020,81 +1020,81 @@ on_action_forward(void *data, Evas_Object *o __UNUSED__,
 }
 
 void
-chrome_prefs_apply(Evas_Object *chrome)
+chrome_config_apply(Evas_Object *chrome)
 {
    Evas_Object *view = evas_object_data_get(chrome, "view");
    Browser_Window *win = evas_object_data_get(chrome, "win");
 
-   ewk_view_setting_enable_scripts_set(view, prefs_enable_javascript_get(prefs));
-   ewk_view_setting_enable_plugins_set(view, prefs_enable_plugins_get(prefs));
-   ewk_view_setting_user_agent_set(view, prefs_user_agent_get(prefs));
-   ewk_view_setting_private_browsing_set(view, prefs_enable_private_mode_get(prefs));
-   ewk_view_setting_auto_load_images_set(view, prefs_enable_auto_load_images_get(prefs));
-   ewk_view_setting_auto_shrink_images_set(view, prefs_enable_auto_shrink_images_get(prefs));
-   ewk_view_setting_scripts_window_open_set(view, prefs_allow_popup_get(prefs));
-   view_touch_interface_set(view, prefs_enable_touch_interface_get(prefs));
-   window_mouse_enabled_set(win->win, prefs_enable_mouse_cursor_get(prefs));
+   ewk_view_setting_enable_scripts_set(view, config_enable_javascript_get(config));
+   ewk_view_setting_enable_plugins_set(view, config_enable_plugins_get(config));
+   ewk_view_setting_user_agent_set(view, config_user_agent_get(config));
+   ewk_view_setting_private_browsing_set(view, config_enable_private_mode_get(config));
+   ewk_view_setting_auto_load_images_set(view, config_enable_auto_load_images_get(config));
+   ewk_view_setting_auto_shrink_images_set(view, config_enable_auto_shrink_images_get(config));
+   ewk_view_setting_scripts_window_open_set(view, config_allow_popup_get(config));
+   view_touch_interface_set(view, config_enable_touch_interface_get(config));
+   window_mouse_enabled_set(win->win, config_enable_mouse_cursor_get(config));
 }
 
 static void
-pref_updated(More_Menu_Preference *p, void *new_value)
+conf_updated(More_Menu_Config *mmc, void *new_value)
 {
    Evas_Object *chrome, *view;
    Browser_Window *win;
    Eina_List *win_iter, *chrome_iter;
 
-#define SET_PREF_TO_ALL_VIEWS(fn,newvalue) \
-      EINA_LIST_FOREACH(app.windows, win_iter, win) \
-      { \
+#define SET_PREF_TO_ALL_VIEWS(fn,newvalue)                    \
+      EINA_LIST_FOREACH(app.windows, win_iter, win)           \
+      {                                                       \
          EINA_LIST_FOREACH(win->chromes, chrome_iter, chrome) \
-         { \
-            view = evas_object_data_get(chrome, "view"); \
-            fn(view, newvalue); \
-         } \
+         {                                                    \
+            view = evas_object_data_get(chrome, "view");      \
+            fn(view, newvalue);                               \
+         }                                                    \
       }
 
-   switch (p->pref) {
-   case EVE_PREF_ENABLE_JAVASCRIPT:
+   switch (mmc->conf) {
+   case EVE_CONFIG_ENABLE_JAVASCRIPT:
       {
          SET_PREF_TO_ALL_VIEWS(ewk_view_setting_enable_scripts_set, *((int *)new_value));
          break;
       }
-   case EVE_PREF_ENABLE_PLUGINS:
+   case EVE_CONFIG_ENABLE_PLUGINS:
       {
          SET_PREF_TO_ALL_VIEWS(ewk_view_setting_enable_plugins_set, *((int *)new_value));
          break;
       }
-   case EVE_PREF_USER_AGENT:
+   case EVE_CONFIG_USER_AGENT:
       {
          SET_PREF_TO_ALL_VIEWS(ewk_view_setting_user_agent_set, new_value);
          break;
       }
-   case EVE_PREF_ENABLE_PRIVATE_MODE:
+   case EVE_CONFIG_ENABLE_PRIVATE_MODE:
       {
          SET_PREF_TO_ALL_VIEWS(ewk_view_setting_private_browsing_set, *((int *)new_value));
          break;
       }
-   case EVE_PREF_AUTO_LOAD_IMAGES:
+   case EVE_CONFIG_AUTO_LOAD_IMAGES:
       {
          SET_PREF_TO_ALL_VIEWS(ewk_view_setting_auto_load_images_set, *((int *)new_value));
          break;
       }
-   case EVE_PREF_AUTO_SHRINK_IMAGES:
+   case EVE_CONFIG_AUTO_SHRINK_IMAGES:
       {
          SET_PREF_TO_ALL_VIEWS(ewk_view_setting_auto_shrink_images_set, *((int *)new_value));
          break;
       }
-   case EVE_PREF_POPUP_ALLOW:
+   case EVE_CONFIG_POPUP_ALLOW:
       {
          SET_PREF_TO_ALL_VIEWS(ewk_view_setting_scripts_window_open_set, *((int *)new_value));
          break;
       }
-    case EVE_PREF_TOUCH_INTERFACE:
+    case EVE_CONFIG_TOUCH_INTERFACE:
       {
          SET_PREF_TO_ALL_VIEWS(view_touch_interface_set, *((int*)new_value));
          break;
       }
-   case EVE_PREF_MOUSE_CURSOR:
+   case EVE_CONFIG_MOUSE_CURSOR:
       {
          EINA_LIST_FOREACH(app.windows, win_iter, win)
          {
@@ -1108,72 +1108,72 @@ pref_updated(More_Menu_Preference *p, void *new_value)
 }
 
 static void
-cb_pref_bool_changed(void *data, Evas_Object *obj, void *event_info __UNUSED__)
+cb_config_bool_changed(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 {
-   More_Menu_Preference *pref = data;
-   void (*pref_set)(Prefs *, Eina_Bool);
+   More_Menu_Config *mmc = data;
+   void (*conf_set)(Config *, Eina_Bool);
 
-   if ((pref_set = pref->pref_set))
+   if ((conf_set = mmc->conf_set))
       {
-         pref_set(prefs, elm_toggle_state_get(obj));
-         pref_updated(pref, (int[]){ elm_toggle_state_get(obj) });
+         conf_set(config, elm_toggle_state_get(obj));
+         conf_updated(mmc, (int[]){ elm_toggle_state_get(obj) });
       }
 }
 
 static void
-cb_pref_int_changed(void *data, Evas_Object *obj, void *event_info __UNUSED__)
+cb_config_int_changed(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 {
-   More_Menu_Preference *pref = data;
-   void (*pref_set)(Prefs *, int);
+   More_Menu_Config *mmc = data;
+   void (*conf_set)(Config *, int);
 
-   if ((pref_set = pref->pref_set))
+   if ((conf_set = mmc->conf_set))
       {
-         pref_set(prefs, elm_spinner_value_get(obj));
-         pref_updated(pref, (int[]){ elm_spinner_value_get(obj) });
+         conf_set(config, elm_spinner_value_get(obj));
+         conf_updated(mmc, (int[]){ elm_spinner_value_get(obj) });
       }
 }
 
 static void
-cb_pref_string_changed(void *data, Evas_Object *obj, void *event_info __UNUSED__)
+cb_config_string_changed(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 {
-   More_Menu_Preference *pref = data;
-   void (*pref_set)(Prefs *, const char *);
+   More_Menu_Config *mmc = data;
+   void (*conf_set)(Config *, const char *);
 
-   if ((pref_set = pref->pref_set))
+   if ((conf_set = mmc->conf_set))
       {
-         pref_set(prefs, elm_scrolled_entry_entry_get(obj));
-         pref_updated(pref, (void *)elm_scrolled_entry_entry_get(obj));
+         conf_set(config, elm_scrolled_entry_entry_get(obj));
+         conf_updated(mmc, (void *)elm_scrolled_entry_entry_get(obj));
       }
 }
 
 static Evas_Object *
-pref_widget_get(Evas_Object *parent, More_Menu_Preference *pref)
+config_widget_get(Evas_Object *parent, More_Menu_Config *mmc)
 {
-   if (!pref->pref_get) return NULL;
+   if (!mmc->conf_get) return NULL;
 
-   switch (pref->type) {
-   case PREF_TYPE_CHECKBOX:
+   switch (mmc->type) {
+   case CONFIG_TYPE_CHECKBOX:
       {
-         Eina_Bool (*pref_get)(Prefs *);
+         Eina_Bool (*conf_get)(Config *);
          Evas_Object *toggle = elm_toggle_add(parent);
 
-         pref_get = pref->pref_get;
-         elm_toggle_state_set(toggle, pref_get(prefs));
-         evas_object_smart_callback_add(toggle, "changed", cb_pref_bool_changed, pref);
+         conf_get = mmc->conf_get;
+         elm_toggle_state_set(toggle, conf_get(config));
+         evas_object_smart_callback_add(toggle, "changed", cb_config_bool_changed, mmc);
 
          return toggle;
       }
-   case PREF_TYPE_SPINNER:
+   case CONFIG_TYPE_SPINNER:
       {
-         int (*pref_get)(Prefs *);
+         int (*conf_get)(Config *);
          Evas_Object *spinner = elm_spinner_add(parent);
-         More_Menu_Preference_Spinner *spinner_params = pref->data;
+         More_Menu_Config_Spinner *spinner_params = mmc->data;
 
-         pref_get = pref->pref_get;
+         conf_get = mmc->conf_get;
          elm_spinner_min_max_set(spinner, spinner_params->min, spinner_params->max);
          if (spinner_params->format) elm_spinner_label_format_set(spinner, spinner_params->format);
-         elm_spinner_value_set(spinner, pref_get(prefs));
-         evas_object_smart_callback_add(spinner, "changed", cb_pref_int_changed, pref);
+         elm_spinner_value_set(spinner, conf_get(config));
+         evas_object_smart_callback_add(spinner, "changed", cb_config_int_changed, mmc);
 
          return spinner;
       }
@@ -1218,8 +1218,8 @@ on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UN
                elm_list_item_separator_set(item, EINA_TRUE);
                break;
            }
-        case ITEM_TYPE_PREFERENCE:
-           end = pref_widget_get(params->list, params->root[i].next);
+        case ITEM_TYPE_CONFIG:
+           end = config_widget_get(params->list, params->root[i].next);
            /* fallthrough */
         default:
            if (!icon && params->root[i].flags & ITEM_FLAG_SELECTED)
@@ -1301,11 +1301,11 @@ on_more_item_back_click(void *data, Evas_Object *edje,
 }
 
 static void
-callback_menu_prefs_list_set(Browser_Window *win __UNUSED__, More_Menu_Item *i)
+callback_menu_config_list_set(Browser_Window *win __UNUSED__, More_Menu_Item *i)
 {
-   More_Menu_Preference *p = i->data;
-   More_Menu_Preference_List *l = p->data;
-   void (*pref_set)(Prefs *, const char *);
+   More_Menu_Config *p = i->data;
+   More_Menu_Config_List *l = p->data;
+   void (*conf_set)(Config *, const char *);
    const char *title = NULL;
    int item;
 
@@ -1313,10 +1313,10 @@ callback_menu_prefs_list_set(Browser_Window *win __UNUSED__, More_Menu_Item *i)
       {
          if (!strcmp(l[item].title, i->text))
             {
-               if ((pref_set = p->pref_set))
+               if ((conf_set = p->conf_set))
                   {
-                     pref_set(prefs, l[item].value);
-                     pref_updated(p, (void *)l[item].value);
+                     conf_set(config, l[item].value);
+                     conf_updated(p, (void *)l[item].value);
                   }
                break;
             }
@@ -1324,25 +1324,25 @@ callback_menu_prefs_list_set(Browser_Window *win __UNUSED__, More_Menu_Item *i)
 }
 
 static More_Menu_Item *
-more_menu_prefs_list_create(More_Menu_Item *i, More_Menu_Preference *p)
+more_menu_config_list_create(More_Menu_Item *i, More_Menu_Config *p)
 {
-   More_Menu_Preference_List *list = p->data;
+   More_Menu_Config_List *list = p->data;
    More_Menu_Item *mmi;
-   const char *(*pref_get)(void *);
-   const char *preference = NULL;
+   const char *(*conf_get)(void *);
+   const char *configuration = NULL;
    int item, n_items;
 
    if (!list) return NULL;
    for (n_items = 0; list[n_items].title; n_items++);
    if (!(mmi = calloc(n_items + 1, sizeof(*mmi)))) return NULL;
-   if ((pref_get = p->pref_get)) preference = pref_get(prefs);
+   if ((conf_get = p->conf_get)) configuration = conf_get(config);
 
    for (item = 0; item < n_items; item++) {
       mmi[item].text = eina_stringshare_add(list[item].title);
-      mmi[item].next = callback_menu_prefs_list_set;
+      mmi[item].next = callback_menu_config_list_set;
       mmi[item].type = ITEM_TYPE_CALLBACK_NO_HIDE;
       mmi[item].data = p;
-      mmi[item].flags = (preference && !strcmp(list[item].value, preference)) ? ITEM_FLAG_SELECTED : ITEM_FLAG_NONE;
+      mmi[item].flags = (configuration && !strcmp(list[item].value, configuration)) ? ITEM_FLAG_SELECTED : ITEM_FLAG_NONE;
       mmi[item].flags |= ITEM_FLAG_DYNAMIC;
    }
 
@@ -1368,17 +1368,17 @@ on_string_ask_cancel_click(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-more_menu_prefs_string_ask(Evas_Object *parent, More_Menu_Item *item, More_Menu_Preference *pref, Eina_Bool password)
+more_menu_config_string_ask(Evas_Object *parent, More_Menu_Item *item, More_Menu_Config *mmc, Eina_Bool password)
 {
    Eina_Bool response = EINA_FALSE;
    Evas_Object *bx_h, *bx_v, *lb;
    Evas_Object *bt_cancel, *bt_ok;
    Evas_Object *notify;
    Evas_Object *entry;
-   const char *(*pref_get)(Prefs *);
-   void (*pref_set)(Prefs *, const char *);
+   const char *(*conf_get)(Config *);
+   void (*conf_set)(Config *, const char *);
    
-   if (!(pref_get = pref->pref_get) || !(pref_set = pref->pref_set)) return;
+   if (!(conf_get = mmc->conf_get) || !(conf_set = mmc->conf_set)) return;
 
    notify = elm_notify_add(parent);
    elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_CENTER);
@@ -1399,7 +1399,7 @@ more_menu_prefs_string_ask(Evas_Object *parent, More_Menu_Item *item, More_Menu_
    entry = elm_entry_add(bx_v);
    elm_entry_password_set(entry, password);
    elm_entry_single_line_set(entry, EINA_TRUE);
-   elm_entry_entry_set(entry, pref_get(prefs));
+   elm_entry_entry_set(entry, conf_get(config));
    elm_box_pack_end(bx_v, entry);
    evas_object_show(entry);
 
@@ -1431,22 +1431,22 @@ more_menu_prefs_string_ask(Evas_Object *parent, More_Menu_Item *item, More_Menu_
    evas_object_hide(notify);
 
    if (response == EINA_TRUE)
-      pref_set(prefs, elm_entry_entry_get(entry));
+      conf_set(config, elm_entry_entry_get(entry));
 
    evas_object_del(notify);
 }
 
 static More_Menu_Item *
-more_menu_prefs_create(Evas_Object *parent, More_Menu_Item *item, More_Menu_Preference *pref)
+more_menu_config_create(Evas_Object *parent, More_Menu_Item *item, More_Menu_Config *config)
 {
-   switch (pref->type) {
-   case PREF_TYPE_LIST:
-      return more_menu_prefs_list_create(item, pref);
-   case PREF_TYPE_STRING:
-      more_menu_prefs_string_ask(parent, item, pref, EINA_FALSE);
+   switch (config->type) {
+   case CONFIG_TYPE_LIST:
+      return more_menu_config_list_create(item, config);
+   case CONFIG_TYPE_STRING:
+      more_menu_config_string_ask(parent, item, config, EINA_FALSE);
       break;
-   case PREF_TYPE_PASSWORD:
-      more_menu_prefs_string_ask(parent, item, pref, EINA_TRUE);
+   case CONFIG_TYPE_PASSWORD:
+      more_menu_config_string_ask(parent, item, config, EINA_TRUE);
       break;
    }
 
@@ -1455,7 +1455,7 @@ more_menu_prefs_create(Evas_Object *parent, More_Menu_Item *item, More_Menu_Pref
 
 static void
 on_more_item_click(void *data, Evas_Object *obj,
-                       void *event_info __UNUSED__)
+                   void *event_info __UNUSED__)
 {
    Evas_Object *chrome = evas_object_data_get(obj, "chrome");
    Evas_Object *ed = elm_layout_edje_get(chrome);
@@ -1489,12 +1489,12 @@ on_more_item_click(void *data, Evas_Object *obj,
         break;
       }
 
-      case ITEM_TYPE_PREFERENCE:
+      case ITEM_TYPE_CONFIG:
       {
          if (!mmi->next)
             return;
 
-         More_Menu_Item *new_root = more_menu_prefs_create(win->win, mmi, mmi->next);
+         More_Menu_Item *new_root = more_menu_config_create(win->win, mmi, mmi->next);
          if (new_root)
             {
                win->list_history_titles = eina_list_prepend(win->list_history_titles, old_text);
@@ -1615,7 +1615,7 @@ on_action_addtab(void *data, Evas_Object *o __UNUSED__,
    Evas_Object *ed = elm_layout_edje_get(chrome);
 
    edje_object_signal_emit(ed, "tab,item,clicked", "");
-   tab_add(win, prefs_home_page_get(prefs));
+   tab_add(win, config_home_page_get(config));
 }
 
 static void
@@ -1699,7 +1699,7 @@ on_action_home(void *data, Evas_Object *o __UNUSED__,
 {
    Evas_Object *view = data;
 
-   ewk_view_uri_set(view, prefs_home_page_get(prefs));
+   ewk_view_uri_set(view, config_home_page_get(config));
 }
 
 static void
@@ -1997,7 +1997,7 @@ chrome_add(Browser_Window *win, const char *url)
    _chrome_state_apply(chrome, view);
 
    elm_pager_content_push(win->pager, chrome);
-   chrome_prefs_apply(chrome);
+   chrome_config_apply(chrome);
    return chrome;
 
 error_view_create:

@@ -11,8 +11,6 @@
 #include <Elementary.h>
 #ifndef ELM_LIB_QUICKLAUNCH
 
-#include "prefs.h"
-#include "favorite.h"
 #include "private.h"
 
 #include <Ecore_Getopt.h>
@@ -23,9 +21,9 @@
 #include "gettext.h"
 
 int _log_domain = -1;
-Fav *fav = NULL;
 Hist *hist = NULL;
-Prefs *prefs = NULL;
+Fav *fav = NULL;
+Config *config = NULL;
 App app;
 
 struct Cursor {
@@ -234,7 +232,7 @@ add_win(App *app, const char *url)
    elm_win_title_set(win->win, PACKAGE_STRING);
    elm_win_rotation_set(win->win, app->rotate);
    elm_win_fullscreen_set(win->win, app->is_fullscreen);
-   window_mouse_enabled_set(win->win, prefs_enable_mouse_cursor_get(prefs));
+   window_mouse_enabled_set(win->win, config_enable_mouse_cursor_get(config));
 
    win->bg = edje_object_add(evas_object_evas_get(win->win));
    if (!win->bg)
@@ -425,7 +423,7 @@ state_save(void)
    Browser_Window *win;
    Eina_List *win_iter;
 
-   if (!prefs_restore_state_get(prefs)) return;
+   if (!config_restore_state_get(config)) return;
    prefs_state_list_clear(prefs);
 
    EINA_LIST_FOREACH(app.windows, win_iter, win)
@@ -528,9 +526,7 @@ elm_main(int argc, char **argv)
 
    elm_theme_extension_add(NULL, PACKAGE_DATA_DIR "/default.edj");
    ewk_init();
-   favorite_init();
-   history_init();
-   preferences_init();
+   eve_state_init();
    e_dbus_init();
 
    home = getenv("HOME");
@@ -596,23 +592,56 @@ elm_main(int argc, char **argv)
         BOOL_OPT(plugins);
 #undef BOOL_OPT
 
-        prefs = prefs_new(enable_mouse_cursor, enable_touch_interface,
-                          enable_plugins,
-                          EINA_TRUE, user_agent_str, DEFAULT_URL, NULL,
-                          EINA_FALSE, EINA_TRUE, EINA_FALSE,
-                          EINA_TRUE, EINA_FALSE, NULL);
-        prefs_save(prefs, path);
+        config = config_new(EINA_TRUE /* allow_popup */,
+        		    EINA_TRUE /* enable_auto_load_images */,
+        		    EINA_TRUE /* enable_auto_shrink_images */,
+        		    EINA_TRUE /* enable_javascript */,
+        		    enable_mouse_cursor,
+        		    enable_plugins,
+        		    EINA_FALSE /* enable_private_mode */,
+        		    enable_touch_interface,
+        		    DEFAULT_URL /* home_page */,
+        		    NULL /* proxy */,
+        		    EINA_FALSE /* restore_state */,
+        		    user_agent_str);
+        if (!config_save(config, path))
+          {
+             r = -1;
+             goto end_config;
+          }
+     }
+
+   hist = hist_load(path);
+   if (!hist)
+     {
+        hist = hist_new();
+        if (!hist_save(hist, path))
+          {
+             r = -1;
+             goto end_hist;
+          }
+     }
+   
+   fav = fav_load(path);
+   if (!fav)
+     {
+        fav = fav_new();
+        if (!fav_save(fav, path))
+          {
+             r = -1;
+             goto end_fav;
+          }
      }
 
 #define BOOL_OPT(opt)                                           \
    if (disable_##opt != 0xff)                                   \
      {                                                          \
-        Eina_Bool old = prefs_enable_##opt##_get(prefs);        \
+        Eina_Bool old = config_enable_##opt##_get(config);      \
         Eina_Bool cur = !disable_##opt;                         \
         if (old != cur)                                         \
           {                                                     \
              INF("Changed preferences to "#opt"=%hhu", cur);    \
-             prefs_enable_##opt##_set(prefs, cur);              \
+             config_enable_##opt##_set(config, cur);            \
           }                                                     \
      }
    BOOL_OPT(mouse_cursor);
@@ -622,19 +651,19 @@ elm_main(int argc, char **argv)
 
    if (user_agent_option)
      {
-        const char *old = prefs_user_agent_get(prefs);
+        const char *old = config_user_agent_get(config);
         const char *cur = user_agent_str;
         if (strcmp(old, cur) != 0)
           {
              INF("Changed preferences to user_agent=\"%s\"", cur);
-             prefs_user_agent_set(prefs, cur);
+             config_user_agent_set(config, cur);
           }
      }
 
    if (args < argc)
       url = argv[args];
    else
-      url = prefs_home_page_get(prefs);
+      url = config_home_page_get(config);
 
    conn = e_dbus_bus_get(DBUS_BUS_SESSION);
    if (conn)
@@ -648,7 +677,8 @@ elm_main(int argc, char **argv)
         e_dbus_request_name(conn, "mobi.profusion.eve", 0, _cb_dbus_request_name, response);
      }
 
-   if (prefs_restore_state_get(prefs) && prefs_state_count(prefs) > 0)
+#if 0
+   if (prefs_restore_state_get(prefs) && prefs_state_count(config) > 0)
      {
         Eina_List *previous_state = prefs_state_list_get(prefs);
         Eina_List *state_iter;
@@ -665,34 +695,33 @@ elm_main(int argc, char **argv)
         EINA_LIST_FOREACH(previous_state->next, state_iter, tab)
           tab_add(win, prefs_opened_tab_address_get(tab));
      }
-   else if (!add_win(&app, url))
+   else
+#else
+   if (!add_win(&app, url))
      {
         r = -1;
         goto end;
      }
+#endif
 
    elm_run();
 end:
-   state_save();
-
-   fav_save(fav, NULL);
-   fav_free(fav);
-
+   config_save(config, NULL);
+   config_free(config);
+end_config:
    hist_save(hist, NULL);
    hist_free(hist);
-
-   prefs_save(prefs, NULL);
-   prefs_free(prefs);
-
+end_hist:
+   fav_save(fav, NULL);
+   fav_free(fav);
+end_fav:
    if (conn) e_dbus_connection_close(conn);
 
    eina_log_domain_unregister(_log_domain);
    _log_domain = -1;
    elm_shutdown();
    ewk_shutdown();
-   favorite_shutdown();
-   history_shutdown();
-   preferences_shutdown();
+   eve_state_shutdown();
    e_dbus_shutdown();
    return r;
 }
