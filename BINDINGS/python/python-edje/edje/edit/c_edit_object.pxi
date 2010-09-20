@@ -212,7 +212,7 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
         return None
 
     def part_add(self, char *name, int type, char *source=""):
-        if type != edje.EDJE_PART_TYPE_EXTERNAL:
+        if type != edje.c_edje.EDJE_PART_TYPE_EXTERNAL:
             return bool(edje_edit_part_add(
                 self.obj, name, <c_edje.Edje_Part_Type>type))
         else:

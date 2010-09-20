@@ -20,6 +20,7 @@ cimport cpython
 cimport evas.c_evas
 import evas.c_evas
 cimport edje.c_edje as c_edje
+import edje.c_edje as c_edje
 
 __extra_epydoc_fields__ = (
     ("parm", "Parameter", "Parameters"), # epydoc don't support pyrex properly
