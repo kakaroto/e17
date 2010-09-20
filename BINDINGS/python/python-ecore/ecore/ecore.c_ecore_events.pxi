@@ -316,7 +316,7 @@ cdef class EventHandlerSignalExit(EventHandler):
 
     cdef Eina_Bool _exec(self, void *event) except 2:
         cdef Ecore_Event_Signal_Exit *obj = <Ecore_Event_Signal_Exit *>event
-        cdef EventSignalUser e
+        cdef EventSignalExit e
         if obj.terminate:
             e = EventSignalTerminate()
         elif obj.interrupt:
