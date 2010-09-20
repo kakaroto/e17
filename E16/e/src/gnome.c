@@ -97,7 +97,7 @@
 /*      6 = Dock (always on top - for panel) */
 /* The app sets this alone, not the WM. If this property changes the WM */
 /* should comply and change the appearance/behavior of the Client window */
-/* if this hint does nto exist the WM Will create it ont he Client window */
+/* if this hint does nto exist the WM Will create it on the Client window */
 #define WIN_LAYER_DESKTOP                0
 #define WIN_LAYER_BELOW                  2
 #define WIN_LAYER_NORMAL                 4

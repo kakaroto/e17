@@ -288,7 +288,7 @@ __imlib_ScaleSampleRGBA(ImlibScaleInfo * isi, DATA32 * dest, int dxx, int dyy,
    DATA32            **ypoints = isi->ypoints;
    int                *xpoints = isi->xpoints;
 
-   /* whats the last pixel ont he line so we stop there */
+   /* whats the last pixel on the line so we stop there */
    end = dxx + dw;
    /* go through every scanline in the output buffer */
    for (y = 0; y < dh; y++)

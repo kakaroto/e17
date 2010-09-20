@@ -488,7 +488,7 @@ __imlib_AddImagePixmapToCache(ImlibImagePixmap * ip)
    pixmaps = ip;
 }
 
-/* remove a pixmap cache struct fromt he pixmap cache */
+/* remove a pixmap cache struct from the pixmap cache */
 void
 __imlib_RemoveImagePixmapFromCache(ImlibImagePixmap * ip)
 {
@@ -589,7 +589,7 @@ __imlib_ProduceLoader(char *file)
    return l;
 }
 
-/* list all the filenames of loaders  int he system loaders dir and the user */
+/* list all the filenames of loaders  in the system loaders dir and the user */
 /* loader dir */
 char              **
 __imlib_ListLoaders(int *num_ret)
@@ -821,7 +821,7 @@ __imlib_FindBestLoaderForFile(const char *file, int for_save)
    extension = __imlib_FileExtension(rfile);
    free(rfile);
    /* change the extensiont o all lower case as all "types" are listed as */
-   /* lower case strings fromt he loader that represent all the possible */
+   /* lower case strings from the loader that represent all the possible */
    /* extensions that file format could have */
    lower = extension;
    while (*lower)
@@ -839,7 +839,7 @@ __imlib_FindBestLoaderForFile(const char *file, int for_save)
    /* systematically go from most recently used to least recently used */
    /* loader until one succeeds - or none are left and all have failed */
    /* and only if all fail does the laod fail. the lao9der that does */
-   /* succeed gets it way tot he head of the list so it's going */
+   /* succeed gets it way to the head of the list so it's going */
    /* to be used first next time in this search mechanims - this */
    /* assumes you tend to laod a few image types and ones generally */
    /* of the same format */
@@ -887,7 +887,7 @@ __imlib_FindBestLoaderForFileFormat(const char *file, char *format,
      {
         extension = __imlib_FileExtension(file);
         /* change the extension to all lower case as all "types" are listed as */
-        /* lower case strings fromt he loader that represent all the possible */
+        /* lower case strings from the loader that represent all the possible */
         /* extensions that file format could have */
         if (extension)
           {
