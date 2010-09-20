@@ -18,15 +18,16 @@
 from desktop_handler import Handler
 from desktop_part_listener import PartListener
 from operation import Operation
+from elementary import cursors
 
 
 class PartHandler(Handler, PartListener):
-    def __init__(self, editable_grp, desktop_scroller, canvas, theme_file,
+    def __init__(self, editable_grp, desktop_scroller, theme_file,
                  rel1_move_offset_inform_cb=None,
                  rel2_move_offset_inform_cb=None, op_stack_cb=None,
                  group="editje/desktop/part/resize_handler"):
         Handler.__init__(
-            self, editable_grp, desktop_scroller, canvas, theme_file, group,
+            self, editable_grp, desktop_scroller, theme_file, group,
             op_stack_cb)
         PartListener.__init__(self)
         self._rel1_move_offset_inform_cb = rel1_move_offset_inform_cb
@@ -57,12 +58,14 @@ class PartHandler(Handler, PartListener):
 
 
 class PartHandler_Move(PartHandler):
-    def __init__(self, editable_grp, desktop_scroller, canvas, theme_file,
+    cursor = cursors.ELM_CURSOR_FLEUR
+
+    def __init__(self, editable_grp, desktop_scroller, theme_file,
                  rel1_move_offset_inform_cb=None,
                  rel2_move_offset_inform_cb=None, op_stack_cb=None,
                  group="editje/desktop/part/move_handler"):
         PartHandler.__init__(
-            self, editable_grp, desktop_scroller, canvas, theme_file,
+            self, editable_grp, desktop_scroller, theme_file,
             rel1_move_offset_inform_cb, rel2_move_offset_inform_cb,
             op_stack_cb, group)
         self.size = (10, 10)
@@ -105,6 +108,8 @@ class PartHandler_Move(PartHandler):
 
 
 class PartHandler_T(PartHandler):
+    cursor = cursors.ELM_CURSOR_TOP_SIDE
+
     def part_move(self, obj):
         self.bottom_center = obj.top_center
         if obj.size[0] < 10:
@@ -143,6 +148,8 @@ class PartHandler_T(PartHandler):
 
 
 class PartHandler_TL(PartHandler):
+    cursor = cursors.ELM_CURSOR_TOP_LEFT_CORNER
+
     def part_move(self, obj):
         self.show()
         self.bottom_right = obj.top_left
@@ -178,6 +185,8 @@ class PartHandler_TL(PartHandler):
 
 
 class PartHandler_TR(PartHandler):
+    cursor = cursors.ELM_CURSOR_TOP_RIGHT_CORNER
+
     def part_move(self, obj):
         self.show()
         self.bottom_left = obj.top_right
@@ -216,6 +225,8 @@ class PartHandler_TR(PartHandler):
 
 
 class PartHandler_B(PartHandler):
+    cursor = cursors.ELM_CURSOR_BOTTOM_SIDE
+
     def part_move(self, obj):
         self.top_center = obj.bottom_center
         if obj.size[0] < 10:
@@ -254,6 +265,8 @@ class PartHandler_B(PartHandler):
 
 
 class PartHandler_BR(PartHandler):
+    cursor = cursors.ELM_CURSOR_BOTTOM_RIGHT_CORNER
+
     def part_move(self, obj):
         self.show()
         self.top_left = obj.bottom_right
@@ -289,6 +302,8 @@ class PartHandler_BR(PartHandler):
 
 
 class PartHandler_BL(PartHandler):
+    cursor = cursors.ELM_CURSOR_BOTTOM_LEFT_CORNER
+
     def part_move(self, obj):
         self.show()
         self.top_right = obj.bottom_left
@@ -327,6 +342,8 @@ class PartHandler_BL(PartHandler):
 
 
 class PartHandler_L(PartHandler):
+    cursor = cursors.ELM_CURSOR_LEFT_SIDE
+
     def part_move(self, obj):
         self.right_center = obj.left_center
         if obj.size[1] < 10:
@@ -365,6 +382,8 @@ class PartHandler_L(PartHandler):
 
 
 class PartHandler_R(PartHandler):
+    cursor = cursors.ELM_CURSOR_RIGHT_SIDE
+
     def part_move(self, obj):
         self.left_center = obj.right_center
         if obj.size[1] < 10:

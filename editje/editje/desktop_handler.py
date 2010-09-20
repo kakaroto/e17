@@ -17,19 +17,25 @@
 
 import evas
 import ecore
-import edje
+import elementary
+from elementary import cursors
 
 
-class Handler(edje.Edje):
-    def __init__(self, editable_grp, desktop_scroller, canvas, theme_file=None,
+class Handler(elementary.Layout):
+    cursor = cursors.ELM_CURSOR_X
+
+    def __init__(self, editable_grp, desktop_scroller, theme_file=None,
                  group=None, op_stack_cb=None):
-        if not editable_grp or not desktop_scroller or not canvas or \
+        if not editable_grp or not desktop_scroller or \
                 not theme_file or not group or not op_stack_cb:
             raise TypeError(
                 "You must provide valid editable_grp, desktop_scroller, "
-                "canvas, theme_file, group and operation_stack_callback "
+                "theme_file, group and operation_stack_callback "
                 "parameters to Handler objects.")
-        edje.Edje.__init__(self, canvas, file=theme_file, group=group)
+        elementary.Layout.__init__(self, desktop_scroller)
+        self.file_set(theme_file, group)
+        self.size = self.edje.size_min_get()
+        self.cursor_set(self.cursor)
         self.on_mouse_down_add(self.__mouse_down_cb)
         self._move_animator = None
         self._desktop_scroller = desktop_scroller

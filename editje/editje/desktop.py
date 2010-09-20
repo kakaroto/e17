@@ -19,6 +19,7 @@ import evas
 import evas.decorators
 import edje
 import elementary
+from elementary import cursors
 
 from controller import Controller, View
 from desktop_handler import Handler
@@ -182,7 +183,7 @@ class EditManager(View, evas.ClippedSmartObject):
 
         #Group Handler
         self.group_handler = GroupResizeHandler(
-            self.controller.e, self.parent_view, self.evas, self.theme,
+            self.controller.e, self.parent_view, self.theme,
             self.group_resize, self.padding_update, self._operation_stack_cb)
         self.listener_member_push(self.group_handler)
 
@@ -219,7 +220,7 @@ class EditManager(View, evas.ClippedSmartObject):
         self.listener_member_push(self.highlight)
 
         def handler_args_list():
-            return (self.controller.e, self.parent_view, self.evas, self.theme,
+            return (self.controller.e, self.parent_view, self.theme,
                     self._inform_rel1_changed, self._inform_rel2_changed,
                     self._operation_stack_cb)
 
@@ -491,10 +492,12 @@ class GroupBorder(GroupListener, edje.Edje):
 
 
 class GroupResizeHandler(Handler, GroupListener):
-    def __init__(self, editable_grp, desktop_scroller, canvas, theme_file,
+    cursor = cursors.ELM_CURSOR_BOTTOM_RIGHT_CORNER
+
+    def __init__(self, editable_grp, desktop_scroller, theme_file,
                  group_resize_cb, padding_update_cb,
                  op_stack_cb=None, group="editje/desktop/handler"):
-        Handler.__init__(self, editable_grp, desktop_scroller, canvas,
+        Handler.__init__(self, editable_grp, desktop_scroller,
                          theme_file, group, op_stack_cb)
         GroupListener.__init__(self)
         self._group_resize_cb, self._padding_update_cb = \
