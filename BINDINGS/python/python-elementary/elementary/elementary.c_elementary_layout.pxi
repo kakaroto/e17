@@ -39,6 +39,10 @@ cdef class Layout(Object):
         cdef c_evas.Evas_Object *obj = elm_layout_edje_get(self.obj)
         return evas.c_evas._Object_from_instance(<long> obj)
 
+    property edje:
+        def __get__(self):
+            return self.edje_get()
+
     def sizing_eval(self):
         elm_layout_sizing_eval(self.obj)
 
