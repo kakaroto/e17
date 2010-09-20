@@ -106,6 +106,7 @@ void Application::quit()
 
 void Application::startTimer( double seconds )
 {
+  // FIXME: why is this needed? Who deletes this Timer object?
   Timer* ecoretimer = new Timer( seconds );
   ecoretimer->timeout.connect( sigc::mem_fun( this, &Application::timerEvent ) );
 }

@@ -97,10 +97,12 @@ public:
    */
   void setData (void *data);
   
-  void addEventSignal (const std::string &event);
-  
   void delEventSignal (const std::string &event);
-  
+
+  /*!
+   * Implicit add an event signal. So need to call delEventSignal()
+   * when not longer using it.
+   */
   sigc::signal <void, Object&, void*> *getEventSignal (const std::string &event);
   
   void callEventSignal (const std::string &event, void *event_info);
@@ -161,6 +163,8 @@ private:
   Evas_Object *newEsmart( Canvas &canvas, const std::string &name );
 
   static void wrapCustomEvent (void *data, Evas_Object *obj, void *event_info);
+
+  void addEventSignal (const std::string &event);
   
   static void wrap_add(Evas_Object *o);
   static void wrap_del(Evas_Object *o);

@@ -7,7 +7,7 @@
 /* EFL++ */
 #include <eflxx/Common.h>
 #include <evasxx/Canvas.h>
-#include <evasxx/Object.h>
+#include <evasxx/Smart.h>
 
 /* STD */
 #include <iostream>
@@ -21,7 +21,7 @@ using namespace std;
 
 namespace Emotionxx {
 
-class Object : public Evasxx::Object
+class Object : public Evasxx::Smart
 {
 public:
   void setFile (const std::string &filename);
