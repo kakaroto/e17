@@ -35,6 +35,7 @@ ephoto_show_preferences(Ephoto *em)
                 evas_object_size_hint_weight_set(pg1, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
                 evas_object_show(pg1);
                 elm_pager_content_push(pager, pg1);
+                evas_object_data_set(pg1, "pager", pager);
                 elm_toolbar_item_add(tb, NULL, "General", _ephoto_preferences_pager_switch, pg1);
 
                 o = elm_check_add(pg1);
@@ -53,6 +54,7 @@ ephoto_show_preferences(Ephoto *em)
                 evas_object_size_hint_weight_set(pg2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
                 evas_object_show(pg2);
                 elm_pager_content_push(pager, pg2);
+                evas_object_data_set(pg2, "pager", pager);
                 elm_toolbar_item_add(tb, NULL, "Slideshow",  _ephoto_preferences_pager_switch, pg2);
 
                 o = elm_label_add(pg2);
@@ -78,7 +80,8 @@ ephoto_show_preferences(Ephoto *em)
 
                 /* XXX: The page cannot be the parent, since 
                  * the items will be clipped to it */
-                o = elm_hoversel_add(em->win);
+                o = elm_hoversel_add(pg2);
+                elm_hoversel_hover_parent_set(o, em->win);
                 elm_hoversel_label_set(o, em->config->slideshow_transition);
                 transitions = elm_slideshow_transitions_get(em->slideshow);
                 EINA_LIST_FOREACH(transitions, l, transition)
@@ -92,6 +95,7 @@ ephoto_show_preferences(Ephoto *em)
                 evas_object_size_hint_weight_set(pg3, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
                 evas_object_show(pg3);
                 elm_pager_content_push(pager, pg3);
+                evas_object_data_set(pg3, "pager", pager);
                 elm_toolbar_item_add(tb, NULL, "External Editor", _ephoto_preferences_pager_switch, pg3);
 
                 o = elm_button_add(box);
@@ -112,8 +116,7 @@ static void
 _ephoto_preferences_pager_switch(void *data, Evas_Object *obj, void *event_info)
 {
         Evas_Object *o = data;
-        /* XXX: Useful function, but not currently exported as public */
-        Evas_Object *pager = elm_widget_parent_get(o);
+        Evas_Object *pager = evas_object_data_get(o, "pager");
 
         elm_pager_content_promote(pager, o);
 }

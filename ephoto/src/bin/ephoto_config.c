@@ -16,7 +16,7 @@ ephoto_config_init(Ephoto *em)
                 return EINA_FALSE;
         }
 
-        em->config_edd = eet_data_descriptor_file_new(&eddc);
+        em->config_edd = eet_data_descriptor_stream_new(&eddc);
 #undef T
 #undef D
 #define T Ephoto_Config 
