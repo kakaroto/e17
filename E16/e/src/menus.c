@@ -628,6 +628,8 @@ MenuEmpty(Menu * m, int destroying)
 	   FreePmapMask(&(mi->pmm[j]));
 	if (!destroying && mi->win)
 	   EDestroyWindow(mi->win);
+	else
+	   EventCallbackUnregister(mi->win, MenuItemHandleEvents, mi);
 	ImageclassFree(mi->icon_iclass);
 	Efree(mi);
      }
