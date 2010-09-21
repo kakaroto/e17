@@ -1075,6 +1075,10 @@ collections {
                     target: "tab-grid";
                     transition: ACCELERATE 0.2;
                 }
+                program { name: "show-tab-grid-signal";
+                    signal: "show,tab";
+                    script { tab_grid_show(); }
+                }
                 program { name: "hide-tab-grid";
                     action: STATE_SET "default" 0.0;
                     target: "tab-grid";

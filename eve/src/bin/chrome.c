@@ -986,14 +986,43 @@ on_tab_close(void *data, Evas_Object *o,
 {
    Browser_Window *win = evas_object_data_get(o, "win");
    Evas_Object *chrome = evas_object_data_get(data, "chrome");
+   Evas_Object *view = evas_object_data_get(chrome, "view");
    Elm_Gengrid_Item *item = evas_object_data_get(o, "item");
-   Evas_Object *ed;
-
-   ed = elm_layout_edje_get(win->current_chrome);
-   edje_object_signal_emit(ed, "tab,item,clicked", "");
+   Eina_List *win_iter;
 
    elm_gengrid_item_del(item);
    tab_close_chrome(win, chrome);
+
+   if (win->current_chrome)
+      {
+         Evas_Object *ed = elm_layout_edje_get(win->current_chrome);
+         edje_object_signal_emit(ed, "show,tab", "");
+      }
+
+   EINA_LIST_FOREACH(app.windows, win_iter, win)
+   {
+      Eina_List *chrome_iter;
+      Evas_Object *chrome;
+
+      EINA_LIST_FOREACH(win->chromes, chrome_iter, chrome)
+      {
+         Evas_Object *grid = evas_object_data_get(chrome, "tab-grid");
+         const Eina_List *others;
+         Eina_List *others_iter;
+
+         if (!grid) continue;
+         if (!(others = elm_gengrid_items_get(grid))) continue;
+
+         EINA_LIST_FOREACH((Eina_List *)others, others_iter, item)
+         {
+            if (elm_gengrid_item_data_get(item) == view)
+               {
+                  elm_gengrid_item_del(item);
+                  break;
+               }
+         }
+      }
+   }
 }
 
 static void

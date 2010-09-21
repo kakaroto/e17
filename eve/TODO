@@ -5,7 +5,6 @@ UI
  * show visual zoom indication (zoom level? some icon?)
  * show page icon (listen to signal, create object, feed theme, remember to del it when done)
  * change icon of Bookmarks (or name) to reflect History is there as well
- * tabs: don't reload all grid on delete (faster close of multiple tabs)
  * move reload to URL bar?
  * url bar: clear button?
  * bookmarks: save page icon once it is known?
