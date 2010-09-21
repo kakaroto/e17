@@ -203,7 +203,7 @@ _url_data_new(void *user_data,
 static void
 _url_data_free(Url_Data *dd)
 {
-   ecore_con_url_destroy(dd->con_url);
+   ecore_con_url_free(dd->con_url);
    E_FREE(dd->data);
    E_FREE(dd);
 }

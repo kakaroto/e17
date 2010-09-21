@@ -1349,7 +1349,7 @@ elixir_ecore_con_url_custom_new(JSContext *cx, uintN argc, jsval *vp)
 }
 
 static JSBool
-elixir_ecore_con_url_destroy(JSContext *cx, uintN argc, jsval *vp)
+elixir_ecore_con_url_free(JSContext *cx, uintN argc, jsval *vp)
 {
    Elixir_Con_Data *ecd;
    Ecore_Con_Url *curl;
@@ -1371,7 +1371,7 @@ elixir_ecore_con_url_destroy(JSContext *cx, uintN argc, jsval *vp)
 
    elixir_void_free(ecore_con_url_data_get(curl));
    ecore_con_url_data_set(curl, NULL);
-   ecore_con_url_destroy(curl);
+   ecore_con_url_free(curl);
 
    return JS_TRUE;
 }
@@ -1700,7 +1700,7 @@ static JSFunctionSpec           ecore_con_functions[] = {
   ELIXIR_FN(ecore_con_client_flush, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_new, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_custom_new, 2, JSPROP_ENUMERATE, 0 ),
-  ELIXIR_FN(ecore_con_url_destroy, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(ecore_con_url_free, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_url_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_send, 4, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_verbose_set, 2, JSPROP_ENUMERATE, 0 ),

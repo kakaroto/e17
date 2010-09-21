@@ -275,7 +275,7 @@ _ecore_request(const char *url, const char *req, Eina_Array *additional_headers,
    send_error:
 	free((char *)request->body);
    body_error:
-	ecore_con_url_destroy(con);
+	ecore_con_url_free(con);
    con_error:
 	free(request);
 	return NULL;
@@ -287,7 +287,7 @@ _ecore_request_free(Eupnp_Request request)
    CHECK_NULL_RET(request);
    Eupnp_Ecore_Request *dl = request;
    free((char *)dl->body);
-   ecore_con_url_destroy(dl->con);
+   ecore_con_url_free(dl->con);
    free(dl);
 }
 
