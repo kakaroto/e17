@@ -847,6 +847,10 @@ static int ed_twitter_status_get_handler(void *data, int argc, char **argv, char
 	http_request * request=calloc(1, sizeof(http_request));
 	Evas_Object *notify, *label;
 	aStatus **prelated_status = (aStatus**)data;
+	int sqlite_res=0;
+	struct sqlite3_stmt *insert_stmt=NULL;
+	const char *missed=NULL;
+	char *key=NULL, *query=NULL;
 
     /* In this query handler, these are the current fields:
         argv[0] == name TEXT
@@ -921,13 +925,154 @@ static int ed_twitter_status_get_handler(void *data, int argc, char **argv, char
 	if(request->content.memory) free(request->content.memory);
 	free(request);
 
+	res = asprintf(&query, "insert into messages (status_id, account_id, timeline, s_text, s_truncated, s_created_at, s_in_reply_to_status_id, s_source, s_in_reply_to_user_id, s_favorited, s_user) values (?, %d, %d, ?, ?, ?, ?, ?, ?, ?, ?);", id, -1);;
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
+		if(sqlite_res == 0) {
+			if(debug > 3) printf("Inserting: %lld\n", (*prelated_status)->sid);
+			res = asprintf(&key, "%lld", (*prelated_status)->sid);
+			if(res != -1) {
+				message_insert(key, &insert_stmt);
+				free(key);
+			}
+			sqlite3_finalize(insert_stmt);
+		} else {
+			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, missed);
+		}
+		free(query);
+	}
 	return(0);
 }
+
+static int ed_twitter_user_get_from_db(void *data, int argc, char **argv, char **azColName) {
+	anUser *au = calloc(1, sizeof(anUser));
+	char *uid_str = argv[1];
+
+/*
+	argv[0]  := id					INTEGER
+	argv[1]  := uid					INTEGER
+	argv[2]  := account_id			INTEGER
+	argv[3]  := name				TEXT
+	argv[4]  := screen_name			TEXT
+	argv[5]  := location			TEXT
+	argv[6]  := description			TEXT
+	argv[7]  := profile_image_url	TEXT
+	argv[8]  := url					TEXT
+	argv[9]  := protected			INTEGER
+	argv[10] := followers_count		INTEGER
+	argv[11] := friends_count		INTEGER
+	argv[12] := created_at			INTEGER
+	argv[13] := favorites_count		INTEGER
+	argv[14] := statuses_count		INTEGER
+	argv[15] := following			INTEGER
+	argv[16] := statusnet_blocking	INTEGER
+*/
+
+	au->uid = strtoll(uid_str, NULL, 10);
+	au->name = strndup(argv[3], PIPE_BUF);
+	au->screen_name = strndup(argv[4], PIPE_BUF);
+	au->description = strndup(argv[6], PIPE_BUF);
+	au->profile_image_url = strndup(argv[7], PIPE_BUF);
+	au->followers_count = atoi(argv[10]);
+	au->friends_count = atoi(argv[11]);
+	au->created_at = atoi(argv[12]);
+	au->favorites_count = atoi(argv[13]);
+	au->statuses_count = atoi(argv[14]);
+	au->following = atoi(argv[15]);
+	au->statusnet_blocking = atoi(argv[16]);
+
+
+	eina_hash_add(userHash, uid_str, au);
+	return(0);
+}
+
+static int ed_twitter_status_get_from_db(void *data, int argc, char **argv, char **azColName) {
+	aStatus **as = (aStatus**)data;
+	char *query=NULL, *db_err=NULL, *uid_str=NULL;
+	int sqlite_res = 0;
+
+	(*as) = calloc(1, sizeof(aStatus));
+
+/*
+	argv[0]  := id						INTEGER
+	argv[1]  := status_id				INTEGER
+	argv[2]  := account_id				INTEGER
+	argv[3]  := timeline				INTEGER
+	argv[4]  := s_text					TEXT
+	argv[5]  := s_truncated				INTEGER
+	argv[6]  := s_created_at			INTEGER
+	argv[7]  := s_in_reply_to_status_id INTEGER
+	argv[8]  := s_source				TEXT
+	argv[9]  := s_in_reply_to_user_id	INTEGER
+	argv[10] := s_favorited				INTEGER
+	argv[11] := s_user					INTEGER
+	argv[12] := accounts.type			INTEGER
+	argv[13] := accounts.id				INTEGER
+	argv[14] := accounts.enabled		INTEGER
+*/
+
+	(*as)->sid = strtoll(argv[0], NULL, 10);
+	(*as)->text = strndup(argv[4], PIPE_BUF);
+	(*as)->truncated = atoi(argv[5]);
+	(*as)->created_at = atoi(argv[6]);
+	(*as)->in_reply_to_status_id = strtoll(argv[7], NULL, 10);
+	(*as)->in_reply_to_user_id = strtoll(argv[9], NULL, 10);
+	(*as)->favorited = atoi(argv[10]);
+	(*as)->user = strtoll(argv[11], NULL, 10);
+	(*as)->account_id = atoi(argv[13]);
+	(*as)->account_type = ACCOUNT_TYPE_TWITTER;
+	(*as)->in_db = EINA_TRUE;
+
+	sqlite_res = asprintf(&uid_str, "%lld", (*as)->user);
+	if(sqlite_res != -1) {
+		if(!eina_hash_find(userHash, uid_str)) {
+			sqlite_res = asprintf(&query, "SELECT * FROM users WHERE uid = %lld LIMIT 1;", (*as)->user);
+			if(sqlite_res != -1) {
+				sqlite_res = sqlite3_exec(ed_DB, query, ed_twitter_user_get_from_db, NULL, &db_err);
+				if(sqlite_res != 0) {
+					fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
+					sqlite3_free(db_err);
+				}
+				free(query);
+			}
+		}
+		free(uid_str);
+	}
+	return(0);
+}
+
 void ed_twitter_status_get(int account_id, long long int in_reply_to, aStatus **prelated_status) {
-	char *query=NULL, *db_err=NULL;
+	char *query=NULL, *db_err=NULL, *key=NULL;
+	aStatus *as=NULL;
 	int sqlite_res;
 
-	if(debug>3) printf("Importing status %lld with account %d\n", in_reply_to, account_id);
+	sqlite_res = asprintf(&key, "%lld", in_reply_to);
+	if(sqlite_res != -1) {
+		as = eina_hash_find(statusHash, key);
+		free(key);
+		if(as) {
+			if(debug > 3) printf("Status %lld is present in memory cache\n", in_reply_to);
+			*prelated_status = as;
+			return;
+		}
+	}
+
+	sqlite_res = asprintf(&query, "SELECT messages.*, accounts.type, accounts.id, accounts.enabled FROM messages,accounts WHERE account_id = %d and status_id = %lld LIMIT 1;", account_id, in_reply_to);
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_twitter_status_get_from_db, (void**)prelated_status, &db_err);
+		if(sqlite_res != 0) {
+			fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
+			sqlite3_free(db_err);
+		}
+		free(query);
+
+		if(*prelated_status) {
+			if(debug > 3) printf("Status %lld is present in disk cache\n", in_reply_to);
+			return;
+		} else if(debug > 3) printf("Status %lld is NOT present in disk cache\n", in_reply_to);
+	}
+
+	if(debug>3) printf("Downloading status %lld with account %d\n", in_reply_to, account_id);
 	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id,%lld FROM accounts WHERE id = %d and type = %d and enabled = 1;", in_reply_to, account_id, ACCOUNT_TYPE_TWITTER);
 	if(sqlite_res != -1) {
 		sqlite_res = sqlite3_exec(ed_DB, query, ed_twitter_status_get_handler, (void**)prelated_status, &db_err);

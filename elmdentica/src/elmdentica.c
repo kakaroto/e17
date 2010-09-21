@@ -788,7 +788,7 @@ Evas_Object *ed_make_bubble(Evas_Object *parent, aStatus* as, anUser* au) {
 			elm_bubble_info_set(bubble, datestr);
 		}
 
-		elm_bubble_label_set(bubble, au->name);
+		if(au) elm_bubble_label_set(bubble, au->name);
 
 		res = asprintf(&file_path, "%s/cache/icons/%lld", home, as->user);
 
