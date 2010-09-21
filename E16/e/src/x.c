@@ -1702,7 +1702,7 @@ EDisplayOpen(const char *dstr, int scr)
    char                dbuf[256], *s;
    unsigned int        ddpy, dscr;
 
-   Esnprintf(dbuf, sizeof(dbuf), "%.256s", dstr);
+   Esnprintf(dbuf, sizeof(dbuf), "%s", dstr);
    s = strchr(dbuf, ':');
    if (!s)
       return -1;
