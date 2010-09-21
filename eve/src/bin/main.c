@@ -437,7 +437,7 @@ cleanup:
 }
 
 static Eina_Bool
-cb_session_save(void *data __UNUSED__)
+_cb_session_save(void *data __UNUSED__)
 {
    Browser_Window *win;
    Eina_List *chrome_iter, *win_iter;
@@ -501,7 +501,7 @@ struct _Session_Restore_Scroll {
 };
 
 static Eina_Bool
-cb_session_scroll_restore(void *data)
+_cb_session_scroll_restore(void *data)
 {
    struct _Session_Restore_Scroll *srs = data;
    if (--srs->tries && ewk_frame_scroll_set(srs->frame, srs->sx, srs->sy))
@@ -522,7 +522,7 @@ session_restore_delayed_scroll(Evas_Object *view, Session_Item *item)
          srs->sx = session_item_scroll_x_get(item);
          srs->sy = session_item_scroll_y_get(item);
          srs->tries = 10;
-         ecore_timer_loop_add(1, cb_session_scroll_restore, srs);
+         ecore_timer_loop_add(1, _cb_session_scroll_restore, srs);
       }
 }
 
@@ -765,7 +765,7 @@ elm_main(int argc, char **argv)
              goto end_session;
           }
      }
-   session_save_timer = ecore_timer_loop_add(15, cb_session_save, NULL);
+   session_save_timer = ecore_timer_loop_add(15, _cb_session_save, NULL);
    if (!session_save_timer)
      {
         r = -1;
@@ -837,7 +837,7 @@ end_hist:
    fav_save(fav, NULL);
    fav_free(fav);
 end_fav:
-   cb_session_save(session);
+   _cb_session_save(session);
    session_free(session);
 end_session:
    if (conn) e_dbus_connection_close(conn);
