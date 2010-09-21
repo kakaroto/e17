@@ -37,6 +37,11 @@ static More_Menu_Item *more_menu_home_page_default_set(Browser_Window *, More_Me
 static void on_more_item_click(void *data, Evas_Object *obj, void *event_info __UNUSED__);
 static void on_more_item_back_click(void *data, Evas_Object *edje, const char *emission __UNUSED__, const char *source __UNUSED__);
 
+static char *tab_grid_label_get(const void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
+static Evas_Object *tab_grid_icon_get(const void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
+static Eina_Bool tab_grid_state_get(const void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
+static void tab_grid_del(const void *data __UNUSED__, Evas_Object *obj __UNUSED__);
+
 typedef enum {
    ITEM_TYPE_LAST,
    ITEM_TYPE_STATIC_FOLDER,
@@ -262,7 +267,14 @@ static More_Menu_Item more_menu_root[] =
    { ITEM_TYPE_LAST, NULL, NULL, NULL, ITEM_FLAG_NONE }
 };
 
-static Elm_Gengrid_Item_Class gic_default;
+static const Elm_Gengrid_Item_Class gic_default = {
+   .func = {
+       .label_get = tab_grid_label_get,
+       .icon_get = tab_grid_icon_get,
+       .state_get = tab_grid_state_get,
+       .del = tab_grid_del
+    }
+};
 
 static Eina_List *
 _eina_hash_sorted_keys_get(Eina_Hash *hash, Eina_Compare_Cb compare_func)
@@ -1960,11 +1972,6 @@ chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
    elm_layout_content_set(chrome, "tab-grid-swallow", tab_grid);
    evas_object_smart_callback_add(tab_grid, "realized",
                                   on_tab_gengrid_item_realized, win);
-
-   gic_default.func.label_get = tab_grid_label_get;
-   gic_default.func.icon_get = tab_grid_icon_get;
-   gic_default.func.state_get = tab_grid_state_get;
-   gic_default.func.del = tab_grid_del;
 
    edje_object_signal_callback_add(ed, "action,back", "back", on_action_back, view);
    edje_object_signal_callback_add(ed, "action,forward", "forward", on_action_forward,
