@@ -990,7 +990,7 @@ _forecasts_popup_content_create(Instance *inst)
 
    evas = inst->popup->win->evas;
    o = e_widget_list_add(evas, 0, 0);
-   snprintf(buf, sizeof(buf), "%s: Current Conditions", inst->location);
+   snprintf(buf, sizeof(buf), D_("%s: Current Conditions"), inst->location);
    of = e_widget_frametable_add(evas, buf, 0);
 
    snprintf(buf, sizeof(buf), "%s: %d°%c", inst->condition.desc, inst->condition.temp, inst->units.temp);
@@ -1063,9 +1063,9 @@ _forecasts_popup_content_create(Instance *inst)
 	int row = 0;
 
         if (!i)
-          snprintf (buf, sizeof(buf), "Today");
+          snprintf (buf, sizeof(buf), D_("Today"));
         else if (i == 1)
-          snprintf (buf, sizeof(buf), "Tomorrow");
+          snprintf (buf, sizeof(buf), D_("Tomorrow"));
         else
           snprintf (buf, sizeof(buf), "%s", inst->forecast[i].date);
 	of = e_widget_frametable_add(evas, buf, 0);
