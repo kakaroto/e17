@@ -37,10 +37,10 @@ static More_Menu_Item *more_menu_home_page_default_set(Browser_Window *, More_Me
 static void on_more_item_click(void *data, Evas_Object *obj, void *event_info __UNUSED__);
 static void on_more_item_back_click(void *data, Evas_Object *edje, const char *emission __UNUSED__, const char *source __UNUSED__);
 
-static char *tab_grid_label_get(const void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
-static Evas_Object *tab_grid_icon_get(const void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
-static Eina_Bool tab_grid_state_get(const void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
-static void tab_grid_del(const void *data __UNUSED__, Evas_Object *obj __UNUSED__);
+static char *tab_grid_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
+static Evas_Object *tab_grid_icon_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
+static Eina_Bool tab_grid_state_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
+static void tab_grid_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__);
 
 typedef enum {
    ITEM_TYPE_LAST,
@@ -1856,7 +1856,7 @@ on_key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__,
 }
 
 static char *
-tab_grid_label_get(const void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+tab_grid_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    if (data)
      {
@@ -1868,7 +1868,7 @@ tab_grid_label_get(const void *data, Evas_Object *obj __UNUSED__, const char *pa
 }
 
 static Evas_Object *
-tab_grid_icon_get(const void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+tab_grid_icon_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    if (data)
      {
@@ -1881,13 +1881,13 @@ tab_grid_icon_get(const void *data, Evas_Object *obj __UNUSED__, const char *par
 }
 
 static Eina_Bool
-tab_grid_state_get(const void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+tab_grid_state_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    return EINA_FALSE;
 }
 
 static void
-tab_grid_del(const void *data __UNUSED__, Evas_Object *obj __UNUSED__)
+tab_grid_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__)
 {
 }
 
