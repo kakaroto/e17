@@ -2,6 +2,14 @@
 #include "e_mod_main.h"
 #include "imap.h"
 
+#ifdef PRINT_LOTS_OF_DEBUG
+static void
+tls_log_func(int level, const char *str)
+{
+   fprintf(stderr, "|<%d>| %s", level, str);
+}
+#endif
+
 static ImapServer *_mail_imap_server_find (Ecore_Con_Server *server);
 static ImapServer *_mail_imap_server_get (Config_Box *cb);
 static ImapClient *_mail_imap_client_get (Config_Box *cb);
@@ -45,7 +53,17 @@ _mail_imap_check_mail (void *data)
 	    type = ECORE_CON_REMOTE_SYSTEM;
 
 	  if (ecore_con_ssl_available_get () && (is->ssl))
-	    type |= ECORE_CON_USE_SSL;
+            {
+	       type |= ECORE_CON_USE_SSL;
+#ifdef PRINT_LOTS_OF_DEBUG
+               if (ecore_con_ssl_available_get() == 1)
+                 {
+                    gnutls_global_set_log_level(9);
+                    gnutls_global_set_log_function(tls_log_func);
+                 }
+            }
+#endif
+           }
 	  is->state = IMAP_STATE_DISCONNECTED;
 	  is->server =
 	     ecore_con_server_connect (type, is->host,
