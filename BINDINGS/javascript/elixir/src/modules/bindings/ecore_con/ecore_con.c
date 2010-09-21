@@ -1701,6 +1701,7 @@ static JSFunctionSpec           ecore_con_functions[] = {
   ELIXIR_FN(ecore_con_url_new, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_custom_new, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_free, 1, JSPROP_ENUMERATE, 0 ),
+  JS_FN("ecore_con_url_destroy", elixir_ecore_con_url_free, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_url_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_send, 4, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_verbose_set, 2, JSPROP_ENUMERATE, 0 ),
