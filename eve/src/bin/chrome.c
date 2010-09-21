@@ -1386,7 +1386,7 @@ more_menu_config_string_ask(Evas_Object *parent, More_Menu_Item *item, More_Menu
    Evas_Object *entry;
    const char *(*conf_get)(Config *);
    void (*conf_set)(Config *, const char *);
-   
+
    if (!(conf_get = mmc->conf_get) || !(conf_set = mmc->conf_set)) return;
 
    notify = elm_notify_add(parent);

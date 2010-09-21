@@ -87,9 +87,9 @@ static inline void
 _config_init(void)
 {
     Eet_Data_Descriptor_Class eddc;
-    
+
     if (_config_descriptor) return;
-    
+
     EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Config);
     _config_descriptor = eet_data_descriptor_stream_new(&eddc);
 
@@ -119,7 +119,7 @@ Config *
 config_new(unsigned char allow_popup, unsigned char enable_auto_load_images, unsigned char enable_auto_shrink_images, unsigned char enable_javascript, unsigned char enable_mouse_cursor, unsigned char enable_plugins, unsigned char enable_private_mode, unsigned char enable_touch_interface, const char * home_page, const char * proxy, unsigned char restore_state, const char * user_agent)
 {
     Config *config = calloc(1, sizeof(Config));
-    
+
     if (!config)
        {
           fprintf(stderr, "ERROR: could not calloc Config\n");
@@ -317,7 +317,7 @@ config_load(const char *filename)
         fprintf(stderr, "ERROR: could not open '%s' for read\n", filename);
         return NULL;
       }
-    
+
     config = eet_data_read(ef, _config_descriptor, CONFIG_ENTRY);
     if (!config) goto end;
     config->__eet_filename = eina_stringshare_add(filename);
@@ -332,7 +332,7 @@ config_save(Config *config, const char *filename)
 {
     Eet_File *ef;
     Eina_Bool ret;
-    
+
     if (filename) config->__eet_filename = eina_stringshare_add(filename);
     else if (config->__eet_filename) filename = config->__eet_filename;
     else return EINA_FALSE;
@@ -346,7 +346,7 @@ config_save(Config *config, const char *filename)
 
     ret = !!eet_data_write(ef, _config_descriptor, CONFIG_ENTRY, config, EINA_TRUE);
     eet_close(ef);
-    
+
     return ret;
 }
 
@@ -354,9 +354,9 @@ static inline void
 _hist_item_init(void)
 {
     Eet_Data_Descriptor_Class eddc;
-    
+
     if (_hist_item_descriptor) return;
-    
+
     EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Hist_Item);
     _hist_item_descriptor = eet_data_descriptor_stream_new(&eddc);
 
@@ -378,7 +378,7 @@ Hist_Item *
 hist_item_new(const char * title, const char * url, unsigned int visit_count, double last_visit)
 {
     Hist_Item *hist_item = calloc(1, sizeof(Hist_Item));
-    
+
     if (!hist_item)
        {
           fprintf(stderr, "ERROR: could not calloc Hist_Item\n");
@@ -458,9 +458,9 @@ static inline void
 _hist_init(void)
 {
     Eet_Data_Descriptor_Class eddc;
-    
+
     if (_hist_descriptor) return;
-    
+
     EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Hist);
     _hist_descriptor = eet_data_descriptor_stream_new(&eddc);
 
@@ -479,7 +479,7 @@ Hist *
 hist_new()
 {
     Hist *hist = calloc(1, sizeof(Hist));
-    
+
     if (!hist)
        {
           fprintf(stderr, "ERROR: could not calloc Hist\n");
@@ -543,7 +543,7 @@ hist_load(const char *filename)
         fprintf(stderr, "ERROR: could not open '%s' for read\n", filename);
         return NULL;
       }
-    
+
     hist = eet_data_read(ef, _hist_descriptor, HIST_ENTRY);
     if (!hist) goto end;
     hist->__eet_filename = eina_stringshare_add(filename);
@@ -560,7 +560,7 @@ hist_save(Hist *hist, const char *filename)
 {
     Eet_File *ef;
     Eina_Bool ret;
-    
+
     if (filename) hist->__eet_filename = eina_stringshare_add(filename);
     else if (hist->__eet_filename) filename = hist->__eet_filename;
     else return EINA_FALSE;
@@ -574,7 +574,7 @@ hist_save(Hist *hist, const char *filename)
 
     ret = !!eet_data_write(ef, _hist_descriptor, HIST_ENTRY, hist, EINA_TRUE);
     eet_close(ef);
-    
+
     return ret;
 }
 
@@ -582,9 +582,9 @@ static inline void
 _fav_item_init(void)
 {
     Eet_Data_Descriptor_Class eddc;
-    
+
     if (_fav_item_descriptor) return;
-    
+
     EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Fav_Item);
     _fav_item_descriptor = eet_data_descriptor_stream_new(&eddc);
 
@@ -605,7 +605,7 @@ Fav_Item *
 fav_item_new(const char * url, const char * title, unsigned int visit_count)
 {
     Fav_Item *fav_item = calloc(1, sizeof(Fav_Item));
-    
+
     if (!fav_item)
        {
           fprintf(stderr, "ERROR: could not calloc Fav_Item\n");
@@ -671,9 +671,9 @@ static inline void
 _fav_init(void)
 {
     Eet_Data_Descriptor_Class eddc;
-    
+
     if (_fav_descriptor) return;
-    
+
     EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Fav);
     _fav_descriptor = eet_data_descriptor_stream_new(&eddc);
 
@@ -692,7 +692,7 @@ Fav *
 fav_new()
 {
     Fav *fav = calloc(1, sizeof(Fav));
-    
+
     if (!fav)
        {
           fprintf(stderr, "ERROR: could not calloc Fav\n");
@@ -756,7 +756,7 @@ fav_load(const char *filename)
         fprintf(stderr, "ERROR: could not open '%s' for read\n", filename);
         return NULL;
       }
-    
+
     fav = eet_data_read(ef, _fav_descriptor, FAV_ENTRY);
     if (!fav) goto end;
     fav->__eet_filename = eina_stringshare_add(filename);
@@ -773,7 +773,7 @@ fav_save(Fav *fav, const char *filename)
 {
     Eet_File *ef;
     Eina_Bool ret;
-    
+
     if (filename) fav->__eet_filename = eina_stringshare_add(filename);
     else if (fav->__eet_filename) filename = fav->__eet_filename;
     else return EINA_FALSE;
@@ -787,7 +787,7 @@ fav_save(Fav *fav, const char *filename)
 
     ret = !!eet_data_write(ef, _fav_descriptor, FAV_ENTRY, fav, EINA_TRUE);
     eet_close(ef);
-    
+
     return ret;
 }
 
@@ -795,9 +795,9 @@ static inline void
 _session_item_init(void)
 {
     Eet_Data_Descriptor_Class eddc;
-    
+
     if (_session_item_descriptor) return;
-    
+
     EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Session_Item);
     _session_item_descriptor = eet_data_descriptor_stream_new(&eddc);
 
@@ -819,7 +819,7 @@ Session_Item *
 session_item_new(const char * url, unsigned char focused, int scroll_x, int scroll_y)
 {
     Session_Item *session_item = calloc(1, sizeof(Session_Item));
-    
+
     if (!session_item)
        {
           fprintf(stderr, "ERROR: could not calloc Session_Item\n");
@@ -898,9 +898,9 @@ static inline void
 _session_window_init(void)
 {
     Eet_Data_Descriptor_Class eddc;
-    
+
     if (_session_window_descriptor) return;
-    
+
     EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Session_Window);
     _session_window_descriptor = eet_data_descriptor_stream_new(&eddc);
 
@@ -920,7 +920,7 @@ Session_Window *
 session_window_new(Eina_List * tabs, unsigned char focused)
 {
     Session_Window *session_window = calloc(1, sizeof(Session_Window));
-    
+
     if (!session_window)
        {
           fprintf(stderr, "ERROR: could not calloc Session_Window\n");
@@ -1013,9 +1013,9 @@ static inline void
 _session_init(void)
 {
     Eet_Data_Descriptor_Class eddc;
-    
+
     if (_session_descriptor) return;
-    
+
     EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Session);
     _session_descriptor = eet_data_descriptor_stream_new(&eddc);
 
@@ -1034,7 +1034,7 @@ Session *
 session_new(Eina_List * windows)
 {
     Session *session = calloc(1, sizeof(Session));
-    
+
     if (!session)
        {
           fprintf(stderr, "ERROR: could not calloc Session\n");
@@ -1118,7 +1118,7 @@ session_load(const char *filename)
         fprintf(stderr, "ERROR: could not open '%s' for read\n", filename);
         return NULL;
       }
-    
+
     session = eet_data_read(ef, _session_descriptor, SESSION_ENTRY);
     if (!session) goto end;
     session->__eet_filename = eina_stringshare_add(filename);
@@ -1133,7 +1133,7 @@ session_save(Session *session, const char *filename)
 {
     Eet_File *ef;
     Eina_Bool ret;
-    
+
     if (filename) session->__eet_filename = eina_stringshare_add(filename);
     else if (session->__eet_filename) filename = session->__eet_filename;
     else return EINA_FALSE;
@@ -1147,7 +1147,7 @@ session_save(Session *session, const char *filename)
 
     ret = !!eet_data_write(ef, _session_descriptor, SESSION_ENTRY, session, EINA_TRUE);
     eet_close(ef);
-    
+
     return ret;
 }
 

@@ -560,7 +560,7 @@ session_restore(void)
              * user doesn't look like a good alternative either.
              */
             continue;
-         
+
          session_restore_delayed_scroll(win->current_view, item);
          if (session_item_focused_get(item))
             focused_chrome = win->current_chrome;
@@ -743,7 +743,7 @@ elm_main(int argc, char **argv)
              goto end_hist;
           }
      }
-   
+
    fav = fav_load(path);
    if (!fav)
      {
