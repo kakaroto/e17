@@ -1032,7 +1032,7 @@ _view_smart_add(Evas_Object *o)
    _parent_sc.sc.add(o);
 
    /* set some common properties, such as theme and default zoom weak method */
-   ewk_view_theme_set(o, PACKAGE_DATA_DIR "/ewebkit.edj");
+   ewk_view_theme_set(o, EWEBKIT_DATA_DIR "/themes/default.edj");
    ewk_view_zoom_weak_smooth_scale_set(o, EINA_FALSE);
 
    evas_object_smart_callback_add

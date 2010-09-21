@@ -71,6 +71,14 @@ AC_ARG_WITH([edje-cc],
    ],[edje_cc=$(pkg-config --variable=prefix edje)/bin/edje_cc])
 AC_SUBST(edje_cc)
 
+AC_ARG_WITH([ewebkit-datadir],
+   [AC_HELP_STRING([--with-ewebkit-datadir=PATH],
+                   [specify the data directory of webkit default theme])],
+   [ewebkit_datadir=$withval;
+    AC_MSG_NOTICE([ewebkit datadir explicitly set to $ewebkit_datadir])
+   ],[ewebkit_datadir=$(pkg-config --variable=datadir ewebkit)])
+AC_SUBST(ewebkit_datadir)
+
 want_quicklaunch="auto"
 AC_ARG_ENABLE([quicklaunch],
    [AC_HELP_STRING([--disable-quicklaunch],

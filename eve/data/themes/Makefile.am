@@ -4,7 +4,7 @@ EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v -id $(top_srcdir)/data/themes -fd $(top_srcdir)/data/themes
 
 filesdir = $(datadir)/$(PACKAGE)
-files_DATA = ewebkit.edj default.edj
+files_DATA = default.edj
 
 images = \
     more-list-back-button.png \
@@ -48,7 +48,7 @@ images = \
 
 fonts = 
 
-EXTRA_DIST = ewebkit.edj default.edc $(images) $(fonts)
+EXTRA_DIST = default.edc $(images) $(fonts)
 
 default.edj: Makefile $(images) $(fonts) default.edc
 	$(EDJE_CC) $(EDJE_FLAGS) \

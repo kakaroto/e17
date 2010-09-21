@@ -1,9 +1,12 @@
 MAINTAINERCLEANFILES = Makefile.in
 
+EWEBKIT_DATA_DIR=@ewebkit_datadir@
+
 INCLUDES = \
 -I$(top_srcdir) \
 -I$(top_srcdir)/src/bin \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
+-DEWEBKIT_DATA_DIR=\"$(EWEBKIT_DATA_DIR)\" \
 -DGETTEXT_PACKAGE=\"$(PACKAGE)\" \
 -DLOCALEDIR=\"$(localedir)\" \
 @ELEMENTARY_CFLAGS@ \
