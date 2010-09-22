@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Forecasts module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-09-10 06:30+0400\n"
-"PO-Revision-Date: 2010-09-10 08:28+0400\n"
+"POT-Creation-Date: 2010-09-22 06:11+0400\n"
+"PO-Revision-Date: 2010-09-22 11:14+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <pourunmondesansgourou@gmail.com>\n"
 "Language: \n"
@@ -81,6 +81,11 @@ msgstr "Prévisions"
 msgid "Settings"
 msgstr "Configuration"
 
+#: src/e_mod_main.c:993
+#, c-format
+msgid "%s: Current Conditions"
+msgstr "%s : conditions actuelles"
+
 #: src/e_mod_main.c:1009
 msgid "Wind Chill"
 msgstr "Température ressentie"
@@ -117,6 +122,14 @@ msgstr "Stable"
 msgid "Sunrise / Sunset"
 msgstr "Lever / Coucher"
 
+#: src/e_mod_main.c:1066
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#: src/e_mod_main.c:1068
+msgid "Tomorrow"
+msgstr "Demain"
+
 #: src/e_mod_main.c:1076
 msgid "High"
 msgstr "Maximum"
@@ -127,6 +140,6 @@ msgstr "Minimum"
 
 #~ msgid "Forecasts Configuration"
 #~ msgstr "Configuration des prévisions"
-
 #~ msgid "Configuration"
 #~ msgstr "Configuration"
+
