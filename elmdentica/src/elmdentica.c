@@ -1696,7 +1696,7 @@ static void on_fs(void *data, Evas_Object *obj, void *event_info) {
 
 static int do_post(void *notUsed, int argc, char **argv, char **azColName) {
 	struct sqlite3_stmt *post_stmt=NULL;
-	char *msg = NULL, *query = NULL;
+	char *msg = NULL, *query = NULL, *entry_str=NULL;
 	const char *missed = NULL;
 	int sqlite_res = 0, res=0;
 	Eina_Strbuf *buf = NULL;
@@ -1725,7 +1725,8 @@ static int do_post(void *notUsed, int argc, char **argv, char **azColName) {
 	base_url = argv[8];
 
 	buf = eina_strbuf_new();
-	eina_strbuf_append(buf, elm_entry_entry_get(entry));
+	entry_str = elm_entry_markup_to_utf8(elm_entry_entry_get(entry));
+	eina_strbuf_append(buf, entry_str);
 	eina_strbuf_replace_all(buf, "<br>", " ");
 	msg=ed_curl_escape(eina_strbuf_string_steal(buf));
 	eina_strbuf_free(buf);
@@ -1758,7 +1759,8 @@ static int do_post(void *notUsed, int argc, char **argv, char **azColName) {
 		}
 	}
 
-	free(msg);
+	if(msg) free(msg);
+	if(entry_str) free(entry_str);
 
 	return(0);
 }
@@ -1766,13 +1768,14 @@ static int do_post(void *notUsed, int argc, char **argv, char **azColName) {
 static void on_post_dm_set(void *data, Evas_Object *obj, void *event_info) {
 	Evas *e = evas_object_evas_get(obj);
 	Evas_Object *dm_entry = e?evas_object_name_find(e, "dm_entry"):NULL;
-	const char* dm_entry_str = dm_entry?elm_entry_entry_get(dm_entry):NULL;
+	char* dm_entry_str = dm_entry?elm_entry_markup_to_utf8(elm_entry_entry_get(dm_entry)):NULL;
 
 	if(dm_entry_str && strlen(dm_entry_str) > 0) {
 		dm_to = strdup(dm_entry_str);
 		if(debug) printf("Sending a DM to %s\n", dm_to);
 	}
 	evas_object_del((Evas_Object*)data);
+	if(dm_entry_str) free(dm_entry_str);
 }
 
 static void on_post_dm_cancel(void *data, Evas_Object *obj, void *event_info) {
@@ -1856,7 +1859,7 @@ static void on_entry_changed(void *data, Evas_Object *entry, void *event_info) {
 	char * count_str = NULL;
 	char * entry_text = NULL;
 
-	entry_text = (char*)elm_entry_entry_get(entry);
+	entry_text = elm_entry_markup_to_utf8(elm_entry_entry_get(entry));
 
 	if(!entry_text) {
 		len=0;
@@ -1871,18 +1874,20 @@ static void on_entry_changed(void *data, Evas_Object *entry, void *event_info) {
 	i-=len;
 
 	if(i<0) {
-		res = asprintf(&count_str, "-%dc | ", -1*i);
+		res = asprintf(&count_str, "-% dc | ", -1*i);
 	} else
-		res = asprintf(&count_str, " %dc | ", i);
+		res = asprintf(&count_str, " % dc | ", i);
 	if(res != -1) {
 		elm_label_label_set(count, count_str);
 		free(count_str);
 	}
+	free(entry_text);
 }
 
 static void on_entry_clicked(void *data, Evas_Object *entry, void *event_info) {
 	int len;
-	const char *first = _("Type your status here..."), *msg=elm_entry_entry_get(entry);
+	const char *first = _("Type your status here...");
+	char *msg=elm_entry_markup_to_utf8(elm_entry_entry_get(entry));
 
 	if(g_utf8_validate(first, -1, NULL))
 		len = g_utf8_strlen(first, -1);
@@ -1893,6 +1898,8 @@ static void on_entry_clicked(void *data, Evas_Object *entry, void *event_info) {
 		elm_entry_entry_set(entry, "");
 		first_message=0;
 	}
+
+	if(msg) free(msg);
 }
 
 EAPI int elm_main(int argc, char **argv)

@@ -201,7 +201,7 @@ void get_account_id(char *screen_name, char *domain, int *id) {
 
 void on_user_data_ok(void *data, Evas_Object *obj, void *event_info) {
 	Evas_Object *account_list = (Evas_Object*)data, *check=NULL;
-	char *account_id=NULL, *query=NULL, *db_err=NULL;
+	char *account_id=NULL, *query=NULL, *db_err=NULL, *tmp=NULL;
 	char *screen_name=NULL, *password=NULL, *domain=NULL, *base_url=NULL, *proto=NULL;
 	int enabled=1, port=443, sqlite_res = 0, *id=NULL, receive=1, send=1, res=0;
 	Elm_List_Item *li;
@@ -209,25 +209,33 @@ void on_user_data_ok(void *data, Evas_Object *obj, void *event_info) {
 
 	buf = eina_strbuf_new();
 
-	eina_strbuf_append(buf, elm_entry_entry_get(screen_name_entry));
+	tmp = elm_entry_markup_to_utf8(elm_entry_entry_get(screen_name_entry));
+	eina_strbuf_append(buf, tmp);
 	eina_strbuf_replace_all(buf, "<br>", "");
 	screen_name = eina_strbuf_string_steal(buf);
 	eina_strbuf_reset(buf);
+	free(tmp); tmp = NULL;
 
-	eina_strbuf_append(buf, elm_entry_entry_get(password_entry));
+	tmp = elm_entry_markup_to_utf8(elm_entry_entry_get(password_entry));
+	eina_strbuf_append(buf, tmp);
 	eina_strbuf_replace_all(buf, "<br>", "");
 	password = eina_strbuf_string_steal(buf);
 	eina_strbuf_reset(buf);
+	free(tmp); tmp = NULL;
 
-	eina_strbuf_append(buf, elm_entry_entry_get(domain_entry));
+	tmp = elm_entry_markup_to_utf8(elm_entry_entry_get(domain_entry));
+	eina_strbuf_append(buf, tmp);
 	eina_strbuf_replace_all(buf, "<br>", "");
 	domain = eina_strbuf_string_steal(buf);
 	eina_strbuf_reset(buf);
+	free(tmp); tmp = NULL;
 
-	eina_strbuf_append(buf, elm_entry_entry_get(base_url_entry));
+	tmp = elm_entry_markup_to_utf8(elm_entry_entry_get(base_url_entry));
+	eina_strbuf_append(buf, tmp);
 	eina_strbuf_replace_all(buf, "<br>", "");
 	base_url = eina_strbuf_string_steal(buf);
 	eina_strbuf_reset(buf);
+	free(tmp); tmp = NULL;
 
 	eina_strbuf_free(buf);
 
@@ -1071,7 +1079,7 @@ void on_gag_pattern_add(void *data, Evas_Object *obj, void *event_info) {
 	const Eina_List *list_items=NULL, *l=NULL;
 	Elm_List_Item *li=NULL;
 	char *query, *db_err=NULL;
-	const char *pattern = elm_entry_entry_get(gag_pattern);
+	char *pattern = elm_entry_markup_to_utf8(elm_entry_entry_get(gag_pattern));
 	int res=0;
 
 	res = asprintf(&query, "INSERT INTO gag (enabled, pattern) VALUES ( 1, '%s');", pattern);
@@ -1101,6 +1109,7 @@ void on_gag_pattern_add(void *data, Evas_Object *obj, void *event_info) {
 	}
 
 	evas_object_del((Evas_Object*)data);
+	if(pattern) free(pattern);
 }
 
 void on_gag_pattern_edit(void *data, Evas_Object *obj, void *event_info) {
@@ -1108,7 +1117,7 @@ void on_gag_pattern_edit(void *data, Evas_Object *obj, void *event_info) {
 	Evas_Object *gag_list = evas_object_name_find(e, "gag_list"), *gag_pattern = evas_object_name_find(e, "gag-pattern");
 	Elm_List_Item *li = elm_list_selected_item_get(gag_list);
 	char *query, *db_err=NULL;
-	const char *pattern = elm_entry_entry_get(gag_pattern);
+	char *pattern = elm_entry_markup_to_utf8(elm_entry_entry_get(gag_pattern));
 	int res=0;
 
 	res = asprintf(&query, "UPDATE gag SET pattern = '%s' where id = %d;", pattern, current_gag);
@@ -1122,6 +1131,7 @@ void on_gag_pattern_edit(void *data, Evas_Object *obj, void *event_info) {
 		free(query);
 	}
 	evas_object_del((Evas_Object*)data);
+	if(pattern) free(pattern);
 }
 
 void on_gag_pattern_cancel(void *data, Evas_Object *obj, void *event_info) {
