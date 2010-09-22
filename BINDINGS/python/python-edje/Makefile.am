@@ -163,7 +163,8 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/edje/edit \
 	-I$(top_srcdir)/include \
 	@PYTHON_INCLUDES@ \
-	@EDJE_CFLAGS@
+	@EDJE_CFLAGS@ \
+	-DEDJE_EDIT_IS_UNSTABLE_AND_I_KNOW_ABOUT_IT
 
 pyexecedjedir =  $(pyexecdir)/edje
 pyexecedje_LTLIBRARIES = c_edje.la
