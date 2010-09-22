@@ -15,7 +15,6 @@
 #include <Ecore_File.h>
 
 #include <Edje.h>
-#include <Edje_Edit.h>
 #include <Elementary.h>
 
 #define CONFIG_VERSION 1

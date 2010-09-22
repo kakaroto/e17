@@ -1,5 +1,8 @@
 #include <edje_viewer_main.h>
 
+#define EDJE_EDIT_IS_UNSTABLE_AND_I_KNOW_ABOUT_IT 1
+#include <Edje_Edit.h>
+
 typedef struct _Hoversel_Item_Data Hoversel_Item_Data;
 
 struct _Hoversel_Item_Data
@@ -48,9 +51,9 @@ static void on_object_signal(void *data, Evas_Object *o, const char *sig, const 
 static void on_object_message(void *data, Evas_Object *obj, Edje_Message_Type type, int id, void *msg);
 static void on_hover_signal_select(void *data, Evas_Object *obj, void *event_info);
 
-static Evas_Object * gc_icon_get(const void *data, Evas_Object *obj, const char *part);
-static char *gc_label_get(const void *data, Evas_Object *obj, const char *part);
-static void gc_del(const void *data, Evas_Object *obj);
+static Evas_Object * gc_icon_get(void *data, Evas_Object *obj, const char *part);
+static char *gc_label_get(void *data, Evas_Object *obj, const char *part);
+static void gc_del(void *data, Evas_Object *obj);
 
 void
 create_main_win(Viewer *v)
@@ -1061,9 +1064,9 @@ on_hover_signal_select(void *data, Evas_Object *obj, void *event_info)
 
 /* Genlist functions */
 static Evas_Object *
-gc_icon_get(const void *data, Evas_Object *obj, const char *part)
+gc_icon_get(void *data, Evas_Object *obj, const char *part)
 {
-   Group *grp = (Group *) data;
+   Group *grp = data;
 
    if (!strcmp(part, "elm.swallow.icon"))
      {
@@ -1080,7 +1083,7 @@ gc_icon_get(const void *data, Evas_Object *obj, const char *part)
 }
 
 static char *
-gc_label_get(const void *data, Evas_Object *obj, const char *part)
+gc_label_get(void *data, Evas_Object *obj, const char *part)
 {
    const Group *grp = data;
 
@@ -1088,9 +1091,9 @@ gc_label_get(const void *data, Evas_Object *obj, const char *part)
 }
 
 static void
-gc_del(const void *data, Evas_Object *obj)
+gc_del(void *data, Evas_Object *obj)
 {
-   Group *grp = (Group *) data;
+   Group *grp = data;
    eina_stringshare_del(grp->name);
 
    free_group_parts(grp);
