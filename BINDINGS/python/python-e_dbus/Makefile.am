@@ -45,7 +45,7 @@ AM_CPPFLAGS = \
 	@PYTHON_INCLUDES@ \
 	@EDBUS_CFLAGS@
 
-pyexecedbusdir =  $(pyexecdir)/
+pyexecedbusdir =  $(pyexecdir)
 pyexecedbus_LTLIBRARIES = e_dbus.la
 e_dbus_la_LIBADD = @EDBUS_LIBS@
 e_dbus_la_LDFLAGS = -module -avoid-version

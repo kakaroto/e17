@@ -170,7 +170,7 @@ fi
 CYTHON_ECORE_EVAS_INCLUDEDIR=""
 if test "x$want_ecore_evas" != "xno" -a "x${have_ecore_evas}" = "xyes"; then
    wanted_cython_files="${wanted_cython_files} ${srcdir}/ecore/evas/ecore.evas.c_ecore_evas.pyx"
-   CYTHON_ECORE_EVAS_INCLUDEDIR=`pkg-config --variable=includedir "python-evas >= ${python_evas_version}"`
+   CYTHON_ECORE_EVAS_INCLUDEDIR=`$PKG_CONFIG --variable=includedir "python-evas >= ${python_evas_version}"`
 fi
 AM_CONDITIONAL(WANT_ECORE_EVAS,
    [test "x$want_ecore_evas" != "xno" -a "x${have_ecore_evas}" = "xyes"])

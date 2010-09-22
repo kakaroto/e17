@@ -66,7 +66,7 @@ python_evas_version="0.7.2"
 pkgconfig_elementary_requires_libs="elementary >= 0.7.0.51191 evas >= 1.0.0 eina >= 1.0.0 python-evas >= ${python_evas_version}"
 AC_SUBST(pkgconfig_elementary_requires_libs)
 PKG_CHECK_MODULES([ELEMENTARY], [$pkgconfig_elementary_requires_libs])
-CYTHON_ELEMENTARY_INCLUDEDIR=`pkg-config --variable=includedir "python-evas >= ${python_evas_version}"`
+CYTHON_ELEMENTARY_INCLUDEDIR=`$PKG_CONFIG --variable=includedir "python-evas >= ${python_evas_version}"`
 AC_SUBST(CYTHON_ELEMENTARY_INCLUDEDIR)
 wanted_cython_files="${srcdir}/elementary/elementary.c_elementary.pyx"
 

@@ -66,7 +66,7 @@ python_evas_version="0.7.2"
 pkgconfig_edje_requires_libs="edje >= 1.0.0 evas >= 1.0.0 eina >= 1.0.0 python-evas >= ${python_evas_version}"
 AC_SUBST(pkgconfig_edje_requires_libs)
 PKG_CHECK_MODULES([EDJE], [$pkgconfig_edje_requires_libs])
-CYTHON_EDJE_INCLUDEDIR=`pkg-config --variable=includedir "python-evas >= ${python_evas_version}"`
+CYTHON_EDJE_INCLUDEDIR=`$PKG_CONFIG --variable=includedir "python-evas >= ${python_evas_version}"`
 AC_SUBST(CYTHON_EDJE_INCLUDEDIR)
 wanted_cython_files="${srcdir}/edje/edje.c_edje.pyx ${srcdir}/edje/edit/c_edit.pyx"
 

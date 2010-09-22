@@ -66,7 +66,7 @@ python_evas_version="0.7.2"
 pkgconfig_emotion_requires_libs="emotion >= 0.2.0.52190 evas >= 1.0.0 python-evas >= ${python_evas_version}"
 AC_SUBST(pkgconfig_emotion_requires_libs)
 PKG_CHECK_MODULES([EMOTION], [$pkgconfig_emotion_requires_libs])
-CYTHON_EMOTION_INCLUDEDIR=`pkg-config --variable=includedir "python-evas >= ${python_evas_version}"`
+CYTHON_EMOTION_INCLUDEDIR=`$PKG_CONFIG --variable=includedir "python-evas >= ${python_evas_version}"`
 AC_SUBST(CYTHON_EMOTION_INCLUDEDIR)
 wanted_cython_files="${srcdir}/emotion/emotion.c_emotion.pyx"
 
