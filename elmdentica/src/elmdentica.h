@@ -24,7 +24,7 @@
 #include <Elementary.h>
 #include <Ecore_X.h>
 
-#include <twitter.h>
+#include <statusnet.h>
 
 typedef struct anchor_data {
 	Evas_Object *bubble;
@@ -46,7 +46,6 @@ typedef struct _StatusesList {
 
 #define ACCOUNT_TYPE_NONE 0
 #define ACCOUNT_TYPE_STATUSNET 1
-#define ACCOUNT_TYPE_TWITTER 2
 
 #define TIMELINE_FRIENDS 0
 #define TIMELINE_USER 1

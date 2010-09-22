@@ -299,7 +299,7 @@ void on_account_type_chose_identica(void *data, Evas_Object *obj, void *event_in
 	Evas_Object * eo = NULL;
 	Evas * evas = NULL;
 
-	current_account_type=ACCOUNT_TYPE_TWITTER;
+	current_account_type=ACCOUNT_TYPE_STATUSNET;
 	evas = evas_object_evas_get(obj);
 	if(evas) {
 		eo = evas_object_name_find(evas, "secure_entry");
@@ -313,14 +313,9 @@ void on_account_type_chose_identica(void *data, Evas_Object *obj, void *event_in
 	}
 }
 
-void on_account_type_chose_twitter_api(void *data, Evas_Object *obj, void *event_info) {
-	current_account_type=ACCOUNT_TYPE_TWITTER;
-}
-
 void on_account_type_chosen(void *data, Evas_Object *obj, void *event_info) {
 	Evas_Object *type_hoversel = (Evas_Object*)data;
 	switch(current_account_type) {
-		case ACCOUNT_TYPE_TWITTER: { elm_hoversel_label_set(type_hoversel, "Twitter API"); break; }
 		case ACCOUNT_TYPE_STATUSNET:
 		default: { elm_hoversel_label_set(type_hoversel, "StatusNet"); break; }
 	}
@@ -379,11 +374,6 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 				evas_object_size_hint_weight_set(type_entry, 1, 1);
 				evas_object_size_hint_align_set(type_entry, -1, 0.5);
 				switch(account_type) {
-					case ACCOUNT_TYPE_TWITTER: {
-						current_account_type=ACCOUNT_TYPE_TWITTER;
-						elm_hoversel_label_set(type_entry, "Twitter API");
-						break;
-					}
 					case ACCOUNT_TYPE_STATUSNET: { 
 						current_account_type=ACCOUNT_TYPE_STATUSNET;
 						elm_hoversel_label_set(type_entry, "StatusNet");
@@ -399,7 +389,6 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 
 				elm_hoversel_hover_begin(type_entry);
 					acc_type = elm_hoversel_item_add(type_entry, "Identi.ca", NULL, ELM_ICON_NONE, on_account_type_chose_identica, type_entry);
-					acc_type = elm_hoversel_item_add(type_entry, "Twitter API", NULL, ELM_ICON_NONE, on_account_type_chose_twitter_api, type_entry);
 					acc_type = elm_hoversel_item_add(type_entry, "StatusNet", NULL, ELM_ICON_NONE, on_account_type_chose_statusnet, type_entry);
 					evas_object_smart_callback_add(type_entry, "selected", on_account_type_chosen, type_entry);
 				elm_hoversel_hover_end(type_entry);
@@ -538,11 +527,7 @@ static int account_edit(void *data, int argc, char **argv, char **azColName) {
 	screen_name = argv[2];
 	password = argv[3];
 
-	switch(atoi(argv[4])) {
-		case 2: { type = ACCOUNT_TYPE_TWITTER; break; }
-		case 1:
-		default: { type = ACCOUNT_TYPE_STATUSNET; break; }
-	}
+	type = ACCOUNT_TYPE_STATUSNET;
 
 	proto = argv[5];
 	domain = argv[6];

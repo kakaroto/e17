@@ -59,7 +59,6 @@
 
 #include "elmdentica.h"
 #include "settings.h"
-#include "twitter.h"
 #include "statusnet.h"
 #include "curl.h"
 
@@ -207,12 +206,6 @@ void error_win_del(void *data, Evas_Object *zbr, void *event_info) {
 	evas_object_del(error_win);
 }
 
-void ed_statusnet_favorite_create(int id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline) {
-}
-
-void ed_statusnet_favorite_destroy(int id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline) {
-}
-
 static int ed_mark_favorite(void *data, int argc, char **argv, char **azColName) {
 	Evas_Object *bubble = (Evas_Object*)data;
 	aStatus *as = eina_hash_find(bubble2status, &bubble);
@@ -240,13 +233,11 @@ static int ed_mark_favorite(void *data, int argc, char **argv, char **azColName)
 
 	if(as->favorited) {
 		switch(atoi(argv[2])) {
-			case ACCOUNT_TYPE_TWITTER: { ed_twitter_favorite_destroy(id, screen_name, password, proto, domain, port, base_url, as->sid); break; }
 			case ACCOUNT_TYPE_STATUSNET:
 			default: { ed_statusnet_favorite_destroy(id, screen_name, password, proto, domain, port, base_url, as->sid); break; }
 		}
 	} else {
 		switch(atoi(argv[2])) {
-			case ACCOUNT_TYPE_TWITTER: { ed_twitter_favorite_create(id, screen_name, password, proto, domain, port, base_url, as->sid); break; }
 			case ACCOUNT_TYPE_STATUSNET:
 			default: { ed_statusnet_favorite_create(id, screen_name, password, proto, domain, port, base_url, as->sid); break; }
 		}
@@ -287,9 +278,8 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 
 	if(as) {
 		switch(as->account_type) {
-			case ACCOUNT_TYPE_TWITTER: { ed_twitter_repeat(as->account_id, as->sid); break; }
 			case ACCOUNT_TYPE_STATUSNET:
-			default: { break; }
+			default: { ed_statusnet_repeat(as->account_id, as->sid); break; }
 		}
 	}
 
@@ -375,9 +365,8 @@ static void on_view_related(void *data, Evas_Object *obj, void *event_info) {
 
 	if(as) {
 		switch(as->account_type) {
-			case ACCOUNT_TYPE_TWITTER: { ed_twitter_status_get(as->account_id, as->in_reply_to_status_id, &related_status); break; }
 			case ACCOUNT_TYPE_STATUSNET:
-			default: { break; }
+			default: { ed_statusnet_status_get(as->account_id, as->in_reply_to_status_id, &related_status); break; }
 		}
 	}
 
@@ -584,23 +573,15 @@ Evas_Object *ed_make_message(char *text, Evas_Object *bubble, Evas_Object *windo
 }
 
 
-anUser *ed_statusnet_user_get(int account_id, UserProfile *user) {
-	return(NULL);
-}
-
 anUser *user_info_get(aStatus *as, UserProfile *user) {
 	anUser *au=NULL;
 
 	switch(as->account_type) {
-		case ACCOUNT_TYPE_TWITTER: { au = ed_twitter_user_get(as->account_id, user) ; break; }
 		case ACCOUNT_TYPE_STATUSNET:
 		default: { au = ed_statusnet_user_get(as->account_id, user); break; }
 	}
 
 	return(au);
-}
-
-void ed_statusnet_user_follow(int id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *user_screen_name) {
 }
 
 static int ed_user_follow(void *data, int argc, char **argv, char **azColName) {
@@ -627,7 +608,6 @@ static int ed_user_follow(void *data, int argc, char **argv, char **azColName) {
 	id = atoi(argv[7]);
 
 	switch(atoi(argv[2])) {
-		case ACCOUNT_TYPE_TWITTER: { ed_twitter_user_follow(id, screen_name, password, proto, domain, port, base_url, follow_user); break; }
 		case ACCOUNT_TYPE_STATUSNET:
 		default: { ed_statusnet_user_follow(id, screen_name, password, proto, domain, port, base_url, follow_user); break; }
 	}
@@ -654,8 +634,6 @@ static void on_user_follow(void *data, Evas_Object *obj, void *event_info) {
 		evas_object_del(url_win);
 	}
 }
-void ed_statusnet_user_abandon(int id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *user_screen_name) {
-}
 
 static int ed_user_abandon(void *data, int argc, char **argv, char **azColName) {
 	char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
@@ -681,7 +659,6 @@ static int ed_user_abandon(void *data, int argc, char **argv, char **azColName) 
 	id = atoi(argv[7]);
 
 	switch(atoi(argv[2])) {
-		case ACCOUNT_TYPE_TWITTER: { ed_twitter_user_abandon(id, screen_name, password, proto, domain, port, base_url, follow_user); break; }
 		case ACCOUNT_TYPE_STATUSNET:
 		default: { ed_statusnet_user_abandon(id, screen_name, password, proto, domain, port, base_url, follow_user); break; }
 	}
@@ -1618,7 +1595,6 @@ static int get_messages_for_account(void *pTimeline, int argc, char **argv, char
 	id = atoi(argv[7]);
 
 	switch(atoi(argv[2])) {
-		case ACCOUNT_TYPE_TWITTER: { ed_twitter_timeline_get(id, screen_name, password, proto, domain, port, base_url, timeline); break; }
 		case ACCOUNT_TYPE_STATUSNET:
 		default: { ed_statusnet_timeline_get(id, screen_name, password, proto, domain, port, base_url, timeline); break; }
 	}
@@ -1755,7 +1731,6 @@ static int do_post(void *notUsed, int argc, char **argv, char **azColName) {
 	eina_strbuf_free(buf);
 
 	switch(type) {
-		case ACCOUNT_TYPE_TWITTER: { res = ed_twitter_post(id, screen_name, password, proto, domain, port, base_url, msg) ; break; }
 		case ACCOUNT_TYPE_STATUSNET:
 		default: { res = ed_statusnet_post(id, screen_name, password, proto, domain, port, base_url, msg); break; }
 	}
