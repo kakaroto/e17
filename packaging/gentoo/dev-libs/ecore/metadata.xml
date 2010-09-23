@@ -4,11 +4,9 @@
 <herd>no-herd</herd>
 <maintainer>
  <email>enlightenment@gentoo.org</email>
- <name>Enlightenment-Gentoo maintainers</name>
 </maintainer>
 <use>
  <flag name="glib">Enable <pkg>dev-libs/glib</pkg> eventloop support</flag>
- <flag name="xim">Enable X11 XiM input method</flag>
  <flag name="xprint">Enable X11 Xprint support</flag>
  <flag name="inotify">Enable support for inotify</flag>
  <flag name="evas">Provides easy to use canvas by gluing <pkg>media-libs/evas</pkg> and various input/output systems.</flag>
