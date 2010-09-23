@@ -47,7 +47,7 @@ static const Ecore_Getopt options =
                         ('E', "list-engines", "list ecore-evas engines.",
                         ecore_getopt_callback_ecore_evas_list_engines, NULL),
                 ECORE_GETOPT_STORE_DEF_BOOL
-                        ('F', "fullscreen", "fullscreen mode.", 0),
+                        ('F', "fullscreen", "fullscreen mode.", 1),
                 ECORE_GETOPT_CALLBACK_ARGS
                         ('g', "geometry", "geometry to use in x:y:w:h form.", "X:Y:W:H",
                         ecore_getopt_callback_geometry_parse, NULL),
