@@ -3,20 +3,15 @@
 # $Header: $
 
 EAPI="2"
-EFL_PKG_IUSE="doc"
-E_SVN_SUB_PROJECT="TMP/st"
+ESVN_SUB_PROJECT="TMP/st"
 
-inherit efl
+inherit enlightenment
 
 DESCRIPTION="Basic widget set, based on EFL with focus mobile touch-screen devices."
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/Elementary"
-SRC_URI=""
 
 LICENSE="LGPL-2.1"
-SLOT="0"
-KEYWORDS=""
-
-IUSE="fbcon opengl sdl X dbus xdg weather thumbnails xcb"
+IUSE="dbus fbcon opengl sdl thumbnails weather X xcb xdg static-libs"
 
 RDEPEND="
 	>=dev-libs/ecore-9999[evas,fbcon?,opengl?,sdl?,X?,xcb?]
@@ -31,7 +26,6 @@ DEPEND="${RDEPEND}"
 
 src_configure() {
 	export MY_ECONF="
-	  ${MY_ECONF}
 	  $(use_enable dbus edbus)
 	  $(use_enable xdg efreet)
 	  $(use_enable weather eweather)
@@ -40,5 +34,5 @@ src_configure() {
 	  $(use_enable X ecore-x)
 	  $(use_enable thumbnails ethumb)
 	"
-	efl_src_configure
+	enlightenment_src_configure
 }
