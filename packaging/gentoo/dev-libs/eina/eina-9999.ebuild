@@ -3,87 +3,34 @@
 # $Header: $
 
 EAPI="2"
-EFL_PKG_IUSE="doc test"
 
-inherit efl
+inherit enlightenment
 
-DESCRIPTION="Enlightenment's data types library (List, hash, etc) in C."
-HOMEPAGE="http://trac.enlightenment.org/e/wiki/Eina"
-SRC_URI=""
+DESCRIPTION="Enlightenment's data types library (List, hash, etc) in C"
 
 LICENSE="LGPL-2.1"
-SLOT="0"
-KEYWORDS=""
 
-IUSE="mmx sse sse2 altivec +threads +safety-checks
-	+mempool-chained mempool-fixed-bitmap +mempool-pass-through mempool-buddy
+IUSE="altivec debug default-mempool mempool-buddy +mempool-chained
 	mempool-ememoa-fixed mempool-ememoa-unknown
-	default-mempool +static-modules debug voltron"
+	mempool-fixed-bitmap +mempool-pass-through
+	mmx sse sse2 static-libs +threads"
 
 RDEPEND="
 	mempool-ememoa-fixed? ( sys-libs/ememoa )
 	mempool-ememoa-unknown? ( sys-libs/ememoa )"
 
-DEPEND="
-	${RDEPEND}
+DEPEND="${RDEPEND}
+	dev-util/pkgconfig
 	test? (
 		dev-libs/glib
 		dev-util/lcov
 	)"
 
 src_configure() {
-	local DEBUG_FLAGS="" SAFETY_CHECKS_FLAGS="" TEST_FLAGS="" EMEMOA_FLAGS=""
+	local EMEMOA_FLAGS=""
 
-	# ???: should we use 'use_enable' for these as well?
-	if use debug; then
-		DEBUG_FLAGS="
-		  --disable-amalgamation
-		  --enable-stringshare-usage
-		  --enable-assert
-		"
-	else
-		DEBUG_FLAGS="
-		  --enable-amalgamation
-		  --disable-stringshare-usage
-		  --disable-assert
-		  --with-internal-maximum-log-level=2
-		"
-	fi
-
-	if use safety-checks || use debug; then
-		SAFETY_CHECKS_FLAGS="
-		  --enable-magic-debug
-		  --enable-safety-checks
-		"
-	else
-		ewarn "Compiling without safety-checks is dangerous and unsupported."
-		ewarn "Just use safety-checks if you really know what you are doing."
-		SAFETY_CHECKS_FLAGS="
-		  --disable-magic-debug
-		  --disable-safety-checks
-		"
-	fi
-
-	if use test; then
-		if ! use safety-checks; then
-			die "Cannot run tests without safety-checks, otherwise negative tests will crash."
-			die "Compile with USE=safety-checks"
-		fi
-
-		# Evas benchmark is broken!
-		TEST_FLAGS="
-		  --enable-e17
-		  --enable-tests
-		  --enable-coverage
-		  --enable-benchmark"
-		#these flags don't even exist
-#		  --disable-benchmark-evas
-#		  --enable-benchmark-glib
-	fi
-
-	if use static-modules; then
-		MODULE_ARGUMENT="static"
-	else
+	local MODULE_ARGUMENT="static"
+	if use debug ; then
 		MODULE_ARGUMENT="yes"
 	fi
 
@@ -93,26 +40,34 @@ src_configure() {
 		EMEMOA_FLAGS="--disable-ememoa"
 	fi
 
-	export MY_ECONF="
-	  ${MY_ECONF}
-	  $(use_enable voltron)
-	  $(use_enable mmx cpu-mmx)
-	  $(use_enable sse cpu-sse)
-	  $(use_enable sse2 cpu-sse2)
-	  $(use_enable altivec cpu-altivec)
-	  $(use_enable threads posix-threads)
-	  $(use_enable mempool-chained mempool-chained-pool $MODULE_ARGUMENT)
-	  $(use_enable mempool-ememoa-fixed mempool-ememoa-fixed $MODULE_ARGUMENT)
-	  $(use_enable mempool-ememoa-unknown mempool-ememoa-unknown $MODULE_ARGUMENT)
-	  $(use_enable mempool-fixed-bitmap mempool-fixed-bitmap $MODULE_ARGUMENT)
-	  $(use_enable mempool-pass-through mempool-pass-through $MODULE_ARGUMENT)
-	  $(use_enable mempool-buddy mempool-buddy $MODULE_ARGUMENT)
-	  $(use_enable default-mempool)
-	  ${DEBUG_FLAGS}
-	  ${SAFETY_CHECKS_FLAGS}
-	  ${TEST_FLAGS}
-	  ${EMEMOA_FLAGS}
+	# Evas benchmark is broken!
+	MY_ECONF="
+	$(use_enable altivec cpu-altivec)
+	$(use_enable !debug amalgamation)
+	$(use_enable debug stringshare-usage)
+	$(use_enable debug assert)
+	$(use debug || echo " --with-internal-maximum-log-level=2")
+	$(use_enable default-mempool)
+	$(use_enable doc)
+	$(use_enable mempool-buddy mempool-buddy $MODULE_ARGUMENT)
+	$(use_enable mempool-chained mempool-chained-pool $MODULE_ARGUMENT)
+	$(use_enable mempool-ememoa-fixed mempool-ememoa-fixed $MODULE_ARGUMENT)
+	$(use_enable mempool-ememoa-unknown mempool-ememoa-unknown $MODULE_ARGUMENT)
+	$(use_enable mempool-fixed-bitmap mempool-fixed-bitmap $MODULE_ARGUMENT)
+	$(use_enable mempool-pass-through mempool-pass-through $MODULE_ARGUMENT)
+	$(use_enable mmx cpu-mmx)
+	$(use_enable sse cpu-sse)
+	$(use_enable sse2 cpu-sse2)
+	$(use_enable threads posix-threads)
+	$(use test && echo " --disable-amalgamation")
+	$(use_enable test e17)
+	$(use_enable test tests)
+	$(use_enable test coverage)
+	$(use_enable test benchmark)
+	${EMEMOA_FLAGS}
+	--enable-magic-debug
+	--enable-safety-checks
 	"
 
-	efl_src_configure
+	enlightenment_src_configure
 }

@@ -4,7 +4,6 @@
 <herd>no-herd</herd>
 <maintainer>
  <email>enlightenment@gentoo.org</email>
- <name>Enlightenment-Gentoo maintainers</name>
 </maintainer>
 <use>
  <flag name="safety-checks">Do regular safety checks for NULL pointers and incorrect references.</flag>
