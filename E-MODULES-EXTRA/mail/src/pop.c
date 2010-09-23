@@ -46,7 +46,7 @@ _mail_pop_check_mail (void *data)
 				       _mail_pop_server_data, NULL);
 
 	  if ((ecore_con_ssl_available_get ()) && (pc->config->ssl))
-	    type |= ECORE_CON_USE_SSL;
+	    type |= ECORE_CON_USE_MIXED;
 	  pc->server =
 	    ecore_con_server_connect (type, pc->config->host,
 				      pc->config->port, pc);

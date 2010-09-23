@@ -74,7 +74,7 @@ _mail_imap_check_mail (void *data)
 		  switch (ic->config->ssl)
 		    {
 		     case 3:
-			type |= ECORE_CON_USE_SSL3;
+			type |= ECORE_CON_USE_MIXED;
 			break;
 		     case 2:
 		     default:
