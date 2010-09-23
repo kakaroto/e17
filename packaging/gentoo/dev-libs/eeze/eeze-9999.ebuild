@@ -9,5 +9,5 @@ HOMEPAGE="http://trac.enlightenment.org/e/wiki/Eeze"
 
 IUSE="static-libs"
 
-RDEPEND="dev-libs/ecore"
+RDEPEND=">=dev-libs/ecore-9999"
 DEPEND="${RDEPEND}"
