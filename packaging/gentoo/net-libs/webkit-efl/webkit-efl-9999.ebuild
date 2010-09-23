@@ -17,22 +17,22 @@ WANT_AUTOTOOLS="no"
 LICENSE="LGPL-2 LGPL-2.1 BSD"
 SLOT="0"
 KEYWORDS=""
-IUSE="-libsoup"
+IUSE="-glib"
 
 RDEPEND="
 	dev-libs/libxslt
 	media-libs/jpeg:0
 	media-libs/libpng
 	x11-libs/cairo
-	libsoup? (
+	glib? (
 			dev-libs/glib
 			net-libs/libsoup
 		)
-	!libsoup? ( net-misc/curl )
+	!glib? ( net-misc/curl )
 	>=dev-db/sqlite-3
 	media-libs/edje
 	media-libs/evas[fontconfig]
-	dev-libs/ecore[X]
+	dev-libs/ecore[X,glib?]
 "
 
 DEPEND="${RDEPEND}
@@ -46,7 +46,7 @@ DEPEND="${RDEPEND}
 src_configure() {
 	[[ gcc-major-version == 4 ]] && [[ gcc-minor-version == 4 ]] && append-flags -fno-strict-aliasing
 
-	if ! use libsoup ; then
+	if ! use glib ; then
 		#could have done the whole cmake-utils_use_enable thing here but I'm lazy
 		mycmakeargs+=" -DNETWORK_BACKEND=curl -DENABLE_GLIB_SUPPORT=OFF"
 	fi

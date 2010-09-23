@@ -7,7 +7,7 @@
  <name>Enlightenment-Gentoo maintainers</name>
 </maintainer>
 <use>
- <flag name="libsoup">Enable glib/libsoup network backend</flag>
+ <flag name="glib">Enable glib/libsoup network backend</flag>
 </use>
 <longdescription>
 Webkit-EFL is the Enlightened variant of webkit
