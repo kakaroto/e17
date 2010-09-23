@@ -39,3 +39,8 @@ src_configure() {
 
 	econf ${MY_ECONF}
 }
+
+src_install() {
+	emake install DESTDIR="${D}"
+	find "${D}" \( -name '*.la' -o -name '*.a' \) -delete
+}
