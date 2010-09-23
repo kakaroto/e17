@@ -54,7 +54,7 @@ EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
 # Eina library
 
-PKG_CHECK_MODULES(ESKISS, [edje ecore-evas ecore-x ecore-file ecore evas eet eina-0])
+PKG_CHECK_MODULES(ESKISS, [edje ecore-evas ecore-x ecore-file ecore evas eet eina])
 
 ### Checks for header files
 
