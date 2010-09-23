@@ -4,15 +4,15 @@
 
 EAPI="2"
 
-DESCRIPTION="Lightweight media scanner."
+DESCRIPTION="Lightweight media scanner"
 HOMEPAGE="http://lms.garage.maemo.org/"
 SRC_URI="https://garage.maemo.org/frs/download.php/8852/lightmediascanner-0.4.1.0.tar.bz2"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-KEYWORDS="~x86 ~arm"
+KEYWORDS="~arm ~x86"
 
-IUSE="+jpeg +png ogg +playlist +asf +real +mp4 +id3 +flac"
+IUSE="+asf flac +id3 jpeg mp4 ogg +playlist png real"
 
 RDEPEND="
 	>=dev-db/sqlite-3.3
@@ -23,24 +23,23 @@ RDEPEND="
 DEPEND="${RDEPEND}"
 
 src_configure() {
-	export MY_ECONF="
-	  --enable-video-dummy
-	  --enable-audio-dummy
-	  $(use_enable jpeg)
-	  $(use_enable png)
-	  $(use_enable playlist m3u)
-	  $(use_enable ogg)
-	  $(use_enable playlist pls)
-	  $(use_enable asf)
-	  $(use_enable real rm)
-	  $(use_enable mp4)
-	  $(use_enable id3)
-	  $(use_enable flac)"
-
-	econf ${MY_ECONF}
+	econf \
+		--disable-static \
+		--enable-video-dummy \
+		--enable-audio-dummy \
+		$(use_enable jpeg) \
+		$(use_enable png) \
+		$(use_enable playlist m3u) \
+		$(use_enable ogg) \
+		$(use_enable playlist pls) \
+		$(use_enable asf) \
+		$(use_enable real rm) \
+		$(use_enable mp4) \
+		$(use_enable id3) \
+		$(use_enable flac)
 }
 
 src_install() {
-	emake install DESTDIR="${D}"
-	find "${D}" \( -name '*.la' -o -name '*.a' \) -delete
+	emake install DESTDIR="${D}" || die
+	find "${D}" -name '*.la' -delete
 }
