@@ -14,6 +14,7 @@
  <flag name="static-modules">Build modules built-in, avoiding dynamically loading and linking them.</flag>
  <flag name="16bpp">Enable optimized 16 bits per pixel engine (usually for embedded systems running at that screen depth, like phones or internet tablets).</flag>
  <flag name="8bpp">Enable optimized 8 bits per pixel grayscale engine (usually for embedded systems running at that screen depth, like ebook readers).</flag>
+ <flag name="text-cache">Enable word and metric caches to speed up text rendering.</flag>
 </use>
 <longdescription>
 Evas is a hardware-accelerated canvas API for X-Windows that can draw

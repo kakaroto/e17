@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<herd>no-herd</herd>
+<maintainer>
+ <email>barbieri@profusion.mobi</email>
+ <name>Gustavo Sverzut Barbieri</name>
+</maintainer>
+<use>
+ <flag name="real">Support Real Media metadata.</flag>
+ <flag name="id3">Support ID3v1 and ID3v2 tags of audio files.</flag>
+ <flag name="asf">Provide support for Microsoft's 'advanced systems format' media container.</flag>
+ <flag name="playlist">Add support for playlists (m3u and pls).</flag>
+</use>
+<longdescription>
+Lightweight media scanner meant to be used in not-so-powerful devices,
+like embedded systems or old machines.
+
+Provides an optimized way to recursively scan directories, handling
+the parser in a child process, avoiding breaks of the main process
+when parsers break (quite common with such bad libs and tags). One can
+opt to use the single process version, but be aware that if something
+bad happens during parsing, your application will suffer.
+
+Parsers are plugins in the form of shared objects, so it's easy to add
+new without having to recompile the scanner.
+
+The scanner will use SQLite3 to store file-mtime association, avoiding
+parsing files that are already up-to-date. This SQLite connection and
+the file id within the master table 'files' are handled to plugins for
+relationship with other tables.
+</longdescription>
+</pkgmetadata>

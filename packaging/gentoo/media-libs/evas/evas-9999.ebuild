@@ -15,7 +15,7 @@ LICENSE="BSD"
 SLOT="0"
 KEYWORDS=""
 
-IUSE="debug mmx sse altivec +threads +fontconfig bidi +cserve directfb fbcon opengl sdl X xcb +eet gif +jpeg +pnm +png svg +tiff +xpm static-modules +safety-checks 16bpp 8bpp"
+IUSE="debug mmx sse altivec +threads +fontconfig bidi +cserve directfb fbcon opengl sdl X xcb +eet gif +jpeg +pnm +png svg +tiff +xpm static-modules +safety-checks 16bpp 8bpp text-cache"
 
 RDEPEND="
 	>=dev-libs/eina-9999
@@ -121,6 +121,8 @@ src_configure() {
 	  $(use_enable fontconfig)
 	  $(use_enable bidi fribidi)
 	  $(use_enable cserve evas-cserve)
+	  $(use_enable text-cache word-cache)
+	  $(use_enable text-cache metric-cache)
 	  --enable-cpu-c
 	  --enable-scale-sample
 	  --enable-scale-smooth
