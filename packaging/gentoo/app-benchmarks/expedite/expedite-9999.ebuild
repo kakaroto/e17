@@ -4,15 +4,10 @@
 
 EAPI="2"
 
-inherit efl
+inherit enlightenment
 
 DESCRIPTION="Comprehensive test and benchmark suite for Evas"
 HOMEPAGE="http://www.enlightenment.org/"
-SRC_URI=""
-
-LICENSE="BSD"
-SLOT="0"
-KEYWORDS=""
 
 IUSE="directfb fbcon opengl sdl X xcb"
 
@@ -50,7 +45,6 @@ src_configure() {
 	fi
 
 	export MY_ECONF="
-	  ${MY_ECONF}
 	  --disable-software-gdi
 	  --disable-software-ddraw
 	  --disable-direct3d
@@ -67,5 +61,5 @@ src_configure() {
 	  $(use_enable X xrender-x11)
 	  $(use_enable xcb xrender-xcb)
 	"
-	efl_src_configure
+	enlightenment_src_configure
 }
