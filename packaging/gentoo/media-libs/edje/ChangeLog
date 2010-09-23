@@ -1,0 +1,13 @@
+# ChangeLog for media-libs/edje
+# Copyright 1999-2009 Gentoo Foundation; Distributed under the GPL v2
+# $Header: $
+
+  20 Dec 2009; Thomas Sachau (Tommy[D]) <tommy@gentoo.org>
+  +edje-0.9.93.063.ebuild:
+  Version bump for edje snapshot
+
+  17 Aug 2009; Thomas Sachau (Tommy[D]) <tommy@gentoo.org> edje-9999.ebuild:
+  Add required lua dependency
+
+  30 Nov 2008; Mike Frysinger <vapier@gentoo.org> +edje-0.9.9.050.ebuild:
+  Version bump.
