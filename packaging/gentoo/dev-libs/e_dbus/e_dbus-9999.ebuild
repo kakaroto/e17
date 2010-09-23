@@ -3,19 +3,12 @@
 # $Header: $
 
 EAPI="2"
-EFL_PKG_IUSE="doc"
 
-inherit efl
+inherit enlightenment
 
 DESCRIPTION="Enlightenment's (Ecore) integration to DBus"
-HOMEPAGE="http://trac.enlightenment.org/e/wiki/E_Dbus"
-SRC_URI=""
 
-LICENSE="BSD"
-SLOT="0"
-KEYWORDS=""
-
-IUSE="hal connman libnotify bluetooth ofono ukit"
+IUSE="bluetooth connman +hal +libnotify ofono static-libs ukit"
 
 RDEPEND="
 	>=dev-libs/eina-9999
@@ -28,14 +21,14 @@ RDEPEND="
 DEPEND="${RDEPEND}"
 
 src_configure() {
-	export MY_ECONF="
-	  ${MY_ECONF}
-	  $(use_enable hal ehal)
-	  $(use_enable connman econnman)
-	  $(use_enable libnotify enotify)
-	  $(use_enable bluetooth ebluez)
-	  $(use_enable ofono eofono)
-	  $(use_enable ukit eukit)
+	MY_ECONF="
+	$(use_enable bluetooth ebluez)
+	$(use_enable connman econnman)
+	$(use_enable doc)
+	$(use_enable hal ehal)
+	$(use_enable libnotify enotify)
+	$(use_enable ofono eofono)
+	$(use_enable ukit eukit)
 	"
-	efl_src_configure
+	enlightenment_src_configure
 }
