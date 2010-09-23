@@ -1204,16 +1204,6 @@ ECompMgrWinSetPicts(EObj * eo)
 					   pictfmt, CPSubwindowMode, &pa);
 	D1printf("ECompMgrWinSetPicts %#lx: Pict=%#lx (drawable=%#lx)\n",
 		 EobjGetXwin(eo), cw->picture, draw);
-
-	/* Hmm.. What good does this actually do? */
-	if (draw == cw->pixmap && EobjIsShaped(eo))
-	  {
-	     XserverRegion       clip;
-
-	     clip = ERegionCreateFromWindow(EobjGetWin(eo));
-	     EPictureSetClip(cw->picture, clip);
-	     ERegionDestroy(clip);
-	  }
      }
 }
 
@@ -1780,7 +1770,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
    ECmWinInfo         *cw;
    Desk               *dsk = eo->desk;
    int                 x, y;
-   XserverRegion       clip;
+   XserverRegion       clip, clip2;
    Picture             alpha;
 
    cw = eo->cmhook;
@@ -1829,9 +1819,15 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	  case WINDOW_TRANS:
 	  case WINDOW_ARGB:
 	     clip = ECompMgrRepaintObjSetClip(rgn_clip, region, cw->clip, x, y);
+	     clip2 = clip;
+	     if (WinIsShaped(EobjGetWin(eo)))
+	       {
+		  clip2 = ERegionCopy(rgn_tmp, clip);
+		  ERegionIntersect(clip2, cw->shape);
+	       }
 	     if (EDebug(EDBUG_TYPE_COMPMGR2))
 		ECompMgrWinDumpInfo("ECompMgrRepaintObj trans", eo, clip, 0);
-	     EPictureSetClip(pbuf, clip);
+	     EPictureSetClip(pbuf, clip2);
 	     if (cw->opacity != OPAQUE && !cw->pict_alpha)
 		cw->pict_alpha =
 		   EPictureCreateSolid(Mode_compmgr.root, True,
