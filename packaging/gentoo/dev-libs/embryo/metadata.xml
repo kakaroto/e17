@@ -4,7 +4,6 @@
 <herd>no-herd</herd>
 <maintainer>
  <email>enlightenment@gentoo.org</email>
- <name>Enlightenment-Gentoo maintainers</name>
 </maintainer>
 <longdescription>
 Embryo is primarily a shared library that gives you an API to load and control
