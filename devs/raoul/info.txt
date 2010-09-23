@@ -1,10 +1,11 @@
 Login:		raoul
 IRC Nick:	raoulh
 Name:		Raoul HECKY
-Location:	NONE, France
+Location:	Bartenheim, France
 E-Mail:		raoul.hecky@gmail.com
-WWW:		http://blog.calaos.fr/
-Managing:	none
-Contributing:	ewww
+WWW:		http://www..calaos.fr/
+Managing:	eskiss
+Contributing:	efl
 Group:		Applications
-Platform:	None
+Platform:	Ubuntu (Linux), Debian (Linux)
+GeoData:	47.636984 7.494564
