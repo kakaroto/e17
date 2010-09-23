@@ -3,7 +3,7 @@ IRC Nick:	raoulh
 Name:		Raoul HECKY
 Location:	Bartenheim, France
 E-Mail:		raoul.hecky@gmail.com
-WWW:		http://www..calaos.fr/
+WWW:		http://www.calaos.fr/
 Managing:	eskiss
 Contributing:	efl
 Group:		Applications
