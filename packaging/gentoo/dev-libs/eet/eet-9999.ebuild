@@ -1,55 +1,27 @@
 # Copyright 1999-2010 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
+# $Header: /var/cvsroot/gentoo-x86/dev-libs/eet/eet-9999.ebuild,v 1.4 2005/03/25 17:51:29 vapier Exp $
 
-EAPI="2"
-EFL_PKG_IUSE="doc test"
+EAPI=2
 
-inherit efl
+inherit enlightenment
 
 DESCRIPTION="E file chunk reading/writing library"
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/Eet"
-SRC_URI=""
 
-LICENSE="BSD"
-SLOT="0"
-KEYWORDS=""
-
-IUSE="+threads debug gnutls ssl"
-
-RDEPEND="
+RDEPEND=">=dev-libs/eina-9999
 	media-libs/jpeg
-	>=dev-libs/eina-9999
 	sys-libs/zlib
 	gnutls? ( net-libs/gnutls )
 	!gnutls? ( ssl? ( dev-libs/openssl ) )"
-DEPEND="
-	${RDEPEND}
-	test? ( dev-util/lcov )
-	"
+DEPEND="${RDEPEND}
+	test? ( dev-libs/check
+		dev-util/lcov )"
+
+IUSE="debug examples gnutls ssl static-libs +threads"
 
 src_configure() {
-	local SSL_FLAGS="" DEBUG_FLAGS="" TEST_FLAGS=""
-
-	# ???: should we use 'use_enable' for these as well?
-	if use debug; then
-		DEBUG_FLAGS="
-		  --disable-amalgamation
-		  --enable-assert
-		"
-	else
-		DEBUG_FLAGS="
-		  --enable-amalgamation
-		  --disable-assert
-		"
-	fi
-
-	if use test; then
-		TEST_FLAGS="
-		  --enable-tests
-		  --enable-coverage
-		"
-	fi
+	local SSL_FLAGS=""
 
 	if use gnutls; then
 		if use ssl; then
@@ -57,34 +29,40 @@ src_configure() {
 			ewarn "gnutls and not openssl for cipher and signature support"
 		fi
 		SSL_FLAGS="
-		  --enable-cipher
-		  --enable-signature
-		  --disable-openssl
-		  --enable-gnutls
-		"
+			--enable-cipher
+			--enable-signature
+			--disable-openssl
+			--enable-gnutls"
 	elif use ssl; then
 		SSL_FLAGS="
-		  --enable-cipher
-		  --enable-signature
-		  --enable-openssl
-		  --disable-gnutls
-		"
+			--enable-cipher
+			--enable-signature
+			--enable-openssl
+			--disable-gnutls"
 	else
 		SSL_FLAGS="
-		  --disable-cipher
-		  --disable-signature
-		  --disable-openssl
-		  --disable-gnutls
-		"
+			--disable-cipher
+			--disable-signature
+			--disable-openssl
+			--disable-gnutls"
 	fi
 
 	export MY_ECONF="
-	  ${MY_ECONF}
-	  $(use_enable threads posix-threads)
-	  ${SSL_FLAGS}
-	  ${DEBUG_FLAGS}
-	  ${TEST_FLAGS}
-	"
+		$(use_enable !debug amalgamation)
+		$(use_enable debug assert)
+		$(use_enable doc)
+		$(use_enable test tests)
+		$(use_enable test coverage)
+		$(use_enable threads posix-threads)
+		${SSL_FLAGS}
+		${MY_ECONF}"
 
-	efl_src_configure
+	enlightenment_src_configure
+}
+
+src_install() {
+	enlightenment_src_install
+	rm -r src/examples/Makefile* || die
+	docinto examples
+	dodoc src/examples/* || die
 }
