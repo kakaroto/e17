@@ -2,67 +2,16 @@
 <!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
 <herd>no-herd</herd>
-<maintainer>
- <email>enlightenment@gentoo.org</email>
- <name>Enlightenment-Gentoo maintainers</name>
-</maintainer>
-<use>
- <flag name="udev">Enable devices discovery via udev</flag>
- <flag name="exchange">Enable Enlightenment's <pkg>net-libs/exchange</pkg> to get themes and wallpapers.</flag>
- <flag name="tracker">Enable the search plugin using <pkg>app-misc/tracker</pkg> in Everything launcher.</flag>
- <flag name="pm-utils">Integrate with <pkg>sys-power/pm-utils</pkg> to provide hibernate and suspend.</flag>
- <flag name="xinerama">Enable multiple screen setup (xinerama and xrandr).</flag>
- <flag name="connman">Enable <pkg>net-misc/connman</pkg> support to manage network connections.</flag>
- <flag name="bluetooth">Enable <pkg>net-wireless/bluez</pkg> support to manage bluetooth devices.</flag>
- <flag name="ofono">Enable <pkg>net-misc/ofono</pkg> support to manage telephony (GSM/UMTS).</flag>
- <flag name="temperature">Enable temperature module.</flag>
- <flag name="battery">Enable battery module.</flag>
- <flag name="clock">Enable clock module.</flag>
- <flag name="comp">Enable composite module for desktop transparency effects.</flag>
- <flag name="conf-borders">Enable borders configuration.</flag>
- <flag name="conf-colors">Enables the configuration of Colors.</flag>
- <flag name="conf-desklock">Enables the configuration of Desklock.</flag>
- <flag name="conf-desk">Enables the configuration of Desk.</flag>
- <flag name="conf-desks">Enables the configuration of Desks.</flag>
- <flag name="conf-dialogs">Enables the configuration of Dialogs.</flag>
- <flag name="conf-display">Enables the configuration of Displays.</flag>
- <flag name="conf-dpms">Enables the configuration of DPMS.</flag>
- <flag name="conf-engine">Enables the configuration of Engine for rendering.</flag>
- <flag name="conf-fonts">Enables the configuration of Fonts.</flag>
- <flag name="conf-imc">Enables the configuration of IMC.</flag>
- <flag name="conf-intl">Enables the configuration of Intl.</flag>
- <flag name="conf-menus">Enables the configuration of Menus.</flag>
- <flag name="conf-mime">Enables the configuration of Mime-types.</flag>
- <flag name="conf-mouse">Enables the configuration of Mice.</flag>
- <flag name="conf">Enables the configuration panel.</flag>
- <flag name="conf-paths">Enables the configuration of Paths.</flag>
- <flag name="conf-profiles">Enables the configuration of Profiles.</flag>
- <flag name="conf-scale">Enables the configuration of Scale.</flag>
- <flag name="conf-shelves">Enables the configuration of Shelves.</flag>
- <flag name="conf-startup">Enables the configuration of Startup.</flag>
- <flag name="conf-theme">Enables the configuration of Themes.</flag>
- <flag name="conf-winlist">Enables the configuration of Winlist.</flag>
- <flag name="cpufreq">Enable the Cpufreq module.</flag>
- <flag name="dropshadow">Enable the Dropshadow module.</flag>
- <flag name="everything">Enable the Everything module.</flag>
- <flag name="fileman">Enable the Fileman module for browsing files.</flag>
- <flag name="ibar">Enable the Ibar module.</flag>
- <flag name="ibox">Enable the Ibox module.</flag>
- <flag name="illume2">Enable the Illume2 module.</flag>
- <flag name="illume">Enable the Illume module.</flag>
- <flag name="ofono">Enable the Ofono module.</flag>
- <flag name="pager">Enable the Pager module.</flag>
- <flag name="start">Enable the Start module.</flag>
- <flag name="sysactions">Install the /etc/enlightenment/sysactions.conf file.</flag>
- <flag name="syscon">Enable the Syscon module.</flag>
- <flag name="systray">Enable the Systray module.</flag>
- <flag name="winlist">Enable the Window Listing (alt-tab) module.</flag>
- <flag name="wizard">Enable welcome/first run wizard module.</flag>
- <flag name="everything-files">Enable the Everything-Files module.</flag>
- <flag name="everything-apps">Enable the Everything-Apps module.</flag>
- <flag name="everything-calc">Enable the Everything-Calc module.</flag>
- <flag name="everything-aspell">Enable the Everything-Aspell module.</flag>
- <flag name="everything-settings">Enable the Everything-Settings module.</flag>
- <flag name="everything-windows">Enable the Everything-Windows module.</flag>
-</use>
+    <maintainer>
+	 <email>enlightenment@gentoo.org</email>
+    </maintainer>
+
+    <use>
+	<flag name='exchange'>
+	  Add support for <pkg>app-misc/exchange</pkg> - the enlightened way to exchange stuffs!
+	</flag>
+	<flag name='udev'>
+	  Use sys-fs/udev to determine available devices
+	</flag>
+    </use>
 </pkgmetadata>
