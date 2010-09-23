@@ -2,27 +2,12 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI="2"
-EFL_PKG_IUSE="doc"
+inherit enlightenment
 
-inherit efl
+DESCRIPTION="library to simplify the use of devices"
+HOMEPAGE="http://trac.enlightenment.org/e/wiki/Eeze"
 
-DESCRIPTION="Enlightenment's integration to devices"
-HOMEPAGE="http://www.enlightenment.org"
-SRC_URI=""
+IUSE="static-libs"
 
-LICENSE="BSD"
-SLOT="0"
-KEYWORDS=""
-
-IUSE=""
-
-RDEPEND="
-	>=dev-libs/ecore-9999
-	>=sys-fs/udev-141-r1
-"
+RDEPEND="dev-libs/ecore"
 DEPEND="${RDEPEND}"
-
-src_configure() {
-	efl_src_configure
-}
