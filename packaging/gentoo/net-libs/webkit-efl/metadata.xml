@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<herd>no-herd</herd>
+<maintainer>
+ <email>enlightenment@gentoo.org</email>
+ <name>Enlightenment-Gentoo maintainers</name>
+</maintainer>
+<use>
+ <flag name="libsoup">Enable glib/libsoup network backend</flag>
+</use>
+<longdescription>
+Webkit-EFL is the Enlightened variant of webkit
+</longdescription>
+</pkgmetadata>
