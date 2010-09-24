@@ -33,7 +33,7 @@ IUSE_E_MODULES="${__EVRY_MODS//@/e_modules_everything-}
 IUSE="acpi bluetooth exchange hal pam spell static-libs +udev ${IUSE_E_MODULES}"
 
 # XXX: missing USE=hal depend ?
-RDEPEND="exchange? ( >=app-misc/exchange-9999 )
+RDEPEND="exchange? ( >=net-libs/exchange-9999 )
 	pam? ( sys-libs/pam )
 	>=dev-libs/efreet-9999
 	>=dev-libs/eina-9999
