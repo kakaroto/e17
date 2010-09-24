@@ -38,6 +38,20 @@ _list_page_song(void *data, Evas_Object *o __UNUSED__, void *event_info)
 }
 
 static void
+_list_page_folder_songs(void *data, Evas_Object *o __UNUSED__, void *event_info)
+{
+   List *list = data;
+   Evas_Object *page = event_info;
+   EINA_SAFETY_ON_NULL_RETURN(page);
+   list->page.current = page;
+   list->page.songs = page;
+   evas_object_smart_callback_add(page, "back", _list_page_back, list);
+   evas_object_smart_callback_add(page, "song", _list_page_song, list);
+   list->page.list = eina_list_append(list->page.list, page);
+   elm_pager_content_push(list->pager, page);
+}
+
+static void
 _list_page_folder(void *data, Evas_Object *o __UNUSED__, void *event_info)
 {
    List *list = data;
@@ -45,8 +59,9 @@ _list_page_folder(void *data, Evas_Object *o __UNUSED__, void *event_info)
    EINA_SAFETY_ON_NULL_RETURN(page);
    list->page.current = page;
    evas_object_smart_callback_add(page, "back", _list_page_back, list);
-   evas_object_smart_callback_add(page, "song", _list_page_song, list);
    evas_object_smart_callback_add(page, "folder", _list_page_folder, list);
+   evas_object_smart_callback_add
+     (page, "folder-songs", _list_page_folder_songs, list);
    list->page.list = eina_list_append(list->page.list, page);
    elm_pager_content_push(list->pager, page);
 }

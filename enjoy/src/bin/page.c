@@ -558,7 +558,8 @@ _album_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
    char buf[128];
    snprintf(buf, sizeof(buf), "Songs of %s", nameid->name);
    Evas_Object *next = _page_songs_add(page->layout, it, buf);
-   if (next) evas_object_smart_callback_call(page->layout, "folder", next);
+   if (next)
+     evas_object_smart_callback_call(page->layout, "folder-songs", next);
 }
 
 static Evas_Object *
@@ -597,7 +598,8 @@ _artist_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info
    char buf[128];
    snprintf(buf, sizeof(buf), "Songs by %s", nameid->name);
    Evas_Object *next = _page_songs_add(page->layout, it, buf);
-   if (next) evas_object_smart_callback_call(page->layout, "folder", next);
+   if (next)
+     evas_object_smart_callback_call(page->layout, "folder-songs", next);
 }
 
 static Evas_Object *
@@ -636,7 +638,8 @@ _genre_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
    char buf[128];
    snprintf(buf, sizeof(buf), "Songs of %s", nameid->name);
    Evas_Object *next = _page_songs_add(page->layout, it, buf);
-   if (next) evas_object_smart_callback_call(page->layout, "folder", next);
+   if (next)
+     evas_object_smart_callback_call(page->layout, "folder-songs", next);
 }
 
 static Evas_Object *
@@ -669,6 +672,7 @@ typedef struct _Static_Item
    const char *label;
    Evas_Object *(*action)(Evas_Object *parent, void *data);
    const void *data;
+   const char *signal;
 } Static_Item;
 
 static char *
@@ -687,7 +691,8 @@ _static_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info
    EINA_SAFETY_ON_NULL_RETURN(si);
    EINA_SAFETY_ON_NULL_RETURN(si->action);
    next = si->action(page->layout, (void *)si->data);
-   if (next) evas_object_smart_callback_call(page->layout, "folder", next);
+   if (next)
+     evas_object_smart_callback_call(page->layout, si->signal, next);
 }
 
 static Evas_Object *
@@ -743,10 +748,10 @@ page_root_add(Evas_Object *parent)
      offsetof(Static_Item, label)
    };
    static const Static_Item root_items[] = {
-     {"All Songs", _page_all_songs_add, "All Songs"},
-     {"Albums", _page_all_albums_add, "All Albums"},
-     {"Artists", _page_all_artists_add, "All Artists"},
-     {"Genres", _page_all_genres_add, "All Genres"},
+     {"All Songs", _page_all_songs_add, "All Songs", "folder-songs"},
+     {"Albums", _page_all_albums_add, "All Albums", "folder"},
+     {"Artists", _page_all_artists_add, "All Artists", "folder"},
+     {"Genres", _page_all_genres_add, "All Genres", "folder"},
    };
    Eina_Iterator *it = _array_iterator_new
      (root_items, sizeof(Static_Item), ARRAY_SIZE(root_items));
