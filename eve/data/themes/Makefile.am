@@ -44,14 +44,18 @@ images = \
     cur_shad.png \
     progress-bar-background.png \
     arrow_right.png \
+    toggle_bg.png  \
+    toggle_off.png \
+    toggle_on.png \
     check.png
 
-edcdeps = data/themes/elm-gengrid.edc \
-    data/themes/elm-notify.edc \
-    data/themes/elm-scroller.edc \
-    data/themes/elm-entry.edc \
-    data/themes/elm-list.edc \
-    data/themes/elm-pager.edc
+edcdeps = elm-gengrid.edc \
+    elm-notify.edc \
+    elm-scroller.edc \
+    elm-entry.edc \
+    elm-list.edc \
+    elm-pager.edc \
+    elm-toggle.edc
 
 fonts = 
 

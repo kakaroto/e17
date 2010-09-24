@@ -1205,6 +1205,7 @@ config_widget_get(Evas_Object *parent, More_Menu_Config *mmc)
          Evas_Object *toggle = elm_toggle_add(parent);
 
          conf_get = mmc->conf_get;
+         elm_object_style_set(toggle, "ewebkit");
          elm_toggle_state_set(toggle, conf_get(config));
          evas_object_smart_callback_add(toggle, "changed", cb_config_bool_changed, mmc);
 

@@ -251,6 +251,7 @@ collections {
 #include "elm-notify.edc"
 #include "elm-pager.edc"
 #include "elm-entry.edc"
+#include "elm-toggle.edc"
     group { name: "bg";
         parts {
             part { name: "bg";
