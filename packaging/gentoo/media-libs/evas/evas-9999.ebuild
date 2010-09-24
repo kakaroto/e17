@@ -33,7 +33,7 @@ RDEPEND="
 		xcb? (
 			x11-libs/xcb-util
 		) )
-	>=dev-libs/eet-9999
+	eet? ( >=dev-libs/eet-9999 )
 	media-libs/giflib
 	media-libs/jpeg
 	media-libs/libpng
@@ -88,6 +88,7 @@ src_configure() {
 		$(use_enable fontconfig)
 		$(use_enable gif image-loader-gif)
 		$(use_enable jpeg image-loader-jpeg)
+		$(use_enable eet image-loader-eet)
 		$(use_enable mmx cpu-mmx)
 		$(use_enable png image-loader-png)
 		$(use_enable sdl software-sdl)
