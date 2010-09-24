@@ -22,9 +22,9 @@ __CONF_MODS="
 	+@wallpaper2 +@window-display +@window-focus +@window-manipulation
 	+@window-remembers +@winlist"
 __NORM_MODS="
-	+@battery +@clock +@comp +@connman +@cpufreq +@dropshadow +@fileman
-	+@fileman_opinfo +@gadman +@ibar +@ibox @illume +@illume2 +@mixer
-	+@msgbus +@ofono +@pager +@start +@syscon +@systray +@temperature
+	+@battery +@clock +@comp @connman +@cpufreq +@dropshadow +@fileman
+	+@fileman_opinfo +@gadman +@ibar +@ibox @illume @illume2 +@mixer
+	+@msgbus @ofono +@pager +@start +@syscon +@systray +@temperature
 	+@winlist +@wizard"
 IUSE_E_MODULES="${__EVRY_MODS//@/e_modules_everything-}
 	${__CONF_MODS//@/e_modules_conf-}
