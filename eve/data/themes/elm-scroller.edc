@@ -361,7 +361,7 @@
        }
     }
  }
- group { name: "elm/scroller/base/ewebkit/url";
+ group { name: "elm/scroller/entry/ewebkit/url";
     parts {
        part { name: "bg";
           type: RECT;

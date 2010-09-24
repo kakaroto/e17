@@ -46,9 +46,16 @@ images = \
     arrow_right.png \
     check.png
 
+edcdeps = data/themes/elm-gengrid.edc \
+    data/themes/elm-notify.edc \
+    data/themes/elm-scroller.edc \
+    data/themes/elm-entry.edc \
+    data/themes/elm-list.edc \
+    data/themes/elm-pager.edc
+
 fonts = 
 
-EXTRA_DIST = default.edc $(images) $(fonts)
+EXTRA_DIST = default.edc $(images) $(fonts) $(edcdeps)
 
 default.edj: Makefile $(images) $(fonts) default.edc
 	$(EDJE_CC) $(EDJE_FLAGS) \
