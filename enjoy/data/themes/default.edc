@@ -190,7 +190,7 @@ collections {
 
    group { name: "elm/genlist/item_compress/song/default";
       alias: "elm/genlist/item_compress_odd/song/default";
-      data.item: "labels" "text.title text.album-artist";
+      data.item: "labels" "ejy.text.title ejy.text.album-artist";
       //data.item: "icons" "swallow.cover";
       parts {
          part {
@@ -203,7 +203,7 @@ collections {
          }
 
          part {
-            name: "text.title";
+            name: "ejy.text.title";
             type: TEXT;
             mouse_events: 0;
             scale: 1;
@@ -217,7 +217,7 @@ collections {
                rel2 {
                   relative: 1.0 0.0;
                   offset: -5 -2;
-                  to_y: "text.album-artist";
+                  to_y: "ejy.text.album-artist";
                }
                text {
                   font: "Sans:style=Bold";
@@ -234,13 +234,14 @@ collections {
          }
 
          part {
-            name: "text.album-artist";
+            name: "ejy.text.album-artist";
             type: TEXT;
             mouse_events: 0;
             description {
                state: "default" 0.0;
                color: 128 128 128 255;
                align: 0.0 1.0;
+               fixed: 1 1;
                rel1 {
                   relative: 0.0 1.0;
                   offset: 4 -3;
@@ -254,7 +255,7 @@ collections {
                   size: 8;
                   min: 0 1;
                   align: 0.0 1.0;
-                  text: "Album";
+                  text: "";
                }
             }
          }
@@ -283,14 +284,14 @@ collections {
             signal:  "elm,state,selected";
             source:  "elm";
             action:  STATE_SET "selected" 0.0;
-            target:  "text.title";
+            target:  "ejy.text.title";
          }
          program {
             name:    "go_passive";
             signal:  "elm,state,unselected";
             source:  "elm";
             action:  STATE_SET "default" 0.0;
-            target:  "text.title";
+            target:  "ejy.text.title";
          }
       }
    }

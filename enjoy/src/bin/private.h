@@ -75,6 +75,11 @@ struct _Song
       unsigned int artist;
       unsigned int genre;
    } len; /* strlen of string fields */
+   struct { /* not from db, for runtime use */
+      Eina_Bool fetched_album:1;
+      Eina_Bool fetched_artist:1;
+      Eina_Bool fetched_genre:1;
+   } flags;
 };
 
 Eina_Iterator *db_songs_get(DB *db); /* walks over 'const Song*'  */
@@ -82,6 +87,9 @@ Song          *db_song_copy(const Song *orig);
 void           db_song_free(Song *song);
 Eina_Bool      db_song_rating_set(DB *db, Song *song, int rating);
 Eina_Bool      db_song_length_set(DB *db, Song *song, int length);
+Eina_Bool      db_song_album_fetch(DB *db, Song *song);
+Eina_Bool      db_song_artist_fetch(DB *db, Song *song);
+Eina_Bool      db_song_genre_fetch(DB *db, Song *song);
 
 Eina_Iterator *db_album_songs_get(DB *db, int64_t album_id);
 Eina_Iterator *db_artist_songs_get(DB *db, int64_t artist_id);

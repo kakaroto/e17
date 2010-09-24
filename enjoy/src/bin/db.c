@@ -12,6 +12,9 @@ struct _DB
       sqlite3_stmt *songs_get;
       sqlite3_stmt *album_songs_get;
       sqlite3_stmt *artist_songs_get;
+      sqlite3_stmt *album_get;
+      sqlite3_stmt *artist_get;
+      sqlite3_stmt *genre_get;
    } stmt;
 };
 
@@ -82,43 +85,35 @@ _db_stmts_compile(DB *db)
    C(songs_get,
      "SELECT files.id, files.path, files.size, "
      " audios.title, audios.album_id, audios.artist_id, audios.genre_id, "
-     " audios.trackno, audios.rating, audios.playcnt, audios.length, "
-     " audio_albums.name, audio_artists.name, audio_genres.name "
-     "FROM audios, files, audio_albums, audio_artists, audio_genres "
+     " audios.trackno, audios.rating, audios.playcnt, audios.length "
+     "FROM audios, files "
      "WHERE "
-     " files.id = audios.id AND "
-     " audio_albums.id = audios.album_id AND "
-     " audio_artists.id = audios.artist_id AND "
-     " audio_genres.id = audios.genre_id "
+     " files.id = audios.id "
      "ORDER BY UPPER(audios.title)");
 
    C(album_songs_get,
      "SELECT files.id, files.path, files.size, "
      " audios.title, audios.album_id, audios.artist_id, audios.genre_id, "
-     " audios.trackno, audios.rating, audios.playcnt, audios.length, "
-     " audio_albums.name, audio_artists.name, audio_genres.name "
-     "FROM audios, files, audio_albums, audio_artists, audio_genres "
+     " audios.trackno, audios.rating, audios.playcnt, audios.length "
+     "FROM audios, files "
      "WHERE "
      " files.id = audios.id AND "
-     " audio_albums.id = audios.album_id AND "
-     " audio_artists.id = audios.artist_id AND "
-     " audio_genres.id = audios.genre_id AND "
      " audios.album_id = ? "
      "ORDER BY audios.trackno, UPPER(audios.title)");
 
    C(artist_songs_get,
      "SELECT files.id, files.path, files.size, "
      " audios.title, audios.album_id, audios.artist_id, audios.genre_id, "
-     " audios.trackno, audios.rating, audios.playcnt, audios.length, "
-     " audio_albums.name, audio_artists.name, audio_genres.name "
-     "FROM audios, files, audio_albums, audio_artists, audio_genres "
+     " audios.trackno, audios.rating, audios.playcnt, audios.length "
+     "FROM audios, files "
      "WHERE "
      " files.id = audios.id AND "
-     " audio_albums.id = audios.album_id AND "
-     " audio_artists.id = audios.artist_id AND "
-     " audio_genres.id = audios.genre_id AND "
      " audios.artist_id = ? "
      "ORDER BY UPPER(audios.title)");
+
+   C(album_get, "SELECT name FROM audio_albums WHERE id = ?");
+   C(artist_get, "SELECT name FROM audio_artists WHERE id = ?");
+   C(genre_get, "SELECT name FROM audio_genres WHERE id = ?");
 
 #undef C
    return EINA_TRUE;
@@ -135,6 +130,9 @@ _db_stmts_finalize(DB *db)
    F(songs_get);
    F(album_songs_get);
    F(artist_songs_get);
+   F(album_get);
+   F(artist_get);
+   F(genre_get);
 
 #undef F
    return ret;
@@ -312,9 +310,6 @@ _db_iterator_songs_next(Eina_Iterator *iterator, void **data)
    INT(rating, 8);
    INT(playcnt, 9);
    INT(length, 10);
-   STR(album, 11);
-   STR(artist, 12);
-   STR(genre, 13);
 
 #undef STR
 #undef INT
@@ -407,6 +402,133 @@ db_artist_songs_get(DB *db, int64_t artist_id)
    EINA_MAGIC_SET(&it->base.base, EINA_MAGIC_ITERATOR);
    return &it->base.base;
 }
+
+Eina_Bool
+db_song_album_fetch(DB *db, Song *song)
+{
+   sqlite3_stmt *stmt;
+   Eina_Bool ret;
+   int err;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(db, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(song, EINA_FALSE);
+   if (song->flags.fetched_album) return EINA_TRUE;
+
+   stmt = db->stmt.album_get;
+   if (!_db_stmt_bind_int64(stmt, 1, song->album_id))
+     return EINA_FALSE;
+
+   err = sqlite3_step(stmt);
+   if (err == SQLITE_ROW)
+     {
+        eina_stringshare_replace
+          (&song->album, (const char *)sqlite3_column_text(stmt, 0));
+        song->len.album = sqlite3_column_bytes(stmt, 0);
+        ret = EINA_TRUE;
+     }
+   else if (err == SQLITE_DONE)
+     {
+        DBG("no album with id=%lld", (long long)song->album_id);
+        eina_stringshare_replace(&song->album, NULL);
+        song->len.album = 0;
+        ret = EINA_TRUE;
+     }
+   else
+     {
+        ERR("could not query album with id=%lld: %s",
+            (long long)song->album_id, sqlite3_errmsg(db->handle));
+        ret = EINA_FALSE;
+     }
+
+   _db_stmt_reset(stmt);
+   song->flags.fetched_album = ret;
+   return ret;
+}
+
+Eina_Bool
+db_song_artist_fetch(DB *db, Song *song)
+{
+   sqlite3_stmt *stmt;
+   Eina_Bool ret;
+   int err;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(db, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(song, EINA_FALSE);
+   if (song->flags.fetched_artist) return EINA_TRUE;
+
+   stmt = db->stmt.artist_get;
+   if (!_db_stmt_bind_int64(stmt, 1, song->artist_id))
+     return EINA_FALSE;
+
+   err = sqlite3_step(stmt);
+   if (err == SQLITE_ROW)
+     {
+        eina_stringshare_replace
+          (&song->artist, (const char *)sqlite3_column_text(stmt, 0));
+        song->len.artist = sqlite3_column_bytes(stmt, 0);
+        ret = EINA_TRUE;
+     }
+   else if (err == SQLITE_DONE)
+     {
+        DBG("no artist with id=%lld", (long long)song->artist_id);
+        eina_stringshare_replace(&song->artist, NULL);
+        song->len.artist = 0;
+        ret = EINA_TRUE;
+     }
+   else
+     {
+        ERR("could not query artist with id=%lld: %s",
+            (long long)song->artist_id, sqlite3_errmsg(db->handle));
+        ret = EINA_FALSE;
+     }
+
+   _db_stmt_reset(stmt);
+   song->flags.fetched_artist = ret;
+   return ret;
+}
+
+Eina_Bool
+db_song_genre_fetch(DB *db, Song *song)
+{
+   sqlite3_stmt *stmt;
+   Eina_Bool ret;
+   int err;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(db, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(song, EINA_FALSE);
+   if (song->flags.fetched_genre) return EINA_TRUE;
+
+   stmt = db->stmt.genre_get;
+   if (!_db_stmt_bind_int64(stmt, 1, song->genre_id))
+     return EINA_FALSE;
+
+   err = sqlite3_step(stmt);
+   if (err == SQLITE_ROW)
+     {
+        eina_stringshare_replace
+          (&song->genre, (const char *)sqlite3_column_text(stmt, 0));
+        song->len.genre = sqlite3_column_bytes(stmt, 0);
+        ret = EINA_TRUE;
+     }
+   else if (err == SQLITE_DONE)
+     {
+        DBG("no genre with id=%lld", (long long)song->genre_id);
+        eina_stringshare_replace(&song->genre, NULL);
+        song->len.genre = 0;
+        ret = EINA_TRUE;
+     }
+   else
+     {
+        ERR("could not query genre with id=%lld: %s",
+            (long long)song->genre_id, sqlite3_errmsg(db->handle));
+        ret = EINA_FALSE;
+     }
+
+   _db_stmt_reset(stmt);
+   song->flags.fetched_genre = ret;
+   return ret;
+}
+
 
 
 /*

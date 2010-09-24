@@ -10,7 +10,7 @@
  */
 
 /* number of songs to populate at once before going back to mainloop */
-#define PAGE_SONGS_POPULATE_ITERATION_COUNT (128)
+#define PAGE_SONGS_POPULATE_ITERATION_COUNT (64)
 
 typedef struct _Page
 {
@@ -32,15 +32,36 @@ typedef struct _Page
 
 
 static char *
-_song_item_label_get(void *data, Evas_Object *list __UNUSED__, const char *part)
+_song_item_label_get(void *data, Evas_Object *list, const char *part)
 {
    Song *song = data;
 
-   if (!strcmp(part, "text.title"))
+   /* check if matches protocol */
+   if (strncmp(part, "ejy.text.", sizeof("ejy.text.") - 1) != 0)
+     return NULL;
+   part += sizeof("ejy.text.") - 1;
+
+   if (!strcmp(part, "title"))
      return strdup(song->title);
-   else if (!strcmp(part, "text.album-artist"))
+   else if (!strcmp(part, "trackno-title"))
      {
         char *str;
+        if (song->trackno < 1) return strdup(song->title);
+        if (asprintf(&str, "%d - %s", song->trackno, song->title) > 0)
+          return str;
+        return NULL;
+     }
+   else if (!strcmp(part, "album-artist"))
+     {
+        char *str;
+
+        if ((!song->flags.fetched_album) || (!song->flags.fetched_artist))
+          {
+             DB *db = evas_object_data_get(list, "_enjoy_db");
+             db_song_album_fetch(db, song);
+             db_song_artist_fetch(db, song);
+          }
+
         if ((!song->album) && (!song->artist)) return NULL;
         else if (!song->album) return strdup(song->artist);
         else if (!song->artist) return strdup(song->album);
@@ -49,10 +70,74 @@ _song_item_label_get(void *data, Evas_Object *list __UNUSED__, const char *part)
           return str;
         return NULL;
      }
-   else if (!strcmp(part, "text.album"))
-     return song->album ? strdup(song->album) : NULL;
-   else if (!strcmp(part, "text.artist"))
-     return song->artist ? strdup(song->artist) : NULL;
+   else if (!strcmp(part, "album"))
+     {
+        if (!song->flags.fetched_album)
+          {
+             DB *db = evas_object_data_get(list, "_enjoy_db");
+             db_song_album_fetch(db, song);
+          }
+        return song->album ? strdup(song->album) : NULL;
+     }
+   else if (!strcmp(part, "artist"))
+     {
+        if (!song->flags.fetched_artist)
+          {
+             DB *db = evas_object_data_get(list, "_enjoy_db");
+             db_song_artist_fetch(db, song);
+          }
+        return song->artist ? strdup(song->artist) : NULL;
+     }
+   else if (!strcmp(part, "genre"))
+     {
+        if (!song->flags.fetched_genre)
+          {
+             DB *db = evas_object_data_get(list, "_enjoy_db");
+             db_song_genre_fetch(db, song);
+          }
+        return song->genre ? strdup(song->genre) : NULL;
+     }
+   else if (!strcmp(part, "trackno"))
+     {
+        char *str;
+        if (song->trackno < 1) return NULL;
+        if (asprintf(&str, "%d", song->trackno) > 0)
+          return str;
+        return NULL;
+     }
+   else if (!strcmp(part, "playcnt"))
+     {
+        char *str;
+        if (song->playcnt < 1) return NULL;
+        if (asprintf(&str, "%d", song->playcnt) > 0)
+          return str;
+        return NULL;
+     }
+   else if (!strcmp(part, "rating"))
+     {
+        char *str;
+        if (song->rating < 1) return NULL;
+        if (asprintf(&str, "%d", song->rating) > 0)
+          return str;
+        return NULL;
+     }
+   else if (!strcmp(part, "length"))
+     {
+        char *str;
+        int len;
+        if (song->length < 1) return NULL;
+        if (song->length < 60)
+          len = asprintf(&str, "%d", song->length);
+        else if (song->length < 60 * 60)
+          len = asprintf(&str, "%d:%02d", song->length / 60, song->length % 60);
+        else
+          len = asprintf(&str, "%d:%02d:%02d",
+                         song->length / (60 * 60),
+                         (song->length / 60) % 60,
+                         song->length % 60);
+        if (len > 0) return str;
+        return NULL;
+     }
 
    return NULL;
 }
@@ -188,14 +273,15 @@ page_songs_add(Evas_Object *parent, Eina_Iterator *it, const char *title)
    elm_genlist_bounce_set(page->list, EINA_FALSE, EINA_TRUE);
    elm_genlist_horizontal_mode_set(page->list, ELM_LIST_COMPRESS);
    elm_genlist_compress_mode_set(page->list, EINA_TRUE);
-   elm_genlist_block_count_set(page->list, 1024);
+   elm_genlist_block_count_set(page->list, 256);
+   evas_object_data_set(page->list, "_enjoy_db",
+                        eina_iterator_container_get(it));
 
    evas_object_smart_callback_add
      (page->list, "selected", _page_songs_selected, page);
 
    s = edje_object_data_get(page->edje, "homogeneous");
    elm_genlist_homogeneous_set(page->list, s ? !!atoi(s) : EINA_FALSE);
-   printf("genlist homogeneous: %d\n", elm_genlist_homogeneous_get(page->list));
 
    elm_layout_content_set(obj, "ejy.swallow.list", page->list);
 
