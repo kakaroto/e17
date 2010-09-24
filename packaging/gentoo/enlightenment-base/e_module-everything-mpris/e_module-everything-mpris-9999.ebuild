@@ -19,5 +19,5 @@ KEYWORDS=""
 
 IUSE=""
 
-RDEPEND=">=x11-wm/enlightenment-9999[everything]"
+RDEPEND=">=x11-wm/enlightenment-9999[e_modules_everything]"
 DEPEND="${RDEPEND}"

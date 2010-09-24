@@ -25,7 +25,7 @@ __NORM_MODS="
 	+@battery +@clock +@comp @connman +@cpufreq +@dropshadow +@fileman
 	+@fileman_opinfo +@gadman +@ibar +@ibox @illume @illume2 +@mixer
 	+@msgbus @ofono +@pager +@start +@syscon +@systray +@temperature
-	+@winlist +@wizard"
+	+@winlist +@wizard +@everything"
 IUSE_E_MODULES="${__EVRY_MODS//@/e_modules_everything-}
 	${__CONF_MODS//@/e_modules_conf-}
 	${__NORM_MODS//@/e_modules_}"
@@ -46,7 +46,7 @@ RDEPEND="exchange? ( >=net-libs/exchange-9999 )
 	bluetooth? ( net-wireless/bluez )
 	udev? ( dev-libs/eeze )
 	spell? ( app-text/aspell )
-	e_modules_everything-calc? ( sys-devel/bc )"
+	e_modules_everything? ( e_modules_everything-calc? ( sys-devel/bc ) )"
 DEPEND="${RDEPEND}"
 
 src_prepare() {
@@ -55,6 +55,19 @@ src_prepare() {
 }
 
 src_configure() {
+	if ! use e_modules_everything; then
+		local u c
+		for u in ${IUSE_E_MODULES}; do
+			c=${u#+}
+			if [ $c == $u ]; then
+				continue
+			fi
+			if [ $c != ${c#e_modules_everything-} ]; then
+				ewarn "Tried to enable $c, but e_modules_everything is not enabled. $c disabled."
+			fi
+		done
+	fi
+
 	export MY_ECONF="
 		--disable-install-sysactions
 		$(use_enable acpi conf-acpibindings)
