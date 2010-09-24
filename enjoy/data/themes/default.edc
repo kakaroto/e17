@@ -140,6 +140,52 @@ collections {
          }
 
          part {
+            name: "songs";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 255 0 255 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: -40 10;
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -11 30;
+               }
+            }
+            description {
+               state: "visible" 0.0;
+               inherit: "default" 0.0;
+               color: 255 0 255 255;
+               visible: 1;
+            }
+         }
+         programs {
+            program {
+               name: "ejy,songs,clicked";
+               signal: "mouse,clicked,1";
+               source: "songs";
+               action: SIGNAL_EMIT "ejy,songs,clicked" "ejy";
+            }
+            program {
+               name: "ejy,songs,show";
+               signal: "ejy,songs,show";
+               source: "ejy";
+               action: STATE_SET "visible" 0.0;
+               target: "songs";
+            }
+            program {
+               name: "ejy,songs,hide";
+               signal: "ejy,songs,hide";
+               source: "ejy";
+               action: STATE_SET "hidden" 0.0;
+               target: "songs";
+            }
+         }
+
+         part {
             name: "ejy.text.title";
             type: TEXT;
             mouse_events: 0;
@@ -229,6 +275,52 @@ collections {
                signal: "mouse,clicked,1";
                source: "back";
                action: SIGNAL_EMIT "ejy,back,clicked" "ejy";
+            }
+         }
+
+         part {
+            name: "songs";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 255 0 255 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: -40 10;
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -11 30;
+               }
+            }
+            description {
+               state: "visible" 0.0;
+               inherit: "default" 0.0;
+               color: 255 0 255 255;
+               visible: 1;
+            }
+         }
+         programs {
+            program {
+               name: "ejy,songs,clicked";
+               signal: "mouse,clicked,1";
+               source: "songs";
+               action: SIGNAL_EMIT "ejy,songs,clicked" "ejy";
+            }
+            program {
+               name: "ejy,songs,show";
+               signal: "ejy,songs,show";
+               source: "ejy";
+               action: STATE_SET "visible" 0.0;
+               target: "songs";
+            }
+            program {
+               name: "ejy,songs,hide";
+               signal: "ejy,songs,hide";
+               source: "ejy";
+               action: STATE_SET "hidden" 0.0;
+               target: "songs";
             }
          }
 

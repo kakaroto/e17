@@ -6,19 +6,17 @@ struct _DB
    const char *path;
    sqlite3 *handle;
    struct {
-      /* just pre-compile most used and complex operations, no need to do so
-       * for simple update statements like "set song playcnt".
+      /* just pre-compile most used, no need to do so for rarely used
+       * update statements like "set song playcnt".
+       *
+       * DO NOT pre-compile statements that are used from iterators to
+       * populate huge lists, as the operations are asynchronous we
+       * might have user asking to load one while the other is still
+       * loading :-/
        */
-      sqlite3_stmt *songs_get;
-      sqlite3_stmt *album_songs_get;
-      sqlite3_stmt *artist_songs_get;
-      sqlite3_stmt *genre_songs_get;
       sqlite3_stmt *album_get;
       sqlite3_stmt *artist_get;
       sqlite3_stmt *genre_get;
-      sqlite3_stmt *albums_get;
-      sqlite3_stmt *artists_get;
-      sqlite3_stmt *genres_get;
    } stmt;
 };
 
@@ -86,52 +84,9 @@ _db_stmts_compile(DB *db)
      }                                                          \
    while (0)
 
-   C(songs_get,
-     "SELECT files.id, files.path, files.size, "
-     " audios.title, audios.album_id, audios.artist_id, audios.genre_id, "
-     " audios.trackno, audios.rating, audios.playcnt, audios.length "
-     "FROM audios, files "
-     "WHERE "
-     " files.id = audios.id "
-     "ORDER BY UPPER(audios.title)");
-
-   C(album_songs_get,
-     "SELECT files.id, files.path, files.size, "
-     " audios.title, audios.album_id, audios.artist_id, audios.genre_id, "
-     " audios.trackno, audios.rating, audios.playcnt, audios.length "
-     "FROM audios, files "
-     "WHERE "
-     " files.id = audios.id AND "
-     " audios.album_id = ? "
-     "ORDER BY audios.trackno, UPPER(audios.title)");
-
-   C(artist_songs_get,
-     "SELECT files.id, files.path, files.size, "
-     " audios.title, audios.album_id, audios.artist_id, audios.genre_id, "
-     " audios.trackno, audios.rating, audios.playcnt, audios.length "
-     "FROM audios, files "
-     "WHERE "
-     " files.id = audios.id AND "
-     " audios.artist_id = ? "
-     "ORDER BY UPPER(audios.title)");
-
-   C(genre_songs_get,
-     "SELECT files.id, files.path, files.size, "
-     " audios.title, audios.album_id, audios.artist_id, audios.genre_id, "
-     " audios.trackno, audios.rating, audios.playcnt, audios.length "
-     "FROM audios, files "
-     "WHERE "
-     " files.id = audios.id AND "
-     " audios.genre_id = ? "
-     "ORDER BY UPPER(audios.title)");
-
    C(album_get, "SELECT name FROM audio_albums WHERE id = ?");
    C(artist_get, "SELECT name FROM audio_artists WHERE id = ?");
    C(genre_get, "SELECT name FROM audio_genres WHERE id = ?");
-
-   C(albums_get, "SELECT id, name FROM audio_albums ORDER BY UPPER(name)");
-   C(artists_get, "SELECT id, name FROM audio_artists ORDER BY UPPER(name)");
-   C(genres_get, "SELECT id, name FROM audio_genres ORDER BY UPPER(name)");
 
 #undef C
    return EINA_TRUE;
@@ -145,18 +100,9 @@ _db_stmts_finalize(DB *db)
 #define F(m)                                            \
    ret &= _db_stmt_finalize(db->stmt.m, stringify(m));
 
-   F(songs_get);
-   F(album_songs_get);
-   F(artist_songs_get);
-   F(genre_songs_get);
-
    F(album_get);
    F(artist_get);
    F(genre_get);
-
-   F(albums_get);
-   F(artists_get);
-   F(genres_get);
 
 #undef F
    return ret;
@@ -211,7 +157,7 @@ Song *db_song_copy(const Song *orig)
    // TODO: move to mempool to avoid fragmentation!
    Song *copy;
    EINA_SAFETY_ON_NULL_RETURN_VAL(orig, NULL);
-   copy = malloc(sizeof(Song));
+   copy = calloc(1, sizeof(Song));
    EINA_SAFETY_ON_NULL_RETURN_VAL(copy, NULL);
 
    /* Note: cannot use eina_stringshare_ref() as value may be from sqlite
@@ -255,6 +201,7 @@ struct DB_Iterator
 {
    Eina_Iterator base;
    DB *db;
+   const char *stmt_name;
    sqlite3_stmt *stmt;
 };
 
@@ -286,6 +233,7 @@ _db_iterator_free(Eina_Iterator *iterator)
         return;
      }
    _db_stmt_reset(it->stmt);
+   _db_stmt_finalize(it->stmt, it->stmt_name);
    EINA_MAGIC_SET(&it->base, EINA_MAGIC_NONE);
    free(it);
 }
@@ -357,7 +305,21 @@ db_songs_get(DB *db)
    it->base.base.get_container = _db_iterator_container_get;
    it->base.base.free = _db_iterator_free;
    it->base.db = db;
-   it->base.stmt = db->stmt.songs_get;
+   it->base.stmt_name = "songs_get";
+   it->base.stmt = _db_stmt_compile
+     (db, it->base.stmt_name,
+      "SELECT files.id, files.path, files.size, "
+      " audios.title, audios.album_id, audios.artist_id, audios.genre_id, "
+      " audios.trackno, audios.rating, audios.playcnt, audios.length "
+      "FROM audios, files "
+      "WHERE "
+      " files.id = audios.id "
+      "ORDER BY UPPER(audios.title)");
+   if (!it->base.stmt)
+     {
+        free(it);
+        return NULL;
+     }
 
    EINA_MAGIC_SET(&it->base.base, EINA_MAGIC_ITERATOR);
    return &it->base.base;
@@ -390,7 +352,22 @@ db_album_songs_get(DB *db, int64_t album_id)
    it->base.base.get_container = _db_iterator_container_get;
    it->base.base.free = _db_iterator_free;
    it->base.db = db;
-   it->base.stmt = db->stmt.album_songs_get;
+   it->base.stmt_name = "album_songs_get";
+   it->base.stmt = _db_stmt_compile
+     (db, it->base.stmt_name,
+      "SELECT files.id, files.path, files.size, "
+      " audios.title, audios.album_id, audios.artist_id, audios.genre_id, "
+      " audios.trackno, audios.rating, audios.playcnt, audios.length "
+      "FROM audios, files "
+      "WHERE "
+      " files.id = audios.id AND "
+      " audios.album_id = ? "
+      "ORDER BY audios.trackno, UPPER(audios.title)");
+   if (!it->base.stmt)
+     {
+        free(it);
+        return NULL;
+     }
 
    if (!_db_stmt_bind_int64(it->base.stmt, 1, album_id))
      {
@@ -415,7 +392,22 @@ db_artist_songs_get(DB *db, int64_t artist_id)
    it->base.base.get_container = _db_iterator_container_get;
    it->base.base.free = _db_iterator_free;
    it->base.db = db;
-   it->base.stmt = db->stmt.artist_songs_get;
+   it->base.stmt_name = "artist_songs_get";
+   it->base.stmt = _db_stmt_compile
+     (db, it->base.stmt_name,
+      "SELECT files.id, files.path, files.size, "
+      " audios.title, audios.album_id, audios.artist_id, audios.genre_id, "
+      " audios.trackno, audios.rating, audios.playcnt, audios.length "
+      "FROM audios, files "
+      "WHERE "
+      " files.id = audios.id AND "
+      " audios.artist_id = ? "
+      "ORDER BY UPPER(audios.title)");
+   if (!it->base.stmt)
+     {
+        free(it);
+        return NULL;
+     }
 
    if (!_db_stmt_bind_int64(it->base.stmt, 1, artist_id))
      {
@@ -440,7 +432,22 @@ db_genre_songs_get(DB *db, int64_t genre_id)
    it->base.base.get_container = _db_iterator_container_get;
    it->base.base.free = _db_iterator_free;
    it->base.db = db;
-   it->base.stmt = db->stmt.genre_songs_get;
+   it->base.stmt_name = "genre_songs_get";
+   it->base.stmt = _db_stmt_compile
+     (db, it->base.stmt_name,
+      "SELECT files.id, files.path, files.size, "
+      " audios.title, audios.album_id, audios.artist_id, audios.genre_id, "
+      " audios.trackno, audios.rating, audios.playcnt, audios.length "
+      "FROM audios, files "
+      "WHERE "
+      " files.id = audios.id AND "
+      " audios.genre_id = ? "
+      "ORDER BY UPPER(audios.title)");
+   if (!it->base.stmt)
+     {
+        free(it);
+        return NULL;
+     }
 
    if (!_db_stmt_bind_int64(it->base.stmt, 1, genre_id))
      {
@@ -583,7 +590,7 @@ db_nameid_copy(const NameID *orig)
 {
    NameID *copy;
    EINA_SAFETY_ON_NULL_RETURN_VAL(orig, NULL);
-   copy = malloc(sizeof(NameID));
+   copy = calloc(1, sizeof(NameID));
    EINA_SAFETY_ON_NULL_RETURN_VAL(copy, NULL);
    copy->id = orig->id;
    copy->len = orig->len;
@@ -651,7 +658,15 @@ db_albums_get(DB *db)
    it->base.base.get_container = _db_iterator_container_get;
    it->base.base.free = _db_iterator_free;
    it->base.db = db;
-   it->base.stmt = db->stmt.albums_get;
+   it->base.stmt_name = "albums_get";
+   it->base.stmt = _db_stmt_compile
+     (db, it->base.stmt_name,
+      "SELECT id, name FROM audio_albums ORDER BY UPPER(name)");
+   if (!it->base.stmt)
+     {
+        free(it);
+        return NULL;
+     }
 
    EINA_MAGIC_SET(&it->base.base, EINA_MAGIC_ITERATOR);
    return &it->base.base;
@@ -670,7 +685,15 @@ db_artists_get(DB *db)
    it->base.base.get_container = _db_iterator_container_get;
    it->base.base.free = _db_iterator_free;
    it->base.db = db;
-   it->base.stmt = db->stmt.artists_get;
+   it->base.stmt_name = "artists_get";
+   it->base.stmt = _db_stmt_compile
+     (db, it->base.stmt_name,
+      "SELECT id, name FROM audio_artists ORDER BY UPPER(name)");
+   if (!it->base.stmt)
+     {
+        free(it);
+        return NULL;
+     }
 
    EINA_MAGIC_SET(&it->base.base, EINA_MAGIC_ITERATOR);
    return &it->base.base;
@@ -689,7 +712,15 @@ db_genres_get(DB *db)
    it->base.base.get_container = _db_iterator_container_get;
    it->base.base.free = _db_iterator_free;
    it->base.db = db;
-   it->base.stmt = db->stmt.genres_get;
+   it->base.stmt_name = "genres_get";
+   it->base.stmt = _db_stmt_compile
+     (db, it->base.stmt_name,
+      "SELECT id, name FROM audio_genres ORDER BY UPPER(name)");
+   if (!it->base.stmt)
+     {
+        free(it);
+        return NULL;
+     }
 
    EINA_MAGIC_SET(&it->base.base, EINA_MAGIC_ITERATOR);
    return &it->base.base;

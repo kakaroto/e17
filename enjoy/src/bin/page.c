@@ -140,7 +140,6 @@ _page_db_get(const Evas_Object *obj)
    return list_db_get(page->parent);
 }
 
-
 static Eina_Bool
 _page_populate(void *data)
 {
@@ -196,6 +195,8 @@ _page_selected(void *data, Evas_Object *o, void *event_info)
    page->cls->selected(data, o, event_info);
 }
 
+
+
 static void
 _page_index_changed(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info)
 {
@@ -218,6 +219,13 @@ _page_back(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED_
 {
    Page *page = data;
    evas_object_smart_callback_call(page->layout, "back", NULL);
+}
+
+static void
+_page_songs(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+{
+   Page *page = data;
+   evas_object_smart_callback_call(page->layout, "songs", NULL);
 }
 
 static Evas_Object *
@@ -273,6 +281,8 @@ _page_add(Evas_Object *parent, Eina_Iterator *it, const char *title, const Page_
    edje_object_part_text_set(page->edje, "ejy.text.title", page->title);
    edje_object_signal_callback_add
      (page->edje, "ejy,back,clicked", "ejy", _page_back, page);
+   edje_object_signal_callback_add
+     (page->edje, "ejy,songs,clicked", "ejy", _page_songs, page);
 
    page->list = elm_genlist_add(obj);
    elm_genlist_bounce_set(page->list, EINA_FALSE, EINA_TRUE);
@@ -301,6 +311,24 @@ _page_add(Evas_Object *parent, Eina_Iterator *it, const char *title, const Page_
  error:
    evas_object_del(obj); /* should delete everything */
    return NULL;
+}
+
+void
+page_songs_exists_changed(Evas_Object *obj, Eina_Bool exists)
+{
+   PAGE_GET_OR_RETURN(page, obj);
+   if (exists)
+     edje_object_signal_emit(page->edje, "ejy,songs,show", "ejy");
+   else
+     edje_object_signal_emit(page->edje, "ejy,songs,hide", "ejy");
+
+}
+
+const char *
+page_title_get(const Evas_Object *obj)
+{
+   PAGE_GET_OR_RETURN(page, obj, NULL);
+   return page->title;
 }
 
 
@@ -560,6 +588,8 @@ _album_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
    Evas_Object *next = _page_songs_add(page->layout, it, buf);
    if (next)
      evas_object_smart_callback_call(page->layout, "folder-songs", next);
+   elm_genlist_item_selected_set(event_info, EINA_FALSE);
+   page->selected = NULL;
 }
 
 static Evas_Object *
@@ -600,6 +630,8 @@ _artist_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info
    Evas_Object *next = _page_songs_add(page->layout, it, buf);
    if (next)
      evas_object_smart_callback_call(page->layout, "folder-songs", next);
+   elm_genlist_item_selected_set(event_info, EINA_FALSE);
+   page->selected = NULL;
 }
 
 static Evas_Object *
@@ -640,6 +672,8 @@ _genre_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
    Evas_Object *next = _page_songs_add(page->layout, it, buf);
    if (next)
      evas_object_smart_callback_call(page->layout, "folder-songs", next);
+   elm_genlist_item_selected_set(event_info, EINA_FALSE);
+   page->selected = NULL;
 }
 
 static Evas_Object *
@@ -693,6 +727,8 @@ _static_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info
    next = si->action(page->layout, (void *)si->data);
    if (next)
      evas_object_smart_callback_call(page->layout, si->signal, next);
+   elm_genlist_item_selected_set(event_info, EINA_FALSE);
+   page->selected = NULL;
 }
 
 static Evas_Object *

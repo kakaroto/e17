@@ -208,6 +208,17 @@ _win_list_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
 }
 
 static void
+_win_list_changed(void *data, Evas_Object *list __UNUSED__, void *event_info __UNUSED__)
+{
+   Win *w = data;
+   _win_song_set(w, list_selected_get(w->list));
+   if (list_songs_exists(w->list))
+     edje_object_signal_emit(w->edje, "ejy,songs,show", "ejy");
+   else
+     edje_object_signal_emit(w->edje, "ejy,songs,hide", "ejy");
+}
+
+static void
 _win_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Win *w = data;
@@ -277,6 +288,15 @@ _win_more(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__
 {
    Win *w = data;
    DBG("todo");
+}
+
+static void
+_win_songs(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+{
+   Win *w = data;
+   if (!list_songs_show(w->list)) return;
+   edje_object_signal_emit(w->edje, "ejy,mode,nowplaying,hide", "ejy");
+   edje_object_signal_emit(w->edje, "ejy,mode,list,show", "ejy");
 }
 
 //#define EDJE_SIGNAL_DEBUG 1
@@ -399,6 +419,7 @@ win_new(App *app)
      }
    elm_layout_content_set(w->layout, "ejy.swallow.list", w->list);
    evas_object_smart_callback_add(w->list, "selected", _win_list_selected, w);
+   evas_object_smart_callback_add(w->list, "changed", _win_list_changed, w);
 
    w->edje = elm_layout_edje_get(w->layout);
    edje_object_size_min_get(w->edje, &(w->min.w), &(w->min.h));
@@ -440,6 +461,8 @@ win_new(App *app)
      (w->edje, "ejy,mode,nowplaying,clicked", "ejy", _win_mode_nowplaying, w);
    edje_object_signal_callback_add
      (w->edje, "ejy,more,clicked", "ejy", _win_more, w);
+   edje_object_signal_callback_add
+     (w->edje, "ejy,songs,clicked", "ejy", _win_songs, w);
    edje_object_message_handler_set(w->edje, _win_edje_msg, w);
 
    edje_object_signal_emit(w->edje, "ejy,prev,disable", "ejy");

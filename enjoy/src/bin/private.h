@@ -38,12 +38,17 @@ Evas_Object *win_new(App *app);
 
 Evas_Object *list_add(Evas_Object *parent);
 Eina_Bool    list_populate(Evas_Object *list, DB *db);
+Eina_Bool    list_songs_show(Evas_Object *obj);
+Eina_Bool    list_songs_exists(const Evas_Object *obj);
 Song        *list_selected_get(const Evas_Object *list);
 Eina_Bool    list_next_exists(const Evas_Object *list);
 Song        *list_next_go(Evas_Object *list);
 Eina_Bool    list_prev_exists(const Evas_Object *list);
 Song        *list_prev_go(Evas_Object *list);
 DB          *list_db_get(const Evas_Object *obj);
+
+const char  *page_title_get(const Evas_Object *obj);
+void         page_songs_exists_changed(Evas_Object *obj, Eina_Bool exists);
 
 
 Evas_Object *page_root_add(Evas_Object *parent);
