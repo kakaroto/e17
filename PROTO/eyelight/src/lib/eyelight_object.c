@@ -37,6 +37,7 @@ extern "C"
 void *alloca (size_t);
 #endif
 
+#define EDJE_EDIT_IS_UNSTABLE_AND_I_KNOW_ABOUT_IT 1
 #include <Edje_Edit.h>
 #include <Emotion.h>
 
