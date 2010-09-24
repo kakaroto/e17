@@ -105,6 +105,8 @@ list_populate(Evas_Object *obj, DB *db)
    page = list->page.current = page_root_add(obj);
    if (!page) return EINA_FALSE;
    evas_object_smart_callback_add(page, "folder", _list_page_folder, list);
+   evas_object_smart_callback_add
+     (page, "folder-songs", _list_page_folder_songs, list);
    list->page.list = eina_list_append(list->page.list, page);
    elm_pager_content_push(list->pager, page);
 
