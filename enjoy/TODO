@@ -1,0 +1,97 @@
+UI - base ui similar to eve (browser)
+-------------------------------------
+ * top one of:
+   * list + header, allows going back or selecting new + filter
+   * cover + info
+ * bottom action bar (always visible):
+   * volume
+   * back
+   * forward
+   * play/pause (toggle)
+   * mini-mode (toggle)
+   * more: preferences, library manager, plugins? (cover fetch, etc)
+
+ List Mode:
+ .-------------------------------------.
+ | <BACK]     Albums by 'Artist'       |
+ }-------------------------------------{
+ | album name1                         |
+ | album name2                         |
+ | album name3                         |
+ | album name4                         |
+ | ...                                 |
+ | ...                                 |
+ | ...                                 |
+ | ...                                 |
+ | ...                                 |
+ }-------------------------------------{
+ | =====V----------------------------- |   <- volume
+ |       |       |      |      |       |
+ | <Prev | Next> | Play | Mode | Prefs |
+ |       |       |      |      |       |
+ `-------------------------------------'
+
+                           ^
+                           |
+                         toggles
+                           |
+                           V
+
+ Play Mode:
+ .-------------------------------------.
+ | 01 - My Song                        |
+ | By Artist                           |
+ | Album Name                          |
+ | * * * * *       [repeat] [random]   |  <- rating + toggles: repeat, random
+ | 02:03 ========V------------- -03:04 |  <- progress/seek
+ }-------------------------------------{
+ |                                     |
+ |                                     |
+ |                                     |
+ |                                     |  <- cover area
+ |                                     |
+ |                                     |
+ |                                     |
+ |                                     |
+ |                                     |
+ }-------------------------------------{
+ | =====V----------------------------- |   <- volume
+ |       |       |      |      |       |
+ | <Prev | Next> | Play | Mode | More  |
+ |       |       |      |      |       |
+ `-------------------------------------'
+
+
+Media List
+----------
+ * top shows "<Back", $CURRENT_SECTION [and filter field - later]
+ * all sections should start with "All songs"
+ * all sections should contain "Shuffle songs"
+ * root sections: Songs, Artist, Albums, Genres
+ * filter limits the current section and thus creates a dynamic playlist
+
+
+Library (all from "more")
+-------------------------
+ * manager: allows add/remove directories
+ * rescan: allows rescan media immediately
+ * stop-scan: while scanning, allows cancel the process
+
+
+More
+----
+ * Preferences:
+   * choose media backend (xine, gstreamer)
+ * Bookmarks? (show list of songs with bookmarked positions)
+
+
+Misc
+----
+ * single instance using dbus
+ * export mpris control interface (mini mode could be e17 control using it)
+ * support for e_notify (libnotify)
+ * read cover from id3? requires id3 image loader in evas
+ * fetch covers from webservices (amazon, last.fm)
+ * fetch lyrics from webservices (maybe use webkit)
+ * fetch track/artist/album info from webservices (wikipedia? uses webkit)
+ * audio bookmarks

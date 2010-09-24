@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Enjoy
+Comment=Music Player
+Exec=enjoy
+Icon=enjoy
+Terminal=false
+Type=Application
+Categories=Application;Audio;Player
