@@ -226,6 +226,11 @@ collections {
                   align: 0.0 0.5;
                }
             }
+            description {
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 200 20 20 255;
+            }
          }
 
          part {
@@ -270,6 +275,22 @@ collections {
                   offset: -1 -1;
                }
             }
+         }
+      }
+      programs {
+         program {
+            name:    "go_active";
+            signal:  "elm,state,selected";
+            source:  "elm";
+            action:  STATE_SET "selected" 0.0;
+            target:  "text.title";
+         }
+         program {
+            name:    "go_passive";
+            signal:  "elm,state,unselected";
+            source:  "elm";
+            action:  STATE_SET "default" 0.0;
+            target:  "text.title";
          }
       }
    }
