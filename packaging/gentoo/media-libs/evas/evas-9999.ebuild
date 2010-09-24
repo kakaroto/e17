@@ -97,41 +97,10 @@ src_configure() {
 		$(use_enable threads pthreads)
 		$(use_enable threads async-events)
 		$(use_enable threads async-preload)
-		$(use_enable threads async-render)
 		$(use_enable X software-xlib static)
 		$(use_enable X xrender-x11 static)
-		$(use_enable X software-16-x11 static)
 		$(use_enable xpm image-loader-xpm static)
-		--enable-evas-magic-debug \
-		--enable-static-software-generic \
-		--enable-buffer \
-		--enable-image-loader-eet \
-		--enable-font-loader-eet \
-		--enable-cpu-c \
-		--enable-scale-sample \
-		--enable-scale-smooth \
-		--enable-convert-8-rgb-332 \
-		--enable-convert-8-rgb-666 \
-		--enable-convert-8-rgb-232 \
-		--enable-convert-8-rgb-222 \
-		--enable-convert-8-rgb-221 \
-		--enable-convert-8-rgb-121 \
-		--enable-convert-8-rgb-111 \
-		--enable-convert-16-rgb-565 \
-		--enable-convert-16-rgb-555 \
-		--enable-convert-16-rgb-444 \
-		--enable-convert-16-rgb-rot-0 \
-		--enable-convert-16-rgb-rot-270 \
-		--enable-convert-16-rgb-rot-90 \
-		--enable-convert-24-rgb-888 \
-		--enable-convert-24-bgr-888 \
-		--enable-convert-32-rgb-8888 \
-		--enable-convert-32-rgbx-8888 \
-		--enable-convert-32-bgr-8888 \
-		--enable-convert-32-bgrx-8888 \
-		--enable-convert-32-rgb-rot-0 \
-		--enable-convert-32-rgb-rot-270 \
-		--enable-convert-32-rgb-rot-90"
+	"
 
 	enlightenment_src_configure
 }
