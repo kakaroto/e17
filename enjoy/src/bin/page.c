@@ -111,8 +111,8 @@ _page_songs_populate(void *data)
    return EINA_TRUE;
 
  end:
-     page->populate = NULL;
-     return EINA_FALSE;
+   page->populate = NULL;
+   return EINA_FALSE;
 }
 
 static void
@@ -242,6 +242,7 @@ page_songs_next_go(Evas_Object *obj)
    song = elm_genlist_item_data_get(it);
    page->selected = it;
    elm_genlist_item_selected_set(it, EINA_TRUE);
+   elm_genlist_item_bring_in(it);
    return song;
 }
 
@@ -266,5 +267,6 @@ page_songs_prev_go(Evas_Object *obj)
    song = elm_genlist_item_data_get(it);
    page->selected = it;
    elm_genlist_item_selected_set(it, EINA_TRUE);
+   elm_genlist_item_bring_in(it);
    return song;
 }
