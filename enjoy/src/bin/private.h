@@ -11,8 +11,12 @@
 #define stringify(X) #X
 
 typedef struct _App                     App;
-typedef struct _Song                    Song;
 typedef struct _DB                      DB;
+typedef struct _Song                    Song;
+typedef struct _NameID                  NameID;
+typedef struct _NameID                  Album;
+typedef struct _NameID                  Artist;
+typedef struct _NameID                  Genre;
 
 extern int _log_domain;
 
@@ -39,9 +43,11 @@ Eina_Bool    list_next_exists(const Evas_Object *list);
 Song        *list_next_go(Evas_Object *list);
 Eina_Bool    list_prev_exists(const Evas_Object *list);
 Song        *list_prev_go(Evas_Object *list);
+DB          *list_db_get(const Evas_Object *obj);
 
 
-Evas_Object *page_songs_add(Evas_Object *parent, Eina_Iterator *it, const char *title);
+Evas_Object *page_root_add(Evas_Object *parent);
+
 Song        *page_songs_selected_get(const Evas_Object *obj);
 Eina_Bool    page_songs_next_exists(const Evas_Object *obj);
 Song        *page_songs_next_go(Evas_Object *obj);
@@ -82,6 +88,13 @@ struct _Song
    } flags;
 };
 
+struct _NameID
+{
+   int64_t id;
+   const char *name;
+   unsigned int len;
+};
+
 Eina_Iterator *db_songs_get(DB *db); /* walks over 'const Song*'  */
 Song          *db_song_copy(const Song *orig);
 void           db_song_free(Song *song);
@@ -93,5 +106,21 @@ Eina_Bool      db_song_genre_fetch(DB *db, Song *song);
 
 Eina_Iterator *db_album_songs_get(DB *db, int64_t album_id);
 Eina_Iterator *db_artist_songs_get(DB *db, int64_t artist_id);
+Eina_Iterator *db_genre_songs_get(DB *db, int64_t genre_id);
+
+Eina_Iterator *db_albums_get(DB *db); /* walks over 'const Album*' */
+Eina_Iterator *db_artists_get(DB *db); /* walks over 'const Artist*' */
+Eina_Iterator *db_genres_get(DB *db); /* walks over 'const Genre*' */
+
+
+NameID        *db_nameid_copy(const NameID *nameid);
+#define        db_album_copy(v)  db_nameid_copy(v)
+#define        db_artist_copy(v) db_nameid_copy(v)
+#define        db_genre_copy(v)  db_nameid_copy(v)
+
+void           db_nameid_free(NameID *nameid);
+#define        db_album_free(v)  db_nameid_free(v)
+#define        db_artist_free(v) db_nameid_free(v)
+#define        db_genre_free(v)  db_nameid_free(v)
 
 #endif

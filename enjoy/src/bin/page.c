@@ -12,13 +12,103 @@
 /* number of songs to populate at once before going back to mainloop */
 #define PAGE_SONGS_POPULATE_ITERATION_COUNT (64)
 
+/* number of folders to populate at once before going back to mainloop */
+#define PAGE_FOLDERS_POPULATE_ITERATION_COUNT (64)
+
+#define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
+
+struct Array_Iterator
+{
+   Eina_Iterator base;
+   const void *container;
+   size_t current, count, item_size;
+};
+
+static void *
+_array_iterator_container_get(Eina_Iterator *iterator)
+{
+   struct Array_Iterator *it = (struct Array_Iterator *)iterator;
+   if (!EINA_MAGIC_CHECK(iterator, EINA_MAGIC_ITERATOR))
+     {
+        EINA_MAGIC_FAIL(iterator, EINA_MAGIC_ITERATOR);
+        return NULL;
+     }
+   return (void *)it->container;
+}
+
+static void
+_array_iterator_free(Eina_Iterator *iterator)
+{
+   struct Array_Iterator *it = (struct Array_Iterator *)iterator;
+   if (!EINA_MAGIC_CHECK(iterator, EINA_MAGIC_ITERATOR))
+     {
+        EINA_MAGIC_FAIL(iterator, EINA_MAGIC_ITERATOR);
+        return;
+     }
+   EINA_MAGIC_SET(&it->base, EINA_MAGIC_NONE);
+   free(it);
+}
+
+static Eina_Bool
+_array_iterator_next(Eina_Iterator *iterator, void **data)
+{
+   struct Array_Iterator *it = (struct Array_Iterator *)iterator;
+   if (!EINA_MAGIC_CHECK(iterator, EINA_MAGIC_ITERATOR))
+     {
+        EINA_MAGIC_FAIL(iterator, EINA_MAGIC_ITERATOR);
+        return EINA_FALSE;
+     }
+   EINA_SAFETY_ON_NULL_RETURN_VAL(data, EINA_FALSE);
+   *data = NULL;
+   if (it->current >= it->count) return EINA_FALSE;
+   *data = ((char *)it->container) + it->item_size * it->current;
+   it->current++;
+   return EINA_TRUE;
+}
+
+static Eina_Iterator *
+_array_iterator_new(const void *array, size_t item_size, size_t count)
+{
+   struct Array_Iterator *it = calloc(1, sizeof(*it));
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
+   it->base.get_container = _array_iterator_container_get;
+   it->base.free = _array_iterator_free;
+   it->base.next = _array_iterator_next;
+   it->container = array;
+   it->item_size = item_size;
+   it->count = count;
+   EINA_MAGIC_SET(&it->base, EINA_MAGIC_ITERATOR);
+   return &it->base;
+}
+
+static void *
+_data_from_itr_passthrough(const void *data)
+{
+   return (void *)data;
+}
+
+typedef struct _Page_Class
+{
+   const char *name;
+   const char *key;
+   const char *layout;
+   Evas_Smart_Cb selected;
+   const Elm_Genlist_Item_Class *item_cls;
+   size_t populate_iteration_count;
+   void *(*data_from_itr)(const void *data);
+   size_t data_letter_offset;
+} Page_Class;
+
 typedef struct _Page
 {
+   const Page_Class *cls;
    Evas_Object *layout;
    Evas_Object *edje;
    Evas_Object *list;
    Evas_Object *index;
+   Evas_Object *parent;
    const char *title;
+   void *container;
    Elm_Genlist_Item *selected;
    Elm_Genlist_Item *first;
    Eina_Iterator *iterator;
@@ -26,9 +116,209 @@ typedef struct _Page
    char last_index_letter[2];
 } Page;
 
-#define PAGE_SONGS_GET_OR_RETURN(page, obj, ...)                      \
-  Page *page = evas_object_data_get(obj, "_enjoy_page_songs");        \
-  do { if (!page) return __VA_ARGS__; } while (0)
+#define PAGE_GET_OR_RETURN(page, obj, ...)                      \
+  Page *page = evas_object_data_get(obj, "_enjoy_page");        \
+  do                                                            \
+    {                                                           \
+       if (!page)                                               \
+         {                                                      \
+            CRITICAL("Not a page: "#obj": %p", obj);            \
+            return __VA_ARGS__;                                 \
+         }                                                      \
+    }                                                           \
+  while (0)
+
+static DB *
+_page_db_get(const Evas_Object *obj)
+{
+   Page *page, *ppage;
+
+   page = evas_object_data_get(obj, "_enjoy_page");
+   EINA_SAFETY_ON_NULL_RETURN_VAL(page, NULL);
+   ppage = evas_object_data_get(page->parent, "_enjoy_page");
+   if (ppage) return _page_db_get(page->parent);
+   return list_db_get(page->parent);
+}
+
+
+static Eina_Bool
+_page_populate(void *data)
+{
+   Page *page = data;
+   const Page_Class *cls = page->cls;
+   unsigned int count;
+
+   for (count = 0; count < cls->populate_iteration_count; count++)
+     {
+        Elm_Genlist_Item *it;
+        char letter;
+        void *id, *od;
+        const char **letter_str;
+
+        if (!eina_iterator_next(page->iterator, &id)) goto end;
+        // TODO: evaluate if we should keep a full copy or just store
+        // fields of interest such as id, title, artist and album
+        od = cls->data_from_itr(id);
+        if (!od) goto end;
+
+        it = elm_genlist_item_append
+          (page->list, cls->item_cls, od,
+           NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL);
+
+        letter_str = (const char **)(((char *)od) + cls->data_letter_offset);
+
+        letter = toupper((*letter_str)[0]);
+        if (isalpha(letter) && (page->last_index_letter[0] != letter))
+          {
+             if ((page->first) && (!page->last_index_letter[0]))
+               elm_index_item_append(page->index, "Special", page->first);
+
+             page->last_index_letter[0] = letter;
+             elm_index_item_append(page->index, page->last_index_letter, it);
+          }
+        if (!page->first) page->first = it;
+     }
+
+   return EINA_TRUE;
+
+ end:
+   page->populate = NULL;
+   return EINA_FALSE;
+}
+
+static void
+_page_selected(void *data, Evas_Object *o, void *event_info)
+{
+   Page *page = data;
+   Elm_Genlist_Item *it = event_info;
+   if (page->selected == it) return;
+   page->selected = it;
+   page->cls->selected(data, o, event_info);
+}
+
+static void
+_page_index_changed(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info)
+{
+   Elm_Genlist_Item *it = event_info;
+   elm_genlist_item_top_bring_in(it);
+}
+
+static void
+_page_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+   Page *page = data;
+   eina_stringshare_del(page->title);
+   if (page->iterator) eina_iterator_free(page->iterator);
+   if (page->populate) ecore_idler_del(page->populate);
+   free(page);
+}
+
+static void
+_page_back(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+{
+   Page *page = data;
+   evas_object_smart_callback_call(page->layout, "back", NULL);
+}
+
+static Evas_Object *
+_page_add(Evas_Object *parent, Eina_Iterator *it, const char *title, const Page_Class *cls)
+{
+   Evas_Object *obj;
+   Page *page;
+   const char *s;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cls, NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cls->name, NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cls->key, NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cls->layout, NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cls->selected, NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cls->item_cls, NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cls->data_from_itr, NULL);
+
+   DBG("creating page %s with key %s, item style %s",
+       cls->name, cls->key, cls->item_cls->item_style);
+
+   obj = elm_layout_add(parent);
+   if (!obj)
+     {
+        eina_iterator_free(it);
+        return NULL;
+     }
+
+   page = calloc(1, sizeof(*page));
+   if (!page)
+     {
+        CRITICAL("could not allocate page memory!");
+        eina_iterator_free(it);
+        goto error;
+     }
+   evas_object_data_set(obj, "_enjoy_page", page);
+   evas_object_data_set(obj, cls->key, page);
+   evas_object_event_callback_add(obj, EVAS_CALLBACK_DEL, _page_del, page);
+   page->layout = obj;
+   page->iterator = it;
+   page->cls = cls;
+   page->parent = parent;
+
+   if (!elm_layout_file_set(obj, PACKAGE_DATA_DIR "/default.edj", cls->layout))
+     {
+        CRITICAL("no theme for '%s' at %s",
+                 cls->layout, PACKAGE_DATA_DIR "/default.edj");
+        goto error;
+     }
+
+   page->title = eina_stringshare_add(title);
+   page->edje = elm_layout_edje_get(obj);
+   edje_object_part_text_set(page->edje, "ejy.text.title", page->title);
+   edje_object_signal_callback_add
+     (page->edje, "ejy,back,clicked", "ejy", _page_back, page);
+
+   page->list = elm_genlist_add(obj);
+   elm_genlist_bounce_set(page->list, EINA_FALSE, EINA_TRUE);
+   elm_genlist_horizontal_mode_set(page->list, ELM_LIST_COMPRESS);
+   elm_genlist_compress_mode_set(page->list, EINA_TRUE);
+   elm_genlist_block_count_set(page->list, 256);
+
+   s = edje_object_data_get(page->edje, "homogeneous");
+   elm_genlist_homogeneous_set(page->list, s ? !!atoi(s) : EINA_FALSE);
+
+   elm_layout_content_set(obj, "ejy.swallow.list", page->list);
+
+   page->index = elm_index_add(obj);
+   evas_object_smart_callback_add
+     (page->index, "delay,changed", _page_index_changed, page);
+   elm_layout_content_set(obj, "ejy.swallow.index", page->index);
+
+   page->container = eina_iterator_container_get(it);
+   evas_object_data_set(page->list, "_enjoy_container", page->container);
+   evas_object_smart_callback_add(page->list, "selected", _page_selected, page);
+
+   page->populate = ecore_idler_add(_page_populate, page);
+
+   return obj;
+
+ error:
+   evas_object_del(obj); /* should delete everything */
+   return NULL;
+}
+
+
+/***********************************************************************
+ * SONGS
+ ***********************************************************************/
+
+#define PAGE_SONGS_GET_OR_RETURN(page, obj, ...)                \
+  Page *page = evas_object_data_get(obj, "_enjoy_page_songs");  \
+  do                                                            \
+    {                                                           \
+       if (!page)                                               \
+         {                                                      \
+            CRITICAL("Not a page_song: "#obj": %p", obj);       \
+            return __VA_ARGS__;                                 \
+         }                                                      \
+    }                                                           \
+  while (0)
 
 
 static char *
@@ -57,7 +347,7 @@ _song_item_label_get(void *data, Evas_Object *list, const char *part)
 
         if ((!song->flags.fetched_album) || (!song->flags.fetched_artist))
           {
-             DB *db = evas_object_data_get(list, "_enjoy_db");
+             DB *db = evas_object_data_get(list, "_enjoy_container");
              db_song_album_fetch(db, song);
              db_song_artist_fetch(db, song);
           }
@@ -74,7 +364,7 @@ _song_item_label_get(void *data, Evas_Object *list, const char *part)
      {
         if (!song->flags.fetched_album)
           {
-             DB *db = evas_object_data_get(list, "_enjoy_db");
+             DB *db = evas_object_data_get(list, "_enjoy_container");
              db_song_album_fetch(db, song);
           }
         return song->album ? strdup(song->album) : NULL;
@@ -83,7 +373,7 @@ _song_item_label_get(void *data, Evas_Object *list, const char *part)
      {
         if (!song->flags.fetched_artist)
           {
-             DB *db = evas_object_data_get(list, "_enjoy_db");
+             DB *db = evas_object_data_get(list, "_enjoy_container");
              db_song_artist_fetch(db, song);
           }
         return song->artist ? strdup(song->artist) : NULL;
@@ -92,7 +382,7 @@ _song_item_label_get(void *data, Evas_Object *list, const char *part)
      {
         if (!song->flags.fetched_genre)
           {
-             DB *db = evas_object_data_get(list, "_enjoy_db");
+             DB *db = evas_object_data_get(list, "_enjoy_container");
              db_song_genre_fetch(db, song);
           }
         return song->genre ? strdup(song->genre) : NULL;
@@ -148,156 +438,37 @@ _song_item_del(void *data, Evas_Object *list __UNUSED__)
    db_song_free(data);
 }
 
-static const Elm_Genlist_Item_Class _song_item_class = {
-  "song",
-  {
-    _song_item_label_get,
-    NULL,
-    NULL,
-    _song_item_del
-  }
-};
-
-static Eina_Bool
-_page_songs_populate(void *data)
+static void
+_song_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
 {
    Page *page = data;
-   const Song *orig;
-   Song *copy;
-   unsigned int count;
-
-   for (count = 0; count < PAGE_SONGS_POPULATE_ITERATION_COUNT; count++)
-     {
-        Elm_Genlist_Item *it;
-        char letter;
-
-        if (!eina_iterator_next(page->iterator, (void **)&orig)) goto end;
-        // TODO: evaluate if we should keep a full copy or just store
-        // fields of interest such as id, title, artist and album
-        copy = db_song_copy(orig);
-        if (!copy) goto end;
-
-        it = elm_genlist_item_append
-          (page->list, &_song_item_class, copy,
-           NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL);
-
-        letter = toupper(copy->title[0]);
-        if (isalpha(letter) && (page->last_index_letter[0] != letter))
-          {
-             if ((page->first) && (!page->last_index_letter[0]))
-               elm_index_item_append(page->index, "Special", page->first);
-
-             page->last_index_letter[0] = letter;
-             elm_index_item_append(page->index, page->last_index_letter, it);
-          }
-        if (!page->first) page->first = it;
-     }
-
-   return EINA_TRUE;
-
- end:
-   page->populate = NULL;
-   return EINA_FALSE;
+   Song *song = elm_genlist_item_data_get(event_info);
+   if (song) evas_object_smart_callback_call(page->layout, "song", song);
 }
 
-static void
-_page_songs_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+static Evas_Object *
+_page_songs_add(Evas_Object *parent, Eina_Iterator *it, const char *title)
 {
-   Page *page = data;
-   eina_stringshare_del(page->title);
-   if (page->iterator) eina_iterator_free(page->iterator);
-   if (page->populate) ecore_idler_del(page->populate);
-   free(page);
-}
-
-static void
-_page_songs_selected(void *data, Evas_Object *o __UNUSED__, void *event_info)
-{
-   Page *page = data;
-   Elm_Genlist_Item *it = event_info;
-   Song *song = elm_genlist_item_data_get(it);
-   EINA_SAFETY_ON_NULL_RETURN(song);
-   if (page->selected == it) return;
-   page->selected = it;
-   evas_object_smart_callback_call(page->layout, "song", song);
-}
-
-static void
-_page_songs_index_changed(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info)
-{
-   Elm_Genlist_Item *it = event_info;
-   elm_genlist_item_top_bring_in(it);
-}
-
-Evas_Object *
-page_songs_add(Evas_Object *parent, Eina_Iterator *it, const char *title)
-{
-   Evas_Object *obj;
-   Page *page;
-   const char *s;
-
-   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
-
-   obj = elm_layout_add(parent);
-   if (!obj)
+   static const Elm_Genlist_Item_Class song_item_cls = {
+     "song",
      {
-        eina_iterator_free(it);
-        return NULL;
+       _song_item_label_get,
+       NULL,
+       NULL,
+       _song_item_del
      }
-
-   page = calloc(1, sizeof(*page));
-   if (!page)
-     {
-        CRITICAL("could not allocate page memory!");
-        eina_iterator_free(it);
-        goto error;
-     }
-   evas_object_data_set(obj, "_enjoy_page_songs", page);
-   evas_object_event_callback_add
-     (obj, EVAS_CALLBACK_DEL, _page_songs_del, page);
-   page->layout = obj;
-   page->iterator = it;
-
-   if (!elm_layout_file_set(obj, PACKAGE_DATA_DIR "/default.edj", "page/songs"))
-     {
-        CRITICAL("no theme for 'page/songs' at %s",
-                 PACKAGE_DATA_DIR "/default.edj");
-        goto error;
-     }
-
-   page->title = eina_stringshare_add(title);
-   page->edje = elm_layout_edje_get(obj);
-   edje_object_part_text_set(page->edje, "ejy.text.title", page->title);
-
-   page->list = elm_genlist_add(obj);
-   elm_genlist_bounce_set(page->list, EINA_FALSE, EINA_TRUE);
-   elm_genlist_horizontal_mode_set(page->list, ELM_LIST_COMPRESS);
-   elm_genlist_compress_mode_set(page->list, EINA_TRUE);
-   elm_genlist_block_count_set(page->list, 256);
-   evas_object_data_set(page->list, "_enjoy_db",
-                        eina_iterator_container_get(it));
-
-   evas_object_smart_callback_add
-     (page->list, "selected", _page_songs_selected, page);
-
-   s = edje_object_data_get(page->edje, "homogeneous");
-   elm_genlist_homogeneous_set(page->list, s ? !!atoi(s) : EINA_FALSE);
-
-   elm_layout_content_set(obj, "ejy.swallow.list", page->list);
-
-   page->index = elm_index_add(obj);
-   evas_object_smart_callback_add
-     (page->index, "delay,changed", _page_songs_index_changed, page);
-   elm_layout_content_set(obj, "ejy.swallow.index", page->index);
-
-   page->first = NULL;
-   page->populate = ecore_idler_add(_page_songs_populate, page);
-
-   return obj;
-
- error:
-   evas_object_del(obj); /* should delete everything */
-   return NULL;
+   };
+   static const Page_Class song_cls = {
+     "song",
+     "_enjoy_page_songs",
+     "page/songs",
+     _song_item_selected,
+     &song_item_cls,
+     PAGE_SONGS_POPULATE_ITERATION_COUNT,
+     (void *(*)(const void*))db_song_copy,
+     offsetof(Song, title)
+   };
+   return _page_add(parent, it, title, &song_cls);
 }
 
 Song *
@@ -355,4 +526,229 @@ page_songs_prev_go(Evas_Object *obj)
    elm_genlist_item_selected_set(it, EINA_TRUE);
    elm_genlist_item_bring_in(it);
    return song;
+}
+
+
+/***********************************************************************
+ * FOLDERS
+ **********************************************************************/
+
+
+static char *
+_nameid_item_label_get(void *data, Evas_Object *list __UNUSED__, const char *part __UNUSED__)
+{
+   NameID *nameid = data;
+   return strdup(nameid->name);
+}
+
+static void
+_nameid_item_del(void *data, Evas_Object *list __UNUSED__)
+{
+   db_nameid_free(data);
+}
+
+static void
+_album_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
+{
+   Page *page = data;
+   NameID *nameid = elm_genlist_item_data_get(event_info);
+   EINA_SAFETY_ON_NULL_RETURN(nameid);
+   DB *db = _page_db_get(page->layout);
+   Eina_Iterator *it = db_album_songs_get(db, nameid->id);
+   char buf[128];
+   snprintf(buf, sizeof(buf), "Songs of %s", nameid->name);
+   Evas_Object *next = _page_songs_add(page->layout, it, buf);
+   if (next) evas_object_smart_callback_call(page->layout, "folder", next);
+}
+
+static Evas_Object *
+_page_albums_add(Evas_Object *parent, Eina_Iterator *it, const char *title)
+{
+   static const Elm_Genlist_Item_Class nameid_item_cls = {
+     "nameid",
+     {
+       _nameid_item_label_get,
+       NULL,
+       NULL,
+       _nameid_item_del
+     }
+   };
+   static const Page_Class nameid_cls = {
+     "album",
+     "_enjoy_page_albums",
+     "page/nameids",
+     _album_item_selected,
+     &nameid_item_cls,
+     PAGE_FOLDERS_POPULATE_ITERATION_COUNT,
+     (void *(*)(const void*))db_nameid_copy,
+     offsetof(NameID, name)
+   };
+   return _page_add(parent, it, title, &nameid_cls);
+}
+
+static void
+_artist_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
+{
+   Page *page = data;
+   NameID *nameid = elm_genlist_item_data_get(event_info);
+   EINA_SAFETY_ON_NULL_RETURN(nameid);
+   DB *db = _page_db_get(page->layout);
+   Eina_Iterator *it = db_artist_songs_get(db, nameid->id);
+   char buf[128];
+   snprintf(buf, sizeof(buf), "Songs by %s", nameid->name);
+   Evas_Object *next = _page_songs_add(page->layout, it, buf);
+   if (next) evas_object_smart_callback_call(page->layout, "folder", next);
+}
+
+static Evas_Object *
+_page_artists_add(Evas_Object *parent, Eina_Iterator *it, const char *title)
+{
+   static const Elm_Genlist_Item_Class nameid_item_cls = {
+     "nameid",
+     {
+       _nameid_item_label_get,
+       NULL,
+       NULL,
+       _nameid_item_del
+     }
+   };
+   static const Page_Class nameid_cls = {
+     "artist",
+     "_enjoy_page_artists",
+     "page/nameids",
+     _artist_item_selected,
+     &nameid_item_cls,
+     PAGE_FOLDERS_POPULATE_ITERATION_COUNT,
+     (void *(*)(const void*))db_nameid_copy,
+     offsetof(NameID, name)
+   };
+   return _page_add(parent, it, title, &nameid_cls);
+}
+
+static void
+_genre_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
+{
+   Page *page = data;
+   NameID *nameid = elm_genlist_item_data_get(event_info);
+   EINA_SAFETY_ON_NULL_RETURN(nameid);
+   DB *db = _page_db_get(page->layout);
+   Eina_Iterator *it = db_genre_songs_get(db, nameid->id);
+   char buf[128];
+   snprintf(buf, sizeof(buf), "Songs of %s", nameid->name);
+   Evas_Object *next = _page_songs_add(page->layout, it, buf);
+   if (next) evas_object_smart_callback_call(page->layout, "folder", next);
+}
+
+static Evas_Object *
+_page_genres_add(Evas_Object *parent, Eina_Iterator *it, const char *title)
+{
+   static const Elm_Genlist_Item_Class nameid_item_cls = {
+     "nameid",
+     {
+       _nameid_item_label_get,
+       NULL,
+       NULL,
+       _nameid_item_del
+     }
+   };
+   static const Page_Class nameid_cls = {
+     "genre",
+     "_enjoy_page_genres",
+     "page/nameids",
+     _genre_item_selected,
+     &nameid_item_cls,
+     PAGE_FOLDERS_POPULATE_ITERATION_COUNT,
+     (void *(*)(const void*))db_nameid_copy,
+     offsetof(NameID, name)
+   };
+   return _page_add(parent, it, title, &nameid_cls);
+}
+
+typedef struct _Static_Item
+{
+   const char *label;
+   Evas_Object *(*action)(Evas_Object *parent, void *data);
+   const void *data;
+} Static_Item;
+
+static char *
+_static_item_label_get(void *data, Evas_Object *list __UNUSED__, const char *part __UNUSED__)
+{
+   Static_Item *root = data;
+   return strdup(root->label);
+}
+
+static void
+_static_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
+{
+   Page *page = data;
+   const Static_Item *si = elm_genlist_item_data_get(event_info);
+   Evas_Object *next;
+   EINA_SAFETY_ON_NULL_RETURN(si);
+   EINA_SAFETY_ON_NULL_RETURN(si->action);
+   next = si->action(page->layout, (void *)si->data);
+   if (next) evas_object_smart_callback_call(page->layout, "folder", next);
+}
+
+static Evas_Object *
+_page_all_songs_add(Evas_Object *parent, void *data)
+{
+   PAGE_GET_OR_RETURN(page, parent, NULL);
+   DB *db = _page_db_get(parent);
+   Eina_Iterator *it = db_songs_get(db);
+   return _page_songs_add(parent, it, data);
+}
+
+static Evas_Object *
+_page_all_albums_add(Evas_Object *parent, void *data)
+{
+   PAGE_GET_OR_RETURN(page, parent, NULL);
+   DB *db = _page_db_get(parent);
+   Eina_Iterator *it = db_albums_get(db);
+   return _page_albums_add(parent, it, data);
+}
+
+static Evas_Object *
+_page_all_artists_add(Evas_Object *parent, void *data)
+{
+   PAGE_GET_OR_RETURN(page, parent, NULL);
+   DB *db = _page_db_get(parent);
+   Eina_Iterator *it = db_artists_get(db);
+   return _page_artists_add(parent, it, data);
+}
+
+static Evas_Object *
+_page_all_genres_add(Evas_Object *parent, void *data)
+{
+   PAGE_GET_OR_RETURN(page, parent, NULL);
+   DB *db = _page_db_get(parent);
+   Eina_Iterator *it = db_genres_get(db);
+   return _page_genres_add(parent, it, data);
+}
+
+Evas_Object *
+page_root_add(Evas_Object *parent)
+{
+   static const Elm_Genlist_Item_Class root_item_cls = {
+     "root", { _static_item_label_get, NULL, NULL, NULL }
+   };
+   static const Page_Class root_cls = {
+     "root",
+     "_enjoy_page_roots",
+     "page/roots",
+     _static_item_selected,
+     &root_item_cls,
+     PAGE_FOLDERS_POPULATE_ITERATION_COUNT,
+     (void *(*)(const void*))_data_from_itr_passthrough,
+     offsetof(Static_Item, label)
+   };
+   static const Static_Item root_items[] = {
+     {"All Songs", _page_all_songs_add, "All Songs"},
+     {"Albums", _page_all_albums_add, "All Albums"},
+     {"Artists", _page_all_artists_add, "All Artists"},
+     {"Genres", _page_all_genres_add, "All Genres"},
+   };
+   Eina_Iterator *it = _array_iterator_new
+     (root_items, sizeof(Static_Item), ARRAY_SIZE(root_items));
+   return _page_add(parent, it, "Enjoy your music!", &root_cls);
 }
