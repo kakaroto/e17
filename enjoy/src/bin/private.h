@@ -83,4 +83,7 @@ void           db_song_free(Song *song);
 Eina_Bool      db_song_rating_set(DB *db, Song *song, int rating);
 Eina_Bool      db_song_length_set(DB *db, Song *song, int length);
 
+Eina_Iterator *db_album_songs_get(DB *db, int64_t album_id);
+Eina_Iterator *db_artist_songs_get(DB *db, int64_t artist_id);
+
 #endif

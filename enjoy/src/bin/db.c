@@ -10,8 +10,26 @@ struct _DB
        * for simple update statements like "set song playcnt".
        */
       sqlite3_stmt *songs_get;
+      sqlite3_stmt *album_songs_get;
+      sqlite3_stmt *artist_songs_get;
    } stmt;
 };
+
+static Eina_Bool
+_db_stmt_bind_int64(sqlite3_stmt *stmt, int col, int64_t value)
+{
+   int r = sqlite3_bind_int64(stmt, col, value);
+   if (r == SQLITE_OK)
+     return EINA_TRUE;
+   else
+     {
+        sqlite3 *db = sqlite3_db_handle(stmt);;
+        const char *err = sqlite3_errmsg(db);
+        ERR("could not bind SQL value %lld to column %d: %s",
+            (long long)value, col, err);
+        return EINA_FALSE;
+     }
+}
 
 static Eina_Bool
 _db_stmt_reset(sqlite3_stmt *stmt)
@@ -74,6 +92,34 @@ _db_stmts_compile(DB *db)
      " audio_genres.id = audios.genre_id "
      "ORDER BY UPPER(audios.title)");
 
+   C(album_songs_get,
+     "SELECT files.id, files.path, files.size, "
+     " audios.title, audios.album_id, audios.artist_id, audios.genre_id, "
+     " audios.trackno, audios.rating, audios.playcnt, audios.length, "
+     " audio_albums.name, audio_artists.name, audio_genres.name "
+     "FROM audios, files, audio_albums, audio_artists, audio_genres "
+     "WHERE "
+     " files.id = audios.id AND "
+     " audio_albums.id = audios.album_id AND "
+     " audio_artists.id = audios.artist_id AND "
+     " audio_genres.id = audios.genre_id AND "
+     " audios.album_id = ? "
+     "ORDER BY audios.trackno, UPPER(audios.title)");
+
+   C(artist_songs_get,
+     "SELECT files.id, files.path, files.size, "
+     " audios.title, audios.album_id, audios.artist_id, audios.genre_id, "
+     " audios.trackno, audios.rating, audios.playcnt, audios.length, "
+     " audio_albums.name, audio_artists.name, audio_genres.name "
+     "FROM audios, files, audio_albums, audio_artists, audio_genres "
+     "WHERE "
+     " files.id = audios.id AND "
+     " audio_albums.id = audios.album_id AND "
+     " audio_artists.id = audios.artist_id AND "
+     " audio_genres.id = audios.genre_id AND "
+     " audios.artist_id = ? "
+     "ORDER BY UPPER(audios.title)");
+
 #undef C
    return EINA_TRUE;
 }
@@ -87,6 +133,8 @@ _db_stmts_finalize(DB *db)
    ret &= _db_stmt_finalize(db->stmt.m, stringify(m));
 
    F(songs_get);
+   F(album_songs_get);
+   F(artist_songs_get);
 
 #undef F
    return ret;
@@ -310,6 +358,55 @@ db_song_length_set(DB *db, Song *song, int length)
    return EINA_TRUE;
 }
 
+Eina_Iterator *
+db_album_songs_get(DB *db, int64_t album_id)
+{
+   struct DB_Iterator_Songs *it;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(db, NULL);
+   it = calloc(1,  sizeof(*it));
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
+
+   it->base.base.version = EINA_ITERATOR_VERSION;
+   it->base.base.next = _db_iterator_songs_next;
+   it->base.base.get_container = _db_iterator_container_get;
+   it->base.base.free = _db_iterator_free;
+   it->base.db = db;
+   it->base.stmt = db->stmt.album_songs_get;
+
+   if (!_db_stmt_bind_int64(it->base.stmt, 1, album_id))
+     {
+        free(it);
+        return NULL;
+     }
+
+   EINA_MAGIC_SET(&it->base.base, EINA_MAGIC_ITERATOR);
+   return &it->base.base;
+}
+
+Eina_Iterator *
+db_artist_songs_get(DB *db, int64_t artist_id)
+{
+   struct DB_Iterator_Songs *it;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(db, NULL);
+   it = calloc(1,  sizeof(*it));
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
+
+   it->base.base.version = EINA_ITERATOR_VERSION;
+   it->base.base.next = _db_iterator_songs_next;
+   it->base.base.get_container = _db_iterator_container_get;
+   it->base.base.free = _db_iterator_free;
+   it->base.db = db;
+   it->base.stmt = db->stmt.artist_songs_get;
+
+   if (!_db_stmt_bind_int64(it->base.stmt, 1, artist_id))
+     {
+        free(it);
+        return NULL;
+     }
+
+   EINA_MAGIC_SET(&it->base.base, EINA_MAGIC_ITERATOR);
+   return &it->base.base;
+}
 
 
 /*
