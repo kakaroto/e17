@@ -16,7 +16,7 @@ __EVRY_MODS="+@apps +@calc +@files +@settings +@windows"
 __CONF_MODS="
 	+@applications +@borders +@clientlist +@colors +@desk +@desklock +@desks
 	+@dialogs +@display +@dpms +@edgebindings +@engine +@fonts +@icon-theme
-	+@imc +@interaction +@intl @keybindings +@menus +@mime +@mouse
+	+@imc +@interaction +@intl +@keybindings +@menus +@mime +@mouse
 	+@mousebindings +@mouse-cursor +@paths +@performance +@profiles +@scale
 	+@screensaver +@shelves +@startup +@theme +@transitions +@wallpaper
 	+@wallpaper2 +@window-display +@window-focus +@window-manipulation
