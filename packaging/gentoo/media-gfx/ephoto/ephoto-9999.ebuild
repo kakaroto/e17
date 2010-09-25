@@ -3,17 +3,9 @@
 # $Header: $
 
 EAPI="2"
-ESVN_URI_APPEND="ephoto"
-inherit efl
+inherit enlightenment
 
 DESCRIPTION="EFL-based photo app"
-HOMEPAGE="http://www.enlightenment.org/"
-SRC_URI=""
-
-LICENSE="BSD"
-SLOT="0"
-KEYWORDS=""
-
 
 RDEPEND="
 	 >=dev-libs/eet-9999
