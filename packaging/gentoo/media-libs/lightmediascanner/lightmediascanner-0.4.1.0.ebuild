@@ -4,6 +4,8 @@
 
 EAPI="2"
 
+inherit enlightenment
+
 DESCRIPTION="Lightweight media scanner"
 HOMEPAGE="http://lms.garage.maemo.org/"
 SRC_URI="https://garage.maemo.org/frs/download.php/8852/lightmediascanner-0.4.1.0.tar.bz2"
@@ -12,7 +14,7 @@ LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS="~arm ~x86"
 
-IUSE="+asf flac +id3 jpeg mp4 ogg +playlist png real"
+IUSE="+asf flac +id3 jpeg mp4 ogg +playlist png real static-libs"
 
 RDEPEND="
 	>=dev-db/sqlite-3.3
