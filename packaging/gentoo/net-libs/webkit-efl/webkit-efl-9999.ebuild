@@ -15,7 +15,7 @@ LICENSE="LGPL-2 LGPL-2.1 BSD"
 SLOT="0"
 KEYWORDS=""
 #IUSE="-glib gstreamer"
-IUSE="-glib"
+IUSE="-glib static-libs"
 
 RDEPEND="
 	dev-libs/libxslt

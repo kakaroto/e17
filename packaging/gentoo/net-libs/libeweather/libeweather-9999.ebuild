@@ -3,19 +3,14 @@
 # $Header: $
 
 EAPI="2"
-E_SVN_SUB_PROJECT="PROTO"
+ESVN_SUB_PROJECT="PROTO"
 
-inherit efl
+inherit enlightenment
 
 DESCRIPTION="Enlightenment's weather information fetching and parsing framework"
-HOMEPAGE="http://www.enlightenment.org"
-SRC_URI=""
-
 LICENSE="LGPL-2.1"
-SLOT="0"
-KEYWORDS=""
 
-IUSE=""
+IUSE="static-libs"
 
 RDEPEND="
 	>=dev-libs/ecore-9999[curl]

@@ -3,20 +3,14 @@
 # $Header: $
 
 EAPI="2"
-EFL_PKG_IUSE="doc test"
-E_SVN_SUB_PROJECT="PROTO"
+ESVN_SUB_PROJECT="PROTO"
 
-inherit efl
+inherit enlightenment
 
 DESCRIPTION="Enlightenment's UPnP/DLNA framework"
-HOMEPAGE="http://www.enlightenment.org"
-SRC_URI=""
-
 LICENSE="LGPL-3"
-SLOT="0"
-KEYWORDS=""
 
-IUSE="examples"
+IUSE="examples test static-libs"
 
 RDEPEND="
 	>=dev-libs/eina-9999
@@ -26,8 +20,7 @@ RDEPEND="
 DEPEND="${RDEPEND}"
 
 src_configure() {
-	export MY_ECONF="
-	  ${MY_ECONF}
+	MY_ECONF="
 	  $(use_enable test tests)
 	  $(use_enable examples)
 	  $(use_enable examples tools)
@@ -35,5 +28,5 @@ src_configure() {
 	  --enable-eupnp-av
 	"
 
-	efl_src_configure
+	enlightenment_src_configure
 }

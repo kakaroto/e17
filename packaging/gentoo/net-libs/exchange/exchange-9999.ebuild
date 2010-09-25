@@ -3,19 +3,14 @@
 # $Header: $
 
 EAPI="2"
-E_SVN_SUB_PROJECT="PROTO"
+ESVN_SUB_PROJECT="PROTO"
 
-inherit efl
+inherit enlightenment
 
 DESCRIPTION="Enlightenment way to exchange contributed stuff"
-HOMEPAGE="http://www.enlightenment.org/"
-SRC_URI=""
-
 LICENSE="GPL-2"
-SLOT="0"
-KEYWORDS=""
 
-IUSE=""
+IUSE="static-libs"
 
 DEPEND="
 	>=dev-libs/eina-9999
@@ -27,11 +22,10 @@ DEPEND="
 RDEPEND="${DEPEND}"
 
 src_configure() {
-	export MY_ECONF="
-	  ${MY_ECONF}
+	MY_ECONF="
 	  --disable-etk
 	  --disable-ewl
 	"
 
-	efl_src_configure
+	enlightenment_src_configure
 }
