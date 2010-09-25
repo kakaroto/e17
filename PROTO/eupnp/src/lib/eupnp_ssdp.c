@@ -499,7 +499,7 @@ _eupnp_ssdp_on_datagram_available(Eupnp_SSDP_Client *ssdp)
 }
 
 static Eina_Bool
-_eupnp_ssdp_forward_sock_event(void *data, Eupnp_Fd_Handler fd_handler)
+_eupnp_ssdp_forward_sock_event(void *data, Eupnp_Fd_Handler fd_handler __UNUSED__)
 {
    _eupnp_ssdp_on_datagram_available(data);
    return EINA_TRUE;

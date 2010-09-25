@@ -80,7 +80,7 @@ eupnp_device_info_data_ready(void *buffer, int size, void *data)
 }
 
 static void
-eupnp_device_info_download_completed(Eupnp_Request *request, void *data, const Eupnp_HTTP_Request *req)
+eupnp_device_info_download_completed(Eupnp_Request *request, void *data, const Eupnp_HTTP_Request *req __UNUSED__)
 {
    DBG("Finished building device %p callback called", data);
    eupnp_device_info_unref(data);
@@ -102,7 +102,7 @@ eupnp_device_info_icon_list_clear(Eupnp_Device_Info *d)
 {
    Eupnp_Device_Icon *icon;
 
-   while (icon = (void*)d->icons)
+   while ((icon = (void*)d->icons))
      {
 	d->icons = eina_inlist_remove(d->icons, d->icons);
 	eupnp_device_icon_free(icon);
