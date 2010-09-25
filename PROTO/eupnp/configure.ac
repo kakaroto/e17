@@ -15,6 +15,7 @@ AC_PROG_CC
 AM_PROG_CC_STDC
 AM_PROG_CC_C_O
 AC_HEADER_STDC
+AC_C___ATTRIBUTE__
 AC_C_CONST
 
 define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
@@ -38,7 +39,6 @@ case "$host_os" in
       ;;
 esac
 AC_SUBST(E_UPNP_BUILD)
-
 
 # Required modules
 PKG_CHECK_MODULES(EINA, [eina])
