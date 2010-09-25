@@ -23,10 +23,13 @@
 # include "config.h"
 #endif
 
-#include <libxml/SAX2.h>
-
+#include <stdio.h>
+#include <ctype.h>
 #include <string.h>
 #include <Eina.h>
+
+#include <libxml/SAX2.h>
+
 
 #include "Eupnp_AV.h"
 
@@ -140,8 +143,8 @@ eupnp_av_item_res_append(void *_item, void *_res)
 
 static void
 eupnp_av_didl_object_parse_basic_attrs(DIDL_Object *obj, int nb_attributes,
-					    int nb_defaulted,
-					    const xmlChar **attributes)
+					    int nb_defaulted __UNUSED__,
+					    const char **attributes)
 {
    int i;
    int index = 0;
@@ -165,7 +168,7 @@ eupnp_av_didl_object_parse_basic_attrs(DIDL_Object *obj, int nb_attributes,
 static void
 eupnp_av_didl_object_parse_item_attrs(DIDL_Item *item, int nb_attributes,
 				      int nb_defaulted,
-				      const xmlChar **attributes)
+				      const char **attributes)
 {
    eupnp_av_didl_object_parse_basic_attrs(&item->parent, nb_attributes,
 					  nb_defaulted, attributes);
@@ -176,7 +179,7 @@ eupnp_av_didl_object_parse_item_attrs(DIDL_Item *item, int nb_attributes,
 static void
 eupnp_av_didl_object_parse_container_attrs(DIDL_Container *c, int nb_attributes,
 					    int nb_defaulted,
-					    const xmlChar **attributes)
+					    const char **attributes)
 {
    eupnp_av_didl_object_parse_basic_attrs(&c->parent, nb_attributes,
 					  nb_defaulted, attributes);
@@ -199,8 +202,8 @@ eupnp_av_didl_object_parse_container_attrs(DIDL_Container *c, int nb_attributes,
 
 static void
 eupnp_av_didl_object_parse_res_attrs(DIDL_Resource *r, int nb_attributes,
-				     int nb_defaulted,
-				     const xmlChar **attributes)
+				     int nb_defaulted __UNUSED__,
+				     const char **attributes)
 {
    int i;
    int index = 0;
@@ -259,13 +262,13 @@ eupnp_av_didl_object_parse_res_attrs(DIDL_Resource *r, int nb_attributes,
 }
 
 static void
-eupnp_av_element_ns_start(void *ctx, const xmlChar *name, const xmlChar *prefix,
-			  const xmlChar *URI, int nb_namespaces,
-			  const xmlChar **namespaces, int nb_attributes,
-			  int nb_defaulted, const xmlChar **attributes)
+eupnp_av_element_ns_start(void *ctx, const char *name,
+			  const xmlChar *prefix __UNUSED__,
+			  const xmlChar *URI __UNUSED__, int nb_namespaces __UNUSED__,
+			  const xmlChar **namespaces __UNUSED__, int nb_attributes,
+			  int nb_defaulted, const char **attributes)
 {
    Context *c = ctx;
-   int i;
 
    switch (c->state)
      {
@@ -320,7 +323,7 @@ eupnp_av_element_ns_start(void *ctx, const xmlChar *name, const xmlChar *prefix,
 }
 
 static void
-eupnp_av_on_characters(void *ctx, const xmlChar *ch, int len)
+eupnp_av_on_characters(void *ctx, const char *ch, int len)
 {
    Context *c = ctx;
    const char *end;
@@ -346,7 +349,7 @@ eupnp_av_on_characters(void *ctx, const xmlChar *ch, int len)
 	       else
 	         {
 		    char *tmp = strndup(ch, len);
-		    asprintf(&c->container->parent.title, "%s%s", c->container->parent.title, tmp);
+		    asprintf((char **) &c->container->parent.title, "%s%s", c->container->parent.title, tmp);
 		    free(tmp);
 		 }
 	    }
@@ -363,7 +366,7 @@ eupnp_av_on_characters(void *ctx, const xmlChar *ch, int len)
 	       else
 	         {
 		    char *tmp = strndup(ch, len);
-		    asprintf(&c->item->parent.title, "%s%s", c->item->parent.title, tmp);
+		    asprintf((char **) &c->item->parent.title, "%s%s", c->item->parent.title, tmp);
 		    free(tmp);
 		 }
 	    }
@@ -379,8 +382,9 @@ eupnp_av_on_characters(void *ctx, const xmlChar *ch, int len)
 }
 
 static void
-eupnp_av_element_ns_end(void *ctx, const xmlChar *name, const xmlChar *prefix,
-			const xmlChar *URI)
+eupnp_av_element_ns_end(void *ctx, const xmlChar *name,
+			const xmlChar *prefix __UNUSED__,
+			const xmlChar *URI __UNUSED__)
 {
    Context *c = ctx;
 
@@ -427,7 +431,7 @@ eupnp_av_element_ns_end(void *ctx, const xmlChar *name, const xmlChar *prefix,
 }
 
 static void
-error(void *state, const char *msg, ...)
+error(void *state __UNUSED__ , const char *msg, ...)
 {
    va_list args;
    va_start(args, msg);
@@ -474,8 +478,8 @@ eupnp_av_didl_parse(const char *didl_xml,
 
    memset(&handler, 0, sizeof(xmlSAXHandler));
    handler.initialized = XML_SAX2_MAGIC;
-   handler.characters = &eupnp_av_on_characters;
-   handler.startElementNs = &eupnp_av_element_ns_start;
+   handler.characters = (charactersSAXFunc) &eupnp_av_on_characters;
+   handler.startElementNs = (startElementNsSAX2Func) &eupnp_av_element_ns_start;
    handler.endElementNs = &eupnp_av_element_ns_end;
    handler.error = &error;
 
