@@ -3,9 +3,8 @@
 # $Header: $
 
 EAPI="2"
-EFL_PKG_IUSE="doc"
 
-inherit efl
+inherit enlightenment
 
 DESCRIPTION="Enlightenment's thumbnailing library"
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/Ethumb"
@@ -35,13 +34,12 @@ src_configure() {
 		DEBUG_FLAGS="--with-internal-maximum-log-level=2"
 	fi
 
-	export MY_ECONF="
-	  ${MY_ECONF}
+	MY_ECONF="
 	  --with-dbus-services=/usr/share/dbus-1/services
 	  $(use_enable dbus ethumbd)
 	  $(use_enable emotion)
 	  $(use_enable epdf)
 	  ${DEBUG_FLAGS}"
 
-	efl_src_configure
+	enlightenment_src_configure
 }
