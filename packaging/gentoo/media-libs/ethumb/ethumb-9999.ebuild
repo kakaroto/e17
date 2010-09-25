@@ -14,7 +14,7 @@ LICENSE="LGPL-3"
 SLOT="0"
 KEYWORDS=""
 
-IUSE="+dbus emotion epdf debug"
+IUSE="+dbus emotion epdf debug static-libs"
 
 RDEPEND="
 	>=dev-libs/eina-9999

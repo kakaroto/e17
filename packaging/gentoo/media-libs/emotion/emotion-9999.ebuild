@@ -11,7 +11,7 @@ HOMEPAGE="http://trac.enlightenment.org/e/wiki/Emotion"
 
 # vlc/gstreamer support is buggy, do not even expose them here
 #IUSE="gstreamer xine vlc static-modules"
-IUSE="gstreamer xine static-modules"
+IUSE="gstreamer xine static-modules static-libs"
 
 # TODO: remove edje dependency as soon as emotion is fixed to not build its test
 RDEPEND="
