@@ -3,22 +3,15 @@
 # $Header: $
 
 EAPI="2"
-EFL_PKG_IUSE=""
 
-inherit efl
+inherit enlightenment
 
 DESCRIPTION="Fast memory pool allocator"
 HOMEPAGE="http://code.google.com/p/ememoa/"
-SRC_URI=""
 
-LICENSE="BSD"
-SLOT="0"
-KEYWORDS=""
-
-IUSE="debug threads"
+IUSE="debug threads static-libs"
 
 ESVN_REPO_URI="http://ememoa.googlecode.com/svn/trunk/"
-E_NO_DOC="1"
 DEPEND="
 	dev-util/pkgconfig
 	doc? ( app-doc/doxygen )"
@@ -38,5 +31,5 @@ src_configure() {
 	  $(use_enable threads pthread)
 	"
 
-	efl_src_configure
+	enlightenment_src_configure
 }
