@@ -3,17 +3,11 @@
 # $Header: $
 
 EAPI="2"
-EFL_PKG_IUSE="doc"
 
-inherit efl
+inherit enlightenment
 
 DESCRIPTION="Enlightenment's (Ecore/Evas) video integration."
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/Emotion"
-SRC_URI=""
-
-LICENSE="BSD"
-SLOT="0"
-KEYWORDS=""
 
 # vlc/gstreamer support is buggy, do not even expose them here
 #IUSE="gstreamer xine vlc static-modules"
@@ -48,8 +42,7 @@ src_configure() {
 		MODULE_ARGUMENT="yes"
 	fi
 
-	export MY_ECONF="
-	  ${MY_ECONF}
+	MY_ECONF="
 	  --disable-vlc
 	  $(use_enable xine xine $MODULE_ARGUMENT)
 	  $(use_enable gstreamer gstreamer $MODULE_ARGUMENT)
@@ -59,5 +52,5 @@ src_configure() {
 	export GST_REGISTRY="${T}"/registry.xml
 	export GST_PLUGIN_SYSTEM_PATH="${T}"
 
-	efl_src_configure
+	enlightenment_src_configure
 }
