@@ -97,6 +97,12 @@ def tooltip_delay_get():
 def tooltip_delay_set(delay):
     elm_tooltip_delay_set(delay)
 
+def cursor_engine_only_get():
+    return elm_cursor_engine_only_get()
+
+def cursor_engine_only_set(engine_only):
+    elm_cursor_engine_only_set(engine_only)
+
 def coords_finger_size_adjust(times_w, w, times_h, h):
     cdef c_evas.Evas_Coord width
     cdef c_evas.Evas_Coord height

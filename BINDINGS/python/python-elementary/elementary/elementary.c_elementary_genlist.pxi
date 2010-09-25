@@ -539,6 +539,39 @@ cdef class GenlistItem(WidgetItem):
         """
         elm_genlist_item_cursor_unset(self.obj)
 
+    def cursor_style_set(self, style=None):
+        """ Sets a different style for this object cursor.
+
+        @note before you set a style you should define a cursor with
+        elm_genlist_item_cursor_set()
+        """
+        if style:
+            elm_genlist_item_cursor_style_set(self.obj, style)
+        else:
+            elm_genlist_item_cursor_style_set(self.obj, NULL)
+
+    def cursor_style_get(self):
+        """ Get the style for this object cursor.
+        """
+        cdef const_char_ptr style
+        style = elm_genlist_item_cursor_style_get(self.obj)
+        if style == NULL:
+            return None
+        return style
+
+    def cursor_engine_only_set(self, engine_only):
+        """ Sets cursor engine only usage for this object.
+
+        @note before you set engine only usage you should define a cursor with
+        elm_genlist_item_cursor_set()
+        """
+        elm_genlist_item_cursor_engine_only_set(self.obj, bool(engine_only))
+
+    def cursor_engine_only_get(self):
+        """ Get the engine only usage for this object.
+        """
+        return elm_genlist_item_cursor_engine_only_get(self.obj)
+
 
 def _genlist_item_conv(long addr):
     cdef Elm_Genlist_Item *it = <Elm_Genlist_Item *>addr

@@ -225,6 +225,8 @@ cdef extern from "Elementary.h":
 
     double       elm_tooltip_delay_get()
     evas.c_evas.Eina_Bool elm_tooltip_delay_set(double delay)
+    evas.c_evas.Eina_Bool elm_cursor_engine_only_set(int engine_only)
+    int          elm_cursor_engine_only_get()
     void         elm_object_tooltip_show(evas.c_evas.Evas_Object *obj)
     void         elm_object_tooltip_hide(evas.c_evas.Evas_Object *obj)
     void         elm_object_tooltip_text_set(evas.c_evas.Evas_Object *obj, char *text)
@@ -235,6 +237,10 @@ cdef extern from "Elementary.h":
 
     void         elm_object_cursor_set(evas.c_evas.Evas_Object *obj, char *cursor)
     void         elm_object_cursor_unset(evas.c_evas.Evas_Object *obj)
+    void         elm_object_cursor_style_set(evas.c_evas.Evas_Object *obj, char *style)
+    char*        elm_object_cursor_style_get(evas.c_evas.Evas_Object *obj)
+    void         elm_object_cursor_engine_only_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool engine_only)
+    evas.c_evas.Eina_Bool elm_object_cursor_engine_only_get(evas.c_evas.Evas_Object *obj)
 
     double       elm_scale_get()
     void         elm_scale_set(double scale)
@@ -549,6 +555,10 @@ cdef extern from "Elementary.h":
     char*        elm_toolbar_item_tooltip_style_get(Elm_Toolbar_Item *item)
     void         elm_toolbar_item_cursor_set(Elm_Toolbar_Item *item, char *cursor)
     void         elm_toolbar_item_cursor_unset(Elm_Toolbar_Item *item)
+    void         elm_toolbar_item_cursor_style_set(Elm_Toolbar_Item *item, char *style)
+    char*        elm_toolbar_item_cursor_style_get(Elm_Toolbar_Item *item)
+    void         elm_toolbar_item_cursor_engine_only_set(Elm_Toolbar_Item *item, evas.c_evas.Eina_Bool engine_only)
+    evas.c_evas.Eina_Bool elm_toolbar_item_cursor_engine_only_get(Elm_Toolbar_Item *item)
 
     # List object
     evas.c_evas.Evas_Object *elm_list_add(evas.c_evas.Evas_Object *parent)
@@ -586,6 +596,10 @@ cdef extern from "Elementary.h":
     char*        elm_list_item_tooltip_style_get(Elm_List_Item *item)
     void         elm_list_item_cursor_set(Elm_List_Item *item, char *cursor)
     void         elm_list_item_cursor_unset(Elm_List_Item *item)
+    void         elm_list_item_cursor_style_set(Elm_List_Item *item, char *style)
+    char*        elm_list_item_cursor_style_get(Elm_List_Item *item)
+    void         elm_list_item_cursor_engine_only_set(Elm_List_Item *item, evas.c_evas.Eina_Bool engine_only)
+    evas.c_evas.Eina_Bool elm_list_item_cursor_engine_only_get(Elm_List_Item *item)
     void elm_list_bounce_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool h_bounce, evas.c_evas.Eina_Bool v_bounce)
     void 	elm_list_scroller_policy_set(evas.c_evas.Evas_Object *obj, Elm_Scroller_Policy policy_h, Elm_Scroller_Policy policy_v)
 
@@ -662,6 +676,10 @@ cdef extern from "Elementary.h":
     char*        elm_genlist_item_tooltip_style_get(Elm_Genlist_Item *item)
     void         elm_genlist_item_cursor_set(Elm_Genlist_Item *item, char *cursor)
     void         elm_genlist_item_cursor_unset(Elm_Genlist_Item *item)
+    void         elm_genlist_item_cursor_style_set(Elm_Genlist_Item *item, char *style)
+    char*        elm_genlist_item_cursor_style_get(Elm_Genlist_Item *item)
+    void         elm_genlist_item_cursor_engine_only_set(Elm_Genlist_Item *item, evas.c_evas.Eina_Bool engine_only)
+    evas.c_evas.Eina_Bool elm_genlist_item_cursor_engine_only_get(Elm_Genlist_Item *item)
 
     # Check widget
     evas.c_evas.Evas_Object *elm_check_add(evas.c_evas.Evas_Object *parent)
