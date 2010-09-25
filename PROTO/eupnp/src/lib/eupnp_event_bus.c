@@ -120,7 +120,7 @@
 
 static Eina_List *subscribers = NULL;
 static int _log_dom = -1;
-static int _event_max = EUPNP_EVENT_COUNT;
+static unsigned int _event_max = EUPNP_EVENT_COUNT;
 
 #undef DBG
 #undef INF
@@ -231,7 +231,6 @@ eupnp_event_bus_shutdown(void)
 EAPI void
 eupnp_event_bus_publish(Eupnp_Event_Type event_type, void *event_data)
 {
-   if (event_type < 0) return;
    if (event_type >= _event_max) return;
    Eina_List *l, *l_next;
    Eupnp_Subscriber *s;
@@ -284,7 +283,7 @@ eupnp_event_bus_subscribe(Eupnp_Event_Type event_type, Eupnp_Callback cb, void *
 {
    CHECK_NULL_RET(cb, NULL);
 
-   if (event_type < 0 || event_type >= _event_max)
+   if (event_type >= _event_max)
      {
 	ERR("Failed to subscribe for event type %d, callback %p, data %p", event_type, cb, user_data);
 	return NULL;
@@ -353,7 +352,7 @@ eupnp_event_bus_event_type_new(void)
 EAPI Eina_Bool
 eupnp_event_bus_type_has_subscriber(Eupnp_Event_Type type)
 {
-   Eina_List *l, *l_next;
+   Eina_List *l;
    Eupnp_Subscriber *s;
 
    EINA_LIST_FOREACH(subscribers, l, s)
