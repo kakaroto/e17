@@ -1,3 +1,5 @@
+SUBDIRS = themes
+
 MAINTAINERCLEANFILES = Makefile.in
 
 desktopdir = $(datadir)/applications

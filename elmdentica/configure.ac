@@ -57,6 +57,8 @@ AC_SUBST([APMDIR])
 
 AC_SUBST([VERSION])
 
+EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
+
 dnl ==============================================
 dnl DBUS
 dnl ==============================================
@@ -79,5 +81,6 @@ elmdentica.spec
 data/Makefile
 data/elmdentica.desktop
 data/elmdentica.conf
+data/themes/Makefile
 src/Makefile
 ])

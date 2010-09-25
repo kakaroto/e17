@@ -62,7 +62,7 @@
 #include "statusnet.h"
 #include "curl.h"
 
-Evas_Object *status_list=NULL, *scroller=NULL, *status=NULL, *win=NULL, *error_win=NULL, *entry=NULL, *fs=NULL, *count=NULL, *url_win=NULL, *hv=NULL, *related_inwin=NULL;
+Evas_Object *status_list=NULL, *scroller=NULL, *status=NULL, *win=NULL, *error_win=NULL, *entry=NULL, *fs=NULL, *count=NULL, *url_win=NULL, *hv=NULL, *related_inwin=NULL, *ly=NULL;
 char * dm_to=NULL;
 
 StatusesList	*statuses=NULL;
@@ -266,7 +266,7 @@ static void on_mark_favorite(void *data, Evas_Object *obj, void *event_info) {
 		e = evas_object_evas_get(win);
 		if(e) {
 			hover = evas_object_name_find(e, "hover_actions");
-			if(hover) evas_object_del(hover);
+			if(hover) evas_object_hide(hover);
 		}
 	}
 }
@@ -286,7 +286,7 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 	e = evas_object_evas_get(win);
 	if(e) {
 		hover = evas_object_name_find(e, "hover_actions");
-		if(hover) evas_object_del(hover);
+		if(hover) evas_object_hide(hover);
 	}
 }
 
@@ -378,7 +378,7 @@ static void on_view_related(void *data, Evas_Object *obj, void *event_info) {
 	e = evas_object_evas_get(win);
 	if(e) {
 		hover = evas_object_name_find(e, "hover_actions");
-		if(hover) evas_object_del(hover);
+		if(hover) evas_object_hide(hover);
 	}
 
 }
@@ -412,7 +412,7 @@ static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 	e = evas_object_evas_get(win);
 	if(e) {
 		hover = evas_object_name_find(e, "hover_actions");
-		if(hover) evas_object_del(hover);
+		if(hover) evas_object_hide(hover);
 	}
 
 	evas_object_show(hv);
@@ -431,7 +431,7 @@ static void on_dm(void *data, Evas_Object *obj, void *event_info) {
 	e = evas_object_evas_get(win);
 	if(e) {
 		hover = evas_object_name_find(e, "hover_actions");
-		if(hover) evas_object_del(hover);
+		if(hover) evas_object_hide(hover);
 	}
 
 	evas_object_show(hv);
@@ -1904,9 +1904,10 @@ static void on_entry_clicked(void *data, Evas_Object *entry, void *event_info) {
 
 EAPI int elm_main(int argc, char **argv)
 {
-	Evas_Object *bg=NULL, *box=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *box2=NULL, *hoversel=NULL, *edit_panel=NULL, *timelines=NULL, *timelines_panel=NULL;
+	Evas_Object *bg=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *box2=NULL, *hoversel=NULL, *edit_panel=NULL, *timelines=NULL, *timelines_panel=NULL;
 	char *tmp=NULL;
 	int res = 0;
+	char buf[PATH_MAX];
 
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, LOCALEDIR);
@@ -1933,14 +1934,14 @@ EAPI int elm_main(int argc, char **argv)
 	elm_win_resize_object_add(win, bg);
 	evas_object_show(bg);
 
-	/* add a vertical box object */
-	box = elm_box_add(win);
-	evas_object_size_hint_weight_set(box, 1.0, 1.0);
-	evas_object_size_hint_align_set(box, -1, 0);
-	elm_win_resize_object_add(win, box);
-	elm_box_homogenous_set(box, 0);
+	ly = elm_layout_add(win);
+		snprintf(buf, sizeof(buf), "%s/themes/default.edj", PKGDATADIR);
+		elm_layout_file_set(ly, buf, "vertical_layout");
+		evas_object_size_hint_weight_set(ly, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+		elm_win_resize_object_add(win, ly);
+	evas_object_show(ly);
 
-	scroller = elm_scroller_add(box);
+	scroller = elm_scroller_add(win);
 		evas_object_size_hint_weight_set(scroller, 1, 1);
 		evas_object_size_hint_align_set(scroller, -1, -1);
 		elm_scroller_bounce_set(scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
@@ -1950,9 +1951,8 @@ EAPI int elm_main(int argc, char **argv)
 		make_status_list(TIMELINE_FRIENDS);
 		fill_message_list(TIMELINE_FRIENDS);
 
+		elm_layout_content_set(ly, "timeline", scroller);
 	evas_object_show(scroller);
-
-	elm_box_pack_end(box, scroller);
 
 	edit_panel = elm_box_add(win);
 		elm_box_homogenous_set(edit_panel, 0);
@@ -2135,10 +2135,8 @@ EAPI int elm_main(int argc, char **argv)
 		elm_box_pack_end(toolbar, hoversel);
 		evas_object_show(hoversel);
 
+	elm_layout_content_set(ly, "toolbar", toolbar);
 	evas_object_show(toolbar);
-	elm_box_pack_end(box, toolbar);
-
-	evas_object_show(box);
 
 	evas_object_resize(win, 480, 640);
 	evas_object_show(win);
