@@ -3,21 +3,14 @@
 # $Header: $
 
 EAPI="2"
-EFL_PKG_IUSE="nls"
-E_SVN_SUB_PROJECT="E-MODULES-EXTRA"
+ESVN_SUB_PROJECT="E-MODULES-EXTRA"
 ESVN_URI_APPEND="${PN#e_module-}"
 
-inherit efl
+inherit enlightenment
 
 DESCRIPTION="Enlightenment's notification daemon using libnotify/notify-osd standard"
-HOMEPAGE="http://www.enlightenment.org"
-SRC_URI=""
 
-LICENSE="BSD"
-SLOT="0"
-KEYWORDS=""
 
-IUSE=""
 
 RDEPEND="
 	>=x11-wm/enlightenment-9999
