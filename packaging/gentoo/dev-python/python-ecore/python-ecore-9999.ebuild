@@ -3,21 +3,16 @@
 # $Header: $
 
 EAPI="2"
-EFL_PKG_IUSE="examples"
 E_CYTHON="1"
-E_SVN_SUB_PROJECT="BINDINGS/python"
+ESVN_SUB_PROJECT="BINDINGS/python"
 
-inherit efl
+inherit enlightenment
 
 DESCRIPTION="Python bindings for Ecore"
-HOMEPAGE="http://www.enlightenment.org"
-SRC_URI=""
 
 LICENSE="LGPL-2.1"
-SLOT="0"
-KEYWORDS=""
 
-IUSE="+evas +X +xscreensaver"
+IUSE="examples +evas +X +xscreensaver"
 
 RDEPEND=">=dev-libs/ecore-9999[evas?,X?,xscreensaver?]"
 
@@ -49,7 +44,7 @@ src_configure() {
 		fi
 	fi
 
-	efl_src_configure
+	enlightenment_src_configure
 }
 
 src_install() {
@@ -77,5 +72,5 @@ src_install() {
 		export ECORE_BUILD_X=0
 	fi
 
-	efl_src_install
+	enlightenment_src_install
 }

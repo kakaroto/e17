@@ -4,17 +4,12 @@
 
 EAPI="2"
 E_PYTHON="1"
-E_SVN_SUB_PROJECT="BINDINGS/python"
+ESVN_SUB_PROJECT="BINDINGS/python"
 
-inherit efl
+inherit enlightenment
 
-DESCRIPTION="D-Bus Python intergation for Ecore/EFL"
-HOMEPAGE="http://www.enlightenment.org"
-SRC_URI=""
-
+DESCRIPTION="D-Bus Python intergation for Ecore/efl"
 LICENSE="LGPL-2.1"
-SLOT="0"
-KEYWORDS=""
 
 IUSE=""
 

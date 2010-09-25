@@ -3,21 +3,15 @@
 # $Header: $
 
 EAPI="2"
-EFL_PKG_IUSE="examples"
 E_CYTHON="1"
-E_SVN_SUB_PROJECT="BINDINGS/python"
+ESVN_SUB_PROJECT="BINDINGS/python"
 
-inherit efl
+inherit enlightenment
 
 DESCRIPTION="Python bindings for Ethumb thumbnailing library"
-HOMEPAGE="http://www.enlightenment.org"
-SRC_URI=""
-
 LICENSE="LGPL-2.1"
-SLOT="0"
-KEYWORDS=""
 
-IUSE="+dbus"
+IUSE="+dbus examples"
 
 RDEPEND=">=media-libs/ethumb-9999[dbus?]"
 
@@ -30,7 +24,7 @@ src_configure() {
 		export ETHUMB_BUILD_CLIENT=0
 	fi
 
-	efl_src_configure
+	enlightenment_src_configure
 }
 
 src_install() {
@@ -40,5 +34,5 @@ src_install() {
 		export ETHUMB_BUILD_CLIENT=0
 	fi
 
-	efl_src_install
+	enlightenment_src_install
 }
