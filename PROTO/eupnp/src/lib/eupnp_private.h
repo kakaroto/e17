@@ -143,6 +143,9 @@ struct _Eupnp_Device_Icon {
    const char *mimetype;
 };
 
+
+Eina_Bool          eupnp_device_parse_xml_buffer(const char *buffer, int buffer_len, Eupnp_Device_Info *d);
+
 Eupnp_Device_Info *eupnp_device_info_new(const char *udn, const char *location, void *resource, void (*resource_free)(void *resource));
 void               eupnp_device_info_free(Eupnp_Device_Info *d);
 void               eupnp_device_info_icon_add(Eupnp_Device_Info *device_info, Eupnp_Device_Icon *icon);
@@ -151,5 +154,29 @@ void               eupnp_device_info_device_add(Eupnp_Device_Info *device, Eupnp
 void               eupnp_device_info_dump(const Eupnp_Device_Info *device_info);
 
 
+/* utils */
+const char * eupnp_utils_default_host_ip_get(void);
+int          eupnp_utils_url_base_get(const char *url);
+
+double       eupnp_time_get(void);
+
+
+/* private submodules initializers */
+Eina_Bool    eupnp_event_bus_init(void);
+Eina_Bool    eupnp_service_info_init(void);
+Eina_Bool    eupnp_device_parser_init(void);
+Eina_Bool    eupnp_service_parser_init(void);
+Eina_Bool    eupnp_device_info_init(void);
+Eina_Bool    eupnp_ssdp_init(void);
+Eina_Bool    eupnp_control_point_init(void);
+Eina_Bool    eupnp_service_proxy_init(void);
+
+Eina_Bool    eupnp_event_bus_shutdown(void);
+Eina_Bool    eupnp_service_info_shutdown(void);
+Eina_Bool    eupnp_device_parser_shutdown(void);
+Eina_Bool    eupnp_service_parser_shutdown(void);
+Eina_Bool    eupnp_device_info_shutdown(void);
+Eina_Bool    eupnp_ssdp_shutdown(void);
+Eina_Bool    eupnp_control_point_shutdown(void);
 
 #endif /* _EUPNP_PRIVATE_H */
