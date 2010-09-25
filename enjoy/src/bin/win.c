@@ -32,6 +32,9 @@ typedef struct Win
       Eina_List *add, *del;
    } scan;
    struct {
+      Ecore_Timer *play_eval;
+   } timer;
+   struct {
       Ecore_Job *scan;
       Ecore_Job *populate;
    } job;
@@ -99,7 +102,6 @@ _win_scan_job(void *data)
 static void
 _win_toolbar_eval(Win *w)
 {
-   printf("eval toolbar: prev=%hhu, next=%hhu\n", list_prev_exists(w->list), list_next_exists(w->list));
    if (list_prev_exists(w->list))
      edje_object_signal_emit(w->edje, "ejy,prev,enable", "ejy");
    else
@@ -131,6 +133,18 @@ _win_play_eval(Win *w)
 {
    Edje_Message_Float_Set *mf;
 
+   if (w->play.length <= 0.0)
+     {
+        w->play.length = emotion_object_play_length_get(w->emotion);
+        if ((w->song) && (w->song->length != (int)w->play.length))
+          {
+             db_song_length_set(w->db, w->song, w->play.length);
+             list_song_updated(w->list);
+          }
+     }
+
+   w->play.position = emotion_object_position_get(w->emotion);
+
    mf = alloca(sizeof(Edje_Message_Float_Set) + sizeof(double));
    mf->count = 2;
    mf->val[0] = w->play.position;
@@ -147,6 +161,13 @@ _win_play_eval(Win *w)
         edje_object_signal_emit(w->edje, "ejy,action,pause,hide", "ejy");
         edje_object_signal_emit(w->edje, "ejy,action,play,show", "ejy");
      }
+}
+
+static Eina_Bool
+_win_play_eval_timer(void *data)
+{
+   _win_play_eval(data);
+   return EINA_TRUE;
 }
 
 static void
@@ -175,11 +196,20 @@ _win_song_set(Win *w, Song *s)
    edje_object_message_send(w->edje, EDJE_MESSAGE_INT, MSG_RATING, &mi);
 
    emotion_object_file_set(w->emotion, s->path);
-   // TODO: emotion_object_audio_volume_set(w->emotion, w->play.volume);
    w->play.playing = EINA_TRUE;
    emotion_object_play_set(w->emotion, EINA_TRUE);
+   emotion_object_audio_volume_set(w->emotion, w->play.volume);
 
  end:
+   if ((!w->play.playing) && (w->timer.play_eval))
+     {
+        ecore_timer_del(w->timer.play_eval);
+        w->timer.play_eval = NULL;
+     }
+   else if ((w->play.playing) && (!w->timer.play_eval))
+     w->timer.play_eval = ecore_timer_loop_add
+       (0.1, _win_play_eval_timer, w);
+
    _win_play_eval(w);
    _win_toolbar_eval(w);
 }
@@ -225,6 +255,7 @@ _win_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_
    if (w->emotion) evas_object_del(w->emotion);
    if (w->job.scan) ecore_job_del(w->job.scan);
    if (w->job.populate) ecore_job_del(w->job.populate);
+   if (w->timer.play_eval) ecore_timer_del(w->timer.play_eval);
    if (w->thread.scan) ecore_thread_cancel(w->thread.scan);
    if (w->db_path) eina_stringshare_del(w->db_path);
 }
@@ -369,6 +400,8 @@ win_new(App *app)
 
    memset(w, 0, sizeof(*w));
 
+   w->play.volume = 0.8;
+
    w->win = elm_win_add(NULL, PACKAGE_NAME, ELM_WIN_BASIC);
    if (!w->win) return NULL;
    evas_object_data_set(w->win, "_enjoy", &w);
@@ -394,6 +427,8 @@ win_new(App *app)
      (w->emotion, "position_update", _win_play_pos_update, w);
    evas_object_smart_callback_add
      (w->emotion, "length_change", _win_play_pos_update, w);
+   evas_object_smart_callback_add
+     (w->emotion, "frame_decode", _win_play_pos_update, w);
    evas_object_smart_callback_add
      (w->emotion, "decode_stop", _win_play_end, w);
 
@@ -477,7 +512,6 @@ win_new(App *app)
 
    evas_object_show(w->layout);
 
-   printf("initial size: %dx%d\n", iw, ih);
    evas_object_resize(w->win, iw, ih);
    evas_object_size_hint_min_set(w->win, w->min.w, w->min.h);
    elm_win_title_set(w->win, PACKAGE_STRING);

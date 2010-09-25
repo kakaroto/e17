@@ -213,6 +213,14 @@ list_selected_get(const Evas_Object *obj)
 }
 
 Eina_Bool
+list_song_updated(Evas_Object *obj)
+{
+   LIST_GET_OR_RETURN(list, obj, EINA_FALSE);
+   if (list->page.songs) return page_songs_song_updated(list->page.songs);
+   return EINA_FALSE;
+}
+
+Eina_Bool
 list_next_exists(const Evas_Object *obj)
 {
    LIST_GET_OR_RETURN(list, obj, EINA_FALSE);

@@ -157,7 +157,7 @@ Song *db_song_copy(const Song *orig)
    // TODO: move to mempool to avoid fragmentation!
    Song *copy;
    EINA_SAFETY_ON_NULL_RETURN_VAL(orig, NULL);
-   copy = calloc(1, sizeof(Song));
+   copy = malloc(sizeof(Song));
    EINA_SAFETY_ON_NULL_RETURN_VAL(copy, NULL);
 
    /* Note: cannot use eina_stringshare_ref() as value may be from sqlite
@@ -183,6 +183,8 @@ Song *db_song_copy(const Song *orig)
    N(playcnt);
    N(length);
 #undef N
+
+   copy->flags = orig->flags;
 
    return copy;
 }
@@ -328,14 +330,48 @@ db_songs_get(DB *db)
 Eina_Bool
 db_song_rating_set(DB *db, Song *song, int rating)
 {
-   DBG("TODO");
+   char sql[128], *errmsg = NULL;
+   int r;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(db, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(song, EINA_FALSE);
+
+   sqlite3_snprintf(sizeof(sql), sql,
+                    "UPDATE audios SET playcnt = %d WHERE id = %lld",
+                    rating, song->id);
+
+   r = sqlite3_exec(db->handle, sql, NULL, NULL, &errmsg);
+   if (r != SQLITE_OK)
+     {
+        ERR("Could not execute SQL %s: %s", sql, errmsg);
+        sqlite3_free(errmsg);
+        return EINA_FALSE;
+     }
+   song->rating = rating;
    return EINA_TRUE;
 }
 
 Eina_Bool
 db_song_length_set(DB *db, Song *song, int length)
 {
-   DBG("TODO");
+   char sql[128], *errmsg = NULL;
+   int r;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(db, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(song, EINA_FALSE);
+
+   sqlite3_snprintf(sizeof(sql), sql,
+                    "UPDATE audios SET length = %d WHERE id = %lld",
+                    length, song->id);
+
+   r = sqlite3_exec(db->handle, sql, NULL, NULL, &errmsg);
+   if (r != SQLITE_OK)
+     {
+        ERR("Could not execute SQL %s: %s", sql, errmsg);
+        sqlite3_free(errmsg);
+        return EINA_FALSE;
+     }
+   song->length = length;
    return EINA_TRUE;
 }
 
@@ -585,6 +621,263 @@ db_song_genre_fetch(DB *db, Song *song)
    return ret;
 }
 
+Album *
+db_album_copy(const Album *orig)
+{
+   Album *copy;
+   const Album_Cover *orig_cover;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(orig, NULL);
+   copy = malloc(sizeof(Album));
+   EINA_SAFETY_ON_NULL_RETURN_VAL(copy, NULL);
+   copy->id = orig->id;
+   copy->artist_id = orig->artist_id;
+   copy->name = eina_stringshare_add(orig->name);
+   copy->artist = eina_stringshare_add(orig->artist);
+   copy->len.name = orig->len.name;
+   copy->len.artist = orig->len.artist;
+   copy->flags = orig->flags;
+
+   copy->covers = NULL;
+   EINA_INLIST_FOREACH(orig->covers, orig_cover)
+     {
+        Album_Cover *copy_cover;
+
+        copy_cover = malloc(sizeof(Album_Cover) + orig_cover->path_len + 1);
+        if (!copy_cover) break;
+        copy_cover->w = orig_cover->w;
+        copy_cover->h = orig_cover->h;
+        copy_cover->path_len = orig_cover->path_len;
+        memcpy(copy_cover->path, orig_cover->path, orig_cover->path_len + 1);
+        copy->covers = eina_inlist_append
+          (copy->covers, EINA_INLIST_GET(copy_cover));
+     }
+
+   return copy;
+}
+
+void
+db_album_free(Album *album)
+{
+   while (album->covers)
+     {
+        void *n = album->covers;
+        album->covers = eina_inlist_remove(album->covers, album->covers);
+        free(n);
+     }
+
+   eina_stringshare_del(album->name);
+   eina_stringshare_del(album->artist);
+   free(album);
+}
+
+Eina_Bool
+db_album_artist_fetch(DB *db, Album *album)
+{
+   sqlite3_stmt *stmt;
+   Eina_Bool ret;
+   int err;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(db, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(album, EINA_FALSE);
+   if (album->flags.fetched_artist) return EINA_TRUE;
+
+   stmt = db->stmt.artist_get;
+   if (!_db_stmt_bind_int64(stmt, 1, album->artist_id))
+     return EINA_FALSE;
+
+   err = sqlite3_step(stmt);
+   if (err == SQLITE_ROW)
+     {
+        eina_stringshare_replace
+          (&album->artist, (const char *)sqlite3_column_text(stmt, 0));
+        album->len.artist = sqlite3_column_bytes(stmt, 0);
+        ret = EINA_TRUE;
+     }
+   else if (err == SQLITE_DONE)
+     {
+        DBG("no artist with id=%lld", (long long)album->artist_id);
+        eina_stringshare_replace(&album->artist, NULL);
+        album->len.artist = 0;
+        ret = EINA_TRUE;
+     }
+   else
+     {
+        ERR("could not query artist with id=%lld: %s",
+            (long long)album->artist_id, sqlite3_errmsg(db->handle));
+        ret = EINA_FALSE;
+     }
+
+   _db_stmt_reset(stmt);
+   album->flags.fetched_artist = ret;
+   return ret;
+}
+
+Eina_Bool
+db_album_covers_fetch(DB *db, Album *album)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(db, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(album, EINA_FALSE);
+   if (album->flags.fetched_covers) return EINA_TRUE;
+
+   DBG("todo: create and handle 'covers' table");
+
+   album->flags.fetched_covers = EINA_TRUE;
+   return EINA_TRUE;
+}
+
+Eina_Bool
+db_album_covers_update(DB *db, const Album *album)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(db, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(album, EINA_FALSE);
+
+   DBG("todo: create and handle 'covers' table");
+
+   return EINA_TRUE;
+}
+
+
+struct DB_Iterator_Album
+{
+   struct DB_Iterator base;
+   Album album;
+};
+
+static Eina_Bool
+_db_iterator_album_next(Eina_Iterator *iterator, void **data)
+{
+   struct DB_Iterator_Album *it = (struct DB_Iterator_Album *)iterator;
+   Album **album = (Album **)data;
+   int r;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(album, EINA_FALSE);
+   *album = NULL;
+   if (!EINA_MAGIC_CHECK(iterator, EINA_MAGIC_ITERATOR))
+     {
+        EINA_MAGIC_FAIL(iterator, EINA_MAGIC_ITERATOR);
+        return EINA_FALSE;
+     }
+
+   r = sqlite3_step(it->base.stmt);
+   if (r == SQLITE_DONE)
+     return EINA_FALSE;
+   if (r != SQLITE_ROW)
+     {
+        ERR("Error executing sql statement: %s",
+            sqlite3_errmsg(it->base.db->handle));
+        return EINA_FALSE;
+     }
+
+   it->album.id = sqlite3_column_int64(it->base.stmt, 0);
+   it->album.artist_id = sqlite3_column_int64(it->base.stmt, 1);
+   it->album.name = (const char *)sqlite3_column_text(it->base.stmt, 2);
+   it->album.len.name = sqlite3_column_bytes(it->base.stmt, 2);
+
+   *album = &it->album;
+
+   return EINA_TRUE;
+}
+
+Eina_Iterator *
+db_albums_get(DB *db)
+{
+   struct DB_Iterator_Album *it;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(db, NULL);
+   it = calloc(1,  sizeof(*it));
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
+
+   it->base.base.version = EINA_ITERATOR_VERSION;
+   it->base.base.next = _db_iterator_album_next;
+   it->base.base.get_container = _db_iterator_container_get;
+   it->base.base.free = _db_iterator_free;
+   it->base.db = db;
+   it->base.stmt_name = "albums_get";
+   it->base.stmt = _db_stmt_compile
+     (db, it->base.stmt_name,
+      "SELECT id, artist_id, name FROM audio_albums ORDER BY UPPER(name)");
+   if (!it->base.stmt)
+     {
+        free(it);
+        return NULL;
+     }
+
+   EINA_MAGIC_SET(&it->base.base, EINA_MAGIC_ITERATOR);
+   return &it->base.base;
+}
+
+Eina_Iterator *
+db_artist_albums_get(DB *db, int64_t artist_id)
+{
+   struct DB_Iterator_Album *it;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(db, NULL);
+   it = calloc(1,  sizeof(*it));
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
+
+   it->base.base.version = EINA_ITERATOR_VERSION;
+   it->base.base.next = _db_iterator_album_next;
+   it->base.base.get_container = _db_iterator_container_get;
+   it->base.base.free = _db_iterator_free;
+   it->base.db = db;
+   it->base.stmt_name = "artist_albums_get";
+   it->base.stmt = _db_stmt_compile
+     (db, it->base.stmt_name,
+      "SELECT id, artist_id, name FROM audio_albums "
+      "WHERE artist_id = ? ORDER BY UPPER(name)");
+   if (!it->base.stmt)
+     {
+        free(it);
+        return NULL;
+     }
+
+   if (!_db_stmt_bind_int64(it->base.stmt, 1, artist_id))
+     {
+        free(it);
+        return NULL;
+     }
+
+   EINA_MAGIC_SET(&it->base.base, EINA_MAGIC_ITERATOR);
+   return &it->base.base;
+}
+
+Eina_Iterator *
+db_genre_albums_get(DB *db, int64_t genre_id)
+{
+   struct DB_Iterator_Album *it;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(db, NULL);
+   it = calloc(1,  sizeof(*it));
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
+
+   it->base.base.version = EINA_ITERATOR_VERSION;
+   it->base.base.next = _db_iterator_album_next;
+   it->base.base.get_container = _db_iterator_container_get;
+   it->base.base.free = _db_iterator_free;
+   it->base.db = db;
+   it->base.stmt_name = "genre_albums_get";
+   it->base.stmt = _db_stmt_compile
+     (db, it->base.stmt_name,
+      "SELECT DISTINCT "
+      " audio_albums.id, audio_albums.artist_id, audio_albums.name "
+      "FROM audios, audio_albums "
+      "WHERE audios.album_id = audio_albums.id "
+      "AND audios.genre_id = ? "
+      "ORDER BY UPPER(audio_albums.name)");
+   if (!it->base.stmt)
+     {
+        free(it);
+        return NULL;
+     }
+
+   if (!_db_stmt_bind_int64(it->base.stmt, 1, genre_id))
+     {
+        free(it);
+        return NULL;
+     }
+
+   EINA_MAGIC_SET(&it->base.base, EINA_MAGIC_ITERATOR);
+   return &it->base.base;
+}
+
 NameID *
 db_nameid_copy(const NameID *orig)
 {
@@ -643,33 +936,6 @@ _db_iterator_nameid_next(Eina_Iterator *iterator, void **data)
    *nameid = &it->nameid;
 
    return EINA_TRUE;
-}
-
-Eina_Iterator *
-db_albums_get(DB *db)
-{
-   struct DB_Iterator_NameID *it;
-   EINA_SAFETY_ON_NULL_RETURN_VAL(db, NULL);
-   it = calloc(1,  sizeof(*it));
-   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
-
-   it->base.base.version = EINA_ITERATOR_VERSION;
-   it->base.base.next = _db_iterator_nameid_next;
-   it->base.base.get_container = _db_iterator_container_get;
-   it->base.base.free = _db_iterator_free;
-   it->base.db = db;
-   it->base.stmt_name = "albums_get";
-   it->base.stmt = _db_stmt_compile
-     (db, it->base.stmt_name,
-      "SELECT id, name FROM audio_albums ORDER BY UPPER(name)");
-   if (!it->base.stmt)
-     {
-        free(it);
-        return NULL;
-     }
-
-   EINA_MAGIC_SET(&it->base.base, EINA_MAGIC_ITERATOR);
-   return &it->base.base;
 }
 
 Eina_Iterator *

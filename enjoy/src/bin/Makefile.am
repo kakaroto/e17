@@ -17,7 +17,7 @@ bin_PROGRAMS += enjoy_ql
 endif
 
 enjoy_LDADD = @ELEMENTARY_LIBS@ @EMOTION_LIBS@ @LMS_LIBS@ @SQLITE3_LIBS@
-enjoy_SOURCES = main.c win.c db.c list.c page.c
+enjoy_SOURCES = main.c win.c db.c list.c page.c cover.c
 
 if BUILD_QUICKLAUNCH
 ############################################################################
@@ -28,7 +28,7 @@ if BUILD_QUICKLAUNCH
 ############################################################################
 enjoy_qldir = $(quicklauncher_libdir)
 enjoy_ql_LTLIBRARIES = enjoy_ql.la
-enjoy_ql_la_SOURCES = main.c win.c db.c list.c page.c
+enjoy_ql_la_SOURCES = main.c win.c db.c list.c page.c cover.c
 enjoy_ql_la_LIBADD = @ELEMENTARY_LIBS@ @EMOTION_LIBS@ @LMS_LIBS@ @SQLITE3_LIBS@
 enjoy_ql_la_CFLAGS =
 enjoy_ql_la_LDFLAGS = -module -avoid-version -no-undefined

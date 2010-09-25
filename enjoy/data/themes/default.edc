@@ -237,6 +237,7 @@ collections {
 
    group {
       name: "page/songs";
+      alias: "page/albums";
       alias: "page/nameids";
 
       data.item: "homogeneous" "1";
@@ -374,6 +375,169 @@ collections {
       }
    }
 
+   group {
+      name: "page/songs-album";
+
+      data.item: "homogeneous" "1";
+      parts {
+         part {
+            name: "title.bg";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 128 128 128 255;
+               rel1.to: "ejy.text.title";
+               rel2.to: "ejy.text.title";
+            }
+         }
+
+         part {
+            name: "back";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 0 255 255 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 10 10;
+               }
+               rel2 {
+                  relative: 0.0 0.0;
+                  offset: 30 30;
+               }
+            }
+         }
+         programs {
+            program {
+               name: "ejy,back,clicked";
+               signal: "mouse,clicked,1";
+               source: "back";
+               action: SIGNAL_EMIT "ejy,back,clicked" "ejy";
+            }
+         }
+
+         part {
+            name: "songs";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 255 0 255 0;
+               visible: 0;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: -40 10;
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -11 30;
+               }
+            }
+            description {
+               state: "visible" 0.0;
+               inherit: "default" 0.0;
+               color: 255 0 255 255;
+               visible: 1;
+            }
+         }
+         programs {
+            program {
+               name: "ejy,songs,clicked";
+               signal: "mouse,clicked,1";
+               source: "songs";
+               action: SIGNAL_EMIT "ejy,songs,clicked" "ejy";
+            }
+            program {
+               name: "ejy,songs,show";
+               signal: "ejy,songs,show";
+               source: "ejy";
+               action: STATE_SET "visible" 0.0;
+               target: "songs";
+            }
+            program {
+               name: "ejy,songs,hide";
+               signal: "ejy,songs,hide";
+               source: "ejy";
+               action: STATE_SET "hidden" 0.0;
+               target: "songs";
+            }
+         }
+
+         part {
+            name: "ejy.text.title";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -1 100;
+               }
+               text {
+                  font: "Sans";
+                  size: 10;
+                  text: "title";
+               }
+            }
+         }
+
+         part {
+            name: "cover-fallback";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 255 255 0 255;
+               min: 128 128;
+               max: 128 128;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 110;
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -1 237;
+               }
+            }
+         }
+
+         part {
+            name: "ejy.swallow.cover";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 110;
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -1 237;
+               }
+            }
+         }
+
+         part {
+            name: "ejy.swallow.list";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 248;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+            }
+         }
+      }
+   }
+
    group { name: "elm/genlist/item_compress/song/default";
       alias: "elm/genlist/item_compress_odd/song/default";
       data.item: "labels" "ejy.text.title ejy.text.album-artist";
@@ -441,6 +605,172 @@ collections {
                   size: 8;
                   min: 0 1;
                   align: 0.0 1.0;
+                  text: "";
+               }
+            }
+         }
+
+         part {
+            name: "separator";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 128 128 128 255;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 -2;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+            }
+         }
+      }
+      programs {
+         program {
+            name:    "go_active";
+            signal:  "elm,state,selected";
+            source:  "elm";
+            action:  STATE_SET "selected" 0.0;
+            target:  "ejy.text.title";
+         }
+         program {
+            name:    "go_passive";
+            signal:  "elm,state,unselected";
+            source:  "elm";
+            action:  STATE_SET "default" 0.0;
+            target:  "ejy.text.title";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item_compress/song-album/default";
+      alias: "elm/genlist/item_compress_odd/song-album/default";
+      data.item: "labels" "ejy.text.title ejy.text.trackno ejy.text.length";
+      parts {
+         part {
+            name: "events";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 0;
+            }
+         }
+
+         part {
+            name: "ejy.text.trackno";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 4 2;
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 40 -3;
+
+               }
+               text {
+                  font: "Sans:style=Bold";
+                  size: 12;
+                  min: 0 1;
+                  align: 1.0 0.5;
+               }
+            }
+         }
+
+         part {
+            name: "trackno-sep";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 128 128 128 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 44 0;
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 44 -1;
+               }
+            }
+         }
+
+         part {
+            name: "ejy.text.title";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 48 2;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -84 -3;
+               }
+               text {
+                  font: "Sans:style=Bold";
+                  size: 12;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description {
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 200 20 20 255;
+            }
+         }
+
+         part {
+            name: "length-sep";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 128 128 128 255;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: -80 0;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -80 -1;
+               }
+            }
+         }
+
+         part {
+            name: "ejy.text.length";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 128 128 128 255;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: -76 2;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -10 -3;
+               }
+               text {
+                  font: "Sans:style=Bold";
+                  size: 10;
+                  min: 0 1;
+                  align: 1.0 0.5;
                   text: "";
                }
             }
@@ -560,6 +890,238 @@ collections {
             source:  "elm";
             action:  STATE_SET "default" 0.0;
             target:  "ejy.text.title";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item_compress/album/default";
+      alias: "elm/genlist/item_compress_odd/album/default";
+      data {
+         item: "labels" "ejy.text.album ejy.text.artist";
+         item: "icons" "ejy.swallow.cover";
+         item: "icon_size" "32";
+      }
+      parts {
+         part {
+            name: "events";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 0;
+            }
+         }
+
+         part {
+            name: "ejy.swallow.cover";
+            type: SWALLOW;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 32 32;
+               max: 32 32;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 4 0;
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 35 -1;
+               }
+            }
+         }
+
+         part {
+            name: "ejy.text.album";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 40 2;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -5 -3;
+               }
+               text {
+                  font: "Sans:style=Bold";
+                  size: 12;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description {
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 200 20 20 255;
+            }
+         }
+
+         part {
+            name: "separator";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 128 128 128 255;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 -2;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+            }
+         }
+      }
+      programs {
+         program {
+            name:    "go_active";
+            signal:  "elm,state,selected";
+            source:  "elm";
+            action:  STATE_SET "selected" 0.0;
+            target:  "ejy.text.album";
+         }
+         program {
+            name:    "go_passive";
+            signal:  "elm,state,unselected";
+            source:  "elm";
+            action:  STATE_SET "default" 0.0;
+            target:  "ejy.text.album";
+         }
+      }
+   }
+
+   group { name: "elm/genlist/item_compress/album-artist/default";
+      alias: "elm/genlist/item_compress_odd/album-artist/default";
+      data {
+         item: "labels" "ejy.text.album ejy.text.artist";
+         item: "icons" "ejy.swallow.cover";
+         item: "icon_size" "32";
+      }
+      parts {
+         part {
+            name: "events";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 0;
+            }
+         }
+
+         part {
+            name: "ejy.swallow.cover";
+            type: SWALLOW;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 32 32;
+               max: 32 32;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 4 0;
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 35 -1;
+               }
+            }
+         }
+
+         part {
+            name: "ejy.text.album";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 40 2;
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -5 -2;
+                  to_y: "ejy.text.artist";
+               }
+               text {
+                  font: "Sans:style=Bold";
+                  size: 12;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description {
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 200 20 20 255;
+            }
+         }
+
+         part {
+            name: "ejy.text.artist";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 128 128 128 255;
+               align: 0.0 1.0;
+               fixed: 1 1;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 40 -3;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -5 -3;
+               }
+               text {
+                  font: "Sans";
+                  size: 8;
+                  min: 0 1;
+                  align: 0.0 1.0;
+                  text: "";
+               }
+            }
+         }
+
+         part {
+            name: "separator";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 128 128 128 255;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 -2;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+            }
+         }
+      }
+      programs {
+         program {
+            name:    "go_active";
+            signal:  "elm,state,selected";
+            source:  "elm";
+            action:  STATE_SET "selected" 0.0;
+            target:  "ejy.text.album";
+         }
+         program {
+            name:    "go_passive";
+            signal:  "elm,state,unselected";
+            source:  "elm";
+            action:  STATE_SET "default" 0.0;
+            target:  "ejy.text.album";
          }
       }
    }
