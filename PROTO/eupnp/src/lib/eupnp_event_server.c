@@ -25,6 +25,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 #include <Eina.h>
 
@@ -39,9 +40,9 @@
  */
 
 static Eupnp_Server _event_server = NULL;
-static const char *_host = NULL;
+static char *_host = NULL;
 static int _port = 0;
-static const char *_url = NULL;
+static char *_url = NULL;
 static int _log_dom = -1;
 
 #undef DBG
@@ -57,7 +58,7 @@ static int _log_dom = -1;
 
 
 static void
-_client_data_ready(void *buffer, int size, void *data)
+_client_data_ready(void *buffer, int size, void *data __UNUSED__)
 {
    DBG("Event received, size %d!", size);
 
@@ -150,8 +151,6 @@ eupnp_event_server_init(void)
    listen_url_err:
 	free((char *)_host);
    host_ip_err:
-	eupnp_event_bus_shutdown();
-   event_bus_fail:
 	eina_log_domain_unregister(_log_dom);
    log_domain_fail:
 	_log_dom = -1;
@@ -187,8 +186,6 @@ eupnp_event_server_request_subscribe(Eupnp_Callback cb, void *data)
 
    Eupnp_Event_Type event = eupnp_event_bus_event_type_new();
 
-   if (event < 0) return -1;
-
    Eupnp_Subscriber *sub;
    sub = eupnp_event_bus_subscribe(event, cb, data);
 
@@ -209,5 +206,5 @@ eupnp_event_server_request_subscribe(Eupnp_Callback cb, void *data)
 const char *
 eupnp_event_server_url_get()
 {
-   return _url;
+   return (const char *) _url;
 }
