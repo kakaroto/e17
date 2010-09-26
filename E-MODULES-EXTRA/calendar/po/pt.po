@@ -1,13 +1,14 @@
 # Portuguese translation for calendar
 # This file is distributed under the same license as the enlightenment package.
 # Sérgio Marques <smarquespt@gmail.com>, 2010
-#
+# Portuguese translation for alarm
+# Adaptado ao acordo ortográfico de 1990
 msgid ""
 msgstr ""
 "Project-Id-Version: calendar\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2009-08-28 02:00-0700\n"
-"PO-Revision-Date: 2010-08-11 15:36-0000\n"
+"POT-Creation-Date: 2010-08-12 07:00-0700\n"
+"PO-Revision-Date: 2010-09-26 01:50-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Portuguese\n"
 "MIME-Version: 1.0\n"
@@ -19,25 +20,25 @@ msgstr ""
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: Portugal\n"
 
-#: ../src/e_mod_main.c:450
+#: ../src/e_mod_main.c:584
 msgid "Sunday"
-msgstr "Domingo"
+msgstr "domingo"
 
-#: ../src/e_mod_main.c:457
+#: ../src/e_mod_main.c:591
 msgid "Monday"
-msgstr "Segunda-Feira"
+msgstr "segunda"
 
-#: ../src/e_mod_main.c:469
+#: ../src/e_mod_main.c:603
 msgid "First Day of Week"
-msgstr "Primeiro Dia da Semana"
+msgstr "Primeiro dia da semana"
 
-#: ../src/e_mod_main.c:570
-#: ../src/e_mod_main.c:586
+#: ../src/e_mod_main.c:686
+#: ../src/e_mod_main.c:703
 msgid "Calendar"
 msgstr "Calendário"
 
-#: ../src/e_mod_main.c:570
-#: ../src/e_mod_main.c:586
+#: ../src/e_mod_main.c:687
+#: ../src/e_mod_main.c:703
 msgid "Monthview Popup (Show/Hide)"
-msgstr "Alerta de Vista Mensal (Mostrar/Ocultar)"
+msgstr "Alerta de vista mensal (mostrar/ocultar)"
 

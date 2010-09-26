@@ -1,18 +1,21 @@
 # Portuguese translation for enlightenment
 # This file is distributed under the same license as the enlightenment package.
 # Diogo Lavareda <diogolavareda9@hotmail.com>, 2009.
-#
+# Sérgio Marques <smarquespt@gmail.com>, 2010
+# Adaptado ao acordo ortográfico de 1990
 msgid ""
 msgstr ""
-"Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-25 17:14+0800\n"
-"PO-Revision-Date: 2009-05-28 20:55+0000\n"
-"Last-Translator: Diogo Lavareda <diogolavareda9@hotmail.com>\n"
-"Language-Team: Portuguese <pt@li.org>\n"
+"Project-Id-Version: cpu\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2009-08-28 02:00-0700\n"
+"PO-Revision-Date: 2010-09-26 01:50-0000\n"
+"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
+"Language-Team: Portuguese\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Portuguese\n"
+"X-Poedit-Country: Portugal\n"
 
 #: ../src/e_mod_main.c:132
 msgid "Cpu"
@@ -36,8 +39,9 @@ msgstr "Lento (5 seg)"
 
 #: ../src/e_mod_main.c:394
 msgid "Very Slow (30 sec)"
-msgstr "Muito Lento (30 seg)"
+msgstr "Muito lento (30 seg)"
 
 #: ../src/e_mod_main.c:405
 msgid "Time Between Updates"
-msgstr "Tempo Entre Actualizações"
+msgstr "Tempo entre atualizações"
+
