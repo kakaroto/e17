@@ -32,6 +32,11 @@ static const elixir_parameter_t*        _ecore_evas_int_params[3] = {
    &int_parameter,
    NULL
 };
+static const elixir_parameter_t*        _ecore_evas_bool_params[3] = {
+   &_ecore_evas_parameter,
+   &boolean_parameter,
+   NULL
+};
 static const elixir_parameter_t*        _ecore_evas_2int_params[4] = {
    &_ecore_evas_parameter,
    &int_parameter,
@@ -243,20 +248,36 @@ elixir_int_params_ecore_evas(int (*func)(const Ecore_Evas *ee),
    return JS_TRUE;
 }
 
+static JSBool
+elixir_boolean_params_ecore_evas(Eina_Bool (*func)(const Ecore_Evas *ee),
+				 JSContext *cx, uintN argc, jsval *vp)
+{
+   Ecore_Evas *ee;
+   elixir_value_t val[1];
+
+   if (!elixir_params_check(cx, _ecore_evas_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, ee);
+
+   JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(func(ee)));
+   return JS_TRUE;
+}
+
 FAST_CALL_PARAMS(ecore_evas_rotation_get, elixir_int_params_ecore_evas);
-FAST_CALL_PARAMS(ecore_evas_shaped_get, elixir_int_params_ecore_evas);
-FAST_CALL_PARAMS(ecore_evas_alpha_get, elixir_int_params_ecore_evas);
+FAST_CALL_PARAMS(ecore_evas_shaped_get, elixir_boolean_params_ecore_evas);
+FAST_CALL_PARAMS(ecore_evas_alpha_get, elixir_boolean_params_ecore_evas);
 FAST_CALL_PARAMS(ecore_evas_visibility_get, elixir_int_params_ecore_evas);
 FAST_CALL_PARAMS(ecore_evas_layer_get, elixir_int_params_ecore_evas);
-FAST_CALL_PARAMS(ecore_evas_focus_get, elixir_int_params_ecore_evas);
-FAST_CALL_PARAMS(ecore_evas_iconified_get, elixir_int_params_ecore_evas);
-FAST_CALL_PARAMS(ecore_evas_borderless_get, elixir_int_params_ecore_evas);
-FAST_CALL_PARAMS(ecore_evas_override_get, elixir_int_params_ecore_evas);
-FAST_CALL_PARAMS(ecore_evas_maximized_get, elixir_int_params_ecore_evas);
-FAST_CALL_PARAMS(ecore_evas_fullscreen_get, elixir_int_params_ecore_evas);
-FAST_CALL_PARAMS(ecore_evas_withdrawn_get, elixir_int_params_ecore_evas);
-FAST_CALL_PARAMS(ecore_evas_sticky_get, elixir_int_params_ecore_evas);
-FAST_CALL_PARAMS(ecore_evas_ignore_events_get, elixir_int_params_ecore_evas);
+FAST_CALL_PARAMS(ecore_evas_focus_get, elixir_boolean_params_ecore_evas);
+FAST_CALL_PARAMS(ecore_evas_iconified_get, elixir_boolean_params_ecore_evas);
+FAST_CALL_PARAMS(ecore_evas_borderless_get, elixir_boolean_params_ecore_evas);
+FAST_CALL_PARAMS(ecore_evas_override_get, elixir_boolean_params_ecore_evas);
+FAST_CALL_PARAMS(ecore_evas_maximized_get, elixir_boolean_params_ecore_evas);
+FAST_CALL_PARAMS(ecore_evas_fullscreen_get, elixir_boolean_params_ecore_evas);
+FAST_CALL_PARAMS(ecore_evas_withdrawn_get, elixir_boolean_params_ecore_evas);
+FAST_CALL_PARAMS(ecore_evas_sticky_get, elixir_boolean_params_ecore_evas);
+FAST_CALL_PARAMS(ecore_evas_ignore_events_get, elixir_boolean_params_ecore_evas);
 
 FAST_CALL_PARAMS_CAST(ecore_evas_avoid_damage_get, elixir_int_params_ecore_evas);
 
@@ -308,19 +329,36 @@ elixir_void_params_int(void (*func)(Ecore_Evas *ee, int a),
    return JS_TRUE;
 }
 
+static JSBool
+elixir_void_params_boolean(void (*func)(Ecore_Evas *ee, Eina_Bool a),
+			   JSContext *cx, uintN argc, jsval *vp)
+{
+   Ecore_Evas *ee;
+   elixir_value_t val[2];
+
+   if (!elixir_params_check(cx, _ecore_evas_bool_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, ee);
+
+   func(ee, val[1].v.bol);
+
+   return JS_TRUE;
+}
+
 FAST_CALL_PARAMS(ecore_evas_rotation_set, elixir_void_params_int);
-FAST_CALL_PARAMS(ecore_evas_shaped_set, elixir_void_params_int);
-FAST_CALL_PARAMS(ecore_evas_alpha_set, elixir_void_params_int);
+FAST_CALL_PARAMS(ecore_evas_shaped_set, elixir_void_params_boolean);
+FAST_CALL_PARAMS(ecore_evas_alpha_set, elixir_void_params_boolean);
 FAST_CALL_PARAMS(ecore_evas_layer_set, elixir_void_params_int);
-FAST_CALL_PARAMS(ecore_evas_focus_set, elixir_void_params_int);
-FAST_CALL_PARAMS(ecore_evas_iconified_set, elixir_void_params_int);
-FAST_CALL_PARAMS(ecore_evas_borderless_set, elixir_void_params_int);
-FAST_CALL_PARAMS(ecore_evas_override_set, elixir_void_params_int);
-FAST_CALL_PARAMS(ecore_evas_maximized_set, elixir_void_params_int);
-FAST_CALL_PARAMS(ecore_evas_fullscreen_set, elixir_void_params_int);
-FAST_CALL_PARAMS(ecore_evas_withdrawn_set, elixir_void_params_int);
-FAST_CALL_PARAMS(ecore_evas_sticky_set, elixir_void_params_int);
-FAST_CALL_PARAMS(ecore_evas_ignore_events_set, elixir_void_params_int);
+FAST_CALL_PARAMS(ecore_evas_focus_set, elixir_void_params_boolean);
+FAST_CALL_PARAMS(ecore_evas_iconified_set, elixir_void_params_boolean);
+FAST_CALL_PARAMS(ecore_evas_borderless_set, elixir_void_params_boolean);
+FAST_CALL_PARAMS(ecore_evas_override_set, elixir_void_params_boolean);
+FAST_CALL_PARAMS(ecore_evas_maximized_set, elixir_void_params_boolean);
+FAST_CALL_PARAMS(ecore_evas_fullscreen_set, elixir_void_params_boolean);
+FAST_CALL_PARAMS(ecore_evas_withdrawn_set, elixir_void_params_boolean);
+FAST_CALL_PARAMS(ecore_evas_sticky_set, elixir_void_params_boolean);
+FAST_CALL_PARAMS(ecore_evas_ignore_events_set, elixir_void_params_boolean);
 
 FAST_CALL_PARAMS_CAST(ecore_evas_avoid_damage_set, elixir_void_params_int);
 
@@ -434,7 +472,6 @@ elixir_ecore_evas_new(JSContext *cx, uintN argc, jsval *vp)
 static JSBool
 elixir_ecore_evas_get(JSContext *cx, uintN argc, jsval *vp)
 {
-   JSClass *evas_class;
    Ecore_Evas *ee;
    jsval *tmp;
    JSObject *jo;

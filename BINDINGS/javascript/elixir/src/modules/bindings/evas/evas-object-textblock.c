@@ -96,7 +96,7 @@ elixir_evas_textblock_cursor_params(void (*func)(Evas_Textblock_Cursor* cur),
 }
 
 static JSBool
-elixir_int_evas_textblock_cursor_string_params(size_t (*func)(Evas_Textblock_Cursor* cur, const char* str),
+elixir_int_evas_textblock_cursor_string_params(int (*func)(Evas_Textblock_Cursor* cur, const char* str),
 					       JSContext *cx, uintN argc, jsval *vp)
 {
    Evas_Textblock_Cursor *know;
