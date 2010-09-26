@@ -115,6 +115,10 @@ typedef struct _Page
    Eina_Iterator *iterator;
    Ecore_Idler *populate;
    char last_index_letter[2];
+   struct {
+      void *data;
+      void (*free)(void *data);
+   } item;
 } Page;
 
 #define PAGE_GET_OR_RETURN(page, obj, ...)                      \
@@ -213,6 +217,7 @@ _page_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
    eina_stringshare_del(page->title);
    if (page->iterator) eina_iterator_free(page->iterator);
    if (page->populate) ecore_idler_del(page->populate);
+   if (page->item.free) page->item.free(page->item.data);
    free(page);
 }
 
@@ -763,6 +768,21 @@ _page_albums_add(Evas_Object *parent, Eina_Iterator *it, const char *title)
    return _page_add(parent, it, title, NULL, &album_cls);
 }
 
+static char *
+_item_all_songs_label_get(void *data __UNUSED__, Evas_Object *list __UNUSED__, const char *part __UNUSED__)
+{
+   return strdup("All Songs");
+}
+
+static const Elm_Genlist_Item_Class _item_all_songs_cls = {
+  "all-song",
+  {
+    _item_all_songs_label_get,
+    NULL,
+    NULL,
+    NULL
+  }
+};
 
 static char *
 _nameid_item_label_get(void *data, Evas_Object *list __UNUSED__, const char *part __UNUSED__)
@@ -778,6 +798,22 @@ _nameid_item_del(void *data, Evas_Object *list __UNUSED__)
 }
 
 static void
+_artist_item_all_songs_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
+{
+   Page *page = data;
+   NameID *nameid = page->item.data;
+   DB *db = _page_db_get(page->layout);
+   Eina_Iterator *it = db_artist_songs_get(db, nameid->id);
+   char buf[128];
+   snprintf(buf, sizeof(buf), "Songs by %s", nameid->name);
+   Evas_Object *next = _page_songs_add(page->layout, it, buf);
+   if (next)
+     evas_object_smart_callback_call(page->layout, "folder-songs", next);
+   elm_genlist_item_selected_set(event_info, EINA_FALSE);
+   page->selected = NULL;
+}
+
+static void
 _artist_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
 {
    Page *page = data;
@@ -789,7 +825,16 @@ _artist_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info
    snprintf(buf, sizeof(buf), "Albums by %s", nameid->name);
    Evas_Object *next = _page_albums_add(page->layout, it, buf);
    if (next)
-     evas_object_smart_callback_call(page->layout, "folder", next);
+     {
+        Page *next_page = evas_object_data_get(next, "_enjoy_page");
+        next_page->item.data = db_nameid_copy(nameid);
+        next_page->item.free = (void (*)(void *))db_nameid_free;
+        elm_genlist_item_append
+          (next_page->list, &_item_all_songs_cls, NULL, NULL,
+           ELM_GENLIST_ITEM_NONE, _artist_item_all_songs_selected, next_page);
+
+        evas_object_smart_callback_call(page->layout, "folder", next);
+     }
    elm_genlist_item_selected_set(event_info, EINA_FALSE);
    page->selected = NULL;
 }
@@ -821,6 +866,22 @@ _page_artists_add(Evas_Object *parent, Eina_Iterator *it, const char *title)
 }
 
 static void
+_genre_item_all_songs_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
+{
+   Page *page = data;
+   NameID *nameid = page->item.data;
+   DB *db = _page_db_get(page->layout);
+   Eina_Iterator *it = db_genre_songs_get(db, nameid->id);
+   char buf[128];
+   snprintf(buf, sizeof(buf), "Songs of %s", nameid->name);
+   Evas_Object *next = _page_songs_add(page->layout, it, buf);
+   if (next)
+     evas_object_smart_callback_call(page->layout, "folder-songs", next);
+   elm_genlist_item_selected_set(event_info, EINA_FALSE);
+   page->selected = NULL;
+}
+
+static void
 _genre_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
 {
    Page *page = data;
@@ -832,7 +893,16 @@ _genre_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
    snprintf(buf, sizeof(buf), "Albums of %s", nameid->name);
    Evas_Object *next = _page_albums_artist_add(page->layout, it, buf);
    if (next)
-     evas_object_smart_callback_call(page->layout, "folder", next);
+     {
+        Page *next_page = evas_object_data_get(next, "_enjoy_page");
+        next_page->item.data = db_nameid_copy(nameid);
+        next_page->item.free = (void (*)(void *))db_nameid_free;
+        elm_genlist_item_append
+          (next_page->list, &_item_all_songs_cls, NULL, NULL,
+           ELM_GENLIST_ITEM_NONE, _genre_item_all_songs_selected, next_page);
+
+        evas_object_smart_callback_call(page->layout, "folder", next);
+     }
    elm_genlist_item_selected_set(event_info, EINA_FALSE);
    page->selected = NULL;
 }
