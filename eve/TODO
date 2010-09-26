@@ -9,9 +9,16 @@ UI
  * url bar: clear button?
  * bookmarks: save page icon once it is known?
  * history: save icon
+ * history: disable ewk built-in history and just use the one from eve, that should be saved with its state and restored on next startup.
+ * ewk_view_bg_color_set() based on theme color class?
+ * more: add search
 
 Preferences / State
 -------------------
+ * tweaks:
+   - bool: frame flattening
+   - bool: text only zoom
+   - int: font minimum (some people really need bigger fonts) maybe just allow few options such as 6, 8, 10, 12, 14, 16 and 18.
  * preferences (runtime, save at eet):
    - toggle: use start page (otherwise home page)
    - string: proxy
@@ -25,7 +32,7 @@ Preferences / State
 
 View
 ----
- * fix zoom out (seems < 1.0 is not allowed)
+ * fix zoom out (seems < 1.0 is not allowed) when page specifies a fixed viewport/contents size, check google.com with '-U iphone'
  * implement viewport tag support (good for mobile pages)
 
 Misc
