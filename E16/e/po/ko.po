@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-08-29 14:59+0200\n"
+"POT-Creation-Date: 2010-09-23 23:24+0200\n"
 "PO-Revision-Date: 2009-12-02 09:48+0000\n"
 "Last-Translator: Michael Kim <Unknown>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -395,7 +395,7 @@ msgstr "닫기"
 msgid "Create New Iconbox"
 msgstr "새 아이콘상자 생성"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2117
+#: src/container.c:1507 src/container.c:1583 src/menus.c:2120
 #, c-format
 msgid "Icon size: %2d"
 msgstr ""
@@ -672,7 +672,7 @@ msgstr ""
 msgid "Apply"
 msgstr "적용"
 
-#: src/ecompmgr.c:2315
+#: src/ecompmgr.c:2311
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1230,27 +1230,27 @@ msgstr "이 그룹 아이콘화"
 msgid "Group %i"
 msgstr "그룹 %i"
 
-#: src/menus.c:2140
+#: src/menus.c:2143
 msgid "Animated display of menus"
 msgstr "메뉴 표시 에니메이트"
 
-#: src/menus.c:2145
+#: src/menus.c:2148
 msgid "Always pop up menus on screen"
 msgstr "항상 화면에 메뉴를 팝업"
 
-#: src/menus.c:2150
+#: src/menus.c:2153
 msgid "Warp pointer after moving menus"
 msgstr "메뉴를 움직인 후에 포인터 뒤집기"
 
-#: src/menus.c:2167
+#: src/menus.c:2170
 msgid "Menus"
 msgstr ""
 
-#: src/menus.c:2168
+#: src/menus.c:2171
 msgid "Menu Settings"
 msgstr ""
 
-#: src/menus.c:2171
+#: src/menus.c:2174
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-08-29 14:59+0200\n"
+"POT-Creation-Date: 2010-09-23 23:24+0200\n"
 "PO-Revision-Date: 2010-02-14 04:53+0000\n"
 "Last-Translator: Teylo Laundos Aguiar <teylo.aguiar@gmail.com>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -403,7 +403,7 @@ msgstr "Fechar"
 msgid "Create New Iconbox"
 msgstr "Criar Novo Porta-ícone"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2117
+#: src/container.c:1507 src/container.c:1583 src/menus.c:2120
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Tamanho do ícone %2d"
@@ -684,7 +684,7 @@ msgstr ""
 msgid "Apply"
 msgstr "Aplicar"
 
-#: src/ecompmgr.c:2315
+#: src/ecompmgr.c:2311
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1242,27 +1242,27 @@ msgstr "Iconificar esse grupo"
 msgid "Group %i"
 msgstr "Grupo %i"
 
-#: src/menus.c:2140
+#: src/menus.c:2143
 msgid "Animated display of menus"
 msgstr "Exibição animada de menus"
 
-#: src/menus.c:2145
+#: src/menus.c:2148
 msgid "Always pop up menus on screen"
 msgstr "Sempre exibir menus na tela"
 
-#: src/menus.c:2150
+#: src/menus.c:2153
 msgid "Warp pointer after moving menus"
 msgstr ""
 
-#: src/menus.c:2167
+#: src/menus.c:2170
 msgid "Menus"
 msgstr ""
 
-#: src/menus.c:2168
+#: src/menus.c:2171
 msgid "Menu Settings"
 msgstr ""
 
-#: src/menus.c:2171
+#: src/menus.c:2174
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"

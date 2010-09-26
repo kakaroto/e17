@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-08-29 14:59+0200\n"
+"POT-Creation-Date: 2010-09-23 23:24+0200\n"
 "PO-Revision-Date: 2010-01-16 04:42+0000\n"
 "Last-Translator: Miro Glavić <glavicmiro@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -413,7 +413,7 @@ msgstr "Zatvori"
 msgid "Create New Iconbox"
 msgstr ""
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2117
+#: src/container.c:1507 src/container.c:1583 src/menus.c:2120
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Veličina ikone: %2d"
@@ -681,7 +681,7 @@ msgstr ""
 msgid "Apply"
 msgstr "Primijeni"
 
-#: src/ecompmgr.c:2315
+#: src/ecompmgr.c:2311
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1177,27 +1177,27 @@ msgstr ""
 msgid "Group %i"
 msgstr "Grupa %i"
 
-#: src/menus.c:2140
+#: src/menus.c:2143
 msgid "Animated display of menus"
 msgstr "Animirani prikaz izbornika"
 
-#: src/menus.c:2145
+#: src/menus.c:2148
 msgid "Always pop up menus on screen"
 msgstr "Uvijek pop-up izbornike na zaslonu"
 
-#: src/menus.c:2150
+#: src/menus.c:2153
 msgid "Warp pointer after moving menus"
 msgstr ""
 
-#: src/menus.c:2167
+#: src/menus.c:2170
 msgid "Menus"
 msgstr "Izbornici"
 
-#: src/menus.c:2168
+#: src/menus.c:2171
 msgid "Menu Settings"
 msgstr "Postavke Izbornika"
 
-#: src/menus.c:2171
+#: src/menus.c:2174
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"

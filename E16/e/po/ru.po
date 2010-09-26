@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-08-29 14:59+0200\n"
+"POT-Creation-Date: 2010-09-23 23:24+0200\n"
 "PO-Revision-Date: 2010-05-09 01:23+0000\n"
 "Last-Translator: sda00 <Unknown>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -431,7 +431,7 @@ msgstr "Закрыть"
 msgid "Create New Iconbox"
 msgstr "Сделать новый Iconbox"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2117
+#: src/container.c:1507 src/container.c:1583 src/menus.c:2120
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Размер пиктограммы: %2d"
@@ -713,7 +713,7 @@ msgstr ""
 msgid "Apply"
 msgstr "Применить"
 
-#: src/ecompmgr.c:2315
+#: src/ecompmgr.c:2311
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1288,27 +1288,27 @@ msgstr "Свернуть эту группу"
 msgid "Group %i"
 msgstr "Группа %i"
 
-#: src/menus.c:2140
+#: src/menus.c:2143
 msgid "Animated display of menus"
 msgstr "Анимированный показ окон"
 
-#: src/menus.c:2145
+#: src/menus.c:2148
 msgid "Always pop up menus on screen"
 msgstr "Всегда показывать меню поверх остальных окон"
 
-#: src/menus.c:2150
+#: src/menus.c:2153
 msgid "Warp pointer after moving menus"
 msgstr "Следить за перемещением меню"
 
-#: src/menus.c:2167
+#: src/menus.c:2170
 msgid "Menus"
 msgstr "Стиль рамки"
 
-#: src/menus.c:2168
+#: src/menus.c:2171
 msgid "Menu Settings"
 msgstr "Настройки меню"
 
-#: src/menus.c:2171
+#: src/menus.c:2174
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"

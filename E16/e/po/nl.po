@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-08-29 14:59+0200\n"
+"POT-Creation-Date: 2010-09-23 23:24+0200\n"
 "PO-Revision-Date: 2009-11-09 14:39+0000\n"
 "Last-Translator: Yentl <y.v.t@scarlet.be>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -429,7 +429,7 @@ msgstr "Sluit"
 msgid "Create New Iconbox"
 msgstr "Maak een nieuwe Icoonbox"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2117
+#: src/container.c:1507 src/container.c:1583 src/menus.c:2120
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Icoon grootte: %2d"
@@ -706,7 +706,7 @@ msgstr ""
 msgid "Apply"
 msgstr "Pas toe"
 
-#: src/ecompmgr.c:2315
+#: src/ecompmgr.c:2311
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1282,27 +1282,27 @@ msgstr "Minimaliseer deze groep"
 msgid "Group %i"
 msgstr "Groep %i"
 
-#: src/menus.c:2140
+#: src/menus.c:2143
 msgid "Animated display of menus"
 msgstr "Geanimeerd tonen van menus"
 
-#: src/menus.c:2145
+#: src/menus.c:2148
 msgid "Always pop up menus on screen"
 msgstr "Toon menus altijd op het scherm"
 
-#: src/menus.c:2150
+#: src/menus.c:2153
 msgid "Warp pointer after moving menus"
 msgstr "Pointer warpen na menu's te verplaatsen"
 
-#: src/menus.c:2167
+#: src/menus.c:2170
 msgid "Menus"
 msgstr "Menu's"
 
-#: src/menus.c:2168
+#: src/menus.c:2171
 msgid "Menu Settings"
 msgstr "Menu Instellingen"
 
-#: src/menus.c:2171
+#: src/menus.c:2174
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"
