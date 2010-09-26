@@ -627,8 +627,14 @@ on_view_mask_visible(void *data, Evas_Object *o __UNUSED__,
    Evas_Object *ed = elm_layout_edje_get(win->current_chrome);
    Evas_Object *url_entry = edje_object_part_swallow_get(ed, "url-entry");
 
-   evas_object_focus_set(win->current_view, EINA_FALSE);
-   evas_object_focus_set(url_entry, EINA_TRUE);
+   /*
+    * BIG FAT HACK - TODO - REMOVE ASAP
+    *
+    * elm is stupid and does not guess it lost the focus before, but
+    * it tries to be smart and do not re-focus if already
+    * focused... this leads to elm_object_focus() not working.
+    */
+   elm_object_unfocus(url_entry);
    elm_object_focus(url_entry);
 }
 
