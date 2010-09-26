@@ -5371,3 +5371,14 @@ Call XRRUpdateConfiguration on RRScreenChangeNotify.
 Fix unpacking theme from .etheme file. Has been broken since 1.0.2.
 Another attempt to fix pointer focus breakage.
 
+-------------------------------------------------------------------------------
+
+Sun Sep 26 07:30:30 CEST 2010
+
+--- 1.0.6 ---
+Fix potential crash in menu key press handling.
+Keep on-screen windows requesting resize on screen.
+Fix deriving configuration file names with libX11-1.4.
+Fix potential crash when destroying menus.
+Fix rendering of translucent shaped windows.
+
