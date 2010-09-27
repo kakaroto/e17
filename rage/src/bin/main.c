@@ -15,7 +15,6 @@ char        *config = NULL;
 Eet_File    *eet_config = NULL;
 Ecore_Timer* mouse_timeout = NULL;
 
-static double       start_time = 0.0;
 static Ecore_Evas  *ecore_evas = NULL;
 static Evas_Object *o_bg       = NULL;
 static Eina_List   *modes      = NULL;
@@ -87,7 +86,6 @@ main(int argc, char **argv)
    };
 
    /* init ecore, eet, evas, edje etc. */
-   start_time = ecore_time_get();
    eet_init();
    ecore_init();
    ecore_file_init();
