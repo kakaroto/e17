@@ -22,6 +22,9 @@ struct _Config {
     const char * proxy;
     unsigned char restore_state;
     const char * user_agent;
+    unsigned char frame_flattening;
+    unsigned char text_only_zoom;
+    int minimum_font_size;
     const char *__eet_filename;
 };
 
@@ -105,6 +108,9 @@ _config_init(void)
     EET_DATA_DESCRIPTOR_ADD_BASIC(_config_descriptor, Config, "proxy", proxy, EET_T_STRING);
     EET_DATA_DESCRIPTOR_ADD_BASIC(_config_descriptor, Config, "restore_state", restore_state, EET_T_UCHAR);
     EET_DATA_DESCRIPTOR_ADD_BASIC(_config_descriptor, Config, "user_agent", user_agent, EET_T_STRING);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(_config_descriptor, Config, "frame_flattening", frame_flattening, EET_T_UCHAR);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(_config_descriptor, Config, "text_only_zoom", text_only_zoom, EET_T_UCHAR);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(_config_descriptor, Config, "minimum_font_size", minimum_font_size, EET_T_INT);
 }
 
 static inline void
@@ -116,7 +122,7 @@ _config_shutdown(void)
 }
 
 Config *
-config_new(unsigned char allow_popup, unsigned char enable_auto_load_images, unsigned char enable_auto_shrink_images, unsigned char enable_javascript, unsigned char enable_mouse_cursor, unsigned char enable_plugins, unsigned char enable_private_mode, unsigned char enable_touch_interface, const char * home_page, const char * proxy, unsigned char restore_state, const char * user_agent)
+config_new(unsigned char allow_popup, unsigned char enable_auto_load_images, unsigned char enable_auto_shrink_images, unsigned char enable_javascript, unsigned char enable_mouse_cursor, unsigned char enable_plugins, unsigned char enable_private_mode, unsigned char enable_touch_interface, const char * home_page, const char * proxy, unsigned char restore_state, const char * user_agent, unsigned char frame_flattening, unsigned char text_only_zoom, int minimum_font_size)
 {
     Config *config = calloc(1, sizeof(Config));
 
@@ -138,6 +144,9 @@ config_new(unsigned char allow_popup, unsigned char enable_auto_load_images, uns
     config->proxy = eina_stringshare_add(proxy);
     config->restore_state = restore_state;
     config->user_agent = eina_stringshare_add(user_agent ? user_agent : "eve");
+    config->frame_flattening = frame_flattening;
+    config->text_only_zoom = text_only_zoom;
+    config->minimum_font_size = minimum_font_size;
 
     return config;
 }
@@ -305,6 +314,45 @@ config_user_agent_set(Config *config, const char *user_agent)
 {
     EINA_SAFETY_ON_NULL_RETURN(config);
     eina_stringshare_replace(&(config->user_agent), user_agent);
+}
+  
+inline unsigned char
+config_frame_flattening_get(const Config *config)
+{
+    return config->frame_flattening;
+}
+
+inline void
+config_frame_flattening_set(Config *config, unsigned char frame_flattening)
+{
+    EINA_SAFETY_ON_NULL_RETURN(config);
+    config->frame_flattening = frame_flattening;
+}
+  
+inline unsigned char
+config_text_only_zoom_get(const Config *config)
+{
+    return config->text_only_zoom;
+}
+
+inline void
+config_text_only_zoom_set(Config *config, unsigned char text_only_zoom)
+{
+    EINA_SAFETY_ON_NULL_RETURN(config);
+    config->text_only_zoom = text_only_zoom;
+}
+  
+inline int
+config_minimum_font_size_get(const Config *config)
+{
+    return config->minimum_font_size;
+}
+
+inline void
+config_minimum_font_size_set(Config *config, int minimum_font_size)
+{
+    EINA_SAFETY_ON_NULL_RETURN(config);
+    config->minimum_font_size = minimum_font_size;
 }
   
 Config *

@@ -15,10 +15,6 @@ UI
 
 Preferences / State
 -------------------
- * tweaks:
-   - bool: frame flattening
-   - bool: text only zoom
-   - int: font minimum (some people really need bigger fonts) maybe just allow few options such as 6, 8, 10, 12, 14, 16 and 18.
  * preferences (runtime, save at eet):
    - toggle: use start page (otherwise home page)
    - string: proxy

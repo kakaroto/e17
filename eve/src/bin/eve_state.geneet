@@ -11,6 +11,9 @@ Config {
 	proxy                     : str;
 	restore_state             : uchar;
 	user_agent                : str default "eve";
+	frame_flattening          : uchar;
+	text_only_zoom            : uchar;
+	minimum_font_size         : int;
 }
 
 Hist_Item {

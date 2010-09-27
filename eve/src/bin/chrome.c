@@ -15,6 +15,7 @@ typedef struct _More_Menu_Set_Params More_Menu_Set_Params;
 typedef struct _More_Menu_Filter_Context More_Menu_Filter_Context;
 typedef struct _More_Menu_Config More_Menu_Config;
 typedef struct _More_Menu_Config_List More_Menu_Config_List;
+typedef struct _More_Menu_Config_List_Int More_Menu_Config_List_Int;
 typedef struct _More_Menu_Config_Spinner More_Menu_Config_Spinner;
 
 typedef More_Menu_Item *(*More_Menu_Callback)(Browser_Window *win, More_Menu_Item *current_item);
@@ -65,7 +66,8 @@ typedef enum {
    CONFIG_TYPE_LIST,
    CONFIG_TYPE_STRING,
    CONFIG_TYPE_PASSWORD,
-   CONFIG_TYPE_SPINNER
+   CONFIG_TYPE_SPINNER,
+   CONFIG_TYPE_LIST_INT,
 } More_Menu_Config_Type;
 
 typedef enum {
@@ -81,6 +83,9 @@ typedef enum {
    EVE_CONFIG_AUTO_SHRINK_IMAGES,
    EVE_CONFIG_POPUP_ALLOW,
    EVE_CONFIG_RESTORE_STATE,
+   EVE_CONFIG_FRAME_FLATTENING,
+   EVE_CONFIG_TEXT_ONLY_ZOOM,
+   EVE_CONFIG_MINIMUM_FONT_SIZE,
    EVE_CONFIG_LAST
 } Eve_Config;
 
@@ -110,6 +115,12 @@ struct _More_Menu_Config {
 struct _More_Menu_Config_List {
    const char *title;
    const char *value;
+};
+
+struct _More_Menu_Config_List_Int {
+   const char *title;
+   const int value;
+   Eina_Bool is_default : 1;
 };
 
 struct _More_Menu_Config_Spinner {
@@ -229,6 +240,37 @@ static More_Menu_Item more_menu_config[] =
              .conf_get = config_allow_popup_get,
              .conf_set = config_allow_popup_set
            }}, NULL, ITEM_FLAG_NONE },
+         { ITEM_TYPE_CONFIG, "Frame flattening",
+           (More_Menu_Config[]) {{
+             .type = CONFIG_TYPE_CHECKBOX,
+             .conf = EVE_CONFIG_FRAME_FLATTENING,
+             .conf_get = config_frame_flattening_get,
+             .conf_set = config_frame_flattening_set
+           }}, NULL, ITEM_FLAG_NONE },
+         { ITEM_TYPE_CONFIG, "Text only zoom",
+           (More_Menu_Config[]) {{
+             .type = CONFIG_TYPE_CHECKBOX,
+             .conf = EVE_CONFIG_TEXT_ONLY_ZOOM,
+             .conf_get = config_text_only_zoom_get,
+             .conf_set = config_text_only_zoom_set
+           }}, NULL, ITEM_FLAG_NONE },
+         { ITEM_TYPE_CONFIG, "Minimum font size",
+           (More_Menu_Config[]) {{
+             .type = CONFIG_TYPE_LIST_INT,
+             .conf = EVE_CONFIG_MINIMUM_FONT_SIZE,
+             .conf_get = config_minimum_font_size_get,
+             .conf_set = config_minimum_font_size_set,
+             .data = (More_Menu_Config_List_Int[]) {
+               { "6pt", 6, EINA_FALSE },
+               { "8pt", 8, EINA_FALSE },
+               { "10pt", 10, EINA_FALSE },
+               { "12pt (default)", 12, EINA_TRUE },
+               { "14pt", 14, EINA_FALSE },
+               { "16pt", 16, EINA_FALSE },
+               { "18pt", 18, EINA_FALSE },
+               { NULL, 0, EINA_FALSE }
+             }
+           }}, NULL, ITEM_FLAG_ARROW },
          { ITEM_TYPE_CONFIG, "User agent",
            (More_Menu_Config[]) {{
              .type = CONFIG_TYPE_LIST,
@@ -1081,6 +1123,9 @@ chrome_config_apply(Evas_Object *chrome)
    ewk_view_setting_scripts_window_open_set(view, config_allow_popup_get(config));
    view_touch_interface_set(view, config_enable_touch_interface_get(config));
    window_mouse_enabled_set(win->win, config_enable_mouse_cursor_get(config));
+   ewk_view_zoom_text_only_set(view, config_text_only_zoom_get(config));
+   ewk_view_setting_enable_frame_flattening_set(view, config_frame_flattening_get(config));
+   ewk_view_setting_font_minimum_size_set(view, config_minimum_font_size_get(config));
 }
 
 static void
@@ -1134,6 +1179,21 @@ conf_updated(More_Menu_Config *mmc, void *new_value)
    case EVE_CONFIG_POPUP_ALLOW:
       {
          SET_PREF_TO_ALL_VIEWS(ewk_view_setting_scripts_window_open_set, *((int *)new_value));
+         break;
+      }
+    case EVE_CONFIG_TEXT_ONLY_ZOOM:
+      {
+         SET_PREF_TO_ALL_VIEWS(ewk_view_zoom_text_only_set, *((int*)new_value));
+         break;
+      }
+    case EVE_CONFIG_FRAME_FLATTENING:
+      {
+         SET_PREF_TO_ALL_VIEWS(ewk_view_setting_enable_frame_flattening_set, *((int*)new_value));
+         break;
+      }
+    case EVE_CONFIG_MINIMUM_FONT_SIZE:
+      {
+         SET_PREF_TO_ALL_VIEWS(ewk_view_setting_font_minimum_size_set, *((int*)new_value));
          break;
       }
     case EVE_CONFIG_TOUCH_INTERFACE:
@@ -1380,6 +1440,29 @@ callback_menu_config_list_set(Browser_Window *win __UNUSED__, More_Menu_Item *i)
       }
 }
 
+static void
+callback_menu_config_list_int_set(Browser_Window *win __UNUSED__, More_Menu_Item *i)
+{
+   More_Menu_Config *p = i->data;
+   More_Menu_Config_List_Int *l = p->data;
+   void (*conf_set)(Config *, const int);
+   const char *title = NULL;
+   int item;
+
+   for (item = 0; l[item].title; item++)
+      {
+         if (!strcmp(l[item].title, i->text))
+            {
+               if ((conf_set = p->conf_set))
+                  {
+                     conf_set(config, l[item].value);
+                     conf_updated(p, (int[]){ l[item].value });
+                  }
+               break;
+            }
+      }
+}
+
 static More_Menu_Item *
 more_menu_config_list_create(More_Menu_Item *i, More_Menu_Config *p)
 {
@@ -1387,7 +1470,7 @@ more_menu_config_list_create(More_Menu_Item *i, More_Menu_Config *p)
    More_Menu_Item *mmi;
    const char *(*conf_get)(void *);
    const char *configuration = NULL;
-   int item, n_items;
+   int n_items, item;
 
    if (!list) return NULL;
    for (n_items = 0; list[n_items].title; n_items++);
@@ -1399,7 +1482,35 @@ more_menu_config_list_create(More_Menu_Item *i, More_Menu_Config *p)
       mmi[item].next = callback_menu_config_list_set;
       mmi[item].type = ITEM_TYPE_CALLBACK_NO_HIDE;
       mmi[item].data = p;
-      mmi[item].flags = (configuration && !strcmp(list[item].value, configuration)) ? ITEM_FLAG_SELECTED : ITEM_FLAG_NONE;
+      mmi[item].flags = (configuration && !strcmp(configuration, list[item].value)) ? ITEM_FLAG_SELECTED : ITEM_FLAG_NONE;
+      mmi[item].flags |= ITEM_FLAG_DYNAMIC;
+   }
+
+   mmi[item].type = ITEM_TYPE_LAST;
+
+   return mmi;
+}
+
+static More_Menu_Item *
+more_menu_config_list_int_create(More_Menu_Item *i, More_Menu_Config *p)
+{
+   More_Menu_Config_List_Int *list = p->data;
+   More_Menu_Item *mmi;
+   int (*conf_get)(void *);
+   int configuration = 0;
+   int n_items, item;
+
+   if (!list) return NULL;
+   for (n_items = 0; list[n_items].title; n_items++);
+   if (!(mmi = calloc(n_items + 1, sizeof(*mmi)))) return NULL;
+   if ((conf_get = p->conf_get)) configuration = conf_get(config);
+
+   for (item = 0; item < n_items; item++) {
+      mmi[item].text = eina_stringshare_add(list[item].title);
+      mmi[item].next = callback_menu_config_list_int_set;
+      mmi[item].type = ITEM_TYPE_CALLBACK_NO_HIDE;
+      mmi[item].data = p;
+      mmi[item].flags = configuration == list[item].value ? ITEM_FLAG_SELECTED : ITEM_FLAG_NONE;
       mmi[item].flags |= ITEM_FLAG_DYNAMIC;
    }
 
@@ -1499,6 +1610,8 @@ more_menu_config_create(Evas_Object *parent, More_Menu_Item *item, More_Menu_Con
    switch (config->type) {
    case CONFIG_TYPE_LIST:
       return more_menu_config_list_create(item, config);
+   case CONFIG_TYPE_LIST_INT:
+      return more_menu_config_list_int_create(item, config);
    case CONFIG_TYPE_STRING:
       more_menu_config_string_ask(parent, item, config, EINA_FALSE);
       break;

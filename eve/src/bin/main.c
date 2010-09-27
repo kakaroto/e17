@@ -715,17 +715,20 @@ elm_main(int argc, char **argv)
 #undef BOOL_OPT
 
         config = config_new(EINA_TRUE /* allow_popup */,
-        		    EINA_TRUE /* enable_auto_load_images */,
-        		    EINA_TRUE /* enable_auto_shrink_images */,
-        		    EINA_TRUE /* enable_javascript */,
-        		    enable_mouse_cursor,
-        		    enable_plugins,
-        		    EINA_FALSE /* enable_private_mode */,
-        		    enable_touch_interface,
-        		    DEFAULT_URL /* home_page */,
-        		    NULL /* proxy */,
-        		    EINA_FALSE /* restore_state */,
-        		    user_agent_str);
+                            EINA_TRUE /* enable_auto_load_images */,
+                            EINA_TRUE /* enable_auto_shrink_images */,
+                            EINA_TRUE /* enable_javascript */,
+                            enable_mouse_cursor,
+                            enable_plugins,
+                            EINA_FALSE /* enable_private_mode */,
+                            enable_touch_interface,
+                            DEFAULT_URL /* home_page */,
+                            NULL /* proxy */,
+                            EINA_FALSE /* restore_state */,
+                            user_agent_str,
+                            EINA_FALSE /* frame_flattening */,
+                            EINA_FALSE /* text_only_zoom */,
+                            12 /* minimum_font_size */);
         if (!config_save(config, path))
           {
              r = -1;
