@@ -1315,7 +1315,7 @@ _cb_feed_parse(News_Feed_Document *doc, News_Parse_Error error, int changes)
    doc->server.nb_tries = 0;
    doc->server.buffer = NULL;
    doc->server.buffer_size = 0;
-   doc->parse.last_time = ecore_time_get();
+   doc->parse.last_time = ecore_time_unix_get();
 
    //TODO with popups
    doc->parse.error = error;

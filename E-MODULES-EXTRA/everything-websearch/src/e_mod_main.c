@@ -880,7 +880,7 @@ _youtube_dl_data_cb(Url_Data *dd)
      }
    else
      {
-	snprintf(fifo, sizeof(fifo), "/tmp/convert-%f", ecore_time_get());
+	snprintf(fifo, sizeof(fifo), "/tmp/convert-%f", ecore_time_unix_get());
 	mkfifo(fifo, 0666);
 
 	snprintf(buf, sizeof(buf),

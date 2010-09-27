@@ -243,7 +243,7 @@ alarm_alarm_add(int state, char *name, int type,
           {
              ALARM_ADD_FAIL(ALARM_ADD_ERROR_SCHED_DAY);
           }
-        if (al->sched.date_epoch <= ecore_time_get())
+        if (al->sched.date_epoch <= ecore_time_unix_get())
           {
              ALARM_ADD_FAIL(ALARM_ADD_ERROR_SCHED_BEFORE);
           }
@@ -573,7 +573,7 @@ _alarm_check_date(Alarm *al, int strict)
    switch(al->sched.type)
      {
      case ALARM_SCHED_DAY:
-        if (al->sched.date_epoch <= ecore_time_get())
+        if (al->sched.date_epoch <= ecore_time_unix_get())
           {
              printf("check_date : before ! state %d\n", al->state);
              if (strict)
@@ -596,7 +596,7 @@ _alarm_check_date(Alarm *al, int strict)
           }
         else
           {
-             printf("check_date : after (%f < %f) ! state %d\n", al->sched.date_epoch, ecore_time_get(), al->state);
+             printf("check_date : after (%f < %f) ! state %d\n", al->sched.date_epoch, ecore_time_unix_get(), al->state);
              /*
                if (al->state == ALARM_STATE_RINGING)
                alarm_alarm_ring_stop(al, 0);
@@ -614,7 +614,7 @@ _alarm_check_date(Alarm *al, int strict)
              al->sched.day_sunday) == 0)
           return 0;
 
-        if (al->sched.date_epoch <= ecore_time_get())
+        if (al->sched.date_epoch <= ecore_time_unix_get())
           {
              al->sched.date_epoch =
                 _epoch_find_next(al->sched.day_monday,
@@ -959,7 +959,7 @@ _cb_alarms_ring_etimer(void *data)
         return EINA_FALSE;
      }
 
-   now = ecore_time_get();
+   now = ecore_time_unix_get();
 
    for(l=alarm_config->alarms; l; l=eina_list_next(l))
      {
