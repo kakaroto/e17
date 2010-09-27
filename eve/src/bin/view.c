@@ -1102,6 +1102,13 @@ _view_smart_calculate(Evas_Object *o)
    /* call parent smart calculate and let ewk_view do all its work */
    _parent_sc.sc.calculate(o);
 
+   if (sd->flags.touch_interface)
+     {
+        Evas_Coord w, h;
+        evas_object_geometry_get(o, NULL, NULL, &w, &h);
+        ewk_view_fixed_layout_size_set(o, w, h);
+     }
+
 #ifdef HACK_FLUSH_EVENTS_DURING_LONG_CALCULATE
    double now = ecore_time_get();
    double elapsed = now - before;
@@ -1652,7 +1659,17 @@ void view_touch_interface_set(Evas_Object *view, Eina_Bool setting)
    setting = !!setting;
    if (sd->flags.touch_interface == setting) return;
    sd->flags.touch_interface = setting;
-   if (setting) return; /* nothing to do to enter touch mode */
+
+   if (setting)
+     {
+        Evas_Coord w, h;
+        evas_object_geometry_get(view, NULL, NULL, &w, &h);
+        ewk_view_fixed_layout_size_set(view, w, h);
+     }
+   else
+     ewk_view_fixed_layout_size_set(view, 0, 0);
+
+   if (setting) return; /* nothing else to do to enter touch mode */
 
    if (sd->animator.kinetic)
      {
