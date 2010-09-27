@@ -1,10 +1,7 @@
 #include "private.h"
 #include <Emotion.h>
 
-#ifndef ENGINE
-/* todo: move to preferences */
-#define ENGINE "xine"
-#endif
+static const char *_emotion_engines[] = { "xine", "gstreamer", "vlc", NULL };
 
 #define MSG_VOLUME 1
 #define MSG_POSITION 2
@@ -395,6 +392,7 @@ win_new(App *app)
 {
    Win *w = &_win;
    const char *s;
+   const char **e;
    Evas_Coord iw = 320, ih = 240;
    char path[PATH_MAX];
 
@@ -414,9 +412,10 @@ win_new(App *app)
    w->db_path = eina_stringshare_add(path);
 
    w->emotion = emotion_object_add(evas_object_evas_get(w->win));
-   if (!emotion_object_init(w->emotion, ENGINE))
+   for (e = _emotion_engines; *e; e++) if (emotion_object_init(w->emotion, *e)) break;
+   if (!*e)
      {
-        CRITICAL("cannot create emotion engine %s", ENGINE);
+        CRITICAL("cannot create emotion engine");
         goto error;
      }
    emotion_object_video_mute_set(w->emotion, EINA_TRUE);
