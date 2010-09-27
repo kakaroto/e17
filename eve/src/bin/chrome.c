@@ -346,7 +346,7 @@ _more_menu_history(Eina_Iterator *items, More_Menu_Item *current_item, Eina_Bool
    int n_items = 0;
    const char *url;
 
-   ctx.time = ecore_time_get();
+   ctx.time = ecore_time_unix_get();
    ctx.current_item = current_item;
 
    EINA_ITERATOR_FOREACH(items, url)
@@ -740,11 +740,11 @@ _history_update(const char *url, const char *title)
    if ((item = hist_items_get(hist, url)))
      {
         hist_item_visit_count_set(item, hist_item_visit_count_get(item) + 1);
-        hist_item_last_visit_set(item, ecore_time_get());
+        hist_item_last_visit_set(item, ecore_time_unix_get());
         hist_item_title_set(item, title);
      }
    else
-      hist_items_add(hist, url, hist_item_new(title, url, 1, ecore_time_get()));
+      hist_items_add(hist, url, hist_item_new(title, url, 1, ecore_time_unix_get()));
 }
 
 static const char *
