@@ -14,6 +14,7 @@ static void _ephoto_go_previous(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_go_slideshow(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_go_rotate_counterclockwise(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_go_rotate_clockwise(void *data, Evas_Object *obj, void *event_info);
+static void _ephoto_go_editor(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_key_pressed(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _ephoto_flow_browser_show_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _ephoto_flow_browser_del_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -276,6 +277,7 @@ static const struct
 	{ "Escape", _ephoto_go_back },
         { "bracketleft", _ephoto_go_rotate_counterclockwise },
         { "bracketright", _ephoto_go_rotate_clockwise },
+        { "e", _ephoto_go_editor },
 	{ NULL, NULL }
 };
 
@@ -422,4 +424,17 @@ _ephoto_go_rotate_clockwise(void *data, Evas_Object *obj, void *event_info)
                         edje_object_signal_emit(o, "ef,state,rotate,0", "ef");
                         break;
         }
+}
+
+static void
+_ephoto_go_editor(void *data, Evas_Object *obj, void *event_info)
+{
+        Ephoto_Flow_Browser *ef = data;
+        Ecore_Exe *exe;
+        char buf[PATH_MAX];
+
+        snprintf(buf, sizeof(buf), em->config->editor, (char *) ef->cur_image);
+        DBG("Editor command: %s", buf);
+        exe = ecore_exe_run(buf, NULL);
+        ecore_exe_free(exe);
 }

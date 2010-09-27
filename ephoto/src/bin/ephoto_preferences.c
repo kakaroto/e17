@@ -10,7 +10,7 @@ ephoto_show_preferences(Ephoto *em)
 {
         if (!em->prefs_win)
         {
-                Evas_Object *o, *tb, *box, *pager, *pg1, *pg2, *pg3;
+                Evas_Object *o, *tb, *box, *pager, *pg1, *pg2, *pg3, *scr;
                 const Eina_List *transitions, *l;
                 const char *transition;
 
@@ -78,8 +78,6 @@ ephoto_show_preferences(Ephoto *em)
                 evas_object_show(o);
                 elm_table_pack(pg2, o, 0, 1, 1, 1);
 
-                /* XXX: The page cannot be the parent, since 
-                 * the items will be clipped to it */
                 o = elm_hoversel_add(pg2);
                 elm_hoversel_hover_parent_set(o, em->win);
                 elm_hoversel_label_set(o, em->config->slideshow_transition);
@@ -97,6 +95,29 @@ ephoto_show_preferences(Ephoto *em)
                 elm_pager_content_push(pager, pg3);
                 evas_object_data_set(pg3, "pager", pager);
                 elm_toolbar_item_add(tb, NULL, "External Editor", _ephoto_preferences_pager_switch, pg3);
+
+                o = elm_label_add(pg3);
+                elm_label_label_set(o, "Image editor:");
+                elm_box_pack_end(pg3, o);
+                evas_object_show(o);
+
+                scr = elm_scroller_add(pg3);
+                elm_box_pack_end(pg3, scr);
+                elm_scroller_bounce_set(scr, EINA_TRUE, EINA_FALSE);
+                evas_object_size_hint_weight_set(scr, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+                evas_object_size_hint_align_set(scr, EVAS_HINT_FILL, EVAS_HINT_FILL);
+                evas_object_show(scr);
+
+                o = elm_entry_add(pg3);
+                elm_entry_single_line_set(o, EINA_TRUE);
+                evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+                evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
+                elm_entry_entry_set(o, em->config->editor);
+                evas_object_data_set(o, "config", "editor");
+                evas_object_smart_callback_add(o, "changed",
+                                               _ephoto_preferences_item_change, em);
+                elm_scroller_content_set(scr, o);
+                evas_object_show(o);
 
                 o = elm_button_add(box);
                 elm_button_label_set(o, "Close");
@@ -131,6 +152,10 @@ _ephoto_preferences_item_change(void *data, Evas_Object *obj, void *event_info)
                 em->config->remember_directory = elm_check_state_get(obj);
         else if (!strcmp(key, "slideshow_timeout"))
                 em->config->slideshow_timeout = elm_spinner_value_get(obj);
+        else if (!strcmp(key, "editor"))
+                eina_stringshare_replace(
+                    &em->config->editor,
+                    eina_stringshare_add(elm_entry_entry_get(obj)));
 
         ephoto_config_save(em, EINA_FALSE);
 }

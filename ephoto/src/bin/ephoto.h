@@ -89,6 +89,8 @@ struct _Ephoto_Config
 
         double slideshow_timeout;
         const char *slideshow_transition;
+
+        const char *editor;
 };
 
 /*Ephoto Main Structure*/
