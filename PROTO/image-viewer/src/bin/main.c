@@ -821,7 +821,7 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 			iv->preview_files = eina_list_append(iv->preview_files, file);
 		     }
 #endif
-		   file->change_time = ecore_time_get();
+		   file->change_time = ecore_time_unix_get();
 		   file->flags.changed = 1;
 		   iv->flags.current = EINA_TRUE;
 		   break;
@@ -834,7 +834,7 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 		   new->insert_before = file;
 		   iv->preview_files = eina_list_append(iv->preview_files, new);
 #endif
-		   new->change_time = ecore_time_get();
+		   new->change_time = ecore_time_unix_get();
 		   new->flags.changed = 1;
 		   iv->flags.current = EINA_TRUE;
 		   break;
@@ -843,7 +843,7 @@ on_file_monitor_event(void *data, Ecore_File_Monitor *em, Ecore_File_Event event
 	 if (!iv->flags.current)
 	   {
 	      IV_File *new = create_iv_file(iv, path);
-	      new->change_time = ecore_time_get();
+	      new->change_time = ecore_time_unix_get();
 	      new->flags.changed = 1;
 	      iv->files = eina_inlist_append(iv->files, EINA_INLIST_GET(new));
 #ifdef HAVE_ETHUMB
@@ -1021,7 +1021,7 @@ read_image(IV *iv, IV_Image_Dest dest)
 	       }
 	     if (cur->flags.changed)
 	       {
-		  if (f->change_time - ecore_time_get() > 60)
+		  if (f->change_time - ecore_time_unix_get() > 60)
 		    f->flags.changed = 0;
 		  break;
 	       }
