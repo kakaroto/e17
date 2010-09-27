@@ -94,6 +94,8 @@ struct sqlite3 *ed_DB=NULL;
 GRegex *re_link=NULL, *re_link_content=NULL, *re_entities=NULL, *re_user=NULL, *re_nouser=NULL, *re_group=NULL, *re_nogroup=NULL, *re_amp=NULL, *re_nl;
 GError *re_err=NULL;
 
+static Elm_Genlist_Item_Class itc1;
+
 static int count_accounts(void *notUsed, int argc, char **argv, char **azColName) {
 	int count = atoi(argv[0]);
 
@@ -182,15 +184,6 @@ void make_status_list(int timeline) {
 	}
 
 	elm_win_title_set(win, label);
-
-	if(status_list)
-		evas_object_del(status_list);
-	status_list = elm_box_add(win);
-	evas_object_size_hint_weight_set(status_list, 1.0, 1.0);
-	evas_object_size_hint_align_set(status_list, -1, -1);
-
-	elm_scroller_content_set(scroller, status_list);
-	evas_object_show(status_list);
 }
 
 void print_status(gpointer data, gpointer user_data) {
@@ -750,11 +743,23 @@ static void on_bubble_icon_clicked(void *data, Evas_Object *obj, void *event_inf
 	}
 }
 
+Evas_Object *ed_get_icon(long long int id, Evas_Object *parent) {
+	Evas_Object *icon=NULL;
+	int res=0;
+	char *file_path=NULL;
+
+	res = asprintf(&file_path, "%s/cache/icons/%lld", home, id);
+	if(res != -1 && (icon = elm_icon_add(parent))) {
+		elm_icon_file_set(icon, file_path, "fubar?");
+		free(file_path);
+	}
+	return(icon);
+}
+
 Evas_Object *ed_make_bubble(Evas_Object *parent, aStatus* as, anUser* au) {
 	Evas_Object *bubble = NULL, *icon = NULL, *message = NULL;
-	char *file_path, datestr[19];
+	char datestr[19];
 	struct tm date_tm;
-	int res = 0;
 
 	if((bubble = elm_bubble_add(parent))) {
 		evas_object_size_hint_weight_set(bubble, 1, 0);
@@ -767,14 +772,11 @@ Evas_Object *ed_make_bubble(Evas_Object *parent, aStatus* as, anUser* au) {
 
 		if(au) elm_bubble_label_set(bubble, au->name);
 
-		res = asprintf(&file_path, "%s/cache/icons/%lld", home, as->user);
-
-		if(res != -1 && (icon = elm_icon_add(parent))) {
-			elm_icon_file_set(icon, file_path, "fubar?");
-			evas_object_show(icon);
-			evas_object_smart_callback_add(icon, "clicked", on_bubble_icon_clicked, bubble);
+		icon = ed_get_icon(as->user, parent);
+		if(icon) {
 			elm_bubble_icon_set(bubble, icon);
-			free(file_path);
+			evas_object_smart_callback_add(icon, "clicked", on_bubble_icon_clicked, bubble);
+			evas_object_show(icon);
 		}
 
 		message = ed_make_message(as->text, bubble, win);
@@ -1452,11 +1454,40 @@ anUser *fetch_user_from_db(long long int uid) {
 	} 
 	return(au);
 }
+
+char *ed_status_label_get(void *data, Evas_Object *obj, const char *part) {
+	char buf[256];
+	aStatus *as = (aStatus *)data;
+
+	snprintf(buf, sizeof(buf), "%s", as->text);
+	return(strdup(buf));
+}
+
+Evas_Object *ed_status_icon_get(void *data, Evas_Object *obj, const char *part) {
+	aStatus *as = (aStatus *)data;
+
+	return(ed_get_icon(as->user, win));
+}
+
+Eina_Bool ed_status_state_get(void *data, Evas_Object *obj, const char *part) {
+	return(EINA_FALSE);
+}
+
+void ed_status_del(void *data, Evas_Object *obj) {
+}
+
+static void ed_status_action(void *data, Evas_Object *obj, void *event_info) {
+	Elm_Genlist_Item *li = (Elm_Genlist_Item*)event_info;
+	aStatus *as = (aStatus*)elm_genlist_item_data_get(li);
+	printf("DO SOMETHING WITH THIS STATUS: %s\n", as->text);
+}
+
 static int add_status(void *data, int argc, char **argv, char **azColName) {
 	anUser *au=NULL;
 	aStatus *as=NULL;
 
-	Evas_Object *bubble=NULL;
+	Elm_Genlist_Item *li=NULL;
+	Evas_Object *icon=NULL;
 	char *uid_str=NULL, *sid_str=NULL;
 
 	/* In this query handler, these are the current fields:
@@ -1508,12 +1539,17 @@ static int add_status(void *data, int argc, char **argv, char **azColName) {
 
 	if(ed_check_gag(au->screen_name, au->name, as->text)) return(0);
 
-	if((bubble = ed_make_bubble(win, as, au))) {
-		elm_box_pack_end(status_list, bubble);
-		evas_object_show(bubble);
-	}
+	icon = ed_get_icon(as->user, win);
 
-	eina_hash_add(bubble2status, &bubble, as);
+	itc1.item_style		= "elmdentica";
+	itc1.func.label_get	= ed_status_label_get;
+	itc1.func.icon_get	= ed_status_icon_get;
+	itc1.func.state_get	= ed_status_state_get;
+	itc1.func.del		= ed_status_del;
+
+	li = elm_genlist_item_append(scroller, &itc1, as, NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL);
+
+	eina_hash_add(bubble2status, &li, as);
 
 	return(0);
 }
@@ -1936,17 +1972,19 @@ EAPI int elm_main(int argc, char **argv)
 
 	ly = elm_layout_add(win);
 		snprintf(buf, sizeof(buf), "%s/themes/default.edj", PKGDATADIR);
-		elm_layout_file_set(ly, buf, "vertical_layout");
+		elm_layout_file_set(ly, buf, "elmdentica/vertical_layout");
+		//elm_layout_theme_set(ly, "elmdentica", "elm/genlist", "default");
 		evas_object_size_hint_weight_set(ly, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 		elm_win_resize_object_add(win, ly);
 	evas_object_show(ly);
 
-	scroller = elm_scroller_add(win);
+	scroller = elm_genlist_add(win);
 		evas_object_size_hint_weight_set(scroller, 1, 1);
 		evas_object_size_hint_align_set(scroller, -1, -1);
-		elm_scroller_bounce_set(scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-		elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
+		elm_genlist_bounce_set(scroller, EINA_FALSE, EINA_TRUE);
+		elm_genlist_no_select_mode_set(scroller, EINA_TRUE);
 
+		evas_object_smart_callback_add(scroller, "longpressed", ed_status_action, NULL);
 		// Statuses list
 		make_status_list(TIMELINE_FRIENDS);
 		fill_message_list(TIMELINE_FRIENDS);
