@@ -1018,6 +1018,11 @@ collections {
                     transition: ACCELERATE 0.2;
                     after: "restore-top-panel";
                 }
+                program { name: "set-top-panel-visible";
+                    signal: "set,view,mask,visible";
+                    after: "release-panel-top-triangle";
+                }
+
                 program { name: "hide-view-mask";
                     action: STATE_SET "hidden" 0.0;
                     target: "view-mask";
@@ -1168,12 +1173,20 @@ collections {
                 }
                 program { name: "favorite-hilight";
                     signal: "favorite,hilight";
+                    script { set_int(favorited, 1); }
+                    after: "favorite-hilight-2";
+                }
+                program { name: "favorite-hilight-2";
                     action: STATE_SET "visible" 0.0;
                     target: "button-fav-selected";
                     transition: ACCELERATE 0.5;
                 }
                 program { name: "favorite-default";
                     signal: "favorite,default";
+                    script { set_int(favorited, 0); }
+                    after: "favorite-default-2";
+                }
+                program { name: "favorite-default-2";
                     action: STATE_SET "default" 0.0;
                     target: "button-fav-selected";
                     transition: DECELERATE 0.5;

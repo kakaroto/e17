@@ -82,6 +82,7 @@ void                  window_mouse_enabled_set(Evas_Object *win, Eina_Bool setti
 void                  window_title_set(Browser_Window *win, const char *title);
 
 Evas_Object *         view_add(Evas_Object *parent);
+void                  view_zoom_reset(Evas_Object *view);
 void                  view_zoom_next_up(Evas_Object *view);
 void                  view_zoom_next_down(Evas_Object *view);
 Eina_Bool             view_context_menu_set(Evas_Object *view, Evas_Object *widget, Ewk_Context_Menu *menu);

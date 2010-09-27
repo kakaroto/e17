@@ -1866,29 +1866,100 @@ on_key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__,
    Evas_Object *view = win->current_view;
    Evas_Object *frame = ewk_view_frame_main_get(view);
    Evas_Event_Key_Down *ev = event_info;
+   Eina_Bool control, shift, alt;
    const char *k = ev->keyname;
 
+   control = evas_key_modifier_is_set(ev->modifiers, "Control");
+   shift = evas_key_modifier_is_set(ev->modifiers, "Shift");
+   alt = evas_key_modifier_is_set(ev->modifiers, "Alt");
+
    INF("keyname=%s, key=%s, string=%s\n", ev->keyname, ev->key, ev->string);
-   if ((strcmp(k, "Keycode-122") == 0) || (strcmp(k, "F5") == 0))
+   if (strcmp(k, "Keycode-122") == 0)
      {
         ev->event_flags &= EVAS_EVENT_FLAG_ON_HOLD;
         ewk_frame_scroll_add(frame, 0, 50);
      }
-   else if ((strcmp(k, "Keycode-123") == 0) || (strcmp(k, "F6") == 0))
+   else if (strcmp(k, "Keycode-123") == 0)
      {
         ev->event_flags &= EVAS_EVENT_FLAG_ON_HOLD;
         ewk_frame_scroll_add(frame, 0, -50);
      }
-   else if ((strcmp(k, "Keycode-185") == 0) || (strcmp(k, "F7") == 0))
+   else if ((strcmp(k, "Keycode-185") == 0) ||
+            (control && ((strcmp(k, "plus") == 0) || strcmp(k, "equal") == 0)))
      {
         ev->event_flags &= EVAS_EVENT_FLAG_ON_HOLD;
         view_zoom_next_up(view);
      }
-   else if ((strcmp(k, "Keycode-186") == 0) || (strcmp(k, "F8") == 0))
+   else if ((strcmp(k, "Keycode-186") == 0) ||
+            (control && (strcmp(k, "minus") == 0)))
      {
         ev->event_flags &= EVAS_EVENT_FLAG_ON_HOLD;
         view_zoom_next_down(view);
      }
+   else if ((strcmp(k, "Keycode-186") == 0) ||
+            (control && (strcmp(k, "minus") == 0)))
+     {
+        ev->event_flags &= EVAS_EVENT_FLAG_ON_HOLD;
+        view_zoom_next_down(view);
+     }
+   else if (control && (strcmp(k, "0") == 0))
+     view_zoom_reset(view);
+   else if (control && (strcmp(k, "d") == 0))
+     {
+        const char *url = ewk_view_uri_get(view);
+        if (url)
+          {
+             Evas_Object *ed = elm_layout_edje_get(win->current_chrome);
+             Fav_Item *item = fav_items_get(fav, url);
+             if (item)
+               {
+                  unsigned int count = fav_item_visit_count_get(item);
+                  fav_item_visit_count_set(item, count + 1);
+               }
+             else
+               {
+                  const char *title = ewk_view_title_get(view);
+                  fav_items_add(fav, url, fav_item_new(url, title, 1));
+               }
+             edje_object_signal_emit(ed, "favorite,hilight", "");
+          }
+     }
+   else if (control && (strcmp(k, "l") == 0))
+     {
+        Evas_Object *ed = elm_layout_edje_get(win->current_chrome);
+        edje_object_signal_emit(ed, "set,view,mask,visible", "");
+     }
+   else if (control && (strcmp(k, "r") == 0))
+     {
+        if (shift) ewk_view_reload_full(view);
+        else ewk_view_reload(view);
+     }
+   else if (strcmp(k, "F11") == 0)
+     {
+        Eina_Bool setting = !elm_win_fullscreen_get(win->win);
+        elm_win_fullscreen_set(win->win, setting);
+        if (setting)
+          {
+             Evas_Object *notify, *label;
+
+             // TODO: hint user with an elm_notify or theme signal
+             // theme signal is better, but we need a global elm_layout
+
+             label = elm_label_add(win->win);
+             elm_object_style_set(label, "ewebkit");
+             elm_label_label_set(label, "F11 to exit fullscreen");
+             evas_object_show(label);
+
+             notify = elm_notify_add(win->win);
+             elm_object_style_set(notify, "ewebkit");
+             elm_notify_content_set(notify, label);
+             elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_TOP);
+             elm_notify_timeout_set(notify, 1.0);
+             evas_object_show(notify);
+          }
+     }
+   else if (alt && (strcmp(k, "Home") == 0))
+     ewk_view_uri_set(view, config_home_page_get(config));
 }
 
 static char *

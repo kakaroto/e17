@@ -1541,6 +1541,26 @@ view_add(Evas_Object *parent)
    return view;
 }
 
+void view_zoom_reset(Evas_Object *view)
+{
+   Evas_Coord w, h;
+   VIEW_SD_GET_OR_RETURN(view, sd);
+   if (sd->flags.animated_zoom || sd->animator.pan || sd->animator.zoom)
+      return;
+
+   if (sd->animator.kinetic)
+     {
+        ecore_animator_del(sd->animator.kinetic);
+        sd->animator.kinetic = NULL;
+     }
+
+   sd->flags.animated_zoom = EINA_TRUE;
+   ewk_frame_visible_content_geometry_get
+      (sd->base.main_frame, EINA_FALSE, NULL, NULL, &w, &h);
+   ewk_view_zoom_animated_set
+      (view, 1.0, ZOOM_AUTO_ANIMATION_DURATION, w / 2, h / 2);
+}
+
 void view_zoom_next_up(Evas_Object *view)
 {
    VIEW_SD_GET_OR_RETURN(view, sd);
