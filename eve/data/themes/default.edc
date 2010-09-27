@@ -6,7 +6,7 @@
 #define URLBAR_ITEM_SIZE 40
 
 #define TOOLBAR_POSITION(_item_number) ((_item_number)*(TOOLBAR_ITEM_SIZE)-((TOOLBAR_ITEM_SIZE)*(TOOLBAR_MIDDLE_ITEM)))
-#define TOOLBAR_BUTTON(_button_name,_button_title,_xpos) \
+#define TOOLBAR_BUTTON(_button_name,_button_title,_xpos, variable_disabled) \
     part { name: "button-"_button_name"-normal"; \
         type: IMAGE; \
         description { state: "default" 0.0; \
@@ -149,15 +149,19 @@
         } \
         program { name: _button_name"-disable"; \
             signal: "button,"_button_name",disable"; \
-            action: STATE_SET "masking" 0.0; \
-            target: "button-"_button_name"-disable-mask"; \
-            transition: ACCELERATE 0.3; \
+            script{ \
+                if (get_int(more_list_visible) != 1 && get_int(tab_grid_visible) != 1){  \
+                   set_state(PART:"button-"_button_name"-disable-mask", "masking", 0.0); \
+                }  \
+                set_int(variable_disabled, 1); \
+            } \
         } \
         program { name: _button_name"-enable"; \
             signal: "button,"_button_name",enable"; \
-            action: STATE_SET "default" 0.0; \
-            target: "button-"_button_name"-disable-mask"; \
-            transition: DECELERATE 0.3; \
+            script{ \
+                set_state(PART:"button-"_button_name"-disable-mask", "default", 0.0); \
+                set_int(variable_disabled, 0); \
+            } \
         } \
         program { name: _button_name"-hide"; \
             action: STATE_SET "hidden" 0.0; \
@@ -326,6 +330,10 @@ collections {
             public progress_bar_visible;
             public button_back_disabled;
             public button_forward_disabled;
+            public button_addtab_disabled;
+            public button_reload_disabled;
+            public button_tab_disabled;
+            public button_more_disabled;
 
             public fav_off() {
                 set_int(favorited, 0);
@@ -857,12 +865,12 @@ collections {
                     image.normal: "toolbar-background-bottom.png";
                 }
             }
-            TOOLBAR_BUTTON("addtab", "Add Tab", TOOLBAR_POSITION(1))
-            TOOLBAR_BUTTON("back", "Back", TOOLBAR_POSITION(1))
-            TOOLBAR_BUTTON("forward", "Forward", TOOLBAR_POSITION(2))
-            TOOLBAR_BUTTON("reload", "Reload", TOOLBAR_POSITION(3))
-            TOOLBAR_BUTTON("tab", "Tabs", TOOLBAR_POSITION(4))
-            TOOLBAR_BUTTON("more", "More", TOOLBAR_POSITION(5))
+            TOOLBAR_BUTTON("addtab", "Add Tab", TOOLBAR_POSITION(1), button_addtab_disabled)
+            TOOLBAR_BUTTON("back", "Back", TOOLBAR_POSITION(1), button_back_disabled)
+            TOOLBAR_BUTTON("forward", "Forward", TOOLBAR_POSITION(2), button_forward_disabled)
+            TOOLBAR_BUTTON("reload", "Reload", TOOLBAR_POSITION(3), button_reload_disabled)
+            TOOLBAR_BUTTON("tab", "Tabs", TOOLBAR_POSITION(4), button_tab_disabled)
+            TOOLBAR_BUTTON("more", "More", TOOLBAR_POSITION(5), button_more_disabled)
             URLBAR_BUTTON("home", 0.0, URLBAR_ITEM_SIZE + 20)
             URLBAR_BUTTON("fav", 1.0, -URLBAR_ITEM_SIZE - 20)
             part { name: "button-more-right-separator";
@@ -976,6 +984,13 @@ collections {
                         set_int(favorited, 0);
                         set_int(panel_top_visible, 1);
                         set_int(progress_bar_visible, 0);
+
+                        set_int(button_back_disabled, 0);
+                        set_int(button_forward_disabled, 0);
+                        set_int(button_addtab_disabled, 0);
+                        set_int(button_reload_disabled, 0);
+                        set_int(button_tab_disabled, 0);
+                        set_int(button_more_disabled, 0);
 
                         set_state(PART:"view-mask", "masking-white", 0.0);
                         run_program(PROGRAM:"addtab-hide");
