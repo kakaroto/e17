@@ -1,12 +1,19 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 EDJE_CC = @edje_cc@
-EDJE_FLAGS = -v -id $(top_srcdir)/data/themes -fd $(top_srcdir)/data/themes
+EDJE_FLAGS = -v -id $(top_srcdir)/data/themes -fd $(top_srcdir)/data/themes -id $(top_srcdir)/data/themes/images
 
 filesdir = $(datadir)/$(PACKAGE)
 files_DATA = default.edj
 
-images =
+images =images/back-button.png \
+	images/back_bg.png \
+	images/bg.png \
+	images/bottom_bg.png \
+	images/scrollbar-bg.png \
+	images/scrollbar-knob.png \
+	images/top_bg.png
+
 fonts =
 
 EXTRA_DIST = default.edc $(images) $(fonts)
