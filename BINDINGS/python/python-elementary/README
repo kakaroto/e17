@@ -35,3 +35,7 @@ variable to ./configure.
 The discovery of dependencies is done with pkg-config, thus all your
 packages must be properly accessible with such tool. Ensure your
 PKG_CONFIG_PATH and PKG_CONFIG_LIBDIR (cross-compiles) are configured!
+
+When cross-compiling, if your target's Python headers differ from your
+host's headers, specify PYTHON_INCLUDES variable containing the
+directory of the correct version of Python.h!

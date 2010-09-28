@@ -43,6 +43,9 @@ dnl function also defines PYTHON_INCLUDES
 AC_DEFUN([AM_CHECK_PYTHON_HEADERS],
 [AC_REQUIRE([AM_PATH_PYTHON])
 AC_MSG_CHECKING(for headers required to compile python extensions)
+if test -x "$PYTHON_INCLUDES"; then
+PYTHON_INCLUDES="-I$PYTHON_INCLUDES"
+else
 dnl deduce PYTHON_INCLUDES
 py_prefix=`$PYTHON -c "import sys; print sys.prefix"`
 py_exec_prefix=`$PYTHON -c "import sys; print sys.exec_prefix"`
@@ -52,6 +55,7 @@ else
 PYTHON_INCLUDES="-I${py_prefix}/include/python${PYTHON_VERSION}"
 if test "$py_prefix" != "$py_exec_prefix"; then
   PYTHON_INCLUDES="$PYTHON_INCLUDES -I${py_exec_prefix}/include/python${PYTHON_VERSION}"
+fi
 fi
 fi
 AC_SUBST(PYTHON_INCLUDES)
