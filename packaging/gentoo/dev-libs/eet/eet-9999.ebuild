@@ -13,19 +13,19 @@ RDEPEND=">=dev-libs/eina-9999
 	media-libs/jpeg
 	sys-libs/zlib
 	gnutls? ( net-libs/gnutls )
-	!gnutls? ( ssl? ( dev-libs/openssl ) )"
+	!gnutls? ( openssl? ( dev-libs/openssl ) )"
 DEPEND="${RDEPEND}
 	test? ( dev-libs/check
 		dev-util/lcov )"
 
-IUSE="debug examples gnutls ssl static-libs +threads"
+IUSE="debug examples gnutls openssl static-libs +threads"
 
 src_configure() {
 	local SSL_FLAGS=""
 
 	if use gnutls; then
-		if use ssl; then
-			ewarn "You have enabled both 'ssl' and 'gnutls', so we will use"
+		if use openssl; then
+			ewarn "You have enabled both 'openssl' and 'gnutls', so we will use"
 			ewarn "gnutls and not openssl for cipher and signature support"
 		fi
 		SSL_FLAGS="
@@ -33,7 +33,7 @@ src_configure() {
 			--enable-signature
 			--disable-openssl
 			--enable-gnutls"
-	elif use ssl; then
+	elif use openssl; then
 		SSL_FLAGS="
 			--enable-cipher
 			--enable-signature

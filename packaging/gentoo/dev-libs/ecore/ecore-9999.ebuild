@@ -8,14 +8,14 @@ inherit enlightenment
 
 DESCRIPTION="Enlightenment's core event abstraction layer and OS abstraction layer"
 
-IUSE="curl directfb +evas fbcon glib gnutls +inotify opengl sdl ssl static-libs +threads tslib +X xcb xinerama xprint xscreensaver"
+IUSE="curl directfb +evas fbcon glib gnutls +inotify opengl sdl openssl static-libs +threads tslib +X xcb xinerama xprint xscreensaver"
 
 RDEPEND="
 	>=dev-libs/eina-9999
 	glib? ( dev-libs/glib )
 	curl? ( net-misc/curl )
 	gnutls? ( net-libs/gnutls )
-	!gnutls? ( ssl? ( dev-libs/openssl ) )
+	!gnutls? ( openssl? ( dev-libs/openssl ) )
 	evas? (
 		>=media-libs/evas-9999[directfb?,fbcon?,opengl?,sdl?,X?,xcb?]
 		opengl? ( virtual/opengl )
@@ -44,15 +44,15 @@ src_configure() {
 	local SSL_FLAGS="" EVAS_FLAGS="" X_FLAGS=""
 
 	if use gnutls; then
-		if use ssl; then
-			einfo "You have enabled both 'ssl' and 'gnutls', so we will use"
+		if use openssl; then
+			einfo "You have enabled both 'openssl' and 'gnutls', so we will use"
 			einfo "gnutls and not openssl for ecore-con support"
 		fi
 		SSL_FLAGS="
 		  --disable-openssl
 		  --enable-gnutls
 		"
-	elif use ssl; then
+	elif use openssl; then
 		SSL_FLAGS="
 		  --enable-openssl
 		  --disable-gnutls
