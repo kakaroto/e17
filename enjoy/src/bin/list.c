@@ -157,6 +157,7 @@ list_add(Evas_Object *parent)
    memset(list, 0, sizeof(list));
 
    list->pager = elm_pager_add(parent);
+   elm_object_style_set(list->pager, "enjoy");
    if (!list->pager) return NULL;
 
    evas_object_data_set(list->pager, "_enjoy_list", list);
