@@ -83,6 +83,7 @@ elm_main(int argc, char **argv)
      }
 
    elm_theme_extension_add(NULL, PACKAGE_DATA_DIR "/default.edj");
+   elm_theme_overlay_add(NULL, PACKAGE_DATA_DIR "/default.edj");
 
    home = getenv("HOME");
    if (!home || !home[0])

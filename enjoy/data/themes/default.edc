@@ -1,3 +1,9 @@
+#define TB_ITEMS 3
+#define TB_MIDDLE_ITEM 2
+#define TB_ITEM_SIZE 90
+
+#define TB_POS(_item) ((_item)*(TB_ITEM_SIZE)-((TB_ITEM_SIZE)*(TB_MIDDLE_ITEM)))
+
 collections {
 
    group { /*
@@ -18,6 +24,10 @@ collections {
       images {
          image: "bg.png" COMP;
          image: "bottom_bg.png" COMP;
+         image: "bt-back.png" COMP;
+         image: "bt-next.png" COMP;
+         image: "bt-play.png" COMP;
+         image: "bt-pause.png" COMP;
       }
       parts {
          part {
@@ -41,7 +51,7 @@ collections {
                }
                rel2 {
                   relative: 1.0 1.0;
-                  offset: -1 -101;
+                  offset: -1 -85;
                }
             }
          }
@@ -52,14 +62,12 @@ collections {
             description {
                state: "default" 0.0;
                image.normal: "bottom_bg.png";
-               image.border: 0 0 17 0;
-               rel1.relative: 0 1;
-               rel1.to: "ejy.swallow.list";
-               rel1.offset: -14 0;
+               rel1.relative: 0.0 1.0;
+               rel1.offset: 0 -91;
             }
          }
 
-#define TB(_name, start, end, _color)                                   \
+#define TB(_name, _xpos, _image)                                        \
          part {                                                         \
          name: _name".clipper";                                         \
             type: RECT;                                                 \
@@ -75,18 +83,21 @@ collections {
          }                                                              \
          part {                                                         \
             name: _name;                                                \
-            type: RECT;                                                 \
+            type: IMAGE;                                                \
             clip_to: _name".clipper";                                   \
             description {                                               \
                state: "default" 0.0;                                    \
-               color: _color;                                           \
+               image.normal: _image;                                    \
+               min: TB_ITEM_SIZE (1+TB_ITEM_SIZE);                      \
                rel1 {                                                   \
-                  relative: start 1.0;                                  \
-                  offset: 0 -80;                                        \
+                  to: "iconbar.bg";                                     \
+                  relative: 0.5 1.0;                                    \
+                  offset: (_xpos) -48;                                  \
                }                                                        \
                rel2 {                                                   \
-                  relative: end 1.0;                                    \
-                  offset: -1 -1;                                        \
+                  to: "iconbar.bg";                                     \
+                  relative: 0.5 1.0;                                    \
+                  offset: (_xpos) (-TB_ITEM_SIZE/2);                    \
                }                                                        \
             }                                                           \
             description {                                               \
@@ -132,10 +143,10 @@ collections {
             }                                                           \
          }
 
-         TB("prev", 0.0, 0.2, 255 0 0 255);
-         TB("next", 0.2, 0.4, 0 255 0 255);
-         TB("action,play", 0.4, 0.6, 0 0 255 255);
-         TB("action,pause", 0.4, 0.6, 255 0 255 255);
+         TB("prev", TB_POS(1), "bt-back.png");
+         TB("next", TB_POS(2), "bt-next.png");
+         TB("action,play", TB_POS(3), "bt-play.png");
+         TB("action,pause", TB_POS(3), "bt-pause.png");
       }
    }
 
@@ -155,7 +166,7 @@ collections {
                state: "default" 0.0;
                rel1 {
                   relative: 0.0 0.0;
-                  offset: 0 85;
+                  offset: 0 45;
                }
                rel2 {
                   relative: 1.0 1.0;
@@ -182,7 +193,6 @@ collections {
                rel1.to: "ejy.text.title";
                rel2.to: "ejy.text.title";
                image.normal: "top_bg.png";
-               image.border: 0 0 0 17;
             }
          }
          part {
@@ -242,12 +252,12 @@ collections {
                }
                rel2 {
                   relative: 1.0 0.0;
-                  offset: -1 100;
+                  offset: -1 45;
                }
                color: 255 255 255 255;
                text {
-                  font: "Sans";
-                  size: 10;
+                  font: "Sans:style=Bold";
+                  size: 11;
                   text: "title";
                }
             }
@@ -272,7 +282,7 @@ collections {
                state: "default" 0.0;
                rel1 {
                   relative: 0.0 0.0;
-                  offset: 0 85;
+                  offset: 0 45;
                }
                rel2 {
                   relative: 1.0 1.0;
@@ -299,7 +309,6 @@ collections {
                rel1.to: "ejy.text.title";
                rel2.to: "ejy.text.title";
                image.normal: "top_bg.png";
-               image.border: 0 0 0 17;
             }
          }
          part { 
@@ -431,12 +440,12 @@ collections {
                }
                rel2 {
                   relative: 1.0 0.0;
-                  offset: 0 100;
+                  offset: 0 45;
                }
                color: 255 255 255 255;
                text {
-                  font: "Sans";
-                  size: 10;
+                  font: "Sans:style=Bold";
+                  size: 11;
                   text: "title";
                }
             }
@@ -486,12 +495,11 @@ collections {
             description { state: "default" 0.0;
                rel1 {
                   offset: 20 10;
-      }
+               }
                rel2 {
                   relative: 0 0;
                   offset: 100 50;
-   }
-
+               }
                image.normal: "back_bg.png";
                image.border: 8 8 8 8;
             }
@@ -518,9 +526,9 @@ collections {
                   text: "Back";
                   min: 0 1;
                   align: 0.5 0.5;
-            }
+               }
                color: 255 255 255 255;
-         }
+            }
          }
          part {
             name: "back-arrow";
@@ -597,7 +605,6 @@ collections {
                target: "songs";
             }
          }
-
          part {
             name: "ejy.text.title";
             type: TEXT;
@@ -610,13 +617,13 @@ collections {
                }
                rel2 {
                   relative: 1.0 0.0;
-                  offset: -1 280;
+                  offset: -1 45;
                }
                color: 255 255 255 255;
                text {
                   align: 0.5 0.2;
-                  font: "Sans";
-                  size: 10;
+                  font: "Sans:style=Bold";
+                  size: 11;
                   text: "title";
                }
             }
@@ -1773,149 +1780,124 @@ group { name: "elm/scroller/base/enjoy";
     }
  }
 
-/*
- * TODO: Keep offset borders for swallow ?
- */
- group { name: "elm/pager/base/enjoy";
-    data.item: "onshow" "raise";
-    // other options
-    //      data.item: "onhide" "lower";
-    //      data.item: "onshow" "lower";
-    parts {
-       part { name: "clip";
-          type: RECT;
-          mouse_events: 0;
-          description { state: "default" 0.0;
-             rel1 {
-                to: "base";
-                offset: -9999 -9999;
-             }
-             rel2 {
-                to: "base";
-                offset: 9999 9999;
-             }
-             color: 255 255 255 255;
-          }
-          description { state: "visible" 0.0;
-             inherit: "default" 0.0;
-          }
-          description { state: "hidden" 0.0;
-             inherit: "default" 0.0;
-             color: 255 255 255 0;
-             visible: 0;
-          }
-          description { state: "hidden2" 0.0;
-             inherit: "default" 0.0;
-             color: 255 255 255 0;
-             visible: 0;
-          }
-       }
 
-       part { name: "base";
-          mouse_events:  0;
-          clip_to: "clip";
-          description { state: "default" 0.0;
-             color: 0 0 0 0;
-          }
-          description { state: "hidden" 0.0;
-             inherit: "default" 0.0;
-             rel1.relative: -1.0 0.0;
-             rel2.relative: 0.0 1.0;
-          }
-          description { state: "hidden2" 0.0;
-             inherit: "default" 0.0;
-             rel1.relative: 1.0 0.0;
-             rel2.relative: 2.0 1.0;
-          }
-          description { state: "visible" 0.0;
-             inherit: "default" 0.0;
-             rel1.relative: 0.0 0.0;
-             rel2.relative: 1.0 1.0;
-          }
-       }
+   group { name: "elm/pager/base/default";
+      data.item: "onshow" "raise";
+      parts {
+         part { name: "clip";
+            type: RECT;
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1 {
+                  to: "base";
+                  offset: -9999 -9999;
+               }
+	       rel2 {
+                  to: "base";
+                  offset: 9999 9999;
+               }
+               color: 255 255 255 255;
+	    }
+	    description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+	    }
+	    description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 0;
+               visible: 0;
+	    }
+	 }
+	 part { name: "base";
+	    mouse_events:  0;
+            clip_to: "clip";
+	    description { state: "default" 0.0; }
+	    description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               rel1.relative: -1.0 0.0;
+               rel2.relative: 0.0 1.0;
+	    }
+	    description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 1.0;
+	    }
+	 }
+	 part { name: "elm.swallow.content";
+	    type: SWALLOW;
+            clip_to: "clip";
+	    description { state: "default" 0.0;
+	       rel1 {
+                  to: "base";
+                  offset: 0 0;
+               }
+	       rel2 {
+                  to: "base";
+                  offset: -1 -1;
+               }
+	    }
+	 }
+      }
+      programs {
+	 program { name: "push_start";
+	    signal: "elm,action,push";
+	    source: "elm";
+	    action:  STATE_SET "hidden" 0.0;
+	    target: "base";
+	    target: "clip";
+            after: "show_start2";
+	 }
+         program { name: "show_start";
+	    signal: "elm,action,show";
+	    source: "elm";
+	    action:  STATE_SET "hidden" 0.0;
+	    target: "base";
+	    target: "clip";
+            after: "show_start2";
+	 }
+         program { name: "show_start2";
+	    action:  STATE_SET "visible" 0.0;
+            transition: DECELERATE 0.5;
+	    target: "base";
+	    target: "clip";
+            after: "show_end";
+	 }
+         program { name: "show_end";
+            action: SIGNAL_EMIT "elm,action,show,finished" "";
+	 }
+         program { name: "pop_start";
+	    signal: "elm,action,pop";
+	    source: "elm";
+	    action:  STATE_SET "visible" 0.0;
+	    target: "base";
+	    target: "clip";
+            after: "hide_start2";
+	 }
+         program { name: "hide_start";
+	    signal: "elm,action,hide";
+	    source: "elm";
+	    action:  STATE_SET "visible" 0.0;
+	    target: "base";
+	    target: "clip";
+            after: "hide_start2";
+	 }
+         program { name: "hide_start2";
+	    action:  STATE_SET "hidden" 0.0;
+            transition: DECELERATE 0.5;
+	    target: "base";
+	    target: "clip";
+            after: "hide_end";
+	 }
+         program { name: "hide_end";
+            action: SIGNAL_EMIT "elm,action,hide,finished" "";
+	 }
+         program { name: "reset";
+	    signal: "elm,action,reset";
+	    source: "elm";
+	    action:  STATE_SET "default" 0.0;
+	    target: "base";
+	    target: "clip";
+	 }
+      }
+   }
 
-       part { name: "elm.swallow.content";
-          type: SWALLOW;
-          clip_to: "clip";
-          description { state: "default" 0.0;
-             rel1 {
-                to: "base";
-                offset: 8 8;
-             }
-             rel2 {
-                to: "base";
-                offset: -9 -9;
-             }
-          }
-       }
-
-     
-    }
-    program { name: "push_start";
-       signal: "elm,action,push";
-       source: "elm";
-       action:  STATE_SET "hidden2" 0.0;
-       target: "base";
-       target: "clip";
-       after: "show_start2";
-    }
-    program { name: "show_start";
-       signal: "elm,action,show";
-       source: "elm";
-       action:  STATE_SET "hidden" 0.0;
-       target: "base";
-       target: "clip";
-       after: "show_start2";
-    }
-    program { name: "show_start2";
-       action:  STATE_SET "visible" 0.0;
-       transition: DECELERATE 0.5;
-       target: "base";
-       target: "clip";
-       after: "show_end";
-    }
-    program { name: "show_end";
-       action: SIGNAL_EMIT "elm,action,show,finished" "";
-    }
-    program { name: "pop_start";
-       signal: "elm,action,pop";
-       source: "elm";
-       action:  STATE_SET "visible" 0.0;
-       target: "base";
-       target: "clip";
-       after: "pop_start2";
-    }
-    program { name: "pop_start2";
-       action:  STATE_SET "hidden2" 0.0;
-       transition: DECELERATE 0.5;
-       target: "base";
-       target: "clip";
-       after: "hide_end";
-    }
-    program { name: "hide_start";
-       signal: "elm,action,hide";
-       source: "elm";
-       action:  STATE_SET "visible" 0.0;
-       target: "base";
-       target: "clip";
-       after: "hide_start2";
-    }
-    program { name: "hide_start2";
-       action:  STATE_SET "hidden" 0.0;
-       transition: DECELERATE 0.5;
-       target: "base";
-       target: "clip";
-       after: "hide_end";
-    }
-    program { name: "hide_end";
-       action: SIGNAL_EMIT "elm,action,hide,finished" "";
-    }
-    program { name: "reset";
-       signal: "elm,action,reset";
-       source: "elm";
-       action:  STATE_SET "default" 0.0;
-       target: "base";
-       target: "clip";
-    }
- }
 }
