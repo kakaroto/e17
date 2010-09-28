@@ -4,6 +4,7 @@ REQUIREMENTS
 ============
 
  * E_Dbus >= 1.0.0
+ * D-Bus Python >= 0.80
  * Ecore >= 1.0.0        (indirect, E_DBus dependency)
  * D-Bus >= 0.62         (indirect, E_DBus dependency)
  * Python >= 2.4
