@@ -354,21 +354,6 @@ _ephoto_grid_del(const void *data, Evas_Object *obj)
 static void
 _ephoto_thumb_clicked_job(void *data)
 {
-	const char *file;
-
-	file = data;
-	
-	/* evas_object_smart_callback_call(ef->flow_browser, "selected", file); */
-
-	/* em->flow_browser = ephoto_create_flow_browser(em->layout); */
-	/* ephoto_flow_browser_image_set(em->flow_browser, file); */
-	/* elm_layout_content_set(em->layout, "ephoto.content.swallow", em->flow_browser); */
-}
-
-/*Check to see if the thumbnail was double clicked*/
-static void 
-_ephoto_thumb_clicked(void *data, Evas_Object *obj, void *event_info)
-{
 	const Eina_List *selected;
 	Ephoto_Thumb_Data *etd;
 	Evas_Object *o;
@@ -378,7 +363,13 @@ _ephoto_thumb_clicked(void *data, Evas_Object *obj, void *event_info)
 	o = eina_list_data_get(selected);
 	etd = (Ephoto_Thumb_Data *)elm_gengrid_item_data_get((Elm_Gengrid_Item *)o);
 	evas_object_smart_callback_call(tb->layout, "selected", (char *)etd->file);
-	//	ecore_job_add(_ephoto_thumb_clicked_job, etd->file);
+}
+
+/*Check to see if the thumbnail was double clicked*/
+static void 
+_ephoto_thumb_clicked(void *data, Evas_Object *obj, void *event_info)
+{
+	ecore_job_add(_ephoto_thumb_clicked_job, data);
 }
 
 /*File Selector is shown*/
@@ -526,5 +517,7 @@ _ephoto_del_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 		eina_stringshare_del(etd->file);
 		free(etd);
 	}
-	ethumb_client_disconnect(tb->ec);
+	if (tb->ec)
+		ethumb_client_disconnect(tb->ec);
+	em->thumb_browser = NULL;
 }

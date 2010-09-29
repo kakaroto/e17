@@ -19,6 +19,7 @@ _ephoto_flow_browser_delete_cb(void *data, Evas_Object *obj, void *event_info)
 				       _ephoto_thumb_browser_selected_cb,
 				       NULL);
 	em->state = EPHOTO_STATE_THUMB;
+	em->flow_browser = NULL;
 }
 
 static void 
