@@ -25,7 +25,9 @@ collections {
          image: "bg.png" COMP;
          image: "bottom_bg.png" COMP;
          image: "bt-back.png" COMP;
+         image: "bt-back2.png" COMP;
          image: "bt-next.png" COMP;
+         image: "bt-next2.png" COMP;
          image: "bt-play.png" COMP;
          image: "bt-pause.png" COMP;
       }
@@ -66,87 +68,270 @@ collections {
                rel1.offset: 0 -91;
             }
          }
-
-#define TB(_name, _xpos, _image)                                        \
-         part {                                                         \
-         name: _name".clipper";                                         \
-            type: RECT;                                                 \
-            description {                                               \
-               state: "default" 0.0;                                    \
-            }                                                           \
-            description {                                               \
-               state: "hidden" 0.0;                                     \
-               inherit: "default" 0.0;                                  \
-               color: 255 255 255 0;                                    \
-               visible: 0;                                              \
-            }                                                           \
-         }                                                              \
-         part {                                                         \
-            name: _name;                                                \
-            type: IMAGE;                                                \
-            clip_to: _name".clipper";                                   \
-            description {                                               \
-               state: "default" 0.0;                                    \
-               image.normal: _image;                                    \
-               min: TB_ITEM_SIZE (1+TB_ITEM_SIZE);                      \
-               rel1 {                                                   \
-                  to: "iconbar.bg";                                     \
-                  relative: 0.5 1.0;                                    \
-                  offset: (_xpos) -48;                                  \
-               }                                                        \
-               rel2 {                                                   \
-                  to: "iconbar.bg";                                     \
-                  relative: 0.5 1.0;                                    \
-                  offset: (_xpos) (-TB_ITEM_SIZE/2);                    \
-               }                                                        \
-            }                                                           \
-            description {                                               \
-               state: "disabled" 0.0;                                   \
-               inherit: "default" 0.0;                                  \
-               color: 128 128 128 255;                                  \
-            }                                                           \
-         }                                                              \
-         programs {                                                     \
-            program {                                                   \
-               name: "ejy,"_name",clicked";                             \
-               signal: "mouse,clicked,1";                               \
-               source: _name;                                           \
-               action: SIGNAL_EMIT "ejy,"_name",clicked" "ejy";         \
-            }                                                           \
-            program {                                                   \
-               name: "ejy,"_name",disable";                             \
-               signal: "ejy,"_name",disable";                           \
-               source: "ejy";                                           \
-               action: STATE_SET "disabled" 0.0;                        \
-               target: _name;                                           \
-            }                                                           \
-            program {                                                   \
-               name: "ejy,"_name",enable";                              \
-               signal: "ejy,"_name",enable";                            \
-               source: "ejy";                                           \
-               action: STATE_SET "default" 0.0;                         \
-               target: _name;                                           \
-            }                                                           \
-            program {                                                   \
-               name: "ejy,"_name",hide";                                \
-               signal: "ejy,"_name",hide";                              \
-               source: "ejy";                                           \
-               action: STATE_SET "hidden" 0.0;                          \
-               target: _name".clipper";                                 \
-            }                                                           \
-            program {                                                   \
-               name: "ejy,"_name",show";                                \
-               signal: "ejy,"_name",show";                              \
-               source: "ejy";                                           \
-               action: STATE_SET "default" 0.0;                         \
-               target: _name".clipper";                                 \
-            }                                                           \
+         part {
+            name: "prev.clipper";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+            }
+            description {
+               state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 0;
+               visible: 0;
+            }
          }
-
-         TB("prev", TB_POS(1), "bt-back.png");
-         TB("next", TB_POS(2), "bt-next.png");
-         TB("action,play", TB_POS(3), "bt-play.png");
-         TB("action,pause", TB_POS(3), "bt-pause.png");
+         part {
+            name: "prev";
+            type: IMAGE;
+            clip_to: "prev.clipper";
+            description {
+               state: "default" 0.0;
+               image.normal: "bt-back.png";
+               min: 64 64;
+               max: 64 64;
+               align: 1.0 0.5;
+               rel1 {
+                 to: "action,play";
+               }
+               rel2 {
+                 to: "action,play";
+                 relative: 0.0 1.0;
+               }
+            }
+            description {
+               state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "bt-back2.png";
+            }
+            programs {
+               program {
+                  name: "prev,down";
+                  signal: "mouse,down,1";
+                  source: "prev";
+                  action: STATE_SET "pressed" 0.0;
+                  target: "prev";
+               }
+               program {
+                  name: "prev,up";
+                  signal: "mouse,up,1";
+                  source: "prev";
+                  action: STATE_SET "default" 0.0;
+                  target: "prev";
+               }
+               program {
+                  name: "prev,clicked";
+                  signal: "mouse,clicked,1";
+                  source: "prev";
+                  action: SIGNAL_EMIT "ejy,prev,clicked" "ejy";
+               }
+            }
+         }
+         part {
+            name: "next.clipper";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+            }
+            description {
+               state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 0;
+               visible: 0;
+            }
+         }
+         part {
+            name: "next";
+            type: IMAGE;
+            clip_to: "next.clipper";
+            description {
+               state: "default" 0.0;
+               image.normal: "bt-next.png";
+               min: 64 64;
+               max: 64 64;
+               align: 0.0 0.5;
+               rel1 {
+                 to: "action,play";
+                 relative: 1.0 0.0;
+               }
+               rel2 {
+                 to: "action,play";
+               }
+            }
+            description {
+               state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "bt-next2.png";
+            }
+            programs {
+               program {
+                  name: "next,down";
+                  signal: "mouse,down,1";
+                  source: "next";
+                  action: STATE_SET "pressed" 0.0;
+                  target: "next";
+               }
+               program {
+                  name: "next,up";
+                  signal: "mouse,up,1";
+                  source: "next";
+                  action: STATE_SET "default" 0.0;
+                  target: "next";
+               }
+               program {
+                  name: "next,clicked";
+                  signal: "mouse,clicked,1";
+                  source: "next";
+                  action: SIGNAL_EMIT "ejy,next,clicked" "ejy";
+               }
+            }
+         }
+         part {
+            name: "action,pause.clipper";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+            }
+            description {
+               state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 0;
+               visible: 0;
+            }
+         }
+         part {
+            name: "action,pause";
+            type: IMAGE;
+            clip_to: "action,pause.clipper";
+            description {
+               state: "default" 0.0;
+               image.normal: "bt-play.png";
+               min: 64 64;
+               max: 64 64;
+               align: 0.5 0.5;
+               rel1 {
+                 to: "iconbar.bg";
+                 offset: 0 5;
+               }
+               rel2 {
+                 to: "iconbar.bg";
+               }
+            }
+            description {
+               state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "bt-play.png";
+            }
+            programs {
+               program {
+                  name: "pause,down";
+                  signal: "mouse,down,1";
+                  source: "action,pause";
+                  action: STATE_SET "pressed" 0.0;
+                  target: "action,pause";
+               }
+               program {
+                  name: "pause,up";
+                  signal: "mouse,up,1";
+                  source: "action,pause";
+                  action: STATE_SET "default" 0.0;
+                  target: "action,pause";
+               }
+               program {
+                  name: "pause,clicked";
+                  signal: "mouse,clicked,1";
+                  source: "action,pause";
+                  action: SIGNAL_EMIT "ejy,action,pause,clicked" "ejy";
+               }
+               program {
+                  name: "pause,hide";
+                  signal: "ejy,action,pause,hide";
+                  source: "ejy";
+                  action: STATE_SET "hidden" 0.0;
+                  target: "action,pause.clipper";
+               }
+               program {
+                  name: "pause,show";
+                  signal: "ejy,action,pause,show";
+                  source: "ejy";
+                  action: STATE_SET "default" 0.0;
+                  target: "action,pause.clipper";
+               }
+            }
+         }
+         part {
+            name: "action,play.clipper";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+            }
+            description {
+               state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 0;
+               visible: 0;
+            }
+         }
+         part {
+            name: "action,play";
+            type: IMAGE;
+            clip_to: "action,play.clipper";
+            description {
+               state: "default" 0.0;
+               image.normal: "bt-pause.png";
+               min: 64 64;
+               max: 64 64;
+               align: 0.5 0.5;
+               rel1 {
+                 to: "iconbar.bg";
+                 offset: 0 5;
+               }
+               rel2 {
+                 to: "iconbar.bg";
+               }
+            }
+            description {
+               state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "bt-pause.png";
+            }
+            programs {
+               program {
+                  name: "play,down";
+                  signal: "mouse,down,1";
+                  source: "action,play";
+                  action: STATE_SET "pressed" 0.0;
+                  target: "action,play";
+               }
+               program {
+                  name: "play,up";
+                  signal: "mouse,up,1";
+                  source: "action,play";
+                  action: STATE_SET "default" 0.0;
+                  target: "action,play";
+               }
+               program {
+                  name: "play,clicked";
+                  signal: "mouse,clicked,1";
+                  source: "action,play";
+                  action: SIGNAL_EMIT "ejy,action,play,clicked" "ejy";
+               }
+               program {
+                  name: "play,hide";
+                  signal: "ejy,action,play,hide";
+                  source: "ejy";
+                  action: STATE_SET "hidden" 0.0;
+                  target: "action,play.clipper";
+               }
+               program {
+                  name: "play,show";
+                  signal: "ejy,action,play,show";
+                  source: "ejy";
+                  action: STATE_SET "default" 0.0;
+                  target: "action,play.clipper";
+               }
+            }
+         }
       }
    }
 
