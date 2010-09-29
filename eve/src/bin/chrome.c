@@ -2163,9 +2163,6 @@ chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
    evas_object_smart_callback_add(view, "inputmethods,changed",
                                   on_inputmethods_changed, win->win);
 
-   if (url)
-      ewk_view_uri_set(view, url);
-
    Evas_Object *text_url = elm_scrolled_entry_add(ed);
    elm_object_style_set(text_url, "ewebkit/url");
    elm_scrolled_entry_single_line_set(text_url, EINA_TRUE);
@@ -2243,8 +2240,11 @@ chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
    edje_object_signal_emit(ed, "panels,reset,hide", "");
    _chrome_state_apply(chrome, view);
 
-   elm_pager_content_push(win->pager, chrome);
    chrome_config_apply(chrome);
+   if (url)
+      ewk_view_uri_set(view, url);
+
+   elm_pager_content_push(win->pager, chrome);
    return chrome;
 
 error_session_create:
