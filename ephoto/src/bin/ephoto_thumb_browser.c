@@ -420,8 +420,8 @@ _ephoto_get_icon(const void *data, Evas_Object *obj, const char *part)
 		evas_object_size_hint_weight_set(thumb, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 		evas_object_show(thumb);
 
-		o = elm_bg_add(thumb);
-		elm_bg_file_set(o, etd->thumb_path, NULL);
+		o = elm_image_add(thumb);
+		elm_image_file_set(o, etd->thumb_path, NULL);
 		evas_object_resize(o, 176, 117);
 
 		elm_layout_content_set(thumb, "ephoto.swallow.content", o);

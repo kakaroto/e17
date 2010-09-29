@@ -75,10 +75,9 @@ _ephoto_go_update(Ephoto_Flow_Browser *ef)
         evas_object_hide(ef->image2);
 
 	file_type = efreet_mime_type_get(ef->cur_image);
-	printf("%s\n", file_type);
 	if (file_type && !strcmp(file_type, "image/jpeg"))
 	{
-		success = elm_photocam_file_set(ef->image, ef->cur_image);
+		success = (elm_photocam_file_set(ef->image, ef->cur_image) == EVAS_LOAD_ERROR_NONE);
 		elm_layout_content_set(ef->flow_browser, "ephoto.flow.swallow", ef->image);
 		evas_object_show(ef->image);
 	} else {
@@ -88,8 +87,6 @@ _ephoto_go_update(Ephoto_Flow_Browser *ef)
 	}
 	if (success)
         {
-                char *buffer;
-                int length;
 #ifdef HAVE_LIBEXIF
                 int orientation = 0;
 
@@ -137,11 +134,7 @@ _ephoto_go_update(Ephoto_Flow_Browser *ef)
                         }
                 }
 #endif
-
-                length = strlen(ef->cur_image) + strlen("Ephoto - ") + 1;
-                buffer = alloca(length);
-                snprintf(buffer, length, "Ephoto - %s", ef->cur_image);
-                elm_win_title_set(em->win, buffer);
+                _ephoto_set_title(ef->cur_image);
         }
 
         elm_toolbar_item_unselect_all(ef->toolbar);
