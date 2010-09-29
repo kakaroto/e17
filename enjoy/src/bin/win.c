@@ -1,8 +1,6 @@
 #include "private.h"
 #include <Emotion.h>
 
-static const char *_emotion_engines[] = { "xine", "gstreamer", "vlc", NULL };
-
 #define MSG_VOLUME 1
 #define MSG_POSITION 2
 #define MSG_RATING 3
@@ -412,10 +410,9 @@ win_new(App *app)
    w->db_path = eina_stringshare_add(path);
 
    w->emotion = emotion_object_add(evas_object_evas_get(w->win));
-   for (e = _emotion_engines; *e; e++) if (emotion_object_init(w->emotion, *e)) break;
-   if (!*e)
+   if (!emotion_object_init(w->emotion, NULL))
      {
-        CRITICAL("cannot create emotion engine");
+        CRITICAL("could not create emotion engine");
         goto error;
      }
    emotion_object_video_mute_set(w->emotion, EINA_TRUE);
