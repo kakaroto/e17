@@ -132,6 +132,8 @@ struct _Drawer_View
         void	    (*container_resized)	(Drawer_View *v);
         /* Sets the orientation of the gadget container */
         void	    (*orient_set)		(Drawer_View *v, E_Gadcon_Orient orient);
+        /* Called when the view is shown/hidden */
+        void        (*toggle_visibility)        (Drawer_View *v, Eina_Bool show);
      } func;
 };
 
@@ -157,6 +159,8 @@ struct _Drawer_Composite
         void	    (*container_resized) (Drawer_Composite *c);
         /* Sets the orientation of the gadget container */
         void	    (*orient_set)	 (Drawer_Composite *c, E_Gadcon_Orient orient);
+        /* Called when the view is shown/hidden */
+        void        (*toggle_visibility)        (Drawer_View *v, Eina_Bool show);
 
         /* Creates a shelf icon */
         Evas_Object * (*get_main_icon)   (Drawer_Composite *c, Evas *evas, Evas_Coord w, Evas_Coord h);

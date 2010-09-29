@@ -3491,7 +3491,42 @@ target: "e.text.label";
 		  min: 1 1;
 	       }
 	    }
+            description {
+                state: "stack" 0.0;
+                inherit: "default" 0.0;
+                box.layout: "stack";
+            }
 	 }
+      }
+      programs {
+          program {
+              name: "show";
+              signal: "e,action,show";
+              source: "drawer";
+              action:  STATE_SET "stack" 0.0;
+              target: "e.box.content";
+              after: "show_after";
+          }
+          program {
+              name: "show_after";
+              transition: SINUSOIDAL 0.5;
+              action:  STATE_SET "default" 0.0;
+              target: "e.box.content";
+          }
+          program {
+              name: "hide";
+              signal: "e,action,hide";
+              source: "drawer";
+              transition: SINUSOIDAL 0.7;
+              action:  STATE_SET "stack" 0.0;
+              target: "e.box.content";
+              after: "hide_after";
+          }
+          program {
+              name: "hide_after";
+              action:  STATE_SET "default" 0.0;
+              target: "e.box.content";
+          }
       }
    }
    group {

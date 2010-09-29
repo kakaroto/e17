@@ -11,5 +11,6 @@ EAPI Evas_Object * drawer_view_render(Drawer_View *v, Evas *evas, Eina_List *ite
 
 EAPI void  drawer_view_container_resized(Drawer_View *v);
 EAPI void  drawer_view_orient_set(Drawer_View *v, E_Gadcon_Orient orient);
+EAPI void  drawer_view_toggle_visibility(Drawer_View *v, Eina_Bool show);
 
 #endif

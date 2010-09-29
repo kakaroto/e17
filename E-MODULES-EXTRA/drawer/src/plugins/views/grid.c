@@ -282,6 +282,19 @@ drawer_view_orient_set(Drawer_View *v, E_Gadcon_Orient orient)
      }
 }
 
+EAPI void
+drawer_view_toggle_visibility(Drawer_View *v, Eina_Bool show)
+{
+   Instance *inst = NULL;
+   
+   inst = DRAWER_PLUGIN(v)->data;
+
+   if (show)
+     edje_object_signal_emit(inst->o_box, "e,action,show", "drawer");
+   else
+     edje_object_signal_emit(inst->o_box, "e,action,hide", "drawer");
+}
+
 static void
 _grid_reconfigure(Instance *inst)
 {

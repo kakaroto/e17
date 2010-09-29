@@ -681,6 +681,7 @@ static void
 _drawer_popup_create(Instance *inst)
 {
    inst->popup = e_gadcon_popup_new(inst->gcc);
+   e_popup_name_set(inst->popup->win, "drawer");
    _drawer_popup_theme_set(inst);
    e_popup_edje_bg_object_set(inst->popup->win, inst->popup->o_bg);
    edje_object_signal_callback_add(inst->popup->o_bg, "e,action,popup,hidden", "drawer", 
@@ -736,6 +737,11 @@ _drawer_popup_show(Instance *inst)
    inst->flags.pop_showing = EINA_TRUE;
    e_gadcon_popup_show(inst->popup);
    e_gadcon_locked_set(inst->gcc->gadcon, 1);
+   if (inst->view && DRAWER_VIEW(inst->view)->func.toggle_visibility)
+     DRAWER_VIEW(inst->view)->func.toggle_visibility(DRAWER_VIEW(inst->view), EINA_TRUE);
+   else if (inst->composite && DRAWER_COMPOSITE(inst->composite)->func.toggle_visibility)
+     DRAWER_COMPOSITE(inst->composite)->func.toggle_visibility(
+         DRAWER_COMPOSITE(inst->composite), EINA_TRUE);
 }
 
 static void
@@ -772,6 +778,11 @@ _drawer_popup_hide(Instance *inst)
         break;
      }
    inst->flags.pop_hiding = EINA_TRUE;
+   if (inst->view && DRAWER_VIEW(inst->view)->func.toggle_visibility)
+     DRAWER_VIEW(inst->view)->func.toggle_visibility(DRAWER_VIEW(inst->view), EINA_FALSE);
+   else if (inst->composite && DRAWER_COMPOSITE(inst->composite)->func.toggle_visibility)
+     DRAWER_COMPOSITE(inst->composite)->func.toggle_visibility(
+         DRAWER_COMPOSITE(inst->composite), EINA_FALSE);
 }
 
 /* Updates the popup contents */
@@ -1117,6 +1128,7 @@ _drawer_view_new(Instance *inst, const char *name)
 
    v->func.container_resized = dlsym(p->handle, "drawer_view_container_resized");
    v->func.orient_set = dlsym(p->handle, "drawer_view_orient_set");
+   v->func.toggle_visibility = dlsym(p->handle, "drawer_view_toggle_visibility");
 
 init_done:
 
@@ -1165,6 +1177,7 @@ _drawer_composite_new(Instance *inst, const char *name)
    c->func.description_get = dlsym(p->handle, "drawer_composite_description_get");
    c->func.container_resized = dlsym(p->handle, "drawer_composite_container_resized");
    c->func.orient_set = dlsym(p->handle, "drawer_composite_orient_set");
+   c->func.toggle_visibility = dlsym(p->handle, "drawer_composite_toggle_visibility");
 
 init_done:
 
