@@ -5,6 +5,15 @@ static void _ephoto_preferences_hide(void *data, Evas_Object *obj, void *event_i
 static void _ephoto_preferences_item_change(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_preferences_slideshow_transition(void *data, Evas_Object *obj, void *event_info);
 
+static void
+_ephoto_key_pressed(void *data, Evas *e, Evas_Object *obj, void *event_data)
+{
+	Evas_Event_Key_Down *eku;
+	eku = (Evas_Event_Key_Down *)event_data;
+	if (!strcmp(eku->key, "Escape"))
+		_ephoto_preferences_hide(data, NULL, NULL);
+}
+
 void
 ephoto_show_preferences(Ephoto *em)
 {
@@ -126,11 +135,16 @@ ephoto_show_preferences(Ephoto *em)
                 elm_box_pack_end(box, o);
                 evas_object_show(o);
 
+
+                evas_object_event_callback_add(em->prefs_win, EVAS_CALLBACK_KEY_DOWN,
+                                       _ephoto_key_pressed, em);
+
                 elm_toolbar_item_select_first(tb);
                 elm_pager_content_promote(pager, pg1);
         }
 
         elm_win_inwin_activate(em->prefs_win);
+        evas_object_focus_set(em->prefs_win, EINA_TRUE);
 }
 
 static void
@@ -178,4 +192,5 @@ _ephoto_preferences_hide(void *data, Evas_Object *obj, void *event_info)
         Ephoto *em = data;
 
         evas_object_hide(em->prefs_win);
+        evas_object_focus_set(em->thumb_browser, EINA_TRUE);
 }

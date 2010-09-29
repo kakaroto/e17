@@ -102,6 +102,7 @@ struct _Ephoto
 	Evas_Object *layout;
 	Evas_Object *flow_browser;
 	Evas_Object *slideshow;
+	Evas_Object *slideshow_notify;
 	Evas_Object *thumb_browser;
         Evas_Object *prefs_win;
 	Eina_List   *images;

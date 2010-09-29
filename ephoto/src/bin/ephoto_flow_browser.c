@@ -16,8 +16,12 @@ static void _ephoto_go_rotate_counterclockwise(void *data, Evas_Object *obj, voi
 static void _ephoto_go_rotate_clockwise(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_go_editor(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_key_pressed(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _ephoto_mouse_wheel(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _ephoto_flow_browser_show_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _ephoto_flow_browser_del_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _ephoto_zoom_in(void *data, Evas_Object *obj, void *event_info);
+static void _ephoto_zoom_out(void *data, Evas_Object *obj, void *event_info);
+static void _ephoto_zoom_regular_size(void *data, Evas_Object *obj, void *event_info);
 
 typedef struct _Ephoto_Flow_Browser Ephoto_Flow_Browser;
 
@@ -38,7 +42,11 @@ static const char *toolbar_items[] = {
 	"Previous",
 	"Next",
 	"Last",
-	"Slideshow"
+	"Slideshow",
+	"Rotate CW",
+	"Rotate CCW",
+	"Zoom In",
+	"Zoom Out"
 };
 
 static void
@@ -171,6 +179,7 @@ ephoto_create_flow_browser(Evas_Object *parent)
 	ef->toolbar = elm_toolbar_add(ef->flow_browser);
         elm_toolbar_icon_size_set(ef->toolbar, 24);
         elm_toolbar_homogenous_set(ef->toolbar, EINA_TRUE);
+        elm_toolbar_scrollable_set(ef->toolbar, EINA_FALSE);
         evas_object_size_hint_weight_set(ef->toolbar, EVAS_HINT_EXPAND, 0.0);
         evas_object_size_hint_align_set(ef->toolbar, EVAS_HINT_FILL, 0.5);
 	elm_layout_content_set(ef->flow_browser, "ephoto.toolbar.swallow", ef->toolbar);
@@ -200,7 +209,22 @@ ephoto_create_flow_browser(Evas_Object *parent)
         elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/play_slideshow.png", NULL);
         elm_toolbar_item_add(ef->toolbar, o, "Slideshow", _ephoto_go_slideshow, ef);
 
-	
+        o = elm_icon_add(ef->toolbar);
+        elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/play_slideshow.png", NULL);
+        elm_toolbar_item_add(ef->toolbar, o, "RotateCW", _ephoto_go_rotate_clockwise, ef);
+
+        o = elm_icon_add(ef->toolbar);
+        elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/play_slideshow.png", NULL);
+        elm_toolbar_item_add(ef->toolbar, o, "RotateCCW", _ephoto_go_rotate_counterclockwise, ef);
+
+        o = elm_icon_add(ef->toolbar);
+        elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/play_slideshow.png", NULL);
+        elm_toolbar_item_add(ef->toolbar, o, "Zoom In", _ephoto_zoom_in, ef);
+
+        o = elm_icon_add(ef->toolbar);
+        elm_icon_file_set(o, PACKAGE_DATA_DIR "/images/play_slideshow.png", NULL);
+        elm_toolbar_item_add(ef->toolbar, o, "Zoom Out", _ephoto_zoom_out, ef);
+
 	evas_object_event_callback_add(ef->flow_browser, EVAS_CALLBACK_SHOW,
 						_ephoto_flow_browser_show_cb, ef);
 	evas_object_event_callback_add(ef->flow_browser, EVAS_CALLBACK_DEL,
@@ -225,8 +249,10 @@ ephoto_flow_browser_image_set(Evas_Object *obj, const char *current_image)
         {
 		ef->cur_image = current_image;
 
-		evas_object_event_callback_add(ef->flow_browser, EVAS_CALLBACK_KEY_UP,
+		evas_object_event_callback_add(ef->flow_browser, EVAS_CALLBACK_KEY_DOWN,
 						_ephoto_key_pressed, ef);
+		evas_object_event_callback_add(ef->flow_browser, EVAS_CALLBACK_MOUSE_WHEEL,
+						_ephoto_mouse_wheel, ef);
 
 		ef->iter = eina_list_data_find_list(em->images, current_image);
 		for (i = 0; i < (sizeof (toolbar_items) / sizeof (char*)); ++i)
@@ -269,30 +295,50 @@ _ephoto_flow_browser_del_cb(void *data, Evas *e, Evas_Object *obj, void *event_i
 static const struct
 {
 	const char *name;
+	const char *modifiers;
 	void (*func)(void *data, Evas_Object *obj, void *event_info);
 } keys[] = {
-	{ "Left", _ephoto_go_previous },
-	{ "Right", _ephoto_go_next },
-	{ "space", _ephoto_go_next },
-	{ "Escape", _ephoto_go_back },
-        { "bracketleft", _ephoto_go_rotate_counterclockwise },
-        { "bracketright", _ephoto_go_rotate_clockwise },
-        { "e", _ephoto_go_editor },
-	{ NULL, NULL }
+	{ "Left", NULL, _ephoto_go_previous },
+	{ "Right", NULL, _ephoto_go_next },
+	{ "space", NULL, _ephoto_go_next },
+	{ "Escape", NULL, _ephoto_go_back },
+	{ "bracketleft", NULL, _ephoto_go_rotate_counterclockwise },
+	{ "bracketright", NULL, _ephoto_go_rotate_clockwise },
+	{ "Home", NULL, _ephoto_go_first },
+	{ "End", NULL, _ephoto_go_last },
+	{ "F5", NULL, _ephoto_go_slideshow},
+	{ "plus", "Control", _ephoto_zoom_in},
+	{ "minus", "Control", _ephoto_zoom_out},
+	{ "0", "Control", _ephoto_zoom_regular_size},
+        { "e", NULL, _ephoto_go_editor },
+	{ NULL, NULL, NULL }
 };
 
 static void
 _ephoto_key_pressed(void *data, Evas *e, Evas_Object *obj, void *event_data)
-{    
-        Ephoto_Flow_Browser *ef = data;
-	Evas_Event_Key_Up *eku;
+{
+	Evas_Event_Key_Down *eku;
 	int i;
 
-	eku = (Evas_Event_Key_Up *)event_data;
-        DBG("Key name: %s", eku->keyname);
+	eku = (Evas_Event_Key_Down *)event_data;
+	DBG("Key name: %s", eku->key);
 	for (i = 0; keys[i].name; ++i)
-		if (!strcmp(eku->keyname, keys[i].name))
-			keys[i].func(ef, NULL, NULL);
+		if ((!strcmp(eku->key, keys[i].name)) &&
+		    ((keys[i].modifiers == NULL) || (evas_key_modifier_is_set(eku->modifiers, keys[i].modifiers))))
+			keys[i].func(data, NULL, NULL);
+}
+
+static void
+_ephoto_mouse_wheel(void *data, Evas *e, Evas_Object *obj, void *event_data)
+{
+	Evas_Event_Mouse_Wheel *emw = (Evas_Event_Mouse_Wheel *) event_data;
+	if (evas_key_modifier_is_set(emw->modifiers, "Control"))
+	{
+		if (emw->z < 0)
+			_ephoto_zoom_in(data, NULL, NULL);
+		else
+			_ephoto_zoom_out(data, NULL, NULL);
+	}
 }
 
 /*Go back to the thumbnail viewer*/
@@ -397,6 +443,7 @@ _ephoto_go_rotate_counterclockwise(void *data, Evas_Object *obj, void *event_inf
                         edje_object_signal_emit(o, "ef,state,rotate,180", "ef");
                         break;
         }
+	elm_toolbar_item_unselect_all(ef->toolbar);
 }
 
 static void
@@ -424,6 +471,7 @@ _ephoto_go_rotate_clockwise(void *data, Evas_Object *obj, void *event_info)
                         edje_object_signal_emit(o, "ef,state,rotate,0", "ef");
                         break;
         }
+	elm_toolbar_item_unselect_all(ef->toolbar);
 }
 
 static void
@@ -437,4 +485,42 @@ _ephoto_go_editor(void *data, Evas_Object *obj, void *event_info)
         DBG("Editor command: %s", buf);
         exe = ecore_exe_run(buf, NULL);
         ecore_exe_free(exe);
+}
+
+/* Zoom in in image */
+static void
+_ephoto_zoom_in(void *data, Evas_Object *obj, void *event)
+{
+	Ephoto_Flow_Browser *ef = data;
+	double zoom;
+
+	elm_photocam_zoom_mode_set(ef->image, ELM_PHOTOCAM_ZOOM_MODE_MANUAL);
+	zoom = elm_photocam_zoom_get(ef->image);
+	zoom -= 0.4;
+	if (zoom < 0.1)
+		zoom = 0.1;
+	elm_photocam_zoom_set(ef->image, zoom);
+	elm_toolbar_item_unselect_all(ef->toolbar);
+}
+
+/* Zoom out in image */
+static void
+_ephoto_zoom_out(void *data, Evas_Object *obj, void *event)
+{
+	Ephoto_Flow_Browser *ef = data;
+	double zoom;
+
+	elm_photocam_zoom_mode_set(ef->image, ELM_PHOTOCAM_ZOOM_MODE_MANUAL);
+	zoom = elm_photocam_zoom_get(ef->image);
+	zoom += 0.4;
+	elm_photocam_zoom_set(ef->image, zoom);
+	elm_toolbar_item_unselect_all(ef->toolbar);
+}
+
+/* Zoom regular size in image */
+static void
+_ephoto_zoom_regular_size(void *data, Evas_Object *obj, void *event)
+{
+	Ephoto_Flow_Browser *ef = data;
+	elm_photocam_zoom_mode_set(ef->image, ELM_PHOTOCAM_ZOOM_MODE_AUTO_FIT);
 }

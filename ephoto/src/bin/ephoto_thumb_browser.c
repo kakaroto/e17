@@ -1,5 +1,7 @@
 #include "ephoto.h"
 
+#define SLIDER_MAX 300
+#define SLIDER_MIN 80
 typedef struct _Ephoto_Thumb_Data Ephoto_Thumb_Data;
 typedef struct _Ephoto_Thumb_Browser Ephoto_Thumb_Browser;
 
@@ -44,6 +46,53 @@ static void _ephoto_view_slideshow(void *data, Evas_Object *obj, void *event_inf
 static void _ephoto_preferences(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_del_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _ephoto_show_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _ephoto_zoom_in(void *data, Evas_Object *obj, void *event_info);
+static void _ephoto_zoom_out(void *data, Evas_Object *obj, void *event_info);
+static void _ephoto_zoom_regular_size(void *data, Evas_Object *obj, void *event_info);
+
+/*A key has been pressed*/
+static const struct
+{
+	const char *name;
+	const char *modifiers;
+	void (*func)(void *data, Evas_Object *obj, void *event_info);
+} keys[] = {
+	{ "F5", NULL, _ephoto_view_slideshow },
+	{ "d", "Control",  _ephoto_change_directory},
+	{ "p", "Control",  _ephoto_preferences},
+	{ "plus", "Control", _ephoto_zoom_in},
+	{ "minus", "Control", _ephoto_zoom_out},
+	{ "0", "Control", _ephoto_zoom_regular_size},
+	{ NULL, NULL, NULL }
+};
+
+static void
+_ephoto_key_pressed(void *data, Evas *e, Evas_Object *obj, void *event_data)
+{
+	Evas_Event_Key_Down *eku;
+	int i;
+
+	eku = (Evas_Event_Key_Down *)event_data;
+        DBG("Key name: %s", eku->key);
+	for (i = 0; keys[i].name; ++i)
+		if ((!strcmp(eku->key, keys[i].name)) &&
+                    ((keys[i].modifiers == NULL) || (evas_key_modifier_is_set(eku->modifiers, keys[i].modifiers))))
+			keys[i].func(data, obj, NULL);
+}
+
+static void
+_ephoto_mouse_wheel(void *data, Evas *e, Evas_Object *obj, void *event_data)
+{
+	Evas_Event_Mouse_Wheel *emw = (Evas_Event_Mouse_Wheel *) event_data;
+	if (evas_key_modifier_is_set(emw->modifiers, "Control"))
+	{
+		if (emw->z < 0)
+			_ephoto_zoom_in(data, NULL, NULL);
+		else
+			_ephoto_zoom_out(data, NULL, NULL);
+	}
+}
+
 /*Create the thumbnail browser object*/
 Evas_Object *
 ephoto_create_thumb_browser(Evas_Object *parent)
@@ -81,7 +130,7 @@ ephoto_create_thumb_browser(Evas_Object *parent)
         tb->thumb_slider = elm_slider_add(tb->thbox);
         elm_slider_label_set(tb->thumb_slider, "Thumb Size:");
         elm_slider_span_size_set(tb->thumb_slider, 100);
-        elm_slider_min_max_set(tb->thumb_slider, 80, 300);
+        elm_slider_min_max_set(tb->thumb_slider, SLIDER_MIN, SLIDER_MAX);
         elm_slider_value_set(tb->thumb_slider, em->config->thumb_size);
         elm_box_pack_end(tb->thbox, tb->thumb_slider);
         evas_object_smart_callback_add(tb->thumb_slider, "changed",
@@ -141,6 +190,11 @@ ephoto_create_thumb_browser(Evas_Object *parent)
         evas_object_data_set(tb->layout, "thumb_browser", tb);
         evas_object_event_callback_add(tb->layout, EVAS_CALLBACK_DEL, _ephoto_del_cb, tb);
         evas_object_event_callback_add(tb->layout, EVAS_CALLBACK_SHOW, _ephoto_show_cb, tb);
+        evas_object_event_callback_add(tb->layout, EVAS_CALLBACK_KEY_DOWN,
+                                       _ephoto_key_pressed, tb);
+        evas_object_event_callback_add(tb->layout, EVAS_CALLBACK_MOUSE_WHEEL,
+                                       _ephoto_mouse_wheel, tb);
+        evas_object_focus_set(tb->layout, 1);
 	return tb->layout;
 }
 
@@ -242,6 +296,48 @@ ephoto_populate_thumbnails(Evas_Object *obj)
 			   tb);
 }
 
+/*Zoom out the thumbnail size*/
+static void
+_ephoto_zoom_out(void *data, Evas_Object *obj, void *event)
+{
+	int val;
+	Ephoto_Thumb_Browser *tb = data;
+
+	val = elm_slider_value_get(tb->thumb_slider);
+	val -= (SLIDER_MAX + SLIDER_MIN) / 10;
+	if (val > SLIDER_MAX)
+		val = SLIDER_MAX;
+	elm_slider_value_set(tb->thumb_slider, val);
+	_ephoto_slider_changed(data, obj, event);
+}
+
+/*Zoom in the thumbnail size*/
+static void
+_ephoto_zoom_in(void *data, Evas_Object *obj, void *event)
+{
+	int val;
+	Ephoto_Thumb_Browser *tb = data;
+
+	val = elm_slider_value_get(tb->thumb_slider);
+	val += (SLIDER_MAX + SLIDER_MIN) / 10;
+	if (val > SLIDER_MAX)
+		val = SLIDER_MAX;
+	elm_slider_value_set(tb->thumb_slider, val);
+	_ephoto_slider_changed(data, obj, event);
+
+}
+
+/*Zoom half the thumbnail size*/
+static void
+_ephoto_zoom_regular_size(void *data, Evas_Object *obj, void *event)
+{
+	int val;
+	Ephoto_Thumb_Browser *tb = data;
+
+	val = (SLIDER_MAX + SLIDER_MIN) / 2;
+	elm_slider_value_set(tb->thumb_slider, val);
+	_ephoto_slider_changed(data, obj, event);
+}
 /*Change the thumbnail size*/
 static void
 _ephoto_slider_changed(void *data, Evas_Object *obj, void *event)
