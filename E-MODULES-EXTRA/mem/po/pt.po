@@ -1,12 +1,13 @@
-# Portuguese Translation of mem 
-# This file is distributed under the same license as Enlightenment package.
-# Sérgio Marques<smarquespt@gmail.com>, 2010
+# Portuguese translation for mem
+# This file is distributed under the same license as the enlightenment package.
+# Sérgio Marques <smarquespt@gmail.com>, 2010
+# Adaptado ao acordo ortográfico de 1990
 msgid ""
 msgstr ""
 "Project-Id-Version: mem\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2010-08-12 08:00-0700\n"
-"PO-Revision-Date: 2010-08-12 17:02-0000\n"
+"POT-Creation-Date: 2010-09-09 08:00-0700\n"
+"PO-Revision-Date: 2010-09-29 02:22-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -17,36 +18,37 @@ msgstr ""
 "X-Poedit-Country: Portugal\n"
 
 #: ../src/e_mod_config.c:43
-msgid "Mem Configuration"
-msgstr "Configuração do Mem"
+#| msgid "General Settings"
+msgid "Mem Settings"
+msgstr "Definições do \"Mem\""
 
 #: ../src/e_mod_config.c:92
 msgid "General Settings"
-msgstr "Definições Gerais"
+msgstr "Definições gerais"
 
 #: ../src/e_mod_config.c:94
 msgid "Always Show Text"
-msgstr "Mostrar Sempre o Texto"
+msgstr "Mostrar sempre o texto"
 
 #: ../src/e_mod_config.c:96
 msgid "Show Text On Mouse Over"
-msgstr "Mostrar Texto ao Passar Com o Rato"
+msgstr "Mostrar texto ao passar com o rato"
 
 #: ../src/e_mod_config.c:99
 msgid "Show Text As Percent"
-msgstr "Mostrar Texto Como Percentagem"
+msgstr "Mostrar texto como percentagem"
 
 #: ../src/e_mod_config.c:104
 msgid "Ignore Buffers"
-msgstr "Ignorar Buffers"
+msgstr "Ignorar \"buffers\""
 
 #: ../src/e_mod_config.c:108
 msgid "Ignore Cached"
-msgstr "Ignorar Itens em Cache"
+msgstr "Ignorar itens em cache"
 
 #: ../src/e_mod_config.c:112
 msgid "Check Interval:"
-msgstr "Intervalo de Verificação:"
+msgstr "Intervalo de verificação:"
 
 #: ../src/e_mod_config.c:115
 #, c-format
@@ -55,9 +57,10 @@ msgstr "%1.0f segundos"
 
 #: ../src/e_mod_main.c:108
 msgid "Mem"
-msgstr "Mem"
+msgstr "\"Mem\""
 
-#: ../src/e_mod_main.c:165
-msgid "Configuration"
-msgstr "Configuração"
+#: ../src/e_mod_main.c:167
+#| msgid "General Settings"
+msgid "Settings"
+msgstr "Definições"
 

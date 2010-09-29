@@ -1,13 +1,13 @@
-# Portuguese Translation of net
-# This file is distributed under the same license as Enlightenment package.
-# Sérgio Marques<smarquespt@gmail.com>, 2010
-#
+# Portuguese translation for net
+# This file is distributed under the same license as the enlightenment package.
+# Sérgio Marques <smarquespt@gmail.com>, 2010
+# Adaptado ao acordo ortográfico de 1990
 msgid ""
 msgstr ""
 "Project-Id-Version: net\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2010-08-12 08:00-0700\n"
-"PO-Revision-Date: 2010-08-13 11:12-0000\n"
+"POT-Creation-Date: 2010-09-09 08:00-0700\n"
+"PO-Revision-Date: 2010-09-29 02:46-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,28 +18,29 @@ msgstr ""
 "X-Poedit-Country: Portugal\n"
 
 #: ../src/e_mod_configure.c:44
-msgid "Net Module Configuration"
-msgstr "Configuração do Módulo Net"
+#| msgid "Net Module Configuration"
+msgid "Net Module Settings"
+msgstr "Definições do módulo \"Net\""
 
 #: ../src/e_mod_configure.c:116
 msgid "General Settings"
-msgstr "Definições Gerais"
+msgstr "Definições gerais"
 
 #: ../src/e_mod_configure.c:117
 msgid "Show Text"
-msgstr "Mostrar Texto "
+msgstr "Mostrar texto "
 
 #: ../src/e_mod_configure.c:119
 msgid "Show Popup On Mouse-Over"
-msgstr "Mostrar Alerta ao Passar Com o Rato"
+msgstr "Mostrar alerta ao passar com o rato"
 
 #: ../src/e_mod_configure.c:121
 msgid "Launch Application On Double-Click"
-msgstr "Iniciar Aplicação Com Duplo Clique"
+msgstr "Iniciar aplicação com duplo clique"
 
 #: ../src/e_mod_configure.c:127
 msgid "Activity Notification Level"
-msgstr "Nível da Notificação da Actividade"
+msgstr "Notificação do nível de atividade"
 
 #: ../src/e_mod_configure.c:129
 msgid "High (MB)"
@@ -55,17 +56,18 @@ msgstr "Baixa (B)"
 
 #: ../src/e_mod_configure.c:139
 msgid "Device Settings"
-msgstr "Definições do Dispositivo"
+msgstr "Definições do dispositivo"
 
 #: ../src/e_mod_gadcon.c:91
 msgid "Net"
-msgstr "Net"
+msgstr "\"Net\""
 
-#: ../src/e_mod_net.c:165
-msgid "Configuration"
-msgstr "Configuração"
+#: ../src/e_mod_net.c:167
+#| msgid "Device Settings"
+msgid "Settings"
+msgstr "Definições"
 
-#: ../src/e_mod_net.c:200
+#: ../src/e_mod_net.c:199
 #, c-format
 msgid "Device - %s"
 msgstr "Dispositivo - %s"
