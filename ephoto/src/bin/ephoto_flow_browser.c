@@ -217,7 +217,7 @@ ephoto_flow_browser_image_set(Evas_Object *obj, const char *current_image)
 {	
         Ephoto_Flow_Browser *ef;
 	Elm_Toolbar_Item *o;
-	int i;
+	unsigned int i;
 
         ef = evas_object_data_get(obj, "flow_browser");
 
