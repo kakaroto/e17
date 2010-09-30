@@ -209,7 +209,7 @@ collections {
                color: 0 0 0 255;
                color3: 0 0 0 0;
                text {
-                  font: "SansBold";
+                  font: "Sans:style=Bold";
                   size: 10;
                   min: 1 1;
 //                  min: 0 0;
@@ -245,7 +245,7 @@ collections {
                color: 0 0 0 255;
                color3: 0 0 0 0;
                text {
-                  font: "SansBold";
+                  font: "Sans";
                   size: 10;
                   min: 1 1;
 //                  min: 0 0;
@@ -273,16 +273,17 @@ collections {
                   relative: 1.0  0.5;
 		  offset: 5 0;
                }
-               //rel2 {
-                  //to:     "elm.swallow.pad";
-                  //relative: 1.0  1.0;
-               //}
+               rel2 {
+                  to:     "elm.swallow.pad";
+                  relative: 1.0  1.0;
+               }
                color: 0 0 0 255;
                color3: 0 0 0 0;
                text {
 		style: "elmdentica_status";
                   min: 1 1;
                   align: 0.0 0.0;
+		text: "this is a long message that should be wrapped at some point bla bla bla";
                }
             }
             description { state: "selected" 0.0;
