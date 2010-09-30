@@ -697,7 +697,7 @@ static void on_zoomed_icon_clicked(void *data, Evas_Object *obj, void *event_inf
 }
 
 static void on_bubble_icon_clicked(void *data, Evas_Object *obj, void *event_info) {
-	aStatus *as = eina_hash_find(bubble2status, &data);
+	aStatus *as = (aStatus*)data;
 	anUser *au=NULL;
 	char *file_path=NULL, *uid_str=NULL;
 	Evas_Object *zoom=NULL, *box=NULL, *label=NULL, *icon=NULL;
@@ -1456,17 +1456,41 @@ anUser *fetch_user_from_db(long long int uid) {
 }
 
 char *ed_status_label_get(void *data, Evas_Object *obj, const char *part) {
-	char buf[256];
+	char buf[256], datetime[19], *key=NULL;
 	aStatus *as = (aStatus *)data;
+	int res=0;
+	anUser *au;
+	struct tm date_tm;
 
-	snprintf(buf, sizeof(buf), "%s", as->text);
+	if (!strcmp(part, "elm.text")) {
+		snprintf(buf, sizeof(buf), "%s", as->text);
+	} else if (!strcmp(part, "elm.name")) {
+		res = asprintf(&key, "%lld", as->user);
+		if(res != -1)  {
+			au = eina_hash_find(userHash, key);
+			snprintf(buf, sizeof(buf), "%s", au->name);
+		} else snprintf(buf, sizeof(buf), "unknown");
+	} else if (!strcmp(part, "elm.date")) {
+		if(localtime_r(&(as->created_at), &date_tm)) {
+			strftime(datetime, sizeof(datetime), "%F %R", &date_tm);
+			snprintf(buf, sizeof(buf), datetime);
+		} else snprintf(buf, 8, "unknown");
+	}
+
+	if(res != -1 && key) free(key);
+
 	return(strdup(buf));
 }
 
 Evas_Object *ed_status_icon_get(void *data, Evas_Object *obj, const char *part) {
 	aStatus *as = (aStatus *)data;
+	Evas_Object *icon=NULL;
 
-	return(ed_get_icon(as->user, win));
+	if (!strcmp(part, "elm.swallow.icon")) {
+		icon = ed_get_icon(as->user, win);
+		evas_object_smart_callback_add(icon, "clicked", on_bubble_icon_clicked, as);
+	}
+	return(icon);
 }
 
 Eina_Bool ed_status_state_get(void *data, Evas_Object *obj, const char *part) {
@@ -1970,8 +1994,9 @@ EAPI int elm_main(int argc, char **argv)
 	elm_win_resize_object_add(win, bg);
 	evas_object_show(bg);
 
+	snprintf(buf, sizeof(buf), "%s/themes/default.edj", PKGDATADIR);
+	elm_theme_extension_add(NULL, buf);
 	ly = elm_layout_add(win);
-		snprintf(buf, sizeof(buf), "%s/themes/default.edj", PKGDATADIR);
 		elm_layout_file_set(ly, buf, "elmdentica/vertical_layout");
 		//elm_layout_theme_set(ly, "elmdentica", "elm/genlist", "default");
 		evas_object_size_hint_weight_set(ly, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);

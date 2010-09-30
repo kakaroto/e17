@@ -2,10 +2,9 @@ styles
 {
   style {
     name: "elmdentica_status";
-    base: "font=Edje-Vera font_size=12 align=left valign=bottom color=#0f0  wrap=word";
-
-    tag:  "br"        "  \n";
+base: "font=Sans font_size=10 align=left valign=bottom color=#000 wrap=word";
   }
+
 }
 
 collections {
@@ -44,7 +43,7 @@ collections {
           alias: "elm/genlist/item_odd/elmdentica/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "labels" "elm.text elm.name elm.date";
       data.item: "icons" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
 //      data.item: "states" "";
@@ -153,9 +152,11 @@ collections {
          part { name: "elm.swallow.icon";
             clip_to: "disclip";
             type: SWALLOW;
+		scale: 1;
             description { state: "default" 0.0;
                fixed: 1 0;
                align: 0.0 0.5;
+		min: 64 64;
                rel1 {
                   to_x: "elm.swallow.pad";
                   relative: 1.0  0.0;
@@ -186,33 +187,102 @@ collections {
                }
             }
          }
+         part { name: "elm.name";
+            clip_to: "disclip";
+            type:           TEXT;
+            effect:         SOFT_SHADOW;
+            mouse_events:   0;
+            scale: 1;
+            description {
+	    fixed: 1 1;
+               state: "default" 0.0;
+//               min: 16 16;
+		align: 0 0;
+               rel1 {
+                  to:     "elm.swallow.icon";
+                  relative: 1.0  0.0;
+               }
+               rel2 {
+                  to_y:     "elm.text";
+                  relative: 0.0  0.0;
+               }
+               color: 0 0 0 255;
+               color3: 0 0 0 0;
+               text {
+                  font: "SansBold";
+                  size: 10;
+                  min: 1 1;
+//                  min: 0 0;
+		elipsis: 0;
+                  align: 0.0 0.0;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 224 224 224 255;
+               color3: 0 0 0 64;
+            }
+         }
+         part { name: "elm.date";
+            clip_to: "disclip";
+            type:           TEXT;
+            effect:         SOFT_SHADOW;
+            mouse_events:   0;
+            scale: 1;
+            description {
+	    fixed: 1 1;
+               state: "default" 0.0;
+//               min: 16 16;
+		align: 0 0;
+               rel1 {
+                  to:     "elm.name";
+                  relative: 1.0  0.0;
+               }
+               rel2 {
+                  to_y:     "elm.text";
+                  relative: 1.0  0.0;
+               }
+               color: 0 0 0 255;
+               color3: 0 0 0 0;
+               text {
+                  font: "SansBold";
+                  size: 10;
+                  min: 1 1;
+//                  min: 0 0;
+                  align: 0.0 0.0;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 224 224 224 255;
+               color3: 0 0 0 64;
+            }
+         }
          part { name: "elm.text";
             clip_to: "disclip";
             type:           TEXTBLOCK;
             effect:         SOFT_SHADOW;
             mouse_events:   0;
-            scale: 1;
+            scale: 0;
             description {
+		align: 0 0.5;
+	    fixed: 1 1;
                state: "default" 0.0;
-//               min: 16 16;
                rel1 {
-                  to_x:     "elm.swallow.icon";
-                  relative: 1.0  0.0;
-                  offset:   0 4;
+                  to:     "elm.swallow.icon";
+                  relative: 1.0  0.5;
+		  offset: 5 0;
                }
-               rel2 {
-                  to_x:     "elm.swallow.end";
-                  relative: 0.0  1.0;
-                  offset:   -1 -5;
-               }
+               //rel2 {
+                  //to:     "elm.swallow.pad";
+                  //relative: 1.0  1.0;
+               //}
                color: 0 0 0 255;
                color3: 0 0 0 0;
                text {
-                  font: "Sans";
-                  size: 10;
-//                  min: 1 1;
-                  min: 0 0;
-                  align: 0.0 0.5;
+		style: "elmdentica_status";
+                  min: 1 1;
+                  align: 0.0 0.0;
                }
             }
             description { state: "selected" 0.0;
