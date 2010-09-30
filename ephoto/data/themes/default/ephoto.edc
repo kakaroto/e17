@@ -461,13 +461,14 @@ collections
                     rel2.to: "ephoto.toolbar.swallow";
                     rel2.relative: 1 0;
                     map {
-                        on: 1;
+                        on: 0;
                     }
                  }
                  description {
                      state: "rotate_0" 0.0;
                      inherit: "default" 0.0;
                      map {
+                        on: 1;
                          rotation {
                              z: 0;
                          }
@@ -477,6 +478,7 @@ collections
                      state: "rotate_90" 0.0;
                      inherit: "default" 0.0;
                      map {
+                        on: 1;
                          rotation {
                              z: 90;
                          }
@@ -486,6 +488,7 @@ collections
                      state: "rotate_180" 0.0;
                      inherit: "default" 0.0;
                      map {
+                        on: 1;
                          rotation {
                              z: 180;
                          }
@@ -495,6 +498,7 @@ collections
                      state: "rotate_270" 0.0;
                      inherit: "default" 0.0;
                      map {
+                        on: 1;
                          rotation {
                              z: 270;
                          }
