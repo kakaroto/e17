@@ -60,6 +60,7 @@ AM_GNU_GETTEXT_VERSION([0.12.1])
 AM_GNU_GETTEXT([external])
 
 PKG_CHECK_MODULES([ELEMENTARY], [elementary ecore-file])
+PKG_CHECK_MODULES([EFREET], [efreet])
 PKG_CHECK_MODULES([EMOTION], [emotion])
 PKG_CHECK_MODULES([LMS], [lightmediascanner])
 PKG_CHECK_MODULES([SQLITE3], [sqlite3])
