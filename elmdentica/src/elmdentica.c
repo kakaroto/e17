@@ -184,6 +184,8 @@ void make_status_list(int timeline) {
 	}
 
 	elm_win_title_set(win, label);
+
+	elm_genlist_clear(scroller);
 }
 
 void print_status(gpointer data, gpointer user_data) {
@@ -993,7 +995,6 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 			elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_TOP_RIGHT);
 			elm_notify_parent_set(notify, win);
 			elm_notify_timeout_set(notify, 5);
-			elm_notify_timer_init(notify);
 		evas_object_show(notify);
 
 		return;
@@ -2008,6 +2009,7 @@ EAPI int elm_main(int argc, char **argv)
 		evas_object_size_hint_align_set(scroller, -1, -1);
 		elm_genlist_bounce_set(scroller, EINA_FALSE, EINA_TRUE);
 		elm_genlist_no_select_mode_set(scroller, EINA_TRUE);
+		elm_genlist_compress_mode_set(scroller, EINA_TRUE);
 
 		evas_object_smart_callback_add(scroller, "longpressed", ed_status_action, NULL);
 		// Statuses list

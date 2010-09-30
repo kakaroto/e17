@@ -1,10 +1,8 @@
-styles
-{
-  style {
-    name: "elmdentica_status";
-base: "font=Sans font_size=10 align=left valign=bottom color=#000 wrap=word";
-  }
-
+styles {
+	style {
+		name: "elmdentica_status";
+		base: "font=Sans font_size=8 align=left valign=bottom color=#000 wrap=word";
+	}
 }
 
 collections {
@@ -41,6 +39,8 @@ collections {
 
    group { name: "elm/genlist/item/elmdentica/default";
           alias: "elm/genlist/item_odd/elmdentica/default";
+          alias: "elm/genlist/item_compress/elmdentica/default";
+          alias: "elm/genlist/item_compress_odd/elmdentica/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text elm.name elm.date";
@@ -155,7 +155,7 @@ collections {
 		scale: 1;
             description { state: "default" 0.0;
                fixed: 1 0;
-               align: 0.0 0.5;
+               align: 0.0 0.0;
 		min: 64 64;
                rel1 {
                   to_x: "elm.swallow.pad";
@@ -196,24 +196,24 @@ collections {
             description {
 	    fixed: 1 1;
                state: "default" 0.0;
-//               min: 16 16;
 		align: 0 0;
                rel1 {
                   to:     "elm.swallow.icon";
                   relative: 1.0  0.0;
+		offset: 5 0;
                }
                rel2 {
-                  to_y:     "elm.text";
-                  relative: 0.0  0.0;
+	       	to_x: "elm.date";
+                  relative: 0  0;
                }
                color: 0 0 0 255;
                color3: 0 0 0 0;
                text {
                   font: "Sans:style=Bold";
-                  size: 10;
+                  size: 8;
                   min: 1 1;
-//                  min: 0 0;
 		elipsis: 0;
+		max: 0.5 1;
                   align: 0.0 0.0;
                }
             }
@@ -232,21 +232,21 @@ collections {
             description {
 	    fixed: 1 1;
                state: "default" 0.0;
-//               min: 16 16;
-		align: 0 0;
+		align: 1 0;
                rel1 {
-                  to:     "elm.name";
-                  relative: 1.0  0.0;
+                  to:     "elm.swallow.end";
+                  relative: 0.0  0.0;
                }
                rel2 {
-                  to_y:     "elm.text";
+                  to:     "elm.swallow.end";
                   relative: 1.0  0.0;
                }
                color: 0 0 0 255;
                color3: 0 0 0 0;
                text {
-                  font: "Sans";
-                  size: 10;
+                  //font: "Sans";
+                  font: "Sans:style=Oblique";
+                  size: 8;
                   min: 1 1;
 //                  min: 0 0;
                   align: 0.0 0.0;
@@ -265,25 +265,27 @@ collections {
             mouse_events:   0;
             scale: 0;
             description {
-		align: 0 0.5;
+		align: 0 0;
 	    fixed: 1 1;
                state: "default" 0.0;
                rel1 {
-                  to:     "elm.swallow.icon";
-                  relative: 1.0  0.5;
-		  offset: 5 0;
+                  to_y:     "elm.name";
+                  to_x:     "elm.swallow.icon";
+                  relative: 1  1;
+		  offset: 5 5;
                }
                rel2 {
-                  to:     "elm.swallow.pad";
+                  to_y:     "elm.swallow.icon";
                   relative: 1.0  1.0;
                }
                color: 0 0 0 255;
                color3: 0 0 0 0;
                text {
 		style: "elmdentica_status";
-                  min: 1 1;
+                  min: 0 1;
+		max: 1 1;
                   align: 0.0 0.0;
-		text: "this is a long message that should be wrapped at some point bla bla bla";
+		//text: "this is a long message that should be wrapped at some point bla bla bla";
                }
             }
             description { state: "selected" 0.0;

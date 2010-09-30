@@ -894,7 +894,6 @@ void ed_statusnet_timeline_get(int account_id, char *screen_name, char *password
 					elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_TOP_RIGHT);
 					elm_notify_parent_set(notify, win);
 					elm_notify_timeout_set(notify, 5);
-					elm_notify_timer_init(notify);
 				evas_object_show(notify);
 
 				free(notify_message);
@@ -1218,7 +1217,6 @@ static int ed_statusnet_status_get_handler(void *data, int argc, char **argv, ch
 					elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_TOP_RIGHT);
 					elm_notify_parent_set(notify, win);
 					elm_notify_timeout_set(notify, 5);
-					elm_notify_timer_init(notify);
 				evas_object_show(notify);
 
 				free(notify_message);
