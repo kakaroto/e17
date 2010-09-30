@@ -1,11 +1,4 @@
-#define TB_ITEMS 3
-#define TB_MIDDLE_ITEM 2
-#define TB_ITEM_SIZE 90
-
-#define TB_POS(_item) ((_item)*(TB_ITEM_SIZE)-((TB_ITEM_SIZE)*(TB_MIDDLE_ITEM)))
-
 collections {
-
    group { /*
             *  TODO: make a proper theme, see TODO and src/bin/win.c
             *
@@ -22,7 +15,6 @@ collections {
       data.item: "initial_size" "480 800";
 
       images {
-         image: "bg.png" COMP;
          image: "bottom_bg.png" COMP;
          image: "bt-back.png" COMP;
          image: "bt-back2.png" COMP;
@@ -34,11 +26,11 @@ collections {
       parts {
          part {
             name: "bg";
-            type: IMAGE;
+            type: RECT;
             mouse_events: 0;
             description {
                state: "default" 0.0;
-               image.normal: "bg.png";
+               color: 0 0 0 255;
             }
          }
 
@@ -496,7 +488,7 @@ collections {
                image.normal: "top_bg.png";
             }
          }
-         part { 
+         part {
             name: "back";
             type: IMAGE;
             description { state: "default" 0.0;
@@ -511,7 +503,7 @@ collections {
                image.border: 8 8 8 8;
             }
          }
-         part { 
+         part {
             name: "back-button-text";
             type: TEXT;
             mouse_events: 0;
@@ -537,7 +529,7 @@ collections {
                color: 130 130 130 255;
             }
          }
-         part { 
+         part {
             name: "back-arrow";
             type: IMAGE;
             mouse_events: 0;
@@ -674,7 +666,7 @@ collections {
                image.border: 0 0 0 17;
             }
          }
-         part { 
+         part {
             name: "back";
             type: IMAGE;
             description { state: "default" 0.0;
@@ -850,104 +842,114 @@ collections {
       }
    }
 
-#define GENLIST_ITEM_SONG(r,g,b,a)                                      \
-   part {                                                               \
-      name: "events";                                                   \
-      type: RECT;                                                       \
-      description {                                                     \
-         state: "default" 0.0;                                          \
-         color: r g b a;                                                \
-      }                                                                 \
-      description {                                                     \
-         state: "selected" 0.0;                                         \
-         color:  255 156 2 255;                                         \
-      }                                                                 \
-   }                                                                    \
-   part {                                                               \
-      name: "ejy.text.title";                                           \
-      type: TEXT;                                                       \
-      mouse_events: 0;                                                  \
-      scale: 1;                                                         \
-      description {                                                     \
-         state: "default" 0.0;                                          \
-         color: 0 0 0 255;                                              \
-         rel1 {                                                         \
-            relative: 0.0 0.0;                                          \
-            offset: 4 2;                                                \
-         }                                                              \
-         rel2 {                                                         \
-            relative: 1.0 0.0;                                          \
-            offset: -5 -2;                                              \
-            to_y: "ejy.text.album-artist";                              \
-         }                                                              \
-         color: 255 255 255 255;                                        \
-         text {                                                         \
-            font: "Sans:style=Bold";                                    \
-            size: 12;                                                   \
-            min: 0 1;                                                   \
-            align: 0.0 0.5;                                             \
-         }                                                              \
-      }                                                                 \
-      description {                                                     \
-         state: "selected" 0.0;                                         \
-         inherit: "default" 0.0;                                        \
-         color: 0 0 0 255;                                              \
-      }                                                                 \
-   }                                                                    \
-                                                                        \
-   part {                                                               \
-      name: "ejy.text.album-artist";                                    \
-      type: TEXT;                                                       \
-      mouse_events: 0;                                                  \
-      description {                                                     \
-         state: "default" 0.0;                                          \
-         color: 128 128 128 255;                                        \
-         align: 0.0 1.0;                                                \
-         fixed: 1 1;                                                    \
-         rel1 {                                                         \
-            relative: 0.0 1.0;                                          \
-            offset: 4 -3;                                               \
-         }                                                              \
-         rel2 {                                                         \
-            relative: 1.0 1.0;                                          \
-            offset: -5 -3;                                              \
-         }                                                              \
-         color: 255 255 255 255;                                        \
-         text {                                                         \
-            font: "Sans";                                               \
-            size: 8;                                                    \
-            min: 0 1;                                                   \
-            align: 0.0 1.0;                                             \
-            text: "";                                                   \
-         }                                                              \
-      }                                                                 \
-   }                                                                    \
-                                                                        \
-   part {                                                               \
-      name: "separator";                                                \
-      type: RECT;                                                       \
-      mouse_events: 0;                                                  \
-      description {                                                     \
-         state: "default" 0.0;                                          \
-         color: 0 0 0 80;                                               \
-         rel1 {                                                         \
-            relative: 0.0 1.0;                                          \
-            offset: 0 -1;                                               \
-         }                                                              \
-         rel2 {                                                         \
-            relative: 1.0 1.0;                                          \
-            offset: -1 -1;                                              \
-         }                                                              \
-      }                                                                 \
-   }                                                                    \
-   /* TODO: add programs in MACRO */  
    /* All Songs */
    group { name: "elm/genlist/item_compress/song/default";
+      alias: "elm/genlist/item_compress_odd/song/default";
       data.item: "labels" "ejy.text.title ejy.text.album-artist";
-      //data.item: "icons" "swallow.cover";
       parts {
-         GENLIST_ITEM_SONG(255, 255, 255, 10);
+         images {
+            image: "list-highlight.png" COMP;
+         }
+         part {
+            name: "events";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+            }
+         }
+         part {
+            name: "bg";
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               visible: 0;
+               image.normal: "list-highlight.png";
+            }
+            description {
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part {
+            name: "ejy.text.title";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 4 2;
                }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -5 -2;
+                  to_y: "ejy.text.album-artist";
+               }
+               color: 255 255 255 255;
+               text {
+                  font: "Sans:style=Bold";
+                  size: 12;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description {
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 0 0 0 255;
+            }
+         }
+
+         part {
+            name: "ejy.text.album-artist";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+               align: 0.0 1.0;
+               fixed: 1 1;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 4 -3;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -5 -3;
+               }
+               color: 255 255 255 255;
+               text {
+                  font: "Sans";
+                  size: 8;
+                  min: 0 1;
+                  align: 0.0 1.0;
+                  text: "";
+               }
+            }
+         }
+
+         part {
+            name: "separator";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 80;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 -1;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+            }
+         }
+      }
       programs {
          program {
             name:    "go_active";
@@ -955,7 +957,7 @@ collections {
             source:  "elm";
             action:  STATE_SET "selected" 0.0;
             target:  "ejy.text.title";
-            target:  "events";
+            target:  "bg";
             }
          program {
             name:    "go_passive";
@@ -963,249 +965,208 @@ collections {
             source:  "elm";
             action:  STATE_SET "default" 0.0;
             target:  "ejy.text.title";
-            target:  "events";
+            target:  "bg";
          }
       }
    }
 
-   group { name: "elm/genlist/item_compress_odd/song/default";
-      data.item: "labels" "ejy.text.title ejy.text.album-artist";
-      //data.item: "icons" "swallow.cover";
-      parts {
-         GENLIST_ITEM_SONG(255, 255, 255, 0);
-      }
-      programs {
-         program {
-            name:    "go_active";
-            signal:  "elm,state,selected";
-            source:  "elm";
-            action:  STATE_SET "selected" 0.0;
-            target:  "ejy.text.title";
-            target:  "events";
-         }
-         program {
-            name:    "go_passive";
-            signal:  "elm,state,unselected";
-            source:  "elm";
-            action:  STATE_SET "default" 0.0;
-            target:  "ejy.text.title";
-            target:  "events";
-            }
-         }
-   }
-
-#define GENLIST_ITEM_SONG_ALBUM(r, g, b, a)                             \
-   part {                                                               \
-      name: "events";                                                   \
-      type: RECT;                                                       \
-      description {                                                     \
-         state: "default" 0.0;                                          \
-         color: r g b a;                                                \
-      }                                                                 \
-      description {                                                     \
-         state: "selected" 0.0;                                         \
-         color: 255 156 2 255;                                          \
-      }                                                                 \
-   }                                                                    \
-   part {                                                               \
-      name: "separator";                                                \
-      type: RECT;                                                       \
-      mouse_events: 0;                                                  \
-      description {                                                     \
-         state: "default" 0.0;                                          \
-         color: 0 0 0 80;                                               \
-         rel1 {                                                         \
-            relative: 0.0 1.0;                                          \
-            offset: 0 -1;                                               \
-         }                                                              \
-         rel2 {                                                         \
-            relative: 1.0 1.0;                                          \
-            offset: -1 -1;                                              \
-         }                                                              \
-      }                                                                 \
-   }                                                                    \
-                                                                        \
-   part {                                                               \
-      name: "ejy.text.trackno";                                         \
-      type: TEXT;                                                       \
-      mouse_events: 0;                                                  \
-      scale: 1;                                                         \
-      description {                                                     \
-         state: "default" 0.0;                                          \
-         color: 0 0 0 255;                                              \
-         rel1 {                                                         \
-            relative: 0.0 0.0;                                          \
-            offset: 4 2;                                                \
-         }                                                              \
-         rel2 {                                                         \
-            relative: 0.0 1.0;                                          \
-            offset: 40 -3;                                              \
-                                                                        \
-         }                                                              \
-         color: 255 255 255 255;                                        \
-         text {                                                         \
-            font: "Sans:style=Bold";                                    \
-            size: 12;                                                   \
-            min: 0 1;                                                   \
-            align: 0.5 0.5;                                             \
-         }                                                              \
-      }                                                                 \
-   }                                                                    \
-   part {                                                               \
-      name: "ejy.text.title";                                           \
-      type: TEXT;                                                       \
-      mouse_events: 0;                                                  \
-      scale: 1;                                                         \
-      description {                                                     \
-         state: "default" 0.0;                                          \
-         color: 0 0 0 255;                                              \
-         rel1 {                                                         \
-            relative: 0.0 0.0;                                          \
-            offset: 50 2;                                               \
-         }                                                              \
-         rel2 {                                                         \
-            relative: 1.0 1.0;                                          \
-            offset: -84 -3;                                             \
-         }                                                              \
-         color: 255 255 255 255;                                        \
-         text {                                                         \
-            font: "Sans:style=Bold";                                    \
-            size: 12;                                                   \
-            min: 0 1;                                                   \
-            align: 0.0 0.5;                                             \
-         }                                                              \
-      }                                                                 \
-      description {                                                     \
-         state: "selected" 0.0;                                         \
-         inherit: "default" 0.0;                                        \
-         color: 0 0 0  255;                                             \
-      }                                                                 \
-   }                                                                    \
-   part {                                                               \
-      name: "length-sep";                                               \
-      type: RECT;                                                       \
-      mouse_events: 0;                                                  \
-      description {                                                     \
-         state: "default" 0.0;                                          \
-         color: 255 255 255 30;                                         \
-         rel1 {                                                         \
-            relative: 1.0 0.0;                                          \
-            offset: -50 0;                                              \
-         }                                                              \
-         rel2 {                                                         \
-            relative: 1.0 1.0;                                          \
-            offset: -50 -1;                                             \
-         }                                                              \
-      }                                                                 \
-   }                                                                    \
-   part {                                                               \
-      name: "length-sep2";                                              \
-      type: RECT;                                                       \
-      mouse_events: 0;                                                  \
-      description {                                                     \
-         state: "default" 0.0;                                          \
-         color: 0 0 0 150;                                              \
-         rel1 {                                                         \
-            relative: 1.0 0.0;                                          \
-            offset: -51 0;                                              \
-         }                                                              \
-         rel2 {                                                         \
-            relative: 1.0 1.0;                                          \
-            offset: -51 -1;                                             \
-         }                                                              \
-      }                                                                 \
-   }                                                                    \
-   part {                                                               \
-      name: "trackno-sep";                                              \
-      type: RECT;                                                       \
-      mouse_events: 0;                                                  \
-      description {                                                     \
-         state: "default" 0.0;                                          \
-         color: 255 255 255 30;                                         \
-         rel1 {                                                         \
-            relative: 0.0 0.0;                                          \
-            offset: 43 0;                                               \
-         }                                                              \
-         rel2 {                                                         \
-            relative: 0.0 1.0;                                          \
-            offset: 43 -1;                                              \
-         }                                                              \
-      }                                                                 \
-   }                                                                    \
-   part {                                                               \
-      name: "trackno-sep2";                                             \
-      type: RECT;                                                       \
-      mouse_events: 0;                                                  \
-      description {                                                     \
-         state: "default" 0.0;                                          \
-         color: 0 0 0 150;                                              \
-         rel1 {                                                         \
-            relative: 0.0 0.0;                                          \
-            offset: 44 0;                                               \
-         }                                                              \
-         rel2 {                                                         \
-            relative: 0.0 1.0;                                          \
-            offset: 44 -1;                                              \
-         }                                                              \
-      }                                                                 \
-   }                                                                    \
-                                                                        \
-                                                                        \
-   part {                                                               \
-      name: "ejy.text.length";                                          \
-      type: TEXT;                                                       \
-      mouse_events: 0;                                                  \
-      description {                                                     \
-         state: "default" 0.0;                                          \
-         color: 128 128 128 255;                                        \
-         rel1 {                                                         \
-            relative: 1.0 0.0;                                          \
-            offset: -76 2;                                              \
-         }                                                              \
-         rel2 {                                                         \
-            relative: 1.0 1.0;                                          \
-            offset: -10 -3;                                             \
-         }                                                              \
-         color: 255 255 255 255;                                        \
-         text {                                                         \
-            font: "Sans:style=Bold";                                    \
-            size: 10;                                                   \
-            min: 0 1;                                                   \
-            align: 1.0 0.5;                                             \
-            text: "";                                                   \
-         }                                                              \
-      }                                                                 \
-   }                                                                    \
    /* Songs */
    group { name: "elm/genlist/item_compress/song-album/default";
+      alias: "elm/genlist/item_compress_odd/song-album/default";
       data.item: "labels" "ejy.text.title ejy.text.trackno ejy.text.length";
       parts {
-         GENLIST_ITEM_SONG_ALBUM(255, 255, 255, 10);
+         images {
+            image: "list-highlight.png" COMP;
+         }
+         part {
+            name: "events";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+            }
+         }
+         part {
+            name: "bg";
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               visible: 0;
+               image.normal: "list-highlight.png";
+            }
+            description {
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part {
+            name: "separator";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 80;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 -1;
                }
-      programs {
-         program {
-            name:    "go_active";
-            signal:  "elm,state,selected";
-            source:  "elm";
-            action:  STATE_SET "selected" 0.0;
-            target:  "ejy.text.title";
-            target:  "events";
-               }
-         program {
-            name:    "go_passive";
-            signal:  "elm,state,unselected";
-            source:  "elm";
-            action:  STATE_SET "default" 0.0;
-            target:  "ejy.text.title";
-            target:  "events";
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
                }
             }
          }
 
- group { name: "elm/genlist/item_compress_odd/song-album/default";
-      data.item: "labels" "ejy.text.title ejy.text.trackno ejy.text.length";
-      parts {
-         GENLIST_ITEM_SONG_ALBUM(255, 255, 255, 00);
+         part {
+            name: "ejy.text.trackno";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 4 2;
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 40 -3;
+
+               }
+               color: 255 255 255 255;
+               text {
+                  font: "Sans:style=Bold";
+                  size: 12;
+                  min: 0 1;
+                  align: 0.5 0.5;
+               }
+            }
+         }
+         part {
+            name: "ejy.text.title";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 50 2;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -84 -3;
+               }
+               color: 255 255 255 255;
+               text {
+                  font: "Sans:style=Bold";
+                  size: 12;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description {
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 0 0 0  255;
+            }
+         }
+         part {
+            name: "length-sep";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 30;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: -50 0;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -50 -1;
+               }
+            }
+         }
+         part {
+            name: "length-sep2";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 150;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: -51 0;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -51 -1;
+               }
+            }
+         }
+         part {
+            name: "trackno-sep";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 30;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 43 0;
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 43 -1;
+               }
+            }
+         }
+         part {
+            name: "trackno-sep2";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 150;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 44 0;
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 44 -1;
+               }
+            }
+         }
+         part {
+            name: "ejy.text.length";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 128 128 128 255;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: -76 2;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -10 -3;
+               }
+               color: 255 255 255 255;
+               text {
+                  font: "Sans:style=Bold";
+                  size: 10;
+                  min: 0 1;
+                  align: 1.0 0.5;
+                  text: "";
+               }
+            }
+         }
       }
       programs {
          program {
@@ -1214,7 +1175,7 @@ collections {
             source:  "elm";
             action:  STATE_SET "selected" 0.0;
             target:  "ejy.text.title";
-            target:  "events";
+            target:  "bg";
                }
          program {
             name:    "go_passive";
@@ -1222,104 +1183,95 @@ collections {
             source:  "elm";
             action:  STATE_SET "default" 0.0;
             target:  "ejy.text.title";
-            target:  "events";
+            target:  "bg";
                }
             }
          }
 
-#define GENLIST_ITEM_ROOT( r, g, b, a)                                  \
- part {                                                                 \
-    name: "events";                                                     \
-    type: RECT;                                                         \
-    description {                                                       \
-       state: "default" 0.0;                                            \
-       color: r g b a;                                                  \
-    }                                                                   \
- }                                                                      \
-                                                                        \
- part {                                                                 \
-    name: "ejy.text.title";                                             \
-    type: TEXT;                                                         \
-    mouse_events: 0;                                                    \
-    scale: 1;                                                           \
-    description {                                                       \
-       state: "default" 0.0;                                            \
-       color: 0 0 0 255;                                                \
-       rel1 {                                                           \
-          relative: 0.0 0.0;                                            \
-          offset: 4 2;                                                  \
-       }                                                                \
-       rel2 {                                                           \
-          relative: 1.0 1.0;                                            \
-          offset: -5 -3;                                                \
-       }                                                                \
-       color: 255 255 255 255;                                          \
-       text {                                                           \
-          font: "Sans:style=Bold";                                      \
-          size: 12;                                                     \
-          min: 0 1;                                                     \
-          align: 0.0 0.5;                                               \
-       }                                                                \
-    }                                                                   \
-    description {                                                       \
-       state: "selected" 0.0;                                           \
-       inherit: "default" 0.0;                                          \
-       color: 255 156 2 255;                                            \
-    }                                                                   \
- }                                                                      \
-                                                                        \
- part {                                                                 \
-    name: "separator";                                                  \
-    type: RECT;                                                         \
-    mouse_events: 0;                                                    \
-    description {                                                       \
-       state: "default" 0.0;                                            \
-       color: 0 0 0 80;                                                 \
-       rel1 {                                                           \
-          relative: 0.0 1.0;                                            \
-          offset: 0 -1;                                                 \
-       }                                                                \
-       rel2 {                                                           \
-          relative: 1.0 1.0;                                            \
-          offset: -1 -1;                                                \
-       }                                                                \
-    }                                                                   \
- }                                                                      \
 
-  /* TODO: programs in MACRO */  
+  /* TODO: programs in MACRO */
    group { name: "elm/genlist/item_compress/root/default";
       alias: "elm/genlist/item_compress/nameid/default";
       alias: "elm/genlist/item_compress/all-song/default";
-      data.item: "labels" "ejy.text.title";
-      //data.item: "icons" "swallow.cover";
-      parts {
-         GENLIST_ITEM_ROOT(255, 255, 255, 10);
-      }
-      programs {
-         program {
-            name:    "go_active";
-            signal:  "elm,state,selected";
-            source:  "elm";
-            action:  STATE_SET "selected" 0.0;
-            target:  "ejy.text.title";
-         }
-         program {
-            name:    "go_passive";
-            signal:  "elm,state,unselected";
-            source:  "elm";
-            action:  STATE_SET "default" 0.0;
-            target:  "ejy.text.title";
-         }
-      }
-   }
-
-   group { name: "elm/genlist/item_compress_odd/root/default";
+      alias: "elm/genlist/item_compress_odd/root/default";
       alias: "elm/genlist/item_compress_odd/nameid/default";
       alias: "elm/genlist/item_compress_odd/all-song/default";
       data.item: "labels" "ejy.text.title";
       //data.item: "icons" "swallow.cover";
       parts {
-         GENLIST_ITEM_ROOT(255, 255, 255, 0);
+          images {
+             image: "list-highlight.png" COMP;
+          }
+          part {
+             name: "events";
+             type: RECT;
+             description {
+                state: "default" 0.0;
+                color: 0 0 0 255;
+             }
+          }
+          part {
+             name: "bg";
+             type: IMAGE;
+             description {
+                state: "default" 0.0;
+                visible: 0;
+                image.normal: "list-highlight.png";
+             }
+             description {
+                state: "selected" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+             }
+          }
+          part {
+             name: "ejy.text.title";
+             type: TEXT;
+             mouse_events: 0;
+             scale: 1;
+             description {
+                state: "default" 0.0;
+                color: 0 0 0 255;
+                rel1 {
+                   relative: 0.0 0.0;
+                   offset: 4 2;
+                }
+                rel2 {
+                   relative: 1.0 1.0;
+                   offset: -5 -3;
+                }
+                color: 255 255 255 255;
+                text {
+                   font: "Sans:style=Bold";
+                   size: 12;
+                   min: 0 1;
+                   align: 0.0 0.5;
+                }
+             }
+             description {
+                state: "selected" 0.0;
+                inherit: "default" 0.0;
+                color: 255 156 2 255;
+             }
+          }
+
+          part {
+             name: "separator";
+             type: RECT;
+             mouse_events: 0;
+             description {
+                state: "default" 0.0;
+                color: 0 0 0 80;
+                rel1 {
+                   relative: 0.0 1.0;
+                   offset: 0 -1;
+                }
+                rel2 {
+                   relative: 1.0 1.0;
+                   offset: -1 -1;
+                }
+             }
+          }
       }
       programs {
          program {
@@ -1328,6 +1280,7 @@ collections {
             source:  "elm";
             action:  STATE_SET "selected" 0.0;
             target:  "ejy.text.title";
+            target:  "bg";
          }
          program {
             name:    "go_passive";
@@ -1335,17 +1288,21 @@ collections {
             source:  "elm";
             action:  STATE_SET "default" 0.0;
             target:  "ejy.text.title";
+            target:  "bg";
          }
       }
    }
 
-   /* TODO: Add a background color for odd items*/  
+   /* TODO: Add a background color for odd items*/
    group { name: "elm/genlist/item_compress/album/default";
       alias: "elm/genlist/item_compress_odd/album/default";
       data {
          item: "labels" "ejy.text.album ejy.text.artist";
          item: "icons" "ejy.swallow.cover";
          item: "icon_size" "32";
+      }
+      images {
+         image: "list-highlight.png" COMP;
       }
       parts {
          part {
@@ -1357,6 +1314,20 @@ collections {
             }
          }
 
+         part {
+            name: "bg";
+            type: IMAGE;
+            description {
+                state: "default" 0.0;
+                visible: 0;
+                image.normal: "list-highlight.png";
+            }
+            description {
+                state: "selected" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+            }
+         }
          part {
             name: "ejy.swallow.cover";
             type: SWALLOW;
@@ -1432,6 +1403,7 @@ collections {
             source:  "elm";
             action:  STATE_SET "selected" 0.0;
             target:  "ejy.text.album";
+            target:  "bg";
          }
          program {
             name:    "go_passive";
@@ -1439,121 +1411,136 @@ collections {
             source:  "elm";
             action:  STATE_SET "default" 0.0;
             target:  "ejy.text.album";
+            target:  "bg";
          }
       }
    }
-
-#define GENLIST_ITEM_ALBUM_ARTIST(r, g, b, a)                           \
-   part {                                                               \
-      name: "events";                                                   \
-      type: RECT;                                                       \
-      description {                                                     \
-         state: "default" 0.0;                                          \
-         color: r g b a;                                                \
-      }                                                                 \
-   }                                                                    \
-   part {                                                               \
-      name: "ejy.swallow.cover";                                        \
-      type: SWALLOW;                                                    \
-      mouse_events: 0;                                                  \
-      description {                                                     \
-         state: "default" 0.0;                                          \
-         min: 32 32;                                                    \
-         max: 32 32;                                                    \
-         rel1 {                                                         \
-            relative: 0.0 0.0;                                          \
-            offset: 4 0;                                                \
-         }                                                              \
-         rel2 {                                                         \
-            relative: 0.0 1.0;                                          \
-            offset: 35 -1;                                              \
-         }                                                              \
-      }                                                                 \
-   }                                                                    \
-   part {                                                               \
-      name: "ejy.text.album";                                           \
-      type: TEXT;                                                       \
-      mouse_events: 0;                                                  \
-      scale: 1;                                                         \
-      description {                                                     \
-         state: "default" 0.0;                                          \
-         color: 0 0 0 255;                                              \
-         rel1 {                                                         \
-            relative: 0.0 0.0;                                          \
-            offset: 40 2;                                               \
-         }                                                              \
-         rel2 {                                                         \
-            relative: 1.0 0.0;                                          \
-            offset: -5 -2;                                              \
-            to_y: "ejy.text.artist";                                    \
-         }                                                              \
-         color: 255 255 255 255;                                        \
-         text {                                                         \
-            font: "Sans:style=Bold";                                    \
-            size: 12;                                                   \
-            min: 0 1;                                                   \
-            align: 0.0 0.5;                                             \
-         }                                                              \
-      }                                                                 \
-      description {                                                     \
-         state: "selected" 0.0;                                         \
-         inherit: "default" 0.0;                                        \
-         color: 200 20 20 255;                                          \
-      }                                                                 \
-   }                                                                    \
-   part {                                                               \
-      name: "ejy.text.artist";                                          \
-      type: TEXT;                                                       \
-      mouse_events: 0;                                                  \
-      description {                                                     \
-         state: "default" 0.0;                                          \
-         color: 128 128 128 255;                                        \
-         align: 0.0 1.0;                                                \
-         fixed: 1 1;                                                    \
-         rel1 {                                                         \
-            relative: 0.0 1.0;                                          \
-            offset: 40 -3;                                              \
-         }                                                              \
-         rel2 {                                                         \
-            relative: 1.0 1.0;                                          \
-            offset: -5 -3;                                              \
-         }                                                              \
-         color: 255 255 255 255;                                        \
-         text {                                                         \
-            font: "Sans";                                               \
-            size: 8;                                                    \
-            min: 0 1;                                                   \
-            align: 0.0 1.0;                                             \
-            text: "";                                                   \
-         }                                                              \
-      }                                                                 \
-   }                                                                    \
-   part {                                                               \
-      name: "separator";                                                \
-      type: RECT;                                                       \
-      mouse_events: 0;                                                  \
-      description {                                                     \
-         state: "default" 0.0;                                          \
-         color: 0 0 0 80;                                               \
-         rel1 {                                                         \
-            relative: 0.0 1.0;                                          \
-            offset: 0 -1;                                               \
-         }                                                              \
-         rel2 {                                                         \
-            relative: 1.0 1.0;                                          \
-            offset: -1 -1;                                              \
-         }                                                              \
-      }                                                                 \
-   }
-
    group { name: "elm/genlist/item_compress/album-artist/default";
+      alias: "elm/genlist/item_compress_odd/album-artist/default";
       data {
          item: "labels" "ejy.text.album ejy.text.artist";
          item: "icons" "ejy.swallow.cover";
          item: "icon_size" "100";
          }
       parts {
-         GENLIST_ITEM_ALBUM_ARTIST(255, 255, 255, 10);
+         images {
+            image: "list-highlight.png" COMP;
+         }
+         part {
+            name: "events";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+            }
+         }
+         part {
+            name: "bg";
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               visible: 0;
+               image.normal: "list-highlight.png";
+            }
+            description {
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part {
+            name: "ejy.swallow.cover";
+            type: SWALLOW;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 32 32;
+               max: 32 32;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 4 0;
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 35 -1;
+               }
+            }
+         }
+         part {
+            name: "ejy.text.album";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 40 2;
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -5 -2;
+                  to_y: "ejy.text.artist";
+               }
+               color: 255 255 255 255;
+               text {
+                  font: "Sans:style=Bold";
+                  size: 12;
+                  min: 0 1;
+                  align: 0.0 0.5;
+               }
+            }
+            description {
+               state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 200 20 20 255;
+            }
+         }
+         part {
+            name: "ejy.text.artist";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 128 128 128 255;
+               align: 0.0 1.0;
+               fixed: 1 1;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 40 -3;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -5 -3;
+               }
+               color: 255 255 255 255;
+               text {
+                  font: "Sans";
+                  size: 8;
+                  min: 0 1;
+                  align: 0.0 1.0;
+                  text: "";
+               }
+            }
+         }
+         part {
+            name: "separator";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 80;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 -1;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+            }
+         }
       }
       programs {
          program {
@@ -1562,6 +1549,7 @@ collections {
             source:  "elm";
             action:  STATE_SET "selected" 0.0;
             target:  "ejy.text.album";
+            target:  "bg";
          }
          program {
             name:    "go_passive";
@@ -1569,39 +1557,14 @@ collections {
             source:  "elm";
             action:  STATE_SET "default" 0.0;
             target:  "ejy.text.album";
+            target:  "bg";
          }
       }
    }
-   group { name: "elm/genlist/item_compress_odd/album-artist/default";
-      data {
-         item: "labels" "ejy.text.album ejy.text.artist";
-         item: "icons" "ejy.swallow.cover";
-         item: "icon_size" "100";
-      }
-      parts {
-         GENLIST_ITEM_ALBUM_ARTIST(255, 255, 255, 0);
-      }
-      programs {
-         program {
-            name:    "go_active";
-            signal:  "elm,state,selected";
-            source:  "elm";
-            action:  STATE_SET "selected" 0.0;
-            target:  "ejy.text.album";
-         }
-         program {
-            name:    "go_passive";
-            signal:  "elm,state,unselected";
-            source:  "elm";
-            action:  STATE_SET "default" 0.0;
-            target:  "ejy.text.album";
-         }
-      }
-   }
-   /* 
+   /*
     * TODO: taken from eve edc but not perfect yet
     * Add fade effects for show and hide signals
-    */  
+    */
 group { name: "elm/scroller/base/enjoy";
    alias: "elm/genlist/base/enjoy";
     alias: "elm/list/base/enjoy";

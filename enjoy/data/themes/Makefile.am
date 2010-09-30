@@ -9,7 +9,6 @@ files_DATA = default.edj
 images = \
 images/back-button.png \
 images/back_bg.png \
-images/bg.png \
 images/bottom_bg.png \
 images/scrollbar-bg.png \
 images/scrollbar-knob.png \
@@ -19,7 +18,8 @@ images/bt-back2.png \
 images/bt-next.png \
 images/bt-next2.png \
 images/bt-play.png \
-images/bt-pause.png
+images/bt-pause.png \
+images/list-highlight.png
 
 fonts =
 
