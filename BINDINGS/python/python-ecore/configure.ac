@@ -2,7 +2,7 @@
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 m4_define([v_maj], [0])
 m4_define([v_min], [7])
-m4_define([v_mic], [2])
+m4_define([v_mic], [3])
 m4_define([v_rev], m4_esyscmd([(svnversion "${SVN_REPO_PATH:-.}" | grep -v export || echo 0) | awk -F : '{printf("%s\n", $1);}' | tr -d ' :MSP\n']))
 m4_if(v_rev, [0], [m4_define([v_rev], m4_esyscmd([git log 2> /dev/null | (grep -m1 git-svn-id || echo 0) | sed -e 's/.*@\([0-9]*\).*/\1/' | tr -d '\n']))])
 ##--   When released, remove the dnl on the below line
@@ -146,7 +146,7 @@ fi
 AM_CONDITIONAL(WANT_ECORE_WIN32,
    [test "x$want_ecore_win32" != "xno" -a "x${have_ecore_win32}" = "xyes"])
 
-python_evas_version="0.7.2"
+python_evas_version="0.7.3"
 have_ecore_evas="no"
 want_ecore_evas="auto"
 pkgconfig_ecore_evas_requires_libs="ecore-evas >= 1.0.0 python-evas >= ${python_evas_version}"

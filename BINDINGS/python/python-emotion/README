@@ -7,7 +7,7 @@ REQUIREMENTS
  * Evas >= 1.0.0  (indirect, Emotion dependency)
  * Ecore >= 1.0.0 (indirect, Emotion dependency)
  * Eina >= 1.0.0  (indirect, Emotion dependency)
- * Python-Evas >= 0.7.2
+ * Python-Evas >= 0.7.3
  * Cython >= 0.12.1
  * Python >= 2.4
 

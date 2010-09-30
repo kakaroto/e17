@@ -8,7 +8,7 @@ REQUIREMENTS
  * Embryo >= 1.0.0       (indirect, Edje dependency)
  * Ecore >= 1.0.0        (indirect, Edje dependency)
  * Evas >= 1.0.0
- * Python-Evas >= 0.7.2
+ * Python-Evas >= 0.7.3
  * Cython >= 0.13
  * Python >= 2.4
 
