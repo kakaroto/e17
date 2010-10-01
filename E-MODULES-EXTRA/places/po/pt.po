@@ -1,13 +1,13 @@
-# Portuguese Translation of places
-# This file is distributed under the same license as Enlightenment package.
-# Sérgio Marques<smarquespt@gmail.com>, 2010
-#
+# Portuguese translation for places
+# This file is distributed under the same license as the enlightenment package.
+# Sérgio Marques <smarquespt@gmail.com>, 2010
+# Adaptado ao acordo ortográfico de 1990
 msgid ""
 msgstr ""
 "Project-Id-Version: places\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2010-08-12 08:00-0700\n"
-"PO-Revision-Date: 2010-08-12 16:59-0000\n"
+"POT-Creation-Date: 2010-09-09 08:01-0700\n"
+"PO-Revision-Date: 2010-09-29 14:58-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,8 +19,8 @@ msgstr ""
 
 #. create new config dialog
 #: ../src/e_mod_config.c:51
-msgid "Places Configuration"
-msgstr "Configuração do Locais"
+msgid "Places Settings"
+msgstr "Definições do Locais"
 
 #. General frame
 #: ../src/e_mod_config.c:118
@@ -37,7 +37,7 @@ msgstr "Montar volumes ao inserir"
 
 #: ../src/e_mod_config.c:129
 msgid "Open filemanager on insert"
-msgstr "Abrir gestor de ficheiros ao inserir"
+msgstr "Ao inserir, abrir gestor de ficheiros"
 
 #: ../src/e_mod_config.c:133
 msgid "Use a custom file manager"
@@ -49,28 +49,28 @@ msgid "Show in menu"
 msgstr "Mostrar no menu"
 
 #: ../src/e_mod_config.c:149
-#: ../src/e_mod_places.c:381
+#: ../src/e_mod_places.c:379
 msgid "Home"
-msgstr "Pasta Pessoal"
+msgstr "Pasta pessoal"
 
 #: ../src/e_mod_config.c:152
-#: ../src/e_mod_places.c:390
+#: ../src/e_mod_places.c:388
 msgid "Desktop"
 msgstr "Ambiente de trabalho"
 
 #: ../src/e_mod_config.c:155
-#: ../src/e_mod_places.c:400
+#: ../src/e_mod_places.c:398
 msgid "Trash"
 msgstr "Lixo"
 
 #: ../src/e_mod_config.c:158
-#: ../src/e_mod_places.c:211
-#: ../src/e_mod_places.c:409
+#: ../src/e_mod_places.c:208
+#: ../src/e_mod_places.c:407
 msgid "Filesystem"
 msgstr "Sistema de ficheiros"
 
 #: ../src/e_mod_config.c:161
-#: ../src/e_mod_places.c:418
+#: ../src/e_mod_places.c:416
 msgid "Temp"
 msgstr "Temp"
 
@@ -84,32 +84,32 @@ msgid "Files"
 msgstr "Ficheiros"
 
 #: ../src/e_mod_main.c:60
-#: ../src/e_mod_places.c:481
+#: ../src/e_mod_places.c:479
 msgid "Places"
 msgstr "Locais"
 
-#: ../src/e_mod_main.c:426
-msgid "Configuration"
-msgstr "Configuração"
+#: ../src/e_mod_main.c:430
+msgid "Settings"
+msgstr "Definições"
 
-#: ../src/e_mod_places.c:216
+#: ../src/e_mod_places.c:213
 msgid "No Name"
-msgstr "Sem Nome"
+msgstr "Sem nome"
 
-#: ../src/e_mod_places.c:671
+#: ../src/e_mod_places.c:669
 msgid "free of"
 msgstr "livres de"
 
-#: ../src/e_mod_places.c:677
+#: ../src/e_mod_places.c:675
 #, c-format
 msgid "%s Not Mounted"
-msgstr "%s Não Está Montado"
+msgstr "%s não está montado"
 
-#: ../src/e_mod_places.c:694
+#: ../src/e_mod_places.c:692
 msgid "unmount"
 msgstr "desmontar"
 
-#: ../src/e_mod_places.c:700
+#: ../src/e_mod_places.c:698
 msgid "eject"
-msgstr "ejectar"
+msgstr "ejetar"
 

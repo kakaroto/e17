@@ -1,13 +1,13 @@
 # Portuguese translation for penguins
 # This file is distributed under the same license as the enlightenment package.
 # Sérgio Marques <smarquespt@gmail.com>, 2010
-#
+# Adaptado ao acordo ortográfico de 1990
 msgid ""
 msgstr ""
 "Project-Id-Version: penguins\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2009-08-28 02:01-0700\n"
-"PO-Revision-Date: 2010-08-11 15:43-0000\n"
+"POT-Creation-Date: 2010-08-12 07:01-0700\n"
+"PO-Revision-Date: 2010-09-29 14:29-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Portuguese\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../src/e_mod_config.c:42
 msgid "Population Settings"
-msgstr "Definições da População"
+msgstr "Definições da população"
 
 #: ../src/e_mod_config.c:92
 msgid "Number of penguins:"
@@ -47,13 +47,13 @@ msgstr "Transparência:"
 #. Lista
 #: ../src/e_mod_config.c:108
 msgid "Select population:"
-msgstr "Seleccione a População:"
+msgstr "Selecione a população:"
 
-#: ../src/e_mod_main.c:62
+#: ../src/e_mod_main.c:61
 msgid "Appearance"
 msgstr "Aparência"
 
-#: ../src/e_mod_main.c:63
+#: ../src/e_mod_main.c:62
 msgid "Penguins"
 msgstr "Pinguins"
 
