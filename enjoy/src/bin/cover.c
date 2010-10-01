@@ -12,10 +12,10 @@ _cover_album_local_find(Evas *evas, DB *db, Album *album)
      {
         char dir[PATH_MAX];
         size_t dir_len = 0, i;
-	Eina_Iterator *files;
+        Eina_Iterator *files;
         const Eina_List *l;
         const char *s;
-	const char *file;
+        const char *file;
 
         memcpy(dir, song->path, song->len.path + 1);
         for (i = song->len.path; i > 0; i--)
@@ -36,7 +36,7 @@ _cover_album_local_find(Evas *evas, DB *db, Album *album)
         if (!dir_len) continue;
         done_dirs = eina_list_append(done_dirs, strdup(dir));
 
-	files = eina_file_ls(dir);
+        files = eina_file_ls(dir);
         if (!files)
           {
              DBG("could not open directory '%s': %s", dir, strerror(errno));
@@ -45,16 +45,16 @@ _cover_album_local_find(Evas *evas, DB *db, Album *album)
         dir[dir_len] = '/';
         dir_len++;
 
-	EINA_ITERATOR_FOREACH(files, file)
+        EINA_ITERATOR_FOREACH(files, file)
           {
-	     const char *file_type;
+             const char *file_type;
              Album_Cover *cover;
              Evas_Load_Error err;
              int w = 0, h = 0;
 
-	     file_type = efreet_mime_type_get(file);
-	     if (!file_type || strncmp("image/", file_type, 5))
-	       continue ;
+             file_type = efreet_mime_type_get(file);
+             if ((!file_type) || (strncmp("image/", file_type, 5)))
+               continue;
 
              evas_object_image_file_set(img, file, NULL);
              err = evas_object_image_load_error_get(img);
@@ -86,7 +86,7 @@ _cover_album_local_find(Evas *evas, DB *db, Album *album)
                (album->covers, EINA_INLIST_GET(cover));
           }
 
-	eina_iterator_free(files);
+        eina_iterator_free(files);
      }
 
    eina_iterator_free(it);
