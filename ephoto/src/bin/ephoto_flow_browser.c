@@ -62,6 +62,14 @@ _ephoto_set_title(const char *file)
 }
 
 static void
+_photocal_loaded_cb(void *data, Evas_Object *obj, void *event)
+{
+  Ephoto_Flow_Browser *ef = data;
+  printf("Load\n");
+  elm_photocam_paused_set(ef->image, EINA_FALSE);
+}
+
+static void
 _ephoto_go_update(Ephoto_Flow_Browser *ef)
 {
 	const char *file_type;
@@ -78,7 +86,11 @@ _ephoto_go_update(Ephoto_Flow_Browser *ef)
 	if (file_type && !strcmp(file_type, "image/jpeg"))
 	{
 		success = elm_photocam_file_set(ef->image, ef->cur_image) == EVAS_LOAD_ERROR_NONE;
+		elm_photocam_zoom_mode_set(ef->image, ELM_PHOTOCAM_ZOOM_MODE_AUTO_FIT);     
+		evas_object_smart_callback_add(ef->image, "loaded", _photocal_loaded_cb, ef);
+	    elm_photocam_paused_set(ef->image, EINA_TRUE);
 		elm_layout_content_set(ef->flow_browser, "ephoto.flow.swallow", ef->image);
+		
 		evas_object_show(ef->image);
 		evas_object_hide(ef->image2);
 
@@ -162,7 +174,6 @@ ephoto_create_flow_browser(Evas_Object *parent)
 	evas_object_size_hint_align_set(ef->flow_browser, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
 	ef->image = elm_photocam_add(ef->flow_browser);
-        elm_photocam_zoom_mode_set(ef->image, ELM_PHOTOCAM_ZOOM_MODE_AUTO_FIT);
         evas_object_size_hint_weight_set(ef->image, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
         evas_object_size_hint_align_set(ef->image, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
