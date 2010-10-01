@@ -4,6 +4,6 @@ Name:         Gustavo Lima Chaves
 Location:     Campinas, Brazil
 E-Mail:       glima@profusion.mobi
 Contributing: Evas, Edje, Elementary, Editje
-Group:        Libraries
+Group:        Core, Libraries, Applications
 Platform:     Ubuntu (Linux)
 GeoData:      -22.83083 -47.076893
