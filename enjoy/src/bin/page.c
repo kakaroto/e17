@@ -295,7 +295,6 @@ _page_add(Evas_Object *parent, Eina_Iterator *it, const char *title, Evas_Object
    elm_genlist_bounce_set(page->list, EINA_FALSE, EINA_TRUE);
    elm_genlist_horizontal_mode_set(page->list, ELM_LIST_COMPRESS);
    elm_genlist_compress_mode_set(page->list, EINA_TRUE);
-   elm_genlist_block_count_set(page->list, 256);
    elm_object_style_set(page->list, "enjoy");
 
    s = edje_object_data_get(page->edje, "homogeneous");
