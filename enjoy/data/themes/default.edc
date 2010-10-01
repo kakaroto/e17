@@ -872,6 +872,8 @@ collections {
             description {
                state: "default" 0.0;
                color: 0 0 0 255;
+               min: 1 95;
+               max: 99999 95;
             }
          }
          part {
@@ -880,6 +882,8 @@ collections {
             description {
                state: "default" 0.0;
                visible: 0;
+               min: 1 63;
+               max: 99999 63;
                image.normal: "list-highlight.png";
             }
             description {
@@ -897,8 +901,9 @@ collections {
                state: "default" 0.0;
                color: 0 0 0 255;
                rel1 {
+                  to: "bg";
                   relative: 0.0 0.0;
-                  offset: 4 2;
+                  offset: 32 6;
                }
                rel2 {
                   relative: 1.0 0.0;
@@ -908,15 +913,10 @@ collections {
                color: 255 255 255 255;
                text {
                   font: "Sans:style=Bold";
-                  size: 12;
+                  size: 10;
                   min: 0 1;
-                  align: 0.0 0.5;
+                  align: 0.0 0.0;
                }
-            }
-            description {
-               state: "selected" 0.0;
-               inherit: "default" 0.0;
-               color: 0 0 0 255;
             }
          }
 
@@ -930,19 +930,20 @@ collections {
                align: 0.0 1.0;
                fixed: 1 1;
                rel1 {
-                  relative: 0.0 1.0;
-                  offset: 4 -3;
+                  to: "bg";
+                  relative: 0.0 0.0;
+                  offset: 32 28;
                }
                rel2 {
                   relative: 1.0 1.0;
                   offset: -5 -3;
                }
-               color: 255 255 255 255;
+               color: 140 140 140 255;
                text {
                   font: "Sans";
-                  size: 8;
+                  size: 10;
                   min: 0 1;
-                  align: 0.0 1.0;
+                  align: 0.0 0.0;
                   text: "";
                }
             }
@@ -972,7 +973,6 @@ collections {
             signal:  "elm,state,selected";
             source:  "elm";
             action:  STATE_SET "selected" 0.0;
-            target:  "ejy.text.title";
             target:  "bg";
             }
          program {
@@ -980,7 +980,6 @@ collections {
             signal:  "elm,state,unselected";
             source:  "elm";
             action:  STATE_SET "default" 0.0;
-            target:  "ejy.text.title";
             target:  "bg";
          }
       }
