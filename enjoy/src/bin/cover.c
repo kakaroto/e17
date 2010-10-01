@@ -103,6 +103,27 @@ _cover_album_local_find(Evas *evas, DB *db, Album *album)
      }
 }
 
+static Evas_Object *
+_cover_empty_add(Evas_Object *parent, unsigned short size)
+{
+   Evas_Object *cover = elm_icon_add(parent);
+   elm_icon_smooth_set(cover, size >= 32);
+   elm_icon_prescale_set(cover, size);
+   return cover;
+}
+
+static Evas_Object *
+_cover_without_image_add(Evas_Object *parent, unsigned short size)
+{
+   Evas_Object *cover = _cover_empty_add(parent, size);
+   if (!elm_icon_file_set(cover, PACKAGE_DATA_DIR "/default.edj", "album-without-cover"))
+     {
+        evas_object_del(cover);
+        return NULL;
+     }
+   return cover;
+}
+
 Evas_Object *
 cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size)
 {
@@ -137,11 +158,9 @@ cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size
           }
      }
 
-   if (!best_match) return NULL;
+   if (!best_match) return _cover_without_image_add(parent, size);
 
-   cover = elm_icon_add(parent);
-   elm_icon_smooth_set(cover, size >= 32);
-   elm_icon_prescale_set(cover, size);
+   cover = _cover_empty_add(parent, size);
    if (!elm_icon_file_set(cover, best_match->path, NULL))
      {
         while (album->covers)
@@ -153,7 +172,7 @@ cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size
         db_album_covers_update(db, album);
         evas_object_del(cover);
         if (fetches < 2) goto fetch_local;
-        else return NULL;
+        else return _cover_without_image_add(parent, size);
      }
 
    return cover;

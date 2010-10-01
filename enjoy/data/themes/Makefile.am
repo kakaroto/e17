@@ -19,7 +19,8 @@ images/bt-next.png \
 images/bt-next2.png \
 images/bt-play.png \
 images/bt-pause.png \
-images/list-highlight.png
+images/list-highlight.png \
+images/no-cover.png
 
 fonts =
 
