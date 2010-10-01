@@ -9,6 +9,7 @@ import evas
 def buttons_clicked(obj, it):
     win = elementary.Window("buttons", elementary.ELM_WIN_BASIC)
     win.title_set("Buttons")
+    win.focus_highlight_enabled_set(True)
     win.autodel_set(True)
 
     bg = elementary.Background(win)

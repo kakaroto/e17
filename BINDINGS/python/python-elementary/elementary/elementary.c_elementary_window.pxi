@@ -198,6 +198,18 @@ cdef class Window(Object):
         """
         elm_win_raise(self.obj)
 
+    def focus_highlight_enabled_set(self, enabled):
+        """
+        Enable focus highlight
+        """
+        elm_win_focus_highlight_enabled_set(self.obj, enabled)
+
+    def focus_highlight_enabled_get(self):
+        """
+        Get if focus highlight is enabled
+        """
+        return bool(elm_win_focus_highlight_enabled_get(self.obj))
+
     # TODO
     """
     def xwindow_get(self):

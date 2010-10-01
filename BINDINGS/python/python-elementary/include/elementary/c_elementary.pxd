@@ -277,6 +277,9 @@ cdef extern from "Elementary.h":
     void elm_win_keyboard_mode_set(evas.c_evas.Evas_Object *obj, Elm_Win_Keyboard_Mode mode)
     void elm_win_keyboard_win_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool is_keyboard)
 
+    void elm_win_focus_highlight_enabled_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool enabled)
+    evas.c_evas.Eina_Bool elm_win_focus_highlight_enabled_get(evas.c_evas.Evas_Object *obj)
+
     # X specific call - wont't work on non-x engines (return 0)
     Ecore_X_Window elm_win_xwindow_get(evas.c_evas.Evas_Object *obj)
 
