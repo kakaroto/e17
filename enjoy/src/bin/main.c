@@ -115,6 +115,7 @@ elm_main(int argc, char **argv)
    eina_log_domain_unregister(_log_domain);
    _log_domain = -1;
    elm_shutdown();
+   efreet_mime_shutdown();
 
    return r;
 }

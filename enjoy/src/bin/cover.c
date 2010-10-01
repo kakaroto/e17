@@ -8,8 +8,6 @@ _cover_album_local_find(Evas *evas, DB *db, Album *album)
    const Song *song;
    Eina_List *done_dirs = NULL;
 
-   efreet_mime_init();
-
    EINA_ITERATOR_FOREACH(it, song)
      {
         char dir[PATH_MAX];
@@ -93,8 +91,6 @@ _cover_album_local_find(Evas *evas, DB *db, Album *album)
 
    eina_iterator_free(it);
    evas_object_del(img);
-
-   efreet_mime_shutdown();
 
    if (done_dirs)
      {
