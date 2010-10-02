@@ -669,14 +669,8 @@ on_view_mask_visible(void *data, Evas_Object *o __UNUSED__,
    Evas_Object *ed = elm_layout_edje_get(win->current_chrome);
    Evas_Object *url_entry = edje_object_part_swallow_get(ed, "url-entry");
 
-   /*
-    * BIG FAT HACK - TODO - REMOVE ASAP
-    *
-    * elm is stupid and does not guess it lost the focus before, but
-    * it tries to be smart and do not re-focus if already
-    * focused... this leads to elm_object_focus() not working.
-    */
-   elm_object_unfocus(url_entry);
+   /* we show the location entry - requested it. it should be focused for
+    * typing, so lets do this */
    elm_object_focus(url_entry);
 }
 
@@ -686,6 +680,11 @@ on_view_mask_hidden(void *data, Evas_Object *o __UNUSED__,
 {
    Browser_Window *win = data;
 
+   /* we steal focus away from elm's focus model and start to do things
+    * manually here, so elm now has no clue what's up, so tell elm that its
+    * toplevel widget for the chrome is to be unfocused so elm gives up
+    * the focus and its idea of the world */
+   elm_object_unfocus(elm_object_top_widget_get(win->current_chrome));
    evas_object_focus_set(win->current_view, EINA_TRUE);
 }
 
