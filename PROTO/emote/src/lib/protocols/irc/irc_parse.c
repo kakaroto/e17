@@ -45,183 +45,183 @@ enum _IRC_COMMANDS
 };
 
 /* local function prototypes */
-static Eina_List *_irc_parse_split_input(const char *input);
 static void _irc_cleanup_irc_line(IRC_Line *line);
 static char *_irc_parse_utf8_to_markup(const char *text);
 static char *_irc_str_append(char *str, const char *txt, int *len, int *alloc);
-static int _irc_parse_line(const char *line, IRC_Line *out);
+static int _irc_split_line(const char *line, IRC_Line *out);
+static void _irc_parse_line(char *line, const char *server, Emote_Protocol *m);
+static Eina_List *_irc_parse_split_input(Eina_Strbuf **input);
 
 void
 irc_parse_input(char *input, const char *server, Emote_Protocol *m)
 {
-   Emote_Event *event;
-   static char buf[8192];
-   static int length = 0;
-   IRC_Line ln;
-   Eina_List *lines, *l, *p;
-   char *line, *param;
-   int size;
-   int ncmd;
+   Eina_List *lines, *l;
+   static Eina_Strbuf *buf = NULL;
+   char *line;
 
-   if ((length == 1) && (buf[0] == 0))
-     length = 0;
+   if (!buf) buf = eina_strbuf_new();
 
-   strncpy(&(buf[length]), input, sizeof(buf)-length);
-   length += strlen(input);
+   // Append new data to the buffer
+   eina_strbuf_append(buf, input);
 
-   /* NB: Any parsing of messages after this split will need to append
-    * a new line if printing to the screen as this split strips them out
-    */
-   lines = _irc_parse_split_input(buf);
+   lines = _irc_parse_split_input(&buf);
+
    EINA_LIST_FOREACH(lines, l, line)
      {
-        printf("Parse Line: %s\n", line);
-
-        size = strlen(line);
-        length -= size+2;
-        memmove(buf, &(buf[size+2]), length);
-        buf[length] = 0;
-
-        if(!_irc_parse_line(line, &ln)) continue;
-
-        printf("\tPrefix = %s\n\tSource = %s\n\tUser = %s\n\tHost = %s\n\tCmd: %s\n\tTrailing: %s\n",
-               ln.prefix, ln.source, ln.user, ln.host, ln.cmd, ln.trailing);
-        EINA_LIST_FOREACH(ln.params, p, param)
-          {
-             printf("\tParam: %s\n", param);
-          }
-
-        ncmd = atoi(ln.cmd);
-        event = NULL;
-
-        if (!strcmp(ln.cmd, "PING"))
-          {
-             protocol_irc_pong(server, eina_list_nth(ln.params,0));
-          }
-        else if (!strcmp(ln.cmd, "NOTICE"))
-          {
-             event = emote_event_new(
-                 m,
-                 EMOTE_EVENT_SERVER_MESSAGE_RECEIVED,
-                 server,
-                 _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
-                 _irc_parse_utf8_to_markup(eina_list_nth(ln.params,1))
-             );
-          }
-        else if (!strcmp(ln.cmd, "PRIVMSG"))
-          {
-             event = emote_event_new
-                 (
-                    m,
-                    EMOTE_EVENT_CHAT_MESSAGE_RECEIVED,
-                    server,
-                    _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
-                    _irc_parse_utf8_to_markup(ln.source),
-                    _irc_parse_utf8_to_markup(ln.trailing)
-                 );
-          }
-        else if (!strcmp(ln.cmd, "JOIN"))
-          {
-             event = emote_event_new
-                 (
-                    m,
-                    EMOTE_EVENT_CHAT_JOINED,
-                    server,
-                    _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
-                    _irc_parse_utf8_to_markup(ln.source)
-                 );
-          }
-        else if (!strcmp(ln.cmd, "PART"))
-          {
-             event = emote_event_new
-                 (
-                    m,
-                    EMOTE_EVENT_CHAT_PARTED,
-                    server,
-                    _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
-                    _irc_parse_utf8_to_markup(ln.source)
-                 );
-          }
-        else if (!strcmp(ln.cmd, "NICK"))
-          {
-             event = emote_event_new
-                     (
-                        m,
-                        EMOTE_EVENT_SERVER_NICK_CHANGED,
-                        server,
-                        _irc_parse_utf8_to_markup(ln.source),
-                        _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0))
-                     );
-          }
-        else if (ncmd == RPL_TOPIC)
-          {
-             event = emote_event_new
-                     (
-                        m,
-                        EMOTE_EVENT_CHAT_TOPIC,
-                        server,
-                        _irc_parse_utf8_to_markup(eina_list_nth(ln.params,1)),
-                        NULL,
-                        _irc_parse_utf8_to_markup(ln.trailing)
-                     );
-          }
-        else if (!strcmp(ln.cmd, "TOPIC"))
-          {
-             event = emote_event_new
-                     (
-                        m,
-                        EMOTE_EVENT_CHAT_TOPIC,
-                        server,
-                        _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
-                        _irc_parse_utf8_to_markup(ln.source),
-                        _irc_parse_utf8_to_markup(ln.trailing)
-                     );
-          }
-        else if (ncmd ==  RPL_NAMREPLY)
-          {
-            event = emote_event_new
-                    (
-                       m,
-                       EMOTE_EVENT_CHAT_USERS,
-                       server,
-                       _irc_parse_utf8_to_markup(eina_list_nth(ln.params,2)),
-                       NULL,
-                       _irc_parse_utf8_to_markup(ln.trailing)
-                    );
-          }
-        else if (ncmd == RPL_ENDOFNAMES)
-          {
-            event = emote_event_new
-                    (
-                       m,
-                       EMOTE_EVENT_CHAT_USERS,
-                       server,
-                       _irc_parse_utf8_to_markup(eina_list_nth(ln.params,1)),
-                       NULL,
-                       NULL
-                    );
-          }
-        else if (ncmd == RPL_TOPICUSER)
-          {
-             // Don't really need to show this.
-          }
-        else if (ncmd != 0)
-          {
-             event = emote_event_new(
-                 m,
-                 EMOTE_EVENT_SERVER_MESSAGE_RECEIVED,
-                 server,
-                 NULL,
-                 _irc_parse_utf8_to_markup(ln.param_str)
-             );
-          }
-
-        if (event) emote_event_send(event);
-        _irc_cleanup_irc_line(&ln);
+        _irc_parse_line(line, server, m);
      }
 
    EINA_LIST_FREE(l, line)
    free(line);
+}
+
+static void
+_irc_parse_line(char *line, const char *server, Emote_Protocol *m)
+{
+   Emote_Event *event;
+   Eina_List *p;
+   char *param;
+   IRC_Line ln;
+   int ncmd;
+
+   printf("Parse Line: %s\n", line);
+
+   if(!_irc_split_line(line, &ln)) return;
+
+   printf("\tPrefix = %s\n\tSource = %s\n\tUser = %s\n\tHost = %s\n\tCmd: %s\n\tTrailing: %s\n",
+          ln.prefix, ln.source, ln.user, ln.host, ln.cmd, ln.trailing);
+   EINA_LIST_FOREACH(ln.params, p, param)
+     {
+        printf("\tParam: %s\n", param);
+     }
+
+   ncmd = atoi(ln.cmd);
+   event = NULL;
+
+   if (!strcmp(ln.cmd, "PING"))
+     {
+        protocol_irc_pong(server, eina_list_nth(ln.params,0));
+     }
+   else if (!strcmp(ln.cmd, "NOTICE"))
+     {
+        event = emote_event_new(
+            m,
+            EMOTE_EVENT_SERVER_MESSAGE_RECEIVED,
+            server,
+            _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
+            _irc_parse_utf8_to_markup(eina_list_nth(ln.params,1))
+        );
+     }
+   else if (!strcmp(ln.cmd, "PRIVMSG"))
+     {
+        event = emote_event_new
+            (
+               m,
+               EMOTE_EVENT_CHAT_MESSAGE_RECEIVED,
+               server,
+               _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
+               _irc_parse_utf8_to_markup(ln.source),
+               _irc_parse_utf8_to_markup(ln.trailing)
+            );
+     }
+   else if (!strcmp(ln.cmd, "JOIN"))
+     {
+        event = emote_event_new
+            (
+               m,
+               EMOTE_EVENT_CHAT_JOINED,
+               server,
+               _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
+               _irc_parse_utf8_to_markup(ln.source)
+            );
+     }
+   else if (!strcmp(ln.cmd, "PART"))
+     {
+        event = emote_event_new
+            (
+               m,
+               EMOTE_EVENT_CHAT_PARTED,
+               server,
+               _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
+               _irc_parse_utf8_to_markup(ln.source)
+            );
+     }
+   else if (!strcmp(ln.cmd, "NICK"))
+     {
+        event = emote_event_new
+                (
+                   m,
+                   EMOTE_EVENT_SERVER_NICK_CHANGED,
+                   server,
+                   _irc_parse_utf8_to_markup(ln.source),
+                   _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0))
+                );
+     }
+   else if (ncmd == RPL_TOPIC)
+     {
+        event = emote_event_new
+                (
+                   m,
+                   EMOTE_EVENT_CHAT_TOPIC,
+                   server,
+                   _irc_parse_utf8_to_markup(eina_list_nth(ln.params,1)),
+                   NULL,
+                   _irc_parse_utf8_to_markup(ln.trailing)
+                );
+     }
+   else if (!strcmp(ln.cmd, "TOPIC"))
+     {
+        event = emote_event_new
+                (
+                   m,
+                   EMOTE_EVENT_CHAT_TOPIC,
+                   server,
+                   _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
+                   _irc_parse_utf8_to_markup(ln.source),
+                   _irc_parse_utf8_to_markup(ln.trailing)
+                );
+     }
+   else if (ncmd ==  RPL_NAMREPLY)
+     {
+       event = emote_event_new
+               (
+                  m,
+                  EMOTE_EVENT_CHAT_USERS,
+                  server,
+                  _irc_parse_utf8_to_markup(eina_list_nth(ln.params,2)),
+                  NULL,
+                  _irc_parse_utf8_to_markup(ln.trailing)
+               );
+     }
+   else if (ncmd == RPL_ENDOFNAMES)
+     {
+       event = emote_event_new
+               (
+                  m,
+                  EMOTE_EVENT_CHAT_USERS,
+                  server,
+                  _irc_parse_utf8_to_markup(eina_list_nth(ln.params,1)),
+                  NULL,
+                  NULL
+               );
+     }
+   else if (ncmd == RPL_TOPICUSER)
+     {
+        // Don't really need to show this.
+     }
+   else if (ncmd != 0)
+     {
+        event = emote_event_new(
+            m,
+            EMOTE_EVENT_SERVER_MESSAGE_RECEIVED,
+            server,
+            NULL,
+            _irc_parse_utf8_to_markup(ln.param_str)
+        );
+     }
+
+   if (event) emote_event_send(event);
+   _irc_cleanup_irc_line(&ln);
 }
 
 /* local functions */
@@ -237,19 +237,38 @@ _irc_find_token_pos(const char *buf, int pos, int end, const char token, const c
 }
 
 static Eina_List *
-_irc_parse_split_input(const char *input)
+_irc_parse_split_input(Eina_Strbuf **input)
 {
    Eina_List *l = NULL;
-   char *tok = NULL, *str, *str2;
+   int i, j, len;
+   char *tok, *str;
 
-   str2 = str = strdup(input);
-   while ((tok = strsep(&str, "\r\n")))
+   if (!input || !*input) return NULL;
+
+   len = eina_strbuf_length_get(*input);
+   if (len < 2) return NULL;
+
+   // Copy strbuf string into a new location that we can modify
+   str = strdup(eina_strbuf_string_get(*input));
+   tok = str;
+   j = 0;
+   for (i = 0; i < (len-1); ++i)
+   {
+     if ((tok[i] == '\r') && (tok[i+1] == '\n'))
      {
-        if (!str) break;
-        if ((*tok == '\0') || (*tok == '\n')) continue;
-        l = eina_list_append(l, strdup(tok));
+        tok[i++] = 0;
+
+        l = eina_list_append(l, strdup(&(tok[j])));
+        j = ++i;
      }
-   free(str2);
+   }
+
+   // Update strbuf with remainder
+   eina_strbuf_reset(*input);
+   eina_strbuf_append(*input, &(tok[j]));
+
+   free(str);
+
    return l;
 }
 
@@ -280,7 +299,7 @@ _irc_cleanup_irc_line(IRC_Line *line)
 }
 
 static int
-_irc_parse_line(const char *line, IRC_Line *out)
+_irc_split_line(const char *line, IRC_Line *out)
 {
    char buf[8192];
    PARSE_STATE state;
