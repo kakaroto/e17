@@ -1,15 +1,13 @@
 # Portuguese translation for uptime
-# Copyright (C) 2008 Enlightenment development team
 # This file is distributed under the same license as the enlightenment package.
-# Pulsar <Unknown>, 2009.
 # Sérgio Marques <smarquespt@gmail.com>, 2010
-#
+# Adaptado ao acordo ortográfico de 1990
 msgid ""
 msgstr ""
 "Project-Id-Version: uptime\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2009-08-28 02:01-0700\n"
-"PO-Revision-Date: 2010-08-11 15:44-0000\n"
+"POT-Creation-Date: 2010-09-09 08:02-0700\n"
+"PO-Revision-Date: 2010-10-02 00:54-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Portuguese\n"
 "MIME-Version: 1.0\n"
@@ -20,16 +18,13 @@ msgstr ""
 "X-Poedit-Country: Portugal\n"
 
 #: ../src/e_mod_config.c:52
-msgid "Uptime Configuration"
-msgstr "Configuração do Uptime"
-
 #: ../src/e_mod_config.c:105
 msgid "Uptime Settings"
-msgstr "Definições do Uptime"
+msgstr "Definições do \"Uptime\""
 
 #: ../src/e_mod_config.c:107
 msgid "Update Interval:"
-msgstr "Intervalo de Actualização:"
+msgstr "Intervalo de atualização:"
 
 #: ../src/e_mod_config.c:110
 #: ../src/e_mod_config.c:117
@@ -39,27 +34,28 @@ msgstr "%1.0f segundos"
 
 #: ../src/e_mod_config.c:114
 msgid "Check Interval:"
-msgstr "Intervalo de Verificação:"
+msgstr "Intervalo de verificação:"
 
-#: ../src/e_mod_main.c:162
+#: ../src/e_mod_main.c:160
 msgid "Uptime"
-msgstr "Rempo de ligação"
+msgstr "\"Uptime\""
 
-#: ../src/e_mod_main.c:211
-msgid "Configuration"
-msgstr "Configuração"
+#: ../src/e_mod_main.c:210
+#| msgid "Uptime Settings"
+msgid "Settings"
+msgstr "Definições"
 
-#: ../src/e_mod_main.c:568
+#: ../src/e_mod_main.c:552
 #, c-format
 msgid "up: %d days, %d:%02d:%02ld"
-msgstr "ligado: %d dias, %d:%02d:%02ld"
+msgstr "ligado há: %d dias, %d:%02d:%02ld"
 
-#: ../src/e_mod_main.c:575
+#: ../src/e_mod_main.c:559
 #, c-format
 msgid "la: %.2f %.2f %.2f"
 msgstr "la: %.2f %.2f %.2f"
 
-#: ../src/e_mod_main.c:580
+#: ../src/e_mod_main.c:564
 #, c-format
 msgid "users: %d"
 msgstr "utilizadores: %d"

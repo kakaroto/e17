@@ -1,13 +1,13 @@
-# Portuguese Translation of snow
-# This file is distributed under the same license as Enlightenment package.
-# Sérgio Marques<smarquespt@gmail.com>, 2010
-#
+# Portuguese translation for snow
+# This file is distributed under the same license as the enlightenment package.
+# Sérgio Marques <smarquespt@gmail.com>, 2010
+# Adaptado ao acordo ortográfico de 1990
 msgid ""
 msgstr ""
 "Project-Id-Version: snow\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2010-08-12 08:00-0700\n"
-"PO-Revision-Date: 2010-08-13 11:09-0000\n"
+"POT-Creation-Date: 2010-08-13 05:01-0700\n"
+"PO-Revision-Date: 2010-10-02 00:43-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,19 +19,19 @@ msgstr ""
 
 #: ../src/e_mod_config.c:42
 msgid "Snow Configuration"
-msgstr "Configuração da Neve"
+msgstr "Configuração do Neve"
 
 #: ../src/e_mod_config.c:99
 msgid "General Settings"
-msgstr "Definições Gerais"
+msgstr "Definições gerais"
 
 #: ../src/e_mod_config.c:100
 msgid "Show Trees"
-msgstr "Mostrar Árvores"
+msgstr "Mostrar árvores"
 
 #: ../src/e_mod_config.c:104
 msgid "Snow Density"
-msgstr "Densidade da Neve"
+msgstr "Densidade da neve"
 
 #: ../src/e_mod_config.c:106
 msgid "Sparse"

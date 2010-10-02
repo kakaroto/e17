@@ -5,5 +5,6 @@ Name=E16
 Comment=The Enlightenment (e16) window manager
 Comment[fr]=Gestionnaire de fenêtres Enlightenment (e16)
 Comment[it]=Il window manager Enlightenment (e16)
+Comment[pt]=O gestor de janelas Enlightenment (e16)
 Exec=e16
 Icon=@pkgdatadir@/icons/e16.png

@@ -1,13 +1,13 @@
-# Portuguese Translation of tclock
-# This file is distributed under the same license as Enlightenment package.
-# Sérgio Marques<smarquespt@gmail.com>, 2010
-#
+# Portuguese translation for tclock
+# This file is distributed under the same license as the enlightenment package.
+# Sérgio Marques <smarquespt@gmail.com>, 2010
+# Adaptado ao acordo ortográfico de 1990
 msgid ""
 msgstr ""
 "Project-Id-Version: tclock\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2010-08-12 08:00-0700\n"
-"PO-Revision-Date: 2010-08-12 16:55-0000\n"
+"POT-Creation-Date: 2010-08-13 05:01-0700\n"
+"PO-Revision-Date: 2010-10-02 00:46-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../src/e_mod_config.c:39
 msgid "Tclock Settings"
-msgstr "Definições do Tclock"
+msgstr "Definições do \"Tclock\""
 
 #: ../src/e_mod_config.c:88
 msgid "Top"
@@ -27,13 +27,13 @@ msgstr "Superior"
 
 #: ../src/e_mod_config.c:90
 msgid "Show Top Line"
-msgstr "Mostrar Linha Superior"
+msgstr "Mostrar linha superior"
 
 #: ../src/e_mod_config.c:98
 #: ../src/e_mod_config.c:113
 #: ../src/e_mod_config.c:129
 msgid "Consult strftime(3) for format syntax"
-msgstr "Consulte strftime(3) para a sintaxe do formato"
+msgstr "Consulte \"strftime(3)\" para a sintaxe do formato"
 
 #: ../src/e_mod_config.c:102
 msgid "Bottom"
@@ -41,7 +41,7 @@ msgstr "Inferior"
 
 #: ../src/e_mod_config.c:104
 msgid "Show Bottom Line"
-msgstr "Mostrar Linha Inferior"
+msgstr "Mostrar linha inferior"
 
 #: ../src/e_mod_config.c:117
 msgid "Tool Tip"
@@ -49,11 +49,11 @@ msgstr "Dica"
 
 #: ../src/e_mod_config.c:119
 msgid "Show Tooltip"
-msgstr "Mostrar Dica"
+msgstr "Mostrar dica"
 
 #: ../src/e_mod_main.c:141
 msgid "TClock"
-msgstr "TClock"
+msgstr "\"TClock\""
 
 #: ../src/e_mod_main.c:184
 msgid "Settings"

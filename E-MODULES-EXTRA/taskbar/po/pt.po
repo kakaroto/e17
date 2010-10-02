@@ -1,13 +1,13 @@
-# Portuguese Translation of taskbar
-# This file is distributed under the same license as Enlightenment package.
-# Sérgio Marques<smarquespt@gmail.com>, 2010
-#
+# Portuguese translation for taskbar
+# This file is distributed under the same license as the enlightenment package.
+# Sérgio Marques <smarquespt@gmail.com>, 2010
+# Adaptado ao acordo ortográfico de 1990
 msgid ""
 msgstr ""
 "Project-Id-Version: taskbar\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2010-08-12 08:00-0700\n"
-"PO-Revision-Date: 2010-08-12 17:00-0000\n"
+"POT-Creation-Date: 2010-09-09 08:01-0700\n"
+"PO-Revision-Date: 2010-10-02 00:44-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../src/e_mod_config.c:30
 msgid "Taskbar Configuration"
-msgstr "Configuração da Barra de Tarefas"
+msgstr "Configuração da barra de tarefas"
 
 #: ../src/e_mod_config.c:71
 msgid "Display"
@@ -27,14 +27,14 @@ msgstr "Exibição"
 
 #: ../src/e_mod_config.c:72
 msgid "Show windows from all desktops"
-msgstr "Mostrar janelas de todos os ambientes de trabalho"
+msgstr "Mostrar janelas de todos os ambientes"
 
 #: ../src/e_mod_main.c:291
-#: ../src/e_mod_main.c:664
+#: ../src/e_mod_main.c:655
 msgid "Taskbar"
-msgstr "Barra de Tarefas"
+msgstr "Barra de tarefas"
 
-#: ../src/e_mod_main.c:653
-msgid "Configuration"
-msgstr "Configuração"
+#: ../src/e_mod_main.c:662
+msgid "Settings"
+msgstr "Definições"
 

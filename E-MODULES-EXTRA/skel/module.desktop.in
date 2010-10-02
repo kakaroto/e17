@@ -10,5 +10,6 @@ Comment[eo]=Ne celas uzantojn. Bazo pour krei novajn modulojn.
 Comment[fr]=Pas orienté utilisateur. C'est une base pour construire de nouveaux modules.
 Comment[it]=Non inteso per gli utenti. Fornisce la base per costruire nuovi moduli.
 Comment[el]=Δεν προορίζετε για χρήστες.Είναι μια βάση δημιουργίας νέων ενοτήτων.
+Comment[pt]=Não é destinado a utilizadores. Bases para desenvolvimento de módulos.
 #Several different types available here. NEED TO DOC THESE.
 X-Enlightenment-ModuleType=system

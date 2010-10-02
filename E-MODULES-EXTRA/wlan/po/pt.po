@@ -1,13 +1,13 @@
 # Portuguese translation for wlan
 # This file is distributed under the same license as the enlightenment package.
 # Sérgio Marques <smarquespt@gmail.com>, 2010
-#
+# Adaptado ao acordo ortográfico de 1990
 msgid ""
 msgstr ""
 "Project-Id-Version: wlan\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2009-08-28 02:01-0700\n"
-"PO-Revision-Date: 2010-08-11 15:46-0000\n"
+"POT-Creation-Date: 2010-09-09 08:02-0700\n"
+"PO-Revision-Date: 2010-10-02 01:00-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Portuguese\n"
 "MIME-Version: 1.0\n"
@@ -18,43 +18,45 @@ msgstr ""
 "X-Poedit-Country: Portugal\n"
 
 #: ../src/e_mod_config.c:44
-msgid "Wlan Configuration"
-msgstr "Configuração do Wlan"
+#| msgid "General Settings"
+msgid "Wlan Settings"
+msgstr "Definições do \"Wlan\""
 
-#: ../src/e_mod_config.c:117
+#: ../src/e_mod_config.c:122
 msgid "General Settings"
-msgstr "Definições Gerais"
-
-#: ../src/e_mod_config.c:119
-msgid "Always Show Text"
-msgstr "Mostrar Sempre o Texto"
-
-#: ../src/e_mod_config.c:121
-msgid "Show Text On Mouse Over"
-msgstr "Mostrar Texto ao Passar Com o Rato"
+msgstr "Definições gerais"
 
 #: ../src/e_mod_config.c:124
+msgid "Always Show Text"
+msgstr "Mostrar sempre o texto"
+
+#: ../src/e_mod_config.c:126
+msgid "Show Text On Mouse Over"
+msgstr "Mostrar texto ao passar com o rato"
+
+#: ../src/e_mod_config.c:129
 msgid "Show Text As Percent"
-msgstr "Mostrar Texto Como Percentagem"
+msgstr "Mostrar texto como percentagem"
 
-#: ../src/e_mod_config.c:128
+#: ../src/e_mod_config.c:133
 msgid "Check Interval:"
-msgstr "Intervalo de Verificação:"
+msgstr "Intervalo de verificação:"
 
-#: ../src/e_mod_config.c:131
+#: ../src/e_mod_config.c:136
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f segundos"
 
-#: ../src/e_mod_config.c:138
+#: ../src/e_mod_config.c:143
 msgid "Device Settings"
-msgstr "Definições do Dispositivo"
+msgstr "Definições do dispositivo"
 
-#: ../src/e_mod_main.c:107
+#: ../src/e_mod_main.c:110
 msgid "Wlan"
-msgstr "Wlan"
+msgstr "\"Wlan\""
 
-#: ../src/e_mod_main.c:165
-msgid "Configuration"
-msgstr "Configuração"
+#: ../src/e_mod_main.c:169
+#| msgid "Device Settings"
+msgid "Settings"
+msgstr "Definições"
 
