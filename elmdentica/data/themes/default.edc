@@ -53,6 +53,7 @@ collections {
          image: "bt_sm_hilight.png" COMP;
          image: "ilist_1.png" COMP;
          image: "ilist_item_shadow.png" COMP;
+         image: "bubble_3.png" COMP;
       }
       parts {
          part {
@@ -100,6 +101,31 @@ collections {
                fill.smooth: 0;
             }
          }
+	part { name: "bubble3";
+		mouse_events: 0;
+		description { state: "default" 0.0;
+			align: 0 0.5;
+			min: 0 1;
+			//max: 1 1;
+			fixed: 0 1;
+			rel1 {
+				to:     "elm.name";
+				relative: 0  1;
+				offset: 0 -10;
+			}
+			rel2 {
+				to_y:     "elm.text";
+				relative: 1.0  1.0;
+				offset: 0 2;
+			}
+			image {
+				normal: "bubble_3.png";
+				border: 36 11 18 9;
+			}
+			image.middle: SOLID;
+			fill.smooth: 0;
+		}
+	}
          part { name: "bg";
             clip_to: "disclip";
             mouse_events: 0;
@@ -272,7 +298,7 @@ collections {
                   to_y:     "elm.name";
                   to_x:     "elm.swallow.icon";
                   relative: 1  1;
-		  offset: 5 5;
+		  offset: 15 6;
                }
                rel2 {
                   to_y:     "elm.swallow.icon";
@@ -285,7 +311,7 @@ collections {
                   min: 0 1;
 		max: 1 1;
                   align: 0.0 0.0;
-		//text: "this is a long message that should be wrapped at some point bla bla bla";
+		text: "this is a long message that should be wrapped at some point bla bla bla";
                }
             }
             description { state: "selected" 0.0;
