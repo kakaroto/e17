@@ -431,7 +431,6 @@ void notify_sync_content_set(Enlil_Data *enlil_data, const char *msg, Eina_Bool 
    evas_object_show(bt);
 
    elm_notify_content_set(enlil_data->notify_sync, bx);
-   elm_notify_timer_init(enlil_data->notify_sync);
    evas_object_show(enlil_data->notify_sync);
 }
 
@@ -471,7 +470,6 @@ void notify_load_content_set(Enlil_Data *enlil_data, const char *msg, Eina_Bool 
    evas_object_show(bt);
 
    elm_notify_content_set(enlil_data->notify_load, bx);
-   elm_notify_timer_init(enlil_data->notify_load);
    evas_object_show(enlil_data->notify_load);
 }
 
