@@ -665,6 +665,25 @@ collections
               }
              
            }
+            programs {
+                program { name: "load";
+                    signal: "load";
+                    script {
+                       new Float:val;
+
+                       custom_state(PART:"ephoto.swallow.thumb3", "default", 0.0);
+                       custom_state(PART:"ephoto.swallow.thumb2", "default", 0.0);
+                       val = randf();
+                       val = 40 * val - 20;
+                       set_state_val(PART:"ephoto.swallow.thumb3", STATE_MAP_ROT_Z, val);
+                       val = randf();
+                       val = 40 * val - 20;
+                       set_state_val(PART:"ephoto.swallow.thumb2", STATE_MAP_ROT_Z, val);
+                       set_state(PART:"ephoto.swallow.thumb2", "custom", 0.0);
+                       set_state(PART:"ephoto.swallow.thumb3", "custom", 0.0);
+                    }
+                }
+            }
         }
 }
 
