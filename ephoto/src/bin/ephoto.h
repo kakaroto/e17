@@ -14,8 +14,6 @@
 #include <Eina.h>
 #include <Edje.h>
 #include <Evas.h>
-#include <Ethumb.h>
-#include <Ethumb_Client.h>
 #include <Eio.h>
 #include <limits.h>
 #include <stdio.h>
@@ -53,6 +51,9 @@ void ephoto_create_slideshow(void);
 void ephoto_show_slideshow(int view, const char *current_image);
 void ephoto_hide_slideshow(void);
 void ephoto_delete_slideshow(void);
+
+/* Ephoto Directory Thumb */
+Evas_Object *ephoto_directory_thumb_add(Evas_Object *parent, const char *path);
 
 /*Ephoto Thumb Browser*/
 Evas_Object *ephoto_create_thumb_browser(Evas_Object *parent);

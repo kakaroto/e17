@@ -13,7 +13,8 @@ ephoto_SOURCES = \
 		 ephoto_flow_browser.c \
 		 ephoto_main.c \
 		 ephoto_slideshow.c \
-		 ephoto_thumb_browser.c
+		 ephoto_thumb_browser.c \
+		 ephoto_directory_thumb.c
 
 ephoto_CFLAGS = @EET_CFLAGS@ @EVAS_CFLAGS@ @EDJE_CFLAGS@ @EINA_CFLAGS@ @EFREET_MIME_CFLAGS@ @ETHUMB_CFLAGS@ @ELEMENTARY_CFLAGS@ @EIO_CFLAGS@ -Wall -g
 ephoto_LDADD = @EET_LIBS@ @EVAS_LIBS@ @EDJE_LIBS@ @EINA_LIBS@ @EFREET_MIME_LIBS@ @ETHUMB_LIBS@ @ELEMENTARY_LIBS@ @EIO_LIBS@

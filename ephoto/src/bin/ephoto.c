@@ -8,17 +8,27 @@ int __log_domain = -1;
 int 
 main(int argc, char **argv)
 {
-	ethumb_client_init();
+        Ethumb_Client *client;
 	elm_need_efreet();
+	elm_need_ethumb();
 	elm_init(argc, argv);
-
+	
+	client = elm_thumb_ethumb_client_get();
+	if (!client)
+	  {
+	    ERR("could not get ethumb_client");
+	    return 1;
+	  }
+	ethumb_client_size_set(client, 100, 100);
+	ethumb_client_crop_align_set(client, 0.5, 0.5);
+	ethumb_client_aspect_set(client, ETHUMB_THUMB_KEEP_ASPECT);
+	ethumb_client_orientation_set(client, ETHUMB_THUMB_ORIENT_ORIGINAL);
         __log_domain = eina_log_domain_register("Ephoto", EINA_COLOR_BLUE);
         if (!__log_domain)
         {
                 EINA_LOG_ERR("Could not register log domain: Ephoto");
                 elm_shutdown();
                 efreet_mime_shutdown();
-                ethumb_client_shutdown();
 
                 return 0;
         }
@@ -33,7 +43,6 @@ main(int argc, char **argv)
                 eina_log_domain_unregister(__log_domain);
 		elm_shutdown();
         	efreet_mime_shutdown();
-        	ethumb_client_shutdown();
 
 		return 0;
 	}
@@ -48,7 +57,6 @@ main(int argc, char **argv)
                 eina_log_domain_unregister(__log_domain);
 		elm_shutdown();
         	efreet_mime_shutdown();
-        	ethumb_client_shutdown();
 
 		return 0;
 	}
@@ -80,7 +88,6 @@ main(int argc, char **argv)
                 eina_log_domain_unregister(__log_domain);
 		elm_shutdown();
                 efreet_mime_shutdown();
-                ethumb_client_shutdown();
 
                 return 0;
 	}
@@ -89,7 +96,6 @@ main(int argc, char **argv)
 
 	elm_shutdown();
 	efreet_mime_shutdown();
-	ethumb_client_shutdown();
 
 	return 0;
 }
