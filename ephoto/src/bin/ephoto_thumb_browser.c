@@ -198,6 +198,23 @@ ephoto_create_thumb_browser(Evas_Object *parent)
 	return tb->layout;
 }
 
+static void
+_ephoto_populate_thumb_browser(Ephoto_Thumb_Browser *tb, const char *file)
+{
+        const char *thumb;
+        ethumb_client_file_set(tb->ec, file, NULL);
+        if (!ethumb_client_thumb_exists(tb->ec))
+        {
+                ethumb_client_generate(tb->ec, _ephoto_thumbnail_generated, tb, NULL);
+        }
+        else
+        {
+                ethumb_client_thumb_path_get(tb->ec, &thumb, NULL);
+                _ephoto_thumbnail_generated(tb, tb->ec, 0, file, NULL,
+                                            thumb, NULL, EINA_TRUE);
+        }
+}
+
 /*Show the thumbnail browser*/
 static void
 _ephoto_show_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
@@ -244,6 +261,17 @@ _ephoto_populate_end(const void *data)
 
         tb->list = NULL;
         efreet_mime_shutdown();
+
+        if (em->config->sort_images)
+        {
+                Eina_List *l;
+                const char *file;
+                em->images = eina_list_sort(em->images,
+                                            eina_list_count(em->images),
+                                            EINA_COMPARE_CB(strcoll));
+                EINA_LIST_FOREACH(em->images, l, file)
+                        _ephoto_populate_thumb_browser(tb, file);
+        }
 }
 
 static void
@@ -261,22 +289,12 @@ static void
 _ephoto_populate_main(const void *data, const char *file)
 {
         Ephoto_Thumb_Browser *tb = (Ephoto_Thumb_Browser*)data;
-	const char *thumb;
 
 	file = eina_stringshare_ref(file);
 
 	em->images = eina_list_append(em->images, file);
-	ethumb_client_file_set(tb->ec, file, NULL);
-	if (!ethumb_client_thumb_exists(tb->ec))
-	{
-		ethumb_client_generate(tb->ec, _ephoto_thumbnail_generated, tb, NULL);
-	}
-	else
-	{
-		ethumb_client_thumb_path_get(tb->ec, &thumb, NULL);
-		_ephoto_thumbnail_generated(tb, tb->ec, 0, file, NULL,
-					    thumb, NULL, EINA_TRUE);
-	}
+        if (em->config->sort_images) return;
+        _ephoto_populate_thumb_browser(tb, file);
 }
 
 /* Start a thread to list images in a directory without locking the interface */

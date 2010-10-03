@@ -91,6 +91,8 @@ struct _Ephoto_Config
         const char *slideshow_transition;
 
         const char *editor;
+
+        int sort_images;
 };
 
 /*Ephoto Main Structure*/
