@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <time.h>
 
+#include "../define.h"
+
 static void _sync_done_cb(void *data, Enlil_Sync *sync);
 static void _sync_start_cb(void *data, Enlil_Sync *sync);
 static void _sync_error_cb(void *data, Enlil_Sync *sync,  Sync_Error error, const char* msg);

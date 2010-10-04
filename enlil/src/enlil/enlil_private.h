@@ -6,6 +6,9 @@
 #include "Enlil.h"
 #include <pthread.h>
 #include <errno.h>
+
+#include "../define.h"
+
 extern int Enlil_LOG_DOMAIN_99;
 #define LOG_DOMAIN Enlil_LOG_DOMAIN_99
 

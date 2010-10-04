@@ -1,9 +1,6 @@
 #ifndef  ENLIL_INC
 #define  ENLIL_INC
 
-#include "../define.h"
-
-
 #include <Ecore.h>
 #include <Ecore_File.h>
 #include <Eet.h>
