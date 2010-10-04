@@ -6,6 +6,7 @@ Name[it]=Everything - Risorse
 Icon=e-module
 Comment=Access folder bookmarks and mount drives
 Comment[fr]=Accès aux signets des dossiers et aux volumes montés. 
-Comment[it]=Accede ai segnalibro delle cartelle e monta le unità. 
+Comment[it]=Accede ai segnalibro delle cartelle e monta le unità.
+Comment[pt]=Aceda aos marcadores de pastas e monte as unidades 
 #Several different types available here. NEED TO DOC THESE.
 X-Enlightenment-ModuleType=everything

@@ -9,5 +9,6 @@ Comment=Find Files with Tracker (requires version 0.8)
 Comment[fr]=Trouver des fichiers avec Tracker (version 0.8 requise).
 Comment[it]=Trova i file con Tracker (versione richiesta 0.8).
 Comment[el]= Βρίσκει Αρχεία με τον Tracker (απαιτεί την έκδοση 0,8).
+Comment[pt]=Encontre ficheiros com o "Tracker"(requer a versão 0.8)
 #Several different types available here. NEED TO DOC THESE.
 X-Enlightenment-ModuleType=everything

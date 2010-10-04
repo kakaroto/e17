@@ -7,5 +7,6 @@ Icon=e-module
 Comment=Everything skeleton example module
 Comment[fr]=Base pour construire de nouveaux modules pour Omni.
 Comment[it]=Modulo di esempio con la struttura di base per Everything.
+Comment[pt]=Módulo de exemplo para o skeleton
 #Several different types available here. NEED TO DOC THESE.
 X-Enlightenment-ModuleType=everything
