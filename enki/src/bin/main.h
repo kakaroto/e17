@@ -12,6 +12,8 @@
 #include <unistd.h>
 #include <time.h>
 
+#include "../define.h"
+
 #define D_(s) gettext(s)
 
 #define THEME PACKAGE_DATA_DIR"/themes/default.edj"
