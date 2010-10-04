@@ -18,7 +18,7 @@
       <li>Eeze</li>
      </ul>
     </p>
-    <p>Recommended requirements for all the below are:
+    <p>Recommended requirements for all releases to the right are:
      <ul>
       <li>libc</li>
       <li>libm</li>
@@ -50,9 +50,12 @@
       <li>libudev</li>
      </ul>
     </p>
-    
    </div>
+  </td>
+ </tr>
    
+ <tr>
+  <td class='main'>
    <hr><div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Eina">Eina</a> </b><em>
      1.0.0 BETA </em></p><p>
@@ -92,7 +95,11 @@
      "DOWNLOAD EMBRYO", 
      "http://download.enlightenment.org/releases/embryo-1.0.0.beta.tar.gz"
    );?></p></div>
+  </td>
+ </tr>
    
+ <tr>
+  <td class='main'>
    <hr><div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Edje">Edje</a> </b><em>
      1.0.0 BETA </em></p><p>
@@ -124,9 +131,10 @@
      "DOWNLOAD EEZE", 
      "http://download.enlightenment.org/releases/eeze-1.0.0.beta.tar.gz"
    );?></p></div>
-   
   </td>
-
+ </tr>
+ 
+ <tr>
   <td class='main'>
    <div class="main">
     <p><h2>Packages</h2></p>
@@ -147,6 +155,11 @@
    </div>
   </td>
 
+  <td class='main'>
+   <div class="main">
+   </div>
+  </td>
+   
   <td class='main'>
    <div class="main">
     <p><h2>Snapshots</h2></p>
