@@ -7,40 +7,71 @@
     <p><a href="http://download.enlightenment.org/releases">Releases</a></p>
    </div>
    
-   <hr>
-   <div class="main">
-    <p><b>Eina</b><em>1.0.0 BETA</em></p>
-    <p>Core data structure library</p>
-    <p>Requires:
-     <ul>
-      <li>libc</li>
-      <li>libm</li>
-     </ul>
-    </p>
-    <p align=right>
-     <?php blinkdl("i/logo-s.png", "DOWNLOAD", 
-      "http://download.enlightenment.org/releases/eina-1.0.0.beta.tar.gz"
-     );?>
-     </p>
-   </div>
+   <hr><div class="main"><p><b>
+     Eina </b><em>
+     1.0.0 BETA </em></p><p>
+     Core data structure library. </p><p>Requires:<ul><li>
+     libc </li><li>
+     libm </li></ul>Recommended:<ul><li>
+     libpthread </li></ul></p><p align=right><?php blinkdl("i/logo-s.png", 
+     "DOWNLOAD EINA",
+     "http://download.enlightenment.org/releases/eina-1.0.0.beta.tar.gz"
+   );?></p></div>
    
-   <hr>
-   <div class="main">
-    <p><b>Eet</b><em>1.4.0 BETA</em></p>
-    <p>Data encode/decode and storage library</p>
-    <p>Requires:
-     <ul>
-      <li>Eina (1.0.0 BETA or better)</li>
-      <li>zlib</li>
-      <li>libjpeg</li>
-     </ul>
-    </p>
-    <p align=right>
-     <?php blinkdl("i/logo-s.png", "DOWNLOAD", 
-      "http://download.enlightenment.org/releases/eet-1.4.0.beta.tar.gz"
-     );?>
-     </p>
-   </div>
+   <hr><div class="main"><p><b>
+     Eet </b><em>
+     1.4.0 BETA </em></p><p>
+     Data encode/decode and storage library. </p><p>Requires:<ul><li>
+     Eina (1.0.0 BETA or better) </li><li>
+     zlib </li><li>
+     libjpeg </li></ul></p><p align=right><?php blinkdl("i/logo-s.png", 
+     "DOWNLOAD EET", 
+     "http://download.enlightenment.org/releases/eet-1.4.0.beta.tar.gz"
+   );?></p></div>
+   
+   <hr><div class="main"><p><b>
+     Evas </b><em>
+     1.0.0 BETA </em></p><p>
+     Canvas and scenegraph rendering library. </p><p>Requires:<ul><li>
+     Eina (1.0.0 BETA or better) </li><li>
+     freetype (2.1.9 or better) </li></ul>Recommended:<ul><li>
+     Eet (1.4.0 BETA or better) </li><li>
+     libX11 </li><li>
+     libXext </li><li>
+     libXrender </li><li>
+     fontconfig </li><li>
+     libpng </li><li>
+     libjpeg </li><li>
+     libpthread </li></ul></p><p align=right><?php blinkdl("i/logo-s.png", 
+     "DOWNLOAD EVAS", 
+     "http://download.enlightenment.org/releases/evas-1.0.0.beta.tar.gz"
+   );?></p></div>
+   
+   <hr><div class="main"><p><b>
+     Ecore </b><em>
+     1.0.0 BETA </em></p><p>
+     Core mainloop, display abstraction and utility library. </p><p>Requires:<ul><li>
+     Eina (1.0.0 BETA or better) </li><li>
+     freetype (2.1.9 or better) </li></ul>Recommended:<ul><li>
+     Evas (1.0.0 BETA or better) </li><li>
+     libX11 </li><li>
+     libXext </li><li>
+     libXcursor </li><li>
+     libXprint </li><li>
+     libXinerama </li><li>
+     libXrandr </li><li>
+     libXss </li><li>
+     libXrender </li><li>
+     libXcomposite </li><li>
+     libXdamage </li><li>
+     libXfixes </li><li>
+     libXdpms </li><li>
+     libXtest </li><li>
+     OpenSSL </li><li>
+     Curl </li></ul></p><p align=right><?php blinkdl("i/logo-s.png", 
+     "DOWNLOAD EVAS", 
+     "http://download.enlightenment.org/releases/ecore-1.0.0.beta.tar.gz"
+   );?></p></div>
    
   </td>
 
