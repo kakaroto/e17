@@ -6,9 +6,10 @@
     <p>The latest releases of Packages can always be found here:</p>
     <p><a href="http://download.enlightenment.org/releases">Releases</a></p>
    </div>
+   
    <hr>
    <div class="main">
-    <p><h2>Eina</h2> 1.0.0 BETA</p>
+    <p><b>Eina</b><em>1.0.0 BETA</em></p>
     <p>Core data structure library</p>
     <p>Requires:
      <ul>
@@ -17,11 +18,30 @@
      </ul>
     </p>
     <p align=right>
-     <?php blinkurl("i/logo-s.png", "DOWNLOAD", 
+     <?php blinkdl("i/logo-s.png", "DOWNLOAD", 
       "http://download.enlightenment.org/releases/eina-1.0.0.beta.tar.gz"
      );?>
      </p>
    </div>
+   
+   <hr>
+   <div class="main">
+    <p><b>Eet</b><em>1.4.0 BETA</em></p>
+    <p>Data encode/decode and storage library</p>
+    <p>Requires:
+     <ul>
+      <li>Eina (1.0.0 BETA or better)</li>
+      <li>zlib</li>
+      <li>libjpeg</li>
+     </ul>
+    </p>
+    <p align=right>
+     <?php blinkdl("i/logo-s.png", "DOWNLOAD", 
+      "http://download.enlightenment.org/releases/eet-1.4.0.beta.tar.gz"
+     );?>
+     </p>
+   </div>
+   
   </td>
 
   <td class='main'>

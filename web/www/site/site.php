@@ -86,6 +86,29 @@
       echo("</table>");
   }
 
+  function blinkdl($ic, $txt, $url) {
+      echo("<table class='b' cellpadding='0'>");
+      echo("<tr><td class='b1'><img src='i/_.gif' width='8' height='8'></td>");
+      echo("<td class='b2' width='100%'><img src='i/_.gif' width='8' height='8'></td>");
+      echo("<td class='b3'><img src='i/_.gif' width='8' height='8'></td></tr>");
+      echo("<tr><td class='b4'><img src='i/_.gif' width='8' height='24'></td>");
+      echo("<td class='b5' width='100%'>");
+      echo("<a href='$url' class='b'>");
+      echo("<img src='i/_.gif' width='8' height='24'>");
+      list($width, $height, $type, $attr) = getimagesize("$ic");
+      echo("<img src='$ic' width='$width' height='$height'>");
+      echo("<img src='i/_.gif' width='8' height='24'>");
+      echo("<b>$txt</b>");
+      echo("<img src='i/_.gif' width='8' height='24'>");
+      echo("</a>");
+      echo("</td>");
+      echo("<td class='b6'><img src='i/_.gif' width='8' height='24'></td></tr>");
+      echo("<tr><td class='b7'><img src='i/_.gif' width='8' height='8'></td>");
+      echo("<td class='b8' width='100%'><img src='i/_.gif' width='8' height='8'></td>");
+      echo("<td class='b9'><img src='i/_.gif' width='8' height='8'></td></tr>");
+      echo("</table>");
+  }
+
   function blinkurl($ic, $txt, $url) {
       echo("<table class='b' cellpadding='0' width='100%'>");
       echo("<tr><td class='b1'><img src='i/_.gif' width='8' height='8'></td>");
