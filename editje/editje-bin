@@ -78,16 +78,28 @@ def file_and_group_parse(file_, grp):
 
     return [f, r.group(0)]
 
+def _open_force_ok_cb(sf, filepath=None, group=None, slave_mode=False, in_port=None, mode=0, pop=None):
+    logger.debug("Open editje forced: file='%s' group='%s' force_mode=%d "
+		 "slave_mode=%s in_port=%s", filepath, group, mode,
+		 slave_mode, in_port)
+    editje = Editje(sf, slave_mode=slave_mode, in_port=in_port)
+
+    if group and group in edje.file_collection_list(sf.workfile):
+        editje.group = group
+
+    if pop:
+        pop.hide()
+    editje.show()
+    if pop:
+        pop.delete()
 
 def _open_force_cb(bt, data):
     pop, mode, filepath, group, slave_mode, in_port = data
-    logger.debug("Open file (force): file='%s' group='%s' force_mode=%s"
-                 " slave_mode=%s in_port=%s", filepath, group, slave_mode,
+    logger.debug("Open file (force): file='%s' group='%s' force_mode=%d"
+                 " slave_mode=%s in_port=%s", filepath, group, mode, slave_mode,
                  in_port)
-    swapfile.open(filepath, _open_ok_cb, _open_err_cb, mode=mode, group=group,
-                  slave_mode=slave_mode, in_port=in_port)
-    _open_abort_cb(bt, pop)
-
+    swapfile.open(filepath, _open_force_ok_cb, _open_err_cb, mode=mode, group=group,
+                  slave_mode=slave_mode, in_port=in_port, pop=pop)
 
 def _open_abort_cb(bt, pop):
     pop.hide()
@@ -106,6 +118,7 @@ def _open_ok_cb(sf, filepath=None, group=None, slave_mode=False, in_port=None):
 
 
 def _open_err_cb(e, filepath=None, group=None, slave_mode=None, in_port=None):
+
     logger.error("Open file: file='%s' group='%s' slave_mode=%s "
             "in_port=%s : %s", filepath, group, slave_mode, in_port, e)
 
@@ -125,7 +138,7 @@ def _open_err_cb(e, filepath=None, group=None, slave_mode=None, in_port=None):
         lb.show()
 
         pop.action_add("Ignore Swap", _open_force_cb,
-                       data=(pop, swapfile.RESTORE, filepath, group,
+                       data=(pop, swapfile.REPLACE, filepath, group,
                              slave_mode, in_port))
         pop.action_add("Recover", _open_force_cb,
                        data=(pop, swapfile.RESTORE, filepath, group,
