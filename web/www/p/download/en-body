@@ -7,70 +7,76 @@
     <p><a href="http://download.enlightenment.org/releases">Releases</a></p>
    </div>
    
-   <hr><div class="main"><p><b>
-     Eina </b><em>
+   <hr><div class="main"><p><b><a href=
+     "http://trac.enlightenment.org/e/wiki/Eina">Eina</a> </b><em>
      1.0.0 BETA </em></p><p>
-     Core data structure library. </p><p>Requires:<ul><li>
-     libc </li><li>
-     libm </li></ul>Recommended:<ul><li>
-     libpthread </li></ul></p><p align=right><?php blinkdl("i/logo-s.png", 
+     Core data structure library. </p><p align=right><?php blinkdl("i/logo-s.png", 
      "DOWNLOAD EINA",
      "http://download.enlightenment.org/releases/eina-1.0.0.beta.tar.gz"
    );?></p></div>
    
-   <hr><div class="main"><p><b>
-     Eet </b><em>
+   <hr><div class="main"><p><b><a href=
+     "http://trac.enlightenment.org/e/wiki/Eet">Eet</a> </b><em>
      1.4.0 BETA </em></p><p>
-     Data encode/decode and storage library. </p><p>Requires:<ul><li>
-     Eina (1.0.0 BETA or better) </li><li>
-     zlib </li><li>
-     libjpeg </li></ul></p><p align=right><?php blinkdl("i/logo-s.png", 
+     Data encode/decode and storage library. </p><p align=right><?php blinkdl("i/logo-s.png", 
      "DOWNLOAD EET", 
      "http://download.enlightenment.org/releases/eet-1.4.0.beta.tar.gz"
    );?></p></div>
    
-   <hr><div class="main"><p><b>
-     Evas </b><em>
+   <hr><div class="main"><p><b><a href=
+     "http://trac.enlightenment.org/e/wiki/Evas">Evas</a> </b><em>
      1.0.0 BETA </em></p><p>
-     Canvas and scenegraph rendering library. </p><p>Requires:<ul><li>
-     Eina (1.0.0 BETA or better) </li><li>
-     freetype (2.1.9 or better) </li></ul>Recommended:<ul><li>
-     Eet (1.4.0 BETA or better) </li><li>
-     libX11 </li><li>
-     libXext </li><li>
-     libXrender </li><li>
-     fontconfig </li><li>
-     libpng </li><li>
-     libjpeg </li><li>
-     libpthread </li></ul></p><p align=right><?php blinkdl("i/logo-s.png", 
+     Canvas and scenegraph rendering library. </p><p align=right><?php blinkdl("i/logo-s.png", 
      "DOWNLOAD EVAS", 
      "http://download.enlightenment.org/releases/evas-1.0.0.beta.tar.gz"
    );?></p></div>
    
-   <hr><div class="main"><p><b>
-     Ecore </b><em>
+   <hr><div class="main"><p><b><a href=
+     "http://trac.enlightenment.org/e/wiki/Ecore">Ecore</a> </b><em>
      1.0.0 BETA </em></p><p>
-     Core mainloop, display abstraction and utility library. </p><p>Requires:<ul><li>
-     Eina (1.0.0 BETA or better) </li><li>
-     freetype (2.1.9 or better) </li></ul>Recommended:<ul><li>
-     Evas (1.0.0 BETA or better) </li><li>
-     libX11 </li><li>
-     libXext </li><li>
-     libXcursor </li><li>
-     libXprint </li><li>
-     libXinerama </li><li>
-     libXrandr </li><li>
-     libXss </li><li>
-     libXrender </li><li>
-     libXcomposite </li><li>
-     libXdamage </li><li>
-     libXfixes </li><li>
-     libXdpms </li><li>
-     libXtest </li><li>
-     OpenSSL </li><li>
-     Curl </li></ul></p><p align=right><?php blinkdl("i/logo-s.png", 
-     "DOWNLOAD EVAS", 
+     Core mainloop, display abstraction and utility library. </p><p align=right><?php blinkdl("i/logo-s.png", 
+     "DOWNLOAD ECORE", 
      "http://download.enlightenment.org/releases/ecore-1.0.0.beta.tar.gz"
+   );?></p></div>
+   
+   <hr><div class="main"><p><b><a href=
+     "http://trac.enlightenment.org/e/wiki/Embryo">Embryi</a> </b><em>
+     1.0.0 BETA </em></p><p>
+     Small <a href="http://www.compuphase.com/pawn/pawn-lang.pdf">Pawn</a> based virtual machine and compiler. </p><p align=right><?php blinkdl("i/logo-s.png", 
+     "DOWNLOAD EMBRYO", 
+     "http://download.enlightenment.org/releases/embryo-1.0.0.beta.tar.gz"
+   );?></p></div>
+   
+   <hr><div class="main"><p><b><a href=
+     "http://trac.enlightenment.org/e/wiki/Edje">Edje</a> </b><em>
+     1.0.0 BETA </em></p><p>
+     Abstract GUI layout and animation object library. </p><p align=right><?php blinkdl("i/logo-s.png", 
+     "DOWNLOAD EDJE", 
+     "http://download.enlightenment.org/releases/edje-1.0.0.beta.tar.gz"
+   );?></p></div>
+   
+   <hr><div class="main"><p><b><a href=
+     "http://trac.enlightenment.org/e/wiki/Efreet">Efreet</a> </b><em>
+     1.0.0 BETA </em></p><p>
+     Standards handling for <a href="http://www.freedesktop.org">freedesktop.org</a> standards. </p><p align=right><?php blinkdl("i/logo-s.png",
+     "DOWNLOAD EFREET", 
+     "http://download.enlightenment.org/releases/efreet-1.0.0.beta.tar.gz"
+   );?></p></div>
+   
+   <hr><div class="main"><p><b><a href=
+     "http://trac.enlightenment.org/e/wiki/E_Dbus">E_Dbus</a> </b><em>
+     1.0.0 BETA </em></p><p>
+     Dbus wrapping and glue layer library. </p><p align=right><?php blinkdl("i/logo-s.png", 
+     "DOWNLOAD E_DBUS", 
+     "http://download.enlightenment.org/releases/e_dbus-1.0.0.beta.tar.gz"
+   );?></p></div>
+   
+   <hr><div class="main"><p><b><a href=
+     "http://trac.enlightenment.org/e/wiki/Eeze">Eeze</a> </b><em>
+     1.0.0 BETA </em></p><p>
+     Udev wrapping and abstraction library. </p><p align=right><?php blinkdl("i/logo-s.png", 
+     "DOWNLOAD EEZE", 
+     "http://download.enlightenment.org/releases/eeze-1.0.0.beta.tar.gz"
    );?></p></div>
    
   </td>
