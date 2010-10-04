@@ -5,6 +5,52 @@
     <p><h2>Releases</h2></p>
     <p>The latest releases of Packages can always be found here:</p>
     <p><a href="http://download.enlightenment.org/releases">Releases</a></p>
+    <p>It is recommended to build them in this order:
+     <ul>
+      <li>Eina</li>
+      <li>Eet</li>
+      <li>Evas</li>
+      <li>Ecore</li>
+      <li>Embryo</li>
+      <li>Edje</li>
+      <li>Efreet</li>
+      <li>E_Dbus</li>
+      <li>Eeze</li>
+     </ul>
+    </p>
+    <p>Recommended requirements for all the below are:
+     <ul>
+      <li>libc</li>
+      <li>libm</li>
+      <li>libpthread</li>
+      <li>zlib</li>
+      <li>freetype</li>
+      <li>fontconfig</li>
+      <li>opengl2.0/opengles-2 (depending on target)</li>
+      <li>libpng</li>
+      <li>libjpeg</li>
+      <li>libtiff</li>
+      <li>libgif</li>
+      <li>librsvg (if you want SVG support in Evas)</li>
+      <li>libx11</li>
+      <li>libxext</li>
+      <li>libxrender</li>
+      <li>libxcomposite</li>
+      <li>libxdamage</li>
+      <li>libxfixes</li>
+      <li>libxrandr</li>
+      <li>libxinerama</li>
+      <li>libxss</li>
+      <li>libxtest</li>
+      <li>libxdpms</li>
+      <li>libxcursor</li>
+      <li>libxprint</li>
+      <li>openssl</li>
+      <li>curl</li>
+      <li>libudev</li>
+     </ul>
+    </p>
+    
    </div>
    
    <hr><div class="main"><p><b><a href=
@@ -109,6 +155,23 @@
     <a href="http://download.enlightenment.org/snapshots">download.enlightenment.org/snapshots</a>.</p>
     <p><a href="http://download.enlightenment.org/snapshots/LATEST">Latest Snapshots</a></p>
    </div>
+
+   <hr><div class="main"><p><b><a href=
+     "http://trac.enlightenment.org/e/wiki/Enlightenment">Enlightenment</a> </b><em>
+     0.16.999.52995 </em></p><p>
+     Core data structure library. </p><p align=right><?php blinkdl("i/logo-s.png", 
+     "DOWNLOAD ENLIGHTENMENT",
+     "http://download.enlightenment.org/snapshots/2010-10-03/enlightenment-0.16.999.52995.tar.gz"
+   );?></p></div>
+   
+   <hr><div class="main"><p><b><a href=
+     "http://trac.enlightenment.org/e/wiki/Elementary">Elementary</a> </b><em>
+     0.7.0.52995 </em></p><p>
+     Core data structure library. </p><p align=right><?php blinkdl("i/logo-s.png", 
+     "DOWNLOAD ELEMENTARY",
+     "http://download.enlightenment.org/snapshots/2010-10-03/elementary-0.7.0.52995.tar.gz"
+   );?></p></div>
+   
   </td>
  </tr>
  
