@@ -61,12 +61,12 @@ static void _loop(double t, int f)
 	evas_object_resize(o_images[i], w, h);
 	evas_object_image_fill_set(o_images[i], 0, 0, w, h);
 	data = evas_object_image_data_get(o_images[i], 1);
-        st = evas_object_image_stride_get(o_images[i]);
+        st = evas_object_image_stride_get(o_images[i]) >> 2;
 	p = data;
 	ff = (f ^ (f << 8) ^ (f << 16) ^ (f << 24));
-	for (y = 0; y < 480; y++)
+	for (y = 0; y < h; y++)
 	  {
-	     for (x = 0; x < 640; x++)
+	     for (x = 0; x < w; x++)
 	       {
 		  *p = ((((x * y) + f) << 8) ^ (x - y - f)) | 0xff000000;
 		  p++;
@@ -74,7 +74,7 @@ static void _loop(double t, int f)
              p += (st - w);
 	  }
 	evas_object_image_data_set(o_images[i], data);
-	evas_object_image_data_update_add(o_images[i], 0, 0, 640, 480);
+	evas_object_image_data_update_add(o_images[i], 0, 0, w, h);
      }
    FPS_STD(NAME);
 }
