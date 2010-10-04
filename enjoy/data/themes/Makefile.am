@@ -7,20 +7,28 @@ filesdir = $(datadir)/$(PACKAGE)
 files_DATA = default.edj
 
 images = \
-images/back-button.png \
 images/back_bg.png \
+images/back-button.png \
 images/bottom_bg.png \
+images/bt_list_normal.png \
+images/bt_list_selected.png \
+images/bt_more_normal.png \
+images/bt_more_selected.png \
+images/bt_next_normal.png \
+images/bt_next_selected.png \
+images/bt_nowplaying_normal.png \
+images/bt_nowplaying_selected.png \
+images/bt_pause_normal.png \
+images/bt_pause_selected.png \
+images/bt_play_normal.png \
+images/bt_play_selected.png \
+images/bt_prev_normal.png \
+images/bt_prev_selected.png \
+images/list-highlight.png \
+images/no-cover.png \
 images/scrollbar-bg.png \
 images/scrollbar-knob.png \
-images/top_bg.png \
-images/bt-back.png \
-images/bt-back2.png \
-images/bt-next.png \
-images/bt-next2.png \
-images/bt-play.png \
-images/bt-pause.png \
-images/list-highlight.png \
-images/no-cover.png
+images/top_bg.png
 
 fonts =
 

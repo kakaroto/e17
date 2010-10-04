@@ -1,3 +1,216 @@
+/*
+ * TOOLBAR_POSITION() macro below only works with an odd number of items on a toolbar.
+ * What it does is calculate the offset relative to the center (on x) of the nth button,
+ * and in order to do that, it uses the position of the item in the middle of the toolbar.
+ */
+#define TOOLBAR_ITEMS 5
+#define TOOLBAR_MIDDLE_ITEM 3
+#define TOOLBAR_ITEM_SIZE 90
+#define TOOLBAR_POSITION(_item_number) ((_item_number)*(TOOLBAR_ITEM_SIZE)-((TOOLBAR_ITEM_SIZE)*(TOOLBAR_MIDDLE_ITEM)))
+
+/*
+ * TOOLBAR_NORMAL, ACTION, and MODE specify which kind of button will be created on the
+ * toolbar: this changes both the signals emitted and received. Refer to the Enjoy shell
+ * code to see which button type to use whenever adding new ones.
+ */
+#define TOOLBAR_NORMAL ""
+#define TOOLBAR_ACTION "action,"
+#define TOOLBAR_MODE "mode,"
+
+/*
+ * TOOLBAR_BUTTON macro creates a button on the iconbar. It creates all the necessary parts
+ * and programs to make the button work.
+ * An example of use would be:
+ *      TOOLBAR_BUTTON("play", "Play", TOOLBAR_ACTION, TOOLBAR_POSITION(1))
+ * That will create a button named "play", using the images "bt_play_normal.png" and
+ * "bt_play_selected.png", with the label "Play", type "action" and on the first position
+ * on the toolbar.
+ */
+#define TOOLBAR_BUTTON(_button_name,_button_title,_button_type,_xpos) \
+    part { name: "button-"_button_name"-normal"; \
+        type: IMAGE; \
+        description { state: "default" 0.0; \
+            min: TOOLBAR_ITEM_SIZE TOOLBAR_ITEM_SIZE; \
+            max: TOOLBAR_ITEM_SIZE TOOLBAR_ITEM_SIZE; \
+            fixed: 1 1; \
+            rel1 { \
+                to_y: "iconbar.bg"; \
+                relative: 0.5 1.0; \
+                offset: (_xpos) -47; \
+            } \
+            rel2 { \
+                to_y: "iconbar.bg"; \
+                relative: 0.5 1.0; \
+                offset: (_xpos) (-TOOLBAR_ITEM_SIZE/2); \
+            } \
+            image.normal: "bt_"_button_name"_normal.png"; \
+            color: 255 255 255 255; \
+        } \
+        description { state: "hidden" 0.0; \
+            inherit: "default" 0.0; \
+            color: 255 255 255 0; \
+            visible: 0; \
+        } \
+        description { state: "disabled" 0.0; \
+            inherit: "default" 0.0; \
+            color: 100 100 100 255; \
+        } \
+    } \
+    part { name: "button-"_button_name"-selected"; \
+        type: IMAGE; \
+        mouse_events: 0; \
+        description { state: "default" 0.0; \
+            visible: 0; \
+            min: TOOLBAR_ITEM_SIZE TOOLBAR_ITEM_SIZE; \
+            max: TOOLBAR_ITEM_SIZE TOOLBAR_ITEM_SIZE; \
+            fixed: 1 1; \
+            rel1 { \
+                to_y: "iconbar.bg"; \
+                relative: 0.5 1.0; \
+                offset: (_xpos) -47; \
+            } \
+            rel2 { \
+                to_y: "iconbar.bg"; \
+                relative: 0.5 1.0; \
+                offset: (_xpos) (-TOOLBAR_ITEM_SIZE/2); \
+            } \
+            image.normal: "bt_"_button_name"_selected.png"; \
+            color: 255 255 255 0; \
+            visible: 0; \
+        } \
+        description { state: "visible" 0.0; \
+            inherit: "default" 0.0; \
+            visible: 1; \
+            color: 255 255 255 255; \
+        } \
+    } \
+    part { name: "button-"_button_name"-left-separator"; \
+        type: RECT; \
+        description { state: "default" 0.0; \
+            fixed: 1 1; \
+            min: 2 90; \
+            max: 2 90; \
+            rel1 { \
+                to: "button-"_button_name"-normal"; \
+                relative: 0.0 0.0; \
+                offset: -1 12; \
+            } \
+            rel2 { \
+                to: "button-"_button_name"-normal"; \
+                relative: 0.0 1.0; \
+                offset: -1 -1; \
+            } \
+            color: 0 0 0 128; \
+        } \
+    } \
+    part { name: "button-"_button_name"-label"; \
+        type: TEXT; \
+        effect: GLOW; \
+        mouse_events: 0; \
+        description { state: "default" 0.0; \
+            rel1 { \
+                to: "button-"_button_name"-normal"; \
+                relative: 0.0 0.0; \
+                offset: 0 5; \
+            } \
+            rel2 { \
+                to: "button-"_button_name"-normal"; \
+                relative: 1.0 1.0; \
+                offset: -1 -1; \
+            } \
+            text { \
+                font: "Sans:style=Bold,Edje-Vera-Bold"; \
+                size: 11; \
+                text: _button_title; \
+                align: 0.5 0.5; \
+            } \
+            color: 190 190 190 255; \
+            color2: 20 20 20 255; \
+        } \
+        description { state: "hidden" 0.0; \
+            inherit: "default" 0.0; \
+            visible: 0; \
+            color: 190 190 190 0; \
+            color2: 20 20 20 0; \
+        } \
+        description { state: "disabled" 0.0; \
+            inherit: "default" 0.0; \
+            color: 100 100 100 255; \
+            color2: 50 50 50 255; \
+        } \
+    } \
+    part { name: "button-"_button_name"-disable-mask"; \
+        type: RECT; \
+        mouse_events: 1; \
+        description { state: "default" 0.0; \
+            rel1.to: "button-"_button_name"-normal"; \
+            rel1.offset: 0 7; \
+            rel2.to: "button-"_button_name"-normal"; \
+            fixed: 1 1; \
+            visible: 0; \
+            color: 255 255 255 0; \
+        } \
+        description { state: "disabled" 0.0; \
+            inherit: "default" 0.0; \
+            visible: 1; \
+        } \
+    } \
+    programs { \
+        program { name: _button_name"-pressed"; \
+            signal: "mouse,down,*"; \
+            source: "button-"_button_name"-normal"; \
+            action: STATE_SET "visible" 0.0; \
+            target: "button-"_button_name"-selected"; \
+            transition: ACCELERATE 0.3; \
+        } \
+        program { name: _button_name"-released"; \
+            signal: "mouse,up,*"; \
+            source: "button-"_button_name"-normal"; \
+            action: STATE_SET "default" 0.0; \
+            target: "button-"_button_name"-selected"; \
+            transition: DECELERATE 0.6; \
+        } \
+        program { name: _button_name"-clicked"; \
+            signal: "mouse,clicked,*"; \
+            source: "button-"_button_name"-normal"; \
+            action: SIGNAL_EMIT "ejy,"_button_type""_button_name",clicked" "ejy"; \
+        } \
+        program { name: _button_name"-hide"; \
+            signal: "ejy,"_button_type""_button_name",hide"; \
+            source: "ejy"; \
+            action: STATE_SET "hidden" 0.0; \
+            target: "button-"_button_name"-normal"; \
+            target: "button-"_button_name"-label"; \
+            transition: ACCELERATE 0.3; \
+        } \
+        program { name: _button_name"-show"; \
+            signal: "ejy,"_button_type""_button_name",show"; \
+            source: "ejy"; \
+            action: STATE_SET "default" 0.0; \
+            target: "button-"_button_name"-normal"; \
+            target: "button-"_button_name"-label"; \
+            transition: DECELERATE 0.3; \
+        } \
+        program { name: _button_name"-disable"; \
+            signal: "ejy,"_button_name",disable"; \
+            source: "ejy"; \
+            action: STATE_SET "disabled" 0.0; \
+            target: "button-"_button_name"-normal"; \
+            target: "button-"_button_name"-label"; \
+            target: "button-"_button_name"-disable-mask"; \
+            transition: DECELERATE 0.3; \
+        } \
+        program { name: _button_name"-enable"; \
+            signal: "ejy,"_button_name",enable"; \
+            source: "ejy"; \
+            action: STATE_SET "default" 0.0; \
+            target: "button-"_button_name"-normal"; \
+            target: "button-"_button_name"-label"; \
+            target: "button-"_button_name"-disable-mask"; \
+            transition: DECELERATE 0.3; \
+        } \
+    }
+
 collections {
    group {
       name: "album-without-cover";
@@ -32,12 +245,20 @@ collections {
 
       images {
          image: "bottom_bg.png" COMP;
-         image: "bt-back.png" COMP;
-         image: "bt-back2.png" COMP;
-         image: "bt-next.png" COMP;
-         image: "bt-next2.png" COMP;
-         image: "bt-play.png" COMP;
-         image: "bt-pause.png" COMP;
+         image: "bt_prev_normal.png" COMP;
+         image: "bt_prev_selected.png" COMP;
+         image: "bt_nowplaying_normal.png" COMP;
+         image: "bt_nowplaying_selected.png" COMP;
+         image: "bt_next_normal.png" COMP;
+         image: "bt_next_selected.png" COMP;
+         image: "bt_list_normal.png" COMP;
+         image: "bt_list_selected.png" COMP;
+         image: "bt_more_normal.png" COMP;
+         image: "bt_more_selected.png" COMP;
+         image: "bt_pause_normal.png" COMP;
+         image: "bt_pause_selected.png" COMP;
+         image: "bt_play_normal.png" COMP;
+         image: "bt_play_selected.png" COMP;
       }
       parts {
          part {
@@ -73,272 +294,36 @@ collections {
                state: "default" 0.0;
                image.normal: "bottom_bg.png";
                rel1.relative: 0.0 1.0;
-               rel1.offset: 0 -91;
+               rel1.offset: 0 -90;
             }
          }
-         part {
-            name: "prev.clipper";
-            type: RECT;
-            description {
-               state: "default" 0.0;
-            }
-            description {
-               state: "hidden" 0.0;
-               inherit: "default" 0.0;
-               color: 255 255 255 0;
-               visible: 0;
-            }
-         }
-         part {
-            name: "prev";
-            type: IMAGE;
-            clip_to: "prev.clipper";
-            description {
-               state: "default" 0.0;
-               image.normal: "bt-back.png";
-               min: 64 64;
-               max: 64 64;
-               align: 1.0 0.5;
-               rel1 {
-                 to: "action,play";
-               }
-               rel2 {
-                 to: "action,play";
-                 relative: 0.0 1.0;
-               }
-            }
-            description {
-               state: "pressed" 0.0;
-               inherit: "default" 0.0;
-               image.normal: "bt-back2.png";
-            }
-            programs {
-               program {
-                  name: "prev,down";
-                  signal: "mouse,down,1";
-                  source: "prev";
-                  action: STATE_SET "pressed" 0.0;
-                  target: "prev";
-               }
-               program {
-                  name: "prev,up";
-                  signal: "mouse,up,1";
-                  source: "prev";
-                  action: STATE_SET "default" 0.0;
-                  target: "prev";
-               }
-               program {
-                  name: "prev,clicked";
-                  signal: "mouse,clicked,1";
-                  source: "prev";
-                  action: SIGNAL_EMIT "ejy,prev,clicked" "ejy";
-               }
-            }
-         }
-         part {
-            name: "next.clipper";
-            type: RECT;
-            description {
-               state: "default" 0.0;
-            }
-            description {
-               state: "hidden" 0.0;
-               inherit: "default" 0.0;
-               color: 255 255 255 0;
-               visible: 0;
-            }
-         }
-         part {
-            name: "next";
-            type: IMAGE;
-            clip_to: "next.clipper";
-            description {
-               state: "default" 0.0;
-               image.normal: "bt-next.png";
-               min: 64 64;
-               max: 64 64;
-               align: 0.0 0.5;
-               rel1 {
-                 to: "action,play";
-                 relative: 1.0 0.0;
-               }
-               rel2 {
-                 to: "action,play";
-               }
-            }
-            description {
-               state: "pressed" 0.0;
-               inherit: "default" 0.0;
-               image.normal: "bt-next2.png";
-            }
-            programs {
-               program {
-                  name: "next,down";
-                  signal: "mouse,down,1";
-                  source: "next";
-                  action: STATE_SET "pressed" 0.0;
-                  target: "next";
-               }
-               program {
-                  name: "next,up";
-                  signal: "mouse,up,1";
-                  source: "next";
-                  action: STATE_SET "default" 0.0;
-                  target: "next";
-               }
-               program {
-                  name: "next,clicked";
-                  signal: "mouse,clicked,1";
-                  source: "next";
-                  action: SIGNAL_EMIT "ejy,next,clicked" "ejy";
-               }
-            }
-         }
-         part {
-            name: "action,pause.clipper";
-            type: RECT;
-            description {
-               state: "default" 0.0;
-            }
-            description {
-               state: "hidden" 0.0;
-               inherit: "default" 0.0;
-               color: 255 255 255 0;
-               visible: 0;
-            }
-         }
-         part {
-            name: "action,pause";
-            type: IMAGE;
-            clip_to: "action,pause.clipper";
-            description {
-               state: "default" 0.0;
-               image.normal: "bt-play.png";
-               min: 64 64;
-               max: 64 64;
-               align: 0.5 0.5;
-               rel1 {
-                 to: "iconbar.bg";
-                 offset: 0 5;
-               }
-               rel2 {
-                 to: "iconbar.bg";
-               }
-            }
-            description {
-               state: "pressed" 0.0;
-               inherit: "default" 0.0;
-               image.normal: "bt-play.png";
-            }
-            programs {
-               program {
-                  name: "pause,down";
-                  signal: "mouse,down,1";
-                  source: "action,pause";
-                  action: STATE_SET "pressed" 0.0;
-                  target: "action,pause";
-               }
-               program {
-                  name: "pause,up";
-                  signal: "mouse,up,1";
-                  source: "action,pause";
-                  action: STATE_SET "default" 0.0;
-                  target: "action,pause";
-               }
-               program {
-                  name: "pause,clicked";
-                  signal: "mouse,clicked,1";
-                  source: "action,pause";
-                  action: SIGNAL_EMIT "ejy,action,pause,clicked" "ejy";
-               }
-               program {
-                  name: "pause,hide";
-                  signal: "ejy,action,pause,hide";
-                  source: "ejy";
-                  action: STATE_SET "hidden" 0.0;
-                  target: "action,pause.clipper";
-               }
-               program {
-                  name: "pause,show";
-                  signal: "ejy,action,pause,show";
-                  source: "ejy";
-                  action: STATE_SET "default" 0.0;
-                  target: "action,pause.clipper";
-               }
-            }
-         }
-         part {
-            name: "action,play.clipper";
-            type: RECT;
-            description {
-               state: "default" 0.0;
-            }
-            description {
-               state: "hidden" 0.0;
-               inherit: "default" 0.0;
-               color: 255 255 255 0;
-               visible: 0;
-            }
-         }
-         part {
-            name: "action,play";
-            type: IMAGE;
-            clip_to: "action,play.clipper";
-            description {
-               state: "default" 0.0;
-               image.normal: "bt-pause.png";
-               min: 64 64;
-               max: 64 64;
-               align: 0.5 0.5;
-               rel1 {
-                 to: "iconbar.bg";
-                 offset: 0 5;
-               }
-               rel2 {
-                 to: "iconbar.bg";
-               }
-            }
-            description {
-               state: "pressed" 0.0;
-               inherit: "default" 0.0;
-               image.normal: "bt-pause.png";
-            }
-            programs {
-               program {
-                  name: "play,down";
-                  signal: "mouse,down,1";
-                  source: "action,play";
-                  action: STATE_SET "pressed" 0.0;
-                  target: "action,play";
-               }
-               program {
-                  name: "play,up";
-                  signal: "mouse,up,1";
-                  source: "action,play";
-                  action: STATE_SET "default" 0.0;
-                  target: "action,play";
-               }
-               program {
-                  name: "play,clicked";
-                  signal: "mouse,clicked,1";
-                  source: "action,play";
-                  action: SIGNAL_EMIT "ejy,action,play,clicked" "ejy";
-               }
-               program {
-                  name: "play,hide";
-                  signal: "ejy,action,play,hide";
-                  source: "ejy";
-                  action: STATE_SET "hidden" 0.0;
-                  target: "action,play.clipper";
-               }
-               program {
-                  name: "play,show";
-                  signal: "ejy,action,play,show";
-                  source: "ejy";
-                  action: STATE_SET "default" 0.0;
-                  target: "action,play.clipper";
-               }
-            }
+
+         TOOLBAR_BUTTON("prev",       "Previous", TOOLBAR_NORMAL, TOOLBAR_POSITION(1))
+         TOOLBAR_BUTTON("next",       "Next",     TOOLBAR_NORMAL, TOOLBAR_POSITION(2))
+         TOOLBAR_BUTTON("pause",      "Pause",    TOOLBAR_ACTION, TOOLBAR_POSITION(3))
+         TOOLBAR_BUTTON("play",       "Play",     TOOLBAR_ACTION, TOOLBAR_POSITION(3))
+         TOOLBAR_BUTTON("list",       "Playlist", TOOLBAR_MODE,   TOOLBAR_POSITION(4))
+         TOOLBAR_BUTTON("nowplaying", "Playing",  TOOLBAR_MODE,   TOOLBAR_POSITION(4))
+         TOOLBAR_BUTTON("more",       "More",     TOOLBAR_NORMAL, TOOLBAR_POSITION(5))
+
+         part { name: "button-more-right-separator";
+             type: RECT;
+             description { state: "default" 0.0;
+                 fixed: 1 1;
+                 min: 2 90;
+                 max: 2 90;
+                 rel1 {
+                     to: "button-more-normal";
+                     relative: 1.0 0.0;
+                     offset: -2 12;
+                 }
+                 rel2 {
+                     to: "button-more-normal";
+                     relative: 1.0 1.0;
+                     offset: -2 -1;
+                 }
+                 color: 0 0 0 128;
+             }
          }
       }
    }
