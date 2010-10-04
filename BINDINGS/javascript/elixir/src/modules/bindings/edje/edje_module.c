@@ -2037,7 +2037,7 @@ elixir_edje_object_item_provider_set(JSContext *cx, uintN argc, jsval *vp)
 }
 
 static void
-_elixir_edje_object_text_insert_filter_cb(void *data, Evas_Object *obj, const char *part, char **text)
+_elixir_edje_object_text_insert_filter_cb(void *data, Evas_Object *obj, const char *part, Edje_Text_Filter_Type type, char **text)
 {
    JSFunction *cb;
    JSContext *cx;
@@ -2045,7 +2045,7 @@ _elixir_edje_object_text_insert_filter_cb(void *data, Evas_Object *obj, const ch
    JSString *spart;
    JSString *stext;
    jsval js_return;
-   jsval argv[4];
+   jsval argv[5];
 
    cb = elixir_void_get_private(data);
    cx = elixir_void_get_cx(data);
@@ -2069,9 +2069,10 @@ _elixir_edje_object_text_insert_filter_cb(void *data, Evas_Object *obj, const ch
 
    argv[0] = elixir_void_get_jsval(data);
    argv[2] = STRING_TO_JSVAL(spart);
-   argv[3] = STRING_TO_JSVAL(stext);
+   argv[3] = INT_TO_JSVAL(type);
+   argv[4] = STRING_TO_JSVAL(stext);
 
-   if (!elixir_function_run(cx, cb, parent, 4, argv, &js_return))
+   if (!elixir_function_run(cx, cb, parent, 5, argv, &js_return))
      goto on_run_error;
 
    *text = elixir_get_string(cx, js_return);
@@ -2134,7 +2135,7 @@ elixir_edje_object_text_insert_filter_callback_del(JSContext *cx, uintN argc, js
    lst = evas_object_data_get(eo, "elixir_jsmap");
    data = elixir_jsmap_find(&lst, val[3].v.any, -5);
 
-   edje_object_text_insert_filter_callback_del(eo, part, _elixir_edje_object_text_insert_filter_cb, data);
+   edje_object_text_insert_filter_callback_del(eo, part, _elixir_edje_object_text_insert_filter_cb);
 
    lst = elixir_jsmap_del(lst, cx, val[3].v.any, -5);
    evas_object_data_set(eo, "elixir_jsmap", lst);

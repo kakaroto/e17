@@ -214,6 +214,12 @@ _elixir_evas_object_image_border_center_fill_get(const Evas_Object *obj)
    return (int) evas_object_image_border_center_fill_get(obj);
 }
 
+static int
+_elixir_evas_object_image_load_error_get(const Evas_Object *obj)
+{
+   return (int) evas_object_image_load_error_get(obj);
+}
+
 static JSBool
 elixir_int_evas_object_params(int (*func)(const Evas_Object *obj),
                               const elixir_parameter_t *params[],
@@ -580,7 +586,7 @@ FAST_CALL_PARAMS_SPEC_CAST(evas_object_render_op_get, elixir_int_evas_object_par
 FAST_CALL_PARAMS_SPEC_CAST(evas_object_image_border_center_fill_get, elixir_int_evas_object_params, _evas_object_image_params);
 
 FAST_CALL_PARAMS_SPEC_CAST(evas_object_layer_get, elixir_int_evas_object_params, _evas_object_params);
-FAST_CALL_PARAMS_SPEC(evas_object_image_load_error_get, elixir_int_evas_object_params, _evas_object_image_params);
+FAST_CALL_PARAMS_SPEC_CAST(evas_object_image_load_error_get, elixir_int_evas_object_params, _evas_object_image_params);
 FAST_CALL_PARAMS_SPEC(evas_object_image_load_scale_down_get, elixir_int_evas_object_params, _evas_object_image_params);
 FAST_CALL_PARAMS_SPEC(evas_object_text_ascent_get, elixir_int_evas_object_params, _evas_object_text_params);
 FAST_CALL_PARAMS_SPEC(evas_object_text_descent_get, elixir_int_evas_object_params, _evas_object_text_params);

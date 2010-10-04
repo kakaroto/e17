@@ -47,6 +47,12 @@ elixir_evas_render_method_list(JSContext *cx, uintN argc, jsval *vp)
    return JS_TRUE;
 }
 
+static int
+_elixir_evas_alloc_error(void)
+{
+   return (int) evas_alloc_error();
+}
+
 static JSBool
 elixir_evas_textblock_style_new(JSContext *cx, uintN argc, jsval *vp)
 {
@@ -63,7 +69,7 @@ elixir_evas_textblock_style_new(JSContext *cx, uintN argc, jsval *vp)
    return JS_TRUE;
 }
 
-FAST_CALL_PARAMS(evas_alloc_error, elixir_int_params_void);
+FAST_CALL_PARAMS_CAST(evas_alloc_error, elixir_int_params_void);
 FAST_CALL_PARAMS(evas_init, elixir_int_params_void);
 FAST_CALL_PARAMS(evas_shutdown, elixir_int_params_void);
 
