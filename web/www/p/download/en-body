@@ -1,5 +1,61 @@
 <table class='main'>
  <tr>
+  <td class='main'>
+   <div class="main">
+    <p><h2>Releases</h2></p>
+    <p>The latest releases of Packages can always be found here:</p>
+    <p><a href="http://download.enlightenment.org/releases">Releases</a></p>
+   </div>
+   <hr>
+   <div class="main">
+    <p><h2>Eina</h2> 1.0.0 BETA</p>
+    <p>Core data structure library</p>
+    <p>Requires:
+     <ul>
+      <li>libc</li>
+      <li>libm</li>
+     </ul>
+    </p>
+    <p align=right>
+     <?php blinkurl("i/logo-s.png", "DOWNLOAD", 
+      "http://download.enlightenment.org/releases/eina-1.0.0.beta.tar.gz"
+     );?>
+     </p>
+   </div>
+  </td>
+
+  <td class='main'>
+   <div class="main">
+    <p><h2>Packages</h2></p>
+    <p>Unoffical packages are availble for several platforms including:</p>
+    <p>
+     <ul>
+      <li>Debian</li>
+      <li><a href="http://ubuntuforums.org/showthread.php?t=97199&highlight=E17+cvs">Ubuntu</a></li>
+      <li><a href="http://sps.nus.edu.sg/~didierbe">Fedora</a></li>
+      <li><a href="http://wiki.archlinux.org/index.php/E17">ArchLinux</a></li>
+      <li><a href="http://en.gentoo-wiki.com/wiki/E17">Gentoo</a>
+      <li>FreeBSD</p>
+     </ul>
+    </p>
+    <p>There are no guarentees if these packages will work as expected. If you experience
+    any problems with DR17 or the EFL using the packages, please first refer to the
+    packagers, not to the Enlightenment team.</p>
+   </div>
+  </td>
+
+  <td class='main'>
+   <div class="main">
+    <p><h2>Snapshots</h2></p>
+    <p><?php a("contribute", "SVN");?> information is here.</p>
+    <p>Snapshot releases are available from
+    <a href="http://download.enlightenment.org/snapshots">download.enlightenment.org/snapshots</a>.</p>
+    <p><a href="http://download.enlightenment.org/snapshots/LATEST">Latest Snapshots</a></p>
+   </div>
+  </td>
+ </tr>
+ 
+ <tr>
   <td class='main' colspan=3>
    <div class="main">
     <h1>Download Enlightenment DR16</h1>
@@ -59,52 +115,6 @@
         </tbody>
      </table>
     </center>
-
-    <hr>
-
-    <h1>Download Enlightenment DR17 and the EFL</h1>
-    <p>While DR17 and the EFL are primarily available from SVN there are a few,
-    unofficial, packages for various distros along with snapshot tarballs.
-    If you wish to use SVN please see the <?php a('contribute', "contributing");?>
-    section for more information.</p>
-
-    <hr>
-  </td>
- </tr>
- <tr>
-  <td class='main'>
-   <div class="main">
-    <p><h2>Releases</h2></p>
-    <p>The latest releases of Packages can be found here:</p>
-    <p><a href="http://download.enlightenment.org/releases">Releases</a></p>
-   </div>
-  </td>
-
-  <td class='main'>
-   <div class="main">
-    <p><h2>SVN &amp; Asparagus</h2>(Snapshots)</p>
-    <p><?php img("aspara.png", "Asparagus");?></p>
-    <p><?php a("contribute", "SVN");?> information is here.</p>
-    <p>Snapshot releases are available from
-    <a href="http://download.enlightenment.org/snapshots">download.enlightenment.org/snapshots</a>.</p>
-    <p><a href="http://download.enlightenment.org/snapshots/LATEST">Latest Snapshots</a></p>
-   </div>
-  </td>
-
-  <td class='main'>
-   <div class="main">
-    <p><h2>Packages</h2></p>
-    <p>Unoffical packages are availble for several platforms including:
-    Debian, <a href="http://ubuntuforums.org/showthread.php?t=97199&highlight=E17+cvs">Ubuntu</a>,
-    <a href="http://sps.nus.edu.sg/~didierbe">Fedora</a>,
-    <a href="http://wiki.archlinux.org/index.php/E17">ArchLinux</a>, and
-    <a href="http://en.gentoo-wiki.com/wiki/E17">Gentoo</a>. There is
-    also a port available in the FreeBSD ports collection.</p>
-
-    <p>There are no guarentees if these packages will work as expected. If you experience
-    any problems with DR17 or the EFL using the packages, please first refer to the
-    packagers, not to the Enlightenment team.</p>
-   </div>
   </td>
  </tr>
 </table>
