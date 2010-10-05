@@ -144,7 +144,6 @@
         mouse_events: 1; \
         description { state: "default" 0.0; \
             rel1.to: "button-"_button_name"-normal"; \
-            rel1.offset: 0 7; \
             rel2.to: "button-"_button_name"-normal"; \
             fixed: 1 1; \
             visible: 0; \

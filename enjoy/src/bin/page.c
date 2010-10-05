@@ -579,6 +579,7 @@ page_songs_next_go(Evas_Object *obj)
    Song *song;
    if (!it) return NULL;
    it = elm_genlist_item_next_get(it);
+   if (!it) return NULL;
    song = elm_genlist_item_data_get(it);
    page->selected = it;
    elm_genlist_item_selected_set(it, EINA_TRUE);
@@ -604,6 +605,7 @@ page_songs_prev_go(Evas_Object *obj)
    Song *song;
    if (!it) return NULL;
    it = elm_genlist_item_prev_get(it);
+   if (!it) return NULL;
    song = elm_genlist_item_data_get(it);
    page->selected = it;
    elm_genlist_item_selected_set(it, EINA_TRUE);
