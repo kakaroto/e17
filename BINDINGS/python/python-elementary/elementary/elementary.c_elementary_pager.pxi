@@ -33,6 +33,7 @@ cdef class Pager(Object):
             pass
 
         _pager_mapping[<long>content.obj] = content
+        elm_pager_content_push(self.obj, content.obj);
 
     def content_pop(self):
         elm_pager_content_pop(self.obj)
