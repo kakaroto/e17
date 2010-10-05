@@ -4,8 +4,8 @@ Name:		Tiago Rezende Campos Falcao
 Location:	Campinas, Brazil
 E-Mail:		tiago@profusion.mobi
 WWW:		http://www.tiagofalcao.com
-Managing:	
-Contributing:	editje
+Managing:	editje, effeniht
+Contributing:	elementary, edje, python-efl
 Group:		Applications
 Platform:	Ubuntu (Linux)
 GeoData:	-22.82310 -47.08770
