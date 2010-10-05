@@ -52,6 +52,9 @@ class PartDetails(EditjeDetails):
         self._header_table = PropertyTable(
             parent, "part name/type", self.header_prop_value_changed)
 
+        self.content_set("part_name.swallow", self._header_table)
+        self._header_table.show()
+
         prop = Property(parent, "name")
         wid = WidgetEntry(self)
         wid.tooltip_set("Unique name of part.")
@@ -71,6 +74,7 @@ class PartDetails(EditjeDetails):
         wid.tooltip_set("External Widget Type.")
         self._source_prop.widget_add("s", wid)
         self._source_prop.hide()
+        self._header_table.property_add(self._source_prop)
 
         self._module_prop = Property(parent, "module")
         wid = WidgetEntry(self)
@@ -78,8 +82,7 @@ class PartDetails(EditjeDetails):
         wid.tooltip_set("External Widget Module.")
         self._module_prop.widget_add("m", wid)
         self._module_prop.hide()
-
-        self.content_set("part_name.swallow", self._header_table)
+        self._header_table.property_add(self._module_prop)
 
         self.__notification = None
 

@@ -279,14 +279,13 @@ class SignalDetails(EditjeDetails):
 
         self._header_table = PropertyTable(
             parent, "signal name", self._header_prop_value_changed)
+        self.content_set("part_state.swallow", self._header_table)
 
         prop = Property(parent, "name")
         wid = WidgetEntry(self)
         wid.tooltip_set("Unique signal name.")
         prop.widget_add("n", wid)
         self._header_table.property_add(prop)
-
-        self.content_set("part_state.swallow", self._header_table)
 
         popup_hide_cb_list = [(self.e.signal, "program.unselected"),
                               (self.e.signal, "program.changed")]
@@ -305,19 +304,20 @@ class SignalDetails(EditjeDetails):
         def animations_get():
             return self.e.animations
 
-        self._prop_source_parts = Property(parent, "source")
-        wid = WidgetSource(self, "Parts list", parts_get, popup_hide_cb_list)
-        wid.tooltip_set("Accepted signal source.", "Click to select one "
-                        "existent<br>part as source.")
-        self._prop_source_parts.widget_add("s", wid)
-
         self._prop_source_animations = Property(parent, "source")
         wid = WidgetSource(self, "Animation list",
                            animations_get, popup_hide_cb_list)
         wid.tooltip_set("Accepted signal source.", "Click to select one "
                         "existent<br>animation as source.")
         self._prop_source_animations.widget_add("s", wid)
+        self["main"].property_add(self._prop_source_animations)
+        self["main"].property_del("source")
 
+        self._prop_source_parts = Property(parent, "source")
+        wid = WidgetSource(self, "Parts list", parts_get, popup_hide_cb_list)
+        wid.tooltip_set("Accepted signal source.", "Click to select one "
+                        "existent<br>part as source.")
+        self._prop_source_parts.widget_add("s", wid)
         self["main"].property_add(self._prop_source_parts)
 
         prop = Property(parent, "delay")

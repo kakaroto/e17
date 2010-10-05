@@ -441,6 +441,7 @@ class AnimationDetails(EditjeDetails):
 
         self._header_table = PropertyTable(
             parent, "animation name", self.header_prop_value_changed)
+        self.content_set("part_name.swallow", self._header_table)
 
         prop = Property(parent, "name")
         wid = WidgetEntry(self)
@@ -457,8 +458,6 @@ class AnimationDetails(EditjeDetails):
         wid.tooltip_set("Time lenght of animation<br>in seconds.")
         prop.widget_add("l", wid)
         self._header_table.property_add(prop)
-
-        self.content_set("part_name.swallow", self._header_table)
 
         prop = Property(parent, "current")
         wid = WidgetEntry(self)

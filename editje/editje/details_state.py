@@ -882,6 +882,7 @@ class PartAnimStateDetails(PartStateDetails):
         self.title = "part frame properties"
 
         self._header_table = PropertyTable(parent, "part name/type")
+        self.content_set("part_state.swallow", self._header_table)
 
         prop = Property(parent, "name")
         wid = WidgetEntry(self)
@@ -899,12 +900,14 @@ class PartAnimStateDetails(PartStateDetails):
         wid = WidgetEntry(self)
         wid.disabled_set(True)
         self._source_prop.widget_add("s", wid)
+        self._header_table.property_add(self._source_prop)
         self._source_prop.hide()
 
         self._module_prop = Property(parent, "module")
         wid = WidgetEntry(self)
         wid.disabled_set(True)
         self._module_prop.widget_add("m", wid)
+        self._header_table.property_add(self._module_prop)
         self._module_prop.hide()
 
         self.content_set("part_name.swallow", self._header_table)

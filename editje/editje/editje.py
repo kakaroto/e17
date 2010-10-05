@@ -332,6 +332,7 @@ class Editje(elementary.Window, OpenFileManager):
             self._window_blocker.size_hint_weight_set(
                 evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
             self.resize_object_add(self._window_blocker)
+            self._window_blocker.disabled_set(True)
             if object_over:
                 self._window_blocker.stack_below(object_over)
             self._window_blocker.show()
@@ -340,8 +341,7 @@ class Editje(elementary.Window, OpenFileManager):
             if not self._window_blocker:
                 return
 
-            self._window_blocker.hide()
-            del self._window_blocker
+            self._window_blocker.delete()
             self._window_blocker = None
 
         if value:
