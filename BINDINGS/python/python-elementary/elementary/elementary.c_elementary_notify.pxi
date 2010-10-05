@@ -18,7 +18,7 @@
 cdef class Notify(Object):
     """Display a window in a particular region of the application (top,
     bottom, etc.  A timeout can be set to automatically close the
-    window. This is so that, after an evas_object_show() on a notify
+    window. This is so that, after an show() on a notify
     object, if a timeout was set on it, it will <b>automatically</b>
     get hidden after that time.
     """
@@ -31,10 +31,10 @@ cdef class Notify(Object):
 
         Once the content object is set, a previously set one will be deleted.
         If you want to keep that old content object, use the
-        elm_notify_content_unset() function.
+        content_unset() function.
 
-        @parm: B{obj} The notify object
-        @parm: B{content} The content will be filled in this notify object
+        @param obj: The notify object
+        @param content: The content will be filled in this notify object
         """
         cdef c_evas.Evas_Object *o
         if content is not None:
@@ -48,7 +48,7 @@ cdef class Notify(Object):
 
         Unparent and return the content object which was set for this widget
 
-        @parm: obj The notify object
+        @param obj: The notify object
         @return: The content that was being used
         """
         cdef c_evas.Evas_Object *o
@@ -64,7 +64,7 @@ cdef class Notify(Object):
     def content_get(self):
         """ Return the content of the notify widget
 
-        @parm: obj The notify object
+        @param obj: The notify object
         @return: The content that is being used
         """
         cdef c_evas.Evas_Object *o
@@ -80,8 +80,8 @@ cdef class Notify(Object):
     def parent_set(self, c_evas.Object parent):
         """ Set the notify parent
 
-        @parm: obj The notify object
-        @parm: content The new parent
+        @param obj: The notify object
+        @param content: The new parent
         """
         cdef c_evas.Evas_Object *o
         if parent is not None:
@@ -93,14 +93,14 @@ cdef class Notify(Object):
     def orient_set(self, int orient):
         """ Set the orientation
 
-        @parm: obj The notify object
-        @parm: orient The new orientation
+        @param obj: The notify object
+        @param orient: The new orientation
         """
         elm_notify_orient_set(self.obj, orient)
 
     def orient_get(self):
         """ Return the orientation
-        @parm: obj the notify objects
+        @param obj: the notify objects
         """
         return elm_notify_orient_get(self.obj)
 
@@ -109,8 +109,8 @@ cdef class Notify(Object):
 
         Set a value < 0 to disable a running timer.
 
-        @parm: obj The notify object
-        @parm: time The new timeout
+        @param obj: The notify object
+        @param time: The new timeout
 
         @note: If the value > 0 and the notify is visible, the timer will be started
         with this value, canceling any before started timer to this notify.
@@ -119,28 +119,28 @@ cdef class Notify(Object):
 
     def timeout_get(self):
         """ Return the timeout value (in seconds)
-        @parm: obj the notify object
+        @param obj: the notify object
         """
         return elm_notify_timeout_get(self.obj)
 
     def repeat_events_set(self, repeat):
         """
-        When true if the user clicks outside the window the events will be
+        When True if the user clicks outside the window the events will be
         catch by the others widgets, else the events are block and the signal
         dismiss will be sent when the user click outside the window.
 
-        @note: The default value is EINA_TRUE.
+        @note: The default value is True.
 
-        @parm: obj The notify object
-        @parm: repeats EINA_TRUE Events are repeats, else no
+        @param obj: The notify object
+        @parm: repeats If True events are repeats, else no
         """
         elm_notify_repeat_events_set(self.obj, repeat)
 
     def repeat_events_get(self):
         """
-        Return true if events are repeat below the notify object
+        Return True if events are repeat below the notify object
 
-        @parm: B{obj} the notify object
+        @param obj: the notify object
         """
         return bool(elm_notify_repeat_events_get(self.obj))
 
