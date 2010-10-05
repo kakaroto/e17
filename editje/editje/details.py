@@ -24,18 +24,19 @@ from prop import PropertyTable
 from operation import Operation
 
 
-class EditjeDetails(edje.Edje):
+class EditjeDetails(elementary.Layout):
     def __init__(self, parent, operation_stack_cb,
                  group="editje/collapsable/default"):
         if not operation_stack_cb:
             raise TypeError("You must set a callback for operation stacking on"
                             " EditjeDetails objects.")
 
-        edje.Edje.__init__(self, parent.evas_get())
+        elementary.Layout.__init__(self, parent)
+        self.file_set(parent.theme, group)
+        self._edje = self.edje_get()
+
         self._parent = parent
         self._operation_stack_cb = operation_stack_cb
-
-        self.file_set(parent.theme, group)
 
         self._proptable = PropertyTable(
             parent, "main", self.prop_value_changed)
@@ -59,12 +60,12 @@ class EditjeDetails(edje.Edje):
         self._open_load()
 
     def _min_sizes_init(self, group):
-        self._m_save = self.size_min_calc()
+        self._m_save = self._edje.size_min_calc()
         self._min_size_collapsed = self._m_save
-        self.edje_get().signal_emit("cl,extra,activate", "")
+        self._edje.signal_emit("cl,extra,activate", "")
         edje.message_signal_process()
-        self._m_save_extra = self.size_min_calc()
-        self.edje_get().signal_emit("cl,extra,deactivate", "")
+        self._m_save_extra = self._edje.size_min_calc()
+        self._edje.signal_emit("cl,extra,deactivate", "")
         self._min_size = self._min_size_collapsed
 
     def min_size_expanded_toggle(self, value):
@@ -74,17 +75,14 @@ class EditjeDetails(edje.Edje):
             self._min_size_collapsed = self._m_save
 
     def _size_hint_changed_cb(self, obj):
-        self._min_size = self.size_min_calc()
+        self._min_size = self._edje.size_min_calc()
         if self._open:
             self.size_hint_min_set(*self._min_size)
 
     def content_set(self, part, obj):
         obj.on_changed_size_hints_add(self._size_hint_changed_cb)
-        self.part_swallow(part, obj)
-        self._min_size = self.size_min_calc()
-
-    def edje_get(self):
-        return self
+        elementary.Layout.content_set(self, part, obj)
+        self._min_size = self._edje.size_min_calc()
 
     def group_add(self, name):
         if name in self._subgroups:
@@ -148,7 +146,7 @@ class EditjeDetails(edje.Edje):
 
     # Title
     def _title_set(self, value):
-        self.part_text_set("cl.header.title", value)
+        self._edje.part_text_set("cl.header.title", value)
 
     def _title_get(self):
         return self.part_text_get("cl.header.title")
@@ -157,9 +155,9 @@ class EditjeDetails(edje.Edje):
 
     #  Open / Close
     def _open_load(self):
-        self.signal_callback_add("cl,opened", "editje/collapsable",
+        self._edje.signal_callback_add("cl,opened", "editje/collapsable",
                                  self._opened_cb)
-        self.signal_callback_add("cl,closed", "editje/collapsable",
+        self._edje.signal_callback_add("cl,closed", "editje/collapsable",
                                  self._closed_cb)
 
         self._open = False
@@ -173,21 +171,21 @@ class EditjeDetails(edje.Edje):
 
     def open_set(self, value):
         if value:
-            self.signal_emit("cl,open", "")
+            self._edje.signal_emit("cl,open", "")
         else:
-            self.signal_emit("cl,close", "")
+            self._edje.signal_emit("cl,close", "")
 
     def _opened_cb(self, obj, emission, source):
         self._open = True
         self.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
         self.size_hint_min_set(*self._min_size)
-        self.calc_force()
+        self._edje.calc_force()
 
     def _closed_cb(self, obj, emission, source):
         self._open = False
         self.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         self.size_hint_min_set(*self._min_size_collapsed)
-        self.calc_force()
+        self._edje.calc_force()
 
     def _open_get(self):
         return self._open
