@@ -111,26 +111,17 @@ class FileSelector(Manager, elementary.Table):
         self.pack(self._right_bx, 1, 0, 3, 4)
         self._right_bx.show()
 
-        sc = elementary.Scroller(self)
-        sc.content_min_limit(0, 1)
-        sc.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
-                      elementary.ELM_SCROLLER_POLICY_OFF)
-        sc.bounce_set(False, False)
-        sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
-        sc.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
-        self._right_bx.pack_end(sc)
-        sc.show()
 
-        self._nav_path = elementary.Entry(self)
+        self._nav_path = elementary.ScrolledEntry(self)
         self._nav_path.single_line_set(True)
-        self._nav_path.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
-                                            evas.EVAS_HINT_EXPAND)
-        self._nav_path.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
+        self._nav_path.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+        self._nav_path.size_hint_align_set(evas.EVAS_HINT_FILL,
+                                           evas.EVAS_HINT_FILL)
         self._nav_path.editable_set(False)
         self._nav_path.entry_set("PATH")
         self._nav_path.callback_anchor_clicked_add(self._path_go)
         self._nav_path.callback_changed_add(self._path_change)
-        sc.content_set(self._nav_path)
+        self._right_bx.pack_end(self._nav_path)
         self._nav_path.show()
 
         self._files = elementary.List(self)
@@ -144,25 +135,14 @@ class FileSelector(Manager, elementary.Table):
         self._right_bx.pack_end(self._files)
         self._files.show()
 
-        self._file_sc = elementary.Scroller(self)
-        self._file_sc.content_min_limit(0, 1)
-        self._file_sc.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
-                      elementary.ELM_SCROLLER_POLICY_OFF)
-        self._file_sc.bounce_set(False, False)
-        self._file_sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
-        self._file_sc.size_hint_align_set(evas.EVAS_HINT_FILL,
-                                          evas.EVAS_HINT_FILL)
-
-        self._file_entry = elementary.Entry(self)
+        self._file_entry = elementary.ScrolledEntry(self)
         self._file_entry.single_line_set(True)
-        self._file_entry.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
-                                            evas.EVAS_HINT_EXPAND)
+        self._file_entry.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         self._file_entry.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
         self._file_entry.editable_set(True)
         self._file_entry.entry_set("")
         self._file_entry.callback_changed_add(self._file_entry_change)
-        self._file_sc.content_set(self._file_entry)
-        self._file_entry.show()
+        self._right_bx.pack_end(self._file_entry)
 
     def _multi_set(self, value):
         if self.save and value:
@@ -183,12 +163,12 @@ class FileSelector(Manager, elementary.Table):
     def _save_set(self, value):
         self._save = value
         if self._save:
-            self._right_bx.pack_end(self._file_sc)
-            self._file_sc.show()
+            self._right_bx.pack_end(self._file_entry)
+            self._file_entry.show()
             self.multi = False
         else:
-            self._file_sc.hide()
-            self._right_bx.unpack(self._file_sc)
+            self._file_entry.hide()
+            self._right_bx.unpack(self._file_entry)
 
     def _save_get(self):
         return self._save

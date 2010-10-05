@@ -54,10 +54,11 @@ class WidgetEntry(Widget, WidgetEntryValidator):
         WidgetEntryValidator.__init__(self)
         self._value = ""
 
-        self.entry = elementary.Entry(parent)
-        self.entry.single_line_set(1)
+        self.entry = elementary.ScrolledEntry(parent)
+        self.entry.single_line_set(True)
         self.entry.style_set("editje.details")
         self.entry.size_hint_weight_set(1.0, 0.0)
+        self.entry.size_hint_align_set(-1.0, -1.0)
         self.entry.context_menu_disabled_set(True)
         self.entry.callback_activated_add(self._entry_activate_cb)
         self.entry.callback_changed_add(self._entry_changed_cb)
@@ -66,18 +67,7 @@ class WidgetEntry(Widget, WidgetEntryValidator):
         self.entry.callback_unfocused_add(self._unfocused_cb)
         self.entry.show()
 
-        self.scr = elementary.Scroller(parent)
-        self.scr.style_set("editje.details")
-        self.scr.size_hint_weight_set(1.0, 0.0)
-        self.scr.size_hint_align_set(-1.0, -1.0)
-        self.scr.content_min_limit(False, True)
-        self.scr.policy_set(elementary.ELM_SCROLLER_POLICY_OFF,
-                            elementary.ELM_SCROLLER_POLICY_OFF)
-        self.scr.bounce_set(False, False)
-        self.scr.content_set(self.entry)
-        self.scr.show()
-
-        self.obj = self.scr
+        self.obj = self.entry
 
     def tooltip_set(self, label):
         self.entry.tooltip_text_set(label)

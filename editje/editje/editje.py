@@ -453,7 +453,7 @@ class Editje(elementary.Window, OpenFileManager):
         self.main_edje.part_text_set("details_group_label", "Group:")
         self.main_edje.part_text_set("details_file_label", "File:")
 
-        self._group_name_entry = elementary.Entry(self)
+        self._group_name_entry = elementary.ScrolledEntry(self)
         self._group_name_entry.context_menu_disabled_set(True)
         self._group_name_entry.size_hint_weight_set(1.0, 1.0)
         self._group_name_entry.size_hint_align_set(-1.0, -1.0)

@@ -40,8 +40,6 @@ class WidgetColor(FloaterOpener, WidgetEntry):
         self.entry.callback_changed_add(self._entry_changed_cb)
         self.entry.callback_double_clicked_add(self._dblclick_cb)
 
-        self.scr.content_min_limit(False, True)
-
         ed = parent.edje_get()
         file = ed.file_get()[0]
         self.rect = edje.Edje(ed.evas, file=file, group="colorpreviewer")
@@ -54,7 +52,7 @@ class WidgetColor(FloaterOpener, WidgetEntry):
         self.box.horizontal_set(True)
         self.box.size_hint_weight_set(1.0, 0.0)
         self.box.size_hint_align_set(-1.0, -1.0)
-        self.box.pack_end(self.scr)
+        self.box.pack_end(self.entry)
         self.box.pack_end(self.rect)
         self.box.show()
 

@@ -50,7 +50,7 @@ class WidgetEntryButton(WidgetEntry):
         self.box.horizontal_set(True)
         self.box.size_hint_weight_set(1.0, 0.0)
         self.box.size_hint_align_set(-1.0, -1.0)
-        self.box.pack_end(self.scr)
+        self.box.pack_end(self.entry)
         self.box.pack_end(self.button)
         self.box.show()
 

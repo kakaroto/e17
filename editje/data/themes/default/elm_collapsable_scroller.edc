@@ -18,6 +18,8 @@
  * <http://www.gnu.org/licenses/>.
  */
    group { name: "elm/scroller/base/editje.collapsable";
+      alias: "elm/scroller/entry/editje.details";
+      alias: "elm/scroller/entry/editje";
 
       images {
          image: "bg_scrollbar.png" COMP;
