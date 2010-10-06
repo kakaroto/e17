@@ -606,30 +606,16 @@ collections {
 	       name: "text_hide";
 	       signal: "e,state,description,hide";
 	       source: "e";
-               script {
-                   if (is_float == 0)
-                       run_program(PROGRAM:"text_hide_complete");
-               }
-	   }
-           program {
-               name: "text_hide_complete";
 	       action: STATE_SET "hidden" 0.0;
 	       target: "e.text.description";
-           }
+	   }
 	   program {
 	       name: "text_show";
 	       signal: "e,state,description,show";
 	       source: "e";
-               script {
-                   if (is_float == 0)
-                       run_program(PROGRAM:"text_hide_complete");
-               }
-	   }
-           program {
-               name: "text_show_complete";
 	       action: STATE_SET "default" 0.0;
 	       target: "e.text.description";
-           }
+	   }
 	   program {
 	       name: "float";
 	       signal: "e,state,orientation,float";
