@@ -186,3 +186,14 @@ cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size
 
    return cover;
 }
+
+Evas_Object *
+cover_album_fetch_by_id(Evas_Object *parent, DB *db, int64_t album_id, unsigned short size)
+{
+   Evas_Object *cover;
+   Album *album = calloc(1, sizeof(Album));
+   album->id = album_id;
+   cover = cover_album_fetch(parent, db, album, size);
+   db_album_free(album);
+   return cover;
+}

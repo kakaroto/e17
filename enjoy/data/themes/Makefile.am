@@ -28,7 +28,17 @@ images/list-highlight.png \
 images/no-cover.png \
 images/scrollbar-bg.png \
 images/scrollbar-knob.png \
-images/top_bg.png
+images/top_bg.png \
+images/toggle_bg.png \
+images/toggle_off.png \
+images/toggle_on.png \
+images/slider_horizontal_clicked.png \
+images/slider_horizontal_indicator.png \
+images/progress_horizontal_fill.png \
+images/progress_horizontal_stroke.png \
+images/main.png \
+images/base.png \
+images/menu_separation.png
 
 fonts =
 

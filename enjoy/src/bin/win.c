@@ -12,6 +12,7 @@ typedef struct Win
    Evas_Object *edje;
    Evas_Object *emotion;
    Evas_Object *list;
+   Evas_Object *nowplaying;
    const char *db_path;
    DB *db;
    Song *song;
@@ -116,15 +117,15 @@ _win_toolbar_eval(Win *w)
      {
         edje_object_signal_emit(w->edje, "ejy,action,play,enable", "ejy");
         edje_object_signal_emit(w->edje, "ejy,action,pause,enable", "ejy");
-        edje_object_signal_emit(w->edje, "ejy,mode,list,enable", "ejy");
-        edje_object_signal_emit(w->edje, "ejy,mode,nowplaying,enable", "ejy");
+        edje_object_signal_emit(w->edje, "ejy,list,enable", "ejy");
+        edje_object_signal_emit(w->edje, "ejy,nowplaying,enable", "ejy");
      }
    else
      {
         edje_object_signal_emit(w->edje, "ejy,action,play,disable", "ejy");
         edje_object_signal_emit(w->edje, "ejy,action,pause,disable", "ejy");
-        edje_object_signal_emit(w->edje, "ejy,mode,list,disable", "ejy");
-        edje_object_signal_emit(w->edje, "ejy,mode,nowplaying,disable", "ejy");
+        edje_object_signal_emit(w->edje, "ejy,list,disable", "ejy");
+        edje_object_signal_emit(w->edje, "ejy,nowplaying,disable", "ejy");
      }
 }
 
@@ -171,6 +172,32 @@ _win_play_eval_timer(void *data)
 }
 
 static void
+_win_nowplaying_update(Win *w)
+{
+   Evas_Object *cover;
+   int label_size;
+   char *artist_title;
+   cover = cover_album_fetch_by_id(w->win, w->db,w->song->album_id, 256); // TODO: size!
+   elm_layout_content_set(w->nowplaying, "ejy.swallow.cover", cover);
+
+   db_song_artist_fetch(w->db, w->song);
+   label_size = strlen(w->song->title) + strlen(w->song->artist) + 4;
+   artist_title = malloc(label_size);
+   if (!artist_title)
+      return;
+
+   if (snprintf(artist_title, label_size, "%s - %s", w->song->artist, w->song->title) >= label_size)
+     {
+        CRITICAL("could not set nowplaying title");
+        goto nowplaying_error;
+     }
+   edje_object_part_text_set(elm_layout_edje_get(w->nowplaying), "ejy.text.title", eina_stringshare_add(artist_title));
+
+nowplaying_error:
+   free(artist_title);
+}
+
+static void
 _win_song_set(Win *w, Song *s)
 {
    Edje_Message_Int mi;
@@ -210,6 +237,7 @@ _win_song_set(Win *w, Song *s)
      w->timer.play_eval = ecore_timer_loop_add
        (0.1, _win_play_eval_timer, w);
 
+   _win_nowplaying_update(w);
    _win_play_eval(w);
    _win_toolbar_eval(w);
 }
@@ -304,6 +332,7 @@ _win_mode_list(void *data, Evas_Object *o __UNUSED__, const char *emission __UNU
    Win *w = data;
    edje_object_signal_emit(w->edje, "ejy,mode,list,hide", "ejy");
    edje_object_signal_emit(w->edje, "ejy,mode,nowplaying,show", "ejy");
+   edje_object_signal_emit(w->edje, "ejy,screen,nowplaying,hide", "ejy");
 }
 
 static void
@@ -312,6 +341,7 @@ _win_mode_nowplaying(void *data, Evas_Object *o __UNUSED__, const char *emission
    Win *w = data;
    edje_object_signal_emit(w->edje, "ejy,mode,nowplaying,hide", "ejy");
    edje_object_signal_emit(w->edje, "ejy,mode,list,show", "ejy");
+   edje_object_signal_emit(w->edje, "ejy,screen,nowplaying,show", "ejy");
 }
 
 static void
@@ -457,6 +487,8 @@ win_new(App *app)
    evas_object_smart_callback_add(w->list, "selected", _win_list_selected, w);
    evas_object_smart_callback_add(w->list, "changed", _win_list_changed, w);
 
+   w->nowplaying = nowplaying_add(w->layout);
+   elm_layout_content_set(w->layout, "ejy.swallow.nowplaying", w->nowplaying);
    w->edje = elm_layout_edje_get(w->layout);
    edje_object_size_min_get(w->edje, &(w->min.w), &(w->min.h));
    edje_object_size_min_restricted_calc
@@ -510,6 +542,7 @@ win_new(App *app)
    edje_object_signal_emit(w->edje, "ejy,mode,list,show", "ejy");
    edje_object_signal_emit(w->edje, "ejy,mode,list,disable", "ejy");
    edje_object_signal_emit(w->edje, "ejy,more,disable", "ejy");
+   edje_object_signal_emit(w->edje, "ejy,nowplaying,disable", "ejy");
 
    evas_object_show(w->layout);
 
