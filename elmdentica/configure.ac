@@ -1,17 +1,18 @@
-AC_PREREQ(2.53)
-AC_INIT(elmdentica, 0.9.10, http://code.google.com/p/elmdentica/)
-AM_INIT_AUTOMAKE(elmdentica, 0.9.10)
+AC_INIT([ElmDentica], [0.9.10], [rms@1407.org], [http://code.google.com/p/elmdentica/])
 AC_CONFIG_SRCDIR(src/)
 AM_CONFIG_HEADER(config.h)
-AM_MAINTAINER_MODE
-
-AC_GNU_SOURCE
-AM_GNU_GETTEXT([external])
-AC_ISC_POSIX
-AC_PROG_CC
-AC_STDC_HEADERS
-AC_PROG_LIBTOOL
 AC_CONFIG_MACRO_DIR([m4])
+
+AM_INIT_AUTOMAKE
+
+AC_DISABLE_STATIC
+AC_PROG_CC
+AC_PROG_LIBTOOL
+
+IT_PROG_INTLTOOL([0.35.0])
+GETTEXT_PACKAGE="elmdentica"
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, ["$GETTEXT_PACKAGE"], [Name of the gettext message domain])
 
 PKG_CHECK_MODULES(GLIB, glib-2.0, [],
 		[AC_MSG_FAILURE([glib not found])]
@@ -55,7 +56,7 @@ AC_SUBST([CONFIGDIR])
 APMDIR="${sysconfdir}/apm"
 AC_SUBST([APMDIR])
 
-AC_SUBST([VERSION])
+AC_SUBST(VERSION)
 
 EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
 
