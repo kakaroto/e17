@@ -505,6 +505,8 @@ class Editje(elementary.Window, OpenFileManager):
 
         old_name = self.e.group
         new_name = obj.entry_get().replace("<br>", "")
+        if old_name == new_name:
+            return
         if group_rename(new_name):
             op = Operation("group renaming")
 
