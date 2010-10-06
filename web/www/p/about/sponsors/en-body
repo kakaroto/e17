@@ -19,7 +19,27 @@ running.</p>
    <p><a href="http://caosity.org">The cAos Foundation</a> are generously donating 
    the needed infrastructure to house our development CVS servers.</p>
   </td>
-  <td>&nbsp;</td>
+  <td valign="top" width="50%">
+   <p><a href="http://easydns.com">EasyDNS</a> helped us to regain control over
+   the <a href="http://enlightenment.org">enlightenment.org</a> domain after 
+   it was briefly lost in domain limbo.</p>
+  </td>
+  <td valign="top" width="50%">
+   <p><a href="http://www.fluffyspider.com.au/" title="Fluffy Spider">Fluffy
+   Spider Technologies</a> helped by using E technology (Evas, Eet, Ecore etc.) and 
+   helping with their further development.</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign="top">
+   <p><a href="http://fondation.free.org/" title="Free Fondation">Free Fondation</a>
+   donated e3, e4 and another link to internet.</p>
+  </td>
+  <td valign="top">
+   <p><a href="http://www.micropact.com/" title="2rad">Micropact (formerly 
+   2 RAD Technologies)</a> helped host the Enlightenment project in a previous
+   life.</p>
+  </td>
   <td valign="top">
    <p><a href="http://osuosl.org/" title="OSUOSL">OSUOSL</a> are donating the
    required hosting and bandwidth to support our servers. Without this support
@@ -29,24 +49,13 @@ running.</p>
  </tr>
  <tr>
   <td valign="top" width="50%">
-   <p><a href="http://easydns.com">EasyDNS</a> helped us to regain control over
-   the <a href="http://enlightenment.org">enlightenment.org</a> domain after 
-   it was briefly lost in domain limbo.</p>
-  </td>
-  <td>&nbsp;</td>
-  <td valign="top">
-   <p><a href="http://www.micropact.com/" title="2rad">Micropact (formerly 
-   2 RAD Technologies)</a> helped host the Enlightenment project in a previous
-   life.</p>
-  </td>
- </tr>
-
- <tr>
-  <td valign="top" width="50%">
    <p><a href="http://www.redhat.com/" title="Redhat">Redhat</a> aided in the 
    early days of Enlightenment.</p>
   </td>
-  <td>&nbsp;</td>
+  <td valign="top">
+   <p><a href="http://www.valinux.co.jp/" title="Va Linux">VA Linux Systems
+   Japan</a> provided developer support  allowed some time to be spent working on E.</p>
+  </td>
   <td valign="top">
    <p><a href="http://www.vasoftware.com/" title="Va software">VA Software</a>
    (formerly VA Linux) helped a lot to getting E 0.16 released and around the prototype 
@@ -55,26 +64,14 @@ running.</p>
  </tr>
  <tr>
   <td valign="top" width="50%">
-   <p><a href="http://www.fluffyspider.com.au/" title="Fluffy Spider">Fluffy
-   Spider Technologies</a> helped by using E technology (Evas, Eet, Ecore etc.) and 
-   helping with their further development.</p>
+   <p><a href="http://www.samsungelectronics.com/" title="Samsung">Samsung Electronics</a>
+   are heavily involved contributing to, sponsoring work on, and using E17 and EFL in 
+   platforms and products.</p>
   </td>
-  <td>&nbsp;</td>
-  <td valign="top">
-   <p><a href="http://www.valinux.co.jp/" title="Va Linux">VA Linux Systems
-   Japan</a> provided developer support  allowed some time to be spent working on E.</p>
-  </td>
- </tr>
- <tr>
   <td valign="top" width="50%">
    <p><a href="http://www.terrasoftsolutions.com/" title="Terrasoft">Terrasoft Solutions</a>
    donated money to help Enlightenment achieve usability for the release of Yellow Dog Linux for 
    the Playstation 3.</p>
-  </td>
-  <td>&nbsp;</td>
-  <td valign="top">
-   <p><a href="http://fondation.free.org/" title="Free Fondation">Free Fondation</a>
-   donated e3, e4 and another link to internet.</p>
   </td>
  </tr>
 </table>
