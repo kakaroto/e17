@@ -49,6 +49,10 @@ running.</p>
  </tr>
  <tr>
   <td valign="top" width="33%">
+   <p><a href="http://www.profusion.mobi/" title="Profusion">Profusion</a> provide support and
+   consulting services EFL and embedded.</p>
+  </td>
+  <td valign="top" width="33%">
    <p><a href="http://www.redhat.com/" title="Redhat">Redhat</a> aided in the 
    early days of Enlightenment.</p>
   </td>
@@ -56,13 +60,13 @@ running.</p>
    <p><a href="http://www.valinux.co.jp/" title="Va Linux">VA Linux Systems
    Japan</a> provided developer support  allowed some time to be spent working on E.</p>
   </td>
+ </tr>
+ <tr>
   <td valign="top" width="33%">
    <p><a href="http://www.vasoftware.com/" title="Va software">VA Software</a>
    (formerly VA Linux) helped a lot to getting E 0.16 released and around the prototype 
    work for E17 (EFM, Imlib2).</p>
   </td>
- </tr>
- <tr>
   <td valign="top" width="33%">
    <p><a href="http://www.samsungelectronics.com/" title="Samsung">Samsung Electronics</a>
    are heavily involved contributing to, sponsoring work on, and using E17 and EFL in 
