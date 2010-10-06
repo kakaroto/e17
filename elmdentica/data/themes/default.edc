@@ -37,270 +37,152 @@ collections {
 		}
 	}
 
-   group 
-     {
-        name: "elm/genlist/item/elmdentica/default";
-        alias: "elm/genlist/item_odd/elmdentica/default";
-        alias: "elm/genlist/item_compress/elmdentica/default";
-        alias: "elm/genlist/item_compress_odd/elmdentica/default";
-        data.item: "stacking" "above";
-        data.item: "selectraise" "on";
-        data.item: "labels" "elm.text elm.name elm.date";
-        data.item: "icons" "elm.swallow.icon";
-        data.item: "treesize" "20";
-        images 
-          {
-             image: "bt_sm_base1.png" COMP;
-             image: "bt_sm_shine.png" COMP;
-             image: "bt_sm_hilight.png" COMP;
-             image: "ilist_1.png" COMP;
-             image: "ilist_item_shadow.png" COMP;
-             image: "bubble_3.png" COMP;
-          }
-        parts 
-          {
-             part 
-               {
-                  name: "event";
-                  type: RECT;
-                  repeat_events: 1;
-                  description 
-                    {
-                       state: "default" 0.0;
-                       color: 0 0 0 0;
-                    }
-               }
-             part 
-               {
-                  name: "shadow";
-                  type: IMAGE;
-                  mouse_events: 0;
-                  description 
-                    {
-                       state: "default" 0.0;
-                       min: 0 10;
-                       fixed: 0 1;
-                       rel1 
-                         {
-                            relative: 0.0 1.0;
-                            to: "base";
-                         }
-                       rel2 
-                         {
-                            offset: -1 0;
-                            to: "base";
-                         }
-                       image.normal: "ilist_item_shadow.png";
-                       fill.smooth: 0;
-                    }
-               }
-             part 
-               {
-                  name: "base";
-                  type: IMAGE;
-                  mouse_events: 0;
-                  description 
-                    {
-                       state: "default" 0.0;
-                       rel2 
-                         {
-                            offset: -1 2;
-                            //to_y: "status";
-                         }
-                       image 
-                         {
-                            normal: "ilist_1.png";
-                            border: 2 2 2 2;
-                         }
-                       fill.smooth: 0;
-                    }
-               }
-             part 
-               {
-                  name: "elm.swallow.pad";
-                  type: SWALLOW;
-                  description 
-                    {
-                       state: "default" 0.0;
-                       fixed: 1 0;
-                       align: 0.0 0.5;
-                       rel1.offset: 4 4;
-                       rel2 
-                         {
-                            relative: 0.0 1.0;
-                            offset: 4 -5;
-                         }
-                    }
-               }
-             part 
-               {
-                  name: "elm.swallow.icon";
-                  type: SWALLOW;
-                  scale: 1;
-                  description 
-                    {
-                       state: "default" 0.0;
-                       fixed: 1 0;
-                       align: 0.0 0.0;
-                       min: 32 32;
-                       rel1 
-                         {
-                            relative: 1.0 0.0;
-                            offset: -1 4;
-                            to_x: "elm.swallow.pad";
-                         }
-                       rel2 
-                         {
-                            offset: -1 -5;
-                            to_x: "elm.swallow.pad";
-                            to_y: "base";
-                         }
-                    }
-               }
-             part 
-               {
-                  name: "status";
-                  type: RECT;
-                  repeat_events: 1;
-                  description 
-                    {
-                       state: "default" 0.0;
-                       color: 0 0 0 0;
-		       align: 0 0;
-                       rel1
-                         {
-			    to: "elm.swallow.icon";
-			    relative: 1 0;
-			 }
-                    }
-               }
-             part 
-               {
-                  name: "elm.name";
-                  type: TEXT;
-                  effect: SOFT_SHADOW;
-                  mouse_events: 0;
-                  scale: 1;
-                  description 
-                    {
-                       state: "default" 0.0;
-                       fixed: 1 1;
-                       align: 0.0 0.0;
-                       rel1 
-                         {
-                            relative: 0.0 0.0;
-                            offset: 5 0;
-                            to: "status";
-                         }
-                       rel2 
-                         {
-                            relative: 0.0 0.0;
-                            to_x: "elm.date";
-                         }
-                       color: 0 0 0 255;
-                       color3: 0 0 0 0;
-                       text 
-                         {
-                            font: "Sans:style=Bold";
-                            size: 8;
-                            min: 1 1;
-                            elipsis: 0;
-                            max: 0.5 1;
-                            align: 0.0 0.0;
-                         }
-                    }
-               }
-             part 
-               {
-                  name: "elm.date";
-                  type: TEXT;
-                  effect: SOFT_SHADOW;
-                  mouse_events: 0;
-                  scale: 1;
-                  description 
-                    {
-                       state: "default" 0.0;
-                       fixed: 1 1;
-                       align: 1.0 0.0;
-                       rel1 
-                         {
-                            relative: 1.0 0.0;
-                            offset: -5 4;
-                         }
-                       rel2.offset: -5 -5;
-                       color: 0 0 0 255;
-                       color3: 0 0 0 0;
-                       text 
-                         {
-                            font: "Sans:style=Oblique";
-                            size: 8;
-                            min: 1 1;
-                            align: 0.0 0.0;
-                         }
-                    }
-               }
-             part 
-               {
-                  name: "bubble";
-                  type: IMAGE;
-                  mouse_events: 0;
-                  scale: 1;
-                  description 
-                    {
-                       state: "default" 0.0;
-                       align: 0.0 0.5;
-                       min: 0 1;
-                       fixed: 0 1;
-                       rel1 
-                         {
-                            relative: 0.0 1.0;
-                            offset: 0 -10;
-                            to: "elm.name";
-                         }
-                       rel2 
-                         {
-                            offset: 0 4;
-                            to_y: "elm.text";
-                         }
-                       image 
-                         {
-                            normal: "bubble_3.png";
-                            border: 36 11 18 9;
-                            middle: SOLID;
-                         }
-                       fill.smooth: 0;
-                    }
-               }
-             part 
-               {
-                  name: "elm.text";
-                  type: TEXTBLOCK;
-                  effect: SOFT_SHADOW;
-                  mouse_events: 0;
-                  scale: 1;
-                  description 
-                    {
-                       state: "default" 0.0;
-                       align: 0.0 0.0;
-                       rel1 
-                         {
-                            relative: 0.0 1.0;
-                            offset: 6 6;
-                            to: "elm.name";
-                         }
-                       color: 0 0 0 255;
-                       color3: 0 0 0 0;
-                       text 
-                         {
-                            style: "elmdentica_status";
-                            min: 0 1;
-                            max: 0 1;
-                            align: 0.0 0.0;
-                            text: "Test";
-                         }
-                    }
-               }
-          }
-     }
+	group {	name: "elm/genlist/item/elmdentica/default";
+		alias: "elm/genlist/item_odd/elmdentica/default";
+		alias: "elm/genlist/item_compress/elmdentica/default";
+		alias: "elm/genlist/item_compress_odd/elmdentica/default";
 
+		data.item: "stacking" "above";
+		data.item: "selectraise" "on";
+		data.item: "labels" "text name date";
+		data.item: "icons" "icon";
+		data.item: "treesize" "20";
+
+		images {
+			image: "bubble_3.png" COMP;
+		}
+
+		parts {
+			part {	name: "event";
+				type: RECT;
+				repeat_events: 1;
+				description {
+					state: "default" 0.0;
+					color: 0 0 0 0;
+				}
+			}
+
+			part {	name: "icon";
+				type: SWALLOW;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					fixed: 1 0;
+					align: 0.0 0.0;
+					min: 32 32;
+					max: 64 64;
+					rel1.offset: 7 7;
+					rel2.relative: 0.2 1;
+				}
+			}
+
+			part {	name: "name";
+				type: TEXT;
+				effect: SOFT_SHADOW;
+				mouse_events: 0;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					fixed: 1 1;
+					align: 0.0 0.0;
+					rel1 {
+						to: "icon";
+						relative: 1.0 0.0;
+						offset: 5 0;
+					}
+					rel2 {
+						to: "date";
+						relative: 0.0 0.0;
+					}
+					color: 0 0 0 255;
+					color3: 0 0 0 0;
+					text {	text: "Unnamed";
+						font: "Sans:style=Bold";
+						size: 8;
+						min: 1 1;
+						elipsis: 0;
+						max: 0.5 1;
+						align: 0.0 0.0;
+					}
+				}
+			}
+
+			part {	name: "date";
+				type: TEXT;
+				effect: SOFT_SHADOW;
+				mouse_events: 0;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					fixed: 1 1;
+					align: 1.0 0.0;
+					rel1 {
+						to: "event";
+						relative: 1.0 0.0;
+						offset: 0 7;
+					}
+					color: 0 0 0 255;
+					color3: 0 0 0 0;
+					text {
+						text: "No date";
+						font: "Sans:style=Oblique";
+						size: 8;
+						min: 1 1;
+						align: 0.0 0.0;
+					}
+				}
+			}
+
+			part {	name: "bubble";
+				type: IMAGE;
+				mouse_events: 0;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					align: 0.0 0.5;
+					min: 0 1;
+					fixed: 0 1;
+					rel1 {
+						to: "name";
+						relative: 0.0 1.0;
+						offset: 0 -10;
+					}
+					rel2 {
+						to: "text";
+					}
+					image {
+						normal: "bubble_3.png";
+						border: 36 11 18 9;
+						middle: SOLID;
+					}
+					fill.smooth: 0;
+				}
+			}
+
+			part {	name: "text";
+				type: TEXTBLOCK;
+				effect: SOFT_SHADOW;
+				mouse_events: 0;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					align: 0.0 0.0;
+					rel1 {
+						to: "name";
+						relative: 0.0 1.0;
+						offset: 11 11;
+					}
+					color: 0 0 0 255;
+					color3: 0 0 0 0;
+					text {
+						style: "elmdentica_status";
+						min: 0 1;
+						align: 0.0 0.0;
+						text: "The quick brown fox jumped over the lazy dog? Yes, the quick brown fox did indeed jump over the lazy dog.";
+					}
+				}
+			}
+
+		}
+	}
 }
