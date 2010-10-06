@@ -359,6 +359,7 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_info)
 
 	ma = e_menu_new();
 	e_menu_post_deactivate_callback_set(ma, _cb_menu_post, inst);
+        inst->menu = ma;
 
 	mg = e_menu_new();
 	mo = e_menu_new();
