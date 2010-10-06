@@ -1,0 +1,27 @@
+# Portuguese translation for everything-places
+# This file is distributed under the same license as the enlightenment package.
+# Sérgio Marques <smarquespt@gmail.com>, 2010.
+msgid ""
+msgstr ""
+"Project-Id-Version: Everything-places\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2010-05-18 09:23+0200\n"
+"PO-Revision-Date: 2010-10-06 12:55-0000\n"
+"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-Language: Portuguese\n"
+"X-Poedit-Country: Portugal\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: src/e_mod_main.c:49
+msgid "Wallpaper"
+msgstr "Papel de parede"
+
+#: src/e_mod_main.c:95
+msgid "Places"
+msgstr "Locais"
+
