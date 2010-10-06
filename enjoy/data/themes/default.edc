@@ -1560,13 +1560,11 @@ collections {
                visible: 0;
                image.normal: "list-highlight.png";
                rel1 {
-                   to_y: "events";
                    to_x: "ejy.swallow.cover";
                    relative: 1.0 0.0;
-                   offset: 3 14;
+                   offset: 3 5;
                }
                rel2 {
-                   to: "events";
                    relative: 1.0 1.0;
                    offset: -10 -10;
                }
@@ -1608,7 +1606,7 @@ collections {
                rel1 {
                   to_y: "bg";
                   relative: 0.0 0.0;
-                  offset: 27 -6;
+                  offset: 27 -3;
                }
                rel2 {
                   to_y: "bg";
@@ -1630,7 +1628,7 @@ collections {
                   to_y: "bg";
                   to_x: "ejy.swallow.cover";
                   relative: 1.0 0.0;
-                  offset: 21 8;
+                  offset: 21 10;
                }
                rel2 {
                   to_y: "bg";
@@ -1663,7 +1661,7 @@ collections {
                   to_y: "bg";
                   to_x: "ejy.swallow.cover";
                   relative: 1.0 0.0;
-                  offset: 21 28;
+                  offset: 21 30;
                }
                rel2 {
                   to_y: "bg";
