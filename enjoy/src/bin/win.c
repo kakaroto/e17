@@ -117,15 +117,15 @@ _win_toolbar_eval(Win *w)
      {
         edje_object_signal_emit(w->edje, "ejy,action,play,enable", "ejy");
         edje_object_signal_emit(w->edje, "ejy,action,pause,enable", "ejy");
-        edje_object_signal_emit(w->edje, "ejy,list,enable", "ejy");
-        edje_object_signal_emit(w->edje, "ejy,nowplaying,enable", "ejy");
+        edje_object_signal_emit(w->edje, "ejy,mode,list,enable", "ejy");
+        edje_object_signal_emit(w->edje, "ejy,mode,nowplaying,enable", "ejy");
      }
    else
      {
         edje_object_signal_emit(w->edje, "ejy,action,play,disable", "ejy");
         edje_object_signal_emit(w->edje, "ejy,action,pause,disable", "ejy");
-        edje_object_signal_emit(w->edje, "ejy,list,disable", "ejy");
-        edje_object_signal_emit(w->edje, "ejy,nowplaying,disable", "ejy");
+        edje_object_signal_emit(w->edje, "ejy,mode,list,disable", "ejy");
+        edje_object_signal_emit(w->edje, "ejy,mode,nowplaying,disable", "ejy");
      }
 }
 
@@ -542,7 +542,7 @@ win_new(App *app)
    edje_object_signal_emit(w->edje, "ejy,mode,list,show", "ejy");
    edje_object_signal_emit(w->edje, "ejy,mode,list,disable", "ejy");
    edje_object_signal_emit(w->edje, "ejy,more,disable", "ejy");
-   edje_object_signal_emit(w->edje, "ejy,nowplaying,disable", "ejy");
+   edje_object_signal_emit(w->edje, "ejy,mode,nowplaying,disable", "ejy");
 
    evas_object_show(w->layout);
 

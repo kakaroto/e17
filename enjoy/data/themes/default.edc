@@ -191,7 +191,7 @@
             transition: DECELERATE 0.3; \
         } \
         program { name: _button_name"-disable"; \
-            signal: "ejy,"_button_name",disable"; \
+            signal: "ejy,"_button_type""_button_name",disable"; \
             source: "ejy"; \
             action: STATE_SET "disabled" 0.0; \
             target: "button-"_button_name"-normal"; \
@@ -200,7 +200,7 @@
             transition: DECELERATE 0.3; \
         } \
         program { name: _button_name"-enable"; \
-            signal: "ejy,"_button_name",enable"; \
+            signal: "ejy,"_button_type""_button_name",enable"; \
             source: "ejy"; \
             action: STATE_SET "default" 0.0; \
             target: "button-"_button_name"-normal"; \
