@@ -7,7 +7,6 @@ filesdir = $(datadir)/$(PACKAGE)
 files_DATA = default.edj
 
 images = \
-images/back_bg.png \
 images/back-button.png \
 images/bottom_bg.png \
 images/bt_list_normal.png \

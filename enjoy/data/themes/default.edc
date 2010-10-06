@@ -372,7 +372,6 @@ collections {
 
       images {
          image: "back-button.png" COMP;
-         image: "back_bg.png" COMP;
       }
       data.item: "homogeneous" "1";
       parts {
@@ -529,21 +528,6 @@ collections {
             }
          }
          part {
-            name: "back";
-            type: IMAGE;
-            description { state: "default" 0.0;
-               rel1 {
-                  offset: 10 10;
-               }
-               rel2 {
-                  relative: 0 0;
-                  offset: 100 40;
-               }
-               image.normal: "back_bg.png";
-               image.border: 8 8 8 8;
-            }
-         }
-         part {
             name: "back-button-text";
             type: TEXT;
             mouse_events: 0;
@@ -590,12 +574,46 @@ collections {
                image.normal: "back-button.png";
             }
          }
+         part {
+            name: "back";
+            type: RECT;
+            description { state: "default" 0.0;
+               rel1 {
+                  offset: 10 10;
+               }
+               rel2 {
+                  relative: 0 0;
+                  offset: 100 40;
+               }
+               color: 0 0 0 0;
+            }
+            description { state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               color: 0 0 0 128;
+            }
+         }
          programs {
             program {
                name: "ejy,back,clicked";
                signal: "mouse,clicked,1";
                source: "back";
                action: SIGNAL_EMIT "ejy,back,clicked" "ejy";
+            }
+            program {
+               name: "ejy,back,pressed";
+               signal: "mouse,down,1";
+               source: "back";
+               action: STATE_SET "pressed" 0.0;
+               target: "back";
+               transition: ACCELERATE 0.2;
+            }
+            program {
+               name: "ejy,back,released";
+               signal: "mouse,up,1";
+               source: "back";
+               action: STATE_SET "default" 0.0;
+               target: "back";
+               transition: ACCELERATE 0.2;
             }
          }
 
@@ -657,7 +675,7 @@ collections {
                }
                rel2 {
                   relative: 1.0 0.0;
-                  offset: 0 45;
+                  offset: -1 45;
                }
                color: 255 255 255 255;
                text {
@@ -707,21 +725,6 @@ collections {
             }
          }
          part {
-            name: "back";
-            type: IMAGE;
-            description { state: "default" 0.0;
-               rel1 {
-                  offset: 20 10;
-               }
-               rel2 {
-                  relative: 0 0;
-                  offset: 100 50;
-               }
-               image.normal: "back_bg.png";
-               image.border: 8 8 8 8;
-            }
-         }
-         part {
             name: "back-button-text";
             type: TEXT;
             mouse_events: 0;
@@ -739,12 +742,12 @@ collections {
                color: 255 255 255 255;
                text {
                   font: "Sans,Edje-Vera";
-                  size: 12; /* 12 */
+                  size: 9; /* 12 */
                   text: "Back";
                   min: 0 1;
-                  align: 0.5 0.5;
+                  align: 0.0 0.5;
                }
-               color: 255 255 255 255;
+               color: 130 130 130 255;
             }
          }
          part {
@@ -768,12 +771,46 @@ collections {
                image.normal: "back-button.png";
             }
          }
+         part {
+            name: "back";
+            type: RECT;
+            description { state: "default" 0.0;
+               rel1 {
+                  offset: 10 10;
+               }
+               rel2 {
+                  relative: 0 0;
+                  offset: 100 40;
+               }
+               color: 0 0 0 0;
+            }
+            description { state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               color: 0 0 0 128;
+            }
+         }
          programs {
             program {
                name: "ejy,back,clicked";
                signal: "mouse,clicked,1";
                source: "back";
                action: SIGNAL_EMIT "ejy,back,clicked" "ejy";
+            }
+            program {
+               name: "ejy,back,pressed";
+               signal: "mouse,down,*";
+               source: "back";
+               action: STATE_SET "pressed" 0.0;
+               target: "back";
+               transition: ACCELERATE 0.2;
+            }
+            program {
+               name: "ejy,back,released";
+               signal: "mouse,up,*";
+               source: "back";
+               action: STATE_SET "default" 0.0;
+               target: "back";
+               transition: ACCELERATE 0.2;
             }
          }
 
@@ -838,7 +875,7 @@ collections {
                }
                color: 255 255 255 255;
                text {
-                  align: 0.5 0.2;
+                  align: 0.5 0.5;
                   font: "Sans:style=Bold";
                   size: 11;
                   text: "title";
