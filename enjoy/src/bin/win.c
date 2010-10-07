@@ -538,11 +538,10 @@ win_new(App *app)
    edje_object_signal_emit(w->edje, "ejy,action,pause,hide", "ejy");
    edje_object_signal_emit(w->edje, "ejy,action,play,show", "ejy");
    edje_object_signal_emit(w->edje, "ejy,action,play,disable", "ejy");
-   edje_object_signal_emit(w->edje, "ejy,mode,nowplaying,show", "ejy");
+   edje_object_signal_emit(w->edje, "ejy,mode,nowplaying,hide", "ejy");
    edje_object_signal_emit(w->edje, "ejy,mode,list,show", "ejy");
    edje_object_signal_emit(w->edje, "ejy,mode,list,disable", "ejy");
    edje_object_signal_emit(w->edje, "ejy,more,disable", "ejy");
-   edje_object_signal_emit(w->edje, "ejy,mode,nowplaying,disable", "ejy");
 
    evas_object_show(w->layout);
 
