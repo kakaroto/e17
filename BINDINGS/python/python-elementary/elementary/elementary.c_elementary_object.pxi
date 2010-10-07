@@ -354,6 +354,39 @@ cdef class Object(evas.c_evas.Object):
         """
         return <long>self.obj
 
+    def focus_custom_chain_set(self, lst):
+        elm_object_focus_custom_chain_unset(self.obj)
+        cdef Object obj
+        for obj in lst:
+            elm_object_focus_custom_chain_append(self.obj, obj.obj, NULL)
+
+    def focus_custom_chain_get(self):
+        cdef c_evas.Evas_Object *o
+        cdef Object obj
+        cdef evas.c_evas.const_Eina_List *lst
+        ret = []
+        lst = elm_object_focus_custom_chain_get(self.obj)
+        while lst:
+            o = <c_evas.Evas_Object *> lst.data
+            obj = <Object>c_evas.evas_object_data_get(o, "python-evas")
+            ret.append(obj)
+            lst = lst.next
+        return ret
+
+    def focus_custom_chain_unset(self, lst):
+        elm_object_focus_custom_chain_unset(self.obj)
+
+    def focus_custom_chain_append(self, Object obj, Object relative=None):
+        cdef c_evas.Evas_Object *rel = NULL
+        if relative:
+            rel = relative.obj
+        elm_object_focus_custom_chain_append(self.obj, obj.obj, rel)
+
+    def focus_custom_chain_prepend(self, Object obj, Object relative=None):
+        cdef c_evas.Evas_Object *rel = NULL
+        if relative:
+            rel = relative.obj
+        elm_object_focus_custom_chain_prepend(self.obj, obj.obj, rel)
 
 def __elm_widget_cls_resolver(long ptr):
     cdef c_evas.Evas_Object *obj = <c_evas.Evas_Object *>ptr

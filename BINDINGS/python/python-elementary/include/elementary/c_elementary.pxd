@@ -254,6 +254,12 @@ cdef extern from "Elementary.h":
     void         elm_theme_overlay_add(Elm_Theme *th, char *item)
     void         elm_theme_extension_add(Elm_Theme *th, char *item)
 
+    void         elm_object_focus_custom_chain_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_List *objs)
+    void         elm_object_focus_custom_chain_unset(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.const_Eina_List *elm_object_focus_custom_chain_get(evas.c_evas.const_Evas_Object *obj)
+    void         elm_object_focus_custom_chain_append(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *child, evas.c_evas.Evas_Object *relative_child)
+    void         elm_object_focus_custom_chain_prepend(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *child, evas.c_evas.Evas_Object *relative_child)
+
     # Window handling
     evas.c_evas.Evas_Object *elm_win_add(evas.c_evas.Evas_Object* parent,char* name,Elm_Win_Type type)
     void elm_win_resize_object_add(evas.c_evas.Evas_Object* obj,evas.c_evas.Evas_Object* subobj)
