@@ -1,5 +1,6 @@
 collections {
    group { name: "elm/button/base/default";
+      data.item: "focus_highlight" "on";
       images {
          image: "button_side_line.png" COMP;
          image: "button_bg_normal.png" COMP;
@@ -125,6 +126,38 @@ collections {
                transition: LINEAR 0.2;
                target: "button_hover";
                target: "elm.text_hilight";
+            }
+         }
+         part { name: "button_focus";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               image.normal: "shelf_hilight.png";
+               image.border: 0 0 1 1;
+               rel1.to: "button_bg";
+               rel1.offset: 0 0;
+               rel2.to: "button_bg";
+               rel2.offset: -1 -1;
+               visible: 0;
+               color: 255 255 255 0;
+            }
+            description { state: "active" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+            }
+            program { name: "highlight_show";
+               signal: "elm,action,focus_highlight,show";
+               source: "elm";
+               action: STATE_SET "active" 0.0;
+               transition: LINEAR 0.2;
+               target: "button_focus";
+            }
+            program { name: "highlight_hide";
+               signal: "elm,action,focus_highlight,hide";
+               source: "elm";
+               action: STATE_SET "default" 0.0;
+               transition: LINEAR 0.2;
+               target: "button_focus";
             }
          }
          part { name: "elm.swallow.content";
