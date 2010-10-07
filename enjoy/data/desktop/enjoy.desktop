@@ -2,6 +2,8 @@
 Encoding=UTF-8
 Name=Enjoy
 Comment=Music Player
+Comment[fr]=Lecteur de musique
+Comment[it]=Riproduttore musicale
 Exec=enjoy
 Icon=enjoy
 Terminal=false

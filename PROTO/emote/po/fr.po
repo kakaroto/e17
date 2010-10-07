@@ -1,0 +1,48 @@
+# French translation for Emote.
+# This file is put in the public domain.
+# batden <batden@orange.fr>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Emote\n"
+"Report-Msgid-Bugs-To: devilhorns@comcast.net\n"
+"POT-Creation-Date: 2010-10-07 14:06+0400\n"
+"PO-Revision-Date: 2010-10-07 14:28+0400\n"
+"Last-Translator: batden <batden@orange.fr>\n"
+"Language-Team: French <pourunmondesansgourou@gmail.com>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n>1;\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: ../src/bin/em_config.c:165
+msgid "Emote - Configuration"
+msgstr "Configuration de Emote"
+
+#: ../src/bin/em_config.c:194
+msgid "General"
+msgstr "Général"
+
+#: ../src/bin/em_config.c:197
+msgid "Servers"
+msgstr "Serveurs"
+
+#: ../src/bin/em_config.c:208
+msgid "Apply"
+msgstr "Appliquer"
+
+#: ../src/bin/em_config.c:213
+msgid "Close"
+msgstr "Fermer"
+
+#: ../src/bin/em_gui.c:88
+msgid "Settings"
+msgstr "Paramètres"
+
+#: ../src/bin/em_gui.c:90
+msgid "Quit"
+msgstr "Quitter"

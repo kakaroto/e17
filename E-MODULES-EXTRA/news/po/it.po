@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: News\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-09-11 13:56+0200\n"
-"PO-Revision-Date: 2010-09-11 13:59+0200\n"
+"POT-Creation-Date: 2010-10-07 20:27+0200\n"
+"PO-Revision-Date: 2010-10-07 20:56+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -426,37 +426,33 @@ msgstr ""
 "Il <hilight>nome</hilight> inserito è <hilight>già usato<hilight><br>da "
 "un'altra categoria"
 
-#: src/news_menu.c:59
-msgid "Configure this Feed"
-msgstr "Configura questo feed"
+#: src/news_menu.c:131
+msgid "Set all as read"
+msgstr "Segna tutti come letti"
 
-#: src/news_menu.c:132
-msgid "Set all feeds as read"
-msgstr "Segna tutti i feed come letti"
+#: src/news_menu.c:137
+msgid "Update"
+msgstr "Aggiorna"
 
-#: src/news_menu.c:138
-msgid "Update all feeds"
-msgstr "Aggiorna tutti i feed"
+#: src/news_menu.c:146 src/news_menu.c:174
+msgid "Settings"
+msgstr "Impostazioni"
 
-#: src/news_menu.c:149
-msgid "Configure gadget"
-msgstr "Configura modulo"
+#: src/news_menu.c:151
+msgid "Newsfeeds"
+msgstr "Feed"
 
-#: src/news_menu.c:153
-msgid "Configure gadget content"
-msgstr "Configura contenuti modulo"
-
-#: src/news_menu.c:157
-msgid "Main Configuration"
-msgstr "Configurazione principale"
-
-#: src/news_menu.c:161
-msgid "Feeds Configuration"
-msgstr "Configurazione dei feed"
+#: src/news_menu.c:158
+msgid "Contents"
+msgstr "Contenuti"
 
 #: src/news_menu.c:165
-msgid "Configuration"
-msgstr "Configurazione"
+msgid "Gadget"
+msgstr "Gadget"
+
+#: src/news_menu.c:169
+msgid "Main"
+msgstr "Principale"
 
 #: src/news_utils.h:13
 msgid "News Module DEBUG DEBUG DEBUG DEBUG"
