@@ -1,18 +1,16 @@
-AC_INIT([ElmDentica], [0.9.10], [rms@1407.org], [http://code.google.com/p/elmdentica/])
+AC_INIT([ElmDentica], [0.9.10], [rms@1407.org], [elmdentica])
 AC_CONFIG_SRCDIR(src/)
 AM_CONFIG_HEADER(config.h)
 AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE
 
-AC_DISABLE_STATIC
 AC_PROG_CC
 AC_PROG_LIBTOOL
 
-IT_PROG_INTLTOOL([0.35.0])
-GETTEXT_PACKAGE="elmdentica"
-AC_SUBST(GETTEXT_PACKAGE)
-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, ["$GETTEXT_PACKAGE"], [Name of the gettext message domain])
+AM_GNU_GETTEXT(external)
+AM_GNU_GETTEXT_VERSION([0.12.1])
+
 
 PKG_CHECK_MODULES(GLIB, glib-2.0, [],
 		[AC_MSG_FAILURE([glib not found])]

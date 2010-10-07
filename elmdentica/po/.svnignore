@@ -1,6 +1,9 @@
-stamp-po
 Makefile
 Makefile.in
 Makefile.in.in
+Makevars.template
 POTFILES
+Rules-quot
+stamp-it
+stamp-po
 *.gmo

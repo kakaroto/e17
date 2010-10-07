@@ -1463,15 +1463,15 @@ char *ed_status_label_get(void *data, Evas_Object *obj, const char *part) {
 	anUser *au;
 	struct tm date_tm;
 
-	if (!strcmp(part, "elm.text")) {
+	if (!strcmp(part, "text")) {
 		snprintf(buf, sizeof(buf), "%s", as->text);
-	} else if (!strcmp(part, "elm.name")) {
+	} else if (!strcmp(part, "name")) {
 		res = asprintf(&key, "%lld", as->user);
 		if(res != -1)  {
 			au = eina_hash_find(userHash, key);
 			snprintf(buf, sizeof(buf), "%s", au->name);
 		} else snprintf(buf, sizeof(buf), "unknown");
-	} else if (!strcmp(part, "elm.date")) {
+	} else if (!strcmp(part, "date")) {
 		if(localtime_r(&(as->created_at), &date_tm)) {
 			strftime(datetime, sizeof(datetime), "%F %R", &date_tm);
 			snprintf(buf, sizeof(buf), datetime);
@@ -1487,7 +1487,7 @@ Evas_Object *ed_status_icon_get(void *data, Evas_Object *obj, const char *part) 
 	aStatus *as = (aStatus *)data;
 	Evas_Object *icon=NULL;
 
-	if (!strcmp(part, "elm.swallow.icon")) {
+	if (!strcmp(part, "icon")) {
 		icon = ed_get_icon(as->user, win);
 		evas_object_smart_callback_add(icon, "clicked", on_bubble_icon_clicked, as);
 	}
