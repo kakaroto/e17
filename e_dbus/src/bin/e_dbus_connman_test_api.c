@@ -21,13 +21,13 @@ _test_string_get(E_Connman_Element *element, const char *name, bool (*func)(cons
    const char *value;
    bool ret;
 
-   INF("BEGIN: testing string get %s of element %s...\n", name, element->path);
+   INF("BEGIN: testing string get %s of element %s...", name, element->path);
    ret = func(element, &value);
    if (ret)
-     INF("SUCCESS: testing string get %s of element %s: %s\n",
+     INF("SUCCESS: testing string get %s of element %s: %s",
 	 name, element->path, value);
    else
-     WRN("FAILURE: testing string get %s of element %s\n",
+     WRN("FAILURE: testing string get %s of element %s",
 	 name, element->path);
 
    return ret;
@@ -38,13 +38,13 @@ _test_bool_get(E_Connman_Element *element, const char *name, bool (*func)(const 
 {
    bool value, ret;
 
-   INF("BEGIN: testing bool get %s of element %s...\n", name, element->path);
+   INF("BEGIN: testing bool get %s of element %s...", name, element->path);
    ret = func(element, &value);
    if (ret)
-     INF("SUCCESS: testing bool get %s of element %s: %hhu\n",
+     INF("SUCCESS: testing bool get %s of element %s: %hhu",
 	 name, element->path, value);
    else
-     WRN("FAILURE: testing bool get %s of element %s\n",
+     WRN("FAILURE: testing bool get %s of element %s",
 	 name, element->path);
 
    return ret;
@@ -56,13 +56,13 @@ _test_uchar_get(E_Connman_Element *element, const char *name, bool (*func)(const
    unsigned char value;
    bool ret;
 
-   INF("BEGIN: testing uchar get %s of element %s...\n", name, element->path);
+   INF("BEGIN: testing uchar get %s of element %s...", name, element->path);
    ret = func(element, &value);
    if (ret)
-     INF("SUCCESS: testing uchar get %s of element %s: %hhu\n",
+     INF("SUCCESS: testing uchar get %s of element %s: %hhu",
 	 name, element->path, value);
    else
-     WRN("FAILURE: testing uchar get %s of element %s\n",
+     WRN("FAILURE: testing uchar get %s of element %s",
 	 name, element->path);
 
    return ret;
@@ -74,13 +74,13 @@ _test_ushort_get(E_Connman_Element *element, const char *name, bool (*func)(cons
    unsigned short value;
    bool ret;
 
-   INF("BEGIN: testing ushort get %s of element %s...\n", name, element->path);
+   INF("BEGIN: testing ushort get %s of element %s...", name, element->path);
    ret = func(element, &value);
    if (ret)
-     INF("SUCCESS: testing ushort get %s of element %s: %hu\n",
+     INF("SUCCESS: testing ushort get %s of element %s: %hu",
 	 name, element->path, value);
    else
-     WRN("FAILURE: testing ushort get %s of element %s\n",
+     WRN("FAILURE: testing ushort get %s of element %s",
 	 name, element->path);
 
    return ret;
@@ -93,16 +93,16 @@ _test_uchar_array_get(E_Connman_Element *element, const char *name, bool (*func)
    unsigned int count;
    bool ret;
 
-   INF("BEGIN: testing ushort get %s of element %s...\n", name, element->path);
+   INF("BEGIN: testing ushort get %s of element %s...", name, element->path);
    ret = func(element, &count, &value);
    if (ret)
      {
-	INF("SUCCESS: testing ushort get %s of element %s: %p\n",
+	INF("SUCCESS: testing ushort get %s of element %s: %p",
 	    name, element->path, value);
 	free(value);
      }
    else
-     WRN("FAILURE: testing ushort get %s of element %s\n",
+     WRN("FAILURE: testing ushort get %s of element %s",
 	 name, element->path);
 
    return ret;
@@ -114,13 +114,13 @@ _test_element_get(E_Connman_Element *element, const char *name, bool (*func)(con
    E_Connman_Element *value;
    bool ret;
 
-   INF("BEGIN: testing element get %s of element %s...\n", name, element->path);
+   INF("BEGIN: testing element get %s of element %s...", name, element->path);
    ret = func(element, &value);
    if (ret)
-     INF("SUCCESS: testing element get %s of element %s: %p\n",
+     INF("SUCCESS: testing element get %s of element %s: %p",
 	 name, element->path, value);
    else
-     WRN("FAILURE: testing element get %s of element %s\n",
+     WRN("FAILURE: testing element get %s of element %s",
 	 name, element->path);
 
    return ret;
@@ -133,17 +133,17 @@ _test_elements_get(E_Connman_Element *element, const char *name, bool (*func)(co
    unsigned int count;
    bool ret;
 
-   INF("BEGIN: testing elements get %s of element %s...\n",
+   INF("BEGIN: testing elements get %s of element %s...",
        name, element->path);
    ret = func(element, &count, &value);
    if (ret)
      {
-	INF("SUCCESS: testing elements get %s of element %s: %p\n",
+	INF("SUCCESS: testing elements get %s of element %s: %p",
 	    name, element->path, value);
 	free(value);
      }
    else
-     WRN("FAILURE: testing elements get %s of element %s\n",
+     WRN("FAILURE: testing elements get %s of element %s",
 	 name, element->path);
 
    return ret;
@@ -155,12 +155,12 @@ _test_element_get_global(const char *name, bool (*func)(E_Connman_Element **valu
    E_Connman_Element *value;
    bool ret;
 
-   INF("BEGIN: testing element get %s\n", name);
+   INF("BEGIN: testing element get %s", name);
    ret = func(&value);
    if (ret)
-     INF("SUCCESS: testing element get %s: %p\n", name, value);
+     INF("SUCCESS: testing element get %s: %p", name, value);
    else
-     WRN("FAILURE: testing element get %s\n", name);
+     WRN("FAILURE: testing element get %s", name);
 
    return ret;
 }
@@ -172,15 +172,15 @@ _test_elements_get_global(const char *name, bool (*func)(unsigned int *count, E_
    unsigned int count;
    bool ret;
 
-   INF("BEGIN: testing elements get %s\n", name);
+   INF("BEGIN: testing elements get %s", name);
    ret = func(&count, &value);
    if (ret)
      {
-	INF("SUCCESS: testing elements get %s: %p\n", name, value);
+	INF("SUCCESS: testing elements get %s: %p", name, value);
 	free(value);
      }
    else
-     WRN("FAILURE: testing elements get %s\n", name);
+     WRN("FAILURE: testing elements get %s", name);
 
    return ret;
 }
@@ -191,12 +191,12 @@ _test_string_get_global(const char *name, bool (*func)(const char **value))
    const char *value;
    bool ret;
 
-   INF("BEGIN: testing string get %s...\n", name);
+   INF("BEGIN: testing string get %s...", name);
    ret = func(&value);
    if (ret)
-     INF("SUCCESS: testing string get %s: %s\n", name, value);
+     INF("SUCCESS: testing string get %s: %s", name, value);
    else
-     WRN("FAILURE: testing string get %s\n", name);
+     WRN("FAILURE: testing string get %s", name);
 
    return ret;
 }
@@ -206,12 +206,12 @@ _test_bool_get_global(const char *name, bool (*func)(bool *value))
 {
    bool value, ret;
 
-   INF("BEGIN: testing bool get %s...\n", name);
+   INF("BEGIN: testing bool get %s...", name);
    ret = func(&value);
    if (ret)
-     INF("SUCCESS: testing bool get %s: %hhu\n", name, value);
+     INF("SUCCESS: testing bool get %s: %hhu", name, value);
    else
-     WRN("FAILURE: testing bool get %s\n", name);
+     WRN("FAILURE: testing bool get %s", name);
 
    return ret;
 }
@@ -223,15 +223,15 @@ _test_strings_get_global(const char *name, bool (*func)(unsigned int *count, con
    unsigned int count;
    bool ret;
 
-   INF("BEGIN: testing strings get %s\n", name);
+   INF("BEGIN: testing strings get %s", name);
    ret = func(&count, &value);
    if (ret)
      {
-	INF("SUCCESS: testing strings get %s: %p\n", name, value);
+	INF("SUCCESS: testing strings get %s: %p", name, value);
 	free(value);
      }
    else
-     WRN("FAILURE: testing strings get %s\n", name);
+     WRN("FAILURE: testing strings get %s", name);
 
    return ret;
 }
@@ -357,7 +357,7 @@ _test_element(E_Connman_Element *element, const struct test_desc *test_descs)
 		(itr->name, itr->func.strings_get_global);
 	      break;
 	   default:
-	      ERR("unknown test type %d (%s)\n", itr->type, itr->name);
+	      ERR("unknown test type %d (%s)", itr->type, itr->name);
 	      r = 0;
 	      break;
 	  }
@@ -366,7 +366,7 @@ _test_element(E_Connman_Element *element, const struct test_desc *test_descs)
 	  ok++;
 	else
 	  {
-	     ERR("test failed %s, element %s [%s]\n",
+	     ERR("test failed %s, element %s [%s]",
 		 itr->name, element->path, element->interface);
 	     fail++;
 	     ret = 0;
@@ -378,11 +378,11 @@ _test_element(E_Connman_Element *element, const struct test_desc *test_descs)
    failure += fail;
    if (total == 0)
      {
-	INF("no tests for %s [%s]\n", element->path, element->interface);
+	INF("no tests for %s [%s]", element->path, element->interface);
 	return 1;
      }
 
-   INF("testing %s success: %d, failure: %d: %d%% [%s]\n",
+   INF("testing %s success: %d, failure: %d: %d%% [%s]",
        element->path, ok, fail, (ok * 100) / total,
        element->interface);
 
@@ -527,7 +527,7 @@ _test_element_timer(void *data)
    else if (e_connman_element_is_service(element))
      _test_element(element, test_desc_service);
    else
-     ERR("!!! don't know how to test %s [%s]\n",
+     ERR("!!! don't know how to test %s [%s]",
 	 element->path, element->interface);
 
    _exiter_reschedule();
