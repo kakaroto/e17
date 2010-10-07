@@ -16,6 +16,10 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,7 +44,6 @@
 #include "gettext.h"
 #define _(string) gettext (string)
 
-#include <config.h>
 #include "curl.h"
 #include "elmdentica.h"
 
