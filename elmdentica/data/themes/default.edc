@@ -59,6 +59,10 @@ collections {
 				description {
 					state: "default" 0.0;
 					color: 0 0 0 0;
+					rel2 {
+						to_y: "bubble";
+						relative: 1 1;
+					}
 				}
 			}
 
@@ -71,7 +75,7 @@ collections {
 					align: 0.0 0.0;
 					min: 32 32;
 					max: 64 64;
-					rel1.offset: 7 7;
+					rel1.offset: 7 15;
 					rel2.relative: 0.2 1;
 				}
 			}
@@ -89,10 +93,6 @@ collections {
 						to: "icon";
 						relative: 1.0 0.0;
 						offset: 5 0;
-					}
-					rel2 {
-						to: "date";
-						relative: 0.0 0.0;
 					}
 					color: 0 0 0 255;
 					color3: 0 0 0 0;
@@ -117,9 +117,9 @@ collections {
 					fixed: 1 1;
 					align: 1.0 0.0;
 					rel1 {
-						to: "event";
+						to: "name";
 						relative: 1.0 0.0;
-						offset: 0 7;
+						offset: 0 0;
 					}
 					color: 0 0 0 255;
 					color3: 0 0 0 0;
@@ -147,9 +147,6 @@ collections {
 						relative: 0.0 1.0;
 						offset: 0 -10;
 					}
-					rel2 {
-						to: "text";
-					}
 					image {
 						normal: "bubble_3.png";
 						border: 36 11 18 9;
@@ -171,6 +168,10 @@ collections {
 						to: "name";
 						relative: 0.0 1.0;
 						offset: 11 11;
+					}
+					rel2 {
+						to: "bubble";
+						offset: 0 -10;
 					}
 					color: 0 0 0 255;
 					color3: 0 0 0 0;
