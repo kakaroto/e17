@@ -1,18 +1,17 @@
 
 ### Version
 
-m4_define([epdf_version_major], [0])
-m4_define([epdf_version_minor], [0])
-m4_define([epdf_version_micro], [1])
+m4_define([v_maj], [0])
+m4_define([v_min], [0])
+m4_define([v_mic], [1])
 
-m4_define([epdf_version],
-   [epdf_version_major.epdf_version_minor.epdf_version_micro])
+m4_define([v_ver], [v_maj.v_min.v_mic])
 
-m4_define([lt_rev], m4_eval(epdf_version_major + epdf_version_minor))
-m4_define([lt_cur], epdf_version_micro)
-m4_define([lt_age], epdf_version_minor)
+m4_define([lt_rev], m4_eval(v_maj + v_min))
+m4_define([lt_cur], v_mic)
+m4_define([lt_age], v_min)
 
-AC_INIT([epdf], [epdf_version], [enlightenment-devel@lists.sourceforge.net])
+AC_INIT([epdf], [v_ver], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ([2.54])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
