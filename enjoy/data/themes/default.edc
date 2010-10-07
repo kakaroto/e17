@@ -1440,9 +1440,9 @@ collections {
          }
 
    group { name: "elm/genlist/item_compress/root/default";
+      alias: "elm/genlist/item_compress_odd/root/default";
       alias: "elm/genlist/item_compress/nameid/default";
       alias: "elm/genlist/item_compress/all-song/default";
-      alias: "elm/genlist/item_compress_odd/root/default";
       alias: "elm/genlist/item_compress_odd/nameid/default";
       alias: "elm/genlist/item_compress_odd/all-song/default";
       data.item: "labels" "ejy.text.title";
@@ -1457,6 +1457,8 @@ collections {
              description {
                 state: "default" 0.0;
                 color: 0 0 0 255;
+                min: 1 50;
+                max: 99999 50;
              }
           }
           part {
@@ -1473,7 +1475,7 @@ collections {
                 visible: 1;
                 rel2 {
                     relative: 1.0 1.0;
-                    offset: -8 -8;
+                    offset: -10 -1;
                 }
              }
           }
@@ -1487,24 +1489,19 @@ collections {
                 color: 0 0 0 255;
                 rel1 {
                    relative: 0.0 0.0;
-                   offset: 4 2;
+                   offset: 26 0;
                 }
                 rel2 {
                    relative: 1.0 1.0;
-                   offset: -5 -3;
+                   offset: -1 -10;
                 }
                 color: 255 255 255 255;
                 text {
-                   font: "Sans:style=Bold";
-                   size: 12;
+                   font: "Sans";
+                   size: 10;
                    min: 0 1;
                    align: 0.0 0.5;
                 }
-             }
-             description {
-                state: "selected" 0.0;
-                inherit: "default" 0.0;
-                color: 255 156 2 255;
              }
           }
       }
