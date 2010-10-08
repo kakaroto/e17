@@ -1,7 +1,7 @@
 #include "ephoto.h"
 
-#define SLIDER_MAX 300
-#define SLIDER_MIN 80
+#define SLIDER_MAX 512
+#define SLIDER_MIN 128
 
 #define PARENT_DIR "Up"
 
