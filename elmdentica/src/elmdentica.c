@@ -62,6 +62,7 @@
 #include "curl.h"
 
 Evas_Object *status_list=NULL, *scroller=NULL, *status=NULL, *win=NULL, *error_win=NULL, *entry=NULL, *fs=NULL, *count=NULL, *url_win=NULL, *hv=NULL, *related_inwin=NULL, *ly=NULL;
+char theme[PATH_MAX];
 char * dm_to=NULL;
 
 StatusesList	*statuses=NULL;
@@ -90,7 +91,7 @@ double mouse_held_down=0;
 
 struct sqlite3 *ed_DB=NULL;
 
-GRegex *re_link=NULL, *re_link_content=NULL, *re_entities=NULL, *re_user=NULL, *re_nouser=NULL, *re_group=NULL, *re_nogroup=NULL, *re_amp=NULL, *re_nl;
+GRegex *re_link=NULL, *re_link_content=NULL, *re_entities=NULL, *re_user=NULL, *re_nouser=NULL, *re_tags=NULL, *re_group=NULL, *re_nogroup=NULL, *re_amp=NULL, *re_nl;
 GError *re_err=NULL;
 
 static Elm_Genlist_Item_Class itc1;
@@ -1500,10 +1501,134 @@ Eina_Bool ed_status_state_get(void *data, Evas_Object *obj, const char *part) {
 void ed_status_del(void *data, Evas_Object *obj) {
 }
 
+static void on_close_status_action(void *data, Evas_Object *obj, void *event_info) {
+	evas_object_del((Evas_Object*)data);
+}
+
 static void ed_status_action(void *data, Evas_Object *obj, void *event_info) {
-	Elm_Genlist_Item *li = (Elm_Genlist_Item*)event_info;
-	aStatus *as = (aStatus*)elm_genlist_item_data_get(li);
-	printf("DO SOMETHING WITH THIS STATUS: %s\n", as->text);
+	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)event_info;
+	Elm_List_Item *li=NULL;
+	Evas_Object *status_inwin=NULL, *box=NULL, *frame=NULL, *list=NULL, *button=NULL;
+	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
+	anUser *au=NULL;
+	GMatchInfo *user_matches=NULL, *link_matches=NULL, *tags_matches=NULL, *group_matches=NULL;
+	char *match=NULL, *key=NULL;
+	int res=0;
+
+	if(!re_link)	re_link  = g_regex_new("([a-z]+://.*?)(\\s|$)", G_REGEX_OPTIMIZE, 0, &re_err);
+	if(!re_user)	re_user  = g_regex_new("@([a-zA-Z0-9_]+)",      G_REGEX_OPTIMIZE, 0, &re_err);
+	if(!re_tags)	re_tags  = g_regex_new("#([a-zA-Z0-9_]+)",      G_REGEX_OPTIMIZE, 0, &re_err);
+	if(!re_group)	re_group = g_regex_new("!([a-zA-Z0-9_]+)",      G_REGEX_OPTIMIZE, 0, &re_err);
+
+	status_inwin=elm_win_inwin_add(win);
+		box=elm_box_add(win);
+			evas_object_size_hint_weight_set(box, 1, 1);
+			evas_object_size_hint_align_set(box, -1, -1);
+		evas_object_show(box);
+
+		frame = elm_frame_add(win);
+			evas_object_size_hint_weight_set(frame, 1, 1);
+			evas_object_size_hint_align_set(frame, -1, -1);
+			elm_frame_label_set(frame, _("Users"));
+
+			list = elm_list_add(win);
+				evas_object_size_hint_weight_set(list, 1, 1);
+				evas_object_size_hint_align_set(list, -1, -1);
+
+				if(g_regex_match(re_user, as->text, 0, &user_matches)) {
+					while((match = g_match_info_fetch(user_matches, 1))) {
+						li = elm_list_item_sorted_insert(list, match, NULL, NULL, NULL, NULL, strcmp);
+						g_match_info_next(user_matches, &re_err);
+					}
+				}
+				g_match_info_free(user_matches);
+
+				res = asprintf(&key, "%lld", as->user);
+				if(res != -1) {
+					au = eina_hash_find(userHash, key);
+					if(au) li = elm_list_item_prepend(list, au->screen_name, NULL, NULL, NULL, NULL);
+					free(key);
+				}
+
+				elm_list_go(list);
+				elm_frame_content_set(frame, list);
+			evas_object_show(list);
+			elm_box_pack_end(box, frame);
+		evas_object_show(frame);
+
+		if(g_regex_match(re_link, as->text, 0, &link_matches)) {
+			frame = elm_frame_add(win);
+				evas_object_size_hint_weight_set(frame, 1, 1);
+				evas_object_size_hint_align_set(frame, -1, -1);
+				elm_frame_label_set(frame, _("Links"));
+
+				list = elm_list_add(win);
+					evas_object_size_hint_weight_set(list, 1, 1);
+					evas_object_size_hint_align_set(list, -1, -1);
+
+					while((match = g_match_info_fetch(link_matches, 1))) {
+						li = elm_list_item_sorted_insert(list, match, NULL, NULL, NULL, NULL, strcmp);
+						g_match_info_next(link_matches, &re_err);
+					}
+					elm_list_go(list);
+					elm_frame_content_set(frame, list);
+				evas_object_show(list);
+				elm_box_pack_end(box, frame);
+			evas_object_show(frame);
+		}
+		g_match_info_free(link_matches);
+
+		if(re_tags && g_regex_match(re_tags, as->text, 0, &tags_matches)) {
+			frame = elm_frame_add(win);
+				evas_object_size_hint_weight_set(frame, 1, 1);
+				evas_object_size_hint_align_set(frame, -1, -1);
+				elm_frame_label_set(frame, _("Tags"));
+
+				list = elm_list_add(win);
+					evas_object_size_hint_weight_set(list, 1, 1);
+					evas_object_size_hint_align_set(list, -1, -1);
+
+					while((match = g_match_info_fetch(tags_matches, 1))) {
+						li = elm_list_item_sorted_insert(list, match, NULL, NULL, NULL, NULL, strcmp);
+						g_match_info_next(tags_matches, &re_err);
+					}
+					elm_list_go(list);
+					elm_frame_content_set(frame, list);
+				evas_object_show(list);
+				elm_box_pack_end(box, frame);
+			evas_object_show(frame);
+		}
+		g_match_info_free(tags_matches);
+
+		if(re_group && g_regex_match(re_group, as->text, 0, &group_matches)) {
+			frame = elm_frame_add(win);
+				evas_object_size_hint_weight_set(frame, 1, 1);
+				evas_object_size_hint_align_set(frame, -1, -1);
+				elm_frame_label_set(frame, _("Groups"));
+
+				list = elm_list_add(win);
+					evas_object_size_hint_weight_set(list, 1, 1);
+					evas_object_size_hint_align_set(list, -1, -1);
+
+					while((match = g_match_info_fetch(group_matches, 1))) {
+						li = elm_list_item_sorted_insert(list, match, NULL, NULL, NULL, NULL, strcmp);
+						g_match_info_next(group_matches, &re_err);
+					}
+					elm_list_go(list);
+					elm_frame_content_set(frame, list);
+				evas_object_show(list);
+				elm_box_pack_end(box, frame);
+			evas_object_show(frame);
+		}
+		g_match_info_free(group_matches);
+
+		button = elm_button_add(win);
+			elm_button_label_set(button, _("Close"));
+			evas_object_smart_callback_add(button, "clicked", on_close_status_action, status_inwin);
+			elm_box_pack_end(box, button);
+		evas_object_show(button);
+		elm_win_inwin_content_set(status_inwin, box);
+	evas_object_show(status_inwin);
 }
 
 static int add_status(void *data, int argc, char **argv, char **azColName) {
@@ -1967,7 +2092,6 @@ EAPI int elm_main(int argc, char **argv)
 	Evas_Object *bg=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *box2=NULL, *hoversel=NULL, *edit_panel=NULL, *timelines=NULL, *timelines_panel=NULL;
 	char *tmp=NULL;
 	int res = 0;
-	char buf[PATH_MAX];
 
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, LOCALEDIR);
@@ -1994,10 +2118,10 @@ EAPI int elm_main(int argc, char **argv)
 	elm_win_resize_object_add(win, bg);
 	evas_object_show(bg);
 
-	snprintf(buf, sizeof(buf), "%s/themes/default.edj", PKGDATADIR);
-	elm_theme_extension_add(NULL, buf);
+	snprintf(theme, sizeof(theme), "%s/themes/default.edj", PKGDATADIR);
+	elm_theme_extension_add(NULL, theme);
 	ly = elm_layout_add(win);
-		elm_layout_file_set(ly, buf, "elmdentica/vertical_layout");
+		elm_layout_file_set(ly, theme, "elmdentica/vertical_layout");
 		//elm_layout_theme_set(ly, "elmdentica", "elm/genlist", "default");
 		evas_object_size_hint_weight_set(ly, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 		elm_win_resize_object_add(win, ly);
@@ -2007,6 +2131,7 @@ EAPI int elm_main(int argc, char **argv)
 		evas_object_size_hint_weight_set(scroller, 1, 1);
 		evas_object_size_hint_align_set(scroller, -1, -1);
 		elm_genlist_bounce_set(scroller, EINA_FALSE, EINA_TRUE);
+		elm_genlist_height_for_width_mode_set(scroller, EINA_TRUE);
 		elm_genlist_no_select_mode_set(scroller, EINA_TRUE);
 		elm_genlist_compress_mode_set(scroller, EINA_TRUE);
 
@@ -2220,6 +2345,8 @@ EAPI int elm_main(int argc, char **argv)
 	if(re_amp) g_regex_unref(re_amp);
 	if(re_link) g_regex_unref(re_link);
 	if(re_user) g_regex_unref(re_user);
+	if(re_tags) g_regex_unref(re_tags);
+	if(re_group) g_regex_unref(re_group);
 	if(re_link_content) g_regex_unref(re_link_content);
 	if(re_nl) g_regex_unref(re_nl);
 	if(re_entities) g_regex_unref(re_entities);
