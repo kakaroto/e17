@@ -183,7 +183,12 @@ _thumb_gen_size_changed_timer_cb(void *data)
    ethumb_client_size_set(client, gen_size, gen_size);
 
    EINA_LIST_FOREACH(_thumbs, l, o)
-     elm_thumb_reload(o);
+     {
+        Ethumb_Thumb_Format format;
+        format = (long)evas_object_data_get(o, "ephoto_format");
+        ethumb_client_format_set(client, format);
+        elm_thumb_reload(o);
+     }
 
  end:
    _thumb_gen_size_changed_timer = NULL;
@@ -226,8 +231,27 @@ _thumb_del(void *data, Evas *e, Evas_Object *o, void *event_info)
 Evas_Object *
 ephoto_thumb_add(Evas_Object *parent, const char *path)
 {
-   Evas_Object *o = elm_thumb_add(parent);
+   Evas_Object *o;
+   const char *ext;
+   Ethumb_Thumb_Format format = ETHUMB_THUMB_FDO;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(parent, NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(path, NULL);
+
+   o = elm_thumb_add(parent);
    if (!o) return NULL;
+
+   ext = strrchr(path, '.');
+   if (ext)
+     {
+        ext++;
+        if ((strcasecmp(ext, "jpg") == 0) ||
+            (strcasecmp(ext, "jpeg") == 0))
+          format = ETHUMB_THUMB_JPEG; /* faster! */
+     }
+
+   ethumb_client_format_set(elm_thumb_ethumb_client_get(), format);
+   evas_object_data_set(o, "ephoto_format", (void*)(long)format);
    elm_thumb_file_set(o, path, NULL);
    _thumbs = eina_list_append(_thumbs, o);
    evas_object_event_callback_add(o, EVAS_CALLBACK_DEL, _thumb_del, NULL);

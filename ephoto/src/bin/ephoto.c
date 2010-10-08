@@ -26,7 +26,7 @@ main(int argc, char **argv)
         goto end_log_domain;
      }
    ethumb_client_crop_align_set(client, 0.5, 0.5);
-   ethumb_client_aspect_set(client, ETHUMB_THUMB_KEEP_ASPECT);
+   ethumb_client_aspect_set(client, ETHUMB_THUMB_CROP);
    ethumb_client_orientation_set(client, ETHUMB_THUMB_ORIENT_ORIGINAL);
    __log_domain = eina_log_domain_register("ephoto", EINA_COLOR_BLUE);
    if (!__log_domain)
