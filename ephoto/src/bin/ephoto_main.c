@@ -253,6 +253,7 @@ ephoto_thumb_add(Evas_Object *parent, const char *path)
    ethumb_client_format_set(elm_thumb_ethumb_client_get(), format);
    evas_object_data_set(o, "ephoto_format", (void*)(long)format);
    elm_thumb_file_set(o, path, NULL);
+   elm_object_style_set(o, "noframe");
    _thumbs = eina_list_append(_thumbs, o);
    evas_object_event_callback_add(o, EVAS_CALLBACK_DEL, _thumb_del, NULL);
    return o;
