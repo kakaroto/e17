@@ -31,7 +31,12 @@ cdef class InnerWindow(Window):
         elm_win_inwin_activate(self.obj)
 
     def content_set(self, c_evas.Object content):
-        elm_win_inwin_content_set(self.obj, content.obj)
+        cdef c_evas.Evas_Object *o
+        if content is not None:
+            o = content.obj
+        else:
+            o = NULL
+        elm_win_inwin_content_set(self.obj, o)
 
 
 _elm_widget_type_register("inwin", InnerWindow)
