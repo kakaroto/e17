@@ -3,6 +3,8 @@
  * What it does is calculate the offset relative to the center (on x) of the nth button,
  * and in order to do that, it uses the position of the item in the middle of the toolbar.
  */
+#define MSG_POSITION 2
+
 #define TOOLBAR_ITEMS 5
 #define TOOLBAR_MIDDLE_ITEM 3
 #define TOOLBAR_ITEM_SIZE 90
@@ -920,6 +922,35 @@ collections {
    }
    group {
       name: "nowplaying";
+      script {
+         public cur_length;
+
+         public get_time_str(Float:time, time_str[6])
+         {
+            if (round(time) % 60 < 10)
+               snprintf(time_str, 6, "%d:0%d", round(time) / 60, round(time) % 60);
+            else
+               snprintf(time_str, 6, "%d:%d", round(time) / 60, round(time) % 60);
+         }
+         public message(Msg_Type:type, id, ...){
+            if (type == MSG_FLOAT_SET && id == MSG_POSITION)
+            {
+               new Float:position = getfarg(2);
+               new Float:length = getfarg(3);
+               if (length > 0)
+                  external_param_set_float(PART:"ejy,progress", "value", position / length * 100);
+               else
+                  external_param_set_float(PART:"ejy,progress", "value", 0);
+
+               new time_str[6];
+               get_time_str(position, time_str);
+               set_text(PART:"ejy.text.current_time", time_str);
+               get_time_str(length, time_str);
+               set_text(PART:"ejy.text.total_time", time_str);
+               set_float(cur_length, length);
+            }
+         }
+      }
       parts {
          images {
             image: "main.png" COMP;
@@ -1001,7 +1032,7 @@ collections {
                state: "default" 0.0;
                color: 255 255 255 255;
                rel1 {
-                  to: "ejy.swallow.progress";
+                  to: "ejy,progress";
                   relative: 0.0 0.0;
                   offset: 0 40;
                }
@@ -1025,7 +1056,7 @@ collections {
                state: "default" 0.0;
                color: 255 255 255 255;
                rel1 {
-                  to: "ejy.swallow.progress";
+                  to: "ejy,progress";
                   relative: 1.0 0.0;
                   offset: -25 40;
                }
@@ -1042,7 +1073,7 @@ collections {
             }
          }
          part {
-            name: "ejy.swallow.progress";
+            name: "ejy,progress";
             type: EXTERNAL;
             source: "elm/slider";
             description {
@@ -1057,7 +1088,9 @@ collections {
                   relative: 1.0 0.0;
                   offset: -40 100;
                }
-
+               params.double: "min" 0.0;
+               params.double: "max" 100.0;
+               params.double: "value" 0.0;
             }
          }
          part {
@@ -1154,6 +1187,16 @@ collections {
                   relative: 1.0 1.0;
                   offset: 0 0;
                }
+            }
+         }
+      }
+      programs {
+         program {
+            name: "ejy,progress,changed";
+            source: "ejy,progress";
+            signal: "changed";
+            script {
+               send_message(MSG_FLOAT, MSG_POSITION, (external_param_get_float(PART:"ejy,progress", "value") * get_float(cur_length) / 100));
             }
          }
       }

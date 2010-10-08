@@ -134,7 +134,7 @@ _win_play_eval(Win *w)
 {
    Edje_Message_Float_Set *mf;
 
-   if (w->play.length <= 0.0)
+   if ((w->play.length < 0.1) || (w->play.position < 0.5))
      {
         w->play.length = emotion_object_play_length_get(w->emotion);
         if ((w->song) && (w->song->length != (int)w->play.length))
@@ -150,7 +150,7 @@ _win_play_eval(Win *w)
    mf->count = 2;
    mf->val[0] = w->play.position;
    mf->val[1] = w->play.length;
-   edje_object_message_send(w->edje, EDJE_MESSAGE_FLOAT_SET, MSG_POSITION, mf);
+   edje_object_message_send(elm_layout_edje_get(w->nowplaying), EDJE_MESSAGE_FLOAT_SET, MSG_POSITION, mf);
 
    if (w->play.playing)
      {
@@ -488,6 +488,7 @@ win_new(App *app)
    evas_object_smart_callback_add(w->list, "changed", _win_list_changed, w);
 
    w->nowplaying = nowplaying_add(w->layout);
+   edje_object_message_handler_set(elm_layout_edje_get(w->nowplaying), _win_edje_msg, w);
    elm_layout_content_set(w->layout, "ejy.swallow.nowplaying", w->nowplaying);
    w->edje = elm_layout_edje_get(w->layout);
    edje_object_size_min_get(w->edje, &(w->min.w), &(w->min.h));
