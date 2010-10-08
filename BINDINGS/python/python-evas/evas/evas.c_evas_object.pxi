@@ -273,6 +273,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         evas_object_event_callback_add(obj, EVAS_CALLBACK_FREE, obj_free_cb,
                                        <void *>self)
         _object_register_decorated_callbacks(self)
+        self.name_set(self.__class__.__name__)
         return 1
 
     def _set_evas(self, Canvas evas not None):
