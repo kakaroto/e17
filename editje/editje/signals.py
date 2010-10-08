@@ -280,6 +280,7 @@ class SignalDetails(EditjeDetails):
         self._header_table = PropertyTable(
             parent, "signal name", self._header_prop_value_changed)
         self.content_set("part_state.swallow", self._header_table)
+        self.focus_custom_chain_set([self._header_table, self._box])
 
         prop = Property(parent, "name")
         wid = WidgetEntry(self)

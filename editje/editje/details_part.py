@@ -55,6 +55,8 @@ class PartDetails(EditjeDetails):
         self.content_set("part_name.swallow", self._header_table)
         self._header_table.show()
 
+        self.focus_custom_chain_set([self._header_table, self._box])
+
         prop = Property(parent, "name")
         wid = WidgetEntry(self)
         wid.tooltip_set("Unique name of part.")

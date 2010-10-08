@@ -47,6 +47,14 @@ class WidgetsList(Collapsable):
         self._content_load()
         self._options_load()
 
+    def _opened_cb(self, obj, emission, source):
+        Collapsable._opened_cb(self, obj, emission, source)
+        self._pager.disabled_set(False)
+
+    def _closed_cb(self, obj, emission, source):
+        Collapsable._closed_cb(self, obj, emission, source)
+        self._pager.disabled_set(True)
+
     def _types_load(self):
         self._loaded_types = {}
         types_list = []

@@ -40,6 +40,14 @@ class CList(Collapsable):
         self.content_set("content", self._list)
         self._list.show()
 
+    def _opened_cb(self, obj, emission, source):
+        Collapsable._opened_cb(self, obj, emission, source)
+        self._list.disabled_set(False)
+
+    def _closed_cb(self, obj, emission, source):
+        Collapsable._closed_cb(self, obj, emission, source)
+        self._list.disabled_set(True)
+
     # List
     def clear(self):
         self._first = None

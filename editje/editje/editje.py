@@ -71,6 +71,7 @@ class Editje(elementary.Window, OpenFileManager):
         self.title_set("Editje - Edje Editor")
         self.callback_destroy_add(self._destroy_cb)
         self.resize(800, 600)
+        self.focus_highlight_enabled_set(True)
 
         # Load Edje Theme File
         self._load_theme()
@@ -335,12 +336,14 @@ class Editje(elementary.Window, OpenFileManager):
             self._window_blocker.disabled_set(True)
             if object_over:
                 self._window_blocker.stack_below(object_over)
+            self.main_layout.disabled_set(True)
             self._window_blocker.show()
 
         def delete_window_blocker():
             if not self._window_blocker:
                 return
 
+            self.main_layout.disabled_set(False)
             self._window_blocker.delete()
             self._window_blocker = None
 
@@ -352,8 +355,10 @@ class Editje(elementary.Window, OpenFileManager):
     def desktop_block(self, bool):
         if bool:
             self.main_edje.signal_emit("desktop,blocker,enable", "")
+            self.desktop.view.disabled_set(True)
         else:
             self.main_edje.signal_emit("desktop,blocker,disable", "")
+            self.desktop.view.disabled_set(False)
 
     def select_group(self):
         grp_wiz = GroupSelectionWizard(

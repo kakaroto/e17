@@ -65,6 +65,7 @@ class PartStateDetails(EditjeDetails):
         EditjeDetails.__init__(self, parent, operation_stack_cb, group)
 
         self._header_init(parent)
+        self.focus_custom_chain_set([self._header_table, self._box])
 
         self._img_new_img_cb = img_new_img_cb
         self._img_list_get_cb = img_list_get_cb

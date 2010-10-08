@@ -180,12 +180,14 @@ class EditjeDetails(elementary.Layout):
         self.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
         self.size_hint_min_set(*self._min_size)
         self._edje.calc_force()
+        self._proptable.disabled_set(False)
 
     def _closed_cb(self, obj, emission, source):
         self._open = False
         self.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         self.size_hint_min_set(*self._min_size_collapsed)
         self._edje.calc_force()
+        self._proptable.disabled_set(True)
 
     def _open_get(self):
         return self._open

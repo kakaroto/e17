@@ -25,6 +25,7 @@ class PopupWindow(elementary.Window):
     def __init__(self, name="popup", type=elementary.ELM_WIN_BASIC):
         elementary.Window.__init__(self, name, type)
         self.autodel_set(True)
+        self.focus_highlight_enabled_set(True)
 
         bg = elementary.Background(self)
         self.resize_object_add(bg)

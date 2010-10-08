@@ -215,9 +215,10 @@ class Wizard(InnerWindow):
         InnerWindow.__init__(self, parent)
 
         self._parent = parent
-        self.style_set("minimal")  # size fallbacks to __layout's min/max
+        #self.style_set("minimal")  # size fallbacks to __layout's min/max
 
-        self.__layout = edje.Edje(self.evas)
+        self.__layout = Layout(self)
+        self.__edje = self.__layout.edje_get()
         self.__theme_file = sysconfig.theme_file_get("default")
         self.__width = width or self.default_width
         self.__height = height or self.default_height
@@ -228,13 +229,13 @@ class Wizard(InnerWindow):
 
         self.on_key_down_add(self.__key_down_cb)
 
-        self.__layout.show()
         InnerWindow.content_set(self, self.__layout)
+        self.__layout.show()
 
         self.__pager = Pager(self)
         self.__pager.style_set("editje.rightwards")
-        self.__layout.part_swallow("content", self.__pager)
         self.__pager.show()
+        self.__layout.content_set("content", self.__pager)
 
         self.__pages = {}
         self.__current_page = None
@@ -242,25 +243,25 @@ class Wizard(InnerWindow):
 
     def _subtitle_text_set(self, value):
         if not value:
-            self.__layout.signal_emit("wizard,subtitle,hide", "")
-            self.__layout.part_text_set("subtitle.text", "")
+            self.__edje.signal_emit("wizard,subtitle,hide", "")
+            self.__edje.part_text_set("subtitle.text", "")
         else:
-            self.__layout.signal_emit("wizard,subtitle,show", "")
-            self.__layout.part_text_set("subtitle.text", value)
+            self.__edje.signal_emit("wizard,subtitle,show", "")
+            self.__edje.part_text_set("subtitle.text", value)
 
     subtitle_text = property(fset=_subtitle_text_set)
 
     def alternate_background_set(self, value):
         if value:
-            self.__layout.signal_emit("wizard,bg,alternate", "")
+            self.__edje.signal_emit("wizard,bg,alternate", "")
         else:
-            self.__layout.signal_emit("wizard,bg,default", "")
+            self.__edje.signal_emit("wizard,bg,default", "")
 
     def _title_text_set(self, value):
         if not value:
-            self.__layout.part_text_set("title.text", "")
+            self.__edje.part_text_set("title.text", "")
         else:
-            self.__layout.part_text_set("title.text", value)
+            self.__edje.part_text_set("title.text", value)
 
     title_text = property(fset=_title_text_set)
 
