@@ -95,72 +95,29 @@ collections
 			}
 		}
 	}
-	group
-	{
-		name: "/ephoto/thumb/no_border";
-		parts
-		{
-			part
-			{
-				name: "border";
-				type: RECT;
-				mouse_events: 0;
-				description
-				{
-					state: "default" 0.0;
-					color: 255 255 255 0;
-					rel1.offset: 18 18;
-					rel2.offset: -17 -17;
-				}
-			}
-			part
-			{
-				name: "clipper";
-				type: RECT;
-				mouse_events: 0;
-				description
-				{
-					state: "default" 0.0;
-					visible: 1;
-					color: 255 255 255 255;
-				}
-			}
-			part
-			{
-				name: "ephoto.swallow.content";
-				type: SWALLOW;
-				mouse_events: 1;
-				clip_to: "clipper";
-				description
-				{
-					state: "default" 0.0;
-					visible: 1;
-					rel1.to: "border";
-					rel1.offset: 8  8;
-					rel2.to: "border";
-					rel2.offset: -9 -9;
-					color: 255 255 255 255;
-				}
-			}
-			part
-			{
-				name: "event_area";
-				type: RECT;
-				mouse_events: 1;
-				description
-				{
-					state: "default" 0.0;
-					color: 255 255 255 0;
-					rel1.to: "clipper";
-					rel1.relative: 0.0 0.0;
-					rel1.offset: 0 0;
-					rel2.to: "clipper";
-					rel2.relative: 1.0 1.0;
-					rel2.offset: -1 -1;
-				}
-			}
-		}
-	}
+
+        group { name: "/ephoto/thumb/no_border";
+           parts {
+              part { name: "ephoto.swallow.content";
+                 type: SWALLOW;
+                 mouse_events: 0;
+                 description { state: "default" 0.0;
+                    min: 16 16;
+                    rel1.offset: 8  8;
+                    rel2.offset: -9 -9;
+                 }
+              }
+
+              part {
+                 name: "eventarea";
+                 type: RECT;
+                 description { state: "default" 0.0;
+                    color: 255 255 255 0;
+                 }
+              }
+           }
+        }
+
 	group 
 	{
 		name: "elm/gengrid/item/ephoto/default";
@@ -617,73 +574,58 @@ collections
                }
            }
         }
-	group
-	{
-           name: "/ephoto/directory/thumb/layout";
-           parts
-           {
-              part {
-                 name: "ephoto.swallow.thumb1";
+
+        group { name: "/ephoto/directory/thumb/layout";
+           data.item: "thumbs" "3";
+           parts {
+              part { name: "ephoto.swallow.thumb1";
                  type: SWALLOW;
                  description {
                     state: "default" 0.0;
-                    color: 255 0 0 255;
-                    map {
-                        on: 0;
-                     }
-                    
+                    map.on: 0;
                  }
               }
-             part {
-                 name: "ephoto.swallow.thumb2";
-                type: SWALLOW;
+              part { name: "ephoto.swallow.thumb2";
+                 type: SWALLOW;
                  description {
                     state: "default" 0.0;
-                    color: 255 0 0 255;
                     map {
-                        on: 1;
-                         rotation {
-                             z: 20;
-                         }
-                     }
-                    
-                 }
-              }
-             part {
-                 name: "ephoto.swallow.thumb3";
-                type: SWALLOW;
-                 description {
-                    state: "default" 0.0;
-                    color: 255 0 0 255;
-                     map {
-                        on: 1;
-                         rotation {
-                             z: -20;
-                         }
-                     }
-                 }
-              }
-             
-           }
-            programs {
-                program { name: "load";
-                    signal: "load";
-                    script {
-                       new Float:val;
-
-                       custom_state(PART:"ephoto.swallow.thumb3", "default", 0.0);
-                       custom_state(PART:"ephoto.swallow.thumb2", "default", 0.0);
-                       val = randf();
-                       val = 40 * val - 20;
-                       set_state_val(PART:"ephoto.swallow.thumb3", STATE_MAP_ROT_Z, val);
-                       val = randf();
-                       val = 40 * val - 20;
-                       set_state_val(PART:"ephoto.swallow.thumb2", STATE_MAP_ROT_Z, val);
-                       set_state(PART:"ephoto.swallow.thumb2", "custom", 0.0);
-                       set_state(PART:"ephoto.swallow.thumb3", "custom", 0.0);
+                       on: 1;
+                       rotation.z: 20;
                     }
-                }
-            }
+                 }
+              }
+              part { name: "ephoto.swallow.thumb3";
+                 type: SWALLOW;
+                 description {
+                    state: "default" 0.0;
+                    map {
+                       on: 1;
+                       rotation.z: -20;
+                    }
+                 }
+              }
+           }
+
+           programs {
+              program { name: "load";
+                 signal: "load";
+                 script {
+                    new Float:val;
+
+                    custom_state(PART:"ephoto.swallow.thumb3", "default", 0.0);
+                    custom_state(PART:"ephoto.swallow.thumb2", "default", 0.0);
+                    val = randf();
+                    val = 40 * val - 20;
+                    set_state_val(PART:"ephoto.swallow.thumb3", STATE_MAP_ROT_Z, val);
+                    val = randf();
+                    val = 40 * val - 20;
+                    set_state_val(PART:"ephoto.swallow.thumb2", STATE_MAP_ROT_Z, val);
+                    set_state(PART:"ephoto.swallow.thumb2", "custom", 0.0);
+                    set_state(PART:"ephoto.swallow.thumb3", "custom", 0.0);
+                 }
+              }
+           }
         }
 }
 
