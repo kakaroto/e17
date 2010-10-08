@@ -239,14 +239,15 @@ _ephoto_show_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 static Eina_Bool
 _ephoto_populate_filter_directory(void *data, const char *file)
 {
-	const char *type;
+   const char *basename;
+   struct stat st;
 
-	if (!(type = efreet_mime_type_get(file)))
-		return EINA_FALSE;
-	if (!strncmp(type, "inode/directory", 15))
-		return EINA_TRUE;
+   /* TODO: eio_file_ls_direct() and get more useful parameter than file */
+   basename = ecore_file_file_get(file);
+   if ((!basename) || (basename[0] == '.'))
+     return EINA_FALSE;
 
-	return EINA_FALSE;
+   return ((stat(file, &st) == 0) && (S_ISDIR(st.st_mode)));
 }
 
 /* Check image type from another thread */
