@@ -3,6 +3,8 @@
 Encoding=UTF-8
 Name=Elm_Indicator
 Comment=Elementary Indicator
+Comment[it]=Elementary - Indicadore
+Comment[pt]=Indicador do Elementary
 Exec=elm_indicator
 Icon=elm_indicator
 Terminal=false

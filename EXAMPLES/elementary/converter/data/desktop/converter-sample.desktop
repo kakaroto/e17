@@ -1,7 +1,10 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=converter-sample
+Name[pt]=Exemplo de conversor
 Comment=converter sample made by editje
+Comment[it]=Un convertitore di esempio fatto con editje
+Comment[pt]=Um exemplo de conversão via editje
 Exec=converter-sample
 Icon=converter-sample
 Terminal=false

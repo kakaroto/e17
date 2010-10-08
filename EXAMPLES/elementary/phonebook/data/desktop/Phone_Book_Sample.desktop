@@ -1,7 +1,10 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=Phone_Book_Sample
-Comment=Simple Phone Book designed using Editje and C Language Programing
+Name[pt]Exemplo de lista telefónica
+Comment=Simple Phone Book designed using Editje and C Language Programing
+Comment[it]=Un'agenda telefonica progettata con Editje e la programmazione in C
+Comment[pt]=Uma agenda telefónica desenvolvida com o Editje e programação C
 Exec=Phone_Book_Sample
 Icon=Phone_Book_Sample
 Terminal=false

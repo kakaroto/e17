@@ -5,6 +5,7 @@ Comment[cs]=Solitaire hry pro E17
 Comment[it]=Raccolta di solitari per E17
 Comment[eo]=Belaspekta kartludaro por E17
 Comment[el]=Όμορφα παιχνίδια με κάρτες για το E17
+Comment[pt]=Conjunto de jogos de cartas tipo solitário para o E17
 Version=1.0
 Encoding=UTF-8
 Exec=elitaire

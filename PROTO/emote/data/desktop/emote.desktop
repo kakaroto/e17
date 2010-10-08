@@ -4,6 +4,7 @@ Name=Emote
 Comment=Emote IRC Application
 Comment[fr]=Client IRC Emote
 Comment[it]=Client IRC Emote
+Comment[pt]=Aplicação de IRC Emote
 Exec=emote
 Icon=emote
 Terminal=false

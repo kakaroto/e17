@@ -1,7 +1,10 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=sticky-notes-edje
+Name[pt]=Notas edje
 Comment=A sample sticky notes application using Edje and Elementary.
+Comment[it]=Una semplice applicazione per note appiccicate che usa Edje e Elementary
+Comment[pt]=Uma aplicação de notas que utiliza Edje e o Elementary
 Exec=sticky-notes-edje
 Icon=sticky-notes-edje
 Terminal=false

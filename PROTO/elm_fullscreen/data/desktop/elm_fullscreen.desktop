@@ -2,7 +2,10 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=Elm_Fullscreen
+Name[pt]=Ecrã completo Elm
 Comment=Elementary Fullscreen
+Comment[it]=Elementary - Schermo pieno
+Comment[pt]=Ecrã completo do Elementary
 Exec=elm_fullscreen
 Icon=elm_fullscreen
 Terminal=false

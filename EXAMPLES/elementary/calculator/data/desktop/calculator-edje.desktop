@@ -1,7 +1,10 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=calculator-edje
+Name[pt]=Calculadora Edje
 Comment=A sample, basic calculator application using Edje and Elementary.
+Comment[it]=Una semplice calcolatrice che usa Edje e Elementary
+Comment[pt]=Uma calculadora básica que utiliza Edje e Elementary
 Exec=calculator-edje
 Icon=calculator-edje
 Terminal=false

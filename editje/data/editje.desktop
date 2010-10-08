@@ -4,6 +4,7 @@ Name=Editje
 Comment=Editje Edje Editor
 Comment[fr]=Éditeur de fichiers edj
 Comment[it]=Editor per i file di Edje
+Comment[pt]=Editor de ficheiros Edje
 Icon=editje
 Exec=editje-bin %F
 Terminal=false

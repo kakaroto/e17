@@ -2,6 +2,8 @@
 Encoding=UTF-8
 Name=Elm_Kbd
 Comment=Elementary Keyboard
+Comment[it]=Elementary - Tastiera
+Comment[pt]=Teclado Elementary
 Exec=elm_kbd
 Icon=elm_kbd
 Terminal=false

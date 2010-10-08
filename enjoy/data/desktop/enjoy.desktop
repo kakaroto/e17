@@ -4,6 +4,7 @@ Name=Enjoy
 Comment=Music Player
 Comment[fr]=Lecteur de musique
 Comment[it]=Riproduttore musicale
+Comment[pt]=Reprodutor de músicas
 Exec=enjoy
 Icon=enjoy
 Terminal=false

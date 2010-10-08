@@ -3,6 +3,8 @@
 Encoding=UTF-8
 Name=Ardy
 Comment=Python-EFL-based Arduino serial controller
+Comment[it]=Controller seriale Arduino basato su Python-EFL
+Comment[pt]=Controlador de série Arduino baseado em Python-EFL
 Exec=ardy
 Terminal=false
 Type=Application
