@@ -364,9 +364,6 @@ ephoto_populate_thumbnails(Evas_Object *obj)
 {
         Ephoto_Thumb_Browser *tb = evas_object_data_get(obj, "thumb_browser");
 
-	if (!efreet_mime_init())
-		fprintf(stderr, "Could not init efreet_mime!\n");
-
 	_ephoto_thumbnail_add(tb, PARENT_DIR, EINA_TRUE);
 	tb->list = eio_file_ls(em->config->directory,
 			   _ephoto_populate_filter_directory,

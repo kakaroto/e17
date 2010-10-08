@@ -75,8 +75,6 @@ _ephoto_go_update(Ephoto_Flow_Browser *ef)
 	const char *file_type;
         int success = 0;
 
-	efreet_mime_init();
-
 	elm_layout_content_unset(ef->flow_browser, "ephoto.flow.swallow");
 
 	evas_object_hide(ef->image);

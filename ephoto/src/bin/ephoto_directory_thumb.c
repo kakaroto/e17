@@ -106,10 +106,6 @@ Evas_Object *ephoto_directory_thumb_add(Evas_Object *parent, const char *path)
   Directory_Thumb *dt;
   Evas_Object *thumb, *o;
 
-  elm_need_ethumb();
-  if (!efreet_mime_init())
-    fprintf(stderr, "Could not init efreet_mime!\n");
-
   dt = calloc(1, sizeof( Directory_Thumb));
   dt->path = eina_stringshare_add(path);
   dt->layout = elm_layout_add(parent);

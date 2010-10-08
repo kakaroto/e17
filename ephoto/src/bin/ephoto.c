@@ -9,15 +9,21 @@ int
 main(int argc, char **argv)
 {
         Ethumb_Client *client;
+        int r = 0;
+
 	elm_need_efreet();
 	elm_need_ethumb();
 	elm_init(argc, argv);
+
+        if (!efreet_mime_init())
+          fprintf(stderr, "Could not init efreet_mime!\n");
 	
 	client = elm_thumb_ethumb_client_get();
 	if (!client)
 	  {
 	    ERR("could not get ethumb_client");
-	    return 1;
+            r = 1;
+            goto end_log_domain;
 	  }
 	ethumb_client_size_set(client, 100, 100);
 	ethumb_client_crop_align_set(client, 0.5, 0.5);
@@ -25,79 +31,66 @@ main(int argc, char **argv)
 	ethumb_client_orientation_set(client, ETHUMB_THUMB_ORIENT_ORIGINAL);
         __log_domain = eina_log_domain_register("Ephoto", EINA_COLOR_BLUE);
         if (!__log_domain)
-        {
-                EINA_LOG_ERR("Could not register log domain: Ephoto");
-                elm_shutdown();
-                efreet_mime_shutdown();
-
-                return 0;
-        }
+          {
+             EINA_LOG_ERR("Could not register log domain: Ephoto");
+             r = 1;
+             goto end_log_domain;
+          }
 
 
         DBG("Logging initialized");
 	if (argc > 2)
-	{
-		printf("Too Many Arguments!\n");
-		_ephoto_display_usage();
-		
-                eina_log_domain_unregister(__log_domain);
-		elm_shutdown();
-        	efreet_mime_shutdown();
-
-		return 0;
-	}
+          {
+             printf("Too Many Arguments!\n");
+             _ephoto_display_usage();
+             r = 1;
+             goto end;
+          }
 	else if (argc < 2)
-	{
-		ephoto_create_main_window(NULL, NULL);
-	}
+          {
+             ephoto_create_main_window(NULL, NULL);
+          }
 	else if (!strncmp(argv[1], "--help", 6))
-	{
-		_ephoto_display_usage();
-
-                eina_log_domain_unregister(__log_domain);
-		elm_shutdown();
-        	efreet_mime_shutdown();
-
-		return 0;
+          {
+             _ephoto_display_usage();
+             r = 0;
+             goto end;
 	}
 	else if (ecore_file_is_dir(argv[1]))
-	{
-                char *real;
-
-                real = ecore_file_realpath(argv[1]);
-		ephoto_create_main_window(real, NULL);
-                free(real);
-	}
+          {
+             char *real = ecore_file_realpath(argv[1]);
+             ephoto_create_main_window(real, NULL);
+             free(real);
+          }
 	else if (ecore_file_exists(argv[1]))
-	{
-		char *directory, *real;
-		const char *image;
+          {
+             char *directory, *real;
+             const char *image;
 
-		image = eina_stringshare_add(argv[1]);
-		directory = ecore_file_dir_get(argv[1]);
-                real = ecore_file_realpath(directory);
-		ephoto_create_main_window(real, image);
-                free(directory);
-                free(real);
-	}
+             image = eina_stringshare_add(argv[1]);
+             directory = ecore_file_dir_get(argv[1]);
+             real = ecore_file_realpath(directory);
+             ephoto_create_main_window(real, image);
+             free(directory);
+             free(real);
+          }
 	else
-	{
-		printf("Incorrect Argument!\n");
-		_ephoto_display_usage();
-		
-                eina_log_domain_unregister(__log_domain);
-		elm_shutdown();
-                efreet_mime_shutdown();
-
-                return 0;
-	}
+          {
+             printf("Incorrect Argument!\n");
+             _ephoto_display_usage();
+             r = 1;
+             goto end;
+          }
 
 	elm_run();
 
-	elm_shutdown();
+ end:
+        eina_log_domain_unregister(__log_domain);
+ end_log_domain:
 	efreet_mime_shutdown();
+	elm_shutdown();
 
-	return 0;
+	return r;
 }
 
 /*Display useage commands for ephoto*/
