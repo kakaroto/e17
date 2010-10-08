@@ -124,10 +124,7 @@ ephoto_directory_thumb_add(Evas_Object *parent, const char *path)
   if (s)
     {
        dt->theme_thumb_count = atoi(s);
-
-       /* TODO: fix "Up" to be another type of directory and do not need
-        * to check for existence here */
-       if ((dt->theme_thumb_count > 0) && (ecore_file_exists(path)))
+       if (dt->theme_thumb_count > 0)
          dt->file = eio_file_direct_ls(path,
                                        _populate_filter,
                                        _populate_main,
