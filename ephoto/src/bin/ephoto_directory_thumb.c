@@ -22,22 +22,9 @@ _layout_del(void *data, Evas *e, Evas_Object *layout, void *event_info)
 }
 
 static Eina_Bool
-_populate_filter(void *data, const char *file)
+_populate_filter(void *data, const Eina_File_Direct_Info *info)
 {
-   const char *type, *basename;
-
-   /* TODO: eio_file_ls_direct() and get more useful parameter than file */
-   basename = ecore_file_file_get(file);
-   if ((!basename) || (basename[0] == '.'))
-     return EINA_FALSE;
-
-   /* TODO: speed up case for jpg/jpeg/png */
-   if (!(type = efreet_mime_type_get(file)))
-     return EINA_FALSE;
-   if (!strncmp(type, "image", 5))
-     return EINA_TRUE;
-
-  return EINA_FALSE;
+   return _ephoto_eina_file_direct_info_image_useful(info);
 }
 
 static void
@@ -55,7 +42,7 @@ _populate_error(int error, void *data)
 }
 
 static void
-_populate_main(void *data, const char *file)
+_populate_main(void *data, const Eina_File_Direct_Info *info)
 {
   Evas_Object *frame, *image;
   int position;
@@ -83,7 +70,7 @@ _populate_main(void *data, const char *file)
   evas_object_show(frame);
 
   image = elm_thumb_add(frame);
-  elm_thumb_file_set(image, file, NULL);
+  elm_thumb_file_set(image, info->path, NULL);
   elm_object_style_set(image, "ephoto");
   evas_object_size_hint_weight_set(image, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   evas_object_size_hint_align_set(image, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -127,9 +114,10 @@ ephoto_directory_thumb_add(Evas_Object *parent, const char *path)
   //evas_object_size_hint_weight_set(thumb, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   elm_layout_content_set(dt->layout, "ephoto.swallow.thumb1", thumb);
 
-  placeholder = elm_image_add(thumb);
-  elm_image_file_set
-    (placeholder,  PACKAGE_DATA_DIR "/images/change_directory.png", NULL);
+  placeholder = edje_object_add(evas_object_evas_get(dt->layout));
+  edje_object_file_set
+    (placeholder, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
+     "/ephoto/directory/no-preview");
   elm_layout_content_set(thumb, "ephoto.swallow.content", placeholder);
 
   s = edje_object_data_get(elm_layout_edje_get(dt->layout), "thumbs");
@@ -140,12 +128,12 @@ ephoto_directory_thumb_add(Evas_Object *parent, const char *path)
        /* TODO: fix "Up" to be another type of directory and do not need
         * to check for existence here */
        if ((dt->theme_thumb_count > 0) && (ecore_file_exists(path)))
-         dt->file = eio_file_ls(path,
-                                _populate_filter,
-                                _populate_main,
-                                _populate_end,
-                                _populate_error,
-                                dt);
+         dt->file = eio_file_direct_ls(path,
+                                       _populate_filter,
+                                       _populate_main,
+                                       _populate_end,
+                                       _populate_error,
+                                       dt);
     }
 
   return dt->layout;

@@ -13,7 +13,8 @@ struct _Ephoto_Thumb_Data
    const char *thumb_path;
    const char *file;
    const char *basename;
-   Eina_Bool is_directory;
+   Eina_Bool is_directory : 1;
+   Eina_Bool is_up : 1;
 };
 
 struct _Ephoto_Thumb_Browser
@@ -50,7 +51,7 @@ static void _ephoto_show_cb(void *data, Evas *e, Evas_Object *obj, void *event_i
 static void _ephoto_zoom_in(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_zoom_out(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_zoom_regular_size(void *data, Evas_Object *obj, void *event_info);
-static void _ephoto_thumbnail_add(Ephoto_Thumb_Browser *tb, const char *path, Eina_Bool is_dir);
+static Ephoto_Thumb_Data *_ephoto_thumbnail_add(Ephoto_Thumb_Browser *tb, const char *path);
 static void _ephoto_change_directory(Ephoto_Thumb_Browser *tb, const char *directory);
 static void _ephoto_populate_images(Ephoto_Thumb_Browser *tb);
 
@@ -237,37 +238,23 @@ _ephoto_show_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
 /* Check directory type from another thread */
 static Eina_Bool
-_ephoto_populate_filter_directory(void *data, const char *file)
+_ephoto_populate_filter_directory(void *data, const Eina_File_Direct_Info *info)
 {
-   const char *basename;
+   const char *bname = info->path + info->name_start;
    struct stat st;
 
-   /* TODO: eio_file_ls_direct() and get more useful parameter than file */
-   basename = ecore_file_file_get(file);
-   if ((!basename) || (basename[0] == '.'))
-     return EINA_FALSE;
+   if (bname[0] == '.') return EINA_FALSE;
+   if (info->dirent->d_type == DT_DIR) return EINA_TRUE;
 
-   return ((stat(file, &st) == 0) && (S_ISDIR(st.st_mode)));
+   if (info->dirent->d_type != DT_UNKNOWN) return EINA_FALSE;
+   return ((stat(info->path, &st) == 0) && (S_ISDIR(st.st_mode)));
 }
 
 /* Check image type from another thread */
 static Eina_Bool
-_ephoto_populate_filter_image(void *data, const char *file)
+_ephoto_populate_filter_image(void *data, const Eina_File_Direct_Info *info)
 {
-   const char *type, *basename;
-
-   /* TODO: eio_file_ls_direct() and get more useful parameter than file */
-   basename = ecore_file_file_get(file);
-   if ((!basename) || (basename[0] == '.'))
-     return EINA_FALSE;
-
-   /* TODO: speed up case for jpg/jpeg/png */
-   if (!(type = efreet_mime_type_get(file)))
-     return EINA_FALSE;
-   if (!strncmp(type, "image", 5))
-     return EINA_TRUE;
-
-   return EINA_FALSE;
+   return _ephoto_eina_file_direct_info_image_useful(info);
 }
 
 /*Done populating directories*/
@@ -282,93 +269,83 @@ _ephoto_populate_end_directory(void *data)
 static void
 _ephoto_populate_end_image(void *data)
 {
-        Ephoto_Thumb_Browser *tb = (Ephoto_Thumb_Browser *)data;
+   Ephoto_Thumb_Browser *tb = data;
+   const char *file;
 
-        tb->list = NULL;
+   tb->list = NULL;
 
-        if (em->config->sort_images)
-        {
-                Eina_List *l;
-                const char *file;
-                em->images = eina_list_sort(em->images,
-                                            eina_list_count(em->images),
-                                            EINA_COMPARE_CB(strcoll));
-                EINA_LIST_FOREACH(em->images, l, file)
-		{
-		        _ephoto_thumbnail_add(tb, file, EINA_FALSE);
-		}
-        }
+   if (!em->config->sort_images) return;
+
+   em->images = eina_list_sort(em->images, -1, EINA_COMPARE_CB(strcoll));
+   EINA_LIST_FREE(em->images, file)
+     {
+        _ephoto_thumbnail_add(tb, file);
+        eina_stringshare_del(file);
+     }
 }
 
 static void
 _ephoto_populate_error(int error, void *data)
 {
-        Ephoto_Thumb_Browser *tb = (Ephoto_Thumb_Browser*)data;
-	/* We don't handle error case in ephoto */
-	tb->list = NULL;
+   Ephoto_Thumb_Browser *tb = data;
+   /* We don't handle error case in ephoto */
+   tb->list = NULL;
 }
 
 /* Build the interface component after detection from main thread */
 static void
-_ephoto_populate_main_directory(void *data, const char *file)
+_ephoto_populate_main_directory(void *data, const Eina_File_Direct_Info *info)
 {
-	Ephoto_Thumb_Browser *tb = (Ephoto_Thumb_Browser*)data;
-	_ephoto_thumbnail_add(tb, file, EINA_TRUE);
+   Ephoto_Thumb_Browser *tb = data;
+   Ephoto_Thumb_Data *td = _ephoto_thumbnail_add(tb, info->path);
+   td->is_directory = EINA_TRUE;
 }
 
 /* Build the interface component after detection from main thread */
 static void
-_ephoto_populate_main_image(void *data, const char *file)
+_ephoto_populate_main_image(void *data, const Eina_File_Direct_Info *info)
 {
-	Ephoto_Thumb_Browser *tb = (Ephoto_Thumb_Browser*)data;
-	const char *type;
+   Ephoto_Thumb_Browser *tb = data;
+   Ephoto_Thumb_Data *td;
 
-	file = eina_stringshare_ref(file);
-
+   if (em->config->sort_images)
+     {
+        const char *file = eina_stringshare_add_length
+          (info->path, info->path_length);
         em->images = eina_list_append(em->images, file);
-        if (em->config->sort_images) return;
-	
-	if (!(type = efreet_mime_type_get(file)))
-		return;
-	if (!strncmp(type, "image", 5))
-	{
-		em->images = eina_list_append(em->images, file);
+        return;
+     }
 
-		_ephoto_thumbnail_add(tb, file, EINA_FALSE);
-	}
-	else
-	{
-	  _ephoto_thumbnail_add(tb, file, EINA_TRUE);
-	}
-
-
+   td = _ephoto_thumbnail_add(tb, info->path);
+   td->is_directory = !_ephoto_eina_file_direct_info_image_useful(info);
 }
 
 /*Create a thread to populate images*/
 static void
 _ephoto_populate_images(Ephoto_Thumb_Browser *tb)
 {
-	tb->list = eio_file_ls(em->config->directory,
-			   _ephoto_populate_filter_image,
-			   _ephoto_populate_main_image,
-			   _ephoto_populate_end_image,
-			   _ephoto_populate_error,
-			   tb);
+   tb->list = eio_file_direct_ls(em->config->directory,
+                                 _ephoto_populate_filter_image,
+                                 _ephoto_populate_main_image,
+                                 _ephoto_populate_end_image,
+                                 _ephoto_populate_error,
+                                 tb);
 }
 
 /* Start a thread to list images and directories in a directory without locking the interface */
 void
 ephoto_populate_thumbnails(Evas_Object *obj)
 {
-        Ephoto_Thumb_Browser *tb = evas_object_data_get(obj, "thumb_browser");
-
-	_ephoto_thumbnail_add(tb, PARENT_DIR, EINA_TRUE);
-	tb->list = eio_file_ls(em->config->directory,
-			   _ephoto_populate_filter_directory,
-			   _ephoto_populate_main_directory,
-			   _ephoto_populate_end_directory,
-			   _ephoto_populate_error,
-			   tb);
+   Ephoto_Thumb_Browser *tb = evas_object_data_get(obj, "thumb_browser");
+   Ephoto_Thumb_Data *td = _ephoto_thumbnail_add(tb, PARENT_DIR);
+   td->is_directory = EINA_TRUE;
+   td->is_up = EINA_TRUE;
+   tb->list = eio_file_direct_ls(em->config->directory,
+                                      _ephoto_populate_filter_directory,
+                                      _ephoto_populate_main_directory,
+                                      _ephoto_populate_end_directory,
+                                      _ephoto_populate_error,
+                                      tb);
 }
 
 /*Zoom out the thumbnail size*/
@@ -428,17 +405,15 @@ _ephoto_slider_changed(void *data, Evas_Object *obj, void *event)
 }
 
 /* Called when adding a directory or a file to elm_gengrid */
-static void
-_ephoto_thumbnail_add(Ephoto_Thumb_Browser *tb, const char *path, Eina_Bool is_dir)
+static Ephoto_Thumb_Data *
+_ephoto_thumbnail_add(Ephoto_Thumb_Browser *tb, const char *path)
 {
-	Ephoto_Thumb_Data *etd;
-
-	etd = calloc(1, sizeof(*etd));
-	etd->thumb_path = eina_stringshare_add(path);
-	etd->file = eina_stringshare_add(path);
-        etd->basename = ecore_file_file_get(etd->file);
-	etd->is_directory = is_dir;
-	elm_gengrid_item_append(tb->thumb_browser, &tb->eg, etd, NULL, NULL);
+   Ephoto_Thumb_Data *etd = calloc(1, sizeof(*etd));
+   etd->file = eina_stringshare_add(path);
+   etd->thumb_path = eina_stringshare_ref(etd->file);
+   etd->basename = ecore_file_file_get(etd->file);
+   elm_gengrid_item_append(tb->thumb_browser, &tb->eg, etd, NULL, NULL);
+   return etd;
 }
 
 /*Get the label for the icon in the grid*/
@@ -447,6 +422,15 @@ _ephoto_get_label(void *data, Evas_Object *obj, const char *part)
 {
    Ephoto_Thumb_Data *etd = data;
    return strdup(etd->basename);
+}
+
+static Evas_Object *
+_ephoto_directory_up_add(Evas_Object *parent_obj)
+{
+   Evas_Object *obj = edje_object_add(evas_object_evas_get(parent_obj));
+   edje_object_file_set(obj, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
+                        "/ephoto/directory/up");
+   return obj;
 }
 
 /*Get the image for the icon in the grid*/
@@ -470,7 +454,10 @@ _ephoto_get_icon(void *data, Evas_Object *obj, const char *part)
 
    if (etd->is_directory)
      {
-        o = ephoto_directory_thumb_add(thumb, etd->thumb_path);
+        if (etd->is_up)
+          o = _ephoto_directory_up_add(thumb);
+        else
+          o = ephoto_directory_thumb_add(thumb, etd->thumb_path);
      }
    else
      {
@@ -535,6 +522,8 @@ _ephoto_change_directory(Ephoto_Thumb_Browser *tb, const char *directory)
 
 	if ((directory) && (eina_stringshare_replace(&em->config->directory, directory)))
 	{
+           const char *s;
+
 		l = elm_gengrid_items_get(tb->thumb_browser);
 		EINA_LIST_FOREACH(l, iter, item)
 		{
@@ -544,8 +533,7 @@ _ephoto_change_directory(Ephoto_Thumb_Browser *tb, const char *directory)
 			free(etd);
 		}
 		elm_gengrid_clear(tb->thumb_browser);
-		eina_list_free(em->images);
-		em->images = NULL;
+                EINA_LIST_FREE(em->images, s) eina_stringshare_del(s);
 		ephoto_populate_thumbnails(tb->layout);
 		elm_label_label_set(tb->dir_label, em->config->directory);
 		_ephoto_set_title(em->config->directory);

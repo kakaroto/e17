@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <dirent.h>
 #include "config.h"
 
 typedef struct _Ephoto_Config Ephoto_Config;
@@ -122,5 +123,30 @@ extern Ephoto *em;
 extern int __log_domain;
 #define DBG(...) EINA_LOG_DOM_DBG(__log_domain, __VA_ARGS__)
 #define ERR(...) EINA_LOG_DOM_ERR(__log_domain, __VA_ARGS__)
+
+static inline Eina_Bool
+_ephoto_eina_file_direct_info_image_useful(const Eina_File_Direct_Info *info)
+{
+   const char *type, *bname, *ext;
+
+   bname = info->path + info->name_start;
+   if (bname[0] == '.') return EINA_FALSE;
+   if ((info->dirent->d_type != DT_REG) && (info->dirent->d_type != DT_UNKNOWN))
+     return EINA_FALSE;
+
+   ext = info->path + info->path_length - 1;
+   for (; ext > bname; ext--) if (*ext == '.') break;
+   if (*ext == '.')
+     {
+        ext++;
+        if ((strcasecmp(ext, "jpg") == 0) ||
+            (strcasecmp(ext, "jpeg") == 0) ||
+            (strcasecmp(ext, "png") == 0))
+          return EINA_TRUE;
+     }
+
+   if (!(type = efreet_mime_type_get(info->path))) return EINA_FALSE;
+   return strncmp(type, "image/", sizeof("image/") - 1) == 0;
+}
 
 #endif
