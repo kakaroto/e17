@@ -3,6 +3,9 @@
 /*Ephoto Main Global*/
 Ephoto *em;
 
+static Eina_List *_thumbs = NULL;
+static Ecore_Timer *_thumb_gen_size_changed_timer = NULL;
+
 /*Inline Callbacks*/
 static void _ephoto_delete_main_window(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_flow_browser_delete_cb(void *data, Evas_Object *obj, void *event_info);
@@ -42,10 +45,22 @@ void
 ephoto_create_main_window(const char *directory, const char *image)
 {
         char current_directory[PATH_MAX];
+        Ethumb_Client *client = elm_thumb_ethumb_client_get();
 
 	em = calloc(1, sizeof(Ephoto));
         if (!ephoto_config_init(em))
-                _ephoto_delete_main_window(NULL, NULL, NULL);
+          {
+             _ephoto_delete_main_window(NULL, NULL, NULL);
+             return;
+          }
+
+        if ((em->config->thumb_gen_size != 128) &&
+            (em->config->thumb_gen_size != 256) &&
+            (em->config->thumb_gen_size != 512))
+          ephoto_thumb_size_set(em->config->thumb_size);
+        else
+          ethumb_client_size_set
+            (client, em->config->thumb_gen_size, em->config->thumb_gen_size);
 
 	/*Setup the main window*/
 	em->win = elm_win_add(NULL, "ephoto", ELM_WIN_BASIC);
@@ -150,3 +165,71 @@ _ephoto_delete_main_window(void *data, Evas_Object *obj, void *event_info)
 	elm_exit();
 }
 
+static Eina_Bool
+_thumb_gen_size_changed_timer_cb(void *data)
+{
+   const int gen_size = (long)data;
+   Ethumb_Client *client;
+   const Eina_List *l;
+   Evas_Object *o;
+
+   if (em->config->thumb_gen_size == gen_size) goto end;
+
+   INF("thumbnail generation size changed from %d to %d",
+       em->config->thumb_gen_size, gen_size);
+
+   client = elm_thumb_ethumb_client_get();
+   em->config->thumb_gen_size = gen_size;
+   ethumb_client_size_set(client, gen_size, gen_size);
+
+   EINA_LIST_FOREACH(_thumbs, l, o)
+     elm_thumb_reload(o);
+
+ end:
+   _thumb_gen_size_changed_timer = NULL;
+   return EINA_FALSE;
+}
+
+void
+ephoto_thumb_size_set(int size)
+{
+   int gen_size;
+
+   if (em->config->thumb_size != size)
+     {
+        INF("thumbnail display size changed from %d to %d",
+            em->config->thumb_size, size);
+        em->config->thumb_size = size;
+        ephoto_config_save(em, EINA_FALSE);
+     }
+
+   if (size <= 128)      gen_size = 128;
+   else if (size <= 256) gen_size = 256;
+   else                  gen_size = 512;
+
+   if (_thumb_gen_size_changed_timer)
+     {
+        ecore_timer_del(_thumb_gen_size_changed_timer);
+        _thumb_gen_size_changed_timer = NULL;
+     }
+
+   _thumb_gen_size_changed_timer = ecore_timer_add
+     (0.1, _thumb_gen_size_changed_timer_cb, (void*)(long)gen_size);
+}
+
+static void
+_thumb_del(void *data, Evas *e, Evas_Object *o, void *event_info)
+{
+   _thumbs = eina_list_remove(_thumbs, o);
+}
+
+Evas_Object *
+ephoto_thumb_add(Evas_Object *parent, const char *path)
+{
+   Evas_Object *o = elm_thumb_add(parent);
+   if (!o) return NULL;
+   elm_thumb_file_set(o, path, NULL);
+   _thumbs = eina_list_append(_thumbs, o);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_DEL, _thumb_del, NULL);
+   return o;
+}

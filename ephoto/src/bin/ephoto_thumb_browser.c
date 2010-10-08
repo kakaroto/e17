@@ -394,14 +394,11 @@ _ephoto_zoom_regular_size(void *data, Evas_Object *obj, void *event)
 static void
 _ephoto_slider_changed(void *data, Evas_Object *obj, void *event)
 {
-	int val;
-        Ephoto_Thumb_Browser *tb = data;
+   Ephoto_Thumb_Browser *tb = data;
+   int val = elm_slider_value_get(tb->thumb_slider);
+   elm_gengrid_item_size_set(tb->thumb_browser, val, val / THUMB_RATIO);
 
-	val = elm_slider_value_get(tb->thumb_slider);
-	elm_gengrid_item_size_set(tb->thumb_browser, val, val / THUMB_RATIO);
-
-        em->config->thumb_size = val;
-        ephoto_config_save(em, EINA_FALSE);
+   ephoto_thumb_size_set(val);
 }
 
 /* Called when adding a directory or a file to elm_gengrid */
@@ -460,11 +457,8 @@ _ephoto_get_icon(void *data, Evas_Object *obj, const char *part)
           o = ephoto_directory_thumb_add(thumb, etd->thumb_path);
      }
    else
-     {
-        o = elm_thumb_add(thumb);
-        elm_thumb_file_set(o, etd->thumb_path, NULL);
-     }
-   evas_object_show(o);
+     o = ephoto_thumb_add(thumb, etd->thumb_path);
+
    elm_layout_content_set(thumb, "ephoto.swallow.content", o);
 
    return thumb;

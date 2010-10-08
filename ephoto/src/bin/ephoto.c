@@ -25,7 +25,6 @@ main(int argc, char **argv)
         r = 1;
         goto end_log_domain;
      }
-   ethumb_client_size_set(client, 100, 100);
    ethumb_client_crop_align_set(client, 0.5, 0.5);
    ethumb_client_aspect_set(client, ETHUMB_THUMB_KEEP_ASPECT);
    ethumb_client_orientation_set(client, ETHUMB_THUMB_ORIENT_ORIGINAL);

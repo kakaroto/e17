@@ -69,8 +69,7 @@ _populate_main(void *data, const Eina_File_Direct_Info *info)
   evas_object_size_hint_weight_set(frame, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   evas_object_show(frame);
 
-  image = elm_thumb_add(frame);
-  elm_thumb_file_set(image, info->path, NULL);
+  image = ephoto_thumb_add(frame, info->path);
   elm_object_style_set(image, "ephoto");
   evas_object_size_hint_weight_set(image, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   evas_object_size_hint_align_set(image, EVAS_HINT_FILL, EVAS_HINT_FILL);

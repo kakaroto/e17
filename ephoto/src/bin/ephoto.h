@@ -30,6 +30,9 @@ typedef enum _Ephoto_Orient Ephoto_Orient;
 
 /*Main Functions*/
 void ephoto_create_main_window(const char *directory, const char *image);
+void ephoto_thumb_size_set(int size);
+Evas_Object *ephoto_thumb_add(Evas_Object *parent, const char *path);
+
 
 /* Configuration */
 Eina_Bool ephoto_config_init(Ephoto *em);
@@ -85,6 +88,7 @@ struct _Ephoto_Config
         int config_version;
 
         int thumb_size;
+        int thumb_gen_size;
 
         int remember_directory;
         const char *directory;
@@ -122,6 +126,7 @@ extern Ephoto *em;
 
 extern int __log_domain;
 #define DBG(...) EINA_LOG_DOM_DBG(__log_domain, __VA_ARGS__)
+#define INF(...) EINA_LOG_DOM_INFO(__log_domain, __VA_ARGS__)
 #define ERR(...) EINA_LOG_DOM_ERR(__log_domain, __VA_ARGS__)
 
 static inline Eina_Bool

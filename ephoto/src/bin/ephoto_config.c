@@ -1,6 +1,6 @@
 #include "ephoto.h"
 
-#define CONFIG_VERSION 4
+#define CONFIG_VERSION 5
 
 static int _ephoto_config_load(Ephoto *em);
 static Eina_Bool _ephoto_on_config_save(void *data);
@@ -24,6 +24,7 @@ ephoto_config_init(Ephoto *em)
 #define C_VAL(edd, type, member, dtype) EET_DATA_DESCRIPTOR_ADD_BASIC(edd, type, #member, member, dtype)
         C_VAL(D, T, config_version, EET_T_INT);
         C_VAL(D, T, thumb_size, EET_T_INT);
+        C_VAL(D, T, thumb_gen_size, EET_T_INT);
         C_VAL(D, T, remember_directory, EET_T_INT);
         C_VAL(D, T, directory, EET_T_STRING);
         C_VAL(D, T, slideshow_timeout, EET_T_DOUBLE);
@@ -37,6 +38,7 @@ ephoto_config_init(Ephoto *em)
                         /* Start a new config */
                         em->config->config_version = CONFIG_VERSION;
                         em->config->thumb_size = 256;
+                        em->config->thumb_gen_size = 256;
                         em->config->remember_directory = 1;
                         em->config->slideshow_timeout = 4.0;
                         em->config->slideshow_transition =
@@ -58,6 +60,9 @@ ephoto_config_init(Ephoto *em)
                                         eina_stringshare_add("gimp %s");
                         if (em->config->config_version < 4)
                                 em->config->sort_images = 1;
+
+                        if (em->config->config_version < 5)
+                                em->config->thumb_gen_size = 256;
 
                         /* Incremental additions */
                         em->config->config_version = CONFIG_VERSION;
