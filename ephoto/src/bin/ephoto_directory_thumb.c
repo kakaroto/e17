@@ -17,15 +17,19 @@ struct _Directory_Thumb
 static Eina_Bool
 _populate_filter(void *data, const char *file)
 {
-  const char *type;
+   const char *type, *basename;
 
-  if (!(type = efreet_mime_type_get(file)))
-    return EINA_FALSE;
-  if (!strncmp(type, "image", 5))
-    {
-      return EINA_TRUE;
-    }
-  
+   /* TODO: eio_file_ls_direct() and get more useful parameter than file */
+   basename = ecore_file_file_get(file);
+   if ((!basename) || (basename[0] == '.'))
+     return EINA_FALSE;
+
+   /* TODO: speed up case for jpg/jpeg/png */
+   if (!(type = efreet_mime_type_get(file)))
+     return EINA_FALSE;
+   if (!strncmp(type, "image", 5))
+     return EINA_TRUE;
+
   return EINA_FALSE;
 }
 

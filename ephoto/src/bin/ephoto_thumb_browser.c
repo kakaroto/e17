@@ -3,16 +3,17 @@
 #define SLIDER_MAX 300
 #define SLIDER_MIN 80
 
-#define PARENT_DIR "top"
+#define PARENT_DIR "Up"
 
 typedef struct _Ephoto_Thumb_Data Ephoto_Thumb_Data;
 typedef struct _Ephoto_Thumb_Browser Ephoto_Thumb_Browser;
 
 struct _Ephoto_Thumb_Data
 {
-    const char *thumb_path;
-    const char *file;
-    Eina_Bool isDirectory;
+   const char *thumb_path;
+   const char *file;
+   const char *basename;
+   Eina_Bool is_directory;
 };
 
 struct _Ephoto_Thumb_Browser
@@ -33,10 +34,10 @@ struct _Ephoto_Thumb_Browser
 
 /*Callbacks*/
 static void _ephoto_slider_changed(void *data, Evas_Object *obj, void *event_info);
-static char *_ephoto_get_label(const void *data, Evas_Object *obj, const char *part);
-static Evas_Object *_ephoto_get_icon(const void *data, Evas_Object *obj, const char *part);
-static Eina_Bool _ephoto_get_state(const void *data, Evas_Object *obj, const char *part);
-static void _ephoto_grid_del(const void *data, Evas_Object *obj);
+static char *_ephoto_get_label(void *data, Evas_Object *obj, const char *part);
+static Evas_Object *_ephoto_get_icon(void *data, Evas_Object *obj, const char *part);
+static Eina_Bool _ephoto_get_state(void *data, Evas_Object *obj, const char *part);
+static void _ephoto_grid_del(void *data, Evas_Object *obj);
 static void _ephoto_thumb_clicked_job(void *data);
 static void _ephoto_thumb_clicked(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_thumb_selected(void *data, Evas_Object *obj, void *event_info);
@@ -252,14 +253,20 @@ _ephoto_populate_filter_directory(void *data, const char *file)
 static Eina_Bool
 _ephoto_populate_filter_image(void *data, const char *file)
 {
-	const char *type;
+   const char *type, *basename;
 
-	if (!(type = efreet_mime_type_get(file)))
-		return EINA_FALSE;
-	if (!strncmp(type, "image", 5))
-		return EINA_TRUE;
+   /* TODO: eio_file_ls_direct() and get more useful parameter than file */
+   basename = ecore_file_file_get(file);
+   if ((!basename) || (basename[0] == '.'))
+     return EINA_FALSE;
 
-	return EINA_FALSE;
+   /* TODO: speed up case for jpg/jpeg/png */
+   if (!(type = efreet_mime_type_get(file)))
+     return EINA_FALSE;
+   if (!strncmp(type, "image", 5))
+     return EINA_TRUE;
+
+   return EINA_FALSE;
 }
 
 /*Done populating directories*/
@@ -434,73 +441,63 @@ _ephoto_thumbnail_add(Ephoto_Thumb_Browser *tb, const char *path, Eina_Bool is_d
 	etd = calloc(1, sizeof(*etd));
 	etd->thumb_path = eina_stringshare_add(path);
 	etd->file = eina_stringshare_add(path);
-	etd->isDirectory = is_dir;
+        etd->basename = ecore_file_file_get(etd->file);
+	etd->is_directory = is_dir;
 	elm_gengrid_item_append(tb->thumb_browser, &tb->eg, etd, NULL, NULL);
 }
 
 /*Get the label for the icon in the grid*/
 static char *
-_ephoto_get_label(const void *data, Evas_Object *obj, const char *part)
+_ephoto_get_label(void *data, Evas_Object *obj, const char *part)
 {
-	const char *bname;
-	Ephoto_Thumb_Data *etd;
-
-	etd = (Ephoto_Thumb_Data *)data;
-
-	bname = basename(etd->file);
-
-	return strdup(bname);
+   Ephoto_Thumb_Data *etd = data;
+   return strdup(etd->basename);
 }
 
 /*Get the image for the icon in the grid*/
 static Evas_Object *
-_ephoto_get_icon(const void *data, Evas_Object *obj, const char *part)
+_ephoto_get_icon(void *data, Evas_Object *obj, const char *part)
 {
-	Evas_Object *thumb, *o;
-	Ephoto_Thumb_Data *etd;
+   Ephoto_Thumb_Data *etd = data;
+   Evas_Object *thumb, *o;
 
-	etd = (Ephoto_Thumb_Data *)data;
+   if (strcmp(part, "elm.swallow.icon") != 0) return NULL;
 
-	if (!strcmp(part, "elm.swallow.icon"))
-	{
-		thumb = elm_layout_add(obj);
-		if (etd->isDirectory)
-			elm_layout_file_set(thumb, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
-				"/ephoto/thumb/no_border");
-		else
-			elm_layout_file_set(thumb, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
-				"/ephoto/thumb");
-		evas_object_size_hint_weight_set(thumb, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-		evas_object_show(thumb);
+   thumb = elm_layout_add(obj);
+   if (etd->is_directory)
+     elm_layout_file_set(thumb, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
+                         "/ephoto/thumb/no_border");
+   else
+     elm_layout_file_set(thumb, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
+                         "/ephoto/thumb");
+   evas_object_size_hint_weight_set(thumb, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(thumb);
 
-		if (etd->isDirectory)
-		{
-		        o = ephoto_directory_thumb_add(thumb, etd->thumb_path);
-		}
-		else
-		{
-		        o = elm_thumb_add(thumb);
-		        elm_thumb_file_set(o, etd->thumb_path, NULL);
-		}
-		evas_object_show(o);
-		elm_layout_content_set(thumb, "ephoto.swallow.content", o);
+   if (etd->is_directory)
+     {
+        o = ephoto_directory_thumb_add(thumb, etd->thumb_path);
+     }
+   else
+     {
+        o = elm_thumb_add(thumb);
+        elm_thumb_file_set(o, etd->thumb_path, NULL);
+     }
+   evas_object_show(o);
+   elm_layout_content_set(thumb, "ephoto.swallow.content", o);
 
-		return thumb;
-	}
-
-	return NULL;
+   return thumb;
 }
 
 /*Get the state of the icon in the grid!*/
 static Eina_Bool
-_ephoto_get_state(const void *data, Evas_Object *obj, const char *part)
+_ephoto_get_state(void *data, Evas_Object *obj, const char *part)
 {
 	return EINA_FALSE;
 }
 
 /*Delete the grid*/
 static void
-_ephoto_grid_del(const void *data, Evas_Object *obj)
+_ephoto_grid_del(void *data, Evas_Object *obj)
 {
 	return;
 }
@@ -518,7 +515,7 @@ _ephoto_thumb_clicked_job(void *data)
 	selected = elm_gengrid_selected_items_get(tb->thumb_browser);
 	o = eina_list_data_get(selected);
 	etd = (Ephoto_Thumb_Data *)elm_gengrid_item_data_get((Elm_Gengrid_Item *)o);
-	if (etd->isDirectory)
+	if (etd->is_directory)
 	{
 		if (!strcmp(etd->file, PARENT_DIR))
 		{
@@ -567,8 +564,8 @@ static void
 _ephoto_thumb_selected(void *data, Evas_Object *obj, void *event_info)
 {
 	Ephoto_Thumb_Browser *tb = data;
-	Ephoto_Thumb_Data *etd = (Ephoto_Thumb_Data *)elm_gengrid_item_data_get((Elm_Gengrid_Item *)event_info);
-	if (etd->isDirectory)
+	Ephoto_Thumb_Data *etd = elm_gengrid_item_data_get(event_info);
+	if (etd->is_directory)
 		elm_toolbar_item_disabled_set(tb->view_large, EINA_TRUE);
 	else
 		elm_toolbar_item_disabled_set(tb->view_large, EINA_FALSE);
