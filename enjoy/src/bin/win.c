@@ -20,6 +20,7 @@ typedef struct Win
       double position, length;
       double volume;
       Eina_Bool playing:1;
+      Eina_Bool playing_last:1;
    } play;
    struct {
       Evas_Coord w, h;
@@ -130,6 +131,21 @@ _win_toolbar_eval(Win *w)
 }
 
 static void
+_win_play_pause_toggle(Win *w)
+{
+   if (w->play.playing)
+     {
+        edje_object_signal_emit(w->edje, "ejy,action,play,hide", "ejy");
+        edje_object_signal_emit(w->edje, "ejy,action,pause,show", "ejy");
+     }
+   else
+     {
+        edje_object_signal_emit(w->edje, "ejy,action,pause,hide", "ejy");
+        edje_object_signal_emit(w->edje, "ejy,action,play,show", "ejy");
+     }
+
+}
+static void
 _win_play_eval(Win *w)
 {
    Edje_Message_Float_Set *mf;
@@ -152,16 +168,9 @@ _win_play_eval(Win *w)
    mf->val[1] = w->play.length;
    edje_object_message_send(elm_layout_edje_get(w->nowplaying), EDJE_MESSAGE_FLOAT_SET, MSG_POSITION, mf);
 
-   if (w->play.playing)
-     {
-        edje_object_signal_emit(w->edje, "ejy,action,play,hide", "ejy");
-        edje_object_signal_emit(w->edje, "ejy,action,pause,show", "ejy");
-     }
-   else
-     {
-        edje_object_signal_emit(w->edje, "ejy,action,pause,hide", "ejy");
-        edje_object_signal_emit(w->edje, "ejy,action,play,show", "ejy");
-     }
+   if (w->play.playing_last == w->play.playing) return;
+   w->play.playing_last = !w->play.playing;
+   _win_play_pause_toggle(w);
 }
 
 static Eina_Bool
@@ -224,6 +233,7 @@ _win_song_set(Win *w, Song *s)
 
    emotion_object_file_set(w->emotion, s->path);
    w->play.playing = EINA_TRUE;
+   w->play.playing_last = EINA_FALSE;
    emotion_object_play_set(w->emotion, EINA_TRUE);
    emotion_object_audio_volume_set(w->emotion, w->play.volume);
 
@@ -313,6 +323,7 @@ _win_action_play(void *data, Evas_Object *o __UNUSED__, const char *emission __U
    INF("play song=%p (%s)", w->song, w->song ? w->song->path : NULL);
    w->play.playing = EINA_TRUE;
    emotion_object_play_set(w->emotion, EINA_TRUE);
+   _win_play_pause_toggle(w);
    _win_play_eval(w);
 }
 
@@ -323,6 +334,7 @@ _win_action_pause(void *data, Evas_Object *o __UNUSED__, const char *emission __
    INF("pause song=%p (%s)", w->song, w->song ? w->song->path : NULL);
    w->play.playing = EINA_FALSE;
    emotion_object_play_set(w->emotion, EINA_FALSE);
+   _win_play_pause_toggle(w);
    _win_play_eval(w);
 }
 
@@ -537,11 +549,9 @@ win_new(App *app)
    edje_object_signal_emit(w->edje, "ejy,prev,disable", "ejy");
    edje_object_signal_emit(w->edje, "ejy,next,disable", "ejy");
    edje_object_signal_emit(w->edje, "ejy,action,pause,hide", "ejy");
-   edje_object_signal_emit(w->edje, "ejy,action,play,show", "ejy");
    edje_object_signal_emit(w->edje, "ejy,action,play,disable", "ejy");
-   edje_object_signal_emit(w->edje, "ejy,mode,nowplaying,hide", "ejy");
-   edje_object_signal_emit(w->edje, "ejy,mode,list,show", "ejy");
-   edje_object_signal_emit(w->edje, "ejy,mode,list,disable", "ejy");
+   edje_object_signal_emit(w->edje, "ejy,mode,list,hide", "ejy");
+   edje_object_signal_emit(w->edje, "ejy,mode,nowplaying,disable", "ejy");
    edje_object_signal_emit(w->edje, "ejy,more,disable", "ejy");
 
    evas_object_show(w->layout);

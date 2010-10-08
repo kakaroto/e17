@@ -23,14 +23,43 @@
  * TOOLBAR_BUTTON macro creates a button on the iconbar. It creates all the necessary parts
  * and programs to make the button work.
  * An example of use would be:
- *      TOOLBAR_BUTTON("play", "Play", TOOLBAR_ACTION, TOOLBAR_POSITION(1))
+ *      TOOLBAR_BUTTON("play", "Play", TOOLBAR_ACTION, 1)
  * That will create a button named "play", using the images "bt_play_normal.png" and
  * "bt_play_selected.png", with the label "Play", type "action" and on the first position
  * on the toolbar.
  */
-#define TOOLBAR_BUTTON(_button_name,_button_title,_button_type,_xpos) \
+
+#define TOOLBAR_BUTTON(_button_name,_button_title,_button_type,_n) \
+  _TOOLBAR_BUTTON_STD_PARTS(_button_name, _button_title, _button_type, TOOLBAR_POSITION(_n), TOOLBAR_POSITION(_n)) \
+  _TOOLBAR_BUTTON_STD_PROGRAMS(_button_name, _button_type)
+
+#define TOOLBAR_MULTIBUTTON(_button_name1,_button_title1,_button_name2,_button_title2,_button_type,_n) \
+  _TOOLBAR_BUTTON_STD_PARTS(_button_name1, _button_title1, _button_type, TOOLBAR_POSITION(_n), TOOLBAR_POSITION((_n - 1))) \
+  _TOOLBAR_BUTTON_STD_PARTS(_button_name2, _button_title2, _button_type, TOOLBAR_POSITION(_n), TOOLBAR_POSITION((_n + 1))) \
+  _TOOLBAR_BUTTON_MULTI_PROGRAMS(_button_name1, _button_name2, _button_type)
+
+#define _TOOLBAR_BUTTON_STD_PARTS(_button_name,_button_title,_button_type,_xpos,_xpos_hidden) \
+    part { name: "button-"_button_name"-clipper"; \
+        type: RECT; \
+        description { state: "default" 0.0; \
+            fixed: 1 1; \
+            min: TOOLBAR_ITEM_SIZE TOOLBAR_ITEM_SIZE; \
+            max: TOOLBAR_ITEM_SIZE TOOLBAR_ITEM_SIZE; \
+            rel1 { \
+                to_y: "iconbar.bg"; \
+                relative: 0.5 1.0; \
+                offset: (_xpos) -47; \
+            } \
+            rel2 { \
+                to_y: "iconbar.bg"; \
+                relative: 0.5 1.0; \
+                offset: (_xpos) (-TOOLBAR_ITEM_SIZE/2); \
+            } \
+        } \
+    } \
     part { name: "button-"_button_name"-normal"; \
         type: IMAGE; \
+        clip_to: "button-"_button_name"-clipper"; \
         description { state: "default" 0.0; \
             min: TOOLBAR_ITEM_SIZE TOOLBAR_ITEM_SIZE; \
             max: TOOLBAR_ITEM_SIZE TOOLBAR_ITEM_SIZE; \
@@ -52,6 +81,8 @@
             inherit: "default" 0.0; \
             color: 255 255 255 0; \
             visible: 0; \
+            rel1.offset: (_xpos_hidden) -47; \
+            rel2.offset: (_xpos_hidden) (-TOOLBAR_ITEM_SIZE/2); \
         } \
         description { state: "disabled" 0.0; \
             inherit: "default" 0.0; \
@@ -60,22 +91,15 @@
     } \
     part { name: "button-"_button_name"-selected"; \
         type: IMAGE; \
+        clip_to: "button-"_button_name"-clipper"; \
         mouse_events: 0; \
         description { state: "default" 0.0; \
             visible: 0; \
             min: TOOLBAR_ITEM_SIZE TOOLBAR_ITEM_SIZE; \
             max: TOOLBAR_ITEM_SIZE TOOLBAR_ITEM_SIZE; \
             fixed: 1 1; \
-            rel1 { \
-                to_y: "iconbar.bg"; \
-                relative: 0.5 1.0; \
-                offset: (_xpos) -47; \
-            } \
-            rel2 { \
-                to_y: "iconbar.bg"; \
-                relative: 0.5 1.0; \
-                offset: (_xpos) (-TOOLBAR_ITEM_SIZE/2); \
-            } \
+            rel1.to: "button-"_button_name"-normal"; \
+            rel2.to: "button-"_button_name"-normal"; \
             image.normal: "bt_"_button_name"_selected.png"; \
             color: 255 255 255 0; \
             visible: 0; \
@@ -93,12 +117,12 @@
             min: 2 90; \
             max: 2 90; \
             rel1 { \
-                to: "button-"_button_name"-normal"; \
+                to: "button-"_button_name"-clipper"; \
                 relative: 0.0 0.0; \
                 offset: -1 12; \
             } \
             rel2 { \
-                to: "button-"_button_name"-normal"; \
+                to: "button-"_button_name"-clipper"; \
                 relative: 0.0 1.0; \
                 offset: -1 -1; \
             } \
@@ -107,6 +131,7 @@
     } \
     part { name: "button-"_button_name"-label"; \
         type: TEXT; \
+        clip_to: "button-"_button_name"-clipper"; \
         effect: GLOW; \
         mouse_events: 0; \
         description { state: "default" 0.0; \
@@ -151,11 +176,20 @@
             visible: 0; \
             color: 255 255 255 0; \
         } \
+        description { state: "hidden" 0.0; \
+            inherit: "default" 0.0; \
+        } \
         description { state: "disabled" 0.0; \
             inherit: "default" 0.0; \
             visible: 1; \
         } \
-    } \
+    }
+
+#define _TOOLBAR_BUTTON_MULTI_PROGRAMS(_button_name1,_button_name2,_button_type) \
+   _TOOLBAR_BUTTON_STD_PROGRAMS(_button_name1, _button_type) \
+   _TOOLBAR_BUTTON_STD_PROGRAMS(_button_name2, _button_type)
+
+#define _TOOLBAR_BUTTON_STD_PROGRAMS(_button_name,_button_type) \
     programs { \
         program { name: _button_name"-pressed"; \
             signal: "mouse,down,*"; \
@@ -190,25 +224,55 @@
             action: STATE_SET "default" 0.0; \
             target: "button-"_button_name"-normal"; \
             target: "button-"_button_name"-label"; \
-            transition: DECELERATE 0.3; \
+            transition: ACCELERATE 0.3; \
         } \
-        program { name: _button_name"-disable"; \
-            signal: "ejy,"_button_type""_button_name",disable"; \
-            source: "ejy"; \
+        program { name: _button_name"-disable-visible-anim"; \
             action: STATE_SET "disabled" 0.0; \
             target: "button-"_button_name"-normal"; \
             target: "button-"_button_name"-label"; \
             target: "button-"_button_name"-disable-mask"; \
             transition: DECELERATE 0.3; \
         } \
-        program { name: _button_name"-enable"; \
-            signal: "ejy,"_button_type""_button_name",enable"; \
+        program { name: _button_name"-disable-hidden-anim"; \
+            action: STATE_SET "hidden" 0.0; \
+            target: "button-"_button_name"-normal"; \
+            target: "button-"_button_name"-label"; \
+            target: "button-"_button_name"-disable-mask"; \
+        } \
+        program { name: _button_name"-disable"; \
+            signal: "ejy,"_button_type""_button_name",disable"; \
             source: "ejy"; \
+            script { \
+                new st[31]; \
+                new Float:idx; \
+                get_state(PART:"button-"_button_name"-normal", st, 30, idx); \
+                if (strcmp(st, "hidden") == 0) run_program(PROGRAM:_button_name"-disable-hidden-anim"); \
+                else run_program(PROGRAM:_button_name"-disable-visible-anim"); \
+            } \
+        } \
+        program { name: _button_name"-enable-visible-anim"; \
             action: STATE_SET "default" 0.0; \
             target: "button-"_button_name"-normal"; \
             target: "button-"_button_name"-label"; \
             target: "button-"_button_name"-disable-mask"; \
             transition: DECELERATE 0.3; \
+        } \
+        program { name: _button_name"-enable-hidden-anim"; \
+            action: STATE_SET "hidden" 0.0; \
+            target: "button-"_button_name"-normal"; \
+            target: "button-"_button_name"-label"; \
+            target: "button-"_button_name"-disable-mask"; \
+        } \
+        program { name: _button_name"-enable"; \
+            signal: "ejy,"_button_type""_button_name",enable"; \
+            source: "ejy"; \
+            script { \
+                new st[31]; \
+                new Float:idx; \
+                get_state(PART:"button-"_button_name"-normal", st, 30, idx); \
+                if (strcmp(st, "hidden") == 0) run_program(PROGRAM:_button_name"-enable-hidden-anim"); \
+                else run_program(PROGRAM:_button_name"-enable-visible-anim"); \
+            } \
         } \
     }
 
@@ -339,13 +403,11 @@ collections {
             }
          }
 
-         TOOLBAR_BUTTON("prev",       "Previous", TOOLBAR_NORMAL, TOOLBAR_POSITION(1))
-         TOOLBAR_BUTTON("next",       "Next",     TOOLBAR_NORMAL, TOOLBAR_POSITION(2))
-         TOOLBAR_BUTTON("pause",      "Pause",    TOOLBAR_ACTION, TOOLBAR_POSITION(3))
-         TOOLBAR_BUTTON("play",       "Play",     TOOLBAR_ACTION, TOOLBAR_POSITION(3))
-         TOOLBAR_BUTTON("list",       "Playlist", TOOLBAR_MODE,   TOOLBAR_POSITION(4))
-         TOOLBAR_BUTTON("nowplaying", "Playing",  TOOLBAR_MODE,   TOOLBAR_POSITION(4))
-         TOOLBAR_BUTTON("more",       "More",     TOOLBAR_NORMAL, TOOLBAR_POSITION(5))
+         TOOLBAR_BUTTON("prev", "Previous", TOOLBAR_NORMAL, 1)
+         TOOLBAR_BUTTON("next", "Next", TOOLBAR_NORMAL, 2)
+         TOOLBAR_BUTTON("more", "More", TOOLBAR_NORMAL, 5)
+         TOOLBAR_MULTIBUTTON("play", "Play", "pause", "Pause", TOOLBAR_ACTION, 3)
+         TOOLBAR_MULTIBUTTON("list", "Playlist", "nowplaying", "Playing", TOOLBAR_MODE, 4)
 
          part { name: "button-more-right-separator";
              type: RECT;
