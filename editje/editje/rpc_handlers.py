@@ -216,6 +216,8 @@ class ReportsHandler(object):
                               [("program.api.changed",
                                 self._parts_changed_event_handler)]}
 
+        self.server_prefix = "eclipse-efl-sdk."
+
         self._handlers_register()
 
     def agent_register(self, host, port):
@@ -225,6 +227,7 @@ class ReportsHandler(object):
 
         c = xmlrpclib.ServerProxy("%s:%d" % (host, port))
         self._clients.append((c, (host, port)))
+        getattr(c, self.server_prefix + "partsChanged")([])
 
     def agent_unregister(self, host, port):
         for c in self._clients:
@@ -239,22 +242,12 @@ class ReportsHandler(object):
                 obj.callback_add(event, handler)
 
     def _clients_call(self, method_name, *args):
-        prefix = "eclipse-efl-sdk."
-
         for c in self._clients:
-            if args:
-                try:
-                    getattr(c[0], prefix + method_name)(*args)
-
-                except xmlrpclib.ProtocolError, err:
-                    self._clients.remove(c)
-                    del c
-            else:
-                try:
-                    getattr(c[0], prefix + method_name)()
-                except xmlrpclib.ProtocolError, err:
-                    self._clients.remove(c)
-                    del c
+            try:
+                getattr(c[0], self.server_prefix + method_name)(*args)
+            except xmlrpclib.ProtocolError:
+                self._clients.remove(c)
+                del c
 
     def _event_handlers_get(self):
         return self._handlers
