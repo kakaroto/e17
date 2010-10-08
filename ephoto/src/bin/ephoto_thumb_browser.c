@@ -284,7 +284,6 @@ _ephoto_populate_end_image(void *data)
         Ephoto_Thumb_Browser *tb = (Ephoto_Thumb_Browser *)data;
 
         tb->list = NULL;
-        efreet_mime_shutdown();
 
         if (em->config->sort_images)
         {
@@ -306,8 +305,6 @@ _ephoto_populate_error(int error, void *data)
         Ephoto_Thumb_Browser *tb = (Ephoto_Thumb_Browser*)data;
 	/* We don't handle error case in ephoto */
 	tb->list = NULL;
-
-	efreet_mime_shutdown();
 }
 
 /* Build the interface component after detection from main thread */

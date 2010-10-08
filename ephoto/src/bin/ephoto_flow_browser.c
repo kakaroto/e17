@@ -150,8 +150,6 @@ _ephoto_go_update(Ephoto_Flow_Browser *ef)
                 _ephoto_set_title(ef->cur_image);
 
         elm_toolbar_item_unselect_all(ef->toolbar);
-
-        efreet_mime_shutdown();
 }
 
 /*Create the flow browser*/
