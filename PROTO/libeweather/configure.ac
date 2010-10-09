@@ -48,7 +48,7 @@ PKG_CHECK_MODULES(E, [ecore
                       evas
                       ecore-con
                       edje])
-release=$(pkg-config --variable=release enlightenment)eina_module_list_free
+release=$(pkg-config --variable=release enlightenment)
 MODULE_ARCH="$host_os-$host_cpu-$release"
 AC_SUBST(MODULE_ARCH)
 AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
