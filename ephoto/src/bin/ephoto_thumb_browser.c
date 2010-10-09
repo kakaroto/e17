@@ -157,10 +157,8 @@ ephoto_create_thumb_browser(Evas_Object *parent)
 	elm_gengrid_align_set(tb->thumb_browser, 0.5, 0.5);
         elm_gengrid_bounce_set(tb->thumb_browser, EINA_TRUE, EINA_FALSE);
 	elm_gengrid_item_size_set(tb->thumb_browser, em->config->thumb_size, em->config->thumb_size / THUMB_RATIO);
-	elm_gengrid_horizontal_set(tb->thumb_browser, EINA_TRUE);
 	evas_object_size_hint_align_set(tb->thumb_browser, EVAS_HINT_FILL, EVAS_HINT_FILL);
 	evas_object_size_hint_weight_set(tb->thumb_browser, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-	evas_object_size_hint_fill_set(tb->thumb_browser, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
 	elm_object_style_set(tb->thumb_browser, "ephoto");
 	evas_object_smart_callback_add(tb->thumb_browser, "selected", _ephoto_thumb_selected, tb);
