@@ -499,6 +499,26 @@ void enlil_root_collection_del(Enlil_Root *root, Enlil_Collection *col)
 }
 
 /**
+ * @brief
+ * @param name The collection  name. The string has to be in eina_stringshare
+ */
+Enlil_Collection *enlil_root_collection_search_name(Enlil_Root *root, const char *name)
+{
+   Eina_List *l;
+   Enlil_Collection *collection;
+   ASSERT_RETURN(root!=NULL);
+   ASSERT_RETURN(name!=NULL);
+
+   EINA_LIST_FOREACH(root->collections, l, collection)
+     {
+	if(enlil_collection_name_get(collection) == name)
+	  return collection;
+     }
+
+   return NULL;
+}
+
+/**
  * Add the photo in the tag named @p photo_tag. If the tag does not exists, it is created.
  *
  * @param root The root struct
@@ -601,7 +621,25 @@ void enlil_root_tag_del(Enlil_Root *root, Enlil_Tag *tag)
    enlil_tag_free(&tag);
 }
 
+/**
+ * @brief
+ * @param name The tag name. The string has to be in eina_stringshare
+ */
+Enlil_Tag *enlil_root_tag_search_name(Enlil_Root *root, const char *name)
+{
+   Eina_List *l;
+   Enlil_Tag *tag;
+   ASSERT_RETURN(root!=NULL);
+   ASSERT_RETURN(name!=NULL);
 
+   EINA_LIST_FOREACH(root->tags, l, tag)
+     {
+	if(enlil_tag_name_get(tag) == name)
+	  return tag;
+     }
+
+   return NULL;
+}
 
 /**
  * Save the path in the file ~/EET_FOLDER_ROOT_DB/EET_FILE_ROOT_DB

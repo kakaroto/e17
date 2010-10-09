@@ -159,9 +159,11 @@ EAPI	void		enlil_root_albums_sort(Enlil_Root *root);
 
 EAPI    const Eina_List *enlil_root_collections_get(const Enlil_Root *root);
 EAPI	void		enlil_root_collection_del(Enlil_Root *root, Enlil_Collection *col);
+EAPI	Enlil_Collection *enlil_root_collection_search_name(Enlil_Root *root, const char *name);
 
 EAPI    const Eina_List *enlil_root_tags_get(const Enlil_Root *root);
 EAPI	void		enlil_root_tag_del(Enlil_Root *root, Enlil_Tag *tag);
+EAPI	Enlil_Tag *	enlil_root_tag_search_name(Enlil_Root *root, const char *name);
 
 EAPI	Enlil_Album *	enlil_root_album_search_flickr_id(Enlil_Root *root, const char *id);
 
