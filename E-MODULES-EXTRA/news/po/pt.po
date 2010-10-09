@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: news\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2010-09-26 05:00-0700\n"
-"PO-Revision-Date: 2010-09-29 13:21-0000\n"
+"POT-Creation-Date: 2010-10-06 09:00-0700\n"
+"PO-Revision-Date: 2010-10-09 11:50-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -425,37 +425,36 @@ msgstr "Precisa de indicar um <hilight>nome</hilight> !"
 msgid "The <hilight>name</hilight> you entered is <hilight>already used</hilight><br>by another category"
 msgstr "O <hilight>nome</hilight> indicado já <hilight>está a ser utilizado</hilight><br>por outra categoria."
 
-#: ../src/news_menu.c:59
-msgid "Configure this Feed"
-msgstr "Configurar esta fonte"
+#: ../src/news_menu.c:131
+#| msgid "Set all feeds as read"
+msgid "Set all as read"
+msgstr "Marcar todas como lidas"
 
-#: ../src/news_menu.c:132
-msgid "Set all feeds as read"
-msgstr "Marcar todas as fontes como lidas"
+#: ../src/news_menu.c:137
+msgid "Update"
+msgstr "Atualizar"
 
-#: ../src/news_menu.c:138
-msgid "Update all feeds"
-msgstr "Atualizar todas as fontes"
+#: ../src/news_menu.c:146
+#: ../src/news_menu.c:174
+msgid "Settings"
+msgstr "Definições"
 
-#: ../src/news_menu.c:149
-msgid "Configure gadget"
-msgstr "Configurar \"gadget\""
+#: ../src/news_menu.c:151
+#| msgid "News"
+msgid "Newsfeeds"
+msgstr "Fontes de notícias"
 
-#: ../src/news_menu.c:153
-msgid "Configure gadget content"
-msgstr "Configurar o conteúdo do \"gadget\""
-
-#: ../src/news_menu.c:157
-msgid "Main Configuration"
-msgstr "Configuração principal"
-
-#: ../src/news_menu.c:161
-msgid "Feeds Configuration"
-msgstr "Configuração das fontes"
+#: ../src/news_menu.c:158
+msgid "Contents"
+msgstr "Conteúdo"
 
 #: ../src/news_menu.c:165
-msgid "Configuration"
-msgstr "Configuração"
+msgid "Gadget"
+msgstr "\"Gadget\""
+
+#: ../src/news_menu.c:169
+msgid "Main"
+msgstr "Principal"
 
 #: ../src/news_utils.h:13
 msgid "News Module DEBUG DEBUG DEBUG DEBUG"
@@ -477,3 +476,23 @@ msgstr "Fontes neste \"gadget\""
 msgid "Articles in selected feed"
 msgstr "Artigos na fonte selecionada"
 
+#~ msgid "Configure this Feed"
+#~ msgstr "Configurar esta fonte"
+
+#~ msgid "Update all feeds"
+#~ msgstr "Atualizar todas as fontes"
+
+#~ msgid "Configure gadget"
+#~ msgstr "Configurar \"gadget\""
+
+#~ msgid "Configure gadget content"
+#~ msgstr "Configurar o conteúdo do \"gadget\""
+
+#~ msgid "Main Configuration"
+#~ msgstr "Configuração principal"
+
+#~ msgid "Feeds Configuration"
+#~ msgstr "Configuração das fontes"
+
+#~ msgid "Configuration"
+#~ msgstr "Configuração"
