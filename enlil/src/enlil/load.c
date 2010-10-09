@@ -180,7 +180,7 @@ static void _enlil_load_message_cb(void *data, void *buffer, unsigned int nbyte)
    switch(load->msg.type)
      {
       case Enlil_LOAD_ERROR:
-	 LOG_CRIT(load->msg.msg);
+	 LOG_CRIT("%s", load->msg.msg);
 	 load->conf.error_cb(load->conf.data, load, load->msg.error, msg);
 	 break;
       case Enlil_LOAD_ALBUM_DONE:

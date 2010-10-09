@@ -1105,7 +1105,7 @@ static void _enlil_sync_message_cb(void *data, void *buffer, unsigned int nbyte)
    switch(sync->msg.type)
      {
       case Enlil_SYNC_ERROR:
-	 LOG_CRIT(sync->msg.msg);
+	 LOG_CRIT("%s", sync->msg.msg);
 	 sync->sync.error_cb(sync->sync.data, sync, sync->msg.error, sync->msg.msg);
 	 break;
       case Enlil_SYNC_ALBUM_NEW:
