@@ -70,6 +70,7 @@ ephoto_show_slideshow(int view, const char *current_image)
 	itc.func.del = NULL;
 
 	elm_slideshow_clear(em->slideshow);
+        /* TODO:
 	l = em->images;
 	EINA_LIST_FOREACH(l, iter, image)
 	{
@@ -77,6 +78,7 @@ ephoto_show_slideshow(int view, const char *current_image)
 		if ((current_image) && (!strcmp(image, current_image)))
 			cur_item = item;
 	}
+        */
 	if (cur_item)
 		elm_slideshow_show(cur_item);
 

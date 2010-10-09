@@ -30,7 +30,6 @@ ephoto_config_init(Ephoto *em)
         C_VAL(D, T, slideshow_timeout, EET_T_DOUBLE);
         C_VAL(D, T, slideshow_transition, EET_T_STRING);
         C_VAL(D, T, editor, EET_T_STRING);
-        C_VAL(D, T, sort_images, EET_T_INT);
 
         switch (_ephoto_config_load(em))
         {
@@ -45,7 +44,6 @@ ephoto_config_init(Ephoto *em)
                                 eina_stringshare_add("fade");
                         em->config->editor =
                                 eina_stringshare_add("gimp %s");
-                        em->config->sort_images = 1;
                         break;
                 case -1:
                         if (em->config->config_version < 2)
@@ -58,8 +56,6 @@ ephoto_config_init(Ephoto *em)
                         if (em->config->config_version < 3)
                                 em->config->editor =
                                         eina_stringshare_add("gimp %s");
-                        if (em->config->config_version < 4)
-                                em->config->sort_images = 1;
 
                         if (em->config->config_version < 5)
                                 em->config->thumb_gen_size = 256;

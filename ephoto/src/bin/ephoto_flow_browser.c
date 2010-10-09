@@ -256,7 +256,7 @@ ephoto_flow_browser_image_set(Evas_Object *obj, const char *current_image)
 		evas_object_event_callback_add(ef->flow_browser, EVAS_CALLBACK_MOUSE_WHEEL,
 						_ephoto_mouse_wheel, ef);
 
-		ef->iter = eina_list_data_find_list(em->images, current_image);
+		// TODO: ef->iter = eina_list_data_find_list(em->images, current_image);
 		for (i = 0; i < (sizeof (toolbar_items) / sizeof (char*)); ++i)
 		{
 			o = elm_toolbar_item_find_by_label(ef->toolbar, toolbar_items[i]);
@@ -362,7 +362,7 @@ _ephoto_go_first(void *data, Evas_Object *obj, void *event_info)
 {
         Ephoto_Flow_Browser *ef = data;
 
-	ef->iter = em->images;
+	// TODO: ef->iter = em->images;
 
 	ef->cur_image = eina_list_data_get(ef->iter);
 	_ephoto_go_update(ef);
@@ -374,7 +374,7 @@ _ephoto_go_last(void *data, Evas_Object *obj, void *event_info)
 {
         Ephoto_Flow_Browser *ef = data;
 
-	ef->iter = eina_list_last(em->images);
+	// TODO: ef->iter = eina_list_last(em->images);
 	ef->cur_image = eina_list_data_get(ef->iter);
 
 	_ephoto_go_update(ef);
@@ -387,7 +387,7 @@ _ephoto_go_next(void *data, Evas_Object *obj, void *event_info)
 	Ephoto_Flow_Browser *ef = data;
 
 	ef->iter = eina_list_next(ef->iter);
-	if (!ef->iter) ef->iter = em->images;
+	// TODO: if (!ef->iter) ef->iter = em->images;
 
 	ef->cur_image = eina_list_data_get(ef->iter);
 
@@ -401,8 +401,10 @@ _ephoto_go_previous(void *data, Evas_Object *obj, void *event_info)
 	Ephoto_Flow_Browser *ef = data;
 
 	ef->iter = eina_list_prev(ef->iter);
+        /* TODO:
 	if (!ef->iter)
 		ef->iter = eina_list_last(em->images);
+        */
 
 	ef->cur_image = eina_list_data_get(ef->iter);
 

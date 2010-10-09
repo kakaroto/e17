@@ -1,24 +1,35 @@
 #include "ephoto.h"
 
-typedef struct _Directory_Thumb Directory_Thumb;
-
-struct _Directory_Thumb
+typedef struct _Ephoto_Directory_Thumb Ephoto_Directory_Thumb;
+struct _Ephoto_Directory_Thumb
 {
-  Evas_Object *layout;
-  Eio_File *file;
-  Eina_List *frames;
-  const char *path;
-  int theme_thumb_count;
+   Eio_File *ls;
+   Eina_List *objs;
+   Ephoto_Entry *entry;
 };
 
+static Eina_Hash *_pending_dirs = NULL;
+
 static void
-_layout_del(void *data, Evas *e, Evas_Object *layout, void *event_info)
+_ephoto_directory_thumb_free(Ephoto_Directory_Thumb *dt)
 {
-   Directory_Thumb *dt = data;
-   if (dt->file) eio_file_cancel(dt->file);
-   eina_list_free(dt->frames);
-   eina_stringshare_del(dt->path);
+   if (dt->ls) eio_file_cancel(dt->ls);
+   eina_hash_del(_pending_dirs, dt->entry->path, dt);
    free(dt);
+
+   if (!eina_hash_population(_pending_dirs))
+     {
+        eina_hash_free(_pending_dirs);
+        _pending_dirs = NULL;
+     }
+}
+
+static void
+_obj_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Ephoto_Directory_Thumb *dt = data;
+   dt->objs = eina_list_remove(dt->objs, obj);
+   if (!dt->objs) _ephoto_directory_thumb_free(dt);
 }
 
 static Eina_Bool
@@ -30,107 +41,104 @@ _populate_filter(void *data, const Eina_File_Direct_Info *info)
 static void
 _populate_end(void *data)
 {
-  Directory_Thumb *dt = (Directory_Thumb*) data;
-  dt->file = NULL;
+   Ephoto_Directory_Thumb *dt = data;
+   Evas_Object *obj;
+   dt->ls = NULL;
+
+   EINA_LIST_FREE(dt->objs, obj)
+     evas_object_event_callback_del_full(obj, EVAS_CALLBACK_DEL, _obj_del, dt);
+
+   dt->entry->dir_files_checked = EINA_TRUE;
+   if (dt->entry->item)
+     elm_gengrid_item_update(dt->entry->item);
+
+   _ephoto_directory_thumb_free(dt);
 }
 
 static void
 _populate_error(int error, void *data)
 {
-  Directory_Thumb *dt = (Directory_Thumb*)data;
-  dt->file = NULL;
+   Ephoto_Directory_Thumb *dt = data;
+   if (error) ERR("could not populate: %s", strerror(error));
+   _populate_end(dt);
 }
 
 static void
 _populate_main(void *data, const Eina_File_Direct_Info *info)
 {
-  Evas_Object *frame, *image;
-  int position;
-  Directory_Thumb *dt = data;
-  char buf[4096];
+   Ephoto_Directory_Thumb *dt = data;
+   Evas_Object *obj;
+   const char *file;
 
-  position = eina_list_count(dt->frames);
+   if (!dt->objs) return;
 
-  if (position > dt->theme_thumb_count)
-    {
-       if (dt->file)
-         {
-            eio_file_cancel(dt->file);
-            dt->file = NULL;
-         }
-       return;
-    }
+   obj = dt->objs->data;
+   file = eina_stringshare_add(info->path);
 
-  frame = elm_layout_add(dt->layout);
-  if (!elm_layout_file_set
-      (frame, PACKAGE_DATA_DIR "/themes/default/ephoto.edj", "/ephoto/thumb"))
-    ERR("could not load group '/ephoto/thumb' from file '%s'",
-        PACKAGE_DATA_DIR "/themes/default/ephoto.edj");
-  evas_object_size_hint_weight_set(frame, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-  evas_object_show(frame);
+   DBG("populate thumbnail %p with path '%s'", obj, file);
 
-  image = ephoto_thumb_add(frame, info->path);
-  elm_object_style_set(image, "ephoto");
-  evas_object_size_hint_weight_set(image, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-  evas_object_size_hint_align_set(image, EVAS_HINT_FILL, EVAS_HINT_FILL);
-  elm_layout_content_set(frame, "ephoto.swallow.content", image);
+   dt->objs = eina_list_remove_list(dt->objs, dt->objs);
+   dt->entry->dir_files = eina_list_append(dt->entry->dir_files, file);
+   ephoto_thumb_path_set(obj, file);
 
-  snprintf(buf, sizeof(buf), "ephoto.swallow.thumb%d", position);
-  elm_layout_content_set(dt->layout, buf, frame);
-
-  dt->frames = eina_list_append(dt->frames, frame);
+   evas_object_event_callback_del_full(obj, EVAS_CALLBACK_DEL, _obj_del, dt);
+   if ((!dt->objs) && (dt->ls))
+     {
+        eio_file_cancel(dt->ls);
+        dt->ls = NULL;
+     }
 }
 
 Evas_Object *
-ephoto_directory_thumb_add(Evas_Object *parent, const char *path)
+ephoto_directory_thumb_add(Evas_Object *parent, Ephoto_Entry *entry)
 {
-  Directory_Thumb *dt;
-  Evas_Object *thumb, *placeholder;
-  const char *s;
+   Ephoto_Directory_Thumb *dt;
+   Evas_Object *obj;
 
-  dt = calloc(1, sizeof( Directory_Thumb));
-  dt->path = eina_stringshare_add(path);
-  dt->layout = elm_layout_add(parent);
+   if (_pending_dirs)
+     dt = eina_hash_find(_pending_dirs, entry->path);
+   else
+     {
+        dt = NULL;
+        _pending_dirs = eina_hash_stringshared_new(NULL);
+        EINA_SAFETY_ON_NULL_RETURN_VAL(_pending_dirs, NULL);
+     }
 
-  if (!elm_layout_file_set
-      (dt->layout, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
-       "/ephoto/directory/thumb/layout"))
-    ERR("could not load group '/ephoto/directory/thumb/layout' from file '%s'",
-        PACKAGE_DATA_DIR "/themes/default/ephoto.edj");
-  evas_object_size_hint_weight_set
-    (dt->layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-  evas_object_show(dt->layout);
-  evas_object_data_set(dt->layout, "dt", dt);
-  evas_object_event_callback_add
-    (dt->layout, EVAS_CALLBACK_DEL, _layout_del, dt);
+   obj = ephoto_thumb_add(parent, NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(obj, NULL);
 
-  thumb = elm_layout_add(dt->layout);
-  if (!elm_layout_file_set
-      (thumb, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
-       "/ephoto/thumb/no_border"))
-    ERR("could not load group '/ephoto/thumb/no_border' from file '%s'",
-        PACKAGE_DATA_DIR "/themes/default/ephoto.edj");
-  //evas_object_size_hint_weight_set(thumb, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-  elm_layout_content_set(dt->layout, "ephoto.swallow.thumb1", thumb);
+   if (!dt)
+     {
+        dt = calloc(1, sizeof(Ephoto_Directory_Thumb));
+        if (!dt)
+          {
+             ERR("could not allocate memory for Ephoto_Directory_Thumb");
+             evas_object_del(obj);
+             return NULL;
+          }
+        dt->entry = entry;
+        dt->ls = eio_file_direct_ls(entry->path,
+                                    _populate_filter,
+                                    _populate_main,
+                                    _populate_end,
+                                    _populate_error,
+                                    dt);
+        if (!dt->ls)
+          {
+             ERR("could not create eio_file_direct_ls(%s)", entry->path);
+             evas_object_del(obj);
+             free(dt);
+             return NULL;
+          }
 
-  placeholder = edje_object_add(evas_object_evas_get(dt->layout));
-  edje_object_file_set
-    (placeholder, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
-     "/ephoto/directory/no-preview");
-  elm_layout_content_set(thumb, "ephoto.swallow.content", placeholder);
+        eina_hash_add(_pending_dirs, entry->path, dt);
+        DBG("start thread to lookup inside '%s' for thumbnails.", entry->path);
+     }
+   else
+     DBG("thread already started, wait for thumbnails in '%s'", entry->path);
 
-  s = edje_object_data_get(elm_layout_edje_get(dt->layout), "thumbs");
-  if (s)
-    {
-       dt->theme_thumb_count = atoi(s);
-       if (dt->theme_thumb_count > 0)
-         dt->file = eio_file_direct_ls(path,
-                                       _populate_filter,
-                                       _populate_main,
-                                       _populate_end,
-                                       _populate_error,
-                                       dt);
-    }
+   dt->objs = eina_list_append(dt->objs, obj);
 
-  return dt->layout;
+   evas_object_event_callback_add(obj, EVAS_CALLBACK_DEL, _obj_del, dt);
+   return obj;
 }

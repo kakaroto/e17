@@ -24,6 +24,7 @@
 
 typedef struct _Ephoto_Config Ephoto_Config;
 typedef struct _Ephoto Ephoto;
+typedef struct _Ephoto_Entry Ephoto_Entry;
 
 typedef enum _Ephoto_State Ephoto_State;
 typedef enum _Ephoto_Orient Ephoto_Orient;
@@ -32,6 +33,7 @@ typedef enum _Ephoto_Orient Ephoto_Orient;
 void ephoto_create_main_window(const char *directory, const char *image);
 void ephoto_thumb_size_set(int size);
 Evas_Object *ephoto_thumb_add(Evas_Object *parent, const char *path);
+void         ephoto_thumb_path_set(Evas_Object *o, const char *path);
 
 
 /* Configuration */
@@ -57,11 +59,10 @@ void ephoto_hide_slideshow(void);
 void ephoto_delete_slideshow(void);
 
 /* Ephoto Directory Thumb */
-Evas_Object *ephoto_directory_thumb_add(Evas_Object *parent, const char *path);
+Evas_Object *ephoto_directory_thumb_add(Evas_Object *parent, Ephoto_Entry *e);
 
 /*Ephoto Thumb Browser*/
-Evas_Object *ephoto_create_thumb_browser(Evas_Object *parent);
-void ephoto_populate_thumbnails(Evas_Object *obj);
+Evas_Object *ephoto_thumb_browser_add(Evas_Object *parent);
 /* smart callbacks called:
  * "selected" - an item in the thumb browser is selected. The selected file is passed as event_info argument.
  * "directory,changed" - the user selected a new directory. The selected directory is passed as event_info argument.
@@ -97,8 +98,6 @@ struct _Ephoto_Config
         const char *slideshow_transition;
 
         const char *editor;
-
-        int sort_images;
 };
 
 /*Ephoto Main Structure*/
@@ -112,8 +111,9 @@ struct _Ephoto
 	Evas_Object *slideshow;
 	Evas_Object *slideshow_notify;
 	Evas_Object *thumb_browser;
+        Eina_List *entries;
+
         Evas_Object *prefs_win;
-	Eina_List   *images;
         Ephoto_State state;
 
         Ephoto_Config *config;
@@ -121,6 +121,22 @@ struct _Ephoto
         Eet_Data_Descriptor  *config_edd;
         Ecore_Timer *config_save;
 };
+
+struct _Ephoto_Entry
+{
+   const char *path;
+   const char *basename; /* pointer inside path */
+   const char *label;
+   Elm_Gengrid_Item *item;
+   Eina_List *dir_files; /* if dir, here contain files with preview */
+   Eina_Bool dir_files_checked : 1;
+   Eina_Bool is_dir : 1;
+   Eina_Bool is_up : 1;
+};
+
+Ephoto_Entry *ephoto_entry_new(const char *path, const char *label);
+void          ephoto_entry_free(Ephoto_Entry *entry);
+void          ephoto_entries_free(Ephoto *em);
 
 extern Ephoto *em;
 

@@ -15,6 +15,8 @@ main(int argc, char **argv)
    elm_need_ethumb();
    elm_init(argc, argv);
 
+   elm_theme_extension_add(NULL, PACKAGE_DATA_DIR"/themes/default/ephoto.edj");
+
    if (!efreet_mime_init())
      fprintf(stderr, "Could not init efreet_mime!\n");
 

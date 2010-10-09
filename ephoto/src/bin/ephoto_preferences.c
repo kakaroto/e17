@@ -56,15 +56,6 @@ ephoto_show_preferences(Ephoto *em)
                 elm_box_pack_end(pg1, o);
                 evas_object_show(o);
 
-                o = elm_check_add(pg1);
-                elm_check_label_set(o, "Sort images");
-                elm_check_state_set(o, em->config->sort_images);
-                evas_object_data_set(o, "config", "sort_images");
-                evas_object_smart_callback_add(o, "changed",
-                                               _ephoto_preferences_item_change, em);
-                elm_box_pack_end(pg1, o);
-                evas_object_show(o);
-
                 elm_box_pack_end(box, pager);
                 evas_object_show(pager);
 
@@ -179,8 +170,6 @@ _ephoto_preferences_item_change(void *data, Evas_Object *obj, void *event_info)
                 eina_stringshare_replace(
                     &em->config->editor,
                     eina_stringshare_add(elm_entry_entry_get(obj)));
-        else if (!strcmp(key, "sort_images"))
-                em->config->sort_images = elm_check_state_get(obj);
 
         ephoto_config_save(em, EINA_FALSE);
 }

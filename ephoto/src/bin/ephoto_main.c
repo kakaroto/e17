@@ -15,7 +15,7 @@ static void _ephoto_thumb_browser_selected_cb(void *data, Evas_Object *obj, void
 static void 
 _ephoto_flow_browser_delete_cb(void *data, Evas_Object *obj, void *event_info)
 {
-        em->thumb_browser = ephoto_create_thumb_browser(em->layout);
+        em->thumb_browser = ephoto_thumb_browser_add(em->layout);
 	elm_layout_content_set(em->layout, "ephoto.content.swallow", em->thumb_browser);
 	evas_object_smart_callback_add(em->thumb_browser, 
 				       "selected",
@@ -132,8 +132,7 @@ ephoto_create_main_window(const char *directory, const char *image)
 	}
 	else
         {
-                em->thumb_browser =  ephoto_create_thumb_browser(em->layout);
-		evas_object_show(em->thumb_browser);
+                em->thumb_browser =  ephoto_thumb_browser_add(em->layout);
 		elm_layout_content_set(em->layout, "ephoto.content.swallow", em->thumb_browser);
 		evas_object_smart_callback_add(em->thumb_browser, 
 					       "selected",
@@ -158,8 +157,7 @@ _ephoto_delete_main_window(void *data, Evas_Object *obj, void *event_info)
 
 	evas_object_del(em->layout);
 	evas_object_del(em->bg);
-	if (em->images)
-		eina_list_free(em->images);
+        ephoto_entries_free(em);
         ephoto_config_free(em);
 	free(em);
 	elm_exit();
@@ -232,16 +230,24 @@ Evas_Object *
 ephoto_thumb_add(Evas_Object *parent, const char *path)
 {
    Evas_Object *o;
-   const char *ext;
-   Ethumb_Thumb_Format format = ETHUMB_THUMB_FDO;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(parent, NULL);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(path, NULL);
 
    o = elm_thumb_add(parent);
    if (!o) return NULL;
 
-   ext = strrchr(path, '.');
+   if (path) ephoto_thumb_path_set(o, path);
+   elm_object_style_set(o, "noframe");
+   _thumbs = eina_list_append(_thumbs, o);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_DEL, _thumb_del, NULL);
+   return o;
+}
+
+void
+ephoto_thumb_path_set(Evas_Object *o, const char *path)
+{
+   Ethumb_Thumb_Format format = ETHUMB_THUMB_FDO;
+   const char *ext = strrchr(path, '.');
    if (ext)
      {
         ext++;
@@ -253,8 +259,35 @@ ephoto_thumb_add(Evas_Object *parent, const char *path)
    ethumb_client_format_set(elm_thumb_ethumb_client_get(), format);
    evas_object_data_set(o, "ephoto_format", (void*)(long)format);
    elm_thumb_file_set(o, path, NULL);
-   elm_object_style_set(o, "noframe");
-   _thumbs = eina_list_append(_thumbs, o);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_DEL, _thumb_del, NULL);
-   return o;
+}
+
+Ephoto_Entry *
+ephoto_entry_new(const char *path, const char *label)
+{
+   Ephoto_Entry *entry;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(path, NULL);
+   entry = calloc(1, sizeof(Ephoto_Entry));
+   EINA_SAFETY_ON_NULL_RETURN_VAL(entry, NULL);
+   entry->path = eina_stringshare_add(path);
+   entry->basename = ecore_file_file_get(entry->path);
+   entry->label = eina_stringshare_add(label);
+   return entry;
+}
+
+void
+ephoto_entry_free(Ephoto_Entry *entry)
+{
+   const char *s;
+   EINA_SAFETY_ON_NULL_RETURN(entry);
+   eina_stringshare_del(entry->path);
+   eina_stringshare_del(entry->label);
+   EINA_LIST_FREE(entry->dir_files, s) eina_stringshare_del(s);
+   free(entry);
+}
+
+void
+ephoto_entries_free(Ephoto *em)
+{
+   Ephoto_Entry *e;
+   EINA_LIST_FREE(em->entries, e) ephoto_entry_free(e);
 }
