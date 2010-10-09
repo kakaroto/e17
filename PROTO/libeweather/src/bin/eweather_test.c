@@ -14,6 +14,7 @@ Ecore_Evas *ecore_evas;
 Evas *evas;
 Evas_Object *ow;
 EWeather *eweather;
+Evas_Object *bg;
 
 int i_theme = 0;
 static const char* _themes[] =
@@ -30,6 +31,7 @@ _resize_cb(Ecore_Evas *ee)
 
     evas_output_viewport_get(evas, NULL, NULL, &w, &h);
     evas_object_resize(ow, w, h);
+    evas_object_resize(bg, w, h);
 }
 
     static void
@@ -70,6 +72,13 @@ int main(int argc, char **argv)
     ecore_evas_name_class_set(ecore_evas, "eweather_test", "main");
     ecore_evas_show(ecore_evas);
     evas = ecore_evas_get(ecore_evas);
+
+    //bg
+    bg = evas_object_rectangle_add(evas);
+    evas_object_color_set(bg, 255, 255, 255, 255);
+    evas_object_show(bg);
+    //
+
 
     //eweather object
     ow = eweather_object_add(evas);
