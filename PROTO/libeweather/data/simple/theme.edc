@@ -1,0 +1,345 @@
+images
+{
+    image: "EWEATHER_TYPE_CLEAR_NIGHT.png" COMP;
+    image: "EWEATHER_TYPE_CLOUDY.png" COMP;
+    image: "EWEATHER_TYPE_FOGGY.png" COMP;
+    image: "EWEATHER_TYPE_HEAVY_SNOW.png" COMP;
+    image: "EWEATHER_TYPE_ISOLATED_THUNDERSTORMS.png" COMP;
+    image: "EWEATHER_TYPE_MOSTLY_CLOUDY_NIGHT.png" COMP;
+    image: "EWEATHER_TYPE_PARTLY_CLOUDY_DAY.png" COMP;
+    image: "EWEATHER_TYPE_PARTLY_CLOUDY_NIGHT.png" COMP;
+    image: "EWEATHER_TYPE_RAIN.png" COMP;
+    image: "EWEATHER_TYPE_RAIN_SNOW.png" COMP;
+    image: "EWEATHER_TYPE_SNOW.png" COMP;
+    image: "EWEATHER_TYPE_SUNNY.png" COMP;
+    image: "EWEATHER_TYPE_THUNDERSTORMS.png" COMP;
+    image: "EWEATHER_TYPE_WINDY.png" COMP;
+}
+
+#define WEATHER(IMAGE,SIGNAL)                   \
+    part                                        \
+    {                                           \
+        name: "part_"SIGNAL;                    \
+        mouse_events: 1;                        \
+        description                             \
+        {                                       \
+            state: "default" 0.0;               \
+            color: 255 255 255 0;               \
+            image.normal: IMAGE;                \
+        }                                       \
+        description                             \
+        {                                       \
+            state: "show" 0.0;                  \
+            inherit: "default" 0.0;             \
+            color: 255 255 255 255;             \
+        }                                       \
+        description                             \
+        {                                       \
+            state: "hide" 0.0;                  \
+            inherit: "default" 0.0;             \
+        }                                       \
+    }                                           \
+    program                                     \
+    {                                           \
+        name: SIGNAL;                           \
+        signal: SIGNAL;                         \
+        script                                  \
+        {                                       \
+            new signal[128];                    \
+            get_str(hide_source, signal, 128);  \
+            if( strcmp(signal, "") )            \
+                emit("hide", signal);           \
+            set_str(hide_source, "pgme_"SIGNAL);\
+            emit("show", "pgme_"SIGNAL);        \
+        }                                       \
+    }                                           \
+    program                                     \
+    {                                           \
+        name: "show_"SIGNAL;                    \
+        signal: "show";                         \
+        source: "pgme_"SIGNAL;                  \
+        action: STATE_SET "show" 0.0;           \
+        target: "part_"SIGNAL;                  \
+        transition: SINUSOIDAL 1.0;             \
+    }                                           \
+    program                                     \
+    {                                           \
+        name: "hide_"SIGNAL;                    \
+        signal: "hide";                         \
+        source: "pgme_"SIGNAL;                  \
+        action: STATE_SET "hide" 0.0;           \
+        target: "part_"SIGNAL;                  \
+        transition: SINUSOIDAL 1.0;             \
+    }
+
+
+
+
+collections
+{
+    group
+    {
+        name: "main";
+        parts
+        {
+            part
+            {
+                name: "whole";
+                type: RECT;
+                description
+                {
+                    state: "default" 0.0;
+                    color: 0 0 0 100;
+                }
+            }
+            part
+            {
+                name: "clipper";
+                type: RECT;
+                description
+                {
+                    state: "default" 0.0;
+                    color: 0 0 0 0;
+                    visible: 1;
+                }
+                description
+                {
+                    state: "expose" 0.0;
+                    color: 0 0 0 0;
+                }
+                description
+                {
+                    state: "fullscreen" 0.0;
+                    color: 255 255 255 255;
+                }
+            }
+            part
+            {
+                name: "object.swallow";
+                type: SWALLOW;
+                clip_to: "clipper";
+                description
+                {
+                    state: "default" 0.0;
+                }
+            }
+            part
+            {
+                name: "object.content";
+                type: RECT;
+                description
+                {
+                    state: "default" 0.0;
+                    rel1.offset: 10 10;
+                    rel2.offset: -10 -10;
+                    visible: 1;
+                    color: 0 0 0 0;
+                }
+                description
+                {
+                    state: "fullscreen" 0.0;
+                    inherit: "default" 0.0;
+                }
+                description
+                {
+                    state: "expose" 0.0;
+                    inherit: "default" 0.0;
+                    color: 255 255 255 255;
+                }
+            }
+        }
+        programs
+        {
+            program
+            {
+                name: "expose";
+                signal: "expose";
+                action: STATE_SET "expose" 0.0;
+                target: "clipper";
+                target: "object.content";
+                transition: ACCELERATE 0.7;
+            }
+            program
+            {
+                name: "fullscreen";
+                signal: "fullscreen";
+                action: STATE_SET "fullscreen" 0.0;
+                target: "clipper";
+                target: "object.content";
+                transition: ACCELERATE 0.7;
+                after: "fullscreen_done";
+            }
+            program
+            {
+                name: "fullscreen_done";
+                action: SIGNAL_EMIT "fullscreen,done" "";
+            }
+        }
+    }
+    group
+    {
+        name: "weather";
+        min: 165 300;
+        script
+        {
+            public hide_source;
+        }
+        parts
+        {
+            part
+            {
+                name: "whole";
+                mouse_events: 1;
+                description
+                {
+                    state: "default" 0.0;
+                }
+            }
+
+            //WEATHER("EWEATHER_TYPE_WINDY.png", "right,day_clear,sun,isolated_cloud,windy");
+            //WEATHER("EWEATHER_TYPE_RAIN.png", "right,day_rain,sun,rain,rain");
+            WEATHER("EWEATHER_TYPE_SNOW.png", "right,day_rain,sun,rain,snow");
+            WEATHER("EWEATHER_TYPE_RAIN_SNOW.png", "right,day_rain,sun,rain,rain_snow");
+            WEATHER("EWEATHER_TYPE_FOGGY.png", "right,day_rain,sun,cloud,foggy");
+            WEATHER("EWEATHER_TYPE_CLOUDY.png", "right,day_clear,sun,cloud,");
+            WEATHER("EWEATHER_TYPE_MOSTLY_CLOUDY_NIGHT.png", "right,night_clear,moon,cloud,");
+            WEATHER("EWEATHER_TYPE_PARTLY_CLOUDY_NIGHT.png", "right,night_clear,moon,isolated_cloud,");
+            WEATHER("EWEATHER_TYPE_PARTLY_CLOUDY_DAY.png", "right,day_clear,sun,isolated_cloud,");
+            WEATHER("EWEATHER_TYPE_CLEAR_NIGHT.png", "right,night_clear,moon,nothing,");
+            WEATHER("EWEATHER_TYPE_SUNNY.png", "right,day_clear,sun,nothing,");
+            WEATHER("EWEATHER_TYPE_ISOLATED_THUNDERSTORMS.png", "right,day_heavyrain,sun,isolated_tstorm,rain");
+            WEATHER("EWEATHER_TYPE_THUNDERSTORMS.png", "right,day_heavyrain,sun,tstorm,rain");
+            WEATHER("EWEATHER_TYPE_HEAVY_SNOW.png", "right,day_heavyrain,sun,storm,snow");
+
+            //TEXT PARTS
+            part
+            {
+                name: "text.date";
+                type:          TEXT;
+                effect:        SOFT_SHADOW;
+                mouse_events: 0;
+                clip_to: "whole";
+                scale: 1;
+                description
+                {
+                    state: "default" 0.0;
+                    rel1.relative: 0.5 0.0;
+                    rel2.relative: 0.5 0.075;
+                    text
+                    {
+                        text: "";
+                        font: "Sans,Edje-Vera";
+                        size: 10;
+                        min: 1 1;
+                        align: 0.5 0.5;
+                        text_class: "module_small_s";
+                    }
+                }
+            }
+            part
+            {
+                name: "text.temp";
+                type:          TEXT;
+                mouse_events: 0;
+                clip_to: "whole";
+                scale: 1;
+                description
+                {
+                    state: "default" 0.0;
+                    rel1.relative: 0.5 0.63;
+                    rel2.relative: 0.5 0.75;
+                    text
+                    {
+                        text: "";
+                        font: "Sans,Edje-Vera";
+                        size: 32;
+                        min: 1 1;
+                        max: 1 1;
+                        align: 0.5 1.0;
+                        text_class: "module_large";
+                    }
+                }
+            }
+            part
+            {
+                name: "text.temp_min";
+                type: TEXT;
+                mouse_events: 0;
+                clip_to: "whole";
+                scale: 1;
+                description
+                {
+                    state: "default" 0.0;
+                    align: 0.0 0.0;
+                    rel1.relative: 1.0 0.75;
+                    rel1.offset: 3 5;
+                    rel2.relative: 1.0 0.75;
+                    rel2.offset: 3 0;
+                    text
+                    {
+                        text: "";
+                        font: "Sans,Edje-Vera";
+                        size: 14;
+                        min: 1 1;
+                        max: 1 1;
+                        align: 0.0 0.5;
+                        text_class: "module_small";
+                    }
+                }
+            }
+            part
+            {
+                name: "text.temp_max";
+                type: TEXT;
+                mouse_events: 0;
+                clip_to: "whole";
+                scale: 1;
+                description
+                {
+                    state: "default" 0.0;
+                    align: 1.0 0.0;
+                    rel1.relative: 0.0 0.75;
+                    rel1.offset: -3 5;
+                    rel2.relative: 0.0 0.75;
+                    rel2.offset: -3 0;
+                    text
+                    {
+                        text: "";
+                        font: "Sans,Edje-Vera";
+                        size: 14;
+                        min: 1 1;
+                        max: 1 1;
+                        align: 1.0 0.5;
+                        text_class: "module_small";
+                    }
+                }
+            }
+            part
+            {
+                name: "text.city";
+                type:          TEXT;
+                effect:        SOFT_SHADOW;
+                mouse_events: 0;
+                clip_to: "whole";
+                scale: 1;
+                description
+                {
+                    state: "default" 0.0;
+                    rel1.relative: 0.5 0.85;
+                    rel2.relative: 0.5 1.0;
+                    text
+                    {
+                        text: "";
+                        font: "Sans,Edje-Vera";
+                        size: 16;
+                        min: 1 1;
+                        align: 0.5 0.5;
+                        text_class: "module_normal_s";
+                    }
+                }
+            }
+            //
+        }
+    }
+}
+

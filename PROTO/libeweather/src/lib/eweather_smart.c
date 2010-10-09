@@ -13,6 +13,7 @@ struct _Smart_Data
    Evas_Object *main; //main weather object
    int current_day;
    EWeather_Object_Mode mode;
+   const char *theme; //eina stringshare
 
    struct
      {
@@ -120,6 +121,27 @@ EWeather *eweather_object_eweather_get(Evas_Object *obj)
    return sd->eweather;
 }
 
+void eweather_theme_set(Evas_Object *obj, const char *theme)
+{
+    Eina_List *l;
+    Evas_Object *o, *_obj;
+    Smart_Data *sd = evas_object_smart_data_get(obj);
+    if(!sd) return ;
+
+    eina_stringshare_del(sd->theme);
+    sd->theme = eina_stringshare_add(theme);
+
+    edje_object_file_set(sd->obj, sd->theme, "main");
+    edje_object_file_set(sd->main, sd->theme, "weather");
+    EINA_LIST_FOREACH(sd->objs, l, _obj)
+        edje_object_file_set(_obj, sd->theme, "weather");
+
+    int mode = sd->mode;
+    sd->mode = -1; //No mode
+    eweather_object_mode_set(obj, mode);
+
+    _eweather_update_cb(obj, sd->eweather);
+}
 
 void eweather_object_mode_set(Evas_Object *obj, EWeather_Object_Mode mode)
 {
@@ -173,7 +195,6 @@ _mouse_up_cb(void *data, Evas *evas, Evas_Object *o_day, void *event)
    if (!sd) return;
 
    if(ev->button != 1) return ;
-
    sd->thumbscroll.moved = EINA_TRUE;
    if(sd->thumbscroll.is)
      {
@@ -212,8 +233,8 @@ _mouse_down_cb(void *data, Evas *evas, Evas_Object *o_day, void *event)
    Evas_Object *obj = data;
    Evas_Event_Mouse_Down *ev = (Evas_Event_Mouse_Down*) event;
    Smart_Data *sd = evas_object_smart_data_get(obj);
-   if (!sd) return;
 
+   if (!sd) return;
    if(ev->button != 1) return ;
 
    sd->thumbscroll.moved = EINA_FALSE;
@@ -286,7 +307,7 @@ static void _eweather_update_cb(void *data, EWeather *eweather)
 	if(!o_day)
 	  {
 	     o_day = edje_object_add(evas_object_evas_get(obj));
-	     edje_object_file_set(o_day, PACKAGE_DATA_DIR"/theme.edj", "weather");
+	     edje_object_file_set(o_day, sd->theme, "weather");
 	     evas_object_smart_member_add(o_day, obj);
 	     evas_object_show(o_day);
 	     sd->objs = eina_list_append(sd->objs, o_day);
@@ -294,12 +315,14 @@ static void _eweather_update_cb(void *data, EWeather *eweather)
 	     evas_object_event_callback_add(o_day, EVAS_CALLBACK_MOUSE_UP,
 		   _mouse_up_cb, obj);
 
-	     const Evas_Object *content = edje_object_part_object_get(sd->obj, "object.content");
-	     evas_object_clip_set(o_day, (Evas_Object *)content);
-
 	     if(sd->mode == EWEATHER_OBJECT_MODE_FULLSCREEN)
 	       evas_object_hide(o_day);
 	  }
+
+        const Evas_Object *content = edje_object_part_object_get(sd->obj, "object.content");
+	evas_object_clip_set(o_day, (Evas_Object *)content);
+
+
 	signal = eweather_object_signal_type_get(eweather_data_type_get(e_data));
 
 	edje_object_signal_emit(o_day, signal, "");
@@ -510,15 +533,16 @@ _smart_add(Evas_Object * obj)
    if (!sd) return;
    evas_object_smart_data_set(obj, sd);
 
+   sd->theme = eina_stringshare_add(PACKAGE_DATA_DIR"/default/theme.edj");
    sd->mode = EWEATHER_OBJECT_MODE_EXPOSE;
    sd->thumbscroll.moved = EINA_TRUE;
 
    sd->obj = edje_object_add(evas_object_evas_get(obj));
-   edje_object_file_set(sd->obj, PACKAGE_DATA_DIR"/theme.edj", "main");
+   edje_object_file_set(sd->obj, sd->theme, "main");
    evas_object_smart_member_add(sd->obj, obj);
 
    sd->main = edje_object_add(evas_object_evas_get(obj));
-   edje_object_file_set(sd->main, PACKAGE_DATA_DIR"/theme.edj", "weather");
+   edje_object_file_set(sd->main, sd->theme, "weather");
    evas_object_smart_member_add(sd->main, obj);
 
    sd->eweather = eweather_new();
@@ -557,6 +581,7 @@ _smart_del(Evas_Object * obj)
       evas_object_del(o);
    evas_object_del(sd->obj);
    evas_object_del(sd->main);
+   eina_stringshare_del(sd->theme);
 
    free(sd);
 }

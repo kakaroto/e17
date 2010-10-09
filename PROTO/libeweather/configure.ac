@@ -44,9 +44,11 @@ AC_SUBST(dlopen_libs)
 
 PKG_CHECK_MODULES(E, [ecore
                       ecore-file
-                      edje
-                      ecore-con])
-release=$(pkg-config --variable=release enlightenment)
+                      ecore-evas
+                      evas
+                      ecore-con
+                      edje])
+release=$(pkg-config --variable=release enlightenment)eina_module_list_free
 MODULE_ARCH="$host_os-$host_cpu-$release"
 AC_SUBST(MODULE_ARCH)
 AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
@@ -73,9 +75,13 @@ AC_OUTPUT([
 Makefile
 eweather.pc
 data/Makefile
-data/images/Makefile
+data/default/Makefile
+data/default/images/Makefile
+data/simple/Makefile
+data/simple/images/Makefile
 src/Makefile
 src/lib/Makefile
+src/bin/Makefile
 src/plugins/Makefile
 src/plugins/test/Makefile
 src/plugins/yahoo/Makefile
