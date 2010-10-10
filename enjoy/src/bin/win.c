@@ -185,17 +185,21 @@ _win_nowplaying_update(Win *w)
 {
    Evas_Object *cover;
    int label_size;
-   char *artist_title;
+   char *artist_title, *s1, *s2;
    cover = cover_album_fetch_by_id(w->win, w->db,w->song->album_id, 256); // TODO: size!
    elm_layout_content_set(w->nowplaying, "ejy.swallow.cover", cover);
 
    db_song_artist_fetch(w->db, w->song);
-   label_size = strlen(w->song->title) + strlen(w->song->artist) + 4;
+   s1 = w->song->title;
+   s2 = w->song->artist;
+   if (!s1) s1 = "";
+   if (!s2) s2 = "";
+   label_size = strlen(s1) + strlen(s2) + 4;
    artist_title = malloc(label_size);
    if (!artist_title)
       return;
 
-   if (snprintf(artist_title, label_size, "%s - %s", w->song->artist, w->song->title) >= label_size)
+   if (snprintf(artist_title, label_size, "%s - %s", s1, s2) >= label_size)
      {
         CRITICAL("could not set nowplaying title");
         goto nowplaying_error;
