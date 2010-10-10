@@ -1,7 +1,8 @@
 #include "ephoto.h"
 
-#define SLIDER_MAX 512
-#define SLIDER_MIN 128
+#define ZOOM_MAX 512
+#define ZOOM_MIN 128
+#define ZOOM_STEP 32
 
 #define PARENT_DIR "Up"
 
@@ -257,6 +258,40 @@ _changed_dir(void *data, Evas_Object *o, const char *emission, const char *sourc
 }
 
 static void
+_zoom_set(Ephoto_Thumb_Browser *tb, int zoom)
+{
+   if (zoom > ZOOM_MAX) zoom = ZOOM_MAX;
+   else if (zoom < ZOOM_MIN) zoom = ZOOM_MIN;
+
+   ephoto_thumb_size_set(tb->ephoto, zoom);
+   elm_gengrid_item_size_set(tb->grid, zoom, zoom);
+
+   if (zoom == ZOOM_MIN)
+     edje_object_signal_emit(tb->edje, "zoom_out,disable", "ephoto");
+   else
+     edje_object_signal_emit(tb->edje, "zoom_out,enable", "ephoto");
+
+   if (zoom == ZOOM_MAX)
+     edje_object_signal_emit(tb->edje, "zoom_in,disable", "ephoto");
+   else
+     edje_object_signal_emit(tb->edje, "zoom_in,enable", "ephoto");
+}
+
+static void
+_zoom_in(void *data, Evas_Object *o, const char *emission, const char *source)
+{
+   Ephoto_Thumb_Browser *tb = data;
+   _zoom_set(tb, tb->ephoto->config->thumb_size + ZOOM_STEP);
+}
+
+static void
+_zoom_out(void *data, Evas_Object *o, const char *emission, const char *source)
+{
+   Ephoto_Thumb_Browser *tb = data;
+   _zoom_set(tb, tb->ephoto->config->thumb_size - ZOOM_STEP);
+}
+
+static void
 _layout_del(void *data, Evas *e, Evas_Object *o, void *event_info)
 {
    Ephoto_Thumb_Browser *tb = data;
@@ -282,6 +317,10 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
    evas_object_data_set(layout, "thumb_browser", tb);
    edje_object_signal_callback_add
      (tb->edje, "location,changed", "ephoto", _changed_dir, tb);
+   edje_object_signal_callback_add
+     (tb->edje, "zoom_out,clicked", "ephoto", _zoom_out, tb);
+   edje_object_signal_callback_add
+     (tb->edje, "zoom_in,clicked", "ephoto", _zoom_in, tb);
 
    if (!elm_layout_file_set(layout, THEME_FILE, "ephoto/browser/layout"))
      {
@@ -296,8 +335,6 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
 
    elm_gengrid_align_set(tb->grid, 0.5, 0.5);
    elm_gengrid_bounce_set(tb->grid, EINA_FALSE, EINA_TRUE);
-   elm_gengrid_item_size_set
-     (tb->grid, tb->ephoto->config->thumb_size, tb->ephoto->config->thumb_size);
    evas_object_size_hint_align_set
      (tb->grid, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set
@@ -305,6 +342,8 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
 
    evas_object_smart_callback_add
      (tb->grid, "selected", _ephoto_thumb_selected, tb);
+
+   _zoom_set(tb, tb->ephoto->config->thumb_size);
 
    elm_layout_content_set(tb->layout, "ephoto.thumb.swallow", tb->grid);
 

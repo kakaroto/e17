@@ -109,7 +109,7 @@ ephoto_window_add(const char *path)
         return NULL;
      }
    elm_layout_content_set
-     (ephoto->layout, "ephoto.swallow.content", ephoto->thumb_browser);
+     (ephoto->layout, "ephoto.swallow.thumb_browser", ephoto->thumb_browser);
 
    ed = elm_layout_edje_get(ephoto->layout);
    edje_object_size_min_get(ed, &mw, &mh);
