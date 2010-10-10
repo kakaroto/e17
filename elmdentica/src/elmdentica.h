@@ -44,6 +44,12 @@ typedef struct _StatusesList {
 	char		*hash_request;
 } StatusesList;
 
+typedef struct _Gui {
+	Evas_Object *win, *timeline, *pager, *main, *status_detail, *status_detail_users, *status_detail_links, *status_detail_tags, *status_detail_groups;
+	Evas *win_evas;
+} Gui;
+
+
 #define ACCOUNT_TYPE_NONE 0
 #define ACCOUNT_TYPE_STATUSNET 1
 

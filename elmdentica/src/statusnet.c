@@ -53,7 +53,6 @@ extern char *home;
 extern char *dm_to;
 extern long long int reply_id;
 extern long long int user_id;
-extern Evas_Object *win;
 
 long long max_status_id=0;
 
@@ -63,7 +62,7 @@ Eina_Hash *statusHash=NULL;
 extern struct sqlite3 *ed_DB;
 extern int debug;
 extern char *home, *dm_to;
-extern Evas_Object *win;
+extern Gui gui;
 
 void json_group_show(GroupProfile *group, char *stream) {
 	cJSON *json_stream, *obj;
@@ -881,10 +880,10 @@ void ed_statusnet_timeline_get(int account_id, char *screen_name, char *password
 		} else {
 			res = asprintf(&notify_message, _("%s@%s had HTTP response: %ld"), screen_name, domain, request->response_code);
 			if(res != -1) {
-				notify = elm_notify_add(win);
+				notify = elm_notify_add(gui.win);
 					evas_object_size_hint_weight_set(notify, 1, 1);
 					evas_object_size_hint_align_set(notify, -1, -1);
-					label = elm_label_add(win);
+					label = elm_label_add(gui.win);
 						evas_object_size_hint_weight_set(label, 1, 1);
 						evas_object_size_hint_align_set(label, -1, -1);
 						elm_label_label_set(label, notify_message);
@@ -892,7 +891,7 @@ void ed_statusnet_timeline_get(int account_id, char *screen_name, char *password
 					evas_object_show(label);
 					elm_notify_content_set(notify, label);
 					elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_TOP_RIGHT);
-					elm_notify_parent_set(notify, win);
+					elm_notify_parent_set(notify, gui.win);
 					elm_notify_timeout_set(notify, 5);
 				evas_object_show(notify);
 
@@ -1204,10 +1203,10 @@ static int ed_statusnet_status_get_handler(void *data, int argc, char **argv, ch
 		} else {
 			res = asprintf(&notify_message, _("%s@%s had HTTP response: %ld"), screen_name, domain, request->response_code);
 			if(res != -1) {
-				notify = elm_notify_add(win);
+				notify = elm_notify_add(gui.win);
 					evas_object_size_hint_weight_set(notify, 1, 1);
 					evas_object_size_hint_align_set(notify, -1, -1);
-					label = elm_label_add(win);
+					label = elm_label_add(gui.win);
 						evas_object_size_hint_weight_set(label, 1, 1);
 						evas_object_size_hint_align_set(label, -1, -1);
 						elm_label_label_set(label, notify_message);
@@ -1215,7 +1214,7 @@ static int ed_statusnet_status_get_handler(void *data, int argc, char **argv, ch
 					evas_object_show(label);
 					elm_notify_content_set(notify, label);
 					elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_TOP_RIGHT);
-					elm_notify_parent_set(notify, win);
+					elm_notify_parent_set(notify, gui.win);
 					elm_notify_timeout_set(notify, 5);
 				evas_object_show(notify);
 

@@ -39,7 +39,8 @@
 #include "gettext.h"
 #define _(string) gettext (string)
 
-extern Evas_Object *error_win, *win;
+extern Evas_Object *error_win;
+extern Gui gui;
 
 CURL * user_agent = NULL;
 CURL * user_agent_images = NULL;
@@ -62,20 +63,20 @@ void show_curl_error(CURLcode curl_res, MemoryStruct * chunk) {
 	char *buf=NULL;
 
 	/* Error Window */
-	error_win = elm_win_inwin_add(win);
+	error_win = elm_win_inwin_add(gui.win);
 
 		/* Vertical Box */
-		box = elm_box_add(win);
+		box = elm_box_add(gui.win);
 			evas_object_size_hint_weight_set(box, 1, 1);
 			evas_object_size_hint_align_set(box, -1, -1);
 			evas_object_show(box);
 	
 			/* Frame (with message) */
-			frame = elm_frame_add(win);
+			frame = elm_frame_add(gui.win);
 				elm_frame_label_set(frame, chunk->memory);
 				res = asprintf(&buf, "%d: %s", curl_res, error_buf);
 				if(res != -1) {
-					label = elm_label_add(win);
+					label = elm_label_add(gui.win);
 						elm_label_line_wrap_set(label, TRUE);
 						elm_label_label_set(label, buf);
 						elm_frame_content_set(frame, label);
@@ -86,7 +87,7 @@ void show_curl_error(CURLcode curl_res, MemoryStruct * chunk) {
 			evas_object_show(frame);
 
 			/* close button */
-			button = elm_button_add(win);
+			button = elm_button_add(gui.win);
 				evas_object_smart_callback_add(button, "clicked", error_win_del, NULL);
 				elm_button_label_set(button, _("Close"));
 				elm_box_pack_end(box, button);
