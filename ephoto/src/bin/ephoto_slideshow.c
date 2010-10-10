@@ -1,5 +1,6 @@
 #include "ephoto.h"
 
+#if 0
 static Evas_Object *_ephoto_get_image(void *data, Evas_Object *obj);
 static void _ephoto_end_slideshow(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _ephoto_switch_fullscreen();
@@ -147,3 +148,4 @@ _ephoto_end_slideshow(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	ephoto_hide_slideshow();
 }
 
+#endif

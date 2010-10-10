@@ -3,6 +3,10 @@ fonts
 	font: "Vera.ttf" "default";
 }
 
+externals {
+   external: "elm";
+}
+
 collections
 {
 	images 
@@ -719,64 +723,94 @@ collections
            }
         }
 
-       group
-        {
-           name: "ephoto/main/layout";
+        group { name: "ephoto/main/layout";
+           data.item: "initial_size" "480 800";
            parts {
-              part {
-                 name: "ephoto.content.swallow";
+              part { name: "ephoto.swallow.content";
                  type: SWALLOW;
-                 description {
-                    state: "default" 0.0;
+                 description { state: "default" 0.0;
                  }
               }
            }
         }
-        group
-        {
-           name: "ephoto/browser/layout";
+
+        group { name: "ephoto/browser/layout";
            parts {
-              part {
-                 name: "bg";
-                 type: RECT;
+              part { name: "ephoto.location";
+                 type: EXTERNAL;
+                 source: "elm/scrolled_entry";
                  description {
                     state: "default" 0.0;
-                    color: 10 10 10 0;
+                    rel2 {
+                       relative: 0.0 0.0;
+                       offset: -3 64;
+                       to_x: "ephoto.fileselector";
+                    }
+                    params {
+                       bool: "editable" 1;
+                       bool: "single line" 1;
+                    }
                  }
               }
-              part {
-                 name: "ephoto.thumb.swallow";
+
+              part { name: "ephoto.fileselector";
+                 type: EXTERNAL;
+                 source: "elm/fileselector_button";
+                 description {
+                    state: "default" 0.0;
+                    align: 1.0 0.0;
+                    rel1 { relative: 1.0 0.0;
+                       offset: -100 3;
+                    }
+                    rel2 { relative: 1.0 0.0;
+                       offset: -4 58;
+                    }
+                    params {
+                       string: "icon" "folder";
+                       bool: "folder only" 1;
+                       bool: "inwin mode" 1;
+                    }
+                 }
+              }
+
+              programs {
+                 program {
+                    signal: "activated";
+                    source: "ephoto.location";
+                    action: PARAM_COPY "ephoto.location" "text" "ephoto.fileselector" "path";
+                    after: "announce-location";
+                 }
+
+                 program {
+                    signal: "file,chosen";
+                    source: "ephoto.fileselector";
+                    action: PARAM_COPY "ephoto.fileselector" "path" "ephoto.location" "text";
+                    after: "announce-location";
+                 }
+
+                 program { name: "announce-location";
+                    action: SIGNAL_EMIT "location,changed" "ephoto";
+                 }
+
+                 program {
+                    signal: "location,set";
+                    source: "ephoto";
+                    action: PARAM_COPY "ephoto.location" "text" "ephoto.fileselector" "path";
+                 }
+              }
+
+              part { name: "ephoto.thumb.swallow";
                  type: SWALLOW;
                  description {
                     state: "default" 0.0;
-                    rel1.to: "ephoto.location.swallow";
-                    rel1.relative: 0 1;
-                    rel2.to: "ephoto.toolbar.swallow";
-                    rel2.relative: 1 0;
+                    rel1 { to: "ephoto.location";
+                       relative: 0.0 1.0;
+                    }
                  }
               }
-              part {
-                 name: "ephoto.location.swallow";
-                 type: SWALLOW;
-                 description {
-                    state: "default" 0.0;
-                    rel2.relative: 1 0;
-                    rel2.offset: 0 64;
-                    
-                 }
-              }
-              part {
-                 name: "ephoto.toolbar.swallow";
-                 type: SWALLOW;
-                 description {
-                    color: 0 255 0 255;
-                    state: "default" 0.0; 
-                    rel1.relative: 0 1;
-                    rel1.offset: 0 -63;
-                 }
-              }
-           }     
+           }
         }
+
         group
         {
            name: "ephoto/flow/layout";

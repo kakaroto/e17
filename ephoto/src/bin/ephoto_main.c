@@ -1,49 +1,140 @@
 #include "ephoto.h"
 
-/*Ephoto Main Global*/
-Ephoto *em;
-
-static Eina_List *_thumbs = NULL;
-static Ecore_Timer *_thumb_gen_size_changed_timer = NULL;
-
-/*Inline Callbacks*/
-static void _ephoto_delete_main_window(void *data, Evas_Object *obj, void *event_info);
-static void _ephoto_flow_browser_delete_cb(void *data, Evas_Object *obj, void *event_info);
-static void _ephoto_thumb_browser_selected_cb(void *data, Evas_Object *obj, void *event_info);
-
-/* Objects Callbacks */
-static void 
-_ephoto_flow_browser_delete_cb(void *data, Evas_Object *obj, void *event_info)
+static void
+_ephoto_flow_browser_delete(void *data, Evas_Object *obj, void *event_info)
 {
-        em->thumb_browser = ephoto_thumb_browser_add(em->layout);
-	elm_layout_content_set(em->layout, "ephoto.content.swallow", em->thumb_browser);
-	evas_object_smart_callback_add(em->thumb_browser, 
-				       "selected",
-				       _ephoto_thumb_browser_selected_cb,
-				       NULL);
-	em->state = EPHOTO_STATE_THUMB;
-	em->flow_browser = NULL;
+   Ephoto *ephoto = data;
+   ephoto->flow_browser = NULL;
+   elm_layout_content_set
+     (ephoto->layout, "ephoto.swallow.content", ephoto->thumb_browser);
+   ephoto->state = EPHOTO_STATE_THUMB;
 }
 
-static void 
-_ephoto_thumb_browser_selected_cb(void *data, Evas_Object *obj, void *event_info)
+static void
+_ephoto_flow_browser_show(Ephoto *ephoto, Ephoto_Entry *entry)
 {
-        const char *file = event_info;
+   /* remove thumb browser without deleting it */
+   elm_layout_content_unset(ephoto->layout, "ephoto.swallow.content");
 
-	em->flow_browser = ephoto_create_flow_browser(em->layout);
-	ephoto_flow_browser_image_set(em->flow_browser, file);
-	elm_layout_content_set(em->layout, "ephoto.content.swallow", em->flow_browser);
-	evas_object_smart_callback_add(em->flow_browser, 
-				       "delete,request",
-				       _ephoto_flow_browser_delete_cb,
-				       NULL);
-	em->state = EPHOTO_STATE_FLOW;
+   ephoto->flow_browser = ephoto_flow_browser_add(ephoto, ephoto->layout);
+   ephoto_flow_browser_image_set(ephoto->flow_browser, entry->path);
+   elm_layout_content_set
+     (ephoto->layout, "ephoto.swallow.content", ephoto->flow_browser);
+
+   evas_object_smart_callback_add
+     (ephoto->flow_browser, "back", _ephoto_flow_browser_delete, ephoto);
+   ephoto->state = EPHOTO_STATE_FLOW;
 }
 
-/*Create the main ephoto window*/
-void 
-ephoto_create_main_window(const char *directory, const char *image)
+static void
+_ephoto_thumb_browser_view(void *data, Evas_Object *obj, void *event_info)
 {
+   Ephoto *ephoto = data;
+   Ephoto_Entry *entry = event_info;
+   _ephoto_flow_browser_show(ephoto, entry);
+}
+
+static void
+_win_del(void *data, Evas *e, Evas_Object *o, void *event_info)
+{
+   Ephoto *ephoto = data;
+   if (ephoto->timer.thumb_regen) ecore_timer_del(ephoto->timer.thumb_regen);
+   free(ephoto);
+}
+
+Evas_Object *
+ephoto_window_add(const char *path)
+{
+   Ephoto *ephoto = calloc(1, sizeof(Ephoto));
+   Ethumb_Client *client = elm_thumb_ethumb_client_get();
+   Evas_Object *ed;
+   Evas_Coord mw, mh, iw, ih;
+   const char *s;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(ephoto, NULL);
+
+   ephoto->win = elm_win_add(NULL, "ephoto", ELM_WIN_BASIC);
+   if (!ephoto->win)
+     {
+        free(ephoto);
+        return NULL;
+     }
+
+   evas_object_event_callback_add
+     (ephoto->win, EVAS_CALLBACK_DEL, _win_del, ephoto);
+
+   elm_win_autodel_set(ephoto->win, EINA_TRUE);
+   evas_object_show(ephoto->win);
+
+   if (!ephoto_config_init(ephoto))
+     {
+        evas_object_del(ephoto->win);
+        return NULL;
+     }
+
+   if ((ephoto->config->thumb_gen_size != 128) &&
+       (ephoto->config->thumb_gen_size != 256) &&
+       (ephoto->config->thumb_gen_size != 512))
+     ephoto_thumb_size_set(ephoto, ephoto->config->thumb_size);
+   else if (client)
+     ethumb_client_size_set
+       (client, ephoto->config->thumb_gen_size, ephoto->config->thumb_gen_size);
+
+   ephoto->bg = elm_bg_add(ephoto->win);
+   evas_object_size_hint_weight_set
+     (ephoto->bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_fill_set(ephoto->bg, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_win_resize_object_add(ephoto->win, ephoto->bg);
+   evas_object_show(ephoto->bg);
+
+   ephoto->layout = elm_layout_add(ephoto->win);
+   if (!elm_layout_file_set(ephoto->layout, THEME_FILE, "ephoto/main/layout"))
+     {
+        ERR("could not load group 'ephoto/main/layout' from file %s",
+            THEME_FILE);
+        evas_object_del(ephoto->win);
+        return NULL;
+     }
+   evas_object_size_hint_weight_set
+     (ephoto->layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_fill_set
+     (ephoto->layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_win_resize_object_add(ephoto->win, ephoto->layout);
+   evas_object_show(ephoto->layout);
+
+   ephoto->thumb_browser = ephoto_thumb_browser_add(ephoto, ephoto->layout);
+   if (!ephoto->thumb_browser)
+     {
+        ERR("could not add thumb browser");
+        evas_object_del(ephoto->win);
+        return NULL;
+     }
+   elm_layout_content_set
+     (ephoto->layout, "ephoto.swallow.content", ephoto->thumb_browser);
+
+   ed = elm_layout_edje_get(ephoto->layout);
+   edje_object_size_min_get(ed, &mw, &mh);
+   edje_object_size_min_restricted_calc(ed, &mw, &mh, mw, mh);
+   if (mw < 1) mw = 320;
+   if (mh < 1) mh = 240;
+
+   s = edje_object_data_get(ed, "initial_size");
+   if ((!s) || (sscanf(s, "%d %d", &iw, &ih) != 2)) iw = ih = 0;
+   if (iw < mw) iw = mw;
+   if (ih < mh) ih = mh;
+   evas_object_resize(ephoto->win, iw, ih);
+
+   if (!path)
+     ephoto_thumb_browser_directory_set
+       (ephoto->thumb_browser, ephoto->config->directory);
+   else if (ecore_file_is_dir(path))
+     ephoto_thumb_browser_directory_set(ephoto->thumb_browser, path);
+   else
+     ERR("loading file to be done");
+
+   return ephoto->win;
+}
+
+#if 0
         char current_directory[PATH_MAX];
         Ethumb_Client *client = elm_thumb_ethumb_client_get();
 
@@ -83,13 +174,6 @@ ephoto_create_main_window(const char *directory, const char *image)
 
 	/* Add the main layout to the window */
 	em->layout = elm_layout_add(em->win);
-	elm_layout_file_set(em->layout,
-			    PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
-			    "ephoto/main/layout");
-	elm_win_resize_object_add(em->win, em->layout);
-	evas_object_size_hint_weight_set(em->layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-	evas_object_size_hint_fill_set(em->layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
-	evas_object_show(em->layout);
 
 
         /* Prepare the slideshow beforehand, in order
@@ -162,25 +246,33 @@ _ephoto_delete_main_window(void *data, Evas_Object *obj, void *event_info)
 	free(em);
 	elm_exit();
 }
+#endif
 
 static Eina_Bool
 _thumb_gen_size_changed_timer_cb(void *data)
 {
-   const int gen_size = (long)data;
+   Ephoto *ephoto = data;
    Ethumb_Client *client;
    const Eina_List *l;
    Evas_Object *o;
 
-   if (em->config->thumb_gen_size == gen_size) goto end;
+   if (ephoto->config->thumb_gen_size == ephoto->thumb_gen_size) goto end;
 
    INF("thumbnail generation size changed from %d to %d",
-       em->config->thumb_gen_size, gen_size);
+       ephoto->config->thumb_gen_size, ephoto->thumb_gen_size);
 
    client = elm_thumb_ethumb_client_get();
-   em->config->thumb_gen_size = gen_size;
-   ethumb_client_size_set(client, gen_size, gen_size);
+   if (!client)
+     {
+        DBG("no client yet, try again later");
+        return EINA_TRUE;
+     }
 
-   EINA_LIST_FOREACH(_thumbs, l, o)
+   ephoto->config->thumb_gen_size = ephoto->thumb_gen_size;
+   ethumb_client_size_set
+     (client, ephoto->thumb_gen_size, ephoto->thumb_gen_size);
+
+   EINA_LIST_FOREACH(ephoto->thumbs, l, o)
      {
         Ethumb_Thumb_Format format;
         format = (long)evas_object_data_get(o, "ephoto_format");
@@ -189,45 +281,39 @@ _thumb_gen_size_changed_timer_cb(void *data)
      }
 
  end:
-   _thumb_gen_size_changed_timer = NULL;
+   ephoto->timer.thumb_regen = NULL;
    return EINA_FALSE;
 }
 
 void
-ephoto_thumb_size_set(int size)
+ephoto_thumb_size_set(Ephoto *ephoto, int size)
 {
-   int gen_size;
-
-   if (em->config->thumb_size != size)
+   if (ephoto->config->thumb_size != size)
      {
         INF("thumbnail display size changed from %d to %d",
-            em->config->thumb_size, size);
-        em->config->thumb_size = size;
-        ephoto_config_save(em, EINA_FALSE);
+            ephoto->config->thumb_size, size);
+        ephoto->config->thumb_size = size;
+        ephoto_config_save(ephoto, EINA_FALSE);
      }
 
-   if (size <= 128)      gen_size = 128;
-   else if (size <= 256) gen_size = 256;
-   else                  gen_size = 512;
+   if (size <= 128)      ephoto->thumb_gen_size = 128;
+   else if (size <= 256) ephoto->thumb_gen_size = 256;
+   else                  ephoto->thumb_gen_size = 512;
 
-   if (_thumb_gen_size_changed_timer)
-     {
-        ecore_timer_del(_thumb_gen_size_changed_timer);
-        _thumb_gen_size_changed_timer = NULL;
-     }
-
-   _thumb_gen_size_changed_timer = ecore_timer_add
-     (0.1, _thumb_gen_size_changed_timer_cb, (void*)(long)gen_size);
+   if (ephoto->timer.thumb_regen) ecore_timer_del(ephoto->timer.thumb_regen);
+   ephoto->timer.thumb_regen = ecore_timer_add
+     (0.1, _thumb_gen_size_changed_timer_cb, ephoto);
 }
 
 static void
 _thumb_del(void *data, Evas *e, Evas_Object *o, void *event_info)
 {
-   _thumbs = eina_list_remove(_thumbs, o);
+   Ephoto *ephoto = data;
+   ephoto->thumbs = eina_list_remove(ephoto->thumbs, o);
 }
 
 Evas_Object *
-ephoto_thumb_add(Evas_Object *parent, const char *path)
+ephoto_thumb_add(Ephoto *ephoto, Evas_Object *parent, const char *path)
 {
    Evas_Object *o;
 
@@ -238,8 +324,8 @@ ephoto_thumb_add(Evas_Object *parent, const char *path)
 
    if (path) ephoto_thumb_path_set(o, path);
    elm_object_style_set(o, "noframe");
-   _thumbs = eina_list_append(_thumbs, o);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_DEL, _thumb_del, NULL);
+   ephoto->thumbs = eina_list_append(ephoto->thumbs, o);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_DEL, _thumb_del, ephoto);
    return o;
 }
 
@@ -262,12 +348,13 @@ ephoto_thumb_path_set(Evas_Object *o, const char *path)
 }
 
 Ephoto_Entry *
-ephoto_entry_new(const char *path, const char *label)
+ephoto_entry_new(Ephoto *ephoto, const char *path, const char *label)
 {
    Ephoto_Entry *entry;
    EINA_SAFETY_ON_NULL_RETURN_VAL(path, NULL);
    entry = calloc(1, sizeof(Ephoto_Entry));
    EINA_SAFETY_ON_NULL_RETURN_VAL(entry, NULL);
+   entry->ephoto = ephoto;
    entry->path = eina_stringshare_add(path);
    entry->basename = ecore_file_file_get(entry->path);
    entry->label = eina_stringshare_add(label);
@@ -286,8 +373,8 @@ ephoto_entry_free(Ephoto_Entry *entry)
 }
 
 void
-ephoto_entries_free(Ephoto *em)
+ephoto_entries_free(Ephoto *ephoto)
 {
-   Ephoto_Entry *e;
-   EINA_LIST_FREE(em->entries, e) ephoto_entry_free(e);
+   Ephoto_Entry *entry;
+   EINA_LIST_FREE(ephoto->entries, entry) ephoto_entry_free(entry);
 }

@@ -104,7 +104,7 @@ ephoto_directory_thumb_add(Evas_Object *parent, Ephoto_Entry *entry)
         EINA_SAFETY_ON_NULL_RETURN_VAL(_pending_dirs, NULL);
      }
 
-   obj = ephoto_thumb_add(parent, NULL);
+   obj = ephoto_thumb_add(entry->ephoto, parent, NULL);
    EINA_SAFETY_ON_NULL_RETURN_VAL(obj, NULL);
 
    if (!dt)

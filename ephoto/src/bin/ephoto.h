@@ -22,6 +22,8 @@
 #include <dirent.h>
 #include "config.h"
 
+#define THEME_FILE PACKAGE_DATA_DIR"/themes/default/ephoto.edj"
+
 typedef struct _Ephoto_Config Ephoto_Config;
 typedef struct _Ephoto Ephoto;
 typedef struct _Ephoto_Entry Ephoto_Entry;
@@ -30,9 +32,9 @@ typedef enum _Ephoto_State Ephoto_State;
 typedef enum _Ephoto_Orient Ephoto_Orient;
 
 /*Main Functions*/
-void ephoto_create_main_window(const char *directory, const char *image);
-void ephoto_thumb_size_set(int size);
-Evas_Object *ephoto_thumb_add(Evas_Object *parent, const char *path);
+Evas_Object *ephoto_window_add(const char *path);
+void         ephoto_thumb_size_set(Ephoto *ephoto, int size);
+Evas_Object *ephoto_thumb_add(Ephoto *ephoto, Evas_Object *parent, const char *path);
 void         ephoto_thumb_path_set(Evas_Object *o, const char *path);
 
 
@@ -45,10 +47,10 @@ void ephoto_config_free(Ephoto *em);
 void ephoto_show_preferences(Ephoto *em);
 
 /*Ephoto Flow Browser*/
-Evas_Object *ephoto_create_flow_browser(Evas_Object *parent);
+Evas_Object *ephoto_flow_browser_add(Ephoto *ephoto, Evas_Object *parent);
 void ephoto_flow_browser_image_set(Evas_Object *obj, const char *current_image);
  /* smart callbacks called:
-  * "delete,request" - the user requested to delete the flow browser, typically called when go_back button is pressed or Escape key is typed.
+  * "back" - the user requested to delete the flow browser, typically called when go_back button is pressed or Escape key is typed.
   */
 
 
@@ -62,7 +64,9 @@ void ephoto_delete_slideshow(void);
 Evas_Object *ephoto_directory_thumb_add(Evas_Object *parent, Ephoto_Entry *e);
 
 /*Ephoto Thumb Browser*/
-Evas_Object *ephoto_thumb_browser_add(Evas_Object *parent);
+Evas_Object *ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent);
+void         ephoto_thumb_browser_directory_set(Evas_Object *obj, const char *path);
+
 /* smart callbacks called:
  * "selected" - an item in the thumb browser is selected. The selected file is passed as event_info argument.
  * "directory,changed" - the user selected a new directory. The selected directory is passed as event_info argument.
@@ -71,55 +75,64 @@ Evas_Object *ephoto_thumb_browser_add(Evas_Object *parent);
 /* Enum for the state machine */
 enum _Ephoto_State
 {
-        EPHOTO_STATE_THUMB,
-        EPHOTO_STATE_FLOW,
-        EPHOTO_STATE_SLIDESHOW
+  EPHOTO_STATE_THUMB,
+  EPHOTO_STATE_FLOW,
+  EPHOTO_STATE_SLIDESHOW
 };
 
 enum _Ephoto_Orient
 {
-        EPHOTO_ORIENT_0,
-        EPHOTO_ORIENT_90,
-        EPHOTO_ORIENT_180,
-        EPHOTO_ORIENT_270
+  EPHOTO_ORIENT_0,
+  EPHOTO_ORIENT_90,
+  EPHOTO_ORIENT_180,
+  EPHOTO_ORIENT_270
 };
 
+/* TODO: split into window & global config, allow multi window
+ *
+ * This also requires single instance, as 2 instances changing the
+ * same configuration will lead to problems.
+ *
+ * Single instance is better done as DBus, using FDO standard methods.
+ */
 struct _Ephoto_Config
 {
-        int config_version;
+   int config_version;
 
-        int thumb_size;
-        int thumb_gen_size;
+   int thumb_size;
+   int thumb_gen_size;
 
-        int remember_directory;
-        const char *directory;
+   int remember_directory;
+   const char *directory;
 
-        double slideshow_timeout;
-        const char *slideshow_transition;
+   double slideshow_timeout;
+   const char *slideshow_transition;
 
-        const char *editor;
+   const char *editor;
 };
 
-/*Ephoto Main Structure*/
 struct _Ephoto
 {
-	Evas *e;
-	Evas_Object *win;
-	Evas_Object *bg;
-	Evas_Object *layout;
-	Evas_Object *flow_browser;
-	Evas_Object *slideshow;
-	Evas_Object *slideshow_notify;
-	Evas_Object *thumb_browser;
-        Eina_List *entries;
+   Evas_Object *win;
+   Evas_Object *bg;
+   Evas_Object *layout;
 
-        Evas_Object *prefs_win;
-        Ephoto_State state;
+   Evas_Object *thumb_browser;
+   Evas_Object *flow_browser;
+   Evas_Object *slideshow;
 
-        Ephoto_Config *config;
+   Eina_List *entries;
+   Eina_List *thumbs; /* live thumbs that need to be regenerated on changes */
 
-        Eet_Data_Descriptor  *config_edd;
-        Ecore_Timer *config_save;
+   int thumb_gen_size; /* pending value for thumb_regen */
+   struct {
+      Ecore_Timer *thumb_regen;
+   } timer;
+
+   Evas_Object *prefs_win;
+   Ephoto_State state;
+
+   Ephoto_Config *config;
 };
 
 struct _Ephoto_Entry
@@ -127,6 +140,7 @@ struct _Ephoto_Entry
    const char *path;
    const char *basename; /* pointer inside path */
    const char *label;
+   Ephoto *ephoto;
    Elm_Gengrid_Item *item;
    Eina_List *dir_files; /* if dir, here contain files with preview */
    Eina_Bool dir_files_checked : 1;
@@ -134,11 +148,9 @@ struct _Ephoto_Entry
    Eina_Bool is_up : 1;
 };
 
-Ephoto_Entry *ephoto_entry_new(const char *path, const char *label);
+Ephoto_Entry *ephoto_entry_new(Ephoto *ephoto, const char *path, const char *label);
 void          ephoto_entry_free(Ephoto_Entry *entry);
-void          ephoto_entries_free(Ephoto *em);
-
-extern Ephoto *em;
+void          ephoto_entries_free(Ephoto *ephoto);
 
 extern int __log_domain;
 #define DBG(...) EINA_LOG_DOM_DBG(__log_domain, __VA_ARGS__)

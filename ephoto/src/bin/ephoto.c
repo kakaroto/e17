@@ -38,6 +38,7 @@ main(int argc, char **argv)
         goto end_log_domain;
      }
 
+   elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
 
    DBG("Logging initialized");
    if (argc > 2)
@@ -49,7 +50,12 @@ main(int argc, char **argv)
      }
    else if (argc < 2)
      {
-        ephoto_create_main_window(NULL, NULL);
+        Evas_Object *win = ephoto_window_add(NULL);
+        if (!win)
+          {
+             r = 1;
+             goto end;
+          }
      }
    else if (!strncmp(argv[1], "--help", 6))
      {
@@ -57,30 +63,22 @@ main(int argc, char **argv)
         r = 0;
         goto end;
      }
-   else if (ecore_file_is_dir(argv[1]))
-     {
-        char *real = ecore_file_realpath(argv[1]);
-        ephoto_create_main_window(real, NULL);
-        free(real);
-     }
-   else if (ecore_file_exists(argv[1]))
-     {
-        char *directory, *real;
-        const char *image;
-
-        image = eina_stringshare_add(argv[1]);
-        directory = ecore_file_dir_get(argv[1]);
-        real = ecore_file_realpath(directory);
-        ephoto_create_main_window(real, image);
-        free(directory);
-        free(real);
-     }
    else
      {
-        printf("Incorrect Argument!\n");
-        _ephoto_display_usage();
-        r = 1;
-        goto end;
+        char *real = ecore_file_realpath(argv[1]);
+        if (!real)
+          {
+             printf("invalid file or directory: '%s'\n", argv[1]);
+             r = 1;
+             goto end;
+          }
+        Evas_Object *win = ephoto_window_add(real);
+        free(real);
+        if (!win)
+          {
+             r = 1;
+             goto end;
+          }
      }
 
    elm_run();

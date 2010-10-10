@@ -4,6 +4,31 @@
   #include <libexif/exif-data.h>
 #endif
 
+Evas_Object *
+ephoto_flow_browser_add(Ephoto *ephoto, Evas_Object *parent)
+{
+   Evas_Object *layout = elm_layout_add(parent);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(layout, NULL);
+
+   if (!elm_layout_file_set(layout, THEME_FILE, "ephoto/flow/layout"))
+     {
+        evas_object_del(layout);
+        return NULL;
+     }
+
+   /* TODO */
+
+   return layout;
+}
+
+void
+ephoto_flow_browser_image_set(Evas_Object *obj, const char *path)
+{
+   /* TODO */
+}
+
+
+#if 0
 
 /*Callbacks*/
 static void _ephoto_go_back(void *data, Evas_Object *obj, void *event_info);
@@ -418,7 +443,7 @@ _ephoto_go_slideshow(void *data, Evas_Object *obj, void *event_info)
         Ephoto_Flow_Browser *ef = data;
         // FIXME
 	//ephoto_hide_flow_browser();
-	ephoto_show_slideshow(1, ef->cur_image);
+	// TODO ephoto_show_slideshow(1, ef->cur_image);
 	elm_toolbar_item_unselect_all(ef->toolbar);
 }
 
@@ -528,3 +553,5 @@ _ephoto_zoom_regular_size(void *data, Evas_Object *obj, void *event)
 	Ephoto_Flow_Browser *ef = data;
 	elm_photocam_zoom_mode_set(ef->image, ELM_PHOTOCAM_ZOOM_MODE_AUTO_FIT);
 }
+
+#endif

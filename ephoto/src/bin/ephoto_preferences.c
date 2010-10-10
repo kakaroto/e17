@@ -1,5 +1,6 @@
 #include "ephoto.h"
 
+#if 0
 static void _ephoto_preferences_pager_switch(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_preferences_hide(void *data, Evas_Object *obj, void *event_info);
 static void _ephoto_preferences_item_change(void *data, Evas_Object *obj, void *event_info);
@@ -194,3 +195,5 @@ _ephoto_preferences_hide(void *data, Evas_Object *obj, void *event_info)
         evas_object_hide(em->prefs_win);
         evas_object_focus_set(em->thumb_browser, EINA_TRUE);
 }
+
+#endif
