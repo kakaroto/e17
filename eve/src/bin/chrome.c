@@ -1055,20 +1055,18 @@ on_tab_close(void *data, Evas_Object *o,
       EINA_LIST_FOREACH(win->chromes, chrome_iter, chrome)
       {
          Evas_Object *grid = evas_object_data_get(chrome, "tab-grid");
-         const Eina_List *others;
-         Eina_List *others_iter;
 
          if (!grid) continue;
-         if (!(others = elm_gengrid_items_get(grid))) continue;
-
-         EINA_LIST_FOREACH((Eina_List *)others, others_iter, item)
-         {
-            if (elm_gengrid_item_data_get(item) == view)
-               {
-                  elm_gengrid_item_del(item);
-                  break;
-               }
-         }
+         for (item = elm_gengrid_first_item_get(grid);
+              item;
+              item = elm_gengrid_item_next_get(item))
+            {
+               if (elm_gengrid_item_data_get(item) == view)
+                  {
+                     elm_gengrid_item_del(item);
+                     break;
+                  }
+            }
       }
    }
 }
