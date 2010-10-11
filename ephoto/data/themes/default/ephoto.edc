@@ -1072,28 +1072,24 @@ collections
                     signal:  "state,rotate,0";
                     source:  "ephoto";
                     action:  STATE_SET "rotate_0" 0.0;
-                    transition: SINUSOIDAL 0.2;
                     target:  "ephoto.swallow.flow";
                  }
                  program {
                     signal:  "state,rotate,90";
                     source:  "ephoto";
                     action:  STATE_SET "rotate_90" 0.0;
-                    transition: SINUSOIDAL 0.2;
                     target:  "ephoto.swallow.flow";
                  }
                  program {
                     signal:  "state,rotate,180";
                     source:  "ephoto";
                     action:  STATE_SET "rotate_180" 0.0;
-                    transition: SINUSOIDAL 0.2;
                     target:  "ephoto.swallow.flow";
                  }
                  program {
                     signal:  "state,rotate,270";
                     source:  "ephoto";
                     action:  STATE_SET "rotate_270" 0.0;
-                    transition: SINUSOIDAL 0.2;
                     target:  "ephoto.swallow.flow";
                  }
               }
