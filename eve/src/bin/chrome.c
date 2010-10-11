@@ -44,6 +44,13 @@ static Evas_Object *tab_grid_icon_get(void *data, Evas_Object *obj __UNUSED__, c
 static Eina_Bool tab_grid_state_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
 static void tab_grid_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__);
 
+static char *more_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
+static char *page_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part);
+static char *list_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part);
+static Evas_Object *more_icon_get(void *data, Evas_Object *obj, const char *part);
+static Eina_Bool more_state_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
+static void more_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__);
+
 typedef enum {
    ITEM_TYPE_LAST,
    ITEM_TYPE_STATIC_FOLDER,
@@ -56,10 +63,11 @@ typedef enum {
 } More_Menu_Item_Type;
 
 typedef enum {
-   ITEM_FLAG_NONE     = 0,
-   ITEM_FLAG_DYNAMIC  = 1<<0,
-   ITEM_FLAG_SELECTED = 1<<1,
-   ITEM_FLAG_ARROW    = 1<<2,
+   ITEM_FLAG_NONE        = 0,
+   ITEM_FLAG_DYNAMIC     = 1<<0,
+   ITEM_FLAG_SELECTED    = 1<<1,
+   ITEM_FLAG_ARROW       = 1<<2,
+   ITEM_FLAG_SELECTABLE  = 1<<3,
 } More_Menu_Item_Flags;
 
 typedef enum {
@@ -271,7 +279,7 @@ static More_Menu_Item more_menu_config[] =
                { "18pt", 18, EINA_FALSE },
                { NULL, 0, EINA_FALSE }
              }
-           }}, NULL, ITEM_FLAG_ARROW },
+           }}, NULL, ITEM_FLAG_ARROW | ITEM_FLAG_SELECTABLE },
          { ITEM_TYPE_CONFIG, "User agent",
            (More_Menu_Config[]) {{
              .type = CONFIG_TYPE_LIST,
@@ -287,7 +295,7 @@ static More_Menu_Item more_menu_config[] =
                { "Internet Explorer", "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)" },
                { NULL, NULL }
              }
-           }}, NULL, ITEM_FLAG_ARROW },
+           }}, NULL, ITEM_FLAG_ARROW | ITEM_FLAG_SELECTABLE },
          { ITEM_TYPE_LAST, NULL, NULL, NULL, ITEM_FLAG_NONE },
      }, NULL, ITEM_FLAG_ARROW },
    { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
@@ -317,6 +325,66 @@ static const Elm_Gengrid_Item_Class gic_default = {
        .state_get = tab_grid_state_get,
        .del = tab_grid_del
     }
+};
+
+static const Elm_Genlist_Item_Class glic_default = {
+   .func = {
+       .label_get = more_label_get,
+       .icon_get = more_icon_get,
+       .state_get = more_state_get,
+       .del = more_del
+    },
+   .item_style = "ewebkit"
+};
+
+static const Elm_Genlist_Item_Class glic_config = {
+   .func = {
+       .label_get = more_label_get,
+       .icon_get = more_icon_get,
+       .state_get = more_state_get,
+       .del = more_del
+    },
+   .item_style = "config"
+};
+
+static const Elm_Genlist_Item_Class glic_config_selectable = {
+   .func = {
+       .label_get = more_label_get,
+       .icon_get = more_icon_get,
+       .state_get = more_state_get,
+       .del = more_del
+    },
+   .item_style = "config/selectable"
+};
+
+static const Elm_Genlist_Item_Class glic_separator = {
+   .func = {
+       .label_get = NULL,
+       .icon_get = NULL,
+       .state_get = NULL,
+       .del = more_del
+    },
+   .item_style = "separator"
+};
+
+static const Elm_Genlist_Item_Class glic_config_list = {
+   .func = {
+       .label_get = list_label_get,
+       .icon_get = more_icon_get,
+       .state_get = more_state_get,
+       .del = more_del
+    },
+   .item_style = "config/double_label/ewebkit"
+};
+
+static const Elm_Genlist_Item_Class glic_page = {
+   .func = {
+       .label_get = page_label_get,
+       .icon_get = more_icon_get,
+       .state_get = more_state_get,
+       .del = more_del
+    },
+   .item_style = "double_label/ewebkit"
 };
 
 static Eina_List *
@@ -1312,7 +1380,7 @@ on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UN
            win->list_history = eina_list_prepend(win->list_history, params->root);
      }
 
-   elm_list_clear(params->list);
+   elm_genlist_clear(params->list);
 
    if (params->root != more_menu_root)
      {
@@ -1329,30 +1397,42 @@ on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UN
         switch (params->root[i].type) {
         case ITEM_TYPE_SEPARATOR:
            {
-               Elm_List_Item *item = elm_list_item_append(params->list, NULL, NULL, NULL, NULL, NULL);
-               elm_list_item_separator_set(item, EINA_TRUE);
+               Elm_Genlist_Item *item = elm_genlist_item_append(params->list, &glic_separator, NULL,
+                        NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL);
+               elm_genlist_item_disabled_set(item, EINA_TRUE);
                break;
            }
+        case ITEM_TYPE_PAGE:
+           {
+                  elm_genlist_item_append(params->list, &glic_page, &(params->root[i]),
+                        NULL, ELM_GENLIST_ITEM_NONE, on_more_item_click, &(params->root[i]));
+                break;
+           }
         case ITEM_TYPE_CONFIG:
-           end = config_widget_get(params->list, params->root[i].next);
+           {
+               More_Menu_Config *mmc = params->root[i].next;
+               if ((mmc->type == CONFIG_TYPE_LIST) || (mmc->type == CONFIG_TYPE_LIST_INT) || (mmc->type == CONFIG_TYPE_STRING))
+                  elm_genlist_item_append(params->list, &glic_config_list,
+                      &(params->root[i]), NULL, ELM_GENLIST_ITEM_NONE, on_more_item_click, &(params->root[i]));
+               else if (params->root[i].flags & ITEM_FLAG_SELECTABLE)
+                  elm_genlist_item_append(params->list, &glic_config_selectable,
+                      &(params->root[i]), NULL, ELM_GENLIST_ITEM_NONE, on_more_item_click, &(params->root[i]));
+               else
+                  elm_genlist_item_append(params->list, &glic_config,
+                       &(params->root[i]), NULL, ELM_GENLIST_ITEM_NONE, on_more_item_click, &(params->root[i]));
+               break;
+           }
            /* fallthrough */
         default:
-           if (!icon && params->root[i].flags & ITEM_FLAG_SELECTED)
-               {
-                  icon = elm_icon_add(params->list);
-                  elm_icon_file_set(icon, PACKAGE_DATA_DIR "/default.edj", "list-selected");
-               }
-           if (!end && params->root[i].flags & ITEM_FLAG_ARROW)
-               {
-                  end = elm_icon_add(params->list);
-                  elm_icon_file_set(end, PACKAGE_DATA_DIR "/default.edj", "list-arrow");
-               }
-
-           elm_list_item_append(params->list, params->root[i].text, icon, end, on_more_item_click, &(params->root[i]));
+           if (params->root[i].flags & ITEM_FLAG_SELECTABLE)
+              elm_genlist_item_append(params->list, &glic_config_selectable,
+                 &(params->root[i]), NULL, ELM_GENLIST_ITEM_NONE, on_more_item_click, &(params->root[i]));
+           else
+              elm_genlist_item_append(params->list, &glic_default, &(params->root[i]), NULL,
+                  ELM_GENLIST_ITEM_NONE, on_more_item_click, &(params->root[i]));
         }
      }
 
-   elm_list_go(params->list);
    edje_object_signal_callback_del(ed, "list,completely,hidden", "", on_list_completely_hidden);
 
    eina_stringshare_del(params->old_text);
@@ -1481,7 +1561,7 @@ more_menu_config_list_create(More_Menu_Item *i, More_Menu_Config *p)
       mmi[item].type = ITEM_TYPE_CALLBACK_NO_HIDE;
       mmi[item].data = p;
       mmi[item].flags = (configuration && !strcmp(configuration, list[item].value)) ? ITEM_FLAG_SELECTED : ITEM_FLAG_NONE;
-      mmi[item].flags |= ITEM_FLAG_DYNAMIC;
+      mmi[item].flags |= ITEM_FLAG_DYNAMIC | ITEM_FLAG_SELECTABLE;
    }
 
    mmi[item].type = ITEM_TYPE_LAST;
@@ -1509,7 +1589,7 @@ more_menu_config_list_int_create(More_Menu_Item *i, More_Menu_Config *p)
       mmi[item].type = ITEM_TYPE_CALLBACK_NO_HIDE;
       mmi[item].data = p;
       mmi[item].flags = configuration == list[item].value ? ITEM_FLAG_SELECTED : ITEM_FLAG_NONE;
-      mmi[item].flags |= ITEM_FLAG_DYNAMIC;
+      mmi[item].flags |= ITEM_FLAG_DYNAMIC | ITEM_FLAG_SELECTABLE;
    }
 
    mmi[item].type = ITEM_TYPE_LAST;
@@ -2109,6 +2189,134 @@ tab_grid_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__)
 {
 }
 
+static char *
+more_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+{
+   More_Menu_Item *mmi = data;
+
+   if (!mmi)
+      return strdup("");
+
+   return strdup(mmi->text);
+}
+
+static char *
+page_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part)
+{
+   More_Menu_Item *mmi = data;
+
+   if (!mmi)
+      return strdup("");
+
+   if (!strcmp(part, "elm.text"))
+      return strdup(mmi->text);
+
+   if (!strcmp(part, "elm.text.sub"))
+      return strdup(mmi->next);
+
+   return NULL;
+}
+
+static const char *
+_get_selected_string_value_title(More_Menu_Config_List *list, char *value){
+   for (; list->title; list++) {
+      if (!strcmp(value, list->value))
+         return list->title;
+   }
+   return "";
+}
+
+static const char *
+_get_selected_int_value_title(More_Menu_Config_List_Int *list, int value)
+{
+   for (; list->title; list++) {
+      if (value == list->value)
+         return list->title;
+   }
+   return "";
+}
+
+static char *
+list_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part)
+{
+   More_Menu_Item *mmi = data;
+
+   if (!mmi)
+      return strdup("");
+
+   if (!strcmp(part, "elm.text"))
+      return strdup(mmi->text);
+
+   if (!strcmp(part, "elm.text.sub"))
+     {
+        More_Menu_Config *mmc = mmi->next;
+
+        void *(*conf_get)(void *);
+        if ((conf_get = mmc->conf_get))
+          {
+             char *selected_value = NULL;
+             if (mmc->type == CONFIG_TYPE_LIST_INT)
+                return strdup(_get_selected_int_value_title(mmc->data, (int)conf_get(config)));
+             else if (mmc->type == CONFIG_TYPE_LIST)
+                return strdup(_get_selected_string_value_title(mmc->data, conf_get(config)));
+             
+             return NULL;
+          }
+        
+     }
+
+   return NULL;
+}
+
+static Evas_Object *
+more_icon_get(void *data, Evas_Object *obj, const char *part)
+{
+   if (!data)
+      return NULL;
+
+   More_Menu_Item *mmi = data;
+   if (!strcmp(part, "elm.swallow.icon"))
+     {
+        Evas_Object *icon = NULL;
+        if (!icon && mmi->flags & ITEM_FLAG_SELECTED)
+          {
+             icon = elm_icon_add(obj);
+             elm_icon_file_set(icon, PACKAGE_DATA_DIR "/default.edj", "list-selected");
+          }
+        else if (mmi->type == ITEM_TYPE_PAGE)
+          {
+             Evas_Object *chrome = evas_object_data_get(obj, "chrome");
+             Evas_Object *view = evas_object_data_get(chrome, "view");
+             Evas *canvas = evas_object_evas_get(chrome);
+             icon = ewk_settings_icon_database_icon_object_add(mmi->next, canvas);
+          }
+        return icon;
+     }
+   else if (!strcmp(part, "elm.swallow.end"))
+     {
+        Evas_Object *end = config_widget_get(obj, mmi->next);
+        if (!end && mmi->flags & ITEM_FLAG_ARROW)
+          {
+             end = elm_icon_add(obj);
+             elm_icon_file_set(end, PACKAGE_DATA_DIR "/default.edj", "list-arrow");
+          }
+        return end;
+     }
+
+   return NULL;
+}
+
+static Eina_Bool
+more_state_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+{
+   return EINA_FALSE;
+}
+
+static void
+more_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__)
+{
+}
+
 Evas_Object *
 chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
 {
@@ -2168,14 +2376,12 @@ chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
    evas_object_smart_callback_add
       (text_url, "activated", on_action_load_page, view);
 
-   Evas_Object *more_list = elm_list_add(ed);
-   elm_list_scroller_policy_set(more_list,
-                                ELM_SCROLLER_POLICY_OFF,
-                                ELM_SCROLLER_POLICY_AUTO);
-   elm_object_style_set(more_list, "ewebkit");
+   Evas_Object *more_list = elm_genlist_add(ed);
    evas_object_data_set(more_list, "chrome", chrome);
    evas_object_data_set(chrome, "more-list", more_list);
    elm_layout_content_set(chrome, "more-list-swallow", more_list);
+   elm_object_style_set(more_list, "ewebkit");
+   elm_genlist_bounce_set(more_list, EINA_FALSE, EINA_FALSE);
 
    Evas_Object *tab_grid = elm_gengrid_add(ed);
    elm_object_style_set(tab_grid, "ewebkit");

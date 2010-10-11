@@ -250,7 +250,7 @@
 
 collections {
 #include "elm-scroller.edc"
-#include "elm-list.edc"
+#include "elm-genlist.edc"
 #include "elm-gengrid.edc"
 #include "elm-notify.edc"
 #include "elm-pager.edc"
