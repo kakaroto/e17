@@ -119,6 +119,18 @@ static const Elm_Gengrid_Item_Class _ephoto_thumb_file_class = {
   }
 };
 
+static int
+_entry_cmp(const void *pa, const void *pb)
+{
+   const Ephoto_Entry *a = pa, *b = pb;
+   if (a->is_dir == b->is_dir)
+     return strcoll(a->basename, b->basename);
+   else if (a->is_dir)
+     return -1;
+   else
+     return 1;
+}
+
 static void
 _ephoto_populate_main(void *data, const Eina_File_Direct_Info *info)
 {
@@ -135,19 +147,43 @@ _ephoto_populate_main(void *data, const Eina_File_Direct_Info *info)
    if (e->is_dir) ic = &_ephoto_thumb_dir_class;
    else           ic = &_ephoto_thumb_file_class;
 
-   /* TODO: add elm_gengrid_item_prepend(), elm_gengrid_item_insert_before(),
-    * elm_gengrid_item_insert_after().
-    * Then eina_list_search_sorted_near_list() to see where to insert it.
-    */
-   e->item = elm_gengrid_item_append(tb->grid, ic, e, NULL, NULL);
+   if (!tb->ephoto->entries)
+     {
+        e->item = elm_gengrid_item_append(tb->grid, ic, e, NULL, NULL);
+        tb->ephoto->entries = eina_list_append(tb->ephoto->entries, e);
+     }
+   else
+     {
+        int near_cmp;
+        Ephoto_Entry *near_entry;
+        Elm_Gengrid_Item *near_item;
+        Eina_List *near_node = eina_list_search_sorted_near_list
+          (tb->ephoto->entries, _entry_cmp, e, &near_cmp);
+
+        near_entry = near_node->data;
+        near_item = near_entry->item;
+        if (near_cmp < 0)
+          {
+             e->item = elm_gengrid_item_insert_after
+               (tb->grid, ic, e, near_item, NULL, NULL);
+             tb->ephoto->entries =  eina_list_append_relative_list
+               (tb->ephoto->entries, e, near_node);
+          }
+        else
+          {
+             e->item = elm_gengrid_item_insert_before
+               (tb->grid, ic, e, near_item, NULL, NULL);
+             tb->ephoto->entries =  eina_list_prepend_relative_list
+               (tb->ephoto->entries, e, near_node);
+          }
+     }
+
    if (!e->item)
      {
         ERR("could not add item to grid: path '%s'", info->path);
         ephoto_entry_free(e);
         return;
      }
-
-   tb->ephoto->entries = eina_list_append(tb->ephoto->entries, e);
 
    msg.val = eina_list_count(tb->ephoto->entries);
    edje_object_message_send(tb->edje, EDJE_MESSAGE_INT, 1, &msg);
