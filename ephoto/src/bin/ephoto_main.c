@@ -1,29 +1,36 @@
 #include "ephoto.h"
 
 static void
-_ephoto_flow_browser_delete(void *data, Evas_Object *obj, void *event_info)
+_ephoto_thumb_browser_show(Ephoto *ephoto, Ephoto_Entry *entry)
 {
-   Ephoto *ephoto = data;
-   ephoto->flow_browser = NULL;
-   elm_layout_content_set
-     (ephoto->layout, "ephoto.swallow.content", ephoto->thumb_browser);
+   DBG("entry '%s'", entry ? entry->path : "");
+
+   ephoto_flow_browser_path_set(ephoto->flow_browser, NULL);
+   elm_object_focus(ephoto->thumb_browser);
+   evas_object_focus_set(ephoto->thumb_browser, EINA_TRUE); // TODO while elm_layout is broken WRT focus
+   edje_object_signal_emit(ephoto->edje, "thumb_browser,show", "ephoto");
    ephoto->state = EPHOTO_STATE_THUMB;
+
+   if ((entry) && (entry->item)) elm_gengrid_item_bring_in(entry->item);
 }
 
 static void
 _ephoto_flow_browser_show(Ephoto *ephoto, Ephoto_Entry *entry)
 {
-   /* remove thumb browser without deleting it */
-   elm_layout_content_unset(ephoto->layout, "ephoto.swallow.content");
-
-   ephoto->flow_browser = ephoto_flow_browser_add(ephoto, ephoto->layout);
-   ephoto_flow_browser_image_set(ephoto->flow_browser, entry->path);
-   elm_layout_content_set
-     (ephoto->layout, "ephoto.swallow.content", ephoto->flow_browser);
-
-   evas_object_smart_callback_add
-     (ephoto->flow_browser, "back", _ephoto_flow_browser_delete, ephoto);
+   DBG("entry '%s'", entry->path);
+   ephoto_flow_browser_entry_set(ephoto->flow_browser, entry);
+   elm_object_focus(ephoto->flow_browser);
+   evas_object_focus_set(ephoto->flow_browser, EINA_TRUE); // TODO while elm_layout is broken WRT focus
+   edje_object_signal_emit(ephoto->edje, "flow_browser,show", "ephoto");
    ephoto->state = EPHOTO_STATE_FLOW;
+}
+
+static void
+_ephoto_flow_browser_back(void *data, Evas_Object *obj, void *event_info)
+{
+   Ephoto *ephoto = data;
+   Ephoto_Entry *entry = event_info;
+   _ephoto_thumb_browser_show(ephoto, entry);
 }
 
 static void
@@ -35,7 +42,19 @@ _ephoto_thumb_browser_view(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-_win_del(void *data, Evas *e, Evas_Object *o, void *event_info)
+_pending_path_found(void *data, Ephoto_Entry *entry)
+{
+   Ephoto *ephoto = data;
+   if (!entry)
+     {
+        ERR("not found entry, but it should be in directory? weird!");
+        return;
+     }
+   ephoto_flow_browser_entry_set(ephoto->flow_browser, entry);
+}
+
+static void
+_win_free(void *data, Evas *e, Evas_Object *o, void *event_info)
 {
    Ephoto *ephoto = data;
    if (ephoto->timer.thumb_regen) ecore_timer_del(ephoto->timer.thumb_regen);
@@ -47,7 +66,6 @@ ephoto_window_add(const char *path)
 {
    Ephoto *ephoto = calloc(1, sizeof(Ephoto));
    Ethumb_Client *client = elm_thumb_ethumb_client_get();
-   Evas_Object *ed;
    Evas_Coord mw, mh, iw, ih;
    const char *s;
    EINA_SAFETY_ON_NULL_RETURN_VAL(ephoto, NULL);
@@ -60,7 +78,7 @@ ephoto_window_add(const char *path)
      }
 
    evas_object_event_callback_add
-     (ephoto->win, EVAS_CALLBACK_DEL, _win_del, ephoto);
+     (ephoto->win, EVAS_CALLBACK_FREE, _win_free, ephoto);
 
    elm_win_autodel_set(ephoto->win, EINA_TRUE);
    evas_object_show(ephoto->win);
@@ -94,6 +112,7 @@ ephoto_window_add(const char *path)
         evas_object_del(ephoto->win);
         return NULL;
      }
+   ephoto->edje = elm_layout_edje_get(ephoto->layout);
    evas_object_size_hint_weight_set
      (ephoto->layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_fill_set
@@ -110,28 +129,68 @@ ephoto_window_add(const char *path)
      }
    elm_layout_content_set
      (ephoto->layout, "ephoto.swallow.thumb_browser", ephoto->thumb_browser);
+   evas_object_smart_callback_add
+     (ephoto->thumb_browser, "view", _ephoto_thumb_browser_view, ephoto);
 
-   ed = elm_layout_edje_get(ephoto->layout);
-   edje_object_size_min_get(ed, &mw, &mh);
-   edje_object_size_min_restricted_calc(ed, &mw, &mh, mw, mh);
+   ephoto->flow_browser = ephoto_flow_browser_add(ephoto, ephoto->layout);
+   if (!ephoto->flow_browser)
+     {
+        ERR("could not add flow browser");
+        evas_object_del(ephoto->win);
+        return NULL;
+     }
+   elm_layout_content_set
+     (ephoto->layout, "ephoto.swallow.flow_browser", ephoto->flow_browser);
+   evas_object_smart_callback_add
+     (ephoto->flow_browser, "back", _ephoto_flow_browser_back, ephoto);
+
+   edje_object_size_min_get(ephoto->edje, &mw, &mh);
+   edje_object_size_min_restricted_calc(ephoto->edje, &mw, &mh, mw, mh);
    if (mw < 1) mw = 320;
    if (mh < 1) mh = 240;
 
-   s = edje_object_data_get(ed, "initial_size");
+   s = edje_object_data_get(ephoto->edje, "initial_size");
    if ((!s) || (sscanf(s, "%d %d", &iw, &ih) != 2)) iw = ih = 0;
    if (iw < mw) iw = mw;
    if (ih < mh) ih = mh;
    evas_object_resize(ephoto->win, iw, ih);
 
-   if (!path)
-     ephoto_thumb_browser_directory_set
-       (ephoto->thumb_browser, ephoto->config->directory);
+   if ((!path) || (!ecore_file_exists(path)))
+     {
+        ephoto_thumb_browser_directory_set
+          (ephoto->thumb_browser, ephoto->config->directory);
+        _ephoto_thumb_browser_show(ephoto, NULL);
+     }
    else if (ecore_file_is_dir(path))
-     ephoto_thumb_browser_directory_set(ephoto->thumb_browser, path);
+     {
+        ephoto_thumb_browser_directory_set(ephoto->thumb_browser, path);
+        _ephoto_thumb_browser_show(ephoto, NULL);
+     }
    else
-     ERR("loading file to be done");
+     {
+        char *dir = ecore_file_dir_get(path);
+        ephoto_thumb_browser_directory_set(ephoto->thumb_browser, dir);
+        free(dir);
+        ephoto_thumb_browser_path_pending_set
+          (ephoto->thumb_browser, path, _pending_path_found, ephoto);
+        ephoto_flow_browser_path_set(ephoto->flow_browser, path);
+
+        elm_object_focus(ephoto->flow_browser);
+        evas_object_focus_set(ephoto->flow_browser, EINA_TRUE); // TODO while elm_layout is broken WRT focus
+        edje_object_signal_emit(ephoto->edje, "flow_browser,show", "ephoto");
+        ephoto->state = EPHOTO_STATE_FLOW;
+     }
 
    return ephoto->win;
+}
+
+void
+ephoto_title_set(Ephoto *ephoto, const char *title)
+{
+   char buf[1024] = "Ephoto";
+
+   if (title) snprintf(buf, sizeof(buf), "%s - Ephoto", title);
+   elm_win_title_set(ephoto->win, buf);
 }
 
 #if 0

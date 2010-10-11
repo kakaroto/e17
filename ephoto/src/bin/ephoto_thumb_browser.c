@@ -16,6 +16,11 @@ struct _Ephoto_Thumb_Browser
    Evas_Object *grid;
    Eio_File *ls;
    struct {
+      const char *path;
+      void (*cb)(void *data, Ephoto_Entry *entry);
+      const void *data;
+   } pending;
+   struct {
       Ecore_Job *change_dir;
    } job;
 };
@@ -147,6 +152,14 @@ _ephoto_populate_main(void *data, const Eina_File_Direct_Info *info)
    msg.val = eina_list_count(tb->ephoto->entries);
    edje_object_message_send(tb->edje, EDJE_MESSAGE_INT, 1, &msg);
    DBG("populate add '%s'", e->path);
+
+   if (tb->pending.path == e->path)
+     {
+        tb->pending.cb((void*)tb->pending.data, e);
+        tb->pending.cb = NULL;
+        tb->pending.data = NULL;
+        eina_stringshare_replace(&tb->pending.path, NULL);
+     }
 }
 
 static Eina_Bool
@@ -171,6 +184,14 @@ _ephoto_populate_end(void *data)
 {
    Ephoto_Thumb_Browser *tb = data;
    tb->ls = NULL;
+   if (tb->pending.cb)
+     {
+        tb->pending.cb((void*)tb->pending.data, NULL);
+        tb->pending.cb = NULL;
+     }
+   tb->pending.data = NULL;
+   eina_stringshare_replace(&tb->pending.path, NULL);
+   edje_object_signal_emit(tb->edje, "populate,stop", "ephoto");
 }
 
 static void
@@ -178,9 +199,8 @@ _ephoto_populate_error(int error, void *data)
 {
    Ephoto_Thumb_Browser *tb = data;
    if (error) ERR("could not populate: %s", strerror(error));
-   tb->ls = NULL;
-   edje_object_signal_emit(tb->edje, "populate,stop", "ephoto");
    edje_object_signal_emit(tb->edje, "populate,error", "ephoto");
+   _ephoto_populate_end(tb);
 }
 
 static void
@@ -235,6 +255,8 @@ _ephoto_thumb_selected(void *data, Evas_Object *o, void *event_info)
    Ephoto_Thumb_Browser *tb = data;
    Elm_Gengrid_Item *it = event_info;
    Ephoto_Entry *e = elm_gengrid_item_data_get(it);
+
+   elm_gengrid_item_selected_set(it, EINA_FALSE);
 
    if (e->is_dir)
      ephoto_thumb_browser_directory_set(tb->layout, e->path);
@@ -295,6 +317,8 @@ static void
 _layout_del(void *data, Evas *e, Evas_Object *o, void *event_info)
 {
    Ephoto_Thumb_Browser *tb = data;
+   if (tb->pending.cb) tb->pending.cb((void*)tb->pending.data, NULL);
+   eina_stringshare_del(tb->pending.path);
    if (tb->ls) eio_file_cancel(tb->ls);
    if (tb->job.change_dir) ecore_job_del(tb->job.change_dir);
    free(tb);
@@ -345,7 +369,7 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
 
    _zoom_set(tb, tb->ephoto->config->thumb_size);
 
-   elm_layout_content_set(tb->layout, "ephoto.thumb.swallow", tb->grid);
+   elm_layout_content_set(tb->layout, "ephoto.swallow.thumb", tb->grid);
 
    return layout;
 
@@ -360,7 +384,23 @@ ephoto_thumb_browser_directory_set(Evas_Object *obj, const char *path)
    Ephoto_Thumb_Browser *tb = evas_object_data_get(obj, "thumb_browser");
    EINA_SAFETY_ON_NULL_RETURN(tb);
 
+   eina_stringshare_replace(&tb->pending.path, NULL);
+   tb->pending.cb = NULL;
+   tb->pending.data = NULL;
+
+   ephoto_title_set(tb->ephoto, path);
+
    eina_stringshare_replace(&tb->ephoto->config->directory, path);
    if (tb->job.change_dir) ecore_job_del(tb->job.change_dir);
    tb->job.change_dir = ecore_job_add(_ephoto_thumb_change_dir, tb);
+}
+
+void
+ephoto_thumb_browser_path_pending_set(Evas_Object *obj, const char *path, void (*cb)(void *data, Ephoto_Entry *entry), const void *data)
+{
+   Ephoto_Thumb_Browser *tb = evas_object_data_get(obj, "thumb_browser");
+   EINA_SAFETY_ON_NULL_RETURN(tb);
+   eina_stringshare_replace(&tb->pending.path, path);
+   tb->pending.cb = cb;
+   tb->pending.data = data;
 }

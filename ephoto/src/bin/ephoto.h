@@ -33,6 +33,7 @@ typedef enum _Ephoto_Orient Ephoto_Orient;
 
 /*Main Functions*/
 Evas_Object *ephoto_window_add(const char *path);
+void         ephoto_title_set(Ephoto *ephoto, const char *title);
 void         ephoto_thumb_size_set(Ephoto *ephoto, int size);
 Evas_Object *ephoto_thumb_add(Ephoto *ephoto, Evas_Object *parent, const char *path);
 void         ephoto_thumb_path_set(Evas_Object *o, const char *path);
@@ -48,7 +49,9 @@ void ephoto_show_preferences(Ephoto *em);
 
 /*Ephoto Flow Browser*/
 Evas_Object *ephoto_flow_browser_add(Ephoto *ephoto, Evas_Object *parent);
-void ephoto_flow_browser_image_set(Evas_Object *obj, const char *current_image);
+void ephoto_flow_browser_path_set(Evas_Object *obj, const char *image);
+void ephoto_flow_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry);
+
  /* smart callbacks called:
   * "back" - the user requested to delete the flow browser, typically called when go_back button is pressed or Escape key is typed.
   */
@@ -66,6 +69,7 @@ Evas_Object *ephoto_directory_thumb_add(Evas_Object *parent, Ephoto_Entry *e);
 /*Ephoto Thumb Browser*/
 Evas_Object *ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent);
 void         ephoto_thumb_browser_directory_set(Evas_Object *obj, const char *path);
+void         ephoto_thumb_browser_path_pending_set(Evas_Object *obj, const char *path, void (*cb)(void *data, Ephoto_Entry *entry), const void *data);
 
 /* smart callbacks called:
  * "selected" - an item in the thumb browser is selected. The selected file is passed as event_info argument.
@@ -116,6 +120,7 @@ struct _Ephoto
    Evas_Object *win;
    Evas_Object *bg;
    Evas_Object *layout;
+   Evas_Object *edje;
 
    Evas_Object *thumb_browser;
    Evas_Object *flow_browser;
