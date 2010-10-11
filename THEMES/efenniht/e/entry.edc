@@ -150,7 +150,7 @@ collections {
    }
    group {
       name: "e/widgets/entry/selection";
-      data.item: "on_foreground" "1";
+      data.item: "on_foreground" "0";
       parts {
          part {
             name: "selection";
@@ -159,7 +159,7 @@ collections {
                state: "default" 0.0;
                rel1.offset: 2 0;
                rel2.offset: 1 -1;
-               color: 164 164 164 70;
+               color: 128 128 128 128;
             }
          }
       }
