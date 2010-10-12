@@ -89,17 +89,15 @@ enum _Ephoto_Orient
 struct _Ephoto_Config
 {
    int config_version;
-
-   int thumb_size;
-   int thumb_gen_size;
-
-   int remember_directory;
-   const char *directory;
-
+   const char *editor;
    double slideshow_timeout;
    const char *slideshow_transition;
 
-   const char *editor;
+   /* these should be per-window */
+   int thumb_size;
+   int thumb_gen_size;
+   const char *directory;
+
 };
 
 struct _Ephoto

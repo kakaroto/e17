@@ -48,15 +48,6 @@ ephoto_show_preferences(Ephoto *em)
                 evas_object_data_set(pg1, "pager", pager);
                 elm_toolbar_item_add(tb, NULL, "General", _ephoto_preferences_pager_switch, pg1);
 
-                o = elm_check_add(pg1);
-                elm_check_label_set(o, "Remember last used directory");
-                elm_check_state_set(o, em->config->remember_directory);
-                evas_object_data_set(o, "config", "remember_directory");
-                evas_object_smart_callback_add(o, "changed",
-                                               _ephoto_preferences_item_change, em);
-                elm_box_pack_end(pg1, o);
-                evas_object_show(o);
-
                 elm_box_pack_end(box, pager);
                 evas_object_show(pager);
 
@@ -163,9 +154,7 @@ _ephoto_preferences_item_change(void *data, Evas_Object *obj, void *event_info)
         Ephoto *em = data;
         const char *key = evas_object_data_get(obj, "config");
 
-        if (!strcmp(key, "remember_directory"))
-                em->config->remember_directory = elm_check_state_get(obj);
-        else if (!strcmp(key, "slideshow_timeout"))
+        if (!strcmp(key, "slideshow_timeout"))
                 em->config->slideshow_timeout = elm_spinner_value_get(obj);
         else if (!strcmp(key, "editor"))
                 eina_stringshare_replace(

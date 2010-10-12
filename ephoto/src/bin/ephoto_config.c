@@ -28,7 +28,6 @@ ephoto_config_init(Ephoto *ephoto)
    C_VAL(D, T, config_version, EET_T_INT);
    C_VAL(D, T, thumb_size, EET_T_INT);
    C_VAL(D, T, thumb_gen_size, EET_T_INT);
-   C_VAL(D, T, remember_directory, EET_T_INT);
    C_VAL(D, T, directory, EET_T_STRING);
    C_VAL(D, T, slideshow_timeout, EET_T_DOUBLE);
    C_VAL(D, T, slideshow_transition, EET_T_STRING);
@@ -41,7 +40,6 @@ ephoto_config_init(Ephoto *ephoto)
          ephoto->config->config_version = CONFIG_VERSION;
          ephoto->config->thumb_size = 256;
          ephoto->config->thumb_gen_size = 256;
-         ephoto->config->remember_directory = 1;
          ephoto->config->slideshow_timeout = 4.0;
          ephoto->config->slideshow_transition = eina_stringshare_add("fade");
          ephoto->config->editor = eina_stringshare_add("gimp %s");
@@ -51,7 +49,6 @@ ephoto_config_init(Ephoto *ephoto)
          /* Incremental additions */
          if (ephoto->config->config_version < 2)
            {
-              ephoto->config->remember_directory = 1;
               ephoto->config->slideshow_timeout = 4.0;
               ephoto->config->slideshow_transition = eina_stringshare_add("fade");
            }
