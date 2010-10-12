@@ -152,7 +152,6 @@ AC_OUTPUT([
 Makefile
 ephoto.spec
 data/Makefile
-data/images/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
 data/themes/default/images/Makefile
