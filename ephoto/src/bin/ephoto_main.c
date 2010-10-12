@@ -205,11 +205,19 @@ ephoto_window_add(const char *path)
 
    if ((!path) || (!ecore_file_exists(path)))
      {
-        ephoto_thumb_browser_directory_set
-          (ephoto->thumb_browser, ephoto->config->directory);
-        _ephoto_thumb_browser_show(ephoto, NULL);
+        char buf[PATH_MAX];
+        path = ephoto->config->directory;
+        if ((path) && (!ecore_file_exists(path))) path = NULL;
+        if (!path)
+          {
+             if (getcwd(buf, sizeof(buf)))
+               path = buf;
+             else
+               path = getenv("HOME");
+          }
      }
-   else if (ecore_file_is_dir(path))
+
+   if (ecore_file_is_dir(path))
      {
         ephoto_thumb_browser_directory_set(ephoto->thumb_browser, path);
         _ephoto_thumb_browser_show(ephoto, NULL);
