@@ -25,6 +25,16 @@ struct _Ephoto_Thumb_Browser
    } job;
 };
 
+static Ephoto_Entry *
+_first_file_entry_find(Ephoto_Thumb_Browser *tb)
+{
+   const Eina_List *l;
+   Ephoto_Entry *entry;
+   EINA_LIST_FOREACH(tb->ephoto->entries, l, entry)
+     if (!entry->is_dir) return entry;
+   return NULL;
+}
+
 static char *
 _ephoto_thumb_item_label_get(void *data, Evas_Object *obj, const char *part)
 {
@@ -350,6 +360,26 @@ _zoom_out(void *data, Evas_Object *o, const char *emission, const char *source)
 }
 
 static void
+_key_down(void *data, Evas *e, Evas_Object *o, void *event_info)
+{
+   Ephoto_Thumb_Browser *tb = data;
+   Evas_Event_Key_Down *ev = event_info;
+   const char *k = ev->keyname;
+
+   if (!strcmp(k, "F5"))
+     {
+        Elm_Gengrid_Item *it = elm_gengrid_selected_item_get(tb->grid);
+        Ephoto_Entry *entry;
+        if (it) entry = elm_gengrid_item_data_get(it);
+        else entry = _first_file_entry_find(tb);
+
+        if (entry)
+          evas_object_smart_callback_call(tb->layout, "slideshow", entry);
+     }
+}
+
+
+static void
 _layout_del(void *data, Evas *e, Evas_Object *o, void *event_info)
 {
    Ephoto_Thumb_Browser *tb = data;
@@ -374,6 +404,8 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
    tb->layout = layout;
    tb->edje = elm_layout_edje_get(layout);
    evas_object_event_callback_add(layout, EVAS_CALLBACK_DEL, _layout_del, tb);
+   evas_object_event_callback_add
+     (layout, EVAS_CALLBACK_KEY_DOWN, _key_down, tb);
    evas_object_data_set(layout, "thumb_browser", tb);
    edje_object_signal_callback_add
      (tb->edje, "location,changed", "ephoto", _changed_dir, tb);

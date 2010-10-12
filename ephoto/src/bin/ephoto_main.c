@@ -1,15 +1,23 @@
 #include "ephoto.h"
 
 static void
+_ephoto_state_set(Ephoto *ephoto, Ephoto_State state)
+{
+   ephoto->prev_state = ephoto->state;
+   ephoto->state = state;
+}
+
+static void
 _ephoto_thumb_browser_show(Ephoto *ephoto, Ephoto_Entry *entry)
 {
    DBG("entry '%s'", entry ? entry->path : "");
 
    ephoto_flow_browser_path_set(ephoto->flow_browser, NULL);
+   ephoto_slideshow_entry_set(ephoto->slideshow, NULL);
    elm_object_focus(ephoto->thumb_browser);
    evas_object_focus_set(ephoto->thumb_browser, EINA_TRUE); // TODO while elm_layout is broken WRT focus
    edje_object_signal_emit(ephoto->edje, "thumb_browser,show", "ephoto");
-   ephoto->state = EPHOTO_STATE_THUMB;
+   _ephoto_state_set(ephoto, EPHOTO_STATE_THUMB);
 
    if ((entry) && (entry->item)) elm_gengrid_item_bring_in(entry->item);
 }
@@ -22,7 +30,18 @@ _ephoto_flow_browser_show(Ephoto *ephoto, Ephoto_Entry *entry)
    elm_object_focus(ephoto->flow_browser);
    evas_object_focus_set(ephoto->flow_browser, EINA_TRUE); // TODO while elm_layout is broken WRT focus
    edje_object_signal_emit(ephoto->edje, "flow_browser,show", "ephoto");
-   ephoto->state = EPHOTO_STATE_FLOW;
+   _ephoto_state_set(ephoto, EPHOTO_STATE_FLOW);
+}
+
+static void
+_ephoto_slideshow_show(Ephoto *ephoto, Ephoto_Entry *entry)
+{
+   DBG("entry '%s'", entry->path);
+   ephoto_slideshow_entry_set(ephoto->slideshow, entry);
+   elm_object_focus(ephoto->slideshow);
+   evas_object_focus_set(ephoto->slideshow, EINA_TRUE); // TODO while elm_layout is broken WRT focus
+   edje_object_signal_emit(ephoto->edje, "slideshow,show", "ephoto");
+   _ephoto_state_set(ephoto, EPHOTO_STATE_SLIDESHOW);
 }
 
 static void
@@ -34,11 +53,45 @@ _ephoto_flow_browser_back(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
+_ephoto_slideshow_back(void *data, Evas_Object *obj, void *event_info)
+{
+   Ephoto *ephoto = data;
+   Ephoto_Entry *entry = event_info;
+   switch (ephoto->prev_state)
+     {
+      case EPHOTO_STATE_FLOW:
+         _ephoto_flow_browser_show(ephoto, entry);
+         break;
+      case EPHOTO_STATE_THUMB:
+         _ephoto_thumb_browser_show(ephoto, entry);
+         break;
+      default:
+         ERR("unhandled previous state %d", ephoto->prev_state);
+     }
+}
+
+static void
 _ephoto_thumb_browser_view(void *data, Evas_Object *obj, void *event_info)
 {
    Ephoto *ephoto = data;
    Ephoto_Entry *entry = event_info;
    _ephoto_flow_browser_show(ephoto, entry);
+}
+
+static void
+_ephoto_thumb_browser_slideshow(void *data, Evas_Object *obj, void *event_info)
+{
+   Ephoto *ephoto = data;
+   Ephoto_Entry *entry = event_info;
+   _ephoto_slideshow_show(ephoto, entry);
+}
+
+static void
+_ephoto_flow_browser_slideshow(void *data, Evas_Object *obj, void *event_info)
+{
+   Ephoto *ephoto = data;
+   Ephoto_Entry *entry = event_info;
+   _ephoto_slideshow_show(ephoto, entry);
 }
 
 static void
@@ -131,6 +184,9 @@ ephoto_window_add(const char *path)
      (ephoto->layout, "ephoto.swallow.thumb_browser", ephoto->thumb_browser);
    evas_object_smart_callback_add
      (ephoto->thumb_browser, "view", _ephoto_thumb_browser_view, ephoto);
+   evas_object_smart_callback_add
+     (ephoto->thumb_browser, "slideshow",
+      _ephoto_thumb_browser_slideshow, ephoto);
 
    ephoto->flow_browser = ephoto_flow_browser_add(ephoto, ephoto->layout);
    if (!ephoto->flow_browser)
@@ -143,6 +199,21 @@ ephoto_window_add(const char *path)
      (ephoto->layout, "ephoto.swallow.flow_browser", ephoto->flow_browser);
    evas_object_smart_callback_add
      (ephoto->flow_browser, "back", _ephoto_flow_browser_back, ephoto);
+   evas_object_smart_callback_add
+     (ephoto->flow_browser, "slideshow",
+      _ephoto_flow_browser_slideshow, ephoto);
+
+   ephoto->slideshow = ephoto_slideshow_add(ephoto, ephoto->layout);
+   if (!ephoto->slideshow)
+     {
+        ERR("could not add flow browser");
+        evas_object_del(ephoto->win);
+        return NULL;
+     }
+   elm_layout_content_set
+     (ephoto->layout, "ephoto.swallow.slideshow", ephoto->slideshow);
+   evas_object_smart_callback_add
+     (ephoto->slideshow, "back", _ephoto_slideshow_back, ephoto);
 
    edje_object_size_min_get(ephoto->edje, &mw, &mh);
    edje_object_size_min_restricted_calc(ephoto->edje, &mw, &mh, mw, mh);

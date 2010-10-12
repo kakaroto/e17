@@ -31,52 +31,39 @@ typedef struct _Ephoto_Entry Ephoto_Entry;
 typedef enum _Ephoto_State Ephoto_State;
 typedef enum _Ephoto_Orient Ephoto_Orient;
 
-/*Main Functions*/
 Evas_Object *ephoto_window_add(const char *path);
 void         ephoto_title_set(Ephoto *ephoto, const char *title);
 void         ephoto_thumb_size_set(Ephoto *ephoto, int size);
 Evas_Object *ephoto_thumb_add(Ephoto *ephoto, Evas_Object *parent, const char *path);
 void         ephoto_thumb_path_set(Evas_Object *o, const char *path);
 
+Eina_Bool    ephoto_config_init(Ephoto *em);
+void         ephoto_config_save(Ephoto *em, Eina_Bool instant);
+void         ephoto_config_free(Ephoto *em);
 
-/* Configuration */
-Eina_Bool ephoto_config_init(Ephoto *em);
-void ephoto_config_save(Ephoto *em, Eina_Bool instant);
-void ephoto_config_free(Ephoto *em);
-
-/* Preferences */
-void ephoto_show_preferences(Ephoto *em);
-
-/*Ephoto Flow Browser*/
 Evas_Object *ephoto_flow_browser_add(Ephoto *ephoto, Evas_Object *parent);
-void ephoto_flow_browser_path_set(Evas_Object *obj, const char *image);
-void ephoto_flow_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry);
-
+void         ephoto_flow_browser_path_set(Evas_Object *obj, const char *image);
+void         ephoto_flow_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry);
  /* smart callbacks called:
-  * "back" - the user requested to delete the flow browser, typically called when go_back button is pressed or Escape key is typed.
+  * "back" - the user want to go back to the previous screen.
   */
 
+Evas_Object *ephoto_slideshow_add(Ephoto *ephoto, Evas_Object *parent);
+void         ephoto_slideshow_entry_set(Evas_Object *obj, Ephoto_Entry *entry);
+ /* smart callbacks called:
+  * "back" - the user want to go back to the previous screen.
+  */
 
-/*Ephoto Slideshow*/
-void ephoto_create_slideshow(void);
-void ephoto_show_slideshow(int view, const char *current_image);
-void ephoto_hide_slideshow(void);
-void ephoto_delete_slideshow(void);
-
-/* Ephoto Directory Thumb */
 Evas_Object *ephoto_directory_thumb_add(Evas_Object *parent, Ephoto_Entry *e);
 
-/*Ephoto Thumb Browser*/
 Evas_Object *ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent);
 void         ephoto_thumb_browser_directory_set(Evas_Object *obj, const char *path);
 void         ephoto_thumb_browser_path_pending_set(Evas_Object *obj, const char *path, void (*cb)(void *data, Ephoto_Entry *entry), const void *data);
 
 /* smart callbacks called:
- * "selected" - an item in the thumb browser is selected. The selected file is passed as event_info argument.
- * "directory,changed" - the user selected a new directory. The selected directory is passed as event_info argument.
+ * "selected" - an item in the thumb browser is selected. The selected Ephoto_Entry is passed as event_info argument.
  */
 
-/* Enum for the state machine */
 enum _Ephoto_State
 {
   EPHOTO_STATE_THUMB,
@@ -135,7 +122,7 @@ struct _Ephoto
    } timer;
 
    Evas_Object *prefs_win;
-   Ephoto_State state;
+   Ephoto_State state, prev_state;
 
    Ephoto_Config *config;
 };

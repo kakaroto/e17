@@ -1,151 +1,129 @@
 #include "ephoto.h"
 
-#if 0
-static Evas_Object *_ephoto_get_image(void *data, Evas_Object *obj);
-static void _ephoto_end_slideshow(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void _ephoto_switch_fullscreen();
+typedef struct _Ephoto_Slideshow Ephoto_Slideshow;
 
-static Elm_Slideshow_Item_Class itc;
-static int return_view;
-static const char *cur_image;
-
-/*Key is pressed*/
-static void
-_ephoto_key_pressed(void *data, Evas *e, Evas_Object *obj, void *event_data)
+struct _Ephoto_Slideshow
 {
-	Evas_Event_Key_Down *eku = (Evas_Event_Key_Down *)event_data;
-	if ((!strcmp(eku->key, "F5")) || (!strcmp(eku->key, "Escape")))
-		ephoto_hide_slideshow();
-	if ((!strcmp(eku->key, "F11")))
-		_ephoto_switch_fullscreen();
-}
+   Ephoto *ephoto;
+   Evas_Object *slideshow;
+   Ephoto_Entry *entry;
+};
 
 static void
-_ephoto_switch_fullscreen(void)
+_key_down(void *data, Evas *e, Evas_Object *o, void *event_info)
 {
-	elm_win_fullscreen_set(em->win, !elm_win_fullscreen_get(em->win));
+   Ephoto_Slideshow *ss = data;
+   Evas_Event_Key_Down *ev = event_info;
+   const char *k = ev->keyname;
+
+   if (!strcmp(k, "Escape"))
+     {
+        Evas_Object *win = ss->ephoto->win;
+        Elm_Slideshow_Item *item;
+        Ephoto_Entry *entry;
+
+        if (elm_win_fullscreen_get(win))
+          elm_win_fullscreen_set(win, EINA_FALSE);
+
+        item = elm_slideshow_item_current_get(ss->slideshow);
+        if (item) entry = elm_slideshow_item_data_get(item);
+        else      entry = ss->entry;
+        evas_object_smart_callback_call(ss->slideshow, "back", entry);
+     }
+   else if (!strcmp(k, "F11"))
+     {
+        Evas_Object *win = ss->ephoto->win;
+        elm_win_fullscreen_set(win, !elm_win_fullscreen_get(win));
+     }
 }
 
-/*Create the slideshow*/
-void 
-ephoto_create_slideshow(void)
+static void
+_mouse_down(void *data, Evas *e, Evas_Object *o, void *event_info)
 {
-	em->slideshow = elm_slideshow_add(em->win);
-	elm_slideshow_loop_set(em->slideshow, EINA_TRUE);
-	elm_slideshow_layout_set(em->slideshow, "fullscreen");
-	evas_object_size_hint_weight_set(em->slideshow, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-	evas_object_size_hint_align_set(em->slideshow, EVAS_HINT_FILL, EVAS_HINT_FILL);
-	evas_object_event_callback_add(em->slideshow, EVAS_CALLBACK_MOUSE_DOWN,
-						_ephoto_end_slideshow, NULL);
-	evas_object_event_callback_add(em->slideshow, EVAS_CALLBACK_KEY_DOWN,
-						_ephoto_key_pressed, NULL);
-        em->slideshow_notify = elm_notify_add(em->win);
-        Evas_Object *label = elm_label_add(em->win);
-        elm_label_label_set(label, "Press F11 to turn off fullscreen");
-        elm_notify_content_set(em->slideshow_notify, label);
-        elm_notify_orient_set(em->slideshow_notify, ELM_NOTIFY_ORIENT_TOP);
-        elm_notify_timeout_set(em->slideshow_notify, 2);
+   Ephoto_Slideshow *ss = data;
+   evas_object_smart_callback_call(ss->slideshow, "back", ss->entry);
 }
 
-/*Start and show the slideshow*/
-void 
-ephoto_show_slideshow(int view, const char *current_image)
+static void
+_slideshow_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-	Eina_List *l = NULL, *iter = NULL;
-	Elm_Slideshow_Item *cur_item = NULL, *item;
-	const char *image;
-	int x, y, w, h;
-
-	elm_slideshow_transition_set(em->slideshow, em->config->slideshow_transition);
-	elm_slideshow_timeout_set(em->slideshow, em->config->slideshow_timeout);
-	elm_win_fullscreen_set(em->win, EINA_TRUE);
-
-	return_view = view;
-	cur_image = current_image;
-
-	evas_object_geometry_get(em->win, &x, &y, &w, &h);
-	evas_object_resize(em->slideshow, w, h);
-	evas_object_move(em->slideshow, 0, 0);
-
-	itc.func.get = _ephoto_get_image;
-	itc.func.del = NULL;
-
-	elm_slideshow_clear(em->slideshow);
-        /* TODO:
-	l = em->images;
-	EINA_LIST_FOREACH(l, iter, image)
-	{
-		item = elm_slideshow_item_add(em->slideshow, &itc, image);
-		if ((current_image) && (!strcmp(image, current_image)))
-			cur_item = item;
-	}
-        */
-	if (cur_item)
-		elm_slideshow_show(cur_item);
-
-	evas_object_show(em->slideshow);
-	evas_object_focus_set(em->slideshow, EINA_TRUE);
-	elm_win_resize_object_add(em->win, em->slideshow);
-
-        evas_object_show(em->slideshow_notify);
+   Ephoto_Slideshow *ss = data;
+   free(ss);
 }
 
-/*Hide the slideshow object*/
-void 
-ephoto_hide_slideshow(void)
+Evas_Object *
+ephoto_slideshow_add(Ephoto *ephoto, Evas_Object *parent)
 {
-        elm_win_fullscreen_set(em->win, EINA_FALSE);
-        evas_object_hide(em->slideshow);
-        elm_slideshow_clear(em->slideshow);
-        if (return_view == 0)
-                evas_object_focus_set(em->thumb_browser, 1);
-        else if (return_view == 1)
-                evas_object_focus_set(em->flow_browser, 1);
+   Evas_Object *slideshow = elm_slideshow_add(parent);
+   Ephoto_Slideshow *ss;
 
-	// FIXME
-	/*
-	if (return_view == 0)
-		ephoto_show_thumb_browser();
-		else*/
-	//ephoto_show_flow_browser(cur_image);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(slideshow, NULL);
+
+   ss = calloc(1, sizeof(Ephoto_Slideshow));
+   EINA_SAFETY_ON_NULL_GOTO(ss, error);
+   ss->ephoto = ephoto;
+   ss->slideshow = slideshow;
+   evas_object_event_callback_add
+     (slideshow, EVAS_CALLBACK_DEL, _slideshow_del, ss);
+   evas_object_event_callback_add
+     (slideshow, EVAS_CALLBACK_KEY_DOWN, _key_down, ss);
+   evas_object_event_callback_add
+     (slideshow, EVAS_CALLBACK_MOUSE_DOWN, _mouse_down, ss);
+   evas_object_data_set(slideshow, "slideshow", ss);
+
+   elm_slideshow_loop_set(slideshow, EINA_TRUE);
+   elm_slideshow_layout_set(slideshow, "fullscreen");
+   evas_object_size_hint_weight_set
+     (slideshow, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(slideshow, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+   return ss->slideshow;
+
+ error:
+   evas_object_del(slideshow);
+   return NULL;
 }
 
-/*Delete the slideshow object*/
-void 
-ephoto_delete_slideshow(void)
-{
-	evas_object_del(em->slideshow);
-}
-
-/*Get the image for the slideshow*/
 static Evas_Object *
-_ephoto_get_image(void *data, Evas_Object *obj)
+_slideshow_item_get(void *data, Evas_Object *obj)
 {
-	char *file;
-	Evas_Object *image;
-	char *buffer;
-	int length;
-
-	file = data;
-
-	image = elm_photo_add(obj);
-	elm_photo_file_set(image, file);
-	elm_photo_fill_inside_set(image, EINA_TRUE);
-	elm_object_style_set(image, "shadow");
-
-	length = strlen(file) + strlen("Ephoto - ") + 1;
-	buffer = alloca(length);
-	snprintf(buffer, length, "Ephoto - %s", file);
-	elm_win_title_set(em->win, buffer);
-
-	return image;
+   Ephoto_Entry *entry = data;
+   /* TODO use viewer from ephoto_flow_browser.c */
+   /* TODO consider using exif rotation, see ephoto_flow_browser.c */
+   Evas_Object *image = elm_photo_add(obj);
+   elm_photo_file_set(image, entry->path);
+   elm_photo_fill_inside_set(image, EINA_TRUE);
+   elm_object_style_set(image, "shadow");
+   return image;
 }
 
-/*End the slideshow*/
-static void 
-_ephoto_end_slideshow(void *data, Evas *e, Evas_Object *obj, void *event_info)
-{
-	ephoto_hide_slideshow();
-}
+static const Elm_Slideshow_Item_Class _item_cls = {{_slideshow_item_get, NULL}};
 
-#endif
+void
+ephoto_slideshow_entry_set(Evas_Object *obj, Ephoto_Entry *entry)
+{
+   Ephoto_Slideshow *ss = evas_object_data_get(obj, "slideshow");
+   Ephoto_Config *conf;
+   Ephoto_Entry *itr;
+   const Eina_List *l;
+   EINA_SAFETY_ON_NULL_RETURN(ss);
+
+   conf = ss->ephoto->config;
+
+   DBG("entry %p, was %p", entry, ss->entry);
+   ss->entry = entry;
+   elm_slideshow_loop_set(ss->slideshow, EINA_TRUE); /* move to config? */
+   elm_slideshow_transition_set(ss->slideshow, conf->slideshow_transition);
+   elm_slideshow_timeout_set(ss->slideshow, conf->slideshow_timeout);
+   elm_slideshow_clear(ss->slideshow);
+   if (!entry) return;
+
+   elm_win_fullscreen_set(ss->ephoto->win, EINA_TRUE);
+   EINA_LIST_FOREACH(ss->ephoto->entries, l, itr)
+     {
+        Elm_Slideshow_Item *item;
+        if (itr->is_dir) continue;
+        item = elm_slideshow_item_add(ss->slideshow, &_item_cls, itr);
+        if (itr == entry) elm_slideshow_show(item);
+     }
+}

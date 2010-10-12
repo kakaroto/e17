@@ -199,7 +199,7 @@ _mouse_wheel(void *data, Evas *e, Evas_Object *o, void *event_info)
 }
 
 static Ephoto_Entry *
-_find_first_entry(Ephoto_Flow_Browser *fb)
+_first_entry_find(Ephoto_Flow_Browser *fb)
 {
    const Eina_List *l;
    Ephoto_Entry *entry;
@@ -211,7 +211,7 @@ _find_first_entry(Ephoto_Flow_Browser *fb)
 }
 
 static Ephoto_Entry *
-_find_last_entry(Ephoto_Flow_Browser *fb)
+_last_entry_find(Ephoto_Flow_Browser *fb)
 {
    const Eina_List *l;
    Ephoto_Entry *entry;
@@ -235,12 +235,12 @@ _ephoto_flow_browser_toolbar_eval(Ephoto_Flow_Browser *fb)
      {
         edje_object_signal_emit(fb->edje, "slideshow,enable", "ephoto");
 
-        if (fb->entry == _find_first_entry(fb))
+        if (fb->entry == _first_entry_find(fb))
           edje_object_signal_emit(fb->edje, "prev,disable", "ephoto");
         else
           edje_object_signal_emit(fb->edje, "prev,enable", "ephoto");
 
-        if (fb->entry == _find_last_entry(fb))
+        if (fb->entry == _last_entry_find(fb))
           edje_object_signal_emit(fb->edje, "next,disable", "ephoto");
         else
           edje_object_signal_emit(fb->edje, "next,enable", "ephoto");
@@ -392,7 +392,7 @@ _prev_entry(Ephoto_Flow_Browser *fb)
 static void
 _first_entry(Ephoto_Flow_Browser *fb)
 {
-   Ephoto_Entry *entry = _find_first_entry(fb);
+   Ephoto_Entry *entry = _first_entry_find(fb);
    if (!entry) return;
    DBG("first is '%s'", entry->path);
    ephoto_flow_browser_entry_set(fb->layout, entry);
@@ -401,7 +401,7 @@ _first_entry(Ephoto_Flow_Browser *fb)
 static void
 _last_entry(Ephoto_Flow_Browser *fb)
 {
-   Ephoto_Entry *entry = _find_last_entry(fb);
+   Ephoto_Entry *entry = _last_entry_find(fb);
    if (!entry) return;
    DBG("last is '%s'", entry->path);
    ephoto_flow_browser_entry_set(fb->layout, entry);
@@ -460,6 +460,11 @@ _key_down(void *data, Evas *e, Evas_Object *o, void *event_info)
      _rotate_counterclock(fb);
    else if (!strcmp(k, "bracketright"))
      _rotate_clock(fb);
+   else if (!strcmp(k, "F5"))
+     {
+        if (fb->entry)
+          evas_object_smart_callback_call(fb->layout, "slideshow", fb->entry);
+     }
 }
 
 static void
