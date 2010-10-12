@@ -50,7 +50,7 @@ _path_is_jpeg(const char *path_stringshared)
 }
 
 static void
-_viewer_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_viewer_del(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Viewer *v = data;
    free(v);
@@ -124,25 +124,25 @@ _viewer_zoom_set(Evas_Object *obj, float zoom)
 static void
 _rotation_apply(Ephoto_Flow_Browser *fb)
 {
-   const char *signal;
+   const char *sig;
    switch (fb->orient)
      {
       case EPHOTO_ORIENT_0:
-         signal = "state,rotate,0";
+         sig = "state,rotate,0";
          break;
       case EPHOTO_ORIENT_90:
-         signal = "state,rotate,90";
+         sig = "state,rotate,90";
          break;
       case EPHOTO_ORIENT_180:
-         signal = "state,rotate,180";
+         sig = "state,rotate,180";
          break;
       case EPHOTO_ORIENT_270:
-         signal = "state,rotate,270";
+         sig = "state,rotate,270";
          break;
       default:
          return;
      }
-   edje_object_signal_emit(fb->edje, signal, "ephoto");
+   edje_object_signal_emit(fb->edje, sig, "ephoto");
 }
 
 static void
@@ -188,7 +188,7 @@ _rotate_clock(Ephoto_Flow_Browser *fb)
 }
 
 static void
-_mouse_wheel(void *data, Evas *e, Evas_Object *o, void *event_info)
+_mouse_wheel(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info)
 {
    Ephoto_Flow_Browser *fb = data;
    Evas_Event_Mouse_Wheel *ev = event_info;
@@ -338,14 +338,14 @@ _zoom_set(Ephoto_Flow_Browser *fb, double zoom)
 }
 
 static void
-_zoom_in(void *data, Evas_Object *o, const char *emission, const char *source)
+_zoom_in(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
    _zoom_set(fb, fb->zoom + ZOOM_STEP);
 }
 
 static void
-_zoom_out(void *data, Evas_Object *o, const char *emission, const char *source)
+_zoom_out(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
    _zoom_set(fb, fb->zoom - ZOOM_STEP);
@@ -408,28 +408,28 @@ _last_entry(Ephoto_Flow_Browser *fb)
 }
 
 static void
-_next_button(void *data, Evas_Object *o, const char *emission, const char *source)
+_next_button(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
    _next_entry(fb);
 }
 
 static void
-_prev_button(void *data, Evas_Object *o, const char *emission, const char *source)
+_prev_button(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
    _prev_entry(fb);
 }
 
 static void
-_back(void *data, Evas_Object *o, const char *emission, const char *source)
+_back(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
    evas_object_smart_callback_call(fb->layout, "back", fb->entry);
 }
 
 static void
-_key_down(void *data, Evas *e, Evas_Object *o, void *event_info)
+_key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info)
 {
    Ephoto_Flow_Browser *fb = data;
    Evas_Event_Key_Down *ev = event_info;
@@ -468,7 +468,7 @@ _key_down(void *data, Evas *e, Evas_Object *o, void *event_info)
 }
 
 static void
-_layout_del(void *data, Evas *e, Evas_Object *o, void *event_info)
+_layout_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
    eina_stringshare_del(fb->path);

@@ -1,0 +1,8 @@
+DOMAIN = ephoto
+subdir = po
+top_builddir = ..
+top_builddir = ..
+XGETTEXT_OPTIONS = --keyword=_ --keyword=N_
+COPYRIGHT_HOLDER = Stephen "okra" Houston
+MSGID_BUGS_ADDRESS = enlightenment-devel@lists.sourceforge.net
+EXTRA_LOCALE_CATEGORIES =

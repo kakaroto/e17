@@ -1,3 +1,9 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+#include <Elementary.h>
+#ifndef ELM_LIB_QUICKLAUNCH
+
 #include "ephoto.h"
 
 static void _ephoto_display_usage(void);
@@ -5,11 +11,18 @@ static void _ephoto_display_usage(void);
 /* Global log domain pointer */
 int __log_domain = -1;
 
-int
-main(int argc, char **argv)
+EAPI int
+elm_main(int argc, char **argv)
 {
    Ethumb_Client *client;
    int r = 0;
+
+#if ENABLE_NLS
+   setlocale(LC_ALL, "");
+   bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
+   bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+   textdomain(GETTEXT_PACKAGE);
+#endif
 
    elm_need_efreet();
    elm_need_ethumb();
@@ -102,3 +115,6 @@ _ephoto_display_usage(void)
           "ephoto dirname  : Specifies a directory to open\n");
 }
 
+
+#endif
+ELM_MAIN()

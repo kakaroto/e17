@@ -25,7 +25,7 @@ _ephoto_directory_thumb_free(Ephoto_Directory_Thumb *dt)
 }
 
 static void
-_obj_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_obj_del(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Directory_Thumb *dt = data;
    dt->objs = eina_list_remove(dt->objs, obj);
@@ -33,7 +33,7 @@ _obj_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
 }
 
 static Eina_Bool
-_populate_filter(void *data, const Eina_File_Direct_Info *info)
+_populate_filter(void *data __UNUSED__, const Eina_File_Direct_Info *info)
 {
    return _ephoto_eina_file_direct_info_image_useful(info);
 }

@@ -14,3 +14,5 @@ go_back.png
 
 imagesdir = $(pkgdatadir)/images
 images_DATA = $(IMAGES)
+
+EXTRA_DIST = $(IMAGES)

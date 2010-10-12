@@ -45,7 +45,7 @@ _ephoto_slideshow_show(Ephoto *ephoto, Ephoto_Entry *entry)
 }
 
 static void
-_ephoto_flow_browser_back(void *data, Evas_Object *obj, void *event_info)
+_ephoto_flow_browser_back(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Ephoto *ephoto = data;
    Ephoto_Entry *entry = event_info;
@@ -53,7 +53,7 @@ _ephoto_flow_browser_back(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-_ephoto_slideshow_back(void *data, Evas_Object *obj, void *event_info)
+_ephoto_slideshow_back(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Ephoto *ephoto = data;
    Ephoto_Entry *entry = event_info;
@@ -71,7 +71,7 @@ _ephoto_slideshow_back(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-_ephoto_thumb_browser_view(void *data, Evas_Object *obj, void *event_info)
+_ephoto_thumb_browser_view(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Ephoto *ephoto = data;
    Ephoto_Entry *entry = event_info;
@@ -79,7 +79,7 @@ _ephoto_thumb_browser_view(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-_ephoto_thumb_browser_slideshow(void *data, Evas_Object *obj, void *event_info)
+_ephoto_thumb_browser_slideshow(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Ephoto *ephoto = data;
    Ephoto_Entry *entry = event_info;
@@ -87,7 +87,7 @@ _ephoto_thumb_browser_slideshow(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-_ephoto_flow_browser_slideshow(void *data, Evas_Object *obj, void *event_info)
+_ephoto_flow_browser_slideshow(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Ephoto *ephoto = data;
    Ephoto_Entry *entry = event_info;
@@ -107,7 +107,7 @@ _pending_path_found(void *data, Ephoto_Entry *entry)
 }
 
 static void
-_win_free(void *data, Evas *e, Evas_Object *o, void *event_info)
+_win_free(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto *ephoto = data;
    if (ephoto->timer.thumb_regen) ecore_timer_del(ephoto->timer.thumb_regen);
@@ -322,7 +322,7 @@ ephoto_thumb_size_set(Ephoto *ephoto, int size)
 }
 
 static void
-_thumb_del(void *data, Evas *e, Evas_Object *o, void *event_info)
+_thumb_del(void *data, Evas *e __UNUSED__, Evas_Object *o, void *event_info __UNUSED__)
 {
    Ephoto *ephoto = data;
    ephoto->thumbs = eina_list_remove(ephoto->thumbs, o);

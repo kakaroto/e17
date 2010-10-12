@@ -1,28 +1,51 @@
-## Process this file with automake to produce Makefile.in 
+MAINTAINERCLEANFILES = *.o config.h.in config.h Makefile.in Makefile stamp-h1
 
-MAINTAINERCLEANFILES = *.o ephoto config.h.in config.h Makefile.in Makefile \
-		       stamp-h1
+INCLUDES = \
+	-I$(top_srcdir) \
+	-I$(top_srcdir)/src/bin \
+	-DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
+	-DGETTEXT_PACKAGE=\"$(PACKAGE)\" \
+	-DLOCALEDIR=\"$(localedir)\" \
+	@ELEMENTARY_CFLAGS@ @EFREET_MIME_CFLAGS@ @EIO_CFLAGS@ @EXIF_CFLAGS@
 
 bin_PROGRAMS = ephoto
-
-ephoto_SOURCES = \
-		 ephoto.c \
-		 ephoto.h \
-		 ephoto_config.c \
-		 ephoto_preferences.c \
-		 ephoto_flow_browser.c \
-		 ephoto_main.c \
-		 ephoto_slideshow.c \
-		 ephoto_thumb_browser.c \
-		 ephoto_directory_thumb.c
-
-ephoto_CFLAGS = @EET_CFLAGS@ @EVAS_CFLAGS@ @EDJE_CFLAGS@ @EINA_CFLAGS@ @EFREET_MIME_CFLAGS@ @ETHUMB_CFLAGS@ @ELEMENTARY_CFLAGS@ @EIO_CFLAGS@ -Wall -g
-ephoto_LDADD = @EET_LIBS@ @EVAS_LIBS@ @EDJE_LIBS@ @EINA_LIBS@ @EFREET_MIME_LIBS@ @ETHUMB_LIBS@ @ELEMENTARY_LIBS@ @EIO_LIBS@
-
-if BUILD_LIBEXIF
-ephoto_CFLAGS += @EXIF_CFLAGS@
+if BUILD_QUICKLAUNCH
+bin_PROGRAMS += ephoto_ql
 endif
 
-if BUILD_LIBEXIF
-ephoto_LDADD += @EXIF_LIBS@
+_sources = \
+	ephoto.c \
+	ephoto_main.c \
+	ephoto_config.c \
+	ephoto_preferences.c \
+	ephoto_thumb_browser.c \
+	ephoto_flow_browser.c \
+	ephoto_slideshow.c \
+	ephoto_directory_thumb.c
+
+_libs =	@ELEMENTARY_LIBS@ @EFREET_MIME_LIBS@ @EIO_LIBS@ @EXIF_LIBS@
+
+ephoto_SOURCES = $(_sources)
+ephoto_LDADD = $(_libs)
+
+noinst_HEADERS = gettext.h ephoto.h
+EXTRA_DIST = gettext.h ephoto.h
+
+if BUILD_QUICKLAUNCH
+############################################################################
+## Build quick launch binary, needs elementary_quicklaunch to be enabled. ##
+##                                                                        ##
+## It is composed of a library with actual code and a binary that talks   ##
+## to server that will then fork() + dlopen() such library.               ##
+############################################################################
+ephoto_qldir = $(quicklauncher_libdir)
+ephoto_ql_LTLIBRARIES = ephoto_ql.la
+ephoto_ql_la_SOURCES = $(_sources)
+ephoto_ql_la_LIBADD = $(_libs)
+ephoto_ql_la_CFLAGS =
+ephoto_ql_la_LDFLAGS = -module -avoid-version -no-undefined
+ephoto_ql_SOURCES = ephoto.c
+ephoto_ql_LDADD = @ELEMENTARY_LIBS@
+ephoto_ql_CFLAGS = -DELM_LIB_QUICKLAUNCH=1
+ephoto_ql_LDFLAGS =
 endif

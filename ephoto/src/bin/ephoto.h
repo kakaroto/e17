@@ -1,8 +1,8 @@
 #ifndef _EPHOTO_H_
 #define _EPHOTO_H_
 
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
 #include <Eet.h>
@@ -20,7 +20,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
-#include "config.h"
 
 #define THEME_FILE PACKAGE_DATA_DIR"/themes/default/ephoto.edj"
 

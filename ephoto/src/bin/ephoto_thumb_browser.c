@@ -36,7 +36,7 @@ _first_file_entry_find(Ephoto_Thumb_Browser *tb)
 }
 
 static char *
-_ephoto_thumb_item_label_get(void *data, Evas_Object *obj, const char *part)
+_ephoto_thumb_item_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    Ephoto_Entry *e = data;
    return strdup(e->label);
@@ -68,7 +68,7 @@ _ephoto_thumb_dir_icon_get(void *data, Evas_Object *obj, const char *part)
 }
 
 static Eina_Bool
-_ephoto_thumb_dir_state_get(void *data, Evas_Object *obj, const char *part)
+_ephoto_thumb_dir_state_get(void *data, Evas_Object *obj __UNUSED__, const char *part)
 {
    Ephoto_Entry *e = data;
    int n;
@@ -82,18 +82,18 @@ _ephoto_thumb_dir_state_get(void *data, Evas_Object *obj, const char *part)
    n = atoi(part + sizeof("have_file.") - 1);
    if (n < 1)
      return EINA_FALSE;
-   return n <= eina_list_count(e->dir_files);
+   return n <= (int)eina_list_count(e->dir_files);
 }
 
 static Evas_Object *
-_ephoto_thumb_file_icon_get(void *data, Evas_Object *obj, const char *part)
+_ephoto_thumb_file_icon_get(void *data, Evas_Object *obj, const char *part __UNUSED__)
 {
    Ephoto_Entry *e = data;
    return ephoto_thumb_add(e->ephoto, obj, e->path);
 }
 
 static void
-_ephoto_thumb_item_del(void *data, Evas_Object *obj)
+_ephoto_thumb_item_del(void *data, Evas_Object *obj __UNUSED__)
 {
    Ephoto_Entry *e = data;
    e->item = NULL;
@@ -209,7 +209,7 @@ _ephoto_populate_main(void *data, const Eina_File_Direct_Info *info)
 }
 
 static Eina_Bool
-_ephoto_populate_filter(void *data, const Eina_File_Direct_Info *info)
+_ephoto_populate_filter(void *data __UNUSED__, const Eina_File_Direct_Info *info)
 {
    const char *bname = info->path + info->name_start;
 
@@ -296,7 +296,7 @@ _ephoto_thumb_change_dir(void *data)
 }
 
 static void
-_ephoto_thumb_selected(void *data, Evas_Object *o, void *event_info)
+_ephoto_thumb_selected(void *data, Evas_Object *o __UNUSED__, void *event_info)
 {
    Ephoto_Thumb_Browser *tb = data;
    Elm_Gengrid_Item *it = event_info;
@@ -311,7 +311,7 @@ _ephoto_thumb_selected(void *data, Evas_Object *o, void *event_info)
 }
 
 static void
-_changed_dir(void *data, Evas_Object *o, const char *emission, const char *source)
+_changed_dir(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Ephoto_Thumb_Browser *tb = data;
    Edje_External_Param p;
@@ -346,21 +346,21 @@ _zoom_set(Ephoto_Thumb_Browser *tb, int zoom)
 }
 
 static void
-_zoom_in(void *data, Evas_Object *o, const char *emission, const char *source)
+_zoom_in(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Ephoto_Thumb_Browser *tb = data;
    _zoom_set(tb, tb->ephoto->config->thumb_size + ZOOM_STEP);
 }
 
 static void
-_zoom_out(void *data, Evas_Object *o, const char *emission, const char *source)
+_zoom_out(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Ephoto_Thumb_Browser *tb = data;
    _zoom_set(tb, tb->ephoto->config->thumb_size - ZOOM_STEP);
 }
 
 static void
-_key_down(void *data, Evas *e, Evas_Object *o, void *event_info)
+_key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info)
 {
    Ephoto_Thumb_Browser *tb = data;
    Evas_Event_Key_Down *ev = event_info;
@@ -380,7 +380,7 @@ _key_down(void *data, Evas *e, Evas_Object *o, void *event_info)
 
 
 static void
-_layout_del(void *data, Evas *e, Evas_Object *o, void *event_info)
+_layout_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Thumb_Browser *tb = data;
    if (tb->pending.cb) tb->pending.cb((void*)tb->pending.data, NULL);

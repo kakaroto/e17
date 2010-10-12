@@ -1,181 +1,80 @@
-dnl Process this file with autoconf to produce a configure script.
+##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
+##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
+m4_define([v_maj], [5])
+m4_define([v_min], [15])
+m4_define([v_mic], [0])
+m4_define([v_rev], m4_esyscmd([(svnversion "${SVN_REPO_PATH:-.}" | grep -v export || echo 0) | awk -F : '{printf("%s\n", $1);}' | tr -d ' :MSP\n']))
+m4_if(v_rev, [0], [m4_define([v_rev], m4_esyscmd([git log 2> /dev/null | (grep -m1 git-svn-id || echo 0) | sed -e 's/.*@\([0-9]*\).*/\1/' | tr -d '\n']))])
+##--   When released, remove the dnl on the below line
+m4_undefine([v_rev])
+##--   When doing snapshots - change soname. remove dnl on below line
+dnl m4_define([relname], [ver-pre-svn-07])
+dnl m4_define([v_rel], [-release relname])
+##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
+m4_ifdef([v_rev], [m4_define([v_ver], [v_maj.v_min.v_mic.v_rev])], [m4_define([v_ver], [v_maj.v_min.v_mic])])
+m4_define([lt_rev], m4_eval(v_maj + v_min))
+m4_define([lt_cur], v_mic)
+m4_define([lt_age], v_min)
+##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
+##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 
-# get rid of that stupid cache mechanism
-rm -f config.cache
-
-AC_INIT(configure.ac)
-AM_INIT_AUTOMAKE(ephoto, 5.15.0)
-AM_CONFIG_HEADER(src/bin/config.h)
-
+AC_INIT([ephoto], [v_ver], [enlightenment-devel@lists.sourceforge.net])
+AC_PREREQ([2.60])
+AC_CONFIG_SRCDIR([configure.ac])
+AC_CONFIG_MACRO_DIR([m4])
+AC_GNU_SOURCE
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
 AC_ISC_POSIX
-AC_PROG_CC
-AC_HEADER_STDC
-AM_ENABLE_SHARED
-AM_PROG_LIBTOOL
 
-AM_WITH_DMALLOC
-
+AM_INIT_AUTOMAKE(1.6 dist-bzip2)
+AM_CONFIG_HEADER(src/bin/config.h)
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
-dnl Set PACKAGE_LOCALE_DIR in config.h.
-if test "x$LIBINTL" = "x"; then
-  LIBINTL="$INTLLIBS"
-fi
-if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/share/locale", [Locale-specific data directory])
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/share/locale", [Locale-specific data directory])
-fi
+define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])
+define([AC_LIBTOOL_LANG_GCJ_CONFIG], [:])
+define([AC_LIBTOOL_LANG_F77_CONFIG], [:])
+AC_PROG_LIBTOOL
 
-dnl Set PACKAGE_DATA_DIR in config.h.
-if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", [Shared Data Directory])
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", [Shared Data Directory])
-fi
+VMAJ=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $1);}'`
+VMIN=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $2);}'`
+VMIC=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $3);}'`
+SNAP=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $4);}'`
+version_info=`expr $VMAJ + $VMIN`":$VMIC:$VMIN"
+m4_ifdef([v_rev], , [m4_define([v_rev], [0])])
+AC_DEFINE_UNQUOTED(VREV, [v_rev], [Revison])
+AC_SUBST(VMAJ)
+AC_SUBST(version_info)
 
-dnl Set PACKAGE_BIN_DIR in config.h.
-if test "x${datadir}" = 'x${prefix}/bin'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${ac_default_prefix}/bin", [Installation directory for user executables])
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${prefix}/bin", [Installation directory for user executables])
-  fi
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}", [Installation directory for user executables])
-fi
+AC_C_BIGENDIAN
+AC_PROG_CC_C99
+AM_PROG_CC_C_O
+AC_C_CONST
+AC_FUNC_ALLOCA
+AC_C___ATTRIBUTE__
 
-dnl Set PACKAGE_EXEC_DIR in config.h.
-if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED(PACKAGE_EXEC_DIR, "${ac_default_prefix}/bin", [Installed directory for executables])
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_EXEC_DIR, "${prefix}/bin", [Installed directory for executables])
-fi
+m4_ifdef([v_mic],
+   [
+    EFL_COMPILER_FLAG([-Wall -Wextra])
+    EFL_COMPILER_FLAG([-W])
+   ])
 
-dnl Set PACKAGE_LIB_DIR in config.h.
-if test "x${datadir}" = 'x${prefix}/lib'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${ac_default_prefix}/lib", [Installation directory for libraries])
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${prefix}/lib", [Installation directory for libraries])
-  fi
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}", [Installation directory for libraries])
-fi
+EFL_COMPILER_FLAG([-Wshadow])
+EFL_COMPILER_FLAG([-fvisibility=hidden])
+EFL_COMPILER_FLAG([-ffunction-sections -fdata-sections])
+EFL_LINKER_FLAG([-fvisibility=hidden])
+EFL_LINKER_FLAG([-Wl,--as-needed])
+EFL_LINKER_FLAG([-Wl,--gc-sections])
 
-dnl Set PACKAGE_SOURCE_DIR in config.h.
-packagesrcdir=`cd $srcdir && pwd`
-AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
+ALL_LINGUAS=`cat po/LINGUAS | grep -v '^[ ]*#'`
+AC_SUBST(ALL_LINGUAS)
 
-PKG_CHECK_MODULES([EET], eet,
-   [
-      have_eet="Yes"
-   ],
-   [
-      have_eet="No"
-      echo "Eet was not found by pkg-config!";
-      AC_MSG_ERROR([Ephoto needs eet to compile.])
-   ]
-)
+AM_GNU_GETTEXT_VERSION([0.12.1])
+AM_GNU_GETTEXT([external])
 
-PKG_CHECK_MODULES([EVAS], evas,
-   [
-      have_evas="Yes"
-   ],
-   [
-      have_evas="No"
-      echo "Evas was not found by pkg-config!";
-      AC_MSG_ERROR([Ephoto needs evas to compile.])
-   ]
-)
-
-PKG_CHECK_MODULES([ECORE_FILE], ecore-file,
-   [
-      have_ecoref="Yes"
-   ],
-   [
-      have_ecoref="No"
-      echo "Ecore_File was not found by pkg-config!";
-      AC_MSG_ERROR([Ephoto needs ecore_file to compile.])
-   ]
-)
-
-PKG_CHECK_MODULES([ECORE_EVAS], ecore-evas,
-   [
-      have_ecoree="Yes"
-   ],
-   [
-      have_ecoree="No"
-      echo "Ecore_Evas was not found by pkg-config!";
-      AC_MSG_ERROR([Ephoto needs ecore_evas to compile.])
-   ]
-)
-
-PKG_CHECK_MODULES([EDJE], edje,
-   [
-      have_edje="Yes"
-   ],
-   [
-      have_edje="No"
-      echo "Edje was not found by pkg-config!";
-      AC_MSG_ERROR([Ephoto needs edje to compile.])
-   ]
-)
-
-PKG_CHECK_MODULES([EFREET_MIME], efreet-mime,
-   [
-      have_efreet_mime="Yes"
-   ],
-   [
-      have_efreet_mime="No"
-      echo "Efreet_Mime was not found by pkg-config!";
-      AC_MSG_ERROR([Ephoto needs efreet_mime to compile.])
-   ]
-)
-
-PKG_CHECK_MODULES([EINA], eina,
-   [
-      have_eina="Yes"
-   ],
-   [
-      have_eina="No"
-      echo "Eina was not found by pkg-config!";
-      AC_MSG_ERROR([Ephoto needs eina to compile.])
-   ]
-)
-
-PKG_CHECK_MODULES([ETHUMB], ethumb_client,
-   [
-      have_ethumb="Yes"
-   ],
-   [
-      have_ethumb="No"
-      echo "Ethumb was not found by pkg-config!";
-      AC_MSG_ERROR([Ephoto needs ethumb to compile.])
-   ]
-)
-
-PKG_CHECK_MODULES([ELEMENTARY], elementary,
-   [
-      have_elementary="Yes"
-   ],
-   [
-      have_elementary="No"
-      echo "Elementary was not found by pkg-config!";
-      AC_MSG_ERROR([Ephoto needs elementary to compile.])
-   ]
-)
-
-PKG_CHECK_MODULES([EIO], eio,
-   [
-      have_eio="Yes"
-   ],
-   [
-      have_eio="No"
-      echo "Eio was not found by pkg-config!";
-      AC_MSG_ERROR([Ephoto needs eio to compile.])
-   ]
-)
+PKG_CHECK_MODULES([ELEMENTARY], [elementary ecore-file ethumb_client])
+PKG_CHECK_MODULES([EFREET_MIME], [efreet-mime])
+PKG_CHECK_MODULES([EIO], [eio])
 
 AC_ARG_ENABLE([libexif],
    [AC_HELP_STRING([--enable-libexif], [enable libexif support @<:@default=yes@:>@])],
@@ -203,7 +102,51 @@ if test "x${_ephoto_enable_libexif}" = "xyes" ; then
     ])
 fi
 
-AM_CONDITIONAL(BUILD_LIBEXIF, test $have_libexif = Yes)
+AC_ARG_WITH([edje-cc],
+   [AC_HELP_STRING([--with-edje-cc=PATH],
+                   [specify a specific path to edje_cc])],
+   [edje_cc=$withval;
+    AC_MSG_NOTICE([edje_cc explicitly set to $edje_cc])
+   ],[edje_cc=$(pkg-config --variable=prefix edje)/bin/edje_cc])
+AC_SUBST(edje_cc)
+
+want_quicklaunch="auto"
+AC_ARG_ENABLE([quicklaunch],
+   [AC_HELP_STRING([--disable-quicklaunch],
+                   [disable build of quicklaunch (default=auto)])],
+   [if test "x${enableval}" = "xno"; then
+       want_quicklaunch="no"
+    elif test "x${enableval}" = "xyes"; then
+       want_quicklaunch="yes"
+    else
+       want_quicklaunch="auto"
+    fi
+   ],
+   [want_quicklaunch="auto"])
+
+if test "x${want_quicklaunch}" = "xauto"; then
+   AC_MSG_CHECKING([checking for elementary_quicklaunch binary...])
+   if test -x $(pkg-config --variable=prefix elementary)/bin/elementary_quicklaunch; then
+      AC_MSG_RESULT([found, enable quicklaunch.])
+      want_quicklaunch="yes"
+   else
+      AC_MSG_RESULT([not found, disable quicklaunch.])
+      want_quicklaunch="no"
+   fi
+fi
+
+if test "x${want_quicklaunch}" = "xyes"; then
+   AC_ARG_WITH([quicklauncher-libdir],
+      [AC_HELP_STRING([--with-quicklauncher-libdir=PATH],
+                      [specify a specific path to install quicklauncher binaries])],
+      [quicklauncher_libdir=$withval;
+      AC_MSG_NOTICE([quicklauncher_libdir explicitly set to $quicklauncher_libdir])
+      ],
+      [quicklauncher_libdir=$(pkg-config --variable=libdir elementary)])
+   AC_SUBST(quicklauncher_libdir)
+fi
+
+AM_CONDITIONAL(BUILD_QUICKLAUNCH, test "x${want_quicklaunch}" = "xyes")
 
 AC_OUTPUT([
 Makefile
@@ -215,43 +158,49 @@ data/themes/default/Makefile
 data/themes/default/images/Makefile
 src/Makefile
 src/bin/Makefile
+po/Makefile.in
 ])
 
-echo
-echo
-echo
-echo "------------------------------------------------------------------------"
-echo "$PACKAGE $VERSION"
-echo "------------------------------------------------------------------------"
-echo
-echo "    ________   ________  ___  ___  ________  ________  ________"
-echo "   /  _____/  /  __   / /  / /  / /  __   / /__  ___/ /  __   /"
-echo "  /  /____   /  /_/  / /  /_/  / /  / /  /    / /    /  / /  / "
-echo " /  _____/  /  _____/ /  __   / /  / /  /    / /    /  / /  /  "
-echo "/  /_____  /  /      /  / /  / /  /_/  /    / /    /  /_/  /   "
-echo "________/ /__/      /__/ /__/ /_______/    /_/    /_______/    "
-echo
-echo
-echo "------------------------------------------------------------------------"
-echo "$PACKAGE $VERSION"
-echo "------------------------------------------------------------------------"
-echo
-echo "Configuration Options Summary:"
-echo
-echo "  Eet .............: $have_eet"
-echo "  Evas ............: $have_evas"
-echo "  Ecore_File.......: $have_ecoref"
-echo "  Ecore_Evas.......: $have_ecoree"
-echo "  Edje ............: $have_edje"
-echo "  Efreet_Mime .....: $have_efreet_mime"
-echo "  Eina.............: $have_eina"
-echo "  Ethumb...........: $have_ethumb"
-echo "  Elementary.......: $have_elementary"
-echo "  Eio..............: $have_eio"
-echo "  Libexif .........: $have_libexif"
-echo
-echo "Installation Path.........: $prefix"
-echo
-echo "Compilation...............: make"
-echo "Installation..............: make install"
-echo
+
+
+cat << EOF
+------------------------------------------------------------------------
+$PACKAGE $VERSION
+------------------------------------------------------------------------
+
+    ________   ________  ___  ___  ________  ________  ________
+   /  _____/  /  __   / /  / /  / /  __   / /__  ___/ /  __   /
+  /  /____   /  /_/  / /  /_/  / /  / /  /    / /    /  / /  /
+ /  _____/  /  _____/ /  __   / /  / /  /    / /    /  / /  /
+/  /_____  /  /      /  / /  / /  /_/  /    / /    /  /_/  /
+________/ /__/      /__/ /__/ /_______/    /_/    /_______/
+
+
+ephoto configured with:
+
+Flags:
+   CFLAGS.....(C): $CFLAGS
+   CXXFLAGS.(C++): $CXXFLAGS
+   CPPFLAGS.(CPP): $CPPFLAGS
+   LDFLAGS...(LD): $LDFLAGS
+
+Installation:
+   PREFIX..............: $prefix
+
+Quick Launcher: ${want_quicklaunch}
+EOF
+
+if test "x${want_quicklaunch}" = "xyes"; then
+cat << EOF_QL
+   quicklauncher_libdir: $quicklauncher_libdir
+
+EOF_QL
+fi
+
+cat << EOF2
+
+Now type 'make' ('gmake' on some systems) to compile ephoto, if it
+builds successfully then you can 'make install', acquiring required
+permissions with 'su' or 'sudo'.
+
+EOF2
