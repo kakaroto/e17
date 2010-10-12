@@ -122,7 +122,7 @@ _viewer_zoom_set(Evas_Object *obj, float zoom)
 }
 
 static void
-_rotation_apply(Ephoto_Flow_Browser *fb)
+_orient_apply(Ephoto_Flow_Browser *fb)
 {
    const char *sig;
    switch (fb->orient)
@@ -163,7 +163,7 @@ _rotate_counterclock(Ephoto_Flow_Browser *fb)
          fb->orient = EPHOTO_ORIENT_180;
          break;
      }
-   _rotation_apply(fb);
+   _orient_apply(fb);
 }
 
 static void
@@ -184,7 +184,7 @@ _rotate_clock(Ephoto_Flow_Browser *fb)
          fb->orient = EPHOTO_ORIENT_0;
          break;
      }
-   _rotation_apply(fb);
+   _orient_apply(fb);
 }
 
 static void
@@ -247,8 +247,8 @@ _ephoto_flow_browser_toolbar_eval(Ephoto_Flow_Browser *fb)
      }
 }
 
-static Ephoto_Orient
-_file_rotation_get(const char *path)
+Ephoto_Orient
+ephoto_file_orient_get(const char *path)
 {
 #ifndef HAVE_LIBEXIF
    return EPHOTO_ORIENT_0;
@@ -284,7 +284,7 @@ _file_rotation_get(const char *path)
          orient = EPHOTO_ORIENT_270;
          break;
       default:
-         ERR("exif rotation not supported: %d", exif_orient);
+         ERR("exif orient not supported: %d", exif_orient);
      }
 
  end_entry:
@@ -312,8 +312,8 @@ _ephoto_flow_browser_recalc(Ephoto_Flow_Browser *fb)
           (fb->viewer, EVAS_CALLBACK_MOUSE_WHEEL, _mouse_wheel, fb);
         edje_object_part_text_set(fb->edje, "ephoto.text.title", bname);
         ephoto_title_set(fb->ephoto, bname);
-        fb->orient = _file_rotation_get(fb->path);
-        _rotation_apply(fb);
+        fb->orient = ephoto_file_orient_get(fb->path);
+        _orient_apply(fb);
      }
 
    _ephoto_flow_browser_toolbar_eval(fb);
@@ -447,6 +447,8 @@ _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
           _zoom_set(fb, fb->zoom - ZOOM_STEP);
         else if (!strcmp(k, "0"))
           _zoom_set(fb, 1.0);
+
+        return;
      }
 
    if (!strcmp(k, "Escape"))

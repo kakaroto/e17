@@ -36,6 +36,8 @@ void         ephoto_thumb_size_set(Ephoto *ephoto, int size);
 Evas_Object *ephoto_thumb_add(Ephoto *ephoto, Evas_Object *parent, const char *path);
 void         ephoto_thumb_path_set(Evas_Object *o, const char *path);
 
+Ephoto_Orient ephoto_file_orient_get(const char *path);
+
 Eina_Bool    ephoto_config_init(Ephoto *em);
 void         ephoto_config_save(Ephoto *em, Eina_Bool instant);
 void         ephoto_config_free(Ephoto *em);

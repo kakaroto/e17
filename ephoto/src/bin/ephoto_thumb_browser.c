@@ -364,7 +364,21 @@ _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
 {
    Ephoto_Thumb_Browser *tb = data;
    Evas_Event_Key_Down *ev = event_info;
+   Eina_Bool alt = evas_key_modifier_is_set(ev->modifiers, "Alt");
    const char *k = ev->keyname;
+
+   if (alt)
+     {
+        if (!strcmp(k, "Up"))
+          {
+             char *parent = ecore_file_dir_get(tb->ephoto->config->directory);
+             if (parent)
+               ephoto_thumb_browser_directory_set(tb->layout, parent);
+             free(parent);
+          }
+
+        return;
+     }
 
    if (!strcmp(k, "F5"))
      {
