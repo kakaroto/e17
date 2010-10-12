@@ -257,6 +257,7 @@ _file_rotation_get(const char *path)
    ExifData *exif;
    ExifEntry *entry;
    ExifByteOrder bo;
+   int exif_orient;
 
    if (!_path_is_jpeg(path)) return orient;
 
@@ -266,9 +267,11 @@ _file_rotation_get(const char *path)
    entry = exif_data_get_entry(exif, EXIF_TAG_ORIENTATION);
    EINA_SAFETY_ON_NULL_GOTO(entry, end_entry);
 
-   switch (exif_get_short(entry->data, bo))
+   exif_orient = exif_get_short(entry->data, bo);
+   DBG("exif_orient=%d", exif_orient);
+   switch (exif_orient)
      {
-      case 0:
+      case 1:
          orient = EPHOTO_ORIENT_0;
          break;
       case 3:
@@ -281,7 +284,7 @@ _file_rotation_get(const char *path)
          orient = EPHOTO_ORIENT_270;
          break;
       default:
-         ERR("exif rotation not supported: %d", orient);
+         ERR("exif rotation not supported: %d", exif_orient);
      }
 
  end_entry:
