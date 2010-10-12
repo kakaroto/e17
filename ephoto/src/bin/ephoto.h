@@ -72,12 +72,16 @@ enum _Ephoto_State
   EPHOTO_STATE_SLIDESHOW
 };
 
-enum _Ephoto_Orient
+enum _Ephoto_Orient /* matches with exif orientation tag */
 {
-  EPHOTO_ORIENT_0,
-  EPHOTO_ORIENT_90,
-  EPHOTO_ORIENT_180,
-  EPHOTO_ORIENT_270
+  EPHOTO_ORIENT_0 = 1,
+  EPHOTO_ORIENT_FLIP_HORIZ = 2,
+  EPHOTO_ORIENT_180 = 3,
+  EPHOTO_ORIENT_FLIP_VERT = 4,
+  EPHOTO_ORIENT_FLIP_VERT_90 = 5,
+  EPHOTO_ORIENT_90 = 6,
+  EPHOTO_ORIENT_FLIP_HORIZ_90 = 7,
+  EPHOTO_ORIENT_270 = 8
 };
 
 /* TODO: split into window & global config, allow multi window

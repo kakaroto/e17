@@ -1066,6 +1066,40 @@ collections
                        rotation.z: 270;
                     }
                  }
+                 description { state: "flip_horiz" 0.0;
+                    inherit: "default" 0.0;
+                    map {
+                       on: 1;
+                       rotation.y: 180;
+                    }
+                 }
+                 description { state: "flip_vert" 0.0;
+                    inherit: "default" 0.0;
+                    map {
+                       on: 1;
+                       rotation.x: 180;
+                    }
+                 }
+                 description { state: "flip_horiz_90" 0.0;
+                    inherit: "default" 0.0;
+                    map {
+                       on: 1;
+                       rotation {
+                          z: 90;
+                          y: 180;
+                       }
+                    }
+                 }
+                 description { state: "flip_vert_90" 0.0;
+                    inherit: "default" 0.0;
+                    map {
+                       on: 1;
+                       rotation {
+                          z: 90;
+                          x: 180;
+                       }
+                    }
+                 }
               }
               programs {
                  program {
@@ -1090,6 +1124,30 @@ collections
                     signal:  "state,rotate,270";
                     source:  "ephoto";
                     action:  STATE_SET "rotate_270" 0.0;
+                    target:  "ephoto.swallow.flow";
+                 }
+                 program {
+                    signal:  "state,flip,horiz";
+                    source:  "ephoto";
+                    action:  STATE_SET "flip_horiz" 0.0;
+                    target:  "ephoto.swallow.flow";
+                 }
+                 program {
+                    signal:  "state,flip,vert";
+                    source:  "ephoto";
+                    action:  STATE_SET "flip_vert" 0.0;
+                    target:  "ephoto.swallow.flow";
+                 }
+                 program {
+                    signal:  "state,flip,horiz,90";
+                    source:  "ephoto";
+                    action:  STATE_SET "flip_horiz_90" 0.0;
+                    target:  "ephoto.swallow.flow";
+                 }
+                 program {
+                    signal:  "state,flip,vert,90";
+                    source:  "ephoto";
+                    action:  STATE_SET "flip_vert_90" 0.0;
                     target:  "ephoto.swallow.flow";
                  }
               }

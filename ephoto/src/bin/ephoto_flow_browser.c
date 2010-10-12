@@ -139,9 +139,22 @@ _orient_apply(Ephoto_Flow_Browser *fb)
       case EPHOTO_ORIENT_270:
          sig = "state,rotate,270";
          break;
+      case EPHOTO_ORIENT_FLIP_HORIZ:
+         sig = "state,flip,horiz";
+         break;
+      case EPHOTO_ORIENT_FLIP_VERT:
+         sig = "state,flip,vert";
+         break;
+      case EPHOTO_ORIENT_FLIP_HORIZ_90:
+         sig = "state,flip,horiz,90";
+         break;
+      case EPHOTO_ORIENT_FLIP_VERT_90:
+         sig = "state,flip,vert,90";
+         break;
       default:
          return;
      }
+   DBG("orient: %d, signal '%s'", fb->orient, sig);
    edje_object_signal_emit(fb->edje, sig, "ephoto");
 }
 
@@ -161,6 +174,18 @@ _rotate_counterclock(Ephoto_Flow_Browser *fb)
          break;
       case EPHOTO_ORIENT_270:
          fb->orient = EPHOTO_ORIENT_180;
+         break;
+      case EPHOTO_ORIENT_FLIP_HORIZ:
+         fb->orient = EPHOTO_ORIENT_FLIP_HORIZ_90;
+         break;
+      case EPHOTO_ORIENT_FLIP_VERT:
+         fb->orient = EPHOTO_ORIENT_FLIP_VERT_90;
+         break;
+      case EPHOTO_ORIENT_FLIP_HORIZ_90:
+         fb->orient = EPHOTO_ORIENT_FLIP_VERT;
+         break;
+      case EPHOTO_ORIENT_FLIP_VERT_90:
+         fb->orient = EPHOTO_ORIENT_FLIP_HORIZ;
          break;
      }
    _orient_apply(fb);
@@ -182,6 +207,84 @@ _rotate_clock(Ephoto_Flow_Browser *fb)
          break;
       case EPHOTO_ORIENT_270:
          fb->orient = EPHOTO_ORIENT_0;
+         break;
+      case EPHOTO_ORIENT_FLIP_HORIZ:
+         fb->orient = EPHOTO_ORIENT_FLIP_VERT_90;
+         break;
+      case EPHOTO_ORIENT_FLIP_VERT:
+         fb->orient = EPHOTO_ORIENT_FLIP_HORIZ_90;
+         break;
+      case EPHOTO_ORIENT_FLIP_HORIZ_90:
+         fb->orient = EPHOTO_ORIENT_FLIP_HORIZ;
+         break;
+      case EPHOTO_ORIENT_FLIP_VERT_90:
+         fb->orient = EPHOTO_ORIENT_FLIP_VERT;
+         break;
+     }
+   _orient_apply(fb);
+}
+
+static void
+_flip_horiz(Ephoto_Flow_Browser *fb)
+{
+   switch (fb->orient)
+     {
+      case EPHOTO_ORIENT_0:
+         fb->orient = EPHOTO_ORIENT_FLIP_HORIZ;
+         break;
+      case EPHOTO_ORIENT_90:
+         fb->orient = EPHOTO_ORIENT_FLIP_HORIZ_90;
+         break;
+      case EPHOTO_ORIENT_180:
+         fb->orient = EPHOTO_ORIENT_FLIP_VERT;
+         break;
+      case EPHOTO_ORIENT_270:
+         fb->orient = EPHOTO_ORIENT_FLIP_VERT_90;
+         break;
+      case EPHOTO_ORIENT_FLIP_HORIZ:
+         fb->orient = EPHOTO_ORIENT_0;
+         break;
+      case EPHOTO_ORIENT_FLIP_VERT:
+         fb->orient = EPHOTO_ORIENT_180;
+         break;
+      case EPHOTO_ORIENT_FLIP_HORIZ_90:
+         fb->orient = EPHOTO_ORIENT_90;
+         break;
+      case EPHOTO_ORIENT_FLIP_VERT_90:
+         fb->orient = EPHOTO_ORIENT_270;
+         break;
+     }
+   _orient_apply(fb);
+}
+
+static void
+_flip_vert(Ephoto_Flow_Browser *fb)
+{
+   switch (fb->orient)
+     {
+      case EPHOTO_ORIENT_0:
+         fb->orient = EPHOTO_ORIENT_FLIP_VERT;
+         break;
+      case EPHOTO_ORIENT_90:
+         fb->orient = EPHOTO_ORIENT_FLIP_VERT_90;
+         break;
+      case EPHOTO_ORIENT_180:
+         fb->orient = EPHOTO_ORIENT_FLIP_HORIZ;
+         break;
+      case EPHOTO_ORIENT_270:
+         fb->orient = EPHOTO_ORIENT_FLIP_HORIZ_90;
+         break;
+      case EPHOTO_ORIENT_FLIP_HORIZ:
+         fb->orient = EPHOTO_ORIENT_180;
+         break;
+      case EPHOTO_ORIENT_FLIP_VERT:
+         fb->orient = EPHOTO_ORIENT_0;
+         break;
+      case EPHOTO_ORIENT_FLIP_HORIZ_90:
+         fb->orient = EPHOTO_ORIENT_270;
+         break;
+      case EPHOTO_ORIENT_FLIP_VERT_90:
+         fb->orient = EPHOTO_ORIENT_90;
          break;
      }
    _orient_apply(fb);
@@ -257,34 +360,21 @@ ephoto_file_orient_get(const char *path)
    ExifData *exif;
    ExifEntry *entry;
    ExifByteOrder bo;
-   int exif_orient;
 
    if (!_path_is_jpeg(path)) return orient;
 
    exif = exif_data_new_from_file(path);
-   EINA_SAFETY_ON_NULL_GOTO(exif, end);
+   if (!exif) goto end;
    bo = exif_data_get_byte_order(exif);
    entry = exif_data_get_entry(exif, EXIF_TAG_ORIENTATION);
-   EINA_SAFETY_ON_NULL_GOTO(entry, end_entry);
+   if (!entry) goto end_entry;
 
-   exif_orient = exif_get_short(entry->data, bo);
-   DBG("exif_orient=%d", exif_orient);
-   switch (exif_orient)
+   orient = exif_get_short(entry->data, bo);
+   DBG("orient=%d", orient);
+   if ((orient < 1) || (orient > 8))
      {
-      case 1:
-         orient = EPHOTO_ORIENT_0;
-         break;
-      case 3:
-         orient = EPHOTO_ORIENT_180;
-         break;
-      case 6:
-         orient = EPHOTO_ORIENT_90;
-         break;
-      case 8:
-         orient = EPHOTO_ORIENT_270;
-         break;
-      default:
-         ERR("exif orient not supported: %d", exif_orient);
+        ERR("exif orient not supported: %d", orient);
+        orient = EPHOTO_ORIENT_0;
      }
 
  end_entry:
@@ -437,6 +527,7 @@ _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
    Ephoto_Flow_Browser *fb = data;
    Evas_Event_Key_Down *ev = event_info;
    Eina_Bool ctrl = evas_key_modifier_is_set(ev->modifiers, "Control");
+   Eina_Bool shift = evas_key_modifier_is_set(ev->modifiers, "Shift");
    const char *k = ev->keyname;
 
    if (ctrl)
@@ -462,9 +553,15 @@ _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
    else if (!strcmp(k, "End"))
      _last_entry(fb);
    else if (!strcmp(k, "bracketleft"))
-     _rotate_counterclock(fb);
+     {
+        if (!shift) _rotate_counterclock(fb);
+        else        _flip_horiz(fb);
+     }
    else if (!strcmp(k, "bracketright"))
-     _rotate_clock(fb);
+     {
+        if (!shift) _rotate_clock(fb);
+        else        _flip_vert(fb);
+     }
    else if (!strcmp(k, "F5"))
      {
         if (fb->entry)

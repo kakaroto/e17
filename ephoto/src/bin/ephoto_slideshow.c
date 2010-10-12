@@ -84,6 +84,47 @@ ephoto_slideshow_add(Ephoto *ephoto, Evas_Object *parent)
    return NULL;
 }
 
+static void
+_image_resized(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *image, void *event_info __UNUSED__)
+{
+   Evas_Map *map = evas_map_new(4);
+   Evas_Coord cx, cy, x, y, w, h;
+   int orient = (long)evas_object_data_get(image, "orient");
+
+   evas_object_geometry_get(image, &x, &y, &w, &h);
+   evas_map_util_points_populate_from_geometry(map, x, y, w, h, 0);
+   cx = x + w / 2;
+   cy = y + h / 2;
+
+   switch (orient)
+     {
+      case EPHOTO_ORIENT_0:
+         break;
+      case EPHOTO_ORIENT_90:
+         evas_map_util_rotate(map, 90.0, cx, cy);
+         evas_object_map_enable_set(image, EINA_TRUE);
+         evas_object_map_set(image, map);
+         printf("rotated 90 around %d,%d (%dx%d)\n", cx, cy, w, h);
+         break;
+      case EPHOTO_ORIENT_180:
+         evas_map_util_rotate(map, 180.0, cx, cy);
+         evas_object_map_enable_set(image, EINA_TRUE);
+         evas_object_map_set(image, map);
+         printf("rotated 180 around %d,%d (%d,%d %dx%d)\n", cx, cy, x, y, w, h);
+         break;
+      case EPHOTO_ORIENT_270:
+         evas_map_util_rotate(map, 270.0, cx, cy);
+         evas_object_map_enable_set(image, EINA_TRUE);
+         evas_object_map_set(image, map);
+         printf("rotated 270 around %d,%d (%dx%d)\n", cx, cy, w, h);
+         break;
+      default:
+         ERR("unknown orient %d", orient);
+     }
+
+   evas_map_free(map);
+}
+
 static Evas_Object *
 _slideshow_item_get(void *data, Evas_Object *obj)
 {
@@ -94,6 +135,12 @@ _slideshow_item_get(void *data, Evas_Object *obj)
    elm_photo_file_set(image, entry->path);
    elm_photo_fill_inside_set(image, EINA_TRUE);
    elm_object_style_set(image, "shadow");
+
+   evas_object_data_set
+     (image, "orient", (void*)(long)ephoto_file_orient_get(entry->path));
+   evas_object_event_callback_add
+     (image, EVAS_CALLBACK_RESIZE, _image_resized, NULL);
+
    return image;
 }
 
