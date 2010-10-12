@@ -16,7 +16,24 @@ struct _Ephoto_Flow_Browser
    Ephoto *ephoto;
    Evas_Object *layout;
    Evas_Object *edje;
+   Evas_Object *orient_layout;
+   Evas_Object *orient_edje;
    Evas_Object *viewer;
+   Evas_Object *toolbar;
+   struct {
+      Elm_Toolbar_Item *zoom_in;
+      Elm_Toolbar_Item *zoom_out;
+      Elm_Toolbar_Item *zoom_1;
+      Elm_Toolbar_Item *go_first;
+      Elm_Toolbar_Item *go_prev;
+      Elm_Toolbar_Item *go_next;
+      Elm_Toolbar_Item *go_last;
+      Elm_Toolbar_Item *rotate_counterclock;
+      Elm_Toolbar_Item *rotate_clock;
+      Elm_Toolbar_Item *flip_horiz;
+      Elm_Toolbar_Item *flip_vert;
+      Elm_Toolbar_Item *slideshow;
+   } action;
    const char *path;
    Ephoto_Entry *entry;
    Ephoto_Orient orient;
@@ -155,7 +172,7 @@ _orient_apply(Ephoto_Flow_Browser *fb)
          return;
      }
    DBG("orient: %d, signal '%s'", fb->orient, sig);
-   edje_object_signal_emit(fb->edje, sig, "ephoto");
+   edje_object_signal_emit(fb->orient_edje, sig, "ephoto");
 }
 
 static void
@@ -330,23 +347,22 @@ _ephoto_flow_browser_toolbar_eval(Ephoto_Flow_Browser *fb)
 {
    if (!fb->entry)
      {
-        edje_object_signal_emit(fb->edje, "slideshow,disable", "ephoto");
-        edje_object_signal_emit(fb->edje, "prev,disable", "ephoto");
-        edje_object_signal_emit(fb->edje, "next,disable", "ephoto");
+        elm_toolbar_item_disabled_set(fb->action.go_first, EINA_TRUE);
+        elm_toolbar_item_disabled_set(fb->action.go_prev, EINA_TRUE);
+        elm_toolbar_item_disabled_set(fb->action.go_next, EINA_TRUE);
+        elm_toolbar_item_disabled_set(fb->action.go_last, EINA_TRUE);
+        elm_toolbar_item_disabled_set(fb->action.slideshow, EINA_TRUE);
      }
    else
      {
-        edje_object_signal_emit(fb->edje, "slideshow,enable", "ephoto");
+        Eina_Bool is_first = fb->entry == _first_entry_find(fb);
+        Eina_Bool is_last = fb->entry == _last_entry_find(fb);
 
-        if (fb->entry == _first_entry_find(fb))
-          edje_object_signal_emit(fb->edje, "prev,disable", "ephoto");
-        else
-          edje_object_signal_emit(fb->edje, "prev,enable", "ephoto");
-
-        if (fb->entry == _last_entry_find(fb))
-          edje_object_signal_emit(fb->edje, "next,disable", "ephoto");
-        else
-          edje_object_signal_emit(fb->edje, "next,enable", "ephoto");
+        elm_toolbar_item_disabled_set(fb->action.go_first, is_first);
+        elm_toolbar_item_disabled_set(fb->action.go_prev, is_first);
+        elm_toolbar_item_disabled_set(fb->action.go_next, is_last);
+        elm_toolbar_item_disabled_set(fb->action.go_last, is_last);
+        elm_toolbar_item_disabled_set(fb->action.slideshow, EINA_FALSE);
      }
 }
 
@@ -396,11 +412,12 @@ _ephoto_flow_browser_recalc(Ephoto_Flow_Browser *fb)
    if (fb->path)
      {
         const char *bname = ecore_file_file_get(fb->path);
-        fb->viewer = _viewer_add(fb->layout, fb->path);
-        elm_layout_content_set(fb->layout, "ephoto.swallow.flow", fb->viewer);
+        fb->viewer = _viewer_add(fb->orient_layout, fb->path);
+        elm_layout_content_set
+          (fb->orient_layout, "elm.swallow.content", fb->viewer);
         evas_object_event_callback_add
           (fb->viewer, EVAS_CALLBACK_MOUSE_WHEEL, _mouse_wheel, fb);
-        edje_object_part_text_set(fb->edje, "ephoto.text.title", bname);
+        edje_object_part_text_set(fb->edje, "elm.text.title", bname);
         ephoto_title_set(fb->ephoto, bname);
         fb->orient = ephoto_file_orient_get(fb->path);
         _orient_apply(fb);
@@ -419,29 +436,32 @@ _zoom_set(Ephoto_Flow_Browser *fb, double zoom)
    _viewer_zoom_set(fb->viewer, zoom);
    fb->zoom = zoom;
 
-   if (zoom <= ZOOM_MIN)
-     edje_object_signal_emit(fb->edje, "zoom_out,disable", "ephoto");
-   else
-     edje_object_signal_emit(fb->edje, "zoom_out,enable", "ephoto");
-
-   if (zoom >= ZOOM_MAX)
-     edje_object_signal_emit(fb->edje, "zoom_in,disable", "ephoto");
-   else
-     edje_object_signal_emit(fb->edje, "zoom_in,enable", "ephoto");
+   elm_toolbar_item_disabled_set(fb->action.zoom_out, zoom <= ZOOM_MIN);
+   elm_toolbar_item_disabled_set(fb->action.zoom_in, zoom >= ZOOM_MAX);
 }
 
 static void
-_zoom_in(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_zoom_in(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
+   elm_toolbar_item_unselect(fb->action.zoom_in);
    _zoom_set(fb, fb->zoom + ZOOM_STEP);
 }
 
 static void
-_zoom_out(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_zoom_out(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
+   elm_toolbar_item_unselect(fb->action.zoom_out);
    _zoom_set(fb, fb->zoom - ZOOM_STEP);
+}
+
+static void
+_zoom_1(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+   Ephoto_Flow_Browser *fb = data;
+   elm_toolbar_item_unselect(fb->action.zoom_1);
+   _zoom_set(fb, 1.0);
 }
 
 static void
@@ -501,17 +521,76 @@ _last_entry(Ephoto_Flow_Browser *fb)
 }
 
 static void
-_next_button(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_go_first(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
+   elm_toolbar_item_unselect(fb->action.go_first);
+   _first_entry(fb);
+}
+
+static void
+_go_prev(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+   Ephoto_Flow_Browser *fb = data;
+   elm_toolbar_item_unselect(fb->action.go_prev);
+   _prev_entry(fb);
+}
+
+static void
+_go_next(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+   Ephoto_Flow_Browser *fb = data;
+   elm_toolbar_item_unselect(fb->action.go_next);
    _next_entry(fb);
 }
 
 static void
-_prev_button(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_go_last(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
-   _prev_entry(fb);
+   elm_toolbar_item_unselect(fb->action.go_last);
+   _last_entry(fb);
+}
+
+static void
+_go_rotate_counterclock(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+   Ephoto_Flow_Browser *fb = data;
+   elm_toolbar_item_unselect(fb->action.rotate_counterclock);
+   _rotate_counterclock(fb);
+}
+
+static void
+_go_rotate_clock(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+   Ephoto_Flow_Browser *fb = data;
+   elm_toolbar_item_unselect(fb->action.rotate_clock);
+   _rotate_clock(fb);
+}
+
+static void
+_go_flip_horiz(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+   Ephoto_Flow_Browser *fb = data;
+   elm_toolbar_item_unselect(fb->action.flip_horiz);
+   _flip_horiz(fb);
+}
+
+static void
+_go_flip_vert(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+   Ephoto_Flow_Browser *fb = data;
+   elm_toolbar_item_unselect(fb->action.flip_vert);
+   _flip_vert(fb);
+}
+
+static void
+_slideshow(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+   Ephoto_Flow_Browser *fb = data;
+   elm_toolbar_item_unselect(fb->action.slideshow);
+   if (fb->entry)
+     evas_object_smart_callback_call(fb->layout, "slideshow", fb->entry);
 }
 
 static void
@@ -577,6 +656,56 @@ _layout_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *eve
    free(fb);
 }
 
+/* FIXME: this should go in elm_icon itself! */
+static Eina_Bool
+_icon_load(Evas_Object *ic, const char *name, int size)
+{
+   char *path;
+
+   if (elm_icon_standard_set(ic, name)) return EINA_TRUE;
+
+   path = efreet_icon_path_find(getenv("E_ICON_THEME"), name, size);
+   if (!path)
+     {
+        const char **itr, *themes[] = {
+          "default", "highcolor", "gnome", "Human", "oxygen", NULL
+        };
+        for (itr = themes; *itr; itr++)
+          {
+             path = efreet_icon_path_find(*itr, name, size);
+             if (path) break;
+          }
+     }
+   if (!path) return EINA_FALSE;
+   elm_icon_file_set(ic, path, NULL);
+   free(path);
+   return EINA_TRUE;
+}
+
+static Elm_Toolbar_Item *
+_toolbar_item_add(Ephoto_Flow_Browser *fb, const char *icon, const char *label, Evas_Smart_Cb cb)
+{
+   /* FIXME TODO: toolbar should get a string as icon, get it from theme
+    * for toolbar or menu, and fallback to freedesktop.org icon if not found
+    */
+   Evas_Object *ic = elm_icon_add(fb->toolbar);
+   if (!_icon_load(ic, icon, elm_toolbar_icon_size_get(fb->toolbar)))
+     {
+        evas_object_del(ic);
+        ic = NULL;
+     }
+   return elm_toolbar_item_add(fb->toolbar, ic, label, cb, fb);
+}
+
+static Elm_Toolbar_Item *
+_toolbar_item_separator_add(Ephoto_Flow_Browser *fb)
+{
+   Elm_Toolbar_Item *it = elm_toolbar_item_add
+     (fb->toolbar, NULL, NULL, NULL, NULL);
+   elm_toolbar_item_separator_set(it, EINA_TRUE);
+   return it;
+}
+
 Evas_Object *
 ephoto_flow_browser_add(Ephoto *ephoto, Evas_Object *parent)
 {
@@ -597,22 +726,73 @@ ephoto_flow_browser_add(Ephoto *ephoto, Evas_Object *parent)
    elm_object_focus_allow_set(layout, EINA_TRUE);
    evas_object_data_set(layout, "flow_browser", fb);
 
-   edje_object_signal_callback_add
-     (fb->edje, "zoom_out,clicked", "ephoto", _zoom_out, fb);
-   edje_object_signal_callback_add
-     (fb->edje, "zoom_in,clicked", "ephoto", _zoom_in, fb);
-   edje_object_signal_callback_add
-     (fb->edje, "prev,clicked", "ephoto", _prev_button, fb);
-   edje_object_signal_callback_add
-     (fb->edje, "next,clicked", "ephoto", _next_button, fb);
-   edje_object_signal_callback_add
-     (fb->edje, "back", "ephoto", _back, fb);
+   edje_object_signal_callback_add(fb->edje, "elm,action,back", "", _back, fb);
 
-   if (!elm_layout_file_set(layout, THEME_FILE, "ephoto/flow/layout"))
+   if (!elm_layout_theme_set
+       (layout, "layout", "application", "toolbar-content-back"))
      {
-        evas_object_del(layout);
-        return NULL;
+        ERR("could not load style 'toolbar-content-back' from theme");
+        goto error;
      }
+
+   fb->toolbar = edje_object_part_external_object_get
+     (fb->edje, "elm.external.toolbar");
+   if (!fb->toolbar)
+     {
+        ERR("no toolbar in layout!");
+        goto error;
+     }
+   elm_toolbar_homogenous_set(fb->toolbar, EINA_FALSE);
+
+   fb->action.slideshow = _toolbar_item_add
+     (fb, "media-playback-start", "Slideshow", _slideshow);
+
+   fb->action.zoom_in = _toolbar_item_add
+     (fb, "zoom-in", "Zoom In", _zoom_in);
+   fb->action.zoom_out = _toolbar_item_add
+     (fb, "zoom-out", "Zoom Out", _zoom_out);
+   fb->action.zoom_1 = _toolbar_item_add
+     (fb, "zoom-original", "Zoom 1:1", _zoom_1);
+
+   _toolbar_item_separator_add(fb);
+
+   fb->action.go_first = _toolbar_item_add(fb, "go-first", "First", _go_first);
+   fb->action.go_prev = _toolbar_item_add
+     (fb, "go-previous", "Previous", _go_prev);
+   fb->action.go_next = _toolbar_item_add(fb, "go-next", "Next", _go_next);
+   fb->action.go_last = _toolbar_item_add(fb, "go-last", "Last", _go_last);
+
+   _toolbar_item_separator_add(fb);
+
+   fb->action.rotate_counterclock = _toolbar_item_add
+     (fb, "object-rotate-left", "Rotate Left", _go_rotate_counterclock);
+   fb->action.rotate_clock = _toolbar_item_add
+     (fb, "object-rotate-right", "Rotate Right", _go_rotate_clock);
+   fb->action.flip_horiz = _toolbar_item_add
+     (fb, "object-flip-horizontal", "Flip Horiz.", _go_flip_horiz);
+   fb->action.flip_vert = _toolbar_item_add
+     (fb, "object-flip-vertical", "Flip Vert.", _go_flip_vert);
+
+   elm_toolbar_item_tooltip_text_set
+     (fb->action.rotate_counterclock,
+      "Rotate object to the left (counter-clockwise)");
+   elm_toolbar_item_tooltip_text_set
+     (fb->action.rotate_clock, "Rotate object to the right (clockwise)");
+
+   elm_toolbar_item_tooltip_text_set
+     (fb->action.flip_horiz, "Flip object horizontally");
+   elm_toolbar_item_tooltip_text_set
+     (fb->action.flip_vert, "Flip object vertically");
+
+   fb->orient_layout = elm_layout_add(layout);
+   if (!elm_layout_theme_set
+       (fb->orient_layout, "layout", "ephoto", "orient"))
+     {
+        ERR("could not load style 'ephoto/orient' from theme");
+        goto error;
+     }
+   fb->orient_edje = elm_layout_edje_get(fb->orient_layout);
+   elm_layout_content_set(fb->layout, "elm.swallow.content", fb->orient_layout);
 
    _ephoto_flow_browser_toolbar_eval(fb);
 

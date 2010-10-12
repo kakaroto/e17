@@ -2,1361 +2,732 @@ externals {
    external: "elm";
 }
 
-collections
-{
-	images 
-	{
-		image: "thumb_shadow.png" COMP;
-	}
-	group
-	{
-		name: "/ephoto/thumb";
-		parts
-		{
-                  
-			part
-			{
-				name: "background";
-				type: IMAGE;
-				mouse_events: 1;
-				description
-				{
-					state: "default" 0.0;
-					color: 255 255 255 255;
-					image.normal: "thumb_shadow.png";
-					image.border: 17 17 17 17;
-				}
-			}
-                        part
-                        {
-                           name: "border";
-                           type: RECT;
-                           mouse_events: 0;
-                           description
-                           {
-                              state: "default" 0.0;
-                              color: 255 255 255 255;
-                              rel1.to: "background";
-                              rel1.offset: 16 16;
-                              rel2.to: "background";
-                              rel2.offset: -15 -15;
-                           }
-                        }
-			part
-			{
-				name: "clipper";
-				type: RECT;
-				mouse_events: 0;
-				description
-				{
-					state: "default" 0.0;
-					visible: 1;
-					rel1.to: "border";
-                                        rel1.offset: 8  8;
-                                        rel2.to: "border";
-					rel2.offset: -9 -9;
-					color: 255 255 255 255;
-				}
-			}
-			part
-			{
-				name: "ephoto.swallow.content";
-				type: SWALLOW;
-				mouse_events: 1;
-				clip_to: "clipper";
-				description 
-				{
-					state: "default" 0.0;
-					visible: 1;
-					rel1.to: "clipper";
-					rel1.relative: 0.0 0.0;
-					rel2.to: "clipper";
-					rel2.relative: 1.0 1.0;
-					color: 255 255 255 255;
-				}
-			}
-			part
-			{
-				name: "event_area";
-				type: RECT;
-				mouse_events: 1;
-				description
-				{
-					state: "default" 0.0;
-					color: 255 255 255 0;
-					rel1.to: "clipper";
-					rel1.relative: 0.0 0.0;
-					rel1.offset: 0 0;
-					rel2.to: "clipper";
-					rel2.relative: 1.0 1.0;
-					rel2.offset: -1 -1;
-				}
-			}
-		}
-	}
+collections {
+   images {
+      image: "thumb_shadow.png" COMP;
+   }
 
-        group { name: "/ephoto/thumb/no_border";
-           parts {
-              part { name: "ephoto.swallow.content";
-                 type: SWALLOW;
-                 mouse_events: 0;
-                 description { state: "default" 0.0;
-                    min: 16 16;
-                    rel1.offset: 8  8;
-                    rel2.offset: -9 -9;
-                 }
-              }
+   group { name: "elm/gengrid/item/up/ephoto";
+      data.item: "labels" "elm.text.label";
+      images {
+         set { name: "up";
+            image {
+               image: "up-128.png" COMP;
+               size: 1 1 128 128;
+            }
+            image {
+               image: "up-256.png" COMP;
+               size: 129 129 256 256;
+            }
+            image {
+               image: "up-512.png" COMP;
+               size: 257 257 512 512;
+            }
+         }
+         image: "bt_sm_base1.png" COMP;
+         image: "bt_sm_shine.png" COMP;
+         image: "bt_sm_hilight.png" COMP;
+      }
 
-              part {
-                 name: "eventarea";
-                 type: RECT;
-                 description { state: "default" 0.0;
-                    color: 255 255 255 0;
-                 }
-              }
-           }
-        }
+      parts {
+         part { name: "event";
+            type: RECT;
+            repeat_events: 1;
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         }
 
-        group { name: "elm/gengrid/item/up/ephoto";
-           data.item: "labels" "elm.text.label";
-           images {
-              set { name: "up";
-                 image {
-                    image: "up-128.png" COMP;
-                    size: 1 1 128 128;
-                 }
-                 image {
-                    image: "up-256.png" COMP;
-                    size: 129 129 256 256;
-                 }
-                 image {
-                    image: "up-512.png" COMP;
-                    size: 257 257 512 512;
-                 }
-              }
-              image: "bt_sm_base1.png" COMP;
-              image: "bt_sm_shine.png" COMP;
-              image: "bt_sm_hilight.png" COMP;
-           }
-           parts {
-              part { name: "event";
-                 type: RECT;
-                 repeat_events: 1;
-                 description { state: "default" 0.0;
-                    color: 0 0 0 0;
-                 }
-              }
+         part { name: "bg";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+               rel1.offset: -3 -3;
+               rel2.offset: 2 2;
+               image { normal: "bt_sm_base1.png";
+                  border: 6 6 6 6;
+               }
+               image.middle: SOLID;
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+            }
+         }
 
-              part { name: "bg";
-                 mouse_events: 0;
-                 description { state: "default" 0.0;
-                    visible: 0;
-                    color: 255 255 255 0;
-                    rel1.offset: -3 -3;
-                    rel2.offset: 2 2;
-                    image { normal: "bt_sm_base1.png";
-                       border: 6 6 6 6;
-                    }
-                    image.middle: SOLID;
-                 }
-                 description { state: "selected" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 1;
-                    color: 255 255 255 255;
-                 }
-              }
+         part { name: "img";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               aspect_preference: BOTH;
+               aspect: 1.0 1.0;
+               image.normal: "up";
+               rel2 { to_y: "elm.text.label";
+                  relative: 1.0 0.0;
+                  offset: -1 -2;
+               }
+            }
+         }
 
-              part { name: "img";
-                 type: IMAGE;
-                 mouse_events: 0;
-                 description {
-                    state: "default" 0.0;
-                    aspect_preference: BOTH;
-                    aspect: 1.0 1.0;
-                    image.normal: "up";
-                    rel2 { to_y: "elm.text.label";
-                       relative: 1.0 0.0;
-                       offset: -1 -2;
-                    }
-                 }
-              }
+         part { name: "elm.text.label";
+            type: TEXT;
+            effect: SOFT_SHADOW;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               color: 0 0 0 255;
+               color3: 0 0 0 0;
+               align: 0.5 1.0;
+               rel1 { relative: 0.0  1.0;
+                  offset: 2 -25;
+               }
+               rel2 { relative: 1.0  1.0;
+                  offset: -3 -3;
+               }
+               text { font: "Sans";
+                  size: 10;
+                  min: 0 1;
+                  align: 0.5 0.0;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 224 224 224 255;
+               color3: 0 0 0 64;
+            }
+         }
 
-              part { name: "elm.text.label";
-                 type: TEXT;
-                 effect: SOFT_SHADOW;
-                 mouse_events: 0;
-                 scale: 1;
-                 description { state: "default" 0.0;
-                    color: 0 0 0 255;
-                    color3: 0 0 0 0;
-                    align: 0.5 1.0;
-                    rel1 { relative: 0.0  1.0;
-                       offset: 2 -25;
-                    }
-                    rel2 { relative: 1.0  1.0;
-                       offset: -3 -3;
-                    }
-                    text { font: "Sans";
-                       size: 10;
-                       min: 0 1;
-                       align: 0.5 0.0;
-                    }
-                 }
-                 description { state: "selected" 0.0;
-                    inherit: "default" 0.0;
-                    color: 224 224 224 255;
-                    color3: 0 0 0 64;
-                 }
-              }
+         part { name: "fg1";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+               rel1.offset: -3 -3;
+               rel2 { relative: 1.0 0.5;
+                  offset: 2 -1;
+               }
+               image { normal: "bt_sm_hilight.png";
+                  border: 6 6 6 0;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+            }
+         }
 
-              part { name: "fg1";
-                 mouse_events: 0;
-                 description { state: "default" 0.0;
-                    visible: 0;
-                    color: 255 255 255 0;
-                    rel1.offset: -3 -3;
-                    rel2 { relative: 1.0 0.5;
-                       offset: 2 -1;
-                    }
-                    image { normal: "bt_sm_hilight.png";
-                       border: 6 6 6 0;
-                    }
-                 }
-                 description { state: "selected" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 1;
-                    color: 255 255 255 255;
-                 }
-              }
+         part { name: "fg2";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+               rel1.offset: -3 -3;
+               rel2.offset: 2 2;
+               image { normal: "bt_sm_shine.png";
+                  border: 6 6 6 0;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+            }
+         }
 
-              part { name: "fg2";
-                 mouse_events: 0;
-                 description { state: "default" 0.0;
-                    visible: 0;
-                    color: 255 255 255 0;
-                    rel1.offset: -3 -3;
-                    rel2.offset: 2 2;
-                    image { normal: "bt_sm_shine.png";
-                       border: 6 6 6 0;
-                    }
-                 }
-                 description { state: "selected" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 1;
-                    color: 255 255 255 255;
-                 }
-              }
+         programs {
+            program {
+               signal:  "elm,state,selected";
+               source:  "elm";
+               action:  STATE_SET "selected" 0.0;
+               target:  "bg";
+               target:  "fg1";
+               target:  "fg2";
+               target:  "elm.text.label";
+            }
+            program {
+               signal:  "elm,state,unselected";
+               source:  "elm";
+               action:  STATE_SET "default" 0.0;
+               target:  "bg";
+               target:  "fg1";
+               target:  "fg2";
+               target:  "elm.text.label";
+               transition: LINEAR 0.1;
+            }
+         }
+      }
+   }
 
-              programs {
-                 program {
-                    signal:  "elm,state,selected";
-                    source:  "elm";
-                    action:  STATE_SET "selected" 0.0;
-                    target:  "bg";
-                    target:  "fg1";
-                    target:  "fg2";
-                    target:  "elm.text.label";
-                 }
-                 program {
-                    signal:  "elm,state,unselected";
-                    source:  "elm";
-                    action:  STATE_SET "default" 0.0;
-                    target:  "bg";
-                    target:  "fg1";
-                    target:  "fg2";
-                    target:  "elm.text.label";
-                    transition: LINEAR 0.1;
-                 }
-              }
-           }
-        }
+   group { name: "elm/gengrid/item/file/ephoto";
+      data {
+         item: "icons" "elm.swallow.icon";
+         item: "labels" "elm.text.label";
+      }
+      images {
+         image: "bt_sm_base1.png" COMP;
+         image: "bt_sm_shine.png" COMP;
+         image: "bt_sm_hilight.png" COMP;
+      }
+      parts {
+         part { name: "event";
+            type: RECT;
+            repeat_events: 1;
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         }
 
-        group { name: "elm/gengrid/item/file/ephoto";
-           data {
-              item: "icons" "elm.swallow.icon";
-              item: "labels" "elm.text.label";
-           }
-           images {
-              image: "bt_sm_base1.png" COMP;
-              image: "bt_sm_shine.png" COMP;
-              image: "bt_sm_hilight.png" COMP;
-           }
-           parts {
-              part { name: "event";
-                 type: RECT;
-                 repeat_events: 1;
-                 description { state: "default" 0.0;
-                    color: 0 0 0 0;
-                 }
-              }
+         part { name: "bg";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+               rel1.offset: -3 -3;
+               rel2.offset: 2 2;
+               image { normal: "bt_sm_base1.png";
+                  border: 6 6 6 6;
+               }
+               image.middle: SOLID;
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+            }
+         }
 
-              part { name: "bg";
-                 mouse_events: 0;
-                 description { state: "default" 0.0;
-                    visible: 0;
-                    color: 255 255 255 0;
-                    rel1.offset: -3 -3;
-                    rel2.offset: 2 2;
-                    image { normal: "bt_sm_base1.png";
-                       border: 6 6 6 6;
-                    }
-                    image.middle: SOLID;
-                 }
-                 description { state: "selected" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 1;
-                    color: 255 255 255 255;
-                 }
-              }
+         part { name: "border-shadow";
+            type: IMAGE;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1 { to: "elm.swallow.icon";
+                  offset: -18 -18;
+               }
+               rel2 { to_x: "elm.swallow.icon";
+                  to_y: "elm.text.label";
+                  offset: 17 17;
+               }
+               image { normal: "thumb_shadow.png";
+                  border: 17 17 17 17;
+                  middle: NONE;
+               }
+            }
+         }
 
-              part { name: "border-shadow";
-                 type: IMAGE;
-                 mouse_events: 0;
-                 description { state: "default" 0.0;
-                    rel1 { to: "elm.swallow.icon";
-                       offset: -18 -18;
-                    }
-                    rel2 { to_x: "elm.swallow.icon";
-                       to_y: "elm.text.label";
-                       offset: 17 17;
-                    }
-                    image { normal: "thumb_shadow.png";
-                       border: 17 17 17 17;
-                       middle: NONE;
-                    }
-                 }
-              }
+         part { name: "border";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1 { to: "border-shadow";
+                  offset: 16 16;
+               }
+               rel2 { to: "border-shadow";
+                  offset: -15 -15;
+               }
+            }
+         }
 
-              part { name: "border";
-                 type: RECT;
-                 mouse_events: 0;
-                 description { state: "default" 0.0;
-                    rel1 { to: "border-shadow";
-                       offset: 16 16;
-                    }
-                    rel2 { to: "border-shadow";
-                       offset: -15 -15;
-                    }
-                 }
-              }
+         part { name: "elm.swallow.icon";
+            type: SWALLOW;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               aspect_preference: BOTH;
+               aspect: 1.0 1.0;
+               rel1.offset: 0 8;
+               rel2 { to_y: "elm.text.label";
+                  relative: 1.0 0.0;
+                  offset: -1 -2;
+               }
+            }
+         }
 
-              part { name: "elm.swallow.icon";
-                 type: SWALLOW;
-                 mouse_events: 0;
-                 description {
-                    state: "default" 0.0;
-                    aspect_preference: BOTH;
-                    aspect: 1.0 1.0;
-                    rel1.offset: 0 8;
-                    rel2 { to_y: "elm.text.label";
-                       relative: 1.0 0.0;
-                       offset: -1 -2;
-                    }
-                 }
-              }
+         part { name: "elm.text.label";
+            type: TEXT;
+            effect: SOFT_SHADOW;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               color: 0 0 0 255;
+               color3: 0 0 0 0;
+               align: 0.5 1.0;
+               rel1 { relative: 0.0  1.0;
+                  offset: 2 -30;
+               }
+               rel2 { relative: 1.0  1.0;
+                  offset: -3 -15;
+               }
+               text { font: "Sans";
+                  size: 10;
+                  min: 0 1;
+                  align: 0.5 0.0;
+               }
+            }
+         }
 
-              part { name: "elm.text.label";
-                 type: TEXT;
-                 effect: SOFT_SHADOW;
-                 mouse_events: 0;
-                 scale: 1;
-                 description { state: "default" 0.0;
-                    color: 0 0 0 255;
-                    color3: 0 0 0 0;
-                    align: 0.5 1.0;
-                    rel1 { relative: 0.0  1.0;
-                       offset: 2 -30;
-                    }
-                    rel2 { relative: 1.0  1.0;
-                       offset: -3 -15;
-                    }
-                    text { font: "Sans";
-                       size: 10;
-                       min: 0 1;
-                       align: 0.5 0.0;
-                    }
-                 }
-              }
+         part { name: "fg1";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+               rel1.offset: -3 -3;
+               rel2 { relative: 1.0 0.5;
+                  offset: 2 -1;
+               }
+               image { normal: "bt_sm_hilight.png";
+                  border: 6 6 6 0;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+            }
+         }
 
-              part { name: "fg1";
-                 mouse_events: 0;
-                 description { state: "default" 0.0;
-                    visible: 0;
-                    color: 255 255 255 0;
-                    rel1.offset: -3 -3;
-                    rel2 { relative: 1.0 0.5;
-                       offset: 2 -1;
-                    }
-                    image { normal: "bt_sm_hilight.png";
-                       border: 6 6 6 0;
-                    }
-                 }
-                 description { state: "selected" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 1;
-                    color: 255 255 255 255;
-                 }
-              }
+         part { name: "fg2";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+               rel1.offset: -3 -3;
+               rel2.offset: 2 2;
+               image { normal: "bt_sm_shine.png";
+                  border: 6 6 6 0;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+            }
+         }
 
-              part { name: "fg2";
-                 mouse_events: 0;
-                 description { state: "default" 0.0;
-                    visible: 0;
-                    color: 255 255 255 0;
-                    rel1.offset: -3 -3;
-                    rel2.offset: 2 2;
-                    image { normal: "bt_sm_shine.png";
-                       border: 6 6 6 0;
-                    }
-                 }
-                 description { state: "selected" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 1;
-                    color: 255 255 255 255;
-                 }
-              }
+         programs {
+            program {
+               signal:  "elm,state,selected";
+               source:  "elm";
+               action:  STATE_SET "selected" 0.0;
+               target:  "bg";
+               target:  "fg1";
+               target:  "fg2";
+            }
+            program {
+               signal:  "elm,state,unselected";
+               source:  "elm";
+               action:  STATE_SET "default" 0.0;
+               target:  "bg";
+               target:  "fg1";
+               target:  "fg2";
+               transition: LINEAR 0.1;
+            }
+         }
+      }
+   }
 
-              programs {
-                 program {
-                    signal:  "elm,state,selected";
-                    source:  "elm";
-                    action:  STATE_SET "selected" 0.0;
-                    target:  "bg";
-                    target:  "fg1";
-                    target:  "fg2";
-                 }
-                 program {
-                    signal:  "elm,state,unselected";
-                    source:  "elm";
-                    action:  STATE_SET "default" 0.0;
-                    target:  "bg";
-                    target:  "fg1";
-                    target:  "fg2";
-                    transition: LINEAR 0.1;
-                 }
-              }
-           }
-        }
+   group { name: "elm/gengrid/item/dir/ephoto";
+      data {
+         item: "icons" "elm.swallow.icon.1 elm.swallow.icon.2 elm.swallow.icon.3 elm.swallow.icon.4";
+         item: "labels" "elm.text.label";
+         item: "states" "have_files";
+      }
+      images {
+         set { name: "directory";
+            image {
+               image: "directory-128.png" COMP;
+               size: 1 1 128 128;
+            }
+            image {
+               image: "directory-256.png" COMP;
+               size: 129 129 256 256;
+            }
+            image {
+               image: "directory-512.png" COMP;
+               size: 257 257 512 512;
+            }
+         }
+         image: "bt_sm_base1.png" COMP;
+         image: "bt_sm_shine.png" COMP;
+         image: "bt_sm_hilight.png" COMP;
+      }
+      parts {
+         part { name: "event";
+            type: RECT;
+            repeat_events: 1;
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         }
 
-        group { name: "elm/gengrid/item/dir/ephoto";
-           data {
-              item: "icons" "elm.swallow.icon.1 elm.swallow.icon.2 elm.swallow.icon.3 elm.swallow.icon.4";
-              item: "labels" "elm.text.label";
-              item: "states" "have_files";
-           }
-           images {
-              set { name: "directory";
-                 image {
-                    image: "directory-128.png" COMP;
-                    size: 1 1 128 128;
-                 }
-                 image {
-                    image: "directory-256.png" COMP;
-                    size: 129 129 256 256;
-                 }
-                 image {
-                    image: "directory-512.png" COMP;
-                    size: 257 257 512 512;
-                 }
-              }
-              image: "bt_sm_base1.png" COMP;
-              image: "bt_sm_shine.png" COMP;
-              image: "bt_sm_hilight.png" COMP;
-           }
-           parts {
-              part { name: "event";
-                 type: RECT;
-                 repeat_events: 1;
-                 description { state: "default" 0.0;
-                    color: 0 0 0 0;
-                 }
-              }
+         part { name: "bg";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+               rel1.offset: -3 -3;
+               rel2.offset: 2 2;
+               image { normal: "bt_sm_base1.png";
+                  border: 6 6 6 6;
+               }
+               image.middle: SOLID;
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+            }
+         }
 
-              part { name: "bg";
-                 mouse_events: 0;
-                 description { state: "default" 0.0;
-                    visible: 0;
-                    color: 255 255 255 0;
-                    rel1.offset: -3 -3;
-                    rel2.offset: 2 2;
-                    image { normal: "bt_sm_base1.png";
-                       border: 6 6 6 6;
-                    }
-                    image.middle: SOLID;
-                 }
-                 description { state: "selected" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 1;
-                    color: 255 255 255 255;
-                 }
-              }
+         part { name: "img";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               aspect_preference: BOTH;
+               aspect: 1.0 1.0;
+               image.normal: "directory";
+               rel2 { to_y: "elm.text.label";
+                  relative: 1.0 0.0;
+                  offset: -1 -2;
+               }
+            }
+         }
 
-              part { name: "img";
-                 type: IMAGE;
-                 mouse_events: 0;
-                 description {
-                    state: "default" 0.0;
-                    aspect_preference: BOTH;
-                    aspect: 1.0 1.0;
-                    image.normal: "directory";
-                    rel2 { to_y: "elm.text.label";
-                       relative: 1.0 0.0;
-                       offset: -1 -2;
-                    }
-                 }
-              }
+         part { name: "have-files-clipper";
+            type: RECT;
+            description { state: "default" 0.0;
+               color: 255 255 255 0;
+               visible: 0;
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+               visible: 1;
+            }
+         }
 
-              part { name: "have-files-clipper";
-                 type: RECT;
-                 description { state: "default" 0.0;
-                    color: 255 255 255 0;
-                    visible: 0;
-                 }
-                 description { state: "visible" 0.0;
-                    inherit: "default" 0.0;
-                    color: 255 255 255 255;
-                    visible: 1;
-                 }
-              }
+         part { name: "icon_box_margin";
+            type: RECT;
+            mouse_events: 0;
+            clip_to: "have-files-clipper";
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+               rel1 { to: "icon_box";
+                  offset: -1 -1;
+               }
+               rel2 { to: "icon_box";
+                  offset: 0 0;
+               }
+            }
+         }
 
-              part { name: "icon_box_margin";
-                 type: RECT;
-                 mouse_events: 0;
-                 clip_to: "have-files-clipper";
-                 description {
-                    state: "default" 0.0;
-                    color: 0 0 0 255;
-                    rel1 { to: "icon_box";
-                       offset: -1 -1;
-                    }
-                    rel2 { to: "icon_box";
-                       offset: 0 0;
-                    }
-                 }
-              }
+         part { name: "icon_box";
+            type: RECT;
+            mouse_events: 0;
+            clip_to: "have-files-clipper";
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               align: 1.0 1.0;
+               min:  32 32;
+               rel1 {
+                  relative: 0.25 0.25;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -11 -4;
+                  to_y: "elm.text.label";
+               }
+            }
+         }
 
-              part { name: "icon_box";
-                 type: RECT;
-                 mouse_events: 0;
-                 clip_to: "have-files-clipper";
-                 description {
-                    state: "default" 0.0;
-                    color: 255 255 255 255;
-                    align: 1.0 1.0;
-                    min:  32 32;
-                    rel1 {
-                       relative: 0.25 0.25;
-                       offset: 0 0;
-                    }
-                    rel2 {
-                       relative: 1.0 0.0;
-                       offset: -11 -4;
-                       to_y: "elm.text.label";
-                    }
-                 }
-              }
+         part { name: "elm.swallow.icon.1";
+            type: SWALLOW;
+            mouse_events: 0;
+            clip_to: "have-files-clipper";
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  to: "icon_box";
+               }
+               rel2 {
+                  relative: 0.5 0.5;
+                  offset: -1 -1;
+                  to: "icon_box";
+               }
+            }
+         }
 
-              part { name: "elm.swallow.icon.1";
-                 type: SWALLOW;
-                 mouse_events: 0;
-                 clip_to: "have-files-clipper";
-                 description {
-                    state: "default" 0.0;
-                    rel1 {
-                       relative: 0.0 0.0;
-                       to: "icon_box";
-                    }
-                    rel2 {
-                       relative: 0.5 0.5;
-                       offset: -1 -1;
-                       to: "icon_box";
-                    }
-                 }
-              }
+         part { name: "elm.swallow.icon.2";
+            type: SWALLOW;
+            mouse_events: 0;
+            clip_to: "have-files-clipper";
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.5 0.0;
+                  to: "icon_box";
+               }
+               rel2 {
+                  relative: 1.0 0.5;
+                  offset: -1 -1;
+                  to: "icon_box";
+               }
+            }
+         }
 
-              part { name: "elm.swallow.icon.2";
-                 type: SWALLOW;
-                 mouse_events: 0;
-                 clip_to: "have-files-clipper";
-                 description {
-                    state: "default" 0.0;
-                    rel1 {
-                       relative: 0.5 0.0;
-                       to: "icon_box";
-                    }
-                    rel2 {
-                       relative: 1.0 0.5;
-                       offset: -1 -1;
-                       to: "icon_box";
-                    }
-                 }
-              }
+         part { name: "elm.swallow.icon.3";
+            type: SWALLOW;
+            mouse_events: 0;
+            clip_to: "have-files-clipper";
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.5;
+                  to: "icon_box";
+               }
+               rel2 {
+                  relative: 0.5 1.0;
+                  offset: -1 -1;
+                  to: "icon_box";
+               }
+            }
+         }
 
-              part { name: "elm.swallow.icon.3";
-                 type: SWALLOW;
-                 mouse_events: 0;
-                 clip_to: "have-files-clipper";
-                 description {
-                    state: "default" 0.0;
-                    rel1 {
-                       relative: 0.0 0.5;
-                       to: "icon_box";
-                    }
-                    rel2 {
-                       relative: 0.5 1.0;
-                       offset: -1 -1;
-                       to: "icon_box";
-                    }
-                 }
-              }
+         part { name: "elm.swallow.icon.4";
+            type: SWALLOW;
+            mouse_events: 0;
+            clip_to: "have-files-clipper";
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.5 0.5;
+                  to: "icon_box";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+                  to: "icon_box";
+               }
+            }
+         }
 
-              part { name: "elm.swallow.icon.4";
-                 type: SWALLOW;
-                 mouse_events: 0;
-                 clip_to: "have-files-clipper";
-                 description {
-                    state: "default" 0.0;
-                    rel1 {
-                       relative: 0.5 0.5;
-                       to: "icon_box";
-                    }
-                    rel2 {
-                       relative: 1.0 1.0;
-                       offset: -1 -1;
-                       to: "icon_box";
-                    }
-                 }
-              }
+         part { name: "elm.text.label";
+            type: TEXT;
+            effect: SOFT_SHADOW;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               color: 0 0 0 255;
+               color3: 0 0 0 0;
+               align: 0.5 1.0;
+               rel1 { relative: 0.0  1.0;
+                  offset: 2 -30;
+               }
+               rel2 { relative: 1.0  1.0;
+                  offset: -3 -15;
+               }
+               text { font: "Sans";
+                  size: 10;
+                  min: 0 1;
+                  align: 0.5 0.0;
+               }
+            }
+         }
 
-              part { name: "elm.text.label";
-                 type: TEXT;
-                 effect: SOFT_SHADOW;
-                 mouse_events: 0;
-                 scale: 1;
-                 description { state: "default" 0.0;
-                    color: 0 0 0 255;
-                    color3: 0 0 0 0;
-                    align: 0.5 1.0;
-                    rel1 { relative: 0.0  1.0;
-                       offset: 2 -30;
-                    }
-                    rel2 { relative: 1.0  1.0;
-                       offset: -3 -15;
-                    }
-                    text { font: "Sans";
-                       size: 10;
-                       min: 0 1;
-                       align: 0.5 0.0;
-                    }
-                 }
-              }
+         part { name: "fg1";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+               rel1.offset: -3 -3;
+               rel2 { relative: 1.0 0.5;
+                  offset: 2 -1;
+               }
+               image { normal: "bt_sm_hilight.png";
+                  border: 6 6 6 0;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+            }
+         }
 
-              part { name: "fg1";
-                 mouse_events: 0;
-                 description { state: "default" 0.0;
-                    visible: 0;
-                    color: 255 255 255 0;
-                    rel1.offset: -3 -3;
-                    rel2 { relative: 1.0 0.5;
-                       offset: 2 -1;
-                    }
-                    image { normal: "bt_sm_hilight.png";
-                       border: 6 6 6 0;
-                    }
-                 }
-                 description { state: "selected" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 1;
-                    color: 255 255 255 255;
-                 }
-              }
+         part { name: "fg2";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+               rel1.offset: -3 -3;
+               rel2.offset: 2 2;
+               image { normal: "bt_sm_shine.png";
+                  border: 6 6 6 0;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+            }
+         }
 
-              part { name: "fg2";
-                 mouse_events: 0;
-                 description { state: "default" 0.0;
-                    visible: 0;
-                    color: 255 255 255 0;
-                    rel1.offset: -3 -3;
-                    rel2.offset: 2 2;
-                    image { normal: "bt_sm_shine.png";
-                       border: 6 6 6 0;
-                    }
-                 }
-                 description { state: "selected" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 1;
-                    color: 255 255 255 255;
-                 }
-              }
+         programs {
+            program {
+               signal: "elm,state,selected";
+               source: "elm";
+               action: STATE_SET "selected" 0.0;
+               target: "bg";
+               target: "fg1";
+               target: "fg2";
+            }
+            program {
+               signal: "elm,state,unselected";
+               source: "elm";
+               action: STATE_SET "default" 0.0;
+               target: "bg";
+               target: "fg1";
+               target: "fg2";
+               transition: LINEAR 0.1;
+            }
 
-              programs {
-                 program {
-                    signal: "elm,state,selected";
-                    source: "elm";
-                    action: STATE_SET "selected" 0.0;
-                    target: "bg";
-                    target: "fg1";
-                    target: "fg2";
-                 }
-                 program {
-                    signal: "elm,state,unselected";
-                    source: "elm";
-                    action: STATE_SET "default" 0.0;
-                    target: "bg";
-                    target: "fg1";
-                    target: "fg2";
-                    transition: LINEAR 0.1;
-                 }
+            program {
+               signal: "elm,state,have_files,active";
+               source: "elm";
+               action: STATE_SET "visible" 0.0;
+               target: "have-files-clipper";
+            }
+         }
+      }
+   }
 
-                 program {
-                    signal: "elm,state,have_files,active";
-                    source: "elm";
-                    action: STATE_SET "visible" 0.0;
-                    target: "have-files-clipper";
-                 }
-              }
-           }
-        }
-
-        group { name: "ephoto/main/layout";
-           data.item: "initial_size" "480 800";
-           parts {
-              part { name: "ephoto.swallow.thumb_browser";
-                 type: SWALLOW;
-                 description { state: "default" 0.0;
-                 }
-                 description { state: "hidden" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 0;
-                 }
-              }
-           }
-
-           parts {
-              part { name: "ephoto.swallow.flow_browser";
-                 type: SWALLOW;
-                 description { state: "default" 0.0;
-                 }
-                 description { state: "hidden" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 0;
-                 }
-              }
-           }
-
-           parts {
-              part { name: "ephoto.swallow.slideshow";
-                 type: SWALLOW;
-                 description { state: "default" 0.0;
-                 }
-                 description { state: "hidden" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 0;
-                 }
-              }
-           }
-
-           programs {
-              program {
-                 signal: "thumb_browser,show";
-                 source: "ephoto";
-                 action: STATE_SET "hidden" 0.0;
-                 target: "ephoto.swallow.flow_browser";
-                 target: "ephoto.swallow.slideshow";
-                 after: "thumb_browser.show2";
-              }
-              program {
-                 name: "thumb_browser.show2";
-                 action: STATE_SET "default" 0.0;
-                 target: "ephoto.swallow.thumb_browser";
-              }
-
-              program {
-                 signal: "flow_browser,show";
-                 source: "ephoto";
-                 action: STATE_SET "hidden" 0.0;
-                 target: "ephoto.swallow.thumb_browser";
-                 target: "ephoto.swallow.slideshow";
-                 after: "flow_browser.show2";
-              }
-              program {
-                 name: "flow_browser.show2";
-                 action: STATE_SET "default" 0.0;
-                 target: "ephoto.swallow.flow_browser";
-              }
-
-              program {
-                 signal: "slideshow,show";
-                 source: "ephoto";
-                 action: STATE_SET "hidden" 0.0;
-                 target: "ephoto.swallow.thumb_browser";
-                 target: "ephoto.swallow.flow_browser";
-                 after: "slideshow.show2";
-              }
-              program {
-                 name: "slideshow.show2";
-                 action: STATE_SET "default" 0.0;
-                 target: "ephoto.swallow.slideshow";
-              }
-           }
-        }
-
-        group { name: "ephoto/browser/layout";
-           parts {
-              part { name: "ephoto.location";
-                 type: EXTERNAL;
-                 source: "elm/scrolled_entry";
-                 description {
-                    state: "default" 0.0;
-                    rel2 {
-                       relative: 0.0 0.0;
-                       offset: -3 64;
-                       to_x: "ephoto.fileselector";
-                    }
-                    params {
-                       bool: "editable" 1;
-                       bool: "single line" 1;
-                    }
-                 }
-              }
-
-              part { name: "ephoto.fileselector";
-                 type: EXTERNAL;
-                 source: "elm/fileselector_button";
-                 description {
-                    state: "default" 0.0;
-                    align: 1.0 0.0;
-                    rel1 { relative: 1.0 0.0;
-                       offset: -100 3;
-                    }
-                    rel2 { relative: 1.0 0.0;
-                       offset: -4 58;
-                    }
-                    params {
-                       string: "icon" "folder";
-                       bool: "folder only" 1;
-                       bool: "inwin mode" 1;
-                    }
-                 }
-              }
-
-              programs {
-                 program {
-                    signal: "activated";
-                    source: "ephoto.location";
-                    action: PARAM_COPY "ephoto.location" "text" "ephoto.fileselector" "path";
-                    after: "announce-location";
-                 }
-
-                 program {
-                    signal: "file,chosen";
-                    source: "ephoto.fileselector";
-                    action: PARAM_COPY "ephoto.fileselector" "path" "ephoto.location" "text";
-                    after: "announce-location";
-                 }
-
-                 program { name: "announce-location";
-                    action: SIGNAL_EMIT "location,changed" "ephoto";
-                 }
-
-                 program {
-                    signal: "location,set";
-                    source: "ephoto";
-                    action: PARAM_COPY "ephoto.location" "text" "ephoto.fileselector" "path";
-                 }
-              }
-
-              part { name: "ephoto.swallow.thumb";
-                 type: SWALLOW;
-                 description { state: "default" 0.0;
-                    rel1 { to: "ephoto.location";
-                       relative: 0.0 1.0;
-                    }
-                    rel2 { to_y: "iconbar.bg";
-                       relative: 1.0 0.0;
-                    }
-                 }
-              }
-
-              part { name: "iconbar.bg";
-                 type: RECT;
-                 description { state: "default" 0.0;
-                    rel1 { relative: 0.0 1.0;
-                       offset: 0 -64;
-                    }
-                 }
-              }
-
-              part { name: "zoom_in_area";
-                 type: RECT;
-                 description { state: "default" 0.0;
-                    color: 0 0 0 0;
-                    rel1.to: "zoom_in";
-                    rel2.to: "zoom_in";
-                 }
-                 description { state: "disabled" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 0; /* no events */
-                 }
-              }
-              part { name: "zoom_in";
-                 type: RECT;
-                 mouse_events: 0;
-                 description { state: "default" 0.0;
-                    color: 255 0 0 255;
-                    rel1 { to_y: "iconbar.bg";
-                       relative: 0.0 0.0;
-                    }
-                    rel2.relative: 0.2 1.0;
-                 }
-                 description { state: "disabled" 0.0;
-                    inherit: "default" 0.0;
-                    color: 0 0 0 255;
-                 }
-              }
-              programs {
-                 program {
-                    signal: "mouse,clicked,*";
-                    source: "zoom_in_area";
-                    action: SIGNAL_EMIT "zoom_in,clicked" "ephoto";
-                 }
-                 program {
-                    signal: "zoom_in,disable";
-                    source: "ephoto";
-                    action: STATE_SET "disabled" 0.0;
-                    target: "zoom_in";
-                    target: "zoom_in_area";
-                 }
-                 program {
-                    signal: "zoom_in,enable";
-                    source: "ephoto";
-                    action: STATE_SET "default" 0.0;
-                    target: "zoom_in";
-                    target: "zoom_in_area";
-                 }
-              }
-
-              part { name: "zoom_out_area";
-                 type: RECT;
-                 description { state: "default" 0.0;
-                    color: 0 0 0 0;
-                    rel1.to: "zoom_out";
-                    rel2.to: "zoom_out";
-                 }
-                 description { state: "disabled" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 0; /* no events */
-                 }
-              }
-              part { name: "zoom_out";
-                 type: RECT;
-                 mouse_events: 0;
-                 description { state: "default" 0.0;
-                    color: 0 255 0 255;
-                    rel1 { to_y: "iconbar.bg";
-                       relative: 0.2 0.0;
-                    }
-                    rel2.relative: 0.4 1.0;
-                 }
-                 description { state: "disabled" 0.0;
-                    inherit: "default" 0.0;
-                    color: 0 0 0 255;
-                 }
-              }
-              programs {
-                 program {
-                    signal: "mouse,clicked,*";
-                    source: "zoom_out_area";
-                    action: SIGNAL_EMIT "zoom_out,clicked" "ephoto";
-                 }
-                 program {
-                    signal: "zoom_out,disable";
-                    source: "ephoto";
-                    action: STATE_SET "disabled" 0.0;
-                    target: "zoom_out";
-                    target: "zoom_out_area";
-                 }
-                 program {
-                    signal: "zoom_out,enable";
-                    source: "ephoto";
-                    action: STATE_SET "default" 0.0;
-                    target: "zoom_out";
-                    target: "zoom_out_area";
-                 }
-              }
-           }
-        }
-
-        group { name: "ephoto/flow/layout";
-           parts {
-              part { name: "back";
-                 type: RECT;
-                 description {
-                    state: "default" 0.0;
-                    color: 255 255 0 255;
-                    rel1.offset: 10 5;
-                    rel2 { relative: 0.0 0.0;
-                       offset: 30 24;
-                    }
-                 }
-              }
-              programs {
-                 program {
-                    signal: "mouse,clicked,*";
-                    source: "back";
-                    action: SIGNAL_EMIT "back" "ephoto";
-                 }
-              }
-
-              part { name: "ephoto.text.title";
-                 type: TEXT;
-                 effect: SOFT_SHADOW;
-                 mouse_events: 0;
-                 description { state: "default" 0.0;
-                    rel1 { to_x: "back";
-                       relative: 1.0 0.0;
-                       offset: 5 5;
-                    }
-                    rel2 { relative: 1.0 0.0;
-                       offset: -11 24;
-                    }
-                    text {
-                       font: "Sans:style=Bold";
-                       size: 12;
-                    }
-                 }
-              }
-
-              part { name: "ephoto.swallow.flow";
-                 type: SWALLOW;
-                 description { state: "default" 0.0;
-                    rel1 { to_y: "ephoto.text.title";
-                       relative: 0.0 1.0;
-                       offset: 0 10;
-                    }
-                    rel2 { to_y: "iconbar.bg";
-                       relative: 1.0 0.0;
-                    }
-                 }
-                 description { state: "rotate_0" 0.0;
-                    inherit: "default" 0.0;
-                    map {
-                       on: 1;
-                       rotation.z: 0;
-                    }
-                 }
-                 description { state: "rotate_90" 0.0;
-                    inherit: "default" 0.0;
-                    map {
-                       on: 1;
-                       rotation.z: 90;
-                    }
-                 }
-                 description { state: "rotate_180" 0.0;
-                    inherit: "default" 0.0;
-                    map {
-                       on: 1;
-                       rotation.z: 180;
-                    }
-                 }
-                 description { state: "rotate_270" 0.0;
-                    inherit: "default" 0.0;
-                    map {
-                       on: 1;
-                       rotation.z: 270;
-                    }
-                 }
-                 description { state: "flip_horiz" 0.0;
-                    inherit: "default" 0.0;
-                    map {
-                       on: 1;
-                       rotation.y: 180;
-                    }
-                 }
-                 description { state: "flip_vert" 0.0;
-                    inherit: "default" 0.0;
-                    map {
-                       on: 1;
-                       rotation.x: 180;
-                    }
-                 }
-                 description { state: "flip_horiz_90" 0.0;
-                    inherit: "default" 0.0;
-                    map {
-                       on: 1;
-                       rotation {
-                          z: 90;
-                          y: 180;
-                       }
-                    }
-                 }
-                 description { state: "flip_vert_90" 0.0;
-                    inherit: "default" 0.0;
-                    map {
-                       on: 1;
-                       rotation {
-                          z: 90;
-                          x: 180;
-                       }
-                    }
-                 }
-              }
-              programs {
-                 program {
-                    signal:  "state,rotate,0";
-                    source:  "ephoto";
-                    action:  STATE_SET "rotate_0" 0.0;
-                    target:  "ephoto.swallow.flow";
-                 }
-                 program {
-                    signal:  "state,rotate,90";
-                    source:  "ephoto";
-                    action:  STATE_SET "rotate_90" 0.0;
-                    target:  "ephoto.swallow.flow";
-                 }
-                 program {
-                    signal:  "state,rotate,180";
-                    source:  "ephoto";
-                    action:  STATE_SET "rotate_180" 0.0;
-                    target:  "ephoto.swallow.flow";
-                 }
-                 program {
-                    signal:  "state,rotate,270";
-                    source:  "ephoto";
-                    action:  STATE_SET "rotate_270" 0.0;
-                    target:  "ephoto.swallow.flow";
-                 }
-                 program {
-                    signal:  "state,flip,horiz";
-                    source:  "ephoto";
-                    action:  STATE_SET "flip_horiz" 0.0;
-                    target:  "ephoto.swallow.flow";
-                 }
-                 program {
-                    signal:  "state,flip,vert";
-                    source:  "ephoto";
-                    action:  STATE_SET "flip_vert" 0.0;
-                    target:  "ephoto.swallow.flow";
-                 }
-                 program {
-                    signal:  "state,flip,horiz,90";
-                    source:  "ephoto";
-                    action:  STATE_SET "flip_horiz_90" 0.0;
-                    target:  "ephoto.swallow.flow";
-                 }
-                 program {
-                    signal:  "state,flip,vert,90";
-                    source:  "ephoto";
-                    action:  STATE_SET "flip_vert_90" 0.0;
-                    target:  "ephoto.swallow.flow";
-                 }
-              }
-
-              part { name: "iconbar.bg";
-                 type: RECT;
-                 description { state: "default" 0.0;
-                    rel1 { relative: 0.0 1.0;
-                       offset: 0 -64;
-                    }
-                 }
-              }
-
-              part { name: "zoom_in_area";
-                 type: RECT;
-                 description { state: "default" 0.0;
-                    color: 0 0 0 0;
-                    rel1.to: "zoom_in";
-                    rel2.to: "zoom_in";
-                 }
-                 description { state: "disabled" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 0; /* no events */
-                 }
-              }
-              part { name: "zoom_in";
-                 type: RECT;
-                 mouse_events: 0;
-                 description { state: "default" 0.0;
-                    color: 255 0 0 255;
-                    rel1 { to_y: "iconbar.bg";
-                       relative: 0.0 0.0;
-                    }
-                    rel2.relative: 0.2 1.0;
-                 }
-                 description { state: "disabled" 0.0;
-                    inherit: "default" 0.0;
-                    color: 0 0 0 255;
-                 }
-              }
-              programs {
-                 program {
-                    signal: "mouse,clicked,*";
-                    source: "zoom_in_area";
-                    action: SIGNAL_EMIT "zoom_in,clicked" "ephoto";
-                 }
-                 program {
-                    signal: "zoom_in,disable";
-                    source: "ephoto";
-                    action: STATE_SET "disabled" 0.0;
-                    target: "zoom_in";
-                    target: "zoom_in_area";
-                 }
-                 program {
-                    signal: "zoom_in,enable";
-                    source: "ephoto";
-                    action: STATE_SET "default" 0.0;
-                    target: "zoom_in";
-                    target: "zoom_in_area";
-                 }
-              }
-
-              part { name: "zoom_out_area";
-                 type: RECT;
-                 description { state: "default" 0.0;
-                    color: 0 0 0 0;
-                    rel1.to: "zoom_out";
-                    rel2.to: "zoom_out";
-                 }
-                 description { state: "disabled" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 0; /* no events */
-                 }
-              }
-              part { name: "zoom_out";
-                 type: RECT;
-                 mouse_events: 0;
-                 description { state: "default" 0.0;
-                    color: 0 255 0 255;
-                    rel1 { to_y: "iconbar.bg";
-                       relative: 0.2 0.0;
-                    }
-                    rel2.relative: 0.4 1.0;
-                 }
-                 description { state: "disabled" 0.0;
-                    inherit: "default" 0.0;
-                    color: 0 0 0 255;
-                 }
-              }
-              programs {
-                 program {
-                    signal: "mouse,clicked,*";
-                    source: "zoom_out_area";
-                    action: SIGNAL_EMIT "zoom_out,clicked" "ephoto";
-                 }
-                 program {
-                    signal: "zoom_out,disable";
-                    source: "ephoto";
-                    action: STATE_SET "disabled" 0.0;
-                    target: "zoom_out";
-                    target: "zoom_out_area";
-                 }
-                 program {
-                    signal: "zoom_out,enable";
-                    source: "ephoto";
-                    action: STATE_SET "default" 0.0;
-                    target: "zoom_out";
-                    target: "zoom_out_area";
-                 }
-              }
-
-              part { name: "prev_area";
-                 type: RECT;
-                 description { state: "default" 0.0;
-                    color: 0 0 0 0;
-                    rel1.to: "prev";
-                    rel2.to: "prev";
-                 }
-                 description { state: "disabled" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 0; /* no events */
-                 }
-              }
-              part { name: "prev";
-                 type: RECT;
-                 mouse_events: 0;
-                 description { state: "default" 0.0;
-                    color: 0 0 255 255;
-                    rel1 { to_y: "iconbar.bg";
-                       relative: 0.4 0.0;
-                    }
-                    rel2.relative: 0.6 1.0;
-                 }
-                 description { state: "disabled" 0.0;
-                    inherit: "default" 0.0;
-                    color: 0 0 0 255;
-                 }
-              }
-              programs {
-                 program {
-                    signal: "mouse,clicked,*";
-                    source: "prev_area";
-                    action: SIGNAL_EMIT "prev,clicked" "ephoto";
-                 }
-                 program {
-                    signal: "prev,disable";
-                    source: "ephoto";
-                    action: STATE_SET "disabled" 0.0;
-                    target: "prev";
-                    target: "prev_area";
-                 }
-                 program {
-                    signal: "prev,enable";
-                    source: "ephoto";
-                    action: STATE_SET "default" 0.0;
-                    target: "prev";
-                    target: "prev_area";
-                 }
-              }
-
-              part { name: "next_area";
-                 type: RECT;
-                 description { state: "default" 0.0;
-                    color: 0 0 0 0;
-                    rel1.to: "next";
-                    rel2.to: "next";
-                 }
-                 description { state: "disabled" 0.0;
-                    inherit: "default" 0.0;
-                    visible: 0; /* no events */
-                 }
-              }
-              part { name: "next";
-                 type: RECT;
-                 mouse_events: 0;
-                 description { state: "default" 0.0;
-                    color: 255 0 255 255;
-                    rel1 { to_y: "iconbar.bg";
-                       relative: 0.6 0.0;
-                    }
-                    rel2.relative: 0.8 1.0;
-                 }
-                 description { state: "disabled" 0.0;
-                    inherit: "default" 0.0;
-                    color: 0 0 0 255;
-                 }
-              }
-              programs {
-                 program {
-                    signal: "mouse,clicked,*";
-                    source: "next_area";
-                    action: SIGNAL_EMIT "next,clicked" "ephoto";
-                 }
-                 program {
-                    signal: "next,disable";
-                    source: "ephoto";
-                    action: STATE_SET "disabled" 0.0;
-                    target: "next";
-                    target: "next_area";
-                 }
-                 program {
-                    signal: "next,enable";
-                    source: "ephoto";
-                    action: STATE_SET "default" 0.0;
-                    target: "next";
-                    target: "next_area";
-                 }
-              }
-           }
-        }
-
+   group { name: "elm/layout/ephoto/orient";
+      parts {
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+            }
+            description { state: "rotate_0" 0.0;
+               inherit: "default" 0.0;
+               map {
+                  on: 1;
+                  rotation.z: 0;
+               }
+            }
+            description { state: "rotate_90" 0.0;
+               inherit: "default" 0.0;
+               map {
+                  on: 1;
+                  rotation.z: 90;
+               }
+            }
+            description { state: "rotate_180" 0.0;
+               inherit: "default" 0.0;
+               map {
+                  on: 1;
+                  rotation.z: 180;
+               }
+            }
+            description { state: "rotate_270" 0.0;
+               inherit: "default" 0.0;
+               map {
+                  on: 1;
+                  rotation.z: 270;
+               }
+            }
+            description { state: "flip_horiz" 0.0;
+               inherit: "default" 0.0;
+               map {
+                  on: 1;
+                  rotation.y: 180;
+               }
+            }
+            description { state: "flip_vert" 0.0;
+               inherit: "default" 0.0;
+               map {
+                  on: 1;
+                  rotation.x: 180;
+               }
+            }
+            description { state: "flip_horiz_90" 0.0;
+               inherit: "default" 0.0;
+               map {
+                  on: 1;
+                  rotation {
+                     z: 90;
+                     y: 180;
+                  }
+               }
+            }
+            description { state: "flip_vert_90" 0.0;
+               inherit: "default" 0.0;
+               map {
+                  on: 1;
+                  rotation {
+                     z: 90;
+                     x: 180;
+                  }
+               }
+            }
+         }
+         programs {
+            program {
+               signal:  "state,rotate,0";
+               source:  "ephoto";
+               action:  STATE_SET "rotate_0" 0.0;
+               target:  "elm.swallow.content";
+            }
+            program {
+               signal:  "state,rotate,90";
+               source:  "ephoto";
+               action:  STATE_SET "rotate_90" 0.0;
+               target:  "elm.swallow.content";
+            }
+            program {
+               signal:  "state,rotate,180";
+               source:  "ephoto";
+               action:  STATE_SET "rotate_180" 0.0;
+               target:  "elm.swallow.content";
+            }
+            program {
+               signal:  "state,rotate,270";
+               source:  "ephoto";
+               action:  STATE_SET "rotate_270" 0.0;
+               target:  "elm.swallow.content";
+            }
+            program {
+               signal:  "state,flip,horiz";
+               source:  "ephoto";
+               action:  STATE_SET "flip_horiz" 0.0;
+               target:  "elm.swallow.content";
+            }
+            program {
+               signal:  "state,flip,vert";
+               source:  "ephoto";
+               action:  STATE_SET "flip_vert" 0.0;
+               target:  "elm.swallow.content";
+            }
+            program {
+               signal:  "state,flip,horiz,90";
+               source:  "ephoto";
+               action:  STATE_SET "flip_horiz_90" 0.0;
+               target:  "elm.swallow.content";
+            }
+            program {
+               signal:  "state,flip,vert,90";
+               source:  "ephoto";
+               action:  STATE_SET "flip_vert_90" 0.0;
+               target:  "elm.swallow.content";
+            }
+         }
+      }
+   }
 }

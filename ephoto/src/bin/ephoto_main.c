@@ -16,7 +16,7 @@ _ephoto_thumb_browser_show(Ephoto *ephoto, Ephoto_Entry *entry)
    ephoto_slideshow_entry_set(ephoto->slideshow, NULL);
    elm_object_focus(ephoto->thumb_browser);
    evas_object_focus_set(ephoto->thumb_browser, EINA_TRUE); // TODO while elm_layout is broken WRT focus
-   edje_object_signal_emit(ephoto->edje, "thumb_browser,show", "ephoto");
+   elm_pager_content_promote(ephoto->pager, ephoto->thumb_browser);
    _ephoto_state_set(ephoto, EPHOTO_STATE_THUMB);
 
    if ((entry) && (entry->item)) elm_gengrid_item_bring_in(entry->item);
@@ -29,7 +29,7 @@ _ephoto_flow_browser_show(Ephoto *ephoto, Ephoto_Entry *entry)
    ephoto_flow_browser_entry_set(ephoto->flow_browser, entry);
    elm_object_focus(ephoto->flow_browser);
    evas_object_focus_set(ephoto->flow_browser, EINA_TRUE); // TODO while elm_layout is broken WRT focus
-   edje_object_signal_emit(ephoto->edje, "flow_browser,show", "ephoto");
+   elm_pager_content_promote(ephoto->pager, ephoto->flow_browser);
    _ephoto_state_set(ephoto, EPHOTO_STATE_FLOW);
 }
 
@@ -40,7 +40,7 @@ _ephoto_slideshow_show(Ephoto *ephoto, Ephoto_Entry *entry)
    ephoto_slideshow_entry_set(ephoto->slideshow, entry);
    elm_object_focus(ephoto->slideshow);
    evas_object_focus_set(ephoto->slideshow, EINA_TRUE); // TODO while elm_layout is broken WRT focus
-   edje_object_signal_emit(ephoto->edje, "slideshow,show", "ephoto");
+   elm_pager_content_promote(ephoto->pager, ephoto->slideshow);
    _ephoto_state_set(ephoto, EPHOTO_STATE_SLIDESHOW);
 }
 
@@ -119,8 +119,6 @@ ephoto_window_add(const char *path)
 {
    Ephoto *ephoto = calloc(1, sizeof(Ephoto));
    Ethumb_Client *client = elm_thumb_ethumb_client_get();
-   Evas_Coord mw, mh, iw, ih;
-   const char *s;
    EINA_SAFETY_ON_NULL_RETURN_VAL(ephoto, NULL);
 
    ephoto->win = elm_win_add(NULL, "ephoto", ELM_WIN_BASIC);
@@ -157,74 +155,53 @@ ephoto_window_add(const char *path)
    elm_win_resize_object_add(ephoto->win, ephoto->bg);
    evas_object_show(ephoto->bg);
 
-   ephoto->layout = elm_layout_add(ephoto->win);
-   if (!elm_layout_file_set(ephoto->layout, THEME_FILE, "ephoto/main/layout"))
-     {
-        ERR("could not load group 'ephoto/main/layout' from file %s",
-            THEME_FILE);
-        evas_object_del(ephoto->win);
-        return NULL;
-     }
-   ephoto->edje = elm_layout_edje_get(ephoto->layout);
+   ephoto->pager = elm_pager_add(ephoto->win);
+   elm_object_style_set(ephoto->pager, "fade_invisible");
    evas_object_size_hint_weight_set
-     (ephoto->layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+     (ephoto->pager, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_fill_set
-     (ephoto->layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_win_resize_object_add(ephoto->win, ephoto->layout);
-   evas_object_show(ephoto->layout);
+     (ephoto->pager, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_win_resize_object_add(ephoto->win, ephoto->pager);
+   evas_object_show(ephoto->pager);
 
-   ephoto->thumb_browser = ephoto_thumb_browser_add(ephoto, ephoto->layout);
+   ephoto->thumb_browser = ephoto_thumb_browser_add(ephoto, ephoto->pager);
    if (!ephoto->thumb_browser)
      {
         ERR("could not add thumb browser");
         evas_object_del(ephoto->win);
         return NULL;
      }
-   elm_layout_content_set
-     (ephoto->layout, "ephoto.swallow.thumb_browser", ephoto->thumb_browser);
+   elm_pager_content_push(ephoto->pager, ephoto->thumb_browser);
    evas_object_smart_callback_add
      (ephoto->thumb_browser, "view", _ephoto_thumb_browser_view, ephoto);
    evas_object_smart_callback_add
      (ephoto->thumb_browser, "slideshow",
       _ephoto_thumb_browser_slideshow, ephoto);
 
-   ephoto->flow_browser = ephoto_flow_browser_add(ephoto, ephoto->layout);
+   ephoto->flow_browser = ephoto_flow_browser_add(ephoto, ephoto->pager);
    if (!ephoto->flow_browser)
      {
         ERR("could not add flow browser");
         evas_object_del(ephoto->win);
         return NULL;
      }
-   elm_layout_content_set
-     (ephoto->layout, "ephoto.swallow.flow_browser", ephoto->flow_browser);
+   elm_pager_content_push(ephoto->pager, ephoto->flow_browser);
    evas_object_smart_callback_add
      (ephoto->flow_browser, "back", _ephoto_flow_browser_back, ephoto);
    evas_object_smart_callback_add
      (ephoto->flow_browser, "slideshow",
       _ephoto_flow_browser_slideshow, ephoto);
 
-   ephoto->slideshow = ephoto_slideshow_add(ephoto, ephoto->layout);
+   ephoto->slideshow = ephoto_slideshow_add(ephoto, ephoto->pager);
    if (!ephoto->slideshow)
      {
         ERR("could not add flow browser");
         evas_object_del(ephoto->win);
         return NULL;
      }
-   elm_layout_content_set
-     (ephoto->layout, "ephoto.swallow.slideshow", ephoto->slideshow);
+   elm_pager_content_push(ephoto->pager, ephoto->slideshow);
    evas_object_smart_callback_add
      (ephoto->slideshow, "back", _ephoto_slideshow_back, ephoto);
-
-   edje_object_size_min_get(ephoto->edje, &mw, &mh);
-   edje_object_size_min_restricted_calc(ephoto->edje, &mw, &mh, mw, mh);
-   if (mw < 1) mw = 320;
-   if (mh < 1) mh = 240;
-
-   s = edje_object_data_get(ephoto->edje, "initial_size");
-   if ((!s) || (sscanf(s, "%d %d", &iw, &ih) != 2)) iw = ih = 0;
-   if (iw < mw) iw = mw;
-   if (ih < mh) ih = mh;
-   evas_object_resize(ephoto->win, iw, ih);
 
    if ((!path) || (!ecore_file_exists(path)))
      {
@@ -248,9 +225,12 @@ ephoto_window_add(const char *path)
 
         elm_object_focus(ephoto->flow_browser);
         evas_object_focus_set(ephoto->flow_browser, EINA_TRUE); // TODO while elm_layout is broken WRT focus
-        edje_object_signal_emit(ephoto->edje, "flow_browser,show", "ephoto");
+        elm_pager_content_promote(ephoto->pager, ephoto->flow_browser);
         ephoto->state = EPHOTO_STATE_FLOW;
      }
+
+   /* TODO restore size from last run as well? */
+   evas_object_resize(ephoto->win, 900, 600);
 
    return ephoto->win;
 }

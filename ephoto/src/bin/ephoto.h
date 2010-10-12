@@ -109,8 +109,7 @@ struct _Ephoto
 {
    Evas_Object *win;
    Evas_Object *bg;
-   Evas_Object *layout;
-   Evas_Object *edje;
+   Evas_Object *pager;
 
    Evas_Object *thumb_browser;
    Evas_Object *flow_browser;

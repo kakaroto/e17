@@ -14,7 +14,14 @@ struct _Ephoto_Thumb_Browser
    Evas_Object *layout;
    Evas_Object *edje;
    Evas_Object *grid;
+   Evas_Object *toolbar;
    Eio_File *ls;
+   struct {
+      Elm_Toolbar_Item *zoom_in;
+      Elm_Toolbar_Item *zoom_out;
+      Elm_Toolbar_Item *view_flow;
+      Elm_Toolbar_Item *slideshow;
+   } action;
    struct {
       const char *path;
       void (*cb)(void *data, Ephoto_Entry *entry);
@@ -310,6 +317,8 @@ _ephoto_thumb_selected(void *data, Evas_Object *o __UNUSED__, void *event_info)
      evas_object_smart_callback_call(tb->layout, "view", e);
 }
 
+/* TODO: elm_fileselector_entry and use the activated/file,chosen here */
+/*
 static void
 _changed_dir(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
@@ -324,6 +333,7 @@ _changed_dir(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSE
 
    ephoto_thumb_browser_directory_set(tb->layout, p.s);
 }
+*/
 
 static void
 _zoom_set(Ephoto_Thumb_Browser *tb, int zoom)
@@ -334,29 +344,59 @@ _zoom_set(Ephoto_Thumb_Browser *tb, int zoom)
    ephoto_thumb_size_set(tb->ephoto, zoom);
    elm_gengrid_item_size_set(tb->grid, zoom, zoom);
 
-   if (zoom == ZOOM_MIN)
-     edje_object_signal_emit(tb->edje, "zoom_out,disable", "ephoto");
-   else
-     edje_object_signal_emit(tb->edje, "zoom_out,enable", "ephoto");
-
-   if (zoom == ZOOM_MAX)
-     edje_object_signal_emit(tb->edje, "zoom_in,disable", "ephoto");
-   else
-     edje_object_signal_emit(tb->edje, "zoom_in,enable", "ephoto");
+   elm_toolbar_item_disabled_set(tb->action.zoom_out, zoom == ZOOM_MIN);
+   elm_toolbar_item_disabled_set(tb->action.zoom_in, zoom == ZOOM_MAX);
 }
 
 static void
-_zoom_in(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_zoom_in(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Thumb_Browser *tb = data;
+   elm_toolbar_item_unselect(tb->action.zoom_in);
    _zoom_set(tb, tb->ephoto->config->thumb_size + ZOOM_STEP);
 }
 
 static void
-_zoom_out(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_zoom_out(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Thumb_Browser *tb = data;
+   elm_toolbar_item_unselect(tb->action.zoom_out);
    _zoom_set(tb, tb->ephoto->config->thumb_size - ZOOM_STEP);
+}
+
+static void
+_view_flow(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+   Ephoto_Thumb_Browser *tb = data;
+   Elm_Gengrid_Item *it = elm_gengrid_selected_item_get(tb->grid);
+   Ephoto_Entry *entry;
+
+   elm_toolbar_item_unselect(tb->action.view_flow);
+
+   if (it) entry = elm_gengrid_item_data_get(it);
+   else entry = _first_file_entry_find(tb);
+
+   if (!entry) return;
+   if (entry->is_dir)
+     ephoto_thumb_browser_directory_set(tb->layout, entry->path);
+   else
+     evas_object_smart_callback_call(tb->layout, "view", entry);
+}
+
+static void
+_slideshow(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+   Ephoto_Thumb_Browser *tb = data;
+   Elm_Gengrid_Item *it = elm_gengrid_selected_item_get(tb->grid);
+   Ephoto_Entry *entry;
+
+   elm_toolbar_item_unselect(tb->action.slideshow);
+
+   if (it) entry = elm_gengrid_item_data_get(it);
+   else entry = _first_file_entry_find(tb);
+
+   if (!entry) return;
+   evas_object_smart_callback_call(tb->layout, "slideshow", entry);
 }
 
 static void
@@ -404,6 +444,47 @@ _layout_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *eve
    free(tb);
 }
 
+/* FIXME: this should go in elm_icon itself! */
+static Eina_Bool
+_icon_load(Evas_Object *ic, const char *name, int size)
+{
+   char *path;
+
+   if (elm_icon_standard_set(ic, name)) return EINA_TRUE;
+
+   path = efreet_icon_path_find(getenv("E_ICON_THEME"), name, size);
+   if (!path)
+     {
+        const char **itr, *themes[] = {
+          "default", "highcolor", "gnome", "Human", "oxygen", NULL
+        };
+        for (itr = themes; *itr; itr++)
+          {
+             path = efreet_icon_path_find(*itr, name, size);
+             if (path) break;
+          }
+     }
+   if (!path) return EINA_FALSE;
+   elm_icon_file_set(ic, path, NULL);
+   free(path);
+   return EINA_TRUE;
+}
+
+static Elm_Toolbar_Item *
+_toolbar_item_add(Ephoto_Thumb_Browser *tb, const char *icon, const char *label, Evas_Smart_Cb cb)
+{
+   /* FIXME TODO: toolbar should get a string as icon, get it from theme
+    * for toolbar or menu, and fallback to freedesktop.org icon if not found
+    */
+   Evas_Object *ic = elm_icon_add(tb->toolbar);
+   if (!_icon_load(ic, icon, elm_toolbar_icon_size_get(tb->toolbar)))
+     {
+        evas_object_del(ic);
+        ic = NULL;
+     }
+   return elm_toolbar_item_add(tb->toolbar, ic, label, cb, tb);
+}
+
 Evas_Object *
 ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
 {
@@ -421,19 +502,37 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
    evas_object_event_callback_add
      (layout, EVAS_CALLBACK_KEY_DOWN, _key_down, tb);
    evas_object_data_set(layout, "thumb_browser", tb);
-   edje_object_signal_callback_add
-     (tb->edje, "location,changed", "ephoto", _changed_dir, tb);
-   edje_object_signal_callback_add
-     (tb->edje, "zoom_out,clicked", "ephoto", _zoom_out, tb);
-   edje_object_signal_callback_add
-     (tb->edje, "zoom_in,clicked", "ephoto", _zoom_in, tb);
 
-   if (!elm_layout_file_set(layout, THEME_FILE, "ephoto/browser/layout"))
+   if (!elm_layout_theme_set
+       (layout, "layout", "application", "toolbar-content"))
      {
-        ERR("could not load group 'ephoto/browser/layout' from file %s",
-            THEME_FILE);
+        ERR("could not load style 'toolbar-content' from theme");
         goto error;
      }
+
+   tb->toolbar = edje_object_part_external_object_get
+     (tb->edje, "elm.external.toolbar");
+   if (!tb->toolbar)
+     {
+        ERR("no toolbar in layout!");
+        goto error;
+     }
+   elm_toolbar_homogenous_set(tb->toolbar, EINA_FALSE);
+
+   tb->action.slideshow = _toolbar_item_add
+     (tb, "media-playback-start", "Slideshow", _slideshow);
+   tb->action.zoom_in = _toolbar_item_add
+     (tb, "zoom-in", "Zoom In", _zoom_in);
+   tb->action.zoom_out = _toolbar_item_add
+     (tb, "zoom-out", "Zoom Out", _zoom_out);
+   tb->action.view_flow = _toolbar_item_add
+     (tb, "image", "Larger", _view_flow);
+
+   /* TODO: elm_fileselector_entry and use it with a toolbar-vbox
+    *
+    * TODO: elm_layout_box_*, similar to elm_layout_content_set(), it will
+    *       register the sub-object and re-add it during theme changes.
+    */
 
    tb->grid = elm_gengrid_add(layout);
    EINA_SAFETY_ON_NULL_GOTO(tb->grid, error);
@@ -451,7 +550,7 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
 
    _zoom_set(tb, tb->ephoto->config->thumb_size);
 
-   elm_layout_content_set(tb->layout, "ephoto.swallow.thumb", tb->grid);
+   elm_layout_content_set(tb->layout, "elm.swallow.content", tb->grid);
 
    return layout;
 
