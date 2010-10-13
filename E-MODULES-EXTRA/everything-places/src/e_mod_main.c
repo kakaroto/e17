@@ -111,7 +111,7 @@ _volume_list_add(Plugin *p)
    const Eina_List *l;
    Evry_Item *it;
    E_Volume *vol;
-   EINA_LIST_FOREACH(e_fm2_dbus_volume_list_get(), l, vol)
+   EINA_LIST_FOREACH(e_fm2_device_volume_list_get(), l, vol)
      {
 	if (vol->mount_point && !strcmp(vol->mount_point, "/"))
 	  continue;
@@ -231,21 +231,21 @@ _act_mount(Evry_Action *act)
    if (!vol->mounted && EVRY_ITEM_DATA_INT_GET(act) == ACT_MOUNT)
      {
 	EVRY_ITEM_REF(it);
-	mount = e_fm2_dbus_mount(vol, _cb_mount_ok, _cb_mount_fail,
+	mount = e_fm2_device_mount(vol, _cb_mount_ok, _cb_mount_fail,
 			 _cb_mount_ok, _cb_mount_fail, it);
 	/* XXX needs mount to be freed ? */
      }
    else if (vol->mounted && EVRY_ITEM_DATA_INT_GET(act) == ACT_UNMOUNT)
      {
    	/* if (!(mount = eina_list_data_get(vol->mounts))) */
-	if (!(mount = e_fm2_dbus_mount_find(vol->mount_point)))
+	if (!(mount = e_fm2_device_mount_find(vol->mount_point)))
    	  {
    	     ERR("unmount: no mount point: %s", vol->mount_point);
    	     return 0;
    	  }
 
    	EVRY_ITEM_REF(it);
-   	e_fm2_dbus_unmount(mount);
+   	e_fm2_device_unmount(mount);
      }
    return 0;
 }
