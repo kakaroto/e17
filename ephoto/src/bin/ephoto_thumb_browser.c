@@ -219,6 +219,29 @@ _entry_item_add(Ephoto_Thumb_Browser *tb, Ephoto_Entry *e)
      }
 }
 
+static void
+_up_item_add_if_required(Ephoto_Thumb_Browser *tb)
+{
+   Ephoto_Entry *entry;
+   char *parent_dir;
+
+   if ((elm_gengrid_first_item_get(tb->grid)) ||
+       (strcmp(tb->ephoto->config->directory, "/") == 0))
+     return;
+
+   parent_dir = ecore_file_dir_get(tb->ephoto->config->directory);
+   if (!parent_dir) return;
+
+   entry = ephoto_entry_new(tb->ephoto, parent_dir, PARENT_DIR);
+   free(parent_dir);
+   EINA_SAFETY_ON_NULL_RETURN(entry);
+   entry->is_up = EINA_TRUE;
+   entry->is_dir = EINA_TRUE;
+   entry->item = elm_gengrid_item_append
+     (tb->grid, &_ephoto_thumb_up_class, entry, NULL, NULL);
+   /* does not go into entries as it is always the first - no sort! */
+}
+
 static Eina_Bool
 _todo_items_process(void *data)
 {
@@ -229,23 +252,7 @@ _todo_items_process(void *data)
    if ((tb->ls) && (eina_list_count(tb->todo_items) < TODO_ITEM_MIN_BATCH))
      return EINA_TRUE;
 
-   if ((!elm_gengrid_first_item_get(tb->grid)) &&
-       (strcmp(tb->ephoto->config->directory, "/") != 0))
-     {
-        char *parent_dir = ecore_file_dir_get(tb->ephoto->config->directory);
-        if (parent_dir)
-          {
-             entry = ephoto_entry_new
-               (tb->ephoto, parent_dir, PARENT_DIR);
-             free(parent_dir);
-             EINA_SAFETY_ON_NULL_RETURN_VAL(entry, EINA_TRUE);
-             entry->is_up = EINA_TRUE;
-             entry->is_dir = EINA_TRUE;
-             entry->item = elm_gengrid_item_append
-               (tb->grid, &_ephoto_thumb_up_class, entry, NULL, NULL);
-             /* does not go into entries as it is always the first - no sort! */
-          }
-     }
+   _up_item_add_if_required(tb);
 
    tb->animator.todo_items = NULL;
 
@@ -303,6 +310,8 @@ _ephoto_populate_end(void *data)
         free(tb);
         return;
      }
+
+   if (!tb->animator.todo_items) _up_item_add_if_required(tb);
 
    if (tb->pending.cb)
      {
