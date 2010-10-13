@@ -259,9 +259,11 @@ _ephoto_populate_error(int error, void *data)
 static void
 _ephoto_populate_entries(Ephoto_Thumb_Browser *tb)
 {
-   Edje_External_Param param;
+   /* Edje_External_Param param; */
    char *parent_dir;
    DBG("populate from '%s'", tb->ephoto->config->directory);
+
+   evas_object_smart_callback_call(tb->layout, "changed,directory", NULL);
 
    elm_gengrid_clear(tb->grid);
    ephoto_entries_free(tb->ephoto);
@@ -279,11 +281,12 @@ _ephoto_populate_entries(Ephoto_Thumb_Browser *tb)
         /* does not go into entries as it is always the first - no sort! */
      }
 
-   param.name = "text";
-   param.type = EDJE_EXTERNAL_PARAM_TYPE_STRING;
-   param.s = tb->ephoto->config->directory;
-   edje_object_part_external_param_set(tb->edje, "ephoto.location", &param);
-   edje_object_signal_emit(tb->edje, "location,set", "ephoto");
+   /* TODO elm_fileselector_entry_path_set() */
+   /* param.name = "text"; */
+   /* param.type = EDJE_EXTERNAL_PARAM_TYPE_STRING; */
+   /* param.s = tb->ephoto->config->directory; */
+   /* edje_object_part_external_param_set(tb->edje, "ephoto.location", &param); */
+   /* edje_object_signal_emit(tb->edje, "location,set", "ephoto"); */
 
    edje_object_signal_emit(tb->edje, "populate,start", "ephoto");
    tb->ls = eio_file_direct_ls(tb->ephoto->config->directory,

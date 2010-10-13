@@ -79,6 +79,14 @@ _ephoto_thumb_browser_view(void *data, Evas_Object *obj __UNUSED__, void *event_
 }
 
 static void
+_ephoto_thumb_browser_changed_directory(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
+   Ephoto *ephoto = data;
+   ephoto_flow_browser_entry_set(ephoto->flow_browser, NULL);
+   ephoto_slideshow_entry_set(ephoto->slideshow, NULL);
+}
+
+static void
 _ephoto_thumb_browser_slideshow(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Ephoto *ephoto = data;
@@ -119,6 +127,7 @@ ephoto_window_add(const char *path)
 {
    Ephoto *ephoto = calloc(1, sizeof(Ephoto));
    Ethumb_Client *client = elm_thumb_ethumb_client_get();
+   char buf[PATH_MAX];
    EINA_SAFETY_ON_NULL_RETURN_VAL(ephoto, NULL);
 
    ephoto->win = elm_win_add(NULL, "ephoto", ELM_WIN_BASIC);
@@ -175,6 +184,9 @@ ephoto_window_add(const char *path)
    evas_object_smart_callback_add
      (ephoto->thumb_browser, "view", _ephoto_thumb_browser_view, ephoto);
    evas_object_smart_callback_add
+     (ephoto->thumb_browser, "changed,directory",
+      _ephoto_thumb_browser_changed_directory, ephoto);
+   evas_object_smart_callback_add
      (ephoto->thumb_browser, "slideshow",
       _ephoto_thumb_browser_slideshow, ephoto);
 
@@ -205,7 +217,6 @@ ephoto_window_add(const char *path)
 
    if ((!path) || (!ecore_file_exists(path)))
      {
-        char buf[PATH_MAX];
         path = ephoto->config->directory;
         if ((path) && (!ecore_file_exists(path))) path = NULL;
         if (!path)

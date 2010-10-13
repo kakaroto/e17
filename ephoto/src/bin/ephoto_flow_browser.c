@@ -824,7 +824,12 @@ ephoto_flow_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry)
 
    DBG("entry %p, was %p", entry, fb->entry);
    fb->entry = entry;
-   if (!eina_stringshare_replace(&fb->path, entry->path))
+   if (!entry)
+     {
+        eina_stringshare_replace(&fb->path, NULL);
+        _ephoto_flow_browser_toolbar_eval(fb);
+     }
+   else if (!eina_stringshare_replace(&fb->path, entry->path))
      _ephoto_flow_browser_toolbar_eval(fb);
    else
      {
