@@ -71,7 +71,6 @@ class Editje(elementary.Window, OpenFileManager):
         self.title_set("Editje - Edje Editor")
         self.callback_destroy_add(self._destroy_cb)
         self.resize(800, 600)
-        self.focus_highlight_enabled_set(True)
 
         # Load Edje Theme File
         self._load_theme()
