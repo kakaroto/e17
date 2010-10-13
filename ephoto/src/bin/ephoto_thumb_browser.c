@@ -268,7 +268,6 @@ static void
 _ephoto_populate_entries(Ephoto_Thumb_Browser *tb)
 {
    /* Edje_External_Param param; */
-   char *parent_dir;
    DBG("populate from '%s'", tb->ephoto->config->directory);
 
    evas_object_smart_callback_call(tb->layout, "changed,directory", NULL);
@@ -276,17 +275,21 @@ _ephoto_populate_entries(Ephoto_Thumb_Browser *tb)
    elm_gengrid_clear(tb->grid);
    ephoto_entries_free(tb->ephoto);
 
-   parent_dir = ecore_file_dir_get(tb->ephoto->config->directory);
-   if (parent_dir)
+   if (strcmp(tb->ephoto->config->directory, "/") != 0)
      {
-        Ephoto_Entry *e = ephoto_entry_new(tb->ephoto, parent_dir, PARENT_DIR);
-        free(parent_dir);
-        EINA_SAFETY_ON_NULL_RETURN(e);
-        e->is_up = EINA_TRUE;
-        e->is_dir = EINA_TRUE;
-        e->item = elm_gengrid_item_append
-          (tb->grid, &_ephoto_thumb_up_class, e, NULL, NULL);
-        /* does not go into entries as it is always the first - no sort! */
+        char *parent_dir = ecore_file_dir_get(tb->ephoto->config->directory);
+        if (parent_dir)
+          {
+             Ephoto_Entry *e = ephoto_entry_new
+               (tb->ephoto, parent_dir, PARENT_DIR);
+             free(parent_dir);
+             EINA_SAFETY_ON_NULL_RETURN(e);
+             e->is_up = EINA_TRUE;
+             e->is_dir = EINA_TRUE;
+             e->item = elm_gengrid_item_append
+               (tb->grid, &_ephoto_thumb_up_class, e, NULL, NULL);
+             /* does not go into entries as it is always the first - no sort! */
+          }
      }
 
    /* TODO elm_fileselector_entry_path_set() */
@@ -422,10 +425,14 @@ _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
      {
         if (!strcmp(k, "Up"))
           {
-             char *parent = ecore_file_dir_get(tb->ephoto->config->directory);
-             if (parent)
-               ephoto_thumb_browser_directory_set(tb->layout, parent);
-             free(parent);
+             if (strcmp(tb->ephoto->config->directory, "/") != 0)
+               {
+                  char *parent = ecore_file_dir_get
+                    (tb->ephoto->config->directory);
+                  if (parent)
+                    ephoto_thumb_browser_directory_set(tb->layout, parent);
+                  free(parent);
+               }
           }
 
         return;
