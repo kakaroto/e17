@@ -69,9 +69,9 @@ typedef void (*Enlil_Collection_New_Cb)  (void *data, Enlil_Root *root, Enlil_Co
 typedef void (*Enlil_Collection_Delete_Cb)  (void *data, Enlil_Root *root, Enlil_Collection *collection);
 typedef void (*Enlil_Collection_Album_New_Cb)  (void *data, Enlil_Root *root, Enlil_Collection *collection, Enlil_Album *album);
 typedef void (*Enlil_Collection_Album_Delete_Cb)  (void *data, Enlil_Root *root, Enlil_Collection *collection, Enlil_Album *album);
-typedef void (*Enlil_Tag_New_Cb)	(void *data, Enlil_Root *root, Enlil_Tag *tag);
-typedef void (*Enlil_Tag_Delete_Cb)	(void *data, Enlil_Root *root, Enlil_Tag *tag);
-typedef void (*Enlil_Tag_Photo_New_Cb)	(void *data, Enlil_Root *root, Enlil_Tag *tag, Enlil_Photo *photo);
+typedef void (*Enlil_Tag_New_Cb)        (void *data, Enlil_Root *root, Enlil_Tag *tag);
+typedef void (*Enlil_Tag_Delete_Cb)     (void *data, Enlil_Root *root, Enlil_Tag *tag);
+typedef void (*Enlil_Tag_Photo_New_Cb)  (void *data, Enlil_Root *root, Enlil_Tag *tag, Enlil_Photo *photo);
 typedef void (*Enlil_Tag_Photo_Delete_Cb)  (void *data, Enlil_Root *root, Enlil_Tag *tag, Enlil_Photo *photo);
 //
 typedef void (*Enlil_Album_Free_Cb)     (Enlil_Album *album, void *data);
@@ -90,15 +90,16 @@ enum enlil_photo_sort
 
 enum Enlil_Photo_Type
 {
-  ENLIL_PHOTO_TYPE_PHOTO,
-  ENLIL_PHOTO_TYPE_VIDEO
+   ENLIL_PHOTO_TYPE_PHOTO,
+   ENLIL_PHOTO_TYPE_VIDEO
 };
 
 /**
  * A structure with a simple string
  */
-struct Enlil_String{
-     /** this field is in eina_stringshare, use eina_stringshare_del() to free it */
+struct Enlil_String
+{
+   /* this field is in eina_stringshare, use eina_stringshare_del() to free it */
    const char *string;
 };
 EAPI Eet_Data_Descriptor *enlil_string_edd_new();
@@ -119,13 +120,13 @@ struct enlil_photo_tag
    Enlil_Photo *photo;
 };
 
-EAPI    int             enlil_init();
-EAPI    int             enlil_shutdown();
-EAPI	int		enlil_eet_app_data_save(Eet_Data_Descriptor *edd,
+EAPI    int                    enlil_init();
+EAPI    int                    enlil_shutdown();
+EAPI    int                    enlil_eet_app_data_save(Eet_Data_Descriptor *edd,
       const char *key, void *data);
-EAPI	void *		enlil_eet_app_data_load(Eet_Data_Descriptor *edd, const char *key);
+EAPI    void *                 enlil_eet_app_data_load(Eet_Data_Descriptor *edd, const char *key);
 
-EAPI	Enlil_Root *	enlil_root_new(
+EAPI    Enlil_Root *           enlil_root_new(
       Enlil_Album_New_Cb monitor_album_new_cb, Enlil_Album_Delete_Cb monitor_album_delete_cb,
       Enlil_Delete_Cb monitor_enlil_delete_cb,
       Enlil_Photo_New_Cb monitor_photo_new_cb, Enlil_Photo_Delete_Cb monitor_photo_delete_cb,
@@ -137,207 +138,207 @@ EAPI	Enlil_Root *	enlil_root_new(
       Enlil_Tag_Photo_New_Cb tag_photo_new_cb,
       Enlil_Tag_Photo_Delete_Cb tag_photo_delete_cb,
       void *user_data);
-EAPI    void            enlil_root_free(Enlil_Root **root);
-EAPI    void            enlil_root_path_set(Enlil_Root *root, const char *path);
-EAPI    const char*     enlil_root_path_get(const Enlil_Root *root);
-EAPI    void            enlil_root_flickr_account_set(Enlil_Root *root, const char *account);
-EAPI    const char*     enlil_root_flickr_account_get(const Enlil_Root *root);
-EAPI    void            enlil_root_flickr_auth_token_set(Enlil_Root *root, const char *auth_token);
-EAPI    const char*     enlil_root_flickr_auth_token_get(const Enlil_Root *root);
-EAPI    void            enlil_root_album_add(Enlil_Root *root, Enlil_Album *album);
-EAPI	Enlil_Album *	enlil_root_album_prev_get(Enlil_Root *root, Enlil_Album *album);
-EAPI    Eina_List *     enlil_root_albums_get(const Enlil_Root *root);
-EAPI    void            enlil_root_sync_set(Enlil_Root *root, Enlil_Sync *sync);
-EAPI    Enlil_Sync *enlil_root_sync_get(const Enlil_Root *root);
-EAPI    void            enlil_root_print(Enlil_Root *root);
-EAPI    Enlil_Album *   enlil_root_album_search_file_name(Enlil_Root *root, const char *file_name);
-EAPI	Enlil_Album *	enlil_root_album_search_name(Enlil_Root *root, const char *name);
-EAPI    void            enlil_root_album_remove(Enlil_Root *root, Enlil_Album *album);
-EAPI    void            enlil_root_monitor_start(Enlil_Root *root);
-EAPI    void            enlil_root_monitor_stop(Enlil_Root *root);
-EAPI	void		enlil_root_albums_sort(Enlil_Root *root);
+EAPI    void                    enlil_root_free(Enlil_Root **root);
+EAPI    void                    enlil_root_path_set(Enlil_Root *root, const char *path);
+EAPI    const char *            enlil_root_path_get(const Enlil_Root *root);
+EAPI    void                    enlil_root_flickr_account_set(Enlil_Root *root, const char *account);
+EAPI    const char *            enlil_root_flickr_account_get(const Enlil_Root *root);
+EAPI    void                    enlil_root_flickr_auth_token_set(Enlil_Root *root, const char *auth_token);
+EAPI    const char *            enlil_root_flickr_auth_token_get(const Enlil_Root *root);
+EAPI    void                    enlil_root_album_add(Enlil_Root *root, Enlil_Album *album);
+EAPI    Enlil_Album *           enlil_root_album_prev_get(Enlil_Root *root, Enlil_Album *album);
+EAPI    Eina_List *             enlil_root_albums_get(const Enlil_Root *root);
+EAPI    void                    enlil_root_sync_set(Enlil_Root *root, Enlil_Sync *sync);
+EAPI    Enlil_Sync *            enlil_root_sync_get(const Enlil_Root *root);
+EAPI    void                    enlil_root_print(Enlil_Root *root);
+EAPI    Enlil_Album *           enlil_root_album_search_file_name(Enlil_Root *root, const char *file_name);
+EAPI    Enlil_Album *           enlil_root_album_search_name(Enlil_Root *root, const char *name);
+EAPI    void                    enlil_root_album_remove(Enlil_Root *root, Enlil_Album *album);
+EAPI    void                    enlil_root_monitor_start(Enlil_Root *root);
+EAPI    void                    enlil_root_monitor_stop(Enlil_Root *root);
+EAPI    void                    enlil_root_albums_sort(Enlil_Root *root);
 
-EAPI    const Eina_List *enlil_root_collections_get(const Enlil_Root *root);
-EAPI	void		enlil_root_collection_del(Enlil_Root *root, Enlil_Collection *col);
-EAPI	Enlil_Collection *enlil_root_collection_search_name(Enlil_Root *root, const char *name);
+EAPI    const Eina_List *       enlil_root_collections_get(const Enlil_Root *root);
+EAPI    void                    enlil_root_collection_del(Enlil_Root *root, Enlil_Collection *col);
+EAPI    Enlil_Collection *      enlil_root_collection_search_name(Enlil_Root *root, const char *name);
 
-EAPI    const Eina_List *enlil_root_tags_get(const Enlil_Root *root);
-EAPI	void		enlil_root_tag_del(Enlil_Root *root, Enlil_Tag *tag);
-EAPI	Enlil_Tag *	enlil_root_tag_search_name(Enlil_Root *root, const char *name);
+EAPI    const Eina_List *       enlil_root_tags_get(const Enlil_Root *root);
+EAPI    void                    enlil_root_tag_del(Enlil_Root *root, Enlil_Tag *tag);
+EAPI    Enlil_Tag *             enlil_root_tag_search_name(Enlil_Root *root, const char *name);
 
-EAPI	Enlil_Album *	enlil_root_album_search_flickr_id(Enlil_Root *root, const char *id);
+EAPI    Enlil_Album *           enlil_root_album_search_flickr_id(Enlil_Root *root, const char *id);
 
-EAPI	Eina_List *	enlil_root_eet_path_load();
-EAPI	int		enlil_root_eet_path_save(Enlil_Root *root);
-EAPI    Enlil_Root *	enlil_root_eet_albums_load(Enlil_Root *root);
-EAPI    int             enlil_root_eet_albums_save(Enlil_Root *root);
-EAPI    Enlil_Album *   enlil_root_eet_album_load(Enlil_Root *root, const char* key);
-EAPI    int             enlil_root_eet_album_remove(Enlil_Root *root, const char* key);
-EAPI	Enlil_Root *	enlil_root_eet_collections_load(Enlil_Root *root);
-EAPI	int		enlil_root_eet_collections_save(Enlil_Root *root);
-EAPI	Enlil_Root *	enlil_root_eet_tags_load(Enlil_Root *root);
-EAPI	int		enlil_root_eet_tags_save(Enlil_Root *root);
+EAPI    Eina_List *             enlil_root_eet_path_load();
+EAPI    int                     enlil_root_eet_path_save(Enlil_Root *root);
+EAPI    Enlil_Root *            enlil_root_eet_albums_load(Enlil_Root *root);
+EAPI    int                     enlil_root_eet_albums_save(Enlil_Root *root);
+EAPI    Enlil_Album *           enlil_root_eet_album_load(Enlil_Root *root, const char* key);
+EAPI    int                     enlil_root_eet_album_remove(Enlil_Root *root, const char* key);
+EAPI    Enlil_Root *            enlil_root_eet_collections_load(Enlil_Root *root);
+EAPI    int                     enlil_root_eet_collections_save(Enlil_Root *root);
+EAPI    Enlil_Root *            enlil_root_eet_tags_load(Enlil_Root *root);
+EAPI    int                     enlil_root_eet_tags_save(Enlil_Root *root);
 
 
 
-EAPI	Enlil_Collection *	enlil_collection_new();
-EAPI	void		enlil_collection_free(Enlil_Collection **col);
-EAPI	Enlil_Collection *	enlil_collection_copy_new(const Enlil_Collection *tag);
-EAPI	void		enlil_collection_copy(const Enlil_Collection *col_src, Enlil_Collection *col_dest);
-EAPI	const char *	enlil_collection_name_get(const Enlil_Collection *col);
-EAPI	void		enlil_collection_name_set(Enlil_Collection *col, const char *name);
-EAPI	const char *	enlil_collection_description_get(const Enlil_Collection *col);
-EAPI	void		enlil_collection_description_set(Enlil_Collection *col, const char *description);
-EAPI	Eina_List *	enlil_collection_albums_get(const Enlil_Collection *col);
-EAPI	int		enlil_collection_albums_count_get(const Enlil_Collection *col);
-EAPI	void		enlil_collection_album_add(Enlil_Collection *col, Enlil_Album *album);
-EAPI	void		enlil_collection_album_remove(Enlil_Collection *col, Enlil_Album *album);
-EAPI    void            enlil_collection_user_data_set(Enlil_Collection *col, void *user_data, Enlil_Collection_Free_Cb cb);
-EAPI    void *          enlil_collection_user_data_get(const Enlil_Collection *col);
+EAPI    Enlil_Collection *      enlil_collection_new();
+EAPI    void                    enlil_collection_free(Enlil_Collection **col);
+EAPI    Enlil_Collection *      enlil_collection_copy_new(const Enlil_Collection *tag);
+EAPI    void                    enlil_collection_copy(const Enlil_Collection *col_src, Enlil_Collection *col_dest);
+EAPI    const char *            enlil_collection_name_get(const Enlil_Collection *col);
+EAPI    void                    enlil_collection_name_set(Enlil_Collection *col, const char *name);
+EAPI    const char *            enlil_collection_description_get(const Enlil_Collection *col);
+EAPI    void                    enlil_collection_description_set(Enlil_Collection *col, const char *description);
+EAPI    Eina_List *             enlil_collection_albums_get(const Enlil_Collection *col);
+EAPI    int                     enlil_collection_albums_count_get(const Enlil_Collection *col);
+EAPI    void                    enlil_collection_album_add(Enlil_Collection *col, Enlil_Album *album);
+EAPI    void                    enlil_collection_album_remove(Enlil_Collection *col, Enlil_Album *album);
+EAPI    void                    enlil_collection_user_data_set(Enlil_Collection *col, void *user_data, Enlil_Collection_Free_Cb cb);
+EAPI    void *                  enlil_collection_user_data_get(const Enlil_Collection *col);
 
-EAPI	Enlil_Tag *	enlil_tag_new();
-EAPI	void		enlil_tag_free(Enlil_Tag **tag);
-EAPI	Enlil_Tag *	enlil_tag_copy_new(const Enlil_Tag *tag);
-EAPI	void		enlil_tag_copy(const Enlil_Tag *tag_src, Enlil_Tag *tag_dest);
-EAPI	const char *	enlil_tag_name_get(const Enlil_Tag *tag);
-EAPI	void		enlil_tag_name_set(Enlil_Tag *tag, const char *name);
-EAPI	const char *	enlil_tag_description_get(const Enlil_Tag *tag);
-EAPI	void		enlil_tag_description_set(Enlil_Tag *tag, const char *description);
-EAPI	Eina_List *	enlil_tag_photos_get(const Enlil_Tag *tag);
-EAPI	int		enlil_tag_photos_count_get(const Enlil_Tag *tag);
-EAPI	void		enlil_tag_photo_add(Enlil_Tag *tag, Enlil_Photo *photo);
-EAPI	void		enlil_tag_photo_remove(Enlil_Tag *tag, Enlil_Photo *photo);
-EAPI    void            enlil_tag_user_data_set(Enlil_Tag *tag, void *user_data, Enlil_Tag_Free_Cb cb);
-EAPI    void *          enlil_tag_user_data_get(const Enlil_Tag *tag);
-EAPI	void		enlil_tags_list_print(const Eina_List *tags);
-EAPI	void		enlil_tag_print(const Enlil_Tag *tag);
+EAPI    Enlil_Tag *             enlil_tag_new();
+EAPI    void                    enlil_tag_free(Enlil_Tag **tag);
+EAPI    Enlil_Tag *             enlil_tag_copy_new(const Enlil_Tag *tag);
+EAPI    void                    enlil_tag_copy(const Enlil_Tag *tag_src, Enlil_Tag *tag_dest);
+EAPI    const char *            enlil_tag_name_get(const Enlil_Tag *tag);
+EAPI    void                    enlil_tag_name_set(Enlil_Tag *tag, const char *name);
+EAPI    const char *            enlil_tag_description_get(const Enlil_Tag *tag);
+EAPI    void                    enlil_tag_description_set(Enlil_Tag *tag, const char *description);
+EAPI    Eina_List *             enlil_tag_photos_get(const Enlil_Tag *tag);
+EAPI    int                     enlil_tag_photos_count_get(const Enlil_Tag *tag);
+EAPI    void                    enlil_tag_photo_add(Enlil_Tag *tag, Enlil_Photo *photo);
+EAPI    void                    enlil_tag_photo_remove(Enlil_Tag *tag, Enlil_Photo *photo);
+EAPI    void                    enlil_tag_user_data_set(Enlil_Tag *tag, void *user_data, Enlil_Tag_Free_Cb cb);
+EAPI    void *                  enlil_tag_user_data_get(const Enlil_Tag *tag);
+EAPI    void                    enlil_tags_list_print(const Eina_List *tags);
+EAPI    void                    enlil_tag_print(const Enlil_Tag *tag);
 
-EAPI    Enlil_Album *      enlil_album_new();
-EAPI    Enlil_Album *      enlil_album_copy_new(const Enlil_Album *album);
-EAPI    void            enlil_album_copy(const Enlil_Album *album_src, Enlil_Album *album_dest);
-EAPI    void            enlil_album_free(Enlil_Album **album);
-EAPI    void            enlil_album_name_set(Enlil_Album *album, const char* name);
-EAPI    void            enlil_album_description_set(Enlil_Album *album, const char* desc);
-EAPI    void            enlil_album_file_name_set(Enlil_Album *album, const char* file_name);
-EAPI    void            enlil_album_path_set(Enlil_Album *album, const char* path);
-EAPI    void            enlil_album_time_set(Enlil_Album *album, long long time);
-EAPI    void            enlil_album_photos_set(Enlil_Album *album, Eina_List *photos);
-EAPI    void            enlil_album_root_set(Enlil_Album *album, Enlil_Root *root);
-EAPI    Enlil_Root *	enlil_album_root_get(const Enlil_Album *album);
-EAPI    const char*     enlil_album_name_get(const Enlil_Album *album);
-EAPI    const char*     enlil_album_description_get(const Enlil_Album *album);
-EAPI    const char*     enlil_album_file_name_get(const Enlil_Album *album);
-EAPI    const char*     enlil_album_path_get(const Enlil_Album *album);
-EAPI    long long       enlil_album_time_get(const Enlil_Album *album);
-EAPI    void            enlil_album_list_print(Eina_List *root);
-EAPI    void            enlil_album_print(Enlil_Album *album);
-EAPI    void            enlil_album_photo_add(Enlil_Album *album, Enlil_Photo *photo);
-EAPI    void            enlil_album_photo_remove(Enlil_Album *album, Enlil_Photo *photo);
-EAPI    Eina_List *     enlil_album_photos_get(Enlil_Album *album);
-EAPI	Enlil_Photo *	enlil_album_photo_prev_get(Enlil_Album *album, Enlil_Photo *photo);
-EAPI    int             enlil_album_photos_count_get(Enlil_Album *album);
-EAPI    Enlil_Photo *      enlil_album_photo_search_file_name(Enlil_Album *album, const char *file_name);
-EAPI    void            enlil_album_monitor_start(Enlil_Album *album);
-EAPI    void            enlil_album_monitor_stop(Enlil_Album *album);
-EAPI    void            enlil_album_user_data_set(Enlil_Album *album, void *user_data, Enlil_Album_Free_Cb cb);
-EAPI    void *          enlil_album_user_data_get(const Enlil_Album *album);
+EAPI    Enlil_Album *           enlil_album_new();
+EAPI    Enlil_Album *           enlil_album_copy_new(const Enlil_Album *album);
+EAPI    void                    enlil_album_copy(const Enlil_Album *album_src, Enlil_Album *album_dest);
+EAPI    void                    enlil_album_free(Enlil_Album **album);
+EAPI    void                    enlil_album_name_set(Enlil_Album *album, const char* name);
+EAPI    void                    enlil_album_description_set(Enlil_Album *album, const char* desc);
+EAPI    void                    enlil_album_file_name_set(Enlil_Album *album, const char* file_name);
+EAPI    void                    enlil_album_path_set(Enlil_Album *album, const char* path);
+EAPI    void                    enlil_album_time_set(Enlil_Album *album, long long time);
+EAPI    void                    enlil_album_photos_set(Enlil_Album *album, Eina_List *photos);
+EAPI    void                    enlil_album_root_set(Enlil_Album *album, Enlil_Root *root);
+EAPI    Enlil_Root *            enlil_album_root_get(const Enlil_Album *album);
+EAPI    const char *            enlil_album_name_get(const Enlil_Album *album);
+EAPI    const char *            enlil_album_description_get(const Enlil_Album *album);
+EAPI    const char *            enlil_album_file_name_get(const Enlil_Album *album);
+EAPI    const char *            enlil_album_path_get(const Enlil_Album *album);
+EAPI    long long               enlil_album_time_get(const Enlil_Album *album);
+EAPI    void                    enlil_album_list_print(Eina_List *root);
+EAPI    void                    enlil_album_print(Enlil_Album *album);
+EAPI    void                    enlil_album_photo_add(Enlil_Album *album, Enlil_Photo *photo);
+EAPI    void                    enlil_album_photo_remove(Enlil_Album *album, Enlil_Photo *photo);
+EAPI    Eina_List *             enlil_album_photos_get(Enlil_Album *album);
+EAPI    Enlil_Photo *           enlil_album_photo_prev_get(Enlil_Album *album, Enlil_Photo *photo);
+EAPI    int                     enlil_album_photos_count_get(Enlil_Album *album);
+EAPI    Enlil_Photo *           enlil_album_photo_search_file_name(Enlil_Album *album, const char *file_name);
+EAPI    void                    enlil_album_monitor_start(Enlil_Album *album);
+EAPI    void                    enlil_album_monitor_stop(Enlil_Album *album);
+EAPI    void                    enlil_album_user_data_set(Enlil_Album *album, void *user_data, Enlil_Album_Free_Cb cb);
+EAPI    void *                  enlil_album_user_data_get(const Enlil_Album *album);
 
-EAPI	void		enlil_album_photos_sort_set(Enlil_Album *album, Enlil_Photo_Sort photos_sort);
-EAPI	Enlil_Photo_Sort	enlil_album_photos_sort_get(const Enlil_Album *album);
+EAPI    void                    enlil_album_photos_sort_set(Enlil_Album *album, Enlil_Photo_Sort photos_sort);
+EAPI    Enlil_Photo_Sort        enlil_album_photos_sort_get(const Enlil_Album *album);
 
-EAPI	void		enlil_album_collection_process(Enlil_Album *album);
-EAPI	void		enlil_album_collection_add(Enlil_Album *album, const char *col_name);
-EAPI	const Eina_List*enlil_album_collections_get(const Enlil_Album *album);
-EAPI	void		enlil_album_collection_remove(Enlil_Album *album, Enlil_Album_Collection *album_col);
+EAPI    void                    enlil_album_collection_process(Enlil_Album *album);
+EAPI    void                    enlil_album_collection_add(Enlil_Album *album, const char *col_name);
+EAPI    const Eina_List *       enlil_album_collections_get(const Enlil_Album *album);
+EAPI    void                    enlil_album_collection_remove(Enlil_Album *album, Enlil_Album_Collection *album_col);
 
-EAPI	void		enlil_photo_tag_process(Enlil_Photo *photo);
-EAPI	void		enlil_photo_tag_add(Enlil_Photo *photo, const char *tag_name);
-EAPI	const Eina_List*enlil_photo_tags_get(const Enlil_Photo *photo);
-EAPI	void		enlil_photo_tag_remove(Enlil_Photo *photo, Enlil_Photo_Tag *photo_tag);
+EAPI    void                    enlil_photo_tag_process(Enlil_Photo *photo);
+EAPI    void                    enlil_photo_tag_add(Enlil_Photo *photo, const char *tag_name);
+EAPI    const Eina_List *       enlil_photo_tags_get(const Enlil_Photo *photo);
+EAPI    void                    enlil_photo_tag_remove(Enlil_Photo *photo, Enlil_Photo_Tag *photo_tag);
 
-EAPI    int             enlil_album_eet_global_header_save(Enlil_Album *album);
-EAPI    int             enlil_album_eet_header_save(Enlil_Album *album);
-EAPI	int		enlil_album_eet_photos_list_save(Enlil_Album *album);
+EAPI    int                     enlil_album_eet_global_header_save(Enlil_Album *album);
+EAPI    int                     enlil_album_eet_header_save(Enlil_Album *album);
+EAPI    int                     enlil_album_eet_photos_list_save(Enlil_Album *album);
 
-EAPI	const char *	enlil_album_flickr_id_get(Enlil_Album *album);
-EAPI	Eina_Bool	enlil_album_flickr_need_sync_get(Enlil_Album *album);
-EAPI	void		enlil_album_flickr_need_sync_set(Enlil_Album *album, Eina_Bool need_sync);
+EAPI    const char *            enlil_album_flickr_id_get(Enlil_Album *album);
+EAPI    Eina_Bool               enlil_album_flickr_need_sync_get(Enlil_Album *album);
+EAPI    void                    enlil_album_flickr_need_sync_set(Enlil_Album *album, Eina_Bool need_sync);
 
-EAPI    Enlil_Photo *   enlil_photo_new();
-EAPI    void            enlil_photo_free(Enlil_Photo **photo);
-EAPI    void            enlil_photo_album_set(Enlil_Photo *photo, Enlil_Album *album);
-EAPI    void            enlil_photo_name_set(Enlil_Photo *photo, const char* name);
-EAPI    void            enlil_photo_description_set(Enlil_Photo *photo, const char* desc);
-EAPI    void            enlil_photo_path_set(Enlil_Photo *photo, const char* path);
-EAPI    void            enlil_photo_file_name_set(Enlil_Photo *photo, const char* file_name);
-EAPI    void            enlil_photo_size_set(Enlil_Photo *photo, int size);
-EAPI    void            enlil_photo_size_w_set(Enlil_Photo *photo, int size_w);
-EAPI    void            enlil_photo_size_h_set(Enlil_Photo *photo, int size_h);
-EAPI    Enlil_Album *      enlil_photo_album_get(const Enlil_Photo *photo);
-EAPI    double		enlil_photo_longitude_get(const Enlil_Photo *photo);
-EAPI    double		enlil_photo_latitude_get(const Enlil_Photo *photo);
-EAPI    void            enlil_photo_time_set(Enlil_Photo *photo, long long time);
-EAPI    void            enlil_photo_type_set(Enlil_Photo *photo, Enlil_Photo_Type type);
-EAPI    const char*     enlil_photo_name_get(const Enlil_Photo *photo);
-EAPI    const char*     enlil_photo_description_get(const Enlil_Photo *photo);
-EAPI    void            enlil_photo_eet_save_set(Enlil_Photo *photo, Eina_Bool save);
-EAPI    Eina_Bool	enlil_photo_eet_save_get(const Enlil_Photo *photo);
-EAPI    const char*     enlil_photo_path_get(const Enlil_Photo *photo);
-EAPI    const char*     enlil_photo_file_name_get(const Enlil_Photo *photo);
-EAPI    Enlil_Photo_Type   enlil_photo_type_get(const Enlil_Photo *photo);
-EAPI    int		enlil_photo_size_get(const Enlil_Photo *photo);
-EAPI    int		enlil_photo_size_w_get(const Enlil_Photo *photo);
-EAPI    int		enlil_photo_size_h_get(const Enlil_Photo *photo);
-EAPI    long long       enlil_photo_time_get(const Enlil_Photo *photo);
-EAPI    void            enlil_photo_list_print(const Eina_List *l_photos);
-EAPI    void            enlil_photo_print(const Enlil_Photo *photo);
-EAPI    int             enlil_photo_is(const char *file);
-EAPI	int		enlil_photo_jpg_is(const char *file);
-EAPI	int		enlil_video_is(const char *file);
-EAPI    Enlil_Photo *      enlil_photo_copy_new(Enlil_Photo *photo);
-EAPI    void            enlil_photo_copy(Enlil_Photo *photo_src, Enlil_Photo *photo_dest);
-EAPI    void            enlil_photo_user_data_set(Enlil_Photo *photo, void *user_data, Enlil_Photo_Free_Cb cb);
-EAPI    void *          enlil_photo_user_data_get(const Enlil_Photo *photo);
-EAPI    void            enlil_photo_thumb_fdo_large_set(Enlil_Photo *photo,const char *thumb);
-EAPI    const char*     enlil_photo_thumb_fdo_large_get(const Enlil_Photo *photo);
-EAPI    void            enlil_photo_thumb_fdo_normal_set(Enlil_Photo *photo,const char *thumb);
-EAPI    const char*     enlil_photo_thumb_fdo_normal_get(const Enlil_Photo *photo);
+EAPI    Enlil_Photo *           enlil_photo_new();
+EAPI    void                    enlil_photo_free(Enlil_Photo **photo);
+EAPI    void                    enlil_photo_album_set(Enlil_Photo *photo, Enlil_Album *album);
+EAPI    void                    enlil_photo_name_set(Enlil_Photo *photo, const char* name);
+EAPI    void                    enlil_photo_description_set(Enlil_Photo *photo, const char* desc);
+EAPI    void                    enlil_photo_path_set(Enlil_Photo *photo, const char* path);
+EAPI    void                    enlil_photo_file_name_set(Enlil_Photo *photo, const char* file_name);
+EAPI    void                    enlil_photo_size_set(Enlil_Photo *photo, int size);
+EAPI    void                    enlil_photo_size_w_set(Enlil_Photo *photo, int size_w);
+EAPI    void                    enlil_photo_size_h_set(Enlil_Photo *photo, int size_h);
+EAPI    Enlil_Album *           enlil_photo_album_get(const Enlil_Photo *photo);
+EAPI    double                  enlil_photo_longitude_get(const Enlil_Photo *photo);
+EAPI    double                  enlil_photo_latitude_get(const Enlil_Photo *photo);
+EAPI    void                    enlil_photo_time_set(Enlil_Photo *photo, long long time);
+EAPI    void                    enlil_photo_type_set(Enlil_Photo *photo, Enlil_Photo_Type type);
+EAPI    const char *            enlil_photo_name_get(const Enlil_Photo *photo);
+EAPI    const char *            enlil_photo_description_get(const Enlil_Photo *photo);
+EAPI    void                    enlil_photo_eet_save_set(Enlil_Photo *photo, Eina_Bool save);
+EAPI    Eina_Bool               enlil_photo_eet_save_get(const Enlil_Photo *photo);
+EAPI    const char *            enlil_photo_path_get(const Enlil_Photo *photo);
+EAPI    const char *            enlil_photo_file_name_get(const Enlil_Photo *photo);
+EAPI    Enlil_Photo_Type        enlil_photo_type_get(const Enlil_Photo *photo);
+EAPI    int                     enlil_photo_size_get(const Enlil_Photo *photo);
+EAPI    int                     enlil_photo_size_w_get(const Enlil_Photo *photo);
+EAPI    int                     enlil_photo_size_h_get(const Enlil_Photo *photo);
+EAPI    long long               enlil_photo_time_get(const Enlil_Photo *photo);
+EAPI    void                    enlil_photo_list_print(const Eina_List *l_photos);
+EAPI    void                    enlil_photo_print(const Enlil_Photo *photo);
+EAPI    int                     enlil_photo_is(const char *file);
+EAPI    int                     enlil_photo_jpg_is(const char *file);
+EAPI    int                     enlil_video_is(const char *file);
+EAPI    Enlil_Photo *           enlil_photo_copy_new(Enlil_Photo *photo);
+EAPI    void                    enlil_photo_copy(Enlil_Photo *photo_src, Enlil_Photo *photo_dest);
+EAPI    void                    enlil_photo_user_data_set(Enlil_Photo *photo, void *user_data, Enlil_Photo_Free_Cb cb);
+EAPI    void *                  enlil_photo_user_data_get(const Enlil_Photo *photo);
+EAPI    void                    enlil_photo_thumb_fdo_large_set(Enlil_Photo *photo,const char *thumb);
+EAPI    const char *            enlil_photo_thumb_fdo_large_get(const Enlil_Photo *photo);
+EAPI    void                    enlil_photo_thumb_fdo_normal_set(Enlil_Photo *photo,const char *thumb);
+EAPI    const char *            enlil_photo_thumb_fdo_normal_get(const Enlil_Photo *photo);
 
-EAPI	void		enlil_photo_tag_process(Enlil_Photo *photo);
-EAPI	void		enlil_photo_tag_add(Enlil_Photo *photo, const char *tag_name);
-EAPI	const Eina_List*enlil_photo_tags_get(const Enlil_Photo *photo);
-EAPI	void		enlil_photo_tag_remove(Enlil_Photo *photo, Enlil_Photo_Tag *photo_tag);
+EAPI    void                    enlil_photo_tag_process(Enlil_Photo *photo);
+EAPI    void                    enlil_photo_tag_add(Enlil_Photo *photo, const char *tag_name);
+EAPI    const Eina_List *       enlil_photo_tags_get(const Enlil_Photo *photo);
+EAPI    void                    enlil_photo_tag_remove(Enlil_Photo *photo, Enlil_Photo_Tag *photo_tag);
 
-EAPI	void		enlil_photo_exifs_set(Enlil_Photo *photo, Eina_List *exifs);
-EAPI	const Eina_List*enlil_photo_exifs_get(const Enlil_Photo *photo);
-EAPI	void		enlil_photo_exif_loaded_set(Enlil_Photo *photo, Eina_Bool loaded);
-EAPI	Eina_Bool	enlil_photo_exif_loaded_get(const Enlil_Photo *photo);
-EAPI	Enlil_Exif *	enlil_photo_exif_get_from_tag(const Enlil_Photo *photo, const char *tag);
-EAPI	void		enlil_photo_exif_clear(Enlil_Photo *photo);
-EAPI	void		enlil_photo_copy_exif_in_file(Enlil_Photo *photo, const char *file);
+EAPI    void                    enlil_photo_exifs_set(Enlil_Photo *photo, Eina_List *exifs);
+EAPI    const Eina_List *       enlil_photo_exifs_get(const Enlil_Photo *photo);
+EAPI    void                    enlil_photo_exif_loaded_set(Enlil_Photo *photo, Eina_Bool loaded);
+EAPI    Eina_Bool               enlil_photo_exif_loaded_get(const Enlil_Photo *photo);
+EAPI    Enlil_Exif *            enlil_photo_exif_get_from_tag(const Enlil_Photo *photo, const char *tag);
+EAPI    void                    enlil_photo_exif_clear(Enlil_Photo *photo);
+EAPI    void                    enlil_photo_copy_exif_in_file(Enlil_Photo *photo, const char *file);
 
-EAPI	void		enlil_photo_iptcs_set(Enlil_Photo *photo, Eina_List *iptcs);
-EAPI	const Eina_List*enlil_photo_iptcs_get(const Enlil_Photo *photo);
-EAPI	void		enlil_photo_iptc_loaded_set(Enlil_Photo *photo, Eina_Bool loaded);
-EAPI	Eina_Bool	enlil_photo_iptc_loaded_get(const Enlil_Photo *photo);
-EAPI	void		enlil_photo_iptc_clear(Enlil_Photo *photo);
-EAPI	void		enlil_photo_save_iptc_in_custom_file(Enlil_Photo *photo, const char *file);
-EAPI	void		enlil_photo_save_iptc_in_file(Enlil_Photo *photo);
-EAPI	Enlil_IPTC *	enlil_photo_iptc_get_from_name_and_value(const Enlil_Photo *photo, const char *name, const char *value);
-EAPI	Eina_Bool	enlil_photo_iptc_add(Enlil_Photo *photo, const char *name, const char *value, Eina_Bool check_value);
-EAPI	Eina_Bool	enlil_photo_iptc_remove(Enlil_Photo *photo, const char *name, const char *value);
+EAPI    void                    enlil_photo_iptcs_set(Enlil_Photo *photo, Eina_List *iptcs);
+EAPI    const Eina_List *       enlil_photo_iptcs_get(const Enlil_Photo *photo);
+EAPI    void                    enlil_photo_iptc_loaded_set(Enlil_Photo *photo, Eina_Bool loaded);
+EAPI    Eina_Bool               enlil_photo_iptc_loaded_get(const Enlil_Photo *photo);
+EAPI    void                    enlil_photo_iptc_clear(Enlil_Photo *photo);
+EAPI    void                    enlil_photo_save_iptc_in_custom_file(Enlil_Photo *photo, const char *file);
+EAPI    void                    enlil_photo_save_iptc_in_file(Enlil_Photo *photo);
+EAPI    Enlil_IPTC *            enlil_photo_iptc_get_from_name_and_value(const Enlil_Photo *photo, const char *name, const char *value);
+EAPI    Eina_Bool               enlil_photo_iptc_add(Enlil_Photo *photo, const char *name, const char *value, Eina_Bool check_value);
+EAPI    Eina_Bool               enlil_photo_iptc_remove(Enlil_Photo *photo, const char *name, const char *value);
 
-EAPI    Enlil_Photo *      enlil_photo_eet_load(const char *eet_path, const char *key);
-EAPI    int             enlil_photo_eet_remove(const char *eet_path, const char* key);
-EAPI    int             enlil_photo_eet_save(Enlil_Photo *photo);
+EAPI    Enlil_Photo *           enlil_photo_eet_load(const char *eet_path, const char *key);
+EAPI    int                     enlil_photo_eet_remove(const char *eet_path, const char* key);
+EAPI    int                     enlil_photo_eet_save(Enlil_Photo *photo);
 
-EAPI	const char *	enlil_photo_flickr_id_get(Enlil_Photo *photo);
-EAPI	void		enlil_photo_flickr_id_set(Enlil_Photo *photo, const char *id);
+EAPI    const char *            enlil_photo_flickr_id_get(Enlil_Photo *photo);
+EAPI    void                    enlil_photo_flickr_id_set(Enlil_Photo *photo, const char *id);
 
 /* File manager */
-EAPI    Eet_File *	enlil_file_manager_open(const char *file);
-EAPI    void		enlil_file_manager_close(const char *file);
-EAPI    void		enlil_file_manager_flush();
+EAPI    Eet_File *              enlil_file_manager_open(const char *file);
+EAPI    void                    enlil_file_manager_close(const char *file);
+EAPI    void                    enlil_file_manager_flush();
 
 /* Synchronisation Files <-> .eet */
 
@@ -347,32 +348,32 @@ enum Sync_Error
 };
 
 typedef enum Sync_Error Sync_Error;
-typedef void (*Enlil_Sync_Album_New_Cb)      (void *data, Enlil_Sync *sync, Enlil_Root *root, Enlil_Album *album);
-typedef void (*Enlil_Sync_Album_Update_Cb)   (void *data, Enlil_Sync *sync, Enlil_Root *root, Enlil_Album *album);
-typedef void (*Enlil_Sync_Album_Disappear_Cb) (void *data, Enlil_Sync *sync, Enlil_Root *root, Enlil_Album *album);
-typedef void (*Enlil_Sync_Photo_New_Cb)      (void *data, Enlil_Sync *sync, Enlil_Album *album, Enlil_Photo *photo);
-typedef void (*Enlil_Sync_Photo_Update_Cb)   (void *data, Enlil_Sync *sync, Enlil_Album *album, Enlil_Photo *photo);
-typedef void (*Enlil_Sync_Photo_Disappear_Cb) (void *data, Enlil_Sync *sync, Enlil_Album *album, Enlil_Photo *photo);
-typedef void (*Enlil_Sync_Done_Cb)           (void *data, Enlil_Sync *sync);
-typedef void (*Enlil_Sync_Start_Cb)          (void *data, Enlil_Sync *sync);
-typedef void (*Enlil_Sync_Error_Cb)          (void *data, Enlil_Sync *sync, Sync_Error error, const char* msg);
+typedef void (*Enlil_Sync_Album_New_Cb)         (void *data, Enlil_Sync *sync, Enlil_Root *root, Enlil_Album *album);
+typedef void (*Enlil_Sync_Album_Update_Cb)      (void *data, Enlil_Sync *sync, Enlil_Root *root, Enlil_Album *album);
+typedef void (*Enlil_Sync_Album_Disappear_Cb)   (void *data, Enlil_Sync *sync, Enlil_Root *root, Enlil_Album *album);
+typedef void (*Enlil_Sync_Photo_New_Cb)         (void *data, Enlil_Sync *sync, Enlil_Album *album, Enlil_Photo *photo);
+typedef void (*Enlil_Sync_Photo_Update_Cb)      (void *data, Enlil_Sync *sync, Enlil_Album *album, Enlil_Photo *photo);
+typedef void (*Enlil_Sync_Photo_Disappear_Cb)   (void *data, Enlil_Sync *sync, Enlil_Album *album, Enlil_Photo *photo);
+typedef void (*Enlil_Sync_Done_Cb)              (void *data, Enlil_Sync *sync);
+typedef void (*Enlil_Sync_Start_Cb)             (void *data, Enlil_Sync *sync);
+typedef void (*Enlil_Sync_Error_Cb)             (void *data, Enlil_Sync *sync, Sync_Error error, const char* msg);
 
-EAPI    Enlil_Sync *   enlil_sync_new(const char *path,
-        Enlil_Sync_Album_New_Cb album_new_cb,
-        Enlil_Sync_Album_Update_Cb album_update_cb,
-        Enlil_Sync_Album_Disappear_Cb album_disappear_cb,
-        Enlil_Sync_Photo_New_Cb photo_new_cb,
-        Enlil_Sync_Photo_Update_Cb photo_update_cb,
-        Enlil_Sync_Photo_Disappear_Cb photo_disappear_cb,
-        Enlil_Sync_Done_Cb done_cb,
-	Enlil_Sync_Start_Cb start_cb,
-	Enlil_Sync_Error_Cb error_cb,
-        void *user_data);
-EAPI    void            enlil_sync_free(Enlil_Sync **sync);
-EAPI	int		enlil_sync_jobs_count_get(Enlil_Sync *sync);
-EAPI    void            enlil_sync_job_all_add(Enlil_Sync *sync);
-EAPI    void            enlil_sync_job_album_folder_add(Enlil_Sync *sync, const char *folder);
-EAPI    void            enlil_sync_job_photo_file_add(Enlil_Sync *sync, const char *folder, const char *file);
+EAPI    Enlil_Sync *            enlil_sync_new(const char *path,
+      Enlil_Sync_Album_New_Cb album_new_cb,
+      Enlil_Sync_Album_Update_Cb album_update_cb,
+      Enlil_Sync_Album_Disappear_Cb album_disappear_cb,
+      Enlil_Sync_Photo_New_Cb photo_new_cb,
+      Enlil_Sync_Photo_Update_Cb photo_update_cb,
+      Enlil_Sync_Photo_Disappear_Cb photo_disappear_cb,
+      Enlil_Sync_Done_Cb done_cb,
+      Enlil_Sync_Start_Cb start_cb,
+      Enlil_Sync_Error_Cb error_cb,
+      void *user_data);
+EAPI    void                    enlil_sync_free(Enlil_Sync **sync);
+EAPI    int                     enlil_sync_jobs_count_get(Enlil_Sync *sync);
+EAPI    void                    enlil_sync_job_all_add(Enlil_Sync *sync);
+EAPI    void                    enlil_sync_job_album_folder_add(Enlil_Sync *sync, const char *folder);
+EAPI    void                    enlil_sync_job_photo_file_add(Enlil_Sync *sync, const char *folder, const char *file);
 //
 
 
@@ -384,17 +385,17 @@ enum Load_Error
 typedef struct enlil_load Enlil_Load;
 typedef struct Enlil_Load_Configuration Enlil_Load_Configuration;
 typedef enum Load_Error Load_Error;
-typedef void (*Enlil_Load_Conf_Album_Done_Cb) (void *data, Enlil_Load *load, Enlil_Root *root, Enlil_Album *album);
-typedef void (*Enlil_Load_Conf_Done_Cb)       (void *data, Enlil_Load *load, int nb_albums, int nb_photos);
-typedef void (*Enlil_Load_Conf_Error_Cb)      (void *data, Enlil_Load *load, Load_Error error, const char* msg);
+typedef void (*Enlil_Load_Conf_Album_Done_Cb)   (void *data, Enlil_Load *load, Enlil_Root *root, Enlil_Album *album);
+typedef void (*Enlil_Load_Conf_Done_Cb)         (void *data, Enlil_Load *load, int nb_albums, int nb_photos);
+typedef void (*Enlil_Load_Conf_Error_Cb)        (void *data, Enlil_Load *load, Load_Error error, const char* msg);
 
-EAPI    Enlil_Load *       enlil_load_new(Enlil_Root *root,
-        Enlil_Load_Conf_Album_Done_Cb album_done_cb,
-        Enlil_Load_Conf_Done_Cb done_cb,
-        Enlil_Load_Conf_Error_Cb error_cb,
-        void *user_data);
-EAPI    void                enlil_load_free(Enlil_Load **load);
-EAPI    void                enlil_load_run(Enlil_Load *load);
+EAPI    Enlil_Load *            enlil_load_new(Enlil_Root *root,
+      Enlil_Load_Conf_Album_Done_Cb album_done_cb,
+      Enlil_Load_Conf_Done_Cb done_cb,
+      Enlil_Load_Conf_Error_Cb error_cb,
+      void *user_data);
+EAPI    void                    enlil_load_free(Enlil_Load **load);
+EAPI    void                    enlil_load_run(Enlil_Load *load);
 //
 
 /* thumbnails */
@@ -405,12 +406,12 @@ enum Enlil_Thumb_Job_Type
    Enlil_THUMB_FDO_LARGE
 };
 
-typedef void (*Enlil_Thumb_Done_Cb) (void *data, Enlil_Photo *photo, const char *file);
-typedef void (*Enlil_Thumb_Error_Cb) (void *data, Enlil_Photo *photo);
-EAPI    const char* enlil_thumb_photo_get(Enlil_Photo *photo, Enlil_Thumb_Job_Type type,
+typedef void (*Enlil_Thumb_Done_Cb)     (void *data, Enlil_Photo *photo, const char *file);
+typedef void (*Enlil_Thumb_Error_Cb)    (void *data, Enlil_Photo *photo);
+EAPI    const char *            enlil_thumb_photo_get(Enlil_Photo *photo, Enlil_Thumb_Job_Type type,
       Enlil_Thumb_Done_Cb done_cb, Enlil_Thumb_Error_Cb error_cb, void *data);
-EAPI	void enlil_thumb_clear();
-EAPI	void enlil_thumb_photo_clear(const Enlil_Photo *photo);
+EAPI    void                    enlil_thumb_clear();
+EAPI    void                    enlil_thumb_photo_clear(const Enlil_Photo *photo);
 
 /* transformations */
 typedef enum Enlil_Trans_Job_Type Enlil_Trans_Job_Type;
@@ -431,159 +432,159 @@ enum Enlil_Trans_Job_Type
 };
 typedef void (*Enlil_Trans_Done_Cb) (void *data, Enlil_Trans_Job *job, const char *file);
 
-EAPI	Enlil_Trans_Job *		enlil_trans_job_add(Enlil_Trans_History *h, const char *file, Enlil_Trans_Job_Type type, Enlil_Trans_Done_Cb cb, void *data);
-EAPI	void			enlil_trans_job_del(Enlil_Trans_Job *job);
+EAPI    Enlil_Trans_Job *       enlil_trans_job_add(Enlil_Trans_History *h, const char *file, Enlil_Trans_Job_Type type, Enlil_Trans_Done_Cb cb, void *data);
+EAPI    void                    enlil_trans_job_del(Enlil_Trans_Job *job);
 
-EAPI	Enlil_Trans_History *	enlil_trans_history_new(const char *file);
-EAPI	void			enlil_trans_history_free(Enlil_Trans_History *h);
-EAPI	void			enlil_trans_history_clear(Enlil_Trans_History *h);
-EAPI	const Eina_List *	enlil_trans_history_get(const Enlil_Trans_History *h);
-EAPI	const			Enlil_Trans_History_Item *enlil_trans_history_current_get(const Enlil_Trans_History *h);
-EAPI	const char *		enlil_trans_history_item_file_get(const Enlil_Trans_History_Item *item);
-EAPI	Enlil_Trans_Job_Type	enlil_trans_history_item_type_get(const Enlil_Trans_History_Item *item);
-EAPI	const char *		enlil_trans_history_goto(Enlil_Trans_History *h, int pos);
+EAPI    Enlil_Trans_History *   enlil_trans_history_new(const char *file);
+EAPI    void                    enlil_trans_history_free(Enlil_Trans_History *h);
+EAPI    void                    enlil_trans_history_clear(Enlil_Trans_History *h);
+EAPI    const Eina_List *       enlil_trans_history_get(const Enlil_Trans_History *h);
+EAPI    const Enlil_Trans_History_Item *enlil_trans_history_current_get(const Enlil_Trans_History *h);
+EAPI    const char *            enlil_trans_history_item_file_get(const Enlil_Trans_History_Item *item);
+EAPI    Enlil_Trans_Job_Type    enlil_trans_history_item_type_get(const Enlil_Trans_History_Item *item);
+EAPI    const char *            enlil_trans_history_goto(Enlil_Trans_History *h, int pos);
 
 /* Exif loader */
 typedef struct Enlil_Exif_Job Enlil_Exif_Job;
 typedef void (*Enlil_Exif_Done_Cb) (void *data, Enlil_Exif_Job *job, Eina_List *exifs);
 
-EAPI	Enlil_Exif_Job *		enlil_exif_job_append(Enlil_Photo *photo, Enlil_Exif_Done_Cb cb, void *data);
-EAPI	Enlil_Exif_Job *		enlil_exif_job_prepend(Enlil_Photo *photo, Enlil_Exif_Done_Cb cb, void *data);
-EAPI	void			enlil_exif_job_del(Enlil_Exif_Job *job);
+EAPI    Enlil_Exif_Job *        enlil_exif_job_append(Enlil_Photo *photo, Enlil_Exif_Done_Cb cb, void *data);
+EAPI    Enlil_Exif_Job *        enlil_exif_job_prepend(Enlil_Photo *photo, Enlil_Exif_Done_Cb cb, void *data);
+EAPI    void                    enlil_exif_job_del(Enlil_Exif_Job *job);
 
-EAPI	Enlil_Exif *enlil_exif_new();
-EAPI	Enlil_Exif *enlil_exif_copy_new(Enlil_Exif *exif);
-EAPI	void enlil_exif_copy(Enlil_Exif *exif_src, Enlil_Exif *exif_dest);
-EAPI	void enlil_exif_free(Enlil_Exif **exif);
-EAPI	const char *enlil_exif_tag_get(Enlil_Exif *exif);
-EAPI	const char *enlil_exif_value_get(Enlil_Exif *exif);
-EAPI	const char *enlil_exif_description_get(Enlil_Exif *exif);
+EAPI    Enlil_Exif *            enlil_exif_new();
+EAPI    Enlil_Exif *            enlil_exif_copy_new(Enlil_Exif *exif);
+EAPI    void                    enlil_exif_copy(Enlil_Exif *exif_src, Enlil_Exif *exif_dest);
+EAPI    void                    enlil_exif_free(Enlil_Exif **exif);
+EAPI    const char *            enlil_exif_tag_get(Enlil_Exif *exif);
+EAPI    const char *            enlil_exif_value_get(Enlil_Exif *exif);
+EAPI    const char *            enlil_exif_description_get(Enlil_Exif *exif);
 
 
 
-EAPI	Eina_List	*eina_list_sorted_diff(Eina_List *list1, Eina_List *list2,
+EAPI    Eina_List *             eina_list_sorted_diff(Eina_List *list1, Eina_List *list2,
       Eina_List **elt_list1, Eina_List **elt_list2, Eina_Compare_Cb func);
-EAPI	Eina_List *	eina_list_right_sorted_diff(Eina_List *list, Eina_List *sorted_list,
+EAPI    Eina_List *             eina_list_right_sorted_diff(Eina_List *list, Eina_List *sorted_list,
       Eina_List **elt_list1, Eina_List **elt_list2, Eina_Compare_Cb func);
-EAPI	Eina_List * eina_list_right_sorted_diff(Eina_List *list, Eina_List *sorted_list,
+EAPI    Eina_List *             eina_list_right_sorted_diff(Eina_List *list, Eina_List *sorted_list,
       Eina_List **elt_list1, Eina_List **elt_list2, Eina_Compare_Cb func);
 
 /* IPTC loader */
 typedef struct Enlil_IPTC_Job Enlil_IPTC_Job;
 typedef void (*Enlil_IPTC_Done_Cb) (void *data, Enlil_IPTC_Job *job, Eina_List *iptcs);
 
-EAPI	Enlil_IPTC_Job *	enlil_iptc_job_append(Enlil_Photo *photo, Enlil_IPTC_Done_Cb cb, void *data);
-EAPI	Enlil_IPTC_Job *	enlil_iptc_job_prepend(Enlil_Photo *photo, Enlil_IPTC_Done_Cb cb, void *data);
-EAPI	void			enlil_iptc_job_del(Enlil_IPTC_Job *job);
+EAPI    Enlil_IPTC_Job *        enlil_iptc_job_append(Enlil_Photo *photo, Enlil_IPTC_Done_Cb cb, void *data);
+EAPI    Enlil_IPTC_Job *        enlil_iptc_job_prepend(Enlil_Photo *photo, Enlil_IPTC_Done_Cb cb, void *data);
+EAPI    void                    enlil_iptc_job_del(Enlil_IPTC_Job *job);
 
-EAPI	Enlil_IPTC *		enlil_iptc_new();
-EAPI	Enlil_IPTC *		enlil_iptc_new_from_name(const char *name);
-EAPI	Enlil_IPTC *		enlil_iptc_copy_new(Enlil_IPTC *iptc);
-EAPI	void			enlil_iptc_copy(Enlil_IPTC *iptc_src, Enlil_IPTC *iptc_dest);
-EAPI	void			enlil_iptc_free(Enlil_IPTC **iptc);
-EAPI	double			enlil_iptc_record_get(const Enlil_IPTC *iptc);
-EAPI	double			enlil_iptc_tag_get(const Enlil_IPTC *iptc);
-EAPI	const char *		enlil_iptc_title_get(const Enlil_IPTC *iptc);
-EAPI	const char *		enlil_iptc_name_get(const Enlil_IPTC *iptc);
-EAPI	const char *		enlil_iptc_format_get(const Enlil_IPTC *iptc);
-EAPI	const char *		enlil_iptc_value_get(const Enlil_IPTC *iptc);
-EAPI	void			enlil_iptc_value_set(Enlil_IPTC *iptc, const char *value);
+EAPI    Enlil_IPTC *            enlil_iptc_new();
+EAPI    Enlil_IPTC *            enlil_iptc_new_from_name(const char *name);
+EAPI    Enlil_IPTC *            enlil_iptc_copy_new(Enlil_IPTC *iptc);
+EAPI    void                    enlil_iptc_copy(Enlil_IPTC *iptc_src, Enlil_IPTC *iptc_dest);
+EAPI    void                    enlil_iptc_free(Enlil_IPTC **iptc);
+EAPI    double                  enlil_iptc_record_get(const Enlil_IPTC *iptc);
+EAPI    double                  enlil_iptc_tag_get(const Enlil_IPTC *iptc);
+EAPI    const char *            enlil_iptc_title_get(const Enlil_IPTC *iptc);
+EAPI    const char *            enlil_iptc_name_get(const Enlil_IPTC *iptc);
+EAPI    const char *            enlil_iptc_format_get(const Enlil_IPTC *iptc);
+EAPI    const char *            enlil_iptc_value_get(const Enlil_IPTC *iptc);
+EAPI    void                    enlil_iptc_value_set(Enlil_IPTC *iptc, const char *value);
 
 
 //Geocaching
 typedef void (*Enlil_Geocaching_Done_Cb) (void *data, Eina_Hash *db);
 
-EAPI	Enlil_Geocaching *	enlil_geocaching_new();
-EAPI	void			enlil_geocaching_free(Enlil_Geocaching *gp);
-EAPI	const char *		enlil_geocaching_name_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_name_set(Enlil_Geocaching *gp, const char *name);
-EAPI	const char *		enlil_geocaching_time_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_time_set(Enlil_Geocaching *gp, const char *time);
-EAPI	const char *		enlil_geocaching_description_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_description_set(Enlil_Geocaching *gp, const char *description);
-EAPI	const char *		enlil_geocaching_url_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_url_set(Enlil_Geocaching *gp, const char *url);
-EAPI	const char *		enlil_geocaching_url_name_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_url_name_set(Enlil_Geocaching *gp, const char *url_name);
-EAPI	const char *		enlil_geocaching_sym_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_sym_set(Enlil_Geocaching *gp, const char *sym);
-EAPI	const char *		enlil_geocaching_type_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_type_set(Enlil_Geocaching *gp, const char *type);
+EAPI    Enlil_Geocaching *      enlil_geocaching_new();
+EAPI    void                    enlil_geocaching_free(Enlil_Geocaching *gp);
+EAPI    const char *            enlil_geocaching_name_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_name_set(Enlil_Geocaching *gp, const char *name);
+EAPI    const char *            enlil_geocaching_time_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_time_set(Enlil_Geocaching *gp, const char *time);
+EAPI    const char *            enlil_geocaching_description_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_description_set(Enlil_Geocaching *gp, const char *description);
+EAPI    const char *            enlil_geocaching_url_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_url_set(Enlil_Geocaching *gp, const char *url);
+EAPI    const char *            enlil_geocaching_url_name_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_url_name_set(Enlil_Geocaching *gp, const char *url_name);
+EAPI    const char *            enlil_geocaching_sym_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_sym_set(Enlil_Geocaching *gp, const char *sym);
+EAPI    const char *            enlil_geocaching_type_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_type_set(Enlil_Geocaching *gp, const char *type);
 
 
-EAPI	const char *		enlil_geocaching_gp_name_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_gp_name_set(Enlil_Geocaching *gp, const char *gp_name);
-EAPI	const char *		enlil_geocaching_gp_short_desc_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_gp_short_desc_set(Enlil_Geocaching *gp, const char *gp_short_desc);
-EAPI	const char *		enlil_geocaching_gp_long_desc_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_gp_long_desc_set(Enlil_Geocaching *gp, const char *gp_long_desc);
-EAPI	const char *		enlil_geocaching_gp_placed_by_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_gp_placed_by_set(Enlil_Geocaching *gp, const char *gp_placed_by);
-EAPI	const char *		enlil_geocaching_gp_owner_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_gp_owner_set(Enlil_Geocaching *gp, const char *gp_owner);
-EAPI	const char *		enlil_geocaching_gp_type_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_gp_type_set(Enlil_Geocaching *gp, const char *gp_type);
-EAPI	const char *		enlil_geocaching_gp_container_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_gp_container_set(Enlil_Geocaching *gp, const char *gp_container);
-EAPI	const char *		enlil_geocaching_gp_difficulty_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_gp_difficulty_set(Enlil_Geocaching *gp, const char *gp_difficulty);
-EAPI	const char *		enlil_geocaching_gp_terrain_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_gp_terrain_set(Enlil_Geocaching *gp, const char *gp_terrain);
-EAPI	const char *		enlil_geocaching_gp_country_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_gp_country_set(Enlil_Geocaching *gp, const char *gp_country);
-EAPI	double			enlil_geocaching_longitude_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_longitude_set(Enlil_Geocaching *gp, double longitude);
-EAPI	double			enlil_geocaching_latitude_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_latitude_set(Enlil_Geocaching *gp, double latitude);
-EAPI	const char *		enlil_geocaching_gp_id_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_gp_id_set(Enlil_Geocaching *gp, const char *gp_id);
-EAPI	const char *		enlil_geocaching_gp_available_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_gp_available_set(Enlil_Geocaching *gp, const char *gp_available);
-EAPI	const char *		enlil_geocaching_gp_archived_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_gp_archived_set(Enlil_Geocaching *gp, const char *gp_archived);
-EAPI	const char *		enlil_geocaching_gp_hints_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_gp_hints_set(Enlil_Geocaching *gp, const char *gp_hints);
-EAPI	const char *		enlil_geocaching_gp_state_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_gp_state_set(Enlil_Geocaching *gp, const char *gp_state);
-EAPI	const char *		enlil_geocaching_gp_owner_id_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_gp_owner_id_set(Enlil_Geocaching *gp, const char *gp_owner_id);
-EAPI	Eina_List *		enlil_geocaching_logs_get(const Enlil_Geocaching *gp);
-EAPI	Eina_List *		enlil_geocaching_tbs_get(const Enlil_Geocaching *gp);
+EAPI    const char *            enlil_geocaching_gp_name_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_gp_name_set(Enlil_Geocaching *gp, const char *gp_name);
+EAPI    const char *            enlil_geocaching_gp_short_desc_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_gp_short_desc_set(Enlil_Geocaching *gp, const char *gp_short_desc);
+EAPI    const char *            enlil_geocaching_gp_long_desc_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_gp_long_desc_set(Enlil_Geocaching *gp, const char *gp_long_desc);
+EAPI    const char *            enlil_geocaching_gp_placed_by_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_gp_placed_by_set(Enlil_Geocaching *gp, const char *gp_placed_by);
+EAPI    const char *            enlil_geocaching_gp_owner_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_gp_owner_set(Enlil_Geocaching *gp, const char *gp_owner);
+EAPI    const char *            enlil_geocaching_gp_type_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_gp_type_set(Enlil_Geocaching *gp, const char *gp_type);
+EAPI    const char *            enlil_geocaching_gp_container_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_gp_container_set(Enlil_Geocaching *gp, const char *gp_container);
+EAPI    const char *            enlil_geocaching_gp_difficulty_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_gp_difficulty_set(Enlil_Geocaching *gp, const char *gp_difficulty);
+EAPI    const char *            enlil_geocaching_gp_terrain_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_gp_terrain_set(Enlil_Geocaching *gp, const char *gp_terrain);
+EAPI    const char *            enlil_geocaching_gp_country_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_gp_country_set(Enlil_Geocaching *gp, const char *gp_country);
+EAPI    double                  enlil_geocaching_longitude_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_longitude_set(Enlil_Geocaching *gp, double longitude);
+EAPI    double                  enlil_geocaching_latitude_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_latitude_set(Enlil_Geocaching *gp, double latitude);
+EAPI    const char *            enlil_geocaching_gp_id_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_gp_id_set(Enlil_Geocaching *gp, const char *gp_id);
+EAPI    const char *            enlil_geocaching_gp_available_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_gp_available_set(Enlil_Geocaching *gp, const char *gp_available);
+EAPI    const char *            enlil_geocaching_gp_archived_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_gp_archived_set(Enlil_Geocaching *gp, const char *gp_archived);
+EAPI    const char *            enlil_geocaching_gp_hints_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_gp_hints_set(Enlil_Geocaching *gp, const char *gp_hints);
+EAPI    const char *            enlil_geocaching_gp_state_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_gp_state_set(Enlil_Geocaching *gp, const char *gp_state);
+EAPI    const char *            enlil_geocaching_gp_owner_id_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_gp_owner_id_set(Enlil_Geocaching *gp, const char *gp_owner_id);
+EAPI    Eina_List *             enlil_geocaching_logs_get(const Enlil_Geocaching *gp);
+EAPI    Eina_List *             enlil_geocaching_tbs_get(const Enlil_Geocaching *gp);
 
 
-EAPI	const char *		enlil_geocaching_log_id_get(const Enlil_Geocaching_Log *log);
-EAPI	void			enlil_geocaching_log_id_set(Enlil_Geocaching_Log *log, const char *log_id);
-EAPI	const char *		enlil_geocaching_log_date_get(const Enlil_Geocaching_Log *log);
-EAPI	void			enlil_geocaching_log_date_set(Enlil_Geocaching_Log *log, const char *log_date);
-EAPI	const char *		enlil_geocaching_log_type_get(const Enlil_Geocaching_Log *log);
-EAPI	void			enlil_geocaching_log_type_set(Enlil_Geocaching_Log *log, const char *log_type);
-EAPI	const char *		enlil_geocaching_log_finder_get(const Enlil_Geocaching_Log *log);
-EAPI	void			enlil_geocaching_log_finder_set(Enlil_Geocaching_Log *log, const char *log_finder);
-EAPI	const char *		enlil_geocaching_log_finder_id_get(const Enlil_Geocaching_Log *log);
-EAPI	void			enlil_geocaching_log_finder_id_set(Enlil_Geocaching_Log *log, const char *log_finder_id);
-EAPI	const char *		enlil_geocaching_log_text_get(const Enlil_Geocaching_Log *log);
-EAPI	void			enlil_geocaching_log_text_set(Enlil_Geocaching_Log *log, const char *log_text);
-EAPI	const char *		enlil_geocaching_log_encoded_get(const Enlil_Geocaching_Log *log);
-EAPI	void			enlil_geocaching_log_encoded_set(Enlil_Geocaching_Log *log, const char *log_encoded);
+EAPI    const char *            enlil_geocaching_log_id_get(const Enlil_Geocaching_Log *log);
+EAPI    void                    enlil_geocaching_log_id_set(Enlil_Geocaching_Log *log, const char *log_id);
+EAPI    const char *            enlil_geocaching_log_date_get(const Enlil_Geocaching_Log *log);
+EAPI    void                    enlil_geocaching_log_date_set(Enlil_Geocaching_Log *log, const char *log_date);
+EAPI    const char *            enlil_geocaching_log_type_get(const Enlil_Geocaching_Log *log);
+EAPI    void                    enlil_geocaching_log_type_set(Enlil_Geocaching_Log *log, const char *log_type);
+EAPI    const char *            enlil_geocaching_log_finder_get(const Enlil_Geocaching_Log *log);
+EAPI    void                    enlil_geocaching_log_finder_set(Enlil_Geocaching_Log *log, const char *log_finder);
+EAPI    const char *            enlil_geocaching_log_finder_id_get(const Enlil_Geocaching_Log *log);
+EAPI    void                    enlil_geocaching_log_finder_id_set(Enlil_Geocaching_Log *log, const char *log_finder_id);
+EAPI    const char *            enlil_geocaching_log_text_get(const Enlil_Geocaching_Log *log);
+EAPI    void                    enlil_geocaching_log_text_set(Enlil_Geocaching_Log *log, const char *log_text);
+EAPI    const char *            enlil_geocaching_log_encoded_get(const Enlil_Geocaching_Log *log);
+EAPI    void                    enlil_geocaching_log_encoded_set(Enlil_Geocaching_Log *log, const char *log_encoded);
 
-EAPI	const char *		enlil_geocaching_tb_id_get(const Enlil_Geocaching_Travelbug *tb);
-EAPI	void			enlil_geocaching_tb_id_set(Enlil_Geocaching_Travelbug *tb, const char *tb_id);
-EAPI	const char *		enlil_geocaching_tb_ref_get(const Enlil_Geocaching_Travelbug *tb);
-EAPI	void			enlil_geocaching_tb_ref_set(Enlil_Geocaching_Travelbug *tb, const char *tb_ref);
-EAPI	const char *		enlil_geocaching_tb_name_get(const Enlil_Geocaching_Travelbug *tb);
-EAPI	void			enlil_geocaching_tb_name_set(Enlil_Geocaching_Travelbug *tb, const char *tb_name);
+EAPI    const char *            enlil_geocaching_tb_id_get(const Enlil_Geocaching_Travelbug *tb);
+EAPI    void                    enlil_geocaching_tb_id_set(Enlil_Geocaching_Travelbug *tb, const char *tb_id);
+EAPI    const char *            enlil_geocaching_tb_ref_get(const Enlil_Geocaching_Travelbug *tb);
+EAPI    void                    enlil_geocaching_tb_ref_set(Enlil_Geocaching_Travelbug *tb, const char *tb_ref);
+EAPI    const char *            enlil_geocaching_tb_name_get(const Enlil_Geocaching_Travelbug *tb);
+EAPI    void                    enlil_geocaching_tb_name_set(Enlil_Geocaching_Travelbug *tb, const char *tb_name);
 
-EAPI	Enlil_Geocaching_Log * enlil_geocaching_log_new();
-EAPI	void			enlil_geocaching_log_free(Enlil_Geocaching_Log *gp_log);
-EAPI	Enlil_Geocaching_Travelbug *	enlil_geocaching_tb_new();
-EAPI	void			enlil_geocaching_tb_free(Enlil_Geocaching_Travelbug *gp_tb);
+EAPI    Enlil_Geocaching_Log *  enlil_geocaching_log_new();
+EAPI    void                    enlil_geocaching_log_free(Enlil_Geocaching_Log *gp_log);
+EAPI    Enlil_Geocaching_Travelbug *enlil_geocaching_tb_new();
+EAPI    void                    enlil_geocaching_tb_free(Enlil_Geocaching_Travelbug *gp_tb);
 
 
 
-EAPI	void			enlil_geocaching_import(const char *file, Enlil_Geocaching_Done_Cb done_cb, void *data);
-EAPI	void			enlil_geocaching_get(Enlil_Geocaching_Done_Cb done_cb, void *data);
-EAPI	void *			enlil_geocaching_user_data_get(const Enlil_Geocaching *gp);
-EAPI	void			enlil_geocaching_user_data_set(Enlil_Geocaching *gp, void *data, Enlil_Geocaching_Free_Cb free_cb);
+EAPI    void                    enlil_geocaching_import(const char *file, Enlil_Geocaching_Done_Cb done_cb, void *data);
+EAPI    void                    enlil_geocaching_get(Enlil_Geocaching_Done_Cb done_cb, void *data);
+EAPI    void *                  enlil_geocaching_user_data_get(const Enlil_Geocaching *gp);
+EAPI    void                    enlil_geocaching_user_data_set(Enlil_Geocaching *gp, void *data, Enlil_Geocaching_Free_Cb free_cb);
 
 
 //Flickr
@@ -619,29 +620,29 @@ typedef void (*Enlil_Flickr_Photo_Upload_Done_Cb) (void *data, Enlil_Photo *phot
 
 typedef void (*Enlil_Flickr_Photo_Sizes_Cb) (void *data, Eina_List *sizes, Eina_Bool error);
 
-EAPI	Eina_Bool		enlil_flickr_have();
-EAPI	void			enlil_flickr_job_del(Enlil_Flickr_Job *job);
+EAPI    Eina_Bool               enlil_flickr_have();
+EAPI    void                    enlil_flickr_job_del(Enlil_Flickr_Job *job);
 
 
-EAPI	void			enlil_flickr_job_start_cb_set(Enlil_Flickr_Job_Start_Cb start_cb, void *data);
-EAPI	void			enlil_flickr_job_done_cb_set(Enlil_Flickr_Job_Done_Cb done_cb, void *data);
+EAPI    void                    enlil_flickr_job_start_cb_set(Enlil_Flickr_Job_Start_Cb start_cb, void *data);
+EAPI    void                    enlil_flickr_job_done_cb_set(Enlil_Flickr_Job_Done_Cb done_cb, void *data);
 
-EAPI	void			enlil_flickr_reinit(Enlil_Root *root);
-EAPI	const char *		enlil_flickr_auth_url_get();
-EAPI	Enlil_Flickr_Job *	enlil_flickr_job_reinit_prepend(Enlil_Root *root);
-EAPI	Enlil_Flickr_Job *	enlil_flickr_job_sync_album_header_update_flickr_append(Enlil_Album *album,
+EAPI    void                    enlil_flickr_reinit(Enlil_Root *root);
+EAPI    const char *            enlil_flickr_auth_url_get();
+EAPI    Enlil_Flickr_Job *      enlil_flickr_job_reinit_prepend(Enlil_Root *root);
+EAPI    Enlil_Flickr_Job *      enlil_flickr_job_sync_album_header_update_flickr_append(Enlil_Album *album,
       Enlil_Flickr_Album_Done_Cb done_cb,
       void *data);
-EAPI	Enlil_Flickr_Job *	enlil_flickr_job_sync_album_header_update_local_append(Enlil_Album *album,
+EAPI    Enlil_Flickr_Job *      enlil_flickr_job_sync_album_header_update_local_append(Enlil_Album *album,
       Enlil_Flickr_Album_Done_Cb done_cb,
       void *data);
-EAPI	Enlil_Flickr_Job *	enlil_flickr_job_sync_album_header_create_flickr_append(Enlil_Album *album,
+EAPI    Enlil_Flickr_Job *      enlil_flickr_job_sync_album_header_create_flickr_append(Enlil_Album *album,
       Enlil_Flickr_Photo_Upload_Start_Cb start_cb,
       Enlil_Flickr_Photo_Upload_Progress_Cb progress_cb,
       Enlil_Flickr_Photo_Upload_Done_Cb done_cb,
       Enlil_Flickr_Photo_Error_Cb error_cb,
       void *data);
-EAPI	Enlil_Flickr_Job *	enlil_flickr_job_sync_album_header_append(Enlil_Album *album,
+EAPI    Enlil_Flickr_Job *      enlil_flickr_job_sync_album_header_append(Enlil_Album *album,
       Enlil_Flickr_Album_New_Cb new_cb,
       Enlil_Flickr_Album_NotInFlickr_Cb notinflickr_cb,
       Enlil_Flickr_Album_NotUpToDate_Cb notuptodate_cb,
@@ -649,7 +650,7 @@ EAPI	Enlil_Flickr_Job *	enlil_flickr_job_sync_album_header_append(Enlil_Album *a
       Enlil_Flickr_Album_UpToDate_Cb uptodate_cb,
       Enlil_Flickr_Error_Cb error_cb,
       void *data);
-EAPI	Enlil_Flickr_Job *	enlil_flickr_job_sync_albums_append(Enlil_Root *root,
+EAPI    Enlil_Flickr_Job *      enlil_flickr_job_sync_albums_append(Enlil_Root *root,
       Enlil_Flickr_Album_New_Cb new_cb,
       Enlil_Flickr_Album_NotInFlickr_Cb notinflickr_cb,
       Enlil_Flickr_Album_NotUpToDate_Cb notuptodate_cb,
@@ -657,56 +658,56 @@ EAPI	Enlil_Flickr_Job *	enlil_flickr_job_sync_albums_append(Enlil_Root *root,
       Enlil_Flickr_Album_UpToDate_Cb uptodate_cb,
       Enlil_Flickr_Error_Cb error_cb,
       void *data);
-EAPI	Enlil_Flickr_Job *enlil_flickr_job_sync_album_photos_append(Enlil_Album *album,
-        Enlil_Flickr_Photo_New_Cb new_cb,
-        Enlil_Flickr_Photo_NotInFlickr_Cb notinflickr_cb,
-        Enlil_Flickr_Photo_Known_Cb known_cb,
-        Enlil_Flickr_Album_Error_Cb error_cb,
-        void *data);
+EAPI    Enlil_Flickr_Job *      enlil_flickr_job_sync_album_photos_append(Enlil_Album *album,
+      Enlil_Flickr_Photo_New_Cb new_cb,
+      Enlil_Flickr_Photo_NotInFlickr_Cb notinflickr_cb,
+      Enlil_Flickr_Photo_Known_Cb known_cb,
+      Enlil_Flickr_Album_Error_Cb error_cb,
+      void *data);
 
-EAPI	Enlil_Flickr_Job *enlil_flickr_job_cmp_photo_append(
+EAPI    Enlil_Flickr_Job *      enlil_flickr_job_cmp_photo_append(
       Enlil_Photo *photo,
       Enlil_Flickr_Photo_FlickrNotUpToDate_Cb flickrnotuptodate_cb,
       Enlil_Flickr_Photo_NotUpToDate_Cb notuptodate_cb,
       Enlil_Flickr_Photo_UpToDate_Cb uptodate_cb,
       Enlil_Flickr_Photo_Error_Cb error_cb,
       void *data);
-EAPI	Enlil_Flickr_Job *enlil_flickr_job_sync_photo_update_flickr_append(
+EAPI    Enlil_Flickr_Job *      enlil_flickr_job_sync_photo_update_flickr_append(
       Enlil_Photo *photo,
       Enlil_Flickr_Photo_Upload_Start_Cb start_cb,
       Enlil_Flickr_Photo_Upload_Progress_Cb progress_cb,
       Enlil_Flickr_Photo_Upload_Done_Cb done_cb,
       Enlil_Flickr_Photo_Error_Cb error_cb,
       void *data);
-EAPI	Enlil_Flickr_Job *enlil_flickr_job_sync_photo_upload_flickr_append(
+EAPI    Enlil_Flickr_Job *      enlil_flickr_job_sync_photo_upload_flickr_append(
       Enlil_Photo *photo,
       Enlil_Flickr_Photo_Upload_Start_Cb start_cb,
       Enlil_Flickr_Photo_Upload_Progress_Cb progress_cb,
       Enlil_Flickr_Photo_Upload_Done_Cb done_cb,
       Enlil_Flickr_Photo_Error_Cb error_cb,
       void *data);
-EAPI	Enlil_Flickr_Job *enlil_flickr_job_sync_photo_upload_flickr_append(
+EAPI    Enlil_Flickr_Job *      enlil_flickr_job_sync_photo_upload_flickr_append(
       Enlil_Photo *photo,
       Enlil_Flickr_Photo_Upload_Start_Cb start_cb,
       Enlil_Flickr_Photo_Upload_Progress_Cb progress_cb,
       Enlil_Flickr_Photo_Upload_Done_Cb done_cb,
       Enlil_Flickr_Photo_Error_Cb error_cb,
       void *data);
-EAPI	Enlil_Flickr_Job *enlil_flickr_job_get_photo_sizes_append(const char *photo_id,
-        Enlil_Flickr_Photo_Sizes_Cb cb,
-        void *data);
-EAPI	Enlil_Flickr_Job *enlil_flickr_job_set_photo_times_flickr_fs_prepend(
-	Enlil_Photo *photo,
-	Enlil_Flickr_Photo_Error_Cb error_cb,
-        void *data);
+EAPI    Enlil_Flickr_Job *      enlil_flickr_job_get_photo_sizes_append(const char *photo_id,
+      Enlil_Flickr_Photo_Sizes_Cb cb,
+      void *data);
+EAPI    Enlil_Flickr_Job *      enlil_flickr_job_set_photo_times_flickr_fs_prepend(
+      Enlil_Photo *photo,
+      Enlil_Flickr_Photo_Error_Cb error_cb,
+      void *data);
 
-EAPI	const char* enlil_flickr_size_label_get(Enlil_Flickr_Photo_Size *size);
-EAPI	const char* enlil_flickr_size_source_get(Enlil_Flickr_Photo_Size *size);
-EAPI	const char* enlil_flickr_size_url_get(Enlil_Flickr_Photo_Size *size);
-EAPI	const char* enlil_flickr_size_media_get(Enlil_Flickr_Photo_Size *size);
-EAPI	int enlil_flickr_size_width_get(Enlil_Flickr_Photo_Size *size);
-EAPI	int enlil_flickr_size_height_get(Enlil_Flickr_Photo_Size *size);
-EAPI	int enlil_flickr_size_order_get(Enlil_Flickr_Photo_Size *size);
+EAPI    const char *            enlil_flickr_size_label_get(Enlil_Flickr_Photo_Size *size);
+EAPI    const char *            enlil_flickr_size_source_get(Enlil_Flickr_Photo_Size *size);
+EAPI    const char *            enlil_flickr_size_url_get(Enlil_Flickr_Photo_Size *size);
+EAPI    const char *            enlil_flickr_size_media_get(Enlil_Flickr_Photo_Size *size);
+EAPI    int                     enlil_flickr_size_width_get(Enlil_Flickr_Photo_Size *size);
+EAPI    int                     enlil_flickr_size_height_get(Enlil_Flickr_Photo_Size *size);
+EAPI    int                     enlil_flickr_size_order_get(Enlil_Flickr_Photo_Size *size);
 
 
 //Download a photo
@@ -716,12 +717,12 @@ typedef void (*Enlil_Download_Start_Cb) (void *data, Enlil_Photo *photo);
 typedef void (*Enlil_Download_Done_Cb) (void *data, Enlil_Photo *photo, int status);
 typedef int (*Enlil_Download_Progress_Cb) (void *data, Enlil_Photo *photo, long int dltotal, long int dlnow);
 
-EAPI	void	enlil_download_add(Enlil_Photo *photo, const char *source,
+EAPI    void                    enlil_download_add(Enlil_Photo *photo, const char *source,
       Enlil_Download_Start_Cb start_cb,
       Enlil_Download_Progress_Cb progress_cb,
       Enlil_Download_Done_Cb done_cb,
       void *data);
-EAPI	Eina_Bool enlil_download_image_in_list(const char *src, const Enlil_Album *album);
-EAPI	Eina_Bool enlil_download_photos_of_album_in_list(const Enlil_Album *album, Eina_Bool test_current);
-#endif   /* ----- #ifndef ENLIL_INC  ----- */
+EAPI    Eina_Bool               enlil_download_image_in_list(const char *src, const Enlil_Album *album);
+EAPI    Eina_Bool               enlil_download_photos_of_album_in_list(const Enlil_Album *album, Eina_Bool test_current);
 
+#endif   /* ----- #ifndef ENLIL_INC  ----- */
