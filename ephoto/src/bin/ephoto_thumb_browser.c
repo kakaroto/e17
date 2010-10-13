@@ -30,6 +30,7 @@ struct _Ephoto_Thumb_Browser
    struct {
       Ecore_Job *change_dir;
    } job;
+   Eina_Bool layout_deleted : 1;
 };
 
 static Ephoto_Entry *
@@ -237,6 +238,13 @@ _ephoto_populate_end(void *data)
 {
    Ephoto_Thumb_Browser *tb = data;
    tb->ls = NULL;
+
+   if (tb->layout_deleted)
+     {
+        free(tb);
+        return;
+     }
+
    if (tb->pending.cb)
      {
         tb->pending.cb((void*)tb->pending.data, NULL);
@@ -440,10 +448,24 @@ static void
 _layout_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Thumb_Browser *tb = data;
-   if (tb->pending.cb) tb->pending.cb((void*)tb->pending.data, NULL);
-   eina_stringshare_del(tb->pending.path);
-   if (tb->ls) eio_file_cancel(tb->ls);
-   if (tb->job.change_dir) ecore_job_del(tb->job.change_dir);
+   if (tb->pending.cb)
+     {
+        tb->pending.cb((void*)tb->pending.data, NULL);
+        tb->pending.cb = NULL;
+        tb->pending.data = NULL;
+     }
+   eina_stringshare_replace(&tb->pending.path, NULL);
+   if (tb->job.change_dir)
+     {
+        ecore_job_del(tb->job.change_dir);
+        tb->job.change_dir = NULL;
+     }
+   if (tb->ls)
+     {
+        tb->layout_deleted = EINA_TRUE;
+        eio_file_cancel(tb->ls);
+        return;
+     }
    free(tb);
 }
 

@@ -6,6 +6,7 @@ struct _Ephoto_Directory_Thumb
    Eio_File *ls;
    Eina_List *objs;
    Ephoto_Entry *entry;
+   Eina_Bool canceled:1;
 };
 
 static Eina_Hash *_pending_dirs = NULL;
@@ -13,7 +14,13 @@ static Eina_Hash *_pending_dirs = NULL;
 static void
 _ephoto_directory_thumb_free(Ephoto_Directory_Thumb *dt)
 {
-   if (dt->ls) eio_file_cancel(dt->ls);
+   if (dt->ls)
+     {
+        dt->canceled = EINA_TRUE;
+        eio_file_cancel(dt->ls);
+        return;
+     }
+
    eina_hash_del(_pending_dirs, dt->entry->path, dt);
    free(dt);
 
@@ -25,11 +32,15 @@ _ephoto_directory_thumb_free(Ephoto_Directory_Thumb *dt)
 }
 
 static void
-_obj_del(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_obj_del(void *data, Evas *e __UNUSED__, Evas_Object *obj, void *event_info __UNUSED__)
 {
    Ephoto_Directory_Thumb *dt = data;
    dt->objs = eina_list_remove(dt->objs, obj);
-   if (!dt->objs) _ephoto_directory_thumb_free(dt);
+   if (!dt->objs)
+     {
+        dt->canceled = EINA_TRUE;
+        _ephoto_directory_thumb_free(dt);
+     }
 }
 
 static Eina_Bool
@@ -49,7 +60,7 @@ _populate_end(void *data)
      evas_object_event_callback_del_full(obj, EVAS_CALLBACK_DEL, _obj_del, dt);
 
    dt->entry->dir_files_checked = EINA_TRUE;
-   if (dt->entry->item)
+   if ((dt->entry->item) && (!dt->canceled))
      elm_gengrid_item_update(dt->entry->item);
 
    _ephoto_directory_thumb_free(dt);
