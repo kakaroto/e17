@@ -532,22 +532,22 @@ cdef class State:
                                                   self.name, self.value, param,
                                                   &type, &value):
             return None
-        if type == edje.EDJE_EXTERNAL_PARAM_TYPE_BOOL:
+        if type == edje.c_edje.EDJE_EXTERNAL_PARAM_TYPE_BOOL:
             b = (<evas.c_evas.Eina_Bool *>value)[0]
             return (type, bool(b))
-        elif type == edje.EDJE_EXTERNAL_PARAM_TYPE_INT:
+        elif type == edje.c_edje.EDJE_EXTERNAL_PARAM_TYPE_INT:
             i = (<int *>value)[0]
             return (type, i)
-        elif type == edje.EDJE_EXTERNAL_PARAM_TYPE_DOUBLE:
+        elif type == edje.c_edje.EDJE_EXTERNAL_PARAM_TYPE_DOUBLE:
             d = (<double *>value)[0]
             return (type, d)
-        elif type == edje.EDJE_EXTERNAL_PARAM_TYPE_STRING:
+        elif type == edje.c_edje.EDJE_EXTERNAL_PARAM_TYPE_STRING:
             s = <char *>value
             if s == NULL:
                 return (type, None)
             else:
                 return (type, s)
-        elif type == edje.EDJE_EXTERNAL_PARAM_TYPE_CHOICE:
+        elif type == edje.c_edje.EDJE_EXTERNAL_PARAM_TYPE_CHOICE:
             s = <char *>value
             if s == NULL:
                 return (type, None)
@@ -567,14 +567,14 @@ cdef class State:
         elif isinstance(value, basestring):
             t = edje_object_part_external_param_type_get(
                 self.edje.obj, self.part, param)
-            if t == edje.EDJE_EXTERNAL_PARAM_TYPE_STRING:
+            if t == edje.c_edje.EDJE_EXTERNAL_PARAM_TYPE_STRING:
                 return self.external_param_string_set(param, value)
-            elif t == edje.EDJE_EXTERNAL_PARAM_TYPE_CHOICE:
+            elif t == edje.c_edje.EDJE_EXTERNAL_PARAM_TYPE_CHOICE:
                 return self.external_param_choice_set(param, value)
 
         t = edje_object_part_external_param_type_get(
             self.edje.obj, self.part, param)
-        if t >= edje.EDJE_EXTERNAL_PARAM_TYPE_MAX:
+        if t >= edje.c_edje.EDJE_EXTERNAL_PARAM_TYPE_MAX:
             raise TypeError("no external parameter %s" % (param,))
         else:
             expected = edje_external_param_type_str(t)
