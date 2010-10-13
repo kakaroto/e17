@@ -172,8 +172,10 @@ _ephoto_eina_file_direct_info_image_useful(const Eina_File_Direct_Info *info)
           return EINA_TRUE;
      }
 
-   if (!(type = efreet_mime_type_get(info->path))) return EINA_FALSE;
-   return strncmp(type, "image/", sizeof("image/") - 1) == 0;
+   return EINA_FALSE;
+   /* seems that this does not play nice with threads */
+   //if (!(type = efreet_mime_type_get(info->path))) return EINA_FALSE;
+   //return strncmp(type, "image/", sizeof("image/") - 1) == 0;
 }
 
 #endif
