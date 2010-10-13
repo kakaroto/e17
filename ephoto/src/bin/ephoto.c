@@ -24,6 +24,7 @@ elm_main(int argc, char **argv)
    textdomain(GETTEXT_PACKAGE);
 #endif
 
+   eio_init();
    elm_need_efreet();
    elm_need_ethumb();
    elm_init(argc, argv);
@@ -101,6 +102,7 @@ elm_main(int argc, char **argv)
  end_log_domain:
    efreet_mime_shutdown();
    elm_shutdown();
+   eio_shutdown();
 
    return r;
 }
