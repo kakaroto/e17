@@ -1,30 +1,30 @@
-    #ifdef HAVE_CONFIG_H
-    #include "config.h"
-    #endif
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
-    #ifdef HAVE_ALLOCA_H
-    # include <alloca.h>
-    #elif defined __GNUC__
-    # define alloca __builtin_alloca
-    #elif defined _AIX
-    # define alloca __alloca
-    #elif defined _MSC_VER
-    # include <malloc.h>
-    # define alloca _alloca
-    #else
-    # include <stddef.h>
-    # ifdef  __cplusplus
+#ifdef HAVE_ALLOCA_H
+# include <alloca.h>
+#elif defined __GNUC__
+# define alloca __builtin_alloca
+#elif defined _AIX
+# define alloca __alloca
+#elif defined _MSC_VER
+# include <malloc.h>
+# define alloca _alloca
+#else
+# include <stddef.h>
+# ifdef  __cplusplus
 extern "C"
-    # endif
+# endif
 void *    alloca (size_t);
-    #endif
+#endif
 
-    #include <stdio.h>
+#include <stdio.h>
 
-    #include <Eina.h>
-    #include <eina_safety_checks.h>
+#include <Eina.h>
+#include <eina_safety_checks.h>
 
-    #include "E_Ofono.h"
+#include "E_Ofono.h"
 
 static const char manager_path[] = "/";
 
@@ -45,19 +45,19 @@ extern const char *e_ofono_method_send_sms;
 
 extern int _e_dbus_ofono_log_dom;
 
-    #ifndef EINA_LOG_DEFAULT_COLOR
-    #define EINA_LOG_DEFAULT_COLOR EINA_COLOR_CYAN
-    #endif
+#ifndef EINA_LOG_DEFAULT_COLOR
+#define EINA_LOG_DEFAULT_COLOR EINA_COLOR_CYAN
+#endif
 
-    #undef DBG
-    #undef INF
-    #undef WRN
-    #undef ERR
+#undef DBG
+#undef INF
+#undef WRN
+#undef ERR
 
-    #define DBG(...) EINA_LOG_DOM_DBG(_e_dbus_ofono_log_dom, __VA_ARGS__)
-    #define INF(...) EINA_LOG_DOM_INFO(_e_dbus_ofono_log_dom, __VA_ARGS__)
-    #define WRN(...) EINA_LOG_DOM_WARN(_e_dbus_ofono_log_dom, __VA_ARGS__)
-    #define ERR(...) EINA_LOG_DOM_ERR(_e_dbus_ofono_log_dom, __VA_ARGS__)
+#define DBG(...) EINA_LOG_DOM_DBG(_e_dbus_ofono_log_dom, __VA_ARGS__)
+#define INF(...) EINA_LOG_DOM_INFO(_e_dbus_ofono_log_dom, __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_WARN(_e_dbus_ofono_log_dom, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(_e_dbus_ofono_log_dom, __VA_ARGS__)
 
 typedef struct _E_Ofono_Array   E_Ofono_Array;
 
@@ -103,7 +103,7 @@ __dbus_iter_type_check(int type, int expected, const char *expected_name)
    return 0;
 }
 
-    #define _dbus_iter_type_check(t, e) __dbus_iter_type_check(t, e, # e)
+#define _dbus_iter_type_check(t, e) __dbus_iter_type_check(t, e, # e)
 
 extern E_DBus_Connection *e_ofono_conn;
 
