@@ -45,9 +45,18 @@ _mouse_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *eve
 }
 
 static void
+_entry_free(void *data, const Ephoto_Entry *entry __UNUSED__)
+{
+   Ephoto_Slideshow *ss = data;
+   ss->entry = NULL;
+}
+
+static void
 _slideshow_del(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Slideshow *ss = data;
+   if (ss->entry)
+     ephoto_entry_free_listener_del(ss->entry, _entry_free, ss);
    free(ss);
 }
 
@@ -158,7 +167,15 @@ ephoto_slideshow_entry_set(Evas_Object *obj, Ephoto_Entry *entry)
    conf = ss->ephoto->config;
 
    DBG("entry %p, was %p", entry, ss->entry);
+
+   if (ss->entry)
+     ephoto_entry_free_listener_del(ss->entry, _entry_free, ss);
+
    ss->entry = entry;
+
+   if (entry)
+     ephoto_entry_free_listener_add(entry, _entry_free, ss);
+
    elm_slideshow_loop_set(ss->slideshow, EINA_TRUE); /* move to config? */
    elm_slideshow_transition_set(ss->slideshow, conf->slideshow_transition);
    elm_slideshow_timeout_set(ss->slideshow, conf->slideshow_timeout);

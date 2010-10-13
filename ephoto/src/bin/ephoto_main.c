@@ -1,5 +1,12 @@
 #include "ephoto.h"
 
+typedef struct _Ephoto_Entry_Free_Listener Ephoto_Entry_Free_Listener;
+struct _Ephoto_Entry_Free_Listener
+{
+   void (*cb)(void *data, const Ephoto_Entry *dead);
+   const void *data;
+};
+
 static void
 _ephoto_state_set(Ephoto *ephoto, Ephoto_State state)
 {
@@ -380,11 +387,49 @@ void
 ephoto_entry_free(Ephoto_Entry *entry)
 {
    const char *s;
+   Ephoto_Entry_Free_Listener *fl;
+
+   EINA_LIST_FREE(entry->free_listeners, fl)
+     {
+        fl->cb((void *)fl->data, entry);
+        free(fl);
+     }
    EINA_SAFETY_ON_NULL_RETURN(entry);
    eina_stringshare_del(entry->path);
    eina_stringshare_del(entry->label);
    EINA_LIST_FREE(entry->dir_files, s) eina_stringshare_del(s);
    free(entry);
+}
+
+void
+ephoto_entry_free_listener_add(Ephoto_Entry *entry, void (*cb)(void *data, const Ephoto_Entry *entry), const void *data)
+{
+   Ephoto_Entry_Free_Listener *fl;
+   EINA_SAFETY_ON_NULL_RETURN(entry);
+   EINA_SAFETY_ON_NULL_RETURN(cb);
+   fl = malloc(sizeof(Ephoto_Entry_Free_Listener));
+   EINA_SAFETY_ON_NULL_RETURN(fl);
+   fl->cb = cb;
+   fl->data = data;
+   entry->free_listeners = eina_list_append(entry->free_listeners, fl);
+}
+
+void
+ephoto_entry_free_listener_del(Ephoto_Entry *entry, void (*cb)(void *data, const Ephoto_Entry *entry), const void *data)
+{
+   Eina_List *l;
+   Ephoto_Entry_Free_Listener *fl;
+   EINA_SAFETY_ON_NULL_RETURN(entry);
+   EINA_SAFETY_ON_NULL_RETURN(cb);
+   EINA_LIST_FOREACH(entry->free_listeners, l, fl)
+     {
+        if ((fl->cb == cb) && (fl->data == data))
+          {
+             entry->free_listeners = eina_list_remove_list
+               (entry->free_listeners, l);
+             break;
+          }
+     }
 }
 
 void

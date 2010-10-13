@@ -12,8 +12,22 @@ struct _Ephoto_Directory_Thumb
 static Eina_Hash *_pending_dirs = NULL;
 
 static void
+_entry_free(void *data, const Ephoto_Entry *entry __UNUSED__)
+{
+   Ephoto_Directory_Thumb *dt = data;
+   dt->entry = NULL;
+}
+
+static void
 _ephoto_directory_thumb_free(Ephoto_Directory_Thumb *dt)
 {
+   if (dt->entry)
+     {
+        ephoto_entry_free_listener_del(dt->entry, _entry_free, dt);
+        eina_hash_del(_pending_dirs, dt->entry->path, dt);
+        dt->entry = NULL;
+     }
+
    if (dt->ls)
      {
         dt->canceled = EINA_TRUE;
@@ -21,7 +35,6 @@ _ephoto_directory_thumb_free(Ephoto_Directory_Thumb *dt)
         return;
      }
 
-   eina_hash_del(_pending_dirs, dt->entry->path, dt);
    free(dt);
 
    if (!eina_hash_population(_pending_dirs))
@@ -59,9 +72,12 @@ _populate_end(void *data)
    EINA_LIST_FREE(dt->objs, obj)
      evas_object_event_callback_del_full(obj, EVAS_CALLBACK_DEL, _obj_del, dt);
 
-   dt->entry->dir_files_checked = EINA_TRUE;
-   if ((dt->entry->item) && (!dt->canceled))
-     elm_gengrid_item_update(dt->entry->item);
+   if (dt->entry)
+     {
+        dt->entry->dir_files_checked = EINA_TRUE;
+        if ((dt->entry->item) && (!dt->canceled))
+          elm_gengrid_item_update(dt->entry->item);
+     }
 
    _ephoto_directory_thumb_free(dt);
 }
@@ -82,6 +98,7 @@ _populate_main(void *data, const Eina_File_Direct_Info *info)
    const char *file;
 
    if (!dt->objs) return;
+   if (!dt->entry) return;
 
    obj = dt->objs->data;
    file = eina_stringshare_add(info->path);
@@ -127,6 +144,7 @@ ephoto_directory_thumb_add(Evas_Object *parent, Ephoto_Entry *entry)
              evas_object_del(obj);
              return NULL;
           }
+        ephoto_entry_free_listener_add(entry, _entry_free, dt);
         dt->entry = entry;
         dt->ls = eio_file_direct_ls(entry->path,
                                     _populate_filter,

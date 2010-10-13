@@ -136,6 +136,7 @@ struct _Ephoto_Entry
    const char *label;
    Ephoto *ephoto;
    Elm_Gengrid_Item *item;
+   Eina_List *free_listeners;
    Eina_List *dir_files; /* if dir, here contain files with preview */
    Eina_Bool dir_files_checked : 1;
    Eina_Bool is_dir : 1;
@@ -144,6 +145,8 @@ struct _Ephoto_Entry
 
 Ephoto_Entry *ephoto_entry_new(Ephoto *ephoto, const char *path, const char *label);
 void          ephoto_entry_free(Ephoto_Entry *entry);
+void          ephoto_entry_free_listener_add(Ephoto_Entry *entry, void (*cb)(void *data, const Ephoto_Entry *entry), const void *data);
+void          ephoto_entry_free_listener_del(Ephoto_Entry *entry, void (*cb)(void *data, const Ephoto_Entry *entry), const void *data);
 void          ephoto_entries_free(Ephoto *ephoto);
 
 extern int __log_domain;
@@ -154,7 +157,7 @@ extern int __log_domain;
 static inline Eina_Bool
 _ephoto_eina_file_direct_info_image_useful(const Eina_File_Direct_Info *info)
 {
-   const char *type, *bname, *ext;
+   const char /* *type, */ *bname, *ext;
 
    bname = info->path + info->name_start;
    if (bname[0] == '.') return EINA_FALSE;

@@ -649,9 +649,18 @@ _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
 }
 
 static void
+_entry_free(void *data, const Ephoto_Entry *entry __UNUSED__)
+{
+   Ephoto_Flow_Browser *fb = data;
+   fb->entry = NULL;
+}
+
+static void
 _layout_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
+   if (fb->entry)
+     ephoto_entry_free_listener_del(fb->entry, _entry_free, fb);
    eina_stringshare_del(fb->path);
    free(fb);
 }
@@ -823,7 +832,16 @@ ephoto_flow_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry)
    EINA_SAFETY_ON_NULL_RETURN(fb);
 
    DBG("entry %p, was %p", entry, fb->entry);
+
+   if (fb->entry)
+     ephoto_entry_free_listener_del(fb->entry, _entry_free, fb);
+
    fb->entry = entry;
+
+   if (entry)
+     ephoto_entry_free_listener_add(entry, _entry_free, fb);
+
+
    if (!entry)
      {
         eina_stringshare_replace(&fb->path, NULL);
