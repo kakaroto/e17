@@ -147,7 +147,7 @@ static void _enlil_load(void *data)
 {
     Enlil_Load *load = data;
     Enlil_Root *root, *root_list;
-    Eina_List *l;
+    const Eina_List *l;
     Enlil_Album *album_list;
     Enlil_Collection *collection_list;
     Enlil_Tag *tag_list;
