@@ -160,7 +160,7 @@ void enlil_album_print(Enlil_Album *album)
     printf("\t## ALBUM ##\n");
     printf("\t###########\n");
     printf("Name\t:\t%s\n", album->name);
-    printf("path\t:\t%s\n", album->path);
+    printf("Path\t:\t%s\n", album->path);
     printf("\t## PHOTO ##\n");
     enlil_photo_list_print(enlil_album_photos_get(album));
 }
@@ -357,6 +357,7 @@ void enlil_album_collection_add(Enlil_Album *album, const char *col_name)
       _enlil_root_collection_album_add(album->root, album_col, album);
 
    enlil_album_eet_header_save(album);
+   enlil_root_eet_collections_save(album->root);
 }
 
 /**
@@ -382,6 +383,7 @@ void enlil_album_collection_remove(Enlil_Album *album, Enlil_Album_Collection *a
    free(album_col);
 
    enlil_album_eet_header_save(album);
+   enlil_root_eet_collections_save(album->root);
 }
 
 /**

@@ -212,10 +212,10 @@ void enlil_photo_free(Enlil_Photo **photo)
    FREE(*photo);
 }
 
-void enlil_photo_list_print(Eina_List *l_photos)
+void enlil_photo_list_print(const Eina_List *l_photos)
 {
-   Eina_List *l;
-   Enlil_Photo *photo;
+   const Eina_List *l;
+   const Enlil_Photo *photo;
    ASSERT_RETURN_VOID(l_photos!=NULL);
    EINA_LIST_FOREACH(l_photos, l, photo)
      {
@@ -223,7 +223,7 @@ void enlil_photo_list_print(Eina_List *l_photos)
      }
 }
 
-void enlil_photo_print(Enlil_Photo *photo)
+void enlil_photo_print(const Enlil_Photo *photo)
 {
    ASSERT_RETURN_VOID(photo!=NULL);
    printf("# Photo %s\n", photo->name);
@@ -969,7 +969,11 @@ void enlil_photo_tag_add(Enlil_Photo *photo, const char *tag_name)
    photo->tags = eina_list_append(photo->tags, photo_tag);
 
    if(photo->album && enlil_album_root_get(photo->album))
-     _enlil_root_tag_photo_add(enlil_album_root_get(photo->album), photo_tag, photo);
+     {
+	Enlil_Root *root = enlil_album_root_get(photo->album);
+	_enlil_root_tag_photo_add(root, photo_tag, photo);
+	enlil_root_eet_tags_save(root);
+     }
 
    if(enlil_photo_iptc_add(photo, "Keywords", photo_tag->name, EINA_TRUE))
 	enlil_photo_save_iptc_in_file(photo);
@@ -1029,8 +1033,12 @@ void enlil_photo_tag_remove(Enlil_Photo *photo, Enlil_Photo_Tag *photo_tag)
 
    photo->tags = eina_list_remove(photo->tags, photo_tag);
 
-   if(photo->album && enlil_album_root_get(photo->album))
-     _enlil_root_tag_photo_remove(enlil_album_root_get(photo->album), photo_tag, photo);
+   if(photo->album && enlil_album_root_get(photo->album)) 
+     {
+	Enlil_Root *root = enlil_album_root_get(photo->album);
+	_enlil_root_tag_photo_remove(root, photo_tag, photo);
+	enlil_root_eet_tags_save(root);
+     }
 
    if(enlil_photo_iptc_remove(photo, "Keywords", photo_tag->name))
      enlil_photo_save_iptc_in_file(photo);

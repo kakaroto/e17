@@ -146,14 +146,32 @@ static void _album_load(Enlil_Load *load, Enlil_Album *album)
 static void _enlil_load(void *data)
 {
     Enlil_Load *load = data;
-    Enlil_Root *root;
+    Enlil_Root *root, *root_list;
+    Eina_List *l;
+    Enlil_Album *album_list;
+    Enlil_Collection *collection_list;
+    Enlil_Tag *tag_list;
 
     root = load->root;
 
-    Enlil_Root *root_list = enlil_root_eet_albums_load(root);
+    root_list = enlil_root_eet_tags_load(root);
+    EINA_LIST_FOREACH(enlil_root_tags_get(root_list), l, tag_list)
+      {
+	 Enlil_Tag *tag = enlil_tag_copy_new(tag_list);
+	 _enlil_root_tag_add_end(root, tag, EINA_TRUE);
+      }
+    enlil_root_free(&root_list);
+
+    root_list = enlil_root_eet_collections_load(root);
+    EINA_LIST_FOREACH(enlil_root_collections_get(root_list), l, collection_list)
+      {
+	 Enlil_Collection *collection = enlil_collection_copy_new(collection_list);
+	 _enlil_root_collection_add_end(root, collection, EINA_TRUE);
+      }
+    enlil_root_free(&root_list);
+
+    root_list = enlil_root_eet_albums_load(root);
     if(!root_list) return ;
-    Eina_List *l;
-    Enlil_Album *album_list;
     EINA_LIST_FOREACH(enlil_root_albums_get(root_list), l, album_list)
       {
 	 Enlil_Album *album = enlil_root_eet_album_load(root, enlil_album_file_name_get(album_list));

@@ -55,6 +55,8 @@ void _enlil_root_collection_album_remove(Enlil_Root *root, Enlil_Album_Collectio
 void _enlil_root_tag_photo_add(Enlil_Root *root, Enlil_Photo_Tag *photo_tag, Enlil_Photo *photo);
 void _enlil_root_tag_photo_remove(Enlil_Root *root, Enlil_Photo_Tag *photo_tag, Enlil_Photo *photo);
 void _enlil_root_album_add_end(Enlil_Root *root, Enlil_Album *album);
+void _enlil_root_collection_add_end(Enlil_Root *root, Enlil_Collection *collection, Eina_Bool notify);
+void _enlil_root_tag_add_end(Enlil_Root *root, Enlil_Tag *tag, Eina_Bool notify);
 
 void _enlil_album_photo_name_changed(Enlil_Album *album, Enlil_Photo *photo);
 void _enlil_album_photo_datetimeoriginal_changed(Enlil_Album *album, Enlil_Photo *photo);
@@ -70,6 +72,7 @@ Eet_Data_Descriptor * enlil_photo_edd_new(Eet_Data_Descriptor *edd_tag);
 Eet_Data_Descriptor * _enlil_album_header_edd_new(Eet_Data_Descriptor *edd_collection);
 Eet_Data_Descriptor * _enlil_album_collection_edd_new();
 Eet_Data_Descriptor * _enlil_collection_edd_new();
+Eet_Data_Descriptor * _enlil_tag_edd_new();
 Eet_Data_Descriptor * _enlil_photo_tag_edd_new();
 Eet_Data_Descriptor * _enlil_exif_edd_new();
 Eet_Data_Descriptor * _enlil_iptc_edd_new();

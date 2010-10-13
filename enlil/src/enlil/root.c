@@ -6,8 +6,12 @@
 
 static void _enlil_root_monitor_cb(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const char *path);
 static Eet_Data_Descriptor *_enlil_root_albums_file_name_edd_new(Eet_Data_Descriptor *edd_file_name);
+static Eet_Data_Descriptor * _enlil_root_collections_edd_new(Eet_Data_Descriptor *collection_edd);
+static Eet_Data_Descriptor * _enlil_root_tags_edd_new(Eet_Data_Descriptor *tag_edd);
 static Eet_Data_Descriptor * _enlil_root_header_edd_new();
 static int _sort_albums_name_cb(const void *d1, const void *d2);
+static int _sort_collections_name_cb(const void *d1, const void *d2);
+static int _sort_tags_name_cb(const void *d1, const void *d2);
 
 static int _root_eet_header_save(const Enlil_Root *root);
 static void _root_eet_header_load(Enlil_Root *root);
@@ -320,6 +324,30 @@ void _enlil_root_album_add_end(Enlil_Root *root, Enlil_Album *album)
    root->albums = eina_list_append(root->albums, album);
 }
 
+void _enlil_root_collection_add_end(Enlil_Root *root, Enlil_Collection *collection, Eina_Bool notify)
+{
+   ASSERT_RETURN_VOID(root != NULL);
+   ASSERT_RETURN_VOID(collection != NULL);
+
+   root->collections = eina_list_append(root->collections, collection);
+
+   if (notify)
+      if(root->conf.collection.new_cb)
+	 root->conf.collection.new_cb(root->conf.data, root, collection);
+}
+
+void _enlil_root_tag_add_end(Enlil_Root *root, Enlil_Tag *tag, Eina_Bool notify)
+{
+   ASSERT_RETURN_VOID(root != NULL);
+   ASSERT_RETURN_VOID(tag != NULL);
+
+   root->tags = eina_list_append(root->tags, tag);
+
+   if (notify)
+      if(root->conf.tag.new_cb)
+	 root->conf.tag.new_cb(root->conf.data, root, tag);
+}
+
 Enlil_Album *enlil_root_album_prev_get(Enlil_Root *root, Enlil_Album *album)
 {
    ASSERT_RETURN(root != NULL);
@@ -363,6 +391,25 @@ void _enlil_root_album_name_changed(Enlil_Root *root, Enlil_Album *album)
    enlil_root_eet_albums_save(root);
 }
 
+/*
+ * Sort the list of collections by name
+ */
+void enlil_root_collections_sort(Enlil_Root *root)
+{
+   ASSERT_RETURN_VOID(root != NULL);
+
+   root->collections = eina_list_sort(root->collections, eina_list_count(root->collections), _sort_collections_name_cb);
+}
+
+/*
+ * Sort the list of tags by name
+ */
+void enlil_root_tags_sort(Enlil_Root *root)
+{
+   ASSERT_RETURN_VOID(root != NULL);
+
+   root->tags = eina_list_sort(root->tags, eina_list_count(root->tags), _sort_tags_name_cb);
+}
 
 /*
  * Print the list of album in stdout
@@ -428,11 +475,45 @@ static int _sort_albums_name_cb(const void *d1, const void *d2)
 {
    const Enlil_Album *album1 = d1;
    const Enlil_Album *album2 = d2;
+   const char *name1;
+   const char *name2;
 
-   if(!enlil_album_name_get(album1)) return 1;
-   if(!enlil_album_name_get(album2)) return -1;
+   name1 = enlil_album_name_get(album1);
+   if(!name1) return 1;
+   name2 = enlil_album_name_get(album2);
+   if(!name2) return -1;
 
-   return strcmp(enlil_album_name_get(album1), enlil_album_name_get(album2));
+   return strcmp(name1, name2);
+}
+
+static int _sort_collections_name_cb(const void *d1, const void *d2)
+{
+   const Enlil_Collection *collection1 = d1;
+   const Enlil_Collection *collection2 = d2;
+   const char *name1;
+   const char *name2;
+
+   name1 = enlil_collection_name_get(collection1);
+   if(!name1) return 1;
+   name2 = enlil_collection_name_get(collection2);
+   if(!name2) return -1;
+
+   return strcmp(name1, name2);
+}
+
+static int _sort_tags_name_cb(const void *d1, const void *d2)
+{
+   const Enlil_Tag *tag1 = d1;
+   const Enlil_Tag *tag2 = d2;
+   const char *name1;
+   const char *name2;
+
+   name1 = enlil_tag_name_get(tag1);
+   if(!name1) return 1;
+   name2 = enlil_tag_name_get(tag2);
+   if(!name2) return -1;
+
+   return strcmp(name1, name2);
 }
 
 /**
@@ -716,6 +797,12 @@ Eina_List *enlil_root_eet_path_load()
    return l;
 }
 
+
+
+
+
+
+
 /*
  * Load the list of albums from the Eet file.
  * This list contains only the path and the file name of each album.
@@ -815,6 +902,158 @@ Enlil_Album *enlil_root_eet_album_load(Enlil_Root *root, const char* name)
 
    return data;
 }
+
+
+/*
+ * Load the list of collections from the Eet file.
+ * This list contains only the name and the description of each collection.
+ * You should use it to load the collections with enlil_root_eet_collections_load()
+ *
+ * @param root the root struct
+ * @return Returns a new root with the list of collections
+ */
+Enlil_Root *enlil_root_eet_collections_load(Enlil_Root *root)
+{
+   Eet_Data_Descriptor *edd, *edd_collection;
+   Eet_File *f;
+   Enlil_Root *data;
+   char path[PATH_MAX];
+
+   ASSERT_RETURN(root!=NULL);
+
+   snprintf(path,PATH_MAX,"%s/"EET_FILE,enlil_root_path_get(root));
+   f = enlil_file_manager_open(path);
+   ASSERT_RETURN(f!=NULL);
+
+   edd_collection = _enlil_collection_edd_new();
+   edd = _enlil_root_collections_edd_new(edd_collection);
+
+   data = eet_data_read(f, edd, "/collection_list");
+
+   enlil_file_manager_close(path);
+   eet_data_descriptor_free(edd_collection);
+   eet_data_descriptor_free(edd);
+
+   return data;
+}
+
+/*
+ * Save the list of collections
+ *
+ * @param root the root struct
+ */
+int enlil_root_eet_collections_save(Enlil_Root *root)
+{
+   int res;
+   Eet_Data_Descriptor *edd, *edd_collection;
+   Eet_File *f;
+   char path[PATH_MAX];
+
+   ASSERT_RETURN(root!=NULL);
+
+   snprintf(path,PATH_MAX,"%s/"EET_FILE,enlil_root_path_get(root));
+   f = enlil_file_manager_open(path);
+   ASSERT_RETURN(f!=NULL);
+
+   edd_collection = _enlil_collection_edd_new();
+   edd = _enlil_root_collections_edd_new(edd_collection);
+
+   res = eet_data_write(f, edd, "/collection_list", root, 0);
+
+   enlil_file_manager_close(path);
+   eet_data_descriptor_free(edd_collection);
+   eet_data_descriptor_free(edd);
+
+   return res;
+}
+
+
+
+
+
+
+
+
+/*
+ * Load the list of tags from the Eet file.
+ * This list contains only the name and the description of each tag.
+ * You should use it to load the tags with enlil_root_eet_tags_load()
+ *
+ * @param root the root struct
+ * @return Returns a new root with the list of tags
+ */
+Enlil_Root *enlil_root_eet_tags_load(Enlil_Root *root)
+{
+   Eet_Data_Descriptor *edd, *edd_tag;
+   Eet_File *f;
+   Enlil_Root *data;
+   char path[PATH_MAX];
+
+   ASSERT_RETURN(root!=NULL);
+
+   snprintf(path,PATH_MAX,"%s/"EET_FILE,enlil_root_path_get(root));
+   f = enlil_file_manager_open(path);
+   ASSERT_RETURN(f!=NULL);
+
+   edd_tag = _enlil_tag_edd_new();
+   edd = _enlil_root_tags_edd_new(edd_tag);
+
+   data = eet_data_read(f, edd, "/tag_list");
+
+   enlil_file_manager_close(path);
+   eet_data_descriptor_free(edd_tag);
+   eet_data_descriptor_free(edd);
+
+   return data;
+}
+
+/*
+ * Save the list of tags
+ *
+ * @param root the root struct
+ */
+int enlil_root_eet_tags_save(Enlil_Root *root)
+{
+   int res;
+   Eet_Data_Descriptor *edd, *edd_tag;
+   Eet_File *f;
+   char path[PATH_MAX];
+
+   ASSERT_RETURN(root!=NULL);
+
+   snprintf(path,PATH_MAX,"%s/"EET_FILE,enlil_root_path_get(root));
+   f = enlil_file_manager_open(path);
+   ASSERT_RETURN(f!=NULL);
+
+   edd_tag = _enlil_tag_edd_new();
+   edd = _enlil_root_tags_edd_new(edd_tag);
+
+   res = eet_data_write(f, edd, "/tag_list", root, 0);
+
+   enlil_file_manager_close(path);
+   eet_data_descriptor_free(edd_tag);
+   eet_data_descriptor_free(edd);
+
+   return res;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
  * Save the header of a library
@@ -946,6 +1185,38 @@ static Eet_Data_Descriptor * _enlil_root_albums_file_name_edd_new(Eet_Data_Descr
    edd = eet_data_descriptor_file_new(&eddc);
 
    EET_DATA_DESCRIPTOR_ADD_LIST(edd, Enlil_Root, "albums", albums, edd_file_name);
+
+   return edd;
+}
+
+static Eet_Data_Descriptor * _enlil_root_collections_edd_new(Eet_Data_Descriptor *collection_edd)
+{
+   Eet_Data_Descriptor *edd;
+   Eet_Data_Descriptor_Class eddc;
+
+   EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, Enlil_Root);
+   eddc.func.str_direct_alloc = NULL;
+   eddc.func.str_direct_free = NULL;
+
+   edd = eet_data_descriptor_file_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_LIST(edd, Enlil_Root, "collections", collections, collection_edd);
+
+   return edd;
+}
+
+static Eet_Data_Descriptor * _enlil_root_tags_edd_new(Eet_Data_Descriptor *tag_edd)
+{
+   Eet_Data_Descriptor *edd;
+   Eet_Data_Descriptor_Class eddc;
+
+   EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, Enlil_Root);
+   eddc.func.str_direct_alloc = NULL;
+   eddc.func.str_direct_free = NULL;
+
+   edd = eet_data_descriptor_file_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_LIST(edd, Enlil_Root, "tags", tags, tag_edd);
 
    return edd;
 }

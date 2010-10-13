@@ -173,13 +173,23 @@ EAPI    Enlil_Root *	enlil_root_eet_albums_load(Enlil_Root *root);
 EAPI    int             enlil_root_eet_albums_save(Enlil_Root *root);
 EAPI    Enlil_Album *   enlil_root_eet_album_load(Enlil_Root *root, const char* key);
 EAPI    int             enlil_root_eet_album_remove(Enlil_Root *root, const char* key);
+EAPI	Enlil_Root *	enlil_root_eet_collections_load(Enlil_Root *root);
+EAPI	int		enlil_root_eet_collections_save(Enlil_Root *root);
+EAPI	Enlil_Root *	enlil_root_eet_tags_load(Enlil_Root *root);
+EAPI	int		enlil_root_eet_tags_save(Enlil_Root *root);
+
 
 
 EAPI	Enlil_Collection *	enlil_collection_new();
 EAPI	void		enlil_collection_free(Enlil_Collection **col);
+EAPI	Enlil_Collection *	enlil_collection_copy_new(const Enlil_Collection *tag);
+EAPI	void		enlil_collection_copy(const Enlil_Collection *col_src, Enlil_Collection *col_dest);
 EAPI	const char *	enlil_collection_name_get(const Enlil_Collection *col);
 EAPI	void		enlil_collection_name_set(Enlil_Collection *col, const char *name);
+EAPI	const char *	enlil_collection_description_get(const Enlil_Collection *col);
+EAPI	void		enlil_collection_description_set(Enlil_Collection *col, const char *description);
 EAPI	Eina_List *	enlil_collection_albums_get(const Enlil_Collection *col);
+EAPI	int		enlil_collection_albums_count_get(const Enlil_Collection *col);
 EAPI	void		enlil_collection_album_add(Enlil_Collection *col, Enlil_Album *album);
 EAPI	void		enlil_collection_album_remove(Enlil_Collection *col, Enlil_Album *album);
 EAPI    void            enlil_collection_user_data_set(Enlil_Collection *col, void *user_data, Enlil_Collection_Free_Cb cb);
@@ -187,13 +197,20 @@ EAPI    void *          enlil_collection_user_data_get(const Enlil_Collection *c
 
 EAPI	Enlil_Tag *	enlil_tag_new();
 EAPI	void		enlil_tag_free(Enlil_Tag **tag);
+EAPI	Enlil_Tag *	enlil_tag_copy_new(const Enlil_Tag *tag);
+EAPI	void		enlil_tag_copy(const Enlil_Tag *tag_src, Enlil_Tag *tag_dest);
 EAPI	const char *	enlil_tag_name_get(const Enlil_Tag *tag);
 EAPI	void		enlil_tag_name_set(Enlil_Tag *tag, const char *name);
+EAPI	const char *	enlil_tag_description_get(const Enlil_Tag *tag);
+EAPI	void		enlil_tag_description_set(Enlil_Tag *tag, const char *description);
 EAPI	Eina_List *	enlil_tag_photos_get(const Enlil_Tag *tag);
+EAPI	int		enlil_tag_photos_count_get(const Enlil_Tag *tag);
 EAPI	void		enlil_tag_photo_add(Enlil_Tag *tag, Enlil_Photo *photo);
 EAPI	void		enlil_tag_photo_remove(Enlil_Tag *tag, Enlil_Photo *photo);
 EAPI    void            enlil_tag_user_data_set(Enlil_Tag *tag, void *user_data, Enlil_Tag_Free_Cb cb);
 EAPI    void *          enlil_tag_user_data_get(const Enlil_Tag *tag);
+EAPI	void		enlil_tags_list_print(const Eina_List *tags);
+EAPI	void		enlil_tag_print(const Enlil_Tag *tag);
 
 EAPI    Enlil_Album *      enlil_album_new();
 EAPI    Enlil_Album *      enlil_album_copy_new(const Enlil_Album *album);
@@ -272,8 +289,8 @@ EAPI    int		enlil_photo_size_get(const Enlil_Photo *photo);
 EAPI    int		enlil_photo_size_w_get(const Enlil_Photo *photo);
 EAPI    int		enlil_photo_size_h_get(const Enlil_Photo *photo);
 EAPI    long long       enlil_photo_time_get(const Enlil_Photo *photo);
-EAPI    void            enlil_photo_list_print(Eina_List *l_photos);
-EAPI    void            enlil_photo_print(Enlil_Photo *photo);
+EAPI    void            enlil_photo_list_print(const Eina_List *l_photos);
+EAPI    void            enlil_photo_print(const Enlil_Photo *photo);
 EAPI    int             enlil_photo_is(const char *file);
 EAPI	int		enlil_photo_jpg_is(const char *file);
 EAPI	int		enlil_video_is(const char *file);

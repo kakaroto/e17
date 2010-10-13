@@ -644,6 +644,8 @@ static void _enlil_sync_album_folder_start(Enlil_Sync *sync, const char *folder)
 	enlil_album_name_set(album_list, enlil_album_name_get(album));
 	enlil_root_album_add(root_list, album_list);
 	enlil_root_eet_albums_save(root_list);
+	enlil_root_eet_collections_save(root_list);
+	enlil_root_eet_tags_save(root_list);
      }
    /*else if(album && folder_exist && time > enlil_album_time_get(album))
      {
@@ -675,6 +677,8 @@ static void _enlil_sync_album_folder_start(Enlil_Sync *sync, const char *folder)
 	//update the list of album
 	enlil_root_album_remove(root_list, album_list);
 	enlil_root_eet_albums_save(root_list);
+	enlil_root_eet_collections_save(root_list);
+	enlil_root_eet_tags_save(root_list);
      }
 
    if(album)
@@ -1065,7 +1069,11 @@ static void _enlil_sync_all_start(void *data)
 	  }
      }
    if(save_album_list)
-     enlil_root_eet_albums_save(root_list);
+     {
+	enlil_root_eet_albums_save(root_list);
+	enlil_root_eet_collections_save(root_list);
+	enlil_root_eet_tags_save(root_list);
+     }
 
 
    EINA_LIST_FREE(l_files, file)
