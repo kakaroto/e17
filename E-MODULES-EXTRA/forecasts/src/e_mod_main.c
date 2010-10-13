@@ -162,11 +162,6 @@ _gc_init(E_Gadcon * gc, const char *name, const char *id, const char *style)
    evas_object_event_callback_add(inst->forecasts_obj, EVAS_CALLBACK_MOUSE_OUT,
 				   _cb_mouse_out, inst);
 
-   if (!inst->ci->show_text)
-     edje_object_signal_emit(inst->forecasts_obj, "e,state,description,hide", "e");
-   else
-     edje_object_signal_emit(inst->forecasts_obj, "e,state,description,show", "e");
-   
    if (!inst->add_handler)
      inst->add_handler =
 	ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD,
@@ -884,6 +879,12 @@ _forecasts_display_set(Instance * inst, int ok)
 	    "base/theme/modules/forecasts/icons", buf))
      edje_object_file_set(inst->forecasts->icon_obj, m, buf);
    edje_object_part_swallow(inst->forecasts->forecasts_obj, "icon", inst->forecasts->icon_obj);
+
+   if (!inst->ci->show_text)
+     edje_object_signal_emit(inst->forecasts_obj, "e,state,description,hide", "e");
+   else
+     edje_object_signal_emit(inst->forecasts_obj, "e,state,description,show", "e");
+
    snprintf(buf, sizeof(buf), "%d°%c", inst->condition.temp, inst->units.temp);
    edje_object_part_text_set(inst->forecasts->forecasts_obj, "e.text.temp", buf);
    edje_object_part_text_set(inst->forecasts->forecasts_obj, "e.text.description",
