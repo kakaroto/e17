@@ -40,15 +40,12 @@ cdef class ToolbarItem(WidgetItem):
         Py_DECREF(self)
 
 
-    def __init__(self, c_evas.Object toolbar, c_evas.Object icon, label,
+    def __init__(self, c_evas.Object toolbar, icon, label,
                  callback, *args, **kargs):
         cdef c_evas.Evas_Object *ic = NULL
         cdef void* cbdata = NULL
         cdef void (*cb) (void *, c_evas.Evas_Object *, void *)
         cb = NULL
-
-        if icon is not None:
-           ic = icon.obj
 
         if callback:
             if not callable(callback):
@@ -57,7 +54,7 @@ cdef class ToolbarItem(WidgetItem):
 
         self.cbt = (toolbar, callback, self, args, kargs)
         cbdata = <void*>self.cbt
-        self.obj = elm_toolbar_item_add(toolbar.obj, ic, label, cb, cbdata)
+        self.obj = elm_toolbar_item_add(toolbar.obj, icon, label, cb, cbdata)
 
         Py_INCREF(self)
         elm_toolbar_item_del_cb_set(self.obj, _toolbar_item_del_cb)
@@ -67,6 +64,17 @@ cdef class ToolbarItem(WidgetItem):
         if self.obj == NULL:
             raise ValueError("Object already deleted")
         elm_toolbar_item_del(self.obj)
+
+    def icon_name_get(self):
+        cdef const_char_ptr i
+        i = elm_toolbar_item_icon_name_get(self.obj)
+        if i == NULL:
+            return None
+        return i
+
+    property icon_name:
+        def __get__(self):
+            return self.icon_name_get()
 
     def icon_get(self):
         cdef c_evas.Evas_Object *icon

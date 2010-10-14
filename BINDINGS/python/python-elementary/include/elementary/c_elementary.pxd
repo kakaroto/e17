@@ -541,9 +541,10 @@ cdef extern from "Elementary.h":
     void elm_toolbar_icon_size_set(evas.c_evas.Evas_Object *obj, int icon_size)
     int elm_toolbar_icon_size_get(evas.c_evas.Evas_Object *obj)
     Elm_Toolbar_Item *elm_toolbar_item_add(evas.c_evas.Evas_Object *obj,
-                                           evas.c_evas.Evas_Object *icon, char *label,
+                                           char *icon, char *label,
                                            void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
     evas.c_evas.Evas_Object *elm_toolbar_item_icon_get(Elm_Toolbar_Item *item)
+    char *elm_toolbar_item_icon_name_get(Elm_Toolbar_Item *item)
     char *elm_toolbar_item_label_get(Elm_Toolbar_Item *item)
     void  elm_toolbar_item_label_set(Elm_Toolbar_Item *item, char *label)
     void  elm_toolbar_item_del(Elm_Toolbar_Item *item)
