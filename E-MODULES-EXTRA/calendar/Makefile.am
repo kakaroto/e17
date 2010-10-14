@@ -15,6 +15,10 @@ EXTRA_DIST = module.desktop.in \
 	     e_modules-calendar.spec.in \
 	     e-module-calendar.edc \
 	     calendar.edc \
+	     images/arrow_left.png \
+	     images/arrow_right.png \
+	     images/arrow2_left.png \
+	     images/arrow2_right.png \
 	     images/calendar.png \
 	     images/module_icon.png
 

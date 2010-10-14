@@ -6,11 +6,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: calendar\n"
-"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2010-08-12 07:00-0700\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2010-10-13 10:43-0300\n"
 "PO-Revision-Date: 2010-09-26 01:50-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Portuguese\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,25 +21,22 @@ msgstr ""
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: Portugal\n"
 
-#: ../src/e_mod_main.c:584
+#: src/e_mod_main.c:586
 msgid "Sunday"
 msgstr "domingo"
 
-#: ../src/e_mod_main.c:591
+#: src/e_mod_main.c:593
 msgid "Monday"
 msgstr "segunda"
 
-#: ../src/e_mod_main.c:603
+#: src/e_mod_main.c:602
 msgid "First Day of Week"
 msgstr "Primeiro dia da semana"
 
-#: ../src/e_mod_main.c:686
-#: ../src/e_mod_main.c:703
+#: src/e_mod_main.c:685 src/e_mod_main.c:702
 msgid "Calendar"
 msgstr "Calendário"
 
-#: ../src/e_mod_main.c:687
-#: ../src/e_mod_main.c:703
+#: src/e_mod_main.c:686 src/e_mod_main.c:702
 msgid "Monthview Popup (Show/Hide)"
 msgstr "Alerta de vista mensal (mostrar/ocultar)"
-
