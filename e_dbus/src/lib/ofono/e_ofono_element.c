@@ -1225,15 +1225,13 @@ e_ofono_element_message_send(E_Ofono_Element *element, const char *method_name, 
         *pending = eina_inlist_append(*pending, EINA_INLIST_GET(p));
         return EINA_TRUE;
      }
-   else
-     {
-        ERR("failed to call %s (obj=%s, path=%s, iface=%s)",
-            method_name, e_ofono_system_bus_name_get(),
-            element->path, interface);
-        free(data);
-        free(p);
-        return EINA_TRUE;
-     }
+
+   ERR("failed to call %s (obj=%s, path=%s, iface=%s)",
+       method_name, e_ofono_system_bus_name_get(),
+       element->path, interface);
+   free(data);
+   free(p);
+   return EINA_FALSE;
 }
 
 Eina_Bool
