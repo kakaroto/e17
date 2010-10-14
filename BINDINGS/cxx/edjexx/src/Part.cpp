@@ -56,7 +56,7 @@ void Part::unswallow( Evasxx::Object* object )
   edje_object_part_unswallow( _parent->obj(), object->obj() );
 }
 
-Eflxx::CountedPtr <Evasxx::Object> Part::swallow()
+Eflxx::CountedPtr <Evasxx::Object> Part::getSwallow()
 {
   Evas_Object *eo = edje_object_part_swallow_get( _parent->obj(), _partname.c_str () );
 

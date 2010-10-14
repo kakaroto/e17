@@ -34,7 +34,7 @@ public:
   void swallow( Evasxx::Object* );
   void unswallow( Evasxx::Object* );
 
-  Eflxx::CountedPtr <Evasxx::Object> swallow();
+  Eflxx::CountedPtr <Evasxx::Object> getSwallow ();
 
   //const Evasxx::Object* getObject ( const char* name );
 
