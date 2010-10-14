@@ -40,7 +40,7 @@ do_configure ()
   if [ $val_debug = true ]; then
     CXXFLAGS="-O0 -ggdb" CFLAGS="-O0 -ggdb" ./configure &> $LOGFILE
   else
-    ./configure &> $LOGFILE
+    ./configure $CONFIG_ARGS &> $LOGFILE
   fi
 
   if [ $? != 0 ]; then
@@ -81,6 +81,8 @@ print_help()
 {
 cat << EOF
 
+Set "CONFIG_ARGS" environment variable to define arguments to configure script
+
 Usage:
 $0 [OPTIONS]...
   --help                          show this help
@@ -90,6 +92,7 @@ $0 [OPTIONS]...
   --skip-error                    skip errors while generating/building otherwise exit
   --clean                         clean the sources (without generating)
   --no-make                       don't make the sources
+  --install			  intall the build files
 EOF
 
 }

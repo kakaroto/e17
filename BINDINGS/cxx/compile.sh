@@ -19,6 +19,7 @@ val_skip_error=false
 val_clean=false
 val_make=true
 val_debug=true
+val_install=false
 
 ## include all needed functions
 source compile.functions
@@ -33,6 +34,7 @@ for i
 	--skip-error)                 val_skip_error=true ;;
 	--clean)                      val_clean=true ;;
 	--no-make)                    val_make=false ;;
+	--install)		      val_install=true ;;
 
 	*)
     echo "$0: wrong parameter"
@@ -53,6 +55,7 @@ do
 
   $val_clean && do_make $module clean
   $val_make && do_make $module all
+  $val_install && do_make $module install
 
 done
 
