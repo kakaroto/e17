@@ -233,11 +233,12 @@ _empris_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
    ev = event_info;
    if ((ev->button == 3) && (!empris_config->menu))
      {
-	E_Menu *mn;
+	E_Menu *mn, *mg;
 	E_Menu_Item *mi;
 	int x, y, w, h;
 
 	mn = e_menu_new ();
+	mg = e_menu_new ();
 	e_menu_post_deactivate_callback_set (mn, _empris_menu_cb_post, inst);
 	empris_config->menu = mn;
 
@@ -249,7 +250,7 @@ _empris_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 	mi = e_menu_item_new (mn);
 	e_menu_item_separator_set (mi, 1);
 
-	e_gadcon_client_util_menu_items_append (inst->gcc, mn, 0);
+	e_gadcon_client_util_menu_items_append (inst->gcc, mn,mg, 0);
 	e_gadcon_canvas_zone_geometry_get (inst->gcc->gadcon, &x, &y, &w, &h);
 	e_menu_activate_mouse (mn,
 			       e_util_zone_current_get (e_manager_current_get
