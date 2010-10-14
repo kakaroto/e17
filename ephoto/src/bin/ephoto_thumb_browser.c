@@ -15,6 +15,7 @@ struct _Ephoto_Thumb_Browser
    Ephoto *ephoto;
    Evas_Object *layout;
    Evas_Object *edje;
+   Evas_Object *fsel;
    Evas_Object *grid;
    Evas_Object *toolbar;
    Eio_File *ls;
@@ -344,12 +345,7 @@ _ephoto_populate_entries(Ephoto_Thumb_Browser *tb)
    elm_gengrid_clear(tb->grid);
    ephoto_entries_free(tb->ephoto);
 
-   /* TODO elm_fileselector_entry_path_set() */
-   /* param.name = "text"; */
-   /* param.type = EDJE_EXTERNAL_PARAM_TYPE_STRING; */
-   /* param.s = tb->ephoto->config->directory; */
-   /* edje_object_part_external_param_set(tb->edje, "ephoto.location", &param); */
-   /* edje_object_signal_emit(tb->edje, "location,set", "ephoto"); */
+   elm_fileselector_entry_path_set(tb->fsel, tb->ephoto->config->directory);
 
    edje_object_signal_emit(tb->edje, "populate,start", "ephoto");
    tb->ls = eio_file_direct_ls(tb->ephoto->config->directory,
@@ -383,23 +379,22 @@ _ephoto_thumb_selected(void *data, Evas_Object *o __UNUSED__, void *event_info)
      evas_object_smart_callback_call(tb->layout, "view", e);
 }
 
-/* TODO: elm_fileselector_entry and use the activated/file,chosen here */
-/*
 static void
-_changed_dir(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_changed_dir(void *data, Evas_Object *o __UNUSED__, void *event_info)
 {
    Ephoto_Thumb_Browser *tb = data;
-   Edje_External_Param p;
-
-   p.name = "text";
-   p.type = EDJE_EXTERNAL_PARAM_TYPE_STRING;
-   p.s = NULL;
-   if (!edje_object_part_external_param_get(tb->edje, "ephoto.location", &p))
-     return;
-
-   ephoto_thumb_browser_directory_set(tb->layout, p.s);
+   const char *path = event_info;
+   ephoto_thumb_browser_directory_set(tb->layout, path);
 }
-*/
+
+static void
+_changed_dir_text(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+   Ephoto_Thumb_Browser *tb = data;
+   const char *path = elm_fileselector_entry_path_get(tb->fsel);
+   if (ecore_file_is_dir(path))
+     ephoto_thumb_browser_directory_set(tb->layout, path);
+}
 
 static void
 _zoom_set(Ephoto_Thumb_Browser *tb, int zoom)
@@ -596,9 +591,9 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
    evas_object_data_set(layout, "thumb_browser", tb);
 
    if (!elm_layout_theme_set
-       (layout, "layout", "application", "toolbar-content"))
+       (layout, "layout", "application", "toolbar-vbox"))
      {
-        ERR("could not load style 'toolbar-content' from theme");
+        ERR("could not load style 'toolbar-vbox' from theme");
         goto error;
      }
 
@@ -620,14 +615,25 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
    tb->action.view_flow = _toolbar_item_add
      (tb, "image", "Larger", _view_flow);
 
-   /* TODO: elm_fileselector_entry and use it with a toolbar-vbox
-    *
-    * TODO: elm_layout_box_*, similar to elm_layout_content_set(), it will
-    *       register the sub-object and re-add it during theme changes.
-    */
+   tb->fsel = elm_fileselector_entry_add(layout);
+   EINA_SAFETY_ON_NULL_GOTO(tb->fsel, error);
+   evas_object_size_hint_weight_set(tb->fsel, EVAS_HINT_EXPAND, 0.0);
+   evas_object_size_hint_align_set(tb->fsel, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_fileselector_entry_button_label_set(tb->fsel, "Choose...");
+   elm_fileselector_entry_folder_only_set(tb->fsel, EINA_TRUE);
+   evas_object_smart_callback_add
+     (tb->fsel, "file,chosen", _changed_dir, tb);
+   evas_object_smart_callback_add
+     (tb->fsel, "activated", _changed_dir_text, tb);
+
+   evas_object_show(tb->fsel);
+   elm_layout_box_append(layout, "elm.box.content", tb->fsel);
 
    tb->grid = elm_gengrid_add(layout);
    EINA_SAFETY_ON_NULL_GOTO(tb->grid, error);
+   evas_object_size_hint_weight_set
+     (tb->grid, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(tb->grid, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_style_set(tb->grid, "ephoto");
 
    elm_gengrid_align_set(tb->grid, 0.5, 0.5);
@@ -642,7 +648,8 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
 
    _zoom_set(tb, tb->ephoto->config->thumb_size);
 
-   elm_layout_content_set(tb->layout, "elm.swallow.content", tb->grid);
+   evas_object_show(tb->grid);
+   elm_layout_box_append(tb->layout, "elm.box.content", tb->grid);
 
    return layout;
 
