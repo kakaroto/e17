@@ -505,7 +505,7 @@ _e_ofono_element_array_match(E_Ofono_Array *old, E_Ofono_Array *new, const char 
    void *item_old, *item_new;
    Eina_List *l;
    void *data;
-   Eina_Bool interfaces = 0;
+   Eina_Bool interfaces = EINA_FALSE;
 
    if (!old)
       return;
@@ -554,7 +554,7 @@ _e_ofono_element_array_match(E_Ofono_Array *old, E_Ofono_Array *new, const char 
 
    for(; i_new < eina_array_count_get(new->array); iter_new++, i_new++)
      {
-        Eina_Bool found = 0;
+        Eina_Bool found = EINA_FALSE;
         item_new = *iter_new;
         if (!item_new)
            break;
@@ -564,7 +564,7 @@ _e_ofono_element_array_match(E_Ofono_Array *old, E_Ofono_Array *new, const char 
            if (data == item_new)
              {
                 deleted = eina_list_remove_list(deleted, l);
-                found = 1;
+                found = EINA_TRUE;
                 break;
              }
         }
@@ -626,7 +626,7 @@ out_remove_remaining:
 static Eina_Bool
 _e_ofono_element_property_update(E_Ofono_Element_Property *property, int type, void *data, E_Ofono_Element *element)
 {
-   int changed = 0;
+   Eina_Bool changed = EINA_FALSE;
 
    if ((type == DBUS_TYPE_STRING || type == DBUS_TYPE_OBJECT_PATH) && data)
       data = (char *)eina_stringshare_add(data);
@@ -640,7 +640,7 @@ _e_ofono_element_property_update(E_Ofono_Element_Property *property, int type, v
         _e_ofono_element_property_value_free(property);
         memset(&property->value, 0, sizeof(property->value));
         property->type = type;
-        changed = 1;
+        changed = EINA_TRUE;
      }
 
    switch (type)
@@ -649,7 +649,7 @@ _e_ofono_element_property_update(E_Ofono_Element_Property *property, int type, v
          if (changed || property->value.boolean != (Eina_Bool)(long)data)
            {
               property->value.boolean = (Eina_Bool)(long)data;
-              changed = 1;
+              changed = EINA_TRUE;
            }
 
          break;
@@ -658,7 +658,7 @@ _e_ofono_element_property_update(E_Ofono_Element_Property *property, int type, v
          if (changed || property->value.byte != (unsigned char)(long)data)
            {
               property->value.byte = (unsigned char)(long)data;
-              changed = 1;
+              changed = EINA_TRUE;
            }
 
          break;
@@ -667,7 +667,7 @@ _e_ofono_element_property_update(E_Ofono_Element_Property *property, int type, v
          if (changed || property->value.u16 != (unsigned short)(long)data)
            {
               property->value.u16 = (unsigned short)(long)data;
-              changed = 1;
+              changed = EINA_TRUE;
            }
 
          break;
@@ -676,7 +676,7 @@ _e_ofono_element_property_update(E_Ofono_Element_Property *property, int type, v
          if (changed || property->value.u32 != (unsigned int)(long)data)
            {
               property->value.u32 = (unsigned int)(long)data;
-              changed = 1;
+              changed = EINA_TRUE;
            }
 
          break;
@@ -694,7 +694,7 @@ _e_ofono_element_property_update(E_Ofono_Element_Property *property, int type, v
               if (property->value.str != data)
                 {
                    property->value.str = data;
-                   changed = 1;
+                   changed = EINA_TRUE;
                 }
            }
 
@@ -713,7 +713,7 @@ _e_ofono_element_property_update(E_Ofono_Element_Property *property, int type, v
               if (property->value.path != data)
                 {
                    property->value.path = data;
-                   changed = 1;
+                   changed = EINA_TRUE;
                 }
            }
 
@@ -729,7 +729,7 @@ _e_ofono_element_property_update(E_Ofono_Element_Property *property, int type, v
               }
 
          property->value.array = data;
-         changed = 1;
+         changed = EINA_TRUE;
          break;
 
       default:
@@ -819,31 +819,31 @@ e_ofono_element_objects_array_get_stringshared(const E_Ofono_Element *element, c
    int type;
    void *item;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(property, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(property, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, EINA_FALSE);
 
    *count = 0;
    *p_elements = NULL;
 
    if (!e_ofono_element_property_get_stringshared
           (element, property, &type, &array))
-      return 0;
+      return EINA_FALSE;
 
    if (type != DBUS_TYPE_ARRAY)
      {
         ERR("property %s is not an array!", property);
-        return 0;
+        return EINA_FALSE;
      }
 
    if ((!array) || (!array->array) || (array->type == DBUS_TYPE_INVALID))
-      return 0;
+      return EINA_FALSE;
 
    if (array->type != DBUS_TYPE_OBJECT_PATH)
      {
         ERR("property %s is not an array of object paths!", property);
-        return 0;
+        return EINA_FALSE;
      }
 
    *count = eina_array_count_get(array->array);
@@ -853,7 +853,7 @@ e_ofono_element_objects_array_get_stringshared(const E_Ofono_Element *element, c
         ERR("could not allocate return array of %d elements: %s",
             *count, strerror(errno));
         *count = 0;
-        return 0;
+        return EINA_FALSE;
      }
 
    p = ret;
@@ -869,7 +869,7 @@ e_ofono_element_objects_array_get_stringshared(const E_Ofono_Element *element, c
    }
    *count = p - ret;
    *p_elements = ret;
-   return 1;
+   return EINA_TRUE;
 }
 
 /* strings are just pointers (references), no strdup or stringshare_add/ref */
@@ -883,31 +883,31 @@ e_ofono_element_strings_array_get_stringshared(const E_Ofono_Element *element, c
    int type;
    void *item;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(property, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(strings, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(property, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(strings, EINA_FALSE);
 
    *count = 0;
    *strings = NULL;
 
    if (!e_ofono_element_property_get_stringshared
           (element, property, &type, &array))
-      return 0;
+      return EINA_FALSE;
 
    if (type != DBUS_TYPE_ARRAY)
      {
         ERR("property %s is not an array!", property);
-        return 0;
+        return EINA_FALSE;
      }
 
    if ((!array) || (!array->array) || (array->type == DBUS_TYPE_INVALID))
-      return 0;
+      return EINA_FALSE;
 
    if (array->type != DBUS_TYPE_STRING)
      {
         ERR("property %s is not an array of strings!", property);
-        return 0;
+        return EINA_FALSE;
      }
 
    *count = eina_array_count_get(array->array);
@@ -917,7 +917,7 @@ e_ofono_element_strings_array_get_stringshared(const E_Ofono_Element *element, c
         ERR("could not allocate return array of %d strings: %s",
             *count, strerror(errno));
         *count = 0;
-        return 0;
+        return EINA_FALSE;
      }
 
    p = ret;
@@ -932,7 +932,7 @@ e_ofono_element_strings_array_get_stringshared(const E_Ofono_Element *element, c
    }
    *count = p - ret;
    *strings = ret;
-   return 1;
+   return EINA_TRUE;
 }
 
 static void
@@ -1183,10 +1183,10 @@ e_ofono_element_message_send(E_Ofono_Element *element, const char *method_name, 
    E_Ofono_Element_Call_Data *data;
    E_Ofono_Element_Pending *p;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(pending, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(msg, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(pending, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(msg, EINA_FALSE);
 
    interface = interface ? : element->interface;
 
@@ -1196,7 +1196,7 @@ e_ofono_element_message_send(E_Ofono_Element *element, const char *method_name, 
         ERR("could not alloc e_ofono_element_call_data: %s",
             strerror(errno));
         dbus_message_unref(msg);
-        return 0;
+        return EINA_FALSE;
      }
 
    p = malloc(sizeof(*p));
@@ -1206,7 +1206,7 @@ e_ofono_element_message_send(E_Ofono_Element *element, const char *method_name, 
             strerror(errno));
         free(data);
         dbus_message_unref(msg);
-        return 0;
+        return EINA_FALSE;
      }
 
    data->element = element;
@@ -1223,7 +1223,7 @@ e_ofono_element_message_send(E_Ofono_Element *element, const char *method_name, 
    if (p->pending)
      {
         *pending = eina_inlist_append(*pending, EINA_INLIST_GET(p));
-        return 1;
+        return EINA_TRUE;
      }
    else
      {
@@ -1232,7 +1232,7 @@ e_ofono_element_message_send(E_Ofono_Element *element, const char *method_name, 
             element->path, interface);
         free(data);
         free(p);
-        return 0;
+        return EINA_TRUE;
      }
 }
 
@@ -1241,9 +1241,9 @@ e_ofono_element_call_full(E_Ofono_Element *element, const char *method_name, con
 {
    DBusMessage *msg;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(pending, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(pending, EINA_FALSE);
 
    interface = interface ? : element->interface;
 
@@ -1274,11 +1274,11 @@ _e_ofono_element_property_value_add(E_Ofono_Element *element, const char *name, 
    if (!p)
      {
         ERR("could not create property %s (%c)", name, type);
-        return 0;
+        return EINA_FALSE;
      }
 
    element->props = eina_inlist_append(element->props, EINA_INLIST_GET(p));
-   return 1;
+   return EINA_TRUE;
 }
 
 static E_Ofono_Array *
@@ -1473,7 +1473,7 @@ e_ofono_element_sync_properties_full(E_Ofono_Element *element, E_DBus_Method_Ret
 {
    const char name[] = "GetProperties";
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
    return e_ofono_element_call_full
              (element, name, element->interface,
              _e_ofono_element_get_properties_callback,
@@ -1494,7 +1494,7 @@ e_ofono_element_sync_properties_full(E_Ofono_Element *element, E_DBus_Method_Ret
 Eina_Bool
 e_ofono_element_properties_sync(E_Ofono_Element *element)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
    return e_ofono_element_sync_properties_full(element, NULL, NULL);
 }
 
@@ -1524,14 +1524,14 @@ e_ofono_element_property_dict_set_full(E_Ofono_Element *element, const char *pro
    DBusMessageIter itr, variant, dict, entry;
    char typestr[32];
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(prop, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(prop, EINA_FALSE);
 
    msg = dbus_message_new_method_call
          (e_ofono_system_bus_name_get(), element->path, element->interface, name);
 
    if (!msg)
-      return 0;
+      return EINA_FALSE;
 
    dbus_message_iter_init_append(msg, &itr);
    dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &prop);
@@ -1545,7 +1545,7 @@ e_ofono_element_property_dict_set_full(E_Ofono_Element *element, const char *pro
                         type) >= sizeof(typestr))
      {
         ERR("sizeof(typestr) is too small!");
-        return 0;
+        return EINA_FALSE;
      }
 
    dbus_message_iter_open_container(&itr, DBUS_TYPE_VARIANT, typestr, &variant);
@@ -1600,14 +1600,14 @@ e_ofono_element_property_set_full(E_Ofono_Element *element, const char *prop, in
    char typestr[2];
    DBusMessage *msg;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(prop, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(prop, EINA_FALSE);
 
    msg = dbus_message_new_method_call
          (e_ofono_system_bus_name_get(), element->path, element->interface, name);
 
    if (!msg)
-      return 0;
+      return EINA_FALSE;
 
    DBusMessageIter itr, v;
    dbus_message_iter_init_append(msg, &itr);
@@ -1654,8 +1654,8 @@ e_ofono_element_property_set_full(E_Ofono_Element *element, const char *prop, in
 Eina_Bool
 e_ofono_element_property_set(E_Ofono_Element *element, const char *prop, int type, const void *value)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(prop, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(prop, EINA_FALSE);
    return e_ofono_element_property_set_full
              (element, prop, type, value, NULL, NULL);
 }
@@ -1666,17 +1666,17 @@ e_ofono_element_call_with_path(E_Ofono_Element *element, const char *method_name
    DBusMessageIter itr;
    DBusMessage *msg;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(string, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(pending, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(string, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(pending, EINA_FALSE);
 
    msg = dbus_message_new_method_call
          (e_ofono_system_bus_name_get(), element->path, element->interface,
          method_name);
 
    if (!msg)
-      return 0;
+      return EINA_FALSE;
 
    dbus_message_iter_init_append(msg, &itr);
    dbus_message_iter_append_basic(&itr, DBUS_TYPE_OBJECT_PATH, &string);
@@ -1691,17 +1691,17 @@ e_ofono_element_call_with_string(E_Ofono_Element *element, const char *method_na
    DBusMessageIter itr;
    DBusMessage *msg;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(string, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(pending, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(string, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(pending, EINA_FALSE);
 
    msg = dbus_message_new_method_call
          (e_ofono_system_bus_name_get(), element->path, element->interface,
          method_name);
 
    if (!msg)
-      return 0;
+      return EINA_FALSE;
 
    dbus_message_iter_init_append(msg, &itr);
    dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &string);
@@ -1716,18 +1716,18 @@ e_ofono_element_call_with_path_and_string(E_Ofono_Element *element, const char *
    DBusMessageIter itr;
    DBusMessage *msg;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(path, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(string, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(pending, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(path, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(string, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(pending, EINA_FALSE);
 
    msg = dbus_message_new_method_call
          (e_ofono_system_bus_name_get(), element->path, element->interface,
          method_name);
 
    if (!msg)
-      return 0;
+      return EINA_FALSE;
 
    dbus_message_iter_init_append(msg, &itr);
    dbus_message_iter_append_basic(&itr, DBUS_TYPE_OBJECT_PATH, &path);
@@ -1754,22 +1754,22 @@ e_ofono_element_property_type_get_stringshared(const E_Ofono_Element *element, c
 {
    const E_Ofono_Element_Property *p;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(name, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(type, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(name, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(type, EINA_FALSE);
 
    EINA_INLIST_FOREACH(element->props, p)
    {
       if (p->name == name)
         {
            *type = p->type;
-           return 1;
+           return EINA_TRUE;
         }
    }
 
    WRN("element %s (%p) has no property with name \"%s\".",
        element->path, element, name);
-   return 0;
+   return EINA_FALSE;
 }
 
 /**
@@ -1861,10 +1861,10 @@ e_ofono_element_property_dict_get_stringshared(const E_Ofono_Element *element, c
 {
    const E_Ofono_Element_Property *p;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(dict_name, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(key, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(value, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(dict_name, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(key, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(value, EINA_FALSE);
 
    EINA_INLIST_FOREACH(element->props, p)
    {
@@ -1878,7 +1878,7 @@ e_ofono_element_property_dict_get_stringshared(const E_Ofono_Element *element, c
         {
            WRN("element %s (%p) has property \"%s\" is not an array: %c (%d)",
                element->path, element, dict_name, p->type, p->type);
-           return 0;
+           return EINA_FALSE;
         }
 
       array = p->value.array;
@@ -1887,7 +1887,7 @@ e_ofono_element_property_dict_get_stringshared(const E_Ofono_Element *element, c
            int t = array ? array->type : DBUS_TYPE_INVALID;
            WRN("element %s (%p) has property \"%s\" is not a dict: %c (%d)",
                element->path, element, dict_name, t, t);
-           return 0;
+           return EINA_FALSE;
         }
 
       entry = _e_ofono_element_array_dict_find_stringshared(array, key);
@@ -1896,7 +1896,7 @@ e_ofono_element_property_dict_get_stringshared(const E_Ofono_Element *element, c
            WRN("element %s (%p) has no dict property with name \"%s\" with "
                "key \"%s\".",
                element->path, element, dict_name, key);
-           return 0;
+           return EINA_FALSE;
         }
 
       if (type)
@@ -1906,38 +1906,38 @@ e_ofono_element_property_dict_get_stringshared(const E_Ofono_Element *element, c
         {
          case DBUS_TYPE_BOOLEAN:
             *(Eina_Bool *)value = entry->value.boolean;
-            return 1;
+            return EINA_TRUE;
 
          case DBUS_TYPE_BYTE:
             *(unsigned char *)value = entry->value.byte;
-            return 1;
+            return EINA_TRUE;
 
          case DBUS_TYPE_UINT16:
             *(unsigned short *)value = entry->value.u16;
-            return 1;
+            return EINA_TRUE;
 
          case DBUS_TYPE_UINT32:
             *(unsigned int *)value = entry->value.u32;
-            return 1;
+            return EINA_TRUE;
 
          case DBUS_TYPE_STRING:
             *(const char **)value = entry->value.str;
-            return 1;
+            return EINA_TRUE;
 
          case DBUS_TYPE_OBJECT_PATH:
             *(const char **)value = entry->value.path;
-            return 1;
+            return EINA_TRUE;
 
          default:
             ERR("don't know how to get property %s, key %s type %c (%d)",
                 dict_name, key, entry->type, entry->type);
-            return 0;
+            return EINA_FALSE;
         }
    }
 
    WRN("element %s (%p) has no property with name \"%s\".",
        element->path, element, dict_name);
-   return 0;
+   return EINA_FALSE;
 }
 
 /**
@@ -1962,9 +1962,9 @@ e_ofono_element_property_get_stringshared(const E_Ofono_Element *element, const 
 {
    const E_Ofono_Element_Property *p;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(name, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(value, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(name, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(value, EINA_FALSE);
 
    EINA_INLIST_FOREACH(element->props, p)
    {
@@ -1978,42 +1978,42 @@ e_ofono_element_property_get_stringshared(const E_Ofono_Element *element, const 
         {
          case DBUS_TYPE_BOOLEAN:
             *(Eina_Bool *)value = p->value.boolean;
-            return 1;
+            return EINA_TRUE;
 
          case DBUS_TYPE_BYTE:
             *(unsigned char *)value = p->value.byte;
-            return 1;
+            return EINA_TRUE;
 
          case DBUS_TYPE_UINT16:
             *(unsigned short *)value = p->value.u16;
-            return 1;
+            return EINA_TRUE;
 
          case DBUS_TYPE_UINT32:
             *(unsigned int *)value = p->value.u32;
-            return 1;
+            return EINA_TRUE;
 
          case DBUS_TYPE_STRING:
             *(const char **)value = p->value.str;
-            return 1;
+            return EINA_TRUE;
 
          case DBUS_TYPE_OBJECT_PATH:
             *(const char **)value = p->value.path;
-            return 1;
+            return EINA_TRUE;
 
          case DBUS_TYPE_ARRAY:
             *(E_Ofono_Array **)value = p->value.array;
-            return 1;
+            return EINA_TRUE;
 
          default:
             ERR("don't know how to get property type %c (%d)",
                 p->type, p->type);
-            return 0;
+            return EINA_FALSE;
         }
    }
 
    WRN("element %s (%p) has no property with name \"%s\".",
        element->path, element, name);
-   return 0;
+   return EINA_FALSE;
 }
 
 /**
@@ -2056,7 +2056,7 @@ _e_ofono_elements_for_each(Eina_Hash *hash __UNUSED__, const char *key, void *da
    struct e_ofono_elements_for_each_data *each_data = fdata;
 
    each_data->cb(elements, key, data, each_data->data);
-   return 1;
+   return EINA_TRUE;
 }
 
 /**
@@ -2084,7 +2084,7 @@ _e_ofono_elements_get_allocate(unsigned int *count, E_Ofono_Element ***p_element
    if (*count == 0)
      {
         *p_elements = NULL;
-        return 1;
+        return EINA_TRUE;
      }
 
    *p_elements = malloc(*count * sizeof(E_Ofono_Element *));
@@ -2093,10 +2093,10 @@ _e_ofono_elements_get_allocate(unsigned int *count, E_Ofono_Element ***p_element
         ERR("could not allocate return array of %d elements: %s",
             *count, strerror(errno));
         *count = 0;
-        return 0;
+        return EINA_FALSE;
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static Eina_Bool
@@ -2107,7 +2107,7 @@ _e_ofono_elements_get_all(Eina_Hash *hash __UNUSED__, const char *key __UNUSED__
 
    **p_ret = element;
    (*p_ret)++;
-   return 1;
+   return EINA_TRUE;
 }
 
 /**
@@ -2130,16 +2130,16 @@ e_ofono_elements_get_all(unsigned int *count, E_Ofono_Element ***p_elements)
 {
    E_Ofono_Element **p;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, EINA_FALSE);
 
    if (!_e_ofono_elements_get_allocate(count, p_elements))
-      return 0;
+      return EINA_FALSE;
 
    p = *p_elements;
    eina_hash_foreach
       (elements, (Eina_Hash_Foreach)_e_ofono_elements_get_all, &p);
-   return 1;
+   return EINA_TRUE;
 }
 
 struct e_ofono_elements_get_all_str_data
@@ -2156,11 +2156,11 @@ _e_ofono_elements_get_all_type(Eina_Hash *hash __UNUSED__, const char *key __UNU
    E_Ofono_Element *element = e;
 
    if ((data->str) && (element->interface != data->str))
-      return 1;
+      return EINA_TRUE;
 
    data->elements[data->count] = element;
    data->count++;
-   return 1;
+   return EINA_TRUE;
 }
 
 /**
@@ -2186,11 +2186,11 @@ e_ofono_elements_get_all_type(const char *type, unsigned int *count, E_Ofono_Ele
 {
    struct e_ofono_elements_get_all_str_data data;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, EINA_FALSE);
 
    if (!_e_ofono_elements_get_allocate(count, p_elements))
-      return 0;
+      return EINA_FALSE;
 
    data.elements = *p_elements;
    data.count = 0;
@@ -2201,7 +2201,7 @@ e_ofono_elements_get_all_type(const char *type, unsigned int *count, E_Ofono_Ele
 
    eina_stringshare_del(data.str);
    *count = data.count;
-   return 1;
+   return EINA_TRUE;
 }
 
 /**
@@ -2447,21 +2447,21 @@ _e_ofono_element_is(const E_Ofono_Element *element, const char *interface)
 Eina_Bool
 e_ofono_element_is_manager(const E_Ofono_Element *element)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
    return _e_ofono_element_is(element, e_ofono_iface_manager);
 }
 
 Eina_Bool
 e_ofono_element_is_modem(const E_Ofono_Element *element)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
    return _e_ofono_element_is(element, e_ofono_iface_modem);
 }
 
 Eina_Bool
 e_ofono_element_is_netreg(const E_Ofono_Element *element)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
    return _e_ofono_element_is(element, e_ofono_iface_netreg);
 }
 

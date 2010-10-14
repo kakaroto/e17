@@ -138,7 +138,7 @@ _on_cmd_quit(__UNUSED__ char *cmd, __UNUSED__ char *args)
 {
    fputs("Bye!\n", stderr);
    ecore_main_loop_quit();
-   return 0;
+   return EINA_FALSE;
 }
 
 static Eina_Bool
@@ -673,7 +673,7 @@ _on_cmd_adapter_create_paired_device(__UNUSED__ char *cmd, char *args)
      iface = e_dbus_interface_new("org.bluez.Agent");
      if (!iface) {
         fputs("WARNING: Cannot add org.bluez.Agent interface",stderr);
-        return 0;
+        return EINA_FALSE;
      }
      _msgbus_data->obj = e_dbus_object_add(_msgbus_data->conn, path, NULL);
      e_dbus_object_interface_attach(_msgbus_data->obj, iface);
@@ -746,20 +746,20 @@ _on_input(__UNUSED__ void *data, Ecore_Fd_Handler *fd_handler)
    if (ecore_main_fd_handler_active_get(fd_handler, ECORE_FD_ERROR))
      {
 	fputs("ERROR: reading from stdin, exit\n", stderr);
-	return 0;
+	return EINA_FALSE;
      }
 
    if (!ecore_main_fd_handler_active_get(fd_handler, ECORE_FD_READ))
      {
 	fputs("ERROR: nothing to read?\n", stderr);
-	return 0;
+	return EINA_FALSE;
      }
 
    if (!fgets(buf, sizeof(buf), stdin))
      {
 	fprintf(stderr, "ERROR: could not read command: %s\n", strerror(errno));
 	ecore_main_loop_quit();
-	return 0;
+	return EINA_FALSE;
      }
 
    cmd = buf;

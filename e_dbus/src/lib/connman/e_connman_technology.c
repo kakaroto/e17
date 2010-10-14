@@ -23,8 +23,8 @@ e_connman_technology_get(const char *path)
 /**
  * Get property "Name" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * Name of this technology.
@@ -35,13 +35,13 @@ e_connman_technology_get(const char *path)
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_technology_name_get(const E_Connman_Element *technology, const char **name)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(technology, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(name, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(technology, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(name, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (technology, e_connman_prop_name, NULL, name);
 }
@@ -49,8 +49,8 @@ e_connman_technology_name_get(const E_Connman_Element *technology, const char **
 /**
  * Get property "Type" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The technology type (for example "ethernet" etc.)
@@ -65,13 +65,13 @@ e_connman_technology_name_get(const E_Connman_Element *technology, const char **
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_technology_type_get(const E_Connman_Element *technology, const char **type)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(technology, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(type, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(technology, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(type, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (technology, e_connman_prop_type, NULL, type);
 }
@@ -79,8 +79,8 @@ e_connman_technology_type_get(const E_Connman_Element *technology, const char **
 /**
  * Get property "State" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The technology state information.
@@ -94,13 +94,13 @@ e_connman_technology_type_get(const E_Connman_Element *technology, const char **
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_technology_state_get(const E_Connman_Element *technology, const char **state)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(technology, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(state, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(technology, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(state, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (technology, e_connman_prop_state, NULL, state);
 }
@@ -108,25 +108,25 @@ e_connman_technology_state_get(const E_Connman_Element *technology, const char *
 /**
  * Get array of device elements.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * @param technology path to get property.
  * @param count return the number of elements in array.
  * @param t_elements array with all elements, these are not referenced
- *        and in no particular order, just set if return is 1.  The
+ *        and in no particular order, just set if return is @c EINA_TRUE.  The
  *        array itself is allocated using malloc() and should be freed
  *        after usage is done.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_technology_devices_get(const E_Connman_Element *technology, unsigned int *count, E_Connman_Element ***t_elements)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(technology, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(t_elements, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(technology, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(t_elements, EINA_FALSE);
    return e_connman_element_objects_array_get_stringshared
              (technology, e_connman_prop_devices, count, t_elements);
 }

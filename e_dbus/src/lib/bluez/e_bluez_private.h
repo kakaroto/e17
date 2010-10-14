@@ -93,28 +93,28 @@ _dbus_callback_check_and_init(DBusMessage *msg, DBusMessageIter *itr, DBusError 
         else
            ERR("callback without message arguments!");
 
-        return 0;
+        return EINA_FALSE;
      }
 
    if (!dbus_message_iter_init(msg, itr))
      {
         ERR("could not init iterator.");
-        return 0;
+        return EINA_FALSE;
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static inline Eina_Bool
 __dbus_iter_type_check(int type, int expected, const char *expected_name)
 {
    if (type == expected)
-      return 1;
+      return EINA_TRUE;
 
    ERR("expected type %s (%c) but got %c instead!",
        expected_name, expected, type);
 
-   return 0;
+   return EINA_FALSE;
 }
 
 #define _dbus_iter_type_check(t, e) __dbus_iter_type_check(t, e, # e)

@@ -40,7 +40,7 @@ struct _E_Connman_Element_Property
    const char *name;
    int         type;
    union {
-      bool             boolean;
+      Eina_Bool        boolean;
       const char      *str;
       unsigned short   u16;
       unsigned int     u32;
@@ -56,7 +56,7 @@ struct _E_Connman_Element_Dict_Entry
    const char *name;
    int         type;
    union {
-      bool           boolean;
+      Eina_Bool      boolean;
       const char    *str;
       unsigned short u16;
       unsigned int   u32;
@@ -312,7 +312,7 @@ _e_connman_element_dict_entry_new(DBusMessageIter *itr)
    switch (t)
      {
       case DBUS_TYPE_BOOLEAN:
-         entry->value.boolean = (bool)(long)value;
+         entry->value.boolean = (Eina_Bool)(long)value;
          break;
 
       case DBUS_TYPE_BYTE:
@@ -558,7 +558,7 @@ _e_connman_element_array_match(E_Connman_Array *old, E_Connman_Array *new, const
 
    for(; i_new < eina_array_count_get(new->array); iter_new++, i_new++)
      {
-        bool found = 0;
+        Eina_Bool found = EINA_FALSE;
         item_new = *iter_new;
         if (!item_new)
            break;
@@ -568,7 +568,7 @@ _e_connman_element_array_match(E_Connman_Array *old, E_Connman_Array *new, const
            if (data == item_new)
              {
                 deleted = eina_list_remove_list(deleted, l);
-                found = 1;
+                found = EINA_TRUE;
                 break;
              }
         }
@@ -607,10 +607,10 @@ out_remove_remaining:
      }
 }
 
-static bool
+static Eina_Bool
 _e_connman_element_property_update(E_Connman_Element_Property *property, int type, void *data)
 {
-   int changed = 0;
+   Eina_Bool changed = EINA_FALSE;
 
    if ((type == DBUS_TYPE_STRING || type == DBUS_TYPE_OBJECT_PATH) && data)
       data = (char *)eina_stringshare_add(data);
@@ -624,16 +624,16 @@ _e_connman_element_property_update(E_Connman_Element_Property *property, int typ
         _e_connman_element_property_value_free(property);
         memset(&property->value, 0, sizeof(property->value));
         property->type = type;
-        changed = 1;
+        changed = EINA_TRUE;
      }
 
    switch (type)
      {
       case DBUS_TYPE_BOOLEAN:
-         if (changed || property->value.boolean != (bool)(long)data)
+         if (changed || property->value.boolean != (Eina_Bool)(long)data)
            {
-              property->value.boolean = (bool)(long)data;
-              changed = 1;
+              property->value.boolean = (Eina_Bool)(long)data;
+              changed = EINA_TRUE;
            }
 
          break;
@@ -642,7 +642,7 @@ _e_connman_element_property_update(E_Connman_Element_Property *property, int typ
          if (changed || property->value.byte != (unsigned char)(long)data)
            {
               property->value.byte = (unsigned char)(long)data;
-              changed = 1;
+              changed = EINA_TRUE;
            }
 
          break;
@@ -651,7 +651,7 @@ _e_connman_element_property_update(E_Connman_Element_Property *property, int typ
          if (changed || property->value.u16 != (unsigned short)(long)data)
            {
               property->value.u16 = (unsigned short)(long)data;
-              changed = 1;
+              changed = EINA_TRUE;
            }
 
          break;
@@ -660,7 +660,7 @@ _e_connman_element_property_update(E_Connman_Element_Property *property, int typ
          if (changed || property->value.u32 != (unsigned int)(long)data)
            {
               property->value.u32 = (unsigned int)(long)data;
-              changed = 1;
+              changed = EINA_TRUE;
            }
 
          break;
@@ -678,7 +678,7 @@ _e_connman_element_property_update(E_Connman_Element_Property *property, int typ
               if (property->value.str != data)
                 {
                    property->value.str = data;
-                   changed = 1;
+                   changed = EINA_TRUE;
                 }
            }
 
@@ -697,7 +697,7 @@ _e_connman_element_property_update(E_Connman_Element_Property *property, int typ
               if (property->value.path != data)
                 {
                    property->value.path = data;
-                   changed = 1;
+                   changed = EINA_TRUE;
                 }
            }
 
@@ -712,7 +712,7 @@ _e_connman_element_property_update(E_Connman_Element_Property *property, int typ
               }
 
          property->value.array = data;
-         changed = 1;
+         changed = EINA_TRUE;
          break;
 
       default:
@@ -792,7 +792,7 @@ e_connman_element_bytes_array_get_stringshared(const E_Connman_Element *element,
    return ret;
 }
 
-bool
+Eina_Bool
 e_connman_element_objects_array_get_stringshared(const E_Connman_Element *element, const char *property, unsigned int *count, E_Connman_Element ***p_elements)
 {
    E_Connman_Element **ret, **p;
@@ -802,31 +802,31 @@ e_connman_element_objects_array_get_stringshared(const E_Connman_Element *elemen
    int type;
    void *item;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(property, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(property, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, EINA_FALSE);
 
    *count = 0;
    *p_elements = NULL;
 
    if (!e_connman_element_property_get_stringshared
           (element, property, &type, &array))
-      return 0;
+      return EINA_FALSE;
 
    if (type != DBUS_TYPE_ARRAY)
      {
         ERR("property %s is not an array!", property);
-        return 0;
+        return EINA_FALSE;
      }
 
    if ((!array) || (!array->array) || (array->type == DBUS_TYPE_INVALID))
-      return 0;
+      return EINA_FALSE;
 
    if (array->type != DBUS_TYPE_OBJECT_PATH)
      {
         ERR("property %s is not an array of object paths!", property);
-        return 0;
+        return EINA_FALSE;
      }
 
    *count = eina_array_count_get(array->array);
@@ -836,7 +836,7 @@ e_connman_element_objects_array_get_stringshared(const E_Connman_Element *elemen
         ERR("could not allocate return array of %d elements: %s",
             *count, strerror(errno));
         *count = 0;
-        return 0;
+        return EINA_FALSE;
      }
 
    p = ret;
@@ -852,11 +852,11 @@ e_connman_element_objects_array_get_stringshared(const E_Connman_Element *elemen
    }
    *count = p - ret;
    *p_elements = ret;
-   return 1;
+   return EINA_TRUE;
 }
 
 /* strings are just pointers (references), no strdup or stringshare_add/ref */
-bool
+Eina_Bool
 e_connman_element_strings_array_get_stringshared(const E_Connman_Element *element, const char *property, unsigned int *count, const char ***strings)
 {
    const char **ret, **p;
@@ -866,31 +866,31 @@ e_connman_element_strings_array_get_stringshared(const E_Connman_Element *elemen
    int type;
    void *item;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(property, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(strings, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(property, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(strings, EINA_FALSE);
 
    *count = 0;
    *strings = NULL;
 
    if (!e_connman_element_property_get_stringshared
           (element, property, &type, &array))
-      return 0;
+      return EINA_FALSE;
 
    if (type != DBUS_TYPE_ARRAY)
      {
         ERR("property %s is not an array!", property);
-        return 0;
+        return EINA_FALSE;
      }
 
    if ((!array) || (!array->array) || (array->type == DBUS_TYPE_INVALID))
-      return 0;
+      return EINA_FALSE;
 
    if (array->type != DBUS_TYPE_STRING)
      {
         ERR("property %s is not an array of strings!", property);
-        return 0;
+        return EINA_FALSE;
      }
 
    *count = eina_array_count_get(array->array);
@@ -900,7 +900,7 @@ e_connman_element_strings_array_get_stringshared(const E_Connman_Element *elemen
         ERR("could not allocate return array of %d strings: %s",
             *count, strerror(errno));
         *count = 0;
-        return 0;
+        return EINA_FALSE;
      }
 
    p = ret;
@@ -915,7 +915,7 @@ e_connman_element_strings_array_get_stringshared(const E_Connman_Element *elemen
    }
    *count = p - ret;
    *strings = ret;
-   return 1;
+   return EINA_TRUE;
 }
 
 static void
@@ -1167,21 +1167,21 @@ e_connman_element_unref(E_Connman_Element *element)
 /**
  * Send message with callbacks set to work with connman elements.
  *
- * If this call fails (returns 0), pending callbacks will not be called,
+ * If this call fails (returns @c EINA_FALSE), pending callbacks will not be called,
  * not even with error messages.
  *
- * @return 1 on success, 0 on failure.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE on failure.
  */
-bool
+Eina_Bool
 e_connman_element_message_send(E_Connman_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, DBusMessage *msg, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data)
 {
    E_Connman_Element_Call_Data *data;
    E_Connman_Element_Pending *p;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(pending, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(msg, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(pending, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(msg, EINA_FALSE);
 
    data = malloc(sizeof(*data));
    if (!data)
@@ -1189,7 +1189,7 @@ e_connman_element_message_send(E_Connman_Element *element, const char *method_na
         ERR("could not alloc e_connman_element_call_data: %s",
             strerror(errno));
         dbus_message_unref(msg);
-        return 0;
+        return EINA_FALSE;
      }
 
    p = malloc(sizeof(*p));
@@ -1199,7 +1199,7 @@ e_connman_element_message_send(E_Connman_Element *element, const char *method_na
             strerror(errno));
         free(data);
         dbus_message_unref(msg);
-        return 0;
+        return EINA_FALSE;
      }
 
    data->element = element;
@@ -1216,7 +1216,7 @@ e_connman_element_message_send(E_Connman_Element *element, const char *method_na
    if (p->pending)
      {
         *pending = eina_inlist_append(*pending, EINA_INLIST_GET(p));
-        return 1;
+        return EINA_TRUE;
      }
    else
      {
@@ -1225,18 +1225,18 @@ e_connman_element_message_send(E_Connman_Element *element, const char *method_na
             element->path, element->interface);
         free(data);
         free(p);
-        return 0;
+        return EINA_FALSE;
      }
 }
 
-bool
+Eina_Bool
 e_connman_element_call_full(E_Connman_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data)
 {
    DBusMessage *msg;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(pending, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(pending, EINA_FALSE);
 
    msg = dbus_message_new_method_call
          (e_connman_system_bus_name_get(), element->path, element->interface,
@@ -1246,7 +1246,7 @@ e_connman_element_call_full(E_Connman_Element *element, const char *method_name,
              (element, method_name, cb, msg, pending, user_cb, user_data);
 }
 
-static bool
+static Eina_Bool
 _e_connman_element_property_value_add(E_Connman_Element *element, const char *name, int type, void *value)
 {
    E_Connman_Element_Property *p;
@@ -1265,11 +1265,11 @@ _e_connman_element_property_value_add(E_Connman_Element *element, const char *na
    if (!p)
      {
         ERR("could not create property %s (%c)", name, type);
-        return 0;
+        return EINA_FALSE;
      }
 
    element->props = eina_inlist_append(element->props, EINA_INLIST_GET(p));
-   return 1;
+   return EINA_TRUE;
 }
 
 static E_Connman_Array *
@@ -1441,14 +1441,14 @@ _e_connman_element_get_properties_callback(void *user_data, DBusMessage *msg, DB
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_element_sync_properties_full(E_Connman_Element *element, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "GetProperties";
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
    return e_connman_element_call_full
              (element, name, _e_connman_element_get_properties_callback,
              &element->_pending.properties_get, cb, data);
@@ -1463,12 +1463,12 @@ e_connman_element_sync_properties_full(E_Connman_Element *element, E_DBus_Method
  *
  * @param element to call method on server.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_element_properties_sync(E_Connman_Element *element)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
    return e_connman_element_sync_properties_full(element, NULL, NULL);
 }
 
@@ -1488,9 +1488,9 @@ e_connman_element_properties_sync(E_Connman_Element *element)
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_element_property_dict_set_full(E_Connman_Element *element, const char *prop, const char *key, int type, const void *value, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "SetProperty";
@@ -1498,14 +1498,14 @@ e_connman_element_property_dict_set_full(E_Connman_Element *element, const char 
    DBusMessageIter itr, variant, dict, entry;
    char typestr[32];
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(prop, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(prop, EINA_FALSE);
 
    msg = dbus_message_new_method_call
          (e_connman_system_bus_name_get(), element->path, element->interface, name);
 
    if (!msg)
-      return 0;
+      return EINA_FALSE;
 
    dbus_message_iter_init_append(msg, &itr);
    dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &prop);
@@ -1519,7 +1519,7 @@ e_connman_element_property_dict_set_full(E_Connman_Element *element, const char 
                         type) >= sizeof(typestr))
      {
         ERR("sizeof(typestr) is too small!");
-        return 0;
+        return EINA_FALSE;
      }
 
    dbus_message_iter_open_container(&itr, DBUS_TYPE_VARIANT, typestr, &variant);
@@ -1564,23 +1564,23 @@ e_connman_element_property_dict_set_full(E_Connman_Element *element, const char 
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_element_property_set_full(E_Connman_Element *element, const char *prop, int type, const void *value, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "SetProperty";
    char typestr[2];
    DBusMessage *msg;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(prop, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(prop, EINA_FALSE);
 
    msg = dbus_message_new_method_call
          (e_connman_system_bus_name_get(), element->path, element->interface, name);
 
    if (!msg)
-      return 0;
+      return EINA_FALSE;
 
    DBusMessageIter itr, v;
    dbus_message_iter_init_append(msg, &itr);
@@ -1621,34 +1621,34 @@ e_connman_element_property_set_full(E_Connman_Element *element, const char *prop
  * @param value pointer to value, just like regular DBus, see
  *        dbus_message_iter_append_basic().
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_element_property_set(E_Connman_Element *element, const char *prop, int type, const void *value)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(prop, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(prop, EINA_FALSE);
    return e_connman_element_property_set_full
              (element, prop, type, value, NULL, NULL);
 }
 
-bool
+Eina_Bool
 e_connman_element_call_with_path(E_Connman_Element *element, const char *method_name, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data)
 {
    DBusMessageIter itr;
    DBusMessage *msg;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(string, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(pending, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(string, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(pending, EINA_FALSE);
 
    msg = dbus_message_new_method_call
          (e_connman_system_bus_name_get(), element->path, element->interface,
          method_name);
 
    if (!msg)
-      return 0;
+      return EINA_FALSE;
 
    dbus_message_iter_init_append(msg, &itr);
    dbus_message_iter_append_basic(&itr, DBUS_TYPE_OBJECT_PATH, &string);
@@ -1657,23 +1657,23 @@ e_connman_element_call_with_path(E_Connman_Element *element, const char *method_
              (element, method_name, cb, msg, pending, user_cb, user_data);
 }
 
-bool
+Eina_Bool
 e_connman_element_call_with_string(E_Connman_Element *element, const char *method_name, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data)
 {
    DBusMessageIter itr;
    DBusMessage *msg;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(string, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(pending, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(string, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(pending, EINA_FALSE);
 
    msg = dbus_message_new_method_call
          (e_connman_system_bus_name_get(), element->path, element->interface,
          method_name);
 
    if (!msg)
-      return 0;
+      return EINA_FALSE;
 
    dbus_message_iter_init_append(msg, &itr);
    dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &string);
@@ -1685,54 +1685,54 @@ e_connman_element_call_with_string(E_Connman_Element *element, const char *metho
 /**
  * Get property type.
  *
- * If zero is returned, then this call failed and parameter-returned
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * @param element which element to get the property
  * @param name property name, must be previously stringshared
  * @param type will contain the value type.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_element_property_type_get_stringshared(const E_Connman_Element *element, const char *name, int *type)
 {
    const E_Connman_Element_Property *p;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(name, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(type, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(name, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(type, EINA_FALSE);
 
    EINA_INLIST_FOREACH(element->props, p)
    {
       if (p->name == name)
         {
            *type = p->type;
-           return 1;
+           return EINA_TRUE;
         }
    }
 
    WRN("element %s (%p) has no property with name \"%s\".",
        element->path, element, name);
-   return 0;
+   return EINA_FALSE;
 }
 
 /**
  * Get property type.
  *
- * If zero is returned, then this call failed and parameter-returned
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * @param element which element to get the property
  * @param name property name
  * @param type will contain the value type.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_element_property_type_get(const E_Connman_Element *element, const char *name, int *type)
 {
-   bool ret;
+   Eina_Bool ret;
    name = eina_stringshare_add(name);
    ret = e_connman_element_property_type_get_stringshared(element, name, type);
    eina_stringshare_del(name);
@@ -1740,7 +1740,7 @@ e_connman_element_property_type_get(const E_Connman_Element *element, const char
 }
 
 void
-e_connman_element_list_properties(const E_Connman_Element *element, bool (*cb)(void *data, const E_Connman_Element *element, const char *name, int type, const void *value), const void *data)
+e_connman_element_list_properties(const E_Connman_Element *element, Eina_Bool (*cb)(void *data, const E_Connman_Element *element, const char *name, int type, const void *value), const void *data)
 {
    const E_Connman_Element_Property *p;
 
@@ -1762,7 +1762,7 @@ e_connman_element_list_properties(const E_Connman_Element *element, bool (*cb)(v
             break;
 
          case DBUS_TYPE_BOOLEAN:
-            value = (void *)p->value.boolean;
+            value = (void *)&p->value.boolean;
             break;
 
          case DBUS_TYPE_UINT16:
@@ -1787,9 +1787,9 @@ e_connman_element_list_properties(const E_Connman_Element *element, bool (*cb)(v
  *
  * This will look into properties for one of type dict that contains
  * the given key, to find the property.  If no property is found then
- * 0 is returned.
+ * @c EINA_FALSE is returned.
  *
- * If zero is returned, then this call failed and parameter-returned
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * @param element which element to get the property
@@ -1797,19 +1797,19 @@ e_connman_element_list_properties(const E_Connman_Element *element, bool (*cb)(v
  * @param key key inside dict, must be previously stringshared
  * @param type if provided it will contain the value type.
  * @param value where to store the property value, must be a pointer to the
- *        exact type, (bool *) for booleans, (char **) for strings, and so on.
+ *        exact type, (Eina_Bool *) for booleans, (char **) for strings, and so on.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_element_property_dict_get_stringshared(const E_Connman_Element *element, const char *dict_name, const char *key, int *type, void *value)
 {
    const E_Connman_Element_Property *p;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(dict_name, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(key, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(value, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(dict_name, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(key, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(value, EINA_FALSE);
 
    EINA_INLIST_FOREACH(element->props, p)
    {
@@ -1823,7 +1823,7 @@ e_connman_element_property_dict_get_stringshared(const E_Connman_Element *elemen
         {
            WRN("element %s (%p) has property \"%s\" is not an array: %c (%d)",
                element->path, element, dict_name, p->type, p->type);
-           return 0;
+           return EINA_FALSE;
         }
 
       array = p->value.array;
@@ -1832,7 +1832,7 @@ e_connman_element_property_dict_get_stringshared(const E_Connman_Element *elemen
            int t = array ? array->type : DBUS_TYPE_INVALID;
            WRN("element %s (%p) has property \"%s\" is not a dict: %c (%d)",
                element->path, element, dict_name, t, t);
-           return 0;
+           return EINA_FALSE;
         }
 
       entry = _e_connman_element_array_dict_find_stringshared(array, key);
@@ -1841,7 +1841,7 @@ e_connman_element_property_dict_get_stringshared(const E_Connman_Element *elemen
            WRN("element %s (%p) has no dict property with name \"%s\" with "
                "key \"%s\".",
                element->path, element, dict_name, key);
-           return 0;
+           return EINA_FALSE;
         }
 
       if (type)
@@ -1850,66 +1850,66 @@ e_connman_element_property_dict_get_stringshared(const E_Connman_Element *elemen
       switch (entry->type)
         {
          case DBUS_TYPE_BOOLEAN:
-            *(bool *)value = entry->value.boolean;
-            return 1;
+            *(Eina_Bool *)value = entry->value.boolean;
+            return EINA_TRUE;
 
          case DBUS_TYPE_BYTE:
             *(unsigned char *)value = entry->value.byte;
-            return 1;
+            return EINA_TRUE;
 
          case DBUS_TYPE_UINT16:
             *(unsigned short *)value = entry->value.u16;
-            return 1;
+            return EINA_TRUE;
 
          case DBUS_TYPE_UINT32:
             *(unsigned int *)value = entry->value.u32;
-            return 1;
+            return EINA_TRUE;
 
          case DBUS_TYPE_STRING:
             *(const char **)value = entry->value.str;
-            return 1;
+            return EINA_TRUE;
 
          case DBUS_TYPE_OBJECT_PATH:
             *(const char **)value = entry->value.path;
-            return 1;
+            return EINA_TRUE;
 
          default:
             ERR("don't know how to get property %s, key %s type %c (%d)",
                 dict_name, key, entry->type, entry->type);
-            return 0;
+            return EINA_FALSE;
         }
    }
 
    WRN("element %s (%p) has no property with name \"%s\".",
        element->path, element, dict_name);
-   return 0;
+   return EINA_FALSE;
 }
 
 /**
  * Get property value given its name.
  *
  * This will look into properties, to find the property.
- * If no property is found then 0 is returned.
+ * If no property is found then @c EINA_FALSE is returned.
  *
- * If zero is returned, then this call failed and parameter-returned
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * @param element which element to get the property
  * @param name property name, must be previously stringshared
  * @param type if provided it will contain the value type.
  * @param value where to store the property value, must be a pointer to the
- *        exact type, (bool *) for booleans, (char **) for strings, and so on.
+ *        exact type, (Eina_Bool *) for booleans, (char **) for strings, and so on.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_element_property_get_stringshared(const E_Connman_Element *element, const char *name, int *type, void *value)
 {
    const E_Connman_Element_Property *p;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(name, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(value, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(name, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(value, EINA_FALSE);
 
    EINA_INLIST_FOREACH(element->props, p)
    {
@@ -1922,66 +1922,66 @@ e_connman_element_property_get_stringshared(const E_Connman_Element *element, co
       switch (p->type)
         {
          case DBUS_TYPE_BOOLEAN:
-            *(bool *)value = p->value.boolean;
-            return 1;
+            *(Eina_Bool *)value = p->value.boolean;
+            return EINA_TRUE;
 
          case DBUS_TYPE_BYTE:
             *(unsigned char *)value = p->value.byte;
-            return 1;
+            return EINA_TRUE;
 
          case DBUS_TYPE_UINT16:
             *(unsigned short *)value = p->value.u16;
-            return 1;
+            return EINA_TRUE;
 
          case DBUS_TYPE_UINT32:
             *(unsigned int *)value = p->value.u32;
-            return 1;
+            return EINA_TRUE;
 
          case DBUS_TYPE_STRING:
             *(const char **)value = p->value.str;
-            return 1;
+            return EINA_TRUE;
 
          case DBUS_TYPE_OBJECT_PATH:
             *(const char **)value = p->value.path;
-            return 1;
+            return EINA_TRUE;
 
          case DBUS_TYPE_ARRAY:
             *(E_Connman_Array **)value = p->value.array;
-            return 1;
+            return EINA_TRUE;
 
          default:
             ERR("don't know how to get property type %c (%d)",
                 p->type, p->type);
-            return 0;
+            return EINA_FALSE;
         }
    }
 
    WRN("element %s (%p) has no property with name \"%s\".",
        element->path, element, name);
-   return 0;
+   return EINA_FALSE;
 }
 
 /**
  * Get property value given its name.
  *
  * This will look into properties, to find the property.
- * If no property is found then 0 is returned.
+ * If no property is found then @c EINA_FALSE is returned.
  *
- * If zero is returned, then this call failed and parameter-returned
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * @param element which element to get the property
  * @param name property name
  * @param type if provided it will contain the value type.
  * @param value where to store the property value, must be a pointer to the
- *        exact type, (bool *) for booleans, (char **) for strings, and so on.
+ *        exact type, (Eina_Bool *) for booleans, (char **) for strings, and so on.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_element_property_get(const E_Connman_Element *element, const char *name, int *type, void *value)
 {
-   bool ret;
+   Eina_Bool ret;
    name = eina_stringshare_add(name);
    ret = e_connman_element_property_get_stringshared
          (element, name, type, value);
@@ -2001,7 +2001,7 @@ _e_connman_elements_for_each(Eina_Hash *hash __UNUSED__, const char *key, void *
    struct e_connman_elements_for_each_data *each_data = fdata;
 
    each_data->cb(elements, key, data, each_data->data);
-   return 1;
+   return EINA_TRUE;
 }
 
 /**
@@ -2022,14 +2022,14 @@ e_connman_elements_for_each(Eina_Hash_Foreach cb, const void *user_data)
                      &data);
 }
 
-static bool
+static Eina_Bool
 _e_connman_elements_get_allocate(unsigned int *count, E_Connman_Element ***p_elements)
 {
    *count = eina_hash_population(elements);
    if (*count == 0)
      {
         *p_elements = NULL;
-        return 1;
+        return EINA_TRUE;
      }
 
    *p_elements = malloc(*count * sizeof(E_Connman_Element *));
@@ -2038,10 +2038,10 @@ _e_connman_elements_get_allocate(unsigned int *count, E_Connman_Element ***p_ele
         ERR("could not allocate return array of %d elements: %s",
             *count, strerror(errno));
         *count = 0;
-        return 0;
+        return EINA_FALSE;
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static Eina_Bool
@@ -2052,7 +2052,7 @@ _e_connman_elements_get_all(Eina_Hash *hash __UNUSED__, const char *key __UNUSED
 
    **p_ret = element;
    (*p_ret)++;
-   return 1;
+   return EINA_TRUE;
 }
 
 /**
@@ -2066,25 +2066,25 @@ _e_connman_elements_get_all(Eina_Hash *hash __UNUSED__, const char *key __UNUSED
  *
  * @param count return the number of elements in array.
  * @param p_elements array with all elements, these are not referenced
- *        and in no particular order, just set if return is 1.
+ *        and in no particular order, just set if return is @c EINA_TRUE.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_elements_get_all(unsigned int *count, E_Connman_Element ***p_elements)
 {
    E_Connman_Element **p;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, EINA_FALSE);
 
    if (!_e_connman_elements_get_allocate(count, p_elements))
-      return 0;
+      return EINA_FALSE;
 
    p = *p_elements;
    eina_hash_foreach(elements, (Eina_Hash_Foreach)_e_connman_elements_get_all,
                      &p);
-   return 1;
+   return EINA_TRUE;
 }
 
 struct e_connman_elements_get_all_str_data
@@ -2101,11 +2101,11 @@ _e_connman_elements_get_all_type(Eina_Hash *hash __UNUSED__, const char *key __U
    E_Connman_Element *element = e;
 
    if ((data->str) && (element->interface != data->str))
-      return 1;
+      return EINA_TRUE;
 
    data->elements[data->count] = element;
    data->count++;
-   return 1;
+   return EINA_TRUE;
 }
 
 /**
@@ -2120,22 +2120,22 @@ _e_connman_elements_get_all_type(Eina_Hash *hash __UNUSED__, const char *key __U
  * @param type type to filter, or NULL to get all.
  * @param count return the number of elements in array.
  * @param p_elements array with all elements, these are not referenced
- *        and in no particular order, just set if return is 1.
+ *        and in no particular order, just set if return is @c EINA_TRUE.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  *
  * @see e_connman_elements_get_all()
  */
-bool
+Eina_Bool
 e_connman_elements_get_all_type(const char *type, unsigned int *count, E_Connman_Element ***p_elements)
 {
    struct e_connman_elements_get_all_str_data data;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, EINA_FALSE);
 
    if (!_e_connman_elements_get_allocate(count, p_elements))
-      return 0;
+      return EINA_FALSE;
 
    data.elements = *p_elements;
    data.count = 0;
@@ -2146,7 +2146,7 @@ e_connman_elements_get_all_type(const char *type, unsigned int *count, E_Connman
 
    eina_stringshare_del(data.str);
    *count = data.count;
-   return 1;
+   return EINA_TRUE;
 }
 
 /**
@@ -2356,51 +2356,51 @@ e_connman_elements_shutdown(void)
    elements = NULL;
 }
 
-static inline bool
+static inline Eina_Bool
 _e_connman_element_is(const E_Connman_Element *element, const char *interface)
 {
    return element->interface == interface;
 }
 
-bool
+Eina_Bool
 e_connman_element_is_manager(const E_Connman_Element *element)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
    return _e_connman_element_is(element, e_connman_iface_manager);
 }
 
-bool
+Eina_Bool
 e_connman_element_is_device(const E_Connman_Element *element)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
    return _e_connman_element_is(element, e_connman_iface_device);
 }
 
-bool
+Eina_Bool
 e_connman_element_is_profile(const E_Connman_Element *element)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
    return _e_connman_element_is(element, e_connman_iface_profile);
 }
 
-bool
+Eina_Bool
 e_connman_element_is_network(const E_Connman_Element *element)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
    return _e_connman_element_is(element, e_connman_iface_network);
 }
 
-bool
+Eina_Bool
 e_connman_element_is_service(const E_Connman_Element *element)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
    return _e_connman_element_is(element, e_connman_iface_service);
 }
 
-bool
+Eina_Bool
 e_connman_element_is_technology(const E_Connman_Element *element)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
    return _e_connman_element_is(element, e_connman_iface_technology);
 }
 

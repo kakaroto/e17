@@ -15,11 +15,11 @@ static int success = 0;
 static int failure = 0;
 static Ecore_Timer *exiter = NULL;
 
-static bool
-_test_string_get(E_Connman_Element *element, const char *name, bool (*func)(const E_Connman_Element *element, const char **value))
+static Eina_Bool
+_test_string_get(E_Connman_Element *element, const char *name, Eina_Bool (*func)(const E_Connman_Element *element, const char **value))
 {
    const char *value;
-   bool ret;
+   Eina_Bool ret;
 
    INF("BEGIN: testing string get %s of element %s...", name, element->path);
    ret = func(element, &value);
@@ -33,28 +33,28 @@ _test_string_get(E_Connman_Element *element, const char *name, bool (*func)(cons
    return ret;
 }
 
-static bool
-_test_bool_get(E_Connman_Element *element, const char *name, bool (*func)(const E_Connman_Element *element, bool *value))
+static Eina_Bool
+_test_bool_get(E_Connman_Element *element, const char *name, Eina_Bool (*func)(const E_Connman_Element *element, Eina_Bool *value))
 {
-   bool value, ret;
+   Eina_Bool value, ret;
 
-   INF("BEGIN: testing bool get %s of element %s...", name, element->path);
+   INF("BEGIN: testing Eina_Bool get %s of element %s...", name, element->path);
    ret = func(element, &value);
    if (ret)
-     INF("SUCCESS: testing bool get %s of element %s: %hhu",
+     INF("SUCCESS: testing Eina_Bool get %s of element %s: %hhu",
 	 name, element->path, value);
    else
-     WRN("FAILURE: testing bool get %s of element %s",
+     WRN("FAILURE: testing Eina_Bool get %s of element %s",
 	 name, element->path);
 
    return ret;
 }
 
-static bool
-_test_uchar_get(E_Connman_Element *element, const char *name, bool (*func)(const E_Connman_Element *element, unsigned char *value))
+static Eina_Bool
+_test_uchar_get(E_Connman_Element *element, const char *name, Eina_Bool (*func)(const E_Connman_Element *element, unsigned char *value))
 {
    unsigned char value;
-   bool ret;
+   Eina_Bool ret;
 
    INF("BEGIN: testing uchar get %s of element %s...", name, element->path);
    ret = func(element, &value);
@@ -68,11 +68,11 @@ _test_uchar_get(E_Connman_Element *element, const char *name, bool (*func)(const
    return ret;
 }
 
-static bool
-_test_ushort_get(E_Connman_Element *element, const char *name, bool (*func)(const E_Connman_Element *element, unsigned short *value))
+static Eina_Bool
+_test_ushort_get(E_Connman_Element *element, const char *name, Eina_Bool (*func)(const E_Connman_Element *element, unsigned short *value))
 {
    unsigned short value;
-   bool ret;
+   Eina_Bool ret;
 
    INF("BEGIN: testing ushort get %s of element %s...", name, element->path);
    ret = func(element, &value);
@@ -86,12 +86,12 @@ _test_ushort_get(E_Connman_Element *element, const char *name, bool (*func)(cons
    return ret;
 }
 
-static bool
-_test_uchar_array_get(E_Connman_Element *element, const char *name, bool (*func)(const E_Connman_Element *element, unsigned int *count, unsigned char **value))
+static Eina_Bool
+_test_uchar_array_get(E_Connman_Element *element, const char *name, Eina_Bool (*func)(const E_Connman_Element *element, unsigned int *count, unsigned char **value))
 {
    unsigned char *value;
    unsigned int count;
-   bool ret;
+   Eina_Bool ret;
 
    INF("BEGIN: testing ushort get %s of element %s...", name, element->path);
    ret = func(element, &count, &value);
@@ -108,11 +108,11 @@ _test_uchar_array_get(E_Connman_Element *element, const char *name, bool (*func)
    return ret;
 }
 
-static bool
-_test_element_get(E_Connman_Element *element, const char *name, bool (*func)(const E_Connman_Element *element, E_Connman_Element **value))
+static Eina_Bool
+_test_element_get(E_Connman_Element *element, const char *name, Eina_Bool (*func)(const E_Connman_Element *element, E_Connman_Element **value))
 {
    E_Connman_Element *value;
-   bool ret;
+   Eina_Bool ret;
 
    INF("BEGIN: testing element get %s of element %s...", name, element->path);
    ret = func(element, &value);
@@ -126,12 +126,12 @@ _test_element_get(E_Connman_Element *element, const char *name, bool (*func)(con
    return ret;
 }
 
-static bool
-_test_elements_get(E_Connman_Element *element, const char *name, bool (*func)(const E_Connman_Element *element, unsigned int *count, E_Connman_Element ***elements))
+static Eina_Bool
+_test_elements_get(E_Connman_Element *element, const char *name, Eina_Bool (*func)(const E_Connman_Element *element, unsigned int *count, E_Connman_Element ***elements))
 {
    E_Connman_Element **value;
    unsigned int count;
-   bool ret;
+   Eina_Bool ret;
 
    INF("BEGIN: testing elements get %s of element %s...",
        name, element->path);
@@ -149,11 +149,11 @@ _test_elements_get(E_Connman_Element *element, const char *name, bool (*func)(co
    return ret;
 }
 
-static bool
-_test_element_get_global(const char *name, bool (*func)(E_Connman_Element **value))
+static Eina_Bool
+_test_element_get_global(const char *name, Eina_Bool (*func)(E_Connman_Element **value))
 {
    E_Connman_Element *value;
-   bool ret;
+   Eina_Bool ret;
 
    INF("BEGIN: testing element get %s", name);
    ret = func(&value);
@@ -165,12 +165,12 @@ _test_element_get_global(const char *name, bool (*func)(E_Connman_Element **valu
    return ret;
 }
 
-static bool
-_test_elements_get_global(const char *name, bool (*func)(unsigned int *count, E_Connman_Element ***elements))
+static Eina_Bool
+_test_elements_get_global(const char *name, Eina_Bool (*func)(unsigned int *count, E_Connman_Element ***elements))
 {
    E_Connman_Element **value;
    unsigned int count;
-   bool ret;
+   Eina_Bool ret;
 
    INF("BEGIN: testing elements get %s", name);
    ret = func(&count, &value);
@@ -185,11 +185,11 @@ _test_elements_get_global(const char *name, bool (*func)(unsigned int *count, E_
    return ret;
 }
 
-static bool
-_test_string_get_global(const char *name, bool (*func)(const char **value))
+static Eina_Bool
+_test_string_get_global(const char *name, Eina_Bool (*func)(const char **value))
 {
    const char *value;
-   bool ret;
+   Eina_Bool ret;
 
    INF("BEGIN: testing string get %s...", name);
    ret = func(&value);
@@ -201,27 +201,27 @@ _test_string_get_global(const char *name, bool (*func)(const char **value))
    return ret;
 }
 
-static bool
-_test_bool_get_global(const char *name, bool (*func)(bool *value))
+static Eina_Bool
+_test_bool_get_global(const char *name, Eina_Bool (*func)(Eina_Bool *value))
 {
-   bool value, ret;
+   Eina_Bool value, ret;
 
-   INF("BEGIN: testing bool get %s...", name);
+   INF("BEGIN: testing Eina_Bool get %s...", name);
    ret = func(&value);
    if (ret)
-     INF("SUCCESS: testing bool get %s: %hhu", name, value);
+     INF("SUCCESS: testing Eina_Bool get %s: %hhu", name, value);
    else
-     WRN("FAILURE: testing bool get %s", name);
+     WRN("FAILURE: testing Eina_Bool get %s", name);
 
    return ret;
 }
 
-static bool
-_test_strings_get_global(const char *name, bool (*func)(unsigned int *count, const char ***elements))
+static Eina_Bool
+_test_strings_get_global(const char *name, Eina_Bool (*func)(unsigned int *count, const char ***elements))
 {
    const char **value;
    unsigned int count;
-   bool ret;
+   Eina_Bool ret;
 
    INF("BEGIN: testing strings get %s", name);
    ret = func(&count, &value);
@@ -256,21 +256,21 @@ struct test_desc
      TEST_DESC_TYPE_LAST
    } type;
    union {
-      bool (*string_get)(const E_Connman_Element *element, const char **value);
-      bool (*bool_get)(const E_Connman_Element *element, bool *value);
-      bool (*uchar_get)(const E_Connman_Element *element, unsigned char *value);
-      bool (*ushort_get)(const E_Connman_Element *element, unsigned short*value);
-      bool (*uchar_array_get)(const E_Connman_Element *element, unsigned int *count, unsigned char **value);
-      bool (*element_get)(const E_Connman_Element *element, E_Connman_Element **value);
-      bool (*elements_get)(const E_Connman_Element *element, unsigned int *count, E_Connman_Element ***elements);
-      bool (*element_get_global)(E_Connman_Element **element);
-      bool (*elements_get_global)(unsigned int *count, E_Connman_Element ***elements);
-      bool (*string_get_global)(const char **value);
-      bool (*bool_get_global)(bool *value);
-      bool (*strings_get_global)(unsigned int *count, const char ***strings);
+      Eina_Bool (*string_get)(const E_Connman_Element *element, const char **value);
+      Eina_Bool (*bool_get)(const E_Connman_Element *element, Eina_Bool *value);
+      Eina_Bool (*uchar_get)(const E_Connman_Element *element, unsigned char *value);
+      Eina_Bool (*ushort_get)(const E_Connman_Element *element, unsigned short*value);
+      Eina_Bool (*uchar_array_get)(const E_Connman_Element *element, unsigned int *count, unsigned char **value);
+      Eina_Bool (*element_get)(const E_Connman_Element *element, E_Connman_Element **value);
+      Eina_Bool (*elements_get)(const E_Connman_Element *element, unsigned int *count, E_Connman_Element ***elements);
+      Eina_Bool (*element_get_global)(E_Connman_Element **element);
+      Eina_Bool (*elements_get_global)(unsigned int *count, E_Connman_Element ***elements);
+      Eina_Bool (*string_get_global)(const char **value);
+      Eina_Bool (*bool_get_global)(Eina_Bool *value);
+      Eina_Bool (*strings_get_global)(unsigned int *count, const char ***strings);
       void *dummy;
    } func;
-   bool may_fail;
+   Eina_Bool may_fail;
 };
 
 #define TEST_DESC_STRING_GET(_func, may_fail)				\
@@ -299,16 +299,16 @@ struct test_desc
   {#_func, TEST_DESC_TYPE_STRINGS_GET_GLOBAL, .func.strings_get_global=_func, may_fail}
 #define TEST_DESC_SENTINEL {NULL, TEST_DESC_TYPE_LAST, .func.dummy=NULL}
 
-static bool
+static Eina_Bool
 _test_element(E_Connman_Element *element, const struct test_desc *test_descs)
 {
    const struct test_desc *itr;
    int total, ok = 0, fail = 0;
-   bool ret = 1;
+   Eina_Bool ret = EINA_TRUE;
 
    for (itr = test_descs; itr->type != TEST_DESC_TYPE_LAST; itr++)
      {
-	bool r;
+	Eina_Bool r;
 
 	switch (itr->type)
 	  {
@@ -369,7 +369,7 @@ _test_element(E_Connman_Element *element, const struct test_desc *test_descs)
 	     ERR("test failed %s, element %s [%s]",
 		 itr->name, element->path, element->interface);
 	     fail++;
-	     ret = 0;
+	     ret = EINA_FALSE;
 	  }
      }
 
@@ -379,7 +379,7 @@ _test_element(E_Connman_Element *element, const struct test_desc *test_descs)
    if (total == 0)
      {
 	INF("no tests for %s [%s]", element->path, element->interface);
-	return 1;
+	return EINA_TRUE;
      }
 
    INF("testing %s success: %d, failure: %d: %d%% [%s]",

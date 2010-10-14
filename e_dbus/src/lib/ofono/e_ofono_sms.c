@@ -13,8 +13,8 @@
 Eina_Bool
 e_ofono_sms_sca_get(const E_Ofono_Element *element, const char **sca)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(sca, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(sca, EINA_FALSE);
 
    return e_ofono_element_property_get_stringshared
              (element, e_ofono_prop_sca, NULL, sca);
@@ -34,7 +34,7 @@ e_ofono_sms_sca_get(const E_Ofono_Element *element, const char **sca)
 Eina_Bool
 e_ofono_sms_sca_set(E_Ofono_Element *element, const char *sca, E_DBus_Method_Return_Cb cb, const void *data)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
 
    return e_ofono_element_property_set_full
              (element, e_ofono_prop_sca, DBUS_TYPE_STRING, sca, cb, data);
@@ -55,9 +55,9 @@ e_ofono_sms_sca_set(E_Ofono_Element *element, const char *sca, E_DBus_Method_Ret
 Eina_Bool
 e_ofono_sms_send_message(E_Ofono_Element *element, const char *number, const char *message, E_DBus_Method_Return_Cb cb, const void *data)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(number, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(message, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(number, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(message, EINA_FALSE);
 
    DBusMessage *m;
    DBusMessageIter i;

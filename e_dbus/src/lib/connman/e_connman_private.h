@@ -109,7 +109,7 @@ extern int _e_dbus_connman_log_dom;
 #define WRN(...) EINA_LOG_DOM_WARN(_e_dbus_connman_log_dom, __VA_ARGS__)
 #define ERR(...) EINA_LOG_DOM_ERR(_e_dbus_connman_log_dom, __VA_ARGS__)
 
-static inline bool
+static inline Eina_Bool
 _dbus_callback_check_and_init(DBusMessage *msg, DBusMessageIter *itr, DBusError *err)
 {
    if (!msg)
@@ -121,28 +121,28 @@ _dbus_callback_check_and_init(DBusMessage *msg, DBusMessageIter *itr, DBusError 
         else
            ERR("callback without message arguments!");
 
-        return 0;
+        return EINA_FALSE;
      }
 
    if (!dbus_message_iter_init(msg, itr))
      {
         ERR("could not init iterator.");
-        return 0;
+        return EINA_FALSE;
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
-static inline bool
+static inline Eina_Bool
 __dbus_iter_type_check(int type, int expected, const char *expected_name)
 {
    if (type == expected)
-      return 1;
+      return EINA_TRUE;
 
    ERR("expected type %s (%c) but got %c instead!",
        expected_name, expected, type);
 
-   return 0;
+   return EINA_FALSE;
 }
 
 #define _dbus_iter_type_check(t, e) __dbus_iter_type_check(t, e, # e)
@@ -159,12 +159,12 @@ void                   e_connman_elements_shutdown(void);
 E_Connman_Element *    e_connman_element_register(const char *path, const char *interface);
 void                   e_connman_element_unregister(E_Connman_Element *element);
 
-bool                   e_connman_element_objects_array_get_stringshared(const E_Connman_Element *element, const char *property, unsigned int *count, E_Connman_Element ***elements);
-bool                   e_connman_element_strings_array_get_stringshared(const E_Connman_Element *element, const char *property, unsigned int *count, const char ***strings);
+Eina_Bool              e_connman_element_objects_array_get_stringshared(const E_Connman_Element *element, const char *property, unsigned int *count, E_Connman_Element ***elements);
+Eina_Bool              e_connman_element_strings_array_get_stringshared(const E_Connman_Element *element, const char *property, unsigned int *count, const char ***strings);
 unsigned char *        e_connman_element_bytes_array_get_stringshared(const E_Connman_Element *element, const char *property, unsigned int *count);
 
-bool                   e_connman_element_message_send(E_Connman_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, DBusMessage *msg, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
+Eina_Bool              e_connman_element_message_send(E_Connman_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, DBusMessage *msg, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
 
-bool                   e_connman_element_call_full(E_Connman_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
-bool                   e_connman_element_call_with_path(E_Connman_Element *element, const char *method_name, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
-bool                   e_connman_element_call_with_string(E_Connman_Element *element, const char *method_name, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
+Eina_Bool              e_connman_element_call_full(E_Connman_Element *element, const char *method_name, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
+Eina_Bool              e_connman_element_call_with_path(E_Connman_Element *element, const char *method_name, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);
+Eina_Bool              e_connman_element_call_with_string(E_Connman_Element *element, const char *method_name, const char *string, E_DBus_Method_Return_Cb cb, Eina_Inlist **pending, E_DBus_Method_Return_Cb user_cb, const void *user_data);

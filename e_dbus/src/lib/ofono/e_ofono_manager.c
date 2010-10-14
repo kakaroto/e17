@@ -32,7 +32,7 @@ e_ofono_manager_modems_get(Eina_Array **array)
    E_Ofono_Array *a = NULL;
    Eina_Bool r;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(array, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(array, EINA_FALSE);
 
    element = e_ofono_element_get(manager_path, e_ofono_iface_manager);
    r = e_ofono_element_property_get_stringshared

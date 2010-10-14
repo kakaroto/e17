@@ -30,14 +30,14 @@ e_connman_device_get(const char *path)
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_device_propose_scan(E_Connman_Element *device, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "ProposeScan";
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(device, EINA_FALSE);
    return e_connman_element_call_full
              (device, name, NULL, &device->_pending.device_propose_scan, cb, data);
 }
@@ -45,8 +45,8 @@ e_connman_device_propose_scan(E_Connman_Element *device, E_DBus_Method_Return_Cb
 /**
  * Get property "Address" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The device address (mac-address for ethernet, wifi...).
@@ -60,13 +60,13 @@ e_connman_device_propose_scan(E_Connman_Element *device, E_DBus_Method_Return_Cb
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_device_address_get(const E_Connman_Element *device, const char **address)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(address, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(device, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(address, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (device, e_connman_prop_address, NULL, address);
 }
@@ -74,8 +74,8 @@ e_connman_device_address_get(const E_Connman_Element *device, const char **addre
 /**
  * Get property "Name" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The device name (for example "Wireless" etc.)
@@ -89,13 +89,13 @@ e_connman_device_address_get(const E_Connman_Element *device, const char **addre
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_device_name_get(const E_Connman_Element *device, const char **name)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(name, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(device, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(name, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (device, e_connman_prop_name, NULL, name);
 }
@@ -103,8 +103,8 @@ e_connman_device_name_get(const E_Connman_Element *device, const char **name)
 /**
  * Get property "Type" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The device type (for example "ethernet", "wifi" etc.)
@@ -115,13 +115,13 @@ e_connman_device_name_get(const E_Connman_Element *device, const char **name)
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_device_type_get(const E_Connman_Element *device, const char **type)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(type, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(device, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(type, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (device, e_connman_prop_type, NULL, type);
 }
@@ -129,8 +129,8 @@ e_connman_device_type_get(const E_Connman_Element *device, const char **type)
 /**
  * Get property "Interface" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The device interface (for example "eth0" etc.)
@@ -144,13 +144,13 @@ e_connman_device_type_get(const E_Connman_Element *device, const char **type)
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_device_interface_get(const E_Connman_Element *device, const char **interface)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(interface, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(device, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(interface, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (device, e_connman_prop_interface, NULL, interface);
 }
@@ -158,8 +158,8 @@ e_connman_device_interface_get(const E_Connman_Element *device, const char **int
 /**
  * Get property "Powered" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * Switch a device on or off. This will also modify
@@ -176,16 +176,16 @@ e_connman_device_interface_get(const E_Connman_Element *device, const char **int
  *
  * @param device path to get property.
  * @param powered where to store the property value, must be a pointer
- *        to boolean (bool *).
+ *        to Eina_Bool (Eina_Bool *).
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  * @see e_connman_device_powered_set()
  */
-bool
-e_connman_device_powered_get(const E_Connman_Element *device, bool *powered)
+Eina_Bool
+e_connman_device_powered_get(const E_Connman_Element *device, Eina_Bool *powered)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(powered, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(device, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(powered, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (device, e_connman_prop_powered, NULL, powered);
 }
@@ -214,13 +214,13 @@ e_connman_device_powered_get(const E_Connman_Element *device, bool *powered)
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  * @see e_connman_device_powered_get()
  */
-bool
-e_connman_device_powered_set(E_Connman_Element *device, bool powered, E_DBus_Method_Return_Cb cb, const void *data)
+Eina_Bool
+e_connman_device_powered_set(E_Connman_Element *device, Eina_Bool powered, E_DBus_Method_Return_Cb cb, const void *data)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(device, EINA_FALSE);
    return e_connman_element_property_set_full
              (device, e_connman_prop_powered, DBUS_TYPE_BOOLEAN, &powered, cb, data);
 }
@@ -228,8 +228,8 @@ e_connman_device_powered_set(E_Connman_Element *device, bool powered, E_DBus_Met
 /**
  * Get property "ScanInterval" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The scan interval describes the time in seconds
@@ -247,14 +247,14 @@ e_connman_device_powered_set(E_Connman_Element *device, bool powered, E_DBus_Met
  * @param scan_interval where to store the property value, must be a pointer
  *        to uint16 (unsigned short *).
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  * @see e_connman_device_scan_interval_set()
  */
-bool
+Eina_Bool
 e_connman_device_scan_interval_get(const E_Connman_Element *device, unsigned short *scan_interval)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(scan_interval, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(device, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(scan_interval, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (device, e_connman_prop_scan_interval, NULL, scan_interval);
 }
@@ -282,13 +282,13 @@ e_connman_device_scan_interval_get(const E_Connman_Element *device, unsigned sho
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  * @see e_connman_device_scan_interval_get()
  */
-bool
+Eina_Bool
 e_connman_device_scan_interval_set(E_Connman_Element *device, unsigned short scan_interval, E_DBus_Method_Return_Cb cb, const void *data)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(device, EINA_FALSE);
    return e_connman_element_property_set_full
              (device, e_connman_prop_scan_interval, DBUS_TYPE_UINT16,
              &scan_interval, cb, data);
@@ -297,8 +297,8 @@ e_connman_device_scan_interval_set(E_Connman_Element *device, unsigned short sca
 /**
  * Get property "Scanning" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * Indicates if a device is scanning. Not all device
@@ -309,15 +309,15 @@ e_connman_device_scan_interval_set(E_Connman_Element *device, unsigned short sca
  *
  * @param device path to get property.
  * @param scanning where to store the property value, must be a pointer
- *        to boolean (bool *).
+ *        to Eina_Bool (Eina_Bool *).
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
-e_connman_device_scanning_get(const E_Connman_Element *device, bool *scanning)
+Eina_Bool
+e_connman_device_scanning_get(const E_Connman_Element *device, Eina_Bool *scanning)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(scanning, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(device, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(scanning, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (device, e_connman_prop_scanning, NULL, scanning);
 }
@@ -327,17 +327,17 @@ e_connman_device_scanning_get(const E_Connman_Element *device, bool *scanning)
  *
  * @param device path to get property.
  * @param count return the number of elements in array.
- * @param elements where to store elements array, just changed if return is 1.
+ * @param elements where to store elements array, just changed if return is @c EINA_TRUE.
  *        Elements are not referenced and in no particular order.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_device_networks_get(const E_Connman_Element *device, unsigned int *count, E_Connman_Element ***elements)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(device, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(elements, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(device, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(elements, EINA_FALSE);
    return e_connman_element_objects_array_get_stringshared
              (device, e_connman_prop_networks, count, elements);
 }

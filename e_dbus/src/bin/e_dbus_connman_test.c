@@ -110,7 +110,7 @@ _on_cmd_get_all(__UNUSED__ char *cmd, char *args)
    E_Connman_Element **elements;
    char *type;
    unsigned int count;
-   bool ret;
+   Eina_Bool ret;
 
    if (!args)
      type = NULL;
@@ -365,7 +365,7 @@ _on_cmd_manager_get_state(__UNUSED__ char *cmd, __UNUSED__ char *args)
 static Eina_Bool
 _on_cmd_manager_get_offline_mode(__UNUSED__ char *cmd, __UNUSED__ char *args)
 {
-   bool offline;
+   Eina_Bool offline;
    if (e_connman_manager_offline_mode_get(&offline))
      printf(":::Manager Offline Mode = %hhu\n", offline);
    else
@@ -376,7 +376,7 @@ _on_cmd_manager_get_offline_mode(__UNUSED__ char *cmd, __UNUSED__ char *args)
 static Eina_Bool
 _on_cmd_manager_set_offline_mode(__UNUSED__ char *cmd, char *args)
 {
-   bool offline;
+   Eina_Bool offline;
    if (!args)
      {
 	fputs("ERROR: missing the offline mode value\n", stderr);
@@ -667,7 +667,7 @@ static Eina_Bool
 _on_cmd_device_get_powered(__UNUSED__ char *cmd, char *args)
 {
    char *path;
-   bool powered;
+   Eina_Bool powered;
    E_Connman_Element *e;
 
    if (!args)
@@ -690,7 +690,7 @@ static Eina_Bool
 _on_cmd_device_set_powered(__UNUSED__ char *cmd, char *args)
 {
    char *device_path, *next_args;
-   bool powered;
+   Eina_Bool powered;
    E_Connman_Element *e;
 
    if (!args)
@@ -778,7 +778,7 @@ static Eina_Bool
 _on_cmd_device_get_scanning(__UNUSED__ char *cmd, char *args)
 {
    char *path;
-   bool scanning;
+   Eina_Bool scanning;
    E_Connman_Element *e;
 
    if (!args)
@@ -882,7 +882,7 @@ static Eina_Bool
 _on_cmd_profile_get_offline_mode(__UNUSED__ char *cmd, char *args)
 {
    char *path;
-   bool offline;
+   Eina_Bool offline;
    E_Connman_Element *e;
 
    if (!args)
@@ -905,7 +905,7 @@ static Eina_Bool
 _on_cmd_profile_set_offline_mode(__UNUSED__ char *cmd, char *args)
 {
    char *path, *next_args;
-   bool offline;
+   Eina_Bool offline;
    E_Connman_Element *e;
 
    if (!args)
@@ -1010,7 +1010,7 @@ static Eina_Bool
 _on_cmd_network_get_connected(__UNUSED__ char *cmd, char *args)
 {
    char *path;
-   bool connected;
+   Eina_Bool connected;
    E_Connman_Element *e;
 
    if (!args)
@@ -1555,7 +1555,7 @@ static Eina_Bool
 _on_cmd_service_get_passphrase_required(__UNUSED__ char *cmd, char *args)
 {
    const char *path;
-   bool passphrase;
+   Eina_Bool passphrase;
    E_Connman_Element *e;
 
    if (!args)
@@ -1601,7 +1601,7 @@ static Eina_Bool
 _on_cmd_service_get_favorite(__UNUSED__ char *cmd, char *args)
 {
    const char *path;
-   bool favorite;
+   Eina_Bool favorite;
    E_Connman_Element *e;
 
    if (!args)
@@ -1624,7 +1624,7 @@ static Eina_Bool
 _on_cmd_service_get_immutable(__UNUSED__ char *cmd, char *args)
 {
    const char *path;
-   bool immutable;
+   Eina_Bool immutable;
    E_Connman_Element *e;
 
    if (!args)
@@ -1647,7 +1647,7 @@ static Eina_Bool
 _on_cmd_service_get_auto_connect(__UNUSED__ char *cmd, char *args)
 {
    const char *path;
-   bool auto_connect;
+   Eina_Bool auto_connect;
    E_Connman_Element *e;
 
    if (!args)
@@ -1670,7 +1670,7 @@ static Eina_Bool
 _on_cmd_service_set_auto_connect(__UNUSED__ char *cmd, char *args)
 {
    char *path, *next_args;
-   bool auto_connect;
+   Eina_Bool auto_connect;
    E_Connman_Element *e;
 
    if (!args)
@@ -1702,7 +1702,7 @@ static Eina_Bool
 _on_cmd_service_get_setup_required(__UNUSED__ char *cmd, char *args)
 {
    const char *path;
-   bool setup_required;
+   Eina_Bool setup_required;
    E_Connman_Element *e;
 
    if (!args)
@@ -1821,7 +1821,7 @@ static Eina_Bool
 _on_cmd_service_get_roaming(__UNUSED__ char *cmd, char *args)
 {
    const char *path;
-   bool roaming;
+   Eina_Bool roaming;
    E_Connman_Element *e;
 
    if (!args)

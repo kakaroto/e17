@@ -17,8 +17,8 @@
 Eina_Bool
 e_ofono_netreg_mode_get(const E_Ofono_Element *element, const char **mode)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(mode, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(mode, EINA_FALSE);
 
    return e_ofono_element_property_get_stringshared
              (element, e_ofono_prop_mode, NULL, mode);
@@ -41,8 +41,8 @@ e_ofono_netreg_mode_get(const E_Ofono_Element *element, const char **mode)
 Eina_Bool
 e_ofono_netreg_status_get(const E_Ofono_Element *element, const char **status)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(status, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(status, EINA_FALSE);
 
    return e_ofono_element_property_get_stringshared
              (element, e_ofono_prop_status, NULL, status);
@@ -65,8 +65,8 @@ e_ofono_netreg_status_get(const E_Ofono_Element *element, const char **status)
 Eina_Bool
 e_ofono_netreg_operator_get(const E_Ofono_Element *element, const char **op)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(op, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(op, EINA_FALSE);
 
    return e_ofono_element_property_get_stringshared
              (element, e_ofono_prop_operator, NULL, op);
@@ -85,8 +85,8 @@ e_ofono_netreg_operator_get(const E_Ofono_Element *element, const char **op)
 Eina_Bool
 e_ofono_netreg_strength_get(const E_Ofono_Element *element, uint8_t *strength)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(strength, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(strength, EINA_FALSE);
 
    return e_ofono_element_property_get_stringshared
              (element, e_ofono_prop_strength, NULL, strength);

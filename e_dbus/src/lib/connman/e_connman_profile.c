@@ -23,8 +23,8 @@ e_connman_profile_get(const char *path)
 /**
  * Get property "Name" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The profile name, if set with e_connman_profile_name_set()
@@ -35,14 +35,14 @@ e_connman_profile_get(const char *path)
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  * @see e_connman_profile_name_set()
  */
-bool
+Eina_Bool
 e_connman_profile_name_get(const E_Connman_Element *profile, const char **name)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(profile, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(name, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(profile, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(name, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (profile, e_connman_prop_name, NULL, name);
 }
@@ -58,13 +58,13 @@ e_connman_profile_name_get(const E_Connman_Element *profile, const char **name)
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  * @see e_connman_profile_name_get()
  */
-bool
+Eina_Bool
 e_connman_profile_name_set(E_Connman_Element *profile, const char *name, E_DBus_Method_Return_Cb cb, const void *data)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(profile, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(profile, EINA_FALSE);
    return e_connman_element_property_set_full
              (profile, e_connman_prop_name, DBUS_TYPE_STRING, name, cb, data);
 }
@@ -72,8 +72,8 @@ e_connman_profile_name_set(E_Connman_Element *profile, const char *name, E_DBus_
 /**
  * Get property "OfflineMode" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The offline mode indicates the global setting for
@@ -81,16 +81,16 @@ e_connman_profile_name_set(E_Connman_Element *profile, const char *name, E_DBus_
  * to true results in powering down all devices.
  *
  * @param offline where to store the property value, must be a pointer
- *        to booleans (bool *).
+ *        to Eina_Bool (Eina_Bool *).
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  * @see e_connman_profile_offline_mode_set()
  */
-bool
-e_connman_profile_offline_mode_get(const E_Connman_Element *profile, bool *offline)
+Eina_Bool
+e_connman_profile_offline_mode_get(const E_Connman_Element *profile, Eina_Bool *offline)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(profile, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(offline, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(profile, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(offline, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (profile, e_connman_prop_offline_mode, NULL, offline);
 }
@@ -110,13 +110,13 @@ e_connman_profile_offline_mode_get(const E_Connman_Element *profile, bool *offli
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  * @see e_connman_profile_offline_mode_get()
  */
-bool
-e_connman_profile_offline_mode_set(E_Connman_Element *profile, bool offline, E_DBus_Method_Return_Cb cb, const void *data)
+Eina_Bool
+e_connman_profile_offline_mode_set(E_Connman_Element *profile, Eina_Bool offline, E_DBus_Method_Return_Cb cb, const void *data)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(profile, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(profile, EINA_FALSE);
    return e_connman_element_property_set_full
              (profile, e_connman_prop_offline_mode, DBUS_TYPE_BOOLEAN,
              &offline, cb, data);
@@ -127,16 +127,16 @@ e_connman_profile_offline_mode_set(E_Connman_Element *profile, bool offline, E_D
  *
  * @param count return the number of elements in array.
  * @param p_elements array with all elements, these are not referenced
- *        and in no particular order, just set if return is 1.
+ *        and in no particular order, just set if return is @c EINA_TRUE.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_profile_services_get(const E_Connman_Element *profile, unsigned int *count, E_Connman_Element ***p_elements)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(profile, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(count, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(profile, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(p_elements, EINA_FALSE);
    return e_connman_element_objects_array_get_stringshared
              (profile, e_connman_prop_services, count, p_elements);
 }

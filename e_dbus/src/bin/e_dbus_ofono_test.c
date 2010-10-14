@@ -42,7 +42,7 @@ _on_element_add(void *data __UNUSED__, int type __UNUSED__, void *info)
 {
    E_Ofono_Element *element = info;
    printf(">>> %s %s\n", element->path, element->interface);
-   return 1;
+   return EINA_TRUE;
 }
 
 static Eina_Bool
@@ -50,7 +50,7 @@ _on_element_del(void *data __UNUSED__, int type __UNUSED__, void *info)
 {
    E_Ofono_Element *element = info;
    printf("<<< %s %s\n", element->path, element->interface);
-   return 1;
+   return EINA_TRUE;
 }
 
 static Eina_Bool
@@ -59,21 +59,21 @@ _on_element_updated(void *data __UNUSED__, int type __UNUSED__, void *info)
    E_Ofono_Element *element = info;
    printf("!!! %s %s\n", element->path, element->interface);
    e_ofono_element_print(stderr, element);
-   return 1;
+   return EINA_TRUE;
 }
 static Eina_Bool
 _on_cmd_quit(char *cmd __UNUSED__, char *args __UNUSED__)
 {
    fputs("Bye!\n", stderr);
    ecore_main_loop_quit();
-   return 0;
+   return EINA_FALSE;
 }
 
 static Eina_Bool
 _on_cmd_sync(char *cmd __UNUSED__, char *args __UNUSED__)
 {
    e_ofono_manager_sync_elements();
-   return 1;
+   return EINA_TRUE;
 }
 
 static char *
@@ -119,7 +119,7 @@ _on_cmd_get_all(char *cmd __UNUSED__, char *args)
 	_elements_print(elements, count);
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static E_Ofono_Element *
@@ -156,7 +156,7 @@ _on_cmd_print(char *cmd __UNUSED__, char *args)
    E_Ofono_Element *element = _element_from_args(NULL, args, &next_args);
    if (element)
      e_ofono_element_print(stdout, element);
-   return 1;
+   return EINA_TRUE;
 }
 
 static Eina_Bool
@@ -166,7 +166,7 @@ _on_cmd_get_properties(char *cmd __UNUSED__, char *args)
    E_Ofono_Element *element = _element_from_args(NULL, args, &next_args);
    if (element)
      e_ofono_element_properties_sync(element);
-   return 1;
+   return EINA_TRUE;
 }
 
 static Eina_Bool
@@ -181,12 +181,12 @@ _on_cmd_property_set(char *cmd __UNUSED__, char *args)
    int type;
 
    if (!element)
-     return 1;
+     return EINA_TRUE;
 
    if (!next_args)
      {
 	fputs("ERROR: missing parameters name, type and value.\n", stderr);
-	return 1;
+	return EINA_TRUE;
      }
 
    name = next_args;
@@ -194,14 +194,14 @@ _on_cmd_property_set(char *cmd __UNUSED__, char *args)
    if (!p)
      {
 	fputs("ERROR: missing parameters type and value.\n", stderr);
-	return 1;
+	return EINA_TRUE;
      }
 
    next_args = _tok(p);
    if (!next_args)
      {
 	fputs("ERROR: missing parameter value.\n", stderr);
-	return 1;
+	return EINA_TRUE;
      }
 
    type = p[0];
@@ -217,7 +217,7 @@ _on_cmd_property_set(char *cmd __UNUSED__, char *args)
 	 if (p == next_args)
 	   {
 	      fprintf(stderr, "ERROR: invalid number \"%s\".\n", next_args);
-	      return 1;
+	      return EINA_TRUE;
 	   }
 	 value = &vu16;
 	 fprintf(stderr, "DBG: u16 is: %hu\n", vu16);
@@ -227,7 +227,7 @@ _on_cmd_property_set(char *cmd __UNUSED__, char *args)
 	 if (p == next_args)
 	   {
 	      fprintf(stderr, "ERROR: invalid number \"%s\".\n", next_args);
-	      return 1;
+	      return EINA_TRUE;
 	   }
 	 value = &vu32;
 	 fprintf(stderr, "DBG: u16 is: %u\n", vu32);
@@ -250,7 +250,7 @@ _on_cmd_property_set(char *cmd __UNUSED__, char *args)
       default:
 	 fprintf(stderr, "ERROR: don't know how to parse type '%c' (%d)\n",
 		 type, type);
-	 return 1;
+	 return EINA_TRUE;
      }
 
    fprintf(stderr, "set_property %s [%p] %s %c %p...\n",
@@ -258,7 +258,7 @@ _on_cmd_property_set(char *cmd __UNUSED__, char *args)
    if (!e_ofono_element_property_set(element, name, type, value))
 	fputs("ERROR: error setting property.\n", stderr);
 
-   return 1;
+   return EINA_TRUE;
 }
 
 /* Manager Commands */
@@ -269,7 +269,7 @@ _on_cmd_manager_get(char *cmd __UNUSED__, char *args __UNUSED__)
    E_Ofono_Element *element;
    element = e_ofono_manager_get();
    e_ofono_element_print(stderr, element);
-   return 1;
+   return EINA_TRUE;
 }
 
 static Eina_Bool
@@ -289,7 +289,7 @@ _on_cmd_manager_modems_get(char *cmd __UNUSED__, char *args __UNUSED__)
 	printf(" ]\n");
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
 /* Modem Commands */
@@ -302,12 +302,12 @@ _on_cmd_modem_set_powered(char *cmd __UNUSED__, char *args)
    E_Ofono_Element *element = _element_from_args("org.ofono.Modem", args, &next_args);
 
    if (!element)
-	   return 1;
+	   return EINA_TRUE;
 
    if (!args)
      {
 	fputs("ERROR: missing the powered value\n", stderr);
-	return 1;
+	return EINA_TRUE;
      }
 
    powered = !!atol(next_args);
@@ -317,7 +317,7 @@ _on_cmd_modem_set_powered(char *cmd __UNUSED__, char *args)
      printf(":::Modem %s Powered set to %hhu\n", element->path, powered);
    else
      fputs("ERROR: can't set Modem Powered\n", stderr);
-   return 1;
+   return EINA_TRUE;
 }
 
 /* SMS Commands */
@@ -330,12 +330,12 @@ _on_cmd_sms_sca_set(char *cmd __UNUSED__, char *args)
 						 &next_args);
 
    if (!element)
-     return 1;
+     return EINA_TRUE;
 
    if (!args)
      {
 	fputs("ERROR: missing service center address\n", stderr);
-	return 1;
+	return EINA_TRUE;
      }
 
    sca = next_args;
@@ -346,7 +346,7 @@ _on_cmd_sms_sca_set(char *cmd __UNUSED__, char *args)
    else
      fputs("ERROR: couldn't change Service Center Address\n", stderr);
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static Eina_Bool
@@ -357,27 +357,27 @@ _on_cmd_sms_send_message(char *cmd __UNUSED__, char *args)
 						 &next_args);
 
    if (!element)
-     return 1;
+     return EINA_TRUE;
 
    number = next_args;
    if (!number)
      {
 	fputs("ERROR: missing recipient number and message text.\n", stderr);
-	return 1;
+	return EINA_TRUE;
      }
 
    message = _tok(number);
    if (!message)
      {
 	fputs("ERROR: missing message text.\n", stderr);
-	return 1;
+	return EINA_TRUE;
      }
 
    if (!e_ofono_sms_send_message(element, number, message,
 				 _method_success_check, "sms_send_message"))
 	fputs("ERROR: error setting property.\n", stderr);
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static Eina_Bool
@@ -407,20 +407,20 @@ _on_input(void *data __UNUSED__, Ecore_Fd_Handler *fd_handler)
    if (ecore_main_fd_handler_active_get(fd_handler, ECORE_FD_ERROR))
      {
 	fputs("ERROR: reading from stdin, exit\n", stderr);
-	return 0;
+	return EINA_FALSE;
      }
 
    if (!ecore_main_fd_handler_active_get(fd_handler, ECORE_FD_READ))
      {
 	fputs("ERROR: nothing to read?\n", stderr);
-	return 0;
+	return EINA_FALSE;
      }
 
    if (!fgets(buf, sizeof(buf), stdin))
      {
 	fprintf(stderr, "ERROR: could not read command: %s\n", strerror(errno));
 	ecore_main_loop_quit();
-	return 0;
+	return EINA_FALSE;
      }
 
    cmd = buf;
@@ -467,7 +467,7 @@ _on_input(void *data __UNUSED__, Ecore_Fd_Handler *fd_handler)
 	       printf("\t%s\n", itr->cmd);
 	  }
 	fputc('\n', stdout);
-	return 1;
+	return EINA_TRUE;
      }
 
    for (itr = maps; itr->cmd; itr++)
@@ -475,7 +475,7 @@ _on_input(void *data __UNUSED__, Ecore_Fd_Handler *fd_handler)
        return itr->cb(cmd, args);
 
    printf("unknown command \"%s\", args=%s\n", cmd, args);
-   return 1;
+   return EINA_TRUE;
 }
 
 int

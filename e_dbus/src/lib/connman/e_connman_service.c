@@ -36,14 +36,14 @@ e_connman_service_get(const char *path)
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_connect(E_Connman_Element *service, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "Connect";
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
    return e_connman_element_call_full
              (service, name, NULL, &service->_pending.service_connect, cb, data);
 }
@@ -66,14 +66,14 @@ e_connman_service_connect(E_Connman_Element *service, E_DBus_Method_Return_Cb cb
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_disconnect(E_Connman_Element *service, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "Disconnect";
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
    return e_connman_element_call_full
              (service, name, NULL, &service->_pending.service_disconnect, cb, data);
 }
@@ -103,14 +103,14 @@ e_connman_service_disconnect(E_Connman_Element *service, E_DBus_Method_Return_Cb
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_remove(E_Connman_Element *service, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "Remove";
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
    return e_connman_element_call_full
              (service, name, NULL, &service->_pending.service_remove, cb, data);
 }
@@ -124,15 +124,15 @@ e_connman_service_remove(E_Connman_Element *service, E_DBus_Method_Return_Cb cb,
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_clear_property(E_Connman_Element *service, const char *property, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "ClearProperty";
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(property, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(property, EINA_FALSE);
    return e_connman_element_call_with_string
              (service, name, property, NULL, &service->_pending.service_clear_property,
              cb, data);
@@ -154,15 +154,15 @@ e_connman_service_clear_property(E_Connman_Element *service, const char *propert
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_move_before(E_Connman_Element *service, const char *object_path, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "MoveBefore";
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(object_path, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(object_path, EINA_FALSE);
    return e_connman_element_call_with_path
              (service, name, object_path, NULL,
              &service->_pending.service_move_before, cb, data);
@@ -183,15 +183,15 @@ e_connman_service_move_before(E_Connman_Element *service, const char *object_pat
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_move_after(E_Connman_Element *service, const char *object_path, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "MoveAfter";
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(object_path, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(object_path, EINA_FALSE);
    return e_connman_element_call_with_path
              (service, name, object_path, NULL,
              &service->_pending.service_move_after, cb, data);
@@ -200,8 +200,8 @@ e_connman_service_move_after(E_Connman_Element *service, const char *object_path
 /**
  * Get property "State" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The service state information.
@@ -215,13 +215,13 @@ e_connman_service_move_after(E_Connman_Element *service, const char *object_path
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_state_get(const E_Connman_Element *service, const char **state)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(state, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(state, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (service, e_connman_prop_state, NULL, state);
 }
@@ -229,8 +229,8 @@ e_connman_service_state_get(const E_Connman_Element *service, const char **state
 /**
  * Get property "Error" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The service error status details.
@@ -252,13 +252,13 @@ e_connman_service_state_get(const E_Connman_Element *service, const char **state
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_error_get(const E_Connman_Element *service, const char **error)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(error, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(error, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (service, e_connman_prop_error, NULL, error);
 }
@@ -266,8 +266,8 @@ e_connman_service_error_get(const E_Connman_Element *service, const char **error
 /**
  * Get property "Name" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The service name (for example "Wireless" etc.)
@@ -284,13 +284,13 @@ e_connman_service_error_get(const E_Connman_Element *service, const char **error
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_name_get(const E_Connman_Element *service, const char **name)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(name, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(name, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (service, e_connman_prop_name, NULL, name);
 }
@@ -298,8 +298,8 @@ e_connman_service_name_get(const E_Connman_Element *service, const char **name)
 /**
  * Get property "Type" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The service type (for example "ethernet", "wifi" etc.)
@@ -314,13 +314,13 @@ e_connman_service_name_get(const E_Connman_Element *service, const char **name)
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_type_get(const E_Connman_Element *service, const char **type)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(type, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(type, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (service, e_connman_prop_type, NULL, type);
 }
@@ -328,8 +328,8 @@ e_connman_service_type_get(const E_Connman_Element *service, const char **type)
 /**
  * Get property "Mode" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * If the service type is WiFi or Cellular, then this
@@ -350,13 +350,13 @@ e_connman_service_type_get(const E_Connman_Element *service, const char **type)
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_mode_get(const E_Connman_Element *service, const char **mode)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(mode, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(mode, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (service, e_connman_prop_mode, NULL, mode);
 }
@@ -364,8 +364,8 @@ e_connman_service_mode_get(const E_Connman_Element *service, const char **mode)
 /**
  * Get property "Security" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * If the service type is WiFi, then this property is
@@ -383,13 +383,13 @@ e_connman_service_mode_get(const E_Connman_Element *service, const char **mode)
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_security_get(const E_Connman_Element *service, const char **security)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(security, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(security, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (service, e_connman_prop_security, NULL, security);
 }
@@ -397,8 +397,8 @@ e_connman_service_security_get(const E_Connman_Element *service, const char **se
 /**
  * Get property "Passphrase" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * If the service type is WiFi, then this property
@@ -417,14 +417,14 @@ e_connman_service_security_get(const E_Connman_Element *service, const char **se
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  * @see e_connman_service_passphrase_set()
  */
-bool
+Eina_Bool
 e_connman_service_passphrase_get(const E_Connman_Element *service, const char **passphrase)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(passphrase, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(passphrase, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (service, e_connman_prop_passphrase, NULL, passphrase);
 }
@@ -432,8 +432,8 @@ e_connman_service_passphrase_get(const E_Connman_Element *service, const char **
 /**
  * Set property "Passphrase" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * If the service type is WiFi, then this property
@@ -451,13 +451,13 @@ e_connman_service_passphrase_get(const E_Connman_Element *service, const char **
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  * @see e_connman_service_passphrase_get()
  */
-bool
+Eina_Bool
 e_connman_service_passphrase_set(E_Connman_Element *service, const char *passphrase, E_DBus_Method_Return_Cb cb, const void *data)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
    return e_connman_element_property_set_full
              (service, e_connman_prop_passphrase, DBUS_TYPE_STRING,
              passphrase, cb, data);
@@ -466,8 +466,8 @@ e_connman_service_passphrase_set(E_Connman_Element *service, const char *passphr
 /**
  * Get property "PassphraseRequired" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * If the service type is WiFi, then this property
@@ -479,15 +479,15 @@ e_connman_service_passphrase_set(E_Connman_Element *service, const char *passphr
  *
  * @param service path to get property.
  * @param passphrase_required where to store the property value, must be a
- *        pointer to boolean (bool *).
+ *        pointer to Eina_Bool (Eina_Bool *).
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
-e_connman_service_passphrase_required_get(const E_Connman_Element *service, bool *passphrase_required)
+Eina_Bool
+e_connman_service_passphrase_required_get(const E_Connman_Element *service, Eina_Bool *passphrase_required)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(passphrase_required, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(passphrase_required, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (service, e_connman_prop_passphrase_required, NULL, passphrase_required);
 }
@@ -495,8 +495,8 @@ e_connman_service_passphrase_required_get(const E_Connman_Element *service, bool
 /**
  * Get property "Strength" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * Indicates the signal strength of the service. This
@@ -509,13 +509,13 @@ e_connman_service_passphrase_required_get(const E_Connman_Element *service, bool
  * @param strength where to store the property value, must be a pointer
  *        to byte (unsigned char*).
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_strength_get(const E_Connman_Element *service, unsigned char *strength)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(strength, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(strength, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (service, e_connman_prop_strength, NULL, strength);
 }
@@ -523,8 +523,8 @@ e_connman_service_strength_get(const E_Connman_Element *service, unsigned char *
 /**
  * Get property "Favorite" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * Will be true if a cable is plugged in or the user
@@ -536,15 +536,15 @@ e_connman_service_strength_get(const E_Connman_Element *service, unsigned char *
  *
  * @param service path to get property.
  * @param favorite where to store the property value, must be a
- *        pointer to boolean (bool *).
+ *        pointer to Eina_Bool (Eina_Bool *).
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
-e_connman_service_favorite_get(const E_Connman_Element *service, bool *favorite)
+Eina_Bool
+e_connman_service_favorite_get(const E_Connman_Element *service, Eina_Bool *favorite)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(favorite, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(favorite, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (service, e_connman_prop_favorite, NULL, favorite);
 }
@@ -561,15 +561,15 @@ e_connman_service_favorite_get(const E_Connman_Element *service, bool *favorite)
 
  * @param service path to get property.
  * @param immutable where to store the property value, must be a
- *        pointer to bollean (bool *).
+ *        pointer to Eina_Bool (Eina_Bool *).
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
-e_connman_service_immutable_get(const E_Connman_Element *service, bool *immutable)
+Eina_Bool
+e_connman_service_immutable_get(const E_Connman_Element *service, Eina_Bool *immutable)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(immutable, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(immutable, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (service, e_connman_prop_immutable, NULL, immutable);
 }
@@ -577,8 +577,8 @@ e_connman_service_immutable_get(const E_Connman_Element *service, bool *immutabl
 /**
  * Get property "AutoConnect" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * If set to true, this service will auto-connect
@@ -590,16 +590,16 @@ e_connman_service_immutable_get(const E_Connman_Element *service, bool *immutabl
  *
  * @param service path to get property.
  * @param auto_connect where to store the property value, must be a
- *        pointer to boolean (bool *).
+ *        pointer to Eina_Bool (Eina_Bool *).
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  * @see e_connman_service_auto_connect_set()
  */
-bool
-e_connman_service_auto_connect_get(const E_Connman_Element *service, bool *auto_connect)
+Eina_Bool
+e_connman_service_auto_connect_get(const E_Connman_Element *service, Eina_Bool *auto_connect)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(auto_connect, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(auto_connect, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (service, e_connman_prop_auto_connect, NULL, auto_connect);
 }
@@ -607,8 +607,8 @@ e_connman_service_auto_connect_get(const E_Connman_Element *service, bool *auto_
 /**
  * Set property "AutoConnect" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * If set to true, this service will auto-connect
@@ -620,15 +620,15 @@ e_connman_service_auto_connect_get(const E_Connman_Element *service, bool *auto_
  *
  * @param service path to get property.
  * @param service_favorite where to store the property value, must be a
- *        pointer to boolean (bool *).
+ *        pointer to Eina_Bool (Eina_Bool *).
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  * @see e_connman_service_auto_connect_get()
  */
-bool
-e_connman_service_auto_connect_set(E_Connman_Element *service, bool auto_connect, E_DBus_Method_Return_Cb cb, const void *data)
+Eina_Bool
+e_connman_service_auto_connect_set(E_Connman_Element *service, Eina_Bool auto_connect, E_DBus_Method_Return_Cb cb, const void *data)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
    return e_connman_element_property_set_full
              (service, e_connman_prop_auto_connect, DBUS_TYPE_BOOLEAN, &auto_connect, cb, data);
 }
@@ -636,8 +636,8 @@ e_connman_service_auto_connect_set(E_Connman_Element *service, bool auto_connect
 /**
  * Get property "SetupRequired" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * If the service is Cellular, then this property
@@ -648,15 +648,15 @@ e_connman_service_auto_connect_set(E_Connman_Element *service, bool auto_connect
  *
  * @param service path to get property.
  * @param setup_required where to store the property value, must be a
- *        pointer to boolean (bool *).
+ *        pointer to Eina_Bool (Eina_Bool *).
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
-e_connman_service_setup_required_get(const E_Connman_Element *service, bool *setup_required)
+Eina_Bool
+e_connman_service_setup_required_get(const E_Connman_Element *service, Eina_Bool *setup_required)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(setup_required, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(setup_required, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (service, e_connman_prop_setup_required, NULL, setup_required);
 }
@@ -664,8 +664,8 @@ e_connman_service_setup_required_get(const E_Connman_Element *service, bool *set
 /**
  * Get property "APN" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * If the service is Cellular, then this property
@@ -684,14 +684,14 @@ e_connman_service_setup_required_get(const E_Connman_Element *service, bool *set
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  * @see e_connman_service_apn_set()
  */
-bool
+Eina_Bool
 e_connman_service_apn_get(const E_Connman_Element *service, const char **apn)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(apn, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(apn, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (service, e_connman_prop_apn, NULL, apn);
 }
@@ -699,8 +699,8 @@ e_connman_service_apn_get(const E_Connman_Element *service, const char **apn)
 /**
  * Set property "APN" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * If the service is Cellular, then this property
@@ -718,13 +718,13 @@ e_connman_service_apn_get(const E_Connman_Element *service, const char **apn)
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  * @see e_connman_service_apn_get()
  */
-bool
+Eina_Bool
 e_connman_service_apn_set(E_Connman_Element *service, const char *apn, E_DBus_Method_Return_Cb cb, const void *data)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
    return e_connman_element_property_set_full
              (service, e_connman_prop_apn, DBUS_TYPE_STRING,
              apn, cb, data);
@@ -733,8 +733,8 @@ e_connman_service_apn_set(E_Connman_Element *service, const char *apn, E_DBus_Me
 /**
  * Get property "MCC" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * If the service is Cellular, then this property
@@ -746,13 +746,13 @@ e_connman_service_apn_set(E_Connman_Element *service, const char *apn, E_DBus_Me
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_mcc_get(const E_Connman_Element *service, const char **mcc)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(mcc, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(mcc, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (service, e_connman_prop_mcc, NULL, mcc);
 }
@@ -760,8 +760,8 @@ e_connman_service_mcc_get(const E_Connman_Element *service, const char **mcc)
 /**
  * Get property "MNC" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * If the service is Cellular, then this property
@@ -773,13 +773,13 @@ e_connman_service_mcc_get(const E_Connman_Element *service, const char **mcc)
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_mnc_get(const E_Connman_Element *service, const char **mnc)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(mnc, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(mnc, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (service, e_connman_prop_mnc, NULL, mnc);
 }
@@ -787,8 +787,8 @@ e_connman_service_mnc_get(const E_Connman_Element *service, const char **mnc)
 /**
  * Get property "Roaming" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * This property indicates if this service is roaming.
@@ -799,15 +799,15 @@ e_connman_service_mnc_get(const E_Connman_Element *service, const char **mnc)
  *
  * @param service path to get property.
  * @param roaming where to store the property value, must be a
- *        pointer to boolean (bool *).
+ *        pointer to Eina_Bool (Eina_Bool *).
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
-e_connman_service_roaming_get(const E_Connman_Element *service, bool *roaming)
+Eina_Bool
+e_connman_service_roaming_get(const E_Connman_Element *service, Eina_Bool *roaming)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(roaming, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(roaming, EINA_FALSE);
    return e_connman_element_property_get_stringshared
              (service, e_connman_prop_roaming, NULL, roaming);
 }
@@ -815,8 +815,8 @@ e_connman_service_roaming_get(const E_Connman_Element *service, bool *roaming)
 /**
  * Get property "IPv4.Method" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The IPv4 method in use. Possible values here are "dhcp" and
@@ -828,13 +828,13 @@ e_connman_service_roaming_get(const E_Connman_Element *service, bool *roaming)
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_ipv4_method_get(const E_Connman_Element *service, const char **method)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(method, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(method, EINA_FALSE);
    return e_connman_element_property_dict_get_stringshared
              (service, e_connman_prop_ipv4, e_connman_prop_method, NULL, method);
 }
@@ -842,8 +842,8 @@ e_connman_service_ipv4_method_get(const E_Connman_Element *service, const char *
 /**
  * Get property "IPv4.Address" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The current IPv4 address.
@@ -854,13 +854,13 @@ e_connman_service_ipv4_method_get(const E_Connman_Element *service, const char *
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_ipv4_address_get(const E_Connman_Element *service, const char **address)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(address, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(address, EINA_FALSE);
    return e_connman_element_property_dict_get_stringshared
              (service, e_connman_prop_ipv4, e_connman_prop_address, NULL, address);
 }
@@ -868,8 +868,8 @@ e_connman_service_ipv4_address_get(const E_Connman_Element *service, const char 
 /**
  * Get property "IPv4.Gateway" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The current IPv4 gateway.
@@ -880,13 +880,13 @@ e_connman_service_ipv4_address_get(const E_Connman_Element *service, const char 
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_ipv4_gateway_get(const E_Connman_Element *service, const char **gateway)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(gateway, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(gateway, EINA_FALSE);
    return e_connman_element_property_dict_get_stringshared
              (service, e_connman_prop_ipv4, e_connman_prop_gateway, NULL, gateway);
 }
@@ -894,8 +894,8 @@ e_connman_service_ipv4_gateway_get(const E_Connman_Element *service, const char 
 /**
  * Get property "IPv4.Netmask" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The current IPv4 netmask.
@@ -906,13 +906,13 @@ e_connman_service_ipv4_gateway_get(const E_Connman_Element *service, const char 
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_ipv4_netmask_get(const E_Connman_Element *service, const char **netmask)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(netmask, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(netmask, EINA_FALSE);
    return e_connman_element_property_dict_get_stringshared
              (service, e_connman_prop_ipv4, e_connman_prop_netmask, NULL, netmask);
 }
@@ -923,8 +923,8 @@ e_connman_service_ipv4_netmask_get(const E_Connman_Element *service, const char 
  * Unlike IPv4.Method, this is the user-set value, rather than the
  * actual value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The IPv4 configured method. Possible values here are "dhcp" and
@@ -936,13 +936,13 @@ e_connman_service_ipv4_netmask_get(const E_Connman_Element *service, const char 
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_ipv4_configuration_method_get(const E_Connman_Element *service, const char **method)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(method, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(method, EINA_FALSE);
    return e_connman_element_property_dict_get_stringshared
              (service, e_connman_prop_ipv4_configuration, e_connman_prop_method,
              NULL, method);
@@ -954,8 +954,8 @@ e_connman_service_ipv4_configuration_method_get(const E_Connman_Element *service
  * Unlike IPv4.Address, this is the user-set value, rather than the
  * actual value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The current configured IPv4 address.
@@ -966,13 +966,13 @@ e_connman_service_ipv4_configuration_method_get(const E_Connman_Element *service
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_ipv4_configuration_address_get(const E_Connman_Element *service, const char **address)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(address, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(address, EINA_FALSE);
    return e_connman_element_property_dict_get_stringshared
              (service, e_connman_prop_ipv4_configuration, e_connman_prop_address,
              NULL, address);
@@ -984,8 +984,8 @@ e_connman_service_ipv4_configuration_address_get(const E_Connman_Element *servic
  * Unlike IPv4.Gateway, this is the user-set value, rather than the
  * actual value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The current configured IPv4 gateway.
@@ -996,13 +996,13 @@ e_connman_service_ipv4_configuration_address_get(const E_Connman_Element *servic
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_ipv4_configuration_gateway_get(const E_Connman_Element *service, const char **gateway)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(gateway, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(gateway, EINA_FALSE);
    return e_connman_element_property_dict_get_stringshared
              (service, e_connman_prop_ipv4_configuration, e_connman_prop_gateway,
              NULL, gateway);
@@ -1014,8 +1014,8 @@ e_connman_service_ipv4_configuration_gateway_get(const E_Connman_Element *servic
  * Unlike IPv4.Netmask, this is the user-set value, rather than the
  * actual value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The current configured IPv4 netmask.
@@ -1026,13 +1026,13 @@ e_connman_service_ipv4_configuration_gateway_get(const E_Connman_Element *servic
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_ipv4_configuration_netmask_get(const E_Connman_Element *service, const char **netmask)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(netmask, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(netmask, EINA_FALSE);
    return e_connman_element_property_dict_get_stringshared
              (service, e_connman_prop_ipv4_configuration, e_connman_prop_netmask,
              NULL, netmask);
@@ -1045,13 +1045,13 @@ e_connman_service_ipv4_configuration_netmask_get(const E_Connman_Element *servic
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_ipv4_configure_dhcp(E_Connman_Element *service, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char method[] = "dhcp";
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
    return e_connman_element_property_dict_set_full
              (service, e_connman_prop_ipv4_configuration, e_connman_prop_method,
              DBUS_TYPE_STRING, method, cb, data);
@@ -1067,9 +1067,9 @@ e_connman_service_ipv4_configure_dhcp(E_Connman_Element *service, E_DBus_Method_
  * @param cb function to call when server replies or some error happens.
  * @param data data to give to cb when it is called.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_ipv4_configure_manual(E_Connman_Element *service, const char *address, const char *netmask, const char *gateway, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "SetProperty";
@@ -1077,8 +1077,8 @@ e_connman_service_ipv4_configure_manual(E_Connman_Element *service, const char *
    DBusMessage *msg;
    DBusMessageIter itr, variant, dict, entry;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(address, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(address, EINA_FALSE);
 
    msg = dbus_message_new_method_call
          (e_connman_system_bus_name_get(), service->path, service->interface, name);
@@ -1148,8 +1148,8 @@ e_connman_service_ipv4_configure_manual(E_Connman_Element *service, const char *
 /**
  * Get property "Ethernet.Method" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The Ethernet configuration method. Possible values here "auto".
@@ -1160,13 +1160,13 @@ e_connman_service_ipv4_configure_manual(E_Connman_Element *service, const char *
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_ethernet_method_get(const E_Connman_Element *service, const char **method)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(method, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(method, EINA_FALSE);
    return e_connman_element_property_dict_get_stringshared
              (service, e_connman_prop_ethernet, e_connman_prop_method, NULL, method);
 }
@@ -1174,8 +1174,8 @@ e_connman_service_ethernet_method_get(const E_Connman_Element *service, const ch
 /**
  * Get property "Ethernet.Address" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The current configured Ethernet address (mac-address).
@@ -1186,13 +1186,13 @@ e_connman_service_ethernet_method_get(const E_Connman_Element *service, const ch
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_ethernet_address_get(const E_Connman_Element *service, const char **address)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(address, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(address, EINA_FALSE);
    return e_connman_element_property_dict_get_stringshared
              (service, e_connman_prop_ethernet, e_connman_prop_address, NULL, address);
 }
@@ -1200,8 +1200,8 @@ e_connman_service_ethernet_address_get(const E_Connman_Element *service, const c
 /**
  * Get property "Ethernet.Gateway" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The current configured Ethernet MTU.
@@ -1212,13 +1212,13 @@ e_connman_service_ethernet_address_get(const E_Connman_Element *service, const c
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_ethernet_mtu_get(const E_Connman_Element *service, unsigned short *mtu)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(mtu, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(mtu, EINA_FALSE);
    return e_connman_element_property_dict_get_stringshared
              (service, e_connman_prop_ethernet, e_connman_prop_mtu, NULL, mtu);
 }
@@ -1226,8 +1226,8 @@ e_connman_service_ethernet_mtu_get(const E_Connman_Element *service, unsigned sh
 /**
  * Get property "Ethernet.Netmask" value.
  *
- * If this property isn't found then 0 is returned.
- * If zero is returned, then this call failed and parameter-returned
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
  * The current configured Ethernet netmask.
@@ -1238,13 +1238,13 @@ e_connman_service_ethernet_mtu_get(const E_Connman_Element *service, unsigned sh
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_service_ethernet_netmask_get(const E_Connman_Element *service, const char **netmask)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(netmask, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(netmask, EINA_FALSE);
    return e_connman_element_property_dict_get_stringshared
              (service, e_connman_prop_ethernet, e_connman_prop_netmask, NULL, netmask);
 }

@@ -105,9 +105,9 @@ e_connman_system_bus_name_get(void)
  *
  * This will not remove stale elements.
  *
- * @return 1 on success, 0 otherwise.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-bool
+Eina_Bool
 e_connman_manager_sync_elements(void)
 {
    E_Connman_Element *manager;

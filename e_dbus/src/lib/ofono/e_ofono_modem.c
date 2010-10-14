@@ -15,8 +15,8 @@
 Eina_Bool
 e_ofono_modem_powered_get(const E_Ofono_Element *element, Eina_Bool *powered)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(powered, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(powered, EINA_FALSE);
 
    return e_ofono_element_property_get_stringshared
              (element, e_ofono_prop_powered, NULL, powered);
@@ -35,7 +35,7 @@ e_ofono_modem_powered_get(const E_Ofono_Element *element, Eina_Bool *powered)
 Eina_Bool
 e_ofono_modem_powered_set(E_Ofono_Element *element, Eina_Bool powered, E_DBus_Method_Return_Cb cb, const void *data)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
 
    return e_ofono_element_property_set_full
              (element, e_ofono_prop_powered, DBUS_TYPE_BOOLEAN,
@@ -59,8 +59,8 @@ e_ofono_modem_powered_set(E_Ofono_Element *element, Eina_Bool powered, E_DBus_Me
 Eina_Bool
 e_ofono_modem_name_get(const E_Ofono_Element *element, const char **name)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(name, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(name, EINA_FALSE);
 
    return e_ofono_element_property_get_stringshared
              (element, e_ofono_prop_name, NULL, name);

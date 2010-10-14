@@ -45,12 +45,12 @@ e_hal_property_bool_get(E_Hal_Properties *properties, const char *key, int *err)
 {
   E_Hal_Property *prop;
   if (err) *err = 0;
-  if (!properties->properties) return 0;
+  if (!properties->properties) return EINA_FALSE;
   prop = eina_hash_find(properties->properties, key);
   if (prop) return prop->val.b;
   
   if (err) *err = 1;
-  return 0;
+  return EINA_FALSE;
 }
 
 EAPI int
