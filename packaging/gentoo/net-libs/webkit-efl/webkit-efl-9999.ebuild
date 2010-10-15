@@ -7,7 +7,7 @@ inherit cmake-utils flag-o-matic enlightenment
 
 DESCRIPTION="Open source web browser engine (EFL version)"
 HOMEPAGE="http://trac.webkit.org/wiki/EFLWebKit"
-SRC_URI="http://e2.enlightenment.org/~acidx/webkit-snapshots/${PN}-latest.tar.bz2"
+SRC_URI="http://packages.profusion.mobi/webkit-efl/${PN}-latest.tar.bz2"
 E_STATE="snap"
 WANT_AUTOTOOLS="no"
 
