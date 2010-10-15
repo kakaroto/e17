@@ -20,19 +20,6 @@ AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 AC_C___ATTRIBUTE__
 
-AC_PATH_XTRA
-AC_CHECK_HEADER(X11/X.h,
-  [
-    x_dir=${x_dir:-/usr/X11R6}
-    x_cflags=${x_cflags:--I${x_includes:-$x_dir/include}}
-    x_libs="${x_libs:--L${x_libraries:-$x_dir/lib}} -lX11 -lXext"
-  ],[
-    AC_MSG_ERROR([Cannot find X headers and libraries.])
-  ]
-)
-AC_SUBST(x_cflags)
-AC_SUBST(x_libs)
-
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
   AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", [PACKAGE_DATA_DIR])
@@ -51,7 +38,7 @@ else
   AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}", [Installation directory for user executables])
 fi
 
-PKG_CHECK_MODULES(IMLIB, imlib2)
+PKG_CHECK_MODULES(EINA, eina)
 PKG_CHECK_MODULES(ECORE, 
 ecore
 ecore-file
@@ -59,8 +46,6 @@ ecore-x
 ecore-evas
 )
 PKG_CHECK_MODULES(EVAS, evas)
-PKG_CHECK_MODULES(EDJE, edje)
-PKG_CHECK_MODULES(EINA, eina)
 
 AC_OUTPUT([
 Makefile

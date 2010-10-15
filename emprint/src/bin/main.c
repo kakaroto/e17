@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <X11/Xlib.h>
-#include <Imlib2.h>
 #include <Eina.h>
 #include <Evas.h>
 #include <Ecore.h>
@@ -11,7 +9,6 @@
 #include <Ecore_File.h>
 #include <Ecore_X.h>
 #include <Ecore_X_Cursor.h>
-#include <Edje.h>
 #include <getopt.h>
 #if TIME_WITH_SYS_TIME
 # include <sys/time.h>
@@ -32,12 +29,11 @@ static void _em_print_help(void);
 static void _em_print_version(void);
 static void _em_free_options(void);
 static void _em_get_filename(void);
-static void _em_init_imlib(void);
 static void _em_do_shot(void);
 static void _em_do_screen(void);
 static void _em_do_window(void);
 static void _em_do_region(void);
-static void _em_do_thumb(void *data);
+static void _em_do_thumb(const char *filename);
 static void _em_take_shot(int x, int y, int w, int h);
 static Eina_Bool _em_cb_key_down(void *data __UNUSED__, int type __UNUSED__, void *event);
 static Eina_Bool _em_cb_mouse_move(void *data __UNUSED__, int type __UNUSED__, void *event);
@@ -67,14 +63,14 @@ int
 main(int argc, char **argv) 
 {
    /* initialize eina */
-   if (!eina_init())
-     exit(EXIT_FAILURE);
+   if (!eina_init()) exit(EXIT_FAILURE);
 
    /* allocate a structure to hold our options */
    opts = calloc(1, sizeof(Options));
    if (!opts)
      {
 	printf("Cannot allocate memory for Options structure.\n");
+        eina_shutdown();
 	exit(EXIT_FAILURE);
      }
 
@@ -85,6 +81,7 @@ main(int argc, char **argv)
    if (!ecore_init()) 
      {
 	_em_free_options();
+        eina_shutdown();
 	exit(EXIT_FAILURE);
      }
 
@@ -93,6 +90,7 @@ main(int argc, char **argv)
      {
 	_em_free_options();
 	ecore_shutdown();
+        eina_shutdown();
 	exit(EXIT_FAILURE);
      }
 
@@ -102,16 +100,7 @@ main(int argc, char **argv)
 	_em_free_options();
 	ecore_evas_shutdown();
 	ecore_shutdown();
-	exit(EXIT_FAILURE);
-     }
-
-   /* initialize edje */
-   if (!edje_init()) 
-     {
-	_em_free_options();
-	ecore_x_shutdown();
-	ecore_evas_shutdown();
-	ecore_shutdown();
+        eina_shutdown();
 	exit(EXIT_FAILURE);
      }
 
@@ -129,9 +118,6 @@ main(int argc, char **argv)
 
    /* free our option structure */
    _em_free_options();
-
-   /* shutdown edje */
-   edje_shutdown();
 
    /* shutdown ecore_x */
    ecore_x_shutdown();
@@ -372,24 +358,6 @@ _em_get_filename(void)
 }
 
 static void 
-_em_init_imlib(void) 
-{
-   Ecore_X_Display *disp;
-   Ecore_X_Window root;
-
-   /* get the display */
-   disp = ecore_x_display_get();
-
-   /* get the root window */
-   root = RootWindow(disp, 0);
-
-   /* setup imlib in preparation for shot */
-   imlib_context_set_display(disp);
-   imlib_context_set_drawable(root);
-   imlib_context_set_visual(DefaultVisual(disp, DefaultScreen(disp)));
-}
-
-static void 
 _em_do_shot(void) 
 {
    /* if user specified a delay, do it */
@@ -416,11 +384,8 @@ _em_do_screen(void)
 {
    int w, h;
 
-   /* initialize imlib */
-   _em_init_imlib();
-
    /* get the size of the root window */
-   ecore_x_window_size_get(RootWindow(ecore_x_display_get(), 0), &w, &h);
+   ecore_x_window_size_get(ecore_x_window_root_first_get(), &w, &h);
 
    /* actually take the shot */
    _em_take_shot(0, 0, w, h);
@@ -436,11 +401,8 @@ _em_do_window(void)
    Ecore_X_Cursor cursor = 0;
    int x, y, w, h;
 
-   /* initialize imlib */
-   _em_init_imlib();
-
    /* get the root window */
-   root = RootWindow(ecore_x_display_get(), 0);
+   root = ecore_x_window_root_first_get();
 
    /* get the size of the current root window */
    ecore_x_window_geometry_get(root, &x, &y, &w, &h);
@@ -477,11 +439,8 @@ _em_do_region(void)
    Ecore_X_Cursor cursor = 0;
    int x, y, w, h;
 
-   /* initialize imlib */
-   _em_init_imlib();
-
    /* get the root window */
-   root = RootWindow(ecore_x_display_get(), 0);
+   root = ecore_x_window_root_first_get();
 
    /* get the size of the current root window */
    ecore_x_window_geometry_get(root, &x, &y, &w, &h);
@@ -519,22 +478,29 @@ _em_do_region(void)
 }
 
 static void 
-_em_do_thumb(void *data) 
+_em_do_thumb(const char *filename) 
 {
-   Imlib_Image *im = NULL, *thumb = NULL;
-   Imlib_Load_Error err;
+   Ecore_Evas *ee, *sub_ee;
+   Evas *evas, *sub_evas;
+   Evas_Object *tmp, *img;
    char *ext = NULL;
-   char buf[4096];
+   char buf[PATH_MAX];
    int w, h, tw, th;
 
-   if (!(im = data)) return;
+   if (!filename) return;
 
-   /* set imlib context to our current shot */
-   imlib_context_set_image(im);
+   ee = ecore_evas_buffer_new(1, 1);
+   evas = ecore_evas_get(ee);
+
+   tmp = ecore_evas_object_image_new(ee);
+   sub_ee = evas_object_data_get(tmp, "Ecore_Evas");
+   sub_evas = ecore_evas_get(sub_ee);
+
+   img = evas_object_image_add(sub_evas);
+   evas_object_image_file_set(img, filename, NULL);
 
    /* get the image width & height */
-   w = imlib_image_get_width();
-   h = imlib_image_get_height();
+   evas_object_image_size_get(img, &w, &h);
 
    /* calculate thumbnail size */
    if ((opts->thumb.width > 0) && (opts->thumb.height > 0)) 
@@ -554,15 +520,21 @@ _em_do_thumb(void *data)
 	th = h * 50 / 100;
      }
 
-   /* actually create the thumbnail of our image */
-   thumb = imlib_create_cropped_scaled_image(0, 0, w, h, tw, th);
-   if (!thumb) 
-     printf("Error creating thumbnail: %s\n", opts->filename);
-   else 
-     {
-	/* set imlib context to the thumbnail */
-	imlib_context_set_image(thumb);
+   evas_object_image_file_set(img, NULL, NULL);
+   evas_object_image_load_size_set(img, tw, th);
+   evas_object_image_file_set(img, filename, NULL);
+   evas_object_show(img);
+   evas_object_move(img, 0, 0);
+   evas_object_resize(img, tw, th);
+   evas_object_image_fill_set(img, 0, 0, tw, th);
 
+   evas_object_image_size_set(tmp, tw, th);
+   ecore_evas_resize(sub_ee, tw, th);
+
+   evas_damage_rectangle_add(sub_evas, 0, 0, tw, th);
+   evas_render(sub_evas);
+
+     {
 	/* check for user-supplied thumbnail filename */
 	if (!opts->thumb.filename) 
 	  {
@@ -580,51 +552,68 @@ _em_do_thumb(void *data)
 	  }
 
 	/* actually save the thumbnail */
-	imlib_save_image_with_error_return(opts->thumb.filename, &err);
-	if (err) 
-	  printf("Error saving thumbnail: %s\n", opts->thumb.filename);
-
-	/* cleanup imlib */
-	imlib_free_image_and_decache();
+        snprintf(buf, sizeof(buf), "quality=%d compress=9", opts->quality);
+        if (!(evas_object_image_save(tmp, opts->thumb.filename, NULL, buf))) 
+          printf("Error saving thumbnail: %s\n", opts->thumb.filename);
      }
+
+   if (tmp) evas_object_del(tmp);
+   if (img) evas_object_del(img);
+   if (sub_ee) ecore_evas_free(sub_ee);
+   if (ee) ecore_evas_free(ee);
 }
 
 static void 
 _em_take_shot(int x, int y, int w, int h) 
 {
-   Imlib_Image *im = NULL;
-   Imlib_Load_Error err;
+   Ecore_Evas *ee;
+   Evas *evas;
+   Evas_Object *im;
+   Ecore_X_Window root;
+   Ecore_X_Image *xim;
+   Ecore_X_Window_Attributes att;
+   unsigned int *pix;
+   char buff[1024];
 
    /* if user wanted a beep, then beep there shall be */
-   if (opts->beep) XBell(ecore_x_display_get(), 0);
+   if (opts->beep) ecore_x_bell(0);
 
-   /* actually create the shot */
-   im = imlib_create_image_from_drawable(0, x, y, w, h, 1);
-   if (!im) return;
+   memset(&att, 0, sizeof(Ecore_X_Window_Attributes));
+   root = ecore_x_window_root_first_get();
+   ecore_x_window_attributes_get(root, &att);
 
-   /* set imlib context to our current shot: 
-    * this tells imlib what image we are working with */
-   imlib_context_set_image(im);
+   xim = ecore_x_image_new(w, h, att.visual, att.depth);
+   ecore_x_image_get(xim, root, x, y, 0, 0, w, h);
+   pix = ecore_x_image_data_get(xim, NULL, NULL, NULL);
 
-   /* if user passed in any quality settings, attach them to the image */
-   if (opts->quality)
-     imlib_image_attach_data_value("quality", NULL, opts->quality, NULL);
+   ee = ecore_evas_buffer_new(w, h);
+   evas = ecore_evas_get(ee);
 
-   /* save the image to disk */
-   imlib_save_image_with_error_return(opts->filename, &err);
-   if (err) 
+   im = evas_object_image_filled_add(evas);
+   evas_object_image_fill_set(im, x, y, w, h);
+   evas_object_image_size_set(im, w, h);
+   evas_object_image_data_set(im, pix);
+
+   ecore_evas_buffer_pixels_get(ee);
+
+   /* try to save the image to disk */
+   snprintf(buff, sizeof(buff), "quality=%d compress=9", opts->quality);
+   if (!(evas_object_image_save(im, opts->filename, NULL, buff)))
      {
 	printf("Error taking screenshot: %s\n", opts->filename);
-	imlib_free_image_and_decache();
-	return;
+        if (im) evas_object_del(im);
+        if (ee) ecore_evas_free(ee);
+        if (xim) ecore_x_image_free(xim);
+        return;
      }
 
-   /* if user wanted a thumbnail, do it */
-   if (opts->use_thumb) _em_do_thumb(im);
+   /* cleanup */
+   if (im) evas_object_del(im);
+   if (ee) ecore_evas_free(ee);
+   if (xim) ecore_x_image_free(xim);
 
-   /* cleanup imlib */
-   imlib_context_set_image(im); 
-   imlib_free_image_and_decache();
+   /* if user wanted a thumbnail, do it */
+   if (opts->use_thumb) _em_do_thumb(opts->filename);
 
    /* launch application if user wanted one */
    if (opts->app) _em_do_app();
@@ -702,7 +691,6 @@ static Eina_Bool
 _em_cb_mouse_up(void *data __UNUSED__, int type __UNUSED__, void *event) 
 {
    Ecore_Event_Mouse_Button *ev;
-   Ecore_X_Display *disp;
    Ecore_X_Window win, root;
    int x, y, w, h;
 
@@ -738,11 +726,8 @@ _em_cb_mouse_up(void *data __UNUSED__, int type __UNUSED__, void *event)
    /* get the window which was clicked */
    win = ecore_x_window_at_xy_get(x, y);
 
-   /* get the display */
-   disp = ecore_x_display_get();
-
    /* E uses many parent windows...grab the correct one */
-   root = RootWindow(disp, 0);
+   root = ecore_x_window_root_first_get();
    while (win != root) 
      {
 	if (ecore_x_window_parent_get(win) == root) break;
@@ -824,9 +809,10 @@ _em_band_show(void)
    else
      ecore_evas_shaped_set(band->ee, 1);
 
-   /* create the edje object which will display the band */
+   /* create the object which will display the band */
    band->edj = evas_object_image_add(band->evas);
-   evas_object_image_file_set(band->edj, PACKAGE_DATA_DIR"/images/rect.png", NULL);
+   evas_object_image_file_set(band->edj, 
+                              PACKAGE_DATA_DIR"/images/rect.png", NULL);
    evas_object_image_border_set(band->edj, 3, 3, 3, 3);
    evas_object_move(band->edj, 0, 0);
    evas_object_resize(band->edj, 50, 50);
@@ -901,7 +887,7 @@ static void
 _em_do_app(void) 
 {
    Ecore_Exe *exe;
-   char buf[4096];
+   char buf[PATH_MAX];
 
    /*
     * If there is a %s in our "app", lets replace it with the filename
