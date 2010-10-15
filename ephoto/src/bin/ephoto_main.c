@@ -22,7 +22,6 @@ _ephoto_thumb_browser_show(Ephoto *ephoto, Ephoto_Entry *entry)
    ephoto_flow_browser_path_set(ephoto->flow_browser, NULL);
    ephoto_slideshow_entry_set(ephoto->slideshow, NULL);
    elm_object_focus(ephoto->thumb_browser);
-   evas_object_focus_set(ephoto->thumb_browser, EINA_TRUE); // TODO while elm_layout is broken WRT focus
    elm_pager_content_promote(ephoto->pager, ephoto->thumb_browser);
    _ephoto_state_set(ephoto, EPHOTO_STATE_THUMB);
 
@@ -35,7 +34,6 @@ _ephoto_flow_browser_show(Ephoto *ephoto, Ephoto_Entry *entry)
    DBG("entry '%s'", entry->path);
    ephoto_flow_browser_entry_set(ephoto->flow_browser, entry);
    elm_object_focus(ephoto->flow_browser);
-   evas_object_focus_set(ephoto->flow_browser, EINA_TRUE); // TODO while elm_layout is broken WRT focus
    elm_pager_content_promote(ephoto->pager, ephoto->flow_browser);
    _ephoto_state_set(ephoto, EPHOTO_STATE_FLOW);
 }
@@ -46,7 +44,6 @@ _ephoto_slideshow_show(Ephoto *ephoto, Ephoto_Entry *entry)
    DBG("entry '%s'", entry->path);
    ephoto_slideshow_entry_set(ephoto->slideshow, entry);
    elm_object_focus(ephoto->slideshow);
-   evas_object_focus_set(ephoto->slideshow, EINA_TRUE); // TODO while elm_layout is broken WRT focus
    elm_pager_content_promote(ephoto->pager, ephoto->slideshow);
    _ephoto_state_set(ephoto, EPHOTO_STATE_SLIDESHOW);
 }
@@ -250,7 +247,6 @@ ephoto_window_add(const char *path)
         ephoto_flow_browser_path_set(ephoto->flow_browser, path);
 
         elm_object_focus(ephoto->flow_browser);
-        evas_object_focus_set(ephoto->flow_browser, EINA_TRUE); // TODO while elm_layout is broken WRT focus
         elm_pager_content_promote(ephoto->pager, ephoto->flow_browser);
         ephoto->state = EPHOTO_STATE_FLOW;
      }
