@@ -15,6 +15,7 @@
 #include <Edje.h>
 #include <Evas.h>
 #include <Eio.h>
+#include <Ethumb_Client.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
