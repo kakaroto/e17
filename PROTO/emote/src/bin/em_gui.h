@@ -29,7 +29,7 @@ struct _Em_Gui_Server
    Evas_Object *w_text;
    Evas_Object *w_entry;
    Evas_Object *w_nick;
-   Elm_Hoversel_Item *w_select;
+   Elm_Toolbar_Item *w_select;
 
    const char *nick;
    const char *name;
@@ -47,13 +47,13 @@ struct _Em_Gui_Channel
    Evas_Object *w_text;
    Evas_Object *w_entry;
    Evas_Object *w_nick;
-   Elm_Hoversel_Item *w_select;
+   Elm_Toolbar_Item *w_select;
 
    const char *name;
-
 };
 
-EM_INTERN int em_gui_init(void);
+EM_INTERN Eina_Bool em_gui_init(void);
+EM_INTERN Eina_Bool em_gui_shutdown(void);
 EM_INTERN void em_gui_server_add(const char *server, Emote_Protocol *p);
 EM_INTERN void em_gui_server_del(const char *server, Emote_Protocol *p __UNUSED__);
 EM_INTERN void em_gui_channel_add(const char *server, const char *channel, Emote_Protocol *p);
@@ -63,7 +63,6 @@ EM_INTERN void em_gui_nick_update(const char *server, const char *old, const cha
 EM_INTERN void em_gui_channel_status_update(const char *server, const char *channel, const char *user, Emote_Protocol *p, Eina_Bool joined);
 EM_INTERN void em_gui_topic_show(const char *server, const char *channel, const char *user, const char *message);
 EM_INTERN void em_gui_user_list_add(const char *server, const char *channel, const char *users);
-EM_INTERN int em_gui_shutdown(void);
 
 # endif
 #endif

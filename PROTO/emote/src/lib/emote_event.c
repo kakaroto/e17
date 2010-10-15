@@ -153,8 +153,7 @@ emote_event_new(Emote_Protocol *p, int type, ...)
 EMAPI void
 emote_event_send(Emote_Event *ev)
 {
-   printf("Sending Event:\n\tType: %u(%u)\n\tProtocol: %s\n", ev->type, _emote_events[ev->type], ev->protocol->api->label);
-
+//   printf("Sending Event:\n\tType: %u(%u)\n\tProtocol: %s\n", ev->type, _emote_events[ev->type], ev->protocol->api->label);
    ecore_event_add(_emote_events[ev->type], ev, _emote_event_free, (void*)ev);
 }
 

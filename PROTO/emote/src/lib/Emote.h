@@ -148,8 +148,8 @@ struct _Emote_Event_Chat_Message
 };
 
 // Main
-EMAPI int             emote_init(void);
-EMAPI int             emote_shutdown(void);
+EMAPI Eina_Bool emote_init(void);
+EMAPI Eina_Bool emote_shutdown(void);
 
 // Protocol
 EMAPI Emote_Protocol *emote_protocol_load(const char *name);

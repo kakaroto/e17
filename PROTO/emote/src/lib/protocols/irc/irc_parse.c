@@ -84,15 +84,15 @@ _irc_parse_line(char *line, const char *server, Emote_Protocol *m)
    IRC_Line ln;
    int ncmd;
 
-   printf("Parse Line: %s\n", line);
+//   printf("Parse Line: %s\n", line);
 
    if(!_irc_split_line(line, &ln)) return;
 
-   printf("\tPrefix = %s\n\tSource = %s\n\tUser = %s\n\tHost = %s\n\tCmd: %s\n\tTrailing: %s\n",
-          ln.prefix, ln.source, ln.user, ln.host, ln.cmd, ln.trailing);
+//   printf("\tPrefix = %s\n\tSource = %s\n\tUser = %s\n\tHost = %s\n\tCmd: %s\n\tTrailing: %s\n",
+//          ln.prefix, ln.source, ln.user, ln.host, ln.cmd, ln.trailing);
    EINA_LIST_FOREACH(ln.params, p, param)
      {
-        printf("\tParam: %s\n", param);
+//        printf("\tParam: %s\n", param);
      }
 
    ncmd = atoi(ln.cmd);

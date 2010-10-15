@@ -38,8 +38,8 @@ struct _Em_Config
    int version;
 };
 
-EM_INTERN int em_config_init(void);
-EM_INTERN int em_config_shutdown(void);
+EM_INTERN Eina_Bool em_config_init(void);
+EM_INTERN Eina_Bool em_config_shutdown(void);
 EM_INTERN Em_Config_DD *em_config_descriptor_new(const char *name, int size);
 EM_INTERN void em_config_load(void);
 EM_INTERN int em_config_save(void);

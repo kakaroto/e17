@@ -6,7 +6,7 @@
 static void _emote_locate_paths(void);
 
 /* public functions */
-EMAPI int
+EMAPI Eina_Bool 
 emote_init(void)
 {
    static int ref_count = 0;
@@ -26,12 +26,12 @@ emote_init(void)
    return ret;
 }
 
-EMAPI int
+EMAPI Eina_Bool
 emote_shutdown(void)
 {
    emote_protocol_shutdown();
    emote_event_shutdown();
-   return 1;
+   return EINA_TRUE;
 }
 
 static void

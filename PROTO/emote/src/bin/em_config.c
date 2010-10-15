@@ -15,7 +15,7 @@ static Evas_Object *_em_config_win;
 /* global variables */
 EM_INTERN Em_Config *em_config = NULL;
 
-EM_INTERN int
+EM_INTERN Eina_Bool 
 em_config_init(void)
 {
    _em_config_edd = EM_CONFIG_DD_NEW("Em_Config", Em_Config);
@@ -27,15 +27,15 @@ em_config_init(void)
 
    em_config_load();
    em_config_save();
-   return 1;
+   return EINA_TRUE;
 }
 
-EM_INTERN int
+EM_INTERN Eina_Bool 
 em_config_shutdown(void)
 {
    _em_config_cb_free();
    EM_CONFIG_DD_FREE(_em_config_edd);
-   return 1;
+   return EINA_TRUE;
 }
 
 EM_INTERN Em_Config_DD *
@@ -184,17 +184,14 @@ _em_config_win_create(Evas_Object *parent)
    tb = elm_toolbar_add(_em_config_win);
    elm_toolbar_icon_size_set(tb, 16);
    elm_toolbar_align_set(tb, 0.0);
-   elm_toolbar_scrollable_set(tb, EINA_TRUE);
+//   elm_toolbar_scrollable_set(tb, EINA_TRUE);
    evas_object_size_hint_weight_set(tb, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(tb, EVAS_HINT_FILL, 0.5);
    elm_box_pack_end(bx, tb);
    evas_object_show(tb);
 
-   o = em_util_icon_add(_em_config_win, "preferences-system");
-   elm_toolbar_item_add(tb, o, _("General"), NULL, NULL);
-
-   o = em_util_icon_add(_em_config_win, "go-home");
-   elm_toolbar_item_add(tb, o, _("Servers"), NULL, NULL);
+   elm_toolbar_item_add(tb, "preferences-system", _("General"), NULL, NULL);
+   elm_toolbar_item_add(tb, "go-home", _("Servers"), NULL, NULL);
 
    bbx = elm_box_add(_em_config_win);
    elm_box_horizontal_set(bbx, EINA_TRUE);
