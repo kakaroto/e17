@@ -97,7 +97,7 @@ _ngi_launcher_app_change_cb(void *data, E_Order *eo)
    Ng *ng = box->ng;
    Ngi_Item *it = NULL;
 
-   Efreet_Desktop *app;
+   /* Efreet_Desktop *app; */
    Eina_List *apps, *items;
    if (!box->apps) return;
 
@@ -285,8 +285,6 @@ _ngi_launcher_cb_drop_leave(void *data, const char *type, void *event_info)
 
    ngi_reposition(ng);
    ngi_input_extents_calc(ng, 1);
-
-   printf("mouse_out drop leave\n");
    ng->dnd = 0;
    ngi_mouse_out(ng);
 }
@@ -359,10 +357,10 @@ _ngi_launcher_cb_drop_end  (void *data, const char *type, void *event_info)
      }
    else if (fl)
      {
-	app = NULL;
-	for (l = fl; l ; l = l->next)
+       char *file;
+       app = NULL;
+       EINA_LIST_FOREACH(fl, l, file)
 	  {
-	     char *file = (char*) l->data;
 	     if (!strncmp(file, "file:///", 8))
 	       file = file + 7;
 
@@ -424,13 +422,9 @@ _ngi_launcher_item_new(Ngi_Box *box, Efreet_Desktop *desktop, int instant, Ngi_I
    _ngi_launcher_item_fill(it);
 
    if (after)
-     {
-	box->items = eina_list_prepend_relative(box->items, it, after);
-     }
+     box->items = eina_list_prepend_relative(box->items, it, after);
    else
-     {
-	box->items = eina_list_append(box->items, it);
-     }
+     box->items = eina_list_append(box->items, it);
 
    it->usable = 1;
 
@@ -499,10 +493,7 @@ _ngi_launcher_item_cb_drag_start(Ngi_Item *it)
    e_drag_resize(d, w, h);
    evas_object_event_callback_add(o, EVAS_CALLBACK_DEL, _ngi_launcher_item_cb_drag_del, ng);
 
-   if (ng->cfg->stacking == on_desk)
-     ecore_x_pointer_xy_get(ng->zone->container->win, &px, &py);
-   else
-     ecore_x_pointer_xy_get(ng->win->evas_win, &px, &py);
+   ecore_x_pointer_xy_get(ng->win->evas_win, &px, &py);
 
    e_drag_start(d, px, py);
 
@@ -582,11 +573,8 @@ _ngi_launcher_item_cb_mouse_down(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
      {
 	evas_object_geometry_get(it->obj, &x, &y, &w, &h);
 
-	if (box->ng->cfg->stacking != on_desk)
-	  {
-	     x += box->ng->win->x + box->ng->zone->x;;
-	     y += box->ng->win->y + box->ng->zone->y;;
-	  }
+	x += box->ng->win->x + box->ng->zone->x;;
+	y += box->ng->win->y + box->ng->zone->y;;
 
 	int dir = E_MENU_POP_DIRECTION_AUTO;
 
@@ -665,160 +653,3 @@ _ngi_launcher_item_cb_mouse_up(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
    it->mouse_down = 0;
 }
 
-/* TODO */
-/*
-  static int
-  _ngi_launcher_cb_icon_theme_change(void *data, int ev_type, void *ev)
-  {
-  Eina_List *l, *l2;
-  Ng *ng;
-  Ngi_Item *it;
-
-  for (l = ngi_config->instances; l; l = l->next)
-  {
-  if (!ng->cfg->launcher) continue;
-
-  for (l2 = ng->box->items; l2; l2 = l2->next)
-  {
-  it = l2->data;
-  if (it) _ngi_launcher_item_fill(it);
-  }
-  }
-  return 1;
-  }
-*/
-
-/*
-  if (bd->desktop) efreet_desktop_ref(bd->desktop); !!!!!!!!!
-
-  static int
-  _e_border_cb_efreet_desktop_change(void *data, int ev_type, void *ev)
-  {
-  Efreet_Event_Desktop_Change *event;
-  Eina_List *l;
-
-  event = ev;
-  e_init_status_set(D_("Desktop file scan"));
-  switch (event->change)
-  {
-  case EFREET_DESKTOP_CHANGE_ADD:
-*/ /* If a desktop is added, make the borders without icon retry */
-/*for (l = borders; l; l = l->next)
-  {
-  E_Border *bd;
-
-  bd = l->data;
-  if (!bd->desktop)
-  {
-  bd->changes.icon = 1;
-  bd->changed = 1;
-  }
-  }
-  break;
-  case EFREET_DESKTOP_CHANGE_REMOVE:*/
-/* If a desktop is removed, drop the .desktop pointer */
-/*for (l = borders; l; l = l->next)
-  {
-  E_Border *bd;
-
-  bd = l->data;
-  if (bd->desktop == event->current)
-  {
-  efreet_desktop_free(bd->desktop);
-  bd->desktop = NULL;
-  bd->changes.icon = 1;
-  bd->changed = 1;
-  }
-  }
-  break;
-  case EFREET_DESKTOP_CHANGE_UPDATE:*/
-/* If a desktop is updated, point to the new desktop and update the icon */
-/*	 for (l = borders; l; l = l->next)
-	 {
-	 E_Border *bd;
-
-	 bd = l->data;
-
-	 if (bd->desktop == event->previous)
-	 {
-	 efreet_desktop_free(bd->desktop);
-	 efreet_desktop_ref(event->current);
-	 bd->desktop = event->current;
-	 bd->changes.icon = 1;
-	 bd->changed = 1;
-	 }
-	 else if (bd->desktop == NULL)
-	 {
-	 bd->changes.icon = 1;
-	 bd->changed = 1;
-	 }
-	 }
-	 break;
-	 }
-	 return 1;
-	 }
-*/
-/*
-  static void
-  _ngi_launcher_menu(Ngi_Box *box, int timestamp)
-  {
-  E_Menu *m;
-  E_Menu_Item *mi;
-
-  int dir = E_MENU_POP_DIRECTION_AUTO;
-
-  ngi_freeze(box->ng);
-  ITEM_MOUSE_OUT(box->ng->item_active);
-
-  switch(box->ng->cfg->orient)
-  {
-  case E_GADCON_ORIENT_TOP:
-  dir =  E_MENU_POP_DIRECTION_DOWN;
-  y += h;
-  break;
-  case E_GADCON_ORIENT_BOTTOM:
-  dir =  E_MENU_POP_DIRECTION_UP;
-  break;
-  case E_GADCON_ORIENT_LEFT:
-  dir =  E_MENU_POP_DIRECTION_RIGHT;
-  x +=w;
-  break;
-  case E_GADCON_ORIENT_RIGHT:
-  dir =  E_MENU_POP_DIRECTION_LEFT;
-  break;
-  }
-
-  m = e_menu_new();
-
-  mi = e_menu_item_new(m);
-  e_menu_item_label_set(mi, D_("Configure Bar"));
-  //e_menu_item_callback_set(mi, _ng_border_menu_cb_normal, bd);
-
-
-  mi = e_menu_item_new(m);
-  e_menu_item_label_set(mi, D_("Configure Launcher"));
-  //  e_menu_item_callback_set(mi, _ng_border_menu_cb_normal, bd);
-
-
-  mi = e_menu_item_new(m);
-  e_menu_item_separator_set(mi, 1);
-
-
-  mi = e_menu_item_new(m);
-  e_menu_item_label_set(mi, D_("Lock Dragging"));
-  e_menu_item_toggle_set(mi, box->cfg->launcher_lock_dnd);
-  //e_menu_item_callback_set(mi, _ng_border_menu_cb_normal, bd);
-
-
-  mi = e_menu_item_new(m);
-  e_menu_item_label_set(mi, D_("Edit Icon"));
-  //e_menu_item_callback_set(mi, _ng_border_menu_cb_normal, bd);
-
-  e_menu_activate_mouse(m, box->ng->zone, box.>ng->zone->x + x, box->ng->zone->y + y, 1, 1,
-  dir, timestamp);
-
-  e_util_evas_fake_mouse_up_later(box->ng->win->evas, ev->button);
-  }
-
-
-*/

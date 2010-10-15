@@ -88,7 +88,7 @@ struct _Config_Item
   int            zoom_one;   /* zoom only the icon under the pointer */
   int            mouse_over_anim;
   
-  enum { above_all, below_fullscreen, on_desk } stacking;
+  enum { above_all, below_fullscreen } stacking;
 
   int            lock_deskswitch;
   int            ecomorph_features;

@@ -703,24 +703,6 @@ _ngi_taskbar_item_set_label(Ngi_Item *it)
 /* **************************  ITEM  CALLBACKS  ************************** */
 
 static void
-_ngi_taskbar_item_cb_free(Ngi_Item *it)
-{
-   it->box->items = eina_list_remove(it->box->items, it);
-
-   if (it->border) e_object_unref(E_OBJECT(it->border));
-
-   ngi_item_del_icon(it);
-   evas_object_del(it->obj);
-   evas_object_del(it->over);
-
-   if (it->label) eina_stringshare_del(it->label);
-   if (it->class) eina_stringshare_del(it->class);
-   if (it->overlay_signal_timer) ecore_timer_del(it->overlay_signal_timer);
-
-   E_FREE(it);
-}
-
-static void
 _ngi_taskbar_item_cb_mouse_down(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
 {
    Evas_Coord x, y, w, h;
@@ -737,11 +719,8 @@ _ngi_taskbar_item_cb_mouse_down(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
 	int dir = E_MENU_POP_DIRECTION_AUTO;
 	evas_object_geometry_get(it->obj, &x, &y, &w, &h);
 
-	if (ng->cfg->stacking != on_desk)
-	  {
-	     x += ng->win->x + ng->zone->x;
-	     y += ng->win->y + ng->zone->y;
-	  }
+	x += ng->win->x + ng->zone->x;
+	y += ng->win->y + ng->zone->y;
 
 	ITEM_MOUSE_OUT(it);
 
@@ -877,10 +856,7 @@ _ngi_taskbar_item_cb_drag_start(Ngi_Item *it)
    evas_object_event_callback_add(o, EVAS_CALLBACK_DEL, _ngi_taskbar_item_cb_drag_del, ng);
    ng->show_bar++;
 
-   if (ng->cfg->stacking == on_desk)
-     ecore_x_pointer_xy_get(ng->zone->container->win, &px, &py);
-   else
-     ecore_x_pointer_xy_get(ng->win->evas_win, &px, &py);
+   ecore_x_pointer_xy_get(ng->win->evas_win, &px, &py);
 
    e_drag_start(d, px, py);
 }

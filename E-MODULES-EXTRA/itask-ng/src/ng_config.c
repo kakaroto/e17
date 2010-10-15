@@ -239,13 +239,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 	e_widget_framelist_object_append (of, ob);
      }
    else cfdata->alpha = 255;
-   /*
-     ob = e_widget_check_add(evas, D_("Below Fullscreen Windows"), &(cfdata->below_fullscreen));
-     e_widget_framelist_object_append(of, ob);
 
-     ob = e_widget_check_add(evas, D_("Draw On Desk"), &(cfdata->on_desk));
-     e_widget_framelist_object_append(of, ob);
-   */
    ob = e_widget_label_add(evas, D_("Stacking"));
    e_widget_framelist_object_append(of, ob);
    rg = e_widget_radio_group_new(&cfdata->stacking);
@@ -253,12 +247,8 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_radio_add(evas, D_("Below Fullscreen"), 1, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, D_("On Desktop"), 2, rg);
-   e_widget_framelist_object_append(of, ob);
-
 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
-
 
    of = e_widget_frametable_add(evas, D_("Orientation"), 1);
    rg = e_widget_radio_group_new(&(cfdata->orient));
@@ -281,7 +271,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_label_add (evas, D_("Factor:"));
    e_widget_framelist_object_append (of, ob);
-   ob = e_widget_slider_add (evas, 1, 0, "%1.2f", 1.0, 3.0,
+   ob = e_widget_slider_add (evas, 1, 0, "%1.2f", 1.0, 5.0,
 			     0.01, 0, &(cfdata->zoomfactor), NULL, 100);
    e_widget_on_change_hook_set(ob, _cb_slider_change, cfdata);
    e_widget_framelist_object_append (of, ob);

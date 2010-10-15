@@ -30,7 +30,6 @@ static void _ngi_zoom_out(Ng *ng);
 static void _ngi_item_appear(Ng *ng, Ngi_Item *it);
 static void _ngi_item_disappear(Ng *ng, Ngi_Item *it);
 static void _ngi_zoom_function(Ng *ng, double d, double *zoom, double *disp);
-static int _ngi_zoom_function2(Ng *ng);
 static Eina_Bool _ngi_animator(void *data);
 static void _ngi_redraw(Ng *ng);
 static int _ngi_autohide(Ng *ng, int hide);
@@ -578,44 +577,35 @@ _ngi_win_new(Ng *ng)
    win->ee = NULL;
    win->evas_win = 0;
 
-   if (ng->cfg->stacking != on_desk)
+   win->ee = e_canvas_new(e_config->evas_engine_popups,
+			  ng->zone->container->win,
+			  0, 0, 0, 0, 1, 1, &(win->evas_win));
+
+   if (ngi_config->use_composite)
      {
-	win->ee = e_canvas_new(e_config->evas_engine_popups,
-			       ng->zone->container->win,
-			       0, 0, 0, 0, 1, 1, &(win->evas_win));
+	ecore_evas_alpha_set(win->ee, 1);
+	win->evas_win = ecore_evas_software_x11_window_get(win->ee);
 
-	if (ngi_config->use_composite)
-	  {
-	     ecore_evas_alpha_set(win->ee, 1);
-	     win->evas_win = ecore_evas_software_x11_window_get(win->ee);
-
-	     XRectangle rect;
-	     rect.x = 0;
-	     rect.y = 0;
-	     rect.width = 0;
-	     rect.height = 0;
-	     XShapeCombineRectangles
-	       ((Display*)ecore_x_display_get(),
-		win->evas_win, ShapeInput, 0, 0,
-		&rect, 1, ShapeSet, Unsorted);
-	     ecore_x_netwm_window_type_set
-	       (win->evas_win, ECORE_X_WINDOW_TYPE_DOCK);
-	  }
-	else
-	  {
-	     ecore_evas_shaped_set(win->ee, 1);
-	  }
-
-	ecore_evas_avoid_damage_set(win->ee, 1);
-
-	e_canvas_add(win->ee);
-
-	win->evas = ecore_evas_get(win->ee);
+	XRectangle rect;
+	rect.x = 0;
+	rect.y = 0;
+	rect.width = 0;
+	rect.height = 0;
+	XShapeCombineRectangles
+	  ((Display*)ecore_x_display_get(),
+	   win->evas_win, ShapeInput, 0, 0,
+	   &rect, 1, ShapeSet, Unsorted);
+	ecore_x_netwm_window_type_set
+	  (win->evas_win, ECORE_X_WINDOW_TYPE_DOCK);
      }
    else
      {
-	win->evas = win->ng->zone->container->bg_evas;
+	ecore_evas_shaped_set(win->ee, 1);
      }
+
+   ecore_evas_avoid_damage_set(win->ee, 1);
+   e_canvas_add(win->ee);
+   win->evas = ecore_evas_get(win->ee);
 
    win->input = ecore_x_window_input_new(ng->zone->container->win, 0, 0, 1, 1);
    ecore_x_window_show(win->input);
@@ -657,14 +647,6 @@ _ngi_win_new(Ng *ng)
 	 else
 	   e_container_window_raise(ng->zone->container, win->edge, 150);
 	 e_container_window_raise(ng->zone->container, win->input, 150);
-	 break;
-      case on_desk:
-	 if (ng->cfg->lock_deskswitch)
-	   e_container_window_raise(ng->zone->container, win->edge, 999);
-	 else
-	   e_container_window_raise(ng->zone->container, win->edge, 50);
-
-	 e_container_window_raise(ng->zone->container, win->input, 50);
 	 break;
       case above_all:
 	 e_container_window_raise(ng->zone->container, win->evas_win, 250);
@@ -811,13 +793,10 @@ _ngi_mouse_in_timer(void *data)
    if (ng->cfg->autohide && ng->hide_state != show)
      _ngi_autohide(ng, 0);
 
-   if (ng->cfg->stacking != on_desk)
+   if (!ng->dnd)
      {
-	if (!ng->dnd)
-	  {
-	     evas_event_feed_mouse_in(ng->win->evas, 0, NULL);
-	     _ngi_item_activate(ng);
-	  }
+	evas_event_feed_mouse_in(ng->win->evas, 0, NULL);
+	_ngi_item_activate(ng);
      }
 
    ng->mouse_in_timer = NULL;
@@ -860,8 +839,7 @@ _ngi_mouse_out_timer(void *data)
 
    ng->mouse_out_timer = NULL;
 
-   if (ng->cfg->stacking != on_desk) /*XXX*/
-     evas_event_feed_mouse_out(ng->win->evas, 0, NULL);
+   evas_event_feed_mouse_out(ng->win->evas, 0, NULL);
    ITEM_MOUSE_OUT(ng->item_active);
    edje_object_signal_emit(ng->label, "e,state,label_hide", "e");
 
@@ -929,8 +907,7 @@ _ngi_win_cb_mouse_out(void *data, int type, void *event)
 
    ngi_mouse_out(ng);
 
-   if (ng->cfg->stacking != on_desk)
-     evas_event_feed_mouse_out(ng->win->evas, 0, NULL);
+   evas_event_feed_mouse_out(ng->win->evas, 0, NULL);
 
    return EINA_TRUE;
 }
@@ -992,9 +969,8 @@ _ngi_win_cb_mouse_down(void *data, int type, void *event)
 
    ITEM_MOUSE_DOWN(it, ev);
 
-   if (ng->cfg->stacking != on_desk)
-     evas_event_feed_mouse_down
-       (ng->win->evas, ev->buttons, 0, ev->timestamp, NULL);
+   evas_event_feed_mouse_down
+     (ng->win->evas, ev->buttons, 0, ev->timestamp, NULL);
 
    if (ng->menu_wait_timer)
      ecore_timer_del(ng->menu_wait_timer);
@@ -1019,9 +995,8 @@ _ngi_win_cb_mouse_up(void *data, int type, void *event)
      {
 	ITEM_MOUSE_UP(ng->item_active, ev);
 
-	if (ng->cfg->stacking != on_desk)
-	  evas_event_feed_mouse_up
-	    (ng->win->evas, ev->buttons, 0, ev->timestamp, NULL);
+	evas_event_feed_mouse_up
+	  (ng->win->evas, ev->buttons, 0, ev->timestamp, NULL);
 
 	if (ng->item_drag)
 	  {
@@ -1043,7 +1018,6 @@ _ngi_win_cb_mouse_wheel(void *data, int type, void *event)
        (ev->event_window != ng->win->edge))
      return EINA_TRUE;
 
-   if (ng->cfg->stacking != on_desk)
      evas_event_feed_mouse_wheel
        (ng->win->evas, 0, ev->z, ev->timestamp, NULL);
 
@@ -1144,19 +1118,6 @@ _ngi_win_cb_drop_end(void *data, const char *type, void *event_info)
 
 /**************************************************************************/
 
-static int
-_ngi_zoom_function2(Ng *ng)
-{
-   double f, ff, sqrt_ffxx, sqrt_ff_1;
-
-   f = 5.5;
-   ff = f * f;
-   sqrt_ffxx = sqrt(ff);
-   sqrt_ff_1 = sqrt(ff - 1.0);
-
-   return (int)(((ng->cfg->zoomfactor) *
-		 ((sqrt_ff_1 - sqrt_ffxx) / (sqrt_ff_1 - f)) + 1.0) * ng->size);
-}
 
 static void
 _ngi_netwm_icon_geometry_set(E_Border *bd, int x, int y, int w, int h)
@@ -1181,9 +1142,6 @@ ngi_input_extents_calc(Ng *ng, int resize)
 
    int x, y, w, h;
    int wx, wy, ww, wh;
-
-
-
    int hidden = 0;
 
    if (ng->hide_state == hiding || ng->hide_state == hidden)
@@ -1191,7 +1149,7 @@ ngi_input_extents_calc(Ng *ng, int resize)
 
    if (ng->state != unzoomed && !ng->zoom_out)
      {
-	item_zoomed = _ngi_zoom_function2(ng);
+   	item_zoomed = ng->cfg->size * (1 + ng->cfg->zoomfactor/2.0);
      }
    else
      {
@@ -1276,14 +1234,6 @@ ngi_input_extents_calc(Ng *ng, int resize)
 	 else
 	   e_container_window_raise(ng->zone->container, ng->win->edge, 150);
 	 e_container_window_raise(ng->zone->container, ng->win->input, 150);
-	 break;
-      case on_desk:
-	 if (ng->cfg->lock_deskswitch)
-	   e_container_window_raise(ng->zone->container, ng->win->edge, 999);
-	 else
-	   e_container_window_raise(ng->zone->container, ng->win->edge, 50);
-
-	 e_container_window_raise(ng->zone->container, ng->win->input, 50);
 	 break;
       case above_all:
 	 e_container_window_raise(ng->zone->container, ng->win->input, 999);
@@ -1487,7 +1437,7 @@ _ngi_zoom_in(Ng *ng)
    Config_Item *cfg = ng->cfg;
 
    ng->zoom = ng->zoom +
-     (cfg->zoomfactor / (double)e_config->framerate) / cfg->zoom_duration;
+     (cfg->zoomfactor / (double)e_config->framerate) / (cfg->zoom_duration/2.0);
 
    if (ng->zoom < cfg->zoomfactor)
      {
@@ -1796,65 +1746,22 @@ ngi_reposition(Ng *ng)
 static void
 _ngi_zoom_function(Ng *ng, double d, double *zoom, double *disp)
 {
-   double  range, f, x, ff, sqrt_ffxx, sqrt_ff_1;
+   float range = ng->cfg->size * ng->cfg->zoom_range;
+   float z = ng->zoom - 1.0;
+   float x = d/range;
 
-   Config_Item *cfg = ng->cfg;
-
-   range = ng->cfg->zoom_one ? 1.0 : cfg->zoom_range;
-   f = 5.5;
-   x = d / range;
-
-   ff = f * f;
-   sqrt_ffxx = sqrt(ff - x * x);
-   sqrt_ff_1 = sqrt(ff - 1.0);
-
-   double z = cfg->zoomfactor * (double)ng->size;
-   double w = range *  (double)ng->size;
-   if (d > -range && d < range)
-     {
-	*zoom = (ng->zoom - 1.0) * (cfg->zoomfactor - 1.0) *
-	  ((sqrt_ff_1 - sqrt_ffxx) / (sqrt_ff_1 - f)) + 1.0;
-
-	/// hack for tighter packing ///
-	float z = 0.0f;
-	if (ng->state != unzoomed )
-	  {
-	     z = fabsf(((ng->zoom) - (*zoom)) / (ng->zoom - 1.0f) );
-	     if (z > 1.0f)
-	       z = (double) ng->item_spacing;
-	     else
-	       z *= (double) ng->item_spacing;
-	  }
-	else
-	  {
-	     z = (double) ng->item_spacing;
-	  }
-
-	*disp = (((double) ng->size) + z)
-	  * ((ng->zoom - 1.0) * (cfg->zoomfactor - 1.0) *
-	     (range *
-	      (x * (2 * sqrt_ff_1 - sqrt_ffxx) -
-	       ff * atan(x / sqrt_ffxx)) /
-	      (2.0 * (sqrt_ff_1 - f))) + d);
-     }
+   if (abs(d) < range * ng->cfg->size)
+     *zoom = 1.0 + (expf(-(x*x))) * z;
    else
-     {
-	*zoom = 1.0;
-	*disp = (ng->size + ng->item_spacing) *
-	  ((ng->zoom - 1.0) * (cfg->zoomfactor - 1.0) *
-	   (range * (sqrt_ff_1 - ff * atan(1.0 / sqrt_ff_1)) /
-	    (2.0 * (sqrt_ff_1 - f))) +
-	   range + fabs(d) - range);
-
-	if (d < 0.0)
-	  *disp = -(*disp);
-     }
+     *zoom = 1.0;
+   
+   *disp = z * range * erf(x);
 }
 
 static void
 _ngi_redraw(Ng *ng)
 {
-   double zoom2, disp2, distance, pos;
+   double distance, pos;
    int end1, end2, size, size_spacing, spacing, hide_step, bg_dist1, bg_dist2;
    Ngi_Item *it;
    Ngi_Box *box;
@@ -1899,9 +1806,9 @@ _ngi_redraw(Ng *ng)
      {
 	if (cfg->zoomfactor > 1.0)
 	  {
-	     distance = (double)(ng->start - ng->pos) / size_spacing;
+	     distance = (double)(ng->start - ng->pos);
 	     _ngi_zoom_function(ng, distance, &zoom, &disp);
-	     end1 = (int)(ng->pos + disp);
+	     end1 = (int)(ng->start + disp);
 	  }
 	else
 	  {
@@ -1910,9 +1817,9 @@ _ngi_redraw(Ng *ng)
 
 	if (cfg->zoomfactor > 1.0)
 	  {
-	     distance = (double)(ng->start + ng->w - ng->pos) / size_spacing;
+	     distance = (double)(ng->start + ng->w - ng->pos);
 	     _ngi_zoom_function(ng, distance, &zoom, &disp);
-	     end2 = (int)(ng->pos + disp);
+	     end2 = (int)(ng->start + ng->w + disp);
 	  }
 	else
 	  {
@@ -1972,11 +1879,11 @@ _ngi_redraw(Ng *ng)
      {
 	if (cnt++ > 0)
 	  {
-	     distance = (double)(box->pos + ng->separator_width + ng->item_spacing*3 - ng->pos) / size_spacing;
+	     distance = (double)(box->pos + ng->separator_width + ng->item_spacing*3 - ng->pos);
 
 	     _ngi_zoom_function(ng, distance, &zoom, &disp);
 
-	     pos = (ng->pos + disp);
+	     pos = (box->pos + disp);
 
 	     switch (cfg->orient)
 	       {
@@ -2010,21 +1917,23 @@ _ngi_redraw(Ng *ng)
 
 	     if (cfg->zoomfactor > 1.0)
 	       {
-		  distance = (double)(it->pos - ng->pos) / (double)size_spacing;
+		  distance = (double)(it->pos - ng->pos);
 
 		  _ngi_zoom_function(ng, distance, &zoom, &disp);
 
 		  size = ((it->scale * zoom * (double)ng->size)) + 0.5;
 
-		  pos = (ng->pos + disp) - (size / 2);
-
 		  if (it->pos < ng->pos)
 		    {
-		       pos = ((double)ng->pos + disp) - (size / 2.0) - 0.5;
+		       pos = ((double)it->pos + disp) - (size / 2.0) - 0.5;
 		    }
 		  else if (it->pos > ng->pos)
 		    {
-		       pos = ((double)ng->pos + disp) - (size / 2.0) + 0.5;
+		       pos = ((double)it->pos + disp) - (size / 2.0) + 0.5;
+		    }
+		  else
+		    {
+		       pos = (it->pos + disp) - (size / 2);
 		    }
 	       }
 	     else
