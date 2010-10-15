@@ -38,6 +38,10 @@ else
   AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}", [Installation directory for user executables])
 fi
 
+PKG_PROG_PKG_CONFIG
+
+EFL_CHECK_PATH_MAX
+
 PKG_CHECK_MODULES(EINA, eina)
 PKG_CHECK_MODULES(ECORE, 
 ecore
