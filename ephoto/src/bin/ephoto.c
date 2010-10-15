@@ -111,7 +111,7 @@ elm_main(int argc, char **argv)
 static void
 _ephoto_display_usage(void)
 {
-   printf("Ephoto Useage: \n"
+   printf("Ephoto Usage: \n"
           "ephoto --help   : This page\n"
           "ephoto filename : Specifies a file to open\n"
           "ephoto dirname  : Specifies a directory to open\n");
