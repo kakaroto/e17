@@ -2,67 +2,64 @@
 
 struct _E_Config_Dialog_Data
 {
-  int    show_label;
-  int    show_background;
-  int    orient;
-  double size;
-  double zoomfactor;
-  int    autohide;
-  int    autohide_show_urgent;
-  int    lock_deskswitch;
-  int    ecomorph_features;
+   int              show_label;
+   int              show_background;
+   int              orient;
+   double           size;
+   double           zoomfactor;
+   int              autohide;
+   int              autohide_show_urgent;
+   int              lock_deskswitch;
+   int              ecomorph_features;
 
-  double hide_timeout;
-  double zoom_duration;
-  double zoom_range;
-  int    zoom_one;
+   double           hide_timeout;
+   double           zoom_duration;
+   double           zoom_range;
+   int              zoom_one;
 
-  int    hide_below_windows;
-  int    hide_mode;
-  double alpha;
-  int    sia_remove;
-  int stacking;
-  int mouse_over_anim;
+   int              hide_below_windows;
+   int              hide_mode;
+   double           alpha;
+   int              sia_remove;
+   int              stacking;
+   int              mouse_over_anim;
 
-  Eina_List *boxes;
+   Eina_List       *boxes;
 
-  Evas_Object *ilist;
+   Evas_Object     *ilist;
 
-  Evas_Object *tlist_box;
-  Config_Box  *cfg_box;
-  Config_Item *cfg;
-  E_Config_Dialog *cfd;
+   Evas_Object     *tlist_box;
+   Config_Box      *cfg_box;
+   Config_Item     *cfg;
+   E_Config_Dialog *cfd;
 
-  const char *app_dir;
+   const char      *app_dir;
 };
 
 /* Protos */
-static void *_create_data(E_Config_Dialog *cfd);
-static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
-static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
-static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static void *           _create_data(E_Config_Dialog *cfd);
+static void             _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static Evas_Object *    _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int              _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
-
-static void _cb_add(void *data, void *data2);
-static void _cb_del(void *data, void *data2);
-static void _cb_config(void *data, void *data2);
-static void _cb_entry_ok(char *text, void *data);
-static void _cb_confirm_dialog_yes(void *data);
-static void _load_ilist(E_Config_Dialog_Data *cfdata);
+static void             _cb_add(void *data, void *data2);
+static void             _cb_del(void *data, void *data2);
+static void             _cb_config(void *data, void *data2);
+static void             _cb_entry_ok(char *text, void *data);
+static void             _cb_confirm_dialog_yes(void *data);
+static void             _load_ilist(E_Config_Dialog_Data *cfdata);
 /* static void _show_label_cb_change(void *data, Evas_Object *obj); */
-static void _cb_slider_change(void *data, Evas_Object *obj);
+static void             _cb_slider_change(void *data, Evas_Object *obj);
 /* static void _cb_check_if_launcher_source(void *data, Evas_Object *obj); */
 
-static void _cb_box_add_launcher(void *data, void *data2);
-static void _cb_box_add_taskbar(void *data, void *data2);
-static void _cb_box_add_gadcon(void *data, void *data2);
-static void _cb_box_del(void *data, void *data2);
-static void _cb_box_config(void *data, void *data2);
-static void _cb_box_up(void *data, void *data2);
-static void _cb_box_down(void *data, void *data2);
-static void _load_box_tlist(E_Config_Dialog_Data *cfdata);
-
-
+static void             _cb_box_add_launcher(void *data, void *data2);
+static void             _cb_box_add_taskbar(void *data, void *data2);
+static void             _cb_box_add_gadcon(void *data, void *data2);
+static void             _cb_box_del(void *data, void *data2);
+static void             _cb_box_config(void *data, void *data2);
+static void             _cb_box_up(void *data, void *data2);
+static void             _cb_box_down(void *data, void *data2);
+static void             _load_box_tlist(E_Config_Dialog_Data *cfdata);
 
 void
 ngi_configure_module(Config_Item *ci)
@@ -74,16 +71,19 @@ ngi_configure_module(Config_Item *ci)
    char path[128];
    Config_Item *ci2;
    int i = 0;
-   
-   if (ci->config_dialog) return;
+
+   if (ci->config_dialog)
+      return;
 
    EINA_LIST_FOREACH(ngi_config->items, l, ci2)
-     if (ci == ci2)
-       break;
-     else i++;
-   
+   if (ci == ci2)
+      break;
+   else
+      i++;
+
    snprintf(path, sizeof(path), "extensions/itask_ng::%d", i);
-   if (e_config_dialog_find("E", path)) return;
+   if (e_config_dialog_find("E", path))
+      return;
 
    v = E_NEW(E_Config_Dialog_View, 1);
 
@@ -98,44 +98,40 @@ ngi_configure_module(Config_Item *ci)
    /* Create The Dialog */
    snprintf(buf, sizeof(buf), "%s/e-module-ng.edj", e_module_dir_get(ngi_config->module));
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     D_("Itask NG Configuration"),
-			     "E", path, buf, 0, v, ci);
+                             D_("Itask NG Configuration"),
+                             "E", path, buf, 0, v, ci);
 
    ci->config_dialog = cfd;
-}
-
-
+} /* ngi_configure_module */
 
 static void
 _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
 {
-   cfdata->show_background    = ci->show_background;
-   cfdata->show_label         = ci->show_label;
-   cfdata->orient             = ci->orient;
-   cfdata->size               = ci->size;
-   cfdata->zoomfactor         = ci->zoomfactor;
-   cfdata->autohide           = ci->autohide;
+   cfdata->show_background = ci->show_background;
+   cfdata->show_label = ci->show_label;
+   cfdata->orient = ci->orient;
+   cfdata->size = ci->size;
+   cfdata->zoomfactor = ci->zoomfactor;
+   cfdata->autohide = ci->autohide;
    cfdata->autohide_show_urgent = ci->autohide_show_urgent;
    cfdata->hide_below_windows = ci->hide_below_windows;
-   cfdata->hide_timeout       = ci->hide_timeout;
-   cfdata->zoom_duration      = ci->zoom_duration;
-   cfdata->zoom_range         = ci->zoom_range;
-   cfdata->zoom_one           = ci->zoom_one;
-   cfdata->alpha              = ci->alpha;
-   cfdata->sia_remove         = ci->sia_remove;
-   cfdata->stacking           = ci->stacking;
-   cfdata->mouse_over_anim    = ci->mouse_over_anim;
-   cfdata->lock_deskswitch    = ci->lock_deskswitch;
-   cfdata->ecomorph_features  = ci->ecomorph_features;
+   cfdata->hide_timeout = ci->hide_timeout;
+   cfdata->zoom_duration = ci->zoom_duration;
+   cfdata->zoom_range = ci->zoom_range;
+   cfdata->zoom_one = ci->zoom_one;
+   cfdata->alpha = ci->alpha;
+   cfdata->sia_remove = ci->sia_remove;
+   cfdata->stacking = ci->stacking;
+   cfdata->mouse_over_anim = ci->mouse_over_anim;
+   cfdata->lock_deskswitch = ci->lock_deskswitch;
+   cfdata->ecomorph_features = ci->ecomorph_features;
 
    cfdata->cfg = ci;
    cfdata->cfd = ci->config_dialog;
 
    cfdata->ilist = NULL;
    cfdata->tlist_box = NULL;
-}
-
-
+} /* _fill_data */
 
 static void *
 _create_data(E_Config_Dialog *cfd)
@@ -143,29 +139,24 @@ _create_data(E_Config_Dialog *cfd)
    E_Config_Dialog_Data *cfdata;
    Config_Item *ci;
 
-   ci = (Config_Item*) cfd->data;
+   ci = (Config_Item *)cfd->data;
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
    _fill_data(ci, cfdata);
    return cfdata;
-}
-
-
+} /* _create_data */
 
 static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    cfdata->cfg->config_dialog = NULL;
    free(cfdata);
-}
-
-
+} /* _free_data */
 
 static Evas_Object *
 _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    E_Radio_Group *rg;
    Evas_Object *o, *ol, *of, *ob, *ot, *o_table, *o_all;
-
 
    o_all = e_widget_list_add(evas, 0, 0);
 
@@ -175,7 +166,6 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    o = e_widget_list_add(evas, 0, 0);
 
    of = e_widget_frametable_add(evas, D_("Bar Items"), 0);
-
 
    ol = e_widget_ilist_add(evas, 0, 0, NULL);
    cfdata->ilist = ol;
@@ -219,26 +209,27 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    ob = e_widget_check_add(evas, D_("Show Background Box"), &(cfdata->show_background));
    e_widget_framelist_object_append(of, ob);
    /*
-     ob = e_widget_check_add(evas, D_("Mouse-Over Animation"), &(cfdata->mouse_over_anim));
-     e_widget_framelist_object_append(of, ob);
-   */
+      ob = e_widget_check_add(evas, D_("Mouse-Over Animation"), &(cfdata->mouse_over_anim));
+      e_widget_framelist_object_append(of, ob);
+    */
    ob = e_widget_label_add (evas, D_("Icon Size:"));
    e_widget_framelist_object_append (of, ob);
    ob = e_widget_slider_add (evas, 1, 0, D_("%1.0f px"), 16.0, 128,
-			     1.0, 0, &(cfdata->size), NULL, 100);
+                             1.0, 0, &(cfdata->size), NULL, 100);
    e_widget_on_change_hook_set(ob, _cb_slider_change, cfdata);
    e_widget_framelist_object_append (of, ob);
 
    if (ngi_config->use_composite)
      {
-	ob = e_widget_label_add (evas, D_("Background Transparency:"));
-	e_widget_framelist_object_append (of, ob);
-	ob = e_widget_slider_add (evas, 1, 0, D_("%1.0f \%"), 0, 255,
-				  1.0, 0, &(cfdata->alpha), NULL, 100);
-	e_widget_on_change_hook_set(ob, _cb_slider_change, cfdata);
-	e_widget_framelist_object_append (of, ob);
+        ob = e_widget_label_add (evas, D_("Background Transparency:"));
+        e_widget_framelist_object_append (of, ob);
+        ob = e_widget_slider_add (evas, 1, 0, D_("%1.0f \%"), 0, 255,
+                                  1.0, 0, &(cfdata->alpha), NULL, 100);
+        e_widget_on_change_hook_set(ob, _cb_slider_change, cfdata);
+        e_widget_framelist_object_append (of, ob);
      }
-   else cfdata->alpha = 255;
+   else
+      cfdata->alpha = 255;
 
    ob = e_widget_label_add(evas, D_("Stacking"));
    e_widget_framelist_object_append(of, ob);
@@ -272,46 +263,45 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    ob = e_widget_label_add (evas, D_("Factor:"));
    e_widget_framelist_object_append (of, ob);
    ob = e_widget_slider_add (evas, 1, 0, "%1.2f", 1.0, 5.0,
-			     0.01, 0, &(cfdata->zoomfactor), NULL, 100);
+                             0.01, 0, &(cfdata->zoomfactor), NULL, 100);
    e_widget_on_change_hook_set(ob, _cb_slider_change, cfdata);
    e_widget_framelist_object_append (of, ob);
    ob = e_widget_label_add (evas, D_("Range:"));
    e_widget_framelist_object_append (of, ob);
    ob = e_widget_slider_add (evas, 1, 0, "%1.2f", 1.0, 4.0,
-			     0.01, 0, &(cfdata->zoom_range), NULL, 100);
+                             0.01, 0, &(cfdata->zoom_range), NULL, 100);
    e_widget_on_change_hook_set(ob, _cb_slider_change, cfdata);
    e_widget_framelist_object_append (of, ob);
    ob = e_widget_label_add (evas, D_("Duration:"));
    e_widget_framelist_object_append (of, ob);
    ob = e_widget_slider_add (evas, 1, 0, "%1.2f", 0.1, 0.5,
-			     0.01, 0, &(cfdata->zoom_duration), NULL, 100);
+                             0.01, 0, &(cfdata->zoom_duration), NULL, 100);
    e_widget_on_change_hook_set(ob, _cb_slider_change, cfdata);
    e_widget_framelist_object_append (of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-
    of = e_widget_framelist_add(evas, D_("Auto Hide"), 0);
    /*ob = e_widget_check_add(evas, D_("Autohide"), &(cfdata->autohide));
-     e_widget_framelist_object_append(of, ob);
-     ob = e_widget_check_add(evas, D_("Hide Below Windows"), &(cfdata->hide_below_windows));
-     e_widget_framelist_object_append(of, ob);
-   */
-   /* 
+      e_widget_framelist_object_append(of, ob);
+      ob = e_widget_check_add(evas, D_("Hide Below Windows"), &(cfdata->hide_below_windows));
+      e_widget_framelist_object_append(of, ob);
+    */
+   /*
     * if (cfdata->autohide == 1)
     *   cfdata->hide_mode = 1;
     * else if (cfdata->hide_below_windows)
     *   cfdata->hide_mode = 2; */
    cfdata->hide_mode = cfdata->autohide;
-   
+
    rg = e_widget_radio_group_new(&cfdata->hide_mode);
    ob = e_widget_radio_add(evas, "None",
-			   AUTOHIDE_NONE, rg);
+                           AUTOHIDE_NONE, rg);
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_radio_add(evas, "Autohide",
-			   AUTOHIDE_NORMAL, rg);
+                           AUTOHIDE_NORMAL, rg);
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_radio_add(evas, "Autohide on Fullscreen",
-			   AUTOHIDE_FULLSCREEN, rg);
+                           AUTOHIDE_FULLSCREEN, rg);
    e_widget_framelist_object_append(of, ob);
 
    ob = e_widget_check_add(evas, D_("Show Bar when Urgent"), &(cfdata->autohide_show_urgent));
@@ -320,15 +310,14 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    /*  ob = e_widget_radio_add(evas, "Hide Below Windows", 2, rg);
        e_widget_framelist_object_append(of, ob);
        //  e_widget_on_change_hook_set(ob, _cb_check_if_launcher_source, cfdata);
-       */
+    */
    ob = e_widget_label_add (evas, D_("Hide Timeout:"));
    e_widget_framelist_object_append (of, ob);
    ob = e_widget_slider_add (evas, 1, 0, "%1.2f", 0.1, 1.0,
-			     0.01, 0, &(cfdata->hide_timeout), NULL, 100);
+                             0.01, 0, &(cfdata->hide_timeout), NULL, 100);
    e_widget_on_change_hook_set(ob, _cb_slider_change, cfdata);
    e_widget_framelist_object_append (of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
-
 
    of = e_widget_framelist_add(evas, D_("Other"), 0);
    ob = e_widget_check_add(evas, D_("Lock Deskflip on Edge"), &(cfdata->lock_deskswitch));
@@ -342,8 +331,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_list_object_append (o_all, o_table, 1, 1, 0.5);
 
    return o_all;
-}
-
+} /* _basic_create_widgets */
 
 static int
 _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
@@ -353,19 +341,19 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    Ngi_Box *box;
    int restart = 0;
 
-   ci = (Config_Item*) cfd->data;
+   ci = (Config_Item *)cfd->data;
 
    ng = ci->ng;
 
    if (ci->stacking != cfdata->stacking)
      {
-	restart = 1;
-	goto end;
+        restart = 1;
+        goto end;
      }
    else if (ci->autohide != cfdata->hide_mode)
      {
-	restart = 1;
-	goto end;
+        restart = 1;
+        goto end;
      }
 
    ng->hide_step = 0;
@@ -374,26 +362,26 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    if (ci->show_label != cfdata->show_label)
      {
-	ci->show_label = cfdata->show_label;
+        ci->show_label = cfdata->show_label;
 
-	if (ci->show_label)
-	  evas_object_show(ng->label);
-	else
-	  evas_object_hide(ng->label);
+        if (ci->show_label)
+           evas_object_show(ng->label);
+        else
+           evas_object_hide(ng->label);
      }
 
    ci->show_background = cfdata->show_background;
 
    if (ci->show_background)
      {
-	evas_object_show(ng->bg_clip);
+        evas_object_show(ng->bg_clip);
      }
    else
      {
-	evas_object_hide(ng->bg_clip);
+        evas_object_hide(ng->bg_clip);
      }
 
-   ci->size = (int) cfdata->size;
+   ci->size = (int)cfdata->size;
    ci->zoomfactor = cfdata->zoomfactor;
    ci->hide_timeout = cfdata->hide_timeout;
    ci->zoom_duration = cfdata->zoom_duration;
@@ -407,84 +395,87 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    if (ci->orient != cfdata->orient)
      {
-	Eina_List *l;
+        Eina_List *l;
 
-	ci->orient = cfdata->orient;
+        ci->orient = cfdata->orient;
 
-	ngi_win_position_calc(ng->win);
-	ngi_reposition(ng);
-	ngi_input_extents_calc(ng, 1);
+        ngi_win_position_calc(ng->win);
+        ngi_reposition(ng);
+        ngi_input_extents_calc(ng, 1);
 
-	evas_object_resize(ng->o_event, ng->win->w, ng->win->h);
+        evas_object_resize(ng->o_event, ng->win->w, ng->win->h);
 
-	evas_object_move(ng->o_event, 0, 0);
+        evas_object_move(ng->o_event, 0, 0);
 
-	EINA_LIST_FOREACH (ng->boxes, l, box)
-	  if (ng->horizontal)
-	    edje_object_signal_emit(box->separator, "e,state,horizontal", "e");
-	  else
-	    edje_object_signal_emit(box->separator, "e,state,vertical", "e");
+        EINA_LIST_FOREACH (ng->boxes, l, box)
+        if (ng->horizontal)
+           edje_object_signal_emit(box->separator, "e,state,horizontal", "e");
+        else
+           edje_object_signal_emit(box->separator, "e,state,vertical", "e");
 
-	switch(ci->orient)
-	  {
-	   case E_GADCON_ORIENT_LEFT:
-	      edje_object_signal_emit(ng->o_bg, "e,state,bg_left", "e");
-	      edje_object_signal_emit(ng->o_frame, "e,state,bg_left", "e");
-	      break;
-	   case E_GADCON_ORIENT_RIGHT:
-	      edje_object_signal_emit(ng->o_bg, "e,state,bg_right", "e");
-	      edje_object_signal_emit(ng->o_frame, "e,state,bg_right", "e");
-	      break;
-	   case E_GADCON_ORIENT_TOP:
-	      edje_object_signal_emit(ng->o_bg, "e,state,bg_top", "e");
-	      edje_object_signal_emit(ng->o_frame, "e,state,bg_top", "e");
-	      break;
-	   case E_GADCON_ORIENT_BOTTOM:
-	      edje_object_signal_emit(ng->o_bg, "e,state,bg_bottom", "e");
-	      edje_object_signal_emit(ng->o_frame, "e,state,bg_bottom", "e");
-	  }
-	ngi_thaw(ng);
+        switch(ci->orient)
+          {
+           case E_GADCON_ORIENT_LEFT:
+              edje_object_signal_emit(ng->o_bg, "e,state,bg_left", "e");
+              edje_object_signal_emit(ng->o_frame, "e,state,bg_left", "e");
+              break;
+
+           case E_GADCON_ORIENT_RIGHT:
+              edje_object_signal_emit(ng->o_bg, "e,state,bg_right", "e");
+              edje_object_signal_emit(ng->o_frame, "e,state,bg_right", "e");
+              break;
+
+           case E_GADCON_ORIENT_TOP:
+              edje_object_signal_emit(ng->o_bg, "e,state,bg_top", "e");
+              edje_object_signal_emit(ng->o_frame, "e,state,bg_top", "e");
+              break;
+
+           case E_GADCON_ORIENT_BOTTOM:
+              edje_object_signal_emit(ng->o_bg, "e,state,bg_bottom", "e");
+              edje_object_signal_emit(ng->o_frame, "e,state,bg_bottom", "e");
+          } /* switch */
+        ngi_thaw(ng);
      }
 
    e_config_domain_save("module.ng", ngi_conf_edd, ngi_config);
 
- end:
+end:
 
    if (restart)
      {
-	ngi_free(ng);
-	ci->autohide = cfdata->hide_mode;
-	ci->stacking = cfdata->stacking;
-	ci->size = (int) cfdata->size;
-	ci->zoomfactor = cfdata->zoomfactor;
-	ci->hide_timeout = cfdata->hide_timeout;
-	ci->zoom_duration = cfdata->zoom_duration;
-	ci->zoom_range = cfdata->zoom_range;
-	ci->alpha = cfdata->alpha;
-	ci->show_label = cfdata->show_label;
-	ci->show_background = cfdata->show_background;
-	ci->orient = cfdata->orient;
-	ci->zoom_one = cfdata->zoom_one;
-	ci->mouse_over_anim = cfdata->mouse_over_anim;
-	ci->lock_deskswitch = cfdata->lock_deskswitch;
-	ci->ecomorph_features = cfdata->ecomorph_features;
-	ci->config_dialog = cfdata->cfd;
+        ngi_free(ng);
+        ci->autohide = cfdata->hide_mode;
+        ci->stacking = cfdata->stacking;
+        ci->size = (int)cfdata->size;
+        ci->zoomfactor = cfdata->zoomfactor;
+        ci->hide_timeout = cfdata->hide_timeout;
+        ci->zoom_duration = cfdata->zoom_duration;
+        ci->zoom_range = cfdata->zoom_range;
+        ci->alpha = cfdata->alpha;
+        ci->show_label = cfdata->show_label;
+        ci->show_background = cfdata->show_background;
+        ci->orient = cfdata->orient;
+        ci->zoom_one = cfdata->zoom_one;
+        ci->mouse_over_anim = cfdata->mouse_over_anim;
+        ci->lock_deskswitch = cfdata->lock_deskswitch;
+        ci->ecomorph_features = cfdata->ecomorph_features;
+        ci->config_dialog = cfdata->cfd;
 
-	e_config_domain_save("module.ng", ngi_conf_edd, ngi_config);
+        e_config_domain_save("module.ng", ngi_conf_edd, ngi_config);
 
-	ngi_new(ci);
-	return 1;
+        ngi_new(ci);
+        return 1;
      }
 
    if (!ci->autohide)
      {
-	ng->hide_step = 0;
-	ngi_win_position_calc(ng->win);
-	ngi_thaw(ng);
+        ng->hide_step = 0;
+        ngi_win_position_calc(ng->win);
+        ngi_thaw(ng);
      }
 
    return 1;
-}
+} /* _basic_apply_data */
 
 static void
 _update_boxes(Ng *ng)
@@ -495,47 +486,44 @@ _update_boxes(Ng *ng)
 
    while(ng->boxes)
      {
-	box = ng->boxes->data;
-	if (box->cfg->type == taskbar)
-	  ngi_taskbar_remove(box);
-	else if (box->cfg->type == launcher)
-	  ngi_launcher_remove(box);
-	else if (box->cfg->type == gadcon)
-	  ngi_gadcon_remove(box);
+        box = ng->boxes->data;
+        if (box->cfg->type == taskbar)
+           ngi_taskbar_remove(box);
+        else if (box->cfg->type == launcher)
+           ngi_launcher_remove(box);
+        else if (box->cfg->type == gadcon)
+           ngi_gadcon_remove(box);
      }
 
    ngi_freeze(ng);
 
    EINA_LIST_FOREACH (ng->cfg->boxes, l, cfg_box)
-     {
-	switch (cfg_box->type)
-	  {
-	   case launcher:
-	      ngi_launcher_new(ng, cfg_box);
-	      break;
+   {
+      switch (cfg_box->type)
+        {
+         case launcher:
+            ngi_launcher_new(ng, cfg_box);
+            break;
 
-	   case taskbar:
-	      ngi_taskbar_new(ng, cfg_box);
-	      break;
+         case taskbar:
+            ngi_taskbar_new(ng, cfg_box);
+            break;
 
-	   case gadcon:
-	      ngi_gadcon_new(ng, cfg_box);
-	      break;
-	  }
-     }
+         case gadcon:
+            ngi_gadcon_new(ng, cfg_box);
+            break;
+        } /* switch */
+   }
 
    ngi_thaw(ng);
-}
+} /* _update_boxes */
 
 /***************************************************************************************/
-
-
-
 
 static void
 _cb_box_add_taskbar(void *data, void *data2)
 {
-   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data*) data;
+   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data *)data;
    Config_Box *cfg_box;
 
    cfg_box = E_NEW(Config_Box, 1);
@@ -551,12 +539,12 @@ _cb_box_add_taskbar(void *data, void *data2)
    _update_boxes(cfdata->cfg->ng);
 
    _load_box_tlist(cfdata);
-}
+} /* _cb_box_add_taskbar */
 
 static void
 _cb_box_add_launcher(void *data, void *data2)
 {
-   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data*) data;
+   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data *)data;
    Config_Box *cfg_box;
 
    cfg_box = E_NEW(Config_Box, 1);
@@ -567,12 +555,12 @@ _cb_box_add_launcher(void *data, void *data2)
    _update_boxes(cfdata->cfg->ng);
 
    _load_box_tlist(cfdata);
-}
+} /* _cb_box_add_launcher */
 
 static void
 _cb_box_add_gadcon(void *data, void *data2)
 {
-   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data*) data;
+   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data *)data;
    Config_Box *cfg_box;
 
    cfg_box = E_NEW(Config_Box, 1);
@@ -583,40 +571,44 @@ _cb_box_add_gadcon(void *data, void *data2)
    _update_boxes(cfdata->cfg->ng);
 
    _load_box_tlist(cfdata);
-}
+} /* _cb_box_add_gadcon */
 
 static void
 _cb_box_del(void *data, void *data2)
 {
-   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data*) data;
+   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data *)data;
    int selected = e_widget_ilist_selected_get(cfdata->ilist);
 
-   if (selected < 0) return;
+   if (selected < 0)
+      return;
 
    Eina_List *boxes = cfdata->cfg->boxes;
 
-   Config_Box *cfg_box  = eina_list_nth(boxes, selected);
+   Config_Box *cfg_box = eina_list_nth(boxes, selected);
 
-   if (!cfg_box) return;
+   if (!cfg_box)
+      return;
 
    cfdata->cfg->boxes = eina_list_remove(boxes, cfg_box);
 
    switch(cfg_box->type)
      {
       case launcher:
-	 ngi_launcher_remove(cfg_box->box);
-	 break;
+         ngi_launcher_remove(cfg_box->box);
+         break;
+
       case taskbar:
-	 ngi_taskbar_remove(cfg_box->box);
-	 break;
+         ngi_taskbar_remove(cfg_box->box);
+         break;
+
       case gadcon:
-	 ngi_gadcon_remove(cfg_box->box);
-     }
+         ngi_gadcon_remove(cfg_box->box);
+     } /* switch */
 
    ngi_thaw(cfdata->cfg->ng);
 
    _load_box_tlist(cfdata);
-}
+} /* _cb_box_del */
 
 static Evas_Object *
 _basic_create_box_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
@@ -627,57 +619,57 @@ _basic_create_box_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data
    o = e_widget_list_add(evas, 0, 0);
    if (cfdata->cfg_box->type == launcher)
      {
-	cfdata->app_dir = eina_stringshare_add(cfdata->cfg_box->launcher_app_dir);
+        cfdata->app_dir = eina_stringshare_add(cfdata->cfg_box->launcher_app_dir);
 
-	of = e_widget_frametable_add(evas, D_("Launcher Settings"), 0);
-	ol = e_widget_ilist_add(evas, 0, 0, &cfdata->app_dir);
-	cfdata->tlist_box = ol;
-	_load_ilist(cfdata);
-	e_widget_size_min_set(ol, 140, 140);
-	e_widget_frametable_object_append(of, ol, 0, 0, 1, 2, 1, 1, 1, 1);
+        of = e_widget_frametable_add(evas, D_("Launcher Settings"), 0);
+        ol = e_widget_ilist_add(evas, 0, 0, &cfdata->app_dir);
+        cfdata->tlist_box = ol;
+        _load_ilist(cfdata);
+        e_widget_size_min_set(ol, 140, 140);
+        e_widget_frametable_object_append(of, ol, 0, 0, 1, 2, 1, 1, 1, 1);
 
-	ot = e_widget_table_add(evas, 0);
-	ob = e_widget_button_add(evas, D_("Add"), "widget/add", _cb_add, cfdata, NULL);
-	e_widget_table_object_append(ot, ob, 0, 0, 1, 1, 1, 1, 1, 0);
-	ob = e_widget_button_add(evas, D_("Delete"), "widget/del", _cb_del, cfdata, NULL);
-	e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 1, 1, 1, 0);
-	ob = e_widget_button_add(evas, D_("Configure"), "widget/config", _cb_config, cfdata, NULL);
-	e_widget_table_object_append(ot, ob, 0, 2, 1, 1, 1, 1, 1, 0);
+        ot = e_widget_table_add(evas, 0);
+        ob = e_widget_button_add(evas, D_("Add"), "widget/add", _cb_add, cfdata, NULL);
+        e_widget_table_object_append(ot, ob, 0, 0, 1, 1, 1, 1, 1, 0);
+        ob = e_widget_button_add(evas, D_("Delete"), "widget/del", _cb_del, cfdata, NULL);
+        e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 1, 1, 1, 0);
+        ob = e_widget_button_add(evas, D_("Configure"), "widget/config", _cb_config, cfdata, NULL);
+        e_widget_table_object_append(ot, ob, 0, 2, 1, 1, 1, 1, 1, 0);
 
-	e_widget_frametable_object_append(of, ot, 2, 0, 1, 1, 1, 1, 1, 0);
-	e_widget_list_object_append(o, of, 0, 1, 0.5);
+        e_widget_frametable_object_append(of, ot, 2, 0, 1, 1, 1, 1, 1, 0);
+        e_widget_list_object_append(o, of, 0, 1, 0.5);
      }
    else if (cfdata->cfg_box->type == taskbar)
      {
-	of = e_widget_framelist_add(evas, D_("Taskbar Settings"), 0);
+        of = e_widget_framelist_add(evas, D_("Taskbar Settings"), 0);
 
-	ob = e_widget_check_add(evas, D_("Dont Show Dialogs"), &(cfdata->cfg_box->taskbar_skip_dialogs));
-	e_widget_framelist_object_append(of, ob);
-	ob = e_widget_check_add(evas, D_("Advanced Window Menu"), &(cfdata->cfg_box->taskbar_adv_bordermenu));
-	e_widget_framelist_object_append(of, ob);
-	ob = e_widget_check_add(evas, D_("Only Show Current Desk"), &(cfdata->cfg_box->taskbar_show_desktop));
-	e_widget_framelist_object_append(of, ob);
-	ob = e_widget_check_add(evas, D_("Group Applications by Window Class"), &(cfdata->cfg_box->taskbar_group_apps));
-	e_widget_framelist_object_append(of, ob);
-	ob = e_widget_check_add(evas, D_("Append new Applications on the right Side"), &(cfdata->cfg_box->taskbar_append_right));
-	e_widget_framelist_object_append(of, ob);
+        ob = e_widget_check_add(evas, D_("Dont Show Dialogs"), &(cfdata->cfg_box->taskbar_skip_dialogs));
+        e_widget_framelist_object_append(of, ob);
+        ob = e_widget_check_add(evas, D_("Advanced Window Menu"), &(cfdata->cfg_box->taskbar_adv_bordermenu));
+        e_widget_framelist_object_append(of, ob);
+        ob = e_widget_check_add(evas, D_("Only Show Current Desk"), &(cfdata->cfg_box->taskbar_show_desktop));
+        e_widget_framelist_object_append(of, ob);
+        ob = e_widget_check_add(evas, D_("Group Applications by Window Class"), &(cfdata->cfg_box->taskbar_group_apps));
+        e_widget_framelist_object_append(of, ob);
+        ob = e_widget_check_add(evas, D_("Append new Applications on the right Side"), &(cfdata->cfg_box->taskbar_append_right));
+        e_widget_framelist_object_append(of, ob);
 
-	e_widget_list_object_append(o, of, 1, 1, 0.5);
+        e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-	of = e_widget_framelist_add(evas, D_("Iconified Applications"), 0);
-	rg = e_widget_radio_group_new(&cfdata->cfg_box->taskbar_show_iconified);
-	ob = e_widget_radio_add(evas, "Not Shown", 0, rg);
-	e_widget_framelist_object_append(of, ob);
-	ob = e_widget_radio_add(evas, "Show", 1, rg);
-	e_widget_framelist_object_append(of, ob);
-	ob = e_widget_radio_add(evas, "Only Iconified", 2, rg);
-	e_widget_framelist_object_append(of, ob);
+        of = e_widget_framelist_add(evas, D_("Iconified Applications"), 0);
+        rg = e_widget_radio_group_new(&cfdata->cfg_box->taskbar_show_iconified);
+        ob = e_widget_radio_add(evas, "Not Shown", 0, rg);
+        e_widget_framelist_object_append(of, ob);
+        ob = e_widget_radio_add(evas, "Show", 1, rg);
+        e_widget_framelist_object_append(of, ob);
+        ob = e_widget_radio_add(evas, "Only Iconified", 2, rg);
+        e_widget_framelist_object_append(of, ob);
 
-	e_widget_list_object_append(o, of, 1, 1, 0.5);
+        e_widget_list_object_append(o, of, 1, 1, 0.5);
      }
 
    return o;
-}
+} /* _basic_create_box_widgets */
 
 static int
 _basic_apply_box_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
@@ -686,25 +678,25 @@ _basic_apply_box_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    _update_boxes(cfdata->cfg->ng);
    return 1;
-}
+} /* _basic_apply_box_data */
 
 /* urgh */
 static void *
 _create_box_data(E_Config_Dialog *cfd)
 {
    return cfd->data;
-}
+} /* _create_box_data */
 
 static void
 _free_box_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    eina_stringshare_del(cfdata->app_dir);
-}
+} /* _free_box_data */
 
 static void
 _cb_box_config(void *data, void *data2)
 {
-   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data*) data;
+   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data *)data;
 
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
@@ -712,35 +704,37 @@ _cb_box_config(void *data, void *data2)
 
    int selected = e_widget_ilist_selected_get(cfdata->ilist);
 
-   if (selected < 0) return;
+   if (selected < 0)
+      return;
 
    Eina_List *boxes = cfdata->cfg->boxes;
 
-   cfdata->cfg_box= eina_list_nth(boxes, selected);
+   cfdata->cfg_box = eina_list_nth(boxes, selected);
 
-   if (!cfdata->cfg_box) return;
+   if (!cfdata->cfg_box)
+      return;
 
    if (cfdata->cfg_box->type == gadcon)
      {
-	ngi_gadcon_config(cfdata->cfg_box->box);
+        ngi_gadcon_config(cfdata->cfg_box->box);
      }
    else
      {
-	v = E_NEW(E_Config_Dialog_View, 1);
+        v = E_NEW(E_Config_Dialog_View, 1);
 
-	v->create_cfdata = _create_box_data;
-	v->free_cfdata = _free_box_data;
-	v->basic.apply_cfdata = _basic_apply_box_data;
-	v->basic.create_widgets = _basic_create_box_widgets;
-	v->advanced.apply_cfdata = NULL;
-	v->advanced.create_widgets = NULL;
+        v->create_cfdata = _create_box_data;
+        v->free_cfdata = _free_box_data;
+        v->basic.apply_cfdata = _basic_apply_box_data;
+        v->basic.create_widgets = _basic_create_box_widgets;
+        v->advanced.apply_cfdata = NULL;
+        v->advanced.create_widgets = NULL;
 
-	snprintf(buf, sizeof(buf), "%s/e-module-ng.edj", e_module_dir_get(ngi_config->module));
-	cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-				  D_("Itask NG Bar Configuration"),
-				  "e", "_e_mod_ngi_config_dialog_add_box", buf, 0, v, cfdata);
+        snprintf(buf, sizeof(buf), "%s/e-module-ng.edj", e_module_dir_get(ngi_config->module));
+        cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
+                                  D_("Itask NG Bar Configuration"),
+                                  "e", "_e_mod_ngi_config_dialog_add_box", buf, 0, v, cfdata);
      }
-}
+} /* _cb_box_config */
 
 static void *
 _create_data2(E_Config_Dialog *cfd)
@@ -750,14 +744,14 @@ _create_data2(E_Config_Dialog *cfd)
 
    Ngi_Box *box = cfd->data;
 
-   ci = (Config_Item*) box->ng->cfg;
+   ci = (Config_Item *)box->ng->cfg;
 
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
    _fill_data(ci, cfdata);
    cfdata->cfg_box = box->cfg;
 
    return cfdata;
-}
+} /* _create_data2 */
 
 void
 ngi_configure_box(Ngi_Box *box)
@@ -777,23 +771,25 @@ ngi_configure_box(Ngi_Box *box)
 
    snprintf(buf, sizeof(buf), "%s/e-module-ng.edj", e_module_dir_get(ngi_config->module));
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     D_("Itask NG Bar Configuration"),
-			     "e", "_e_mod_ngi_config_dialog_add_box", buf, 0, v, box);
-}
+                             D_("Itask NG Bar Configuration"),
+                             "e", "_e_mod_ngi_config_dialog_add_box", buf, 0, v, box);
+} /* ngi_configure_box */
 
 static void
 _cb_box_up(void *data, void *data2)
 {
-   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data*) data;
+   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data *)data;
    int selected = e_widget_ilist_selected_get(cfdata->ilist);
 
-   if (selected < 0) return;
+   if (selected < 0)
+      return;
 
    Eina_List *boxes = cfdata->cfg->boxes;
 
    Eina_List *l = eina_list_nth_list(boxes, selected);
 
-   if (!l || !l->prev) return;
+   if (!l || !l->prev)
+      return;
 
    Config_Box *cfg_box = l->data;
 
@@ -805,21 +801,23 @@ _cb_box_up(void *data, void *data2)
    _load_box_tlist(cfdata);
 
    e_widget_ilist_selected_set(cfdata->ilist, selected - 1);
-}
+} /* _cb_box_up */
 
 static void
 _cb_box_down(void *data, void *data2)
 {
-   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data*) data;
+   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data *)data;
    int selected = e_widget_ilist_selected_get(cfdata->ilist);
 
-   if (selected < 0) return;
+   if (selected < 0)
+      return;
 
    Eina_List *boxes = cfdata->cfg->boxes;
 
    Eina_List *l = eina_list_nth_list(boxes, selected);
 
-   if (!l || !l->next) return;
+   if (!l || !l->next)
+      return;
 
    Config_Box *cfg_box = l->data;
 
@@ -831,7 +829,7 @@ _cb_box_down(void *data, void *data2)
    _load_box_tlist(cfdata);
 
    e_widget_ilist_selected_set(cfdata->ilist, selected + 1);
-}
+} /* _cb_box_down */
 
 static void
 _load_box_tlist(E_Config_Dialog_Data *cfdata)
@@ -847,68 +845,68 @@ _load_box_tlist(E_Config_Dialog_Data *cfdata)
 
    for(l = cfdata->cfg->boxes; l; l = l->next)
      {
-	cfg_box = l->data;
-	switch (cfg_box->type)
-	  {
-	   case launcher:
-	      snprintf(buf, sizeof(buf), "%i Launcher", cnt);
-	      blub = strdup(buf);
+        cfg_box = l->data;
+        switch (cfg_box->type)
+          {
+           case launcher:
+              snprintf(buf, sizeof(buf), "%i Launcher", cnt);
+              blub = strdup(buf);
 
-	      e_widget_ilist_append(cfdata->ilist, NULL, blub, NULL, cfg_box, blub);
-	      break;
+              e_widget_ilist_append(cfdata->ilist, NULL, blub, NULL, cfg_box, blub);
+              break;
 
-	   case taskbar:
-	      snprintf(buf, sizeof(buf), "%i Taskbar", cnt);
-	      blub = strdup(buf);
-	      e_widget_ilist_append(cfdata->ilist, NULL, blub, NULL, cfg_box, blub);
-	      break;
+           case taskbar:
+              snprintf(buf, sizeof(buf), "%i Taskbar", cnt);
+              blub = strdup(buf);
+              e_widget_ilist_append(cfdata->ilist, NULL, blub, NULL, cfg_box, blub);
+              break;
 
-	   case gadcon:
-	      snprintf(buf, sizeof(buf), "%i Gadcon", cnt);
-	      blub = strdup(buf);
-	      e_widget_ilist_append(cfdata->ilist, NULL, blub, NULL, cfg_box, blub);
-	      break;
-	  }
-	cnt++;
+           case gadcon:
+              snprintf(buf, sizeof(buf), "%i Gadcon", cnt);
+              blub = strdup(buf);
+              e_widget_ilist_append(cfdata->ilist, NULL, blub, NULL, cfg_box, blub);
+              break;
+          } /* switch */
+        cnt++;
      }
    e_widget_ilist_go(cfdata->ilist);
-}
+} /* _load_box_tlist */
 
 static void
 _cb_add(void *data, void *data2)
 {
-   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data*) data;
+   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data *)data;
    e_entry_dialog_show(D_("Create new Itask NG source"), "enlightenment/e",
-		       D_("Enter a name for this new Application Launcher:"), "", NULL, NULL,
-		       _cb_entry_ok, NULL, cfdata);
-}
+                       D_("Enter a name for this new Application Launcher:"), "", NULL, NULL,
+                       _cb_entry_ok, NULL, cfdata);
+} /* _cb_add */
 
 static void
 _cb_del(void *data, void *data2)
 {
    char buf[4096];
-   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data*) data;
+   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data *)data;
    snprintf(buf, sizeof(buf), D_("You requested to delete \"%s\".<br><br>"
-				 "Are you sure you want to delete this ng source?"),
-	    cfdata->app_dir);
+                                 "Are you sure you want to delete this ng source?"),
+            cfdata->app_dir);
 
    e_confirm_dialog_show(D_("Are you sure you want to delete this Itask NG source?"),
-			 "enlightenment/exit", buf, NULL, NULL,
-			 _cb_confirm_dialog_yes, NULL, cfdata, NULL, NULL, NULL);
-}
+                         "enlightenment/exit", buf, NULL, NULL,
+                         _cb_confirm_dialog_yes, NULL, cfdata, NULL, NULL, NULL);
+} /* _cb_del */
 
 static void
 _cb_config(void *data, void *data2)
 {
    char path[4096];
-   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data*) data;
+   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data *)data;
    snprintf(path, sizeof(path), "%s/.e/e/applications/bar/%s/.order",
-	    e_user_homedir_get(), cfdata->app_dir);
+            e_user_homedir_get(), cfdata->app_dir);
 
    e_configure_registry_call("internal/ibar_other",
-			     e_container_current_get(e_manager_current_get()),
-			     path);
-}
+                             e_container_current_get(e_manager_current_get()),
+                             path);
+} /* _cb_config */
 
 static void
 _cb_entry_ok(char *text, void *data)
@@ -918,43 +916,43 @@ _cb_entry_ok(char *text, void *data)
    FILE *f;
 
    snprintf(buf, sizeof(buf), "%s/.e/e/applications/bar/%s",
-	    e_user_homedir_get(), text);
+            e_user_homedir_get(), text);
 
    if (!ecore_file_exists(buf))
      {
-	ecore_file_mkdir(buf);
+        ecore_file_mkdir(buf);
 
-	snprintf(buf, sizeof(buf), "%s/.e/e/applications/bar/%s/.order",
-		 e_user_homedir_get(), text);
+        snprintf(buf, sizeof(buf), "%s/.e/e/applications/bar/%s/.order",
+                 e_user_homedir_get(), text);
 
-	f = fopen(buf, "w");
-	if (f)
-	  {
-	     // Populate this .order file with some defaults
-	     snprintf(tmp, sizeof(tmp), "xterm.desktop\n"
-		      "firefox.desktop\n"
-		      "gimp.desktop\n" "xmms.desktop\n");
-	     fwrite(tmp, sizeof(char), strlen(tmp), f);
-	     fclose(f);
-	  }
+        f = fopen(buf, "w");
+        if (f)
+          {
+             // Populate this .order file with some defaults
+             snprintf(tmp, sizeof(tmp), "xterm.desktop\n"
+                                        "firefox.desktop\n"
+                                        "gimp.desktop\n" "xmms.desktop\n");
+             fwrite(tmp, sizeof(char), strlen(tmp), f);
+             fclose(f);
+          }
      }
 
-   _load_ilist((E_Config_Dialog_Data*) data);
-}
+   _load_ilist((E_Config_Dialog_Data *)data);
+} /* _cb_entry_ok */
 
 static void
 _cb_confirm_dialog_yes(void *data)
 {
-   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data*) data;
+   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data *)data;
    char buf[4096];
 
    snprintf(buf, sizeof(buf), "%s/.e/e/applications/bar/%s", e_user_homedir_get(), cfdata->app_dir);
 
    if (ecore_file_is_dir(buf))
-     ecore_file_recursive_rm(buf);
+      ecore_file_recursive_rm(buf);
 
    _load_ilist(cfdata);
-}
+} /* _cb_confirm_dialog_yes */
 
 static void
 _load_ilist(E_Config_Dialog_Data *cfdata)
@@ -971,31 +969,33 @@ _load_ilist(E_Config_Dialog_Data *cfdata)
    dirs = ecore_file_ls(buf);
 
    EINA_LIST_FOREACH(dirs, l, file)
-     {
-	if (file[0] == '.') continue;
+   {
+      if (file[0] == '.')
+         continue;
 
-	snprintf(buf, sizeof(buf), "%s/.e/e/applications/bar/%s", home, file);
-	if (ecore_file_is_dir(buf))
-	  {
-	     e_widget_ilist_append(cfdata->tlist_box, NULL, file, NULL, NULL, file);
-	     if ((cfdata->app_dir) && (!strcmp(cfdata->app_dir, file)))
-	       selnum = i;
-	     i++;
-	  }
-     }
+      snprintf(buf, sizeof(buf), "%s/.e/e/applications/bar/%s", home, file);
+      if (ecore_file_is_dir(buf))
+        {
+           e_widget_ilist_append(cfdata->tlist_box, NULL, file, NULL, NULL, file);
+           if ((cfdata->app_dir) && (!strcmp(cfdata->app_dir, file)))
+              selnum = i;
+
+           i++;
+        }
+   }
 
    e_widget_ilist_go(cfdata->tlist_box);
    if (selnum >= 0)
-     e_widget_ilist_selected_set(cfdata->tlist_box, selnum);
-}
+      e_widget_ilist_selected_set(cfdata->tlist_box, selnum);
+} /* _load_ilist */
 
 static void
 _cb_slider_change(void *data, Evas_Object *obj)
 {
-   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data*) data;
+   E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data *)data;
    Ng *ng = cfdata->cfg->ng;
 
-   ng->cfg->size = (int) cfdata->size;
+   ng->cfg->size = (int)cfdata->size;
    ng->size = ng->cfg->size;
 
    ng->cfg->zoomfactor = cfdata->zoomfactor;
@@ -1008,4 +1008,5 @@ _cb_slider_change(void *data, Evas_Object *obj)
 
    evas_object_color_set(ng->bg_clip, ng->cfg->alpha, ng->cfg->alpha, ng->cfg->alpha, ng->cfg->alpha);
    ngi_thaw(ng);
-}
+} /* _cb_slider_change */
+

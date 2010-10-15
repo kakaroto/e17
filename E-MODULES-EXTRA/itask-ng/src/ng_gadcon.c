@@ -1,21 +1,20 @@
 #include "e_mod_main.h"
 #include <string.h>
 
-static void _ngi_gadcon_cb_gadcon_min_size_request(void *data, E_Gadcon *gc, Evas_Coord w, Evas_Coord h);
-static void _ngi_gadcon_cb_gadcon_size_request(void *data, E_Gadcon *gc, Evas_Coord w, Evas_Coord h);
-static Evas_Object *_ngi_gadcon_cb_gadcon_frame_request(void *data, E_Gadcon_Client *gcc, const char *style);
-static void *_create_data(E_Config_Dialog *cfd);
-static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
-static Evas_Object *_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
-static Eina_Bool _cb_mod_update(void *data, int type, void *event);
-static void _avail_list_cb_change(void *data, Evas_Object *obj);
-static void _sel_list_cb_change(void *data, Evas_Object *obj);
-static void _load_avail_gadgets(void *data);
-static void _load_sel_gadgets(void *data);
-static void _cb_add(void *data, void *data2);
-static void _cb_del(void *data, void *data2);
-static void _set_description(void *data, const char *name);
-
+static void             _ngi_gadcon_cb_gadcon_min_size_request(void *data, E_Gadcon *gc, Evas_Coord w, Evas_Coord h);
+static void             _ngi_gadcon_cb_gadcon_size_request(void *data, E_Gadcon *gc, Evas_Coord w, Evas_Coord h);
+static Evas_Object *    _ngi_gadcon_cb_gadcon_frame_request(void *data, E_Gadcon_Client *gcc, const char *style);
+static void *           _create_data(E_Config_Dialog *cfd);
+static void             _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static Evas_Object *    _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static Eina_Bool        _cb_mod_update(void *data, int type, void *event);
+static void             _avail_list_cb_change(void *data, Evas_Object *obj);
+static void             _sel_list_cb_change(void *data, Evas_Object *obj);
+static void             _load_avail_gadgets(void *data);
+static void             _load_sel_gadgets(void *data);
+static void             _cb_add(void *data, void *data2);
+static void             _cb_del(void *data, void *data2);
+static void             _set_description(void *data, const char *name);
 
 static Eina_Hash *ngi_gadcon_hash = NULL;
 
@@ -30,25 +29,27 @@ ngi_gadcon_init(void)
    ngi_gadcon_hash = eina_hash_string_superfast_new(NULL);
 
    EINA_LIST_FOREACH (ngi_config->items, l, ci)
-     {
-	EINA_LIST_FOREACH (ci->boxes, ll, cb)
-	  {
-	     if (cb->type != gadcon) continue;
+   {
+      EINA_LIST_FOREACH (ci->boxes, ll, cb)
+      {
+         if (cb->type != gadcon)
+            continue;
 
-	     for (lll = cb->gadcon_items; lll; lll = lll->next)
-	       {
-		  cg = lll->data;
-		  eina_hash_add(ngi_gadcon_hash, cg->name, cg);
-	       }
-	  }
-     }
-}
+         for (lll = cb->gadcon_items; lll; lll = lll->next)
+           {
+              cg = lll->data;
+              eina_hash_add(ngi_gadcon_hash, cg->name, cg);
+           }
+      }
+   }
+} /* ngi_gadcon_init */
 
 void
 ngi_gadcon_shutdown(void)
 {
-   if (ngi_gadcon_hash) eina_hash_free(ngi_gadcon_hash);
-}
+   if (ngi_gadcon_hash)
+      eina_hash_free(ngi_gadcon_hash);
+} /* ngi_gadcon_shutdown */
 
 static char *
 _ngi_gadcon_name_new()
@@ -58,35 +59,36 @@ _ngi_gadcon_name_new()
 
    while(1)
      {
-	if (cnt > 1000) return NULL;
+        if (cnt > 1000)
+           return NULL;
 
-	snprintf(name, 256, "ng_gadcon-%d", cnt++);
+        snprintf(name, 256, "ng_gadcon-%d", cnt++);
 
-	if (eina_hash_find(ngi_gadcon_hash, name))
-	  continue;
-	else
-	  break;
+        if (eina_hash_find(ngi_gadcon_hash, name))
+           continue;
+        else
+           break;
      }
 
    return strdup(name);
-}
+} /* _ngi_gadcon_name_new */
 
 static void
 _ngi_gadcon_item_cb_mouse_down(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
 {
    //  evas_event_feed_mouse_down(it->box->ng->win->evas, ev->button, 0, 0, NULL);
-}
+} /* _ngi_gadcon_item_cb_mouse_down */
 
 static void
 _ngi_gadcon_item_cb_mouse_up(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
 {
-}
+} /* _ngi_gadcon_item_cb_mouse_up */
 
 static void
 _ngi_gadcon_item_cb_mouse_in(Ngi_Item *it)
 {
    evas_object_focus_set(it->obj, 1);
-}
+} /* _ngi_gadcon_item_cb_mouse_in */
 
 static void
 _ngi_gadcon_item_cb_mouse_out(Ngi_Item *it)
@@ -96,19 +98,19 @@ _ngi_gadcon_item_cb_mouse_out(Ngi_Item *it)
    evas_event_feed_mouse_up(it->box->ng->win->evas, 2, 0, 0, NULL);
    evas_event_feed_mouse_up(it->box->ng->win->evas, 3, 0, 0, NULL);
    evas_object_focus_set(it->obj, 0);
-}
+} /* _ngi_gadcon_item_cb_mouse_out */
 
 static void
 _ngi_gadcon_locked_set(void *data, int lock)
 {
    Ng *ng = data;
    if (lock)
-     ng->show_bar++;
+      ng->show_bar++;
    else if (ng->show_bar > 0)
-     ng->show_bar--;
+      ng->show_bar--;
 
    ngi_animate(ng);
-}
+} /* _ngi_gadcon_locked_set */
 
 static Ngi_Item *
 _ngi_gadcon_item_new(Ngi_Box *box, const char *name, Ngi_Item *after)
@@ -121,10 +123,10 @@ _ngi_gadcon_item_new(Ngi_Box *box, const char *name, Ngi_Item *after)
    it = ngi_item_new(box);
    it->type = gadcon_item;
 
-   it->cb_mouse_in   = _ngi_gadcon_item_cb_mouse_in;
-   it->cb_mouse_out  = _ngi_gadcon_item_cb_mouse_out;
+   it->cb_mouse_in = _ngi_gadcon_item_cb_mouse_in;
+   it->cb_mouse_out = _ngi_gadcon_item_cb_mouse_out;
    it->cb_mouse_down = _ngi_gadcon_item_cb_mouse_down;
-   it->cb_mouse_up   = _ngi_gadcon_item_cb_mouse_up;
+   it->cb_mouse_up = _ngi_gadcon_item_cb_mouse_up;
    it->cb_drag_start = NULL; //_ngi_gadcon_item_cb_drag_start;
 
    it->gadcon = e_gadcon_swallowed_new(name, 0, ng->o_bg, "e.swallow.content");
@@ -145,55 +147,55 @@ _ngi_gadcon_item_new(Ngi_Box *box, const char *name, Ngi_Item *after)
 
    if(it->gadcon->clients)
      {
-	char buf[256];
-	E_Gadcon_Client *gcc = it->gadcon->clients->data;
-	snprintf(buf, 256, "%s-%d", gcc->name, gcc->id);
-	it->label = e_datastore_get(buf);
+        char buf[256];
+        E_Gadcon_Client *gcc = it->gadcon->clients->data;
+        snprintf(buf, 256, "%s-%d", gcc->name, gcc->id);
+        it->label = e_datastore_get(buf);
      }
 
    it->obj = it->gadcon->o_container;
 
    if (after)
-     box->items = eina_list_prepend_relative(box->items, it, after);
+      box->items = eina_list_prepend_relative(box->items, it, after);
    else
-     box->items = eina_list_append(box->items, it);
+      box->items = eina_list_append(box->items, it);
 
    it->usable = 1;
 
    ngi_box_item_show(ng, it, instant);
 
    return it;
-}
+} /* _ngi_gadcon_item_new */
 
 void
 ngi_gadcon_new(Ng *ng, Config_Box *cfg)
 {
    Ngi_Box *box = ngi_box_new(ng);
-   if(!box) return;
+   if(!box)
+      return;
 
    box->cfg = cfg;
    cfg->box = box;
 
    if(cfg->gadcon_items)
      {
-	Eina_List *l;
-	Config_Gadcon *cg;
-	Ngi_Item *it;
+        Eina_List *l;
+        Config_Gadcon *cg;
+        Ngi_Item *it;
 
-	EINA_LIST_FOREACH (cfg->gadcon_items, l, cg)
-	  {
-	     it = _ngi_gadcon_item_new(box, cg->name, NULL);
-	     it->cfg_gadcon = cg;
-
-	  }
+        EINA_LIST_FOREACH (cfg->gadcon_items, l, cg)
+        {
+           it = _ngi_gadcon_item_new(box, cg->name, NULL);
+           it->cfg_gadcon = cg;
+        }
      }
-}
+} /* ngi_gadcon_new */
 
 void
 ngi_gadcon_remove(Ngi_Box *box)
 {
    ngi_box_free(box);
-}
+} /* ngi_gadcon_remove */
 
 static void
 _ngi_gadcon_cb_gadcon_min_size_request(void *data, E_Gadcon *gc, Evas_Coord w, Evas_Coord h)
@@ -204,12 +206,12 @@ _ngi_gadcon_cb_gadcon_min_size_request(void *data, E_Gadcon *gc, Evas_Coord w, E
 
    if (gc == it->gadcon)
      {
-	edje_extern_object_min_size_set(it->gadcon->o_container, w, h);
-	evas_object_show(it->gadcon->o_container);
+        edje_extern_object_min_size_set(it->gadcon->o_container, w, h);
+        evas_object_show(it->gadcon->o_container);
      }
 
    return;
-}
+} /* _ngi_gadcon_cb_gadcon_min_size_request */
 
 static void
 _ngi_gadcon_cb_gadcon_size_request(void *data, E_Gadcon *gc, Evas_Coord w, Evas_Coord h)
@@ -219,26 +221,26 @@ _ngi_gadcon_cb_gadcon_size_request(void *data, E_Gadcon *gc, Evas_Coord w, Evas_
    it = data;
 
    return;
-}
+} /* _ngi_gadcon_cb_gadcon_size_request */
 
 static Evas_Object *
 _ngi_gadcon_cb_gadcon_frame_request(void *data, E_Gadcon_Client *gcc, const char *style)
 {
    /* FIXME: provide an inset look edje thing */
    return NULL;
-}
+} /* _ngi_gadcon_cb_gadcon_frame_request */
 
 struct _E_Config_Dialog_Data
 {
-  Evas_Object *o_avail, *o_sel;
-  Evas_Object *o_add, *o_del;
-  Evas_Object *o_desc;
+   Evas_Object         *o_avail, *o_sel;
+   Evas_Object         *o_add, *o_del;
+   Evas_Object         *o_desc;
 
-  E_Gadcon *gc;
+   E_Gadcon            *gc;
 
-  Ngi_Box *box;
+   Ngi_Box             *box;
 
-  Ecore_Event_Handler *hdl;
+   Ecore_Event_Handler *hdl;
 };
 
 void
@@ -249,7 +251,8 @@ ngi_gadcon_config(Ngi_Box *box)
    E_Container *con;
 
    v = E_NEW(E_Config_Dialog_View, 1);
-   if (!v) return;
+   if (!v)
+      return;
 
    con = e_container_current_get(e_manager_current_get());
 
@@ -258,10 +261,10 @@ ngi_gadcon_config(Ngi_Box *box)
    v->basic.create_widgets = _basic_create;
 
    cfd = e_config_dialog_new(con, "Gadcon Config", "E", "_ngi_gadcon_config_dialog",
-			     "enlightenment/shelf", 0, v, box);
+                             "enlightenment/shelf", 0, v, box);
    //gc->config_dialog = cfd;
    e_dialog_resizable_set(cfd->dia, 1);
-}
+} /* ngi_gadcon_config */
 
 static void *
 _create_data(E_Config_Dialog *cfd)
@@ -271,19 +274,23 @@ _create_data(E_Config_Dialog *cfd)
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
    cfdata->box = cfd->data;
    return cfdata;
-}
+} /* _create_data */
 
 static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    E_Gadcon *gc = NULL;
 
-   if (cfdata->hdl) ecore_event_handler_del(cfdata->hdl);
+   if (cfdata->hdl)
+      ecore_event_handler_del(cfdata->hdl);
+
    E_FREE(cfdata);
 
-   if (!(gc = cfd->data)) return;
+   if (!(gc = cfd->data))
+      return;
+
    gc->config_dialog = NULL;
-}
+} /* _free_data */
 
 static Evas_Object *
 _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
@@ -324,23 +331,29 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    cfdata->o_desc = ow;
    e_widget_table_object_append(o, ow, 0, 1, 2, 1, 1, 1, 1, 0);
 
-   if (cfdata->hdl) ecore_event_handler_del(cfdata->hdl);
+   if (cfdata->hdl)
+      ecore_event_handler_del(cfdata->hdl);
+
    cfdata->hdl = ecore_event_handler_add(E_EVENT_MODULE_UPDATE,
-					 _cb_mod_update, cfdata);
+                                         _cb_mod_update, cfdata);
    return o;
-}
+} /* _basic_create */
 
 static Eina_Bool
 _cb_mod_update(void *data, int type, void *event)
 {
    E_Config_Dialog_Data *cfdata = NULL;
 
-   if (type != E_EVENT_MODULE_UPDATE) return EINA_TRUE;
-   if (!(cfdata = data)) return EINA_TRUE;
+   if (type != E_EVENT_MODULE_UPDATE)
+      return EINA_TRUE;
+
+   if (!(cfdata = data))
+      return EINA_TRUE;
+
    _load_avail_gadgets(cfdata);
    _load_sel_gadgets(cfdata);
    return EINA_TRUE;
-}
+} /* _cb_mod_update */
 
 static void
 _avail_list_cb_change(void *data, Evas_Object *obj)
@@ -349,20 +362,22 @@ _avail_list_cb_change(void *data, Evas_Object *obj)
    const char *name;
    int sel, count;
 
-   if (!(cfdata = data)) return;
+   if (!(cfdata = data))
+      return;
+
    e_widget_ilist_unselect(cfdata->o_sel);
    e_widget_disabled_set(cfdata->o_del, 1);
    e_widget_disabled_set(cfdata->o_add, 0);
    count = e_widget_ilist_selected_count_get(cfdata->o_avail);
    if ((count > 1) || (count == 0))
-     e_widget_textblock_markup_set(cfdata->o_desc, D_("Description: Unavailable"));
+      e_widget_textblock_markup_set(cfdata->o_desc, D_("Description: Unavailable"));
    else
      {
-	sel = e_widget_ilist_selected_get(cfdata->o_avail);
-	name = (char *)e_widget_ilist_nth_data_get(cfdata->o_avail, sel);
-	_set_description(cfdata, name);
+        sel = e_widget_ilist_selected_get(cfdata->o_avail);
+        name = (char *)e_widget_ilist_nth_data_get(cfdata->o_avail, sel);
+        _set_description(cfdata, name);
      }
-}
+} /* _avail_list_cb_change */
 
 static void
 _sel_list_cb_change(void *data, Evas_Object *obj)
@@ -371,20 +386,22 @@ _sel_list_cb_change(void *data, Evas_Object *obj)
    const char *name;
    int sel, count;
 
-   if (!(cfdata = data)) return;
+   if (!(cfdata = data))
+      return;
+
    e_widget_ilist_unselect(cfdata->o_avail);
    e_widget_disabled_set(cfdata->o_add, 1);
    e_widget_disabled_set(cfdata->o_del, 0);
    count = e_widget_ilist_selected_count_get(cfdata->o_sel);
    if ((count > 1) || (count == 0))
-     e_widget_textblock_markup_set(cfdata->o_desc, D_("Description: Unavailable"));
+      e_widget_textblock_markup_set(cfdata->o_desc, D_("Description: Unavailable"));
    else
      {
-	sel = e_widget_ilist_selected_get(cfdata->o_sel);
-	name = (char *)e_widget_ilist_nth_data_get(cfdata->o_sel, sel);
-	_set_description(cfdata, name);
+        sel = e_widget_ilist_selected_get(cfdata->o_sel);
+        name = (char *)e_widget_ilist_nth_data_get(cfdata->o_sel, sel);
+        _set_description(cfdata, name);
      }
-}
+} /* _sel_list_cb_change */
 
 static void
 _load_avail_gadgets(void *data)
@@ -397,29 +414,41 @@ _load_avail_gadgets(void *data)
    Evas *evas;
    int w;
 
-   if (!(cfdata = data)) return;
+   if (!(cfdata = data))
+      return;
+
    evas = evas_object_evas_get(cfdata->o_avail);
    evas_event_freeze(evas);
    edje_freeze();
    e_widget_ilist_freeze(cfdata->o_avail);
    e_widget_ilist_clear(cfdata->o_avail);
    EINA_LIST_FOREACH (e_gadcon_provider_list(), l, cc)
-     {
-	if (!cc) continue;
-	if (cc->func.label) lbl = cc->func.label(cc);
-	if (!lbl) lbl = cc->name;
-	if (cc->func.icon) icon = cc->func.icon(cc, evas);
-	e_widget_ilist_append(cfdata->o_avail, icon, lbl, NULL,
-			      (void *)cc->name, NULL);
-     }
+   {
+      if (!cc)
+         continue;
+
+      if (cc->func.label)
+         lbl = cc->func.label(cc);
+
+      if (!lbl)
+         lbl = cc->name;
+
+      if (cc->func.icon)
+         icon = cc->func.icon(cc, evas);
+
+      e_widget_ilist_append(cfdata->o_avail, icon, lbl, NULL,
+                            (void *)cc->name, NULL);
+   }
    e_widget_ilist_go(cfdata->o_avail);
    e_widget_size_min_get(cfdata->o_avail, &w, NULL);
-   if (w < 200) w = 200;
+   if (w < 200)
+      w = 200;
+
    e_widget_size_min_set(cfdata->o_avail, w, 250);
    e_widget_ilist_thaw(cfdata->o_avail);
    edje_thaw();
    evas_event_thaw(evas);
-}
+} /* _load_avail_gadgets */
 
 static void
 _load_sel_gadgets(void *data)
@@ -431,7 +460,9 @@ _load_sel_gadgets(void *data)
    int w;
    Ngi_Item *it;
 
-   if (!(cfdata = data)) return;
+   if (!(cfdata = data))
+      return;
+
    evas = evas_object_evas_get(cfdata->o_sel);
    evas_event_freeze(evas);
    edje_freeze();
@@ -439,40 +470,55 @@ _load_sel_gadgets(void *data)
    e_widget_ilist_clear(cfdata->o_sel);
 
    EINA_LIST_FOREACH (cfdata->box->items, ll, it)
-     {
-	EINA_LIST_FOREACH (it->gadcon->cf->clients, l, cgc)
-	  {
-	     if (!cgc) continue;
-	     for (l2 = e_gadcon_provider_list(); l2; l2 = l2->next)
-	       {
-		  E_Gadcon_Client_Class *gcc;
-		  Evas_Object *icon = NULL;
-		  const char *lbl = NULL;
+   {
+      EINA_LIST_FOREACH (it->gadcon->cf->clients, l, cgc)
+      {
+         if (!cgc)
+            continue;
 
-		  if (!(gcc = l2->data)) continue;
-		  if ((cgc->name) && (gcc->name) &&
-		      (!strcmp(cgc->name, gcc->name)))
-		    {
-		       if (gcc->func.label) lbl = gcc->func.label(gcc);
-		       if (!lbl) lbl = gcc->name;
-		       if (gcc->func.icon) icon = gcc->func.icon(gcc, evas);
-		       e_widget_ilist_append(cfdata->o_sel, icon, lbl, NULL,
-					     (void *)gcc->name, NULL);
-		    }
-	       }
-	  }
-     }
+         for (l2 = e_gadcon_provider_list(); l2; l2 = l2->next)
+           {
+              E_Gadcon_Client_Class *gcc;
+              Evas_Object *icon = NULL;
+              const char *lbl = NULL;
+
+              if (!(gcc = l2->data))
+                 continue;
+
+              if ((cgc->name) && (gcc->name) &&
+                  (!strcmp(cgc->name, gcc->name)))
+                {
+                   if (gcc->func.label)
+                      lbl = gcc->func.label(gcc);
+
+                   if (!lbl)
+                      lbl = gcc->name;
+
+                   if (gcc->func.icon)
+                      icon = gcc->func.icon(gcc, evas);
+
+                   e_widget_ilist_append(cfdata->o_sel, icon, lbl, NULL,
+                                         (void *)gcc->name, NULL);
+                }
+           }
+      }
+   }
 
    e_widget_ilist_go(cfdata->o_sel);
    e_widget_size_min_get(cfdata->o_sel, &w, NULL);
-   if (w < 200) w = 200;
+   if (w < 200)
+      w = 200;
+
    e_widget_size_min_set(cfdata->o_sel, w, 250);
    e_widget_ilist_thaw(cfdata->o_sel);
    edje_thaw();
    evas_event_thaw(evas);
-   if (l) eina_list_free(l);
-   if (l2) eina_list_free(l2);
-}
+   if (l)
+      eina_list_free(l);
+
+   if (l2)
+      eina_list_free(l2);
+} /* _load_sel_gadgets */
 
 static void
 _cb_add(void *data, void *data2)
@@ -483,68 +529,76 @@ _cb_add(void *data, void *data2)
 
    char *gadcon_name;
 
-   if (!(cfdata = data)) return;
+   if (!(cfdata = data))
+      return;
+
    for (i = 0, l = e_widget_ilist_items_get(cfdata->o_avail); l; l = l->next, i++)
      {
-	E_Ilist_Item *item = NULL;
-	const char *name = NULL;
+        E_Ilist_Item *item = NULL;
+        const char *name = NULL;
 
-	if (!(item = l->data)) continue;
-	if (!item->selected) continue;
-	name = (char *)e_widget_ilist_nth_data_get(cfdata->o_avail, i);
-	if (!name) continue;
-	printf("add gadget %s\n", name);
+        if (!(item = l->data))
+           continue;
 
-	gadcon_name = _ngi_gadcon_name_new();
-	if (!gadcon_name) continue;
+        if (!item->selected)
+           continue;
 
-	Config_Gadcon *cg = E_NEW(Config_Gadcon, 1);
+        name = (char *)e_widget_ilist_nth_data_get(cfdata->o_avail, i);
+        if (!name)
+           continue;
 
-	cg->name = eina_stringshare_add(gadcon_name);
+        printf("add gadget %s\n", name);
 
-	eina_hash_add(ngi_gadcon_hash, cg->name, cg);
+        gadcon_name = _ngi_gadcon_name_new();
+        if (!gadcon_name)
+           continue;
 
-	cfdata->box->cfg->gadcon_items = eina_list_append(cfdata->box->cfg->gadcon_items, cg);
+        Config_Gadcon *cg = E_NEW(Config_Gadcon, 1);
 
-	Ngi_Item *it = _ngi_gadcon_item_new(cfdata->box, cg->name, NULL);
-	it->cfg_gadcon = cg;
+        cg->name = eina_stringshare_add(gadcon_name);
 
-	/* FIXME this removes left over client configs */
-	for (g = it->gadcon->cf->clients; g; g = g->next)
-	  {
-	     E_Config_Gadcon_Client *cgc;
+        eina_hash_add(ngi_gadcon_hash, cg->name, cg);
 
-	     if (!(cgc = g->data)) continue;
+        cfdata->box->cfg->gadcon_items = eina_list_append(cfdata->box->cfg->gadcon_items, cg);
 
-	     e_gadcon_unpopulate(it->gadcon);
-	     e_gadcon_client_config_del(it->gadcon->cf, cgc);
-	  }
+        Ngi_Item *it = _ngi_gadcon_item_new(cfdata->box, cg->name, NULL);
+        it->cfg_gadcon = cg;
 
+        /* FIXME this removes left over client configs */
+        for (g = it->gadcon->cf->clients; g; g = g->next)
+          {
+             E_Config_Gadcon_Client *cgc;
 
-	if (!e_gadcon_client_config_new(it->gadcon, name))
-	  {
-	     ;// free item
-	  }
-	else
-	  {
-	     e_gadcon_populate(it->gadcon);
-	     update = 1;
-	  }
+             if (!(cgc = g->data))
+                continue;
 
+             e_gadcon_unpopulate(it->gadcon);
+             e_gadcon_client_config_del(it->gadcon->cf, cgc);
+          }
+
+        if (!e_gadcon_client_config_new(it->gadcon, name))
+          {
+             // free item
+          }
+        else
+          {
+             e_gadcon_populate(it->gadcon);
+             update = 1;
+          }
      }
    if (update)
      {
-	e_config_save_queue();
+        e_config_save_queue();
 
-	_load_sel_gadgets(cfdata);
-	e_widget_ilist_selected_set(cfdata->o_sel, i);
+        _load_sel_gadgets(cfdata);
+        e_widget_ilist_selected_set(cfdata->o_sel, i);
 
-	ngi_thaw(cfdata->box->ng);
-
+        ngi_thaw(cfdata->box->ng);
      }
 
-   if (l) eina_list_free(l);
-}
+   if (l)
+      eina_list_free(l);
+} /* _cb_add */
 
 static void
 _cb_del(void *data, void *data2)
@@ -554,52 +608,65 @@ _cb_del(void *data, void *data2)
    int i = 0, update = 0;
    Ngi_Item *it;
 
-   if (!(cfdata = data)) return;
+   if (!(cfdata = data))
+      return;
 
    for (i = 0, l = e_widget_ilist_items_get(cfdata->o_sel); l; l = l->next, i++)
      {
-	E_Ilist_Item *item = NULL;
-	E_Config_Gadcon_Client *cgc;
-	const char *name = NULL;
-	if (!(item = l->data)) continue;
-	if (!item->selected) continue;
-	name = (char *)e_widget_ilist_nth_data_get(cfdata->o_sel, i);
-	if (!name) continue;
+        E_Ilist_Item *item = NULL;
+        E_Config_Gadcon_Client *cgc;
+        const char *name = NULL;
+        if (!(item = l->data))
+           continue;
 
-	it = eina_list_nth(cfdata->box->items, i);
+        if (!item->selected)
+           continue;
 
-	if (!it) continue;
+        name = (char *)e_widget_ilist_nth_data_get(cfdata->o_sel, i);
+        if (!name)
+           continue;
 
-	EINA_LIST_FOREACH (it->gadcon->cf->clients, g, cgc)
-	  {
-	     if (!cgc) continue;
-	     if (strcmp(name, cgc->name)) continue;
+        it = eina_list_nth(cfdata->box->items, i);
 
-	     e_gadcon_client_config_del(it->gadcon->cf, cgc);
+        if (!it)
+           continue;
 
-	     cfdata->box->cfg->gadcon_items = eina_list_remove(cfdata->box->cfg->gadcon_items, it->cfg_gadcon);
-	     eina_hash_del_by_key(ngi_gadcon_hash, it->cfg_gadcon->name);
+        EINA_LIST_FOREACH (it->gadcon->cf->clients, g, cgc)
+        {
+           if (!cgc)
+              continue;
 
-	     e_gadcon_unpopulate(it->gadcon);
-	     ngi_item_free(it);
-	     e_config_save_queue();
+           if (strcmp(name, cgc->name))
+              continue;
 
-	     update = 1;
-	  }
+           e_gadcon_client_config_del(it->gadcon->cf, cgc);
+
+           cfdata->box->cfg->gadcon_items = eina_list_remove(cfdata->box->cfg->gadcon_items, it->cfg_gadcon);
+           eina_hash_del_by_key(ngi_gadcon_hash, it->cfg_gadcon->name);
+
+           e_gadcon_unpopulate(it->gadcon);
+           ngi_item_free(it);
+           e_config_save_queue();
+
+           update = 1;
+        }
      }
    if (update)
      {
-	_load_sel_gadgets(cfdata);
+        _load_sel_gadgets(cfdata);
 
-	/* we just default to selecting first one here as the user may have had
-	 * more than one selected */
-	e_widget_ilist_selected_set(cfdata->o_sel, 0);
-	ngi_thaw(cfdata->box->ng);
+        /* we just default to selecting first one here as the user may have had
+         * more than one selected */
+        e_widget_ilist_selected_set(cfdata->o_sel, 0);
+        ngi_thaw(cfdata->box->ng);
      }
 
-   if (g) eina_list_free(g);
-   if (l) eina_list_free(l);
-}
+   if (g)
+      eina_list_free(g);
+
+   if (l)
+      eina_list_free(l);
+} /* _cb_del */
 
 static void
 _set_description(void *data, const char *name)
@@ -609,14 +676,25 @@ _set_description(void *data, const char *name)
    Efreet_Desktop *desk = NULL;
    char buf[4096];
 
-   if (!(cfdata = data)) return;
-   if (!name) return;
-   if (!(mod = e_module_find(name))) return;
+   if (!(cfdata = data))
+      return;
+
+   if (!name)
+      return;
+
+   if (!(mod = e_module_find(name)))
+      return;
 
    snprintf(buf, sizeof(buf), "%s/module.desktop", e_module_dir_get(mod));
-   if (!ecore_file_exists(buf)) return;
-   if (!(desk = efreet_desktop_get(buf))) return;
+   if (!ecore_file_exists(buf))
+      return;
+
+   if (!(desk = efreet_desktop_get(buf)))
+      return;
+
    if (desk->comment)
-     e_widget_textblock_markup_set(cfdata->o_desc, desk->comment);
+      e_widget_textblock_markup_set(cfdata->o_desc, desk->comment);
+
    efreet_desktop_free(desk);
-}
+} /* _set_description */
+
