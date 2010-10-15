@@ -88,7 +88,7 @@ void utils_slide_delete(List_Item *item)
 
     _inwin_delete_slide = elm_win_inwin_add(win);
     evas_object_show(_inwin_delete_slide);
-    elm_win_inwin_style_set(_inwin_delete_slide, "minimal");
+    elm_object_style_set(_inwin_delete_slide, "minimal");
 
     tb = elm_table_add(win);
     elm_win_inwin_content_set(_inwin_delete_slide, tb);
@@ -353,7 +353,7 @@ void utils_edit_area_delete(void *data, Evas_Object *obj, void *event_info)
 
     _inwin_delete_slide = elm_win_inwin_add(win);
     evas_object_show(_inwin_delete_slide);
-    elm_win_inwin_style_set(_inwin_delete_slide, "minimal");
+    elm_object_style_set(_inwin_delete_slide, "minimal");
 
     tb = elm_table_add(win);
     elm_win_inwin_content_set(_inwin_delete_slide, tb);
@@ -601,7 +601,7 @@ void utils_edit_object_delete(void *data, Evas_Object *obj, void *event_info)
 
     _inwin_delete_slide = elm_win_inwin_add(win);
     evas_object_show(_inwin_delete_slide);
-    elm_win_inwin_style_set(_inwin_delete_slide, "minimal");
+    elm_object_style_set(_inwin_delete_slide, "minimal");
 
     tb = elm_table_add(win);
     elm_win_inwin_content_set(_inwin_delete_slide, tb);
