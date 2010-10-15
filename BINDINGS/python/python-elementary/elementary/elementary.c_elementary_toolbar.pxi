@@ -264,20 +264,6 @@ cdef class Toolbar(Object):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_toolbar_add(parent.obj))
 
-
-    def scrollable_set(self, scrollable):
-        """
-        Set the scrollable property
-
-        @parm: L{scrollable}
-        """
-        elm_toolbar_scrollable_set(self.obj, scrollable)
-
-    property scrollable:
-        def __set__(self, scrollable):
-            elm_toolbar_scrollable_set(self.obj, scrollable)
-
-
     def menu_parent_set(self, c_evas.Object parent):
         elm_toolbar_menu_parent_set(self.obj, parent.obj)
 
