@@ -531,45 +531,12 @@ _layout_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *eve
    free(tb);
 }
 
-/* FIXME: this should go in elm_icon itself! */
-static Eina_Bool
-_icon_load(Evas_Object *ic, const char *name, int size)
-{
-   char *path;
-
-   if (elm_icon_standard_set(ic, name)) return EINA_TRUE;
-
-   path = efreet_icon_path_find(getenv("E_ICON_THEME"), name, size);
-   if (!path)
-     {
-        const char **itr, *themes[] = {
-          "default", "highcolor", "gnome", "Human", "oxygen", NULL
-        };
-        for (itr = themes; *itr; itr++)
-          {
-             path = efreet_icon_path_find(*itr, name, size);
-             if (path) break;
-          }
-     }
-   if (!path) return EINA_FALSE;
-   elm_icon_file_set(ic, path, NULL);
-   free(path);
-   return EINA_TRUE;
-}
-
 static Elm_Toolbar_Item *
-_toolbar_item_add(Ephoto_Thumb_Browser *tb, const char *icon, const char *label, Evas_Smart_Cb cb)
+_toolbar_item_add(Ephoto_Thumb_Browser *tb, const char *icon, const char *label, int priority, Evas_Smart_Cb cb)
 {
-   /* FIXME TODO: toolbar should get a string as icon, get it from theme
-    * for toolbar or menu, and fallback to freedesktop.org icon if not found
-    */
-   Evas_Object *ic = elm_icon_add(tb->toolbar);
-   if (!_icon_load(ic, icon, elm_toolbar_icon_size_get(tb->toolbar)))
-     {
-        evas_object_del(ic);
-        ic = NULL;
-     }
-   return elm_toolbar_item_add(tb->toolbar, ic, label, cb, tb);
+   Elm_Toolbar_Item *item = elm_toolbar_item_add(tb->toolbar, icon, label, cb, tb);
+   elm_toolbar_item_priority_set(item, priority);
+   return item;
 }
 
 Evas_Object *
@@ -605,15 +572,17 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
         goto error;
      }
    elm_toolbar_homogenous_set(tb->toolbar, EINA_FALSE);
+   elm_toolbar_mode_shrink_set(tb->toolbar, ELM_TOOLBAR_SHRINK_MENU);
+   elm_toolbar_menu_parent_set(tb->toolbar, parent);
 
    tb->action.slideshow = _toolbar_item_add
-     (tb, "media-playback-start", "Slideshow", _slideshow);
+     (tb, "media-playback-start", "Slideshow", 100, _slideshow);
    tb->action.zoom_in = _toolbar_item_add
-     (tb, "zoom-in", "Zoom In", _zoom_in);
+     (tb, "zoom-in", "Zoom In", 50, _zoom_in);
    tb->action.zoom_out = _toolbar_item_add
-     (tb, "zoom-out", "Zoom Out", _zoom_out);
+     (tb, "zoom-out", "Zoom Out", 50, _zoom_out);
    tb->action.view_flow = _toolbar_item_add
-     (tb, "image", "Larger", _view_flow);
+     (tb, "image", "Larger", 50, _view_flow);
 
    tb->fsel = elm_fileselector_entry_add(layout);
    EINA_SAFETY_ON_NULL_GOTO(tb->fsel, error);

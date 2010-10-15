@@ -665,45 +665,12 @@ _layout_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *eve
    free(fb);
 }
 
-/* FIXME: this should go in elm_icon itself! */
-static Eina_Bool
-_icon_load(Evas_Object *ic, const char *name, int size)
-{
-   char *path;
-
-   if (elm_icon_standard_set(ic, name)) return EINA_TRUE;
-
-   path = efreet_icon_path_find(getenv("E_ICON_THEME"), name, size);
-   if (!path)
-     {
-        const char **itr, *themes[] = {
-          "default", "highcolor", "gnome", "Human", "oxygen", NULL
-        };
-        for (itr = themes; *itr; itr++)
-          {
-             path = efreet_icon_path_find(*itr, name, size);
-             if (path) break;
-          }
-     }
-   if (!path) return EINA_FALSE;
-   elm_icon_file_set(ic, path, NULL);
-   free(path);
-   return EINA_TRUE;
-}
-
 static Elm_Toolbar_Item *
-_toolbar_item_add(Ephoto_Flow_Browser *fb, const char *icon, const char *label, Evas_Smart_Cb cb)
+_toolbar_item_add(Ephoto_Flow_Browser *fb, const char *icon, const char *label, int priority, Evas_Smart_Cb cb)
 {
-   /* FIXME TODO: toolbar should get a string as icon, get it from theme
-    * for toolbar or menu, and fallback to freedesktop.org icon if not found
-    */
-   Evas_Object *ic = elm_icon_add(fb->toolbar);
-   if (!_icon_load(ic, icon, elm_toolbar_icon_size_get(fb->toolbar)))
-     {
-        evas_object_del(ic);
-        ic = NULL;
-     }
-   return elm_toolbar_item_add(fb->toolbar, ic, label, cb, fb);
+   Elm_Toolbar_Item *item = elm_toolbar_item_add(fb->toolbar, icon, label, cb, fb);
+   elm_toolbar_item_priority_set(item, priority);
+   return item;
 }
 
 static Elm_Toolbar_Item *
@@ -752,35 +719,37 @@ ephoto_flow_browser_add(Ephoto *ephoto, Evas_Object *parent)
         goto error;
      }
    elm_toolbar_homogenous_set(fb->toolbar, EINA_FALSE);
+   elm_toolbar_mode_shrink_set(fb->toolbar, ELM_TOOLBAR_SHRINK_MENU);
+   elm_toolbar_menu_parent_set(fb->toolbar, parent);
 
    fb->action.slideshow = _toolbar_item_add
-     (fb, "media-playback-start", "Slideshow", _slideshow);
+     (fb, "media-playback-start", "Slideshow", 150, _slideshow);
 
    fb->action.zoom_in = _toolbar_item_add
-     (fb, "zoom-in", "Zoom In", _zoom_in);
+     (fb, "zoom-in", "Zoom In", 100, _zoom_in);
    fb->action.zoom_out = _toolbar_item_add
-     (fb, "zoom-out", "Zoom Out", _zoom_out);
+     (fb, "zoom-out", "Zoom Out", 80, _zoom_out);
    fb->action.zoom_1 = _toolbar_item_add
-     (fb, "zoom-original", "Zoom 1:1", _zoom_1);
+     (fb, "zoom-original", "Zoom 1:1", 50, _zoom_1);
 
    _toolbar_item_separator_add(fb);
 
-   fb->action.go_first = _toolbar_item_add(fb, "go-first", "First", _go_first);
+   fb->action.go_first = _toolbar_item_add(fb, "go-first", "First", 50, _go_first);
    fb->action.go_prev = _toolbar_item_add
-     (fb, "go-previous", "Previous", _go_prev);
-   fb->action.go_next = _toolbar_item_add(fb, "go-next", "Next", _go_next);
-   fb->action.go_last = _toolbar_item_add(fb, "go-last", "Last", _go_last);
+     (fb, "go-previous", "Previous", 100, _go_prev);
+   fb->action.go_next = _toolbar_item_add(fb, "go-next", "Next", 50, _go_next);
+   fb->action.go_last = _toolbar_item_add(fb, "go-last", "Last", 50, _go_last);
 
    _toolbar_item_separator_add(fb);
 
    fb->action.rotate_counterclock = _toolbar_item_add
-     (fb, "object-rotate-left", "Rotate Left", _go_rotate_counterclock);
+     (fb, "object-rotate-left", "Rotate Left", 50, _go_rotate_counterclock);
    fb->action.rotate_clock = _toolbar_item_add
-     (fb, "object-rotate-right", "Rotate Right", _go_rotate_clock);
+     (fb, "object-rotate-right", "Rotate Right", 30, _go_rotate_clock);
    fb->action.flip_horiz = _toolbar_item_add
-     (fb, "object-flip-horizontal", "Flip Horiz.", _go_flip_horiz);
+     (fb, "object-flip-horizontal", "Flip Horiz.", 30, _go_flip_horiz);
    fb->action.flip_vert = _toolbar_item_add
-     (fb, "object-flip-vertical", "Flip Vert.", _go_flip_vert);
+     (fb, "object-flip-vertical", "Flip Vert.", 30, _go_flip_vert);
 
    elm_toolbar_item_tooltip_text_set
      (fb->action.rotate_counterclock,
