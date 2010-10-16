@@ -62,6 +62,38 @@ Index: configure.ac
  
  # pkg-config
  PKG_PROG_PKG_CONFIG
+@@ -89,7 +90,21 @@
+   AC_DEFINE([OLD_UDEV_RRRRRRRRRRRRRR],[1],[compat functionality for udev < 148])
+ fi
+ 
++with_mount="/bin/mount"
++with_umount="/bin/umount"
++AC_ARG_WITH([mount], AS_HELP_STRING([--with-mount], [specify mount bin @<:@default=detect@:>@]))
++AC_ARG_WITH([umount], AS_HELP_STRING([--with-umount], [specify umount bin @<:@default=detect@:>@]))
+ 
++if test "x$with_mount" = "xdetect";then
++  AC_PATH_PROG([with_mount], [mount], AC_MSG_ERROR([mount could not be found in PATH]))
++fi
++AC_DEFINE_UNQUOTED([EEZE_MOUNT_BIN], ["$with_mount"], [mount bin to use])
++
++if test "x$with_umount" = "xdetect";then
++  AC_PATH_PROG([with_umount], [umount], AC_MSG_ERROR([umount could not be found in PATH]))
++fi
++AC_DEFINE_UNQUOTED([EEZE_UNMOUNT_BIN], ["$with_umount"], [umount bin to use])
++
+ ### Checks for header files
+ 
+ 
+@@ -137,6 +152,9 @@
+ echo
+ echo "Configuration Options Summary:"
+ echo
++echo "Mount..................: ${with_mount}"
++echo "Umount.................: ${with_umount}"
++echo
+ echo "Documentation..........: ${build_doc}"
+ echo
+ echo "Compilation............: make (or gmake)"
 Index: src/lib/eeze_udev_watch.c
 ===================================================================
 --- src/lib/eeze_udev_watch.c	(revision 53481)
@@ -79,7 +111,7 @@ Index: src/lib/eeze_disk_private.h
 ===================================================================
 --- src/lib/eeze_disk_private.h	(revision 0)
 +++ src/lib/eeze_disk_private.h	(revision 0)
-@@ -0,0 +1,56 @@
+@@ -0,0 +1,67 @@
 +#ifndef EEZE_DISK_PRIVATE_H
 +#define EEZE_DISK_PRIVATE_H
 +#include "Eeze.h"
@@ -102,10 +134,16 @@ Index: src/lib/eeze_disk_private.h
 +#endif
 +
 +#define DBG(...)   EINA_LOG_DOM_DBG(_eeze_disk_log_dom, __VA_ARGS__)
-+#define INF(...)    EINA_LOG_DOM_INF(_eeze_disk_log_dom, __VA_ARGS__)
++#define INF(...)    EINA_LOG_DOM_INFO(_eeze_disk_log_dom, __VA_ARGS__)
 +#define WARN(...) EINA_LOG_DOM_WARN(_eeze_disk_log_dom, __VA_ARGS__)
 +#define ERR(...)   EINA_LOG_DOM_ERR(_eeze_disk_log_dom, __VA_ARGS__)
 +
++typedef enum
++{
++   EEZE_DISK_NULL,
++   EEZE_DISK_MOUNTING,
++   EEZE_DISK_UNMOUNTING
++} Eeze_Disk_Status;
 +
 +struct _Eeze_Disk
 +{
@@ -113,6 +151,11 @@ Index: src/lib/eeze_disk_private.h
 +   void *data;
 +
 +   Eina_Bool mounted : 1;
++   Eeze_Disk_Status mount_status;
++   Eina_Strbuf *mount_cmd;
++   Eina_Strbuf *unmount_cmd;
++   Eina_Bool mount_cmd_changed : 1;
++   Eina_Bool unmount_cmd_changed : 1;
 +   Ecore_Exe *mounter;
 +   Ecore_Cb mount_cb;
 +   Ecore_Event_Handler *handler;
@@ -140,7 +183,7 @@ Index: src/lib/eeze_disk.c
 ===================================================================
 --- src/lib/eeze_disk.c	(revision 0)
 +++ src/lib/eeze_disk.c	(revision 0)
-@@ -0,0 +1,297 @@
+@@ -0,0 +1,303 @@
 +#ifdef HAVE_CONFIG_H
 +#include "config.h"
 +#endif
@@ -207,6 +250,8 @@ Index: src/lib/eeze_disk.c
 +
 +   disk->syspath = eina_stringshare_add(syspath);
 +   disk->device = dev;
++   disk->mount_cmd_changed = EINA_TRUE;
++   disk->unmount_cmd_changed = EINA_TRUE;
 +   disk->handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
 +                                           (Ecore_Event_Handler_Cb)_eeze_disk_mount_result_handler, disk);
 +   
@@ -228,6 +273,10 @@ Index: src/lib/eeze_disk.c
 +   eina_stringshare_del(disk->syspath);
 +   udev_device_unref(disk->device);
 +   ecore_event_handler_del(disk->handler);
++   if (disk->mount_cmd)
++     eina_strbuf_free(disk->mount_cmd);
++   if (disk->unmount_cmd)
++     eina_strbuf_free(disk->unmount_cmd);
 +   free(disk);
 +}
 +
@@ -442,7 +491,7 @@ Index: src/lib/eeze_disk_mount.c
 ===================================================================
 --- src/lib/eeze_disk_mount.c	(revision 0)
 +++ src/lib/eeze_disk_mount.c	(revision 0)
-@@ -0,0 +1,162 @@
+@@ -0,0 +1,203 @@
 +#ifdef HAVE_CONFIG_H
 +#include "config.h"
 +#endif
@@ -452,9 +501,6 @@ Index: src/lib/eeze_disk_mount.c
 +#include <Eeze_Disk.h>
 +#include <mount/mount.h>
 +
-+#define EEZE_MOUNT_BIN "/bin/mount"
-+#define EEZE_UNMOUNT_BIN "/bin/umount"
-+
 +
 +#include "eeze_udev_private.h"
 +#include "eeze_disk_private.h"
@@ -462,39 +508,54 @@ Index: src/lib/eeze_disk_mount.c
 +Eina_Bool
 +_eeze_disk_mount_result_handler(Eeze_Disk *disk, int type __UNUSED__, Ecore_Exe_Event_Del *ev)
 +{
-+   switch (ev->exit_code)
-+     {
-+       case 1:
-+         ERR("incorrect invocation or permissions");
-+         break;
++   ecore_exe_free(disk->mounter);
++   disk->mounter = NULL;
++   if (disk->mount_status == EEZE_DISK_MOUNTING)
++     switch (ev->exit_code)
++       {
++         case 1:
++           ERR("incorrect invocation or permissions");
++           break;
 +
-+       case 2:
-+         ERR("system error (out of memory, cannot fork, no more loop devices)");
-+         break;
++         case 2:
++           ERR("system error (out of memory, cannot fork, no more loop devices)");
++           break;
 +
-+       case 4:
-+         ERR("internal mount bug");
-+         break;
++         case 4:
++           ERR("internal mount bug");
++           break;
 +
-+       case 8:
-+         ERR("user interrupt");
-+         break;
++         case 8:
++           ERR("user interrupt");
++           break;
 +
-+       case 16:
-+         ERR("problems writing or locking /etc/mtab");
-+         break;
++         case 16:
++           ERR("problems writing or locking /etc/mtab");
++           break;
 +
-+       case 32:
-+         ERR("mount failure");
-+         break;
++         case 32:
++           ERR("mount failure");
++           break;
 +
-+       case 64:
-+         ERR("some mount succeeded");
-+         break;
++         case 64:
++           ERR("some mount succeeded");
++           break;
 +
-+       default:
-+         disk->mounted = EINA_TRUE;
-+     }
++         default:
++           disk->mounted = EINA_TRUE;
++       }
++    else
++      switch (ev->exit_code)
++        {
++         case 0:
++           disk->mounted = EINA_FALSE;
++           break;
++
++         default:
++           INF("Could not unmount disk, retrying");
++           disk->mounter = ecore_exe_pipe_run(eina_strbuf_string_get(disk->unmount_cmd), 0, disk);
++           return ECORE_CALLBACK_RENEW;
++        }
 +
 +   if (disk->mount_cb)
 +     disk->mount_cb(disk);
@@ -536,12 +597,23 @@ Index: src/lib/eeze_disk_mount.c
 +{
 +   EINA_SAFETY_ON_NULL_RETURN_VAL(disk, EINA_FALSE);
 +   
++   if (!disk->mount_cmd)
++     disk->mount_cmd = eina_strbuf_new();
 +
++   if (disk->mount_cmd_changed)
++     {
++        eina_strbuf_string_free(disk->mount_cmd);
++        eina_strbuf_append_printf(disk->mount_cmd, "%s %s %s", EEZE_MOUNT_BIN, disk->devpath, disk->mount_point);
++        disk->mount_cmd_changed = EINA_FALSE;
++     }
++        
 +   disk->mount_cb = cb;
-+   disk->mounter = ecore_exe_pipe_run(EEZE_MOUNT_BIN, 0, disk);
++   disk->mounter = ecore_exe_pipe_run(eina_strbuf_string_get(disk->mount_cmd), 0, disk);
 +   if (!disk->mounter)
 +     return EINA_FALSE;
 +     
++   disk->mount_status = EEZE_DISK_MOUNTING;
++
 +   return EINA_TRUE;
 +}
 +
@@ -566,11 +638,23 @@ Index: src/lib/eeze_disk_mount.c
 +
 +   if (!disk->mounted)
 +     return EINA_TRUE;
++
++   if (!disk->unmount_cmd)
++     disk->unmount_cmd = eina_strbuf_new();
++
++   if (disk->unmount_cmd_changed)
++     {
++        eina_strbuf_string_free(disk->unmount_cmd);
++        eina_strbuf_append_printf(disk->unmount_cmd, "%s %s", EEZE_UNMOUNT_BIN, disk->mount_point);
++        disk->unmount_cmd_changed = EINA_FALSE;
++     }
++     
 +   disk->mount_cb = cb;
-+   disk->mounter = ecore_exe_pipe_run(EEZE_UNMOUNT_BIN, 0, disk);
++   disk->mounter = ecore_exe_pipe_run(eina_strbuf_string_get(disk->unmount_cmd), 0, disk);
 +   if (!disk->mounter)
 +     return EINA_FALSE;
-+     
++
++   disk->mount_status = EEZE_DISK_UNMOUNTING;
 +   return EINA_TRUE;
 +}
 +
@@ -597,13 +681,19 @@ Index: src/lib/eeze_disk_mount.c
 + *
 + * This function sets the mount point associated with @p disk.
 + * Note that to determine whether the disk is actually mounted, eeze_disk_mounted_get should be used.
++ * Also note that this function cannot be used while the disk is mounted to avoid losing the current mount point.
 + */
 +EAPI void
 +eeze_disk_mount_point_set(Eeze_Disk *disk, const char *mount_point)
 +{
 +   EINA_SAFETY_ON_NULL_RETURN(disk);
 +
++   if (disk->mounted)
++     return;
++
 +   disk->mount_point = mount_point;
++   disk->mount_cmd_changed = EINA_TRUE;
++   disk->unmount_cmd_changed = EINA_TRUE;
 +}
 Index: src/lib/eeze_udev_private.c
 ===================================================================
@@ -760,7 +850,7 @@ Index: src/lib/eeze_udev_private.h
  
  #define DBG(...)   EINA_LOG_DOM_DBG(_eeze_udev_log_dom, __VA_ARGS__)
 -#define INFO(...)    EINA_LOG_DOM_INFO(_eeze_udev_log_dom, __VA_ARGS__)
-+#define INF(...)    EINA_LOG_DOM_INF(_eeze_udev_log_dom, __VA_ARGS__)
++#define INF(...)    EINA_LOG_DOM_INFO(_eeze_udev_log_dom, __VA_ARGS__)
  #define WARN(...) EINA_LOG_DOM_WARN(_eeze_udev_log_dom, __VA_ARGS__)
  #define ERR(...)   EINA_LOG_DOM_ERR(_eeze_udev_log_dom, __VA_ARGS__)
  
