@@ -312,7 +312,7 @@ cdef class GenlistItem(WidgetItem):
                 self.params[1])
 
     def __repr__(self):
-        return ("%s(%#x, refcount=%d, Elm_List_Item=%#x, "
+        return ("%s(%#x, refcount=%d, Elm_Genlist_Item=%#x, "
                 "item_class=%s, func=%s, item_data=%r)") % \
                (self.__class__.__name__,
                 <unsigned long><void*>self,
