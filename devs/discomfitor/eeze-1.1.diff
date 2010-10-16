@@ -183,7 +183,7 @@ Index: src/lib/eeze_disk.c
 ===================================================================
 --- src/lib/eeze_disk.c	(revision 0)
 +++ src/lib/eeze_disk.c	(revision 0)
-@@ -0,0 +1,303 @@
+@@ -0,0 +1,304 @@
 +#ifdef HAVE_CONFIG_H
 +#include "config.h"
 +#endif
@@ -249,6 +249,7 @@ Index: src/lib/eeze_disk.c
 +     return NULL;
 +
 +   disk->syspath = eina_stringshare_add(syspath);
++   disk->devpath = eina_stringshare_add(udev_device_get_property_value(dev, "DEVNAME"));
 +   disk->device = dev;
 +   disk->mount_cmd_changed = EINA_TRUE;
 +   disk->unmount_cmd_changed = EINA_TRUE;
@@ -505,11 +506,11 @@ Index: src/lib/eeze_disk_mount.c
 +#include "eeze_udev_private.h"
 +#include "eeze_disk_private.h"
 +
++#define EEZE_MOUNT_DEFAULT_OPTS "noexec,nosuid"
++
 +Eina_Bool
 +_eeze_disk_mount_result_handler(Eeze_Disk *disk, int type __UNUSED__, Ecore_Exe_Event_Del *ev)
 +{
-+   ecore_exe_free(disk->mounter);
-+   disk->mounter = NULL;
 +   if (disk->mount_status == EEZE_DISK_MOUNTING)
 +     switch (ev->exit_code)
 +       {
@@ -603,7 +604,7 @@ Index: src/lib/eeze_disk_mount.c
 +   if (disk->mount_cmd_changed)
 +     {
 +        eina_strbuf_string_free(disk->mount_cmd);
-+        eina_strbuf_append_printf(disk->mount_cmd, "%s %s %s", EEZE_MOUNT_BIN, disk->devpath, disk->mount_point);
++        eina_strbuf_append_printf(disk->mount_cmd, "%s -o %s %s %s", EEZE_MOUNT_BIN, EEZE_MOUNT_DEFAULT_OPTS, disk->devpath, disk->mount_point);
 +        disk->mount_cmd_changed = EINA_FALSE;
 +     }
 +        
@@ -721,11 +722,33 @@ Index: src/lib/eeze_udev_syspath.c
  /**
   * @addtogroup syspath Syspath
   *
+@@ -303,8 +301,7 @@
+ {
+    _udev_enumerate *en;
+    _udev_list_entry *devs, *cur;
+-   _udev_device *device;
+-   const char *name, *ret = NULL;
++   const char *ret = NULL;
+ 
+    if (!devpath)
+      return NULL;
+@@ -319,10 +316,7 @@
+    devs = udev_enumerate_get_list_entry(en);
+    udev_list_entry_foreach(cur, devs)
+      {
+-        name = udev_list_entry_get_name(cur);
+-        device = udev_device_new_from_syspath(udev, name);
+-        ret = eina_stringshare_add(udev_device_get_sysname(device));
+-        udev_device_unref(device);
++        ret = eina_stringshare_add(udev_list_entry_get_name(cur));
+         break;      /*just in case there's more than one somehow */
+      }
+    udev_enumerate_unref(en);
 Index: src/lib/Eeze_Disk.h
 ===================================================================
 --- src/lib/Eeze_Disk.h	(revision 0)
 +++ src/lib/Eeze_Disk.h	(revision 0)
-@@ -0,0 +1,75 @@
+@@ -0,0 +1,78 @@
 +#ifndef EEZE_DISK_H
 +#define EEZE_DISK_H
 +
@@ -746,6 +769,9 @@ Index: src/lib/Eeze_Disk.h
 +#else
 +# define EAPI
 +#endif
++
++#include <Eina.h>
++#include <Ecore.h>
 +
 +/**
 + * @file Eeze_Disk.h
@@ -923,3 +949,132 @@ Index: src/lib/eeze_main.c
     eina_shutdown();
     return _eeze_init_count;
  }
+Index: src/bin/Makefile.am
+===================================================================
+--- src/bin/Makefile.am	(revision 53479)
++++ src/bin/Makefile.am	(working copy)
+@@ -7,8 +7,12 @@
+ 
+ EEZE_UDEV_PROG = eeze_udev_test
+ 
+-bin_PROGRAMS = eeze_udev_test
++bin_PROGRAMS = eeze_udev_test eeze_mount
+ 
+ eeze_udev_test_SOURCES = eeze_udev_test.c
+ eeze_udev_test_CPPFLAGS = $(EEZE_CPPFLAGS)
+ eeze_udev_test_LDADD = $(top_builddir)/src/lib/libeeze.la
++
++eeze_mount_SOURCES = eeze_mount.c
++eeze_mount_CPPFLAGS = $(EEZE_CPPFLAGS) $(LIBMOUNT_CFLAGS)
++eeze_mount_LDADD = $(top_builddir)/src/lib/libeeze.la $(LIBMOUNT_LIBS)
+Index: src/bin/eeze_mount.c
+===================================================================
+--- src/bin/eeze_mount.c	(revision 0)
++++ src/bin/eeze_mount.c	(revision 0)
+@@ -0,0 +1,106 @@
++#include <Eeze.h>
++#include <Eeze_Disk.h>
++#include <Ecore.h>
++#include <Ecore_Getopt.h>
++#include <stdio.h>
++
++/** This app can be used as a "dumb" replacement for mount. Just don't try anything fancy! */
++static const Ecore_Getopt opts =
++{
++   "eeze_mount",
++   "eeze_mount /dev/sdb1 /media/disk",
++   "1.0",
++   "(C) 2010 Mike Blumenkrantz",
++   "LGPL",
++   "Mount a disk using either its /sys/ path or its /dev/ path\n\n",
++   1,
++   {      
++      ECORE_GETOPT_VERSION('V', "version"),
++      ECORE_GETOPT_COPYRIGHT('R', "copyright"),
++      ECORE_GETOPT_LICENSE('L', "license"),
++      ECORE_GETOPT_HELP('h', "help"),
++      ECORE_GETOPT_SENTINEL
++   }
++};
++
++void
++_mount_cb(Eeze_Disk *disk)
++{
++   if (eeze_disk_mounted_get(disk))
++     printf("Success!\n");
++   else
++     printf("Failure!\n");
++   ecore_main_loop_quit();
++}
++
++int
++main(int argc, char *argv[])
++{
++   int args;
++   const char *dev, *mount_point;
++   Eina_Bool exit_option = EINA_FALSE;
++   Eeze_Disk *disk;
++
++   Ecore_Getopt_Value values[] =
++   {       
++      ECORE_GETOPT_VALUE_BOOL(exit_option),
++      ECORE_GETOPT_VALUE_BOOL(exit_option),
++      ECORE_GETOPT_VALUE_BOOL(exit_option),
++      ECORE_GETOPT_VALUE_BOOL(exit_option)
++   };
++   
++   if (argc < 2)
++     {
++        printf("Insufficient args specified!\n");
++        ecore_getopt_help(stderr, &opts);
++        exit(1);
++     }
++
++   ecore_init();
++   eeze_init();
++   ecore_app_args_set(argc, (const char **)argv);
++   args = ecore_getopt_parse(&opts, values, argc, argv);
++
++   if (exit_option)
++     return 0;
++
++   if (args < 0)
++     {
++        printf("No args specified!\n");
++        ecore_getopt_help(stderr, &opts);
++        exit(1);
++     }
++
++   dev = argv[args];
++   mount_point = argv[args + 1];
++   if (!strncmp(dev, "/sys/", 5))
++     disk = eeze_disk_new(dev);
++   else if (!strncmp(dev, "/dev/", 5))
++     {
++        const char *syspath;
++
++        syspath = eeze_udev_devpath_get_syspath(dev);
++        disk = eeze_disk_new(syspath);
++     }
++   else
++     {
++        printf("[Device] must be either a /dev/ path or a /sys/ path!\n");
++        ecore_getopt_help(stderr, &opts);
++        exit(1);
++     }
++   if (eeze_disk_mounted_get(disk))
++     {
++        printf("[%s] is already mounted!", dev);
++        exit(1);
++     }
++
++   eeze_disk_mount_point_set(disk, mount_point);
++   if (!eeze_disk_mount(disk, (Ecore_Cb)_mount_cb))
++     {
++        printf("Mount operation could not be started!\n");
++        exit(1);
++     }
++   ecore_main_loop_begin();
++
++   return 0;
++}
