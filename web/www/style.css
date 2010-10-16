@@ -81,7 +81,7 @@ div.bod {
 
 
 div.fragment, div.code {
-   border                 : 1px solid #eee;
+   border                 : 1px solid #eeeeee;
    text-align             : left;
    vertical-align         : middle;
    padding                : 8px;
@@ -89,7 +89,7 @@ div.fragment, div.code {
 }
 
 pre {
-   border                 : 1px dotted #bbb;
+   border                 : 1px dotted #bbbbbb;
    text-align             : left;
    vertical-align         : middle;
    padding                : 5px;
@@ -210,7 +210,7 @@ td.b4[class] { background-image:url("i/b4.png"); }
 td.b5 {
    background-image       : url("i/b5.png");
    font-size              : 11px;
-   color                  : #ffffff;
+   color                  : #4444;
    text-align             : left;
    vertical-align         : middle;
 }
@@ -271,7 +271,7 @@ td.pn9[class] { background-image:url("i/pn-9.png"); }
 
 .post {
    margin                 : 0 0 2.5em 40px;
-   border-left            : 1px solid #bbb;
+   border-left            : 1px solid #bbbbbb;
    padding-left           : 2ex;
    text-align             : left;
 }

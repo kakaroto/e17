@@ -64,7 +64,7 @@
   }
 
   function blink($ic, $txt, $pg) {
-      echo("<table class='b' cellpadding='0'>");
+      echo("<table class='b' cellpadding='0' border='0' cellspacing='0'>");
       echo("<tr><td class='b1'><img src='i/_.gif' width='8' height='8'></td>");
       echo("<td class='b2'><img src='i/_.gif' width='8' height='8'></td>");
       echo("<td class='b3'><img src='i/_.gif' width='8' height='8'></td></tr>");
@@ -87,7 +87,7 @@
   }
 
   function blinkdl($ic, $txt, $url) {
-      echo("<table class='b' cellpadding='0'>");
+      echo("<table class='b' cellpadding='0' border='0' cellspacing='0'>");
       echo("<tr><td class='b1'><img src='i/_.gif' width='8' height='8'></td>");
       echo("<td class='b2' width='100%'><img src='i/_.gif' width='8' height='8'></td>");
       echo("<td class='b3'><img src='i/_.gif' width='8' height='8'></td></tr>");
@@ -110,7 +110,7 @@
   }
 
   function blinkurl($ic, $txt, $url) {
-      echo("<table class='b' cellpadding='0' width='100%'>");
+      echo("<table class='b' cellpadding='0' width='100%' border='0' cellspacing='0'>");
       echo("<tr><td class='b1'><img src='i/_.gif' width='8' height='8'></td>");
       echo("<td class='b2' width='100%'><img src='i/_.gif' width='8' height='8'></td>");
       echo("<td class='b3'><img src='i/_.gif' width='8' height='8'></td></tr>");
@@ -133,7 +133,7 @@
   }
 
   function frame1($w) {
-      echo("<table class='pn' cellpadding='0' $w>");
+      echo("<table class='pn' cellpadding='0' border='0' cellspacing='0' $w>");
       echo("<tr><td class='pn1'><img src='i/_.gif' width='24' height='24'></td>");
       echo("<td class='pn2' width='100%'><img src='i/_.gif' width='24' height='24'></td>");
       echo("<td class='pn3'><img src='i/_.gif' width='24' height='24'></td></tr>");
