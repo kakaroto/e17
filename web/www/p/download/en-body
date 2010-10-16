@@ -54,45 +54,55 @@
   </td>
    
   <td class='main'>
-   <hr><div class="main"><p><b><a href=
+   <?php frame1("width=100%");?>
+   <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Eina">Eina</a> </b><em>
      1.0.0 BETA </em></p><p>
      Core data structure library. </p><p align=right><?php blinkdl("i/logo-s.png", 
      "DOWNLOAD EINA",
      "http://download.enlightenment.org/releases/eina-1.0.0.beta.tar.gz"
    );?></p></div>
+   <?php frame2();?>
    
-   <hr><div class="main"><p><b><a href=
+   <?php frame1("width=100%");?>
+   <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Eet">Eet</a> </b><em>
      1.4.0 BETA </em></p><p>
      Data encode/decode and storage library. </p><p align=right><?php blinkdl("i/logo-s.png", 
      "DOWNLOAD EET", 
      "http://download.enlightenment.org/releases/eet-1.4.0.beta.tar.gz"
    );?></p></div>
+   <?php frame2();?>
    
-   <hr><div class="main"><p><b><a href=
+   <?php frame1("width=100%");?>
+   <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Evas">Evas</a> </b><em>
      1.0.0 BETA </em></p><p>
      Canvas and scenegraph rendering library. </p><p align=right><?php blinkdl("i/logo-s.png", 
      "DOWNLOAD EVAS", 
      "http://download.enlightenment.org/releases/evas-1.0.0.beta.tar.gz"
    );?></p></div>
+   <?php frame2();?>
    
-   <hr><div class="main"><p><b><a href=
+   <?php frame1("width=100%");?>
+   <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Ecore">Ecore</a> </b><em>
      1.0.0 BETA </em></p><p>
      Core mainloop, display abstraction and utility library. </p><p align=right><?php blinkdl("i/logo-s.png", 
      "DOWNLOAD ECORE", 
      "http://download.enlightenment.org/releases/ecore-1.0.0.beta.tar.gz"
    );?></p></div>
+   <?php frame2();?>
    
-   <hr><div class="main"><p><b><a href=
+   <?php frame1("width=100%");?>
+   <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Embryo">Embryo</a> </b><em>
      1.0.0 BETA </em></p><p>
      Small <a href="http://www.compuphase.com/pawn">Pawn</a> based virtual machine and compiler. </p><p align=right><?php blinkdl("i/logo-s.png", 
      "DOWNLOAD EMBRYO", 
      "http://download.enlightenment.org/releases/embryo-1.0.0.beta.tar.gz"
    );?></p></div>
+   <?php frame2();?>
   </td>
    
   <td class='main'>

@@ -132,6 +132,23 @@
       echo("</table>");
   }
 
+  function frame1($w) {
+      echo("<table class='pn' cellpadding='0' $w>");
+      echo("<tr><td class='pn1'><img src='i/_.gif' width='24' height='24'></td>");
+      echo("<td class='pn2' width='100%'><img src='i/_.gif' width='24' height='24'></td>");
+      echo("<td class='pn3'><img src='i/_.gif' width='24' height='24'></td></tr>");
+      echo("<tr><td class='pn4'><img src='i/_.gif' width='24' height='24'></td>");
+      echo("<td class='pn5' width='100%'>");
+  }
+  function frame2() {
+      echo("</td>");
+      echo("<td class='pn6'><img src='i/_.gif' width='24' height='24'></td></tr>");
+      echo("<tr><td class='pn7'><img src='i/_.gif' width='24' height='24'></td>");
+      echo("<td class='pn8' width='100%'><img src='i/_.gif' width='24' height='24'></td>");
+      echo("<td class='pn9'><img src='i/_.gif' width='24' height='24'></td></tr>");
+      echo("</table>");
+  }
+
 /* utility functions */
   function read_var($f) {
       if (file_exists($f)) {
