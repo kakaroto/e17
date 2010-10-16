@@ -23,6 +23,7 @@ from c_elementary import Object, Window, Background, Icon, \
     Radio, Check, Pager, InnerWindow, Image, Spinner, Fileselector, Notify, \
     Separator, Progressbar, Menu, MenuItem, MenuItemSeparator, Panel, \
     Genlist, GenlistItem, GenlistItemClass, WidgetItem, ScrolledEntry, \
+    Gengrid, GengridItem, GengridItemClass, \
     init, shutdown, run, exit, scale_get, scale_set, \
     finger_size_get, finger_size_set, coords_finger_size_adjust, \
     theme_overlay_add, theme_extension_add, policy_set, policy_get, \

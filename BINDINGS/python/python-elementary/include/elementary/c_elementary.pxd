@@ -175,6 +175,21 @@ cdef extern from "Elementary.h":
         char *item_style
         Elm_Genlist_Item_Class_Func func
 
+    ctypedef char *(*GengridItemLabelGetFunc)(void *data, evas.c_evas.Evas_Object *obj, const_char_ptr part)
+    ctypedef evas.c_evas.Evas_Object *(*GengridItemIconGetFunc)(void *data, evas.c_evas.Evas_Object *obj, const_char_ptr part)
+    ctypedef evas.c_evas.Eina_Bool (*GengridItemStateGetFunc)(void *data, evas.c_evas.Evas_Object *obj, const_char_ptr part)
+    ctypedef void (*GengridItemDelFunc)(void *data, evas.c_evas.Evas_Object *obj)
+
+    ctypedef struct Elm_Gengrid_Item_Class_Func:
+        GengridItemLabelGetFunc label_get
+        GengridItemIconGetFunc icon_get
+        GengridItemStateGetFunc state_get
+        GengridItemDelFunc del_ "del"
+
+    ctypedef struct Elm_Gengrid_Item_Class:
+        char *item_style
+        Elm_Gengrid_Item_Class_Func func
+
     ctypedef evas.c_evas.Evas_Object *(*Elm_Tooltip_Content_Cb) (void *data, evas.c_evas.Evas_Object *obj)
     ctypedef evas.c_evas.Evas_Object *(*Elm_Tooltip_Item_Content_Cb) (void *data, evas.c_evas.Evas_Object *obj, void *item)
 
@@ -184,6 +199,7 @@ cdef extern from "Elementary.h":
     ctypedef struct Elm_List_Item
     ctypedef struct Elm_Carousel_Item
     ctypedef struct Elm_Genlist_Item
+    ctypedef struct Elm_Gengrid_Item
     ctypedef struct Elm_Theme
 
     # Basic elementary functions
@@ -692,6 +708,62 @@ cdef extern from "Elementary.h":
     char*        elm_genlist_item_cursor_style_get(Elm_Genlist_Item *item)
     void         elm_genlist_item_cursor_engine_only_set(Elm_Genlist_Item *item, evas.c_evas.Eina_Bool engine_only)
     evas.c_evas.Eina_Bool elm_genlist_item_cursor_engine_only_get(Elm_Genlist_Item *item)
+
+    # Generic Grid
+    evas.c_evas.Evas_Object *elm_gengrid_add(evas.c_evas.Evas_Object *parent)
+    void elm_gengrid_clear(evas.c_evas.Evas_Object *obj)
+    void elm_gengrid_item_size_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord w, evas.c_evas.Evas_Coord h)
+    void elm_gengrid_item_size_get(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord *w, evas.c_evas.Evas_Coord *h)
+    void elm_gengrid_align_set(evas.c_evas.Evas_Object *obj,  double align_x, double align_y)
+    void elm_gengrid_align_get(evas.c_evas.Evas_Object *obj,  double *align_x, double *align_y)
+
+    void elm_gengrid_multi_select_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool multi)
+    evas.c_evas.Eina_Bool elm_gengrid_multi_select_get(evas.c_evas.Evas_Object *obj)
+    void elm_gengrid_always_select_mode_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool always_select)
+    evas.c_evas.Eina_Bool elm_gengrid_always_select_mode_get(evas.c_evas.Evas_Object *obj)
+    void elm_gengrid_no_select_mode_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool no_select)
+    evas.c_evas.Eina_Bool elm_gengrid_no_select_mode_get(evas.c_evas.Evas_Object *obj)
+    void elm_gengrid_bounce_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool h_bounce, evas.c_evas.Eina_Bool v_bounce)
+    void elm_gengrid_bounce_get(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool *h_bounce, evas.c_evas.Eina_Bool *v_bounce)
+    void elm_gengrid_page_relative_set(evas.c_evas.Evas_Object *obj, double h_pagerel, double v_pagerel)
+    void elm_gengrid_page_size_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord h_pagesize, evas.c_evas.Evas_Coord v_pagesize)
+    void elm_gengrid_horizontal_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool setting) 
+
+    Elm_Gengrid_Item *elm_gengrid_item_append(evas.c_evas.Evas_Object *obj, Elm_Gengrid_Item_Class *itc, void *data, evas.c_evas.Evas_Smart_Cb func, void *func_data)
+    Elm_Gengrid_Item *elm_gengrid_item_prepend(evas.c_evas.Evas_Object *obj, Elm_Gengrid_Item_Class *itc, void *data, evas.c_evas.Evas_Smart_Cb func, void *func_data)
+    Elm_Gengrid_Item *elm_gengrid_item_insert_before(evas.c_evas.Evas_Object *obj, Elm_Gengrid_Item_Class *itc, void *data, Elm_Gengrid_Item *before, evas.c_evas.Evas_Smart_Cb func, void *func_data)
+    Elm_Gengrid_Item *elm_gengrid_item_insert_after(evas.c_evas.Evas_Object *obj, Elm_Gengrid_Item_Class *itc, void *data, Elm_Gengrid_Item *after, evas.c_evas.Evas_Smart_Cb func, void *func_data)
+    Elm_Gengrid_Item *elm_gengrid_selected_item_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_List *elm_gengrid_selected_items_get(evas.c_evas.Evas_Object *obj)
+    Elm_Gengrid_Item *elm_gengrid_first_item_get(evas.c_evas.Evas_Object *obj)
+    Elm_Gengrid_Item *elm_gengrid_last_item_get(evas.c_evas.Evas_Object *obj)
+
+    Elm_Gengrid_Item *elm_gengrid_item_next_get(Elm_Gengrid_Item *item)
+    Elm_Gengrid_Item *elm_gengrid_item_prev_get(Elm_Gengrid_Item *item)
+    evas.c_evas.Evas_Object *elm_gengrid_item_gengrid_get(Elm_Gengrid_Item *item)
+    void elm_gengrid_item_selected_set(Elm_Gengrid_Item *item, evas.c_evas.Eina_Bool selected)
+    evas.c_evas.Eina_Bool elm_gengrid_item_selected_get(Elm_Gengrid_Item *item)
+    void elm_gengrid_item_show(Elm_Gengrid_Item *item)
+    void elm_gengrid_item_bring_in(Elm_Gengrid_Item *item)
+    void elm_gengrid_item_del(Elm_Gengrid_Item *item)
+    void *elm_gengrid_item_data_get(Elm_Gengrid_Item *item)
+    void elm_gengrid_item_data_set(Elm_Gengrid_Item *it, void *data)
+    evas.c_evas.Evas_Object *elm_gengrid_item_object_get(Elm_Gengrid_Item *it)
+    void elm_gengrid_item_update(Elm_Gengrid_Item *item)
+    void elm_gengrid_item_pos_get(Elm_Gengrid_Item *item, unsigned int *x, unsigned int *y)
+
+    void  elm_gengrid_item_tooltip_text_set(Elm_Gengrid_Item *item, char *text)
+    void  elm_gengrid_item_tooltip_content_cb_set(Elm_Gengrid_Item *item, Elm_Tooltip_Item_Content_Cb func, void *data, evas.c_evas.Evas_Smart_Cb del_cb)
+    void  elm_gengrid_item_tooltip_unset(Elm_Gengrid_Item *item)
+    void  elm_gengrid_item_tooltip_style_set(Elm_Gengrid_Item *item, char *style)
+    char* elm_gengrid_item_tooltip_style_get(Elm_Gengrid_Item *item)
+    void  elm_gengrid_item_cursor_set(Elm_Gengrid_Item *item, char *cursor)
+    void  elm_gengrid_item_cursor_unset(Elm_Gengrid_Item *item)
+    void  elm_gengrid_item_cursor_style_set(Elm_Gengrid_Item *item, char *style)
+    char* elm_gengrid_item_cursor_style_get(Elm_Gengrid_Item *item)
+    void  elm_gengrid_item_cursor_engine_only_set(Elm_Gengrid_Item *item, evas.c_evas.Eina_Bool engine_only)
+    evas.c_evas.Eina_Bool elm_gengrid_item_cursor_engine_only_get(Elm_Gengrid_Item *item)
+
 
     # Check widget
     evas.c_evas.Evas_Object *elm_check_add(evas.c_evas.Evas_Object *parent)

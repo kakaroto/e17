@@ -34,6 +34,7 @@ from test_panel import panel_clicked
 from test_layout import layout_clicked
 from test_spinner import spinner_clicked
 from test_genlist import genlist_clicked
+from test_gengrid import gengrid_clicked
 from test_flip import flip_clicked
 from test_tooltip import tooltip_clicked
 from test_cursor import cursor_clicked, cursor2_clicked, cursor3_clicked
@@ -99,6 +100,7 @@ if __name__ == "__main__":
              ("List 3", list3_clicked),
              ("InnerWindow", inner_window_clicked),
              ("Genlist", genlist_clicked),
+             ("Gengrid", gengrid_clicked),
              ("Checks", check_clicked),
              ("Radios", radio_clicked),
              ("Pager", pager_clicked),
