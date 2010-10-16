@@ -106,37 +106,45 @@
   </td>
    
   <td class='main'>
-   <hr><div class="main"><p><b><a href=
+   <?php frame1("width=100%");?>
+   <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Edje">Edje</a> </b><em>
      1.0.0 BETA </em></p><p>
      Abstract GUI layout and animation object library. </p><p align=right><?php blinkdl("i/logo-s.png", 
      "DOWNLOAD EDJE", 
      "http://download.enlightenment.org/releases/edje-1.0.0.beta.tar.gz"
    );?></p></div>
+   <?php frame2();?>
    
-   <hr><div class="main"><p><b><a href=
+   <?php frame1("width=100%");?>
+   <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Efreet">Efreet</a> </b><em>
      1.0.0 BETA </em></p><p>
      Standards handling for <a href="http://www.freedesktop.org">freedesktop.org</a> standards. </p><p align=right><?php blinkdl("i/logo-s.png",
      "DOWNLOAD EFREET", 
      "http://download.enlightenment.org/releases/efreet-1.0.0.beta.tar.gz"
    );?></p></div>
+   <?php frame2();?>
    
-   <hr><div class="main"><p><b><a href=
+   <?php frame1("width=100%");?>
+   <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/E_Dbus">E_Dbus</a> </b><em>
      1.0.0 BETA </em></p><p>
      Dbus wrapping and glue layer library. </p><p align=right><?php blinkdl("i/logo-s.png", 
      "DOWNLOAD E_DBUS", 
      "http://download.enlightenment.org/releases/e_dbus-1.0.0.beta.tar.gz"
    );?></p></div>
+   <?php frame2();?>
    
-   <hr><div class="main"><p><b><a href=
+   <?php frame1("width=100%");?>
+   <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Eeze">Eeze</a> </b><em>
      1.0.0 BETA </em></p><p>
      Udev wrapping and abstraction library. </p><p align=right><?php blinkdl("i/logo-s.png", 
      "DOWNLOAD EEZE", 
      "http://download.enlightenment.org/releases/eeze-1.0.0.beta.tar.gz"
    );?></p></div>
+   <?php frame2();?>
   </td>
  </tr>
  
