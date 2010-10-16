@@ -1,0 +1,835 @@
+Index: m4/ac_attribute.m4
+===================================================================
+--- m4/ac_attribute.m4	(revision 0)
++++ m4/ac_attribute.m4	(revision 0)
+@@ -0,0 +1,47 @@
++dnl Copyright (C) 2004-2008 Kim Woelders
++dnl Copyright (C) 2008 Vincent Torri <vtorri at univ-evry dot fr>
++dnl That code is public domain and can be freely used or copied.
++dnl Originally snatched from somewhere...
++
++dnl Macro for checking if the compiler supports __attribute__
++
++dnl Usage: AC_C___ATTRIBUTE__
++dnl call AC_DEFINE for HAVE___ATTRIBUTE__ and __UNUSED__
++dnl if the compiler supports __attribute__, HAVE___ATTRIBUTE__ is
++dnl defined to 1 and __UNUSED__ is defined to __attribute__((unused))
++dnl otherwise, HAVE___ATTRIBUTE__ is not defined and __UNUSED__ is
++dnl defined to nothing.
++
++AC_DEFUN([AC_C___ATTRIBUTE__],
++[
++
++AC_MSG_CHECKING([for __attribute__])
++
++AC_CACHE_VAL([ac_cv___attribute__],
++   [AC_TRY_COMPILE(
++       [
++#include <stdlib.h>
++
++int func(int x);
++int foo(int x __attribute__ ((unused)))
++{
++   exit(1);
++}
++       ],
++       [],
++       [ac_cv___attribute__="yes"],
++       [ac_cv___attribute__="no"]
++    )])
++
++AC_MSG_RESULT($ac_cv___attribute__)
++
++if test "x${ac_cv___attribute__}" = "xyes" ; then
++   AC_DEFINE([HAVE___ATTRIBUTE__], [1], [Define to 1 if your compiler has __attribute__])
++   AC_DEFINE([__UNUSED__], [__attribute__((unused))], [Macro declaring a function argument to be unused])
++  else
++    AC_DEFINE([__UNUSED__], [], [Macro declaring a function argument to be unused])
++fi
++
++])
++
++dnl End of ac_attribute.m4
+Index: configure.ac
+===================================================================
+--- configure.ac	(revision 53479)
++++ configure.ac	(working copy)
+@@ -58,6 +58,7 @@
+ ### Checks for programs
+ AC_PROG_CC
+ AM_PROG_CC_C_O
++AC_C___ATTRIBUTE__
+ 
+ # pkg-config
+ PKG_PROG_PKG_CONFIG
+Index: src/lib/eeze_udev_watch.c
+===================================================================
+--- src/lib/eeze_udev_watch.c	(revision 53481)
++++ src/lib/eeze_udev_watch.c	(working copy)
+@@ -6,8 +6,6 @@
+ #include <Eeze.h>
+ #include "eeze_udev_private.h"
+ 
+-extern _udev *udev;
+-
+ /* opaque */
+ struct Eeze_Udev_Watch
+ {
+Index: src/lib/eeze_disk_private.h
+===================================================================
+--- src/lib/eeze_disk_private.h	(revision 0)
++++ src/lib/eeze_disk_private.h	(revision 0)
+@@ -0,0 +1,56 @@
++#ifndef EEZE_DISK_PRIVATE_H
++#define EEZE_DISK_PRIVATE_H
++#include "Eeze.h"
++
++#ifndef EEZE_DISK_COLOR_DEFAULT
++#define EEZE_DISK_COLOR_DEFAULT EINA_COLOR_LIGHTBLUE
++#endif
++extern int _eeze_disk_log_dom;
++#ifdef ERR
++#undef ERR
++#endif
++#ifdef INF
++#undef INF
++#endif
++#ifdef WARN
++#undef WARN
++#endif
++#ifdef DBG
++#undef DBG
++#endif
++
++#define DBG(...)   EINA_LOG_DOM_DBG(_eeze_disk_log_dom, __VA_ARGS__)
++#define INF(...)    EINA_LOG_DOM_INF(_eeze_disk_log_dom, __VA_ARGS__)
++#define WARN(...) EINA_LOG_DOM_WARN(_eeze_disk_log_dom, __VA_ARGS__)
++#define ERR(...)   EINA_LOG_DOM_ERR(_eeze_disk_log_dom, __VA_ARGS__)
++
++
++struct _Eeze_Disk
++{
++   _udev_device *device;
++   void *data;
++
++   Eina_Bool mounted : 1;
++   Ecore_Exe *mounter;
++   Ecore_Cb mount_cb;
++   Ecore_Event_Handler *handler;
++   
++   const char *syspath;
++   const char *devpath;
++   const char *fstype;
++   const char *mount_point;
++   
++   struct
++     {
++        Eeze_Disk_Type type;
++        const char *vendor;
++        const char *model;
++        const char *serial;
++        const char *uuid;
++        Eina_Bool filled : 1;
++     } cache;
++};
++
++Eina_Bool _eeze_disk_mount_result_handler(Eeze_Disk *disk, int type __UNUSED__, Ecore_Exe_Event_Del *ev);
++
++#endif
+Index: src/lib/eeze_disk.c
+===================================================================
+--- src/lib/eeze_disk.c	(revision 0)
++++ src/lib/eeze_disk.c	(revision 0)
+@@ -0,0 +1,297 @@
++#ifdef HAVE_CONFIG_H
++#include "config.h"
++#endif
++
++#include <Ecore.h>
++#include <Eeze.h>
++#include <Eeze_Disk.h>
++
++#include "eeze_udev_private.h"
++#include "eeze_disk_private.h"
++
++/**
++ * @addtogroup disk Disk
++ * @{
++ */
++
++static Eeze_Disk_Type
++_eeze_disk_type_find(Eeze_Disk *disk)
++{
++   const char *bus;
++   bus = udev_device_get_property_value(disk->device, "ID_BUS");
++   if (!bus)
++     return EEZE_DISK_TYPE_UNKNOWN;
++
++   if (!strcmp(bus, "ata") || !strcmp(bus, "scsi"))
++     { /* FIXME: I think some other types of devices fall into this, check later */
++        if (udev_device_get_property_value(disk->device, "ID_CDROM"))
++          return EEZE_DISK_TYPE_CDROM;
++        else
++          return EEZE_DISK_TYPE_INTERNAL;
++     }
++   else if (!strcmp(bus, "usb"))
++     return EEZE_DISK_TYPE_USB;
++
++   return EEZE_DISK_TYPE_UNKNOWN;
++}
++
++
++/**
++ * @brief Create a new disk object
++ * @param syspath The /sys/ path of the disk; CANNOT be #NULL
++ * @return The new disk object
++ *
++ * This function creates a new #Eeze_Disk from @p syspath.  Note that this function
++ * does the minimal amount of work in order to save memory, and udev info about the disk
++ * is not retrieved in this call.
++ */
++EAPI Eeze_Disk *
++eeze_disk_new(const char *syspath)
++{
++   Eeze_Disk *disk;
++   _udev_device *dev;
++   
++   EINA_SAFETY_ON_NULL_RETURN_VAL(syspath, NULL);
++   
++   /* do the lookup manually to avoid slight but unnecessary udev overhead here
++    * while simultaneously validating the syspath
++    */
++   if (!(dev = _new_device(syspath)))
++     return EINA_FALSE;
++
++   if (!(disk = calloc(1, sizeof(Eeze_Disk))))
++     return NULL;
++
++   disk->syspath = eina_stringshare_add(syspath);
++   disk->device = dev;
++   disk->handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
++                                           (Ecore_Event_Handler_Cb)_eeze_disk_mount_result_handler, disk);
++   
++   return disk;
++}
++
++
++/**
++ * @brief Frees a disk object
++ * @param disk The disk object to free
++ *
++ * This call frees an #Eeze_Disk.  Once freed, the disk can no longer be used.
++ */
++EAPI void
++eeze_disk_free(Eeze_Disk *disk)
++{
++   EINA_SAFETY_ON_NULL_RETURN(disk);
++
++   eina_stringshare_del(disk->syspath);
++   udev_device_unref(disk->device);
++   ecore_event_handler_del(disk->handler);
++   free(disk);
++}
++
++/**
++ * @brief Retrieve all disk information
++ * @param disk
++ *
++ * Use this function to retrieve all of a disk's information at once, then use
++ * a "get" function to retrieve the value.  Data retrieved in this call is cached,
++ * meaning that subsequent calls will return immediately without performing any work.
++ */
++EAPI void
++eeze_disk_scan(Eeze_Disk *disk)
++{
++   EINA_SAFETY_ON_NULL_RETURN(disk);
++   /* never rescan; if these values change then something is seriously wrong */
++   if (disk->cache.filled)
++     return;
++     
++   if (!disk->cache.vendor)
++     disk->cache.vendor = udev_device_get_property_value(disk->device, "ID_VENDOR");
++   if (!disk->cache.model)
++     disk->cache.model = udev_device_get_property_value(disk->device, "ID_MODEL");
++   if (!disk->cache.serial)
++     disk->cache.serial = udev_device_get_property_value(disk->device, "ID_SERIAL_SHORT");
++   if (!disk->cache.uuid)
++     disk->cache.uuid = udev_device_get_property_value(disk->device, "ID_UUID");
++   if (!disk->cache.type)
++     disk->cache.type = _eeze_disk_type_find(disk);
++
++   disk->cache.filled = EINA_TRUE;
++}
++
++/**
++ * @brief Associate data with a disk
++ * @param disk The disk
++ * @param data The data
++ *
++ * Data can be associated with @p disk with this function.
++ * @see eeze_disk_data_get
++ */
++EAPI void
++eeze_disk_data_set(Eeze_Disk *disk, void *data)
++{
++   EINA_SAFETY_ON_NULL_RETURN(disk);
++   
++   disk->data = data;
++}
++
++/**
++ * @brief Retrieve data previously associated with a disk
++ * @param disk The disk
++ * @return The data
++ *
++ * Data that has been previously associated with @p disk
++ * is returned with this function.
++ * @see eeze_disk_data_set
++ */
++EAPI void *
++eeze_disk_data_get(Eeze_Disk *disk)
++{
++   EINA_SAFETY_ON_NULL_RETURN_VAL(disk, NULL);
++   
++   return disk->data;
++}
++
++/**
++ * @brief Return the /sys/ path of a disk
++ * @param disk The disk
++ * @return The /sys/ path
++ *
++ * This retrieves the /sys/ path that udev associates with @p disk.
++ */
++EAPI const char *
++eeze_disk_syspath_get(Eeze_Disk *disk)
++{
++   EINA_SAFETY_ON_NULL_RETURN_VAL(disk, NULL);
++   
++   return disk->syspath;
++}
++
++/**
++ * @brief Return the /dev/ path of a disk
++ * @param disk The disk
++ * @return The /dev/ path
++ *
++ * This retrieves the /dev/ path that udev has created a device node at for @p disk.
++ */
++EAPI const char *
++eeze_disk_devpath_get(Eeze_Disk *disk)
++{
++   EINA_SAFETY_ON_NULL_RETURN_VAL(disk, NULL);
++   
++   if (disk->devpath)
++     return disk->devpath;
++   disk->devpath = udev_device_get_devpath(disk->device);
++   return disk->devpath;
++}
++
++/**
++ * @brief Return the filesystem of the disk (if known)
++ * @param disk The disk
++ * @return The filesystem type
++ *
++ * This retrieves the filesystem that the disk is using, or #NULL if unknown.
++ */
++EAPI const char *
++eeze_disk_fstype_get(Eeze_Disk *disk)
++{
++   EINA_SAFETY_ON_NULL_RETURN_VAL(disk, NULL);
++   
++   return disk->fstype;
++}
++
++/**
++ * @brief Return the manufacturing vendor of the disk
++ * @param disk The disk
++ * @return The vendor
++ *
++ * This retrieves the vendor which manufactured the disk, or #NULL if unknown.
++ */
++EAPI const char *
++eeze_disk_vendor_get(Eeze_Disk *disk)
++{
++   EINA_SAFETY_ON_NULL_RETURN_VAL(disk, NULL);
++   
++   if (disk->cache.vendor)
++     return disk->cache.vendor;
++     
++   disk->cache.vendor = udev_device_get_property_value(disk->device, "ID_VENDOR");
++   return disk->cache.vendor;
++}
++
++/**
++ * @brief Return the model of the disk
++ * @param disk The disk
++ * @return The model
++ *
++ * This retrieves the model of the disk, or #NULL if unknown.
++ */
++EAPI const char *
++eeze_disk_model_get(Eeze_Disk *disk)
++{
++   EINA_SAFETY_ON_NULL_RETURN_VAL(disk, NULL);
++   
++   if (disk->cache.model)
++     return disk->cache.model;
++     
++   disk->cache.model = udev_device_get_property_value(disk->device, "ID_MODEL");
++   return disk->cache.model;
++}
++
++/**
++ * @brief Return the serial number of the disk
++ * @param disk The disk
++ * @return The serial number
++ *
++ * This retrieves the serial number the disk, or #NULL if unknown.
++ */
++EAPI const char *
++eeze_disk_serial_get(Eeze_Disk *disk)
++{
++   EINA_SAFETY_ON_NULL_RETURN_VAL(disk, NULL);
++   
++   if (disk->cache.serial)
++     return disk->cache.serial;
++   disk->cache.serial = udev_device_get_property_value(disk->device, "ID_SERIAL_SHORT");
++   return disk->cache.serial;
++}
++
++/**
++ * @brief Return the UUID of the disk
++ * @param disk The disk
++ * @return The UUID
++ *
++ * This retrieves the UUID of the disk, or #NULL if unknown.
++ * A UUID is a 36 character (hopefully) unique identifier which can
++ * be used to store persistent information about a disk.
++ */
++EAPI const char *
++eeze_disk_uuid_get(Eeze_Disk *disk)
++{
++   EINA_SAFETY_ON_NULL_RETURN_VAL(disk, NULL);
++   
++   if (disk->cache.uuid)
++     return disk->cache.uuid;
++   disk->cache.uuid = udev_device_get_property_value(disk->device, "ID_UUID");
++   return disk->cache.uuid;
++}
++
++/**
++ * @brief Return the #Eeze_Disk_Type of the disk
++ * @param disk The disk
++ * @return The type
++ *
++ * This retrieves the #Eeze_Disk_Type of the disk.  This call is useful for determining
++ * the bus that the disk is connected through.
++ */
++EAPI Eeze_Disk_Type
++eeze_disk_type_get(Eeze_Disk *disk)
++{
++   EINA_SAFETY_ON_NULL_RETURN_VAL(disk, EEZE_DISK_TYPE_UNKNOWN);
++   
++   if (disk->cache.type)
++     return disk->cache.type;
++   disk->cache.type = _eeze_disk_type_find(disk);
++   return disk->cache.type;
++}
++
++/** @} */
+Index: src/lib/eeze_disk_mount.c
+===================================================================
+--- src/lib/eeze_disk_mount.c	(revision 0)
++++ src/lib/eeze_disk_mount.c	(revision 0)
+@@ -0,0 +1,162 @@
++#ifdef HAVE_CONFIG_H
++#include "config.h"
++#endif
++
++#include <Ecore.h>
++#include <Eeze.h>
++#include <Eeze_Disk.h>
++#include <mount/mount.h>
++
++#define EEZE_MOUNT_BIN "/bin/mount"
++#define EEZE_UNMOUNT_BIN "/bin/umount"
++
++
++#include "eeze_udev_private.h"
++#include "eeze_disk_private.h"
++
++Eina_Bool
++_eeze_disk_mount_result_handler(Eeze_Disk *disk, int type __UNUSED__, Ecore_Exe_Event_Del *ev)
++{
++   switch (ev->exit_code)
++     {
++       case 1:
++         ERR("incorrect invocation or permissions");
++         break;
++
++       case 2:
++         ERR("system error (out of memory, cannot fork, no more loop devices)");
++         break;
++
++       case 4:
++         ERR("internal mount bug");
++         break;
++
++       case 8:
++         ERR("user interrupt");
++         break;
++
++       case 16:
++         ERR("problems writing or locking /etc/mtab");
++         break;
++
++       case 32:
++         ERR("mount failure");
++         break;
++
++       case 64:
++         ERR("some mount succeeded");
++         break;
++
++       default:
++         disk->mounted = EINA_TRUE;
++     }
++
++   if (disk->mount_cb)
++     disk->mount_cb(disk);
++   
++   return ECORE_CALLBACK_RENEW;
++}
++
++/**
++ * @brief Return the mount state of a disk
++ * @param disk The disk
++ * @return The mount state
++ *
++ * This returns the mounted state of the disk.  #EINA_TRUE if mounted, else #EINA_FALSE.
++ */
++EAPI Eina_Bool
++eeze_disk_mounted_get(Eeze_Disk *disk)
++{
++   EINA_SAFETY_ON_NULL_RETURN_VAL(disk, EINA_FALSE);
++
++   return disk->mounted;
++}
++
++/**
++ * @brief Begin a mount operation on the disk
++ * @param disk The disk
++ * @param cb The callback (if desired) to call upon completion of the operation
++ * @return #EINA_TRUE if the operation was started, else #EINA_FALSE
++ *
++ * This call is used to begin a mount operation on @p disk.  The operation will
++ * run asynchronously in a pipe, optionally calling @p cb upon completion.  If
++ * any errors are encountered, they will automatically logged to the eeze_disk domain.
++ * When @p cb is called, eeze_disk_mounted_get should be used to determine whether the operation
++ * was successful.
++ *
++ * NOTE: The return value of this function does not in any way reflect the mount state of a disk.
++ */
++EAPI Eina_Bool
++eeze_disk_mount(Eeze_Disk *disk, Ecore_Cb cb)
++{
++   EINA_SAFETY_ON_NULL_RETURN_VAL(disk, EINA_FALSE);
++   
++
++   disk->mount_cb = cb;
++   disk->mounter = ecore_exe_pipe_run(EEZE_MOUNT_BIN, 0, disk);
++   if (!disk->mounter)
++     return EINA_FALSE;
++     
++   return EINA_TRUE;
++}
++
++/**
++ * @brief Begin an unmount operation on the disk
++ * @param disk The disk
++ * @param cb The callback (if desired) to call upon completion of the operation
++ * @return #EINA_TRUE if the operation was started, else #EINA_FALSE
++ *
++ * This call is used to begin an unmount operation on @p disk.  The operation will
++ * run asynchronously in a pipe, optionally calling @p cb upon completion.  If
++ * any errors are encountered, they will automatically logged to the eeze_disk domain.
++ * When @p cb is called, eeze_disk_mounted_get should be used to determine whether the operation
++ * was successful.
++ *
++ * NOTE: The return value of this function does not in any way reflect the mount state of a disk.
++ */
++EAPI Eina_Bool
++eeze_disk_unmount(Eeze_Disk *disk, Ecore_Cb cb)
++{
++   EINA_SAFETY_ON_NULL_RETURN_VAL(disk, EINA_FALSE);
++
++   if (!disk->mounted)
++     return EINA_TRUE;
++   disk->mount_cb = cb;
++   disk->mounter = ecore_exe_pipe_run(EEZE_UNMOUNT_BIN, 0, disk);
++   if (!disk->mounter)
++     return EINA_FALSE;
++     
++   return EINA_TRUE;
++}
++
++/**
++ * @brief Return the mount point of a disk
++ * @param disk The disk
++ * @return The mount point
++ *
++ * This function returns the mount point associated with @p disk.
++ * Note that to determine whether the disk is actually mounted, eeze_disk_mounted_get should be used.
++ */
++EAPI const char *
++eeze_disk_mount_point_get(Eeze_Disk *disk)
++{
++   EINA_SAFETY_ON_NULL_RETURN_VAL(disk, NULL);
++
++   return disk->mount_point;
++}
++
++/**
++ * @brief Set the mount point of a disk
++ * @param disk The disk
++ * @param mount_point The mount point
++ *
++ * This function sets the mount point associated with @p disk.
++ * Note that to determine whether the disk is actually mounted, eeze_disk_mounted_get should be used.
++ */
++EAPI void
++eeze_disk_mount_point_set(Eeze_Disk *disk, const char *mount_point)
++{
++   EINA_SAFETY_ON_NULL_RETURN(disk);
++
++   disk->mount_point = mount_point;
++}
+Index: src/lib/eeze_udev_private.c
+===================================================================
+--- src/lib/eeze_udev_private.c	(revision 53481)
++++ src/lib/eeze_udev_private.c	(working copy)
+@@ -5,8 +5,6 @@
+ #include <Eeze.h>
+ #include "eeze_udev_private.h"
+ 
+-extern _udev *udev;
+-
+ /*
+  * helper function to set up a new device from a syspath
+  * which may or may not include /sys at the beginning
+Index: src/lib/eeze_udev_syspath.c
+===================================================================
+--- src/lib/eeze_udev_syspath.c	(revision 53481)
++++ src/lib/eeze_udev_syspath.c	(working copy)
+@@ -5,8 +5,6 @@
+ #include <Eeze.h>
+ #include "eeze_udev_private.h"
+ 
+-extern _udev *udev;
+-
+ /**
+  * @addtogroup syspath Syspath
+  *
+Index: src/lib/Eeze_Disk.h
+===================================================================
+--- src/lib/Eeze_Disk.h	(revision 0)
++++ src/lib/Eeze_Disk.h	(revision 0)
+@@ -0,0 +1,75 @@
++#ifndef EEZE_DISK_H
++#define EEZE_DISK_H
++
++#ifndef USE_UNSTABLE_LIBMOUNT_API
++# define USE_UNSTABLE_LIBMOUNT_API 1
++#endif
++
++#ifdef EAPI
++# undef EAPI
++#endif
++
++#ifdef __GNUC__
++# if __GNUC__ >= 4
++#  define EAPI __attribute__ ((visibility("default")))
++# else
++#  define EAPI
++# endif
++#else
++# define EAPI
++#endif
++
++/**
++ * @file Eeze_Disk.h
++ * @brief Disk manipulation
++ *
++ * Eeze disk functions allow you to quickly and efficiently manipulate disks
++ * through simple function calls.
++ *
++ * @addtogroup disk Disk
++ * @{
++ */
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++typedef enum
++{
++   EEZE_DISK_TYPE_UNKNOWN = 0, /**< type could not be determined */
++   EEZE_DISK_TYPE_INTERNAL = 1, /**< internal drive */
++   EEZE_DISK_TYPE_CDROM = 2, /**< cdrom drive */
++   EEZE_DISK_TYPE_USB = 4 /**< usb drive */
++} Eeze_Disk_Type;
++
++struct _Eeze_Disk;
++typedef struct _Eeze_Disk Eeze_Disk;
++
++
++EAPI Eeze_Disk     *eeze_disk_new(const char *syspath);
++EAPI void           eeze_disk_free(Eeze_Disk *disk);
++EAPI void           eeze_disk_scan(Eeze_Disk *disk);
++EAPI void           eeze_disk_data_set(Eeze_Disk *disk, void *data);
++EAPI void          *eeze_disk_data_get(Eeze_Disk *disk);
++EAPI const char    *eeze_disk_syspath_get(Eeze_Disk *disk);
++EAPI const char    *eeze_disk_devpath_get(Eeze_Disk *disk);
++EAPI const char    *eeze_disk_fstype_get(Eeze_Disk *disk);
++EAPI const char    *eeze_disk_vendor_get(Eeze_Disk *disk);
++EAPI const char    *eeze_disk_model_get(Eeze_Disk *disk);
++EAPI const char    *eeze_disk_serial_get(Eeze_Disk *disk);
++EAPI const char    *eeze_disk_uuid_get(Eeze_Disk *disk);
++EAPI Eeze_Disk_Type eeze_disk_type_get(Eeze_Disk *disk);
++
++EAPI Eina_Bool      eeze_disk_mounted_get(Eeze_Disk *disk);
++EAPI Eina_Bool      eeze_disk_mount(Eeze_Disk *disk, Ecore_Cb cb);
++EAPI Eina_Bool      eeze_disk_unmount(Eeze_Disk *disk, Ecore_Cb cb);
++EAPI const char    *eeze_disk_mount_point_get(Eeze_Disk *disk);
++EAPI void           eeze_disk_mount_point_set(Eeze_Disk *disk, const char *mount_point);
++
++#ifdef __cplusplus
++}
++#endif
++
++/** @} */
++
++#endif
+Index: src/lib/Makefile.am
+===================================================================
+--- src/lib/Makefile.am	(revision 53372)
++++ src/lib/Makefile.am	(working copy)
+@@ -3,16 +3,18 @@
+ AM_CPPFLAGS = @ECORE_CFLAGS@ @LIBUDEV_CFLAGS@
+ 
+ lib_LTLIBRARIES = libeeze.la
+-includes_HEADERS = Eeze.h
++includes_HEADERS = Eeze.h Eeze_Disk.h
+ includesdir = $(includedir)/eeze-@VMAJ@
+ 
+ libeeze_la_SOURCES = \
+-eeze_udev_syspath.c \
+-eeze_udev_watch.c \
++eeze_disk.c \
++eeze_disk_mount.c \
+ eeze_main.c \
+ eeze_udev_find.c \
++eeze_udev_private.c \
++eeze_udev_syspath.c \
+ eeze_udev_walk.c \
+-eeze_udev_private.c
++eeze_udev_watch.c
+ 
+ libeeze_la_LIBADD = @ECORE_LIBS@ @LIBUDEV_LIBS@
+ libeeze_la_LDFLAGS = -no-undefined -version-info @version_info@ @release_info@
+Index: src/lib/eeze_udev_walk.c
+===================================================================
+--- src/lib/eeze_udev_walk.c	(revision 53481)
++++ src/lib/eeze_udev_walk.c	(working copy)
+@@ -5,8 +5,6 @@
+ #include <Eeze.h>
+ #include "eeze_udev_private.h"
+ 
+-extern _udev *udev;
+-
+ /**
+  * @addtogroup walks Walks
+  *
+Index: src/lib/eeze_udev_private.h
+===================================================================
+--- src/lib/eeze_udev_private.h	(revision 53482)
++++ src/lib/eeze_udev_private.h	(working copy)
+@@ -20,7 +20,7 @@
+ #endif
+ 
+ #define DBG(...)   EINA_LOG_DOM_DBG(_eeze_udev_log_dom, __VA_ARGS__)
+-#define INFO(...)    EINA_LOG_DOM_INFO(_eeze_udev_log_dom, __VA_ARGS__)
++#define INF(...)    EINA_LOG_DOM_INF(_eeze_udev_log_dom, __VA_ARGS__)
+ #define WARN(...) EINA_LOG_DOM_WARN(_eeze_udev_log_dom, __VA_ARGS__)
+ #define ERR(...)   EINA_LOG_DOM_ERR(_eeze_udev_log_dom, __VA_ARGS__)
+ 
+@@ -31,6 +31,8 @@
+ typedef struct udev_enumerate _udev_enumerate;
+ typedef struct udev_monitor _udev_monitor;
+ 
++extern _udev *udev;
++
+ _udev_device *_new_device(const char *syspath);
+ Eina_Bool _walk_parents_test_attr(_udev_device *device, const char *sysattr, const char* value);
+ const char *_walk_parents_get_attr(_udev_device *device, const char *sysattr);
+Index: src/lib/eeze_udev_find.c
+===================================================================
+--- src/lib/eeze_udev_find.c	(revision 53481)
++++ src/lib/eeze_udev_find.c	(working copy)
+@@ -5,8 +5,6 @@
+ #include <Eeze.h>
+ #include "eeze_udev_private.h"
+ 
+-extern _udev *udev;
+-
+ /**
+  * @addtogroup find Find
+  *
+Index: src/lib/eeze_main.c
+===================================================================
+--- src/lib/eeze_main.c	(revision 53482)
++++ src/lib/eeze_main.c	(working copy)
+@@ -14,6 +14,7 @@
+ _udev *udev;
+ 
+ int _eeze_udev_log_dom = -1;
++int _eeze_disk_log_dom = -1;
+ int _eeze_init_count = 0;
+ 
+ 
+@@ -45,7 +46,7 @@
+      return --_eeze_init_count;
+ 
+    _eeze_udev_log_dom = eina_log_domain_register
+-                       ("eeze_udev", EEZE_UDEV_COLOR_DEFAULT);
++                       ("eeze_udev", EINA_COLOR_CYAN);
+ 
+    if (_eeze_udev_log_dom < 0)
+      {
+@@ -53,6 +54,15 @@
+         goto fail;
+      }
+ 
++   _eeze_disk_log_dom = eina_log_domain_register
++                       ("eeze_disk", EINA_COLOR_LIGHTBLUE);
++
++   if (_eeze_disk_log_dom < 0)
++     {
++        EINA_LOG_ERR("Could not register 'eeze_disk' log domain.");
++        goto fail;
++     }
++
+    if (!((udev) = udev_new()))
+      {
+         EINA_LOG_ERR("Could not initialize udev library!");
+@@ -84,7 +94,9 @@
+ 
+    udev_unref(udev);
+    eina_log_domain_unregister(_eeze_udev_log_dom);
++   eina_log_domain_unregister(_eeze_disk_log_dom);
+    _eeze_udev_log_dom = -1;
++   _eeze_disk_log_dom = -1;
+    eina_shutdown();
+    return _eeze_init_count;
+ }
