@@ -35,8 +35,10 @@ def gg_sel(gg, ggi, *args, **kwargs):
     print "[item selected] # %d  at pos %d %d" % (ggi.data, x, y)
 
 def gg_unsel(gg, ggi, *args, **kwargs):
-    (x, y) = ggi.pos_get()
-    print "[item unselected] # %d  at pos %d %d" % (ggi.data, x, y)
+    print "[item unselected] # %d" % (ggi.data)
+
+def gg_clicked(gg, ggi, *args, **kwargs):
+    print "[item clicked] # %d" % (ggi.data)
 # -}}}-
 
 #----- Gengrid -{{{-
@@ -79,6 +81,7 @@ def gengrid_clicked(obj, it):
     tb.pack(gg, 0, 0, 6, 1)
     gg.callback_selected_add(gg_sel)
     gg.callback_unselected_add(gg_unsel)
+    gg.callback_clicked_add(gg_clicked)
     gg.show()
 
     # add the first items
