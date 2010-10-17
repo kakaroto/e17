@@ -11,6 +11,7 @@ Exec=enlightenment
 StartupNotify=false
 X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=language,gadget
+X-Enlightenment-ModuleType=utils
 Icon=e-module-language
 Comment=Gadget to control active keyboard, keyboard layout, and layout variant.
 Comment[cs]=Gadget pro ovládání aktivní klávesnice, jejího rozložení a varianty rozložení.
