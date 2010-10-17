@@ -8,6 +8,7 @@ Name[fr]=Prévisions
 Name[el]=Προβλέψεις
 Name[pt]=Previsões metereológicas
 Icon=e-module-forecasts
+X-Enlightenment-ModuleType=utils
 Comment=The forecasts gadget will display the current weather conditions plus a few days forecast.
 Comment[cs]=Zobrazuje aktuální počasí plus předpověď na několik dní.
 Comment[eo]=Vidigi la nunan veteron kaj prognozo por kelkaj tagoj.
