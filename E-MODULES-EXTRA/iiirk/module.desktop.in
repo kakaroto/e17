@@ -3,6 +3,7 @@ Type=Link
 Name=Iiirk
 Name[eo]=Iiirk
 Icon=e-module-iiirk
+X-Enlightenment-ModuleType=utils
 Comment=Act like a taskbar but only for selected applications.
 Comment[cs]=Jako taskbar, ale jen pro vybrané aplikace.
 Comment[hu]=Olyan mint egy feladatablak, de csak a kijelölt alkalmazásoknak.
