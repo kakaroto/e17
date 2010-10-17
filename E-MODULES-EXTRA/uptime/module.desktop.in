@@ -4,6 +4,7 @@ Name=Uptime
 Name[eo]=Da≈≠ro de funkciado
 Name[hu]=√územ√≥ra
 Icon=e-module-uptime
+X-Enlightenment-ModuleType=utils
 Comment=Gadget to display the current uptime of the system.
 Comment[cs]=Zobrazuje aktu·lnÌ≠ uptime systÈmu.
 Comment[eo]=Vidigi la nunan da≈≠ron de funkciado de la operaciumo.
