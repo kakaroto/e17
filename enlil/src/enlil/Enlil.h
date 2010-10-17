@@ -396,6 +396,7 @@ EAPI    Enlil_Load *            enlil_load_new(Enlil_Root *root,
       void *user_data);
 EAPI    void                    enlil_load_free(Enlil_Load **load);
 EAPI    void                    enlil_load_run(Enlil_Load *load);
+EAPI    void                    enlil_load_stop(Enlil_Load *load);
 //
 
 /* thumbnails */

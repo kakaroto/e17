@@ -27,6 +27,7 @@ struct Enlil_Load_Configuration
 struct enlil_load
 {
     Enlil_Root *root;
+    Ecore_Thread *thread;
     Enlil_Load_Configuration conf;
     int photos_count;
 
@@ -122,8 +123,18 @@ void enlil_load_run(Enlil_Load *load)
 
     load->is_running = 1;
     load->t0 = ecore_time_get();
-    ecore_thread_run(_enlil_load, _enlil_load_end_cb, NULL, load);
+    load->thread = ecore_thread_run(_enlil_load, _enlil_load_end_cb, NULL, load);
     LOG_INFO("Loading start on the library : %s", enlil_root_path_get(load->root));
+}
+
+void enlil_load_stop(Enlil_Load *load)
+{
+    ASSERT_RETURN_VOID(load != NULL);
+    ASSERT_RETURN_VOID(load->is_running != 0);
+
+    ecore_thread_cancel(load->thread);
+    load->is_running = 0;
+    LOG_INFO("Loading the library %s has been canceled.", enlil_root_path_get(load->root));
 }
 
 static void _album_load(Enlil_Load *load, Enlil_Album *album)
