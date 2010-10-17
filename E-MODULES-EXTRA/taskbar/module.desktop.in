@@ -7,6 +7,7 @@ Name[fr]=Barre des tâches
 Name[el]=Γραμμή Εργασιών
 Name[pt]=Barra de tarefas
 X-Enlightenment-IconClass=taskbar,gadget
+X-Enlightenment-ModuleType=utils
 Icon=e-module-taskbar
 Comment=Gadget to provide a taskbar.
 Comment[cs]=Gadget poskytující taskbar.
