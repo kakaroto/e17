@@ -7,6 +7,7 @@ Name[fr]=Courriel
 Name[el]=Αλληλογραφία
 Name[pt]=Correio
 Icon=e-module-mail
+X-Enlightenment-ModuleType=utils
 Comment=Mail notification gadget. Checks POP3, IMAP, maildir, and mbox mailboxes.
 Comment[cs]=Gadget pro upozornění na e-mail. Kontroluje POP3, IMAP, maildir, a mbox schránky.
 Comment[eo]=Vanaĵo por retmesaĝa averto. Inspektas POP3, IMAP, maildir kaj mbox retpoŝtkestojn.
