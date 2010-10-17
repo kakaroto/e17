@@ -9,6 +9,7 @@ Name[zh_CN]=Calendar 日历
 Name[el]=Ημερολόγιο
 Name[pt]=Calendário
 Icon=e-module-calendar
+X-Enlightenment-ModuleType=utils
 Comment=Calendar sheet showing the current day.
 Comment[cs]=Kalendář zobrazující aktuální den.
 Comment[eo]=Kalendara folio vidiganta la nunan tagon.
