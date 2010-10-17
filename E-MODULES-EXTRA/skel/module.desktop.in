@@ -12,4 +12,4 @@ Comment[it]=Non inteso per gli utenti. Fornisce la base per costruire nuovi modu
 Comment[el]=Δεν προορίζετε για χρήστες.Είναι μια βάση δημιουργίας νέων ενοτήτων.
 Comment[pt]=Não é destinado a utilizadores. Bases para desenvolvimento de módulos.
 #Several different types available here. NEED TO DOC THESE.
-X-Enlightenment-ModuleType=system
+X-Enlightenment-ModuleType=utils
