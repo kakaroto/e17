@@ -13,6 +13,7 @@ Exec=enlightenment
 StartupNotify=false
 X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=alarm,gadget
+X-Enlightenment-ModuleType=utils
 Icon=e-module-alarm
 Comment=A module which allows you to set popup reminders.
 Comment[cs]=Modul umožňující nastavit upomínky.
