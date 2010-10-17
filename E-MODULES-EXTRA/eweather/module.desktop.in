@@ -7,6 +7,7 @@ Name[hu]=Időjárás
 Name[fr]=E-météo
 Name[el]=Καιρός
 Icon=eweather
+X-Enlightenment-ModuleType=utils
 Comment=A weather gadget.
 Comment[cs]=Zobrazí aktuální počasí.
 Comment[eo]=Vidigi veteron.
