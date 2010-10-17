@@ -8,6 +8,7 @@ Name[fr]=Météo
 Name[el]=Καιρός
 Name[pt]=Metereologia
 Icon=e-module-weather
+X-Enlightenment-ModuleType=utils
 Comment=A weather gadget.
 Comment[cs]=Zobrazí aktuální počasí.
 Comment[eo]=Vidigi veteron.
