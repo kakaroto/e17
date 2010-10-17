@@ -1052,20 +1052,22 @@ Index: src/lib/eeze_main.c
  }
  
  /**
-@@ -85,6 +129,13 @@
+@@ -83,6 +127,15 @@
+      return _eeze_init_count;
+ 
     udev_unref(udev);
-    eina_log_domain_unregister(_eeze_udev_log_dom);
-    _eeze_udev_log_dom = -1;
 +#ifdef HAVE_EEZE_MOUNT
-+   eina_log_domain_unregister(_eeze_disk_log_dom);
-+   _eeze_disk_log_dom = -1;
 +   eeze_mount_shutdown();
 +   ecore_file_shutdown();
-+#endif
 +   ecore_shutdown();
++   eina_log_domain_unregister(_eeze_disk_log_dom);
++   _eeze_disk_log_dom = -1;
++#else
++   ecore_shutdown();
++#endif
+    eina_log_domain_unregister(_eeze_udev_log_dom);
+    _eeze_udev_log_dom = -1;
     eina_shutdown();
-    return _eeze_init_count;
- }
 Index: src/bin/Makefile.am
 ===================================================================
 --- src/bin/Makefile.am	(revision 53479)
