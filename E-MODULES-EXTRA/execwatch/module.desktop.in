@@ -3,6 +3,7 @@ Type=Link
 Name=Execwatch
 Name[eo]=KomandAtentilo
 Icon=e-module-execwatch
+X-Enlightenment-ModuleType=utils
 Comment=Shows the last state of a periodic executed cmd. Useful as an update checker or for checking if a remote host is available (through ping).
 Comment[cs]=Zobrazuje poslední stav periodicky spouštěného příkazu. Užitečný jako kontrola aktualizací nebo jestli je dostupný vzdálený PC(přes ping).
 Comment[el]=Εμφανίζει την τελευταία κατάσταση μιας περιοδικά εκτελεσμένης εντολής. Χρήσιμο για τον έλεγχο αν ένας απομακρυσμένος Η/Υ είναι διαθέσιμος (μέσω ping).
