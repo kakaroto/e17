@@ -9,6 +9,7 @@ Exec=enlightenment
 StartupNotify=false
 X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=photo,gadget
+X-Enlightenment-ModuleType=utils
 Icon=e-module-photo
 Comment=View photos or a mini slideshow within this gadget.
 Comment[cs]=Zobrazí fotky nebo malou slideshow uvnitř gadgetu.
