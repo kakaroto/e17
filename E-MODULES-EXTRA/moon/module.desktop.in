@@ -17,3 +17,4 @@ Comment[it]=Modulo per e17 che mostra l'attuale fase lunare.
 Comment[fr]=Ce gadget pour e17 affiche la phase lunaire actuelle.
 Comment[pt]=Um módulo do e17 que exibe as diferentes fases lunares.
 Icon=e-module-moon
+X-Enlightenment-ModuleType=utils
