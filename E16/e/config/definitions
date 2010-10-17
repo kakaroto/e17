@@ -265,7 +265,7 @@
 #define __A_ALERT	alert
 #define __A_SHOW_MENU	menus show
 #define __A_HIDE_MENU	menus hide
-#define __A_CLEANUP	misc arrange
+#define __A_CLEANUP	desk arrange
 #define __A_ABOUT	about
 
 #define __A_MOVE	wop * mo ptr
