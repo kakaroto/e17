@@ -934,8 +934,6 @@ _youtube_dl_dequeue(void)
 {
    Youtube_Data *yd;
 
-   printf("dequeue %d active\n", youtube_dl_active);
-
    if (youtube_dl_queue)
      {
 	yd = youtube_dl_queue->data;
@@ -1025,6 +1023,9 @@ struct _Upload_Data
   const char *file;
   int progress;
 
+  char *data;
+  unsigned int size;
+  
   Url_Data *dd;
 };
 
@@ -1035,6 +1036,8 @@ _upload_data(Url_Data *dd)
    Upload_Data *ud = dd->user_data;
    int len;
 
+   if (ud->data) free(ud->data);
+   
    rsp = _json_parse(dd->data, dd->size);
    d = _json_data_find(rsp, "imgur_page", 5);
 
@@ -1080,6 +1083,18 @@ _upload_progress(Url_Data *dd, Ecore_Con_Event_Url_Progress *ev)
    return 1;
 }
 
+static size_t
+_cb_curl_form_get(void *data, const char *buf, size_t len)
+{
+   Upload_Data *ud = data;
+
+   ud->data = realloc(ud->data, sizeof(char) * (ud->size + len));
+   memcpy(ud->data + ud->size, buf, len);
+   ud->size += len;
+
+   return len;
+}
+
 static int
 _action_upload(Evry_Action *act)
 {
@@ -1107,7 +1122,21 @@ _action_upload(Evry_Action *act)
 		CURLFORM_FILE, file->path,
 		CURLFORM_END);
 
-   ecore_con_url_http_post_send(ud->dd->con_url, post);
+   if (!curl_formget(post, ud, _cb_curl_form_get))
+     {
+   	int i;
+   	char buf[200];
+   	const char *line;
+
+	/* first line is: Content-Type: ... */
+	for(i = 0, line = ud->data; i < 200 && *line != '\n'; i++, line++);
+	/* strip 'Content-Type:' == 14 */
+   	snprintf(buf, i-14, "%s", ud->data+14);
+   
+   	ecore_con_url_send(ud->dd->con_url, ud->data+i, ud->size-i, buf);
+     }
+   
+   /* ecore_con_url_http_post_send(ud->dd->con_url, post); */
 
    _send_notification(ud->id, "image", N_("Upload Image"), ud->file, -1);
 
