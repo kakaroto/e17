@@ -284,7 +284,7 @@ collections {
 
 
    //settings/look
-   SETTINGS_TOOLBAR_ICON("preferences-appearance","look")                  // "enlightenment/appearance"
+   SETTINGS_TOOLBAR_ICON("preferences-look","look")                  // "enlightenment/look"
    //ICON("preferences-desktop-wallpaper","icon_wallpaper.png",64)              // "enlightenment/background"
    //ICON("preferences-desktop-theme","icon_theme.png",64)                      // "enlightenment/themes"
    //ICON("preferences-desktop-color","icon_colors.png",64)                     // "enlightenment/colors"
@@ -354,6 +354,9 @@ collections {
    //settings/screen
    //ICON("preferences-system-screen-resolution","icon_screen_resolution.png",64)// *** // "enlightenment/screen_resolution"
 
+   //settings/extensions/modules
+   SETTINGS_TOOLBAR_ICON("preferences-utils","apps")       // *** // "enlightenment/utils"
+   SETTINGS_TOOLBAR_ICON("system-run","advanced")       // *** // "enlightenment/utils"
 
    ICON("application-exit","icon_system_logout.png",64)                                      // "enlightenment/exit"
    ICON("enlightenment","e.png",64)                               // *** // "enlightenment/e"
