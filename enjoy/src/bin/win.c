@@ -150,14 +150,11 @@ _win_play_eval(Win *w)
 {
    Edje_Message_Float_Set *mf;
 
-   if ((w->play.length < 0.1) || (w->play.position < 0.5))
+   w->play.length = emotion_object_play_length_get(w->emotion);
+   if ((w->song) && (w->song->length != (int)w->play.length))
      {
-        w->play.length = emotion_object_play_length_get(w->emotion);
-        if ((w->song) && (w->song->length != (int)w->play.length))
-          {
-             db_song_length_set(w->db, w->song, w->play.length);
-             list_song_updated(w->list);
-          }
+        db_song_length_set(w->db, w->song, w->play.length);
+        list_song_updated(w->list);
      }
 
    w->play.position = emotion_object_position_get(w->emotion);
@@ -258,6 +255,13 @@ _win_song_set(Win *w, Song *s)
 
 static void
 _win_play_pos_update(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+   Win *w = data;
+   _win_play_eval(w);
+}
+
+static void
+_win_play_begin(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Win *w = data;
    _win_play_eval(w);
@@ -477,7 +481,9 @@ win_new(App *app)
    evas_object_smart_callback_add
      (w->emotion, "frame_decode", _win_play_pos_update, w);
    evas_object_smart_callback_add
-     (w->emotion, "decode_stop", _win_play_end, w);
+     (w->emotion, "playback_started", _win_play_begin, w);
+   evas_object_smart_callback_add
+     (w->emotion, "playback_finished", _win_play_end, w);
 
    w->layout = elm_layout_add(w->win);
    if (!w->layout) goto error;
