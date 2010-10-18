@@ -1,11 +1,11 @@
 Login:        nash
 IRC Nick:     nash
 Name:         Brett Nash
-Location:     Xi'an, China
+Location:     Sydney, Australia
 E-Mail:       nash@nash.id.au
 WWW:          http://www.nash.id.au
-Managing:     Ensure, Evas neon, Elementary X Selections
-Contributing: evas (neon), ecore, elementary, edje
+Managing:     Ensure, Evas neon, Evas (Proxy), Elementary X Selections
+Contributing: ecore, elementary, edje
 Group:        Applications, Libraries
 Platform:     Debian (Linux)
-GeoData:      -34.069582 150.830569
+GeoData:      -33.950001 151.183334
