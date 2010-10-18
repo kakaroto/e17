@@ -39,6 +39,8 @@ static elixir_virtual_chroot_t  _evct = ELIXIR_VCHROOT_ALL;
 static Eina_List *suspended_cx = NULL;
 static pthread_mutex_t suspended_lock = PTHREAD_MUTEX_INITIALIZER;
 
+static unsigned int _elixir_api_version = 0;
+
 EAPI FILE *tracker = NULL;
 
 extern char*    files_root;
@@ -990,4 +992,18 @@ elixir_reset(Elixir_Runtime *er)
 
    return EINA_FALSE;
 }
+
+unsigned int
+elixir_api_version_get(void)
+{
+   return _elixir_api_version;
+}
+
+void
+elixir_api_version_set(unsigned int version)
+{
+   if (version > _elixir_api_version)
+     _elixir_api_version = version;
+}
+
 

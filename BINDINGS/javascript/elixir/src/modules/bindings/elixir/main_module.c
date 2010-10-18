@@ -77,6 +77,22 @@ elixir_sleep(JSContext *cx, uintN argc, jsval *vp)
 }
 
 static JSBool
+elixir_api(JSContext *cx, uintN argc, jsval *vp)
+{
+   int version;
+   elixir_value_t val[1];
+
+   if (!elixir_params_check(cx, int_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   version  = val[0].v.num;
+
+   elixir_api_version_set(version);
+
+   return JS_TRUE;
+}
+
+static JSBool
 elixir_usleep(JSContext *cx, uintN argc, jsval *vp)
 {
    int interval;
@@ -347,6 +363,7 @@ module_open(Elixir_Module *em, JSContext *cx, JSObject *root)
        ELIXIR_FN(chdir, 1, JSPROP_ENUMERATE, 0 ),
        ELIXIR_FN(gc, 0, JSPROP_ENUMERATE, 0 ),
        ELIXIR_FN(current, 0, JSPROP_ENUMERATE, 0 ),
+       ELIXIR_FN(api, 1, JSPROP_ENUMERATE, 0 ),
        JS_FS_END
      };
    Elixir_Sub_Module *esmd;

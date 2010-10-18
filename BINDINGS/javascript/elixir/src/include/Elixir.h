@@ -608,4 +608,7 @@ Eina_List *elixir_jsmap_del(Eina_List *list, JSContext *cx, jsval val, int type)
 void *elixir_jsmap_find(Eina_List **list, jsval val, int type);
 void elixir_jsmap_free(Eina_List *list, JSContext *cx);
 
+unsigned int elixir_api_version_get(void);
+void elixir_api_version_set(unsigned int version);
+
 #endif          /* ELIXIR_H__ */

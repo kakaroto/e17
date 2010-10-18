@@ -79,9 +79,9 @@ static const elixir_parameter_t*        _ecore_con_url_string_params[3] = {
   &string_parameter,
   NULL
 };
-static const elixir_parameter_t*	_ecore_con_url_int_params[3] = {
+static const elixir_parameter_t*	_ecore_con_url_bool_params[3] = {
   &_ecore_con_url_parameter,
-  &int_parameter,
+  &boolean_parameter,
   NULL
 };
 static const elixir_parameter_t*        _ecore_con_url_2int_params[4] = {
@@ -1543,26 +1543,26 @@ elixir_ecore_con_url_send(JSContext *cx, uintN argc, jsval *vp)
 }
 
 static JSBool
-elixir_void_params_ecore_con_url_int(void (*func)(Ecore_Con_Url*, int),
+elixir_void_params_ecore_con_url_bool(void (*func)(Ecore_Con_Url*, Eina_Bool),
 				     JSContext *cx, uintN argc, jsval *vp)
 {
    Ecore_Con_Url *curl;
-   int arg;
+   Eina_Bool arg;
    elixir_value_t val[2];
 
-   if (!elixir_params_check(cx, _ecore_con_url_int_params, val, argc, JS_ARGV(cx, vp)))
+   if (!elixir_params_check(cx, _ecore_con_url_bool_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, curl);
-   arg = val[1].v.num;
+   arg = val[1].v.bol;
 
    func(curl, arg);
 
    return JS_TRUE;
 }
 
-FAST_CALL_PARAMS(ecore_con_url_verbose_set, elixir_void_params_ecore_con_url_int);
-FAST_CALL_PARAMS(ecore_con_url_ftp_use_epsv_set, elixir_void_params_ecore_con_url_int);
+FAST_CALL_PARAMS(ecore_con_url_verbose_set, elixir_void_params_ecore_con_url_bool);
+FAST_CALL_PARAMS(ecore_con_url_ftp_use_epsv_set, elixir_void_params_ecore_con_url_bool);
 
 static JSBool
 elixir_ecore_con_url_time(JSContext *cx, uintN argc, jsval *vp)

@@ -869,13 +869,13 @@ struct _Elixir_Thread_Data
 };
 
 static void
-_elixir_func_heavy(void *data)
+_elixir_func_heavy(Ecore_Thread *thread, void *data)
 {
    Elixir_Thread_Data *dt;
    JSContext *cx;
    JSObject *parent;
-   jsval argv[1];
-   jsval rval;
+   jsval argv[2];
+   jsval rval = JSVAL_VOID;
 
    cx = elixir_void_get_cx(data);
    if (!cx) return ;
@@ -889,10 +889,19 @@ _elixir_func_heavy(void *data)
        || !dt)
      goto on_error;
 
-   argv[0] = elixir_void_get_jsval(data);
-   rval = JSVAL_VOID;
+   if (elixir_api_version_get() == 0)
+     {
+        argv[0] = elixir_void_get_jsval(data);
 
-   elixir_function_run(cx, dt->func_heavy, parent, 1, argv, &rval);
+        elixir_function_run(cx, dt->func_heavy, parent, 1, argv, &rval);
+     }
+   else
+     {
+        elixir_return_ptr(cx, &argv[0], thread, elixir_class_request("Ecore_Thread", NULL));
+        argv[1] = elixir_void_get_jsval(data);
+
+        elixir_function_run(cx, dt->func_heavy, parent, 2, argv, &rval);
+     }
 
  on_error:
    elixir_unlock_cx(cx);
