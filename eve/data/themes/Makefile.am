@@ -47,7 +47,9 @@ images = \
     toggle_bg.png  \
     toggle_off.png \
     toggle_on.png \
-    check.png
+    check.png \
+    index.png \
+    index_selected.png
 
 edcdeps = elm-gengrid.edc \
     elm-notify.edc \

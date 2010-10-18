@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include <Eina.h>
+#include <Elementary.h>
 
 #include "private.h"
 
@@ -68,6 +69,7 @@ typedef enum {
    ITEM_FLAG_SELECTED    = 1<<1,
    ITEM_FLAG_ARROW       = 1<<2,
    ITEM_FLAG_SELECTABLE  = 1<<3,
+   ITEM_FLAG_INDEX       = 1<<4,
 } More_Menu_Item_Flags;
 
 typedef enum {
@@ -147,14 +149,14 @@ struct _More_Menu_Set_Params {
 
 static More_Menu_Item more_menu_history[] =
 {
-   { ITEM_TYPE_DYNAMIC_FOLDER, "Today", more_menu_history_today, NULL, ITEM_FLAG_ARROW },
-   { ITEM_TYPE_DYNAMIC_FOLDER, "Yesterday", more_menu_history_yesterday, NULL, ITEM_FLAG_ARROW },
-   { ITEM_TYPE_DYNAMIC_FOLDER, "This week", more_menu_history_this_week, NULL, ITEM_FLAG_ARROW },
+   { ITEM_TYPE_DYNAMIC_FOLDER, "Today", more_menu_history_today, NULL, ITEM_FLAG_ARROW | ITEM_FLAG_INDEX},
+   { ITEM_TYPE_DYNAMIC_FOLDER, "Yesterday", more_menu_history_yesterday, NULL, ITEM_FLAG_ARROW | ITEM_FLAG_INDEX},
+   { ITEM_TYPE_DYNAMIC_FOLDER, "This week", more_menu_history_this_week, NULL, ITEM_FLAG_ARROW | ITEM_FLAG_INDEX},
    { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
    { ITEM_TYPE_DYNAMIC_FOLDER, "Most visited", more_menu_history_most_visited, NULL, ITEM_FLAG_ARROW },
    { ITEM_TYPE_DYNAMIC_FOLDER, "Least visited", more_menu_history_least_visited, NULL, ITEM_FLAG_ARROW },
    { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
-   { ITEM_TYPE_DYNAMIC_FOLDER, "By domain", more_menu_history_by_domain, NULL, ITEM_FLAG_ARROW },
+   { ITEM_TYPE_DYNAMIC_FOLDER, "By domain", more_menu_history_by_domain, NULL, ITEM_FLAG_ARROW | ITEM_FLAG_INDEX },
    { ITEM_TYPE_LAST, NULL, NULL, NULL, ITEM_FLAG_NONE }
 };
 
@@ -305,7 +307,7 @@ static More_Menu_Item more_menu_config[] =
 static More_Menu_Item more_menu_root[] =
 {
    { ITEM_TYPE_STATIC_FOLDER, "History", more_menu_history, NULL, ITEM_FLAG_ARROW },
-   { ITEM_TYPE_DYNAMIC_FOLDER, "Favorites", more_menu_favorites, NULL, ITEM_FLAG_ARROW },
+   { ITEM_TYPE_DYNAMIC_FOLDER, "Favorites", more_menu_favorites, NULL, ITEM_FLAG_ARROW | ITEM_FLAG_INDEX },
    { ITEM_TYPE_STATIC_FOLDER, "Preferences", more_menu_config, NULL, ITEM_FLAG_ARROW },
    { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
    { ITEM_TYPE_PAGE, "ProFUSION", "http://profusion.mobi", NULL, ITEM_FLAG_NONE },
@@ -485,7 +487,7 @@ _domain_filter(More_Menu_Filter_Context *ctx, Hist_Item *item)
 }
 
 static More_Menu_Item *
-_more_menu_history_by_domain(More_Menu_Item *current_item)
+_more_menu_history_by_domain(Browser_Window *win __UNUSED__, More_Menu_Item *current_item)
 {
    More_Menu_Item *ret;
    Eina_Iterator *items = eina_hash_iterator_key_new(hist_items_hash_get(hist));
@@ -496,11 +498,21 @@ _more_menu_history_by_domain(More_Menu_Item *current_item)
    return ret;
 }
 
+static int
+compare_domain_cb(const void *d1, const void *d2)
+{
+   const char *c1 = ((Eina_Hash_Tuple *)d1)->key;
+   const char *c2 = ((Eina_Hash_Tuple *)d2)->key;
+
+   return strcasecmp(c1, c2);
+}
+
 static More_Menu_Item *
 more_menu_history_by_domain(Browser_Window *win __UNUSED__, More_Menu_Item *current_item)
 {
    More_Menu_Item *bm_item;
    More_Menu_Item *ret = NULL, *new_ret;
+   Eina_List *keys;
    Eina_Iterator *items = eina_hash_iterator_key_new(hist_items_hash_get(hist));
    Eina_Hash *domains = eina_hash_string_superfast_new(NULL);
    const char *url;
@@ -529,14 +541,15 @@ unknown_schema:
    }
    eina_iterator_free(items);
 
-   items = eina_hash_iterator_key_new(domains);
+   keys = _eina_hash_sorted_keys_get(domains, compare_domain_cb);
+   items = eina_list_iterator_new(keys);
    EINA_ITERATOR_FOREACH(items, url)
    {
       bm_item = calloc(1, sizeof(More_Menu_Item));
       bm_item->type = ITEM_TYPE_DYNAMIC_FOLDER;
       bm_item->text = eina_stringshare_add(url);
       bm_item->next = _more_menu_history_by_domain;
-      bm_item->flags = ITEM_FLAG_ARROW | ITEM_FLAG_DYNAMIC;
+      bm_item->flags = ITEM_FLAG_ARROW | ITEM_FLAG_DYNAMIC | ITEM_FLAG_INDEX;
 
       if (!n_items)
          ret = calloc(1, sizeof(*ret) * BOOKMARK_MENU_PREALLOC_SIZE);
@@ -555,6 +568,7 @@ unknown_schema:
       n_items++;
    }
 realloc_error:
+   eina_list_free(keys);
    eina_iterator_free(items);
    eina_hash_free(domains);
 
@@ -602,11 +616,62 @@ _yesterday_filter(More_Menu_Filter_Context *ctx, Hist_Item *item)
    return (now - item_time) > 24 * 3600 && (now - item_time) <= 48 * 3600;
 }
 
+static const char *
+_first_alpha_char(const char *str)
+{
+   if (!str) return NULL;
+   while ((*str) && (!isalpha(*str))) str++;
+   return str;
+}
+
+static int
+compare_hist_cb(const void *d1, const void *d2)
+{
+   Hist_Item *f1 = ((Eina_Hash_Tuple *)d1)->data;
+   Hist_Item *f2 = ((Eina_Hash_Tuple *)d2)->data;
+
+   const char *c1, *c2;
+
+   if (!f1) return(1);
+   if (!f2) return(-1);
+
+   c1 = _first_alpha_char(hist_item_title_get(f1));
+   c2 = _first_alpha_char(hist_item_title_get(f2));
+
+   return strcasecmp(c1, c2);
+}
+
+static int
+compare_fav_cb(const void *d1, const void *d2)
+{
+   Fav_Item *f1 = ((Eina_Hash_Tuple *)d1)->data;
+   Fav_Item *f2 = ((Eina_Hash_Tuple *)d2)->data;
+
+   const char *c1, *c2;
+
+   if (!f1) return(1);
+   if (!f2) return(-1);
+
+   c1 = _first_alpha_char(fav_item_title_get(f1));
+   c2 = _first_alpha_char(fav_item_title_get(f2));
+
+   return strcasecmp(c1, c2);
+}
+
+static void
+index_selected(void *data, Evas_Object *obj, void *event_info)
+{
+   elm_genlist_item_top_bring_in(event_info);
+}
+
 static More_Menu_Item *
 more_menu_history_today(Browser_Window *win __UNUSED__, More_Menu_Item *current_item)
 {
-   Eina_Iterator *iter = eina_hash_iterator_key_new(hist_items_hash_get(hist));
+   Eina_List *keys = _eina_hash_sorted_keys_get(hist_items_hash_get(hist), compare_hist_cb);
+   Eina_Iterator *iter = eina_list_iterator_new(keys);
    More_Menu_Item *items = _more_menu_history(iter, current_item, _today_filter);
+
+   eina_list_free(keys);
    eina_iterator_free(iter);
    return items;
 }
@@ -614,8 +679,11 @@ more_menu_history_today(Browser_Window *win __UNUSED__, More_Menu_Item *current_
 static More_Menu_Item *
 more_menu_history_yesterday(Browser_Window *win __UNUSED__, More_Menu_Item *current_item)
 {
-   Eina_Iterator *iter = eina_hash_iterator_key_new(hist_items_hash_get(hist));
+   Eina_List *keys = _eina_hash_sorted_keys_get(hist_items_hash_get(hist), compare_hist_cb);
+   Eina_Iterator *iter = eina_list_iterator_new(keys);
    More_Menu_Item *items = _more_menu_history(iter, current_item, _yesterday_filter);
+
+   eina_list_free(keys);
    eina_iterator_free(iter);
    return items;
 }
@@ -623,8 +691,11 @@ more_menu_history_yesterday(Browser_Window *win __UNUSED__, More_Menu_Item *curr
 static More_Menu_Item *
 more_menu_history_this_week(Browser_Window *win __UNUSED__, More_Menu_Item *current_item)
 {
-   Eina_Iterator *iter = eina_hash_iterator_key_new(hist_items_hash_get(hist));
+   Eina_List *keys = _eina_hash_sorted_keys_get(hist_items_hash_get(hist), compare_hist_cb);
+   Eina_Iterator *iter = eina_list_iterator_new(keys);
    More_Menu_Item *items = _more_menu_history(iter, current_item, _this_week_filter);
+
+   eina_list_free(keys);
    eina_iterator_free(iter);
    return items;
 }
@@ -674,7 +745,8 @@ more_menu_favorites(Browser_Window *win __UNUSED__, More_Menu_Item *current_item
 {
    More_Menu_Item *bm_item;
    More_Menu_Item *ret = NULL, *new_ret;
-   Eina_Iterator *iter = eina_hash_iterator_key_new(fav_items_hash_get(fav));
+   Eina_List *keys = _eina_hash_sorted_keys_get(fav_items_hash_get(fav), compare_fav_cb);
+   Eina_Iterator *iter = eina_list_iterator_new(keys);
    int n_items = 0;
    const char *url;
 
@@ -705,6 +777,7 @@ more_menu_favorites(Browser_Window *win __UNUSED__, More_Menu_Item *current_item
       n_items++;
    }
 realloc_error:
+   eina_list_free(keys);
    eina_iterator_free(iter);
 
    if (!n_items)
@@ -1391,8 +1464,10 @@ static void
 on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    More_Menu_Set_Params *params = data;
+   Evas_Object *index;
    Browser_Window *win = evas_object_data_get(params->chrome, "win");
    int i;
+   char last_index = '\0';
 
    if (!eina_list_data_find(win->list_history, params->root))
      {
@@ -1406,6 +1481,9 @@ on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UN
      }
 
    elm_genlist_clear(params->list);
+   index = evas_object_data_get(params->list, "more-index");
+   if (index)
+      elm_index_item_clear(index);
 
    if (params->root != more_menu_root)
      {
@@ -1419,17 +1497,18 @@ on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UN
    for (i = 0; params->root[i].type != ITEM_TYPE_LAST; i++)
      {
         Evas_Object *icon = NULL, *end = NULL;
+        Elm_Genlist_Item *item = NULL;
         switch (params->root[i].type) {
         case ITEM_TYPE_SEPARATOR:
            {
-               Elm_Genlist_Item *item = elm_genlist_item_append(params->list, &glic_separator, NULL,
+               item = elm_genlist_item_append(params->list, &glic_separator, NULL,
                         NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL);
                elm_genlist_item_disabled_set(item, EINA_TRUE);
                break;
            }
         case ITEM_TYPE_PAGE:
            {
-                  elm_genlist_item_append(params->list, &glic_page, &(params->root[i]),
+                item = elm_genlist_item_append(params->list, &glic_page, &(params->root[i]),
                         NULL, ELM_GENLIST_ITEM_NONE, on_more_item_click, &(params->root[i]));
                 break;
            }
@@ -1437,25 +1516,41 @@ on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UN
            {
                More_Menu_Config *mmc = params->root[i].next;
                if ((mmc->type == CONFIG_TYPE_LIST) || (mmc->type == CONFIG_TYPE_LIST_INT) || (mmc->type == CONFIG_TYPE_STRING))
-                  elm_genlist_item_append(params->list, &glic_config_list,
+                  item = elm_genlist_item_append(params->list, &glic_config_list,
                       &(params->root[i]), NULL, ELM_GENLIST_ITEM_NONE, on_more_item_click, &(params->root[i]));
                else if (params->root[i].flags & ITEM_FLAG_SELECTABLE)
-                  elm_genlist_item_append(params->list, &glic_config_selectable,
+                  item = elm_genlist_item_append(params->list, &glic_config_selectable,
                       &(params->root[i]), NULL, ELM_GENLIST_ITEM_NONE, on_more_item_click, &(params->root[i]));
                else
-                  elm_genlist_item_append(params->list, &glic_config,
+                  item = elm_genlist_item_append(params->list, &glic_config,
                        &(params->root[i]), NULL, ELM_GENLIST_ITEM_NONE, on_more_item_click, &(params->root[i]));
                break;
            }
            /* fallthrough */
         default:
            if (params->root[i].flags & ITEM_FLAG_SELECTABLE)
-              elm_genlist_item_append(params->list, &glic_config_selectable,
+              item = elm_genlist_item_append(params->list, &glic_config_selectable,
                  &(params->root[i]), NULL, ELM_GENLIST_ITEM_NONE, on_more_item_click, &(params->root[i]));
            else
-              elm_genlist_item_append(params->list, &glic_default, &(params->root[i]), NULL,
+              item = elm_genlist_item_append(params->list, &glic_default, &(params->root[i]), NULL,
                   ELM_GENLIST_ITEM_NONE, on_more_item_click, &(params->root[i]));
         }
+        if (item)
+          {
+             const char *temp = _first_alpha_char(params->root[i].text);
+
+             if (index && temp && isalpha(*temp))
+               {
+                  char index_label[2];
+                  index_label[0] = toupper(*temp);
+                  index_label[1] = '\0';
+                  if (index_label[0] != last_index)
+                    {
+                       elm_index_item_append(index, index_label, item);
+                       last_index = index_label[0];
+                    }
+               }
+           }
      }
 
    edje_object_signal_callback_del(ed, "list,completely,hidden", "", on_list_completely_hidden);
@@ -1735,8 +1830,15 @@ on_more_item_click(void *data, Evas_Object *obj,
    More_Menu_Item *mmi = data;
    Browser_Window *win = evas_object_data_get(chrome, "win");
    const char *old_text = edje_object_part_text_get(ed, "more-list-title");
+   Evas_Object *list = evas_object_data_get(chrome, "more-list");
+   Evas_Object *index = evas_object_data_get(list, "more-index");
 
    if (!mmi) return;
+
+   if (mmi->flags & ITEM_FLAG_INDEX)
+      edje_object_signal_emit(ed, "index,show", "");
+   else
+      edje_object_signal_emit(ed, "index,hide", "");
 
    switch (mmi->type) {
       case ITEM_TYPE_STATIC_FOLDER:
@@ -1943,9 +2045,11 @@ on_action_more_show(void *data, Evas_Object *o __UNUSED__,
                         const char *source __UNUSED__)
 {
    Evas_Object *chrome = data;
+   Evas_Object *ed = elm_layout_edje_get(chrome);
    Evas_Object *hl = evas_object_data_get(chrome, "more-list");
 
    more_menu_set(chrome, hl, NULL, NULL);
+   edje_object_signal_emit(ed, "index,hide", "");
 }
 
 static void
@@ -2284,10 +2388,9 @@ list_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part)
                 return strdup(_get_selected_int_value_title(mmc->data, (int)conf_get(config)));
              else if (mmc->type == CONFIG_TYPE_LIST)
                 return strdup(_get_selected_string_value_title(mmc->data, conf_get(config)));
-             
+
              return NULL;
           }
-        
      }
 
    return NULL;
@@ -2416,6 +2519,12 @@ chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
    elm_layout_content_set(chrome, "more-list-swallow", more_list);
    elm_object_style_set(more_list, "ewebkit");
    elm_genlist_bounce_set(more_list, EINA_FALSE, EINA_FALSE);
+
+   Evas_Object *more_index = elm_index_add(ed);
+   evas_object_data_set(more_list, "more-index", more_index);
+   elm_layout_content_set(chrome, "more-list-index", more_index);
+   evas_object_smart_callback_add(more_index, "selected", index_selected, NULL);
+   elm_object_style_set(more_index, "ewebkit");
 
    Evas_Object *tab_grid = elm_gengrid_add(ed);
    elm_object_style_set(tab_grid, "ewebkit");

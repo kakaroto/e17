@@ -256,6 +256,7 @@ collections {
 #include "elm-pager.edc"
 #include "elm-entry.edc"
 #include "elm-toggle.edc"
+#include "elm-index.edc"
     group { name: "bg";
         parts {
             part { name: "bg";
@@ -569,7 +570,7 @@ collections {
                     rel2 {
                         to: "more-list";
                         relative: 1.0 1.0;
-                        offset: -1 -1;
+                        offset: -10 -1;
                     }
                 }
                 description { state: "hide-left" 0.0;
@@ -737,6 +738,51 @@ collections {
                         relative: 1.0 0.0;
                         offset: -1 5;
                     }
+                }
+            }
+            part { name: "more-list-index";
+                type: SWALLOW;
+                description { state: "default" 0.0;
+                    fixed: 1 1;
+                    rel1 {
+                        to: "more-list-swallow";
+                        relative: 1.0 0.0;
+                        offset: -100 1;
+                    }
+                    rel2 {
+                        to: "more-list";
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                }
+                description { state: "hidden" 0.0;
+                    fixed: 1 1;
+                    visible: 0;
+                    rel1 {
+                        to: "more-list-swallow";
+                        relative: 1.0 0.0;
+                        offset: -60 1;
+                    }
+                    rel2 {
+                        to: "more-list";
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                }
+                programs {
+                    program { name: "index-show";
+                        signal: "index,show";
+                        source: "";
+                        action: STATE_SET "default" 0.0;
+                        target: "more-list-index";
+                    }
+                    program { name: "index-hide";
+                        signal: "index,hide";
+                        source: "";
+                        action: STATE_SET "hidden" 0.0;
+                        target: "more-list-index";
+                    }
+
                 }
             }
             part { name: "tab-grid-swallow";
