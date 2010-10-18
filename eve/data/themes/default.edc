@@ -295,6 +295,20 @@ collections {
             }
         }
     }
+    group { name: "clear-button";
+        images.image: "bt_clear.png" COMP;
+        parts {
+            part { name: "icon";
+                type: IMAGE;
+                description { state: "default" 0.0;
+                    align: 1.0 0.5;
+                    image.normal: "bt_clear.png";
+                    min: 38 22;
+                    max: 38 22;
+                }
+            }
+        }
+    }
     group { name: "chrome";
         images {
             image: "bt_back_normal.png" COMP;
@@ -971,7 +985,7 @@ collections {
                     rel2 {
                         to: "url-entry-bg";
                         relative: 1.0 1.0;
-                        offset: -6 -2;
+                        offset: -1 -2;
                     }
                 }
             }
