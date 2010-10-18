@@ -1866,10 +1866,21 @@ on_more_item_click(void *data, Evas_Object *obj,
 
       case ITEM_TYPE_CONFIG:
       {
+         More_Menu_Config *conf;
+
          if (!mmi->next)
             return;
 
-         More_Menu_Item *new_root = more_menu_config_create(win->win, mmi, mmi->next);
+         conf = mmi->next;
+         if (conf->type == CONFIG_TYPE_CHECKBOX)
+         {
+             Evas_Object *end = edje_object_part_swallow_get(elm_genlist_item_object_get(event_info), "elm.swallow.end");
+             if (end) elm_toggle_state_set(end, !elm_toggle_state_get(end));
+             elm_genlist_item_selected_set(event_info, EINA_FALSE);
+             return;
+         }
+
+         More_Menu_Item *new_root = more_menu_config_create(win->win, mmi, conf);
          if (new_root)
             {
                win->list_history_titles = eina_list_prepend(win->list_history_titles, old_text);
@@ -2455,7 +2466,6 @@ chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
    if (!elm_layout_file_set(chrome, PACKAGE_DATA_DIR "/default.edj", "chrome"))
      {
         int err = edje_object_load_error_get(ed);
-
         const char *msg = edje_load_error_str(err);
 
         CRITICAL("Could not load chrome theme: %s", msg);
