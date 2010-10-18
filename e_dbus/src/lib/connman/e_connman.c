@@ -451,7 +451,7 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
       e_connman_prop_mcc = eina_stringshare_add("MCC");
 
    if (!e_connman_prop_mnc)
-      e_connman_prop_mnc = eina_stringshare_add("MCN");
+      e_connman_prop_mnc = eina_stringshare_add("MNC");
 
    if (!e_connman_prop_roaming)
       e_connman_prop_roaming = eina_stringshare_add("Roaming");
