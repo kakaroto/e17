@@ -150,14 +150,14 @@ _win_play_eval(Win *w)
 {
    Edje_Message_Float_Set *mf;
 
+   w->play.position = emotion_object_position_get(w->emotion);
    w->play.length = emotion_object_play_length_get(w->emotion);
+   
    if ((w->song) && (w->song->length != (int)w->play.length))
      {
         db_song_length_set(w->db, w->song, w->play.length);
         list_song_updated(w->list);
      }
-
-   w->play.position = emotion_object_position_get(w->emotion);
 
    mf = alloca(sizeof(Edje_Message_Float_Set) + sizeof(double));
    mf->count = 2;
