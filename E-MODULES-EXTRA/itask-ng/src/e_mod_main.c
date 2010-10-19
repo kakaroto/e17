@@ -29,7 +29,7 @@ static void           _ngi_zoom_in(Ng *ng);
 static void           _ngi_zoom_out(Ng *ng);
 static void           _ngi_item_appear(Ng *ng, Ngi_Item *it);
 static void           _ngi_item_disappear(Ng *ng, Ngi_Item *it);
-static void           _ngi_zoom_function(Ng *ng, double d, double *zoom, double *disp);
+static void           _ngi_zoom_function(Ng *ng, double d, double *disp);
 static Eina_Bool      _ngi_animator(void *data);
 static void           _ngi_redraw(Ng *ng);
 static int            _ngi_autohide(Ng *ng, int hide);
@@ -1374,10 +1374,10 @@ _ngi_item_activate(Ng *ng)
         else
            h = ng->zone->h;
 
-        if (ng->zoom > 1.0)
-           _ngi_zoom_function(ng, 0, &zoom, &disp);
+        /* if (ng->zoom > 1.0)
+         *    _ngi_zoom_function(ng, 0, &zoom, &disp); */
 
-        size = zoom * ng->size;
+        size = ng->cfg->zoomfactor * ng->size;
         switch (ng->cfg->orient)
           {
            case E_GADCON_ORIENT_BOTTOM:
@@ -1707,7 +1707,7 @@ ngi_reposition(Ng *ng)
    double distance = (double)(ng->start - middle) / (ng->size + ng->item_spacing);
    double tmp = ng->zoom;
    ng->zoom = ng->cfg->zoomfactor;
-   _ngi_zoom_function(ng, distance, &zoom, &disp);
+   _ngi_zoom_function(ng, distance, &disp);
    ng->zoom = tmp;
    int end = (int)(middle + disp);
 
@@ -1797,18 +1797,11 @@ ngi_reposition(Ng *ng)
 } /* ngi_reposition */
 
 static void
-_ngi_zoom_function(Ng *ng, double d, double *zoom, double *disp)
+_ngi_zoom_function(Ng *ng, double d, double *disp)
 {
-   float range = ng->cfg->size * ng->cfg->zoom_range;
-   float z = ng->zoom - 1.0;
-   float x = d / range;
+   float range = ng->cfg->zoom_range * ng->cfg->size;
 
-   if (abs(d) < range * ng->cfg->size)
-      *zoom = 1.0 + (expf(-(x * x))) * z;
-   else
-      *zoom = 1.0;
-
-   *disp = z * range * erf(x);
+   *disp = erf(d / range) * range * (ng->zoom - 1.0) + 0.5;
 } /* _ngi_zoom_function */
 
 static void
@@ -1829,6 +1822,11 @@ _ngi_redraw(Ng *ng)
    double disp = 0.0;
    double zoom = 1.0;
 
+   int w = ng->win->w;
+   int h = ng->win->h;
+
+   double pos2;
+
    spacing = ng->item_spacing;
    hide_step = cfg->autohide ? ng->hide_step : 0;
    size_spacing = ng->size + spacing;
@@ -1839,85 +1837,48 @@ _ngi_redraw(Ng *ng)
    if (cfg->zoomfactor < 1.2)
       ng->pos = ng->win->w / 2;
 
-   int x, y, w, h;
-   if (ng->win->ee)
-     {
-        w = ng->win->w;
-        h = ng->win->h;
-        x = 0;
-        y = 0;
-     }
-   else
-     {
-        w = ng->zone->w;
-        h = ng->zone->h;
-        x = ng->zone->x;
-        y = ng->zone->y;
-     }
-
    if (cfg->show_background)
      {
-        if (cfg->zoomfactor > 1.0)
-          {
-             distance = (double)(ng->start - ng->pos);
-             _ngi_zoom_function(ng, distance, &zoom, &disp);
-             end1 = (int)(ng->start + disp);
-          }
-        else
-          {
-             end1 = ng->start;
-          }
+        _ngi_zoom_function(ng, (ng->start - ng->pos), &disp);
+        end1 = ng->start + disp;
 
-        if (cfg->zoomfactor > 1.0)
-          {
-             distance = (double)(ng->start + ng->w - ng->pos);
-             _ngi_zoom_function(ng, distance, &zoom, &disp);
-             end2 = (int)(ng->start + ng->w + disp);
-          }
-        else
-          {
-             end2 = ng->start + ng->w;
-          }
+        _ngi_zoom_function(ng, (ng->start + ng->w - ng->pos), &disp);
+        end2 = ng->start + ng->w + disp;
 
         switch (cfg->orient)
           {
            case E_GADCON_ORIENT_BOTTOM:
-              evas_object_move(ng->o_bg, x + (end1 - bg_border), y + ((h + hide_step) - bg_dist2));
+              evas_object_move(ng->o_bg, (end1 - bg_border), ((h + hide_step) - bg_dist2));
               evas_object_resize(ng->o_bg, (end2 - end1) + bg_border * 2 + spacing, bg_dist2 - bg_dist1);
-              evas_object_move(ng->o_frame, x + (end1 - bg_border), y + ((h + hide_step) - bg_dist2));
+              evas_object_move(ng->o_frame, (end1 - bg_border), ((h + hide_step) - bg_dist2));
               evas_object_resize(ng->o_frame, (end2 - end1) + bg_border * 2 + spacing, bg_dist2 - bg_dist1);
               break;
 
            case E_GADCON_ORIENT_TOP:
-              evas_object_move(ng->o_bg, x + (end1 - bg_border), y + (bg_dist1 - hide_step));
+              evas_object_move(ng->o_bg, (end1 - bg_border), (bg_dist1 - hide_step));
               evas_object_resize(ng->o_bg, (end2 - end1) + bg_border * 2 + spacing, bg_dist2 - bg_dist1);
-              evas_object_move(ng->o_frame, x + (end1 - bg_border), y + (bg_dist1 - hide_step));
+              evas_object_move(ng->o_frame, (end1 - bg_border), (bg_dist1 - hide_step));
               evas_object_resize(ng->o_frame, (end2 - end1) + bg_border * 2 + spacing, bg_dist2 - bg_dist1);
               break;
 
            case  E_GADCON_ORIENT_LEFT:
-              evas_object_move(ng->o_bg, x + (bg_dist1 - hide_step), y + (end1 - bg_border));
+              evas_object_move(ng->o_bg, (bg_dist1 - hide_step), (end1 - bg_border));
               evas_object_resize(ng->o_bg, bg_dist2 - bg_dist1, (end2 - end1) + (bg_border * 2));
-              evas_object_move(ng->o_frame, x + (bg_dist1 - hide_step), y + (end1 - bg_border));
+              evas_object_move(ng->o_frame, (bg_dist1 - hide_step), (end1 - bg_border));
               evas_object_resize(ng->o_frame, bg_dist2 - bg_dist1, (end2 - end1) + (bg_border * 2));
               break;
 
            case E_GADCON_ORIENT_RIGHT:
-              evas_object_move(ng->o_bg, x + ((w + hide_step) - bg_dist2), y + (end1 - bg_border));
+              evas_object_move(ng->o_bg, ((w + hide_step) - bg_dist2), (end1 - bg_border));
               evas_object_resize(ng->o_bg, bg_dist2 - bg_dist1, (end2 - end1) + (bg_border * 2));
-              evas_object_move(ng->o_frame, x + ((w + hide_step) - bg_dist2), y + (end1 - bg_border));
+              evas_object_move(ng->o_frame, ((w + hide_step) - bg_dist2), (end1 - bg_border));
               evas_object_resize(ng->o_frame, bg_dist2 - bg_dist1, (end2 - end1) + (bg_border * 2));
           } /* switch */
      }
 
    if (ng->item_active && ng->state != unzoomed)
      {
-        if (cfg->zoomfactor > 1.0)
-          {
-             _ngi_zoom_function(ng, 0, &zoom, &disp);
-          }
-
-        size = zoom * ng->size;
+        size = ng->cfg->zoomfactor * ng->size;
         switch (cfg->orient)
           {
            case E_GADCON_ORIENT_BOTTOM:
@@ -1933,31 +1894,28 @@ _ngi_redraw(Ng *ng)
    {
       if (cnt++ > 0)
         {
-           distance = (double)(box->pos + ng->separator_width + ng->item_spacing * 3 - ng->pos);
-
-           _ngi_zoom_function(ng, distance, &zoom, &disp);
-
+           _ngi_zoom_function(ng, (box->pos + ng->separator_width + ng->item_spacing * 3 - ng->pos), &disp);
            pos = (box->pos + disp);
 
            switch (cfg->orient)
              {
               case E_GADCON_ORIENT_BOTTOM:
-                 evas_object_move(box->separator, (x + pos) - ng->separator_width / 2, y + ((h + hide_step) - bg_dist2));
+                 evas_object_move(box->separator, pos - ng->separator_width / 2, (h + hide_step) - bg_dist2);
                  evas_object_resize(box->separator, ng->separator_width - 1, bg_dist2 - bg_dist1);
                  break;
 
               case E_GADCON_ORIENT_TOP:
-                 evas_object_move(box->separator, (x + pos) - ng->separator_width / 2, y + (bg_dist1 - hide_step));
+                 evas_object_move(box->separator, pos - ng->separator_width / 2, (bg_dist1 - hide_step));
                  evas_object_resize(box->separator, ng->separator_width - 1, bg_dist2 - bg_dist1);
                  break;
 
               case E_GADCON_ORIENT_LEFT:
-                 evas_object_move(box->separator, x + (bg_dist1 - hide_step), (y + pos) - ng->separator_width / 2);
+                 evas_object_move(box->separator,  (bg_dist1 - hide_step), pos - ng->separator_width / 2);
                  evas_object_resize(box->separator, bg_dist2 - bg_dist1, ng->separator_width - 1);
                  break;
 
               case E_GADCON_ORIENT_RIGHT:
-                 evas_object_move(box->separator, x + ((w + hide_step) - bg_dist2), (y + pos) - ng->separator_width / 2);
+                 evas_object_move(box->separator, ((w + hide_step) - bg_dist2), pos - ng->separator_width / 2);
                  evas_object_resize(box->separator, bg_dist2 - bg_dist1, ng->separator_width - 1);
              } /* switch */
            evas_object_show(box->separator);
@@ -1969,60 +1927,48 @@ _ngi_redraw(Ng *ng)
       {
          double size;
 
-         if (cfg->zoomfactor > 1.0)
+         if (!l->prev)
            {
-              distance = (double)(it->pos - ng->pos);
-
-              _ngi_zoom_function(ng, distance, &zoom, &disp);
-
-              size = ((it->scale * zoom * (double)ng->size)) + 0.5;
-
-              if (it->pos < ng->pos)
-                {
-                   pos = ((double)it->pos + disp) - (size / 2.0) - 0.5;
-                }
-              else if (it->pos > ng->pos)
-                {
-                   pos = ((double)it->pos + disp) - (size / 2.0) + 0.5;
-                }
-              else
-                {
-                   pos = (it->pos + disp) - (size / 2);
-                }
+              _ngi_zoom_function(ng, (it->pos - ng->cfg->size / 2) - ng->pos,  &pos);
+              pos = it->pos - ng->cfg->size / 2 + pos;
            }
          else
            {
-              pos = it->pos - ng->size / 2;
-              size = it->scale * ng->size;
+              pos = pos2 + 1.0;
            }
+
+         _ngi_zoom_function(ng, (it->pos + ng->cfg->size / 2) - ng->pos, &pos2);
+         pos2 = it->pos + ng->cfg->size / 2 + pos2;
+
+         size = (pos2 - pos) - 0.5;
 
          switch (cfg->orient)
            {
             case E_GADCON_ORIENT_BOTTOM:
-               evas_object_move(it->obj,  x + pos, y + ((h + hide_step) - (size + edge_spacing)));
+               evas_object_move(it->obj,  pos, ((h + hide_step) - (size + edge_spacing)));
                if (!it->overlay_signal_timer)
-                  evas_object_move(it->over, x + pos, y + ((h + hide_step) - (size + edge_spacing)));
+                  evas_object_move(it->over, pos, ((h + hide_step) - (size + edge_spacing)));
 
                break;
 
             case E_GADCON_ORIENT_TOP:
-               evas_object_move(it->obj,  x + pos, y + (edge_spacing - hide_step));
+               evas_object_move(it->obj,  pos, (edge_spacing - hide_step));
                if (!it->overlay_signal_timer)
-                  evas_object_move(it->over, x + pos, y + (edge_spacing - hide_step));
+                  evas_object_move(it->over, pos, (edge_spacing - hide_step));
 
                break;
 
             case E_GADCON_ORIENT_LEFT:
-               evas_object_move(it->obj,  x + (edge_spacing - hide_step), y + pos);
+               evas_object_move(it->obj,  (edge_spacing - hide_step), pos);
                if (!it->overlay_signal_timer)
-                  evas_object_move(it->over, x + (edge_spacing - hide_step), y + pos);
+                  evas_object_move(it->over, (edge_spacing - hide_step), pos);
 
                break;
 
             case E_GADCON_ORIENT_RIGHT:
-               evas_object_move(it->obj,  x + ((w + hide_step) - (size + edge_spacing)), y + pos);
+               evas_object_move(it->obj,  ((w + hide_step) - (size + edge_spacing)), pos);
                if (!it->overlay_signal_timer)
-                  evas_object_move(it->over, x + ((w + hide_step) - (size + edge_spacing)), y + pos);
+                  evas_object_move(it->over, ((w + hide_step) - (size + edge_spacing)), pos);
            } /* switch */
 
          if (size != it->size)
