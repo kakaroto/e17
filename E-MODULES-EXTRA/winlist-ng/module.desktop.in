@@ -6,4 +6,4 @@ Comment=<hilight>Winlist Switcher Module</hilight><br>Configure it with: <br> Co
 Comment[it]=Modulo commutazione finestre<br>Per configurarlo: Pannello di configurazione → Estensioni → Winlist NG
 Comment[fr]=Module de commutation Winlist.<br>Configuration : Panneau de configuration → Extensions → Winlist NG
 Comment[pt]=<hilight>Módulo Winlist Switcher</hilight><br>Configure-o via: <br> Painel de configuração > Extensões > Winlist NG 
-X-Enlightenment-ModuleType=system
+X-Enlightenment-ModuleType=core
