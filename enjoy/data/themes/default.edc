@@ -283,15 +283,31 @@ collections {
    group {
       name: "album-without-cover";
       images {
-         image: "no-cover.png" COMP;
+         set {
+            name: "no-cover";
+            image {
+               image: "no-cover-66.png" COMP;
+               size: 1 1 70 70;
+            }
+            image {
+               image: "no-cover-146.png" COMP;
+               size: 71 71 146 146;
+            }
+            image {
+               image: "no-cover-1024.png" COMP;
+               size: 147 147 2048 2048;
+            }
+         }
       }
       parts {
           part {
               name: "icon";
               type: IMAGE;
               description {
+                  aspect: 1.0 1.0;
+                  aspect_preference: BOTH;
                   state: "default" 0.0;
-                  image.normal: "no-cover.png";
+                  image.normal: "no-cover";
               }
           }
       }
@@ -947,28 +963,11 @@ collections {
             }
          }
          part {
-            name: "cover-fallback";
-            type: RECT;
-            description {
-               state: "default" 0.0;
-               color: 255 255 0 255;
-               min: 128 128;
-               max: 128 128;
-               rel1 {
-                  relative: 0.0 0.0;
-                  offset: 0 110;
-               }
-               rel2 {
-                  relative: 1.0 0.0;
-                  offset: -1 237;
-               }
-            }
-         }
-
-         part {
             name: "ejy.swallow.cover";
             type: SWALLOW;
             description {
+               aspect: 1.0 1.0;
+               aspect_preference: VERTICAL;
                state: "default" 0.0;
                rel1 {
                   relative: 0.0 0.0;

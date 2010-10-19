@@ -24,7 +24,9 @@ images/bt_play_selected.png \
 images/bt_prev_normal.png \
 images/bt_prev_selected.png \
 images/list-highlight.png \
-images/no-cover.png \
+images/no-cover-66.png \
+images/no-cover-146.png \
+images/no-cover-1024.png \
 images/scrollbar-bg.png \
 images/scrollbar-knob.png \
 images/top_bg.png \
