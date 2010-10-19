@@ -25,6 +25,8 @@ images = \
     bt_tab_selected.png \
     bt_addtab_normal.png \
     bt_addtab_selected.png \
+    bt_stop_normal.png \
+    bt_stop_selected.png \
     panel-top-triangle.png \
     scrollbar-bg.png \
     scrollbar-knob.png \
