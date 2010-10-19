@@ -5,6 +5,7 @@ Name[pt]=Exemplo de conversor
 Comment=converter sample made by editje
 Comment[it]=Un convertitore di esempio fatto con editje
 Comment[pt]=Um exemplo de conversão via editje
+Comment[fr]=Un exemple de convertisseur conçu avec Editje
 Exec=converter-sample
 Icon=converter-sample
 Terminal=false
