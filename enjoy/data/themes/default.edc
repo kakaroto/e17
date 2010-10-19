@@ -1234,20 +1234,39 @@ collections {
             }
          }
          part {
-            name: "ejy.swallow.cover";
-            type: SWALLOW;
+            name: "cover.clip";
+            type: RECT;
             description {
-               min: 480 0;
-               max: 480 99999;
-               state: "default" 0.0;
+               color: 255 255 255 255;
                rel1 {
                   to_y: "buttons.bg";
                   relative: 0.0 1.0;
-                  offset: 0 0;
+                  offset: 0 1;
                }
                rel2 {
+                  to_y: "buttons.bg";
                   relative: 1.0 1.0;
-                  offset: 0 0;
+                  offset: 0 480;
+               }
+            }
+         }
+         part {
+            name: "ejy.swallow.cover";
+            type: SWALLOW;
+            clip_to: "cover.clip";
+            description {
+               min: 480 480;
+               max: 480 99999;
+               state: "default" 0.0;
+               rel1 {
+                  to: "cover.clip";
+                  relative: 0.0 0.0;
+                  offset: 0 -1000;
+               }
+               rel2 {
+                  to: "cover.clip";
+                  relative: 1.0 1.0;
+                  offset: -1 1000;
                }
             }
          }
