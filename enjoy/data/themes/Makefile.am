@@ -40,7 +40,8 @@ images/progress_horizontal_stroke.png \
 images/main.png \
 images/base.png \
 images/menu_separation.png \
-images/all_songs.png
+images/all_songs.png \
+images/songs-button.png
 
 fonts =
 
