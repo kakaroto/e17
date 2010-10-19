@@ -13,4 +13,4 @@ Comment[it]=Posiziona/ridimensiona le finestre affiancandole, come ad esempio io
 Comment[hu]=Ablakok pozicionálása/átméretezése, mint pl.:az ion.
 Comment[fr]=Place/Redimensionne les fenêtres sans les superposer. à l'instar de ion.
 Comment[pt]=Posiciona e ajusta as suas janelas em mosaico
-X-Enlightenment-ModuleType=appearance
+X-Enlightenment-ModuleType=core
