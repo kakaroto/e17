@@ -33,4 +33,4 @@ Comment[zh_TW]=
 Comment[el]=Ένα άρθρωμα που επιτρέπει την πληκτρολόγηση μιας τοποθεσίας στον διαχειριστή αρχείων.
 X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=efm_path,gadget
-X-Enlightenment-ModuleType=fileman
+X-Enlightenment-ModuleType=files
