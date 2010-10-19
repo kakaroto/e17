@@ -234,7 +234,7 @@ _win_song_set(Win *w, Song *s)
    edje_object_part_text_set(w->edje, "ejy.text.genre", s->genre);
 
    mi.val = s->rating;
-   edje_object_message_send(w->edje, EDJE_MESSAGE_INT, MSG_RATING, &mi);
+   edje_object_message_send(elm_layout_edje_get(w->nowplaying), EDJE_MESSAGE_INT, MSG_RATING, &mi);
 
    emotion_object_file_set(w->emotion, s->path);
    emotion_object_position_set(w->emotion, w->play.position);

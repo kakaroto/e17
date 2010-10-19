@@ -45,8 +45,9 @@ images/songs-button.png \
 images/progress_horizontal_fill_volume.png \
 images/sound_max.png \
 images/sound_min.png \
-images/sound_mute.png
-
+images/sound_mute.png \
+images/rating_stars_highlight.png \
+images/rating_stars.png
 
 fonts =
 

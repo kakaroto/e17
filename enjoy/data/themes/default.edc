@@ -1,12 +1,18 @@
+#define RATING_STARS_WIDTH 480
+#define RATING_STARS_HEIGHT 60
+#define RATING_STARS_STEP 55
+#define RATING_STARS_COUNT 5
+
+#define MSG_VOLUME 1
+#define MSG_POSITION 2
+#define MSG_RATING 3
+#define MSG_MUTE 4
+
 /*
  * TOOLBAR_POSITION() macro below only works with an odd number of items on a toolbar.
  * What it does is calculate the offset relative to the center (on x) of the nth button,
  * and in order to do that, it uses the position of the item in the middle of the toolbar.
  */
-#define MSG_VOLUME 1
-#define MSG_POSITION 2
-#define MSG_MUTE 4
-
 #define TOOLBAR_ITEMS 5
 #define TOOLBAR_MIDDLE_ITEM 3
 #define TOOLBAR_ITEM_SIZE 90
@@ -1400,7 +1406,7 @@ collections {
                rel1 {
                   to: "title.bg";
                   relative: 0.0 0.0;
-                  offset: 0 20;
+                  offset: 0 15;
                }
                rel2 {
                   to: "title.bg";
@@ -1475,11 +1481,30 @@ collections {
                rel2 {
                   to: "title.bg";
                   relative: 1.0 0.0;
-                  offset: -40 90;
+                  offset: -40 80;
                }
                params.double: "min" 0.0;
                params.double: "max" 100.0;
                params.double: "value" 0.0;
+            }
+         }
+         part {
+            name: "title.rating_starts";
+            type: GROUP;
+            source: "group_rating_stars";
+            description {
+               color: 255 0 0 255;
+               rel1 {
+                  to_y: "ejy,progress";
+                  to_x: "title.bg";
+                  relative: 0.0 1.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  to: "title.bg";
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+               }
             }
          }
          part {
@@ -3898,6 +3923,212 @@ group { name: "elm/scroller/base/enjoy";
             target: "indicator_bg";
             target: "elm.indicator";
          }
+      }
+   }
+   group {
+      name: "group_rating_stars";
+      min: RATING_STARS_WIDTH RATING_STARS_HEIGHT;
+      max: RATING_STARS_WIDTH RATING_STARS_HEIGHT;
+
+      images {
+         image: "rating_stars.png" COMP;
+         image: "rating_stars_highlight.png" COMP;
+      }
+      script {
+         public is_mouse_down = 0;
+         public current_rating = -1;
+
+         public recalc(part_name, knob) {
+            new mx, my, ox, oy, ow, oh, res;
+            new Float:p;
+
+            get_mouse(mx, my);
+            get_geometry(part_name, ox, oy, ow, oh);
+
+            res = mx - ox;
+            if (res > 0) {
+               p = Float:res / Float:ow;
+               set_drag(knob, p, 0.0);
+            }
+            else
+               set_drag(knob, 0.0, 0.0);
+         }
+         public send_drag_signal() {
+            new Float:dx;
+            new Float:dy;
+            new rating;
+            get_drag(PART:"rect_rating_stars_knob", dx, dy);
+            rating = round(dx * (RATING_STARS_COUNT + 1), FLOOR);
+            if (rating > 5)
+               rating = 5;
+            if (get_int(current_rating) != rating)
+            {
+               send_message(MSG_INT, MSG_RATING, rating);
+               set_int(current_rating, rating);
+            }
+         }
+         public message(Msg_Type:type, id, ...){
+            if (type == MSG_INT && id == MSG_RATING)
+            {
+               new rating = getarg(2);
+               new Float:position;
+               position = float_div(rating, RATING_STARS_COUNT);
+               set_drag(PART:"rect_rating_stars_knob", position, 0.0);
+            }
+         }
+      }
+      parts {
+         part {
+            name: "img_rating_stars";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               min: RATING_STARS_WIDTH RATING_STARS_HEIGHT;
+               max: RATING_STARS_WIDTH RATING_STARS_HEIGHT;
+               image.normal: "rating_stars.png";
+            }
+         }
+         part {
+            name: "img_rating_stars_highlight";
+            type: IMAGE;
+            clip_to: "rect_img_rating_stars_highlight";
+            mouse_events: 0;
+
+            description {
+               image.normal: "rating_stars_highlight.png";
+               min: RATING_STARS_WIDTH RATING_STARS_HEIGHT;
+               max: RATING_STARS_WIDTH RATING_STARS_HEIGHT;
+            }
+            description {
+               state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 0;
+            }
+         }
+         part {
+            name: "rect_img_rating_stars_highlight";
+            type: RECT;
+            mouse_events: 0;
+
+            description {
+               step: RATING_STARS_STEP 0;
+               rel1{
+                  to: "img_rating_stars";
+                  offset: 0 -1;
+               }
+               rel2 {
+                  to: "rect_rating_stars_knob";
+                  relative: 0.0 1.0;
+                  offset: (RATING_STARS_STEP-5) 0;
+               }
+            }
+
+            description {
+               state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 0;
+            }
+         }
+         part {
+            name: "rect_rating_stars_knob_confine";
+            type: RECT;
+            mouse_events: 0;
+
+            description {
+               color: 255 255 255 0;
+               rel1 {
+                  to: "img_rating_stars";
+                  offset: 60 0;
+               }
+               rel2 {
+                  to: "img_rating_stars";
+                  offset: -100 -1;
+               }
+            }
+         }
+         part {
+            name: "rect_rating_stars_knob";
+            type: RECT;
+            mouse_events: 1;
+
+            dragable {
+               confine: "rect_rating_stars_knob_confine";
+               x: 1 RATING_STARS_STEP 1;
+               y: 0 0 0 ;
+            }
+
+            description {
+               min: 10 RATING_STARS_HEIGHT;
+               max: 10 RATING_STARS_HEIGHT;
+               color: 255 255 0 0;
+            }
+         }
+         part {
+            name: "rect_rating_stars_knob_confine_area";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 0;
+               rel1.to: "rect_rating_stars_knob_confine";
+               rel2.to: "rect_rating_stars_knob_confine";
+            }
+         }
+         programs {
+            program {
+               name: "rect_rating_stars_knob_confine_show";
+               signal: "show";
+               source: "*";
+               script {
+                  set_int(is_mouse_down, 0);
+               }
+            }
+            program {
+               name: "rect_rating_stars_knob_confine_clicked";
+               signal: "mouse,clicked,1";
+               source: "rect_rating_stars_knob_confine_area";
+               script {
+                  recalc(PART:"rect_rating_stars_knob_confine_area", PART:"rect_rating_stars_knob");
+               }
+            }
+            program {
+               name: "rect_rating_stars_knob_confine_down";
+               signal: "mouse,down,1";
+               source: "rect_rating_stars_knob_confine_area";
+               script {
+                  set_int(is_mouse_down, 1);
+               }
+            }
+            program {
+               name: "rect_rating_stars_knob_confine_up";
+               signal: "mouse,up,1";
+               source: "rect_rating_stars_knob_confine_area";
+               script {
+                  set_int(is_mouse_down, 0);
+                  recalc(PART:"rect_rating_stars_knob_confine_area", PART:"rect_rating_stars_knob");
+                  send_drag_signal()
+               }
+            }
+            program {
+               name: "rect_rating_stars_knob_confine_move";
+               signal: "mouse,move";
+               source: "rect_rating_stars_knob_confine_area";
+               script {
+                  if (get_int(is_mouse_down) == 1) {
+                     recalc(PART:"rect_rating_stars_knob_confine_area", PART:"rect_rating_stars_knob");
+                     send_drag_signal()
+                  }
+               }
+            }
+            program {
+               name: knob"_drag_stop";
+               signal: "drag,stop";
+               source: "knob";
+               script {
+                  send_drag_signal()
+               }
+            }
+        }
       }
    }
 }

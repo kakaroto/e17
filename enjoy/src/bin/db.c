@@ -337,7 +337,7 @@ db_song_rating_set(DB *db, Song *song, int rating)
    EINA_SAFETY_ON_NULL_RETURN_VAL(song, EINA_FALSE);
 
    sqlite3_snprintf(sizeof(sql), sql,
-                    "UPDATE audios SET playcnt = %d WHERE id = %lld",
+                    "UPDATE audios SET rating = %d WHERE id = %lld",
                     rating, song->id);
 
    r = sqlite3_exec(db->handle, sql, NULL, NULL, &errmsg);
