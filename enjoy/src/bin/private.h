@@ -64,6 +64,7 @@ Song        *page_songs_random_go(Evas_Object *obj);
 Eina_Bool    page_songs_prev_exists(const Evas_Object *obj);
 Song        *page_songs_prev_go(Evas_Object *obj);
 
+Evas_Object *cover_allsongs_fetch(Evas_Object *parent, unsigned short size);
 Evas_Object *cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size);
 Evas_Object *cover_album_fetch_by_id(Evas_Object *parent, DB *db, int64_t album_id, unsigned short size);
 

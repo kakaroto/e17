@@ -796,14 +796,24 @@ _page_albums_add(Evas_Object *parent, Eina_Iterator *it, const char *title)
 static char *
 _item_all_songs_label_get(void *data __UNUSED__, Evas_Object *list __UNUSED__, const char *part __UNUSED__)
 {
+   if (strcmp(part, "ejy.text.artist") == 0)
+        return NULL;
    return strdup("All Songs");
 }
+
+static Evas_Object *
+_item_all_songs_icon_get(void *data, Evas_Object *list __UNUSED__, const char *part __UNUSED__)
+{
+   Page *page = evas_object_data_get(list, "_enjoy_page");
+   return cover_allsongs_fetch(list, page->cls->icon_size);
+}
+
 
 static const Elm_Genlist_Item_Class _item_all_songs_cls = {
   "all-song",
   {
     _item_all_songs_label_get,
-    NULL,
+    _item_all_songs_icon_get,
     NULL,
     NULL
   }

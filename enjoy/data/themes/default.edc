@@ -281,6 +281,22 @@ collections {
       external: "elm";
    }
    group {
+      name: "all-songs-icon";
+      images {
+         image: "all_songs.png" COMP;
+      }
+      parts {
+          part {
+              name: "icon";
+              type: IMAGE;
+              description {
+                  state: "default" 0.0;
+                  image.normal: "all_songs.png";
+              }
+          }
+      }
+   }
+   group {
       name: "album-without-cover";
       images {
          set {
@@ -1587,9 +1603,7 @@ collections {
    group { name: "elm/genlist/item_compress/root/default";
       alias: "elm/genlist/item_compress_odd/root/default";
       alias: "elm/genlist/item_compress/nameid/default";
-      alias: "elm/genlist/item_compress/all-song/default";
       alias: "elm/genlist/item_compress_odd/nameid/default";
-      alias: "elm/genlist/item_compress_odd/all-song/default";
       data.item: "labels" "ejy.text.title";
       //data.item: "icons" "swallow.cover";
       parts {
@@ -1672,6 +1686,8 @@ collections {
 
    group { name: "elm/genlist/item_compress/album-artist/default";
       alias: "elm/genlist/item_compress_odd/album-artist/default";
+      alias: "elm/genlist/item_compress/all-song/default";
+      alias: "elm/genlist/item_compress_odd/all-song/default";
       alias: "elm/genlist/item_compress/album/default";
       alias: "elm/genlist/item_compress_odd/album/default";
       data {
@@ -1704,7 +1720,7 @@ collections {
                rel1 {
                    to_x: "ejy.swallow.cover";
                    relative: 1.0 0.0;
-                   offset: 3 5;
+                   offset: 3 7;
                }
                rel2 {
                    relative: 1.0 1.0;

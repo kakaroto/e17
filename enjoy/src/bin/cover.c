@@ -134,6 +134,18 @@ _cover_without_image_add(Evas_Object *parent, unsigned short size)
 }
 
 Evas_Object *
+cover_allsongs_fetch(Evas_Object *parent, unsigned short size)
+{
+   Evas_Object *cover = _cover_empty_add(parent, size);
+   if (!elm_icon_file_set(cover, PACKAGE_DATA_DIR "/default.edj", "all-songs-icon"))
+     {
+        evas_object_del(cover);
+        return NULL;
+     }
+   return cover;
+}
+
+Evas_Object *
 cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size)
 {
    Evas_Object *cover;

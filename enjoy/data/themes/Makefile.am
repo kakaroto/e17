@@ -39,7 +39,8 @@ images/progress_horizontal_fill.png \
 images/progress_horizontal_stroke.png \
 images/main.png \
 images/base.png \
-images/menu_separation.png
+images/menu_separation.png \
+images/all_songs.png
 
 fonts =
 
