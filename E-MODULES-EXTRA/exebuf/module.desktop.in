@@ -31,4 +31,4 @@ Comment[tr]=Komut çalıştır modülü program çalıştırma penceresi açar.
 Comment[zh_CN]=
 Comment[zh_TW]=
 Comment[el]=Το άρθρωμα της εκτέλεση εντολής παρέχει ένα παράθυρο διαλόγου εκτέλεσης εφαρμογής.
-X-Enlightenment-ModuleType=system
+X-Enlightenment-ModuleType=launcher
