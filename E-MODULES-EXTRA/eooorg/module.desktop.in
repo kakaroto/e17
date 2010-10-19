@@ -10,4 +10,4 @@ Comment[fr]=Préchargement de OpenOffice.org pour accélérer son lancement, au 
 Comment[it]=Questo modulo precarica il processo di OpenOffice.org per risparmiare tempo<br>nell'avvio al costo di un po' di memoria.
 Comment[pt]=Este módulo faz o carregamento automático do openoffice para minimizar o tempo de arranque.
 #Several different types available here. NEED TO DOC THESE.
-X-Enlightenment-ModuleType=system
+X-Enlightenment-ModuleType=utils
