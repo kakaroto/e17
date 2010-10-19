@@ -18,4 +18,4 @@ Comment[el]=Ένα άρθωμα που παρέχει μια μπάρα για �
 Comment[pt]=Um módulo que disponibiliza um gadget para navegar no gestor de ficheiros.
 X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=efm_pathbar,gadget
-X-Enlightenment-ModuleType=fileman
+X-Enlightenment-ModuleType=files
