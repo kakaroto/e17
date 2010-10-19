@@ -9,4 +9,4 @@ Comment[fr]=Recherche sur Wikipedia, utilise les suggestions Google et l'action 
 Comment[it]=Fa ricerche su Wikipedia, usa i suggerimenti di Google e l'azione 'Cerca con Google'(tm).<br>I richiami sono configurabili, quelli predefiniti sono 'g' e 'w'.
 Comment[pt]=Encontrar itens na Wikipedia, utilizar sugestões Google e a ação "Google for it(tm)".<br>Pode configurar os aceleradores. As omissões são "g" e "w".
 #Several different types available here. NEED TO DOC THESE.
-X-Enlightenment-ModuleType=everything
+X-Enlightenment-ModuleType=launcher
