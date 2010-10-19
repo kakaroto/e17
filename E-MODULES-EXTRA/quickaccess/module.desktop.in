@@ -11,4 +11,4 @@ Comment[el]=Παρέχει γρήγορη πρόσβαση σε επιλεγμέ
 Comment[fr]=Permet d'accéder rapidement à des applications sélectionnées.
 Comment[it]=Permette di accedere rapidamente ad alcune applicazioni.
 Comment[pt]=Disponibiliza um acesso rápido às aplicações escolhidas
-X-Enlightenment-ModuleType=system
+X-Enlightenment-ModuleType=launcher
