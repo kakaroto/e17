@@ -186,7 +186,8 @@ _win_nowplaying_update(Win *w)
 {
    Evas_Object *cover;
    int label_size;
-   char *artist_title, *s1, *s2;
+   char *artist_title;
+   const char *s1, *s2;
    cover = cover_album_fetch_by_id(w->win, w->db,w->song->album_id, 480); // TODO: size!
    elm_layout_content_set(w->nowplaying, "ejy.swallow.cover", cover);
 
