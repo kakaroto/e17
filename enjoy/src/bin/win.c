@@ -4,6 +4,7 @@
 #define MSG_VOLUME 1
 #define MSG_POSITION 2
 #define MSG_RATING 3
+#define MSG_MUTE 4
 
 typedef struct Win
 {
@@ -19,6 +20,7 @@ typedef struct Win
    struct {
       double position, length;
       double volume;
+      Eina_Bool mute:1;
       Eina_Bool playing:1;
       Eina_Bool playing_last:1;
       Eina_Bool repeat:1;
@@ -449,6 +451,24 @@ _win_edje_msg(void *data, Evas_Object *o __UNUSED__, Edje_Message_Type type, int
               Edje_Message_Float *m = msg;
               w->play.volume = m->val;
               emotion_object_audio_volume_set(w->emotion, w->play.volume);
+              w->play.mute = EINA_FALSE;
+              emotion_object_audio_mute_set(w->emotion, w->play.mute);
+           }
+        break;
+
+      case MSG_MUTE:
+         if (type != EDJE_MESSAGE_INT)
+           ERR("message for volume got type %d instead of %d",
+               type, EDJE_MESSAGE_INT);
+         else
+           {
+              Edje_Message_Int *m = msg;
+              w->play.mute = m->val;
+              emotion_object_audio_mute_set(w->emotion, w->play.mute);
+              if (w->play.mute)
+                 emotion_object_audio_volume_set(w->emotion, 0);
+              else
+                 emotion_object_audio_volume_set(w->emotion, w->play.volume);
            }
         break;
 

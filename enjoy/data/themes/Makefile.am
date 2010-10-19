@@ -41,7 +41,12 @@ images/main.png \
 images/base.png \
 images/menu_separation.png \
 images/all_songs.png \
-images/songs-button.png
+images/songs-button.png \
+images/progress_horizontal_fill_volume.png \
+images/sound_max.png \
+images/sound_min.png \
+images/sound_mute.png
+
 
 fonts =
 
