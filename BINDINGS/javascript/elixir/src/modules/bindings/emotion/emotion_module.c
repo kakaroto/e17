@@ -10,6 +10,9 @@
 
 #include "Elixir.h"
 
+#ifdef ELIXIR_EMOTION_SECURITY
+# include <fnmatch.h>
+#endif
 
 static elixir_parameter_t               _evas_parameter = {
   "Evas", JOBJECT, NULL
@@ -57,6 +60,7 @@ static const elixir_parameter_t*        _emotion_object_string_params[3] = {
    NULL
 };
 
+static char **_elixir_emotion_regex;
 
 static void
 _elixir_evas_object(void *data, Evas *e, Evas_Object *obj, void *event_info)
@@ -202,6 +206,9 @@ elixir_emotion_object_file_set(JSContext *cx, uintN argc, jsval *vp)
    const char *uri;
    char tmp[PATH_MAX];
    elixir_value_t val[2];
+#ifdef ELIXIR_EMOTION_SECURITY
+   int i;
+#endif
 
    if (!elixir_params_check(cx, _emotion_object_string_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
@@ -235,8 +242,22 @@ elixir_emotion_object_file_set(JSContext *cx, uintN argc, jsval *vp)
 	strncpy(tmp, uri, PATH_MAX - 1);
      }
 
-   emotion_object_file_set(obj, tmp);
-   return JS_TRUE;
+#ifdef ELIXIR_EMOTION_SECURITY
+   for (i = 0; _elixir_emotion_regex[i] != NULL; ++i)
+     if (!fnmatch(_elixir_emotion_regex[i], tmp, FNM_CASEFOLD))
+       break;
+
+   if (_elixir_emotion_regex[i])
+     {
+#endif
+        emotion_object_file_set(obj, tmp);
+        return JS_TRUE;
+#ifdef ELIXIR_EMOTION_SECURITY
+     }
+
+   JS_ReportError(cx, "URI [%s] is not authorized by current security rules.", tmp);
+   return JS_FALSE;
+#endif
 }
 
 
@@ -693,6 +714,25 @@ module_open(Elixir_Module* em, JSContext* cx, JSObject* parent)
    _evas_parameter.class = elixir_class_request("evas", NULL);
    _evas_object_parameter.class = elixir_class_request("evas_object", NULL);
    _emotion_object_parameter.class = elixir_class_request("emotion_object", "evas_object_smart");
+
+   _elixir_emotion_regex = malloc(sizeof (char**));
+   _elixir_emotion_regex[0] = NULL;
+
+#ifdef ELIXIR_EMOTION_SECURITY
+   if (getenv("ELIXIR_EMOTION_MATCH"))
+     {
+        char *copy;
+        unsigned int j = 0;
+
+        copy = strdup(getenv("ELIXIR_EMOTION_MATCH"));
+        while (copy)
+          {
+             _elixir_emotion_regex = realloc(_elixir_emotion_regex, sizeof (char**) * (++j + 1));
+             _elixir_emotion_regex[j - 1] = strsep(&copy, ",");
+             _elixir_emotion_regex[j] = NULL;
+          }
+     }
+#endif
 
    return EINA_TRUE;
 

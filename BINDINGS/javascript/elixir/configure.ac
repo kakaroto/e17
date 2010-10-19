@@ -456,6 +456,25 @@ if test "x$have_strndup" = "xyes"; then
 fi
 
 ###############################
+want_emotion_security="no"
+have_emotion_security="no"
+active_emotion_security="no"
+
+EFL_CHECK_FNMATCH([have_emotion_security="yes"], [have_emotion_security="no"])
+
+AC_ARG_ENABLE([emotion-security],
+	[AC_HELP_STRING([--enable-emotion-security], [limit content playable by emotion])],
+	[want_emotion_security=$enableval])
+
+if test "x${want_emotion_security}" = "xyes" -a "x${have_emotion_security}" = "xyes"; then
+   active_emotion_security="yes"
+   AC_DEFINE(ELIXIR_EMOTION_SECURITY, 1, [Check file set to emotion against a set of regexp])
+fi
+
+AC_MSG_CHECKING([Enabling emotion security check])
+AC_MSG_RESULT($active_emotion_security)
+
+###############################
 
 elixir_cflags="${EMOTION_CFLAGS} ${EDJE_CFLAGS} ${EET_CFLAGS} ${EINA_CFLAGS}"
 elixir_libs="${EMOTION_LIBS} ${EDJE_LIBS} ${EET_LIBS} ${zlib_libs} ${gcrypt_libs} ${tomcrypt_libs} ${magic_libs} ${EINA_LIBS}"
@@ -542,6 +561,7 @@ echo "  Ecore-file..........: ${have_ecore_file}"
 echo "  Ecore-ipc...........: ${have_ecore_ipc}"
 echo "  Edje................: $have_edje"
 echo "  Emotion.............: $have_emotion"
+echo "     regexp match.....: $active_emotion_security"
 echo "  Eet.................: $have_eet"
 echo
 echo "Loaders modules:"
