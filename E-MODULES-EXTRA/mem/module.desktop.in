@@ -6,6 +6,7 @@ Name[hu]=Memória
 Name[fr]=Mémoire
 Name[el]=Μνήμη
 Icon=e-module-mem
+X-Enlightenment-ModuleType=system
 Comment=Used to monitor memory utilization.
 Comment[cs]=Zobrazí využití paměti.
 Comment[eo]=Elrigardi la uzadon de memoro.
