@@ -1,6 +1,7 @@
 #include "private.h"
 
 #include <ctype.h>
+#include <stdlib.h>
 
 /*
  * TODO:
@@ -108,6 +109,7 @@ typedef struct _Page
    Evas_Object *list;
    Evas_Object *index;
    Evas_Object *parent;
+   size_t num_elements;
    const char *title;
    void *container;
    Elm_Genlist_Item *selected;
@@ -182,6 +184,7 @@ _page_populate(void *data)
              elm_index_item_append(page->index, page->last_index_letter, it);
           }
         if (!page->first) page->first = it;
+        page->num_elements++;
      }
 
    return EINA_TRUE;
@@ -579,6 +582,26 @@ page_songs_next_go(Evas_Object *obj)
    Song *song;
    if (!it) return NULL;
    it = elm_genlist_item_next_get(it);
+   if (!it) return NULL;
+   song = elm_genlist_item_data_get(it);
+   page->selected = it;
+   elm_genlist_item_selected_set(it, EINA_TRUE);
+   elm_genlist_item_bring_in(it);
+   return song;
+}
+
+Song *
+page_songs_random_go(Evas_Object *obj)
+{
+   Song *song;
+   int count, song_num;
+
+   PAGE_SONGS_GET_OR_RETURN(page, obj, NULL);
+   Elm_Genlist_Item *it = page->first;
+   if (!it) return NULL;
+   song_num = (rand() % page->num_elements);
+   for (count = 0; (it) && (count < song_num); count++)
+      it = elm_genlist_item_next_get(it);
    if (!it) return NULL;
    song = elm_genlist_item_data_get(it);
    page->selected = it;

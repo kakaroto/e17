@@ -1169,7 +1169,7 @@ collections {
                rel2 {
                   to_y: "title.bg";
                   relative: 1.0 1.0;
-                  offset: 0 50;
+                  offset: 0 41;
                }
             }
          }
@@ -1181,12 +1181,12 @@ collections {
                rel1 {
                   to: "buttons.bg";
                   relative: 0.0 1.0;
-                  offset: 0 -4;
+                  offset: 0 0;
                }
                rel2 {
                   to: "buttons.bg";
                   relative: 1.0 1.0;
-                  offset: 0 0;
+                  offset: 0 4;
                }
                image.normal: "base.png";
             }
@@ -1253,6 +1253,28 @@ collections {
          }
       }
       programs {
+         program {
+            name: "buttons.shuffle,changed";
+            source: "buttons.shuffle";
+            signal: "changed";
+            script {
+               if (external_param_get_bool(PART:"buttons.shuffle", "state"))
+                  emit("ejy,shuffle,on", "ejy");
+               else
+                  emit("ejy,shuffle,off", "ejy");
+            }
+         }
+         program {
+            name: "buttons.repeat,changed";
+            source: "buttons.repeat";
+            signal: "changed";
+            script {
+               if (external_param_get_bool(PART:"buttons.repeat", "state"))
+                  emit("ejy,repeat,on", "ejy");
+               else
+                  emit("ejy,repeat,off", "ejy");
+            }
+         }
          program {
             name: "ejy,progress,changed";
             source: "ejy,progress";

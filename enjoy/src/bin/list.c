@@ -237,6 +237,14 @@ list_next_go(Evas_Object *obj)
    return NULL;
 }
 
+Song *
+list_random_go(Evas_Object *obj)
+{
+   LIST_GET_OR_RETURN(list, obj, NULL);
+   if (list->page.songs) return page_songs_random_go(list->page.songs);
+   return NULL;
+}
+
 Eina_Bool
 list_prev_exists(const Evas_Object *obj)
 {

@@ -21,6 +21,8 @@ typedef struct Win
       double volume;
       Eina_Bool playing:1;
       Eina_Bool playing_last:1;
+      Eina_Bool repeat:1;
+      Eina_Bool shuffle:1;
    } play;
    struct {
       Evas_Coord w, h;
@@ -109,7 +111,7 @@ _win_toolbar_eval(Win *w)
    else
      edje_object_signal_emit(w->edje, "ejy,prev,disable", "ejy");
 
-   if (list_next_exists(w->list))
+   if ((w->play.shuffle) || (list_next_exists(w->list)))
      edje_object_signal_emit(w->edje, "ejy,next,enable", "ejy");
    else
      edje_object_signal_emit(w->edje, "ejy,next,disable", "ejy");
@@ -233,6 +235,7 @@ _win_song_set(Win *w, Song *s)
    edje_object_message_send(w->edje, EDJE_MESSAGE_INT, MSG_RATING, &mi);
 
    emotion_object_file_set(w->emotion, s->path);
+   emotion_object_position_set(w->emotion, w->play.position);
    w->play.playing = EINA_TRUE;
    w->play.playing_last = EINA_FALSE;
    emotion_object_play_set(w->emotion, EINA_TRUE);
@@ -265,14 +268,6 @@ _win_play_begin(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED
 {
    Win *w = data;
    _win_play_eval(w);
-}
-
-static void
-_win_play_end(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
-{
-   Win *w = data;
-   Song *s = list_next_go(w->list);
-   _win_song_set(w, s);
 }
 
 static void
@@ -319,9 +314,28 @@ static void
 _win_next(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Win *w = data;
-   Song *s = list_next_go(w->list);
+   Song *s;
+   if (w->play.shuffle)
+      s = list_random_go(w->list);
+   else
+      s = list_next_go(w->list);
    INF("next song=%p (%s)", s, s ? s->path : NULL);
    if (s) _win_song_set(w, s);
+}
+
+static void
+_win_play_end(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+   Win *w = data;
+   Song *s;
+
+   if (w->play.repeat)
+     {
+        s = w->song;
+        _win_song_set(w, s);
+     }
+   else
+         _win_next(data, NULL, NULL, NULL);
 }
 
 static void
@@ -378,6 +392,36 @@ _win_songs(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emissio
    if (!list_songs_show(w->list)) return;
    edje_object_signal_emit(w->edje, "ejy,mode,nowplaying,hide", "ejy");
    edje_object_signal_emit(w->edje, "ejy,mode,list,show", "ejy");
+}
+
+static void
+_win_repeat_on(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+{
+   Win *w = data;
+   w->play.repeat = EINA_TRUE;
+}
+
+static void
+_win_repeat_off(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+{
+   Win *w = data;
+   w->play.repeat = EINA_FALSE;
+}
+
+static void
+_win_shuffle_on(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+{
+   Win *w = data;
+   w->play.shuffle = EINA_TRUE;
+   _win_toolbar_eval(w);
+}
+
+static void
+_win_shuffle_off(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+{
+   Win *w = data;
+   w->play.shuffle = EINA_FALSE;
+   _win_toolbar_eval(w);
 }
 
 //#define EDJE_SIGNAL_DEBUG 1
@@ -448,6 +492,7 @@ win_new(App *app)
    const char **e;
    Evas_Coord iw = 320, ih = 240;
    char path[PATH_MAX];
+   Evas_Object *nowplaying_edje;
 
    memset(w, 0, sizeof(*w));
 
@@ -510,7 +555,16 @@ win_new(App *app)
    evas_object_smart_callback_add(w->list, "changed", _win_list_changed, w);
 
    w->nowplaying = nowplaying_add(w->layout);
-   edje_object_message_handler_set(elm_layout_edje_get(w->nowplaying), _win_edje_msg, w);
+   nowplaying_edje = elm_layout_edje_get(w->nowplaying);
+   edje_object_message_handler_set(nowplaying_edje, _win_edje_msg, w);
+   edje_object_signal_callback_add
+     (nowplaying_edje, "ejy,repeat,on", "ejy", _win_repeat_on, w);
+   edje_object_signal_callback_add
+     (nowplaying_edje, "ejy,repeat,off", "ejy", _win_repeat_off, w);
+   edje_object_signal_callback_add
+     (nowplaying_edje, "ejy,shuffle,on", "ejy", _win_shuffle_on, w);
+   edje_object_signal_callback_add
+     (nowplaying_edje, "ejy,shuffle,off", "ejy", _win_shuffle_off, w);
    elm_layout_content_set(w->layout, "ejy.swallow.nowplaying", w->nowplaying);
    w->edje = elm_layout_edje_get(w->layout);
    edje_object_size_min_get(w->edje, &(w->min.w), &(w->min.h));
@@ -579,6 +633,8 @@ win_new(App *app)
      }
    else
      w->job.populate = ecore_job_add(_win_populate_job, w);
+
+   srand(ecore_time_unix_get());
 
    return w->win;
 

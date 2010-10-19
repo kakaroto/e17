@@ -45,6 +45,7 @@ Song        *list_selected_get(const Evas_Object *list);
 Eina_Bool    list_song_updated(Evas_Object *obj);
 Eina_Bool    list_next_exists(const Evas_Object *list);
 Song        *list_next_go(Evas_Object *list);
+Song        *list_random_go(Evas_Object *list);
 Eina_Bool    list_prev_exists(const Evas_Object *list);
 Song        *list_prev_go(Evas_Object *list);
 DB          *list_db_get(const Evas_Object *obj);
@@ -59,6 +60,7 @@ Song        *page_songs_selected_get(const Evas_Object *obj);
 Eina_Bool    page_songs_song_updated(Evas_Object *obj);
 Eina_Bool    page_songs_next_exists(const Evas_Object *obj);
 Song        *page_songs_next_go(Evas_Object *obj);
+Song        *page_songs_random_go(Evas_Object *obj);
 Eina_Bool    page_songs_prev_exists(const Evas_Object *obj);
 Song        *page_songs_prev_go(Evas_Object *obj);
 
