@@ -52,7 +52,7 @@ Index: m4/ac_attribute.m4
 +dnl End of ac_attribute.m4
 Index: configure.ac
 ===================================================================
---- configure.ac	(revision 53479)
+--- configure.ac	(revision 53646)
 +++ configure.ac	(working copy)
 @@ -58,6 +58,7 @@
  ### Checks for programs
@@ -120,7 +120,7 @@ Index: configure.ac
 +
 Index: src/lib/eeze_udev_watch.c
 ===================================================================
---- src/lib/eeze_udev_watch.c	(revision 53481)
+--- src/lib/eeze_udev_watch.c	(revision 53646)
 +++ src/lib/eeze_udev_watch.c	(working copy)
 @@ -6,8 +6,6 @@
  #include <Eeze.h>
@@ -276,7 +276,7 @@ Index: src/lib/eeze_disk.c
 +     return NULL;
 +
 +   disk->syspath = eina_stringshare_add(syspath);
-+   disk->devpath = udev_device_get_property_value(dev, "DEVNAME");
++
 +   disk->device = dev;
 +   disk->mount_cmd_changed = EINA_TRUE;
 +   disk->unmount_cmd_changed = EINA_TRUE;
@@ -331,7 +331,7 @@ Index: src/lib/eeze_disk.c
 +   if (!disk->cache.serial)
 +     disk->cache.serial = udev_device_get_property_value(disk->device, "ID_SERIAL_SHORT");
 +   if (!disk->cache.uuid)
-+     disk->cache.uuid = udev_device_get_property_value(disk->device, "ID_UUID");
++     disk->cache.uuid = udev_device_get_property_value(disk->device, "ID_FS_UUID");
 +   if (!disk->cache.type)
 +     disk->cache.type = _eeze_disk_type_find(disk);
 +
@@ -491,7 +491,7 @@ Index: src/lib/eeze_disk.c
 +   
 +   if (disk->cache.uuid)
 +     return disk->cache.uuid;
-+   disk->cache.uuid = udev_device_get_property_value(disk->device, "ID_UUID");
++   disk->cache.uuid = udev_device_get_property_value(disk->device, "ID_FS_UUID");
 +   return disk->cache.uuid;
 +}
 +
@@ -519,7 +519,7 @@ Index: src/lib/eeze_disk_mount.c
 ===================================================================
 --- src/lib/eeze_disk_mount.c	(revision 0)
 +++ src/lib/eeze_disk_mount.c	(revision 0)
-@@ -0,0 +1,201 @@
+@@ -0,0 +1,205 @@
 +#ifdef HAVE_CONFIG_H
 +#include "config.h"
 +#endif
@@ -629,11 +629,14 @@ Index: src/lib/eeze_disk_mount.c
 +   if (disk->mount_cmd_changed)
 +     {
 +        eina_strbuf_string_free(disk->mount_cmd);
-+        eina_strbuf_append_printf(disk->mount_cmd, "%s -o %s %s %s", EEZE_MOUNT_BIN, EEZE_MOUNT_DEFAULT_OPTS, disk->devpath, disk->mount_point);
++        if (!disk->cache.uuid)
++          disk->cache.uuid = udev_device_get_property_value(disk->device, "ID_FS_UUID");
++        eina_strbuf_append_printf(disk->mount_cmd, "%s -o %s UUID=%s %s", EEZE_MOUNT_BIN, EEZE_MOUNT_DEFAULT_OPTS, disk->cache.uuid, disk->mount_point);
 +        disk->mount_cmd_changed = EINA_FALSE;
 +     }
 +        
 +   disk->mount_cb = cb;
++   INF("Mounting: %s", eina_strbuf_string_get(disk->mount_cmd));
 +   disk->mounter = ecore_exe_pipe_run(eina_strbuf_string_get(disk->mount_cmd), 0, disk);
 +   if (!disk->mounter)
 +     return EINA_FALSE;
@@ -676,6 +679,7 @@ Index: src/lib/eeze_disk_mount.c
 +     }
 +     
 +   disk->mount_cb = cb;
++   INF("Unmounting: %s", eina_strbuf_string_get(disk->unmount_cmd));
 +   disk->mounter = ecore_exe_pipe_run(eina_strbuf_string_get(disk->unmount_cmd), 0, disk);
 +   if (!disk->mounter)
 +     return EINA_FALSE;
@@ -723,7 +727,7 @@ Index: src/lib/eeze_disk_mount.c
 +}
 Index: src/lib/eeze_udev_private.c
 ===================================================================
---- src/lib/eeze_udev_private.c	(revision 53481)
+--- src/lib/eeze_udev_private.c	(revision 53646)
 +++ src/lib/eeze_udev_private.c	(working copy)
 @@ -5,8 +5,6 @@
  #include <Eeze.h>
@@ -736,7 +740,7 @@ Index: src/lib/eeze_udev_private.c
   * which may or may not include /sys at the beginning
 Index: src/lib/eeze_udev_syspath.c
 ===================================================================
---- src/lib/eeze_udev_syspath.c	(revision 53481)
+--- src/lib/eeze_udev_syspath.c	(revision 53646)
 +++ src/lib/eeze_udev_syspath.c	(working copy)
 @@ -5,8 +5,6 @@
  #include <Eeze.h>
@@ -747,28 +751,6 @@ Index: src/lib/eeze_udev_syspath.c
  /**
   * @addtogroup syspath Syspath
   *
-@@ -303,8 +301,7 @@
- {
-    _udev_enumerate *en;
-    _udev_list_entry *devs, *cur;
--   _udev_device *device;
--   const char *name, *ret = NULL;
-+   const char *ret = NULL;
- 
-    if (!devpath)
-      return NULL;
-@@ -319,10 +316,7 @@
-    devs = udev_enumerate_get_list_entry(en);
-    udev_list_entry_foreach(cur, devs)
-      {
--        name = udev_list_entry_get_name(cur);
--        device = udev_device_new_from_syspath(udev, name);
--        ret = eina_stringshare_add(udev_device_get_sysname(device));
--        udev_device_unref(device);
-+        ret = eina_stringshare_add(udev_list_entry_get_name(cur));
-         break;      /*just in case there's more than one somehow */
-      }
-    udev_enumerate_unref(en);
 Index: src/lib/Eeze_Disk.h
 ===================================================================
 --- src/lib/Eeze_Disk.h	(revision 0)
@@ -854,7 +836,7 @@ Index: src/lib/Eeze_Disk.h
 +#endif
 Index: src/lib/Makefile.am
 ===================================================================
---- src/lib/Makefile.am	(revision 53372)
+--- src/lib/Makefile.am	(revision 53646)
 +++ src/lib/Makefile.am	(working copy)
 @@ -1,20 +1,34 @@
  MAINTAINERCLEANFILES = Makefile.in
@@ -899,7 +881,7 @@ Index: src/lib/Makefile.am
  EXTRA_DIST = eeze_udev_private.h eeze_private.h
 Index: src/lib/eeze_udev_walk.c
 ===================================================================
---- src/lib/eeze_udev_walk.c	(revision 53481)
+--- src/lib/eeze_udev_walk.c	(revision 53646)
 +++ src/lib/eeze_udev_walk.c	(working copy)
 @@ -5,8 +5,6 @@
  #include <Eeze.h>
@@ -912,7 +894,7 @@ Index: src/lib/eeze_udev_walk.c
   *
 Index: src/lib/eeze_udev_private.h
 ===================================================================
---- src/lib/eeze_udev_private.h	(revision 53482)
+--- src/lib/eeze_udev_private.h	(revision 53646)
 +++ src/lib/eeze_udev_private.h	(working copy)
 @@ -1,6 +1,6 @@
  #ifndef EEZE_UDEV_PRIVATE_H
@@ -942,7 +924,7 @@ Index: src/lib/eeze_udev_private.h
  const char *_walk_parents_get_attr(_udev_device *device, const char *sysattr);
 Index: src/lib/eeze_udev_find.c
 ===================================================================
---- src/lib/eeze_udev_find.c	(revision 53481)
+--- src/lib/eeze_udev_find.c	(revision 53646)
 +++ src/lib/eeze_udev_find.c	(working copy)
 @@ -5,8 +5,6 @@
  #include <Eeze.h>
@@ -953,15 +935,109 @@ Index: src/lib/eeze_udev_find.c
  /**
   * @addtogroup find Find
   *
+Index: src/lib/eeze_disk_libmount.c
+===================================================================
+--- src/lib/eeze_disk_libmount.c	(revision 0)
++++ src/lib/eeze_disk_libmount.c	(revision 0)
+@@ -0,0 +1,91 @@
++#ifdef HAVE_CONFIG_H
++#include "config.h"
++#endif
++
++#include <Ecore.h>
++#include <Eeze.h>
++#include <Eeze_Disk.h>
++#include <mount/mount.h>
++
++#include "eeze_udev_private.h"
++#include "eeze_disk_private.h"
++
++Ecore_File_Monitor *_mtab_mon = NULL;
++Ecore_File_Monitor *_fstab_mon = NULL;
++Eina_Bool _watching = EINA_FALSE;
++Eina_Bool _mtab_scan_active = EINA_FALSE;
++Eina_Bool _fstab_scan_active = EINA_FALSE;
++mnt_tab *_mtab = NULL;
++mnt_lock *_mlock = NULL;
++mnt_tab *_fstab = NULL;
++
++
++static void
++_eeze_mount_mtab_watcher(void *data, Ecore_File_Monitor *mon, Ecore_File_Event event, const char *path)
++{
++   mnt_tab *bak;
++   if (_mtab_scan_active)
++     return;
++
++   bak = _mtab;
++   if (!(_mtab = mnt_new_tab_from_file("/etc/mtab")))
++     ERR("Could not parse /etc/mtab!");
++}
++
++static void
++_eeze_mount_fstab_watcher(void *data, Ecore_File_Monitor *mon, Ecore_File_Event event, const char *path)
++{
++   if (_fstab_scan_active)
++     return;
++
++   mnt_free_tab(_fstab);
++}
++
++Eina_Bool
++eeze_mount_init(void)
++{
++   if (_mlock)
++     return EINA_TRUE;
++   if (!(_mlock = mnt_new_lock(NULL, 0)))
++     return EINA_FALSE;
++   return EINA_TRUE;
++}
++
++void
++eeze_mount_shutdown(void)
++{
++   if (!_mlock)
++     return;
++
++   mnt_unlock_file(_mlock);
++   mnt_free_lock(_mlock);
++}
++
++EAPI Eina_Bool
++eeze_mount_tabs_watch(void)
++{
++
++   if (_watching)
++     return EINA_TRUE;
++
++   if (!(_mtab = mnt_new_tab_from_file("/etc/mtab")))
++     goto error;
++   if (!(_fstab = mnt_new_tab_from_file("/etc/mtab")))
++     goto error;
++
++
++   _mtab_mon = ecore_file_monitor_add("/etc/mtab", _eeze_mount_mtab_watcher, NULL);
++   _fstab_mon = ecore_file_monitor_add("/etc/fstab", _eeze_mount_fstab_watcher, NULL);
++
++  return EINA_TRUE;
++
++error:
++   if (!_mtab)
++     ERR("Could not parse /etc/mtab!");
++   else
++     {
++        ERR("Could not parse /etc/fstab!");
++        mnt_free_tab(_mtab);
++     }
++   return EINA_FALSE;
++}
 Index: src/lib/eeze_main.c
 ===================================================================
---- src/lib/eeze_main.c	(revision 53482)
+--- src/lib/eeze_main.c	(revision 53646)
 +++ src/lib/eeze_main.c	(working copy)
-@@ -2,8 +2,11 @@
- #include "config.h"
- #endif
+@@ -4,7 +4,9 @@
  
-+#include <Ecore.h>
+ #include <Ecore.h>
  #include <Eeze.h>
 +#include <Eeze_Disk.h>
  #include "eeze_udev_private.h"
@@ -969,7 +1045,7 @@ Index: src/lib/eeze_main.c
  
  /**
   * @defgroup udev udev
-@@ -14,6 +17,9 @@
+@@ -15,6 +17,9 @@
  _udev *udev;
  
  int _eeze_udev_log_dom = -1;
@@ -979,12 +1055,8 @@ Index: src/lib/eeze_main.c
  int _eeze_init_count = 0;
  
  
-@@ -42,29 +48,67 @@
-      return _eeze_init_count;
- 
-    if (!eina_init())
--     return --_eeze_init_count;
-+     return 0;
+@@ -46,7 +51,7 @@
+      return 0;
  
     _eeze_udev_log_dom = eina_log_domain_register
 -                       ("eeze_udev", EEZE_UDEV_COLOR_DEFAULT);
@@ -992,17 +1064,14 @@ Index: src/lib/eeze_main.c
  
     if (_eeze_udev_log_dom < 0)
       {
-         EINA_LOG_ERR("Could not register 'eeze_udev' log domain.");
--        goto fail;
-+        goto eina_fail;
-      }
+@@ -56,16 +61,48 @@
  
-+   if (!ecore_init())
-+     goto fail;
+    if (!ecore_init())
+      goto fail;
 +#ifdef HAVE_EEZE_MOUNT
 +   _eeze_disk_log_dom = eina_log_domain_register
 +                       ("eeze_disk", EINA_COLOR_LIGHTBLUE);
-+
+ 
 +   if (_eeze_disk_log_dom < 0)
 +     {
 +        EINA_LOG_ERR("Could not register 'eeze_disk' log domain.");
@@ -1019,11 +1088,10 @@ Index: src/lib/eeze_main.c
     if (!((udev) = udev_new()))
       {
          EINA_LOG_ERR("Could not initialize udev library!");
--        goto fail;
 +#ifdef HAVE_EEZE_MOUNT
 +        goto eeze_fail;
 +#else
-+        goto ecore_fail;
+         goto ecore_fail;
 +#endif
       }
  
@@ -1035,8 +1103,8 @@ Index: src/lib/eeze_main.c
 +ecore_file_fail:
 +   ecore_file_shutdown();
 +#endif
-+ecore_fail:
-+   ecore_shutdown();
+ ecore_fail:
+    ecore_shutdown();
 +#ifdef HAVE_EEZE_MOUNT
 +disk_fail:
 +   eina_log_domain_unregister(_eeze_disk_log_dom);
@@ -1045,21 +1113,14 @@ Index: src/lib/eeze_main.c
  fail:
     eina_log_domain_unregister(_eeze_udev_log_dom);
     _eeze_udev_log_dom = -1;
-+eina_fail:
-    eina_shutdown();
--   return _eeze_init_count;
-+   return 0;
- }
- 
- /**
-@@ -83,6 +127,15 @@
+@@ -90,7 +127,15 @@
       return _eeze_init_count;
  
     udev_unref(udev);
 +#ifdef HAVE_EEZE_MOUNT
 +   eeze_mount_shutdown();
 +   ecore_file_shutdown();
-+   ecore_shutdown();
+    ecore_shutdown();
 +   eina_log_domain_unregister(_eeze_disk_log_dom);
 +   _eeze_disk_log_dom = -1;
 +#else
@@ -1070,7 +1131,7 @@ Index: src/lib/eeze_main.c
     eina_shutdown();
 Index: src/bin/Makefile.am
 ===================================================================
---- src/bin/Makefile.am	(revision 53479)
+--- src/bin/Makefile.am	(revision 53646)
 +++ src/bin/Makefile.am	(working copy)
 @@ -1,14 +1,24 @@
  MAINTAINERCLEANFILES = Makefile.in
