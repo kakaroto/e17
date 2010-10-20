@@ -1005,7 +1005,7 @@ Index: src/lib/eeze_disk_libmount.c
 ===================================================================
 --- src/lib/eeze_disk_libmount.c	(revision 0)
 +++ src/lib/eeze_disk_libmount.c	(revision 0)
-@@ -0,0 +1,149 @@
+@@ -0,0 +1,136 @@
 +#ifdef HAVE_CONFIG_H
 +#include "config.h"
 +#endif
@@ -1057,42 +1057,30 @@ Index: src/lib/eeze_disk_libmount.c
 +}
 +
 +static void
-+_eeze_mount_mtab_watcher(void *data __UNUSED__, Ecore_File_Monitor *mon __UNUSED__, Ecore_File_Event event __UNUSED__, const char *path __UNUSED__)
++_eeze_mount_tab_watcher(void *data, Ecore_File_Monitor *mon __UNUSED__, Ecore_File_Event event __UNUSED__, const char *path)
 +{
 +   mnt_tab *bak;
-+   if (_mtab_scan_active)
++   if (
++       ((_mtab_scan_active) && (data)) ||
++       ((_fstab_scan_active) && (!data))
++      )
 +     /* prevent scans from triggering a scan */
 +     return;
 +
 +   bak = _mtab;
-+   if (mnt_lock_file(_mlock))
-+     {  /* FIXME: maybe queue job here? */
-+        printf("Couldn't lock mtab! losing events...");
-+        return;
-+     }
-+   _mtab = _eeze_mount_tab_parse("/etc/mtab");
-+   mnt_unlock_file(_mlock);
++   if (data)
++     if (mnt_lock_file(_mlock))
++       {  /* FIXME: maybe queue job here? */
++          printf("Couldn't lock mtab! losing events...");
++          return;
++       }
++   _mtab = _eeze_mount_tab_parse(path);
++   if (data)
++     mnt_unlock_file(_mlock);
 +   if (!_mtab)
 +     {
-+        ERR("Could not parse /etc/mtab! keeping old tab...");
++        ERR("Could not parse %s! keeping old tab...", path);
 +        _mtab = bak;
-+        return;
-+     }
-+}
-+
-+static void
-+_eeze_mount_fstab_watcher(void *data __UNUSED__, Ecore_File_Monitor *mon __UNUSED__, Ecore_File_Event event __UNUSED__, const char *path __UNUSED__)
-+{
-+   mnt_tab *bak;
-+   if (_fstab_scan_active)
-+     /* prevent scans from triggering a scan */
-+     return;
-+
-+   bak = _fstab;
-+   if (!(_fstab = _eeze_mount_tab_parse("/etc/fstab")))
-+     {
-+        ERR("Could not parse /etc/fstab! keeping old tab...");
-+        _fstab = bak;
 +        return;
 +     }
 +}
@@ -1128,9 +1116,8 @@ Index: src/lib/eeze_disk_libmount.c
 +   if (!(_fstab = mnt_new_tab_from_file("/etc/mtab")))
 +     goto error;
 +
-+
-+   _mtab_mon = ecore_file_monitor_add("/etc/mtab", _eeze_mount_mtab_watcher, NULL);
-+   _fstab_mon = ecore_file_monitor_add("/etc/fstab", _eeze_mount_fstab_watcher, NULL);
++   _mtab_mon = ecore_file_monitor_add("/etc/mtab", _eeze_mount_tab_watcher, (void*)1);
++   _fstab_mon = ecore_file_monitor_add("/etc/fstab", _eeze_mount_tab_watcher, NULL);
 +   _watching = EINA_TRUE;
 +
 +  return EINA_TRUE;
