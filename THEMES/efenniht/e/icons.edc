@@ -355,10 +355,16 @@ collections {
    //ICON("preferences-system-screen-resolution","icon_screen_resolution.png",64)// *** // "enlightenment/screen_resolution"
 
    //settings/extensions/modules
-   SETTINGS_TOOLBAR_ICON("preferences-utils","apps")       // *** // "enlightenment/utils"
-   SETTINGS_TOOLBAR_ICON("system-run","advanced")       // *** // "enlightenment/utils"
+   SETTINGS_TOOLBAR_ICON("modules-utils","extensions")               // *** // "enlightenment/utils"
+   SETTINGS_TOOLBAR_ICON("modules-system","apps")                    // *** // "enlightenment/system"
+   SETTINGS_TOOLBAR_ICON("modules-look","look")                      // *** // "enlightenment/look"
+   SETTINGS_TOOLBAR_ICON("modules-files","files")                    // *** // "enlightenment/files"
+   SETTINGS_TOOLBAR_ICON("modules-launcher","advanced")              // *** // "enlightenment/launcher"
+   SETTINGS_TOOLBAR_ICON("modules-core","core")                      // *** // "enlightenment/core"
+   SETTINGS_TOOLBAR_ICON("modules-mobile","illume")                  // *** // "enlightenment/mobile"
+   SETTINGS_TOOLBAR_ICON("modules-settings","settings")              // *** // "enlightenment/settings"
 
-   ICON("application-exit","icon_system_logout.png",64)                                      // "enlightenment/exit"
+   ICON("application-exit","icon_system_logout.png",64)              // "enlightenment/exit"
    ICON("enlightenment","e.png",64)                               // *** // "enlightenment/e"
    ////Standard Emblem Icons
    //ICON("emblem-symbolic-link","icon_dummy.png",64)                // EFMBUTTON("symlink")
