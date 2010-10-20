@@ -1113,7 +1113,7 @@ Index: src/lib/eeze_disk_libmount.c
 +
 +   if (!(_mtab = mnt_new_tab_from_file("/etc/mtab")))
 +     goto error;
-+   if (!(_fstab = mnt_new_tab_from_file("/etc/mtab")))
++   if (!(_fstab = mnt_new_tab_from_file("/etc/fstab")))
 +     goto error;
 +
 +   _mtab_mon = ecore_file_monitor_add("/etc/mtab", _eeze_mount_tab_watcher, (void*)1);
