@@ -37,10 +37,13 @@ _ephoto_directory_thumb_free(Ephoto_Directory_Thumb *dt)
 
    free(dt);
 
-   if (!eina_hash_population(_pending_dirs))
+   if (_pending_dirs)
      {
-        eina_hash_free(_pending_dirs);
-        _pending_dirs = NULL;
+        if (!eina_hash_population(_pending_dirs))
+          {
+             eina_hash_free(_pending_dirs);
+             _pending_dirs = NULL;
+          }
      }
 }
 
