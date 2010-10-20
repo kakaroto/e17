@@ -415,6 +415,7 @@ _ephoto_flow_browser_recalc(Ephoto_Flow_Browser *fb)
         fb->viewer = _viewer_add(fb->orient_layout, fb->path);
         elm_layout_content_set
           (fb->orient_layout, "elm.swallow.content", fb->viewer);
+        evas_object_show(fb->viewer);
         evas_object_event_callback_add
           (fb->viewer, EVAS_CALLBACK_MOUSE_WHEEL, _mouse_wheel, fb);
         edje_object_part_text_set(fb->edje, "elm.text.title", bname);
@@ -699,7 +700,6 @@ ephoto_flow_browser_add(Ephoto *ephoto, Evas_Object *parent)
    evas_object_event_callback_add(layout, EVAS_CALLBACK_DEL, _layout_del, fb);
    evas_object_event_callback_add
      (layout, EVAS_CALLBACK_KEY_DOWN, _key_down, fb);
-   elm_object_focus_allow_set(layout, EINA_TRUE);
    evas_object_data_set(layout, "flow_browser", fb);
 
    edje_object_signal_callback_add(fb->edje, "elm,action,back", "", _back, fb);

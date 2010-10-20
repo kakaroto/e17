@@ -21,8 +21,8 @@ _ephoto_thumb_browser_show(Ephoto *ephoto, Ephoto_Entry *entry)
 
    ephoto_flow_browser_path_set(ephoto->flow_browser, NULL);
    ephoto_slideshow_entry_set(ephoto->slideshow, NULL);
-   elm_object_focus(ephoto->thumb_browser);
    elm_pager_content_promote(ephoto->pager, ephoto->thumb_browser);
+   elm_object_focus(ephoto->thumb_browser);
    _ephoto_state_set(ephoto, EPHOTO_STATE_THUMB);
 
    if ((entry) && (entry->item)) elm_gengrid_item_bring_in(entry->item);
@@ -33,8 +33,8 @@ _ephoto_flow_browser_show(Ephoto *ephoto, Ephoto_Entry *entry)
 {
    DBG("entry '%s'", entry->path);
    ephoto_flow_browser_entry_set(ephoto->flow_browser, entry);
-   elm_object_focus(ephoto->flow_browser);
    elm_pager_content_promote(ephoto->pager, ephoto->flow_browser);
+   elm_object_focus(ephoto->flow_browser);
    _ephoto_state_set(ephoto, EPHOTO_STATE_FLOW);
 }
 
@@ -43,8 +43,8 @@ _ephoto_slideshow_show(Ephoto *ephoto, Ephoto_Entry *entry)
 {
    DBG("entry '%s'", entry->path);
    ephoto_slideshow_entry_set(ephoto->slideshow, entry);
-   elm_object_focus(ephoto->slideshow);
    elm_pager_content_promote(ephoto->pager, ephoto->slideshow);
+   elm_object_focus(ephoto->slideshow);
    _ephoto_state_set(ephoto, EPHOTO_STATE_SLIDESHOW);
 }
 
