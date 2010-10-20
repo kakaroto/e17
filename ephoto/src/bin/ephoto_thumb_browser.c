@@ -384,6 +384,7 @@ _changed_dir(void *data, Evas_Object *o __UNUSED__, void *event_info)
 {
    Ephoto_Thumb_Browser *tb = data;
    const char *path = event_info;
+   if (!path) return;
    ephoto_thumb_browser_directory_set(tb->layout, path);
 }
 
