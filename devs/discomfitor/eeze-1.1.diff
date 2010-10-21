@@ -1790,7 +1790,7 @@ Index: src/bin/eeze_umount.c
 ===================================================================
 --- src/bin/eeze_umount.c	(revision 0)
 +++ src/bin/eeze_umount.c	(revision 0)
-@@ -0,0 +1,110 @@
+@@ -0,0 +1,112 @@
 +#include <Eeze.h>
 +#include <Eeze_Disk.h>
 +#include <Ecore.h>
@@ -1824,6 +1824,7 @@ Index: src/bin/eeze_umount.c
 +   (void)type;
 +   (void)disk;
 +   printf("Success!\n");
++   eeze_disk_free(disk);
 +   ecore_main_loop_quit();
 +}
 +
@@ -1833,6 +1834,7 @@ Index: src/bin/eeze_umount.c
 +   (void)data;
 +   (void)type;
 +   printf("Could not unmount disk with /dev/ path: %s!\n", eeze_disk_devpath_get(de->disk));
++   eeze_disk_free(de->disk);
 +   ecore_main_loop_quit();
 +}
 +
@@ -1945,7 +1947,7 @@ Index: src/bin/eeze_mount.c
 ===================================================================
 --- src/bin/eeze_mount.c	(revision 0)
 +++ src/bin/eeze_mount.c	(revision 0)
-@@ -0,0 +1,114 @@
+@@ -0,0 +1,116 @@
 +#include <Eeze.h>
 +#include <Eeze_Disk.h>
 +#include <Ecore.h>
@@ -1979,6 +1981,7 @@ Index: src/bin/eeze_mount.c
 +   (void)type;
 +   (void)disk;
 +   printf("Success!\n");
++   eeze_disk_free(disk);
 +   ecore_main_loop_quit();
 +}
 +
@@ -1988,6 +1991,7 @@ Index: src/bin/eeze_mount.c
 +   (void)data;
 +   (void)type;
 +   printf("Could not mount disk with /dev/ path: %s!\n", eeze_disk_devpath_get(de->disk));
++   eeze_disk_free(de->disk);
 +   ecore_main_loop_quit();
 +}
 +
