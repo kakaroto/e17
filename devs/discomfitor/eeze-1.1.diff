@@ -52,7 +52,7 @@ Index: m4/ac_attribute.m4
 +dnl End of ac_attribute.m4
 Index: configure.ac
 ===================================================================
---- configure.ac	(revision 53739)
+--- configure.ac	(revision 53745)
 +++ configure.ac	(working copy)
 @@ -1,15 +1,12 @@
  ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
@@ -144,19 +144,6 @@ Index: configure.ac
  echo "  prefix...............: $prefix"
  echo
 +
-Index: src/lib/eeze_udev_watch.c
-===================================================================
---- src/lib/eeze_udev_watch.c	(revision 53739)
-+++ src/lib/eeze_udev_watch.c	(working copy)
-@@ -6,8 +6,6 @@
- #include <Eeze.h>
- #include "eeze_udev_private.h"
- 
--extern _udev *udev;
--
- /* opaque */
- struct Eeze_Udev_Watch
- {
 Index: src/lib/eeze_disk_private.h
 ===================================================================
 --- src/lib/eeze_disk_private.h	(revision 0)
@@ -1041,32 +1028,6 @@ Index: src/lib/eeze_disk_mount.c
 +}
 +
 +/** @} */
-Index: src/lib/eeze_udev_private.c
-===================================================================
---- src/lib/eeze_udev_private.c	(revision 53739)
-+++ src/lib/eeze_udev_private.c	(working copy)
-@@ -5,8 +5,6 @@
- #include <Eeze.h>
- #include "eeze_udev_private.h"
- 
--extern _udev *udev;
--
- /*
-  * helper function to set up a new device from a syspath
-  * which may or may not include /sys at the beginning
-Index: src/lib/eeze_udev_syspath.c
-===================================================================
---- src/lib/eeze_udev_syspath.c	(revision 53739)
-+++ src/lib/eeze_udev_syspath.c	(working copy)
-@@ -5,8 +5,6 @@
- #include <Eeze.h>
- #include "eeze_udev_private.h"
- 
--extern _udev *udev;
--
- /**
-  * @addtogroup syspath Syspath
-  *
 Index: src/lib/Eeze_Disk.h
 ===================================================================
 --- src/lib/Eeze_Disk.h	(revision 0)
@@ -1178,7 +1139,7 @@ Index: src/lib/Eeze_Disk.h
 +#endif
 Index: src/lib/Makefile.am
 ===================================================================
---- src/lib/Makefile.am	(revision 53739)
+--- src/lib/Makefile.am	(revision 53745)
 +++ src/lib/Makefile.am	(working copy)
 @@ -1,20 +1,34 @@
  MAINTAINERCLEANFILES = Makefile.in
@@ -1221,22 +1182,9 @@ Index: src/lib/Makefile.am
  libeeze_la_LDFLAGS = -no-undefined -version-info @version_info@ @release_info@
  
  EXTRA_DIST = eeze_udev_private.h eeze_private.h
-Index: src/lib/eeze_udev_walk.c
-===================================================================
---- src/lib/eeze_udev_walk.c	(revision 53739)
-+++ src/lib/eeze_udev_walk.c	(working copy)
-@@ -5,8 +5,6 @@
- #include <Eeze.h>
- #include "eeze_udev_private.h"
- 
--extern _udev *udev;
--
- /**
-  * @addtogroup walks Walks
-  *
 Index: src/lib/eeze_udev_private.h
 ===================================================================
---- src/lib/eeze_udev_private.h	(revision 53739)
+--- src/lib/eeze_udev_private.h	(revision 53745)
 +++ src/lib/eeze_udev_private.h	(working copy)
 @@ -1,6 +1,6 @@
  #ifndef EEZE_UDEV_PRIVATE_H
@@ -1264,67 +1212,6 @@ Index: src/lib/eeze_udev_private.h
  _udev_device *_new_device(const char *syspath);
  Eina_Bool _walk_parents_test_attr(_udev_device *device, const char *sysattr, const char* value);
  const char *_walk_parents_get_attr(_udev_device *device, const char *sysattr);
-Index: src/lib/eeze_udev_find.c
-===================================================================
---- src/lib/eeze_udev_find.c	(revision 53739)
-+++ src/lib/eeze_udev_find.c	(working copy)
-@@ -5,8 +5,6 @@
- #include <Eeze.h>
- #include "eeze_udev_private.h"
- 
--extern _udev *udev;
--
- /**
-  * @addtogroup find Find
-  *
-@@ -67,8 +65,9 @@
-         devname = udev_list_entry_get_name(cur);
-        /* verify unlisted device */
- 
--        EINA_LIST_FOREACH(ret, l, dev) if (!strcmp(dev, devname))
--          continue;
-+        EINA_LIST_FOREACH(ret, l, dev)
-+          if (!strcmp(dev, devname))
-+            continue;
- 
-         ret = eina_list_prepend(ret, eina_stringshare_add(devname));
-         device = udev_device_new_from_syspath(udev, devname);
-@@ -210,6 +209,8 @@
-           udev_enumerate_add_match_subsystem(en, "block");
-           udev_enumerate_add_match_property(en, "ID_FS_USAGE", "filesystem");
-           udev_enumerate_add_nomatch_sysattr(en, "capability", "52");
-+          /* parent node */
-+          udev_enumerate_add_nomatch_sysattr(en, "capability", "50");
-           break;
-         case EEZE_UDEV_TYPE_DRIVE_INTERNAL:
-           udev_enumerate_add_match_subsystem(en, "block");
-@@ -274,22 +275,18 @@
-                    goto out;
-               }
-           }
--        else
--          if (etype == EEZE_UDEV_TYPE_DRIVE_INTERNAL)
-+        else if (etype == EEZE_UDEV_TYPE_DRIVE_INTERNAL)
-             {
-                if (udev_device_get_property_value(device, "ID_USB_DRIVER"))
-                  goto out;
-             }
--         else
--           if (etype == EEZE_UDEV_TYPE_DRIVE_REMOVABLE)
-+         else if (etype == EEZE_UDEV_TYPE_DRIVE_REMOVABLE)
-              {
--                if (!
--                    (test = udev_device_get_property_value(device, "ID_USB_DRIVER")))
-+                if (!(test = udev_device_get_property_value(device, "ID_USB_DRIVER")))
-                   goto out;
-              }
- 
--        if (name)
--         if (!strstr(devname, name))
-+        if (name && (!strstr(devname, name)))
-            goto out;
- 
-         ret = eina_list_append(ret, eina_stringshare_add(devname));
 Index: src/lib/eeze_disk_libmount.c
 ===================================================================
 --- src/lib/eeze_disk_libmount.c	(revision 0)
@@ -1737,7 +1624,7 @@ Index: src/lib/eeze_disk_libmount.c
 +/** @} */
 Index: src/lib/eeze_main.c
 ===================================================================
---- src/lib/eeze_main.c	(revision 53739)
+--- src/lib/eeze_main.c	(revision 53745)
 +++ src/lib/eeze_main.c	(working copy)
 @@ -4,7 +4,9 @@
  
@@ -1996,7 +1883,7 @@ Index: src/bin/eeze_disk_ls.c
 +}
 Index: src/bin/Makefile.am
 ===================================================================
---- src/bin/Makefile.am	(revision 53739)
+--- src/bin/Makefile.am	(revision 53745)
 +++ src/bin/Makefile.am	(working copy)
 @@ -1,14 +1,32 @@
  MAINTAINERCLEANFILES = Makefile.in
