@@ -771,6 +771,7 @@ ephoto_flow_browser_add(Ephoto *ephoto, Evas_Object *parent)
      }
    fb->orient_edje = elm_layout_edje_get(fb->orient_layout);
    elm_layout_content_set(fb->layout, "elm.swallow.content", fb->orient_layout);
+   elm_object_focus_custom_chain_append(fb->layout, fb->orient_layout, NULL);
 
    _ephoto_flow_browser_toolbar_eval(fb);
 
