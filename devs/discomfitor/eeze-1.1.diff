@@ -988,19 +988,19 @@ Index: src/lib/eeze_disk_mount.c
 +   mp = eeze_disk_libmount_mp_lookup_by_devpath(eeze_disk_devpath_get(disk));
 +   if (mp)
 +     {
-+        disk->mount_point = eina_stringshare_add(disk->mount_point);
++        disk->mount_point = eina_stringshare_add(mp);
 +        return disk->mount_point;
 +     }
 +   mp = eeze_disk_libmount_mp_lookup_by_uuid(eeze_disk_uuid_get(disk));
 +   if (mp)
 +     {
-+        disk->mount_point = eina_stringshare_add(disk->mount_point);
++        disk->mount_point = eina_stringshare_add(mp);
 +        return disk->mount_point;
 +     }
 +   mp = eeze_disk_libmount_mp_lookup_by_label(eeze_disk_label_get(disk));
 +   if (mp)
 +     {
-+        disk->mount_point = eina_stringshare_add(disk->mount_point);
++        disk->mount_point = eina_stringshare_add(mp);
 +        return disk->mount_point;
 +     }
 +   return NULL;
