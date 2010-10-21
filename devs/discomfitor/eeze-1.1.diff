@@ -218,7 +218,7 @@ Index: src/lib/eeze_disk.c
 ===================================================================
 --- src/lib/eeze_disk.c	(revision 0)
 +++ src/lib/eeze_disk.c	(revision 0)
-@@ -0,0 +1,444 @@
+@@ -0,0 +1,455 @@
 +#ifdef HAVE_CONFIG_H
 +#include "config.h"
 +#endif
@@ -284,6 +284,17 @@ Index: src/lib/eeze_disk.c
 +   udev_enumerate_unref(en);
 +   return device;
 +        
++}
++
++/**
++ * @brief Use this function to determine whether your eeze is disk-capable
++ *
++ * Since applications will die if they run against a function that doesn't exist,
++ * if your application successfully runs this function then you have eeze_disk.
++ */
++EAPI void
++eeze_disk_function(void)
++{
 +}
 +
 +/**
@@ -1036,7 +1047,7 @@ Index: src/lib/Eeze_Disk.h
 ===================================================================
 --- src/lib/Eeze_Disk.h	(revision 0)
 +++ src/lib/Eeze_Disk.h	(revision 0)
-@@ -0,0 +1,103 @@
+@@ -0,0 +1,104 @@
 +#ifndef EEZE_DISK_H
 +#define EEZE_DISK_H
 +
@@ -1106,6 +1117,7 @@ Index: src/lib/Eeze_Disk.h
 +   } type;
 +};
 +
++EAPI void           eeze_disk_function(void);
 +EAPI Eeze_Disk     *eeze_disk_new(const char *path);
 +EAPI Eeze_Disk     *eeze_disk_new_from_mount(const char *mount_point);
 +EAPI void           eeze_disk_free(Eeze_Disk *disk);
