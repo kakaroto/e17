@@ -54,7 +54,33 @@ Index: configure.ac
 ===================================================================
 --- configure.ac	(revision 53739)
 +++ configure.ac	(working copy)
-@@ -58,6 +58,7 @@
+@@ -1,15 +1,12 @@
+ ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
+ ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
+ m4_define([v_maj], [1])
+-m4_define([v_min], [0])
++m4_define([v_min], [1])
+ m4_define([v_mic], [0])
+ m4_define([v_rev], m4_esyscmd([(svnversion "${SVN_REPO_PATH:-.}" | grep -v export || echo 0) | awk -F : '{printf("%s\n", $1);}' | tr -d ' :MSP\n']))
+ m4_if(v_rev, [0], [m4_define([v_rev], m4_esyscmd([git log 2> /dev/null | (grep -m1 git-svn-id || echo 0) | sed -e 's/.*@\([0-9]*\).*/\1/' | tr -d '\n']))])
+ ##--   When released, remove the dnl on the below line
+ m4_undefine([v_rev])
+-##--   When doing snapshots - change soname. remove dnl on below line
+-dnl dnl m4_define([relname], [ver-pre-svn-06])
+-dnl m4_define([v_rel], [-release relname])
+ ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
+ m4_ifdef([v_rev], [m4_define([v_ver], [v_maj.v_min.v_mic.v_rev])], [m4_define([v_ver], [v_maj.v_min.v_mic])])
+ m4_define([lt_rev], m4_eval(v_maj + v_min))
+@@ -18,7 +15,7 @@
+ ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
+ ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
+ 
+-AC_INIT([eeze], [v_ver.beta], [enlightenment-devel@lists.sourceforge.net])
++AC_INIT([eeze], [v_ver.alpha], [enlightenment-devel@lists.sourceforge.net])
+ AC_PREREQ([2.52])
+ AC_CONFIG_SRCDIR([configure.ac])
+ AC_CONFIG_MACRO_DIR([m4])
+@@ -58,6 +55,7 @@
  ### Checks for programs
  AC_PROG_CC
  AM_PROG_CC_C_O
@@ -62,7 +88,7 @@ Index: configure.ac
  
  # pkg-config
  PKG_PROG_PKG_CONFIG
-@@ -89,7 +90,34 @@
+@@ -89,7 +87,34 @@
    AC_DEFINE([OLD_UDEV_RRRRRRRRRRRRRR],[1],[compat functionality for udev < 148])
  fi
  
@@ -97,7 +123,7 @@ Index: configure.ac
  ### Checks for header files
  
  
-@@ -136,9 +164,13 @@
+@@ -136,9 +161,13 @@
  echo "------------------------------------------------------------------------"
  echo
  echo "Configuration Options Summary:"
@@ -113,7 +139,7 @@ Index: configure.ac
  echo "Compilation............: make (or gmake)"
  echo "  CPPFLAGS.............: $CPPFLAGS"
  echo "  CFLAGS...............: $CFLAGS"
-@@ -147,3 +179,4 @@
+@@ -147,3 +176,4 @@
  echo "Installation...........: make install (as root if needed, with 'su' or 'sudo')"
  echo "  prefix...............: $prefix"
  echo
