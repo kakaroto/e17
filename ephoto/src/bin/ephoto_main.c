@@ -22,7 +22,6 @@ _ephoto_thumb_browser_show(Ephoto *ephoto, Ephoto_Entry *entry)
    ephoto_flow_browser_path_set(ephoto->flow_browser, NULL);
    ephoto_slideshow_entry_set(ephoto->slideshow, NULL);
    elm_pager_content_promote(ephoto->pager, ephoto->thumb_browser);
-   elm_object_focus(ephoto->thumb_browser);
    _ephoto_state_set(ephoto, EPHOTO_STATE_THUMB);
 
    if ((entry) && (entry->item)) elm_gengrid_item_bring_in(entry->item);
@@ -34,7 +33,6 @@ _ephoto_flow_browser_show(Ephoto *ephoto, Ephoto_Entry *entry)
    DBG("entry '%s'", entry->path);
    ephoto_flow_browser_entry_set(ephoto->flow_browser, entry);
    elm_pager_content_promote(ephoto->pager, ephoto->flow_browser);
-   elm_object_focus(ephoto->flow_browser);
    _ephoto_state_set(ephoto, EPHOTO_STATE_FLOW);
 }
 
@@ -44,7 +42,6 @@ _ephoto_slideshow_show(Ephoto *ephoto, Ephoto_Entry *entry)
    DBG("entry '%s'", entry->path);
    ephoto_slideshow_entry_set(ephoto->slideshow, entry);
    elm_pager_content_promote(ephoto->pager, ephoto->slideshow);
-   elm_object_focus(ephoto->slideshow);
    _ephoto_state_set(ephoto, EPHOTO_STATE_SLIDESHOW);
 }
 
@@ -145,7 +142,6 @@ ephoto_window_add(const char *path)
      (ephoto->win, EVAS_CALLBACK_FREE, _win_free, ephoto);
 
    elm_win_autodel_set(ephoto->win, EINA_TRUE);
-   evas_object_show(ephoto->win);
 
    if (!ephoto_config_init(ephoto))
      {
@@ -246,13 +242,13 @@ ephoto_window_add(const char *path)
           (ephoto->thumb_browser, path, _pending_path_found, ephoto);
         ephoto_flow_browser_path_set(ephoto->flow_browser, path);
 
-        elm_object_focus(ephoto->flow_browser);
         elm_pager_content_promote(ephoto->pager, ephoto->flow_browser);
         ephoto->state = EPHOTO_STATE_FLOW;
      }
 
    /* TODO restore size from last run as well? */
    evas_object_resize(ephoto->win, 900, 600);
+   evas_object_show(ephoto->win);
 
    return ephoto->win;
 }
