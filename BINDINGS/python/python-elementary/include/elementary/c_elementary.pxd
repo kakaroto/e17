@@ -100,6 +100,7 @@ cdef extern from "Elementary.h":
         ELM_LIST_COMPRESS
         ELM_LIST_SCROLL
         ELM_LIST_LIMIT
+        ELM_LIST_EXPAND
 
     ctypedef enum Elm_Flip_Mode:
         ELM_FLIP_ROTATE_Y_CENTER_AXIS
@@ -598,8 +599,10 @@ cdef extern from "Elementary.h":
     void         elm_list_go(evas.c_evas.Evas_Object *obj)
     void      elm_list_multi_select_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool multi)
     evas.c_evas.Eina_Bool      elm_list_multi_select_get(evas.c_evas.Evas_Object *obj)
-    void         elm_list_horizontal_mode_set(evas.c_evas.Evas_Object *obj, Elm_List_Mode mode)
-    Elm_List_Mode       elm_list_horizontal_mode_get(evas.c_evas.Evas_Object *obj)
+    void         elm_list_mode_set(evas.c_evas.Evas_Object *obj, Elm_List_Mode mode)
+    Elm_List_Mode       elm_list_mode_get(evas.c_evas.Evas_Object *obj)
+    void         elm_list_horizontal_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool horizontal)
+    evas.c_evas.Eina_Bool       elm_list_horizontal_get(evas.c_evas.Evas_Object *obj)
     void      elm_list_always_select_mode_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool multi)
     evas.c_evas.Eina_List     *elm_list_items_get(evas.c_evas.Evas_Object *obj)
     Elm_List_Item *elm_list_selected_item_get(evas.c_evas.Evas_Object *obj)
