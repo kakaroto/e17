@@ -47,8 +47,7 @@ DEPEND="${RDEPEND}
 "
 
 CMAKE_IN_SOURCE_BUILD="enable"
-S="${WORKDIR}/WebKit-Efl-0.1.1-Source"
-
+S="${WORKDIR}/${PN}-svn-r70236"
 src_configure() {
 	[[ gcc-major-version == 4 ]] && [[ gcc-minor-version == 4 ]] && append-flags -fno-strict-aliasing
 
