@@ -135,7 +135,7 @@ Index: src/lib/eeze_disk_private.h
 ===================================================================
 --- src/lib/eeze_disk_private.h	(revision 0)
 +++ src/lib/eeze_disk_private.h	(revision 0)
-@@ -0,0 +1,71 @@
+@@ -0,0 +1,78 @@
 +#ifndef EEZE_DISK_PRIVATE_H
 +#define EEZE_DISK_PRIVATE_H
 +#include <Eeze.h>
@@ -175,7 +175,6 @@ Index: src/lib/eeze_disk_private.h
 +   _udev_device *device;
 +   void *data;
 +
-+   Eina_Bool mounted : 1;
 +   Eeze_Disk_Status mount_status;
 +   Eina_Strbuf *mount_cmd;
 +   Eina_Strbuf *unmount_cmd;
@@ -196,22 +195,30 @@ Index: src/lib/eeze_disk_private.h
 +        const char *model;
 +        const char *serial;
 +        const char *uuid;
++        const char *label;
 +        Eina_Bool filled : 1;
 +     } cache;
 +};
 +
-+Eina_Bool _eeze_disk_mount_result_handler(Eeze_Disk *disk, int type __UNUSED__, Ecore_Exe_Event_Del *ev);
 +Eina_Bool eeze_mount_init(void);
-+Eina_Bool eeze_libmount_init(void);
 +void eeze_mount_shutdown(void);
++
++Eina_Bool eeze_libmount_init(void);
 +void eeze_libmount_shutdown(void);
++Eina_Bool eeze_disk_libmount_mounted_get(Eeze_Disk *disk);
++
++const char *eeze_disk_libmount_mp_find_source(const char *mount_point);
++
++const char *eeze_disk_libmount_mp_lookup_by_uuid(const char *uuid);
++const char *eeze_disk_libmount_mp_lookup_by_label(const char *label);
++const char *eeze_disk_libmount_mp_lookup_by_devpath(const char *devpath);
 +
 +#endif
 Index: src/lib/eeze_disk.c
 ===================================================================
 --- src/lib/eeze_disk.c	(revision 0)
 +++ src/lib/eeze_disk.c	(revision 0)
-@@ -0,0 +1,304 @@
+@@ -0,0 +1,444 @@
 +#ifdef HAVE_CONFIG_H
 +#include "config.h"
 +#endif
@@ -249,44 +256,164 @@ Index: src/lib/eeze_disk.c
 +   return EEZE_DISK_TYPE_UNKNOWN;
 +}
 +
++static _udev_device *
++_eeze_disk_device_from_property(const char *prop, Eina_Bool uuid)
++{
++   _udev_enumerate *en;
++   _udev_list_entry *devs, *cur;
++   _udev_device *device;
++   const char *devname;
++
++   en = udev_enumerate_new(udev);
++
++   if (!en)
++     return NULL;
++
++   if (uuid)
++     udev_enumerate_add_match_property(en, "ID_FS_UUID", prop);
++   else
++     udev_enumerate_add_match_property(en, "ID_FS_LABEL", prop);
++   udev_enumerate_scan_devices(en);
++   devs = udev_enumerate_get_list_entry(en);
++   udev_list_entry_foreach(cur, devs)
++     {
++        devname = udev_list_entry_get_name(cur);
++        device = udev_device_new_from_syspath(udev, devname);
++        break;
++     }
++   udev_enumerate_unref(en);
++   return device;
++        
++}
 +
 +/**
-+ * @brief Create a new disk object from a /sys/ path
-+ * @param syspath The /sys/ path of the disk; CANNOT be #NULL
++ * @brief Create a new disk object from a /sys/ path or /dev/ path
++ * @param path The /sys/ or /dev path of the disk; CANNOT be #NULL
 + * @return The new disk object
 + *
-+ * This function creates a new #Eeze_Disk from @p syspath.  Note that this function
++ * This function creates a new #Eeze_Disk from @p path.  Note that this function
 + * does the minimal amount of work in order to save memory, and udev info about the disk
 + * is not retrieved in this call.
 + */
 +EAPI Eeze_Disk *
-+eeze_disk_new(const char *syspath)
++eeze_disk_new(const char *path)
 +{
 +   Eeze_Disk *disk;
 +   _udev_device *dev;
++   const char *syspath;
++   Eina_Bool is_dev = EINA_FALSE;
 +   
-+   EINA_SAFETY_ON_NULL_RETURN_VAL(syspath, NULL);
-+   
-+   /* do the lookup manually to avoid slight but unnecessary udev overhead here
-+    * while simultaneously validating the syspath
-+    */
-+   if (!(dev = _new_device(syspath)))
-+     return EINA_FALSE;
++   EINA_SAFETY_ON_NULL_RETURN_VAL(path, NULL);
++
++   if (!strncmp(path, "/dev/", 5))
++     {
++        is_dev = EINA_TRUE;
++        syspath = eeze_udev_devpath_get_syspath(path);
++        if (!syspath)
++          return NULL;
++
++        if (!(dev = _new_device(syspath)))
++          {
++             eina_stringshare_del(syspath);
++             return NULL;
++          }
++     }
++   else if (!(dev = _new_device(path)))
++     return NULL;
++        
 +
 +   if (!(disk = calloc(1, sizeof(Eeze_Disk))))
 +     return NULL;
 +
-+   disk->syspath = eina_stringshare_add(syspath);
++   
++   if (is_dev)
++     {
++        disk->devpath = eina_stringshare_add(path);
++        disk->syspath = syspath;
++     }
++   else
++     disk->syspath = eina_stringshare_add(udev_device_get_syspath(dev));
++     
 +
 +   disk->device = dev;
 +   disk->mount_cmd_changed = EINA_TRUE;
 +   disk->unmount_cmd_changed = EINA_TRUE;
-+   disk->handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
-+                                           (Ecore_Event_Handler_Cb)_eeze_disk_mount_result_handler, disk);
 +   
 +   return disk;
 +}
 +
++/**
++ * @brief Create a new disk object from a mount point
++ * @param mount_point The mount point of the disk; CANNOT be #NULL
++ * @return The new disk object
++ *
++ * This function creates a new #Eeze_Disk from @p mount_point.  Note that this function
++ * does the minimal amount of work in order to save memory, and udev info about the disk
++ * is not retrieved in this call.  If the disk is not currently mounted, it must have an entry
++ * in /etc/fstab.
++ */
++EAPI Eeze_Disk *
++eeze_disk_new_from_mount(const char *mount_point)
++{
++   Eeze_Disk *disk = NULL;
++   _udev_device *dev = NULL;
++   const char *syspath = NULL, *source, *uuid = NULL, *label = NULL, *devpath = NULL;
++   
++   EINA_SAFETY_ON_NULL_RETURN_VAL(mount_point, NULL);
++
++   if (!(source = eeze_disk_libmount_mp_find_source(mount_point)))
++     return NULL;
++
++   if (source[4] == '=')
++     {
++        source += 4;
++        uuid = eina_stringshare_add(source);
++        dev = _eeze_disk_device_from_property(uuid, EINA_TRUE);
++     }
++   else if (source[5] == '=')
++     {
++        source += 5;
++        label = eina_stringshare_add(source);
++        dev = _eeze_disk_device_from_property(label, EINA_FALSE);
++     }
++   else
++     {
++        devpath = eina_stringshare_add(source);
++        dev = _new_device(devpath);
++     }
++
++   if (!dev)
++     goto error;
++
++   if (!(disk = calloc(1, sizeof(Eeze_Disk))))
++     goto error;
++
++   disk->syspath = udev_device_get_syspath(dev);
++
++   disk->device = dev;
++   disk->mount_cmd_changed = EINA_TRUE;
++   disk->unmount_cmd_changed = EINA_TRUE;
++   if (uuid)
++     disk->cache.uuid = uuid;
++   else if (label)
++     disk->cache.label = label;
++   else
++     disk->devpath = devpath;
++   
++   return disk;
++error:
++   if (uuid)
++     eina_stringshare_del(uuid);
++   else if (label)
++     eina_stringshare_del(label);
++   else if (devpath)
++     eina_stringshare_del(devpath);
++   if (syspath)
++     eina_stringshare_del(syspath);
++   if (dev)
++     udev_device_unref(dev);
++   return NULL;
++}
 +
 +/**
 + * @brief Frees a disk object
@@ -335,6 +462,8 @@ Index: src/lib/eeze_disk.c
 +     disk->cache.uuid = udev_device_get_property_value(disk->device, "ID_FS_UUID");
 +   if (!disk->cache.type)
 +     disk->cache.type = _eeze_disk_type_find(disk);
++   if (!disk->cache.label)
++     disk->cache.label = udev_device_get_property_value(disk->device, "ID_FS_LABEL");
 +
 +   disk->cache.filled = EINA_TRUE;
 +}
@@ -497,6 +626,24 @@ Index: src/lib/eeze_disk.c
 +}
 +
 +/**
++ * @brief Return the label of the disk
++ * @param disk The disk
++ * @return The label
++ *
++ * This retrieves the label (name) of the disk, or #NULL if unknown.
++ */
++EAPI const char *
++eeze_disk_label_get(Eeze_Disk *disk)
++{
++   EINA_SAFETY_ON_NULL_RETURN_VAL(disk, NULL);
++   
++   if (disk->cache.label)
++     return disk->cache.label;
++   disk->cache.label = udev_device_get_property_value(disk->device, "ID_FS_LABEL");
++   return disk->cache.label;
++}
++
++/**
 + * @brief Return the #Eeze_Disk_Type of the disk
 + * @param disk The disk
 + * @return The type
@@ -520,7 +667,7 @@ Index: src/lib/eeze_disk_mount.c
 ===================================================================
 --- src/lib/eeze_disk_mount.c	(revision 0)
 +++ src/lib/eeze_disk_mount.c	(revision 0)
-@@ -0,0 +1,245 @@
+@@ -0,0 +1,336 @@
 +#ifdef HAVE_CONFIG_H
 +#include "config.h"
 +#endif
@@ -534,9 +681,21 @@ Index: src/lib/eeze_disk_mount.c
 +
 +#define EEZE_MOUNT_DEFAULT_OPTS "noexec,nosuid"
 +
++/**
++ * @addtogroup disk Disk
++ * @{
++ */
++
 +EAPI int EEZE_EVENT_DISK_MOUNT = 0;
 +EAPI int EEZE_EVENT_DISK_UNMOUNT = 0;
 +EAPI int EEZE_EVENT_DISK_ERROR = 0;
++static Ecore_Event_Handler *_mount_handler = NULL;
++
++/*
++ *
++ * PRIVATE
++ *
++ */
 +
 +static void
 +_eeze_disk_mount_error_free(void *data __UNUSED__, Eeze_Event_Disk_Error *de)
@@ -564,26 +723,17 @@ Index: src/lib/eeze_disk_mount.c
 +   ecore_event_add(EEZE_EVENT_DISK_ERROR, de, (Ecore_End_Cb)_eeze_disk_mount_error_free, NULL);
 +}
 +
-+Eina_Bool
-+eeze_mount_init(void)
++static Eina_Bool
++_eeze_disk_mount_result_handler(void *data __UNUSED__, int type __UNUSED__, Ecore_Exe_Event_Del *ev)
 +{
-+   EEZE_EVENT_DISK_MOUNT = ecore_event_type_new();
-+   EEZE_EVENT_DISK_UNMOUNT = ecore_event_type_new();
-+   EEZE_EVENT_DISK_ERROR = ecore_event_type_new();
-+   return eeze_libmount_init();
-+}
++   Eeze_Disk *disk;
 +
-+void
-+eeze_mount_shutdown(void)
-+{
-+   eeze_libmount_shutdown();
-+}
-+
-+
-+
-+Eina_Bool
-+_eeze_disk_mount_result_handler(Eeze_Disk *disk, int type __UNUSED__, Ecore_Exe_Event_Del *ev)
-+{
++   if ((!ev) || (!ev->exe))
++     return ECORE_CALLBACK_RENEW;
++   if (!(disk = ecore_exe_data_get(ev->exe)))
++     return ECORE_CALLBACK_RENEW;
++   
++   
 +   if (disk->mount_status == EEZE_DISK_MOUNTING)
 +     switch (ev->exit_code)
 +       {
@@ -616,14 +766,12 @@ Index: src/lib/eeze_disk_mount.c
 +           break;
 +
 +         default:
-+           disk->mounted = EINA_TRUE;
 +           ecore_event_add(EEZE_EVENT_DISK_MOUNT, disk, NULL, NULL);
 +       }
 +    else
 +      switch (ev->exit_code)
 +        {
 +         case 0:
-+           disk->mounted = EINA_FALSE;
 +           ecore_event_add(EEZE_EVENT_DISK_UNMOUNT, disk, NULL, NULL);
 +           break;
 +
@@ -635,6 +783,37 @@ Index: src/lib/eeze_disk_mount.c
 +   
 +   return ECORE_CALLBACK_RENEW;
 +}
++
++/*
++ *
++ * INVISIBLE
++ *
++ */
++
++Eina_Bool
++eeze_mount_init(void)
++{
++   EEZE_EVENT_DISK_MOUNT = ecore_event_type_new();
++   EEZE_EVENT_DISK_UNMOUNT = ecore_event_type_new();
++   EEZE_EVENT_DISK_ERROR = ecore_event_type_new();
++   _mount_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
++                                           (Ecore_Event_Handler_Cb)_eeze_disk_mount_result_handler, NULL);
++   return eeze_libmount_init();
++}
++
++void
++eeze_mount_shutdown(void)
++{
++   eeze_libmount_shutdown();
++   ecore_event_handler_del(_mount_handler);
++   _mount_handler = NULL;
++}
++
++/*
++ *
++ * API
++ *
++ */
 +
 +/**
 + * @brief Return the mount state of a disk
@@ -648,7 +827,7 @@ Index: src/lib/eeze_disk_mount.c
 +{
 +   EINA_SAFETY_ON_NULL_RETURN_VAL(disk, EINA_FALSE);
 +
-+   return disk->mounted;
++   return eeze_disk_libmount_mounted_get(disk);
 +}
 +
 +/**
@@ -667,7 +846,10 @@ Index: src/lib/eeze_disk_mount.c
 +eeze_disk_mount(Eeze_Disk *disk)
 +{
 +   EINA_SAFETY_ON_NULL_RETURN_VAL(disk, EINA_FALSE);
-+   
++
++   if ((!disk->mount_point) && eeze_disk_libmount_mounted_get(disk))
++     return EINA_FALSE;
++
 +   if (!disk->mount_cmd)
 +     disk->mount_cmd = eina_strbuf_new();
 +
@@ -676,6 +858,39 @@ Index: src/lib/eeze_disk_mount.c
 +        eina_strbuf_string_free(disk->mount_cmd);
 +        if (!disk->cache.uuid)
 +          disk->cache.uuid = udev_device_get_property_value(disk->device, "ID_FS_UUID");
++
++        if (!disk->mount_point)
++          {
++             const char *mp;
++             /* here we attempt to guess the mount point using libmount */
++             mp = eeze_disk_libmount_mp_lookup_by_uuid(disk->cache.uuid);
++             if (!mp)
++               {
++                  const char *label;
++
++                  label = eeze_disk_label_get(disk);
++                  if (label)
++                    {
++                       mp = eeze_disk_libmount_mp_lookup_by_label(label);
++                       eina_stringshare_del(label);
++                    }
++                  if (!mp)
++                    {
++                       const char *devpath;
++
++                       devpath = eeze_disk_devpath_get(disk);
++                       if (devpath)
++                         {
++                            mp = eeze_disk_libmount_mp_lookup_by_devpath(devpath);
++                            eina_stringshare_del(devpath);
++                         }
++                    }
++               }
++             if (!eeze_disk_mount_point_set(disk, mp))
++               /* sometimes we fail */
++               return EINA_FALSE;
++          }
++
 +        eina_strbuf_append_printf(disk->mount_cmd, "%s -o %s UUID=%s %s", EEZE_MOUNT_BIN, EEZE_MOUNT_DEFAULT_OPTS, disk->cache.uuid, disk->mount_point);
 +        disk->mount_cmd_changed = EINA_FALSE;
 +     }
@@ -707,7 +922,7 @@ Index: src/lib/eeze_disk_mount.c
 +{
 +   EINA_SAFETY_ON_NULL_RETURN_VAL(disk, EINA_FALSE);
 +
-+   if (!disk->mounted)
++   if (!eeze_disk_libmount_mounted_get(disk))
 +     return EINA_TRUE;
 +
 +   if (!disk->unmount_cmd)
@@ -740,32 +955,55 @@ Index: src/lib/eeze_disk_mount.c
 +EAPI const char *
 +eeze_disk_mount_point_get(Eeze_Disk *disk)
 +{
++   const char *mp;
 +   EINA_SAFETY_ON_NULL_RETURN_VAL(disk, NULL);
 +
-+   return disk->mount_point;
++   if (disk->mount_point)
++     return disk->mount_point;
++
++   mp = eeze_disk_libmount_mp_lookup_by_devpath(eeze_disk_devpath_get(disk));
++   if (mp)
++     {
++        disk->mount_point = eina_stringshare_add(disk->mount_point);
++        return disk->mount_point;
++     }
++   mp = eeze_disk_libmount_mp_lookup_by_uuid(eeze_disk_uuid_get(disk));
++   if (mp)
++     {
++        disk->mount_point = eina_stringshare_add(disk->mount_point);
++        return disk->mount_point;
++     }
++   mp = eeze_disk_libmount_mp_lookup_by_label(eeze_disk_label_get(disk));
++   if (mp)
++     {
++        disk->mount_point = eina_stringshare_add(disk->mount_point);
++        return disk->mount_point;
++     }
++   return NULL;
 +}
 +
 +/**
 + * @brief Set the mount point of a disk
 + * @param disk The disk
 + * @param mount_point The mount point
++ * @return EINA_TRUE on success, else EINA_FALSE
 + *
 + * This function sets the mount point associated with @p disk.
 + * Note that to determine whether the disk is actually mounted, eeze_disk_mounted_get should be used.
 + * Also note that this function cannot be used while the disk is mounted to avoid losing the current mount point.
 + */
-+EAPI void
++EAPI Eina_Bool
 +eeze_disk_mount_point_set(Eeze_Disk *disk, const char *mount_point)
 +{
-+   EINA_SAFETY_ON_NULL_RETURN(disk);
-+
-+   if (disk->mounted)
-+     return;
++   EINA_SAFETY_ON_NULL_RETURN_VAL(disk, EINA_FALSE);
 +
 +   disk->mount_point = mount_point;
 +   disk->mount_cmd_changed = EINA_TRUE;
 +   disk->unmount_cmd_changed = EINA_TRUE;
++   return EINA_TRUE;
 +}
++
++/** @} */
 Index: src/lib/eeze_udev_private.c
 ===================================================================
 --- src/lib/eeze_udev_private.c	(revision 53646)
@@ -799,10 +1037,6 @@ Index: src/lib/Eeze_Disk.h
 @@ -0,0 +1,103 @@
 +#ifndef EEZE_DISK_H
 +#define EEZE_DISK_H
-+
-+#ifndef USE_UNSTABLE_LIBMOUNT_API
-+# define USE_UNSTABLE_LIBMOUNT_API 1
-+#endif
 +
 +#ifdef EAPI
 +# undef EAPI
@@ -864,13 +1098,14 @@ Index: src/lib/Eeze_Disk.h
 +   Eeze_Disk *disk;
 +   const char *message;
 +   struct
-+   {
++   { /* probably switching this to enum */
 +      Eina_Bool mount : 1;
 +      Eina_Bool unmount :1;
 +   } type;
 +};
 +
-+EAPI Eeze_Disk     *eeze_disk_new(const char *syspath);
++EAPI Eeze_Disk     *eeze_disk_new(const char *path);
++EAPI Eeze_Disk     *eeze_disk_new_from_mount(const char *mount_point);
 +EAPI void           eeze_disk_free(Eeze_Disk *disk);
 +EAPI void           eeze_disk_scan(Eeze_Disk *disk);
 +EAPI void           eeze_disk_data_set(Eeze_Disk *disk, void *data);
@@ -882,16 +1117,19 @@ Index: src/lib/Eeze_Disk.h
 +EAPI const char    *eeze_disk_model_get(Eeze_Disk *disk);
 +EAPI const char    *eeze_disk_serial_get(Eeze_Disk *disk);
 +EAPI const char    *eeze_disk_uuid_get(Eeze_Disk *disk);
++EAPI const char    *eeze_disk_label_get(Eeze_Disk *disk);
 +EAPI Eeze_Disk_Type eeze_disk_type_get(Eeze_Disk *disk);
 +
 +EAPI Eina_Bool      eeze_disk_mounted_get(Eeze_Disk *disk);
 +EAPI Eina_Bool      eeze_disk_mount(Eeze_Disk *disk);
 +EAPI Eina_Bool      eeze_disk_unmount(Eeze_Disk *disk);
 +EAPI const char    *eeze_disk_mount_point_get(Eeze_Disk *disk);
-+EAPI void           eeze_disk_mount_point_set(Eeze_Disk *disk, const char *mount_point);
++EAPI Eina_Bool      eeze_disk_mount_point_set(Eeze_Disk *disk, const char *mount_point);
 +
 +EAPI Eina_Bool      eeze_mount_tabs_watch(void);
 +EAPI void           eeze_mount_tabs_unwatch(void);
++EAPI Eina_Bool      eeze_mount_mtab_scan(void);
++EAPI Eina_Bool      eeze_mount_fstab_scan(void);
 +
 +#ifdef __cplusplus
 +}
@@ -1001,13 +1239,56 @@ Index: src/lib/eeze_udev_find.c
  /**
   * @addtogroup find Find
   *
+@@ -67,8 +65,9 @@
+         devname = udev_list_entry_get_name(cur);
+        /* verify unlisted device */
+ 
+-        EINA_LIST_FOREACH(ret, l, dev) if (!strcmp(dev, devname))
+-          continue;
++        EINA_LIST_FOREACH(ret, l, dev)
++          if (!strcmp(dev, devname))
++            continue;
+ 
+         ret = eina_list_prepend(ret, eina_stringshare_add(devname));
+         device = udev_device_new_from_syspath(udev, devname);
+@@ -274,22 +273,18 @@
+                    goto out;
+               }
+           }
+-        else
+-          if (etype == EEZE_UDEV_TYPE_DRIVE_INTERNAL)
++        else if (etype == EEZE_UDEV_TYPE_DRIVE_INTERNAL)
+             {
+                if (udev_device_get_property_value(device, "ID_USB_DRIVER"))
+                  goto out;
+             }
+-         else
+-           if (etype == EEZE_UDEV_TYPE_DRIVE_REMOVABLE)
++         else if (etype == EEZE_UDEV_TYPE_DRIVE_REMOVABLE)
+              {
+-                if (!
+-                    (test = udev_device_get_property_value(device, "ID_USB_DRIVER")))
++                if (!(test = udev_device_get_property_value(device, "ID_USB_DRIVER")))
+                   goto out;
+              }
+ 
+-        if (name)
+-         if (!strstr(devname, name))
++        if (name && (!strstr(devname, name)))
+            goto out;
+ 
+         ret = eina_list_append(ret, eina_stringshare_add(devname));
 Index: src/lib/eeze_disk_libmount.c
 ===================================================================
 --- src/lib/eeze_disk_libmount.c	(revision 0)
 +++ src/lib/eeze_disk_libmount.c	(revision 0)
-@@ -0,0 +1,136 @@
+@@ -0,0 +1,405 @@
 +#ifdef HAVE_CONFIG_H
 +#include "config.h"
++#endif
++
++#ifndef USE_UNSTABLE_LIBMOUNT_API
++# define USE_UNSTABLE_LIBMOUNT_API 1
 +#endif
 +
 +#include <Ecore.h>
@@ -1018,79 +1299,126 @@ Index: src/lib/eeze_disk_libmount.c
 +#include "eeze_udev_private.h"
 +#include "eeze_disk_private.h"
 +
-+Ecore_File_Monitor *_mtab_mon = NULL;
-+Ecore_File_Monitor *_fstab_mon = NULL;
-+Eina_Bool _watching = EINA_FALSE;
-+Eina_Bool _mtab_scan_active = EINA_FALSE;
-+Eina_Bool _fstab_scan_active = EINA_FALSE;
-+mnt_tab *_mtab = NULL;
-+mnt_lock *_mlock = NULL;
-+mnt_tab *_fstab = NULL;
++/**
++ * @addtogroup disk Disk
++ * @{
++ */
++
++/*
++ *
++ * PRIVATE
++ *
++ */
++static Ecore_File_Monitor *_mtab_mon = NULL;
++static Ecore_File_Monitor *_fstab_mon = NULL;
++static Eina_Bool _watching = EINA_FALSE;
++static Eina_Bool _mtab_scan_active = EINA_FALSE;
++static Eina_Bool _fstab_scan_active = EINA_FALSE;
++static mnt_tab *_eeze_mount_mtab = NULL;
++static mnt_tab *_eeze_mount_fstab = NULL;
++static mnt_lock *_eeze_mtab_lock = NULL;
++
++static mnt_tab *_eeze_mount_tab_parse(const char *filename);
++static void _eeze_mount_tab_watcher(void *data, Ecore_File_Monitor *mon __UNUSED__, Ecore_File_Event event __UNUSED__, const char *path);
++
++static Eina_Bool
++_eeze_mount_lock_mtab(void)
++{
++    DBG("Locking mlock: %s", mnt_lock_get_linkfile(_eeze_mtab_lock));
++#if 0
++#warning this code is broken with current libmount!
++    if (mnt_lock_file(_eeze_mtab_lock))
++     {
++        ERR("Couldn't lock mtab!");
++        return EINA_FALSE;
++     }
++#endif
++   return EINA_TRUE;
++}
++
++static void
++_eeze_mount_unlock_mtab(void)
++{
++   DBG("Unlocking mlock: %s", mnt_lock_get_linkfile(_eeze_mtab_lock));
++   mnt_unlock_file(_eeze_mtab_lock);
++}
 +
 +/*
 + * I could use mnt_new_tab_from_file() but this way gives much more detailed output
 + * on failure so why not
 + */
-+mnt_tab *
++static mnt_tab *
 +_eeze_mount_tab_parse(const char *filename)
 +{
 +   mnt_tab *tab;
 +
 +   if (!(tab = mnt_new_tab(filename)))
 +     return NULL;
-+   if (mnt_tab_parse_file(tab))
-+     {
-+        if (mnt_tab_get_nerrs(tab))
-+          {  /* parse error */
-+             char buf[1024];
++   if (!mnt_tab_parse_file(tab))
++     return tab;
 +
-+             mnt_tab_strerror(tab, buf, sizeof(buf));
-+             ERR("%s", buf);
-+          }
-+        else
-+          /* system error */
-+          ERR("%s", mnt_tab_get_name(tab));
-+        mnt_free_tab(tab);
-+        return NULL;
++   if (mnt_tab_get_nerrs(tab))
++     {  /* parse error */
++        char buf[1024];
++
++        mnt_tab_strerror(tab, buf, sizeof(buf));
++        ERR("%s", buf);
 +     }
-+   return tab;
++   else
++     /* system error */
++     ERR("%s", mnt_tab_get_name(tab));
++   mnt_free_tab(tab);
++   return NULL;
 +}
 +
 +static void
 +_eeze_mount_tab_watcher(void *data, Ecore_File_Monitor *mon __UNUSED__, Ecore_File_Event event __UNUSED__, const char *path)
 +{
 +   mnt_tab *bak;
++
 +   if (
-+       ((_mtab_scan_active) && (data)) ||
++       ((_mtab_scan_active) && (data)) || /* mtab has non-null data to avoid needing strcmp */
 +       ((_fstab_scan_active) && (!data))
 +      )
 +     /* prevent scans from triggering a scan */
 +     return;
 +
-+   bak = _mtab;
++   bak = _eeze_mount_mtab;
 +   if (data)
-+     if (mnt_lock_file(_mlock))
++     if (!_eeze_mount_lock_mtab())
 +       {  /* FIXME: maybe queue job here? */
-+          printf("Couldn't lock mtab! losing events...");
++          ERR("Losing events...");
 +          return;
 +       }
-+   _mtab = _eeze_mount_tab_parse(path);
++   _eeze_mount_mtab = _eeze_mount_tab_parse(path);
 +   if (data)
-+     mnt_unlock_file(_mlock);
-+   if (!_mtab)
++     _eeze_mount_unlock_mtab();
++   if (!_eeze_mount_mtab)
 +     {
 +        ERR("Could not parse %s! keeping old tab...", path);
-+        _mtab = bak;
-+        return;
++        goto error;
 +     }
++
++   mnt_free_tab(bak);
++   return;
++
++error:
++   mnt_free_tab(_eeze_mount_mtab);
++   _eeze_mount_mtab = bak;
 +}
++
++/*
++ *
++ * INVISIBLE
++ *
++ */
 +
 +Eina_Bool
 +eeze_libmount_init(void)
 +{
-+   if (_mlock)
++   if (_eeze_mtab_lock)
 +     return EINA_TRUE;
-+   if (!(_mlock = mnt_new_lock(NULL, 0)))
++   if (!(_eeze_mtab_lock = mnt_new_lock(NULL, 0)))
 +     return EINA_FALSE;
 +   return EINA_TRUE;
 +}
@@ -1098,24 +1426,168 @@ Index: src/lib/eeze_disk_libmount.c
 +void
 +eeze_libmount_shutdown(void)
 +{
-+   if (!_mlock)
++   if (!_eeze_mtab_lock)
 +     return;
 +
-+   mnt_unlock_file(_mlock);
-+   mnt_free_lock(_mlock);
++   mnt_unlock_file(_eeze_mtab_lock);
++   mnt_free_lock(_eeze_mtab_lock);
 +}
 +
++/*
++ * helper function to return whether a disk is mounted
++ */
++Eina_Bool
++eeze_disk_libmount_mounted_get(Eeze_Disk *disk)
++{
++   mnt_fs *mnt;
++   
++   if (!disk)
++     return EINA_FALSE;
++
++   if (!eeze_mount_mtab_scan() || !eeze_mount_fstab_scan())
++     return EINA_FALSE;
++
++   mnt = mnt_tab_find_srcpath(_eeze_mount_mtab, eeze_disk_devpath_get(disk), MNT_ITER_BACKWARD);
++   if (!mnt)
++     return EINA_FALSE;
++
++   disk->mount_point = eina_stringshare_add(mnt_fs_get_target(mnt));
++   return EINA_TRUE;
++}
++
++
++/*
++ * helper function to return the device that is mounted at a mount point
++ */
++const char *
++eeze_disk_libmount_mp_find_source(const char *mount_point)
++{
++   mnt_fs *mnt;
++   
++   if (!mount_point)
++     return NULL;
++
++   if (!eeze_mount_mtab_scan() || !eeze_mount_fstab_scan())
++     return NULL;
++
++   mnt = mnt_tab_find_target(_eeze_mount_mtab, mount_point, MNT_ITER_BACKWARD);
++   if (!mnt)
++     mnt = mnt_tab_find_target(_eeze_mount_fstab, mount_point, MNT_ITER_BACKWARD);
++
++   if (!mnt)
++     return NULL;
++
++   return mnt_fs_get_source(mnt);
++}
++
++/*
++ * helper function to return a mount point from a uuid
++ */
++const char *
++eeze_disk_libmount_mp_lookup_by_uuid(const char *uuid)
++{
++   mnt_fs *mnt;
++   
++   if (!uuid)
++     return NULL;
++
++   if (!eeze_mount_mtab_scan() || !eeze_mount_fstab_scan())
++     return NULL;
++
++   mnt = mnt_tab_find_tag(_eeze_mount_fstab, "UUID", uuid, MNT_ITER_BACKWARD);
++
++   if (!mnt)
++     return NULL;
++
++   return mnt_fs_get_target(mnt);
++}
++
++/*
++ * helper function to return a mount point from a label
++ */
++const char *
++eeze_disk_libmount_mp_lookup_by_label(const char *label)
++{
++   mnt_fs *mnt;
++   
++   if (!label)
++     return NULL;
++
++   if (!eeze_mount_mtab_scan() || !eeze_mount_fstab_scan())
++     return NULL;
++
++   mnt = mnt_tab_find_tag(_eeze_mount_fstab, "LABEL", label, MNT_ITER_BACKWARD);
++
++   if (!mnt)
++     return NULL;
++
++   return mnt_fs_get_target(mnt);
++}
++
++/*
++ * helper function to return a mount point from a /dev/ path
++ */
++const char *
++eeze_disk_libmount_mp_lookup_by_devpath(const char *devpath)
++{
++   mnt_fs *mnt;
++   
++   if (!devpath)
++     return NULL;
++
++   if (!eeze_mount_mtab_scan() || !eeze_mount_fstab_scan())
++     return NULL;
++
++   mnt = mnt_tab_find_srcpath(_eeze_mount_mtab, devpath, MNT_ITER_BACKWARD);
++   if (!mnt)
++     mnt = mnt_tab_find_srcpath(_eeze_mount_fstab, devpath, MNT_ITER_BACKWARD);
++
++   if (!mnt)
++     return NULL;
++
++   return mnt_fs_get_target(mnt);
++}
++
++/*
++ *
++ * API
++ *
++ */
++
++/**
++ * @brief Begin watching mtab and fstab
++ * @return #EINA_TRUE if watching was started, else #EINA_FALSE
++ *
++ * This function creates inotify watches on /etc/mtab and /etc/fstab and watches
++ * them for changes.  This function should be used when expecting a lot of disk
++ * mounting/unmounting while you need disk data since it will automatically update
++ * certain necessary data instead of waiting.
++ * @see eeze_mount_mtab_scan, eeze_mount_fstab_scan
++ */
 +EAPI Eina_Bool
 +eeze_mount_tabs_watch(void)
 +{
++   mnt_tab *bak;
++   
 +   if (_watching)
 +     return EINA_TRUE;
 +
-+   if (!(_mtab = mnt_new_tab_from_file("/etc/mtab")))
-+     goto error;
-+   if (!(_fstab = mnt_new_tab_from_file("/etc/fstab")))
++   if (!_eeze_mount_lock_mtab())
++     return EINA_FALSE;
++
++   bak = _eeze_mount_tab_parse("/etc/mtab");
++   _eeze_mount_unlock_mtab();
++   if (!bak)
 +     goto error;
 +
++   mnt_free_tab(_eeze_mount_mtab);
++   _eeze_mount_mtab = bak;
++   if (!(bak = _eeze_mount_tab_parse("/etc/fstab")))
++     goto error;
++
++   mnt_free_tab(_eeze_mount_fstab);
++   _eeze_mount_fstab = bak;
++   
 +   _mtab_mon = ecore_file_monitor_add("/etc/mtab", _eeze_mount_tab_watcher, (void*)1);
 +   _fstab_mon = ecore_file_monitor_add("/etc/fstab", _eeze_mount_tab_watcher, NULL);
 +   _watching = EINA_TRUE;
@@ -1123,16 +1595,21 @@ Index: src/lib/eeze_disk_libmount.c
 +  return EINA_TRUE;
 +
 +error:
-+   if (!_mtab)
++   if (!_eeze_mount_mtab)
 +     ERR("Could not parse /etc/mtab!");
 +   else
 +     {
 +        ERR("Could not parse /etc/fstab!");
-+        mnt_free_tab(_mtab);
++        mnt_free_tab(_eeze_mount_mtab);
 +     }
 +   return EINA_FALSE;
 +}
 +
++/**
++ * @brief Stop watching /etc/fstab and /etc/mtab
++ *
++ * This function stops watching fstab and mtab.  Data obtained previously will be saved.
++ */
 +EAPI void
 +eeze_mount_tabs_unwatch(void)
 +{
@@ -1142,6 +1619,75 @@ Index: src/lib/eeze_disk_libmount.c
 +   ecore_file_monitor_del(_mtab_mon);
 +   ecore_file_monitor_del(_fstab_mon);
 +}
++
++/**
++ * @brief Scan /etc/mtab a single time
++ * @return #EINA_TRUE if mtab could be scanned, else #EINA_FALSE
++ *
++ * This function is used to perform a single scan on /etc/mtab.  It is used to gather
++ * information about mounted filesystems which can then be used with your #Eeze_Disk objects
++ * where appropriate.  These files will automatically be scanned any time a mount point or mount state
++ * is requested unless eeze_mount_tabs_watch has been called previously, in which case data is stored for
++ * use.
++ * If this function is called after eeze_mount_tabs_watch, #EINA_TRUE will be returned.
++ * @see eeze_mount_tabs_watch, eeze_mount_fstab_scan
++ */
++EAPI Eina_Bool
++eeze_mount_mtab_scan(void)
++{
++   mnt_tab *bak;
++   
++   if (_watching)
++     return EINA_TRUE;
++
++   if (!_eeze_mount_lock_mtab())
++     return EINA_FALSE;
++   bak = _eeze_mount_tab_parse("/etc/mtab");
++   _eeze_mount_unlock_mtab();
++   if (!bak)
++     goto error;
++   if (_eeze_mount_mtab)
++     mnt_free_tab(_eeze_mount_mtab);
++   _eeze_mount_mtab = bak;
++   return EINA_TRUE;
++
++error:
++   return EINA_FALSE;
++}
++
++/**
++ * @brief Scan /etc/fstab a single time
++ * @return #EINA_TRUE if mtab could be scanned, else #EINA_FALSE
++ *
++ * This function is used to perform a single scan on /etc/fstab.  It is used to gather
++ * information about mounted filesystems which can then be used with your #Eeze_Disk objects
++ * where appropriate.  These files will automatically be scanned any time a mount point or mount state
++ * is requested unless eeze_mount_tabs_watch has been called previously, in which case data is stored for
++ * use.
++ * If this function is called after eeze_mount_tabs_watch, #EINA_TRUE will be returned.
++ * @see eeze_mount_tabs_watch, eeze_mount_mtab_scan
++ */
++EAPI Eina_Bool
++eeze_mount_fstab_scan(void)
++{
++   mnt_tab *bak;
++   if (_watching)
++     return EINA_TRUE;
++
++   bak = _eeze_mount_tab_parse("/etc/fstab");
++   if (!bak)
++     goto error;
++   if (_eeze_mount_fstab)
++     mnt_free_tab(_eeze_mount_fstab);
++   _eeze_mount_fstab = bak;
++
++   return EINA_TRUE;
++
++error:
++   return EINA_FALSE;
++}
++
++/** @} */
 Index: src/lib/eeze_main.c
 ===================================================================
 --- src/lib/eeze_main.c	(revision 53646)
@@ -1240,11 +1786,126 @@ Index: src/lib/eeze_main.c
     eina_log_domain_unregister(_eeze_udev_log_dom);
     _eeze_udev_log_dom = -1;
     eina_shutdown();
+Index: src/bin/eeze_umount.c
+===================================================================
+--- src/bin/eeze_umount.c	(revision 0)
++++ src/bin/eeze_umount.c	(revision 0)
+@@ -0,0 +1,110 @@
++#include <Eeze.h>
++#include <Eeze_Disk.h>
++#include <Ecore.h>
++#include <Ecore_File.h>
++#include <Ecore_Getopt.h>
++#include <stdio.h>
++
++/** This app can be used as a "dumb" replacement for unmount. Just don't try anything fancy yet! */
++static const Ecore_Getopt opts =
++{
++   "eeze_unmount",
++   "eeze_unmount /dev/sdb1 /media/disk",
++   "1.0",
++   "(C) 2010 Mike Blumenkrantz",
++   "LGPL",
++   "unmount a disk using either its /sys/ path or its /dev/ path\n\n",
++   1,
++   {      
++      ECORE_GETOPT_VERSION('V', "version"),
++      ECORE_GETOPT_COPYRIGHT('R', "copyright"),
++      ECORE_GETOPT_LICENSE('L', "license"),
++      ECORE_GETOPT_HELP('h', "help"),
++      ECORE_GETOPT_SENTINEL
++   }
++};
++
++void
++_unmount_cb(void *data, int type, Eeze_Disk *disk)
++{
++   (void)data;
++   (void)type;
++   (void)disk;
++   printf("Success!\n");
++   ecore_main_loop_quit();
++}
++
++void
++_error_cb(void *data, int type, Eeze_Event_Disk_Error *de)
++{
++   (void)data;
++   (void)type;
++   printf("Could not unmount disk with /dev/ path: %s!\n", eeze_disk_devpath_get(de->disk));
++   ecore_main_loop_quit();
++}
++
++int
++main(int argc, char *argv[])
++{
++   int args;
++   const char *dev;
++   Eina_Bool exit_option = EINA_FALSE;
++   Eeze_Disk *disk;
++
++   Ecore_Getopt_Value values[] =
++   {       
++      ECORE_GETOPT_VALUE_BOOL(exit_option),
++      ECORE_GETOPT_VALUE_BOOL(exit_option),
++      ECORE_GETOPT_VALUE_BOOL(exit_option),
++      ECORE_GETOPT_VALUE_BOOL(exit_option)
++   };
++   
++   if (argc < 2)
++     {
++        printf("Insufficient args specified!\n");
++        ecore_getopt_help(stderr, &opts);
++        exit(1);
++     }
++
++   ecore_init();
++   eeze_init();
++   ecore_app_args_set(argc, (const char **)argv);
++   args = ecore_getopt_parse(&opts, values, argc, argv);
++
++   if (exit_option)
++     return 0;
++
++   if (args < 0)
++     {
++        printf("No args specified!\n");
++        ecore_getopt_help(stderr, &opts);
++        exit(1);
++     }
++
++   dev = argv[args];
++   if ((!strncmp(dev, "/sys/", 5)) || (!strncmp(dev, "/dev/", 5)))
++     disk = eeze_disk_new(dev);
++   else if ((argc == 2) && (ecore_file_is_dir(dev)))
++     disk = eeze_disk_new_from_mount(dev);
++   else
++     {
++        printf("[Device] must be either a /dev/ path or a /sys/ path!\n");
++        ecore_getopt_help(stderr, &opts);
++        exit(1);
++     }
++   if (!eeze_disk_mounted_get(disk))
++     {
++        printf("[%s] is already unmounted!", dev);
++        exit(1);
++     }
++   ecore_event_handler_add(EEZE_EVENT_DISK_UNMOUNT, (Ecore_Event_Handler_Cb)_unmount_cb, NULL);
++   ecore_event_handler_add(EEZE_EVENT_DISK_ERROR, (Ecore_Event_Handler_Cb)_error_cb, NULL);
++   if (!eeze_disk_unmount(disk))
++     {
++        printf("unmount operation could not be started!\n");
++        exit(1);
++     }
++   ecore_main_loop_begin();
++
++   return 0;
++}
 Index: src/bin/Makefile.am
 ===================================================================
 --- src/bin/Makefile.am	(revision 53646)
 +++ src/bin/Makefile.am	(working copy)
-@@ -1,14 +1,24 @@
+@@ -1,14 +1,30 @@
  MAINTAINERCLEANFILES = Makefile.in
  
 -EEZE_CPPFLAGS = \
@@ -1257,12 +1918,14 @@ Index: src/bin/Makefile.am
 -EEZE_UDEV_PROG = eeze_udev_test
 +if HAVE_EEZE_MOUNT
 +  MOUNT_PROG = eeze_mount
++  UMOUNT_PROG = eeze_umount
 +else
 +  MOUNT_PROG = 
++  UMOUNT_PROG = 
 +endif
  
 -bin_PROGRAMS = eeze_udev_test
-+bin_PROGRAMS = eeze_udev_test $(MOUNT_PROG)
++bin_PROGRAMS = eeze_udev_test $(MOUNT_PROG) $(UMOUNT_PROG)
  
  eeze_udev_test_SOURCES = eeze_udev_test.c
 -eeze_udev_test_CPPFLAGS = $(EEZE_CPPFLAGS)
@@ -1273,15 +1936,20 @@ Index: src/bin/Makefile.am
 +  eeze_mount_SOURCES = eeze_mount.c
 +  eeze_mount_CFLAGS = $(EEZE_CFLAGS) @LIBMOUNT_CFLAGS@ @ECORE_FILE_CFLAGS@
 +  eeze_mount_LDADD = $(top_builddir)/src/lib/libeeze.la @LIBMOUNT_CFLAGS@ @ECORE_FILE_CFLAGS@
++
++  eeze_umount_SOURCES = eeze_umount.c
++  eeze_umount_CFLAGS = $(EEZE_CFLAGS) @LIBMOUNT_CFLAGS@ @ECORE_FILE_CFLAGS@
++  eeze_umount_LDADD = $(top_builddir)/src/lib/libeeze.la @LIBMOUNT_CFLAGS@ @ECORE_FILE_CFLAGS@
 +endif
 Index: src/bin/eeze_mount.c
 ===================================================================
 --- src/bin/eeze_mount.c	(revision 0)
 +++ src/bin/eeze_mount.c	(revision 0)
-@@ -0,0 +1,107 @@
+@@ -0,0 +1,114 @@
 +#include <Eeze.h>
 +#include <Eeze_Disk.h>
 +#include <Ecore.h>
++#include <Ecore_File.h>
 +#include <Ecore_Getopt.h>
 +#include <stdio.h>
 +
@@ -1314,6 +1982,15 @@ Index: src/bin/eeze_mount.c
 +   ecore_main_loop_quit();
 +}
 +
++void
++_error_cb(void *data, int type, Eeze_Event_Disk_Error *de)
++{
++   (void)data;
++   (void)type;
++   printf("Could not mount disk with /dev/ path: %s!\n", eeze_disk_devpath_get(de->disk));
++   ecore_main_loop_quit();
++}
++
 +int
 +main(int argc, char *argv[])
 +{
@@ -1330,7 +2007,7 @@ Index: src/bin/eeze_mount.c
 +      ECORE_GETOPT_VALUE_BOOL(exit_option)
 +   };
 +   
-+   if (argc < 3)
++   if (argc < 2)
 +     {
 +        printf("Insufficient args specified!\n");
 +        ecore_getopt_help(stderr, &opts);
@@ -1353,16 +2030,12 @@ Index: src/bin/eeze_mount.c
 +     }
 +
 +   dev = argv[args];
-+   mount_point = argv[args + 1];
-+   if (!strncmp(dev, "/sys/", 5))
++   if (args + 1 < argc)
++     mount_point = argv[args + 1];
++   if ((!strncmp(dev, "/sys/", 5)) || (!strncmp(dev, "/dev/", 5)))
 +     disk = eeze_disk_new(dev);
-+   else if (!strncmp(dev, "/dev/", 5))
-+     {
-+        const char *syspath;
-+
-+        syspath = eeze_udev_devpath_get_syspath(dev);
-+        disk = eeze_disk_new(syspath);
-+     }
++   else if ((argc == 2) && (ecore_file_is_dir(dev)))
++     disk = eeze_disk_new_from_mount(dev);
 +   else
 +     {
 +        printf("[Device] must be either a /dev/ path or a /sys/ path!\n");
@@ -1374,9 +2047,10 @@ Index: src/bin/eeze_mount.c
 +        printf("[%s] is already mounted!", dev);
 +        exit(1);
 +     }
-+
-+   eeze_disk_mount_point_set(disk, mount_point);
++   if (argc > 2)
++     eeze_disk_mount_point_set(disk, mount_point);
 +   ecore_event_handler_add(EEZE_EVENT_DISK_MOUNT, (Ecore_Event_Handler_Cb)_mount_cb, NULL);
++   ecore_event_handler_add(EEZE_EVENT_DISK_ERROR, (Ecore_Event_Handler_Cb)_error_cb, NULL);
 +   if (!eeze_disk_mount(disk))
 +     {
 +        printf("Mount operation could not be started!\n");
