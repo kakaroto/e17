@@ -667,7 +667,7 @@ Index: src/lib/eeze_disk_mount.c
 ===================================================================
 --- src/lib/eeze_disk_mount.c	(revision 0)
 +++ src/lib/eeze_disk_mount.c	(revision 0)
-@@ -0,0 +1,336 @@
+@@ -0,0 +1,338 @@
 +#ifdef HAVE_CONFIG_H
 +#include "config.h"
 +#endif
@@ -836,9 +836,10 @@ Index: src/lib/eeze_disk_mount.c
 + * @return #EINA_TRUE if the operation was started, else #EINA_FALSE
 + *
 + * This call is used to begin a mount operation on @p disk.  The operation will
-+ * run asynchronously in a pipe, emitting an EEZE_EVENT_DISK_MOUNT event on completion.  If
-+ * any errors are encountered, they will automatically logged to the eeze_disk domain and an
-+ * EEZE_EVENT_DISK_ERROR event will be generated.
++ * run asynchronously in a pipe, emitting an EEZE_EVENT_DISK_MOUNT event with the disk object
++ * as its event on completion.  If any errors are encountered, they will automatically logged
++ * to the eeze_disk domain and an EEZE_EVENT_DISK_ERROR event will be generated with an #Eeze_Event_Disk_Error
++ * struct as its event.
 + *
 + * NOTE: The return value of this function does not in any way reflect the mount state of a disk.
 + */
@@ -911,10 +912,11 @@ Index: src/lib/eeze_disk_mount.c
 + * @return #EINA_TRUE if the operation was started, else #EINA_FALSE
 + *
 + * This call is used to begin an unmount operation on @p disk.  The operation will
-+ * run asynchronously in a pipe, emitting an EEZE_EVENT_DISK_UNMOUNT event on completion.  If
-+ * any errors are encountered, they will automatically logged to the eeze_disk domain and an
-+ * EEZE_EVENT_DISK_ERROR event will be generated.
-+ *
++ * run asynchronously in a pipe, emitting an EEZE_EVENT_DISK_MOUNT event with the disk object
++ * as its event on completion.  If any errors are encountered, they will automatically logged
++ * to the eeze_disk domain and an EEZE_EVENT_DISK_ERROR event will be generated with
++ * an #Eeze_Event_Disk_Error struct as its event.
++ * 
 + * NOTE: The return value of this function does not in any way reflect the mount state of a disk.
 + */
 +EAPI Eina_Bool
