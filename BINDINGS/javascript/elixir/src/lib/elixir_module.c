@@ -126,6 +126,11 @@ Eina_Bool eet_binding_init(void);
 void eet_binding_shutdown(void);
 #endif
 
+#ifdef EINA_STATIC_BUILD_EIO
+Eina_Bool eio_binding_init(void);
+void eio_binding_shutdown(void);
+#endif
+
 #ifdef EINA_STATIC_BUILD_TEXT
 Eina_Bool text_loader_init(void);
 void text_loader_shutdown(void);
@@ -201,6 +206,9 @@ static Elixir_Modules_Static ems[] = {
 #ifdef EINA_STATIC_BUILD_EET
   { eet_loader_init, eet_loader_shutdown },
   { eet_binding_init, eet_binding_shutdown },
+#endif
+#ifdef EINA_STATIC_BUILD_EIO
+  { eio_binding_init, eio_binding_shutdown },
 #endif
 #ifdef EINA_STATIC_BUILD_TEXT
   { text_loader_init, text_loader_shutdown },

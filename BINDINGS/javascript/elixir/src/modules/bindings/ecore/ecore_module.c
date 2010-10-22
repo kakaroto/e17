@@ -925,6 +925,8 @@ _elixir_func_cleanup(JSContext *cx, Elixir_Thread_Data *dt, void *data)
 
    elixir_shutdown(dt->runtime);
    free(dt);
+
+   elixir_thread_del();
 }
 
 static void
@@ -1027,18 +1029,30 @@ elixir_ecore_thread_run(JSContext *cx, uintN argc, jsval *vp)
    new = elixir_void_new(dt->runtime->cx, JS_THIS_OBJECT(cx, vp), val[3].v.any, dt);
    if (!new)
      {
+        elixir_object_unregister(dt->runtime->cx, &dt->obj_heavy);
+        elixir_object_unregister(dt->runtime->cx, &dt->obj_end);
+        elixir_object_unregister(dt->runtime->cx, &dt->obj_cancel);
 	free(dt);
 	return JS_FALSE;
      }
 
    elixir_function_stop(cx);
 
+   elixir_thread_new();
+
    result = ecore_thread_run(_elixir_func_heavy, _elixir_func_end, _elixir_func_cancel, new);
 
    elixir_function_start(cx);
 
-   dt->result = elixir_return_ptr(cx, vp, result, elixir_class_request("Ecore_Thread", NULL));
-   elixir_object_register(cx, &dt->result, NULL);
+   if (result)
+     {
+        dt->result = elixir_return_ptr(cx, vp, result, elixir_class_request("Ecore_Thread", NULL));
+        elixir_object_register(cx, &dt->result, NULL);
+     }
+   else
+     {
+        JS_SET_RVAL(cx, vp, JSVAL_NULL);
+     }
    return JS_TRUE;
 }
 

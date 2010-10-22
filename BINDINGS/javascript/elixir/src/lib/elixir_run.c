@@ -38,6 +38,7 @@ struct gc_cx_s
 static elixir_virtual_chroot_t  _evct = ELIXIR_VCHROOT_ALL;
 static Eina_List *suspended_cx = NULL;
 static pthread_mutex_t suspended_lock = PTHREAD_MUTEX_INITIALIZER;
+static int running_thread = 0;
 
 static unsigned int _elixir_api_version = 0;
 
@@ -221,6 +222,18 @@ elixir_unlock_cx(JSContext *cx)
      }
 }
 
+void
+elixir_thread_new(void)
+{
+   running_thread++;
+}
+
+void
+elixir_thread_del(void)
+{
+   running_thread--;
+}
+
 Eina_Bool
 elixir_function_suspended(JSContext *cx)
 {
@@ -274,9 +287,13 @@ elixir_suspended_gc(void)
    Eina_List *l;
    JSContext *cx;
 
+   if (running_thread > 0)
+     return ;
+
    pthread_mutex_lock(&suspended_lock);
    EINA_LIST_FOREACH(suspended_cx, l, cx)
      {
+        fprintf(stderr, "cleanup %p\n", cx);
 	JS_SetContextThread(cx);
 	JS_MaybeGC(cx);
 	JS_ClearContextThread(cx);

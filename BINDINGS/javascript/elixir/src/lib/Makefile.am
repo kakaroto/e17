@@ -120,6 +120,12 @@ libelixir_la_LIBADD += @EET_LIBS@
 INCLUDES += @EET_CFLAGS@
 endif
 
+if EINA_STATIC_BUILD_EIO
+libelixir_la_SOURCES += $(top_srcdir)/src/modules/bindings/eio/eio_module.c
+libelixir_la_LIBADD += @EIO_LIBS@
+INCLUDES += @EIO_CFLAGS@
+endif
+
 if EINA_STATIC_BUILD_CMP
 libelixir_la_SOURCES += $(top_srcdir)/src/modules/security/cmp/cmp_security.c
 endif

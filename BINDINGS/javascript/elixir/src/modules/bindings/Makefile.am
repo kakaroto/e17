@@ -1,6 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 SUBDIRS = 	\
+eio		\
 eet		\
 elixir		\
 file 		\

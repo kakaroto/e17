@@ -409,6 +409,9 @@ EINA_CHECK_STATIC(emotion, [emotion])
 ELIXIR_CHECK_PKG_MODULE([SQLITE], [sqlite3], [SQLite binding module support])
 EINA_CHECK_STATIC([sqlite3], [sqlite])
 
+ELIXIR_CHECK_PKG_MODULE(EIO, eio, [Eio file loading support])
+EINA_CHECK_STATIC(eio, eio)
+
 ################################
 # Build option and helper module
 
@@ -507,6 +510,7 @@ src/modules/bindings/emotion/Makefile
 src/modules/bindings/mix/Makefile
 src/modules/bindings/sqlite/Makefile
 src/modules/bindings/eet/Makefile
+src/modules/bindings/eio/Makefile
 src/modules/loaders/edje/Makefile
 src/modules/loaders/eet/Makefile
 src/modules/loaders/text/Makefile
