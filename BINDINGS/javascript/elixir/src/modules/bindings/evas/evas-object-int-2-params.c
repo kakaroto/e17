@@ -20,6 +20,12 @@ static const elixir_parameter_t*        _evas_object_image_double_int_params[4] 
    &int_parameter,
    NULL
 };
+static const elixir_parameter_t*        _evas_object_smart_double_int_params[4] = {
+   &evas_object_smart_parameter,
+   &int_parameter,
+   &int_parameter,
+   NULL
+};
 static const elixir_parameter_t*        _evas_object_size_params[3] = {
    &evas_object_parameter,
    &size_parameter,
@@ -125,6 +131,27 @@ elixir_evas_object_text_char_coords_get(JSContext *cx, uintN argc, jsval *vp)
    return elixir_new_evas_pos(cx, icx, icy, icw, ich, &(JS_RVAL(cx, vp)));
 }
 
+static JSBool
+elixir_evas_object_smart_move_children_relative(JSContext *cx, uintN argc, jsval *vp)
+{
+   Evas_Object *know;
+   int dx;
+   int dy;
+   elixir_value_t val[3];
+
+   if (!elixir_params_check(cx, _evas_object_smart_double_int_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, know);
+   dx = val[1].v.num;
+   dy = val[2].v.num;
+
+   evas_object_smart_move_children_relative(know, dx, dy);
+
+   return JS_TRUE;
+}
+
+
 static JSFunctionSpec     evas_object_params_function[] = {
   ELIXIR_FN(evas_object_move, 3, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_polygon_point_add, 3, JSPROP_ENUMERATE, 0 ),
@@ -135,6 +162,7 @@ static JSFunctionSpec     evas_object_params_function[] = {
   ELIXIR_FN(evas_object_resize, 3, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_image_size_set, 3, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_image_load_size_set, 3, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(evas_object_smart_move_children_relative, 3, JSPROP_ENUMERATE, 0 ),
   JS_FS_END
 };
 
