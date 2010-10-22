@@ -3,7 +3,7 @@
 ARGS=
 AUTOGEN=0
 TARGET=
-TOPDIR=$(pwd)
+SCRIPTDIR="$0"
 
 function usage {
 		cat - <<EOF
@@ -36,6 +36,8 @@ do
 done
 shift $((OPTIND - 1))
 
+TOPDIR="$(dirname $SCRIPTDIR)/../../"
+pushd $TOPDIR
 
 SCRIPT=$1
 shift
@@ -150,3 +152,4 @@ for d in $TARGETS; do
 	esac
 done
 
+popd
