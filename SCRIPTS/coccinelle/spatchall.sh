@@ -8,9 +8,15 @@ SCRIPTDIR="$0"
 function usage {
 		cat - <<EOF
 USAGE:
-	run_cmds [-a|-t|-h] script.cocci
+	spatchall.sh [-a | -t <target> | -h] script.cocci
 OPTIONS:
 	-a       Run autogen.sh in each project first
+
+	-t       Select a target project. Examples:
+	            spatchall.sh -t eina myscript.cocci
+	            spatchall.sh -t "ecore TMP/st/elementary" myscript.cocci
+
+        -h       Show this help
 EOF
 }
 
