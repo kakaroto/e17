@@ -294,7 +294,7 @@ elixir_new_evas_font(JSContext *cx,
    propertie = INT_TO_JSVAL(size);
    JS_SetProperty(cx, js_obj, "size", &propertie);
 
-   propertie = INT_TO_JSVAL(font);
+   propertie = font ? STRING_TO_JSVAL(elixir_dup(cx, font)) : JSVAL_NULL;
    JS_SetProperty(cx, js_obj, "font", &propertie);
 
    ret = EINA_TRUE;
