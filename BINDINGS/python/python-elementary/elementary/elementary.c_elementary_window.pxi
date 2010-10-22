@@ -104,12 +104,38 @@ cdef class Window(Object):
         """
         elm_win_borderless_set(self.obj, borderless)
 
+    def borderless_get(self):
+        """
+        Get the borderless property of the window
+        """
+        return bool(elm_win_borderless_get(self.obj))
+
+    property borderless:
+        def __get__(self):
+            return self.borderless_get()
+
+        def __set__(self, borderless):
+            self.borderless_set(borderless)
+
     def shaped_set(self,shaped):
         """Set the shaped property of the window
 
         @parm: B{shaped} Shaped property
         """
         elm_win_shaped_set(self.obj, shaped)
+
+    def shaped_get(self):
+        """
+        Get the shaped property of the window
+        """
+        return bool(elm_win_shaped_get(self.obj))
+
+    property shaped:
+        def __get__(self):
+            return self.shaped_get()
+
+        def __set__(self, shaped):
+            self.shaped_set(shaped)
 
     def alpha_set(self,alpha):
         """
@@ -119,6 +145,19 @@ cdef class Window(Object):
         """
         elm_win_alpha_set(self.obj, alpha)
 
+    def alpha_get(self):
+        """
+        Get the alpha value of the window
+        """
+        return bool(elm_win_alpha_get(self.obj))
+
+    property alpha:
+        def __get__(self):
+            return self.alpha_get()
+
+        def __set__(self, alpha):
+            self.alpha_set(alpha)
+
     def override_set(self, override):
         """
         Set the override property
@@ -126,6 +165,19 @@ cdef class Window(Object):
         @parm: B{override} Override property
         """
         elm_win_override_set(self.obj, override)
+
+    def override_get(self):
+        """
+        Get the override property
+        """
+        return bool(elm_win_override_get(self.obj))
+
+    property override:
+        def __get__(self):
+            return self.override_get()
+
+        def __set__(self, override):
+            self.override_set(override)
 
     def fullscreen_set(self, fullscreen):
         """
@@ -135,6 +187,21 @@ cdef class Window(Object):
         """
         elm_win_fullscreen_set(self.obj, fullscreen)
 
+    def fullscreen_get(self):
+        """
+        Get the window fullscreen mode.
+        True means the window is in fullscreen mode while False means in
+        windowed mode.
+        """
+        return bool(elm_win_fullscreen_get(self.obj))
+
+    property fullscreen:
+        def __get__(self):
+            return self.fullscreen_get()
+
+        def __set__(self, fullscreen):
+            self.fullscreen_set(fullscreen)
+    
     def maximized_set(self, maximized):
         """
         Maximize the window
@@ -142,6 +209,19 @@ cdef class Window(Object):
         @parm: B{maximized} Maximize the window
         """
         elm_win_maximized_set(self.obj, maximized)
+
+    def maximized_get(self):
+        """
+        Get the Maximize state of the window
+        """
+        return bool(elm_win_maximized_get(self.obj))
+
+    property maximized:
+        def __get__(self):
+            return self.maximized_get()
+
+        def __set__(self, maximized):
+            self.maximized_set(maximized)
 
     def iconified_set(self, iconified):
         """
@@ -151,6 +231,19 @@ cdef class Window(Object):
         """
         elm_win_iconified_set(self.obj, iconified)
 
+    def iconified_get(self):
+        """
+        Get the Iconify state of the window
+        """
+        return bool(elm_win_iconified_get(self.obj))
+
+    property iconified:
+        def __get__(self):
+            return self.iconified_get()
+
+        def __set__(self, iconified):
+            self.iconified_set(iconified)
+
     def layer_set(self, layer):
         """
         Set the layer of the window
@@ -158,6 +251,19 @@ cdef class Window(Object):
         @parm: B{layer}
         """
         elm_win_layer_set(self.obj, layer)
+
+    def layer_get(self):
+        """
+        Get the layer of the window
+        """
+        return elm_win_layer_get(self.obj)
+
+    property layer:
+        def __get__(self):
+            return self.layer_get()
+
+        def __set__(self, layer):
+            self.layer_set(layer)
 
     def rotation_set(self, rotation):
         """
@@ -167,8 +273,39 @@ cdef class Window(Object):
         """
         elm_win_rotation_set(self.obj, rotation)
 
+    def rotation_get(self):
+        """
+        Get the rotation of the window
+        """
+        return elm_win_rotation_get(self.obj)
+
+    property rotation:
+        def __get__(self):
+            return self.rotation_get()
+
+        def __set__(self, rotation):
+            self.rotation_set(rotation)
+
     def sticky_set(self, sticky):
+        """
+        Set the Sticky state of the window
+
+        @parm: B{sticky}
+        """
         elm_win_sticky_set(self.obj, sticky)
+
+    def sticky_get(self):
+        """
+        Get the Sticky state of the window
+        """
+        return bool(elm_win_sticky_get(self.obj))
+
+    property sticky:
+        def __get__(self):
+            return self.sticky_get()
+
+        def __set__(self, sticky):
+            self.sticky_set(sticky)
 
     def keyboard_mode_set(self, mode):
         """
