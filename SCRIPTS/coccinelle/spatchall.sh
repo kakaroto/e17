@@ -42,10 +42,11 @@ do
 done
 shift $((OPTIND - 1))
 
-TOPDIR="$(dirname $SCRIPTDIR)/../../"
-pushd $TOPDIR
+SCRIPT="$(readlink -f $(dirname $1) )/$(basename $1)"
 
-SCRIPT=$1
+pushd "$(dirname $SCRIPTDIR)/../../"
+TOPDIR=$PWD
+
 shift
 ARGS="$*"
 
