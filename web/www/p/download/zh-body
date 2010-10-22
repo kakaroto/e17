@@ -112,7 +112,7 @@
     Debian, <a href="http://ubuntuforums.org/showthread.php?t=97199&highlight=E17+cvs">Ubuntu</a>，
     <a href="http://sps.nus.edu.sg/~didierbe">Fedora</a>，
     <a href="http://wiki.archlinux.org/index.php/E17">ArchLinux</a> 和
-    <a href="http://gentoo-wiki.com/HOWTO_emerge_e17">Gentoo</a>。另有一部分FreeBSD
+    <a href="http://overlays.gentoo.org/dev/vapier/wiki/enlightenment">Gentoo</a>。另有一部分FreeBSD
      移植。</p>
 
     <p>我们不对这些软件包作出能够按照预期工作的保证。如果您在使用通过软件包运行 DR17 或 EFL 时出现
