@@ -12,6 +12,8 @@ ecocci.h is the file to be passed to Coccinelle as -macro_file_builtins.
 It's easier to run against all code base, but you'll achieve better results
 if you run individually for each project.
 
+*THE SCRIPTS PROVIDED IN THIS DIRECTORY ARE TESTED WITH VERSION 0.2.4rc3 AND
+GREATER. DON'T EXPECT IT TO WORK WITH OTHER VERSIONS*
 
 Q&A
 ===
