@@ -293,7 +293,6 @@ elixir_suspended_gc(void)
    pthread_mutex_lock(&suspended_lock);
    EINA_LIST_FOREACH(suspended_cx, l, cx)
      {
-        fprintf(stderr, "cleanup %p\n", cx);
 	JS_SetContextThread(cx);
 	JS_MaybeGC(cx);
 	JS_ClearContextThread(cx);
