@@ -312,7 +312,7 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 
    p->do_update = 1;
 
-   PmapMaskInit(&ewin->mini_pmm, p->win, w, h);
+   PmapMaskInit(&ewin->mini_pmm, EoGetWin(ewin), w, h);
 
    draw = None;
    if (pager_mode != PAGER_MODE_SIMPLE)
@@ -328,13 +328,13 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 	ImageClass         *ic;
 
 	ic = ImageclassFind("PAGER_WIN", 1);
-	ImageclassApplySimple(ic, p->win, ewin->mini_pmm.pmap,
+	ImageclassApplySimple(ic, EoGetWin(ewin), ewin->mini_pmm.pmap,
 			      STATE_NORMAL, 0, 0, w, h);
 	Dprintf("Use Iclass, pmap=%#lx\n", ewin->mini_pmm.pmap);
      }
    else
      {
-	ScaleRect(EoGetWin(ewin), draw, p->win, ewin->mini_pmm.pmap,
+	ScaleRect(EoGetWin(ewin), draw, EoGetWin(ewin), ewin->mini_pmm.pmap,
 		  0, 0, EoGetW(ewin), EoGetH(ewin), 0, 0, w, h, HIQ);
 	Dprintf("Grab scaled, pmap=%#lx\n", ewin->mini_pmm.pmap);
      }
@@ -444,14 +444,16 @@ doPagerUpdate(Pager * p)
 	if (ewin->mini_pmm.pmap)
 	  {
 #if USE_COMPOSITE
-	     pict = EPictureCreate(NULL, ewin->mini_pmm.pmap);
+	     /*      pmap set by           depth determined by
+	      * PagerEwinUpdateMini()           ewin
+	      * PagerEwinUpdateFromPager()      p->win
+	      */
+	     pict = EPictureCreate(ewin->mini_pmm.depth == WinGetDepth(p->win) ?
+				   p->win : EoGetWin(ewin),
+				   ewin->mini_pmm.pmap);
 	     alpha = ECompMgrWinGetAlphaPict(EoObj(ewin));
-	     if (alpha)
-		XRenderComposite(disp, PictOpOver, pict, alpha, pager_pict,
-				 0, 0, 0, 0, wx, wy, ww, wh);
-	     else
-		XRenderComposite(disp, PictOpSrc, pict, None, pager_pict,
-				 0, 0, 0, 0, wx, wy, ww, wh);
+	     XRenderComposite(disp, PictOpOver, pict, alpha, pager_pict,
+			      0, 0, 0, 0, wx, wy, ww, wh);
 	     EPictureDestroy(pict);
 #else
 #if 0				/* Mask is currently not set anywhere */
