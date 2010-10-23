@@ -17,7 +17,8 @@ IUSE="altivec debug default-mempool mempool-buddy +mempool-chained
 
 RDEPEND="
 	mempool-ememoa-fixed? ( sys-libs/ememoa )
-	mempool-ememoa-unknown? ( sys-libs/ememoa )"
+	mempool-ememoa-unknown? ( sys-libs/ememoa )
+	debug? ( dev-util/valgrind )"
 
 DEPEND="${RDEPEND}
 	dev-util/pkgconfig
@@ -46,6 +47,7 @@ src_configure() {
 	$(use_enable !debug amalgamation)
 	$(use_enable debug stringshare-usage)
 	$(use_enable debug assert)
+	$(use_enable debug valgrind)
 	$(use debug || echo " --with-internal-maximum-log-level=2")
 	$(use_enable default-mempool)
 	$(use_enable doc)
