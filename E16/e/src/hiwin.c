@@ -89,7 +89,7 @@ HiwinRenderImageInit(Hiwin * phi)
      {
 	phi->im =
 	   EImageGrabDrawable(ewin->mini_pmm.pmap, ewin->mini_pmm.mask, 0, 0,
-			      ewin->mini_w, ewin->mini_h, 0);
+			      ewin->mini_pmm.w, ewin->mini_pmm.h, 0);
      }
 
    ESetWindowBackgroundPixmap(EoGetWin(phi), None);

@@ -282,11 +282,13 @@ Atom                EInternAtom(const char *name);
 
 typedef struct {
    char                type;
+   char                depth;
    Pixmap              pmap;
    Pixmap              mask;
-   int                 w, h;
+   unsigned short      w, h;
 } PmapMask;
 
+void                PmapMaskInit(PmapMask * pmm, Win win, int w, int h);
 void                PmapMaskFree(PmapMask * pmm);
 
 #if USE_COMPOSITE

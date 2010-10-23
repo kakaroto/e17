@@ -604,6 +604,24 @@ EDrawableDumpImage(Drawable draw, const char *txt)
 #endif
 
 void
+PmapMaskInit(PmapMask * pmm, Win win, int w, int h)
+{
+   if (pmm->pmap)
+     {
+	if (pmm->w == w && pmm->h == h && pmm->depth == WinGetDepth(win))
+	   return;
+	PmapMaskFree(pmm);
+     }
+
+   pmm->type = 0;
+   pmm->depth = WinGetDepth(win);
+   pmm->pmap = ECreatePixmap(win, w, h, 0);
+   pmm->mask = None;
+   pmm->w = w;
+   pmm->h = h;
+}
+
+void
 PmapMaskFree(PmapMask * pmm)
 {
    /* type !=0: Created by imlib_render_pixmaps_for_whole_image... */

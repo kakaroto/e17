@@ -268,7 +268,7 @@ PagerHiwinUpdate(Hiwin * phi, Pager * p __UNUSED__, EWin * ewin)
       return;
 
    im = EImageGrabDrawable(ewin->mini_pmm.pmap, None, 0, 0,
-			   ewin->mini_w, ewin->mini_h, 0);
+			   ewin->mini_pmm.w, ewin->mini_pmm.h, 0);
    EImageRenderOnDrawable(im, EoGetWin(phi), 0, 0, 0, EoGetW(phi), EoGetH(phi));
    EImageDecache(im);
 }
@@ -294,7 +294,7 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
    update = 0;
    if (!ewin->mini_pmm.pmap)
       update = 1;
-   if (ewin->mini_w != w || ewin->mini_h != h)
+   if (ewin->mini_pmm.w != w || ewin->mini_pmm.h != h)
       update = 1;
 
    if (serdif > 0 && ewin->type != EWIN_TYPE_PAGER &&
@@ -312,12 +312,7 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 
    p->do_update = 1;
 
-   PmapMaskFree(&ewin->mini_pmm);
-
-   ewin->mini_w = w;
-   ewin->mini_h = h;
-   ewin->mini_pmm.type = 0;
-   ewin->mini_pmm.pmap = ECreatePixmap(p->win, w, h, 0);
+   PmapMaskInit(&ewin->mini_pmm, p->win, w, h);
 
    draw = None;
    if (pager_mode != PAGER_MODE_SIMPLE)
@@ -916,21 +911,7 @@ PagerEwinUpdateFromPager(Pager * p, EWin * ewin)
    if (!gc)
       gc = EXCreateGC(WinGetPmap(p->win), 0, NULL);
 
-   /* NB! If the pixmap/mask was created by imlib, free it. Due to imlibs */
-   /*     image/pixmap cache it may be in use elsewhere. */
-   if (ewin->mini_pmm.pmap &&
-       ((ewin->mini_pmm.type) || (ewin->mini_w != w) || (ewin->mini_h != h)))
-      PmapMaskFree(&ewin->mini_pmm);
-
-   if (!ewin->mini_pmm.pmap)
-     {
-	ewin->mini_w = w;
-	ewin->mini_h = h;
-	ewin->mini_pmm.type = 0;
-	ewin->mini_pmm.pmap = ECreatePixmap(p->win, w, h, 0);
-	ewin->mini_pmm.mask = None;
-     }
-
+   PmapMaskInit(&ewin->mini_pmm, p->win, w, h);
    if (!ewin->mini_pmm.pmap)
       return;
 
@@ -1288,19 +1269,22 @@ PagersUpdateBackground(Desk * dsk)
 }
 
 static void
-PagerSetHiQ(char onoff)
+_EwinsMiniFree(void)
 {
    EWin               *const *lst;
    int                 i, num;
 
-   Conf_pagers.hiq = onoff;
-
    lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
-     {
-	lst[i]->mini_w = 0;
-	lst[i]->mini_h = 0;
-     }
+      PmapMaskFree(&(lst[i]->mini_pmm));
+}
+
+static void
+PagerSetHiQ(char onoff)
+{
+   Conf_pagers.hiq = onoff;
+
+   _EwinsMiniFree();
 
    PagersUpdateBackground(NULL);
 
@@ -1316,19 +1300,11 @@ _PagerSetSnap(Pager * p, void *prm __UNUSED__)
 static void
 PagersSetMode(int mode)
 {
-   EWin               *const *lst;
-   int                 i, num;
-
    if (mode == Conf_pagers.mode)
       return;
    Conf_pagers.mode = mode;
 
-   lst = EwinListGetAll(&num);
-   for (i = 0; i < num; i++)
-     {
-	lst[i]->mini_w = 0;
-	lst[i]->mini_h = 0;
-     }
+   _EwinsMiniFree();
 
    PagersUpdateBackground(NULL);
 

@@ -243,7 +243,6 @@ struct _ewin {
    int                 area_x, area_y;
    char               *session_id;
    PmapMask            mini_pmm;
-   int                 mini_w, mini_h;
 
    int                 shape_x, shape_y, shape_w, shape_h;
    int                 req_x, req_y;
