@@ -813,6 +813,12 @@ Evas_Object *ed_make_bubble(Evas_Object *parent, aStatus* as, anUser* au) {
 	return(bubble);
 }
 
+static void user_win_del(void *data, Evas_Object *obj, void *event_info) {
+	UserProfile *user = (UserProfile*)data;
+	if(user) user_free(user);
+	evas_object_del(obj);
+}
+
 static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 	Elm_List_Item *li = elm_list_selected_item_get(obj);
 	Evas_Object *user_win=NULL, *icon=NULL, *bg=NULL, *table=NULL, *button=NULL, *label=NULL;
@@ -822,6 +828,8 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 	int res=0;
 	struct stat buf;
 	anUser *au=NULL;
+
+	elm_list_item_selected_set(li, EINA_FALSE);
 
 	if(!settings->online) return;
 
@@ -838,7 +846,7 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 		evas_object_size_hint_min_set(user_win, 480, 480);
 		evas_object_size_hint_max_set(user_win, 640, 640);
 		elm_win_title_set(user_win, au->name);
-		elm_win_autodel_set(user_win, EINA_TRUE);
+		evas_object_smart_callback_add(user_win, "delete-request", user_win_del, user);
 
 		bg = elm_bg_add(user_win);
 			evas_object_size_hint_weight_set(bg, 1, 1);
@@ -908,7 +916,6 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 	    evas_object_resize(user_win, 480, 640);
 	evas_object_show(user_win);
 
-	if(user) user_free(user);
 }
 
 static void on_group_messages_view(void *data, Evas_Object *obj, void *event_info) {
@@ -926,19 +933,14 @@ static void on_group_messages_view(void *data, Evas_Object *obj, void *event_inf
 static void on_group_leave(void *data, Evas_Object *obj, void *event_info);
 
 static void on_group_join(void *data, Evas_Object *obj, void *event_info) {
-	Evas_Object *bubble = (Evas_Object*)data;
-	aStatus *as = eina_hash_find(bubble2status, &bubble);
 	Evas *e = evas_object_evas_get(obj);
-	Evas_Object *frame = evas_object_name_find(e, "group"), *group_desc = NULL;
-	GroupProfile *gp = (GroupProfile*)calloc(1, sizeof(GroupProfile));
+	Evas_Object *group_desc = NULL;
+	GroupProfile *gp = (GroupProfile*)data;
 	char *m;
 	int res = 0;
 
-	if(!as) return;
-
-	gp->name=strndup(elm_frame_label_get(frame), PIPE_BUF);
-
-	ed_statusnet_group_join(as->account_id, gp);
+	gp->failed = 0;
+	ed_statusnet_group_join(gp);
 
 	if(gp->failed) {
 		printf("Error joining group %s: %s\n", gp->name, gp->error);
@@ -952,28 +954,22 @@ static void on_group_join(void *data, Evas_Object *obj, void *event_info) {
 			group_desc = evas_object_name_find(e, "group_desc");
 			elm_label_label_set(group_desc, m);
 			elm_button_label_set(obj, _("Leave"));
-			evas_object_smart_callback_add(obj, "clicked", on_group_leave, bubble);
+			evas_object_smart_callback_del(obj, "clicked", on_group_join);
+			evas_object_smart_callback_add(obj, "clicked", on_group_leave, gp);
 			free(m);
 		}
 	}
-
-	ed_statusnet_group_free(gp);
 }
 
 static void on_group_leave(void *data, Evas_Object *obj, void *event_info) {
-	Evas_Object *bubble = (Evas_Object*)data;
-	aStatus *as = eina_hash_find(bubble2status, &bubble);
 	Evas *e = evas_object_evas_get(obj);
-	Evas_Object *frame = evas_object_name_find(e, "group"), *group_desc = NULL;
-	GroupProfile *gp = (GroupProfile*)calloc(1, sizeof(GroupProfile));
+	Evas_Object *group_desc = NULL;
+	GroupProfile *gp = (GroupProfile*)data;
 	char *m;
 	int res = 0;
 
-	if(!as) return;
-
-	gp->name=strndup(elm_frame_label_get(frame), PIPE_BUF);
-
-	ed_statusnet_group_leave(as->account_id, gp);
+	gp->failed = 0;
+	ed_statusnet_group_leave(gp);
 
 	if(gp->failed && debug)
 		printf("Error leaving group %s: %s\n", gp->name, gp->error);
@@ -987,24 +983,37 @@ static void on_group_leave(void *data, Evas_Object *obj, void *event_info) {
 			group_desc = evas_object_name_find(e, "group_desc");
 			elm_label_label_set(group_desc, m);
 			elm_button_label_set(obj, _("Join"));
-			evas_object_smart_callback_add(obj, "clicked", on_group_join, bubble);
+			evas_object_smart_callback_del(obj, "clicked", on_group_leave);
+			evas_object_smart_callback_add(obj, "clicked", on_group_join, gp);
 			free(m);
 		}
 	}
 }
 
+static void group_win_del(void *data, Evas_Object *obj, void *event_info) {
+	GroupProfile *gp = (GroupProfile*)data;
+	ed_statusnet_group_free(gp);
+	evas_object_del(obj);
+}
+
 static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
-	AnchorData *anchor = (AnchorData*)data;
-	Evas_Object *group_win=NULL, *bg=NULL, *box=NULL, *label=NULL, *notify=NULL, *s=NULL, *box2=NULL, *bubble=anchor->bubble, *icon=NULL, *button=NULL, *frame=NULL;
-	aStatus *as = eina_hash_find(bubble2status, &bubble);
+	aStatus* as = (aStatus*)data;
+	Elm_List_Item *li = elm_list_selected_item_get(obj);
+	Evas_Object *group_win=NULL, *bg=NULL, *box=NULL, *label=NULL, *notify=NULL, *s=NULL, *box2=NULL, *icon=NULL, *button=NULL, *frame=NULL;
 	GroupProfile *gp = (GroupProfile*)calloc(1, sizeof(GroupProfile));
 	char *m, *path;
 	int res = 0;
 	struct stat buf;
 
-	gp->name=strndup(anchor->url+8, PIPE_BUF);
+	elm_list_item_selected_set(li, EINA_FALSE);
 
-	ed_statusnet_group_get(as->account_id, gp);
+	if(!settings->online) return;
+
+	gp->name=strdup(elm_list_item_label_get(li));
+	gp->account_id = as->account_id;
+
+	ed_statusnet_group_get(gp);
+
 	if(gp->failed) {
 		notify = elm_notify_add(gui.win);
 			evas_object_size_hint_weight_set(notify, 1, 1);
@@ -1027,7 +1036,7 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 	group_win = elm_win_add(NULL, gp->name, ELM_WIN_BASIC);
 		evas_object_name_set(group_win, "group_win");
 		elm_win_title_set(group_win, gp->name);
-		elm_win_autodel_set(group_win, EINA_TRUE);
+		evas_object_smart_callback_add(group_win, "delete-request", group_win_del, gp);
 
 		bg = elm_bg_add(group_win);
 			evas_object_size_hint_weight_set(bg, 1, 1);
@@ -1100,10 +1109,10 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 					evas_object_size_hint_align_set(button, -1, 0);
 					if(gp->member) {
 						elm_button_label_set(button, _("Leave"));
-						evas_object_smart_callback_add(button, "clicked", on_group_leave, bubble);
+						evas_object_smart_callback_add(button, "clicked", on_group_leave, gp);
 					} else {
 						elm_button_label_set(button, _("Join"));
-						evas_object_smart_callback_add(button, "clicked", on_group_join, bubble);
+						evas_object_smart_callback_add(button, "clicked", on_group_join, gp);
 					}
 					elm_box_pack_end(box2, button);
 				evas_object_show(button);
@@ -1130,8 +1139,6 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 
 	evas_object_resize(group_win, 480, 640);
 	evas_object_show(group_win);
-
-	ed_statusnet_group_free(gp);
 }
 
 static void on_handle_url(void *data, Evas_Object *obj, void *event_info) {
@@ -1142,6 +1149,10 @@ static void on_handle_url(void *data, Evas_Object *obj, void *event_info) {
 	aStatus *as=(aStatus*)data;
 	anUser *au=NULL;
 	int res = 0;
+
+	elm_list_item_selected_set(li, EINA_FALSE);
+
+	if(!settings->online) return;
 
 	url = elm_list_item_label_get(li);
 
@@ -1535,7 +1546,6 @@ void ed_status_del(void *data, Evas_Object *obj) {
 }
 
 static void on_close_status_action(void *data, Evas_Object *obj, void *event_info) {
-	//elm_pager_content_promote(gui.pager, gui.main);
 	evas_object_del(gui.status_detail);
 }
 
@@ -1584,7 +1594,7 @@ static void ed_status_action(void *data, Evas_Object *obj, void *event_info) {
 	evas_object_show(pager);
 
 	box = elm_box_add(gui.win);
-		elm_box_homogenous_set(box, EINA_TRUE);
+		elm_box_homogenous_set(box, EINA_FALSE);
 		evas_object_size_hint_weight_set(box, 1, 1);
 		evas_object_size_hint_align_set(box, -1, -1);
 
@@ -1592,7 +1602,6 @@ static void ed_status_action(void *data, Evas_Object *obj, void *event_info) {
 			evas_object_size_hint_weight_set(toolbar, 1, 1);
 			evas_object_size_hint_align_set(toolbar, -1, 0);
 			ti = elm_toolbar_item_add(toolbar, NULL, _("Users"), on_status_show_page_users, pager);
-			elm_toolbar_item_select(ti);
 
 			list = elm_list_add(gui.win);
 				evas_object_size_hint_weight_set(list, 1, 1);
@@ -1663,6 +1672,7 @@ static void ed_status_action(void *data, Evas_Object *obj, void *event_info) {
 				list = elm_list_add(gui.win);
 					evas_object_size_hint_weight_set(list, 1, 1);
 					evas_object_size_hint_align_set(list, -1, -1);
+					evas_object_smart_callback_add(list, "selected", on_handle_group, as);
 
 					while((match = g_match_info_fetch(group_matches, 1))) {
 						li = elm_list_item_sorted_insert(list, match, NULL, NULL, NULL, NULL, my_strcmp);
@@ -1692,6 +1702,7 @@ static void ed_status_action(void *data, Evas_Object *obj, void *event_info) {
 
 	elm_win_inwin_content_set(gui.status_detail, box);
 
+	elm_toolbar_item_select(ti);
 	evas_object_show(gui.status_detail);
 }
 

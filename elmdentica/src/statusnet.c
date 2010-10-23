@@ -115,8 +115,7 @@ void json_group_show(GroupProfile *group, char *stream) {
 }
 
 static int ed_statusnet_group_get_handler(void *data, int argc, char **argv, char **azColName) {
-	GroupGet *gg=(GroupGet*)data;
-	GroupProfile *group = gg->group;
+	GroupProfile *group = (GroupProfile*)data;
     char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
     int port=0, id=0, res, redir=3;
 	http_request * request=calloc(1, sizeof(http_request));
@@ -148,7 +147,7 @@ static int ed_statusnet_group_get_handler(void *data, int argc, char **argv, cha
 	if(res != -1) {
 		if (debug) printf("gnome-open %s\n", request->url);
 
-		res = ed_curl_get(screen_name, password, request, gg->account_id);
+		res = ed_curl_get(screen_name, password, request, group->account_id);
 		while(request->redir_url && redir--) {
 			free(request->url);
 			request->url = request->redir_url;
@@ -156,7 +155,7 @@ static int ed_statusnet_group_get_handler(void *data, int argc, char **argv, cha
 			free(request->content.memory);
 			request->content.size = 0;
 			request->content.memory = NULL;
-			res = ed_curl_get(screen_name, password, request, gg->account_id);
+			res = ed_curl_get(screen_name, password, request, group->account_id);
 		}
 		
 		if((res == 0) && (request->response_code == 200))
@@ -181,17 +180,14 @@ static int ed_statusnet_group_get_handler(void *data, int argc, char **argv, cha
 	return(0);
 }
 
-void ed_statusnet_group_get(int account_id, GroupProfile *group) {
+void ed_statusnet_group_get(GroupProfile *group) {
 	char *query=NULL, *db_err=NULL;
 	int sqlite_res;
-	GroupGet gg;
 	
-	gg.group=group;
-	gg.account_id=account_id;
-	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE id = %d and type = %d and enabled = 1;", account_id, ACCOUNT_TYPE_STATUSNET);
+	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE id = %d and type = %d and enabled = 1;", group->account_id, ACCOUNT_TYPE_STATUSNET);
 
 	if(sqlite_res != -1) {
-		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_group_get_handler, (void*)&gg, &db_err);
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_group_get_handler, (void*)group, &db_err);
 		if(sqlite_res != 0) {
 			fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
 			sqlite3_free(db_err);
@@ -213,8 +209,7 @@ void ed_statusnet_group_free(GroupProfile *group) {
 }
 
 static int ed_statusnet_group_join_handler(void *data, int argc, char **argv, char **azColName) {
-	GroupGet *gg=(GroupGet*)data;
-	GroupProfile *group = gg->group;
+	GroupProfile *group = (GroupProfile*)data;
     char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
     int port=0, id=0, res;
 	http_request * request=calloc(1, sizeof(http_request));
@@ -245,7 +240,7 @@ static int ed_statusnet_group_join_handler(void *data, int argc, char **argv, ch
 	if(res != -1) {
 		if (debug) printf("gnome-open %s\n", request->url);
 
-		res = ed_curl_post(screen_name, password, request, "",  gg->account_id);
+		res = ed_curl_post(screen_name, password, request, "",  group->account_id);
 		if((res == 0) && (request->response_code == 200))
 			json_group_show(group, request->content.memory);
 		else {
@@ -268,17 +263,13 @@ static int ed_statusnet_group_join_handler(void *data, int argc, char **argv, ch
 	return(0);
 }
 
-void ed_statusnet_group_join(int account_id, GroupProfile *group) {
+void ed_statusnet_group_join(GroupProfile *group) {
 	char *query=NULL, *db_err=NULL;
 	int sqlite_res;
-	GroupGet gg;
 	
-	gg.group=group;
-	gg.account_id=account_id;
-
-	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE id = %d and type = %d and enabled = 1;", account_id, ACCOUNT_TYPE_STATUSNET);
+	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE id = %d and type = %d and enabled = 1;", group->account_id, ACCOUNT_TYPE_STATUSNET);
 	if(sqlite_res != -1) {
-		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_group_join_handler, (void*)&gg, &db_err);
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_group_join_handler, (void*)group, &db_err);
 		if(sqlite_res != 0) {
 			fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
 			sqlite3_free(db_err);
@@ -288,8 +279,7 @@ void ed_statusnet_group_join(int account_id, GroupProfile *group) {
 }
 
 static int ed_statusnet_group_leave_handler(void *data, int argc, char **argv, char **azColName) {
-	GroupGet *gg=(GroupGet*)data;
-	GroupProfile *group = gg->group;
+	GroupProfile *group =(GroupProfile*)data;
     char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
     int port=0, id=0, res;
 	http_request * request=calloc(1, sizeof(http_request));
@@ -320,7 +310,7 @@ static int ed_statusnet_group_leave_handler(void *data, int argc, char **argv, c
 	if(res != -1) {
 		if (debug) printf("gnome-open %s\n", request->url);
 
-		res = ed_curl_post(screen_name, password, request, "",  gg->account_id);
+		res = ed_curl_post(screen_name, password, request, "",  group->account_id);
 		if((res == 0) && (request->response_code == 200))
 			json_group_show(group, request->content.memory);
 		else {
@@ -343,17 +333,13 @@ static int ed_statusnet_group_leave_handler(void *data, int argc, char **argv, c
 	return(0);
 }
 
-void ed_statusnet_group_leave(int account_id, GroupProfile *group) {
+void ed_statusnet_group_leave(GroupProfile *group) {
 	char *query=NULL, *db_err=NULL;
 	int sqlite_res;
-	GroupGet gg;
 	
-	gg.group=group;
-	gg.account_id=account_id;
-
-	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE id = %d and type = %d and enabled = 1;", account_id, ACCOUNT_TYPE_STATUSNET);
+	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE id = %d and type = %d and enabled = 1;", group->account_id, ACCOUNT_TYPE_STATUSNET);
 	if(sqlite_res != -1) {
-		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_group_leave_handler, (void*)&gg, &db_err);
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_group_leave_handler, (void*)group, &db_err);
 		if(sqlite_res != 0) {
 			fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
 			sqlite3_free(db_err);

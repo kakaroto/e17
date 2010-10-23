@@ -25,7 +25,7 @@
 
 
 typedef struct _Group_Profile {
-    char        *name;
+    char  *name;
     char        *fullname;
     Eina_Bool   member;
     int         member_count;
@@ -33,6 +33,7 @@ typedef struct _Group_Profile {
     char        *description;
 	Eina_Bool	failed;
 	char		*error;
+	int account_id;
 } GroupProfile;
 
 typedef struct _group_get {
@@ -104,12 +105,12 @@ typedef struct _user_get {
 	anUser *au;
 } UserGet;
 
-void ed_statusnet_group_get(int account_id, GroupProfile *group);
+void ed_statusnet_group_get(GroupProfile *group);
 
 void ed_statusnet_group_free(GroupProfile *group);
 
-void ed_statusnet_group_join(int account_id, GroupProfile *group);
-void ed_statusnet_group_leave(int account_id, GroupProfile *group);
+void ed_statusnet_group_join(GroupProfile *group);
+void ed_statusnet_group_leave(GroupProfile *group);
 
 int ed_statusnet_post(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *msg);
 void ed_statusnet_timeline_get(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline);
