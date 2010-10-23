@@ -443,17 +443,6 @@ doPagerUpdate(Pager * p)
 
 	if (ewin->mini_pmm.pmap)
 	  {
-#if 0				/* Mask is currently not set anywhere */
-	     if (ewin->mini_pmm.mask)
-	       {
-		  XSetClipMask(disp, gc, ewin->mini_pmm.mask);
-		  XSetClipOrigin(disp, gc, wx, wy);
-	       }
-	     XCopyArea(disp, ewin->mini_pmm.pmap, pmap, gc, 0, 0,
-		       ww, wh, wx, wy);
-	     if (ewin->mini_pmm.mask)
-		XSetClipMask(disp, gc, None);
-#else
 #if USE_COMPOSITE
 	     pict = EPictureCreate(NULL, ewin->mini_pmm.pmap);
 	     alpha = ECompMgrWinGetAlphaPict(EoObj(ewin));
@@ -465,8 +454,18 @@ doPagerUpdate(Pager * p)
 				 0, 0, 0, 0, wx, wy, ww, wh);
 	     EPictureDestroy(pict);
 #else
+#if 0				/* Mask is currently not set anywhere */
+	     if (ewin->mini_pmm.mask)
+	       {
+		  XSetClipMask(disp, gc, ewin->mini_pmm.mask);
+		  XSetClipOrigin(disp, gc, wx, wy);
+	       }
+#endif
 	     XCopyArea(disp, ewin->mini_pmm.pmap, pmap, gc, 0, 0,
 		       ww, wh, wx, wy);
+#if 0				/* Mask is currently not set anywhere */
+	     if (ewin->mini_pmm.mask)
+		XSetClipMask(disp, gc, None);
 #endif
 #endif
 	  }
