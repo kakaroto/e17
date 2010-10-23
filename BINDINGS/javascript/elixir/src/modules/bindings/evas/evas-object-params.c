@@ -124,7 +124,7 @@ elixir_evas_object_del(JSContext *cx, uintN argc, jsval *vp)
 
    GET_PRIVATE_S(cx, val[0].v.obj, know);
 
-   evas_object_del(know);
+   if (know) evas_object_del(know);
    JS_SetPrivate(cx, val[0].v.obj, JSVAL_NULL);
 
    return JS_TRUE;
