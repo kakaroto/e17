@@ -259,7 +259,7 @@ DialogDestroy(Dialog * d)
    ImageclassFree(d->iclass);
    TextclassFree(d->tclass);
 
-   FreePmapMask(&(d->pmm_bg));
+   PmapMaskFree(&d->pmm_bg);
 
    Efree(d);
 }
@@ -337,7 +337,7 @@ DialogRedraw(Dialog * d)
 	   WinGetXwin(d->win), WinGetPmap(d->win));
 #endif
 
-   FreePmapMask(&(d->pmm_bg));
+   PmapMaskFree(&d->pmm_bg);
    ImageclassApplyCopy(d->iclass, d->win, d->w, d->h, 0, 0, STATE_NORMAL,
 		       &(d->pmm_bg), IC_FLAG_FULL_SIZE, ST_DIALOG);
    if (d->pmm_bg.pmap == None)

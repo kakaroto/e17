@@ -287,7 +287,7 @@ typedef struct {
    int                 w, h;
 } PmapMask;
 
-void                FreePmapMask(PmapMask * pmm);
+void                PmapMaskFree(PmapMask * pmm);
 
 #if USE_COMPOSITE
 #include <X11/extensions/Xfixes.h>

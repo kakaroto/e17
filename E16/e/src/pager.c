@@ -312,7 +312,7 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 
    p->do_update = 1;
 
-   FreePmapMask(&ewin->mini_pmm);
+   PmapMaskFree(&ewin->mini_pmm);
 
    ewin->mini_w = w;
    ewin->mini_h = h;
@@ -920,7 +920,7 @@ PagerEwinUpdateFromPager(Pager * p, EWin * ewin)
    /*     image/pixmap cache it may be in use elsewhere. */
    if (ewin->mini_pmm.pmap &&
        ((ewin->mini_pmm.type) || (ewin->mini_w != w) || (ewin->mini_h != h)))
-      FreePmapMask(&ewin->mini_pmm);
+      PmapMaskFree(&ewin->mini_pmm);
 
    if (!ewin->mini_pmm.pmap)
      {

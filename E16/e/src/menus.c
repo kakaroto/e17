@@ -625,7 +625,7 @@ MenuEmpty(Menu * m, int destroying)
 	Efree(mi->text);
 	Efree(mi->params);
 	for (j = 0; j < 3; j++)
-	   FreePmapMask(&(mi->pmm[j]));
+	   PmapMaskFree(&(mi->pmm[j]));
 	if (!destroying && mi->win)
 	   EDestroyWindow(mi->win);
 	else
@@ -638,7 +638,7 @@ MenuEmpty(Menu * m, int destroying)
    m->num = 0;
    m->sel_item = NULL;
 
-   FreePmapMask(&m->pmm);
+   PmapMaskFree(&m->pmm);
 
    m->last_change = 0;
    m->filled = 0;
@@ -655,10 +655,10 @@ MenuFreePixmaps(Menu * m)
 	mi = m->items[i];
 
 	for (j = 0; j < 3; j++)
-	   FreePmapMask(mi->pmm + j);
+	   PmapMaskFree(mi->pmm + j);
      }
 
-   FreePmapMask(&m->pmm);
+   PmapMaskFree(&m->pmm);
 
    m->last_change = 0;
    m->filled = 0;
@@ -927,7 +927,7 @@ MenuRedraw(Menu * m)
 	for (i = 0; i < m->num; i++)
 	  {
 	     for (j = 0; j < 3; j++)
-		FreePmapMask(&(m->items[i]->pmm[j]));
+		PmapMaskFree(&(m->items[i]->pmm[j]));
 
 	  }
 	m->redraw = 0;
@@ -935,7 +935,7 @@ MenuRedraw(Menu * m)
 
    if (!m->style->use_item_bg)
      {
-	FreePmapMask(&m->pmm);
+	PmapMaskFree(&m->pmm);
 	ImageclassApplyCopy(m->style->bg_iclass, m->win, m->w, m->h, 0,
 			    0, STATE_NORMAL, &m->pmm, IC_FLAG_MAKE_MASK,
 			    ST_MENU);
@@ -994,7 +994,7 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape, int state)
 				      IC_FLAG_MAKE_MASK, item_type);
 		  EXCopyAreaTiled(pmm.pmap, pmm.mask, mi_pmm->pmap,
 				  0, 0, w, h, 0, 0);
-		  FreePmapMask(&pmm);
+		  PmapMaskFree(&pmm);
 	       }
 	     EXFreeGC(gc);
 	  }
@@ -1004,7 +1004,7 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape, int state)
 				 IC_FLAG_MAKE_MASK, item_type);
 	     EXCopyAreaTiled(pmm.pmap, pmm.mask, mi_pmm->pmap,
 			     0, 0, w, h, 0, 0);
-	     FreePmapMask(&pmm);
+	     PmapMaskFree(&pmm);
 	  }
 
 	if (mi->text)

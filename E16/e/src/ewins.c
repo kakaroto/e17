@@ -427,7 +427,7 @@ EwinDestroy(EWin * ewin)
    Efree(ewin->ewmh.wm_icon);
    Efree(ewin->bits);
    Efree(ewin->session_id);
-   FreePmapMask(&ewin->mini_pmm);
+   PmapMaskFree(&ewin->mini_pmm);
    GroupsEwinRemove(ewin);
 
    Efree(ewin);

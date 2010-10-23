@@ -604,7 +604,7 @@ EDrawableDumpImage(Drawable draw, const char *txt)
 #endif
 
 void
-FreePmapMask(PmapMask * pmm)
+PmapMaskFree(PmapMask * pmm)
 {
    /* type !=0: Created by imlib_render_pixmaps_for_whole_image... */
    if (pmm->pmap)

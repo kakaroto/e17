@@ -1169,7 +1169,7 @@ ITApply(Win win, ImageClass * ic, ImageState * is,
 		EShapeSetMaskTiled(win, 0, 0, pmm.mask, w, h);
 	  }
 
-	FreePmapMask(&pmm);
+	PmapMaskFree(&pmm);
 
 	if ((is->unloadable) || (Conf.memory_paranoia))
 	  {
@@ -1225,7 +1225,7 @@ PmapMaskTile(PmapMask * pmm, Win win, unsigned int w, unsigned int h)
    if (mask != None)
       EXCopyAreaTiled(pmm->mask, None, mask, 0, 0, w, h, 0, 0);
 
-   FreePmapMask(pmm);
+   PmapMaskFree(pmm);
    pmm->type = 0;
    pmm->w = w;
    pmm->h = h;
