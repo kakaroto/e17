@@ -3,10 +3,10 @@ IRC Nick:     vtorri
 Cloak:        developer/vtorri
 Name:         Vincent Torri
 Location:     France, Maisons-Alfort
-E-Mail:       -vtorri@univ-evry.fr
+E-Mail:       vincent.torri@gmail.com
 WWW:          http://avisynth3.unite-video.com/
-Managing:     epdf, edvi, eps
-Contributing: eina, evas, ecore, emotion, etk, ewl
+Managing:     evil, epdf, edvi, eps
+Contributing: eina, evas, ecore, emotion, autotools, doc
 Group:        Core, Libraries
 Platform:     Linux, Windows
 GeoData:      48.803728 2.430786
