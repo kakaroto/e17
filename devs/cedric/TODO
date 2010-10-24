@@ -1,3 +1,8 @@
+* Eina
+	- implement multiple level of hash for eina_hash depending on number of child.
+	- replace inlist by rbtree in chained mempool.
+	- improve benchmark (add more real use case, provide option for tracking result more easily)
+
 * Eet
 	- add inheritance
 
@@ -17,6 +22,8 @@ d	- Optimize file format
 h	- Optimize memory layout thanks to new file format
 	- Reuse match automate between edje object of the same type
 h	- Add specialized task for each match automate case
+	- Add internazionalisation support
+	- Add an optimizer to change edje layout for better performance
 
 * Elixir
 h	- add eet -> js object
@@ -49,6 +56,10 @@ h	- fix expose and thumbnail display to be fully async
 
 * Eio
 h	- provide a completly asynchronous IO API using ecore thread infra
+	- add notify support
+	- use dirfd helper
+	- add tutorial
+	- add tests suite
 
 h: half done
 d: done
