@@ -57,8 +57,10 @@ _list_page_remove(List *list, Evas_Object *page)
 
    DBG("page=%p (%s), songs=%p (%s), current=%p (%s)",
        page, page_title_get(page),
-       list->page.songs, page_title_get(list->page.songs),
-       list->page.current, page_title_get(list->page.current));
+       list->page.songs,
+       list->page.songs ? page_title_get(list->page.songs) : "",
+       list->page.current,
+       list->page.current ? page_title_get(list->page.current): "");
 
    list->page.list = eina_list_remove(list->page.list, page);
    if (list->page.songs != page) evas_object_del(page);
