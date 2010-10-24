@@ -312,6 +312,19 @@ _calendar_popup_content_update(Instance *inst)
 }
 
 static void
+_day_today(void *data, __UNUSED__ Evas_Object *obj, __UNUSED__ const char *emission, __UNUSED__ const char *source)
+{
+   Instance *inst = data;
+   
+   time_t current_time;
+   struct tm *local_time;
+   current_time = time (NULL);
+   local_time = localtime_r(&current_time, &inst->displayed_time);
+   inst->displayed_time.tm_mday = 1;
+   _calendar_popup_content_update(inst);
+}
+
+static void
 _year_minus(void *data, __UNUSED__ Evas_Object *obj, __UNUSED__ const char *emission, __UNUSED__ const char *source)
 {
    Instance *inst = data;
@@ -439,7 +452,7 @@ _calendar_popup_content_populate(Instance *inst, struct tm *time)
 	       o = e_widget_label_add(evas, buf);
 	     e_widget_table_object_append(table, o, col, row, 1, 1, 1, 0, 0, 0);
 	}
-	if (day > maxdays) break;
+	if (day > maxdays+1) break;
      }
 
    e_widget_list_object_append(inst->list, table, 1, 1, 0.5);
@@ -480,6 +493,7 @@ _calendar_popup_content_create(Instance *inst)
 				"modules/calendar/header"))
      edje_object_file_set(oe, inst->edje_module, "modules/calendar/header");
    edje_object_part_swallow(oe, "content", label);
+   edje_object_signal_callback_add(oe, "day", "today", _day_today, inst);
    edje_object_signal_callback_add(oe, "year", "minus", _year_minus, inst);
    edje_object_signal_callback_add(oe, "year", "plus", _year_plus, inst);
    edje_object_signal_callback_add(oe, "month", "minus", _month_minus, inst);
@@ -494,7 +508,7 @@ _calendar_popup_content_create(Instance *inst)
    e_widget_resize_object_set(ow, oe);
    evas_object_show(ow);
 
-   e_widget_list_object_append(list, ow, 1, 1, 0.5);
+   e_widget_list_object_append(list, ow, 1, 0, 0.5);
 
    inst->list = list;
    inst->label = label;
