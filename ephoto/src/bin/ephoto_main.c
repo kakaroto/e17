@@ -69,6 +69,7 @@ _ephoto_slideshow_back(void *data, Evas_Object *obj __UNUSED__, void *event_info
       default:
          ERR("unhandled previous state %d", ephoto->prev_state);
      }
+   elm_win_fullscreen_set(ephoto->win, EINA_FALSE);
 }
 
 static void
