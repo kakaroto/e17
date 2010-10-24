@@ -9,6 +9,8 @@ files_DATA = default.edj
 images = \
 images/back-button.png \
 images/bottom_bg.png \
+images/bg_gradient_bottom.png \
+images/bg_gradient_top.png \
 images/bt_list_normal.png \
 images/bt_list_selected.png \
 images/bt_more_normal.png \
