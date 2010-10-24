@@ -1836,6 +1836,8 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	     XRenderComposite(dpy, PictOpOver, cw->picture, cw->pict_alpha,
 			      pbuf, 0, 0, 0, 0, x + cw->rcx, y + cw->rcy,
 			      cw->rcw, cw->rch);
+	     if (clip != clip2)
+		EPictureSetClip(pbuf, clip);
 	     break;
 	  }
 
