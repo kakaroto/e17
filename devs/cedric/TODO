@@ -22,7 +22,7 @@ d	- Optimize file format
 h	- Optimize memory layout thanks to new file format
 	- Reuse match automate between edje object of the same type
 h	- Add specialized task for each match automate case
-	- Add internazionalisation support
+	- Add internationalization support
 	- Add an optimizer to change edje layout for better performance
 
 * Elixir
