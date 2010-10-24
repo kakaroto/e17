@@ -23,13 +23,13 @@ SITEFILE="50${PN}-gentoo.el"
 
 src_configure() {
 	# TODO: detect FPU-less architectures and use --enable-fixed-point
- 	export MY_ECONF="
+	export MY_ECONF="
 	  $(use_enable !debug amalgamation)
 	  $(use_enable cache edje-program-cache)
 	  $(use_enable cache edje-calc-cache)
 	  $(use_with vim-syntax vim /usr/share/vim)
- 	"
-	enlightenment_src_compile
+	"
+	enlightenment_src_configure
  }
 
 
