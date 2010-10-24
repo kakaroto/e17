@@ -119,7 +119,7 @@ extern int debug;
 extern CURL * user_agent;
 
 void settings_win_del(void *data, Evas_Object *obj, void *event_info) {
-        evas_object_del(settings_win);
+        evas_object_del(obj);
 }
 
 void user_data_dialog_win_del(void *data, Evas_Object *obj, void *event_info) {

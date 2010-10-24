@@ -1399,11 +1399,11 @@ static int ed_check_gag_message(void *user_data, int argc, char **argv, char **a
 			sn = gd->screen_name;
 	}
 
-	if(debug > 2) printf("(%s|%s|%s) ~ %s ?", sn, gd->name, gd->message, pattern);
+	if(debug > 2) printf("(%s|%s|%s) ~ %s ?", sn?sn:gd->screen_name, gd->name, gd->message, pattern);
 
 	// only do costly matches if there's isn't a match already
 	if(	gd->match == EINA_FALSE &&
-			(g_regex_match_simple(pattern, sn, G_REGEX_CASELESS, 0) ||
+			(g_regex_match_simple(pattern, sn?sn:gd->screen_name, G_REGEX_CASELESS, 0) ||
 			 g_regex_match_simple(pattern, gd->name, G_REGEX_CASELESS, 0)        ||
 			 g_regex_match_simple(pattern, gd->message, G_REGEX_CASELESS, 0))) {
 		gd->match = EINA_TRUE;
@@ -1579,6 +1579,8 @@ static void ed_status_action(void *data, Evas_Object *obj, void *event_info) {
 	GMatchInfo *user_matches=NULL, *link_matches=NULL, *tags_matches=NULL, *group_matches=NULL;
 	char *match=NULL, *key=NULL;
 	int res=0;
+
+	elm_genlist_item_selected_set(gli, EINA_FALSE);
 
 	if(!re_link)	re_link  = g_regex_new("([a-z]+://.*?)(\\s|$)", G_REGEX_OPTIMIZE, 0, &re_err);
 	if(!re_user)	re_user  = g_regex_new("@([a-zA-Z0-9_]+)",      G_REGEX_OPTIMIZE, 0, &re_err);
@@ -2217,7 +2219,7 @@ EAPI int elm_main(int argc, char **argv)
 		//elm_genlist_no_select_mode_set(gui.timeline, EINA_TRUE);
 		elm_genlist_compress_mode_set(gui.timeline, EINA_TRUE);
 
-		evas_object_smart_callback_add(gui.timeline, "longpressed", ed_status_action, NULL);
+		evas_object_smart_callback_add(gui.timeline, "selected", ed_status_action, NULL);
 		// Statuses list
 		make_status_list(TIMELINE_FRIENDS);
 		fill_message_list(TIMELINE_FRIENDS);
