@@ -73,8 +73,8 @@ collections {
 					state: "default" 0.0;
 					fixed: 1 0;
 					align: 0.0 0.0;
-					min: 32 32;
-					max: 64 64;
+					min: 24 24;
+					max: 32 32;
 					rel1.offset: 7 15;
 					rel2.relative: 0.2 1;
 				}
