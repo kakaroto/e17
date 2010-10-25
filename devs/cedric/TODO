@@ -2,6 +2,7 @@
 	- implement multiple level of hash for eina_hash depending on number of child.
 	- replace inlist by rbtree in chained mempool.
 	- improve benchmark (add more real use case, provide option for tracking result more easily)
+	- add open/fstat/mmap/munmap/close helper.
 
 * Eet
 	- add inheritance
@@ -24,6 +25,7 @@ h	- Optimize memory layout thanks to new file format
 h	- Add specialized task for each match automate case
 	- Add internationalization support
 	- Add an optimizer to change edje layout for better performance
+	- Add benchmark tools.
 
 * Elixir
 h	- add eet -> js object
