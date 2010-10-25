@@ -268,17 +268,17 @@ mupdf-0.5/cmaps/UniKS-UTF16-V
 cmap_tounicode.c: cmapdump $(cmap_tounicode_files)
 	./cmapdump $@ $(cmap_tounicode_files)
 
-cmap_cns.c: $(cmap_cns_files)
-	./cmapdump $@ $+
+cmap_cns.c: cmapdump $(cmap_cns_files)
+	./cmapdump $@ $(cmap_cns_files)
 
-cmap_gb.c: $(cmap_gb_files)
-	./cmapdump $@ $+
+cmap_gb.c: cmapdump $(cmap_gb_files)
+	./cmapdump $@ $(cmap_gb_files)
 
-cmap_japan.c: $(cmap_japan_files)
-	./cmapdump $@ $+
+cmap_japan.c: cmapdump $(cmap_japan_files)
+	./cmapdump $@ $(cmap_japan_files)
 
-cmap_korea.c: $(cmap_korea_files)
-	./cmapdump $@ $+
+cmap_korea.c: cmapdump $(cmap_korea_files)
+	./cmapdump $@ $(cmap_korea_files)
 
 libfonts_la_SOURCES = \
 font_misc.c \
@@ -321,17 +321,17 @@ mupdf-0.5/fonts/droid/DroidSansFallback.ttf
 font_misc.c: fontdump $(font_misc_files)
 	./fontdump $@ $(font_misc_files)
 
-font_mono.c: $(font_mono_files)
-	./fontdump $@ $+
+font_mono.c: fontdump $(font_mono_files)
+	./fontdump $@ $(font_mono_files)
 
-font_serif.c: $(font_serif_files)
-	./fontdump $@ $+
+font_serif.c: fontdump $(font_serif_files)
+	./fontdump $@ $(font_serif_files)
 
-font_sans.c: $(font_sans_files)
-	./fontdump $@ $+
+font_sans.c: fontdump $(font_sans_files)
+	./fontdump $@ $(font_sans_files)
 
-font_cjk.c: $(font_cjk_files)
-	./fontdump $@ $+
+font_cjk.c: fontdump $(font_cjk_files)
+	./fontdump $@ $(font_cjk_files)
 
 
 
