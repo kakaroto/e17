@@ -6,7 +6,7 @@ rm -f config.cache
 AC_INIT(configure.ac)
 AC_PREREQ(2.59)
 AC_CONFIG_MACRO_DIR([m4])
-AM_INIT_AUTOMAKE(emprint, 0.0.1)
+AM_INIT_AUTOMAKE(emprint, 0.1.0)
 AM_CONFIG_HEADER(config.h)
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
