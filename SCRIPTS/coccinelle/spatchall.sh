@@ -71,7 +71,7 @@ function call_spatch {
 if [ ! -z "$TARGET" ]; then
 	TARGETS=$TARGET
 else
-	TARGETS="eina eet embryo evas ecore efreet edje e_dbus eeze e TMP/st/elementary E16 E-MODULES-EXTRA BINDINGS editje edje_viewer eio elicit elitaire elmdentica emotion empower emprint enki enlil ensure ephoto eterm ethumb eve exalt EXAMPLES expedite exquisite imlib2 imlib2_loaders MISC $(ls PROTO | grep -v emote | while read d; do echo PROTO/$a; done) rage TEST"
+	TARGETS="eina eet embryo evas ecore efreet edje e_dbus eeze e TMP/st/elementary E16 E-MODULES-EXTRA BINDINGS editje edje_viewer eio elitaire elmdentica emotion empower emprint enki enlil ensure ephoto eterm ethumb eve exalt EXAMPLES expedite exquisite imlib2 imlib2_loaders MISC $(ls PROTO | grep -v emote | while read d; do echo PROTO/$a; done) rage TEST"
 fi
 
 
