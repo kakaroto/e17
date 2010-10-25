@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: flame\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2010-08-12 07:00-0700\n"
-"PO-Revision-Date: 2010-09-29 01:58-0000\n"
+"POT-Creation-Date: 2010-10-17 11:00-0700\n"
+"PO-Revision-Date: 2010-10-25 02:41-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 "X-Poedit-Country: Portugal\n"
 
 #: ../src/e_mod_main.c:61
-msgid "Appearance"
+msgid "Look"
 msgstr "Aparência"
 
 #: ../src/e_mod_main.c:63

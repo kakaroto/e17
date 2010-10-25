@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: rain\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2010-08-13 05:01-0700\n"
-"PO-Revision-Date: 2010-09-29 14:59-0000\n"
+"POT-Creation-Date: 2010-10-17 11:00-0700\n"
+"PO-Revision-Date: 2010-10-24 15:49-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -46,7 +46,7 @@ msgid "Downpour"
 msgstr "Chuva intensa"
 
 #: ../src/e_mod_main.c:33
-msgid "Appearance"
+msgid "Look"
 msgstr "Aparência"
 
 #: ../src/e_mod_main.c:35

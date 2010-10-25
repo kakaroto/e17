@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: snow\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2010-08-13 05:01-0700\n"
-"PO-Revision-Date: 2010-10-02 00:43-0000\n"
+"POT-Creation-Date: 2010-10-17 11:01-0700\n"
+"PO-Revision-Date: 2010-10-25 02:41-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../src/e_mod_config.c:42
 msgid "Snow Configuration"
-msgstr "Configuração do Neve"
+msgstr "Configuração da neve"
 
 #: ../src/e_mod_config.c:99
 msgid "General Settings"
@@ -31,7 +31,7 @@ msgstr "Mostrar árvores"
 
 #: ../src/e_mod_config.c:104
 msgid "Snow Density"
-msgstr "Densidade da neve"
+msgstr "Densidade"
 
 #: ../src/e_mod_config.c:106
 msgid "Sparse"
@@ -46,10 +46,12 @@ msgid "Dense"
 msgstr "Intensa"
 
 #: ../src/e_mod_main.c:33
-msgid "Appearance"
+msgid "Look"
 msgstr "Aparência"
 
 #: ../src/e_mod_main.c:35
 msgid "Snow"
 msgstr "Neve"
 
+#~ msgid "Appearance"
+#~ msgstr "Aparência"
