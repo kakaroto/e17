@@ -310,8 +310,11 @@ void                ERegionSetRect(XserverRegion rgn, int x, int y, int w,
 				   int h);
 void                ERegionTranslate(XserverRegion rgn, int dx, int dy);
 void                ERegionIntersect(XserverRegion dst, XserverRegion src);
-void                ERegionUnion(XserverRegion dst, XserverRegion src);
 void                ERegionSubtract(XserverRegion dst, XserverRegion src);
+void                ERegionUnion(XserverRegion dst, XserverRegion src);
+void                ERegionIntersectOffset(XserverRegion dst, int dx, int dy,
+					   XserverRegion src,
+					   XserverRegion tmp);
 void                ERegionSubtractOffset(XserverRegion dst, int dx, int dy,
 					  XserverRegion src, XserverRegion tmp);
 void                ERegionUnionOffset(XserverRegion dst, int dx, int dy,

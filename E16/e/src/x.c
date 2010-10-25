@@ -2175,6 +2175,22 @@ ERegionSubtract(XserverRegion dst, XserverRegion src)
 }
 
 void
+ERegionIntersectOffset(XserverRegion dst, int dx, int dy, XserverRegion src,
+		       XserverRegion tmp)
+{
+   Display            *dpy = disp;
+   XserverRegion       rgn;
+
+   rgn = src;
+   if (dx != 0 || dy != 0)
+     {
+	rgn = ERegionCopy(tmp, src);
+	XFixesTranslateRegion(dpy, rgn, dx, dy);
+     }
+   XFixesIntersectRegion(dpy, dst, dst, rgn);
+}
+
+void
 ERegionSubtractOffset(XserverRegion dst, int dx, int dy, XserverRegion src,
 		      XserverRegion tmp)
 {
