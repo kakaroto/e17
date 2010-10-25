@@ -1204,6 +1204,17 @@ ECompMgrWinSetPicts(EObj * eo)
 					   pictfmt, CPSubwindowMode, &pa);
 	D1printf("ECompMgrWinSetPicts %#lx: Pict=%#lx (drawable=%#lx)\n",
 		 EobjGetXwin(eo), cw->picture, draw);
+
+#if 0				/* Pixmap must be clipped by window shape */
+	if (draw == cw->pixmap && WinIsShaped(EobjGetWin(eo)))
+	  {
+	     XserverRegion       clip;
+
+	     clip = ERegionCreateFromWindow(EobjGetWin(eo));
+	     EPictureSetClip(cw->picture, clip);
+	     ERegionDestroy(clip);
+	  }
+#endif
      }
 }
 
@@ -1762,6 +1773,25 @@ ECompMgrRepaintObjSetClip(XserverRegion rgn, XserverRegion damage,
    return rgn;
 }
 
+static              XserverRegion
+ECompMgrRepaintObjSetClip2(EObj * eo, XserverRegion clip, int x, int y)
+{
+#if 1
+   /* This is only needed when source clipping in XRenderComposite() is broken.
+    * otherwise it should be possible to set the source clip mask in
+    * ECompMgrWinSetPicts() (when needed, i.e. source pict is pixmap). */
+   if (WinIsShaped(EobjGetWin(eo)))
+     {
+	clip = ERegionCopy(rgn_tmp, clip);
+	ERegionIntersectOffset(clip, x, y, eo->cmhook->shape, rgn_tmp2);
+     }
+#else
+   eo = NULL;
+   x = y = 0;
+#endif
+   return clip;
+}
+
 static void
 ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 {
@@ -1797,9 +1827,10 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	  case WINDOW_UNREDIR:
 	  case WINDOW_SOLID:
 	     clip = ECompMgrRepaintObjSetClip(rgn_clip, region, cw->clip, x, y);
+	     clip2 = ECompMgrRepaintObjSetClip2(eo, clip, x, y);
 	     if (EDebug(EDBUG_TYPE_COMPMGR2))
 		ECompMgrWinDumpInfo("ECompMgrRepaintObj solid", eo, clip, 0);
-	     EPictureSetClip(pbuf, clip);
+	     EPictureSetClip(pbuf, clip2);
 	     XRenderComposite(dpy, PictOpSrc, cw->picture, None, pbuf,
 			      0, 0, 0, 0, x + cw->rcx, y + cw->rcy, cw->rcw,
 			      cw->rch);
@@ -1819,12 +1850,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	  case WINDOW_TRANS:
 	  case WINDOW_ARGB:
 	     clip = ECompMgrRepaintObjSetClip(rgn_clip, region, cw->clip, x, y);
-	     clip2 = clip;
-	     if (WinIsShaped(EobjGetWin(eo)))
-	       {
-		  clip2 = ERegionCopy(rgn_tmp, clip);
-		  ERegionIntersect(clip2, cw->shape);
-	       }
+	     clip2 = ECompMgrRepaintObjSetClip2(eo, clip, x, y);
 	     if (EDebug(EDBUG_TYPE_COMPMGR2))
 		ECompMgrWinDumpInfo("ECompMgrRepaintObj trans", eo, clip, 0);
 	     EPictureSetClip(pbuf, clip2);
@@ -1836,8 +1862,6 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	     XRenderComposite(dpy, PictOpOver, cw->picture, cw->pict_alpha,
 			      pbuf, 0, 0, 0, 0, x + cw->rcx, y + cw->rcy,
 			      cw->rcw, cw->rch);
-	     if (clip != clip2)
-		EPictureSetClip(pbuf, clip);
 	     break;
 	  }
 
@@ -1924,6 +1948,7 @@ ECompMgrPaintGhosts(Picture pict, XserverRegion damage)
 	/* Subtract window region from damage region */
 	ERegionSubtract(damage, eo->cmhook->shape);
      }
+   EPictureSetClip(pict, None);
 }
 
 void
