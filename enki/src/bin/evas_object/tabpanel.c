@@ -111,7 +111,8 @@ Tabpanel_Item *tabpanel_item_add(Tabpanel *tab, const char *label, Evas_Object *
 	tab->items = eina_list_append(tab->items, item);
 
 	item->tab = tab;
-	item->item_tb = elm_toolbar_item_add(tab->tabs, NULL, label, _tb_select_cb, item);
+	item->item_tb = elm_toolbar_item_append(tab->tabs, NULL, label,
+                                                _tb_select_cb, item);
 	item->content = content;
 	item->del = EINA_FALSE;
 	if(content)
@@ -119,14 +120,14 @@ Tabpanel_Item *tabpanel_item_add(Tabpanel *tab, const char *label, Evas_Object *
 	item->data = data;
 	item->select_cb = select_cb;
 
-	elm_toolbar_item_select(item->item_tb);
+	elm_toolbar_item_selected_set(item->item_tb, EINA_TRUE);
 	return item;
 }
 
 
 void tabpanel_item_select(Tabpanel_Item *item)
 {	
-	elm_toolbar_item_select(item->item_tb);
+	elm_toolbar_item_selected_set(item->item_tb, EINA_TRUE);
 }
 
 Tabpanel_Item *tabpanel_item_add_with_signal(Tabpanel *tab, const char *label, Evas_Object *edje, const char *signal,
@@ -137,14 +138,15 @@ Tabpanel_Item *tabpanel_item_add_with_signal(Tabpanel *tab, const char *label, E
 	tab->items = eina_list_append(tab->items, item);
 
 	item->tab = tab;
-	item->item_tb = elm_toolbar_item_add(tab->tabs, NULL, label, _tb_select_cb, item);
+	item->item_tb = elm_toolbar_item_append(tab->tabs, NULL, label,
+                                                _tb_select_cb, item);
 	item->content = edje;
 	item->signal = signal;
 	item->del = EINA_FALSE;
 	item->data = data;
 	item->select_cb = select_cb;
 
-	elm_toolbar_item_select(item->item_tb);
+	elm_toolbar_item_selected_set(item->item_tb, EINA_TRUE);
 	return item;
 }
 

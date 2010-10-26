@@ -71,9 +71,9 @@ em_gui_init(void)
    evas_object_size_hint_weight_set(gui->w_tb, 0.0, 0.0);
    evas_object_size_hint_align_set(gui->w_tb, EVAS_HINT_FILL, 0.0);
 
-   elm_toolbar_item_add(gui->w_tb, "preferences-system", _("Settings"), 
+   elm_toolbar_item_append(gui->w_tb, "preferences-system", _("Settings"), 
                         _em_gui_cb_settings, NULL);
-   elm_toolbar_item_add(gui->w_tb, "application-exit", _("Quit"), 
+   elm_toolbar_item_append(gui->w_tb, "application-exit", _("Quit"), 
                         _em_gui_cb_quit, NULL);
    evas_object_show(gui->w_tb);
    elm_box_pack_start(gui->w_box, gui->w_tb);
@@ -319,8 +319,8 @@ _em_gui_chansel_add_channel(const Eina_Hash *hash __UNUSED__, const void *key, v
    if (!c->w_select) 
      {
         c->w_select = 
-          elm_toolbar_item_add(gui->w_chansel, NULL, key, 
-                               _em_gui_chansel_cb_channel_clicked, c);
+          elm_toolbar_item_append(gui->w_chansel, NULL, key, 
+                                  _em_gui_chansel_cb_channel_clicked, c);
      }
 
   return EINA_TRUE;
@@ -335,8 +335,8 @@ _em_gui_chansel_add_server(const Eina_Hash *hash __UNUSED__, const void *key, vo
    if (!s->w_select) 
      {
         s->w_select = 
-          elm_toolbar_item_add(gui->w_chansel, NULL, key, 
-                               _em_gui_chansel_cb_server_clicked, s);
+          elm_toolbar_item_append(gui->w_chansel, NULL, key, 
+                                  _em_gui_chansel_cb_server_clicked, s);
      }
 
   eina_hash_foreach(s->channels, _em_gui_chansel_add_channel, NULL);
@@ -352,7 +352,7 @@ _em_gui_chansel_update(const char *label)
    eina_hash_foreach(gui->servers, _em_gui_chansel_add_server, NULL);
 
    if ((item = elm_toolbar_item_find_by_label(gui->w_chansel, label)))
-     elm_toolbar_item_select(item);
+     elm_toolbar_item_selected_set(item, EINA_TRUE);
 }
 
 static void
@@ -418,7 +418,9 @@ _em_gui_cb_win_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *eve
 static void
 _em_gui_cb_settings(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__)
 {
-   elm_toolbar_item_unselect_all(gui->w_tb);
+   Elm_Toolbar_Item *it = elm_toolbar_selected_item_get(gui->w_tb);
+   if (it)
+     elm_toolbar_item_selected_set(it, EINA_FALSE);
    em_config_show(gui->w_win);
 }
 
@@ -601,8 +603,8 @@ _em_gui_server_create(const char *server, Emote_Protocol *p)
    s->channels = eina_hash_string_small_new(_em_gui_channel_del);
 
    s->w_select = 
-     elm_toolbar_item_add(gui->w_chansel, NULL, server, 
-                          _em_gui_chansel_cb_server_clicked, s);
+     elm_toolbar_item_append(gui->w_chansel, NULL, server, 
+                             _em_gui_chansel_cb_server_clicked, s);
 
    s->name = eina_stringshare_add(server);
 
@@ -668,8 +670,8 @@ _em_gui_channel_create(const char *server, const char *channel)
    evas_object_show(c->w_entry);
 
    c->w_select = 
-     elm_toolbar_item_add(gui->w_chansel, NULL, channel, 
-                          _em_gui_chansel_cb_channel_clicked, c);
+      elm_toolbar_item_append(gui->w_chansel, NULL, channel, 
+                              _em_gui_chansel_cb_channel_clicked, c);
 
    c->name = eina_stringshare_add(channel);
 

@@ -445,7 +445,7 @@ static void
 _zoom_in(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
-   elm_toolbar_item_unselect(fb->action.zoom_in);
+   elm_toolbar_item_selected_set(fb->action.zoom_in, EINA_FALSE);
    _zoom_set(fb, fb->zoom + ZOOM_STEP);
 }
 
@@ -453,7 +453,7 @@ static void
 _zoom_out(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
-   elm_toolbar_item_unselect(fb->action.zoom_out);
+   elm_toolbar_item_selected_set(fb->action.zoom_out, EINA_FALSE);
    _zoom_set(fb, fb->zoom - ZOOM_STEP);
 }
 
@@ -461,7 +461,7 @@ static void
 _zoom_1(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
-   elm_toolbar_item_unselect(fb->action.zoom_1);
+   elm_toolbar_item_selected_set(fb->action.zoom_1, EINA_FALSE);
    _zoom_set(fb, 1.0);
 }
 
@@ -525,7 +525,7 @@ static void
 _go_first(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
-   elm_toolbar_item_unselect(fb->action.go_first);
+   elm_toolbar_item_selected_set(fb->action.go_first, EINA_FALSE);
    _first_entry(fb);
 }
 
@@ -533,7 +533,7 @@ static void
 _go_prev(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
-   elm_toolbar_item_unselect(fb->action.go_prev);
+   elm_toolbar_item_selected_set(fb->action.go_prev, EINA_FALSE);
    _prev_entry(fb);
 }
 
@@ -541,7 +541,7 @@ static void
 _go_next(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
-   elm_toolbar_item_unselect(fb->action.go_next);
+   elm_toolbar_item_selected_set(fb->action.go_next, EINA_FALSE);
    _next_entry(fb);
 }
 
@@ -549,7 +549,7 @@ static void
 _go_last(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
-   elm_toolbar_item_unselect(fb->action.go_last);
+   elm_toolbar_item_selected_set(fb->action.go_last, EINA_FALSE);
    _last_entry(fb);
 }
 
@@ -557,7 +557,7 @@ static void
 _go_rotate_counterclock(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
-   elm_toolbar_item_unselect(fb->action.rotate_counterclock);
+   elm_toolbar_item_selected_set(fb->action.rotate_counterclock, EINA_FALSE);
    _rotate_counterclock(fb);
 }
 
@@ -565,7 +565,7 @@ static void
 _go_rotate_clock(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
-   elm_toolbar_item_unselect(fb->action.rotate_clock);
+   elm_toolbar_item_selected_set(fb->action.rotate_clock, EINA_FALSE);
    _rotate_clock(fb);
 }
 
@@ -573,7 +573,7 @@ static void
 _go_flip_horiz(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
-   elm_toolbar_item_unselect(fb->action.flip_horiz);
+   elm_toolbar_item_selected_set(fb->action.flip_horiz, EINA_FALSE);
    _flip_horiz(fb);
 }
 
@@ -581,7 +581,7 @@ static void
 _go_flip_vert(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
-   elm_toolbar_item_unselect(fb->action.flip_vert);
+   elm_toolbar_item_selected_set(fb->action.flip_vert, EINA_FALSE);
    _flip_vert(fb);
 }
 
@@ -589,7 +589,7 @@ static void
 _slideshow(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
-   elm_toolbar_item_unselect(fb->action.slideshow);
+   elm_toolbar_item_selected_set(fb->action.slideshow, EINA_FALSE);
    if (fb->entry)
      evas_object_smart_callback_call(fb->layout, "slideshow", fb->entry);
 }
@@ -669,7 +669,8 @@ _layout_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *eve
 static Elm_Toolbar_Item *
 _toolbar_item_add(Ephoto_Flow_Browser *fb, const char *icon, const char *label, int priority, Evas_Smart_Cb cb)
 {
-   Elm_Toolbar_Item *item = elm_toolbar_item_add(fb->toolbar, icon, label, cb, fb);
+   Elm_Toolbar_Item *item = elm_toolbar_item_append(fb->toolbar, icon, label,
+                                                    cb, fb);
    elm_toolbar_item_priority_set(item, priority);
    return item;
 }
@@ -677,7 +678,7 @@ _toolbar_item_add(Ephoto_Flow_Browser *fb, const char *icon, const char *label, 
 static Elm_Toolbar_Item *
 _toolbar_item_separator_add(Ephoto_Flow_Browser *fb)
 {
-   Elm_Toolbar_Item *it = elm_toolbar_item_add
+   Elm_Toolbar_Item *it = elm_toolbar_item_append
      (fb->toolbar, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(it, EINA_TRUE);
    return it;

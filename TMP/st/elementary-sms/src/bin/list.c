@@ -848,25 +848,25 @@ create_main_win(void)
 
    ic = elm_icon_add(win);
    elm_icon_standard_set(ic, "edit");
-   elm_toolbar_item_add(tb, ic, "Write", on_write, NULL);
+   elm_toolbar_item_append(tb, ic, "Write", on_write, NULL);
    evas_object_show(ic);
    ic = elm_icon_add(win);
    elm_icon_standard_set(ic, "clock");
-   tbi = elm_toolbar_item_add(tb, ic, "Recent", on_recent, NULL);
+   tbi = elm_toolbar_item_append(tb, ic, "Recent", on_recent, NULL);
    evas_object_show(ic);
    ic = elm_icon_add(win);
    elm_icon_standard_set(ic, "chat");
-   elm_toolbar_item_add(tb, ic, "Chats", on_chats, NULL);
+   elm_toolbar_item_append(tb, ic, "Chats", on_chats, NULL);
    evas_object_show(ic);
    ic = elm_icon_add(win);
    elm_icon_standard_set(ic, "delete");
-   elm_toolbar_item_add(tb, ic, "Trash", on_trash, NULL);
+   elm_toolbar_item_append(tb, ic, "Trash", on_trash, NULL);
    evas_object_show(ic);
    
    elm_box_pack_end(bx, tb);
    evas_object_show(tb);
 
-   elm_toolbar_item_select(tbi);
+   elm_toolbar_item_selected_set(tbi, EINA_TRUE);
    
    evas_object_show(bx);
    

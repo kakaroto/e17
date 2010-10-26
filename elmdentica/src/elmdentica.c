@@ -1226,7 +1226,7 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 		toolbar = elm_toolbar_add(gui.win);
 			evas_object_size_hint_weight_set(toolbar, 1, 1);
 			evas_object_size_hint_align_set(toolbar, -1, 0);
-			ti = elm_toolbar_item_add(toolbar, NULL, _("Users"), on_status_show_page_users, pager);
+			ti = elm_toolbar_item_append(toolbar, NULL, _("Users"), on_status_show_page_users, pager);
 
 			list = elm_list_add(gui.win);
 				evas_object_size_hint_weight_set(list, 1, 1);
@@ -1255,7 +1255,7 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 			evas_object_show(list);
 
 			if(g_regex_match(re_link, as->text, 0, &link_matches)) {
-				elm_toolbar_item_add(toolbar, NULL, _("Links"), on_status_show_page_links, pager);
+				elm_toolbar_item_append(toolbar, NULL, _("Links"), on_status_show_page_links, pager);
 
 				list = elm_list_add(gui.win);
 					evas_object_size_hint_weight_set(list, 1, 1);
@@ -1274,7 +1274,7 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 			g_match_info_free(link_matches);
 
 			if(re_tags && g_regex_match(re_tags, as->text, 0, &tags_matches)) {
-				elm_toolbar_item_add(toolbar, NULL, _("Tags"), on_status_show_page_tags, pager);
+				elm_toolbar_item_append(toolbar, NULL, _("Tags"), on_status_show_page_tags, pager);
 
 				list = elm_list_add(gui.win);
 					evas_object_size_hint_weight_set(list, 1, 1);
@@ -1292,7 +1292,7 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 			g_match_info_free(tags_matches);
 
 			if(re_group && g_regex_match(re_group, as->text, 0, &group_matches)) {
-				elm_toolbar_item_add(toolbar, NULL, _("Groups"), on_status_show_page_groups, pager);
+				elm_toolbar_item_append(toolbar, NULL, _("Groups"), on_status_show_page_groups, pager);
 
 				list = elm_list_add(gui.win);
 					evas_object_size_hint_weight_set(list, 1, 1);
@@ -1327,7 +1327,7 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 
 	elm_win_inwin_content_set(gui.status_detail, box);
 
-	elm_toolbar_item_select(ti);
+	elm_toolbar_item_selected_set(ti, EINA_TRUE);
 	evas_object_show(gui.status_detail);
 }
 

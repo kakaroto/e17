@@ -156,7 +156,7 @@ open_edje_file(Viewer *v)
      }
 
    if (visible)
-     elm_toolbar_item_select(visible->ti);
+     elm_toolbar_item_selected_set(visible->ti, EINA_TRUE);
    edje_file_collection_list_free(entries);
    elm_win_title_set(v->gui.win, v->config->edje_file);
 }
@@ -344,10 +344,11 @@ toolbar_reconfigure(Group *grp, Eina_Bool skip_config)
 {
    if (grp->active)
      {
-	grp->ti = elm_toolbar_item_add(grp->v->gui.tbar, NULL, grp->name, on_toolbar_changed, grp);
+	grp->ti = elm_toolbar_item_append(grp->v->gui.tbar, NULL, grp->name,
+                                          on_toolbar_changed, grp);
         if (!skip_config)
           {
-             elm_toolbar_item_select(grp->ti);
+             elm_toolbar_item_selected_set(grp->ti, EINA_TRUE);
              config_group_change(grp->v, grp->name, 1, 0);
           }
      }
@@ -364,7 +365,7 @@ toolbar_reconfigure(Group *grp, Eina_Bool skip_config)
 	       {
 		  if (grp->ti)
 		    {
-		       elm_toolbar_item_select(grp->ti);
+		       elm_toolbar_item_selected_set(grp->ti, EINA_TRUE);
 		       break;
 		    }
 	       }

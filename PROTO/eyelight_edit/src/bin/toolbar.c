@@ -30,7 +30,7 @@ Evas_Object *toolbar_create()
     evas_object_size_hint_weight_set(tb, 0.0, 0.0);
     evas_object_size_hint_align_set(tb, -1.0, 0.0);
 
-    item = elm_toolbar_item_add(tb, NULL, D_("File"), NULL, NULL);
+    item = elm_toolbar_item_append(tb, NULL, D_("File"), NULL, NULL);
     menu = elm_toolbar_item_menu_get(item);
     elm_menu_item_add(menu, NULL, NULL, D_("New"), _pres_new_cb, NULL);
     elm_menu_item_add(menu, NULL, NULL, D_("Open"), _pres_open_cb, NULL);
@@ -45,7 +45,7 @@ Evas_Object *toolbar_create()
     elm_menu_item_separator_add(menu, NULL);
     mi_save = elm_menu_item_add(menu, NULL, NULL, D_("Save"), _pres_save_cb, NULL);
 
-    item = elm_toolbar_item_add(tb, NULL, D_("View"), NULL, NULL);
+    item = elm_toolbar_item_append(tb, NULL, D_("View"), NULL, NULL);
     menu = elm_toolbar_item_menu_get(item);
     mi_slideshow = elm_menu_item_add(menu, NULL, NULL, D_("Slideshow"), _slideshow_cb, NULL);
 

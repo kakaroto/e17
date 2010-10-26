@@ -1368,25 +1368,25 @@ void on_settings(void *data, Evas_Object *obj, void *event_info) {
 			icon = elm_photo_add(settings_win);
 				elm_photo_file_set(icon, "head.png");
 				evas_object_show(icon);
-			item = elm_toolbar_item_add(toolbar, icon, _("Accounts"), on_settings_accounts, NULL);
+			item = elm_toolbar_item_append(toolbar, icon, _("Accounts"), on_settings_accounts, NULL);
 
 			icon = elm_icon_add(settings_win);
 				elm_icon_standard_set(icon, "folder");
 				evas_object_show(icon);
-			elm_toolbar_item_add(toolbar, icon, _("Cache"), on_settings_cache, NULL);
+			elm_toolbar_item_append(toolbar, icon, _("Cache"), on_settings_cache, NULL);
 
 			icon = elm_icon_add(settings_win);
 				elm_icon_standard_set(icon, "apps");
 				evas_object_show(icon);
-			elm_toolbar_item_add(toolbar, icon, _("Options"), on_settings_options, NULL);
+			elm_toolbar_item_append(toolbar, icon, _("Options"), on_settings_options, NULL);
 
 			icon = elm_photo_add(settings_win);
 				elm_photo_file_set(icon, "head.png");
 				evas_object_show(icon);
-			elm_toolbar_item_add(toolbar, icon, _("Gag"), on_settings_gag, NULL);
+			elm_toolbar_item_append(toolbar, icon, _("Gag"), on_settings_gag, NULL);
 		elm_box_pack_start(box, toolbar);
 		evas_object_show(toolbar);
-		elm_toolbar_item_select(item);
+		elm_toolbar_item_selected_set(item, EINA_TRUE);
 
 	evas_object_show(box);
 	evas_object_resize(settings_win, 480, 640);

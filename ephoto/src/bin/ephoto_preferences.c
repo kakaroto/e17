@@ -46,7 +46,7 @@ ephoto_show_preferences(Ephoto *em)
                 evas_object_show(pg1);
                 elm_pager_content_push(pager, pg1);
                 evas_object_data_set(pg1, "pager", pager);
-                elm_toolbar_item_add(tb, NULL, "General", _ephoto_preferences_pager_switch, pg1);
+                elm_toolbar_item_append(tb, NULL, "General", _ephoto_preferences_pager_switch, pg1);
 
                 elm_box_pack_end(box, pager);
                 evas_object_show(pager);
@@ -56,7 +56,7 @@ ephoto_show_preferences(Ephoto *em)
                 evas_object_show(pg2);
                 elm_pager_content_push(pager, pg2);
                 evas_object_data_set(pg2, "pager", pager);
-                elm_toolbar_item_add(tb, NULL, "Slideshow",  _ephoto_preferences_pager_switch, pg2);
+                elm_toolbar_item_append(tb, NULL, "Slideshow",  _ephoto_preferences_pager_switch, pg2);
 
                 o = elm_label_add(pg2);
                 elm_label_label_set(o, "Delay:");
@@ -95,7 +95,7 @@ ephoto_show_preferences(Ephoto *em)
                 evas_object_show(pg3);
                 elm_pager_content_push(pager, pg3);
                 evas_object_data_set(pg3, "pager", pager);
-                elm_toolbar_item_add(tb, NULL, "External Editor", _ephoto_preferences_pager_switch, pg3);
+                elm_toolbar_item_append(tb, NULL, "External Editor", _ephoto_preferences_pager_switch, pg3);
 
                 o = elm_label_add(pg3);
                 elm_label_label_set(o, "Image editor:");
@@ -131,7 +131,8 @@ ephoto_show_preferences(Ephoto *em)
                 evas_object_event_callback_add(em->prefs_win, EVAS_CALLBACK_KEY_DOWN,
                                        _ephoto_key_pressed, em);
 
-                elm_toolbar_item_select_first(tb);
+                elm_toolbar_item_selected_set(elm_toolbar_first_item_get(tb),
+                                              EINA_TRUE);
                 elm_pager_content_promote(pager, pg1);
         }
 

@@ -414,7 +414,7 @@ static void
 _zoom_in(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Thumb_Browser *tb = data;
-   elm_toolbar_item_unselect(tb->action.zoom_in);
+   elm_toolbar_item_selected_set(tb->action.zoom_in, EINA_FALSE);
    _zoom_set(tb, tb->ephoto->config->thumb_size + ZOOM_STEP);
 }
 
@@ -422,7 +422,7 @@ static void
 _zoom_out(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Thumb_Browser *tb = data;
-   elm_toolbar_item_unselect(tb->action.zoom_out);
+   elm_toolbar_item_selected_set(tb->action.zoom_out, EINA_FALSE);
    _zoom_set(tb, tb->ephoto->config->thumb_size - ZOOM_STEP);
 }
 
@@ -433,7 +433,7 @@ _view_flow(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
    Elm_Gengrid_Item *it = elm_gengrid_selected_item_get(tb->grid);
    Ephoto_Entry *entry;
 
-   elm_toolbar_item_unselect(tb->action.view_flow);
+   elm_toolbar_item_selected_set(tb->action.view_flow, EINA_FALSE);
 
    if (it) entry = elm_gengrid_item_data_get(it);
    else entry = _first_file_entry_find(tb);
@@ -452,7 +452,7 @@ _slideshow(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
    Elm_Gengrid_Item *it = elm_gengrid_selected_item_get(tb->grid);
    Ephoto_Entry *entry;
 
-   elm_toolbar_item_unselect(tb->action.slideshow);
+   elm_toolbar_item_selected_set(tb->action.slideshow, EINA_FALSE);
 
    if (it) entry = elm_gengrid_item_data_get(it);
    else entry = _first_file_entry_find(tb);
@@ -535,7 +535,8 @@ _layout_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *eve
 static Elm_Toolbar_Item *
 _toolbar_item_add(Ephoto_Thumb_Browser *tb, const char *icon, const char *label, int priority, Evas_Smart_Cb cb)
 {
-   Elm_Toolbar_Item *item = elm_toolbar_item_add(tb->toolbar, icon, label, cb, tb);
+   Elm_Toolbar_Item *item = elm_toolbar_item_append(tb->toolbar, icon, label,
+                                                    cb, tb);
    elm_toolbar_item_priority_set(item, priority);
    return item;
 }

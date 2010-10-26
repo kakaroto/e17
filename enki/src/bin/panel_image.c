@@ -283,15 +283,15 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    evas_object_size_hint_align_set(panel_image->tb, -1.0, 0.0);
    evas_object_show(panel_image->tb);
 
-   elm_toolbar_item_add(panel_image->tb, NULL, D_("Save"), _bt_save_cb, panel_image);
-   elm_toolbar_item_add(panel_image->tb, NULL, D_("Save as"), _bt_save_as_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, NULL, D_("Save"), _bt_save_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, NULL, D_("Save as"), _bt_save_as_cb, panel_image);
 
-   tb_item = elm_toolbar_item_add(panel_image->tb, NULL, NULL, NULL, NULL);
+   tb_item = elm_toolbar_item_append(panel_image->tb, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(tb_item, 1);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, THEME, "icons/undo");
-   tb_item = elm_toolbar_item_add(panel_image->tb, icon, D_("Undo"), NULL, NULL);
+   tb_item = elm_toolbar_item_append(panel_image->tb, icon, D_("Undo"), NULL, NULL);
    panel_image->undo.undo = elm_toolbar_item_menu_get(tb_item);
 
    icon = elm_icon_add(obj);
@@ -302,7 +302,7 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, THEME, "icons/redo");
-   tb_item = elm_toolbar_item_add(panel_image->tb, icon, D_("Redo"), NULL, NULL);
+   tb_item = elm_toolbar_item_append(panel_image->tb, icon, D_("Redo"), NULL, NULL);
    panel_image->undo.redo = elm_toolbar_item_menu_get(tb_item);
 
    icon = elm_icon_add(obj);
@@ -312,59 +312,59 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    elm_menu_item_disabled_set(panel_image->undo.item_redo, 1);
    elm_menu_item_separator_add(panel_image->undo.redo, NULL);
 
-   tb_item = elm_toolbar_item_add(panel_image->tb, NULL, NULL, NULL, NULL);
+   tb_item = elm_toolbar_item_append(panel_image->tb, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(tb_item, 1);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, THEME, "icons/1_1");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("1:1"), _bt_1_1_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, icon, D_("1:1"), _bt_1_1_cb, panel_image);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, THEME, "icons/fit");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("Fit"), _bt_fit_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, icon, D_("Fit"), _bt_fit_cb, panel_image);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, THEME, "icons/fill");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("Fill"), _bt_fill_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, icon, D_("Fill"), _bt_fill_cb, panel_image);
 
-   tb_item = elm_toolbar_item_add(panel_image->tb, NULL, NULL, NULL, NULL);
+   tb_item = elm_toolbar_item_append(panel_image->tb, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(tb_item, 1);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, THEME, "icons/rotate/90");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("90°"), _bt_rotate_90_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, icon, D_("90°"), _bt_rotate_90_cb, panel_image);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, THEME, "icons/rotate/90/reverse");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("-90°"), _bt_rotate_R90_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, icon, D_("-90°"), _bt_rotate_R90_cb, panel_image);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, THEME, "icons/rotate/180");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("180°"), _bt_rotate_180_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, icon, D_("180°"), _bt_rotate_180_cb, panel_image);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, THEME, "icons/flip/horizontal");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("Horizontal"), _bt_flip_horizontal_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, icon, D_("Horizontal"), _bt_flip_horizontal_cb, panel_image);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, THEME, "icons/flip/vertical");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("Vertical"), _bt_flip_vertical_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, icon, D_("Vertical"), _bt_flip_vertical_cb, panel_image);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, THEME, "icons/blur");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("Blur"), _bt_blur_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, icon, D_("Blur"), _bt_blur_cb, panel_image);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, THEME, "icons/sharpen");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("Sharpen"), _bt_sharpen_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, icon, D_("Sharpen"), _bt_sharpen_cb, panel_image);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, THEME, "icons/sepia");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("Sepia"), _bt_sepia_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, icon, D_("Sepia"), _bt_sepia_cb, panel_image);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, THEME, "icons/grayscale");
-   elm_toolbar_item_add(panel_image->tb, icon, D_("Grayscale"), _bt_grayscale_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, icon, D_("Grayscale"), _bt_grayscale_cb, panel_image);
 
 
 

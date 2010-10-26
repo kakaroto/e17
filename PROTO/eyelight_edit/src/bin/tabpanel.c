@@ -37,9 +37,9 @@ Evas_Object *tabpanel_create()
     elm_pager_content_push(_pager, slides_grid);
     //
 
-    Elm_Toolbar_Item *item = elm_toolbar_item_add(tb, NULL, D_("Presentation"), _tb_presentation, presentation);
-    elm_toolbar_item_add(tb, NULL, D_("Slides list"), _tb_slidelist, slides_grid);
-    elm_toolbar_item_select(item);
+    Elm_Toolbar_Item *item = elm_toolbar_item_append(tb, NULL, D_("Presentation"), _tb_presentation, presentation);
+    elm_toolbar_item_append(tb, NULL, D_("Slides list"), _tb_slidelist, slides_grid);
+    elm_toolbar_item_selected_set(item, EINA_TRUE);
 
     return vbox;
 }

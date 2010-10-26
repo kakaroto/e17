@@ -190,8 +190,8 @@ _em_config_win_create(Evas_Object *parent)
    elm_box_pack_end(bx, tb);
    evas_object_show(tb);
 
-   elm_toolbar_item_add(tb, "preferences-system", _("General"), NULL, NULL);
-   elm_toolbar_item_add(tb, "go-home", _("Servers"), NULL, NULL);
+   elm_toolbar_item_append(tb, "preferences-system", _("General"), NULL, NULL);
+   elm_toolbar_item_append(tb, "go-home", _("Servers"), NULL, NULL);
 
    bbx = elm_box_add(_em_config_win);
    elm_box_horizontal_set(bbx, EINA_TRUE);
