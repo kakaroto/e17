@@ -146,7 +146,7 @@ static void usage_exit(const char *msg, const char *argv0, int code)
            " -o FILE      : Redirect stdout to FILE\n"
            " -F FILE      : read files to process from FILE, one filename per line\n"
            " files        : files to process (can be combined with -F)\n"
-           " --suffix SFX : Append SFX to the output filename. The default is '.uncrustify'\n"
+           " --suffix SFX : Append SFX to the output filename. The default is '.ecrustify'\n"
            " --prefix PFX : Prepend PFX to the output filename path.\n"
            " --replace    : replace source files (creates a backup)\n"
            " --no-backup  : replace files, no backup. Useful if files are under source control\n"
@@ -174,14 +174,14 @@ static void usage_exit(const char *msg, const char *argv0, int code)
            " --decode FLAG: Print FLAG (chunk flags) as text and exit\n"
            "\n"
            "Usage Examples\n"
-           "cat foo.d | uncrustify -q -c my.cfg -l d\n"
-           "uncrustify -c my.cfg -f foo.d\n"
-           "uncrustify -c my.cfg -f foo.d -L0-2,20-23,51\n"
-           "uncrustify -c my.cfg -f foo.d -o foo.d\n"
-           "uncrustify -c my.cfg foo.d\n"
-           "uncrustify -c my.cfg --replace foo.d\n"
-           "uncrustify -c my.cfg --no-backup foo.d\n"
-           "uncrustify -c my.cfg --prefix=out -F files.txt\n"
+           "cat foo.d | ecrustify -q -c my.cfg -l d\n"
+           "ecrustify -c my.cfg -f foo.d\n"
+           "ecrustify -c my.cfg -f foo.d -L0-2,20-23,51\n"
+           "ecrustify -c my.cfg -f foo.d -o foo.d\n"
+           "ecrustify -c my.cfg foo.d\n"
+           "ecrustify -c my.cfg --replace foo.d\n"
+           "ecrustify -c my.cfg --no-backup foo.d\n"
+           "ecrustify -c my.cfg --prefix=out -F files.txt\n"
            "\n"
            "Note: Use comments containing ' *INDENT-OFF*' and ' *INDENT-ON*' to disable\n"
            "      processing of parts of the source file.\n"
@@ -197,7 +197,7 @@ static void usage_exit(const char *msg, const char *argv0, int code)
 
 static void version_exit(void)
 {
-   printf("uncrustify %s\n", UNCRUSTIFY_VERSION);
+   printf("ecrustify %s\n", UNCRUSTIFY_VERSION);
    exit(0);
 }
 
@@ -225,7 +225,7 @@ int main(int argc, char *argv[])
 {
    char       *data        = NULL;
    int        data_len     = 0;
-   const char *cfg_file    = "uncrustify.cfg";
+   const char *cfg_file    = "ecrustify.cfg";
    const char *parsed_file = NULL;
    const char *source_file = NULL;
    const char *output_file = NULL;
@@ -300,7 +300,7 @@ int main(int argc, char *argv[])
    char buf[512];
    if (cfg_file == NULL)
    {
-      cfg_file = getenv("UNCRUSTIFY_CONFIG");
+      cfg_file = getenv("ECRUSTIFY_CONFIG");
       if (cfg_file == NULL)
       {
          const char *home = getenv("HOME");
@@ -309,7 +309,7 @@ int main(int argc, char *argv[])
          {
             struct stat tmp_stat;
 
-            snprintf(buf, sizeof(buf), "%s/.uncrustify.cfg", home);
+            snprintf(buf, sizeof(buf), "%s/.ecrustify.cfg", home);
             if (stat(buf, &tmp_stat) == 0)
             {
                cfg_file = buf;
@@ -423,7 +423,7 @@ int main(int argc, char *argv[])
    {
       if ((prefix == NULL) && (suffix == NULL))
       {
-         suffix = ".uncrustify";
+         suffix = ".ecrustify";
       }
    }
 
@@ -502,7 +502,7 @@ int main(int argc, char *argv[])
 #ifdef WIN32
       usage_exit("Specify the config file: -c file", argv[0], 58);
 #else
-      usage_exit("Specify the config file with '-c file' or set UNCRUSTIFY_CONFIG",
+      usage_exit("Specify the config file with '-c file' or set ECRUSTIFY_CONFIG",
                  argv[0], 58);
 #endif
    }
@@ -932,11 +932,11 @@ const char *fix_filename(const char *filename)
 {
    char *tmp_file;
 
-   /* Create 'outfile.uncrustify' */
+   /* Create 'outfile.ecrustify' */
    tmp_file = new char[strlen(filename) + 16 + 1]; /* + 1 for '\0' */
    if (tmp_file != NULL)
    {
-      sprintf(tmp_file, "%s.uncrustify", filename);
+      sprintf(tmp_file, "%s.ecrustify", filename);
    }
    return(tmp_file);
 }
@@ -990,7 +990,7 @@ static void do_source_file(const char *filename_in,
       filename_tmp = filename_out;
       if (strcmp(filename_in, filename_out) == 0)
       {
-         /* Create 'outfile.uncrustify' */
+         /* Create 'outfile.ecrustify' */
          filename_tmp = fix_filename(filename_out);
          if (filename_tmp == NULL)
          {
