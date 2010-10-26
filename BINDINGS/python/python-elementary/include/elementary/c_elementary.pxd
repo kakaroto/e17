@@ -859,14 +859,11 @@ cdef extern from "Elementary.h":
     evas.c_evas.Evas_Object *elm_menu_add(evas.c_evas.Evas_Object *parent)
     void  elm_menu_move(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord x, evas.c_evas.Evas_Coord y)
     void  elm_menu_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
-    Elm_Menu_Item *elm_menu_item_add(evas.c_evas.Evas_Object *obj, Elm_Menu_Item *parent,
-                                     evas.c_evas.Evas_Object *icon, char *label,
-                                     void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info),
-                                     void *data)
+    Elm_Menu_Item *elm_menu_item_add(evas.c_evas.Evas_Object *obj, Elm_Menu_Item *parent, char *icon, char *label, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
     Elm_Menu_Item *elm_menu_item_separator_add(evas.c_evas.Evas_Object *obj, Elm_Menu_Item *parent)
     void  elm_menu_item_label_set(Elm_Menu_Item *item, char *label)
     char *elm_menu_item_label_get(Elm_Menu_Item *item)
-    void  elm_menu_item_icon_set(Elm_Menu_Item *item, evas.c_evas.Evas_Object *icon)
+    void  elm_menu_item_icon_set(Elm_Menu_Item *item, char *icon)
     void  elm_menu_item_disabled_set(Elm_Menu_Item *item, evas.c_evas.Eina_Bool disabled)
     void  elm_menu_item_del(Elm_Menu_Item *item)
     void  elm_menu_item_del_cb_set(Elm_Menu_Item *it, void (*func)(void *data, evas.c_evas.Evas_Object *obj, void *event_info))

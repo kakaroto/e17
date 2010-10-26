@@ -12,58 +12,35 @@ def menu_show(rect, evtinfo, menu):
     menu.show()
 
 def menu_populate_4(menu, item):
-    ic = elementary.Icon(menu)
-    ic.file_set('images/logo_small.png')
-    menu.item_add(item, "menu 2", ic)
+    menu.item_add(item, "menu 2", "clock")
 
-    ic = elementary.Icon(menu)
-    ic.file_set('images/logo_small.png')
-
-    item2 = menu.item_add(item, "menu 3", ic)
+    item2 = menu.item_add(item, "menu 3", "folder-new")
 
     menu.item_separator_add(item)
 
-    ic = elementary.Icon(menu)
-    ic.file_set('images/logo_small.png')
-    item3 = menu.item_add(item, "Disabled item", ic);
+    item3 = menu.item_add(item, "Disabled item", "document-print");
     item3.disabled = True
 
-    ic = elementary.Icon(menu)
-    ic.file_set('images/logo_small.png')
-    item3 = menu.item_add(item, "Disabled item", ic);
+    item3 = menu.item_add(item, "Disabled item", "mail-send");
     item3.disabled = True
 
-    ic = elementary.Icon(menu)
-    ic.file_set('images/logo_small.png')
-    item3 = menu.item_add(item, "Disabled item", ic);
+    item3 = menu.item_add(item, "Disabled item", "refresh");
     item3.disabled = True
 
 def menu_populate_3(menu, item):
-    ic = elementary.Icon(menu)
-    ic.file_set('images/logo_small.png')
-    menu.item_add(item, "menu 2", ic)
+    menu.item_add(item, "menu 2", "refresh")
 
-    ic = elementary.Icon(menu)
-    ic.file_set('images/logo_small.png')
-
-    item2 = menu.item_add(item, "menu 3", ic)
+    item2 = menu.item_add(item, "menu 3",  "mail-send")
 
     menu.item_separator_add(item)
 
-    ic = elementary.Icon(menu)
-    ic.file_set('images/logo_small.png')
-
-    item3 = menu.item_add(item, "Disabled item", ic);
+    item3 = menu.item_add(item, "Disabled item", "clock");
     item3.disabled = True
 
 def menu_populate_2(menu, item):
-    ic = elementary.Icon(menu)
-    ic.file_set('images/logo_small.png')
-    menu.item_add(item, "menu 2", ic)
+    menu.item_add(item, "menu 2", "document-print")
 
-    ic = elementary.Icon(menu)
-    ic.file_set('images/logo_small.png')
-    item2 = menu.item_add(item, "menu 3", ic)
+    item2 = menu.item_add(item, "menu 3", "folder-new")
 
     menu_populate_3(menu, item2)
 
@@ -75,23 +52,17 @@ def menu_populate_2(menu, item):
     menu.item_separator_add(item)
     menu.item_separator_add(item)
 
-    ic = elementary.Icon(menu)
-    ic.file_set('images/logo_small.png')
-    item2 = menu.item_add(item, "menu 2", ic);
+    item2 = menu.item_add(item, "menu 2", "refresh");
 
     menu.item_separator_add(item)
 
-    ic = elementary.Icon(menu)
-    ic.file_set('images/logo_small.png')
-    item3 = menu.item_add(item, "Disabled item", ic);
+    item3 = menu.item_add(item, "Disabled item", "mail-send");
     item3.disabled = True
 
     menu_populate_4(menu, item2)
 
 def menu_populate_1(menu, item):
-    ic = elementary.Icon(menu)
-    ic.file_set('images/logo_small.png')
-    item2 = menu.item_add(item, "menu 1", ic)
+    item2 = menu.item_add(item, "menu 1", "refresh")
 
     menu_populate_2(menu, item2)
 
@@ -111,17 +82,12 @@ def menu_clicked(obj, it):
     rect.show()
 
     menu = elementary.Menu(win)
-    item = menu.item_add(None, "first item")
+    item = menu.item_add(None, "first item", "clock")
 
-    ic = elementary.Icon(menu)
-    ic.file_set('images/logo_small.png')
-
-    item = menu.item_add(None, "second item", ic)
+    item = menu.item_add(None, "second item", "mail-send")
     menu_populate_1(menu, item)
 
-    ic = elementary.Icon(menu)
-    ic.file_set('images/logo_small.png')
-    menu.item_add(item, "sub menu", ic)
+    menu.item_add(item, "sub menu", "refresh")
 
     rect.event_callback_add(evas.EVAS_CALLBACK_MOUSE_DOWN, menu_show, menu)
 

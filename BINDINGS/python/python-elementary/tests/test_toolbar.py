@@ -63,21 +63,13 @@ def toolbar_clicked(obj, it):
     tb.menu_parent_set(win)
     menu = item.menu_get()
 
-    ic = elementary.Icon(win)
-    ic.file_set("images/logo_small.png")
-    menu.item_add(None, "Here", ic, tb_3, ph4)
+    menu.item_add(None, "Here", "clock", tb_3, ph4)
 
-    ic = elementary.Icon(win)
-    ic.file_set("images/logo_small.png")
-    menu_item = menu.item_add(None, "Comes", ic, tb_4, ph4)
+    menu_item = menu.item_add(None, "Comes", "refresh", tb_4, ph4)
 
-    ic = elementary.Icon(win)
-    ic.file_set("images/logo_small.png")
-    menu.item_add(menu_item, "hey ho", ic, tb_4, ph4)
+    menu.item_add(menu_item, "hey ho", "folder-new", tb_4, ph4)
 
-    ic = elementary.Icon(win)
-    ic.file_set("images/logo_small.png")
-    menu.item_add(None, "python-elementary", ic, tb_5, ph4)
+    menu.item_add(None, "python-elementary", "document-print", tb_5, ph4)
 
     bx.pack_end(tb)
     tb.show()

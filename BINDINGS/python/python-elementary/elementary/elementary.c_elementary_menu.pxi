@@ -36,9 +36,8 @@ cdef class MenuItem:
         self.cbt = None
         Py_DECREF(self)
 
-    def __init__(self, c_evas.Object menu, MenuItem parent, label, c_evas.Object icon,
+    def __init__(self, c_evas.Object menu, MenuItem parent, label, icon,
                  callback, *args, **kargs):
-        cdef c_evas.Evas_Object *icon_obj = NULL
         cdef Elm_Menu_Item *parent_obj = NULL
         cdef void* cbdata = NULL
         cdef void (*cb) (void *, c_evas.Evas_Object *, void *)
@@ -47,9 +46,6 @@ cdef class MenuItem:
         if parent:
             parent_obj = parent.obj
 
-        if icon:
-           icon_obj = icon.obj
-
         if callback:
             if not callable(callback):
                 raise TypeError("callback is not callable")
@@ -57,7 +53,7 @@ cdef class MenuItem:
 
         self.cbt = (menu, callback, self, args, kargs)
         cbdata = <void*>self.cbt
-        self.obj = elm_menu_item_add(menu.obj, parent_obj, icon_obj, label,
+        self.obj = elm_menu_item_add(menu.obj, parent_obj, icon, label,
                                           cb, cbdata)
 
         Py_INCREF(self)
@@ -86,12 +82,12 @@ cdef class MenuItem:
         def __set__(self, value):
             self.label_set(value)
 
-    def icon_set(self, c_evas.Object icon):
-        elm_menu_item_icon_set(self.obj, icon.obj)
+    def icon_set(self, icon):
+        elm_menu_item_icon_set(self.obj, icon)
 
     property icon:
-        def __set__(self, c_evas.Object icon):
-            elm_menu_item_icon_set(self.obj, icon.obj)
+        def __set__(self, icon):
+            elm_menu_item_icon_set(self.obj, icon)
 
     def disabled_set(self, disabled):
         elm_menu_item_disabled_set(self.obj, disabled)
