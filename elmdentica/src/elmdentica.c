@@ -93,7 +93,7 @@ double mouse_held_down=0;
 
 struct sqlite3 *ed_DB=NULL;
 
-GRegex *re_link=NULL, *re_link_content=NULL, *re_entities=NULL, *re_user=NULL, *re_nouser=NULL, *re_tags=NULL, *re_group=NULL, *re_nogroup=NULL, *re_amp=NULL, *re_nl;
+GRegex *re_link=NULL, *re_link_content=NULL, *re_user=NULL, *re_tags=NULL, *re_group=NULL;
 GError *re_err=NULL;
 
 static Elm_Genlist_Item_Class itc1;
@@ -549,13 +549,6 @@ static void user_free(UserProfile *user) {
 
 		free(user);
 	}
-}
-
-static void on_zoomed_icon_clicked(void *data, Evas_Object *obj, void *event_info) {
-	Evas_Object *zoom = (Evas_Object*)data;
-
-	if(zoom)
-		evas_object_del(zoom);
 }
 
 Evas_Object *ed_get_icon(long long int id, Evas_Object *parent) {
@@ -1111,25 +1104,46 @@ anUser *fetch_user_from_db(long long int uid) {
 	return(au);
 }
 
+char *ed_shorten_text(char *text) {
+	GError *re_err=NULL;
+	char *shortened_text=NULL;
+
+	if(!re_link)	re_link  = g_regex_new("([a-z]+://.*?)(?=\\s|$)", G_REGEX_OPTIMIZE, 0, &re_err);
+
+	shortened_text = g_regex_replace(re_link, text, strlen(text), 0, "<u>[link]</u>", 0, &re_err);
+
+	return(shortened_text);
+}
+
 char *ed_status_label_get(void *data, Evas_Object *obj, const char *part) {
 	char buf[256], datetime[19], *key=NULL;
 	aStatus *as = (aStatus *)data;
+	char *shortened_text;
 	int res=0;
 	anUser *au;
+	//time_t now, dt;
+	//struct tm date_tm, date_now;
 	struct tm date_tm;
 
 	if (!strcmp(part, "text")) {
-		snprintf(buf, sizeof(buf), "%s", as->text);
+		shortened_text = ed_shorten_text(as->text);
+		snprintf(buf, sizeof(buf), shortened_text);
+		free(shortened_text);
 	} else if (!strcmp(part, "name")) {
 		res = asprintf(&key, "%lld", as->user);
 		if(res != -1)  {
 			au = eina_hash_find(userHash, key);
-			snprintf(buf, sizeof(buf), "%s", au->name);
+			snprintf(buf, sizeof(buf), au->name);
 		} else snprintf(buf, sizeof(buf), "unknown");
 	} else if (!strcmp(part, "date")) {
+		//time(&now);
+		//localtime_r(&now, &date_now);
+
 		if(localtime_r(&(as->created_at), &date_tm)) {
 			strftime(datetime, sizeof(datetime), "%F %R", &date_tm);
 			snprintf(buf, sizeof(buf), datetime);
+			//dt = now - as->created_at;
+			//snprintf(buf, sizeof(buf), "%d seconds ago", (int)dt);
 		} else snprintf(buf, 8, "unknown");
 	}
 
@@ -1191,7 +1205,7 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 	char *match=NULL, *key=NULL;
 	int res=0;
 
-	if(!re_link)	re_link  = g_regex_new("([a-z]+://.*?)(\\s|$)", G_REGEX_OPTIMIZE, 0, &re_err);
+	if(!re_link)	re_link  = g_regex_new("([a-z]+://.*?)(?=\\s|$)", G_REGEX_OPTIMIZE, 0, &re_err);
 	if(!re_user)	re_user  = g_regex_new("@([a-zA-Z0-9_]+)",      G_REGEX_OPTIMIZE, 0, &re_err);
 	if(!re_tags)	re_tags  = g_regex_new("#([a-zA-Z0-9_]+)",      G_REGEX_OPTIMIZE, 0, &re_err);
 	if(!re_group)	re_group = g_regex_new("!([a-zA-Z0-9_]+)",      G_REGEX_OPTIMIZE, 0, &re_err);
@@ -1860,6 +1874,20 @@ static void on_entry_clicked(void *data, Evas_Object *entry, void *event_info) {
 	if(msg) free(msg);
 }
 
+Eina_Bool ed_statuses_update_time(void *data) {
+	Eina_List *l=NULL, *statuses_list = eina_list_clone(elm_genlist_realized_items_get(gui.timeline));
+	Elm_Genlist_Item *gli=NULL;
+
+	//gli = elm_genlist_first_item_get(gui.timeline);
+	//elm_genlist_item_show(gli);
+	//while( (gli = elm_genlist_item_next_get(gli)) )		
+		//elm_genlist_item_show(gli);
+	EINA_LIST_FOREACH(statuses_list, l, gli)
+		elm_genlist_item_update(gli);
+
+	return(EINA_TRUE);
+}
+
 EAPI int elm_main(int argc, char **argv)
 {
 	Evas_Object *bg=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *box2=NULL, *hoversel=NULL, *edit_panel=NULL, *timelines=NULL, *timelines_panel=NULL;
@@ -1922,6 +1950,8 @@ EAPI int elm_main(int argc, char **argv)
 
 		elm_layout_content_set(gui.main, "timeline", gui.timeline);
 	evas_object_show(gui.timeline);
+
+	//ecore_timer_add(5, ed_statuses_update_time, NULL);
 
 	edit_panel = elm_box_add(gui.win);
 		elm_box_homogenous_set(edit_panel, 0);
@@ -2122,14 +2152,11 @@ EAPI int elm_main(int argc, char **argv)
 
 	ed_settings_shutdown();
 
-	if(re_amp) g_regex_unref(re_amp);
 	if(re_link) g_regex_unref(re_link);
 	if(re_user) g_regex_unref(re_user);
 	if(re_tags) g_regex_unref(re_tags);
 	if(re_group) g_regex_unref(re_group);
 	if(re_link_content) g_regex_unref(re_link_content);
-	if(re_nl) g_regex_unref(re_nl);
-	if(re_entities) g_regex_unref(re_entities);
 
 	return 0;
 }

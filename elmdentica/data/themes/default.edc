@@ -2,6 +2,8 @@ styles {
 	style {
 		name: "elmdentica_status";
 		base: "font=Sans font_size=8 align=left valign=bottom color=#000 wrap=word";
+		tag: "u" "+ style=underline underline_color=#f00";
+		tag: "/u" "- style=underline";
 	}
 }
 
