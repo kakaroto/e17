@@ -54,10 +54,28 @@ cdef class ToolbarItem(WidgetItem):
 
         self.cbt = (toolbar, callback, self, args, kargs)
         cbdata = <void*>self.cbt
-        self.obj = elm_toolbar_item_add(toolbar.obj, icon, label, cb, cbdata)
+        self.obj = elm_toolbar_item_append(toolbar.obj, icon, label, cb, cbdata)
 
         Py_INCREF(self)
         elm_toolbar_item_del_cb_set(self.obj, _toolbar_item_del_cb)
+
+    def next_get(self):
+        cdef Elm_Toolbar_Item *it
+        it = elm_toolbar_item_next_get(self.obj)
+        return _elm_toolbar_item_to_python(it)
+
+    property next:
+        def __get__(self):
+            return self.next_get()
+
+    def prev_get(self):
+        cdef Elm_Toolbar_Item *it
+        it = elm_toolbar_item_prev_get(self.obj)
+        return _elm_toolbar_item_to_python(it)
+
+    property prev:
+        def __get__(self):
+            return self.prev_get()
 
     def delete(self):
         """Delete the item"""
@@ -102,9 +120,32 @@ cdef class ToolbarItem(WidgetItem):
         def __set__(self, value):
             self.label_set(value)
 
-    def select(self):
+    def data_get(self):
+        cdef void* data
+        data = elm_toolbar_item_data_get(self.obj)
+        if data == NULL:
+            return None
+        else:
+            (tb, func, it, a, ka) = <object>data
+            return (a, ka)
+
+    property data:
+        def __get__(self):
+            return self.data_get()
+
+    def selected_set(self, selected):
         """Select the item"""
-        elm_toolbar_item_select(self.obj)
+        elm_toolbar_item_selected_set(self.obj, selected)
+
+    def selected_get(self):
+        return elm_toolbar_item_selected_get(self.obj)
+
+    property selected:
+        def __set__(self, selected):
+            elm_toolbar_item_selected_set(self.obj, selected)
+
+        def __get__(self):
+            return elm_toolbar_item_selected_get(self.obj)
 
     def disabled_set(self, disabled):
         elm_toolbar_item_disabled_set(self.obj, disabled)
@@ -255,6 +296,17 @@ cdef class ToolbarItem(WidgetItem):
         """
         return elm_toolbar_item_cursor_engine_only_get(self.obj)
 
+cdef _elm_toolbar_item_to_python(Elm_Toolbar_Item *it):
+    cdef void *data
+    cdef object prm
+    if it == NULL:
+        return None
+    data = elm_toolbar_item_data_get(it)
+    if data == NULL:
+        return None
+    prm = <object>data
+    return prm[2]
+
 
 cdef class Toolbar(Object):
     """
@@ -301,15 +353,36 @@ cdef class Toolbar(Object):
         def __get__(self):
             return elm_toolbar_icon_size_get(self.obj)
 
-    def item_unselect_all(self):
-        elm_toolbar_item_unselect_all(self.obj)
+    def selected_item_get(self):
+        cdef Elm_Toolbar_Item *it
+        it = elm_toolbar_selected_item_get(self.obj)
+        return _elm_toolbar_item_to_python(it)
 
-    def item_add(self, c_evas.Object icon, label, callback = None, *args, **kargs):
+    property selected_item:
+        def __get__(self):
+            return self.selected_item_get()
+
+    def first_item_get(self):
+        cdef Elm_Toolbar_Item *it
+        it = elm_toolbar_first_item_get(self.obj)
+        return _elm_toolbar_item_to_python(it)
+
+    property first_item:
+        def __get__(self):
+            return self.first_item_get()
+
+    def last_item_get(self):
+        cdef Elm_Toolbar_Item *it
+        it = elm_toolbar_last_item_get(self.obj)
+        return _elm_toolbar_item_to_python(it)
+
+    property last_item:
+        def __get__(self):
+            return self.last_item_get()
+
+    def item_append(self, icon, label, callback = None, *args, **kargs):
         """
-        Adds a new item to the toolbar
-
-        @note: Never pass the the same icon object to more than one item. For
-               a every item you must create a new icon!
+        Appends a new item to the toolbar
 
         @parm: L{icon} icon for the item
         @parm: L{label} label for the item

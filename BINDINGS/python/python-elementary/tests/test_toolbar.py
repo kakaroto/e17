@@ -46,31 +46,19 @@ def toolbar_clicked(obj, it):
     ph3 = elementary.Photo(win)
     ph4 = elementary.Photo(win)
 
-    ic = elementary.Icon(win)
-    ic.file_set("images/logo_small.png")
-    item = tb.item_add(ic, "Hello", tb_1)
+    item = tb.item_append("document-print", "Hello", tb_1)
     item.disabled = True
 
-    ic = elementary.Icon(win)
-    ic.file_set("images/logo_small.png")
-    item = tb.item_add(ic, "World,", tb_2, ph2)
-    item.select()
+    item = tb.item_append("clock", "World,", tb_2, ph2)
+    item.selected_set(True)
 
-    ic = elementary.Icon(win)
-    ic.file_set("images/logo_small.png")
-    tb.item_add(ic, "here", tb_3, ph4)
+    tb.item_append("folder-new", "here", tb_3, ph4)
 
-    ic = elementary.Icon(win)
-    ic.file_set("images/logo_small.png")
-    tb.item_add(ic, "comes", tb_4, ph4)
+    tb.item_append("clock", "comes", tb_4, ph4)
 
-    ic = elementary.Icon(win)
-    ic.file_set("images/logo_small.png")
-    tb.item_add(ic, "python-elementary!", tb_5, ph4)
+    tb.item_append("folder-new", "python-elementary!", tb_5, ph4)
 
-    ic = elementary.Icon(win)
-    ic.file_set("images/logo_small.png")
-    item = tb.item_add(ic, "Menu", tb_5, ph4)
+    item = tb.item_append("clock", "Menu", tb_5, ph4)
     item.menu_set(True)
     tb.menu_parent_set(win)
     menu = item.menu_get()

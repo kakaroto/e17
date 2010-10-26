@@ -51,10 +51,10 @@ def tooltip_clicked(obj, it):
     bx.pack_end(tb)
     tb.show()
 
-    ti = tb.item_add(None, "Open", None, None)
+    ti = tb.item_append("folder-new", "Open", None, None)
     ti.tooltip_text_set("Opens a file")
 
-    ti = tb.item_add(None, "Icon", None, None)
+    ti = tb.item_append("clock", "Icon", None, None)
     ti.tooltip_content_cb_set(_tt_item_icon, None)
     ti.tooltip_style_set("transparent")
 
