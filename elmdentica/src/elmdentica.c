@@ -61,6 +61,8 @@
 #include "statusnet.h"
 #include "curl.h"
 
+#undef AUTO_UPDATE
+
 Gui gui;
 
 Evas_Object *status_list=NULL, *status=NULL, *error_win=NULL, *entry=NULL, *fs=NULL, *count=NULL, *hv=NULL, *related_inwin=NULL;
@@ -1116,15 +1118,18 @@ char *ed_shorten_text(char *text) {
 }
 
 char *ed_status_label_get(void *data, Evas_Object *obj, const char *part) {
-	char buf[256], datetime[19], *key=NULL;
 	aStatus *as = (aStatus *)data;
 	char *shortened_text;
 	int res=0;
 	anUser *au;
-	//time_t now, dt;
-	//struct tm date_tm, date_now;
+#ifdef AUTO_UPDATE
+	char buf[256], *key=NULL;
+	time_t now, dt;
+	struct tm date_tm, date_now;
+#else
+	char buf[256], datetime[19], *key=NULL;
 	struct tm date_tm;
-
+#endif
 	if (!strcmp(part, "text")) {
 		shortened_text = ed_shorten_text(as->text);
 		snprintf(buf, sizeof(buf), shortened_text);
@@ -1136,14 +1141,18 @@ char *ed_status_label_get(void *data, Evas_Object *obj, const char *part) {
 			snprintf(buf, sizeof(buf), au->name);
 		} else snprintf(buf, sizeof(buf), "unknown");
 	} else if (!strcmp(part, "date")) {
-		//time(&now);
-		//localtime_r(&now, &date_now);
+#ifdef AUTO_UPDATE
+		time(&now);
+		localtime_r(&now, &date_now);
 
+		if(localtime_r(&(as->created_at), &date_tm)) {
+			dt = now - as->created_at;
+			snprintf(buf, sizeof(buf), "%d seconds ago", (int)dt);
+#else
 		if(localtime_r(&(as->created_at), &date_tm)) {
 			strftime(datetime, sizeof(datetime), "%F %R", &date_tm);
 			snprintf(buf, sizeof(buf), datetime);
-			//dt = now - as->created_at;
-			//snprintf(buf, sizeof(buf), "%d seconds ago", (int)dt);
+#endif
 		} else snprintf(buf, 8, "unknown");
 	}
 
@@ -1435,9 +1444,10 @@ void add_status(aStatus *as, Elm_Genlist_Item *gli) {
 	itc1.func.state_get	= ed_status_state_get;
 	itc1.func.del		= ed_status_del;
 
-	if(gli)
+	if(gli) {
 		li = elm_genlist_item_insert_after(gui.timeline, &itc1, as, gli, ELM_GENLIST_ITEM_NONE, NULL, NULL);
-	else
+		elm_genlist_item_show(li);
+	} else
 		li = elm_genlist_item_append(gui.timeline, &itc1, as, NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL);
 
 	eina_hash_add(bubble2status, &li, as);
@@ -1875,15 +1885,18 @@ static void on_entry_clicked(void *data, Evas_Object *entry, void *event_info) {
 }
 
 Eina_Bool ed_statuses_update_time(void *data) {
-	Eina_List *l=NULL, *statuses_list = eina_list_clone(elm_genlist_realized_items_get(gui.timeline));
 	Elm_Genlist_Item *gli=NULL;
+#ifdef AUTO_UPDATE
+	Eina_List *l=NULL, *statuses_list = eina_list_clone(elm_genlist_realized_items_get(gui.timeline));
 
-	//gli = elm_genlist_first_item_get(gui.timeline);
-	//elm_genlist_item_show(gli);
-	//while( (gli = elm_genlist_item_next_get(gli)) )		
-		//elm_genlist_item_show(gli);
 	EINA_LIST_FOREACH(statuses_list, l, gli)
 		elm_genlist_item_update(gli);
+#else
+	gli = elm_genlist_first_item_get(gui.timeline);
+	elm_genlist_item_show(gli);
+	while( (gli = elm_genlist_item_next_get(gli)) )		
+		elm_genlist_item_show(gli);
+#endif
 
 	return(EINA_TRUE);
 }
@@ -1951,7 +1964,9 @@ EAPI int elm_main(int argc, char **argv)
 		elm_layout_content_set(gui.main, "timeline", gui.timeline);
 	evas_object_show(gui.timeline);
 
-	//ecore_timer_add(5, ed_statuses_update_time, NULL);
+#ifdef AUTO_UPDATE
+	ecore_timer_add(5, ed_statuses_update_time, NULL);
+#endif
 
 	edit_panel = elm_box_add(gui.win);
 		elm_box_homogenous_set(edit_panel, 0);
