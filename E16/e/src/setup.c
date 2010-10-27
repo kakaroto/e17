@@ -51,7 +51,7 @@ SetupX(const char *dstr)
    if (!dstr)
       dstr = getenv("DISPLAY");
    if (!dstr)
-      dstr = ":0";
+      dstr = ":0.0";
 
    /* Open a connection to the diplay nominated by the DISPLAY variable */
    err = EDisplayOpen(dstr, Dpy.screen);
