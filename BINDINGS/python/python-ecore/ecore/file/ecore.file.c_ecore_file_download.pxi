@@ -136,6 +136,7 @@ cdef class Download:
         if self.progress_cb:
             return self.progress_cb(file, dltotal, dlnow, ultotal, ulnow,
                                     *self.args, **self.kargs)
+        return 0
 
     def abort(self):
         """Abort the download and free internal resources."""
