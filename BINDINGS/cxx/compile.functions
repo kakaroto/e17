@@ -38,7 +38,7 @@ do_configure ()
 
   ## choose debug
   if [ $val_debug = true ]; then
-    CXXFLAGS="-O0 -ggdb" CFLAGS="-O0 -ggdb" ./configure &> $LOGFILE
+    CXXFLAGS="-O0 -ggdb" CFLAGS="-O0 -ggdb" ./configure $CONFIG_ARGS &> $LOGFILE
   else
     ./configure $CONFIG_ARGS &> $LOGFILE
   fi
