@@ -17,6 +17,9 @@ static elixir_parameter_t               _evas_parameter = {
 static elixir_parameter_t               _evas_object_parameter = {
   "Evas_Object", JOBJECT, NULL
 };
+static elixir_parameter_t               _evas_object_image_parameter = {
+  "Evas_Object_Image", JOBJECT, NULL
+};
 
 static const elixir_parameter_t*        _ecore_evas_params[2] = {
    &_ecore_evas_parameter,
@@ -105,6 +108,41 @@ static const elixir_parameter_t*        _ecore_evas_4int_params[6] = {
    &int_parameter,
    NULL
 };
+static const elixir_parameter_t*        _evas_object_image_params[2] = {
+  &_evas_object_image_parameter,
+  NULL
+};
+
+static Eina_Bool
+elixir_evas_to_jsval(JSContext *cx, Ecore_Evas *ee, jsval *rval)
+{
+   JSObject *jo;
+   Evas *e;
+   jsval *tmp;
+
+   tmp = ecore_evas_data_get(ee, "elixir_evas_jsval");
+   if (tmp) goto on_found;
+   e = ecore_evas_get(ee);
+
+   jo = elixir_build_ptr(cx, e, elixir_class_request("evas", NULL));
+   if (!jo) return EINA_FALSE;
+
+   tmp = malloc(sizeof (jsval));
+   if (!tmp) return EINA_FALSE;
+
+   *tmp = OBJECT_TO_JSVAL(jo);
+   if (!elixir_rval_register(cx, tmp))
+     {
+	free(tmp);
+	return EINA_FALSE;
+     }
+
+   ecore_evas_data_set(ee, "elixir_evas_jsval", tmp);
+
+ on_found:
+   *rval = *tmp;
+   return EINA_TRUE;
+}
 
 #if 0
 static void
@@ -473,9 +511,6 @@ static JSBool
 elixir_ecore_evas_get(JSContext *cx, uintN argc, jsval *vp)
 {
    Ecore_Evas *ee;
-   jsval *tmp;
-   JSObject *jo;
-   Evas *e;
    elixir_value_t val[1];
 
    if (!elixir_params_check(cx, _ecore_evas_params, val, argc, JS_ARGV(cx, vp)))
@@ -483,32 +518,7 @@ elixir_ecore_evas_get(JSContext *cx, uintN argc, jsval *vp)
 
    GET_PRIVATE(cx, val[0].v.obj, ee);
 
-   tmp = ecore_evas_data_get(ee, "elixir_evas_jsval");
-   if (tmp)
-     {
-	JS_SET_RVAL(cx, vp, *tmp);
-	return JS_TRUE;
-     }
-
-   e = ecore_evas_get(ee);
-
-   jo = elixir_build_ptr(cx, e, elixir_class_request("evas", NULL));
-   if (!jo) return JS_FALSE;
-
-   tmp = malloc(sizeof (jsval));
-   if (!tmp) return JS_FALSE;
-
-   *tmp = OBJECT_TO_JSVAL(jo);
-   if (!elixir_rval_register(cx, tmp))
-     {
-	free(tmp);
-	return JS_FALSE;
-     }
-
-   ecore_evas_data_set(ee, "elixir_evas_jsval", tmp);
-
-   JS_SET_RVAL(cx, vp, *tmp);
-   return JS_TRUE;
+   return elixir_evas_to_jsval(cx, ee, &(JS_RVAL(cx, vp)));
 }
 
 static JSBool
@@ -547,6 +557,41 @@ elixir_ecore_evas_object_image_new(JSContext *cx, uintN argc, jsval *vp)
 }
 
 static JSBool
+elixir_ecore_evas_object_ecore_evas_get(JSContext *cx, uintN argc, jsval *vp)
+{
+   Ecore_Evas *ee;
+   Evas_Object *eo;
+   elixir_value_t val[1];
+
+   if (!elixir_params_check(cx, _evas_object_image_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, eo);
+
+   ee = ecore_evas_object_ecore_evas_get(eo);
+
+   JS_SET_RVAL(cx, vp, _elixir_ecore_evas_to_jsval(cx, ee));
+   return JS_TRUE;
+}
+
+static JSBool
+elixir_ecore_evas_object_evas_get(JSContext *cx, uintN argc, jsval *vp)
+{
+   Ecore_Evas *ee;
+   Evas_Object *eo;
+   elixir_value_t val[1];
+
+   if (!elixir_params_check(cx, _evas_object_image_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, eo);
+
+   ee = ecore_evas_object_ecore_evas_get(eo);
+
+   return elixir_evas_to_jsval(cx, ee, &(JS_RVAL(cx, vp)));
+}
+
+static JSBool
 elixir_ecore_evas_ecore_evas_get(JSContext *cx, uintN argc, jsval *vp)
 {
    Ecore_Evas *ee;
@@ -568,13 +613,13 @@ static JSBool
 elixir_ecore_evas_cursor_get(JSContext *cx, uintN argc, jsval *vp)
 {
    JSObject *ret;
-   JSObject *jeo;
    Ecore_Evas *ee;
    Evas_Object *eo;
    int layer;
    int hot_x;
    int hot_y;
    elixir_value_t val[1];
+   jsval tmp;
 
    if (!elixir_params_check(cx, _ecore_evas_params, val, argc, JS_ARGV(cx, vp)))
      return JS_FALSE;
@@ -592,11 +637,10 @@ elixir_ecore_evas_cursor_get(JSContext *cx, uintN argc, jsval *vp)
    elixir_add_int_prop(cx, ret, "hot_x", hot_x);
    elixir_add_int_prop(cx, ret, "hot_y", hot_y);
 
-   jeo = elixir_build_ptr(cx, eo, elixir_class_request("evas_object", NULL));
-   if (!jeo)
+   if (!evas_object_to_jsval(cx, eo, &tmp))
      return JS_FALSE;
 
-   elixir_add_object_prop(cx, ret, "obj", jeo);
+   JS_DefineProperty(cx, ret, "obj", tmp, NULL, NULL, JSPROP_ENUMERATE | JSPROP_READONLY);
 
    return JS_TRUE;
 }
@@ -946,6 +990,8 @@ static JSFunctionSpec   ecore_evas_functions[] = {
   ELIXIR_FN(ecore_evas_title_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_evas_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_evas_object_image_new, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(ecore_evas_object_ecore_evas_get, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(ecore_evas_object_evas_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_evas_ecore_evas_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_evas_init, 0, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_evas_shutdown, 0, JSPROP_ENUMERATE, 0 ),
@@ -1062,6 +1108,7 @@ module_open(Elixir_Module *em, JSContext *cx, JSObject *parent)
 
    _ecore_evas_parameter.class = elixir_class_request("ecore_evas", NULL);
    _evas_parameter.class = elixir_class_request("evas", NULL);
+   _evas_object_image_parameter.class = elixir_class_request("evas_object_image", "evas_object");
 
    return EINA_TRUE;
 
