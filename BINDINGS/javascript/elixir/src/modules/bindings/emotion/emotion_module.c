@@ -60,7 +60,8 @@ static const elixir_parameter_t*        _emotion_object_string_params[3] = {
    NULL
 };
 
-static char **_elixir_emotion_regex;
+static char **_elixir_emotion_regex = NULL;
+static char **_elixir_emotion_blacklist = NULL;
 
 static void
 _elixir_evas_object(void *data, Evas *e, Evas_Object *obj, void *event_info)
@@ -249,10 +250,17 @@ elixir_emotion_object_file_set(JSContext *cx, uintN argc, jsval *vp)
 
    if (_elixir_emotion_regex[i])
      {
+        for (i = 0; _elixir_emotion_blacklist[i] != NULL; ++i)
+          if (!fnmatch(_elixir_emotion_blacklist[i], tmp, FNM_CASEFOLD))
+            break;
+
+        if (!_elixir_emotion_blacklist[i])
+          {
 #endif
-        emotion_object_file_set(obj, tmp);
-        return JS_TRUE;
+             emotion_object_file_set(obj, tmp);
+             return JS_TRUE;
 #ifdef ELIXIR_EMOTION_SECURITY
+          }
      }
 
    JS_ReportError(cx, "URI [%s] is not authorized by current security rules.", tmp);
@@ -718,6 +726,9 @@ module_open(Elixir_Module* em, JSContext* cx, JSObject* parent)
    _elixir_emotion_regex = malloc(sizeof (char**));
    _elixir_emotion_regex[0] = NULL;
 
+   _elixir_emotion_blacklist = malloc(sizeof (char **));
+   _elixir_emotion_blacklist[0] = NULL;
+
 #ifdef ELIXIR_EMOTION_SECURITY
    if (getenv("ELIXIR_EMOTION_MATCH"))
      {
@@ -730,6 +741,20 @@ module_open(Elixir_Module* em, JSContext* cx, JSObject* parent)
              _elixir_emotion_regex = realloc(_elixir_emotion_regex, sizeof (char**) * (++j + 1));
              _elixir_emotion_regex[j - 1] = strsep(&copy, ",");
              _elixir_emotion_regex[j] = NULL;
+          }
+     }
+
+   if (getenv("ELIXIR_EMOTION_BLACKLIST"))
+     {
+        char *copy;
+        unsigned int j = 0;
+
+        copy = strdup(getenv("ELIXIR_EMOTION_BLACKLIST"));
+        while (copy)
+          {
+             _elixir_emotion_blacklist = realloc(_elixir_emotion_blacklist, sizeof (char**) * (++j + 1));
+             _elixir_emotion_blacklist[j - 1] = strsep(&copy, ",");
+             _elixir_emotion_blacklist[j] = NULL;
           }
      }
 #endif
@@ -768,6 +793,20 @@ module_close(Elixir_Module *em, JSContext *cx)
      elixir_file_unregister(emotion_types[i].extention, emotion_types[i].type_name);
 
    elixir_object_unregister(cx, (JSObject**) tmp);
+
+   if (_elixir_emotion_regex)
+     {
+        free(_elixir_emotion_regex[0]);
+        free(_elixir_emotion_regex);
+        _elixir_emotion_regex = NULL;
+     }
+
+   if (_elixir_emotion_blacklist)
+     {
+        free(_elixir_emotion_blacklist[0]);
+        free(_elixir_emotion_blacklist);
+        _elixir_emotion_blacklist = NULL;
+     }
 
    em->data = NULL;
 
