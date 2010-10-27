@@ -5382,3 +5382,18 @@ Fix deriving configuration file names with libX11-1.4.
 Fix potential crash when destroying menus.
 Fix rendering of translucent shaped windows.
 
+-------------------------------------------------------------------------------
+
+Wed Oct 27 19:37:51 CEST 2010
+
+--- 1.0.6.001 ---
+Portuguese translation update (Sérgio Marques).
+Correct __A_CLEANUP (noted by Daniel Manjarres).
+Ecore no longer has ecore_list_...
+FreePmapMask() -> PmapMaskFree().
+Introduce PmapMaskInit().
+Fix rendering of argb windows in pager when compositing is enabled (noted by Zone Seventeen).
+Add ERegionIntersectOffset().
+Correct recent composite/shape fixes and fix some more related issues.
+Fix restart (broken in 1.0.6).
+
