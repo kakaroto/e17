@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-09-23 23:24+0200\n"
+"POT-Creation-Date: 2010-10-25 19:02+0200\n"
 "PO-Revision-Date: 2010-05-09 01:27+0000\n"
 "Last-Translator: Kemal Sanjta <Unknown>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -388,7 +388,7 @@ msgstr "Enlightenment se pokreće..."
 msgid "Settings..."
 msgstr "Postavke..."
 
-#: src/container.c:1191 src/dialog.c:705 src/pager.c:1043 config/strings.c:30
+#: src/container.c:1191 src/dialog.c:705 src/pager.c:1025 config/strings.c:30
 #: config/strings.c:122
 msgid "Close"
 msgstr "Zatvori"
@@ -606,11 +606,11 @@ msgstr "Vrh"
 msgid "Bottom"
 msgstr "Dno"
 
-#: src/desktops.c:2419 src/pager.c:1952 src/pager.c:1977 src/pager.c:2002
+#: src/desktops.c:2419 src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
 msgid "Left"
 msgstr "Lijevo"
 
-#: src/desktops.c:2425 src/pager.c:1964 src/pager.c:1989 src/pager.c:2014
+#: src/desktops.c:2425 src/pager.c:1941 src/pager.c:1966 src/pager.c:1991
 msgid "Right"
 msgstr "Desno"
 
@@ -674,7 +674,7 @@ msgstr ""
 msgid "Apply"
 msgstr "Izvrši"
 
-#: src/ecompmgr.c:2311
+#: src/ecompmgr.c:2338
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1317,123 +1317,123 @@ msgstr ""
 "Enlightenment Izabrana providnost\n"
 "dijalog osobina"
 
-#: src/pager.c:1032 config/strings.c:49 config/strings.c:121
+#: src/pager.c:1014 config/strings.c:49 config/strings.c:121
 msgid "Window Options"
 msgstr "Opcije prozora"
 
-#: src/pager.c:1039 config/strings.c:51 config/strings.c:124
+#: src/pager.c:1021 config/strings.c:51 config/strings.c:124
 msgid "Iconify"
 msgstr "Ikonificiraj"
 
-#: src/pager.c:1047 config/strings.c:123
+#: src/pager.c:1029 config/strings.c:123
 msgid "Annihilate"
 msgstr "Uništiti"
 
-#: src/pager.c:1051
+#: src/pager.c:1033
 msgid "Stick / Unstick"
 msgstr "Zalijepi / Odlijepi"
 
-#: src/pager.c:1058
+#: src/pager.c:1040
 msgid "Desktop Options"
 msgstr "Opcije Desktopa"
 
-#: src/pager.c:1064
+#: src/pager.c:1046
 msgid "Pager Settings..."
 msgstr "Osobine Pejdžera..."
 
-#: src/pager.c:1069
+#: src/pager.c:1051
 msgid "Snapshotting Off"
 msgstr "Slikanje Isklučeno"
 
-#: src/pager.c:1073
+#: src/pager.c:1055
 msgid "High Quality Off"
 msgstr "Visoki kvalitet Isključen"
 
-#: src/pager.c:1075
+#: src/pager.c:1057
 msgid "High Quality On"
 msgstr "Visoki kvalitet Uključen"
 
-#: src/pager.c:1080
+#: src/pager.c:1062
 msgid "Snapshotting On"
 msgstr "Slikanje Uključeno"
 
-#: src/pager.c:1084
+#: src/pager.c:1066
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1086
+#: src/pager.c:1068
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1837 src/pager.c:1932
+#: src/pager.c:1814 src/pager.c:1909
 msgid "Pager scanning speed:"
 msgstr "Brzina skeniranja pejdžera:"
 
-#: src/pager.c:1838 src/pager.c:1933
+#: src/pager.c:1815 src/pager.c:1910
 msgid "lines per second"
 msgstr "linija po sekundi"
 
-#: src/pager.c:1871
+#: src/pager.c:1848
 msgid "Enable pager display"
 msgstr "Omogući prikaz pejdžera"
 
-#: src/pager.c:1881
+#: src/pager.c:1858
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1885
+#: src/pager.c:1862
 msgid "Simple"
 msgstr "Jednostavan"
 
-#: src/pager.c:1891
+#: src/pager.c:1868
 msgid "Make miniature snapshots of the screen"
 msgstr "Napravi male slike ekrana"
 
-#: src/pager.c:1898
+#: src/pager.c:1875
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1909
+#: src/pager.c:1886
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Visoko kvalitetne glatke slike u modu za slikanje"
 
-#: src/pager.c:1914
+#: src/pager.c:1891
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Uvećaj prozore pejdžera kada je miš iznad njih"
 
-#: src/pager.c:1920
+#: src/pager.c:1897
 msgid "Pop up window title when mouse is over the window"
 msgstr "Pop up naslov prozora kada je miš iznad prozora"
 
-#: src/pager.c:1925
+#: src/pager.c:1902
 msgid "Continuously scan screen to update pager"
 msgstr "Neprestalno sekinraj ekran radi nadogradnje pejdžera"
 
-#: src/pager.c:1948
+#: src/pager.c:1925
 msgid "Mouse button to select and drag windows:"
 msgstr "Dugme miša za izbor i povlaćenje prozora:"
 
-#: src/pager.c:1958 src/pager.c:1983 src/pager.c:2008
+#: src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
 msgid "Middle"
 msgstr "Sredina"
 
-#: src/pager.c:1973
+#: src/pager.c:1950
 msgid "Mouse button to select desktops:"
 msgstr "Dugme miša za izbor desktopa:"
 
-#: src/pager.c:1998
+#: src/pager.c:1975
 msgid "Mouse button to display pager menu:"
 msgstr "Dugme miša za prikaz izbornika pejdžera:"
 
-#: src/pager.c:2022
+#: src/pager.c:1999
 msgid "Pagers"
 msgstr ""
 
-#: src/pager.c:2023
+#: src/pager.c:2000
 msgid "Pager Settings"
 msgstr "Osobine pejdžera..."
 
-#: src/pager.c:2026
+#: src/pager.c:2003
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog"

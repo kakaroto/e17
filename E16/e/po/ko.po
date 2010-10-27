@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-09-23 23:24+0200\n"
+"POT-Creation-Date: 2010-10-25 19:02+0200\n"
 "PO-Revision-Date: 2009-12-02 09:48+0000\n"
 "Last-Translator: Michael Kim <Unknown>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -386,7 +386,7 @@ msgstr "인라이튼먼트 시작중..."
 msgid "Settings..."
 msgstr ""
 
-#: src/container.c:1191 src/dialog.c:705 src/pager.c:1043 config/strings.c:30
+#: src/container.c:1191 src/dialog.c:705 src/pager.c:1025 config/strings.c:30
 #: config/strings.c:122
 msgid "Close"
 msgstr "닫기"
@@ -604,11 +604,11 @@ msgstr "위"
 msgid "Bottom"
 msgstr "아래"
 
-#: src/desktops.c:2419 src/pager.c:1952 src/pager.c:1977 src/pager.c:2002
+#: src/desktops.c:2419 src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
 msgid "Left"
 msgstr "왼쪽"
 
-#: src/desktops.c:2425 src/pager.c:1964 src/pager.c:1989 src/pager.c:2014
+#: src/desktops.c:2425 src/pager.c:1941 src/pager.c:1966 src/pager.c:1991
 msgid "Right"
 msgstr "오른쪽"
 
@@ -672,7 +672,7 @@ msgstr ""
 msgid "Apply"
 msgstr "적용"
 
-#: src/ecompmgr.c:2311
+#: src/ecompmgr.c:2338
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1313,123 +1313,123 @@ msgstr ""
 "인라이튼먼트 테마 투명도 설정\n"
 "설정 대화상자"
 
-#: src/pager.c:1032 config/strings.c:49 config/strings.c:121
+#: src/pager.c:1014 config/strings.c:49 config/strings.c:121
 msgid "Window Options"
 msgstr "창 옵션"
 
-#: src/pager.c:1039 config/strings.c:51 config/strings.c:124
+#: src/pager.c:1021 config/strings.c:51 config/strings.c:124
 msgid "Iconify"
 msgstr "아이콘화"
 
-#: src/pager.c:1047 config/strings.c:123
+#: src/pager.c:1029 config/strings.c:123
 msgid "Annihilate"
 msgstr "전멸시킴"
 
-#: src/pager.c:1051
+#: src/pager.c:1033
 msgid "Stick / Unstick"
 msgstr "고착 / 잡아뗌"
 
-#: src/pager.c:1058
+#: src/pager.c:1040
 msgid "Desktop Options"
 msgstr "데스크탑 옵션"
 
-#: src/pager.c:1064
+#: src/pager.c:1046
 msgid "Pager Settings..."
 msgstr "페이저 설정..."
 
-#: src/pager.c:1069
+#: src/pager.c:1051
 msgid "Snapshotting Off"
 msgstr "스냅샷 사용않함"
 
-#: src/pager.c:1073
+#: src/pager.c:1055
 msgid "High Quality Off"
 msgstr "고해상도 사용않함"
 
-#: src/pager.c:1075
+#: src/pager.c:1057
 msgid "High Quality On"
 msgstr "고해상도 사용"
 
-#: src/pager.c:1080
+#: src/pager.c:1062
 msgid "Snapshotting On"
 msgstr "스냅샷 사용"
 
-#: src/pager.c:1084
+#: src/pager.c:1066
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1086
+#: src/pager.c:1068
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1837 src/pager.c:1932
+#: src/pager.c:1814 src/pager.c:1909
 msgid "Pager scanning speed:"
 msgstr "페이저 스캐닝 속도:"
 
-#: src/pager.c:1838 src/pager.c:1933
+#: src/pager.c:1815 src/pager.c:1910
 msgid "lines per second"
 msgstr "초당 줄수"
 
-#: src/pager.c:1871
+#: src/pager.c:1848
 msgid "Enable pager display"
 msgstr "페이저 표시 가능"
 
-#: src/pager.c:1881
+#: src/pager.c:1858
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1885
+#: src/pager.c:1862
 msgid "Simple"
 msgstr ""
 
-#: src/pager.c:1891
+#: src/pager.c:1868
 msgid "Make miniature snapshots of the screen"
 msgstr "축소된 화면의 스냅샷 만들기"
 
-#: src/pager.c:1898
+#: src/pager.c:1875
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1909
+#: src/pager.c:1886
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "스냅샷 모드에서 부드러운 고해상도 스냅샷"
 
-#: src/pager.c:1914
+#: src/pager.c:1891
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "마우스가 페이저 안의 창 위에 있을 때 그 창 확대"
 
-#: src/pager.c:1920
+#: src/pager.c:1897
 msgid "Pop up window title when mouse is over the window"
 msgstr "마우스가 페이저 안의 창 위에 있을 때 그 창 제목 보여주기"
 
-#: src/pager.c:1925
+#: src/pager.c:1902
 msgid "Continuously scan screen to update pager"
 msgstr "페이저를 갱신하기 위해 연속적으로 화면 스캔"
 
-#: src/pager.c:1948
+#: src/pager.c:1925
 msgid "Mouse button to select and drag windows:"
 msgstr "창을 선택하고 끌기 위한 마우스 버튼:"
 
-#: src/pager.c:1958 src/pager.c:1983 src/pager.c:2008
+#: src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
 msgid "Middle"
 msgstr "중간"
 
-#: src/pager.c:1973
+#: src/pager.c:1950
 msgid "Mouse button to select desktops:"
 msgstr "데스크탑을 선택할 마우스 버튼"
 
-#: src/pager.c:1998
+#: src/pager.c:1975
 msgid "Mouse button to display pager menu:"
 msgstr "페이저 메뉴를 표시할 마우스 버튼:"
 
-#: src/pager.c:2022
+#: src/pager.c:1999
 msgid "Pagers"
 msgstr ""
 
-#: src/pager.c:2023
+#: src/pager.c:2000
 msgid "Pager Settings"
 msgstr "페이저 설정"
 
-#: src/pager.c:2026
+#: src/pager.c:2003
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog"

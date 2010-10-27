@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-09-23 23:24+0200\n"
+"POT-Creation-Date: 2010-10-25 19:02+0200\n"
 "PO-Revision-Date: 2010-04-23 21:20+0000\n"
 "Last-Translator: Fernando Muñoz <munozferna@gmail.com>\n"
 "Language-Team: \n"
@@ -425,7 +425,7 @@ msgstr "Iniciando Enlightenment..."
 msgid "Settings..."
 msgstr "Configuraciones..."
 
-#: src/container.c:1191 src/dialog.c:705 src/pager.c:1043 config/strings.c:30
+#: src/container.c:1191 src/dialog.c:705 src/pager.c:1025 config/strings.c:30
 #: config/strings.c:122
 msgid "Close"
 msgstr "Cerrar"
@@ -644,11 +644,11 @@ msgstr "Arriba"
 msgid "Bottom"
 msgstr "Abajo"
 
-#: src/desktops.c:2419 src/pager.c:1952 src/pager.c:1977 src/pager.c:2002
+#: src/desktops.c:2419 src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
 msgid "Left"
 msgstr "Izquierdo"
 
-#: src/desktops.c:2425 src/pager.c:1964 src/pager.c:1989 src/pager.c:2014
+#: src/desktops.c:2425 src/pager.c:1941 src/pager.c:1966 src/pager.c:1991
 msgid "Right"
 msgstr "Derecho"
 
@@ -712,7 +712,7 @@ msgstr ""
 msgid "Apply"
 msgstr "Aplicar"
 
-#: src/ecompmgr.c:2311
+#: src/ecompmgr.c:2338
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1374,123 +1374,123 @@ msgstr ""
 "Transparencia Selectiva de Enlightenment\n"
 "Dialogo de Configuracion"
 
-#: src/pager.c:1032 config/strings.c:49 config/strings.c:121
+#: src/pager.c:1014 config/strings.c:49 config/strings.c:121
 msgid "Window Options"
 msgstr "Opciones de Ventanas"
 
-#: src/pager.c:1039 config/strings.c:51 config/strings.c:124
+#: src/pager.c:1021 config/strings.c:51 config/strings.c:124
 msgid "Iconify"
 msgstr "Iconizar"
 
-#: src/pager.c:1047 config/strings.c:123
+#: src/pager.c:1029 config/strings.c:123
 msgid "Annihilate"
 msgstr "Aniquilar"
 
-#: src/pager.c:1051
+#: src/pager.c:1033
 msgid "Stick / Unstick"
 msgstr "Pegar / Despegar"
 
-#: src/pager.c:1058
+#: src/pager.c:1040
 msgid "Desktop Options"
 msgstr "Opciones de Escritorio"
 
-#: src/pager.c:1064
+#: src/pager.c:1046
 msgid "Pager Settings..."
 msgstr "Configurar Conmutador..."
 
-#: src/pager.c:1069
+#: src/pager.c:1051
 msgid "Snapshotting Off"
 msgstr "Miniaturas Inhabilitadas"
 
-#: src/pager.c:1073
+#: src/pager.c:1055
 msgid "High Quality Off"
 msgstr "Calidad Alta Inhabilitada"
 
-#: src/pager.c:1075
+#: src/pager.c:1057
 msgid "High Quality On"
 msgstr "Calidad Alta Habilitada"
 
-#: src/pager.c:1080
+#: src/pager.c:1062
 msgid "Snapshotting On"
 msgstr "Miniaturas Habilitadas"
 
-#: src/pager.c:1084
+#: src/pager.c:1066
 msgid "Zoom Off"
 msgstr "alejar"
 
-#: src/pager.c:1086
+#: src/pager.c:1068
 msgid "Zoom On"
 msgstr "acercar"
 
-#: src/pager.c:1837 src/pager.c:1932
+#: src/pager.c:1814 src/pager.c:1909
 msgid "Pager scanning speed:"
 msgstr "Velocidad de barrido del Conmutador:"
 
-#: src/pager.c:1838 src/pager.c:1933
+#: src/pager.c:1815 src/pager.c:1910
 msgid "lines per second"
 msgstr "líneas por segundo"
 
-#: src/pager.c:1871
+#: src/pager.c:1848
 msgid "Enable pager display"
 msgstr "Habilitar el uso del Conmutador"
 
-#: src/pager.c:1881
+#: src/pager.c:1858
 msgid "Pager Mode:"
 msgstr "Modo de paginación"
 
-#: src/pager.c:1885
+#: src/pager.c:1862
 msgid "Simple"
 msgstr "Simple"
 
-#: src/pager.c:1891
+#: src/pager.c:1868
 msgid "Make miniature snapshots of the screen"
 msgstr "Hacer Miniaturas de la pantalla"
 
-#: src/pager.c:1898
+#: src/pager.c:1875
 msgid "Live Update"
 msgstr "Live Update"
 
-#: src/pager.c:1909
+#: src/pager.c:1886
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Suavizar miniaturas de alta calidad en modo Miniaturas"
 
-#: src/pager.c:1914
+#: src/pager.c:1891
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Realizar acercamiento cuando el ratón está sobre ventanas"
 
-#: src/pager.c:1920
+#: src/pager.c:1897
 msgid "Pop up window title when mouse is over the window"
 msgstr "Mostrar título cuando el ratón está sobre ventanas"
 
-#: src/pager.c:1925
+#: src/pager.c:1902
 msgid "Continuously scan screen to update pager"
 msgstr "Barrer continuamente la pantalla para actualizar el Conmutador"
 
-#: src/pager.c:1948
+#: src/pager.c:1925
 msgid "Mouse button to select and drag windows:"
 msgstr "Botón del ratón para seleccionar y arrastrar ventanas:"
 
-#: src/pager.c:1958 src/pager.c:1983 src/pager.c:2008
+#: src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
 msgid "Middle"
 msgstr "Medio"
 
-#: src/pager.c:1973
+#: src/pager.c:1950
 msgid "Mouse button to select desktops:"
 msgstr "Botón del ratón para seleccionar escritorios:"
 
-#: src/pager.c:1998
+#: src/pager.c:1975
 msgid "Mouse button to display pager menu:"
 msgstr "Botón del ratón para Mostrar menú del Conmutador:"
 
-#: src/pager.c:2022
+#: src/pager.c:1999
 msgid "Pagers"
 msgstr ""
 
-#: src/pager.c:2023
+#: src/pager.c:2000
 msgid "Pager Settings"
 msgstr "Configurar Conmutador"
 
-#: src/pager.c:2026
+#: src/pager.c:2003
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog"

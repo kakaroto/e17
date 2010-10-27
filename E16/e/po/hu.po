@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-09-23 23:24+0200\n"
+"POT-Creation-Date: 2010-10-25 19:02+0200\n"
 "PO-Revision-Date: 2010-02-19 03:04+0000\n"
 "Last-Translator: Roth Róbert <Unknown>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -395,7 +395,7 @@ msgstr "Az Enlightenment indítása..."
 msgid "Settings..."
 msgstr "Beállítások..."
 
-#: src/container.c:1191 src/dialog.c:705 src/pager.c:1043 config/strings.c:30
+#: src/container.c:1191 src/dialog.c:705 src/pager.c:1025 config/strings.c:30
 #: config/strings.c:122
 msgid "Close"
 msgstr "Bezár"
@@ -612,11 +612,11 @@ msgstr "Fent"
 msgid "Bottom"
 msgstr "Lent"
 
-#: src/desktops.c:2419 src/pager.c:1952 src/pager.c:1977 src/pager.c:2002
+#: src/desktops.c:2419 src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
 msgid "Left"
 msgstr "Bal"
 
-#: src/desktops.c:2425 src/pager.c:1964 src/pager.c:1989 src/pager.c:2014
+#: src/desktops.c:2425 src/pager.c:1941 src/pager.c:1966 src/pager.c:1991
 msgid "Right"
 msgstr "Jobb"
 
@@ -680,7 +680,7 @@ msgstr ""
 msgid "Apply"
 msgstr "Alkalmaz"
 
-#: src/ecompmgr.c:2311
+#: src/ecompmgr.c:2338
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1275,123 +1275,123 @@ msgid ""
 "Settings Dialog"
 msgstr ""
 
-#: src/pager.c:1032 config/strings.c:49 config/strings.c:121
+#: src/pager.c:1014 config/strings.c:49 config/strings.c:121
 msgid "Window Options"
 msgstr "Ablak beállításai"
 
-#: src/pager.c:1039 config/strings.c:51 config/strings.c:124
+#: src/pager.c:1021 config/strings.c:51 config/strings.c:124
 msgid "Iconify"
 msgstr "Kicsinyít"
 
-#: src/pager.c:1047 config/strings.c:123
+#: src/pager.c:1029 config/strings.c:123
 msgid "Annihilate"
 msgstr "Megsemmisít"
 
-#: src/pager.c:1051
+#: src/pager.c:1033
 msgid "Stick / Unstick"
 msgstr "Rögzít"
 
-#: src/pager.c:1058
+#: src/pager.c:1040
 msgid "Desktop Options"
 msgstr "Asztal beállításai"
 
-#: src/pager.c:1064
+#: src/pager.c:1046
 msgid "Pager Settings..."
 msgstr "Pager beállításai..."
 
-#: src/pager.c:1069
+#: src/pager.c:1051
 msgid "Snapshotting Off"
 msgstr "Miniatúra ki"
 
-#: src/pager.c:1073
+#: src/pager.c:1055
 msgid "High Quality Off"
 msgstr "Jó minőség ki"
 
-#: src/pager.c:1075
+#: src/pager.c:1057
 msgid "High Quality On"
 msgstr "Jó minőség be"
 
-#: src/pager.c:1080
+#: src/pager.c:1062
 msgid "Snapshotting On"
 msgstr "Miniatúra be"
 
-#: src/pager.c:1084
+#: src/pager.c:1066
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1086
+#: src/pager.c:1068
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1837 src/pager.c:1932
+#: src/pager.c:1814 src/pager.c:1909
 msgid "Pager scanning speed:"
 msgstr "Pager frissítési sebessége:"
 
-#: src/pager.c:1838 src/pager.c:1933
+#: src/pager.c:1815 src/pager.c:1910
 msgid "lines per second"
 msgstr "sor másodpercenként"
 
-#: src/pager.c:1871
+#: src/pager.c:1848
 msgid "Enable pager display"
 msgstr "Lapozó megjelenítése"
 
-#: src/pager.c:1881
+#: src/pager.c:1858
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1885
+#: src/pager.c:1862
 msgid "Simple"
 msgstr "Egyszerű"
 
-#: src/pager.c:1891
+#: src/pager.c:1868
 msgid "Make miniature snapshots of the screen"
 msgstr "Miniatúrák használata"
 
-#: src/pager.c:1898
+#: src/pager.c:1875
 msgid "Live Update"
 msgstr "Frissítés"
 
-#: src/pager.c:1909
+#: src/pager.c:1886
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Jó minőségű miniatúrák használata"
 
-#: src/pager.c:1914
+#: src/pager.c:1891
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Ablak kinagyítása, amikor az egérmutató fölötte van"
 
-#: src/pager.c:1920
+#: src/pager.c:1897
 msgid "Pop up window title when mouse is over the window"
 msgstr "Ablak nevének megjelenítése, amikor az egérmutató fölötte van"
 
-#: src/pager.c:1925
+#: src/pager.c:1902
 msgid "Continuously scan screen to update pager"
 msgstr "Pager állandó frissítése"
 
-#: src/pager.c:1948
+#: src/pager.c:1925
 msgid "Mouse button to select and drag windows:"
 msgstr "Egérgomb az ablakok kiválasztásához:"
 
-#: src/pager.c:1958 src/pager.c:1983 src/pager.c:2008
+#: src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
 msgid "Middle"
 msgstr "Középső"
 
-#: src/pager.c:1973
+#: src/pager.c:1950
 msgid "Mouse button to select desktops:"
 msgstr "Egérgomb az asztalok kiválasztásához:"
 
-#: src/pager.c:1998
+#: src/pager.c:1975
 msgid "Mouse button to display pager menu:"
 msgstr "Egérgomb a pager menü megjelenítéséhez"
 
-#: src/pager.c:2022
+#: src/pager.c:1999
 msgid "Pagers"
 msgstr ""
 
-#: src/pager.c:2023
+#: src/pager.c:2000
 msgid "Pager Settings"
 msgstr "Lapozó beállításai"
 
-#: src/pager.c:2026
+#: src/pager.c:2003
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog"
