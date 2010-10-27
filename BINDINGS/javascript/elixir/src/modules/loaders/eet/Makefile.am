@@ -5,7 +5,7 @@ MAINTAINERCLEANFILES = Makefile.in
 if BUILD_MODULE_EET
 if !EINA_STATIC_BUILD_EET
 
-INCLUDES = -I. -I$(top_srcdir)/src/include @EET_CFLAGS@
+INCLUDES = -I. -I$(top_srcdir)/src/include @EET_CFLAGS@ @elixir_cflags@
 
 pkgdir = $(libdir)/elixir/loaders/eet/$(MODULE_ARCH)
 

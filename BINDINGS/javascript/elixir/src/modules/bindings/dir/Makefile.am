@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 
 MAINTAINERCLEANFILES = Makefile.in
 
-INCLUDES = -I. -I$(top_srcdir)/src/include @EINA_CFLAGS@
+INCLUDES = -I. -I$(top_srcdir)/src/include @EINA_CFLAGS@ @elixir_cflags@
 
 if BUILD_MODULE_DIR
 if !EINA_STATIC_BUILD_DIR

@@ -5,7 +5,7 @@ MAINTAINERCLEANFILES = Makefile.in
 if BUILD_MODULE_ECORE_DOWNLOAD
 if !EINA_STATIC_BUILD_ECORE_DOWNLOAD
 
-INCLUDES = -I. -I$(top_srcdir)/src/include @ECORE_DOWNLOAD_CFLAGS@
+INCLUDES = -I. -I$(top_srcdir)/src/include @ECORE_DOWNLOAD_CFLAGS@ @elixir_cflags@
 
 pkgdir = $(libdir)/elixir/bindings/ecore-download/$(MODULE_ARCH)
 

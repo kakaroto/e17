@@ -63,90 +63,6 @@ static const elixir_parameter_t*        _emotion_object_string_params[3] = {
 static char **_elixir_emotion_regex = NULL;
 static char **_elixir_emotion_blacklist = NULL;
 
-static void
-_elixir_evas_object(void *data, Evas *e, Evas_Object *obj, void *event_info)
-{
-   Eina_Bool suspended;
-   Eina_List *jsmap;
-   JSContext *cx;
-   JSObject *js_obj;
-   jsval *tmp;
-
-   (void) data;
-   (void) e;
-   (void) event_info;
-
-   tmp = evas_object_data_del(obj, "elixir_jsval");
-   if (!tmp) return ;
-
-   cx = evas_object_event_callback_del(obj, EVAS_CALLBACK_FREE, _elixir_evas_object);
-
-   suspended = elixir_function_suspended(cx);
-
-   if (suspended) elixir_function_start(cx);
-
-   js_obj = JSVAL_TO_OBJECT(*tmp);
-   if (!js_obj) return ;
-   JS_SetPrivate(cx, js_obj, NULL);
-
-   elixir_rval_delete(cx, tmp);
-   free(tmp);
-
-   jsmap = evas_object_data_del(obj, "elixir_jsmap");
-   elixir_jsmap_free(jsmap, cx);
-
-   if (suspended) elixir_function_stop(cx);
-
-   elixir_decrease_count(cx);
-}
-
-Eina_Bool
-_emotion_evas_object_to_jsval(JSContext *cx, Evas_Object *obj, jsval *rval)
-{
-   JSClass *evas_object_class;
-   jsval *tmp;
-   JSObject *jo;
-
-   if (!obj)
-     {
-        *rval = JSVAL_NULL;
-        return EINA_TRUE;
-     }
-
-   tmp = evas_object_data_get(obj, "elixir_jsval");
-   if (tmp)
-     {
-        /* FIXME: Instruct tracker of returned object. */
-        *rval = *tmp;
-        return EINA_TRUE;
-     }
-
-   evas_object_class = elixir_class_request("emotion_object", "evas_object_smart");
-
-   jo = elixir_build_ptr(cx, obj, evas_object_class);
-   if (!jo)
-     return EINA_FALSE;
-   *rval = OBJECT_TO_JSVAL(jo);
-
-   tmp = malloc(sizeof (jsval));
-   if (!tmp) return EINA_FALSE;
-
-   *tmp = *rval;
-   if (!elixir_rval_register(cx, tmp))
-     {
-        free(tmp);
-        return EINA_FALSE;
-     }
-
-   evas_object_data_set(obj, "elixir_jsval", tmp);
-   elixir_increase_count(cx);
-   evas_object_event_callback_add(obj, EVAS_CALLBACK_FREE, _elixir_evas_object, cx);
-
-   return EINA_TRUE;
-}
-
-
-
 static JSBool
 elixir_emotion_object_add(JSContext *cx, uintN argc, jsval *vp)
 {
@@ -161,7 +77,7 @@ elixir_emotion_object_add(JSContext *cx, uintN argc, jsval *vp)
 
    obj = emotion_object_add(evas);
 
-   return _emotion_evas_object_to_jsval(cx, obj, &(JS_RVAL(cx, vp)));
+   return evas_object_to_jsval(cx, obj, &(JS_RVAL(cx, vp)));
 }
 
 static JSBool

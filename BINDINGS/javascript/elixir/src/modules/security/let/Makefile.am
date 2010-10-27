@@ -5,7 +5,7 @@ MAINTAINERCLEANFILES = Makefile.in
 if BUILD_MODULE_LET
 if !EINA_STATIC_BUILD_LET
 
-INCLUDES = -I. -I$(top_srcdir)/src/include @EINA_CFLAGS@
+INCLUDES = -I. -I$(top_srcdir)/src/include @EINA_CFLAGS@ @elixir_cflags@
 
 pkgdir = $(libdir)/elixir/security/let/$(MODULE_ARCH)
 

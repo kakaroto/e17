@@ -5,7 +5,7 @@ MAINTAINERCLEANFILES = Makefile.in
 if BUILD_MODULE_CMP
 if !EINA_STATIC_BUILD_CMP
 
-INCLUDES = -I. -I$(top_srcdir)/src/include @EINA_CFLAGS@
+INCLUDES = -I. -I$(top_srcdir)/src/include @EINA_CFLAGS@ @elixir_cflags@
 
 pkgdir = $(libdir)/elixir/security/cmp/$(MODULE_ARCH)
 

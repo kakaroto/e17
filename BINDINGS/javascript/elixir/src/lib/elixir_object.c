@@ -354,3 +354,128 @@ elixir_jsmap_free(Eina_List *list, JSContext *cx)
      }
 }
 
+static const struct {
+  const char *evas_name;
+  const char *elixir_name;
+} _matching_evas_object[] = {
+  { "rectangle", "evas_object_rectangle" },
+  { "polygon", "evas_object_polygon" },
+  { "textblock", "evas_object_textblock" },
+  { "text", "evas_object_text" },
+  { "line", "evas_object_line" },
+  { "image", "evas_object_image" },
+  { "edje", "edje_object" },
+  { "emotion_object", "emotion_object" },
+  { NULL, NULL }
+};
+
+const char*
+evas_object_to_elixir_object(Evas_Object *obj)
+{
+   const char *evas_name;
+   unsigned int  i;
+
+   if (!obj)
+     return "evas_object";
+
+   evas_name = evas_object_type_get(obj);
+
+   for (i = 0; _matching_evas_object[i].evas_name; ++i)
+     if (strcmp(_matching_evas_object[i].evas_name, evas_name) == 0)
+       return _matching_evas_object[i].elixir_name;
+
+   return "evas_object_smart";
+}
+
+#ifdef BUILD_MODULE_EVAS
+static void
+_elixir_evas_object(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Eina_List *jsmap;
+   JSContext *cx;
+   JSObject *js_obj;
+   jsval *tmp;
+   Eina_Bool suspended;
+
+   (void) data;
+   (void) e;
+   (void) event_info;
+
+   tmp = evas_object_data_del(obj, "elixir_jsval");
+   if (!tmp) return ;
+
+   cx = evas_object_event_callback_del(obj, EVAS_CALLBACK_FREE, _elixir_evas_object);
+
+   suspended = elixir_function_suspended(cx);
+
+   if (suspended) elixir_function_start(cx);
+
+   js_obj = JSVAL_TO_OBJECT(*tmp);
+   if (!js_obj) return ;
+   JS_SetPrivate(cx, js_obj, NULL);
+
+   elixir_rval_delete(cx, tmp);
+   free(tmp);
+
+   jsmap = evas_object_data_del(obj, "elixir_jsmap");
+   elixir_jsmap_free(jsmap, cx);
+
+   if (suspended) elixir_function_stop(cx);
+
+   elixir_decrease_count(cx);
+}
+#endif
+
+EAPI Eina_Bool
+evas_object_to_jsval(JSContext *cx, Evas_Object *obj, jsval *rval)
+{
+#ifdef BUILD_MODULE_EVAS
+   JSClass *evas_object_class;
+   jsval *tmp;
+   JSObject *jo;
+
+   if (!obj)
+     {
+	*rval = JSVAL_NULL;
+	return EINA_TRUE;
+     }
+
+   tmp = evas_object_data_get(obj, "elixir_jsval");
+   if (tmp)
+     {
+	/* FIXME: Instruct tracker of returned object. */
+	*rval = *tmp;
+	return EINA_TRUE;
+     }
+
+   evas_object_class = elixir_class_request(evas_object_to_elixir_object(obj), "evas_object");
+
+   jo = elixir_build_ptr(cx, obj, evas_object_class);
+   if (!jo)
+     return EINA_FALSE;
+   *rval = OBJECT_TO_JSVAL(jo);
+
+   tmp = malloc(sizeof (jsval));
+   if (!tmp) return EINA_FALSE;
+
+   *tmp = *rval;
+   if (!elixir_rval_register(cx, tmp))
+     {
+	free(tmp);
+	return EINA_FALSE;
+     }
+
+   evas_object_data_set(obj, "elixir_jsval", tmp);
+   elixir_increase_count(cx);
+   evas_object_event_callback_add(obj, EVAS_CALLBACK_FREE, _elixir_evas_object, cx);
+
+   return EINA_TRUE;
+#else
+   (void) cx;
+   (void) obj;
+   (void) rval;
+   return EINA_FALSE;
+#endif
+}
+
+

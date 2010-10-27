@@ -1,4 +1,4 @@
-INCLUDES = -Wall -I$(top_srcdir)/src/include @EINA_CFLAGS@ @EET_CFLAGS@
+INCLUDES = -Wall -I$(top_srcdir)/src/include @EINA_CFLAGS@ @EET_CFLAGS@ @elixir_cflags@
 
 bin_PROGRAMS = elixir
 if BUILD_MODULE_EET

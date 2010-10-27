@@ -22,10 +22,18 @@
 # endif
 #endif
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <stdio.h>
 #include <jsapi.h>
 
 #include <Eina.h>
+
+#ifdef BUILD_MODULE_EVAS
+# include <Evas.h>
+#endif
 
 #define ELIXIR_ID_KEY_FILE "/etc/elixir.keys"
 
@@ -459,6 +467,10 @@ EAPI Eina_Bool elixir_extract_geometry(JSContext *cx, JSObject *obj, int *x, int
 
 EAPI JSObject *elixir_new_position(JSContext *cx, int x, int y);
 EAPI Eina_Bool elixir_extract_position(JSContext *cx, JSObject *obj, int *x, int *y);
+
+#ifdef BUILD_MODULE_EVAS
+EAPI Eina_Bool evas_object_to_jsval(JSContext *cx, Evas_Object *obj, jsval *rval);
+#endif
 
 /* Must become useless. */
 extern FILE*            out;

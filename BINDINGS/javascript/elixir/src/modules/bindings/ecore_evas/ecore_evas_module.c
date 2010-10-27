@@ -543,8 +543,7 @@ elixir_ecore_evas_object_image_new(JSContext *cx, uintN argc, jsval *vp)
 
    eo = ecore_evas_object_image_new(ee_target);
 
-   elixir_return_ptr(cx, vp, eo, elixir_class_request("evas_object", NULL));
-   return JS_TRUE;
+   return evas_object_to_jsval(cx, eo, &(JS_RVAL(cx, vp)));
 }
 
 static JSBool

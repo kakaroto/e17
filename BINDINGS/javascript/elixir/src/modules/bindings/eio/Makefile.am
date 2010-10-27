@@ -5,7 +5,7 @@ MAINTAINERCLEANFILES = Makefile.in
 if BUILD_MODULE_EIO
 if !EINA_STATIC_BUILD_EIO
 
-INCLUDES = -I. -I$(top_srcdir)/src/include @EIO_CFLAGS@
+INCLUDES = -I. -I$(top_srcdir)/src/include @EIO_CFLAGS@ @elixir_cflags@
 
 pkgdir = $(libdir)/elixir/bindings/eio/$(MODULE_ARCH)
 

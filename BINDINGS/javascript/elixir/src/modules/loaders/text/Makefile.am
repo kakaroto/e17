@@ -4,7 +4,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 if !EINA_STATIC_BUILD_TEXT
 
-INCLUDES = -I. -I$(top_srcdir)/src/include @EINA_CFLAGS@
+INCLUDES = -I. -I$(top_srcdir)/src/include @EINA_CFLAGS@ @elixir_cflags@
 
 pkgdir = $(libdir)/elixir/loaders/text/$(MODULE_ARCH)
 

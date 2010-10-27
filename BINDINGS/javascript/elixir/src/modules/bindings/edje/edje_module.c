@@ -230,118 +230,6 @@ static const elixir_parameter_t*	_edje_object_bool_params[3] = {
   NULL
 };
 
-static const struct {
-  const char    *evas_name;
-  const char    *elixir_name;
-} _matching_evas_object[] = {
-  { "rectangle", "evas_object_rectangle" },
-  { "polygon", "evas_object_polygon" },
-  { "textblock", "evas_object_textblock" },
-  { "text", "evas_object_text" },
-  { "line", "evas_object_line" },
-  { "image", "evas_object_image" },
-  { "edje", "edje_object" },
-  { NULL, NULL }
-};
-
-const char*
-_elixir_evas_object_to_elixir_object(Evas_Object *obj)
-{
-   const char   *evas_name;
-   unsigned int  i;
-
-   if (!obj)
-     return "evas_object";
-
-   evas_name = evas_object_type_get(obj);
-
-   for (i = 0; _matching_evas_object[i].evas_name; ++i)
-     if (strcmp(_matching_evas_object[i].evas_name, evas_name) == 0)
-       return _matching_evas_object[i].elixir_name;
-
-   return "evas_smart_object";
-}
-
-static void
-_elixir_evas_object(void *data, Evas *e, Evas_Object *obj, void *event_info)
-{
-   Eina_Bool suspended;
-   Eina_List *jsmap;
-   JSContext *cx;
-   JSObject *js_obj;
-   jsval *tmp;
-
-   (void) data;
-   (void) e;
-   (void) event_info;
-
-   tmp = evas_object_data_del(obj, "elixir_jsval");
-   if (!tmp) return ;
-
-   cx = evas_object_event_callback_del(obj, EVAS_CALLBACK_FREE, _elixir_evas_object);
-
-   suspended = elixir_function_suspended(cx);
-
-   if (suspended) elixir_function_start(cx);
-
-   js_obj = JSVAL_TO_OBJECT(*tmp);
-   if (!js_obj) return ;
-   JS_SetPrivate(cx, js_obj, NULL);
-
-   elixir_rval_delete(cx, tmp);
-   free(tmp);
-
-   jsmap = evas_object_data_del(obj, "elixir_jsmap");
-   elixir_jsmap_free(jsmap, cx);
-
-   if (suspended) elixir_function_stop(cx);
-
-   elixir_decrease_count(cx);
-}
-
-Eina_Bool
-_elixir_evas_object_to_jsval(JSContext *cx, Evas_Object *obj, jsval *rval)
-{
-   JSClass *evas_object_class;
-   JSObject *jo;
-   jsval *tmp;
-
-   if (!obj) {
-      *rval = JSVAL_NULL;
-      return EINA_TRUE;
-   }
-
-   tmp = evas_object_data_get(obj, "elixir_jsval");
-   if (tmp)
-     {
-	*rval = *tmp;
-	return EINA_TRUE;
-     }
-
-   evas_object_class = elixir_class_request(_elixir_evas_object_to_elixir_object(obj), "evas_object");
-
-   jo = elixir_build_ptr(cx, obj, evas_object_class);
-   if (!jo)
-     return EINA_FALSE;
-   *rval = OBJECT_TO_JSVAL(jo);
-
-   tmp = malloc(sizeof (jsval));
-   if (!tmp) return EINA_FALSE;
-
-   *tmp = *rval;
-   if (!elixir_rval_register(cx, tmp))
-     {
-	free(tmp);
-	return EINA_FALSE;
-     }
-
-   evas_object_data_set(obj, "elixir_jsval", tmp);
-   elixir_increase_count(cx);
-   evas_object_event_callback_add(obj, EVAS_CALLBACK_FREE, _elixir_evas_object, cx);
-
-   return EINA_TRUE;
-}
-
 FAST_CALL_PARAMS(edje_init, elixir_int_params_void);
 FAST_CALL_PARAMS(edje_shutdown, elixir_int_params_void);
 FAST_CALL_PARAMS(edje_file_cache_get, elixir_int_params_void);
@@ -714,7 +602,7 @@ elixir_edje_object_add(JSContext *cx, uintN argc, jsval *vp)
 
    eo = edje_object_add(e);
 
-   return _elixir_evas_object_to_jsval(cx, eo, &JS_RVAL(cx, vp));
+   return evas_object_to_jsval(cx, eo, &JS_RVAL(cx, vp));
 }
 
 static JSBool
@@ -845,7 +733,7 @@ elixir_evas_object_params_edje_object_string(Evas_Object* (*func)(const Evas_Obj
 
    ret = func(eo, part);
 
-   return _elixir_evas_object_to_jsval(cx, ret, &JS_RVAL(cx, vp));
+   return evas_object_to_jsval(cx, ret, &JS_RVAL(cx, vp));
 }
 
 FAST_CALL_PARAMS_CAST(edje_object_part_object_get, elixir_evas_object_params_edje_object_string);
@@ -1251,7 +1139,7 @@ elixir_edje_object_part_box_remove(JSContext *cx, uintN argc, jsval *vp)
 
    ret = edje_object_part_box_remove(eo, part, child);
 
-   return _elixir_evas_object_to_jsval(cx, ret, &JS_RVAL(cx, vp));
+   return evas_object_to_jsval(cx, ret, &JS_RVAL(cx, vp));
 }
 
 static JSBool
@@ -1644,7 +1532,7 @@ elixir_edje_object_part_box_remove_at(JSContext *cx, uintN argc, jsval *vp)
 
    ret = edje_object_part_box_remove_at(eo, part, pos);
 
-   return _elixir_evas_object_to_jsval(cx, ret, &JS_RVAL(cx, vp));
+   return evas_object_to_jsval(cx, ret, &JS_RVAL(cx, vp));
 }
 
 static JSBool
@@ -1963,7 +1851,7 @@ _elixir_edje_object_item_provider_set(void *data,
 
    elixir_function_start(cx);
 
-   if (!_elixir_evas_object_to_jsval(cx, obj, argv + 1))
+   if (!evas_object_to_jsval(cx, obj, argv + 1))
      goto on_edje_error;
 
    js_part = elixir_ndup(cx, part, strlen(part));
@@ -2056,7 +1944,7 @@ _elixir_edje_object_text_insert_filter_cb(void *data, Evas_Object *obj, const ch
 
    elixir_function_start(cx);
 
-   if (!_elixir_evas_object_to_jsval(cx, obj, argv + 1))
+   if (!evas_object_to_jsval(cx, obj, argv + 1))
      goto on_edje_error;
 
    spart = elixir_ndup(cx, part, strlen(part));
@@ -2162,7 +2050,7 @@ _elixir_edje_object_text_change_cb(void* data, Evas_Object* obj, const char* par
 
    elixir_function_start(cx);
 
-   if (!_elixir_evas_object_to_jsval(cx, obj, argv + 1))
+   if (!evas_object_to_jsval(cx, obj, argv + 1))
      goto on_firt_error;
 
    str = elixir_ndup(cx, part, strlen(part));
@@ -2226,7 +2114,7 @@ _elixir_edje_object_signal_cb(void* data, Evas_Object* obj,
 
    elixir_function_start(cx);
 
-   if (!_elixir_evas_object_to_jsval(cx, obj, argv + 1))
+   if (!evas_object_to_jsval(cx, obj, argv + 1))
      goto on_finish;
 
    jse = elixir_ndup(cx, emission, strlen(emission));
@@ -2623,7 +2511,7 @@ _elixir_edje_object_message_handler_cb(void *data, Evas_Object *obj, Edje_Messag
 
    elixir_function_start(cx);
 
-   if (!_elixir_evas_object_to_jsval(cx, obj, argv + 1))
+   if (!evas_object_to_jsval(cx, obj, argv + 1))
      goto on_finish;
 
    argv[0] = elixir_void_get_jsval(data);

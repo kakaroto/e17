@@ -5,7 +5,7 @@ MAINTAINERCLEANFILES = Makefile.in
 if BUILD_MODULE_ECORE_CON
 if !EINA_STATIC_BUILD_ECORE_CON
 
-INCLUDES = -I. -I$(top_srcdir)/src/include @ECORE_CON_CFLAGS@
+INCLUDES = -I. -I$(top_srcdir)/src/include @ECORE_CON_CFLAGS@ @elixir_cflags@
 
 pkgdir = $(libdir)/elixir/bindings/ecore-con/$(MODULE_ARCH)
 

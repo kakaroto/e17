@@ -14,9 +14,6 @@
 
 #include "Elixir.h"
 
-const char *_elixir_evas_object_to_elixir_object(Evas_Object *obj);
-JSBool _elixir_evas_object_to_jsval(JSContext *cx, Evas_Object *obj, jsval *rval, JSBool nopush);
-
 static const elixir_parameter_t*	_string_4functions_any_params[7] = {
   &string_parameter,
   &function_parameter,
@@ -40,6 +37,7 @@ _elixir_evas_object_box_layout(Evas_Object *o, Evas_Object_Box_Data *priv, void 
    JSObject *jsson = NULL;
    int i;
    jsval argv[3];
+   jsval jobj;
    jsval rval;
 
    cb = elixir_void_get_private(user_data);
@@ -50,7 +48,7 @@ _elixir_evas_object_box_layout(Evas_Object *o, Evas_Object_Box_Data *priv, void 
 
    elixir_function_start(cx);
 
-   if (!_elixir_evas_object_to_jsval(cx, o, argv, JS_TRUE))
+   if (!evas_object_to_jsval(cx, o, &argv[0]))
      goto on_error;
 
    jspriv = JS_NewObject(cx, elixir_class_request("Evas_Object_Box_Data", NULL), NULL, NULL);
@@ -65,9 +63,9 @@ _elixir_evas_object_box_layout(Evas_Object *o, Evas_Object_Box_Data *priv, void 
    if (!jstmp) goto on_error;
 
    if (!elixir_object_register(cx, &jstmp, NULL)) goto on_error;
-   /* FIXME: WOOT ??? */
-   jsson = JS_DefineObject(cx, jstmp, "clipper", elixir_class_request(_elixir_evas_object_to_elixir_object(priv->base.clipper), "evas_object"), NULL, JSPROP_ENUMERATE | JSPROP_READONLY);
-   if (!jsson) goto on_error;
+
+   if (!evas_object_to_jsval(cx, priv->base.clipper, &jobj)) goto on_error;
+   JS_DefineProperty(cx, jstmp, "clipper", jobj, NULL, NULL,  JSPROP_ENUMERATE | JSPROP_READONLY);
 
    jsson = JS_DefineObject(cx, jstmp, "evas", elixir_class_request("evas", NULL), NULL, JSPROP_ENUMERATE | JSPROP_READONLY);
    if (!jsson) goto on_error;
@@ -99,7 +97,7 @@ _elixir_evas_object_box_layout(Evas_Object *o, Evas_Object_Box_Data *priv, void 
      {
 	jsval js_obj;
 
-	_elixir_evas_object_to_jsval(cx, over, &js_obj, JS_TRUE);
+        evas_object_to_jsval(cx, over, &js_obj);
 	JS_DefineElement(cx, jstmp, i++, js_obj, NULL,
 			 NULL, JSPROP_INDEX | JSPROP_ENUMERATE | JSPROP_READONLY);
      }
