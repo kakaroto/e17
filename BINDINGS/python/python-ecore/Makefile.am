@@ -5,6 +5,7 @@ cython_dist = \
 	ecore/x/ecore.x.c_ecore_x.pyx \
 	ecore/x/ecore.x.screensaver.pyx \
 	ecore/imf/ecore.imf.c_ecore_imf.pyx \
+	ecore/file/ecore.file.c_ecore_file.pyx \
 	ecore/win32/ecore.win32.c_ecore_win32.pyx \
 	ecore/evas/ecore.evas.c_ecore_evas.pyx
 
@@ -40,6 +41,17 @@ cython_outs += ecore/imf/ecore.imf.c_ecore_imf.c
 doc_modules += c_ecore_imf
 pyincecoreimfdir = $(includedir)/@PACKAGE@/ecore/imf
 pyincecoreimf_DATA = $(c_ecore_imf_includes)
+endif
+
+c_ecore_file_includes = \
+	include/ecore/file/c_ecore_file.pxd \
+	include/ecore/file/__init__.py
+if WANT_ECORE_FILE
+cython_ins += ecore/file/ecore.file.c_ecore_file.pyx
+cython_outs += ecore/file/ecore.file.c_ecore_file.c
+doc_modules += c_ecore_file
+pyincecorefiledir = $(includedir)/@PACKAGE@/ecore/file
+pyincecorefile_DATA = $(c_ecore_file_includes)
 endif
 
 c_ecore_win32_includes = \
@@ -84,6 +96,9 @@ c_ecore_x_deps = \
 
 c_ecore_imf_deps =
 
+c_ecore_file_deps = \
+	ecore/file/ecore.file.c_ecore_file_download.pxi
+
 c_ecore_win32_deps = \
 	ecore/win32/ecore.win32.c_ecore_win32_window.pxi
 
@@ -114,6 +129,9 @@ examples_ecore_evas_files = \
 examples_ecore_x_files = \
 	examples/x/mplayer_embed.py \
 	examples/x/window_creation.py
+
+examples_ecore_file_files =
+	examples/file/01-file-download.py
 
 tests_files = \
 	tests/01-basics.py \
@@ -146,7 +164,7 @@ MAINTAINERCLEANFILES = \
 	Makefile.in \
 	missing \
 	py-compile \
-        config.h.in \
+	config.h.in \
 	$(cython_outs)
 
 EXTRA_DIST = \
@@ -157,22 +175,26 @@ EXTRA_DIST = \
 	python-ecore.pc.in \
 	python-ecore-x.pc.in \
 	python-ecore-imf.pc.in \
+	python-ecore-file.pc.in \
 	python-ecore-win32.pc.in \
 	python-ecore-evas.pc.in \
 	$(cython_dist) $(cython_outs) \
 	$(pyincecore_DATA) \
 	$(c_ecore_x_includes) \
 	$(c_ecore_imf_includes) \
+	$(c_ecore_file_includes) \
 	$(c_ecore_win32_includes) \
 	$(c_ecore_evas_includes) \
 	$(c_ecore_deps) \
 	$(c_ecore_x_deps) \
 	$(c_ecore_imf_deps) \
+	$(c_ecore_file_deps) \
 	$(c_ecore_win32_deps) \
 	$(c_ecore_evas_deps) \
 	$(examples_files) \
 	$(examples_ecore_evas_files) \
 	$(examples_ecore_x_files) \
+	$(examples_ecore_file_files) \
 	$(tests_files) \
 	$(tests_ecore_evas_files)
 
@@ -184,6 +206,7 @@ distcleancheck_listfiles = \
 		   -not -name 'ecore.x.c_ecore_x.c' -a \
 		   -not -name 'ecore.x.screensaver.c' -a \
 		   -not -name 'ecore.imf.c_ecore_imf.c' -a \
+		   -not -name 'ecore.file.c_ecore_file.c' -a \
 		   -not -name 'ecore.win32.c_ecore_win32.c' -a \
 		   -not -name 'ecore.evas.c_ecore_evas.c' \)
 
@@ -204,6 +227,10 @@ $(top_builddir)/ecore/imf/ecore.imf.c_ecore_imf.c: $(top_srcdir)/ecore/imf/ecore
 	@$(MKDIR_P) $(top_builddir)/ecore/imf
 	$(AM_V_GEN)cd $(top_builddir) && $(PYTHON) -m cython -I$(top_srcdir)/include $(CYTHONFLAGS) -o $@ $<
 
+$(top_builddir)/ecore/file/ecore.file.c_ecore_file.c: $(top_srcdir)/ecore/file/ecore.file.c_ecore_file.pyx $(c_ecore_file_deps) $(pyincecorefile_DATA) Makefile
+	@$(MKDIR_P) $(top_builddir)/ecore/file
+	$(AM_V_GEN)cd $(top_builddir) && $(PYTHON) -m cython -I$(top_srcdir)/include $(CYTHONFLAGS) -o $@ $<
+
 $(top_builddir)/ecore/win32/ecore.win32.c_ecore_win32.c: $(top_srcdir)/ecore/win32/ecore.win32.c_ecore_win32.pyx $(c_ecore_win32_deps) $(pyincecorewin32_DATA) Makefile
 	@$(MKDIR_P) $(top_builddir)/ecore/win32
 	$(AM_V_GEN)cd $(top_builddir) && $(PYTHON) -m cython -I$(top_srcdir)/include $(CYTHONFLAGS) -o $@ $<
@@ -217,10 +244,10 @@ $(top_builddir)/ecore/win32/ecore.win32.c_ecore_win32.c:
 	@echo "Unfortunately you need cython to generate your own $^"
 	/bin/false
 
-$(top_builddir)/ecore/ecore.c_ecore.c $(top_builddir)/ecore/ecore.c_ecore.h $(top_builddir)/ecore/x/ecore.x.c_ecore_x.c $(top_builddir)/ecore/x/ecore.x.screensaver.c $(top_builddir)/ecore/imf/ecore.imf.c_ecore_imf.c $(top_builddir)/ecore/evas/ecore.evas.c_ecore_evas.c: Makefile
+$(top_builddir)/ecore/ecore.c_ecore.c $(top_builddir)/ecore/ecore.c_ecore.h $(top_builddir)/ecore/x/ecore.x.c_ecore_x.c $(top_builddir)/ecore/x/ecore.x.screensaver.c $(top_builddir)/ecore/imf/ecore.imf.c_ecore_imf.c $(top_builddir)/ecore/file/ecore.file.c_ecore_file.c $(top_builddir)/ecore/evas/ecore.evas.c_ecore_evas.c: Makefile
 	@echo "NOTE: No cython, using pre-generated ecore.c_ecore.[ch]"
 	@$(MKDIR_P) $(top_builddir)/ecore
-	$(AM_V_GEN)for f in ecore/ecore.c_ecore.c ecore/ecore.c_ecore.h ecore/x/ecore.x.c_ecore_x.c ecore/x/ecore.x.screensaver.c ecore/imf/ecore.imf.c_ecore_imf.c ecore/evas/ecore.evas.c_ecore_evas.c; do if ! test -f $(top_srcdir)/$$f; then continue; elif ! cmp $(top_srcdir)/$$f $(top_srcdir)/$$f >/dev/null; then cp $(top_srcdir)/$$f $(top_builddir)/$$f; fi; done
+	$(AM_V_GEN)for f in ecore/ecore.c_ecore.c ecore/ecore.c_ecore.h ecore/x/ecore.x.c_ecore_x.c ecore/x/ecore.x.screensaver.c ecore/imf/ecore.imf.c_ecore_imf.c ecore/file/ecore.file.c_ecore_file.c ecore/evas/ecore.evas.c_ecore_evas.c; do if ! test -f $(top_srcdir)/$$f; then continue; elif ! cmp $(top_srcdir)/$$f $(top_srcdir)/$$f >/dev/null; then cp $(top_srcdir)/$$f $(top_builddir)/$$f; fi; done
 endif
 
 AM_CPPFLAGS = \
@@ -228,6 +255,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/ecore \
 	-I$(top_srcdir)/ecore/x \
 	-I$(top_srcdir)/ecore/imf \
+	-I$(top_srcdir)/ecore/file \
 	-I$(top_srcdir)/ecore/win32 \
 	-I$(top_srcdir)/ecore/evas \
 	-I$(top_srcdir)/include \
@@ -235,6 +263,7 @@ AM_CPPFLAGS = \
 	@ECORE_CFLAGS@ \
 	@ECORE_X_CFLAGS@ \
 	@ECORE_IMF_CFLAGS@ \
+	@ECORE_FILE_CFLAGS@ \
 	@ECORE_WIN32_CFLAGS@ \
 	@ECORE_EVAS_CFLAGS@
 
@@ -276,6 +305,20 @@ pyecoreimfdir = $(pythondir)/ecore/imf
 pyecoreimf_PYTHON = ecore/imf/__init__.py
 
 pkgconfig_DATA += python-ecore-imf.pc
+endif
+
+if WANT_ECORE_FILE
+pyexececorefiledir = $(pyexecdir)/ecore/file
+pyexececorefile_LTLIBRARIES = c_ecore_file.la
+c_ecore_file_la_LIBADD = @ECORE_FILE_LIBS@
+c_ecore_file_la_LDFLAGS = -module -avoid-version
+c_ecore_file_la_LIBTOOLFLAGS = --tag=disable-static
+c_ecore_file_la_SOURCES = $(top_builddir)/ecore/file/ecore.file.c_ecore_file.c
+
+pyecorefiledir = $(pythondir)/ecore/file
+pyecorefile_PYTHON = ecore/file/__init__.py
+
+pkgconfig_DATA += python-ecore-file.pc
 endif
 
 if WANT_ECORE_WIN32

@@ -146,6 +146,32 @@ fi
 AM_CONDITIONAL(WANT_ECORE_WIN32,
    [test "x$want_ecore_win32" != "xno" -a "x${have_ecore_win32}" = "xyes"])
 
+have_ecore_file="no"
+want_ecore_file="auto"
+pkgconfig_ecore_file_requires_libs="ecore-file >= 1.0.0"
+AC_SUBST(pkgconfig_ecore_file_requires_libs)
+AC_ARG_ENABLE([ecore-file],
+   [AC_HELP_STRING([--disable-ecore-file],
+      [disable ecore-file support. @<:@default=detect@:>@])],
+   [want_ecore_file=$enableval], [])
+
+if test "x$want_ecore_file" != "xno"; then
+   PKG_CHECK_MODULES([ECORE_FILE],
+      [$pkgconfig_ecore_file_requires_libs],
+      [have_ecore_file="yes"], [have_ecore_file="no"]
+   )
+else
+    have_ecore_file="no"
+fi
+if test "x$want_ecore_file" = "xyes" -a "x$have_ecore_file" = "xno"; then
+    AC_MSG_ERROR([ecore-file support requested, but not found by pkg-config: $pkgconfig_ecore_file_requires_libs])
+fi
+if test "x$want_ecore_file" != "xno" -a "x${have_ecore_file}" = "xyes"; then
+   wanted_cython_files="${wanted_cython_files} ${srcdir}/ecore/file/ecore.file.c_ecore_file.pyx"
+fi
+AM_CONDITIONAL(WANT_ECORE_FILE,
+   [test "x$want_ecore_file" != "xno" -a "x${have_ecore_file}" = "xyes"])
+
 python_evas_version="0.7.3"
 have_ecore_evas="no"
 want_ecore_evas="auto"
@@ -231,6 +257,7 @@ Makefile
 python-ecore.pc
 python-ecore-x.pc
 python-ecore-imf.pc
+python-ecore-file.pc
 python-ecore-win32.pc
 python-ecore-evas.pc
 ])
@@ -263,6 +290,7 @@ echo
 echo "Modules:"
 echo "  X....................: ${want_ecore_x} (found: ${have_ecore_x})"
 echo "  IMF..................: ${want_ecore_imf} (found: ${have_ecore_imf})"
+echo "  File.................: ${want_ecore_file} (found: ${have_ecore_file})"
 echo "  Win32................: ${want_ecore_win32} (found: ${have_ecore_win32})"
 echo "  Evas.................: ${want_ecore_evas} (found: ${have_ecore_evas})"
 echo
