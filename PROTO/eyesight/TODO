@@ -1,0 +1,14 @@
+ * PDF backend: add mupdf support
+ * txt backend: improve a lot
+ * dvi backend
+ * rtf backend
+ * djvu backend
+ * epub
+ * multipage TIFF
+ * editing pdf forms
+ * search linking latex source with the corresponding location in DVI or PDF document (pdfsync)
+
+others (less important) :
+
+ * chm
+ * odt
