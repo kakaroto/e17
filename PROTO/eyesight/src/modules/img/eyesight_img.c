@@ -354,6 +354,7 @@ em_file_close (void *eb)
 
   if (ebi->archive_path)
     {
+      ecore_file_recursive_rm(ebi->archive_path);
       free(ebi->archive_path);
       ebi->archive_path = NULL;
     }
