@@ -4,8 +4,6 @@ AM_CPPFLAGS = \
 -I $(top_srcdir)/src/lib/dbus \
 @EDBUS_CFLAGS@
 
-if BUILD_EBLUEZ
-
 lib_LTLIBRARIES = libebluez.la
 includes_HEADERS = E_Bluez.h
 includesdir = $(includedir)/e_dbus-@VMAJ@
@@ -22,7 +20,5 @@ libebluez_la_LIBADD = \
 $(top_builddir)/src/lib/dbus/libedbus.la
 
 libebluez_la_LDFLAGS = -version-info @version_info@ @release_info@
-
-endif
 
 EXTRA_DIST = e_bluez_private.h

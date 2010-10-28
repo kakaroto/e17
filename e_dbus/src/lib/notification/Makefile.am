@@ -5,8 +5,6 @@ AM_CPPFLAGS = \
 @EDBUS_CFLAGS@ \
 @EVAS_CFLAGS@
 
-if BUILD_ENOTIFY
-
 lib_LTLIBRARIES = libenotify.la
 includes_HEADERS = E_Notify.h E_Notification_Daemon.h
 includesdir = $(includedir)/e_dbus-@VMAJ@
@@ -22,7 +20,5 @@ $(top_builddir)/src/lib/dbus/libedbus.la \
 @EVAS_LIBS@
 
 libenotify_la_LDFLAGS = -version-info @version_info@ @release_info@
-
-endif
 
 EXTRA_DIST = e_notify_private.h

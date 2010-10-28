@@ -4,8 +4,6 @@ AM_CPPFLAGS = \
 -I $(top_srcdir)/src/lib/dbus \
 @EDBUS_CFLAGS@
 
-if BUILD_EOFONO
-
 lib_LTLIBRARIES = libeofono.la
 includes_HEADERS = E_Ofono.h
 includesdir = $(includedir)/e_dbus-@VMAJ@
@@ -22,7 +20,5 @@ libeofono_la_LIBADD = \
 $(top_builddir)/src/lib/dbus/libedbus.la
 
 libeofono_la_LDFLAGS = -version-info @version_info@ @release_info@
-
-endif
 
 EXTRA_DIST = e_ofono_private.h
