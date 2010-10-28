@@ -300,16 +300,6 @@ cdef class EventWindowStackRequest(ecore.c_ecore.Event):
         return 1
 
 
-cdef class EventDesktopChange(ecore.c_ecore.Event):
-    cdef int _set_obj(self, void *o) except 0:
-        cdef Ecore_X_Event_Window_Prop_Desktop_Change *obj
-        obj = <Ecore_X_Event_Window_Prop_Desktop_Change *>o
-        self.win = Window_from_xid(obj.win)
-        self.desktop = obj.desktop
-        self.time = obj.time
-        return 1
-
-
 cdef class EventPing(ecore.c_ecore.Event):
     cdef int _set_obj(self, void *o) except 0:
         cdef Ecore_X_Event_Ping *obj

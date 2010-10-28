@@ -416,8 +416,9 @@ cdef class Window:
         @return: tuple with: accepts_focus, initial_state, icon_pixmap,
                  icon_mask, icon_window, window_group, is_urgent
         """
-        cdef int accepts_focus, initial_state, icon_pixmap, icon_mask, \
-             icon_window, window_group, is_urgent
+        cdef Eina_Bool accepts_focus, is_urgent
+        cdef int initial_state, icon_pixmap, icon_mask, \
+             icon_window, window_group
         ecore_x_icccm_hints_get(self.xid, &accepts_focus,
                                 <Ecore_X_Window_State_Hint *>&initial_state,
                                 <Ecore_X_Pixmap *>&icon_pixmap,

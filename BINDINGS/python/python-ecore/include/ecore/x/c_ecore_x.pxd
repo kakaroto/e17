@@ -21,6 +21,9 @@ cdef extern from *:
 cdef extern from "sys/types.h":
     ctypedef long pid_t
 
+cdef extern from "Eina.h":
+    ctypedef unsigned char Eina_Bool
+
 cdef extern from "Ecore_Input.h":
     int ECORE_EVENT_KEY_DOWN
     int ECORE_EVENT_KEY_UP
@@ -547,55 +550,6 @@ cdef extern from "Ecore_X.h":
         Ecore_X_Time time
 
 
-    ctypedef struct Ecore_X_Event_Window_Prop_Title_Change:
-        Ecore_X_Window win
-        char *title
-        Ecore_X_Time time
-
-
-    ctypedef struct Ecore_X_Event_Window_Prop_Visible_Title_Change:
-        Ecore_X_Window win
-        char *title
-        Ecore_X_Time time
-
-
-    ctypedef struct Ecore_X_Event_Window_Prop_Icon_Name_Change:
-        Ecore_X_Window win
-        char *name
-        Ecore_X_Time time
-
-
-    ctypedef struct Ecore_X_Event_Window_Prop_Visible_Icon_Name_Change:
-        Ecore_X_Window win
-        char *name
-        Ecore_X_Time time
-
-
-    ctypedef struct Ecore_X_Event_Window_Prop_Client_Machine_Change:
-        Ecore_X_Window win
-        char *name
-        Ecore_X_Time time
-
-
-    ctypedef struct Ecore_X_Event_Window_Prop_Name_Class_Change:
-        Ecore_X_Window win
-        char *name
-        char *clas
-        Ecore_X_Time time
-
-
-    ctypedef struct Ecore_X_Event_Window_Prop_Pid_Change:
-        Ecore_X_Window win
-        pid_t pid
-        Ecore_X_Time time
-
-
-    ctypedef struct Ecore_X_Event_Window_Prop_Desktop_Change:
-        Ecore_X_Window win
-        long desktop
-        Ecore_X_Time time
-
-
     ctypedef struct Ecore_X_Event_Startup_Sequence:
         Ecore_X_Window win
 
@@ -1101,7 +1055,7 @@ cdef extern from "Ecore_X.h":
     void ecore_x_icccm_save_yourself_send(Ecore_X_Window win, Ecore_X_Time t)
     void ecore_x_icccm_move_resize_send(Ecore_X_Window win, int x, int y, int w, int h)
     void ecore_x_icccm_hints_set(Ecore_X_Window win, int accepts_focus, Ecore_X_Window_State_Hint initial_state, Ecore_X_Pixmap icon_pixmap, Ecore_X_Pixmap icon_mask, Ecore_X_Window icon_window, Ecore_X_Window window_group, int is_urgent)
-    int ecore_x_icccm_hints_get(Ecore_X_Window win, int *accepts_focus, Ecore_X_Window_State_Hint *initial_state, Ecore_X_Pixmap *icon_pixmap, Ecore_X_Pixmap *icon_mask, Ecore_X_Window *icon_window, Ecore_X_Window *window_group, int *is_urgent)
+    int ecore_x_icccm_hints_get(Ecore_X_Window win, Eina_Bool *accepts_focus, Ecore_X_Window_State_Hint *initial_state, Ecore_X_Pixmap *icon_pixmap, Ecore_X_Pixmap *icon_mask, Ecore_X_Window *icon_window, Ecore_X_Window *window_group, Eina_Bool *is_urgent)
     void ecore_x_icccm_size_pos_hints_set(Ecore_X_Window win, int request_pos, Ecore_X_Gravity gravity, int min_w, int min_h, int max_w, int max_h, int base_w, int base_h, int step_x, int step_y, double min_aspect, double max_aspect)
     int ecore_x_icccm_size_pos_hints_get(Ecore_X_Window win, int *request_pos, Ecore_X_Gravity *gravity, int *min_w, int *min_h, int *max_w, int *max_h, int *base_w, int *base_h, int *step_x, int *step_y, double *min_aspect, double *max_aspect)
     void ecore_x_icccm_title_set(Ecore_X_Window win, char *t)
