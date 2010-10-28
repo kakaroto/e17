@@ -98,6 +98,14 @@ cdef class AnchorBlock(Object):
         """
         elm_anchorblock_text_set(self.obj, text)
 
+    def text_get(self):
+        """
+        Get the text markup of the anchorblock
+
+        @return: The current markup text
+        """
+        return elm_anchorblock_text_get(self.obj)
+
     def hover_parent_set(self, c_evas.Object parent):
         """
         Set the parent of the hover popup
@@ -108,6 +116,16 @@ cdef class AnchorBlock(Object):
         @param: B{parent} The parent the hover should use
         """
         elm_anchorblock_hover_parent_set(self.obj, parent.obj)
+
+    def hover_parent_get(self):
+        """
+        Get the parent of the hover popup
+
+        @return: The parent the hover is using
+        """
+        cdef c_evas.Evas_Object *parent
+        parent = elm_anchorblock_hover_parent_get(self.obj)
+        return evas.c_evas._Object_from_instance(<long> parent)
 
     def hover_style_set(self, style):
         """

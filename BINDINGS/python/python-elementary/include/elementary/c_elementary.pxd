@@ -523,10 +523,12 @@ cdef extern from "Elementary.h":
 
     # Anchorblock object
     evas.c_evas.Evas_Object *elm_anchorblock_add(evas.c_evas.Evas_Object *parent)
-    void         elm_anchorblock_text_set(evas.c_evas.Evas_Object *obj, char *text)
-    void         elm_anchorblock_hover_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
-    void         elm_anchorblock_hover_style_set(evas.c_evas.Evas_Object *obj, char *style)
-    void         elm_anchorblock_hover_end(evas.c_evas.Evas_Object *obj)
+    void                     elm_anchorblock_text_set(evas.c_evas.Evas_Object *obj, char *text)
+    const_char_ptr           elm_anchorblock_text_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_anchorblock_hover_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
+    evas.c_evas.Evas_Object *elm_anchorblock_hover_parent_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_anchorblock_hover_style_set(evas.c_evas.Evas_Object *obj, char *style)
+    void                     elm_anchorblock_hover_end(evas.c_evas.Evas_Object *obj)
 
     # Bubble object
     evas.c_evas.Evas_Object *elm_bubble_add(evas.c_evas.Evas_Object *parent)
