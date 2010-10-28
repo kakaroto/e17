@@ -27,7 +27,7 @@ _eyesight_cb_is_valid(const char *filename)
   Eyesight_Img_Archive arch;
   int ret;
 
-  ret = snprintf(buf, 4096, "unzip -t %s", filename);
+  ret = snprintf(buf, 4096, "unzip -t '%s'", filename);
   if (ret >= 4096)
     goto test_rar;
   ret = system(buf);
@@ -37,7 +37,7 @@ _eyesight_cb_is_valid(const char *filename)
     return EYESIGHT_IMG_ARCHIVE_CBZ;
 
  test_rar:
-  ret = snprintf(buf, 4096, "unrar t %s", filename);
+  ret = snprintf(buf, 4096, "unrar t '%s'", filename);
   if (ret >= 4096)
     goto test_ace;
   ret = system(buf);
@@ -47,7 +47,7 @@ _eyesight_cb_is_valid(const char *filename)
     return EYESIGHT_IMG_ARCHIVE_CBR;
 
  test_ace:
-  ret = snprintf(buf, 4096, "unace t %s", filename);
+  ret = snprintf(buf, 4096, "unace t '%s'", filename);
   if (ret >= 4096)
     goto test_tar;
   ret = system(buf);
@@ -57,7 +57,7 @@ _eyesight_cb_is_valid(const char *filename)
     return EYESIGHT_IMG_ARCHIVE_CBA;
 
  test_tar:
-  ret = snprintf(buf, 4096, "tar -tvf %s", filename);
+  ret = snprintf(buf, 4096, "tar -tvf '%s'", filename);
   if (ret >= 4096)
     goto test_7z;
   ret = system(buf);
@@ -67,7 +67,7 @@ _eyesight_cb_is_valid(const char *filename)
     return EYESIGHT_IMG_ARCHIVE_CBT;
 
  test_7z:
-  ret = snprintf(buf, 4096, "7z t %s", filename);
+  ret = snprintf(buf, 4096, "7z t '%s'", filename);
   if (ret >= 4096)
     return EYESIGHT_IMG_ARCHIVE_NONE;
   ret = system(buf);
@@ -142,7 +142,7 @@ _eyesight_cb_deflate(Eyesight_Img_Archive archive, const char *archive_dir, cons
       return EINA_FALSE;
     }
 
-  ret = snprintf(buf, 4096, "cd %s && %s %s", archive_dir, deflate, filename);
+  ret = snprintf(buf, 4096, "cd %s && %s '%s'", archive_dir, deflate, filename);
   if (ret >= 4096)
     return EINA_FALSE;
 
