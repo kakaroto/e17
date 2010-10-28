@@ -309,7 +309,7 @@ em_file_open (void *eb, const char *filename)
       }
     eina_list_free(files);
     if (!_eyesight_cb_page_set(ebi->obj, ebi->archive_path, ebi->doc.toc, 0))
-      goto free_filename;
+      goto free_archive_path;
   }
 
  open_success:
@@ -319,6 +319,9 @@ em_file_open (void *eb, const char *filename)
 
   return EINA_TRUE;
 
+ free_archive_path:
+  free(ebi->archive_path);
+  ebi->archive_path = NULL;
  free_filename:
   free(ebi->filename);
   ebi->filename = NULL;
@@ -330,6 +333,7 @@ static void
 em_file_close (void *eb)
 {
   Eyesight_Backend_Img *ebi;
+  void *data;
 
   if (!eb)
     return;
@@ -338,6 +342,21 @@ em_file_close (void *eb)
 
   DBG("Close file %s", ebi->filename);
 
+  EINA_LIST_FREE(ebi->doc.toc, data)
+    {
+      Eyesight_Index_Item *item;
+
+      item = (Eyesight_Index_Item *)data;
+
+      free(item->title);
+      free(item);
+    }
+
+  if (ebi->archive_path)
+    {
+      free(ebi->archive_path);
+      ebi->archive_path = NULL;
+    }
   if (ebi->filename)
     {
       free(ebi->filename);
