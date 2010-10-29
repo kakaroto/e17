@@ -188,6 +188,7 @@ collections {
    }
 
    group { name: "elm/toolbar/item/default";
+      data.item: "transition_animation_on" "1";
       parts {
          part { name: "bg";
             type: RECT;
@@ -238,6 +239,26 @@ collections {
             }
             
          }
+         part { name: "elm.swallow.icon.area";
+            type: RECT;
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1.offset: 1 0;
+               rel2.offset: -2 -1;
+            }
+            description { state: "move,left" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+               rel1 {
+                  relative: -0.5 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: -0.5 1.0;
+                  offset: 0 0;
+               }
+            }
+         }
          part { name: "elm.swallow.icon";
             type: SWALLOW;
             clip_to: "icon_clipper";
@@ -248,8 +269,80 @@ collections {
                fixed: 0 0;
                aspect: 1.0 1.0;
                aspect_preference: VERTICAL;
-               rel1.offset: 1 0;
-               rel2.offset: -2 -1;
+               rel1.to: "elm.swallow.icon.area";
+               rel2.to: "elm.swallow.icon.area";
+            }
+         }
+         part { name: "elm.swallow.icon_new.area";
+            type: RECT;
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1 {
+                  relative: 1.5 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.5 1.0;
+                  offset: 0 0;
+               }
+            }
+            description { state: "move,left" 0.0;
+               inherit: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 1 0;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -2 -1;
+               }
+            }
+         }
+         part { name: "elm.swallow.icon_new";
+            type: SWALLOW;
+            clip_to: "icon_clipper";
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 0.5 0.5;
+               fixed: 0 0;
+               aspect: 1.0 1.0;
+               aspect_preference: VERTICAL;
+               rel1.to:"elm.swallow.icon_new.area";
+               rel2.to:"elm.swallow.icon_new.area";
+            }
+         }
+         part { name: "elm.text.clipper";
+            type: RECT;
+            description {
+               color: 255 255 255 255;
+            }
+         }
+         part { name: "elm.text.area";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               visible: 0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+               }
+            }
+            description {
+               state: "move,left" 0.0;
+               inherit: "default" 0.0;
+               rel1 {
+                  relative: -0.5 0.0;
+                  offset: -1 0;
+               }
+               rel2 {
+                  relative: -0.5 1.0;
+                  offset: -1 0;
+               }
             }
          }
          part { name: "elm.text";
@@ -257,8 +350,11 @@ collections {
             effect: SOFT_OUTLINE;
             mouse_events:  0;
             scale: 1;
+            clip_to: "elm.text.clipper";
             description { state: "default" 0.0;
-               fixed: 0 1;
+               fixed: 1 1;
+               rel1.to: "elm.text.area";
+               rel2.to: "elm.text.area";
                color_class: "toolbar_text";
                text {
                   font: "Sans:style=Bold";
@@ -266,6 +362,74 @@ collections {
                   min: 1 1;
                   align: 0.5 0.5;
                }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color_class: "toolbar_text_selected";
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color_class: "toolbar_text_disabled";
+            }
+            description {
+               state: "move,left" 0.0;
+               inherit: "default" 0.0;
+               fixed: 1 1;
+               align: 1.0 0.5;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: -1 0;
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: -1 0;
+               }
+            }
+         }
+         part { name: "elm.text_new.area";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               visible: 0;
+               rel1 {
+                  relative: 1.5 0.0;
+                  offset: 1 0;
+               }
+               rel2 {
+                  relative: 1.5 1.0;
+                  offset: 1 0;
+               }
+            }
+            description {
+               state: "move,left" 0.0;
+               inherit: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: 0 0;
+               }
+            }
+         }
+         part { name: "elm.text_new";
+            type: TEXT;
+            effect: SOFT_OUTLINE;
+            mouse_events:  0;
+            scale: 1;
+            clip_to: "elm.text.clipper";
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               color_class: "toolbar_text";
+               text {
+                  font: "Sans:style=Bold";
+                  size: 10;
+                  min: 1 1;
+                  align: 0.5 0.5;
+               }
+               rel1.to: "elm.text_new.area";
+               rel2.to: "elm.text_new.area";
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
@@ -283,6 +447,10 @@ collections {
             description { state: "default" 0.0;
                color: 0 0 0 0;
             }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
          }
       }
       programs {
@@ -293,6 +461,7 @@ collections {
             transition: LINEAR 0.2;
             target:  "bg";
             target:  "elm.text";
+            target:  "elm.text_new";
          }
          program { name: "go_passive";
             signal:  "elm,state,unselected";
@@ -301,11 +470,22 @@ collections {
             transition: LINEAR 0.1;
             target:  "bg";
             target:  "elm.text";
+            target:  "elm.text_new";
          }
          program { name: "go";
             signal:  "mouse,up,1";
             source:  "event";
             action:  SIGNAL_EMIT "elm,action,click" "elm";
+         }
+         program { name: "mouse,in";
+            signal:  "mouse,in";
+            source:  "event";
+            action:  SIGNAL_EMIT "elm,mouse,in" "elm";
+         }
+         program { name: "mouse,out";
+            signal:  "mouse,out";
+            source:  "event";
+            action:  SIGNAL_EMIT "elm,mouse,out" "elm";
          }
          program { name: "disable";
             signal: "elm,state,disabled";
@@ -314,6 +494,7 @@ collections {
             target: "bg";
             target: "icon_clipper";
             target: "elm.text";
+            target: "elm.text_new";
          }
          program { name: "enable";
             signal: "elm,state,enabled";
@@ -322,6 +503,65 @@ collections {
             target: "bg";
             target: "icon_clipper";
             target: "elm.text";
+            target: "elm.text_new";
+         }
+         program { name: "label_set,animation";
+            signal: "elm,state,label_set";
+            source: "elm";
+            after: "label_set,animation2";
+            after: "event,disable";
+         }
+         program { name: "label_set,animation2";
+            action: STATE_SET "move,left" 0.0;
+            target: "elm.text.area";
+            target: "elm.text_new.area";
+            transition: SINUSOIDAL 1.0;
+            after: "label_set,animation,done";
+         }
+         program { name: "label_set,animation,done";
+            action: SIGNAL_EMIT "elm,state,label_set,done" "elm";
+            after: "label_set,animation,done2";
+         }
+         program { name: "label_set,animation,done2";
+            script {
+               set_text(PART:"elm.text_new", "");
+            }
+         }
+         program { name: "label,reset";
+            signal: "elm,state,label,reset";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.text.area";
+            target: "elm.text_new.area";
+            after: "event,enable";
+         }
+         program { name: "event,enable";
+            action: STATE_SET "default" 0.0;
+            target: "event";
+         }
+         program { name: "event,disable";
+            action: STATE_SET "disabled" 0.0;
+            target: "event";
+         }
+         program { name: "icon_set,animation";
+            signal: "elm,state,icon_set";
+            source: "elm";
+            action: STATE_SET "move,left" 0.0;
+            target: "elm.swallow.icon.area";
+            target: "elm.swallow.icon_new.area";
+            transition: SINUSOIDAL 1.0;
+            after: "icon_set,animation,done";
+         }
+         program { name: "icon_set,animation,done";
+            action: SIGNAL_EMIT "elm,state,icon_set,done" "elm";
+         }
+         program { name: "icon,reset";
+            signal: "elm,state,icon,reset";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.swallow.icon.area";
+            target: "elm.swallow.icon_new.area";
+            after: "event,enable";
          }
       }
    }

@@ -3,6 +3,7 @@
 #include "backgrounds.edc"
 #include "icons.edc"
 
+#include "elm/icons.edc"
 #include "elm/background.edc"
 #include "elm/label.edc"
 #include "elm/list.edc"
