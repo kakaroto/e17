@@ -20,61 +20,96 @@
 static int _eyesight_img_log_domain = -1;
 
 
-static Eyesight_Img_Archive
-_eyesight_cb_is_valid(const char *filename)
+static Eina_Bool
+_eyesight_cb_is_valid(Eyesight_Backend_Img *ebi)
 {
   char buf[4096];
   Eyesight_Img_Archive arch;
   int ret;
+  Eina_Bool use_rar = EINA_FALSE;
 
-  ret = snprintf(buf, 4096, "unzip -t '%s'", filename);
+  ret = snprintf(buf, 4096, "unzip -t '%s'", ebi->filename);
+  if (ret >= 4096)
+    goto test_unrar;
+  ret = system(buf);
+  if (ret != 0)
+    goto test_unrar;
+  else
+    {
+      ebi->archive = EYESIGHT_IMG_ARCHIVE_CBZ;
+      return use_rar;
+    }
+
+ test_unrar:
+  ret = snprintf(buf, 4096, "unrar t '%s'", ebi->filename);
   if (ret >= 4096)
     goto test_rar;
   ret = system(buf);
   if (ret != 0)
     goto test_rar;
   else
-    return EYESIGHT_IMG_ARCHIVE_CBZ;
+    {
+      ebi->archive = EYESIGHT_IMG_ARCHIVE_CBR;
+      return use_rar;
+    }
 
  test_rar:
-  ret = snprintf(buf, 4096, "unrar t '%s'", filename);
+  ret = snprintf(buf, 4096, "rar t '%s'", ebi->filename);
   if (ret >= 4096)
     goto test_ace;
   ret = system(buf);
   if (ret != 0)
     goto test_ace;
   else
-    return EYESIGHT_IMG_ARCHIVE_CBR;
+    {
+      use_rar = EINA_TRUE;
+      ebi->archive = EYESIGHT_IMG_ARCHIVE_CBR;
+      return use_rar;
+    }
 
  test_ace:
-  ret = snprintf(buf, 4096, "unace t '%s'", filename);
+  ret = snprintf(buf, 4096, "unace t '%s'", ebi->filename);
   if (ret >= 4096)
     goto test_tar;
   ret = system(buf);
   if (ret != 0)
     goto test_tar;
   else
-    return EYESIGHT_IMG_ARCHIVE_CBA;
+    {
+      ebi->archive = EYESIGHT_IMG_ARCHIVE_CBA;
+      return use_rar;
+    }
 
  test_tar:
-  ret = snprintf(buf, 4096, "tar -tvf '%s'", filename);
+  ret = snprintf(buf, 4096, "tar -tvf '%s'", ebi->filename);
   if (ret >= 4096)
     goto test_7z;
   ret = system(buf);
   if (ret != 0)
     goto test_7z;
   else
-    return EYESIGHT_IMG_ARCHIVE_CBT;
+    {
+      ebi->archive = EYESIGHT_IMG_ARCHIVE_CBT;
+      return use_rar;
+    }
 
  test_7z:
-  ret = snprintf(buf, 4096, "7z t '%s'", filename);
+  ret = snprintf(buf, 4096, "7z t '%s'", ebi->filename);
   if (ret >= 4096)
-    return EYESIGHT_IMG_ARCHIVE_NONE;
+    {
+      ebi->archive = EYESIGHT_IMG_ARCHIVE_NONE;
+      return use_rar;
+    }
   ret = system(buf);
   if (ret != 0)
-    return EYESIGHT_IMG_ARCHIVE_NONE;
+    {
+      ebi->archive = EYESIGHT_IMG_ARCHIVE_NONE;
+      return use_rar;
+    }
   else
-    return EYESIGHT_IMG_ARCHIVE_CBZ;
+    ebi->archive = EYESIGHT_IMG_ARCHIVE_CBZ;
+
+  return use_rar;
 }
 
 static void
@@ -115,19 +150,22 @@ _eyesight_cb_tmp_mkdir(char **dir)
 }
 
 static Eina_Bool
-_eyesight_cb_deflate(Eyesight_Img_Archive archive, const char *archive_dir, const char *filename)
+_eyesight_cb_deflate(Eyesight_Backend_Img *ebi, Eina_Bool use_rar)
 {
   char buf[4096];
   char *deflate;
   int ret;
 
-  switch(archive)
+  switch(ebi->archive)
     {
     case EYESIGHT_IMG_ARCHIVE_CBZ:
       deflate = "unzip";
       break;
     case EYESIGHT_IMG_ARCHIVE_CBR:
-      deflate = "unrar e";
+      if (use_rar)
+        deflate = "rar e";
+      else
+        deflate = "unrar e";
       break;
     case EYESIGHT_IMG_ARCHIVE_CBA:
       deflate = "unace e";
@@ -142,7 +180,7 @@ _eyesight_cb_deflate(Eyesight_Img_Archive archive, const char *archive_dir, cons
       return EINA_FALSE;
     }
 
-  ret = snprintf(buf, 4096, "cd %s && %s '%s'", archive_dir, deflate, filename);
+  ret = snprintf(buf, 4096, "cd %s && %s '%s'", ebi->archive_path, deflate, ebi->filename);
   if (ret >= 4096)
     return EINA_FALSE;
 
@@ -223,9 +261,8 @@ static Eina_Bool
 em_file_open (void *eb, const char *filename)
 {
   Eyesight_Backend_Img *ebi;
-  char *archive_path;
-  Eyesight_Img_Archive archive;
   int ret;
+  Eina_Bool use_rar;
 
   if (!eb || !filename || !*filename)
     return EINA_FALSE;
@@ -243,8 +280,8 @@ em_file_open (void *eb, const char *filename)
 
   DBG("Could not open file %s, trying Comic Books", ebi->filename);
 
-  archive = _eyesight_cb_is_valid(ebi->filename);
-  if (archive == EYESIGHT_IMG_ARCHIVE_NONE)
+  use_rar = _eyesight_cb_is_valid(ebi);
+  if (ebi->archive == EYESIGHT_IMG_ARCHIVE_NONE)
     {
       DBG("Could not open Comic Books");
       goto free_filename;
@@ -256,16 +293,16 @@ em_file_open (void *eb, const char *filename)
     void *data;
     int page;
 
-    _eyesight_cb_tmp_mkdir(&archive_path);
-    if (!archive_path)
+    _eyesight_cb_tmp_mkdir(&ebi->archive_path);
+    if (!ebi->archive_path)
       goto free_filename;
 
-    if (!_eyesight_cb_deflate(archive, archive_path, ebi->filename))
+    if (!_eyesight_cb_deflate(ebi, use_rar))
       goto free_filename;
 
     {
       char *archive_name = "none";
-      switch (archive)
+      switch (ebi->archive)
         {
         case EYESIGHT_IMG_ARCHIVE_CBZ:
           archive_name = "ZIP";
@@ -287,8 +324,6 @@ em_file_open (void *eb, const char *filename)
     }
 
     ebi->is_archive = EINA_TRUE;
-    ebi->archive = archive;
-    ebi->archive_path = archive_path;
     files = ecore_file_ls(ebi->archive_path);
     page = 0;
     EINA_LIST_FOREACH(files, l, data)
