@@ -325,7 +325,7 @@ _ephoto_populate_end(void *data)
 }
 
 static void
-_ephoto_populate_error(int error, void *data)
+_ephoto_populate_error(void *data, int error)
 {
    Ephoto_Thumb_Browser *tb = data;
    if (error) ERR("could not populate: %s", strerror(error));

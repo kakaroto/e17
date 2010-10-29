@@ -444,7 +444,7 @@ _elixir_eio_done_cb(void *data)
 }
 
 static void
-_elixir_eio_error_cb(int error, void *data)
+_elixir_eio_error_cb(void *data, int error)
 {
    Elixir_EIO_Data *dt;
    JSContext *cx;
@@ -463,8 +463,8 @@ _elixir_eio_error_cb(int error, void *data)
 
    JS_SetContextThread(dt->runtime->cx);
 
-   argv[0] = INT_TO_JSVAL(error);
-   argv[1] = elixir_void_get_jsval(data);
+   argv[1] = INT_TO_JSVAL(error);
+   argv[0] = elixir_void_get_jsval(data);
    rval = JSVAL_VOID;
 
    elixir_function_run(cx, dt->func_error, parent, 2, argv, &rval);
@@ -671,7 +671,7 @@ _elixir_eio_stat_free(JSContext *cx, Elixir_EIO_Stat *st)
 }
 
 static void
-_elixir_eio_direct_stat_error(int error, void *data)
+_elixir_eio_direct_stat_error(void *data, int error)
 {
    Elixir_EIO_Stat *st;
    JSContext *cx;
@@ -687,8 +687,8 @@ _elixir_eio_direct_stat_error(int error, void *data)
 
    elixir_function_start(cx);
 
-   argv[0] = INT_TO_JSVAL(error);
-   argv[1] = elixir_void_get_jsval(data);
+   argv[1] = INT_TO_JSVAL(error);
+   argv[0] = elixir_void_get_jsval(data);
 
    elixir_function_run(cx, st->func_error, parent, 2, argv, &rval);
 
@@ -728,7 +728,7 @@ _elixir_eio_direct_stat_done(void *data, const struct stat *stat)
  on_error:
    elixir_function_stop(cx);
 
-   _elixir_eio_direct_stat_error(0, data);
+   _elixir_eio_direct_stat_error(data, 0);
 }
 
 static JSBool
@@ -796,8 +796,8 @@ elixir_eio_file_direct_stat(JSContext *cx, uintN argc, jsval *vp)
         free(st);
      }
 
-   argv[0] = INT_TO_JSVAL(0);
-   argv[1] = val[3].v.any;
+   argv[1] = INT_TO_JSVAL(0);
+   argv[0] = val[3].v.any;
 
    elixir_function_run(cx, val[2].v.fct, JS_THIS_OBJECT(cx, vp), 2, argv, &rval);
 

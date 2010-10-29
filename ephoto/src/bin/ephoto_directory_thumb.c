@@ -86,7 +86,7 @@ _populate_end(void *data)
 }
 
 static void
-_populate_error(int error, void *data)
+_populate_error(void *data, int error)
 {
    Ephoto_Directory_Thumb *dt = data;
    if (error) ERR("could not populate: %s", strerror(error));
