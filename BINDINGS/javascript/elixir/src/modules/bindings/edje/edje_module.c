@@ -2980,6 +2980,14 @@ edje_object_perspective_set
 edje_object_perspective_get
  */
 
+static const struct {
+   const char *extention;
+   const char *type_name;
+} edje_types[] = {
+  { ".edj", "Edje file" },
+  { ".edje", "Edje file" }
+};
+
 static Eina_Bool
 module_open(Elixir_Module *em, JSContext *cx, JSObject *parent)
 {
@@ -3015,6 +3023,9 @@ module_open(Elixir_Module *em, JSContext *cx, JSObject *parent)
    _edje_object_parameter.class = elixir_class_request("edje_object", "evas_object_smart");
    _evas_parameter.class = elixir_class_request("evas", NULL);
 
+   for (i = 0; i < sizeof (edje_types) / sizeof(*edje_types); i++)
+     elixir_file_register(edje_types[i].extention, edje_types[i].type_name);
+
    return EINA_TRUE;
 
   on_error:
@@ -3048,6 +3059,9 @@ module_close(Elixir_Module *em, JSContext *cx)
    elixir_object_unregister(cx, (JSObject**) tmp);
 
    em->data = NULL;
+
+   for (i = 0; i < sizeof (edje_types) / sizeof(*edje_types); i++)
+     elixir_file_unregister(edje_types[i].extention, edje_types[i].type_name);
 
    return EINA_TRUE;
 }
