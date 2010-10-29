@@ -233,17 +233,17 @@ em_file_open (void *eb, const char *filename)
   DBG("Open file %s", filename);
 
   ebi = (Eyesight_Backend_Img *)eb;
-  ebi->filename = strdup(filename);
+  ebi->filename = ecore_file_realpath(filename);
   if (!ebi->filename)
     return EINA_FALSE;
 
-  evas_object_image_file_set(ebi->obj, filename, NULL);
+  evas_object_image_file_set(ebi->obj, ebi->filename, NULL);
   if (evas_object_image_load_error_get(ebi->obj) == EVAS_LOAD_ERROR_NONE)
     goto open_success;
 
-  DBG("Could not open file %s, trying Comic Books", filename);
+  DBG("Could not open file %s, trying Comic Books", ebi->filename);
 
-  archive = _eyesight_cb_is_valid(filename);
+  archive = _eyesight_cb_is_valid(ebi->filename);
   if (archive == EYESIGHT_IMG_ARCHIVE_NONE)
     {
       DBG("Could not open Comic Books");
@@ -260,7 +260,7 @@ em_file_open (void *eb, const char *filename)
     if (!archive_path)
       goto free_filename;
 
-    if (!_eyesight_cb_deflate(archive, archive_path, filename))
+    if (!_eyesight_cb_deflate(archive, archive_path, ebi->filename))
       goto free_filename;
 
     {
