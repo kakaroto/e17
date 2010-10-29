@@ -17,3 +17,9 @@ Modules
  * chm (less important)
  * odt (less important)
  * actually, everything evince and okular support ? :-)
+
+Architecture
+
+ * make it fully asynchrone and work with smart object callback
+ * share context between same opened file (think thumbnail)
+ * be able to use ecore_thread_heavy_run to render one page in another thread (and scale way behond one thread)
