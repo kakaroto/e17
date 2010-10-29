@@ -805,6 +805,59 @@ elixir_eio_file_direct_stat(JSContext *cx, uintN argc, jsval *vp)
    return JS_TRUE;
 }
 
+static JSBool
+elixir_double_eio_stat(double (*func)(const struct stat *stat),
+                       JSContext *cx, uintN argc, jsval *vp)
+{
+   const struct stat *stat;
+   elixir_value_t val[1];
+
+   if (!elixir_params_check(cx, _struct_stat_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, stat);
+
+   return JS_NewNumberValue(cx, func(stat), &(JS_RVAL(cx, vp)));
+}
+
+FAST_CALL_PARAMS(eio_file_atime, elixir_double_eio_stat);
+FAST_CALL_PARAMS(eio_file_mtime, elixir_double_eio_stat);
+
+static JSBool
+elixir_eio_file_size(JSContext *cx, uintN argc, jsval *vp)
+{
+   const struct stat *stat;
+   elixir_value_t val[1];
+
+   if (!elixir_params_check(cx, _struct_stat_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, stat);
+
+   return JS_NewNumberValue(cx, eio_file_size(stat), &(JS_RVAL(cx, vp)));
+}
+
+static JSBool
+elixir_boolean_eio_stat(Eina_Bool (*func)(const struct stat *stat),
+                        JSContext *cx, uintN argc, jsval *vp)
+{
+   const struct stat *stat;
+   Eina_Bool ret;
+   elixir_value_t val[1];
+
+   if (!elixir_params_check(cx, _struct_stat_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, stat);
+   ret = func(stat);
+
+   JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(ret));
+   return JS_TRUE;
+}
+
+FAST_CALL_PARAMS(eio_file_is_dir, elixir_boolean_eio_stat);
+FAST_CALL_PARAMS(eio_file_is_lnk, elixir_boolean_eio_stat);
+
 static JSFunctionSpec eio_functions[] = {
   ELIXIR_FN(eio_init, 0, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(eio_shutdown, 0, JSPROP_ENUMERATE, 0 ),
@@ -813,6 +866,11 @@ static JSFunctionSpec eio_functions[] = {
   ELIXIR_FN(eio_file_direct_ls, 6, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(eio_filter_add, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(eio_filter_del, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(eio_file_atime, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(eio_file_mtime, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(eio_file_size, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(eio_file_is_dir, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(eio_file_is_lnk, 1, JSPROP_ENUMERATE, 0 ),
   JS_FS_END
 };
 
