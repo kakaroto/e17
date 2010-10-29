@@ -18,6 +18,10 @@ static elixir_parameter_t _eina_direct_parameter = {
   "Eina_Direct", JOBJECT, NULL
 };
 
+static elixir_parameter_t _struct_stat_parameter = {
+  "struct stat", JOBJECT, NULL
+};
+
 static const elixir_parameter_t* _string_4func_any[7] = {
   &string_parameter,
   &function_parameter,
@@ -74,6 +78,11 @@ static const elixir_parameter_t* _string_3func_any[6] = {
   NULL
 };
 
+static const elixir_parameter_t* _struct_stat_params[2] = {
+  &_struct_stat_parameter,
+  NULL
+};
+
 FAST_CALL_PARAMS(eio_init, elixir_int_params_void);
 FAST_CALL_PARAMS(eio_shutdown, elixir_int_params_void);
 
@@ -92,6 +101,9 @@ struct _Elixir_EIO_Data
    JSContext *main;
    JSObject *result;
 };
+
+#define ADDIPROP(Cx, Obj, Info, Name)                   \
+  elixir_add_int_prop(Cx, Obj, #Name, Info->Name);
 
 static Eina_Bool
 elixir_new_eina_direct_info(JSContext *cx,
@@ -118,22 +130,20 @@ elixir_new_eina_direct_info(JSContext *cx,
    obj = JS_NewObject(cx, elixir_class_request("Eina_File_Direct_Info", NULL), NULL, NULL);
    if (!obj) goto on_error;
 
+   if (!elixir_object_register(cx, &obj, NULL)) goto on_error;
+
    *rval = OBJECT_TO_JSVAL(obj);
 
    dirent = JS_NewObject(cx, elixir_class_request("struct dirent", NULL), NULL, NULL);
-   if (!dirent) goto on_error;
+   if (!dirent) goto on_error_register;
 
    propertie = OBJECT_TO_JSVAL(dirent);
    JS_SetProperty(cx, obj, "dirent", &propertie);
 
    /* build eina_file_direct_info content */
-#define ADDIPROP(Prop, Cx, Obj, Info, Name)       \
-   Prop = INT_TO_JSVAL(Info->Name);       \
-   JS_SetProperty(Cx, Obj, #Name, &Prop);
-
-   ADDIPROP(propertie, cx, obj, info, path_length);
-   ADDIPROP(propertie, cx, obj, info, name_length);
-   ADDIPROP(propertie, cx, obj, info, name_start);
+   ADDIPROP(cx, obj, info, path_length);
+   ADDIPROP(cx, obj, info, name_length);
+   ADDIPROP(cx, obj, info, name_start);
 
    propertie = STRING_TO_JSVAL(elixir_dup(cx, tmp));
    JS_SetProperty(cx, obj, "path", &propertie);
@@ -143,20 +153,60 @@ elixir_new_eina_direct_info(JSContext *cx,
    JS_SetProperty(cx, obj, "type", &propertie);
 
    /* build dirent content */
-   ADDIPROP(propertie, cx, dirent, info->dirent, d_ino);
-   ADDIPROP(propertie, cx, dirent, info->dirent, d_off);
-   ADDIPROP(propertie, cx, dirent, info->dirent, d_reclen);
-   ADDIPROP(propertie, cx, dirent, info->dirent, d_type);
+   ADDIPROP(cx, dirent, info->dirent, d_ino);
+   ADDIPROP(cx, dirent, info->dirent, d_off);
+   ADDIPROP(cx, dirent, info->dirent, d_reclen);
+   ADDIPROP(cx, dirent, info->dirent, d_type);
 
    propertie = STRING_TO_JSVAL(elixir_dup(cx, info->dirent->d_name));
    JS_SetProperty(cx, obj, "d_name", &propertie);
 
    ret = EINA_TRUE;
 
+ on_error_register:
+   elixir_object_unregister(cx, &obj);
+
  on_error:
    elixir_unlock_cx(cx);
 
    free(tmp);
+   return ret;
+}
+
+static Eina_Bool
+elixir_new_stat(JSContext *cx,
+                const struct stat *st,
+                jsval *rval)
+{
+   JSObject *obj;
+   double tmp;
+   Eina_Bool ret = EINA_FALSE;
+
+   elixir_lock_cx(cx);
+
+   obj = JS_NewObject(cx, elixir_class_request("struct stat", NULL), NULL, NULL);
+   if (!obj) goto on_error;
+
+   if (!elixir_object_register(cx, &obj, (struct stat*) st)) goto on_error;
+
+   *rval = OBJECT_TO_JSVAL(obj);
+
+   ADDIPROP(cx, obj, st, st_dev);
+   ADDIPROP(cx, obj, st, st_ino);
+   ADDIPROP(cx, obj, st, st_mode);
+   ADDIPROP(cx, obj, st, st_nlink);
+   ADDIPROP(cx, obj, st, st_uid);
+   ADDIPROP(cx, obj, st, st_rdev);
+
+   tmp = (double) st->st_size;
+   elixir_add_dbl_prop(cx, obj, "st_size", tmp);
+
+   ret = EINA_TRUE;
+   elixir_object_unregister(cx, &obj);
+
+ on_error:
+   elixir_unlock_cx(cx);
+
    return ret;
 }
 
@@ -597,9 +647,168 @@ elixir_eio_filter_del(JSContext *cx, uintN argc, jsval *vp)
    return JS_TRUE;
 }
 
+typedef struct _Elixir_EIO_Stat Elixir_EIO_Stat;
+struct _Elixir_EIO_Stat
+{
+   JSFunction *func_done;
+   JSFunction *func_error;
+   JSObject *obj_done;
+   JSObject *obj_error;
+   JSObject *result;
+};
+
+static void
+_elixir_eio_stat_free(JSContext *cx, Elixir_EIO_Stat *st)
+{
+   elixir_object_unregister(cx, &st->obj_done);
+   elixir_object_unregister(cx, &st->obj_error);
+
+   JS_SetPrivate(cx, st->result, NULL);
+   elixir_object_unregister(cx, &st->result);
+
+   elixir_function_stop(cx);
+   free(st);
+}
+
+static void
+_elixir_eio_direct_stat_error(int error, void *data)
+{
+   Elixir_EIO_Stat *st;
+   JSContext *cx;
+   JSObject *parent;
+   jsval argv[2];
+   jsval rval;
+
+   parent = elixir_void_get_parent(data);
+   cx = elixir_void_get_cx(data);
+   st = elixir_void_get_private(data);
+   if (!parent || !st || !cx)
+     return ;
+
+   elixir_function_start(cx);
+
+   argv[0] = INT_TO_JSVAL(error);
+   argv[1] = elixir_void_get_jsval(data);
+
+   elixir_function_run(cx, st->func_error, parent, 2, argv, &rval);
+
+   elixir_void_free(data);
+   _elixir_eio_stat_free(cx, st);
+}
+
+static void
+_elixir_eio_direct_stat_done(void *data, const struct stat *stat)
+{
+   Elixir_EIO_Stat *st;
+   JSContext *cx;
+   JSObject *parent;
+   jsval argv[2];
+   jsval rval;
+
+   parent = elixir_void_get_parent(data);
+   cx = elixir_void_get_cx(data);
+   st = elixir_void_get_private(data);
+   if (!parent || !st || !cx)
+     return ;
+
+   elixir_function_start(cx);
+
+   if (!elixir_new_stat(cx, stat, &argv[1]))
+     goto on_error;
+
+   argv[0] = elixir_void_get_jsval(data);
+
+   elixir_function_run(cx, st->func_done, parent, 2, argv, &rval);
+
+   elixir_void_free(data);
+   _elixir_eio_stat_free(cx, st);
+
+   return ;
+
+ on_error:
+   elixir_function_stop(cx);
+
+   _elixir_eio_direct_stat_error(0, data);
+}
+
+static JSBool
+elixir_eio_file_direct_stat(JSContext *cx, uintN argc, jsval *vp)
+{
+   Elixir_EIO_Stat *st = NULL;
+   Eio_File *result;
+   char *tmp;
+   void *n;
+   jsval argv[2];
+   jsval rval;
+   elixir_value_t val[4];
+
+   if (!elixir_params_check(cx, _string_2func_any, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   tmp = elixir_file_canonicalize(elixir_get_string_bytes(val[0].v.str, NULL));
+   if (tmp && !elixir_file_type(tmp))
+     {
+        free(tmp);
+        tmp = NULL;
+     }
+
+   if (!tmp) goto on_error;
+
+   st = malloc(sizeof (Elixir_EIO_Stat));
+   if (!st) goto on_error;
+
+   st->func_done = val[1].v.fct;
+   st->func_error = val[2].v.fct;
+   st->obj_done = JS_GetFunctionObject(st->func_done);
+   st->obj_error = JS_GetFunctionObject(st->func_error);
+
+   elixir_object_register(cx, &st->obj_done, NULL);
+   elixir_object_register(cx, &st->obj_error, NULL);
+
+   n = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), val[3].v.any, st);
+   if (!n) goto on_error;
+
+   elixir_function_stop(cx);
+   result = eio_file_direct_stat(tmp,
+                                 _elixir_eio_direct_stat_done,
+                                 _elixir_eio_direct_stat_error,
+                                 n);
+   elixir_function_start(cx);
+
+   if (result)
+     {
+        st->result = elixir_return_ptr(cx, vp, result, elixir_class_request("Eio_File", NULL));
+        elixir_object_register(cx, &st->result, NULL);
+     }
+   else
+     {
+        JS_SET_RVAL(cx, vp, JSVAL_NULL);
+     }
+
+   return JS_TRUE;
+
+ on_error:
+   if (tmp) free(tmp);
+   if (st)
+     {
+        elixir_object_unregister(cx, &st->obj_done);
+        elixir_object_unregister(cx, &st->obj_error);
+        free(st);
+     }
+
+   argv[0] = INT_TO_JSVAL(0);
+   argv[1] = val[3].v.any;
+
+   elixir_function_run(cx, val[2].v.fct, JS_THIS_OBJECT(cx, vp), 2, argv, &rval);
+
+   JS_SET_RVAL(cx, vp, JSVAL_NULL);
+   return JS_TRUE;
+}
+
 static JSFunctionSpec eio_functions[] = {
   ELIXIR_FN(eio_init, 0, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(eio_shutdown, 0, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(eio_file_direct_stat, 4, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(eio_file_ls, 6, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(eio_file_direct_ls, 6, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(eio_filter_add, 1, JSPROP_ENUMERATE, 0 ),
@@ -663,6 +872,7 @@ module_open(Elixir_Module *em, JSContext *cx, JSObject *parent)
    _eio_file_parameter.class = elixir_class_request("Eio_File", NULL);
    _eina_stat_parameter.class = elixir_class_request("Eina_Stat", NULL);
    _eina_direct_parameter.class = elixir_class_request("Eina_Direct", NULL);
+   _struct_stat_parameter.class = elixir_class_request("struct stat", NULL);
 
    return EINA_TRUE;
 
