@@ -61,6 +61,10 @@ if EINA_STATIC_BUILD_EMOTION
 elixir_compile_LDADD += @EMOTION_LIBS@
 endif
 
+if EINA_STATIC_BUILD_EIO
+elixir_compile_LDADD += @EIO_LIBS@
+endif
+
 endif
 
 endif
