@@ -5397,3 +5397,13 @@ Add ERegionIntersectOffset().
 Correct recent composite/shape fixes and fix some more related issues.
 Fix restart (broken in 1.0.6).
 
+-------------------------------------------------------------------------------
+
+Sat Oct 30 18:22:46 CEST 2010
+
+--- 1.0.6.002 ---
+Debug stuff cleanups.
+Cosmetics.
+Remove incorrect comment. Cosmetics.
+Avoid processing events belonging to a previous ewin for a client window.
+Revert incorrect fixes for menu related segvs.
