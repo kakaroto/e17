@@ -575,7 +575,7 @@ EDestroyWindow(Win win)
       return;
 
 #if DEBUG_XWIN
-   Eprintf("ExDestroyWindow: %p %#lx\n", win, win->xwin);
+   Eprintf("EDestroyWindow: %p %#lx\n", win, win->xwin);
 #endif
    if (win->parent != None)
      {
@@ -794,8 +794,8 @@ EReparentWindow(Win win, Win parent, int x, int y)
 #if 0
    Eprintf
       ("EReparentWindow: %p %#lx: %d %#lx->%#lx %d,%d %dx%d -> %d,%d\n",
-       win, win->xwin, win->mapped, win->parent, parent->xwin,
-       win->x, win->y, win->w, win->h, x, y);
+       win, win->xwin, win->mapped, (win->parent) ? win->parent->xwin : None,
+       parent->xwin, win->x, win->y, win->w, win->h, x, y);
 #endif
    if (parent == win->parent)
      {
