@@ -22,7 +22,7 @@
 <h1>Documentation</h1>
 
 <table border=0 cellpadding=0 cellspacing=8><tr>
-<td class='main'><div class="main">
+<td class='main' width='*'><div class="main">
 <p>
   The Enlightenment Project covers more than simple window management. Whether
   you're a user, developer, or just someone looking for some good bathroom
@@ -44,7 +44,7 @@ libraries is on the right.
 
 <h3>Enlightenment Foundation Libraries (EFL)</h3>
 
-<h2><a href=http://trac.enlightenment.org/e/wiki/EFLOverview>Overview</a></h2>
+<h2><a href=http://trac.enlightenment.org/e/wiki/EFLOverview>Overview</a></h3>
  <p>
   For an overveiw of how EFL is works and is designed, red this.
  </p>
@@ -114,7 +114,6 @@ libraries is on the right.
  
  </tr>
 </table>
-<hr>
 </center>
 
 </div></td>
@@ -126,9 +125,15 @@ libraries is on the right.
 <?php frame1("width=100%");?>
 <div class="main">
 
+<table border=0 cellpadding=0 cellspacing=8><tr>
+<td class='main' width='*'><div class="main">
+
 <p>
 Documentation for applications auto-generated daily from SVN:
 </p>
+
+</div></td>
+<td class='main'><div class="main">
 
 <center>
 <table border=0 cellpadding=0 cellspacing=10>
@@ -145,6 +150,9 @@ Documentation for applications auto-generated daily from SVN:
  </tr>
 </table>
 </center>
+
+</div></td>
+</tr></table>
 
 </div>
 <?php frame2();?>
