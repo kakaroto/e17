@@ -7,7 +7,7 @@
 <form method="get" action="http://www.google.com/search">
 <table border=0 cellpadding=0 cellspacing=8>
  <tr>
-  <td align=center><p><h3>Search Docs</h3></p></td>
+  <td align=center><h3>Search Docs</h3></td>
   <td align=center><input type="text" name="q" maxlength="255" value="" style="width:320px"></td>
   <td align=center><input type="submit" value="Search" style="width:120px"></td>
  </tr>
@@ -132,6 +132,36 @@ Documentation for applications auto-generated daily from SVN:
 </div>
 <?php frame2();?>
 
+<hr>
+
+<?php frame1("width=100%");?>
+<div class="main">
+
+<h2>Enlightenment DR16 Documentation</h2>
+ <p>
+  There is ample documentation available from Enlightenment itself. eDox is
+  DR16's "built in" docuemenation and tutorial system. This system was removed
+  from the main distribution with the release of DR16.7 in order to shrink the
+  size of the distribution and applications installed disk usage. If you are
+  new to Enlightenment, please <a
+  href="http://sourceforge.net/project/showfiles.php?group_id=2&package_id=116678&release_id=234365">download
+  and install the enlightenment-docs package (aka: eDox)</a>.
+ </p>
+
+<h3>EtherDox [<a href="http://etherdoxproject.com">HTML</a>]</h3>
+ <p>
+  Assorted articles on DR16 theming building toward a complete set of
+  documents for the DR16 themer.<br />
+  Written by <a href="mailto:peteNO@SPAMlowatts.demon.co.uk">monkiboi</a>.
+ </p>
+
+</div>
+<?php frame2();?>
+
+<br>
+<hr>
+<br>
+
 <?php frame1("width=100%");?>
 <div class="main">
 
@@ -163,7 +193,7 @@ Documentation for applications auto-generated daily from SVN:
   This document is available in several languages:
  </p>
  <p>
-   <ul align=left>
+   <ul>
     <li>Spanish: [<a
        href="http://docs.enlightenment.org/books/cookbook/eflcookbook.es.html">HTML</a>]
        [<a href="http://docs.enlightenment.org/books/cookbook/eflcookbook.es.pdf">PDF</a>]</li>
@@ -187,30 +217,6 @@ Documentation for applications auto-generated daily from SVN:
   application development and make nearly any application completely
   skinable by even non-programmers.<br />
   Written by <a href="mailto:benrNO@SPAMcuddletech.com">Ben 'technikolor' Rockwood</a>.
- </p>
-
-</div>
-<?php frame2();?>
-
-<?php frame1("width=100%");?>
-<div class="main">
-
-<h2>Enlightenment DR16 Documentation</h2>
- <p>
-  There is ample documentation available from Enlightenment itself. eDox is
-  DR16's "built in" docuemenation and tutorial system. This system was removed
-  from the main distribution with the release of DR16.7 in order to shrink the
-  size of the distribution and applications installed disk usage. If you are
-  new to Enlightenment, please <a
-  href="http://sourceforge.net/project/showfiles.php?group_id=2&package_id=116678&release_id=234365">download
-  and install the enlightenment-docs package (aka: eDox)</a>.
- </p>
-
-<h3>EtherDox [<a href="http://etherdoxproject.com">HTML</a>]</h3>
- <p>
-  Assorted articles on DR16 theming building toward a complete set of
-  documents for the DR16 themer.<br />
-  Written by <a href="mailto:peteNO@SPAMlowatts.demon.co.uk">monkiboi</a>.
  </p>
 
 </div>
