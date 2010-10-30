@@ -237,6 +237,8 @@ EwinManage(EWin * ewin)
    if (ewin->state.docked)
       ewin->inh_wm.b.border = 1;
 
+   ewin->serial = NextRequest(disp);
+
    frame = EoGetWin(ewin);
    if (!frame)
      {
@@ -2291,10 +2293,40 @@ ActionsCheck(const char *which, EWin * ewin, XEvent * ev)
    return ActionclassEvent(ac, ev, ewin);
 }
 
+static EWin        *
+_EwinEventEwinCheck(const char *txt, XEvent * ev, EWin * ewin)
+{
+   if ((int)(ev->xany.serial - ewin->serial) < 0)
+     {
+	Eprintf("%s: %#lx: Ignore obsolete event %d\n", txt,
+		ev->xany.window, ev->type);
+	return NULL;
+     }
+
+   ewin->serial = ev->xany.serial;
+
+   return ewin;
+}
+
+static EWin        *
+_EwinEventEwinFind(XEvent * ev, Window xwin)
+{
+   EWin               *ewin;
+
+   ewin = EwinFindByClient(xwin);
+   if (!ewin)
+      return ewin;
+
+   return _EwinEventEwinCheck("root", ev, ewin);
+}
+
 static void
 EwinHandleEventsToplevel(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    EWin               *ewin = (EWin *) prm;
+
+   if (!_EwinEventEwinCheck("frm", ev, ewin))
+      return;
 
    switch (ev->type)
      {
@@ -2324,6 +2356,9 @@ EwinHandleEventsContainer(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    EWin               *ewin = (EWin *) prm;
    Window              xwin = EwinGetClientXwin(ewin);
+
+   if (!_EwinEventEwinCheck("cont", ev, ewin))
+      return;
 
    switch (ev->type)
      {
@@ -2407,6 +2442,9 @@ EwinHandleEventsClient(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    EWin               *ewin = (EWin *) prm;
 
+   if (!_EwinEventEwinCheck("cli", ev, ewin))
+      return;
+
    switch (ev->type)
      {
      case FocusIn:
@@ -2482,7 +2520,7 @@ EwinHandleEventsRoot(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
      case UnmapNotify:
      case EX_EVENT_UNMAP_GONE:
 	/* Catch clients unmapped after MapRequest but before being reparented */
-	ewin = EwinFindByClient(ev->xunmap.window);
+	ewin = _EwinEventEwinFind(ev, ev->xunmap.window);
 	if (!ewin)
 	   break;
 	if (ev->type == EX_EVENT_UNMAP_GONE)
@@ -2492,7 +2530,7 @@ EwinHandleEventsRoot(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 
      case DestroyNotify:
 	/* Catch clients destroyed after MapRequest but before being reparented */
-	ewin = EwinFindByClient(ev->xdestroywindow.window);
+	ewin = _EwinEventEwinFind(ev, ev->xdestroywindow.window);
 	if (!ewin)
 	   break;
 	EwinEventDestroy(ewin);
@@ -2500,7 +2538,7 @@ EwinHandleEventsRoot(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 
      case ReparentNotify:
      case EX_EVENT_REPARENT_GONE:
-	ewin = EwinFindByClient(ev->xreparent.window);
+	ewin = _EwinEventEwinFind(ev, ev->xreparent.window);
 	if (!ewin)
 	   break;
 	if (ev->type == EX_EVENT_REPARENT_GONE)

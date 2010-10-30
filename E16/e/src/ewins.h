@@ -66,6 +66,7 @@ struct _ewin {
    EObj                o;
    char                type;
    Win                 win_container;
+   unsigned int        serial;
 
    const Border       *border;
    const Border       *normal_border;
