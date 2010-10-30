@@ -2,65 +2,136 @@
  <tr>
   <td class='main'>
    <div class="main">
-<h1>Support</h1>
 
-<div class="section-plug">
-<div class="left-border">
-<div class="right-border">
-<h3><a href="http://wiki.enlightenment.org/index.php/Main_Page">Wiki</a></h3>
-<p>Frequently updated tutorials and guides for both users and developers.</p>
-<ul>
-<li><a href="http://wiki.enlightenment.org/index.php/Enlightenment">Enlightenment</a></li>
-<li><a href="http://wiki.enlightenment.org/index.php/E17_User_Guide">DR17 User Guide</a></li>
-<li><a href="http://wiki.enlightenment.org/index.php/Enlightenment_Foundation_Libraries"> EFL Overview</a></li>
-<li><a href="http://wiki.enlightenment.org/index.php/Install_EFL_from_CVS_guide"> Installing the EFL</a></li>
-<li><a href="http://wiki.enlightenment.org/index.php/Main_Page">[more]</a></li>
-</ul>
+<table border=0 cellpadding=0 cellspacing=8>
+
+<tr>
+<td class='main' width=33%><div class="main">
+<?php frame1("width=100%");?>
+<div class="main">
+ <h2>E-Mail</h2>
+
+ <p>
+  Our primary non-realtime form of communication is via e-mail. This
+  allows everyone to participate no matter what timezone the live in or
+  what waking hours they keep. It allowws for streamlined access via
+  your favorite e-mail application, whicvh should handle large volumes
+  of messages and conversations well already. It allows for offline
+  reading and replies (unlike web forums or IRC),
+ </p>
+ <p>
+  The language used on our mailing lists is English. It is a universal
+  language that more people speak than any other, so if you want to
+  participate, please use English, and then everyone can understand
+  and respond. Also note that these lissts are public and everyone sees
+  the e-mails sent to them, and anyone may respond. Not all answers will
+  be correct, but the vast majority will be.
+ </p>
+ <p>
+  In addition to the lists being a forum for questions, suggestions and
+  other such discussions, they are also used as a news feed. Especially
+  our commits mailng list. Every piece of code changed, bug fixed, or
+  feature added will be broadcast on our commits mailing list. If you
+  want to know what is going on, our commits list is an absolute must to
+  subscribe to.
+ </p>
+ <p>
+  We have 3 main lists. <a
+  href=https://lists.sourceforge.net/lists/listinfo/enlightenment-svn>The
+  SVN Commits List</a> is for sending out notices of every commit that
+  happens to our repositories, with full source diffs, log and who
+  did the work. <a
+  href=https://lists.sourceforge.net/lists/listinfo/enlightenment-devel>The
+  Devel List</a> is where most of the developer and development
+  discussions happen. This list will be more technical that the Users
+  list. <a 
+  href=https://lists.sourceforge.net/lists/listinfo/enlightenment-users>The
+  Users List</a> is where regular user discussions will happen.
+ </p>
+ <p>
+  In addition we have the <a
+  href=https://lists.sourceforge.net/lists/listinfo/enlightenment-announce>
+  Announce List</a> for official announcements (like releases of new
+  software). <a
+  href=https://lists.sourceforge.net/lists/listinfo/enlightenment-intl>The
+  Intl List</a> is for posting changes to internationalization like
+  updated PO files. <a 
+  href=https://lists.sourceforge.net/lists/listinfo/enlightenment-bugs>The
+  Bugs List</a> is for broadcasting bug reports (though the way trac
+  works currently for us, it will only be used if added to the cc list).
+ </p>
+ <p>
+  For more information, please see the 
+  <?php a("contact", "contact");?> page.
+ </p>
+
 </div>
+<?php frame2();?>
+</div></td>
+<td class='main' width=33%><div class="main">
+<?php frame1("width=100%");?>
+<div class="main">
+ <h2>IRC</h2>
+
+ <p>
+  Many of the core developers involved in Enlightenment as well as a
+  lot of users are on IRC. They use IRC often and will discuss many
+  development issues there instead of e-mail, due to it having immediate
+  feedback as well as convenient shared discussion channels.
+ </p>
+ <p>
+  We use the Freenode IRC network, and you will find us on the <b>#e</b>
+  channel. You can use a, IRC client like <a
+  href=http://xchat.org/>X-Chat</a>, <a
+  href=http://konversation.kde.org/>Konversation</a>,
+  <a href=http://www.pidgin.im/>Pidgin</a>, <a
+  href=http://www.mibbit.com/>Mibbit</a>, and many others. If your
+  client already has a listing for freenode, just select it. If not
+  just set up the server as <b>irc.freenode.net</b> as your server
+  with the normal IRC port of 6667. Once connected just join <b>#e</b> 
+  (you can just tyoe in the command: <b>/join #e</b> then Enter). Jusst
+  type + press Enter to talk.
+ </p>
+ <p>
+  For more information please see <?php a("contact", "contact");?>.
+ </p>
+
 </div>
+<?php frame2();?>
+</div></td>
+<td class='main' width=33%><div class="main">
+<?php frame1("width=100%");?>
+<div class="main">
+ <h2>Bug Tracking</h2>
+
+ <p>
+  We use <a href=http://trac.enlightenment.org/e/>Trac</a> for our Bug
+  tracking and wiki. If you have a bug or issue, please <a
+  href=http://trac.enlightenment.org/e/report>Report</a> a bug. We will
+  eventually get to it, but try and assign it to someone appropriate
+  so it gets attention. We list all our developers on our <?php
+  a("contact", "contact");?> page. 
+ </p>
+ <p>
+  Please use the tracker for bugs, not for discussions or feature
+  requests or for "I don't know how to do this" questions. It's for
+  reporting actual problems. For questions we have E-Mail and IRC. Also
+  remember that we will prioritise bug fixing to those things that are
+  core, urgent or necessary, so just because a report isn't acted on
+  soon, doesn't mean we won't eventually get to it. Once it's in the
+  system it won't disappear. It just takes it being noticed.
+ </p>
+ <p>
+  To report a bug, go to <a 
+  href=http://trac.enlightenment.org/e/report>Trac Bugs</a>.
+ </p>
+
 </div>
+<?php frame2();?>
+</div></td>
+</tr>
+</table>
 
-<div class="section-plug">
-<div class="left-border">
-<div class="right-border">
-<h3><a href="http://docs.enlightenment.org/">Docs</a></h3>
-<p>API References, stable development manuals and books.</p>
-<ul>
-<li><a href="http://homepages.pathfinder.gr/kazanaki/contrib/">Introduction to
-the EFL</a></li>
-<li><a href="http://docs.enlightenment.org/books/cookbook/eflcookbook.html">The
-EFL Cookbook</a></li>
-<li><a href="http://docs.enlightenment.org/api/evas/html">Evas
-API Reference</a></li>
-<li><a href="http://docs.enlightenment.org/api/edje/html">Edje
-API Reference</a></li>
-<li><a href="http://docs.enlightenment.org/">[more]</a></li>
-</ul>
-</div>
-</div>
-</div>
-
-<p>There is a great community of helpful developers and users surrounding
-the Enlightenment project. The following is a list of ways to get in contact
-with this community.</p>
-
-<p>We have been working on documenting the many portions of DR16, DR17 and
-the EFL. Along with this system documentation we've been working on a few
-books to help people get staring. All of this documentation is available at <a
-href="http://docs.enlightenment.org">docs.enlightenment.org</a>.</p>
-
-<p>If you're questions aren't answered in the standard documentation there
-is a <a href="http://wiki.enlightenment.org">wiki</a> available to aid in
-the support process. Along with the wiki is a 
-<a href="http://forum.enlightenment.org">forum</a> to allow you to ask
-your questions.</p>
-
-<p>For those of you that aren't fans of all this web technology there are
-also the <a href="http://sourceforge.net/mail/?group_id=2">mailing lists</a>
-and people hanging out in #e on irc.freenode.net.</p>
-
-<p>If you've found a bug in something you can report it to the <a
-href="http://trac.enlightenment.org/e/report">Bug Tracker</a>.</p>
    </div>
   </td>
  </tr>

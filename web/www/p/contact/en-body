@@ -62,16 +62,17 @@ subscription details into the form.
 <h2>IRC</h2>
 
 <p>
-Get help right away using #e, the Enlightenment channel on FreeNode IRC.  Choose a server <a href="http://freenode.org/irc_servers.shtml">from
-the FreeNode Servers Page</a> and then join #e. Einen deutschsprachigen IRC
-channel gibt es auch - #e.de auf <a href="http://freenode.org/irc_servers.shtml">
-FreeNode</a>. Per gli utenti di lingua italiana è disponibile il canale #e-it su <a href="http://freenode.org/irc_servers.shtml">FreeNode</a>
-</p>
+Get help right away using #e, the Enlightenment channel on FreeNode
+IRC.  Choose <b>irc.freenode.net</b> as your server and then join <b>#e</b>
+with the <b>/join #e</b> command. Einen deutschsprachigen IRC
+channel gibt es auch - <b>#e.de</b> auf FreeNode. Per gli utenti di lingua
+italiana è disponibile il canale <b>#e-it</b>.</p>
 
 <hr noshade="noshade" style="width: 200px;" />
 <h2>Bugs</h2>
 <p>If you happen to come across a bug, missing feature or lack of
-documentation feel free to report it in the <a href="http://trac.enlightenment.org/e/report">Enlightenment Trac</a>.</p>
+documentation feel free to report it in the <a 
+href="http://trac.enlightenment.org/e/report">Enlightenment Trac</a>.</p>
 
 <hr noshade="noshade" style="width: 200px;" />
 <h2>People</h2>
