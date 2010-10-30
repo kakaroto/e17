@@ -171,7 +171,6 @@ MenuHide(Menu * m)
      {
 	EUnmapWindow(m->win);
 	EReparentWindow(m->win, VROOT, ewin->client.x, ewin->client.y);
-	m->win = NULL;
 	EwinHide(ewin);
      }
    m->ewin = NULL;
@@ -1549,8 +1548,7 @@ MenuSelectItem(Menu * m, MenuItem * mi, int focus)
 	  {
 	     Mode_menus.active = m;
 	     GrabKeyboardRelease();
-	     if (m->win)
-		GrabKeyboardSet(m->win);
+	     GrabKeyboardSet(m->win);
 	  }
      }
 
