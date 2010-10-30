@@ -144,6 +144,8 @@ Documentation for applications auto-generated daily from SVN:
   <td>
    <?php blinkurl("i/logo-s.png", "EPHOTO MANAGER", "http://docs.enlightenment.org/auto/ephoto_manager"); ?>
   </td>
+ </tr>
+ <tr>
   <td>
    <?php blinkurl("i/logo-s.png", "EYELIGHT", "http://docs.enlightenment.org/auto/eyelight"); ?>
   </td>
