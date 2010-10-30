@@ -14,23 +14,23 @@
  <p>
   Our primary non-realtime form of communication is via e-mail. This
   allows everyone to participate no matter what timezone the live in or
-  what waking hours they keep. It allowws for streamlined access via
-  your favorite e-mail application, whicvh should handle large volumes
-  of messages and conversations well already. It allows for offline
+  what waking hours they keep. It allows for streamlined access via
+  your favorite e-mail application, which should handle large volumes
+  of messages and conversations well already. It allows for off-line
   reading and replies (unlike web forums or IRC),
  </p>
  <p>
   The language used on our mailing lists is English. It is a universal
   language that more people speak than any other, so if you want to
   participate, please use English, and then everyone can understand
-  and respond. Also note that these lissts are public and everyone sees
+  and respond. Also note that these lists are public and everyone sees
   the e-mails sent to them, and anyone may respond. Not all answers will
   be correct, but the vast majority will be.
  </p>
  <p>
   In addition to the lists being a forum for questions, suggestions and
   other such discussions, they are also used as a news feed. Especially
-  our commits mailng list. Every piece of code changed, bug fixed, or
+  our commits mailing list. Every piece of code changed, bug fixed, or
   feature added will be broadcast on our commits mailing list. If you
   want to know what is going on, our commits list is an absolute must to
   subscribe to.
@@ -89,7 +89,7 @@
   client already has a listing for freenode, just select it. If not
   just set up the server as <b>irc.freenode.net</b> as your server
   with the normal IRC port of 6667. Once connected just join <b>#e</b> 
-  (you can just tyoe in the command: <b>/join #e</b> then Enter). Jusst
+  (you can just type in the command: <b>/join #e</b> then Enter). Jusst
   type + press Enter to talk.
  </p>
  <p>
@@ -116,7 +116,7 @@
   Please use the tracker for bugs, not for discussions or feature
   requests or for "I don't know how to do this" questions. It's for
   reporting actual problems. For questions we have E-Mail and IRC. Also
-  remember that we will prioritise bug fixing to those things that are
+  remember that we will prioritize bug fixing to those things that are
   core, urgent or necessary, so just because a report isn't acted on
   soon, doesn't mean we won't eventually get to it. Once it's in the
   system it won't disappear. It just takes it being noticed.
