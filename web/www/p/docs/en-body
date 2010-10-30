@@ -2,7 +2,7 @@
  <tr>
   <td class='main'>
    <div class="main">
-<div class="section-plug">
+   
 <div class="left-border">
 <div class="right-border">
 <h3>Search Docs</h3>
@@ -17,9 +17,7 @@
 </p></center>
 </div>
 </div>
-</div>
 
-<div class="section-plug">
 <div class="left-border">
 <div class="right-border">
 <h3>EFL API Docs</h3>
@@ -41,7 +39,6 @@
    <li>Engrave [<a href="http://docs.enlightenment.org/api/engrave/html">HTML</a>] 
         [<a href="http://docs.enlightenment.org/api/engrave/engrave-reference.pdf">PDF</a>]</li>
   </ul>
-</div>
 </div>
 </div>
 
@@ -189,8 +186,10 @@ Documentation for applications auto-generated daily from SVN:
   Every componant is covered in this guide with complete workable code in each
   recipe. This is a community document and everyone is welcome to contribute
   to it.
-  This document is available in several languages:<br />
-   <ul>
+  This document is available in several languages:
+ </p>
+ <p>
+   <ul align=left>
     <li>Spanish: [<a
        href="http://docs.enlightenment.org/books/cookbook/eflcookbook.es.html">HTML</a>]
        [<a href="http://docs.enlightenment.org/books/cookbook/eflcookbook.es.pdf">PDF</a>]</li>
