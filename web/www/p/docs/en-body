@@ -137,7 +137,23 @@ Documentation for applications auto-generated daily from SVN:
 </table>
 </center>
 
-<h2>EFL Beta Manuals</h2>
+<hr>
+
+<h2>Enlightenment Foundation Libraries (EFL)</h2>
+
+<h2><a href=http://trac.enlightenment.org/e/wiki/EFLOverview>Overview</a></h2>
+ <p>
+  For an overveiw of how EFL is works and is designed, red this.
+ </p>
+ 
+<h2><a href=http://trac.enlightenment.org/e/wiki/EFL>EFL</a></h2>
+ <p>
+  For a list of all EFL documentation on our wiki, go here.
+ </p>
+ 
+<hr>
+
+<h2>EFL Beta Manuals (OLD by now, see above docs instead)</h2>
  <p>
   These manuals are still a work in progress. So, while the code examples may
   have become outdated due to code changes the concepts described in the
@@ -170,22 +186,11 @@ Documentation for applications auto-generated daily from SVN:
     <li>French: [<a 
        href="http://docs.enlightenment.org/books/cookbook/eflcookbook.fr.html">HTML</a>]
        [<a href="http://docs.enlightenment.org/books/cookbook/eflcookbook.fr.pdf">PDF</a>]</li>
-    <li>Brazillian: [<a 
+    <li>Portuguese: [<a 
        href="http://docs.enlightenment.org/books/cookbook/eflcookbook.pt-BR.html">HTML</a>]
        [<a href="http://docs.enlightenment.org/books/cookbook/eflcookbook.pt-BR.pdf">PDF</a>]</li>
    </ul>
   Please contact <a href="mailto:benrNO@SPAMcuddletech.com">benr</a> if you are interested in helping.
- </p>
-
-<h3>The Ewl Book [<a
-  href="http://docs.enlightenment.org/books/ewlbook/ewlbook.pdf">PDF</a>]</h3>
- <p>
-  The Ewl book is an introduction to the Enlightnened Widget Library (Ewl).
-  It attempts to guide you through your first steps into the EWL and then
-  give a more general overview of the widgets themselves.<br />
-  This document is also avalible in Spanish: [<a
-    href="http://docs.enlightenment.org/books/ewlbook/ewlbook.es.pdf">PDF</a>].<br />
-  Written by <a href="mailto:dj2NO@SPAMeverburning.com">Dan 'dj2' Sinclair</a>.
  </p>
 
 <h3>Building Interfaces with Edje: The Edje Developers Guide [<a
@@ -199,6 +204,8 @@ Documentation for applications auto-generated daily from SVN:
   skinable by even non-programmers.<br />
   Written by <a href="mailto:benrNO@SPAMcuddletech.com">Ben 'technikolor' Rockwood</a>.
  </p>
+
+<hr>
 
 <h2>Enlightenment DR16 Documentation</h2>
  <p>
