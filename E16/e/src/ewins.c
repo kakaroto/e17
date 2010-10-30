@@ -1073,7 +1073,6 @@ EwinUnmap2(EWin * ewin)
 static void
 EwinWithdraw(EWin * ewin, Win to)
 {
-   Window              win;
    int                 x, y;
 
    /* Only external clients should go here */
@@ -1094,7 +1093,7 @@ EwinWithdraw(EWin * ewin, Win to)
 	y = ewin->client.y;
 	ETranslateCoordinates(EwinGetClientWin(ewin), VROOT,
 			      -ewin->border->border.left,
-			      -ewin->border->border.top, &x, &y, &win);
+			      -ewin->border->border.top, &x, &y, NULL);
 	EReparentWindow(EwinGetClientWin(ewin), to, x, y);
 	HintsDelWindowHints(ewin);
      }
@@ -1105,14 +1104,18 @@ EwinWithdraw(EWin * ewin, Win to)
 }
 
 static void
-EwinEventMapRequest(EWin * ewin, Window win)
+EwinEventMapRequest(EWin * ewin, XEvent * ev)
 {
+   Window              xwin;
+
+   xwin = ev->xmaprequest.window;
+
    if (ewin)
      {
 	if (ewin->state.state == EWIN_STATE_ICONIC)
 	   EwinDeIconify(ewin);
 	else if (ewin->state.state == EWIN_STATE_WITHDRAWN)
-	   AddToFamily(ewin, win, 0);
+	   AddToFamily(ewin, xwin, 0);
 	else
 	  {
 	     Eprintf("AddToFamily: Already managing %s %#lx\n", "A",
@@ -1123,7 +1126,7 @@ EwinEventMapRequest(EWin * ewin, Window win)
    else
      {
 	/* Check if we are already managing it */
-	ewin = EwinFindByClient(win);
+	ewin = EwinFindByClient(xwin);
 
 	/* Some clients MapRequest more than once ?!? */
 	if (ewin)
@@ -1134,7 +1137,7 @@ EwinEventMapRequest(EWin * ewin, Window win)
 	     EwinShow(ewin);
 	  }
 	else
-	   AddToFamily(NULL, win, 0);
+	   AddToFamily(NULL, xwin, 0);
      }
 }
 
@@ -2266,6 +2269,8 @@ EwinsSetFree(void)
  * Event handlers
  */
 
+#define DEBUG_EWIN_EVENTS 0
+
 static int
 ActionsCheck(const char *which, EWin * ewin, XEvent * ev)
 {
@@ -2288,7 +2293,6 @@ ActionsCheck(const char *which, EWin * ewin, XEvent * ev)
    return ActionclassEvent(ac, ev, ewin);
 }
 
-#define DEBUG_EWIN_EVENTS 0
 static void
 EwinHandleEventsToplevel(Win win __UNUSED__, XEvent * ev, void *prm)
 {
@@ -2321,11 +2325,8 @@ static void
 EwinHandleEventsContainer(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    EWin               *ewin = (EWin *) prm;
+   Window              xwin = EwinGetClientXwin(ewin);
 
-#if 0
-   Eprintf("EwinHandleEventsContainer: type=%2d win=%#lx: %s\n",
-	   ev->type, EwinGetClientXwin(ewin), EwinGetTitle(ewin));
-#endif
    switch (ev->type)
      {
      case ButtonPress:
@@ -2333,57 +2334,57 @@ EwinHandleEventsContainer(Win win __UNUSED__, XEvent * ev, void *prm)
 	break;
 
      case MapRequest:
-	if (ev->xmaprequest.window != EwinGetClientXwin(ewin))
+	if (ev->xmaprequest.window != xwin)
 	   break;
-	EwinEventMapRequest(ewin, ev->xmaprequest.window);
+	EwinEventMapRequest(ewin, ev);
 	break;
      case ConfigureRequest:
-	if (ev->xconfigurerequest.window != EwinGetClientXwin(ewin))
+	if (ev->xconfigurerequest.window != xwin)
 	   break;
 	EwinEventConfigureRequest(ewin, ev);
 	break;
      case ResizeRequest:
-	if (ev->xresizerequest.window != EwinGetClientXwin(ewin))
+	if (ev->xresizerequest.window != xwin)
 	   break;
 	EwinEventResizeRequest(ewin, ev);
 	break;
      case CirculateRequest:
-	if (ev->xcirculaterequest.window != EwinGetClientXwin(ewin))
+	if (ev->xcirculaterequest.window != xwin)
 	   break;
 	EwinEventCirculateRequest(ewin, ev);
 	break;
 
      case DestroyNotify:
-	if (ev->xdestroywindow.window != EwinGetClientXwin(ewin))
+	if (ev->xdestroywindow.window != xwin)
 	   break;
 	EwinEventDestroy(ewin);
 	break;
 
      case EX_EVENT_UNMAP_GONE:
-	if (ev->xunmap.window != EwinGetClientXwin(ewin))
+	if (ev->xunmap.window != xwin)
 	   break;
 	EoSetGone(ewin);
 	goto do_unmap;
      case UnmapNotify:
-	if (ev->xunmap.window != EwinGetClientXwin(ewin))
+	if (ev->xunmap.window != xwin)
 	   break;
       do_unmap:
 	EwinEventUnmap(ewin, ev);
 	break;
 
      case MapNotify:
-	if (ev->xmap.window != EwinGetClientXwin(ewin))
+	if (ev->xmap.window != xwin)
 	   break;
 	EwinEventMap(ewin, ev);
 	break;
 
      case EX_EVENT_REPARENT_GONE:
-	if (ev->xreparent.window != EwinGetClientXwin(ewin))
+	if (ev->xreparent.window != xwin)
 	   break;
 	EoSetGone(ewin);
 	goto do_reparent;
      case ReparentNotify:
-	if (ev->xreparent.window != EwinGetClientXwin(ewin))
+	if (ev->xreparent.window != xwin)
 	   break;
       do_reparent:
 	EwinEventReparent(ewin, ev);
@@ -2395,8 +2396,10 @@ EwinHandleEventsContainer(Win win __UNUSED__, XEvent * ev, void *prm)
 	break;
 
      default:
+#if DEBUG_EWIN_EVENTS
 	Eprintf("EwinHandleEventsContainer: type=%2d win=%#lx: %s\n",
-		ev->type, EwinGetClientXwin(ewin), EwinGetTitle(ewin));
+		ev->type, xwin, EwinGetTitle(ewin));
+#endif
 	break;
      }
 }
@@ -2452,7 +2455,7 @@ EwinHandleEventsRoot(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
    switch (ev->type)
      {
      case MapRequest:
-	EwinEventMapRequest(NULL, ev->xmaprequest.window);
+	EwinEventMapRequest(NULL, ev);
 	break;
      case ConfigureRequest:
 #if 0
