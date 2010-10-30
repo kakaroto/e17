@@ -1158,15 +1158,13 @@ EwinEventReparent(EWin * ewin, XEvent * ev)
 
    EGrabServer();
 
-   /* Refetch parent window. We cannot rely on the one in the event. */
-   if (EoIsGone(ewin))
-      parent = None;
-   else
-      parent = ev->xreparent.parent;
+   parent = EoIsGone(ewin) ? None : ev->xreparent.parent;
+
    if (EDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinEventReparent %#lx st=%d parent=%#lx: %s\n",
 	      EwinGetClientXwin(ewin), ewin->state.state, parent,
 	      EwinGetTitle(ewin));
+
    if (parent != EwinGetContainerXwin(ewin))
       EwinDestroy(ewin);
 
