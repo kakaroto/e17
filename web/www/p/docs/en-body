@@ -173,7 +173,7 @@ select the documentation you desire on the right.
 <h2>Enlightenment DR16 Documentation</h2>
  <p>
   There is ample documentation available from Enlightenment itself. eDox is
-  DR16's "built in" docuemenation and tutorial system. This system was removed
+  DR16's "built in" documentation and tutorial system. This system was removed
   from the main distribution with the release of DR16.7 in order to shrink the
   size of the distribution and applications installed disk usage. If you are
   new to Enlightenment, please <a
