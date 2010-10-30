@@ -3,44 +3,18 @@
   <td class='main'>
    <div class="main">
    
-<div class="left-border">
-<div class="right-border">
-<h3>Search Docs</h3>
 <center><p>
 <form method="get" action="http://www.google.com/search">
 <table border=0 cellpadding=0 cellspacing=8>
-<tr><td align=center><input type="text" name="q" maxlength="255" value="" style="width:120px"></td></tr>
-<tr><td align=center><input type="submit" value="Search" style="width:120px"></td></tr>
+ <tr>
+  <td align=center><p><h3>Search Docs</h3></p></td>
+  <td align=center><input type="text" name="q" maxlength="255" value="" style="width:320px"></td>
+  <td align=center><input type="submit" value="Search" style="width:120px"></td>
+ </tr>
 </table>
 <input type=hidden name="sitesearch" value="enlightenment.org">
 </form>
 </p></center>
-</div>
-</div>
-
-<div class="left-border">
-<div class="right-border">
-<h3>EFL API Docs</h3>
-<p>Older doxygen API documentation for various libraries.</p>
-  <ul>
-   <li>Imlib2 [<a href="http://docs.enlightenment.org/api/imlib2/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/imlib2/imlib2-reference.pdf">PDF</a>]</li>
-   <li>Epeg [<a href="http://docs.enlightenment.org/api/epeg/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/epeg/epeg-reference.pdf">PDF</a>]</li>
-   <li>Epsilon [<a href="http://docs.enlightenment.org/api/epsilon/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/epsilon/epsilon-reference.pdf">PDF</a>]</li>
-   <li>E_DBus [<a href="http://docs.enlightenment.org/api/e_dbus/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/e_dbus/e_dbus-reference.pdf">PDF</a>]</li>
-   <li>Ewl [<a href="http://docs.enlightenment.org/api/ewl/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/ewl/ewl-reference.pdf">PDF</a>]</li>
-   <li>Etk [<a href="http://docs.enlightenment.org/api/etk/html">HTML</a>]</li>
-   <li>Emotion [<a href="http://docs.enlightenment.org/api/emotion/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/emotion/emotion-reference.pdf">PDF</a>]</li>
-   <li>Engrave [<a href="http://docs.enlightenment.org/api/engrave/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/engrave/engrave-reference.pdf">PDF</a>]</li>
-  </ul>
-</div>
-</div>
 
 <?php frame1("width=100%");?>
 <div class="main">
