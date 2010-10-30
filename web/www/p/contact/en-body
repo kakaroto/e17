@@ -17,6 +17,7 @@ subscription details into the form.
 <center>
 <?php frame1("width=100%");?>
 <div class="main">
+<center>
 <table class="data mailing">
     <thead>
         <tr>
@@ -58,6 +59,7 @@ subscription details into the form.
         </tr>
     </tbody>
 </table>
+</center>
 </div>
 <?php frame2();?>
 </center>
@@ -83,10 +85,6 @@ href="http://trac.enlightenment.org/e/report">Enlightenment Trac</a>.</p>
 
 <?php frame1("width=100%");?>
 <div class="main">
-<table class='main'>
-<tr>
-<td class='main'><div class="main">
-
 <center>
     <table class="data developers active" cellspacing="0">
         <caption>
