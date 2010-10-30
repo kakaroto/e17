@@ -273,8 +273,8 @@ _ephoto_populate_main(void *data, const Eina_File_Direct_Info *info)
    Ephoto_Entry *e;
 
    e = ephoto_entry_new(tb->ephoto, info->path, info->path + info->name_start);
-   if (info->dirent->d_type == DT_DIR) e->is_dir = EINA_TRUE;
-   else if (info->dirent->d_type == DT_REG) e->is_dir = EINA_FALSE;
+   if (info->type == EINA_FILE_DIR) e->is_dir = EINA_TRUE;
+   else if (info->type == EINA_FILE_REG) e->is_dir = EINA_FALSE;
    else e->is_dir = !_ephoto_eina_file_direct_info_image_useful(info);
 
    tb->todo_items = eina_list_append(tb->todo_items, e);
@@ -289,8 +289,8 @@ _ephoto_populate_filter(void *data __UNUSED__, const Eina_File_Direct_Info *info
    const char *bname = info->path + info->name_start;
 
    if (bname[0] == '.') return EINA_FALSE;
-   if (info->dirent->d_type == DT_DIR) return EINA_TRUE;
-   if (info->dirent->d_type == DT_UNKNOWN)
+   if (info->type == EINA_FILE_DIR) return EINA_TRUE;
+   if (info->type == EINA_FILE_UNKNOWN)
      {
         struct stat st;
         if ((stat(info->path, &st) == 0) && (S_ISDIR(st.st_mode)))
