@@ -9,8 +9,81 @@
 <td class='main' width=33%><div class="main">
 <?php frame1("width=100%");?>
 <div class="main">
+ <h2>IRC</h2>
+
+ <p>
+  <table class="data mailing">
+   <thead>
+    <tr>
+     <th class="name">IRC Server</th>
+     <th class="name">Port</th>
+     <th class="name">Channel</th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr><td class="name">
+     irc.freenode.net
+    </td>
+    <td class="name">
+     6667
+    </td>
+    <td class="name">
+     #e
+    </td></tr>
+   </tbody>
+  </table>
+ </p>
+ <p>
+  Many of the core developers involved in Enlightenment as well as a
+  lot of users are on IRC. They use IRC often and will discuss many
+  development issues there instead of e-mail, due to it having immediate
+  feedback as well as convenient shared discussion channels.
+ </p>
+ <p>
+  We use the Freenode IRC network, and you will find us on the <b>#e</b>
+  channel. You can use a, IRC client like <a
+  href=http://xchat.org/>X-Chat</a>, <a
+  href=http://konversation.kde.org/>Konversation</a>,
+  <a href=http://www.pidgin.im/>Pidgin</a>, <a
+  href=http://www.mibbit.com/>Mibbit</a>, and many others. If your
+  client already has a listing for freenode, just select it. If not
+  just set up the server as <b>irc.freenode.net</b> as your server
+  with the normal IRC port of 6667. Once connected just join <b>#e</b> 
+  (you can just type in the command: <b>/join #e</b> then Enter). Just
+  type + press Enter to talk.
+ </p>
+ <p>
+  For more information please see <?php a("contact", "contact");?>.
+ </p>
+
+</div>
+<?php frame2();?>
+</div></td>
+<td class='main' width=33%><div class="main">
+<?php frame1("width=100%");?>
+<div class="main">
  <h2>E-Mail</h2>
 
+ <p>
+  <table class="data mailing">
+   <thead>
+    <tr>
+     <th class="name">Mailing List</th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr><td class="name">
+     <a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-users">Users List</a>
+    </td></tr>
+    <tr><td class="name">
+     <a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-devel">Developers List</a>
+    </td></tr>
+    <tr><td class="name">
+     <a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-svn">SVN Commits List</a>
+    </td></tr>
+   </tbody>
+  </table>
+ </p>
  <p>
   Our primary non-realtime form of communication is via e-mail. This
   allows everyone to participate no matter what timezone the live in or
@@ -63,37 +136,6 @@
  <p>
   For more information, please see the 
   <?php a("contact", "contact");?> page.
- </p>
-
-</div>
-<?php frame2();?>
-</div></td>
-<td class='main' width=33%><div class="main">
-<?php frame1("width=100%");?>
-<div class="main">
- <h2>IRC</h2>
-
- <p>
-  Many of the core developers involved in Enlightenment as well as a
-  lot of users are on IRC. They use IRC often and will discuss many
-  development issues there instead of e-mail, due to it having immediate
-  feedback as well as convenient shared discussion channels.
- </p>
- <p>
-  We use the Freenode IRC network, and you will find us on the <b>#e</b>
-  channel. You can use a, IRC client like <a
-  href=http://xchat.org/>X-Chat</a>, <a
-  href=http://konversation.kde.org/>Konversation</a>,
-  <a href=http://www.pidgin.im/>Pidgin</a>, <a
-  href=http://www.mibbit.com/>Mibbit</a>, and many others. If your
-  client already has a listing for freenode, just select it. If not
-  just set up the server as <b>irc.freenode.net</b> as your server
-  with the normal IRC port of 6667. Once connected just join <b>#e</b> 
-  (you can just type in the command: <b>/join #e</b> then Enter). Just
-  type + press Enter to talk.
- </p>
- <p>
-  For more information please see <?php a("contact", "contact");?>.
  </p>
 
 </div>
