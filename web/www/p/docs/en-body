@@ -2,8 +2,6 @@
  <tr>
   <td class='main'>
    <div class="main">
-<h1>Documentation</h1>
-
 <div class="section-plug">
 <div class="left-border">
 <div class="right-border">
@@ -46,6 +44,11 @@
 </div>
 </div>
 </div>
+
+<?php frame1("width=100%");?>
+<div class="main">
+
+<h1>Documentation</h1>
 
 <p>
   The Enlightenment Project covers more than simple window management. Whether
@@ -117,6 +120,24 @@ API documentation auto-generated daily from SVN source for EFL libraries:
 <hr>
 </center>
 
+<h2>Enlightenment Foundation Libraries (EFL)</h2>
+
+<h2><a href=http://trac.enlightenment.org/e/wiki/EFLOverview>Overview</a></h2>
+ <p>
+  For an overveiw of how EFL is works and is designed, red this.
+ </p>
+ 
+<h2><a href=http://trac.enlightenment.org/e/wiki/EFL>EFL</a></h2>
+ <p>
+  For a list of all EFL documentation on our wiki, go here.
+ </p>
+ 
+</div>
+<?php frame2();?>
+
+<?php frame1("width=100%");?>
+<div class="main">
+
 <p>
 Documentation for applications auto-generated daily from SVN:
 </p>
@@ -137,23 +158,13 @@ Documentation for applications auto-generated daily from SVN:
 </table>
 </center>
 
-<hr>
+</div>
+<?php frame2();?>
 
-<h2>Enlightenment Foundation Libraries (EFL)</h2>
+<?php frame1("width=100%");?>
+<div class="main">
 
-<h2><a href=http://trac.enlightenment.org/e/wiki/EFLOverview>Overview</a></h2>
- <p>
-  For an overveiw of how EFL is works and is designed, red this.
- </p>
- 
-<h2><a href=http://trac.enlightenment.org/e/wiki/EFL>EFL</a></h2>
- <p>
-  For a list of all EFL documentation on our wiki, go here.
- </p>
- 
-<hr>
-
-<h2>EFL Beta Manuals (OLD by now, see above docs instead)</h2>
+<h3>EFL Beta Manuals (OLD by now, see above docs instead)</h3>
  <p>
   These manuals are still a work in progress. So, while the code examples may
   have become outdated due to code changes the concepts described in the
@@ -205,7 +216,11 @@ Documentation for applications auto-generated daily from SVN:
   Written by <a href="mailto:benrNO@SPAMcuddletech.com">Ben 'technikolor' Rockwood</a>.
  </p>
 
-<hr>
+</div>
+<?php frame2();?>
+
+<?php frame1("width=100%");?>
+<div class="main">
 
 <h2>Enlightenment DR16 Documentation</h2>
  <p>
@@ -224,8 +239,11 @@ Documentation for applications auto-generated daily from SVN:
   documents for the DR16 themer.<br />
   Written by <a href="mailto:peteNO@SPAMlowatts.demon.co.uk">monkiboi</a>.
  </p>
+
+</div>
+<?php frame2();?>
+
    </div>
   </td>
  </tr>
 </table>
-      
