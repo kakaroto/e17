@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-10-25 19:02+0200\n"
+"POT-Creation-Date: 2010-10-30 18:12+0200\n"
 "PO-Revision-Date: 2010-01-25 00:46+0000\n"
 "Last-Translator: Sergiy Gavrylov <sergiovana@bigmir.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -430,7 +430,7 @@ msgstr "Закрити"
 msgid "Create New Iconbox"
 msgstr "Створити новий Iconbox"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2120
+#: src/container.c:1507 src/container.c:1583 src/menus.c:2118
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Розмір піктограми: %2d"
@@ -1279,27 +1279,27 @@ msgstr "Згорнути цю групу"
 msgid "Group %i"
 msgstr "Група %i"
 
-#: src/menus.c:2143
+#: src/menus.c:2141
 msgid "Animated display of menus"
 msgstr "Анімоване відображення меню"
 
-#: src/menus.c:2148
+#: src/menus.c:2146
 msgid "Always pop up menus on screen"
 msgstr "Зринаючі меню завжди на екрані"
 
-#: src/menus.c:2153
+#: src/menus.c:2151
 msgid "Warp pointer after moving menus"
 msgstr "Рух вказівника після переміщення меню"
 
-#: src/menus.c:2170
+#: src/menus.c:2168
 msgid "Menus"
 msgstr "Меню"
 
-#: src/menus.c:2171
+#: src/menus.c:2169
 msgid "Menu Settings"
 msgstr "Налаштування меню"
 
-#: src/menus.c:2174
+#: src/menus.c:2172
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"

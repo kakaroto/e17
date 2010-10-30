@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-10-25 19:02+0200\n"
+"POT-Creation-Date: 2010-10-30 18:12+0200\n"
 "PO-Revision-Date: 2009-11-09 14:47+0000\n"
 "Last-Translator: Bernt Holmberg <Unknown>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -394,7 +394,7 @@ msgstr "Stäng"
 msgid "Create New Iconbox"
 msgstr "Skapa ny ikonlåda"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2120
+#: src/container.c:1507 src/container.c:1583 src/menus.c:2118
 #, c-format
 msgid "Icon size: %2d"
 msgstr ""
@@ -1222,27 +1222,27 @@ msgstr "Ikonifiera denna grupp"
 msgid "Group %i"
 msgstr "Grupp %i"
 
-#: src/menus.c:2143
+#: src/menus.c:2141
 msgid "Animated display of menus"
 msgstr "Animerad visning av menyer"
 
-#: src/menus.c:2148
+#: src/menus.c:2146
 msgid "Always pop up menus on screen"
 msgstr "Låt alltid menyer poppa upp på skärm"
 
-#: src/menus.c:2153
+#: src/menus.c:2151
 msgid "Warp pointer after moving menus"
 msgstr "Flytta muspekaren efter att menyer flyttats"
 
-#: src/menus.c:2170
+#: src/menus.c:2168
 msgid "Menus"
 msgstr ""
 
-#: src/menus.c:2171
+#: src/menus.c:2169
 msgid "Menu Settings"
 msgstr ""
 
-#: src/menus.c:2174
+#: src/menus.c:2172
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"

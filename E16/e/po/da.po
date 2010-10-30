@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-10-25 19:02+0200\n"
+"POT-Creation-Date: 2010-10-30 18:12+0200\n"
 "PO-Revision-Date: 2010-05-09 01:23+0000\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Danish\n"
@@ -409,7 +409,7 @@ msgstr "Luk"
 msgid "Create New Iconbox"
 msgstr "Opret ny ikonboks"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2120
+#: src/container.c:1507 src/container.c:1583 src/menus.c:2118
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Ikonstørrelse: %2d"
@@ -1188,27 +1188,27 @@ msgstr "Ikonificér denne gruppe"
 msgid "Group %i"
 msgstr "Gruppe %i"
 
-#: src/menus.c:2143
+#: src/menus.c:2141
 msgid "Animated display of menus"
 msgstr "Animeret visning af menuer"
 
-#: src/menus.c:2148
+#: src/menus.c:2146
 msgid "Always pop up menus on screen"
 msgstr "Hold menuer inden for skærmen"
 
-#: src/menus.c:2153
+#: src/menus.c:2151
 msgid "Warp pointer after moving menus"
 msgstr "Flyt markør efter flytning af menuer"
 
-#: src/menus.c:2170
+#: src/menus.c:2168
 msgid "Menus"
 msgstr "Menuer"
 
-#: src/menus.c:2171
+#: src/menus.c:2169
 msgid "Menu Settings"
 msgstr "Menuindstillinger"
 
-#: src/menus.c:2174
+#: src/menus.c:2172
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"
