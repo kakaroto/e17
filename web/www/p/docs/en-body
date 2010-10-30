@@ -19,7 +19,7 @@
 <?php frame1("width=100%");?>
 <div class="main">
 
-<h1>Documentation</h1>
+<h1>EFL Documentation</h1>
 
 <table border=0 cellpadding=0 cellspacing=8><tr>
 <td class='main' width='*'><div class="main">
@@ -42,9 +42,11 @@ API documentation auto-generated daily from SVN source for EFL
 libraries is on the right.
 </p>
 
+<p>
 <h3>Enlightenment Foundation Libraries (EFL)</h3>
+</p>
 
-<h2><a href=http://trac.enlightenment.org/e/wiki/EFLOverview>Overview</a></h3>
+<h3><a href=http://trac.enlightenment.org/e/wiki/EFLOverview>Overview</a></h3>
  <p>
   For an overveiw of how EFL is works and is designed, red this.
  </p>
@@ -125,11 +127,15 @@ libraries is on the right.
 <?php frame1("width=100%");?>
 <div class="main">
 
+<h1>Application Documentation</h1>
+
 <table border=0 cellpadding=0 cellspacing=8><tr>
 <td class='main' width='*'><div class="main">
 
 <p>
-Documentation for applications auto-generated daily from SVN:
+Some applications also have automatically generated documentation. It is
+geenerated daily from SVN likee the EFL documentation above. Just
+select the documentation you desire on the right.
 </p>
 
 </div></td>
