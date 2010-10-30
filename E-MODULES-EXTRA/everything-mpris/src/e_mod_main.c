@@ -52,7 +52,13 @@ struct _Plugin
 
   Ecore_Timer *update_timer;
 
-  int instances;
+  E_DBus_Signal_Handler *cb_tracklist_change;
+  E_DBus_Signal_Handler *cb_player_track_change;
+  E_DBus_Signal_Handler *cb_player_status_change;
+
+  DBusPendingCall *pnd_tracklist;
+  DBusPendingCall *pnd_status;
+  DBusPendingCall *pnd_curtrack;
 };
 
 
@@ -79,9 +85,6 @@ static Ecore_Event_Handler *select_handler = NULL;
 static Eina_Bool plugin_selected = EINA_FALSE;
 static E_DBus_Connection *conn = NULL;
 static E_DBus_Signal_Handler *cb_name_owner_changed = NULL;
-static E_DBus_Signal_Handler *cb_tracklist_change = NULL;
-static E_DBus_Signal_Handler *cb_player_track_change = NULL;
-static E_DBus_Signal_Handler *cb_player_status_change = NULL;
 static const char *bus_name = NULL;
 static const char mpris_interface[] = "org.freedesktop.MediaPlayer";
 static const char fdo_bus_name[] = "org.freedesktop.DBus";
@@ -174,9 +177,6 @@ _dbus_cb_current_track(void *data, DBusMessage *reply, DBusError *error)
    Evry_Item *it;
    int num;
 
-   if (!p->instances)
-     return;
-
    if (!_dbus_check_msg(reply, error))
      return;
 
@@ -194,6 +194,8 @@ _dbus_cb_current_track(void *data, DBusMessage *reply, DBusError *error)
 	it = eina_list_nth(p->tracks, p->current_track);
 	if (it) evry->item_changed(it, 1, plugin_selected);
      }
+
+   p->pnd_curtrack = NULL;
 }
 
 static void
@@ -238,7 +240,7 @@ _update_list(Plugin *p)
 	     GET_ITEM(it, t);
 	     GET_FILE(file, t);
 
-	     /* TODO fix xmms2 mpris bridge */
+	     /* TODO fix xmms2 mpris bridge / audacious */
 	     tmp = evry->util_url_unescape(it->id, 0);
 	     if (!strncmp(tmp, "file://", 7))
 	       file->path = eina_stringshare_add(tmp + 7);
@@ -283,8 +285,9 @@ _update_list(Plugin *p)
 	  EVRY_PLUGIN_ITEM_APPEND(p, t);
      }
 
-   _dbus_send_msg("/TrackList", "GetCurrentTrack",
-		  _dbus_cb_current_track, p);
+   if (!p->pnd_curtrack)
+     p->pnd_curtrack = _dbus_send_msg("/TrackList", "GetCurrentTrack",
+				      _dbus_cb_current_track, p);
 
    EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
 }
@@ -299,12 +302,6 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
    GET_PLUGIN(p, EVRY_ITEM(t)->plugin);
 
    t->pnd = NULL;
-
-   if (!p->instances)
-     {
-	ERR("dbus return after finish!");
-	return;
-     }
 
    if (!p->fetch_tracks)
      {
@@ -400,7 +397,7 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 	EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
      }
 
-   p->tracks = eina_list_remove(p->tracks, t);
+   p->fetch = eina_list_remove(p->fetch, t);
    EVRY_ITEM_FREE(t);
 
    return;
@@ -524,6 +521,8 @@ _dbus_cb_tracklist_length(void *data, DBusMessage *reply, DBusError *error)
 			 DBUS_TYPE_INVALID);
 
    _mpris_get_metadata(p);
+
+   p->pnd_tracklist = NULL;
 }
 
 static void
@@ -559,20 +558,17 @@ _dbus_cb_get_status(void *data, DBusMessage *reply, DBusError *error)
 {
    GET_PLUGIN(p, data);
 
-   if (!p->instances)
-     return;
-
    if (!_dbus_check_msg(reply, error)) return;
 
    _set_status(data, reply);
+
+   p->pnd_status = NULL;
 }
 
 static void
 _dbus_cb_tracklist_change(void *data, DBusMessage *msg)
 {
    GET_PLUGIN(p, data);
-
-   DBG("tracklist change");
 
    p->next_track = 0;
 
@@ -590,7 +586,10 @@ _dbus_cb_track_change(void *data, DBusMessage *msg)
 
    /* XXX just fsckin give the track nr. if I want metadata I would ask for it!*/
 
-   _dbus_send_msg("/TrackList", "GetCurrentTrack", _dbus_cb_current_track, p);
+   if (p->pnd_curtrack)
+     dbus_pending_call_cancel(p->pnd_curtrack);
+
+   p->pnd_curtrack = _dbus_send_msg("/TrackList", "GetCurrentTrack", _dbus_cb_current_track, p);
 }
 
 static void
@@ -609,35 +608,32 @@ _dbus_cb_status_change(void *data, DBusMessage *msg)
    else if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_INT32)
      {
 	/* XXX audacious.. seems to be fixed upstream, remove later */
-	_dbus_send_msg("/Player", "GetStatus", _dbus_cb_get_status, p);
+	p->pnd_status = _dbus_send_msg("/Player", "GetStatus", _dbus_cb_get_status, p);
      }
 }
 
 static Evry_Plugin *
 _begin(Evry_Plugin *plugin, const Evry_Item *item __UNUSED__)
 {
+   Plugin *p;
+
    if (!conn || !dbus_active) return NULL;
 
-   GET_PLUGIN(p, plugin);
+   EVRY_PLUGIN_INSTANCE(p, plugin)
 
-   if (p->instances)
-     return NULL;
+   p->pnd_tracklist = _dbus_send_msg("/TrackList", "GetLength", _dbus_cb_tracklist_length, p);
 
-   p->instances++;
+   p->pnd_status = _dbus_send_msg("/Player", "GetStatus", _dbus_cb_get_status, p);
 
-   _dbus_send_msg("/TrackList", "GetLength", _dbus_cb_tracklist_length, p);
-
-   _dbus_send_msg("/Player", "GetStatus", _dbus_cb_get_status, p);
-
-   cb_tracklist_change = e_dbus_signal_handler_add
+   p->cb_tracklist_change = e_dbus_signal_handler_add
      (conn, bus_name, "/TrackList", mpris_interface, "TrackListChange",
       _dbus_cb_tracklist_change, p);
 
-   cb_player_track_change = e_dbus_signal_handler_add
+   p->cb_player_track_change = e_dbus_signal_handler_add
      (conn, bus_name, "/Player", mpris_interface, "TrackChange",
       _dbus_cb_track_change, p);
 
-   cb_player_status_change = e_dbus_signal_handler_add
+   p->cb_player_status_change = e_dbus_signal_handler_add
      (conn, bus_name, "/Player", mpris_interface, "StatusChange",
       _dbus_cb_status_change, p);
 
@@ -659,17 +655,19 @@ _finish(Evry_Plugin *plugin)
 
    IF_RELEASE(p->input);
 
-   p->instances--;
+   if (p->cb_tracklist_change)
+     e_dbus_signal_handler_del(conn, p->cb_tracklist_change);
+   if (p->cb_player_track_change)
+     e_dbus_signal_handler_del(conn, p->cb_player_track_change);
+   if (p->cb_player_status_change)
+     e_dbus_signal_handler_del(conn, p->cb_player_status_change);
 
-   if (p->instances > 0)
-     return;
-
-   if (cb_tracklist_change)
-     e_dbus_signal_handler_del(conn, cb_tracklist_change);
-   if (cb_player_track_change)
-     e_dbus_signal_handler_del(conn, cb_player_track_change);
-   if (cb_player_status_change)
-     e_dbus_signal_handler_del(conn, cb_player_status_change);
+   if (p->pnd_tracklist)
+     dbus_pending_call_cancel(p->pnd_tracklist);
+   if (p->pnd_status)
+     dbus_pending_call_cancel(p->pnd_status);
+   if (p->pnd_curtrack)
+     dbus_pending_call_cancel(p->pnd_curtrack);
 
    EINA_LIST_FREE(p->tracks, t)
      {
@@ -684,7 +682,8 @@ _finish(Evry_Plugin *plugin)
 
    if (p->update_timer)
      ecore_timer_del(p->update_timer);
-   p->update_timer = NULL;
+
+   E_FREE(p);
 }
 
 static int
@@ -1310,7 +1309,7 @@ _cb_key_down(Evry_Plugin *plugin, const Ecore_Event_Key *ev)
    return 0;
 }
 
-static int
+static Eina_Bool
 _cb_plugin_selected(void *data, int type, void *event)
 {
    Evry_Event_Item_Selected *ev = event;
@@ -1319,13 +1318,13 @@ _cb_plugin_selected(void *data, int type, void *event)
    if (ev->item != EVRY_ITEM(_plug))
      {
 	plugin_selected = EINA_FALSE;
-	return 1;
+	return EINA_TRUE;
      }
 
    GET_PLUGIN(p, _plug);
 
    if (!p)
-     return 1;
+     return EINA_TRUE;
 
    plugin_selected = EINA_TRUE;
 
@@ -1335,7 +1334,7 @@ _cb_plugin_selected(void *data, int type, void *event)
 	  evry->item_changed(EVRY_ITEM(t), 1, 1);
      }
 
-   return 1;
+   return EINA_TRUE;
 }
 
 static int
