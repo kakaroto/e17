@@ -51,7 +51,7 @@ libraries is on the right.
 
 <h3><a href=http://trac.enlightenment.org/e/wiki/EFLOverview>Overview</a></h3>
  <p>
-  For an overveiw of how EFL is works and is designed, red this.
+  For an overview of how EFL is works and is designed, red this.
  </p>
  
 <h3><a href=http://trac.enlightenment.org/e/wiki/EFL>EFL</a></h3>
@@ -137,7 +137,7 @@ libraries is on the right.
 
 <p>
 Some applications also have automatically generated documentation. It is
-geenerated daily from SVN likee the EFL documentation above. Just
+generated daily from SVN likee the EFL documentation above. Just
 select the documentation you desire on the right.
 </p>
 
