@@ -21,21 +21,41 @@
 
 <h1>Documentation</h1>
 
+<table border=0 cellpadding=0 cellspacing=8><tr>
+<td class='main'><div class="main">
 <p>
   The Enlightenment Project covers more than simple window management. Whether
   you're a user, developer, or just someone looking for some good bathroom
   material, if you are in need of answers, you should find something of
-  interest below.
+  interest here.
 </p>
   
 <p>
   There is also a <a href="http://trac.enlightenment.org/e/wiki">wiki</a>
-  available (please note that some pages still reside in the old <a href="http://wiki.enlightenment.org/">wiki</a>)
+  available (please note that some pages still reside in the old 
+  <a href="http://wiki.enlightenment.org/">wiki</a>, but it is old and
+  out of date)
 </p>
 
 <p>
-API documentation auto-generated daily from SVN source for EFL libraries:
+API documentation auto-generated daily from SVN source for EFL
+libraries is on the right.
 </p>
+
+<h3>Enlightenment Foundation Libraries (EFL)</h3>
+
+<h2><a href=http://trac.enlightenment.org/e/wiki/EFLOverview>Overview</a></h2>
+ <p>
+  For an overveiw of how EFL is works and is designed, red this.
+ </p>
+ 
+<h3><a href=http://trac.enlightenment.org/e/wiki/EFL>EFL</a></h3>
+ <p>
+  For a list of all EFL documentation on our wiki, go here.
+ </p>
+
+</div></td>
+<td class='main'><div class="main">
 
 <center>
 <table border=0 cellpadding=0 cellspacing=10>
@@ -46,6 +66,8 @@ API documentation auto-generated daily from SVN source for EFL libraries:
   <td>
    <?php blinkurl("i/logo-s.png", "EDJE", "http://docs.enlightenment.org/auto/edje"); ?>
   </td>
+ </tr>
+ <tr>
   <td>
    <?php blinkurl("i/logo-s.png", "EDBUS", "http://docs.enlightenment.org/auto/e_dbus"); ?>
   </td>
@@ -60,6 +82,8 @@ API documentation auto-generated daily from SVN source for EFL libraries:
   <td>
    <?php blinkurl("i/logo-s.png", "EFREET", "http://docs.enlightenment.org/auto/efreet"); ?>
   </td>
+ </tr>
+ <tr>
   <td>
    <?php blinkurl("i/logo-s.png", "EINA", "http://docs.enlightenment.org/auto/eina"); ?>
   </td>
@@ -74,6 +98,8 @@ API documentation auto-generated daily from SVN source for EFL libraries:
   <td>
    <?php blinkurl("i/logo-s.png", "EPDF", "http://docs.enlightenment.org/auto/epdf"); ?>
   </td>
+ </tr>
+ <tr>
   <td>
    <?php blinkurl("i/logo-s.png", "ETHUMB", "http://docs.enlightenment.org/auto/ethumb"); ?>
   </td>
@@ -91,18 +117,9 @@ API documentation auto-generated daily from SVN source for EFL libraries:
 <hr>
 </center>
 
-<h2>Enlightenment Foundation Libraries (EFL)</h2>
+</div></td>
+</tr></table>
 
-<h2><a href=http://trac.enlightenment.org/e/wiki/EFLOverview>Overview</a></h2>
- <p>
-  For an overveiw of how EFL is works and is designed, red this.
- </p>
- 
-<h2><a href=http://trac.enlightenment.org/e/wiki/EFL>EFL</a></h2>
- <p>
-  For a list of all EFL documentation on our wiki, go here.
- </p>
- 
 </div>
 <?php frame2();?>
 
