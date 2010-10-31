@@ -63,6 +63,56 @@
 </div>
 <?php frame2();?>
 
+<?php frame1("width=100%");?>
+<div class="main">
+ <h2>Professional / Commercial</h2>
+
+ <p>
+  Several companies and individuals provide professional support and
+  services related to EFL and Enlightenment. If you find yourself in
+  need of help that the community can't provide, please feel free to
+  contact any of the list below.
+ </p>
+ <p>
+  <table class="data mailing">
+   <thead>
+    <tr>
+     <th class="name">Company/Consultant</th>
+     <th class="name">Specialties</th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td class="name">
+      <a href="http://www.enlightenment.org">FILLME</a>
+     </td>
+     <td class="name">
+      Blah, blah blah.
+     </td>
+    </tr>
+    <tr>
+     <td class="name">
+      <a href="http://www.enlightenment.org">FILLME</a>
+     </td>
+     <td class="name">
+      Blah, blah blah.
+     </td>
+    </tr>
+    <tr>
+     <td class="name">
+      <a href="http://www.enlightenment.org">FILLME</a>
+     </td>
+     <td class="name">
+      Blah, blah blah.
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </p>
+ 
+</div>
+<?php frame2();?>
+
 </div></td>
 <td class='main' width=33%><div class="main">
 
@@ -192,6 +242,27 @@
  <p>
   To report a bug, go to <a 
   href=http://trac.enlightenment.org/e/report>Trac Bugs</a>.
+ </p>
+
+</div>
+<?php frame2();?>
+
+<?php frame1("width=100%");?>
+<div class="main">
+ <h2>Wiki</h2>
+
+ <p>
+  We have split our website into 2 major parts. The main less-changing
+  pages such as this and a <a 
+  href=http://trac.enlightenment.org/e/wiki>Wiki</a>. This Wiki is
+  where anyone can edit and contribute documentation, information and
+  similar pages.
+ </p>
+ <p>
+  Feel free to browse around the <a
+  href=http://trac.enlightenment.org/e/wiki>Wiki</a> to see if what
+  you are looking for is over there, or if you wish to contribute
+  information.
  </p>
 
 </div>
