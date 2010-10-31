@@ -79,6 +79,7 @@
   want to consider professional grade suppliers.
  </p>
  <p>
+  <center>
   <table class="data mailing">
    <thead>
     <tr>
@@ -113,6 +114,7 @@
     </tr>
    </tbody>
   </table>
+  </center>
  </p>
  
 </div>
@@ -126,6 +128,7 @@
  <h2>E-Mail</h2>
 
  <p>
+  <center>
   <table class="data mailing">
    <thead>
     <tr>
@@ -144,6 +147,7 @@
     </td></tr>
    </tbody>
   </table>
+  </center>
  </p>
  <hr>
  <p>
@@ -211,6 +215,7 @@
  <h2>Bug Tracking</h2>
 
  <p>
+  <center>
   <table class="data mailing">
    <thead>
     <tr>
@@ -225,6 +230,7 @@
     </td></tr>
    </tbody>
   </table>
+  </center>
  </p>
  <hr>
  <p>

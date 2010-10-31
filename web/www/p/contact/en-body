@@ -24,15 +24,15 @@ curious.
 <h2><b class="contentheading">Mailing Lists and Archives</b></h2>
 
 <p>
-The Enlightenment Project has several mailing lists to aid you.  The
-following table contains a summary, including links to the list archives.
-To add, remove or otherwise modify a subscription to these lists,
-simply click on the list name in the &quot;Mailing List&quot; column and
-enter your subscription details into the form.
+ The Enlightenment Project has several mailing lists to aid you.  The
+ following table contains a summary, including links to the list archives.
+ To add, remove or otherwise modify a subscription to these lists,
+ simply click on the list name in the &quot;Mailing List&quot; column and
+ enter your subscription details into the form.
 </p>
 
 <center>
-<table class="data mailing">
+  <table class="data mailing">
     <thead>
         <tr>
             <th class="name">Mailing List</th>
@@ -72,7 +72,7 @@ enter your subscription details into the form.
             <td class="description">Receive notification for all bugs committed to Trac.</td>
         </tr>
     </tbody>
-</table>
+  </table>
 </center>
 </div>
 <?php frame2();?>
