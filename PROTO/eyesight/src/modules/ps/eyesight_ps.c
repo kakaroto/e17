@@ -6,9 +6,31 @@
 
 #include <libspectre/spectre.h>
 
+#include "Eyesight_Module_Ps.h"
 #include "Eyesight.h"
 #include "eyesight_private.h"
 #include "eyesight_ps.h"
+
+
+#define EYESIGHT_PS_INFO_STRING_GET(member, info)   \
+  do { \
+    const char *data; \
+    data = spectre_document_get_##info (ebp->document); \
+    if (spectre_document_status(ebp->document) != SPECTRE_STATUS_SUCCESS) \
+      doc->member = NULL; \
+    else \
+      doc->member = data; \
+  } while(0)
+
+#define EYESIGHT_PS_INFO_INT_GET(member)   \
+  do { \
+    int data; \
+    data = spectre_document_get_##member(ebp->document); \
+    if (spectre_document_status(ebp->document) != SPECTRE_STATUS_SUCCESS) \
+      doc->member = 0; \
+    else \
+      doc->member = data; \
+  } while(0)
 
 
 #define DBG(...) EINA_LOG_DOM_DBG(_eyesight_ps_log_domain, __VA_ARGS__)
@@ -67,27 +89,28 @@ em_shutdown(void *eb)
   free(eb);
 }
 
-static Eina_Bool
+static void *
 em_file_open(void *eb, const char *filename)
 {
   Eyesight_Backend_Ps *ebp;
   SpectreStatus    status;
+  Eyesight_Document_Ps *doc;
 
   if (!eb || !filename || !*filename)
-    return EINA_FALSE;
+    return NULL;
 
   DBG("Open file %s", filename);
 
   ebp = (Eyesight_Backend_Ps *)eb;
   ebp->filename = strdup(filename);
   if (!ebp->filename)
-    return EINA_FALSE;
+    return NULL;
 
-  spectre_document_load(ebp->document, filename);
+  spectre_document_load(ebp->document, ebp->filename);
   status = spectre_document_status(ebp->document);
   if (status != SPECTRE_STATUS_SUCCESS)
     {
-      ERR("Could not load %s (%s)", filename, spectre_status_to_string(status));
+      ERR("Could not load %s (%s)", ebp->filename, spectre_status_to_string(status));
       goto free_filename;
    }
 
@@ -99,13 +122,29 @@ em_file_open(void *eb, const char *filename)
       goto free_filename;
    }
 
-  return EINA_TRUE;
+  doc = (Eyesight_Document_Ps *)malloc(sizeof(Eyesight_Document_Ps));
+  if (!doc)
+    goto free_filename;
+
+  doc->filename = ebp->filename;
+
+  EYESIGHT_PS_INFO_STRING_GET(title, title);
+  EYESIGHT_PS_INFO_STRING_GET(author, creator);
+  EYESIGHT_PS_INFO_STRING_GET(for_, for);
+  EYESIGHT_PS_INFO_STRING_GET(format, format);
+  EYESIGHT_PS_INFO_STRING_GET(date_creation, creation_date);
+
+  EYESIGHT_PS_INFO_INT_GET(is_eps);
+  EYESIGHT_PS_INFO_INT_GET(langage_level);
+  ebp->doc = doc;
+
+  return doc;
 
  free_filename:
   free(ebp->filename);
   ebp->filename = NULL;
 
-  return EINA_FALSE;
+  return NULL;
 }
 
 static void
@@ -120,6 +159,11 @@ em_file_close(void *eb)
 
   DBG("Close file %s", ebp->filename);
 
+  if (ebp->doc)
+    {
+      free(ebp->doc);
+      ebp->doc = NULL;
+    }
   if (ebp->filename)
     {
       free(ebp->filename);

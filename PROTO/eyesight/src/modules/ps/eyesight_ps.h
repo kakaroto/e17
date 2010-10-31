@@ -7,6 +7,7 @@ typedef struct _Eyesight_Backend_Ps Eyesight_Backend_Ps;
 struct _Eyesight_Backend_Ps
 {
   char *filename;
+  Eyesight_Document_Ps *doc;
   Evas_Object *obj;
 
   SpectreDocument      *document;

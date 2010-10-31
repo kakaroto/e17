@@ -37,6 +37,15 @@ extern "C" {
 
 typedef enum
 {
+  EYESIGHT_BACKEND_NONE,
+  EYESIGHT_BACKEND_IMG,
+  EYESIGHT_BACKEND_PDF,
+  EYESIGHT_BACKEND_PS,
+  EYESIGHT_BACKEND_TXT
+} Eyesight_Backend;
+
+typedef enum
+{
   EYESIGHT_ORIENTATION_PORTRAIT   = 0,   /**< Portrait orientation */
   EYESIGHT_ORIENTATION_LANDSCAPE  = 90,  /**< Landscape orientation */
   EYESIGHT_ORIENTATION_UPSIDEDOWN = 180, /**< Upside-down orientation */
@@ -162,9 +171,9 @@ struct _Eyesight_Link
 };
 
 EAPI Evas_Object         *eyesight_object_add(Evas *evas);
-EAPI Eina_Bool            eyesight_object_init(Evas_Object *obj,
+EAPI Eyesight_Backend     eyesight_object_init(Evas_Object *obj,
                                                const char *module_filename);
-EAPI Eina_Bool            eyesight_object_file_set(Evas_Object *obj,
+EAPI void                *eyesight_object_file_set(Evas_Object *obj,
                                                    const char *filename);
 EAPI const char          *eyesight_object_file_get(Evas_Object *obj);
 EAPI Eina_List           *eyesight_object_toc_get(Evas_Object *obj);

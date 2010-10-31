@@ -28,7 +28,7 @@ struct _Eyesight_Module
 {
   Eina_Bool            (*init)(Evas *evas, Evas_Object **obj, void **backend);
   void                 (*shutdown)(void *backend);
-  Eina_Bool            (*file_open)(void *backend, const char *filename);
+  void                *(*file_open)(void *backend, const char *filename);
   void                 (*file_close)(void *backend);
   Eina_List           *(*toc_get)(void *backend);
   int                  (*page_count)(void *backend);

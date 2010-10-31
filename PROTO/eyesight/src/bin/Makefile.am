@@ -4,6 +4,10 @@ MAINTAINERCLEANFILES = Makefile.in
 AM_CPPFLAGS = \
 -I$(top_srcdir) \
 -I$(top_srcdir)/src/lib \
+-I$(top_srcdir)/src/modules/img \
+-I$(top_srcdir)/src/modules/pdf \
+-I$(top_srcdir)/src/modules/ps \
+-I$(top_srcdir)/src/modules/txt \
 @EYESIGHT_CFLAGS@ \
 @EYESIGHT_BIN_CFLAGS@
 

@@ -5,6 +5,7 @@
 #include <Evas.h>
 #include <Ecore_File.h>
 
+#include "Eyesight_Module_Img.h"
 #include "Eyesight.h"
 #include "eyesight_private.h"
 #include "eyesight_img.h"
@@ -257,15 +258,16 @@ em_shutdown(void *eb)
   free(ebi);
 }
 
-static Eina_Bool
+static void *
 em_file_open (void *eb, const char *filename)
 {
   Eyesight_Backend_Img *ebi;
   int ret;
   Eina_Bool use_rar;
+  Eyesight_Document_Img *doc;
 
   if (!eb || !filename || !*filename)
-    return EINA_FALSE;
+    return NULL;
 
   DBG("Open file %s", filename);
 
@@ -273,6 +275,10 @@ em_file_open (void *eb, const char *filename)
   ebi->filename = ecore_file_realpath(filename);
   if (!ebi->filename)
     return EINA_FALSE;
+
+  doc = (Eyesight_Document_Img *)malloc(sizeof(Eyesight_Document_Img));
+  if (!doc)
+    goto free_filename;
 
   evas_object_image_file_set(ebi->obj, ebi->filename, NULL);
   if (evas_object_image_load_error_get(ebi->obj) == EVAS_LOAD_ERROR_NONE)
@@ -284,7 +290,7 @@ em_file_open (void *eb, const char *filename)
   if (ebi->archive == EYESIGHT_IMG_ARCHIVE_NONE)
     {
       DBG("Could not open Comic Books");
-      goto free_filename;
+      goto free_doc;
     }
 
   {
@@ -295,10 +301,10 @@ em_file_open (void *eb, const char *filename)
 
     _eyesight_cb_tmp_mkdir(&ebi->archive_path);
     if (!ebi->archive_path)
-      goto free_filename;
+      goto free_doc;
 
     if (!_eyesight_cb_deflate(ebi, use_rar))
-      goto free_filename;
+      goto free_doc;
 
     {
       char *archive_name = "none";
@@ -348,20 +354,26 @@ em_file_open (void *eb, const char *filename)
   }
 
  open_success:
+  doc->filename = ebi->filename;
+  doc-> archive = ebi->archive;
+  ebi->document = doc;
   ebi->page.hscale = 1.0;
   ebi->page.vscale = 1.0;
   ebi->page.orientation = EYESIGHT_ORIENTATION_PORTRAIT;
 
-  return EINA_TRUE;
+  return doc;
 
  free_archive_path:
   free(ebi->archive_path);
   ebi->archive_path = NULL;
+ free_doc:
+  free(doc);
+  ebi->document = NULL;
  free_filename:
   free(ebi->filename);
   ebi->filename = NULL;
 
-  return EINA_FALSE;
+  return NULL;
 }
 
 static void
@@ -392,6 +404,11 @@ em_file_close (void *eb)
       ecore_file_recursive_rm(ebi->archive_path);
       free(ebi->archive_path);
       ebi->archive_path = NULL;
+    }
+  if (ebi->document)
+    {
+      free(ebi->document);
+      ebi->document = NULL;
     }
   if (ebi->filename)
     {

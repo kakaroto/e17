@@ -19,6 +19,7 @@
 #include <ErrorCodes.h>
 #include <Link.h>
 
+#include "Eyesight_Module_Pdf.h"
 #include "Eyesight.h"
 #include "eyesight_private.h"
 #include "eyesight_pdf.h"
@@ -487,9 +488,9 @@ _unicode_to_char (Unicode *unicode,
 
   GooString gstr;
   char buf[8]; /* 8 is enough for mapping an unicode char to a string */
-  int i, n;
+  int n;
 
-  for (i = 0; i < len; ++i)
+  for (int i = 0; i < len; ++i)
     {
       n = uMap->mapUnicode(unicode[i], buf, sizeof(buf));
       gstr.append(buf, n);
@@ -553,6 +554,177 @@ _eyesight_index_unfill (Eina_List *items)
     }
 }
 
+static char *
+_eyesight_document_property_get (Dict *dict, const char *property)
+{
+  Object     obj;
+  GooString *goo_string;
+  char      *title = NULL;
+
+  if (!dict->lookup((char *)property, &obj)->isString())
+    {
+      obj.free();
+      return NULL;
+    }
+
+  goo_string = obj.getString();
+  /* Unicode */
+  if (((goo_string->getChar(0) & 0xff) == 0xfe) &&
+      ((goo_string->getChar(1) & 0xff) == 0xff))
+    {
+      /* FIXME: to do */
+      printf("Unicode !\n");
+    }
+  else
+    {
+      int   length;
+
+      length = goo_string->getLength();
+      title = (char *)malloc(sizeof(char) * (length + 1));
+      if (!title)
+        {
+          obj.free();
+          return NULL;
+        }
+      for (int i = 0; i < length; i++)
+        title[i] = pdfDocEncoding[(unsigned char)goo_string->getChar(i)];
+      title[length] = '\0';
+    }
+  obj.free();
+
+  return title;
+}
+
+static char *
+_eyesight_document_date_get (Dict *dict, const char *property)
+{
+  Object     obj;
+  GooString *goo_string;
+  char      *date = NULL;
+  char       res[64];
+  int        year;
+  int        month;
+  int        day;
+  int        hour;
+  int        minute;
+  int        second;
+  int        scanned_items;
+
+  if (!dict->lookup((char *)property, &obj)->isString())
+    {
+      obj.free();
+      return NULL;
+    }
+
+  goo_string = obj.getString();
+  /* Unicode */
+  if (((goo_string->getChar(0) & 0xff) == 0xfe) &&
+      ((goo_string->getChar(1) & 0xff) == 0xff))
+    {
+      /* FIXME: to do */
+      printf("Unicode !\n");
+    }
+  else
+    {
+      int   length;
+
+      length = goo_string->getLength();
+      date = (char *)malloc(sizeof(char) * (length + 1));
+      if (!date)
+        {
+          obj.free();
+          return NULL;
+        }
+      memcpy (date, goo_string->getCString (), length + 1);
+    }
+
+  /* See PDF Reference 1.3, Section 3.8.2 for PDF Date representation */
+
+  if (date [0] == 'D' && date [1] == ':')
+    scanned_items = sscanf (date + 2, "%4d%2d%2d%2d%2d%2d",
+                            &year, &month, &day, &hour, &minute, &second);
+  else
+    scanned_items = sscanf (date, "%4d%2d%2d%2d%2d%2d",
+                            &year, &month, &day, &hour, &minute, &second);
+  if (scanned_items != 6)
+    {
+      free (date);
+      obj.free ();
+
+      return NULL;
+    }
+
+  /* Workaround for y2k bug in Distiller 3, hoping that it won't
+   * be used after y2.2k */
+  if ((year < 1930) &&
+      (strlen (date) > 14)) {
+    int century;
+    int years_since_1900;
+
+    scanned_items = sscanf (date, "%2d%3d%2d%2d%2d%2d%2d",
+                            &century, &years_since_1900, &month, &day, &hour, &minute, &second);
+
+    if (scanned_items != 7) {
+      free (date);
+      obj.free ();
+
+      return NULL;
+    }
+
+    year = century * 100 + years_since_1900;
+  }
+
+  snprintf (res, 64, "%d-%d-%d, %d:%d:%d", year, month, day, hour, minute, second);
+  free (date);
+  obj.free ();
+
+  return strdup (res);
+}
+
+Eyesight_Document_Pdf_Page_Mode
+_eyesight_document_page_mode_get (PDFDoc *pdfdoc)
+{
+  switch (pdfdoc->getCatalog()->getPageMode())
+    {
+    case Catalog::pageModeNone:
+      return EYESIGHT_DOCUMENT_PDF_PAGE_MODE_USE_NONE;
+    case Catalog::pageModeOutlines:
+      return EYESIGHT_DOCUMENT_PDF_PAGE_MODE_USE_OUTLINES;
+    case Catalog::pageModeThumbs:
+      return EYESIGHT_DOCUMENT_PDF_PAGE_MODE_USE_THUMBS;
+    case Catalog::pageModeFullScreen:
+      return EYESIGHT_DOCUMENT_PDF_PAGE_MODE_FULLSCREEN;
+    case Catalog::pageModeOC:
+      return EYESIGHT_DOCUMENT_PDF_PAGE_MODE_USE_OC;
+    default:
+      return EYESIGHT_DOCUMENT_PDF_PAGE_MODE_USE_NONE;
+    }
+}
+
+Eyesight_Document_Pdf_Page_Layout
+_eyesight_document_page_layout_get (PDFDoc *pdfdoc)
+{
+  switch (pdfdoc->getCatalog()->getPageLayout())
+    {
+    case Catalog::pageLayoutNone:
+      return EYESIGHT_DOCUMENT_PDF_PAGE_LAYOUT_NONE;
+    case Catalog::pageLayoutSinglePage:
+      return EYESIGHT_DOCUMENT_PDF_PAGE_LAYOUT_SINGLE_PAGE;
+    case Catalog::pageLayoutOneColumn:
+      return EYESIGHT_DOCUMENT_PDF_PAGE_LAYOUT_ONE_COLUMN;
+    case Catalog::pageLayoutTwoColumnLeft:
+      return EYESIGHT_DOCUMENT_PDF_PAGE_LAYOUT_TWO_COLUMN_LEFT;
+    case Catalog::pageLayoutTwoColumnRight:
+      return EYESIGHT_DOCUMENT_PDF_PAGE_LAYOUT_TWO_COLUMN_RIGHT;
+    case Catalog::pageLayoutTwoPageLeft:
+      return EYESIGHT_DOCUMENT_PDF_PAGE_LAYOUT_TWO_PAGE_LEFT;
+    case Catalog::pageLayoutTwoPageRight:
+      return EYESIGHT_DOCUMENT_PDF_PAGE_LAYOUT_TWO_PAGE_RIGHT;
+    default:
+      return EYESIGHT_DOCUMENT_PDF_PAGE_LAYOUT_NONE;
+    }
+}
+
 static Eina_Bool
 em_init(Evas *evas, Evas_Object **obj, void **eyesight_backend)
 {
@@ -599,23 +771,24 @@ em_shutdown(void *eb)
   free(eb);
 }
 
-static Eina_Bool
+static void *
 em_file_open(void *eb, const char *filename)
 {
-  Eyesight_Backend_Pdf *ebp;
-  Object                obj;
-  Outline              *outline;
-  GooList              *gitems;
+  Eyesight_Backend_Pdf  *ebp;
+  Eyesight_Document_Pdf *doc;
+  Object                 obj;
+  Outline               *outline;
+  GooList               *gitems;
 
   if (!eb || !filename || !*filename)
-    return EINA_FALSE;
+    return NULL;
 
   DBG("Open file %s", filename);
 
   ebp = (Eyesight_Backend_Pdf *)eb;
   ebp->filename = strdup(filename);
   if (!ebp->filename)
-    return EINA_FALSE;
+    return NULL;
 
   ebp->doc.pdfdoc = new PDFDoc(new GooString(filename), NULL);
   if (!ebp->doc.pdfdoc)
@@ -625,17 +798,12 @@ em_file_open(void *eb, const char *filename)
       ebp->doc.pdfdoc->getErrorCode() != errEncrypted)
     {
       ERR("PDF file %s illformed", filename);
-       goto delete_pdfdoc;
+      goto delete_pdfdoc;
     }
 
   ebp->doc.scanner = new FontInfoScanner(ebp->doc.pdfdoc);
   if (!ebp->doc.scanner)
     goto delete_pdfdoc;
-
-  if (ebp->doc.pdfdoc->getErrorCode() == errEncrypted)
-    ebp->doc.locked = EINA_TRUE;
-  else
-    ebp->doc.locked = EINA_FALSE;
 
   ebp->doc.pdfdoc->getDocInfo(&obj);
   if (!obj.isDict())
@@ -644,6 +812,36 @@ em_file_open(void *eb, const char *filename)
   ebp->doc.dict = obj.getDict();
   if (!ebp->doc.dict)
     goto delete_scanner;
+
+  doc = (Eyesight_Document_Pdf *)malloc(sizeof(Eyesight_Document_Pdf));
+  if (!doc)
+    goto delete_dict;
+
+  doc->version_min = ebp->doc.pdfdoc->getPDFMajorVersion();
+  doc->version_min = ebp->doc.pdfdoc->getPDFMinorVersion();
+  doc->filename = ebp->filename;
+
+  doc->title = _eyesight_document_property_get(ebp->doc.dict, "Title");
+  doc->author = _eyesight_document_property_get(ebp->doc.dict, "Author");
+  doc->subject = _eyesight_document_property_get(ebp->doc.dict, "Subject");
+  doc->keywords = _eyesight_document_property_get(ebp->doc.dict, "Keywords");
+  doc->creator = _eyesight_document_property_get(ebp->doc.dict, "Creator");
+  doc->producer = _eyesight_document_property_get(ebp->doc.dict, "Producer");
+
+  doc->date_creation = _eyesight_document_date_get(ebp->doc.dict, "CreationDate");
+  doc->date_modification = _eyesight_document_date_get(ebp->doc.dict, "ModDate");
+
+  doc->mode = _eyesight_document_page_mode_get(ebp->doc.pdfdoc);
+  doc->layout = _eyesight_document_page_layout_get(ebp->doc.pdfdoc);
+
+  doc->locked = (ebp->doc.pdfdoc->getErrorCode() == errEncrypted) ? EINA_TRUE : EINA_FALSE;
+  doc->encrypted = ebp->doc.pdfdoc->isEncrypted();
+  doc->linearized = ebp->doc.pdfdoc->isLinearized();
+  doc->printable = ebp->doc.pdfdoc->okToPrint();
+  doc->changeable = ebp->doc.pdfdoc->okToChange();
+  doc->copyable = ebp->doc.pdfdoc->okToCopy();
+  doc->notable = ebp->doc.pdfdoc->okToAddNotes();
+  ebp->document = doc;
 
   outline = ebp->doc.pdfdoc->getOutline();
   if (!outline)
@@ -660,7 +858,7 @@ em_file_open(void *eb, const char *filename)
   if (!ebp->page.page || !ebp->page.page->isOk())
     {
        ERR("Could not retrieve first page from the document");
-       goto free_toc;
+       goto free_doc;
     }
 
   ebp->page.links = _eyesight_page_links_get(ebp);
@@ -669,10 +867,14 @@ em_file_open(void *eb, const char *filename)
   ebp->page.vscale = 1.0;
   ebp->page.orientation = EYESIGHT_ORIENTATION_PORTRAIT;
 
-  return EINA_TRUE;
+  return doc;
 
- free_toc:
+ free_doc:
   _eyesight_index_unfill(ebp->doc.toc);
+  free(doc);
+  ebp->document = NULL;
+ delete_dict:
+  delete ebp->doc.dict;
  delete_scanner:
   obj.free();
   delete ebp->doc.scanner;
@@ -682,7 +884,7 @@ em_file_open(void *eb, const char *filename)
   free(ebp->filename);
   ebp->filename = NULL;
 
-  return EINA_FALSE;
+  return NULL;
 }
 
 static void
@@ -699,6 +901,19 @@ em_file_close(void *eb)
 
   _eyesight_page_links_free(ebp);
   _eyesight_index_unfill(ebp->doc.toc);
+  if (ebp->document)
+    {
+      if (ebp->document->title) free(ebp->document->title);
+      if (ebp->document->author) free(ebp->document->author);
+      if (ebp->document->subject) free(ebp->document->subject);
+      if (ebp->document->keywords) free(ebp->document->keywords);
+      if (ebp->document->creator) free(ebp->document->creator);
+      if (ebp->document->producer) free(ebp->document->producer);
+      if (ebp->document->date_creation) free(ebp->document->date_creation);
+      if (ebp->document->date_modification) free(ebp->document->date_modification);
+      free(ebp->document);
+      ebp->document = NULL;
+    }
   delete ebp->doc.dict;
   delete ebp->doc.scanner;
   delete ebp->doc.pdfdoc;
@@ -994,6 +1209,7 @@ em_page_text_find(void *eb, const char *text, Eina_Bool is_case_sensitive, Eina_
   Eyesight_Backend_Pdf *ebp;
   Eina_Rectangle *match;
   Eina_List      *matches = NULL;
+  TextOutputDev   output_dev(NULL, 1, 0, 0);
   double          xMin, yMin, xMax, yMax;
   int             rotate;
   int             length;
@@ -1011,36 +1227,32 @@ em_page_text_find(void *eb, const char *text, Eina_Bool is_case_sensitive, Eina_
 
 #if 1
   GooString tmp (text);
-  Unicode *s;
+  Unicode  *s;
+  bool      anyNonEncoded = false;
+
   length = tmp.getLength();
   s = (Unicode *)malloc(sizeof(Unicode) * length);
   if (!s)
     return NULL;
-  bool anyNonEncoded = false;
   for (int j = 0; j < length && !anyNonEncoded; ++j)
     {
       s[j] = pdfDocEncoding[tmp.getChar(j) & 0xff];
       if (!s[j]) anyNonEncoded = true;
     }
-  if ( anyNonEncoded )
+  if (anyNonEncoded)
     {
       for (int j = 0; j < length; ++j)
-        {
-          s[j] = tmp.getChar(j);
-        }
+        s[j] = tmp.getChar(j);
     }
 #endif
 
   length = strlen (text);
 
-  TextOutputDev output_dev(NULL, 1, 0, 0);
-
-  int h;
   rotate = ebp->page.page->getRotate ();
   if (rotate == 90 || rotate == 270)
-    h = round(ebp->page.page->getCropWidth());
+    height = round(ebp->page.page->getCropWidth());
   else
-    h = round(ebp->page.page->getCropHeight());
+    height = round(ebp->page.page->getCropHeight());
 
   /* FIXME: take into account the scale ?? So, save output_dev ?? */
   ebp->page.page->display(&output_dev, 72, 72, 0, false,
@@ -1053,7 +1265,7 @@ em_page_text_find(void *eb, const char *text, Eina_Bool is_case_sensitive, Eina_
                              0, 1, // startAtTop, stopAtBottom
                              1, 0, // startAtLast, stopAtLast
                              is_case_sensitive, backward, // caseSensitive, backwards
-                              &xMin, &yMin, &xMax, &yMax)) {
+                             &xMin, &yMin, &xMax, &yMax)) {
     match = (Eina_Rectangle *)malloc (sizeof (Eina_Rectangle));
     if (match)
       {

@@ -4,9 +4,7 @@ MAINTAINERCLEANFILES = Makefile.in
 lib_LTLIBRARIES = libeyesight.la
 
 installed_headersdir = $(includedir)/eyesight
-
-include_HEADERS = \
-Eyesight.h
+include_HEADERS = Eyesight.h
 
 libeyesight_la_SOURCES = \
 eyesight.c \

@@ -7,6 +7,7 @@ typedef struct _Eyesight_Backend_Txt Eyesight_Backend_Txt;
 struct _Eyesight_Backend_Txt
 {
   char *filename;
+  Eyesight_Document_Txt *document;
   Evas_Object *obj;
   char *text;
 

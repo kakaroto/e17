@@ -47,6 +47,7 @@ struct _Smart_Data
 
    char            *module_filename;
 
+   void            *doc;
    char            *filename;
    Evas_Object     *obj;
 };
@@ -177,7 +178,7 @@ eyesight_object_add(Evas *evas)
    return evas_object_smart_add(evas, smart);
 }
 
-EAPI Eina_Bool
+EAPI Eyesight_Backend
 eyesight_object_init(Evas_Object *obj, const char *module_filename)
 {
    Smart_Data *sd;
@@ -189,7 +190,7 @@ eyesight_object_init(Evas_Object *obj, const char *module_filename)
    DBG("module filename=%s", module_filename);
 
    if ((sd->module_filename) && module_filename && (!strcmp(sd->module_filename, module_filename)))
-     return EINA_TRUE;
+     goto backend_success;
 
    if (sd->module_filename)
      {
@@ -206,7 +207,7 @@ eyesight_object_init(Evas_Object *obj, const char *module_filename)
 
    modulename = _eyesight_module_open(module_filename, evas_object_evas_get(obj), &sd->obj, &sd->module, &sd->backend);
    if (!modulename)
-     return EINA_FALSE;
+     return EYESIGHT_BACKEND_NONE;
 
    evas_object_smart_member_add(sd->obj, obj);
    evas_object_smart_data_set(obj, sd);
@@ -214,7 +215,7 @@ eyesight_object_init(Evas_Object *obj, const char *module_filename)
 
    sd->module_filename = strdup(modulename);
    if (!sd->module_filename)
-     return EINA_FALSE;
+     return EYESIGHT_BACKEND_NONE;
 
    if (filename)
      {
@@ -222,10 +223,18 @@ eyesight_object_init(Evas_Object *obj, const char *module_filename)
         free(filename);
      }
 
-   return EINA_TRUE;
+ backend_success:
+   if (strcmp(sd->module_filename, "img") == 0)
+     return EYESIGHT_BACKEND_IMG;
+   if (strcmp(sd->module_filename, "pdf") == 0)
+     return EYESIGHT_BACKEND_PDF;
+   if (strcmp(sd->module_filename, "ps") == 0)
+     return EYESIGHT_BACKEND_PS;
+   if (strcmp(sd->module_filename, "txt") == 0)
+     return EYESIGHT_BACKEND_TXT;
 }
 
-EAPI Eina_Bool
+EAPI void *
 eyesight_object_file_set(Evas_Object *obj, const char *filename)
 {
    Smart_Data *sd;
@@ -235,21 +244,21 @@ eyesight_object_file_set(Evas_Object *obj, const char *filename)
    DBG("filename=%s", filename);
 
    if (!sd->module)
-     return EINA_FALSE;
+     return NULL;
 
    if ((filename) && (sd->filename) && (!strcmp(filename, sd->filename)))
-     return EINA_TRUE;
+     return sd->doc;
 
    if (filename && *filename)
      {
         free(sd->filename);
         sd->filename = strdup(filename);
         if (!sd->filename)
-          return EINA_FALSE;
+          return NULL;
 
         sd->module->file_close(sd->backend);
-        if (!sd->module->file_open(sd->backend, sd->filename))
-          return EINA_FALSE;
+        if (!(sd->doc = sd->module->file_open(sd->backend, sd->filename)))
+          return NULL;
      }
    else
      {
@@ -261,7 +270,7 @@ eyesight_object_file_set(Evas_Object *obj, const char *filename)
         sd->filename = NULL;
      }
 
-   return EINA_TRUE;
+   return sd->doc;
 }
 
 EAPI const char *

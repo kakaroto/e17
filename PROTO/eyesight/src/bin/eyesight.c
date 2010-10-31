@@ -7,6 +7,10 @@
 #include <Ecore_Evas.h>
 
 #include "Eyesight.h"
+#include "Eyesight_Module_Img.h"
+#include "Eyesight_Module_Pdf.h"
+#include "Eyesight_Module_Ps.h"
+#include "Eyesight_Module_Txt.h"
 
 static int page_nbr = 0;
 
@@ -176,6 +180,8 @@ int main(int argc, char *argv[])
   int w, h;
   char *backend = NULL;
   Eina_List *links = NULL;
+  Eyesight_Backend eb;
+  void *doc;
 
   if (argc < 2)
     {
@@ -218,18 +224,82 @@ int main(int argc, char *argv[])
   evas = ecore_evas_get(ee);
 
   o = eyesight_object_add(evas);
-  if (!eyesight_object_init(o, backend))
+  if (!(eb = eyesight_object_init(o, backend)))
     {
       printf("erreur init backend\n");
       ecore_evas_shutdown();
       return -1;
     }
-  if (!eyesight_object_file_set(o, argv[1]))
+  if (!(doc = eyesight_object_file_set(o, argv[1])))
     {
       printf("erreur file_set\n");
       ecore_evas_shutdown();
       return -1;
     }
+
+  /* Specific information */
+
+  switch (eb)
+    {
+    case EYESIGHT_BACKEND_IMG:
+      printf("Image format.............: ");
+      switch (((Eyesight_Document_Img *)doc)->archive)
+        {
+        case EYESIGHT_IMG_ARCHIVE_NONE:
+          printf ("single image\n");
+          break;
+        case EYESIGHT_IMG_ARCHIVE_CBA:
+          printf ("comic book (ACE)\n");
+          break;
+        case EYESIGHT_IMG_ARCHIVE_CBR:
+          printf ("comic book (RAR)\n");
+          break;
+        case EYESIGHT_IMG_ARCHIVE_CBT:
+          printf ("comic book (TAR)\n");
+          break;
+        case EYESIGHT_IMG_ARCHIVE_CBZ:
+          printf ("comic book (ZIP)\n");
+          break;
+        case EYESIGHT_IMG_ARCHIVE_CB7:
+          printf ("comic book (7z)\n");
+          break;
+        }
+      break;
+    case EYESIGHT_BACKEND_PDF:
+      printf("Version..................: %d.%ds\n",
+             ((Eyesight_Document_Pdf *)doc)->version_maj,
+             ((Eyesight_Document_Pdf *)doc)->version_min);
+      printf("Title....................: %s\n", ((Eyesight_Document_Pdf *)doc)->title);
+      printf("Author...................: %s\n", ((Eyesight_Document_Pdf *)doc)->author);
+      printf("Subject..................: %s\n", ((Eyesight_Document_Pdf *)doc)->subject);
+      printf("Keywords.................: %s\n", ((Eyesight_Document_Pdf *)doc)->keywords);
+      printf("Creator..................: %s\n", ((Eyesight_Document_Pdf *)doc)->creator);
+      printf("Producer.................: %s\n", ((Eyesight_Document_Pdf *)doc)->producer);
+      printf("Date creation............: %s\n", ((Eyesight_Document_Pdf *)doc)->date_creation);
+      printf("Date modification........: %s\n", ((Eyesight_Document_Pdf *)doc)->date_modification);
+      printf("Mode.....................: %d\n", ((Eyesight_Document_Pdf *)doc)->mode);
+      printf("Layout...................: %d\n", ((Eyesight_Document_Pdf *)doc)->layout);
+      printf("Locked...................: %s\n", ((Eyesight_Document_Pdf *)doc)->locked ? "yes" : "no");
+      printf("Encrypted................: %s\n", ((Eyesight_Document_Pdf *)doc)->encrypted ? "yes" : "no");
+      printf("Linearized...............: %s\n", ((Eyesight_Document_Pdf *)doc)->linearized ? "yes" : "no");
+      printf("Printable................: %s\n", ((Eyesight_Document_Pdf *)doc)->printable ? "yes" : "no");
+      printf("Changeable...............: %s\n", ((Eyesight_Document_Pdf *)doc)->changeable ? "yes" : "no");
+      printf("Copyable.................: %s\n", ((Eyesight_Document_Pdf *)doc)->copyable ? "yes" : "no");
+      printf("Notable..................: %s\n", ((Eyesight_Document_Pdf *)doc)->notable ? "yes" : "no");
+      break;
+    case EYESIGHT_BACKEND_PS:
+      printf("Title....................: %s\n", ((Eyesight_Document_Ps *)doc)->title);
+      printf("Author...................: %s\n", ((Eyesight_Document_Ps *)doc)->author);
+      printf("For......................: %s\n", ((Eyesight_Document_Ps *)doc)->for_);
+      printf("Format...................: %s\n", ((Eyesight_Document_Ps *)doc)->format);
+      printf("Date creation............: %s\n", ((Eyesight_Document_Ps *)doc)->date_creation);
+      printf("Langage level............: %d\n", ((Eyesight_Document_Ps *)doc)->langage_level);
+      printf("EPS......................: %s\n", ((Eyesight_Document_Ps *)doc)->is_eps ? "yes" : "no");
+      break;
+    case EYESIGHT_BACKEND_TXT:
+      break;
+    }
+
   printf ("page count: %d\n", eyesight_object_page_count(o));
   evas_object_move (o, 0, 0);
   eyesight_object_page_render (o);

@@ -4,6 +4,7 @@
 
 #include <Evas.h>
 
+#include "Eyesight_Module_Txt.h"
 #include "Eyesight.h"
 #include "eyesight_private.h"
 #include "eyesight_txt.h"
@@ -67,28 +68,29 @@ em_shutdown(void *eb)
   free(ebt);
 }
 
-static Eina_Bool
+static void *
 em_file_open (void *eb, const char *filename)
 {
   char line[80];
   Eyesight_Backend_Txt *ebt;
   FILE *f;
   Eina_Strbuf *sb;
+  Eyesight_Document_Txt *doc;
 
   if (!eb || !filename || !*filename)
-    return EINA_FALSE;
+    return NULL;
 
   DBG("Open file %s", filename);
 
   ebt = (Eyesight_Backend_Txt *)eb;
   ebt->filename = strdup(filename);
   if (!ebt->filename)
-    return EINA_FALSE;
+    return NULL;
 
-  f = fopen(filename, "rb");
+  f = fopen(ebt->filename, "rb");
   if (!f)
     {
-      DBG("Could not open file %s", filename);
+      DBG("Could not open file %s", ebt->filename);
       goto free_filename;
     }
 
@@ -112,19 +114,28 @@ em_file_open (void *eb, const char *filename)
   if (!ebt->text)
     goto close_f;
 
+  doc = (Eyesight_Document_Txt *)malloc(sizeof(Eyesight_Document_Txt));
+  if (!doc)
+    goto free_text;
+
+  doc->filename = filename;
+  ebt->document = doc;
+
   ebt->page.hscale = 1.0;
   ebt->page.vscale = 1.0;
   ebt->page.orientation = EYESIGHT_ORIENTATION_PORTRAIT;
 
-  return EINA_TRUE;
+  return doc;
 
+ free_text:
+  free(ebt->text);
  close_f:
   fclose(f);
  free_filename:
   free(ebt->filename);
   ebt->filename = NULL;
 
-  return EINA_FALSE;
+  return NULL;
 }
 
 static void
@@ -139,6 +150,11 @@ em_file_close (void *eb)
 
   DBG("Close file %s", ebt->filename);
 
+  if (ebt->document)
+    {
+      free(ebt->document);
+      ebt->document = NULL;
+    }
   free(ebt->text);
   if (ebt->filename)
     {

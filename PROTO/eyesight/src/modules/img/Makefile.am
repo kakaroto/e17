@@ -4,6 +4,9 @@ MAINTAINERCLEANFILES = Makefile.in
 if EYESIGHT_BUILD_IMG
 if !EYESIGHT_STATIC_BUILD_IMG
 
+installed_headersdir = $(includedir)/eyesight
+include_HEADERS = Eyesight_Module_Img.h
+
 pkgdir = $(libdir)/eyesight
 
 pkg_LTLIBRARIES = img.la
