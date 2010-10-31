@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "ewins.h"
+#include "hints.h"
 
 #ifdef WITH_ZOOM
 #include "borders.h"
@@ -215,6 +216,9 @@ Zoom(EWin * ewin, int on)
 {
    int                 dw, dh;
 
+   if (Mode.wm.window)
+      return;
+
    if (zoom_can == 0)
       ZoomInit();
 
@@ -238,17 +242,18 @@ Zoom(EWin * ewin, int on)
 	ewin->state.zoomed = 0;
 	EwinMoveResize(ewin, ewin->save_fs.x, ewin->save_fs.y,
 		       ewin->client.w, ewin->client.h);
-	EwinWarpTo(ewin, 1);
-	ESync(0);
-	return;
      }
-
-   if (ewin->state.fullscreen)
-      return;
-
-   on = SwitchRes(1, 0, 0, ewin->client.w, ewin->client.h, &dw, &dh);
-   if (on)
+   else
      {
+	/* Zoom */
+
+	if (ewin->state.fullscreen)
+	   return;
+
+	on = SwitchRes(1, 0, 0, ewin->client.w, ewin->client.h, &dw, &dh);
+	if (!on)
+	   return;
+
 	zoom_last_ewin = ewin;
 	ewin->save_fs.x = EoGetX(ewin);
 	ewin->save_fs.y = EoGetY(ewin);
@@ -258,9 +263,12 @@ Zoom(EWin * ewin, int on)
 	EwinMoveResize(ewin, 0, 0, ewin->client.w, ewin->client.h);
 	ewin->state.zoomed = 1;
 	FocusToEWin(ewin, FOCUS_SET);
-	EwinWarpTo(ewin, 1);
-	ESync(0);
      }
+
+   EwinWarpTo(ewin, 1);
+   ESync(0);
+   EwinStateUpdate(ewin);
+   HintsSetWindowState(ewin);
 }
 
 void

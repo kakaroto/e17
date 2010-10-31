@@ -170,6 +170,9 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
    int                 i, num;
    Desk               *pdesk;
 
+   if (ewin->state.zoomed)
+      return;
+
    if (call_depth > 256)
       return;
    call_depth++;
