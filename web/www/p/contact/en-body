@@ -2,21 +2,35 @@
  <tr>
   <td class='main'>
    <div class="main">
-<h1>Contact</h1>
+<center>
 
+<p>
+We are contactable by various means. Please see our
+<?php a("support", "support page");?> for information on various
+options on how to contact us in general (From IRC to E-Mail and Bug
+reporting). There are also archives for our mailing lists, accessible below.
+</p>
+<p>
+We also maintain a list of our developers who are currently active
+with development access to SVN. That list is below. Above is also a
+link to a world map of all our developers and where they live, for the
+curious.
+</p>
+
+<hr noshade="noshade" style="width: 200px;" />
+
+<?php frame1("width=100%");?>
+<div class="main">
 <h2><b class="contentheading">Mailing Lists and Archives</b></h2>
 
 <p>
 The Enlightenment Project has several mailing lists to aid you.  The
 following table contains a summary, including links to the list archives.
 To add, remove or otherwise modify a subscription to these lists,
-simply click on the list name in the &quot;Mailing List&quot; column and enter your
-subscription details into the form.
+simply click on the list name in the &quot;Mailing List&quot; column and
+enter your subscription details into the form.
 </p>
 
-<center>
-<?php frame1("width=100%");?>
-<div class="main">
 <center>
 <table class="data mailing">
     <thead>
@@ -65,26 +79,36 @@ subscription details into the form.
 </center>
 
 <hr noshade="noshade" style="width: 200px;" />
-<h2>IRC</h2>
-
-<p>
-Get help right away using #e, the Enlightenment channel on FreeNode
-IRC.  Choose <b>irc.freenode.net</b> as your server and then join <b>#e</b>
-with the <b>/join #e</b> command. Einen deutschsprachigen IRC
-channel gibt es auch - <b>#e.de</b> auf FreeNode. Per gli utenti di lingua
-italiana è disponibile il canale <b>#e-it</b>.</p>
-
-<hr noshade="noshade" style="width: 200px;" />
-<h2>Bugs</h2>
-<p>If you happen to come across a bug, missing feature or lack of
-documentation feel free to report it in the <a 
-href="http://trac.enlightenment.org/e/report">Enlightenment Trac</a>.</p>
-
-<hr noshade="noshade" style="width: 200px;" />
-<h2>People</h2>
 
 <?php frame1("width=100%");?>
 <div class="main">
+<h2>People</h2>
+
+<p>
+ This is a list of our developers. Each will work in different things,
+ and have various levels of activity at any time, and even be spread
+ out all around the world and speak various different languages.
+</p>
+<p>
+ We are an inclusive, not exclusive community. It means we prefer to
+ welcome you than to keep you out. We do "ask for forgiveness, not
+ permission" style development. That means that once you are a
+ developer you have access to work on anything and do anything you feel
+ is needed. Of course everyone sees what you do, when and how, and
+ sometimes you may be called to account on your changes and be yelled
+ at, with changes being reverted, but this is the exception, not the
+ rule. If you are going to play with code someone else is actively
+ working on (and the SVN commits list will let you know that as well
+ as the below list of developers and who is responsible for what), it
+ is nice to first discuss your changes with people - especially if they
+ are major and get an agreement.
+</p>
+<p>
+ If you want to become a developer, please see our <?php a("contribute",
+ "contibution");?> page. Information is over there as to how to
+ contribute and help out.
+</p>
+
 <center>
     <table class="data developers active" cellspacing="0">
         <caption>

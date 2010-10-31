@@ -7,6 +7,7 @@
 
 <tr>
 <td class='main' width=33%><div class="main">
+
 <?php frame1("width=100%");?>
 <div class="main">
  <h2>IRC</h2>
@@ -54,13 +55,17 @@
   type + press Enter to talk.
  </p>
  <p>
-  For more information please see <?php a("contact", "contact");?>.
+  Einen deutschsprachigen IRC Channel gibt es auch - <b>#e.de</b>. Per
+  gli utenti di lingua italiana è disponibile il canale <b>#e-it</b>.
+  Pour le Français, nous avons <b>#e.fr</b>.
  </p>
 
 </div>
 <?php frame2();?>
+
 </div></td>
 <td class='main' width=33%><div class="main">
+
 <?php frame1("width=100%");?>
 <div class="main">
  <h2>E-Mail</h2>
@@ -76,7 +81,7 @@
     <tr><td class="name">
      <a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-users">Users List</a>
     </td></tr>
-    <tr><td class="name">
+    <tr class="odd"><td class="name">
      <a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-devel">Developers List</a>
     </td></tr>
     <tr><td class="name">
@@ -142,8 +147,10 @@
 
 </div>
 <?php frame2();?>
+
 </div></td>
 <td class='main' width=33%><div class="main">
+
 <?php frame1("width=100%");?>
 <div class="main">
  <h2>Bug Tracking</h2>
@@ -189,6 +196,7 @@
 
 </div>
 <?php frame2();?>
+
 </div></td>
 </tr>
 </table>
