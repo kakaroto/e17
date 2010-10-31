@@ -22,12 +22,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#include "ewins.h"
-#include "hints.h"
-
-#ifdef WITH_ZOOM
 #include "borders.h"
+#include "ewins.h"
 #include "focus.h"
+#include "hints.h"
 #include "xwin.h"
 #if USE_XRANDR
 #include <X11/extensions/Xrandr.h>
@@ -280,5 +278,3 @@ ReZoom(EWin * ewin)
 	Zoom(ewin, 1);
      }
 }
-
-#endif /* WITH_ZOOM */

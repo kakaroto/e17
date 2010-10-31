@@ -1,11 +1,14 @@
 SUBDIRS =
 
-EXTRA_DIST = gnome.c eglx.c eglx.h glwin.c ecompmgr.c ecompmgr.h magwin.c snprintf.c
+EXTRA_DIST = gnome.c zoom.c eglx.c eglx.h glwin.c ecompmgr.c ecompmgr.h magwin.c snprintf.c
 
 bin_PROGRAMS = e16
 
 if ENABLE_GNOME
 SRCS_GNOME = gnome.c
+endif
+if ENABLE_ZOOM
+SRCS_ZOOM = zoom.c
 endif
 if ENABLE_GLX
 SRCS_GLX = eglx.c eglx.h glwin.c
@@ -109,9 +112,9 @@ e16_SOURCES = \
 	windowmatch.c   	windowmatch.h		\
 	x.c                     xwin.h			\
 	xtypes.h                \
-	zoom.c			\
 	$(MODULE_SRCS)		\
 	$(SRCS_GNOME) 		\
+	$(SRCS_ZOOM) 		\
 	$(SRCS_GLX) 		\
 	$(SRCS_ECOMPMGR)	\
 	$(SRCS_DBUS)		\

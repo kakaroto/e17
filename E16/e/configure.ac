@@ -210,18 +210,6 @@ if test "x$enable_xinerama" = "xyes"; then
 fi
 AC_SUBST(XINERAMA_LIBS)
 
-AC_ARG_ENABLE(zoom,
-  [  --enable-zoom           compile with zoom support @<:@default=yes@:>@],,
-  enable_zoom=yes)
-if test "x$enable_zoom" = "xyes"; then
-  AC_CHECK_LIB(Xxf86vm, XF86VidModeQueryExtension,
-    AC_DEFINE(WITH_ZOOM, 1, [Zoom Support])
-    E_X_LIBS="-lXxf86vm $E_X_LIBS",
-    enable_zoom=no
-    AC_MSG_WARN([Zoom support was requested but not found]),
-    -lXext -lX11)
-fi
-
 AC_ARG_ENABLE(xsync,
   [  --enable-xsync          compile with SYNC support @<:@default=yes@:>@],,
   enable_xsync=yes)
@@ -290,6 +278,19 @@ if test "x$enable_composite" = "xyes"; then
   fi
 fi
 AM_CONDITIONAL(ENABLE_COMPOSITE, test "x$enable_composite" = "xyes")
+
+AC_ARG_ENABLE(zoom,
+  [  --enable-zoom           compile with zoom support @<:@default=yes@:>@],,
+  enable_zoom=yes)
+if test "x$enable_zoom" = "xyes"; then
+  AC_CHECK_LIB(Xxf86vm, XF86VidModeQueryExtension,
+    AC_DEFINE(ENABLE_ZOOM, 1, [Zoom Support])
+    E_X_LIBS="-lXxf86vm $E_X_LIBS",
+    enable_zoom=no
+    AC_MSG_WARN([Zoom support was requested but not found]),
+    -lXext -lX11)
+fi
+AM_CONDITIONAL(ENABLE_ZOOM, test "x$enable_zoom" != "xno")
 
 AC_ARG_ENABLE(dbus,
   [  --enable-dbus           compile with D-Bus support (experimental) @<:@default=no@:>@],,

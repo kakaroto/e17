@@ -476,7 +476,7 @@ int                 EwinListStackIsRaised(const EWin * ewin);
 #define EwinListGetAll EwinListStackGet
 
 /* zoom.c */
-#if WITH_ZOOM
+#if ENABLE_ZOOM
 void                Zoom(EWin * ewin, int on);
 void                ReZoom(EWin * ewin);
 #else
