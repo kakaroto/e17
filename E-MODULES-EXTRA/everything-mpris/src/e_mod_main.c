@@ -94,12 +94,11 @@ static char *theme_file = NULL;
 static Evry_Type MPRIS_TRACK;
 static Evry_Type TRACKER_MUSIC;
 static Evry_Type FILE_LIST;
-
 static Eina_Bool dbus_active = EINA_FALSE;
 
 #define GET_TRACK(_t, _it) Track *_t = (Track*) (_it);
 
-static void _mpris_get_metadata(Plugin *p);
+static void _mpris_get_metadata(Plugin *p, Eina_Bool delay);
 
 
 static int
@@ -303,12 +302,6 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 
    t->pnd = NULL;
 
-   if (!p->fetch_tracks)
-     {
-	ERR("should be nothing to fetch!");
-	goto error;
-     }
-
    p->fetch_tracks--;
 
    if (!_dbus_check_msg(reply, error))
@@ -466,7 +459,7 @@ _update_timer(void *data)
 }
 
 static void
-_mpris_get_metadata(Plugin *p)
+_mpris_get_metadata(Plugin *p, Eina_Bool delay)
 {
 
    Track *t;
@@ -493,7 +486,10 @@ _mpris_get_metadata(Plugin *p)
 	if (p->update_timer)
 	  ecore_timer_del(p->update_timer);
 
-	p->update_timer = ecore_timer_add(0.3, _update_timer, p);
+	if (delay)
+	  p->update_timer = ecore_timer_add(0.3, _update_timer, p);
+	else
+	  _update_timer(p);
      }
    else
      {
@@ -520,7 +516,7 @@ _dbus_cb_tracklist_length(void *data, DBusMessage *reply, DBusError *error)
 			 DBUS_TYPE_INT32, (dbus_int32_t*) &(p->tracklist_cnt),
 			 DBUS_TYPE_INVALID);
 
-   _mpris_get_metadata(p);
+   _mpris_get_metadata(p, EINA_FALSE);
 
    p->pnd_tracklist = NULL;
 }
@@ -576,7 +572,7 @@ _dbus_cb_tracklist_change(void *data, DBusMessage *msg)
 			 DBUS_TYPE_INT32, (dbus_int32_t*) &(p->tracklist_cnt),
 			 DBUS_TYPE_INVALID);
 
-   _mpris_get_metadata(p);
+   _mpris_get_metadata(p, EINA_TRUE);
 }
 
 static void
@@ -619,7 +615,7 @@ _begin(Evry_Plugin *plugin, const Evry_Item *item __UNUSED__)
 
    if (!conn || !dbus_active) return NULL;
 
-   EVRY_PLUGIN_INSTANCE(p, plugin)
+   EVRY_PLUGIN_INSTANCE(p, plugin);
 
    p->pnd_tracklist = _dbus_send_msg("/TrackList", "GetLength", _dbus_cb_tracklist_length, p);
 
@@ -669,14 +665,11 @@ _finish(Evry_Plugin *plugin)
    if (p->pnd_curtrack)
      dbus_pending_call_cancel(p->pnd_curtrack);
 
-   EINA_LIST_FREE(p->tracks, t)
-     {
-	if (t == p->empty)
-	  continue;
+   EINA_LIST_FREE(p->fetch, t)
+     EVRY_ITEM_FREE(t);
 
-	if (t->pnd) dbus_pending_call_cancel(t->pnd);
-	EVRY_ITEM_FREE(t);
-     }
+   EINA_LIST_FREE(p->tracks, t)
+     EVRY_ITEM_FREE(t);
 
    EVRY_ITEM_FREE(p->empty);
 
