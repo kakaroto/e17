@@ -10,8 +10,6 @@
  */
 //#define ROTATION
 
-#define ZOOM_MIN 0.1
-#define ZOOM_MAX 10.0
 #define ZOOM_STEP 0.2
 
 typedef struct _Ephoto_Flow_Browser Ephoto_Flow_Browser;
@@ -30,6 +28,7 @@ struct _Ephoto_Flow_Browser
       Elm_Toolbar_Item *zoom_in;
       Elm_Toolbar_Item *zoom_out;
       Elm_Toolbar_Item *zoom_1;
+      Elm_Toolbar_Item *zoom_fit;
       Elm_Toolbar_Item *go_first;
       Elm_Toolbar_Item *go_prev;
       Elm_Toolbar_Item *go_next;
@@ -45,7 +44,6 @@ struct _Ephoto_Flow_Browser
    const char *path;
    Ephoto_Entry *entry;
    Ephoto_Orient orient;
-   double zoom;
 };
 
 struct _Ephoto_Viewer
@@ -53,9 +51,13 @@ struct _Ephoto_Viewer
    Evas_Object *photocam;
    Evas_Object *scroller;
    Evas_Object *image;
+   double zoom;
+   Eina_Bool fit:1;
 };
 
 static void _zoom_set(Ephoto_Flow_Browser *fb, double zoom);
+static void _zoom_in(Ephoto_Flow_Browser *fb);
+static void _zoom_out(Ephoto_Flow_Browser *fb);
 
 static Eina_Bool
 _path_is_jpeg(const char *path_stringshared)
@@ -72,6 +74,12 @@ _path_is_jpeg(const char *path_stringshared)
    if (strcasecmp(ext, ".jpeg") == 0) return EINA_TRUE;
 
    return EINA_FALSE;
+}
+
+static void
+_viewer_photocam_loaded(void *data __UNUSED__, Evas_Object *obj, void *event_info __UNUSED__)
+{
+   elm_photocam_paused_set(obj, EINA_FALSE);
 }
 
 static void
@@ -95,6 +103,9 @@ _viewer_add(Evas_Object *parent, const char *path)
         EINA_SAFETY_ON_NULL_GOTO(obj, error);
         err = elm_photocam_file_set(obj, path);
         if (err != EVAS_LOAD_ERROR_NONE) goto load_error;
+        elm_photocam_paused_set(obj, EINA_TRUE);
+        evas_object_smart_callback_add
+          (obj, "loaded", _viewer_photocam_loaded, v);
      }
    else
      {
@@ -129,11 +140,9 @@ _viewer_add(Evas_Object *parent, const char *path)
 }
 
 static void
-_viewer_zoom_set(Evas_Object *obj, float zoom)
+_viewer_zoom_apply(Ephoto_Viewer *v, double zoom)
 {
-   Ephoto_Viewer *v = evas_object_data_get(obj, "viewer");
-   EINA_SAFETY_ON_NULL_RETURN(v);
-
+   v->zoom = zoom;
    if (v->photocam) elm_photocam_zoom_set(v->photocam, 1.0 / zoom);
    else
      {
@@ -144,6 +153,86 @@ _viewer_zoom_set(Evas_Object *obj, float zoom)
         evas_object_size_hint_min_set(v->image, w, h);
         evas_object_size_hint_max_set(v->image, w, h);
      }
+}
+
+static void
+_viewer_zoom_fit_apply(Ephoto_Viewer *v)
+{
+   Evas_Coord cw, ch, iw, ih;
+   double zx, zy, zoom;
+
+   if (v->photocam)
+     {
+        evas_object_geometry_get(v->photocam, NULL, NULL, &cw, &ch);
+        elm_photocam_image_size_get(v->photocam, &iw, &ih);
+     }
+   else
+     {
+        evas_object_geometry_get(v->scroller, NULL, NULL, &cw, &ch);
+        evas_object_image_size_get(v->image, &iw, &ih);
+     }
+
+   if ((cw <= 0) || (ch <= 0)) return; /* object still not resized */
+   EINA_SAFETY_ON_TRUE_RETURN(iw <= 0);
+   EINA_SAFETY_ON_TRUE_RETURN(ih <= 0);
+
+   zx = (double)cw / (double)iw;
+   zy = (double)ch / (double)ih;
+
+   zoom = (zx < zy) ? zx : zy;
+   _viewer_zoom_apply(v, zoom);
+}
+
+static void
+_viewer_resized(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
+   _viewer_zoom_fit_apply(data);
+}
+
+static void
+_viewer_zoom_set(Evas_Object *obj, double zoom)
+{
+   Ephoto_Viewer *v = evas_object_data_get(obj, "viewer");
+   EINA_SAFETY_ON_NULL_RETURN(v);
+   _viewer_zoom_apply(v, zoom);
+
+   if (v->fit)
+     {
+        if (v->photocam)
+          evas_object_event_callback_del_full
+            (v->photocam, EVAS_CALLBACK_RESIZE, _viewer_resized, v);
+        else
+          evas_object_event_callback_del_full
+            (v->scroller, EVAS_CALLBACK_RESIZE, _viewer_resized, v);
+        v->fit = EINA_FALSE;
+     }
+}
+
+static double
+_viewer_zoom_get(Evas_Object *obj)
+{
+   Ephoto_Viewer *v = evas_object_data_get(obj, "viewer");
+   EINA_SAFETY_ON_NULL_RETURN_VAL(v, 0.0);
+   return v->zoom;
+}
+
+static void
+_viewer_zoom_fit(Evas_Object *obj)
+{
+   Ephoto_Viewer *v = evas_object_data_get(obj, "viewer");
+   EINA_SAFETY_ON_NULL_RETURN(v);
+
+   if (v->fit) return;
+   v->fit = EINA_TRUE;
+
+   if (v->photocam)
+     evas_object_event_callback_add
+       (v->photocam, EVAS_CALLBACK_RESIZE, _viewer_resized, v);
+   else
+     evas_object_event_callback_add
+       (v->scroller, EVAS_CALLBACK_RESIZE, _viewer_resized, v);
+
+   _viewer_zoom_fit_apply(v);
 }
 
 static void
@@ -328,8 +417,8 @@ _mouse_wheel(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *ev
    Evas_Event_Mouse_Wheel *ev = event_info;
    if (!evas_key_modifier_is_set(ev->modifiers, "Control")) return;
 
-   if (ev->z > 0) _zoom_set(fb, fb->zoom + ZOOM_STEP);
-   else _zoom_set(fb, fb->zoom - ZOOM_STEP);
+   if (ev->z > 0) _zoom_in(fb);
+   else _zoom_out(fb);
 }
 
 static Ephoto_Entry *
@@ -444,39 +533,61 @@ _ephoto_flow_browser_recalc(Ephoto_Flow_Browser *fb)
 static void
 _zoom_set(Ephoto_Flow_Browser *fb, double zoom)
 {
-   if (zoom > ZOOM_MAX) zoom = ZOOM_MAX;
-   else if (zoom < ZOOM_MIN) zoom = ZOOM_MIN;
-
    DBG("zoom %f", zoom);
+   if (zoom <= 0.0) return;
    _viewer_zoom_set(fb->viewer, zoom);
-   fb->zoom = zoom;
-
-   elm_toolbar_item_disabled_set(fb->action.zoom_out, zoom <= ZOOM_MIN);
-   elm_toolbar_item_disabled_set(fb->action.zoom_in, zoom >= ZOOM_MAX);
 }
 
 static void
-_zoom_in(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+_zoom_fit(Ephoto_Flow_Browser *fb)
+{
+   if (fb->viewer) _viewer_zoom_fit(fb->viewer);
+}
+
+static void
+_zoom_in(Ephoto_Flow_Browser *fb)
+{
+   double change = (1.0 + ZOOM_STEP);
+   _viewer_zoom_set(fb->viewer, _viewer_zoom_get(fb->viewer) * change);
+}
+
+static void
+_zoom_out(Ephoto_Flow_Browser *fb)
+{
+   double change = (1.0 - ZOOM_STEP);
+   _viewer_zoom_set(fb->viewer, _viewer_zoom_get(fb->viewer) * change);
+}
+
+static void
+_zoom_in_cb(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
    elm_toolbar_item_selected_set(fb->action.zoom_in, EINA_FALSE);
-   _zoom_set(fb, fb->zoom + ZOOM_STEP);
+   _zoom_in(fb);
 }
 
 static void
-_zoom_out(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+_zoom_out_cb(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
    elm_toolbar_item_selected_set(fb->action.zoom_out, EINA_FALSE);
-   _zoom_set(fb, fb->zoom - ZOOM_STEP);
+   _zoom_out(fb);
 }
 
 static void
-_zoom_1(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+_zoom_1_cb(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
    elm_toolbar_item_selected_set(fb->action.zoom_1, EINA_FALSE);
    _zoom_set(fb, 1.0);
+}
+
+static void
+_zoom_fit_cb(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+   Ephoto_Flow_Browser *fb = data;
+   elm_toolbar_item_selected_set(fb->action.zoom_fit, EINA_FALSE);
+   _zoom_fit(fb);
 }
 
 static void
@@ -623,19 +734,20 @@ _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
    Ephoto_Flow_Browser *fb = data;
    Evas_Event_Key_Down *ev = event_info;
    Eina_Bool ctrl = evas_key_modifier_is_set(ev->modifiers, "Control");
-#ifdef ROTATION
    Eina_Bool shift = evas_key_modifier_is_set(ev->modifiers, "Shift");
-#endif
    const char *k = ev->keyname;
 
    if (ctrl)
      {
         if ((!strcmp(k, "plus")) || (!strcmp(k, "equal")))
-          _zoom_set(fb, fb->zoom + ZOOM_STEP);
+          _zoom_in(fb);
         else if (!strcmp(k, "minus"))
-          _zoom_set(fb, fb->zoom - ZOOM_STEP);
+          _zoom_out(fb);
         else if (!strcmp(k, "0"))
-          _zoom_set(fb, 1.0);
+          {
+             if (shift) _zoom_fit(fb);
+             else _zoom_set(fb, 1.0);
+          }
 
         return;
      }
@@ -717,7 +829,6 @@ ephoto_flow_browser_add(Ephoto *ephoto, Evas_Object *parent)
    fb->ephoto = ephoto;
    fb->layout = layout;
    fb->edje = elm_layout_edje_get(layout);
-   fb->zoom = 1.0;
    evas_object_event_callback_add(layout, EVAS_CALLBACK_DEL, _layout_del, fb);
    evas_object_event_callback_add
      (layout, EVAS_CALLBACK_KEY_DOWN, _key_down, fb);
@@ -747,11 +858,13 @@ ephoto_flow_browser_add(Ephoto *ephoto, Evas_Object *parent)
      (fb, "media-playback-start", "Slideshow", 150, _slideshow);
 
    fb->action.zoom_in = _toolbar_item_add
-     (fb, "zoom-in", "Zoom In", 100, _zoom_in);
+     (fb, "zoom-in", "Zoom In", 100, _zoom_in_cb);
    fb->action.zoom_out = _toolbar_item_add
-     (fb, "zoom-out", "Zoom Out", 80, _zoom_out);
+     (fb, "zoom-out", "Zoom Out", 80, _zoom_out_cb);
    fb->action.zoom_1 = _toolbar_item_add
-     (fb, "zoom-original", "Zoom 1:1", 50, _zoom_1);
+     (fb, "zoom-original", "Zoom 1:1", 50, _zoom_1_cb);
+   fb->action.zoom_fit = _toolbar_item_add
+     (fb, "zoom-fit-best", "Zoom Fit", 40, _zoom_fit_cb);
 
    _toolbar_item_separator_add(fb);
 
@@ -814,8 +927,8 @@ ephoto_flow_browser_path_set(Evas_Object *obj, const char *path)
    DBG("path '%s', was '%s'", path ? path : "", fb->path ? fb->path : "");
    if (!eina_stringshare_replace(&fb->path, path)) return;
    fb->entry = NULL;
-   fb->zoom = 1.0;
    _ephoto_flow_browser_recalc(fb);
+   _zoom_fit(fb);
 }
 
 void
@@ -844,7 +957,7 @@ ephoto_flow_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry)
      _ephoto_flow_browser_toolbar_eval(fb);
    else
      {
-        fb->zoom = 1.0;
         _ephoto_flow_browser_recalc(fb);
+        _zoom_fit(fb);
      }
 }
