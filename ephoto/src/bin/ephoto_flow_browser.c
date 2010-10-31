@@ -527,6 +527,8 @@ _ephoto_flow_browser_recalc(Ephoto_Flow_Browser *fb)
         _orient_apply(fb);
      }
 
+   elm_object_focus(fb->layout);
+
    _ephoto_flow_browser_toolbar_eval(fb);
 }
 
