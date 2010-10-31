@@ -4,6 +4,12 @@
 #include <libexif/exif-data.h>
 #endif
 
+/* ROTATION is disabled until we do it properly, and properly means
+ * elm_photocam and elm_image rotates their images internally.
+ * Rotating the scroller is not correct and was rejected by Raster and others.
+ */
+//#define ROTATION
+
 #define ZOOM_MIN 0.1
 #define ZOOM_MAX 10.0
 #define ZOOM_STEP 0.2
@@ -28,10 +34,12 @@ struct _Ephoto_Flow_Browser
       Elm_Toolbar_Item *go_prev;
       Elm_Toolbar_Item *go_next;
       Elm_Toolbar_Item *go_last;
+#ifdef ROTATION
       Elm_Toolbar_Item *rotate_counterclock;
       Elm_Toolbar_Item *rotate_clock;
       Elm_Toolbar_Item *flip_horiz;
       Elm_Toolbar_Item *flip_vert;
+#endif
       Elm_Toolbar_Item *slideshow;
    } action;
    const char *path;
@@ -141,6 +149,7 @@ _viewer_zoom_set(Evas_Object *obj, float zoom)
 static void
 _orient_apply(Ephoto_Flow_Browser *fb)
 {
+#ifdef ROTATION
    const char *sig;
    switch (fb->orient)
      {
@@ -173,8 +182,12 @@ _orient_apply(Ephoto_Flow_Browser *fb)
      }
    DBG("orient: %d, signal '%s'", fb->orient, sig);
    edje_object_signal_emit(fb->orient_edje, sig, "ephoto");
+#else
+   (void)fb;
+#endif
 }
 
+#ifdef ROTATION
 static void
 _rotate_counterclock(Ephoto_Flow_Browser *fb)
 {
@@ -306,6 +319,7 @@ _flip_vert(Ephoto_Flow_Browser *fb)
      }
    _orient_apply(fb);
 }
+#endif
 
 static void
 _mouse_wheel(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info)
@@ -553,6 +567,7 @@ _go_last(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
    _last_entry(fb);
 }
 
+#ifdef ROTATION
 static void
 _go_rotate_counterclock(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
@@ -584,6 +599,7 @@ _go_flip_vert(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__
    elm_toolbar_item_selected_set(fb->action.flip_vert, EINA_FALSE);
    _flip_vert(fb);
 }
+#endif
 
 static void
 _slideshow(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
@@ -607,7 +623,9 @@ _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
    Ephoto_Flow_Browser *fb = data;
    Evas_Event_Key_Down *ev = event_info;
    Eina_Bool ctrl = evas_key_modifier_is_set(ev->modifiers, "Control");
+#ifdef ROTATION
    Eina_Bool shift = evas_key_modifier_is_set(ev->modifiers, "Shift");
+#endif
    const char *k = ev->keyname;
 
    if (ctrl)
@@ -632,6 +650,7 @@ _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
      _first_entry(fb);
    else if (!strcmp(k, "End"))
      _last_entry(fb);
+#if ROTATION
    else if (!strcmp(k, "bracketleft"))
      {
         if (!shift) _rotate_counterclock(fb);
@@ -642,6 +661,7 @@ _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
         if (!shift) _rotate_clock(fb);
         else        _flip_vert(fb);
      }
+#endif
    else if (!strcmp(k, "F5"))
      {
         if (fb->entry)
@@ -743,6 +763,7 @@ ephoto_flow_browser_add(Ephoto *ephoto, Evas_Object *parent)
 
    _toolbar_item_separator_add(fb);
 
+#ifdef ROTATION
    fb->action.rotate_counterclock = _toolbar_item_add
      (fb, "object-rotate-left", "Rotate Left", 50, _go_rotate_counterclock);
    fb->action.rotate_clock = _toolbar_item_add
@@ -762,6 +783,7 @@ ephoto_flow_browser_add(Ephoto *ephoto, Evas_Object *parent)
      (fb->action.flip_horiz, "Flip object horizontally");
    elm_toolbar_item_tooltip_text_set
      (fb->action.flip_vert, "Flip object vertically");
+#endif
 
    fb->orient_layout = elm_layout_add(layout);
    if (!elm_layout_theme_set
