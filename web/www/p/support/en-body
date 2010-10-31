@@ -65,7 +65,7 @@
 
 <?php frame1("width=100%");?>
 <div class="main">
- <h2>Professional / Commercial</h2>
+ <h2>Professional</h2>
 
  <p>
   Several companies and individuals provide professional support and
@@ -74,10 +74,15 @@
   contact any of the list below.
  </p>
  <p>
+  Just remember that community support isn't guaranteed. It's done on a
+  volunteer/freetime basis. For guaranteed response and support, you'll
+  want to consider professional grade suppliers.
+ </p>
+ <p>
   <table class="data mailing">
    <thead>
     <tr>
-     <th class="name">Company/Consultant</th>
+     <th class="name">Organization</th>
      <th class="name">Specialties</th>
     </tr>
    </thead>
@@ -87,7 +92,7 @@
       <a href="http://www.enlightenment.org">FILLME</a>
      </td>
      <td class="name">
-      Blah, blah blah.
+      Blah, blah blah. More Blah and blah.
      </td>
     </tr>
     <tr>
