@@ -52,7 +52,7 @@ Index: m4/ac_attribute.m4
 +dnl End of ac_attribute.m4
 Index: configure.ac
 ===================================================================
---- configure.ac	(revision 53745)
+--- configure.ac	(revision 53752)
 +++ configure.ac	(working copy)
 @@ -1,15 +1,12 @@
  ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
@@ -689,7 +689,7 @@ Index: src/lib/eeze_disk_mount.c
 ===================================================================
 --- src/lib/eeze_disk_mount.c	(revision 0)
 +++ src/lib/eeze_disk_mount.c	(revision 0)
-@@ -0,0 +1,338 @@
+@@ -0,0 +1,346 @@
 +#ifdef HAVE_CONFIG_H
 +#include "config.h"
 +#endif
@@ -788,13 +788,21 @@ Index: src/lib/eeze_disk_mount.c
 +           break;
 +
 +         default:
-+           ecore_event_add(EEZE_EVENT_DISK_MOUNT, disk, NULL, NULL);
++           Eeze_Event_Disk_Mount *e;
++
++           e = malloc(sizeof(Eeze_Event_Disk_Mount));
++           EINA_SAFETY_ON_NULL_RETURN_VAL(e, ECORE_CALLBACK_RENEW);
++           e->disk = disk;
++           ecore_event_add(EEZE_EVENT_DISK_MOUNT, e, NULL, NULL);
 +       }
 +    else
 +      switch (ev->exit_code)
 +        {
 +         case 0:
-+           ecore_event_add(EEZE_EVENT_DISK_UNMOUNT, disk, NULL, NULL);
++           e = malloc(sizeof(Eeze_Event_Disk_Unmount));
++           EINA_SAFETY_ON_NULL_RETURN_VAL(e, ECORE_CALLBACK_RENEW);
++           e->disk = disk;
++           ecore_event_add(EEZE_EVENT_DISK_UNMOUNT, e, NULL, NULL);
 +           break;
 +
 +         default:
@@ -1032,7 +1040,7 @@ Index: src/lib/Eeze_Disk.h
 ===================================================================
 --- src/lib/Eeze_Disk.h	(revision 0)
 +++ src/lib/Eeze_Disk.h	(revision 0)
-@@ -0,0 +1,104 @@
+@@ -0,0 +1,117 @@
 +#ifndef EEZE_DISK_H
 +#define EEZE_DISK_H
 +
@@ -1085,6 +1093,19 @@ Index: src/lib/Eeze_Disk.h
 +EAPI extern int EEZE_EVENT_DISK_MOUNT;
 +EAPI extern int EEZE_EVENT_DISK_UNMOUNT;
 +EAPI extern int EEZE_EVENT_DISK_ERROR;
++
++typedef struct _Eeze_Event_Disk_Mount Eeze_Event_Disk_Mount;
++typedef struct _Eeze_Event_Disk_Unmount Eeze_Event_Disk_Unmount;
++
++struct _Eeze_Event_Disk_Mount
++{
++   Eeze_Disk *disk;
++};
++
++struct _Eeze_Event_Disk_Unmount
++{
++   Eeze_Disk *disk;
++};
 +
 +struct _Eeze_Disk;
 +typedef struct _Eeze_Disk Eeze_Disk;
@@ -1139,7 +1160,7 @@ Index: src/lib/Eeze_Disk.h
 +#endif
 Index: src/lib/Makefile.am
 ===================================================================
---- src/lib/Makefile.am	(revision 53745)
+--- src/lib/Makefile.am	(revision 53752)
 +++ src/lib/Makefile.am	(working copy)
 @@ -1,20 +1,34 @@
  MAINTAINERCLEANFILES = Makefile.in
@@ -1184,7 +1205,7 @@ Index: src/lib/Makefile.am
  EXTRA_DIST = eeze_udev_private.h eeze_private.h
 Index: src/lib/eeze_udev_private.h
 ===================================================================
---- src/lib/eeze_udev_private.h	(revision 53745)
+--- src/lib/eeze_udev_private.h	(revision 53752)
 +++ src/lib/eeze_udev_private.h	(working copy)
 @@ -1,6 +1,6 @@
  #ifndef EEZE_UDEV_PRIVATE_H
@@ -1624,7 +1645,7 @@ Index: src/lib/eeze_disk_libmount.c
 +/** @} */
 Index: src/lib/eeze_main.c
 ===================================================================
---- src/lib/eeze_main.c	(revision 53745)
+--- src/lib/eeze_main.c	(revision 53752)
 +++ src/lib/eeze_main.c	(working copy)
 @@ -4,7 +4,9 @@
  
@@ -1724,7 +1745,7 @@ Index: src/bin/eeze_umount.c
 ===================================================================
 --- src/bin/eeze_umount.c	(revision 0)
 +++ src/bin/eeze_umount.c	(revision 0)
-@@ -0,0 +1,112 @@
+@@ -0,0 +1,111 @@
 +#include <Eeze.h>
 +#include <Eeze_Disk.h>
 +#include <Ecore.h>
@@ -1752,13 +1773,12 @@ Index: src/bin/eeze_umount.c
 +};
 +
 +void
-+_unmount_cb(void *data, int type, Eeze_Disk *disk)
++_unmount_cb(void *data, int type, Eeze_Event_Disk_Unmount *e)
 +{
 +   (void)data;
 +   (void)type;
-+   (void)disk;
 +   printf("Success!\n");
-+   eeze_disk_free(disk);
++   eeze_disk_free(e->disk);
 +   ecore_main_loop_quit();
 +}
 +
@@ -1897,7 +1917,7 @@ Index: src/bin/eeze_disk_ls.c
 +}
 Index: src/bin/Makefile.am
 ===================================================================
---- src/bin/Makefile.am	(revision 53745)
+--- src/bin/Makefile.am	(revision 53752)
 +++ src/bin/Makefile.am	(working copy)
 @@ -1,14 +1,32 @@
  MAINTAINERCLEANFILES = Makefile.in
@@ -1941,7 +1961,7 @@ Index: src/bin/eeze_mount.c
 ===================================================================
 --- src/bin/eeze_mount.c	(revision 0)
 +++ src/bin/eeze_mount.c	(revision 0)
-@@ -0,0 +1,116 @@
+@@ -0,0 +1,115 @@
 +#include <Eeze.h>
 +#include <Eeze_Disk.h>
 +#include <Ecore.h>
@@ -1969,13 +1989,12 @@ Index: src/bin/eeze_mount.c
 +};
 +
 +void
-+_mount_cb(void *data, int type, Eeze_Disk *disk)
++_mount_cb(void *data, int type, Eeze_Event_Disk_Mount *e)
 +{
 +   (void)data;
 +   (void)type;
-+   (void)disk;
 +   printf("Success!\n");
-+   eeze_disk_free(disk);
++   eeze_disk_free(e->disk);
 +   ecore_main_loop_quit();
 +}
 +
