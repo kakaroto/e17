@@ -148,7 +148,6 @@ elixir_new_eina_direct_info(JSContext *cx,
 
    ret = EINA_TRUE;
 
- on_error_register:
    elixir_object_unregister(cx, &obj);
 
  on_error:
@@ -532,7 +531,13 @@ elixir_eio_file_ls(JSContext *cx, uintN argc, jsval *vp)
 }
 
 static JSBool
-elixir_eio_file_direct_ls(JSContext *cx, uintN argc, jsval *vp)
+elixir_eio_file_any_ls(Eio_File *(*func)(const char *dir,
+                                         Eio_Filter_Direct_Cb filter_cb,
+                                         Eio_Main_Direct_Cb main_cb,
+                                         Eio_Done_Cb done_cb,
+                                         Eio_Error_Cb error_cb,
+                                         const void *data),
+                       JSContext *cx, uintN argc, jsval *vp)
 {
    Elixir_EIO_Data *dt;
    Eio_File *result;
@@ -581,12 +586,12 @@ elixir_eio_file_direct_ls(JSContext *cx, uintN argc, jsval *vp)
    elixir_function_stop(cx);
 
    elixir_thread_new();
-   result = eio_file_direct_ls(elixir_get_string_bytes(val[0].v.str, NULL),
-                               _elixir_eio_filter_direct_cb,
-                               _elixir_eio_main_direct_cb,
-                               _elixir_eio_done_cb,
-                               _elixir_eio_error_cb,
-                               new);
+   result = func(elixir_get_string_bytes(val[0].v.str, NULL),
+                 _elixir_eio_filter_direct_cb,
+                 _elixir_eio_main_direct_cb,
+                 _elixir_eio_done_cb,
+                 _elixir_eio_error_cb,
+                 new);
 
    elixir_function_start(cx);
 
@@ -601,6 +606,9 @@ elixir_eio_file_direct_ls(JSContext *cx, uintN argc, jsval *vp)
      }
    return JS_TRUE;
 }
+
+FAST_CALL_PARAMS(eio_file_direct_ls, elixir_eio_file_any_ls);
+FAST_CALL_PARAMS(eio_file_stat_ls, elixir_eio_file_any_ls);
 
 static JSBool
 elixir_eio_filter_add(JSContext *cx, uintN argc, jsval *vp)
@@ -849,6 +857,7 @@ static JSFunctionSpec eio_functions[] = {
   ELIXIR_FN(eio_file_direct_stat, 4, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(eio_file_ls, 6, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(eio_file_direct_ls, 6, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(eio_file_stat_ls, 6, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(eio_filter_add, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(eio_filter_del, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(eio_file_atime, 1, JSPROP_ENUMERATE, 0 ),
