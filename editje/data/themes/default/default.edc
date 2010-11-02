@@ -416,7 +416,8 @@ collections {
             type: SWALLOW;
             mouse_events: 1;
             description { state: "default" 0.0;
-               align: 0.0 1.0;
+               align: 0.0 0.0;
+               fixed: 1 1;
                rel1 {
                   to: "details_group_label";
                   relative: 1.0 0.0;
