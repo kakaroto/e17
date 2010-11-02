@@ -111,7 +111,6 @@ elixir_new_eina_direct_info(JSContext *cx,
                             jsval *rval)
 {
    JSObject *obj;
-   JSObject *dirent;
    jsval propertie;
    char *tmp;
    const char *type = NULL;
@@ -134,16 +133,11 @@ elixir_new_eina_direct_info(JSContext *cx,
 
    *rval = OBJECT_TO_JSVAL(obj);
 
-   dirent = JS_NewObject(cx, elixir_class_request("struct dirent", NULL), NULL, NULL);
-   if (!dirent) goto on_error_register;
-
-   propertie = OBJECT_TO_JSVAL(dirent);
-   JS_SetProperty(cx, obj, "dirent", &propertie);
-
    /* build eina_file_direct_info content */
    ADDIPROP(cx, obj, info, path_length);
    ADDIPROP(cx, obj, info, name_length);
    ADDIPROP(cx, obj, info, name_start);
+   ADDIPROP(cx, obj, info, type);
 
    propertie = STRING_TO_JSVAL(elixir_dup(cx, tmp));
    JS_SetProperty(cx, obj, "path", &propertie);
@@ -151,15 +145,6 @@ elixir_new_eina_direct_info(JSContext *cx,
    /* add an elixir specific content */
    propertie = STRING_TO_JSVAL(elixir_dup(cx, type));
    JS_SetProperty(cx, obj, "type", &propertie);
-
-   /* build dirent content */
-   ADDIPROP(cx, dirent, info->dirent, d_ino);
-   ADDIPROP(cx, dirent, info->dirent, d_off);
-   ADDIPROP(cx, dirent, info->dirent, d_reclen);
-   ADDIPROP(cx, dirent, info->dirent, d_type);
-
-   propertie = STRING_TO_JSVAL(elixir_dup(cx, info->dirent->d_name));
-   JS_SetProperty(cx, obj, "d_name", &propertie);
 
    ret = EINA_TRUE;
 
@@ -885,15 +870,15 @@ static const struct {
   { "EIO_UNLINK", EIO_UNLINK },
   { "EIO_FILE_GETPWNAM", EIO_FILE_GETPWNAM },
   { "EIO_FILE_GETGRNAM", EIO_FILE_GETGRNAM },
-  { "DT_UNKNOWN", DT_UNKNOWN },
-  { "DT_FIFO", DT_FIFO },
-  { "DT_CHR", DT_CHR },
-  { "DT_DIR", DT_DIR },
-  { "DT_BLK", DT_BLK },
-  { "DT_REG", DT_REG },
-  { "DT_LNK", DT_LNK },
-  { "DT_SOCK", DT_SOCK },
-  { "DT_WHT", DT_WHT },
+  { "EINA_FILE_UNKNOWN", EINA_FILE_UNKNOWN },
+  { "EINA_FILE_FIFO", EINA_FILE_FIFO },
+  { "EINA_FILE_CHR", EINA_FILE_CHR },
+  { "EINA_FILE_DIR", EINA_FILE_DIR },
+  { "EINA_FILE_BLK", EINA_FILE_BLK },
+  { "EINA_FILE_REG", EINA_FILE_REG },
+  { "EINA_FILE_LNK", EINA_FILE_LNK },
+  { "EINA_FILE_SOCK", EINA_FILE_SOCK },
+  { "EINA_FILE_WHT", EINA_FILE_WHT },
   { NULL, 0 }
 };
 

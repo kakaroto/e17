@@ -162,7 +162,7 @@ _ephoto_eina_file_direct_info_image_useful(const Eina_File_Direct_Info *info)
 
    bname = info->path + info->name_start;
    if (bname[0] == '.') return EINA_FALSE;
-   if ((info->dirent->d_type != DT_REG) && (info->dirent->d_type != DT_UNKNOWN))
+   if ((info->type != EINA_FILE_REG) && (info->type != EINA_FILE_UNKNOWN))
      return EINA_FALSE;
 
    ext = info->path + info->path_length - 1;
