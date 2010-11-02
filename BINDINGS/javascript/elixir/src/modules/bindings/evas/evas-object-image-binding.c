@@ -36,6 +36,11 @@ static const elixir_parameter_t*        _evas_object_image_geometry_params[3] = 
    &geometry_parameter,
    NULL
 };
+static const elixir_parameter_t*        _evas_object_image_boolean_params[3] = {
+   &evas_object_image_parameter,
+   &boolean_parameter,
+   NULL
+};
 static const elixir_parameter_t*        _evas_object_image_double_string_params[4] = {
    &evas_object_image_parameter,
    &string_parameter,
@@ -260,6 +265,24 @@ elixir_evas_object_image_data_update_add(JSContext *cx, uintN argc, jsval *vp)
    return JS_TRUE;
 }
 
+static JSBool
+elixir_evas_object_image_preload(JSContext *cx, uintN argc, jsval *vp)
+{
+   Evas_Object *know;
+   elixir_value_t val[2];
+
+   if (!elixir_params_check(cx, _evas_object_image_boolean_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   know = JS_GetPrivate(cx, val[0].v.obj);
+   if (!know) return JS_FALSE;
+
+   evas_object_image_preload(know, val[1].v.bol);
+
+   return JS_TRUE;
+}
+
+
 /* Evas_Bool         evas_object_image_save            (Evas_Object *obj, const char *file, const char *key, const char *flags); */
 /* Evas_Bool         evas_object_image_pixels_import          (Evas_Object *obj, Evas_Pixel_Import_Source *pixels); */
 /* void              evas_object_image_pixels_get_callback_set(Evas_Object *obj, void (*func) (void *data, Evas_Object *o), void *data); */
@@ -284,6 +307,7 @@ elixir_evas_object_image_load_dpi_set(JSContext *cx, uintN argc, jsval *vp)
 }
 
 static JSFunctionSpec	evas_object_image_functions[] = {
+  ELIXIR_FN(evas_object_image_preload, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_image_file_set, 3, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_image_border_set, 5, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_image_fill_set, 5, JSPROP_ENUMERATE, 0 ),
