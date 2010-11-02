@@ -14,12 +14,12 @@
      powerful multi-core desktops (which are the primary development
      environment).
     </p>
-    
+
     <center>
      <?php ast("about");?><?php img("phone.png", "Mobile Devices");?></a>
      <?php ast("about");?><?php img("laptop.png", "Desktops, Laptops and Netbooks");?></a>
     </center>
-    
+
     <h3>Enlightenment Foundation Libraries (EFL)</h3>
     <p>
      These provide both a semi-traditional toolkit set in Elementary as well
@@ -28,17 +28,17 @@
      alpha channels and events in-tact. It has 3D transformations for all
      objects <?php a("about", "and more");?>.
     </p>
-    
+
     <p>
      A simple overview of the EFL (Enlightenment Foundation Libraries) stack
      is here. <?php a("about", "There is more to this");?>, but this gives
      a quick overview of where it fits in.
     </p>
-    
+
     <center>
      <?php ast("about");?><?php img("diagram-efl-simple-small.png", "Simple E stack");?></a>
    </center>
-   
+
    </div>
   </td>
 
@@ -54,7 +54,7 @@
   <td class='main'>
    <div class="main">
     <h3>Enlightenment News</h3>
-    <p><?php include 'p/news/latestnews.php' ?></p>
+    <?php include 'p/news/latestnews.php' ?>
    </div>
   </td>
  </tr>

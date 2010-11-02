@@ -10,7 +10,7 @@
 <title><?php echo $title; ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="style.css">
-<link rel="stylesheet" type="text/css" href="/theme/css/<?php echo $theme ?>.css">
+<link rel="stylesheet" type="text/css" href="/theme/css/default.css">
 <!--[if lt IE 8]> <link rel="stylesheet" type="text/css" href="/theme/css/ie-lt8.css"> <![endif]-->
 <link rel="icon" href="favicon.png" type="image/x-icon">
 <link rel="shortcut icon" href="favicon.png" type="image/x-icon">

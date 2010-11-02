@@ -1,10 +1,9 @@
 /* Transparent PNGs */
-img { behavior: url("/theme/img/ie/iepngfix.htc"); }
+img {
+  behavior: url("/theme/img/ie/iepngfix.htc");
+}
 
 /* IE6 and 7 do not support inline-block for block elements like <li> */
-#header ul.menu li, #header ul.submenu li { display: inline; }
-
-/* Move submenu 1 line in IE6 */
-/** html #header div.submenu
-{ margin-top: -$line;
-}*/
+#header ul.menu li, #header ul.submenu li {
+  display: inline;
+}

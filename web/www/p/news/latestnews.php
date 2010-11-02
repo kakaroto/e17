@@ -13,16 +13,16 @@ foreach($list as $new)
      $link = "p.php?p=news/show&l=" . $news->lang . "&news_id=$new[id]";
 
      $pos = strpos($n, '<!-- cut -->');
-     if ($pos != FALSE) 
+     if ($pos != FALSE)
      {
 	     $before = substr($n, 0, $pos);
-	     $before .= "<div align='right' class='news-latest-date'><a href='$link'>more &raquo;</a></div>";
+	     $before .= "<div align='right' class='news-more'><a href='$link'>more &raquo;</a></div>";
      }
      else $before = $n;
 
      echo "<p class='news-latest-title'><a href='$link'>" . $new['title'] . "</a><br />";
      echo "<em class='news-latest-date'>" . $new['date'] . "</em></p>";
-     echo "<p class='news-latest-body'>" . $before . "</p>\n";
+     echo "<div class='news-latest-body'>" . $before . "</div>\n";
    }
 }
 echo '<p align="right"><a href="/p.php?p=news&amp;l='.$news->lang.'" title="News">Archives</a></p>';
