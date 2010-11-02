@@ -1,5 +1,4 @@
 <?php
-/*  DON'T PUT HTML HERE, PUT IT IN HELPERS.PHP */
 
 /**
     @return Multi-level array of developer data in the format:
