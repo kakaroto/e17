@@ -50,7 +50,7 @@
   href=http://www.mibbit.com/>Mibbit</a>, and many others. If your
   client already has a listing for freenode, just select it. If not
   just set up the server as <b>irc.freenode.net</b> as your server
-  with the normal IRC port of 6667. Once connected just join <b>#e</b> 
+  with the normal IRC port of 6667. Once connected just join <b>#e</b>
   (you can just type in the command: <b>/join #e</b> then Enter). Just
   type + press Enter to talk.
  </p>
@@ -116,7 +116,7 @@
   </table>
   </center>
  </p>
- 
+
 </div>
 <?php frame2();?>
 
@@ -132,19 +132,34 @@
   <table class="data mailing">
    <thead>
     <tr>
-     <th class="name">Mailing List</th>
+     <th colspan="2" class="name">Mailing Lists</th>
     </tr>
    </thead>
    <tbody>
-    <tr><td class="name">
-     <a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-users">Users List</a>
-    </td></tr>
-    <tr class="odd"><td class="name">
-     <a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-devel">Developers List</a>
-    </td></tr>
-    <tr><td class="name">
-     <a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-svn">SVN Commits List</a>
-    </td></tr>
+    <tr>
+        <td class="name">
+            <a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-users">Users</a>
+        </td>
+        <td class="archive">
+            (<a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-users">archive</a>)
+        </td>
+    </tr>
+    <tr class="odd">
+        <td class="name">
+            <a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-devel">Developers</a>
+        </td>
+        <td class="archive">
+            (<a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-users">archive</a>)
+        </td>
+    </tr>
+    <tr>
+        <td class="name">
+            <a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-svn">SVN Commits</a>
+        </td>
+        <td class="archive">
+            (<a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-users">archive</a>)
+        </td>
+    </tr>
    </tbody>
   </table>
   </center>
@@ -183,7 +198,7 @@
   href=https://lists.sourceforge.net/lists/listinfo/enlightenment-devel>The
   Devel List</a> is where most of the developer and development
   discussions happen. This list will be more technical that the Users
-  list. <a 
+  list. <a
   href=https://lists.sourceforge.net/lists/listinfo/enlightenment-users>The
   Users List</a> is where regular user discussions will happen.
  </p>
@@ -194,13 +209,13 @@
   software). <a
   href=https://lists.sourceforge.net/lists/listinfo/enlightenment-intl>The
   Intl List</a> is for posting changes to internationalization like
-  updated PO files. <a 
+  updated PO files. <a
   href=https://lists.sourceforge.net/lists/listinfo/enlightenment-bugs>The
   Bugs List</a> is for broadcasting bug reports (though the way trac
   works currently for us, it will only be used if added to the cc list).
  </p>
  <p>
-  For more information, please see the 
+  For more information, please see the
   <?php a("contact", "contact");?> page.
  </p>
 
@@ -239,7 +254,7 @@
   href=http://trac.enlightenment.org/e/report>Report</a> a bug. We will
   eventually get to it, but try and assign it to someone appropriate
   so it gets attention. We list all our developers on our <?php
-  a("contact", "contact");?> page. 
+  a("contact", "contact");?> page.
  </p>
  <p>
   Please use the tracker for bugs, not for discussions or feature
@@ -251,7 +266,7 @@
   system it won't disappear. It just takes it being noticed.
  </p>
  <p>
-  To report a bug, go to <a 
+  To report a bug, go to <a
   href=http://trac.enlightenment.org/e/report>Trac Bugs</a>.
  </p>
 
@@ -264,7 +279,7 @@
 
  <p>
   We have split our website into 2 major parts. The main less-changing
-  pages such as this and a <a 
+  pages such as this and a <a
   href=http://trac.enlightenment.org/e/wiki>Wiki</a>. This Wiki is
   where anyone can edit and contribute documentation, information and
   similar pages.
@@ -287,4 +302,4 @@
   </td>
  </tr>
 </table>
-      
+
