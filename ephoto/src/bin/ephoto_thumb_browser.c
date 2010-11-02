@@ -290,12 +290,6 @@ _ephoto_populate_filter(void *data __UNUSED__, const Eina_File_Direct_Info *info
 
    if (bname[0] == '.') return EINA_FALSE;
    if (info->type == EINA_FILE_DIR) return EINA_TRUE;
-   if (info->type == EINA_FILE_UNKNOWN)
-     {
-        struct stat st;
-        if ((stat(info->path, &st) == 0) && (S_ISDIR(st.st_mode)))
-          return EINA_TRUE;
-     }
 
    return _ephoto_eina_file_direct_info_image_useful(info);
 }
@@ -348,12 +342,12 @@ _ephoto_populate_entries(Ephoto_Thumb_Browser *tb)
    elm_fileselector_entry_path_set(tb->fsel, tb->ephoto->config->directory);
 
    edje_object_signal_emit(tb->edje, "populate,start", "ephoto");
-   tb->ls = eio_file_direct_ls(tb->ephoto->config->directory,
-                               _ephoto_populate_filter,
-                               _ephoto_populate_main,
-                               _ephoto_populate_end,
-                               _ephoto_populate_error,
-                               tb);
+   tb->ls = eio_file_stat_ls(tb->ephoto->config->directory,
+                             _ephoto_populate_filter,
+                             _ephoto_populate_main,
+                             _ephoto_populate_end,
+                             _ephoto_populate_error,
+                             tb);
 }
 
 static void
