@@ -1,7 +1,5 @@
 #include "e.h"
 #include "e_mod_main.h"
-#include "itask_menu.h"
-
 
 static void _itask_menu_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _itask_menu_cb_configuration(void *data, E_Menu *m, E_Menu_Item *mi);
@@ -12,7 +10,7 @@ static void _itask_menu_item_cb(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _itask_menu_icon_cb(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _itask_menu_remove(Itask *it);
 
-EAPI void
+void
 itask_menu_button(Itask *it)
 {
       Evas_Coord w, h;
@@ -31,7 +29,7 @@ itask_menu_button(Itask *it)
      it->menubutton = ic;
 }
 
-EAPI void 
+void 
 itask_menu_remove(Itask *it){
   //edje_object_part_unswallow(it->menubutton->o_holder, it->menubutton->o_icon);
    evas_object_del(it->menubutton->o_holder);
@@ -123,7 +121,7 @@ _e_int_menus_apps_drag(void *data, E_Menu *m, E_Menu_Item *mi)
       }
 }
 
-EAPI E_Menu *
+E_Menu *
 itask_menu_items_menu(Eina_List *items)
 {
   Eina_List *l;

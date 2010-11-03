@@ -26,11 +26,6 @@
 
 #include "e.h"
 #include "e_mod_main.h"
-#include "itask_item.h"
-#include "itask_items.h"
-#include "itask_menu.h"
-
-
 
 static Itask *_itask_new(Evas *evas, E_Zone *zone);
 static void	_itask_free(Itask *it);
@@ -247,7 +242,7 @@ _itask_new(Evas *evas, E_Zone *zone)
    it->o_box = e_box_add(evas);
    e_box_homogenous_set(it->o_box, 0);
    e_box_orientation_set(it->o_box, 1);
-   e_box_align_set(it->o_box, 0.5, 0.5);
+   e_box_align_set(it->o_box, 0.0, 0.0);
    it->zone = zone;
    it->items = NULL;
    it->items_menu = NULL;
@@ -306,13 +301,13 @@ _itask_orient_set(Itask *it, int horizontal)
    itask_resize_handle(it);
 }
 
-EAPI void
+void
 itask_update_gc_orient(Itask *it)
 {
    _gc_orient(it->inst->gcc, it->inst->gcc->gadcon->orient);
 }
 
-EAPI void
+void
 itask_resize_handle(Itask *it)
 {
    Eina_List *l;
@@ -323,20 +318,23 @@ itask_resize_handle(Itask *it)
 			    NULL, NULL,&w, &h);
    
    if (e_box_orientation_get(it->o_box))
-     bw = h;
+     {
+	bw = h;
+     }
    else
      {
 	bw = it->item_width;
 	h = it->item_height;
      }
-   
+
    e_box_freeze(it->o_box);
+
    if(it->option_ibox_style)
      {
 	e_box_pack_options_set(it->o_button,
 			       1, 1, /* fill */
 			       1, 1, /* expand */
-			       0.5, 0.5, /* align */
+			       0.0, 0.5, /* align */
 			       0, 0, /* min */
 			       -1, -1 /* max */
 			       );
@@ -347,7 +345,7 @@ itask_resize_handle(Itask *it)
 	e_box_pack_options_set(it->o_button,
 			       0, 0, /* fill */
 			       0, 0, /* expand */
-			       0.5, 0.5, /* align */
+			       0.0, 0.5, /* align */
 			       bw, h, /* min */
 			       bw, h /* max */
 			       );
@@ -355,7 +353,7 @@ itask_resize_handle(Itask *it)
    e_box_thaw(it->o_box);
 }
 
-EAPI Eina_List *
+Eina_List *
 itask_zone_find(E_Zone *zone)
 {
    Eina_List *itask = NULL;
@@ -379,7 +377,6 @@ itask_zone_find(E_Zone *zone)
    return itask;
 }
 
-// TODO hm, this can probably be made simpler
 static Eina_Bool
 _itask_cb_event_desk_show(void *data, int type, void *event)
 {
@@ -394,20 +391,19 @@ _itask_cb_event_desk_show(void *data, int type, void *event)
    int items_on_desk_in_bar = 0;
    itask = itask_zone_find(ev->desk->zone);
    
-   for (l = itask; l; l = l->next)
+   EINA_LIST_FREE(itask, it)
      {
-	it = l->data;
 	/* If we're 'this desktop only' then we need to refill when the desk changes */
 	if(it->show_zone == 2)
 	  {
 	     _itask_empty(it);
 	     _itask_fill(it);
 	  }
+
 	if(it->show_desk)
 	  {
-	     for(ll = it->items_menu; ll ; ll = ll->next)
+	     EINA_LIST_FOREACH(it->items_menu, ll, ic)
 	       {
-		  ic = ll->data;
 		  if(ic->border->desk == ev->desk)
 		    {
 		       items_on_desk_in_menu++;
@@ -416,9 +412,8 @@ _itask_cb_event_desk_show(void *data, int type, void *event)
 	       }
 	     if(items_on_desk_in_menu == 0) continue;
 
-	     for(ll = it->items_bar; ll ; ll = ll->next)
+	     EINA_LIST_FOREACH(it->items_bar, ll, ic)
 	       {
-		  ic = ll->data;
 		  items++;
 		  if(ic->border->desk == ev->desk)
 		    {
@@ -463,13 +458,11 @@ _itask_cb_event_desk_show(void *data, int type, void *event)
 	     itask_resize_handle(it);
 	  }
      }
-   while (itask)
-     itask = eina_list_remove_list(itask, itask);
   
    return EINA_TRUE;
 }
 	
-EAPI Config_Item *
+Config_Item *
 itask_config_item_get(const char *id)
 {
    Eina_List *l;
@@ -521,7 +514,7 @@ itask_config_item_get(const char *id)
    return ci;
 }
 
-EAPI void
+void
 itask_config_update(Config_Item *ci)
 {
    Eina_List *l;

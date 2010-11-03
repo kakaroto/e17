@@ -119,12 +119,32 @@ EAPI int   e_modapi_shutdown (E_Module *m);
 EAPI int   e_modapi_save     (E_Module *m);
 EAPI int   e_modapi_about    (E_Module *m);
 
-// TODOthis shouldnt be here
-EAPI void     itask_config_update(Config_Item *ci);
-EAPI Config_Item *itask_config_item_get(const char *id); 
-EAPI Eina_List *itask_zone_find(E_Zone *zone);
-EAPI void itask_update_gc_orient(Itask *it);
-EAPI void itask_resize_handle(Itask *it);
+void     itask_config_update(Config_Item *ci);
+Config_Item *itask_config_item_get(const char *id); 
+Eina_List *itask_zone_find(E_Zone *zone);
+void itask_update_gc_orient(Itask *it);
+void itask_resize_handle(Itask *it);
+
+void itask_items_init(Config *itask_config);
+void itask_items_shutdown();
+
+Itask_Item *itask_item_new(Itask *it, E_Border *bd);
+int   itask_item_realize(Itask_Item *ic);
+void  itask_icon_signal_emit(Itask_Item *ic, char *sig, char *src);
+void  itask_item_set_icon(Itask_Item *ic);
+void  itask_item_del_icon(Itask_Item *ic);
+void  itask_item_set_label(Itask_Item *ic);
+void  itask_item_add_to_bar(Itask_Item *ic);
+void  itask_item_remove_from_bar(Itask_Item *ic);
+void  itask_item_remove(Itask_Item *ic);
+void  itask_item_swap_to_bar(Itask_Item *ic);
+void  itask_item_swap_oldest_from_bar(Itask *it);
+void  itask_item_swap_youngest_from_menu(Itask *it);
+int   itask_item_add_check(Itask *it, E_Border *bd);
+
+void itask_menu_init(Itask *it);
+void itask_menu_button(Itask *it);
+E_Menu *itask_menu_items_menu(Eina_List *items);
 
 void _itask_config_update(void);
 void _config_itask_module(Config_Item *ci);

@@ -19,7 +19,7 @@ static void _itask_border_menu_cb_sendto(void *data, E_Menu *m, E_Menu_Item *mi)
 static void _itask_border_menu_cb_raise(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _itask_border_menu_cb_lower(void *data, E_Menu *m, E_Menu_Item *mi);
 
-EAPI E_Menu *
+E_Menu *
 itask_border_menu_get(E_Border *bd, E_Menu *mn)
 {
    E_Menu_Item *mi;
