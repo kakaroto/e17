@@ -27,6 +27,7 @@ ico_fonts.png \
 ico_group.png \
 ico_images.png \
 ico_new.png \
+ico_new_file.png \
 ico_next.png \
 ico_open.png \
 ico_opened.png \
