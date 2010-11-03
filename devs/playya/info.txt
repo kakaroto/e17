@@ -1,0 +1,7 @@
+Login: playya
+IRC Nick: playya
+Name: Frederik Sdun
+Location: Villingen (Schwarzw.), Germany
+E-Mail: frederik.sdun@googlemail.com
+Contributing: vala-bindings
+Platform: Openmoko Freerunner, Palm Pre
