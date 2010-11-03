@@ -257,9 +257,8 @@ static int ed_mark_favorite(void *data, int argc, char **argv, char **azColName)
 }
 
 static void on_mark_favorite(void *data, Evas_Object *obj, void *event_info) {
-	Evas *e;
-	Evas_Object *hover, *bubble = (Evas_Object*)data;
-	aStatus *as = eina_hash_find(bubble2status, &bubble);
+	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)data;
+	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
 	int sqlite_res=0;
 	char *db_err=NULL, *query=NULL;
 
@@ -274,10 +273,9 @@ static void on_mark_favorite(void *data, Evas_Object *obj, void *event_info) {
 		sqlite3_free(db_err);
 		free(query);
 
-		e = evas_object_evas_get(gui.win);
-		if(e) {
-			hover = evas_object_name_find(e, "hover_actions");
-			if(hover) evas_object_hide(hover);
+		if(gui.hover) {
+			evas_object_del(gui.hover);
+			gui.hover = NULL;
 		}
 	}
 }
@@ -285,8 +283,6 @@ static void on_mark_favorite(void *data, Evas_Object *obj, void *event_info) {
 static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)data;
 	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
-	Evas *e;
-	Evas_Object *hover;
 
 	if(as) {
 		switch(as->account_type) {
@@ -295,18 +291,15 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 		}
 	}
 
-	e = evas_object_evas_get(gui.win);
-	if(e) {
-		hover = evas_object_name_find(e, "hover_actions");
-		if(hover) evas_object_hide(hover);
-	}
+		if(gui.hover) {
+			evas_object_del(gui.hover);
+			gui.hover = NULL;
+		}
 }
 
 static void on_view_related(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)data;
 	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli), *related_status=NULL;
-	Evas *e;
-	Evas_Object *hover;
 
 	if(as) {
 		switch(as->account_type) {
@@ -320,10 +313,9 @@ static void on_view_related(void *data, Evas_Object *obj, void *event_info) {
 	else
 		printf(_("Error importing related status\n"));
 
-	e = evas_object_evas_get(gui.win);
-	if(e) {
-		hover = evas_object_name_find(e, "hover_actions");
-		if(hover) evas_object_hide(hover);
+	if(gui.hover) {
+		evas_object_del(gui.hover);
+		gui.hover = NULL;
 	}
 
 }
@@ -331,8 +323,6 @@ static void on_view_related(void *data, Evas_Object *obj, void *event_info) {
 static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)data;
 	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
-	Evas *e;
-	Evas_Object *hover;
 	anUser *au = NULL;
 	char * entry_str=NULL, *uid_str=NULL;
 	int res = 0;
@@ -355,10 +345,9 @@ static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 		}
 	}
 
-	e = evas_object_evas_get(gui.win);
-	if(e) {
-		hover = evas_object_name_find(e, "hover_actions");
-		if(hover) evas_object_hide(hover);
+	if(gui.hover) {
+		evas_object_del(gui.hover);
+		gui.hover = NULL;
 	}
 
 	evas_object_show(hv);
@@ -367,18 +356,15 @@ static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 static void on_dm(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)data;
 	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
-	Evas *e;
-	Evas_Object *hover;
 
 	if(as) {
 		elm_object_focus(entry);
 		user_id=as->user;
 	}
 
-	e = evas_object_evas_get(gui.win);
-	if(e) {
-		hover = evas_object_name_find(e, "hover_actions");
-		if(hover) evas_object_hide(hover);
+	if(gui.hover) {
+		evas_object_del(gui.hover);
+		gui.hover = NULL;
 	}
 
 	evas_object_show(hv);
@@ -1219,6 +1205,11 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 	if(!re_tags)	re_tags  = g_regex_new("#([a-zA-Z0-9_]+)",      G_REGEX_OPTIMIZE, 0, &re_err);
 	if(!re_group)	re_group = g_regex_new("!([a-zA-Z0-9_]+)",      G_REGEX_OPTIMIZE, 0, &re_err);
 
+	if(gui.hover) {
+		evas_object_del(gui.hover);
+		gui.hover = NULL;
+	}
+
 	gui.status_detail=elm_win_inwin_add(gui.win);
 
 	pager = elm_pager_add(gui.win);
@@ -1347,12 +1338,12 @@ void on_status_action_close(void *data, Evas_Object *obj, void *event_info) {
 void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)event_info;
 	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
-	Evas_Object *hover = NULL, *box=NULL, *table=NULL, *button=NULL;
+	Evas_Object *box=NULL, *table=NULL, *button=NULL;
 
 	elm_genlist_item_selected_set(gli, EINA_FALSE);
 
-	hover = elm_hover_add(gui.win);
-		evas_object_name_set(hover, "hover_actions");
+	gui.hover = elm_hover_add(gui.win);
+		evas_object_name_set(gui.hover, "hover_actions");
 		box = elm_box_add(gui.win);
 			table = elm_table_add(gui.win);
 
@@ -1414,10 +1405,10 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 
 		evas_object_show(box);
 
-		elm_hover_parent_set(hover, gui.win);
-		elm_hover_target_set(hover, gui.timeline);
-		elm_hover_content_set(hover, "middle", box);
-	evas_object_show(hover);
+		elm_hover_parent_set(gui.hover, gui.win);
+		elm_hover_target_set(gui.hover, gui.timeline);
+		elm_hover_content_set(gui.hover, "middle", box);
+	evas_object_show(gui.hover);
 }
 
 void add_status(aStatus *as, Elm_Genlist_Item *gli) {

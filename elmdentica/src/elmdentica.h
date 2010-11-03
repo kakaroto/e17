@@ -45,7 +45,7 @@ typedef struct _StatusesList {
 } StatusesList;
 
 typedef struct _Gui {
-	Evas_Object *win, *timeline, *pager, *main, *status_detail, *status_detail_users, *status_detail_links, *status_detail_tags, *status_detail_groups;
+	Evas_Object *win, *timeline, *pager, *main, *status_detail, *status_detail_users, *status_detail_links, *status_detail_tags, *status_detail_groups, *hover;
 	Evas *win_evas;
 } Gui;
 
