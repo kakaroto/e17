@@ -1,0 +1,1031 @@
+#define TOP_PANEL_HEIGHT 64
+#define BOTTOM_PANEL_HEIGHT 85
+#define TOOLBAR_ITEMS 5
+#define TOOLBAR_MIDDLE_ITEM 3
+#define TOOLBAR_ITEM_SIZE 90
+#define SEARCHBAR_ITEM_SIZE 40
+
+#define TOOLBAR_POSITION(_item_number) ((_item_number)*(TOOLBAR_ITEM_SIZE)-((TOOLBAR_ITEM_SIZE)*(TOOLBAR_MIDDLE_ITEM)))
+#define TOOLBAR_BUTTON(_button_name,_button_title,_xpos, variable_disabled) \
+    part { name: "button-"_button_name"-normal"; \
+        type: IMAGE; \
+        description { state: "default" 0.0; \
+            min: TOOLBAR_ITEM_SIZE TOOLBAR_ITEM_SIZE; \
+            max: TOOLBAR_ITEM_SIZE TOOLBAR_ITEM_SIZE; \
+            fixed: 1 1; \
+            rel1 { \
+                to_y: "panel-bottom"; \
+                relative: 0.5 1.0; \
+                offset: (_xpos) -46; \
+            } \
+            rel2 { \
+                to_y: "panel-bottom"; \
+                relative: 0.5 1.0; \
+                offset: (_xpos) (-TOOLBAR_ITEM_SIZE/2); \
+            } \
+            image.normal: "bt_"_button_name"_normal.png"; \
+            color: 255 255 255 255; \
+        } \
+        description { state: "hidden" 0.0; \
+            inherit: "default" 0.0; \
+            color: 255 255 255 0; \
+            visible: 0; \
+        } \
+    } \
+    part { name: "button-"_button_name"-selected"; \
+        type: IMAGE; \
+        mouse_events: 0; \
+        description { state: "default" 0.0; \
+            visible: 0; \
+            min: TOOLBAR_ITEM_SIZE TOOLBAR_ITEM_SIZE; \
+            max: TOOLBAR_ITEM_SIZE TOOLBAR_ITEM_SIZE; \
+            fixed: 1 1; \
+            rel1 { \
+                to_y: "panel-bottom"; \
+                relative: 0.5 1.0; \
+                offset: (_xpos) -46; \
+            } \
+            rel2 { \
+                to_y: "panel-bottom"; \
+                relative: 0.5 1.0; \
+                offset: (_xpos) (-TOOLBAR_ITEM_SIZE/2); \
+            } \
+            image.normal: "bt_"_button_name"_selected.png"; \
+            color: 255 255 255 0; \
+            visible: 0; \
+        } \
+        description { state: "visible" 0.0; \
+            inherit: "default" 0.0; \
+            visible: 1; \
+            color: 255 255 255 255; \
+        } \
+    } \
+    part { name: "button-"_button_name"-left-separator"; \
+        type: RECT; \
+        description { state: "default" 0.0; \
+            fixed: 1 1; \
+            min: 2 90; \
+            max: 2 90; \
+            rel1 { \
+                to: "button-"_button_name"-normal"; \
+                relative: 0.0 0.0; \
+                offset: -1 12; \
+            } \
+            rel2 { \
+                to: "button-"_button_name"-normal"; \
+                relative: 0.0 1.0; \
+                offset: -1 -1; \
+            } \
+            color: 0 0 0 128; \
+        } \
+        description { state: "hidden" 0.0; \
+            inherit: "default" 0.0; \
+            color: 255 255 255 0; \
+            visible: 0; \
+        } \
+    } \
+    part { name: "button-"_button_name"-label"; \
+        type: TEXT; \
+        effect: GLOW; \
+        mouse_events: 0; \
+        description { state: "default" 0.0; \
+            rel1 { \
+                to: "button-"_button_name"-normal"; \
+                relative: 0.0 0.0; \
+                offset: 0 5; \
+            } \
+            rel2 { \
+                to: "button-"_button_name"-normal"; \
+                relative: 1.0 1.0; \
+                offset: -1 -1; \
+            } \
+            text { \
+                font: "Sans:style=Bold,Edje-Vera-Bold"; \
+                size: 11; \
+                text: _button_title; \
+                align: 0.5 0.5; \
+            } \
+            color: 190 190 190 255; \
+            color2: 20 20 20 255; \
+        } \
+        description { state: "hidden" 0.0; \
+            inherit: "default" 0.0; \
+            visible: 0; \
+            color: 190 190 190 0; \
+            color2: 20 20 20 0; \
+        } \
+    } \
+    part { name: "button-"_button_name"-disable-mask"; \
+        type: RECT; \
+        mouse_events: 1; \
+        description { state: "default" 0.0; \
+            rel1.to: "button-"_button_name"-normal"; \
+            rel1.offset: 0 7; \
+            rel2.to: "button-"_button_name"-normal"; \
+            fixed: 1 1; \
+            color: 0 0 0 0; \
+            visible: 0; \
+        } \
+        description { state: "masking" 0.0; \
+            inherit: "default" 0.0; \
+            color: 0 0 0 128; \
+            visible: 1; \
+        } \
+    } \
+    programs { \
+        program { name: _button_name"-pressed"; \
+            signal: "mouse,down,*"; \
+            source: "button-"_button_name"-normal"; \
+            action: STATE_SET "visible" 0.0; \
+            target: "button-"_button_name"-selected"; \
+            transition: ACCELERATE 0.3; \
+        } \
+        program { name: _button_name"-released"; \
+            signal: "mouse,up,*"; \
+            source: "button-"_button_name"-normal"; \
+            action: STATE_SET "default" 0.0; \
+            target: "button-"_button_name"-selected"; \
+            transition: DECELERATE 0.6; \
+        } \
+        program { name: _button_name"-clicked"; \
+            signal: "mouse,clicked,*"; \
+            source: "button-"_button_name"-normal"; \
+            action: SIGNAL_EMIT "action,"_button_name _button_name; \
+        } \
+        program { name: _button_name"-disable"; \
+            signal: "button,"_button_name",disable"; \
+            script{ \
+                if (get_int(more_list_visible) != 1){  \
+                   set_state(PART:"button-"_button_name"-disable-mask", "masking", 0.0); \
+                }  \
+                set_int(variable_disabled, 1); \
+            } \
+        } \
+        program { name: _button_name"-enable"; \
+            signal: "button,"_button_name",enable"; \
+            script{ \
+                set_state(PART:"button-"_button_name"-disable-mask", "default", 0.0); \
+                set_int(variable_disabled, 0); \
+            } \
+        } \
+        program { name: _button_name"-hide"; \
+            action: STATE_SET "hidden" 0.0; \
+            target: "button-"_button_name"-normal"; \
+            target: "button-"_button_name"-label"; \
+            target: "button-"_button_name"-left-separator"; \
+            target: "button-"_button_name"-disable-mask"; \
+            transition: ACCELERATE 0.3; \
+        } \
+        program { name: _button_name"-show"; \
+            action: STATE_SET "default" 0.0; \
+            target: "button-"_button_name"-normal"; \
+            target: "button-"_button_name"-label"; \
+            target: "button-"_button_name"-left-separator"; \
+            target: "button-"_button_name"-disable-mask"; \
+            transition: DECELERATE 0.3; \
+        } \
+    }
+
+collections {
+#include "elm-genlist.edc"
+#include "elm-gengrid.edc"
+#include "elm-scroller.edc"
+#include "elm-entry.edc"
+#include "elm-spinner.edc"
+
+    group { name: "highlight";
+        images.image: "found_page_selected.png" COMP;
+        parts {
+            part { name: "icon";
+                type: IMAGE;
+                description { state: "default" 0.0;
+                    align: 0.5 0.5;
+                   rel1 {
+                   relative: 0.0 0.0;
+                   offset: -4 -4;
+                   }
+                   rel2 {
+                   relative: 1.0 1.0;
+                   offset: 4 4;
+                   }
+                   image {
+                      normal: "found_page_selected.png";
+                      border: 8 8 8 8;
+                   }
+                    min: 0 0;
+                    max: 9999 9999;
+                }
+            }
+            part { name: "rect";
+                type: RECT;
+               description { state: "default" 0.0;
+               visible: 0;
+                rel1.relative: 0.0 0.0;
+                rel2.relative: 1.0 1.0;
+                    color: 244 188 63 166;
+                    align: 0.5 0.5;
+                    min: 0 0;
+                    max: 9999 9999;
+                }
+            }
+
+        }
+    }
+
+    group { name: "openfile";
+        images.image: "open.png" COMP;
+        parts {
+            part { name: "icon";
+                type: IMAGE;
+                description { state: "default" 0.0;
+                    align: 1.0 0.5;
+                    image.normal: "open.png";
+                    min: 45 45;
+                    max: 45 45;
+                }
+            }
+        }
+    }
+
+    group { name: "fullscreen";
+        images.image: "fullscreen.png" COMP;
+        parts {
+            part { name: "icon";
+                type: IMAGE;
+                description { state: "default" 0.0;
+                    align: 1.0 0.5;
+                    image.normal: "fullscreen.png";
+                    min: 45 45;
+                    max: 45 45;
+                }
+            }
+        }
+    }
+
+    group { name: "search_button";
+        images {
+          image: "search_normal.png" COMP;
+          image: "search_selected.png" COMP;
+        }
+        parts {
+           part { name: "normal";
+           type: IMAGE;
+              description { state: "default" 0.0;
+              align: 1.0 0.5;
+              image.normal: "search_normal.png";
+              min: 22 22;
+              max: 22 22;
+              }
+           }
+           part { name: "selected";
+           mouse_events:0;
+                   description { state: "default" 0.0;
+                   min: 22 22;
+                   max: 22 22;
+                   visible:0;
+                   image.normal: "search_selected.png";
+                   }
+                   description { state: "visible" 0.0;
+                   inherit: "default" 0.0;
+                     visible:1;
+                   }
+           }
+
+            programs {
+               program {
+                    signal: "mouse,down,*";
+                    source: "normal";
+                    action: STATE_SET "visible" 0.0;
+                    target: "selected";
+                    transition: ACCELERATE 0.3;
+               }
+               program { name: "mouse-released";
+                    signal: "mouse,up,*";
+                    source: "normal";
+                    action: STATE_SET "default" 0.0;
+                    target: "selected";
+                    transition: DECELERATE 0.6;
+               }
+            }
+        }
+    }
+
+    group { name: "main";
+        images
+          {
+          image: "bt_clear_normal.png" COMP;
+          image: "bt_clear_selected.png" COMP;
+          image: "bt_down_normal.png" COMP;
+          image: "bt_down_selected.png" COMP;
+          image: "bt_up_normal.png" COMP;
+          image: "bt_up_selected.png" COMP;
+          image: "bt_zoomin_normal.png" COMP;
+          image: "bt_zoomin_selected.png" COMP;
+          image: "bt_zoomout_normal.png" COMP;
+          image: "bt_zoomout_selected.png" COMP;
+          image: "found_page_selected.png" COMP;
+          image: "fullscreen.png" COMP;
+          image: "open.png" COMP;
+          image: "search_normal.png" COMP;
+          image: "search_selected.png" COMP;
+          image: "bt_more_normal.png" COMP;
+          image: "bt_more_selected.png" COMP;
+          image: "panel-top-triangle.png" COMP;
+          image: "more-list-title.png" COMP;
+          image: "toolbar-background-bottom.png" COMP;
+          image: "toolbar-background-top.png" COMP;
+          image: "search-entry.png" COMP;
+          }
+        script {
+            public more_list_visible;
+            public tab_grid_visible;
+            public favorited;
+            public panel_top_visible;
+            public progress_bar_visible;
+            public button_up_disabled;
+            public button_zoomin_disabled;
+            public button_down_disabled;
+            public button_zoomout_disabled;
+            public button_more_disabled;
+            public panel_bottom_visible;
+
+            public panel_top_hide() {
+                run_program(PROGRAM:"hide-view-mask");
+                run_program(PROGRAM:"hide-top-panel");
+                emit("view,mask,hidden", "");
+                set_int(panel_top_visible, 0);
+            }
+
+            public panel_bottom_hide() {
+                run_program(PROGRAM:"hide-bottom-panel");
+                run_program(PROGRAM:"down-hide");
+                run_program(PROGRAM:"up-hide");
+                run_program(PROGRAM:"zoomin-hide");
+                run_program(PROGRAM:"zoomout-hide");
+                run_program(PROGRAM:"more-hide");
+                set_int(panel_bottom_visible, 0);
+            }
+
+            public panel_bottom_show() {
+                run_program(PROGRAM:"show-bottom-panel");
+                run_program(PROGRAM:"down-show");
+                run_program(PROGRAM:"up-show");
+                run_program(PROGRAM:"zoomin-show");
+                run_program(PROGRAM:"zoomout-show");
+                run_program(PROGRAM:"more-show");
+                set_int(panel_bottom_visible, 1);
+            }
+
+            public panel_top_show() {
+                if (get_int(more_list_visible) != 1)
+                    run_program(PROGRAM:"show-white-view-mask");
+                run_program(PROGRAM:"show-top-panel");
+                emit("view,mask,visible", "");
+                set_int(panel_top_visible, 1);
+            }
+            public panel_top_toggle() {
+                if (get_int(panel_top_visible) == 1) panel_top_hide();
+                else panel_top_show();
+            }
+            public navigation_controls_hide() {
+                new state_dst[31];
+                new Float:state_idx;
+
+                get_state(PART:"button-down-disable-mask", state_dst, 30, state_idx);
+                if (strcmp(state_dst, "masking") == 0) set_int(button_down_disabled, 1);
+                else set_int(button_down_disabled, 0);
+
+                get_state(PART:"button-up-disable-mask", state_dst, 30, state_idx);
+                if (strcmp(state_dst, "masking") == 0) set_int(button_up_disabled, 1);
+                else set_int(button_up_disabled, 0);
+
+                run_program(PROGRAM:"down-hide");
+                run_program(PROGRAM:"up-hide");
+                run_program(PROGRAM:"zoomin-hide");
+                run_program(PROGRAM:"zoomout-hide");
+            }
+            public navigation_controls_show() {
+                run_program(PROGRAM:"down-show");
+                run_program(PROGRAM:"up-show");
+                run_program(PROGRAM:"zoomin-show");
+                run_program(PROGRAM:"zoomout-show");
+                run_program(PROGRAM:"more-show");
+                if (get_int(button_down_disabled) == 1) run_program(PROGRAM:"down-disable");
+                if (get_int(button_up_disabled) == 1) run_program(PROGRAM:"up-disable");
+            }
+            public more_list_hide() {
+                run_program(PROGRAM:"hide-more-list");
+                set_state(PART:"button-more-selected", "default", 0.0);
+                set_int(more_list_visible, 0);
+                if (get_int(tab_grid_visible) != 1) {
+                   run_program(PROGRAM:"show-white-view-mask");
+                /*     navigation_controls_show(); */
+                }
+                emit("more,hide", "");
+            }
+            public more_list_show() {
+                set_int(more_list_visible, 1);
+                navigation_controls_hide();
+                run_program(PROGRAM:"show-more-list");
+                set_state(PART:"button-more-selected", "visible", 0.0);
+                run_program(PROGRAM:"show-black-view-mask");
+                emit("more,show", "");
+            }
+            public more_list_toggle() {
+                if (get_int(more_list_visible) == 1) more_list_hide();
+                else more_list_show();
+            }
+        }
+        parts {
+            part { name: "bg";
+                type: RECT;
+                description { state: "default" 0.0;
+                    color: 0 0 0 255;
+                    min: 480 800;
+                }
+            }
+            part { name: "view";
+                type: SWALLOW;
+                description { state: "default" 0.0;
+                    rel1 {
+                        relative: 0.0 0.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        to_y: "panel-bottom";
+                        relative: 1.0 0.0;
+                        offset: -1 5;
+                    }
+                }
+                description { state: "fullscreen" 0.0;
+                inherit: "default" 0.0;
+                    rel1 {
+                        relative: 0.0 0.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                }
+            }
+            part { name: "view-mask";
+                type: RECT;
+                description { state: "default" 0.0;
+                    rel1 {
+                        to_y: "panel-top";
+                        relative: 0.0 1.0;
+                        offset: 0 -10;
+                    }
+                    rel2 {
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                    color: 0 0 0 0;
+                }
+                description { state: "hidden" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 0;
+                }
+                description { state: "masking-white" 0.0;
+                    inherit: "default" 0.0;
+                    color: 255 255 255 0;
+                }
+                description { state: "masking-black" 0.0;
+                    inherit: "default" 0.0;
+                    color: 0 0 0 200;
+                }
+            }
+            part { name: "more-list-header";
+                type: IMAGE;
+                clip_to: "more-list";
+                description { state: "default" 0.0;
+                    max: 99999 55;
+                    rel1 {
+                        to: "more-list";
+                        relative: 0.0 0.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        to: "more-list";
+                        relative: 1.0 0.0;
+                        offset: -1 55;
+                    }
+                    image.normal: "more-list-title.png";
+                }
+            }
+            part { name: "more-list-bg";
+                type: RECT;
+                description { state: "default" 0.0;
+                    rel1 {
+                        to: "more-list-header";
+                        relative: 0.0 1.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        to: "more-list";
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                    color: 0 0 0 255;
+                }
+            }
+            part { name: "more-list-swallow";
+                type: SWALLOW;
+                description { state: "default" 0.0;
+                    fixed: 1 1;
+                    rel1 {
+                        to: "more-list-header";
+                        relative: 0.0 1.0;
+                        offset: 0 -1;
+                    }
+                    rel2 {
+                        to: "more-list";
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                }
+                description { state: "hide-left" 0.0;
+                    inherit: "default" 0.0;
+                    rel1 {
+                        to: "more-list-header";
+                        relative: -1.0 1.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        to: "more-list";
+                        relative: 0.0 1.0;
+                        offset: -1 -1;
+                    }
+                }
+                description { state: "hide-right" 0.0;
+                    inherit: "default" 0.0;
+                    rel1 {
+                        to: "more-list-header";
+                        relative: 1.0 1.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        to: "more-list";
+                        relative: 2.0 1.0;
+                        offset: -1 -1;
+                    }
+                }
+            }
+            part { name: "more-list-title";
+                type: TEXT;
+                clip_to: "more-list";
+                description { state: "default" 0.0;
+                    rel1 {
+                        to_y: "more-list-header";
+                        to_x: "more-list-swallow";
+                        relative: 0.0 0.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        to_y: "more-list-header";
+                        to_x: "more-list-swallow";
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                    text {
+                        font: "Sans:style=Bold,Edje-Vera-Bold";
+                        size: 11;
+                        text: "Untitled";
+                        min: 0 1;
+                        align: 0.5 0.7;
+                    }
+                    color: 190 190 190 255;
+                }
+            }
+            part { name: "more-list";
+                type: RECT;
+                description { state: "default" 0.0;
+                    fixed: 1 1;
+                    visible: 0;
+                    rel1 {
+                        to_y: "panel-bottom";
+                        relative: 0.0 0.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                }
+                description { state: "visible" 0.0;
+                    rel1 {
+                        relative: 0.0 0.65;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        to_y: "panel-bottom";
+                        relative: 1.0 0.0;
+                        offset: -1 5;
+                    }
+                }
+            }
+           part { name: "panel-top-triangle";
+                type: IMAGE;
+                description { state: "default" 0.0;
+                    visible: 0;
+                    min: 30 27;
+                    max: 30 27;
+                    fixed: 1 1;
+                    image.normal: "panel-top-triangle.png";
+                    rel1 {
+                        relative: 1.0 0.0;
+                        offset: 60 60;
+                    }
+                    rel2 {
+                        relative: 1.0 0.0;
+                        offset: 60 60;
+                    }
+                }
+                description { state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                    image.normal: "panel-top-triangle.png";
+                    rel1 {
+                        relative: 1.0 0.0;
+                        offset: -15 13;
+                    }
+                    rel2 {
+                        relative: 1.0 0.0;
+                        offset: -15 13;
+                    }
+                }
+                description { state: "pressed" 0.0;
+                    inherit: "visible" 0.0;
+                    color: 255 255 255 128;
+                }
+            }
+            part { name: "panel-top";
+                type: IMAGE;
+                description { state: "default" 0.0;
+                    max: 99999 TOP_PANEL_HEIGHT;
+                    rel1 {
+                        relative: 0.0 0.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        relative: 1.0 0.0;
+                        offset: 0 TOP_PANEL_HEIGHT;
+                    }
+                    image.normal: "toolbar-background-top.png";
+                }
+                description { state: "hidden" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 0;
+                    rel1 {
+                        relative: 0.0 -1.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        relative: 1.0 0.0;
+                        offset: -1 -TOP_PANEL_HEIGHT;
+                    }
+                }
+            }
+            part { name: "panel-bottom";
+                type: IMAGE;
+                description { state: "default" 0.0;
+                min: 480 (BOTTOM_PANEL_HEIGHT+5);
+                    fixed: 1 1;
+                    rel1 {
+                        relative: 0.0 1.0;
+                        offset: 0 -BOTTOM_PANEL_HEIGHT;
+                    }
+                    rel2 {
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                    }
+                    image.normal: "toolbar-background-bottom.png";
+                }
+                description { state: "hidden" 0.0;
+                    inherit: "default" 0.0;
+                min: 0 0;
+                    visible: 0;
+                    rel1 {
+                        relative: 1.0 1.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        relative: 1.0 1.0;
+                        offset: 0 0;
+                    }
+                }
+            }
+            TOOLBAR_BUTTON("down", "Down", TOOLBAR_POSITION(1), button_down_disabled)
+            TOOLBAR_BUTTON("up", "Up", TOOLBAR_POSITION(2), button_up_disabled)
+            TOOLBAR_BUTTON("zoomin", "Zoom", TOOLBAR_POSITION(3), button_zoomin_disabled)
+            TOOLBAR_BUTTON("zoomout", "Zoom", TOOLBAR_POSITION(4), button_zoomout_disabled)
+            TOOLBAR_BUTTON("more", "More", TOOLBAR_POSITION(5), button_more_disabled)
+            part { name: "button-more-right-separator";
+                type: RECT;
+                description { state: "default" 0.0;
+                    fixed: 1 1;
+                    min: 2 90;
+                    max: 2 90;
+                    rel1 {
+                        to: "button-more-normal";
+                        relative: 1.0 0.0;
+                        offset: -2 12;
+                    }
+                    rel2 {
+                        to: "button-more-normal";
+                        relative: 1.0 1.0;
+                        offset: -2 -1;
+                    }
+                    color: 0 0 0 128;
+                }
+                description { state: "hidden" 0.0;
+                visible: 0;
+                }
+            }
+            part { name: "page-title";
+                type: TEXT;
+                description { state: "default" 0.0;
+                    rel1 {
+                        to_y: "panel-top";
+                        relative: 0.0 0.0;
+                        offset: 0 0;
+                    }
+                    rel2 {
+                        to_y: "panel-top";
+                        relative: 1.0 0.0;
+                        offset: -1 24;
+                    }
+                    text {
+                        font: "Sans,Edje-Vera";
+                        size: 8;
+                        text: "Untitled";
+                        min: 0 1;
+                        align: 0.5 0.5;
+                    }
+                }
+            }
+            part { name: "page-spinner-bg";
+            type: IMAGE;
+                description { state: "default" 0.0;
+                    fixed: 1 1;
+                    min: 10 26;
+                    max: 99999 26;
+                    rel1 {
+                        to_y: "panel-top";
+                        relative: 0.0 0.0;
+                        offset: 20 68;
+                    }
+                    rel2 {
+                        to_y: "panel-top";
+                        relative: 0.0 0.0;
+                        offset: 198 -1;
+                    }
+                image.normal: "search-entry.png";
+                image.border: 4 4 4 4;
+                }
+            }
+            part { name: "search-entry-bg";
+            type: IMAGE;
+                description { state: "default" 0.0;
+                    fixed: 1 1;
+                    min: 10 26;
+                    max: 99999 26;
+                    rel1 {
+                        to_y: "panel-top";
+                        relative: 0.0 0.0;
+                        offset:  204  68;
+                    }
+                    rel2 {
+                        to_y: "panel-top";
+                        relative:  1.0  0.0;
+                        offset:  -20  -1;
+                    }
+                image.normal: "search-entry.png";
+                image.border: 4 4 4 4;
+                }
+            }
+            part { name: "search-entry";
+                type: SWALLOW;
+                description { state: "default" 0.0;
+                    fixed: 1 1;
+                    rel1 {
+                        to: "search-entry-bg";
+                        relative: 0.0 0.0;
+                        offset: 1 1;
+                    }
+                    rel2 {
+                        to: "search-entry-bg";
+                        relative: 1.0 1.0;
+                        offset: -6 -2;
+                    }
+                }
+            }
+
+            part { name: "page-spinner";
+                type: SWALLOW;
+                description { state: "default" 0.0;
+                    fixed: 1 1;
+                    rel1 {
+                        to: "page-spinner-bg";
+                        relative: 0.0 0.0;
+                        offset: 1 1;
+                    }
+                    rel2 {
+                        to: "page-spinner-bg";
+                        relative: 1.0 1.0;
+                        offset: -1 -2;
+                    }
+                }
+            }
+
+            programs {
+                program { name: "theme-load";
+                    signal: "load";
+                    script {
+                        set_int(more_list_visible, 0);
+                        set_int(panel_top_visible, 1);
+                        set_int(button_down_disabled, 0);
+                        set_int(button_up_disabled, 0);
+                        set_int(button_zoomin_disabled, 0);
+                        set_int(button_zoomout_disabled, 0);
+                        set_int(button_more_disabled, 0);
+                        set_int(panel_bottom_visible, 1);
+                        set_state(PART:"view-mask", "masking-white", 0.0);
+                    }
+                }
+                program { name: "press-view-mask";
+                    signal: "mouse,down,*";
+                    source: "view-mask";
+                    script {
+                        if (get_int(more_list_visible) == 1) {
+                            more_list_hide();
+                        } else {
+                            run_program(PROGRAM:"hide-view-mask");
+                            panel_top_hide();
+                        }
+                    }
+                }
+                program { name: "press-panel-top-triangle";
+                    signal: "mouse,down,*";
+                    source: "panel-top-triangle";
+                    action: STATE_SET "pressed" 0.0;
+                    target: "panel-top-triangle";
+                    transition: ACCELERATE 0.2;
+                }
+
+                program { name: "clicked-panel-top-triangle";
+                    signal: "mouse,down,1,double";
+                    source: "panel-top-triangle";
+                    action: SIGNAL_EMIT "top-triangle-clicked" "panel-top-triangle";
+                }
+
+                program { name: "restore-top-panel";
+                    script { panel_top_show(); }
+                }
+
+                program { name: "restore-bottom-panel";
+                signal: "sig,full";
+                source: "app";
+                   script { panel_bottom_hide();
+                      if (get_int(more_list_visible) == 1) more_list_hide();
+                   }
+                }
+                program { name: "unrestore-bottom-panel";
+                signal: "sig,wind";
+                source: "app";
+                   script { panel_bottom_show();
+                   }
+                }
+
+
+                program { name: "release-panel-top-triangle";
+                    signal: "mouse,up,*";
+                    source: "panel-top-triangle";
+                    action: STATE_SET "visible" 0.0;
+                    target: "panel-top-triangle";
+                    transition: ACCELERATE 0.2;
+                    after: "restore-top-panel";
+                }
+                program { name: "set-top-panel-visible";
+                    signal: "set,view,mask,visible";
+                    after: "release-panel-top-triangle";
+                }
+
+                program { name: "hide-view-mask";
+                    action: STATE_SET "hidden" 0.0;
+                    target: "view-mask";
+                    transition: ACCELERATE 0.2;
+                }
+                program { name: "show-white-view-mask";
+                    action: STATE_SET "masking-white" 0.0;
+                    target: "view-mask";
+                    transition: DECELERATE 0.2;
+                }
+                program { name: "show-black-view-mask";
+                    action: SIGNAL_EMIT "view,mask,show" "";
+                    action: STATE_SET "masking-black" 0.0;
+                    target: "view-mask";
+                    transition: DECELERATE 0.2;
+                }
+                program { name: "show-top-triangle";
+                    action: STATE_SET "visible" 0.0;
+                    target: "panel-top-triangle";
+                    transition: ACCELERATE 0.2;
+                }
+                program { name: "hide-top-triangle";
+                    action: STATE_SET "default" 0.0;
+                    target: "panel-top-triangle";
+                    transition: DECELERATE 0.2;
+                }
+                program { name: "show-top-panel";
+                    action: STATE_SET "default" 0.0;
+                    target: "panel-top";
+                    transition: DECELERATE 0.3;
+                    after: "hide-top-triangle";
+                }
+                program { name: "hide-top-panel";
+                    action: STATE_SET "hidden" 0.0;
+                    target: "panel-top";
+                    transition: ACCELERATE 0.3;
+                    after: "show-top-triangle";
+                }
+                program { name: "show-more-list";
+                    action: STATE_SET "visible" 0.0;
+                    target: "more-list";
+                    transition: ACCELERATE 0.2;
+                }
+                program { name: "hide-more-list";
+                    action: STATE_SET "default" 0.0;
+                    target: "more-list";
+                    transition: DECELERATE 0.2;
+                }
+                program { name: "toggle-more-list";
+                    signal: "mouse,clicked,*";
+                    source: "button-more-normal";
+                    script { more_list_toggle(); }
+                }
+                program { name: "list-animate-left";
+                    signal: "list,animate,left";
+                    action: STATE_SET "hide-left" 0.0;
+                    target: "more-list-swallow";
+                    transition: ACCELERATE 0.1;
+                    after: "list-animate-left-2";
+                }
+                program { name: "list-animate-left-2";
+                    action: STATE_SET "hide-right" 0.0;
+                    target: "more-list-swallow";
+                    after: "list-animate-completely-hidden";
+                }
+                program { name: "list-animate-right";
+                    signal: "list,animate,right";
+                    action: STATE_SET "hide-right" 0.0;
+                    target: "more-list-swallow";
+                    transition: ACCELERATE 0.1;
+                    after: "list-animate-right-2";
+                }
+                program { name: "list-animate-right-2";
+                    action: STATE_SET "hide-left" 0.0;
+                    target: "more-list-swallow";
+                    after: "list-animate-completely-hidden";
+                }
+                program { name: "list-animate-completely-hidden";
+                    action: SIGNAL_EMIT "list,completely,hidden" "";
+                    after: "list-animate-final";
+                }
+                program { name: "list-animate-final";
+                    action: STATE_SET "default" 0.0;
+                    target: "more-list-swallow";
+                    transition: DECELERATE 0.2;
+                }
+                program { name: "more-item-clicked";
+                    signal: "more,item,clicked";
+                    script { more_list_hide(); }
+                }
+                program { name: "show-bottom-panel";
+                    action: STATE_SET "default" 0.0;
+                    target: "panel-bottom";
+                    target: "button-more-right-separator";
+                    after: "hide-top-triangle";
+                    after: "contract-view";
+                }
+                program { name: "hide-bottom-panel";
+                    action: STATE_SET "hidden" 0.0;
+                    target: "panel-bottom";
+                    target: "button-more-right-separator";
+                    after: "show-top-triangle";
+                    after: "hide-top-panel";
+                    after: "expand-view";
+                }
+                program { name: "expand-view";
+                    action: STATE_SET "fullscreen" 0.0;
+                    target: "view";
+                }
+                program { name: "contract-view";
+                    action: STATE_SET "default" 0.0;
+                    target: "view";
+                }
+            }
+        }
+    }
+}

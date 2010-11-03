@@ -1,0 +1,7 @@
+DOMAIN = envision
+subdir = po
+top_builddir = ..
+XGETTEXT_OPTIONS = --keyword=_ --keyword=N_
+COPYRIGHT_HOLDER = Thiago Ribeiro Masaki
+MSGID_BUGS_ADDRESS = masaki@profusion.mobi
+EXTRA_LOCALE_CATEGORIES =

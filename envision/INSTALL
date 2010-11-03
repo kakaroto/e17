@@ -1,0 +1,56 @@
+INTRODUCTION
+============
+
+This project uses the standard autoconf, so usual ./configure && make install
+process should work nice.
+
+CONFIGURE
+=========
+
+Configure step let you choose where the package should be installed,
+where resources like images or binaries are located and even
+optimization flags.
+
+If you got a official release tar archive do:
+    ./configure
+
+If there are no "configure" script, then you need more tools to
+generate it, namely you need autoconf, automake and friends. To
+generate "configure" use:
+    ./autogen.sh
+
+It will run "configure" script for you.
+
+Common configure options follows, they can be combined.
+
+  * Debug:
+      ./configure CFLAGS="-O0 -g"
+
+  * Optimized:
+      ./configure CFLAGS="-O2 -fvisibility=hidden -fomit-frame-pointer -ffast-math" LDFLAGS="-fvisibility=hidden -Wl,--as-needed -Wl,-O1 -Wl,--hash-style=gnu -Wl,--enable-new-dtags"
+
+  * Install to other directory other than /usr/local:
+      ./configure --prefix="/usr"
+
+
+COMPILE (MAKE)
+==============
+
+This project create binary files, so the source code needs to be
+converted into binary by "compile" process. This is done with a simple
+command:
+
+    make
+
+
+INSTALL
+=======
+
+This project needs to be installed to run properly. To do this execute
+the following command:
+
+    make install
+
+If you have errors like "Permission Denied", please acquire the
+required permissions (su, sudo) or install to directories you have
+access to, like "$HOME/usr".
