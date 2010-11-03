@@ -315,3 +315,11 @@ epdf_page_orientation_get (const Epdf_Page *page)
 
    return page->orientation;
 }
+
+Eina_List *
+epdf_page_text_find (const Epdf_Page *page,
+                     const char      *text,
+                     unsigned char    is_case_sensitive)
+{
+   return NULL;
+}
