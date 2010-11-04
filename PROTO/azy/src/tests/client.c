@@ -1,0 +1,255 @@
+/*
+ * Copyright 2010 Mike Blumenkrantz <mike@zentific.com>
+ */
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <stdio.h>
+#include <string.h>
+
+#include "TTest1.azy_client.h"
+#include "TTest2.azy_client.h"
+
+/* this function prints client error if any and resets error so that futher calls to client funcs work */
+static Eina_Bool
+_check_err(Azy_Content *err)
+{
+   if (!err)
+     return EINA_TRUE;
+
+   if (!azy_content_error_is_set(err))
+     return EINA_FALSE;
+
+   printf("** ERROR **: %s\n", azy_content_error_message_get(err));
+   azy_content_error_reset(err);
+   return EINA_TRUE;
+}
+
+static Eina_Bool
+_disconnected(void *data __UNUSED__, int type __UNUSED__, void *data2 __UNUSED__)
+{
+   printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
+   ecore_main_loop_quit();
+   return ECORE_CALLBACK_RENEW;
+}
+
+static void
+_TTest1_getBigArray_ret(Azy_Client *client, Azy_Content *content)
+{
+   Eina_List *ret;
+
+   if (azy_content_error_is_set(content))
+     {
+        printf("Error encountered: %s\n", azy_content_error_message_get(content));
+        azy_client_close(client);
+        ecore_main_loop_quit();
+        return;
+     }
+   ret = azy_content_return_get(content);
+
+   if (ret)
+     printf("%i list entries\n", eina_list_count(ret));
+   printf("%s: Success? %s!\n", __PRETTY_FUNCTION__, ret ? "YES" : "NO");
+}
+
+static void
+_TTest1_putBigArray_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
+{
+   Eina_Bool ret;
+ 
+   if (azy_content_error_is_set(content))
+     {
+        printf("Error encountered: %s\n", azy_content_error_message_get(content));
+        azy_client_close(client);
+        ecore_main_loop_quit();
+        return;
+     }
+
+   ret = (intptr_t)azy_content_return_get(content);
+   printf("%s: Success? %s!\n", __PRETTY_FUNCTION__, ret ? "YES" : "NO");
+}
+
+static void
+_TTest1_getAll_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
+{
+   TAllTypes *ret;
+
+   if (azy_content_error_is_set(content))
+     {
+        printf("Error encountered: %s\n", azy_content_error_message_get(content));
+        azy_client_close(client);
+        ecore_main_loop_quit();
+        return;
+     }
+
+   ret = azy_content_return_get(content);
+   printf("%s: Success? %s!\n", __PRETTY_FUNCTION__, ret ? "YES" : "NO");
+}
+
+static void
+_TTest1_getAllArrays_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
+{
+   TAllArrays *ret;
+
+   if (azy_content_error_is_set(content))
+     {
+        printf("Error encountered: %s\n", azy_content_error_message_get(content));
+        azy_client_close(client);
+        ecore_main_loop_quit();
+        return;
+     }
+
+   ret = azy_content_return_get(content);
+   printf("%s: Success? %s!\n", __PRETTY_FUNCTION__, ret ? "YES" : "NO");
+}
+
+static void
+_TTest2_auth_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
+{
+   Eina_Bool ret;
+ 
+   if (azy_content_error_is_set(content))
+     {
+        printf("Error encountered: %s\n", azy_content_error_message_get(content));
+        azy_client_close(client);
+        ecore_main_loop_quit();
+        return;
+     }
+
+   ret = (intptr_t)azy_content_return_get(content);
+   printf("%s: Success? %s!\n", __PRETTY_FUNCTION__, ret ? "YES" : "NO");
+}
+
+
+static Eina_Bool
+_connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
+{
+   unsigned int ret;
+   const char *s;
+   Azy_Content *err;
+   Azy_Net *net;
+
+   Eina_List *list = NULL;
+   int i;
+   
+   net = azy_client_net_get(cli);
+   err = azy_content_new(NULL);
+   
+   /* use json transport for big arrays */
+   azy_net_transport_set(net, AZY_NET_JSON);
+   azy_net_uri_set(net, "/RPC2");
+
+   ret = TTest1_getBigArray(cli, err);
+   if (_check_err(err) || (!ret))
+     exit(1);
+
+   if (!azy_client_callback_set(cli, ret, _TTest1_getBigArray_ret))
+     {
+        azy_client_close(cli);
+        return ECORE_CALLBACK_CANCEL;
+     }
+
+   for (i = 0; i < 5000; i++)
+     list = eina_list_append(list, eina_stringshare_printf("user.bob%d@zonio.net", i));
+
+   ret = TTest1_putBigArray(cli, list, err);
+   if (_check_err(err) || (!ret))
+     exit(1);
+   if (!azy_client_callback_set(cli, ret, _TTest1_putBigArray_ret))
+     {
+        azy_client_close(cli);
+        return ECORE_CALLBACK_CANCEL;
+     }
+   EINA_LIST_FREE(list, s)
+     eina_stringshare_del(s);
+
+   azy_net_transport_set(net, AZY_NET_XML);
+
+   ret = TTest1_getAll(cli, err);
+   if (_check_err(err) || (!ret))
+     exit(1);
+   if (!azy_client_callback_set(cli, ret, _TTest1_getAll_ret))
+     {
+        azy_client_close(cli);
+        return ECORE_CALLBACK_CANCEL;
+     }
+
+   ret = TTest1_getAllArrays(cli, err);
+   if (_check_err(err) || (!ret))
+     exit(1);
+   if (!azy_client_callback_set(cli, ret, _TTest1_getAllArrays_ret))
+     {
+        azy_client_close(cli);
+        return ECORE_CALLBACK_CANCEL;
+     }
+
+   ret = TTest2_auth(cli, "name", "pass", err);
+   if (_check_err(err) || (!ret))
+     exit(1);
+   if (!azy_client_callback_set(cli, ret, _TTest2_auth_ret))
+     {
+        azy_client_close(cli);
+        return ECORE_CALLBACK_CANCEL;
+     }
+
+   ret = TTest1_getAll(cli, err);
+   if (_check_err(err) || (!ret))
+     exit(1);
+   if (!azy_client_callback_set(cli, ret, _TTest1_getAll_ret))
+     {
+        azy_client_close(cli);
+        return ECORE_CALLBACK_CANCEL;
+     }
+
+#if 0
+   /* call undefined servlet methods */
+
+   content = azy_content_new("TTest1.undefined");
+   azy_content_param_add(content, azy_value_struct_new_from_int("test", 100));
+   azy_client_call(cli, content, AZY_NET_JSON);
+   _check_err(content);
+   err = NULL;
+#endif
+   azy_content_free(err);
+   return ECORE_CALLBACK_RENEW;
+}
+
+int
+main(void)
+{
+   const char *uri;
+   Ecore_Event_Handler *handler;
+   Azy_Client *cli;
+
+   
+   eina_init();
+   ecore_init();
+   azy_init();
+   eina_log_domain_level_set("azy", EINA_LOG_LEVEL_DBG);
+   uri = "https://localhost:4444/RPC2";
+
+   /* create object for performing client connections */
+   cli = azy_client_new();
+
+   if (!azy_client_host_set(cli, "localhost", 4444))
+     return 1;
+
+   handler = ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)_connected, cli);
+   handler = ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)_disconnected, cli);
+
+   /* connect to the servlet on the server specified by uri */
+   if (!azy_client_connect(cli, EINA_TRUE))
+     return 1;
+
+   ecore_main_loop_begin();
+
+   azy_client_free(cli);
+   azy_shutdown();
+   ecore_shutdown();
+   eina_shutdown();
+
+   return 0;
+}
+

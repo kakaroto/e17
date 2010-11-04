@@ -1,0 +1,327 @@
+/*
+ * Copyright 2006, 2007 Ondrej Jirman <ondrej.jirman@zonio.net>
+ * Copyright 2010 Mike Blumenkrantz <mike@zentific.com>
+ */
+
+namespace T;
+
+error ERR1 = 1 { sup this is an error };
+error ERR2 = 2 { chea dawg this is also an error };
+
+struct Struct
+{
+   string v_string;
+}
+
+struct AllArrays
+{
+   array<string>      a_string;
+   array<time>    a_time;
+   array<blob>    a_blob;
+   array<int>     a_int;
+   array<boolean> a_boolean;
+//    array<double>      a_double;
+   array<any>     a_any;
+   array<Struct>  a_struct;
+                  array < array < string >> aa_string;
+                  array < array < array<string >>> aaa_string;
+}
+
+struct AllTypes
+{
+   string v_string;
+   time      v_time;
+   blob      v_blob;
+   int       v_int;
+   boolean   v_boolean;
+   double    v_double;
+   any       v_any;
+   Struct    v_struct;
+   AllArrays v_arrays;
+}
+
+module Test1
+{
+   <%
+    #include <stdio.h>
+    #include <string.h>
+   %>
+
+   error NOTHING = 2 { error messageeeeeeeeeeeeeeee };
+   error NO_DATA = 5 { and another errrorrrrrrrrrrrrrrr woooo };
+
+   AllTypes getAll()
+   <%
+     printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
+     retval = TAllTypes_new();
+     retval->v_string = eina_stringshare_add("Hi!");
+     retval->v_time = eina_stringshare_add("2010-11-01");
+     retval->v_blob = azy_blob_new(eina_stringshare_add("Hi all!"), strlen("Hi all!"));
+     retval->v_int = 5645;
+     retval->v_boolean = EINA_FALSE;
+     retval->v_double = 123.123e-3;
+     retval->v_any = azy_value_string_new("test");
+     retval->v_struct = TStruct_new();
+     retval->v_struct->v_string = eina_stringshare_add("some str");
+     retval->v_arrays = TAllArrays_new();
+
+     /* test copy/free */
+     TAllTypes *orig = retval;
+     retval = TAllTypes_copy(retval);
+     TAllTypes_free(orig);
+     return retval;
+   %>
+
+   AllArrays getAllArrays()
+   <%
+     int i;
+
+     #define ADD(a, val) retval->a = eina_list_append(retval->a, val)
+
+     printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
+
+     retval = TAllArrays_new();
+
+     for (i = 0; i < 5; i++)
+       ADD(a_string, eina_stringshare_printf("str%d", i));
+
+     ADD(a_string, eina_stringshare_add("&#10;test<\xc4\x8d\xc5\x99\xc5\xa1"));
+
+     for (i = 1; i < 10; i++)
+       ADD(a_time, eina_stringshare_printf("2006-04-%02d", i));
+
+     for (i = 0; i < 2; i++)
+       ADD(a_blob, azy_blob_new(eina_stringshare_printf("BBBBBBBBBBBBBBBBBLOOOOOB%d", i), -1));
+
+     for (i = 0; i < 10; i++)
+       ADD(a_int, (void *)&i);
+
+     for (i = 0; i < 10; i++)
+       {
+          int x = i % 2;
+          ADD(a_boolean, (void *)&x);
+       }
+
+     //    for (i = 0; i < 5; i++)
+     //      ADD(a_double, (void *)(double)(i * 1.11e-3));
+     for (i = 0; i < 10; i++)
+       if (i % 2)
+         {
+            const char *val = eina_stringshare_printf("%d", i);
+            ADD(a_any, azy_value_string_new(val));
+            eina_stringshare_del(val);
+         }
+       else
+         ADD(a_any, azy_value_int_new(i));
+
+     for (i = 0; i < 2; i++)
+       {
+          TStruct *s = TStruct_new();
+          s->v_string = eina_stringshare_printf("struct val %d", i);
+          ADD(a_struct, s);
+       }
+
+     for (i = 0; i < 2; i++)
+       {
+          Eina_List *a = NULL;
+          int j;
+
+          for (j = 0; j < 10; j++)
+            a = eina_list_append(a, eina_stringshare_printf("[%d %d]", i, j));
+
+          ADD(aa_string, a);
+       }
+
+     for (i = 0; i < 2; i++)
+       {
+          Eina_List *a = NULL;
+          int j;
+
+          for (j = 0; j < 10; j++)
+            {
+               Eina_List *b = NULL;
+               int k;
+
+               for (k = 0; k < 3; k++)
+                 b = eina_list_append(b, eina_stringshare_printf("[%d %d %d]", i, j, k));
+
+               a = eina_list_append(a, b);
+            }
+
+          ADD(aaa_string, a);
+       }
+
+          #undef ADD
+
+     /* test copy/free */
+     TAllArrays *orig = retval;
+     retval = TAllArrays_copy(retval);
+     TAllArrays_free(orig);
+   %>
+
+   boolean setAll(AllTypes all)
+   <%
+     printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
+   %>
+
+   array<string> getBigArray()
+   <%
+     int i;
+
+     for (i = 0; i < 5000; i++)
+       retval = eina_list_append(retval, eina_stringshare_printf("user.bob%d@zentific.com", i));
+   %>
+
+   boolean putBigArray(take array<string> arr)
+   <%
+     const char *x;
+     EINA_LIST_FREE(arr, x)
+       eina_stringshare_del(x);
+     return EINA_TRUE;
+   %>
+
+   __attrs__
+   <%
+     const char *username;
+   %>
+
+   __init__
+   <%
+     printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
+   %>
+
+   __shutdown__
+   <%
+     printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
+   %>
+
+   __pre__
+   <%
+    //printf("Pre-call!\n");
+   %>
+
+   __post__
+   <%
+    //printf("Post-call!\n");
+   %>
+
+   __fallback__
+   <%
+     printf("Unknown method called %s!\n", azy_content_method_get(_content));
+     azy_content_retval_set(_content, azy_value_bool_new(EINA_TRUE));
+     return EINA_TRUE;
+   %>
+
+   /* serve GET request, if serverd return EINA_TRUE, otherwise return EINA_FALSE */
+   __download__
+   <%
+     const char *path = azy_net_uri_get(_net);
+     const char *username;
+     const char *password;
+
+     if (!azy_net_auth_get(_net, &username, &password))
+       {
+          azy_net_code_set(_net, 401);
+          azy_net_header_set(_net, "Content-Type", "text/plain");
+          azy_net_header_set(_net, "WWW-Authenticate", "Basic realm=\"Azy Testsuite\"");
+          azy_server_send(_net, (unsigned char *)"Authentication Required", 23);
+          return EINA_TRUE;
+       }
+
+     printf("Authorized: '%s' '%s'\n", username, password);
+     eina_stringshare_del(username);
+     eina_stringshare_del(password);
+
+     if (1)
+       {
+          azy_net_code_set(_net, 200);
+          azy_net_header_set(_net, "Content-Type", "text/plain");
+          azy_server_send(_net, (unsigned char *)"Crap\n", 5);
+          return EINA_TRUE;
+       }
+     else
+       {
+          Eina_Strbuf *response = eina_strbuf_new();
+          eina_strbuf_append_printf(response, "<html><head><title>401 Not Authorized</title></head><body><h1>401 Not Authorized</h1><p>You are not authorized to download %s</p></body></html>", path);
+
+          azy_net_code_set(_net, 401);
+          azy_net_header_set(_net, "Content-Type", "text/html");
+          azy_server_send(_net, (unsigned char *)eina_strbuf_string_get(response), eina_strbuf_length_get(response));
+
+          eina_strbuf_free(response);
+          return EINA_TRUE;
+       }
+
+   %>
+/*
+        __upload__
+        <%
+        //	size_t read_bytes;
+        //	const char* path = azy_net_resource_get(_net);
+                const char* username;
+                const char* password;
+
+                if (!azy_net_basic_auth_get(_net, &username, &password))
+                {
+                        azy_net_code_set(_net, 401);
+                        azy_net_header_set(_net, "Content-Type", "text/plain");
+                        azy_net_header_set(_net, "WWW-Authenticate", "Basic realm=\"Azy Testsuite\"");
+                        azy_server_send(_net, (unsigned char*)"Authentication Required", -1);
+                        return EINA_TRUE;
+                }
+
+                printf("Authorized: '%s' '%s'\n", username, password);
+                eina_stringshare_del(username);
+                eina_stringshare_del(password);
+
+                Eina_Strbuf* data = azy_net_read_all(_net);
+                printf("%s\n", eina_strbuf_string_get(data));
+                eina_strbuf_free(data);
+
+                azy_net_code_set(_net, 200);
+                azy_net_header_set(_net, "Content-Type", "text/plain");
+                azy_server_send(_net, (unsigned char*)"Crap\n", -1);
+                return EINA_TRUE;
+        %>
+ */
+}
+
+module Test2
+{
+   <%
+#include <stdio.h>
+#include <string.h>
+   %>
+
+   __attrs__
+   <%
+     const char *username;
+     const char *password;
+   %>
+
+   __init__
+   <%
+     Azy_Net *net = azy_server_module_net_get(_module);
+     printf("Init AUTH Servlet!\n");
+     printf("Accepted connection from: %s\n", azy_net_ip_get(net));
+   %>
+
+   __shutdown__
+   <%
+     printf("Shutdown AUTH Servlet!\n");
+   %>
+
+   boolean auth(take string name,
+                take string password)
+   <%
+     printf("AUTH-PRE:  %s, %s\n", _priv->username, _priv->password);
+     _priv->username = name;
+     _priv->password = password;
+     printf("AUTH-POST: %s, %s\n", _priv->username, _priv->password);
+   %>
+
+   string getUsername()
+   <%
+     return eina_stringshare_add(_priv->username);
+   %>
+}

@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: azy
+Description: A Lazy Zentific EFL RPC library
+Version: @VERSION@
+Requires: @ECORE_REQUIRES@ @EINA_REQUIRES@
+Requires.private: @XML_REQUIRES@ @SSL_REQUIRES@
+Libs: -L${libdir} -lazy
+Cflags: -I${includedir}/azy-@VMAJ@

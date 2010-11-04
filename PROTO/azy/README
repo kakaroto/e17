@@ -1,0 +1,2 @@
+Azy is a full rewrite of libzxr, itself a modification of libxr.  It is meant for
+implementing rpc clients and servers in a simple manner.
