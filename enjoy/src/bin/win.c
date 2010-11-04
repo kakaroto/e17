@@ -16,6 +16,7 @@ typedef struct Win
    Evas_Object *nowplaying;
    const char *db_path;
    DB *db;
+   Libmgr *mgr;
    Song *song;
    struct {
       double position, length;
@@ -75,34 +76,43 @@ _win_populate_job(void *data)
 }
 
 static void
+_win_scan_job_finished(void *data, Eina_Bool success)
+{
+   Win *w = data;
+   list_thaw(w->list);
+   w->job.populate = ecore_job_add(_win_populate_job, w);
+}
+
+static void
 _win_scan_job(void *data)
 {
    Win *w = data;
    w->job.scan = NULL;
-   DBG("TODO");
-   printf("SCAN IS NOT IMPLEMENTED!\n"
-          "Meanwhile please run "
-          "(./test = binary from lightmediascanner/src/bin):\n");
 
    Eina_List *l;
    const char *path;
    EINA_LIST_FOREACH(w->scan.add, l, path)
-     printf("   ./test -p id3 -i 5000 -s %s %s\n",
-            path, w->db_path);
+       libmgr_scanpath_add(w->mgr, path);
    EINA_LIST_FOREACH(w->scan.del, l, path)
      printf("   sqlite3 %s \"delete from files where path like '%s%%'\"\n",
             w->db_path, path);
 
-   // notify win (should stop lists from updating)
-   // create lms
-   // w->thread.scan = ecore_thread_...: create thread
+   if (w->job.populate)
+     {
+        ecore_job_del(w->job.populate);
+        w->job.populate = NULL;
+     }
+   list_freeze(w->list);
+
+   libmgr_scan_start(w->mgr, _win_scan_job_finished, w);
+
+   // TODO
    // emit delete as sqlite statements
-   // start lms process + check from thread
    // finish thread -> unmark it from Win
    // notify win (should reload lists)
 
-   if (!w->job.populate)
-     w->job.populate = ecore_job_add(_win_populate_job, w);
+   // if (!w->job.populate)
+   //   w->job.populate = ecore_job_add(_win_populate_job, w);
 }
 
 static void
@@ -529,6 +539,8 @@ win_new(App *app)
 
    snprintf(path, sizeof(path), "%s/media.db", app->configdir);
    w->db_path = eina_stringshare_add(path);
+
+   w->mgr = libmgr_new(w->db_path);
 
    w->emotion = emotion_object_add(evas_object_evas_get(w->win));
    if (!emotion_object_init(w->emotion, NULL))

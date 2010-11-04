@@ -12,6 +12,7 @@
 
 typedef struct _App                     App;
 typedef struct _DB                      DB;
+typedef struct _Libmgr                  Libmgr;
 typedef struct _Song                    Song;
 typedef struct _NameID                  NameID;
 typedef struct _Album_Cover             Album_Cover;
@@ -37,6 +38,10 @@ struct _App
 
 Evas_Object *win_new(App *app);
 
+Libmgr      *libmgr_new(const char *dbpath);
+Eina_Bool    libmgr_scanpath_add(Libmgr *mgr, const char *path);
+Eina_Bool    libmgr_scan_start(Libmgr *mgr, void (*func_end)(void *, Eina_Bool), void *data);
+
 Evas_Object *list_add(Evas_Object *parent);
 Eina_Bool    list_populate(Evas_Object *list, DB *db);
 Eina_Bool    list_songs_show(Evas_Object *obj);
@@ -49,6 +54,8 @@ Song        *list_random_go(Evas_Object *list);
 Eina_Bool    list_prev_exists(const Evas_Object *list);
 Song        *list_prev_go(Evas_Object *list);
 DB          *list_db_get(const Evas_Object *obj);
+void         list_freeze(Evas_Object *obj);
+void         list_thaw(Evas_Object *obj);
 
 const char  *page_title_get(const Evas_Object *obj);
 void         page_songs_exists_changed(Evas_Object *obj, Eina_Bool exists);

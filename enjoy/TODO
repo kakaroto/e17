@@ -73,9 +73,13 @@ Media List
 
 Library (all from "more")
 -------------------------
- * manager: allows add/remove directories
+ * manager:
+  - allows add directories; - DONE
+  - allows remove directories;
  * rescan: allows rescan media immediately
  * stop-scan: while scanning, allows cancel the process
+ * provide progress feedback;
+ * put all this stuff into the UI (currently scan just works from the cmd line);
 
 
 More

@@ -9,6 +9,7 @@ typedef struct _List
       Evas_Object *current;
       Evas_Object *songs;
    } page;
+   unsigned int frozen;
 } List;
 
 static List _list;
@@ -175,6 +176,9 @@ list_populate(Evas_Object *obj, DB *db)
    LIST_GET_OR_RETURN(list, obj, EINA_FALSE);
    Evas_Object *page;
 
+   if (list->frozen)
+     return EINA_FALSE;
+
    EINA_SAFETY_ON_NULL_RETURN_VAL(list, EINA_FALSE);
    EINA_LIST_FREE(list->page.list, page) evas_object_del(page);
    list->page.current = list->page.songs = NULL;
@@ -268,4 +272,18 @@ list_db_get(const Evas_Object *obj)
 {
    LIST_GET_OR_RETURN(list, obj, NULL);
    return list->db;
+}
+
+void
+list_freeze(Evas_Object *obj)
+{
+   LIST_GET_OR_RETURN(list, obj);
+   list->frozen++;
+}
+
+void
+list_thaw(Evas_Object *obj)
+{
+   LIST_GET_OR_RETURN(list, obj);
+   list->frozen--;
 }
