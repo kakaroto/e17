@@ -6,350 +6,377 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Elmdentica\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
-"POT-Creation-Date: 2010-08-08 17:26+0100\n"
+"POT-Creation-Date: 2010-11-04 00:31+0000\n"
 "PO-Revision-Date: 2010-08-18 10:12+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <pourunmondesansgourou@gmail.com>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: src/curl.c:86
-#: src/elmdentica.c:979
-#: src/elmdentica.c:1263
+#: src/curl.c:92 src/elmdentica.c:1250 src/elmdentica.c:1457
 msgid "Close"
 msgstr "Fermer"
 
-#: src/elmdentica.c:170
-msgid "Last messages..."
-msgstr "Derniers messages..."
-
-#: src/elmdentica.c:171
-msgid "Everyone..."
-msgstr "Tous..."
-
-#: src/elmdentica.c:172
-msgid "My favorites..."
-msgstr "Mes favoris..."
-
-#: src/elmdentica.c:173
-msgid "Replies / mentions..."
-msgstr "Réponses / Mentions..."
-
-#: src/elmdentica.c:175
-msgid "My friends..."
-msgstr "Mes amis..."
-
-#: src/elmdentica.c:346
+#: src/curl.c:319
 #, c-format
-msgid "Error %d: %s\n"
-msgstr "Erreur %d : %s\n"
+msgid ""
+"Can't dump %s into %s:\n"
+"(%d) %s\n"
+msgstr ""
 
-#: src/elmdentica.c:349
-#, c-format
-msgid "System failed, child exited with status %d\n"
-msgstr "Échec, statut du processus fils en sortie %d\n"
-
-#: src/elmdentica.c:719
-msgid "Couldn't parse user info message..."
-msgstr "Analyse du message d'info de l'utilisateur impossible..."
-
-#: src/elmdentica.c:729
-msgid "Follow"
-msgstr "Suivre"
-
-#: src/elmdentica.c:732
-msgid "Stop following"
-msgstr "Ne plus suivre"
-
-#: src/elmdentica.c:762
-msgid "Not implemented yet"
-msgstr "Pas encore disponible"
-
-#: src/elmdentica.c:840
-#, c-format
-msgid "You are a member of group %s along with %d other people.<br>«%s»"
-msgstr "Vous êtes membre du groupe %s avec %d autres personnes.<br>« %s »"
-
-#: src/elmdentica.c:842
-#, c-format
-msgid "You are not a member of group %s but %d people are.<br>«%s»"
-msgstr "Vous n'êtes pas membre du groupe %s mais %d personnes le sont.<br>« %s »"
-
-#: src/elmdentica.c:874
-msgid "Leave"
-msgstr "Quitter"
-
-#: src/elmdentica.c:877
-msgid "Join"
-msgstr "Rejoindre"
-
-#: src/elmdentica.c:883
-#, c-format
-msgid "Last %d messages"
-msgstr "%d derniers messages"
-
-#: src/elmdentica.c:929
-msgid "Visit website?"
-msgstr "Visiter le site ?"
-
-#: src/elmdentica.c:940
-#, c-format
-msgid "%s posted the following URL...<br>"
-msgstr "%s postés pour l'URL suivante...<br>"
-
-#: src/elmdentica.c:971
-msgid "Check it out!"
-msgstr "Jeter un oeil !"
-
-#: src/elmdentica.c:1008
-msgid "View details?"
-msgstr "Voir les détails ?"
-
-#: src/elmdentica.c:1026
-msgid "View group?"
-msgstr "Voir le groupe ?"
-
-#: src/elmdentica.c:1085
-msgid "Reply"
-msgstr "Répondre"
-
-#: src/elmdentica.c:1093
-msgid "Repeat"
-msgstr "Répéter"
-
-#: src/elmdentica.c:1102
-msgid "Unmark favorite"
-msgstr "Enlever des favoris"
-
-#: src/elmdentica.c:1104
-msgid "Mark favorite"
-msgstr "Ajouter aux favoris"
-
-#: src/elmdentica.c:1233
-msgid "Error"
-msgstr "Erreur"
-
-#: src/elmdentica.c:1234
-msgid "µ-blog Error"
-msgstr "Erreur du microblogue"
-
-#: src/elmdentica.c:1541
-#: src/elmdentica.c:1610
-msgid "Type your status here..."
-msgstr "Entrer votre statut ici..."
-
-#: src/elmdentica.c:1632
-msgid "Everyone"
-msgstr "Tous"
-
-#: src/elmdentica.c:1639
-msgid "Just me"
-msgstr "Moi seul"
-
-#: src/elmdentica.c:1646
-msgid "Favorites"
-msgstr "Favoris"
-
-#: src/elmdentica.c:1653
-msgid "Replies/Mentions"
-msgstr "Réponses/Mentions"
-
-#: src/elmdentica.c:1660
-msgid "Friends & I"
-msgstr "Amis & moi"
-
-#: src/elmdentica.c:1683
-msgid "Timelines"
-msgstr "Chronologies"
-
-#: src/elmdentica.c:1704
-msgid "Post"
-msgstr "Publier"
-
-#: src/elmdentica.c:1722
-msgid "Send"
-msgstr "Envoyer"
-
-#: src/elmdentica.c:1735
-msgid "Clear"
-msgstr "Effacer"
-
-#: src/elmdentica.c:1749
-msgid "More..."
-msgstr "Plus..."
-
-#: src/elmdentica.c:1751
-msgid "Fullscreen"
-msgstr "Plein écran"
-
-#: src/elmdentica.c:1752
-#: src/settings.c:1343
-msgid "Settings"
-msgstr "Configuration"
-
-#: src/twitter.c:206
+#: src/curl.c:326
 #, c-format
 msgid "Can't open %s for writing: %s\n"
 msgstr "Impossible d'ouvrir %s en écriture : %s\n"
 
-#: src/twitter.c:337
-#, c-format
-msgid "FAILED TO SAX FRIENDS: %d\n"
-msgstr "ÉCHEC SAX POUR LES AMIS : %d\n"
+#: src/elmdentica.c:195
+msgid "Last messages..."
+msgstr "Derniers messages..."
 
-#: src/twitter.c:344
+#: src/elmdentica.c:196
+msgid "Everyone..."
+msgstr "Tous..."
+
+#: src/elmdentica.c:197
+msgid "My favorites..."
+msgstr "Mes favoris..."
+
+#: src/elmdentica.c:198
+msgid "Replies / mentions..."
+msgstr "Réponses / Mentions..."
+
+#: src/elmdentica.c:200
+msgid "My friends..."
+msgstr "Mes amis..."
+
+#: src/elmdentica.c:315
+#, c-format
+msgid "Error importing related status\n"
+msgstr ""
+
+#: src/elmdentica.c:389
+#, c-format
+msgid "Error %d: %s\n"
+msgstr "Erreur %d : %s\n"
+
+#: src/elmdentica.c:392
+#, c-format
+msgid "System failed, child exited with status %d\n"
+msgstr "Échec, statut du processus fils en sortie %d\n"
+
+#: src/elmdentica.c:614
+msgid "Couldn't parse user info message..."
+msgstr "Analyse du message d'info de l'utilisateur impossible..."
+
+#: src/elmdentica.c:624
+msgid "Follow"
+msgstr "Suivre"
+
+#: src/elmdentica.c:627
+msgid "Stop following"
+msgstr "Ne plus suivre"
+
+#: src/elmdentica.c:657
+msgid "Not implemented yet"
+msgstr "Pas encore disponible"
+
+#: src/elmdentica.c:678 src/elmdentica.c:707 src/elmdentica.c:805
+#, c-format
+msgid "You are a member of group %s along with %d other people.<br>«%s»"
+msgstr "Vous êtes membre du groupe %s avec %d autres personnes.<br>« %s »"
+
+#: src/elmdentica.c:680 src/elmdentica.c:709 src/elmdentica.c:807
+#, c-format
+msgid "You are not a member of group %s but %d people are.<br>«%s»"
+msgstr ""
+"Vous n'êtes pas membre du groupe %s mais %d personnes le sont.<br>« %s »"
+
+#: src/elmdentica.c:685 src/elmdentica.c:840
+msgid "Leave"
+msgstr "Quitter"
+
+#: src/elmdentica.c:714 src/elmdentica.c:843
+msgid "Join"
+msgstr "Rejoindre"
+
+#: src/elmdentica.c:849
+#, c-format
+msgid "Last %d messages"
+msgstr "%d derniers messages"
+
+#: src/elmdentica.c:896
+msgid "Check it out!"
+msgstr "Jeter un oeil !"
+
+#: src/elmdentica.c:1158
+msgid "Users"
+msgstr ""
+
+#: src/elmdentica.c:1187
+msgid "Links"
+msgstr ""
+
+#: src/elmdentica.c:1206
+msgid "Tags"
+msgstr ""
+
+#: src/elmdentica.c:1224
+msgid "Groups"
+msgstr ""
+
+#: src/elmdentica.c:1282
+msgid "Reply"
+msgstr "Répondre"
+
+#: src/elmdentica.c:1290
+msgid "Repeat"
+msgstr "Répéter"
+
+#: src/elmdentica.c:1298 src/elmdentica.c:2036
+msgid "DM"
+msgstr ""
+
+#: src/elmdentica.c:1307
+msgid "Unmark favorite"
+msgstr "Enlever des favoris"
+
+#: src/elmdentica.c:1309
+msgid "Mark favorite"
+msgstr "Ajouter aux favoris"
+
+#: src/elmdentica.c:1318
+msgid "View related"
+msgstr ""
+
+#: src/elmdentica.c:1327
+msgid "Status details"
+msgstr ""
+
+#: src/elmdentica.c:1427
+msgid "Error"
+msgstr "Erreur"
+
+#: src/elmdentica.c:1428
+msgid "µ-blog Error"
+msgstr "Erreur du microblogue"
+
+#: src/elmdentica.c:1695
+msgid "Send a DM to..."
+msgstr ""
+
+#: src/elmdentica.c:1707 src/settings.c:490 src/settings.c:1177
+msgid "OK"
+msgstr "O.K."
+
+#: src/elmdentica.c:1713 src/settings.c:498 src/settings.c:1186
+msgid "Cancel"
+msgstr "Annuler"
+
+#: src/elmdentica.c:1791 src/elmdentica.c:1904
+msgid "Type your status here..."
+msgstr "Entrer votre statut ici..."
+
+#: src/elmdentica.c:1926
+#, fuzzy
+msgid "Direct Messages"
+msgstr "Messages affichés"
+
+#: src/elmdentica.c:1933
+msgid "Everyone"
+msgstr "Tous"
+
+#: src/elmdentica.c:1940
+msgid "Just me"
+msgstr "Moi seul"
+
+#: src/elmdentica.c:1947
+msgid "Favorites"
+msgstr "Favoris"
+
+#: src/elmdentica.c:1954
+msgid "Replies/Mentions"
+msgstr "Réponses/Mentions"
+
+#: src/elmdentica.c:1961
+msgid "Friends & I"
+msgstr "Amis & moi"
+
+#: src/elmdentica.c:1984
+msgid "Timelines"
+msgstr "Chronologies"
+
+#: src/elmdentica.c:2005
+msgid "Post"
+msgstr "Publier"
+
+#: src/elmdentica.c:2023
+msgid "Send"
+msgstr "Envoyer"
+
+#: src/elmdentica.c:2049
+msgid "Clear"
+msgstr "Effacer"
+
+#: src/elmdentica.c:2063
+msgid "More..."
+msgstr "Plus..."
+
+#: src/elmdentica.c:2065
+msgid "Fullscreen"
+msgstr "Plein écran"
+
+#: src/elmdentica.c:2066 src/settings.c:1342
+msgid "Settings"
+msgstr "Configuration"
+
+#: src/statusnet.c:395
+#, c-format
+msgid "Oops, there should be a status here, for %s!\n"
+msgstr ""
+
+#: src/statusnet.c:403
+#, c-format
+msgid "Oops, there should be an user here for %lld!\n"
+msgstr ""
+
+#: src/statusnet.c:867 src/statusnet.c:1190
 #, c-format
 msgid "%s@%s had HTTP response: %ld"
 msgstr "%s@%s a reçu la réponse HTTP : %ld"
 
-#: src/settings.c:345
+#: src/settings.c:352
 msgid "Screen name"
 msgstr "Nom d'écran"
 
-#: src/settings.c:360
+#: src/settings.c:367
 msgid "Password"
 msgstr "Mot de passe"
 
-#: src/settings.c:389
+#: src/settings.c:391
 msgid "Type"
 msgstr "Type"
 
-#: src/settings.c:409
+#: src/settings.c:410
 msgid "Secure"
 msgstr "Sécuriser"
 
-#: src/settings.c:409
+#: src/settings.c:410
 msgid "Faster"
 msgstr "Plus rapide"
 
-#: src/settings.c:421
+#: src/settings.c:422
 msgid "Domain"
 msgstr "Domaine"
 
-#: src/settings.c:436
+#: src/settings.c:437
 msgid "Base URL"
 msgstr "URL de base"
 
-#: src/settings.c:451
+#: src/settings.c:452
 msgid "Receive?"
 msgstr "Recevoir ?"
 
-#: src/settings.c:463
+#: src/settings.c:464
 msgid "Send?"
 msgstr "Envoyer ?"
 
-#: src/settings.c:489
-#: src/settings.c:1178
-msgid "OK"
-msgstr "O.K."
-
-#: src/settings.c:497
-#: src/settings.c:1187
-msgid "Cancel"
-msgstr "Annuler"
-
-#: src/settings.c:670
+#: src/settings.c:667
 msgid "Accounts..."
 msgstr "Comptes..."
 
-#: src/settings.c:705
-#: src/settings.c:1294
+#: src/settings.c:702 src/settings.c:1293
 msgid "Add"
 msgstr "Ajouter"
 
-#: src/settings.c:718
-#: src/settings.c:1307
+#: src/settings.c:715 src/settings.c:1306
 msgid "Edit"
 msgstr "Éditer"
 
-#: src/settings.c:732
-#: src/settings.c:1320
+#: src/settings.c:729 src/settings.c:1319
 msgid "Delete"
 msgstr "Supprimer"
 
-#: src/settings.c:759
-#: src/settings.c:782
+#: src/settings.c:756 src/settings.c:779
 msgid "No posts<br>in cache."
 msgstr "Aucun post<br>dans le cache."
 
-#: src/settings.c:761
+#: src/settings.c:758
 #, c-format
 msgid "Currently remembering<br>%d posts."
 msgstr "%d posts<br>en mémoire."
 
-#: src/settings.c:797
-#: src/settings.c:820
+#: src/settings.c:794 src/settings.c:817
 msgid "No messages<br>in cache."
 msgstr "Aucun message<br>dans le cache."
 
-#: src/settings.c:799
+#: src/settings.c:796
 #, c-format
 msgid "Currently remembering<br>%d messages."
 msgstr "%d messages<br>en mémoire."
 
-#: src/settings.c:898
+#: src/settings.c:895
 msgid "Displayed messages"
 msgstr "Messages affichés"
 
-#: src/settings.c:965
+#: src/settings.c:962
 msgid "Please choose a browser"
 msgstr "Choisissez un navigateur"
 
-#: src/settings.c:967
+#: src/settings.c:964
 msgid "No supported browser available"
 msgstr "Aucun navigateur adéquat disponible"
 
-#: src/settings.c:994
+#: src/settings.c:991
 msgid "Preferred browser..."
 msgstr "Navigateur préféré..."
 
-#: src/settings.c:1002
+#: src/settings.c:999
 msgid "Online mode..."
 msgstr "Mode en ligne..."
 
-#: src/settings.c:1004
+#: src/settings.c:1001
 msgid "Online"
 msgstr "En ligne"
 
-#: src/settings.c:1004
+#: src/settings.c:1001
 msgid "Offline"
 msgstr "Hors ligne"
 
-#: src/settings.c:1158
+#: src/settings.c:1157
 msgid "Pattern..."
 msgstr "Motif..."
 
-#: src/settings.c:1260
+#: src/settings.c:1259
 msgid "Gag patterns..."
 msgstr "Motifs pour bâillons..."
 
-#: src/settings.c:1344
+#: src/settings.c:1343
 msgid "ElmDentica settings..."
 msgstr "Configuration d'ElmDentica..."
 
-#: src/settings.c:1372
+#: src/settings.c:1368
 msgid "Accounts"
 msgstr "Comptes"
 
-#: src/settings.c:1377
+#: src/settings.c:1370
 msgid "Cache"
 msgstr "Cache"
 
-#: src/settings.c:1382
+#: src/settings.c:1372
 msgid "Options"
 msgstr "Options"
 
-#: src/settings.c:1387
+#: src/settings.c:1374
 msgid "Gag"
 msgstr "Bâillon"
 
-#: src/settings.c:1398
+#: src/settings.c:1385
 #, c-format
 msgid ""
 "\n"
@@ -365,50 +392,70 @@ msgstr ""
 "   -h    Help (l'aide que vous êtes en train de lire)\n"
 "   -m  N Afficher N messages à la fois\n"
 
-#: src/settings.c:1422
+#: src/settings.c:1408
 #, c-format
 msgid "Can't run ecore_file_init()\n"
 msgstr "Impossible d'exécuter ecore_file_init()\n"
 
-#: src/settings.c:1431
+#: src/settings.c:1414
 #, c-format
 msgid "Can't create preferences directories since asprintf failed\n"
 msgstr "La création des dossiers de préférences a échoué à cause de asprintf\n"
 
-#: src/settings.c:1431
+#: src/settings.c:1414
 #, c-format
 msgid "Can't create preferences directories since ecore_file_mkpath failed\n"
-msgstr "La création des dossiers de préférences a échoué à cause de ecore_file_mkpath\n"
+msgstr ""
+"La création des dossiers de préférences a échoué à cause de "
+"ecore_file_mkpath\n"
 
-#: src/settings.c:1442
+#: src/settings.c:1422
 #, c-format
 msgid "Not enough memory to define conf.eet path"
 msgstr "Mémoire insuffisante pour définir le chemin de conf.eet"
 
-#: src/settings.c:1448
+#: src/settings.c:1428
 #, c-format
 msgid "Couldn't run eet_init()"
 msgstr "Impossible d'exécuter eet_init()"
 
-#: src/settings.c:1455
+#: src/settings.c:1435
 #, c-format
 msgid "Can't create %s"
 msgstr "Impossible de créer %s"
 
-#: src/settings.c:1463
+#: src/settings.c:1443
 #, c-format
 msgid "Can't setup settings_edd."
 msgstr "Impossible d'initialiser settings_edd."
 
-#: src/settings.c:1480
+#: src/settings.c:1460
 #, c-format
-msgid "Not enough memory for settings, no doubt for anything else either, surely..."
-msgstr "Mémoire insuffisante pour la configuration, ou quoi que ce soit d'autre..."
+msgid ""
+"Not enough memory for settings, no doubt for anything else either, surely..."
+msgstr ""
+"Mémoire insuffisante pour la configuration, ou quoi que ce soit d'autre..."
+
+#~ msgid "Visit website?"
+#~ msgstr "Visiter le site ?"
+
+#~ msgid "%s posted the following URL...<br>"
+#~ msgstr "%s postés pour l'URL suivante...<br>"
+
+#~ msgid "View details?"
+#~ msgstr "Voir les détails ?"
+
+#~ msgid "View group?"
+#~ msgstr "Voir le groupe ?"
+
+#~ msgid "FAILED TO SAX FRIENDS: %d\n"
+#~ msgstr "ÉCHEC SAX POUR LES AMIS : %d\n"
 
 #~ msgid "Error fetching user info: %s"
 #~ msgstr "Échec de récupération de l'info pour : %s"
+
 #~ msgid "Unknown error fetching user info."
 #~ msgstr "Erreur inconnue lors de la récupération de l'info utilisateur."
+
 #~ msgid "FAILED TO SAX USERS SHOW: %d\n"
 #~ msgstr "ÉCHEC SAX POUR LES UTILISATEURS : %d\n"
-

@@ -4,6 +4,7 @@ Makefile.in.in
 Makevars.template
 POTFILES
 Rules-quot
+remove-potcdate.sed
 stamp-it
 stamp-po
 *.gmo
