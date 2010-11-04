@@ -7,13 +7,15 @@ ________/ /__/      /__/ /__/ /_______/    /_/    /_______/
 
 
 TODO-
-Rotate Images.
-Zoom Images.
-Possibly Grayscale, Sepia, etc..?
-Make the filter work.
-Sorts possibly?
-Slideshow features.
-Include directory in the listing.
-Use edje external.
-Transition from one directory to another.
-Maybe implement a wallpaper2 like object in elementary and use it in ephoto.
+[Complete?]Rotate Images.
+[Complete?]Zoom Images.
+-Possibly Grayscale, Sepia, etc..?
+-Slideshow features.
+[Complete?]Include directory in the listing.
+[Complete?]Use edje external.
+-Transition from one directory to another.
+-Maybe implement a wallpaper2 like object in elementary and use it in ephoto.
+-Similar to the previous todo item, make the flow view an actual flow view, while keeping the current flow view around as a zoom view.
+-Possibly some sort of simple edit view or simple edit options? HSV, Brightness, Contrast, RGB, etc...
+-Exporting to flickr, facebook, etc..
+-Possibly a tag system?
