@@ -512,7 +512,8 @@ void eon_layout_process(Eon_Layout *l)
 {
 	Eon_Layout_Private *prv = PRIVATE(l);
 	Eon_Engine *e;
-	Eina_Rectangle geom, rect;
+	Eina_Rectangle geom;
+        Eina_Rectangle *rect;
 	Eon_Document *doc;
 	Ekeko_Object *ch;
 	Eina_Iterator *it;
@@ -572,12 +573,12 @@ renderables:
 tiles:
 	/* get the tiler render areas */
 	it = eina_tiler_iterator_new(prv->tiler);
-	while (eina_iterator_next(it, (void **)&rect))
+	while (eina_iterator_next(it, (void **)rect))
 	{
 		Eina_Iterator *rit;
 		Eon_Paint *r;
 
-		DBG("%p redraw rectangle %d %d %d %d", l, rect.x, rect.y, rect.w, rect.h);
+		DBG("%p redraw rectangle %d %d %d %d", l, rect->x, rect->y, rect->w, rect->h);
 		/* iterate over the list of renderables */
 		rit = eina_list_iterator_new(prv->renderables);
 		while (eina_iterator_next(rit, (void **)&r))
@@ -587,12 +588,12 @@ tiles:
 
 			eon_paint_boundings_get(r, &geom);
 			/* intersect the geometry and the damage area */
-			if (!eina_rectangle_intersection(&geom, &rect))
+			if (!eina_rectangle_intersection(&geom, rect))
 				continue;
 			DBG("%p rendering renderable %s:%p (%d %d %d %d)", l, ekeko_object_type_name_get(r), r, geom.x, geom.y, geom.w, geom.h);
 #if 0
 #if BOUNDING_DEBUG
-			eon_engine_debug_rect(e, surface, 0xffaaaaaa, rect.x, rect.y, rect.w, rect.h);
+			eon_engine_debug_rect(e, surface, 0xffaaaaaa, rect->x, rect->y, rect->w, rect->h);
 #endif
 #endif
 			/* FIXME */
@@ -611,15 +612,15 @@ tiles:
 
 	/* iterate over the redraw rectangles and flush */
 	it = eina_tiler_iterator_new(prv->tiler);
-	while (eina_iterator_next(it, (void **)&rect))
+	while (eina_iterator_next(it, (void **)rect))
 	{
-		DBG("%p flushing %d %d %d %d", l, rect.x, rect.y, rect.w, rect.h);
+		DBG("%p flushing %d %d %d %d", l, rect->x, rect->y, rect->w, rect->h);
 #if 0
-		if (eon_engine_layout_flush(e, ld, &rect))
+		if (eon_engine_layout_flush(e, ld, rect))
 			break;
 #endif
 #if 0
-		if (l->flush(l, &rect))
+		if (l->flush(l, rect))
 			break;
 #endif
 	}

@@ -171,7 +171,7 @@ static Eina_Bool
 process_input(void *data)
 {
    Eina_Iterator *itr;
-   Eina_Rectangle r;
+   Eina_Rectangle *r;
    unsigned int out = 0;
 
    if (input_idx == input_count)
@@ -183,16 +183,16 @@ process_input(void *data)
 
    output_rects_reset();
 
-   r = input_rects[input_idx];
-   printf("Iteration #%u: %dx%d%+d%+d\n", input_idx, r.w, r.h, r.x, r.y);
+   r = &input_rects[input_idx];
+   printf("Iteration #%u: %dx%d%+d%+d\n", input_idx, r->w, r->h, r->x, r->y);
    input_idx++;
    add_input_rect(&r);
 
-   eina_tiler_rect_add(tiler, &r);
+   eina_tiler_rect_add(tiler, r);
    itr = eina_tiler_iterator_new(tiler);
    EINA_ITERATOR_FOREACH(itr, r)
      {
-        printf("\tOutput #%u: %dx%d%+d%+d\n", out, r.w, r.h, r.x, r.y);
+        printf("\tOutput #%u: %dx%d%+d%+d\n", out, r->w, r->h, r->x, r->y);
         add_output_rect(&r);
         out++;
      }
