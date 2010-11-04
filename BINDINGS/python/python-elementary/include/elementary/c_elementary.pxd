@@ -508,11 +508,6 @@ cdef extern from "Elementary.h":
 
     # Composite objects
 
-    # Notepad object
-    evas.c_evas.Evas_Object *elm_notepad_add(evas.c_evas.Evas_Object *parent)
-    void elm_notepad_file_set(evas.c_evas.Evas_Object *obj, char *file, Elm_Text_Format format)
-    void elm_notepad_bounce_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool h_bounce, evas.c_evas.Eina_Bool v_bounce)
-
     # Anchorview object
     evas.c_evas.Evas_Object *elm_anchorview_add(evas.c_evas.Evas_Object *parent)
     void elm_anchorview_text_set(evas.c_evas.Evas_Object *obj, char *text)

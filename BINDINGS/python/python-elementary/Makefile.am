@@ -38,7 +38,6 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_layout.pxi \
 	elementary/elementary.c_elementary_list.pxi \
 	elementary/elementary.c_elementary_menu.pxi \
-	elementary/elementary.c_elementary_notepad.pxi \
 	elementary/elementary.c_elementary_notify.pxi \
 	elementary/elementary.c_elementary_object.pxi \
 	elementary/elementary.c_elementary_pager.pxi \
@@ -79,7 +78,6 @@ examples_files = \
 	tests/test_layout.py \
 	tests/test_list.py \
 	tests/test_menu.py \
-	tests/test_notepad.py \
 	tests/test_notify.py \
 	tests/test_pager.py \
 	tests/test_panel.py \

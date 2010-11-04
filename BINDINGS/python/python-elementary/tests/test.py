@@ -14,7 +14,6 @@ from test_table import table_clicked
 from test_clock import clock_clicked
 from test_hover import hover_clicked, hover2_clicked
 from test_entry import entry_clicked, entry_scrolled_clicked
-from test_notepad import notepad_clicked
 from test_anchorview import anchorview_clicked
 from test_anchorblock import anchorblock_clicked
 from test_toolbar import toolbar_clicked
@@ -90,7 +89,6 @@ if __name__ == "__main__":
              ("Entry", entry_clicked),
              ("Entry Scrolled", entry_scrolled_clicked),
              ("Flip", flip_clicked),
-             ("Notepad", notepad_clicked),
              ("Anchorview", anchorview_clicked),
              ("Anchorblock", anchorblock_clicked),
              ("Toolbar", toolbar_clicked),
