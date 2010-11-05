@@ -434,11 +434,11 @@ _azy_server_client_send(Azy_Server_Client *client,
    azy_net_header_reset(client->net);
    INFO("Sending response for method: '%s'", content->method);
 
-
+#ifdef ISCOMFITOR
    char buf[64];
    snprintf(buf, sizeof(buf), "SENDING:\n<<<<<<<<<<<<<\n%%.%is%%.%llis\n<<<<<<<<<<<<<", eina_strbuf_length_get(header), content->length);
    INFO(buf, eina_strbuf_string_get(header), content->buffer);
-
+#endif
 
    EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_client_send(client->net->conn, eina_strbuf_string_get(header), eina_strbuf_length_get(header)), error);
    INFO("Send [1/2] complete! %i bytes queued for sending.", eina_strbuf_length_get(header));

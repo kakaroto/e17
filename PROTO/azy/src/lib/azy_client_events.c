@@ -118,14 +118,14 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
    EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data->client->net, ECORE_CALLBACK_RENEW);
    DBG("(handler_data=%p, method='%s', ev=%p, data=%p)", handler_data, handler_data->method, ev, (ev) ? ev->data : NULL);
 
-
+#ifdef ISCOMFITOR
    if (data)
      {
         char buf[64];
         snprintf(buf, sizeof(buf), "RECEIVED:\n<<<<<<<<<<<<<\n%%.%is\n<<<<<<<<<<<<<", len);
         INFO(buf, data);
      }
-
+#endif
 
    client = handler_data->client;
    

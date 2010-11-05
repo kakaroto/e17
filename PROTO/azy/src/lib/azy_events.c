@@ -48,13 +48,38 @@ azy_events_type_parse(Azy_Net            *net,
    DBG("(net=%p, header=%p, len=%i)", net, header, len);
    EINA_SAFETY_ON_NULL_RETURN_VAL(net, 0);
 
-   if (net->buffer)
+   if (net->size)
      {
-        start = net->buffer;
-        len = (int)net->size;
+        unsigned char *buf_start;
+        int size;
+
+        /* previous buffer */
+        size = (net->size + len > MAX_HEADER_SIZE) ? MAX_HEADER_SIZE : net->size + len;
+        buf_start = alloca(size);
+        /* grab and combine buffers */
+        if (header)
+          {
+             memcpy(buf_start, net->buffer, size);
+             if (net->size < size)
+               memcpy(buf_start + net->size, header, size - net->size);
+             len = size;
+          }
+        else
+          {
+             memcpy(buf_start, net->buffer, net->size);
+             len = net->size;
+          }
+
+        start = buf_start;
+        AZY_SKIP_BLANK(start);
      }
    else
-     start = header;
+     {
+        /* copy pointer */
+         start = header;
+         /* skip all spaces/newlines/etc and decrement len */
+         AZY_SKIP_BLANK(start);
+     }
 
    /* some clients are dumb and send leading cr/nl/etc */
    AZY_SKIP_BLANK(start);
@@ -64,7 +89,7 @@ azy_events_type_parse(Azy_Net            *net,
      return 0;
 
    if ((endline - start) > MAX_HEADER_SIZE)
-     /* FIXME: 4kb of headers is waaaaaaaaay too long for right now */
+     /* FIXME: 4kb of headers is waaaaaaaaay too long for right now but I suppose it's possible? */
      return 0;
 
    /*null terminate*/
@@ -154,17 +179,18 @@ if (event_data)
           */
         buf_start = alloca(len + net->size - offset);
         /* grab and combine buffers */
-        if (data)
+        if (event_data)
           {
-             memcpy(buf_start, net->buffer, net->size);
-             memcpy(buf_start + net->size, data, len);
+             memcpy(buf_start, net->buffer + offset, net->size - offset);
+             memcpy(buf_start + net->size, event_data, len);
           }
         else
           memcpy(buf_start, net->buffer + offset, net->size - offset);
           
         free(net->buffer);
         net->buffer = NULL;
-        len += net->size;
+        len += net->size - offset;
+
         prev_size = net->size;
         net->size = 0;
         start = buf_start;
@@ -298,9 +324,11 @@ out:
                   memcpy(net->overflow, p + rlen, net->overflow_length);
 #ifdef ISCOMFITOR
      {
-        char buf[64];
-        snprintf(buf, sizeof(buf), "OVERFLOW:\n<<<<<<<<<<<<<\n%%.%llis\n<<<<<<<<<<<<<", net->overflow_length);
-        INFO(buf, net->overflow);
+        long long int x;
+        INFO("OVERFLOW:\n<<<<<<<<<<<<<");
+        for (x = 0; x < net->overflow_length; x++)
+          putc(net->overflow[x], stdout);
+        fflush(stdout);
      }
 #endif
                }
