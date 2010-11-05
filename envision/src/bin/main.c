@@ -19,10 +19,10 @@
 #include "gettext.h"
 
 /*--------------------GLOBAL VALUES STORAGE------------------------*/
-typedef struct _App App;
-typedef struct _Item_Data Item_Data;
+typedef struct _App            App;
+typedef struct _Item_Data      Item_Data;
 typedef struct _Highlight_Data Highlight_Data;
-typedef enum _PageViewMode PageViewMode;
+typedef enum _PageViewMode     PageViewMode;
 
 struct _App
 {
@@ -37,43 +37,41 @@ struct _App
    Evas_Object *gl_index;
    Evas_Object *spinner;
 
-
    struct _file_info
    {
       Epdf_Document *document;
-      int pages_count;
-      const char *filename;
-      Eina_List *index;
+      int            pages_count;
+      const char    *filename;
+      Eina_List     *index;
    } file_info;
 
-   const char *text_to_search;
+   const char       *text_to_search;
 
    Elm_Gengrid_Item *current_item_page;
-   Ecore_Job  *update_job;
-   Eina_Bool single_page;
-   Eina_Bool bring_in_cur_page:1;
-   Eina_List *visible_items;
+   Ecore_Job        *update_job;
+   Eina_Bool         single_page;
+   Eina_Bool         bring_in_cur_page : 1;
+   Eina_List        *visible_items;
 };
 
 /*----------------------PAGE DATA---------------------------------*/
 struct _Item_Data
 {
    Elm_Gengrid_Item *item;
-   Epdf_Page *page;
-   int page_width, page_height, page_number;
-   App *base;
+   Epdf_Page        *page;
+   int               page_width, page_height, page_number;
+   App              *base;
 
    struct _search
    {
       Eina_List *matches;
       Eina_List *highlights;
    } search;
-
 };
 
 struct _Highlight_Data
 {
-   Evas_Coord x, y, w, h;
+   Evas_Coord   x, y, w, h;
    Evas_Object *rect;
    Evas_Object *item_obj;
 };
@@ -90,7 +88,10 @@ static Elm_Genlist_Item_Class glc2;
 static Elm_Genlist_Item_Class glc;
 
 static void
-_viewport_resize(void *data, Evas *e __UNUSED__, Evas_Object *obj, void *einfo __UNUSED__)
+_viewport_resize(void        *data,
+                 Evas *e      __UNUSED__,
+                 Evas_Object *obj,
+                 void *einfo  __UNUSED__)
 {
    App *app = data;
    Evas_Coord w, h;
@@ -99,32 +100,44 @@ _viewport_resize(void *data, Evas *e __UNUSED__, Evas_Object *obj, void *einfo _
 }
 
 static void
-_viewport_move(void *data, Evas *e __UNUSED__, Evas_Object *obj, void *einfo __UNUSED__)
+_viewport_move(void        *data,
+               Evas *e      __UNUSED__,
+               Evas_Object *obj,
+               void *einfo  __UNUSED__)
 {
    App *app = data;
-   Evas_Coord x,y;
+   Evas_Coord x, y;
    evas_object_geometry_get(obj, &x, &y, NULL, NULL);
    evas_object_move(app->clipper, x, y);
 }
 
 static void
-_viewport_del(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *einfo __UNUSED__)
+_viewport_del(void            *data,
+              Evas *e          __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *einfo      __UNUSED__)
 {
    App *app = data;
    evas_object_del((Evas_Object *)app->clipper);
 }
 
 static void
-_page_move(void *data, Evas *e __UNUSED__, Evas_Object *obj, void *einfo __UNUSED__)
+_page_move(void        *data,
+           Evas *e      __UNUSED__,
+           Evas_Object *obj,
+           void *einfo  __UNUSED__)
 {
    Highlight_Data *item = data;
    Evas_Coord x, y;
    evas_object_geometry_get(obj, &x, &y, NULL, NULL);
-   evas_object_move(item->rect, item->x + x , item->y + y);
+   evas_object_move(item->rect, item->x + x, item->y + y);
 }
 
 static void
-_page_del(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *einfo __UNUSED__)
+_page_del(void            *data,
+          Evas *e          __UNUSED__,
+          Evas_Object *obj __UNUSED__,
+          void *einfo      __UNUSED__)
 {
    Highlight_Data *item = data;
    evas_object_del(item->rect);
@@ -172,7 +185,6 @@ draw_search_highlights(Elm_Gengrid_Item *it)
      }
 }
 
-
 /*-------------------UPDATE ITEMS - REPAINT PDF----------------------*/
 static void
 _update_items(void *data)
@@ -188,27 +200,35 @@ _update_items(void *data)
 
 /*---------------------LABEL GET - SHOW LABEL------------------------*/
 static char *
-grid_label_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+grid_label_get(void *data       __UNUSED__,
+               Evas_Object *obj __UNUSED__,
+               const char *part __UNUSED__)
 {
    return NULL;
 }
 
 static void
-grid_item_realized(void *data, Evas_Object *obj __UNUSED__, void *event_info)
+grid_item_realized(void            *data,
+                   Evas_Object *obj __UNUSED__,
+                   void            *event_info)
 {
    App *app = data;
    app->visible_items = eina_list_append(app->visible_items, event_info);
 }
 
 static void
-grid_item_unrealized(void *data, Evas_Object *obj __UNUSED__, void *event_info)
+grid_item_unrealized(void            *data,
+                     Evas_Object *obj __UNUSED__,
+                     void            *event_info)
 {
    App *app = data;
    app->visible_items = eina_list_remove(app->visible_items, event_info);
 }
 
 static void
-grid_changed(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+grid_changed(void            *data,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
 {
    App *app = data;
    if (!app->bring_in_cur_page) return;
@@ -218,7 +238,9 @@ grid_changed(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED_
 
 /*---------------------ICON GET - RENDER PDF-------------------------*/
 static Evas_Object *
-grid_icon_get(void *data, Evas_Object *obj, const char *part)
+grid_icon_get(void        *data,
+              Evas_Object *obj,
+              const char  *part)
 {
    const Item_Data *idata = data;
    Evas_Coord w, h;
@@ -230,16 +252,19 @@ grid_icon_get(void *data, Evas_Object *obj, const char *part)
         Evas_Object *rect = evas_object_image_add(evas_object_evas_get(obj));
         epdf_page_scale_set(idata->page, ((double)w - 50) /
                             (double)idata->page_width,
-                            ((double)h -50 ) / (double)idata->page_height);
+                            ((double)h - 50) / (double)idata->page_height);
         epdf_page_render(idata->page, rect);
         if (idata->base->text_to_search) draw_search_highlights(idata->item);
         return rect;
      }
    return NULL;
 }
+
 /*--------------------------ITEM SELECT CB---------------------------*/
 static void
-grid_sel(void *data, Evas_Object *obj __UNUSED__, void *event_info)
+grid_sel(void            *data,
+         Evas_Object *obj __UNUSED__,
+         void            *event_info)
 {
    App *app = data;
    Elm_Gengrid_Item *item = event_info;
@@ -247,11 +272,13 @@ grid_sel(void *data, Evas_Object *obj __UNUSED__, void *event_info)
    app->current_item_page = item;
    idata = elm_gengrid_item_data_get(item);
 
-   elm_spinner_value_set(app->spinner, (double) idata->page_number);
+   elm_spinner_value_set(app->spinner, (double)idata->page_number);
 }
+
 /*--------------------------GRID ITEM DEL CB-------------------------*/
 static void
-grid_data_del(void *data, Evas_Object *obj __UNUSED__)
+grid_data_del(void            *data,
+              Evas_Object *obj __UNUSED__)
 {
    Item_Data *idata = data;
    epdf_page_delete(idata->page);
@@ -260,7 +287,8 @@ grid_data_del(void *data, Evas_Object *obj __UNUSED__)
 
 /* FIXME */
 static void
-page_view_mode_set(App *app, PageViewMode mode)
+page_view_mode_set(App         *app,
+                   PageViewMode mode)
 {
    Evas_Coord h, w, item_w, item_h;
    Item_Data *idata;
@@ -271,27 +299,32 @@ page_view_mode_set(App *app, PageViewMode mode)
    switch(mode)
      {
       case SINGLE_PAGE:
-         elm_gengrid_item_size_get(app->grid, &item_w, &item_h);
-         item_w = ((h - 10) * idata->page_width) / idata->page_height;
-         evas_object_size_hint_align_set(app->grid, 0.5, 0.5);
-         elm_gengrid_item_size_set(app->grid, item_w, h - 10);
-         if (app->update_job) ecore_job_del(app->update_job);
-         app->update_job = ecore_job_add(_update_items, app);
-         break;
+        elm_gengrid_item_size_get(app->grid, &item_w, &item_h);
+        item_w = ((h - 10) * idata->page_width) / idata->page_height;
+        evas_object_size_hint_align_set(app->grid, 0.5, 0.5);
+        elm_gengrid_item_size_set(app->grid, item_w, h - 10);
+        if (app->update_job) ecore_job_del(app->update_job);
+        app->update_job = ecore_job_add(_update_items, app);
+        break;
+
       case WINDOW_WIDTH:
-         evas_object_geometry_get(app->win, NULL, NULL, &w, NULL);
-         item_h = (w * idata->page_height) / idata->page_width;
-         elm_gengrid_item_size_set(app->grid, w, item_h);
-         if (app->update_job) ecore_job_del(app->update_job);
-         app->update_job = ecore_job_add(_update_items, app);
-         break;
+        evas_object_geometry_get(app->win, NULL, NULL, &w, NULL);
+        item_h = (w * idata->page_height) / idata->page_width;
+        elm_gengrid_item_size_set(app->grid, w, item_h);
+        if (app->update_job) ecore_job_del(app->update_job);
+        app->update_job = ecore_job_add(_update_items, app);
+        break;
+
       default:
-         break;
+        break;
      }
 }
+
 /*------------------------ITEM DOUBLE CLICK CB-----------------------*/
 static void
-grid_item_db_clicked(void *data, Evas_Object *obj __UNUSED__, void *event_info)
+grid_item_db_clicked(void            *data,
+                     Evas_Object *obj __UNUSED__,
+                     void            *event_info)
 {
    App *app = data;
    app->current_item_page = event_info;
@@ -302,7 +335,10 @@ grid_item_db_clicked(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 
 /*--------------------------ZOOM IN CB-------------------------------*/
 static void
-_zoom_in(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_zoom_in(void                *data,
+         Evas_Object *obj     __UNUSED__,
+         const char *emission __UNUSED__,
+         const char *source   __UNUSED__)
 {
    App *app = data;
    Item_Data *idata;
@@ -325,9 +361,13 @@ _zoom_in(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED_
    app->update_job = ecore_job_add(_update_items, app);
    elm_gengrid_item_show(app->current_item_page);
 }
+
 /*--------------------------ZOOM OUT CB------------------------------*/
 static void
-_zoom_out(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_zoom_out(void                *data,
+          Evas_Object *obj     __UNUSED__,
+          const char *emission __UNUSED__,
+          const char *source   __UNUSED__)
 {
    App *app = data;
    Item_Data *idata;
@@ -351,7 +391,10 @@ _zoom_out(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED
 }
 
 static void
-_page_up(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_page_up(void                *data,
+         Evas_Object *obj     __UNUSED__,
+         const char *emission __UNUSED__,
+         const char *source   __UNUSED__)
 {
    App *app = data;
    const Elm_Gengrid_Item *it;
@@ -363,9 +406,13 @@ _page_up(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED_
    elm_gengrid_item_selected_set(prev, EINA_TRUE);
    elm_gengrid_item_show(prev);
 }
+
 /*--------------------------PAGE_DOWN CB-------------------------------*/
 static void
-_page_down(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_page_down(void                *data,
+           Evas_Object *obj     __UNUSED__,
+           const char *emission __UNUSED__,
+           const char *source   __UNUSED__)
 {
    App *app = data;
    const Elm_Gengrid_Item *it;
@@ -377,9 +424,12 @@ _page_down(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSE
    elm_gengrid_item_selected_set(next, EINA_TRUE);
    elm_gengrid_item_show(next);
 }
+
 /*--------------------------FULL SCREEN CB-----------------------------*/
 static void
-gl_fullscreen(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+gl_fullscreen(void            *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
 {
    App *app = data;
    Eina_Bool fullscreen;
@@ -394,16 +444,23 @@ gl_fullscreen(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED
    elm_win_fullscreen_set(app->win, fullscreen);
    page_view_mode_set((App *)data, SINGLE_PAGE);
 }
+
 /*--------------------------OPEN FILE_SELECTOR CB----------------------*/
 static void
-gl_open(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+gl_open(void            *data,
+        Evas_Object *obj __UNUSED__,
+        void *event_info __UNUSED__)
 {
    App *app = data;
    evas_object_show(app->fs_inwin);
 }
+
 /*--------------------------SEARCH BUTTON CB---------------------------*/
 static void
-_search(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *einfo __UNUSED__)
+_search(void            *data,
+        Evas *e          __UNUSED__,
+        Evas_Object *obj __UNUSED__,
+        void *einfo      __UNUSED__)
 {
    App *app = data;
    Elm_Gengrid_Item *it;
@@ -460,7 +517,10 @@ _search(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *einfo
 }
 
 static void
-_on_key_down(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *einfo)
+_on_key_down(void            *data,
+             Evas *e          __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void            *einfo)
 {
    Evas_Event_Key_Down *event = einfo;
    App *app = data;
@@ -476,7 +536,8 @@ _on_key_down(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *
  * @param filename The file name of the file to be loaded
  */
 static Eina_Bool
-epdf_load(App *app, const char *filename)
+epdf_load(App        *app,
+          const char *filename)
 {
    if (!filename)
      return EINA_FALSE;
@@ -496,12 +557,16 @@ epdf_load(App *app, const char *filename)
 
 /* Epdf Page index still doesn't work*/
 static void
-_goto_page(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_goto_page(void *data       __UNUSED__,
+           Evas_Object *obj __UNUSED__,
+           void *event_info __UNUSED__)
 {
 }
 
 void
-load_index_genlist(App *app, Elm_Genlist_Item *ancestor, Eina_List *children)
+load_index_genlist(App              *app,
+                   Elm_Genlist_Item *ancestor,
+                   Eina_List        *children)
 {
    Eina_List *l;
    Epdf_Index_Item *it;
@@ -535,7 +600,8 @@ load_index_genlist(App *app, Elm_Genlist_Item *ancestor, Eina_List *children)
  * @param page_number The number of the page to load
  */
 static Item_Data *
-page_set(App *app, int page_number)
+page_set(App *app,
+         int  page_number)
 {
    Epdf_Page *page;
    Item_Data *idata;
@@ -569,7 +635,9 @@ page_set(App *app, int page_number)
 }
 
 static void
-_bt_close(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_bt_close(void            *data,
+          Evas_Object *obj __UNUSED__,
+          void *event_info __UNUSED__)
 {
    Evas_Object *notify = data;
    evas_object_hide(notify);
@@ -577,7 +645,8 @@ _bt_close(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 }
 
 void
-show_message(Evas_Object *win, char *message)
+show_message(Evas_Object *win,
+             char        *message)
 {
    Evas_Object *notify, *lb, *bt, *bx;
    notify = elm_notify_add(win);
@@ -624,6 +693,7 @@ unload_gengrid(App *app)
    elm_gengrid_clear(app->grid);
    epdf_document_delete(app->file_info.document);
 }
+
 /**
  * @brief Populate the gengrid with pdf pages
  *
@@ -659,7 +729,7 @@ load_gengrid(App *app)
    first = elm_gengrid_first_item_get(app->grid);
    elm_gengrid_item_selected_set(first, EINA_TRUE);
    app->current_item_page = first;
-   idata =  elm_gengrid_item_data_get(first);
+   idata = elm_gengrid_item_data_get(first);
 
    elm_gengrid_item_size_set(app->grid, idata->page_width, idata->page_height);
 
@@ -671,7 +741,9 @@ load_gengrid(App *app)
 }
 
 static void
-_change_selection(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_change_selection(void            *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
 {
    App *app = data;
    int page;
@@ -679,7 +751,6 @@ _change_selection(void *data, Evas_Object *obj __UNUSED__, void *event_info __UN
    Item_Data *idata;
    int range, i;
    page = (int)elm_spinner_value_get(app->spinner);
-
 
    it = app->current_item_page;
    idata = elm_gengrid_item_data_get(it);
@@ -690,11 +761,12 @@ _change_selection(void *data, Evas_Object *obj __UNUSED__, void *event_info __UN
         for (i = 0; i < range; i++)
           it = elm_gengrid_item_next_get(it);
      }
-   else if (idata->page_number > page){
-      range = idata->page_number - page;
-      for (i = 0; i < range; i++)
-        it = elm_gengrid_item_prev_get(it);
-   }
+   else if (idata->page_number > page)
+     {
+        range = idata->page_number - page;
+        for (i = 0; i < range; i++)
+          it = elm_gengrid_item_prev_get(it);
+     }
 
    elm_gengrid_item_selected_set(it, EINA_TRUE);
    elm_gengrid_item_show(it);
@@ -702,7 +774,9 @@ _change_selection(void *data, Evas_Object *obj __UNUSED__, void *event_info __UN
 
 /*--------------------------FILE SELECTOR OK CB-----------------------*/
 static void
-fileselector_done(void *data, Evas_Object *obj __UNUSED__, void *event_info)
+fileselector_done(void            *data,
+                  Evas_Object *obj __UNUSED__,
+                  void            *event_info)
 {
    App *app = data;
    const char *selected = event_info;
@@ -729,19 +803,26 @@ fileselector_done(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 
 /*--------------------------WINDOW CLOSE CB--------------------------*/
 static void
-on_win_del_req(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+on_win_del_req(void *data       __UNUSED__,
+               Evas_Object *obj __UNUSED__,
+               void *event_info __UNUSED__)
 {
    elm_exit();
 }
 
-
-char *gl_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+char *
+gl_label_get(void            *data,
+             Evas_Object *obj __UNUSED__,
+             const char *part __UNUSED__)
 {
    char *label = data;
    return strdup(label);
 }
 
-Evas_Object *gl_icon_get(void *data, Evas_Object *obj, const char *part)
+Evas_Object *
+gl_icon_get(void        *data,
+            Evas_Object *obj,
+            const char  *part)
 {
    Evas_Object *ic = NULL;
 
@@ -765,7 +846,7 @@ Evas_Object *gl_icon_get(void *data, Evas_Object *obj, const char *part)
 static Eina_Bool
 create_main_win(App *app)
 {
-   Evas_Object  *layout, *btsearch;
+   Evas_Object *layout, *btsearch;
    Evas_Coord x, y, w, h;
 
    /* Window */
@@ -805,7 +886,7 @@ create_main_win(App *app)
         goto gui_error;
      }
 
-   if (!elm_layout_file_set(layout, PACKAGE_DATA_DIR "/default.edj","main"))
+   if (!elm_layout_file_set(layout, PACKAGE_DATA_DIR "/default.edj", "main"))
      {
         CRITICAL("Can't load Edje Layout");
         goto gui_error;
@@ -831,7 +912,6 @@ create_main_win(App *app)
    edje_object_signal_callback_add(app->ed, "action,down", "down",
                                    _page_down, app);
 
-
    app->spinner = elm_spinner_add(app->win);
    elm_object_style_set(app->spinner, "efenniht");
    elm_spinner_step_set(app->spinner, 1);
@@ -853,10 +933,9 @@ create_main_win(App *app)
    elm_scrolled_entry_end_set(app->entry, btsearch);
    elm_layout_content_set(layout, "search-entry", app->entry);
 
-
-   glc.item_style     = "efenniht";
+   glc.item_style = "efenniht";
    glc.func.label_get = gl_label_get;
-   glc.func.icon_get  = gl_icon_get;
+   glc.func.icon_get = gl_icon_get;
 
    Evas_Object *more_list = elm_genlist_add(app->win);
    elm_genlist_always_select_mode_set(more_list, EINA_TRUE);
@@ -869,7 +948,6 @@ create_main_win(App *app)
                            gl_open, app);
    elm_genlist_item_append(more_list, &glc, "Fullscreen", NULL,
                            ELM_GENLIST_ITEM_NONE, gl_fullscreen, app);
-
 
    /* Open file */
    app->fs_inwin = elm_win_inwin_add(app->win);
@@ -923,7 +1001,7 @@ create_main_win(App *app)
    if ((app->file_info.filename) && (!load_gengrid(app)))
      show_message(app->win, "Failed to open file");
 
-   app->clipper =  evas_object_rectangle_add(evas_object_evas_get(app->grid));
+   app->clipper = evas_object_rectangle_add(evas_object_evas_get(app->grid));
    evas_object_geometry_get(app->grid, &x, &y, &w, &h);
    evas_object_resize(app->clipper, w, h);
    evas_object_move(app->clipper, x, y);
@@ -934,7 +1012,6 @@ create_main_win(App *app)
    evas_object_event_callback_add(app->grid, EVAS_CALLBACK_DEL, _viewport_del,
                                   app);
 
-
    elm_layout_content_set(layout, "view", app->grid);
    evas_object_event_callback_add(app->win, EVAS_CALLBACK_KEY_DOWN,
                                   _on_key_down, app);
@@ -944,10 +1021,9 @@ create_main_win(App *app)
                                   _on_key_down, app);
    evas_object_show(app->win);
 
-
    return EINA_TRUE;
 
- gui_error:
+gui_error:
    if (app->win) evas_object_del(app->win);
    if (app->bg) evas_object_del(app->bg);
    if (layout) evas_object_del(layout);
@@ -956,6 +1032,7 @@ create_main_win(App *app)
    if (app->grid) evas_object_del(app->grid);
    return EINA_FALSE;
 }
+
 /*----------------------------MAIN-----------------------------------*/
 /**
  * @brief The main function for the elementary application
@@ -964,7 +1041,8 @@ create_main_win(App *app)
  * @param argv The array of parameters
  */
 EAPI int
-elm_main(int argc, char **argv)
+elm_main(int    argc,
+         char **argv)
 {
    App app;
    int r = 0;
@@ -999,7 +1077,7 @@ elm_main(int argc, char **argv)
    if (app.file_info.document)
      epdf_document_delete(app.file_info.document);
 
- end:
+end:
    if (app.file_info.filename)
      eina_stringshare_del(app.file_info.filename);
 
@@ -1016,6 +1094,7 @@ elm_main(int argc, char **argv)
 
    return r;
 }
+
 #endif
 ELM_MAIN()
 
