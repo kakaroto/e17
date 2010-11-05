@@ -65,7 +65,7 @@ EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
 ### Checks for libraries
 
-requirement_eyesight="eina >= 1.0.0, evas >= 1.0.0, ecore >= 1.0.0, ecore-evas >= 1.0.0"
+requirement_eyesight="eina >= 1.0.0, evas >= 1.0.0"
 
 EYESIGHT_CHECK_MODULE([Poppler], [${want_poppler}])
 EYESIGHT_CHECK_MODULE([Postscript], [${want_postscript}])
@@ -120,7 +120,7 @@ AC_SUBST(lt_enable_auto_import)
 
 AC_SUBST(requirement_eyesight)
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 src/Makefile
 eyesight.pc
@@ -133,6 +133,7 @@ src/modules/ps/Makefile
 src/modules/txt/Makefile
 ])
 
+AC_OUTPUT
 
 #####################################################################
 ## Info
