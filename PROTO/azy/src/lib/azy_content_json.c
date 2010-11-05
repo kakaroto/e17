@@ -261,6 +261,9 @@ azy_content_unserialize_request_json(void       *data,
         return EINA_FALSE;
      }
 
+   if ((grab = cJSON_GetObjectItem(object, "id")))
+     content->id = grab->valueint;
+
    if (!(grab = cJSON_GetObjectItem(object, "method")))
      {
         azy_content_error_code_set(content, AZY_ERROR_REQUEST_JSON_METHOD);
@@ -286,10 +289,6 @@ azy_content_unserialize_request_json(void       *data,
         content->params = eina_list_append(content->params, v);
      }
 
-   if ((grab = cJSON_GetObjectItem(object, "id")))
-     content->id = grab->valueint;
-   
-
    cJSON_Delete(object);
    return EINA_TRUE;
 }
@@ -312,6 +311,9 @@ azy_content_unserialize_response_json(void       *data,
         return EINA_FALSE;
      }
 
+   if ((grab = cJSON_GetObjectItem(object, "id")))
+     content->id = grab->valueint;
+
    if ((grab = cJSON_GetObjectItem(object, "error")) && (error = cJSON_GetObjectItem(grab, "code")))
      {
         int code;
@@ -329,7 +331,7 @@ azy_content_unserialize_response_json(void       *data,
           azy_content_error_code_set(content, AZY_ERROR_RESPONSE_JSON_ERROR);
 
         cJSON_Delete(object);
-        return EINA_FALSE;
+        return EINA_TRUE;
      }
 
    grab = cJSON_GetObjectItem(object, "result");
@@ -347,9 +349,6 @@ azy_content_unserialize_response_json(void       *data,
         cJSON_Delete(object);
         return EINA_FALSE;
      }
-
-   if ((grab = cJSON_GetObjectItem(object, "id")))
-     content->id = grab->valueint;
 
    azy_content_retval_set(content, ret);
    cJSON_Delete(object);

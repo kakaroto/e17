@@ -588,7 +588,12 @@ azy_content_unserialize_response_xml(void       *data,
           {
              azy_content_error_faultmsg_set(content, errcode, "%s", errmsg);
              eina_stringshare_del(errmsg);
-             goto err_3;
+             azy_value_unref(content->retval);
+             content->retval = NULL;
+             xp_free_nodes(ns);
+             xmlXPathFreeContext(ctx);
+             xmlFreeDoc(doc);
+             return EINA_TRUE;
           }
         else
           {

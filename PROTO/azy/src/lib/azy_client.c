@@ -218,7 +218,6 @@ azy_client_call(Azy_Client       *client,
    EINA_SAFETY_ON_NULL_RETURN_VAL(client, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(content, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(content->method, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(cb, 0);
 
    INFO("New method call: '%s'", content->method);
 

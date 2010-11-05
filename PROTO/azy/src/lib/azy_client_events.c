@@ -33,7 +33,8 @@ _azy_client_handler_data_free(Azy_Client_Handler_Data *handler_data)
    DBG("(handler_data=%p, client=%p, net=%p)", handler_data, handler_data->client, handler_data->client->net);
    if (!handler_data)
      return;
-   azy_net_free(handler_data->recv);
+   if (handler_data->recv)
+     azy_net_free(handler_data->recv);
    free(handler_data);
 }
 
@@ -62,8 +63,11 @@ _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
    if (!azy_content_unserialize_response(content, handler_data->recv->transport, (const char*)handler_data->recv->buffer, handler_data->recv->size))
      azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return parsing failed.");
    else if ((handler_data->recv->transport == AZY_NET_JSON) && (content->id != handler_data->id))
-     azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return id does not match.");
-   else if (!handler_data->callback(azy_content_retval_get(content), &ret))
+     {
+        ERR("Content id: %u  |  Call id: %u", content->id, handler_data->id);
+        azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return id does not match.");
+     }
+   else if (handler_data->callback && (!handler_data->callback(azy_content_retval_get(content), &ret)))
      azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return value demarshalization failed.");
 
 
@@ -249,8 +253,6 @@ _azy_client_handler_del(Azy_Client                    *client,
    if (!client->connected)
      return ECORE_CALLBACK_RENEW;
    client->connected = EINA_FALSE;
-   azy_net_free(client->net);
-   client->net = NULL;
    EINA_LIST_FREE(client->conns, handler_data)
      _azy_client_handler_data_free(handler_data);
 

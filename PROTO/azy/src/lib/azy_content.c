@@ -259,7 +259,7 @@ azy_content_error_faultmsg_set(Azy_Content *content,
    va_list args;
    char *msg;
 
-   DBG("(content=%p, faultcode='%d', msg='%s')", content, faultcode, fmt);
+   DBG("(content=%p, faultcode='%d')", content, faultcode);
 
    if ((!content) || (!fmt))
      return;

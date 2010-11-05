@@ -661,7 +661,7 @@ azy_server_client_add_handler(Azy_Server                *server,
    DBG("(server=%p)", server);
 
    INFO("Client %s has connected!", ecore_con_client_ip_get(ev->client));
-   ecore_con_client_timeout_set(ev->client, 1);
+   ecore_con_client_timeout_set(ev->client, 3);
    _azy_server_client_new(server, ev->client);
 
    return ECORE_CALLBACK_RENEW;

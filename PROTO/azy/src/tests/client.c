@@ -122,7 +122,14 @@ _TTest2_auth_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
    printf("%s: Success? %s!\n", __PRETTY_FUNCTION__, ret ? "YES" : "NO");
 }
 
-
+static void
+_TTest1_undefined_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
+{
+   if (azy_content_error_is_set(content))
+     printf("Error encountered: %s\n", azy_content_error_message_get(content));
+   azy_client_close(client);
+   ecore_main_loop_quit();
+}
 static Eina_Bool
 _connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
 {
@@ -203,15 +210,23 @@ _connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
         return ECORE_CALLBACK_CANCEL;
      }
 
-#if 0
    /* call undefined servlet methods */
+   {
+      Azy_Content *content;
 
-   content = azy_content_new("TTest1.undefined");
-   azy_content_param_add(content, azy_value_struct_new_from_int("test", 100));
-   azy_client_call(cli, content, AZY_NET_JSON);
-   _check_err(content);
-   err = NULL;
-#endif
+      content = azy_content_new("TTest1.undefined");
+      azy_content_param_add(content, azy_value_struct_new_from_int("test", 100));
+      ret = azy_client_call(cli, content, AZY_NET_JSON, NULL);
+      if (_check_err(err) || (!ret))
+        exit(1);
+      if (!azy_client_callback_set(cli, ret, _TTest1_undefined_ret))
+        {
+           azy_client_close(cli);
+           return ECORE_CALLBACK_CANCEL;
+        }
+      azy_content_free(content);
+   }
+
    azy_content_free(err);
    return ECORE_CALLBACK_RENEW;
 }
