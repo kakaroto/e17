@@ -10,8 +10,10 @@
 static void _azy_client_handler_call_free(Azy_Client *client, Azy_Content *content);
 static Eina_Bool _azy_client_handler_call(Azy_Client_Handler_Data *handler_data);
 static void _azy_client_handler_data_free(Azy_Client_Handler_Data *data);
-static void
-_azy_client_handler_call_free(Azy_Client *client, Azy_Content *content)
+static void _azy_client_handler_call_free(Azy_Client *client, Azy_Content *content);
+static Eina_Bool _azy_client_recv_timer(Azy_Client_Handler_Data *handler_data);
+
+static void _azy_client_handler_call_free(Azy_Client *client, Azy_Content *content)
 {
    void (*callback)(void *);
 
@@ -103,6 +105,31 @@ _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
    if (client->conns)
      ecore_event_handler_data_set(client->recv, client->conns->data);
    return EINA_TRUE;
+}
+
+static Eina_Bool
+_azy_client_recv_timer(Azy_Client_Handler_Data *handler_data)
+{
+   if (!handler_data->recv)
+     return ECORE_CALLBACK_CANCEL;
+
+   DBG("(handler_data=%p, client=%p, net=%p)", handler_data, handler_data->client, handler_data->client->net);
+
+   ecore_con_server_flush(handler_data->client->net->conn);
+   if (handler_data->recv->size < handler_data->recv->http.content_length)
+     {
+        if (!handler_data->recv->nodata)
+          {
+             handler_data->recv->nodata = EINA_TRUE;
+             return ECORE_CALLBACK_RENEW;
+          }
+        INFO("Server at '%s' timed out!", azy_net_ip_get(handler_data->recv));
+        ecore_con_server_del(handler_data->recv->conn); 
+        _azy_client_handler_data_free(handler_data);
+        return ECORE_CALLBACK_CANCEL;
+     }
+
+   return ECORE_CALLBACK_CANCEL;
 }
 
 Eina_Bool
@@ -216,8 +243,25 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
    if (!handler_data->recv->headers_read)
      return ECORE_CALLBACK_RENEW;
 
-   if (handler_data->recv->size >= handler_data->recv->http.content_length)
-      _azy_client_handler_call(handler_data);
+   if (handler_data->recv->size < handler_data->recv->http.content_length)
+     {
+        if (!handler_data->recv->timer)
+          /* no timer and full content length not received, start timer */
+          handler_data->recv->timer = ecore_timer_add(5, (Ecore_Task_Cb)_azy_client_recv_timer, handler_data->recv);
+        else
+          /* timer and full content length not received, reset timer */
+          ecore_timer_delay(handler_data->recv->timer, 5);
+     }
+   else
+     {
+         /* else create a "done" event */
+         if (handler_data->recv->timer)
+           {
+              ecore_timer_del(handler_data->recv->timer);
+              handler_data->recv->timer = NULL;
+           }
+         _azy_client_handler_call(handler_data);
+     }
 
    if (overflow && (handler_data != client->conns->data))
      {
