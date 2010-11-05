@@ -318,6 +318,7 @@ module Test2
      _priv->username = name;
      _priv->password = password;
      printf("AUTH-POST: %s, %s\n", _priv->username, _priv->password);
+     return EINA_TRUE;
    %>
 
    string getUsername()

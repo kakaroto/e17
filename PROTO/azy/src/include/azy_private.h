@@ -112,6 +112,7 @@ typedef struct _Azy_Server_Client
    Eina_List   *modules;
 
    const char          *session_id;
+   const char          *ip;
    double               last_used;
 } Azy_Server_Client;
 

@@ -79,7 +79,6 @@ static Eina_Bool _azy_server_client_handler_data(Azy_Server_Client          *cli
                                                   int                          type,
                                                   Ecore_Con_Event_Client_Data *ev);
 
-static Eina_Bool _azy_server_client_recv_timer(Azy_Server_Client *client);
 static void      _azy_server_client_free(Azy_Server_Client *client);
 
 
@@ -224,6 +223,10 @@ _azy_server_client_method_run(Azy_Server_Client *client,
              else if (!azy_content_retval_get(content) && !azy_content_error_is_set(content))
                azy_content_error_faultmsg_set(content, -1, "Pre-call did not return value or set error.");
           }
+        else
+          {
+             retval = method->method(module, content);
+          }
      }
    else if (module->def->fallback)
      {
@@ -255,6 +258,7 @@ _azy_server_client_new(Azy_Server      *server,
    if (!client) return;
    client->net = azy_net_new(conn);
    client->net->server_client = EINA_TRUE;
+   client->ip = ecore_con_client_ip_get(conn);
    client->server = server;
    client->last_used = ecore_time_get();
    client->session_id = azy_uuid_new();
@@ -522,29 +526,6 @@ _azy_server_client_handler_request(Azy_Server_Client *client)
 }
 
 static Eina_Bool
-_azy_server_client_recv_timer(Azy_Server_Client *client)
-{
-   DBG("(client=%p)", client);
-   if (!client->net)
-     return ECORE_CALLBACK_CANCEL;
-
-   ecore_con_client_flush(client->net->conn);
-   if (client->net->size < client->net->http.content_length)
-     {
-        if (!client->net->nodata)
-          {
-             client->net->nodata = EINA_TRUE;
-             return ECORE_CALLBACK_RENEW;
-          }
-        INFO("Client from '%s' timed out!", ecore_con_client_ip_get(client->net->conn));
-        ecore_con_client_del(client->net->conn);
-        _azy_server_client_free(client);
-     }
-
-   return ECORE_CALLBACK_CANCEL;
-}
-
-static Eina_Bool
 _azy_server_client_handler_data(Azy_Server_Client          *client,
                                  int                          type,
                                  Ecore_Con_Event_Client_Data *ev)
@@ -555,7 +536,7 @@ _azy_server_client_handler_data(Azy_Server_Client          *client,
    static unsigned char *overflow;
    static long long int overflow_length;
 
-   DBG("(client=%p)", client);
+   DBG("(client=%p, ev=%p, data=%p)", client, ev, (ev) ? ev->data : NULL);
    client->net->nodata = EINA_FALSE;
 
 #ifdef ISCOMFITOR
@@ -568,24 +549,29 @@ _azy_server_client_handler_data(Azy_Server_Client          *client,
      {
         client->net->buffer = overflow;
         client->net->size = overflow_length;
-        overflow = NULL;
-        overflow_length = 0;
+        INFO("%s: Set recv size to %lli from overflow", client->ip, client->net->size);
         
         /* returns offset where http header line ends */
          if (!(offset = azy_events_type_parse(client->net, type, data, len)) && ev)
+           return azy_events_connection_kill(client->net->conn, EINA_TRUE, NULL);
+         else if (!offset && overflow)
            {
-              _azy_server_client_free(client);
-              return azy_events_connection_kill(client->net->conn, EINA_TRUE, error400);
+              client->net->buffer = NULL;
+              client->net->size = 0;
+              INFO("%s: Set recv size to %lli, storing overflow of %lli", client->ip, client->net->size, overflow_length);
+              return EINA_TRUE;
+           }
+         else
+           {
+              overflow = NULL;
+              overflow_length = 0;
            }
      }
    
    if (!client->net->headers_read) /* if headers aren't done being read, keep reading them */
      {
         if (!azy_events_header_parse(client->net, data, len, offset) && ev)
-          {
-             _azy_server_client_free(client);
-             return azy_events_connection_kill(client->net->conn, EINA_TRUE, error500);
-          }
+          return azy_events_connection_kill(client->net->conn, EINA_TRUE, error500);
      }
    else
      {   /* otherwise keep appending to buffer */
@@ -612,12 +598,17 @@ _azy_server_client_handler_data(Azy_Server_Client          *client,
                   return ECORE_CALLBACK_RENEW;
                }
              memcpy(overflow, data + (len - overflow_length), overflow_length);
+             WARN("%s: Extra content length of %lli! Set recv size to %lli (previous %lli)",
+                  client->ip, overflow_length, client->net->size + len - overflow_length, client->net->size);
              client->net->size += len - overflow_length;
+
           }
         else
           {
              memcpy(client->net->buffer + client->net->size, data, len);
              client->net->size += len;
+
+             INFO("%s: Incremented recv size to %lli (+%i)", client->ip, client->net->size, len);
           }
      }
 
@@ -629,33 +620,20 @@ _azy_server_client_handler_data(Azy_Server_Client          *client,
         client->net->overflow_length = 0;
      }
 
-   if (client->net->size < client->net->http.content_length)
-     {
-      ;
-#if 0
-        if (!client->net->timer)
-          /* no timer and full content length not received, start timer */
-          client->net->timer = ecore_timer_add(2, (Ecore_Task_Cb)_azy_server_client_recv_timer, client);
-        else
-          /* timer and full content length not received, reset timer */
-          ecore_timer_delay(client->net->timer, 2);
-#endif
-     }
-   else
-     {
-         /* else create a "done" event */
-         if (client->net->timer)
-           {
-              ecore_timer_del(client->net->timer);
-              client->net->timer = NULL;
-           }
-         _azy_server_client_handler_request(client);
-     }
+   if (!client->net->headers_read)
+     return ECORE_CALLBACK_RENEW;
+
+   if (client->net->size >= client->net->http.content_length)
+      _azy_server_client_handler_request(client);
 
    if (overflow && (!client->net->buffer))
      {
-        INFO("Calling %s again to try using overflow data...", __PRETTY_FUNCTION__);
+        WARN("%s: Calling %s again to try using %lli bytes of overflow data...", client->ip, __PRETTY_FUNCTION__, overflow_length);
         _azy_server_client_handler_data(client, type, NULL);
+        if (!overflow)
+          WARN("%s: Overflow has been successfully used!", client->ip);
+        else
+          WARN("%s: Overflow could not be used, storing %lli bytes for next event.", client->ip, overflow_length);
      }
 
    return ECORE_CALLBACK_RENEW;
