@@ -4,8 +4,8 @@ MAINTAINERCLEANFILES = Makefile.in
 if EYESIGHT_BUILD_POSTSCRIPT
 if !EYESIGHT_STATIC_BUILD_POSTSCRIPT
 
-installed_headersdir = $(includedir)/eyesight
-include_HEADERS = Eyesight_Module_Ps.h
+includesdir = $(includedir)/eyesight
+includes_HEADERS = Eyesight_Module_Ps.h
 
 pkgdir = $(libdir)/eyesight
 

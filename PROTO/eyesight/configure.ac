@@ -27,7 +27,6 @@ LT_INIT([win32-dll])
 version_info="lt_rev:lt_cur:lt_age"
 AC_SUBST(version_info)
 
-
 ### Needed information
 
 want_img="yes"
@@ -66,7 +65,7 @@ EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
 ### Checks for libraries
 
-requirement_eyesight="evas eina"
+requirement_eyesight="eina >= 1.0.0, evas >= 1.0.0, ecore >= 1.0.0, ecore-evas >= 1.0.0"
 
 EYESIGHT_CHECK_MODULE([Poppler], [${want_poppler}])
 EYESIGHT_CHECK_MODULE([Postscript], [${want_postscript}])
@@ -119,8 +118,9 @@ AC_SUBST(lt_enable_auto_import)
 
 ### Checks for library functions
 
+AC_SUBST(requirement_eyesight)
 
-AC_CONFIG_FILES([
+AC_OUTPUT([
 Makefile
 src/Makefile
 eyesight.pc
@@ -132,8 +132,6 @@ src/modules/pdf/Makefile
 src/modules/ps/Makefile
 src/modules/txt/Makefile
 ])
-
-AC_OUTPUT
 
 
 #####################################################################
