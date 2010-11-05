@@ -344,14 +344,19 @@ _zoom_in(void                *data,
    Item_Data *idata;
    Evas_Coord item_w, item_h;
 
+   if (!app->current_item_page)
+     return;
+
    elm_gengrid_item_size_get(app->grid, &item_w, &item_h);
 
    if (item_h > 2400)
      return;
 
-   item_h += 60;
-
    idata = (Item_Data *)elm_gengrid_item_data_get(app->current_item_page);
+   if (!idata)
+     return;
+
+   item_h += 60;
 
    item_w = (item_h * idata->page_width) / idata->page_height;
 
@@ -373,15 +378,19 @@ _zoom_out(void                *data,
    Item_Data *idata;
    Evas_Coord item_w, item_h;
 
+   if (!app->current_item_page)
+     return;
+
    elm_gengrid_item_size_get(app->grid, &item_w, &item_h);
 
    if (item_h < 240)
      return;
 
-   item_h -= 60;
-
    idata = (Item_Data *)elm_gengrid_item_data_get(app->current_item_page);
+   if (!idata)
+     return;
 
+   item_h -= 60;
    item_w = (item_h * idata->page_width) / idata->page_height;
 
    elm_gengrid_item_size_set(app->grid, item_w, item_h);
@@ -400,6 +409,8 @@ _page_up(void                *data,
    const Elm_Gengrid_Item *it;
    Elm_Gengrid_Item *prev;
    it = elm_gengrid_selected_item_get(app->grid);
+   if (!it)
+     return;
    prev = elm_gengrid_item_prev_get(it);
    if (!prev)
      return;
@@ -418,6 +429,8 @@ _page_down(void                *data,
    const Elm_Gengrid_Item *it;
    Elm_Gengrid_Item *next;
    it = elm_gengrid_selected_item_get(app->grid);
+   if (!it)
+     return;
    next = elm_gengrid_item_next_get(it);
    if (!next)
      return;
@@ -750,11 +763,15 @@ _change_selection(void            *data,
    Elm_Gengrid_Item *it;
    Item_Data *idata;
    int range, i;
+
+   if (!app->current_item_page)
+     return;
+
+   idata = elm_gengrid_item_data_get(app->current_item_page);
+   if (!idata)
+     return;
+
    page = (int)elm_spinner_value_get(app->spinner);
-
-   it = app->current_item_page;
-   idata = elm_gengrid_item_data_get(it);
-
    if (idata->page_number < page)
      {
         range = (page - idata->page_number);
