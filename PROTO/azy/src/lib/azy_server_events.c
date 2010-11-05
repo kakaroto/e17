@@ -631,12 +631,15 @@ _azy_server_client_handler_data(Azy_Server_Client          *client,
 
    if (client->net->size < client->net->http.content_length)
      {
+      ;
+#if 0
         if (!client->net->timer)
           /* no timer and full content length not received, start timer */
-          client->net->timer = ecore_timer_add(5, (Ecore_Task_Cb)_azy_server_client_recv_timer, client);
+          client->net->timer = ecore_timer_add(2, (Ecore_Task_Cb)_azy_server_client_recv_timer, client);
         else
           /* timer and full content length not received, reset timer */
-          ecore_timer_delay(client->net->timer, 5);
+          ecore_timer_delay(client->net->timer, 2);
+#endif
      }
    else
      {
@@ -680,6 +683,7 @@ azy_server_client_add_handler(Azy_Server                *server,
    DBG("(server=%p)", server);
 
    INFO("Client %s has connected!", ecore_con_client_ip_get(ev->client));
+   ecore_con_client_timeout_set(ev->client, 1);
    _azy_server_client_new(server, ev->client);
 
    return ECORE_CALLBACK_RENEW;

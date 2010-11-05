@@ -42,7 +42,7 @@ struct _Azy_Content
    Eina_List          *params;
    Azy_Value         *retval;
    void               *ret;
-   unsigned int        id;
+   Azy_Client_Call_Id  id;
    
 
    unsigned char      *buffer;
@@ -147,6 +147,7 @@ struct _Azy_Client
 
    Ecore_Event_Handler *add;
    Ecore_Event_Handler *del;
+   Ecore_Event_Handler *recv;
 
    Eina_List           *conns;
    Eina_Hash           *callbacks;
@@ -162,12 +163,19 @@ struct _Azy_Client
 
 struct _Azy_Client_Handler_Data
 {
-   Ecore_Event_Handler *data;
-   unsigned int         id;
+   Azy_Client_Call_Id   id;
    Azy_Client         *client;
    Azy_Net            *recv;
    const char          *method;
    Azy_Content_Cb     callback; //callback set to convert from Azy_Value to Return_Type
+};
+
+
+struct _Azy_Blob
+{
+   const char *buf;
+   int         len;
+   char        refs;
 };
 
 Eina_Bool __azy_value_is_complicated(Azy_Value *v,

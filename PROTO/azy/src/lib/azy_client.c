@@ -11,7 +11,7 @@
 #include "Azy.h"
 #include "azy_private.h"
 
-static unsigned int __azy_client_send_id = 0;
+static Azy_Client_Call_Id __azy_client_send_id = 0;
 static char _init = 0;
 
 int AZY_CLIENT_DISCONNECTED;
@@ -130,6 +130,8 @@ azy_client_connect(Azy_Client *client,
    if (!(svr = ecore_con_server_connect(flags, client->host, client->port, NULL)))
      return EINA_FALSE;
 
+   ecore_con_server_timeout_set(svr, 1);
+
    client->net = azy_net_new(svr);
 
    return EINA_TRUE;
@@ -202,7 +204,7 @@ azy_client_callback_free_set(Azy_Client *client,
    return eina_hash_add(client->free_callbacks, &id, callback);
 }
 
-unsigned int
+Azy_Client_Call_Id
 azy_client_call(Azy_Client       *client,
                  Azy_Content      *content,
                  Azy_Net_Transport transport,
@@ -269,11 +271,10 @@ azy_client_call(Azy_Client       *client,
    handler_data->callback = cb;
 
    handler_data->id = __azy_client_send_id;
+   if (!client->conns)
+     client->recv = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_azy_client_handler_data, handler_data);
+     
    client->conns = eina_list_append(client->conns, handler_data);
-   if ((!handler_data->data) && (client->conns->data == handler_data))
-     /* only set data handler if it's the current call */
-     handler_data->data = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_azy_client_handler_data, handler_data);
-
 
    DBG("(client=%p, net=%p, content=%p, handler_data=%p)", client, client->net, content, handler_data);
    return __azy_client_send_id;
@@ -283,7 +284,7 @@ error:
    return 0;
 }
 
-unsigned int
+Azy_Client_Call_Id
 azy_client_send(Azy_Client   *client,
                  unsigned char *data,
                  int            length)
@@ -314,8 +315,9 @@ azy_client_send(Azy_Client   *client,
 
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!(handler_data = calloc(sizeof(Azy_Client_Handler_Data), 1)), 0);
 
-   if (!handler_data->data)
-     handler_data->data = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_azy_client_handler_data, handler_data);
+   if (!client->conns)
+     client->recv = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_azy_client_handler_data, handler_data);
+
    handler_data->client = client;
 
    ++__azy_client_send_id;

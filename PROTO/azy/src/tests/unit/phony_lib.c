@@ -56,7 +56,6 @@ Eina_Error AZY_ERROR_RESPONSE_XML_FAULT;
 Eina_Error AZY_ERROR_RESPONSE_XML_INVAL;
 Eina_Error AZY_ERROR_RESPONSE_XML_UNSERIAL;
 
-int azy_debug_enabled = 0;
 
 int azy_log_dom;
 

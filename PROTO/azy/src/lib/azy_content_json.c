@@ -316,9 +316,12 @@ azy_content_unserialize_response_json(void       *data,
      {
         int code;
         const char *msg;
+        cJSON *obj;
 
         code = error->valueint;
-        msg = cJSON_GetObjectItem(error, "message")->valuestring;
+        obj = cJSON_GetObjectItem(grab, "message");
+        if (obj)
+          msg = obj->valuestring;
 
         if (code && msg)
           azy_content_error_faultmsg_set(content, -1, "%s", msg);

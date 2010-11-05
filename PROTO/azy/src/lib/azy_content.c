@@ -475,7 +475,7 @@ azy_content_return_get(Azy_Content *content)
 }
 
 
-unsigned int
+Azy_Client_Call_Id
 azy_content_id_get(Azy_Content *content)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(content, 0);

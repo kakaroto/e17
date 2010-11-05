@@ -35,7 +35,6 @@ _azy_client_handler_data_free(Azy_Client_Handler_Data *handler_data)
    DBG("(handler_data=%p, client=%p, net=%p)", handler_data, handler_data->client, handler_data->client->net);
    if (!handler_data)
      return;
-   ecore_event_handler_del(handler_data->data);
    azy_net_free(handler_data->recv);
    free(handler_data);
 }
@@ -69,14 +68,14 @@ _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
    else if (!handler_data->callback(azy_content_retval_get(content), &ret))
      azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return value demarshalization failed.");
 
-#ifdef ISCOMFITOR
+
    if (azy_content_error_is_set(content))
      {
         char buf[64];
         snprintf(buf, sizeof(buf), "%s:\n<<<<<<<<<<<<<\n%%.%llis\n<<<<<<<<<<<<<", handler_data->method, handler_data->recv->size);
         ERR(buf, handler_data->recv->buffer);
      }
-#endif
+
 
    content->id = handler_data->id;
    content->ret = ret;
@@ -100,11 +99,7 @@ _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
    client->conns = eina_list_remove(client->conns, handler_data);
 
    if (client->conns)
-     {
-        handler_data = client->conns->data;
-        /* set handler for current call */
-        handler_data->data = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_azy_client_handler_data, handler_data);
-     }
+     ecore_event_handler_data_set(client->recv, client->conns->data);
    return EINA_TRUE;
 }
 
@@ -247,12 +242,15 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
 
    if (handler_data->recv->size < handler_data->recv->http.content_length)
      {
+      ;
+#if 0
         if (!handler_data->recv->timer)
           /* no timer and full content length not received, start timer */
           handler_data->recv->timer = ecore_timer_add(5, (Ecore_Task_Cb)_azy_client_recv_timer, handler_data->recv);
         else
           /* timer and full content length not received, reset timer */
           ecore_timer_delay(handler_data->recv->timer, 5);
+#endif
      }
    else
      {

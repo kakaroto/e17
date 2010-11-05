@@ -28,7 +28,6 @@ void *alloca (size_t);
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #endif
 
-extern int azy_debug_enabled;
 extern int azy_log_dom;
 
 extern int AZY_CLIENT_DISCONNECTED;
@@ -36,6 +35,18 @@ extern int AZY_CLIENT_CONNECTED;
 extern int AZY_CLIENT_RETURN;
 extern int AZY_CLIENT_ERROR;
 
+/**
+ * @defgroup Azy_Typedefs Azy types
+ * @brief These types are used throughout the library
+ * @{
+ */
+
+/**
+ * @typedef _Azy_Server Azy_Server
+ * @brief An object representing the local server
+ * This type is for hosting a server, and is used by the
+ * azy_server namespace.
+ */
 typedef struct _Azy_Server               Azy_Server;
 typedef struct _Azy_Server_Module        Azy_Server_Module;
 typedef struct _Azy_Server_Module_Method Azy_Server_Module_Method;
@@ -51,6 +62,8 @@ typedef void (*Azy_Server_Module_Shutdown_Cb)(Azy_Server_Module *);
 typedef Eina_Bool (*Azy_Server_Module_Content_Cb)(Azy_Server_Module *, Azy_Content *);
 typedef void *(*Azy_Content_Cb)(Azy_Value *, void **);
 typedef void (*Azy_Client_Return_Cb)(Azy_Client *, Azy_Content *);
+
+typedef unsigned int Azy_Client_Call_Id;
 
 typedef enum
 {
@@ -121,12 +134,6 @@ struct _Azy_Server_Module_Method
    Azy_Server_Module_Content_Cb method;
 };
 
-struct _Azy_Blob
-{
-   const char *buf;
-   int         len;
-   char        refs;
-};
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -308,7 +315,7 @@ extern "C" {
    void        azy_content_retval_set(Azy_Content *content,
                                        Azy_Value   *val);
    void       *azy_content_return_get(Azy_Content *content);
-   unsigned int azy_content_id_get(Azy_Content *content);
+   Azy_Client_Call_Id azy_content_id_get(Azy_Content *content);
    Azy_Value *azy_content_retval_get(Azy_Content *content);
    void        azy_content_error_code_set(Azy_Content *content,
                                            Eina_Error    code);
@@ -346,10 +353,10 @@ extern "C" {
                                          void        *data);
    Azy_Client     *azy_client_new(void);
    Eina_Bool        azy_client_callback_set(Azy_Client *client,
-                                             unsigned int id,
+                                             Azy_Client_Call_Id id,
                                              Azy_Client_Return_Cb callback);
    Eina_Bool        azy_client_callback_free_set(Azy_Client *client,
-                                                  unsigned int id,
+                                                  Azy_Client_Call_Id id,
                                                   void (*callback)(void*));
    void             azy_client_free(Azy_Client *client);
    Eina_Bool        azy_client_port_set(Azy_Client *client,
@@ -368,10 +375,13 @@ extern "C" {
    Eina_Bool          azy_client_connect(Azy_Client *client,
                                           Eina_Bool    secure);
    void               azy_client_close(Azy_Client *client);
-   unsigned int       azy_client_call(Azy_Client       *client,
+   Azy_Client_Call_Id azy_client_call(Azy_Client       *client,
                                        Azy_Content      *content,
                                        Azy_Net_Transport transport,
                                        Azy_Content_Cb    cb);
+   Azy_Client_Call_Id azy_client_send(Azy_Client   *client,
+                                      unsigned char *data,
+                                      int            length);
 #ifdef __cplusplus
 }
 #endif

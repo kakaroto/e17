@@ -165,7 +165,6 @@ int main()
 	Eina_Counter *c = eina_counter_new("t001-content");
 	eina_counter_start(c);
 
-	azy_debug_enabled = 0;
 	int failed = EINA_FALSE;
 	RUN_TEST(constructCall);
 	RUN_TEST(constructCallNoMethod);
