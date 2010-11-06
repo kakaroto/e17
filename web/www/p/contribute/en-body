@@ -143,7 +143,7 @@
   You will definitely want the following installed to build EFL and E
   (exact package names may vary from system to system):
  </p>
- <p>
+ <p align=left>
   <ul>
    <li>subversion</li>
    <li>gcc</li>
