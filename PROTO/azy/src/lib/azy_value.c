@@ -192,7 +192,7 @@ Eina_Bool
 azy_value_to_time(Azy_Value  *val,
                    const char **nval)
 {
-   if ((!nval) || (!val) || (val->type != AZY_VALUE_TIME))
+   if ((!nval) || (!val) || ((val->type != AZY_VALUE_TIME) && (val->type != AZY_VALUE_STRING)))
      return EINA_FALSE;
 
    *nval = eina_stringshare_add(val->str_val);
@@ -203,10 +203,13 @@ Eina_Bool
 azy_value_to_blob(Azy_Value *val,
                    Azy_Blob **nval)
 {
-   if ((!nval) || (!val) || (val->type != AZY_VALUE_BLOB))
+   if ((!nval) || (!val) || ((val->type != AZY_VALUE_BLOB) && (val->type != AZY_VALUE_STRING)))
      return EINA_FALSE;
 
-   *nval = azy_blob_ref(val->blob_val);
+   if (val->blob_val)
+     *nval = azy_blob_ref(val->blob_val);
+   else
+     *nval = azy_blob_new(val->str_val, strlen(val->str_val));
    return EINA_TRUE;
 }
 

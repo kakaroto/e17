@@ -52,7 +52,7 @@ module Test1
 
    AllTypes getAll()
    <%
-     printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
+  //   printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
      retval = TAllTypes_new();
      retval->v_string = eina_stringshare_add("Hi!");
      retval->v_time = eina_stringshare_add("2010-11-01");
@@ -78,7 +78,7 @@ module Test1
 
      #define ADD(a, val) retval->a = eina_list_append(retval->a, val)
 
-     printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
+    // printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
 
      retval = TAllArrays_new();
 
@@ -187,12 +187,12 @@ module Test1
 
    __init__
    <%
-     printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
+ //    printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
    %>
 
    __shutdown__
    <%
-     printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
+  //   printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
    %>
 
    __pre__

@@ -39,8 +39,6 @@ azy_client_new(void)
 {
    Azy_Client *client;
 
-   azy_init();
-
    if (!(client = calloc(sizeof(Azy_Client), 1)))
      return NULL;
 

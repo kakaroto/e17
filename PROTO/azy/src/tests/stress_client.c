@@ -10,7 +10,7 @@
 
 #include "TTest1.azy_client.h"
 
-#define NUM_CLIENTS 50
+#define NUM_CLIENTS 100
 
 static Eina_List *clients;
 
@@ -44,7 +44,7 @@ _TTest1_getAll_ret(Azy_Client *client __UNUSED__, int type __UNUSED__, Azy_Conte
      }
 
    ret = azy_content_return_get(content);
-   printf("#%i: Success? %s!\n", x, ret ? "YES" : "NO");
+ //  printf("#%i: Success? %s!\n", x, ret ? "YES" : "NO");
    if (x == (NUM_CLIENTS * NUM_CLIENTS))
      ecore_main_loop_quit();
 }
@@ -96,6 +96,7 @@ _spawn(void *data __UNUSED__)
           return;
 
         azy_net_uri_set(azy_client_net_get(cli), "/");
+        azy_net_transport_set(azy_client_net_get(cli), AZY_NET_JSON);
         clients = eina_list_append(clients, cli);
      }
 }
