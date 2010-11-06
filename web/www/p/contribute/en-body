@@ -137,7 +137,7 @@
   building anything would be:
  </p>
  <p>
-  <b>./autogen.sh && make && sudo make install</b>
+  <b>./autogen.sh &amp;&amp; make &amp;&amp; sudo make install</b>
  </p>
  <p>
   You will definitely want the following installed to build EFL and E
