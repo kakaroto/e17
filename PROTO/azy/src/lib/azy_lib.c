@@ -8,6 +8,7 @@
 #include <stdio.h>
 
 #include <Azy.h>
+#include <azy_private.h>
 
 static const char AZY_ERROR_REQUEST_JSON_OBJECT_err[] = "Can't parse JSON-RPC request. Invalid JSON object.";
 static const char AZY_ERROR_REQUEST_JSON_METHOD_err[] = "Can't parse JSON-RPC request. Missing method.";
@@ -97,7 +98,7 @@ azy_init()
    AZY_CLIENT_CONNECTED = ecore_event_type_new();
    AZY_CLIENT_RETURN = ecore_event_type_new();
    AZY_CLIENT_ERROR = ecore_event_type_new();
-   
+
    azy_log_dom = eina_log_domain_register("azy", EINA_COLOR_BLUE);
 
    _azy_initialized = 1;

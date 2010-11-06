@@ -98,7 +98,7 @@ azy_server_new(Eina_Bool secure)
    if (!(server = calloc(sizeof(Azy_Server), 1)))
      return NULL;
 
-   if (!(server->add = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_ADD, (Ecore_Event_Handler_Cb)azy_server_client_add_handler, server)))
+   if (!(server->add = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_ADD, (Ecore_Event_Handler_Cb)azy_server_client_handler_add, server)))
      goto err;
    server->security.secure = secure;
 
@@ -129,9 +129,9 @@ azy_server_module_defs_get(Azy_Server *server)
 }
 
 Eina_Bool
-azy_server_send(Azy_Net      *net,
-                 unsigned char *data,
-                 int            length)
+azy_server_client_send(Azy_Net      *net,
+                       unsigned char *data,
+                       int            length)
 {
    unsigned char *send;
    int total;
@@ -194,6 +194,8 @@ azy_server_run(Azy_Server     *server,
    if (!server->server)
      return EINA_FALSE;
 
+   ecore_con_server_data_set(server->server, server);
+
    ecore_main_loop_begin();
 
    return EINA_TRUE;
@@ -240,6 +242,8 @@ azy_server_basic_run(int                      port,
 
    if (!(server->server = ecore_con_server_add(ecore, name, port, server)))
      goto error;
+
+   ecore_con_server_data_set(server->server, server);
 
    if (secure && cert)
      {

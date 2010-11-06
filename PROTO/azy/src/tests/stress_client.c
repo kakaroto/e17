@@ -27,7 +27,7 @@ _check_err(Azy_Content *err)
 }
 
 static void
-_TTest1_getAll_ret(Azy_Client *client, int type __UNUSED__, Azy_Content *content)
+_TTest1_getAll_ret(Azy_Client *client __UNUSED__, int type __UNUSED__, Azy_Content *content)
 {
    static int x;
    TAllTypes *ret;
@@ -36,13 +36,13 @@ _TTest1_getAll_ret(Azy_Client *client, int type __UNUSED__, Azy_Content *content
 
    if (azy_content_error_is_set(content))
      {
-        printf("Error encountered: %s\n", azy_content_error_message_get(content));
+        printf("%i: Error encountered: %s\n", x, azy_content_error_message_get(content));
         ecore_main_loop_quit();
         return;
      }
 
    ret = azy_content_return_get(content);
-   printf("#%i: Success? %s!\n", ++x, ret ? "YES" : "NO");
+   printf("#%i: Success? %s!\n", x, ret ? "YES" : "NO");
 }
 
 static Eina_Bool

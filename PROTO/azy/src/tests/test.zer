@@ -224,7 +224,7 @@ module Test1
           azy_net_code_set(_net, 401);
           azy_net_header_set(_net, "Content-Type", "text/plain");
           azy_net_header_set(_net, "WWW-Authenticate", "Basic realm=\"Azy Testsuite\"");
-          azy_server_send(_net, (unsigned char *)"Authentication Required", 23);
+          azy_server_client_send(_net, (unsigned char *)"Authentication Required", 23);
           return EINA_TRUE;
        }
 
@@ -236,7 +236,7 @@ module Test1
        {
           azy_net_code_set(_net, 200);
           azy_net_header_set(_net, "Content-Type", "text/plain");
-          azy_server_send(_net, (unsigned char *)"Crap\n", 5);
+          azy_server_client_send(_net, (unsigned char *)"Crap\n", 5);
           return EINA_TRUE;
        }
      else
@@ -246,7 +246,7 @@ module Test1
 
           azy_net_code_set(_net, 401);
           azy_net_header_set(_net, "Content-Type", "text/html");
-          azy_server_send(_net, (unsigned char *)eina_strbuf_string_get(response), eina_strbuf_length_get(response));
+          azy_server_client_send(_net, (unsigned char *)eina_strbuf_string_get(response), eina_strbuf_length_get(response));
 
           eina_strbuf_free(response);
           return EINA_TRUE;
@@ -266,7 +266,7 @@ module Test1
                         azy_net_code_set(_net, 401);
                         azy_net_header_set(_net, "Content-Type", "text/plain");
                         azy_net_header_set(_net, "WWW-Authenticate", "Basic realm=\"Azy Testsuite\"");
-                        azy_server_send(_net, (unsigned char*)"Authentication Required", -1);
+                        azy_server_client_send(_net, (unsigned char*)"Authentication Required", -1);
                         return EINA_TRUE;
                 }
 
@@ -280,7 +280,7 @@ module Test1
 
                 azy_net_code_set(_net, 200);
                 azy_net_header_set(_net, "Content-Type", "text/plain");
-                azy_server_send(_net, (unsigned char*)"Crap\n", -1);
+                azy_server_client_send(_net, (unsigned char*)"Crap\n", -1);
                 return EINA_TRUE;
         %>
  */

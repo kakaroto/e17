@@ -171,7 +171,7 @@ extern "C" {
    Azy_Server            *azy_server_new(Eina_Bool   secure);
    void                    azy_server_free(Azy_Server *server);
    Eina_List              *azy_server_module_defs_get(Azy_Server *server);
-   Eina_Bool               azy_server_send(Azy_Net      *net,
+   Eina_Bool               azy_server_client_send(Azy_Net      *net,
                                             unsigned char *data,
                                             int            length);
    Eina_Bool azy_server_run(Azy_Server *server,

@@ -260,8 +260,9 @@ _azy_server_client_new(Azy_Server      *server,
    client->net->server_client = EINA_TRUE;
    client->ip = ecore_con_client_ip_get(conn);
    client->server = server;
-   client->last_used = ecore_time_get();
    client->session_id = azy_uuid_new();
+
+   ecore_con_client_data_set(conn, client);
 
    client->del = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DEL, (Ecore_Event_Handler_Cb)_azy_server_client_handler_del, client);
    client->data = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DATA, (Ecore_Event_Handler_Cb)_azy_server_client_handler_data, client);
@@ -541,9 +542,23 @@ _azy_server_client_handler_data(Azy_Server_Client          *client,
    int len = (ev) ? ev->size : 0;
    static unsigned char *overflow;
    static long long int overflow_length;
+   static Azy_Server_Client *cli;
+
+   if (type == -500)
+     {
+        if (overflow)
+          free(overflow);
+
+        overflow = NULL;
+        overflow_length = 0;
+     }
+
+   if (client != (Azy_Server_Client*)((ev) ? ecore_con_client_data_get(ev->client) : cli))
+     return ECORE_CALLBACK_PASS_ON;
 
    DBG("(client=%p, ev=%p, data=%p)", client, ev, (ev) ? ev->data : NULL);
-   client->net->nodata = EINA_FALSE;
+
+   cli = client;
 
 #ifdef ISCOMFITOR
    char buf[64];
@@ -667,20 +682,27 @@ _azy_server_client_handler_del(Azy_Server_Client         *client,
                                 int                         type __UNUSED__,
                                 Ecore_Con_Event_Client_Del *ev)
 {
+   if (client != ecore_con_client_data_get(ev->client))
+     return ECORE_CALLBACK_PASS_ON;
+     
    DBG("(client=%p)", client);
    INFO("Client %s has disconnected!", ecore_con_client_ip_get(ev->client));
-   if (client->net->timer)
-     ecore_timer_del(client->net->timer);
    _azy_server_client_free(client);
 
-   return ECORE_CALLBACK_RENEW;
+   if (!ecore_con_server_connected_get(client->server->server))
+     _azy_server_client_handler_data(NULL, -500, NULL);
+
+   return ECORE_CALLBACK_CANCEL;
 }
 
 Eina_Bool
-azy_server_client_add_handler(Azy_Server                *server,
+azy_server_client_handler_add(Azy_Server                *server,
                                int                         type __UNUSED__,
                                Ecore_Con_Event_Client_Add *ev)
 {
+   if (server != ecore_con_server_data_get(ecore_con_client_server_get(ev->client)))
+     return ECORE_CALLBACK_PASS_ON;
+
    DBG("(server=%p)", server);
 
    INFO("Client %s has connected!", ecore_con_client_ip_get(ev->client));

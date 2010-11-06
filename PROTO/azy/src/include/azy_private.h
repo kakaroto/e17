@@ -113,7 +113,6 @@ typedef struct _Azy_Server_Client
 
    const char          *session_id;
    const char          *ip;
-   double               last_used;
 } Azy_Server_Client;
 
 struct _Azy_Server_Module
@@ -181,9 +180,6 @@ struct _Azy_Blob
 
 Eina_Bool __azy_value_is_complicated(Azy_Value *v,
                                       int                 max_strlen);
-Eina_Bool azy_server_client_add_handler(Azy_Server        *server,
-                                         int                         type,
-                                         Ecore_Con_Event_Client_Add *ev);
 int azy_events_type_parse(Azy_Net            *net,
                            int                  type,
                            const unsigned char *header,
@@ -207,7 +203,7 @@ Eina_Bool _azy_client_handler_data(Azy_Client_Handler_Data *handler_data,
                                     int                               type,
                                     Ecore_Con_Event_Server_Data      *ev);
 
-Eina_Bool azy_server_client_add_handler(Azy_Server                *server,
+Eina_Bool azy_server_client_handler_add(Azy_Server                *server,
                                          int                         type,
                                          Ecore_Con_Event_Client_Add *ev);
 void      _azy_event_handler_fake_free(void *data __UNUSED__, void *data2 __UNUSED__);

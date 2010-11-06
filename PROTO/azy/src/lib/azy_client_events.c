@@ -6,7 +6,6 @@
 #include "Azy.h"
 #include "azy_private.h"
 
-
 static void _azy_client_handler_call_free(Azy_Client *client, Azy_Content *content);
 static Eina_Bool _azy_client_handler_call(Azy_Client_Handler_Data *handler_data);
 static void _azy_client_handler_data_free(Azy_Client_Handler_Data *data);
@@ -96,14 +95,17 @@ _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
    else
      {
        if (!azy_content_error_is_set(content))
-         ecore_event_add(AZY_CLIENT_RETURN, content, (Ecore_End_Cb)_azy_client_handler_call_free, NULL);
+         ecore_event_add(AZY_CLIENT_RETURN, content, (Ecore_End_Cb)_azy_client_handler_call_free, client);
        else
-         ecore_event_add(AZY_CLIENT_ERROR, content, (Ecore_End_Cb)_azy_client_handler_call_free, NULL);
+         ecore_event_add(AZY_CLIENT_ERROR, content, (Ecore_End_Cb)_azy_client_handler_call_free, client);
      }
    client->conns = eina_list_remove(client->conns, handler_data);
 
    if (client->conns)
-     ecore_event_handler_data_set(client->recv, client->conns->data);
+     {
+        ecore_event_handler_data_set(client->recv, client->conns->data);
+        ecore_con_server_data_set(client->net->conn, client);
+     }
    return EINA_TRUE;
 }
 
@@ -147,7 +149,16 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
    EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data, ECORE_CALLBACK_RENEW);
    EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data->client, ECORE_CALLBACK_RENEW);
    EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data->client->net, ECORE_CALLBACK_RENEW);
+
    DBG("(handler_data=%p, method='%s', ev=%p, data=%p)", handler_data, (handler_data) ? handler_data->method : NULL, ev, (ev) ? ev->data : NULL);
+   DBG("(client=%p, server->client=%p)", handler_data->client, (ev) ? ecore_con_server_data_get(ev->server) : NULL);
+
+
+   if (handler_data->client != (Azy_Client*)((ev) ? ecore_con_server_data_get(ev->server) : client))
+     {
+        DBG("Ignoring callback due to pointer mismatch");
+        return ECORE_CALLBACK_PASS_ON;
+     }
 
 #ifdef ISCOMFITOR
    if (data)
@@ -303,33 +314,44 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
    return ECORE_CALLBACK_RENEW;
 }
 
+static void
+_azy_client_handler_del_free(void *data __UNUSED__, Azy_Client *client)
+{
+   azy_client_free(client);
+}
+
 Eina_Bool
 _azy_client_handler_del(Azy_Client                    *client,
                          int type                        __UNUSED__,
-                         Ecore_Con_Event_Server_Del *del __UNUSED__)
+                         Ecore_Con_Event_Server_Del *ev __UNUSED__)
 {
    Azy_Client_Handler_Data *handler_data;
 
+   if (client != ecore_con_server_data_get(ev->server))
+     return ECORE_CALLBACK_PASS_ON;
+
    DBG("(client=%p, net=%p)", client, client->net);
    if (!client->connected)
-     return ECORE_CALLBACK_RENEW;
+     return ECORE_CALLBACK_CANCEL;
    client->connected = EINA_FALSE;
    EINA_LIST_FREE(client->conns, handler_data)
      _azy_client_handler_data_free(handler_data);
 
-   ecore_event_add(AZY_CLIENT_DISCONNECTED, client, _azy_event_handler_fake_free, NULL);
-   return ECORE_CALLBACK_RENEW;
+   ecore_event_add(AZY_CLIENT_DISCONNECTED, client, (Ecore_End_Cb)_azy_client_handler_del_free, NULL);
+   return ECORE_CALLBACK_CANCEL;
 }
 
 Eina_Bool
 _azy_client_handler_add(Azy_Client                    *client,
                          int type                        __UNUSED__,
-                         Ecore_Con_Event_Server_Add *add __UNUSED__)
+                         Ecore_Con_Event_Server_Add *ev __UNUSED__)
 {
+   if (client != ecore_con_server_data_get(ev->server))
+     return ECORE_CALLBACK_PASS_ON;
    DBG("(client=%p, net=%p)", client, client->net);
 
    client->connected = EINA_TRUE;
 
    ecore_event_add(AZY_CLIENT_CONNECTED, client, _azy_event_handler_fake_free, NULL);
-   return ECORE_CALLBACK_RENEW;
+   return ECORE_CALLBACK_CANCEL;
 }
