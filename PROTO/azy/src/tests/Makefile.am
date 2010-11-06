@@ -44,8 +44,8 @@ LDADD = \
 
 check_PROGRAMS = \
   client \
+  stress_client \
   server
-#  tclient \
 #  session-client \
 #  value-utils-test
 
@@ -57,9 +57,9 @@ client_SOURCES = \
 #  session-client.c \
 #  $(BUILT_SOURCES)
 
-#tclient_SOURCES = \
-#  tclient.c \
-#  $(BUILT_SOURCES)
+stress_client_SOURCES = \
+  stress_client.c \
+  $(BUILT_SOURCES)
 
 server_SOURCES = \
   server.c \

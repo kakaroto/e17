@@ -147,7 +147,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
    EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data, ECORE_CALLBACK_RENEW);
    EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data->client, ECORE_CALLBACK_RENEW);
    EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data->client->net, ECORE_CALLBACK_RENEW);
-   DBG("(handler_data=%p, method='%s', ev=%p, data=%p)", handler_data, handler_data->method, ev, (ev) ? ev->data : NULL);
+   DBG("(handler_data=%p, method='%s', ev=%p, data=%p)", handler_data, (handler_data) ? handler_data->method : NULL, ev, (ev) ? ev->data : NULL);
 
 #ifdef ISCOMFITOR
    if (data)
@@ -179,13 +179,14 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
            {
               handler_data->recv->buffer = NULL;
               handler_data->recv->size = 0;
-              INFO("%s: Set recv size to %lli, storing overflow of %lli", handler_data->method, handler_data->recv->size, overflow_length);
+              INFO("%s: Overflow could not be parsed, set recv size to %lli, storing overflow of %lli", handler_data->method, handler_data->recv->size, overflow_length);
               return EINA_TRUE;
            }
          else
            {
               overflow = NULL;
               overflow_length = 0;
+              INFO("%s: Overflow was parsed! Removing...", handler_data->method);
            }
      }
    if (!handler_data->recv->headers_read) /* if headers aren't done being read, keep reading them */
@@ -193,7 +194,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
         if (!azy_events_header_parse(handler_data->recv, data, len, offset) && ev)
           return azy_events_connection_kill(handler_data->client->net->conn, EINA_FALSE, NULL);
      }
-   else
+   else if (data)
      {   /* otherwise keep appending to buffer */
         unsigned char *tmp;
         
@@ -231,6 +232,22 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
              INFO("%s: Incremented recv size to %lli (+%i)", handler_data->method, handler_data->recv->size, len);
           }
      }
+   else if (handler_data->recv->size > handler_data->recv->http.content_length)
+     {
+        overflow_length = handler_data->recv->size - handler_data->recv->http.content_length;
+        overflow = malloc(overflow_length);
+        if (!overflow)
+          {
+             ERR("alloc failure, losing %lli bytes", overflow_length);
+             _azy_client_handler_call(handler_data);
+             return ECORE_CALLBACK_RENEW;
+          }
+        memcpy(overflow, handler_data->recv->buffer, overflow_length);
+        WARN("%s: Extra content length of %lli! Set recv size to %lli (previous %lli)",
+             handler_data->method, overflow_length, handler_data->recv->http.content_length, handler_data->recv->size);
+        handler_data->recv->size = handler_data->recv->http.content_length;
+
+     }
 
    if (handler_data->recv->overflow)
      {
@@ -247,10 +264,10 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
      {
         if (!handler_data->recv->timer)
           /* no timer and full content length not received, start timer */
-          handler_data->recv->timer = ecore_timer_add(5, (Ecore_Task_Cb)_azy_client_recv_timer, handler_data->recv);
+          handler_data->recv->timer = ecore_timer_add(30, (Ecore_Task_Cb)_azy_client_recv_timer, handler_data->recv);
         else
           /* timer and full content length not received, reset timer */
-          ecore_timer_delay(handler_data->recv->timer, 5);
+          ecore_timer_interval_set(handler_data->recv->timer, 30);
      }
    else
      {

@@ -92,6 +92,12 @@ azy_init()
    ecore_con_init();
 
    _register_errors();
+
+   AZY_CLIENT_DISCONNECTED = ecore_event_type_new();
+   AZY_CLIENT_CONNECTED = ecore_event_type_new();
+   AZY_CLIENT_RETURN = ecore_event_type_new();
+   AZY_CLIENT_ERROR = ecore_event_type_new();
+   
    azy_log_dom = eina_log_domain_register("azy", EINA_COLOR_BLUE);
 
    _azy_initialized = 1;
@@ -106,6 +112,7 @@ azy_shutdown()
    eina_log_domain_unregister(azy_log_dom);
    ecore_con_shutdown();
    ecore_shutdown();
+   eina_shutdown();
    _azy_initialized = 0;
 }
 

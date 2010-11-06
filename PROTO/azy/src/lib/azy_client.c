@@ -12,7 +12,6 @@
 #include "azy_private.h"
 
 static Azy_Client_Call_Id __azy_client_send_id = 0;
-static char _init = 0;
 
 int AZY_CLIENT_DISCONNECTED;
 int AZY_CLIENT_CONNECTED;
@@ -22,6 +21,7 @@ int AZY_CLIENT_ERROR;
 void *
 azy_client_data_get(Azy_Client *client)
 {
+   DBG("(client=%p)", client);
    EINA_SAFETY_ON_NULL_RETURN_VAL(client, NULL);
    return client->data;
 }
@@ -29,6 +29,7 @@ azy_client_data_get(Azy_Client *client)
 void
 azy_client_data_set(Azy_Client *client, void *data)
 {
+   DBG("(client=%p)", client);
    EINA_SAFETY_ON_NULL_RETURN(client);
    client->data = data;
 }
@@ -43,15 +44,6 @@ azy_client_new(void)
    if (!(client = calloc(sizeof(Azy_Client), 1)))
      return NULL;
 
-   if (EINA_UNLIKELY(!_init))
-     {
-        AZY_CLIENT_DISCONNECTED = ecore_event_type_new();
-        AZY_CLIENT_CONNECTED = ecore_event_type_new();
-        AZY_CLIENT_RETURN = ecore_event_type_new();
-        AZY_CLIENT_ERROR = ecore_event_type_new();
-        _init = 1;
-     }
-
    client->add = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, (Ecore_Event_Handler_Cb)_azy_client_handler_add, client);
    client->del = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, (Ecore_Event_Handler_Cb)_azy_client_handler_del, client);
 
@@ -63,6 +55,7 @@ azy_client_host_set(Azy_Client *client,
                      const char  *host,
                      int          port)
 {
+   DBG("(client=%p)", client);
    if ((!client) || (!host) || (port < 1) || (port > 65535))
      return EINA_FALSE;
 
@@ -77,6 +70,7 @@ azy_client_host_set(Azy_Client *client,
 const char *
 azy_client_hostname_get(Azy_Client *client)
 {
+   DBG("(client=%p)", client);
    if (!client) return NULL;
 
    return client->host;
@@ -85,6 +79,7 @@ azy_client_hostname_get(Azy_Client *client)
 Eina_Bool
 azy_client_hostname_set(Azy_Client *client, const char *hostname)
 {
+   DBG("(client=%p)", client);
    EINA_SAFETY_ON_NULL_RETURN_VAL(client, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(hostname, EINA_FALSE);
 
@@ -95,6 +90,7 @@ azy_client_hostname_set(Azy_Client *client, const char *hostname)
 int
 azy_client_port_get(Azy_Client *client)
 {
+   DBG("(client=%p)", client);
    if (!client) return -1;
 
    return client->port;
@@ -103,6 +99,7 @@ azy_client_port_get(Azy_Client *client)
 Eina_Bool
 azy_client_port_set(Azy_Client *client, int port)
 {
+   DBG("(client=%p)", client);
    EINA_SAFETY_ON_NULL_RETURN_VAL(client, EINA_FALSE);
    if (port < 1)
      return EINA_FALSE;
@@ -115,6 +112,7 @@ Eina_Bool
 azy_client_connect(Azy_Client *client,
                     Eina_Bool    secure)
 {
+   DBG("(client=%p)", client);
    Ecore_Con_Server *svr;
    int flags = ECORE_CON_REMOTE_NODELAY;
 
@@ -140,8 +138,8 @@ azy_client_connect(Azy_Client *client,
 Azy_Net *
 azy_client_net_get(Azy_Client *client)
 {
-   if (!client)
-     return NULL;
+   DBG("(client=%p)", client);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(client, NULL);
 
    return client->net;
 }
@@ -149,6 +147,7 @@ azy_client_net_get(Azy_Client *client)
 Eina_Bool
 azy_client_connected_get(Azy_Client *client)
 {
+   DBG("(client=%p)", client);
    EINA_SAFETY_ON_NULL_RETURN_VAL(client, EINA_FALSE);
    return client->connected;
 }
@@ -158,12 +157,10 @@ azy_client_close(Azy_Client *client)
 {
    DBG("(client=%p)", client);
 
-   if (!client)
-     return;
-
-   if (!client->connected)
-     return;
-
+   EINA_SAFETY_ON_NULL_RETURN(client);
+   EINA_SAFETY_ON_FALSE_RETURN(client->connected);
+   EINA_SAFETY_ON_NULL_RETURN(client->net);
+   
    ecore_con_server_del(client->net->conn);
 
    azy_net_free(client->net);
@@ -177,6 +174,8 @@ azy_client_callback_set(Azy_Client *client,
                          unsigned int id,
                          Azy_Client_Return_Cb callback)
 {
+   DBG("(client=%p, id=%u)", client, id);
+
    EINA_SAFETY_ON_NULL_RETURN_VAL(client, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(callback, EINA_FALSE);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(id < 1, EINA_FALSE);
@@ -193,6 +192,8 @@ azy_client_callback_free_set(Azy_Client *client,
                               unsigned int id,
                               void (*callback)(void*))
 {
+   DBG("(client=%p, id=%u)", client, id);
+
    EINA_SAFETY_ON_NULL_RETURN_VAL(client, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(callback, EINA_FALSE);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(id < 1, EINA_FALSE);
@@ -216,6 +217,7 @@ azy_client_call(Azy_Client       *client,
    DBG("(client=%p, net=%p, content=%p)", client, client->net, content);
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(client, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(client->net, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(content, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(content->method, 0);
 
@@ -227,9 +229,7 @@ azy_client_call(Azy_Client       *client,
         return 0;
      }
 
-   ++__azy_client_send_id;
-   if (__azy_client_send_id == 0)
-     ++__azy_client_send_id;
+   while (++__azy_client_send_id < 1);
 
    content->id = __azy_client_send_id;
 
@@ -319,9 +319,7 @@ azy_client_send(Azy_Client   *client,
 
    handler_data->client = client;
 
-   ++__azy_client_send_id;
-   if (__azy_client_send_id == 0)
-     ++__azy_client_send_id;
+   while (++__azy_client_send_id < 1);
 
    handler_data->id = __azy_client_send_id;
    client->conns = eina_list_append(client->conns, handler_data);
@@ -342,7 +340,8 @@ azy_client_free(Azy_Client *client)
    if (!client)
      return;
 
-   azy_client_close(client);
+   if (client->connected)
+     azy_client_close(client);
    if (client->host)
      eina_stringshare_del(client->host);
    if (client->session_id)

@@ -410,6 +410,12 @@ _azy_server_client_send(Azy_Server_Client *client,
    Eina_Strbuf *header;
 
    DBG("(client=%p, content=%p)", client, content);
+   if (!ecore_con_client_connected_get(client->net->conn))
+     {
+        WARN("Filtering reply for already disconnected client %s", client->ip);
+        azy_content_free(content);
+        return;
+     }
 
 #ifdef ISCOMFITOR
    azy_content_dump(content, 0);
@@ -558,13 +564,14 @@ _azy_server_client_handler_data(Azy_Server_Client          *client,
            {
               client->net->buffer = NULL;
               client->net->size = 0;
-              INFO("%s: Set recv size to %lli, storing overflow of %lli", client->ip, client->net->size, overflow_length);
+              INFO("%s: Overflow could not be parsed, set recv size to %lli, storing overflow of %lli", client->ip, client->net->size, overflow_length);
               return EINA_TRUE;
            }
          else
            {
               overflow = NULL;
               overflow_length = 0;
+              INFO("%s: Overflow was parsed! Removing...", client->ip);
            }
      }
    
@@ -573,7 +580,7 @@ _azy_server_client_handler_data(Azy_Server_Client          *client,
         if (!azy_events_header_parse(client->net, data, len, offset) && ev)
           return azy_events_connection_kill(client->net->conn, EINA_TRUE, error500);
      }
-   else
+   else if (data)
      {   /* otherwise keep appending to buffer */
         unsigned char *tmp;
         
@@ -611,7 +618,23 @@ _azy_server_client_handler_data(Azy_Server_Client          *client,
              INFO("%s: Incremented recv size to %lli (+%i)", client->ip, client->net->size, len);
           }
      }
+   else if (client->net->size > client->net->http.content_length)
+     {
+        overflow_length = client->net->size - client->net->http.content_length;
+        overflow = malloc(overflow_length);
+        if (!overflow)
+          {
+             ERR("alloc failure, losing %lli bytes", overflow_length);
+             _azy_server_client_handler_request(client);
+             return ECORE_CALLBACK_RENEW;
+          }
+        memcpy(overflow, client->net->buffer, overflow_length);
+        WARN("%s: Extra content length of %lli! Set recv size to %lli (previous %lli)",
+             client->ip, overflow_length, client->net->http.content_length, client->net->size);
+        client->net->size = client->net->http.content_length;
 
+     }
+          
    if (client->net->overflow)
      {
         overflow = client->net->overflow;
@@ -661,7 +684,7 @@ azy_server_client_add_handler(Azy_Server                *server,
    DBG("(server=%p)", server);
 
    INFO("Client %s has connected!", ecore_con_client_ip_get(ev->client));
-   ecore_con_client_timeout_set(ev->client, 3);
+   //ecore_con_client_timeout_set(ev->client, 3);
    _azy_server_client_new(server, ev->client);
 
    return ECORE_CALLBACK_RENEW;
