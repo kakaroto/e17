@@ -277,14 +277,14 @@ _azy_server_client_free(Azy_Server_Client *client)
      return;
 
    DBG("(client=%p)", client);
+   ecore_con_client_data_set(client->net->conn, NULL);
+   ecore_event_handler_data_set(client->del, NULL);
    azy_net_free(client->net);
    EINA_LIST_FREE(client->modules, s)
      _azy_server_module_free(s, EINA_TRUE);
    if (client->session_id)
      eina_stringshare_del(client->session_id);
 
-   if (client->del)
-     ecore_event_handler_del(client->del);
    if (client->data)
      ecore_event_handler_del(client->data);
 
@@ -554,7 +554,10 @@ _azy_server_client_handler_data(Azy_Server_Client          *client,
      }
 
    if (client != (Azy_Server_Client*)((ev) ? ecore_con_client_data_get(ev->client) : cli))
-     return ECORE_CALLBACK_PASS_ON;
+     {
+        DBG("Ignoring callback due to pointer mismatch");
+        return ECORE_CALLBACK_PASS_ON;
+     }
 
    DBG("(client=%p, ev=%p, data=%p)", client, ev, (ev) ? ev->data : NULL);
 
@@ -682,14 +685,17 @@ _azy_server_client_handler_del(Azy_Server_Client         *client,
                                 int                         type __UNUSED__,
                                 Ecore_Con_Event_Client_Del *ev)
 {
+   DBG("(client=%p, server->client=%p)", client, (ev) ? ecore_con_client_data_get(ev->client) : NULL);
    if (client != ecore_con_client_data_get(ev->client))
-     return ECORE_CALLBACK_PASS_ON;
+     {
+        DBG("Ignoring callback due to pointer mismatch");
+        return ECORE_CALLBACK_PASS_ON;
+     }
      
-   DBG("(client=%p)", client);
    INFO("Client %s has disconnected!", ecore_con_client_ip_get(ev->client));
    _azy_server_client_free(client);
 
-   if (!ecore_con_server_connected_get(client->server->server))
+   if (!ecore_con_server_clients_get(client->server->server))
      _azy_server_client_handler_data(NULL, -500, NULL);
 
    return ECORE_CALLBACK_CANCEL;
@@ -700,10 +706,12 @@ azy_server_client_handler_add(Azy_Server                *server,
                                int                         type __UNUSED__,
                                Ecore_Con_Event_Client_Add *ev)
 {
+   DBG("(server=%p, server->client=%p)", server, (ev) ? ecore_con_server_data_get(ecore_con_client_server_get(ev->client)) : NULL);
    if (server != ecore_con_server_data_get(ecore_con_client_server_get(ev->client)))
-     return ECORE_CALLBACK_PASS_ON;
-
-   DBG("(server=%p)", server);
+     {
+        DBG("Ignoring callback due to pointer mismatch");
+        return ECORE_CALLBACK_PASS_ON;
+     }
 
    INFO("Client %s has connected!", ecore_con_client_ip_get(ev->client));
    //ecore_con_client_timeout_set(ev->client, 3);

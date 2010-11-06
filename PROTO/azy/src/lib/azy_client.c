@@ -273,8 +273,11 @@ azy_client_call(Azy_Client       *client,
 
    handler_data->id = __azy_client_send_id;
    if (!client->conns)
-     client->recv =  ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA,
-                                             (Ecore_Event_Handler_Cb)_azy_client_handler_data, handler_data);
+     {
+        client->recv =  ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA,
+                                                (Ecore_Event_Handler_Cb)_azy_client_handler_data, handler_data);
+        ecore_con_server_data_set(client->net->conn, client);
+     }
      
    client->conns = eina_list_append(client->conns, handler_data);
 
@@ -318,8 +321,11 @@ azy_client_send(Azy_Client   *client,
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!(handler_data = calloc(sizeof(Azy_Client_Handler_Data), 1)), 0);
 
    if (!client->conns)
-     client->recv =  ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA,
-                                             (Ecore_Event_Handler_Cb)_azy_client_handler_data, handler_data);
+     {
+        client->recv =  ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA,
+                                                (Ecore_Event_Handler_Cb)_azy_client_handler_data, handler_data);
+        ecore_con_server_data_set(client->net->conn, client);
+     }
 
    handler_data->client = client;
 

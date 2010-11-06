@@ -106,6 +106,11 @@ _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
         ecore_event_handler_data_set(client->recv, client->conns->data);
         ecore_con_server_data_set(client->net->conn, client);
      }
+   else
+     {
+        ecore_event_handler_data_set(client->recv, NULL);
+        ecore_con_server_data_set(client->net->conn, NULL);
+     }
    return EINA_TRUE;
 }
 
@@ -146,7 +151,8 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
    static long long int overflow_length;
    static Azy_Client *client;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data, ECORE_CALLBACK_RENEW);
+   if (!handler_data)
+     return ECORE_CALLBACK_RENEW;
    EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data->client, ECORE_CALLBACK_RENEW);
    EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data->client->net, ECORE_CALLBACK_RENEW);
 

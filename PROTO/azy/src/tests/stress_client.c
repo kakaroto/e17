@@ -10,7 +10,9 @@
 
 #include "TTest1.azy_client.h"
 
-#define NUM_CLIENTS 5
+#define NUM_CLIENTS 50
+
+static Eina_List *clients;
 
 static Eina_Bool
 _check_err(Azy_Content *err)
@@ -43,16 +45,19 @@ _TTest1_getAll_ret(Azy_Client *client __UNUSED__, int type __UNUSED__, Azy_Conte
 
    ret = azy_content_return_get(content);
    printf("#%i: Success? %s!\n", x, ret ? "YES" : "NO");
+   if (x == (NUM_CLIENTS * NUM_CLIENTS))
+     ecore_main_loop_quit();
 }
 
 static Eina_Bool
 _connected(Azy_Client *cli __UNUSED__, int type __UNUSED__, Azy_Client *ev)
 {
    Azy_Content *err;
+   int i;
 
-printf("_connected\n");
    err = azy_content_new(NULL);
 
+   for (i = 0; i < NUM_CLIENTS; i++)
      {
         Azy_Client_Call_Id ret;
         if (!azy_client_connected_get(ev))
@@ -91,22 +96,27 @@ _spawn(void *data __UNUSED__)
           return;
 
         azy_net_uri_set(azy_client_net_get(cli), "/");
+        clients = eina_list_append(clients, cli);
      }
 }
 
 int
 main(void)
 {
+   Azy_Client *cli;
    eina_init();
    ecore_init();
    azy_init();
-   eina_log_domain_level_set("azy", EINA_LOG_LEVEL_DBG);
+   eina_log_domain_level_set("azy", EINA_LOG_LEVEL_ERR);
 
 
    ecore_job_add(_spawn, NULL);
    ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)_connected, NULL);
    ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)_TTest1_getAll_ret, NULL);
    ecore_main_loop_begin();
+
+   EINA_LIST_FREE(clients, cli)
+     azy_client_free(cli);
 
    azy_shutdown();
    ecore_shutdown();
