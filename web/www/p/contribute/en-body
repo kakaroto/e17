@@ -2,28 +2,453 @@
  <tr>
   <td class='main'>
    <div class="main">
-<h1>Contributing</h1>
+   
+<table border=0 cellpadding=0 cellspacing=0>
+<tr>
+<td class='main' width=33%><div class="main">
 
-<p>If you're looking to help out on the project you're in the right place.
-We are always looking for people to work on code, do translations, write
-documentation, help new users, answer forum questions or verify bugs. If
-this kind of thing peaks your interest keep reading.</p>
+<?php frame1("width=100%");?>
+<div class="main">
+ <h2>Source</h2>
+ 
+ <p>
+  All our source code is available from our SVN source repository at
+  all times. If we actually are moving seriously on a piece of code,
+  it will make its way to our <?php a("download", "download");?> page.
+  For something supported, look there. If you want to help with
+  development or are just hyper-curious and want to see what's in our
+  workshop, then you will want to <a
+  href=http://trac.enlightenment.org/e/browser/trunk>browse through
+  our SVN repository</a>. Alternatively, you will want to check it out.
+ </p>
+ <p>
+  Our SVN repository is not small. There's currently over 1.5 million
+  lines of C source code alone in there. Along with some other
+  languages. A full local checkout will use about 1.2 GB of local disk
+  space. To check it out you will need <a 
+  href=http://subversion.tigris.org/>subversion</a>. Most Linux
+  distributions come with packages for them. For other operating
+  systems your luck may vary. There is <a
+  href=http://tortoisesvn.tigris.org/>Tortoise SVN</a> for windows,
+  and OSX users can just use regular subversion like their Linux
+  counterparts. To check out all of SVN just use:
+ </p>
+ <p>
+  <b>svn co http://svn.enlightenment.org/svn/e</b>
+ </p>
+ <p>
+  <em>(You can also use https instead of http if you want to use SSL
+  encryption)</em>
+ </p>
+ <p>
+  You can also use git (with git-svn) if you want to maintain lots of
+  local branches, code and features and generate patches and so on. You
+  can do this with:
+ </p>
+ <p>
+  <b>git svn clone http://svn.enlightenment.org/svn/e</b>
+ </p>
+ <p>
+  To update the code in your tree (pull in changes from our master
+  tree), just use:
+ </p>
+ <p>
+  <b>svn update</b>
+ </p>
+ <p>
+  Or for git use:
+ </p>
+ <p>
+  <b>git svn rebase</b>
+ </p>
+ <p>
+  If you have made changes you'd like to share, you can generate a patch
+  file from your changes with:
+ </p>
+ <p>
+  <b>svn diff</b>
+ </p>
+ <p>
+  Or with git
+ </p>
+ <p>
+  <b>git diff</b>
+ </p>
+ <p>
+  Please read the appropriate manuals for your chosen revisioning
+  system so you know how to use it effectively.
+ </p>
+  <hr>
+ <p>
+  Once you become an enlightenment developer, you will possibly get SVN
+  commit access. This means you can not just fetch the code and generate
+  patches, but you can also directly put changes into SVN (commit them).
+  All changes are watched and broadcast on our <a 
+  href=https://lists.sourceforge.net/lists/listinfo/enlightenment-svn>
+  SVN Commits List</a> as they happen. To gain a copy of the tree as a
+  developer with commit access you will want to check out the tree with
+  one of the following commands (depending on if you want to use SVN
+  directly, or SVN via git), where <b>USER</b> is your assigned username:
+ </p>
+ <p>
+  <b>svn co svn+ssh://USER@svn.enlightenment.org/var/svn/e</b>
+ </p>
+ <p>
+  <b>git svn clone svn+ssh://USER@svn.enlightenment.org/var/svn/e/evas</b>
+ </p>
+ <p>
+  Our SVN tree is divided up and categorized. The <b>trunk</b>
+  directory is where all the main development happens. Inside this
+  directory most maintained source lives in the base. We divided off
+  bindings for other languages off into the <b>BINDINGS</b> directory. 
+  The <b>E-MODULES-EXTRA</b> contains a whole bunch of modules for
+  enlightenment that may or may not work - try at your own risk.
+  <b>PROTO</b> contains prototype applications. <b>TMP</b> is scratch
+  space for projects yet to be categorized or found a home in the
+  tree. We could go on telling you about the tree, but it's best to
+  just look around and see. Just keep in mind that this tree is our
+  "workshop" and parts of it may be in better condition than others and
+  may or may not be usable. If you look here it is assumed you have a
+  good technical grasp on things and can work out what is and isn't
+  relevant or being worked on or going to be released any time soon.
+ </p>
+ 
+</div>
+<?php frame2();?>
 
-<p>All of the Enlightenment development happens out of the SVN repository.
-You can browse the repository through the
-<a href="http://trac.enlightenment.org/e/browser/trunk">Trac</a> interface.
-You can work off of the snapshots but you'll always be behind the current
-set of patches and fixes that are in SVN. Any bugs being report should be
-done against the latest SVN revisions.</p>
+<?php frame1("width=100%");?>
+<div class="main">
+ <h2>Building</h2>
+ 
+ <p>
+  Almost all our project are C based (with some C++). They almost all
+  use autoconf, automake, libtool etc. (autotools) and any such source
+  tree will ship with an <b>autogen.sh</b> script. This is where it all
+  begins.
+ </p>
+ <p>
+  To build a library or application simply start by running the
+  <b>autogen.sh</b> script (and pass in a --prefix="/where/to/install"
+  option if you wish something other than the default /usr/local install
+  location). The <b>autogen.sh</b> script will run configure for you,
+  passing in any parameters provided to it to configure. After this you
+  should be able to do the usual <b>make</a> and <b>make install</b>
+  (as root if you install in a root owned location). So a quick recipe for
+  building anything would be:
+ </p>
+ <p>
+  <b>./autogen.sh && make && sudo make install</b>
+ </p>
+ <p>
+  You will definitely want the following installed to build EFL and E
+  (exact package names may vary from system to system):
+ </p>
+ <p>
+  <ul>
+   <li>subversion</li>
+   <li>gcc</li>
+   <li>autoconf 2.59 or better</li>
+   <li>automake 1.10 or better</li>
+   <li>libtool</li>
+   <li>make (gnu make)</li>
+   <li>gettext</li>
+   <li>libpam dev headers</li>
+   <li>libfreetype dev headers</li>
+   <li>libpng dev headers</li>
+   <li>libjpeg dev headers</li>
+   <li>zlib dev headers</li>
+   <li>libdbus dev headers</li>
+   <li>libblua 5.1 or better dev headers</li>
+   <li>libx11 dev headers</li>
+   <li>libxcursor dev headers</li>
+   <li>libxrender dev headers</li>
+   <li>libxrandr dev headers</li>
+   <li>libxfixes dev headers</li>
+   <li>libxdamage dev headers</li>
+   <li>libxcomposite dev headers</li>
+   <li>libxss dev headers</li>
+   <li>libxp dev headers</li>
+   <li>libxext dev headers</li>
+   <li>libxinerama dev headers</li>
+   <li>libxkbfile dev headers</li>
+   <li>libxtst dev headers</li>
+  </ul>
+ </p>
+ <p>
+  Some extra optional packages for support of bonus features that you
+  might want installed also are:
+ </p>
+ <p>
+  <ul>
+   <li>libtiff dev headers (tiff loading support in evas)</li>
+   <li>librsvg dev headers (svg loading support in evas)</li>
+   <li>libungif dev headers (gif loading support in evas)</li>
+   <li>libcurl dev headers (http download/fetch support in ecore)</li>
+   <li>libgnutls dev headers (signed eet files, secure tcp conntection support for ecore)</li>
+  </ul>
+ </p>
+ <p>
+  Also note that for many other libraries and applications you may
+  want or need other dependencies. These will vary from project to
+  project. For example - <b>emotion</b> will require either gstreamer or
+  libxine libraries and development headers to build.
+ </p>
+ <p>
+  The following handy script will also give you an insight as to how
+  to compile things and in what order:
+ </p>
+ <p>
+<pre>
+#!/bin/sh
+set -e
+PREFIX="/usr/local"
+PROJECTS="\
+eina eet evas ecore \
+embryo edje e_dbus efreet \
+e"
+SITE="svn.enlightenment.org"
+SVN="http://$SITE/svn/e/trunk"
+OPT="--prefix=$PREFIX"
+svn co $SVN
+PKG_CONFIG_PATH="\
+$PREFIX/lib/pkgconfig:\
+$PKG_CONFIG_PATH"
+PATH="$PREFIX/bin:$PATH"
+LD_LIBRARY_PATH="\
+$PREFIX/lib:\
+$LD_LIBRARY_PATH"
+for PROJ in $PROJECTS; do
+  cd trunk/$PROJ
+  make clean distclean || true
+  ./autogen.sh $OPT
+  make
+  sudo make install
+  cd ../..
+  sudo ldconfig
+done
+</pre>
+ </p>
+ 
+</div>
+<?php frame2();?>
 
-<p>Please see <a href=http://svn.enlightenment.org>svn.enlightenment.org</a>
-for more information on how to use SVN.</p>
 
-<p>For more information about the different EFL libraries please consult the
-<a href="http://wiki.enlightenment.org">wiki</a> and
-<a href="http://docs.enlightenment.org">documentation</a>. Any bugs
-identified, or features desired, can be entered into the
-<a href="http://trac.enlightenment.org/e">Tracker</a>.</p>
+</div></td>
+<td class='main' width=33%><div class="main">
+
+<?php frame1("width=100%");?>
+<div class="main">
+ <h2>Conventions</h2>
+ 
+ <p>
+  We follow many conventions in order to work as a team despite the fact
+  that we are spread around the world, in many different timezones, speak
+  many languages, run multiple operating systems and have divergent goals.
+  These conventions cover how we speak, communicate, what our code looks
+  like, what our source trees look like and more. These conventions help
+  our many disparate libraries at least look somewhat alike and makes
+  maintenance, development and troubleshooting much easier. It also
+  helps with an introduction to Enlightenment and EFL as the rules you
+  learn in one place allow you to quickly discover what you need in
+  another unfamiliar location, as it follows the same conventions.
+ </p>
+ <h3>Language</h3>
+ <p>
+  Our primary language is English. For better or worse it is the
+  one language most of us know better than any other. All documentation,
+  comments and discussion should be in English. It doesn't need to be
+  perfect. It needs to be understandable. So when you write code comments,
+  <?php a("contact", "discuss anything ");?> on IRC, in E-Mail or
+  otherwise, please keep it in English.
+ </p>
+ <h3>Coding Style</h3>
+ <p>
+  Our golden rule of coding - <b>FOLLOW THE CODING STYLE
+  ALREADY THERE</b>. That means that if you work on code that already
+  exists, keep to the spacing, indenting, variable and function naming
+  style, etc. that already exists. Don't go changing it mid-file or
+  mid-project. It is even better if you use the same formatting for
+  new projects that has already been used on others. It means the code
+  is easier to read and maintain.
+ </p>
+ <p>
+<pre>
+static Eet_File_Node *
+find_node_by_name(Eet_File   *ef,
+                  const char *name)
+{
+  Eet_File_Node *efn;
+  int hash;
+
+  hash = _eet_hash_gen(name, ef->header->directory->size);
+  for (efn = ef->header->directory->nodes[hash]; efn; efn = efn->next)
+    {
+      if (eet_string_match(efn->name, name)) return efn;
+      else break;
+    }
+  return NULL;
+}
+
+EAPI Eet_Error
+eet_sync(Eet_File *ef)
+{
+  Eet_Error ret;
+
+  if (eet_check_pointer(ef)) return EET_ERROR_BAD_OBJECT;
+  if ((ef->mode != EET_FILE_MODE_WRITE) &&
+      (ef->mode != EET_FILE_MODE_READ_WRITE))
+    return EET_ERROR_NOT_WRITABLE;
+  else
+    {
+      ef->data = NULL;
+      ef->count++;
+    }
+  ret = eet_flush2(ef);
+  return ret;
+}
+</pre>
+ </p>
+ <h3>Source Trees</h3>
+ <p>
+  XXX: talk about autofoo, src, data src/bin, src/lib, src/modules, doc
+  etc. etc.
+ </p>
+ <h3>Licenses &amp; Copyright</h3>
+ <p>
+  By default we stick to open source licenses. GPL, LGPL, BSD and so
+  on. The person who starts any project calls the shots on its initial
+  license and it is assumed all people contributing to it do so under
+  the terms of that license. We also respect the licenses of others and
+  their works, so we won't be accepting code that we know is already
+  under an incompatible license. All projects should contain a COPYING
+  file in the base directory of that project that covers all files in
+  that project (unless otherwise stated).
+ </p>
+ <p>
+  If you want your name listed as an author of a project when you
+  contribute code, <b>PLEASE</b> remember to include your name and
+  E-Mail address as a patch to the AUTHORS file. This way you will have
+  the correct name and contact details listed. All members of the
+  AUTHORS file share copyright over the code they contribute to. So
+  remember to include this change to AUTHORS for the first patch or
+  commit you provide to make sure your name is immortalized in
+  blinking lights in the AUTHORS file.
+ </p>
+ <p>
+  If you want to begin work on a a feature - something that isn't just
+  a small trivial fix or feature, please discuss it on our mailing lists
+  or IRC channels or both. Generally try and find the person in charge
+  of that component, but if you can't, a broadcast to the devel list
+  should find them. At this point you should discuss your idea and
+  plans. This is where you can find out if someone else is already
+  doing it, if it's a good idea or not, if it can be done better, how it
+  should be done etc. Once you get agreement, you will know what to do
+  next. Doing work and then just dumping it on developers as a
+  surprise generally doesn't get a positive response. It was unexpected
+  and often quite large. If you send small patches and changes over
+  many days or weeks, as opposed to wait weeks or even months then send a
+  single massive patch, you will get much better response. Big patches
+  discourage review as time to review it is large and most developers
+  just don't have such large blocks of time. Lots of smaller steps
+  always works better.
+ </p>
+ 
+</div>
+<?php frame2();?>
+
+</div></td>
+<td class='main' width=33%><div class="main">
+
+<?php frame1("width=100%");?>
+<div class="main">
+ <h2>Join us</h2>
+ 
+ <p>
+  If you join us you'll be welcomed into a community of developers and
+  users who like to do cool things and actually make them happen. If
+  you join you will not only be able to hang out with us (well you can
+  anyway), you'll actually start to have a say in how Enlightenment and
+  EFL develop, if not actually get some control. It also reduces a
+  massive amount of work involved in maintaining forks as your work
+  becomes mainline and gets shared, tested and maintained by a wider
+  audience earlier, not to mention it likely becomes much better
+  quality. If you are not into doing code, maybe you can help in other
+  ways like with advertising and publicity, documentation and
+  packaging, if not just regular bug reporting.
+ </p>
+ <p>
+  To report a bug please see the <?php a("contact", "contact");?> page.
+  To submit initial patches for code, please send them to the mailing
+  list after discussions have taken place. Keep patches small and send
+  them, often as you work. Small patches get reviewed quickly. Large
+  patches get delayed or sometimes ignored or lost. Make sure that any
+  patch at least compiles and doesn't break an existing functionality
+  (so make the changes enableable at compile or runtime as part of the
+  patch if it does intersect with existing functionality). You will get
+  feedback on your patches and may be asked to make changes before
+  inclusion. Also remember to respect the formatting and conventions of
+  the existing code as it gets a bit tedious asking for basic changes
+  like naming, spacing and general style. We'd rather focus on the
+  actual algorithms and features involved.
+ </p>
+ <p>
+  If you want developer access (SVN commit access) first you will need
+  an existing developer to approve that. Generally any senior or long
+  time developer can do it - new ones can too but will probably defer
+  the OK decision to a senior developer first. To gain access we need
+  you to provide a few files. The kind of files you find like
+  <a href=http://trac.enlightenment.org/e/browser/trunk/devs/raster>
+  this developer</a>.
+ </p>
+ <p>
+  The <b>info.txt</b> file provides general information about you.
+  Please fill one in with relevant information needed, with your Login
+  being the developer login name you'd like, as well as other important
+  fields. If you are new the Managing and Contributing fields may be
+  empty, as well as Group, but please provide everything else including
+  your location in the world as well as actual Geographic data.
+ </p>
+ <p>
+  The <b>id_rsa.pub</b> is your SSH public key. You will find this in
+  your <b>~/.ssh</b> directory. If you don't have one yet, you can
+  generate one with <b>ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa</b>
+  for example. You should read the SSH manuals for more information if
+  you need it. This SSH key will give you access to SVN so you can
+  check out and commit code, with all traffic between you and
+  enlightenment.org being encrypted.
+ </p>
+ <p>
+  As an addition we also ask you to provide some photos/images/icons
+  of yourself so we can put a face to a name. Take a look at the example
+  ones in the above developer directory. Provide images of the exact
+  same size in pixels, with the </b>icon-map.png</b> file having an
+  arrow at the bottom pointing down. This image is used on our world
+  developer map.
+ </p>
+ <p>
+  If you can't write code, you can always help by writing
+  documentation or articles or blogs. Contributing content to our
+  wiki site that may help other users is always useful. We also always
+  can do with artwork and graphics people. People who do artwork would
+  be able to get developer access as they will need access to the
+  source trees so they can put their artwork in there anyway.
+ </p>
+ <p>
+  Otherwise, debugging is also something that is always needed. No code
+  is perfect. It's written by humans. But bugs need to be fixed and to
+  help you help us find the bugs we don't see, but you do, see our
+  <a href=http://trac.enlightenment.org/e/wiki/Debugging>debugging</a>
+  page that lets you know how to begin to find bugs and provide useful
+  feedback.
+ </p>
+ 
+</div>
+<?php frame2();?>
+
+</div></td>
+</tr>
+</table>
+
    </div>
   </td>
  </tr>
