@@ -132,7 +132,7 @@
   option if you wish something other than the default /usr/local install
   location). The <b>autogen.sh</b> script will run configure for you,
   passing in any parameters provided to it to configure. After this you
-  should be able to do the usual <b>make</a> and <b>make install</b>
+  should be able to do the usual <b>make</b> and <b>make install</b>
   (as root if you install in a root owned location). So a quick recipe for
   building anything would be:
  </p>
