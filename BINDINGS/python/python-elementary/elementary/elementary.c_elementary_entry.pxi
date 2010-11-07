@@ -154,6 +154,54 @@ cdef class Entry(Object):
     def select_all(self):
         elm_entry_select_all(self.obj)
 
+    def cursor_next(self):
+        return bool(elm_entry_cursor_next(self.obj))
+
+    def cursor_prev(self):
+        return bool(elm_entry_cursor_prev(self.obj))
+
+    def cursor_up(self):
+        return bool(elm_entry_cursor_up(self.obj))
+
+    def cursor_down(self):
+        return bool(elm_entry_cursor_down(self.obj))
+
+    def cursor_begin_set(self):
+        elm_entry_cursor_begin_set(self.obj)
+
+    def cursor_end_set(self):
+        elm_entry_cursor_end_set(self.obj)
+
+    def cursor_line_begin_set(self):
+        elm_entry_cursor_line_begin_set(self.obj)
+
+    def cursor_line_end_set(self):
+        elm_entry_cursor_line_end_set(self.obj)
+
+    def cursor_selection_begin(self):
+        elm_entry_cursor_selection_begin(self.obj)
+
+    def cursor_selection_end(self):
+        elm_entry_cursor_selection_end(self.obj)
+
+    def cursor_is_format_get(self):
+        return bool(elm_entry_cursor_is_format_get(self.obj))
+
+    def cursor_is_visible_format_get(self):
+        return bool(elm_entry_cursor_is_visible_format_get(self.obj))
+
+    def cursor_content_get(self):
+        return elm_entry_cursor_content_get(self.obj)
+
+    def selection_cut(self):
+        elm_entry_selection_cut(self.obj)
+
+    def selection_copy(self):
+        elm_entry_selection_copy(self.obj)
+
+    def selection_paste(self):
+        elm_entry_selection_paste(self.obj)
+
     def context_menu_disabled_set(self, disabled):
         elm_entry_context_menu_disabled_set(self.obj, disabled)
 
