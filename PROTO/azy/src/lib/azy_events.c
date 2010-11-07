@@ -70,8 +70,8 @@ azy_events_type_parse(Azy_Net            *net,
           }
         else
           {
-             memcpy(buf_start, net->buffer, net->size);
-             len = net->size;
+             memcpy(buf_start, net->buffer, size);
+             len = size;
           }
 
         start = buf_start;
