@@ -237,13 +237,14 @@ AC_ARG_ENABLE(xrandr,
   [  --enable-xrandr         compile with RandR support @<:@default=yes@:>@],,
   enable_xrandr=yes)
 if test "x$enable_xrandr" = "xyes"; then
-  AC_CHECK_LIB(Xrandr, XRRQueryExtension,
+  PKG_CHECK_MODULES(XRANDR, xrandr,
     AC_DEFINE(USE_XRANDR, 1, [RandR support])
-    E_X_LIBS="-lXrandr -lXrender $E_X_LIBS",
+    PKG_CHECK_EXISTS(xrandr >= 1.2, AC_DEFINE(HAVE_XRANDR_12, 1, [RandR 1.2 support])
+      have_randr_12=y)
+    PKG_CHECK_EXISTS(xrandr >= 1.3, AC_DEFINE(HAVE_XRANDR_13, 1, [RandR 1.3 support])
+      have_randr_13=y),
     enable_xrandr=no
-    AC_MSG_WARN([RandR support was requested but not found]),
-    -lXrender -lXext -lX11)
-  AC_CHECK_HEADERS(X11/extensions/Xrandr.h,,,[#include <X11/Xlib.h>])
+    AC_MSG_WARN([RandR support was requested but not found]) )
 fi
 
 AC_ARG_ENABLE(xrender,
@@ -283,12 +284,29 @@ AC_ARG_ENABLE(zoom,
   [  --enable-zoom           compile with zoom support @<:@default=yes@:>@],,
   enable_zoom=yes)
 if test "x$enable_zoom" = "xyes"; then
+# Prefer xf86vm for now
+# if test "x$have_randr_13" = "xy"; then
+#   enable_zoom=xrandr
+# else
+    enable_zoom=xf86vm
+# fi
+fi
+if test "x$enable_zoom" = "xxf86vm"; then
   AC_CHECK_LIB(Xxf86vm, XF86VidModeQueryExtension,
     AC_DEFINE(ENABLE_ZOOM, 1, [Zoom Support])
+    AC_DEFINE(USE_ZOOM_XF86VM, 1, [Use xf86vm for zooming (deprecated)])
     E_X_LIBS="-lXxf86vm $E_X_LIBS",
     enable_zoom=no
     AC_MSG_WARN([Zoom support was requested but not found]),
     -lXext -lX11)
+fi
+if test "x$enable_zoom" = "xxrandr"; then
+  if test "x$have_randr_13" = "xy"; then
+    AC_DEFINE(ENABLE_ZOOM, 1, [Zoom Support])
+  else
+    enable_zoom=no
+    AC_MSG_WARN([Zoom support was requested but not found])
+  fi
 fi
 AM_CONDITIONAL(ENABLE_ZOOM, test "x$enable_zoom" != "xno")
 

@@ -31,11 +31,17 @@
 #include <X11/extensions/Xrandr.h>
 #endif
 
+#define DEBUG_ZOOM 0
+#if DEBUG_ZOOM
+#define Dprintf(fmt...) if(EDebug(EDBUG_TYPE_ZOOM))Eprintf(fmt)
+#else
+#define Dprintf(fmt...)
+#endif
+
 static EWin        *zoom_last_ewin = NULL;
 static signed char  zoom_can = 0;
 
-#define USE_xf86vmode 1
-#if USE_xf86vmode
+#if USE_ZOOM_XF86VM
 #include <X11/extensions/xf86vmode.h>
 
 static int          std_vid_modes_num = 0;
@@ -194,17 +200,169 @@ ZoomInit(void)
 #else
 
 static int
-SwitchRes(char inout, int x, int y, int w, int h, int *dw, int *dh)
+SetMode(XRRScreenResources * xsr, RRCrtc crtc, RRMode mode, Rotation rot)
 {
-   inout = 0;
-   x = y = w = h = 0;
-   *dw = *dh = 0;
-   return 0;
+   return !XRRSetCrtcConfig(disp, xsr, crtc, EGetTimestamp(),
+			    0, 0, mode, rot, xsr->outputs, 1);
+}
+
+static void
+SetPanning(XRRScreenResources * xsr, RRCrtc crtc, int on)
+{
+   XRRPanning         *xpa = NULL;
+
+   xpa = XRRGetPanning(disp, xsr, crtc);
+   if (!xpa)
+      return;
+
+   Dprintf("Panning-A: %d,%d %dx%d trk: %d,%d %dx%d bdr: %d,%d,%d,%d\n",
+	   xpa->left, xpa->top, xpa->width, xpa->height,
+	   xpa->track_left, xpa->track_top,
+	   xpa->track_width, xpa->track_height,
+	   xpa->border_left, xpa->border_top,
+	   xpa->border_right, xpa->border_bottom);
+
+   xpa->timestamp = EGetTimestamp();
+   xpa->left = xpa->top = 0;
+   if (on)
+     {
+	xpa->width = WinGetW(VROOT);
+	xpa->height = WinGetH(VROOT);
+	xpa->track_width = xpa->track_height = 1;
+     }
+   else
+     {
+	xpa->width = xpa->height = 0;
+	xpa->track_width = xpa->track_height = 0;
+     }
+   xpa->track_left = xpa->track_top = 0;
+   xpa->border_left = xpa->border_top = 0;
+   xpa->border_right = xpa->border_bottom = 0;
+
+   Dprintf("Panning-B: %d,%d %dx%d trk: %d,%d %dx%d bdr: %d,%d,%d,%d\n",
+	   xpa->left, xpa->top, xpa->width, xpa->height,
+	   xpa->track_left, xpa->track_top,
+	   xpa->track_width, xpa->track_height,
+	   xpa->border_left, xpa->border_top,
+	   xpa->border_right, xpa->border_bottom);
+
+   XRRSetPanning(disp, xsr, crtc, xpa);
+   XRRFreePanning(xpa);
+}
+
+#define SWAP(a, b) \
+   do { int tmp; tmp = a; a = b; b = tmp; } while(0)
+
+static RRMode       ss_mode;
+static Rotation     ss_rot;
+
+static              RRMode
+FindMode(XRRScreenResources * xsr, int w, int h, int *dw, int *dh)
+{
+   int                 i, ic, in, norm, best;
+   RRMode              mode;
+
+   if (Mode.screen.rotation & (RR_Rotate_90 | RR_Rotate_270))
+      SWAP(w, h);
+
+   best = 0x7fffffff;
+   in = -1;
+   ic = 0;
+   for (i = 0; i < xsr->nmode; i++)
+     {
+	Dprintf("Sz%2d: %dx%d\n", i, xsr->modes[i].width, xsr->modes[i].height);
+
+	if (ss_mode == xsr->modes[i].id)
+	   ic = i;
+	if ((int)xsr->modes[i].width < w || (int)xsr->modes[i].height < h)
+	   continue;
+	norm = xsr->modes[i].width - w + xsr->modes[i].height - h;
+	if (norm >= best)
+	   continue;
+	in = i;			/* new best */
+	best = norm;
+	mode = xsr->modes[i].id;
+     }
+
+   Dprintf("Cur i=%d mode=%#x WxH=%dx%d rot=%d\n", ic,
+	   (unsigned int)xsr->modes[ic].id,
+	   xsr->modes[ic].width, xsr->modes[ic].height, ss_rot);
+
+   if (in < 0)
+      return 0;
+
+   /* Found a new mode */
+   Dprintf("New i=%d mode=%#x WxH=%dx%d rot=%d\n", in,
+	   (unsigned int)xsr->modes[in].id,
+	   xsr->modes[in].width, xsr->modes[in].height, ss_rot);
+
+   w = xsr->modes[in].width;
+   h = xsr->modes[in].height;
+
+   if (Mode.screen.rotation & (RR_Rotate_90 | RR_Rotate_270))
+      SWAP(w, h);
+
+   *dw = w;
+   *dh = h;
+
+   return mode;
+}
+
+static int
+SwitchRes(char inout, int x __UNUSED__, int y __UNUSED__, int w, int h,
+	  int *dw, int *dh)
+{
+   XRRScreenResources *xsr;
+   XRRCrtcInfo        *xci;
+   RRCrtc              crtc;
+   RRMode              ss_mode_new;
+   int                 ok = 0;
+
+   Dprintf("%s: inout=%d\n", __func__, inout);
+
+   xsr = XRRGetScreenResourcesCurrent(disp, WinGetXwin(VROOT));
+   if (!xsr)
+      goto done;
+   crtc = xsr->crtcs[0];	/* FIXME - Which crtc? */
+
+   if (inout)
+     {
+	/* Save current setup */
+	xci = XRRGetCrtcInfo(disp, xsr, crtc);
+	if (!xci)
+	   goto done;
+	ss_mode = xci->mode;
+	ss_rot = xci->rotation;
+	XRRFreeCrtcInfo(xci);
+
+	/* Select zoomed setup */
+	ss_mode_new = FindMode(xsr, w, h, dw, dh);
+
+	/* Set zoomed setup */
+	SetPanning(xsr, crtc, 1);
+
+	ok = SetMode(xsr, crtc, ss_mode_new, ss_rot);
+     }
+   else
+     {
+	/* Revert to original setup */
+	ok = SetMode(xsr, crtc, ss_mode, ss_rot);
+
+	SetPanning(xsr, crtc, 0);
+     }
+
+ done:
+   if (xsr)
+      XRRFreeScreenResources(xsr);
+
+   Dprintf("%s: ok=%d\n", __func__, ok);
+   return ok;
 }
 
 static void
 ZoomInit(void)
 {
+   zoom_can = 1;
 }
 
 #endif
@@ -223,6 +381,7 @@ Zoom(EWin * ewin, int on)
    if (zoom_can <= 0)
       return;
 
+   Dprintf("%s: on=%d\n", __func__, on);
    if (!on)
      {
 	/* Unzoom */
@@ -249,6 +408,8 @@ Zoom(EWin * ewin, int on)
 	   return;
 
 	on = SwitchRes(1, 0, 0, ewin->client.w, ewin->client.h, &dw, &dh);
+	Dprintf("%s: SwitchRes=%d - client size %dx%d -> screen %dx%d\n",
+		__func__, on, ewin->client.w, ewin->client.h, dw, dh);
 	if (!on)
 	   return;
 

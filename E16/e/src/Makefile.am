@@ -133,6 +133,7 @@ e16_CPPFLAGS = -I$(top_builddir) \
 	$(IMLIB2_CFLAGS) \
 	$(DBUS_CFLAGS) \
 	$(XI_CFLAGS) \
+	$(XRANDR_CFLAGS) \
 	$(X_CFLAGS)
 
 LDADD = \
@@ -143,6 +144,7 @@ LDADD = \
 	$(MODULE_LIBS)		\
 	$(GLX_LIBS)		\
 	$(XI_LIBS)		\
+	$(XRANDR_LIBS)		\
 	$(X_LIBS)		\
 	$(SM_LIBS)		\
 	$(XINERAMA_LIBS)	\
