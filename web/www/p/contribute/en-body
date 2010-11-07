@@ -305,7 +305,7 @@ eet_sync(Eet_File *ef)
  <p>
   Source is structured with source code being in the <b>src</b>
   directory tree. This in turn is split up into directories like
-  <b>bin</> (that produces binary executables), <b>lib</b> (that
+  <b>bin</b> (that produces binary executables), <b>lib</b> (that
   produces shared libraries for others to link to), and
   <b>modules</b> (that produces module shared objects that the
   binaries or libraries may dynamically load at runtime to add
