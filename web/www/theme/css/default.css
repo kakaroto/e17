@@ -1,16 +1,16 @@
 body { font-family: "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif; color: #444444; }
 
-pre, div.fragment, div.code { font-family: "Bitstream Vera Mono", "Vera Mono", "Trebuchet MS Mono", "Trebuchet Mono", "Tahoma Mono", mono; white-space: pre-wrap; color: #000; }
+pre, div.fragment, div.code { font-family: "Bitstream Vera Mono", "Vera Mono", "Trebuchet MS Mono", "Trebuchet Mono", "Tahoma Mono", mono; white-space: pre-wrap; color: #000000; }
 
-blockquote { color: #000; }
+blockquote { color: #000000; }
 
 body { font-size: 12px; }
 
-pre, div.fragment, div.code { font-size: 11px; line-height: 12px; }
+pre, div.fragment, div.code { font-size: 9px; color: #880000; }
 
-p.tiny { color: #888; font-size: 10px; }
+p.tiny { color: #888888; font-size: 10px; }
 
-h1, h2, h3, h4, h5, h6 { color: #000; }
+h1, h2, h3, h4, h5, h6 { color: #000000; }
 
 h1 { font-size: 21px; }
 
@@ -24,7 +24,7 @@ h5 { font-size: 12px; }
 
 h6 { font-size: 11px; }
 
-ul, ol { font-size: 11px; }
+ul, ol { font-size: 11px; text-align: left; margin-left: -20em; }
 
 #header { /*  CSS Reset */ /*  http://meyerweb.com/eric/tools/css/reset/ */ /*  v1.0 | 20080212 */ /* remember to define focus styles! */ /* remember to highlight inserts somehow! */ /* tables still need 'cellspacing="0"' in the markup */ }
 #header html, #header body, #header div, #header span, #header applet, #header object, #header iframe, #header h1, #header h2, #header h3, #header h4, #header h5, #header h6, #header p, #header blockquote, #header pre, #header a, #header abbr, #header acronym, #header address, #header big, #header cite, #header code, #header del, #header dfn, #header em, #header font, #header img, #header ins, #header kbd, #header q, #header s, #header samp, #header small, #header strike, #header strong, #header sub, #header sup, #header tt, #header var, #header b, #header u, #header i, #header center, #header dl, #header dt, #header dd, #header ol, #header ul, #header li, #header fieldset, #header form, #header label, #header legend, #header table, #header caption, #header tbody, #header tfoot, #header thead, #header tr, #header th, #header td { margin: 0; padding: 0; border: 0; outline: 0; font-size: 100%; vertical-align: baseline; background: transparent; }
@@ -65,17 +65,17 @@ ul, ol { font-size: 11px; }
 #header div.submenu { height: 36px; margin-bottom: 36px; }
 
 /* ******************* Changes to the Original Stylesheet ****************** */
-table.data { width: 90%; padding: 0px; margin: 5px; border: 1px solid #ccc; border-collapse: collapse; }
-table.data thead th { color: #fff; background-color: #000; padding: 3px; text-align: left; }
-table.data tbody tr td { color: #444; background-color: #fff; padding: 3px; text-align: left; font-size: 11px; }
-table.data tbody tr.odd td { color: #444; background-color: #eee; }
+table.data { width: 90%; padding: 0px; margin: 5px; border: 1px solid #cccccc; border-collapse: collapse; }
+table.data thead th { color: #ffffff; background-color: #000000; padding: 3px; text-align: left; }
+table.data tbody tr td { color: #444444; background-color: #ffffff; padding: 3px; text-align: left; font-size: 11px; }
+table.data tbody tr.odd td { color: #444444; background-color: #eeeeee; }
 
 table.developers td.name { width: 12em; }
 table.developers td.photo { text-align: center }
 table.developers td.location { width: 14em; }
 table.developers.active caption { display: none; }
 table.developers td { padding-right: 1ex; }
-table.developers.inactive caption { font-weight: bold; margin-bottom: 2px; color: #000; }
+table.developers.inactive caption { font-weight: bold; margin-bottom: 2px; color: #000000; }
 
 table.mailing td.archive { white-space: nowrap; }
 
@@ -89,7 +89,7 @@ table.main h1, td.main { margin-top: 0; padding-top: 0; }
 
 table.b { line-height: 1; }
 
-#sitefooter p { text-align: center; padding-top: 9px; font-size: 10px; color: #888; white-space: nowrap; }
+#sitefooter p { text-align: center; padding-top: 9px; font-size: 10px; color: #888888; white-space: nowrap; }
 
 hr { width: 200px; height: 1px; background-color: #eeeeee; border: 0px; }
 

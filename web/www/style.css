@@ -94,13 +94,6 @@ pre {
    vertical-align         : middle;
    padding                : 2px;
    overflow               : auto;
-   font-size              : 9px;
-   color                  : #880000;
-}
-
-ul {
-   text-align             : left;
-   margin-left            : -20em;
 }
 
 hr {
