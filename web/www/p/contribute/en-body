@@ -33,9 +33,9 @@
   and OSX users can just use regular subversion like their Linux
   counterparts. To check out all of SVN just use:
  </p>
- <p>
-  <b>svn co http://svn.enlightenment.org/svn/e</b>
- </p>
+<p><pre>
+svn co http://svn.enlightenment.org/svn/e
+</pre></p>
  <p>
   <em>(You can also use https instead of http if you want to use SSL
   encryption)</em>
@@ -45,35 +45,35 @@
   local branches, code and features and generate patches and so on. You
   can do this with:
  </p>
- <p>
-  <b>git svn clone http://svn.enlightenment.org/svn/e</b>
- </p>
+<p><pre>
+git svn clone http://svn.enlightenment.org/svn/e
+</pre></p>
  <p>
   To update the code in your tree (pull in changes from our master
   tree), just use:
  </p>
- <p>
-  <b>svn update</b>
- </p>
+<p><pre>
+svn update
+</pre></p>
  <p>
   Or for git use:
  </p>
- <p>
-  <b>git svn rebase</b>
- </p>
+<p><pre>
+git svn rebase
+</pre></p>
  <p>
   If you have made changes you'd like to share, you can generate a patch
   file from your changes with:
  </p>
- <p>
-  <b>svn diff</b>
- </p>
+<p><pre>
+svn diff
+</pre></p>
  <p>
   Or with git
  </p>
- <p>
-  <b>git diff</b>
- </p>
+<p><pre>
+git diff
+</pre></p>
  <p>
   Please read the appropriate manuals for your chosen revisioning
   system so you know how to use it effectively.
@@ -90,12 +90,12 @@
   one of the following commands (depending on if you want to use SVN
   directly, or SVN via git), where <b>USER</b> is your assigned username:
  </p>
- <p>
-  <b>svn co svn+ssh://USER@svn.enlightenment.org/var/svn/e</b>
- </p>
- <p>
-  <b>git svn clone svn+ssh://USER@svn.enlightenment.org/var/svn/e/evas</b>
- </p>
+<p><pre>
+svn co svn+ssh://USER@svn.enlightenment.org/var/svn/e
+</pre></p>
+<p><pre>
+git svn clone svn+ssh://USER@svn.enlightenment.org/var/svn/e/evas
+</pre></p>
  <p>
   Our SVN tree is divided up and categorized. The <b>trunk</b>
   directory is where all the main development happens. Inside this
@@ -136,9 +136,9 @@
   (as root if you install in a root owned location). So a quick recipe for
   building anything would be:
  </p>
- <p>
-  <b>./autogen.sh &amp;&amp; make &amp;&amp; sudo make install</b>
- </p>
+<p><pre>
+./autogen.sh &amp;&amp; make &amp;&amp; sudo make install</b>
+</pre></p>
  <p>
   You will definitely want the following installed to build EFL and E
   (exact package names may vary from system to system):
@@ -197,8 +197,7 @@
   The following handy script will also give you an insight as to how
   to compile things and in what order:
  </p>
- <p>
-<pre>
+<p><pre>
 #!/bin/sh
 set -e
 PREFIX="/usr/local"
@@ -226,8 +225,7 @@ for PROJ in $PROJECTS; do
   cd ../..
   sudo ldconfig
 done
-</pre>
- </p>
+</pre></p>
  
 </div>
 <?php frame2();?>
@@ -271,19 +269,17 @@ done
   new projects that has already been used on others. It means the code
   is easier to read and maintain.
  </p>
- <p>
-<pre>
+<p><pre>
 static Eet_File_Node *
-find_node_by_name(Eet_File   *ef,
-                  const char *name)
+_eet_find_node_by_name(Eet_File   *ef,
+                       const char *name)
 {
   Eet_File_Node *efn;
-  int hash;
-
-  hash = _eet_hash_gen(name, ef->header->directory->size);
-  for (efn = ef->header->directory->nodes[hash]; efn; efn = efn->next)
+  int hash = _eet_hash_gen(name, ef-&gt;dir-&gt;size);
+  
+  for (efn = ef-&gt;dir-&gt;nodes[hash]; efn; efn = efn-&gt;next)
     {
-      if (eet_string_match(efn->name, name)) return efn;
+      if (_eet_string_match(efn-&gt;name, name)) return efn;
       else break;
     }
   return NULL;
@@ -294,20 +290,19 @@ eet_sync(Eet_File *ef)
 {
   Eet_Error ret;
 
-  if (eet_check_pointer(ef)) return EET_ERROR_BAD_OBJECT;
-  if ((ef->mode != EET_FILE_MODE_WRITE) &&
-      (ef->mode != EET_FILE_MODE_READ_WRITE))
-    return EET_ERROR_NOT_WRITABLE;
+  if (_eet_check_pointer(ef)) return EET_ERROR_BAD;
+  if ((ef-&gt;mode != EET_MODE_WRITE) &amp;&amp;
+      (ef-&gt;mode != EET_MODE_READ_WRITE))
+    return EET_ERROR_CANNOT_WRITE;
   else
     {
-      ef->data = NULL;
-      ef->count++;
+      ef-&gt;data = NULL;
+      ef-&gt;count++;
     }
-  ret = eet_flush2(ef);
+  ret = eet_flush(ef);
   return ret;
 }
-</pre>
- </p>
+</pre></p>
  <h3>Source Trees</h3>
  <p>
   XXX: talk about autofoo, src, data src/bin, src/lib, src/modules, doc
@@ -431,7 +426,12 @@ eet_sync(Eet_File *ef)
   wiki site that may help other users is always useful. We also always
   can do with artwork and graphics people. People who do artwork would
   be able to get developer access as they will need access to the
-  source trees so they can put their artwork in there anyway.
+  source trees so they can put their artwork in there anyway. We also
+  can always do with people helping translate things. We use gettext
+  like most open source software, so it's as sumple as providing us with
+  new or updated .PO files. We even have
+  <a href=https://lists.sourceforge.net/lists/listinfo/enlightenment-intl>
+  a dedicated mailing list</a> for just this purpose.
  </p>
  <p>
   Otherwise, debugging is also something that is always needed. No code

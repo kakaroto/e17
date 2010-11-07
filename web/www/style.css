@@ -99,7 +99,10 @@ pre {
 
 ul {
    text-align             : left;
+   margin-left            : -5px;
 }
+
+li {
 
 hr {
    width                  : 200px;
