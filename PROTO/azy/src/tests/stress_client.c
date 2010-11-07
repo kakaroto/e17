@@ -10,7 +10,7 @@
 
 #include "TTest1.azy_client.h"
 
-#define NUM_CLIENTS 1000
+#define NUM_CLIENTS 500
 
 static Eina_List *clients;
 
@@ -47,6 +47,15 @@ _TTest1_getAll_ret(Azy_Client *client __UNUSED__, int type __UNUSED__, Azy_Conte
  //  printf("#%i: Success? %s!\n", x, ret ? "YES" : "NO");
    if (x == (NUM_CLIENTS * NUM_CLIENTS))
      ecore_main_loop_quit();
+}
+
+static Eina_Bool
+_disconnected(void *data __UNUSED__, int type __UNUSED__, void *data2 __UNUSED__)
+{
+   printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
+   ecore_main_loop_quit();
+   exit(0);
+   return ECORE_CALLBACK_RENEW;
 }
 
 static Eina_Bool
@@ -114,6 +123,7 @@ main(void)
 
    ecore_job_add(_spawn, NULL);
    ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)_connected, NULL);
+   ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)_disconnected, NULL);
    ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)_TTest1_getAll_ret, NULL);
    ecore_main_loop_begin();
 
