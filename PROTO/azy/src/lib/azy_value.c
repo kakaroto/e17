@@ -599,8 +599,10 @@ azy_value_retval_is_error(Azy_Value  *val,
    if ((!c) && (!s))
      return EINA_FALSE;
 
-   *errmsg = s->str_val;
-   *errcode = c->int_val;
+   if (s)
+     *errmsg = s->str_val;
+   if (c)
+     *errcode = c->int_val;
 
    return EINA_TRUE;
 }

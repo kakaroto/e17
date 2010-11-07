@@ -127,7 +127,7 @@ static __inline__ const char *
 xp_eval_cont_str(xmlXPathContextPtr ctx,
                  const char        *path)
 {
-   const char *ret;
+   const char *ret = NULL;
    xmlXPathObjectPtr o = xmlXPathEvalExpression((xmlChar *)path, ctx);
    if (o && o->type == XPATH_NODESET && o->nodesetval && o->nodesetval->nodeNr > 0)
      ret = xml_get_cont_str(o->nodesetval->nodeTab[0]);

@@ -313,7 +313,7 @@ azy_content_unserialize_response_json(Azy_Content *content,
    if ((grab = cJSON_GetObjectItem(object, "error")) && (error = cJSON_GetObjectItem(grab, "code")))
      {
         int code;
-        const char *msg;
+        const char *msg = NULL;
         cJSON *obj;
 
         code = error->valueint;

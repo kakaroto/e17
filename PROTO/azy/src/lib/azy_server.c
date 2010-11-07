@@ -392,7 +392,7 @@ azy_server_basic_run(int                      port,
 {
    Azy_Server *server;
    Azy_Server_Module_Def **mods;
-   Eina_Bool secure;
+   Eina_Bool secure = EINA_FALSE;
    const char *name;
    int az, ecore = ECORE_CON_REMOTE_NODELAY;
 

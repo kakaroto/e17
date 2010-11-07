@@ -52,7 +52,7 @@ azy_events_type_parse(Azy_Net            *net,
         return 0;
      }
 
-   if (net->size)
+   if (net->size && net->buffer)
      {
         unsigned char *buf_start;
         int size;
@@ -84,6 +84,9 @@ azy_events_type_parse(Azy_Net            *net,
          /* skip all spaces/newlines/etc and decrement len */
          AZY_SKIP_BLANK(start);
      }
+
+   if (!start)
+     return 0;
 
    /* some clients are dumb and send leading cr/nl/etc */
    AZY_SKIP_BLANK(start);

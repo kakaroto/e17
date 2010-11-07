@@ -300,7 +300,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
          _azy_client_handler_call(handler_data);
      }
 
-   if (overflow && (handler_data != client->conns->data))
+   if (overflow && client && client->conns && (handler_data != client->conns->data))
      {
         Azy_Client_Handler_Data *dh;
         char *method;
