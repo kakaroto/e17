@@ -27,6 +27,7 @@ azy_net_new(void *conn)
    Azy_Net *net = calloc(sizeof(Azy_Net), 1);
    net->conn = conn;
 
+   AZY_MAGIC_SET(net, AZY_MAGIC_NET);
    return net;
 }
 
@@ -35,8 +36,14 @@ azy_net_free(Azy_Net *net)
 {
    DBG("(net=%p)", net);
 
-   EINA_SAFETY_ON_NULL_RETURN(net);
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return;
+     }
 
+
+   AZY_MAGIC_SET(net, AZY_MAGIC_NONE);
    if (net->http.headers)
      eina_hash_free(net->http.headers);
    if (net->http.req.http_path)
@@ -57,7 +64,13 @@ azy_net_header_get(Azy_Net   *net,
 
    DBG("(net=%p)", net);
 
-   if ((!net) || (!name))
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return NULL;
+     }
+
+   if (!name)
      return NULL;
 
    tmp = strdupa(name);
@@ -71,14 +84,20 @@ void
 azy_net_header_reset(Azy_Net *net)
 {
    DBG("(net=%p)", net);
-   if (!net)
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return;
+     }
+
+   if (!net->http.headers)
      return;
 
    eina_hash_free_buckets(net->http.headers);
    net->headers_read = EINA_FALSE;
 }
 
-void
+Eina_Bool
 azy_net_auth_set(Azy_Net   *net,
                   const char *username,
                   const char *password)
@@ -87,13 +106,19 @@ azy_net_auth_set(Azy_Net   *net,
    char *enc_auth_str;
    Eina_Strbuf *str;
 
-   if ((!net) || (!username) || (!password))
-     return;
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return EINA_FALSE;
+     }
+
+   if ((!username) || (!password))
+     return EINA_FALSE;
 
    if (!(str = eina_strbuf_new()))
      {
         ERR("Could not allocate memory!");
-        return;
+        return EINA_FALSE;
      }
    eina_strbuf_append_printf(str, "%s:%s", username, password);
    enc_auth_str = azy_base64_encode(eina_strbuf_string_get(str), eina_strbuf_length_get(str));
@@ -102,6 +127,7 @@ azy_net_auth_set(Azy_Net   *net,
    azy_net_header_set(net, "Authorization", eina_strbuf_string_get(str));
    free(enc_auth_str);
    eina_strbuf_free(str);
+   return EINA_TRUE;
 }
 
 Eina_Bool
@@ -114,7 +140,13 @@ azy_net_auth_get(Azy_Net    *net,
    const char *enc_auth_str, *auth_header;
    char *auth_str;
 
-   if ((!net) || (!username) || (!password))
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return EINA_FALSE;
+     }
+
+   if ((!username) || (!password))
      return EINA_FALSE;
 
    auth_header = azy_net_header_get(net, "Authorization");
@@ -150,8 +182,11 @@ const char *
 azy_net_uri_get(Azy_Net *net)
 {
    DBG("(net=%p)", net);
-   if (!net)
-     return NULL;
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return NULL;
+     }
 
    return net->http.req.http_path;
 }
@@ -160,7 +195,11 @@ Eina_Bool
 azy_net_uri_set(Azy_Net *net, const char *path)
 {
    DBG("(net=%p)", net);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(net, EINA_FALSE);
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return EINA_FALSE;
+     }
    EINA_SAFETY_ON_NULL_RETURN_VAL(path, EINA_FALSE);
 
    net->http.req.http_path = eina_stringshare_add(path);
@@ -171,8 +210,11 @@ int
 azy_net_version_get(Azy_Net *net)
 {
    DBG("(net=%p)", net);
-   if (!net)
-     return -1;
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return -1;
+     }
 
    return net->http.version;
 }
@@ -181,7 +223,11 @@ Eina_Bool
 azy_net_version_set(Azy_Net *net, int version)
 {
    DBG("(net=%p)", net);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(net, EINA_FALSE);
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return EINA_FALSE;
+     }
    EINA_SAFETY_ON_TRUE_RETURN_VAL((version != 0) && (version != 1), EINA_FALSE);
 
    net->http.version = version;
@@ -192,8 +238,11 @@ int
 azy_net_code_get(Azy_Net *net)
 {
    DBG("(net=%p)", net);
-   if (!net)
-     return -1;
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return -1;
+     }
 
    DBG("(net=%p)", net);
 
@@ -205,8 +254,11 @@ azy_net_code_set(Azy_Net *net,
                   int       code)
 {
    DBG("(net=%p)", net);
-   if (!net)
-     return;
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return;
+     }
 
    net->http.res.http_code = code;
    net->http.res.http_msg = azy_net_http_msg_get(code);
@@ -216,8 +268,11 @@ Azy_Net_Type
 azy_net_type_get(Azy_Net *net)
 {
    DBG("(net=%p)", net);
-   if (!net)
-     return AZY_NET_TYPE_NONE;
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return AZY_NET_TYPE_NONE;
+     }
 
    return net->type;
 }
@@ -226,8 +281,11 @@ int
 azy_net_message_length_get(Azy_Net *net)
 {
    DBG("(net=%p)", net);
-   if (!net)
-     return -1;
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return -1;
+     }
 
    return net->http.content_length;
 }
@@ -241,7 +299,13 @@ azy_net_header_set(Azy_Net   *net,
    const char *old;
    char *tmp;
 
-   if ((!net) || (!name) || (!value))
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return;
+     }
+
+   if ((!name) || (!value))
      return;
 
    tmp = strdupa(name);
@@ -258,7 +322,11 @@ const char *
 azy_net_ip_get(Azy_Net *net)
 {
    DBG("(net=%p)", net);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(net, NULL);
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return NULL;
+     }
 
    if (net->server_client)
      return ecore_con_client_ip_get(net->conn);
@@ -274,7 +342,12 @@ azy_net_type_set(Azy_Net     *net,
                   Azy_Net_Type type)
 {
    DBG("(net=%p)", net);
-   if ((!net) || ((type < AZY_NET_TYPE_GET) || (type > AZY_NET_TYPE_RESPONSE_ERROR)))
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return;
+     }
+   if (((type < AZY_NET_TYPE_GET) || (type > AZY_NET_TYPE_RESPONSE_ERROR)))
      return;
 
    net->type = type;
@@ -285,13 +358,16 @@ azy_net_transport_set(Azy_Net          *net,
                        Azy_Net_Transport transport)
 {
    DBG("(net=%p)", net);
-   if (!net)
-     return;
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return;
+     }
 
    net->transport = transport;
-   if (transport == AZY_NET_XML)
+   if (transport == AZY_NET_TRANSPORT_XML)
      azy_net_header_set(net, "Content-Type", "text/xml");
-   else if (transport == AZY_NET_JSON)
+   else if (transport == AZY_NET_TRANSPORT_JSON)
      azy_net_header_set(net, "Content-Type", "application/json");
 }
 
@@ -299,7 +375,11 @@ Azy_Net_Transport
 azy_net_transport_get(Azy_Net *net)
 {
    DBG("(net=%p)", net);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(net, AZY_NET_UNKNOWN);
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return AZY_NET_TRANSPORT_UNKNOWN;
+     }
    return net->transport;
 }
 
@@ -309,7 +389,13 @@ azy_net_message_length_set(Azy_Net *net,
 {
    DBG("(net=%p)", net);
    char buf[64];
-   if ((!net) || (length < 1))
+
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return;
+     }
+   if (length < 1)
      return;
 
    net->http.content_length = length;
@@ -323,7 +409,13 @@ azy_net_header_create(Azy_Net *net)
    DBG("(net=%p)", net);
    Eina_Strbuf *header;
 
-   if ((!net) || (!net->http.headers) || (net->type == AZY_NET_TYPE_NONE))
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return NULL;
+     }
+
+   if ((!net->http.headers) || (net->type == AZY_NET_TYPE_NONE))
      return NULL;
 
    header = eina_strbuf_new();

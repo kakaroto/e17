@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 Ondrej Jirman <ondrej.jirman@zonio.net>
+ * Parts copyright 2006-2008 Ondrej Jirman <ondrej.jirman@zonio.net>
  * Copyright 2010 Mike Blumenkrantz <mike@zentific.com>
  */
 
@@ -35,18 +35,17 @@
 }                                                                 \
   current_line = 1
 
-#define SET_STUB(n)                                                \
-  if (s->stub_ ## n) {                                             \
-       EL(1, "." #n " = %s%sModule_" #n ",", azy->name, s->name); \
-    }                                                              \
-  else                                                             \
-    EL(1, "." #n " = NULL,")
-
 #define ORIG_LINE() \
   EL(0, "#line %d \"%s\"", current_line + 1, current_file)
 
 #define FILE_LINE(_line, _file) \
   EL(0, "#line %d \"%s\"", _line, _file)
+
+#define GET_NAME(func)                                             \
+  if (s->stub_##func)                                              \
+    E(0, "%s%sModule_"#func, azy->name, s->name);                  \
+  else                                                             \
+    E(0, "NULL")
 
 #define STUB(s)                                   \
   do {                                            \
@@ -169,7 +168,7 @@ gen_type_marshalizers(Azy_Typedef *t,
 
         EINA_LIST_FOREACH(t->struct_members, l, m)
           {
-             EL(2, "azy_value_unref(%s);", m->name);
+             EL(2, "if (%s) azy_value_unref(%s);", m->name, m->name);
           }
 
         EL(2, "return NULL;");
@@ -257,7 +256,7 @@ gen_type_marshalizers(Azy_Typedef *t,
         EL(1, "if ((!_array) || (azy_value_type_get(_array) != AZY_VALUE_ARRAY))");
         EL(2, "return EINA_FALSE;");
         NL;
-        EL(1, "EINA_LIST_FOREACH(azy_value_items_get(_array), _item, v)");
+        EL(1, "EINA_LIST_FOREACH(azy_value_children_items_get(_array), _item, v)");
         EL(1, "{");
         EL(2, "%s _item_value = %s;", (!strcmp(t->item_type->ctype, "Eina_Bool")) ? "int" : t->item_type->ctype,
            t->item_type->cnull);
@@ -900,6 +899,10 @@ gen_server_impl(Azy_Server_Module *s)
    EL(0, "#include \"%s%s.azy_server.h\"", azy->name, s->name);
    NL;
 
+
+   EL(0, "static Azy_Server_Module_Def *__module = NULL;");
+   NL;
+   
    EINA_LIST_FOREACH(s->methods, j, method)
      {
         int n = 0;
@@ -951,9 +954,7 @@ gen_server_impl(Azy_Server_Module *s)
 
 // call stub
         NL;
-        E(1, "_nreturn_value = %s%sModule_%s(_module",
-          azy->name, s->name,
-          method->name);
+        E(1, "_nreturn_value = %s%sModule_%s(_module", azy->name, s->name, method->name);
 
         EINA_LIST_FOREACH(method->params, k, p)
           {
@@ -968,18 +969,14 @@ gen_server_impl(Azy_Server_Module *s)
 
 // prepare retval
         NL;
-        EL(1, "_return_value = %s(_nreturn_value);",
-           method->return_type->march_name);
+        EL(1, "_return_value = %s(_nreturn_value);", method->return_type->march_name);
         EL(1, "if (!_return_value)");
         EL(1, "{");
-        EL(2,
-           "azy_content_error_faultmsg_set(_content, -1, \"Stub return value marshalization failed. (%s)\");",
-           method->name);
+        EL(2, "azy_content_error_faultmsg_set(_content, -1, \"Stub return value marshalization failed. (%s)\");", method->name);
         EL(2, "goto out;");
         EL(1, "}");
         NL;
-        EL(1,
-           "azy_content_retval_set(_content, _return_value);");
+        EL(1, "azy_content_retval_set(_content, _return_value);");
         EL(1, "_retval = EINA_TRUE;");
 
 // free native types and return
@@ -1000,34 +997,52 @@ gen_server_impl(Azy_Server_Module *s)
         NL;
      }
 
-   EL(0, "static Azy_Server_Module_Method *__method = NULL;");
-   EL(0, "static Azy_Server_Module_Def __module = {");
-   EL(1, ".name = \"%s%s\",", azy->name, s->name);
-   SET_STUB(init);
-   SET_STUB(shutdown);
-   SET_STUB(pre);
-   SET_STUB(post);
-   SET_STUB(fallback);
-   SET_STUB(download);
-   SET_STUB(upload);
-   EL(1, ".methods = NULL");
-   EL(0, "};");
    NL;
 
-   EL(0, "Azy_Server_Module_Def* __%s%sModule_def()",
-      azy->name,
-      s->name);
+   EL(0, "Azy_Server_Module_Def *\n__%s%sModule_def(void)", azy->name, s->name);
    EL(0, "{");
-   EL(1, "__module.data_size = __%s%sModule_data_size_get();", azy->name, s->name);
+   EL(1, "Azy_Server_Module_Method *__method;");
+   NL;
+   EL(1, "if (__module) return __module;");
+   NL;
+   EL(1, "__module = azy_server_module_def_new(\"%s%s\");", azy->name, s->name);
+   EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(__module, NULL);");
+   NL;
+   
+   E(1, "azy_server_module_def_init_shutdown_set(__module, ");
+   GET_NAME(init);
+   E(0, ", ");
+   GET_NAME(shutdown);
+   EL(0, ");");
+
+   E(1, "azy_server_module_def_pre_post_set(__module, ");
+   GET_NAME(pre);
+   E(0, ", ");
+   GET_NAME(post);
+   EL(0, ");");
+
+   E(1, "azy_server_module_def_download_upload_set(__module, ");
+   GET_NAME(download);
+   E(0, ", ");
+   GET_NAME(upload);
+   EL(0, ");");
+
+   E(1, "azy_server_module_def_fallback_set(__module, ");
+   GET_NAME(fallback);
+   EL(0, ");");
+   
+   EL(1, "azy_server_module_size_set(__module, __%s%sModule_data_size_get());", azy->name, s->name);
    EINA_LIST_FOREACH(s->methods, j, method)
      {
-        EL(1, "__method = malloc(sizeof(Azy_Server_Module_Method));");
-        EL(1, "__method->name = eina_stringshare_add(\"%s\");", method->name);
-        EL(1, "__method->method = __method_%s;", method->name);
-        EL(1, "__module.methods = eina_list_append(__module.methods, __method);");
+        EL(1, "__method = azy_server_module_method_new(\"%s\", __method_%s);", method->name, method->name);
+        EL(1, "EINA_SAFETY_ON_NULL_GOTO(__method, error);");
+        EL(1, "azy_server_module_def_method_add(__module, __method);");
      }
    NL;
-   EL(1, "return &__module;");
+   EL(1, "return __module;");
+   EL(0, "error:");
+   EL(2, "azy_server_module_def_free(__module);");
+   EL(1, "return NULL;");
    EL(0, "}");
    fclose(f);
 
@@ -1051,8 +1066,7 @@ gen_server_impl(Azy_Server_Module *s)
 
    EL(0, "int __%s%sModule_data_size_get(void)", azy->name, s->name);
    EL(0, "{");
-   EL(1, "return sizeof(%s%sModule);", azy->name,
-      s->name);
+   EL(1, "return sizeof(%s%sModule);", azy->name, s->name);
    EL(0, "}");
    NL;
 
@@ -1336,7 +1350,7 @@ gen_client_impl(Azy_Server_Module *s)
 
         EL(1, "Azy_Content* _content;");
         EL(1, "Azy_Net *_net;");
-        EL(1, "Azy_Net_Transport tr = AZY_NET_XML;");
+        EL(1, "Azy_Net_Transport tr = AZY_NET_TRANSPORT_XML;");
         NL;
         EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(_client, _retval);");
         EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(_error, _retval);");
@@ -1359,7 +1373,7 @@ gen_client_impl(Azy_Server_Module *s)
 
         NL;
         EL(1, "_net = azy_client_net_get(_client);");
-        EL(1, "if (azy_net_transport_get(_net) != AZY_NET_UNKNOWN)");
+        EL(1, "if (azy_net_transport_get(_net) != AZY_NET_TRANSPORT_UNKNOWN)");
         EL(2, "tr = azy_net_transport_get(_net);");
         EL(1, "_retval = azy_client_call(_client, _content, tr, (Azy_Content_Cb)%s);", method->return_type->demarch_name);
         if (method->return_type->free_func)

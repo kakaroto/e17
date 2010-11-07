@@ -12,12 +12,12 @@
 #include "azy_private.h"
 
 #define AZY_SKIP_BLANK(PTR) \
-  if (PTR && len && isspace(*PTR))  \
+  if (PTR && len && isspace(*(PTR)))  \
     do                       \
       {                      \
-         PTR++;              \
+         (PTR)++;              \
          len--;              \
-      } while (isspace(*PTR) && (len > 0))
+      } while ((PTR) && isspace(*(PTR)) && (len > 0))
 
 #define MAX_HEADER_SIZE 4096
 
@@ -46,7 +46,11 @@ azy_events_type_parse(Azy_Net            *net,
    const unsigned char *endline = NULL, *start = NULL;
 
    DBG("(net=%p, header=%p, len=%i)", net, header, len);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(net, 0);
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return 0;
+     }
 
    if (net->size)
      {
@@ -155,9 +159,13 @@ azy_events_header_parse(Azy_Net      *net,
    long long int prev_size = 0;
 
    DBG("(net=%p, event_data=%p, len=%zu, offset=%i)", net, event_data, event_len, offset);
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return EINA_FALSE;
+     }
    if (net->headers_read)
      return EINA_TRUE;
-   EINA_SAFETY_ON_NULL_RETURN_VAL(net, EINA_FALSE);
    EINA_SAFETY_ON_TRUE_RETURN_VAL((!net->buffer) && (!data), EINA_FALSE);
 
    if (net->size)
@@ -355,22 +363,22 @@ Azy_Net_Transport
 azy_events_net_transport_get(const char *content_type)
 {
    if (!content_type)
-     return AZY_NET_TEXT;
+     return AZY_NET_TRANSPORT_TEXT;
 
    if (!strncmp(content_type, "text/xml", 8))
-     return AZY_NET_XML;
+     return AZY_NET_TRANSPORT_XML;
 
    if (!strncmp(content_type, "application/xml", 15))
-     return AZY_NET_XML;
+     return AZY_NET_TRANSPORT_XML;
 
    if (!strncmp(content_type, "application/json", 16))
-     return AZY_NET_JSON;
+     return AZY_NET_TRANSPORT_JSON;
 
    if (!strncmp(content_type, "text/plain", 10))
-     return AZY_NET_TEXT;
+     return AZY_NET_TRANSPORT_TEXT;
 
    if (!strncmp(content_type, "text/html", 9))
-     return AZY_NET_HTML;
+     return AZY_NET_TRANSPORT_HTML;
 
    return -1;
 }

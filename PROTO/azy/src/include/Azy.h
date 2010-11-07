@@ -24,9 +24,31 @@ void *alloca (size_t);
 #include <Ecore.h>
 #include <Ecore_Con.h>
 
-#ifndef MIN
-#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#ifdef EAPI
+# undef EAPI
 #endif
+
+#ifdef _WIN32
+# ifdef EFL_ECORE_BUILD
+#  ifdef DLL_EXPORT
+#   define EAPI __declspec(dllexport)
+#  else
+#   define EAPI
+#  endif /* ! DLL_EXPORT */
+# else
+#  define EAPI __declspec(dllimport)
+# endif /* ! EFL_ECORE_BUILD */
+#else
+# ifdef __GNUC__
+#  if __GNUC__ >= 4
+#   define EAPI __attribute__ ((visibility("default")))
+#  else
+#   define EAPI
+#  endif
+# else
+#  define EAPI
+# endif
+#endif /* ! _WIN32 */
 
 extern int azy_log_dom;
 
@@ -64,6 +86,7 @@ typedef void *(*Azy_Content_Cb)(Azy_Value *, void **);
 typedef void (*Azy_Client_Return_Cb)(Azy_Client *, Azy_Content *);
 
 typedef unsigned int Azy_Client_Call_Id;
+
 
 typedef enum
 {
@@ -105,34 +128,13 @@ typedef enum
 
 typedef enum
 {
-   AZY_NET_XML,
-   AZY_NET_JSON,
-   AZY_NET_TEXT,
-   AZY_NET_HTML,
-   AZY_NET_UNKNOWN
+   AZY_NET_TRANSPORT_XML,
+   AZY_NET_TRANSPORT_JSON,
+   AZY_NET_TRANSPORT_TEXT,
+   AZY_NET_TRANSPORT_HTML,
+   AZY_NET_TRANSPORT_UNKNOWN
 } Azy_Net_Transport;
 
-
-
-struct _Azy_Server_Module_Def
-{
-   const char *name;
-   int         data_size;
-   Azy_Server_Module_Cb init;
-   Azy_Server_Module_Shutdown_Cb shutdown;
-   Azy_Server_Module_Content_Cb pre;
-   Azy_Server_Module_Content_Cb post;
-   Azy_Server_Module_Content_Cb fallback;
-   Azy_Server_Module_Cb download;
-   Azy_Server_Module_Cb upload;
-   Eina_List *methods;
-};
-
-struct _Azy_Server_Module_Method
-{
-   const char *name;
-   Azy_Server_Module_Content_Cb method;
-};
 
 #ifdef __cplusplus
 extern "C" {
@@ -168,6 +170,27 @@ extern "C" {
                                                   Azy_Server_Module_Def *module);
    Eina_Bool               azy_server_module_del(Azy_Server            *server,
                                                   Azy_Server_Module_Def *module);
+   Azy_Server_Module_Method *azy_server_module_method_new(const char *name,
+                                                          Azy_Server_Module_Content_Cb cb);
+   void                      azy_server_module_method_free(Azy_Server_Module_Method *method);
+   Azy_Server_Module_Def    *azy_server_module_def_new(const char *name);
+   void                      azy_server_module_def_free(Azy_Server_Module_Def *def);
+   void                      azy_server_module_def_init_shutdown_set(Azy_Server_Module_Def *def,
+                                                                     Azy_Server_Module_Cb init,
+                                                                     Azy_Server_Module_Shutdown_Cb shutdown);
+   void                      azy_server_module_def_pre_post_set(Azy_Server_Module_Def *def,
+                                                                Azy_Server_Module_Content_Cb pre,
+                                                                Azy_Server_Module_Content_Cb post);
+   void                      azy_server_module_def_download_upload_set(Azy_Server_Module_Def *def,
+                                                                       Azy_Server_Module_Cb download,
+                                                                       Azy_Server_Module_Cb upload);
+   void                      azy_server_module_def_fallback_set(Azy_Server_Module_Def *def,
+                                                                Azy_Server_Module_Content_Cb fallback);
+   void                      azy_server_module_def_method_add(Azy_Server_Module_Def *def,
+                                                              Azy_Server_Module_Method *method);
+   int                       azy_server_module_def_size_get(Azy_Server_Module_Def *def);
+   Eina_Bool                 azy_server_module_size_set(Azy_Server_Module_Def *def,
+                                                        int                    size);
    Azy_Server            *azy_server_new(Eina_Bool   secure);
    void                    azy_server_free(Azy_Server *server);
    Eina_List              *azy_server_module_defs_get(Azy_Server *server);
@@ -187,7 +210,7 @@ extern "C" {
    void        azy_net_free(Azy_Net *net);
    const char *azy_net_header_get(Azy_Net   *net,
                                    const char *name);
-   void        azy_net_auth_set(Azy_Net   *net,
+   Eina_Bool     azy_net_auth_set(Azy_Net   *net,
                                  const char *username,
                                  const char *password);
    Eina_Bool azy_net_auth_get(Azy_Net    *net,
@@ -254,7 +277,7 @@ extern "C" {
    Azy_Value *azy_value_array_new(void);
    void        azy_value_array_append(Azy_Value *arr,
                                        Azy_Value *val);
-   Eina_List  *azy_value_items_get(Azy_Value *arr);
+   Eina_List  *azy_value_children_items_get(Azy_Value *arr);
    Azy_Value *azy_value_struct_new(void);
    Azy_Value *azy_value_struct_new_from_string(const char *name,
                                                  const char *value);
@@ -267,7 +290,6 @@ extern "C" {
                                             Azy_Value *val);
    Azy_Value *azy_value_struct_member_get(Azy_Value *str,
                                             const char *name);
-   Eina_List  *azy_value_struct_members_get(Azy_Value *str);
    const char *azy_value_struct_member_name_get(Azy_Value *mem);
    Azy_Value *azy_value_struct_member_value_get(Azy_Value *mem);
    Eina_Bool   azy_value_retval_is_error(Azy_Value  *val,
@@ -278,20 +300,20 @@ extern "C" {
                         unsigned int indent);
 
    /* content */
-   Eina_Bool azy_content_serialize_request_xml(void *content);
-   Eina_Bool azy_content_serialize_response_xml(void *content);
-   Eina_Bool azy_content_unserialize_request_xml(void       *content,
+   Eina_Bool azy_content_serialize_request_xml(Azy_Content *content);
+   Eina_Bool azy_content_serialize_response_xml(Azy_Content *content);
+   Eina_Bool azy_content_unserialize_request_xml(Azy_Content *content,
                                                   const char *buf,
                                                   ssize_t     len);
-   Eina_Bool azy_content_unserialize_response_xml(void       *content,
+   Eina_Bool azy_content_unserialize_response_xml(Azy_Content *content,
                                                    const char *buf,
                                                    ssize_t     len);
-   Eina_Bool azy_content_serialize_request_json(void *content);
-   Eina_Bool azy_content_serialize_response_json(void *content);
-   Eina_Bool azy_content_unserialize_request_json(void       *content,
+   Eina_Bool azy_content_serialize_request_json(Azy_Content *content);
+   Eina_Bool azy_content_serialize_response_json(Azy_Content *content);
+   Eina_Bool azy_content_unserialize_request_json(Azy_Content *content,
                                                    const char *buf,
                                                    ssize_t     len);
-   Eina_Bool azy_content_unserialize_response_json(void       *content,
+   Eina_Bool azy_content_unserialize_response_json(Azy_Content *content,
                                                     const char *buf,
                                                     ssize_t     len);
 

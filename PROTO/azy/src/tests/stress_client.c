@@ -10,7 +10,7 @@
 
 #include "TTest1.azy_client.h"
 
-#define NUM_CLIENTS 100
+#define NUM_CLIENTS 1000
 
 static Eina_List *clients;
 
@@ -96,7 +96,7 @@ _spawn(void *data __UNUSED__)
           return;
 
         azy_net_uri_set(azy_client_net_get(cli), "/");
-        azy_net_transport_set(azy_client_net_get(cli), AZY_NET_JSON);
+        azy_net_transport_set(azy_client_net_get(cli), AZY_NET_TRANSPORT_JSON);
         clients = eina_list_append(clients, cli);
      }
 }
@@ -109,6 +109,7 @@ main(void)
    ecore_init();
    azy_init();
    eina_log_domain_level_set("azy", EINA_LOG_LEVEL_ERR);
+   eina_log_domain_level_set("ecore_con", EINA_LOG_LEVEL_UNKNOWN);
 
 
    ecore_job_add(_spawn, NULL);

@@ -12,9 +12,14 @@
 void
 azy_server_stop(Azy_Server *server)
 {
-   EINA_SAFETY_ON_NULL_RETURN(server);
+   if (!AZY_MAGIC_CHECK(server, AZY_MAGIC_SERVER))
+     {
+        AZY_MAGIC_FAIL(server, AZY_MAGIC_SERVER);
+        return;
+     }
 
    ecore_con_server_del(server->server);
+   server->server = NULL;
    ecore_main_loop_quit();
 }
 
@@ -42,7 +47,11 @@ azy_server_module_def_find(Azy_Server *server,
    Azy_Server_Module_Def *def;
    Eina_List *l;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(server, NULL);
+   if (!AZY_MAGIC_CHECK(server, AZY_MAGIC_SERVER))
+     {
+        AZY_MAGIC_FAIL(server, AZY_MAGIC_SERVER);
+        return NULL;
+     }
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, NULL);
    if (!server->module_defs)
      return NULL;
@@ -62,7 +71,12 @@ Eina_Bool
 azy_server_module_add(Azy_Server            *server,
                        Azy_Server_Module_Def *module)
 {
-   if ((!server) || (!module))
+   if (!AZY_MAGIC_CHECK(server, AZY_MAGIC_SERVER))
+     {
+        AZY_MAGIC_FAIL(server, AZY_MAGIC_SERVER);
+        return EINA_FALSE;
+     }
+   if (!module)
      return EINA_FALSE;
 
    if (azy_server_module_def_find(server, module->name))
@@ -79,13 +93,172 @@ azy_server_module_del(Azy_Server            *server,
                        Azy_Server_Module_Def *module)
 {
    DBG("server=%p, module=%p", server, module);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(server, EINA_FALSE);
+   if (!AZY_MAGIC_CHECK(server, AZY_MAGIC_SERVER))
+     {
+        AZY_MAGIC_FAIL(server, AZY_MAGIC_SERVER);
+        return EINA_FALSE;
+     }
    EINA_SAFETY_ON_NULL_RETURN_VAL(module, EINA_FALSE);
 
    if (!azy_server_module_def_find(server, module->name))
      return EINA_TRUE;
 
    server->module_defs = eina_list_remove(server->module_defs, module);
+   return EINA_TRUE;
+}
+
+Azy_Server_Module_Def *
+azy_server_module_def_new(const char *name)
+{
+   Azy_Server_Module_Def *def;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(name, NULL);
+
+   def = calloc(sizeof(Azy_Server_Module_Def), 1);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(def, NULL);
+
+   def->name = eina_stringshare_add(name);
+   AZY_MAGIC_SET(def, AZY_MAGIC_SERVER_MODULE_DEF);
+   return def;
+}
+
+void
+azy_server_module_def_free(Azy_Server_Module_Def *def)
+{
+   Azy_Server_Module_Method *method;
+   
+   if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
+     {
+        AZY_MAGIC_FAIL(def, AZY_MAGIC_SERVER_MODULE_DEF);
+        return;
+     }
+
+   eina_stringshare_del(def->name);
+   EINA_LIST_FREE(def->methods, method)
+     azy_server_module_method_free(method);
+     
+   AZY_MAGIC_SET(def, AZY_MAGIC_NONE);
+   free(def);
+}
+
+void
+azy_server_module_def_init_shutdown_set(Azy_Server_Module_Def *def, Azy_Server_Module_Cb init, Azy_Server_Module_Shutdown_Cb shutdown)
+{
+   if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
+     {
+        AZY_MAGIC_FAIL(def, AZY_MAGIC_SERVER_MODULE_DEF);
+        return;
+     }
+   def->init = init;
+   def->shutdown = shutdown;
+}
+
+void
+azy_server_module_def_pre_post_set(Azy_Server_Module_Def *def, Azy_Server_Module_Content_Cb pre, Azy_Server_Module_Content_Cb post)
+{
+   if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
+     {
+        AZY_MAGIC_FAIL(def, AZY_MAGIC_SERVER_MODULE_DEF);
+        return;
+     }
+   def->pre = pre;
+   def->post = post;
+}
+
+void
+azy_server_module_def_download_upload_set(Azy_Server_Module_Def *def, Azy_Server_Module_Cb download, Azy_Server_Module_Cb upload)
+{
+   if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
+     {
+        AZY_MAGIC_FAIL(def, AZY_MAGIC_SERVER_MODULE_DEF);
+        return;
+     }
+   def->download = download;
+   def->upload = upload;
+}
+
+void
+azy_server_module_def_fallback_set(Azy_Server_Module_Def *def, Azy_Server_Module_Content_Cb fallback)
+{
+   if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
+     {
+        AZY_MAGIC_FAIL(def, AZY_MAGIC_SERVER_MODULE_DEF);
+        return;
+     }
+   def->fallback = fallback;
+}
+
+void
+azy_server_module_def_method_add(Azy_Server_Module_Def *def, Azy_Server_Module_Method *method)
+{
+   if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
+     {
+        AZY_MAGIC_FAIL(def, AZY_MAGIC_SERVER_MODULE_DEF);
+        return;
+     }
+
+   if (!AZY_MAGIC_CHECK(method, AZY_MAGIC_SERVER_MODULE_METHOD))
+     {
+        AZY_MAGIC_FAIL(method, AZY_MAGIC_SERVER_MODULE_METHOD);
+        return;
+     }
+   def->methods = eina_list_append(def->methods, method);
+}
+
+Azy_Server_Module_Method *
+azy_server_module_method_new(const char *name, Azy_Server_Module_Content_Cb cb)
+{
+   Azy_Server_Module_Method *method;
+   
+   if ((!name) || (!cb))
+     return NULL;
+
+   method = calloc(sizeof(Azy_Server_Module_Method), 1);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(method, NULL);
+
+   method->name = eina_stringshare_add(name);
+   method->method = cb;
+
+   AZY_MAGIC_SET(method, AZY_MAGIC_SERVER_MODULE_METHOD);
+   return method;
+}
+
+void
+azy_server_module_method_free(Azy_Server_Module_Method *method)
+{
+   if (!AZY_MAGIC_CHECK(method, AZY_MAGIC_SERVER_MODULE_METHOD))
+     {
+        AZY_MAGIC_FAIL(method, AZY_MAGIC_SERVER_MODULE_METHOD);
+        return;
+     }
+
+   AZY_MAGIC_SET(method, AZY_MAGIC_NONE);
+   eina_stringshare_del(method->name);
+   free(method);
+}
+
+int
+azy_server_module_def_size_get(Azy_Server_Module_Def *def)
+{
+   if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
+     {
+        AZY_MAGIC_FAIL(def, AZY_MAGIC_SERVER_MODULE_DEF);
+        return -1;
+     }
+
+   return def->data_size;
+}
+
+Eina_Bool
+azy_server_module_size_set(Azy_Server_Module_Def *def, int size)
+{
+   if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
+     {
+        AZY_MAGIC_FAIL(def, AZY_MAGIC_SERVER_MODULE_DEF);
+        return EINA_FALSE;
+     }
+
+   def->data_size = size;
    return EINA_TRUE;
 }
 
@@ -102,6 +275,7 @@ azy_server_new(Eina_Bool secure)
      goto err;
    server->security.secure = secure;
 
+   AZY_MAGIC_SET(server, AZY_MAGIC_SERVER);
    return server;
 
 err:
@@ -112,18 +286,25 @@ err:
 void
 azy_server_free(Azy_Server *server)
 {
-   if (!server)
-     return;
+   if (!AZY_MAGIC_CHECK(server, AZY_MAGIC_SERVER))
+     {
+        AZY_MAGIC_FAIL(server, AZY_MAGIC_SERVER);
+        return;
+     }
 
    eina_list_free(server->module_defs);
+   AZY_MAGIC_SET(server, AZY_MAGIC_NONE);
    free(server);
 }
 
 Eina_List *
 azy_server_module_defs_get(Azy_Server *server)
 {
-   if (!server)
-     return NULL;
+   if (!AZY_MAGIC_CHECK(server, AZY_MAGIC_SERVER))
+     {
+        AZY_MAGIC_FAIL(server, AZY_MAGIC_SERVER);
+        return NULL;
+     }
 
    return server->module_defs;
 }
@@ -133,30 +314,29 @@ azy_server_client_send(Azy_Net      *net,
                        unsigned char *data,
                        int            length)
 {
-   unsigned char *send;
-   int total;
    Eina_Strbuf *header;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(net, 0);
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return EINA_FALSE;
+     }
    EINA_SAFETY_ON_NULL_RETURN_VAL(data, 0);
 
    EINA_SAFETY_ON_TRUE_RETURN_VAL(length < 1, 0);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!ecore_con_server_connected_get(net->conn), 0);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!(header = azy_net_header_create(net)), 0);
 
-   total = length + eina_strbuf_length_get(header);
-   if (!(send = malloc(total)))
+   if (!ecore_con_client_send(net->conn, eina_strbuf_string_get(header), eina_strbuf_length_get(header)))
      {
-        eina_strbuf_free(header);
-        return EINA_FALSE;
+        ERR("Could not queue header for sending!");
+        goto error;
      }
 
-   memcpy(send, eina_strbuf_string_get(header), eina_strbuf_length_get(header));
-   memcpy(send + eina_strbuf_length_get(header) + 1, data, length);
+   EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_server_send(net->conn, data, length), error);
 
+error:
    eina_strbuf_free(header);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(ecore_con_server_send(net->conn, send, total) != total, EINA_FALSE);
-
    free(send);
    return EINA_TRUE;
 }
@@ -169,8 +349,11 @@ azy_server_run(Azy_Server     *server,
    const char *name;
    int az, ecore = ECORE_CON_REMOTE_NODELAY;
 
-   if (!server)
-     return EINA_FALSE;
+   if (!AZY_MAGIC_CHECK(server, AZY_MAGIC_SERVER))
+     {
+        AZY_MAGIC_FAIL(server, AZY_MAGIC_SERVER);
+        return EINA_FALSE;
+     }
    if (port < 1)
      return EINA_FALSE;
 

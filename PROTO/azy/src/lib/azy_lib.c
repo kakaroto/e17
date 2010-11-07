@@ -58,7 +58,7 @@ int azy_log_dom;
 static int _azy_initialized = 0;
 
 static void
-_register_errors(void)
+_azy_lib_register_errors(void)
 {
    AZY_ERROR_REQUEST_JSON_OBJECT = eina_error_msg_static_register(AZY_ERROR_REQUEST_JSON_OBJECT_err);
    AZY_ERROR_REQUEST_JSON_METHOD = eina_error_msg_static_register(AZY_ERROR_REQUEST_JSON_METHOD_err);
@@ -84,6 +84,29 @@ _register_errors(void)
 }
 
 void
+_azy_magic_fail(const void *d, Azy_Magic m, Azy_Magic req_m, const char *fname)
+{
+   ERR("\n"
+       "*** AZY ERROR: Azy Magic Check Failed!!!\n"
+       "*** IN FUNCTION: %s()", fname);
+   if (!d)
+     ERR("  Input handle pointer is NULL!");
+   else if (m == AZY_MAGIC_NONE)
+     ERR("  Input handle has already been freed!");
+   else if (m != req_m)
+     ERR("  Input handle is wrong type\n"
+         "    Expected: %08x - %s\n"
+         "    Supplied: %08x - %s",
+         (unsigned int)req_m, eina_magic_string_get(req_m),
+         (unsigned int)m, eina_magic_string_get(m));
+     ERR("*** NAUGHTY PROGRAMMER!!!\n"
+         "*** SPANK SPANK SPANK!!!\n"
+         "*** Now go fix your code. Tut tut tut!\n"
+         "*** This message brought to you by Ecore.");
+   if (getenv("AZY_ERROR_ABORT")) abort();
+}
+
+EAPI void
 azy_init()
 {
    if (_azy_initialized)
@@ -92,7 +115,7 @@ azy_init()
    ecore_init();
    ecore_con_init();
 
-   _register_errors();
+   _azy_lib_register_errors();
 
    AZY_CLIENT_DISCONNECTED = ecore_event_type_new();
    AZY_CLIENT_CONNECTED = ecore_event_type_new();
@@ -101,10 +124,23 @@ azy_init()
 
    azy_log_dom = eina_log_domain_register("azy", EINA_COLOR_BLUE);
 
+
+   eina_magic_string_set(AZY_MAGIC_SERVER, "Azy_Server");
+   eina_magic_string_set(AZY_MAGIC_SERVER_CLIENT, "Azy_Server_Client");
+   eina_magic_string_set(AZY_MAGIC_SERVER_MODULE, "Azy_Server_Module");
+   eina_magic_string_set(AZY_MAGIC_SERVER_MODULE_DEF, "Azy_Server_Module_Def");
+   eina_magic_string_set(AZY_MAGIC_SERVER_MODULE_METHOD, "Azy_Server_Module_Method");
+   eina_magic_string_set(AZY_MAGIC_CLIENT, "Azy_Client");
+   eina_magic_string_set(AZY_MAGIC_CLIENT_DATA_HANDLER, "Azy_Client_Handler_Data");
+   eina_magic_string_set(AZY_MAGIC_NET, "Azy_Net");
+   eina_magic_string_set(AZY_MAGIC_VALUE, "Azy_Value");
+   eina_magic_string_set(AZY_MAGIC_BLOB, "Azy_Blob");
+   eina_magic_string_set(AZY_MAGIC_CONTENT, "Azy_Content");
+
    _azy_initialized = 1;
 }
 
-void
+EAPI void
 azy_shutdown()
 {
    if (!_azy_initialized)

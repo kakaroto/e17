@@ -86,8 +86,11 @@ static void
 _azy_server_module_free(Azy_Server_Module *module,
                          Eina_Bool           shutdown)
 {
-   if (!module)
-     return;
+   if (!AZY_MAGIC_CHECK(module, AZY_MAGIC_SERVER_MODULE))
+     {
+        AZY_MAGIC_FAIL(module, AZY_MAGIC_SERVER_MODULE);
+        return;
+     }
 
    if (shutdown && module->def && module->def->shutdown)
      module->def->shutdown(module);
@@ -100,18 +103,37 @@ static Azy_Server_Module *
 _azy_server_module_new(Azy_Server_Module_Def *def,
                         Azy_Server_Client     *client)
 {
+   Azy_Server_Module *s;
    DBG("(client=%p)", client);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(def, NULL);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(client, NULL);
+   if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
+     {
+        AZY_MAGIC_FAIL(def, AZY_MAGIC_SERVER_MODULE_DEF);
+        return NULL;
+     }
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_SERVER_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_SERVER_CLIENT);
+        return NULL;
+     }
 
-   Azy_Server_Module *s = calloc(sizeof(Azy_Server_Module), 1);
+   s = calloc(sizeof(Azy_Server_Module), 1);
 
+   EINA_SAFETY_ON_NULL_RETURN_VAL(s, NULL);
    if (def->data_size > 0)
-     s->data = calloc(1, def->data_size);
+     {
+        s->data = calloc(1, def->data_size);
+        if (!s->data)
+          {
+             ERR("alloc!");
+             free(s);
+             return NULL;
+          }
+     }
 
    s->def = def;
    s->client = client;
 
+   AZY_MAGIC_SET(s, AZY_MAGIC_SERVER_MODULE);
    if (s->def->init && !s->def->init(s))
      {
         _azy_server_module_free(s, EINA_FALSE);
@@ -129,7 +151,11 @@ _azy_server_module_def_find(Azy_Server *server,
    Azy_Server_Module_Def *def;
 
    DBG("(server=%p)", server);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(server, NULL);
+   if (!AZY_MAGIC_CHECK(server, AZY_MAGIC_SERVER))
+     {
+        AZY_MAGIC_FAIL(server, AZY_MAGIC_SERVER);
+        return NULL;
+     }
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, NULL);
 
    EINA_LIST_FOREACH(server->module_defs, l, def)
@@ -149,8 +175,16 @@ _azy_server_module_method_find(Azy_Server_Module *module,
    Azy_Server_Module_Method *method;
 
    DBG("(module=%p, name='%s')", module, name);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(module, NULL);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(module->def, NULL);
+   if (!AZY_MAGIC_CHECK(module, AZY_MAGIC_SERVER_MODULE))
+     {
+        AZY_MAGIC_FAIL(module, AZY_MAGIC_SERVER_MODULE);
+        return NULL;
+     }
+   if (!AZY_MAGIC_CHECK(module->def, AZY_MAGIC_SERVER_MODULE_DEF))
+     {
+        AZY_MAGIC_FAIL(module->def, AZY_MAGIC_SERVER_MODULE_DEF);
+        return NULL;
+     }
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, NULL);
 
    EINA_LIST_FOREACH(module->def->methods, l, method)
@@ -174,8 +208,16 @@ _azy_server_client_method_run(Azy_Server_Client *client,
    const char *module_name;
 
    DBG("(client=%p, content=%p)", client, content);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(client, EINA_FALSE);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(content, EINA_FALSE);
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_SERVER_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_SERVER_CLIENT);
+        return EINA_FALSE;
+     }
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return EINA_FALSE;
+     }
 
    INFO("Running RPC for %s", content->method);
    /* get Azy_Server_Module object for current connection and given module name */
@@ -252,10 +294,14 @@ static void
 _azy_server_client_new(Azy_Server      *server,
                         Ecore_Con_Client *conn)
 {
-   if (!server) return;
+   if (!AZY_MAGIC_CHECK(server, AZY_MAGIC_SERVER))
+     {
+        AZY_MAGIC_FAIL(server, AZY_MAGIC_SERVER);
+        return;
+     }
    Azy_Server_Client *client = calloc(sizeof(Azy_Server_Client), 1);
 
-   if (!client) return;
+   EINA_SAFETY_ON_NULL_RETURN(client);
    client->net = azy_net_new(conn);
    client->net->server_client = EINA_TRUE;
    client->ip = ecore_con_client_ip_get(conn);
@@ -267,16 +313,21 @@ _azy_server_client_new(Azy_Server      *server,
    client->del = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DEL, (Ecore_Event_Handler_Cb)_azy_server_client_handler_del, client);
    client->data = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DATA, (Ecore_Event_Handler_Cb)_azy_server_client_handler_data, client);
    /* FIXME: is there other data I want to shove into these handlers? */
+   AZY_MAGIC_SET(client, AZY_MAGIC_SERVER_CLIENT);
 }
 
 static void
 _azy_server_client_free(Azy_Server_Client *client)
 {
    Azy_Server_Module *s;
-   if (!client)
-     return;
-
    DBG("(client=%p)", client);
+
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_SERVER_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_SERVER_CLIENT);
+        return;
+     }
+   AZY_MAGIC_SET(client, AZY_MAGIC_NONE);
    ecore_con_client_data_set(client->net->conn, NULL);
    ecore_event_handler_data_set(client->del, NULL);
    azy_net_free(client->net);
@@ -299,8 +350,6 @@ _azy_server_client_module_find(Azy_Server_Client *client,
    Azy_Server_Module *module;
 
    DBG("(client=%p)", client);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(client, NULL);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(name, NULL);
 
    EINA_LIST_FOREACH(client->modules, l, module)
      if (!strcmp(module->def->name, name))
@@ -513,13 +562,13 @@ _azy_server_client_handler_request(Azy_Server_Client *client)
         client->net->transport = azy_events_net_transport_get(azy_net_header_get(client->net, "content-type"));
         switch (client->net->transport)
           {
-           case AZY_NET_JSON:
-           case AZY_NET_XML:
+           case AZY_NET_TRANSPORT_JSON:
+           case AZY_NET_TRANSPORT_XML:
              _azy_server_client_rpc(client, client->net->transport);
              break;
 
-           case AZY_NET_TEXT:
-           case AZY_NET_HTML:
+           case AZY_NET_TRANSPORT_TEXT:
+           case AZY_NET_TRANSPORT_HTML:
            default:
              /* FIXME: this isn't supported yet but probably should be somehow? */
              azy_events_connection_kill(client->net->conn, EINA_TRUE, error501);
@@ -551,6 +600,7 @@ _azy_server_client_handler_data(Azy_Server_Client          *client,
 
         overflow = NULL;
         overflow_length = 0;
+        return ECORE_CALLBACK_CANCEL;
      }
 
    if (client != (Azy_Server_Client*)((ev) ? ecore_con_client_data_get(ev->client) : cli))

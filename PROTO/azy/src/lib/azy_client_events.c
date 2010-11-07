@@ -32,8 +32,9 @@ static void
 _azy_client_handler_data_free(Azy_Client_Handler_Data *handler_data)
 {
    DBG("(handler_data=%p, client=%p, net=%p)", handler_data, handler_data->client, handler_data->client->net);
-   if (!handler_data)
+   if (!AZY_MAGIC_CHECK(handler_data, AZY_MAGIC_CLIENT_DATA_HANDLER))
      return;
+   AZY_MAGIC_SET(handler_data, AZY_MAGIC_NONE);
    if (handler_data->recv)
      azy_net_free(handler_data->recv);
    free(handler_data);
@@ -63,7 +64,7 @@ _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
 
    if (!azy_content_unserialize_response(content, handler_data->recv->transport, (const char*)handler_data->recv->buffer, handler_data->recv->size))
      azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return parsing failed.");
-   else if ((handler_data->recv->transport == AZY_NET_JSON) && (content->id != handler_data->id))
+   else if ((handler_data->recv->transport == AZY_NET_TRANSPORT_JSON) && (content->id != handler_data->id))
      {
         ERR("Content id: %u  |  Call id: %u", content->id, handler_data->id);
         azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return id does not match.");
@@ -106,7 +107,7 @@ _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
         ecore_event_handler_data_set(client->recv, client->conns->data);
         ecore_con_server_data_set(client->net->conn, client);
      }
-   else
+   else if (client->net && client->recv)
      {
         ecore_event_handler_data_set(client->recv, NULL);
         ecore_con_server_data_set(client->net->conn, NULL);
@@ -117,7 +118,9 @@ _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
 static Eina_Bool
 _azy_client_recv_timer(Azy_Client_Handler_Data *handler_data)
 {
-   if (!handler_data->recv)
+   if (!AZY_MAGIC_CHECK(handler_data, AZY_MAGIC_CLIENT_DATA_HANDLER))
+     return ECORE_CALLBACK_CANCEL;
+   if (!AZY_MAGIC_CHECK(handler_data, AZY_MAGIC_NET))
      return ECORE_CALLBACK_CANCEL;
 
    DBG("(handler_data=%p, client=%p, net=%p)", handler_data, handler_data->client, handler_data->client->net);
@@ -151,7 +154,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
    static long long int overflow_length;
    static Azy_Client *client;
 
-   if (!handler_data)
+   if (!AZY_MAGIC_CHECK(handler_data, AZY_MAGIC_CLIENT_DATA_HANDLER))
      return ECORE_CALLBACK_RENEW;
    EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data->client, ECORE_CALLBACK_RENEW);
    EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data->client->net, ECORE_CALLBACK_RENEW);
@@ -301,13 +304,15 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
      {
         Azy_Client_Handler_Data *dh;
         char *method;
+        size_t mlen;
 
         dh = client->conns->data;
         if (dh->recv)
           return ECORE_CALLBACK_RENEW;
 
-        method = calloc(sizeof(char), strlen(dh->method) + 1);
-        sprintf(method, "%s", dh->method);
+        mlen = strlen(dh->method);
+        method = calloc(sizeof(char), mlen + 1);
+        snprintf(method, mlen, "%s", dh->method);
         WARN("%s: Calling %s again to try using %lli bytes of overflow data...", method, __PRETTY_FUNCTION__, overflow_length);
         _azy_client_handler_data(dh, type, NULL);
         if (!overflow)

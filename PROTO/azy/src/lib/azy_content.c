@@ -8,19 +8,22 @@
 #include "Azy.h"
 #include "azy_private.h"
 
+#ifndef MIN
+# define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#endif
+
 Azy_Content *
 azy_content_new(const char *method)
 {
    /* method can safely be null here */
     Azy_Content *c = calloc(sizeof(Azy_Content), 1);
 
-    if (!c)
-      return NULL;
+    EINA_SAFETY_ON_NULL_RETURN_VAL(c, NULL);
     if (method && method[0])
       c->method = eina_stringshare_add(method);
 
     DBG("(method=%s) = %p", method, c);
-
+    AZY_MAGIC_SET(c, AZY_MAGIC_CONTENT);
     return c;
 }
 
@@ -31,13 +34,18 @@ azy_content_free(Azy_Content *content)
 
    DBG("(content=%p)", content);
 
-   if (!content)
-     return;
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return;
+     }
 
+   AZY_MAGIC_SET(content, AZY_MAGIC_NONE);
    eina_stringshare_del(content->method);
    EINA_LIST_FREE(content->params, v)
      azy_value_unref(v);
-   azy_value_unref(content->retval);
+   if (content->retval)
+     azy_value_unref(content->retval);
    if (content->length)
      free(content->buffer);
    if (content->faultmsg)
@@ -49,12 +57,16 @@ Eina_Bool
 azy_content_serialize_request(Azy_Content *content,
                                Azy_Net_Transport type)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(content, EINA_FALSE);
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return EINA_FALSE;
+     }
 
-   if (type == AZY_NET_JSON)
+   if (type == AZY_NET_TRANSPORT_JSON)
      return azy_content_serialize_request_json(content);
 
-   if (type == AZY_NET_XML)
+   if (type == AZY_NET_TRANSPORT_XML)
      return azy_content_serialize_request_xml(content);
 
    ERR("ILLEGAL TYPE PASSED! %i", type);
@@ -67,12 +79,16 @@ azy_content_unserialize_request(Azy_Content *content,
                                  const char   *buf,
                                  ssize_t       len)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(content, EINA_FALSE);
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return EINA_FALSE;
+     }
 
-   if (type == AZY_NET_JSON)
+   if (type == AZY_NET_TRANSPORT_JSON)
      return azy_content_unserialize_request_json(content, buf, len);
 
-   if (type == AZY_NET_XML)
+   if (type == AZY_NET_TRANSPORT_XML)
      return azy_content_unserialize_request_xml(content, buf, len);
 
    azy_content_error_faultmsg_set(content, 1, eina_stringshare_add_length(buf, len));
@@ -83,13 +99,17 @@ Eina_Bool
 azy_content_serialize_response(Azy_Content *content,
                                 Azy_Net_Transport type)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(content, EINA_FALSE);
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return EINA_FALSE;
+     }
 
-   if (type == AZY_NET_JSON)
+   if (type == AZY_NET_TRANSPORT_JSON)
      return azy_content_serialize_response_json(content);
 
 
-   if (type == AZY_NET_XML)
+   if (type == AZY_NET_TRANSPORT_XML)
      return azy_content_serialize_response_xml(content);
 
    ERR("ILLEGAL TYPE PASSED! %i", type);
@@ -102,12 +122,16 @@ azy_content_unserialize_response(Azy_Content *content,
                                   const char   *buf,
                                   ssize_t       len)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(content, EINA_FALSE);
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return EINA_FALSE;
+     }
 
-   if (type == AZY_NET_JSON)
+   if (type == AZY_NET_TRANSPORT_JSON)
      return azy_content_unserialize_response_json(content, buf, len);
 
-   if (type == AZY_NET_XML)
+   if (type == AZY_NET_TRANSPORT_XML)
      return azy_content_unserialize_response_xml(content, buf, len);
 
    azy_content_error_faultmsg_set(content, 1, eina_stringshare_add_length(buf, len));
@@ -119,8 +143,11 @@ azy_content_method_full_get(Azy_Content *content)
 {
    DBG("(content=%p)", content);
 
-   if (!content)
-     return NULL;
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return NULL;
+     }
 
    return content->method;
 }
@@ -131,7 +158,13 @@ azy_content_method_get(Azy_Content *content)
    const char *ret;
    DBG("(content=%p)", content);
 
-   if ((!content) || (!content->method))
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return NULL;
+     }
+
+   if (!content->method)
      return NULL;
 
    if ((ret = strchr(content->method, '.')))
@@ -147,8 +180,11 @@ azy_content_module_name_get(Azy_Content *content,
    const char *ret;
    DBG("(content=%p)", content);
 
-   if (!content)
-     return NULL;
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return NULL;
+     }
 
    if ((!content->method) || (!(ret = strchr(content->method, '.'))))
      return eina_stringshare_add(fallback);
@@ -164,8 +200,17 @@ azy_content_param_add(Azy_Content *content,
 {
    DBG("(content=%p, val=%p)", content, val);
 
-   if ((!content) || (!val))
-     return;
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return;
+     }
+
+   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
+     {
+        AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
+        return;
+     }
 
    content->params = eina_list_append(content->params, val);
 }
@@ -176,8 +221,11 @@ azy_content_param_get(Azy_Content *content,
 {
    DBG("(content=%p, pos=%u)", content, pos);
 
-   if (!content)
-     return NULL;
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return NULL;
+     }
 
    return eina_list_nth(content->params, pos);
 }
@@ -187,8 +235,11 @@ azy_content_params_get(Azy_Content *content)
 {
    DBG("(content=%p)", content);
 
-   if (!content)
-     return NULL;
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return NULL;
+     }
 
    return content->params;
 }
@@ -201,10 +252,12 @@ azy_content_retval_set(Azy_Content *content,
 {
    DBG("(content=%p, val=%p)", content, val);
 
-   if ((!content) || (!val))
-     return;
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return;
+     }
 
-   azy_value_unref(content->retval);
    content->retval = val;
 }
 
@@ -213,8 +266,11 @@ azy_content_retval_get(Azy_Content *content)
 {
    DBG("(content=%p)", content);
 
-   if (!content)
-     return NULL;
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return NULL;
+     }
 
    return content->retval;
 }
@@ -227,8 +283,11 @@ azy_content_error_code_set(Azy_Content *content,
 {
    DBG("(content=%p, code=%d)", content, code);
 
-   if (!content)
-     return;
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return;
+     }
 
    content->error_set = EINA_TRUE;
    content->errcode = code;
@@ -242,8 +301,11 @@ azy_content_error_faultcode_set(Azy_Content *content,
 {
    DBG("(content=%p, code=%d)", content, code);
 
-   if (!content)
-     return;
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return;
+     }
 
    content->error_set = EINA_TRUE;
    content->errcode = code;
@@ -261,7 +323,13 @@ azy_content_error_faultmsg_set(Azy_Content *content,
 
    DBG("(content=%p, faultcode='%d')", content, faultcode);
 
-   if ((!content) || (!fmt))
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return;
+     }
+
+   if (!fmt)
      return;
 
    if (content->faultmsg)
@@ -287,8 +355,11 @@ azy_content_error_is_set(Azy_Content *content)
 {
    DBG("(content=%p)", content);
 
-   if (!content)
-     return EINA_FALSE;
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return EINA_FALSE;
+     }
 
    return content->error_set;
 }
@@ -298,8 +369,11 @@ azy_content_error_reset(Azy_Content *content)
 {
    DBG("(content=%p)", content);
 
-   if (!content)
-     return;
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return;
+     }
    if (!content->error_set)
      return;
 
@@ -320,8 +394,11 @@ azy_content_error_code_get(Azy_Content *content)
 {
    DBG("(content=%p)", content);
 
-   if (!content)
-     return -1;
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return -1;
+     }
 
    return content->errcode;
 }
@@ -331,7 +408,13 @@ azy_content_error_message_get(Azy_Content *content)
 {
    DBG("(content=%p)", content);
 
-   if ((!content) || (!content->error_set))
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return NULL;
+     }
+
+   if (!content->error_set)
      return NULL;
 
    if (content->faultmsg)
@@ -351,8 +434,11 @@ azy_content_dump_string(const Azy_Content *content,
    Eina_Bool single_line = EINA_TRUE;
    Azy_Value *v;
 
-   if (!content)
-     return NULL;
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return NULL;
+     }
 
    memset(buf, ' ', MIN(indent * 2, sizeof(buf) - 1));
    string = eina_strbuf_new();
@@ -362,7 +448,7 @@ azy_content_dump_string(const Azy_Content *content,
      single_line = EINA_FALSE;
    else
      EINA_LIST_FOREACH(content->params, l, v)
-       if (__azy_value_is_complicated(v, 25))
+       if (_azy_value_multi_line_get(v, 25))
          single_line = EINA_FALSE;
 
    eina_strbuf_append_printf(string, "%s%s(", buf, content->method ? content->method : "<anonymous>");
@@ -412,8 +498,11 @@ azy_content_dump(const Azy_Content *content,
 {
    char *str;
 
-   if (!content)
-     return;
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return;
+     }
 
    if (!(str = azy_content_dump_string(content, indent)))
      return;
@@ -425,8 +514,11 @@ azy_content_dump(const Azy_Content *content,
 unsigned char *
 azy_content_buffer_get(Azy_Content *content)
 {
-   if (!content)
-     return NULL;
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return NULL;
+     }
 
    return content->buffer;
 }
@@ -434,8 +526,11 @@ azy_content_buffer_get(Azy_Content *content)
 int
 azy_content_length_get(Azy_Content *content)
 {
-   if (!content)
-     return -1;
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return -1;
+     }
 
    return content->length;
 }
@@ -445,7 +540,12 @@ azy_content_buffer_set(Azy_Content  *content,
                         unsigned char *buffer,
                         int            length)
 {
-   if ((!content) || (!buffer) || (length < 1))
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return EINA_FALSE;
+     }
+   if ((!buffer) || (length < 1))
      return EINA_FALSE;
 
    if (content->buffer)
@@ -459,8 +559,12 @@ azy_content_buffer_set(Azy_Content  *content,
 void
 azy_content_buffer_reset(Azy_Content *content)
 {
-   EINA_SAFETY_ON_NULL_RETURN(content);
-   EINA_SAFETY_ON_NULL_RETURN(content->buffer);
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return;
+     }
+   if (!content->buffer) return;
 
    free(content->buffer);
    content->buffer = NULL;
@@ -470,7 +574,11 @@ azy_content_buffer_reset(Azy_Content *content)
 void *
 azy_content_return_get(Azy_Content *content)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(content, NULL);
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return NULL;
+     }
    return content->ret;
 }
 
@@ -478,6 +586,10 @@ azy_content_return_get(Azy_Content *content)
 Azy_Client_Call_Id
 azy_content_id_get(Azy_Content *content)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(content, 0);
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return 0;
+     }
    return content->id;
 }

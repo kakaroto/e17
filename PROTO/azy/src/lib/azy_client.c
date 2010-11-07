@@ -22,7 +22,11 @@ void *
 azy_client_data_get(Azy_Client *client)
 {
    DBG("(client=%p)", client);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(client, NULL);
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
+        return NULL;
+     }
    return client->data;
 }
 
@@ -30,7 +34,11 @@ void
 azy_client_data_set(Azy_Client *client, void *data)
 {
    DBG("(client=%p)", client);
-   EINA_SAFETY_ON_NULL_RETURN(client);
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
+        return;
+     }
    client->data = data;
 }
 
@@ -45,6 +53,7 @@ azy_client_new(void)
    client->add = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, (Ecore_Event_Handler_Cb)_azy_client_handler_add, client);
    client->del = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, (Ecore_Event_Handler_Cb)_azy_client_handler_del, client);
 
+   AZY_MAGIC_SET(client, AZY_MAGIC_CLIENT);
    return client;
 }
 
@@ -54,7 +63,12 @@ azy_client_host_set(Azy_Client *client,
                      int          port)
 {
    DBG("(client=%p)", client);
-   if ((!client) || (!host) || (port < 1) || (port > 65535))
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
+        return EINA_FALSE;
+     }
+   if ((!host) || (port < 1) || (port > 65535))
      return EINA_FALSE;
 
    if (client->host)
@@ -69,7 +83,11 @@ const char *
 azy_client_hostname_get(Azy_Client *client)
 {
    DBG("(client=%p)", client);
-   if (!client) return NULL;
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
+        return NULL;
+     }
 
    return client->host;
 }
@@ -78,7 +96,11 @@ Eina_Bool
 azy_client_hostname_set(Azy_Client *client, const char *hostname)
 {
    DBG("(client=%p)", client);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(client, EINA_FALSE);
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
+        return EINA_FALSE;
+     }
    EINA_SAFETY_ON_NULL_RETURN_VAL(hostname, EINA_FALSE);
 
    client->host = eina_stringshare_add(hostname);
@@ -89,7 +111,11 @@ int
 azy_client_port_get(Azy_Client *client)
 {
    DBG("(client=%p)", client);
-   if (!client) return -1;
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
+        return -1;
+     }
 
    return client->port;
 }
@@ -98,7 +124,11 @@ Eina_Bool
 azy_client_port_set(Azy_Client *client, int port)
 {
    DBG("(client=%p)", client);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(client, EINA_FALSE);
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
+        return EINA_FALSE;
+     }
    if (port < 1)
      return EINA_FALSE;
 
@@ -114,7 +144,11 @@ azy_client_connect(Azy_Client *client,
    Ecore_Con_Server *svr;
    int flags = ECORE_CON_REMOTE_NODELAY;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(client, EINA_FALSE);
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
+        return EINA_FALSE;
+     }
    if ((client->connected) || (!client->host) || (!client->port))
      return EINA_FALSE;
 
@@ -139,7 +173,11 @@ Azy_Net *
 azy_client_net_get(Azy_Client *client)
 {
    DBG("(client=%p)", client);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(client, NULL);
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
+        return NULL;
+     }
 
    return client->net;
 }
@@ -148,7 +186,11 @@ Eina_Bool
 azy_client_connected_get(Azy_Client *client)
 {
    DBG("(client=%p)", client);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(client, EINA_FALSE);
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
+        return EINA_FALSE;
+     }
    return client->connected;
 }
 
@@ -157,7 +199,11 @@ azy_client_close(Azy_Client *client)
 {
    DBG("(client=%p)", client);
 
-   EINA_SAFETY_ON_NULL_RETURN(client);
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
+        return;
+     }
    EINA_SAFETY_ON_FALSE_RETURN(client->connected);
    EINA_SAFETY_ON_NULL_RETURN(client->net);
    
@@ -176,7 +222,11 @@ azy_client_callback_set(Azy_Client *client,
 {
    DBG("(client=%p, id=%u)", client, id);
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(client, EINA_FALSE);
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
+        return EINA_FALSE;
+     }
    EINA_SAFETY_ON_NULL_RETURN_VAL(callback, EINA_FALSE);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(id < 1, EINA_FALSE);
 
@@ -194,7 +244,11 @@ azy_client_callback_free_set(Azy_Client *client,
 {
    DBG("(client=%p, id=%u)", client, id);
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(client, EINA_FALSE);
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
+        return EINA_FALSE;
+     }
    EINA_SAFETY_ON_NULL_RETURN_VAL(callback, EINA_FALSE);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(id < 1, EINA_FALSE);
 
@@ -216,18 +270,22 @@ azy_client_call(Azy_Client       *client,
 
    DBG("(client=%p, net=%p, content=%p)", client, client->net, content);
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(client, 0);
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
+        return 0;
+     }
    EINA_SAFETY_ON_NULL_RETURN_VAL(client->net, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(content, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(content->method, 0);
-
-   INFO("New method call: '%s'", content->method);
 
    if (!client->connected)
      {
         ERR("Can't perform RPC on closed connection.");
         return 0;
      }
+
+   INFO("New method call: '%s'", content->method);
 
    while (++__azy_client_send_id < 1);
 
@@ -270,6 +328,7 @@ azy_client_call(Azy_Client       *client,
    handler_data->callback = cb;
 
    handler_data->id = __azy_client_send_id;
+   AZY_MAGIC_SET(handler_data, AZY_MAGIC_CLIENT_DATA_HANDLER);
    if (!client->conns)
      {
         client->recv =  ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA,
@@ -295,7 +354,11 @@ azy_client_send(Azy_Client   *client,
    Eina_Strbuf *msg;
    Azy_Client_Handler_Data *handler_data;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(client, 0);
+      if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
+        return 0;
+     }
    EINA_SAFETY_ON_NULL_RETURN_VAL(data, 0);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(length < 1, 0);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!ecore_con_server_connected_get(client->net->conn), 0);
@@ -326,6 +389,7 @@ azy_client_send(Azy_Client   *client,
      }
 
    handler_data->client = client;
+   AZY_MAGIC_SET(handler_data, AZY_MAGIC_CLIENT_DATA_HANDLER);
 
    while (++__azy_client_send_id < 1);
 
@@ -345,11 +409,15 @@ azy_client_free(Azy_Client *client)
 {
    DBG("(client=%p)", client);
 
-   if (!client)
-     return;
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
+        return;
+     }
 
    if (client->connected)
      azy_client_close(client);
+   AZY_MAGIC_SET(client, AZY_MAGIC_NONE);
    if (client->host)
      eina_stringshare_del(client->host);
    if (client->session_id)

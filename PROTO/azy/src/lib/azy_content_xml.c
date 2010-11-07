@@ -172,7 +172,7 @@ azy_value_serialize_xml(xmlNode    *node,
       {
          value = xmlNewChild(node, NULL, BAD_CAST "array", NULL);
          value = xmlNewChild(value, NULL, BAD_CAST "data", NULL);
-         EINA_LIST_FOREACH(azy_value_items_get(val), l, v)
+         EINA_LIST_FOREACH(azy_value_children_items_get(val), l, v)
            azy_value_serialize_xml(value, v);
          break;
       }
@@ -180,7 +180,7 @@ azy_value_serialize_xml(xmlNode    *node,
       case AZY_VALUE_STRUCT:
       {
          value = xmlNewChild(node, NULL, BAD_CAST "struct", NULL);
-         EINA_LIST_FOREACH(azy_value_struct_members_get(val), l, v)
+         EINA_LIST_FOREACH(azy_value_children_items_get(val), l, v)
            azy_value_serialize_xml(value, v);
          break;
       }
@@ -381,9 +381,8 @@ azy_value_unserialize_xml(xmlNode *node)
 }
 
 Eina_Bool
-azy_content_serialize_request_xml(void *data)
+azy_content_serialize_request_xml(Azy_Content *content)
 {
-   Azy_Content *content = data;
    Eina_List *l;
    Azy_Value *val;
    xmlNode *params;
@@ -414,9 +413,8 @@ azy_content_serialize_request_xml(void *data)
 }
 
 Eina_Bool
-azy_content_serialize_response_xml(void *data)
+azy_content_serialize_response_xml(Azy_Content *content)
 {
-   Azy_Content *content = data;
    if ((!content) || (content->buffer))
      return EINA_FALSE;
 
@@ -450,11 +448,10 @@ azy_content_serialize_response_xml(void *data)
 }
 
 Eina_Bool
-azy_content_unserialize_request_xml(void       *data,
+azy_content_unserialize_request_xml(Azy_Content *content,
                                      const char *buf,
                                      ssize_t     len)
 {
-   Azy_Content *content = data;
    if ((!content) || (!buf))
      return EINA_FALSE;
 
@@ -518,11 +515,10 @@ err_0:
 }
 
 Eina_Bool
-azy_content_unserialize_response_xml(void       *data,
+azy_content_unserialize_response_xml(Azy_Content *content,
                                       const char *buf,
                                       ssize_t     len)
 {
-   Azy_Content *content = data;
    if ((!content) || (!buf))
      return EINA_FALSE;
 
@@ -587,7 +583,6 @@ azy_content_unserialize_response_xml(void       *data,
         if (azy_value_retval_is_error(content->retval, &errcode, &errmsg))
           {
              azy_content_error_faultmsg_set(content, errcode, "%s", errmsg);
-             eina_stringshare_del(errmsg);
              azy_value_unref(content->retval);
              content->retval = NULL;
              xp_free_nodes(ns);
@@ -614,7 +609,8 @@ done:
    return EINA_TRUE;
 
 err_3:
-   azy_value_unref(content->retval);
+   if (content->retval)
+     azy_value_unref(content->retval);
    content->retval = NULL;
 err_2:
    xp_free_nodes(ns);

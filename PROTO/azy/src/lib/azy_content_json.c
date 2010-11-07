@@ -25,7 +25,7 @@ azy_value_serialize_json(Azy_Value *val)
       case AZY_VALUE_ARRAY:
       {
          object = cJSON_CreateArray();
-         EINA_LIST_FOREACH(azy_value_items_get(val), l, v)
+         EINA_LIST_FOREACH(azy_value_children_items_get(val), l, v)
            cJSON_AddItemToArray(object, azy_value_serialize_json(v));
          return object;
       }
@@ -33,7 +33,7 @@ azy_value_serialize_json(Azy_Value *val)
       case AZY_VALUE_STRUCT:
       {
          object = cJSON_CreateObject();
-         EINA_LIST_FOREACH(azy_value_struct_members_get(val), l, v)
+         EINA_LIST_FOREACH(azy_value_children_items_get(val), l, v)
            cJSON_AddItemToObject(object, azy_value_struct_member_name_get(v),
                                  azy_value_serialize_json(azy_value_struct_member_value_get(v)));
          return object;
@@ -164,12 +164,11 @@ azy_value_unserialize_json(cJSON *object)
 }
 
 Eina_Bool
-azy_content_serialize_request_json(void *data)
+azy_content_serialize_request_json(Azy_Content *content)
 {
    Eina_List *l;
    Azy_Value *v;
    cJSON *object, *params;
-   Azy_Content *content = data;
    char *msg;
 
    if ((!content) || (content->buffer))
@@ -199,10 +198,9 @@ azy_content_serialize_request_json(void *data)
 }
 
 Eina_Bool
-azy_content_serialize_response_json(void *data)
+azy_content_serialize_response_json(Azy_Content *content)
 {
    cJSON *object, *error;
-   Azy_Content *content = data;
    char *msg;
 
    if ((!content) || (content->buffer))
@@ -244,13 +242,12 @@ azy_content_serialize_response_json(void *data)
 }
 
 Eina_Bool
-azy_content_unserialize_request_json(void       *data,
+azy_content_unserialize_request_json(Azy_Content *content,
                                       const char *buf,
                                       ssize_t len __UNUSED__)
 {
    cJSON *object, *grab;
    int i;
-   Azy_Content *content = data;
 
    if ((!content) || (!buf))
      return EINA_FALSE;
@@ -294,13 +291,12 @@ azy_content_unserialize_request_json(void       *data,
 }
 
 Eina_Bool
-azy_content_unserialize_response_json(void       *data,
+azy_content_unserialize_response_json(Azy_Content *content,
                                        const char *buf,
                                        ssize_t len __UNUSED__)
 {
    cJSON *object, *grab, *error;
    Azy_Value *ret;
-   Azy_Content *content = data;
 
    if ((!content) || (!buf))
      return EINA_FALSE;

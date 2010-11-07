@@ -5,8 +5,39 @@
 #ifndef AZY_PRIV_H
 #define AZY_PRIV_H
 
+#include <Eina.h>
 #include <Azy.h>
+
 #define AZY_SERVER_TYPE 0x0f
+
+#define AZY_MAGIC_SERVER 0x31337
+#define AZY_MAGIC_SERVER_CLIENT 0x31338
+#define AZY_MAGIC_SERVER_MODULE 0x31339
+#define AZY_MAGIC_SERVER_MODULE_DEF 0x31340
+#define AZY_MAGIC_SERVER_MODULE_METHOD 0x31341
+#define AZY_MAGIC_CLIENT 0x31342
+#define AZY_MAGIC_NET 0x31343
+#define AZY_MAGIC_VALUE 0x31344
+#define AZY_MAGIC_BLOB 0x31345
+#define AZY_MAGIC_CONTENT 0x31346
+#define AZY_MAGIC_CLIENT_DATA_HANDLER 0x31347
+
+#define AZY_MAGIC_NONE 0x1234fedc
+#define AZY_MAGIC                 Azy_Magic  __magic
+#define AZY_MAGIC_SET(d, m)       (d)->__magic = (m)
+#define AZY_MAGIC_CHECK(d, m)     ((d) && ((d)->__magic == (m)))
+#define AZY_MAGIC_FAIL(d, m)  _azy_magic_fail((d), (d) ? (d)->__magic : 0, (m), __PRETTY_FUNCTION__)
+
+#ifndef __GNUC__
+# define __PRETTY_FUNCTION__ __FILE__
+#endif
+
+
+#define DBG(...)  EINA_LOG_DOM_DBG(azy_log_dom, __VA_ARGS__)
+#define INFO(...) EINA_LOG_DOM_INFO(azy_log_dom, __VA_ARGS__)
+#define WARN(...) EINA_LOG_DOM_WARN(azy_log_dom, __VA_ARGS__)
+#define ERR(...)  EINA_LOG_DOM_ERR(azy_log_dom, __VA_ARGS__)
+
 extern Eina_Error AZY_ERROR_REQUEST_JSON_OBJECT;
 extern Eina_Error AZY_ERROR_REQUEST_JSON_METHOD;
 extern Eina_Error AZY_ERROR_REQUEST_JSON_PARAM;
@@ -30,11 +61,8 @@ extern Eina_Error AZY_ERROR_RESPONSE_XML_INVAL;
 extern Eina_Error AZY_ERROR_RESPONSE_XML_UNSERIAL;
 
 typedef struct _Azy_Client_Handler_Data Azy_Client_Handler_Data;
+typedef unsigned int Azy_Magic;
 
-#define DBG(...)  EINA_LOG_DOM_DBG(azy_log_dom, __VA_ARGS__)
-#define INFO(...) EINA_LOG_DOM_INFO(azy_log_dom, __VA_ARGS__)
-#define WARN(...) EINA_LOG_DOM_WARN(azy_log_dom, __VA_ARGS__)
-#define ERR(...)  EINA_LOG_DOM_ERR(azy_log_dom, __VA_ARGS__)
 
 struct _Azy_Content
 {
@@ -52,6 +80,7 @@ struct _Azy_Content
    Eina_Error          errcode; //internal code
    int                 faultcode; //code to actually report
    const char         *faultmsg; //if non-null, message to reply with instead of message associated with errcode
+   AZY_MAGIC;
 };
 
 struct _Azy_Net
@@ -86,6 +115,7 @@ struct _Azy_Net
       long long int        content_length;
    } http;
    Eina_Bool headers_read : 1;
+   AZY_MAGIC;
 };
 
 struct _Azy_Server
@@ -100,6 +130,7 @@ struct _Azy_Server
    } security;
 
    Eina_List *module_defs;
+   AZY_MAGIC;
 };
 
 typedef struct _Azy_Server_Client
@@ -113,6 +144,7 @@ typedef struct _Azy_Server_Client
 
    const char          *session_id;
    const char          *ip;
+   AZY_MAGIC;
 } Azy_Server_Client;
 
 struct _Azy_Server_Module
@@ -122,6 +154,7 @@ struct _Azy_Server_Module
    Azy_Content           *content;
    Azy_Server_Client     *client;
    double                  last_used;
+   AZY_MAGIC;
 };
 
 struct _Azy_Value
@@ -138,6 +171,7 @@ struct _Azy_Value
 
    const char         *member_name;
    Azy_Value         *member_value;
+   AZY_MAGIC;
 };
 
 struct _Azy_Client
@@ -159,6 +193,7 @@ struct _Azy_Client
    int                  secure;
 
    Eina_Bool            connected : 1;
+   AZY_MAGIC;
 };
 
 struct _Azy_Client_Handler_Data
@@ -168,6 +203,7 @@ struct _Azy_Client_Handler_Data
    Azy_Net            *recv;
    const char          *method;
    Azy_Content_Cb     callback; //callback set to convert from Azy_Value to Return_Type
+   AZY_MAGIC;
 };
 
 
@@ -176,9 +212,34 @@ struct _Azy_Blob
    const char *buf;
    int         len;
    char        refs;
+   AZY_MAGIC;
 };
 
-Eina_Bool __azy_value_is_complicated(Azy_Value *v,
+struct _Azy_Server_Module_Def
+{
+   const char *name;
+   int         data_size;
+   Azy_Server_Module_Cb init;
+   Azy_Server_Module_Shutdown_Cb shutdown;
+   Azy_Server_Module_Content_Cb pre;
+   Azy_Server_Module_Content_Cb post;
+   Azy_Server_Module_Content_Cb fallback;
+   Azy_Server_Module_Cb download;
+   Azy_Server_Module_Cb upload;
+   Eina_List *methods;
+   AZY_MAGIC;
+};
+
+struct _Azy_Server_Module_Method
+{
+   const char *name;
+   Azy_Server_Module_Content_Cb method;
+   AZY_MAGIC;
+};
+
+extern void _azy_magic_fail(const void *d, Azy_Magic m, Azy_Magic req_m, const char *fname);
+
+Eina_Bool _azy_value_multi_line_get(Azy_Value *v,
                                       int                 max_strlen);
 int azy_events_type_parse(Azy_Net            *net,
                            int                  type,

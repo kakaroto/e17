@@ -41,7 +41,7 @@ static int constructCallNoMethod()
 static int requestUnserialize1()
 {
   Azy_Content* content = azy_content_new(NULL);
-  Eina_Bool rs = azy_content_unserialize_request(content, AZY_NET_XML, "<->", 3);
+  Eina_Bool rs = azy_content_unserialize_request(content, AZY_NET_TRANSPORT_XML, "<->", 3);
   TEST_ASSERT(!rs);
   azy_content_free(content);
   return EINA_TRUE;
@@ -55,7 +55,7 @@ static int requestUnserialize2()
     PARAM(VALUE(string, "s1"))
     PARAM(VALUE(string, "s2"))
   ));
-  Eina_Bool rs = azy_content_unserialize_request(content, AZY_NET_XML, eina_strbuf_string_get(str), eina_strbuf_length_get(str));
+  Eina_Bool rs = azy_content_unserialize_request(content, AZY_NET_TRANSPORT_XML, eina_strbuf_string_get(str), eina_strbuf_length_get(str));
   TEST_ASSERT(!rs);
   eina_strbuf_free(str);
   azy_content_free(content);
@@ -72,7 +72,7 @@ static int requestUnserialize3()
     PARAM(VALUE(string, "s2"))
   ));
 
-  Eina_Bool rs = azy_content_unserialize_request(content, AZY_NET_XML, eina_strbuf_string_get(str), eina_strbuf_length_get(str));
+  Eina_Bool rs = azy_content_unserialize_request(content, AZY_NET_TRANSPORT_XML, eina_strbuf_string_get(str), eina_strbuf_length_get(str));
   TEST_ASSERT(rs);
 
   const char* method = azy_content_method_get(content);
@@ -138,7 +138,7 @@ static int requestUnserialize4()
     ))
   ));
   printf("%s\n",eina_strbuf_string_get(str));
-  Eina_Bool rs = azy_content_unserialize_request(content, AZY_NET_XML, eina_strbuf_string_get(str), eina_strbuf_length_get(str));
+  Eina_Bool rs = azy_content_unserialize_request(content, AZY_NET_TRANSPORT_XML, eina_strbuf_string_get(str), eina_strbuf_length_get(str));
 //  azy_content_dump(content, 0);
   TEST_ASSERT(rs);
   TEST_ASSERT(_assert_param_type(content, 0, AZY_VALUE_INT));

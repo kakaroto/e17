@@ -145,7 +145,7 @@ _connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
    err = azy_content_new(NULL);
    
    /* use json transport for big arrays */
-   azy_net_transport_set(net, AZY_NET_JSON);
+   azy_net_transport_set(net, AZY_NET_TRANSPORT_JSON);
    azy_net_uri_set(net, "/RPC2");
 
    ret = TTest1_getBigArray(cli, err);
@@ -172,7 +172,7 @@ _connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
    EINA_LIST_FREE(list, s)
      eina_stringshare_del(s);
 
-   azy_net_transport_set(net, AZY_NET_XML);
+   azy_net_transport_set(net, AZY_NET_TRANSPORT_XML);
 
    ret = TTest1_getAll(cli, err);
    if (_check_err(err) || (!ret))
@@ -216,7 +216,7 @@ _connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
 
       content = azy_content_new("TTest1.undefined");
       azy_content_param_add(content, azy_value_struct_new_from_int("test", 100));
-      ret = azy_client_call(cli, content, AZY_NET_JSON, NULL);
+      ret = azy_client_call(cli, content, AZY_NET_TRANSPORT_JSON, NULL);
       if (_check_err(err) || (!ret))
         exit(1);
       if (!azy_client_callback_set(cli, ret, _TTest1_undefined_ret))

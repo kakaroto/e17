@@ -10,6 +10,18 @@
 #include "cdecode.h"
 #include "cencode.h"
 
+#define AZY_MAGIC_NONE 0x1234fedc
+#define AZY_MAGIC                 Azy_Magic  __magic
+#define AZY_MAGIC_SET(d, m)       (d)->__magic = (m)
+#define AZY_MAGIC_CHECK(d, m)     ((d) && ((d)->__magic == (m)))
+#define AZY_MAGIC_FAIL(d, m)  _azy_magic_fail((d), (d) ? (d)->__magic : 0, (m), __PRETTY_FUNCTION__)
+typedef unsigned int Azy_Magic;
+
+#define DBG(...)  EINA_LOG_DOM_DBG(azy_log_dom, __VA_ARGS__)
+#define INFO(...) EINA_LOG_DOM_INFO(azy_log_dom, __VA_ARGS__)
+#define WARN(...) EINA_LOG_DOM_WARN(azy_log_dom, __VA_ARGS__)
+#define ERR(...)  EINA_LOG_DOM_ERR(azy_log_dom, __VA_ARGS__)
+
 static const char AZY_ERROR_REQUEST_JSON_OBJECT_err[] = "Can't parse JSON-RPC request. Invalid JSON object.";
 static const char AZY_ERROR_REQUEST_JSON_METHOD_err[] = "Can't parse JSON-RPC request. Missing method.";
 static const char AZY_ERROR_REQUEST_JSON_PARAMS_err[] = "Can't parse JSON-RPC request. Invalid params.";
@@ -139,4 +151,27 @@ char *azy_base64_decode(const char *string, int len)
 	
 	return ret;
 
+}
+
+void
+_azy_magic_fail(const void *d, Azy_Magic m, Azy_Magic req_m, const char *fname)
+{
+   ERR("\n"
+       "*** AZY ERROR: Azy Magic Check Failed!!!\n"
+       "*** IN FUNCTION: %s()", fname);
+   if (!d)
+     ERR("  Input handle pointer is NULL!");
+   else if (m == AZY_MAGIC_NONE)
+     ERR("  Input handle has already been freed!");
+   else if (m != req_m)
+     ERR("  Input handle is wrong type\n"
+         "    Expected: %08x - %s\n"
+         "    Supplied: %08x - %s",
+         (unsigned int)req_m, eina_magic_string_get(req_m),
+         (unsigned int)m, eina_magic_string_get(m));
+     ERR("*** NAUGHTY PROGRAMMER!!!\n"
+         "*** SPANK SPANK SPANK!!!\n"
+         "*** Now go fix your code. Tut tut tut!\n"
+         "*** This message brought to you by Ecore.");
+   if (getenv("AZY_ERROR_ABORT")) abort();
 }
