@@ -9,7 +9,7 @@ body {
 }
 
 html, body {
-  height: 100%;
+  height                  : 100%;
 }
 
 
@@ -95,6 +95,7 @@ pre {
    padding                : 2px;
    overflow               : auto;
    font-size              : 9px;
+   color                  : #880000;
 }
 
 ul {
@@ -215,7 +216,7 @@ td.b4[class] { background-image:url("i/b4.png"); }
 td.b5 {
    background-image       : url("i/b5.png");
    font-size              : 11px;
-   color                  : #4444;
+   color                  : #444444;
    text-align             : left;
    vertical-align         : middle;
 }
@@ -362,4 +363,3 @@ td.pn9[class] { background-image:url("i/pn-9.png"); }
     font-weight           : bold;
     text-align            : left;
 }
-
