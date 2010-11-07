@@ -395,7 +395,11 @@ eet_sync(Eet_File *ef)
  <p>
   The <b>id_rsa.pub</b> is your SSH public key. You will find this in
   your <b>~/.ssh</b> directory. If you don't have one yet, you can
-  generate one with <b>ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa</b>
+  generate one with: 
+ </p>
+<p><pre><code>ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa
+</code></pre></p>
+ <p>
   for example. You should read the SSH manuals for more information if
   you need it. This SSH key will give you access to SVN so you can
   check out and commit code, with all traffic between you and
