@@ -77,8 +77,8 @@
   Once you become an enlightenment developer, you will possibly get SVN
   commit access. This means you can not just fetch the code and generate
   patches, but you can also directly put changes into SVN (commit them).
-  All changes are watched and broadcast on our <a 
-  href=https://lists.sourceforge.net/lists/listinfo/enlightenment-svn>
+  All changes are watched and broadcast on our
+  <a href=https://lists.sourceforge.net/lists/listinfo/enlightenment-svn>
   SVN Commits List</a> as they happen. To gain a copy of the tree as a
   developer with commit access you will want to check out the tree with
  one of the following commands (depending on if you want to use SVN
@@ -288,8 +288,48 @@ eet_sync(Eet_File *ef)
 </code></pre></p>
  <h3>Source Trees</h3>
  <p>
-  XXX: talk about autofoo, src, data src/bin, src/lib, src/modules, doc
-  etc. etc.
+  We use "autotools" as our build setup. For better or worse this is
+  the predominant "standard" when it comes to build systems in the
+  open source world. It's the devil we know and changing it is an
+  uphill battle that may not actually end up in a better position
+  than where we started. So it's staying, for now.
+ </p>
+ <p>
+  The configure template file is <b>configure.ac</b>. This determines
+  the package name, version, what it checks for in dependencies and
+  what Makefiles are to be output in what directories. If configure
+  has extra macros we place them inside the <b>m4</b> directory. Here
+  you will find extra non-default autotools macros for checking of
+  dependencies etc.
+ </p>
+ <p>
+  Source is structured with source code being in the <b>src</b>
+  directory tree. This in turn is split up into directories like
+  <b>bin</> (that produces binary executables), <b>lib</b> (that
+  produces shared libraries for others to link to), and
+  <b>modules</b> (that produces module shared objects that the
+  binaries or libraries may dynamically load at runtime to add
+  new features).
+ </p>
+ <p>
+  The documentation templates and build happens in the <b>doc</b>
+  directory and uses the same template style for html etc. so our
+  documentation looks consistent.
+ </p>
+ <p>
+  In the <b>data</b> directory you will find possibly many things,
+  but mostly data files that get installed and then needed at runtime
+  such as icons, desktop files, theme files (edj) and so on. This will
+  normally be broken up into sub directories here too.
+ </p>
+ <p>
+  Some projects have a <b>config</b> directory in which a set of default
+  configuration files are set up and installed by default, maybe split
+  into profiles and more.
+ </p>
+ <p>
+  In some projects there is even a <b>win32</b> directory for
+  files related to building that project on windows.
  </p>
  <h3>Licenses &amp; Copyright</h3>
  <p>
@@ -415,7 +455,7 @@ eet_sync(Eet_File *ef)
   be able to get developer access as they will need access to the
   source trees so they can put their artwork in there anyway. We also
   can always do with people helping translate things. We use gettext
-  like most open source software, so it's as sumple as providing us with
+  like most open source software, so it's as simple as providing us with
   new or updated .PO files. We even have
   <a href=https://lists.sourceforge.net/lists/listinfo/enlightenment-intl>
   a dedicated mailing list</a> for just this purpose.
