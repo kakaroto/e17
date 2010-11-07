@@ -33,9 +33,9 @@
   and OSX users can just use regular subversion like their Linux
   counterparts. To check out all of SVN just use:
  </p>
-<p><pre>
+<p><pre><code>
 svn co http://svn.enlightenment.org/svn/e
-</pre></p>
+</code></pre></p>
  <p>
   <em>(You can also use https instead of http if you want to use SSL
   encryption)</em>
@@ -45,35 +45,35 @@ svn co http://svn.enlightenment.org/svn/e
   local branches, code and features and generate patches and so on. You
   can do this with:
  </p>
-<p><pre>
+<p><pre><code>
 git svn clone http://svn.enlightenment.org/svn/e
-</pre></p>
+</code></pre></p>
  <p>
   To update the code in your tree (pull in changes from our master
   tree), just use:
  </p>
-<p><pre>
+<p><pre><code>
 svn update
-</pre></p>
+</code></pre></p>
  <p>
   Or for git use:
  </p>
-<p><pre>
+<p><pre><code>
 git svn rebase
-</pre></p>
+</code></pre></p>
  <p>
   If you have made changes you'd like to share, you can generate a patch
   file from your changes with:
  </p>
-<p><pre>
+<p><pre><code>
 svn diff
-</pre></p>
+</code></pre></p>
  <p>
   Or with git
  </p>
-<p><pre>
+<p><pre><code>
 git diff
-</pre></p>
+</code></pre></p>
  <p>
   Please read the appropriate manuals for your chosen revisioning
   system so you know how to use it effectively.
@@ -90,12 +90,12 @@ git diff
   one of the following commands (depending on if you want to use SVN
   directly, or SVN via git), where <b>USER</b> is your assigned username:
  </p>
-<p><pre>
+<p><pre><code>
 svn co svn+ssh://USER@svn.enlightenment.org/var/svn/e
-</pre></p>
-<p><pre>
+</code></pre></p>
+<p><pre><code>
 git svn clone svn+ssh://USER@svn.enlightenment.org/var/svn/e/evas
-</pre></p>
+</code></pre></p>
  <p>
   Our SVN tree is divided up and categorized. The <b>trunk</b>
   directory is where all the main development happens. Inside this
@@ -136,9 +136,9 @@ git svn clone svn+ssh://USER@svn.enlightenment.org/var/svn/e/evas
   (as root if you install in a root owned location). So a quick recipe for
   building anything would be:
  </p>
-<p><pre>
+<p><pre><code>
 ./autogen.sh &amp;&amp; make &amp;&amp; sudo make install</b>
-</pre></p>
+</code></pre></p>
  <p>
   You will definitely want the following installed to build EFL and E
   (exact package names may vary from system to system):
@@ -197,7 +197,7 @@ git svn clone svn+ssh://USER@svn.enlightenment.org/var/svn/e/evas
   The following handy script will also give you an insight as to how
   to compile things and in what order:
  </p>
-<p><pre>
+<p><pre><code>
 #!/bin/sh
 set -e
 PREFIX="/usr/local"
@@ -225,7 +225,7 @@ for PROJ in $PROJECTS; do
   cd ../..
   sudo ldconfig
 done
-</pre></p>
+</code></pre></p>
  
 </div>
 <?php frame2();?>
@@ -269,7 +269,7 @@ done
   new projects that has already been used on others. It means the code
   is easier to read and maintain.
  </p>
-<p><pre>
+<p><pre><code>
 static Eet_File_Node *
 _eet_node_find(Eet_File   *ef,
                const char *name)
@@ -302,7 +302,7 @@ eet_sync(Eet_File *ef)
   ret = eet_flush(ef);
   return ret;
 }
-</pre></p>
+</code></pre></p>
  <h3>Source Trees</h3>
  <p>
   XXX: talk about autofoo, src, data src/bin, src/lib, src/modules, doc
