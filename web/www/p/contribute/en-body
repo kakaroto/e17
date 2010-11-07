@@ -87,7 +87,7 @@ git diff
   href=https://lists.sourceforge.net/lists/listinfo/enlightenment-svn>
   SVN Commits List</a> as they happen. To gain a copy of the tree as a
   developer with commit access you will want to check out the tree with
-  one of the following commands (depending on if you want to use SVN
+ one of the following commands (depending on if you want to use SVN
   directly, or SVN via git), where <b>USER</b> is your assigned username:
  </p>
 <p><pre><code>
@@ -275,11 +275,11 @@ _eet_node_find(Eet_File   *ef,
                const char *name)
 {
   Eet_File_Node *efn;
-  int hash = _eet_hash_gen(name, ef-&gt;dir-&gt;size);
+  int hash = _eet_hash_gen(name, ef->dir->size);
   
-  for (efn = ef-&gt;dir-&gt;nodes[hash]; efn; efn = efn-&gt;next)
+  for (efn = ef->dir->nodes[hash]; efn; efn = efn->next)
     {
-      if (_eet_match(efn-&gt;name, name)) return efn;
+      if (_eet_match(efn->name, name)) return efn;
       else break;
     }
   return NULL;
@@ -291,13 +291,13 @@ eet_sync(Eet_File *ef)
   Eet_Error ret;
 
   if (_eet_check(ef)) return EET_ERROR_BAD;
-  if ((ef-&gt;mode != EET_MODE_WRITE) &amp;&amp;
-      (ef-&gt;mode != EET_MODE_READ_WRITE))
+  if ((ef->mode != EET_MODE_WRITE) &amp;&amp;
+      (ef->mode != EET_MODE_READ_WRITE))
     return EET_ERROR_CANNOT_WRITE;
   else
     {
-      ef-&gt;data = NULL;
-      ef-&gt;count++;
+      ef->data = NULL;
+      ef->count++;
     }
   ret = eet_flush(ef);
   return ret;
