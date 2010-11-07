@@ -2231,6 +2231,8 @@ CB_ConfigureDesktops(Dialog * d, int val, void *data __UNUSED__)
 	Conf.desks.dragdir = dd->dragdir;
 	DesksControlsRefresh();
      }
+
+   autosave();
 }
 
 static void
@@ -2464,6 +2466,8 @@ CB_ConfigureAreas(Dialog * d, int val, void *data __UNUSED__)
    if (dd->edge_resist < 1)
       dd->edge_resist = 1;
    Conf.desks.edge_flip_resistance = dd->edge_resist;
+
+   autosave();
 }
 
 static void
