@@ -92,10 +92,14 @@ pre {
    border                 : 1px dotted #bbbbbb;
    text-align             : left;
    vertical-align         : middle;
-   padding                : 5px;
+   padding                : 2px;
    overflow               : auto;
+   font-size              : 9px;
 }
 
+ul {
+   text-align             : left;
+}
 
 hr {
    width                  : 200px;
