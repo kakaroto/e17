@@ -271,15 +271,15 @@ done
  </p>
 <p><pre>
 static Eet_File_Node *
-_eet_find_node_by_name(Eet_File   *ef,
-                       const char *name)
+_eet_node_find(Eet_File   *ef,
+               const char *name)
 {
   Eet_File_Node *efn;
   int hash = _eet_hash_gen(name, ef-&gt;dir-&gt;size);
   
   for (efn = ef-&gt;dir-&gt;nodes[hash]; efn; efn = efn-&gt;next)
     {
-      if (_eet_string_match(efn-&gt;name, name)) return efn;
+      if (_eet_match(efn-&gt;name, name)) return efn;
       else break;
     }
   return NULL;
@@ -290,7 +290,7 @@ eet_sync(Eet_File *ef)
 {
   Eet_Error ret;
 
-  if (_eet_check_pointer(ef)) return EET_ERROR_BAD;
+  if (_eet_check(ef)) return EET_ERROR_BAD;
   if ((ef-&gt;mode != EET_MODE_WRITE) &amp;&amp;
       (ef-&gt;mode != EET_MODE_READ_WRITE))
     return EET_ERROR_CANNOT_WRITE;
