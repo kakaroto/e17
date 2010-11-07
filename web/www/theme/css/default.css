@@ -24,7 +24,7 @@ h5 { font-size: 12px; }
 
 h6 { font-size: 11px; }
 
-ul, ol { font-size: 11px; text-align: left; margin-left: -2em;}
+ul, ol { font-size: 11px; text-align: left; }
 
 #header { /*  CSS Reset */ /*  http://meyerweb.com/eric/tools/css/reset/ */ /*  v1.0 | 20080212 */ /* remember to define focus styles! */ /* remember to highlight inserts somehow! */ /* tables still need 'cellspacing="0"' in the markup */ }
 #header html, #header body, #header div, #header span, #header applet, #header object, #header iframe, #header h1, #header h2, #header h3, #header h4, #header h5, #header h6, #header p, #header blockquote, #header pre, #header a, #header abbr, #header acronym, #header address, #header big, #header cite, #header code, #header del, #header dfn, #header em, #header font, #header img, #header ins, #header kbd, #header q, #header s, #header samp, #header small, #header strike, #header strong, #header sub, #header sup, #header tt, #header var, #header b, #header u, #header i, #header center, #header dl, #header dt, #header dd, #header ol, #header ul, #header li, #header fieldset, #header form, #header label, #header legend, #header table, #header caption, #header tbody, #header tfoot, #header thead, #header tr, #header th, #header td { margin: 0; padding: 0; border: 0; outline: 0; font-size: 100%; vertical-align: baseline; background: transparent; }
