@@ -737,7 +737,79 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         self.event_callback_del(EVAS_CALLBACK_RENDER_FLUSH_POST, func)
 
     # Event feeding
+    def feed_mouse_down(self, int b, Evas_Button_Flags flags,
+                        unsigned int timestamp):
+        """ Emit a mouse_down event in the canvas """
+        evas_event_feed_mouse_down(self.obj, b, flags, timestamp, NULL)
+
+    def feed_mouse_up(self, int b, Evas_Button_Flags flags,
+                      unsigned int timestamp):
+        """ Emit a mouse_up event in the canvas """
+        evas_event_feed_mouse_up(self.obj, b, flags, timestamp, NULL)
+
+    def feed_mouse_cancel(self, unsigned int timestamp):
+        """ Emit a mouse_cancel event in the canvas """
+        evas_event_feed_mouse_cancel(self.obj, timestamp, NULL)
+
+    def feed_mouse_wheel(self, int direction, int z, unsigned int timestamp):
+        """ Emit a mouse_wheel event in the canvas """
+        evas_event_feed_mouse_wheel(self.obj, direction, z, timestamp, NULL)
+
+    def feed_mouse_move(self, int x, int y, unsigned int timestamp):
+        """ Emit a mouse_move event in the canvas """
+        evas_event_feed_mouse_move(self.obj, x, y, timestamp, NULL)
+
+    def feed_mouse_in(self, unsigned int timestamp):
+        """ Emit a mouse_in event in the canvas """
+        evas_event_feed_mouse_in(self.obj, timestamp, NULL)
+
+    def feed_mouse_out(self, unsigned int timestamp):
+        """ Emit a mouse_out event in the canvas """
+        evas_event_feed_mouse_out(self.obj, timestamp, NULL)
+
+    def feed_multi_down(self, int d, int x, int y,
+                        double rad, double radx, double rady,
+                        double pres, double ang,
+                        double fx, double fy,
+                        Evas_Button_Flags flags,
+                        unsigned int timestamp):
+        """ Emit a multi_down event in the canvas """
+        evas_event_feed_multi_down(self.obj, d, x, y, rad, radx, rady, pres,
+                                   ang, fx, fy, flags, timestamp, NULL)
+
+    def feed_multi_up(self, int d, int x, int y,
+                      double rad, double radx, double rady,
+                      double pres, double ang,
+                      double fx, double fy,
+                      Evas_Button_Flags flags,
+                      unsigned int timestamp):
+        """ Emit a multi_up event in the canvas """
+        evas_event_feed_multi_up(self.obj, d, x, y, rad, radx, rady, pres,
+                                 ang, fx, fy, flags, timestamp, NULL)
+
+    def feed_multi_move(self, int d, int x, int y,
+                        double rad, double radx, double rady,
+                        double pres, double ang,
+                        double fx, double fy,
+                        unsigned int timestamp):
+        """ Emit a multi_move event in the canvas """
+        evas_event_feed_multi_move(self.obj, d, x, y, rad, radx, rady, pres,
+                                   ang, fx, fy, timestamp, NULL)
+
+    def feed_key_down(self, char *keyname, char *key, char *string,
+                      char *compose, int timestamp):
+        """ Emit a key_down event in the canvas """
+        evas_event_feed_key_down(self.obj, keyname, key, string,
+                                 compose, timestamp, NULL)
+
+    def feed_key_up(self, char *keyname, char *key, char *string,
+                    char *compose, int timestamp):
+        """ Emit a key_up event in the canvas """
+        evas_event_feed_key_up(self.obj, keyname, key, string,
+                              compose, timestamp, NULL)
+
     def feed_hold(self, int hold, unsigned int timestamp):
+        """ Emit a feed_hold event in the canvas """
         evas_event_feed_hold(self.obj, hold, timestamp, NULL)
 
     # Factory

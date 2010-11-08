@@ -553,6 +553,18 @@ cdef extern from "Evas.h":
     void evas_event_thaw(Evas *e)
     int evas_event_freeze_get(const_Evas *e)
 
+    void evas_event_feed_mouse_down(Evas *e, int b, Evas_Button_Flags flags, unsigned int timestamp, const_void *data)
+    void evas_event_feed_mouse_up(Evas *e, int b, Evas_Button_Flags flags, unsigned int timestamp, const_void *data)
+    void evas_event_feed_mouse_cancel(Evas *e, unsigned int timestamp, const_void *data)
+    void evas_event_feed_mouse_wheel(Evas *e, int direction, int z, unsigned int timestamp, const_void *data)
+    void evas_event_feed_mouse_move(Evas *e, int x, int y, unsigned int timestamp, const_void *data)
+    void evas_event_feed_mouse_in(Evas *e, unsigned int timestamp, const_void *data)
+    void evas_event_feed_mouse_out(Evas *e, unsigned int timestamp, const_void *data)
+    void evas_event_feed_multi_down(Evas *e, int d, int x, int y, double rad, double radx, double rady, double pres, double ang, double fx, double fy, Evas_Button_Flags flags, unsigned int timestamp, const_void *data)
+    void evas_event_feed_multi_up(Evas *e, int d, int x, int y, double rad, double radx, double rady, double pres, double ang, double fx, double fy, Evas_Button_Flags flags, unsigned int timestamp, const_void *data)
+    void evas_event_feed_multi_move(Evas *e, int d, int x, int y, double rad, double radx, double rady, double pres, double ang, double fx, double fy, unsigned int timestamp, const_void *data)
+    void evas_event_feed_key_down(Evas *e, const_char_ptr keyname, const_char_ptr key, const_char_ptr string, const_char_ptr compose, unsigned int timestamp, const_void *data)
+    void evas_event_feed_key_up(Evas *e, const_char_ptr keyname, const_char_ptr key, const_char_ptr string, const_char_ptr compose, unsigned int timestamp, const_void *data)
     void evas_event_feed_hold(Evas *e, int hold, unsigned int timestamp, const_void *data)
 
     void evas_font_path_clear(Evas *e)
