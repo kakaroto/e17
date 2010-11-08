@@ -1,6 +1,0 @@
-debian/tmp/usr/bin/imlib2_bumpmap
-debian/tmp/usr/bin/imlib2_colorspace
-debian/tmp/usr/bin/imlib2_grab
-debian/tmp/usr/bin/imlib2_poly
-debian/tmp/usr/bin/imlib2_test
-debian/tmp/usr/share/imlib2/data/images/imlib2.png
