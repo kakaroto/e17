@@ -83,7 +83,6 @@ AC_FUNC_REALLOC
 AC_FUNC_STRTOD
 AC_C___ATTRIBUTE__
 AC_CHECK_FUNCS([memset regcomp select socket strchr strndup strrchr strstr strtol munmap strdup])
-AX_PTHREAD()
 EINA_REQUIRES="eina >= 1.0.0"
 ECORE_REQUIRES="ecore-con >= 1.0.0 ecore >= 1.0.0"
 XML_REQUIRES="libxml-2.0 >= 2.6.20"
