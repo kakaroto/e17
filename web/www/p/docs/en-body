@@ -201,59 +201,19 @@ select the documentation you desire on the right.
 <?php frame1("width=100%");?>
 <div class="main">
 
-<h3>EFL Beta Manuals (OLD by now, see above docs instead)</h3>
+<h3>EFL Guides, Tutorials and Manuals (for developers and designers)</h3>
  <p>
-  These manuals are still a work in progress. So, while the code examples may
-  have become outdated due to code changes the concepts described in the
-  documents remain valid.
+  These manuals are still work in progress. They may not cover all of our
+  packages/functionality yet, but we're working on it.
  </p>
 
-<h3>Introduction to the EFL [<a
-  href="http://trac.enlightenment.org/e/wiki/IntroductionToEFL">HTML</a>] [<a
-  href="http://homepages.pathfinder.gr/kazanaki/contrib/concepts.pdf">PDF</a>]</h3>
- <p>
-  A high level overview of the EFL libraries. This document describes the
-  general concepts behind EFL. If you are not sure why you should care, this
-  document is for you. <br />
-  Written by <a href="mailto:kkapelonPLEASE@NOSPAMfreemail.gr">Kostis Kapelonis</a>
- </p>
-
-<h3>The EFL Cookbook [<a
-  href="http://docs.enlightenment.org/books/cookbook/eflcookbook.html">HTML</a>] [<a
-  href="http://docs.enlightenment.org/books/cookbook/eflcookbook.pdf">PDF</a>]</h3>
- <p>
-  A developers guide to the EFL in a cookbook style similar to O'Reilly's.
-  Every componant is covered in this guide with complete workable code in each
-  recipe. This is a community document and everyone is welcome to contribute
-  to it.
-  This document is available in several languages:
- </p>
- <p>
-   <ul>
-    <li>Spanish: [<a
-       href="http://docs.enlightenment.org/books/cookbook/eflcookbook.es.html">HTML</a>]
-       [<a href="http://docs.enlightenment.org/books/cookbook/eflcookbook.es.pdf">PDF</a>]</li>
-    <li>French: [<a 
-       href="http://docs.enlightenment.org/books/cookbook/eflcookbook.fr.html">HTML</a>]
-       [<a href="http://docs.enlightenment.org/books/cookbook/eflcookbook.fr.pdf">PDF</a>]</li>
-    <li>Portuguese: [<a 
-       href="http://docs.enlightenment.org/books/cookbook/eflcookbook.pt-BR.html">HTML</a>]
-       [<a href="http://docs.enlightenment.org/books/cookbook/eflcookbook.pt-BR.pdf">PDF</a>]</li>
-   </ul>
-  Please contact <a href="mailto:benrNO@SPAMcuddletech.com">benr</a> if you are interested in helping.
- </p>
-
-<h3>Building Interfaces with Edje: The Edje Developers Guide [<a
-  href="http://docs.enlightenment.org/books/edjebook/edjebook.pdf">PDF</a>]</h3>
- <p>
-  A complete guide to designing interfaces using Edje and utilizing them
-  effectively in your EVAS applications. Includes a complete overview of
-  Edje Data Collections (EDC) and the Edje API, including sample code and
-  reference material. Utilizing Edje effectively can simplify and streamline
-  application development and make nearly any application completely
-  skinable by even non-programmers.<br />
-  Written by <a href="mailto:benrNO@SPAMcuddletech.com">Ben 'technikolor' Rockwood</a>.
- </p>
+<h3>The Enlightenment Foundation Libraries -- A Big Picture
+  [<ahref="http://docs.enlightenment.org/books/efl-big-picture/efl_big_picture.pdf">PDF</a>]</h3>
+  <p> A high level overview of the EFL. This document describes the
+  general concepts behind all of our technology. If you are a newcomer
+  to any part of it, this document is for you.  <br />
+  Written by <a href="mailto:glima@NOSPAMprofusion.mobi">Gustavo Lima Chaves</a>
+  </p>
 
 </div>
 <?php frame2();?>
