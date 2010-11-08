@@ -453,6 +453,7 @@ _ui_setup(void)
 {
    Evas_Object *o;
    Evas_Coord x, y, w, h;
+   time_t t0, t;
 
    o = evas_object_rectangle_add(evas);
    evas_object_move(o, 0, 0);
@@ -550,6 +551,18 @@ _ui_setup(void)
 #include "tests.h"
 #undef UI
    _ui_menu_item_add("exit.png", "Exit", _ui_exit);
+
+   /* make sure disk io isn't going to turn up unexpectedly */
+   sync();
+   sync();
+   sync();
+   /* warm up the cpu with some spinning */
+   t0 = time(NULL);
+   for (;;)
+     {
+        t = time(NULL);
+        if (t - t0 > 2) break;
+     }
 
    if (run_all)
      {

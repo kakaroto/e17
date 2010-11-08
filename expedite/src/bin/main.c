@@ -1373,7 +1373,7 @@ main(int argc, char **argv)
    ui_args(argc, argv);
 
    evas_font_hinting_set(evas, EVAS_FONT_HINTING_AUTO);
-
+  
    while (_engine_go())
      {
 	engine_loop();
