@@ -1,4 +1,0 @@
-debian/tmp/usr/lib/enlightenment/modules/wlan/*.desktop
-debian/tmp/usr/lib/enlightenment/modules/wlan/*.edj
-debian/tmp/usr/lib/enlightenment/modules/wlan/*/*.so
-debian/tmp/usr/lib/enlightenment/modules/wlan/locale/*

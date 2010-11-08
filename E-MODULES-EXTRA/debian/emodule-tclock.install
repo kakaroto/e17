@@ -1,4 +1,0 @@
-debian/tmp/usr/lib/enlightenment/modules/tclock/*.desktop
-debian/tmp/usr/lib/enlightenment/modules/tclock/*.edj
-debian/tmp/usr/lib/enlightenment/modules/tclock/*/*.so
-debian/tmp/usr/lib/enlightenment/modules/tclock/locale/*

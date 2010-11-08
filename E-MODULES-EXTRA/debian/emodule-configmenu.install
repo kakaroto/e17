@@ -1,4 +1,0 @@
-debian/tmp/usr/lib/enlightenment/modules/configmenu/*.desktop
-debian/tmp/usr/lib/enlightenment/modules/configmenu/*.edj
-debian/tmp/usr/lib/enlightenment/modules/configmenu/*/*.so
-debian/tmp/usr/lib/enlightenment/modules/configmenu/locale/*

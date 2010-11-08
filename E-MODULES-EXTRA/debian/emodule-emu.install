@@ -1,7 +1,0 @@
-debian/tmp/usr/lib/enlightenment/modules/emu/*.desktop
-debian/tmp/usr/lib/enlightenment/modules/emu/*.edj
-debian/tmp/usr/lib/enlightenment/modules/emu/*.png
-debian/tmp/usr/lib/enlightenment/modules/emu/*.ttf
-debian/tmp/usr/lib/enlightenment/modules/emu/bin/*
-debian/tmp/usr/lib/enlightenment/modules/emu/*/*.so
-debian/tmp/usr/lib/enlightenment/modules/emu/locale/*
