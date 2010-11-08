@@ -810,10 +810,6 @@ on_view_mask_visible(void *data, Evas_Object *o __UNUSED__,
    Browser_Window *win = data;
    Evas_Object *ed = elm_layout_edje_get(win->current_chrome);
    Evas_Object *url_entry = edje_object_part_swallow_get(ed, "url-entry");
-
-   /* we show the location entry - requested it. it should be focused for
-    * typing, so lets do this */
-   elm_object_focus(url_entry);
 }
 
 static void
