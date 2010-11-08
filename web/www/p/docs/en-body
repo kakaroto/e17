@@ -207,8 +207,8 @@ select the documentation you desire on the right.
   packages/functionality yet, but we're working on it.
  </p>
 
-<h3>The Enlightenment Foundation Libraries -- A Big Picture
-  [<ahref="http://docs.enlightenment.org/books/efl-big-picture/efl_big_picture.pdf">PDF</a>]</h3>
+<h3>The Enlightenment Foundation Libraries -- A Big Picture [<a
+  href="http://docs.enlightenment.org/books/efl-big-picture/efl_big_picture.pdf">PDF</a>]</h3>
   <p> A high level overview of the EFL. This document describes the
   general concepts behind all of our technology. If you are a newcomer
   to any part of it, this document is for you.  <br />
