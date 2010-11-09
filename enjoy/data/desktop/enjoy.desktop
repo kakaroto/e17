@@ -1,5 +1,4 @@
 [Desktop Entry]
-Encoding=UTF-8
 Name=Enjoy
 Comment=Music Player
 Comment[fr]=Lecteur de musique
@@ -9,4 +8,4 @@ Exec=enjoy
 Icon=enjoy
 Terminal=false
 Type=Application
-Categories=Application;Audio;Player
+Categories=Application;Audio;Player;
