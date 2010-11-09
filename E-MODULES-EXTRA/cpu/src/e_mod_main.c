@@ -245,7 +245,7 @@ _get_cpu_count(void)
 
    if (!(f = fopen("/proc/stat", "r"))) return cpu;
 
-   while (fscanf(f, "cp%s %*u %*u %*u %*u %*u %*u %*u %*u %*u\n", (char *) &tmp) == 1)
+   while (fscanf(f, "cp%s %*u %*u %*u %*u %*u %*u %*u %*u %*u %*u\n", (char *) &tmp) == 1)
      cpu++;
 
    fclose(f);
@@ -265,7 +265,7 @@ _get_cpu_load(void)
 #else
    FILE *stat;
    static unsigned long old_u[8], old_n[8], old_s[8], old_i[8], old_wa[8], old_hi[8], old_si[8];
-   unsigned long new_u, new_n, new_s, new_i, new_wa = 0, new_hi = 0, new_si = 0, dummy2, dummy3, ticks_past;
+   unsigned long new_u, new_n, new_s, new_i, new_wa = 0, new_hi = 0, new_si = 0, dummy2, dummy3, dummy4, ticks_past;
    int tmp_u = 0, tmp_n = 0, tmp_s = 0;
    char dummy[16];
    int i = 0;
@@ -303,9 +303,9 @@ _get_cpu_load(void)
 
    if (cpu_count > 1) 
      {
-	if (fscanf(stat, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu", dummy, 
+	if (fscanf(stat, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu", dummy, 
 		   &new_u, &new_n, &new_s, &new_i, &new_wa, &new_hi, &new_si, 
-		   &dummy2, &dummy3) < 5)
+		   &dummy2, &dummy3, &dummy4) < 5)
 	  {
 	     fclose(stat);
 	     return -1;
@@ -314,8 +314,8 @@ _get_cpu_load(void)
 
    while (i < cpu_count)
      {
-	if (fscanf(stat, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu", dummy, &new_u, &new_n,
-	     &new_s, &new_i, &new_wa, &new_hi, &new_si, &dummy2, &dummy3) < 5)
+	if (fscanf(stat, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu", dummy, &new_u, &new_n,
+	     &new_s, &new_i, &new_wa, &new_hi, &new_si, &dummy2, &dummy3, dummy4) < 5)
 	  {
 	     fclose (stat);
 	     return -1;
