@@ -4,7 +4,7 @@ EM_INTERN Evas_Object *
 em_util_icon_add(Evas_Object *obj, const char *icon)
 {
    Evas_Object *ow;
-   char *path;
+   const char *path;
 
    ow = elm_icon_add(obj);
    evas_object_size_hint_aspect_set(ow, EVAS_ASPECT_CONTROL_BOTH, 1, 1);
@@ -20,10 +20,7 @@ em_util_icon_add(Evas_Object *obj, const char *icon)
               path = efreet_icon_path_find("Human", icon, 48);
      }
    if (path)
-     {
-        elm_icon_file_set(ow, path, NULL);
-        free(path);
-     }
+     elm_icon_file_set(ow, path, NULL);
 #endif
 
    return ow;

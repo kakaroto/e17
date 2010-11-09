@@ -276,7 +276,7 @@ _cb_gl_icon_get(const void *data, Evas_Object *obj, const char *part)
    if (!data) return NULL;
 
    Efreet_Desktop *d = (Efreet_Desktop *)data;
-   char *path;
+   const char *path;
    Evas_Object *ic;
 
    if (!d) return NULL;
@@ -298,7 +298,6 @@ _cb_gl_icon_get(const void *data, Evas_Object *obj, const char *part)
    if (path) 
      {
         elm_icon_file_set(ic, path, NULL);
-        free(path);
         return ic;
      }
    return ic;
