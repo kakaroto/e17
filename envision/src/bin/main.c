@@ -657,36 +657,6 @@ _bt_close(void            *data,
    evas_object_del(notify);
 }
 
-void
-show_message(Evas_Object *win,
-             char        *message)
-{
-   Evas_Object *notify, *lb, *bt, *bx;
-   notify = elm_notify_add(win);
-   elm_notify_repeat_events_set(notify, EINA_FALSE);
-   evas_object_size_hint_weight_set(notify, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_CENTER);
-   elm_notify_timeout_set(notify, 2.0);
-   evas_object_smart_callback_add(notify, "timeout", _bt_close, notify);
-
-   bx = elm_box_add(win);
-   elm_notify_content_set(notify, bx);
-   elm_box_horizontal_set(bx, EINA_TRUE);
-   evas_object_show(bx);
-
-   lb = elm_label_add(win);
-   elm_label_label_set(lb, message);
-   elm_box_pack_end(bx, lb);
-   evas_object_show(lb);
-
-   bt = elm_button_add(win);
-   elm_button_label_set(bt, "OK");
-   evas_object_smart_callback_add(bt, "clicked", _bt_close, notify);
-   elm_box_pack_end(bx, bt);
-   evas_object_show(bt);
-   evas_object_show(notify);
-}
-
 /*--------------------------GENGRID LOAD--------------------------*/
 /**
  * @brief Clear gengrid items
@@ -802,10 +772,7 @@ fileselector_done(void            *data,
    edje_object_signal_emit(app->ed, "more,item,clicked", "");
 
    if (!selected)
-     {
-        show_message(app->win, "No file selected");
         return;
-     }
 
    if (app->file_info.filename)
      eina_stringshare_replace(&app->file_info.filename, selected);
@@ -813,7 +780,7 @@ fileselector_done(void            *data,
      app->file_info.filename = eina_stringshare_add(selected);
 
    if (!load_gengrid(app))
-     show_message(app->win, "Failed to open file");
+      CRITICAL("Failed to open file");
 
    edje_object_part_text_set(app->ed, "page-title", app->file_info.filename);
 }
@@ -1013,9 +980,6 @@ create_main_win(App *app)
    gic.func.label_get = grid_label_get;
    gic.func.icon_get = grid_icon_get;
    gic.func.del = grid_data_del;
-
-   if ((app->file_info.filename) && (!load_gengrid(app)))
-     show_message(app->win, "Failed to open file");
 
    app->clipper = evas_object_rectangle_add(evas_object_evas_get(app->grid));
    evas_object_geometry_get(app->grid, &x, &y, &w, &h);
