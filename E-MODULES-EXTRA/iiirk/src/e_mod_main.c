@@ -948,8 +948,6 @@ _iiirk_inst_cb_scroll(void *data)
 static void
 _iiirk_drop_position_update(Instance *inst, Evas_Coord x, Evas_Coord y)
 {
-   Evas_Coord xx, yy;
-   int ox, oy;
    IIirk_Icon *ic;
 
    inst->iiirk->dnd_x = x;
@@ -957,9 +955,7 @@ _iiirk_drop_position_update(Instance *inst, Evas_Coord x, Evas_Coord y)
 
    if (inst->iiirk->o_drop)
       e_box_unpack(inst->iiirk->o_drop);
-   evas_object_geometry_get(inst->iiirk->o_box, &xx, &yy, NULL, NULL);
-   e_box_align_pixel_offset_get(inst->gcc->o_box, &ox, &oy);
-   ic = _iiirk_icon_at_coord(inst->iiirk, x + xx + ox, y + yy + oy);
+   ic = _iiirk_icon_at_coord(inst->iiirk, x, y);
    inst->iiirk->ic_drop_before = ic;
    if (ic)
      {
@@ -969,11 +965,11 @@ _iiirk_drop_position_update(Instance *inst, Evas_Coord x, Evas_Coord y)
 	evas_object_geometry_get(ic->o_holder, &ix, &iy, &iw, &ih);
 	if (e_box_orientation_get(inst->iiirk->o_box))
 	  {
-	     if ((x + xx) < (ix + (iw / 2))) before = 1;
+	     if (x < (ix + (iw / 2))) before = 1;
 	  }
 	else
 	  {
-	     if ((y + yy) < (iy + (ih / 2))) before = 1;
+	     if (y < (iy + (ih / 2))) before = 1;
 	  }
 	if (before)
 	  e_box_pack_before(inst->iiirk->o_box, inst->iiirk->o_drop, ic->o_holder);
