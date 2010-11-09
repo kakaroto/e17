@@ -538,7 +538,7 @@ _forecasts_get_proxy(void)
    if ((host) && (port))
      {
 	if (proxy.host) eina_stringshare_del(proxy.host);
-	proxy.host = eina_stringshare_add_length(host, (p - 1) - host);
+	proxy.host = eina_stringshare_add_length(host, p - host);
 	proxy.port = port;
      }
 }
