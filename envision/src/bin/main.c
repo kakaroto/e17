@@ -746,8 +746,8 @@ load_gengrid(App *app)
 
    elm_gengrid_item_size_set(app->grid, idata->page_width, idata->page_height);
 
-   snprintf(buf, sizeof(buf), "%%1.0f of %d", app->file_info.pages_count - 1);
-   elm_spinner_min_max_set(app->spinner, 0, app->file_info.pages_count - 1);
+   snprintf(buf, sizeof(buf), "%%1.0f of %d", app->file_info.pages_count);
+   elm_spinner_min_max_set(app->spinner, 1, app->file_info.pages_count);
    elm_spinner_label_format_set(app->spinner, buf);
 
    return EINA_TRUE;
@@ -932,6 +932,7 @@ create_main_win(App *app)
    app->spinner = elm_spinner_add(app->win);
    elm_object_style_set(app->spinner, "efenniht");
    elm_spinner_step_set(app->spinner, 1);
+   elm_spinner_min_max_set(app->spinner, 0, 0);
    elm_layout_content_set(layout, "page-spinner", app->spinner);
    evas_object_smart_callback_add(app->spinner, "changed", _change_selection,
                                   app);
