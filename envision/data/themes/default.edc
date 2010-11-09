@@ -759,7 +759,7 @@ collections {
                     text {
                         font: "Sans,Edje-Vera";
                         size: 8;
-                        text: "Untitled";
+                        text: "";
                         min: 0 1;
                         align: 0.5 0.5;
                     }

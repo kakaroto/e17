@@ -916,8 +916,6 @@ create_main_win(App *app)
 
    if (app->file_info.filename)
      edje_object_part_text_set(app->ed, "page-title", app->file_info.filename);
-   else
-     edje_object_part_text_set(app->ed, "page-title", "Envision");
 
    edje_object_signal_callback_add(app->ed, "action,zoomin", "zoomin", _zoom_in,
                                    app);
