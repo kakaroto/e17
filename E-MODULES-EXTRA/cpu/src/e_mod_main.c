@@ -315,7 +315,7 @@ _get_cpu_load(void)
    while (i < cpu_count)
      {
 	if (fscanf(stat, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu", dummy, &new_u, &new_n,
-	     &new_s, &new_i, &new_wa, &new_hi, &new_si, &dummy2, &dummy3, dummy4) < 5)
+	     &new_s, &new_i, &new_wa, &new_hi, &new_si, &dummy2, &dummy3, &dummy4) < 5)
 	  {
 	     fclose (stat);
 	     return -1;
