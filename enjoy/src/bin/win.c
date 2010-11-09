@@ -170,7 +170,8 @@ _win_play_eval(Win *w)
    if ((w->song) && (w->song->length != (int)w->play.length))
      {
         db_song_length_set(w->db, w->song, w->play.length);
-        list_song_updated(w->list);
+// why do this? item doesnt have any new fields in the item.       
+//        list_song_updated(w->list);
      }
 
    mf = alloca(sizeof(Edje_Message_Float_Set) + sizeof(double));
