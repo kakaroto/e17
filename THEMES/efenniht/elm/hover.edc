@@ -521,6 +521,13 @@ collections {
          image: "bt_dis_base.png" COMP;
       }
       parts {
+         part { name: "bg";
+            type: RECT;
+            description { state: "default" 0.0;
+               visible: 1;
+               color: 0 0 0 100;
+            }
+         }
          part { name: "elm.swallow.offset";
             type: SWALLOW;
             description { state: "default" 0.0;
@@ -630,14 +637,6 @@ collections {
             description { state: "default" 0.0;
                rel1.to: "elm.swallow.size";
                rel2.to: "elm.swallow.size";
-            }
-         }
-         part { name: "event";
-            type: RECT;
-            mouse_events: 1;
-            description { state: "default" 0.0;
-               visible: 1;
-               color: 250 0 0 100;
             }
          }
       }
@@ -793,14 +792,6 @@ collections {
             description { state: "default" 0.0;
                rel1.to: "elm.swallow.size";
                rel2.to: "elm.swallow.size";
-            }
-         }
-         part { name: "event";
-            type: RECT;
-            mouse_events: 1;
-            description { state: "default" 0.0;
-               visible: 1;
-               color: 0 250 0 100;
             }
          }
       }
