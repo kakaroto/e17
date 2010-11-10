@@ -74,14 +74,16 @@ static FILE *f;
 
 static const Ecore_Getopt opts = {
    "azy_parser",
-   "azy_parser file.zer -o destination_directory/",
+   "azy_parser file.azy -o destination_directory/",
    "1.0alpha",
    "(C) 2010 Mike Blumenkrantz, previously others, see AUTHORS",
    "LGPL",
    "Parse an azy file into *.{c,h} files\n\n",
    1,
    {
-      ECORE_GETOPT_STORE_STR('m', "modes", "Parser modes: all, server-impl, client-headers, client-impl, common-headers, common-impl"),
+      ECORE_GETOPT_STORE_STR('m', "modes", "Parser modes: all, server-impl, server-headers,\n"
+                                           "\t\t\tclient-impl, client-headers,\n"
+                                           "\t\t\tcommon-impl, common-headers"),
       ECORE_GETOPT_STORE_STR('o', "output", "Output directory."),
       ECORE_GETOPT_STORE_TRUE('d', "debug", "Print debugging output."),
       ECORE_GETOPT_VERSION('V', "version"),
@@ -1426,7 +1428,7 @@ azy_write(void)
      {
         OPEN("%s/%s.azy", out_dir, azy->name);
 
-        EL(0, "/* Generated ZER */");
+        EL(0, "/* Generated AZY */");
         NL;
 
         EL(0, "namespace %s;", azy->name);
@@ -1548,7 +1550,7 @@ main(int argc, char *argv[])
 
    if (!azy_file)
      {
-        printf("You must specify ZER file.\n");
+        printf("You must specify AZY file.\n");
         return 1;
      }
 
