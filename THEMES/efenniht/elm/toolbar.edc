@@ -3,10 +3,13 @@
 
 collections {
    group { name: "elm/toolbar/base/default";
+      data.item: "icon_size" "90";
       images {
          image: "icon_arrow_left.png" COMP;
          image: "icon_arrow_right.png" COMP;
          image: "bg_gradient_simple.png" COMP;
+         image: "toolbar_separator.png" COMP;
+         image: "toolbar_separator_bottom.png" COMP;
       }
       parts {
          part { name: "bg";
@@ -15,6 +18,28 @@ collections {
                image.normal: "bg_gradient_simple.png";
                rel1.to_y: "clipper";
                rel2.to_y: "clipper";
+            }
+         }
+         part { name: "sep_top";
+            type: IMAGE;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: 0 4;
+               }
+               image.normal: "toolbar_separator.png";
+            }
+         }
+         part { name: "sep_bottom";
+            type: IMAGE;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 -4;
+               }
+               image.normal: "toolbar_separator_bottom.png";
             }
          }
          part { name: "clipper";
@@ -197,17 +222,34 @@ collections {
                min: 87 90;
                rel1.offset: 1 0;
                rel2.offset: -2 -1;
-               color: 0 0 0 78;
+               color: 0 0 0 0;
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
                visible: 0;
-               color: 0 0 0 0;
+               color: 0 0 0 78;
             }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-               color: 0 0 0 100;
+         }
+         part { name: "sep_top";
+            type: IMAGE;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: 0 4;
+               }
+               image.normal: "toolbar_separator.png";
+            }
+         }
+         part { name: "sep_bottom";
+            type: IMAGE;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 0 -4;
+               }
+               image.normal: "toolbar_separator_bottom.png";
             }
          }
          part { name: "sep_left";
@@ -219,15 +261,6 @@ collections {
                rel2.offset: 0 -1;
             }
          }
-         part { name: "sep_right";
-            type: RECT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               color: 0 0 0 255;
-               rel1.relative: 1.0 0.0;
-               rel1.offset: -1 0;
-            }
-         }
          part { name: "icon_clipper";
             type: RECT;
             mouse_events: 0;
@@ -235,7 +268,7 @@ collections {
             }
             description { state: "disabled" 0.0;
                inherit: "default" 0.0;
-               color: 140 140 140 255;
+               color: 255 255 255 32;
             }
             
          }
@@ -480,6 +513,15 @@ collections {
                color_class: "toolbar_text_disabled";
             }
          }
+         part { name: "sep_right";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               color: 0 0 0 255;
+               rel1.relative: 1.0 0.0;
+               rel1.offset: -1 0;
+            }
+         }
          part { name: "event";
             type: RECT;
             mouse_events: 1;
@@ -531,7 +573,6 @@ collections {
             signal: "elm,state,disabled";
             source: "elm";
             action: STATE_SET "disabled" 0.0;
-            target: "bg";
             target: "icon_clipper";
             target: "elm.text";
             target: "elm.text_new";
