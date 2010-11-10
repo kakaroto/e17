@@ -358,6 +358,8 @@ eyesight_object_page_scale_get(Evas_Object *obj, double *hscale, double *vscale)
    Smart_Data *sd;
    char *_e_smart_str;
 
+   E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
+
    if (!obj)
      {
        if (hscale) *hscale = 1.0;
@@ -430,6 +432,8 @@ eyesight_object_page_size_get(Evas_Object *obj,
 {
    Smart_Data *sd;
    char *_e_smart_str;
+
+   E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
 
    if (!obj)
      {
