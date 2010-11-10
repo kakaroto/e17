@@ -1,6 +1,7 @@
 #define TOOLBAR_ICON(NAME, IMAGE)                                             \
    group {                                                                    \
       name: "elm/icon/"NAME"/default" ;                                       \
+      alias: "elm/icon/toolbar/"NAME"/default" ;                              \
       max: 87 90;                                                             \
       min: 10 10;                                                             \
       script {                                                                \
@@ -145,4 +146,11 @@
 
 collections {
    TOOLBAR_ICON("settings_look", "settings_look")
+   TOOLBAR_ICON("media-playback-pause", "media-playback-pause")
+   TOOLBAR_ICON("media-playback-start", "media-playback-start")
+   TOOLBAR_ICON("nowplaying", "nowplaying")
+   TOOLBAR_ICON("list", "list")
+   TOOLBAR_ICON("go-previous", "go-previous")
+   TOOLBAR_ICON("go-next", "go-next")
+   TOOLBAR_ICON("more_menu", "more")
 }
