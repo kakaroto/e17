@@ -51,10 +51,9 @@ _libmgr_lms_charsets_add(Libmgr *mgr)
 }
 
 static void
-_libmgr_scan(Ecore_Thread *thread, void *data)
+_libmgr_scan(Ecore_Thread *thread __UNUSED__, void *data)
 {
    Libmgr *mgr = data;
-   lms_t *lms;
    const char *scanpath;
    Eina_List *l;
 
@@ -92,7 +91,7 @@ libmgr_scanpath_add(Libmgr *mgr, const char *path)
 }
 
 static void
-_libmgr_scan_finish(Libmgr *mgr, Eina_Bool success)
+_libmgr_scan_finish(Libmgr *mgr, Eina_Bool success __UNUSED__)
 {
    const char *scanpath;
    mgr->scan_end_cb(mgr->scan_end_cb_data, EINA_TRUE);

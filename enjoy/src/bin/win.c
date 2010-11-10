@@ -76,7 +76,7 @@ _win_populate_job(void *data)
 }
 
 static void
-_win_scan_job_finished(void *data, Eina_Bool success)
+_win_scan_job_finished(void *data, Eina_Bool success __UNUSED__)
 {
    Win *w = data;
    list_thaw(w->list);
@@ -393,14 +393,14 @@ _win_mode_nowplaying(void *data, Evas_Object *o __UNUSED__, const char *emission
 }
 
 static void
-_win_more(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_win_more(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
-   Win *w = data;
+   //Win *w = data;
    DBG("todo");
 }
 
 static void
-_win_songs(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_win_songs(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Win *w = data;
    if (!list_songs_show(w->list)) return;
@@ -409,21 +409,21 @@ _win_songs(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emissio
 }
 
 static void
-_win_repeat_on(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_win_repeat_on(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Win *w = data;
    w->play.repeat = EINA_TRUE;
 }
 
 static void
-_win_repeat_off(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_win_repeat_off(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Win *w = data;
    w->play.repeat = EINA_FALSE;
 }
 
 static void
-_win_shuffle_on(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_win_shuffle_on(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Win *w = data;
    w->play.shuffle = EINA_TRUE;
@@ -431,7 +431,7 @@ _win_shuffle_on(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *em
 }
 
 static void
-_win_shuffle_off(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_win_shuffle_off(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Win *w = data;
    w->play.shuffle = EINA_FALSE;
@@ -521,7 +521,6 @@ win_new(App *app)
 {
    Win *w = &_win;
    const char *s;
-   const char **e;
    Evas_Coord iw = 320, ih = 240;
    char path[PATH_MAX];
    Evas_Object *nowplaying_edje;
