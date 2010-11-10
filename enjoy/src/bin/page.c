@@ -1,4 +1,5 @@
 #include "private.h"
+#include "mpris.h"
 
 #include <ctype.h>
 #include <stdlib.h>
@@ -95,7 +96,8 @@ typedef struct _Page_Class
    const char *name;
    const char *key;
    const char *layout;
-   Eina_Bool (*init)(Page *page); /* optional extra initializer */
+   Eina_Bool (*init)(Page *page);      /* optional extra initializer */
+   void (*after_populate)(Page *page); /* called after page has been populated */
    Evas_Smart_Cb selected;
    const Elm_Genlist_Item_Class *item_cls;
    size_t populate_iteration_count;
@@ -194,6 +196,9 @@ _page_populate(void *data)
    return EINA_TRUE;
 
  end:
+   if (cls->after_populate)
+     cls->after_populate(page);
+
    page->populate = NULL;
    return EINA_FALSE;
 }
@@ -547,6 +552,12 @@ _song_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
    if (song) evas_object_smart_callback_call(page->layout, "song", song);
 }
 
+static void
+_page_songs_after_populate(Page *page)
+{
+   mpris_signal_tracklist_tracklist_change(page->num_elements);
+}
+
 static Evas_Object *
 _page_songs_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const char *title)
 {
@@ -564,6 +575,7 @@ _page_songs_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const ch
      "_enjoy_page_songs",
      "page/songs",
      NULL,
+     _page_songs_after_populate,
      _song_item_selected,
      &song_item_cls,
      PAGE_SONGS_POPULATE_ITERATION_COUNT,
@@ -648,6 +660,7 @@ _page_album_songs_add(Evas_Object *parent, Album *album)
      "_enjoy_page_songs",
      "page/songs-album",
      _song_album_init,
+     _page_songs_after_populate,
      _song_item_selected,
      &song_item_cls,
      PAGE_SONGS_POPULATE_ITERATION_COUNT,
@@ -706,7 +719,30 @@ page_songs_next_go(Evas_Object *obj)
    page->selected = it;
    elm_genlist_item_selected_set(it, EINA_TRUE);
    elm_genlist_item_bring_in(it);
+   mpris_signal_player_track_change(song);
    return song;
+}
+
+int32_t
+page_songs_selected_n_get(Evas_Object *obj)
+{
+   PAGE_SONGS_GET_OR_RETURN(page, obj, 0);
+   Elm_Genlist_Item *it;
+   int n;
+   for (n = 0, it = page->first;
+        it && it != page->selected;
+        n++, it = elm_genlist_item_next_get(it));
+   return (it) ? n : 0;
+}
+
+Song *
+page_songs_nth_get(Evas_Object *obj, int32_t n)
+{
+   PAGE_SONGS_GET_OR_RETURN(page, obj, NULL);
+   Elm_Genlist_Item *it = page->first;
+   while (it && n--) it = elm_genlist_item_next_get(it);
+   if (!it) return NULL;
+   return elm_genlist_item_data_get(it);
 }
 
 Song *
@@ -726,6 +762,7 @@ page_songs_random_go(Evas_Object *obj)
    page->selected = it;
    elm_genlist_item_selected_set(it, EINA_TRUE);
    elm_genlist_item_bring_in(it);
+   mpris_signal_player_track_change(song);
    return song;
 }
 
@@ -752,6 +789,7 @@ page_songs_prev_go(Evas_Object *obj)
    page->selected = it;
    elm_genlist_item_selected_set(it, EINA_TRUE);
    elm_genlist_item_bring_in(it);
+   mpris_signal_player_track_change(song);
    return song;
 }
 
@@ -822,6 +860,7 @@ _page_albums_artist_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, 
      "_enjoy_page_albums",
      "page/albums",
      NULL,
+     NULL,
      _album_item_selected,
      &album_item_cls,
      PAGE_FOLDERS_POPULATE_ITERATION_COUNT,
@@ -867,6 +906,7 @@ _page_albums_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const c
      "album",
      "_enjoy_page_albums",
      "page/albums",
+     NULL,
      NULL,
      _album_item_selected,
      &album_item_cls,
@@ -995,6 +1035,7 @@ _page_artists_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const 
      "_enjoy_page_artists",
      "page/nameids",
      NULL,
+     NULL,
      _artist_item_selected,
      &nameid_item_cls,
      PAGE_FOLDERS_POPULATE_ITERATION_COUNT,
@@ -1063,6 +1104,7 @@ _page_genres_add(Evas_Object *parent, Eina_Iterator *it, const char *title)
      "genre",
      "_enjoy_page_genres",
      "page/nameids",
+     NULL,
      NULL,
      _genre_item_selected,
      &nameid_item_cls,
@@ -1150,6 +1192,7 @@ page_root_add(Evas_Object *parent)
      "root",
      "_enjoy_page_roots",
      "page/roots",
+     NULL,
      NULL,
      _static_item_selected,
      &root_item_cls,

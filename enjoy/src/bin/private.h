@@ -28,6 +28,13 @@ extern int _log_domain;
 #define INF(...)      EINA_LOG_DOM_INFO(_log_domain, __VA_ARGS__)
 #define DBG(...)      EINA_LOG_DOM_DBG(_log_domain, __VA_ARGS__)
 
+#define MSG_VOLUME   1
+#define MSG_POSITION 2
+#define MSG_RATING   3
+#define MSG_MUTE     4
+#define MSG_LOOP     5
+#define MSG_SHUFFLE  6
+
 struct _App
 {
    Eina_List   *add_dirs;
@@ -36,7 +43,30 @@ struct _App
    Evas_Object *win;
 };
 
+
 Evas_Object *win_new(App *app);
+
+Eina_Bool  enjoy_repeat_get(void);
+int32_t    enjoy_position_get(void);
+int32_t    enjoy_volume_get(void);
+int        enjoy_caps_get(void);
+int32_t    enjoy_playlist_current_position_get(void);
+Song      *enjoy_playlist_song_position_get(int32_t position);
+Song      *enjoy_song_current_get(void);
+Song      *enjoy_song_position_get(int32_t position);
+void       enjoy_control_loop_set(Eina_Bool param);
+void       enjoy_control_next(void);
+void       enjoy_control_pause(void);
+void       enjoy_control_play(void);
+void       enjoy_control_previous(void);
+void       enjoy_control_seek(uint64_t position);
+void       enjoy_control_shuffle_set(Eina_Bool param);
+void       enjoy_control_stop(void);
+void       enjoy_position_set(int32_t position);
+void       enjoy_quit(void);
+void       enjoy_repeat_set(Eina_Bool repeat);
+void       enjoy_status_get(int *playback, int *shuffle, int *repeat, int *endless);
+void       enjoy_volume_set(int32_t volume);
 
 Libmgr      *libmgr_new(const char *dbpath);
 Eina_Bool    libmgr_scanpath_add(Libmgr *mgr, const char *path);
@@ -56,6 +86,8 @@ Song        *list_prev_go(Evas_Object *list);
 DB          *list_db_get(const Evas_Object *obj);
 void         list_freeze(Evas_Object *obj);
 void         list_thaw(Evas_Object *obj);
+Song        *list_song_nth_get(Evas_Object *obj, int32_t n);
+int32_t      list_song_selected_n_get(Evas_Object *obj);
 
 const char  *page_title_get(const Evas_Object *obj);
 void         page_songs_exists_changed(Evas_Object *obj, Eina_Bool exists);
@@ -70,6 +102,8 @@ Song        *page_songs_next_go(Evas_Object *obj);
 Song        *page_songs_random_go(Evas_Object *obj);
 Eina_Bool    page_songs_prev_exists(const Evas_Object *obj);
 Song        *page_songs_prev_go(Evas_Object *obj);
+Song        *page_songs_nth_get(Evas_Object *obj, int32_t n);
+int32_t      page_songs_selected_n_get(Evas_Object *obj);
 
 Evas_Object *cover_allsongs_fetch(Evas_Object *parent, unsigned short size);
 Evas_Object *cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size);
@@ -152,6 +186,8 @@ Eina_Bool      db_song_length_set(DB *db, Song *song, int length);
 Eina_Bool      db_song_album_fetch(DB *db, Song *song);
 Eina_Bool      db_song_artist_fetch(DB *db, Song *song);
 Eina_Bool      db_song_genre_fetch(DB *db, Song *song);
+
+Song           *db_song_get(DB *db, int64_t id);
 
 /* walks over 'const Song*'  */
 Eina_Iterator *db_album_songs_get(DB *db, int64_t album_id);

@@ -1,10 +1,6 @@
 #include "private.h"
+#include "mpris.h"
 #include <Emotion.h>
-
-#define MSG_VOLUME 1
-#define MSG_POSITION 2
-#define MSG_RATING 3
-#define MSG_MUTE 4
 
 typedef struct Win
 {
@@ -142,11 +138,18 @@ _win_toolbar_eval(Win *w)
         edje_object_signal_emit(w->edje, "ejy,mode,list,disable", "ejy");
         edje_object_signal_emit(w->edje, "ejy,mode,nowplaying,disable", "ejy");
      }
+
+   mpris_signal_player_caps_change(enjoy_caps_get());
 }
 
 static void
 _win_play_pause_toggle(Win *w)
 {
+   int playback, shuffle, repeat, endless;
+   enjoy_status_get(&playback, &shuffle, &repeat, &endless);
+   mpris_signal_player_status_change(playback, shuffle, repeat, endless);
+   mpris_signal_player_caps_change(enjoy_caps_get());
+
    if (w->play.playing)
      {
         edje_object_signal_emit(w->edje, "ejy,action,play,hide", "ejy");
@@ -157,7 +160,6 @@ _win_play_pause_toggle(Win *w)
         edje_object_signal_emit(w->edje, "ejy,action,pause,hide", "ejy");
         edje_object_signal_emit(w->edje, "ejy,action,play,show", "ejy");
      }
-
 }
 static void
 _win_play_eval(Win *w)
@@ -183,6 +185,8 @@ _win_play_eval(Win *w)
    if (w->play.playing_last == w->play.playing) return;
    w->play.playing_last = !w->play.playing;
    _win_play_pause_toggle(w);
+
+   mpris_signal_player_caps_change(enjoy_caps_get());
 }
 
 static Eina_Bool
@@ -255,7 +259,7 @@ _win_song_set(Win *w, Song *s)
    emotion_object_play_set(w->emotion, EINA_TRUE);
    emotion_object_audio_volume_set(w->emotion, w->play.volume);
 
- end:
+end:
    if ((!w->play.playing) && (w->timer.play_eval))
      {
         ecore_timer_del(w->timer.play_eval);
@@ -268,6 +272,9 @@ _win_song_set(Win *w, Song *s)
    _win_nowplaying_update(w);
    _win_play_eval(w);
    _win_toolbar_eval(w);
+
+   mpris_signal_player_caps_change(enjoy_caps_get());
+   mpris_signal_player_track_change(s);
 }
 
 static void
@@ -349,7 +356,7 @@ _win_play_end(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__
         _win_song_set(w, s);
      }
    else
-         _win_next(data, NULL, NULL, NULL);
+        _win_next(data, NULL, NULL, NULL);
 }
 
 static void
@@ -361,6 +368,8 @@ _win_action_play(void *data, Evas_Object *o __UNUSED__, const char *emission __U
    emotion_object_play_set(w->emotion, EINA_TRUE);
    _win_play_pause_toggle(w);
    _win_play_eval(w);
+
+   mpris_signal_player_caps_change(enjoy_caps_get());
 }
 
 static void
@@ -372,6 +381,8 @@ _win_action_pause(void *data, Evas_Object *o __UNUSED__, const char *emission __
    emotion_object_play_set(w->emotion, EINA_FALSE);
    _win_play_pause_toggle(w);
    _win_play_eval(w);
+
+   mpris_signal_player_caps_change(enjoy_caps_get());
 }
 
 static void
@@ -515,6 +526,202 @@ _win_edje_msg(void *data, Evas_Object *o __UNUSED__, Edje_Message_Type type, int
      }
 }
 
+void 
+enjoy_control_next(void)
+{
+   Win *w = &_win;
+   _win_next(w, NULL, NULL, NULL);
+}
+
+void
+enjoy_control_previous(void)
+{
+   Win *w = &_win;
+   _win_prev(w, NULL, NULL, NULL);
+}
+
+void
+enjoy_control_pause(void)
+{
+   Win *w = &_win;
+   _win_action_pause(w, NULL, NULL, NULL);
+}
+
+void
+enjoy_control_stop(void)
+{
+   Win *w = &_win;
+   _win_action_pause(&_win, NULL, NULL, NULL);
+   w->play.position = 0.0;
+   emotion_object_position_set(w->emotion, w->play.position);
+}
+
+void
+enjoy_control_play(void)
+{
+   Win *w = &_win;
+   _win_action_play(w, NULL, NULL, NULL);
+}
+
+void
+enjoy_control_seek(uint64_t position)
+{
+   Win *w = &_win;
+   double seek_to;
+
+   seek_to = w->play.position + w->play.length / ((double)position / 1e6);
+   if (seek_to <= 0.0)
+     seek_to = 0.0;
+   else if (seek_to >= 1.0)
+     seek_to = 1.0;
+
+   w->play.position = seek_to;
+   emotion_object_position_set(w->emotion, w->play.position);
+}
+
+void
+enjoy_quit(void)
+{
+   ecore_main_loop_quit();
+}
+
+int
+enjoy_caps_get(void)
+{
+   Win *w = &_win;
+   int caps = 0;
+
+   if (list_prev_exists(w->list)) caps |= CAN_GO_PREV;
+   if ((w->play.shuffle) || (list_next_exists(w->list))) caps |= CAN_GO_NEXT;
+   if (w->song)
+     {
+        caps |= CAN_PAUSE;
+        caps |= CAN_PLAY;
+        if (emotion_object_seekable_get(w->emotion))
+          caps |= CAN_SEEK;
+        caps |= CAN_PROVIDE_METADATA;
+        caps |= CAN_HAS_TRACKLIST;
+     }
+
+   return caps;
+}
+
+void
+enjoy_status_get(int *playback, int *shuffle, int *repeat, int *endless)
+{
+  Win *w = &_win;
+  if (playback)
+    {
+      if (w->play.playing)
+        *playback = 0;
+      else if (w->play.position == 0.0)
+        *playback = 2;
+      else
+        *playback = 1;
+    }
+
+  if (shuffle) *shuffle = !!w->play.shuffle;
+  if (repeat) *repeat = !!w->play.repeat;
+  if (endless) *endless = 0;
+}
+
+void
+enjoy_repeat_set(Eina_Bool repeat)
+{
+  Win *w = &_win;
+  w->play.repeat = !!repeat;
+}
+
+Eina_Bool
+enjoy_repeat_get(void)
+{
+  Win *w = &_win;
+  return w->play.repeat;
+}
+
+void
+enjoy_position_set(int32_t position)
+{
+   Win *w = &_win;
+
+   w->play.position = w->play.length / ((double)position / 1e6);
+   if (w->play.position < 0.0)
+     w->play.position = 0.0;
+   else if (w->play.position > 1.0)
+     w->play.position = 1.0;
+
+   emotion_object_position_set(w->emotion, w->play.position);
+}
+
+int32_t
+enjoy_position_get(void)
+{
+   Win *w = &_win;
+   return w->play.position * w->play.length;
+}
+
+int32_t
+enjoy_volume_get(void)
+{
+   Win *w = &_win;
+   return w->play.volume * 100;
+}
+
+void
+enjoy_volume_set(int32_t volume)
+{
+   Win *w = &_win;
+   w->play.volume = (double)volume / 100.0;
+   emotion_object_audio_volume_set(w->emotion, w->play.volume);
+}
+
+Song *
+enjoy_song_current_get(void)
+{
+   Win *w = &_win;
+   return w->song;
+}
+
+Song *
+enjoy_song_position_get(int32_t position)
+{
+   Win *w = &_win;
+   return db_song_get(w->db, position);
+}
+
+void
+enjoy_control_loop_set(Eina_Bool param)
+{
+   Win *w = &_win;
+   param = !!param;
+   edje_object_message_send(elm_layout_edje_get(w->nowplaying),
+                            EDJE_MESSAGE_INT, MSG_LOOP, &param);
+}
+
+void
+enjoy_control_shuffle_set(Eina_Bool param)
+{
+   Win *w = &_win;
+   param = !!param;
+   edje_object_message_send(elm_layout_edje_get(w->nowplaying),
+                            EDJE_MESSAGE_INT, MSG_SHUFFLE, &param);
+}
+
+int32_t
+enjoy_playlist_current_position_get(void)
+{
+   Win *w = &_win;
+   if (!w->list) return 0;
+   return list_song_selected_n_get(w->list);
+}
+
+Song *
+enjoy_playlist_song_position_get(int32_t position)
+{
+   Win *w = &_win;
+   if (!w->list) return NULL;
+   return list_song_nth_get(w->list, position);
+}
 
 Evas_Object *
 win_new(App *app)

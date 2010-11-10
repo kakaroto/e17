@@ -5,6 +5,7 @@
 #ifndef ELM_LIB_QUICKLAUNCH
 
 #include "private.h"
+#include "mpris.h"
 
 #include <Ecore_Getopt.h>
 #include <Ecore_File.h>
@@ -103,7 +104,7 @@ elm_main(int argc, char **argv)
 
    app.win = win_new(&app);
    if (!app.win) goto end;
-
+   mpris_init();
    elm_run();
 
 // don't del win - autodel is set. choose. either use autodel and then set win
@@ -119,6 +120,7 @@ elm_main(int argc, char **argv)
    _log_domain = -1;
    elm_shutdown();
    efreet_mime_shutdown();
+   mpris_shutdown();
 
    return r;
 }

@@ -92,7 +92,6 @@ More
 Misc
 ----
  * single instance using dbus
- * export mpris control interface (mini mode could be e17 control using it)
  * support for e_notify (libnotify)
  * read cover from id3? requires id3 image loader in evas
  * fetch covers from webservices (amazon, last.fm)

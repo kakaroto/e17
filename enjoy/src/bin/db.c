@@ -192,11 +192,64 @@ Song *db_song_copy(const Song *orig)
 void
 db_song_free(Song *song)
 {
+   if (!song) return;
    eina_stringshare_del(song->path);
    eina_stringshare_del(song->title);
    eina_stringshare_del(song->album);
    eina_stringshare_del(song->artist);
    free(song);
+}
+
+Song *
+db_song_get(DB *db, int64_t id)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(db, NULL);
+   sqlite3_stmt *song_get;
+   Song *song;
+
+   song_get = _db_stmt_compile(db, "song_get",
+      "SELECT files.id, files.path, files.size, "
+      " audios.title, audios.album_id, audios.artist_id, audios.genre_id, "
+      " audios.trackno, audios.rating, audios.playcnt, audios.length "
+      "FROM audios, files "
+      "WHERE "
+      " files.id = audios.id "
+      "AND audios.id = ?");
+   if (!song_get) return NULL;
+   if (!_db_stmt_bind_int64(song_get, 1, id)) goto cleanup;
+   if (sqlite3_step(song_get) != SQLITE_ROW) goto cleanup;
+   song = calloc(1, sizeof(*song));
+   if (!song) goto cleanup;
+
+#define ID(m, c)                                                        \
+   song->m = sqlite3_column_int64(song_get, c);
+#define INT(m, c)                                                       \
+   song->m = sqlite3_column_int(song_get, c);
+#define STR(m, c)                                                       \
+   song->m = (const char *)sqlite3_column_text(song_get, c);            \
+   song->m = eina_stringshare_add(song->m);                             \
+   song->len.m = sqlite3_column_bytes(song_get, c)
+
+   ID(id, 0);
+   STR(path, 1);
+   INT(size, 2);
+   STR(title, 3);
+   ID(album_id, 4);
+   ID(artist_id, 5);
+   ID(genre_id, 6);
+   INT(trackno, 7);
+   INT(rating, 8);
+   INT(playcnt, 9);
+   INT(length, 10);
+
+#undef STR
+#undef INT
+#undef ID
+
+   return song;
+cleanup:
+  _db_stmt_finalize(song_get, "song_get");
+  return NULL;
 }
 
 struct DB_Iterator
@@ -1017,7 +1070,6 @@ void song_free(Song *);
 void album_free(Album *);
 void artist_free(Artist *);
 
-Song *db_song_get(DB *db, id); // ret song
 Eina_Bool db_song_rating_set(DB *db, Song *song, int rating);
 
 Eina_Iterator *db_songs_get(DB *db); // ret song

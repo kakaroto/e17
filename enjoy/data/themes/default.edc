@@ -7,6 +7,8 @@
 #define MSG_POSITION 2
 #define MSG_RATING 3
 #define MSG_MUTE 4
+#define MSG_LOOP 5
+#define MSG_SHUFFLE 6
 
 /*
  * TOOLBAR_POSITION() macro below only works with an odd number of items on a toolbar.
@@ -1603,8 +1605,7 @@ collections {
                snprintf(time_str, 6, "%d:%d", round(time) / 60, round(time) % 60);
          }
          public message(Msg_Type:type, id, ...){
-            if (type == MSG_FLOAT_SET && id == MSG_POSITION)
-            {
+            if (type == MSG_FLOAT_SET && id == MSG_POSITION) {
                new Float:position = getfarg(2);
                new Float:length = getfarg(3);
                if (length > 0)
@@ -1618,6 +1619,10 @@ collections {
                get_time_str(length, time_str);
                set_text(PART:"ejy.text.total_time", time_str);
                set_float(cur_length, length);
+            } else if (type == MSG_INT && id == MSG_SHUFFLE) {
+               external_param_set_bool(PART:"buttons.shuffle", "state", getarg(2));
+            } else if (type == MSG_INT && id == MSG_LOOP) {
+               external_param_set_bool(PART:"buttons.repeat", "state", getarg(2));
             }
          }
       }
