@@ -10,7 +10,7 @@ DESCRIPTION="E file chunk reading/writing library"
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/Eet"
 
 RDEPEND=">=dev-libs/eina-9999
-	media-libs/jpeg
+	virtual/jpeg:0
 	sys-libs/zlib
 	gnutls? ( net-libs/gnutls )
 	!gnutls? ( openssl? ( dev-libs/openssl ) )"
