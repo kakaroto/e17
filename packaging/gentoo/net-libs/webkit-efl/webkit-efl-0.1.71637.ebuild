@@ -20,7 +20,7 @@ IUSE="-glib static-libs"
 
 RDEPEND="
 	dev-libs/libxslt
-	media-libs/jpeg:0
+	virtual/jpeg:0
 	media-libs/libpng
 	x11-libs/cairo
 	glib? (

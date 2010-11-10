@@ -16,7 +16,7 @@ RDEPEND="
 	>=media-libs/freetype-2.3.9
 	fontconfig? ( media-libs/fontconfig )
 	gif? ( media-libs/giflib )
-	jpeg? ( media-libs/jpeg )
+	jpeg? ( virtual/jpeg:0 )
 	png? ( media-libs/libpng )
 	bidi? ( >=dev-libs/fribidi-0.19.1 )
 	directfb? ( >=dev-libs/DirectFB-0.9.16 )
