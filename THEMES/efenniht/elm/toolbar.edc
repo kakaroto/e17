@@ -258,6 +258,18 @@ collections {
                   offset: 0 0;
                }
             }
+            description { state: "move,right" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+               rel1 {
+                  relative: 1.5 0.0;
+                  offset: 1 0;
+               }
+               rel2 {
+                  relative: 1.5 1.0;
+                  offset: 1 0;
+               }
+            }
          }
          part { name: "elm.swallow.icon";
             type: SWALLOW;
@@ -286,6 +298,17 @@ collections {
                   offset: 0 0;
                }
             }
+            description { state: "default,move,right" 0.0;
+               inherit: "default" 0.0;
+               rel1 {
+                  relative: -0.5 0.0;
+                  offset: -1 0;
+               }
+               rel2 {
+                  relative: -0.5 1.0;
+                  offset: -1 0;
+               }
+            }
             description { state: "move,left" 0.0;
                inherit: "default" 0.0;
                rel1 {
@@ -296,6 +319,9 @@ collections {
                   relative: 1.0 1.0;
                   offset: -2 -1;
                }
+            }
+            description { state: "move,right" 0.0;
+               inherit: "move,left" 0.0;
             }
          }
          part { name: "elm.swallow.icon_new";
@@ -344,6 +370,18 @@ collections {
                   offset: -1 0;
                }
             }
+            description {
+               state: "move,right" 0.0;
+               inherit: "default" 0.0;
+               rel1 {
+                  relative: 1.5 0.0;
+                  offset: -1 0;
+               }
+               rel2 {
+                  relative: 1.5 1.0;
+                  offset: -1 0;
+               }
+            }
          }
          part { name: "elm.text";
             type: TEXT;
@@ -371,20 +409,6 @@ collections {
                inherit: "default" 0.0;
                color_class: "toolbar_text_disabled";
             }
-            description {
-               state: "move,left" 0.0;
-               inherit: "default" 0.0;
-               fixed: 1 1;
-               align: 1.0 0.5;
-               rel1 {
-                  relative: 0.0 0.0;
-                  offset: -1 0;
-               }
-               rel2 {
-                  relative: 0.0 1.0;
-                  offset: -1 0;
-               }
-            }
          }
          part { name: "elm.text_new.area";
             type: RECT;
@@ -401,6 +425,18 @@ collections {
                }
             }
             description {
+               state: "default,move,right" 0.0;
+               inherit: "default" 0.0;
+               rel1 {
+                  relative: -0.5 0.0;
+                  offset: -1 0;
+               }
+               rel2 {
+                  relative: -0.5 1.0;
+                  offset: -1 0;
+               }
+            }
+            description {
                state: "move,left" 0.0;
                inherit: "default" 0.0;
                rel1 {
@@ -411,6 +447,10 @@ collections {
                   relative: 1.0 1.0;
                   offset: 0 0;
                }
+            }
+            description {
+               state: "move,right" 0.0;
+               inherit: "move,left" 0.0;
             }
          }
          part { name: "elm.text_new";
@@ -505,17 +545,38 @@ collections {
             target: "elm.text";
             target: "elm.text_new";
          }
+         program { name: "label_set,animation,forward";
+            signal: "elm,state,label_set,forward";
+            source: "elm";
+            after: "label_set,animation,left";
+            after: "event,disable";
+         }
+         program { name: "label_set,animation,backward";
+            signal: "elm,state,label_set,backward";
+            source: "elm";
+            action: STATE_SET "default,move,right" 0.0;
+            target: "elm.text_new.area";
+            after: "label_set,animation,right";
+            after: "event,disable";
+         }
          program { name: "label_set,animation";
             signal: "elm,state,label_set";
             source: "elm";
-            after: "label_set,animation2";
+            after: "label_set,animation,left";
             after: "event,disable";
          }
-         program { name: "label_set,animation2";
+         program { name: "label_set,animation,left";
             action: STATE_SET "move,left" 0.0;
             target: "elm.text.area";
             target: "elm.text_new.area";
-            transition: SINUSOIDAL 1.0;
+            transition: ACCELERATE 0.2;
+            after: "label_set,animation,done";
+         }
+         program { name: "label_set,animation,right";
+            action: STATE_SET "move,right" 0.0;
+            target: "elm.text.area";
+            target: "elm.text_new.area";
+            transition: ACCELERATE 0.2;
             after: "label_set,animation,done";
          }
          program { name: "label_set,animation,done";
@@ -543,13 +604,34 @@ collections {
             action: STATE_SET "disabled" 0.0;
             target: "event";
          }
-         program { name: "icon_set,animation";
+         program { name: "icon_set,animation,forward";
+            signal: "elm,state,icon_set,forward";
+            source: "elm";
+            after: "icon_set,animation,left";
+         }
+         program { name: "icon_set,animation,backward";
+            signal: "elm,state,icon_set,backward";
+            source: "elm";
+            action: STATE_SET "default,move,right" 0.0;
+            target: "elm.swallow.icon_new.area";
+            after: "icon_set,animation,right";
+         }
+         program { name: "icon_set,animation,left";
             signal: "elm,state,icon_set";
             source: "elm";
             action: STATE_SET "move,left" 0.0;
             target: "elm.swallow.icon.area";
             target: "elm.swallow.icon_new.area";
-            transition: SINUSOIDAL 1.0;
+            transition: ACCELERATE 0.2;
+            after: "icon_set,animation,done";
+         }
+         program { name: "icon_set,animation,right";
+            signal: "elm,state,icon_set";
+            source: "elm";
+            action: STATE_SET "move,right" 0.0;
+            target: "elm.swallow.icon.area";
+            target: "elm.swallow.icon_new.area";
+            transition: ACCELERATE 0.2;
             after: "icon_set,animation,done";
          }
          program { name: "icon_set,animation,done";
