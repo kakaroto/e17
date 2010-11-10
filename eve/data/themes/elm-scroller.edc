@@ -396,19 +396,11 @@
              visible: 0;
           }
           description { state: "visible" 0.0;
-             fixed: 1 1;
-             align: 0.0 1.0;
-             rel1 {
-                to: "bg";
-                relative: 0.0 1.0;
-                offset: 4 -31;
-             }
-             rel2 {
-                to: "bg";
-                relative: 0.0 1.0;
-                offset: 20 -15;
-             }
+             inherit: "default" 0.0;
              visible: 1;
+             align: 0.0 0.5;
+             min: 20 20;
+             max: 20 20;
           }
        }
        part { name: "elm.swallow.end";
