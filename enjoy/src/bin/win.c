@@ -5,15 +5,26 @@
 typedef struct Win
 {
    Evas_Object *win;
+   Evas_Object *bg;
    Evas_Object *layout;
+   Evas_Object *toolbar;
    Evas_Object *edje;
    Evas_Object *emotion;
    Evas_Object *list;
    Evas_Object *nowplaying;
+   Evas_Object *nowplaying_pager;
    const char *db_path;
    DB *db;
    Libmgr *mgr;
    Song *song;
+   struct {
+        Elm_Toolbar_Item *play;
+        Elm_Toolbar_Item_State *pause;
+        Elm_Toolbar_Item *next;
+        Elm_Toolbar_Item *prev;
+        Elm_Toolbar_Item *nowplaying;
+        Elm_Toolbar_Item_State *playlist;
+   } action;
    struct {
       double position, length;
       double volume;
@@ -115,28 +126,24 @@ static void
 _win_toolbar_eval(Win *w)
 {
    if (list_prev_exists(w->list))
-     edje_object_signal_emit(w->edje, "ejy,prev,enable", "ejy");
+      elm_toolbar_item_disabled_set(w->action.prev, EINA_FALSE);
    else
-     edje_object_signal_emit(w->edje, "ejy,prev,disable", "ejy");
+      elm_toolbar_item_disabled_set(w->action.prev, EINA_TRUE);
 
    if ((w->play.shuffle) || (list_next_exists(w->list)))
-     edje_object_signal_emit(w->edje, "ejy,next,enable", "ejy");
+      elm_toolbar_item_disabled_set(w->action.next, EINA_FALSE);
    else
-     edje_object_signal_emit(w->edje, "ejy,next,disable", "ejy");
+      elm_toolbar_item_disabled_set(w->action.next, EINA_TRUE);
 
    if (w->song)
      {
-        edje_object_signal_emit(w->edje, "ejy,action,play,enable", "ejy");
-        edje_object_signal_emit(w->edje, "ejy,action,pause,enable", "ejy");
-        edje_object_signal_emit(w->edje, "ejy,mode,list,enable", "ejy");
-        edje_object_signal_emit(w->edje, "ejy,mode,nowplaying,enable", "ejy");
+        elm_toolbar_item_disabled_set(w->action.play, EINA_FALSE);
+        elm_toolbar_item_disabled_set(w->action.nowplaying, EINA_FALSE);
      }
    else
      {
-        edje_object_signal_emit(w->edje, "ejy,action,play,disable", "ejy");
-        edje_object_signal_emit(w->edje, "ejy,action,pause,disable", "ejy");
-        edje_object_signal_emit(w->edje, "ejy,mode,list,disable", "ejy");
-        edje_object_signal_emit(w->edje, "ejy,mode,nowplaying,disable", "ejy");
+        elm_toolbar_item_disabled_set(w->action.play, EINA_TRUE);
+        elm_toolbar_item_disabled_set(w->action.nowplaying, EINA_TRUE);
      }
 
    mpris_signal_player_caps_change(enjoy_caps_get());
@@ -151,15 +158,9 @@ _win_play_pause_toggle(Win *w)
    mpris_signal_player_caps_change(enjoy_caps_get());
 
    if (w->play.playing)
-     {
-        edje_object_signal_emit(w->edje, "ejy,action,play,hide", "ejy");
-        edje_object_signal_emit(w->edje, "ejy,action,pause,show", "ejy");
-     }
+      elm_toolbar_item_state_set(w->action.play, w->action.pause);
    else
-     {
-        edje_object_signal_emit(w->edje, "ejy,action,pause,hide", "ejy");
-        edje_object_signal_emit(w->edje, "ejy,action,play,show", "ejy");
-     }
+      elm_toolbar_item_state_unset(w->action.play);
 }
 static void
 _win_play_eval(Win *w)
@@ -323,7 +324,7 @@ _win_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_
 }
 
 static void
-_win_prev(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_win_prev(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Win *w = data;
    Song *s = list_prev_go(w->list);
@@ -332,7 +333,7 @@ _win_prev(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__
 }
 
 static void
-_win_next(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_win_next(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Win *w = data;
    Song *s;
@@ -345,7 +346,7 @@ _win_next(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__
 }
 
 static void
-_win_play_end(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+_win_play_end(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Win *w = data;
    Song *s;
@@ -356,11 +357,11 @@ _win_play_end(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__
         _win_song_set(w, s);
      }
    else
-        _win_next(data, NULL, NULL, NULL);
+     _win_next(data, NULL, NULL);
 }
 
 static void
-_win_action_play(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_win_action_play(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Win *w = data;
    INF("play song=%p (%s)", w->song, w->song ? w->song->path : NULL);
@@ -373,7 +374,7 @@ _win_action_play(void *data, Evas_Object *o __UNUSED__, const char *emission __U
 }
 
 static void
-_win_action_pause(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_win_action_pause(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Win *w = data;
    INF("pause song=%p (%s)", w->song, w->song ? w->song->path : NULL);
@@ -386,32 +387,23 @@ _win_action_pause(void *data, Evas_Object *o __UNUSED__, const char *emission __
 }
 
 static void
-_win_mode_list(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_win_mode_list(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Win *w = data;
-   edje_object_signal_emit(w->edje, "ejy,mode,list,hide", "ejy");
-   edje_object_signal_emit(w->edje, "ejy,mode,nowplaying,show", "ejy");
-   edje_object_signal_emit(w->edje, "ejy,screen,nowplaying,hide", "ejy");
+   elm_toolbar_item_state_unset(w->action.nowplaying);
+   list_promote_current(w->list);
 }
 
 static void
-_win_mode_nowplaying(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_win_mode_nowplaying(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Win *w = data;
-   edje_object_signal_emit(w->edje, "ejy,mode,nowplaying,hide", "ejy");
-   edje_object_signal_emit(w->edje, "ejy,mode,list,show", "ejy");
-   edje_object_signal_emit(w->edje, "ejy,screen,nowplaying,show", "ejy");
+   elm_toolbar_item_state_set(w->action.nowplaying, w->action.playlist);
+   elm_pager_content_promote(w->list, w->nowplaying);
 }
 
 static void
-_win_more(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
-{
-   //Win *w = data;
-   DBG("todo");
-}
-
-static void
-_win_songs(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_win_songs(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Win *w = data;
    if (!list_songs_show(w->list)) return;
@@ -420,21 +412,21 @@ _win_songs(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED_
 }
 
 static void
-_win_repeat_on(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_win_repeat_on(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Win *w = data;
    w->play.repeat = EINA_TRUE;
 }
 
 static void
-_win_repeat_off(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_win_repeat_off(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Win *w = data;
    w->play.repeat = EINA_FALSE;
 }
 
 static void
-_win_shuffle_on(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_win_shuffle_on(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Win *w = data;
    w->play.shuffle = EINA_TRUE;
@@ -442,7 +434,7 @@ _win_shuffle_on(void *data, Evas_Object *o __UNUSED__, const char *emission __UN
 }
 
 static void
-_win_shuffle_off(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_win_shuffle_off(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Win *w = data;
    w->play.shuffle = EINA_FALSE;
@@ -530,28 +522,28 @@ void
 enjoy_control_next(void)
 {
    Win *w = &_win;
-   _win_next(w, NULL, NULL, NULL);
+   _win_next(w, NULL, NULL);
 }
 
 void
 enjoy_control_previous(void)
 {
    Win *w = &_win;
-   _win_prev(w, NULL, NULL, NULL);
+   _win_prev(w, NULL, NULL);
 }
 
 void
 enjoy_control_pause(void)
 {
    Win *w = &_win;
-   _win_action_pause(w, NULL, NULL, NULL);
+   _win_action_pause(w, NULL, NULL);
 }
 
 void
 enjoy_control_stop(void)
 {
    Win *w = &_win;
-   _win_action_pause(&_win, NULL, NULL, NULL);
+   _win_action_pause(&_win, NULL, NULL);
    w->play.position = 0.0;
    emotion_object_position_set(w->emotion, w->play.position);
 }
@@ -560,7 +552,7 @@ void
 enjoy_control_play(void)
 {
    Win *w = &_win;
-   _win_action_play(w, NULL, NULL, NULL);
+   _win_action_play(w, NULL, NULL);
 }
 
 void
@@ -723,6 +715,15 @@ enjoy_playlist_song_position_get(int32_t position)
    return list_song_nth_get(w->list, position);
 }
 
+static Elm_Toolbar_Item *
+_toolbar_item_add(Win *w, const char *icon, const char *label, int priority, Evas_Smart_Cb cb)
+{
+   Elm_Toolbar_Item *item = elm_toolbar_item_append(w->toolbar, icon, label,
+                                                    cb, w);
+   elm_toolbar_item_priority_set(item, priority);
+   return item;
+}
+
 Evas_Object *
 win_new(App *app)
 {
@@ -740,6 +741,13 @@ win_new(App *app)
    if (!w->win) return NULL;
    evas_object_data_set(w->win, "_enjoy", &w);
    evas_object_event_callback_add(w->win, EVAS_CALLBACK_DEL, _win_del, w);
+
+   w->bg = elm_bg_add(w->win);
+   evas_object_size_hint_weight_set
+     (w->bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_fill_set(w->bg, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_win_resize_object_add(w->win, w->bg);
+   evas_object_show(w->bg);
 
    elm_win_autodel_set(w->win, 1); // TODO
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
@@ -778,11 +786,40 @@ win_new(App *app)
      (w->layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_win_resize_object_add(w->win, w->layout);
 
-   if (!elm_layout_file_set(w->layout, PACKAGE_DATA_DIR "/default.edj", "win"))
+   if (!elm_layout_theme_set
+       (w->layout, "layout", "application", "toolbar-content"))
      {
-        CRITICAL("no theme for 'win' at %s", PACKAGE_DATA_DIR "/default.edj");
+        ERR("could not load style 'toolbar-content-back' from theme");
         goto error;
      }
+
+   w->edje = elm_layout_edje_get(w->layout);
+   w->toolbar = edje_object_part_external_object_get
+     (w->edje, "elm.external.toolbar");
+   if (!w->toolbar)
+     {
+        ERR("no toolbar in layout!");
+        goto error;
+     }
+
+   elm_toolbar_no_select_mode_set(w->toolbar, EINA_TRUE);
+   elm_toolbar_menu_parent_set(w->toolbar, w->win);
+   w->action.prev = _toolbar_item_add
+      (w, "go-previous", "Previous", 130, _win_prev);
+   w->action.next = _toolbar_item_add(w, "go-next", "Next", 140, _win_next);
+   w->action.play = _toolbar_item_add
+      (w, "media-playback-start", "Play", 150, _win_action_play);
+   w->action.pause = elm_toolbar_item_state_add
+      (w->action.play, "media-playback-pause", "Pause", _win_action_pause, w);
+   w->action.nowplaying = _toolbar_item_add
+      (w, "nowplaying", "Now Playing", 120, _win_mode_nowplaying);
+   w->action.playlist = elm_toolbar_item_state_add
+      (w->action.nowplaying, "list", "Playlist", _win_mode_list, w);
+
+   elm_toolbar_item_disabled_set(w->action.prev, EINA_TRUE);
+   elm_toolbar_item_disabled_set(w->action.next, EINA_TRUE);
+   elm_toolbar_item_disabled_set(w->action.play, EINA_TRUE);
+   elm_toolbar_item_disabled_set(w->action.nowplaying, EINA_TRUE);
 
    w->list = list_add(w->layout);
    if (!w->list)
@@ -790,7 +827,7 @@ win_new(App *app)
         CRITICAL("cannot create list");
         goto error;
      }
-   elm_layout_content_set(w->layout, "ejy.swallow.list", w->list);
+   elm_layout_content_set(w->layout, "elm.swallow.content", w->list);
    evas_object_smart_callback_add(w->list, "selected", _win_list_selected, w);
    evas_object_smart_callback_add(w->list, "changed", _win_list_changed, w);
 
@@ -806,10 +843,10 @@ win_new(App *app)
    edje_object_signal_callback_add
      (nowplaying_edje, "ejy,shuffle,off", "ejy", _win_shuffle_off, w);
    elm_layout_content_set(w->layout, "ejy.swallow.nowplaying", w->nowplaying);
-   w->edje = elm_layout_edje_get(w->layout);
    edje_object_size_min_get(w->edje, &(w->min.w), &(w->min.h));
    edje_object_size_min_restricted_calc
      (w->edje, &(w->min.w), &(w->min.h), w->min.w, w->min.h);
+   elm_pager_content_push(w->list, w->nowplaying);
 
    s = edje_object_data_get(w->edje, "initial_size");
    if (!s)
@@ -831,32 +868,9 @@ win_new(App *app)
 #ifdef EDJE_SIGNAL_DEBUG
    edje_object_signal_callback_add(w->edje, "*", "*", _edje_signal_debug, w);
 #endif
-
-   edje_object_signal_callback_add
-     (w->edje, "ejy,prev,clicked", "ejy", _win_prev, w);
-   edje_object_signal_callback_add
-     (w->edje, "ejy,next,clicked", "ejy", _win_next, w);
-   edje_object_signal_callback_add
-     (w->edje, "ejy,action,play,clicked", "ejy", _win_action_play, w);
-   edje_object_signal_callback_add
-     (w->edje, "ejy,action,pause,clicked", "ejy", _win_action_pause, w);
-   edje_object_signal_callback_add
-     (w->edje, "ejy,mode,list,clicked", "ejy", _win_mode_list, w);
-   edje_object_signal_callback_add
-     (w->edje, "ejy,mode,nowplaying,clicked", "ejy", _win_mode_nowplaying, w);
-   edje_object_signal_callback_add
-     (w->edje, "ejy,more,clicked", "ejy", _win_more, w);
    edje_object_signal_callback_add
      (w->edje, "ejy,songs,clicked", "ejy", _win_songs, w);
    edje_object_message_handler_set(w->edje, _win_edje_msg, w);
-
-   edje_object_signal_emit(w->edje, "ejy,prev,disable", "ejy");
-   edje_object_signal_emit(w->edje, "ejy,next,disable", "ejy");
-   edje_object_signal_emit(w->edje, "ejy,action,pause,hide", "ejy");
-   edje_object_signal_emit(w->edje, "ejy,action,play,disable", "ejy");
-   edje_object_signal_emit(w->edje, "ejy,mode,list,hide", "ejy");
-   edje_object_signal_emit(w->edje, "ejy,mode,nowplaying,disable", "ejy");
-   edje_object_signal_emit(w->edje, "ejy,more,disable", "ejy");
 
    evas_object_show(w->layout);
 

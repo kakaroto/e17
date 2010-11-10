@@ -170,6 +170,13 @@ list_add(Evas_Object *parent)
    return list->pager;
 }
 
+void
+list_promote_current(Evas_Object *obj)
+{
+   LIST_GET_OR_RETURN(list, obj);
+   elm_pager_content_promote(obj, list->page.current);
+}
+
 Eina_Bool
 list_populate(Evas_Object *obj, DB *db)
 {

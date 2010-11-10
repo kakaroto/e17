@@ -73,6 +73,7 @@ Eina_Bool    libmgr_scanpath_add(Libmgr *mgr, const char *path);
 Eina_Bool    libmgr_scan_start(Libmgr *mgr, void (*func_end)(void *, Eina_Bool), void *data);
 
 Evas_Object *list_add(Evas_Object *parent);
+void         list_promote_current(Evas_Object *list);
 Eina_Bool    list_populate(Evas_Object *list, DB *db);
 Eina_Bool    list_songs_show(Evas_Object *obj);
 Eina_Bool    list_songs_exists(const Evas_Object *obj);
