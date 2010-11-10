@@ -631,7 +631,7 @@ gen_common_headers(void)
    Azy_Typedef *t;
    Azy_Server_Module *s;
    
-   OPEN("%s/%s_Common.h", out_dir, azy->name);
+   OPEN("%s/%s%sCommon.h", out_dir, azy->name, (azy->name) ? "_" : "");
 
    EL(0, "#ifndef %s_Common_H__", (azy->name) ? azy->name : "AZY");
    EL(0, "#define %s_Common_H__", (azy->name) ? azy->name : "AZY");
@@ -694,14 +694,14 @@ gen_server_headers(Azy_Server_Module *s)
    Azy_Method_Param *p;
    Azy_Method *method;
    
-   OPEN("%s/%s%s.azy_server_stubs.h", out_dir, azy->name, s->name);
+   OPEN("%s/%s%s%s.azy_server_stubs.h", out_dir, azy->name, (azy->name) ? "_" : "", s->name);
 
    EL(0, "#ifndef %s_%s_STUBS_H__", (azy->name) ? azy->name : "AZY", s->name);
    EL(0, "#define %s_%s_STUBS_H__", (azy->name) ? azy->name : "AZY", s->name);
    NL;
 
    EL(0, "#include <Azy.h>");
-   EL(0, "#include \"%s%s.h\"", azy->name, s->name);
+   EL(0, "#include \"%s%s%s.h\"", azy->name, (azy->name) ? "_" : "", s->name);
    NL;
 
    if (s->doc)
@@ -871,13 +871,13 @@ gen_server_headers(Azy_Server_Module *s)
    fclose(f);
 
 
-   OPEN("%s/%s%s.azy_server.h", out_dir, azy->name, s->name);
+   OPEN("%s/%s%s%s.azy_server.h", out_dir, azy->name, (azy->name) ? "_" : "", s->name);
    EL(0, "#ifndef %s_%s_AZY_SERVER_H__", (azy->name) ? azy->name : "AZY", s->name);
    EL(0, "#define %s_%s_AZY_SERVER_H__", (azy->name) ? azy->name : "AZY", s->name);
    NL;
 
    EL(0, "#include <Azy.h>");
-   EL(0, "#include \"%s%s.azy_server_stubs.h\"", azy->name, s->name);
+   EL(0, "#include \"%s%s%s.azy_server_stubs.h\"", azy->name, (azy->name) ? "_" : "", s->name);
    NL;
 
    EL(0, "Azy_Server_Module_Def* __%s%sModule_def();",
@@ -896,9 +896,9 @@ gen_server_impl(Azy_Server_Module *s)
    Azy_Method *method;
    Azy_Method_Param *p;
 
-   OPEN("%s/%s%s.azy_server.c", out_dir, azy->name, s->name);
+   OPEN("%s/%s%s%s.azy_server.c", out_dir, azy->name, (azy->name) ? "_" : "", s->name);
 
-   EL(0, "#include \"%s%s.azy_server.h\"", azy->name, s->name);
+   EL(0, "#include \"%s%s%s.azy_server.h\"", azy->name, (azy->name) ? "_" : "", s->name);
    NL;
 
 
@@ -1050,8 +1050,8 @@ gen_server_impl(Azy_Server_Module *s)
 
 
    /* ************************STUBS************************* */
-   OPEN("%s/%s%s.azy_server_stubs.c", out_dir, azy->name, s->name);
-   EL(0, "#include \"%s%s.azy_server_stubs.h\"", azy->name, s->name);
+   OPEN("%s/%s%s%s.azy_server_stubs.c", out_dir, azy->name, (azy->name) ? "_" : "", s->name);
+   EL(0, "#include \"%s%s%s.azy_server_stubs.h\"", azy->name, (azy->name) ? "_" : "", s->name);
    NL;
 
    if (s->stub_header)
@@ -1255,12 +1255,12 @@ gen_client_headers(Azy_Server_Module *s)
    Azy_Method_Param *p;
    Azy_Typedef *t;
 
-   OPEN("%s/%s%s.h", out_dir, azy->name, s->name);
+   OPEN("%s/%s%s%s.h", out_dir, azy->name, (azy->name) ? "_" : "", s->name);
    EL(0, "#ifndef %s_%s_H__", (azy->name) ? azy->name : "AZY", s->name);
    EL(0, "#define %s_%s_H__", (azy->name) ? azy->name : "AZY", s->name);
    NL;
 
-   EL(0, "#include \"%s_Common.h\"", azy->name);
+   EL(0, "#include \"%s%sCommon.h\"", azy->name, (azy->name) ? "_" : "");
    NL;
 
    gen_errors_header(s);
@@ -1278,13 +1278,13 @@ gen_client_headers(Azy_Server_Module *s)
    fclose(f);
 
 
-   OPEN("%s/%s%s.azy_client.h", out_dir, azy->name, s->name);
+   OPEN("%s/%s%s%s.azy_client.h", out_dir, azy->name, (azy->name) ? "_" : "", s->name);
    EL(0, "#ifndef %s_%s_AZY_CLIENT_H__", (azy->name) ? azy->name : "AZY", s->name);
    EL(0, "#define %s_%s_AZY_CLIENT_H__", (azy->name) ? azy->name : "AZY", s->name);
    NL;
 
    EL(0, "#include <Azy.h>");
-   EL(0, "#include \"%s%s.h\"", azy->name, s->name);
+   EL(0, "#include \"%s%s%s.h\"", azy->name, (azy->name) ? "_" : "", s->name);
    NL;
 
    EINA_LIST_FOREACH(s->methods, j, method)
@@ -1326,9 +1326,9 @@ gen_client_impl(Azy_Server_Module *s)
    Azy_Method *method;
    Azy_Method_Param *p;
    
-   OPEN("%s/%s%s.azy_client.c", out_dir, azy->name, s->name);
+   OPEN("%s/%s%s%s.azy_client.c", out_dir, azy->name, (azy->name) ? "_" : "", s->name);
 
-   EL(0, "#include \"%s%s.azy_client.h\"", azy->name, s->name);
+   EL(0, "#include \"%s%s%s.azy_client.h\"", azy->name, (azy->name) ? "_" : "", s->name);
    NL;
 
    gen_errors_impl(s);

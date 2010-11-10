@@ -149,7 +149,8 @@ opt_namespace_decl ::= namespace_decl.
 namespace_decl ::= NAMESPACE ID(N) SEMICOL. {
   if (!MODEL)
     _MODEL = azy_new();
-  MODEL->name = eina_stringshare_add(N->text);
+  if (N->text && N->text[0])
+    MODEL->name = eina_stringshare_add(N->text);
   token_free(N);
 }
 
