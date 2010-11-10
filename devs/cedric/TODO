@@ -1,4 +1,4 @@
-* Eina
+* Eina 1.1
 	- implement multiple level of hash for eina_hash depending on number of child.
 	- replace inlist by rbtree in chained mempool.
 	- improve benchmark (add more real use case, provide option for tracking result more easily)
@@ -15,7 +15,7 @@
 h	- try quadtree support
 	- fix Evas_Object_Polygon resize issue and API.
 
-* Edje
+* Edje 1.1
 	- Add REVERSE to edje possible program action
 	- Add continue: (ABORT|CONTINUE|CHAIN) to edje STATE_SET argument
 	- Make it possible to catch requested file and to rewrite it
@@ -56,17 +56,23 @@ h	- add client library
 	- write own layout function
 h	- fix expose and thumbnail display to be fully async
 
-* Eio
+* Eio 1.0
 h	- provide a completly asynchronous IO API using ecore thread infra
 	- add notify support
 	- use dirfd helper
 	- add tutorial
 	- add tests suite
 
-* Efreet
+* Efreet 1.0
 	- implement cache with icons directory content to avoid uneeded stat
 	(should require a daemon to do the monitoring and the generation for
 	every one in the background).
+
+* Ecore 1.1
+	- add ecore_thread_reschedule (to reschedule it again after all other
+	pending jobs)
+	- add ecore_thread_batch_run/ecore_thread_batch_feedback_run (to create
+	batch a list of data instead of creating one ecore_thread per data)
 
 h: half done
 d: done
