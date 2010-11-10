@@ -666,9 +666,9 @@ gen_common_impl(void)
    Azy_Typedef *t;
    Azy_Server_Module *s;
    
-   OPEN("%s/%s_Common.c", out_dir, azy->name);
+   OPEN("%s/%s%sCommon.c", out_dir, azy->name, (azy->name) ? "_" : "");
 
-   EL(0, "#include \"%s_Common.h\"", azy->name);
+   EL(0, "#include \"%s%sCommon.h\"", azy->name, (azy->name) ? "_" : "");
    EL(0, "#include <string.h>");
    NL;
 
