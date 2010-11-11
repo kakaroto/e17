@@ -15,7 +15,8 @@ RE2CFLAGS    = -bi
 CLEANFILES   = parser.cc y.tab.c y.tab.h scanner.cc re2c.1 .version htdocs/manual.html
 
 DISTCLEANFILES = makerpm re2c.spec README scanner.cc re2c$(EXEEXT)
-MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.h.in config.h.in~ config_w32.h.in configure depcomp install-sh missing
+MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.h.in config.h.in~ config_w32.h.in configure depcomp install-sh missing bootstrap/parser.cc bootstrap/y.tab.h
+
 
 parser.cc: parser.y
 	$(YACC) $(YFLAGS) parser.y || exit

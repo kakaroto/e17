@@ -3,20 +3,20 @@ SUBDIRS = unit
 BUILT_SOURCES = \
   T_Common.h \
   T_Common.c \
-  TTest1.azy_server.c \
-  TTest1.azy_client.c \
-  TTest1.azy_server_stubs.c \
-  TTest1.azy_server.h \
-  TTest1.azy_client.h \
-  TTest1.azy_server_stubs.h \
-  TTest1.h \
-  TTest2.azy_server.c \
-  TTest2.azy_client.c \
-  TTest2.azy_server_stubs.c \
-  TTest2.azy_server.h \
-  TTest2.azy_client.h \
-  TTest2.azy_server_stubs.h \
-  TTest2.h
+  T_Test1.azy_server.c \
+  T_Test1.azy_client.c \
+  T_Test1.azy_server_stubs.c \
+  T_Test1.azy_server.h \
+  T_Test1.azy_client.h \
+  T_Test1.azy_server_stubs.h \
+  T_Test1.h \
+  T_Test2.azy_server.c \
+  T_Test2.azy_client.c \
+  T_Test2.azy_server_stubs.c \
+  T_Test2.azy_server.h \
+  T_Test2.azy_client.h \
+  T_Test2.azy_server_stubs.h \
+  T_Test2.h
 
 EXTRA_DIST = \
   bench.h \
@@ -37,6 +37,7 @@ AM_CFLAGS= \
 AM_LDFLAGS = -static
 
 CLEANFILES = $(BUILT_SOURCES) .sources-ts
+MAINTAINERCLEANFILES = Makefile.in
 
 LDADD = \
   $(ECORE_LIBS) \

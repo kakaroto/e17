@@ -9,8 +9,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "TTest1.azy_client.h"
-#include "TTest2.azy_client.h"
+#include "T_Test1.azy_client.h"
+#include "T_Test2.azy_client.h"
 
 /* this function prints client error if any and resets error so that futher calls to client funcs work */
 static Eina_Bool

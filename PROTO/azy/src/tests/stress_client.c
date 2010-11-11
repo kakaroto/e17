@@ -8,7 +8,7 @@
 
 #include <Ecore.h>
 
-#include "TTest1.azy_client.h"
+#include "T_Test1.azy_client.h"
 
 #define NUM_CLIENTS 500
 

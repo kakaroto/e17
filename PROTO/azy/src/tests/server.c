@@ -2,8 +2,8 @@
  * Copyright 2010 Mike Blumenkrantz <mike@zentific.com>
  */
 
-#include "TTest1.azy_server.h"
-#include "TTest2.azy_server.h"
+#include "T_Test1.azy_server.h"
+#include "T_Test2.azy_server.h"
 
 int
 main(void)

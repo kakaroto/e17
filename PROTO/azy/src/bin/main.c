@@ -119,32 +119,39 @@ line_fprintf(unsigned int indent,
 
 static void
 gen_type_marshalizers(Azy_Typedef *t,
-                      Eina_Bool     header)
+                      Eina_Bool     header,
+                      Eina_Bool     _static)
 {
    Eina_List *l;
    Azy_Struct_Member *m;
 
    if (header)
      {
+        if (t->mheader) return;
         if (t->type == TD_STRUCT)
           {
-             EL(0, "Azy_Value *%s(%s _nstruct) EINA_WARN_UNUSED_RESULT;", t->march_name,
+             EL(0, "%sAzy_Value *%s(%s _nstruct) EINA_WARN_UNUSED_RESULT;", (_static) ? "static " : "", t->march_name,
                    ((!strcmp(t->ctype, "int")) || (!strcmp(t->ctype, "Eina_Bool"))) ? "int32_t" : t->ctype);
-             EL(0, "Eina_Bool %s(Azy_Value *_struct, %s* _nstruct) EINA_WARN_UNUSED_RESULT;", t->demarch_name, t->ctype);
+             EL(0, "%sEina_Bool %s(Azy_Value *_struct, %s* _nstruct) EINA_WARN_UNUSED_RESULT;", (_static) ? "static " : "",
+                t->demarch_name, t->ctype);
           }
         else
           {
              if (!strcmp(t->ctype, "Eina_Bool"))
                return;
-             EL(0, "Azy_Value *%s(%s _narray) EINA_WARN_UNUSED_RESULT;", t->march_name, t->ctype);
-             EL(0, "Eina_Bool %s(Azy_Value *_array, %s* _narray) EINA_WARN_UNUSED_RESULT;", t->demarch_name, t->ctype);
+             EL(0, "%sAzy_Value *%s(%s _narray) EINA_WARN_UNUSED_RESULT;", (_static) ? "static " : "",
+                t->march_name, t->ctype);
+             EL(0, "%sEina_Bool %s(Azy_Value *_array, %s* _narray) EINA_WARN_UNUSED_RESULT;", (_static) ? "static " : "",
+                t->demarch_name, t->ctype);
           }
+        t->mheader = EINA_TRUE;
         return;
      }
 
+   if (t->mfunc) return;
    if (t->type == TD_STRUCT)
      {
-        EL(0, "Azy_Value *%s(%s _nstruct)", t->march_name,
+        EL(0, "%sAzy_Value *%s(%s _nstruct)", (_static) ? "static " : "", t->march_name,
            ((!strcmp(t->ctype, "int")) || (!strcmp(t->ctype, "Eina_Bool"))) ? "int32_t" : t->ctype);
         EL(0, "{");
         EL(1, "Azy_Value *_struct = NULL;");
@@ -188,7 +195,8 @@ gen_type_marshalizers(Azy_Typedef *t,
         NL;
 
         
-        EL(0, "Eina_Bool %s(Azy_Value *_struct, %s* _nstruct)", t->demarch_name, t->ctype);
+        EL(0, "%sEina_Bool %s(Azy_Value *_struct, %s* _nstruct)", (_static) ? "static " : "",
+           t->demarch_name, t->ctype);
         EL(0, "{");
         EL(1, "%s _tmp_nstruct = NULL;", t->ctype);
         NL;
@@ -220,7 +228,7 @@ gen_type_marshalizers(Azy_Typedef *t,
      }
    else if (t->type == TD_ARRAY)
      {
-        EL(0, "Azy_Value *%s(%s _narray)", t->march_name, t->ctype);
+        EL(0, "%sAzy_Value *%s(%s _narray)", (_static) ? "static " : "", t->march_name, t->ctype);
         EL(0, "{");
         EL(1, "Eina_List *_item;");
         EL(1, "%s v;", ((!strcmp(t->item_type->ctype, "int")) || (!strcmp(t->item_type->ctype, "Eina_Bool"))) ? "int32_t*" : t->item_type->ctype);
@@ -248,7 +256,7 @@ gen_type_marshalizers(Azy_Typedef *t,
         EL(0, "}");
         NL;
 
-        EL(0, "Eina_Bool %s(Azy_Value *_array, %s* _narray)", t->demarch_name, t->ctype);
+        EL(0, "%sEina_Bool %s(Azy_Value *_array, %s* _narray)", (_static) ? "static " : "", t->demarch_name, t->ctype);
         EL(0, "{");
         EL(1, "Eina_List *_tmp_narray = NULL, *_item;");
         EL(1, "Azy_Value *v;");
@@ -283,6 +291,7 @@ gen_type_marshalizers(Azy_Typedef *t,
         EL(0, "}");
         NL;
      }
+   t->mfunc = EINA_TRUE;
 }
 
 static void
@@ -368,36 +377,39 @@ gen_type_eq(Azy_Typedef *t,
 
 static void
 gen_type_copyfree(Azy_Typedef *t,
-                   Eina_Bool     def)
+                   Eina_Bool   def,
+                   Eina_Bool   _static)
 {
    Eina_List *l;
    Azy_Struct_Member *m;
 
    if (def)
      {
+        if (t->fcheader) return;
         if (t->type == TD_STRUCT)
           EL(0, "%s %s_new();", t->ctype, t->cname);
 
         if (t->type == TD_STRUCT || t->type == TD_ARRAY)
           {
-             EL(0, "void %s(%s val);", t->free_func, t->ctype);
-             EL(0, "%s %s(%s orig);", t->ctype, t->copy_func, t->ctype);
+             EL(0, "%svoid %s(%s val);", (_static) ? "static " : "", t->free_func, t->ctype);
+             EL(0, "%s%s %s(%s orig);", (_static) ? "static " : "", t->ctype, t->copy_func, t->ctype);
           }
-
+        t->fcheader = EINA_TRUE;
         return;
      }
 
+   if (t->fcfunc) return;
    if (t->type == TD_STRUCT)
      {
         /* new */
-         EL(0, "%s %s_new()", t->ctype, t->cname);
+         EL(0, "%s%s %s_new()", (_static) ? "static " : "", t->ctype, t->cname);
          EL(0, "{");
          EL(1, "return calloc(sizeof(%s), 1);", t->cname);
          EL(0, "}");
          NL;
 
          /* free */
-         EL(0, "void %s(%s val)", t->free_func, t->ctype);
+         EL(0, "%svoid %s(%s val)", (_static) ? "static " : "", t->free_func, t->ctype);
          EL(0, "{");
          EL(1, "if (!val)");
          EL(2, "return;");
@@ -406,8 +418,7 @@ gen_type_copyfree(Azy_Typedef *t,
          EINA_LIST_FOREACH(t->struct_members, l, m)
            {
               if (m->type->free_func)
-                EL(1, "%s(val->%s);", m->type->free_func,
-                   m->name);
+                EL(1, "%s(val->%s);", m->type->free_func, m->name);
            }
 
          EL(1, "free(val);");
@@ -415,7 +426,7 @@ gen_type_copyfree(Azy_Typedef *t,
          NL;
 
          /* copy */
-         EL(0, "%s %s(%s orig)", t->ctype, t->copy_func, t->ctype);
+         EL(0, "%s%s %s(%s orig)", (_static) ? "static " : "", t->ctype, t->copy_func, t->ctype);
          EL(0, "{");
          EL(1, "%s copy;", t->ctype);
          NL;
@@ -442,7 +453,7 @@ gen_type_copyfree(Azy_Typedef *t,
    else if (t->type == TD_ARRAY)
      {
         /* free */
-         EL(0, "void %s(%s val)", t->free_func, t->ctype);
+         EL(0, "%svoid %s(%s val)", (_static) ? "static " : "", t->free_func, t->ctype);
          EL(0, "{");
          if (t->item_type->free_func)
            EL(1, "%s t;", t->item_type->ctype);
@@ -460,7 +471,7 @@ gen_type_copyfree(Azy_Typedef *t,
          NL;
 
          /* copy */
-         EL(0, "%s %s(%s orig)", t->ctype, t->copy_func, t->ctype);
+         EL(0, "%s%s %s(%s orig)", (_static) ? "static " : "", t->ctype, t->copy_func, t->ctype);
          EL(0, "{");
          EL(1, "%s copy = NULL;", t->ctype);
          NL;
@@ -468,8 +479,7 @@ gen_type_copyfree(Azy_Typedef *t,
          EL(1, "{");
 
          if (t->item_type->copy_func)
-           EL(2,
-              "copy = eina_list_prepend(copy, %s((%s)orig->data));",
+           EL(2, "copy = eina_list_prepend(copy, %s((%s)orig->data));",
               t->item_type->copy_func, t->item_type->ctype);
          else
            EL(2, "copy = eina_list_prepend(copy, orig->data);");
@@ -482,6 +492,7 @@ gen_type_copyfree(Azy_Typedef *t,
          EL(0, "}");
          NL;
      }
+   t->fcfunc = EINA_TRUE;
 }
 
 static void
@@ -544,7 +555,7 @@ gen_marshalizers(Azy_Server_Module *s, Eina_Bool header)
              if (t->type == TD_ANY)
                continue;
 
-             gen_type_marshalizers(t, header);
+             gen_type_marshalizers(t, header, EINA_FALSE);
           }
         return;
      }
@@ -553,7 +564,7 @@ gen_marshalizers(Azy_Server_Module *s, Eina_Bool header)
         if (t->type == TD_ANY)
           continue;
 
-        gen_type_marshalizers(t, header);
+        gen_type_marshalizers(t, header, EINA_TRUE);
      }
 }
 
@@ -626,9 +637,8 @@ gen_errors_impl(Azy_Server_Module *s)
 static void
 gen_common_headers(void)
 {
-   Eina_List *j, *k;
+   Eina_List *j;
    Azy_Typedef *t;
-   Azy_Server_Module *s;
    
    OPEN("%s/%s%sCommon.h", out_dir, azy->name, (azy->name && azy->name[0]) ? "_" : "");
 
@@ -638,26 +648,18 @@ gen_common_headers(void)
 
    EL(0, "#include <Azy.h>");
    NL;
-
    gen_errors_header(NULL);
-
    gen_type_defs(azy->types);
 
    EINA_LIST_FOREACH(azy->types, j, t)
      {
-        gen_type_copyfree(t, EINA_TRUE);
+        gen_type_copyfree(t, EINA_TRUE, EINA_FALSE);
         gen_type_eq(t, EINA_TRUE);
      }
 
    NL;
-
    gen_marshalizers(NULL, EINA_TRUE);
-   EINA_LIST_FOREACH(azy->modules, j, s)
-     {
-        gen_marshalizers(s, EINA_TRUE);
-        EINA_LIST_FOREACH(s->types, k, t)
-          gen_type_copyfree(t, EINA_TRUE);
-     }
+
    EL(0, "#endif");
    fclose(f);
 }
@@ -665,9 +667,8 @@ gen_common_headers(void)
 static void
 gen_common_impl(void)
 {
-   Eina_List *j, *k;
+   Eina_List *j;
    Azy_Typedef *t;
-   Azy_Server_Module *s;
    
    OPEN("%s/%s%sCommon.c", out_dir, azy->name, (azy->name && azy->name[0]) ? "_" : "");
 
@@ -677,19 +678,12 @@ gen_common_impl(void)
 
    EINA_LIST_FOREACH(azy->types, j, t)
      {
-        gen_type_copyfree(t, EINA_FALSE);
+        gen_type_copyfree(t, EINA_FALSE, EINA_FALSE);
         gen_type_eq(t, EINA_FALSE);
      }
-
    gen_errors_impl(NULL);
-
    gen_marshalizers(NULL, EINA_FALSE);
-   EINA_LIST_FOREACH(azy->modules, j, s)
-     {
-        gen_marshalizers(s, EINA_FALSE);
-        EINA_LIST_FOREACH(s->types, k, t)
-          gen_type_copyfree(t, EINA_FALSE);
-     }
+
    fclose(f);
 }
 
@@ -707,7 +701,7 @@ gen_server_headers(Azy_Server_Module *s)
    NL;
 
    EL(0, "#include <Azy.h>");
-   EL(0, "#include \"%s%s%s.h\"", azy->name, (azy->name && azy->name[0]) ? "_" : "", s->name);
+   EL(0, "#include \"%s%sCommon.h\"", azy->name, (azy->name && azy->name[0]) ? "_" : "");
    NL;
 
    if (s->doc)
@@ -1259,7 +1253,6 @@ gen_client_headers(Azy_Server_Module *s)
    Eina_List *j, *k;
    Azy_Method *method;
    Azy_Method_Param *p;
-   Azy_Typedef *t;
 
    OPEN("%s/%s%s%s.azy_client.h", out_dir, azy->name, (azy->name && azy->name[0]) ? "_" : "", s->name);
    EL(0, "#ifndef %s_%s_AZY_CLIENT_H__", (azy->name && azy->name[0]) ? azy->name : "AZY", s->name);
@@ -1267,7 +1260,7 @@ gen_client_headers(Azy_Server_Module *s)
    NL;
 
    EL(0, "#include <Azy.h>");
-   EL(0, "#include \"%s%s%s.h\"", azy->name, (azy->name && azy->name[0]) ? "_" : "", s->name);
+   EL(0, "#include \"%s%sCommon.h\"", azy->name, (azy->name && azy->name[0]) ? "_" : "");
    NL;
 
    EINA_LIST_FOREACH(s->methods, j, method)
@@ -1307,6 +1300,7 @@ gen_client_impl(Azy_Server_Module *s)
 
    Eina_List *j, *k;
    Azy_Method *method;
+   Azy_Typedef *t;
    Azy_Method_Param *p;
    
    OPEN("%s/%s%s%s.azy_client.c", out_dir, azy->name, (azy->name && azy->name[0]) ? "_" : "", s->name);
@@ -1314,8 +1308,15 @@ gen_client_impl(Azy_Server_Module *s)
    EL(0, "#include \"%s%s%s.azy_client.h\"", azy->name, (azy->name && azy->name[0]) ? "_" : "", s->name);
    NL;
 
+   gen_marshalizers(s, EINA_TRUE);
+   EINA_LIST_FOREACH(s->types, k, t)
+     gen_type_copyfree(t, EINA_TRUE, EINA_TRUE);
+   NL;
    gen_errors_impl(s);
-
+   gen_marshalizers(s, EINA_FALSE);
+   EINA_LIST_FOREACH(s->types, k, t)
+     gen_type_copyfree(t, EINA_FALSE, EINA_TRUE);
+   NL;
    EINA_LIST_FOREACH(s->methods, j, method)
      {
         E(0, "unsigned int %s%s_%s(Azy_Client* _client", azy->name, s->name, method->name);

@@ -41,7 +41,7 @@ azy_typedef_new(int         type,
    t->cname = eina_stringshare_add(cname);
    t->ctype = eina_stringshare_add(ctype);
    t->cnull = eina_stringshare_add(cnull);
-   t->free_func = eina_stringshare_add(free_func);
+   if (free_func) t->free_func = eina_stringshare_add(free_func);
 
    if (type == TD_BASE && (!strcmp(name, "string") || !strcmp(name, "time")))
      {
@@ -76,11 +76,11 @@ azy_new()
    Azy_Model *c = calloc(sizeof(Azy_Model), 1);
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "int", "int", "int", "-1", "azy_value_to_int", "azy_value_int_new", NULL));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "boolean", "boolean", "Eina_Bool", "EINA_FALSE", "azy_value_to_bool", "azy_value_bool_new", NULL));
-   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "string", "string", "const char*", "NULL", "azy_value_to_string", "azy_value_string_new", "eina_stringshare_del"));
+   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "string", "string", "const char *", "NULL", "azy_value_to_string", "azy_value_string_new", "eina_stringshare_del"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "double", "double", "double", "0.0", "azy_value_to_double", "azy_value_double_new", NULL));
-   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "time", "time", "const char*", "NULL", "azy_value_to_time", "azy_value_time_new", "eina_stringshare_del"));
-   c->types = eina_list_append(c->types, azy_typedef_new(TD_BLOB, "blob", "blob", "Azy_Blob*", "NULL", "azy_value_to_blob", "azy_value_blob_new", "azy_blob_unref"));
-   c->types = eina_list_append(c->types, azy_typedef_new(TD_ANY, "any", "any", "Azy_Value*", "NULL", "azy_value_to_value", "azy_value_ref", "azy_value_unref"));
+   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "time", "time", "const char *", "NULL", "azy_value_to_time", "azy_value_time_new", "eina_stringshare_del"));
+   c->types = eina_list_append(c->types, azy_typedef_new(TD_BLOB, "blob", "blob", "Azy_Blob *", "NULL", "azy_value_to_blob", "azy_value_blob_new", "azy_blob_unref"));
+   c->types = eina_list_append(c->types, azy_typedef_new(TD_ANY, "any", "any", "Azy_Value *", "NULL", "azy_value_to_value", "azy_value_ref", "azy_value_unref"));
    c->name = "";
    return c;
 }

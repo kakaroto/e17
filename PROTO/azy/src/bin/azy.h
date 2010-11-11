@@ -28,6 +28,10 @@ typedef struct _Azy_Error_Code    Azy_Error_Code;
 struct _Azy_Typedef
 {
    int                 type; /* typedef node type */
+   Eina_Bool           fcheader : 1;
+   Eina_Bool           fcfunc : 1;
+   Eina_Bool           mheader : 1;
+   Eina_Bool           mfunc : 1;
    const char         *name; /* name of the type (for use in ZER) */
    const char         *cname; /* name of the type (for use in ZER) */
    const char         *ctype; /* C type name */
