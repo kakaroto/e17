@@ -28,10 +28,10 @@ public static int main( string[] args )
     eina_list_example();
     eina_file_example();
     eina_error_example();
+    eina_iterator_example();
     Eina.shutdown();
     return 0;
 }
-
 //=================================================================
 public static void eina_list_example()
 {
@@ -43,20 +43,37 @@ public static void eina_list_example()
     b.prepend( "Bar" );
     b.prepend( "aaaa" );
     debug( "list a:" );
-    a.iterator_new(  ).foreach( print_str,null);
+    a.iterator_new(  ).foreach((c, el) => {
+            var e = (string)el;
+            debug(@"\tdata: $e");
+            });
     debug( "list b:" );
-    b.iterator_new(  ).foreach( print_str, null);
+    b.iterator_new(  ).foreach( print_str);
     a.reverse();
     b.merge( a );
     debug( "list merged:" );
-    b.iterator_new(  ).foreach( print_str, null);
+    b.iterator_new(  ).foreach( print_str);
     uint c = b.count();
     b.sort( c ,sort_str );
     debug( "list sorted:" );
-    b.iterator_new().foreach( print_str, null);
+    b.iterator_new().foreach( print_str);
 }
-
-public static bool print_str( void* container, void* data, void* fdata )
+//=================================================================
+public static bool eina_iterator_example()
+{
+        var a = new Eina.Array<string>();
+        a.push("eins");
+        a.push("zwei");
+        a.push("drei");
+        var iter = a.iterator_new();
+        string e = null;
+        while(iter.get_next(out e))
+        {
+            debug(@"$e");
+        }
+}
+//=================================================================
+public static bool print_str( void* container, void* data )
 {
     string s = ( string )data;
     debug( "\tdata: %s", s  );
@@ -74,9 +91,9 @@ public static void eina_file_example()
     string path = GLib.Environment.get_variable( "PWD" );
 
     stdout.printf("Dir \tName\n");
-    File.dir_list( path, true, dir_print, null );
+    File.dir_list( path, true, dir_print );
 }
-public void dir_print( string? name, string? path, void* data )
+public void dir_print( string? name, string? path)
 {
     string p = "%s/%s".printf( path, name );
     var v = FileUtils.test( p, GLib.FileTest.IS_DIR ).to_string();

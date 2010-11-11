@@ -19,8 +19,8 @@
 [CCode (cprefix = "Eina_", lower_case_cprefix = "eina_", cheader_filename = "Eina.h")]
 namespace Eina
 {
-    public int init();
-    public int shutdown();
+    public bool init();
+    public bool shutdown();
 
     [CCode (cname = "Eina_Compare_Cb", has_target = false)]
     public delegate int CompareCb(void* data1, void* data2);
@@ -28,8 +28,7 @@ namespace Eina
     [CCode (cname = "Eina_Free_Cb", instance_pos = 0, has_target = false)]
     public delegate void FreeCb(void* data);
 
-    [CCode (instance_pos = 0, has_target = false)]
-    public delegate bool Each(void* container, void* data, void* fdata );
+    public delegate bool Each(void* container, void* data);
 
     [CCode (cprefix = "EINA_SORT_")]
     public enum Sort
@@ -37,6 +36,23 @@ namespace Eina
         MIN,
         MAX
     }
+
+    //=======================================================================
+    [CCode (cname = "EINA_VERSION_MAJOR")]
+    const uint major_version;
+    [CCode (cname = "EINA_VERSION_MINOR")]
+    const uint minor_version;
+
+    [SimpleType]
+    [CCode (cname = "Eina_Version")]
+    class Version
+    {
+        int major;
+        int minor;
+        int micro;
+        int revision;
+    }
+    Version version;
 
     //=======================================================================
     [Compact]
@@ -59,6 +75,8 @@ namespace Eina
         public void append_relative_list(G data, List<G> relative);
 
         public uint count();
+
+        public uint length {[CCode (cname = "eina_list_count")]get;}
 
         public unowned G data_find(owned G data);
         // ???
@@ -112,8 +130,11 @@ namespace Eina
         public Eina.List<G> clone();
         public Eina.List<G> reverse_clone();
 
-        public Eina.Iterator iterator_new();
-        public Eina.Accessor accessor_new();
+        public Eina.List<G> split_list(Eina.List<G> relative, out Eina.List<G> right);
+
+        public Eina.Iterator<G> iterator_new();
+        public Eina.Iterator<G> iterator_reversed_new();
+        public Eina.Accessor<G> accessor_new();
 
     }
 
@@ -157,14 +178,14 @@ namespace Eina
         public Eina.List<G> clone();
         public Eina.List<G> reverse_clone();
 
-        public Eina.Iterator iterator_new();
-        public Eina.Accessor accessor_new();
+        public Eina.Iterator<G> iterator_new();
+        public Eina.Accessor<G> accessor_new();
 
     }
 
     //=======================================================================
     [Compact]
-    [CCode (free_function = "eina_iterator_free")]
+    [CCode (free_function = "eina_iterator_free", simple_generics = true)]
     public class Iterator<G>
     {
         [CCode (cname = "Eina_Iterator_Next_Callback")]
@@ -176,18 +197,14 @@ namespace Eina
         [CCode (cname = "Eina_Iterator_Free_Callback")]
         public delegate void FreeCallback();
 
-        public void foreach(Each callback, void* fdata);
-        [CCode (cname = "eina_iterator_container_get")]
-        public unowned G get();
+        [CCode (cname = "Eina_Iterator_Lock_Callback")]
+        public delegate bool LockCallback();
+
+        public void foreach(Each callback);
+        //[CCode (cname = "eina_iterator_container_get")]
+        public unowned void* container_get();
         [CCode (cname="eina_iterator_next")]
-        public bool get_next(ref G next);
-        [CCode (cname="eflvala_eina_iterator_next")]
-        public bool next()
-        {
-            G g = null;
-            var result = this.get_next( ref g );
-            return result;
-        }
+        public bool get_next(out unowned G next);
     }
 
     //=======================================================================
@@ -204,9 +221,14 @@ namespace Eina
         [CCode (cname = "Eina_Accessor_Free_Callback")]
         public delegate void FreeCallback();
 
+        [CCode (cname = "Eina_Accessor_Lock_Callback")]
+        public delegate bool LockCallback();
+
         public bool data_get(uint index, ref G data);
         public G container_get();
         public void over(Each cb, uint start, uint end);
+        public bool lock();
+        public bool unlock();
     }
 
     //=======================================================================
@@ -214,6 +236,7 @@ namespace Eina
     [CCode (free_function = "eina_array_free")]
     public class Array<G>
     {
+        public delegate bool Keep(G element);
         public static bool init();
         public static bool shutdown();
         public G* data;
@@ -221,17 +244,23 @@ namespace Eina
         public uint count;
         public uint step;
 
-        public Array(uint step = 0);
+        public Array(uint step = 16);
         public void clean();
         public void flush();
+        //public bool remove(Keep k);
+        public bool foreach(Each e);
 
-        public bool push(G data);
-        public void pop();
+        public bool push(owned G data);
+        public unowned G pop();
         public void data_set(G data);
-        public void data_get(uint index);
+        public G data_get(uint index);
+        [CCode (cname = "eina_array_data_get")]
+        public G get(uint index);
+        [CCode (cname = "eina_array_data_set")]
+        public void set(uint index, G data);
         public uint count_get();
-        [CCode (cname="eina_array_iterator_new")]
-        public Eina.Iterator<G> iterator();
+        public uint length {[CCode (cname = "eina_array_count_get")]get;}
+        public Eina.Iterator<G> iterator_new();
         public Eina.Accessor<G> accessor_new();
     }
 
@@ -258,12 +287,13 @@ namespace Eina
         [CCode (cname = "EINA_ERROR_CONVERT_OUTRUN_STRING_LENGTH")]
         public const Eina.Error OUTRUN_STRING_LENGTH;
 
-        public static int itoa(int n, string s);
-        public static int xtoa(uint n, string s);
-        public static int dtoa(double d, string s);
+        public int itoa(int n, string s);
+        public int xtoa(uint n, string s);
+        public int dtoa(double d, string s);
         //vala doesn't support long long, use int64
-        public static bool atod(string src, int length, out int64 m, out int64 e);
-        //FIXME: add fptoa and atofp
+        public bool atod(string src, int length, out int64 m, out int64 e);
+        public int fptoa(F32p32 a, string des);
+        public bool atofp(string src, int length, out F32p32 a);
     }
 
     //=======================================================================
@@ -293,14 +323,18 @@ namespace Eina
             VIS,
             NEON,
         }
-        public static Features features_get();
+        public Features features_get();
+        public int count();
     }
 
     //=======================================================================
     public struct Error : int
     {
         [CCode (cname = "eina_error_msg_register")]
-        public  Error(string msg);
+        public Error(string msg);
+        [CCode (cname = "eina_error_msg_static_register")]
+        public Error.static(string msg);
+
         public static Error OUT_OF_MEMORY;
 
         public static Error get();
@@ -309,6 +343,7 @@ namespace Eina
         public unowned string? to_string();
         public static void print(ErrorLevel level, string file, string function, int line,string format, ...);
         public static void log_level_set(ErrorLevel level);
+        public bool msg_modify(string msg);
     }
 
     //=======================================================================
@@ -335,15 +370,95 @@ namespace Eina
         public F16p16 mul();
         public F16p16 sqrt();
         public uint fracc_get();
+        public F32p32 to_f32p32();
+        public F8p24 to_f8p24();
+    }
+
+    //=======================================================================
+    [SimpleType]
+    public struct F32p32: uint64
+    {
+        [CCode (cname = "eina_f32p32_int_from")]
+        public F32p32.int(int32 i = 0);
+        [CCode (cname = "eina_f32p32_double_from")]
+        public F32p32.double(double d = 0.0);
+        [CCode (cname = "eina_f32p32_int_to")]
+        public int to_int();
+        [CCode (cname = "eina_f32p32_double_to")]
+        public double to_double();
+        public F32p32 add(F32p32 b);
+        public F32p32 sub(F32p32 b);
+        public F32p32 mul(F32p32 b);
+        public F32p32 scale(int b);
+        public F32p32 div(F32p32 b);
+        public F32p32 sqrt(F32p32 a);
+        public int freacc_get();
+        public F32p32 sin(F32p32 a);
+        public F32p32 cos(F32p32 a);
+
+        public F16p16 to_f16p16();
+        public F8p24 to_f8p24();
+    }
+
+    //=======================================================================
+    [SimpleType]
+    public struct F8p24: int32
+    {
+        [CCode (cname = "eina_f8p24_int_from")]
+        public F8p24.int(int i = 0);
+        [CCode (cname = "eina_f8p24_float_from")]
+        public F8p24.float(float f = 0);
+        [CCode (cname = "eina_f8p24_int_to")]
+        public int to_int();
+        [CCode (cname = "eina_f8p24_float_to")]
+        public float to_float();
+        public F8p24 add(F8p24 b);
+        public F8p24 sub(F8p24 b);
+        public F8p24 mul(F8p24 b);
+        public F8p24 scale(int b);
+        public F8p24 div(F8p24 b);
+        public F8p24 sqrt(F8p24 a);
+        public int freacc_get();
+        public F8p24 sin(F8p24 a);
+        public F8p24 cos(F8p24 a);
+
+        public F32p32 to_f32p32();
+        public F16p16 to_f16p16();
     }
 
     //=======================================================================
     namespace File
     {
-        [CCode (cname = "Eina_File_Dir_List_Cb", has_target=false)]
-        public delegate void DirListCb(string name, string path, void* data);
-        public static bool dir_list(string dir, bool recursive, DirListCb cb, void* data);
+        [CCode (cname = "Eina_File_Dir_List_Cb")]
+        public delegate void DirListCb(string name, string path);
+        public static bool dir_list(string dir, bool recursive, DirListCb cb);
+        public Iterator<string> ls(string dir);
+        public Iterator<DirectInfo> stat_ls(string dir);
+        public Iterator<DirectInfo> direct_ls(string dir);
         public Eina.Array<string> split(string path);
+        [CCode (cprefix = "EINA_FILE_")]
+        public enum Type
+        {
+            UNKNOWN,
+            FIFO,
+            CHR,
+            DIR,
+            BLK,
+            REG,
+            LNK,
+            SOCK,
+            WHT
+        }
+        [Compact]
+        [CCode (cname = "Eina_File_Direct_Info")]
+        class DirectInfo
+        {
+            string path;
+            size_t name_start;
+            size_t path_length;
+            size_t name_length;
+            Type type;
+        }
     }
 
     //=======================================================================
@@ -375,20 +490,22 @@ namespace Eina
         public Hash(KeyLength key_length_cb, KeyCmp key_cmp_cb, KeyHash key_hash_cb, FreeCb free_cb, int buckets_pwer_size);
         public Hash.string_dj2b(FreeCb data_free_cb);
 
-        [CCode (cname = "eina_hash_string_superfast_new")]
-        public static Hash? string_superfast(FreeCb? data_free_cb);
+        [CCode (cname = "eina_hash_string_superfast_new", simple_generics = true)]
+        public static Hash string_superfast(FreeCb? data_free_cb = null);
 
         [CCode (cname = "eina_hash_string_small_new")]
-        public static Hash? string_small(FreeCb? data_free_cb);
+        public Hash.string_small(FreeCb? data_free_cb);
 
         [CCode (cname = "eina_hash_int32_new")]
-        public static Hash? int32(FreeCb? data_free_cb);
+        public Hash.int32(FreeCb? data_free_cb);
 
         [CCode (cname = "eina_hash_int64_new")]
-        public static Hash? int64(FreeCb? data_free_cb);
+        public Hash.int64(FreeCb? data_free_cb);
 
         [CCode (cname = "eina_hash_pointer_new")]
-        public static Hash? pointer(FreeCb data_free_cb);
+        public Hash.pointer(FreeCb data_free_cb);
+
+        public Hash.stringshared(FreeCb data_free_cb);
 
         public bool add(K key, V data);
         [CCode (cname = "eina_hash_add")]
@@ -405,16 +522,19 @@ namespace Eina
         public bool del_by_key(K key);
         public bool del_by_data(V data);
         public bool del_by_hash(K key, int key_length, int key_hash, V data);
+        public bool direct_add_by_hash(K key, int key_length, int key_hash, V data);
         public V? find_by_hash(K key, int key_length, int key_hash);
         public V? modify_by_hash(K key, int key_length, int key_hash, V data);
-        public Iterator iterator_key_new();
-        public Iterator iterator_data_new();
-        public Iterator iterator_tuple_new();
-        public void foreach(Foreach cb, void* fdata);
+        public Iterator<K> iterator_key_new();
+        public Iterator<V> iterator_data_new();
+        public Iterator<HashTuple<K,V>> iterator_tuple_new();
+        public void foreach(Foreach cb);
+        public void free_buckets();
     }
 
     //=======================================================================
     [Compact]
+    [CCode (simple_generics = true)]
     public class HashTuple<K,V>
     {
         public K key;
@@ -423,6 +543,41 @@ namespace Eina
 
     }
 
+    //=======================================================================
+    [Compact]
+    [CCode (free_function = "eina_quadtree_free", simple_generics = true, lower_case_cprefix = "eina_quadtree_", cname = "Eina_QuadTree")]
+    public class QuadTree<V>
+    {
+        [CCode (cprefix = "EINA_QUAD_", cname = "Eina_Quad_Direction")]
+        public enum Direction
+        {
+            LEFT,
+            RIGHT,
+            BOTH
+        }
+        public delegate Direction Callback(V object, size_t middle);
+
+        public QuadTree(size_t w, size_t h, Callback vertical, Callback horizontal);
+        public void resize(size_t w, size_t h);
+        public void cycle();
+        public Item add(V object);
+        public InList<Item> collide(int x, int y, int w, int h);
+
+        [CCode (simple_generics = true)]
+        public static V object(InList<V> list);
+        [Compact]
+        [CCode (cname = "Eina_QuadTree_Item", free_function = "eina_quadtree_del", lower_case_cprefix = "eina_quadtree_", simple_generics = true)]
+        public class Item<V>
+        {
+            [CCode (cname = "eina_quadtree_add")]
+            public Item(QuadTree tree, [CCode (type = "const void *")] V object);
+            public bool del();
+            public bool change();
+            public bool hide();
+            public bool show();
+            public void increase();
+        }
+    }
     //=======================================================================
     [Compact]
     [CCode (free_function = "eina_lalloc_free")]
@@ -505,8 +660,12 @@ namespace Eina
     {
         public static bool init();
         public static bool shutdown();
-        [CCode (has_target = false)]
+        [CCode (has_target = false, cname = "Eina_Module_Cb")]
         public delegate bool Cb (Module m, void* data);
+        [CCode (has_target = false, cname = "Eina_Module_Init")]
+        public delegate bool Init();
+        [CCode (has_target = false, cname = "Eina_Module_Shutdown")]
+        public delegate bool Shutdown();
         [CCode (cname = "EINA_ERROR_WRONG_MODULE")]
         public static Eina.Error WRONG_MODULE;
         [CCode (cname = "EINA_ERROR_MODULE_INIT_FAILED")]
@@ -517,11 +676,13 @@ namespace Eina
         public void* symbol_get(string symbol);
         public string file_get();
         public static string symbol_path_get(string symbol, string subdir);
-        public static string environment_get_path(string env, string sub_dir);
+        public static string environment_path_get(string env, string sub_dir);
+        public static Eina.Array<Module> arch_list_get(Eina.Array<Module>? array, string path, string arch);
         public static Eina.Array<Module> list_get(Eina.Array array, string path, uint recursive, Cb cb, void* data);
         public static void list_load(Eina.Array<Module> list);
         public static void list_unload(Eina.Array<Module> list);
         public static void list_delete(Eina.Array<Module> list);
+        public static Module find(Eina.Array<Module> array, string module);
     }
 
     //=======================================================================
@@ -551,7 +712,7 @@ namespace Eina
         [CCode (cname = "Eina_Rbtree_Cmp_Key_Cb", has_target = false)]
         public delegate int CmpKeyCb(Rbtree node, string key, int length, void* data);
         [CCode (cname = "Eina_Rbtree_Free_Cb", has_target = false)]
-        public delegate void FreeCb(Rbtree node, void data);
+        public delegate void FreeCb(Rbtree node, void* data);
         [ReturnsModifiedPointer ()]
         public void inline_insert(Rbtree node, CmpNodeCb cb, void * data);
         [ReturnsModifiedPointer ()]
@@ -559,9 +720,9 @@ namespace Eina
         public void delete(FreeCb func, void* data);
         [ReturnsModifiedPointer ()]
         public void inline_lookup(void* key, int length, CmpKeyCb cmp, void* data);
-        public Iterator iterator_prefix();
-        public Iterator iterator_infix();
-        public Iterator iterator_postfix();
+        public Iterator<Rbtree> iterator_prefix();
+        public Iterator<Rbtree> iterator_infix();
+        public Iterator<Rbtree> iterator_postfix();
     }
 
     //=======================================================================
@@ -575,6 +736,7 @@ namespace Eina
         public int h;
         [CCode (cname = "eina_spans_intersect")]
         public static int spans_intersect(int c1, int l1, int c2, int l2);
+        public Rectangle(int x, int y, int h, int w);
         public bool is_empty();
         public void coords_from(int x, int y, int w, int h);
         public bool intersect(Rectangle r2);
@@ -621,6 +783,12 @@ namespace Eina
         public static void arg_nonnull(void* idx, ...);
     }
 
+    namespace Schedule
+    {
+        [CCode (cname = "eina_sched_prio_drop")]
+        public static void drop_priority();
+    }
+
     //=======================================================================
     [Compact]
     [CCode (lower_case_cprefix = "stringshare_", ref_function = "eina_stringshare_ref", unref_function = "eina_stringshare_del")]
@@ -649,6 +817,16 @@ namespace Eina
         public bool rect_add(Rectangle rect);
         public void rect_del(Rectangle rect);
         public void clear();
-        public Iterator iterator_new();
+        public Iterator<Rectangle> iterator_new();
+        public static Iterator<GridInfo> slicer_iterator_new(int x, int y, int w, int h, int tile_w, int tile_h);
+        [Compact]
+        [CCode (cname = "Eina_Tile_Grid_Info")]
+        public class GridInfo
+        {
+            ulong col;
+            ulong row;
+            Rectangle rect;
+            bool full;
+        }
     }
 }

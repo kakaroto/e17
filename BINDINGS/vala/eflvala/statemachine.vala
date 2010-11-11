@@ -7,7 +7,7 @@ public class EflVala.ViewState
 
     public ViewState(ViewStateMachine sm)
     {
-        transition_map = Eina.Hash.string_superfast(null);
+        transition_map = Eina.Hash.string_superfast<ViewState>(null);
         this.state_machine = sm;
     }
 
