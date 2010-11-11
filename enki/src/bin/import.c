@@ -25,7 +25,7 @@ static void _bt_select_all_cb(void *data, Evas_Object *obj, void *event_info);
 static void _bt_unselect_all_cb(void *data, Evas_Object *obj, void *event_info);
 
 static Elm_Genlist_Item_Class itc_album;
-static char *_gl_album_label_get(const void *data, Evas_Object *obj, const char *part);
+static char *_gl_album_label_get(void *data, Evas_Object *obj, const char *part);
 static void _gl_album_sel(void *data, Evas_Object *obj, void *event_info);
 static void _bt_album_new_cb(void *data, Evas_Object *obj, void *event_info);;
 
@@ -33,7 +33,7 @@ static void _bt_cancel_cb(void *data, Evas_Object *obj, void *event_info);
 static void _bt_import_cb(void *data, Evas_Object *obj, void *event_info);
 
 static void _import_next(void *data);
-static void _import_thread(void *data);
+static void _import_thread(Ecore_Thread *thread, void *data);
 static void _bt_close_cb(void *data, Evas_Object *obj, void *event_info);
 
 typedef struct _Import_Photo_Data
@@ -356,7 +356,7 @@ static void _import_thumb_error_cb(void *data, Enlil_Photo *photo)
 }
 
 
-static char *_gl_album_label_get(const void *data, Evas_Object *obj, const char *part)
+static char *_gl_album_label_get(void *data, Evas_Object *obj, const char *part)
 {
    Enlil_Album *album = (Enlil_Album *)data;
 
@@ -513,7 +513,7 @@ static void _import_next(void *data)
      ecore_thread_run(_import_thread, _import_next, NULL, current_import);
 }
 
-static void _import_thread(void *data)
+static void _import_thread(Ecore_Thread *thread, void *data)
 {
    char path[PATH_MAX], path2[PATH_MAX], path3[PATH_MAX];
    Enlil_Photo *photo = eina_list_data_get(data);

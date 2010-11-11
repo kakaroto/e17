@@ -17,7 +17,7 @@ static void _bt_album_delete_cancel_cb(void *data, Evas_Object *obj, void *event
 static void _bt_album_delete_apply_cb(void *data, Evas_Object *obj, void *event_info);
 
 static Elm_Genlist_Item_Class itc_album;
-static char *_gl_album_label_get(const void *data, Evas_Object *obj, const char *part);
+static char *_gl_album_label_get(void *data, Evas_Object *obj, const char *part);
 static void _gl_album_sel(void *data, Evas_Object *obj, void *event_info);
 
 static void _bt_photo_move_album_cancel_cb(void *data, Evas_Object *obj, void *event_info);
@@ -999,7 +999,7 @@ Inwin *inwin_photo_save_new(Inwin_Del del_cb, Inwin_Apply apply_cb, Inwin_Close 
    return inwin;
 }
 
-static char *_gl_album_label_get(const void *data, Evas_Object *obj, const char *part)
+static char *_gl_album_label_get(void *data, Evas_Object *obj, const char *part)
 {
    Enlil_Album *album = (Enlil_Album *)data;
 

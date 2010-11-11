@@ -15,16 +15,6 @@ button("object.main_menu.bt_new_library", "New Library", "folder")
 group {
     name : "main_menu";
     parts {
-    	alias: "object.main_menu.bt_slideshow" 		"tools[bt_slideshow]:object.main_menu.bt_slideshow";
-    	alias: "object.main_menu.bt_new_album" 		"tools[bt_new_album]:object.main_menu.bt_new_album";
-    	alias: "object.main_menu.bt_import_photos" 	"tools[bt_import_photos]:object.main_menu.bt_import_photos";
-    	alias: "object.main_menu.bt_remove_wall" 	"tools[bt_remove_wall]:object.main_menu.bt_remove_wall";
-    	alias: "object.main_menu.bt_import_gpx" 	"tools[bt_import_gpx]:object.main_menu.bt_import_gpx";
-    	alias: "object.main_menu.bt_preference" 	"tools[bt_preference]:object.main_menu.bt_preference";
-    	alias: "object.main_menu.bt_close" 			"quit[bt_close]:object.main_menu.bt_close";
-    	
-    	alias: "object.main_menu.bt_new_library" 	"libraries[bt_new_library]:object.main_menu.bt_new_library";
-    	alias: "object.main_menu.list_libraries" 	"libraries[list_libraries]:object.main_menu.libraries";
         part {
             name: "libraries";
             type: BOX;

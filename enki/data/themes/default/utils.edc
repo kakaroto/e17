@@ -1,4 +1,11 @@
 
+#define transfers_signal(_signal, _source, _container, _content) 		\
+	program {															\
+		name: _signal;													\
+		signal: _signal;												\
+		source: _source;												\
+		action: SIGNAL_EMIT _container"["_content"]:"_signal _source;	\
+	}
 
 
 #define list(_name) 								\

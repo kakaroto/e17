@@ -18,23 +18,10 @@ static void _account_set_cancel_cb(void *data, Evas_Object *obj, void *event_inf
 static void _account_set_entry_changed_cb(void *data, Evas_Object *obj, void *event_info);
 
 
-Evas_Object *flickr_menu_new(Evas_Object *win)
+Evas_Object *flickr_menu_new(Evas_Object *edje)
 {
-    Evas_Object *bt = elm_button_add(win);
-    elm_object_style_set(bt, "anchor");
-    evas_object_size_hint_weight_set(bt, 0, 0);
-    evas_object_size_hint_align_set(bt, -1.0, -1.0);
-    elm_button_label_set(bt, "");
-    evas_object_show(bt);
-
-    ic = edje_object_add(evas_object_evas_get(win));
-    edje_object_file_set(ic, THEME, "flickr/logo");
-    evas_object_size_hint_weight_set(ic, 1.0, 1.0);
-    evas_object_size_hint_align_set(ic, -1.0, -1.0);
-    elm_button_icon_set(bt, ic);
-    evas_object_smart_callback_add(bt, "clicked", _menu_open_cb, win);
-    edje_object_signal_emit(ic, "not_animated", "");
-    evas_object_show(ic);
+    Evas_Object *bt = edje_object_part_external_object_get(edje, "object.flickr");
+    evas_object_smart_callback_add(bt, "clicked", _menu_open_cb, edje);
 
     return bt;
 }
@@ -56,7 +43,7 @@ static void _menu_open_cb(void *data, Evas_Object *obj, void *event_info)
 
     if(menu) evas_object_del(menu);
 
-    menu = elm_menu_add(data);
+    menu = elm_menu_add(enlil_data->win->win);
     if(!enlil_root_flickr_account_get(enlil_data->root))
     {
         elm_menu_item_add(menu, NULL, NULL, D_("Set the Flickr account"), _account_set_cb, NULL);

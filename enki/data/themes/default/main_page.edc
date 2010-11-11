@@ -1,0 +1,67 @@
+
+group {
+	name: "main_page";
+	
+	parts {
+		//main menu
+		alias: "object.main_menu.bt_slideshow" 		"panes[right]:menu[menu]:tools[bt_slideshow]:object.main_menu.bt_slideshow";
+    	alias: "object.main_menu.bt_new_album" 		"panes[right]:menu[menu]:tools[bt_new_album]:object.main_menu.bt_new_album";
+    	alias: "object.main_menu.bt_import_photos" 	"panes[right]:menu[menu]:tools[bt_import_photos]:object.main_menu.bt_import_photos";
+    	alias: "object.main_menu.bt_remove_wall" 	"panes[right]:menu[menu]:tools[bt_remove_wall]:object.main_menu.bt_remove_wall";
+    	alias: "object.main_menu.bt_import_gpx" 	"panes[right]:menu[menu]:tools[bt_import_gpx]:object.main_menu.bt_import_gpx";
+    	alias: "object.main_menu.bt_preference" 	"panes[right]:menu[menu]:tools[bt_preference]:object.main_menu.bt_preference";
+    	alias: "object.main_menu.bt_close" 			"panes[right]:menu[menu]:quit[bt_close]:object.main_menu.bt_close";
+    	
+    	alias: "object.main_menu.bt_new_library" 	"panes[right]:menu[menu]:libraries[bt_new_library]:object.main_menu.bt_new_library";
+    	alias: "object.main_menu.list_libraries" 	"panes[right]:menu[menu]:libraries[list_libraries]:object.main_menu.libraries";
+    	//
+    	
+    	//map
+    	alias: "object.map.map"						"panes[right]:map[map]:object.map.map";
+    	alias: "object.map.display_photos"			"panes[right]:map[map]:object.map.display_photos";
+    	alias: "object.map.display_geocaching"		"panes[right]:map[map]:object.map.display_geocaching";
+    	alias: "object.map.zoom"					"panes[right]:map[map]:object.map.zoom";
+    	alias: "object.map.rect_zoom"				"panes[right]:map[map]:object.map.rect_zoom";
+    	//
+    	
+    	//
+    	alias: "object.photos.swallow"				"panes[right]:object.photos.swallow";
+    	//
+    	
+    	//list left
+    	alias: "object.menu.lvl1" 					"panes[left]:object.menu.lvl1";
+    	alias: "object.menu.lvl2" 					"panes[left]:object.menu.lvl2";
+    	alias: "object.list.albums" 				"panes[left]:object.list.albums";
+    	alias: "object.list.collections" 			"panes[left]:object.list.collections";
+    	alias: "object.list.tags" 					"panes[left]:object.list.tags";
+    	//
+    	
+		part {
+			name: "panes";
+			type: EXTERNAL;
+			source: "elm/panes";
+			description {
+				state: "default" 0.0;
+				params {
+					string: "content left" "list_left";
+					string: "content right" "main_panel";
+					double: "left size" 0.2;
+				}
+			}
+		}
+	}
+	
+	programs {
+		//main_panel signals
+		transfers_signal("main_panel,menu,show", "", "panes", "right")
+		transfers_signal("main_panel,photos,show", "", "panes", "right")
+		transfers_signal("main_panel,map,show", "", "panes", "right")
+		//
+		
+		//list_left signals
+		transfers_signal("list_left,albums,show", "", "panes", "left")
+		transfers_signal("list_left,collections,show", "", "panes", "left")
+		transfers_signal("list_left,tags,show", "", "panes", "left")
+		//
+	}
+}

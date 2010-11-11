@@ -12,7 +12,7 @@ static Evas_Object *_map_icon_get(Evas_Object *obj, Elm_Map_Marker *marker, void
 Panel_Geocaching *panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geocaching)
 {
    char buf[PATH_MAX];
-   Evas_Object *vbox, *bx, *bt, *main_bx, *lbl, *ly, *fr, *ic, *tb, *o, *entry, *sc, *map, *rect; 
+   Evas_Object *vbox, *bx, *bt, *main_bx, *lbl, *ly, *fr, *ic, *o, *entry, *sc, *map, *rect, *edje;
    Enlil_Geocaching_Log *log;
    Eina_List *l;
    char *s = NULL, *s2;
@@ -53,142 +53,51 @@ Panel_Geocaching *panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geoca
    elm_box_pack_end(bx, fr);
 
    ly = elm_layout_add(obj);
-   elm_layout_file_set(ly, THEME, "layout/panel/geocaching");
+   elm_layout_file_set(ly, THEME, "panel/geocaching");
    evas_object_size_hint_weight_set(ly, 1.0, 1.0);
    evas_object_size_hint_align_set(ly, -1.0, -1.0);
    evas_object_show(ly);
    elm_frame_content_set(fr, ly);
+   edje = elm_layout_edje_get(ly);
 
-   ic = elm_icon_add(obj);
+   ic =  edje_object_part_external_object_get(edje, "object.geocaching.panel.icon");
    snprintf(buf, PATH_MAX, "icons/geocaching/%s", enlil_geocaching_gp_type_get(geocaching));
    elm_icon_file_set(ic, THEME, buf);
-   evas_object_size_hint_weight_set(ic, 1.0, 1.0);
-   evas_object_size_hint_align_set(ic, -1.0, 0.0);
-   evas_object_show(ic);
-   elm_layout_content_set(ly, "swallow.icon", ic);
 
    snprintf(buf, PATH_MAX, "<b><font_size=14>%s</font_size></b>", enlil_geocaching_url_name_get(geocaching));
-   lbl = elm_label_add(obj);
+   lbl = edje_object_part_external_object_get(edje, "object.geocaching.panel.title");
    elm_label_label_set(lbl, buf);
-   evas_object_size_hint_weight_set(lbl, 1.0, 0.0);
-   evas_object_size_hint_align_set(lbl, -1.0, 0.0);
-   evas_object_show(lbl);
-   elm_layout_content_set(ly, "swallow.title", lbl);
 
    snprintf(buf, PATH_MAX, "<b>A cache by %s</b>", enlil_geocaching_gp_owner_get(geocaching));
-   lbl = elm_label_add(obj);
+   lbl = edje_object_part_external_object_get(edje, "object.geocaching.panel.owner");
    elm_label_label_set(lbl, buf);
-   evas_object_size_hint_weight_set(lbl, 1.0, 0.0);
-   evas_object_size_hint_align_set(lbl, -1.0, 0.0);
-   evas_object_show(lbl);
-   elm_layout_content_set(ly, "swallow.owner", lbl);
 
-   ic = elm_icon_add(obj);
+   ic = edje_object_part_external_object_get(edje, "object.geocaching.panel.icon2");
    elm_icon_file_set(ic, THEME, "icons/geocaching/geocaching");
-   evas_object_size_hint_weight_set(ic, 1.0, 1.0);
-   evas_object_size_hint_align_set(ic, -1.0, 0.0);
-   evas_object_show(ic);
-   elm_layout_content_set(ly, "swallow.icon2", ic);
 
+   //header
+   snprintf(buf, PATH_MAX, "terrain,%s", enlil_geocaching_gp_terrain_get(geocaching));
+   edje_object_signal_emit(edje, buf, "");
 
-   //
-   tb = elm_table_add(enlil_data->win->win);
-   evas_object_size_hint_weight_set(tb, 1.0, 1.0);
-   evas_object_size_hint_align_set(tb, -1.0, -1.0);
-   evas_object_show(tb);
-   elm_table_padding_set(tb, 30, 5);
-   elm_layout_content_set(ly, "swallow.header", tb);
+   snprintf(buf, PATH_MAX, "difficulty,%s", enlil_geocaching_gp_difficulty_get(geocaching));
+   edje_object_signal_emit(edje, buf, "");
 
-   bx = elm_box_add(tb);
-   evas_object_show(bx);
-   elm_box_horizontal_set(bx, EINA_TRUE);
-   evas_object_size_hint_weight_set(bx, 1.0, 0.0);
-   evas_object_size_hint_align_set(bx, -1.0, 1.0);
-   elm_table_pack(tb, bx, 0, 0, 1, 1);
+   o = edje_object_part_external_object_get(edje, "object.geocaching.panel.date_hidden");
+   elm_label_label_set(o, enlil_geocaching_time_get(geocaching));
 
-   o = elm_label_add(tb);
-   elm_label_label_set(o, D_("<b>Difficulty :</b>"));
-   evas_object_show(o);
-   evas_object_size_hint_weight_set(o, 0.0, 1.0);
-   evas_object_size_hint_align_set(o, 0.0, -1.0);
-   elm_box_pack_end(bx, o);
+   o = edje_object_part_external_object_get(edje, "object.geocaching.panel.cache_size");
+   elm_label_label_set(o, enlil_geocaching_gp_container_get(geocaching));
 
-   o = elm_layout_add(tb);
-   elm_layout_file_set(o, THEME, "stars");
-   evas_object_show(o);
-   evas_object_size_hint_weight_set(o, 1.0, 0.0);
-   evas_object_size_hint_align_set(o, -1.0, 0.0);
-   elm_box_pack_end(bx, o);
-   edje_object_signal_emit(elm_layout_edje_get(o), enlil_geocaching_gp_difficulty_get(geocaching), "");
-
-
-   bx = elm_box_add(tb);
-   evas_object_show(bx);
-   elm_box_horizontal_set(bx, EINA_TRUE);
-   evas_object_size_hint_weight_set(bx, 1.0, 1.0);
-   evas_object_size_hint_align_set(bx, -1.0, 0.0);
-   elm_table_pack(tb, bx, 1, 0, 1, 1);
-
-   o = elm_label_add(tb);
-   elm_label_label_set(o, D_("<b>Terrain :</b>"));
-   evas_object_show(o);
-   evas_object_size_hint_weight_set(o, 0.0, 1.0);
-   evas_object_size_hint_align_set(o, 0.0, 0.0);
-   elm_box_pack_end(bx, o);
-
-   o = elm_layout_add(tb);
-   elm_layout_file_set(o, THEME, "stars");
-   evas_object_show(o);
-   evas_object_size_hint_weight_set(o, 1.0, 0.0);
-   evas_object_size_hint_align_set(o, -1.0, 0.0);
-   elm_box_pack_end(bx, o);
-   edje_object_signal_emit(elm_layout_edje_get(o), enlil_geocaching_gp_terrain_get(geocaching), "");
-
-
-   snprintf(buf, PATH_MAX, D_("<b>Date Hidden :</b> %s"), enlil_geocaching_time_get(geocaching));
-   buf[21+10] = '\0';
-   o = elm_label_add(tb);
+   o = edje_object_part_external_object_get(edje, "object.geocaching.panel.coordinates");
+   snprintf(buf, PATH_MAX, "%f - %f", enlil_geocaching_longitude_get(geocaching), enlil_geocaching_latitude_get(geocaching));
    elm_label_label_set(o, buf);
-   evas_object_show(o);
-   evas_object_size_hint_weight_set(o, 1.0, 0.0);
-   evas_object_size_hint_align_set(o, -1.0, 0.0);
-   elm_table_pack(tb, o, 0, 1, 1, 1);
 
-   snprintf(buf, PATH_MAX, D_("<b>cache size :</b> %s"), enlil_geocaching_gp_container_get(geocaching));
-   o = elm_label_add(tb);
-   elm_label_label_set(o, buf);
-   evas_object_show(o);
-   evas_object_size_hint_weight_set(o, 1.0, 0.0);
-   evas_object_size_hint_align_set(o, -1.0, 0.0);
-   elm_table_pack(tb, o, 1, 1, 1, 1);
-
-   snprintf(buf, PATH_MAX, D_("<b>Coordinates :</b> %f - %f"), enlil_geocaching_longitude_get(geocaching), enlil_geocaching_latitude_get(geocaching));
-   o = elm_label_add(tb);
-   elm_label_label_set(o, buf);
-   evas_object_show(o);
-   evas_object_size_hint_weight_set(o, 1.0, 0.0);
-   evas_object_size_hint_align_set(o, -1.0, 0.0);
-   elm_table_pack(tb, o, 0, 2, 1, 1);
-
-   snprintf(buf, PATH_MAX, D_("<b>Hints :</b> %s"), enlil_geocaching_gp_hints_get(geocaching));
-   o = elm_label_add(tb);
-   elm_label_label_set(o, buf);
-   evas_object_show(o);
-   evas_object_size_hint_weight_set(o, 1.0, 0.0);
-   evas_object_size_hint_align_set(o, -1.0, 0.0);
-   elm_table_pack(tb, o, 0, 4, 2, 1);
+   o = edje_object_part_external_object_get(edje, "object.geocaching.panel.hints");
+   elm_label_label_set(o, enlil_geocaching_gp_hints_get(geocaching));
    //
 
 
    //
-   sc = elm_scroller_add(obj);
-   elm_scroller_bounce_set(sc, 0, 0);
-   evas_object_size_hint_weight_set(sc, 1.0, 1.0);
-   evas_object_size_hint_align_set(sc, -1.0, -1.0);
-   evas_object_show(sc);
-   elm_layout_content_set(ly, "swallow.description", sc);
-
-  
    //replace <br /> and \n
    if(enlil_geocaching_gp_long_desc_get(geocaching))
      {
@@ -214,24 +123,14 @@ Panel_Geocaching *panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geoca
    else
      s = strdup("");
 
-   entry = elm_entry_add(obj);
-   elm_entry_entry_set(entry, s);
-   elm_entry_editable_set(entry, EINA_FALSE);
-   elm_entry_single_line_set(entry, 0);
-   evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, 0.0);
-   elm_scroller_content_set(sc,entry);
-   evas_object_show(entry);
-
+   o = edje_object_part_external_object_get(edje, "object.geocaching.panel.description");
+   elm_scrolled_entry_entry_set(o, s);
    FREE(s);
    //
 
    
-   map = elm_map_add(obj);
+   map = edje_object_part_external_object_get(edje, "object.geocaching.panel.map");
    panel_geocaching->map = map;
-   evas_object_size_hint_weight_set(map, 1.0, 1.0);
-   evas_object_size_hint_align_set(map, -1.0, -1.0);
-   evas_object_show(map);
-   elm_layout_content_set(ly, "swallow.map", map);
 
    panel_geocaching->itc_group = elm_map_group_class_new(map);
    panel_geocaching->itc = elm_map_marker_class_new(map);
@@ -261,10 +160,7 @@ Panel_Geocaching *panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geoca
    //
   
    // comments
-   sc = elm_scroller_add(obj);
-   elm_scroller_bounce_set(sc, 0, 1);
-   evas_object_size_hint_weight_set(sc, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_layout_content_set(ly, "swallow.comments", sc);
+   sc = edje_object_part_external_object_get(edje, "object.geocaching.panel.comments");
 
    bx = elm_box_add(obj);
    evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, 0.0);
@@ -315,7 +211,7 @@ Panel_Geocaching *panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geoca
 	evas_object_size_hint_align_set(bb, EVAS_HINT_FILL, EVAS_HINT_FILL);
 	entry = elm_entry_add(obj);
 	elm_entry_editable_set(entry, EINA_FALSE);
-	elm_label_label_set(entry, s);
+	elm_entry_entry_set(entry, s);
 	elm_bubble_content_set(bb,entry);
 	evas_object_show(entry);
 	elm_box_pack_end(bx, bb);

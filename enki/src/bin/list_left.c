@@ -5,13 +5,13 @@ static Elm_Genlist_Item_Class itc_col;
 static Elm_Genlist_Item_Class itc_col_album;
 static Elm_Genlist_Item_Class itc_tag;
 
-static char *_gl_label_get(const void *data, Evas_Object *obj, const char *part);
+static char *_gl_label_get(void *data, Evas_Object *obj, const char *part);
 static void _gl_sel(void *data, Evas_Object *obj, void *event_info);
 static void _right_click_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
-static char *_gl_col_label_get(const void *data, Evas_Object *obj, const char *part);
+static char *_gl_col_label_get(void *data, Evas_Object *obj, const char *part);
 static void _gl_col_sel(void *data, Evas_Object *obj, void *event_info);
-static char *_gl_col_album_label_get(const void *data, Evas_Object *obj, const char *part);
+static char *_gl_col_album_label_get(void *data, Evas_Object *obj, const char *part);
 static void _gl_col_album_sel(void *data, Evas_Object *obj, void *event_info);
 static void _col_right_click_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
@@ -20,7 +20,7 @@ static void _gl_col_con(void *data, Evas_Object *obj, void *event_info);
 static void _gl_col_exp_req(void *data, Evas_Object *obj, void *event_info);
 static void _gl_col_con_req(void *data, Evas_Object *obj, void *event_info);
 
-static char *_gl_tag_label_get(const void *data, Evas_Object *obj, const char *part);
+static char *_gl_tag_label_get(void *data, Evas_Object *obj, const char *part);
 static void _gl_tag_sel(void *data, Evas_Object *obj, void *event_info);
 static void _tag_right_click_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
@@ -29,24 +29,14 @@ static void _tabpanel_collection_select_cb(void *data, Tabpanel *tabpanel, Tabpa
 static void _tabpanel_tag_select_cb(void *data, Tabpanel *tabpanel, Tabpanel_Item *item);
 
 
-List_Left *list_left_new(Evas_Object *win)
+List_Left *list_left_new(Evas_Object *edje)
 {
-    Evas_Object *gl, *ly, *edje;
+    Evas_Object *gl;
     Tabpanel_Item *tp_item;
     List_Left *list_left = calloc(1,sizeof(List_Left));
 
     //
-    ly = elm_layout_add(win);
-    list_left->obj = ly;
-    elm_layout_file_set(ly, THEME, "list_left");
-    evas_object_size_hint_weight_set(ly, 1.0, 1.0);
-    evas_object_size_hint_align_set(ly, -1.0, -1.0);
-    evas_object_show(ly);
-
-    edje = elm_layout_edje_get(ly);
-
-    //
-    list_left->tb_liste_map = tabpanel_add_with_edje(win, edje_object_part_external_object_get(edje, "object.menu.lvl1"));
+    list_left->tb_liste_map = tabpanel_add_with_edje(edje, edje_object_part_external_object_get(edje, "object.menu.lvl1"));
 
     list_left->panels_map = tabpanel_panels_obj_get(list_left->tb_liste_map);
     evas_object_size_hint_weight_set(list_left->panels_map, 1.0, 1.0);
@@ -55,7 +45,7 @@ List_Left *list_left_new(Evas_Object *win)
     //
 
     //
-    list_left->tabpanel = tabpanel_add_with_edje(win, edje_object_part_external_object_get(edje, "object.menu.lvl2"));
+    list_left->tabpanel = tabpanel_add_with_edje(edje, edje_object_part_external_object_get(edje, "object.menu.lvl2"));
     //
 
 
@@ -68,7 +58,7 @@ List_Left *list_left_new(Evas_Object *win)
     itc_album.func.state_get = NULL;
     itc_album.func.del       = NULL;
 
-    tp_item = tabpanel_item_add_with_signal(list_left->tabpanel, D_("Albums"), edje, "albums,show", _tabpanel_album_select_cb, list_left);
+    tp_item = tabpanel_item_add_with_signal(list_left->tabpanel, D_("Albums"), edje, "list_left,albums,show", _tabpanel_album_select_cb, list_left);
 
     gl = edje_object_part_external_object_get(edje, "object.list.collections");
     list_left->gl_collections = gl;
@@ -90,7 +80,7 @@ List_Left *list_left_new(Evas_Object *win)
     evas_object_smart_callback_add(gl, "expand,request", _gl_col_exp_req, gl);
     evas_object_smart_callback_add(gl, "contract,request", _gl_col_con_req, gl);
 
-    tabpanel_item_add_with_signal(list_left->tabpanel, D_("Collections"), edje, "collections,show", _tabpanel_collection_select_cb, list_left);
+    tabpanel_item_add_with_signal(list_left->tabpanel, D_("Collections"), edje, "list_left,collections,show", _tabpanel_collection_select_cb, list_left);
 
     gl = edje_object_part_external_object_get(edje, "object.list.tags");
     list_left->gl_tags = gl;
@@ -101,7 +91,7 @@ List_Left *list_left_new(Evas_Object *win)
     itc_tag.func.state_get = NULL;
     itc_tag.func.del       = NULL;
 
-    tabpanel_item_add_with_signal(list_left->tabpanel, D_("Tags"), edje, "tags,show", _tabpanel_tag_select_cb, list_left);
+    tabpanel_item_add_with_signal(list_left->tabpanel, D_("Tags"), edje, "list_left,tags,show", _tabpanel_tag_select_cb, list_left);
 
     tabpanel_item_select(tp_item);
 
@@ -262,7 +252,7 @@ static void _tabpanel_collection_select_cb(void *data, Tabpanel *tabpanel, Tabpa
      photos_list_object_show_all(list_left->enlil_data->list_photo->o_list);
 }
 
-static char *_gl_label_get(const void *data, Evas_Object *obj, const char *part)
+static char *_gl_label_get(void *data, Evas_Object *obj, const char *part)
 {
    Enlil_Album *album = (Enlil_Album *)data;
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
@@ -347,7 +337,7 @@ static void _gl_col_album_sel(void *data, Evas_Object *obj, void *event_info)
      }
 }
 
-static char *_gl_col_label_get(const void *data, Evas_Object *obj, const char *part)
+static char *_gl_col_label_get(void *data, Evas_Object *obj, const char *part)
 {
    const Enlil_Collection *col = data;
    Enlil_Collection_Data *col_data = enlil_collection_user_data_get(col);
@@ -358,7 +348,7 @@ static char *_gl_col_label_get(const void *data, Evas_Object *obj, const char *p
    return strdup(enlil_collection_name_get(col));
 }
 
-static char *_gl_col_album_label_get(const void *data, Evas_Object *obj, const char *part)
+static char *_gl_col_album_label_get(void *data, Evas_Object *obj, const char *part)
 {
    const Enlil_Album *album = data;
 
@@ -421,7 +411,7 @@ static void _gl_col_con(void *data, Evas_Object *obj, void *event_info)
    elm_genlist_item_subitems_clear(it);
 }
 
-static char *_gl_tag_label_get(const void *data, Evas_Object *obj, const char *part)
+static char *_gl_tag_label_get(void *data, Evas_Object *obj, const char *part)
 {
    const Enlil_Tag *tag = data;
    Enlil_Tag_Data *tag_data = enlil_tag_user_data_get(tag);

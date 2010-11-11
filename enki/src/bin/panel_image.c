@@ -3,10 +3,10 @@
 #include "evas_object/photo_object.h"
 
 static Elm_Genlist_Item_Class itc_exifs;
-static char *_gl_exifs_label_get(const void *data, Evas_Object *obj, const char *part);
+static char *_gl_exifs_label_get(void *data, Evas_Object *obj, const char *part);
 
 static Elm_Genlist_Item_Class itc_iptcs;
-static char *_gl_iptcs_label_get(const void *data, Evas_Object *obj, const char *part);
+static char *_gl_iptcs_label_get(void *data, Evas_Object *obj, const char *part);
 static void _slideshow_selected_cb(void *data, Evas_Object *obj, void *event_info);
 
 static Slideshow_Item_Class itc_slideshow;
@@ -68,7 +68,7 @@ static void _panes_h_clicked_double(void *data, Evas_Object *obj, void *event_in
 
 Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
 {
-    Evas_Object *ph, *vbox, *vbox2, *bx, *bx2, *tb, *bt, *rect, *sl, *pb, *icon, *gl,
+    Evas_Object *ph, *vbox, *vbox2, *bx, *bx2, *tb, *bt, *rect, *sl, *pb, *gl,
 	       *fr, *entry, *sc, *lbl, *tabs, *panels, *panes, *panes_h, *hbox;
    Elm_Toolbar_Item *tb_item;
    Tabpanel_Item *tp_item;
@@ -289,82 +289,39 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    tb_item = elm_toolbar_item_append(panel_image->tb, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(tb_item, 1);
 
-   icon = elm_icon_add(obj);
-   elm_icon_file_set(icon, THEME, "icons/undo");
-   tb_item = elm_toolbar_item_append(panel_image->tb, icon, D_("Undo"), NULL, NULL);
+   tb_item = elm_toolbar_item_append(panel_image->tb, "icons/undo", D_("Undo"), NULL, NULL);
    panel_image->undo.undo = elm_toolbar_item_menu_get(tb_item);
 
-   icon = elm_icon_add(obj);
-   elm_icon_file_set(icon, THEME, "icons/undo");
-   panel_image->undo.item_undo = elm_menu_item_add(panel_image->undo.undo, NULL, icon, D_("Undo"), _bt_undo_cb, panel_image);
+   panel_image->undo.item_undo = elm_menu_item_add(panel_image->undo.undo, NULL, "icons/undo", D_("Undo"), _bt_undo_cb, panel_image);
    elm_menu_item_disabled_set(panel_image->undo.item_undo, 1);
    elm_menu_item_separator_add(panel_image->undo.undo, NULL);
 
-   icon = elm_icon_add(obj);
-   elm_icon_file_set(icon, THEME, "icons/redo");
-   tb_item = elm_toolbar_item_append(panel_image->tb, icon, D_("Redo"), NULL, NULL);
+   tb_item = elm_toolbar_item_append(panel_image->tb, "icons/redo", D_("Redo"), NULL, NULL);
    panel_image->undo.redo = elm_toolbar_item_menu_get(tb_item);
 
-   icon = elm_icon_add(obj);
-   evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   elm_icon_file_set(icon, THEME, "icons/redo");
-   panel_image->undo.item_redo = elm_menu_item_add(panel_image->undo.redo, NULL, icon, D_("Redo"), _bt_redo_cb, panel_image);
+   panel_image->undo.item_redo = elm_menu_item_add(panel_image->undo.redo, NULL, "icons/redo", D_("Redo"), _bt_redo_cb, panel_image);
    elm_menu_item_disabled_set(panel_image->undo.item_redo, 1);
    elm_menu_item_separator_add(panel_image->undo.redo, NULL);
 
    tb_item = elm_toolbar_item_append(panel_image->tb, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(tb_item, 1);
 
-   icon = elm_icon_add(obj);
-   elm_icon_file_set(icon, THEME, "icons/1_1");
-   elm_toolbar_item_append(panel_image->tb, icon, D_("1:1"), _bt_1_1_cb, panel_image);
-
-   icon = elm_icon_add(obj);
-   elm_icon_file_set(icon, THEME, "icons/fit");
-   elm_toolbar_item_append(panel_image->tb, icon, D_("Fit"), _bt_fit_cb, panel_image);
-
-   icon = elm_icon_add(obj);
-   elm_icon_file_set(icon, THEME, "icons/fill");
-   elm_toolbar_item_append(panel_image->tb, icon, D_("Fill"), _bt_fill_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, "icons/1_1", D_("1:1"), _bt_1_1_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, "icons/fit", D_("Fit"), _bt_fit_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, "icons/fill", D_("Fill"), _bt_fill_cb, panel_image);
 
    tb_item = elm_toolbar_item_append(panel_image->tb, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(tb_item, 1);
 
-   icon = elm_icon_add(obj);
-   elm_icon_file_set(icon, THEME, "icons/rotate/90");
-   elm_toolbar_item_append(panel_image->tb, icon, D_("90°"), _bt_rotate_90_cb, panel_image);
-
-   icon = elm_icon_add(obj);
-   elm_icon_file_set(icon, THEME, "icons/rotate/90/reverse");
-   elm_toolbar_item_append(panel_image->tb, icon, D_("-90°"), _bt_rotate_R90_cb, panel_image);
-
-   icon = elm_icon_add(obj);
-   elm_icon_file_set(icon, THEME, "icons/rotate/180");
-   elm_toolbar_item_append(panel_image->tb, icon, D_("180°"), _bt_rotate_180_cb, panel_image);
-
-   icon = elm_icon_add(obj);
-   elm_icon_file_set(icon, THEME, "icons/flip/horizontal");
-   elm_toolbar_item_append(panel_image->tb, icon, D_("Horizontal"), _bt_flip_horizontal_cb, panel_image);
-
-   icon = elm_icon_add(obj);
-   elm_icon_file_set(icon, THEME, "icons/flip/vertical");
-   elm_toolbar_item_append(panel_image->tb, icon, D_("Vertical"), _bt_flip_vertical_cb, panel_image);
-
-   icon = elm_icon_add(obj);
-   elm_icon_file_set(icon, THEME, "icons/blur");
-   elm_toolbar_item_append(panel_image->tb, icon, D_("Blur"), _bt_blur_cb, panel_image);
-
-   icon = elm_icon_add(obj);
-   elm_icon_file_set(icon, THEME, "icons/sharpen");
-   elm_toolbar_item_append(panel_image->tb, icon, D_("Sharpen"), _bt_sharpen_cb, panel_image);
-
-   icon = elm_icon_add(obj);
-   elm_icon_file_set(icon, THEME, "icons/sepia");
-   elm_toolbar_item_append(panel_image->tb, icon, D_("Sepia"), _bt_sepia_cb, panel_image);
-
-   icon = elm_icon_add(obj);
-   elm_icon_file_set(icon, THEME, "icons/grayscale");
-   elm_toolbar_item_append(panel_image->tb, icon, D_("Grayscale"), _bt_grayscale_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, "icons/rotate/90", D_("90°"), _bt_rotate_90_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, "icons/rotate/90/reverse", D_("-90°"), _bt_rotate_R90_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, "icons/rotate/180", D_("180°"), _bt_rotate_180_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, "icons/flip/horizontal", D_("Horizontal"), _bt_flip_horizontal_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, "icons/flip/vertical", D_("Vertical"), _bt_flip_vertical_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, "icons/blur", D_("Blur"), _bt_blur_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, "icons/sharpen", D_("Sharpen"), _bt_sharpen_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, "icons/sepia", D_("Sepia"), _bt_sepia_cb, panel_image);
+   elm_toolbar_item_append(panel_image->tb, "icons/grayscale", D_("Grayscale"), _bt_grayscale_cb, panel_image);
 
 
 
@@ -602,7 +559,7 @@ void panel_image_exifs_update(Enlil_Photo *photo)
      }
 }
 
-static char *_gl_exifs_label_get(const void *data, Evas_Object *obj, const char *part)
+static char *_gl_exifs_label_get(void *data, Evas_Object *obj, const char *part)
 {
    Enlil_Exif *exif = (Enlil_Exif *)data;
    char buf[PATH_MAX];
@@ -637,7 +594,7 @@ void panel_image_iptcs_update(Enlil_Photo *photo)
      }
 }
 
-static char *_gl_iptcs_label_get(const void *data, Evas_Object *obj, const char *part)
+static char *_gl_iptcs_label_get(void *data, Evas_Object *obj, const char *part)
 {
    Enlil_IPTC *iptc = (Enlil_IPTC *)data;
    char buf[PATH_MAX];
@@ -1103,7 +1060,6 @@ static void _update_undo_redo(Panel_Image *panel_image)
    const Enlil_Trans_History_Item *current, *item;
    Elm_Menu_Item *mi_item;
    const Eina_List *h, *l;
-   Evas_Object *icon;
 
    EINA_LIST_FREE(panel_image->undo.items_undo, mi_item)
       elm_menu_item_del(mi_item);
@@ -1155,11 +1111,8 @@ static void _update_undo_redo(Panel_Image *panel_image)
 	      type = D_("Sepia");
 	      break;
 	  }
-	icon = elm_icon_add(panel_image->undo.undo);
-	evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-	elm_icon_file_set(icon, THEME, "icons/undo");
 
-	mi_item = elm_menu_item_add(panel_image->undo.undo, NULL, icon, type, _menu_history_cb, panel_image);
+	mi_item = elm_menu_item_add(panel_image->undo.undo, NULL, "icons/undo", type, _menu_history_cb, panel_image);
 	panel_image->undo.items_undo = eina_list_append(panel_image->undo.items_undo, mi_item);
 
 	elm_menu_item_disabled_set(panel_image->undo.item_undo, 0);
@@ -1202,11 +1155,7 @@ second_step:
 	      break;
 	  }
 
-	icon = elm_icon_add(panel_image->undo.redo);
-	evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-	elm_icon_file_set(icon, THEME, "icons/redo");
-
-	mi_item = elm_menu_item_add(panel_image->undo.redo, NULL, icon, type, _menu_history_cb, panel_image);
+	mi_item = elm_menu_item_add(panel_image->undo.redo, NULL, "icons/redo", type, _menu_history_cb, panel_image);
 	panel_image->undo.items_redo = eina_list_append(panel_image->undo.items_redo, mi_item);
 
 	elm_menu_item_disabled_set(panel_image->undo.item_redo, 0);

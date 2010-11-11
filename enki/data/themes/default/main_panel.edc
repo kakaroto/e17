@@ -3,26 +3,6 @@ group {
 	name: "main_panel";
 	
 	parts {
-		//main menu
-		alias: "object.main_menu.bt_slideshow" 		"menu[menu]:tools[bt_slideshow]:object.main_menu.bt_slideshow";
-    	alias: "object.main_menu.bt_new_album" 		"menu[menu]:tools[bt_new_album]:object.main_menu.bt_new_album";
-    	alias: "object.main_menu.bt_import_photos" 	"menu[menu]:tools[bt_import_photos]:object.main_menu.bt_import_photos";
-    	alias: "object.main_menu.bt_remove_wall" 	"menu[menu]:tools[bt_remove_wall]:object.main_menu.bt_remove_wall";
-    	alias: "object.main_menu.bt_import_gpx" 	"menu[menu]:tools[bt_import_gpx]:object.main_menu.bt_import_gpx";
-    	alias: "object.main_menu.bt_preference" 	"menu[menu]:tools[bt_preference]:object.main_menu.bt_preference";
-    	alias: "object.main_menu.bt_close" 			"menu[menu]:quit[bt_close]:object.main_menu.bt_close";
-    	
-    	alias: "object.main_menu.bt_new_library" 	"menu[menu]:libraries[bt_new_library]:object.main_menu.bt_new_library";
-    	alias: "object.main_menu.list_libraries" 	"menu[menu]:libraries[list_libraries]:object.main_menu.libraries";
-    	//
-    	
-    	//map
-    	alias: "object.map.map"						"map[map]:object.map";
-    	alias: "object.map.display_photos"			"map[map]:object.display_photos";
-    	alias: "object.map.display_geocaching"		"map[map]:object.display_geocaching";
-    	alias: "object.map.zoom"					"map[map]:object.zoom";
-    	alias: "object.map.rect_zoom"				"map[map]:object.rect_zoom";
-    	//
     	
     	part {
     		name: "menu_clipper";
@@ -185,7 +165,7 @@ group {
     	}
 
         part {
-            name: "photos";
+            name: "object.photos.swallow";
             type: SWALLOW;
         	clip_to: "photos_clipper";
             description {
@@ -203,7 +183,7 @@ group {
 		
 		program {
 			name: "show_menu";
-			signal: "menu,show";
+			signal: "main_panel,menu,show";
 			action: STATE_SET "menu" 0.0;
 			target: "menu_clipper";
 			target: "photos_clipper";
@@ -220,7 +200,7 @@ group {
 		}
 		program {
 			name: "show_photos";
-			signal: "photos,show";
+			signal: "main_panel,photos,show";
 			action: STATE_SET "photos" 0.0;
 			target: "menu_clipper";
 			target: "photos_clipper";
@@ -237,7 +217,7 @@ group {
 		}
 		program {
 			name: "show_map";
-			signal: "map,show";
+			signal: "main_panel,map,show";
 			action: STATE_SET "map" 0.0;
 			target: "menu_clipper";
 			target: "photos_clipper";

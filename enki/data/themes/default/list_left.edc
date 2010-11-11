@@ -189,6 +189,7 @@ group {
 				}
 			}
 		}
+		
 	}
 	
 	programs {
@@ -200,7 +201,7 @@ group {
 		
 		program {
 			name: "show_albums";
-			signal: "albums,show";
+			signal: "list_left,albums,show";
 			action: STATE_SET "albums" 0.0;
 			target: "albums_clipper";
 			target: "collections_clipper";
@@ -217,7 +218,7 @@ group {
 		}
 		program {
 			name: "show_collections";
-			signal: "collections,show";
+			signal: "list_left,collections,show";
 			action: STATE_SET "collections" 0.0;
 			target: "albums_clipper";
 			target: "collections_clipper";
@@ -234,7 +235,7 @@ group {
 		}
 		program {
 			name: "show_tags";
-			signal: "tags,show";
+			signal: "list_left,tags,show";
 			action: STATE_SET "tags" 0.0;
 			target: "albums_clipper";
 			target: "collections_clipper";

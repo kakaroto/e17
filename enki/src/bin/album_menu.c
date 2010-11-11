@@ -183,7 +183,7 @@ Album_Menu *album_sorts_menu_new(Evas_Object *parent, Enlil_Album *album)
 {
    Evas_Object *menu;
    Elm_Menu_Item *mi = NULL;
-   Evas_Object *icon = NULL;
+   char *icon = NULL;
    Album_Menu * am = calloc(1, sizeof(Album_Menu));
    am->album = album;
 
@@ -193,18 +193,14 @@ Album_Menu *album_sorts_menu_new(Evas_Object *parent, Enlil_Album *album)
 
    if(enlil_album_photos_sort_get(album) == ENLIL_PHOTO_SORT_NAME)
      {
-	icon = elm_icon_add(parent);
-        elm_icon_standard_set(icon, "arrow_right");
-	evas_object_show(icon);
+        icon = "arrow_right";
      }
    mi = elm_menu_item_add(menu, NULL, icon, D_("Sort by name"), _sort_by_name_cb, am);
    icon = NULL;
 
    if(enlil_album_photos_sort_get(album) == ENLIL_PHOTO_SORT_DATE)
      {
-	icon = elm_icon_add(parent);
-	elm_icon_standard_set(icon, "arrow_right");
-	evas_object_show(icon);
+	   icon =  "arrow_right";
      }
    mi = elm_menu_item_add(menu, NULL, icon, D_("Sort by date"), _sort_by_date_cb, am);
    icon = NULL;
