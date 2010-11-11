@@ -5,7 +5,6 @@
 static Evas_Object *inwin = NULL;
 
 static Evas_Object *libraries_list;
-static Evas_Object *bt_new_library;
 static Evas_Object *bt_import;
 static Evas_Object *bt_slideshow;
 static Evas_Object *bt_del_bg;
@@ -18,7 +17,7 @@ static void  _library_del(void *data, Evas_Object *obj);
 static Evas_Object* _library_icon_get(void *data, Evas_Object *obj, const char *part);
 
 static void _library_select(void *data, Evas_Object *obj, void *event_info);
-static void _new_library_cb(void *data, Evas_Object *obj, void *event_info);
+static void _new_library();
 static void _new_library_done_cb(void *data, Evas_Object *obj, void *event_info);
 
 static void _slideshow_cb(void *data, Evas_Object *obj, void *event_info);
@@ -32,6 +31,7 @@ static void _quit_cb(void *data, Evas_Object *obj, void *event_info);
 
 typedef struct
 {
+	Eina_Bool is_new_library;
 	const char *path;
 	Enlil_Photo *photo;
 } Library;
@@ -46,8 +46,6 @@ void main_menu_new(Evas_Object *edje)
     libraries_list = elm_gengrid_add(edje);
     elm_gengrid_item_size_set(libraries_list, 256, 256);
     edje_object_part_swallow(edje, "object.main_menu.list_libraries", libraries_list);
-    bt_new_library = edje_object_part_external_object_get(edje, "object.main_menu.bt_new_library");
-    evas_object_smart_callback_add(bt_new_library, "clicked", _new_library_cb, NULL);
 
     itc_grid.func.label_get = _library_get;
     itc_grid.func.del = _library_del;
@@ -87,7 +85,6 @@ void main_menu_new(Evas_Object *edje)
 
 void main_menu_loading_disable_set(Eina_Bool disabled)
 {
-   elm_object_disabled_set(bt_new_library, disabled);
    elm_object_disabled_set(libraries_list, disabled);
    elm_object_disabled_set(bt_import, disabled);
    elm_object_disabled_set(bt_album_new, disabled);
@@ -96,14 +93,12 @@ void main_menu_loading_disable_set(Eina_Bool disabled)
 
 void main_menu_sync_disable_set(Eina_Bool disabled)
 {
-   elm_object_disabled_set(bt_new_library, disabled);
    elm_object_disabled_set(libraries_list, disabled);
 }
 
 void main_menu_noroot_disabled_set(Eina_Bool disabled)
 {
    main_menu_loading_disable_set(disabled);
-   elm_object_disabled_set(bt_new_library, EINA_FALSE);
    elm_object_disabled_set(libraries_list, EINA_FALSE);
    elm_object_disabled_set(bt_del_bg, disabled);
 }
@@ -114,9 +109,18 @@ void main_menu_update_libraries_list()
     Eina_List *list = enlil_root_eet_path_load();
 
     elm_gengrid_clear(libraries_list);
+
+    //
+    Library *lib = calloc(1, sizeof(Library));
+	lib->is_new_library = EINA_TRUE;
+	lib->path = eina_stringshare_add("New Library");
+    elm_gengrid_item_append(libraries_list, &itc_grid, lib, _library_select, NULL);
+    //
+
     EINA_LIST_FREE(list, string)
     {
     	Library *lib = calloc(1, sizeof(Library));
+    	lib->is_new_library = EINA_FALSE;
     	lib->path = eina_stringshare_add(string->string);
         lib->photo = enlil_photo_new();
         Enlil_Photo_Data *photo_data = calloc(1, sizeof(Enlil_Photo_Data));
@@ -140,7 +144,8 @@ static void  _library_del(void *data, Evas_Object *obj)
 {
 	Library *lib = data;
 	EINA_STRINGSHARE_DEL(lib->path);
-	enlil_photo_free(&(lib->photo));
+	if(lib->photo)
+		enlil_photo_free(&(lib->photo));
 	FREE(lib);
 }
 
@@ -148,6 +153,14 @@ static Evas_Object* _library_icon_get(void *data, Evas_Object *obj, const char *
 {
 	const char *s = NULL;
 	Library *lib = data;
+
+	if(lib->is_new_library)
+	{
+		Evas_Object *icon = elm_icon_add(obj);
+		elm_icon_standard_set(icon, "add");
+		return icon;
+	}
+
 	Enlil_Photo *photo = enlil_root_first_photo_get(lib->path);
 
 	if(!photo)
@@ -185,11 +198,19 @@ static Evas_Object* _library_icon_get(void *data, Evas_Object *obj, const char *
 static void _library_select(void *data, Evas_Object *obj, void *event_info)
 {
 	Library *lib = elm_gengrid_item_data_get(elm_gengrid_selected_item_get(obj));
-    root_set(lib->path);
-    select_list_photo();
+
+	if(lib->is_new_library)
+	{
+		_new_library();
+	}
+	else
+	{
+		root_set(lib->path);
+		select_list_photo();
+	}
 }
 
-static void _new_library_cb(void *data, Evas_Object *obj, void *event_info)
+static void _new_library()
 {
    Evas_Object *fs, *vbox;
 

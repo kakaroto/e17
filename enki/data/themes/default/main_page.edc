@@ -4,8 +4,7 @@ group {
 	
 	parts {
 		//libraries
-    	alias: "object.main_menu.bt_new_library" 	"panes[right]:menu[libraries]:libraries[bt_new_library]:object.main_menu.bt_new_library";
-    	alias: "object.main_menu.list_libraries" 	"panes[right]:menu[libraries]:libraries[libraries]:object.main_menu.libraries";
+    	alias: "object.main_menu.list_libraries" 	"panes[right]:menu[libraries]:object.main_menu.libraries";
     	//
     	
     	//map

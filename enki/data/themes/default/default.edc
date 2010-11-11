@@ -157,8 +157,8 @@ parts {
             color: 0 0 0 255;
             rel1.to: "shadow";
             rel2.to: "shadow";
-            rel1.relative: 0.01 0.01;
-            rel2.relative: 0.99 0.99;
+            rel1.relative: 0.05 0.05;
+            rel2.relative: 0.95 0.95;
         }
     }
     part {
