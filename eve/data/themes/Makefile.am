@@ -51,14 +51,21 @@ images = \
     toggle_on.png \
     check.png \
     index.png \
-    index_selected.png
+    index_selected.png \
+    bt_base1.png \
+    bt_base2.png \
+    bt_hilight.png \
+    bt_shine.png \
+    bt_clear.png \
+    bt_clear_pressed.png
 
 edcdeps = elm-gengrid.edc \
     elm-notify.edc \
     elm-scroller.edc \
     elm-entry.edc \
-    elm-list.edc \
     elm-pager.edc \
+    elm-genlist.edc \
+    elm-index.edc \
     elm-toggle.edc
 
 fonts = 
