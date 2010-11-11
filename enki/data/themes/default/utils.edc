@@ -1,7 +1,7 @@
 
-#define transfers_signal(_signal, _source, _container, _content) 		\
+#define transfers_signal(_pre, _signal, _source, _container, _content) 		\
 	program {															\
-		name: _signal;													\
+		name: _pre""_signal;													\
 		signal: _signal;												\
 		source: _source;												\
 		action: SIGNAL_EMIT _container"["_content"]:"_signal _source;	\

@@ -72,6 +72,7 @@ collections {
 	#include "map.edc"
 	#include "main_panel.edc"
 	#include "slideshow.edc"
+	#include "list_left_menu.edc"
 	#include "list_left.edc"
 	#include "main_page.edc"
 	#include "main.edc"

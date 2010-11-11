@@ -1,14 +1,5 @@
 
 
-   
-button("object.main_menu.bt_slideshow", "Slideshow", "edit") 
-button("object.main_menu.bt_new_album", "New Album", "folder")
-button("object.main_menu.bt_import_photos", "Import Photos", "file")
-button("object.main_menu.bt_remove_wall", "Remove The Wallpaper", "delete")
-button("object.main_menu.bt_import_gpx", "Import a GPX File", "file")
-button("object.main_menu.bt_preference", "Preference", "edit")	
-button("object.main_menu.bt_close", "Close Enki", "close")	
-
 list("object.main_menu.libraries")
 button("object.main_menu.bt_new_library", "New Library", "folder")
 
@@ -41,80 +32,6 @@ group {
                         name: "bt_new_library";
                         align: -1 1;
                         weight: 0 0;
-                    }
-               }
-           }
-        }
-        part {
-            name: "tools";
-            type: BOX;
-            description {
-                state : "default" 0.0;
-                rel1.relative: 0.6 0.1;
-                rel2.relative: 0.8 0.7;
-                box {
-                    layout: "vertical";    
-                }
-            }
-            box {
-            	items {
-            		item {
-                        type: GROUP;
-                        source: "object.main_menu.bt_slideshow";
-                        name:  "bt_slideshow";
-                        align: -1 -1;
-                    }
-                    item {
-                        type: GROUP;
-                        source: "object.main_menu.bt_new_album";
-                        name: "bt_new_album";
-                        align: -1 -1;
-                    }
-                    item {
-                        type: GROUP;
-                        source: "object.main_menu.bt_import_photos";
-                        name: "bt_import_photos";
-                        align: -1 -1;
-                    }
-                    item {
-                        type: GROUP;
-                        source: "object.main_menu.bt_remove_wall";
-                        name: "bt_remove_wall";
-                        align: -1 -1;
-                    }
-                    item {
-                        type: GROUP;
-                        source: "object.main_menu.bt_import_gpx";
-                        name: "bt_import_gpx";
-                        align: -1 -1;
-                    }
-                    item {
-                        type: GROUP;
-                        source: "object.main_menu.bt_preference";
-                        name: "bt_preference";
-                        align: -1 -1;
-                    }
-                }
-            }
-        }
-        part {
-            name: "quit";
-            type: BOX;
-            description {
-                state : "default" 0.0;
-                rel1.relative: 0.75 0.9;
-                rel2.relative: 0.95 0.95;
-                box {
-                    layout: "vertical";
-                }
-            }
-            box {
-            	items {
-            		item {
-                        type: GROUP;
-                        source: "object.main_menu.bt_close";
-                        name: "bt_close";
-                        align: -1 -1;
                     }
                }
            }

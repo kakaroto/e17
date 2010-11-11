@@ -5,7 +5,7 @@ EDJ = default.edj
 
 EDJE_FLAGS = -v
 
-default.edj:  default.edc main_menu.edc utils.edc slideshow.edc list_left.edc main_panel.edc map.edc main.edc main_page.edc geocaching.edc
+default.edj:  default.edc main_menu.edc utils.edc slideshow.edc list_left.edc list_left_menu.edc main_panel.edc map.edc main.edc main_page.edc geocaching.edc
 	$(EDJE_CC) $(EDJE_FLAGS) default.edc -id ../images/
 
 icondir = $(pkgdatadir)/themes
