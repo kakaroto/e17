@@ -1279,7 +1279,7 @@ gen_client_headers(Azy_Server_Module *s)
         EL(0, " * @return ");
         EL(0, " */ ");
 
-        E(0, "unsigned int %s%s_%s(Azy_Client* _client", azy->name, s->name, method->name);
+        E(0, "Azy_Client_Call_Id %s%s_%s(Azy_Client* _client", azy->name, s->name, method->name);
 
         EINA_LIST_FOREACH(method->params, k, p)
           {
@@ -1319,7 +1319,7 @@ gen_client_impl(Azy_Server_Module *s)
    NL;
    EINA_LIST_FOREACH(s->methods, j, method)
      {
-        E(0, "unsigned int %s%s_%s(Azy_Client* _client", azy->name, s->name, method->name);
+        E(0, "Azy_Client_Call_Id %s%s_%s(Azy_Client* _client", azy->name, s->name, method->name);
 
         EINA_LIST_FOREACH(method->params, k, p)
           {
