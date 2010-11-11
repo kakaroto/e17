@@ -29,13 +29,13 @@ group {
     	//
     	
     	//list left menu
-    	alias: "object.main_menu.bt_slideshow" 		"panes[left]:tools[bt_slideshow]:object.main_menu.bt_slideshow";
-    	alias: "object.main_menu.bt_new_album" 		"panes[left]:tools[bt_new_album]:object.main_menu.bt_new_album";
-    	alias: "object.main_menu.bt_import_photos" 	"panes[left]:tools[bt_import_photos]:object.main_menu.bt_import_photos";
-    	alias: "object.main_menu.bt_remove_wall" 	"panes[left]:tools[bt_remove_wall]:object.main_menu.bt_remove_wall";
-    	alias: "object.main_menu.bt_import_gpx" 	"panes[left]:tools[bt_import_gpx]:object.main_menu.bt_import_gpx";
-    	alias: "object.main_menu.bt_preference" 	"panes[left]:tools[bt_preference]:object.main_menu.bt_preference";
-    	alias: "object.main_menu.bt_close" 			"panes[left]:tools[bt_close]:object.main_menu.bt_close";
+    	alias: "object.main_menu.bt_slideshow" 		"panes[left]:menu:tools[bt_slideshow]:object.main_menu.bt_slideshow";
+    	alias: "object.main_menu.bt_new_album" 		"panes[left]:menu:tools[bt_new_album]:object.main_menu.bt_new_album";
+    	alias: "object.main_menu.bt_import_photos" 	"panes[left]:menu:tools[bt_import_photos]:object.main_menu.bt_import_photos";
+    	alias: "object.main_menu.bt_remove_wall" 	"panes[left]:menu:tools[bt_remove_wall]:object.main_menu.bt_remove_wall";
+    	alias: "object.main_menu.bt_import_gpx" 	"panes[left]:menu:tools[bt_import_gpx]:object.main_menu.bt_import_gpx";
+    	alias: "object.main_menu.bt_preference" 	"panes[left]:menu:tools[bt_preference]:object.main_menu.bt_preference";
+    	alias: "object.main_menu.bt_close" 			"panes[left]:menu:tools[bt_close]:object.main_menu.bt_close";
     	//
     	
 		part {
