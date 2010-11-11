@@ -154,6 +154,9 @@ static Evas_Object* _library_icon_get(void *data, Evas_Object *obj, const char *
 	const char *s = NULL;
 	Library *lib = data;
 
+	if(strcmp(part, "elm.swallow.icon"))
+		return NULL;
+
 	if(lib->is_new_library)
 	{
 		Evas_Object *icon = elm_icon_add(obj);
