@@ -991,7 +991,6 @@ Enlil_Root *enlil_root_eet_tags_load(Enlil_Root *root)
 
    ASSERT_RETURN(root!=NULL);
 
-   printf("%s/\n", enlil_root_path_get(root));
    snprintf(path,PATH_MAX,"%s/"EET_FILE,enlil_root_path_get(root));
    f = enlil_file_manager_open(path);
    ASSERT_RETURN(f!=NULL);
@@ -1247,4 +1246,40 @@ Enlil_Configuration enlil_conf_get(Enlil_Root *root)
    return root->conf;
 }
 
+Enlil_Photo * enlil_root_first_photo_get(const char *library_path)
+{
+	char buf[PATH_MAX];
+	Eina_Bool found = EINA_TRUE, found2 = EINA_TRUE;
+	Enlil_Photo *photo = NULL;
+	char *folder, *file;
+	Eina_List *folders = ecore_file_ls(library_path);
 
+	EINA_LIST_FREE(folders, folder)
+	{
+		if(found)
+		{
+			snprintf(buf, PATH_MAX, "%s/%s", library_path, folder);
+			Eina_List *files = ecore_file_ls(buf);
+
+			EINA_LIST_FREE(files, file)
+			{
+
+				if(found2)
+				{
+					if( enlil_photo_is(file) )
+					{
+						photo = enlil_photo_new();
+						enlil_photo_path_set(photo, buf);
+						enlil_photo_file_name_set(photo, file);
+						found2 = EINA_FALSE;
+						found = EINA_FALSE;
+					}
+				}
+				FREE(file);
+			}
+		}
+		FREE(folder);
+	}
+
+	return photo;
+}
