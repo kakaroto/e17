@@ -1,0 +1,8 @@
+Login:        beber
+IRC Nick:     Beber`
+Name:         Bertrand Jacquin
+Location:     Choisy-Le-Roi, France
+E-Mail:       beber@meleeweb.net
+Managing:     e3, e4
+Contributin:  e2
+Platform:     Linux
