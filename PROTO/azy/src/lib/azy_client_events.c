@@ -325,12 +325,6 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
    return ECORE_CALLBACK_RENEW;
 }
 
-static void
-_azy_client_handler_del_free(void *data __UNUSED__, Azy_Client *client)
-{
-   azy_client_free(client);
-}
-
 Eina_Bool
 _azy_client_handler_del(Azy_Client                    *client,
                          int type                        __UNUSED__,
@@ -345,10 +339,12 @@ _azy_client_handler_del(Azy_Client                    *client,
    if (!client->connected)
      return ECORE_CALLBACK_CANCEL;
    client->connected = EINA_FALSE;
+   azy_net_free(client->net);
+   client->net = NULL;
    EINA_LIST_FREE(client->conns, handler_data)
      _azy_client_handler_data_free(handler_data);
 
-   ecore_event_add(AZY_CLIENT_DISCONNECTED, client, (Ecore_End_Cb)_azy_client_handler_del_free, NULL);
+   ecore_event_add(AZY_CLIENT_DISCONNECTED, client, (Ecore_End_Cb)_azy_event_handler_fake_free, NULL);
    return ECORE_CALLBACK_CANCEL;
 }
 
