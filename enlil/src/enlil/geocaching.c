@@ -298,8 +298,8 @@ void enlil_geocaching_tb_free(Enlil_Geocaching_Travelbug *gp_tb)
 }
 
 static Eina_Bool running = EINA_FALSE;
-static void _load_thread(void *data);
-static void _import_thread(void *data);
+static void _load_thread(Ecore_Thread *thread, void *data);
+static void _import_thread(Ecore_Thread *thread, void *data);
 static void _import_end_cb(void *data);
 
 void enlil_geocaching_get(Enlil_Geocaching_Done_Cb done_cb, void *data)
@@ -335,7 +335,7 @@ void enlil_geocaching_import(const char *file, Enlil_Geocaching_Done_Cb done_cb,
    ecore_thread_run(_import_thread, _import_end_cb, NULL, eina_stringshare_add(file));
 }
 
-static void _load_thread(void *data)
+static void _load_thread(Ecore_Thread *thread, void *data)
 {
    if(_db.hash)
      {
@@ -422,7 +422,7 @@ static int _save()
    return res;
 }
 
-static void _import_thread(void *data)
+static void _import_thread(Ecore_Thread *thread, void *data)
 {
    const char *file = data;
    const char *value, *tag = NULL, *prefix = NULL;
@@ -481,7 +481,7 @@ static void _import_thread(void *data)
    _gp_tb = eina_stringshare_add("travelbug");
 
    if(!_db.loaded)
-     _load_thread(NULL);
+     _load_thread(NULL, NULL);
 
    char *strip_ext = ecore_file_strip_ext(file);
    const char *ext = file + strlen(strip_ext);

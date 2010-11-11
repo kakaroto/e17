@@ -8,7 +8,7 @@ static void _thumb_die_cb(void *data, Ethumb_Client *client);
 static void _thumb_done_cb(void *data, Ethumb_Client *client, int id, const char *file, const char *key, const char *thumb_path, const char *thumb_key, Eina_Bool success);
 static void _job_next();
 static void _job_free(Enlil_Thumb_Job *job);
-static void _check_exists_thread_cb(void *data);
+static void _check_exists_thread_cb(Ecore_Thread *thread, void *data);
 static void _check_exists_thread_done_cb(void *data);
 
 
@@ -216,7 +216,7 @@ static void _job_next()
    ecore_thread_run(_check_exists_thread_cb, _check_exists_thread_done_cb, NULL, job);
 }
 
-static void _check_exists_thread_cb(void *data)
+static void _check_exists_thread_cb(Ecore_Thread *thread, void *data)
 {
    ethumb_client_thumb_exists(thumb.ethumb);
 }

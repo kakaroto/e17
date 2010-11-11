@@ -91,8 +91,8 @@ struct enlil_sync
 static void _enlil_sync_message_cb(void *data, void *buffer, unsigned int nbyte);
 static void _enlil_sync_end_cb(void *data);
 
-static void _enlil_sync_album_folder_thread(void *data);
-static void _enlil_sync_photo_file_thread(void *data);
+static void _enlil_sync_album_folder_thread(Ecore_Thread *thread, void *data);
+static void _enlil_sync_photo_file_thread(Ecore_Thread *thread, void *data);
 
 static void _enlil_sync_run(Enlil_Sync *sync);
 static void _enlil_sync_album_folder_run(Enlil_Sync *sync, const char *file);
@@ -105,7 +105,7 @@ static void  _enlil_sync_photo_file_start(Enlil_Sync *sync, const char *folder, 
 static void _enlil_sync_album_folder_start(Enlil_Sync *sync, const char *file);
 
 //methods used to do a global synchronisation
-static void _enlil_sync_all_start(void *data);
+static void _enlil_sync_all_start(Ecore_Thread *thread, void *data);
 static void _enlil_sync_all_album_sync(Enlil_Sync *sync, Enlil_Album *album);
 static void _enlil_sync_all_photo_new(Enlil_Sync *sync, Enlil_Album *album, const char *file);
 static int _enlil_sync_all_photo_update(Enlil_Sync *sync, Enlil_Album *album, Enlil_Photo *photo);
@@ -388,7 +388,7 @@ static void _enlil_sync_album_folder_run(Enlil_Sync *sync, const char *folder)
    sync->t0 = ecore_time_get();
 }
 
-static void _enlil_sync_album_folder_thread(void *data)
+static void _enlil_sync_album_folder_thread(Ecore_Thread *thread, void *data)
 {
    Enlil_Sync *sync = (Enlil_Sync *) data;
    _enlil_sync_album_folder_start(sync, sync->extra.folder);
@@ -409,7 +409,7 @@ static void _enlil_sync_photo_file_run(Enlil_Sync *sync, const char *folder, con
    sync->t0 = ecore_time_get();
 }
 
-static void _enlil_sync_photo_file_thread(void *data)
+static void _enlil_sync_photo_file_thread(Ecore_Thread *thread, void *data)
 {
    Enlil_Sync *sync = (Enlil_Sync *) data;
    _enlil_sync_photo_file_start(sync, sync->extra.folder, sync->extra.file);
@@ -1006,7 +1006,7 @@ static int _enlil_sync_all_album_update(Enlil_Sync *sync, Enlil_Root *root_list,
  * @brief Synchronise a photo manager folder
  * @param data a sync struct
  */
-static void _enlil_sync_all_start(void *data)
+static void _enlil_sync_all_start(Ecore_Thread *thread, void *data)
 {
    Enlil_Sync *sync = data;
    Enlil_Root *root;

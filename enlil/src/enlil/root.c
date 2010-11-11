@@ -991,6 +991,7 @@ Enlil_Root *enlil_root_eet_tags_load(Enlil_Root *root)
 
    ASSERT_RETURN(root!=NULL);
 
+   printf("%s/\n", enlil_root_path_get(root));
    snprintf(path,PATH_MAX,"%s/"EET_FILE,enlil_root_path_get(root));
    f = enlil_file_manager_open(path);
    ASSERT_RETURN(f!=NULL);

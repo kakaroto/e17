@@ -39,7 +39,7 @@ static int running = 0;
 
 static void _job_free(Enlil_IPTC_Job *job);
 static void _job_next();
-static void _iptc_thread(void *data);
+static void _iptc_thread(Ecore_Thread *thread, void *data);
 static void _end_cb(void *data);
 
 Enlil_IPTC *enlil_iptc_new()
@@ -243,7 +243,7 @@ static void _job_next()
     running = 1;
 }
 
-static void _iptc_thread(void *data)
+static void _iptc_thread(Ecore_Thread *thread, void *data)
 {
    Enlil_IPTC_Thread_Data *t_data = data;
    const char *file = t_data->file;

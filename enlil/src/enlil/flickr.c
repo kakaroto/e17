@@ -109,7 +109,7 @@ static void *_job_done_data = NULL;
 
 static void _job_next();
 static void _job_free(Enlil_Flickr_Job *job);
-static void _flickr_thread(void *data);
+static void _flickr_thread(Ecore_Thread *thread, void *data);
 static void _end_cb(void *data);
 static const char *_enlil_flickr_job_type_tostring(Enlil_Flickr_Job_Type type);
 
@@ -714,7 +714,7 @@ static void _job_next()
 #endif
 }
 
-static void _flickr_thread(void *data)
+static void _flickr_thread(Ecore_Thread *thread, void *data)
 {
    char *token;
    char buf[PATH_MAX];

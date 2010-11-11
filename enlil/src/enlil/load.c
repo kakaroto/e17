@@ -4,7 +4,7 @@
 #include <time.h>
 
 
-static void _enlil_load(void *data);
+static void _enlil_load(Ecore_Thread *thread, void *data);
 static void _album_load(Enlil_Load *load, Enlil_Album *album);
 
 static void _enlil_load_message_cb(void *data, void *buffer, unsigned int nbyte);
@@ -154,7 +154,7 @@ static void _album_load(Enlil_Load *load, Enlil_Album *album)
     pthread_mutex_lock(&(load->mutex));
 }
 
-static void _enlil_load(void *data)
+static void _enlil_load(Ecore_Thread *thread, void *data)
 {
     Enlil_Load *load = data;
     Enlil_Root *root, *root_list;
