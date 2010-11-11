@@ -3,9 +3,9 @@ group {
 	name: "main_page";
 	
 	parts {
-		//main menu
-    	alias: "object.main_menu.bt_new_library" 	"panes[right]:menu[menu]:libraries[bt_new_library]:object.main_menu.bt_new_library";
-    	alias: "object.main_menu.list_libraries" 	"panes[right]:menu[menu]:libraries[list_libraries]:object.main_menu.libraries";
+		//libraries
+    	alias: "object.main_menu.bt_new_library" 	"panes[right]:menu[libraries]:libraries[bt_new_library]:object.main_menu.bt_new_library";
+    	alias: "object.main_menu.list_libraries" 	"panes[right]:menu[libraries]:libraries[libraries]:object.main_menu.libraries";
     	//
     	
     	//map

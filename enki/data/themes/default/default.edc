@@ -68,7 +68,7 @@ images {
 #include "utils.edc"
 	
 collections {
-	#include "main_menu.edc"
+	#include "libraries.edc"
 	#include "map.edc"
 	#include "main_panel.edc"
 	#include "slideshow.edc"

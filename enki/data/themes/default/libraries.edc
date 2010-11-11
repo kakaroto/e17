@@ -1,18 +1,31 @@
 
 
-list("object.main_menu.libraries")
+//gengrid("object.main_menu.libraries")
+//TODO need elm gengrid edje external
+group {
+    name : "object.main_menu.libraries";
+    parts {
+        part {
+            name: "object.main_menu.libraries";
+            type: SWALLOW;
+            description {
+                state : "default" 0.0;
+            }
+        }
+    }
+}
+
+
 button("object.main_menu.bt_new_library", "New Library", "folder")
 
 group {
-    name : "main_menu";
+    name : "libraries";
     parts {
         part {
             name: "libraries";
             type: BOX;
             description {
                 state : "default" 0.0;
-                rel1.relative: 0.15 0.1;
-                rel2.relative: 0.45 0.7;
                 box {
                     layout: "vertical";    
                 }
@@ -22,7 +35,7 @@ group {
             		item {
                         type: GROUP;
                         source: "object.main_menu.libraries";
-                        name: "list_libraries";
+                        name: "libraries";
                         align: -1 -1;
                         weight: 1 1;
                     }
@@ -31,7 +44,7 @@ group {
                         source: "object.main_menu.bt_new_library";
                         name: "bt_new_library";
                         align: -1 1;
-                        weight: 0 0;
+                        weight: 1 0;
                     }
                }
            }

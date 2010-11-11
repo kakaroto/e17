@@ -454,9 +454,13 @@ void monitor_photo_update_cb(void *data, Enlil_Root *root, Enlil_Album *album, c
 
 void thumb_done_cb(void *data, Enlil_Photo *photo, const char *file)
 {
-   Enlil_Photo_Data *enlil_photo_data = enlil_photo_user_data_get(photo);
-   photos_list_object_item_update(enlil_photo_data->list_photo_item);
-   map_photo_update(enlil_data->map, photo);
+   Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+   if(photo_data->list_photo_item)
+	   photos_list_object_item_update(photo_data->list_photo_item);
+   if(enlil_data->map)
+	   map_photo_update(enlil_data->map, photo);
+   if(photo_data->library_item)
+	   elm_gengrid_item_update(photo_data->library_item);
 }
 
 void thumb_error_cb(void *data, Enlil_Photo *photo)

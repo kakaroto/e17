@@ -333,7 +333,7 @@ void flickr_menu_animated_set(Eina_Bool animated);
 
 //main menu
 void main_menu_new(Evas_Object *parent);
-void main_menu_update_libraries_list(Eina_List *list);
+void main_menu_update_libraries_list();
 void main_menu_loading_disable_set(Eina_Bool disabled);
 void main_menu_sync_disable_set(Eina_Bool disabled);
 void main_menu_noroot_disabled_set(Eina_Bool disabled);

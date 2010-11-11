@@ -56,8 +56,8 @@ group {
             	items {
             		item {
                         type: GROUP;
-                        source: "main_menu";
-                        name: "menu";
+                        source: "libraries";
+                        name: "libraries";
                         align: -1 -1;
                         weight: 1 1;
                     }

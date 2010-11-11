@@ -1,5 +1,6 @@
 #include "main.h"
 #include "slideshow.h"
+#include "evas_object/photo_object.h"
 
 static Evas_Object *inwin = NULL;
 
@@ -9,6 +10,12 @@ static Evas_Object *bt_import;
 static Evas_Object *bt_slideshow;
 static Evas_Object *bt_del_bg;
 static Evas_Object *bt_album_new;
+
+static Elm_Gengrid_Item_Class itc_grid;
+
+static char* _library_get(void *data, Evas_Object *obj, const char *part);
+static void  _library_del(void *data, Evas_Object *obj);
+static Evas_Object* _library_icon_get(void *data, Evas_Object *obj, const char *part);
 
 static void _library_select(void *data, Evas_Object *obj, void *event_info);
 static void _new_library_cb(void *data, Evas_Object *obj, void *event_info);
@@ -23,15 +30,28 @@ static void _geocaching_import_done_cb(void *data, Evas_Object *obj, void *event
 static void _preferences_cb(void *data, Evas_Object *obj, void *event_info);
 static void _quit_cb(void *data, Evas_Object *obj, void *event_info);
 
+typedef struct
+{
+	const char *path;
+	Enlil_Photo *photo;
+} Library;
+
 
 void main_menu_new(Evas_Object *edje)
 {
     Evas_Object *bt;
 
     //Libraries
-    libraries_list = edje_object_part_external_object_get(edje, "object.main_menu.list_libraries");
+    //libraries_list = edje_object_part_external_object_get(edje, "object.main_menu.list_libraries");
+    libraries_list = elm_gengrid_add(edje);
+    elm_gengrid_item_size_set(libraries_list, 256, 256);
+    edje_object_part_swallow(edje, "object.main_menu.list_libraries", libraries_list);
     bt_new_library = edje_object_part_external_object_get(edje, "object.main_menu.bt_new_library");
     evas_object_smart_callback_add(bt_new_library, "clicked", _new_library_cb, NULL);
+
+    itc_grid.func.label_get = _library_get;
+    itc_grid.func.del = _library_del;
+    itc_grid.func.icon_get = _library_icon_get;
     //
 
     //tools
@@ -62,15 +82,7 @@ void main_menu_new(Evas_Object *edje)
 
 
     //library list
-    Eina_List *l = enlil_root_eet_path_load();
-    Enlil_String *string;
-    main_menu_update_libraries_list(l);
-    EINA_LIST_FREE(l, string)
-    {
-        EINA_STRINGSHARE_DEL(string->string);
-        FREE(string);
-    }
-
+    main_menu_update_libraries_list();
 }
 
 void main_menu_loading_disable_set(Eina_Bool disabled)
@@ -96,20 +108,84 @@ void main_menu_noroot_disabled_set(Eina_Bool disabled)
    elm_object_disabled_set(bt_del_bg, disabled);
 }
 
-void main_menu_update_libraries_list(Eina_List *list)
+void main_menu_update_libraries_list()
 {
-    const Eina_List *l;
     Enlil_String *string;
+    Eina_List *list = enlil_root_eet_path_load();
 
-    elm_list_clear(libraries_list);
-    EINA_LIST_FOREACH(list, l, string)
-        elm_list_item_append(libraries_list, string->string, NULL, NULL, _library_select, NULL);
-    elm_list_go(libraries_list);
+    elm_gengrid_clear(libraries_list);
+    EINA_LIST_FREE(list, string)
+    {
+    	Library *lib = calloc(1, sizeof(Library));
+    	lib->path = eina_stringshare_add(string->string);
+        lib->photo = enlil_photo_new();
+        Enlil_Photo_Data *photo_data = calloc(1, sizeof(Enlil_Photo_Data));
+        enlil_photo_user_data_set(lib->photo, photo_data, enlil_photo_data_free);
+
+        photo_data->library_item = elm_gengrid_item_append(libraries_list, &itc_grid, lib, _library_select, NULL);
+
+        EINA_STRINGSHARE_DEL(string->string);
+        FREE(string);
+    }
+}
+
+
+static char* _library_get(void *data, Evas_Object *obj, const char *part)
+{
+	Library *lib = data;
+	return strdup(lib->path);
+}
+
+static void  _library_del(void *data, Evas_Object *obj)
+{
+	Library *lib = data;
+	EINA_STRINGSHARE_DEL(lib->path);
+	enlil_photo_free(&(lib->photo));
+	FREE(lib);
+}
+
+static Evas_Object* _library_icon_get(void *data, Evas_Object *obj, const char *part)
+{
+	const char *s = NULL;
+	Library *lib = data;
+	Enlil_Photo *photo = enlil_root_first_photo_get(lib->path);
+
+	if(!photo)
+		return NULL;
+
+	enlil_photo_path_set(lib->photo, enlil_photo_path_get(photo));
+	enlil_photo_file_name_set(lib->photo, enlil_photo_file_name_get(photo));
+
+	enlil_photo_free(&(photo));
+	photo = lib->photo;
+	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+
+	Evas_Object *o = photo_object_add(obj);
+	photo_object_theme_file_set(o, THEME, "photo_simple");
+
+	if(photo_data->cant_create_thumb == 1)
+		return o;
+
+	s = enlil_thumb_photo_get(photo, Enlil_THUMB_FDO_LARGE, thumb_done_cb, thumb_error_cb, NULL);
+
+	evas_image_cache_flush (evas_object_evas_get(obj));
+
+	if(s)
+	{
+		photo_object_file_set(o, s , NULL);
+	}
+	else
+		photo_object_progressbar_set(o, EINA_TRUE);
+
+
+	evas_object_show(o);
+	return o;
 }
 
 static void _library_select(void *data, Evas_Object *obj, void *event_info)
 {
-    root_set(elm_list_item_label_get(elm_list_selected_item_get(obj)));
+	Library *lib = elm_gengrid_item_data_get(elm_gengrid_selected_item_get(obj));
+    root_set(lib->path);
     select_list_photo();
 }
 
@@ -151,6 +227,7 @@ static void _new_library_done_cb(void *data, Evas_Object *obj, void *event_info)
         {
             root_set(selected);
             select_list_photo();
+            main_menu_update_libraries_list();
         }
      }
    evas_object_del(inwin);

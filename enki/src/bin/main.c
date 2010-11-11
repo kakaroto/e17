@@ -153,17 +153,6 @@ void root_set(const char *root_path)
 	enlil_load_run(load);
 	//
 
-	//
-	Eina_List *list = enlil_root_eet_path_load();
-	Enlil_String *string;
-	main_menu_update_libraries_list(list);
-	EINA_LIST_FREE(list, string)
-	{
-		EINA_STRINGSHARE_DEL(string->string);
-		FREE(string);
-	}
-	//
-
 	//the background
 	Enlil_String *s;
 	Eet_Data_Descriptor *edd;
@@ -323,17 +312,6 @@ int elm_main(int argc, char **argv)
 	enlil_data->ul = upload_new(win->win);
 	//
 
-	//
-	Eina_List *list = enlil_root_eet_path_load();
-	Enlil_String *string;
-	main_menu_update_libraries_list(list);
-	EINA_LIST_FREE(list, string)
-	{
-		EINA_STRINGSHARE_DEL(string->string);
-		FREE(string);
-	}
-	//
-
 	//the media player
 	Enlil_String *s;
 	Eet_Data_Descriptor *edd;
@@ -477,7 +455,8 @@ void enlil_photo_data_free(Enlil_Photo *photo, void *_data)
 	Enlil_Flickr_Job *job;
 
 	enlil_thumb_photo_clear(photo);
-	photos_list_object_item_del(data->list_photo_item);
+	if(data->list_photo_item)
+		photos_list_object_item_del(data->list_photo_item);
 	if(data->slideshow_item)
 		elm_slideshow_item_del(data->slideshow_item);
 	if(data->panel_image)
