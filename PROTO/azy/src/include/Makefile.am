@@ -1,5 +1,5 @@
 pkginclude_HEADERS = Azy.h
 
-libazyincludedir = $(includedir)/azy-@VMAJ@
+pkgincludedir = $(includedir)/azy-@VMAJ@
 
 MAINTAINERCLEANFILES = Makefile.in
