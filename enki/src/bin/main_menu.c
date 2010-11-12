@@ -176,8 +176,8 @@ static Evas_Object* _library_icon_get(void *data, Evas_Object *obj, const char *
 	photo = lib->photo;
 	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
 
-	Evas_Object *o = photo_object_add(obj);
-	photo_object_theme_file_set(o, THEME, "photo_simple");
+	Evas_Object *o = elm_layout_add(obj);
+	elm_layout_file_set(o, THEME, "photo_library");
 
 	if(photo_data->cant_create_thumb == 1)
 		return o;
@@ -188,10 +188,18 @@ static Evas_Object* _library_icon_get(void *data, Evas_Object *obj, const char *
 
 	if(s)
 	{
-		photo_object_file_set(o, s , NULL);
+		Evas_Object *icon = elm_icon_add(obj);
+		elm_icon_file_set(icon, s, NULL);
+		elm_icon_fill_outside_set(icon, EINA_TRUE);
+		elm_layout_content_set(o, "object.photo.front.swallow" , icon);
+
+		icon = elm_icon_add(obj);
+		elm_icon_file_set(icon, s, NULL);
+		elm_icon_fill_outside_set(icon, EINA_TRUE);
+		elm_layout_content_set(o, "object.photo.back.swallow" , icon);
 	}
-	else
-		photo_object_progressbar_set(o, EINA_TRUE);
+	//else
+	//	photo_object_progressbar_set(o, EINA_TRUE);
 
 
 	evas_object_show(o);
