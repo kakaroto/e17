@@ -158,6 +158,8 @@ EAPI    void                    enlil_root_monitor_start(Enlil_Root *root);
 EAPI    void                    enlil_root_monitor_stop(Enlil_Root *root);
 EAPI    void                    enlil_root_albums_sort(Enlil_Root *root);
 EAPI 	Enlil_Photo * 			enlil_root_first_photo_get(const char *library_path);
+EAPI 	Enlil_Photo * 			enlil_root_photo_get(const char *library_path);
+EAPI 	void 					enlil_root_photo_set(Enlil_Root *root, const Enlil_Photo *photo);
 
 EAPI    const Eina_List *       enlil_root_collections_get(const Enlil_Root *root);
 EAPI    void                    enlil_root_collection_del(Enlil_Root *root, Enlil_Collection *col);

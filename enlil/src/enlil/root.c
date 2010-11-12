@@ -28,6 +28,8 @@ struct enlil_root
    Ecore_File_Monitor *monitor;
    Enlil_Configuration conf;
 
+   const char *photo; //photo use to describe the library
+
    //list of Enlil_Collection *
    Eina_List *collections;
    //list of Enlil_Tag *
@@ -112,6 +114,7 @@ void enlil_root_free(Enlil_Root **root)
    ASSERT_RETURN_VOID((*root)!=NULL);
 
    EINA_STRINGSHARE_DEL((*root)->path);
+   EINA_STRINGSHARE_DEL((*root)->photo);
    EINA_LIST_FOREACH_SAFE( (*root)->albums, l, l_next, album)
       enlil_album_free(&album);
 
@@ -190,12 +193,36 @@ void enlil_root_path_set(Enlil_Root *root, const char *path)
    FREE(_path);
 }
 
+/**
+ * Set the default photo of the album
+ *
+ * @param root the root struct
+ * @param photo the photo
+ */
+void enlil_root_photo_set(Enlil_Root *root, const Enlil_Photo *photo)
+{
+	char buf[PATH_MAX];
+
+	ASSERT_RETURN_VOID(root!=NULL);
+	ASSERT_RETURN_VOID(photo!=NULL);
+
+	ROOT_HEADER_LOAD(root);
+
+	EINA_STRINGSHARE_DEL(root->photo);
+
+	snprintf(buf, sizeof(buf), "%s/%s", enlil_album_file_name_get(enlil_photo_album_get(photo)), enlil_photo_file_name_get(photo));
+	root->photo = eina_stringshare_add(buf);
+	_root_eet_header_save(root);
+}
+
 void enlil_root_flickr_account_set(Enlil_Root *root, const char *account)
 {
    ASSERT_RETURN_VOID(root!=NULL);
    ASSERT_RETURN_VOID(account!=NULL);
 
    if(account == root->flickr_account) return ;
+
+   ROOT_HEADER_LOAD(root);
 
    EINA_STRINGSHARE_DEL(root->flickr_account);
 
@@ -219,6 +246,8 @@ void enlil_root_flickr_auth_token_set(Enlil_Root *root, const char *auth_token)
    ASSERT_RETURN_VOID(root!=NULL);
 
    if(auth_token == root->flickr_auth_token) return ;
+
+   ROOT_HEADER_LOAD(root);
 
    EINA_STRINGSHARE_DEL(root->flickr_auth_token);
 
@@ -762,7 +791,7 @@ int enlil_root_eet_path_save(Enlil_Root *root)
 }
 
 /**
- * Return the list of albums saved in ~/EET_FOLDER_ROOT_DB/EET_FILE_ROOT_DB
+ * Return the list of libraries saved in ~/EET_FOLDER_ROOT_DB/EET_FILE_ROOT_DB
  *
  * @return Returns a list of String* containing the root path
  */
@@ -1111,8 +1140,9 @@ static void _root_eet_header_load(Enlil_Root *root)
 
    if(data)
      {
-	enlil_root_flickr_account_set(root, data->flickr_account);
-	enlil_root_flickr_auth_token_set(root, data->flickr_auth_token);
+	root->flickr_account = eina_stringshare_add(data->flickr_account);
+	root->flickr_auth_token = eina_stringshare_add(data->flickr_auth_token);
+	root->photo = eina_stringshare_add(data->photo);
      }
 
    enlil_root_free(&data);
@@ -1234,6 +1264,7 @@ static Eet_Data_Descriptor * _enlil_root_header_edd_new()
 
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Root, "flickr_account", flickr_account, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Root, "flickr_auth_token", flickr_auth_token, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Root, "photo", photo, EET_T_STRING);
 
    return edd;
 }
@@ -1245,6 +1276,36 @@ Enlil_Configuration enlil_conf_get(Enlil_Root *root)
 {
    return root->conf;
 }
+
+
+
+Enlil_Photo * enlil_root_photo_get(const char *library_path)
+{
+	Enlil_Photo *photo = NULL;
+	char buf[PATH_MAX];
+	Enlil_Root *root = enlil_root_new(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+	enlil_root_path_set(root, library_path);
+	ROOT_HEADER_LOAD(root);
+
+	if(root->photo)
+	{
+		snprintf(buf, sizeof(buf), "%s/%s", library_path, root->photo);
+
+		if(ecore_file_exists(buf))
+		{
+			photo = enlil_photo_new();
+			enlil_photo_path_set(photo, library_path);
+			enlil_photo_file_name_set(photo, root->photo);
+		}
+	}
+
+	if(!photo)
+		photo = enlil_root_first_photo_get(library_path);
+
+	enlil_root_free(&(root));
+	return photo;
+}
+
 
 Enlil_Photo * enlil_root_first_photo_get(const char *library_path)
 {
