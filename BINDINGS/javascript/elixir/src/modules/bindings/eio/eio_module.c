@@ -225,12 +225,12 @@ _eio_jsval_to_boolean(JSContext *cx, jsval val)
 }
 
 static Eina_Bool
-_elixir_eio_filter_direct_cb(void *data, const Eina_File_Direct_Info *info)
+_elixir_eio_filter_direct_cb(void *data, Eio_File *handler __UNUSED__, const Eina_File_Direct_Info *info)
 {
    Elixir_EIO_Data *dt;
    JSContext *cx;
    JSObject *parent;
-   jsval argv[2];
+   jsval argv[3];
    jsval rval;
    Eina_Bool result = EINA_FALSE;
 
@@ -246,10 +246,11 @@ _elixir_eio_filter_direct_cb(void *data, const Eina_File_Direct_Info *info)
    if (!parent || !dt) goto on_error;
 
    argv[0] = elixir_void_get_jsval(data);
-   if (!elixir_new_eina_direct_info(cx, info, &argv[1])) goto on_error;
+   argv[1] = OBJECT_TO_JSVAL(dt->result);
+   if (!elixir_new_eina_direct_info(cx, info, &argv[2])) goto on_error;
    rval = JSVAL_VOID;
 
-   if (elixir_function_run(cx, dt->func_filter, parent, 2, argv, &rval))
+   if (elixir_function_run(cx, dt->func_filter, parent, 3, argv, &rval))
      result = _eio_jsval_to_boolean(cx, rval);
 
  on_error:
@@ -258,12 +259,12 @@ _elixir_eio_filter_direct_cb(void *data, const Eina_File_Direct_Info *info)
 }
 
 static void
-_elixir_eio_main_direct_cb(void *data, const Eina_File_Direct_Info *info)
+_elixir_eio_main_direct_cb(void *data, Eio_File *handler __UNUSED__, const Eina_File_Direct_Info *info)
 {
    Elixir_EIO_Data *dt;
    JSContext *cx;
    JSObject *parent;
-   jsval argv[2];
+   jsval argv[3];
    jsval rval;
 
    parent = elixir_void_get_parent(data);
@@ -276,17 +277,18 @@ _elixir_eio_main_direct_cb(void *data, const Eina_File_Direct_Info *info)
    elixir_function_start(cx);
 
    argv[0] = elixir_void_get_jsval(data);
-   if (!elixir_new_eina_direct_info(cx, info, &argv[1])) goto on_error;
+   argv[1] = OBJECT_TO_JSVAL(dt->result);
+   if (!elixir_new_eina_direct_info(cx, info, &argv[2])) goto on_error;
    rval = JSVAL_VOID;
 
-   elixir_function_run(cx, dt->func_main, parent, 2, argv, &rval);
+   elixir_function_run(cx, dt->func_main, parent, 3, argv, &rval);
 
  on_error:
    elixir_function_stop(cx);
 }
 
 static Eina_Bool
-_elixir_eio_filter_cb(void *data, const char *file)
+_elixir_eio_filter_cb(void *data, Eio_File *handler __UNUSED__, const char *file)
 {
    Elixir_EIO_Data *dt;
    JSContext *cx;
@@ -325,10 +327,12 @@ _elixir_eio_filter_cb(void *data, const char *file)
    str = elixir_dup(cx, tmp);
 
    argv[0] = elixir_void_get_jsval(data);
-   argv[1] = STRING_TO_JSVAL(str);
+   /* To avoid race condition and other nasty cross thread problem */
+   elixir_return_ptr(cx, &argv[1], handler, elixir_class_request("Eio_File", NULL));
+   argv[2] = STRING_TO_JSVAL(str);
    rval = JSVAL_VOID;
 
-   if (elixir_function_run(cx, dt->func_filter, parent, 2, argv, &rval))
+   if (elixir_function_run(cx, dt->func_filter, parent, 3, argv, &rval))
      result = _eio_jsval_to_boolean(cx, rval);
 
  on_error:
@@ -339,14 +343,14 @@ _elixir_eio_filter_cb(void *data, const char *file)
 }
 
 static void
-_elixir_eio_main_cb(void *data, const char *file)
+_elixir_eio_main_cb(void *data, Eio_File *handler __UNUSED__, const char *file)
 {
    Elixir_EIO_Data *dt;
    JSString *str;
    JSContext *cx;
    JSObject *parent;
    char *canon;
-   jsval argv[2];
+   jsval argv[3];
    jsval rval;
 
    parent = elixir_void_get_parent(data);
@@ -364,10 +368,11 @@ _elixir_eio_main_cb(void *data, const char *file)
    str = elixir_dup(cx, canon);
 
    argv[0] = elixir_void_get_jsval(data);
-   argv[1] = STRING_TO_JSVAL(str);
+   argv[1] = OBJECT_TO_JSVAL(dt->result);
+   argv[2] = STRING_TO_JSVAL(str);
    rval = JSVAL_VOID;
 
-   elixir_function_run(cx, dt->func_main, parent, 2, argv, &rval);
+   elixir_function_run(cx, dt->func_main, parent, 3, argv, &rval);
 
    elixir_function_stop(cx);
 }
@@ -397,38 +402,7 @@ _elixir_eio_data_free(Elixir_EIO_Data *dt)
 }
 
 static void
-_elixir_eio_done_cb(void *data)
-{
-   Elixir_EIO_Data *dt;
-   JSContext *cx;
-   JSObject *parent;
-   jsval argv[1];
-   jsval rval;
-
-   parent = elixir_void_get_parent(data);
-   dt = elixir_void_get_private(data);
-   if (!parent || !dt)
-     return ;
-
-   cx = dt->main;
-
-   elixir_function_start(cx);
-
-   JS_SetContextThread(dt->runtime->cx);
-
-   argv[0] = elixir_void_get_jsval(data);
-   rval = JSVAL_VOID;
-
-   elixir_function_run(cx, dt->func_done, parent, 1, argv, &rval);
-
-   elixir_void_free(data);
-
-   _elixir_eio_data_free(dt);
-   elixir_thread_del();
-}
-
-static void
-_elixir_eio_error_cb(void *data, int error)
+_elixir_eio_done_cb(void *data, Eio_File *handler __UNUSED__)
 {
    Elixir_EIO_Data *dt;
    JSContext *cx;
@@ -447,11 +421,44 @@ _elixir_eio_error_cb(void *data, int error)
 
    JS_SetContextThread(dt->runtime->cx);
 
-   argv[1] = INT_TO_JSVAL(error);
    argv[0] = elixir_void_get_jsval(data);
+   argv[1] = OBJECT_TO_JSVAL(dt->result);
    rval = JSVAL_VOID;
 
-   elixir_function_run(cx, dt->func_error, parent, 2, argv, &rval);
+   elixir_function_run(cx, dt->func_done, parent, 2, argv, &rval);
+
+   elixir_void_free(data);
+
+   _elixir_eio_data_free(dt);
+   elixir_thread_del();
+}
+
+static void
+_elixir_eio_error_cb(void *data, Eio_File *handler __UNUSED__, int error)
+{
+   Elixir_EIO_Data *dt;
+   JSContext *cx;
+   JSObject *parent;
+   jsval argv[3];
+   jsval rval;
+
+   parent = elixir_void_get_parent(data);
+   dt = elixir_void_get_private(data);
+   if (!parent || !dt)
+     return ;
+
+   cx = dt->main;
+
+   elixir_function_start(cx);
+
+   JS_SetContextThread(dt->runtime->cx);
+
+   argv[2] = INT_TO_JSVAL(error);
+   argv[0] = elixir_void_get_jsval(data);
+   argv[1] = OBJECT_TO_JSVAL(dt->result);
+   rval = JSVAL_VOID;
+
+   elixir_function_run(cx, dt->func_error, parent, 3, argv, &rval);
 
    _elixir_eio_data_free(dt);
 
@@ -664,12 +671,12 @@ _elixir_eio_stat_free(JSContext *cx, Elixir_EIO_Stat *st)
 }
 
 static void
-_elixir_eio_direct_stat_error(void *data, int error)
+_elixir_eio_direct_stat_error(void *data, Eio_File *handler __UNUSED__, int error)
 {
    Elixir_EIO_Stat *st;
    JSContext *cx;
    JSObject *parent;
-   jsval argv[2];
+   jsval argv[3];
    jsval rval;
 
    parent = elixir_void_get_parent(data);
@@ -680,8 +687,9 @@ _elixir_eio_direct_stat_error(void *data, int error)
 
    elixir_function_start(cx);
 
-   argv[1] = INT_TO_JSVAL(error);
+   argv[2] = INT_TO_JSVAL(error);
    argv[0] = elixir_void_get_jsval(data);
+   argv[1] = OBJECT_TO_JSVAL(st->result);
 
    elixir_function_run(cx, st->func_error, parent, 2, argv, &rval);
 
@@ -690,12 +698,12 @@ _elixir_eio_direct_stat_error(void *data, int error)
 }
 
 static void
-_elixir_eio_direct_stat_done(void *data, const struct stat *stat)
+_elixir_eio_direct_stat_done(void *data, Eio_File *handler __UNUSED__, const struct stat *stat)
 {
    Elixir_EIO_Stat *st;
    JSContext *cx;
    JSObject *parent;
-   jsval argv[2];
+   jsval argv[3];
    jsval rval;
 
    parent = elixir_void_get_parent(data);
@@ -706,12 +714,12 @@ _elixir_eio_direct_stat_done(void *data, const struct stat *stat)
 
    elixir_function_start(cx);
 
-   if (!elixir_new_stat(cx, stat, &argv[1]))
+   if (!elixir_new_stat(cx, stat, &argv[2]))
      goto on_error;
-
    argv[0] = elixir_void_get_jsval(data);
+   argv[1] = OBJECT_TO_JSVAL(st->result);
 
-   elixir_function_run(cx, st->func_done, parent, 2, argv, &rval);
+   elixir_function_run(cx, st->func_done, parent, 3, argv, &rval);
 
    elixir_void_free(data);
    _elixir_eio_stat_free(cx, st);
@@ -721,7 +729,7 @@ _elixir_eio_direct_stat_done(void *data, const struct stat *stat)
  on_error:
    elixir_function_stop(cx);
 
-   _elixir_eio_direct_stat_error(data, 0);
+   _elixir_eio_direct_stat_error(data, handler, 0);
 }
 
 static JSBool

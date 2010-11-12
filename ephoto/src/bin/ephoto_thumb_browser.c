@@ -267,7 +267,7 @@ _todo_items_process(void *data)
 }
 
 static void
-_ephoto_populate_main(void *data, const Eina_File_Direct_Info *info)
+_ephoto_populate_main(void *data, Eio_File *handler __UNUSED__, const Eina_File_Direct_Info *info)
 {
    Ephoto_Thumb_Browser *tb = data;
    Ephoto_Entry *e;
@@ -284,7 +284,7 @@ _ephoto_populate_main(void *data, const Eina_File_Direct_Info *info)
 }
 
 static Eina_Bool
-_ephoto_populate_filter(void *data __UNUSED__, const Eina_File_Direct_Info *info)
+_ephoto_populate_filter(void *data __UNUSED__, Eio_File *handler __UNUSED__, const Eina_File_Direct_Info *info)
 {
    const char *bname = info->path + info->name_start;
 
@@ -295,7 +295,7 @@ _ephoto_populate_filter(void *data __UNUSED__, const Eina_File_Direct_Info *info
 }
 
 static void
-_ephoto_populate_end(void *data)
+_ephoto_populate_end(void *data, Eio_File *handler __UNUSED__)
 {
    Ephoto_Thumb_Browser *tb = data;
    tb->ls = NULL;
@@ -319,12 +319,12 @@ _ephoto_populate_end(void *data)
 }
 
 static void
-_ephoto_populate_error(void *data, int error)
+_ephoto_populate_error(void *data, Eio_File *handler, int error)
 {
    Ephoto_Thumb_Browser *tb = data;
    if (error) ERR("could not populate: %s", strerror(error));
    edje_object_signal_emit(tb->edje, "populate,error", "ephoto");
-   _ephoto_populate_end(tb);
+   _ephoto_populate_end(tb, handler);
 }
 
 static void

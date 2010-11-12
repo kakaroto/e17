@@ -60,13 +60,13 @@ _obj_del(void *data, Evas *e __UNUSED__, Evas_Object *obj, void *event_info __UN
 }
 
 static Eina_Bool
-_populate_filter(void *data __UNUSED__, const Eina_File_Direct_Info *info)
+_populate_filter(void *data __UNUSED__, Eio_File *handler __UNUSED__, const Eina_File_Direct_Info *info)
 {
    return _ephoto_eina_file_direct_info_image_useful(info);
 }
 
 static void
-_populate_end(void *data)
+_populate_end(void *data, Eio_File *handler __UNUSED__)
 {
    Ephoto_Directory_Thumb *dt = data;
    Evas_Object *obj;
@@ -86,15 +86,15 @@ _populate_end(void *data)
 }
 
 static void
-_populate_error(void *data, int error)
+_populate_error(void *data, Eio_File *handler, int error)
 {
    Ephoto_Directory_Thumb *dt = data;
    if (error) ERR("could not populate: %s", strerror(error));
-   _populate_end(dt);
+   _populate_end(dt, handler);
 }
 
 static void
-_populate_main(void *data, const Eina_File_Direct_Info *info)
+_populate_main(void *data, Eio_File *handler __UNUSED__, const Eina_File_Direct_Info *info)
 {
    Ephoto_Directory_Thumb *dt = data;
    Evas_Object *obj;
