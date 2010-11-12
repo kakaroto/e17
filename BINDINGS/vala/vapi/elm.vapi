@@ -728,7 +728,14 @@ public class Toolbar : Elm.Object
 
     public void icon_size_set( int icon_size );
     public int icon_size_get();
-    public ToolbarItem item_add( Elm.Object icon, string label, Evas.Callback func );
+    [CCode (cname = "elm_toolbar_item_append")]
+    public ToolbarItem append( string icon, string label, Evas.Callback func );
+    [CCode (cname = "elm_toolbar_item_prepend")]
+    public ToolbarItem prepend( string icon, string label, Evas.Callback func );
+    public ToolbarItem item_insert_before( ToolbarItem before, string icon, string label, Evas.Callback cb);
+    public ToolbarItem item_insert_after( ToolbarItem after, string icon, string label, Evas.Callback cb);
+    public ToolbarItem first_item_get();
+    public ToolbarItem last_item_get();
     // Note: elm_boolbar_item_ functions living in ToolbarItem scope
     public void scrollable_set( bool scrollable );
     public void homogenous_set( bool homogenous );
@@ -736,6 +743,22 @@ public class Toolbar : Elm.Object
     [CCode (cname = "elm_toolbar_item_unselect_all")]
     public void unselect_all();
     public void align_set( bool align );
+    [CCode (cname = "elm_toolbar_item_find_by_label")]
+    public ToolbarItem find_by_label(string label);
+    public ToolbarItem selected_item_get();
+    public ShrinkMode mode_shrink_get();
+    public void mode_shrink_set( ShrinkMode mode );
+    public bool menu_get();
+    public void menu_set( bool menu );
+
+    [CCode (cname = "Elm_Toolbar_Shrink_Mode", cprefix = "ELM_TOOLBAR_SHRINK_")]
+    public enum ShrinkMode
+    {
+        NONE,
+        HIDE,
+        SCROLL,
+        MENU
+    }
 }
 
 
@@ -745,16 +768,51 @@ public class Toolbar : Elm.Object
 public class ToolbarItem
 {
     public Elm.Object icon_get();
+    public void icon_set( string icon );
     public unowned string label_get();
     public void label_set( string label );
+    public ToolbarItem next_get();
+    public ToolbarItem prev_get();
     //public void del_cb_set( ... );
-    public void select();
     public bool disabled_get();
     public void disabled_set( bool disabled );
     public bool separator_get();
     public void separator_set( bool separator );
     public void menu_set( bool menu );
     public Elm.Object menu_get();
+    public Elm.Object toolbar_get();
+    public void priority_set( int priority );
+    public int priority_get();
+    public string icon_name_get();
+    public void* data_get();
+    public void data_set( void* data );
+    public bool selected_get();
+    public void selected_set( bool selected );
+    public bool homogenous_get();
+    public void homogenous_set( bool selected );
+    public Elm.Object end_get();
+    public void end_set( Elm.Object obj );
+    public State state_add( string icon, string lable, Evas.Callback cb);
+    public bool state_set( State state );
+    public void state_unset();
+    public State state_get();
+    public State state_next();
+    public State state_prev();
+
+    public void tooltip_text_set( string text );
+    public void tooltip_unset();
+    public void tooltip_style_set( string style );
+    public unowned string tooltip_style_get();
+
+    public void cursor_set( string text );
+    public void cursor_unset();
+    public void cursor_style_set( string style );
+    public unowned string cursor_style_get();
+    public bool cursor_engine_only_get();
+    public void cursor_engine_only_set( bool only );
+
+    [CCode (cname = "Elm_Toolbar_Item_State", free_function = "g_free")]
+    public class State {}
 }
 
 
