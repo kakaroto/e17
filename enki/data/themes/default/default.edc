@@ -101,6 +101,7 @@ parts {
             state: "default" 0.0;
             visible: 1;
             image.normal: "library_photo.png";
+            image.border: 15 15 15 15;
             rel1.relative: 0.1 0.2;
             rel2.relative: 0.9 0.8;
             map {
@@ -200,6 +201,7 @@ parts {
             state: "default" 0.0;
             visible: 1;
             image.normal: "library_photo.png";
+            image.border: 15 15 15 15;
             rel1.relative: 0.1 0.2;
             rel2.relative: 0.9 0.8;
             map {
@@ -222,7 +224,7 @@ parts {
             map {
 	        	on: 1;
 	            rotation {
-	            	z: -LIBRARY_ROTATE;
+	            	z: LIBRARY_ROTATE*2;
 	            }
 	        }
         }
@@ -259,7 +261,7 @@ parts {
             map {
 	        	on: 1;
 	            rotation {
-	            	z: -LIBRARY_ROTATE;
+	            	z: LIBRARY_ROTATE*2;
 	            }
 	        }
         }
@@ -290,7 +292,7 @@ parts {
             map {
 	        	on: 1;
 	            rotation {
-	            	z: -LIBRARY_ROTATE;
+	            	z: LIBRARY_ROTATE*2;
 	            }
 	        }
         }
@@ -578,17 +580,21 @@ script {
 parts {
     part {
         name: "object.whole";
-        type: RECT;
+        type: IMAGE;
         ignore_flags: ON_HOLD;
         description {
             state: "default" 0.0;
             visible: 1;
             color: 255 255 255 0;
+            image.normal: "library_photo.png";
+            rel1.offset: -5 -5;
+            rel2.offset: 5 5;
+            image.border: 15 15 15 15;
         }
         description {
             state: "select" 0.0;
             inherit: "default" 0.0;
-            color: 0 0 200 100;
+            color: 255 255 255 200;
         }
         description {
             state: "unselect" 0.0;
@@ -960,17 +966,21 @@ script {
 parts {
     part {
         name: "object.whole";
-        type: RECT;
+        type: IMAGE;
         ignore_flags: ON_HOLD;
         description {
             state: "default" 0.0;
             visible: 1;
             color: 255 255 255 0;
+            image.normal: "library_photo.png";
+            rel1.offset: -5 -5;
+            rel2.offset: 5 5;
+            image.border: 15 15 15 15;
         }
         description {
             state: "select" 0.0;
             inherit: "default" 0.0;
-            color: 0 0 200 100;
+            color: 255 255 255 200;
         }
         description {
             state: "unselect" 0.0;
