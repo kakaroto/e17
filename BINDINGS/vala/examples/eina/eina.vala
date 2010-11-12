@@ -46,20 +46,21 @@ public static void eina_list_example()
     a.iterator_new(  ).foreach((c, el) => {
             var e = (string)el;
             debug(@"\tdata: $e");
+            return true;
             });
     debug( "list b:" );
-    b.iterator_new(  ).foreach( print_str);
+    b.iterator_new(  ).foreach( print_str );
     a.reverse();
     b.merge( a );
     debug( "list merged:" );
-    b.iterator_new(  ).foreach( print_str);
+    b.iterator_new(  ).foreach( print_str );
     uint c = b.count();
-    b.sort( c ,sort_str );
+    b.sort( c , sort_str );
     debug( "list sorted:" );
-    b.iterator_new().foreach( print_str);
+    b.iterator_new().foreach( print_str );
 }
 //=================================================================
-public static bool eina_iterator_example()
+public static void eina_iterator_example()
 {
         var a = new Eina.Array<string>();
         a.push("eins");
