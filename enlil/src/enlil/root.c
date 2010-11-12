@@ -28,7 +28,8 @@ struct enlil_root
    Ecore_File_Monitor *monitor;
    Enlil_Configuration conf;
 
-   const char *photo; //photo use to describe the library
+   const char *photo1; //photo use to describe the library
+   const char *photo2;
 
    //list of Enlil_Collection *
    Eina_List *collections;
@@ -114,7 +115,8 @@ void enlil_root_free(Enlil_Root **root)
    ASSERT_RETURN_VOID((*root)!=NULL);
 
    EINA_STRINGSHARE_DEL((*root)->path);
-   EINA_STRINGSHARE_DEL((*root)->photo);
+   EINA_STRINGSHARE_DEL((*root)->photo1);
+   EINA_STRINGSHARE_DEL((*root)->photo2);
    EINA_LIST_FOREACH_SAFE( (*root)->albums, l, l_next, album)
       enlil_album_free(&album);
 
@@ -199,7 +201,7 @@ void enlil_root_path_set(Enlil_Root *root, const char *path)
  * @param root the root struct
  * @param photo the photo
  */
-void enlil_root_photo_set(Enlil_Root *root, const Enlil_Photo *photo)
+void enlil_root_photo_set(Enlil_Root *root, const Enlil_Photo *photo, int first_second)
 {
 	char buf[PATH_MAX];
 
@@ -208,10 +210,19 @@ void enlil_root_photo_set(Enlil_Root *root, const Enlil_Photo *photo)
 
 	ROOT_HEADER_LOAD(root);
 
-	EINA_STRINGSHARE_DEL(root->photo);
-
 	snprintf(buf, sizeof(buf), "%s/%s", enlil_album_file_name_get(enlil_photo_album_get(photo)), enlil_photo_file_name_get(photo));
-	root->photo = eina_stringshare_add(buf);
+
+	if(first_second == 1)
+	{
+		EINA_STRINGSHARE_DEL(root->photo1);
+		root->photo1 = eina_stringshare_add(buf);
+	}
+	else
+	{
+		EINA_STRINGSHARE_DEL(root->photo2);
+		root->photo2 = eina_stringshare_add(buf);
+	}
+
 	_root_eet_header_save(root);
 }
 
@@ -1142,7 +1153,8 @@ static void _root_eet_header_load(Enlil_Root *root)
      {
 	root->flickr_account = eina_stringshare_add(data->flickr_account);
 	root->flickr_auth_token = eina_stringshare_add(data->flickr_auth_token);
-	root->photo = eina_stringshare_add(data->photo);
+	root->photo1 = eina_stringshare_add(data->photo1);
+	root->photo2 = eina_stringshare_add(data->photo2);
      }
 
    enlil_root_free(&data);
@@ -1264,7 +1276,8 @@ static Eet_Data_Descriptor * _enlil_root_header_edd_new()
 
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Root, "flickr_account", flickr_account, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Root, "flickr_auth_token", flickr_auth_token, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Root, "photo", photo, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Root, "photo1", photo1, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Root, "photo2", photo2, EET_T_STRING);
 
    return edd;
 }
@@ -1279,40 +1292,58 @@ Enlil_Configuration enlil_conf_get(Enlil_Root *root)
 
 
 
-Enlil_Photo * enlil_root_photo_get(const char *library_path)
+Enlil_Photo * enlil_root_photo_get(const char *library_path, int first_second)
 {
 	Enlil_Photo *photo = NULL;
 	char buf[PATH_MAX];
+	const char* photo_file;
+
+	ASSERT_RETURN(library_path != NULL);
+	ASSERT_RETURN(first_second > 0);
+	ASSERT_RETURN(first_second < 3);
+
 	Enlil_Root *root = enlil_root_new(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 	enlil_root_path_set(root, library_path);
 	ROOT_HEADER_LOAD(root);
 
-	if(root->photo)
+	if(first_second == 1)
+		photo_file = root->photo1;
+	else
+		photo_file = root->photo2;
+
+	if(photo_file)
 	{
-		snprintf(buf, sizeof(buf), "%s/%s", library_path, root->photo);
+
+		snprintf(buf, sizeof(buf), "%s/%s", library_path, photo_file);
 
 		if(ecore_file_exists(buf))
 		{
 			photo = enlil_photo_new();
 			enlil_photo_path_set(photo, library_path);
-			enlil_photo_file_name_set(photo, root->photo);
+			enlil_photo_file_name_set(photo, photo_file);
 		}
 	}
 
 	if(!photo)
-		photo = enlil_root_first_photo_get(library_path);
+		photo = enlil_root_search_photo_get(library_path, first_second);
 
 	enlil_root_free(&(root));
 	return photo;
 }
 
 
-Enlil_Photo * enlil_root_first_photo_get(const char *library_path)
+Enlil_Photo * enlil_root_search_photo_get(const char *library_path, int first_second)
 {
 	char buf[PATH_MAX];
 	Eina_Bool found = EINA_TRUE, found2 = EINA_TRUE;
+	Eina_Bool first_found = EINA_FALSE;
 	Enlil_Photo *photo = NULL;
 	char *folder, *file;
+
+	ASSERT_RETURN(library_path != NULL);
+	ASSERT_RETURN(first_second > 0);
+	ASSERT_RETURN(first_second < 3);
+
 	Eina_List *folders = ecore_file_ls(library_path);
 
 	EINA_LIST_FREE(folders, folder)
@@ -1324,16 +1355,19 @@ Enlil_Photo * enlil_root_first_photo_get(const char *library_path)
 
 			EINA_LIST_FREE(files, file)
 			{
-
 				if(found2)
 				{
 					if( enlil_photo_is(file) )
 					{
-						photo = enlil_photo_new();
-						enlil_photo_path_set(photo, buf);
-						enlil_photo_file_name_set(photo, file);
-						found2 = EINA_FALSE;
-						found = EINA_FALSE;
+						if(first_found || first_second == 1)
+						{
+							photo = enlil_photo_new();
+							enlil_photo_path_set(photo, buf);
+							enlil_photo_file_name_set(photo, file);
+							found2 = EINA_FALSE;
+							found = EINA_FALSE;
+						}
+						first_found = EINA_TRUE;
 					}
 				}
 				FREE(file);
