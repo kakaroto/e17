@@ -83,6 +83,8 @@ _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
 
    content->id = handler_data->id;
    content->ret = ret;
+   content->recv_net = handler_data->recv;
+   handler_data->recv = NULL;
 
    _azy_client_handler_data_free(handler_data);
 
@@ -332,7 +334,7 @@ _azy_client_handler_del(Azy_Client                    *client,
 {
    Azy_Client_Handler_Data *handler_data;
 
-   if (client != ecore_con_server_data_get(ev->server))
+   if ((client != ecore_con_server_data_get(ev->server)) && (ecore_con_server_data_get(ev->server)))
      return ECORE_CALLBACK_PASS_ON;
 
    DBG("(client=%p, net=%p)", client, client->net);

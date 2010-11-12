@@ -50,6 +50,8 @@ azy_content_free(Azy_Content *content)
      free(content->buffer);
    if (content->faultmsg)
      eina_stringshare_del(content->faultmsg);
+   if (content->recv_net)
+     azy_net_free(content->recv_net);
    free(content);
 }
 
@@ -192,7 +194,18 @@ azy_content_module_name_get(Azy_Content *content,
    return eina_stringshare_add_length(content->method, ret - content->method);
 }
 
-/* param manipulation */
+Azy_Net *
+azy_content_net_get(Azy_Content *content)
+{
+   DBG("(content=%p)", content);
+
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return NULL;
+     }
+   return content->recv_net;
+}
 
 void
 azy_content_param_add(Azy_Content *content,

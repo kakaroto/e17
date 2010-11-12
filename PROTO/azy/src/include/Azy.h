@@ -327,8 +327,10 @@ extern "C" {
    void        azy_content_buffer_reset(Azy_Content *content);
    Azy_Content_Cb azy_content_callback_get(Azy_Content *content);
    const char *azy_content_method_get(Azy_Content *content);
+   const char *azy_content_method_full_get(Azy_Content *content);
    const char *azy_content_module_name_get(Azy_Content *content,
                                             const char   *fallback);
+   Azy_Net    *azy_content_net_get(Azy_Content *content);
    void        azy_content_param_add(Azy_Content *content,
                                       Azy_Value   *val);
    Azy_Value *azy_content_param_get(Azy_Content *content,

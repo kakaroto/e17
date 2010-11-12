@@ -71,7 +71,7 @@ struct _Azy_Content
    Azy_Value         *retval;
    void               *ret;
    Azy_Client_Call_Id  id;
-   
+   Azy_Net            *recv_net;
 
    unsigned char      *buffer;
    long long int       length;
