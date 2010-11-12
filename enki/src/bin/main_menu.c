@@ -33,7 +33,8 @@ typedef struct
 {
 	Eina_Bool is_new_library;
 	const char *path;
-	Enlil_Photo *photo;
+	Enlil_Photo *photo1;
+	Enlil_Photo *photo2;
 } Library;
 
 
@@ -122,11 +123,17 @@ void main_menu_update_libraries_list()
     	Library *lib = calloc(1, sizeof(Library));
     	lib->is_new_library = EINA_FALSE;
     	lib->path = eina_stringshare_add(string->string);
-        lib->photo = enlil_photo_new();
-        Enlil_Photo_Data *photo_data = calloc(1, sizeof(Enlil_Photo_Data));
-        enlil_photo_user_data_set(lib->photo, photo_data, enlil_photo_data_free);
 
-        photo_data->library_item = elm_gengrid_item_append(libraries_list, &itc_grid, lib, _library_select, NULL);
+        lib->photo1 = enlil_photo_new();
+        Enlil_Photo_Data *photo_data1 = calloc(1, sizeof(Enlil_Photo_Data));
+        enlil_photo_user_data_set(lib->photo1, photo_data1, enlil_photo_data_free);
+
+        lib->photo2 = enlil_photo_new();
+        Enlil_Photo_Data *photo_data2 = calloc(1, sizeof(Enlil_Photo_Data));
+        enlil_photo_user_data_set(lib->photo2, photo_data2, enlil_photo_data_free);
+
+        photo_data1->library_item = elm_gengrid_item_append(libraries_list, &itc_grid, lib, _library_select, NULL);
+        photo_data2->library_item = photo_data1->library_item;
 
         EINA_STRINGSHARE_DEL(string->string);
         FREE(string);
@@ -144,14 +151,16 @@ static void  _library_del(void *data, Evas_Object *obj)
 {
 	Library *lib = data;
 	EINA_STRINGSHARE_DEL(lib->path);
-	if(lib->photo)
-		enlil_photo_free(&(lib->photo));
+	if(lib->photo1)
+		enlil_photo_free(&(lib->photo1));
+	if(lib->photo2)
+		enlil_photo_free(&(lib->photo2));
 	FREE(lib);
 }
 
 static Evas_Object* _library_icon_get(void *data, Evas_Object *obj, const char *part)
 {
-	const char *s = NULL;
+	const char *s1 = NULL, *s2 = NULL;
 	Library *lib = data;
 
 	if(strcmp(part, "elm.swallow.icon"))
@@ -164,37 +173,50 @@ static Evas_Object* _library_icon_get(void *data, Evas_Object *obj, const char *
 		return icon;
 	}
 
-	Enlil_Photo *photo = enlil_root_photo_get(lib->path);
-
-	if(!photo)
-		return NULL;
-
-	enlil_photo_path_set(lib->photo, enlil_photo_path_get(photo));
-	enlil_photo_file_name_set(lib->photo, enlil_photo_file_name_get(photo));
-
-	enlil_photo_free(&(photo));
-	photo = lib->photo;
-	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
 
 	Evas_Object *o = elm_layout_add(obj);
 	elm_layout_file_set(o, THEME, "photo_library");
 
-	if(photo_data->cant_create_thumb == 1)
+	//
+	Enlil_Photo *photo1 = enlil_root_photo_get(lib->path,1);
+	if(!photo1)
 		return o;
 
-	s = enlil_thumb_photo_get(photo, Enlil_THUMB_FDO_LARGE, thumb_done_cb, thumb_error_cb, NULL);
+	enlil_photo_path_set(lib->photo1, enlil_photo_path_get(photo1));
+	enlil_photo_file_name_set(lib->photo1, enlil_photo_file_name_get(photo1));
+	Enlil_Photo_Data *photo_data1 = enlil_photo_user_data_get(lib->photo1);
 
-	evas_image_cache_flush (evas_object_evas_get(obj));
+	if(photo1 && !photo_data1->cant_create_thumb)
+		s1 = enlil_thumb_photo_get(lib->photo1, Enlil_THUMB_FDO_LARGE, thumb_done_cb, thumb_error_cb, NULL);
 
-	if(s)
+	enlil_photo_free(&(photo1));
+	//
+
+	//
+	Enlil_Photo *photo2 = enlil_root_photo_get(lib->path,2);
+	enlil_photo_path_set(lib->photo2, enlil_photo_path_get(photo2));
+	enlil_photo_file_name_set(lib->photo2, enlil_photo_file_name_get(photo2));
+	Enlil_Photo_Data *photo_data2 = enlil_photo_user_data_get(lib->photo2);
+
+	if(photo2 && !photo_data2->cant_create_thumb)
+		s2 = enlil_thumb_photo_get(lib->photo2, Enlil_THUMB_FDO_LARGE, thumb_done_cb, thumb_error_cb, NULL);
+
+	enlil_photo_free(&(photo2));
+	//
+
+
+	if(s1 && !s2)
+		s2 = s1;
+
+	if(s1 && s2)
 	{
 		Evas_Object *icon = elm_icon_add(obj);
-		elm_icon_file_set(icon, s, NULL);
+		elm_icon_file_set(icon, s1, NULL);
 		elm_icon_fill_outside_set(icon, EINA_TRUE);
 		elm_layout_content_set(o, "object.photo.front.swallow" , icon);
 
 		icon = elm_icon_add(obj);
-		elm_icon_file_set(icon, s, NULL);
+		elm_icon_file_set(icon, s2, NULL);
 		elm_icon_fill_outside_set(icon, EINA_TRUE);
 		elm_layout_content_set(o, "object.photo.back.swallow" , icon);
 	}

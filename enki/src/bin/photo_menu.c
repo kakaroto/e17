@@ -11,7 +11,8 @@ static void _photo_exif_reload_cb(void *data, Evas_Object *obj, void *event_info
 static void _photo_move_album_cb(void *data, Evas_Object *obj, void *event_info);
 static void _photo_move_album_list_cb(void *data, Evas_Object *obj, void *event_info);
 static void _wall_app_set_cb(void *data, Evas_Object *obj, void *event_info);
-static void _library_photo_set_cb(void *data, Evas_Object *obj, void *event_info);
+static void _library_photo1_set_cb(void *data, Evas_Object *obj, void *event_info);
+static void _library_photo2_set_cb(void *data, Evas_Object *obj, void *event_info);
 static void _inwin_del_cb(void *data);
 
 Photo_Menu *photo_menu_new(Evas_Object *parent, Enlil_Photo *photo, Eina_List *photos)
@@ -80,7 +81,9 @@ Photo_Menu *photo_menu_new(Evas_Object *parent, Enlil_Photo *photo, Eina_List *p
 	elm_menu_item_add(menu, mi, NULL, D_("To the application"), _wall_app_set_cb, am);
 
 
-	mi = elm_menu_item_add(menu, NULL, NULL, D_("Set as library's photo"), _library_photo_set_cb, am);
+	mi = elm_menu_item_add(menu, NULL, NULL, D_("Set as library's photo"), NULL, NULL);
+	elm_menu_item_add(menu, mi, NULL, D_("Front photo"), _library_photo1_set_cb, am);
+	elm_menu_item_add(menu, mi, NULL, D_("Back photo"), _library_photo2_set_cb, am);
      }
 
 
@@ -261,10 +264,17 @@ static void _wall_app_set_cb(void *data, Evas_Object *obj, void *event_info)
    eina_stringshare_del(s.string);
 }
 
-static void _library_photo_set_cb(void *data, Evas_Object *obj, void *event_info)
+static void _library_photo1_set_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Photo_Menu *photo_menu = data;
-   enlil_root_photo_set(enlil_data->root, photo_menu->photo);
+   enlil_root_photo_set(enlil_data->root, photo_menu->photo, 1);
+   main_menu_update_libraries_list();
+}
+
+static void _library_photo2_set_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   Photo_Menu *photo_menu = data;
+   enlil_root_photo_set(enlil_data->root, photo_menu->photo, 2);
    main_menu_update_libraries_list();
 }
 
