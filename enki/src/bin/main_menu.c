@@ -164,7 +164,7 @@ static Evas_Object* _library_icon_get(void *data, Evas_Object *obj, const char *
 		return icon;
 	}
 
-	Enlil_Photo *photo = enlil_root_first_photo_get(lib->path);
+	Enlil_Photo *photo = enlil_root_photo_get(lib->path);
 
 	if(!photo)
 		return NULL;

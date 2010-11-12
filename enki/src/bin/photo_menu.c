@@ -11,6 +11,7 @@ static void _photo_exif_reload_cb(void *data, Evas_Object *obj, void *event_info
 static void _photo_move_album_cb(void *data, Evas_Object *obj, void *event_info);
 static void _photo_move_album_list_cb(void *data, Evas_Object *obj, void *event_info);
 static void _wall_app_set_cb(void *data, Evas_Object *obj, void *event_info);
+static void _library_photo_set_cb(void *data, Evas_Object *obj, void *event_info);
 static void _inwin_del_cb(void *data);
 
 Photo_Menu *photo_menu_new(Evas_Object *parent, Enlil_Photo *photo, Eina_List *photos)
@@ -77,6 +78,9 @@ Photo_Menu *photo_menu_new(Evas_Object *parent, Enlil_Photo *photo, Eina_List *p
 	elm_menu_item_separator_add(menu, NULL);
 	mi = elm_menu_item_add(menu, NULL, NULL, D_("Set as wallpaper"), NULL, NULL);
 	elm_menu_item_add(menu, mi, NULL, D_("To the application"), _wall_app_set_cb, am);
+
+
+	mi = elm_menu_item_add(menu, NULL, NULL, D_("Set as library's photo"), _library_photo_set_cb, am);
      }
 
 
@@ -255,6 +259,13 @@ static void _wall_app_set_cb(void *data, Evas_Object *obj, void *event_info)
    enlil_eet_app_data_save(edd, buf, &s);
    eet_data_descriptor_free(edd);
    eina_stringshare_del(s.string);
+}
+
+static void _library_photo_set_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   Photo_Menu *photo_menu = data;
+   enlil_root_photo_set(enlil_data->root, photo_menu->photo);
+   main_menu_update_libraries_list();
 }
 
 void photo_menu_free(Photo_Menu *photo_menu)
