@@ -1,4 +1,4 @@
-AC_INIT([editje], [0.9.2], [enlightenment-devel@lists.sourceforge.net])
+AC_INIT([editje], [0.9.3], [enlightenment-devel@lists.sourceforge.net])
 
 AM_INIT_AUTOMAKE([1.6 dist-bzip2])
 
