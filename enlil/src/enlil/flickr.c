@@ -109,8 +109,8 @@ static void *_job_done_data = NULL;
 
 static void _job_next();
 static void _job_free(Enlil_Flickr_Job *job);
-static void _flickr_thread(Ecore_Thread *thread, void *data);
-static void _end_cb(void *data);
+static void _flickr_thread(void *data, Ecore_Thread *thread);
+static void _end_cb(void *data, Ecore_Thread *thread);
 static const char *_enlil_flickr_job_type_tostring(Enlil_Flickr_Job_Type type);
 
 static Enlil_Flickr_Job *_enlil_flickr_job_get_authtoken_prepend(Enlil_Root *root, const char *code);
@@ -714,7 +714,7 @@ static void _job_next()
 #endif
 }
 
-static void _flickr_thread(Ecore_Thread *thread, void *data)
+static void _flickr_thread(void *data, Ecore_Thread *thread)
 {
    char *token;
    char buf[PATH_MAX];
@@ -878,7 +878,7 @@ ENLIL_FLICKR_JOB_CMP_PHOTO_NEXT:
 #endif
 }
 
-static void _end_cb(void *data)
+static void _end_cb(void *data, Ecore_Thread *thread)
 {
    int i;
    char buf[PATH_MAX];

@@ -869,7 +869,7 @@ struct _Elixir_Thread_Data
 };
 
 static void
-_elixir_func_heavy(Ecore_Thread *thread, void *data)
+_elixir_func_heavy(void *data, Ecore_Thread *thread)
 {
    Elixir_Thread_Data *dt;
    JSContext *cx;
@@ -889,16 +889,15 @@ _elixir_func_heavy(Ecore_Thread *thread, void *data)
        || !dt)
      goto on_error;
 
+   argv[0] = elixir_void_get_jsval(data);
+
    if (elixir_api_version_get() == 0)
      {
-        argv[0] = elixir_void_get_jsval(data);
-
         elixir_function_run(cx, dt->func_heavy, parent, 1, argv, &rval);
      }
    else
      {
-        elixir_return_ptr(cx, &argv[0], thread, elixir_class_request("Ecore_Thread", NULL));
-        argv[1] = elixir_void_get_jsval(data);
+        elixir_return_ptr(cx, &argv[1], thread, elixir_class_request("Ecore_Thread", NULL));
 
         elixir_function_run(cx, dt->func_heavy, parent, 2, argv, &rval);
      }
@@ -930,12 +929,12 @@ _elixir_func_cleanup(JSContext *cx, Elixir_Thread_Data *dt, void *data)
 }
 
 static void
-_elixir_func_end(void *data)
+_elixir_func_end(void *data, Ecore_Thread *thread)
 {
    Elixir_Thread_Data *dt;
    JSContext *cx;
    JSObject *parent;
-   jsval argv[1];
+   jsval argv[2];
    jsval rval;
 
    parent = elixir_void_get_parent(data);
@@ -954,18 +953,27 @@ _elixir_func_end(void *data)
    argv[0] = elixir_void_get_jsval(data);
    rval = JSVAL_VOID;
 
-   elixir_function_run(cx, dt->func_end, parent, 1, argv, &rval);
+   if (elixir_api_version_get() == 0)
+     {
+        elixir_function_run(cx, dt->func_end, parent, 1, argv, &rval);
+     }
+   else
+     {
+        elixir_return_ptr(cx, &argv[1], thread, elixir_class_request("Ecore_Thread", NULL));
+
+        elixir_function_run(cx, dt->func_end, parent, 2, argv, &rval);
+     }
 
    _elixir_func_cleanup(cx, dt, data);
 }
 
 static void
-_elixir_func_cancel(void *data)
+_elixir_func_cancel(void *data, Ecore_Thread *thread)
 {
    Elixir_Thread_Data *dt;
    JSContext *cx;
    JSObject *parent;
-   jsval argv[1];
+   jsval argv[2];
    jsval rval;
 
    parent = elixir_void_get_parent(data);
@@ -984,7 +992,16 @@ _elixir_func_cancel(void *data)
    argv[0] = elixir_void_get_jsval(data);
    rval = JSVAL_VOID;
 
-   elixir_function_run(cx, dt->func_cancel, parent, 1, argv, &rval);
+   if (elixir_api_version_get() == 0)
+     {
+        elixir_function_run(cx, dt->func_cancel, parent, 1, argv, &rval);
+     }
+   else
+     {
+        elixir_return_ptr(cx, &argv[1], thread, elixir_class_request("Ecore_Thread", NULL));
+
+        elixir_function_run(cx, dt->func_cancel, parent, 2, argv, &rval);
+     }
 
    _elixir_func_cleanup(cx, dt, data);
 }

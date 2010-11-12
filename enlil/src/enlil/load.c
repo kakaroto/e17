@@ -4,11 +4,11 @@
 #include <time.h>
 
 
-static void _enlil_load(Ecore_Thread *thread, void *data);
+static void _enlil_load(void *data, Ecore_Thread *thread);
 static void _album_load(Enlil_Load *load, Enlil_Album *album);
 
 static void _enlil_load_message_cb(void *data, void *buffer, unsigned int nbyte);
-static void _enlil_load_end_cb(void *data);
+static void _enlil_load_end_cb(void *data, Ecore_Thread *thread);
 
 typedef enum Enlil_Load_Message
 {
@@ -154,7 +154,7 @@ static void _album_load(Enlil_Load *load, Enlil_Album *album)
     pthread_mutex_lock(&(load->mutex));
 }
 
-static void _enlil_load(Ecore_Thread *thread, void *data)
+static void _enlil_load(void *data, Ecore_Thread *thread)
 {
     Enlil_Load *load = data;
     Enlil_Root *root, *root_list;
@@ -219,7 +219,7 @@ static void _enlil_load_message_cb(void *data, void *buffer, unsigned int nbyte)
    EINA_STRINGSHARE_DEL(msg);
 }
 
-static void _enlil_load_end_cb(void *data)
+static void _enlil_load_end_cb(void *data, Ecore_Thread *thread)
 {
    double t;
    Enlil_Load *load = (Enlil_Load*) data;

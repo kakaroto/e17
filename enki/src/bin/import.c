@@ -32,8 +32,8 @@ static void _bt_album_new_cb(void *data, Evas_Object *obj, void *event_info);;
 static void _bt_cancel_cb(void *data, Evas_Object *obj, void *event_info);
 static void _bt_import_cb(void *data, Evas_Object *obj, void *event_info);
 
-static void _import_next(void *data);
-static void _import_thread(Ecore_Thread *thread, void *data);
+static void _import_next(void *data, Ecore_Thread *thread);
+static void _import_thread(void *data, Ecore_Thread *thread);
 static void _bt_close_cb(void *data, Evas_Object *obj, void *event_info);
 
 typedef struct _Import_Photo_Data
@@ -469,10 +469,10 @@ static void _bt_import_cb(void *data, Evas_Object *obj, void *event_info)
 
    enlil_album_monitor_stop(album);
    nb_imports = -1;
-   _import_next(NULL);
+   _import_next(NULL, NULL);
 }
 
-static void _import_next(void *data)
+static void _import_next(void *data, Ecore_Thread *thread)
 {
    char buf[PATH_MAX];
 
@@ -513,7 +513,7 @@ static void _import_next(void *data)
      ecore_thread_run(_import_thread, _import_next, NULL, current_import);
 }
 
-static void _import_thread(Ecore_Thread *thread, void *data)
+static void _import_thread(void *data, Ecore_Thread *thread)
 {
    char path[PATH_MAX], path2[PATH_MAX], path3[PATH_MAX];
    Enlil_Photo *photo = eina_list_data_get(data);
