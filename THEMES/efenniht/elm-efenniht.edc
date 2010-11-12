@@ -25,4 +25,5 @@
 #include "elm/hoversel.edc"
 #include "elm/hover.edc"
 #include "elm/application.edc"
+#include "elm/pager.edc"
 //#include "elm/old.edc"
