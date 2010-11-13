@@ -168,7 +168,16 @@ namespace Ecore
     [CCode (cprefix = "Ecore_X_", lower_case_cprefix = "ecore_x_", cheader_filename = "Ecore_X.h")]
     namespace X
     {
-        public int init( string name = ":0" );
+        [CCode (cname = "ecore_x_init")]
+        public int _init( string name );
+        public int init( string name = "" )
+        {
+            if ( name == "" )
+            {
+                string dname = GLib.Environment.get_variable( "DISPLAY" ) ?? ":0.0";
+                return _init( dname );
+            }
+        }
         public int shutdown();
 
         [SimpleType]
