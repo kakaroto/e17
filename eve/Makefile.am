@@ -10,6 +10,6 @@ MAINTAINERCLEANFILES = Makefile.in ABOUT-NLS INSTALL aclocal.m4 config.guess com
   m4/iconv.m4 m4/po.m4 m4/isc-posix.m4 m4/inttypes.m4 m4/ltsugar.m4 m4/glibc21.m4 m4/gettext.m4 m4/ltversion.m4 \
   m4/codeset.m4 m4/inttypes_h.m4 m4/ltoptions.m4 m4/nls.m4 po/Rules-quot po/en@quot.header po/insert-header.sin \
   po/quot.sed po/en@boldquot.header po/boldquot.sed po/Makevars.template po/remove-potcdate.sin po/Makefile.in.in \
-  stamp-h.in acconfig.h depcomp
+  stamp-h.in acconfig.h depcomp mkinstalldirs~ config.h.in~
 
 EXTRA_DIST = README AUTHORS COPYING
