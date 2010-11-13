@@ -5407,3 +5407,14 @@ Cosmetics.
 Remove incorrect comment. Cosmetics.
 Avoid processing events belonging to a previous ewin for a client window.
 Revert incorrect fixes for menu related segvs.
+
+-------------------------------------------------------------------------------
+
+Sat Nov 13 11:08:54 CET 2010
+
+--- 1.0.7 ---
+Minor zooming related fixes/cleanups.
+Change WITH_ZOOM to ENABLE_ZOOM. Zoom related build tweaks.
+Fix desk/area dialog changes sometimes not being saved.
+Enable using randr (1.3) for zooming.
+Revert "If CM is active, change snap to live pager mode."
