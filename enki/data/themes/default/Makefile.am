@@ -22,7 +22,8 @@ photo_import.edc \
 photo_slideshow.edc \
 icons.edc \
 flickr.edc \
-minislideshow.edc 
+minislideshow.edc \
+elm.edc
 	$(EDJE_CC) $(EDJE_FLAGS) default.edc -id ../images/
 
 icondir = $(pkgdatadir)/themes

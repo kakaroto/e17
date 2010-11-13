@@ -23,6 +23,7 @@ images {
     image:  "flickr_logo.png" COMP;
     
     image:  "library_photo.png" COMP;
+    image:  "enki_logo.png" COMP;
 
     image: "geocaching/2.png" COMP;
     image: "geocaching/3.png" COMP;
@@ -91,6 +92,9 @@ collections {
 	#include "icons.edc"
 	#include "flickr.edc"
 	#include "minislideshow.edc"
+	
+	
+	#include "elm.edc"
 
 }
 

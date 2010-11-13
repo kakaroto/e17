@@ -198,6 +198,8 @@ int elm_main(int argc, char **argv)
 	enlil_init();
 	ecore_file_init();
 
+	elm_theme_all_set(THEME);
+
 	LOG_DOMAIN = eina_log_domain_register("Enki", "\033[34;1m");
 
 	//ecore_getopt

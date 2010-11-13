@@ -51,6 +51,7 @@ void main_menu_new(Evas_Object *edje)
     itc_grid.func.label_get = _library_get;
     itc_grid.func.del = _library_del;
     itc_grid.func.icon_get = _library_icon_get;
+    itc_grid.item_style = "enki";
     //
 
     //tools
@@ -114,7 +115,7 @@ void main_menu_update_libraries_list()
     //
     Library *lib = calloc(1, sizeof(Library));
 	lib->is_new_library = EINA_TRUE;
-	lib->path = eina_stringshare_add("New Library");
+	lib->path = eina_stringshare_add("Add a new Library");
     elm_gengrid_item_append(libraries_list, &itc_grid, lib, _library_select, NULL);
     //
 
@@ -144,7 +145,28 @@ void main_menu_update_libraries_list()
 static char* _library_get(void *data, Evas_Object *obj, const char *part)
 {
 	Library *lib = data;
-	return strdup(lib->path);
+	char *name = strdup(lib->path);
+	char *name_old = name;
+
+	if(strlen(name) > 40)
+	{
+		name = name + strlen(name) - 40;
+
+		int i = 0;
+		name--;
+		while(i< 3 && name >= name_old)
+		{
+			*name = '.';
+			name--;
+			i++;
+		}
+		name++;
+	}
+
+	name = strdup(name);
+	FREE(name_old);
+
+	return name;
 }
 
 static void  _library_del(void *data, Evas_Object *obj)
@@ -214,8 +236,6 @@ static Evas_Object* _library_icon_get(void *data, Evas_Object *obj, const char *
 
 	enlil_photo_free(&(photo2));
 	//
-
-	printf("%s %s\n", s1, s2);
 
 	if(s1 && !s2)
 		s2 = s1;

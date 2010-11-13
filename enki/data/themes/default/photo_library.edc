@@ -36,6 +36,8 @@ group {
 	        description {
 	            state: "display_back" 0.0;
 	            inherit: "default" 0.0;
+	            rel1.relative: 0.05 0.15;
+	            rel2.relative: 0.95 0.85;
 	            map {
 		        	on: 1;
 		            rotation {
@@ -54,8 +56,8 @@ group {
 	            color: 255 255 255 0;
 	            rel1.to: "bg_back";
 	            rel2.to: "bg_back";
-	            rel1.offset : 23 14;
-	            rel2.offset : -23 -14;
+	            rel1.relative: 0.1 0.15;
+	            rel2.relative: 0.9 0.85;
 	            map {
 		        	on: 1;
 		            rotation {
@@ -158,8 +160,8 @@ group {
 	            color: 255 255 255 0;
 	            rel1.to: "bg_front";
 	            rel2.to: "bg_front";
-	            rel1.offset : 23 14;
-	            rel2.offset : -23 -14;
+	            rel1.relative: 0.1 0.15;
+	            rel2.relative: 0.9 0.85;
 	            map {
 		        	on: 1;
 		            rotation {
