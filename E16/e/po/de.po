@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-10-30 18:12+0200\n"
+"POT-Creation-Date: 2010-11-08 23:35+0100\n"
 "PO-Revision-Date: 2010-05-09 01:21+0000\n"
 "Last-Translator: Peter Wehrfritz <Unknown>\n"
 "Language-Team: Enlightenment l10n <enlightenment-intl@lists.sourceforge."
@@ -504,7 +504,7 @@ msgstr "Einstellungen ..."
 # src/settings.c:1524 src/settings.c:1612 src/settings.c:2014
 # src/settings.c:3407 src/settings.c:3752 src/settings.c:4050
 # src/settings.c:4188
-#: src/container.c:1191 src/dialog.c:705 src/pager.c:1025 config/strings.c:30
+#: src/container.c:1191 src/dialog.c:705 src/pager.c:1019 config/strings.c:30
 #: config/strings.c:122
 msgid "Close"
 msgstr "Schließen"
@@ -614,7 +614,7 @@ msgstr "Iconnamen anzeigen"
 msgid "Animation mode:"
 msgstr ""
 
-#: src/container.c:1679 src/desktops.c:2583
+#: src/container.c:1679 src/desktops.c:2587
 msgid "Off"
 msgstr "An"
 
@@ -720,69 +720,69 @@ msgstr ""
 "ganz nach unten zu heben."
 
 # src/settings.c:882
-#: src/desktops.c:2344
+#: src/desktops.c:2346
 msgid "Number of virtual desktops:"
 msgstr "Anzahl virtueller Desktops:"
 
 # src/settings.c:1750
-#: src/desktops.c:2369
+#: src/desktops.c:2371
 msgid "Slide desktops around when changing"
 msgstr "Desktops gleiten beim Wechseln herum"
 
 # src/settings.c:1922
-#: src/desktops.c:2375
+#: src/desktops.c:2377
 msgid "Desktop Slide speed:"
 msgstr "Desktop-Gleitgeschwindigkeit:"
 
 # src/settings.c:1120
-#: src/desktops.c:2389
+#: src/desktops.c:2391
 msgid "Wrap desktops around"
 msgstr "Virtuelle Desktops zyklisch durchlaufen"
 
 # src/settings.c:1858
-#: src/desktops.c:2397
+#: src/desktops.c:2399
 msgid "Display desktop dragbar"
 msgstr "Desktop-Ziehbalken anzeigen"
 
 # src/settings.c:1867
-#: src/desktops.c:2403
+#: src/desktops.c:2405
 msgid "Drag bar position:"
 msgstr "Position des Ziehbalkens:"
 
 # src/settings.c:1878
-#: src/desktops.c:2407
+#: src/desktops.c:2409
 msgid "Top"
 msgstr "Oben"
 
 # src/settings.c:1885
-#: src/desktops.c:2413
+#: src/desktops.c:2415
 msgid "Bottom"
 msgstr "Unten"
 
 # src/settings.c:218 src/settings.c:250 src/settings.c:282
 # src/settings.c:1896
-#: src/desktops.c:2419 src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
+#: src/desktops.c:2421 src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
 msgid "Left"
 msgstr "Links"
 
 # src/settings.c:234 src/settings.c:266 src/settings.c:298
 # src/settings.c:1903
-#: src/desktops.c:2425 src/pager.c:1941 src/pager.c:1966 src/pager.c:1991
+#: src/desktops.c:2427 src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
 msgid "Right"
 msgstr "Rechts"
 
 # src/snaps.c:453
-#: src/desktops.c:2433 src/menus-misc.c:585
+#: src/desktops.c:2435 src/menus-misc.c:585
 msgid "Desks"
 msgstr "Desktops"
 
 # src/settings.c:856
-#: src/desktops.c:2434
+#: src/desktops.c:2436
 msgid "Multiple Desktop Settings"
 msgstr "Mehrfach-Desktop-Einstellungen"
 
 # src/main.c:89
-#: src/desktops.c:2437
+#: src/desktops.c:2439
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog"
@@ -791,43 +791,43 @@ msgstr ""
 "Einstellungsdialog"
 
 # src/settings.c:1066
-#: src/desktops.c:2537
+#: src/desktops.c:2541
 msgid "Virtual Desktop size:"
 msgstr "Virtuelle Desktopgröße:"
 
 # src/settings.c:1120
-#: src/desktops.c:2573
+#: src/desktops.c:2577
 msgid "Wrap virtual desktops around"
 msgstr "Virtuelle Desktops zyklisch durchlaufen"
 
-#: src/desktops.c:2580
+#: src/desktops.c:2584
 msgid "Edge Flip Mode:"
 msgstr "Magische Kanten Modus"
 
-#: src/desktops.c:2588
+#: src/desktops.c:2592
 msgid "On"
 msgstr "Aus"
 
-#: src/desktops.c:2593
+#: src/desktops.c:2597
 msgid "Only when moving window"
 msgstr "Nur beim Verschieben von Fenstern"
 
 # src/settings.c:1134
-#: src/desktops.c:2599
+#: src/desktops.c:2603
 msgid "Resistance at edge of screen:"
 msgstr "Widerstand der Bildschirmkante:"
 
-#: src/desktops.c:2611
+#: src/desktops.c:2615
 msgid "Areas"
 msgstr "Bereiche"
 
 # src/settings.c:1040
-#: src/desktops.c:2612
+#: src/desktops.c:2616
 msgid "Virtual Desktop Settings"
 msgstr "Einstellungen zu virtuellen Desktops"
 
 # src/settings.c:1040
-#: src/desktops.c:2615
+#: src/desktops.c:2619
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog"
@@ -1598,147 +1598,147 @@ msgstr ""
 "Einstellungsdialog"
 
 # src/pager.c:1268
-#: src/pager.c:1014 config/strings.c:49 config/strings.c:121
+#: src/pager.c:1008 config/strings.c:49 config/strings.c:121
 msgid "Window Options"
 msgstr "Fensteroptionen"
 
 # src/pager.c:1274
-#: src/pager.c:1021 config/strings.c:51 config/strings.c:124
+#: src/pager.c:1015 config/strings.c:51 config/strings.c:124
 msgid "Iconify"
 msgstr "Minimieren"
 
 # src/pager.c:1280
-#: src/pager.c:1029 config/strings.c:123
+#: src/pager.c:1023 config/strings.c:123
 msgid "Annihilate"
 msgstr "Zerstören"
 
 # src/pager.c:1283
-#: src/pager.c:1033
+#: src/pager.c:1027
 msgid "Stick / Unstick"
 msgstr "Ankleben / Ablösen"
 
 # src/pager.c:1295
-#: src/pager.c:1040
+#: src/pager.c:1034
 msgid "Desktop Options"
 msgstr "Desktopoptionen"
 
 # src/pager.c:1301
-#: src/pager.c:1046
+#: src/pager.c:1040
 msgid "Pager Settings..."
 msgstr "Pager-Einstellungen..."
 
 # src/pager.c:1311
-#: src/pager.c:1051
+#: src/pager.c:1045
 msgid "Snapshotting Off"
 msgstr "Schnappschüsse aus"
 
 # src/pager.c:1323
-#: src/pager.c:1055
+#: src/pager.c:1049
 msgid "High Quality Off"
 msgstr "Hohe Qualität aus"
 
 # src/pager.c:1318
-#: src/pager.c:1057
+#: src/pager.c:1051
 msgid "High Quality On"
 msgstr "Hohe Qualität ein"
 
 # src/pager.c:1306
-#: src/pager.c:1062
+#: src/pager.c:1056
 msgid "Snapshotting On"
 msgstr "Schnappschüsse ein"
 
-#: src/pager.c:1066
+#: src/pager.c:1060
 msgid "Zoom Off"
 msgstr "Zoom aus"
 
-#: src/pager.c:1068
+#: src/pager.c:1062
 msgid "Zoom On"
 msgstr "Zoom an"
 
 # src/settings.c:87 src/settings.c:192
-#: src/pager.c:1814 src/pager.c:1909
+#: src/pager.c:1808 src/pager.c:1903
 msgid "Pager scanning speed:"
 msgstr "Pager-Abtastgeschwindigkeit:"
 
 # src/settings.c:88 src/settings.c:193
-#: src/pager.c:1815 src/pager.c:1910
+#: src/pager.c:1809 src/pager.c:1904
 msgid "lines per second"
 msgstr "Zeilen pro Sekunde"
 
 # src/settings.c:135
-#: src/pager.c:1848
+#: src/pager.c:1842
 msgid "Enable pager display"
 msgstr "Pager anzeigen"
 
-#: src/pager.c:1858
+#: src/pager.c:1852
 msgid "Pager Mode:"
 msgstr "Pager Modus:"
 
-#: src/pager.c:1862
+#: src/pager.c:1856
 msgid "Simple"
 msgstr "Schlicht"
 
 # src/settings.c:144
-#: src/pager.c:1868
+#: src/pager.c:1862
 msgid "Make miniature snapshots of the screen"
 msgstr "Mini-Schnappschüsse des Bildschirms"
 
-#: src/pager.c:1875
+#: src/pager.c:1869
 msgid "Live Update"
 msgstr "Mini-Ansicht des Bildschirms"
 
 # src/settings.c:154
-#: src/pager.c:1886
+#: src/pager.c:1880
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Weiche, hochwertige Schnappschüsse im Schnappschussmodus"
 
 # src/settings.c:164
-#: src/pager.c:1891
+#: src/pager.c:1885
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Auf Pager-Fenster einzoomen, wenn Maus darüber ist"
 
 # src/settings.c:174
-#: src/pager.c:1897
+#: src/pager.c:1891
 msgid "Pop up window title when mouse is over the window"
 msgstr "Fenstertitel anzeigen, wenn Maus über Fenster ist"
 
 # src/settings.c:183
-#: src/pager.c:1902
+#: src/pager.c:1896
 msgid "Continuously scan screen to update pager"
 msgstr "Ständig den Bildschirm abtasten, um Pager zu aktualisieren"
 
 # src/settings.c:212
-#: src/pager.c:1925
+#: src/pager.c:1919
 msgid "Mouse button to select and drag windows:"
 msgstr "Mausknopf zum Auswählen und Ziehen von Fenstern:"
 
 # src/settings.c:226 src/settings.c:258 src/settings.c:290
-#: src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
+#: src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
 msgid "Middle"
 msgstr "Mitte"
 
 # src/settings.c:244
-#: src/pager.c:1950
+#: src/pager.c:1944
 msgid "Mouse button to select desktops:"
 msgstr "Mausknopf zum Auswählen von Desktops:"
 
 # src/settings.c:276
-#: src/pager.c:1975
+#: src/pager.c:1969
 msgid "Mouse button to display pager menu:"
 msgstr "Mausknopf zum Anzeigen des Pager-Menüs:"
 
 # src/settings.c:126
-#: src/pager.c:1999
+#: src/pager.c:1993
 msgid "Pagers"
 msgstr "Pagers"
 
 # src/settings.c:126
-#: src/pager.c:2000
+#: src/pager.c:1994
 msgid "Pager Settings"
 msgstr "Pager-Einstellungen"
 
 # src/main.c:89
-#: src/pager.c:2003
+#: src/pager.c:1997
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog"

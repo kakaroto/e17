@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-10-30 18:12+0200\n"
+"POT-Creation-Date: 2010-11-08 23:35+0100\n"
 "PO-Revision-Date: 2009-12-02 09:49+0000\n"
 "Last-Translator: Adam Kisiel <Unknown>\n"
 "Language-Team: Polshi <pl@li.org>\n"
@@ -396,7 +396,7 @@ msgstr "Uruchamianie Enlightenment..."
 msgid "Settings..."
 msgstr "Ustawienia..."
 
-#: src/container.c:1191 src/dialog.c:705 src/pager.c:1025 config/strings.c:30
+#: src/container.c:1191 src/dialog.c:705 src/pager.c:1019 config/strings.c:30
 #: config/strings.c:122
 msgid "Close"
 msgstr "Zamknij"
@@ -486,7 +486,7 @@ msgstr "Pokazuj nazwy Ikon"
 msgid "Animation mode:"
 msgstr ""
 
-#: src/container.c:1679 src/desktops.c:2583
+#: src/container.c:1679 src/desktops.c:2587
 msgid "Off"
 msgstr ""
 
@@ -582,55 +582,55 @@ msgstr ""
 "Aby schowaæ ten Pulpit na dno,\n"
 "kliknij tutaj."
 
-#: src/desktops.c:2344
+#: src/desktops.c:2346
 msgid "Number of virtual desktops:"
 msgstr "Ilo¶æ Pulpitów wirtualnych:"
 
-#: src/desktops.c:2369
+#: src/desktops.c:2371
 msgid "Slide desktops around when changing"
 msgstr "Pulpity ¶lizgaj± siê podczas ich zmiany"
 
-#: src/desktops.c:2375
+#: src/desktops.c:2377
 msgid "Desktop Slide speed:"
 msgstr ""
 
-#: src/desktops.c:2389
+#: src/desktops.c:2391
 msgid "Wrap desktops around"
 msgstr ""
 
-#: src/desktops.c:2397
+#: src/desktops.c:2399
 msgid "Display desktop dragbar"
 msgstr "Wy¶wietlaj Pasek Przeci±gania Pulpitu"
 
-#: src/desktops.c:2403
+#: src/desktops.c:2405
 msgid "Drag bar position:"
 msgstr "Pozycja Paska Przeci±gania"
 
-#: src/desktops.c:2407
+#: src/desktops.c:2409
 msgid "Top"
 msgstr "Góra"
 
-#: src/desktops.c:2413
+#: src/desktops.c:2415
 msgid "Bottom"
 msgstr "Dó³"
 
-#: src/desktops.c:2419 src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
+#: src/desktops.c:2421 src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
 msgid "Left"
 msgstr "Lewo"
 
-#: src/desktops.c:2425 src/pager.c:1941 src/pager.c:1966 src/pager.c:1991
+#: src/desktops.c:2427 src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
 msgid "Right"
 msgstr "Prawo"
 
-#: src/desktops.c:2433 src/menus-misc.c:585
+#: src/desktops.c:2435 src/menus-misc.c:585
 msgid "Desks"
 msgstr ""
 
-#: src/desktops.c:2434
+#: src/desktops.c:2436
 msgid "Multiple Desktop Settings"
 msgstr "Ustawienia Wielu Pulpitów"
 
-#: src/desktops.c:2437
+#: src/desktops.c:2439
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog"
@@ -638,39 +638,39 @@ msgstr ""
 "Okno ustawieñ Wielu Pulpitów\n"
 "Enlightenment"
 
-#: src/desktops.c:2537
+#: src/desktops.c:2541
 msgid "Virtual Desktop size:"
 msgstr "Rozmiar Wirtualnego Pulpitu:"
 
-#: src/desktops.c:2573
+#: src/desktops.c:2577
 msgid "Wrap virtual desktops around"
 msgstr "Zawijaj Wirtulane Pulpity"
 
-#: src/desktops.c:2580
+#: src/desktops.c:2584
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2588
+#: src/desktops.c:2592
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2593
+#: src/desktops.c:2597
 msgid "Only when moving window"
 msgstr "Tylko przy poruszaniu oknem"
 
-#: src/desktops.c:2599
+#: src/desktops.c:2603
 msgid "Resistance at edge of screen:"
 msgstr "Czu³o¶æ na prze³±czanie przy brzegach ekranu:"
 
-#: src/desktops.c:2611
+#: src/desktops.c:2615
 msgid "Areas"
 msgstr "Obszary"
 
-#: src/desktops.c:2612
+#: src/desktops.c:2616
 msgid "Virtual Desktop Settings"
 msgstr "Ustawienia Wirtualnego Biurka"
 
-#: src/desktops.c:2615
+#: src/desktops.c:2619
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog"
@@ -1307,123 +1307,123 @@ msgid ""
 "Settings Dialog"
 msgstr ""
 
-#: src/pager.c:1014 config/strings.c:49 config/strings.c:121
+#: src/pager.c:1008 config/strings.c:49 config/strings.c:121
 msgid "Window Options"
 msgstr "Opcje Okna"
 
-#: src/pager.c:1021 config/strings.c:51 config/strings.c:124
+#: src/pager.c:1015 config/strings.c:51 config/strings.c:124
 msgid "Iconify"
 msgstr "Zwiñ do Ikony"
 
-#: src/pager.c:1029 config/strings.c:123
+#: src/pager.c:1023 config/strings.c:123
 msgid "Annihilate"
 msgstr "Zniszcz"
 
-#: src/pager.c:1033
+#: src/pager.c:1027
 msgid "Stick / Unstick"
 msgstr "Przyklej/Odklej"
 
-#: src/pager.c:1040
+#: src/pager.c:1034
 msgid "Desktop Options"
 msgstr "Opcje pulpitu"
 
-#: src/pager.c:1046
+#: src/pager.c:1040
 msgid "Pager Settings..."
 msgstr "Opcje Podgl±du Pulpitu..."
 
-#: src/pager.c:1051
+#: src/pager.c:1045
 msgid "Snapshotting Off"
 msgstr "Wy³±cz 'Zdjêcie Ekranu'"
 
-#: src/pager.c:1055
+#: src/pager.c:1049
 msgid "High Quality Off"
 msgstr "Wy³±cz Wysok± Jako¶æ"
 
-#: src/pager.c:1057
+#: src/pager.c:1051
 msgid "High Quality On"
 msgstr "W³±cz Wysok± Jako¶æ"
 
-#: src/pager.c:1062
+#: src/pager.c:1056
 msgid "Snapshotting On"
 msgstr "W³±cz 'Zdjêcie Ekranu'"
 
-#: src/pager.c:1066
+#: src/pager.c:1060
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1068
+#: src/pager.c:1062
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1814 src/pager.c:1909
+#: src/pager.c:1808 src/pager.c:1903
 msgid "Pager scanning speed:"
 msgstr "Szybko¶æ skanowania w Podgl±dzie Pulpitu:"
 
-#: src/pager.c:1815 src/pager.c:1910
+#: src/pager.c:1809 src/pager.c:1904
 msgid "lines per second"
 msgstr "linii na sekundê"
 
-#: src/pager.c:1848
+#: src/pager.c:1842
 msgid "Enable pager display"
 msgstr "W³±cz Podgl±d Pulpitu"
 
-#: src/pager.c:1858
+#: src/pager.c:1852
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1862
+#: src/pager.c:1856
 msgid "Simple"
 msgstr ""
 
-#: src/pager.c:1868
+#: src/pager.c:1862
 msgid "Make miniature snapshots of the screen"
 msgstr "Rób miniaturowe zdjêcia ekranu"
 
-#: src/pager.c:1875
+#: src/pager.c:1869
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1886
+#: src/pager.c:1880
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Wyg³adzaj wysokiej jako¶ci zdjêcia w trybie 'Zdjêcia Ekranu'"
 
-#: src/pager.c:1891
+#: src/pager.c:1885
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Powiêksz okna w Podgl±dzie Pulpitu, gdy jest nad nimi wska¼nik myszy"
 
-#: src/pager.c:1897
+#: src/pager.c:1891
 msgid "Pop up window title when mouse is over the window"
 msgstr "Wy¶wietl tytu³ okna, gdy jest nad nim wska¼nik myszy"
 
-#: src/pager.c:1902
+#: src/pager.c:1896
 msgid "Continuously scan screen to update pager"
 msgstr "Skanuj bez przerwy ekran i uaktualniaj Podgl±d Pulpitu"
 
-#: src/pager.c:1925
+#: src/pager.c:1919
 msgid "Mouse button to select and drag windows:"
 msgstr "Przycisk myszy s³u¿acy do wybierania i przeci±gania okien :"
 
-#: src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
+#: src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
 msgid "Middle"
 msgstr "¦rodek"
 
-#: src/pager.c:1950
+#: src/pager.c:1944
 msgid "Mouse button to select desktops:"
 msgstr "Przycisk myszy s³u¿±cy do wybierania Pulpitów :"
 
-#: src/pager.c:1975
+#: src/pager.c:1969
 msgid "Mouse button to display pager menu:"
 msgstr "Przycisk myszy s³u¿acy do wy¶wietlania menu Podgl±du Pulpitu :"
 
-#: src/pager.c:1999
+#: src/pager.c:1993
 msgid "Pagers"
 msgstr ""
 
-#: src/pager.c:2000
+#: src/pager.c:1994
 msgid "Pager Settings"
 msgstr "Ustawienia Podgladu Pulpitu"
 
-#: src/pager.c:2003
+#: src/pager.c:1997
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog"

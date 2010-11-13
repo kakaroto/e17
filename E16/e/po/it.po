@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-10-30 18:12+0200\n"
+"POT-Creation-Date: 2010-11-08 23:35+0100\n"
 "PO-Revision-Date: 2010-08-13 12:58+0200\n"
 "Last-Translator: Massimo Maiurana <Unknown>\n"
 "Language-Team: none\n"
@@ -421,7 +421,7 @@ msgstr "Avvio di Enlightenment..."
 msgid "Settings..."
 msgstr "Impostazioni..."
 
-#: src/container.c:1191 src/dialog.c:705 src/pager.c:1025 config/strings.c:30
+#: src/container.c:1191 src/dialog.c:705 src/pager.c:1019 config/strings.c:30
 #: config/strings.c:122
 msgid "Close"
 msgstr "Chiudi"
@@ -511,7 +511,7 @@ msgstr "Mostra nome icone"
 msgid "Animation mode:"
 msgstr "Modalità animazione:"
 
-#: src/container.c:1679 src/desktops.c:2583
+#: src/container.c:1679 src/desktops.c:2587
 msgid "Off"
 msgstr "Disattivato"
 
@@ -607,55 +607,55 @@ msgstr ""
 "Cliccare quí per abbassare questo desktop\n"
 "in fondo."
 
-#: src/desktops.c:2344
+#: src/desktops.c:2346
 msgid "Number of virtual desktops:"
 msgstr "Numero di desktop virtuali:"
 
-#: src/desktops.c:2369
+#: src/desktops.c:2371
 msgid "Slide desktops around when changing"
 msgstr "Scorri desktop al cambio"
 
-#: src/desktops.c:2375
+#: src/desktops.c:2377
 msgid "Desktop Slide speed:"
 msgstr "Velocitá scorrimento desktop:"
 
-#: src/desktops.c:2389
+#: src/desktops.c:2391
 msgid "Wrap desktops around"
 msgstr "Concatena desktop estremi"
 
-#: src/desktops.c:2397
+#: src/desktops.c:2399
 msgid "Display desktop dragbar"
 msgstr "Mostra barra trascinamento desktop"
 
-#: src/desktops.c:2403
+#: src/desktops.c:2405
 msgid "Drag bar position:"
 msgstr "Posizione barra trascinamento:"
 
-#: src/desktops.c:2407
+#: src/desktops.c:2409
 msgid "Top"
 msgstr "Alto"
 
-#: src/desktops.c:2413
+#: src/desktops.c:2415
 msgid "Bottom"
 msgstr "Basso"
 
-#: src/desktops.c:2419 src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
+#: src/desktops.c:2421 src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
 msgid "Left"
 msgstr "Sinistra"
 
-#: src/desktops.c:2425 src/pager.c:1941 src/pager.c:1966 src/pager.c:1991
+#: src/desktops.c:2427 src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
 msgid "Right"
 msgstr "Destra"
 
-#: src/desktops.c:2433 src/menus-misc.c:585
+#: src/desktops.c:2435 src/menus-misc.c:585
 msgid "Desks"
 msgstr "Desktop"
 
-#: src/desktops.c:2434
+#: src/desktops.c:2436
 msgid "Multiple Desktop Settings"
 msgstr "Impostazioni desktop multipli"
 
-#: src/desktops.c:2437
+#: src/desktops.c:2439
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog"
@@ -663,39 +663,39 @@ msgstr ""
 "Finestra configurazione desktop\n"
 "multipli di Enlightenment"
 
-#: src/desktops.c:2537
+#: src/desktops.c:2541
 msgid "Virtual Desktop size:"
 msgstr "Dimensione desktop virtuale:"
 
-#: src/desktops.c:2573
+#: src/desktops.c:2577
 msgid "Wrap virtual desktops around"
 msgstr "Concatena desktop virtuali estremi"
 
-#: src/desktops.c:2580
+#: src/desktops.c:2584
 msgid "Edge Flip Mode:"
 msgstr "Cambio desktop con puntatore al confine:"
 
-#: src/desktops.c:2588
+#: src/desktops.c:2592
 msgid "On"
 msgstr "Attivato"
 
-#: src/desktops.c:2593
+#: src/desktops.c:2597
 msgid "Only when moving window"
 msgstr "Solo trascinando finestre"
 
-#: src/desktops.c:2599
+#: src/desktops.c:2603
 msgid "Resistance at edge of screen:"
 msgstr "Resistenza al confine dello schermo:"
 
-#: src/desktops.c:2611
+#: src/desktops.c:2615
 msgid "Areas"
 msgstr "Aree"
 
-#: src/desktops.c:2612
+#: src/desktops.c:2616
 msgid "Virtual Desktop Settings"
 msgstr "Impostazione desktop virtuali"
 
-#: src/desktops.c:2615
+#: src/desktops.c:2619
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog"
@@ -1364,123 +1364,123 @@ msgstr ""
 "Finestra configurazione trasparenze\n"
 "selettiva di Enlightenment"
 
-#: src/pager.c:1014 config/strings.c:49 config/strings.c:121
+#: src/pager.c:1008 config/strings.c:49 config/strings.c:121
 msgid "Window Options"
 msgstr "Opzioni delle finestre"
 
-#: src/pager.c:1021 config/strings.c:51 config/strings.c:124
+#: src/pager.c:1015 config/strings.c:51 config/strings.c:124
 msgid "Iconify"
 msgstr "Iconifica"
 
-#: src/pager.c:1029 config/strings.c:123
+#: src/pager.c:1023 config/strings.c:123
 msgid "Annihilate"
 msgstr "Uccidi"
 
-#: src/pager.c:1033
+#: src/pager.c:1027
 msgid "Stick / Unstick"
 msgstr "Appiccica/stacca"
 
-#: src/pager.c:1040
+#: src/pager.c:1034
 msgid "Desktop Options"
 msgstr "Opzioni dei desktop"
 
-#: src/pager.c:1046
+#: src/pager.c:1040
 msgid "Pager Settings..."
 msgstr "Impostazioni del Pager..."
 
-#: src/pager.c:1051
+#: src/pager.c:1045
 msgid "Snapshotting Off"
 msgstr "Miniature disabilitate"
 
-#: src/pager.c:1055
+#: src/pager.c:1049
 msgid "High Quality Off"
 msgstr "Alta qualitá disabilitata"
 
-#: src/pager.c:1057
+#: src/pager.c:1051
 msgid "High Quality On"
 msgstr "Alta qualitá abilitata"
 
-#: src/pager.c:1062
+#: src/pager.c:1056
 msgid "Snapshotting On"
 msgstr "Miniature abilitate"
 
-#: src/pager.c:1066
+#: src/pager.c:1060
 msgid "Zoom Off"
 msgstr "Zoom disabilitato"
 
-#: src/pager.c:1068
+#: src/pager.c:1062
 msgid "Zoom On"
 msgstr "Zoom abilitato"
 
-#: src/pager.c:1814 src/pager.c:1909
+#: src/pager.c:1808 src/pager.c:1903
 msgid "Pager scanning speed:"
 msgstr "Velocitá aggiornamento Pager:"
 
-#: src/pager.c:1815 src/pager.c:1910
+#: src/pager.c:1809 src/pager.c:1904
 msgid "lines per second"
 msgstr "linee al secondo"
 
-#: src/pager.c:1848
+#: src/pager.c:1842
 msgid "Enable pager display"
 msgstr "Abilita visualizzazione Pager"
 
-#: src/pager.c:1858
+#: src/pager.c:1852
 msgid "Pager Mode:"
 msgstr "Modalitá Pager:"
 
-#: src/pager.c:1862
+#: src/pager.c:1856
 msgid "Simple"
 msgstr "Semplice"
 
-#: src/pager.c:1868
+#: src/pager.c:1862
 msgid "Make miniature snapshots of the screen"
 msgstr "Crea miniature dello schermo"
 
-#: src/pager.c:1875
+#: src/pager.c:1869
 msgid "Live Update"
 msgstr "Aggiornamento in tempo reale"
 
-#: src/pager.c:1886
+#: src/pager.c:1880
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Crea miniature ad alta qualitá"
 
-#: src/pager.c:1891
+#: src/pager.c:1885
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Zoom delle finestre nel Pager al passaggio del mouse"
 
-#: src/pager.c:1897
+#: src/pager.c:1891
 msgid "Pop up window title when mouse is over the window"
 msgstr "Mostra titolo finestra al passaggio del mouse"
 
-#: src/pager.c:1902
+#: src/pager.c:1896
 msgid "Continuously scan screen to update pager"
 msgstr "Scansione continua dello schermo per aggiornamento Pager"
 
-#: src/pager.c:1925
+#: src/pager.c:1919
 msgid "Mouse button to select and drag windows:"
 msgstr "Tasto del mouse per selezione e trascinamento finestre:"
 
-#: src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
+#: src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
 msgid "Middle"
 msgstr "Centrale"
 
-#: src/pager.c:1950
+#: src/pager.c:1944
 msgid "Mouse button to select desktops:"
 msgstr "Tasto del mouse per selezione desktop:"
 
-#: src/pager.c:1975
+#: src/pager.c:1969
 msgid "Mouse button to display pager menu:"
 msgstr "Tasto del mouse per menú del Pager:"
 
-#: src/pager.c:1999
+#: src/pager.c:1993
 msgid "Pagers"
 msgstr "Pager"
 
-#: src/pager.c:2000
+#: src/pager.c:1994
 msgid "Pager Settings"
 msgstr "Impostazioni del Pager"
 
-#: src/pager.c:2003
+#: src/pager.c:1997
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog"
