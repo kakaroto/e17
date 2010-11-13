@@ -5,7 +5,7 @@
 
 static void _load_done_cb(void *data, Enlil_Load *load, int nb_albums, int nb_photos);
 static void _load_error_cb(void *data, Enlil_Load *load,  Load_Error error, const char* msg);
-static void _load_album_done_cb(void *data, Enlil_Load *load, Enlil_Root *root, Enlil_Album *album);
+static void _load_album_done_cb(void *data, Enlil_Load *load, Enlil_Library *library, Enlil_Album *album);
 
 static const Ecore_Getopt options = {
     "Test Enlil, a photo manager",
@@ -28,7 +28,7 @@ static const Ecore_Getopt options = {
 int main(int argc, char **argv)
 {
     unsigned char exit_option = 0;
-    char *root_path = NULL;
+    char *library_path = NULL;
 
     enlil_init();
 
@@ -37,7 +37,7 @@ int main(int argc, char **argv)
         ECORE_GETOPT_VALUE_BOOL(exit_option),
         ECORE_GETOPT_VALUE_BOOL(exit_option),
         ECORE_GETOPT_VALUE_BOOL(exit_option),
-        ECORE_GETOPT_VALUE_STR(root_path),
+        ECORE_GETOPT_VALUE_STR(library_path),
         ECORE_GETOPT_VALUE_BOOL(exit_option),
     };
     ecore_app_args_set(argc, (const char **) argv);
@@ -50,7 +50,7 @@ int main(int argc, char **argv)
         ecore_getopt_help(stderr, &options);
         return 1;
     }
-    if(!root_path)
+    if(!library_path)
     {
         fprintf(stderr, "You must specify the location of your enlil !\n");
         return 0;
@@ -60,19 +60,19 @@ int main(int argc, char **argv)
         return 0;
     //
 
-    Enlil_Root *root = enlil_root_new(NULL, NULL, NULL, NULL, NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-    enlil_root_path_set(root, root_path);
+    Enlil_Library *library = enlil_library_new(NULL, NULL, NULL, NULL, NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+    enlil_library_path_set(library, library_path);
 
-    Enlil_Load *load = enlil_load_new(root,
+    Enlil_Load *load = enlil_load_new(library,
             _load_album_done_cb,
-            _load_done_cb, _load_error_cb, root);
+            _load_done_cb, _load_error_cb, library);
 
-    enlil_root_monitor_start(root);
+    enlil_library_monitor_start(library);
 
     enlil_load_run(load);
     ecore_main_loop_begin();
 
-    enlil_root_free(&root);
+    enlil_library_free(&library);
 
     enlil_shutdown();
 
@@ -82,9 +82,9 @@ int main(int argc, char **argv)
 
 static void _load_done_cb(void *data, Enlil_Load *load, int nb_albums, int nb_photos)
 {
-    Enlil_Root *root = (Enlil_Root*)data;
+    Enlil_Library *library = (Enlil_Library*)data;
 
-    enlil_root_print(root);
+    enlil_library_print(library);
     enlil_load_free(&load);
 
     ecore_main_loop_quit();
@@ -96,7 +96,7 @@ static void _load_error_cb(void *data, Enlil_Load *load,  Load_Error error, cons
     printf("LOAD CB ERROR : %s\n",msg);
 }
 
-static void _load_album_done_cb(void *data, Enlil_Load *load,Enlil_Root *root, Enlil_Album *album)
+static void _load_album_done_cb(void *data, Enlil_Load *load,Enlil_Library *library, Enlil_Album *album)
 {
     ;//printf("Enlil_Album loaded\n");
 }

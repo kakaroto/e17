@@ -10,7 +10,7 @@ libenlil_la_SOURCES  = \
 enlil.c \
 Enlil.h \
 enlil_private.h \
-root.c \
+library.c \
 collection.c \
 tag.c \
 album.c \

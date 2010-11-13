@@ -177,8 +177,8 @@ void enlil_photo_free(Enlil_Photo **photo)
 
    EINA_LIST_FREE( (*photo)->tags, photo_tag)
      {
-	if((*photo)->album && enlil_album_root_get((*photo)->album))
-	  _enlil_root_tag_photo_remove(enlil_album_root_get((*photo)->album), photo_tag, *photo);
+	if((*photo)->album && enlil_album_library_get((*photo)->album))
+	  _enlil_library_tag_photo_remove(enlil_album_library_get((*photo)->album), photo_tag, *photo);
 
 	eina_stringshare_del(photo_tag->name);
 	free(photo_tag);
@@ -917,8 +917,8 @@ int enlil_photo_jpg_is(const char *file)
 }
 
 /**
- * If the photo is in an album which is in a root ( see enlil_photo_album_set() and enlil_album_root_set()), this method will add the photo
- * in the tag defined in the root. If the tag does not exists, it is created.
+ * If the photo is in an album which is in a library ( see enlil_photo_album_set() and enlil_album_library_set()), this method will add the photo
+ * in the tag defined in the library. If the tag does not exists, it is created.
  *
  * @param photo The photo struct
  */
@@ -928,21 +928,21 @@ void enlil_photo_tag_process(Enlil_Photo *photo)
    Enlil_Photo_Tag *photo_tag;
    ASSERT_RETURN_VOID(photo != NULL);
    ASSERT_RETURN_VOID(photo->album != NULL);
-   ASSERT_RETURN_VOID(enlil_album_root_get(photo->album) != NULL);
+   ASSERT_RETURN_VOID(enlil_album_library_get(photo->album) != NULL);
 
    EINA_LIST_FOREACH(photo->tags, l, photo_tag)
      {
 	photo_tag->photo = photo;
 	if(!photo_tag -> tag)
-	  _enlil_root_tag_photo_add(enlil_album_root_get(photo->album), photo_tag, photo);
+	  _enlil_library_tag_photo_add(enlil_album_library_get(photo->album), photo_tag, photo);
      }
 }
 
 /**
  * Add the a tag to the photo .
  *
- * If the photo is in an album which is in a root  ( see enlil_photo_album_set() and enlil_album_root_set()), this method will add the photo
- * in the tag defined in the root. If the tag does not exists, it is created.
+ * If the photo is in an album which is in a library  ( see enlil_photo_album_set() and enlil_album_library_set()), this method will add the photo
+ * in the tag defined in the library. If the tag does not exists, it is created.
  *
  * @param photo The photo struct
  * @param tag_name The name of the tag
@@ -968,11 +968,11 @@ void enlil_photo_tag_add(Enlil_Photo *photo, const char *tag_name)
 
    photo->tags = eina_list_append(photo->tags, photo_tag);
 
-   if(photo->album && enlil_album_root_get(photo->album))
+   if(photo->album && enlil_album_library_get(photo->album))
      {
-	Enlil_Root *root = enlil_album_root_get(photo->album);
-	_enlil_root_tag_photo_add(root, photo_tag, photo);
-	enlil_root_eet_tags_save(root);
+	Enlil_Library *library = enlil_album_library_get(photo->album);
+	_enlil_library_tag_photo_add(library, photo_tag, photo);
+	enlil_library_eet_tags_save(library);
      }
 
    if(enlil_photo_iptc_add(photo, "Keywords", photo_tag->name, EINA_TRUE))
@@ -1020,8 +1020,8 @@ Eina_Bool enlil_photo_iptc_add(Enlil_Photo *photo, const char *name, const char 
 /**
  * Remove the photo from the tag.
  *
- * If the photo is in an album which is in a root ( see enlil_photo_album_set() and enlil_album_root_set()), this method will remove the photo
- * from the tag defined in the root.
+ * If the photo is in an album which is in a library ( see enlil_photo_album_set() and enlil_album_library_set()), this method will remove the photo
+ * from the tag defined in the library.
  *
  * @param photo The photo struct
  * @param photo_tag The photo tag struct
@@ -1033,11 +1033,11 @@ void enlil_photo_tag_remove(Enlil_Photo *photo, Enlil_Photo_Tag *photo_tag)
 
    photo->tags = eina_list_remove(photo->tags, photo_tag);
 
-   if(photo->album && enlil_album_root_get(photo->album)) 
+   if(photo->album && enlil_album_library_get(photo->album)) 
      {
-	Enlil_Root *root = enlil_album_root_get(photo->album);
-	_enlil_root_tag_photo_remove(root, photo_tag, photo);
-	enlil_root_eet_tags_save(root);
+	Enlil_Library *library = enlil_album_library_get(photo->album);
+	_enlil_library_tag_photo_remove(library, photo_tag, photo);
+	enlil_library_eet_tags_save(library);
      }
 
    if(enlil_photo_iptc_remove(photo, "Keywords", photo_tag->name))

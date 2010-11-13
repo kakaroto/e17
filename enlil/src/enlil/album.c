@@ -26,7 +26,7 @@ struct enlil_album
    //extra data, not saved in an Eet file
    int header_load_is;
    int photos_load_is;
-   Enlil_Root *root;
+   Enlil_Library *library;
    Ecore_File_Monitor *monitor;
    void *user_data;
    Enlil_Album_Free_Cb free_cb;
@@ -119,8 +119,8 @@ void enlil_album_free(Enlil_Album **album)
 
     EINA_LIST_FREE( (*album)->collections, album_col)
       {
-	 if((*album)->root)
-	   _enlil_root_collection_album_remove((*album)->root, album_col, *album);
+	 if((*album)->library)
+	   _enlil_library_collection_album_remove((*album)->library, album_col, *album);
 
 	 eina_stringshare_del(album_col->name);
 	 free(album_col);
@@ -129,8 +129,8 @@ void enlil_album_free(Enlil_Album **album)
     if( (*album)->free_cb )
       (*album)->free_cb((*album), (*album)->user_data);
 
-    if(enlil_album_root_get(*album))
-       enlil_root_album_remove(enlil_album_root_get(*album), *album);
+    if(enlil_album_library_get(*album))
+       enlil_library_album_remove(enlil_album_library_get(*album), *album);
 
     EINA_STRINGSHARE_DEL( (*album)->name);
     EINA_STRINGSHARE_DEL( (*album)->file_name);
@@ -190,12 +190,12 @@ void enlil_album_monitor_stop(Enlil_Album *album)
 #define FCT_NAME enlil_album
 #define STRUCT_TYPE Enlil_Album
 
-SET(root, Enlil_Root *)
+SET(library, Enlil_Library *)
 STRING_SET(file_name)
 SET(time, long long)
 SET(photos, Eina_List*)
 
-GET(root, Enlil_Root*)
+GET(library, Enlil_Library*)
 GET(name, const char*)
 GET(file_name, const char*)
 GET(path, const char*)
@@ -216,8 +216,8 @@ void enlil_album_name_set(Enlil_Album *album, const char *name)
    EINA_STRINGSHARE_DEL(album->name);
    album->name = eina_stringshare_add(name);
 
-   if(album->root)
-      _enlil_root_album_name_changed(album->root, album);
+   if(album->library)
+      _enlil_library_album_name_changed(album->library, album);
 
    enlil_album_flickr_need_sync_set(album, EINA_TRUE);
 }
@@ -312,8 +312,8 @@ int enlil_album_photos_count_get(Enlil_Album *album)
 }
 
 /**
- * If the album is in a root ( see enlil_album_root_set() ), this method will add the album
- * in the collection defined in the root. If the collection does not exists, it is created.
+ * If the album is in a library ( see enlil_album_library_set() ), this method will add the album
+ * in the collection defined in the library. If the collection does not exists, it is created.
  *
  * @param album The album struct
  */
@@ -322,21 +322,21 @@ void enlil_album_collection_process(Enlil_Album *album)
    Eina_List *l;
    Enlil_Album_Collection *album_col;
    ASSERT_RETURN_VOID(album != NULL);
-   ASSERT_RETURN_VOID(album->root != NULL);
+   ASSERT_RETURN_VOID(album->library != NULL);
 
    EINA_LIST_FOREACH(album->collections, l, album_col)
      {
 	album_col->album = album;
 	if(!album_col -> collection)
-	  _enlil_root_collection_album_add(album->root, album_col, album);
+	  _enlil_library_collection_album_add(album->library, album_col, album);
      }
 }
 
 /**
  * Add the album in a collection.
  *
- * If the album is in a root ( see enlil_album_root_set() ), this method will add the album
- * in the collection defined in the root. If the collection does not exists, it is created.
+ * If the album is in a library ( see enlil_album_library_set() ), this method will add the album
+ * in the collection defined in the library. If the collection does not exists, it is created.
  *
  * @param album The album struct
  * @param col_name The name of the collection
@@ -353,18 +353,18 @@ void enlil_album_collection_add(Enlil_Album *album, const char *col_name)
 
    album->collections = eina_list_append(album->collections, album_col);
 
-   if(album->root)
-      _enlil_root_collection_album_add(album->root, album_col, album);
+   if(album->library)
+      _enlil_library_collection_album_add(album->library, album_col, album);
 
    enlil_album_eet_header_save(album);
-   enlil_root_eet_collections_save(album->root);
+   enlil_library_eet_collections_save(album->library);
 }
 
 /**
  * Remove the album from the collection.
  *
- * If the album is in a root ( see enlil_album_root_set() ), this method will remove the album
- * from the collection defined in the root.
+ * If the album is in a library ( see enlil_album_library_set() ), this method will remove the album
+ * from the collection defined in the library.
  *
  * @param album The album struct
  * @param album_col The album collection struct
@@ -376,14 +376,14 @@ void enlil_album_collection_remove(Enlil_Album *album, Enlil_Album_Collection *a
 
    album->collections = eina_list_remove(album->collections, album_col);
 
-   if(album->root)
-      _enlil_root_collection_album_remove(album->root, album_col, album);
+   if(album->library)
+      _enlil_library_collection_album_remove(album->library, album_col, album);
 
    eina_stringshare_del(album_col->name);
    free(album_col);
 
    enlil_album_eet_header_save(album);
-   enlil_root_eet_collections_save(album->root);
+   enlil_library_eet_collections_save(album->library);
 }
 
 /**
@@ -556,7 +556,7 @@ static int _sort_photos_date_cb(const void *d1, const void *d2)
 static void _album_monitor_cb(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const char *path)
 {
     Enlil_Album *album = (Enlil_Album*)data;
-    Enlil_Root *enlil = album->root;
+    Enlil_Library *enlil = album->library;
 
     ASSERT_RETURN_VOID(enlil != NULL);
 

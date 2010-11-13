@@ -71,7 +71,7 @@ struct enlil_sync
 	Enlil_Sync_Message type;
 	Sync_Error error;
 	char *msg;
-	Enlil_Root *root;
+	Enlil_Library *library;
 	Enlil_Album *album;
 	Enlil_Photo *photo;
      }msg;
@@ -109,8 +109,8 @@ static void _enlil_sync_all_start(void *data, Ecore_Thread *thread);
 static void _enlil_sync_all_album_sync(Enlil_Sync *sync, Enlil_Album *album);
 static void _enlil_sync_all_photo_new(Enlil_Sync *sync, Enlil_Album *album, const char *file);
 static int _enlil_sync_all_photo_update(Enlil_Sync *sync, Enlil_Album *album, Enlil_Photo *photo);
-static void _enlil_sync_all_album_new(Enlil_Sync *sync, Enlil_Root *root_list, const char *file);
-static int _enlil_sync_all_album_update(Enlil_Sync *sync, Enlil_Root *root_list, Enlil_Album *_album);
+static void _enlil_sync_all_album_new(Enlil_Sync *sync, Enlil_Library *library_list, const char *file);
+static int _enlil_sync_all_album_update(Enlil_Sync *sync, Enlil_Library *library_list, Enlil_Album *_album);
 
 static void _enlil_sync_next_job_process(Enlil_Sync *sync);
 static void _enlil_sync_job_free(Enlil_Sync_Job **job);
@@ -436,7 +436,7 @@ static void _enlil_sync_photo_file_start(Enlil_Sync *sync, const char *folder, c
    int new_photo = 0;
    int file_exist;
    Enlil_Album *album;
-   Enlil_Root *root;
+   Enlil_Library *library;
 
 #define SAVE() \
    do { \
@@ -455,10 +455,10 @@ static void _enlil_sync_photo_file_start(Enlil_Sync *sync, const char *folder, c
    ASSERT_RETURN_VOID(folder != NULL);
    ASSERT_RETURN_VOID(file != NULL);
 
-   root = enlil_root_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-   enlil_root_path_set(root, sync->path);
+   library = enlil_library_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+   enlil_library_path_set(library, sync->path);
 
-   album = enlil_root_eet_album_load(root, folder);
+   album = enlil_library_eet_album_load(library, folder);
 
    snprintf(buf_path,PATH_MAX,"%s/%s",enlil_album_path_get(album),enlil_album_file_name_get(album));
    snprintf(buf_eet,PATH_MAX,"%s/%s/"EET_FILE,enlil_album_path_get(album),enlil_album_file_name_get(album));
@@ -552,7 +552,7 @@ static void _enlil_sync_photo_file_start(Enlil_Sync *sync, const char *folder, c
    if(!not_delete_photo && photo)
      enlil_photo_free(&photo);
    enlil_album_free(&album);
-   enlil_root_free(&root);
+   enlil_library_free(&library);
 #undef SAVE
 }
 
@@ -587,20 +587,20 @@ static void _enlil_sync_album_folder_start(Enlil_Sync *sync, const char *folder)
 	  } \
    }while(0);
 
-   Enlil_Root *root = enlil_root_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-   enlil_root_path_set(root, sync->path);
+   Enlil_Library *library = enlil_library_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+   enlil_library_path_set(library, sync->path);
 
-   Enlil_Root *root_list = enlil_root_eet_albums_load(root);
-   if(!root_list)
-     root_list = enlil_root_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-   enlil_root_path_set(root_list, sync->path);
+   Enlil_Library *library_list = enlil_library_eet_albums_load(library);
+   if(!library_list)
+     library_list = enlil_library_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+   enlil_library_path_set(library_list, sync->path);
 
-   album_list = enlil_root_album_search_file_name(root_list, folder);
+   album_list = enlil_library_album_search_file_name(library_list, folder);
 
-   snprintf(buf_album, PATH_MAX, "%s/%s", enlil_root_path_get(root), folder);
+   snprintf(buf_album, PATH_MAX, "%s/%s", enlil_library_path_get(library), folder);
    //load the album from the eet file
    if(album_list)
-     album = enlil_root_eet_album_load(root, folder);
+     album = enlil_library_eet_album_load(library, folder);
    //test if the folder exists
    folder_exist = ecore_file_exists(buf_album);
    //
@@ -616,7 +616,7 @@ static void _enlil_sync_album_folder_start(Enlil_Sync *sync, const char *folder)
 
 	//create the new album
 	album = enlil_album_new();
-	enlil_album_path_set(album, enlil_root_path_get(root));
+	enlil_album_path_set(album, enlil_library_path_get(library));
 	enlil_album_file_name_set(album, folder);
 	enlil_album_name_set(album, folder);
 	enlil_album_time_set(album, time);
@@ -625,7 +625,7 @@ static void _enlil_sync_album_folder_start(Enlil_Sync *sync, const char *folder)
 
 	//send notif new album
 	sync->msg.type = Enlil_SYNC_ALBUM_NEW;
-	sync->msg.root = root;
+	sync->msg.library = library;
 	sync->msg.album = album;
 	ecore_pipe_write(sync->pipe.thread_main, "a", 1);
 	pthread_mutex_lock(&(sync->mutex));
@@ -634,7 +634,7 @@ static void _enlil_sync_album_folder_start(Enlil_Sync *sync, const char *folder)
 	//update the list of album
 	if(album_list)
 	  {
-	    enlil_root_album_remove(root_list, album_list);
+	    enlil_library_album_remove(library_list, album_list);
 	    enlil_album_free(&album_list);
 	  }
 
@@ -642,10 +642,10 @@ static void _enlil_sync_album_folder_start(Enlil_Sync *sync, const char *folder)
 	enlil_album_path_set(album_list, enlil_album_path_get(album));
 	enlil_album_file_name_set(album_list, enlil_album_file_name_get(album));
 	enlil_album_name_set(album_list, enlil_album_name_get(album));
-	enlil_root_album_add(root_list, album_list);
-	enlil_root_eet_albums_save(root_list);
-	enlil_root_eet_collections_save(root_list);
-	enlil_root_eet_tags_save(root_list);
+	enlil_library_album_add(library_list, album_list);
+	enlil_library_eet_albums_save(library_list);
+	enlil_library_eet_collections_save(library_list);
+	enlil_library_eet_tags_save(library_list);
      }
    /*else if(album && folder_exist && time > enlil_album_time_get(album))
      {
@@ -654,7 +654,7 @@ static void _enlil_sync_album_folder_start(Enlil_Sync *sync, const char *folder)
 
 	//send notif update album
 	sync->msg.type = Enlil_SYNC_ALBUM_UPDATE;
-	sync->msg.root = root;
+	sync->msg.library = library;
 	sync->msg.album = album;
 	ecore_pipe_write(sync->pipe.thread_main, "a", 1);
 	pthread_mutex_lock(&(sync->mutex));
@@ -669,16 +669,16 @@ static void _enlil_sync_album_folder_start(Enlil_Sync *sync, const char *folder)
 
 	//send notif
 	sync->msg.type = Enlil_SYNC_ALBUM_DISAPPEAR;
-	sync->msg.root = root;
+	sync->msg.library = library;
 	sync->msg.album = album_list;
 	ecore_pipe_write(sync->pipe.thread_main, "a", 1);
 	pthread_mutex_lock(&(sync->mutex));
 
 	//update the list of album
-	enlil_root_album_remove(root_list, album_list);
-	enlil_root_eet_albums_save(root_list);
-	enlil_root_eet_collections_save(root_list);
-	enlil_root_eet_tags_save(root_list);
+	enlil_library_album_remove(library_list, album_list);
+	enlil_library_eet_albums_save(library_list);
+	enlil_library_eet_collections_save(library_list);
+	enlil_library_eet_tags_save(library_list);
      }
 
    if(album)
@@ -686,9 +686,9 @@ static void _enlil_sync_album_folder_start(Enlil_Sync *sync, const char *folder)
 
    if(album)
      enlil_album_free(&album);
-   if(root_list)
-     enlil_root_free(&root_list);
-   enlil_root_free(&root);
+   if(library_list)
+     enlil_library_free(&library_list);
+   enlil_library_free(&library);
 #undef SAVE
 }
 
@@ -895,7 +895,7 @@ static void _enlil_sync_all_album_sync(Enlil_Sync *sync, Enlil_Album *album)
       free(file);
 }
 
-static void _enlil_sync_all_album_new(Enlil_Sync *sync, Enlil_Root *root_list, const char *file)
+static void _enlil_sync_all_album_new(Enlil_Sync *sync, Enlil_Library *library_list, const char *file)
 {
    char buf[PATH_MAX], buf2[PATH_MAX];
    int ret;
@@ -915,8 +915,8 @@ static void _enlil_sync_all_album_new(Enlil_Sync *sync, Enlil_Root *root_list, c
 	  } \
    } while(0);
 
-   Enlil_Root *root = enlil_root_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-   enlil_root_path_set(root, sync->path);
+   Enlil_Library *library = enlil_library_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+   enlil_library_path_set(library, sync->path);
 
    //
    time_t time;
@@ -939,7 +939,7 @@ static void _enlil_sync_all_album_new(Enlil_Sync *sync, Enlil_Root *root_list, c
 
    //send notif new album
    sync->msg.type = Enlil_SYNC_ALBUM_NEW;
-   sync->msg.root = root;
+   sync->msg.library = library;
    sync->msg.album = album;
    ecore_pipe_write(sync->pipe.thread_main, "a", 1);
    pthread_mutex_lock(&(sync->mutex));
@@ -948,21 +948,21 @@ static void _enlil_sync_all_album_new(Enlil_Sync *sync, Enlil_Root *root_list, c
    enlil_album_path_set(album_list, enlil_album_path_get(album));
    enlil_album_file_name_set(album_list, enlil_album_file_name_get(album));
    enlil_album_name_set(album_list, enlil_album_name_get(album));
-   enlil_root_album_add(root_list, album_list);
+   enlil_library_album_add(library_list, album_list);
 
    _enlil_sync_all_album_sync(sync, album);
-   enlil_root_free(&root);
+   enlil_library_free(&library);
    enlil_album_free(&album);
 
 #undef SAVE
 }
 
-static int _enlil_sync_all_album_update(Enlil_Sync *sync, Enlil_Root *root_list, Enlil_Album *_album)
+static int _enlil_sync_all_album_update(Enlil_Sync *sync, Enlil_Library *library_list, Enlil_Album *_album)
 {
    char buf[PATH_MAX];
 
-   Enlil_Root *root = enlil_root_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-   enlil_root_path_set(root, sync->path);
+   Enlil_Library *library = enlil_library_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+   enlil_library_path_set(library, sync->path);
 
    //
    time_t time;
@@ -972,13 +972,13 @@ static int _enlil_sync_all_album_update(Enlil_Sync *sync, Enlil_Root *root_list,
    //
 
    //compare to the eet file
-   Enlil_Album *album = enlil_root_eet_album_load(root, enlil_album_file_name_get(_album));
+   Enlil_Album *album = enlil_library_eet_album_load(library, enlil_album_file_name_get(_album));
    if(!album)
      {
-	enlil_root_album_remove(root_list, _album);
-	_enlil_sync_all_album_new(sync, root_list, enlil_album_file_name_get(_album));
+	enlil_library_album_remove(library_list, _album);
+	_enlil_sync_all_album_new(sync, library_list, enlil_album_file_name_get(_album));
 	enlil_album_free(&_album);
-	enlil_root_free(&root);
+	enlil_library_free(&library);
 	return 1;
      }
 
@@ -989,14 +989,14 @@ static int _enlil_sync_all_album_update(Enlil_Sync *sync, Enlil_Root *root_list,
 
    //send notif update album
    sync->msg.type = Enlil_SYNC_ALBUM_UPDATE;
-   sync->msg.root = root;
+   sync->msg.library = library;
    sync->msg.album = album;
    ecore_pipe_write(sync->pipe.thread_main, "a", 1);
    pthread_mutex_lock(&(sync->mutex));
    } */
 
    _enlil_sync_all_album_sync(sync, album);
-   enlil_root_free(&root);
+   enlil_library_free(&library);
    enlil_album_free(&album);
 
    return 0;
@@ -1009,7 +1009,7 @@ static int _enlil_sync_all_album_update(Enlil_Sync *sync, Enlil_Root *root_list,
 static void _enlil_sync_all_start(void *data, Ecore_Thread *thread)
 {
    Enlil_Sync *sync = data;
-   Enlil_Root *root;
+   Enlil_Library *library;
    char buf[PATH_MAX];
    Eina_List *l_files;
    Eina_List *l;
@@ -1020,16 +1020,16 @@ static void _enlil_sync_all_start(void *data, Ecore_Thread *thread)
    int save_album_list = 0;
    Enlil_Album *album;
 
-   root = enlil_root_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, NULL);
-   enlil_root_path_set(root, sync->path);
+   library = enlil_library_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, NULL);
+   enlil_library_path_set(library, sync->path);
 
-   l_files = ecore_file_ls(enlil_root_path_get(root));
+   l_files = ecore_file_ls(enlil_library_path_get(library));
 
-   Enlil_Root *root_list = enlil_root_eet_albums_load(root);
-   if(!root_list) root_list = enlil_root_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-   enlil_root_path_set(root_list, sync->path);
+   Enlil_Library *library_list = enlil_library_eet_albums_load(library);
+   if(!library_list) library_list = enlil_library_new(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+   enlil_library_path_set(library_list, sync->path);
 
-   l_files_common = eina_list_sorted_diff(enlil_root_albums_get(root_list),
+   l_files_common = eina_list_sorted_diff(enlil_library_albums_get(library_list),
 	 l_files, &l_files_disapear, &l_files_new, file_album_comp_cb);
 
    //new album
@@ -1037,15 +1037,15 @@ static void _enlil_sync_all_start(void *data, Ecore_Thread *thread)
      save_album_list = 1;
    EINA_LIST_FOREACH(l_files_new, l, file)
      {
-	snprintf(buf, PATH_MAX, "%s/%s", enlil_root_path_get(root),file);
+	snprintf(buf, PATH_MAX, "%s/%s", enlil_library_path_get(library),file);
 	if(ecore_file_is_dir(buf))
-	  _enlil_sync_all_album_new(sync, root_list, file);
+	  _enlil_sync_all_album_new(sync, library_list, file);
      }
 
    //known albums
    EINA_LIST_FOREACH(l_files_common, l, album)
      {
-	if( _enlil_sync_all_album_update(sync, root_list, album) )
+	if( _enlil_sync_all_album_update(sync, library_list, album) )
 	  save_album_list = 1;
      }
 
@@ -1054,25 +1054,25 @@ static void _enlil_sync_all_start(void *data, Ecore_Thread *thread)
      save_album_list = 1;
    EINA_LIST_FOREACH(l_files_disapear, l, album)
      {
-	snprintf(buf,PATH_MAX,"%s/%s", enlil_root_path_get(root_list), enlil_album_file_name_get(album));
+	snprintf(buf,PATH_MAX,"%s/%s", enlil_library_path_get(library_list), enlil_album_file_name_get(album));
 	if(!ecore_file_exists(buf))
 	  {
 	     sync->msg.type = Enlil_SYNC_ALBUM_DISAPPEAR;
-	     sync->msg.root = root;
+	     sync->msg.library = library;
 	     sync->msg.album = album;
 	     ecore_pipe_write(sync->pipe.thread_main, "a", 1);
 	     pthread_mutex_lock(&(sync->mutex));
 
-	     enlil_root_album_remove(root_list, album);
-	     enlil_root_eet_album_remove(root_list, enlil_album_file_name_get(album));
+	     enlil_library_album_remove(library_list, album);
+	     enlil_library_eet_album_remove(library_list, enlil_album_file_name_get(album));
 	     enlil_album_free(&album);
 	  }
      }
    if(save_album_list)
      {
-	enlil_root_eet_albums_save(root_list);
-	enlil_root_eet_collections_save(root_list);
-	enlil_root_eet_tags_save(root_list);
+	enlil_library_eet_albums_save(library_list);
+	enlil_library_eet_collections_save(library_list);
+	enlil_library_eet_tags_save(library_list);
      }
 
 
@@ -1083,9 +1083,9 @@ static void _enlil_sync_all_start(void *data, Ecore_Thread *thread)
    if(l_files_disapear) eina_list_free(l_files_disapear);
    if(l_files_common) eina_list_free(l_files_common);
 
-   enlil_root_free(&root_list);
+   enlil_library_free(&library_list);
 
-   enlil_root_free(&root);
+   enlil_library_free(&library);
 
    sync->msg.type = Enlil_SYNC_DONE;
    ecore_pipe_write(sync->pipe.thread_main, "a", 1);
@@ -1118,15 +1118,15 @@ static void _enlil_sync_message_cb(void *data, void *buffer, unsigned int nbyte)
 	 break;
       case Enlil_SYNC_ALBUM_NEW:
 	 LOG_INFO("New album : %s", enlil_album_file_name_get(sync->msg.album));
-	 sync->sync.album_new_cb(sync->sync.data, sync, sync->msg.root, sync->msg.album);
+	 sync->sync.album_new_cb(sync->sync.data, sync, sync->msg.library, sync->msg.album);
 	 break;
       case Enlil_SYNC_ALBUM_UPDATE:
 	 LOG_INFO("Update album : %s", enlil_album_file_name_get(sync->msg.album));
-	 sync->sync.album_update_cb(sync->sync.data, sync, sync->msg.root, sync->msg.album);
+	 sync->sync.album_update_cb(sync->sync.data, sync, sync->msg.library, sync->msg.album);
 	 break;
       case Enlil_SYNC_ALBUM_DISAPPEAR:
 	 LOG_INFO("The album is referenced in the eet file but the folder does not exists: %s", enlil_album_file_name_get(sync->msg.album));
-	 sync->sync.album_disappear_cb(sync->sync.data, sync, sync->msg.root, sync->msg.album);
+	 sync->sync.album_disappear_cb(sync->sync.data, sync, sync->msg.library, sync->msg.album);
 	 break;
       case Enlil_SYNC_PHOTO_NEW:
 	 LOG_INFO("New photo \"%s\" in the album : %s", enlil_photo_file_name_get(sync->msg.photo), enlil_album_file_name_get(sync->msg.album));

@@ -4,7 +4,7 @@
 #define EET_FILE_VERSION 0.1
 #define EET_FILE "EnlilDB.eet"
 #define EET_FOLDER_ROOT_DB ".enlil/"
-#define EET_FILE_ROOT_DB "roots.eet"
+#define EET_FILE_ROOT_DB "libraries.eet"
 #define EET_FILE_GROUNDSPEAK_DB "geocaching.eet"
 
 #define FLICKR_KEY "aae798f1317888cd87622847d77b8df9"

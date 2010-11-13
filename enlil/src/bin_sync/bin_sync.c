@@ -7,9 +7,9 @@
 static void _sync_done_cb(void *data, Enlil_Sync *sync);
 static void _sync_start_cb(void *data, Enlil_Sync *sync);
 static void _sync_error_cb(void *data, Enlil_Sync *sync,  Sync_Error error, const char* msg);
-static void _sync_album_new_cb(void *data, Enlil_Sync *sync, Enlil_Root *root, Enlil_Album *album);
-static void _sync_album_update_cb(void *data, Enlil_Sync *sync, Enlil_Root *root, Enlil_Album *album);
-static void _sync_album_disapear_cb(void *data, Enlil_Sync *sync, Enlil_Root *root, Enlil_Album *album);
+static void _sync_album_new_cb(void *data, Enlil_Sync *sync, Enlil_Library *library, Enlil_Album *album);
+static void _sync_album_update_cb(void *data, Enlil_Sync *sync, Enlil_Library *library, Enlil_Album *album);
+static void _sync_album_disapear_cb(void *data, Enlil_Sync *sync, Enlil_Library *library, Enlil_Album *album);
 static void _sync_photo_new_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Photo *photo);
 static void _sync_photo_update_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Photo *photo);
 static void _sync_photo_disapear_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Photo *photo);
@@ -35,7 +35,7 @@ static const Ecore_Getopt options = {
 int main(int argc, char **argv)
 {
     unsigned char exit_option = 0;
-    char *root_path = NULL;
+    char *library_path = NULL;
 
     enlil_init();
 
@@ -44,7 +44,7 @@ int main(int argc, char **argv)
         ECORE_GETOPT_VALUE_BOOL(exit_option),
         ECORE_GETOPT_VALUE_BOOL(exit_option),
         ECORE_GETOPT_VALUE_BOOL(exit_option),
-        ECORE_GETOPT_VALUE_STR(root_path),
+        ECORE_GETOPT_VALUE_STR(library_path),
         ECORE_GETOPT_VALUE_BOOL(exit_option),
     };
     ecore_app_args_set(argc, (const char **) argv);
@@ -57,7 +57,7 @@ int main(int argc, char **argv)
         ecore_getopt_help(stderr, &options);
         return 1;
     }
-    if(!root_path)
+    if(!library_path)
     {
         fprintf(stderr, "You must specify the location of your enlil !\n");
         return 0;
@@ -67,7 +67,7 @@ int main(int argc, char **argv)
         return 0;
     //
 
-    Enlil_Sync *sync = enlil_sync_new(root_path,
+    Enlil_Sync *sync = enlil_sync_new(library_path,
             _sync_album_new_cb, _sync_album_update_cb, _sync_album_disapear_cb,
             _sync_photo_new_cb, _sync_photo_update_cb, _sync_photo_disapear_cb,
             _sync_done_cb, _sync_start_cb, _sync_error_cb, NULL);
@@ -99,17 +99,17 @@ static void _sync_error_cb(void *data, Enlil_Sync *sync,  Sync_Error error, cons
     printf("SYNC CB ERROR : %s\n",msg);
 }
 
-static void _sync_album_new_cb(void *data, Enlil_Sync *sync,Enlil_Root *root, Enlil_Album *album)
+static void _sync_album_new_cb(void *data, Enlil_Sync *sync,Enlil_Library *library, Enlil_Album *album)
 {
     ;
 }
 
-static void _sync_album_update_cb(void *data, Enlil_Sync *sync,Enlil_Root *root, Enlil_Album *album)
+static void _sync_album_update_cb(void *data, Enlil_Sync *sync,Enlil_Library *library, Enlil_Album *album)
 {
     ;
 }
 
-static void _sync_album_disapear_cb(void *data, Enlil_Sync *sync,Enlil_Root *root, Enlil_Album *album)
+static void _sync_album_disapear_cb(void *data, Enlil_Sync *sync,Enlil_Library *library, Enlil_Album *album)
 {
     ;
 }

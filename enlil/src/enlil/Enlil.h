@@ -36,11 +36,11 @@
 
 /** TODO
  * Browse albums recursively
- * Create an album for photos which are in the root directory
+ * Create an album for photos which are in the library directory
  *
  */
 
-typedef struct enlil_root Enlil_Root;
+typedef struct enlil_library Enlil_Library;
 typedef struct enlil_collection Enlil_Collection;
 typedef struct enlil_tag Enlil_Tag;
 typedef struct Enlil_Exif Enlil_Exif;
@@ -57,22 +57,22 @@ typedef struct Enlil_Geocaching_Travelbug Enlil_Geocaching_Travelbug;
 typedef enum enlil_photo_sort Enlil_Photo_Sort;
 typedef enum Enlil_Photo_Type Enlil_Photo_Type;
 
-/* CB used when a change occurs in an root folder or an album */
+/* CB used when a change occurs in an library folder or an album */
 typedef struct Enlil_Configuration Enlil_Configuration;
-typedef void (*Enlil_Album_New_Cb)     (void *data, Enlil_Root *root, const char *path);
-typedef void (*Enlil_Album_Delete_Cb)  (void *data, Enlil_Root *root, const char *path);
-typedef void (*Enlil_Delete_Cb)        (void *data, Enlil_Root *root);
-typedef void (*Enlil_Photo_New_Cb)     (void *data, Enlil_Root *root, Enlil_Album *album, const char *path);
-typedef void (*Enlil_Photo_Delete_Cb)  (void *data, Enlil_Root *root, Enlil_Album *album, const char *path);
-typedef void (*Enlil_Photo_Update_Cb)  (void *data, Enlil_Root *root, Enlil_Album *album, const char *path);
-typedef void (*Enlil_Collection_New_Cb)  (void *data, Enlil_Root *root, Enlil_Collection *collection);
-typedef void (*Enlil_Collection_Delete_Cb)  (void *data, Enlil_Root *root, Enlil_Collection *collection);
-typedef void (*Enlil_Collection_Album_New_Cb)  (void *data, Enlil_Root *root, Enlil_Collection *collection, Enlil_Album *album);
-typedef void (*Enlil_Collection_Album_Delete_Cb)  (void *data, Enlil_Root *root, Enlil_Collection *collection, Enlil_Album *album);
-typedef void (*Enlil_Tag_New_Cb)        (void *data, Enlil_Root *root, Enlil_Tag *tag);
-typedef void (*Enlil_Tag_Delete_Cb)     (void *data, Enlil_Root *root, Enlil_Tag *tag);
-typedef void (*Enlil_Tag_Photo_New_Cb)  (void *data, Enlil_Root *root, Enlil_Tag *tag, Enlil_Photo *photo);
-typedef void (*Enlil_Tag_Photo_Delete_Cb)  (void *data, Enlil_Root *root, Enlil_Tag *tag, Enlil_Photo *photo);
+typedef void (*Enlil_Album_New_Cb)     (void *data, Enlil_Library *library, const char *path);
+typedef void (*Enlil_Album_Delete_Cb)  (void *data, Enlil_Library *library, const char *path);
+typedef void (*Enlil_Delete_Cb)        (void *data, Enlil_Library *library);
+typedef void (*Enlil_Photo_New_Cb)     (void *data, Enlil_Library *library, Enlil_Album *album, const char *path);
+typedef void (*Enlil_Photo_Delete_Cb)  (void *data, Enlil_Library *library, Enlil_Album *album, const char *path);
+typedef void (*Enlil_Photo_Update_Cb)  (void *data, Enlil_Library *library, Enlil_Album *album, const char *path);
+typedef void (*Enlil_Collection_New_Cb)  (void *data, Enlil_Library *library, Enlil_Collection *collection);
+typedef void (*Enlil_Collection_Delete_Cb)  (void *data, Enlil_Library *library, Enlil_Collection *collection);
+typedef void (*Enlil_Collection_Album_New_Cb)  (void *data, Enlil_Library *library, Enlil_Collection *collection, Enlil_Album *album);
+typedef void (*Enlil_Collection_Album_Delete_Cb)  (void *data, Enlil_Library *library, Enlil_Collection *collection, Enlil_Album *album);
+typedef void (*Enlil_Tag_New_Cb)        (void *data, Enlil_Library *library, Enlil_Tag *tag);
+typedef void (*Enlil_Tag_Delete_Cb)     (void *data, Enlil_Library *library, Enlil_Tag *tag);
+typedef void (*Enlil_Tag_Photo_New_Cb)  (void *data, Enlil_Library *library, Enlil_Tag *tag, Enlil_Photo *photo);
+typedef void (*Enlil_Tag_Photo_Delete_Cb)  (void *data, Enlil_Library *library, Enlil_Tag *tag, Enlil_Photo *photo);
 //
 typedef void (*Enlil_Album_Free_Cb)     (Enlil_Album *album, void *data);
 typedef void (*Enlil_Photo_Free_Cb)     (Enlil_Photo *photo, void *data);
@@ -126,7 +126,7 @@ EAPI    int                    enlil_eet_app_data_save(Eet_Data_Descriptor *edd,
       const char *key, void *data);
 EAPI    void *                 enlil_eet_app_data_load(Eet_Data_Descriptor *edd, const char *key);
 
-EAPI    Enlil_Root *           enlil_root_new(
+EAPI    Enlil_Library *        enlil_library_new(
       Enlil_Album_New_Cb monitor_album_new_cb, Enlil_Album_Delete_Cb monitor_album_delete_cb,
       Enlil_Delete_Cb monitor_enlil_delete_cb,
       Enlil_Photo_New_Cb monitor_photo_new_cb, Enlil_Photo_Delete_Cb monitor_photo_delete_cb,
@@ -138,49 +138,49 @@ EAPI    Enlil_Root *           enlil_root_new(
       Enlil_Tag_Photo_New_Cb tag_photo_new_cb,
       Enlil_Tag_Photo_Delete_Cb tag_photo_delete_cb,
       void *user_data);
-EAPI    void                    enlil_root_free(Enlil_Root **root);
-EAPI    void                    enlil_root_path_set(Enlil_Root *root, const char *path);
-EAPI    const char *            enlil_root_path_get(const Enlil_Root *root);
-EAPI    void                    enlil_root_flickr_account_set(Enlil_Root *root, const char *account);
-EAPI    const char *            enlil_root_flickr_account_get(const Enlil_Root *root);
-EAPI    void                    enlil_root_flickr_auth_token_set(Enlil_Root *root, const char *auth_token);
-EAPI    const char *            enlil_root_flickr_auth_token_get(const Enlil_Root *root);
-EAPI    void                    enlil_root_album_add(Enlil_Root *root, Enlil_Album *album);
-EAPI    Enlil_Album *           enlil_root_album_prev_get(Enlil_Root *root, Enlil_Album *album);
-EAPI    Eina_List *             enlil_root_albums_get(const Enlil_Root *root);
-EAPI    void                    enlil_root_sync_set(Enlil_Root *root, Enlil_Sync *sync);
-EAPI    Enlil_Sync *            enlil_root_sync_get(const Enlil_Root *root);
-EAPI    void                    enlil_root_print(Enlil_Root *root);
-EAPI    Enlil_Album *           enlil_root_album_search_file_name(Enlil_Root *root, const char *file_name);
-EAPI    Enlil_Album *           enlil_root_album_search_name(Enlil_Root *root, const char *name);
-EAPI    void                    enlil_root_album_remove(Enlil_Root *root, Enlil_Album *album);
-EAPI    void                    enlil_root_monitor_start(Enlil_Root *root);
-EAPI    void                    enlil_root_monitor_stop(Enlil_Root *root);
-EAPI    void                    enlil_root_albums_sort(Enlil_Root *root);
-EAPI 	Enlil_Photo * 			enlil_root_search_photo_get(const char *library_path, int first_second);
-EAPI 	Enlil_Photo * 			enlil_root_photo_get(const char *library_path, int first_second);
-EAPI 	void 					enlil_root_photo_set(Enlil_Root *root, const Enlil_Photo *photo, int first_second);
+EAPI    void                    enlil_library_free(Enlil_Library **library);
+EAPI    void                    enlil_library_path_set(Enlil_Library *library, const char *path);
+EAPI    const char *            enlil_library_path_get(const Enlil_Library *library);
+EAPI    void                    enlil_library_flickr_account_set(Enlil_Library *library, const char *account);
+EAPI    const char *            enlil_library_flickr_account_get(Enlil_Library *library);
+EAPI    void                    enlil_library_flickr_auth_token_set(Enlil_Library *library, const char *auth_token);
+EAPI    const char *            enlil_library_flickr_auth_token_get(Enlil_Library *library);
+EAPI    void                    enlil_library_album_add(Enlil_Library *library, Enlil_Album *album);
+EAPI    Enlil_Album *           enlil_library_album_prev_get(Enlil_Library *library, Enlil_Album *album);
+EAPI    Eina_List *             enlil_library_albums_get(const Enlil_Library *library);
+EAPI    void                    enlil_library_sync_set(Enlil_Library *library, Enlil_Sync *sync);
+EAPI    Enlil_Sync *            enlil_library_sync_get(const Enlil_Library *library);
+EAPI    void                    enlil_library_print(Enlil_Library *library);
+EAPI    Enlil_Album *           enlil_library_album_search_file_name(Enlil_Library *library, const char *file_name);
+EAPI    Enlil_Album *           enlil_library_album_search_name(Enlil_Library *library, const char *name);
+EAPI    void                    enlil_library_album_remove(Enlil_Library *library, Enlil_Album *album);
+EAPI    void                    enlil_library_monitor_start(Enlil_Library *library);
+EAPI    void                    enlil_library_monitor_stop(Enlil_Library *library);
+EAPI    void                    enlil_library_albums_sort(Enlil_Library *library);
+EAPI 	Enlil_Photo * 			enlil_library_search_photo_get(const char *library_path, int first_second);
+EAPI 	Enlil_Photo * 			enlil_library_photo_get(const char *library_path, int first_second);
+EAPI 	void 					enlil_library_photo_set(Enlil_Library *library, const Enlil_Photo *photo, int first_second);
 
-EAPI    const Eina_List *       enlil_root_collections_get(const Enlil_Root *root);
-EAPI    void                    enlil_root_collection_del(Enlil_Root *root, Enlil_Collection *col);
-EAPI    Enlil_Collection *      enlil_root_collection_search_name(Enlil_Root *root, const char *name);
+EAPI    const Eina_List *       enlil_library_collections_get(const Enlil_Library *library);
+EAPI    void                    enlil_library_collection_del(Enlil_Library *library, Enlil_Collection *col);
+EAPI    Enlil_Collection *      enlil_library_collection_search_name(Enlil_Library *library, const char *name);
 
-EAPI    const Eina_List *       enlil_root_tags_get(const Enlil_Root *root);
-EAPI    void                    enlil_root_tag_del(Enlil_Root *root, Enlil_Tag *tag);
-EAPI    Enlil_Tag *             enlil_root_tag_search_name(Enlil_Root *root, const char *name);
+EAPI    const Eina_List *       enlil_library_tags_get(const Enlil_Library *library);
+EAPI    void                    enlil_library_tag_del(Enlil_Library *library, Enlil_Tag *tag);
+EAPI    Enlil_Tag *             enlil_library_tag_search_name(Enlil_Library *library, const char *name);
 
-EAPI    Enlil_Album *           enlil_root_album_search_flickr_id(Enlil_Root *root, const char *id);
+EAPI    Enlil_Album *           enlil_library_album_search_flickr_id(Enlil_Library *library, const char *id);
 
-EAPI    Eina_List *             enlil_root_eet_path_load();
-EAPI    int                     enlil_root_eet_path_save(Enlil_Root *root);
-EAPI    Enlil_Root *            enlil_root_eet_albums_load(Enlil_Root *root);
-EAPI    int                     enlil_root_eet_albums_save(Enlil_Root *root);
-EAPI    Enlil_Album *           enlil_root_eet_album_load(Enlil_Root *root, const char* key);
-EAPI    int                     enlil_root_eet_album_remove(Enlil_Root *root, const char* key);
-EAPI    Enlil_Root *            enlil_root_eet_collections_load(Enlil_Root *root);
-EAPI    int                     enlil_root_eet_collections_save(Enlil_Root *root);
-EAPI    Enlil_Root *            enlil_root_eet_tags_load(Enlil_Root *root);
-EAPI    int                     enlil_root_eet_tags_save(Enlil_Root *root);
+EAPI    Eina_List *             enlil_library_eet_path_load();
+EAPI    int                     enlil_library_eet_path_save(Enlil_Library *library);
+EAPI    Enlil_Library *         enlil_library_eet_albums_load(Enlil_Library *library);
+EAPI    int                     enlil_library_eet_albums_save(Enlil_Library *library);
+EAPI    Enlil_Album *           enlil_library_eet_album_load(Enlil_Library *library, const char* key);
+EAPI    int                     enlil_library_eet_album_remove(Enlil_Library *library, const char* key);
+EAPI    Enlil_Library *         enlil_library_eet_collections_load(Enlil_Library *library);
+EAPI    int                     enlil_library_eet_collections_save(Enlil_Library *library);
+EAPI    Enlil_Library *         enlil_library_eet_tags_load(Enlil_Library *library);
+EAPI    int                     enlil_library_eet_tags_save(Enlil_Library *library);
 
 
 
@@ -226,14 +226,14 @@ EAPI    void                    enlil_album_file_name_set(Enlil_Album *album, co
 EAPI    void                    enlil_album_path_set(Enlil_Album *album, const char* path);
 EAPI    void                    enlil_album_time_set(Enlil_Album *album, long long time);
 EAPI    void                    enlil_album_photos_set(Enlil_Album *album, Eina_List *photos);
-EAPI    void                    enlil_album_root_set(Enlil_Album *album, Enlil_Root *root);
-EAPI    Enlil_Root *            enlil_album_root_get(const Enlil_Album *album);
+EAPI    void                    enlil_album_library_set(Enlil_Album *album, Enlil_Library *library);
+EAPI    Enlil_Library *         enlil_album_library_get(const Enlil_Album *album);
 EAPI    const char *            enlil_album_name_get(const Enlil_Album *album);
 EAPI    const char *            enlil_album_description_get(const Enlil_Album *album);
 EAPI    const char *            enlil_album_file_name_get(const Enlil_Album *album);
 EAPI    const char *            enlil_album_path_get(const Enlil_Album *album);
 EAPI    long long               enlil_album_time_get(const Enlil_Album *album);
-EAPI    void                    enlil_album_list_print(Eina_List *root);
+EAPI    void                    enlil_album_list_print(Eina_List *library);
 EAPI    void                    enlil_album_print(Enlil_Album *album);
 EAPI    void                    enlil_album_photo_add(Enlil_Album *album, Enlil_Photo *photo);
 EAPI    void                    enlil_album_photo_remove(Enlil_Album *album, Enlil_Photo *photo);
@@ -351,9 +351,9 @@ enum Sync_Error
 };
 
 typedef enum Sync_Error Sync_Error;
-typedef void (*Enlil_Sync_Album_New_Cb)         (void *data, Enlil_Sync *sync, Enlil_Root *root, Enlil_Album *album);
-typedef void (*Enlil_Sync_Album_Update_Cb)      (void *data, Enlil_Sync *sync, Enlil_Root *root, Enlil_Album *album);
-typedef void (*Enlil_Sync_Album_Disappear_Cb)   (void *data, Enlil_Sync *sync, Enlil_Root *root, Enlil_Album *album);
+typedef void (*Enlil_Sync_Album_New_Cb)         (void *data, Enlil_Sync *sync, Enlil_Library *library, Enlil_Album *album);
+typedef void (*Enlil_Sync_Album_Update_Cb)      (void *data, Enlil_Sync *sync, Enlil_Library *library, Enlil_Album *album);
+typedef void (*Enlil_Sync_Album_Disappear_Cb)   (void *data, Enlil_Sync *sync, Enlil_Library *library, Enlil_Album *album);
 typedef void (*Enlil_Sync_Photo_New_Cb)         (void *data, Enlil_Sync *sync, Enlil_Album *album, Enlil_Photo *photo);
 typedef void (*Enlil_Sync_Photo_Update_Cb)      (void *data, Enlil_Sync *sync, Enlil_Album *album, Enlil_Photo *photo);
 typedef void (*Enlil_Sync_Photo_Disappear_Cb)   (void *data, Enlil_Sync *sync, Enlil_Album *album, Enlil_Photo *photo);
@@ -388,11 +388,11 @@ enum Load_Error
 typedef struct enlil_load Enlil_Load;
 typedef struct Enlil_Load_Configuration Enlil_Load_Configuration;
 typedef enum Load_Error Load_Error;
-typedef void (*Enlil_Load_Conf_Album_Done_Cb)   (void *data, Enlil_Load *load, Enlil_Root *root, Enlil_Album *album);
+typedef void (*Enlil_Load_Conf_Album_Done_Cb)   (void *data, Enlil_Load *load, Enlil_Library *library, Enlil_Album *album);
 typedef void (*Enlil_Load_Conf_Done_Cb)         (void *data, Enlil_Load *load, int nb_albums, int nb_photos);
 typedef void (*Enlil_Load_Conf_Error_Cb)        (void *data, Enlil_Load *load, Load_Error error, const char* msg);
 
-EAPI    Enlil_Load *            enlil_load_new(Enlil_Root *root,
+EAPI    Enlil_Load *            enlil_load_new(Enlil_Library *library,
       Enlil_Load_Conf_Album_Done_Cb album_done_cb,
       Enlil_Load_Conf_Done_Cb done_cb,
       Enlil_Load_Conf_Error_Cb error_cb,
@@ -598,16 +598,16 @@ typedef struct Enlil_Flickr_Photo_Size Enlil_Flickr_Photo_Size;
 typedef void (*Enlil_Flickr_Job_Start_Cb) (void *data, Enlil_Flickr_Job *job, Enlil_Album *album, Enlil_Photo *photo);
 typedef void (*Enlil_Flickr_Job_Done_Cb) (void *data, Enlil_Flickr_Job *job, Enlil_Album *album, Enlil_Photo *photo);
 
-typedef void (*Enlil_Flickr_Error_Cb) (void *data, Enlil_Root *root);
+typedef void (*Enlil_Flickr_Error_Cb) (void *data, Enlil_Library *library);
 typedef void (*Enlil_Flickr_Album_Error_Cb) (void *data, Enlil_Album *album);
 typedef void (*Enlil_Flickr_Photo_Error_Cb) (void *data, Enlil_Photo *photo);
 
-typedef void (*Enlil_Flickr_Album_New_Cb) (void *data, Enlil_Root *root, Enlil_Album *album);
-typedef void (*Enlil_Flickr_Album_NotInFlickr_Cb) (void *data, Enlil_Root *root, Enlil_Album *album);
-typedef void (*Enlil_Flickr_Album_NotUpToDate_Cb) (void *data, Enlil_Root *root, Enlil_Album *album);
-typedef void (*Enlil_Flickr_Album_FlickrNotUpToDate_Cb) (void *data, Enlil_Root *root, Enlil_Album *album);
-typedef void (*Enlil_Flickr_Album_UpToDate_Cb) (void *data, Enlil_Root *root, Enlil_Album *album);
-typedef void (*Enlil_Flickr_Album_Done_Cb) (void *data, Enlil_Root *root, Enlil_Album *album, Eina_Bool error);
+typedef void (*Enlil_Flickr_Album_New_Cb) (void *data, Enlil_Library *library, Enlil_Album *album);
+typedef void (*Enlil_Flickr_Album_NotInFlickr_Cb) (void *data, Enlil_Library *library, Enlil_Album *album);
+typedef void (*Enlil_Flickr_Album_NotUpToDate_Cb) (void *data, Enlil_Library *library, Enlil_Album *album);
+typedef void (*Enlil_Flickr_Album_FlickrNotUpToDate_Cb) (void *data, Enlil_Library *library, Enlil_Album *album);
+typedef void (*Enlil_Flickr_Album_UpToDate_Cb) (void *data, Enlil_Library *library, Enlil_Album *album);
+typedef void (*Enlil_Flickr_Album_Done_Cb) (void *data, Enlil_Library *library, Enlil_Album *album, Eina_Bool error);
 
 typedef void (*Enlil_Flickr_Photo_New_Cb) (void *data, Enlil_Album *album, const char *name, const char *photo_id);
 typedef void (*Enlil_Flickr_Photo_Known_Cb) (void *data, Enlil_Album *album, Enlil_Photo *photo);
@@ -631,9 +631,9 @@ EAPI    void                    enlil_flickr_job_del(Enlil_Flickr_Job *job);
 EAPI    void                    enlil_flickr_job_start_cb_set(Enlil_Flickr_Job_Start_Cb start_cb, void *data);
 EAPI    void                    enlil_flickr_job_done_cb_set(Enlil_Flickr_Job_Done_Cb done_cb, void *data);
 
-EAPI    void                    enlil_flickr_reinit(Enlil_Root *root);
+EAPI    void                    enlil_flickr_reinit(Enlil_Library *library);
 EAPI    const char *            enlil_flickr_auth_url_get();
-EAPI    Enlil_Flickr_Job *      enlil_flickr_job_reinit_prepend(Enlil_Root *root);
+EAPI    Enlil_Flickr_Job *      enlil_flickr_job_reinit_prepend(Enlil_Library *library);
 EAPI    Enlil_Flickr_Job *      enlil_flickr_job_sync_album_header_update_flickr_append(Enlil_Album *album,
       Enlil_Flickr_Album_Done_Cb done_cb,
       void *data);
@@ -654,7 +654,7 @@ EAPI    Enlil_Flickr_Job *      enlil_flickr_job_sync_album_header_append(Enlil_
       Enlil_Flickr_Album_UpToDate_Cb uptodate_cb,
       Enlil_Flickr_Error_Cb error_cb,
       void *data);
-EAPI    Enlil_Flickr_Job *      enlil_flickr_job_sync_albums_append(Enlil_Root *root,
+EAPI    Enlil_Flickr_Job *      enlil_flickr_job_sync_albums_append(Enlil_Library *library,
       Enlil_Flickr_Album_New_Cb new_cb,
       Enlil_Flickr_Album_NotInFlickr_Cb notinflickr_cb,
       Enlil_Flickr_Album_NotUpToDate_Cb notuptodate_cb,

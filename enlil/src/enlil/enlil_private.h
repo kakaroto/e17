@@ -37,7 +37,7 @@ struct Enlil_Configuration
     } tag;
 };
 
-Enlil_Configuration     enlil_conf_get(Enlil_Root *root);
+Enlil_Configuration     enlil_conf_get(Enlil_Library *library);
 
 int                     enlil_file_manager_init();
 int                     enlil_file_manager_shutdown();
@@ -46,18 +46,18 @@ int                     enlil_thumb_init();
 int                     enlil_thumb_shutdown();
 
 
-void                    _enlil_root_collection_album_add(Enlil_Root *root, Enlil_Album_Collection *album_col, Enlil_Album *album);
-void                    _enlil_root_collection_album_remove(Enlil_Root *root, Enlil_Album_Collection *album_col, Enlil_Album *album);
+void                    _enlil_library_collection_album_add(Enlil_Library *library, Enlil_Album_Collection *album_col, Enlil_Album *album);
+void                    _enlil_library_collection_album_remove(Enlil_Library *library, Enlil_Album_Collection *album_col, Enlil_Album *album);
 
-void                    _enlil_root_tag_photo_add(Enlil_Root *root, Enlil_Photo_Tag *photo_tag, Enlil_Photo *photo);
-void                    _enlil_root_tag_photo_remove(Enlil_Root *root, Enlil_Photo_Tag *photo_tag, Enlil_Photo *photo);
-void                    _enlil_root_album_add_end(Enlil_Root *root, Enlil_Album *album);
-void                    _enlil_root_collection_add_end(Enlil_Root *root, Enlil_Collection *collection, Eina_Bool notify);
-void                    _enlil_root_tag_add_end(Enlil_Root *root, Enlil_Tag *tag, Eina_Bool notify);
+void                    _enlil_library_tag_photo_add(Enlil_Library *library, Enlil_Photo_Tag *photo_tag, Enlil_Photo *photo);
+void                    _enlil_library_tag_photo_remove(Enlil_Library *library, Enlil_Photo_Tag *photo_tag, Enlil_Photo *photo);
+void                    _enlil_library_album_add_end(Enlil_Library *library, Enlil_Album *album);
+void                    _enlil_library_collection_add_end(Enlil_Library *library, Enlil_Collection *collection, Eina_Bool notify);
+void                    _enlil_library_tag_add_end(Enlil_Library *library, Enlil_Tag *tag, Eina_Bool notify);
 
 void                    _enlil_album_photo_name_changed(Enlil_Album *album, Enlil_Photo *photo);
 void                    _enlil_album_photo_datetimeoriginal_changed(Enlil_Album *album, Enlil_Photo *photo);
-void                    _enlil_root_album_name_changed(Enlil_Root *root, Enlil_Album *album);
+void                    _enlil_library_album_name_changed(Enlil_Library *library, Enlil_Album *album);
 
 const char *            _enlil_photo_exif_datetimeoriginal_get(const Enlil_Photo *photo);
 

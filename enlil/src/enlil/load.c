@@ -26,7 +26,7 @@ struct Enlil_Load_Configuration
 
 struct enlil_load
 {
-    Enlil_Root *root;
+    Enlil_Library *library;
     Ecore_Thread *thread;
     Enlil_Load_Configuration conf;
     int photos_count;
@@ -61,13 +61,13 @@ struct enlil_load
  * @param user_data Data sent in the callbacks
  * @return Returns a new load struct
  */
-Enlil_Load *enlil_load_new(Enlil_Root *root,
+Enlil_Load *enlil_load_new(Enlil_Library *library,
         Enlil_Load_Conf_Album_Done_Cb album_done_cb,
         Enlil_Load_Conf_Done_Cb done_cb,
         Enlil_Load_Conf_Error_Cb error_cb,
         void *user_data)
 {
-    ASSERT_RETURN(root!=NULL);
+    ASSERT_RETURN(library!=NULL);
     ASSERT_RETURN(album_done_cb!=NULL);
     ASSERT_RETURN(done_cb!=NULL);
     ASSERT_RETURN(error_cb!=NULL);
@@ -75,7 +75,7 @@ Enlil_Load *enlil_load_new(Enlil_Root *root,
     Enlil_Load *load = calloc(1, sizeof(Enlil_Load));
     ASSERT_RETURN(load!=NULL);
 
-    load->root = root;
+    load->library = library;
     load->conf.album_done_cb = album_done_cb;
     load->conf.done_cb = done_cb;
     load->conf.error_cb = error_cb;
@@ -124,7 +124,7 @@ void enlil_load_run(Enlil_Load *load)
     load->is_running = 1;
     load->t0 = ecore_time_get();
     load->thread = ecore_thread_run(_enlil_load, _enlil_load_end_cb, NULL, load);
-    LOG_INFO("Loading start on the library : %s", enlil_root_path_get(load->root));
+    LOG_INFO("Loading start on the library : %s", enlil_library_path_get(load->library));
 }
 
 void enlil_load_stop(Enlil_Load *load)
@@ -134,7 +134,7 @@ void enlil_load_stop(Enlil_Load *load)
 
     ecore_thread_cancel(load->thread);
     load->is_running = 0;
-    LOG_INFO("Loading the library %s has been canceled.", enlil_root_path_get(load->root));
+    LOG_INFO("Loading the library %s has been canceled.", enlil_library_path_get(load->library));
 }
 
 static void _album_load(Enlil_Load *load, Enlil_Album *album)
@@ -157,42 +157,42 @@ static void _album_load(Enlil_Load *load, Enlil_Album *album)
 static void _enlil_load(void *data, Ecore_Thread *thread)
 {
     Enlil_Load *load = data;
-    Enlil_Root *root, *root_list;
+    Enlil_Library *library, *library_list;
     const Eina_List *l;
     Enlil_Album *album_list;
     Enlil_Collection *collection_list;
     Enlil_Tag *tag_list;
 
-    root = load->root;
+    library = load->library;
 
-    root_list = enlil_root_eet_tags_load(root);
-    EINA_LIST_FOREACH(enlil_root_tags_get(root_list), l, tag_list)
+    library_list = enlil_library_eet_tags_load(library);
+    EINA_LIST_FOREACH(enlil_library_tags_get(library_list), l, tag_list)
       {
 	 Enlil_Tag *tag = enlil_tag_copy_new(tag_list);
-	 _enlil_root_tag_add_end(root, tag, EINA_TRUE);
+	 _enlil_library_tag_add_end(library, tag, EINA_TRUE);
       }
-    enlil_root_free(&root_list);
+    enlil_library_free(&library_list);
 
-    root_list = enlil_root_eet_collections_load(root);
-    EINA_LIST_FOREACH(enlil_root_collections_get(root_list), l, collection_list)
+    library_list = enlil_library_eet_collections_load(library);
+    EINA_LIST_FOREACH(enlil_library_collections_get(library_list), l, collection_list)
       {
 	 Enlil_Collection *collection = enlil_collection_copy_new(collection_list);
-	 _enlil_root_collection_add_end(root, collection, EINA_TRUE);
+	 _enlil_library_collection_add_end(library, collection, EINA_TRUE);
       }
-    enlil_root_free(&root_list);
+    enlil_library_free(&library_list);
 
-    root_list = enlil_root_eet_albums_load(root);
-    if(!root_list) return ;
-    EINA_LIST_FOREACH(enlil_root_albums_get(root_list), l, album_list)
+    library_list = enlil_library_eet_albums_load(library);
+    if(!library_list) return ;
+    EINA_LIST_FOREACH(enlil_library_albums_get(library_list), l, album_list)
       {
-	 Enlil_Album *album = enlil_root_eet_album_load(root, enlil_album_file_name_get(album_list));
+	 Enlil_Album *album = enlil_library_eet_album_load(library, enlil_album_file_name_get(album_list));
 	 if(album)
 	   {
-	      _enlil_root_album_add_end(root, album);
+	      _enlil_library_album_add_end(library, album);
 	      _album_load(load, album);
 	   }
     }
-    enlil_root_free(&root_list);
+    enlil_library_free(&library_list);
 }
 
 static void _enlil_load_message_cb(void *data, void *buffer, unsigned int nbyte)
@@ -214,7 +214,7 @@ static void _enlil_load_message_cb(void *data, void *buffer, unsigned int nbyte)
 	 break;
       case Enlil_LOAD_ALBUM_DONE:
 	 LOG_INFO("Loading album done: %s", enlil_album_name_get(load->msg.album));
-	 load->conf.album_done_cb(load->conf.data, load, load->root, album);
+	 load->conf.album_done_cb(load->conf.data, load, load->library, album);
      }
    EINA_STRINGSHARE_DEL(msg);
 }
@@ -225,12 +225,12 @@ static void _enlil_load_end_cb(void *data, Ecore_Thread *thread)
    Enlil_Load *load = (Enlil_Load*) data;
    load->is_running = 0;
 
-    Eina_List *l_enlil = enlil_root_albums_get(load->root);
+    Eina_List *l_enlil = enlil_library_albums_get(load->library);
 
     t = ecore_time_get();
     double time = t - load->t0;
     LOG_ERR("(%f sec) Loading the library \"%s\" done. %d albums and %d photos.",
-            time, enlil_root_path_get(load->root), eina_list_count(l_enlil), load->photos_count);
+            time, enlil_library_path_get(load->library), eina_list_count(l_enlil), load->photos_count);
     load->conf.done_cb(load->conf.data, load, eina_list_count(l_enlil), load->photos_count);
 }
 

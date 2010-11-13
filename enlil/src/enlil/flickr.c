@@ -35,7 +35,7 @@ struct Enlil_Flickr_Job
 
    Enlil_Album *album;
    Enlil_Photo *photo;
-   Enlil_Root *root;
+   Enlil_Library *library;
    const char *frob;
    const char *photo_id;
 
@@ -113,8 +113,8 @@ static void _flickr_thread(void *data, Ecore_Thread *thread);
 static void _end_cb(void *data, Ecore_Thread *thread);
 static const char *_enlil_flickr_job_type_tostring(Enlil_Flickr_Job_Type type);
 
-static Enlil_Flickr_Job *_enlil_flickr_job_get_authtoken_prepend(Enlil_Root *root, const char *code);
-static int _connect(Enlil_Root *root, const char *code);
+static Enlil_Flickr_Job *_enlil_flickr_job_get_authtoken_prepend(Enlil_Library *library, const char *code);
+static int _connect(Enlil_Library *library, const char *code);
 static int _disconnect();
 static Eina_Bool _idler_upload_cb(void *data);
 
@@ -214,7 +214,7 @@ void enlil_flickr_job_del(Enlil_Flickr_Job *job)
     _job_free(job);
 }
 
-Enlil_Flickr_Job *enlil_flickr_job_reinit_prepend(Enlil_Root *root)
+Enlil_Flickr_Job *enlil_flickr_job_reinit_prepend(Enlil_Library *library)
 {
    Enlil_Flickr_Job *job;
    Eina_List *l;
@@ -226,7 +226,7 @@ Enlil_Flickr_Job *enlil_flickr_job_reinit_prepend(Enlil_Root *root)
    if(!job)
      {
 	job = calloc(1, sizeof(Enlil_Flickr_Job));
-	job->root = root;
+	job->library = library;
 	job->type = ENLIL_FLICKR_JOB_REINIT;
 
 	l_jobs = eina_list_prepend(l_jobs, job);
@@ -254,7 +254,7 @@ Enlil_Flickr_Job *enlil_flickr_job_sync_album_header_update_flickr_append(Enlil_
      {
 	job = calloc(1, sizeof(Enlil_Flickr_Job));
 	job->album = album;
-	job->root = enlil_album_root_get(album);
+	job->library = enlil_album_library_get(album);
 	job->type = ENLIL_FLICKR_JOB_SYNC_ALBUM_HEADER_UPDATE_FLICKR;
 
 	job->album_done_cb = done_cb;
@@ -285,7 +285,7 @@ Enlil_Flickr_Job *enlil_flickr_job_sync_album_header_update_local_append(Enlil_A
      {
 	job = calloc(1, sizeof(Enlil_Flickr_Job));
 	job->album = album;
-	job->root = enlil_album_root_get(album);
+	job->library = enlil_album_library_get(album);
 	job->type = ENLIL_FLICKR_JOB_SYNC_ALBUM_HEADER_UPDATE_LOCAL;
 
 	job->album_done_cb = done_cb;
@@ -335,7 +335,7 @@ Enlil_Flickr_Job *enlil_flickr_job_sync_album_header_create_flickr_append(Enlil_
 
 	job = calloc(1, sizeof(Enlil_Flickr_Job));
 	job->album = album;
-	job->root = enlil_album_root_get(album);
+	job->library = enlil_album_library_get(album);
 
 	if(!photo)
 	  {
@@ -382,7 +382,7 @@ Enlil_Flickr_Job *enlil_flickr_job_sync_album_header_append(Enlil_Album *album,
    if(!job)
      {
 	job = calloc(1, sizeof(Enlil_Flickr_Job));
-	job->root = enlil_album_root_get(album);
+	job->library = enlil_album_library_get(album);
 	job->album = album;
 	job->type = ENLIL_FLICKR_JOB_CMP_ALBUM_HEADER;
 	job->album_new_cb = new_cb;
@@ -401,7 +401,7 @@ Enlil_Flickr_Job *enlil_flickr_job_sync_album_header_append(Enlil_Album *album,
    return job;
 }
 
-Enlil_Flickr_Job *enlil_flickr_job_sync_albums_append(Enlil_Root *root,
+Enlil_Flickr_Job *enlil_flickr_job_sync_albums_append(Enlil_Library *library,
       Enlil_Flickr_Album_New_Cb new_cb,
       Enlil_Flickr_Album_NotInFlickr_Cb notinflickr_cb,
       Enlil_Flickr_Album_NotUpToDate_Cb notuptodate_cb,
@@ -413,7 +413,7 @@ Enlil_Flickr_Job *enlil_flickr_job_sync_albums_append(Enlil_Root *root,
    Enlil_Flickr_Job *job;
    Eina_List *l;
 
-   ASSERT_RETURN(root != NULL);
+   ASSERT_RETURN(library != NULL);
 
    EINA_LIST_FOREACH(l_jobs, l, job)
       if(job->type == ENLIL_FLICKR_JOB_CMP_ALBUMS_HEADER)
@@ -422,7 +422,7 @@ Enlil_Flickr_Job *enlil_flickr_job_sync_albums_append(Enlil_Root *root,
    if(!job)
      {
 	job = calloc(1, sizeof(Enlil_Flickr_Job));
-	job->root = root;
+	job->library = library;
 	job->type = ENLIL_FLICKR_JOB_CMP_ALBUMS_HEADER;
 	job->album_new_cb = new_cb;
 	job->album_notinflickr_cb = notinflickr_cb;
@@ -459,7 +459,7 @@ Enlil_Flickr_Job *enlil_flickr_job_sync_album_photos_append(Enlil_Album *album,
    if(!job)
      {
 	job = calloc(1, sizeof(Enlil_Flickr_Job));
-	job->root = enlil_album_root_get(album);
+	job->library = enlil_album_library_get(album);
 	job->album = album;
 	job->type = ENLIL_FLICKR_JOB_CMP_ALBUM_PHOTOS;
 	job->photo_new_cb = new_cb;
@@ -680,20 +680,20 @@ static void _job_next()
 
    if(!fc)
      {
-	Enlil_Root *root = job->root;
+	Enlil_Library *library = job->library;
 
-	if(!root)
+	if(!library)
 	  {
 	     LOG_CRIT("The job is not associated to a library !");
 	     return ;
 	  }
-	else if(!enlil_root_flickr_account_get(root))
+	else if(!enlil_library_flickr_account_get(library))
 	  {
 	     LOG_CRIT("The library is not associated to a flickr account !");
 	     return ;
 	  }
 
-	if(!_connect(root, enlil_root_flickr_account_get(root)))
+	if(!_connect(library, enlil_library_flickr_account_get(library)))
 	  return ;
      }
 
@@ -740,7 +740,7 @@ static void _flickr_thread(void *data, Ecore_Thread *thread)
 	      break;
 	   }
 	 flickcurl_set_auth_token(fc, token);
-	 enlil_root_flickr_auth_token_set(job->root, token);
+	 enlil_library_flickr_auth_token_set(job->library, token);
 	 break;
       case ENLIL_FLICKR_JOB_CMP_ALBUMS_HEADER :
 	 LOG_INFO("Get albums header");
@@ -912,12 +912,12 @@ static void _end_cb(void *data, Ecore_Thread *thread)
 	 if(job->response.error)
 	   {
 	      if(job->error_cb)
-		job->error_cb(job->data, job->root);
+		job->error_cb(job->data, job->library);
 	      break;
 	   }
 	 i = 0;
 
-	 copy = eina_list_clone(enlil_root_albums_get(job->root));
+	 copy = eina_list_clone(enlil_library_albums_get(job->library));
 
 	 while(job->response.photosets && job->response.photosets[i])
 	   {
@@ -939,29 +939,29 @@ static void _end_cb(void *data, Ecore_Thread *thread)
 		   LOG_INFO("The album '%s' exists in the Flickr account but not in the local library. Consequently we create it.", photoset->title);
 
 		   Enlil_Album *album = enlil_album_new();
-		   enlil_album_path_set(album, enlil_root_path_get(job->root));
+		   enlil_album_path_set(album, enlil_library_path_get(job->library));
 		   enlil_album_name_set(album, photoset->title);
 		   enlil_album_file_name_set(album, photoset->title);
 		   _enlil_album_flickr_id_set(album, photoset->id);
 
-		   snprintf(buf, PATH_MAX, "%s/%s", enlil_root_path_get(job->root), photoset->title);
+		   snprintf(buf, PATH_MAX, "%s/%s", enlil_library_path_get(job->library), photoset->title);
 		   if(ecore_file_exists(buf))
 		     {
 			snprintf(buf, PATH_MAX, "%s_Flickr", photoset->title);
 			enlil_album_file_name_set(album, buf);
 			enlil_album_name_set(album, buf);
 
-			snprintf(buf, PATH_MAX, "%s/%s", enlil_root_path_get(job->root),
+			snprintf(buf, PATH_MAX, "%s/%s", enlil_library_path_get(job->library),
 			      enlil_album_file_name_get(album));
 		     }
-		   enlil_root_album_add(job->root, album);
-		   enlil_root_eet_albums_save(job->root);
+		   enlil_library_album_add(job->library, album);
+		   enlil_library_eet_albums_save(job->library);
 		   enlil_album_eet_header_save(album);
 
 		   ecore_file_mkdir(buf);
 
 		   if(job->album_new_cb)
-		     job->album_new_cb(job->data, job->root, album);
+		     job->album_new_cb(job->data, job->library, album);
 		}
 	      else
 		{
@@ -972,16 +972,16 @@ static void _end_cb(void *data, Ecore_Thread *thread)
 			if(enlil_album_flickr_need_sync_get(album))
 			  {
 			     if(job->album_flickrnotuptodate_cb)
-			       job->album_flickrnotuptodate_cb(job->data, job->root, album);
+			       job->album_flickrnotuptodate_cb(job->data, job->library, album);
 			  }
 			else
 			  {
 			     if(job->album_notuptodate_cb)
-			       job->album_notuptodate_cb(job->data, job->root, album);
+			       job->album_notuptodate_cb(job->data, job->library, album);
 			  }
 		     }
 		   else if(job->album_uptodate_cb)
-		     job->album_uptodate_cb(job->data, job->root, album);
+		     job->album_uptodate_cb(job->data, job->library, album);
 
 		}
 
@@ -997,7 +997,7 @@ static void _end_cb(void *data, Ecore_Thread *thread)
 		   enlil_album_eet_header_save(album);
 		}
 	      if(job->album_notinflickr_cb)
-		job->album_notinflickr_cb(job->data, job->root, album);
+		job->album_notinflickr_cb(job->data, job->library, album);
 	   }
 	 break;
       case ENLIL_FLICKR_JOB_CMP_ALBUM_HEADER :
@@ -1005,7 +1005,7 @@ static void _end_cb(void *data, Ecore_Thread *thread)
 	 if(job->response.error)
 	   {
 	      if(job->error_cb)
-		job->error_cb(job->data, job->root);
+		job->error_cb(job->data, job->library);
 	      break;
 	   }
 
@@ -1013,7 +1013,7 @@ static void _end_cb(void *data, Ecore_Thread *thread)
 	 if(!job->response.photoset)
 	   {
 	      if(job->album_notinflickr_cb)
-		job->album_notinflickr_cb(job->data, job->root, album);
+		job->album_notinflickr_cb(job->data, job->library, album);
 	      break;
 	   }
 
@@ -1023,12 +1023,12 @@ static void _end_cb(void *data, Ecore_Thread *thread)
 	      if(enlil_album_flickr_need_sync_get(album))
 		{
 		   if(job->album_flickrnotuptodate_cb)
-		     job->album_flickrnotuptodate_cb(job->data, job->root, album);
+		     job->album_flickrnotuptodate_cb(job->data, job->library, album);
 		}
 	      else
 		{
 		   if(job->album_notuptodate_cb)
-		     job->album_notuptodate_cb(job->data, job->root, album);
+		     job->album_notuptodate_cb(job->data, job->library, album);
 		}
 	   }
 	 break;
@@ -1039,7 +1039,7 @@ static void _end_cb(void *data, Ecore_Thread *thread)
 	      enlil_album_eet_header_save(job->album);
 	   }
 	 if(job->album_done_cb)
-	   job->album_done_cb(job->data, job->root, job->album, job->response.error);
+	   job->album_done_cb(job->data, job->library, job->album, job->response.error);
 	 break;
       case ENLIL_FLICKR_JOB_SYNC_ALBUM_HEADER_UPDATE_LOCAL :
 	 if(!job->response.error)
@@ -1049,7 +1049,7 @@ static void _end_cb(void *data, Ecore_Thread *thread)
 	   }
 	 enlil_album_eet_header_save(job->album);
 	 if(job->album_done_cb)
-	   job->album_done_cb(job->data, job->root, job->album, job->response.error);
+	   job->album_done_cb(job->data, job->library, job->album, job->response.error);
 	 break;
       case ENLIL_FLICKR_JOB_CMP_ALBUM_PHOTOS :
 	 if(job->response.error)
@@ -1241,7 +1241,7 @@ end:
 }
 
 
-static Enlil_Flickr_Job *_enlil_flickr_job_get_authtoken_prepend(Enlil_Root *root, const char *frob)
+static Enlil_Flickr_Job *_enlil_flickr_job_get_authtoken_prepend(Enlil_Library *library, const char *frob)
 {
    Enlil_Flickr_Job *job;
    Eina_List *l;
@@ -1254,7 +1254,7 @@ static Enlil_Flickr_Job *_enlil_flickr_job_get_authtoken_prepend(Enlil_Root *roo
      {
 	job = calloc(1, sizeof(Enlil_Flickr_Job));
 	job->frob = eina_stringshare_add(frob);
-	job->root = root;
+	job->library = library;
 	job->type = ENLIL_FLICKR_JOB_GET_AUTHTOKEN;
 
 	l_jobs = eina_list_prepend(l_jobs, job);
@@ -1266,10 +1266,10 @@ static Enlil_Flickr_Job *_enlil_flickr_job_get_authtoken_prepend(Enlil_Root *roo
 }
 
 
-static int _connect(Enlil_Root *root, const char *frob)
+static int _connect(Enlil_Library *library, const char *frob)
 {
    ASSERT_RETURN(frob != NULL);
-   ASSERT_RETURN(root != NULL);
+   ASSERT_RETURN(library != NULL);
 
 #ifdef HAVE_FLICKR
    flickcurl_init();
@@ -1277,13 +1277,13 @@ static int _connect(Enlil_Root *root, const char *frob)
 
    flickcurl_set_api_key(fc, FLICKR_KEY);
    flickcurl_set_shared_secret(fc, FLICKR_SECRET);
-   if(!enlil_root_flickr_auth_token_get(root))
+   if(!enlil_library_flickr_auth_token_get(library))
      {
-	_enlil_flickr_job_get_authtoken_prepend(root, frob);
+	_enlil_flickr_job_get_authtoken_prepend(library, frob);
 	return 0;
      }
    else
-     flickcurl_set_auth_token(fc, enlil_root_flickr_auth_token_get(root));
+     flickcurl_set_auth_token(fc, enlil_library_flickr_auth_token_get(library));
 
    return 1;
 #else
