@@ -30,7 +30,7 @@ static void _tag_del_cb(void *data, Evas_Object *obj, void *event_info)
    Tag_Menu *tag_menu = data;
    Enlil_Tag_Data *tag_data = enlil_tag_user_data_get(tag_menu->tag);
 
-   enlil_root_tag_del(tag_data->enlil_data->root, tag_menu->tag); 
+   enlil_library_tag_del(tag_data->enlil_data->library, tag_menu->tag); 
 
    tag_menu_free(tag_menu);
 }

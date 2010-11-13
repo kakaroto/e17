@@ -9,7 +9,7 @@ static Evas_Object *slideshow, *bt_start, *bt_stop, *edje, *bt_layout, *spin;
 static Elm_Slideshow_Item_Class itc;
 static Evas_Object * _get(void *data, Evas_Object *obj);
 static Enlil_Album *galbum = NULL;
-static Enlil_Root *groot = NULL;
+static Enlil_Library *glibrary = NULL;
 
 
 static void
@@ -235,7 +235,7 @@ void slideshow_album_add(Enlil_Album *album, Enlil_Photo *_photo)
 		elm_slideshow_show(item);
 }
 
-void slideshow_root_add(Enlil_Root *root, Enlil_Photo *_photo)
+void slideshow_library_add(Enlil_Library *library, Enlil_Photo *_photo)
 {
 	Eina_List *l, *l2;
 	Enlil_Photo *photo;
@@ -244,8 +244,8 @@ void slideshow_root_add(Enlil_Root *root, Enlil_Photo *_photo)
 
 	_init_slideshow();
 
-	groot = root;
-	EINA_LIST_FOREACH(enlil_root_albums_get(root), l, album)
+	glibrary = library;
+	EINA_LIST_FOREACH(enlil_library_albums_get(library), l, album)
 	{
 		EINA_LIST_FOREACH(enlil_album_photos_get(album), l2, photo)
 			  {
@@ -283,9 +283,9 @@ void slideshow_clear()
 		galbum = NULL;
 	}
 
-	if(groot)
+	if(glibrary)
 	{
-		EINA_LIST_FOREACH(enlil_root_albums_get(groot), l, album)
+		EINA_LIST_FOREACH(enlil_library_albums_get(glibrary), l, album)
 			  {
 			EINA_LIST_FOREACH(enlil_album_photos_get(album), l2, photo)
 	    		   {
@@ -293,7 +293,7 @@ void slideshow_clear()
 				photo_data->slideshow_item = NULL;
 	    		   }
 			  }
-		groot = NULL;
+		glibrary = NULL;
 	}
 }
 

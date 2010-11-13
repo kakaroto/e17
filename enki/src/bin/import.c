@@ -165,7 +165,7 @@ Evas_Object *import_new(Evas_Object *win)
     itc_album.func.state_get = NULL;
     itc_album.func.del       = NULL;
 
-    EINA_LIST_FOREACH(enlil_root_albums_get(enlil_data->root), l, album)
+    EINA_LIST_FOREACH(enlil_library_albums_get(enlil_data->library), l, album)
     {
         Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
         album_data->import_list_album_item =
@@ -507,7 +507,7 @@ static void _import_next(void *data, Ecore_Thread *thread)
 	//done
 	elm_object_disabled_set(bt_close, 0);
 	enlil_album_monitor_start(album);
-	monitor_album_update_cb(enlil_data, enlil_data->root, album);
+	monitor_album_update_cb(enlil_data, enlil_data->library, album);
      }
    else
      ecore_thread_run(_import_thread, _import_next, NULL, current_import);
@@ -541,7 +541,7 @@ void _import_photo_data_free(Enlil_Photo *photo, void *_data)
    _Import_Photo_Data *data = _data;
    //Enlil_Data *enlil_data = data->enlil_data;
 
-    EINA_LIST_FOREACH(enlil_root_albums_get(enlil_data->root), l, album)
+    EINA_LIST_FOREACH(enlil_library_albums_get(enlil_data->library), l, album)
     {
         album_data = enlil_album_user_data_get(album);
         album_data->import_list_album_item = NULL;

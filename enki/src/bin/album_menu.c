@@ -54,7 +54,7 @@ Album_Menu *album_menu_new(Evas_Object *parent, Enlil_Album *album)
    elm_menu_item_add(menu, mi, NULL, D_("New collection"), _collection_new_cb, am);
    elm_menu_item_separator_add(menu, mi);
 
-   EINA_LIST_FOREACH(enlil_root_collections_get(enlil_album_root_get(album)), l, col)
+   EINA_LIST_FOREACH(enlil_library_collections_get(enlil_album_library_get(album)), l, col)
    {
       Elm_Menu_Item *mi2;
       if(!eina_list_data_find(enlil_collection_albums_get(col), album))
@@ -108,7 +108,7 @@ Album_Menu *album_collection_menu_new(Evas_Object *parent, Enlil_Album *album)
    elm_menu_item_add(menu, mi, NULL, D_("New collection"), _collection_new_cb, am);
    elm_menu_item_separator_add(menu, mi);
 
-   EINA_LIST_FOREACH(enlil_root_collections_get(enlil_album_root_get(album)), l, col)
+   EINA_LIST_FOREACH(enlil_library_collections_get(enlil_album_library_get(album)), l, col)
    {
       Elm_Menu_Item *mi2;
       if(!eina_list_data_find(enlil_collection_albums_get(col), album))
@@ -135,7 +135,7 @@ Album_Menu *album_tag_menu_new(Evas_Object *parent, Enlil_Album *album)
    am->menu = menu;
 
    mi = elm_menu_item_add(menu, NULL, NULL, D_("Remove the tag from all photos"), NULL, am);
-   EINA_LIST_FOREACH(enlil_root_tags_get(enlil_album_root_get(album)), l, tag)
+   EINA_LIST_FOREACH(enlil_library_tags_get(enlil_album_library_get(album)), l, tag)
    {
       Eina_Bool find = EINA_FALSE;
       EINA_LIST_FOREACH(enlil_album_photos_get(album), _l, photo)
@@ -160,7 +160,7 @@ Album_Menu *album_tag_menu_new(Evas_Object *parent, Enlil_Album *album)
    elm_menu_item_add(menu, mi, NULL, D_("New tag"), _tag_new_cb, am);
    elm_menu_item_separator_add(menu, mi);
 
-   EINA_LIST_FOREACH(enlil_root_tags_get(enlil_album_root_get(album)), l, tag)
+   EINA_LIST_FOREACH(enlil_library_tags_get(enlil_album_library_get(album)), l, tag)
    {
       Eina_Bool find = EINA_TRUE;
       EINA_LIST_FOREACH(enlil_album_photos_get(album), _l, photo)

@@ -10,7 +10,7 @@ static void _photos_notinflickr_cb(void *data, Evas_Object *obj, void *event_inf
 static void _photos_notinlocal_cb(void *data, Evas_Object *obj, void *event_info);
 static void _flickr_photos_notinlocal_photo_new_cb(void *data, Enlil_Album *album, const char *photo_name, const char *photo_id);
 
-static void _flickr_album_header_sync_done_cb(void *data, Enlil_Root *root, Enlil_Album *album, Eina_Bool error);
+static void _flickr_album_header_sync_done_cb(void *data, Enlil_Library *library, Enlil_Album *album, Eina_Bool error);
 Evas_Object *flickr_sync_new(Evas_Object *win, Enlil_Album *album)
 {
    Evas_Object *inwin, *pb, *bt, *tb;
@@ -587,7 +587,7 @@ static void _album_notinflickr_cb(void *data, Evas_Object *obj, void *event_info
 }
 
 
-static void _flickr_album_header_sync_done_cb(void *data, Enlil_Root *root, Enlil_Album *album, Eina_Bool error)
+static void _flickr_album_header_sync_done_cb(void *data, Enlil_Library *library, Enlil_Album *album, Eina_Bool error)
 {
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 

@@ -24,7 +24,7 @@ typedef struct enlil_tag_data Enlil_Tag_Data;
 
 struct enlil_data
 {
-    Enlil_Root *root;
+    Enlil_Library *library;
     Enlil_Sync *sync;
     Enlil_Load *load;
 

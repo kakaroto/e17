@@ -4,7 +4,7 @@
 #include "slideshow.h"
 
 static int APP_LOG_DOMAIN;
-static Enlil_Root *root;
+static Enlil_Library *library;
 
 static const Ecore_Getopt options = {
 		"Enki-Slideshow",
@@ -26,7 +26,7 @@ static const Ecore_Getopt options = {
 
 static void _load_done_cb(void *data, Enlil_Load *load, int nb_albums, int nb_photos);
 static void _load_error_cb(void *data, Enlil_Load *load,  Load_Error error, const char* msg);
-static void _load_album_done_cb(void *data, Enlil_Load *load, Enlil_Root *root, Enlil_Album *album);
+static void _load_album_done_cb(void *data, Enlil_Load *load, Enlil_Library *library, Enlil_Album *album);
 
 
 
@@ -39,7 +39,7 @@ static void close_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 int elm_main(int argc, char **argv)
 {
 	unsigned char exit_option = 0;
-	char *root_path = NULL;
+	char *library_path = NULL;
 
 	enlil_init();
 	APP_LOG_DOMAIN = eina_log_domain_register("Enki-Slideshow", "\033[34;1m");
@@ -49,14 +49,14 @@ int elm_main(int argc, char **argv)
 			ECORE_GETOPT_VALUE_BOOL(exit_option),
 			ECORE_GETOPT_VALUE_BOOL(exit_option),
 			ECORE_GETOPT_VALUE_BOOL(exit_option),
-			ECORE_GETOPT_VALUE_STR(root_path),
+			ECORE_GETOPT_VALUE_STR(library_path),
 			ECORE_GETOPT_VALUE_BOOL(exit_option),
 	};
 	ecore_app_args_set(argc, (const char **) argv);
 	int nonargs = ecore_getopt_parse(&options, values, argc, argv);
 	if (nonargs < 0)
 		return 1;
-	else if (nonargs != argc || !root_path)
+	else if (nonargs != argc || !library_path)
 	{
 		fputs("Invalid non-option argument", stderr);
 		ecore_getopt_help(stderr, &options);
@@ -71,15 +71,15 @@ int elm_main(int argc, char **argv)
 	elm_finger_size_set(1);
 
 	//
-	root = enlil_root_new(NULL, NULL, NULL,
+	library = enlil_library_new(NULL, NULL, NULL,
 			NULL, NULL, NULL,
 			NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
-	enlil_root_path_set(root, root_path);
+	enlil_library_path_set(library, library_path);
 
-	Enlil_Load *load = enlil_load_new(root,
+	Enlil_Load *load = enlil_load_new(library,
 			_load_album_done_cb,
-			_load_done_cb, _load_error_cb, root);
+			_load_done_cb, _load_error_cb, library);
 
 	enlil_load_run(load);
 	//
@@ -95,7 +95,7 @@ int elm_main(int argc, char **argv)
 
 static void _load_done_cb(void *data, Enlil_Load *load, int nb_albums, int nb_photos)
 {
-	slideshow_root_add(root, NULL);
+	slideshow_library_add(library, NULL);
 	slideshow_show();
 	slideshow_start();
 	evas_object_event_callback_add(slideshow_win_get(), EVAS_CALLBACK_HIDE, close_cb, NULL);
@@ -107,7 +107,7 @@ static void _load_error_cb(void *data, Enlil_Load *load,  Load_Error error, cons
     printf("LOAD CB ERROR : %s\n",msg);
 }
 
-static void _load_album_done_cb(void *data, Enlil_Load *load,Enlil_Root *root, Enlil_Album *album)
+static void _load_album_done_cb(void *data, Enlil_Load *load,Enlil_Library *library, Enlil_Album *album)
 {
 	Eina_List *l;
 	Enlil_Photo *photo;

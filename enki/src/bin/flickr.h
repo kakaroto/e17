@@ -18,12 +18,12 @@ const char *photo_flickr_edje_signal_get(Photo_Flickr_Enum e);
 void flickr_job_start_cb(void *data, Enlil_Flickr_Job* job, Enlil_Album *album, Enlil_Photo *photo);
 void flickr_job_done_cb(void *data, Enlil_Flickr_Job* job, Enlil_Album *album, Enlil_Photo *photo);
 
-void flickr_album_new_cb(void *data, Enlil_Root *root, Enlil_Album *album);
-void flickr_album_flickrnotuptodate_cb(void *data, Enlil_Root *root, Enlil_Album *album);
-void flickr_album_notuptodate_cb(void *data, Enlil_Root *root, Enlil_Album *album);
-void flickr_album_notinflickr_cb(void *data, Enlil_Root *root, Enlil_Album *album);
-void flickr_album_uptodate_cb(void *data, Enlil_Root *root, Enlil_Album *album);
-void flickr_error_cb(void *data, Enlil_Root *root);
+void flickr_album_new_cb(void *data, Enlil_Library *root, Enlil_Album *album);
+void flickr_album_flickrnotuptodate_cb(void *data, Enlil_Library *root, Enlil_Album *album);
+void flickr_album_notuptodate_cb(void *data, Enlil_Library *root, Enlil_Album *album);
+void flickr_album_notinflickr_cb(void *data, Enlil_Library *root, Enlil_Album *album);
+void flickr_album_uptodate_cb(void *data, Enlil_Library *root, Enlil_Album *album);
+void flickr_error_cb(void *data, Enlil_Library *root);
 
 void flickr_photo_new_cb(void *data, Enlil_Album *album, const char *photo_name, const char *photo_id);
 void flickr_photo_notinflickr_cb(void *data, Enlil_Album *album, Enlil_Photo *photo);

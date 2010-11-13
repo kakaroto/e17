@@ -29,7 +29,7 @@ static void _collection_del_cb(void *data, Evas_Object *obj, void *event_info)
    Collection_Menu *col_menu = data;
    Enlil_Collection_Data *col_data = enlil_collection_user_data_get(col_menu->col);
 
-   enlil_root_collection_del(col_data->enlil_data->root, col_menu->col); 
+   enlil_library_collection_del(col_data->enlil_data->library, col_menu->col); 
 
    collection_menu_free(col_menu);
 }

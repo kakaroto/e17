@@ -34,7 +34,7 @@ Photo_Menu *photo_menu_new(Evas_Object *parent, Enlil_Photo *photo, Eina_List *p
    mi = elm_menu_item_add(menu, NULL, NULL, D_("Remove the tag"), NULL, NULL);
 
    Enlil_Album *album = enlil_photo_album_get(eina_list_data_get(photos));
-   EINA_LIST_FOREACH(enlil_root_tags_get(enlil_album_root_get(album)),l, tag)
+   EINA_LIST_FOREACH(enlil_library_tags_get(enlil_album_library_get(album)),l, tag)
      {
 	Eina_Bool find = EINA_FALSE;
 	EINA_LIST_FOREACH(photos, _l, _photo)
@@ -59,7 +59,7 @@ Photo_Menu *photo_menu_new(Evas_Object *parent, Enlil_Photo *photo, Eina_List *p
    elm_menu_item_add(menu, mi, NULL, D_("New tag"), _tag_new_cb, am);
    elm_menu_item_separator_add(menu, mi);
 
-   EINA_LIST_FOREACH(enlil_root_tags_get(enlil_album_root_get(album)), l, tag)
+   EINA_LIST_FOREACH(enlil_library_tags_get(enlil_album_library_get(album)), l, tag)
    {
       Eina_Bool find = EINA_TRUE;
       EINA_LIST_FOREACH(photos, _l, _photo)
@@ -91,7 +91,7 @@ Photo_Menu *photo_menu_new(Evas_Object *parent, Enlil_Photo *photo, Eina_List *p
    mi = elm_menu_item_add(menu, NULL, NULL, D_("Move to the album"), NULL, NULL);
 
    int i= 0;
-   EINA_LIST_FOREACH(enlil_root_albums_get(enlil_album_root_get(enlil_photo_album_get(photo))), l, album)
+   EINA_LIST_FOREACH(enlil_library_albums_get(enlil_album_library_get(enlil_photo_album_get(photo))), l, album)
      {
 	 Elm_Menu_Item *mi2;
 	 if(album != enlil_photo_album_get(photo))
@@ -183,7 +183,7 @@ static void _photo_move_album_cb(void *data, Evas_Object *obj, void *event_info)
 
    EINA_LIST_FOREACH(photo_menu->photos, l, photo)
      {
-	Enlil_Album *album = enlil_root_album_search_name(enlil_album_root_get(enlil_photo_album_get(photo)),
+	Enlil_Album *album = enlil_library_album_search_name(enlil_album_library_get(enlil_photo_album_get(photo)),
 	      elm_menu_item_label_get(mi));
 	ASSERT_RETURN_VOID(album != NULL);
 
@@ -258,7 +258,7 @@ static void _wall_app_set_cb(void *data, Evas_Object *obj, void *event_info)
    s.string = eina_stringshare_add(buf);
    edd = enlil_string_edd_new();
 
-   snprintf(buf, PATH_MAX, "%s %s", APP_NAME" background", enlil_root_path_get(enlil_data->root));
+   snprintf(buf, PATH_MAX, "%s %s", APP_NAME" background", enlil_library_path_get(enlil_data->library));
    enlil_eet_app_data_save(edd, buf, &s);
    eet_data_descriptor_free(edd);
    eina_stringshare_del(s.string);
@@ -267,14 +267,14 @@ static void _wall_app_set_cb(void *data, Evas_Object *obj, void *event_info)
 static void _library_photo1_set_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Photo_Menu *photo_menu = data;
-   enlil_root_photo_set(enlil_data->root, photo_menu->photo, 1);
+   enlil_library_photo_set(enlil_data->library, photo_menu->photo, 1);
    main_menu_update_libraries_list();
 }
 
 static void _library_photo2_set_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Photo_Menu *photo_menu = data;
-   enlil_root_photo_set(enlil_data->root, photo_menu->photo, 2);
+   enlil_library_photo_set(enlil_data->library, photo_menu->photo, 2);
    main_menu_update_libraries_list();
 }
 

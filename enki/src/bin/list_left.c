@@ -102,7 +102,7 @@ void list_left_data_set(List_Left *list_left, Enlil_Data *enlil_data)
 {
     Eina_List *l;
     Enlil_Album *album;
-    Enlil_Root *root = enlil_data->root;
+    Enlil_Library *library = enlil_data->library;
 
     list_left->enlil_data = enlil_data;
     enlil_data->list_left = list_left;
@@ -110,7 +110,7 @@ void list_left_data_set(List_Left *list_left, Enlil_Data *enlil_data)
     elm_genlist_clear(list_left->gl_albums);
     elm_genlist_clear(list_left->gl_collections);
 
-    EINA_LIST_FOREACH(enlil_root_albums_get(root), l, album)
+    EINA_LIST_FOREACH(enlil_library_albums_get(library), l, album)
         list_left_add(list_left, album);
 }
 

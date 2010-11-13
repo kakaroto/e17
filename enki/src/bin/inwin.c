@@ -796,7 +796,7 @@ Inwin *inwin_photo_move_album_new(Inwin_Del del_cb, void *data, Eina_List *photo
    itc_album.func.state_get = NULL;
    itc_album.func.del       = NULL;
 
-   EINA_LIST_FOREACH(enlil_root_albums_get(enlil_data->root), l, album)
+   EINA_LIST_FOREACH(enlil_library_albums_get(enlil_data->library), l, album)
      {
 	Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 	album_data->inwin_photo_move_album = inwin;
@@ -1099,7 +1099,7 @@ static void _bt_album_new_apply_cb(void *data, Evas_Object *obj, void *event_inf
    if(s && strlen(s)>0)
      {
 	 char buf[PATH_MAX];
-	 snprintf(buf, PATH_MAX, "%s/%s", enlil_root_path_get(enlil_data->root), s);
+	 snprintf(buf, PATH_MAX, "%s/%s", enlil_library_path_get(enlil_data->library), s);
 	 ecore_file_mkdir(buf);
      }
 
@@ -1203,7 +1203,7 @@ static void _bt_album_rename_apply_cb(void *data, Evas_Object *obj, void *event_
 
    photos_list_object_header_update(album_data->list_photo_item);
 
-   Enlil_Album *album_prev = enlil_root_album_prev_get(enlil_album_root_get(album), album);
+   Enlil_Album *album_prev = enlil_library_album_prev_get(enlil_album_library_get(album), album);
    if(!album_prev)
      {
 	list_left_append_relative(enlil_data->list_left, album, NULL);
@@ -1231,7 +1231,7 @@ static void _bt_photo_move_album_cancel_cb(void *data, Evas_Object *obj, void *e
    Eina_List *l;
    Enlil_Album *album;
 
-   EINA_LIST_FOREACH(enlil_root_albums_get(enlil_data->root), l, album)
+   EINA_LIST_FOREACH(enlil_library_albums_get(enlil_data->library), l, album)
      {
 	Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 	album_data->inwin_photo_move_album = NULL;

@@ -97,7 +97,7 @@ void main_menu_sync_disable_set(Eina_Bool disabled)
    elm_object_disabled_set(libraries_list, disabled);
 }
 
-void main_menu_noroot_disabled_set(Eina_Bool disabled)
+void main_menu_nolibrary_disabled_set(Eina_Bool disabled)
 {
    main_menu_loading_disable_set(disabled);
    elm_object_disabled_set(libraries_list, EINA_FALSE);
@@ -107,7 +107,7 @@ void main_menu_noroot_disabled_set(Eina_Bool disabled)
 void main_menu_update_libraries_list()
 {
     Enlil_String *string;
-    Eina_List *list = enlil_root_eet_path_load();
+    Eina_List *list = enlil_library_eet_path_load();
 
     elm_gengrid_clear(libraries_list);
 
@@ -189,7 +189,7 @@ static Evas_Object* _library_icon_get(void *data, Evas_Object *obj, const char *
 	elm_layout_file_set(o, THEME, "photo_library");
 
 	//
-	Enlil_Photo *photo1 = enlil_root_photo_get(lib->path,1);
+	Enlil_Photo *photo1 = enlil_library_photo_get(lib->path,1);
 	if(!photo1)
 		return o;
 
@@ -204,7 +204,7 @@ static Evas_Object* _library_icon_get(void *data, Evas_Object *obj, const char *
 	//
 
 	//
-	Enlil_Photo *photo2 = enlil_root_photo_get(lib->path,2);
+	Enlil_Photo *photo2 = enlil_library_photo_get(lib->path,2);
 	enlil_photo_path_set(lib->photo2, enlil_photo_path_get(photo2));
 	enlil_photo_file_name_set(lib->photo2, enlil_photo_file_name_get(photo2));
 	Enlil_Photo_Data *photo_data2 = enlil_photo_user_data_get(lib->photo2);
@@ -250,7 +250,7 @@ static void _library_select(void *data, Evas_Object *obj, void *event_info)
 	}
 	else
 	{
-		root_set(lib->path);
+		library_set(lib->path);
 		select_list_photo();
 	}
 }
@@ -291,7 +291,7 @@ static void _new_library_done_cb(void *data, Evas_Object *obj, void *event_info)
 	  ecore_file_mkdir(selected);
 	if(ecore_file_is_dir(selected))
         {
-            root_set(selected);
+            library_set(selected);
             select_list_photo();
             main_menu_update_libraries_list();
         }
@@ -313,7 +313,7 @@ static void _slideshow_cb(void *data, Evas_Object *obj, void *event_info)
      }
 
    slideshow_clear();
-   slideshow_root_add(enlil_data->root, photo);
+   slideshow_library_add(enlil_data->library, photo);
    slideshow_show();
 }
 
@@ -338,7 +338,7 @@ static void _del_bg_cb(void *data, Evas_Object *obj, void *event_info)
    s.string = NULL;
    edd = enlil_string_edd_new();
 
-   snprintf(buf, PATH_MAX, "%s %s", APP_NAME" background", enlil_root_path_get(enlil_data->root));
+   snprintf(buf, PATH_MAX, "%s %s", APP_NAME" background", enlil_library_path_get(enlil_data->library));
    enlil_eet_app_data_save(edd, buf, &s);
    eet_data_descriptor_free(edd);
 }

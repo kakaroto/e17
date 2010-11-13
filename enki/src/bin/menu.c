@@ -185,7 +185,7 @@ static void _photo_wall_set_cb(void *data, Evas_Object *obj, void *event_info)
    s.string = eina_stringshare_add(buf);
    edd = enlil_string_edd_new();
 
-   snprintf(buf, PATH_MAX, "%s %s", APP_NAME" background", enlil_root_path_get(enlil_data->root));
+   snprintf(buf, PATH_MAX, "%s %s", APP_NAME" background", enlil_library_path_get(enlil_data->library));
    enlil_eet_app_data_save(edd, buf, &s);
    eet_data_descriptor_free(edd);
    eina_stringshare_del(s.string);

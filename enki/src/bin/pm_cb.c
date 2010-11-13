@@ -5,7 +5,7 @@ static void _album_new(void *data, Enlil_Album *album)
 {
    char buf[PATH_MAX];
    Enlil_Data *enlil_data = (Enlil_Data*) data;
-   Enlil_Root *_root = enlil_data->root;
+   Enlil_Library *_library = enlil_data->library;
    enlil_album_monitor_start(album);
 
    enlil_album_collection_process(album);
@@ -17,7 +17,7 @@ static void _album_new(void *data, Enlil_Album *album)
    enlil_album_photos_sort_set(album, ENLIL_PHOTO_SORT_DATE);
    enlil_album_photos_sort_set(album, ENLIL_PHOTO_SORT_DATE);
 
-   Enlil_Album *album_prev = enlil_root_album_prev_get(_root, album);
+   Enlil_Album *album_prev = enlil_library_album_prev_get(_library, album);
    if(!album_prev)
      {
 	list_left_append_relative(enlil_data->list_left, album, NULL);
@@ -54,7 +54,7 @@ void load_done_cb(void *data, Enlil_Load *load, int nb_albums, int nb_photos)
 {
    char buf[PATH_MAX];
    Enlil_Data *enlil_data = (Enlil_Data*) data;
-   Enlil_Root *root = enlil_data->root;
+   Enlil_Library *library = enlil_data->library;
 
    snprintf(buf, PATH_MAX, D_("Loading %d albums and %d photos"), nb_albums, nb_photos);
 
@@ -63,7 +63,7 @@ void load_done_cb(void *data, Enlil_Load *load, int nb_albums, int nb_photos)
    enlil_load_free(&load);
    enlil_data->load = NULL;
 
-   Enlil_Sync *sync = enlil_root_sync_get(root);
+   Enlil_Sync *sync = enlil_library_sync_get(library);
 
    enlil_sync_job_all_add(sync);
 
@@ -79,7 +79,7 @@ void load_done_cb(void *data, Enlil_Load *load, int nb_albums, int nb_photos)
    photos_list_object_freeze(enlil_data->list_photo->o_list, EINA_FALSE);
 
    //Enlil_Flickr_Job *job =
-   enlil_flickr_job_sync_albums_append(enlil_data->root, flickr_album_new_cb,
+   enlil_flickr_job_sync_albums_append(enlil_data->library, flickr_album_new_cb,
 	 flickr_album_notinflickr_cb, flickr_album_notuptodate_cb, flickr_album_flickrnotuptodate_cb,
 	 flickr_album_uptodate_cb, flickr_error_cb, enlil_data);
 }
@@ -90,7 +90,7 @@ void load_error_cb(void *data, Enlil_Load *load,  Load_Error error, const char* 
    printf("LOAD CB ERROR : %s\n",msg);
 }
 
-void load_album_done_cb(void *data, Enlil_Load *load,Enlil_Root *root, Enlil_Album *album)
+void load_album_done_cb(void *data, Enlil_Load *load,Enlil_Library *library, Enlil_Album *album)
 {
    Eina_List *l;
    Enlil_Photo *photo;
@@ -169,13 +169,13 @@ void sync_error_cb(void *data, Enlil_Sync *sync,  Sync_Error error, const char* 
      main_menu_sync_disable_set(0);
 }
 
-void sync_album_new_cb(void *data, Enlil_Sync *sync,Enlil_Root *root, Enlil_Album *album)
+void sync_album_new_cb(void *data, Enlil_Sync *sync,Enlil_Library *library, Enlil_Album *album)
 {
    Enlil_Data *enlil_data = (Enlil_Data*) data;
-   Enlil_Root *_root = enlil_data->root;
+   Enlil_Library *_library = enlil_data->library;
 
    Enlil_Album *_album = enlil_album_copy_new(album);
-   enlil_root_album_add(_root, _album);
+   enlil_library_album_add(_library, _album);
    _album_new(data, _album);
    Enlil_Album_Data *album_data = enlil_album_user_data_get(_album);
 
@@ -187,12 +187,12 @@ void sync_album_new_cb(void *data, Enlil_Sync *sync,Enlil_Root *root, Enlil_Albu
      album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
 }
 
-void sync_album_update_cb(void *data, Enlil_Sync *sync,Enlil_Root *root, Enlil_Album *album)
+void sync_album_update_cb(void *data, Enlil_Sync *sync,Enlil_Library *library, Enlil_Album *album)
 {
    Enlil_Data *enlil_data = (Enlil_Data*) data;
-   Enlil_Root *_root= enlil_data->root;
+   Enlil_Library *_library= enlil_data->library;
 
-   Enlil_Album *_album = enlil_root_album_search_file_name(_root, enlil_album_file_name_get(album));
+   Enlil_Album *_album = enlil_library_album_search_file_name(_library, enlil_album_file_name_get(album));
    ASSERT_RETURN_VOID(_album != NULL);
 
    enlil_album_copy(album, _album);
@@ -212,12 +212,12 @@ void sync_album_update_cb(void *data, Enlil_Sync *sync,Enlil_Root *root, Enlil_A
    //notify_sync_content_set(enlil_data, buf);
 }
 
-void sync_album_disappear_cb(void *data, Enlil_Sync *sync,Enlil_Root *root, Enlil_Album *album)
+void sync_album_disappear_cb(void *data, Enlil_Sync *sync,Enlil_Library *library, Enlil_Album *album)
 {
    char buf[PATH_MAX];
    Enlil_Data *enlil_data = (Enlil_Data*) data;
-   Enlil_Root *_root = enlil_data->root;
-   Enlil_Album *_album = enlil_root_album_search_file_name(_root, enlil_album_file_name_get(album));
+   Enlil_Library *_library = enlil_data->library;
+   Enlil_Album *_album = enlil_library_album_search_file_name(_library, enlil_album_file_name_get(album));
    ASSERT_RETURN_VOID(_album != NULL);
 
    //snprintf(buf, PATH_MAX, "%s %s",D_("Delete Album : "), enlil_album_name_get(album));
@@ -235,9 +235,9 @@ void sync_photo_new_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Ph
 {
    char buf[PATH_MAX];
    Enlil_Data *enlil_data = (Enlil_Data*) data;
-   Enlil_Root *_root = enlil_data->root;
+   Enlil_Library *_library = enlil_data->library;
 
-   Enlil_Album *_album = enlil_root_album_search_file_name(_root, enlil_album_file_name_get(album));
+   Enlil_Album *_album = enlil_library_album_search_file_name(_library, enlil_album_file_name_get(album));
    Enlil_Album_Data *album_data = enlil_album_user_data_get(_album);
    ASSERT_RETURN_VOID(_album != NULL);
 
@@ -300,9 +300,9 @@ void sync_photo_new_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Ph
 void sync_photo_update_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Photo *photo)
 {
    Enlil_Data *enlil_data = (Enlil_Data*) data;
-   Enlil_Root *_root = enlil_data->root;
+   Enlil_Library *_library = enlil_data->library;
 
-   Enlil_Album *_album = enlil_root_album_search_file_name(_root, enlil_album_file_name_get(album));
+   Enlil_Album *_album = enlil_library_album_search_file_name(_library, enlil_album_file_name_get(album));
    ASSERT_RETURN_VOID(_album != NULL);
 
    Enlil_Photo *_photo = enlil_album_photo_search_file_name(_album, enlil_photo_file_name_get(photo));
@@ -342,9 +342,9 @@ void sync_photo_disappear_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, En
 {
    char buf[PATH_MAX];
    Enlil_Data *enlil_data = (Enlil_Data*) data;
-   Enlil_Root *_root = enlil_data->root;
+   Enlil_Library *_library = enlil_data->library;
 
-   Enlil_Album *_album = enlil_root_album_search_file_name(_root, enlil_album_file_name_get(album));
+   Enlil_Album *_album = enlil_library_album_search_file_name(_library, enlil_album_file_name_get(album));
    ASSERT_RETURN_VOID(_album != NULL);
    Enlil_Photo *_photo = enlil_album_photo_search_file_name(_album, enlil_photo_file_name_get(photo));
 
@@ -360,14 +360,14 @@ void sync_photo_disappear_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, En
    elm_label_label_set(enlil_data->list_photo->lbl_nb_albums_photos, buf);
 }
 
-void monitor_album_new_cb(void *data, Enlil_Root *root, const char *path)
+void monitor_album_new_cb(void *data, Enlil_Library *library, const char *path)
 {
    Enlil_Data *enlil_data = (Enlil_Data*) data;
 
    if(!enlil_data->load)
      {
 	const char *file_name = ecore_file_file_get(path);
-	Enlil_Sync *sync = enlil_root_sync_get(enlil_data->root);
+	Enlil_Sync *sync = enlil_library_sync_get(enlil_data->library);
 
 	enlil_sync_job_album_folder_add(sync, file_name);
 
@@ -375,14 +375,14 @@ void monitor_album_new_cb(void *data, Enlil_Root *root, const char *path)
      }
 }
 
-void monitor_album_update_cb(void *data, Enlil_Root *root, Enlil_Album *album)
+void monitor_album_update_cb(void *data, Enlil_Library *library, Enlil_Album *album)
 {
    Enlil_Data *enlil_data = (Enlil_Data*) data;
 
    if(!enlil_data->load)
      {
 	const char *file_name = enlil_album_file_name_get(album);
-	Enlil_Sync *sync = enlil_root_sync_get(enlil_data->root);
+	Enlil_Sync *sync = enlil_library_sync_get(enlil_data->library);
 
 	enlil_sync_job_album_folder_add(sync, file_name);
 
@@ -390,60 +390,60 @@ void monitor_album_update_cb(void *data, Enlil_Root *root, Enlil_Album *album)
      }
 }
 
-void monitor_album_delete_cb(void *data, Enlil_Root *root, const char *path)
+void monitor_album_delete_cb(void *data, Enlil_Library *library, const char *path)
 {
    Enlil_Data *enlil_data = (Enlil_Data*) data;
 
    if(!enlil_data->load)
      {
 	const char *file_name = ecore_file_file_get(path);
-	Enlil_Sync *sync = enlil_root_sync_get(root);
+	Enlil_Sync *sync = enlil_library_sync_get(library);
 	enlil_sync_job_album_folder_add(sync, file_name);
 
 	main_menu_sync_disable_set(1);
      }
 }
 
-void monitor_enlil_delete_cb(void *data, Enlil_Root *root)
+void monitor_enlil_delete_cb(void *data, Enlil_Library *library)
 {
    printf("Enlil delete !!!\n");
 }
 
-void monitor_photo_new_cb(void *data, Enlil_Root *root, Enlil_Album *album, const char *path)
+void monitor_photo_new_cb(void *data, Enlil_Library *library, Enlil_Album *album, const char *path)
 {
    Enlil_Data *enlil_data = (Enlil_Data*) data;
 
    if(!enlil_data->load)
      {
 	const char *file_name = ecore_file_file_get(path);
-	Enlil_Sync *sync = enlil_root_sync_get(enlil_data->root);
+	Enlil_Sync *sync = enlil_library_sync_get(enlil_data->library);
 
 	enlil_sync_job_photo_file_add(sync, enlil_album_file_name_get(album), file_name);
 	main_menu_sync_disable_set(1);
      }
 }
 
-void monitor_photo_delete_cb(void *data, Enlil_Root *root, Enlil_Album *album, const char *path)
+void monitor_photo_delete_cb(void *data, Enlil_Library *library, Enlil_Album *album, const char *path)
 {
    Enlil_Data *enlil_data = (Enlil_Data*) data;
 
    if(!enlil_data->load)
      {
 	const char *file_name = ecore_file_file_get(path);
-	Enlil_Sync *sync = enlil_root_sync_get(root);
+	Enlil_Sync *sync = enlil_library_sync_get(library);
 	enlil_sync_job_photo_file_add(sync, enlil_album_file_name_get(album), file_name);
 	main_menu_sync_disable_set(1);
      }
 }
 
-void monitor_photo_update_cb(void *data, Enlil_Root *root, Enlil_Album *album, const char *path)
+void monitor_photo_update_cb(void *data, Enlil_Library *library, Enlil_Album *album, const char *path)
 {
    Enlil_Data *enlil_data = (Enlil_Data*) data;
 
    if(!enlil_data->load)
      {
 	const char *file_name = ecore_file_file_get(path);
-	Enlil_Sync *sync = enlil_root_sync_get(enlil_data->root);
+	Enlil_Sync *sync = enlil_library_sync_get(enlil_data->library);
 
 	enlil_sync_job_photo_file_add(sync, enlil_album_file_name_get(album), file_name);
 	main_menu_sync_disable_set(1);
@@ -471,7 +471,7 @@ void thumb_error_cb(void *data, Enlil_Photo *photo)
      enlil_photo_data->cant_create_thumb++;
 }
 
-void collection_new_cb(void *data, Enlil_Root *root, Enlil_Collection *col)
+void collection_new_cb(void *data, Enlil_Library *library, Enlil_Collection *col)
 {
    Enlil_Data *enlil_data = data;
 
@@ -483,7 +483,7 @@ void collection_new_cb(void *data, Enlil_Root *root, Enlil_Collection *col)
    list_left_col_add(enlil_data->list_left, col);
 }
 
-void collection_delete_cb(void *data, Enlil_Root *root, Enlil_Collection *col)
+void collection_delete_cb(void *data, Enlil_Library *library, Enlil_Collection *col)
 {
    //Enlil_Data *enlil_data = data;
    Enlil_Collection_Data *col_data = enlil_collection_user_data_get(col);
@@ -492,7 +492,7 @@ void collection_delete_cb(void *data, Enlil_Root *root, Enlil_Collection *col)
    col_data->list_col_item = NULL;
 }
 
-void collection_album_new_cb(void *data, Enlil_Root *root, Enlil_Collection *col, Enlil_Album *album)
+void collection_album_new_cb(void *data, Enlil_Library *library, Enlil_Collection *col, Enlil_Album *album)
 {
    Enlil_Data *enlil_data = data;
    //Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
@@ -500,7 +500,7 @@ void collection_album_new_cb(void *data, Enlil_Root *root, Enlil_Collection *col
    list_left_col_album_add(enlil_data->list_left, col, album);
 }
 
-void collection_album_delete_cb(void *data, Enlil_Root *root, Enlil_Collection *col, Enlil_Album *album)
+void collection_album_delete_cb(void *data, Enlil_Library *library, Enlil_Collection *col, Enlil_Album *album)
 {
    Enlil_Data *enlil_data = data;
    //Enlil_Collection_Data *col_data = enlil_collection_user_data_get(col);
@@ -508,7 +508,7 @@ void collection_album_delete_cb(void *data, Enlil_Root *root, Enlil_Collection *
    list_left_col_album_remove(enlil_data->list_left, col, album);
 }
 
-void tag_new_cb(void *data, Enlil_Root *root, Enlil_Tag *tag)
+void tag_new_cb(void *data, Enlil_Library *library, Enlil_Tag *tag)
 {
    Enlil_Data *enlil_data = data;
    Enlil_Tag_Data *tag_data = calloc(1, sizeof(Enlil_Tag_Data));
@@ -520,7 +520,7 @@ void tag_new_cb(void *data, Enlil_Root *root, Enlil_Tag *tag)
    list_left_tag_add(enlil_data->list_left, tag);
 }
 
-void tag_delete_cb(void *data, Enlil_Root *root, Enlil_Tag *tag)
+void tag_delete_cb(void *data, Enlil_Library *library, Enlil_Tag *tag)
 {
    //Enlil_Data *enlil_data = data;
    Enlil_Tag_Data *tag_data = enlil_tag_user_data_get(tag);
@@ -529,7 +529,7 @@ void tag_delete_cb(void *data, Enlil_Root *root, Enlil_Tag *tag)
    tag_data->list_tag_item = NULL;
 }
 
-void tag_photo_new_cb(void *data, Enlil_Root *root, Enlil_Tag *tag, Enlil_Photo *photo)
+void tag_photo_new_cb(void *data, Enlil_Library *library, Enlil_Tag *tag, Enlil_Photo *photo)
 {
    Enlil_Data *enlil_data = data;
    Enlil_Tag_Data *tag_data = enlil_tag_user_data_get(tag);
@@ -539,7 +539,7 @@ void tag_photo_new_cb(void *data, Enlil_Root *root, Enlil_Tag *tag, Enlil_Photo 
      photos_list_object_item_show(photo_data->list_photo_item);
 }
 
-void tag_photo_delete_cb(void *data, Enlil_Root *root, Enlil_Tag *tag, Enlil_Photo *photo)
+void tag_photo_delete_cb(void *data, Enlil_Library *library, Enlil_Tag *tag, Enlil_Photo *photo)
 {
    Enlil_Data *enlil_data = data;
    Enlil_Tag_Data *tag_data = enlil_tag_user_data_get(tag);
@@ -647,7 +647,7 @@ void geocaching_remove_marker_cb(void *data, Eina_Hash *db)
    eina_hash_foreach(db, _geocaching_remove_marker_foreach_cb, NULL);
 }
 
-void flickr_album_new_cb(void *data, Enlil_Root *root, Enlil_Album *album)
+void flickr_album_new_cb(void *data, Enlil_Library *library, Enlil_Album *album)
 {
    _album_new(data, album);
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
@@ -662,7 +662,7 @@ void flickr_album_new_cb(void *data, Enlil_Root *root, Enlil_Album *album)
      album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
 }
 
-void flickr_album_flickrnotuptodate_cb(void *data, Enlil_Root *root, Enlil_Album *album)
+void flickr_album_flickrnotuptodate_cb(void *data, Enlil_Library *library, Enlil_Album *album)
 {
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
    album_data->flickr_sync.album_flickr_notuptodate = EINA_TRUE;
@@ -680,7 +680,7 @@ void flickr_album_flickrnotuptodate_cb(void *data, Enlil_Root *root, Enlil_Album
      album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
 }
 
-void flickr_album_notuptodate_cb(void *data, Enlil_Root *root, Enlil_Album *album)
+void flickr_album_notuptodate_cb(void *data, Enlil_Library *library, Enlil_Album *album)
 {
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
    album_data->flickr_sync.album_notuptodate = EINA_TRUE;
@@ -698,7 +698,7 @@ void flickr_album_notuptodate_cb(void *data, Enlil_Root *root, Enlil_Album *albu
      album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
 }
 
-void flickr_album_notinflickr_cb(void *data, Enlil_Root *root, Enlil_Album *album)
+void flickr_album_notinflickr_cb(void *data, Enlil_Library *library, Enlil_Album *album)
 {
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
    album_data->flickr_sync.album_notinflickr = EINA_TRUE;
@@ -716,7 +716,7 @@ void flickr_album_notinflickr_cb(void *data, Enlil_Root *root, Enlil_Album *albu
      album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
 }
 
-void flickr_album_uptodate_cb(void *data, Enlil_Root *root, Enlil_Album *album)
+void flickr_album_uptodate_cb(void *data, Enlil_Library *library, Enlil_Album *album)
 {
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
    Enlil_Flickr_Job *job = enlil_flickr_job_sync_album_photos_append(album,
@@ -729,7 +729,7 @@ void flickr_album_uptodate_cb(void *data, Enlil_Root *root, Enlil_Album *album)
      album_data->flickr_sync.jobs = eina_list_append(album_data->flickr_sync.jobs, job);
 }
 
-void flickr_error_cb(void *data, Enlil_Root *root)
+void flickr_error_cb(void *data, Enlil_Library *library)
 {
    printf("ERROR\n");
 }

@@ -39,19 +39,19 @@ static void _menu_open_cb(void *data, Evas_Object *obj, void *event_info)
     Evas_Coord x, y;
     char buf[PATH_MAX];
 
-    if(!enlil_data->root) return ;
+    if(!enlil_data->library) return ;
 
     if(menu) evas_object_del(menu);
 
     menu = elm_menu_add(enlil_data->win->win);
-    if(!enlil_root_flickr_account_get(enlil_data->root))
+    if(!enlil_library_flickr_account_get(enlil_data->library))
     {
         elm_menu_item_add(menu, NULL, NULL, D_("Set the Flickr account"), _account_set_cb, NULL);
     }
     else
     {
         snprintf(buf, PATH_MAX, D_("Flickr account : %s"),
-                enlil_root_flickr_account_get(enlil_data->root));
+                enlil_library_flickr_account_get(enlil_data->library));
         elm_menu_item_add(menu, NULL, NULL, buf, NULL, NULL);
         elm_menu_item_add(menu, NULL, NULL, D_("Change the Flickr account"), _account_set_cb, NULL);
     }
@@ -186,11 +186,11 @@ static void _account_set_cb(void *data, Evas_Object *obj, void *event_info)
 
 static void _account_set_apply_cb(void *data, Evas_Object *obj, void *event_info)
 {
-    if(enlil_data->root)
+    if(enlil_data->library)
     {
-        enlil_root_flickr_account_set(enlil_data->root, elm_entry_entry_get(data));
-        enlil_root_flickr_auth_token_set(enlil_data->root, NULL);
-        enlil_flickr_job_reinit_prepend(enlil_data->root);
+        enlil_library_flickr_account_set(enlil_data->library, elm_entry_entry_get(data));
+        enlil_library_flickr_auth_token_set(enlil_data->library, NULL);
+        enlil_flickr_job_reinit_prepend(enlil_data->library);
     }
     evas_object_del(set_account.inwin);
 }

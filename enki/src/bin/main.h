@@ -35,7 +35,7 @@ extern Enlil_Data *enlil_data;
 
 
 
-void root_set(const char *root_path);
+void library_set(const char *root_path);
 void close_cb(void *data, Evas_Object *obj, void *event_info);
 
 void select_list_photo();
@@ -56,37 +56,37 @@ void notify_load_content_set(Enlil_Data *enlil_data, const char *msg, Eina_Bool 
 void sync_done_cb(void *data, Enlil_Sync *sync);
 void sync_start_cb(void *data, Enlil_Sync *sync);
 void sync_error_cb(void *data, Enlil_Sync *sync,  Sync_Error error, const char* msg);
-void sync_album_new_cb(void *data, Enlil_Sync *sync, Enlil_Root*root, Enlil_Album *album);
-void sync_album_update_cb(void *data, Enlil_Sync *sync, Enlil_Root*root, Enlil_Album *album);
-void sync_album_disappear_cb(void *data, Enlil_Sync *sync, Enlil_Root*root, Enlil_Album *album);
+void sync_album_new_cb(void *data, Enlil_Sync *sync, Enlil_Library*root, Enlil_Album *album);
+void sync_album_update_cb(void *data, Enlil_Sync *sync, Enlil_Library*root, Enlil_Album *album);
+void sync_album_disappear_cb(void *data, Enlil_Sync *sync, Enlil_Library*root, Enlil_Album *album);
 void sync_photo_new_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Photo *photo);
 void sync_photo_update_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Photo *photo);
 void sync_photo_disappear_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Photo *photo);
 
 void load_done_cb(void *data, Enlil_Load *load, int nb_albums, int nb_photos);
 void load_error_cb(void *data, Enlil_Load *load,  Load_Error error, const char* msg);
-void load_album_done_cb(void *data, Enlil_Load *load, Enlil_Root*root, Enlil_Album *album);
+void load_album_done_cb(void *data, Enlil_Load *load, Enlil_Library*root, Enlil_Album *album);
 
-void monitor_album_new_cb(void *data, Enlil_Root*root, const char *path);
-void monitor_album_delete_cb(void *data, Enlil_Root*root, const char *path);
-void monitor_album_update_cb(void *data, Enlil_Root *root, Enlil_Album *album);
-void monitor_enlil_delete_cb(void *data, Enlil_Root*root);
-void monitor_photo_new_cb(void *data, Enlil_Root*root, Enlil_Album *album, const char *path);
-void monitor_photo_delete_cb(void *data, Enlil_Root*root, Enlil_Album *album, const char *path);
-void monitor_photo_update_cb(void *data, Enlil_Root*root, Enlil_Album *album, const char *path);
+void monitor_album_new_cb(void *data, Enlil_Library*root, const char *path);
+void monitor_album_delete_cb(void *data, Enlil_Library*root, const char *path);
+void monitor_album_update_cb(void *data, Enlil_Library *root, Enlil_Album *album);
+void monitor_enlil_delete_cb(void *data, Enlil_Library*root);
+void monitor_photo_new_cb(void *data, Enlil_Library*root, Enlil_Album *album, const char *path);
+void monitor_photo_delete_cb(void *data, Enlil_Library*root, Enlil_Album *album, const char *path);
+void monitor_photo_update_cb(void *data, Enlil_Library*root, Enlil_Album *album, const char *path);
 
 void thumb_done_cb(void *data, Enlil_Photo *photo, const char *file);
 void thumb_error_cb(void *data, Enlil_Photo *photo);
 
-void collection_new_cb(void *data, Enlil_Root *root, Enlil_Collection *col);
-void collection_delete_cb(void *data, Enlil_Root *root, Enlil_Collection *col);
-void collection_album_new_cb(void *data, Enlil_Root *root, Enlil_Collection *col, Enlil_Album *album);
-void collection_album_delete_cb(void *data, Enlil_Root *root, Enlil_Collection *col, Enlil_Album *album);
+void collection_new_cb(void *data, Enlil_Library *root, Enlil_Collection *col);
+void collection_delete_cb(void *data, Enlil_Library *root, Enlil_Collection *col);
+void collection_album_new_cb(void *data, Enlil_Library *root, Enlil_Collection *col, Enlil_Album *album);
+void collection_album_delete_cb(void *data, Enlil_Library *root, Enlil_Collection *col, Enlil_Album *album);
 
-void tag_new_cb(void *data, Enlil_Root *root, Enlil_Tag *tag);
-void tag_delete_cb(void *data, Enlil_Root *root, Enlil_Tag *tag);
-void tag_photo_new_cb(void *data, Enlil_Root *root, Enlil_Tag *tag, Enlil_Photo *photo);
-void tag_photo_delete_cb(void *data, Enlil_Root *root, Enlil_Tag *tag, Enlil_Photo *photo);
+void tag_new_cb(void *data, Enlil_Library *root, Enlil_Tag *tag);
+void tag_delete_cb(void *data, Enlil_Library *root, Enlil_Tag *tag);
+void tag_photo_new_cb(void *data, Enlil_Library *root, Enlil_Tag *tag, Enlil_Photo *photo);
+void tag_photo_delete_cb(void *data, Enlil_Library *root, Enlil_Tag *tag, Enlil_Photo *photo);
 
 void exif_load_done(void *data, Enlil_Exif_Job *job, Eina_List *exifs);
 void iptc_load_done(void *data, Enlil_IPTC_Job *job, Eina_List *iptcs);

@@ -38,7 +38,7 @@ void close_cb(void *data, Evas_Object *obj, void *event_info)
 
 	download_free(&(enlil_data->dl));
 	upload_free(&(enlil_data->ul));
-	enlil_root_free(&(enlil_data->root));
+	enlil_library_free(&(enlil_data->library));
 	enlil_sync_free(&(enlil_data->sync));
 	if(enlil_data->load) enlil_load_free(&(enlil_data->load));
 
@@ -91,9 +91,9 @@ static void _menu_select_cb(void *data, Tabpanel *tabpanel, Tabpanel_Item *item)
 		elm_map_bubbles_close(enlil_data->map->map);
 }
 
-void root_set(const char *root_path)
+void library_set(const char *library_path)
 {
-	main_menu_noroot_disabled_set(EINA_FALSE);
+	main_menu_nolibrary_disabled_set(EINA_FALSE);
 
 	photos_list_object_freeze(enlil_data->list_photo->o_list, 1);
 	enlil_thumb_clear();
@@ -107,9 +107,9 @@ void root_set(const char *root_path)
 		enlil_sync_free(&enlil_data->sync);
 	if(enlil_data->load)
 		enlil_load_free(&enlil_data->load);
-	if(enlil_data->root)
+	if(enlil_data->library)
 	{
-		enlil_root_free(&enlil_data->root);
+		enlil_library_free(&enlil_data->library);
 	}
 
 	photos_list_object_freeze(enlil_data->list_photo->o_list, 0);
@@ -119,32 +119,32 @@ void root_set(const char *root_path)
 	list_left_data_set(enlil_data->list_left, enlil_data);
 
 	//
-	Enlil_Root *root = enlil_root_new(monitor_album_new_cb, monitor_album_delete_cb, monitor_enlil_delete_cb,
+	Enlil_Library *library = enlil_library_new(monitor_album_new_cb, monitor_album_delete_cb, monitor_enlil_delete_cb,
 			monitor_photo_new_cb, monitor_photo_delete_cb, monitor_photo_update_cb,
 			collection_new_cb, collection_delete_cb,
 			collection_album_new_cb, collection_album_delete_cb,
 			tag_new_cb, tag_delete_cb,
 			tag_photo_new_cb, tag_photo_delete_cb,
 			enlil_data);
-	enlil_root_path_set(root, root_path);
-	enlil_root_eet_path_save(root);
-	enlil_data->root = root;
+	enlil_library_path_set(library, library_path);
+	enlil_library_eet_path_save(library);
+	enlil_data->library = library;
 	//
 
 	//
-	Enlil_Sync *sync = enlil_sync_new(enlil_root_path_get(root),
+	Enlil_Sync *sync = enlil_sync_new(enlil_library_path_get(library),
 			sync_album_new_cb, sync_album_update_cb, sync_album_disappear_cb,
 			sync_photo_new_cb, sync_photo_update_cb, sync_photo_disappear_cb,
 			sync_done_cb, sync_start_cb, sync_error_cb, enlil_data);
-	enlil_root_sync_set(root, sync);
+	enlil_library_sync_set(library, sync);
 	enlil_data->sync = sync;
 	//
 
 	//
-	Enlil_Load *load = enlil_load_new(root,
+	Enlil_Load *load = enlil_load_new(library,
 			load_album_done_cb,
 			load_done_cb, load_error_cb, enlil_data);
-	enlil_root_monitor_start(root);
+	enlil_library_monitor_start(library);
 	enlil_data->load = load;
 
 	notify_load_content_set(enlil_data, D_("  Loading ..."), EINA_TRUE);
@@ -158,7 +158,7 @@ void root_set(const char *root_path)
 	Eet_Data_Descriptor *edd;
 	char buf[PATH_MAX];
 	edd = enlil_string_edd_new();
-	snprintf(buf, PATH_MAX, "%s %s", APP_NAME" background", enlil_root_path_get(enlil_data->root));
+	snprintf(buf, PATH_MAX, "%s %s", APP_NAME" background", enlil_library_path_get(enlil_data->library));
 	s = enlil_eet_app_data_load(edd, buf);
 	eet_data_descriptor_free(edd);
 	if(s)
@@ -193,7 +193,7 @@ int elm_main(int argc, char **argv)
 	Evas_Object *panels, *ly, *edje;
 	Tabpanel_Item *tp_item;
 	unsigned char exit_option = 0;
-	char *root_path = NULL;
+	char *library_path = NULL;
 
 	enlil_init();
 	ecore_file_init();
@@ -205,7 +205,7 @@ int elm_main(int argc, char **argv)
 			ECORE_GETOPT_VALUE_BOOL(exit_option),
 			ECORE_GETOPT_VALUE_BOOL(exit_option),
 			ECORE_GETOPT_VALUE_BOOL(exit_option),
-			ECORE_GETOPT_VALUE_STR(root_path),
+			ECORE_GETOPT_VALUE_STR(library_path),
 			ECORE_GETOPT_VALUE_BOOL(exit_option),
 	};
 	ecore_app_args_set(argc, (const char **) argv);
@@ -328,9 +328,9 @@ int elm_main(int argc, char **argv)
 	//
 
 
-	main_menu_noroot_disabled_set(EINA_TRUE);
-	if(root_path)
-		root_set(root_path);
+	main_menu_nolibrary_disabled_set(EINA_TRUE);
+	if(library_path)
+		library_set(library_path);
 
 	evas_object_resize(win->win, 1024, 768);
 	evas_object_show(win->win);
