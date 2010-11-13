@@ -347,12 +347,10 @@ window_title_set(Browser_Window *win, const char *title)
    elm_win_title_set(win->win, buf);
 }
 
-#define stringify(X) #X
-
 static const Ecore_Getopt options = {
    PACKAGE_NAME,
    "%prog [options] [url]",
-   PACKAGE_VERSION "Revision:" stringify(VREV),
+   PACKAGE_VERSION " Revision: " VREV,
    "(C) 2010 ProFUSION embedded systems",
    "LGPL-3",
    "WebKit-EFL demo browser for mobile systems with touchscreen.",
