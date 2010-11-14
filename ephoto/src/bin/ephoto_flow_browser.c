@@ -758,6 +758,7 @@ _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
    Eina_Bool shift = evas_key_modifier_is_set(ev->modifiers, "Shift");
    const char *k = ev->keyname;
 
+   DBG("key pressed '%s'", k);
    if (ctrl)
      {
         if ((!strcmp(k, "plus")) || (!strcmp(k, "equal")))
@@ -775,9 +776,9 @@ _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
 
    if (!strcmp(k, "Escape"))
      evas_object_smart_callback_call(fb->layout, "back", fb->entry);
-   else if (!strcmp(k, "Left"))
+   else if (!strcmp(k, "Left") || !strcmp(k, "BackSpace"))
      _prev_entry(fb);
-   else if (!strcmp(k, "Right"))
+   else if (!strcmp(k, "Right") || !strcmp(k, "space"))
      _next_entry(fb);
    else if (!strcmp(k, "Home"))
      _first_entry(fb);
