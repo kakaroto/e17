@@ -25,9 +25,11 @@ m4/ltversion.m4
 SUBDIRS = src
 
 EXTRA_DIST = \
-autogen.sh \
+COPYING-LGPL \
+LICENCE \
 README \
 TODO \
+autogen.sh \
 eyesight.pc.in \
 m4/efl_binary.m4 \
 m4/efl_doxygen.m4 \

@@ -1,0 +1,9 @@
+
+Eyesight comes with two licence: the LGPL (see COPYING-LGPL)
+and the GPL (see COPYING-GPL) ones.
+
+The LGPL licence is used for the source and header files
+located in the src/lib and src/modules (sub)directories
+
+The GPL licence is used for the source files located in the
+src/bin directory.

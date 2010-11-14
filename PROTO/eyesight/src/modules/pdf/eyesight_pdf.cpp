@@ -1,3 +1,22 @@
+/*
+ * Eyesight - EFL-based document renderer
+ * Copyright (C) 2010 Vincent Torri <vtorri at univ-evry dot fr>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -511,14 +530,49 @@ _eyesight_index_fill(PDFDoc    *doc,
     Eyesight_Index_Item *item;
     OutlineItem     *oitem = (OutlineItem *)gitems->get(i);
     Unicode         *utitle = oitem->getTitle ();
-    LinkAction      *action;
 
     item = eyesight_index_item_new();
     item->title = _unicode_to_char(utitle, oitem->getTitleLength());
-    action = oitem->getAction();
-    item->action = EYESIGHT_LINK_ACTION_UNKNOWN;
-//    if (action->getKind() != actionGoTo)
-    item->page = _eyesight_link_action_page_get(doc, action);
+    switch (oitem->getAction()->getKind())
+      {
+      case actionGoTo:
+        item->action = EYESIGHT_LINK_ACTION_GOTO;
+        break;
+      case actionGoToR:
+        item->action = EYESIGHT_LINK_ACTION_GOTO_NEW_FILE;
+        break;
+      case actionLaunch:
+        item->action = EYESIGHT_LINK_ACTION_LAUNCH;
+        break;
+      case actionURI:
+        item->action = EYESIGHT_LINK_ACTION_URI;
+        break;
+      case actionNamed:
+        item->action = EYESIGHT_LINK_ACTION_NAMED;
+        break;
+      case actionMovie:
+        item->action = EYESIGHT_LINK_ACTION_MOVIE;
+        break;
+      case actionRendition:
+        item->action = EYESIGHT_LINK_ACTION_RENDITION;
+        break;
+      case actionSound:
+        item->action = EYESIGHT_LINK_ACTION_SOUND;
+        break;
+      case actionJavaScript:
+        item->action = EYESIGHT_LINK_ACTION_JAVASCRIPT;
+        break;
+#ifdef HAVE_POPPLER_0_14
+      case actionOCGState:
+        item->action = EYESIGHT_LINK_ACTION_OCG_STATE;
+        break;
+#endif
+      case actionUnknown:
+        item->action = EYESIGHT_LINK_ACTION_UNKNOWN;
+        break;
+      }
+    item->page = _eyesight_link_action_page_get(doc, oitem->getAction());
+    item->is_open = oitem->isOpen();
 
     oitem->open ();
     if (oitem->hasKids() && oitem->getKids())

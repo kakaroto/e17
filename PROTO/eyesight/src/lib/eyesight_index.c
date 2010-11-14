@@ -1,3 +1,22 @@
+/*
+ * Eyesight - EFL-based document renderer
+ * Copyright (C) 2010 Vincent Torri <vtorri at univ-evry dot fr>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -10,13 +29,9 @@ eyesight_index_item_new()
 {
   Eyesight_Index_Item *item;
 
-  item = (Eyesight_Index_Item *)malloc(sizeof (Eyesight_Index_Item));
+  item = (Eyesight_Index_Item *)calloc(1, sizeof (Eyesight_Index_Item));
   if (!item)
     return NULL;
-
-  item->title = NULL;
-  item->action = 0;
-  item->children = NULL;
 
   return item;
 }
@@ -33,14 +48,8 @@ eyesight_index_item_free(Eyesight_Index_Item *item)
     {
       Eyesight_Index_Item *i;
 
-      while (item->children)
-        {
-          Eyesight_Index_Item *item;
-
-          item = (Eyesight_Index_Item *)eina_list_data_get(item->children);
-          eyesight_index_item_free(item);
-          item->children = eina_list_remove_list(item->children, item->children);
-        }
+      EINA_LIST_FREE(item->children, i)
+        eyesight_index_item_free(item);
     }
 
   free(item);
@@ -80,4 +89,13 @@ eyesight_index_item_page_get (const Eyesight_Index_Item *item)
     return 0;
 
   return item->page;
+}
+
+Eina_Bool
+eyesight_index_item_is_open (const Eyesight_Index_Item *item)
+{
+  if (!item)
+    return EINA_FALSE;
+
+  return item->is_open;
 }

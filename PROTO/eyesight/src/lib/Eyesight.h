@@ -208,6 +208,7 @@ EAPI const char               *eyesight_index_item_title_get(const Eyesight_Inde
 EAPI Eyesight_Link_Action_Kind eyesight_index_item_action_kind_get(const Eyesight_Index_Item *item);
 EAPI int                       eyesight_index_item_page_get(const Eyesight_Index_Item *item);
 EAPI Eina_List                *eyesight_index_item_children_get(const Eyesight_Index_Item *item);
+Eina_Bool                      eyesight_index_item_is_open (const Eyesight_Index_Item *item);
 
 #ifdef __cplusplus
 }
