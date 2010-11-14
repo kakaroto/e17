@@ -620,6 +620,8 @@ _next_entry(Ephoto_Flow_Browser *fb)
         if (!entry->is_dir)
           break;
      }
+   if (!entry)
+     entry = _first_entry_find(fb);
    if (entry)
      {
         DBG("next is '%s'", entry->path);
@@ -642,6 +644,8 @@ _prev_entry(Ephoto_Flow_Browser *fb)
         if (!entry->is_dir)
           break;
      }
+   if (!entry)
+     entry = _last_entry_find(fb);
    if (entry)
      {
         DBG("prev is '%s'", entry->path);
