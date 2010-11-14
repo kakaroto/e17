@@ -6,16 +6,16 @@ EAPI="2"
 inherit enlightenment
 
 DESCRIPTION="EFL-based photo app"
+IUSE=""
 
 RDEPEND="
 	 >=dev-libs/eet-9999
 	 >=dev-libs/efreet-9999
 	 >=dev-libs/eina-9999
-	 >=dev-libs/embryo-9999
-	 >=dev-libs/ecore-9999[X,evas,inotify]
+	 >=dev-libs/ecore-9999[evas,inotify]
 	 >=dev-libs/eio-9999
 	 >=media-libs/edje-9999
-	 >=media-libs/evas-9999[X,eet,jpeg,png]
+	 >=media-libs/evas-9999[eet,jpeg,png]
 	 >=media-libs/elementary-9999[thumbnails,xdg]
 	 >=media-libs/ethumb-9999
 "
