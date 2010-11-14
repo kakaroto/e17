@@ -1,0 +1,43 @@
+
+/*
+ * Contains list of all used images: images list first, icons second.
+ */
+
+image: "images/outdent-top.png" COMP;
+image: "images/outdent-bottom.png" COMP;
+
+image: "images/separator_v.png" COMP;
+image: "images/progress_trough.png" COMP;
+
+//~ Window
+image: "images/win_background.png" COMP; /* background */
+
+//~ button
+image: "images/button_im0.png" COMP; /* base */
+image: "images/button_im1.png" COMP; /* enabled */
+image: "images/button_im2.png" COMP; /* disabled */
+image: "images/button_im3.png" COMP; /* focus */
+image: "images/button_im4.png" COMP; /* top shadow */
+image: "images/button_im5.png" COMP; /* shadow overlay */
+
+//~ frame
+image: "images/frame_im0.png" COMP; /* frame border */
+
+//~ menu
+image: "images/menu_im0.png" COMP; /* background */
+image: "images/menu_im1.png" COMP; /* separator */
+image: "images/menu_im2.png" COMP; /* hilite */
+image: "images/menu_im3.png" COMP; /* inactive arrow */
+
+//~ exebuf
+image: "images/exebuf_im0.png" COMP; /* hilite */
+
+//~ gadman
+image: "images/gadman_im5.png" COMP; /* left arrow */
+image: "images/gadman_im6.png" COMP; /* right arrow */
+
+
+//~ scrollframe
+image: "images/scrollframe_im1.png" COMP; /* inset */
+image: "images/scrollframe-bar_im2.png" COMP; /* vertical bar */
+
