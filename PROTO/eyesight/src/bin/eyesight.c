@@ -312,7 +312,7 @@ int main(int argc, char *argv[])
       printf("For......................: %s\n", ((Eyesight_Document_Ps *)doc)->for_);
       printf("Format...................: %s\n", ((Eyesight_Document_Ps *)doc)->format);
       printf("Date creation............: %s\n", ((Eyesight_Document_Ps *)doc)->date_creation);
-      printf("Langage level............: %d\n", ((Eyesight_Document_Ps *)doc)->langage_level);
+      printf("Language level...........: %d\n", ((Eyesight_Document_Ps *)doc)->language_level);
       printf("EPS......................: %s\n", ((Eyesight_Document_Ps *)doc)->is_eps ? "yes" : "no");
       break;
     case EYESIGHT_BACKEND_TXT:

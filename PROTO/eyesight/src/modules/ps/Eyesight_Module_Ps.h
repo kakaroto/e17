@@ -10,8 +10,8 @@ typedef struct
   const char *for_;
   const char *format;
   const char *date_creation;
-  int langage_level;
-  Eina_Bool is_eps : 1;
+  int         language_level;
+  Eina_Bool   is_eps : 1;
 } Eyesight_Document_Ps;
 
 

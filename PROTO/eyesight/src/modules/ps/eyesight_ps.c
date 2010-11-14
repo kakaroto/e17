@@ -41,10 +41,10 @@
       doc->member = data; \
   } while(0)
 
-#define EYESIGHT_PS_INFO_INT_GET(member)   \
+#define EYESIGHT_PS_INFO_INT_GET(member, info)       \
   do { \
     int data; \
-    data = spectre_document_get_##member(ebp->document); \
+    data = spectre_document_##info(ebp->document); \
     if (spectre_document_status(ebp->document) != SPECTRE_STATUS_SUCCESS) \
       doc->member = 0; \
     else \
@@ -153,8 +153,8 @@ em_file_open(void *eb, const char *filename)
   EYESIGHT_PS_INFO_STRING_GET(format, format);
   EYESIGHT_PS_INFO_STRING_GET(date_creation, creation_date);
 
-  EYESIGHT_PS_INFO_INT_GET(is_eps);
-  EYESIGHT_PS_INFO_INT_GET(langage_level);
+  EYESIGHT_PS_INFO_INT_GET(is_eps, is_eps);
+  EYESIGHT_PS_INFO_INT_GET(language_level, get_language_level);
   ebp->doc = doc;
 
   return doc;
