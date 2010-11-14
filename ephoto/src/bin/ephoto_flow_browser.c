@@ -593,42 +593,60 @@ _zoom_fit_cb(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
    _zoom_fit(fb);
 }
 
+static int
+_entry_cmp(const void *pa, const void *pb)
+{
+   const Ephoto_Entry *a = pa;
+   const char *path = pb;
+   
+   if (path == a->path)
+     return 0;
+   else
+     return strcoll(a->path, path);
+}
+
 static void
 _next_entry(Ephoto_Flow_Browser *fb)
 {
-   Elm_Gengrid_Item *it;
-   Ephoto_Entry *entry;
+   Ephoto_Entry *entry = NULL;
+   Eina_List *node;
    EINA_SAFETY_ON_NULL_RETURN(fb->entry);
-   EINA_SAFETY_ON_NULL_RETURN(fb->entry->item);
 
-   it = fb->entry->item;
-   while ((it = elm_gengrid_item_next_get(it)))
+   node = eina_list_search_sorted_list(fb->ephoto->entries, _entry_cmp, fb->entry->path);
+   if (!node) return;
+   while ((node = node->next))
      {
-        entry = elm_gengrid_item_data_get(it);
-        if (!entry->is_dir) break;
+        entry = node->data;
+        if (!entry->is_dir)
+          break;
      }
-   if (!it) return;
-   DBG("next is '%s'", entry->path);
-   ephoto_flow_browser_entry_set(fb->layout, entry);
+   if (entry)
+     {
+        DBG("next is '%s'", entry->path);
+        ephoto_flow_browser_entry_set(fb->layout, entry);
+     }
 }
 
 static void
 _prev_entry(Ephoto_Flow_Browser *fb)
 {
-   Elm_Gengrid_Item *it;
-   Ephoto_Entry *entry;
+   Eina_List *node;
+   Ephoto_Entry *entry = NULL;
    EINA_SAFETY_ON_NULL_RETURN(fb->entry);
-   EINA_SAFETY_ON_NULL_RETURN(fb->entry->item);
 
-   it = fb->entry->item;
-   while ((it = elm_gengrid_item_prev_get(it)))
+   node = eina_list_search_sorted_list(fb->ephoto->entries, _entry_cmp, fb->entry->path);
+   if (!node) return;
+   while ((node = node->prev))
      {
-        entry = elm_gengrid_item_data_get(it);
-        if (!entry->is_dir) break;
+        entry = node->data;
+        if (!entry->is_dir)
+          break;
      }
-   if (!it) return;
-   DBG("prev is '%s'", entry->path);
-   ephoto_flow_browser_entry_set(fb->layout, entry);
+   if (entry)
+     {
+        DBG("prev is '%s'", entry->path);
+        ephoto_flow_browser_entry_set(fb->layout, entry);
+     }
 }
 
 static void
