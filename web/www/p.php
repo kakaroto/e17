@@ -3,7 +3,6 @@
 <?php
     include 'site/site.php';
     include 'site/developers.php';
-    include 'site/helpers.php';
 ?>
 <html>
 <head>
