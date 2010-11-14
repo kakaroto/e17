@@ -37,7 +37,7 @@ AC_SUBST(ALL_LINGUAS)
 AM_GNU_GETTEXT_VERSION([0.12.1])
 AM_GNU_GETTEXT([external])
 
-PKG_CHECK_MODULES([ELEMENTARY], [elementary epdf])
+PKG_CHECK_MODULES([ELEMENTARY], [elementary epdf eina ecore evas edje])
 
 AC_ARG_WITH([edje-cc],
    [AC_HELP_STRING([--with-edje-cc=PATH],
