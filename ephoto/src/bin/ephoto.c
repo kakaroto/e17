@@ -44,7 +44,7 @@ elm_main(int argc, char **argv)
    ethumb_client_crop_align_set(client, 0.5, 0.5);
    ethumb_client_aspect_set(client, ETHUMB_THUMB_CROP);
    ethumb_client_orientation_set(client, ETHUMB_THUMB_ORIENT_ORIGINAL);
-   __log_domain = eina_log_domain_register("ephoto", EINA_COLOR_BLUE);
+   __log_domain = eina_log_domain_register("ephoto", EINA_COLOR_ORANGE);
    if (!__log_domain)
      {
         EINA_LOG_ERR("Could not register log domain: Ephoto");

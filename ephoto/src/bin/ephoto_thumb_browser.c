@@ -20,20 +20,14 @@ struct _Ephoto_Thumb_Browser
    Evas_Object *toolbar;
    Eio_File *ls;
    Eina_List *todo_items;
+   Eina_List *grid_items;
+   Eina_List *handlers;
    struct {
       Elm_Toolbar_Item *zoom_in;
       Elm_Toolbar_Item *zoom_out;
       Elm_Toolbar_Item *view_flow;
       Elm_Toolbar_Item *slideshow;
    } action;
-   struct {
-      const char *path;
-      void (*cb)(void *data, Ephoto_Entry *entry);
-      const void *data;
-   } pending;
-   struct {
-      Ecore_Job *change_dir;
-   } job;
    struct {
       Ecore_Animator *todo_items;
    } animator;
@@ -45,6 +39,13 @@ _todo_items_free(Ephoto_Thumb_Browser *tb)
 {
    eina_list_free(tb->todo_items);
    tb->todo_items = NULL;
+}
+
+static void
+_grid_items_free(Ephoto_Thumb_Browser *tb)
+{
+   eina_list_free(tb->grid_items);
+   tb->grid_items = NULL;
 }
 
 static Ephoto_Entry *
@@ -115,10 +116,14 @@ _ephoto_thumb_file_icon_get(void *data, Evas_Object *obj, const char *part __UNU
 }
 
 static void
-_ephoto_thumb_item_del(void *data, Evas_Object *obj __UNUSED__)
+_ephoto_thumb_item_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__)
 {
+   /* FIXME: the entry is already freed when changing directories
+    * One solution is to take care of this cleaning when manually removing
+    * some grid items
    Ephoto_Entry *e = data;
    e->item = NULL;
+   */
 }
 
 static const Elm_Gengrid_Item_Class _ephoto_thumb_dir_class = {
@@ -154,7 +159,11 @@ static const Elm_Gengrid_Item_Class _ephoto_thumb_file_class = {
 static int
 _entry_cmp(const void *pa, const void *pb)
 {
-   const Ephoto_Entry *a = pa, *b = pb;
+   const Elm_Gengrid_Item *ia = pa;
+   const Ephoto_Entry *a, *b = pb;
+
+   a = elm_gengrid_item_data_get(ia);
+
    if (a->is_dir == b->is_dir)
      return strcoll(a->basename, b->basename);
    else if (a->is_dir)
@@ -167,56 +176,49 @@ static void
 _entry_item_add(Ephoto_Thumb_Browser *tb, Ephoto_Entry *e)
 {
    const Elm_Gengrid_Item_Class *ic;
+   int near_cmp;
+   Elm_Gengrid_Item *near_item = NULL;
+   Eina_List *near_node = NULL;
+   
+   near_node = eina_list_search_sorted_near_list
+     (tb->grid_items, _entry_cmp, e, &near_cmp);
 
-   DBG("populate add '%s'", e->path);
+   if (near_node)
+     near_item = near_node->data;
 
    if (e->is_dir) ic = &_ephoto_thumb_dir_class;
    else           ic = &_ephoto_thumb_file_class;
 
-   if (!tb->ephoto->entries)
+   if (!near_item)
      {
         e->item = elm_gengrid_item_append(tb->grid, ic, e, NULL, NULL);
-        tb->ephoto->entries = eina_list_append(tb->ephoto->entries, e);
+        tb->grid_items = eina_list_append(tb->grid_items, e->item);
      }
    else
      {
-        int near_cmp;
-        Ephoto_Entry *near_entry;
-        Elm_Gengrid_Item *near_item;
-        Eina_List *near_node = eina_list_search_sorted_near_list
-          (tb->ephoto->entries, _entry_cmp, e, &near_cmp);
-
-        near_entry = near_node->data;
-        near_item = near_entry->item;
         if (near_cmp < 0)
           {
              e->item = elm_gengrid_item_insert_after
-               (tb->grid, ic, e, near_item, NULL, NULL);
-             tb->ephoto->entries =  eina_list_append_relative_list
-               (tb->ephoto->entries, e, near_node);
+                (tb->grid, ic, e, near_item, NULL, NULL);
+             tb->grid_items = eina_list_append_relative
+                (tb->grid_items, e->item, near_item);
           }
         else
           {
              e->item = elm_gengrid_item_insert_before
-               (tb->grid, ic, e, near_item, NULL, NULL);
-             tb->ephoto->entries =  eina_list_prepend_relative_list
-               (tb->ephoto->entries, e, near_node);
+                (tb->grid, ic, e, near_item, NULL, NULL);
+             tb->grid_items = eina_list_prepend_relative
+                (tb->grid_items, e->item, near_item);
           }
      }
 
-   if (!e->item)
+   if (e->item)
+     elm_gengrid_item_data_set(e->item, e);
+   else
      {
         ERR("could not add item to grid: path '%s'", e->path);
         ephoto_entry_free(e);
         return;
-     }
-
-   if (tb->pending.path == e->path)
-     {
-        tb->pending.cb((void*)tb->pending.data, e);
-        tb->pending.cb = NULL;
-        tb->pending.data = NULL;
-        eina_stringshare_replace(&tb->pending.path, NULL);
      }
 }
 
@@ -267,98 +269,6 @@ _todo_items_process(void *data)
 }
 
 static void
-_ephoto_populate_main(void *data, Eio_File *handler __UNUSED__, const Eina_File_Direct_Info *info)
-{
-   Ephoto_Thumb_Browser *tb = data;
-   Ephoto_Entry *e;
-
-   e = ephoto_entry_new(tb->ephoto, info->path, info->path + info->name_start);
-   if (info->type == EINA_FILE_DIR) e->is_dir = EINA_TRUE;
-   else if (info->type == EINA_FILE_REG) e->is_dir = EINA_FALSE;
-   else e->is_dir = !_ephoto_eina_file_direct_info_image_useful(info);
-
-   tb->todo_items = eina_list_append(tb->todo_items, e);
-
-   if (!tb->animator.todo_items)
-     tb->animator.todo_items = ecore_animator_add(_todo_items_process, tb);
-}
-
-static Eina_Bool
-_ephoto_populate_filter(void *data __UNUSED__, Eio_File *handler __UNUSED__, const Eina_File_Direct_Info *info)
-{
-   const char *bname = info->path + info->name_start;
-
-   if (bname[0] == '.') return EINA_FALSE;
-   if (info->type == EINA_FILE_DIR) return EINA_TRUE;
-
-   return _ephoto_eina_file_direct_info_image_useful(info);
-}
-
-static void
-_ephoto_populate_end(void *data, Eio_File *handler __UNUSED__)
-{
-   Ephoto_Thumb_Browser *tb = data;
-   tb->ls = NULL;
-
-   if (tb->layout_deleted)
-     {
-        free(tb);
-        return;
-     }
-
-   if (!tb->animator.todo_items) _up_item_add_if_required(tb);
-
-   if (tb->pending.cb)
-     {
-        tb->pending.cb((void*)tb->pending.data, NULL);
-        tb->pending.cb = NULL;
-     }
-   tb->pending.data = NULL;
-   eina_stringshare_replace(&tb->pending.path, NULL);
-   edje_object_signal_emit(tb->edje, "populate,stop", "ephoto");
-}
-
-static void
-_ephoto_populate_error(void *data, Eio_File *handler, int error)
-{
-   Ephoto_Thumb_Browser *tb = data;
-   if (error) ERR("could not populate: %s", strerror(error));
-   edje_object_signal_emit(tb->edje, "populate,error", "ephoto");
-   _ephoto_populate_end(tb, handler);
-}
-
-static void
-_ephoto_populate_entries(Ephoto_Thumb_Browser *tb)
-{
-   /* Edje_External_Param param; */
-   DBG("populate from '%s'", tb->ephoto->config->directory);
-
-   evas_object_smart_callback_call(tb->layout, "changed,directory", NULL);
-
-   _todo_items_free(tb);
-   elm_gengrid_clear(tb->grid);
-   ephoto_entries_free(tb->ephoto);
-
-   elm_fileselector_entry_path_set(tb->fsel, tb->ephoto->config->directory);
-
-   edje_object_signal_emit(tb->edje, "populate,start", "ephoto");
-   tb->ls = eio_file_stat_ls(tb->ephoto->config->directory,
-                             _ephoto_populate_filter,
-                             _ephoto_populate_main,
-                             _ephoto_populate_end,
-                             _ephoto_populate_error,
-                             tb);
-}
-
-static void
-_ephoto_thumb_change_dir(void *data)
-{
-   Ephoto_Thumb_Browser *tb = data;
-   tb->job.change_dir = NULL;
-   _ephoto_populate_entries(tb);
-}
-
-static void
 _ephoto_thumb_selected(void *data, Evas_Object *o __UNUSED__, void *event_info)
 {
    Ephoto_Thumb_Browser *tb = data;
@@ -368,7 +278,7 @@ _ephoto_thumb_selected(void *data, Evas_Object *o __UNUSED__, void *event_info)
    elm_gengrid_item_selected_set(it, EINA_FALSE);
 
    if (e->is_dir)
-     ephoto_thumb_browser_directory_set(tb->layout, e->path);
+     ephoto_directory_set(tb->ephoto, e->path);
    else
      evas_object_smart_callback_call(tb->layout, "view", e);
 }
@@ -379,7 +289,7 @@ _changed_dir(void *data, Evas_Object *o __UNUSED__, void *event_info)
    Ephoto_Thumb_Browser *tb = data;
    const char *path = event_info;
    if (!path) return;
-   ephoto_thumb_browser_directory_set(tb->layout, path);
+   ephoto_directory_set(tb->ephoto, path);
 }
 
 static void
@@ -388,7 +298,7 @@ _changed_dir_text(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUS
    Ephoto_Thumb_Browser *tb = data;
    const char *path = elm_fileselector_entry_path_get(tb->fsel);
    if (ecore_file_is_dir(path))
-     ephoto_thumb_browser_directory_set(tb->layout, path);
+     ephoto_directory_set(tb->ephoto, path);
 }
 
 static void
@@ -434,7 +344,7 @@ _view_flow(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 
    if (!entry) return;
    if (entry->is_dir)
-     ephoto_thumb_browser_directory_set(tb->layout, entry->path);
+     ephoto_directory_set(tb->ephoto, entry->path);
    else
      evas_object_smart_callback_call(tb->layout, "view", entry);
 }
@@ -472,7 +382,7 @@ _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
                   char *parent = ecore_file_dir_get
                     (tb->ephoto->config->directory);
                   if (parent)
-                    ephoto_thumb_browser_directory_set(tb->layout, parent);
+                    ephoto_directory_set(tb->ephoto, parent);
                   free(parent);
                }
           }
@@ -497,21 +407,13 @@ static void
 _layout_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Thumb_Browser *tb = data;
+   Ecore_Event_Handler *handler;
 
    _todo_items_free(tb);
+   _grid_items_free(tb);
+   EINA_LIST_FREE(tb->handlers, handler)
+      ecore_event_handler_del(handler);
 
-   if (tb->pending.cb)
-     {
-        tb->pending.cb((void*)tb->pending.data, NULL);
-        tb->pending.cb = NULL;
-        tb->pending.data = NULL;
-     }
-   eina_stringshare_replace(&tb->pending.path, NULL);
-   if (tb->job.change_dir)
-     {
-        ecore_job_del(tb->job.change_dir);
-        tb->job.change_dir = NULL;
-     }
    if (tb->animator.todo_items)
      {
         ecore_animator_del(tb->animator.todo_items);
@@ -533,6 +435,68 @@ _toolbar_item_add(Ephoto_Thumb_Browser *tb, const char *icon, const char *label,
                                                     cb, tb);
    elm_toolbar_item_priority_set(item, priority);
    return item;
+}
+
+static Eina_Bool
+_ephoto_thumb_populate_start(void *data, int type __UNUSED__, void *event __UNUSED__)
+{
+   Ephoto_Thumb_Browser *tb = data;
+
+   evas_object_smart_callback_call(tb->layout, "changed,directory", NULL);
+
+   _todo_items_free(tb);
+   _grid_items_free(tb);
+   elm_gengrid_clear(tb->grid);
+   elm_fileselector_entry_path_set(tb->fsel, tb->ephoto->config->directory);
+
+   edje_object_signal_emit(tb->edje, "populate,start", "ephoto");
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_ephoto_thumb_populate_end(void *data, int type __UNUSED__, void *event __UNUSED__)
+{
+   Ephoto_Thumb_Browser *tb = data;
+
+   tb->ls = NULL;
+   if (tb->layout_deleted)
+     {
+        free(tb);
+        return ECORE_CALLBACK_PASS_ON;
+     }
+
+   if (!tb->animator.todo_items) _up_item_add_if_required(tb);
+
+   edje_object_signal_emit(tb->edje, "populate,stop", "ephoto");
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_ephoto_thumb_populate_error(void *data, int type __UNUSED__, void *event __UNUSED__)
+{
+   Ephoto_Thumb_Browser *tb = data;
+
+   edje_object_signal_emit(tb->edje, "populate,error", "ephoto");
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_ephoto_thumb_entry_create(void *data, int type __UNUSED__, void *event)
+{
+   Ephoto_Thumb_Browser *tb = data;
+   Ephoto_Event_Entry_Create *ev = event;
+   Ephoto_Entry *e;
+
+   e = ev->entry;
+   tb->todo_items = eina_list_append(tb->todo_items, e);
+
+   if (!tb->animator.todo_items)
+     tb->animator.todo_items = ecore_animator_add(_todo_items_process, tb);
+
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 Evas_Object *
@@ -616,36 +580,25 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
    evas_object_show(tb->grid);
    elm_layout_box_append(tb->layout, "elm.box.content", tb->grid);
 
+   tb->handlers = eina_list_append
+      (tb->handlers, ecore_event_handler_add
+       (EPHOTO_EVENT_POPULATE_START, _ephoto_thumb_populate_start, tb));
+
+   tb->handlers = eina_list_append
+      (tb->handlers, ecore_event_handler_add
+       (EPHOTO_EVENT_POPULATE_END, _ephoto_thumb_populate_end, tb));
+
+   tb->handlers = eina_list_append
+      (tb->handlers, ecore_event_handler_add
+       (EPHOTO_EVENT_POPULATE_ERROR, _ephoto_thumb_populate_error, tb));
+
+   tb->handlers = eina_list_append
+      (tb->handlers, ecore_event_handler_add
+       (EPHOTO_EVENT_ENTRY_CREATE, _ephoto_thumb_entry_create, tb));
+
    return layout;
 
  error:
    evas_object_del(layout);
    return NULL;
-}
-
-void
-ephoto_thumb_browser_directory_set(Evas_Object *obj, const char *path)
-{
-   Ephoto_Thumb_Browser *tb = evas_object_data_get(obj, "thumb_browser");
-   EINA_SAFETY_ON_NULL_RETURN(tb);
-
-   eina_stringshare_replace(&tb->pending.path, NULL);
-   tb->pending.cb = NULL;
-   tb->pending.data = NULL;
-
-   ephoto_title_set(tb->ephoto, path);
-
-   eina_stringshare_replace(&tb->ephoto->config->directory, path);
-   if (tb->job.change_dir) ecore_job_del(tb->job.change_dir);
-   tb->job.change_dir = ecore_job_add(_ephoto_thumb_change_dir, tb);
-}
-
-void
-ephoto_thumb_browser_path_pending_set(Evas_Object *obj, const char *path, void (*cb)(void *data, Ephoto_Entry *entry), const void *data)
-{
-   Ephoto_Thumb_Browser *tb = evas_object_data_get(obj, "thumb_browser");
-   EINA_SAFETY_ON_NULL_RETURN(tb);
-   eina_stringshare_replace(&tb->pending.path, path);
-   tb->pending.cb = cb;
-   tb->pending.data = data;
 }

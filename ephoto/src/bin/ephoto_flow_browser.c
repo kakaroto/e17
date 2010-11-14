@@ -41,9 +41,10 @@ struct _Ephoto_Flow_Browser
 #endif
       Elm_Toolbar_Item *slideshow;
    } action;
-   const char *path;
+   const char *pending_path;
    Ephoto_Entry *entry;
    Ephoto_Orient orient;
+   Eina_List *handlers;
 };
 
 struct _Ephoto_Viewer
@@ -512,10 +513,10 @@ _ephoto_flow_browser_recalc(Ephoto_Flow_Browser *fb)
         fb->viewer = NULL;
      }
 
-   if (fb->path)
+   if (fb->entry)
      {
-        const char *bname = ecore_file_file_get(fb->path);
-        fb->viewer = _viewer_add(fb->orient_layout, fb->path);
+        const char *bname = ecore_file_file_get(fb->entry->path);
+        fb->viewer = _viewer_add(fb->orient_layout, fb->entry->path);
         elm_layout_content_set
           (fb->orient_layout, "elm.swallow.content", fb->viewer);
         evas_object_show(fb->viewer);
@@ -523,7 +524,7 @@ _ephoto_flow_browser_recalc(Ephoto_Flow_Browser *fb)
           (fb->viewer, EVAS_CALLBACK_MOUSE_WHEEL, _mouse_wheel, fb);
         edje_object_part_text_set(fb->edje, "elm.text.title", bname);
         ephoto_title_set(fb->ephoto, bname);
-        fb->orient = ephoto_file_orient_get(fb->path);
+        fb->orient = ephoto_file_orient_get(fb->entry->path);
         _orient_apply(fb);
      }
 
@@ -794,9 +795,14 @@ static void
 _layout_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *fb = data;
+   Ecore_Event_Handler *handler;
+
+   EINA_LIST_FREE(fb->handlers, handler)
+      ecore_event_handler_del(handler);
    if (fb->entry)
      ephoto_entry_free_listener_del(fb->entry, _entry_free, fb);
-   eina_stringshare_del(fb->path);
+   if (fb->pending_path)
+     eina_stringshare_del(fb->pending_path);
    free(fb);
 }
 
@@ -816,6 +822,36 @@ _toolbar_item_separator_add(Ephoto_Flow_Browser *fb)
      (fb->toolbar, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(it, EINA_TRUE);
    return it;
+}
+
+static Eina_Bool
+_ephoto_flow_populate_end(void *data, int type __UNUSED__, void *event __UNUSED__)
+{
+   Ephoto_Flow_Browser *fb = data;
+
+   _ephoto_flow_browser_toolbar_eval(fb);
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_ephoto_flow_entry_create(void *data, int type __UNUSED__, void *event __UNUSED__)
+{
+   Ephoto_Flow_Browser *fb = data;
+   Ephoto_Event_Entry_Create *ev = event;
+   Ephoto_Entry *e;
+
+   e = ev->entry;
+   if (!fb->entry && fb->pending_path && e->path == fb->pending_path)
+     {
+        DBG("Adding entry %p for path %s", e, fb->pending_path);
+
+        eina_stringshare_del(fb->pending_path);
+        fb->pending_path = NULL;
+        ephoto_flow_browser_entry_set(fb->ephoto->flow_browser, e);
+     }
+
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 Evas_Object *
@@ -913,6 +949,14 @@ ephoto_flow_browser_add(Ephoto *ephoto, Evas_Object *parent)
 
    _ephoto_flow_browser_toolbar_eval(fb);
 
+   fb->handlers = eina_list_append
+      (fb->handlers, ecore_event_handler_add
+       (EPHOTO_EVENT_POPULATE_END, _ephoto_flow_populate_end, fb));
+
+   fb->handlers = eina_list_append
+      (fb->handlers, ecore_event_handler_add
+       (EPHOTO_EVENT_ENTRY_CREATE, _ephoto_flow_entry_create, fb));
+
    return layout;
 
  error:
@@ -921,45 +965,41 @@ ephoto_flow_browser_add(Ephoto *ephoto, Evas_Object *parent)
 }
 
 void
-ephoto_flow_browser_path_set(Evas_Object *obj, const char *path)
-{
-   Ephoto_Flow_Browser *fb = evas_object_data_get(obj, "flow_browser");
-   EINA_SAFETY_ON_NULL_RETURN(fb);
-
-   DBG("path '%s', was '%s'", path ? path : "", fb->path ? fb->path : "");
-   if (!eina_stringshare_replace(&fb->path, path)) return;
-   fb->entry = NULL;
-   _ephoto_flow_browser_recalc(fb);
-   _zoom_fit(fb);
-}
-
-void
 ephoto_flow_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry)
 {
    Ephoto_Flow_Browser *fb = evas_object_data_get(obj, "flow_browser");
+   Eina_Bool same_file = EINA_FALSE;
    EINA_SAFETY_ON_NULL_RETURN(fb);
 
    DBG("entry %p, was %p", entry, fb->entry);
 
    if (fb->entry)
-     ephoto_entry_free_listener_del(fb->entry, _entry_free, fb);
+     {
+        ephoto_entry_free_listener_del(fb->entry, _entry_free, fb);
+        if (entry && entry->path == fb->entry->path)
+          same_file = EINA_TRUE;
+     }
 
    fb->entry = entry;
 
    if (entry)
      ephoto_entry_free_listener_add(entry, _entry_free, fb);
 
-
-   if (!entry)
-     {
-        eina_stringshare_replace(&fb->path, NULL);
-        _ephoto_flow_browser_toolbar_eval(fb);
-     }
-   else if (!eina_stringshare_replace(&fb->path, entry->path))
+   if (!fb->entry || same_file)
      _ephoto_flow_browser_toolbar_eval(fb);
    else
      {
         _ephoto_flow_browser_recalc(fb);
         _zoom_fit(fb);
      }
+}
+
+void
+ephoto_flow_browser_path_pending_set(Evas_Object *obj, const char *path)
+{
+   Ephoto_Flow_Browser *fb = evas_object_data_get(obj, "flow_browser");
+   EINA_SAFETY_ON_NULL_RETURN(fb);
+
+   DBG("Setting pending path '%s'", path);
+   fb->pending_path = eina_stringshare_add(path);
 }

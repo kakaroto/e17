@@ -27,6 +27,7 @@
 typedef struct _Ephoto_Config Ephoto_Config;
 typedef struct _Ephoto Ephoto;
 typedef struct _Ephoto_Entry Ephoto_Entry;
+typedef struct _Ephoto_Event_Entry_Create Ephoto_Event_Entry_Create;
 
 typedef enum _Ephoto_State Ephoto_State;
 typedef enum _Ephoto_Orient Ephoto_Orient;
@@ -36,6 +37,7 @@ void         ephoto_title_set(Ephoto *ephoto, const char *title);
 void         ephoto_thumb_size_set(Ephoto *ephoto, int size);
 Evas_Object *ephoto_thumb_add(Ephoto *ephoto, Evas_Object *parent, const char *path);
 void         ephoto_thumb_path_set(Evas_Object *o, const char *path);
+void         ephoto_directory_set(Ephoto *ephoto, const char *path);
 
 Ephoto_Orient ephoto_file_orient_get(const char *path);
 
@@ -44,8 +46,8 @@ void         ephoto_config_save(Ephoto *em, Eina_Bool instant);
 void         ephoto_config_free(Ephoto *em);
 
 Evas_Object *ephoto_flow_browser_add(Ephoto *ephoto, Evas_Object *parent);
-void         ephoto_flow_browser_path_set(Evas_Object *obj, const char *image);
 void         ephoto_flow_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry);
+void         ephoto_flow_browser_path_pending_set(Evas_Object *obj, const char *path);
  /* smart callbacks called:
   * "back" - the user want to go back to the previous screen.
   */
@@ -59,8 +61,6 @@ void         ephoto_slideshow_entry_set(Evas_Object *obj, Ephoto_Entry *entry);
 Evas_Object *ephoto_directory_thumb_add(Evas_Object *parent, Ephoto_Entry *e);
 
 Evas_Object *ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent);
-void         ephoto_thumb_browser_directory_set(Evas_Object *obj, const char *path);
-void         ephoto_thumb_browser_path_pending_set(Evas_Object *obj, const char *path, void (*cb)(void *data, Ephoto_Entry *entry), const void *data);
 
 /* smart callbacks called:
  * "selected" - an item in the thumb browser is selected. The selected Ephoto_Entry is passed as event_info argument.
@@ -123,6 +123,11 @@ struct _Ephoto
    struct {
       Ecore_Timer *thumb_regen;
    } timer;
+   struct {
+      Ecore_Job *change_dir;
+   } job;
+
+   Eio_File *ls;
 
    Evas_Object *prefs_win;
    Ephoto_State state, prev_state;
@@ -142,6 +147,11 @@ struct _Ephoto_Entry
    Eina_Bool dir_files_checked : 1;
    Eina_Bool is_dir : 1;
    Eina_Bool is_up : 1;
+};
+
+struct _Ephoto_Event_Entry_Create
+{
+   Ephoto_Entry *entry;
 };
 
 Ephoto_Entry *ephoto_entry_new(Ephoto *ephoto, const char *path, const char *label);
@@ -181,5 +191,10 @@ _ephoto_eina_file_direct_info_image_useful(const Eina_File_Direct_Info *info)
    //if (!(type = efreet_mime_type_get(info->path))) return EINA_FALSE;
    //return strncmp(type, "image/", sizeof("image/") - 1) == 0;
 }
+
+extern int EPHOTO_EVENT_ENTRY_CREATE;
+extern int EPHOTO_EVENT_POPULATE_START;
+extern int EPHOTO_EVENT_POPULATE_END;
+extern int EPHOTO_EVENT_POPULATE_ERROR;
 
 #endif

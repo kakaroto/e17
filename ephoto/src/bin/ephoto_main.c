@@ -1,5 +1,10 @@
 #include "ephoto.h"
 
+int EPHOTO_EVENT_ENTRY_CREATE = 0;
+int EPHOTO_EVENT_POPULATE_START = 0;
+int EPHOTO_EVENT_POPULATE_END = 0;
+int EPHOTO_EVENT_POPULATE_ERROR = 0;
+
 typedef struct _Ephoto_Entry_Free_Listener Ephoto_Entry_Free_Listener;
 struct _Ephoto_Entry_Free_Listener
 {
@@ -19,7 +24,7 @@ _ephoto_thumb_browser_show(Ephoto *ephoto, Ephoto_Entry *entry)
 {
    DBG("entry '%s'", entry ? entry->path : "");
 
-   ephoto_flow_browser_path_set(ephoto->flow_browser, NULL);
+   ephoto_flow_browser_entry_set(ephoto->flow_browser, NULL);
    ephoto_slideshow_entry_set(ephoto->slideshow, NULL);
    elm_pager_content_promote(ephoto->pager, ephoto->thumb_browser);
    _ephoto_state_set(ephoto, EPHOTO_STATE_THUMB);
@@ -105,18 +110,6 @@ _ephoto_flow_browser_slideshow(void *data, Evas_Object *obj __UNUSED__, void *ev
 }
 
 static void
-_pending_path_found(void *data, Ephoto_Entry *entry)
-{
-   Ephoto *ephoto = data;
-   if (!entry)
-     {
-        ERR("not found entry, but it should be in directory? weird!");
-        return;
-     }
-   ephoto_flow_browser_entry_set(ephoto->flow_browser, entry);
-}
-
-static void
 _win_free(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto *ephoto = data;
@@ -131,6 +124,11 @@ ephoto_window_add(const char *path)
    Ethumb_Client *client = elm_thumb_ethumb_client_get();
    char buf[PATH_MAX];
    EINA_SAFETY_ON_NULL_RETURN_VAL(ephoto, NULL);
+
+   EPHOTO_EVENT_ENTRY_CREATE = ecore_event_type_new();
+   EPHOTO_EVENT_POPULATE_START = ecore_event_type_new();
+   EPHOTO_EVENT_POPULATE_END = ecore_event_type_new();
+   EPHOTO_EVENT_POPULATE_ERROR = ecore_event_type_new();
 
    ephoto->win = elm_win_add(NULL, "ephoto", ELM_WIN_BASIC);
    if (!ephoto->win)
@@ -231,17 +229,15 @@ ephoto_window_add(const char *path)
 
    if (ecore_file_is_dir(path))
      {
-        ephoto_thumb_browser_directory_set(ephoto->thumb_browser, path);
+        ephoto_directory_set(ephoto, path);
         _ephoto_thumb_browser_show(ephoto, NULL);
      }
    else
      {
         char *dir = ecore_file_dir_get(path);
-        ephoto_thumb_browser_directory_set(ephoto->thumb_browser, dir);
+        ephoto_directory_set(ephoto, dir);
         free(dir);
-        ephoto_thumb_browser_path_pending_set
-          (ephoto->thumb_browser, path, _pending_path_found, ephoto);
-        ephoto_flow_browser_path_set(ephoto->flow_browser, path);
+        ephoto_flow_browser_path_pending_set(ephoto->flow_browser, path);
 
         elm_pager_content_promote(ephoto->pager, ephoto->flow_browser);
         ephoto->state = EPHOTO_STATE_FLOW;
@@ -261,6 +257,120 @@ ephoto_title_set(Ephoto *ephoto, const char *title)
 
    if (title) snprintf(buf, sizeof(buf), "%s - Ephoto", title);
    elm_win_title_set(ephoto->win, buf);
+}
+
+static int
+_entry_cmp(const void *pa, const void *pb)
+{
+   const Ephoto_Entry *a = pa, *b = pb;
+   if (a->is_dir == b->is_dir)
+     return strcoll(a->basename, b->basename);
+   else if (a->is_dir)
+     return -1;
+   else
+     return 1;
+}
+
+static void
+_ephoto_populate_main(void *data, Eio_File *handler __UNUSED__, const Eina_File_Direct_Info *info)
+{
+   Ephoto *ephoto = data;
+   Ephoto_Entry *e;
+   Ephoto_Event_Entry_Create *ev;
+
+   e = ephoto_entry_new(ephoto, info->path, info->path + info->name_start);
+   if (info->type == EINA_FILE_DIR) e->is_dir = EINA_TRUE;
+   else if (info->type == EINA_FILE_REG) e->is_dir = EINA_FALSE;
+   else e->is_dir = !_ephoto_eina_file_direct_info_image_useful(info);
+
+   if (!ephoto->entries)
+     ephoto->entries = eina_list_append(ephoto->entries, e);
+   else
+     {
+        int near_cmp;
+        Eina_List *near_node = eina_list_search_sorted_near_list
+          (ephoto->entries, _entry_cmp, e, &near_cmp);
+
+        if (near_cmp < 0)
+          ephoto->entries =  eina_list_append_relative_list
+             (ephoto->entries, e, near_node);
+        else
+          ephoto->entries =  eina_list_prepend_relative_list
+             (ephoto->entries, e, near_node);
+     }
+
+   ev = calloc(1, sizeof(Ephoto_Event_Entry_Create));
+   ev->entry = e;
+
+   ecore_event_add(EPHOTO_EVENT_ENTRY_CREATE, ev, NULL, NULL);
+}
+
+static Eina_Bool
+_ephoto_populate_filter(void *data __UNUSED__, Eio_File *handler __UNUSED__, const Eina_File_Direct_Info *info)
+{
+   const char *bname = info->path + info->name_start;
+
+   if (bname[0] == '.') return EINA_FALSE;
+   if (info->type == EINA_FILE_DIR) return EINA_TRUE;
+
+   return _ephoto_eina_file_direct_info_image_useful(info);
+}
+
+static void
+_ephoto_populate_end(void *data, Eio_File *handler __UNUSED__)
+{
+   Ephoto *ephoto = data;
+   ephoto->ls = NULL;
+
+   ecore_event_add(EPHOTO_EVENT_POPULATE_END, NULL, NULL, NULL);
+}
+
+static void
+_ephoto_populate_error(void *data, Eio_File *handler, int error)
+{
+   Ephoto *ephoto = data;
+   if (error) ERR("could not populate: %s", strerror(error));
+
+   /* XXX: Perhaps it would be better to _not_ emit POPULATE_END here */
+   ecore_event_add(EPHOTO_EVENT_POPULATE_ERROR, NULL, NULL, NULL);
+   _ephoto_populate_end(ephoto, handler);
+}
+
+static void
+_ephoto_populate_entries(Ephoto *ephoto)
+{
+   /* Edje_External_Param param; */
+   DBG("populate from '%s'", ephoto->config->directory);
+
+   ephoto_entries_free(ephoto);
+
+   ephoto->ls = eio_file_stat_ls(ephoto->config->directory,
+                                 _ephoto_populate_filter,
+                                 _ephoto_populate_main,
+                                 _ephoto_populate_end,
+                                 _ephoto_populate_error,
+                                 ephoto);
+
+   ecore_event_add(EPHOTO_EVENT_POPULATE_START, NULL, NULL, NULL);
+}
+
+static void
+_ephoto_change_dir(void *data)
+{
+   Ephoto *ephoto = data;
+   ephoto->job.change_dir = NULL;
+   _ephoto_populate_entries(ephoto);
+}
+
+void
+ephoto_directory_set(Ephoto *ephoto, const char *path)
+{
+   EINA_SAFETY_ON_NULL_RETURN(ephoto);
+
+   ephoto_title_set(ephoto, path);
+   eina_stringshare_replace(&ephoto->config->directory, path);
+   if (ephoto->job.change_dir) ecore_job_del(ephoto->job.change_dir);
+   ephoto->job.change_dir = ecore_job_add(_ephoto_change_dir, ephoto);
 }
 
 static Eina_Bool
