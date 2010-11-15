@@ -14,6 +14,9 @@ echo '<?xml version="1.0"?>'
     <managingEditor>barbieri@profusion.mobi</managingEditor>
     <webMaster>barbieri@profusion.mobi</webMaster>
 
-    <?php include "p/$page/$lang-rss" ?>
+    <?php
+      if (file_exists("p/$page/$lang-rss"))
+        include "p/$page/$lang-rss";
+    ?>
   </channel>
 </rss>
