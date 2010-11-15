@@ -871,7 +871,7 @@ em_file_open(void *eb, const char *filename)
   if (!doc)
     goto delete_dict;
 
-  doc->version_min = ebp->doc.pdfdoc->getPDFMajorVersion();
+  doc->version_maj = ebp->doc.pdfdoc->getPDFMajorVersion();
   doc->version_min = ebp->doc.pdfdoc->getPDFMinorVersion();
   doc->filename = ebp->filename;
 
