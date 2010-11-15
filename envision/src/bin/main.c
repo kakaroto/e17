@@ -761,9 +761,7 @@ _change_selection(void            *data,
 
 /*--------------------------FILE SELECTOR OK CB-----------------------*/
 static void
-fileselector_done(void            *data,
-                  Evas_Object *obj __UNUSED__,
-                  void            *event_info)
+fileselector_done(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
    App *app = data;
    const char *selected = event_info;
@@ -771,13 +769,9 @@ fileselector_done(void            *data,
    evas_object_hide(app->fs_inwin);
    edje_object_signal_emit(app->ed, "more,item,clicked", "");
 
-   if (!selected)
-        return;
+   if (!selected) return;
 
-   if (app->file_info.filename)
-     eina_stringshare_replace(&app->file_info.filename, selected);
-   else
-     app->file_info.filename = eina_stringshare_add(selected);
+   eina_stringshare_replace(&app->file_info.filename, selected);
 
    if (!load_gengrid(app))
       CRITICAL("Failed to open file");
@@ -821,12 +815,6 @@ gl_icon_get(void        *data,
    return ic;
 }
 
-/*--------------------------MAIN_WINDOW------------------------------*/
-/**
- * @brief Create the User interface
- *
- * @param App Application state variable
- */
 static Eina_Bool
 create_main_win(App *app)
 {
@@ -1013,16 +1001,8 @@ gui_error:
    return EINA_FALSE;
 }
 
-/*----------------------------MAIN-----------------------------------*/
-/**
- * @brief The main function for the elementary application
- *
- * @param argc Number of parameters
- * @param argv The array of parameters
- */
 EAPI int
-elm_main(int    argc,
-         char **argv)
+elm_main(int argc, char **argv)
 {
    App app;
    int r = 0;
@@ -1043,13 +1023,16 @@ elm_main(int    argc,
 
    memset(&app, 0, sizeof(app));
 
-   if (argc > 1)
-     app.file_info.filename = eina_stringshare_add(argv[1]);
-
    if (!create_main_win(&app))
      {
         r = -1;
         goto end;
+     }
+
+   if (argc > 1)
+     {
+        app.file_info.filename = eina_stringshare_add(argv[1]);
+        load_gengrid(&app);
      }
 
    elm_run();
@@ -1058,11 +1041,8 @@ elm_main(int    argc,
      epdf_document_delete(app.file_info.document);
 
 end:
-   if (app.file_info.filename)
-     eina_stringshare_del(app.file_info.filename);
-
-   if (app.text_to_search)
-     eina_stringshare_del(app.text_to_search);
+   eina_stringshare_del(app.file_info.filename);
+   eina_stringshare_del(app.text_to_search);
 
    if (app.update_job)
      ecore_job_del(app.update_job);

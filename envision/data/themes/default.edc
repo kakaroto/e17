@@ -419,7 +419,7 @@ collections {
                 set_int(more_list_visible, 0);
                 if (get_int(tab_grid_visible) != 1) {
                    run_program(PROGRAM:"show-white-view-mask");
-                /*     navigation_controls_show(); */
+                   navigation_controls_show();
                 }
                 emit("more,hide", "");
             }
