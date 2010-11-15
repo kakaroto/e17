@@ -285,7 +285,7 @@ int main(int argc, char *argv[])
         }
       break;
     case EYESIGHT_BACKEND_PDF:
-      printf("Version..................: %d.%ds\n",
+      printf("Version..................: %d.%d\n",
              ((Eyesight_Document_Pdf *)doc)->version_maj,
              ((Eyesight_Document_Pdf *)doc)->version_min);
       printf("Title....................: %s\n", ((Eyesight_Document_Pdf *)doc)->title);
