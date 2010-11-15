@@ -4075,6 +4075,95 @@ collections {
             }
         }
     }
+    #define NOTIFY_PART() \
+        part { \
+                name: "pop"; \
+                mouse_events: 1; \
+                description { \
+                    state: "default" 0.0; \
+                    rel1.to: "elm.swallow.content"; \
+                    rel1.offset: -5 -5; \
+                    rel2.to: "elm.swallow.content"; \
+                    rel2.offset: 4 4; \
+                    color: 255 255 255 0; \
+                    image { \
+                        normal: "images/button_im1.png"; \
+                        border: 7 7 7 7; \
+                    } \
+                    image.middle: SOLID; \
+                } \
+                description { \
+                    state: "visible" 0.0; \
+                    inherit: "default" 0.0; \
+                    color: 255 255 255 255; \
+                } \
+            } \
+            part { \
+                name: "popover"; \
+                mouse_events: 0; \
+                description { \
+                    state: "default" 0.0; \
+                    rel1.to: "pop"; \
+                    rel2.to: "pop"; \
+                    rel2.relative: 1.0 0.5; \
+                    color: 255 255 255 0; \
+                    image { \
+                        normal: "images/button_im4.png"; \
+                        border: 4 4 4 0; \
+                    } \
+                } \
+                description { \
+                    state: "visible" 0.0; \
+                    inherit: "default" 0.0; \
+                    color: 255 255 255 255; \
+                } \
+            } \
+            part { \
+                name: "elm.swallow.content"; \
+                type: SWALLOW; \
+                clip_to: "base"; \
+                description { \
+                    state: "default" 0.0; \
+                    rel1.to: "base"; \
+                    rel2.to: "base"; \
+                } \
+            }
+
+    #define NOTIFY_PGME() \
+        program { \
+                name: "show"; \
+                signal: "elm,action,show"; \
+                source: "elm"; \
+                after: "show_2"; \
+            } \
+            program { \
+                name: "show_2"; \
+                signal: "show"; \
+                action: STATE_SET "default" 0.0; \
+                target: "base"; \
+                target: "pop"; \
+                target: "popover"; \
+                after: "show_3"; \
+            } \
+            program { \
+                name: "show_3"; \
+                action: STATE_SET "visible" 0.0; \
+                target: "base"; \
+                target: "pop"; \
+                target: "popover"; \
+                transition: SINUSOIDAL 0.4; \
+            } \
+            program { \
+                name: "hide"; \
+                signal: "elm,action,hide"; \
+                source: "elm"; \
+                action: STATE_SET "default" 0.0; \
+                target: "base"; \
+                target: "pop"; \
+                target: "popover"; \
+                transition: SINUSOIDAL 0.3; \
+            }
+
     group {
         name: "elm/notify/top/default";
               //this group is a design similar to the inwin group
@@ -4086,7 +4175,7 @@ collections {
                 repeat_events: 1;
                 description {
                     state: "default" 0.0;
-                    color: 0 0 0 0;
+                    color: 255 255 255 0;
                     rel1.offset: 10 10;
                     rel2.offset: -10 -10;
                     rel1.relative: 0.0 -1.0;
@@ -4095,80 +4184,15 @@ collections {
                 description {
                     state: "visible" 0.0;
                     inherit: "default" 0.0;
-                    color: 0 0 0 64;
+                    color: 255 255 255 255;
                     rel1.relative: 0.0 0.0;
                     rel2.relative: 1.0 1.0;
                 }
             }
-            part {
-                name: "pop";
-                mouse_events: 1;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "elm.swallow.content";
-                    rel1.offset: -5 -5;
-                    rel2.to: "elm.swallow.content";
-                    rel2.offset: 4 4;
-                    image {
-                        normal: "images/button_im1.png";
-                        border: 7 7 7 7;
-                    }
-                    image.middle: SOLID;
-                }
-            }
-            part {
-                name: "popover";
-                mouse_events: 0;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "pop";
-                    rel2.to: "pop";
-                    rel2.relative: 1.0 0.5;
-                    image {
-                        normal: "images/button_im4.png";
-                        border: 4 4 4 0;
-                    }
-                }
-            }
-            part {
-                name: "elm.swallow.content";
-                type: SWALLOW;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "base";
-                    rel2.to: "base";
-                }
-            }
+            NOTIFY_PART()
         }
         programs {
-            program {
-                name: "show";
-                signal: "elm,action,show";
-                source: "elm";
-                action: STATE_SET "visible" 0.0;
-                target: "base";
-            }
-            program {
-                name: "show_2";
-                signal: "show";
-                action: STATE_SET "default" 0.0;
-                target: "base";
-                after: "show_3";
-            }
-            program {
-                name: "show_3";
-                signal: "show";
-                action: STATE_SET "visible" 0.0;
-                target: "base";
-                transition: LINEAR 0.5;
-            }
-            program {
-                name: "hide";
-                signal: "elm,action,hide";
-                source: "elm";
-                action: STATE_SET "default" 0.0;
-                target: "base";
-            }
+            NOTIFY_PGME()
         }
     }
     group {
@@ -4182,80 +4206,20 @@ collections {
                 repeat_events: 1;
                 description {
                     state: "default" 0.0;
-                    color: 0 0 0 0;
+                    color: 255 255 255 0;
                     rel1.relative: 0.0 0.0;
                     rel2.relative: 1.0 1.0;
                 }
-            }
-            part {
-                name: "pop";
-                mouse_events: 1;
                 description {
-                    state: "default" 0.0;
-                    rel1.to: "elm.swallow.content";
-                    rel1.offset: -5 -5;
-                    rel2.to: "elm.swallow.content";
-                    rel2.offset: 4 4;
-                    image {
-                        normal: "images/button_im1.png";
-                        border: 7 7 7 7;
-                    }
-                    image.middle: SOLID;
+                    state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    color: 255 255 255 255;
                 }
             }
-            part {
-                name: "popover";
-                mouse_events: 0;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "pop";
-                    rel2.to: "pop";
-                    rel2.relative: 1.0 0.5;
-                    image {
-                        normal: "images/button_im4.png";
-                        border: 4 4 4 0;
-                    }
-                }
-            }
-            part {
-                name: "elm.swallow.content";
-                type: SWALLOW;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "base";
-                    rel2.to: "base";
-                }
-            }
+            NOTIFY_PART()
         }
         programs {
-            program {
-                name: "show";
-                signal: "elm,action,show";
-                source: "elm";
-                action: STATE_SET "visible" 0.0;
-                target: "base";
-            }
-            program {
-                name: "show_2";
-                signal: "show";
-                action: STATE_SET "default" 0.0;
-                target: "base";
-                after: "show_3";
-            }
-            program {
-                name: "show_3";
-                signal: "show";
-                action: STATE_SET "visible" 0.0;
-                target: "base";
-                transition: LINEAR 0.5;
-            }
-            program {
-                name: "hide";
-                signal: "elm,action,hide";
-                source: "elm";
-                action: STATE_SET "default" 0.0;
-                target: "base";
-            }
+            NOTIFY_PGME()
         }
     }
     group {
@@ -4269,7 +4233,7 @@ collections {
                 repeat_events: 1;
                 description {
                     state: "default" 0.0;
-                    color: 0 0 0 0;
+                    color: 255 255 255 0;
                     rel1.offset: 10 10;
                     rel2.offset: -10 -10;
                     rel1.relative: 0.0 1.0;
@@ -4278,80 +4242,15 @@ collections {
                 description {
                     state: "visible" 0.0;
                     inherit: "default" 0.0;
-                    color: 0 0 0 64;
+                    color: 255 255 255 255;
                     rel1.relative: 0.0 0.0;
                     rel2.relative: 1.0 1.0;
                 }
             }
-            part {
-                name: "pop";
-                mouse_events: 1;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "elm.swallow.content";
-                    rel1.offset: -5 -5;
-                    rel2.to: "elm.swallow.content";
-                    rel2.offset: 4 4;
-                    image {
-                        normal: "images/button_im1.png";
-                        border: 7 7 7 7;
-                    }
-                    image.middle: SOLID;
-                }
-            }
-            part {
-                name: "popover";
-                mouse_events: 0;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "pop";
-                    rel2.to: "pop";
-                    rel2.relative: 1.0 0.5;
-                    image {
-                        normal: "images/button_im4.png";
-                        border: 4 4 4 0;
-                    }
-                }
-            }
-            part {
-                name: "elm.swallow.content";
-                type: SWALLOW;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "base";
-                    rel2.to: "base";
-                }
-            }
+            NOTIFY_PART()
         }
         programs {
-            program {
-                name: "show";
-                signal: "elm,action,show";
-                source: "elm";
-                action: STATE_SET "visible" 0.0;
-                target: "base";
-            }
-            program {
-                name: "show_2";
-                signal: "show";
-                action: STATE_SET "default" 0.0;
-                target: "base";
-                after: "show_3";
-            }
-            program {
-                name: "show_3";
-                signal: "show";
-                action: STATE_SET "visible" 0.0;
-                target: "base";
-                transition: LINEAR 0.5;
-            }
-            program {
-                name: "hide";
-                signal: "elm,action,hide";
-                source: "elm";
-                action: STATE_SET "default" 0.0;
-                target: "base";
-            }
+            NOTIFY_PGME()
         }
     }
     group {
@@ -4365,7 +4264,7 @@ collections {
                 repeat_events: 1;
                 description {
                     state: "default" 0.0;
-                    color: 0 0 0 0;
+                    color: 255 255 255 0;
                     rel1.offset: 10 10;
                     rel2.offset: -10 -10;
                     rel1.relative: -1.0 0.0;
@@ -4374,80 +4273,15 @@ collections {
                 description {
                     state: "visible" 0.0;
                     inherit: "default" 0.0;
-                    color: 0 0 0 64;
+                    color: 255 255 255 255;
                     rel1.relative: 0.0 0.0;
                     rel2.relative: 1.0 1.0;
                 }
             }
-            part {
-                name: "pop";
-                mouse_events: 1;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "elm.swallow.content";
-                    rel1.offset: -5 -5;
-                    rel2.to: "elm.swallow.content";
-                    rel2.offset: 4 4;
-                    image {
-                        normal: "images/button_im1.png";
-                        border: 7 7 7 7;
-                    }
-                    image.middle: SOLID;
-                }
-            }
-            part {
-                name: "popover";
-                mouse_events: 0;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "pop";
-                    rel2.to: "pop";
-                    rel2.relative: 1.0 0.5;
-                    image {
-                        normal: "images/button_im4.png";
-                        border: 4 4 4 0;
-                    }
-                }
-            }
-            part {
-                name: "elm.swallow.content";
-                type: SWALLOW;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "base";
-                    rel2.to: "base";
-                }
-            }
+            NOTIFY_PART()
         }
         programs {
-            program {
-                name: "show";
-                signal: "elm,action,show";
-                source: "elm";
-                action: STATE_SET "visible" 0.0;
-                target: "base";
-            }
-            program {
-                name: "show_2";
-                signal: "show";
-                action: STATE_SET "default" 0.0;
-                target: "base";
-                after: "show_3";
-            }
-            program {
-                name: "show_3";
-                signal: "show";
-                action: STATE_SET "visible" 0.0;
-                target: "base";
-                transition: LINEAR 0.5;
-            }
-            program {
-                name: "hide";
-                signal: "elm,action,hide";
-                source: "elm";
-                action: STATE_SET "default" 0.0;
-                target: "base";
-            }
+            NOTIFY_PGME()
         }
     }
     group {
@@ -4461,7 +4295,7 @@ collections {
                 repeat_events: 1;
                 description {
                     state: "default" 0.0;
-                    color: 0 0 0 0;
+                    color: 255 255 255 255;
                     rel1.offset: 10 10;
                     rel2.offset: -10 -10;
                     rel1.relative: 1.0 0.0;
@@ -4470,80 +4304,15 @@ collections {
                 description {
                     state: "visible" 0.0;
                     inherit: "default" 0.0;
-                    color: 0 0 0 64;
+                    color: 255 255 255 64;
                     rel1.relative: 0.0 0.0;
                     rel2.relative: 1.0 1.0;
                 }
             }
-            part {
-                name: "pop";
-                mouse_events: 1;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "elm.swallow.content";
-                    rel1.offset: -5 -5;
-                    rel2.to: "elm.swallow.content";
-                    rel2.offset: 4 4;
-                    image {
-                        normal: "images/button_im1.png";
-                        border: 7 7 7 7;
-                    }
-                    image.middle: SOLID;
-                }
-            }
-            part {
-                name: "popover";
-                mouse_events: 0;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "pop";
-                    rel2.to: "pop";
-                    rel2.relative: 1.0 0.5;
-                    image {
-                        normal: "images/button_im4.png";
-                        border: 4 4 4 0;
-                    }
-                }
-            }
-            part {
-                name: "elm.swallow.content";
-                type: SWALLOW;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "base";
-                    rel2.to: "base";
-                }
-            }
+            NOTIFY_PART()
         }
         programs {
-            program {
-                name: "show";
-                signal: "elm,action,show";
-                source: "elm";
-                action: STATE_SET "visible" 0.0;
-                target: "base";
-            }
-            program {
-                name: "show_2";
-                signal: "show";
-                action: STATE_SET "default" 0.0;
-                target: "base";
-                after: "show_3";
-            }
-            program {
-                name: "show_3";
-                signal: "show";
-                action: STATE_SET "visible" 0.0;
-                target: "base";
-                transition: LINEAR 0.5;
-            }
-            program {
-                name: "hide";
-                signal: "elm,action,hide";
-                source: "elm";
-                action: STATE_SET "default" 0.0;
-                target: "base";
-            }
+            NOTIFY_PGME()
         }
     }
     group {
@@ -4557,7 +4326,7 @@ collections {
                 repeat_events: 1;
                 description {
                     state: "default" 0.0;
-                    color: 0 0 0 0;
+                    color: 255 255 255 255;
                     rel1.offset: 10 10;
                     rel2.offset: -10 -10;
                     rel1.relative: 0.0 -1.0;
@@ -4566,80 +4335,15 @@ collections {
                 description {
                     state: "visible" 0.0;
                     inherit: "default" 0.0;
-                    color: 0 0 0 64;
+                    color: 255 255 255 64;
                     rel1.relative: 0.0 0.0;
                     rel2.relative: 1.0 1.0;
                 }
             }
-            part {
-                name: "pop";
-                mouse_events: 1;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "elm.swallow.content";
-                    rel1.offset: -5 -5;
-                    rel2.to: "elm.swallow.content";
-                    rel2.offset: 4 4;
-                    image {
-                        normal: "images/button_im1.png";
-                        border: 7 7 7 7;
-                    }
-                    image.middle: SOLID;
-                }
-            }
-            part {
-                name: "popover";
-                mouse_events: 0;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "pop";
-                    rel2.to: "pop";
-                    rel2.relative: 1.0 0.5;
-                    image {
-                        normal: "images/button_im4.png";
-                        border: 4 4 4 0;
-                    }
-                }
-            }
-            part {
-                name: "elm.swallow.content";
-                type: SWALLOW;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "base";
-                    rel2.to: "base";
-                }
-            }
+            NOTIFY_PART()
         }
         programs {
-            program {
-                name: "show";
-                signal: "elm,action,show";
-                source: "elm";
-                action: STATE_SET "visible" 0.0;
-                target: "base";
-            }
-            program {
-                name: "show_2";
-                signal: "show";
-                action: STATE_SET "default" 0.0;
-                target: "base";
-                after: "show_3";
-            }
-            program {
-                name: "show_3";
-                signal: "show";
-                action: STATE_SET "visible" 0.0;
-                target: "base";
-                transition: LINEAR 0.5;
-            }
-            program {
-                name: "hide";
-                signal: "elm,action,hide";
-                source: "elm";
-                action: STATE_SET "default" 0.0;
-                target: "base";
-            }
+            NOTIFY_PGME()
         }
     }
     group {
@@ -4653,7 +4357,7 @@ collections {
                 repeat_events: 1;
                 description {
                     state: "default" 0.0;
-                    color: 0 0 0 0;
+                    color: 255 255 255 255;
                     rel1.offset: 10 10;
                     rel2.offset: -10 -10;
                     rel1.relative: 0.0 -1.0;
@@ -4662,80 +4366,15 @@ collections {
                 description {
                     state: "visible" 0.0;
                     inherit: "default" 0.0;
-                    color: 0 0 0 64;
+                    color: 255 255 255 64;
                     rel1.relative: 0.0 0.0;
                     rel2.relative: 1.0 1.0;
                 }
             }
-            part {
-                name: "pop";
-                mouse_events: 1;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "elm.swallow.content";
-                    rel1.offset: -5 -5;
-                    rel2.to: "elm.swallow.content";
-                    rel2.offset: 4 4;
-                    image {
-                        normal: "images/button_im1.png";
-                        border: 7 7 7 7;
-                    }
-                    image.middle: SOLID;
-                }
-            }
-            part {
-                name: "popover";
-                mouse_events: 0;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "pop";
-                    rel2.to: "pop";
-                    rel2.relative: 1.0 0.5;
-                    image {
-                        normal: "images/button_im4.png";
-                        border: 4 4 4 0;
-                    }
-                }
-            }
-            part {
-                name: "elm.swallow.content";
-                type: SWALLOW;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "base";
-                    rel2.to: "base";
-                }
-            }
+            NOTIFY_PART()
         }
         programs {
-            program {
-                name: "show";
-                signal: "elm,action,show";
-                source: "elm";
-                action: STATE_SET "visible" 0.0;
-                target: "base";
-            }
-            program {
-                name: "show_2";
-                signal: "show";
-                action: STATE_SET "default" 0.0;
-                target: "base";
-                after: "show_3";
-            }
-            program {
-                name: "show_3";
-                signal: "show";
-                action: STATE_SET "visible" 0.0;
-                target: "base";
-                transition: LINEAR 0.5;
-            }
-            program {
-                name: "hide";
-                signal: "elm,action,hide";
-                source: "elm";
-                action: STATE_SET "default" 0.0;
-                target: "base";
-            }
+            NOTIFY_PGME()
         }
     }
     group {
@@ -4749,7 +4388,7 @@ collections {
                 repeat_events: 1;
                 description {
                     state: "default" 0.0;
-                    color: 0 0 0 0;
+                    color: 255 255 255 255;
                     rel1.offset: 10 10;
                     rel2.offset: -10 -10;
                     rel1.relative: 0.0 1.0;
@@ -4758,80 +4397,15 @@ collections {
                 description {
                     state: "visible" 0.0;
                     inherit: "default" 0.0;
-                    color: 0 0 0 64;
+                    color: 255 255 255 64;
                     rel1.relative: 0.0 0.0;
                     rel2.relative: 1.0 1.0;
                 }
             }
-            part {
-                name: "pop";
-                mouse_events: 1;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "elm.swallow.content";
-                    rel1.offset: -5 -5;
-                    rel2.to: "elm.swallow.content";
-                    rel2.offset: 4 4;
-                    image {
-                        normal: "images/button_im1.png";
-                        border: 7 7 7 7;
-                    }
-                    image.middle: SOLID;
-                }
-            }
-            part {
-                name: "popover";
-                mouse_events: 0;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "pop";
-                    rel2.to: "pop";
-                    rel2.relative: 1.0 0.5;
-                    image {
-                        normal: "images/button_im4.png";
-                        border: 4 4 4 0;
-                    }
-                }
-            }
-            part {
-                name: "elm.swallow.content";
-                type: SWALLOW;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "base";
-                    rel2.to: "base";
-                }
-            }
+            NOTIFY_PART()
         }
         programs {
-            program {
-                name: "show";
-                signal: "elm,action,show";
-                source: "elm";
-                action: STATE_SET "visible" 0.0;
-                target: "base";
-            }
-            program {
-                name: "show_2";
-                signal: "show";
-                action: STATE_SET "default" 0.0;
-                target: "base";
-                after: "show_3";
-            }
-            program {
-                name: "show_3";
-                signal: "show";
-                action: STATE_SET "visible" 0.0;
-                target: "base";
-                transition: LINEAR 0.5;
-            }
-            program {
-                name: "hide";
-                signal: "elm,action,hide";
-                source: "elm";
-                action: STATE_SET "default" 0.0;
-                target: "base";
-            }
+            NOTIFY_PGME()
         }
     }
     group {
@@ -4845,7 +4419,7 @@ collections {
                 repeat_events: 1;
                 description {
                     state: "default" 0.0;
-                    color: 0 0 0 0;
+                    color: 255 255 255 255;
                     rel1.offset: 10 10;
                     rel2.offset: -10 -10;
                     rel1.relative: 0.0 1.0;
@@ -4854,80 +4428,15 @@ collections {
                 description {
                     state: "visible" 0.0;
                     inherit: "default" 0.0;
-                    color: 0 0 0 64;
+                    color: 255 255 255 64;
                     rel1.relative: 0.0 0.0;
                     rel2.relative: 1.0 1.0;
                 }
             }
-            part {
-                name: "pop";
-                mouse_events: 1;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "elm.swallow.content";
-                    rel1.offset: -5 -5;
-                    rel2.to: "elm.swallow.content";
-                    rel2.offset: 4 4;
-                    image {
-                        normal: "images/button_im1.png";
-                        border: 7 7 7 7;
-                    }
-                    image.middle: SOLID;
-                }
-            }
-            part {
-                name: "popover";
-                mouse_events: 0;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "pop";
-                    rel2.to: "pop";
-                    rel2.relative: 1.0 0.5;
-                    image {
-                        normal: "images/button_im4.png";
-                        border: 4 4 4 0;
-                    }
-                }
-            }
-            part {
-                name: "elm.swallow.content";
-                type: SWALLOW;
-                description {
-                    state: "default" 0.0;
-                    rel1.to: "base";
-                    rel2.to: "base";
-                }
-            }
+            NOTIFY_PART()
         }
         programs {
-            program {
-                name: "show";
-                signal: "elm,action,show";
-                source: "elm";
-                action: STATE_SET "visible" 0.0;
-                target: "base";
-            }
-            program {
-                name: "show_2";
-                signal: "show";
-                action: STATE_SET "default" 0.0;
-                target: "base";
-                after: "show_3";
-            }
-            program {
-                name: "show_3";
-                signal: "show";
-                action: STATE_SET "visible" 0.0;
-                target: "base";
-                transition: LINEAR 0.5;
-            }
-            program {
-                name: "hide";
-                signal: "elm,action,hide";
-                source: "elm";
-                action: STATE_SET "default" 0.0;
-                target: "base";
-            }
+            NOTIFY_PGME()
         }
     }
     ///////////////////////////////////////////////////////////////////////////////
