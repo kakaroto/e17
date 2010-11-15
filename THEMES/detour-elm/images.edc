@@ -41,3 +41,13 @@ image: "images/gadman_im6.png" COMP; /* right arrow */
 image: "images/scrollframe_im1.png" COMP; /* inset */
 image: "images/scrollframe-bar_im2.png" COMP; /* vertical bar */
 
+//~ check
+image: "images/check_bt0.png" COMP;
+image: "images/check_bt1.png" COMP;
+image: "images/check_bt2.png" COMP;
+
+//~ radio
+image: "images/radio_bt0.png" COMP;
+image: "images/radio_bt1.png" COMP;
+image: "images/radio_bt2.png" COMP;
+
