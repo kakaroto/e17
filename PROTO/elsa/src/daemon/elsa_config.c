@@ -1,4 +1,5 @@
 #include "elsa.h"
+#include <sys/stat.h>
 
 #define ELSA_CONFIG_KEY "config"
 #define ELSA_SESSION_KEY "session"
@@ -25,6 +26,8 @@ _defaults_set(Elsa_Config *config)
    config->daemonize = EINA_TRUE;
    config->numlock = EINA_FALSE;
    config->xsessions = EINA_FALSE;
+   config->autologin = EINA_FALSE;
+   config->userlogin = eina_stringshare_add("mylogintouse");
    config->lockfile = eina_stringshare_add("/var/run/elsa.pid");
    config->logfile = eina_stringshare_add("/var/log/elsa.log");
 }
@@ -117,6 +120,7 @@ _config_free(Elsa_Config *config)
    eina_stringshare_del(config->command.shutdown);
    eina_stringshare_del(config->command.reboot);
    eina_stringshare_del(config->command.suspend);
+   eina_stringshare_del(config->userlogin);
    eina_stringshare_del(config->lockfile);
    eina_stringshare_del(config->logfile);
    free(config);
@@ -148,6 +152,8 @@ elsa_config_init()
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "daemonize", daemonize, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "numlock", numlock, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "xsessions", xsessions, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "autologin", autologin, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "userlogin", userlogin, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "lockfile", lockfile, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "logfile", logfile, EET_T_STRING);
 

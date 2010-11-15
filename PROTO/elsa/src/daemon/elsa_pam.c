@@ -42,12 +42,12 @@ _elsa_pam_conv(int num_msg, const struct pam_message **msg,
             case PAM_PROMPT_ECHO_ON:
                  // We assume PAM is asking for the username
                  fprintf(stderr, PACKAGE": echo on\n");
-                 resp[i]->resp = elsa_gui_user_get();
+                 resp[i]->resp = strdup(elsa_server_login_get());
                  break;
 
             case PAM_PROMPT_ECHO_OFF:
                  fprintf(stderr, PACKAGE": echo off\n");
-                 resp[i]->resp = elsa_gui_password_get();
+                 resp[i]->resp = strdup(elsa_server_password_get());
                  break;
             case PAM_ERROR_MSG:
                  fprintf(stderr, PACKAGE": error msg\n");
@@ -83,7 +83,7 @@ elsa_pam_open_session() {
       case PAM_CRED_ERR:
       case PAM_USER_UNKNOWN:
          fprintf(stderr, PACKAGE": PAM user unknow\n");
-         elsa_gui_auth_error();
+         //elsa_gui_auth_error();
          return 1;
       case PAM_AUTH_ERR:
       case PAM_PERM_DENIED:

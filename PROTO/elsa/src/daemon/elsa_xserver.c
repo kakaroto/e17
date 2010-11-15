@@ -1,5 +1,6 @@
 #include "elsa.h"
 #include <wait.h>
+#include <unistd.h>
 
 typedef struct Elsa_Xserver_
 {
@@ -38,6 +39,8 @@ _xserver_start()
    pid = fork();
    if (!pid)
      {
+        signal(SIGTTIN, SIG_IGN);
+        signal(SIGTTOU, SIG_IGN);
         signal(SIGUSR1, SIG_IGN);
         char *token;
         int num_token = 0;
@@ -90,17 +93,15 @@ _xserver_start()
      }
 }
 
-/*
 static Eina_Bool
 _xserver_stop()
 {
    fprintf(stderr, PACKAGE": Xserver have been terminated\n");
-   elm_shutdown();
    return ECORE_CALLBACK_PASS_ON;
 }
 
-static void
-_xserver_wait(void *data __UNUSED__)
+void
+elsa_xserver_wait()
 {
    int status;
    pid_t pid = _xserver->pid;
@@ -109,18 +110,20 @@ _xserver_wait(void *data __UNUSED__)
    fprintf(stderr, PACKAGE": waiting Xserver with pid %d\n", pid);
    while (wpid != pid)
      {
-        pid = waitpid(pid, &status, 0);
+//        pid = waitpid(pid, &status, 0);
+        pid = wait(&status);
      }
    _xserver_stop();
 }
-*/
 
 static Eina_Bool
 _xserver_started(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
 {
    _env_set(_xserver->dname);
-   elm_init(0, NULL);
-   _xserver->start();
+   if (elsa_config->autologin)
+     ecore_main_loop_quit();
+   else
+     _xserver->start();
    return ECORE_CALLBACK_PASS_ON;
 }
 
@@ -135,9 +138,6 @@ elsa_xserver_init(Elsa_X_Cb start, const char *dname)
    _xserver->dname = eina_stringshare_add(dname);
    _xserver->start = start;
    _xserver_start();
-   /* Why wait Xserver ?
-    * ecore_thread_run(_xserver_wait, NULL, NULL, NULL);
-    */
    _handler_start = ecore_event_handler_add(ECORE_EVENT_SIGNAL_USER,
                                             _xserver_started,
                                             NULL);
@@ -146,7 +146,6 @@ elsa_xserver_init(Elsa_X_Cb start, const char *dname)
 void
 elsa_xserver_shutdown()
 {
-   elm_shutdown();
    kill(_xserver->pid, SIGTERM);
    eina_stringshare_del(_xserver->dname);
    free(_xserver);

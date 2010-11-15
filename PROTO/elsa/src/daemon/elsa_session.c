@@ -185,13 +185,14 @@ elsa_session_run(struct passwd *pwd, char *cmd)
                  "%s > %s/.elsa_session.log 2>&1",
                   cmd,
                   pwd->pw_dir);
-        free(cmd);
+//        free(cmd);
         execle(pwd->pw_shell, pwd->pw_shell, "-c",
                buf, NULL, env);
         fprintf(stderr, PACKAGE": The Xsessions are not launched :(\n");
      }
    else
      {
+        sleep(5);
         elsa_session_pid_set(pid);
         _user = strdup(pwd->pw_name);
         _running = ecore_thread_run(_elsa_session_run_wait,
@@ -255,19 +256,19 @@ elsa_session_shutdown()
 }
 
 Eina_Bool
-elsa_session_login(void *data __UNUSED__)
+elsa_session_authenticate()
+{
+   return !elsa_pam_authenticate();
+}
+
+Eina_Bool
+elsa_session_login(const char *command)
 {
 #ifdef HAVE_PAM
    struct passwd *pwd;
    char buf[PATH_MAX];
    char *term;
-   int status;
-   status = elsa_pam_authenticate();
-   if (status)
-     {
-        elsa_gui_auth_error();
-        return ECORE_CALLBACK_CANCEL;
-     }
+   if (!command) return ECORE_CALLBACK_CANCEL;
    if (!elsa_pam_open_session())
      {
         pwd = getpwnam(elsa_pam_item_get(ELSA_PAM_ITEM_USER));
@@ -283,7 +284,8 @@ elsa_session_login(void *data __UNUSED__)
         elsa_pam_env_set("MAIL", "");
         snprintf(buf, sizeof(buf), "%s/.Xauthority", pwd->pw_dir);
         elsa_pam_env_set("XAUTHORITY", buf);
-        elsa_gui_auth_valid(pwd);
+        printf("launching %s\n", command);
+        elsa_session_run(pwd, command);
      }
 #endif
    return ECORE_CALLBACK_CANCEL;

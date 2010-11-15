@@ -1,4 +1,4 @@
-AC_INIT([elsa], [0.0.1], [enlightenment-devel@lists.sourceforge.net])
+AC_INIT([elsa], [0.0.2], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ([2.59])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
@@ -70,7 +70,8 @@ AC_C___ATTRIBUTE__
 
 ### Checks for libraries
 
-PKG_CHECK_MODULES([ELSA], [elementary >= 0.5.0.0])
+PKG_CHECK_MODULES([ELSA], [efreet], [eina >= 1.0.0] [eet >= 1.2.0] [ecore >= 1.0.0] [ecore-file >= 1.0.0])
+PKG_CHECK_MODULES([ELSA_CLIENT], [elementary >= 0.5.0.0])
 
 if test "x${enable_pam}" = "xyes" ; then
    AC_CHECK_LIB([pam], [pam_start],
@@ -96,6 +97,7 @@ fi
 EFL_COMPILER_FLAG([-Wall])
 EFL_COMPILER_FLAG([-W])
 EFL_COMPILER_FLAG([-Wshadow])
+EFL_COMPILER_FLAG([-Wmissing-declarations])
 
 
 ### Checks for linker characteristics
@@ -110,6 +112,7 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 src/bin/Makefile
+src/daemon/Makefile
 data/Makefile
 data/themes/Makefile
 ])

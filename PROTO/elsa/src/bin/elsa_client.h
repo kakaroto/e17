@@ -9,12 +9,9 @@
 
 #include <Elementary.h>
 
-#include "elsa_session.h"
-#include "elsa_pam.h"
 #include "elsa_gui.h"
-#include "elsa_config.h"
-#include "elsa_xserver.h"
+#include "elsa_connect.h"
 
-int elsa_main();
+int elsa_client_main();
 
 #endif /* ELSA_H_ */

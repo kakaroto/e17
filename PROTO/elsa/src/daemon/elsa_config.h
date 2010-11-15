@@ -24,6 +24,8 @@ struct _Elsa_Config
    Eina_Bool daemonize;// :1;
    Eina_Bool numlock;// :1;
    Eina_Bool xsessions;
+   Eina_Bool autologin;
+   const char *userlogin;
    const char *lockfile;
    const char *logfile;
    char *last_session;

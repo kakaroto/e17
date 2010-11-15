@@ -6,29 +6,18 @@ AM_CPPFLAGS = \
 -I$(top_builddir)/src/bin \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 -DSYSTEM_CONFIG_DIR=\"$(sysconfdir)\" \
-@ELSA_CFLAGS@
+@ELSA_CLIENT_CFLAGS@
 
-sbin_PROGRAMS = elsa
-bin_PROGRAMS = elsa_test
+bin_PROGRAMS = elsa_client
 
-elsa_SOURCES =     \
-elsa_config.h      \
-elsa_config.c      \
-elsa_session.h     \
-elsa_session.c     \
-elsa_xserver.h     \
-elsa_xserver.c     \
-elsa_pam.h         \
-elsa_pam.c         \
-elsa_gui.h         \
-elsa_gui.c         \
-elsa.h             \
-elsa.c
+elsa_client_SOURCES = \
+elsa_client.h         \
+elsa_client.c         \
+elsa_connect.h        \
+elsa_connect.c        \
+elsa_gui.h            \
+elsa_gui.c
 
-elsa_LDFLAGS =
-elsa_LDADD = @ELSA_LIBS@ -lpam
+elsa_client_LDFLAGS =
+elsa_client_LDADD = @ELSA_CLIENT_LIBS@ -lpam
 
-elsa_test_SOURCES = \
-elsa_test.c
-
-elsa_test_LDADD = @ELSA_LIBS@

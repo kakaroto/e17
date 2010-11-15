@@ -8,23 +8,22 @@
 
 #define ELSA_DISPLAY ":0.0"
 
-static Ecore_Event_Handler *_exit_handler = NULL;
-
 static Eina_Bool _testing = EINA_FALSE;
 
 static void _elsa_help ();
-static Eina_Bool _event_exit_cb(void *data, int type, void *event);
 static Eina_Bool _open_log();
 static Eina_Bool _close_log();
 static void _remove_lock();
+static void _signal_cb();
 
-static Eina_Bool
-_event_exit_cb(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
+
+static void
+_signal_cb(int sig)
 {
-   fprintf(stderr, PACKAGE": daemon quit\n");
+   fprintf(stderr, PACKAGE": signal %d received\n", sig);
    elsa_session_shutdown();
-   elm_exit();
-   return ECORE_CALLBACK_DONE;
+   elsa_xserver_shutdown();
+   exit(1);
 }
 
 static Eina_Bool
@@ -120,9 +119,8 @@ _elsa_help() {
 int
 elsa_main()
 {
-   fprintf(stderr, PACKAGE": Init\n");
-   if (elsa_gui_init()) return 1;
-   fprintf(stderr, PACKAGE": Run\n");
+   fprintf(stderr, PACKAGE": Run client\n");
+   ecore_exe_run("elsa_client", NULL);
    return 0;
 }
 
@@ -131,14 +129,15 @@ int
 main (int argc, char ** argv)
 {
    char tmp;
-   char *dname = ELSA_DISPLAY;
+   char *dname = strdup(ELSA_DISPLAY);
 
-   while((tmp = getopt(argc, argv, "vhp:n:d?")) != EOF)
+   while((tmp = getopt(argc, argv, "thp:n:d?")) != EOF)
      {
         switch (tmp)
           {
            case 'h' : _elsa_help();
                       return (1);
+           case 't' : _testing = EINA_TRUE;
            default : continue;
           }
      }
@@ -150,7 +149,7 @@ main (int argc, char ** argv)
      }
 
    elsa_config_init();
-   if (!_get_lock())
+   if (!_testing && !_get_lock())
      {
         exit(1);
      }
@@ -159,7 +158,7 @@ main (int argc, char ** argv)
      {
         if (daemon(0, 1) == -1)
           {
-             fprintf(stderr, "Elsa: Error on daemonize !");
+             fprintf(stderr, PACKAGE": Error on daemonize !");
              exit(1);
           }
         _update_lock();
@@ -170,18 +169,36 @@ main (int argc, char ** argv)
 
    ecore_init();
    /* Initialise event handler */
-   _exit_handler = ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT,
-                                           _event_exit_cb, NULL);
-#ifndef XNEST_DEBUG
+   signal(SIGQUIT, _signal_cb);
+   signal(SIGTERM, _signal_cb);
+   signal(SIGKILL, _signal_cb);
+   signal(SIGINT, _signal_cb);
+   signal(SIGHUP, _signal_cb);
+   signal(SIGPIPE, _signal_cb);
+   signal(SIGALRM, _signal_cb);
+
    elsa_pam_init(PACKAGE, dname);
+   free(dname);
    elsa_session_init(elsa_config->command.xauth_file);
 
-#endif
-   elsa_xserver_init(elsa_main, dname);
-   ecore_main_loop_begin();
+   if (!_testing)
+     elsa_xserver_init(elsa_main, dname);
+   if (elsa_config->autologin)
+     {
+        ecore_main_loop_begin();
+        elsa_config->autologin = EINA_FALSE;
+        elsa_pam_item_set(ELSA_PAM_ITEM_USER, elsa_config->userlogin);
+        elsa_session_login(elsa_config->command.session_login);
+     }
+   else
+     {
+        elsa_server_init();
+        elsa_server_shutdown();
+     }
+   elsa_xserver_wait();
+   elsa_xserver_shutdown();
    elsa_pam_shutdown();
    _remove_lock();
-   elsa_xserver_shutdown();
    elsa_config_shutdown();
    ecore_shutdown();
    fprintf(stderr, PACKAGE": Goodbye until next time :)\n\n\n");
