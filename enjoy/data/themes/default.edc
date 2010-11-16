@@ -1635,6 +1635,7 @@ collections {
             image: "sound_max.png" COMP;
             image: "sound_min.png" COMP;
             image: "sound_mute.png" COMP;
+            image: "volume_bg.png" COMP;
          }
          part {
             name: "title.bg";
@@ -1689,10 +1690,30 @@ collections {
                state: "default" 0.0;
                align: 0.5 1.0;
                min: 0 50;
-               image.normal: "main.png";
+               image.normal: "volume_bg.png";
                rel1 {
                   to_y: "volume.slider";
                   offset: 0 -4;
+               }
+            }
+         }
+         part {
+            name: "volume.mute_sep";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+               rel1 {
+                  to_y: "volume.bg";
+                  to_x: "volume.mute";
+                  relative: 1.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  to_y: "volume.bg";
+                  to_x: "volume.mute";
+                  relative: 1.0 1.0;
+                  offset: 1 0;
                }
             }
          }
@@ -2099,6 +2120,7 @@ collections {
             name: "volume,mute,2";
             script {
                send_message(MSG_INT, MSG_MUTE, 1);
+               external_param_set_str(PART:"volume.slider", "style", "volume_disabled");
             }
          }
 
@@ -2115,6 +2137,7 @@ collections {
             name: "volume,unmute,2";
             script {
                send_message(MSG_INT, MSG_MUTE, 0);
+               external_param_set_str(PART:"volume.slider", "style", "default");
             }
          }
       }
