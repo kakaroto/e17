@@ -12,6 +12,11 @@ engine_gl_sdl_args(const char *engine, int width, int height)
    evas_output_method_set(evas, evas_render_method_lookup("gl_sdl"));
 
    einfo = (Evas_Engine_Info_GL_SDL *) evas_engine_info_get(evas);
+   if (!einfo)
+     {
+        printf("Evas wasn't build with GL SDL backend.\n");
+        return EINA_FALSE;
+     }
 
    /* the following is specific to the engine */
    einfo->flags.fullscreen = fullscreen;
