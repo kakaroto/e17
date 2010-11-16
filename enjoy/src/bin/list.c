@@ -267,10 +267,25 @@ list_song_nth_get(Evas_Object *obj, int32_t n)
 }
 
 Song *
-list_random_go(Evas_Object *obj)
+list_shuffle_next_go(Evas_Object *obj)
 {
    LIST_GET_OR_RETURN(list, obj, NULL);
-   if (list->page.songs) return page_songs_random_go(list->page.songs);
+   if (list->page.songs) return page_songs_shuffle_next_go(list->page.songs);
+   return NULL;
+}
+
+void
+list_shuffle_reset(Evas_Object *obj)
+{
+   LIST_GET_OR_RETURN(list, obj);
+   if (list->page.songs) return page_songs_shuffle_reset(list->page.songs);
+}
+
+Song *
+list_shuffle_prev_go(Evas_Object *obj)
+{
+   LIST_GET_OR_RETURN(list, obj, NULL);
+   if (list->page.songs) return page_songs_shuffle_prev_go(list->page.songs);
    return NULL;
 }
 

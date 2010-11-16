@@ -115,6 +115,8 @@ struct _Page
    Evas_Object *index;
    Evas_Object *parent;
    size_t num_elements;
+   Eina_Array *shuffle;
+   size_t shuffle_position;
    const char *title;
    void *container;
    void *model;
@@ -749,20 +751,102 @@ page_songs_nth_get(Evas_Object *obj, int32_t n)
    return elm_genlist_item_data_get(it);
 }
 
+Eina_Bool
+_page_shuffle_array(Page *page, Eina_Bool next)
+{
+   size_t i, j;
+   Elm_Genlist_Item *it;
+
+   if (!page->first) return EINA_FALSE;
+
+   if (!page->shuffle)
+     {
+        page->shuffle = eina_array_new(page->num_elements);
+        if (!page->shuffle) return EINA_FALSE;
+        eina_array_push(page->shuffle, page->first);
+        page->shuffle_position = 0;
+     }
+
+   if ((page->shuffle_position >= page->num_elements) || (page->shuffle_position == 0))
+     {
+        it = page->first;
+        eina_array_data_set(page->shuffle, 0, it);
+        it = elm_genlist_item_next_get(it);
+        for (i = 1; it; i++)
+          {
+             j = rand() % (i + 1);
+             eina_array_data_set(page->shuffle, i,
+                                 eina_array_data_get(page->shuffle, j));
+             eina_array_data_set(page->shuffle, j, it);
+             it = elm_genlist_item_next_get(it);
+          }
+        if ((page->selected) && (next))
+          {
+             size_t count = page->num_elements;
+             for (i = 0; i < count / 2; i++)
+                if (eina_array_data_get(page->shuffle, i) == page->selected)
+                  {
+                     eina_array_data_set(page->shuffle, i,
+                                         eina_array_data_get(page->shuffle,
+                                                             count - 1));
+                     eina_array_data_set(page->shuffle, count - 1,
+                                         page->selected);
+                     break;
+                  }
+          }
+        page->shuffle_position = 0;
+     }
+   return EINA_TRUE;
+}
+
 Song *
-page_songs_random_go(Evas_Object *obj)
+page_songs_shuffle_prev_go(Evas_Object *obj)
 {
    Song *song;
-   int count, song_num;
+   Elm_Genlist_Item *it;
 
    PAGE_SONGS_GET_OR_RETURN(page, obj, NULL);
-   Elm_Genlist_Item *it = page->first;
-   if (!it) return NULL;
-   song_num = (rand() % page->num_elements);
-   for (count = 0; (it) && (count < song_num); count++)
-      it = elm_genlist_item_next_get(it);
-   if (!it) return NULL;
+
+   if (page->shuffle_position > 0)
+      page->shuffle_position--;
+   if ((!page->shuffle) || (page->shuffle_position == 0))
+     {
+        _page_shuffle_array(page, EINA_FALSE);
+        page->shuffle_position = page->num_elements;
+     }
+
+   it = eina_array_data_get(page->shuffle, page->shuffle_position - 1);
+
    song = elm_genlist_item_data_get(it);
+
+   page->selected = it;
+   elm_genlist_item_selected_set(it, EINA_TRUE);
+   elm_genlist_item_bring_in(it);
+   mpris_signal_player_track_change(song);
+   return song;
+}
+
+void
+page_songs_shuffle_reset(Evas_Object *obj)
+{
+   PAGE_SONGS_GET_OR_RETURN(page, obj);
+   page->shuffle_position = 0;
+}
+
+Song *
+page_songs_shuffle_next_go(Evas_Object *obj)
+{
+   Song *song;
+   Elm_Genlist_Item *it;
+
+   PAGE_SONGS_GET_OR_RETURN(page, obj, NULL);
+   _page_shuffle_array(page, EINA_TRUE);
+
+   it = eina_array_data_get(page->shuffle, page->shuffle_position);
+   page->shuffle_position++;
+
+   song = elm_genlist_item_data_get(it);
+
    page->selected = it;
    elm_genlist_item_selected_set(it, EINA_TRUE);
    elm_genlist_item_bring_in(it);

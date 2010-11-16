@@ -125,7 +125,8 @@ _win_scan_job(void *data)
 static void
 _win_toolbar_eval(Win *w)
 {
-   if (list_prev_exists(w->list))
+
+   if ((w->play.shuffle) || (list_prev_exists(w->list)))
       elm_toolbar_item_disabled_set(w->action.prev, EINA_FALSE);
    else
       elm_toolbar_item_disabled_set(w->action.prev, EINA_TRUE);
@@ -327,7 +328,11 @@ static void
 _win_prev(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Win *w = data;
-   Song *s = list_prev_go(w->list);
+   Song *s;
+   if (w->play.shuffle)
+      s = list_shuffle_prev_go(w->list);
+   else
+      s = list_prev_go(w->list);
    INF("prev song=%p (%s)", s, s ? s->path : NULL);
    if (s) _win_song_set(w, s);
 }
@@ -338,7 +343,7 @@ _win_next(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
    Win *w = data;
    Song *s;
    if (w->play.shuffle)
-      s = list_random_go(w->list);
+      s = list_shuffle_next_go(w->list);
    else
       s = list_next_go(w->list);
    INF("next song=%p (%s)", s, s ? s->path : NULL);
@@ -430,6 +435,7 @@ _win_shuffle_on(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *em
 {
    Win *w = data;
    w->play.shuffle = EINA_TRUE;
+   list_shuffle_reset(w->list);
    _win_toolbar_eval(w);
 }
 
