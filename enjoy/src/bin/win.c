@@ -204,7 +204,7 @@ _win_nowplaying_update(Win *w)
    int label_size;
    char *artist_title;
    const char *s1, *s2;
-   cover = cover_album_fetch_by_id(w->win, w->db,w->song->album_id, 480); // TODO: size!
+   cover = cover_album_fetch_by_id(w->win, w->db,w->song->album_id, 480, NULL, NULL); // TODO: size!
    elm_layout_content_set(w->nowplaying, "ejy.swallow.cover", cover);
 
    db_song_artist_fetch(w->db, w->song);

@@ -94,7 +94,6 @@ Misc
  * single instance using dbus
  * support for e_notify (libnotify)
  * read cover from id3? requires id3 image loader in evas
- * fetch covers from webservices (amazon, last.fm)
  * fetch lyrics from webservices (maybe use webkit)
  * fetch track/artist/album info from webservices (wikipedia? uses webkit)
  * audio bookmarks

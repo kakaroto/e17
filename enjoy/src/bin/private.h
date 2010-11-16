@@ -107,8 +107,10 @@ Song        *page_songs_nth_get(Evas_Object *obj, int32_t n);
 int32_t      page_songs_selected_n_get(Evas_Object *obj);
 
 Evas_Object *cover_allsongs_fetch(Evas_Object *parent, unsigned short size);
-Evas_Object *cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size);
-Evas_Object *cover_album_fetch_by_id(Evas_Object *parent, DB *db, int64_t album_id, unsigned short size);
+Evas_Object *cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size, void (*cb)(void *data), void *data);
+Evas_Object *cover_album_fetch_by_id(Evas_Object *parent, DB *db, int64_t album_id, unsigned short size, void (*cb)(void *data), void *data);
+void         cover_init(void);
+void         cover_shutdown(void);
 
 
 DB        *db_open(const char *path);
@@ -146,12 +148,18 @@ struct _Song
    } flags;
 };
 
+typedef enum {
+   ALBUM_COVER_ORIGIN_LOCAL,
+   ALBUM_COVER_ORIGIN_LASTFM
+} Album_Cover_Origin;
+
 struct _Album_Cover
 {
    EINA_INLIST;
    unsigned short w;
    unsigned short h;
    unsigned short path_len;
+   Album_Cover_Origin origin;
    char path[];
 };
 

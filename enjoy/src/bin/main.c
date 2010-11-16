@@ -105,6 +105,7 @@ elm_main(int argc, char **argv)
    app.win = win_new(&app);
    if (!app.win) goto end;
    mpris_init();
+   cover_init();
    elm_run();
 
 // don't del win - autodel is set. choose. either use autodel and then set win
@@ -121,6 +122,7 @@ elm_main(int argc, char **argv)
    elm_shutdown();
    efreet_mime_shutdown();
    mpris_shutdown();
+   cover_shutdown();
 
    return r;
 }

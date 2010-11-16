@@ -1,12 +1,121 @@
 #include "private.h"
+#include "coverart-lastfm.h"
+
+struct LastFM_Completed_Data {
+    int ref_count;
+    Album *album;
+    Evas *evas;
+    DB *db;
+    struct {
+       void (*cb)(void *);
+       void *data;
+    } success;
+};
 
 static void
-_cover_album_local_find(Evas *evas, DB *db, Album *album)
+_cover_album_lastfm_download_finished_cb(void *data, char *local_path, Eina_Bool success)
+{
+    struct LastFM_Completed_Data *completed_data = data;
+    Evas_Object *img;
+    Album_Cover *cover;
+    Evas_Load_Error err;
+    int w, h;
+
+    if (!success) goto download_failed;
+    img = evas_object_image_add(completed_data->evas);
+    evas_object_image_file_set(img, local_path, NULL);
+    err = evas_object_image_load_error_get(img);
+    if (err != EVAS_LOAD_ERROR_NONE)
+      {
+         ERR("could not open image %s: %s",
+             local_path, evas_load_error_str(err));
+         goto end;
+      }
+    evas_object_image_size_get(img, &w, &h);
+    if ((w == 0) || (h == 0))
+      {
+         ERR("could not get image size %s", local_path);
+         goto end;
+      }
+    cover = malloc(sizeof(*cover) + strlen(local_path) + 1);
+    if (!cover)
+      {
+         ERR("could not allocate memory");
+         goto end;
+      }
+
+    cover->w = w;
+    cover->h = h;
+    cover->origin = ALBUM_COVER_ORIGIN_LASTFM;
+    strcpy(cover->path, local_path);
+
+    completed_data->album->covers = eina_inlist_append
+      (completed_data->album->covers, EINA_INLIST_GET(cover));
+    db_album_covers_update(completed_data->db, completed_data->album);
+    if (completed_data->success.cb)
+      completed_data->success.cb(completed_data->success.data);
+end:
+    if (img) evas_object_del(img);
+download_failed:
+    if (completed_data->ref_count-- <= 0) free(completed_data);
+}
+
+static void
+_cover_album_lastfm_request_finished_cb(void *data, Eina_Hash *urls)
+{
+    struct LastFM_Completed_Data *completed_data = data;
+    Eina_Iterator *iter = eina_hash_iterator_tuple_new(urls);
+    Eina_Hash_Tuple *tuple;
+    if (!iter) return;
+
+    EINA_ITERATOR_FOREACH(iter, tuple)
+    {
+       Eina_Bool success;
+
+       completed_data->ref_count++;
+       success = lastfm_cover_download((char *)tuple->key,
+                                          _cover_album_lastfm_download_finished_cb,
+                                          completed_data);
+       if (!success)
+         {
+            ERR("could not download cover from %s", (char *)tuple->key);
+            continue;
+         }
+    }
+
+    eina_iterator_free(iter);
+    lastfm_response_free(urls);
+}
+
+static void
+_cover_album_lastfm_find(Evas *evas, DB *db, Album *album, void (*cb)(void *), void *data)
+{
+   struct LastFM_Completed_Data *completed_data;
+
+   if ((album->len.artist + album->len.name) == 0) return;
+
+   completed_data = calloc(1, sizeof(*completed_data));
+   if (!completed_data) return;
+   completed_data->album = album;
+   completed_data->evas = evas;
+   completed_data->db = db;
+   completed_data->success.cb = cb;
+   completed_data->success.data = data;
+   completed_data->ref_count = 1;
+
+   lastfm_cover_search_request(album->artist, album->name,
+                               _cover_album_lastfm_request_finished_cb,
+                               completed_data);
+}
+
+static Eina_Bool
+_cover_album_local_find(Evas *evas, DB *db, Album *album, void (*cb)(void *data), void *data)
 {
    Evas_Object *img = evas_object_image_add(evas);
    Eina_Iterator *it = db_album_songs_get(db, album->id);
    const Song *song;
    Eina_List *done_dirs = NULL;
+   Eina_Bool success;
 
    EINA_ITERATOR_FOREACH(it, song)
      {
@@ -43,7 +152,6 @@ _cover_album_local_find(Evas *evas, DB *db, Album *album)
              continue;
           }
         dir[dir_len] = '/';
-        dir_len++;
 
         EINA_ITERATOR_FOREACH(files, fi)
           {
@@ -94,6 +202,7 @@ _cover_album_local_find(Evas *evas, DB *db, Album *album)
              cover->h = h;
              cover->path_len = fi->path_length;
              memcpy(cover->path, fi->path, fi->path_length + 1);
+             cover->origin = ALBUM_COVER_ORIGIN_LOCAL;
 
              album->covers = eina_inlist_append
                (album->covers, EINA_INLIST_GET(cover));
@@ -110,6 +219,19 @@ _cover_album_local_find(Evas *evas, DB *db, Album *album)
         char *dir;
         EINA_LIST_FREE(done_dirs, dir) free(dir);
      }
+
+   success = !!eina_inlist_count(album->covers);
+   if (cb && success) cb(data);
+   return success;
+}
+
+static void
+_cover_album_find(Evas *evas, DB *db, Album *album, void (*cb)(void *), void *data)
+{
+   if (!_cover_album_local_find(evas, db, album, cb, data))
+     _cover_album_lastfm_find(evas, db, album, cb, data);
+
+   album->flags.fetched_covers = !!eina_inlist_count(album->covers);
 }
 
 static Evas_Object *
@@ -146,7 +268,8 @@ cover_allsongs_fetch(Evas_Object *parent, unsigned short size)
 }
 
 Evas_Object *
-cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size)
+cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size,
+                  void (*cb_success)(void *data), void *data)
 {
    Evas_Object *cover;
    unsigned int min_error = (unsigned int)-1;
@@ -161,7 +284,7 @@ cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size
    fetches++;
    best_match = NULL;
    if (!album->covers)
-     _cover_album_local_find(evas_object_evas_get(parent), db, album);
+     _cover_album_find(evas_object_evas_get(parent), db, album, cb_success, data);
 
    EINA_INLIST_FOREACH(album->covers, itr)
      {
@@ -200,12 +323,28 @@ cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size
 }
 
 Evas_Object *
-cover_album_fetch_by_id(Evas_Object *parent, DB *db, int64_t album_id, unsigned short size)
+cover_album_fetch_by_id(Evas_Object *parent, DB *db, int64_t album_id, unsigned short size, void (*cb_success)(void *data), void *data)
 {
    Evas_Object *cover;
    Album *album = calloc(1, sizeof(Album));
    album->id = album_id;
-   cover = cover_album_fetch(parent, db, album, size);
+   cover = cover_album_fetch(parent, db, album, size, cb_success, data);
    db_album_free(album);
    return cover;
+}
+
+void
+cover_init(void)
+{
+   lastfm_cover_init();
+
+#ifdef PACKAGE
+   lastfm_cover_cache_package_set(PACKAGE);
+#endif
+}
+
+void
+cover_shutdown(void)
+{
+   lastfm_cover_shutdown();
 }

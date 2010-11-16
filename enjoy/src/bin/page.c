@@ -122,6 +122,7 @@ struct _Page
    Elm_Genlist_Item *first;
    Eina_Iterator *iterator;
    Ecore_Idler *populate;
+   Eina_Hash *od_to_list_item;
    char last_index_letter[2];
    struct {
       void *data;
@@ -160,6 +161,8 @@ _page_populate(void *data)
    const Page_Class *cls = page->cls;
    unsigned int count;
 
+   page->od_to_list_item = eina_hash_pointer_new(NULL);
+
    for (count = 0; count < cls->populate_iteration_count; count++)
      {
         Elm_Genlist_Item *it;
@@ -190,6 +193,7 @@ _page_populate(void *data)
              elm_index_item_append(page->index, page->last_index_letter, it);
           }
         if (!page->first) page->first = it;
+        eina_hash_set(page->od_to_list_item, od, it);
         page->num_elements++;
      }
 
@@ -213,8 +217,6 @@ _page_selected(void *data, Evas_Object *o, void *event_info)
    page->cls->selected(data, o, event_info);
 }
 
-
-
 static void
 _page_index_changed(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info)
 {
@@ -230,6 +232,7 @@ _page_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
    if (page->iterator) eina_iterator_free(page->iterator);
    if (page->populate) ecore_idler_del(page->populate);
    if (page->item.free) page->item.free(page->item.data);
+   if (page->od_to_list_item) eina_hash_free(page->od_to_list_item);
    free(page);
 }
 
@@ -288,6 +291,7 @@ _page_add(Evas_Object *parent, void *model, Eina_Iterator *it, const char *title
    page->iterator = it;
    page->cls = cls;
    page->parent = parent;
+   page->od_to_list_item = NULL;
 
    if (!elm_layout_file_set(obj, PACKAGE_DATA_DIR "/default.edj", cls->layout))
      {
@@ -599,7 +603,7 @@ _song_album_cover_size_changed(void *data, Evas *e __UNUSED__, Evas_Object *part
    size = (w < h) ? w : h;
 
    DBG("cover view changed size to %dx%d, query cover size %d", w, h, size);
-   cover = cover_album_fetch(page->layout, page->container, page->model, size);
+   cover = cover_album_fetch(page->layout, page->container, page->model, size, NULL, NULL);
    elm_layout_content_set(page->layout, "ejy.swallow.cover", cover);
 }
 
@@ -619,7 +623,7 @@ _song_album_init(Page *page)
         if (s) size = atoi(s);
         if (size < 32) size = 32;
 
-        cover = cover_album_fetch(page->layout, db, album, size);
+        cover = cover_album_fetch(page->layout, db, album, size, NULL, NULL);
         elm_layout_content_set(page->layout, "ejy.swallow.cover", cover);
 
         part = (Evas_Object *)
@@ -816,12 +820,21 @@ _album_item_label_get(void *data, Evas_Object *list, const char *part)
    return strdup(album->name);
 }
 
+static void
+_album_cover_fetch_finished_cb(void *data)
+{
+   Elm_Genlist_Item *it = data;
+   if (it) elm_genlist_item_update(it);
+}
+
 static Evas_Object *
 _album_item_icon_get(void *data, Evas_Object *list, const char *part __UNUSED__)
 {
    Page *page = evas_object_data_get(list, "_enjoy_page");
    Album *album = data;
-   return cover_album_fetch(list, page->container, album, page->cls->icon_size);
+   Elm_Genlist_Item *it = eina_hash_find(page->od_to_list_item, album);
+   return cover_album_fetch(list, page->container, album, page->cls->icon_size,
+                            _album_cover_fetch_finished_cb, it);
 }
 
 static void

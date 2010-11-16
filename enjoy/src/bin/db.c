@@ -28,7 +28,7 @@ _db_stmt_bind_int64(sqlite3_stmt *stmt, int col, int64_t value)
      return EINA_TRUE;
    else
      {
-        sqlite3 *db = sqlite3_db_handle(stmt);;
+        sqlite3 *db = sqlite3_db_handle(stmt);
         const char *err = sqlite3_errmsg(db);
         ERR("could not bind SQL value %lld to column %d: %s",
             (long long)value, col, err);
@@ -108,6 +108,20 @@ _db_stmts_finalize(DB *db)
    return ret;
 }
 
+static void
+_db_cover_table_ensure_exists(DB *db)
+{
+   static Eina_Bool created = EINA_FALSE;
+   static const char *sql = "CREATE TABLE IF NOT EXISTS covers " \
+                            "(album_id integer, file_path text, " \
+                            "origin integer, width integer, " \
+                            "height integer, primary key" \
+                            "(album_id, file_path))";
+   if (created) return;
+   sqlite3_exec(db->handle, sql, NULL, NULL, NULL);
+   created = EINA_TRUE;
+}
+
 DB *
 db_open(const char *path)
 {
@@ -130,6 +144,8 @@ db_open(const char *path)
         CRITICAL("Could not compile statements.");
         goto error;
      }
+
+   _db_cover_table_ensure_exists(db);
 
    return db;
 
@@ -771,12 +787,42 @@ db_album_covers_fetch(DB *db, Album *album)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(db, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(album, EINA_FALSE);
+   sqlite3_stmt *covers_get;
+
    if (album->flags.fetched_covers) return EINA_TRUE;
 
-   DBG("todo: create and handle 'covers' table");
+   covers_get = _db_stmt_compile(db, "covers_get",
+      "SELECT file_path, origin, width, height, album_id "
+      "FROM covers WHERE album_id = ?");
+   if (!covers_get) return EINA_FALSE;
+   if (!_db_stmt_bind_int64(covers_get, 1, album->id)) goto cleanup;
 
-   album->flags.fetched_covers = EINA_TRUE;
-   return EINA_TRUE;
+   while (sqlite3_step(covers_get) == SQLITE_ROW)
+     {
+        char *path;
+        int path_len;
+        Album_Cover *cover;
+
+        path_len = sqlite3_column_bytes(covers_get, 0);
+        if (path_len <= 0) continue;
+        cover = malloc(sizeof(*cover) + path_len + 1);
+        if (!cover) continue;
+
+        cover->origin = sqlite3_column_int(covers_get, 1);
+        cover->w = sqlite3_column_int(covers_get, 2);
+        cover->h = sqlite3_column_int(covers_get, 3);
+        cover->path_len = path_len;
+        path = (char *)sqlite3_column_text(covers_get, 0);
+        memcpy(cover->path, path, path_len + 1);
+
+        album->covers = eina_inlist_append(album->covers,
+                                           EINA_INLIST_GET(cover));
+     }
+
+cleanup:
+   _db_stmt_finalize(covers_get, "covers_get");
+   album->flags.fetched_covers = !!eina_inlist_count(album->covers);
+   return album->flags.fetched_covers;
 }
 
 Eina_Bool
@@ -784,10 +830,22 @@ db_album_covers_update(DB *db, const Album *album)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(db, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(album, EINA_FALSE);
+   char sql[1024];
+   Album_Cover *cover;
+   Eina_Bool retval = EINA_FALSE;
 
-   DBG("todo: create and handle 'covers' table");
+   EINA_INLIST_FOREACH(album->covers, cover)
+     {
+        sqlite3_snprintf(sizeof(sql), sql,
+                         "INSERT INTO covers (album_id, file_path, origin, width, height) "
+                         "VALUES (%lld, '%s', %d, %d, %d)",
+                         album->id, cover->path, cover->origin,
+                         cover->w, cover->h);
+        if (sqlite3_exec(db->handle, sql, NULL, NULL, NULL) == SQLITE_OK)
+          retval = EINA_TRUE;
+     }
 
-   return EINA_TRUE;
+   return retval;
 }
 
 
