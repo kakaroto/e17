@@ -7,6 +7,8 @@ image: "images/outdent-top.png" COMP;
 image: "images/outdent-bottom.png" COMP;
 
 image: "images/separator_v.png" COMP;
+image: "images/separator_h.png" COMP;
+
 image: "images/progress_trough.png" COMP;
 
 //~ Window
