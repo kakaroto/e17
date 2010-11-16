@@ -97,6 +97,7 @@ typedef enum {
    EVE_CONFIG_FRAME_FLATTENING,
    EVE_CONFIG_TEXT_ONLY_ZOOM,
    EVE_CONFIG_MINIMUM_FONT_SIZE,
+   EVE_CONFIG_COOKIE_POLICY,
    EVE_CONFIG_LAST
 } Eve_Config;
 
@@ -296,6 +297,18 @@ static More_Menu_Item more_menu_config[] =
                { "Firefox", "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.2) Gecko/20121223 Firefox/3.8" },
                { "Internet Explorer", "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)" },
                { NULL, NULL }
+             }
+           }}, NULL, ITEM_FLAG_ARROW | ITEM_FLAG_SELECTABLE },
+         { ITEM_TYPE_CONFIG, "Cookie policy",
+           (More_Menu_Config[]) {{
+             .type = CONFIG_TYPE_LIST_INT,
+             .conf = EVE_CONFIG_COOKIE_POLICY,
+             .conf_get = config_cookie_policy_get,
+             .conf_set = config_cookie_policy_set,
+             .data = (More_Menu_Config_List_Int[]) {
+               { "Accept all cookies", EWK_COOKIE_JAR_ACCEPT_ALWAYS, EINA_FALSE },
+               { "Do not accept third-party cookies", EWK_COOKIE_JAR_ACCEPT_NO_THIRD_PARTY, EINA_TRUE },
+               { "Never accept", EWK_COOKIE_JAR_ACCEPT_NEVER, EINA_FALSE }
              }
            }}, NULL, ITEM_FLAG_ARROW | ITEM_FLAG_SELECTABLE },
          { ITEM_TYPE_LAST, NULL, NULL, NULL, ITEM_FLAG_NONE },
@@ -1284,6 +1297,7 @@ chrome_config_apply(Evas_Object *chrome)
    ewk_view_zoom_text_only_set(view, config_text_only_zoom_get(config));
    ewk_view_setting_enable_frame_flattening_set(view, config_frame_flattening_get(config));
    ewk_view_setting_font_minimum_size_set(view, config_minimum_font_size_get(config));
+   ewk_cookies_policy_set(config_cookie_policy_get(config));
 }
 
 static void
@@ -1371,6 +1385,11 @@ conf_updated(More_Menu_Config *mmc, void *new_value)
          {
             window_mouse_enabled_set(win->win, *((int *)new_value));
          }
+         break;
+      }
+   case EVE_CONFIG_COOKIE_POLICY:
+      {
+         ewk_cookies_policy_set((*(Ewk_Cookie_Policy *)new_value));
          break;
       }
    }

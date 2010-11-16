@@ -726,7 +726,8 @@ elm_main(int argc, char **argv)
                             user_agent_str,
                             EINA_FALSE /* frame_flattening */,
                             EINA_FALSE /* text_only_zoom */,
-                            12 /* minimum_font_size */);
+                            12 /* minimum_font_size */,
+                            ewk_cookies_policy_get());
         if (!config_save(config, path))
           {
              r = -1;
