@@ -699,6 +699,9 @@ elm_main(int argc, char **argv)
    basename++;
    dirlen++;
 
+   eina_strlcpy(basename, "cookies.txt", sizeof(path) - dirlen);
+   ewk_cookies_file_set(path);
+
    eina_strlcpy(basename, "config.eet", sizeof(path) - dirlen);
    config = config_load(path);
    if (!config)
