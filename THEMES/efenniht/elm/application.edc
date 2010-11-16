@@ -30,13 +30,36 @@ collections {
 
    /* application with toolbar and main content area with a back button and title area */
    group { name: "elm/layout/application/toolbar-content-back";
+      images {
+         image: "back-button.png" COMP;
+         image: "next-button.png" COMP;
+         image: "top_bg.png" COMP;
+      }
       parts {
+         part {
+            name: "title.bg";
+            type: IMAGE;
+            scale: 1;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -1 30;
+               }
+               image {
+                  normal: "top_bg.png";
+                  border: 0 0 0 1;
+               }
+            }
+         }
          part { name: "elm.swallow.content";
             type: SWALLOW;
             description { state: "default" 0.0;
-               rel1 { to_y: "back";
+               rel1 { to_y: "title.bg";
                   relative: 0.0 1.0;
-                  offset: -1 1;
+                  offset: -1 0;
                }
             }
          }
@@ -53,30 +76,247 @@ collections {
             }
          }
 
-         part { name: "back";
-            type: EXTERNAL;
-            source: "elm/button";
-            description { state: "default" 0.0;
-               align: 0.0 0.0;
+         part {
+            name: "elm.text.back";
+            type: TEXT;
+            scale: 1;
+            mouse_events: 0;
+            clip_to: "back_clipper";
+            description {
+               state: "default" 0.0;
+               color: 130 130 130 255;
                fixed: 1 1;
+               align: 0.0 0.5;
                rel1 {
+                  to_y: "elm.text.title";
+                  to_x: "back-arrow";
                   relative: 0.0 0.0;
-                  offset: 0 0;
+                  offset: 24 0;
                }
                rel2 {
-                  relative: 0.0 0.0;
-                  offset: 50 32;
+                  to_y: "elm.text.title";
+                  to_x: "back-arrow";
+                  relative: 0.0 1.0;
+                  offset: 51 -1;
                }
-               params.string: "label" "Back";
+               text {
+                  font: "Sans,Edje-Vera";
+                  size: 10;
+                  text: "Back";
+                  min: 1 1;
+                  align: 0.0 0.5;
+               }
+            }
+         }
+         part {
+            name: "back-arrow";
+            type: IMAGE;
+            mouse_events: 0;
+            clip_to: "back_clipper";
+            description {
+               state: "default" 0.0;
+               min: 13 16;
+               max: 13 16;
+               fixed: 1 1;
+               rel1 {
+                  to_y: "back";
+                  relative: 0.0 0.0;
+                  offset: 14 0;
+               }
+               rel2 {
+                  to_y: "back";
+                  relative: 0.0 1.0;
+                  offset: 14 -1;
+               }
+               image.normal: "back-button.png";
+            }
+         }
+         part {
+            name: "back_clipper";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+            }
+            description {
+               state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 128;
+            }
+            description {
+               state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               color: 0 0 0 0;
+               visible: 0;
+            }
+         }
+         part {
+            name: "back";
+            type: RECT;
+            clip_to: "back_clipper";
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               rel2 {
+                  to_x: "elm.text.back";
+                  to_y: "title.bg";
+               }
+            }
+         }
+         part {
+            name: "elm.text.next";
+            type: TEXT;
+            scale: 1;
+            mouse_events: 0;
+            clip_to: "next_clipper";
+            description {
+               state: "default" 0.0;
+               color: 130 130 130 255;
+               fixed: 1 1;
+               align: 1.0 0.5;
+               rel1 {
+                  to_y: "elm.text.title";
+                  to_x: "next-arrow";
+                  relative: 0.0 0.0;
+                  offset: -51 -1;
+               }
+               rel2 {
+                  to_y: "elm.text.title";
+                  to_x: "next-arrow";
+                  relative: 0.0 1.0;
+                  offset: -11 -1;
+               }
+               text {
+                  font: "Sans,Edje-Vera";
+                  size: 10;
+                  text: "Next";
+                  min: 1 1;
+                  align: 1.0 0.5;
+               }
+            }
+         }
+         part {
+            name: "next-arrow";
+            type: IMAGE;
+            mouse_events: 0;
+            clip_to: "next_clipper";
+            description {
+               state: "default" 0.0;
+               min: 13 16;
+               max: 13 16;
+               fixed: 1 1;
+               rel1 {
+                  to_y: "next";
+                  relative: 1.0 0.0;
+                  offset: -15 0;
+               }
+               rel2 {
+                  to_y: "next";
+                  relative: 1.0 1.0;
+                  offset: -15 -1;
+               }
+               image.normal: "next-button.png";
+            }
+         }
+         part {
+            name: "next_clipper";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1.to: "next";
+               rel2.to: "next";
+            }
+            description {
+               state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+            description {
+               state: "pressed" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 128;
+            }
+         }
+         part {
+            name: "next";
+            type: RECT;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1 {
+                  to_x: "elm.text.next";
+                  relative: 0.0 0.0; /* reset inherited from "default" 0.0 */
+                  offset: 0 0;
+               }
+               rel2.to_y: "title.bg";
             }
          }
          programs {
             program {
-               signal: "clicked";
+               signal: "mouse,clicked,1";
                source: "back";
                action: SIGNAL_EMIT "elm,action,back" "";
             }
+            program {
+               signal: "mouse,down,1";
+               source: "back";
+               action: STATE_SET "pressed" 0.0;
+               target: "back_clipper";
+               transition: ACCELERATE 0.2;
+            }
+            program {
+               signal: "mouse,up,1";
+               source: "back";
+               action: STATE_SET "visible" 0.0;
+               target: "back_clipper";
+               transition: ACCELERATE 0.2;
+            }
+            program {
+               signal: "elm,back,hide";
+               source: "elm";
+               action: STATE_SET "hidden" 0.0;
+               target: "back_clipper";
+            }
+            program {
+               signal: "elm,back,show";
+               source: "elm";
+               action: STATE_SET "default" 0.0;
+               target: "back_clipper";
+            }
+            program {
+               signal: "elm,next,hide";
+               source: "elm";
+               action: STATE_SET "hidden" 0.0;
+               target: "next_clipper";
+            }
+            program {
+               signal: "elm,next,show";
+               source: "elm";
+               action: STATE_SET "default" 0.0;
+               target: "next_clipper";
+            }
+            program {
+               signal: "mouse,clicked,1";
+               source: "next";
+               action: SIGNAL_EMIT "elm,action,next" "";
+            }
+            program {
+               signal: "mouse,down,1";
+               source: "next";
+               action: STATE_SET "pressed" 0.0;
+               target: "next_clipper";
+               transition: ACCELERATE 0.2;
+            }
+            program {
+               signal: "mouse,up,1";
+               source: "next";
+               action: STATE_SET "visible" 0.0;
+               target: "next_clipper";
+               transition: ACCELERATE 0.2;
+            }
          }
+
 
          part { name: "elm.swallow.end";
             type: SWALLOW;
