@@ -51,7 +51,7 @@ _libmgr_lms_charsets_add(Libmgr *mgr)
 }
 
 static void
-_libmgr_scan(Ecore_Thread *thread __UNUSED__, void *data)
+_libmgr_scan(void *data, Ecore_Thread *thread __UNUSED__)
 {
    Libmgr *mgr = data;
    const char *scanpath;
@@ -106,14 +106,14 @@ _libmgr_scan_finish(Libmgr *mgr, Eina_Bool success __UNUSED__)
 }
 
 static void
-_libmgr_scan_end(void *data)
+_libmgr_scan_end(void *data, Ecore_Thread *thread __UNUSED__)
 {
    Libmgr *mgr = data;
    _libmgr_scan_finish(mgr, EINA_TRUE);
 }
 
 static void
-_libmgr_scan_cancel(void *data)
+_libmgr_scan_cancel(void *data, Ecore_Thread *thread __UNUSED__)
 {
    Libmgr *mgr = data;
    _libmgr_scan_finish(mgr, EINA_FALSE);
