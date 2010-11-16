@@ -2110,14 +2110,14 @@ on_action_load_page(void *data, Evas_Object *view, void *event_info __UNUSED__)
    Evas_Object *ewk_view = data;
 
    const char *entry_data = elm_scrolled_entry_entry_get(view);
+   char *uri;
 
-   char uri[2048];
-
-   snprintf(uri, 2048, "%s%s",
-            (strstr(entry_data, "://") ? "" : "http://"), entry_data);
-
-   ewk_view_uri_set(ewk_view, uri);
-   evas_object_focus_set(ewk_view, EINA_TRUE);
+   if ((uri = uri_sanitize((char *)entry_data)))
+     {
+        ewk_view_uri_set(ewk_view, uri);
+        evas_object_focus_set(ewk_view, EINA_TRUE);
+        free(uri);
+     }
 }
 
 static void

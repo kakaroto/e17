@@ -379,11 +379,17 @@ _cb_dbus_open_url(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
    DBusMessage *reply;
    Browser_Window *win = eina_list_data_get(app.windows);
-   char *new_url;
+   char *tmp_uri;
+   char *uri;
 
-   dbus_message_get_args(msg, NULL, DBUS_TYPE_STRING, &new_url, DBUS_TYPE_INVALID);
-   tab_add(win, new_url, NULL);
-   ecore_x_window_focus(elm_win_xwindow_get(win->win));
+   dbus_message_get_args(msg, NULL, DBUS_TYPE_STRING, &tmp_uri, DBUS_TYPE_INVALID);
+
+   if ((uri = uri_sanitize(tmp_uri)))
+     {
+        tab_add(win, uri, NULL);
+        ecore_x_window_focus(elm_win_xwindow_get(win->win));
+        free(uri);
+     }
 
    return dbus_message_new_method_return(msg);
 }
@@ -572,13 +578,24 @@ session_restore(void)
    return !!n_tabs;
 }
 
+char *
+uri_sanitize(char *uri) {
+   char *fixed_uri;
+
+   if (!uri || !*uri) return NULL;
+   if (asprintf(&fixed_uri, "%s%s",
+            (strstr(uri, "://") ? "" : "http://"), uri) > 0)
+     return fixed_uri;
+   return NULL;
+}
+
 EAPI int
 elm_main(int argc, char **argv)
 {
    int r = 0, args;
    const char *home;
    const char *url;
-   char path[PATH_MAX], *basename;
+   char path[PATH_MAX], *basename, *tmp_uri;
    Eina_Bool quit_option = EINA_FALSE;
    Eina_Bool disable_plugins = 0xff;
    Eina_Bool disable_mouse_cursor = 0xff;
@@ -804,8 +821,12 @@ elm_main(int argc, char **argv)
           }
      }
 
+   tmp_uri = NULL;
    if (args < argc)
-      url = argv[args];
+     {
+        tmp_uri = uri_sanitize(argv[args]);
+        url = tmp_uri;
+     }
    else
       url = config_home_page_get(config);
 
@@ -830,6 +851,8 @@ elm_main(int argc, char **argv)
         r = -1;
         goto end;
      }
+
+   if (tmp_uri) free(tmp_uri);
 
    elm_run();
 end:
