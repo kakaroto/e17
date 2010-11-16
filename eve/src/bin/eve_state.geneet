@@ -1,19 +1,20 @@
 Config {
-	allow_popup               : uchar;
-	enable_auto_load_images   : uchar;
-	enable_auto_shrink_images : uchar;
-	enable_javascript         : uchar;
-	enable_mouse_cursor       : uchar;
-	enable_plugins            : uchar;
-	enable_private_mode       : uchar;
-	enable_touch_interface    : uchar;
-	home_page                 : str default "http://www.google.com";
-	proxy                     : str;
-	restore_state             : uchar;
-	user_agent                : str default "eve";
-	frame_flattening          : uchar;
-	text_only_zoom            : uchar;
-	minimum_font_size         : int;
+      allow_popup               : uchar;
+      enable_auto_load_images   : uchar;
+      enable_auto_shrink_images : uchar;
+      enable_javascript         : uchar;
+      enable_mouse_cursor       : uchar;
+      enable_plugins            : uchar;
+      enable_private_mode       : uchar;
+      enable_touch_interface    : uchar;
+      home_page                 : str default "http://www.google.com";
+      proxy                     : str;
+      restore_state             : uchar;
+      user_agent                : str default "eve";
+      frame_flattening          : uchar;
+      text_only_zoom            : uchar;
+      minimum_font_size         : int;
+      cookie_policy             : int;
 }
 
 Hist_Item {
@@ -38,17 +39,17 @@ Fav {
 }
 
 Session_Item {
-        url      : str;
-        focused  : uchar;
-        scroll_x : int;
-        scroll_y : int;
+      url      : str;
+      focused  : uchar;
+      scroll_x : int;
+      scroll_y : int;
 }
 
 Session_Window {
-	tabs    : list of Session_Item;
-	focused : uchar;
+      tabs    : list of Session_Item;
+      focused : uchar;
 }
 
 Session {
-	windows : list of Session_Window;
+      windows : list of Session_Window;
 }
