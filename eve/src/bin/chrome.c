@@ -308,7 +308,8 @@ static More_Menu_Item more_menu_config[] =
              .data = (More_Menu_Config_List_Int[]) {
                { "Accept all cookies", EWK_COOKIE_JAR_ACCEPT_ALWAYS, EINA_FALSE },
                { "Do not accept third-party cookies", EWK_COOKIE_JAR_ACCEPT_NO_THIRD_PARTY, EINA_TRUE },
-               { "Never accept", EWK_COOKIE_JAR_ACCEPT_NEVER, EINA_FALSE }
+               { "Never accept", EWK_COOKIE_JAR_ACCEPT_NEVER, EINA_FALSE },
+               { NULL, 0, EINA_FALSE },
              }
            }}, NULL, ITEM_FLAG_ARROW | ITEM_FLAG_SELECTABLE },
          { ITEM_TYPE_LAST, NULL, NULL, NULL, ITEM_FLAG_NONE },
