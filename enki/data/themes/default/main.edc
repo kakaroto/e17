@@ -4,6 +4,15 @@ group {
 	name: "main";
 	
 	parts {
+           part {
+              name: "object.photos.bg";
+              type: RECT;
+              description {
+                 state : "default" 0.0;
+                 color: 70 70 70 255;
+              }
+           }
+
 		part {
 			name: "object.menu";
 			type: EXTERNAL;

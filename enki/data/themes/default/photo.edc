@@ -69,6 +69,7 @@ group {
 	            state: "default" 0.0;
 	            visible: 1;
 	            image.normal: "shadow.png";
+                    image.border: 15 15 15 15;
 	        }
 	    }
 	    part {
@@ -78,11 +79,11 @@ group {
 	        description {
 	            state: "default" 0.0;
 	            visible: 1;
-	            color: 0 0 0 255;
+	            color: 255 255 255 255;
 	            rel1.to: "shadow";
 	            rel2.to: "shadow";
-	            rel1.relative: 0.05 0.05;
-	            rel2.relative: 0.95 0.94;
+	            rel1.offset: 15 15;
+	            rel2.offset: -16 -16;
 	        }
 	    }
 	    part {
@@ -95,8 +96,8 @@ group {
 	            color: 255 255 255 0;
 	            rel1.to: "border";
 	            rel2.to: "border";
-	            rel1.offset: 1 1;
-	            rel2.offset: -2 -2;
+	            rel1.offset: 5 5;
+	            rel2.offset: -6 -6;
 	        }
 	        description {
 	            state: "visible" 0.0;
