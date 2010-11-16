@@ -33,7 +33,7 @@ public class MainViewState : EflVala.ViewState
     {
     }
 
-    public override weak Elm.Object? object_get()
+    public override unowned Elm.Object? object_get()
     {
         return box;
     }
@@ -73,7 +73,7 @@ public class ConfigurationViewState : EflVala.ViewState
     {
     }
 
-    public override weak Elm.Object? object_get()
+    public override unowned Elm.Object? object_get()
     {
         return box;
     }

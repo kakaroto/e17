@@ -29,7 +29,7 @@ public class EflVala.ViewState
     {
     }
 
-    public virtual weak Elm.Object? object_get()
+    public virtual unowned Elm.Object? object_get()
     {
         return null;
     }
