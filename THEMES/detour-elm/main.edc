@@ -6,7 +6,8 @@ images {
 
 collections {
     ///////////////////////////////////////////////////////////////////////////////
-    group { name: "elm/bg/base/default";
+    group {
+        name: "elm/bg/base/default";
         parts {
             part { name: "base";
                 mouse_events:  0;
@@ -43,7 +44,8 @@ collections {
         }
     }
     ///////////////////////////////////////////////////////////////////////////////
-    group { name: "elm/scroller/base/default";
+    group {
+      name: "elm/scroller/base/default";
       script {
 	 public sbvis_v, sbvis_h, sbalways_v, sbalways_h, sbvis_timer;
 	 public timer0(val) {
@@ -67,12 +69,6 @@ collections {
 	    set_int(sbvis_timer, 0);
 	    return 0;
 	 }
-      }
-      images {
-	 image: "scrollframe_im1.png" COMP;
-	 image: "scrollframe-bar_im2.png" COMP;
-	 image: "sb_runnerh.png" COMP;
-	 image: "sb_runnerv.png" COMP;
       }
       parts {
          part { name: "bg";
@@ -105,7 +101,7 @@ collections {
 	       rel1.offset: 0 0;
 	       rel2.offset: -1 -1;
 	       image {
-		  normal: "scrollframe_im1.png";
+		  normal: "images/scrollframe_im1.png";
 		  border: 7 7 7 7;
 		  middle: 0;
 	       }
@@ -161,7 +157,7 @@ collections {
 	       rel1.to:       "sb_vbar";
 	       rel2.to:       "sb_vbar";
 	       image {
-		  normal: "sb_runnerv.png";
+		  normal: "images/sb_runnerv.png";
 		  border: 0 0 4 4;
 	       }
 	       fill.smooth: 0;
@@ -177,7 +173,7 @@ collections {
 	    }
 	    description { state: "default" 0.0;
 	       fixed: 1 1;
-	       min: 12 12;
+	       min: 13 13;
 	       rel1 {
 		  relative: 0.5  0.5;
 		  offset:   0    0;
@@ -189,10 +185,28 @@ collections {
 		  to: "sb_vbar";
 	       }
 	       image {
-		  normal: "scrollframe-bar_im2.png";
+		  normal: "images/scrollframe-bar_im2.png";
 		  border: 6 6 6 6;
 	       }
                image.middle: SOLID;
+	    }
+	 }
+         part { name: "vbar_center";
+	    clip_to: "sb_vbar_clip";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       min: 7 11;
+	       max: 7 11;
+	       rel1.to: "elm.dragable.vbar";
+	       rel2.to: "elm.dragable.vbar";
+               rel1.relative: 0.5 0.5;
+               rel2.relative: 0.5 0.5;
+               align: 0.5 0.5;
+	       image {
+		  normal: "images/scrollframe-bar_im3.png";
+		  border: 0 0 4 4;
+	       }
+	       fill.smooth: 0;
 	    }
 	 }
 
@@ -245,7 +259,7 @@ collections {
 	       rel1.to:       "sb_hbar";
 	       rel2.to:       "sb_hbar";
 	       image {
-		  normal: "sb_runnerh.png";
+		  normal: "images/sb_runnerh.png";
 		  border: 4 4 0 0;
 	       }
 	       fill.smooth: 0;
@@ -261,7 +275,7 @@ collections {
 	    }
 	    description { state: "default" 0.0;
 	       fixed: 1 1;
-	       min: 17 17;
+	       min: 13 13;
 	       rel1 {
 		  relative: 0.5  0.5;
 		  offset:   0    0;
@@ -273,10 +287,28 @@ collections {
 		  to: "sb_hbar";
 	       }
 	       image {
-		  normal: "scrollframe-bar_im2.png";
+		  normal: "images/scrollframe-bar_im0.png";
 		  border: 6 6 6 6;
 	       }
                image.middle: SOLID;
+	    }
+	 }
+         part { name: "hbar_center";
+	    clip_to: "sb_hbar_clip";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       min: 11 7;
+	       max: 11 7;
+	       rel1.to: "elm.dragable.hbar";
+	       rel2.to: "elm.dragable.hbar";
+               rel1.relative: 0.5 0.5;
+               rel2.relative: 0.5 0.5;
+               align: 0.5 0.5;
+	       image {
+		  normal: "images/scrollframe-bar_im1.png";
+		  border: 0 0 4 4;
+	       }
+	       fill.smooth: 0;
 	    }
 	 }
       }
@@ -433,9 +465,10 @@ collections {
 	    }
 	 }
       }
-   }
+    }
     ///////////////////////////////////////////////////////////////////////////////
-    group { name: "elm/label/base/default";
+    group {
+        name: "elm/label/base/default";
         styles
         {
             style { name: "textblock_style";
@@ -461,7 +494,8 @@ collections {
             }
         }
     }
-    group { name: "elm/label/base_wrap/default";
+    group {
+        name: "elm/label/base_wrap/default";
         parts {
             part { name: "elm.text";
                 type: TEXTBLOCK;
@@ -4295,7 +4329,7 @@ collections {
                 repeat_events: 1;
                 description {
                     state: "default" 0.0;
-                    color: 255 255 255 255;
+                    color: 255 255 255 0;
                     rel1.offset: 10 10;
                     rel2.offset: -10 -10;
                     rel1.relative: 1.0 0.0;
@@ -4304,7 +4338,7 @@ collections {
                 description {
                     state: "visible" 0.0;
                     inherit: "default" 0.0;
-                    color: 255 255 255 64;
+                    color: 255 255 255 255;
                     rel1.relative: 0.0 0.0;
                     rel2.relative: 1.0 1.0;
                 }
@@ -4326,7 +4360,7 @@ collections {
                 repeat_events: 1;
                 description {
                     state: "default" 0.0;
-                    color: 255 255 255 255;
+                    color: 255 255 255 0;
                     rel1.offset: 10 10;
                     rel2.offset: -10 -10;
                     rel1.relative: 0.0 -1.0;
@@ -4335,7 +4369,7 @@ collections {
                 description {
                     state: "visible" 0.0;
                     inherit: "default" 0.0;
-                    color: 255 255 255 64;
+                    color: 255 255 255 255;
                     rel1.relative: 0.0 0.0;
                     rel2.relative: 1.0 1.0;
                 }
@@ -4357,7 +4391,7 @@ collections {
                 repeat_events: 1;
                 description {
                     state: "default" 0.0;
-                    color: 255 255 255 255;
+                    color: 255 255 255 0;
                     rel1.offset: 10 10;
                     rel2.offset: -10 -10;
                     rel1.relative: 0.0 -1.0;
@@ -4366,7 +4400,7 @@ collections {
                 description {
                     state: "visible" 0.0;
                     inherit: "default" 0.0;
-                    color: 255 255 255 64;
+                    color: 255 255 255 255;
                     rel1.relative: 0.0 0.0;
                     rel2.relative: 1.0 1.0;
                 }
@@ -4388,7 +4422,7 @@ collections {
                 repeat_events: 1;
                 description {
                     state: "default" 0.0;
-                    color: 255 255 255 255;
+                    color: 255 255 255 0;
                     rel1.offset: 10 10;
                     rel2.offset: -10 -10;
                     rel1.relative: 0.0 1.0;
@@ -4397,7 +4431,7 @@ collections {
                 description {
                     state: "visible" 0.0;
                     inherit: "default" 0.0;
-                    color: 255 255 255 64;
+                    color: 255 255 255 255;
                     rel1.relative: 0.0 0.0;
                     rel2.relative: 1.0 1.0;
                 }
@@ -4419,7 +4453,7 @@ collections {
                 repeat_events: 1;
                 description {
                     state: "default" 0.0;
-                    color: 255 255 255 255;
+                    color: 255 255 255 0;
                     rel1.offset: 10 10;
                     rel2.offset: -10 -10;
                     rel1.relative: 0.0 1.0;
@@ -4428,7 +4462,7 @@ collections {
                 description {
                     state: "visible" 0.0;
                     inherit: "default" 0.0;
-                    color: 255 255 255 64;
+                    color: 255 255 255 255;
                     rel1.relative: 0.0 0.0;
                     rel2.relative: 1.0 1.0;
                 }
@@ -4440,10 +4474,8 @@ collections {
         }
     }
     ///////////////////////////////////////////////////////////////////////////////
-
-
-    ///////////////////////////////////////////////////////////////////////////////
-   group { name: "elm/check/base/default";
+   group {
+      name: "elm/check/base/default";
       parts {
          part { name: "bg_check";
 	    mouse_events: 0;
@@ -4723,10 +4755,9 @@ collections {
          }
       }
    }
-
-
    ///////////////////////////////////////////////////////////////////////////////
-   group { name: "elm/radio/base/default";
+   group {
+      name: "elm/radio/base/default";
       parts {
          part { name: "bg_radio";
 	    mouse_events: 0;

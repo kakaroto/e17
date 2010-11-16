@@ -39,7 +39,13 @@ image: "images/gadman_im6.png" COMP; /* right arrow */
 
 //~ scrollframe
 image: "images/scrollframe_im1.png" COMP; /* inset */
+image: "images/scrollframe-bar_im0.png" COMP; /* vertical bar */
+image: "images/scrollframe-bar_im1.png" COMP; /* vertical bar */
 image: "images/scrollframe-bar_im2.png" COMP; /* vertical bar */
+image: "images/scrollframe-bar_im3.png" COMP; /* vertical bar */
+
+image: "images/sb_runnerh.png" COMP;
+image: "images/sb_runnerv.png" COMP;
 
 //~ check
 image: "images/check_bt0.png" COMP;
