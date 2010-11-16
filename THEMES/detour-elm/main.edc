@@ -5047,7 +5047,21 @@ collections {
                color: 0 0 0 0;
             }
          }
+         part { name: "bg_item"; 
+                mouse_events: 0;
+               description { state: "default" 0.0;
+                   fixed: 1 1;
+                   color: 255 255 255 200;
+                   image {
+                       normal: "images/win_background.png";
+                   }
+                   fill {
+                       smooth: 1;
+                   }
+               }
+           }
          part { name: "separator"; // separator group
+                mouse_events: 0;
                description { state: "default" 0.0;
                    min: 2 2;
                    max: 99999 2;
@@ -5081,7 +5095,7 @@ collections {
             }
             description { state: "selected" 0.0;
                inherit: "default" 0.0;
-               color: 255 255 255 100;
+               color: 255 255 255 150;
             }
          }
          part { name: "bg";
