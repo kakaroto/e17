@@ -144,13 +144,21 @@ static void
 _db_cover_table_ensure_exists(DB *db)
 {
    static Eina_Bool created = EINA_FALSE;
-   static const char *sql = "CREATE TABLE IF NOT EXISTS covers " \
-                            "(album_id integer, file_path text, " \
-                            "origin integer, width integer, " \
-                            "height integer, primary key" \
-                            "(album_id, file_path))";
+   static const char *sql_create_table = "CREATE TABLE IF NOT EXISTS covers " \
+                                         "(album_id integer, file_path text, " \
+                                         "origin integer, width integer, " \
+                                         "height integer, primary key" \
+                                         "(album_id, file_path))";
+   static const char *sql_create_trigger = "CREATE TRIGGER IF NOT EXISTS " \
+                                           "delete_cover_on_album_deleted " \
+                                           "DELETE ON audio_albums " \
+                                           "BEGIN " \
+                                           "DELETE FROM covers WHERE " \
+                                           "album_id=OLD.id; " \
+                                           "END";
    if (created) return;
-   sqlite3_exec(db->handle, sql, NULL, NULL, NULL);
+   sqlite3_exec(db->handle, sql_create_table, NULL, NULL, NULL);
+   sqlite3_exec(db->handle, sql_create_trigger, NULL, NULL, NULL);
    created = EINA_TRUE;
 }
 
