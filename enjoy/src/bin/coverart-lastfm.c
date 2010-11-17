@@ -36,12 +36,11 @@ static const char *api_url = "http://ws.audioscrobbler.com/2.0/";
 
 static struct {
   const char *str;
-  regex_t exp;
-  Eina_Bool valid : 1;
+  regex_t *exp;
 } disc_number_regexes[] = {
-  { "\\((disc|cd) *[0-9]+\\)", NULL, EINA_FALSE },
-  { "\\[(disc|cd) *[0-9]+\\]", NULL, EINA_FALSE },
-  { "-? *(disc|cd) *[0-9]+$", NULL, EINA_FALSE },
+  { "\\((disc|cd) *[0-9]+\\)", NULL },
+  { "\\[(disc|cd) *[0-9]+\\]", NULL },
+  { "-? *(disc|cd) *[0-9]+$", NULL },
   { NULL, NULL }
 };
 
@@ -156,10 +155,10 @@ _remove_disc_info(char *info)
 
     for (i = 0; disc_number_regexes[i].str; i++)
       {
-         if (disc_number_regexes[i].valid)
+         if (disc_number_regexes[i].exp)
            {
              regmatch_t matches[32];
-             if (!regexec(&disc_number_regexes[i].exp, info, 32, matches, 0))
+             if (!regexec(disc_number_regexes[i].exp, info, 32, matches, 0))
                {
                   int j;
                   for (j = 0; j < 32; j++)
@@ -304,12 +303,16 @@ lastfm_cover_init(void)
 
     for (i = 0; disc_number_regexes[i].str; i++)
       {
-         if (regcomp(&disc_number_regexes[i].exp,
+         disc_number_regexes[i].exp = malloc(sizeof(regex_t));
+         if (!disc_number_regexes[i].exp) continue;
+         if (regcomp(disc_number_regexes[i].exp,
                      disc_number_regexes[i].str,
                      REG_EXTENDED | REG_ICASE))
-           ERR("could not compile regex: %s", disc_number_regexes[i].str);
-         else
-           disc_number_regexes[i].valid = EINA_TRUE;
+           {
+              ERR("could not compile regex: %s", disc_number_regexes[i].str);
+              free(disc_number_regexes[i].exp);
+              disc_number_regexes[i].exp = NULL;
+           }
       }
 }
 
@@ -320,8 +323,9 @@ lastfm_cover_shutdown(void)
 
     for (i = 0; disc_number_regexes[i].str; i++)
       {
-         regfree(&disc_number_regexes[i].exp);
-         disc_number_regexes[i].valid = EINA_FALSE;
+         regfree(disc_number_regexes[i].exp);
+         free(disc_number_regexes[i].exp);
+         disc_number_regexes[i].exp = NULL;
       }
 
     ecore_event_handler_del(data_handler);
