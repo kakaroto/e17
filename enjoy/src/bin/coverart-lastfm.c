@@ -175,6 +175,7 @@ _remove_disc_info(char *info)
 static char *
 _url_encode(const char *s)
 {
+    static const char *hex_digits = "0123456789ABCDEF";
     int new_size, i, j;
     char *output, *no_disc;
 
@@ -201,10 +202,8 @@ _url_encode(const char *s)
            {
               unsigned char p;
               output[i] = '%';
-              p = (no_disc[j] & 0xf0) >> 4;
-              output[++i] = (p < 10) ? p + '0' : p - 10 + 'A';
-              p = no_disc[j] & 0x0f;
-              output[++i] = (p < 10) ? p + '0' : p - 10 + 'A';
+              output[++i] = hex_digits[(no_disc[j] & 0xf0) >> 4];
+              output[++i] = hex_digits[no_disc[j] & 0x0f];
            }
       }
     output[i] = '\0';
