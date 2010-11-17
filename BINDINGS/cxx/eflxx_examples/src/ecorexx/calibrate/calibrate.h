@@ -44,7 +44,7 @@ protected:
 private:
   CalibrationData cd;
   unsigned int position;
-  Evasxx::Gradient* background;
+  Evasxx::Rectangle* background;
   Evasxx::Image* crosshair;
   Evasxx::Image* crosshairShadow;
   Evasxx::Line* crosshairhorz;

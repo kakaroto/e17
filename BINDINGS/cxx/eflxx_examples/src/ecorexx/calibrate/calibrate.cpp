@@ -115,12 +115,8 @@ CalibrationRectangle::CalibrationRectangle( Evasxx::Canvas &evas, const Rect &re
   floor->show();
 
   // setup background
-  background = new Evasxx::Gradient( evas, Rect (0, 0, s.width(), s.height()) );
+  background = new Evasxx::Rectangle( evas, Rect (0, 0, s.width(), s.height()) );
   background->setLayer( 5 );
-  background->setAngle( angle = 13 );
-  background->addColorStop( Color (255, 255, 255, 255),  10 );
-  background->addColorStop( Color (170, 160, 190, 255), 5 );
-  background->addColorStop( Color (255, 255, 240, 255), 10 );
   background->setColor( Color (255, 255, 255, 255) );
   //background->show();
   //new CalibrationAnimator( CalibrationAnimator::alpha, background, 255, 0 );
@@ -395,13 +391,6 @@ bool CalibrationAnimator::tick()
     if ( newy < _y ) newy++;
     _o->move( Point (newx, newy) );
     return true;
-  case angle:
-    newx = static_cast<Evasxx::Gradient*>( _o )->getAngle();
-    if ( newx == _x ) return false;
-    if ( newx > _x ) newx--;
-    if ( newx < _x ) newx++;
-    static_cast<Evasxx::Gradient*>( _o )->setAngle( newx );
-    return true;
   case alpha:
     c = _o->getColor();
     newx = c.alpha();
@@ -418,5 +407,4 @@ bool CalibrationAnimator::tick()
 void CalibrationRectangle::timerEvent()
 {
   cout << "CalibrationAnimator::timerEvent()" << endl;
-  background->setAngle( ++angle );
 }
