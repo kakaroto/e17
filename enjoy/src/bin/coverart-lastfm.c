@@ -237,7 +237,7 @@ lastfm_cover_search_request(const char *artist, const char *album,
          ERR("failed to allocate memory");
          goto error;
       }
-      
+
     con_url = ecore_con_url_custom_new(url, "GET");
     if (!con_url)
       {

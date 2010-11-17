@@ -222,6 +222,7 @@ _cover_album_local_find(Evas *evas, DB *db, Album *album, void (*cb)(void *data)
 
    success = !!eina_inlist_count(album->covers);
    if (cb && success) cb(data);
+   db_album_covers_update(db, album);
    return success;
 }
 
