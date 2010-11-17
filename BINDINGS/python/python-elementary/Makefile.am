@@ -66,6 +66,7 @@ examples_files = \
 	tests/test_check.py \
 	tests/test_clock.py \
 	tests/test.edj \
+	tests/cursors.edj \
 	tests/test_entry.py \
 	tests/test_fileselector.py \
 	tests/test_flip.py \

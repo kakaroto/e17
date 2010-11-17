@@ -116,6 +116,7 @@ def cursor3_clicked(obj, it):
     win.title_set("Cursors 3")
     win.autodel_set(True)
 
+    elementary.theme_extension_add("./cursors.edj")
     bg = elementary.Background(win)
     win.resize_object_add(bg)
     bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
