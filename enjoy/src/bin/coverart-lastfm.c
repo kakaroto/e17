@@ -230,8 +230,8 @@ lastfm_cover_search_request(const char *artist, const char *album,
 
     if (asprintf(&url, "%s?method=album.getinfo%s%s%s%s&api_key=%s",
                  api_url,
-                 clear_artist ? "&artist=" : "", clear_artist,
-                 clear_album ? "&album=" : "", clear_album,
+                 clear_artist ? "&artist=" : "", clear_artist ? clear_artist : "",
+                 clear_album ? "&album=" : "", clear_album ? clear_album : "",
                  api_key) < 0)
       {
          ERR("failed to allocate memory");
