@@ -200,7 +200,6 @@ _url_encode(const char *s)
            output[i] = no_disc[j];
          else
            {
-              unsigned char p;
               output[i] = '%';
               output[++i] = hex_digits[(no_disc[j] & 0xf0) >> 4];
               output[++i] = hex_digits[no_disc[j] & 0x0f];

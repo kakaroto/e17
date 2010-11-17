@@ -62,7 +62,7 @@ _db_stmt_bind_string(sqlite3_stmt *stmt, int col, char *value)
      {
         sqlite3 *db = sqlite3_db_handle(stmt);
         const char *err = sqlite3_errmsg(db);
-        ERR("could not bind SQL value %d to column %d: %s",
+        ERR("could not bind SQL value %s to column %d: %s",
             value, col, err);
         return EINA_FALSE;
      }
@@ -870,7 +870,6 @@ db_album_covers_update(DB *db, const Album *album)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(db, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(album, EINA_FALSE);
-   char sql[1024];
    Album_Cover *cover;
    Eina_Bool retval = EINA_FALSE;
    sqlite3_stmt *covers_update;
