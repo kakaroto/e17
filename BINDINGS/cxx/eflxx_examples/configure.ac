@@ -132,6 +132,7 @@ src/emotionxx/audio/Makefile
 src/elementaryxx/Makefile
 src/elementaryxx/simple/Makefile
 src/elementaryxx/full/Makefile
+src/elementaryxx/external/Makefile
 src/einaxx/Makefile
 src/einaxx/list/Makefile
 src/debug/Makefile
