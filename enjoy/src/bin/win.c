@@ -820,7 +820,7 @@ win_new(App *app)
    w->action.nowplaying = _toolbar_item_add
       (w, "nowplaying", "Now Playing", 120, _win_mode_nowplaying);
    w->action.playlist = elm_toolbar_item_state_add
-      (w->action.nowplaying, "list", "Playlist", _win_mode_list, w);
+      (w->action.nowplaying, "list", "Library", _win_mode_list, w);
 
    elm_toolbar_item_disabled_set(w->action.prev, EINA_TRUE);
    elm_toolbar_item_disabled_set(w->action.next, EINA_TRUE);

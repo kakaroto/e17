@@ -692,7 +692,7 @@ collections {
                text {
                   font: "Sans,Edje-Vera";
                   size: 10;
-                  text: "Playing";
+                  text: "Playlist";
                   min: 1 1;
                   align: 1.0 0.5;
                }
@@ -1016,7 +1016,7 @@ collections {
                text {
                   font: "Sans,Edje-Vera";
                   size: 10;
-                  text: "Playing";
+                  text: "Playlist";
                   min: 1 1;
                   align: 1.0 0.5;
                }
@@ -1345,7 +1345,7 @@ collections {
                text {
                   font: "Sans,Edje-Vera";
                   size: 10;
-                  text: "Playing";
+                  text: "Playlist";
                   min: 1 1;
                   align: 1.0 0.5;
                }
