@@ -173,17 +173,44 @@ _remove_disc_info(char *info)
 }
 
 static char *
-_clear_string(const char *s)
+_url_encode(const char *s)
 {
-    char *new_s;
-    char *tmp;
-    
-    new_s = strdup(s);
-    _remove_disc_info(new_s);
-    if ((tmp = strrchr(new_s, '\n'))) *tmp = '\0';
-    while ((tmp = strchr(new_s, ' '))) *tmp = '+';
-    
-    return new_s;
+    int new_size, i, j;
+    char *output, *no_disc;
+
+    if (!s) return NULL;
+
+    no_disc = strdup(s);
+    if (!no_disc) return NULL;
+    _remove_disc_info(no_disc);
+
+    for (new_size = 0, output = no_disc; *output; output++)
+      {
+         if (isalnum(*output)) new_size++;
+         else new_size += 3;
+      }
+
+    output = malloc(new_size + 1);
+    if (!output) return NULL;
+
+    for (i = j = 0; i < new_size; i++, j++)
+      {
+         if (isalnum(no_disc[j]))
+           output[i] = no_disc[j];
+         else
+           {
+              unsigned char p;
+              output[i] = '%';
+              p = (no_disc[j] & 0xf0) >> 4;
+              output[++i] = (p < 10) ? p + '0' : p - 10 + 'A';
+              p = no_disc[j] & 0x0f;
+              output[++i] = (p < 10) ? p + '0' : p - 10 + 'A';
+           }
+      }
+    output[i] = '\0';
+    free(no_disc);
+
+    return output;
 }
 
 LastFM_Cover_Request *
@@ -195,14 +222,17 @@ lastfm_cover_search_request(const char *artist, const char *album,
     Ecore_Con_Url *con_url;
     char *clear_album, *clear_artist;
     char *url = NULL;
-    
+
     if (!completed_cb) return NULL;
-    
-    clear_artist = _clear_string(artist);
-    clear_album = _clear_string(album);
-    
-    if (asprintf(&url, "%s?method=album.getinfo&artist=%s&album=%s&api_key=%s",
-                 api_url, clear_artist, clear_album, api_key) < 0)
+
+    clear_artist = _url_encode(artist);
+    clear_album = _url_encode(album);
+
+    if (asprintf(&url, "%s?method=album.getinfo%s%s%s%s&api_key=%s",
+                 api_url,
+                 clear_artist ? "&artist=" : "", clear_artist,
+                 clear_album ? "&album=" : "", clear_album,
+                 api_key) < 0)
       {
          ERR("failed to allocate memory");
          goto error;
@@ -223,7 +253,7 @@ lastfm_cover_search_request(const char *artist, const char *album,
       }
     req->artist = eina_stringshare_add(artist);
     req->album = eina_stringshare_add(album);
-    req->data = strdup("");
+    req->data = NULL;
     req->data_len = 0;
     req->con_url = con_url;
     req->completed_cb = completed_cb;
