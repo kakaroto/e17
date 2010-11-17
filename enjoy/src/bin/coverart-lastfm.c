@@ -395,7 +395,7 @@ lastfm_cover_download(char *url,
 void
 lastfm_cover_cache_package_set(const char *package)
 {
-    char tmp[1024];
+    char tmp[PATH_MAX];
     char *home = getenv("HOME");
     
     if (!package)
