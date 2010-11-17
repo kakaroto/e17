@@ -13,7 +13,6 @@ elementaryxx_example_full_SOURCES = \
 	test_hover.cpp                   \
 	test_icon.cpp                   \
 	test_layout.cpp                   \
-	test_notepad.cpp                   \
 	test_table.cpp                   \
 	test_toggle.cpp                   \
 	test_slider.cpp                   \

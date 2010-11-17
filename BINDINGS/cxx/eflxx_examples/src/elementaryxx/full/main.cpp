@@ -4,8 +4,6 @@
 
 #include "test.h"
 
-
-
 #ifndef ELM_LIB_QUICKLAUNCH
 static void my_win_del(Evasxx::Object &obj, void *event_info);
 static void my_win_main(void);
@@ -24,7 +22,6 @@ void test_hover (void *data, Evas_Object *obj, void *event_info);
 void test_hover2 (void *data, Evas_Object *obj, void *event_info);
 void test_entry (void *data, Evas_Object *obj, void *event_info);
 void test_entry_scolled (void *data, Evas_Object *obj, void *event_info);
-void test_notepad (void *data, Evas_Object *obj, void *event_info);
 void test_check (void *data, Evas_Object *obj, void *event_info);
 void test_radio (void *data, Evas_Object *obj, void *event_info);
 //
@@ -170,7 +167,6 @@ int main (int argc, char **argv)
   li->append ("Hover 2", test_hover2, NULL);
   li->append ("Entry", test_entry, NULL);
   li->append ("Entry Scrolled", test_entry_scolled, NULL);
-  li->append ("Notepad", test_notepad, NULL);
   /*li.append("Anchorview", NULL, NULL, my_bt_16, NULL);
   li.append("Anchorblock", NULL, NULL, my_bt_17, NULL);
   li.append("Toolbar", NULL, NULL, my_bt_18, NULL);

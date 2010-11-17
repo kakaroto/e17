@@ -8,7 +8,7 @@ elementaryxx_example_simple_SOURCES = \
 elementaryxx_example_simple_LDADD = \
 	$(ELEMENTARYXX_LIBS) \
 	$(EVASXX_LIBS) \
-        $(PACKAGE_SOURCE_DIR)/src/common/libeflxx_example_common.la
+	$(PACKAGE_SOURCE_DIR)/src/common/libeflxx_example_common.la
 
 elementaryxx_example_simple_DEPENDENCIES = \
         $(PACKAGE_SOURCE_DIR)/src/common/libeflxx_example_common.la
