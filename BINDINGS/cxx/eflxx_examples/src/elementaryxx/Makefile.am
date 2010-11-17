@@ -1,6 +1,7 @@
 
 SUBDIRS = \
 	simple\
-	full
+	full \
+	external
 
 ## File created by the gnome-build tools
