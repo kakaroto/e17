@@ -34,11 +34,15 @@ static char *_local_cache_dir = NULL;
 static const char *api_key = "eb6cf992423f32665bd3275c6b121e37";
 static const char *api_url = "http://ws.audioscrobbler.com/2.0/";
 
-static const char *disc_number_regexes[] = {
-  "\\((disc|cd) *[0-9]+\\)",
-  "\\[(disc|cd) *[0-9]+\\]",
-  "-? *(disc|cd) *[0-9]+$",
-  NULL
+static struct {
+  const char *str;
+  regex_t exp;
+  Eina_Bool valid : 1;
+} disc_number_regexes[] = {
+  { "\\((disc|cd) *[0-9]+\\)", NULL, EINA_FALSE },
+  { "\\[(disc|cd) *[0-9]+\\]", NULL, EINA_FALSE },
+  { "-? *(disc|cd) *[0-9]+$", NULL, EINA_FALSE },
+  { NULL, NULL }
 };
 
 static Ecore_Event_Handler *data_handler = NULL;
@@ -150,13 +154,12 @@ _remove_disc_info(char *info)
 {
     int i;
 
-    for (i = 0; disc_number_regexes[i]; i++)
+    for (i = 0; disc_number_regexes[i].str; i++)
       {
-         regex_t preg;
-         if (!regcomp(&preg, disc_number_regexes[i], REG_EXTENDED | REG_ICASE))
+         if (disc_number_regexes[i].valid)
            {
              regmatch_t matches[32];
-             if (!regexec(&preg, info, 32, matches, 0))
+             if (!regexec(&disc_number_regexes[i].exp, info, 32, matches, 0))
                {
                   int j;
                   for (j = 0; j < 32; j++)
@@ -167,7 +170,6 @@ _remove_disc_info(char *info)
                              matches[j].rm_eo - matches[j].rm_so);
                     }
                }
-             regfree(&preg);
            }
       }
 }
@@ -282,6 +284,8 @@ error:
 void
 lastfm_cover_init(void)
 {
+    int i;
+
     ecore_init();
     ecore_file_init();
     ecore_con_url_init();
@@ -297,11 +301,29 @@ lastfm_cover_init(void)
                                                 NULL);
     if (!completed_handler)
       ERR("could not register ECORE_CON_EVENT_URL_COMPLETE handler");
+
+    for (i = 0; disc_number_regexes[i].str; i++)
+      {
+         if (regcomp(&disc_number_regexes[i].exp,
+                     disc_number_regexes[i].str,
+                     REG_EXTENDED | REG_ICASE))
+           ERR("could not compile regex: %s", disc_number_regexes[i].str);
+         else
+           disc_number_regexes[i].valid = EINA_TRUE;
+      }
 }
 
 void
 lastfm_cover_shutdown(void)
 {
+    int i;
+
+    for (i = 0; disc_number_regexes[i].str; i++)
+      {
+         regfree(&disc_number_regexes[i].exp);
+         disc_number_regexes[i].valid = EINA_FALSE;
+      }
+
     ecore_event_handler_del(data_handler);
     ecore_event_handler_del(completed_handler);
     data_handler = completed_handler = NULL;
