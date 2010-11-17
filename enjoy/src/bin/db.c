@@ -874,6 +874,21 @@ db_album_covers_update(DB *db, const Album *album)
    Eina_Bool retval = EINA_FALSE;
    sqlite3_stmt *covers_update;
 
+   if (!album->covers)
+     {
+         char sql[1024], *errmsg;
+         sqlite3_snprintf(sizeof(sql), sql,
+                          "DELETE FROM covers WHERE album_id = %lld",
+                          album->id);
+         if (sqlite3_exec(db->handle, sql, NULL, NULL, &errmsg) != SQLITE_OK)
+           {
+              ERR("Could not execute SQL %s: %s", sql, errmsg);
+              sqlite3_free(errmsg);
+              return EINA_FALSE;
+           }
+         return EINA_TRUE;
+     }
+
    covers_update = _db_stmt_compile(db, "covers_update",
             "INSERT OR REPLACE INTO covers "
             "(album_id, file_path, origin, width, height) "
