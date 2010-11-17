@@ -605,20 +605,15 @@ collections {
                 }
             }
             part {
-                name: "focus_clip";
-                type: RECT;
+                name: "focus";
                 mouse_events: 0;
                 description {
                     state: "default" 0.0;
+                    image.normal: "images/button_im3.png";
+                    image.border: 7 7 7 7;
                     color: 255 255 255 0;
-                    rel1 {
-                        to: "enabled_button";
-                        offset: -1 0;
-                    }
-                    rel2 {
-                        to: "enabled_button";
-                        offset: 0 -1;
-                    }
+                    rel1.offset: 5 4;
+                    rel2.offset: -6 -5;
                 }
                 description {
                     state: "visible" 0.0;
@@ -627,22 +622,20 @@ collections {
                 }
             }
             part {
-                name: "focus";
+                name: "mouse_hover";
                 mouse_events: 0;
-                clip_to: "focus_clip";
                 description {
                     state: "default" 0.0;
                     image.normal: "images/button_im3.png";
                     image.border: 7 7 7 7;
-                    rel1 {
-                        to: "focus_clip";
-                    }
-                    rel2 {
-                        to: "focus_clip";
-                    }
-                    fill {
-                        smooth: 1;
-                    }
+                    color: 255 255 255 0;
+                    rel1.offset: 5 4;
+                    rel2.offset: -6 -5;
+                }
+                description {
+                    state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    color: 255 255 255 100;
                 }
             }
             part {
@@ -890,23 +883,38 @@ collections {
                     set_state(PART:"elm.text", "default", 0.0);
                 }
             }
-            /*program {
+            program {
                 name: "focused";
-                signal: "e,state,focused";
-                source: "e";
+                signal: "elm,action,focus";
+                source: "elm";
                 action: STATE_SET "visible" 0.0;
                 transition: DECELERATE 0.5;
-                target: "focus_clip";
+                target: "focus";
             }
             program {
-                name: "lose_focus";
-                signal: "e,state,unfocused";
-                source: "e";
+                name: "unfocused";
+                signal: "elm,action,unfocus";
+                source: "elm";
                 action: STATE_SET "default" 0.0;
                 transition: DECELERATE 0.5;
-                target: "focus_clip";
+                target: "focus";
             }
-            */
+            program {
+                name: "mouse_in";
+                signal: "mouse,in";
+                source: "enabled_button";
+                action: STATE_SET "visible" 0.0;
+                transition: DECELERATE 0.2;
+                target: "mouse_hover";
+            }
+            program {
+                name: "mouse_out";
+                signal: "mouse,out";
+                source: "enabled_button";
+                action: STATE_SET "default" 0.0;
+                transition: DECELERATE 0.2;
+                target: "mouse_hover";
+            }
             program {
                 name: "button_clicked";
                 signal: "mouse,down,1";
@@ -1059,20 +1067,15 @@ collections {
                 }
             }
             part {
-                name: "focus_clip";
-                type: RECT;
+                name: "focus";
                 mouse_events: 0;
                 description {
                     state: "default" 0.0;
+                    image.normal: "images/button_im3.png";
+                    image.border: 7 7 7 7;
                     color: 255 255 255 0;
-                    rel1 {
-                        to: "enabled_button";
-                        offset: -1 0;
-                    }
-                    rel2 {
-                        to: "enabled_button";
-                        offset: 0 -1;
-                    }
+                    rel1.offset: 5 4;
+                    rel2.offset: -6 -5;
                 }
                 description {
                     state: "visible" 0.0;
@@ -1081,22 +1084,20 @@ collections {
                 }
             }
             part {
-                name: "focus";
+                name: "mouse_hover";
                 mouse_events: 0;
-                clip_to: "focus_clip";
                 description {
                     state: "default" 0.0;
                     image.normal: "images/button_im3.png";
                     image.border: 7 7 7 7;
-                    rel1 {
-                        to: "focus_clip";
-                    }
-                    rel2 {
-                        to: "focus_clip";
-                    }
-                    fill {
-                        smooth: 1;
-                    }
+                    color: 255 255 255 0;
+                    rel1.offset: 5 4;
+                    rel2.offset: -6 -5;
+                }
+                description {
+                    state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    color: 255 255 255 100;
                 }
             }
             part {
@@ -1357,23 +1358,38 @@ collections {
                     set_state(PART:"elm.text", "default", 0.0);
                 }
             }
-            /*program {
+            program {
                 name: "focused";
-                signal: "e,state,focused";
-                source: "e";
+                signal: "elm,action,focus";
+                source: "elm";
                 action: STATE_SET "visible" 0.0;
                 transition: DECELERATE 0.5;
-                target: "focus_clip";
+                target: "focus";
             }
             program {
-                name: "lose_focus";
-                signal: "e,state,unfocused";
-                source: "e";
+                name: "unfocused";
+                signal: "elm,action,unfocus";
+                source: "elm";
                 action: STATE_SET "default" 0.0;
                 transition: DECELERATE 0.5;
-                target: "focus_clip";
+                target: "focus";
             }
-            */
+            program {
+                name: "mouse_in";
+                signal: "mouse,in";
+                source: "enabled_button";
+                action: STATE_SET "visible" 0.0;
+                transition: DECELERATE 0.2;
+                target: "mouse_hover";
+            }
+            program {
+                name: "mouse_out";
+                signal: "mouse,out";
+                source: "enabled_button";
+                action: STATE_SET "default" 0.0;
+                transition: DECELERATE 0.2;
+                target: "mouse_hover";
+            }
             program {
                 name: "button_clicked";
                 signal: "mouse,down,1";
@@ -1466,7 +1482,7 @@ collections {
                 action: STATE_SET "visible" 0.0;
                 target: "base";
                 target: "enabled_button";
-                transition: DECELERATE 0.5;
+                transition: DECELERATE 0.2;
             }
             program {
                 name:   "button_mouse_out";
@@ -1475,7 +1491,7 @@ collections {
                 action: STATE_SET "default" 0.0;
                 target: "base";
                 target: "enabled_button";
-                transition: DECELERATE 0.5;
+                transition: DECELERATE 0.2;
             }
         }
     }
