@@ -6,7 +6,7 @@ EAPI="2"
 inherit enlightenment
 
 DESCRIPTION="EFL-based music player"
-IUSE="asf flac id3 mp4 ogg playlist real"
+IUSE="asf flac +id3 mp4 ogg +playlist real"
 
 RDEPEND="
 	 >=media-libs/emotion-9999
