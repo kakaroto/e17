@@ -37,6 +37,38 @@ _db_stmt_bind_int64(sqlite3_stmt *stmt, int col, int64_t value)
 }
 
 static Eina_Bool
+_db_stmt_bind_int(sqlite3_stmt *stmt, int col, int value)
+{
+   int r = sqlite3_bind_int(stmt, col, value);
+   if (r == SQLITE_OK)
+     return EINA_TRUE;
+   else
+     {
+        sqlite3 *db = sqlite3_db_handle(stmt);
+        const char *err = sqlite3_errmsg(db);
+        ERR("could not bind SQL value %d to column %d: %s",
+            value, col, err);
+        return EINA_FALSE;
+     }
+}
+
+static Eina_Bool
+_db_stmt_bind_string(sqlite3_stmt *stmt, int col, char *value)
+{
+   int r = sqlite3_bind_text(stmt, col, value, -1, NULL);
+   if (r == SQLITE_OK)
+     return EINA_TRUE;
+   else
+     {
+        sqlite3 *db = sqlite3_db_handle(stmt);
+        const char *err = sqlite3_errmsg(db);
+        ERR("could not bind SQL value %d to column %d: %s",
+            value, col, err);
+        return EINA_FALSE;
+     }
+}
+
+static Eina_Bool
 _db_stmt_reset(sqlite3_stmt *stmt)
 {
    Eina_Bool r, c;
@@ -833,18 +865,28 @@ db_album_covers_update(DB *db, const Album *album)
    char sql[1024];
    Album_Cover *cover;
    Eina_Bool retval = EINA_FALSE;
+   sqlite3_stmt *covers_update;
+
+   covers_update = _db_stmt_compile(db, "covers_update",
+            "INSERT OR REPLACE INTO covers "
+            "(album_id, file_path, origin, width, height) "
+            "VALUES (?, ?, ?, ?, ?)");
+   if (!covers_update) return EINA_FALSE;
 
    EINA_INLIST_FOREACH(album->covers, cover)
      {
-        sqlite3_snprintf(sizeof(sql), sql,
-                         "INSERT INTO covers (album_id, file_path, origin, width, height) "
-                         "VALUES (%lld, '%s', %d, %d, %d)",
-                         album->id, cover->path, cover->origin,
-                         cover->w, cover->h);
-        if (sqlite3_exec(db->handle, sql, NULL, NULL, NULL) == SQLITE_OK)
-          retval = EINA_TRUE;
+        if (!_db_stmt_bind_int64(covers_update, 1, album->id)) goto reset;
+        if (!_db_stmt_bind_string(covers_update, 2, cover->path)) goto reset;
+        if (!_db_stmt_bind_int(covers_update, 3, cover->origin)) goto reset;
+        if (!_db_stmt_bind_int(covers_update, 4, cover->w)) goto reset;
+        if (!_db_stmt_bind_int(covers_update, 5, cover->h)) goto reset;
+        if (sqlite3_step(covers_update) != SQLITE_ERROR) retval = EINA_TRUE;
+   reset:
+        sqlite3_reset(covers_update);
+        sqlite3_clear_bindings(covers_update);
      }
 
+   _db_stmt_finalize(covers_update, "covers_update");
    return retval;
 }
 
