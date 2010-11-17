@@ -34,9 +34,10 @@ image: "images/menu_im3.png" COMP; /* inactive arrow */
 //~ exebuf
 image: "images/exebuf_im0.png" COMP; /* hilite */
 
-//~ gadman
-image: "images/gadman_im5.png" COMP; /* left arrow */
-image: "images/gadman_im6.png" COMP; /* right arrow */
+//~ arrow
+image: "images/arrow_left.png" COMP; /* left arrow */
+image: "images/arrow_right.png" COMP; /* right arrow */
+image: "images/arrow_down.png" COMP; /* down arrow */
 
 
 //~ scrollframe
