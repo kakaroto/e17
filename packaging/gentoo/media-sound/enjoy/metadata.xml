@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<herd>no-herd</herd>
+<maintainer>
+ <email>barbieri@profusion.mobi</email>
+ <name>Gustavo Sverzut Barbieri</name>
+</maintainer>
+<use>
+ <flag name="real">Support Real Media metadata.</flag>
+ <flag name="id3">Support ID3v1 and ID3v2 tags of audio files.</flag>
+ <flag name="asf">Provide support for Microsoft's 'advanced systems format' media container.</flag>
+ <flag name="playlist">Add support for playlists (m3u and pls).</flag>
+</use>
+<longdescription>
+Enjoy is a simple and fast music player using EFL.
+
+It uses <pkg>media-libs/lightmediascanner</pkg> to build a collection
+out of metadata found in music files, allowing for artist, album or
+genre browsing.
+
+Built on top of Enlightenment Foundation Libraries such as Elementary and
+Emotion it is slim and fast, while looks nice.
+</longdescription>
+</pkgmetadata>
