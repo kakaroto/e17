@@ -371,7 +371,7 @@ lastfm_cover_download(char *url,
     dest = lastfm_local_path_from_url_get(url);
     if (!dest)
       {
-         ERR("could not obtain local path for url %s\n", url);
+         ERR("could not obtain local path for url %s", url);
          return EINA_FALSE;
       }
     if (ecore_file_exists(dest)) return EINA_TRUE;
@@ -416,7 +416,7 @@ lastfm_cover_cache_package_set(const char *package)
 
     if (snprintf(tmp, sizeof(tmp), "%s/.cache/%s/covers/lastfm", home, package) < 0)
       {
-         ERR("package name too long: %s\n", package);
+         ERR("package name too long: %s", package);
          return;
       }
 
@@ -424,7 +424,7 @@ lastfm_cover_cache_package_set(const char *package)
       {
          if (!ecore_file_mkpath(tmp))
            {
-              ERR("could not create cover directory %s\n", tmp);
+              ERR("could not create cover directory %s", tmp);
               return;
            }
       }
