@@ -60,3 +60,11 @@ image: "images/radio_bt0.png" COMP;
 image: "images/radio_bt1.png" COMP;
 image: "images/radio_bt2.png" COMP;
 
+
+//~ map
+image: "images/map_item.png" COMP;
+image: "images/map_item2.png" COMP;
+image: "images/bubble_content.png" COMP;
+image: "images/bubble_bottom.png" COMP;
+
+
