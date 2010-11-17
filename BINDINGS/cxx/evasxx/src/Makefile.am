@@ -26,8 +26,6 @@ libevasxx_la_SOURCES = \
 	Rectangle.cpp \
 	Polygon.cpp \
 	Textblock.cpp \
-	Gradient.cpp \
-	Transform.cpp \
 	Smart.cpp \
 	Exceptions.cpp
 

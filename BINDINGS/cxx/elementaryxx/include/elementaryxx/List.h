@@ -29,7 +29,7 @@ public:
 
   void setMultiSelect (bool multi);
 
-  void setHorizontalMode (Elm_List_Mode mode);
+  void setHorizontal (bool horizontal);
 
   void setAlwaysSelectMode (bool alwaysSelect);
 

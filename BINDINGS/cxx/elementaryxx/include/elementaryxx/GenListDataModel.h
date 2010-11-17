@@ -32,10 +32,10 @@ public:
   virtual bool getState (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part) = 0;
   
 private:
-  static char *gl_label_get (const void *data, Evas_Object *obj, const char *part);
-  static Evas_Object *gl_icon_get (const void *data, Evas_Object *obj, const char *part);
-  static Eina_Bool gl_state_get (const void *data, Evas_Object *obj, const char *part);
-  static void gl_del (const void *data, Evas_Object *obj);
+  static char *gl_label_get (void *data, Evas_Object *obj, const char *part);
+  static Evas_Object *gl_icon_get (void *data, Evas_Object *obj, const char *part);
+  static Eina_Bool gl_state_get (void *data, Evas_Object *obj, const char *part);
+  static void gl_del (void *data, Evas_Object *obj);
   
   Elm_Genlist_Item_Class mGLIC;
   std::string mStyle;

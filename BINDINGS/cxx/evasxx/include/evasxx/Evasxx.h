@@ -4,7 +4,6 @@
 #include "Canvas.h"
 #include "Event.h"
 #include "Exceptions.h"
-#include "Gradient.h"
 #include "Image.h"
 #include "Line.h"
 #include "Object.h"
@@ -14,7 +13,6 @@
 #include "Textblock.h"
 #include "TextblockStyle.h"
 #include "Text.h"
-#include "Transform.h"
 #include "Utils.h"
 
 #endif // EVASXX_H

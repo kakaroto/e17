@@ -24,7 +24,6 @@ libelementaryxx_HEADERS = \
 	Object.h \
 	Layout.h \
 	Hover.h \
-	Notepad.h \
 	Anchorblock.h \
 	Anchorview.h \
 	Spinner.h \

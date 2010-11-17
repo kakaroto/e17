@@ -221,16 +221,6 @@ void Object::setColor( const Color& c )
   evas_object_color_set( o, c.red(), c.green(), c.blue(), c.alpha() );
 }
 
-int Object::getColorInterpolation() const
-{
-  return evas_object_color_interpolation_get( o );
-}
-
-void Object::setColorInterpolation( int colorspace )
-{
-  evas_object_color_interpolation_set( o, colorspace );
-}
-
 bool Object::isAntiAliased() const
 {
   return evas_object_anti_alias_get( o );

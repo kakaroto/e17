@@ -15,8 +15,6 @@ evasxx_HEADERS = \
 	Rectangle.h \
 	Polygon.h \
 	Textblock.h \
-	Gradient.h \
-	Transform.h \
 	Smart.h \
 	Exceptions.h \
 	Evasxx.h

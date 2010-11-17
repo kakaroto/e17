@@ -37,9 +37,9 @@ void List::setMultiSelect (bool multi)
   elm_list_multi_select_set (o, multi);
 }
 
-void List::setHorizontalMode (Elm_List_Mode mode)
+void List::setHorizontal (bool horizontal)
 {
-  elm_list_horizontal_mode_set (o, mode);
+  elm_list_horizontal_set (o, horizontal);
 }
 
 void List::setAlwaysSelectMode (bool alwaysSelect)

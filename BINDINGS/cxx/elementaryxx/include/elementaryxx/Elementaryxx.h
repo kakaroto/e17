@@ -29,7 +29,6 @@
 #include "Table.h"
 #include "Layout.h"
 #include "Hover.h"
-#include "Notepad.h"
 #include "Check.h"
 #include "Anchorview.h"
 #include "Anchorblock.h"

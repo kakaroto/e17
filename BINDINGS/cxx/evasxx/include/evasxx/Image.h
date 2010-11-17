@@ -7,7 +7,6 @@
 /* EFL++ */
 #include <eflxx/Common.h>
 #include "Object.h"
-#include "Transform.h"
 
 /* EFL */
 #include <Evas.h>
@@ -345,29 +344,13 @@ public:
    * @param   spread One of EVAS_TEXTURE_REFLECT, EVAS_TEXTURE_REPEAT,
    * EVAS_TEXTURE_RESTRICT, or EVAS_TEXTURE_PAD.
    */
-  void setSpread (int tile_mode);
+  void setFillSpread (Evas_Fill_Spread spread);
   
   /*!
   * Retrieves the spread (tiling mode) for the given image object's fill.
   * @return  The current spread mode of the image object.
   */
   int getSpread () const;
-  
-  /*!
-  * To be documented.
-  *
-  * FIXME: To be fixed.
-  *
-  */
-  void setTransform (Transform &t);
-  
-  /*!
-  * To be documented.
-  *
-  * FIXME: To be fixed.
-  *
-  */
-  const Transform getTransform () const;
   
   /*!
   * Converts the raw image data of the given image object to the

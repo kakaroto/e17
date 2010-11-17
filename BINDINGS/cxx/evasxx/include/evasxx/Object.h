@@ -132,8 +132,6 @@ public:
   /* Color */
   virtual Eflxx::Color getColor() const;
   virtual void setColor( const Eflxx::Color& color );
-  virtual int getColorInterpolation() const;
-  virtual void setColorInterpolation( int );
 
   /* Antialias */
   virtual void setAntiAliased( bool );

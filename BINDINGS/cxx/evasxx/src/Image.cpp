@@ -208,29 +208,14 @@ bool Image::save( const std::string &file, const std::string &key, const std::st
   evas_object_image_save( o, file.c_str(), key.empty() ? NULL : key.c_str(), flags.c_str() );
 }
 
-void Image::setSpread (int tile_mode)
+void Image::setFillSpread (Evas_Fill_Spread spread)
 {
-  evas_object_image_fill_spread_set( o, tile_mode);
+  evas_object_image_fill_spread_set( o, spread);
 }
 
 int Image::getSpread () const
 {
   return evas_object_image_fill_spread_get( o );
-}
-
-void Image::setTransform (Transform &t)
-{
-  evas_object_image_fill_transform_set (o, &t.t);
-}
-
-const Transform Image::getTransform () const
-{
-  Evas_Transform t;
-  evas_object_image_fill_transform_get (o, &t);
-  Transform et;
-  et.t = t;
-  
-  return et;
 }
 
 void *Image::convertData (Evas_Colorspace to_cspace)

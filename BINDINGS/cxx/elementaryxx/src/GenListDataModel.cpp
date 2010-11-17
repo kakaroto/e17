@@ -25,7 +25,7 @@ GenListDataModel::GenListDataModel (const std::string &style) :
 
 /* wrappers */
 
-char *GenListDataModel::gl_label_get (const void *data, Evas_Object *obj, const char *part)
+char *GenListDataModel::gl_label_get (void *data, Evas_Object *obj, const char *part)
 {
   cout << "gl_label_get" << endl;
 
@@ -43,7 +43,7 @@ char *GenListDataModel::gl_label_get (const void *data, Evas_Object *obj, const 
   return (!label.empty ()) ? strdup (label.c_str ()) : NULL;
 }
 
-Evas_Object *GenListDataModel::gl_icon_get (const void *data, Evas_Object *obj, const char *part)
+Evas_Object *GenListDataModel::gl_icon_get (void *data, Evas_Object *obj, const char *part)
 {
   GenListColumnConstructor *construction = static_cast <GenListColumnConstructor*> (
                                            const_cast <void*> (data));
@@ -55,7 +55,7 @@ Evas_Object *GenListDataModel::gl_icon_get (const void *data, Evas_Object *obj, 
   return objxx ? objxx->obj () : NULL;
 }
 
-Eina_Bool GenListDataModel::gl_state_get (const void *data, Evas_Object *obj, const char *part)
+Eina_Bool GenListDataModel::gl_state_get (void *data, Evas_Object *obj, const char *part)
 {
   GenListColumnConstructor *construction = static_cast <GenListColumnConstructor*> (
                                            const_cast <void*> (data));
@@ -65,7 +65,7 @@ Eina_Bool GenListDataModel::gl_state_get (const void *data, Evas_Object *obj, co
   return model->getState (construction, *objWrap, part);
 }
 
-void GenListDataModel::gl_del(const void *data, Evas_Object *obj)
+void GenListDataModel::gl_del(void *data, Evas_Object *obj)
 {
   GenListColumnConstructor *construction = static_cast <GenListColumnConstructor*> (
                                            const_cast <void*> (data));

@@ -40,7 +40,6 @@ libelementaryxx_la_SOURCES = \
 	Object.cpp  \
 	Layout.cpp  \
 	Hover.cpp  \
-	Notepad.cpp  \
 	Anchorblock.cpp  \
 	Anchorview.cpp  \
 	Spinner.cpp  \
