@@ -13,18 +13,12 @@ t001_content_CFLAGS = \
   -I$(top_srcdir)/src/include/extras
 
 t001_content_SOURCES = \
-  t001_content.c \
-  phony_lib.c \
-  $(top_srcdir)/src/lib/azy_content.c \
-  $(top_srcdir)/src/lib/azy_content_json.c \
-  $(top_srcdir)/src/lib/azy_content_xml.c \
-  $(top_srcdir)/src/lib/azy_value.c
+  t001_content.c
 
 t001_content_LDADD = \
   $(ECORE_LIBS) \
   $(XML_LIBS) \
-  $(top_builddir)/src/lib/extras/libcJSON.la \
-  $(top_builddir)/src/lib/extras/libb64.la
+  $(top_builddir)/src/lib/libazy.la
 
 t001_content_LDFLAGS = -static
 
