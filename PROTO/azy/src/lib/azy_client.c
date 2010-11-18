@@ -321,11 +321,12 @@ azy_client_call(Azy_Client       *client,
    INFO("Send [2/2] complete! %lli bytes queued for sending.", content->length);
    ecore_con_server_flush(client->net->conn);
  
-   if (!(handler_data = calloc(sizeof(Azy_Client_Handler_Data), 1)))
-     return 0;
+   handler_data = calloc(sizeof(Azy_Client_Handler_Data), 1);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data, 0);
    handler_data->client = client;
    handler_data->method = eina_stringshare_add(content->method);
    handler_data->callback = cb;
+   handler_data->content_data = content->data;
 
    handler_data->id = __azy_client_send_id;
    AZY_MAGIC_SET(handler_data, AZY_MAGIC_CLIENT_DATA_HANDLER);

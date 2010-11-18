@@ -66,9 +66,10 @@ typedef unsigned int Azy_Magic;
 
 struct _Azy_Content
 {
+   void               *data;
    const char         *method;
    Eina_List          *params;
-   Azy_Value         *retval;
+   Azy_Value          *retval;
    void               *ret;
    Azy_Client_Call_Id  id;
    Azy_Net            *recv_net;
@@ -198,11 +199,12 @@ struct _Azy_Client
 
 struct _Azy_Client_Handler_Data
 {
-   Azy_Client_Call_Id   id;
+   Azy_Client_Call_Id  id;
    Azy_Client         *client;
    Azy_Net            *recv;
-   const char          *method;
-   Azy_Content_Cb     callback; //callback set to convert from Azy_Value to Return_Type
+   const char         *method;
+   Azy_Content_Cb      callback; //callback set to convert from Azy_Value to Return_Type
+   void               *content_data;
    AZY_MAGIC;
 };
 

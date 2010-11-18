@@ -62,6 +62,8 @@ _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
    content = azy_content_new(handler_data->method);
    EINA_SAFETY_ON_NULL_RETURN_VAL(content, EINA_FALSE);
 
+   content->data = handler_data->content_data;
+
    if (!azy_content_unserialize_response(content, handler_data->recv->transport, (const char*)handler_data->recv->buffer, handler_data->recv->size))
      azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return parsing failed.");
    else if ((handler_data->recv->transport == AZY_NET_TRANSPORT_JSON) && (content->id != handler_data->id))

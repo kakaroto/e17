@@ -55,6 +55,29 @@ azy_content_free(Azy_Content *content)
    free(content);
 }
 
+void
+azy_content_data_set(Azy_Content *content,
+                     const void  *data)
+{
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return;
+     }
+   content->data = (void*)data;
+}
+
+void *
+azy_content_data_get(Azy_Content *content)
+{
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return NULL;
+     }
+   return content->data;
+}
+
 Eina_Bool
 azy_content_serialize_request(Azy_Content *content,
                                Azy_Net_Transport type)

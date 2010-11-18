@@ -356,6 +356,9 @@ extern "C" {
    const char *azy_content_error_message_get(Azy_Content *content);
    char       *azy_content_dump_string(const Azy_Content *content,
                                         unsigned int  indent);
+   void        azy_content_data_set(Azy_Content *content,
+                                    const void  *data);
+   void       *azy_content_data_get(Azy_Content *content);
    void        azy_content_dump(const Azy_Content *content,
                                  unsigned int  indent);
    Eina_Bool   azy_content_serialize_request(Azy_Content *content,

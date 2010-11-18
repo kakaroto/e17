@@ -1286,7 +1286,7 @@ gen_client_headers(Azy_Server_Module *s)
              E(0, ", %s%s %s", !strcmp(p->type->ctype, "char*") ? "const " : "", p->type->ctype, p->name);
           }
 
-        EL(0, ", Azy_Content* _error);");
+        EL(0, ", Azy_Content *_error, void *data);");
         NL;
      }
 
@@ -1326,9 +1326,9 @@ gen_client_impl(Azy_Server_Module *s)
              E(0, ", %s%s %s", !strcmp(p->type->ctype, "char*") ? "const " : "", p->type->ctype, p->name);
           }
 
-        EL(0, ", Azy_Content* _error)");
+        EL(0, ", Azy_Content *_error, void *data)");
         EL(0, "{");
-          EL(1, "unsigned int _retval = 0;");
+          EL(1, "Azy_Client_Call_Id _retval = 0;");
       //  EL(1, "%s _retval = %s;", method->return_type->ctype, method->return_type->cnull);
 
         if (method->params)
@@ -1342,6 +1342,8 @@ gen_client_impl(Azy_Server_Module *s)
         EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(_error, _retval);");
         NL;
         EL(1, "_content = azy_content_new(\"%s%s.%s\");", azy->name, s->name, method->name);
+        EL(1, "if (!_content) return 0;");
+        EL(1, "if (data) azy_content_data_set(_content, data);");
 
         EINA_LIST_FOREACH(method->params, k, p)
           {

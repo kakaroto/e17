@@ -71,7 +71,7 @@ _connected(Azy_Client *cli __UNUSED__, int type __UNUSED__, Azy_Client *ev)
         Azy_Client_Call_Id ret;
         if (!azy_client_connected_get(ev))
           goto error;
-        ret = TTest1_getAll(ev, err);
+        ret = TTest1_getAll(ev, err, NULL);
         if (_check_err(err) || (!ret))
           goto error;
      }

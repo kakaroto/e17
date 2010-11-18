@@ -148,7 +148,7 @@ _connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
    azy_net_transport_set(net, AZY_NET_TRANSPORT_JSON);
    azy_net_uri_set(net, "/RPC2");
 
-   ret = TTest1_getBigArray(cli, err);
+   ret = TTest1_getBigArray(cli, err, NULL);
    if (_check_err(err) || (!ret))
      exit(1);
 
@@ -161,7 +161,7 @@ _connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
    for (i = 0; i < 5000; i++)
      list = eina_list_append(list, eina_stringshare_printf("user.bob%d@zonio.net", i));
 
-   ret = TTest1_putBigArray(cli, list, err);
+   ret = TTest1_putBigArray(cli, list, err, NULL);
    if (_check_err(err) || (!ret))
      exit(1);
    if (!azy_client_callback_set(cli, ret, _TTest1_putBigArray_ret))
@@ -174,7 +174,7 @@ _connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
 
    azy_net_transport_set(net, AZY_NET_TRANSPORT_XML);
 
-   ret = TTest1_getAll(cli, err);
+   ret = TTest1_getAll(cli, err, NULL);
    if (_check_err(err) || (!ret))
      exit(1);
    if (!azy_client_callback_set(cli, ret, _TTest1_getAll_ret))
@@ -183,7 +183,7 @@ _connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
         return ECORE_CALLBACK_CANCEL;
      }
 
-   ret = TTest1_getAllArrays(cli, err);
+   ret = TTest1_getAllArrays(cli, err, NULL);
    if (_check_err(err) || (!ret))
      exit(1);
    if (!azy_client_callback_set(cli, ret, _TTest1_getAllArrays_ret))
@@ -192,7 +192,7 @@ _connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
         return ECORE_CALLBACK_CANCEL;
      }
 
-   ret = TTest2_auth(cli, "name", "pass", err);
+   ret = TTest2_auth(cli, "name", "pass", err, NULL);
    if (_check_err(err) || (!ret))
      exit(1);
    if (!azy_client_callback_set(cli, ret, _TTest2_auth_ret))
@@ -201,7 +201,7 @@ _connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
         return ECORE_CALLBACK_CANCEL;
      }
 
-   ret = TTest1_getAll(cli, err);
+   ret = TTest1_getAll(cli, err, NULL);
    if (_check_err(err) || (!ret))
      exit(1);
    if (!azy_client_callback_set(cli, ret, _TTest1_getAll_ret))
