@@ -127,7 +127,7 @@ _ephoto_thumb_item_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__)
 }
 
 static const Elm_Gengrid_Item_Class _ephoto_thumb_dir_class = {
-  "dir",
+  "album-preview",
   {
     _ephoto_thumb_item_label_get,
     _ephoto_thumb_dir_icon_get,
@@ -147,7 +147,7 @@ static const Elm_Gengrid_Item_Class _ephoto_thumb_up_class = {
 };
 
 static const Elm_Gengrid_Item_Class _ephoto_thumb_file_class = {
-  "file",
+  "thumb",
   {
     _ephoto_thumb_item_label_get,
     _ephoto_thumb_file_icon_get,
@@ -563,7 +563,6 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
    evas_object_size_hint_weight_set
      (tb->grid, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(tb->grid, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_style_set(tb->grid, "ephoto");
 
    elm_gengrid_align_set(tb->grid, 0.5, 0.5);
    elm_gengrid_bounce_set(tb->grid, EINA_FALSE, EINA_TRUE);
