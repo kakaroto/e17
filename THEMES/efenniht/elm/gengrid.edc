@@ -333,4 +333,461 @@ collections {
             }
         }
     }
+
+    group { name: "elm/gengrid/item/up/default";
+        data.item: "labels" "elm.text";
+        images {
+            image: "bg_box_selected.png" COMP;
+            image: "icon_arrow_up_solid.png" COMP;
+        }
+        parts {
+            part { name: "event";
+                type: RECT;
+                repeat_events: 1;
+                description { state: "default" 0.0;
+                    color: 0 0 0 0;
+                }
+            }
+            part { name: "bg";
+                clip_to: "disclip";
+                mouse_events: 0;
+                description { state: "default" 0.0;
+                    visible: 0;
+                    color: 255 255 255 0;
+                    rel1.offset: -3 -3;
+                    rel2.offset: 2 2;
+                    image { normal: "bg_box_selected.png";
+                        border: 6 6 6 6;
+                        middle: SOLID;
+                    }
+                }
+                description { state: "selected" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                    color: 255 255 255 255;
+                }
+            }
+            part { name: "image";
+                type: IMAGE;
+                mouse_events: 0;
+                description { state: "default" 0.0;
+                    aspect_preference: BOTH;
+                    aspect: 1.0 1.0;
+                    image.normal: "icon_arrow_up_solid.png";
+                    rel2 {
+                        to_y: "elm.text";
+                        relative: 1.0  0.0;
+                        offset: -1 -2;
+                    }
+                }
+            }
+            part { name: "elm.text";
+                clip_to: "disclip";
+                type: TEXT;
+                effect: SOFT_SHADOW;
+                mouse_events: 0;
+                scale: 1;
+                description { state: "default" 0.0;
+                    rel1 {
+                        relative: 0.0 1.0;
+                        offset: 20 -25;
+                    }
+                    rel2 {
+                        relative: 1.0 1.0;
+                        offset: -21 -3;
+                    }
+                    color_class: "list_item";
+                    text {
+                        font: "Sans";
+                        size: 10;
+                        min: 0 1;
+                        align: 0.5 0.0;
+                    }
+                }
+                description { state: "selected" 0.0;
+                    inherit: "default" 0.0;
+                    color_class: "list_item_selected";
+                }
+            }
+            part { name: "disclip";
+                type: RECT;
+                description { state: "default" 0.0;
+                    rel1.to: "bg";
+                    rel2.to: "bg";
+                }
+                description { state: "disabled" 0.0;
+                    inherit: "default" 0.0;
+                    color: 255 255 255 64;
+                }
+            }
+        }
+        programs {
+            program { name: "go_active";
+                signal: "elm,state,selected";
+                source: "elm";
+                action: STATE_SET "selected" 0.0;
+                target: "bg";
+                target: "elm.text";
+            }
+            program { name: "go_passive";
+                signal: "elm,state,unselected";
+                source: "elm";
+                action:  STATE_SET "default" 0.0;
+                target: "bg";
+                target: "elm.text";
+                transition: LINEAR 0.1;
+            }
+            program { name: "go_disabled";
+                signal: "elm,state,disabled";
+                source: "elm";
+                action: STATE_SET "disabled" 0.0;
+                target: "disclip";
+            }
+            program { name: "go_enabled";
+                signal: "elm,state,enabled";
+                source: "elm";
+                action: STATE_SET "default" 0.0;
+                target: "disclip";
+            }
+        }
+    }
+
+    group { name: "elm/gengrid/item/album-preview/default";
+        data.item: "labels" "elm.text";
+        data.item: "icons" "elm.swallow.icon.1 elm.swallow.icon.2 elm.swallow.icon.3 elm.swallow.icon.4";
+        data.item: "states" "have_files";
+        images {
+            set { name: "icon_folder";
+                image {
+                    image: "icon_folder_128.png" COMP;
+                    size: 1 1 128 128;
+                }
+                image {
+                    image: "icon_folder_256.png" COMP;
+                    size: 129 129 256 256;
+                }
+            }
+            image: "bg_box_selected.png" COMP;
+        }
+        parts {
+            part { name: "event";
+                type: RECT;
+                repeat_events: 1;
+                description { state: "default" 0.0;
+                    color: 0 0 0 0;
+                }
+            }
+            part { name: "bg";
+                clip_to: "disclip";
+                mouse_events: 0;
+                description { state: "default" 0.0;
+                    visible: 0;
+                    color: 255 255 255 0;
+                    rel1.offset: 4 4;
+                    rel2.offset: -5 -5;
+                    image {
+                        normal: "bg_box_selected.png";
+                        border: 6 6 6 6;
+                        middle: SOLID;
+                    }
+                }
+                description { state: "selected" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                    color: 255 255 255 255;
+                }
+            }
+            part { name: "image";
+                mouse_events: 0;
+                description { state: "default" 0.0;
+                    aspect_preference: BOTH;
+                    aspect: 1.0 1.0;
+                    image.normal: "icon_folder";
+                    rel2 {
+                        to_y: "elm.text";
+                        relative: 1.0 0.0;
+                        offset: -1 -2;
+                    }
+                }
+            }
+            part { name: "have-files-clipper";
+                type: RECT;
+                description { state: "default" 0.0;
+                    color: 255 255 255 0;
+                    visible: 0;
+                }
+                description { state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    color: 255 255 255 255;
+                    visible: 1;
+                }
+            }
+            part { name: "icon_box";
+                type: RECT;
+                mouse_events: 0;
+                clip_to: "have-files-clipper";
+                description { state: "default" 0.0;
+                    align: 1.0 1.0;
+                    min: 32 32;
+                    color: 255 255 255 0;
+                    rel1 {
+                        relative: 0.25 0.25;
+                        offset: 0 5;
+                    }
+                    rel2 {
+                        relative: 1.0 0.0;
+                        offset: -11 -4;
+                        to_y: "elm.text";
+                    }
+                }
+            }
+            part { name: "elm.swallow.icon.1";
+                type: SWALLOW;
+                mouse_events: 0;
+                clip_to: "have-files-clipper";
+                description { state: "default" 0.0;
+                    rel1 {
+                        relative: 0.0 0.0;
+                        to: "icon_box";
+                    }
+                    rel2 {
+                        relative: 0.5 0.5;
+                        offset: -1 -1;
+                        to: "icon_box";
+                    }
+                }
+            }
+            part { name: "elm.swallow.icon.2";
+                type: SWALLOW;
+                mouse_events: 0;
+                clip_to: "have-files-clipper";
+                description { state: "default" 0.0;
+                    rel1 {
+                        relative: 0.5 0.0;
+                        to: "icon_box";
+                    }
+                    rel2 {
+                        relative: 1.0 0.5;
+                        offset: -1 -1;
+                        to: "icon_box";
+                    }
+                }
+            }
+            part { name: "elm.swallow.icon.3";
+                type: SWALLOW;
+                mouse_events: 0;
+                clip_to: "have-files-clipper";
+                description { state: "default" 0.0;
+                    rel1 {
+                        relative: 0.0 0.5;
+                        to: "icon_box";
+                    }
+                    rel2 {
+                        relative: 0.5 1.0;
+                        offset: -1 -1;
+                        to: "icon_box";
+                    }
+                }
+            }
+            part { name: "elm.swallow.icon.4";
+                type: SWALLOW;
+                mouse_events: 0;
+                clip_to: "have-files-clipper";
+                description { state: "default" 0.0;
+                    rel1 {
+                        relative: 0.5 0.5;
+                        to: "icon_box";
+                    }
+                    rel2 {
+                        relative: 1.0 1.0;
+                        offset: -1 -1;
+                        to: "icon_box";
+                    }
+                }
+            }
+            part { name: "elm.text";
+                clip_to: "disclip";
+                type: TEXT;
+                effect: SOFT_SHADOW;
+                mouse_events: 0;
+                scale: 1;
+                description { state: "default" 0.0;
+                    rel1 {
+                        relative: 0.0 1.0;
+                        offset: 20 -30;
+                    }
+                    rel2 {
+                        relative: 1.0 1.0;
+                        offset: -21 -15;
+                    }
+                    color_class: "list_item";
+                    text {
+                        font: "Sans";
+                        size: 10;
+                        min: 0 1;
+                        align: 0.5 0.0;
+                    }
+                }
+                description { state: "selected" 0.0;
+                    inherit: "default" 0.0;
+                    color_class: "list_item_selected";
+                }
+            }
+            part { name: "disclip";
+                type: RECT;
+                description { state: "default" 0.0;
+                    rel1.to: "bg";
+                    rel2.to: "bg";
+                }
+                description { state: "disabled" 0.0;
+                    inherit: "default" 0.0;
+                    color: 255 255 255 64;
+                }
+            }
+        }
+        programs {
+            program { name: "go_active";
+                signal: "elm,state,selected";
+                source: "elm";
+                action: STATE_SET "selected" 0.0;
+                target: "bg";
+                target: "elm.text";
+            }
+            program { name: "go_passive";
+                signal: "elm,state,unselected";
+                source: "elm";
+                action: STATE_SET "default" 0.0;
+                target: "bg";
+                target: "elm.text";
+                transition: LINEAR 0.1;
+            }
+            program { name: "go_enabled";
+                signal:  "elm,state,enabled";
+                source: "elm";
+                action: STATE_SET "default" 0.0;
+                target: "disclip";
+            }
+            program { name: "go_disabled";
+                signal: "elm,state,disabled";
+                source: "elm";
+                action: STATE_SET "disabled" 0.0;
+                target: "disclip";
+            }
+            program { name: "have_files";
+                signal: "elm,state,have_files,active";
+                source: "elm";
+                action: STATE_SET "visible" 0.0;
+                target: "have-files-clipper";
+            }
+        }
+    }
+
+    group { name: "elm/gengrid/item/thumb/default";
+        data {
+            item: "icons" "elm.swallow.icon";
+            item: "labels" "elm.text";
+        }
+        images {
+            image: "bg_box_selected.png" COMP;
+            image: "bg_gradient_simple.png" COMP;
+        }
+        parts {
+            part { name: "event";
+                type: RECT;
+                repeat_events: 1;
+                description { state: "default" 0.0;
+                    color: 0 0 0 0;
+                }
+            }
+            part { name: "bg";
+                mouse_events: 0;
+                description { state: "default" 0.0;
+                    visible: 0;
+                    color: 255 255 255 0;
+                    rel1.offset: 4 4;
+                    rel2.offset: -5 -5;
+                    image {
+                        normal: "bg_box_selected.png";
+                        border: 6 6 6 6;
+                        middle: SOLID;
+                    }
+                }
+                description { state: "selected" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                    color: 255 255 255 255;
+                }
+            }
+            part { name: "border";
+                mouse_events: 0;
+                description { state: "default" 0.0;
+                    rel1.offset: 16 16;
+                    rel2.offset: -15 -15;
+                    image {
+                        normal: "bg_gradient_simple.png";
+                        border: 6 6 6 6;
+                    }
+                }
+            }
+            part { name: "elm.swallow.icon";
+                type: SWALLOW;
+                mouse_events: 0;
+                description { state: "default" 0.0;
+                    aspect_preference: BOTH;
+                    aspect: 1.0 1.0;
+                    rel1.offset: 0 8;
+                    rel2 {
+                        to_y: "elm.text";
+                        relative: 1.0 0.0;
+                        offset: -1 -2;
+                    }
+                }
+            }
+            part { name: "elm.text";
+                type: TEXT;
+                effect: SOFT_SHADOW;
+                mouse_events: 0;
+                scale: 1;
+                description { state: "default" 0.0;
+                    color_class: "list_item";
+                    align: 0.5 1.0;
+                    rel1 {
+                        relative: 0.0 1.0;
+                        offset: 20 -30;
+                    }
+                    rel2 {
+                        relative: 1.0 1.0;
+                        offset: -21 -15;
+                    }
+                    text {
+                        font: "Sans";
+                        size: 10;
+                        min: 0 1;
+                        align: 0.5 0.0;
+                    }
+                }
+                description { state: "selected" 0.0;
+                    inherit: "default" 0.0;
+                    color_class: "list_item_selected";
+                }
+            }
+        }
+        programs {
+            program { name: "go_active";
+                signal: "elm,state,selected";
+                source: "elm";
+                action:  STATE_SET "selected" 0.0;
+                target: "bg";
+                target: "elm.text";
+            }
+            program { name: "go_passive";
+                signal: "elm,state,unselected";
+                source: "elm";
+                action: STATE_SET "default" 0.0;
+                target: "bg";
+                target: "elm.text";
+                transition: LINEAR 0.1;
+            }
+        }
+    }
 }
