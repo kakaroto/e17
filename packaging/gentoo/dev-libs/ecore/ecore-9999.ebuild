@@ -13,7 +13,7 @@ IUSE="cares curl directfb +epoll +evas fbcon glib gnutls +inotify opengl sdl ope
 RDEPEND="
 	>=dev-libs/eina-9999
 	glib? ( dev-libs/glib )
-	cares? ( net-libs/c-ares )
+	cares? ( net-dns/c-ares )
 	curl? ( net-misc/curl )
 	gnutls? ( net-libs/gnutls )
 	!gnutls? ( openssl? ( dev-libs/openssl ) )
