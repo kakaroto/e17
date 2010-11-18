@@ -330,7 +330,7 @@ _eyesight_page_links_get(Eyesight_Backend_Pdf *ebp)
         continue;
 
       link_item = (Eyesight_Link *)calloc(1, sizeof(Eyesight_Link));
-      if (!link)
+      if (!link_item)
         continue;
 
       link_action = link->getAction();
@@ -341,49 +341,49 @@ _eyesight_page_links_get(Eyesight_Backend_Pdf *ebp)
           link_item->action = EYESIGHT_LINK_ACTION_GOTO;
           link_item->dest.action_goto = _eyesight_link_action_goto_fill(ebp->doc.pdfdoc, (LinkGoTo *)link_action);
             break;
-          case actionGoToR:
-            link_item->action = EYESIGHT_LINK_ACTION_GOTO_NEW_FILE;
-            link_item->dest.action_goto_new_file = _eyesight_link_action_goto_new_file_fill((LinkGoToR *)link_action);
-            break;
-          case actionLaunch:
-            link_item->action = EYESIGHT_LINK_ACTION_LAUNCH;
-            link_item->dest.action_launch = _eyesight_link_action_launch_fill((LinkLaunch *)link_action);
-            break;
-          case actionURI:
-            link_item->action = EYESIGHT_LINK_ACTION_URI;
-            link_item->dest.action_uri = _eyesight_link_action_uri_fill((LinkURI *)link_action);
-            break;
-          case actionNamed:
-            link_item->action = EYESIGHT_LINK_ACTION_NAMED;
-            link_item->dest.action_named = _eyesight_link_action_named_fill((LinkNamed *)link_action);
-            break;
-          case actionMovie:
-            link_item->action = EYESIGHT_LINK_ACTION_MOVIE;
-            link_item->dest.action_movie = _eyesight_link_action_movie_fill((LinkMovie *)link_action);
-            break;
-          case actionRendition:
-            link_item->action = EYESIGHT_LINK_ACTION_RENDITION;
-            link_item->dest.action_rendition = _eyesight_link_action_rendition_fill((LinkRendition *)link_action);
-            break;
-          case actionSound:
-            link_item->action = EYESIGHT_LINK_ACTION_SOUND;
-            link_item->dest.action_sound = _eyesight_link_action_sound_fill((LinkSound *)link_action);
-            break;
-          case actionJavaScript:
-            link_item->action = EYESIGHT_LINK_ACTION_JAVASCRIPT;
-            link_item->dest.action_javascript = _eyesight_link_action_javascript_fill((LinkJavaScript *)link_action);
-            break;
+        case actionGoToR:
+          link_item->action = EYESIGHT_LINK_ACTION_GOTO_NEW_FILE;
+          link_item->dest.action_goto_new_file = _eyesight_link_action_goto_new_file_fill((LinkGoToR *)link_action);
+          break;
+        case actionLaunch:
+          link_item->action = EYESIGHT_LINK_ACTION_LAUNCH;
+          link_item->dest.action_launch = _eyesight_link_action_launch_fill((LinkLaunch *)link_action);
+          break;
+        case actionURI:
+          link_item->action = EYESIGHT_LINK_ACTION_URI;
+          link_item->dest.action_uri = _eyesight_link_action_uri_fill((LinkURI *)link_action);
+          break;
+        case actionNamed:
+          link_item->action = EYESIGHT_LINK_ACTION_NAMED;
+          link_item->dest.action_named = _eyesight_link_action_named_fill((LinkNamed *)link_action);
+          break;
+        case actionMovie:
+          link_item->action = EYESIGHT_LINK_ACTION_MOVIE;
+          link_item->dest.action_movie = _eyesight_link_action_movie_fill((LinkMovie *)link_action);
+          break;
+        case actionRendition:
+          link_item->action = EYESIGHT_LINK_ACTION_RENDITION;
+          link_item->dest.action_rendition = _eyesight_link_action_rendition_fill((LinkRendition *)link_action);
+          break;
+        case actionSound:
+          link_item->action = EYESIGHT_LINK_ACTION_SOUND;
+          link_item->dest.action_sound = _eyesight_link_action_sound_fill((LinkSound *)link_action);
+          break;
+        case actionJavaScript:
+          link_item->action = EYESIGHT_LINK_ACTION_JAVASCRIPT;
+          link_item->dest.action_javascript = _eyesight_link_action_javascript_fill((LinkJavaScript *)link_action);
+          break;
 #ifdef HAVE_POPPLER_0_14
-          case actionOCGState:
-            link_item->action = EYESIGHT_LINK_ACTION_OCG_STATE;
-            link_item->dest.action_ocg_state = _eyesight_link_action_ocg_state_fill((LinkOCGState *)link_action);
-            break;
+        case actionOCGState:
+          link_item->action = EYESIGHT_LINK_ACTION_OCG_STATE;
+          link_item->dest.action_ocg_state = _eyesight_link_action_ocg_state_fill((LinkOCGState *)link_action);
+          break;
 #endif
-          case actionUnknown:
-            link_item->action = EYESIGHT_LINK_ACTION_UNKNOWN;
-            link_item->dest.action_unknown = _eyesight_link_action_unknown_fill((LinkUnknown *)link_action);
-            break;
-          }
+        case actionUnknown:
+          link_item->action = EYESIGHT_LINK_ACTION_UNKNOWN;
+          link_item->dest.action_unknown = _eyesight_link_action_unknown_fill((LinkUnknown *)link_action);
+          break;
+        }
 
       link->getRect (&x1, &y1, &x2, &y2);
       x1 -= ebp->page.page->getCropBox()->x1;
@@ -978,7 +978,7 @@ em_file_close(void *eb)
     }
 }
 
-static Eina_List *
+static const Eina_List *
 em_toc_get(void *eb)
 {
   Eyesight_Backend_Pdf *ebp;
@@ -1338,8 +1338,6 @@ static Eina_List *
 em_page_links_get(void *eb)
 {
   Eyesight_Backend_Pdf *ebp;
-  Eina_List *links_list = NULL;
-  Object obj;
 
   if (!eb)
     return NULL;
@@ -1420,7 +1418,7 @@ pdf_module_shutdown(void)
    _eyesight_module_unregister("pdf");
 }
 
-#ifndef EYESIGHT_STATIC_BUILD_POPPLER
+#ifndef EYESIGHT_STATIC_BUILD_PDF
 
 EINA_MODULE_INIT(pdf_module_init);
 EINA_MODULE_SHUTDOWN(pdf_module_shutdown);

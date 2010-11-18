@@ -30,12 +30,36 @@ AC_SUBST(version_info)
 ### Needed information
 
 want_img="yes"
-want_poppler="yes"
+want_pdf="yes"
 want_postscript="yes"
 want_txt="yes"
 
 
 ### Additional options to configure
+
+AC_ARG_WITH([pdf-backend],
+   [AC_HELP_STRING([--with-pdf-backend], [PDF backend used (mupdf or poppler) @<:@default=mupdf@:>@])],
+  [
+   if ! test "x${with_pdf_backend}" = "xmupdf" && ! test "x${with_pdf_backend}" = "xpoppler" ; then
+      with_pdf_backend="mupdf"
+   fi
+  ],
+  [with_pdf_backend="mupdf"])
+
+# CJK fonts for mupdf
+AC_ARG_ENABLE([mupdf-cjk],
+   [AC_HELP_STRING([--enable-mupdf-cjk], [enable mupdf CJK fonts @<:@default=disabled@:>@])],
+   [
+    if test "x${enableval}" = "xyes" ; then
+       want_mupdf_cjk="yes"
+    else
+       want_mupdf_cjk="no"
+    fi
+   ],
+   [want_mupdfcjk="no"])
+
+AC_MSG_CHECKING([whether mupdf CJK fonts are enabled])
+AC_MSG_RESULT([${want_mupdf_cjk}])
 
 EFL_ENABLE_BIN([eyesight])
 
@@ -67,7 +91,7 @@ EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
 requirement_eyesight="eina >= 1.0.0, evas >= 1.0.0"
 
-EYESIGHT_CHECK_MODULE([Poppler], [${want_poppler}])
+EYESIGHT_CHECK_MODULE([PDF], [${want_pdf}])
 EYESIGHT_CHECK_MODULE([Postscript], [${want_postscript}])
 EYESIGHT_CHECK_MODULE([Txt], [${want_txt}])
 EYESIGHT_CHECK_MODULE([Img], [${want_img}])
@@ -153,7 +177,11 @@ echo "  Documentation........: ${build_doc}"
 echo
 echo "  Modules..............:"
 echo "    Image..............: ${enable_img}"
-echo "    Poppler............: ${enable_poppler}"
+if test "x${enable_pdf}" = "xyes" ; then
+   echo "    PDF................: yes (${with_pdf_backend})"
+else
+   echo "    PDF................: no"
+fi
 echo "    Postscript.........: ${enable_postscript}"
 echo "    Txt................: ${enable_txt}"
 echo

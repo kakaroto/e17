@@ -303,8 +303,8 @@ eyesight_object_file_get(Evas_Object *obj)
    return sd->filename;
 }
 
-EAPI Eina_List
-*eyesight_object_toc_get(Evas_Object *obj)
+EAPI const Eina_List *
+eyesight_object_toc_get(Evas_Object *obj)
 {
    Smart_Data *sd;
 
@@ -557,7 +557,7 @@ eyesight_object_page_links_get(Evas_Object *obj)
 Eina_Bool img_module_init(void);
 #endif
 
-#ifdef EINA_STATIC_BUILD_POPPLER
+#ifdef EINA_STATIC_BUILD_PDF
 Eina_Bool pdf_module_init(void);
 #endif
 

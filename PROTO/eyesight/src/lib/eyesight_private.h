@@ -50,7 +50,7 @@ struct _Eyesight_Module
   void                 (*shutdown)(void *backend);
   void                *(*file_open)(void *backend, const char *filename);
   void                 (*file_close)(void *backend);
-  Eina_List           *(*toc_get)(void *backend);
+  const Eina_List     *(*toc_get)(void *backend);
   int                  (*page_count)(void *backend);
 
   void                 (*page_set)(void *backend, int page);
@@ -77,6 +77,9 @@ EAPI Eina_Bool _eyesight_module_unregister(const char *name);
 
 EAPI Eyesight_Link *_eyesight_link_new(Eyesight_Link_Action_Kind action);
 EAPI void           _eyesight_link_free(Eyesight_Link *link);
+
+EAPI Eyesight_Index_Item *eyesight_index_item_new();
+void                      eyesight_index_item_free(Eyesight_Index_Item *item);
 
 #ifdef __cplusplus
 }

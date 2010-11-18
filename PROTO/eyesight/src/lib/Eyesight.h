@@ -176,7 +176,7 @@ EAPI Eyesight_Backend     eyesight_object_init(Evas_Object *obj,
 EAPI void                *eyesight_object_file_set(Evas_Object *obj,
                                                    const char *filename);
 EAPI const char          *eyesight_object_file_get(Evas_Object *obj);
-EAPI Eina_List           *eyesight_object_toc_get(Evas_Object *obj);
+EAPI const Eina_List     *eyesight_object_toc_get(Evas_Object *obj);
 EAPI int                  eyesight_object_page_count(Evas_Object *obj);
 
 EAPI void                 eyesight_object_page_set(Evas_Object *obj, int page);
@@ -202,12 +202,10 @@ EAPI Eina_List           *eyesight_object_page_text_find(Evas_Object *obj,
                                                          Eina_Bool backward);
 EAPI Eina_List           *eyesight_object_page_links_get(Evas_Object *obj);
 
-EAPI Eyesight_Index_Item      *eyesight_index_item_new();
-void                           eyesight_index_item_free(Eyesight_Index_Item *item);
 EAPI const char               *eyesight_index_item_title_get(const Eyesight_Index_Item *item);
 EAPI Eyesight_Link_Action_Kind eyesight_index_item_action_kind_get(const Eyesight_Index_Item *item);
 EAPI int                       eyesight_index_item_page_get(const Eyesight_Index_Item *item);
-EAPI Eina_List                *eyesight_index_item_children_get(const Eyesight_Index_Item *item);
+EAPI const Eina_List          *eyesight_index_item_children_get(const Eyesight_Index_Item *item);
 Eina_Bool                      eyesight_index_item_is_open (const Eyesight_Index_Item *item);
 
 #ifdef __cplusplus

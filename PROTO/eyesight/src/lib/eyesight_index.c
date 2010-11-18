@@ -33,6 +33,8 @@ eyesight_index_item_new()
   if (!item)
     return NULL;
 
+  item->page = -1;
+
   return item;
 }
 
@@ -64,7 +66,7 @@ eyesight_index_item_title_get(const Eyesight_Index_Item *item)
   return item->title;
 }
 
-Eina_List *
+const Eina_List *
 eyesight_index_item_children_get(const Eyesight_Index_Item *item)
 {
   if (!item)

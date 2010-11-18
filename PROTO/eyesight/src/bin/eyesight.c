@@ -129,7 +129,7 @@ static void _cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info
 
 static int indent = -2;
 
-static void _display_toc(Eina_List *items)
+static void _display_toc(const Eina_List *items)
 {
   Eina_List *l;
   void      *data;
@@ -334,7 +334,7 @@ int main(int argc, char *argv[])
   ecore_evas_resize(ee, w, h);
   ecore_evas_show(ee);
 
-/*   _display_toc(eyesight_object_toc_get(o)); */
+  _display_toc(eyesight_object_toc_get(o));
 /*   _display_text(eyesight_object_page_text_find(o, "prix", EINA_FALSE, EINA_FALSE)); */
   _display_links(o, links);
 

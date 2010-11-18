@@ -23,41 +23,88 @@ AS_IF([test "x$have_dep" = "xyes"], [$2], [$3])
 
 ])
 
-dnl use: EYESIGHT_CHECK_DEP_POPPLER(want_static[, ACTION-IF-FOUND[, ACTION-IF-NOT-FOUND]])
+dnl use: EYESIGHT_CHECK_DEP_PDF(want_static[, ACTION-IF-FOUND[, ACTION-IF-NOT-FOUND]])
 
-AC_DEFUN([EYESIGHT_CHECK_DEP_POPPLER],
+AC_DEFUN([EYESIGHT_CHECK_DEP_PDF],
 [
 
 requirement=""
 
-PKG_CHECK_MODULES([POPPLER],
-   [poppler >= 0.12],
-   [
-    have_dep="yes"
-    requirement="poppler"
-   ],
-   [have_dep="no"])
-
-if test "x${have_dep}" = "xyes" ; then
-   AC_LANG_PUSH(C++)
-   CPPFLAGS_save=${CPPFLAGS}
-   CPPFLAGS="${CPPFLAGS} ${POPPLER_CFLAGS}"
-   AC_CHECK_HEADER([GlobalParams.h],
-      [have_dep="yes"],
+if test "x${with_pdf_backend}" = "xpoppler" ; then
+   PKG_CHECK_MODULES([POPPLER],
+      [poppler >= 0.12],
       [
-       AC_MSG_WARN([Xpdf headers not found. Verify that poppler is configured with the option --enable-xpdf-headers])
-       have_dep="no"
-      ])
-   CPPFLAGS=${CPPFLAGS_save}
-   AC_LANG_POP(C++)
+       have_dep="yes"
+       requirement="poppler"
+      ],
+      [have_dep="no"])
+
+   if test "x${have_dep}" = "xyes" ; then
+      AC_LANG_PUSH(C++)
+      CPPFLAGS_save=${CPPFLAGS}
+      CPPFLAGS="${CPPFLAGS} ${POPPLER_CFLAGS}"
+      AC_CHECK_HEADER([GlobalParams.h],
+         [have_dep="yes"],
+         [
+          AC_MSG_WARN([Xpdf headers not found. Verify that poppler is configured with the option --enable-xpdf-headers])
+          have_dep="no"
+         ])
+      CPPFLAGS=${CPPFLAGS_save}
+      AC_LANG_POP(C++)
+   fi
+
+   if test "x${have_dep}" = "xyes" ; then
+      PKG_CHECK_MODULES([POPPLER_0_14],
+         [poppler >= 0.14],
+         [AC_DEFINE([HAVE_POPPLER_0_14], [1], [Set to 1 if poppler 0.14 is installed])],
+         [dummy=yes])
+   fi
+else
+dnl PDF backend is enabled and it's not poppler, then it is mupdf
+
+MUPDF_CFLAGS=""
+MUPDF_LIBS=""
+
+dnl Freetype
+   PKG_CHECK_MODULES([FREETYPE], [freetype2], [have_dep="yes"], [have_dep="no"])
+
+dnl openjpeg
+   if test "x${have_dep}" = "xyes" ; then
+      AC_CHECK_HEADER([openjpeg.h], [have_dep="yes"], [have_dep="no"])
+   fi
+
+   if test "x${have_dep}" = "xyes" ; then
+      AC_CHECK_LIB([openjpeg], [opj_set_default_decoder_parameters], [have_dep="yes"], [have_dep="no"])
+   fi
+
+dnl jbig2
+   if test "x${have_dep}" = "xyes" ; then
+      AC_CHECK_HEADER([jbig2.h], [have_dep="yes"], [have_dep="no"])
+   fi
+
+   if test "x${have_dep}" = "xyes" ; then
+      AC_CHECK_LIB([jbig2dec], [jbig2_ctx_new], [have_dep="yes"], [have_dep="no"])
+   fi
+
+   if test "x${have_dep}" = "xyes" ; then
+      requirement="freetype2"
+      MUPDF_CFLAGS="${FREETYPE_CFLAGS}"
+      MUPDF_LIBS="${FREETYPE_LIBS} -lopenjpeg -ljbig2dec"
+   fi
+
+dnl CJK fonts
+   if ! test "x${want_mupdf_cjk}" = "xyes" ; then
+      BUILD_MUPDF_CJK_FONTS="-DNOCJK"
+   fi
+
 fi
 
-if test "x${have_dep}" = "xyes" ; then
-   PKG_CHECK_MODULES([POPPLER_0_14],
-      [poppler >= 0.14],
-      [AC_DEFINE([HAVE_POPPLER_0_14], [1], [Set to 1 if poppler 0.14 is installed])],
-      [dummy=yes])
-fi
+AC_SUBST(MUPDF_CFLAGS)
+AC_SUBST(MUPDF_LIBS)
+AC_SUBST(BUILD_MUPDF_CJK_FONTS)
+
+AM_CONDITIONAL([HAVE_PDF_BACKEND_MUPDF], [test "x${with_pdf_backend}" = "xmupdf"])
+AM_CONDITIONAL([BUILD_MUPDF_CJK_FONTS], [test "x${want_mupdf_cjk}" = "xyes"])
 
 if test "x$1" = "xstatic" ; then
    requirement_eyesight="${requirement} ${requirement_eyesight}"

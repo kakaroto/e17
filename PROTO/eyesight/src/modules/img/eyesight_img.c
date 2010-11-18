@@ -173,6 +173,7 @@ static Eina_Bool
 _eyesight_cb_deflate(Eyesight_Backend_Img *ebi, Eina_Bool use_rar)
 {
   char buf[4096];
+  Eina_List *files;
   char *deflate;
   int ret;
 
@@ -208,26 +209,49 @@ _eyesight_cb_deflate(Eyesight_Backend_Img *ebi, Eina_Bool use_rar)
   if (ret != 0)
     return EINA_FALSE;
 
+  /* check if the files are in a directory */
+  files = ecore_file_ls(ebi->archive_path);
+  if (eina_list_count(files) == 1)
+    {
+      char *archive_path;
+      size_t l1;
+      size_t l2;
+
+      l1 = strlen(ebi->archive_path);
+      l2 = strlen(eina_list_data_get(files));
+      archive_path = (char *)malloc((l1 + l2 + 2) * sizeof(char));
+      if (!archive_path)
+        return EINA_FALSE;
+      memcpy(archive_path, ebi->archive_path, l1);
+      archive_path[l1] = '/';
+      memcpy(archive_path + l1 + 1, eina_list_data_get(files), l2 + 1);
+      if (ecore_file_is_dir(archive_path))
+        {
+          free(ebi->archive_path);
+          ebi->archive_path = archive_path;
+        }
+    }
+
   return EINA_TRUE;
 }
 
 static Eina_Bool
-_eyesight_cb_page_set(Evas_Object *obj, const char *archive_path, Eina_List *toc, int page)
+_eyesight_cb_page_set(Eyesight_Backend_Img *ebi, int page)
 {
   char buf[4096];
   Eyesight_Index_Item *item;
   int ret;
 
-  item = eina_list_nth(toc, page);
+  item = eina_list_nth(ebi->doc.toc, page);
   if (!item)
     return EINA_FALSE;
 
-  ret = snprintf(buf, 4096, "%s/%s", archive_path, item->title);
+  ret = snprintf(buf, 4096, "%s/%s", ebi->archive_path, item->title);
   if (ret >= 4096)
     return EINA_FALSE;
 
-  evas_object_image_file_set(obj, buf, NULL);
-  if (evas_object_image_load_error_get(obj) != EVAS_LOAD_ERROR_NONE)
+  evas_object_image_file_set(ebi->obj, buf, NULL);
+  if (evas_object_image_load_error_get(ebi->obj) != EVAS_LOAD_ERROR_NONE)
     {
       ERR("Could not open file %s", buf);
       return EINA_FALSE;
@@ -368,7 +392,7 @@ em_file_open (void *eb, const char *filename)
         ebi->doc.toc = eina_list_append(ebi->doc.toc, item);
       }
     eina_list_free(files);
-    if (!_eyesight_cb_page_set(ebi->obj, ebi->archive_path, ebi->doc.toc, 0))
+    if (!_eyesight_cb_page_set(ebi, 0))
       goto free_archive_path;
   }
 
@@ -436,7 +460,7 @@ em_file_close (void *eb)
     }
 }
 
-static Eina_List *
+static const Eina_List *
 em_toc_get(void *eb)
 {
   Eyesight_Backend_Img *ebi;
@@ -500,7 +524,7 @@ em_page_set(void *eb, int page)
 
   DBG("page=%d", page);
 
-  if (!_eyesight_cb_page_set(ebi->obj, ebi->archive_path, ebi->doc.toc, page))
+  if (!_eyesight_cb_page_set(ebi, page))
     ERR("Could not set page %d", page);
 }
 

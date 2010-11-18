@@ -182,7 +182,7 @@ em_file_close (void *eb)
     }
 }
 
-static Eina_List *
+static const Eina_List *
 em_toc_get(void *eb)
 {
   return NULL;
