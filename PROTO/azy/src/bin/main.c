@@ -1286,7 +1286,7 @@ gen_client_headers(Azy_Server_Module *s)
              E(0, ", %s%s %s", !strcmp(p->type->ctype, "char*") ? "const " : "", p->type->ctype, p->name);
           }
 
-        EL(0, ", Azy_Content *_error, void *data);");
+        EL(0, ", Azy_Content *_error, const void *data);");
         NL;
      }
 
@@ -1326,7 +1326,7 @@ gen_client_impl(Azy_Server_Module *s)
              E(0, ", %s%s %s", !strcmp(p->type->ctype, "char*") ? "const " : "", p->type->ctype, p->name);
           }
 
-        EL(0, ", Azy_Content *_error, void *data)");
+        EL(0, ", Azy_Content *_error, const void *data)");
         EL(0, "{");
           EL(1, "Azy_Client_Call_Id _retval = 0;");
       //  EL(1, "%s _retval = %s;", method->return_type->ctype, method->return_type->cnull);
