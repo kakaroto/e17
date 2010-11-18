@@ -16,6 +16,7 @@ eyesight_ps.h
 ps_la_CPPFLAGS = \
 -I$(top_srcdir) \
 -I$(top_srcdir)/src/lib \
+@EFL_EYESIGHT_BUILD@ \
 @EYESIGHT_CFLAGS@ \
 @POSTSCRIPT_CFLAGS@
 ps_la_LIBADD = @EYESIGHT_LIBS@ @POSTSCRIPT_LIBS@ $(top_builddir)/src/lib/libeyesight.la -lm

@@ -16,6 +16,7 @@ eyesight_img.h
 img_la_CPPFLAGS = \
 -I$(top_srcdir) \
 -I$(top_srcdir)/src/lib \
+@EFL_EYESIGHT_BUILD@ \
 @EYESIGHT_CFLAGS@ \
 @ECORE_FILE_CFLAGS@
 img_la_LIBADD  = @EYESIGHT_LIBS@ @ECORE_FILE_LIBS@ $(top_builddir)/src/lib/libeyesight.la

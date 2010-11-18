@@ -16,6 +16,7 @@ eyesight_txt.h
 txt_la_CPPFLAGS = \
 -I$(top_srcdir) \
 -I$(top_srcdir)/src/lib \
+@EFL_EYESIGHT_BUILD@ \
 @EYESIGHT_CFLAGS@
 txt_la_LIBADD  = @EYESIGHT_LIBS@ $(top_builddir)/src/lib/libeyesight.la
 txt_la_LDFLAGS = -no-undefined @lt_enable_auto_import@ -module -avoid-version

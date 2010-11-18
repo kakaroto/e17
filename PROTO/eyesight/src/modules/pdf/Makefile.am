@@ -376,6 +376,7 @@ pdf_la_CPPFLAGS = \
 -I$(top_builddir)/src/modules/pdf/mupdf-0.7/fitz \
 -I$(top_srcdir)/src/modules/pdf/mupdf-0.7/mupdf \
 -I$(top_builddir)/src/modules/pdf/mupdf-0.7/mupdf \
+@EFL_EYESIGHT_BUILD@ \
 @EYESIGHT_CFLAGS@
 pdf_la_LIBADD  = \
 @EYESIGHT_LIBS@ \
@@ -396,6 +397,7 @@ eyesight_pdf.h
 pdf_la_CPPFLAGS = \
 -I$(top_srcdir) \
 -I$(top_srcdir)/src/lib \
+@EFL_EYESIGHT_BUILD@ \
 @EYESIGHT_CFLAGS@ \
 @POPPLER_CFLAGS@
 pdf_la_CXXFLAGS = -fno-rtti -fno-exceptions
