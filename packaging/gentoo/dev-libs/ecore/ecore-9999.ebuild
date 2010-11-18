@@ -8,15 +8,15 @@ inherit enlightenment
 
 DESCRIPTION="Enlightenment's core event abstraction layer and OS abstraction layer"
 
-IUSE="cares curl directfb +epoll +evas fbcon glib gnutls +inotify opengl sdl openssl static-libs +threads tslib +X xcb xinerama xprint xscreensaver"
+IUSE="ares curl directfb +epoll +evas fbcon glib gnutls +inotify opengl sdl ssl static-libs +threads tslib +X xcb xinerama xprint xscreensaver"
 
 RDEPEND="
 	>=dev-libs/eina-9999
+	ares? ( net-dns/c-ares )
 	glib? ( dev-libs/glib )
-	cares? ( net-dns/c-ares )
 	curl? ( net-misc/curl )
 	gnutls? ( net-libs/gnutls )
-	!gnutls? ( openssl? ( dev-libs/openssl ) )
+	!gnutls? ( ssl? ( dev-libs/openssl ) )
 	evas? (
 		>=media-libs/evas-9999[directfb?,fbcon?,opengl?,sdl?,X?,xcb?]
 		opengl? ( virtual/opengl )
@@ -45,15 +45,15 @@ src_configure() {
 	local SSL_FLAGS="" EVAS_FLAGS="" X_FLAGS=""
 
 	if use gnutls; then
-		if use openssl; then
-			einfo "You have enabled both 'openssl' and 'gnutls', so we will use"
+		if use ssl; then
+			einfo "You have enabled both 'ssl' and 'gnutls', so we will use"
 			einfo "gnutls and not openssl for ecore-con support"
 		fi
 		SSL_FLAGS="
 		  --disable-openssl
 		  --enable-gnutls
 		"
-	elif use openssl; then
+	elif use ssl; then
 		SSL_FLAGS="
 		  --enable-openssl
 		  --disable-gnutls
@@ -155,6 +155,8 @@ src_configure() {
 		ewarn "Compile dev-libs/ecore with USE=fbcon."
 	fi
 
+	use epoll || ewarn "WARNING: You are disabling epoll!!!!! DO NOT DO THIS!!!!"
+
 	MY_ECONF="
 	--enable-ecore-con
 	--enable-ecore-ipc
@@ -169,11 +171,11 @@ src_configure() {
 	--disable-ecore-evas-opengl-glew
 	--disable-ecore-evas-software-16-ddraw
 	--disable-ecore-evas-software-16-wince
-	$(use_enable cares)
+	$(use_enable ares cares)
 	$(use_enable curl)
-	$(use_enable epoll)
 	$(use_enable directfb ecore-directfb)
 	$(use_enable doc)
+	$(use_enable epoll)
 	$(use_enable evas ecore-evas)
 	$(use_enable evas ecore-input-evas)
 	$(use_enable evas ecore-imf-evas)

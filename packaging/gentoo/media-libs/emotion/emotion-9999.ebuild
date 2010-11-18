@@ -1,56 +1,38 @@
-# Copyright 1999-2010 Gentoo Foundation
+# Copyright 1999-2007 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
-
-EAPI="2"
+# $Header: /var/cvsroot/gentoo-x86/media-libs/emotion/emotion-9999.ebuild,v 1.6 2006/02/14 00:32:25 vapier Exp $
 
 inherit enlightenment
 
-DESCRIPTION="Enlightenment's (Ecore/Evas) video integration."
-HOMEPAGE="http://trac.enlightenment.org/e/wiki/Emotion"
+DESCRIPTION="video libraries for e17"
 
-# vlc/gstreamer support is buggy, do not even expose them here
-#IUSE="gstreamer xine vlc static-modules"
-IUSE="gstreamer xine static-modules static-libs"
+IUSE="gstreamer xine static-libs"
 
-# TODO: remove edje dependency as soon as emotion is fixed to not build its test
-RDEPEND="
-	>=dev-libs/eina-9999
-	>=dev-libs/ecore-9999
-	>=media-libs/evas-9999
+DEPEND=">=media-libs/evas-9999
 	>=media-libs/edje-9999
+	>=dev-libs/ecore-9999
 	xine? ( >=media-libs/xine-lib-1.1.1 )
-	gstreamer? (
+	!gstreamer? ( !xine? ( >=media-libs/xine-lib-1.1.1 ) )
+	gstreamer? ( 
 		=media-libs/gstreamer-0.10*
 		=media-libs/gst-plugins-good-0.10*
 		=media-plugins/gst-plugins-ffmpeg-0.10*
 	)"
-#	vlc? media-video/vlc"
-DEPEND="${RDEPEND}"
 
-src_configure() {
-#uncomment when functional
-#	if ! use xine && ! use gstreamer && ! use vlc; then
-	if ! use xine && ! use gstreamer; then
-		die "Emotion needs at least one media system to be useful!"
-		die "Compile media-libs/emotion with USE=xine or gstreamer."
-	fi
-
-	if use static-modules; then
-		MODULE_ARGUMENT="static"
+src_compile() {
+	if ! use xine && ! use gstreamer ; then
+		export MY_ECONF="--enable-xine --disable-gstreamer"
 	else
-		MODULE_ARGUMENT="yes"
+		export MY_ECONF="
+			$(use_enable xine) \
+			$(use_enable gstreamer) \
+		"
 	fi
 
-	MY_ECONF="
-	  --disable-vlc
-	  $(use_enable xine xine $MODULE_ARGUMENT)
-	  $(use_enable gstreamer gstreamer $MODULE_ARGUMENT)
-	"
-	# work around GStreamer's desire to check registry, which by default
-	# results in sandbox access violation.
-	export GST_REGISTRY="${T}"/registry.xml
-	export GST_PLUGIN_SYSTEM_PATH="${T}"
+	if use gstreamer ; then
+		addpredict "/root/.gconfd"
+		addpredict "/root/.gconf"
+	fi
 
-	enlightenment_src_configure
+	enlightenment_src_compile
 }
