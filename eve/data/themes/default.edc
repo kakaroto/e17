@@ -507,6 +507,10 @@ collections {
                     set_state_val(PART:"progress-bar-mask", STATE_REL2, value, 1.0);
                     set_state(PART:"progress-bar-mask", "custom", 0.0);
 
+                    custom_state(PART:"progress-bar-topmask", "visible", 0.0);
+                    set_state_val(PART:"progress-bar-topmask", STATE_REL2, value, 1.0);
+                    set_state(PART:"progress-bar-topmask", "custom", 0.0);
+
                     run_program(PROGRAM:"stop-show");
                     run_program(PROGRAM:"reload-hide");
                 }
@@ -887,6 +891,29 @@ collections {
                         relative: 1.0 0.0;
                         offset: -1 5;
                     }
+                }
+            }
+            part { name: "progress-bar-topmask";
+                type: IMAGE;
+                description { state: "default" 0.0;
+                    fixed: 1 1;
+                    visible: 0;
+                    min: 10 15;
+                    max: 99999 15;
+                    align: 0.0 0.0;
+                    rel1 {
+                        relative: 0.0 0.0;
+                    }
+                    rel2 {
+                        relative: 1.0 0.0;
+                    }
+                    image.normal: "progress-bar-background.png";
+                    color: 255 255 255 0;
+                }
+                description { state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                    color: 255 255 255 255;
                 }
             }
             part { name: "panel-top-triangle";
@@ -1313,11 +1340,19 @@ collections {
                     action: STATE_SET "default" 0.0;
                     target: "progress-bar-mask";
                     transition: ACCELERATE 0.5;
+
+                    action: STATE_SET "default" 0.0;
+                    target: "progress-bar-topmask";
+                    transition: ACCELERATE 0.5;
                 }
                 program { name: "progress-bar-show";
                     action: STATE_SET "visible" 0.0;
                     target: "progress-bar-mask";
                     transition: DECELERATE 0.5;
+
+                    action: STATE_SET "default" 0.0;
+                    target: "progress-bar-topmask";
+                    transition: ACCELERATE 0.5;
                 }
             }
         }
