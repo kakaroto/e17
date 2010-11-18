@@ -192,7 +192,6 @@ elsa_session_run(struct passwd *pwd, char *cmd)
      }
    else
      {
-        sleep(5);
         elsa_session_pid_set(pid);
         _user = strdup(pwd->pw_name);
         _running = ecore_thread_run(_elsa_session_run_wait,
@@ -244,7 +243,7 @@ elsa_session_init(const char *file)
    remove(file);
    snprintf(buf, sizeof(buf), "XAUTHORITY=%s", file);
    putenv(buf);
-   fprintf(stderr, "Elsa: cookie %s \n", _mcookie);
+   fprintf(stderr, PACKAGE": cookie %s \n", _mcookie);
    _elsa_session_cookie_add(_mcookie, ":0", "/usr/bin/xauth", file);
 }
 
@@ -284,7 +283,7 @@ elsa_session_login(const char *command)
         elsa_pam_env_set("MAIL", "");
         snprintf(buf, sizeof(buf), "%s/.Xauthority", pwd->pw_dir);
         elsa_pam_env_set("XAUTHORITY", buf);
-        printf("launching %s\n", command);
+        fprintf(stderr, PACKAGE": launching %s\n", command);
         elsa_session_run(pwd, command);
      }
 #endif
