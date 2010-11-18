@@ -1267,14 +1267,14 @@ gen_client_headers(Azy_Server_Module *s)
      {
         EL(0, "/** ");
         EL(0, " * ");
-        EL(0, " * @param _client Client connection object.");
+        EL(0, " * @param _client Client object.");
 
         EINA_LIST_FOREACH(method->params, k, p)
           {
              EL(0, " * @param %s", p->name);
           }
 
-        EL(0, " * @param _error Error variable pointer (may be NULL).");
+        EL(0, " * @param _error Error content (cannot be NULL).");
         EL(0, " *");
         EL(0, " * @return ");
         EL(0, " */ ");
