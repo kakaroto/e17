@@ -26,4 +26,5 @@
 #include "elm/hover.edc"
 #include "elm/application.edc"
 #include "elm/pager.edc"
+#include "elm/gengrid.edc"
 //#include "elm/old.edc"
