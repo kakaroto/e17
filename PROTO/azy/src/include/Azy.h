@@ -374,7 +374,7 @@ extern "C" {
    /* client */
    void            *azy_client_data_get(Azy_Client *client);
    void             azy_client_data_set(Azy_Client *client,
-                                         void        *data);
+                                        const void *data);
    Azy_Client     *azy_client_new(void);
    Eina_Bool        azy_client_callback_set(Azy_Client *client,
                                              Azy_Client_Call_Id id,

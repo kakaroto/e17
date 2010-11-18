@@ -31,7 +31,7 @@ azy_client_data_get(Azy_Client *client)
 }
 
 void
-azy_client_data_set(Azy_Client *client, void *data)
+azy_client_data_set(Azy_Client *client, const void *data)
 {
    DBG("(client=%p)", client);
    if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
@@ -39,7 +39,7 @@ azy_client_data_set(Azy_Client *client, void *data)
         AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
         return;
      }
-   client->data = data;
+   client->data = (void*)data;
 }
 
 Azy_Client *
