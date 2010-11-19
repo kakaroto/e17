@@ -884,43 +884,55 @@ db_album_covers_update(DB *db, const Album *album)
    EINA_SAFETY_ON_NULL_RETURN_VAL(album, EINA_FALSE);
    Album_Cover *cover;
    Eina_Bool retval = EINA_FALSE;
-   sqlite3_stmt *covers_update;
+   sqlite3_stmt *stmt;
 
-   if (!album->covers)
+   if (EINA_UNLIKELY(!album->covers))
      {
-         char sql[1024], *errmsg;
-         sqlite3_snprintf(sizeof(sql), sql,
-                          "DELETE FROM covers WHERE album_id = %lld",
-                          album->id);
-         if (sqlite3_exec(db->handle, sql, NULL, NULL, &errmsg) != SQLITE_OK)
-           {
-              ERR("Could not execute SQL %s: %s", sql, errmsg);
-              sqlite3_free(errmsg);
-              return EINA_FALSE;
-           }
-         return EINA_TRUE;
+        stmt = _db_stmt_compile(db, "covers_get",
+           "SELECT file_path FROM covers WHERE album_id = ?");
+        if (!stmt) return EINA_FALSE;
+        if (!_db_stmt_bind_int64(stmt, 1, album->id))
+          {
+             _db_stmt_finalize(stmt, "covers_get");
+             return EINA_FALSE;
+          }
+        while (sqlite3_step(stmt) == SQLITE_ROW)
+          ecore_file_remove((char *)sqlite3_column_text(stmt, 0));
+        _db_stmt_finalize(stmt, "covers_get");
+
+        stmt = _db_stmt_compile(db, "covers_delete",
+           "DELETE FROM covers WHERE album_id = ?");
+        if (!stmt) return EINA_FALSE;
+        if (!_db_stmt_bind_int64(stmt, 1, album->id))
+          {
+             _db_stmt_finalize(stmt, "covers_delete");
+             return EINA_FALSE;
+          }
+        retval = sqlite3_step(stmt) == SQLITE_DONE;
+        _db_stmt_finalize(stmt, "covers_delete");
+        return retval;
      }
 
-   covers_update = _db_stmt_compile(db, "covers_update",
+   stmt = _db_stmt_compile(db, "covers_update",
             "INSERT OR REPLACE INTO covers "
             "(album_id, file_path, origin, width, height) "
             "VALUES (?, ?, ?, ?, ?)");
-   if (!covers_update) return EINA_FALSE;
+   if (!stmt) return EINA_FALSE;
 
    EINA_INLIST_FOREACH(album->covers, cover)
      {
-        if (!_db_stmt_bind_int64(covers_update, 1, album->id)) goto reset;
-        if (!_db_stmt_bind_string(covers_update, 2, cover->path)) goto reset;
-        if (!_db_stmt_bind_int(covers_update, 3, cover->origin)) goto reset;
-        if (!_db_stmt_bind_int(covers_update, 4, cover->w)) goto reset;
-        if (!_db_stmt_bind_int(covers_update, 5, cover->h)) goto reset;
-        if (sqlite3_step(covers_update) != SQLITE_ERROR) retval = EINA_TRUE;
+        if (!_db_stmt_bind_int64(stmt, 1, album->id)) goto reset;
+        if (!_db_stmt_bind_string(stmt, 2, cover->path)) goto reset;
+        if (!_db_stmt_bind_int(stmt, 3, cover->origin)) goto reset;
+        if (!_db_stmt_bind_int(stmt, 4, cover->w)) goto reset;
+        if (!_db_stmt_bind_int(stmt, 5, cover->h)) goto reset;
+        if (sqlite3_step(stmt) != SQLITE_ERROR) retval = EINA_TRUE;
    reset:
-        sqlite3_reset(covers_update);
-        sqlite3_clear_bindings(covers_update);
+        sqlite3_reset(stmt);
+        sqlite3_clear_bindings(stmt);
      }
 
-   _db_stmt_finalize(covers_update, "covers_update");
+   _db_stmt_finalize(stmt, "covers_update");
    return retval;
 }
 
