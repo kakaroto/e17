@@ -1,0 +1,11 @@
+Echo - game based on Simon Says
+
+Echo is a game based on the classic game Simon Says,  written using
+Enlightenment Foundation Libraries (EFL).
+
+See INSTALL for help on how to install.
+See COPYING for software usage, modification and redistribution license.
+
+Sound samples were downloaded from thefreesoundproject.
+They were originally done by eliasheuninck and reworked by bdilly.
+These samples are licensed under Creative Commons Sampling Plus 1.0 License.

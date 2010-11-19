@@ -1,0 +1,7 @@
+DOMAIN = e_cho
+subdir = po
+top_builddir = ..
+XGETTEXT_OPTIONS = --keyword=_ --keyword=N_
+COPYRIGHT_HOLDER = Bruno Dilly
+MSGID_BUGS_ADDRESS = bdilly@profusion.mobi
+EXTRA_LOCALE_CATEGORIES =

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Echo
+Comment=Game
+Comment[pt]=Jogo
+Exec=e_cho
+Icon=e_cho
+Terminal=false
+Type=Application
+Categories=Application;Game
