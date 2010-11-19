@@ -2,6 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/media-libs/edje/edje-9999.ebuild,v 1.6 2006/07/16 05:29:42 vapier Exp $
 
+EAPI="3"
 inherit enlightenment
 
 DESCRIPTION="graphical layout and animation library"
