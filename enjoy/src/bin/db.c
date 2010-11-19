@@ -18,6 +18,7 @@ struct _DB
       sqlite3_stmt *artist_get;
       sqlite3_stmt *genre_get;
    } stmt;
+   Ecore_Timer *cleanup_timer;
 };
 
 static Eina_Bool
@@ -174,6 +175,96 @@ _db_cover_table_ensure_exists(DB *db)
    created = EINA_TRUE;
 }
 
+static void
+_db_files_cleanup(DB *db)
+{
+   EINA_SAFETY_ON_NULL_RETURN(db);
+   static const char *delete_old_files = "DELETE FROM files " \
+                                         "WHERE"
+                                         " dtime > 0 AND "
+                                         " dtime < (strftime('%s', 'now') - (86400 * 7))";
+   char *errmsg;
+   int r;
+
+   r = sqlite3_exec(db->handle, delete_old_files, NULL, NULL, &errmsg);
+   if (r != SQLITE_OK)
+     {
+        ERR("Could not execute SQL %s: %s", delete_old_files, errmsg);
+        sqlite3_free(errmsg);
+     }
+}
+
+static void
+_db_album_covers_cleanup(DB *db)
+{
+   EINA_SAFETY_ON_NULL_RETURN(db);
+   static const char *create_temp_table = "CREATE TEMPORARY TABLE cover_cleanup " \
+                                          "(file_path TEXT)";
+   static const char *clean_temp_table = "DROP TABLE cover_cleanup";
+   Eina_Iterator *files;
+   Eina_File_Direct_Info *fi;
+   sqlite3_stmt *stmt;
+   char *errmsg;
+   int r;
+
+   r = sqlite3_exec(db->handle, create_temp_table, NULL, NULL, &errmsg);
+   if (r != SQLITE_OK)
+     {
+        ERR("Could not execute SQL %s: %s", create_temp_table, errmsg);
+        sqlite3_free(errmsg);
+        return;
+     }
+
+   stmt = _db_stmt_compile(db, "insert_files",
+      "INSERT INTO cover_cleanup (file_path) VALUES (?)");
+   if (!stmt) return;
+
+   files = eina_file_direct_ls(enjoy_cache_dir_get());
+   if (!files)
+     {
+        _db_stmt_finalize(stmt, "insert_files");
+        ERR("Could not open cache directory");
+        return;
+     }
+
+   EINA_ITERATOR_FOREACH(files, fi)
+     {
+        if (!_db_stmt_bind_string(stmt, 1, fi->path)) continue;
+        sqlite3_step(stmt);
+        _db_stmt_reset(stmt);
+     }
+
+   _db_stmt_finalize(stmt, "insert_files");
+
+   stmt = _db_stmt_compile(db, "join_files",
+      "SELECT cover_cleanup.file_path FROM covers LEFT OUTER JOIN cover_cleanup " \
+      "ON covers.file_path = cover_cleanup.file_path " \
+      "WHERE covers.file_path IS NULL");
+   if (!stmt) goto end;
+
+   while (sqlite3_step(stmt) == SQLITE_ROW)
+     ecore_file_remove((char *)sqlite3_column_text(stmt, 0));
+   _db_stmt_finalize(stmt, "join_files");
+
+   r = sqlite3_exec(db->handle, clean_temp_table, NULL, NULL, &errmsg);
+   if (r != SQLITE_OK)
+     {
+        ERR("Could not execute SQL %s: %s", clean_temp_table, errmsg);
+        sqlite3_free(errmsg);
+     }
+end:
+   eina_iterator_free(files);
+}
+
+static Eina_Bool
+_db_cleanup_timer_cb(void *data)
+{
+   DB *db = data;
+   _db_files_cleanup(db);
+   _db_album_covers_cleanup(db);
+   return ECORE_CALLBACK_RENEW;
+}
+
 DB *
 db_open(const char *path)
 {
@@ -199,6 +290,13 @@ db_open(const char *path)
 
    _db_cover_table_ensure_exists(db);
 
+   db->cleanup_timer = ecore_timer_add(3600 * 4, _db_cleanup_timer_cb, db);
+   if (!db->cleanup_timer)
+     {
+        ERR("could not create cleanup timer");
+        goto error;
+     }
+
    return db;
 
  error:
@@ -213,6 +311,7 @@ Eina_Bool
 db_close(DB *db)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(db, EINA_FALSE);
+   ecore_timer_del(db->cleanup_timer);
    _db_stmts_finalize(db);
    sqlite3_close(db->handle);
    eina_stringshare_del(db->path);
