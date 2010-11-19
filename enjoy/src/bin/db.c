@@ -436,7 +436,8 @@ db_songs_get(DB *db)
       " audios.trackno, audios.rating, audios.playcnt, audios.length "
       "FROM audios, files "
       "WHERE "
-      " files.id = audios.id "
+      " files.id = audios.id AND "
+      " files.dtime = 0 "
       "ORDER BY UPPER(audios.title)");
    if (!it->base.stmt)
      {
@@ -518,7 +519,8 @@ db_album_songs_get(DB *db, int64_t album_id)
       "FROM audios, files "
       "WHERE "
       " files.id = audios.id AND "
-      " audios.album_id = ? "
+      " audios.album_id = ? AND "
+      " files.dtime = 0 "
       "ORDER BY audios.trackno, UPPER(audios.title)");
    if (!it->base.stmt)
      {
@@ -558,7 +560,8 @@ db_artist_songs_get(DB *db, int64_t artist_id)
       "FROM audios, files "
       "WHERE "
       " files.id = audios.id AND "
-      " audios.artist_id = ? "
+      " audios.artist_id = ? AND "
+      " files.dtime = 0 "
       "ORDER BY UPPER(audios.title)");
    if (!it->base.stmt)
      {
@@ -598,7 +601,8 @@ db_genre_songs_get(DB *db, int64_t genre_id)
       "FROM audios, files "
       "WHERE "
       " files.id = audios.id AND "
-      " audios.genre_id = ? "
+      " audios.genre_id = ? AND "
+      " files.dtime = 0 "
       "ORDER BY UPPER(audios.title)");
    if (!it->base.stmt)
      {
