@@ -338,10 +338,6 @@ void
 cover_init(void)
 {
    lastfm_cover_init();
-
-#ifdef PACKAGE
-   lastfm_cover_cache_package_set(PACKAGE);
-#endif
 }
 
 void

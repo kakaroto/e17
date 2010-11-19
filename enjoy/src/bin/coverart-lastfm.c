@@ -314,6 +314,9 @@ lastfm_cover_init(void)
               disc_number_regexes[i].exp = NULL;
            }
       }
+
+    _local_cache_dir = enjoy_cache_dir_get();
+    if (!_local_cache_dir) CRITICAL("could not get cache directory!");
 }
 
 void
@@ -415,62 +418,6 @@ lastfm_cover_download(char *url,
 
     return EINA_TRUE;
 }
-
-void
-lastfm_cover_cache_package_set(const char *package)
-{
-    char tmp[PATH_MAX];
-    char *cache;
-    Eina_Bool free_cache = EINA_FALSE;
-    
-    if (!package)
-      return;
-    
-    if (!*package)
-      {
-         free(_local_cache_dir);
-         _local_cache_dir = NULL;
-         return;
-      }
-
-    cache = getenv("XDG_CACHE_HOME");
-    if (!cache || !*cache)
-      {
-         char *home = getenv("HOME");
-         if (!home || !*home)
-           {
-              ERR("could not get $HOME");
-              return;
-           }
-         if (asprintf(&cache, "%s/.cache", home) < 0)
-           {
-              ERR("could not set cache directory");
-              return;
-           }
-         free_cache = EINA_TRUE;
-      }
-
-    if (snprintf(tmp, sizeof(tmp), "%s/%s/covers/lastfm", cache, package) < 0)
-      {
-         ERR("package name too long: %s", package);
-         goto cleanup;
-      }
-
-    if (!ecore_file_exists(tmp))
-      {
-         if (!ecore_file_mkpath(tmp))
-           {
-              ERR("could not create cover directory %s", tmp);
-              goto cleanup;
-           }
-      }
-
-    free(_local_cache_dir);
-    _local_cache_dir = strdup(tmp);
-cleanup:
-    if (free_cache) free(cache);
-}
-
 
 #ifdef LASTFM_COVER_TEST
 static void

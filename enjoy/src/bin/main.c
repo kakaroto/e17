@@ -38,6 +38,50 @@ static const Ecore_Getopt options = {
   }
 };
 
+char *
+enjoy_cache_dir_get(void)
+{
+   static char *cache = NULL;
+
+   if (!cache)
+     {
+        cache = getenv("XDG_CACHE_HOME");
+        if (!cache || !*cache)
+          {
+             char *home = getenv("HOME");
+             if (!home || !*home)
+               {
+                  ERR("could not get $HOME");
+                  return NULL;
+               }
+             if (asprintf(&cache, "%s/.cache/%s", home, PACKAGE) < 0)
+               {
+                  ERR("could not set cache directory");
+                  return NULL;
+               }
+          }
+        else
+          {
+             char *tmpcache;
+             if (asprintf(&tmpcache, "%s/%s", cache, PACKAGE) < 0)
+               {
+                  ERR("could not set cache directory");
+                  return NULL;
+               }
+             cache = tmpcache;
+          }
+        if (!ecore_file_exists(cache))
+          {
+             if (!ecore_file_mkpath(cache))
+               {
+                  ERR("could not create cache dir: %s", cache);
+                  return NULL;
+               }
+          }
+     }
+   return cache;
+}
+
 EAPI int
 elm_main(int argc, char **argv)
 {

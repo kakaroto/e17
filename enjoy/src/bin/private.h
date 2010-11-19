@@ -46,6 +46,7 @@ struct _App
 
 Evas_Object *win_new(App *app);
 
+char      *enjoy_cache_dir_get(void);
 Eina_Bool  enjoy_repeat_get(void);
 int32_t    enjoy_position_get(void);
 int32_t    enjoy_volume_get(void);
