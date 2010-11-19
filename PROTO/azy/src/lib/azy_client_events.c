@@ -340,10 +340,8 @@ _azy_client_handler_del(Azy_Client                    *client,
      return ECORE_CALLBACK_PASS_ON;
 
    DBG("(client=%p, net=%p)", client, client->net);
-   if (!client->connected)
-     return ECORE_CALLBACK_CANCEL;
    client->connected = EINA_FALSE;
-   azy_net_free(client->net);
+   if (client->net) azy_net_free(client->net);
    client->net = NULL;
    EINA_LIST_FREE(client->conns, handler_data)
      _azy_client_handler_data_free(handler_data);
