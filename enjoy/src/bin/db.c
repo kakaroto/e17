@@ -156,9 +156,21 @@ _db_cover_table_ensure_exists(DB *db)
                                            "DELETE FROM covers WHERE " \
                                            "album_id=OLD.id; " \
                                            "END";
+   static const char *sql_create_index_path = "CREATE INDEX IF NOT EXISTS " \
+                                              "cover_file_path_idx ON " \
+                                              "covers (file_path)";
+   static const char *sql_create_index_album_id = "CREATE INDEX IF NOT EXISTS " \
+                                                  "cover_album_id_idx ON " \
+                                                  "covers (album_id)";
+   static const char *sql_add_version = "INSERT INTO lms_internal " \
+                                         "(tab, version) " \
+                                         "VALUES ('covers', 1)";
    if (created) return;
    sqlite3_exec(db->handle, sql_create_table, NULL, NULL, NULL);
    sqlite3_exec(db->handle, sql_create_trigger, NULL, NULL, NULL);
+   sqlite3_exec(db->handle, sql_create_index_path, NULL, NULL, NULL);
+   sqlite3_exec(db->handle, sql_create_index_album_id, NULL, NULL, NULL);
+   sqlite3_exec(db->handle, sql_add_version, NULL, NULL, NULL);
    created = EINA_TRUE;
 }
 
