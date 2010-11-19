@@ -413,6 +413,9 @@ endif
 pdf_la_LDFLAGS = -no-undefined @lt_enable_auto_import@ -module -avoid-version
 pdf_la_LIBTOOLFLAGS = --tag=disable-static
 
+install-data-hook:
+	rm -f $(pkgdir)/$(pkg_LTLIBRARIES)
+
 endif
 endif
 
