@@ -67,21 +67,29 @@ _cover_album_lastfm_request_finished_cb(void *data, Eina_Hash *urls)
     Eina_Iterator *iter = eina_hash_iterator_tuple_new(urls);
     Eina_Hash_Tuple *tuple;
     if (!iter) return;
+    int max_size = -1;
+    char *url = NULL;
 
     EINA_ITERATOR_FOREACH(iter, tuple)
     {
-       Eina_Bool success;
-
-       completed_data->ref_count++;
-       success = lastfm_cover_download((char *)tuple->key,
-                                          _cover_album_lastfm_download_finished_cb,
-                                          completed_data);
-       if (!success)
+       int size = *((int *)tuple->data);
+       if (size > max_size)
          {
-            ERR("could not download cover from %s", (char *)tuple->key);
-            continue;
+           max_size = size;
+           url = (char *)tuple->key;
          }
     }
+
+    if (max_size > 0 && url)
+      {
+         Eina_Bool success;
+
+         completed_data->ref_count++;
+         success = lastfm_cover_download(url,
+                                         _cover_album_lastfm_download_finished_cb,
+                                         completed_data);
+         if (!success) ERR("could not download cover from %s", url);
+      }
 
     eina_iterator_free(iter);
     lastfm_response_free(urls);
