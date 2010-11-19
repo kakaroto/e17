@@ -427,7 +427,15 @@ cdef extern from "Elementary.h":
     evas.c_evas.Eina_Bool elm_layout_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
     evas.c_evas.Eina_Bool elm_layout_theme_set(evas.c_evas.Evas_Object *obj, char *clas, char *group, char *style)
     void elm_layout_content_set(evas.c_evas.Evas_Object *obj, char *swallow, evas.c_evas.Evas_Object *content)
+    evas.c_evas.Evas_Object *elm_layout_content_get(evas.c_evas.Evas_Object *obj, char *swallow)
+    evas.c_evas.Evas_Object *elm_layout_content_unset(evas.c_evas.Evas_Object *obj, char *swallow)
     evas.c_evas.Evas_Object *elm_layout_edje_get(evas.c_evas.Evas_Object *obj)
+    void elm_layout_text_set(evas.c_evas.Evas_Object *obj, char *part, char *text)
+    char *elm_layout_text_get(evas.c_evas.Evas_Object *obj, char *part)
+    void elm_layout_icon_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon)
+    evas.c_evas.Evas_Object *elm_layout_icon_get(evas.c_evas.Evas_Object *obj)
+    void elm_layout_end_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *end)
+    evas.c_evas.Evas_Object *elm_layout_end_get(evas.c_evas.Evas_Object *obj)
     void elm_layout_sizing_eval(evas.c_evas.Evas_Object *obj)
 
     # Notify object

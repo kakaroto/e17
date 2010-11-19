@@ -35,6 +35,14 @@ cdef class Layout(Object):
             o = NULL
         elm_layout_content_set(self.obj, swallow, o)
 
+    def content_get(self, swallow):
+        cdef c_evas.const_Evas_Object *obj = elm_layout_content_get(self.obj, swallow)
+        return evas.c_evas._Object_from_instance(<long> obj)
+
+    def content_unset(self, swallow):
+        cdef c_evas.Evas_Object *obj = elm_layout_content_unset(self.obj, swallow)
+        return evas.c_evas._Object_from_instance(<long> obj)
+
     def edje_get(self):
         cdef c_evas.Evas_Object *obj = elm_layout_edje_get(self.obj)
         return evas.c_evas._Object_from_instance(<long> obj)
@@ -42,6 +50,38 @@ cdef class Layout(Object):
     property edje:
         def __get__(self):
             return self.edje_get()
+
+    def text_set(self, part, text):
+        elm_layout_text_set(self.obj, part, text)
+
+    def text_get(self, part):
+        return elm_layout_text_get(self.obj, part)
+
+    def icon_set(self, c_evas.Object icon):
+        elm_layout_icon_set(self.obj, icon.obj if icon else NULL)
+
+    def icon_get(self):
+        cdef c_evas.const_Evas_Object *obj = elm_layout_icon_get(self.obj)
+        return evas.c_evas._Object_from_instance(<long> obj)
+
+    property icon:
+        def __get__(self):
+            return self.icon_get()
+        def __set__(self, value):
+            self.icon_set(value)
+
+    def end_set(self, c_evas.Object end):
+        elm_layout_end_set(self.obj, end.obj if end else NULL)
+
+    def end_get(self):
+        cdef c_evas.const_Evas_Object *obj = elm_layout_end_get(self.obj)
+        return evas.c_evas._Object_from_instance(<long> obj)
+
+    property end:
+        def __get__(self):
+            return self.end_get()
+        def __set__(self, value):
+            self.end_set(value)
 
     def sizing_eval(self):
         elm_layout_sizing_eval(self.obj)
