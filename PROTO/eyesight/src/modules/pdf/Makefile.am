@@ -392,8 +392,8 @@ pdf_la_LINK = $(LINK) $(pdf_la_LDFLAGS)
 else
 
 pdf_la_SOURCES = \
-eyesight_pdf.cpp \
-eyesight_pdf.h
+eyesight_pdf_poppler.cpp \
+eyesight_pdf_poppler.h
 pdf_la_CPPFLAGS = \
 -I$(top_srcdir) \
 -I$(top_srcdir)/src/lib \

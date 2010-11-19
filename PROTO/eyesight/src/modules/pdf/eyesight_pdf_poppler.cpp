@@ -41,7 +41,7 @@
 #include "Eyesight_Module_Pdf.h"
 #include "Eyesight.h"
 #include "eyesight_private.h"
-#include "eyesight_pdf.h"
+#include "eyesight_pdf_poppler.h"
 
 
 #define DBG(...) EINA_LOG_DOM_DBG(_eyesight_pdf_log_domain, __VA_ARGS__)
