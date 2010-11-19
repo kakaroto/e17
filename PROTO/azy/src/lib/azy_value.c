@@ -118,7 +118,7 @@ azy_blob_unref(Azy_Blob *b)
 
    if (--b->refs == 0)
      {
-        eina_stringshare_del(b->buf);
+        if (b->buf) eina_stringshare_del(b->buf);
         free(b);
      }
 }
@@ -156,8 +156,8 @@ azy_value_unref(Azy_Value *val)
    if (val->type == AZY_VALUE_BLOB)
      azy_blob_unref(val->blob_val);
 
-   eina_stringshare_del(val->str_val);
-   eina_stringshare_del(val->member_name);
+   if (val->str_val) eina_stringshare_del(val->str_val);
+   if (val->member_name) eina_stringshare_del(val->member_name);
    if (val->member_value)
      azy_value_unref(val->member_value);
    EINA_LIST_FREE(val->children, v)

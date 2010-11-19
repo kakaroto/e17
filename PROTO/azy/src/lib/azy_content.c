@@ -41,7 +41,8 @@ azy_content_free(Azy_Content *content)
      }
 
    AZY_MAGIC_SET(content, AZY_MAGIC_NONE);
-   eina_stringshare_del(content->method);
+   if (content->method )
+     eina_stringshare_del(content->method);
    EINA_LIST_FREE(content->params, v)
      azy_value_unref(v);
    if (content->retval)
