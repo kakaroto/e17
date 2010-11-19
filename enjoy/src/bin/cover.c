@@ -264,6 +264,87 @@ _cover_without_image_add(Evas_Object *parent, unsigned short size)
    return cover;
 }
 
+static Evas_Object *
+_cover_with_exact_size(Evas_Object *parent, DB *db, Album *album, const Album_Cover *large_cover, int size)
+{
+   Ecore_Evas *ee, *sub_ee;
+   Album_Cover *cover;
+   Evas *e, *sub_e;
+   Evas_Object *o, *img, *icon;
+   int file_name_len = strlen(large_cover->path) + 1;
+   char *file = alloca(file_name_len), *tmp;
+   int printed;
+
+   memcpy(file, large_cover->path, file_name_len);
+   tmp = strrchr(file, '/');
+   if (!tmp)
+     return NULL;
+   printed = snprintf(tmp + 1, 16, "_%d", size);
+   if (printed < 0)
+     return NULL;
+   else
+     tmp[printed + 1] = '_';
+
+   ee = ecore_evas_buffer_new(1, 1);
+   if (!ee) return NULL;
+   e = ecore_evas_get(ee);
+   if (!e) goto error;
+
+   evas_image_cache_set(e, 0);
+   evas_font_cache_set(e, 0);
+
+   o = ecore_evas_object_image_new(ee);
+   if (!o) goto error;
+   sub_ee = evas_object_data_get(o, "Ecore_Evas");
+   sub_e = ecore_evas_get(sub_ee);
+
+   evas_image_cache_set(sub_e, 0);
+   evas_font_cache_set(sub_e, 0);
+
+   img = evas_object_image_add(sub_e);
+   if (!img) goto error;
+
+   evas_object_image_load_size_set(img, size, size);
+   evas_object_image_file_set(img, large_cover->path, NULL);
+   if (evas_object_image_load_error_get(img) != EVAS_LOAD_ERROR_NONE)
+     goto error;
+
+   evas_object_move(img, 0, 0);
+   evas_object_resize(img, size, size);
+   evas_object_image_fill_set(img, 0, 0, size, size);
+   evas_object_show(img);
+
+   evas_object_image_size_set(o, size, size);
+   ecore_evas_resize(sub_ee, size, size);
+
+   evas_damage_rectangle_add(sub_e, 0, 0, size, size);
+   evas_render(sub_e);
+
+   if (!evas_object_image_save(o, file, NULL, "quality=75"))
+     goto error;
+
+   cover = malloc(sizeof(*cover) + file_name_len);
+   if (!cover)
+     goto error;
+
+   cover->w = cover->h = size;
+   cover->path_len = strlen(file);
+   cover->origin = large_cover->origin;
+   memcpy(cover->path, file, cover->path_len);
+
+   album->covers = eina_inlist_append(album->covers, EINA_INLIST_GET(cover));
+   db_album_covers_update(db, album);
+
+   icon = _cover_empty_add(parent, size);
+   elm_icon_file_set(icon, file, NULL);
+
+   ecore_evas_free(ee);
+   return icon;
+error:
+   ecore_evas_free(ee);
+   return NULL;
+}
+
 Evas_Object *
 cover_allsongs_fetch(Evas_Object *parent, unsigned short size)
 {
@@ -312,6 +393,13 @@ cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size
      }
 
    if (!best_match) return _cover_without_image_add(parent, size);
+   if (min_error > 0)
+     {
+        Evas_Object *resized;
+        resized = _cover_with_exact_size(parent, db, album,
+                                         best_match, size);
+        if (resized) return resized;
+     }
 
    cover = _cover_empty_add(parent, size);
    if (!elm_icon_file_set(cover, best_match->path, NULL))
