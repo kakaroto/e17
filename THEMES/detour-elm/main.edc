@@ -3562,6 +3562,7 @@ collections {
                 mouse_events: 1;
                 description {
                     state: "default" 0.0;
+                    color: 255 255 255 200;
                     rel1 {
                         offset: 2 2;
                     }
@@ -3569,7 +3570,7 @@ collections {
                         offset: -3 -3;
                     }
                     image {
-                        normal: "images/progress_trough.png";
+                        normal: "images/shelf_def_im0.png";
                         border: 2 2 2 2;
                     }
                     fill {
@@ -3719,7 +3720,6 @@ collections {
                     state: "default" 0.0;
                     color: 255 255 255 0;
                     align: 0.5 0.5;
-                    visible: 1;
                     image.normal: "images/exebuf_im0.png";
                     image.border: 4 4 5 5;
                     rel1 {
@@ -3736,7 +3736,6 @@ collections {
                     state: "selected" 0.0;
                     inherit: "default" 0.0;
                     color: 255 255 255 255;
-                    visible: 1;
                 }
             }
             part {
@@ -3828,7 +3827,7 @@ collections {
                 target: "bg";
                 target: "elm.text";
                 target: "label";
-                transition: LINEAR 0.15;
+                transition: LINEAR 0.3;
             }
             program {
                 name: "unselected";
@@ -3838,7 +3837,7 @@ collections {
                 target: "bg";
                 target: "elm.text";
                 target: "label";
-                transition: LINEAR 0.15;
+                transition: LINEAR 0.5;
             }
             program {
                 name: "go";

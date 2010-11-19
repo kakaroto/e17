@@ -67,4 +67,6 @@ image: "images/map_item2.png" COMP;
 image: "images/bubble_content.png" COMP;
 image: "images/bubble_bottom.png" COMP;
 
+//~ toolbar
+image: "images/shelf_def_im0.png" COMP;
 
