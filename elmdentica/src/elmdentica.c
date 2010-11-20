@@ -94,7 +94,7 @@ double mouse_held_down=0;
 
 struct sqlite3 *ed_DB=NULL;
 
-GRegex *re_link=NULL, *re_link_content=NULL, *re_user=NULL, *re_tags=NULL, *re_group=NULL;
+GRegex *re_link=NULL, *re_link_content=NULL, *re_user=NULL, *re_tags=NULL, *re_group=NULL, *re_amp=NULL;
 GError *re_err=NULL;
 
 static Elm_Genlist_Item_Class itc1;
@@ -1022,10 +1022,15 @@ anUser *fetch_user_from_db(long long int uid) {
 char *ed_shorten_text(char *text) {
 	GError *re_err=NULL;
 	char *shortened_text=NULL;
+	char *tmp=NULL;
 
 	if(!re_link)	re_link  = g_regex_new("([a-z]+://.*?)(?=\\s|$)", G_REGEX_OPTIMIZE, 0, &re_err);
+	tmp = g_regex_replace(re_link, text, strlen(text), 0, "<u>[link]</u>", 0, &re_err);
+	shortened_text = tmp;
 
-	shortened_text = g_regex_replace(re_link, text, strlen(text), 0, "<u>[link]</u>", 0, &re_err);
+	if(!re_amp)	re_amp  = g_regex_new("(&)(?!amp;)", G_REGEX_OPTIMIZE, 0, &re_err);
+	tmp = g_regex_replace(re_amp, shortened_text, strlen(shortened_text), 0, "&amp;", 0, &re_err);
+	shortened_text = tmp;
 
 	return(shortened_text);
 }
@@ -1060,9 +1065,9 @@ char *ed_status_label_get(void *data, Evas_Object *obj, const char *part) {
 			else if(dt < 600)
 				snprintf(buf, sizeof(buf), _("a few minutes ago"));
 			else if(dt < 3000)
-				snprintf(buf, sizeof(buf), _("%d minutes ago"), (int)dt/60);
+				snprintf(buf, sizeof(buf), _("~ %d minutes ago"), (int)dt/60);
 			else if(dt < 86400)
-				snprintf(buf, sizeof(buf), _("%d hours ago"), (int)dt/3600);
+				snprintf(buf, sizeof(buf), _("~ %d hours ago"), (int)dt/3600);
 			else
 				strftime(buf, sizeof(buf), _("on %F"), &date_tm);
 		} else snprintf(buf, sizeof(buf), _("some-when"));
@@ -2081,6 +2086,7 @@ EAPI int elm_main(int argc, char **argv)
 	if(re_tags) g_regex_unref(re_tags);
 	if(re_group) g_regex_unref(re_group);
 	if(re_link_content) g_regex_unref(re_link_content);
+	if(re_amp) g_regex_unref(re_amp);
 
 	return 0;
 }
