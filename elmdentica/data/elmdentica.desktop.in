@@ -1,9 +1,11 @@
 [Desktop Entry]
 Name=ElmDentica
 GenericName=Identi.ca client
+GenericName[pt]=Cliente Identi.ca
 Comment=Elementary Identi.ca client
 Comment[fr]=Client Identi.ca utilisant Elementary
 Comment[it]=Client per Identi.ca realizzato con Elementary
+Comment[pt]=Cliente básico para Identi.ca
 Exec=elmdentica
 Icon=elmdentica
 Terminal=false
