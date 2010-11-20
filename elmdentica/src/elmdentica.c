@@ -1030,6 +1030,7 @@ char *ed_shorten_text(char *text) {
 
 	if(!re_amp)	re_amp  = g_regex_new("(&)(?!amp;)", G_REGEX_OPTIMIZE, 0, &re_err);
 	tmp = g_regex_replace(re_amp, shortened_text, strlen(shortened_text), 0, "&amp;", 0, &re_err);
+	free(shortened_text);
 	shortened_text = tmp;
 
 	return(shortened_text);
