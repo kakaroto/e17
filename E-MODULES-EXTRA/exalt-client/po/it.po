@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Exalt\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-19 12:28+0100\n"
-"PO-Revision-Date: 2009-11-19 12:30+0100\n"
+"POT-Creation-Date: 2010-11-20 22:05+0100\n"
+"PO-Revision-Date: 2010-11-20 22:06+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -78,9 +78,9 @@ msgstr "Exalt"
 msgid "exalt Configuration Updated"
 msgstr "Configurazione di Exalt aggiornata"
 
-#: src/e_mod_main.c:521
-msgid "Configuration"
-msgstr "Configurazione"
+#: src/e_mod_main.c:525
+msgid "Settings"
+msgstr "Impostazioni"
 
 #: src/popup.c:43
 msgid "DNS configuration"
@@ -98,15 +98,15 @@ msgstr "Composizione con modem"
 msgid "Mobile Phone (3G)"
 msgstr "Cellulare (3G)"
 
-#: src/popup.c:229
+#: src/popup.c:231
 msgid "No IP Address"
 msgstr "Nessun indirizzo IP"
 
-#: src/popup.c:233 src/wired_dialog.c:42
+#: src/popup.c:236 src/wired_dialog.c:42
 msgid "Wired interface"
 msgstr "Interfaccia cablata"
 
-#: src/popup.c:236
+#: src/popup.c:239
 msgid "Wireless interface"
 msgstr "Interfaccia wireless"
 
