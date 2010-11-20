@@ -97,7 +97,7 @@ EdgeTimeout(void *data)
    Mode.events.py = Mode.events.my;
    Mode.events.mx = Mode.events.cx += dx;
    Mode.events.my = Mode.events.cy += dy;
-   EXWarpPointer(WinGetXwin(VROOT), Mode.events.mx, Mode.events.my);
+   EWarpPointer(VROOT, Mode.events.mx, Mode.events.my);
    DeskCurrentMoveAreaBy(dax, day);
    Mode.events.px = Mode.events.mx;
    Mode.events.py = Mode.events.my;

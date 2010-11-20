@@ -1254,12 +1254,12 @@ IPC_Warp(const char *params)
    else if (!strncmp(params, "abs", 3))
      {
 	sscanf(params, "%*s %i %i", &x, &y);
-	EXWarpPointer(WinGetXwin(VROOT), x, y);
+	EWarpPointer(VROOT, x, y);
      }
    else if (!strncmp(params, "rel", 3))
      {
 	sscanf(params, "%*s %i %i", &x, &y);
-	EXWarpPointer(None, x, y);
+	EWarpPointer(NULL, x, y);
      }
    else if (!strncmp(params, "scr", 3))
      {
@@ -1270,7 +1270,7 @@ IPC_Warp(const char *params)
    else
      {
 	sscanf(params, "%i %i", &x, &y);
-	EXWarpPointer(None, x, y);
+	EWarpPointer(NULL, x, y);
      }
 }
 

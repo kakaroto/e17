@@ -1858,7 +1858,7 @@ EwinWarpTo(EWin * ewin, int force)
    if (ewin->state.iconified)
       return;
 
-   EXWarpPointer(EoGetXwin(ewin), EoGetW(ewin) / 2, EoGetH(ewin) / 2);
+   EWarpPointer(EoGetWin(ewin), EoGetW(ewin) / 2, EoGetH(ewin) / 2);
    Mode.mouse_over_ewin = ewin;
 }
 

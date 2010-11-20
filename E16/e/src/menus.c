@@ -1507,7 +1507,7 @@ MenusHandleMotion(void)
 					 Conf.shadespeed, 0);
 			    if (((xdist != 0) || (ydist != 0))
 				&& (Conf.menus.warp))
-			       EXWarpPointer(None, xdist, ydist);
+			       EWarpPointer(NULL, xdist, ydist);
 #ifdef USE_XINERAMA
 			 }
 #endif
@@ -1629,7 +1629,7 @@ _SubmenuCheckSlide(Menu * m, MenuItem * mi, EWin * ewin, EWin * ewin2,
    MenusSetEvents(1);
 
    if (Conf.menus.warp)
-      EXWarpPointer(WinGetXwin(mi->win), mi->text_w / 2, mi->text_h / 2);
+      EWarpPointer(mi->win, mi->text_w / 2, mi->text_h / 2);
 }
 
 static int

@@ -1138,6 +1138,12 @@ EXWarpPointer(Window xwin, int x, int y)
    XWarpPointer(disp, None, xwin, 0, 0, 0, 0, x, y);
 }
 
+void
+EWarpPointer(Win win, int x, int y)
+{
+   EXWarpPointer(win ? win->xwin : None, x, y);
+}
+
 Bool
 EXQueryPointer(Window xwin, int *px, int *py, Window * pchild,
 	       unsigned int *pmask)
