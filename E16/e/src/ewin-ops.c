@@ -394,10 +394,11 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
 	EwinRaise(ewin);
      }
 
+   if (Mode.mode == MODE_NONE || Conf.movres.update_while_moving)
+      ICCCM_Configure(ewin);
+
    if (configure)
      {
-	if (!resize)
-	   ICCCM_Configure(ewin);
 #if USE_XSYNC
 	if (Conf.movres.enable_sync_request)
 	   EwinSyncRequestWait(ewin);
