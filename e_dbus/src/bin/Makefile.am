@@ -42,28 +42,28 @@ e_dbus_test_SOURCES = \
 test.c
 
 e_dbus_test_CPPFLAGS = $(EDBUS_CPPFLAGS)
-e_dbus_test_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la
+e_dbus_test_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(EDBUS_LIBS)
 
 e_dbus_test_client_SOURCES = \
 test_client.c
 
 e_dbus_test_client_CPPFLAGS = $(EDBUS_CPPFLAGS)
-e_dbus_test_client_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la
+e_dbus_test_client_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(EDBUS_LIBS)
 
 if BUILD_EBLUEZ
 e_dbus_bluez_test_SOURCES = e_dbus_bluez_test.c
 e_dbus_bluez_test_CPPFLAGS = $(EDBUS_CPPFLAGS)
-e_dbus_bluez_test_LDADD = $(top_builddir)/src/lib/bluez/libebluez.la
+e_dbus_bluez_test_LDADD = $(top_builddir)/src/lib/bluez/libebluez.la $(EDBUS_LIBS)
 endif
 
 if BUILD_ECONNMAN
 e_dbus_connman_test_SOURCES = e_dbus_connman_test.c
 e_dbus_connman_test_CPPFLAGS = $(EDBUS_CPPFLAGS)
-e_dbus_connman_test_LDADD = $(top_builddir)/src/lib/connman/libeconnman.la
+e_dbus_connman_test_LDADD = $(top_builddir)/src/lib/connman/libeconnman.la $(EDBUS_LIBS)
 
 e_dbus_connman_test_api_SOURCES = e_dbus_connman_test_api.c
 e_dbus_connman_test_api_CPPFLAGS = $(EDBUS_CPPFLAGS)
-e_dbus_connman_test_api_LDADD = $(top_builddir)/src/lib/connman/libeconnman.la
+e_dbus_connman_test_api_LDADD = $(top_builddir)/src/lib/connman/libeconnman.la $(EDBUS_LIBS)
 endif
 
 if BUILD_ENOTIFY
@@ -73,25 +73,25 @@ ENOTIFY_LIBS = $(top_builddir)/src/lib/notification/libenotify.la
 
 e_dbus_notify_SOURCES = notify.c
 e_dbus_notify_CPPFLAGS = $(ENOTIFY_CPPFLAGS)
-e_dbus_notify_LDADD = $(ENOTIFY_LIBS)
+e_dbus_notify_LDADD = $(ENOTIFY_LIBS) $(EDBUS_LIBS)
 
 e_dbus_notification_daemon_SOURCES = notification_daemon.c
 e_dbus_notification_daemon_CPPFLAGS = $(ENOTIFY_CPPFLAGS)
-e_dbus_notification_daemon_LDADD = $(ENOTIFY_LIBS)
+e_dbus_notification_daemon_LDADD = $(ENOTIFY_LIBS) $(EDBUS_LIBS)
 
 e_notify_send_SOURCES = notify-send.c
 e_notify_send_CPPFLAGS = $(ENOTIFY_CPPFLAGS)
-e_notify_send_LDADD =  $(ENOTIFY_LIBS)
+e_notify_send_LDADD =  $(ENOTIFY_LIBS) $(EDBUS_LIBS)
 endif
 
 if BUILD_EOFONO
 e_dbus_ofono_test_SOURCES = e_dbus_ofono_test.c
 e_dbus_ofono_test_CPPFLAGS = $(EDBUS_CPPFLAGS)
-e_dbus_ofono_test_LDADD = $(top_builddir)/src/lib/ofono/libeofono.la
+e_dbus_ofono_test_LDADD = $(top_builddir)/src/lib/ofono/libeofono.la $(EDBUS_LIBS)
 endif
 
 if BUILD_EUKIT
 e_dbus_ukit_test_SOURCES = e_dbus_ukit_test.c
 e_dbus_ukit_test_CPPFLAGS = $(EDBUS_CPPFLAGS)
-e_dbus_ukit_test_LDADD = $(top_builddir)/src/lib/ukit/libeukit.la
+e_dbus_ukit_test_LDADD = $(top_builddir)/src/lib/ukit/libeukit.la $(EDBUS_LIBS)
 endif
