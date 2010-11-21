@@ -1039,7 +1039,7 @@ char *ed_shorten_text(char *text) {
 char *ed_status_label_get(void *data, Evas_Object *obj, const char *part) {
 	aStatus *as = (aStatus *)data;
 	char *shortened_text;
-	int res=0;
+	int res=0,h=0;
 	anUser *au;
 	char buf[256], *key=NULL;
 	time_t now, dt;
@@ -1065,11 +1065,14 @@ char *ed_status_label_get(void *data, Evas_Object *obj, const char *part) {
 				snprintf(buf, sizeof(buf), _("a few seconds ago"));
 			else if(dt < 600)
 				snprintf(buf, sizeof(buf), _("a few minutes ago"));
-			else if(dt < 3000)
+			else if(dt < 3600)
 				snprintf(buf, sizeof(buf), _("~ %d minutes ago"), (int)dt/60);
-			else if(dt < 86400)
-				snprintf(buf, sizeof(buf), _("~ %d hours ago"), (int)dt/3600);
-			else
+			else if(dt < 86400) {
+				if( (h = (int)dt/3600) > 1)
+					snprintf(buf, sizeof(buf), _("~ %d hours ago"), h);
+				else
+					snprintf(buf, sizeof(buf), _("~ 1 hour ago"));
+			} else
 				strftime(buf, sizeof(buf), _("on %F"), &date_tm);
 		} else snprintf(buf, sizeof(buf), _("some-when"));
 	}
