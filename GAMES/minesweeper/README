@@ -1,0 +1,8 @@
+Minesweeper is a puzzle game where the player needs to clear a
+minefield without detonating a mine.
+
+To build it, run:
+$edje_cc minesweeper.edc
+
+It will generate the file minesweeper.edj. Then play it with edje_player:
+$edje_player minesweeper.edj

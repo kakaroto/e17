@@ -23,419 +23,423 @@
 #define WIDTH 8
 #define TOTAL 64
 
-#define SQUARE(lin,col) \
-	part { name: "sq"#lin"-"#col; \
-		type: RECT; \
-		description { state: "default" 0.0; \
-			color: 80 80 80 255; \
-			min: SQUARE_SIZE SQUARE_SIZE; \
-			max: SQUARE_SIZE SQUARE_SIZE; \
-			rel1 { \
-				relative: 0.0 0.0; \
-				offset: (col * 16 + 1) (lin * 16 + 44); \
-			} \
-			rel2 { \
-				relative: 0.0 0.0; \
-				offset: (col * 16 + 16 + 4) (lin * 16 + 16 + 4 + 44); \
-			} \
-		} \
-		description { state: "clear" 0.0; \
-			inherit: "default" 0.0; \
-			color: 40 40 40 255; \
-		} \
-		description { state: "marked" 0.0; \
-			inherit: "default" 0.0; \
-			color: 255 0 0 255; \
-		} \
-		description { state: "suspect" 0.0; \
-			inherit: "default" 0.0; \
-			color: 255 0 0 255; \
-		} \
-		description { state: "bombexploded" 0.0; \
-			inherit: "default" 0.0; \
-			color: 255 0 0 255; \
-		} \
-		description { state: "bomb" 0.0; \
-			inherit: "default" 0.0; \
-			color: 255 0 0 255; \
-		} \
-		description { state: "adj1" 0.0; \
-			inherit: "default" 0.0; \
-			color: 0 255 0 255; \
-		} \
-		description { state: "adj2" 0.0; \
-			inherit: "default" 0.0; \
-			color: 0 255 0 255; \
-		} \
-		description { state: "adj3" 0.0; \
-			inherit: "default" 0.0; \
-			color: 0 255 0 255; \
-		} \
-		description { state: "adj4" 0.0; \
-			inherit: "default" 0.0; \
-			color: 0 255 0 255; \
-		} \
-	} \
-	programs { \
-		program { name: "sq"#lin"-"#col"-pressed"; \
-			source: "sq"#lin"-"#col; \
-			signal: "mouse,down,1"; \
-			action: STATE_SET "clear" 0.0; \
-			target: "sq"#lin"-"#col; \
-		} \
-		program { name: "sq"#lin"-"#col"-released"; \
-			source: "sq"#lin"-"#col; \
-			signal: "mouse,up,1"; \
-			action: STATE_SET "default" 0.0; \
-			target: "sq"#lin"-"#col; \
-		} \
-		program { name: "sq"#lin"-"#col"-clicked"; \
-			source: "sq"#lin"-"#col; \
-			signal: "mouse,up,1"; \
-			script { click_square(lin * WIDTH + col, 0); } \
-		} \
-	}
+/* macro to generate each one of the 64 squares of the board */
+#define SQ(lin,col) \
+part { name: "sq"#lin"-"#col; \
+   type: RECT; \
+   description { state: "default" 0.0; \
+      color: 80 80 80 255; \
+      min: SQUARE_SIZE SQUARE_SIZE; \
+      max: SQUARE_SIZE SQUARE_SIZE; \
+      rel1 { \
+         relative: 0.0 0.0; \
+         offset: (col * 16 + 1) (lin * 16 + 44); \
+      } \
+      rel2 { \
+         relative: 0.0 0.0; \
+         offset: (col * 16 + 16 + 4) (lin * 16 + 16 + 4 + 44); \
+      } \
+   } \
+   description { state: "clear" 0.0; \
+      inherit: "default" 0.0; \
+      color: 40 40 40 255; \
+   } \
+   description { state: "marked" 0.0; \
+      inherit: "default" 0.0; \
+      color: 255 0 0 255; \
+   } \
+   description { state: "suspect" 0.0; \
+      inherit: "default" 0.0; \
+      color: 255 0 0 255; \
+   } \
+   description { state: "bombexploded" 0.0; \
+      inherit: "default" 0.0; \
+      color: 255 0 0 255; \
+   } \
+   description { state: "bomb" 0.0; \
+      inherit: "default" 0.0; \
+      color: 255 0 0 255; \
+   } \
+   description { state: "adj1" 0.0; \
+      inherit: "default" 0.0; \
+      color: 0 255 0 255; \
+   } \
+   description { state: "adj2" 0.0; \
+      inherit: "default" 0.0; \
+      color: 0 255 0 255; \
+   } \
+   description { state: "adj3" 0.0; \
+      inherit: "default" 0.0; \
+      color: 0 255 0 255; \
+   } \
+   description { state: "adj4" 0.0; \
+      inherit: "default" 0.0; \
+      color: 0 255 0 255; \
+   } \
+} \
+programs { \
+   program { name: "sq"#lin"-"#col"-pressed"; \
+      source: "sq"#lin"-"#col; \
+      signal: "mouse,down,1"; \
+      action: STATE_SET "clear" 0.0; \
+      target: "sq"#lin"-"#col; \
+   } \
+   program { name: "sq"#lin"-"#col"-released"; \
+      source: "sq"#lin"-"#col; \
+      signal: "mouse,up,1"; \
+      action: STATE_SET "default" 0.0; \
+      target: "sq"#lin"-"#col; \
+   } \
+   program { name: "sq"#lin"-"#col"-clicked"; \
+      source: "sq"#lin"-"#col; \
+      signal: "mouse,up,1"; \
+      script { click_square(lin * WIDTH + col, 0); } \
+   } \
+}
 
 
 #define APPLY_TO_NEIGHBOURS(fn) \
-    new x = sq % WIDTH; \
-    if (sq >= WIDTH) { \
-        if (x > 0) fn(sq - WIDTH - 1); \
-        fn(sq - WIDTH); \
-        if ((x + 1) < WIDTH) fn(sq - WIDTH + 1) ; \
-    } \
-    if (x > 0) fn(sq - 1); \
-    if ((x + 1) < WIDTH) fn(sq + 1); \
-    if (sq < (TOTAL - WIDTH)) { \
-    	if (x > 0) fn(sq + WIDTH - 1); \
-    	fn(sq + WIDTH); \
-    	if ((x + 1) < WIDTH) fn(sq + WIDTH + 1); \
-    }
+new x = sq % WIDTH; \
+if (sq >= WIDTH) { \
+   if (x > 0) fn(sq - WIDTH - 1); \
+   fn(sq - WIDTH); \
+   if ((x + 1) < WIDTH) fn(sq - WIDTH + 1) ; \
+} \
+if (x > 0) fn(sq - 1); \
+if ((x + 1) < WIDTH) fn(sq + 1); \
+if (sq < (TOTAL - WIDTH)) { \
+   if (x > 0) fn(sq + WIDTH - 1); \
+   fn(sq + WIDTH); \
+   if ((x + 1) < WIDTH) fn(sq + WIDTH + 1); \
+}
 
 collections {
-        group {
-            name: "minesweeper";
+   group {
+      name: "minesweeper";
+      script {
+         public mines;
+         public sadness;
+         public flags;
+         public timer_id;
+         public tail;
+         public remaining;
+         public adjacent;
+         public exposed;
+
+         public init_list(list) {
+            new i;
+            for (i = 0; i < TOTAL; i++) {
+               append_int(list, 0);
+            }
+         }
+         public set_elapsed() {
+            /* update elapsed time display */
+            /* if secs > 999 then value = INF else secs */
+         }
+         public set_happy() {
+            new s = get_int(sadness);
+            if (s == ERASING) set_state(PART:"smiley", "erasing", 0.0);
+            else if (s == SAD) set_state(PART:"smiley", "sad", 0.0);
+            else if (s == BORED) set_state(PART:"smiley", "bored", 0.0);
+            else set_state(PART:"smiley", "happy", 0.0);
+         }
+         public end_game(outcome) {
+            /* turn off timer */
+            set_int(sadness, outcome);
+            set_happy();
+         }
+         public erase_rows() {
+            new i;
+            for (i = 0; i < TOTAL; i++) {
+               replace_int(adjacent, i, 0);
+               if (fetch_int(exposed, i) != UNEXPOSED) {
+                  replace_int(exposed, i, UNEXPOSED);
+                  set_sq(i);
+               }
+            }
+         }
+         public lay_mines() {
+            /*new laid = 0;
+            while (laid < mines) {
+            new target = rand() % TOTAL;
+            if (fetch_int(adjacent, target) != MINE) {
+            replace_int(adjacent, target, MINE);
+            mine_neighbours(target);
+            laid++;
+            }
+            }*/
+            replace_int(adjacent, 0, MINE);
+            replace_int(adjacent, 1, MINE);
+            replace_int(adjacent, 4, MINE);
+            replace_int(adjacent, 10, MINE);
+            replace_int(adjacent, 20, MINE);
+            replace_int(adjacent, 30, MINE);
+            replace_int(adjacent, 31, MINE);
+            replace_int(adjacent, 34, MINE);
+            replace_int(adjacent, 40, MINE);
+            replace_int(adjacent, 60, MINE);
+         }
+         public set_mines() {
+            new st[32];
+            snprintf(st, 31, "Mines: %d", get_int(mines));
+            set_text(PART:"mines", st);
+            snprintf(st, 31, "Rem: %d", get_int(remaining));
+            set_text(PART:"remaining", st);
+         }
+         public erase() {
+            if (get_int(sadness) != ERASING) {
+               set_int(flags, 0);
+               set_mines();
+               set_int(remaining, TOTAL);
+               end_game(ERASING);
+               set_elapsed();
+               erase_rows();
+               lay_mines();
+               set_int(sadness, BORED);
+               set_happy();
+            }
+         }
+         public init_game(m) {
+            set_int(mines, m);
+            set_int(tail, LIST_END);
+            init_list(exposed);
+            init_list(adjacent);
+            erase();
+         }
+         public set_sq_state(sq, st) {
+            new part[32];
+            new pid;
+            snprintf(part, 31, "sq%d-%d", sq / WIDTH, sq % WIDTH);
+
+            pid = get_part_id(part);
+            if (pid == -1) return;
+
+            if (st == UNEXPOSED)
+            set_state(pid, "clear", 0.0);
+            else if (st == FLAGGED)
+            set_state(pid, "marked", 0.0);
+            else if (st == QUERIED)
+            set_state(pid, "suspect", 0.0);
+            else if (st == EXPLODED)
+            set_state(pid, "bombexploded", 0.0);
+            else if (st == INCORRECT)
+            set_state(pid, "default", 0.0);
+            else if (st == MINE)
+            set_state(pid, "bomb", 0.0);
+            else
+            set_state(pid, "default", 0.0);
+         }
+         public set_sq(sq) {
+            new exp = fetch_int(exposed, sq);
+            if (exp == UNEXPOSED) {
+               set_sq_state(sq, UNEXPOSED);
+            } else if (exp < UNEXPOSED) {
+               if (exp == FLAGGED) {
+                  set_sq_state(sq, FLAGGED);
+               } else {
+                  set_sq_state(sq, QUERIED);
+               }
+            } else {
+               new adj = fetch_int(adjacent, sq);
+               if (exp == EXPLODED) {
+                  set_sq_state(sq, EXPLODED);
+               } else if (exp == INCORRECT) {
+                  set_sq_state(sq, INCORRECT);
+               } else if (adj == MINE) {
+                  set_sq_state(sq, MINE);
+               } else if (adj == 0) {
+                  set_sq_state(sq, UNEXPOSED);
+               } else {
+                  /* number of adjacent mines */
+               }
+            }
+         }
+         public expose1(sq) {
+            new exp = fetch_int(exposed, sq);
+            if (exp <= UNEXPOSED && exp != FLAGGED) {
+               set_int(remaining, get_int(remaining) - 1);
+               replace_int(exposed, sq, LIST_END);
+               replace_int(exposed, get_int(tail), sq);
+               set_int(tail, sq);
+               set_sq(sq);
+            }
+         }
+         public neighbour_is_mine(sq) {
+            new adj = fetch_int(adjacent, sq);
+            if (adj != MINE)
+            replace_int(adjacent, sq, adj + 1);
+         }
+         public expose_neighbours(sq) {
+            APPLY_TO_NEIGHBOURS(expose1)
+         }
+         public mine_neighbours(sq) {
+            APPLY_TO_NEIGHBOURS(neighbour_is_mine)
+         }
+         public click_square(sq, shift) {
+            if (get_int(sadness) != BORED) return;
+            /* if not timer start timer */
+            if (fetch_int(exposed, sq) > UNEXPOSED) {
+               /* do nothing */
+            } else if (shift) {
+               new exp = fetch_int(exposed, sq);
+               if (exp == UNEXPOSED) {
+                  replace_int(exposed, sq, FLAGGED);
+                  set_int(flags, get_int(flags) + 1);
+                  set_mines();
+               } else if (exp == FLAGGED) {
+                  replace_int(exposed, sq, QUERIED);
+                  set_int(flags, get_int(flags) - 1);
+                  set_mines();
+               } else if (exp == QUERIED) {
+                  replace_int(exposed, sq, UNEXPOSED);
+               }
+               set_sq(sq);
+            } else if (fetch_int(adjacent, sq) == MINE) {
+               set_int(remaining, get_int(remaining) - 1);
+               replace_int(exposed, sq, EXPLODED);
+               set_sq(sq);
+               new i;
+               for (i = 0; i < TOTAL; i++) {
+                  if (i == sq) {
+                  } else if (fetch_int(adjacent, i) == MINE &&
+                             fetch_int(exposed, i) != FLAGGED) {
+                     set_int(remaining, get_int(remaining) - 1);
+                     replace_int(exposed, i, LIST_END);
+                     set_sq(i);
+                  } else if (fetch_int(adjacent, i) == MINE &&
+                            fetch_int(exposed, i) == FLAGGED) {
+                     set_int(remaining, get_int(remaining) - 1);
+                     replace_int(exposed, i, INCORRECT);
+                     set_sq(i);
+                  }
+               }
+               end_game(SAD);
+            } else {
+               if (fetch_int(exposed, sq) == FLAGGED) {
+                  set_int(flags, get_int(flags) - 1);
+                  set_mines();
+               }
+               set_int(remaining, get_int(remaining) - 1);
+               replace_int(exposed, sq, LIST_END);
+               set_int(tail, sq);
+               set_sq(sq);
+               new pending = sq;
+               while (pending != LIST_END) {
+                  if (fetch_int(adjacent, pending) == 0)
+                  expose_neighbours(pending);
+                  pending = fetch_int(exposed, pending);
+               }
+               if (get_int(remaining) == get_int(mines)) {
+                  new i;
+                  for (i = 0; i < TOTAL; i++) {
+                     if (fetch_int(adjacent, i) == MINE &&
+                         fetch_int(exposed, i) <= UNEXPOSED &&
+                         fetch_int(exposed, i) != FLAGGED) {
+                        replace_int(exposed, i, FLAGGED);
+                        set_int(flags, get_int(flags) + 1);
+                        set_sq(i);
+                     }
+                  }
+                  set_mines();
+                  end_game(HAPPY);
+               }
+            }
+         }
+      }
+      programs {
+         program { name: "start-game";
+            signal: "load";
             script {
-            	public mines;
-            	public sadness;
-            	public flags;
-            	public timer_id;
-            	public tail;
-            	public remaining;
-            	public adjacent;
-            	public exposed;
-
-		public init_list(list) {
-			new i;
-			for (i = 0; i < TOTAL; i++) {
-				append_int(list, 0);
-			}
-		}
-            	public set_elapsed() {
-            		/* update elapsed time display */
-            		/* if secs > 999 then value = INF else secs */
-            	}
-            	public set_happy() {
-            	        new s = get_int(sadness);
-            		if (s == ERASING) set_state(PART:"smiley", "erasing", 0.0);
-            		else if (s == SAD) set_state(PART:"smiley", "sad", 0.0);
-            		else if (s == BORED) set_state(PART:"smiley", "bored", 0.0);
-            		else set_state(PART:"smiley", "happy", 0.0);
-            	}
-            	public end_game(outcome) {
-            		/* turn off timer */
-            		set_int(sadness, outcome);
-            		set_happy();
-            	}
-            	public erase_rows() {
-            		new i;
-            		for (i = 0; i < TOTAL; i++) {
-            			replace_int(adjacent, i, 0);
-            			if (fetch_int(exposed, i) != UNEXPOSED) {
-            				replace_int(exposed, i, UNEXPOSED);
-            				set_sq(i);
-            			}
-            		}
-            	}
-            	public lay_mines() {
-            		/*new laid = 0;
-            		while (laid < mines) {
-            			new target = rand() % TOTAL;
-            			if (fetch_int(adjacent, target) != MINE) {
-            				replace_int(adjacent, target, MINE);
-            				mine_neighbours(target);
-            				laid++;
-            			}
-            		}*/
-            		replace_int(adjacent, 0, MINE);
-            		replace_int(adjacent, 1, MINE);
-            		replace_int(adjacent, 4, MINE);
-            		replace_int(adjacent, 10, MINE);
-            		replace_int(adjacent, 20, MINE);
-            		replace_int(adjacent, 30, MINE);
-            		replace_int(adjacent, 31, MINE);
-            		replace_int(adjacent, 34, MINE);
-            		replace_int(adjacent, 40, MINE);
-            		replace_int(adjacent, 60, MINE);
-            	}
-            	public set_mines() {
-			new st[32];
-			snprintf(st, 31, "Mines: %d", get_int(mines));
-			set_text(PART:"mines", st);
-			snprintf(st, 31, "Rem: %d", get_int(remaining));
-			set_text(PART:"remaining", st);
-            	}
-            	public erase() {
-            		if (get_int(sadness) != ERASING) {
-            			set_int(flags, 0);
-            			set_mines();
-            			set_int(remaining, TOTAL);
-            			end_game(ERASING);
-            			set_elapsed();
-                                erase_rows();
-                                lay_mines();
-                                set_int(sadness, BORED);
-                                set_happy();
-            		}
-            	}
-            	public init_game(m) {
-            		set_int(mines, m);
-            		set_int(tail, LIST_END);
-            		init_list(exposed);
-            		init_list(adjacent);
-            		erase();
-            	}
-            	public set_sq_state(sq, st) {
-            		new part[32];
-            		new pid;
-            		snprintf(part, 31, "sq%d-%d", sq / WIDTH, sq % WIDTH);
-
-            		pid = get_part_id(part);
-            		if (pid == -1) return;
-
-            		if (st == UNEXPOSED)
-            			set_state(pid, "clear", 0.0);
-            		else if (st == FLAGGED)  
-            			set_state(pid, "marked", 0.0);
-            		else if (st == QUERIED)
-            			set_state(pid, "suspect", 0.0);
-            		else if (st == EXPLODED)
-            			set_state(pid, "bombexploded", 0.0);
-            		else if (st == INCORRECT)
-            			set_state(pid, "default", 0.0);
-            		else if (st == MINE)
-            			set_state(pid, "bomb", 0.0);
-            		else
-            			set_state(pid, "default", 0.0);
-            	}
-            	public set_sq(sq) {
-            		new exp = fetch_int(exposed, sq);
-            		if (exp == UNEXPOSED) {
-                                set_sq_state(sq, UNEXPOSED);
-            		} else if (exp < UNEXPOSED) {
-            			if (exp == FLAGGED) {
-            				set_sq_state(sq, FLAGGED);
-            			} else {
-            				set_sq_state(sq, QUERIED);
-            			}
-            		} else {
-            			new adj = fetch_int(adjacent, sq);
-            			if (exp == EXPLODED) {
-            				set_sq_state(sq, EXPLODED);
-            			} else if (exp == INCORRECT) {
-            				set_sq_state(sq, INCORRECT);
-            			} else if (adj == MINE) {
-            				set_sq_state(sq, MINE);
-            			} else if (adj == 0) {
-            				set_sq_state(sq, UNEXPOSED);
-            			} else {
-            				/* number of adjacent mines */
-            			}
-            		}
-            	}
-            	public expose1(sq) {
-			new exp = fetch_int(exposed, sq);
-            		if (exp <= UNEXPOSED && exp != FLAGGED) {
-            			set_int(remaining, get_int(remaining) - 1);
-            			replace_int(exposed, sq, LIST_END);
-            			replace_int(exposed, get_int(tail), sq);
-            			set_int(tail, sq);
-            			set_sq(sq);
-            		}
-            	}
-            	public neighbour_is_mine(sq) {
-			new adj = fetch_int(adjacent, sq);
-            		if (adj != MINE)
-            			replace_int(adjacent, sq, adj + 1);
-            	}
-            	public expose_neighbours(sq) {
-           		APPLY_TO_NEIGHBOURS(expose1)
-            	}
-            	public mine_neighbours(sq) {
-            		APPLY_TO_NEIGHBOURS(neighbour_is_mine)
-            	}
-            	public click_square(sq, shift) {
-            		if (get_int(sadness) != BORED) return;
-            		/* if not timer start timer */
-            		if (fetch_int(exposed, sq) > UNEXPOSED) {
-            			/* do nothing */
-            		} else if (shift) {
-				new exp = fetch_int(exposed, sq);
-				if (exp == UNEXPOSED) {
-					replace_int(exposed, (sq, FLAGGED);
-					set_int(flags, get_int(flags) + 1);
-					set_mines();
-				} else if (exp == FLAGGED) {
-					replace_int(exposed, (sq, QUERIED);
-					set_int(flags, get_int(flags) - 1);
-					set_mines();
-				} else if (exp == QUERIED) {
-					replace_int(exposed, (sq, UNEXPOSED);
-				}
-				set_sq(sq);
-            		} else if (fetch_int(adjacent, sq) == MINE) {
-            			set_int(remaining, get_int(remaining) - 1);
-            			replace_int(exposed, (sq, EXPLODED);
-            			set_sq(sq);
-            			new i;
-            			for (i = 0; i < TOTAL; i++) {
-            				if (i == sq) {
-            				} else if (fetch_int(adjacent, i) == MINE && fetch_int(exposed, i) != FLAGGED) {
-                                            set_int(remaining, get_int(remaining) - 1);
-                                            replace_int(exposed, (i, LIST_END);
-                                            set_sq(i);
-            				} else if (fetch_int(adjacent, i) == MINE && fetch_int(exposed, i) == FLAGGED) {
-                                            set_int(remaining, get_int(remaining) - 1);
-                                            replace_int(exposed, (i, INCORRECT);
-                                            set_sq(i);
-            				}
-            			}
-            			end_game(SAD);
-            		} else {
-            			if (fetch_int(exposed, sq) == FLAGGED) {
-            				set_int(flags, get_int(flags) - 1);
-            				set_mines();
-            			}
-            			set_int(remaining, get_int(remaining) - 1);
-            			replace_int(exposed, (sq, LIST_END);
-            			set_int(tail, sq);
-            			set_sq(sq);
-            			new pending = sq;
-            			while (pending != LIST_END) {
-            				if (fetch_int(adjacent, pending) == 0)
-            					expose_neighbours(pending);
-            				pending = fetch_int(exposed, pending);
-            			}
-            			if (get_int(remaining) == get_int(mines)) {
-            				new i;
-            				for (i = 0; i < TOTAL; i++) {
-            					if (fetch_int(adjacent, i) == MINE && fetch_int(exposed, i) <= UNEXPOSED &&
-            					    fetch_int(exposed, i) != FLAGGED) {
-            						replace_int(exposed, (i, FLAGGED);
-            						set_int(flags, get_int(flags) + 1);
-            						set_sq(i);
-            					}
-            				}
-            				set_mines();
-            				end_game(HAPPY);
-            			}
-            		}
-            	}
+               set_int(flags, 0);
+               set_int(sadness, HAPPY);
+               init_game(10);
             }
-            programs {
-            	program { name: "start-game";
-            		signal: "load";
-            		script {
-            			set_int(flags, 0);
-            			set_int(sadness, HAPPY);
-             			init_game(10);
-            		}
-            	}
+         }
+      }
+      parts {
+         part { name: "bg";
+            type: RECT;
+            description { state: "default" 0.0;
+               color: 128 128 128 255;
+               min: 200 200;
+               max: 200 200;
             }
-            parts {
-                part { name: "bg";
-                    type: RECT;
-                    description { state: "default" 0.0;
-                        color: 128 128 128 255;
-                        min: 200 200;
-                        max: 200 200;
-                    }
-                }
-                SQUARE(0, 0) SQUARE(0, 1) SQUARE(0, 2) SQUARE(0, 3) SQUARE(0, 4) SQUARE(0, 5) SQUARE(0, 6) SQUARE(0, 7)  
-                SQUARE(1, 0) SQUARE(1, 1) SQUARE(1, 2) SQUARE(1, 3) SQUARE(1, 4) SQUARE(1, 5) SQUARE(1, 6) SQUARE(1, 7)  
-                SQUARE(2, 0) SQUARE(2, 1) SQUARE(2, 2) SQUARE(2, 3) SQUARE(2, 4) SQUARE(2, 5) SQUARE(2, 6) SQUARE(2, 7)  
-                SQUARE(3, 0) SQUARE(3, 1) SQUARE(3, 2) SQUARE(3, 3) SQUARE(3, 4) SQUARE(3, 5) SQUARE(3, 6) SQUARE(3, 7)  
-                SQUARE(4, 0) SQUARE(4, 1) SQUARE(4, 2) SQUARE(4, 3) SQUARE(4, 4) SQUARE(4, 5) SQUARE(4, 6) SQUARE(4, 7)  
-                SQUARE(5, 0) SQUARE(5, 1) SQUARE(5, 2) SQUARE(5, 3) SQUARE(5, 4) SQUARE(5, 5) SQUARE(5, 6) SQUARE(5, 7)  
-                SQUARE(6, 0) SQUARE(6, 1) SQUARE(6, 2) SQUARE(6, 3) SQUARE(6, 4) SQUARE(6, 5) SQUARE(6, 6) SQUARE(6, 7)  
-                SQUARE(7, 0) SQUARE(7, 1) SQUARE(7, 2) SQUARE(7, 3) SQUARE(7, 4) SQUARE(7, 5) SQUARE(7, 6) SQUARE(7, 7)
-                part { name: "smiley";
-                    type: RECT;
-                    description { state: "default" 0.0;
-                        min: 24 24;
-                        max: 24 24;
-                        fixed: 1 1;
-                        rel1.relative: 0.5 0.0;
-						rel1.offset: 0 10;
-                        rel2.relative: 0.5 0.0;
-                        color: 255 0 0 255;
-                    }
-                    description { state: "happy" 0.0;
-                    	inherit: "default" 0.0;
-                    	color: 0 255 0 255;
-                    }
-                    description { state: "sad" 0.0;
-                    	inherit: "default" 0.0;
-                    	color: 0 0 255 255;
-                    }
-                    description { state: "bored" 0.0;
-                    	inherit: "default" 0.0;
-                    	color: 255 0 255 255;
-                    }
-                    description { state: "erasing" 0.0;
-                    	inherit: "default" 0.0;
-                    	color: 255 255 255 255;
-                    }
-                }
-                part { name: "remaining";
-                	type: TEXT;
-                	description { state: "default" 0.0;
-                		rel1.relative: 0.0 0.0;
-                		rel2.relative: 0.0 0.0;
-                		rel1.offset: 10 10;
-                		rel2.offset: -11 30;
-                		rel2.to: "smiley";
-                		text {
-                			font: "Sans";
-                			size: 11;
-                			align: 0.5 0.5;
-                			text: "0";
-                		}
-                	}
-                }
-                part { name: "mines";
-                	type: TEXT;
-                	description { state: "default" 0.0;
-                		rel1.relative: 0.0 0.0;
-                		rel2.relative: 0.0 0.0;
-                		rel1.offset: 10 20;
-                		rel2.offset: -11 40;
-                		rel2.to: "smiley";
-                		text {
-                			font: "Sans";
-                			size: 11;
-                			align: 0.5 0.5;
-                			text: "0";
-                		}
-                	}
-                }
-                programs {
-                	program { name: "click-smiley";
-                		signal: "mouse,clicked,1";
-                		source: "smiley";
-                		script { erase(); }
-                	}
-                }
+         }
+         SQ(0, 0) SQ(0, 1) SQ(0, 2) SQ(0, 3) SQ(0, 4) SQ(0, 5) SQ(0, 6) SQ(0, 7)
+         SQ(1, 0) SQ(1, 1) SQ(1, 2) SQ(1, 3) SQ(1, 4) SQ(1, 5) SQ(1, 6) SQ(1, 7)
+         SQ(2, 0) SQ(2, 1) SQ(2, 2) SQ(2, 3) SQ(2, 4) SQ(2, 5) SQ(2, 6) SQ(2, 7)
+         SQ(3, 0) SQ(3, 1) SQ(3, 2) SQ(3, 3) SQ(3, 4) SQ(3, 5) SQ(3, 6) SQ(3, 7)
+         SQ(4, 0) SQ(4, 1) SQ(4, 2) SQ(4, 3) SQ(4, 4) SQ(4, 5) SQ(4, 6) SQ(4, 7)
+         SQ(5, 0) SQ(5, 1) SQ(5, 2) SQ(5, 3) SQ(5, 4) SQ(5, 5) SQ(5, 6) SQ(5, 7)
+         SQ(6, 0) SQ(6, 1) SQ(6, 2) SQ(6, 3) SQ(6, 4) SQ(6, 5) SQ(6, 6) SQ(6, 7)
+         SQ(7, 0) SQ(7, 1) SQ(7, 2) SQ(7, 3) SQ(7, 4) SQ(7, 5) SQ(7, 6) SQ(7, 7)
+         part { name: "smiley";
+            type: RECT;
+            description { state: "default" 0.0;
+               min: 24 24;
+               max: 24 24;
+               fixed: 1 1;
+               rel1.relative: 0.5 0.0;
+               rel1.offset: 0 10;
+               rel2.relative: 0.5 0.0;
+               color: 255 0 0 255;
             }
-        }
+            description { state: "happy" 0.0;
+               inherit: "default" 0.0;
+               color: 0 255 0 255;
+            }
+            description { state: "sad" 0.0;
+               inherit: "default" 0.0;
+               color: 0 0 255 255;
+            }
+            description { state: "bored" 0.0;
+               inherit: "default" 0.0;
+               color: 255 0 255 255;
+            }
+            description { state: "erasing" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+            }
+         }
+         part { name: "remaining";
+            type: TEXT;
+            description { state: "default" 0.0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 0.0 0.0;
+               rel1.offset: 10 10;
+               rel2.offset: -11 30;
+               rel2.to: "smiley";
+               text {
+                  font: "Sans";
+                  size: 11;
+                  align: 0.5 0.5;
+                  text: "0";
+               }
+            }
+         }
+         part { name: "mines";
+            type: TEXT;
+            description { state: "default" 0.0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 0.0 0.0;
+               rel1.offset: 10 20;
+               rel2.offset: -11 40;
+               rel2.to: "smiley";
+               text {
+                  font: "Sans";
+                  size: 11;
+                  align: 0.5 0.5;
+                  text: "0";
+               }
+            }
+         }
+         programs {
+            program { name: "click-smiley";
+               signal: "mouse,clicked,1";
+               source: "smiley";
+               script { erase(); }
+            }
+         }
+      }
+   }
 }
