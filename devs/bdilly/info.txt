@@ -3,5 +3,8 @@ IRC Nick:       bdilly
 Name:           Bruno Dilly
 Location:       Campinas, Brazil
 E-Mail:         bdilly@profusion.mobi
+WWW:            http://www.brunodilly.org/blog
+Managing:       econcentration, e_cho
 Contributing:   e_dbus, elementary
+Group:          Libraries, Applications
 Platform:       Ubuntu (Linux)
