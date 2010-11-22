@@ -5,7 +5,7 @@ Name:         Vincent Torri
 Location:     France, Maisons-Alfort
 E-Mail:       vincent.torri@gmail.com
 WWW:          http://avisynth3.unite-video.com/
-Managing:     evil, epdf, edvi, eps
+Managing:     evil, epdf, edvi, eps, eyesight
 Contributing: eina, evas, ecore, emotion, autotools, doc
 Group:        Core, Libraries
 Platform:     Linux, Windows
