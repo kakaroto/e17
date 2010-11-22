@@ -43,6 +43,8 @@ struct _Azy_Typedef
    const char         *free_func;
    const char         *copy_func;
    const char         *eq_func;
+   const char         *print_func;
+   const char         *fmt_str;
 
    Eina_List          *struct_members; /* struct members list */
    Azy_Typedef       *item_type; /* array item type */

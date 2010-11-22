@@ -165,14 +165,13 @@ gen_type_marshalizers(Azy_Typedef *t,
         EL(1, "if (!_nstruct)");
         EL(2, "return NULL;");
         NL;
-        EL(1, "if (");
 
         EINA_LIST_FOREACH(t->struct_members, l, m)
           {
              EL(2, "%sif (!(%s = %s(_nstruct->%s)))", l->prev ? "else " : "", m->name, m->type->march_name, m->name);
+             EL(3, "goto error;");
           }
 
-        EL(1, ")");
         NL;
         EL(1, "_struct = azy_value_struct_new();");
 
@@ -190,7 +189,7 @@ gen_type_marshalizers(Azy_Typedef *t,
         NL;
 
         
-        EL(0, "%sEina_Bool %s(Azy_Value *_struct, %s* _nstruct)", (_static) ? "static " : "",
+        EL(0, "%sEina_Bool %s(Azy_Value *_struct, %s *_nstruct)", (_static) ? "static " : "",
            t->demarch_name, t->ctype);
         EL(0, "{");
         EL(1, "%s _tmp_nstruct = NULL;", t->ctype);
@@ -296,23 +295,22 @@ gen_type_eq(Azy_Typedef *t,
    if (def)
      {
         if (t->type == TD_STRUCT)
-          EL(0, "int %s_eq(%s a, %s b);", t->cname, t->ctype,
+          EL(0, "Eina_Bool %s_eq(%s a, %s b);", t->cname, t->ctype,
              t->ctype);
         else if (t->type == TD_ARRAY)
-          EL(0, "int %s(%s a, %s b);", t->eq_func, t->ctype,
-             t->ctype);
+          EL(0, "Eina_Bool %s(%s a, %s b);", t->eq_func, t->ctype, t->ctype);
 
         return;
      }
 
    if (t->type == TD_STRUCT)
      {
-        EL(0, "int %s_eq(%s a, %s b)", t->cname, t->ctype, t->ctype);
+        EL(0, "Eina_Bool %s_eq(%s a, %s b)", t->cname, t->ctype, t->ctype);
         EL(0, "{");
         EL(1, "if (a == b)");
-        EL(2, "return 0;");
+        EL(2, "return EINA_FALSE;");
         EL(1, "if ((!a) || (!b))");
-        EL(2, "return 1;");
+        EL(2, "return EINA_TRUE;");
 
         EINA_LIST_FOREACH(t->struct_members, l, m)
           {
@@ -324,24 +322,24 @@ gen_type_eq(Azy_Typedef *t,
              else
                EL(1, "if (a->%s != b->%s)", m->name, m->name);
 
-             EL(2, "return 1;");
+             EL(2, "return EINA_TRUE;");
           }
 
         NL;
-        EL(1, "return 0;");
+        EL(1, "return EINA_FALSE;");
         EL(0, "}");
         NL;
      }
    else if (t->type == TD_ARRAY)
      {
-        EL(0, "int %s(%s a, %s b)", t->eq_func, t->ctype, t->ctype);
+        EL(0, "Eina_Bool %s(%s a, %s b)", t->eq_func, t->ctype, t->ctype);
         EL(0, "{");
         EL(1, "Eina_List *y, *z;");
         NL;
         EL(1, "if (a == b)");
-        EL(2, "return 0;");
+        EL(2, "return EINA_FALSE;");
         EL(1, "if ((!a) || (!b))");
-        EL(2, "return 1;");
+        EL(2, "return EINA_TRUE;");
         EL(1, "for (y = a, z = b;y && z; y = y->next, z = z->next)");
         EL(1, "{");
 
@@ -353,15 +351,79 @@ gen_type_eq(Azy_Typedef *t,
              if (!strcmp(t->item_type->ctype, "int") || !strcmp(t->item_type->ctype, "Eina_Bool"))
                EL(2, "if ((intptr_t)(y->data) != (intptr_t)(z->data))");
              else
-               EL(2, "if ((%s)(y->data) != (%s)(z->data))",
-                  t->item_type->ctype,
-                  t->item_type->ctype);
+               EL(2, "if ((%s)(y->data) != (%s)(z->data))", t->item_type->ctype, t->item_type->ctype);
           }
 
-        EL(3, "return 1;");
+        EL(3, "return EINA_TRUE;");
         EL(1, "}");
         NL;
-        EL(1, "return 0;");
+        EL(1, "return EINA_FALSE;");
+        EL(0, "}");
+        NL;
+     }
+}
+
+static void
+gen_type_print(Azy_Typedef *t,
+            int           def)
+{
+   Eina_List *l;
+   Azy_Struct_Member *m;
+
+   if (def)
+     {
+        if (t->type == TD_STRUCT)
+          EL(0, "void %s_print(const char *pre, %s a);", t->cname, t->ctype, t->ctype);
+        else if (t->type == TD_ARRAY)
+          EL(0, "void %s(const char *pre, Eina_List *a);", t->print_func);
+
+        return;
+     }
+
+   if (t->type == TD_STRUCT)
+     {
+        EL(0, "void %s_print(const char *pre, %s a)", t->cname, t->ctype);
+        EL(0, "{");
+        EL(1, "if (!a)");
+        EL(2, "return;");
+        EL(1, "if (!pre) pre = \"\";");
+
+        EINA_LIST_FOREACH(t->struct_members, l, m)
+          {
+             if (m->type->print_func)
+               {
+                  EL(1, "printf(\"%%s%%s%s: \", pre, pre);", m->name);
+                  EL(1, "%s(pre, a->%s);", m->type->print_func, m->name);
+                  EL(1, "printf(\"\\n\");");
+               }
+             else
+               EL(1, "printf(\"%%s%%s%s: %s\\n\", pre, pre, a->%s);", m->type->fmt_str, m->name, m->name);
+          }
+        EL(0, "}");
+        NL;
+     }
+   else if (t->type == TD_ARRAY)
+     {
+        EL(0, "void %s(const char *pre, %s a)", t->print_func, t->ctype);
+        EL(0, "{");
+        EL(1, "Eina_List *l;");
+        if (!strcmp(t->item_type->ctype, "int") || !strcmp(t->item_type->ctype, "Eina_Bool"))
+          EL(1, "int *t;");
+        else
+          EL(1, "%s t;", t->item_type->ctype);
+        NL;
+        EL(1, "if (!a)");
+        EL(2, "return;");
+        EL(1, "EINA_LIST_FOREACH(a, l, t)");
+        if (t->item_type->print_func)
+          EL(2, "%s(pre, t);", t->item_type->print_func);
+        else
+          {
+               if (!strcmp(t->item_type->ctype, "int") || !strcmp(t->item_type->ctype, "Eina_Bool"))
+                 EL(2, "printf(\"%%s%%s%s, \", pre, pre, (intptr_t)t);", t->item_type->fmt_str);
+               else
+                 EL(2, "printf(\"%%s%%s%s, \", pre, pre, t);", t->item_type->fmt_str);
+          }
         EL(0, "}");
         NL;
      }
@@ -647,6 +709,7 @@ gen_common_headers(void)
      {
         gen_type_copyfree(t, EINA_TRUE, EINA_FALSE);
         gen_type_eq(t, EINA_TRUE);
+        gen_type_print(t, EINA_TRUE);
      }
 
    NL;
@@ -672,6 +735,7 @@ gen_common_impl(void)
      {
         gen_type_copyfree(t, EINA_FALSE, EINA_FALSE);
         gen_type_eq(t, EINA_FALSE);
+        gen_type_print(t, EINA_FALSE);
      }
    gen_errors_impl(NULL);
    gen_marshalizers(NULL, EINA_FALSE);

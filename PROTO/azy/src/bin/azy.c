@@ -33,7 +33,8 @@ azy_typedef_new(int         type,
                  const char *cnull,
                  const char *dem_name,
                  const char *mar_name,
-                 const char *free_func)
+                 const char *free_func,
+                 const char *fmt_str)
 {
    Azy_Typedef *t = calloc(sizeof(Azy_Typedef), 1);
    t->type = type;
@@ -55,7 +56,12 @@ azy_typedef_new(int         type,
      {
         t->copy_func = eina_stringshare_printf("%s_copy", t->cname);
         t->eq_func = eina_stringshare_printf("%s_eq", t->cname);
+        t->fmt_str = fmt_str ? eina_stringshare_add(fmt_str) : NULL;
+        t->print_func = eina_stringshare_printf("%s_print", t->cname);
      }
+
+   if ((!t->fmt_str) && (fmt_str))
+     t->fmt_str = eina_stringshare_add(fmt_str);
 
    if (dem_name)
      t->demarch_name = eina_stringshare_add(dem_name);
@@ -74,13 +80,13 @@ Azy_Model *
 azy_new()
 {
    Azy_Model *c = calloc(sizeof(Azy_Model), 1);
-   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "int", "int", "int", "-1", "azy_value_to_int", "azy_value_int_new", NULL));
-   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "boolean", "boolean", "Eina_Bool", "EINA_FALSE", "azy_value_to_bool", "azy_value_bool_new", NULL));
-   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "string", "string", "const char *", "NULL", "azy_value_to_string", "azy_value_string_new", "eina_stringshare_del"));
-   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "double", "double", "double", "0.0", "azy_value_to_double", "azy_value_double_new", NULL));
-   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "time", "time", "const char *", "NULL", "azy_value_to_time", "azy_value_time_new", "eina_stringshare_del"));
-   c->types = eina_list_append(c->types, azy_typedef_new(TD_BLOB, "blob", "blob", "Azy_Blob *", "NULL", "azy_value_to_blob", "azy_value_blob_new", "azy_blob_unref"));
-   c->types = eina_list_append(c->types, azy_typedef_new(TD_ANY, "any", "any", "Azy_Value *", "NULL", "azy_value_to_value", "azy_value_ref", "azy_value_unref"));
+   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "int", "int", "int", "-1", "azy_value_to_int", "azy_value_int_new", NULL, "%i"));
+   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "boolean", "boolean", "Eina_Bool", "EINA_FALSE", "azy_value_to_bool", "azy_value_bool_new", NULL, "%u"));
+   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "string", "string", "const char *", "NULL", "azy_value_to_string", "azy_value_string_new", "eina_stringshare_del", "%s"));
+   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "double", "double", "double", "0.0", "azy_value_to_double", "azy_value_double_new", NULL, "%lf"));
+   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "time", "time", "const char *", "NULL", "azy_value_to_time", "azy_value_time_new", "eina_stringshare_del", "%s"));
+   c->types = eina_list_append(c->types, azy_typedef_new(TD_BLOB, "blob", "blob", "Azy_Blob *", "NULL", "azy_value_to_blob", "azy_value_blob_new", "azy_blob_unref", "%s"));
+   c->types = eina_list_append(c->types, azy_typedef_new(TD_ANY, "any", "any", "Azy_Value *", "NULL", "azy_value_to_value", "azy_value_ref", "azy_value_unref", NULL));
    c->name = "";
    return c;
 }
@@ -131,7 +137,8 @@ azy_typedef_new_array(Azy_Model         *azy,
    Azy_Typedef *a = azy_typedef_new(TD_ARRAY,
                                       NULL, eina_stringshare_printf("Array_%s", item->cname),
                                       "Eina_List*", "NULL", NULL, NULL,
-                                      eina_stringshare_printf("Array_%s_free", item->cname));
+                                      eina_stringshare_printf("Array_%s_free", item->cname),
+                                      eina_stringshare_printf("Array_%s_print", item->cname));
    a->item_type = item;
 
    if (module && item->type == TD_STRUCT)
@@ -152,7 +159,8 @@ azy_typedef_new_struct(Azy_Model                *azy,
                                       eina_stringshare_printf("%s%s", azy->name, name),
                                       eina_stringshare_printf("%s%s*", azy->name, name),
                                       "NULL", NULL, NULL,
-                                      eina_stringshare_printf("%s%s_free", azy->name, name)
+                                      eina_stringshare_printf("%s%s_free", azy->name, name),
+                                      eina_stringshare_printf("%s%s_print", azy->name, name)
                                       );
    return s;
 }
