@@ -44,3 +44,4 @@
 #include "e/illume.edc"
 #include "e/init.edc"
 #include "e/system.edc"
+#include "e/comp.edc"
