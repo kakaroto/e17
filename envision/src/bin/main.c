@@ -272,7 +272,7 @@ grid_sel(void            *data,
    app->current_item_page = item;
    idata = elm_gengrid_item_data_get(item);
 
-   elm_spinner_value_set(app->spinner, (double)idata->page_number);
+   elm_spinner_value_set(app->spinner, idata->page_number + 1);
 }
 
 /*--------------------------GRID ITEM DEL CB-------------------------*/
@@ -743,7 +743,7 @@ _change_selection(void            *data,
    if (!idata)
      return;
 
-   page = (int)elm_spinner_value_get(app->spinner);
+   page = (int)elm_spinner_value_get(app->spinner) - 1;
    if (idata->page_number < page)
      {
         range = (page - idata->page_number);
