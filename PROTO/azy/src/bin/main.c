@@ -373,38 +373,41 @@ gen_type_print(Azy_Typedef *t,
    if (def)
      {
         if (t->type == TD_STRUCT)
-          EL(0, "void %s_print(const char *pre, %s a);", t->cname, t->ctype, t->ctype);
+          EL(0, "void %s_print(const char *pre, int indent, %s a);", t->cname, t->ctype, t->ctype);
         else if (t->type == TD_ARRAY)
-          EL(0, "void %s(const char *pre, Eina_List *a);", t->print_func);
+          EL(0, "void %s(const char *pre, int indent, Eina_List *a);", t->print_func);
 
         return;
      }
 
    if (t->type == TD_STRUCT)
      {
-        EL(0, "void %s_print(const char *pre, %s a)", t->cname, t->ctype);
+        EL(0, "void %s_print(const char *pre, int indent, %s a)", t->cname, t->ctype);
         EL(0, "{");
+        EL(1, "int i;");
         EL(1, "if (!a)");
         EL(2, "return;");
-        EL(1, "if (!pre) pre = \"\";");
+        EL(1, "if (!pre) pre = \"\\t\";");
 
         EINA_LIST_FOREACH(t->struct_members, l, m)
           {
+             EL(1, "for (i = 0; i < indent; i++)");
+             EL(2, "printf(\"%%s\", pre);");
              if (m->type->print_func)
                {
-                  EL(1, "printf(\"%%s%%s%s: \", pre, pre);", m->name);
-                  EL(1, "%s(pre, a->%s);", m->type->print_func, m->name);
+                  EL(1, "printf(\"%s:\\n\");", m->name);
+                  EL(1, "%s(pre, indent + 1, a->%s);", m->type->print_func, m->name);
                   EL(1, "printf(\"\\n\");");
                }
              else
-               EL(1, "printf(\"%%s%%s%s: %s\\n\", pre, pre, a->%s);", m->name, m->type->fmt_str, m->name);
+               EL(1, "printf(\"%s: %s\\n\", a->%s);", m->name, m->type->fmt_str, m->name);
           }
         EL(0, "}");
         NL;
      }
    else if (t->type == TD_ARRAY)
      {
-        EL(0, "void %s(const char *pre, %s a)", t->print_func, t->ctype);
+        EL(0, "void %s(const char *pre, int indent, %s a)", t->print_func, t->ctype);
         EL(0, "{");
         EL(1, "Eina_List *l;");
         if (!strcmp(t->item_type->ctype, "int") || !strcmp(t->item_type->ctype, "Eina_Bool"))
@@ -416,13 +419,18 @@ gen_type_print(Azy_Typedef *t,
         EL(2, "return;");
         EL(1, "EINA_LIST_FOREACH(a, l, t)");
         if (t->item_type->print_func)
-          EL(2, "%s(pre, t);", t->item_type->print_func);
+          EL(2, "%s(pre, indent + 1, t);", t->item_type->print_func);
         else
           {
+               EL(1, "{");
+               EL(2, "int i;");
+               EL(2, "for (i = 0; i < indent; i++)");
+               EL(3, "printf(\"%%s\", pre);");
+               EL(1, "}");
                if (!strcmp(t->item_type->ctype, "int") || !strcmp(t->item_type->ctype, "Eina_Bool"))
-                 EL(2, "printf(\"%%s%%s%s, \", pre, pre, (intptr_t)t);", t->item_type->fmt_str);
+                 EL(2, "printf(\"%s, \", (intptr_t)t);", t->item_type->fmt_str);
                else
-                 EL(2, "printf(\"%%s%%s%s, \", pre, pre, t);", t->item_type->fmt_str);
+                 EL(2, "printf(\"%s, \", t);", t->item_type->fmt_str);
           }
         EL(0, "}");
         NL;
