@@ -302,10 +302,10 @@ azy_value_to_double(Azy_Value *val,
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return EINA_FALSE;
      }
-   if ((!nval) || (val->type != AZY_VALUE_DOUBLE))
+   if ((!nval) || ((val->type != AZY_VALUE_DOUBLE) && (val->type != AZY_VALUE_INT)))
      return EINA_FALSE;
 
-   *nval = val->dbl_val;
+   *nval = (double)val->dbl_val;
    return EINA_TRUE;
 }
 
