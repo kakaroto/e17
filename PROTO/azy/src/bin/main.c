@@ -71,6 +71,7 @@ static Eina_Bool azy_gen;
 static char *out_dir = ".";
 static char *azy_file;
 static FILE *f;
+static const char *i, *b;
 
 static const Ecore_Getopt opts = {
    "azy_parser",
@@ -102,18 +103,18 @@ line_fprintf(unsigned int indent,
              const char  *fmt,
              ...)
 {
-   unsigned int i;
+   unsigned int x;
    va_list ap;
 
-   for (i = 0; i < indent; i++)
+   for (x = 0; x < indent; x++)
      fprintf(f, "  ");
 
    va_start(ap, fmt);
    vfprintf(f, fmt, ap);
    va_end(ap);
 
-   for (i = 0; i < strlen(fmt); i++)
-     if (fmt[i] == '\n')
+   for (x = 0; x < strlen(fmt); x++)
+     if (fmt[x] == '\n')
        current_line++;
 }
 
@@ -131,7 +132,7 @@ gen_type_marshalizers(Azy_Typedef *t,
         if (t->type == TD_STRUCT)
           {
              EL(0, "%sAzy_Value *%s(%s _nstruct) EINA_WARN_UNUSED_RESULT;", (_static) ? "static " : "", t->march_name,
-                   ((!strcmp(t->ctype, "int")) || (!strcmp(t->ctype, "Eina_Bool"))) ? "int32_t" : t->ctype);
+                   ((t->ctype == i) || (t->ctype == b)) ? "int32_t" : t->ctype);
              EL(0, "%sEina_Bool %s(Azy_Value *_struct, %s* _nstruct) EINA_WARN_UNUSED_RESULT;", (_static) ? "static " : "",
                 t->demarch_name, t->ctype);
           }
@@ -152,7 +153,7 @@ gen_type_marshalizers(Azy_Typedef *t,
    if (t->type == TD_STRUCT)
      {
         EL(0, "%sAzy_Value *%s(%s _nstruct)", (_static) ? "static " : "", t->march_name,
-           ((!strcmp(t->ctype, "int")) || (!strcmp(t->ctype, "Eina_Bool"))) ? "int32_t" : t->ctype);
+           ((t->ctype == i) || (t->ctype == b)) ? "int32_t" : t->ctype);
         EL(0, "{");
         EL(1, "Azy_Value *_struct = NULL;");
 
@@ -222,13 +223,13 @@ gen_type_marshalizers(Azy_Typedef *t,
         EL(0, "%sAzy_Value *%s(%s _narray)", (_static) ? "static " : "", t->march_name, t->ctype);
         EL(0, "{");
         EL(1, "Eina_List *_item;");
-        EL(1, "%s v;", ((!strcmp(t->item_type->ctype, "int")) || (!strcmp(t->item_type->ctype, "Eina_Bool"))) ? "int32_t*" : t->item_type->ctype);
+        EL(1, "%s v;", ((t->item_type->ctype == i) || (t->item_type->ctype == b)) ? "int32_t*" : t->item_type->ctype);
         EL(1, "Azy_Value *_array = azy_value_array_new();");
         NL;
         EL(1, "EINA_LIST_FOREACH(_narray, _item, v)");
         EL(1, "{");
 
-        if (!strcmp(t->item_type->ctype, "int") || !strcmp(t->item_type->ctype, "Eina_Bool"))
+        if ((t->item_type->ctype == i) || (t->item_type->ctype == b))
           EL(2, "Azy_Value *_item_value = %s(*v);", t->item_type->march_name);
         else
           EL(2, "Azy_Value *_item_value = %s((%s)v);", t->item_type->march_name, t->item_type->ctype);
@@ -259,7 +260,7 @@ gen_type_marshalizers(Azy_Typedef *t,
         NL;
         EL(1, "EINA_LIST_FOREACH(azy_value_children_items_get(_array), _item, v)");
         EL(1, "{");
-        EL(2, "%s _item_value = %s;", (!strcmp(t->item_type->ctype, "Eina_Bool")) ? "int" : t->item_type->ctype,
+        EL(2, "%s _item_value = %s;", (t->item_type->ctype == b) ? "int" : t->item_type->ctype,
            t->item_type->cnull);
         NL;
         EL(2, "if (!%s(v, &_item_value))", t->item_type->demarch_name);
@@ -269,7 +270,7 @@ gen_type_marshalizers(Azy_Typedef *t,
         EL(2, "}");
         NL;
 
-        if (!strcmp(t->item_type->ctype, "int") || !strcmp(t->item_type->ctype, "Eina_Bool"))
+        if ((t->item_type->ctype == i) || (t->item_type->ctype == b))
           EL(2, "_tmp_narray = eina_list_append(_tmp_narray, &_item_value);");
         else
 
@@ -348,7 +349,7 @@ gen_type_eq(Azy_Typedef *t,
              t->item_type->eq_func);
         else
           {
-             if (!strcmp(t->item_type->ctype, "int") || !strcmp(t->item_type->ctype, "Eina_Bool"))
+             if ((t->item_type->ctype == i) || (t->item_type->ctype == b))
                EL(2, "if ((intptr_t)(y->data) != (intptr_t)(z->data))");
              else
                EL(2, "if ((%s)(y->data) != (%s)(z->data))", t->item_type->ctype, t->item_type->ctype);
@@ -376,7 +377,6 @@ gen_type_print(Azy_Typedef *t,
           EL(0, "void %s_print(const char *pre, int indent, %s a);", t->cname, t->ctype, t->ctype);
         else if (t->type == TD_ARRAY)
           EL(0, "void %s(const char *pre, int indent, Eina_List *a);", t->print_func);
-
         return;
      }
 
@@ -400,7 +400,12 @@ gen_type_print(Azy_Typedef *t,
                   EL(1, "printf(\"\\n\");");
                }
              else
-               EL(1, "printf(\"%s: %s\\n\", a->%s);", m->name, m->type->fmt_str, m->name);
+               {
+                  if (m->type->ctype == b)
+                    EL(1, "printf(\"%s: %s\\n\", (a->%s) ? \"yes\" : \"no\");", m->name, m->type->fmt_str, m->name);
+                  else
+                    EL(1, "printf(\"%s: %s\\n\", a->%s);", m->name, m->type->fmt_str, m->name);
+               }
           }
         EL(0, "}");
         NL;
@@ -410,7 +415,7 @@ gen_type_print(Azy_Typedef *t,
         EL(0, "void %s(const char *pre, int indent, %s a)", t->print_func, t->ctype);
         EL(0, "{");
         EL(1, "Eina_List *l;");
-        if (!strcmp(t->item_type->ctype, "int") || !strcmp(t->item_type->ctype, "Eina_Bool"))
+        if ((t->item_type->ctype == i) || (t->item_type->ctype == b))
           EL(1, "int *t;");
         else
           EL(1, "%s t;", t->item_type->ctype);
@@ -427,8 +432,10 @@ gen_type_print(Azy_Typedef *t,
                EL(2, "for (i = 0; i < indent; i++)");
                EL(3, "printf(\"%%s\", pre);");
                EL(1, "}");
-               if (!strcmp(t->item_type->ctype, "int") || !strcmp(t->item_type->ctype, "Eina_Bool"))
+               if (t->item_type->ctype == i)
                  EL(2, "printf(\"%s, \", (intptr_t)t);", t->item_type->fmt_str);
+               else if (t->item_type->ctype == b)
+                 EL(1, "printf(\"%s, \", ((intptr_t)t) ? \"yes\" : \"no\");", t->item_type->fmt_str);
                else
                  EL(2, "printf(\"%s, \", t);", t->item_type->fmt_str);
           }
@@ -1451,7 +1458,7 @@ static void
 azy_write(void)
 {
    Azy_Server_Module *s;
-   Eina_List *i;
+   Eina_List *l;
 
    if (common_headers)
      gen_common_headers();
@@ -1459,7 +1466,7 @@ azy_write(void)
    if (common_impl)
      gen_common_impl();
 
-   EINA_LIST_FOREACH(azy->modules, i, s)
+   EINA_LIST_FOREACH(azy->modules, l, s)
      {
         if (client_headers)
           gen_client_headers(s);
@@ -1630,6 +1637,8 @@ main(int argc, char *argv[])
         exit(1);
      }
 
+   i = eina_stringshare_add("int");
+   b = eina_stringshare_add("Eina_Bool");
    azy_write();
 
    if (debug)

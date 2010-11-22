@@ -81,9 +81,9 @@ azy_new()
 {
    Azy_Model *c = calloc(sizeof(Azy_Model), 1);
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "int", "int", "int", "-1", "azy_value_to_int", "azy_value_int_new", NULL, "%i"));
-   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "boolean", "boolean", "Eina_Bool", "EINA_FALSE", "azy_value_to_bool", "azy_value_bool_new", NULL, "%u"));
+   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "boolean", "boolean", "Eina_Bool", "EINA_FALSE", "azy_value_to_bool", "azy_value_bool_new", NULL, "%s"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "string", "string", "const char *", "NULL", "azy_value_to_string", "azy_value_string_new", "eina_stringshare_del", "%s"));
-   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "double", "double", "double", "0.0", "azy_value_to_double", "azy_value_double_new", NULL, "%lf"));
+   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "double", "double", "double", "0.0", "azy_value_to_double", "azy_value_double_new", NULL, "%.3lf"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "time", "time", "const char *", "NULL", "azy_value_to_time", "azy_value_time_new", "eina_stringshare_del", "%s"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BLOB, "blob", "blob", "Azy_Blob *", "NULL", "azy_value_to_blob", "azy_value_blob_new", "azy_blob_unref", "%s"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_ANY, "any", "any", "Azy_Value *", "NULL", "azy_value_to_value", "azy_value_ref", "azy_value_unref", NULL));
