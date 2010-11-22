@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: elmdentica 0.6.0\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
 "POT-Creation-Date: 2010-11-22 22:09+0000\n"
-"PO-Revision-Date: 2009-07-12 17:30+0001\n"
+"PO-Revision-Date: 2010-11-22 23:22+0001\n"
 "Last-Translator: Rui Miguel Silva Seabra <rms@1407.org>\n"
 "Language-Team: Rui Miguel Silva Seabra <rms@1407.org>\n"
 "Language: Portuguese\n"
@@ -55,12 +55,12 @@ msgstr ""
 #: src/elmdentica.c:198
 #, fuzzy
 msgid "My friends..."
-msgstr " Os meus amigos..."
+msgstr "Os meus amigos..."
 
 #: src/elmdentica.c:313
 #, c-format
 msgid "Error importing related status\n"
-msgstr ""
+msgstr "Erro ao importar estado relacionado\n"
 
 #: src/elmdentica.c:387
 #, c-format
@@ -86,25 +86,25 @@ msgstr "Abandonar"
 
 #: src/elmdentica.c:655
 msgid "Not implemented yet"
-msgstr ""
+msgstr "Ainda não implementado"
 
 #: src/elmdentica.c:676 src/elmdentica.c:705 src/elmdentica.c:803
 #, c-format
 msgid "You are a member of group %s along with %d other people.<br>«%s»"
-msgstr ""
+msgstr "É membro do grupo %s junto com mais %d outras pessoas.<br>«%s»"
 
 #: src/elmdentica.c:678 src/elmdentica.c:707 src/elmdentica.c:805
 #, c-format
 msgid "You are not a member of group %s but %d people are.<br>«%s»"
-msgstr ""
+msgstr "Não é mebro do grupo %s mas %d outras pessoas são.<br>«%s»"
 
 #: src/elmdentica.c:683 src/elmdentica.c:838
 msgid "Leave"
-msgstr ""
+msgstr "Abandonar"
 
 #: src/elmdentica.c:712 src/elmdentica.c:841
 msgid "Join"
-msgstr ""
+msgstr "Juntar"
 
 #: src/elmdentica.c:847
 #, fuzzy, c-format
@@ -118,53 +118,53 @@ msgstr "Visitar"
 #: src/elmdentica.c:1065
 #, c-format
 msgid "a few seconds ago"
-msgstr ""
+msgstr "há segundos"
 
 #: src/elmdentica.c:1067
 #, c-format
 msgid "a few minutes ago"
-msgstr ""
+msgstr "há minutos"
 
 #: src/elmdentica.c:1069
 #, c-format
 msgid "~ %d minutes ago"
-msgstr ""
+msgstr "há %d minutos"
 
 #: src/elmdentica.c:1072
 #, c-format
 msgid "~ %d hours ago"
-msgstr ""
+msgstr "há %d horas"
 
 #: src/elmdentica.c:1074
 #, c-format
 msgid "~ 1 hour ago"
-msgstr ""
+msgstr "há 1 hora"
 
 #: src/elmdentica.c:1076
 #, c-format
 msgid "on %F"
-msgstr ""
+msgstr "em %F"
 
 #: src/elmdentica.c:1077
 #, c-format
 msgid "some-when"
-msgstr ""
+msgstr "algures"
 
 #: src/elmdentica.c:1164
 msgid "Users"
-msgstr ""
+msgstr "Utilizadores"
 
 #: src/elmdentica.c:1193
 msgid "Links"
-msgstr ""
+msgstr "Ligações"
 
 #: src/elmdentica.c:1212
 msgid "Tags"
-msgstr ""
+msgstr "Etiquetas"
 
 #: src/elmdentica.c:1230
 msgid "Groups"
-msgstr ""
+msgstr "Grupos"
 
 #: src/elmdentica.c:1288
 msgid "Reply"
@@ -176,7 +176,7 @@ msgstr "Repetir"
 
 #: src/elmdentica.c:1304 src/elmdentica.c:1962
 msgid "DM"
-msgstr ""
+msgstr "MD"
 
 #: src/elmdentica.c:1313
 msgid "Unmark favorite"
@@ -188,11 +188,11 @@ msgstr "Marcar favorita"
 
 #: src/elmdentica.c:1324
 msgid "View related"
-msgstr ""
+msgstr "Ver relacionada"
 
 #: src/elmdentica.c:1333
 msgid "Status details"
-msgstr ""
+msgstr "Detalhes"
 
 #: src/elmdentica.c:1433
 msgid "Error"
@@ -386,11 +386,11 @@ msgstr "Desligado"
 
 #: src/settings.c:1157
 msgid "Pattern..."
-msgstr ""
+msgstr "Padrão"
 
 #: src/settings.c:1259
 msgid "Gag patterns..."
-msgstr ""
+msgstr "Padrões a ignorar..."
 
 #: src/settings.c:1343
 msgid "ElmDentica settings..."
@@ -411,7 +411,7 @@ msgstr "Opções"
 
 #: src/settings.c:1374
 msgid "Gag"
-msgstr ""
+msgstr "Ignorar"
 
 #: src/settings.c:1385
 #, fuzzy, c-format
@@ -475,30 +475,3 @@ msgid ""
 msgstr ""
 "Sem memória suficiente para as preferências, sem dúvida também para mais "
 "nada..."
-
-#~ msgid "More..."
-#~ msgstr "Mais..."
-
-#~ msgid "Visit website?"
-#~ msgstr "Visitar página?"
-
-#, fuzzy
-#~ msgid "%s posted the following URL...<br>"
-#~ msgstr "%s publicou esta ligação..."
-
-#~ msgid "View details?"
-#~ msgstr "Ver detalhes?"
-
-#~ msgid "FAILED TO SAX FRIENDS: %d\n"
-#~ msgstr "FALHA NO SAX de FRIENDS: %d\n"
-
-#, fuzzy
-#~ msgid "Error fetching user info: %s"
-#~ msgstr "Erro ao obter informação sobre o utilizador: %s"
-
-#~ msgid "Unknown error fetching user info."
-#~ msgstr "Erro desconhecido ao obter informação do utilizador."
-
-#, fuzzy
-#~ msgid "FAILED TO SAX USERS SHOW: %d\n"
-#~ msgstr "FALHA NO SAX de FRIENDS: %d\n"
