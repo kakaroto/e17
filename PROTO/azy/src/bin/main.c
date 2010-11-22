@@ -169,19 +169,10 @@ gen_type_marshalizers(Azy_Typedef *t,
 
         EINA_LIST_FOREACH(t->struct_members, l, m)
           {
-             EL(2, "!(%s = %s(_nstruct->%s)) %s", m->name, m->type->march_name, m->name, l->next ? " ||" : "");
+             EL(2, "%sif (!(%s = %s(_nstruct->%s)))", l->prev ? "else " : "", m->name, m->type->march_name, m->name);
           }
 
         EL(1, ")");
-        EL(1, "{");
-
-        EINA_LIST_FOREACH(t->struct_members, l, m)
-          {
-             EL(2, "if (%s) azy_value_unref(%s);", m->name, m->name);
-          }
-
-        EL(2, "return NULL;");
-        EL(1, "}");
         NL;
         EL(1, "_struct = azy_value_struct_new();");
 
@@ -191,6 +182,10 @@ gen_type_marshalizers(Azy_Typedef *t,
           }
 
         EL(1, "return _struct;");
+        EL(0, "error:");
+        EINA_LIST_FOREACH(t->struct_members, l, m)
+          EL(1, "if (%s) azy_value_unref(%s);", m->name, m->name);
+        EL(1, "return NULL;");
         EL(0, "}");
         NL;
 
@@ -206,23 +201,20 @@ gen_type_marshalizers(Azy_Typedef *t,
         EL(1, "EINA_SAFETY_ON_TRUE_RETURN_VAL(azy_value_type_get(_struct) != AZY_VALUE_STRUCT, EINA_FALSE);");
         NL;
         EL(1, "_tmp_nstruct = %s_new();", t->cname);
-        EL(1, "if (");
 
         EINA_LIST_FOREACH(t->struct_members, l, m)
           {
-             EL(2, "!%s(azy_value_struct_member_get(_struct, \"%s\"), %s&_tmp_nstruct->%s)%s",
-                m->type->demarch_name, m->name, (!strcmp(m->type->demarch_name, "azy_value_to_bool")) ? "(int*)" : "", m->name,
-                l->next ? " ||" : "");
+             EL(1, "%sif (!%s(azy_value_struct_member_get(_struct, \"%s\"), %s&_tmp_nstruct->%s))", l->prev ? "else " : "",
+                m->type->demarch_name, m->name, (!strcmp(m->type->demarch_name, "azy_value_to_bool")) ? "(int*)" : "", m->name);
+             EL(2, "goto error;");
           }
-
-        EL(1, ")");
-        EL(1, "{");
-        EL(2, "%s(_tmp_nstruct);", t->free_func);
-        EL(2, "return EINA_FALSE;");
-        EL(1, "}");
+          
         NL;
         EL(1, "*_nstruct = _tmp_nstruct;");
         EL(1, "return EINA_TRUE;");
+        EL(0, "error:");
+        EL(1, "%s(_tmp_nstruct);", t->free_func);
+        EL(1, "return EINA_FALSE;");
         EL(0, "}");
         NL;
      }
