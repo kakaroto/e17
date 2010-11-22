@@ -737,7 +737,9 @@ _change_selection(void            *data,
    if (!app->current_item_page)
      return;
 
-   idata = elm_gengrid_item_data_get(app->current_item_page);
+   it = app->current_item_page;
+
+   idata = elm_gengrid_item_data_get(it);
    if (!idata)
      return;
 
