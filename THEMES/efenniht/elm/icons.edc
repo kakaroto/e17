@@ -130,7 +130,6 @@
             name: "highlighted,icon2";                                        \
             action: STATE_SET "active" 0.0;                                   \
             transition: LINEAR 0.1;                                           \
-            in: 0.05 0.0;                                                     \
             target: "hilight";                                                \
          }                                                                    \
          program {                                                            \
