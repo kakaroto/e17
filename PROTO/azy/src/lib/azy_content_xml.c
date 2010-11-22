@@ -99,7 +99,7 @@ static __inline__ struct nodeset *
 xp_eval_nodes(xmlXPathContextPtr ctx,
               const char        *path)
 {
-   struct nodeset *ns = calloc(sizeof(struct nodeset), 1);
+   struct nodeset *ns = calloc(1, sizeof(struct nodeset));
    xmlXPathObjectPtr o = xmlXPathEvalExpression((xmlChar *)path, ctx);
    if (o && o->type == XPATH_NODESET && o->nodesetval)
      {

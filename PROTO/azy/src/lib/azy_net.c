@@ -24,7 +24,7 @@ azy_net_new(void *conn)
    if (!conn)
      return NULL;
 
-   Azy_Net *net = calloc(sizeof(Azy_Net), 1);
+   Azy_Net *net = calloc(1, sizeof(Azy_Net));
    net->conn = conn;
 
    AZY_MAGIC_SET(net, AZY_MAGIC_NET);

@@ -315,7 +315,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
           return ECORE_CALLBACK_RENEW;
 
         mlen = strlen(dh->method);
-        method = calloc(sizeof(char), mlen + 1);
+        method = calloc(mlen + 1, sizeof(char));
         snprintf(method, mlen, "%s", dh->method);
         WARN("%s: Calling %s again to try using %lli bytes of overflow data...", method, __PRETTY_FUNCTION__, overflow_length);
         _azy_client_handler_data(dh, type, NULL);

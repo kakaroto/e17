@@ -116,7 +116,7 @@ _azy_server_module_new(Azy_Server_Module_Def *def,
         return NULL;
      }
 
-   s = calloc(sizeof(Azy_Server_Module), 1);
+   s = calloc(1, sizeof(Azy_Server_Module));
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(s, NULL);
    if (def->data_size > 0)
@@ -299,7 +299,7 @@ _azy_server_client_new(Azy_Server      *server,
         AZY_MAGIC_FAIL(server, AZY_MAGIC_SERVER);
         return;
      }
-   Azy_Server_Client *client = calloc(sizeof(Azy_Server_Client), 1);
+   Azy_Server_Client *client = calloc(1, sizeof(Azy_Server_Client));
 
    EINA_SAFETY_ON_NULL_RETURN(client);
    client->net = azy_net_new(conn);

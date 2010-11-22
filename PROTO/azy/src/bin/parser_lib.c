@@ -31,7 +31,7 @@ stream_new_from_string(const char *str)
    if (str == NULL)
      return NULL;
 
-   stream *s = calloc(sizeof(stream), 1);
+   stream *s = calloc(1, sizeof(stream));
    s->buffer = eina_stringshare_add(str);
    s->length = eina_stringshare_strlen(s->buffer);
    return s;
@@ -63,7 +63,7 @@ token_new(stream *s,
           int     length)
 {
    int i;
-   token *t = calloc(sizeof(token), 1);
+   token *t = calloc(1, sizeof(token));
 
    t->type = type;
    t->text = eina_stringshare_add_length(s->buffer + s->index, length);
@@ -152,7 +152,7 @@ __parse_string(const char  *str,
 {
    if (!str)
      return NULL;
-   parser_context *ctx = calloc(sizeof(parser_context), 1);
+   parser_context *ctx = calloc(1, sizeof(parser_context));
 
    ctx->stream = stream_new_from_string(str);
 

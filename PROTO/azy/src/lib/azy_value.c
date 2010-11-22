@@ -19,7 +19,7 @@ _azy_value_new(void)
 {
    Azy_Value *v;
 
-   v = calloc(sizeof(Azy_Value), 1);
+   v = calloc(1, sizeof(Azy_Value));
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
    AZY_MAGIC_SET(v, AZY_MAGIC_VALUE);
@@ -85,7 +85,7 @@ azy_blob_new(const char *buf,
    Azy_Blob *b;
    EINA_SAFETY_ON_NULL_RETURN_VAL(buf, NULL);
 
-   b = calloc(sizeof(Azy_Blob), 1);
+   b = calloc(1, sizeof(Azy_Blob));
    EINA_SAFETY_ON_NULL_RETURN_VAL(b, NULL);
    b->buf = eina_stringshare_add(buf);
    b->len = len < 0 ? eina_stringshare_strlen(buf) : len;

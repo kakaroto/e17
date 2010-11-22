@@ -473,7 +473,7 @@ gen_type_copyfree(Azy_Typedef *t,
         /* new */
          EL(0, "%s%s %s_new()", (_static) ? "static " : "", t->ctype, t->cname);
          EL(0, "{");
-         EL(1, "return calloc(sizeof(%s), 1);", t->cname);
+         EL(1, "return calloc(1, sizeof(%s));", t->cname);
          EL(0, "}");
          NL;
 

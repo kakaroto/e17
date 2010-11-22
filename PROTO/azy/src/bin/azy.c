@@ -36,7 +36,7 @@ azy_typedef_new(int         type,
                  const char *free_func,
                  const char *fmt_str)
 {
-   Azy_Typedef *t = calloc(sizeof(Azy_Typedef), 1);
+   Azy_Typedef *t = calloc(1, sizeof(Azy_Typedef));
    t->type = type;
    t->name = eina_stringshare_add(name);
    t->cname = eina_stringshare_add(cname);
@@ -79,7 +79,7 @@ azy_typedef_new(int         type,
 Azy_Model *
 azy_new()
 {
-   Azy_Model *c = calloc(sizeof(Azy_Model), 1);
+   Azy_Model *c = calloc(1, sizeof(Azy_Model));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "int", "int", "int", "-1", "azy_value_to_int", "azy_value_int_new", NULL, "%i"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "boolean", "boolean", "Eina_Bool", "EINA_FALSE", "azy_value_to_bool", "azy_value_bool_new", NULL, "%s"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "string", "string", "const char *", "NULL", "azy_value_to_string", "azy_value_string_new", "eina_stringshare_del", "%s"));
@@ -184,7 +184,7 @@ azy_error_new(Azy_Model         *azy,
                int                 code,
                const char         *msg)
 {
-   Azy_Error_Code *e = calloc(sizeof(Azy_Error_Code), 1);
+   Azy_Error_Code *e = calloc(1, sizeof(Azy_Error_Code));
    e->name = eina_stringshare_add(name);
    e->msg = eina_stringshare_add(msg);
    e->code = code;

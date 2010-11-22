@@ -16,7 +16,7 @@ Azy_Content *
 azy_content_new(const char *method)
 {
    /* method can safely be null here */
-    Azy_Content *c = calloc(sizeof(Azy_Content), 1);
+    Azy_Content *c = calloc(1, sizeof(Azy_Content));
 
     EINA_SAFETY_ON_NULL_RETURN_VAL(c, NULL);
     if (method && method[0])

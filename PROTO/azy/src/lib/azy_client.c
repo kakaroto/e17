@@ -47,7 +47,7 @@ azy_client_new(void)
 {
    Azy_Client *client;
 
-   if (!(client = calloc(sizeof(Azy_Client), 1)))
+   if (!(client = calloc(1, sizeof(Azy_Client))))
      return NULL;
 
    client->add = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, (Ecore_Event_Handler_Cb)_azy_client_handler_add, client);
@@ -321,7 +321,7 @@ azy_client_call(Azy_Client       *client,
    INFO("Send [2/2] complete! %lli bytes queued for sending.", content->length);
    ecore_con_server_flush(client->net->conn);
  
-   handler_data = calloc(sizeof(Azy_Client_Handler_Data), 1);
+   handler_data = calloc(1, sizeof(Azy_Client_Handler_Data));
    EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data, 0);
    handler_data->client = client;
    handler_data->method = eina_stringshare_add(content->method);
@@ -380,7 +380,7 @@ azy_client_send(Azy_Client   *client,
    INFO("Send [2/2] complete! %i bytes queued for sending.", length);
    ecore_con_server_flush(client->net->conn);
 
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(!(handler_data = calloc(sizeof(Azy_Client_Handler_Data), 1)), 0);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!(handler_data = calloc(1, sizeof(Azy_Client_Handler_Data))), 0);
 
    if (!client->conns)
      {

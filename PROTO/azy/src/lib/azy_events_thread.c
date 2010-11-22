@@ -316,7 +316,7 @@ _azy_server_module_new(azy_module_def *def,
    EINA_SAFETY_ON_NULL_RETURN_VAL(def, NULL);
    EINA_SAFETY_ON_NULL_RETURN_VAL(client, NULL);
 
-   Azy_Server_Module *s = calloc(sizeof(Azy_Server_Module), 1);
+   Azy_Server_Module *s = calloc(1, sizeof(Azy_Server_Module));
 
    if (def->size > 0)
      s->data = calloc(1, def->size);

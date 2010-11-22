@@ -114,7 +114,7 @@ azy_server_module_def_new(const char *name)
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, NULL);
 
-   def = calloc(sizeof(Azy_Server_Module_Def), 1);
+   def = calloc(1, sizeof(Azy_Server_Module_Def));
    EINA_SAFETY_ON_NULL_RETURN_VAL(def, NULL);
 
    def->name = eina_stringshare_add(name);
@@ -213,7 +213,7 @@ azy_server_module_method_new(const char *name, Azy_Server_Module_Content_Cb cb)
    if ((!name) || (!cb))
      return NULL;
 
-   method = calloc(sizeof(Azy_Server_Module_Method), 1);
+   method = calloc(1, sizeof(Azy_Server_Module_Method));
    EINA_SAFETY_ON_NULL_RETURN_VAL(method, NULL);
 
    method->name = eina_stringshare_add(name);
@@ -268,7 +268,7 @@ azy_server_new(Eina_Bool secure)
    Azy_Server *server;
    azy_init();
 
-   if (!(server = calloc(sizeof(Azy_Server), 1)))
+   if (!(server = calloc(1, sizeof(Azy_Server))))
      return NULL;
 
    if (!(server->add = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_ADD, (Ecore_Event_Handler_Cb)azy_server_client_handler_add, server)))
