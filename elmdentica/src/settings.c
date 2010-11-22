@@ -895,7 +895,7 @@ void on_settings_cache(void *data, Evas_Object *toolbar, void *event_info) {
 			elm_slider_label_set(slider, _("Displayed messages"));
 
 			elm_slider_unit_format_set(slider, "%0.f");
-			elm_slider_min_max_set(slider, 0.0, 100.0);
+			elm_slider_min_max_set(slider, 0.0, 1000.0);
 			elm_slider_value_set(slider, settings->max_messages);
 			evas_object_smart_callback_add(slider, "changed", cache_messages_max_change, NULL);
 
