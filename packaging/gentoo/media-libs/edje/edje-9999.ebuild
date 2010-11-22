@@ -4,6 +4,8 @@
 
 inherit enlightenment
 
+EAPI="2"
+
 DESCRIPTION="graphical layout and animation library"
 HOMEPAGE="http://www.enlightenment.org/pages/edje.html"
 
