@@ -183,12 +183,12 @@ azy_error_new(Azy_Model         *azy,
 
    if (module != NULL)
      {
-        e->cenum = eina_stringshare_printf("%s_RPC_ERROR_%s_%s", azy_stringshare_toupper(azy->name), azy_stringshare_toupper(module->name), azy_stringshare_toupper(name));
+        e->cenum = eina_stringshare_printf("%s_RPC_ERROR_%s_%s", (azy->name && azy->name[0]) ? azy_stringshare_toupper(azy->name) : "AZY", azy_stringshare_toupper(module->name), azy_stringshare_toupper(name));
         module->errors = eina_list_append(module->errors, e);
      }
    else
      {
-        e->cenum = eina_stringshare_printf("%s_RPC_ERROR_%s", azy_stringshare_toupper(azy->name), azy_stringshare_toupper(name));
+        e->cenum = eina_stringshare_printf("%s_RPC_ERROR_%s", (azy->name && azy->name[0]) ? azy_stringshare_toupper(azy->name) : "AZY", azy_stringshare_toupper(name));
         azy->errors = eina_list_append(azy->errors, e);
      }
 
