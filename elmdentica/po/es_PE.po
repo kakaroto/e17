@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: elmdentica 0.8.0\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
-"POT-Creation-Date: 2010-11-21 11:17+0000\n"
+"POT-Creation-Date: 2010-11-22 22:09+0000\n"
 "PO-Revision-Date: 2010-06-01 10:34+0005\n"
 "Last-Translator: Jorge Puente Sarrín <puentesarrin@gmail.com>\n"
 "Language-Team: Jorge Puente Sarrín <puentesarrin@gmail.com>\n"
@@ -173,7 +173,7 @@ msgstr "Responder"
 msgid "Repeat"
 msgstr "Repetir"
 
-#: src/elmdentica.c:1304 src/elmdentica.c:2034
+#: src/elmdentica.c:1304 src/elmdentica.c:1962
 msgid "DM"
 msgstr ""
 
@@ -201,75 +201,71 @@ msgstr "Error"
 msgid "µ-blog Error"
 msgstr "Error de µ-blog"
 
-#: src/elmdentica.c:1701
+#: src/elmdentica.c:1697
 msgid "Send a DM to..."
 msgstr ""
 
-#: src/elmdentica.c:1713 src/settings.c:490 src/settings.c:1177
+#: src/elmdentica.c:1709 src/settings.c:490 src/settings.c:1177
 msgid "OK"
 msgstr "Aceptar"
 
-#: src/elmdentica.c:1719 src/settings.c:498 src/settings.c:1186
+#: src/elmdentica.c:1715 src/settings.c:498 src/settings.c:1186
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: src/elmdentica.c:1797 src/elmdentica.c:1902
+#: src/elmdentica.c:1794 src/elmdentica.c:1900
 msgid "Type your status here..."
 msgstr ""
 
-#: src/elmdentica.c:1924
-#, fuzzy
-msgid "Direct Messages"
-msgstr "Mensajes visibles:"
-
-#: src/elmdentica.c:1931
-msgid "Everyone"
-msgstr ""
-
-#: src/elmdentica.c:1938
-msgid "Just me"
-msgstr ""
-
-#: src/elmdentica.c:1945
-msgid "Favorites"
-msgstr ""
-
-#: src/elmdentica.c:1952
-msgid "Replies/Mentions"
-msgstr ""
-
-#: src/elmdentica.c:1959
-msgid "Friends & I"
-msgstr ""
-
-#: src/elmdentica.c:1982
+#: src/elmdentica.c:1917
 #, fuzzy
 msgid "Timelines"
 msgstr "Línea de tiempo"
 
-#: src/elmdentica.c:2003
+#: src/elmdentica.c:1923
+#, fuzzy
+msgid "Direct Messages"
+msgstr "Mensajes visibles:"
+
+#: src/elmdentica.c:1924
+msgid "Everyone"
+msgstr ""
+
+#: src/elmdentica.c:1925
+msgid "Just me"
+msgstr ""
+
+#: src/elmdentica.c:1926
+msgid "Favorites"
+msgstr ""
+
+#: src/elmdentica.c:1927
+msgid "Replies/Mentions"
+msgstr ""
+
+#: src/elmdentica.c:1928
+msgid "Friends & I"
+msgstr ""
+
+#: src/elmdentica.c:1935
 msgid "Post"
 msgstr "Enviar"
 
-#: src/elmdentica.c:2021
+#: src/elmdentica.c:1949
 #, fuzzy
 msgid "Send"
 msgstr "¿Enviar?"
 
-#: src/elmdentica.c:2047
+#: src/elmdentica.c:1975
 #, fuzzy
 msgid "Clear"
 msgstr "Cerrar"
 
-#: src/elmdentica.c:2061
-msgid "More..."
-msgstr "Más..."
-
-#: src/elmdentica.c:2063
+#: src/elmdentica.c:1984
 msgid "Fullscreen"
 msgstr "Pantalla completa"
 
-#: src/elmdentica.c:2064 src/settings.c:1342
+#: src/elmdentica.c:1985 src/settings.c:1342
 msgid "Settings"
 msgstr "Configuración"
 
@@ -471,6 +467,9 @@ msgstr ""
 msgid ""
 "Not enough memory for settings, no doubt for anything else either, surely..."
 msgstr ""
+
+#~ msgid "More..."
+#~ msgstr "Más..."
 
 #~ msgid "FAILED TO SAX FRIENDS: %d\n"
 #~ msgstr "FALLA EN SAX DE AMIGOS: %d\n"
