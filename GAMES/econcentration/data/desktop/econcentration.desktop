@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Econcentration
+Comment=Game
+Comment[pt]=Jogo
+Exec=econcentration
+Icon=econcentration
+Terminal=false
+Type=Application
+Categories=Application;Game
