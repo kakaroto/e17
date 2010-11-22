@@ -1,0 +1,9 @@
+Login:        otaviobp
+IRC Nick:     otaviobp
+Name:         Otávio Pontes
+Location:     Campinas, Brazil
+E-Mail:       -otavio@profusion.mobi
+Contributing: Elementary Enjoy
+Group:        Libraries
+Platform:     Arch (Linux)
+
