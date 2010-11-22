@@ -293,6 +293,8 @@ page_view_mode_set(App         *app,
    Evas_Coord h, w, item_w, item_h;
    Item_Data *idata;
 
+   if (!app->current_item_page) return;
+
    idata = elm_gengrid_item_data_get(app->current_item_page);
    evas_object_geometry_get(app->grid, NULL, NULL, NULL, &h);
 
