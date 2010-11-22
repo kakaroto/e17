@@ -397,7 +397,7 @@ gen_type_print(Azy_Typedef *t,
                   EL(1, "printf(\"\\n\");");
                }
              else
-               EL(1, "printf(\"%%s%%s%s: %s\\n\", pre, pre, a->%s);", m->type->fmt_str, m->name, m->name);
+               EL(1, "printf(\"%%s%%s%s: %s\\n\", pre, pre, a->%s);", m->name, m->type->fmt_str, m->name);
           }
         EL(0, "}");
         NL;
