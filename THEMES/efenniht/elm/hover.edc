@@ -81,14 +81,6 @@ collections {
                rel2.to: "elm.swallow.size";
             }
          }
-         part { name: "event";
-            type: RECT;
-            mouse_events: 1;
-            description { state: "default" 0.0;
-               visible: 1;
-               color: 0 250 250 100;
-            }
-         }
       }
       programs {
          program { name: "end";
@@ -416,14 +408,6 @@ collections {
                }
             }
          }
-      part { name: "event";
-         type: RECT;
-         mouse_events: 1;
-         description { state: "default" 0.0;
-            visible: 1;
-            color: 250 250 0 100;
-         }
-      }
       }
       programs {
          program { name: "end";
