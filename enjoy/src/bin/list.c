@@ -32,16 +32,16 @@ _list_page_promote(List *list, Evas_Object *page)
    elm_pager_content_promote(list->pager, page);
 }
 
-static void
-_list_page_songs(void *data, Evas_Object *o, void *event_info __UNUSED__)
+void
+list_page_songs(Evas_Object *obj)
 {
-   List *list = data;
+   LIST_GET_OR_RETURN(list, obj);
 
    DBG("show songs folder %p (%s) requested by %p (%s)",
        list->page.songs, page_title_get(list->page.songs),
-       o, page_title_get(o));
+       obj, page_title_get(obj));
 
-   if (list->page.songs == o) return;
+   if (list->page.songs == obj) return;
    if (!list->page.songs) return;
 
    EINA_SAFETY_ON_NULL_RETURN(eina_list_last(list->page.list));
@@ -49,6 +49,9 @@ _list_page_songs(void *data, Evas_Object *o, void *event_info __UNUSED__)
      list->page.list = eina_list_append(list->page.list, list->page.songs);
 
    _list_page_promote(list, list->page.songs);
+   evas_object_smart_callback_call(list->pager, "title_changed", (void *)page_title_get(list->page.current));
+   evas_object_smart_callback_call(list->pager, "elm,back,show", NULL);
+   evas_object_smart_callback_call(list->pager, "elm,playing,hide", NULL);
 }
 
 static void
@@ -78,21 +81,33 @@ _list_page_add(List *list, Evas_Object *page)
 {
    DBG("page=%p (%s)", page, page_title_get(page));
    EINA_SAFETY_ON_NULL_RETURN_VAL(page, EINA_FALSE);
-   evas_object_smart_callback_add(page, "songs", _list_page_songs, list);
    list->page.list = eina_list_append(list->page.list, page);
    list->page.current = page;
    elm_pager_content_push(list->pager, page);
-   page_songs_exists_changed(page, !!list->page.songs);
+   evas_object_smart_callback_call(list->pager, "title_changed", (void *)page_title_get(page));
+   if (eina_list_count(list->page.list) > 1)
+      evas_object_smart_callback_call(list->pager, "elm,back,show", NULL);
+   if ((list->page.songs) && (list->page.songs != page))
+      evas_object_smart_callback_call(list->pager, "elm,playing,show", NULL);
+   else
+      evas_object_smart_callback_call(list->pager, "elm,playing,hide", NULL);
 
    return EINA_TRUE;
 }
 
-static void
-_list_page_back(void *data, Evas_Object *old_page, void *event_info __UNUSED__)
+void
+list_page_back(Evas_Object *obj)
 {
-   List *list = data;
-   DBG("page=%p (%s)", old_page, page_title_get(old_page));
-   _list_page_remove(list, old_page);
+   LIST_GET_OR_RETURN(list, obj);
+   DBG("page=%p (%s)", list->page.current, page_title_get(list->page.current));
+   _list_page_remove(list, list->page.current);
+   evas_object_smart_callback_call(list->pager, "title_changed", (void *)page_title_get(list->page.current));
+   if (eina_list_count(list->page.list) == 1)
+      evas_object_smart_callback_call(list->pager, "elm,back,hide", NULL);
+   if ((list->page.songs) && (list->page.songs != list->page.current))
+      evas_object_smart_callback_call(list->pager, "elm,playing,show", NULL);
+   else
+      evas_object_smart_callback_call(list->pager, "elm,playing,hide", NULL);
 }
 
 static void
@@ -103,7 +118,6 @@ _list_page_song(void *data, Evas_Object *page, void *event_info)
 
    if (list->page.songs != page)
      {
-        const Eina_List *l;
         Evas_Object *o;
 
         if (list->page.songs)
@@ -114,8 +128,7 @@ _list_page_song(void *data, Evas_Object *page, void *event_info)
           }
 
         list->page.songs = page;
-        EINA_LIST_FOREACH(list->page.list, l, o)
-          page_songs_exists_changed(o, list->page.songs != o);
+        evas_object_smart_callback_call(list->pager, "elm,playing,hide", NULL);
      }
 
    evas_object_smart_callback_call(list->pager, "selected", song);
@@ -128,7 +141,6 @@ _list_page_folder_songs(void *data, Evas_Object *o __UNUSED__, void *event_info)
    Evas_Object *page = event_info;
    EINA_SAFETY_ON_NULL_RETURN(page);
    if (!_list_page_add(list, page)) return;
-   evas_object_smart_callback_add(page, "back", _list_page_back, list);
    evas_object_smart_callback_add(page, "song", _list_page_song, list);
 }
 
@@ -139,7 +151,6 @@ _list_page_folder(void *data, Evas_Object *o __UNUSED__, void *event_info)
    Evas_Object *page = event_info;
    EINA_SAFETY_ON_NULL_RETURN(page);
    if (!_list_page_add(list, page)) return;
-   evas_object_smart_callback_add(page, "back", _list_page_back, list);
    evas_object_smart_callback_add(page, "folder", _list_page_folder, list);
    evas_object_smart_callback_add
      (page, "folder-songs", _list_page_folder_songs, list);
@@ -193,21 +204,13 @@ list_populate(Evas_Object *obj, DB *db)
    if (!db) return EINA_TRUE;
 
    page = page_root_add(obj);
+
    EINA_SAFETY_ON_NULL_RETURN_VAL(page, EINA_FALSE);
    if (!_list_page_add(list, page)) return EINA_FALSE;
    evas_object_smart_callback_add(page, "folder", _list_page_folder, list);
    evas_object_smart_callback_add
      (page, "folder-songs", _list_page_folder_songs, list);
 
-   return EINA_TRUE;
-}
-
-Eina_Bool
-list_songs_show(Evas_Object *obj)
-{
-   LIST_GET_OR_RETURN(list, obj, EINA_FALSE);
-   if (!list->page.songs) return EINA_FALSE;
-   _list_page_promote(list, list->page.songs);
    return EINA_TRUE;
 }
 

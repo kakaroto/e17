@@ -302,14 +302,45 @@ _win_list_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
 }
 
 static void
-_win_list_changed(void *data, Evas_Object *list __UNUSED__, void *event_info __UNUSED__)
+_win_title_changed(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Win *w = data;
-   _win_song_set(w, list_selected_get(w->list));
-   if (list_songs_exists(w->list))
-     edje_object_signal_emit(w->edje, "ejy,songs,show", "ejy");
-   else
-     edje_object_signal_emit(w->edje, "ejy,songs,hide", "ejy");
+   edje_object_part_text_set(w->edje, "elm.text.title", event_info);
+}
+
+static void
+_win_back_show(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
+   Win *w = data;
+   edje_object_signal_emit(w->edje, "elm,back,show", "elm");
+}
+
+static void
+_win_back_hide(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
+   Win *w = data;
+   edje_object_signal_emit(w->edje, "elm,back,hide", "elm");
+}
+
+static void
+_win_playing_show(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
+   Win *w = data;
+   edje_object_signal_emit(w->edje, "elm,next,show", "elm");
+}
+
+static void
+_win_playing_hide(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
+   Win *w = data;
+   edje_object_signal_emit(w->edje, "elm,next,hide", "elm");
+}
+
+static void
+_win_action_back(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+{
+   Win *w = data;
+   list_page_back(w->list);
 }
 
 static void
@@ -397,23 +428,23 @@ _win_mode_list(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSE
    Win *w = data;
    elm_toolbar_item_state_unset(w->action.nowplaying);
    list_promote_current(w->list);
+   edje_object_signal_emit(w->edje, "elm,title,show", "elm");
 }
 
 static void
 _win_mode_nowplaying(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Win *w = data;
+   edje_object_signal_emit(w->edje, "elm,title,hide", "elm");
    elm_toolbar_item_state_set(w->action.nowplaying, w->action.playlist);
    elm_pager_content_promote(w->list, w->nowplaying);
 }
 
 static void
-_win_songs(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_win_action_next(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Win *w = data;
-   if (!list_songs_show(w->list)) return;
-   edje_object_signal_emit(w->edje, "ejy,mode,nowplaying,hide", "ejy");
-   edje_object_signal_emit(w->edje, "ejy,mode,list,show", "ejy");
+   list_page_songs(w->list);
 }
 
 static void
@@ -738,6 +769,7 @@ win_new(App *app)
    Evas_Coord iw = 320, ih = 240;
    char path[PATH_MAX];
    Evas_Object *nowplaying_edje;
+   Edje_External_Param param;
 
    memset(w, 0, sizeof(*w));
 
@@ -793,13 +825,27 @@ win_new(App *app)
    elm_win_resize_object_add(w->win, w->layout);
 
    if (!elm_layout_theme_set
-       (w->layout, "layout", "application", "toolbar-content"))
+       (w->layout, "layout", "application", "toolbar-content-back-next"))
      {
-        ERR("could not load style 'toolbar-content-back' from theme");
+        ERR("could not load style 'toolbar-content-back-next' from theme");
         goto error;
      }
 
    w->edje = elm_layout_edje_get(w->layout);
+   _win_playing_hide(w, NULL, NULL);
+   _win_back_hide(w, NULL, NULL);
+   edje_object_part_text_set(w->edje, "elm.text.next", "Playing");
+
+   param.type = EDJE_EXTERNAL_PARAM_TYPE_STRING;
+   param.name = "label";
+   param.s = "Playing";
+   edje_object_part_external_param_set (w->edje, "next", &param);
+
+   edje_object_signal_callback_add(w->edje, "elm,action,back", "",
+                                   _win_action_back, w);
+   edje_object_signal_callback_add(w->edje, "elm,action,next", "",
+                                   _win_action_next, w);
+
    w->toolbar = edje_object_part_external_object_get
      (w->edje, "elm.external.toolbar");
    if (!w->toolbar)
@@ -811,16 +857,16 @@ win_new(App *app)
    elm_toolbar_no_select_mode_set(w->toolbar, EINA_TRUE);
    elm_toolbar_menu_parent_set(w->toolbar, w->win);
    w->action.prev = _toolbar_item_add
-      (w, "go-previous", "Previous", 130, _win_prev);
-   w->action.next = _toolbar_item_add(w, "go-next", "Next", 140, _win_next);
+      (w, "media-seek-backward", "Previous", 130, _win_prev);
+   w->action.next = _toolbar_item_add(w, "media-seek-forward", "Next", 140, _win_next);
    w->action.play = _toolbar_item_add
       (w, "media-playback-start", "Play", 150, _win_action_play);
    w->action.pause = elm_toolbar_item_state_add
       (w->action.play, "media-playback-pause", "Pause", _win_action_pause, w);
    w->action.nowplaying = _toolbar_item_add
-      (w, "nowplaying", "Now Playing", 120, _win_mode_nowplaying);
+      (w, "multimedia-player", "Now Playing", 120, _win_mode_nowplaying);
    w->action.playlist = elm_toolbar_item_state_add
-      (w->action.nowplaying, "list", "Library", _win_mode_list, w);
+      (w->action.nowplaying, "txt", "Library", _win_mode_list, w);
 
    elm_toolbar_item_disabled_set(w->action.prev, EINA_TRUE);
    elm_toolbar_item_disabled_set(w->action.next, EINA_TRUE);
@@ -835,7 +881,11 @@ win_new(App *app)
      }
    elm_layout_content_set(w->layout, "elm.swallow.content", w->list);
    evas_object_smart_callback_add(w->list, "selected", _win_list_selected, w);
-   evas_object_smart_callback_add(w->list, "changed", _win_list_changed, w);
+   evas_object_smart_callback_add(w->list, "title_changed", _win_title_changed, w);
+   evas_object_smart_callback_add(w->list, "elm,back,hide", _win_back_hide, w);
+   evas_object_smart_callback_add(w->list, "elm,back,show", _win_back_show, w);
+   evas_object_smart_callback_add(w->list, "elm,playing,hide", _win_playing_hide, w);
+   evas_object_smart_callback_add(w->list, "elm,playing,show", _win_playing_show, w);
 
    w->nowplaying = nowplaying_add(w->layout);
    nowplaying_edje = elm_layout_edje_get(w->nowplaying);
@@ -874,8 +924,6 @@ win_new(App *app)
 #ifdef EDJE_SIGNAL_DEBUG
    edje_object_signal_callback_add(w->edje, "*", "*", _edje_signal_debug, w);
 #endif
-   edje_object_signal_callback_add
-     (w->edje, "ejy,songs,clicked", "ejy", _win_songs, w);
    edje_object_message_handler_set(w->edje, _win_edje_msg, w);
 
    evas_object_show(w->layout);

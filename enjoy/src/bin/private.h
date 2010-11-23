@@ -76,7 +76,6 @@ Eina_Bool    libmgr_scan_start(Libmgr *mgr, void (*func_end)(void *, Eina_Bool),
 Evas_Object *list_add(Evas_Object *parent);
 void         list_promote_current(Evas_Object *list);
 Eina_Bool    list_populate(Evas_Object *list, DB *db);
-Eina_Bool    list_songs_show(Evas_Object *obj);
 Eina_Bool    list_songs_exists(const Evas_Object *obj);
 Song        *list_selected_get(const Evas_Object *list);
 Eina_Bool    list_song_updated(Evas_Object *obj);
@@ -92,6 +91,8 @@ void         list_freeze(Evas_Object *obj);
 void         list_thaw(Evas_Object *obj);
 Song        *list_song_nth_get(Evas_Object *obj, int32_t n);
 int32_t      list_song_selected_n_get(Evas_Object *obj);
+void         list_page_back(Evas_Object *obj);
+void         list_page_songs(Evas_Object *obj);
 
 const char  *page_title_get(const Evas_Object *obj);
 void         page_songs_exists_changed(Evas_Object *obj, Eina_Bool exists);
