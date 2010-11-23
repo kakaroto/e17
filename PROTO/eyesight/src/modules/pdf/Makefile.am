@@ -14,7 +14,7 @@ pkg_LTLIBRARIES = pdf.la
 if HAVE_PDF_BACKEND_MUPDF
 
 noinst_PROGRAMS = cmapdump fontdump
-BUILT_SOURCES = cmapdump fontdump
+#BUILT_SOURCES = cmapdump fontdump
 
 cmapdump_SOURCES = mupdf-0.7/mupdf/cmapdump.c
 cmapdump_CPPFLAGS = \
@@ -414,7 +414,7 @@ pdf_la_LDFLAGS = -no-undefined @lt_enable_auto_import@ -module -avoid-version
 pdf_la_LIBTOOLFLAGS = --tag=disable-static
 
 install-data-hook:
-	rm -f $(pkgdir)/$(pkg_LTLIBRARIES)
+	rm -f $(DESTDIR)$(pkgdir)/$(pkg_LTLIBRARIES)
 
 endif
 endif

@@ -23,7 +23,7 @@ txt_la_LDFLAGS = -no-undefined @lt_enable_auto_import@ -module -avoid-version
 txt_la_LIBTOOLFLAGS = --tag=disable-static
 
 install-data-hook:
-	rm -f $(pkgdir)/$(pkg_LTLIBRARIES)
+	rm -f $(DESTDIR)$(pkgdir)/$(pkg_LTLIBRARIES)
 
 endif
 endif
