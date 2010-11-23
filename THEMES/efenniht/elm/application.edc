@@ -21,7 +21,7 @@ collections {
                fixed: 0 1;
                rel1 {
                   relative: 0.0 1.0;
-                  offset: 0 -90;
+                  offset: 0 -85;
                }
             }
          }
@@ -70,7 +70,7 @@ collections {
                align: 0.5 0.0;
                rel1 {
                   relative: 0.0 1.0;
-                  offset: 0 -90;
+                  offset: 0 -85;
                }
             }
          }
@@ -223,7 +223,7 @@ collections {
                align: 0.5 0.0;
                rel1 {
                   relative: 0.0 1.0;
-                  offset: 0 -90;
+                  offset: 0 -85;
                }
             }
          }
@@ -390,7 +390,7 @@ collections {
                fixed: 0 1;
                rel1 {
                   relative: 0.0 1.0;
-                  offset: 0 -90;
+                  offset: 0 -85;
                }
             }
          }
@@ -418,7 +418,7 @@ collections {
                fixed: 0 1;
                rel1 {
                   relative: 0.0 1.0;
-                  offset: 0 -90;
+                  offset: 0 -85;
                }
             }
          }
