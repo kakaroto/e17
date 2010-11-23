@@ -7,35 +7,18 @@ filesdir = $(datadir)/$(PACKAGE)
 files_DATA = default.edj
 
 images = \
-images/back-button.png \
+images/base.png \
 images/bottom_bg.png \
-images/bg_gradient_bottom.png \
-images/bg_gradient_top.png \
-images/list-highlight.png \
-images/no-cover-66.png \
-images/no-cover-146.png \
-images/no-cover-1024.png \
+images/main.png \
+images/menu_separation.png \
+images/rating_stars_highlight.png \
+images/rating_stars.png \
 images/scrollbar-bg.png \
 images/scrollbar-knob.png \
-images/top_bg.png \
-images/toggle_bg.png \
-images/toggle_off.png \
-images/toggle_on.png \
-images/slider_horizontal_clicked.png \
-images/slider_horizontal_indicator.png \
-images/progress_horizontal_fill.png \
-images/progress_horizontal_stroke.png \
-images/main.png \
-images/base.png \
-images/menu_separation.png \
-images/all_songs.png \
-images/songs-button.png \
-images/progress_horizontal_fill_volume.png \
 images/sound_max.png \
 images/sound_min.png \
 images/sound_mute.png \
-images/rating_stars_highlight.png \
-images/rating_stars.png
+images/volume_bg.png
 
 fonts =
 

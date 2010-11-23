@@ -51,11 +51,6 @@ collections {
 
    group {
       name: "page/songs-album";
-      images {
-         image: "back-button.png" COMP;
-         image: "songs-button.png" COMP;
-         image: "top_bg.png" COMP;
-      }
       data {
          item: "homogeneous" "1";
          item: "cover_size" "128";
