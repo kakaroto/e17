@@ -122,8 +122,10 @@ _cover_album_local_find(Evas *evas, DB *db, Album *album, void (*cb)(void *data)
    Evas_Object *img = evas_object_image_add(evas);
    Eina_Iterator *it = db_album_songs_get(db, album->id);
    const Song *song;
-   Eina_List *done_dirs = NULL;
    Eina_Bool success;
+   Eina_Hash *done_dirs;
+
+   done_dirs = eina_hash_string_djb2_new(NULL);
 
    EINA_ITERATOR_FOREACH(it, song)
      {
@@ -131,7 +133,6 @@ _cover_album_local_find(Evas *evas, DB *db, Album *album, void (*cb)(void *data)
         size_t dir_len = 0, i;
         Eina_Iterator *files;
         const Eina_List *l;
-        const char *s;
         const Eina_File_Direct_Info *fi;
 
         memcpy(dir, song->path, song->len.path + 1);
@@ -144,14 +145,8 @@ _cover_album_local_find(Evas *evas, DB *db, Album *album, void (*cb)(void *data)
             }
         if (!dir_len) continue;
 
-        EINA_LIST_FOREACH(done_dirs, l, s)
-          if (strcmp(s, dir) == 0)
-            {
-               dir_len = 0;
-               break;
-            }
-        if (!dir_len) continue;
-        done_dirs = eina_list_append(done_dirs, strdup(dir));
+        if (eina_hash_find(done_dirs, dir)) continue;
+        eina_hash_add(done_dirs, dir, (void *)0xdeadbeef);
 
         files = eina_file_direct_ls(dir);
         if (!files)
@@ -214,12 +209,7 @@ _cover_album_local_find(Evas *evas, DB *db, Album *album, void (*cb)(void *data)
 
    eina_iterator_free(it);
    evas_object_del(img);
-
-   if (done_dirs)
-     {
-        char *dir;
-        EINA_LIST_FREE(done_dirs, dir) free(dir);
-     }
+   eina_hash_free(done_dirs);
 
    success = !!eina_inlist_count(album->covers);
    if (cb && success) cb(data);
