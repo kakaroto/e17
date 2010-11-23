@@ -2,7 +2,6 @@
    group {                                                                    \
       name: "elm/icon/"NAME"/default" ;                                       \
       alias: "elm/icon/toolbar/"NAME"/default" ;                              \
-      max: 87 90;                                                             \
       min: 10 10;                                                             \
       script {                                                                \
          public disabled;                                                     \
@@ -143,13 +142,79 @@
       }                                                                       \
    }                                                                          \
 
+#define ICON(NAME, IMAGE)                                                     \
+   group {                                                                    \
+      name: "elm/icon/"NAME"/default" ;                                       \
+      min: 10 10;                                                             \
+      images {                                                                \
+         image: "images/icon_"IMAGE".png" COMP;                               \
+      }                                                                       \
+      parts {                                                                 \
+         part { name: "icon";                                                 \
+            mouse_events: 0;                                                  \
+            description { state: "default" 0.0;                               \
+               image.normal: "images/icon_"IMAGE".png";                       \
+               aspect: 1.0 1.0;                                               \
+               aspect_preference: BOTH;                                       \
+            }                                                                 \
+         }                                                                    \
+      }                                                                       \
+   }                                                                          \
+
+#define MULTI_SIZE_ICON(NAME, IMAGE, SIZE1, SIZE2, SIZE3)                     \
+   group {                                                                    \
+      name: "elm/icon/"NAME"/default" ;                                       \
+      min: 10 10;                                                             \
+      images {                                                                \
+         set {                                                                \
+            name: IMAGE;                                                      \
+            image {                                                           \
+               image: "images/icon_"IMAGE"_"SIZE1".png" COMP;                 \
+               size: 1 1 SIZE1 SIZE1;                                         \
+            }                                                                 \
+            image {                                                           \
+               image: "images/icon_"IMAGE"_"SIZE2".png" COMP;                 \
+               size: 1 1 SIZE2 SIZE2;                                         \
+            }                                                                 \
+            image {                                                           \
+               image: "images/icon_"IMAGE"_"SIZE3".png" COMP;                 \
+               size: 1 1 SIZE3 SIZE3;                                         \
+            }                                                                 \
+         }                                                                    \
+      }                                                                       \
+      parts {                                                                 \
+         part { name: "icon";                                                 \
+            mouse_events: 0;                                                  \
+            description { state: "default" 0.0;                               \
+               image.normal: IMAGE;                                           \
+               aspect: 1.0 1.0;                                               \
+               aspect_preference: BOTH;                                       \
+            }                                                                 \
+         }                                                                    \
+      }                                                                       \
+   }                                                                          \
+
 collections {
    TOOLBAR_ICON("settings_look", "settings_look")
    TOOLBAR_ICON("media-playback-pause", "media-playback-pause")
    TOOLBAR_ICON("media-playback-start", "media-playback-start")
-   TOOLBAR_ICON("nowplaying", "nowplaying")
-   TOOLBAR_ICON("list", "list")
+   TOOLBAR_ICON("multimedia-player", "multimedia-player")
+   TOOLBAR_ICON("media-seek-backward", "media-seek-backward")
+   TOOLBAR_ICON("media-seek-forward", "media-seek-forward")
+   TOOLBAR_ICON("more_menu", "more")
+   TOOLBAR_ICON("txt", "txt")
+   TOOLBAR_ICON("tab", "tab")
    TOOLBAR_ICON("go-previous", "go-previous")
    TOOLBAR_ICON("go-next", "go-next")
-   TOOLBAR_ICON("more_menu", "more")
+   TOOLBAR_ICON("tab-new", "tab-new")
+   TOOLBAR_ICON("process-stop", "process-stop")
+   TOOLBAR_ICON("go-up", "go-up")
+   TOOLBAR_ICON("go-down", "go-down")
+   TOOLBAR_ICON("zoom-in", "zoom-in")
+   TOOLBAR_ICON("zoom-out", "zoom-out")
+   TOOLBAR_ICON("document-open", "document-open")
+   TOOLBAR_ICON("view-fullscreen", "view-fullscreen")
+
+   ICON("all-songs", "all-songs")
+   MULTI_SIZE_ICON("no-cover", "no-cover", 66, 146, 1024)
 }
