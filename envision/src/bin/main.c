@@ -36,6 +36,15 @@ struct _App
    Evas_Object *clipper;
    Evas_Object *gl_index;
    Evas_Object *spinner;
+   Evas_Object *toolbar;
+   struct {
+        Elm_Toolbar_Item *down;
+        Elm_Toolbar_Item *up;
+        Elm_Toolbar_Item *zoom_in;
+        Elm_Toolbar_Item *zoom_out;
+        Elm_Toolbar_Item *open;
+        Elm_Toolbar_Item *fullscreen;
+   } action;
 
    struct _file_info
    {
@@ -85,7 +94,6 @@ static int _log_domain = -1;
 
 static Elm_Gengrid_Item_Class gic;
 static Elm_Genlist_Item_Class glc2;
-static Elm_Genlist_Item_Class glc;
 
 static void
 _viewport_resize(void        *data,
@@ -337,10 +345,7 @@ grid_item_db_clicked(void            *data,
 
 /*--------------------------ZOOM IN CB-------------------------------*/
 static void
-_zoom_in(void                *data,
-         Evas_Object *obj     __UNUSED__,
-         const char *emission __UNUSED__,
-         const char *source   __UNUSED__)
+_zoom_in(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    App *app = data;
    Item_Data *idata;
@@ -371,10 +376,7 @@ _zoom_in(void                *data,
 
 /*--------------------------ZOOM OUT CB------------------------------*/
 static void
-_zoom_out(void                *data,
-          Evas_Object *obj     __UNUSED__,
-          const char *emission __UNUSED__,
-          const char *source   __UNUSED__)
+_zoom_out(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    App *app = data;
    Item_Data *idata;
@@ -402,10 +404,7 @@ _zoom_out(void                *data,
 }
 
 static void
-_page_up(void                *data,
-         Evas_Object *obj     __UNUSED__,
-         const char *emission __UNUSED__,
-         const char *source   __UNUSED__)
+_page_up(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    App *app = data;
    const Elm_Gengrid_Item *it;
@@ -422,10 +421,7 @@ _page_up(void                *data,
 
 /*--------------------------PAGE_DOWN CB-------------------------------*/
 static void
-_page_down(void                *data,
-           Evas_Object *obj     __UNUSED__,
-           const char *emission __UNUSED__,
-           const char *source   __UNUSED__)
+_page_down(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    App *app = data;
    const Elm_Gengrid_Item *it;
@@ -442,19 +438,12 @@ _page_down(void                *data,
 
 /*--------------------------FULL SCREEN CB-----------------------------*/
 static void
-gl_fullscreen(void            *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_fullscreen(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    App *app = data;
    Eina_Bool fullscreen;
 
    fullscreen = !elm_win_fullscreen_get(app->win);
-
-   if (fullscreen)
-     edje_object_signal_emit(app->ed, "sig,full", "app");
-   else
-     edje_object_signal_emit(app->ed, "sig,wind", "app");
 
    elm_win_fullscreen_set(app->win, fullscreen);
    page_view_mode_set((App *)data, SINGLE_PAGE);
@@ -462,9 +451,7 @@ gl_fullscreen(void            *data,
 
 /*--------------------------OPEN FILE_SELECTOR CB----------------------*/
 static void
-gl_open(void            *data,
-        Evas_Object *obj __UNUSED__,
-        void *event_info __UNUSED__)
+_file_open(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    App *app = data;
    evas_object_show(app->fs_inwin);
@@ -540,7 +527,7 @@ _on_key_down(void            *data,
    Evas_Event_Key_Down *event = einfo;
    App *app = data;
    if (!strcmp(event->keyname, "F11"))
-     gl_fullscreen(app, NULL, NULL);
+     _fullscreen(app, NULL, NULL);
 }
 
 /*--------------------------EPDF_LOAD--------------------------------*/
@@ -771,7 +758,6 @@ fileselector_done(void *data, Evas_Object *obj __UNUSED__, void *event_info)
    const char *selected = event_info;
 
    evas_object_hide(app->fs_inwin);
-   edje_object_signal_emit(app->ed, "more,item,clicked", "");
 
    if (!selected) return;
 
@@ -817,6 +803,15 @@ gl_icon_get(void        *data,
    else
      elm_icon_file_set(ic, PACKAGE_DATA_DIR "/default.edj", "fullscreen");
    return ic;
+}
+
+static Elm_Toolbar_Item *
+_toolbar_item_add(App *app, const char *icon, const char *label, int priority, Evas_Smart_Cb cb)
+{
+   Elm_Toolbar_Item *item = elm_toolbar_item_append(app->toolbar, icon, label,
+                                                    cb, app);
+   elm_toolbar_item_priority_set(item, priority);
+   return item;
 }
 
 static Eina_Bool
@@ -868,23 +863,35 @@ create_main_win(App *app)
         goto gui_error;
      }
 
-   evas_object_show(layout);
+   app->ed = elm_layout_edje_get(layout);
+   app->toolbar = edje_object_part_external_object_get
+     (app->ed, "elm.external.toolbar");
+   if (!app->toolbar)
+     {
+        CRITICAL("no toolbar in layout!");
+        goto gui_error;
+     }
+
+   elm_toolbar_no_select_mode_set(app->toolbar, EINA_TRUE);
+   elm_toolbar_menu_parent_set(app->toolbar, app->win);
+   app->action.down = _toolbar_item_add
+      (app, "go-down", "Down", 200, _page_down);
+   app->action.up = _toolbar_item_add
+      (app, "go-up", "Up", 190, _page_up);
+   app->action.zoom_in = _toolbar_item_add
+      (app, "zoom-in", "Zoom", 180, _zoom_in);
+   app->action.zoom_out = _toolbar_item_add
+      (app, "zoom-out", "Zoom", 170, _zoom_out);
+   app->action.open = _toolbar_item_add
+      (app, "document-open", "Open", 160, _file_open);
+   app->action.fullscreen = _toolbar_item_add
+      (app, "view-fullscreen", "Fullscreen", 150, _fullscreen);
+
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_win_resize_object_add(app->win, layout);
-   app->ed = elm_layout_edje_get(layout);
-
+   evas_object_show(layout);
    if (app->file_info.filename)
      edje_object_part_text_set(app->ed, "page-title", app->file_info.filename);
-
-   edje_object_signal_callback_add(app->ed, "action,zoomin", "zoomin", _zoom_in,
-                                   app);
-   edje_object_signal_callback_add(app->ed, "action,zoomout", "zoomout",
-                                   _zoom_out,
-                                   app);
-   edje_object_signal_callback_add(app->ed, "action,up", "up", _page_up,
-                                   app);
-   edje_object_signal_callback_add(app->ed, "action,down", "down",
-                                   _page_down, app);
 
    app->spinner = elm_spinner_add(app->win);
    elm_object_style_set(app->spinner, "efenniht");
@@ -907,22 +914,6 @@ create_main_win(App *app)
 
    elm_scrolled_entry_end_set(app->entry, btsearch);
    elm_layout_content_set(layout, "search-entry", app->entry);
-
-   glc.item_style = "efenniht";
-   glc.func.label_get = gl_label_get;
-   glc.func.icon_get = gl_icon_get;
-
-   Evas_Object *more_list = elm_genlist_add(app->win);
-   elm_genlist_always_select_mode_set(more_list, EINA_TRUE);
-   edje_object_part_text_set(app->ed, "more-list-title", "More");
-   elm_layout_content_set(layout, "more-list-swallow", more_list);
-   elm_object_style_set(more_list, "efenniht");
-   elm_genlist_bounce_set(more_list, EINA_FALSE, EINA_FALSE);
-
-   elm_genlist_item_append(more_list, &glc, "Open", NULL, ELM_GENLIST_ITEM_NONE,
-                           gl_open, app);
-   elm_genlist_item_append(more_list, &glc, "Fullscreen", NULL,
-                           ELM_GENLIST_ITEM_NONE, gl_fullscreen, app);
 
    /* Open file */
    app->fs_inwin = elm_win_inwin_add(app->win);
