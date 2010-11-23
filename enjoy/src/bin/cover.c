@@ -256,7 +256,8 @@ static Evas_Object *
 _cover_without_image_add(Evas_Object *parent, unsigned short size)
 {
    Evas_Object *cover = _cover_empty_add(parent, size);
-   if (!elm_icon_file_set(cover, PACKAGE_DATA_DIR "/default.edj", "album-without-cover"))
+   if ((!elm_icon_standard_set(cover, "no-cover")) &&
+       (!elm_icon_standard_set(cover, "media-optical")))
      {
         evas_object_del(cover);
         return NULL;
@@ -349,7 +350,8 @@ Evas_Object *
 cover_allsongs_fetch(Evas_Object *parent, unsigned short size)
 {
    Evas_Object *cover = _cover_empty_add(parent, size);
-   if (!elm_icon_file_set(cover, PACKAGE_DATA_DIR "/default.edj", "all-songs-icon"))
+   if ((!elm_icon_standard_set(cover, "all-songs")) &&
+       (!elm_icon_standard_set(cover, "media-optical")))
      {
         evas_object_del(cover);
         return NULL;
