@@ -802,8 +802,6 @@ win_new(App *app)
         goto error;
      }
    emotion_object_video_mute_set(w->emotion, EINA_TRUE);
-   evas_object_show(w->emotion); // req?
-   evas_object_resize(w->emotion, 10, 10); // req?
 
    evas_object_smart_callback_add
      (w->emotion, "position_update", _win_play_pos_update, w);
