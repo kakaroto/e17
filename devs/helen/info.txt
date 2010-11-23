@@ -1,0 +1,7 @@
+Login:        helen
+IRC Nick:     koike
+Name:         Helen Mae Koike Fornazier
+Location:     Campinas, Brazil
+E-Mail:       helen.fornazier@profusion.mobi
+Contributing: elementary, editje
+Platform:     Gentoo (Linux)
