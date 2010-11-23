@@ -60,11 +60,6 @@ _win_populate_job(void *data)
    Win *w = data;
    w->job.populate = NULL;
 
-   /*
-    * Efreet is initialized here so it doesn't take longer to open the window.
-    */
-   efreet_mime_init();
-
    if (w->db) db_close(w->db);
    w->db = db_open(w->db_path);
    if (!w->db)

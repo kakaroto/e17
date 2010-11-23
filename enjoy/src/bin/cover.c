@@ -166,25 +166,17 @@ _cover_album_local_find(Evas *evas, DB *db, Album *album, void (*cb)(void *data)
              Album_Cover *cover;
              Evas_Load_Error err;
              int w = 0, h = 0;
-             const char *ext, *file_type;
+             const char *ext;
 
-             for (ext = fi->path + fi->path_length - 1; ext > fi->path; ext--)
-               if (*ext == '.')
-                 {
-                    ext++;
-                    if ((strcasecmp(ext, "jpg") == 0) ||
-                        (strcasecmp(ext, "jpeg") == 0) ||
-                        (strcasecmp(ext, "png") == 0))
-                      goto try_image;
-                    else
-                      break;
-                 }
-
-             file_type = efreet_mime_type_get(fi->path);
-             if ((!file_type) || (strncmp("image/", file_type, 5)))
+             /* 5 = sizeof("jpeg") + 1 ('\0') */
+             ext = strchr(fi->path + fi->path_length - 5, '.');
+             if (!ext) continue;
+             ext++;
+             if (strcasecmp(ext, "jpg") &&
+                 strcasecmp(ext, "jpeg") &&
+                 strcasecmp(ext, "png"))
                continue;
 
-          try_image:
              evas_object_image_file_set(img, fi->path, NULL);
              err = evas_object_image_load_error_get(img);
              if (err != EVAS_LOAD_ERROR_NONE)
