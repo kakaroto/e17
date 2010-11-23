@@ -1,6 +1,8 @@
 collections {
    group { name: "elm/genlist/item/default/default";
       alias: "elm/genlist/item_odd/default/default";
+      alias: "elm/genlist/item/default/fileselector/default";
+      alias: "elm/genlist/item_odd/default/fileselector/default";
       data.item: "labels" "elm.text";
       data.item: "icons" "elm.swallow.icon elm.swallow.end";
       parts {
