@@ -309,9 +309,9 @@ gen_type_eq(Azy_Typedef *t,
         EL(0, "Eina_Bool %s_eq(%s a, %s b)", t->cname, t->ctype, t->ctype);
         EL(0, "{");
         EL(1, "if (a == b)");
-        EL(2, "return EINA_FALSE;");
-        EL(1, "if ((!a) || (!b))");
         EL(2, "return EINA_TRUE;");
+        EL(1, "if ((!a) || (!b))");
+        EL(2, "return EINA_FALSE;");
 
         EINA_LIST_FOREACH(t->struct_members, l, m)
           {
@@ -323,11 +323,11 @@ gen_type_eq(Azy_Typedef *t,
              else
                EL(1, "if (a->%s != b->%s)", m->name, m->name);
 
-             EL(2, "return EINA_TRUE;");
+             EL(2, "return EINA_FALSE;");
           }
 
         NL;
-        EL(1, "return EINA_FALSE;");
+        EL(1, "return EINA_TRUE;");
         EL(0, "}");
         NL;
      }
@@ -338,9 +338,9 @@ gen_type_eq(Azy_Typedef *t,
         EL(1, "Eina_List *y, *z;");
         NL;
         EL(1, "if (a == b)");
-        EL(2, "return EINA_FALSE;");
-        EL(1, "if ((!a) || (!b))");
         EL(2, "return EINA_TRUE;");
+        EL(1, "if ((!a) || (!b))");
+        EL(2, "return EINA_FALSE;");
         EL(1, "for (y = a, z = b;y && z; y = y->next, z = z->next)");
         EL(1, "{");
 
@@ -355,10 +355,10 @@ gen_type_eq(Azy_Typedef *t,
                EL(2, "if ((%s)(y->data) != (%s)(z->data))", t->item_type->ctype, t->item_type->ctype);
           }
 
-        EL(3, "return EINA_TRUE;");
+        EL(3, "return EINA_FALSE;");
         EL(1, "}");
         NL;
-        EL(1, "return EINA_FALSE;");
+        EL(1, "return EINA_TRUE;");
         EL(0, "}");
         NL;
      }
