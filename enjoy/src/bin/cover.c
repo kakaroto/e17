@@ -169,6 +169,7 @@ _cover_album_local_find(Evas *evas, DB *db, Album *album, void (*cb)(void *data)
              const char *ext;
 
              /* 5 = sizeof("jpeg") + 1 ('\0') */
+             if (fi->path_length <= 5) continue;
              ext = strchr(fi->path + fi->path_length - 5, '.');
              if (!ext) continue;
              ext++;
