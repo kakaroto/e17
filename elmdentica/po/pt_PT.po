@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: elmdentica 0.6.0\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
-"POT-Creation-Date: 2010-11-22 22:09+0000\n"
+"POT-Creation-Date: 2010-11-23 23:05+0000\n"
 "PO-Revision-Date: 2010-11-22 23:22+0001\n"
 "Last-Translator: Rui Miguel Silva Seabra <rms@1407.org>\n"
 "Language-Team: Rui Miguel Silva Seabra <rms@1407.org>\n"
@@ -50,7 +50,7 @@ msgstr "Favoritas..."
 
 #: src/elmdentica.c:196
 msgid "Replies / mentions..."
-msgstr ""
+msgstr "Respostas / menções..."
 
 #: src/elmdentica.c:198
 #, fuzzy
@@ -266,7 +266,7 @@ msgstr "Fechar"
 msgid "Fullscreen"
 msgstr "Écrã completo"
 
-#: src/elmdentica.c:1985 src/settings.c:1342
+#: src/elmdentica.c:1985 src/settings.c:1344
 msgid "Settings"
 msgstr "Definições"
 
@@ -392,28 +392,28 @@ msgstr "Padrão"
 msgid "Gag patterns..."
 msgstr "Padrões a ignorar..."
 
-#: src/settings.c:1343
+#: src/settings.c:1345
 msgid "ElmDentica settings..."
 msgstr "Definições do ElmDentica"
 
-#: src/settings.c:1368
+#: src/settings.c:1370
 msgid "Accounts"
 msgstr "Contas"
 
-#: src/settings.c:1370
+#: src/settings.c:1372
 #, fuzzy
 msgid "Cache"
 msgstr "Cancelar"
 
-#: src/settings.c:1372
+#: src/settings.c:1374
 msgid "Options"
 msgstr "Opções"
 
-#: src/settings.c:1374
+#: src/settings.c:1376
 msgid "Gag"
 msgstr "Ignorar"
 
-#: src/settings.c:1385
+#: src/settings.c:1387
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -430,45 +430,45 @@ msgstr ""
 "\t-m N\tMostrar N mensagens de cada vez\n"
 "\n"
 
-#: src/settings.c:1408
+#: src/settings.c:1410
 #, c-format
 msgid "Can't run ecore_file_init()\n"
 msgstr "Não foi possível executar ecore_file_init()\n"
 
-#: src/settings.c:1414
+#: src/settings.c:1416
 #, c-format
 msgid "Can't create preferences directories since asprintf failed\n"
 msgstr ""
 "Impossível criar directorias das preferências porque a asprintf falhou\n"
 
-#: src/settings.c:1414
+#: src/settings.c:1416
 #, c-format
 msgid "Can't create preferences directories since ecore_file_mkpath failed\n"
 msgstr ""
 "A directorias das preferências não foi criada porque ecore_file_mkpath "
 "falhou\n"
 
-#: src/settings.c:1422
+#: src/settings.c:1424
 #, c-format
 msgid "Not enough memory to define conf.eet path"
 msgstr "Sem memória para definit caminho para conf.eet"
 
-#: src/settings.c:1428
+#: src/settings.c:1430
 #, c-format
 msgid "Couldn't run eet_init()"
 msgstr "eet_init() falhou"
 
-#: src/settings.c:1435
+#: src/settings.c:1437
 #, c-format
 msgid "Can't create %s"
 msgstr "Não consigo criar %s"
 
-#: src/settings.c:1443
+#: src/settings.c:1445
 #, c-format
 msgid "Can't setup settings_edd."
 msgstr "Não consigo definir a settings_edd."
 
-#: src/settings.c:1460
+#: src/settings.c:1462
 #, c-format
 msgid ""
 "Not enough memory for settings, no doubt for anything else either, surely..."

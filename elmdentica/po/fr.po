@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Elmdentica\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
-"POT-Creation-Date: 2010-11-22 22:09+0000\n"
+"POT-Creation-Date: 2010-11-23 23:05+0000\n"
 "PO-Revision-Date: 2010-11-22 08:57+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: Enlightenment French Team <pourunmondesansgourou@gmail.com>\n"
@@ -263,7 +263,7 @@ msgstr "Effacer"
 msgid "Fullscreen"
 msgstr "Plein écran"
 
-#: src/elmdentica.c:1985 src/settings.c:1342
+#: src/elmdentica.c:1985 src/settings.c:1344
 msgid "Settings"
 msgstr "Configuration"
 
@@ -388,27 +388,27 @@ msgstr "Motif..."
 msgid "Gag patterns..."
 msgstr "Motifs pour bâillons..."
 
-#: src/settings.c:1343
+#: src/settings.c:1345
 msgid "ElmDentica settings..."
 msgstr "Configuration d'ElmDentica..."
 
-#: src/settings.c:1368
+#: src/settings.c:1370
 msgid "Accounts"
 msgstr "Comptes"
 
-#: src/settings.c:1370
+#: src/settings.c:1372
 msgid "Cache"
 msgstr "Cache"
 
-#: src/settings.c:1372
+#: src/settings.c:1374
 msgid "Options"
 msgstr "Options"
 
-#: src/settings.c:1374
+#: src/settings.c:1376
 msgid "Gag"
 msgstr "Bâillon"
 
-#: src/settings.c:1385
+#: src/settings.c:1387
 #, c-format
 msgid ""
 "\n"
@@ -424,44 +424,44 @@ msgstr ""
 "   -h    Help (l'aide que vous êtes en train de lire)\n"
 "   -m  N Afficher N messages à la fois\n"
 
-#: src/settings.c:1408
+#: src/settings.c:1410
 #, c-format
 msgid "Can't run ecore_file_init()\n"
 msgstr "Impossible d'exécuter ecore_file_init()\n"
 
-#: src/settings.c:1414
+#: src/settings.c:1416
 #, c-format
 msgid "Can't create preferences directories since asprintf failed\n"
 msgstr "La création des dossiers de préférences a échoué à cause de asprintf\n"
 
-#: src/settings.c:1414
+#: src/settings.c:1416
 #, c-format
 msgid "Can't create preferences directories since ecore_file_mkpath failed\n"
 msgstr ""
 "La création des dossiers de préférences a échoué à cause de "
 "ecore_file_mkpath\n"
 
-#: src/settings.c:1422
+#: src/settings.c:1424
 #, c-format
 msgid "Not enough memory to define conf.eet path"
 msgstr "Mémoire insuffisante pour définir le chemin de conf.eet"
 
-#: src/settings.c:1428
+#: src/settings.c:1430
 #, c-format
 msgid "Couldn't run eet_init()"
 msgstr "Impossible d'exécuter eet_init()"
 
-#: src/settings.c:1435
+#: src/settings.c:1437
 #, c-format
 msgid "Can't create %s"
 msgstr "Impossible de créer %s"
 
-#: src/settings.c:1443
+#: src/settings.c:1445
 #, c-format
 msgid "Can't setup settings_edd."
 msgstr "Impossible d'initialiser settings_edd."
 
-#: src/settings.c:1460
+#: src/settings.c:1462
 #, c-format
 msgid ""
 "Not enough memory for settings, no doubt for anything else either, surely..."

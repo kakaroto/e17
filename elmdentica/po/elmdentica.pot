@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
-"POT-Creation-Date: 2010-11-22 22:09+0000\n"
+"POT-Creation-Date: 2010-11-23 23:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -258,7 +258,7 @@ msgstr ""
 msgid "Fullscreen"
 msgstr ""
 
-#: src/elmdentica.c:1985 src/settings.c:1342
+#: src/elmdentica.c:1985 src/settings.c:1344
 msgid "Settings"
 msgstr ""
 
@@ -383,27 +383,27 @@ msgstr ""
 msgid "Gag patterns..."
 msgstr ""
 
-#: src/settings.c:1343
+#: src/settings.c:1345
 msgid "ElmDentica settings..."
 msgstr ""
 
-#: src/settings.c:1368
+#: src/settings.c:1370
 msgid "Accounts"
 msgstr ""
 
-#: src/settings.c:1370
+#: src/settings.c:1372
 msgid "Cache"
 msgstr ""
 
-#: src/settings.c:1372
+#: src/settings.c:1374
 msgid "Options"
 msgstr ""
 
-#: src/settings.c:1374
+#: src/settings.c:1376
 msgid "Gag"
 msgstr ""
 
-#: src/settings.c:1385
+#: src/settings.c:1387
 #, c-format
 msgid ""
 "\n"
@@ -414,42 +414,42 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/settings.c:1408
+#: src/settings.c:1410
 #, c-format
 msgid "Can't run ecore_file_init()\n"
 msgstr ""
 
-#: src/settings.c:1414
+#: src/settings.c:1416
 #, c-format
 msgid "Can't create preferences directories since asprintf failed\n"
 msgstr ""
 
-#: src/settings.c:1414
+#: src/settings.c:1416
 #, c-format
 msgid "Can't create preferences directories since ecore_file_mkpath failed\n"
 msgstr ""
 
-#: src/settings.c:1422
+#: src/settings.c:1424
 #, c-format
 msgid "Not enough memory to define conf.eet path"
 msgstr ""
 
-#: src/settings.c:1428
+#: src/settings.c:1430
 #, c-format
 msgid "Couldn't run eet_init()"
 msgstr ""
 
-#: src/settings.c:1435
+#: src/settings.c:1437
 #, c-format
 msgid "Can't create %s"
 msgstr ""
 
-#: src/settings.c:1443
+#: src/settings.c:1445
 #, c-format
 msgid "Can't setup settings_edd."
 msgstr ""
 
-#: src/settings.c:1460
+#: src/settings.c:1462
 #, c-format
 msgid ""
 "Not enough memory for settings, no doubt for anything else either, surely..."
