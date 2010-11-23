@@ -261,7 +261,7 @@ notification_box_cb_obj_moveresize(void *data,
   _notification_box_resize_handle(inst->n_box);
 }
 
-int notification_box_cb_border_remove(void *data __UNUSED__, 
+Eina_Bool notification_box_cb_border_remove(void *data __UNUSED__, 
                                       int type __UNUSED__, 
                                       void *event)
 {

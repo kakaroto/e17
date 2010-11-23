@@ -135,7 +135,7 @@ Notification_Box *notification_box_get(const char *id, Evas *evas);
 Config_Item *notification_box_config_item_get(const char *id);
 void notification_box_orient_set(Notification_Box *b, int horizontal);
 void notification_box_cb_obj_moveresize(void *data, Evas *e, Evas_Object *obj, void *event_info);
-int  notification_box_cb_border_remove(void *data, int type, void *event);
+Eina_Bool  notification_box_cb_border_remove(void *data, int type, void *event);
 
 EAPI extern E_Module_Api e_modapi;
 EAPI void  *e_modapi_init(E_Module *m);
