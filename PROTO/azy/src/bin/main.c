@@ -365,8 +365,46 @@ gen_type_eq(Azy_Typedef *t,
 }
 
 static void
+gen_type_notnull(Azy_Typedef *t,
+                 int           def)
+{
+   Eina_List *l;
+   Azy_Struct_Member *m;
+
+   if (def)
+     {
+        if (t->type == TD_STRUCT)
+          EL(0, "Eina_Bool %s_notnull(%s a);", t->cname, t->ctype);
+        return;
+     }
+
+   if (t->type == TD_STRUCT)
+     {
+        EL(0, "Eina_Bool %s_notnull(%s a)", t->cname, t->ctype);
+        EL(0, "{");
+        EL(1, "if (!a)");
+        EL(2, "return EINA_FALSE;");
+
+        EINA_LIST_FOREACH(t->struct_members, l, m)
+          {
+             if (m->type->notnull_func)
+               EL(1, "if (%s(a->%s))", m->type->notnull_func, m->name);
+             else
+               EL(1, "if (a->%s != %s)", m->name, m->type->cnull);
+
+             EL(2, "return EINA_TRUE;");
+          }
+
+        NL;
+        EL(1, "return EINA_FALSE;");
+        EL(0, "}");
+        NL;
+     }
+}
+
+static void
 gen_type_print(Azy_Typedef *t,
-            int           def)
+               int           def)
 {
    Eina_List *l;
    Azy_Struct_Member *m;
@@ -725,6 +763,7 @@ gen_common_headers(void)
         gen_type_copyfree(t, EINA_TRUE, EINA_FALSE);
         gen_type_eq(t, EINA_TRUE);
         gen_type_print(t, EINA_TRUE);
+        gen_type_notnull(t, EINA_TRUE);
      }
 
    NL;
@@ -751,6 +790,7 @@ gen_common_impl(void)
         gen_type_copyfree(t, EINA_FALSE, EINA_FALSE);
         gen_type_eq(t, EINA_FALSE);
         gen_type_print(t, EINA_FALSE);
+        gen_type_notnull(t, EINA_FALSE);
      }
    gen_errors_impl(NULL);
    gen_marshalizers(NULL, EINA_FALSE);

@@ -56,6 +56,8 @@ azy_typedef_new(int         type,
      {
         t->copy_func = eina_stringshare_printf("%s_copy", t->cname);
         t->eq_func = eina_stringshare_printf("%s_eq", t->cname);
+        if (type == TD_STRUCT)
+          t->notnull_func = eina_stringshare_printf("%s_notnull", t->cname);
         t->fmt_str = fmt_str ? eina_stringshare_add(fmt_str) : NULL;
         t->print_func = eina_stringshare_printf("%s_print", t->cname);
      }
@@ -138,7 +140,8 @@ azy_typedef_new_array(Azy_Model         *azy,
                                       NULL, eina_stringshare_printf("Array_%s", item->cname),
                                       "Eina_List*", "NULL", NULL, NULL,
                                       eina_stringshare_printf("Array_%s_free", item->cname),
-                                      eina_stringshare_printf("Array_%s_print", item->cname));
+                                      "%s"
+                                      );
    a->item_type = item;
 
    if (module && item->type == TD_STRUCT)
@@ -156,11 +159,11 @@ azy_typedef_new_struct(Azy_Model                *azy,
 {
    Azy_Typedef *s = azy_typedef_new(TD_STRUCT,
                                       name,
-                                      eina_stringshare_printf("%s%s", azy->name, name),
-                                      eina_stringshare_printf("%s%s*", azy->name, name),
+                                      eina_stringshare_printf("%s%s", (azy->name && azy->name[0]) ? azy->name : "", name),
+                                      eina_stringshare_printf("%s%s*", (azy->name && azy->name[0]) ? azy->name : "", name),
                                       "NULL", NULL, NULL,
-                                      eina_stringshare_printf("%s%s_free", azy->name, name),
-                                      eina_stringshare_printf("%s%s_print", azy->name, name)
+                                      eina_stringshare_printf("%s%s_free", (azy->name && azy->name[0]) ? azy->name : "", name),
+                                      "%s"
                                       );
    return s;
 }
