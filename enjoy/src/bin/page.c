@@ -390,9 +390,9 @@ _song_item_label_get(void *data, Evas_Object *list, const char *part)
    Song *song = data;
 
    /* check if matches protocol */
-   if (strncmp(part, "ejy.text.", sizeof("ejy.text.") - 1) != 0)
+   if (strncmp(part, "elm.text.", sizeof("elm.text.") - 1) != 0)
      return NULL;
-   part += sizeof("ejy.text.") - 1;
+   part += sizeof("elm.text.") - 1;
 
    if (!strcmp(part, "title"))
      return strdup(song->title);
@@ -501,9 +501,9 @@ _song_item_state_get(void *data, Evas_Object *list, const char *part)
    Song *song = data;
 
    /* check if matches protocol */
-   if (strncmp(part, "ejy.state.", sizeof("ejy.state.") - 1) != 0)
+   if (strncmp(part, "elm.state.", sizeof("elm.state.") - 1) != 0)
      return EINA_FALSE;
-   part += sizeof("ejy.state.") - 1;
+   part += sizeof("elm.state.") - 1;
 
    if (!strcmp(part, "title")) return EINA_TRUE;
    else if (!strcmp(part, "trackno")) return song->trackno > 0;
@@ -568,7 +568,7 @@ static Evas_Object *
 _page_songs_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const char *title)
 {
    static const Elm_Genlist_Item_Class song_item_cls = {
-     "song",
+     "media",
      {
        _song_item_label_get,
        NULL,
@@ -653,7 +653,7 @@ _page_album_songs_add(Evas_Object *parent, Album *album)
    DB *db = _page_db_get(parent);
    Eina_Iterator *it;
    static const Elm_Genlist_Item_Class song_item_cls = {
-     "song-album",
+     "media-album",
      {
        _song_item_label_get,
        NULL,
@@ -890,7 +890,7 @@ static char *
 _album_item_label_get(void *data, Evas_Object *list, const char *part)
 {
    Album *album = data;
-   if (strcmp(part, "ejy.text.artist") == 0)
+   if (strcmp(part, "elm.text.artist") == 0)
      {
         if (!album->flags.fetched_artist)
           {
@@ -944,7 +944,7 @@ static Evas_Object *
 _page_albums_artist_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const char *title)
 {
    static const Elm_Genlist_Item_Class album_item_cls = {
-     "album-artist",
+     "media-preview",
      {
        _album_item_label_get,
        _album_item_icon_get,
@@ -991,7 +991,7 @@ static Evas_Object *
 _page_albums_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const char *title)
 {
    static const Elm_Genlist_Item_Class album_item_cls = {
-     "album",
+     "media-preview",
      {
        _album_item_label_get,
        _album_item_icon_get,
@@ -1037,7 +1037,7 @@ _page_albums_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const c
 static char *
 _item_all_songs_label_get(void *data __UNUSED__, Evas_Object *list __UNUSED__, const char *part __UNUSED__)
 {
-   if (strcmp(part, "ejy.text.artist") == 0)
+   if (strcmp(part, "elm.text.artist") == 0)
         return NULL;
    return strdup("All Songs");
 }
@@ -1051,7 +1051,7 @@ _item_all_songs_icon_get(void *data __UNUSED__, Evas_Object *list __UNUSED__, co
 
 
 static const Elm_Genlist_Item_Class _item_all_songs_cls = {
-  "all-song",
+  "media-preview",
   {
     _item_all_songs_label_get,
     _item_all_songs_icon_get,
@@ -1119,7 +1119,7 @@ static Evas_Object *
 _page_artists_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const char *title)
 {
    static const Elm_Genlist_Item_Class nameid_item_cls = {
-     "nameid",
+     "default",
      {
        _nameid_item_label_get,
        NULL,
@@ -1189,7 +1189,7 @@ static Evas_Object *
 _page_genres_add(Evas_Object *parent, Eina_Iterator *it, const char *title)
 {
    static const Elm_Genlist_Item_Class nameid_item_cls = {
-     "nameid",
+     "default",
      {
        _nameid_item_label_get,
        NULL,
@@ -1283,7 +1283,7 @@ Evas_Object *
 page_root_add(Evas_Object *parent)
 {
    static const Elm_Genlist_Item_Class root_item_cls = {
-     "root", { _static_item_label_get, NULL, NULL, NULL }
+     "default", { _static_item_label_get, NULL, NULL, NULL }
    };
    static const Page_Class root_cls = {
      "root",
