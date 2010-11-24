@@ -21,7 +21,7 @@ BUILT_SOURCES = \
 EXTRA_DIST = \
   bench.h \
   bench.sh \
-  test.zer \
+  test.azy \
   server.pem \
   zblok/build.sh \
   zblok/client.c \
@@ -71,6 +71,6 @@ server_SOURCES = \
 
 $(BUILT_SOURCES): .sources-ts
 
-.sources-ts: test.zer $(top_srcdir)/src/bin/azy_parser
-	$(top_srcdir)/src/bin/azy_parser test.zer
+.sources-ts: test.azy $(top_srcdir)/src/bin/azy_parser
+	$(top_srcdir)/src/bin/azy_parser test.azy
 	touch .sources-ts
