@@ -148,8 +148,8 @@ void
 mpris_shutdown(void)
 {
    if (!conn) return;
-   e_dbus_shutdown();
    eina_hash_free(interface_list);
+   e_dbus_shutdown();
    conn = NULL;
    interface_list = NULL;
 }
