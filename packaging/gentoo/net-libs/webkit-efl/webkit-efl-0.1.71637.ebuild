@@ -13,10 +13,7 @@ E_STATE="snap"
 WANT_AUTOTOOLS="no"
 
 LICENSE="LGPL-2 LGPL-2.1 BSD"
-SLOT="0"
-KEYWORDS=""
-#IUSE="-glib gstreamer"
-IUSE="-glib static-libs"
+IUSE="curl -glib -gstreamer static-libs"
 
 RDEPEND="
 	dev-libs/libxslt
@@ -32,13 +29,13 @@ RDEPEND="
 	media-libs/edje
 	media-libs/evas[fontconfig]
 	dev-libs/ecore[X,glib?]
+	gstreamer? (
+			media-libs/gstreamer:0.10
+			>=media-libs/gst-plugins-base-0.10.25:0.10
+			dev-libs/glib
+		)
+	!curl? ( net-libs/libsoup )
 "
-#	gstreamer? (
-#			media-libs/gstreamer:0.10
-#			>=media-libs/gst-plugins-base-0.10.25:0.10
-#			dev-libs/glib
-#		)
-
 DEPEND="${RDEPEND}
 	>=sys-devel/flex-2.5.33
 	sys-devel/bison
@@ -57,7 +54,9 @@ src_configure() {
 	if ! use glib ; then
 		#could have done the whole cmake-utils_use_enable thing here but I'm lazy
 		mycmakeargs+=" -DNETWORK_BACKEND=curl -DENABLE_GLIB_SUPPORT=OFF"
+	else
+		mycmakeargs+=" -DNETWORK_BACKEND=soup -DENABLE_GLIB_SUPPORT=ON"
 	fi
-#	mycmakeargs+=" $(cmake-utils_use_enable gstreamer VIDEO)"
+	mycmakeargs+=" $(cmake-utils_use_enable gstreamer VIDEO)"
 	enable_cmake-utils_src_configure
 }
