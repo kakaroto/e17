@@ -120,6 +120,7 @@ src/bin/Makefile
 data/Makefile
 data/desktop/Makefile
 data/themes/Makefile
+data/themes/images/Makefile
 data/sound/Makefile
 po/Makefile.in
 ])

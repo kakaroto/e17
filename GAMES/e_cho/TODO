@@ -1,5 +1,6 @@
 TODO LIST:
-* Improve default theme
+* Improve sound support making possible to play a sample while
+  a button is pressed.
 * Add a logo for the game
 * Conclude speed control
 * Add about screen
