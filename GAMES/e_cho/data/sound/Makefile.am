@@ -8,7 +8,11 @@ files_DATA = \
         la.wav \
         fail.wav \
         win.wav \
-        next_lv.wav
+        next_lv.wav \
+        pk_red.wav \
+        pk_gre.wav \
+        pk_blu.wav \
+        pk_yel.wav
 
 EXTRA_DIST = \
         do.wav \
@@ -17,4 +21,8 @@ EXTRA_DIST = \
         la.wav \
         fail.wav \
         win.wav \
-        next_lv.wav
+        next_lv.wav \
+        pk_red.wav \
+        pk_gre.wav \
+        pk_blu.wav \
+        pk_yel.wav
