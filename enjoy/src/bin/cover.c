@@ -125,7 +125,7 @@ _cover_album_local_find(Evas *evas, DB *db, Album *album, void (*cb)(void *data)
    Eina_Bool success;
    Eina_Hash *done_dirs;
 
-   done_dirs = eina_hash_string_djb2_new(NULL);
+   done_dirs = eina_hash_string_superfast_new(NULL);
 
    EINA_ITERATOR_FOREACH(it, song)
      {
