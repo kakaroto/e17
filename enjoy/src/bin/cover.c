@@ -256,13 +256,31 @@ _cover_with_exact_size(Evas_Object *parent, DB *db, Album *album, const Album_Co
    Evas *e, *sub_e;
    Evas_Object *o, *img, *icon;
    int file_name_len = strlen(large_cover->path) + 1;
-   char *file = alloca(file_name_len), *tmp;
-   int printed;
+   char file[PATH_MAX];
+   char *tmp, *cache_dir;
+   int printed, cache_dir_len;
 
-   memcpy(file, large_cover->path, file_name_len);
-   tmp = strrchr(file, '/');
-   if (!tmp)
-     return NULL;
+   cache_dir = enjoy_cache_dir_get();
+   if (!cache_dir)
+     {
+        ERR("Could not get cache dir");
+        return NULL;
+     }
+   cache_dir_len = strlen(cache_dir);
+
+   if (!strncmp(large_cover->path, cache_dir, cache_dir_len))
+     {
+        memcpy(file, large_cover->path, file_name_len);
+        tmp = strrchr(file, '/');
+        if (!tmp) return NULL;
+     }
+   else
+     {
+        tmp = strrchr(large_cover->path, '/');
+        if (!tmp) return NULL;
+        memcpy(file, cache_dir, cache_dir_len);
+        memcpy(file + cache_dir_len, tmp, strlen(tmp) + 1);
+     }
    printed = snprintf(tmp + 1, 16, "_%d", size);
    if (printed < 0)
      return NULL;
