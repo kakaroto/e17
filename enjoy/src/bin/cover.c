@@ -380,10 +380,24 @@ cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size
    if (!best_match) return _cover_without_image_add(parent, size);
    if (min_error > 0)
      {
-        Evas_Object *resized;
-        resized = _cover_with_exact_size(parent, db, album,
-                                         best_match, size);
-        if (resized) return resized;
+        const Album_Cover *larger_size = NULL;
+        unsigned short max_size = 0;
+        EINA_INLIST_FOREACH(album->covers, itr)
+          {
+             unsigned short cur_size = (itr->w > itr->h) ? itr->w : itr->h;
+             if (cur_size > max_size)
+               {
+                  max_size = cur_size;
+                  larger_size = itr;
+               }
+          }
+        if (larger_size)
+          {
+             Evas_Object *resized;
+             resized = _cover_with_exact_size(parent, db, album,
+                                              larger_size, size);
+             if (resized) return resized;
+          }
      }
 
    cover = _cover_empty_add(parent, size);
