@@ -938,15 +938,13 @@ _page_albums_artist_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, 
 
    if (!album_cls.icon_size)
      {
-        Evas_Object *ed = edje_object_add(evas_object_evas_get(parent));
-        if (edje_object_file_set
-            (ed, PACKAGE_DATA_DIR"/default.edj",
-             "elm/genlist/item_compress/album-artist/default"))
+        Evas_Object *l = elm_layout_add(parent);
+        if (elm_layout_theme_set(l, "genlist", "item_compress/media-preview", "default"))
           {
-             const char *s = edje_object_data_get(ed, "icon_size");
+             const char *s = edje_object_data_get(elm_layout_edje_get(l), "icon_size");
              if (s) album_cls.icon_size = atoi(s);
           }
-        evas_object_del(ed);
+        evas_object_del(l);
         if (!album_cls.icon_size)
           {
              ERR("Could not get icon_size! assume 32");
@@ -985,15 +983,13 @@ _page_albums_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const c
 
    if (!album_cls.icon_size)
      {
-        Evas_Object *ed = edje_object_add(evas_object_evas_get(parent));
-        if (edje_object_file_set
-            (ed, PACKAGE_DATA_DIR"/default.edj",
-             "elm/genlist/item_compress/album/default"))
+        Evas_Object *l = elm_layout_add(parent);
+        if (elm_layout_theme_set(l, "genlist", "item_compress/media-preview", "default"))
           {
-             const char *s = edje_object_data_get(ed, "icon_size");
+             const char *s = edje_object_data_get(elm_layout_edje_get(l), "icon_size");
              if (s) album_cls.icon_size = atoi(s);
           }
-        evas_object_del(ed);
+        evas_object_del(l);
         if (!album_cls.icon_size)
           {
              ERR("Could not get icon_size! assume 32");
