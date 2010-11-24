@@ -27,6 +27,7 @@ struct _Ephoto_Thumb_Browser
       Elm_Toolbar_Item *zoom_out;
       Elm_Toolbar_Item *view_flow;
       Elm_Toolbar_Item *slideshow;
+      Elm_Toolbar_Item *parent;
    } action;
    struct {
       Ecore_Animator *todo_items;
@@ -222,29 +223,6 @@ _entry_item_add(Ephoto_Thumb_Browser *tb, Ephoto_Entry *e)
      }
 }
 
-static void
-_up_item_add_if_required(Ephoto_Thumb_Browser *tb)
-{
-   Ephoto_Entry *entry;
-   char *parent_dir;
-
-   if ((elm_gengrid_first_item_get(tb->grid)) ||
-       (strcmp(tb->ephoto->config->directory, "/") == 0))
-     return;
-
-   parent_dir = ecore_file_dir_get(tb->ephoto->config->directory);
-   if (!parent_dir) return;
-
-   entry = ephoto_entry_new(tb->ephoto, parent_dir, PARENT_DIR);
-   free(parent_dir);
-   EINA_SAFETY_ON_NULL_RETURN(entry);
-   entry->is_up = EINA_TRUE;
-   entry->is_dir = EINA_TRUE;
-   entry->item = elm_gengrid_item_append
-     (tb->grid, &_ephoto_thumb_up_class, entry, NULL, NULL);
-   /* does not go into entries as it is always the first - no sort! */
-}
-
 static Eina_Bool
 _todo_items_process(void *data)
 {
@@ -254,8 +232,6 @@ _todo_items_process(void *data)
 
    if ((tb->ls) && (eina_list_count(tb->todo_items) < TODO_ITEM_MIN_BATCH))
      return EINA_TRUE;
-
-   _up_item_add_if_required(tb);
 
    tb->animator.todo_items = NULL;
 
@@ -366,6 +342,18 @@ _slideshow(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 }
 
 static void
+_parent_directory(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+   Ephoto_Thumb_Browser *tb = data;
+   const char *parent_dir;
+
+   elm_toolbar_item_selected_set(tb->action.parent, EINA_FALSE);
+   parent_dir = ecore_file_dir_get(tb->ephoto->config->directory);
+   if (!parent_dir) return;
+   ephoto_directory_set(tb->ephoto, parent_dir);
+}
+
+static void
 _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info)
 {
    Ephoto_Thumb_Browser *tb = data;
@@ -466,8 +454,6 @@ _ephoto_thumb_populate_end(void *data, int type __UNUSED__, void *event __UNUSED
         return ECORE_CALLBACK_PASS_ON;
      }
 
-   if (!tb->animator.todo_items) _up_item_add_if_required(tb);
-
    edje_object_signal_emit(tb->edje, "populate,stop", "ephoto");
 
    return ECORE_CALLBACK_PASS_ON;
@@ -535,6 +521,8 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
    elm_toolbar_mode_shrink_set(tb->toolbar, ELM_TOOLBAR_SHRINK_MENU);
    elm_toolbar_menu_parent_set(tb->toolbar, parent);
 
+   tb->action.parent = _toolbar_item_add
+     (tb, "stock_up", "Parent", 150, _parent_directory);
    tb->action.slideshow = _toolbar_item_add
      (tb, "media-playback-start", "Slideshow", 100, _slideshow);
    tb->action.zoom_in = _toolbar_item_add
