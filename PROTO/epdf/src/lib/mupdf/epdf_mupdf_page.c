@@ -2,7 +2,11 @@
 # include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include <arpa/inet.h>
+#ifdef _WIN32
+# include <winsock2.h>
+#else
+# include <arpa/inet.h>
+#endif
 
 #include <fitz.h>
 #include <mupdf.h>
