@@ -961,7 +961,7 @@ gen_server_headers(Azy_Server_Module *s)
                }
 
              EL(0, " * ");
-             EL(0, " * @return ");
+             EL(0, " * @return A valid call id, or 0 on failure");
              EL(0, " */ ");
           }
 
