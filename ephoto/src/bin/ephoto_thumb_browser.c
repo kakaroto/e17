@@ -67,49 +67,6 @@ _ephoto_thumb_item_label_get(void *data, Evas_Object *obj __UNUSED__, const char
 }
 
 static Evas_Object *
-_ephoto_thumb_dir_icon_get(void *data, Evas_Object *obj, const char *part)
-{
-   Ephoto_Entry *e = data;
-   const char *f;
-   int n;
-
-   if (strncmp(part, "elm.swallow.icon.", sizeof("elm.swallow.icon.") - 1) != 0)
-     return NULL;
-
-   n = atoi(part + sizeof("elm.swallow.icon.") - 1);
-   if (n < 1)
-     return NULL;
-   n--;
-
-   f = eina_list_nth(e->dir_files, n);
-   if (f)
-     return ephoto_thumb_add(e->ephoto, obj, f);
-
-   if (e->dir_files_checked)
-     return NULL;
-
-   return ephoto_directory_thumb_add(obj, e);
-}
-
-static Eina_Bool
-_ephoto_thumb_dir_state_get(void *data, Evas_Object *obj __UNUSED__, const char *part)
-{
-   Ephoto_Entry *e = data;
-   int n;
-
-   if (strcmp(part, "have_files") == 0)
-     return !!e->dir_files;
-
-   if (strncmp(part, "have_file.", sizeof("have_file.") - 1) != 0)
-     return EINA_FALSE;
-
-   n = atoi(part + sizeof("have_file.") - 1);
-   if (n < 1)
-     return EINA_FALSE;
-   return n <= (int)eina_list_count(e->dir_files);
-}
-
-static Evas_Object *
 _ephoto_thumb_file_icon_get(void *data, Evas_Object *obj, const char *part __UNUSED__)
 {
    Ephoto_Entry *e = data;
@@ -126,26 +83,6 @@ _ephoto_thumb_item_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__)
    e->item = NULL;
    */
 }
-
-static const Elm_Gengrid_Item_Class _ephoto_thumb_dir_class = {
-  "album-preview",
-  {
-    _ephoto_thumb_item_label_get,
-    _ephoto_thumb_dir_icon_get,
-    _ephoto_thumb_dir_state_get,
-    _ephoto_thumb_item_del
-  }
-};
-
-static const Elm_Gengrid_Item_Class _ephoto_thumb_up_class = {
-  "up",
-  {
-    _ephoto_thumb_item_label_get,
-    NULL,
-    NULL,
-    _ephoto_thumb_item_del
-  }
-};
 
 static const Elm_Gengrid_Item_Class _ephoto_thumb_file_class = {
   "thumb",
@@ -187,7 +124,7 @@ _entry_item_add(Ephoto_Thumb_Browser *tb, Ephoto_Entry *e)
    if (near_node)
      near_item = near_node->data;
 
-   if (e->is_dir) ic = &_ephoto_thumb_dir_class;
+   if (e->is_dir) return;
    else           ic = &_ephoto_thumb_file_class;
 
    if (!near_item)
