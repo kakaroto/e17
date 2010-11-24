@@ -2,7 +2,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 noinst_PROGRAMS = cmapdump fontdump
-BUILT_SOURCES = cmapdump fontdump
+BUILT_SOURCES = cmapdump$(EXEEXT) fontdump$(EXEEXT)
 
 cmapdump_SOURCES = mupdf-0.5/mupdf/cmapdump.c
 cmapdump_CPPFLAGS = \
@@ -398,6 +398,7 @@ libepdf_mupdf_la_CPPFLAGS = \
 -I$(top_builddir)/src/lib/mupdf/mupdf-0.5/fitz \
 -I$(top_srcdir)/src/lib/mupdf/mupdf-0.5/mupdf \
 -I$(top_builddir)/src/lib/mupdf/mupdf-0.5/mupdf \
+@EFL_EPDF_BUILD@ \
 @EPDF_CFLAGS@
 
 libepdf_mupdf_la_LIBADD = @EPDF_LIBS@
