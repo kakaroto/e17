@@ -205,7 +205,16 @@ _db_album_covers_cleanup(DB *db)
    Eina_File_Direct_Info *fi;
    sqlite3_stmt *stmt;
    char *errmsg;
-   int r;
+   char *cache_dir;
+   int r, cache_dir_len;
+
+   cache_dir = enjoy_cache_dir_get();
+   if (!cache_dir)
+     {
+        ERR("Could not get cache directory");
+        return;
+     }
+   cache_dir_len = strlen(cache_dir);
 
    r = sqlite3_exec(db->handle, create_temp_table, NULL, NULL, &errmsg);
    if (r != SQLITE_OK)
@@ -243,7 +252,10 @@ _db_album_covers_cleanup(DB *db)
    if (!stmt) goto end;
 
    while (sqlite3_step(stmt) == SQLITE_ROW)
-     ecore_file_remove((char *)sqlite3_column_text(stmt, 0));
+     {
+       char *path = (char *)sqlite3_column_text(stmt, 0);
+       if (!strncmp(path, cache_dir, cache_dir_len)) ecore_file_remove(path);
+     }
    _db_stmt_finalize(stmt, "join_files");
 
    r = sqlite3_exec(db->handle, clean_temp_table, NULL, NULL, &errmsg);
