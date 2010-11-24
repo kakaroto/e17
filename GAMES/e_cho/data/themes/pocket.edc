@@ -1,0 +1,418 @@
+#define SOUND "sound"
+#define S_UP "la.wav"
+#define S_DOWN "sol.wav"
+#define S_LEFT "do.wav"
+#define S_RIGHT "re.wav"
+#define S_FAIL "fail.wav"
+#define S_WIN "win.wav"
+#define S_NEXT_LV "next_lv.wav"
+
+
+#define BT_PROG(_bt, _sound) \
+   program { name: _bt"_pressed"; \
+      signal: "mouse,down,1"; \
+      source: _bt; \
+      action: STATE_SET "hi" 0.0; \
+      target: _bt; \
+   } \
+   program { name: _bt"_released"; \
+      signal: "mouse,up,1"; \
+      source: _bt; \
+      action: STATE_SET "default" 0.0; \
+      target: _bt; \
+   } \
+   program { name: _bt"_clicked"; \
+      signal: "mouse,down,1"; \
+      source: _bt; \
+      action: SIGNAL_EMIT "gamebt,clicked" _bt; \
+      after: _bt"_sound"; \
+   } \
+   program { name: _bt"_sound"; \
+      action: SIGNAL_EMIT _sound SOUND; \
+   } \
+   program { name: _bt"_hi"; \
+      signal: "hi"; \
+      source: _bt; \
+      action: STATE_SET "hi" 0.0; \
+      target: _bt; \
+      after: _bt"_hi_sound"; \
+   } \
+   program { name: _bt"_hi_sound"; \
+      action: SIGNAL_EMIT _sound SOUND; \
+      after: _bt"_default"; \
+   } \
+   program { name: _bt"_default"; \
+      action: STATE_SET "default" 0.0; \
+      in: 0.3 0.0; \
+      target: _bt; \
+   }
+
+collections {
+   externals {
+      external: "elm";
+   }
+   images {
+      image: "bg.png" COMP;
+      image: "elogo.png" COMP;
+      image: "pk_red_off.png" COMP;
+      image: "pk_red_on.png" COMP;
+      image: "pk_blu_off.png" COMP;
+      image: "pk_blu_on.png" COMP;
+      image: "pk_gre_off.png" COMP;
+      image: "pk_gre_on.png" COMP;
+      image: "pk_yel_off.png" COMP;
+      image: "pk_yel_on.png" COMP;
+   }
+   group { name: "win";
+      min: 320 480;
+      parts {
+         part { name: "bg";
+            type: IMAGE;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               image.normal: "bg.png";
+            }
+         }
+         part { name: "logo";
+            type: IMAGE;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1.relative: 0.35 0.25;
+               rel2.relative: 0.65 0.55;
+               color: 255 255 255 150;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               fixed: 1 1;
+               image.normal: "elogo.png";
+            }
+         }
+         part { name: "up";
+            type: IMAGE;
+            mouse_events: 1;
+            description { state: "default" 0.0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 0.5 0.4;
+               rel2.offset: -6 -6;
+               align: 1.0 1.0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image.normal: "pk_red_off.png";
+            }
+            description { state: "hi" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "pk_red_on.png";
+            }
+         }
+         part { name: "right";
+            type: IMAGE;
+            mouse_events: 1;
+            description { state: "default" 0.0;
+               rel1.relative: 0.5 0.0;
+               rel2.relative: 1.0 0.4;
+               rel1.offset: 5 0;
+               rel2.offset: -1 -6;
+               align: 0.0 1.0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image.normal: "pk_blu_off.png";
+            }
+            description { state: "hi" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "pk_blu_on.png";
+            }
+         }
+         part { name: "down";
+            type: IMAGE;
+            mouse_events: 1;
+            description { state: "default" 0.0;
+               rel1.relative: 0.5 0.4;
+               rel2.relative: 1.0 0.8;
+               rel1.offset: 5 5;
+               align: 0.0 0.0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image.normal: "pk_yel_off.png";
+            }
+            description { state: "hi" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "pk_yel_on.png";
+            }
+         }
+         part { name: "left";
+            type: IMAGE;
+            mouse_events: 1;
+            description { state: "default" 0.0;
+               rel1.relative: 0 0.4;
+               rel2.relative: 0.5 0.8;
+               rel1.offset: 0 5;
+               rel2.offset: -6 -1;
+               align: 1.0 0.0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image.normal: "pk_gre_off.png";
+            }
+            description { state: "hi" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "pk_gre_on.png";
+            }
+         }
+         part { name: "score";
+            type: TEXT;
+            mouse_events: 0;
+            effect: SOFT_SHADOW;
+            description { state: "default" 0.0;
+               color3: 0 0 0 64;
+               rel1.relative: 0.5 0.4;
+               rel2.relative: 0.5 0.4;
+               fixed: 1 1;
+               text {
+                  text: "0";
+                  font: "Sans,Edje-Vera";
+                  size: 16;
+                  min: 1 1;
+                  align: 0.8 0.5;
+               }
+            }
+         }
+         part { name: "hi-score-label";
+            type: TEXT;
+            mouse_events: 0;
+            effect: FAR_SOFT_SHADOW;
+            description { state: "default" 0.0;
+               rel1.relative: 0.0 0.9;
+               rel2.relative: 0.33 1.0;
+               text {
+                  text: "Hi score: ";
+                  font: "Sans,Edje-Vera";
+                  size: 12;
+                  align: 1.0 0.5;
+               }
+            }
+         }
+         part { name: "hi-score";
+            type: TEXT;
+            mouse_events: 0;
+            effect: FAR_SOFT_SHADOW;
+            description { state: "default" 0.0;
+               rel1.relative: 0.33 0.9;
+               rel2.relative: 0.66 1.0;
+               text {
+                  text: "0";
+                  font: "Sans,Edje-Vera";
+                  size: 12;
+                  align: 0.0 0.5;
+               }
+            }
+         }
+         part { name: "blocker";
+            type: RECT;
+            mouse_events: 1;
+            description { state: "default" 0.0;
+               color: 255 255 255 0;
+               visible: 0;
+            }
+            description { state: "blocked" 0.0;
+               inherit: "default" 0.0;
+//               color: 255 255 255 100;
+               visible: 1;
+            }
+         }
+         part { name: "bt_start";
+            type: EXTERNAL;
+            source: "elm/button";
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               rel1.relative: 0.66 0.9;
+               rel2.relative: 1.0 1.0;
+               params.string: "label" "Start Game";
+            }
+         }
+      }
+      programs {
+         BT_PROG("up", S_UP)
+         BT_PROG("down", S_DOWN)
+         BT_PROG("left", S_LEFT)
+         BT_PROG("right", S_RIGHT)
+         program { name: "block";
+            signal: "playing";
+            action: STATE_SET "blocked" 0.0;
+            target: "blocker";
+         }
+         program { name: "unblock";
+            signal: "repeating";
+            action: STATE_SET "default" 0.0;
+            target: "blocker";
+         }
+         program { name: "new_game";
+            signal: "new_game";
+            action: STATE_SET "blocked" 0.0;
+            target: "blocker";
+         }
+         program { name: "fail_block";
+            signal: "fail";
+            action: STATE_SET "blocked" 0.0;
+            target: "blocker";
+            after: "fail_sound";
+         }
+         program { name: "fail_sound";
+            action: SIGNAL_EMIT S_FAIL SOUND;
+            in: 0.3 0.0;
+            after: "fail_hi";
+         }
+         program { name: "fail_hi";
+            action: STATE_SET "hi" 0.0;
+            target: "up";
+            target: "left";
+            target: "right";
+            target: "down";
+            after: "fail_unhi";
+         }
+         program { name: "fail_unhi";
+            action: STATE_SET "default" 0.0;
+            in: 0.6 0.0;
+            target: "up";
+            target: "left";
+            target: "right";
+            target: "down";
+            after: "fail_unblock";
+         }
+         program { name: "fail_unblock";
+            action: STATE_SET "default" 0.0;
+            target: "blocker";
+         }
+         program { name: "next_level_block";
+            signal: "next_level";
+            action: STATE_SET "blocked" 0.0;
+            target: "blocker";
+            after: "next_level_sound";
+         }
+         program { name: "next_level_sound";
+            action: SIGNAL_EMIT S_NEXT_LV SOUND;
+            in: 0.3 0.0;
+            after: "next_level_hi_up";
+         }
+         program { name: "next_level_hi_up";
+            action: STATE_SET "hi" 0.0;
+            target: "up";
+            after: "next_level_unhi_up";
+         }
+         program { name: "next_level_unhi_up";
+            action: STATE_SET "default" 0.0;
+            in: 0.2 0.0;
+            target: "up";
+            after: "next_level_hi_right";
+         }
+         program { name: "next_level_hi_right";
+            action: STATE_SET "hi" 0.0;
+            target: "right";
+            after: "next_level_unhi_right";
+         }
+         program { name: "next_level_unhi_right";
+            action: STATE_SET "default" 0.0;
+            in: 0.2 0.0;
+            target: "right";
+            after: "next_level_hi_down";
+         }
+         program { name: "next_level_hi_down";
+            action: STATE_SET "hi" 0.0;
+            target: "down";
+            after: "next_level_unhi_down";
+         }
+         program { name: "next_level_unhi_down";
+            action: STATE_SET "default" 0.0;
+            in: 0.2 0.0;
+            target: "down";
+            after: "next_level_hi_left";
+         }
+         program { name: "next_level_hi_left";
+            action: STATE_SET "hi" 0.0;
+            target: "left";
+            after: "next_level_unhi_left";
+         }
+         program { name: "next_level_unhi_left";
+            action: STATE_SET "default" 0.0;
+            in: 0.2 0.0;
+            target: "left";
+            after: "next_level_hi_up_again";
+         }
+         program { name: "next_level_hi_up_again";
+            action: STATE_SET "hi" 0.0;
+            target: "up";
+            after: "next_level_unhi_up_again";
+         }
+         program { name: "next_level_unhi_up_again";
+            action: STATE_SET "default" 0.0;
+            in: 0.2 0.0;
+            target: "up";
+         }
+         program { name: "win_block";
+            signal: "player_won";
+            action: STATE_SET "blocked" 0.0;
+            target: "blocker";
+            after: "win_sound";
+         }
+         program { name: "win_sound";
+            action: SIGNAL_EMIT S_WIN SOUND;
+            in: 0.3 0.0;
+            after: "win_hi";
+         }
+         program { name: "win_hi";
+            action: STATE_SET "hi" 0.0;
+            target: "up";
+            target: "left";
+            target: "right";
+            target: "down";
+            after: "win_unhi";
+         }
+         program { name: "win_unhi";
+            action: STATE_SET "default" 0.0;
+            in: 0.3 0.0;
+            target: "up";
+            target: "left";
+            target: "right";
+            target: "down";
+            after: "win_hi2";
+         }
+         program { name: "win_hi2";
+            action: STATE_SET "hi" 0.0;
+            in: 0.1 0.0;
+            target: "up";
+            target: "left";
+            target: "right";
+            target: "down";
+            after: "win_unhi2";
+         }
+         program { name: "win_unhi2";
+            action: STATE_SET "default" 0.0;
+            in: 0.3 0.0;
+            target: "up";
+            target: "left";
+            target: "right";
+            target: "down";
+            after: "win_hi3";
+         }
+         program { name: "win_hi3";
+            action: STATE_SET "hi" 0.0;
+            in: 0.1 0.0;
+            target: "up";
+            target: "left";
+            target: "right";
+            target: "down";
+            after: "win_unhi3";
+         }
+         program { name: "win_unhi3";
+            action: STATE_SET "default" 0.0;
+            in: 1.0 0.0;
+            target: "up";
+            target: "left";
+            target: "right";
+            target: "down";
+            after: "win_unblock";
+         }
+         program { name: "win_unblock";
+            action: STATE_SET "default" 0.0;
+            target: "blocker";
+         }
+      }
+   }
+}
