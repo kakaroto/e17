@@ -322,7 +322,7 @@ _cover_with_exact_size(Evas_Object *parent, DB *db, Album *album, const Album_Co
    evas_damage_rectangle_add(sub_e, 0, 0, size, size);
    evas_render(sub_e);
 
-   if (!evas_object_image_save(o, file, NULL, "quality=75"))
+   if (!evas_object_image_save(o, file, NULL, "quality=90"))
      goto error;
 
    cover = malloc(sizeof(*cover) + file_name_len);
