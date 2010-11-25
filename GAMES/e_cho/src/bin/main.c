@@ -181,14 +181,8 @@ _bt_clicked(void *data, Evas_Object *o __UNUSED__, const char *sig __UNUSED__, c
     Game *game = data;
     int clicked;
 
-    if (game->mode == PLAYING)
+    if (game->mode != REPEATING)
         return;
-
-    if (game->mode == OFF)
-    {
-        _start_new_game(game);
-        return;
-    }
 
     if (!strcmp(src, "up"))
         clicked = 0;
