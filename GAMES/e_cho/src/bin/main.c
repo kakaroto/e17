@@ -12,7 +12,7 @@
 
 #define LEVEL_DEFAULT 3
 #define LEVEL_MAX     100
-#define SPEED_DEFAULT 1.5
+#define SPEED_DEFAULT 0.8
 #define SPEED_MIN     0.3
 #define SPEED_MAX     3.0
 
@@ -29,7 +29,8 @@ typedef struct _Game
 {
     Ecore_Timer *play_timer, *turn_timer;
     Evas_Object *base;
-    int speed, step, level, score, hi_score;
+    double speed;
+    int step, level, score, hi_score;
     int seq[LEVEL_MAX];
     int next;
     Mode mode;
