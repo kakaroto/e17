@@ -150,7 +150,11 @@ _next_level(Game *game, int level)
     game->level = level;
     _create_seq(game);
     game->step = 0;
-    game->turn_timer = ecore_timer_add(1, _cpu_turn_cb, game);
+
+    if (level == LEVEL_DEFAULT)
+        _cpu_turn(game);
+    else
+        game->turn_timer = ecore_timer_add(1.0, _cpu_turn_cb, game);
 }
 
 static void
