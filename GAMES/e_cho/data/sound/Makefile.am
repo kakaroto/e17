@@ -12,7 +12,8 @@ files_DATA = \
         pk_red.wav \
         pk_gre.wav \
         pk_blu.wav \
-        pk_yel.wav
+        pk_yel.wav \
+        pk_fail.wav
 
 EXTRA_DIST = \
         do.wav \
@@ -25,4 +26,5 @@ EXTRA_DIST = \
         pk_red.wav \
         pk_gre.wav \
         pk_blu.wav \
-        pk_yel.wav
+        pk_yel.wav \
+        pk_fail.wav

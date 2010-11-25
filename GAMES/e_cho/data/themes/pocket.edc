@@ -3,7 +3,7 @@
 #define S_DOWN "pk_yel.wav"
 #define S_LEFT "pk_gre.wav"
 #define S_RIGHT "pk_blu.wav"
-#define S_FAIL "fail.wav"
+#define S_FAIL "pk_fail.wav"
 #define S_WIN "win.wav"
 #define S_NEXT_LV "next_lv.wav"
 
