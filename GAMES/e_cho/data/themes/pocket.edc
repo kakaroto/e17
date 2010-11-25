@@ -267,6 +267,38 @@ collections {
                text.text: "!! wrong !!";
             }
          }
+         part { name: "level-label";
+            type: TEXT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               color: FONT_COLOR;
+               rel1.to: "panel";
+               rel2.to: "panel";
+               rel2.relative: 0.6 1.0;
+               text {
+                  text: "Level: ";
+                  font: FONT_BOLD;
+                  size: 12;
+                  align: 1.0 0.75;
+               }
+            }
+         }
+         part { name: "level"; /* API */
+            type: TEXT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               color: FONT_COLOR;
+               rel1.to: "panel";
+               rel2.to: "panel";
+               rel1.relative: 0.6 0.0;
+               text {
+                  text: "0";
+                  font: FONT_BOLD;
+                  size: 12;
+                  align: 0.0 0.75;
+               }
+            }
+         }
          part { name: "hi-score-label";
             type: TEXT;
             mouse_events: 0;
@@ -279,7 +311,7 @@ collections {
                   text: "Hi Score: ";
                   font: FONT_BOLD;
                   size: 12;
-                  align: 1.0 0.8;
+                  align: 1.0 0.9;
                }
             }
          }
@@ -295,7 +327,7 @@ collections {
                   text: "0";
                   font: FONT_BOLD;
                   size: 12;
-                  align: 0.0 0.8;
+                  align: 0.0 0.9;
                }
             }
          }

@@ -137,6 +137,8 @@ _cpu_turn_cb(void *data)
 static void
 _next_level(Game *game, int level)
 {
+    char buf[32];
+
     if (level > LEVEL_MAX)
     {
         edje_object_signal_emit(game->base, "player_won", "");
@@ -145,6 +147,8 @@ _next_level(Game *game, int level)
     }
 
     _score_inc(game, 100 * (level - LEVEL_DEFAULT));
+    snprintf(buf, sizeof(buf), "%i", level - LEVEL_DEFAULT + 1);
+    edje_object_part_text_set(game->base, "level", buf);
     if (level != LEVEL_DEFAULT)
         edje_object_signal_emit(game->base, "next_level", "");
     game->mode = PLAYING;
