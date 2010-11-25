@@ -253,7 +253,6 @@ _ui_all(void)
 static void
 _ui_num(int n)
 {
-   Eina_List *l;
    double fps = 0.0;
    double wfps = 0.0;
    int t_count = 0;
