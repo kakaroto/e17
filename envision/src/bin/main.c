@@ -948,7 +948,7 @@ create_main_win(App *app)
         goto gui_error;
      }
    elm_object_style_set(app->grid, "efenniht");
-   elm_gengrid_align_set(app->grid, 0.5, 0.5);
+   elm_gengrid_align_set(app->grid, 0.5, 0.0);
    elm_gengrid_horizontal_set(app->grid, EINA_FALSE);
    elm_gengrid_multi_select_set(app->grid, EINA_FALSE);
    elm_gengrid_bounce_set(app->grid, EINA_FALSE, EINA_FALSE);
