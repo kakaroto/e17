@@ -7,6 +7,10 @@
 #define S_WIN "win.wav"
 #define S_NEXT_LV "next_lv.wav"
 
+#define FONT "Sans";
+#define FONT_BOLD "Sans:style=Bold";
+#define FONT_COLOR  20 20 20 255;
+#define FONT_COLOR3 0 0 0 32;
 
 #define BT_PROG(_bt, _sound) \
    program { name: _bt"_pressed"; \
@@ -22,7 +26,7 @@
       target: _bt; \
    } \
    program { name: _bt"_clicked"; \
-      signal: "mouse,down,1"; \
+      signal: "mouse,clicked,1"; \
       source: _bt; \
       action: SIGNAL_EMIT "gamebt,clicked" _bt; \
       after: _bt"_sound"; \
@@ -52,7 +56,8 @@ collections {
       external: "elm";
    }
    images {
-      image: "bg.png" COMP;
+      image: "pk_plastic.png" COMP;
+      image: "pk_panel.png" COMP;
       image: "elogo.png" COMP;
       image: "pk_red_off.png" COMP;
       image: "pk_red_on.png" COMP;
@@ -64,38 +69,52 @@ collections {
       image: "pk_yel_on.png" COMP;
    }
    group { name: "win";
-      min: 320 480;
       parts {
+         /* bg */
          part { name: "bg";
-            type: IMAGE;
+            type: RECT;
             mouse_events: 0;
             description { state: "default" 0.0;
-               image.normal: "bg.png";
+               min: 320 480;
+               color: 30 30 30 255;
             }
          }
-         part { name: "logo";
+         part { name: "bg_plastic";
             type: IMAGE;
             mouse_events: 0;
             description { state: "default" 0.0;
-               rel1.relative: 0.35 0.25;
-               rel2.relative: 0.65 0.55;
-               color: 255 255 255 150;
+               image.normal: "pk_plastic.png";
+               fill {
+                  size {
+                     relative: 0.0 0.0;
+                     offset: 200 200;
+                  }
+               }
+            }
+         }
+         /* centered square (invisible) */
+         part { name: "square";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1.offset: 5 5;
+               rel2.relative: 1.0 0.7;
+               rel2.offset: -6 -1;
+               align: 0.5 0.0;
                aspect: 1.0 1.0;
                aspect_preference: BOTH;
-               fixed: 1 1;
-               image.normal: "elogo.png";
             }
          }
          part { name: "up";
             type: IMAGE;
-            mouse_events: 1;
             description { state: "default" 0.0;
-               rel1.relative: 0.0 0.0;
-               rel2.relative: 0.5 0.4;
-               rel2.offset: -6 -6;
-               align: 1.0 1.0;
-               aspect: 1.0 1.0;
-               aspect_preference: BOTH;
+               rel1.to: "square";
+               rel2 {
+                  to: "square";
+                  relative: 0.5 0.5;
+                  offset: -6 -6;
+               }
                image.normal: "pk_red_off.png";
             }
             description { state: "hi" 0.0;
@@ -105,15 +124,17 @@ collections {
          }
          part { name: "right";
             type: IMAGE;
-            mouse_events: 1;
             description { state: "default" 0.0;
-               rel1.relative: 0.5 0.0;
-               rel2.relative: 1.0 0.4;
-               rel1.offset: 5 0;
-               rel2.offset: -1 -6;
-               align: 0.0 1.0;
-               aspect: 1.0 1.0;
-               aspect_preference: BOTH;
+               rel1 {
+                  to: "square";
+                  relative: 0.5 0.0;
+                  offset: 5 0;
+               }
+               rel2 {
+                  to: "square";
+                  relative: 1.0 0.5;
+                  offset: -1 -6;
+               }
                image.normal: "pk_blu_off.png";
             }
             description { state: "hi" 0.0;
@@ -123,14 +144,16 @@ collections {
          }
          part { name: "down";
             type: IMAGE;
-            mouse_events: 1;
             description { state: "default" 0.0;
-               rel1.relative: 0.5 0.4;
-               rel2.relative: 1.0 0.8;
-               rel1.offset: 5 5;
-               align: 0.0 0.0;
-               aspect: 1.0 1.0;
-               aspect_preference: BOTH;
+               rel1 {
+                  to: "square";
+                  relative: 0.5 0.5;
+                  offset: 5 5;
+               }
+               rel2 {
+                  to: "square";
+                  relative: 1.0 1.0;
+               }
                image.normal: "pk_yel_off.png";
             }
             description { state: "hi" 0.0;
@@ -140,15 +163,17 @@ collections {
          }
          part { name: "left";
             type: IMAGE;
-            mouse_events: 1;
             description { state: "default" 0.0;
-               rel1.relative: 0 0.4;
-               rel2.relative: 0.5 0.8;
-               rel1.offset: 0 5;
-               rel2.offset: -6 -1;
-               align: 1.0 0.0;
-               aspect: 1.0 1.0;
-               aspect_preference: BOTH;
+               rel1 {
+                  to: "square";
+                  relative: 0.0 0.5;
+                  offset: 0 5;
+               }
+               rel2 {
+                  to: "square";
+                  relative: 0.5 1.0;
+                  offset: -6 -1;
+               }
                image.normal: "pk_gre_off.png";
             }
             description { state: "hi" 0.0;
@@ -156,51 +181,113 @@ collections {
                image.normal: "pk_gre_on.png";
             }
          }
-         part { name: "score";
+         part { name: "logo";
+            type: IMAGE;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1 {
+                  to: "square";
+                  relative: 0.3 0.3;
+               }
+               rel2 {
+                  to: "square";
+                  relative: 0.7 0.7;
+               }
+               color: 255 255 255 200;
+               image.normal: "elogo.png";
+            }
+         }
+         part { name: "score"; /* API */
             type: TEXT;
             mouse_events: 0;
             effect: SOFT_SHADOW;
             description { state: "default" 0.0;
                color3: 0 0 0 64;
-               rel1.relative: 0.5 0.4;
-               rel2.relative: 0.5 0.4;
-               fixed: 1 1;
+               rel1.to: "square";
+               rel2.to: "square";
                text {
                   text: "0";
                   font: "Sans,Edje-Vera";
                   size: 16;
-                  min: 1 1;
-                  align: 0.8 0.5;
+                  align: 0.5 0.5;
                }
+            }
+         }
+         /* bottom panel */
+         part { name: "panel";
+            type: IMAGE;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1 {
+                  to: "square";
+                  relative: 0.0 0.9;
+               }
+               rel2 {
+                  to_x: "square";
+                  relative: 1.0 1.0;
+               }
+               align: 0.5 1.0;
+               aspect: (410/235) (410/235);
+               aspect_preference: BOTH;
+               image.normal: "pk_panel.png";
+            }
+         }
+         part { name: "label";
+            type: TEXT;
+            mouse_events: 1;
+            effect: SOFT_SHADOW;
+            description { state: "default" 0.0;
+               color: FONT_COLOR;
+               color3: FONT_COLOR3;
+               rel1.to: "panel";
+               rel2.to: "panel";
+               text {
+                  text: "Start Game";
+                  font: FONT_BOLD;
+                  size: 18;
+                  align: 0.5 0.5;
+               }
+            }
+            description { state: "playing" 0.0;
+               inherit: "default" 0.0;
+               color3: 0 0 0 0;
+               text.text: "listen...";
+            }
+            description { state: "repeating" 0.0;
+               inherit: "default" 0.0;
+               color3: 0 0 0 0;
+               text.text: "...and repeat";
             }
          }
          part { name: "hi-score-label";
             type: TEXT;
             mouse_events: 0;
-            effect: FAR_SOFT_SHADOW;
             description { state: "default" 0.0;
-               rel1.relative: 0.0 0.9;
-               rel2.relative: 0.33 1.0;
+               color: FONT_COLOR;
+               rel1.to: "panel";
+               rel2.to: "panel";
+               rel2.relative: 0.6 1.0;
                text {
-                  text: "Hi score: ";
-                  font: "Sans,Edje-Vera";
+                  text: "Hi Score: ";
+                  font: FONT_BOLD;
                   size: 12;
-                  align: 1.0 0.5;
+                  align: 1.0 0.8;
                }
             }
          }
-         part { name: "hi-score";
+         part { name: "hi-score"; /* API */
             type: TEXT;
             mouse_events: 0;
-            effect: FAR_SOFT_SHADOW;
             description { state: "default" 0.0;
-               rel1.relative: 0.33 0.9;
-               rel2.relative: 0.66 1.0;
+               color: FONT_COLOR;
+               rel1.to: "panel";
+               rel2.to: "panel";
+               rel1.relative: 0.6 0.0;
                text {
                   text: "0";
-                  font: "Sans,Edje-Vera";
+                  font: FONT_BOLD;
                   size: 12;
-                  align: 0.0 0.5;
+                  align: 0.0 0.8;
                }
             }
          }
@@ -213,42 +300,55 @@ collections {
             }
             description { state: "blocked" 0.0;
                inherit: "default" 0.0;
-//               color: 255 255 255 100;
                visible: 1;
-            }
-         }
-         part { name: "bt_start";
-            type: EXTERNAL;
-            source: "elm/button";
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               rel1.relative: 0.66 0.9;
-               rel2.relative: 1.0 1.0;
-               params.string: "label" "Start Game";
             }
          }
       }
       programs {
+         /* start button clicked */
+         program { name: "start";
+            signal: "mouse,down,1";
+            source: "label";
+            filter: "label" "default";
+            action: SIGNAL_EMIT "clicked" "bt_start";
+            after: "playing_label";
+         }
+         /* buttons programs */
          BT_PROG("up", S_UP)
          BT_PROG("down", S_DOWN)
          BT_PROG("left", S_LEFT)
          BT_PROG("right", S_RIGHT)
-         program { name: "block";
+
+         /* SIGNAL: playing */
+         program { name: "playing_block"; /* API */
             signal: "playing";
             action: STATE_SET "blocked" 0.0;
             target: "blocker";
+            after: "playing_label";
          }
-         program { name: "unblock";
+         program { name: "playing_label";
+            action: STATE_SET "playing" 0.0;
+            target: "label";
+         }
+         /* SIGNAL: repeating */
+         program { name: "repeating_unblock"; /* API */
             signal: "repeating";
             action: STATE_SET "default" 0.0;
             target: "blocker";
+            after: "repeating_label";
          }
-         program { name: "new_game";
+         program { name: "repeating_label";
+            action: STATE_SET "repeating" 0.0;
+            target: "label";
+         }
+         /* SIGNAL: new_game */
+         program { name: "new_game"; /* API */
             signal: "new_game";
             action: STATE_SET "blocked" 0.0;
             target: "blocker";
          }
-         program { name: "fail_block";
+         /* SIGNAL: fail */
+         program { name: "fail_block"; /* API */
             signal: "fail";
             action: STATE_SET "blocked" 0.0;
             target: "blocker";
@@ -256,7 +356,7 @@ collections {
          }
          program { name: "fail_sound";
             action: SIGNAL_EMIT S_FAIL SOUND;
-            in: 0.3 0.0;
+            in: 0.0 0.0;  // was 0.3 0.0
             after: "fail_hi";
          }
          program { name: "fail_hi";
@@ -279,8 +379,14 @@ collections {
          program { name: "fail_unblock";
             action: STATE_SET "default" 0.0;
             target: "blocker";
+            after: "fail_label";
          }
-         program { name: "next_level_block";
+         program { name: "fail_label";
+            action: STATE_SET "default" 0.0;
+            target: "label";
+         }
+         /* SIGNAL: next level */
+         program { name: "next_level_block"; /* API */
             signal: "next_level";
             action: STATE_SET "blocked" 0.0;
             target: "blocker";
@@ -345,7 +451,8 @@ collections {
             in: 0.2 0.0;
             target: "up";
          }
-         program { name: "win_block";
+         /* player_won */
+         program { name: "win_block"; /* API */
             signal: "player_won";
             action: STATE_SET "blocked" 0.0;
             target: "blocker";
