@@ -83,13 +83,6 @@ _play_next(void *data)
 {
     Game *game = data;
 
-    if (game->next == game->step)
-    {
-        _player_turn(game);
-        game->play_timer = NULL;
-        return ECORE_CALLBACK_CANCEL;
-    }
-
     switch (game->seq[game->next])
     {
         case 0:
@@ -111,6 +104,14 @@ _play_next(void *data)
     }
 
     (game->next)++;
+
+    if (game->next == game->step)
+    {
+        _player_turn(game);
+        game->play_timer = NULL;
+        return ECORE_CALLBACK_CANCEL;
+    }
+
     return ECORE_CALLBACK_RENEW;
 }
 
