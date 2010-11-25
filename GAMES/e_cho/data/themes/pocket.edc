@@ -248,15 +248,23 @@ collections {
                   align: 0.5 0.5;
                }
             }
-            description { state: "playing" 0.0;
+            description { state: "pressed" 0.0;
                inherit: "default" 0.0;
                color3: 0 0 0 0;
+               rel1.offset: 2 5;
+            }
+            description { state: "playing" 0.0;
+               inherit: "default" 0.0;
                text.text: "listen...";
             }
             description { state: "repeating" 0.0;
                inherit: "default" 0.0;
-               color3: 0 0 0 0;
                text.text: "...and repeat";
+            }
+            description { state: "fail" 0.0;
+               inherit: "default" 0.0;
+               color: 200 0 0 255;
+               text.text: "!! wrong !!";
             }
          }
          part { name: "hi-score-label";
@@ -306,10 +314,17 @@ collections {
       }
       programs {
          /* start button clicked */
-         program { name: "start";
+         program { name: "start_down";
             signal: "mouse,down,1";
             source: "label";
             filter: "label" "default";
+            action: STATE_SET "pressed" "label";
+            target: "label";
+         }
+         program { name: "start_up";
+            signal: "mouse,up,1";
+            source: "label";
+            filter: "label" "pressed";
             action: SIGNAL_EMIT "clicked" "bt_start";
             after: "playing_label";
          }
@@ -352,6 +367,11 @@ collections {
             signal: "fail";
             action: STATE_SET "blocked" 0.0;
             target: "blocker";
+            after: "fail_label";
+         }
+         program { name: "fail_label";
+            action: STATE_SET "fail" 0.0;
+            target: "label";
             after: "fail_sound";
          }
          program { name: "fail_sound";
@@ -369,7 +389,7 @@ collections {
          }
          program { name: "fail_unhi";
             action: STATE_SET "default" 0.0;
-            in: 0.6 0.0;
+            in: 1.2 0.0;
             target: "up";
             target: "left";
             target: "right";
@@ -379,9 +399,9 @@ collections {
          program { name: "fail_unblock";
             action: STATE_SET "default" 0.0;
             target: "blocker";
-            after: "fail_label";
+            after: "fail_label2";
          }
-         program { name: "fail_label";
+         program { name: "fail_label2";
             action: STATE_SET "default" 0.0;
             target: "label";
          }
