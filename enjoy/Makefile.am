@@ -12,6 +12,6 @@ MAINTAINERCLEANFILES = Makefile.in ABOUT-NLS INSTALL aclocal.m4 config.guess com
   po/quot.sed po/en@boldquot.header po/boldquot.sed po/Makevars.template po/remove-potcdate.sin po/Makefile.in.in \
   stamp-h.in acconfig.h depcomp
 
-EXTRA_DIST = README AUTHORS COPYING
+EXTRA_DIST = README AUTHORS COPYING enjoy.spec
 
 DISTCHECK_CONFIGURE_FLAGS = --disable-quicklaunch

@@ -1,0 +1,56 @@
+%define _missing_doc_files_terminate_build 0
+%{!?_rel:%{expand:%%global _rel 0.r%(svnversion | sed 's/[^0-9].*$//' || echo 0000)}}
+
+Summary: Enjoy - Music Player
+Name: @PACKAGE@
+Version: @VERSION@
+Release: %{_rel}
+License: Lesser GPLv3+
+Group: Applications/Multimedia
+Source: %{name}-%{version}.tar.gz
+Packager: %{?_packager:%{_packager}}%{!?_packager:Rui Miguel Seabra <rms@1407.org>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
+Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
+URL: http://www.enlightenment.org/
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
+Requires: elementary, sqlite > 3.0, e_dbus, emotion, lightmediascanner
+BuildRequires: elementary-devel, sqlite-devel > 3.0, e_dbus-devel, emotion-devel, lightmediascanner-devel
+
+%description
+Enjoy is a music player written using Enlightenment Foundation
+Libraries (EFL) with focus on speed and mobile usability, yet should
+be usable on desktops as well.
+
+Enjoy is modeled around a media database constructed by
+LightMediaScanner, it is not meant to play single files from disk,
+instead it will recursively index directories for music files and then
+list them by artist, album, genre and so on. Playlists are also
+supported, as well as random or filter playlists can be dynamically
+generated.
+
+%prep
+%setup -q
+
+%build
+%{configure} --prefix=%{_prefix}
+%{__make} %{?_smp_mflags} %{?mflags}
+
+%install
+%{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
+
+%clean
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-, root, root)
+%doc AUTHORS COPYING README
+%{_bindir}/enjoy*
+%{_datadir}/applications/enjoy.desktop
+%{_datadir}/enjoy/default.edj
+%{_datadir}/pixmaps/enjoy.png
+%{_libdir}/enjoy_ql.*
+#%{_datadir}/locale/*
+
+%changelog
+* Fri Nov 26 2010 Rui Miguel Silva Seabra <rms@1407.org> 0.1.0
+- Create rpm spec

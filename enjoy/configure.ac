@@ -18,7 +18,7 @@ m4_define([lt_age], v_min)
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 
-AC_INIT([enjoy], [v_ver-alpha], [enlightenment-devel@lists.sourceforge.net])
+AC_INIT([enjoy], [v_ver.alpha], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
@@ -113,6 +113,7 @@ AM_CONDITIONAL(BUILD_QUICKLAUNCH, test "x${want_quicklaunch}" = "xyes")
 
 AC_OUTPUT([
 Makefile
+enjoy.spec
 src/Makefile
 src/bin/Makefile
 data/Makefile
