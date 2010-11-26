@@ -90,7 +90,7 @@ EAPI Eina_Bool            e_bluez_adapter_name_set(E_Bluez_Element *element, con
 EAPI Eina_Bool            e_bluez_adapter_powered_get(const E_Bluez_Element *element, Eina_Bool *powered) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool            e_bluez_adapter_powered_set(E_Bluez_Element *profile, Eina_Bool powered, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool            e_bluez_adapter_discoverable_get(const E_Bluez_Element *element, Eina_Bool *discoverable) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool            e_bluez_adapter_discoverable_set(E_Bluez_Element *profile, Eina_Bool discoverable, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+EAPI Eina_Bool            e_bluez_adapter_discoverable_set(E_Bluez_Element *profile, Eina_Bool discoverable, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool            e_bluez_adapter_discoverable_timeout_get(const E_Bluez_Element *element, unsigned int *timeout) EINA_ARG_NONNULL(1,2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool            e_bluez_adapter_discoverable_timeout_set(E_Bluez_Element *element, unsigned int timeout, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool            e_bluez_adapter_discovering_get(const E_Bluez_Element *element, Eina_Bool *discovering) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
