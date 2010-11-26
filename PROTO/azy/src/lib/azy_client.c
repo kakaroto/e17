@@ -16,6 +16,7 @@ static Azy_Client_Call_Id __azy_client_send_id = 0;
 int AZY_CLIENT_DISCONNECTED;
 int AZY_CLIENT_CONNECTED;
 int AZY_CLIENT_RETURN;
+int AZY_CLIENT_RESULT;
 int AZY_CLIENT_ERROR;
 
 void *

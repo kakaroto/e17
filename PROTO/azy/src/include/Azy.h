@@ -50,10 +50,13 @@ void *alloca (size_t);
 # endif
 #endif /* ! _WIN32 */
 
+#define AZY_ERROR_NONE 0
+
 extern int azy_log_dom;
 
 extern int AZY_CLIENT_DISCONNECTED;
 extern int AZY_CLIENT_CONNECTED;
+extern int AZY_CLIENT_RESULT;
 extern int AZY_CLIENT_RETURN;
 extern int AZY_CLIENT_ERROR;
 
@@ -79,14 +82,7 @@ typedef struct _Azy_Value Azy_Value;
 typedef struct _Azy_Blob Azy_Blob;
 typedef struct _Azy_Content Azy_Content;
 
-typedef Eina_Bool (*Azy_Server_Module_Cb)(Azy_Server_Module *);
-typedef void (*Azy_Server_Module_Shutdown_Cb)(Azy_Server_Module *);
-typedef Eina_Bool (*Azy_Server_Module_Content_Cb)(Azy_Server_Module *, Azy_Content *);
-typedef void *(*Azy_Content_Cb)(Azy_Value *, void **);
-typedef void (*Azy_Client_Return_Cb)(Azy_Client *, Azy_Content *);
-
 typedef unsigned int Azy_Client_Call_Id;
-
 
 typedef enum
 {
@@ -135,6 +131,12 @@ typedef enum
    AZY_NET_TRANSPORT_UNKNOWN
 } Azy_Net_Transport;
 
+
+typedef Eina_Bool (*Azy_Server_Module_Cb)(Azy_Server_Module *);
+typedef void (*Azy_Server_Module_Shutdown_Cb)(Azy_Server_Module *);
+typedef Eina_Bool (*Azy_Server_Module_Content_Cb)(Azy_Server_Module *, Azy_Content *);
+typedef void *(*Azy_Content_Cb)(Azy_Value *, void **);
+typedef Eina_Error (*Azy_Client_Return_Cb)(Azy_Client *, Azy_Content *);
 
 #ifdef __cplusplus
 extern "C" {

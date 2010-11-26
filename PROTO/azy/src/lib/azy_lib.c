@@ -120,6 +120,7 @@ azy_init()
    AZY_CLIENT_DISCONNECTED = ecore_event_type_new();
    AZY_CLIENT_CONNECTED = ecore_event_type_new();
    AZY_CLIENT_RETURN = ecore_event_type_new();
+   AZY_CLIENT_RESULT = ecore_event_type_new();
    AZY_CLIENT_ERROR = ecore_event_type_new();
 
    azy_log_dom = eina_log_domain_register("azy", EINA_COLOR_BLUE);

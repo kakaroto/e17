@@ -93,7 +93,10 @@ _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
    cb = eina_hash_find(client->callbacks, &content->id);
    if (cb)
      {
-        cb(client, content);
+        Eina_Error ret;
+        ret = cb(client, content);
+
+        ecore_event_add(AZY_CLIENT_RESULT, &ret, (Ecore_End_Cb)_azy_event_handler_fake_free, NULL);
         eina_hash_del_by_key(client->callbacks, &content->id);
         _azy_client_handler_call_free(client, content);
      }

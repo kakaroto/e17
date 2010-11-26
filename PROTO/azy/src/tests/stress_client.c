@@ -28,7 +28,7 @@ _check_err(Azy_Content *err)
    return EINA_TRUE;
 }
 
-static void
+static Eina_Error
 _TTest1_getAll_ret(Azy_Client *client __UNUSED__, int type __UNUSED__, Azy_Content *content)
 {
    static int x;
@@ -40,13 +40,14 @@ _TTest1_getAll_ret(Azy_Client *client __UNUSED__, int type __UNUSED__, Azy_Conte
      {
         printf("%i: Error encountered: %s\n", x, azy_content_error_message_get(content));
         ecore_main_loop_quit();
-        return;
+        return azy_content_error_code_get(content);
      }
 
    ret = azy_content_return_get(content);
  //  printf("#%i: Success? %s!\n", x, ret ? "YES" : "NO");
    if (x == (NUM_CLIENTS * NUM_CLIENTS))
      ecore_main_loop_quit();
+   return AZY_ERROR_NONE;
 }
 
 static Eina_Bool

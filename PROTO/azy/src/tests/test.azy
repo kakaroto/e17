@@ -21,7 +21,6 @@ struct AllArrays
    array<int>     a_int;
    array<boolean> a_boolean;
 //    array<double>      a_double;
-   array<any>     a_any;
    array<Struct>  a_struct;
                   array < array < string >> aa_string;
                   array < array < array<string >>> aaa_string;
@@ -35,7 +34,6 @@ struct AllTypes
    int       v_int;
    boolean   v_boolean;
    double    v_double;
-   any       v_any;
    Struct    v_struct;
    AllArrays v_arrays;
 }
@@ -60,7 +58,6 @@ module Test1
      retval->v_int = 5645;
      retval->v_boolean = EINA_FALSE;
      retval->v_double = 123.123e-3;
-     retval->v_any = azy_value_string_new("test");
      retval->v_struct = TStruct_new();
      retval->v_struct->v_string = eina_stringshare_add("some str");
      retval->v_arrays = TAllArrays_new();
@@ -104,16 +101,6 @@ module Test1
 
      //    for (i = 0; i < 5; i++)
      //      ADD(a_double, (void *)(double)(i * 1.11e-3));
-     for (i = 0; i < 10; i++)
-       if (i % 2)
-         {
-            const char *val = eina_stringshare_printf("%d", i);
-            ADD(a_any, azy_value_string_new(val));
-            eina_stringshare_del(val);
-         }
-       else
-         ADD(a_any, azy_value_int_new(i));
-
      for (i = 0; i < 2; i++)
        {
           TStruct *s = TStruct_new();
