@@ -71,7 +71,7 @@ static Eina_Bool azy_gen;
 static char *out_dir = ".";
 static char *azy_file;
 static FILE *f;
-static const char *i, *b;
+static const char *i, *b, *blob;
 
 static const Ecore_Getopt opts = {
    "azy_parser",
@@ -441,6 +441,8 @@ gen_type_print(Azy_Typedef *t,
                {
                   if (m->type->ctype == b)
                     EL(1, "printf(\"%s: %s\\n\", (a->%s) ? \"yes\" : \"no\");", m->name, m->type->fmt_str, m->name);
+                  else if (m->type->cname == blob)
+                    EL(1, "printf(\"%s: Binary data\");", m->name);
                   else
                     EL(1, "printf(\"%s: %s\\n\", a->%s);", m->name, m->type->fmt_str, m->name);
                }
@@ -460,6 +462,13 @@ gen_type_print(Azy_Typedef *t,
         NL;
         EL(1, "if (!a)");
         EL(2, "return;");
+        if (t->item_type->cname == blob)
+          {
+             EL(1, "printf(\"Array of binary data\");");
+             EL(0, "}");
+             NL;
+             return;
+          }
         EL(1, "EINA_LIST_FOREACH(a, l, t)");
         if (t->item_type->print_func)
           EL(2, "%s(pre, indent + 1, t);", t->item_type->print_func);
@@ -469,13 +478,13 @@ gen_type_print(Azy_Typedef *t,
                EL(2, "int i;");
                EL(2, "for (i = 0; i < indent; i++)");
                EL(3, "printf(\"%%s\", pre);");
-               EL(1, "}");
                if (t->item_type->ctype == i)
                  EL(2, "printf(\"%s, \", (intptr_t)t);", t->item_type->fmt_str);
                else if (t->item_type->ctype == b)
-                 EL(1, "printf(\"%s, \", ((intptr_t)t) ? \"yes\" : \"no\");", t->item_type->fmt_str);
+                 EL(2, "printf(\"%s, \", ((intptr_t)t) ? \"yes\" : \"no\");", t->item_type->fmt_str);
                else
                  EL(2, "printf(\"%s, \", t);", t->item_type->fmt_str);
+               EL(1, "}");
           }
         EL(0, "}");
         NL;
@@ -1679,6 +1688,7 @@ main(int argc, char *argv[])
 
    i = eina_stringshare_add("int");
    b = eina_stringshare_add("Eina_Bool");
+   blob = eina_stringshare_add("blob");
    azy_write();
 
    if (debug)
