@@ -15,6 +15,8 @@ dist_vapi_DATA = \
   edje.deps \
   elm.vapi \
   elm.deps \
+  emotion.vapi \
+  emotion.deps \
   $(NULL)
 
 EXTRA_DIST += \
