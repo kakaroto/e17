@@ -38,7 +38,7 @@ struct AllTypes
    AllArrays v_arrays;
 }
 
-module Test1
+Azy_Module Test1
 {
    <%
     #include <stdio.h>
@@ -273,7 +273,7 @@ module Test1
  */
 }
 
-module Test2
+Azy_Module Test2
 {
    <%
 #include <stdio.h>

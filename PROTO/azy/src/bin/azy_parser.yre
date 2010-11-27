@@ -75,7 +75,7 @@ main:
   "__upload__"       { RET(TK_UPLOAD); }
   "error"            { RET(TK_ERROR); }
   "namespace"        { RET(TK_NAMESPACE); }
-  "module"          { RET(TK_MODULE); }
+  "Azy_Module"       { RET(TK_MODULE); }
   "array"            { RET(TK_ARRAY); }
   "struct"           { RET(TK_STRUCT); }
   "take"             { RET(TK_TAKE); }
