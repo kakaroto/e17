@@ -743,10 +743,11 @@ _azy_server_client_handler_del(Azy_Server_Client         *client,
      }
      
    INFO("Client %s has disconnected!", ecore_con_client_ip_get(ev->client));
-   _azy_server_client_free(client);
 
    if (!ecore_con_server_clients_get(client->server->server))
      _azy_server_client_handler_data(NULL, -500, NULL);
+
+   _azy_server_client_free(client);
 
    return ECORE_CALLBACK_CANCEL;
 }
