@@ -1484,6 +1484,7 @@ gen_client_impl(Azy_Server_Module *s)
         EL(1, "if (azy_net_transport_get(_net) != AZY_NET_TRANSPORT_UNKNOWN)");
         EL(2, "tr = azy_net_transport_get(_net);");
         EL(1, "_retval = azy_client_call(_client, _content, tr, (Azy_Content_Cb)%s);", method->return_type->demarch_name);
+        EL(1, "EINA_SAFETY_ON_TRUE_GOTO(!_retval, error);");
         if (method->return_type->free_func)
           EL(1, "azy_client_callback_free_set(_client, _retval, (Ecore_Cb)%s);", method->return_type->free_func);
 /*
@@ -1495,6 +1496,7 @@ gen_client_impl(Azy_Server_Module *s)
         EL(1, "}");
 */
         NL;
+        EL(0, "error:");
         EL(1, "azy_content_free(_content);");
         EL(1, "return _retval;");
         EL(0, "}");
