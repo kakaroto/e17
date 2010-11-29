@@ -581,11 +581,25 @@ session_restore(void)
 char *
 uri_sanitize(const char *uri) {
    char *fixed_uri;
+   char *schema;
+   char *tmp;
 
    if (!uri || !*uri) return NULL;
-   if (asprintf(&fixed_uri, "%s%s",
-            (strstr(uri, "://") ? "" : "http://"), uri) > 0)
-     return fixed_uri;
+
+   tmp = strstr(uri, "://");
+   if (!tmp || (tmp == uri) || (tmp > (uri + 15)))
+     {
+        if (ecore_file_exists(uri))
+          schema = "file";
+        else
+          schema = "http";
+
+        if (asprintf(&fixed_uri, "%s://%s", schema, uri) > 0)
+          return fixed_uri;
+     }
+   else
+     return strdup(uri);
+
    return NULL;
 }
 
