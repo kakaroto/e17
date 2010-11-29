@@ -329,8 +329,9 @@ _azy_server_client_free(Azy_Server_Client *client)
      }
    AZY_MAGIC_SET(client, AZY_MAGIC_NONE);
    ecore_con_client_data_set(client->net->conn, NULL);
-   ecore_event_handler_data_set(client->del, NULL);
+
    azy_net_free(client->net);
+   client->net = NULL;
    EINA_LIST_FREE(client->modules, s)
      _azy_server_module_free(s, EINA_TRUE);
    if (client->session_id)
@@ -338,6 +339,11 @@ _azy_server_client_free(Azy_Server_Client *client)
 
    if (client->data)
      ecore_event_handler_del(client->data);
+   if (client->del)
+     {
+        ecore_event_handler_data_set(client->del, NULL);
+        ecore_event_handler_del(client->del);
+     }
 
    free(client);
 }
@@ -600,6 +606,14 @@ _azy_server_client_handler_data(Azy_Server_Client          *client,
 
         overflow = NULL;
         overflow_length = 0;
+        client->data = NULL;
+        return ECORE_CALLBACK_CANCEL;
+     }
+   if (!client->net)
+     /* dead client */
+     {
+        INFO("Removing probably dead client %p", client);
+        client->data = NULL;
         return ECORE_CALLBACK_CANCEL;
      }
 
@@ -633,7 +647,7 @@ _azy_server_client_handler_data(Azy_Server_Client          *client,
               client->net->buffer = NULL;
               client->net->size = 0;
               INFO("%s: Overflow could not be parsed, set recv size to %lli, storing overflow of %lli", client->ip, client->net->size, overflow_length);
-              return EINA_TRUE;
+              return ECORE_CALLBACK_RENEW;
            }
          else
            {
@@ -747,6 +761,7 @@ _azy_server_client_handler_del(Azy_Server_Client         *client,
    if (!ecore_con_server_clients_get(client->server->server))
      _azy_server_client_handler_data(NULL, -500, NULL);
 
+   client->del = NULL;
    _azy_server_client_free(client);
 
    return ECORE_CALLBACK_CANCEL;

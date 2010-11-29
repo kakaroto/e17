@@ -31,10 +31,33 @@ static void _azy_client_handler_call_free(Azy_Client *client, Azy_Content *conte
 static void
 _azy_client_handler_data_free(Azy_Client_Handler_Data *handler_data)
 {
+   Eina_List *f;
    DBG("(handler_data=%p, client=%p, net=%p)", handler_data, handler_data->client, handler_data->client->net);
    if (!AZY_MAGIC_CHECK(handler_data, AZY_MAGIC_CLIENT_DATA_HANDLER))
      return;
    AZY_MAGIC_SET(handler_data, AZY_MAGIC_NONE);
+
+   f = eina_list_data_find_list(handler_data->client->conns, handler_data);
+   if (f)
+     {
+        handler_data->client->conns = eina_list_remove_list(handler_data->client->conns, f);
+
+        if (handler_data->client->conns)
+          {
+             if (handler_data->client->recv)
+               ecore_event_handler_data_set(handler_data->client->recv, handler_data->client->conns->data);
+             if (handler_data->client->net)
+               ecore_con_server_data_set(handler_data->client->net->conn, handler_data->client);
+          }
+        else /* if (client->net && client->recv) */
+          {
+             if (handler_data->client->recv)
+               ecore_event_handler_data_set(handler_data->client->recv, NULL);
+             if (handler_data->client->net)
+               ecore_con_server_data_set(handler_data->client->net->conn, NULL);
+          }
+     }
+   
    if (handler_data->recv)
      azy_net_free(handler_data->recv);
    free(handler_data);
@@ -82,7 +105,6 @@ _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
         ERR(buf, handler_data->recv->buffer);
      }
 
-
    content->id = handler_data->id;
    content->ret = ret;
    content->recv_net = handler_data->recv;
@@ -114,7 +136,7 @@ _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
         ecore_event_handler_data_set(client->recv, client->conns->data);
         ecore_con_server_data_set(client->net->conn, client);
      }
-   else if (client->net && client->recv)
+   else /* if (client->net && client->recv) */
      {
         ecore_event_handler_data_set(client->recv, NULL);
         ecore_con_server_data_set(client->net->conn, NULL);
@@ -127,7 +149,7 @@ _azy_client_recv_timer(Azy_Client_Handler_Data *handler_data)
 {
    if (!AZY_MAGIC_CHECK(handler_data, AZY_MAGIC_CLIENT_DATA_HANDLER))
      return ECORE_CALLBACK_CANCEL;
-   if (!AZY_MAGIC_CHECK(handler_data, AZY_MAGIC_NET))
+   if (!AZY_MAGIC_CHECK(handler_data->recv, AZY_MAGIC_NET))
      return ECORE_CALLBACK_CANCEL;
 
    DBG("(handler_data=%p, client=%p, net=%p)", handler_data, handler_data->client, handler_data->client->net);
@@ -162,7 +184,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
    static Azy_Client *client;
 
    if (!AZY_MAGIC_CHECK(handler_data, AZY_MAGIC_CLIENT_DATA_HANDLER))
-     return ECORE_CALLBACK_RENEW;
+     return ECORE_CALLBACK_CANCEL;
    EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data->client, ECORE_CALLBACK_RENEW);
    EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data->client->net, ECORE_CALLBACK_RENEW);
 

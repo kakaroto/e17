@@ -52,6 +52,7 @@ azy_net_free(Azy_Net *net)
      eina_stringshare_del(net->http.res.http_msg);
    if (net->buffer && net->size)
      free(net->buffer);
+   net->buffer = NULL;
    free(net);
 }
 
