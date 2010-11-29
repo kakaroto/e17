@@ -103,6 +103,6 @@ Eina_Bool             tab_close_nth(Browser_Window *win, int n);
 Eina_Bool             tab_close_view(Browser_Window *win, Evas_Object *view);
 Eina_Bool             tab_close_chrome(Browser_Window *win, Evas_Object *chrome);
 
-char *                uri_sanitize(char *uri);
+char *                uri_sanitize(const char *uri);
 
 #endif

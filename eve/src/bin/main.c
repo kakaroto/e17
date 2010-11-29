@@ -579,7 +579,7 @@ session_restore(void)
 }
 
 char *
-uri_sanitize(char *uri) {
+uri_sanitize(const char *uri) {
    char *fixed_uri;
 
    if (!uri || !*uri) return NULL;

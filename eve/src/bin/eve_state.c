@@ -277,9 +277,13 @@ inline void
 config_home_page_set(Config *config, const char *home_page)
 {
     EINA_SAFETY_ON_NULL_RETURN(config);
-    eina_stringshare_replace(&(config->home_page), home_page);
+    char *tmp_uri;
+    if ((tmp_uri = uri_sanitize(home_page))) {
+        eina_stringshare_replace(&(config->home_page), tmp_uri);
+        free(tmp_uri);
+    }
 }
-  
+
 inline const char *
 config_proxy_get(const Config *config)
 {

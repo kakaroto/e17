@@ -2112,7 +2112,7 @@ on_action_load_page(void *data, Evas_Object *view, void *event_info __UNUSED__)
    const char *entry_data = elm_scrolled_entry_entry_get(view);
    char *uri;
 
-   if ((uri = uri_sanitize((char *)entry_data)))
+   if ((uri = uri_sanitize(entry_data)))
      {
         ewk_view_uri_set(ewk_view, uri);
         evas_object_focus_set(ewk_view, EINA_TRUE);
