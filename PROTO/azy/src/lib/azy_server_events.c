@@ -518,9 +518,9 @@ static Eina_Bool
 _azy_server_client_rpc(Azy_Server_Client *client,
                         Azy_Net_Transport  t)
 {
-   DBG("(client=%p)", client);
    Azy_Content *content;
-
+   
+   DBG("(client=%p)", client);
    content = azy_content_new(NULL);
    EINA_SAFETY_ON_NULL_GOTO(content, error);
 
