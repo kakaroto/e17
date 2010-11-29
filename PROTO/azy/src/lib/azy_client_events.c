@@ -9,7 +9,6 @@
 static void _azy_client_handler_call_free(Azy_Client *client, Azy_Content *content);
 static Eina_Bool _azy_client_handler_call(Azy_Client_Handler_Data *handler_data);
 static void _azy_client_handler_data_free(Azy_Client_Handler_Data *data);
-static void _azy_client_handler_call_free(Azy_Client *client, Azy_Content *content);
 static Eina_Bool _azy_client_recv_timer(Azy_Client_Handler_Data *handler_data);
 
 static void _azy_client_handler_call_free(Azy_Client *client, Azy_Content *content)
@@ -83,7 +82,7 @@ _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
    INFO("Running RPC for %s", handler_data->method);
    handler_data->recv->transport = azy_events_net_transport_get(azy_net_header_get(handler_data->recv, "content-type"));
    content = azy_content_new(handler_data->method);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(content, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(content, ECORE_CALLBACK_RENEW);
 
    content->data = handler_data->content_data;
 
@@ -129,19 +128,8 @@ _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
        else
          ecore_event_add(AZY_CLIENT_ERROR, content, (Ecore_End_Cb)_azy_client_handler_call_free, client);
      }
-   client->conns = eina_list_remove(client->conns, handler_data);
 
-   if (client->conns)
-     {
-        ecore_event_handler_data_set(client->recv, client->conns->data);
-        ecore_con_server_data_set(client->net->conn, client);
-     }
-   else /* if (client->net && client->recv) */
-     {
-        ecore_event_handler_data_set(client->recv, NULL);
-        ecore_con_server_data_set(client->net->conn, NULL);
-     }
-   return EINA_TRUE;
+   return ECORE_CALLBACK_RENEW;
 }
 
 static Eina_Bool
@@ -184,7 +172,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
    static Azy_Client *client;
 
    if (!AZY_MAGIC_CHECK(handler_data, AZY_MAGIC_CLIENT_DATA_HANDLER))
-     return ECORE_CALLBACK_CANCEL;
+     return ECORE_CALLBACK_RENEW;
    EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data->client, ECORE_CALLBACK_RENEW);
    EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data->client->net, ECORE_CALLBACK_RENEW);
 
@@ -229,7 +217,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
               handler_data->recv->buffer = NULL;
               handler_data->recv->size = 0;
               INFO("%s: Overflow could not be parsed, set recv size to %lli, storing overflow of %lli", handler_data->method, handler_data->recv->size, overflow_length);
-              return EINA_TRUE;
+              return ECORE_CALLBACK_RENEW;
            }
          else
            {
