@@ -57,7 +57,7 @@ azy_typedef_new(int         type,
         t->copy_func = eina_stringshare_printf("%s_copy", t->cname);
         t->eq_func = eina_stringshare_printf("%s_eq", t->cname);
         if (type == TD_STRUCT)
-          t->notnull_func = eina_stringshare_printf("%s_notnull", t->cname);
+          t->isnull_func = eina_stringshare_printf("%s_isnull", t->cname);
         t->fmt_str = fmt_str ? eina_stringshare_add(fmt_str) : NULL;
         t->print_func = eina_stringshare_printf("%s_print", t->cname);
      }
@@ -82,7 +82,7 @@ Azy_Model *
 azy_new()
 {
    Azy_Model *c = calloc(1, sizeof(Azy_Model));
-   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "int", "int", "int", "-1", "azy_value_to_int", "azy_value_int_new", NULL, "%i"));
+   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "int", "int", "int", "0", "azy_value_to_int", "azy_value_int_new", NULL, "%i"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "boolean", "boolean", "Eina_Bool", "EINA_FALSE", "azy_value_to_bool", "azy_value_bool_new", NULL, "%s"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "string", "string", "const char *", "NULL", "azy_value_to_string", "azy_value_string_new", "eina_stringshare_del", "%s"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "double", "double", "double", "0.0", "azy_value_to_double", "azy_value_double_new", NULL, "%.3lf"));

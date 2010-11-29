@@ -45,7 +45,7 @@ struct _Azy_Typedef
    const char         *eq_func;
    const char         *print_func;
    const char         *fmt_str;
-   const char         *notnull_func;
+   const char         *isnull_func;
 
    Eina_List          *struct_members; /* struct members list */
    Azy_Typedef       *item_type; /* array item type */
