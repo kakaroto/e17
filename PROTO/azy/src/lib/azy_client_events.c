@@ -93,7 +93,7 @@ _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
         ERR("Content id: %u  |  Call id: %u", content->id, handler_data->id);
         azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return id does not match.");
      }
-   else if (handler_data->callback && (!handler_data->callback(azy_content_retval_get(content), &ret)))
+   else if (handler_data->callback && (!handler_data->callback(content->retval, &ret)))
      azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return value demarshalization failed.");
 
 

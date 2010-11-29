@@ -195,8 +195,8 @@ gen_type_marshalizers(Azy_Typedef *t,
         EL(0, "{");
         EL(1, "%s _tmp_nstruct = NULL;", t->ctype);
         NL;
-        EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(_nstruct, EINA_FALSE);");
         EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(_struct, EINA_FALSE);");
+        EL(1, "if (!_nstruct) return EINA_FALSE;");
         NL;
         EL(1, "EINA_SAFETY_ON_TRUE_RETURN_VAL(azy_value_type_get(_struct) != AZY_VALUE_STRUCT, EINA_FALSE);");
         NL;

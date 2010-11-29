@@ -126,7 +126,7 @@ azy_blob_unref(Azy_Blob *b)
 Azy_Value *
 azy_value_ref(Azy_Value *val)
 {
-   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
+   if (val && (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE)))
      {
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return NULL;
@@ -142,7 +142,7 @@ azy_value_unref(Azy_Value *val)
 {
    Azy_Value *v;
 
-   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
+   if (val && (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE)))
      {
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return;
@@ -248,12 +248,12 @@ Eina_Bool
 azy_value_to_int(Azy_Value *val,
                   int        *nval)
 {
-   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
+   if (val && (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE)))
      {
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return EINA_FALSE;
      }
-   if ((!nval) || (val->type != AZY_VALUE_INT))
+   if ((!val) || (!nval) || (val->type != AZY_VALUE_INT))
      return EINA_FALSE;
 
    *nval = val->int_val;
@@ -264,13 +264,13 @@ Eina_Bool
 azy_value_to_string(Azy_Value  *val,
                      const char **nval)
 {
-   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
+   if (val && (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE)))
      {
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return EINA_FALSE;
      }
  
-   if ((!nval) || (val->type != AZY_VALUE_STRING))
+   if ((!val) || (!nval) || (val->type != AZY_VALUE_STRING))
      return EINA_FALSE;
 
    *nval = eina_stringshare_add(val->str_val);
@@ -281,12 +281,12 @@ Eina_Bool
 azy_value_to_bool(Azy_Value *val,
                    int        *nval)
 {
-   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
+   if (val && (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE)))
      {
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return EINA_FALSE;
      }
-   if ((!nval) || (val->type != AZY_VALUE_BOOLEAN))
+   if ((!val) || (!nval) || (val->type != AZY_VALUE_BOOLEAN))
      return EINA_FALSE;
 
    *nval = val->int_val;
@@ -297,12 +297,12 @@ Eina_Bool
 azy_value_to_double(Azy_Value *val,
                      double     *nval)
 {
-   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
+   if (val && (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE)))
      {
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return EINA_FALSE;
      }
-   if ((!nval) || ((val->type != AZY_VALUE_DOUBLE) && (val->type != AZY_VALUE_INT)))
+   if ((!val) || (!nval) || ((val->type != AZY_VALUE_DOUBLE) && (val->type != AZY_VALUE_INT)))
      return EINA_FALSE;
 
    if (val->type == AZY_VALUE_DOUBLE)
@@ -316,12 +316,12 @@ Eina_Bool
 azy_value_to_time(Azy_Value  *val,
                    const char **nval)
 {
-   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
+   if (val && (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE)))
      {
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return EINA_FALSE;
      }
-   if ((!nval) || ((val->type != AZY_VALUE_TIME) && (val->type != AZY_VALUE_STRING)))
+   if ((!val) || (!nval) || ((val->type != AZY_VALUE_TIME) && (val->type != AZY_VALUE_STRING)))
      return EINA_FALSE;
 
    *nval = eina_stringshare_add(val->str_val);
@@ -332,12 +332,12 @@ Eina_Bool
 azy_value_to_blob(Azy_Value *val,
                    Azy_Blob **nval)
 {
-   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
+   if (val && (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE)))
      {
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return EINA_FALSE;
      }
-   if ((!nval) || ((val->type != AZY_VALUE_BLOB) && (val->type != AZY_VALUE_STRING)))
+   if ((!val) || (!nval) || ((val->type != AZY_VALUE_BLOB) && (val->type != AZY_VALUE_STRING)))
      return EINA_FALSE;
 
    if (val->blob_val)
@@ -351,7 +351,7 @@ Eina_Bool
 azy_value_to_value(Azy_Value  *val,
                     Azy_Value **nval)
 {
-   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
+   if (val && (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE)))
      {
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return EINA_FALSE;
@@ -367,7 +367,7 @@ azy_value_to_value(Azy_Value  *val,
 Azy_Value_Type
 azy_value_type_get(Azy_Value *val)
 {
-   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
+   if (val && (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE)))
      {
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return -1;
@@ -379,7 +379,7 @@ azy_value_type_get(Azy_Value *val)
 const char *
 azy_value_struct_member_name_get(Azy_Value *val)
 {
-   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
+   if (val && (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE)))
      {
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return NULL;
@@ -393,7 +393,7 @@ azy_value_struct_member_name_get(Azy_Value *val)
 Azy_Value *
 azy_value_struct_member_value_get(Azy_Value *val)
 {
-   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
+   if (val && (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE)))
      {
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return NULL;
@@ -411,7 +411,7 @@ azy_value_struct_member_get(Azy_Value *val,
    Eina_List *l;
    Azy_Value *m;
 
-   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
+   if (val && (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE)))
      {
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return NULL;
@@ -433,7 +433,7 @@ azy_value_struct_member_get(Azy_Value *val,
 Eina_List *
 azy_value_children_items_get(Azy_Value *val)
 {
-   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
+   if (val && (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE)))
      {
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return NULL;
@@ -530,7 +530,7 @@ azy_value_struct_member_set(Azy_Value *str,
    Eina_List *l;
    Azy_Value *m, *v;
 
-   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
+   if (val && (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE)))
      {
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return;
@@ -567,7 +567,7 @@ void
 azy_value_array_append(Azy_Value *arr,
                         Azy_Value *val)
 {
-   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
+   if (val && (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE)))
      {
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return;
@@ -588,7 +588,7 @@ azy_value_retval_is_error(Azy_Value  *val,
 {
    Azy_Value *c, *s;
    
-   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
+   if (val && (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE)))
      {
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return EINA_FALSE;
