@@ -47,34 +47,38 @@ int main (int argc, char **argv)
   edje->setLayer (0);
   edje->show ();
 
-  Evas_Object *eo = edje->obj ();
+  Eflxx::CountedPtr <Evasxx::Object> ext_eo (edje->getPart ("Button01")->getExternalObject ());
+  Elmxx::Button *button = static_cast <Elmxx::Button*> (&(*ext_eo));
+  button->setLabel ("This is a changed button");
 
-  // TODO: C++ wrapper
-  Evas_Object *ext_eo = edje_object_part_external_object_get (eo, "Button01");
-  elm_button_label_set (ext_eo, "This is a changed button");  
+  Eflxx::CountedPtr <Evasxx::Object> ext_eo2 (edje->getPart ("List01")->getExternalObject ());
+  Elmxx::List *list = static_cast <Elmxx::List*> (&(*ext_eo2));
+  assert (list->append ("1. Line", NULL, NULL));
+  assert (list->append ("2. Line", NULL, NULL));
+  assert (list->append ("3. Line", NULL, NULL));
+  assert (list->append ("4. Line", NULL, NULL));
+  list->go ();
 
-  ext_eo = edje_object_part_external_object_get (eo, "List01");
-  assert (elm_list_item_append (ext_eo, "1. Line", NULL, NULL, NULL, NULL));
-  assert (elm_list_item_append (ext_eo, "2. Line", NULL, NULL, NULL, NULL));
-  assert (elm_list_item_append (ext_eo, "3. Line", NULL, NULL, NULL, NULL));
-  assert (elm_list_item_append (ext_eo, "4. Line", NULL, NULL, NULL, NULL));
-  elm_list_go (ext_eo);
-  
-  ext_eo = edje_object_part_external_object_get (eo, "Progressbar01");
-  elm_progressbar_label_set (ext_eo, "This is the status");
-  elm_progressbar_value_set (ext_eo, 0.5);
+  Eflxx::CountedPtr <Evasxx::Object> ext_eo3 (edje->getPart ("Progressbar01")->getExternalObject ());
+  Elmxx::Progressbar *progressbar = static_cast <Elmxx::Progressbar*> (&(*ext_eo3));
+  progressbar->setLabel ("This is the status");
+  progressbar->setValue (0.5);
+
+  Eflxx::CountedPtr <Edjexx::Part> part (edje->getPart ("Slider01"));
 
   Edje_External_Param param;
   param.type = EDJE_EXTERNAL_PARAM_TYPE_DOUBLE;
   param.name = "value";
   param.d = 5;
-  edje_object_part_external_param_set (eo, "Slider01", &param);
 
   Edje_External_Param param2;
   param2.type = EDJE_EXTERNAL_PARAM_TYPE_STRING;
   param2.name = "label";
   param2.s = "Changed Slider Value";
-  edje_object_part_external_param_set (eo, "Slider01", &param2);
+
+  part->setParam (&param);
+  part->setParam (&param2);
+
   
   bg->setWeightHintSize (1.0, 1.0);
   elmWin->addObjectResize (*bg);

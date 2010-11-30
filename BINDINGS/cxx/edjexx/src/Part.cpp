@@ -5,9 +5,6 @@
 #include "../include/edjexx/Part.h"
 #include "../include/edjexx/Object.h"
 
-/* EFL */
-#include <Edje.h>
-
 /* STD */
 #include <map>
 
@@ -48,7 +45,7 @@ const std::string Part::getText() const
 
 void Part::swallow( Evasxx::Object* object )
 {
-  edje_object_part_swallow( _parent->obj(), _partname.c_str (), object->obj() );
+  edje_object_part_swallow (_parent->obj(), _partname.c_str (), object->obj());
 }
 
 void Part::unswallow( Evasxx::Object* object )
@@ -58,11 +55,25 @@ void Part::unswallow( Evasxx::Object* object )
 
 Eflxx::CountedPtr <Evasxx::Object> Part::getSwallow()
 {
-  Evas_Object *eo = edje_object_part_swallow_get( _parent->obj(), _partname.c_str () );
+  Evas_Object *eo = edje_object_part_swallow_get (_parent->obj(), _partname.c_str ());
 
   Evasxx::Object *ret_o = Evasxx::Object::wrap (eo);
 
   return Eflxx::CountedPtr <Evasxx::Object> (ret_o);
+}
+
+Eflxx::CountedPtr <Evasxx::Object> Part::getExternalObject ()
+{
+  Evas_Object *eo = edje_object_part_external_object_get (_parent->obj(), _partname.c_str ());
+ 
+  Evasxx::Object *ret_o = Evasxx::Object::wrap (eo);
+
+  return Eflxx::CountedPtr <Evasxx::Object> (ret_o);
+}
+
+bool Part::setParam (const Edje_External_Param *param)
+{
+  return edje_object_part_external_param_set (_parent->obj (), _partname.c_str (), param);
 }
 
 /*const Evasxx::Object* Part::getObject ( const char* name )

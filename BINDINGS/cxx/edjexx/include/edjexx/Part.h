@@ -10,6 +10,9 @@
 
 #include <evasxx/Object.h>
 
+/* EFL */
+#include <Edje.h>
+
 using std::string;
 
 namespace Edjexx {
@@ -35,6 +38,11 @@ public:
   void unswallow( Evasxx::Object* );
 
   Eflxx::CountedPtr <Evasxx::Object> getSwallow ();
+
+  Eflxx::CountedPtr <Evasxx::Object> getExternalObject ();
+
+  // TODO: wrap Param?
+  bool setParam (const Edje_External_Param *param);
 
   //const Evasxx::Object* getObject ( const char* name );
 
