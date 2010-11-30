@@ -17,8 +17,9 @@
 
 import ecore
 
-from os import remove, path, getcwd, chdir
+from os import remove, path, getcwd, chdir, listdir
 from shutil import copyfile, rmtree
+from tempfile import mkdtemp
 
 
 class EdjeCC(object):
@@ -96,13 +97,14 @@ class EdjeDeCC(object):
 
     def _on_del(self, exe, event):
         if event.exit_code == 0:
-            orig_dir = getcwd()
-            copyfile("./generated_source.edc", edc)
-            remove("./generated_source.edc")
-            dir, file = path.split(edc)
-            for file in listdir(self._temp_dir):
-                copyfile(file, path.join(dir, file))
-            chdir(orig_dir)
+            gen_src = path.join(self._temp_dir, "generated_source.edc")
+            copyfile(gen_src, self.edc)
+            remove(gen_src)
+            work_dir, edc_file = path.split(self.edc)
+            for sfile in listdir(self._temp_dir):
+                nfile = path.join(work_dir, sfile)
+                sfile = path.join(self._temp_dir, sfile)
+                copyfile(sfile, nfile)
             rmtree(self._temp_dir)
             self._success(self, *self._args, **self._kargs)
         else:

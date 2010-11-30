@@ -176,7 +176,7 @@ class SwapFile(object):
         def decc_error(decc):
             fail_cb(self)
 
-        EdjeDeCC(self.__workfile, filepath, decc_ok, decc_error)
+        EdjeDeCC(self.__swapfile, filepath, decc_ok, decc_error)
 
     def close(self):
         if self.__filepath:
