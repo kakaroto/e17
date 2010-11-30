@@ -105,6 +105,7 @@ _populate_main(void *data, Eio_File *handler __UNUSED__, const Eina_File_Direct_
 
    obj = dt->objs->data;
    file = eina_stringshare_add(info->path);
+
    DBG("populate thumbnail %p with path '%s'", obj, file);
 
    dt->objs = eina_list_remove_list(dt->objs, dt->objs);
@@ -135,7 +136,6 @@ ephoto_directory_thumb_add(Evas_Object *parent, Ephoto_Entry *entry)
      }
 
    obj = ephoto_thumb_add(entry->ephoto, parent, NULL);
-   evas_object_size_hint_max_set(obj, 32, 32);
    EINA_SAFETY_ON_NULL_RETURN_VAL(obj, NULL);
 
    if (!dt)
