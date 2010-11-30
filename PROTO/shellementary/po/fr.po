@@ -6,10 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Shellementary\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-07-16 07:44+0400\n"
-"PO-Revision-Date: 2010-07-16 08:58+0400\n"
+"POT-Creation-Date: 2010-11-30 07:56+0400\n"
+"PO-Revision-Date: 2010-11-30 12:40+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: Enlightenment French Team <pourunmondesansgourou@gmail.com>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -36,7 +37,7 @@ msgstr "À propos de Shellementary"
 
 #: src/bin/shelm_about.c:34
 msgid "<b>Display dialogs from shell scripts</><br>Written as a zenity replacement, supports the same arguments<br><b>http://svn.enlightenment.org/svn/e/trunk/PROTO/shellementary</><br>Based on great Elementary toolkit by <b>raster</> and C programming language.<br><b>License:</> GNU General Public License v3"
-msgstr "<b>Affiche des boîtes de dialogue à partir de scripts shell</><br>Conçu comme alternative à zenity, supporte les mêmes arguments<br><b>http://svn.enlightenment.org/svn/e/trunk/PROTO/shellementary</><br>Basé sur la super boîte à outils Elementary par <b>raster</> et le langage de programmation C.<br><b>Licence :</> GNU General Public License v3"
+msgstr "<b>Affiche des boîtes de dialogue à partir de scripts shell</><br>Conçu comme alternative à Zenity, supporte les mêmes arguments<br><b>http://svn.enlightenment.org/svn/e/trunk/PROTO/shellementary</><br>Basé sur la super boîte à outils Elementary par <b>raster</> et le langage de programmation C.<br><b>Licence :</> GNU General Public License v3"
 
 #: src/bin/shelm_about.c:43
 msgid "<b>Author:</> quaker (quaker66@gmail.com)<br><br><b>Credits:</><br><b>Carsten Haitzler (raster)</> for Enlightenment DR17, great Elementary toolkit and help with developenment<br><b>Christopher Michael (devilhorns)</> for help with developenment<br>"
@@ -63,7 +64,7 @@ msgstr "Annuler"
 #: src/bin/shelm_dlg_scale.c:49
 #: src/bin/shelm_dlg_textinfo.c:86
 msgid "OK"
-msgstr "O.K."
+msgstr "OK"
 
 #: src/bin/shelm_dlg_list.c:12
 msgid "Select an item"
