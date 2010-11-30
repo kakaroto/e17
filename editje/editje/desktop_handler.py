@@ -42,6 +42,9 @@ class Handler(elementary.Layout):
         self._operation_stack_cb = op_stack_cb
         self._edit_grp = editable_grp
 
+        self.modifier_ctrl = False
+        self.modifier_shift = False
+
     @evas.decorators.del_callback
     def _on_del(self):
         if self._move_animator is not None:
@@ -54,6 +57,8 @@ class Handler(elementary.Layout):
         self._start = event.position.output.xy
         self._last = self._start
         self._move_animator = ecore.animator_add(self.__move_animator_do)
+        self._modifier_control = event.modifier_is_set("Control")
+        self._modifier_shift = event.modifier_is_set("Shift")
         self.down(*event.position.output)
         self.on_mouse_up_add(self.__mouse_up_cb)
 
@@ -61,6 +66,9 @@ class Handler(elementary.Layout):
         return
 
     def __move_animator_do(self):
+        self._modifier_control = self.evas.key_modifier_is_set("Control")
+        self._modifier_shift = self.evas.key_modifier_is_set("Shift")
+
         cur = self.evas.pointer_output_xy_get()
         if cur == self._last:
             return True
@@ -79,6 +87,10 @@ class Handler(elementary.Layout):
 
     def __mouse_up_cb(self, obj, event):
         self.on_mouse_up_del(self.__mouse_up_cb)
+
+        self._modifier_control = event.modifier_is_set("Control")
+        self._modifier_shift = event.modifier_is_set("Shift")
+
         sx, sy, sw, sh = self._desktop_scroller.region_get()
         dw = event.position.output[0] - self._start[0]
         dw += sx - self._start_region[0]

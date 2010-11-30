@@ -15,11 +15,12 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with Editje. If not, see <http://www.gnu.org/licenses/>.
 
+import math
+
 from desktop_handler import Handler
 from desktop_part_listener import PartListener
 from operation import Operation
 from elementary import cursors
-
 
 class PartHandler(Handler, PartListener):
     def __init__(self, editable_grp, desktop_scroller, theme_file,
@@ -56,6 +57,12 @@ class PartHandler(Handler, PartListener):
         self._edit_grp.part.name = part
         self._edit_grp.part.state.name = state
 
+    def _modifier_ctrl_adjust(self, dw, dh):
+        if self._modifier_control:
+            dw = (dw / 10) * 10
+            dh = (dh / 10) * 10
+        return (dw, dh)
+
 
 class PartHandler_Move(PartHandler):
     cursor = cursors.ELM_CURSOR_FLEUR
@@ -70,23 +77,42 @@ class PartHandler_Move(PartHandler):
             op_stack_cb, group)
         self.size = (10, 10)
 
+    def _modifier_shift_adjust(self, dw, dh):
+        if self._modifier_shift:
+            angle = math.atan2(dh, dw)
+            sin = abs(math.sin(angle))
+            sin45 = math.sin(math.radians(45))
+            adjust = int(round(math.degrees(angle) / 45)) % 2
+
+            if sin > sin45:
+                dw = math.copysign(dh * adjust, dw)
+            else:
+                dh = math.copysign(dw * adjust, dh)
+
+        return (dw, dh)
+
     def part_move(self, obj):
         self.center = obj.center
         self.show()
 
     def move(self, dw, dh, part_name=None, state_name=None,
              anim=None, time=None):
+
         if part_name and state_name:
             self._context_recall(part_name, state_name, anim, time)
 
         if self._part:
             x, y, w, h = self._geometry
+            dw, dh = self._modifier_ctrl_adjust(dw, dh)
+            dw, dh = self._modifier_shift_adjust(dw, dh)
             self._part.pos = (x + dw, y + dh)
 
     def up(self, dw, dh):
         if not self._part:
             return
 
+        dw, dh = self._modifier_ctrl_adjust(dw, dh)
+        dw, dh = self._modifier_shift_adjust(dw, dh)
         if (dw, dh) != (0, 0):
             op = Operation("part moving")
 
@@ -124,12 +150,14 @@ class PartHandler_T(PartHandler):
 
         if self._part:
             x, y, w, h = self._geometry
+            dw, dh = self._modifier_ctrl_adjust(dw, dh)
             self._part.geometry = (x, y + dh, w, h - dh)
 
     def up(self, dw, dh):
         if not self._part:
             return
 
+        dw, dh = self._modifier_ctrl_adjust(dw, dh)
         if dh != 0:
             op = Operation("part resizing (from top)")
 
@@ -150,6 +178,18 @@ class PartHandler_T(PartHandler):
 class PartHandler_TL(PartHandler):
     cursor = cursors.ELM_CURSOR_TOP_LEFT_CORNER
 
+    def _modifier_shift_adjust(self, dw, dh):
+        if self._modifier_shift:
+            x, y, w, h = self._geometry
+            aspect = float(w)/h
+            temp_dw = int(dh * aspect)
+            if temp_dw < dw:
+                dh = int(dw / aspect)
+                dw = int(dh * aspect)
+            else:
+                dw = temp_dw
+        return (dw, dh)
+
     def part_move(self, obj):
         self.show()
         self.bottom_right = obj.top_left
@@ -161,12 +201,16 @@ class PartHandler_TL(PartHandler):
 
         if self._part:
             x, y, w, h = self._geometry
+            dw, dh = self._modifier_ctrl_adjust(dw, dh)
+            dw, dh = self._modifier_shift_adjust(dw, dh)
             self._part.geometry = (x + dw, y + dh, w - dw, h - dh)
 
     def up(self, dw, dh):
         if not self._part:
             return
 
+        dw, dh = self._modifier_ctrl_adjust(dw, dh)
+        dw, dh = self._modifier_shift_adjust(dw, dh)
         if (dw, dh) != (0, 0):
             op = Operation("part resizing (from top-left)")
 
@@ -187,6 +231,20 @@ class PartHandler_TL(PartHandler):
 class PartHandler_TR(PartHandler):
     cursor = cursors.ELM_CURSOR_TOP_RIGHT_CORNER
 
+    def _modifier_shift_adjust(self, dw, dh):
+        if self._modifier_shift:
+            dh = - dh
+            x, y, w, h = self._geometry
+            aspect = float(w)/h
+            temp_dw = int(dh * aspect)
+            if temp_dw > dw:
+                dh = int(dw / aspect)
+                dw = int(dh * aspect)
+            else:
+                dw = temp_dw
+            dh = - dh
+        return (dw, dh)
+
     def part_move(self, obj):
         self.show()
         self.bottom_left = obj.top_right
@@ -198,12 +256,16 @@ class PartHandler_TR(PartHandler):
 
         if self._part:
             x, y, w, h = self._geometry
+            dw, dh = self._modifier_ctrl_adjust(dw, dh)
+            dw, dh = self._modifier_shift_adjust(dw, dh)
             self._part.geometry = (x, y + dh, w + dw, h - dh)
 
     def up(self, dw, dh):
         if not self._part:
             return
 
+        dw, dh = self._modifier_ctrl_adjust(dw, dh)
+        dw, dh = self._modifier_shift_adjust(dw, dh)
         if (dw, dh) != (0, 0):
             op = Operation("part resizing (from top-left)")
 
@@ -241,12 +303,14 @@ class PartHandler_B(PartHandler):
 
         if self._part:
             x, y, w, h = self._geometry
+            dw, dh = self._modifier_ctrl_adjust(dw, dh)
             self._part.geometry = (x, y, w, h + dh)
 
     def up(self, dw, dh):
         if not self._part:
             return
 
+        dw, dh = self._modifier_ctrl_adjust(dw, dh)
         if dh != 0:
             op = Operation("part resizing (from bottom)")
 
@@ -267,6 +331,18 @@ class PartHandler_B(PartHandler):
 class PartHandler_BR(PartHandler):
     cursor = cursors.ELM_CURSOR_BOTTOM_RIGHT_CORNER
 
+    def _modifier_shift_adjust(self, dw, dh):
+        if self._modifier_shift:
+            x, y, w, h = self._geometry
+            aspect = float(w)/h
+            temp_dw = int(dh * aspect)
+            if temp_dw > dw:
+                dh = int(dw / aspect)
+                dw = int(dh * aspect)
+            else:
+                dw = temp_dw
+        return (dw, dh)
+
     def part_move(self, obj):
         self.show()
         self.top_left = obj.bottom_right
@@ -278,12 +354,16 @@ class PartHandler_BR(PartHandler):
 
         if self._part:
             x, y, w, h = self._geometry
+            dw, dh = self._modifier_ctrl_adjust(dw, dh)
+            dw, dh = self._modifier_shift_adjust(dw, dh)
             self._part.geometry = (x, y, w + dw, h + dh)
 
     def up(self, dw, dh):
         if not self._part:
             return
 
+        dw, dh = self._modifier_ctrl_adjust(dw, dh)
+        dw, dh = self._modifier_shift_adjust(dw, dh)
         if (dw, dh) != (0, 0):
             op = Operation("part resizing (from bottom-right)")
 
@@ -304,6 +384,20 @@ class PartHandler_BR(PartHandler):
 class PartHandler_BL(PartHandler):
     cursor = cursors.ELM_CURSOR_BOTTOM_LEFT_CORNER
 
+    def _modifier_shift_adjust(self, dw, dh):
+        if self._modifier_shift:
+            dw = - dw
+            x, y, w, h = self._geometry
+            aspect = float(w)/h
+            temp_dw = int(dh * aspect)
+            if temp_dw > dw:
+                dh = int(dw / aspect)
+                dw = int(dh * aspect)
+            else:
+                dw = temp_dw
+            dw = - dw
+        return (dw, dh)
+
     def part_move(self, obj):
         self.show()
         self.top_right = obj.bottom_left
@@ -315,12 +409,16 @@ class PartHandler_BL(PartHandler):
 
         if self._part:
             x, y, w, h = self._geometry
+            dw, dh = self._modifier_ctrl_adjust(dw, dh)
+            dw, dh = self._modifier_shift_adjust(dw, dh)
             self._part.geometry = (x + dw, y, w - dw, h + dh)
 
     def up(self, dw, dh):
         if not self._part:
             return
 
+        dw, dh = self._modifier_ctrl_adjust(dw, dh)
+        dw, dh = self._modifier_shift_adjust(dw, dh)
         if (dw, dh) != (0, 0):
             op = Operation("part resizing (from bottom-left)")
 
@@ -358,12 +456,14 @@ class PartHandler_L(PartHandler):
 
         if self._part:
             x, y, w, h = self._geometry
+            dw, dh = self._modifier_ctrl_adjust(dw, dh)
             self._part.geometry = (x + dw, y, w - dw, h)
 
     def up(self, dw, dh):
         if not self._part:
             return
 
+        dw, dh = self._modifier_ctrl_adjust(dw, dh)
         if dw != 0:
             op = Operation("part resizing (from left)")
 
@@ -398,12 +498,14 @@ class PartHandler_R(PartHandler):
 
         if self._part:
             x, y, w, h = self._geometry
+            dw, dh = self._modifier_ctrl_adjust(dw, dh)
             self._part.geometry = (x, y, w + dw, h)
 
     def up(self, dw, dh):
         if not self._part:
             return
 
+        dw, dh = self._modifier_ctrl_adjust(dw, dh)
         if dw != 0:
             op = Operation("part resizing (from right)")
 
