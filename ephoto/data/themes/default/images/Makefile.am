@@ -10,5 +10,6 @@ up-256.png \
 up-512.png \
 directory-128.png \
 directory-256.png \
-directory-512.png
+directory-512.png \
+raise.png
 

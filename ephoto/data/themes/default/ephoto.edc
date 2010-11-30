@@ -3,6 +3,11 @@ externals {
 }
 
 collections {
+   images {
+      image: "up-128.png" COMP;
+      image: "directory-128.png" COMP;
+      image: "raise.png" COMP;
+   }
    group { name: "elm/layout/ephoto/orient";
       parts {
          part { name: "elm.swallow.content";
@@ -121,6 +126,187 @@ collections {
                action:  STATE_SET "flip_vert_90" 0.0;
                target:  "elm.swallow.content";
             }
+         }
+      }
+   }
+   group { name: "ephoto,thumb,grid";
+      parts {
+         part { name: "ephoto.swallow.content.thumb";
+            type: SWALLOW;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               rel1.relative: 0.0 0.0;
+               rel1.offset: 0 0;
+               rel2.relative: 1.0 1.0;
+               rel2.offset: -1 -1;
+            }
+         }
+         part { name: "overlay";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               min: 1 40;
+               max: 9999 40;
+               fixed: 0 1;
+               state: "default" 0.0;
+               rel1.to: "ephoto.swallow.content.thumb";
+               rel1.relative: 0.0 0.0;
+               rel1.offset: 5 45;
+               rel2.to: "ephoto.swallow.content.thumb";
+               rel2.relative: 1.0 0.0;
+               rel2.offset: -5 0;
+               color: 0 0 0 120;
+            }
+            description {
+               state: "lowered" 0.0;
+               rel1.to: "ephoto.swallow.content.thumb";
+               rel1.relative: 0.0 0.0;
+               rel1.offset: 5 5;
+               rel2.to: "ephoto.swallow.content.thumb";
+               rel2.relative: 1.0 1.0;
+               rel2.offset: -5 -5;
+               color: 0 0 0 120;
+            }
+         }
+         part { name: "ephoto.swallow.content.dir";
+            type: SWALLOW;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               visible: 0;
+               rel1.to: "ephoto.swallow.content.thumb";
+               rel1.relative: 0.0 0.0;
+               rel1.offset: 0 0;
+               rel1.to: "ephoto.swallow.content.thumb";
+               rel2.relative: 1.0 1.0;
+               rel2.offset: -1 -1;
+            }
+            description {
+               state: "lowered" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part { name: "up";
+            type: IMAGE;
+            mouse_events: 1;
+            description
+            {
+               min: 32 32;
+               max: 32 32;
+               fixed: 1 1;
+               state: "default" 0.0;
+               rel1.to: "overlay";
+               rel1.relative: 0.0 0.0;
+               rel1.offset: 20 20;
+               rel2.to: "overlay";
+               rel2.relative: 0.0 0.0;
+               rel2.offset: 20 20;
+               image.normal: "up-128.png";
+            }
+            description {
+               state: "lowered" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+         }
+         part { name: "directory";
+            type: IMAGE;
+            mouse_events: 1;
+            description
+            {
+               min: 32 32;
+               max: 32 32;
+               fixed: 1 1;
+               state: "default" 0.0;
+               visible: 1;
+               rel1.to: "overlay";
+               rel1.relative: 1.0 0.0;
+               rel1.offset: -20 20;
+               rel2.to: "overlay";
+               rel2.relative: 1.0 0.0;
+               rel2.offset: -20 20;
+               image.normal: "directory-128.png";
+            }
+            description
+            {
+               state: "lowered" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+         }
+         part { name: "raise";
+            type: IMAGE;
+            mouse_events: 1;
+            description
+            {
+               min: 32 32;
+               max: 32 32;
+               fixed: 1 1;
+               visible: 0;
+               state: "default" 0.0;
+               rel1.to: "overlay";
+               rel1.relative: 1.0 0.0;
+               rel1.offset: -20 20;
+               rel2.to: "overlay";
+               rel2.relative: 1.0 0.0;
+               rel2.offset: -20 20;
+               image.normal: "raise.png";
+            }
+            description
+            {
+               state: "lowered" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+      }
+      programs {
+         program { name: "up_clicked";
+            source: "up";
+            signal: "mouse,up,*";
+            action: SIGNAL_EMIT "ephoto.signal.up" "ephoto";
+         }
+         program { name: "dir_clicked";
+            source: "directory";
+            signal: "mouse,up,*";
+            action: SIGNAL_EMIT "ephoto.signal.dir" "ephoto";
+            after: "lower2";
+         }
+         program { name: "raise_clicked";
+            source: "raise";
+            signal: "mouse,up,*";
+            action: SIGNAL_EMIT "ephoto.signal.raise" "ephoto";
+            after: "raise2";
+         }
+         program { name: "lower";
+            action: STATE_SET "lowered" 0.0;
+            transition: ACCELERATE 0.6;
+            target: "overlay";
+            after: "lower3";
+         }
+         program { name: "lower2";
+            action: STATE_SET "lowered" 0.0;
+            target: "directory";
+            target: "raise";
+            after: "lower";
+         }
+         program { name: "lower3";
+            action: STATE_SET "lowered" 0.0;
+            target: "ephoto.swallow.content.dir";
+          }
+         program { name: "raise";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.6;
+            target: "overlay";
+         }
+         program { name: "raise2";
+            action: STATE_SET "default" 0.0;
+            target: "directory";
+            target: "raise";
+            target: "ephoto.swallow.content.dir";
+            after: "raise";
          }
       }
    }

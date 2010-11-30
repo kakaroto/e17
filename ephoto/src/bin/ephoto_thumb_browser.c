@@ -17,10 +17,13 @@ struct _Ephoto_Thumb_Browser
    Evas_Object *edje;
    Evas_Object *fsel;
    Evas_Object *grid;
+   Evas_Object *dir_grid;
    Evas_Object *toolbar;
+   Evas_Object *overlay;
    Eio_File *ls;
    Eina_List *todo_items;
    Eina_List *grid_items;
+   Eina_List *dir_grid_items;
    Eina_List *handlers;
    struct {
       Elm_Toolbar_Item *zoom_in;
@@ -46,6 +49,8 @@ _grid_items_free(Ephoto_Thumb_Browser *tb)
 {
    eina_list_free(tb->grid_items);
    tb->grid_items = NULL;
+   eina_list_free(tb->dir_grid_items);
+   tb->dir_grid_items = NULL;
 }
 
 static Ephoto_Entry *
@@ -136,16 +141,6 @@ static const Elm_Gengrid_Item_Class _ephoto_thumb_dir_class = {
   }
 };
 
-static const Elm_Gengrid_Item_Class _ephoto_thumb_up_class = {
-  "up",
-  {
-    _ephoto_thumb_item_label_get,
-    NULL,
-    NULL,
-    _ephoto_thumb_item_del
-  }
-};
-
 static const Elm_Gengrid_Item_Class _ephoto_thumb_file_class = {
   "thumb",
   {
@@ -177,38 +172,50 @@ _entry_item_add(Ephoto_Thumb_Browser *tb, Ephoto_Entry *e)
 {
    const Elm_Gengrid_Item_Class *ic;
    int near_cmp;
+   Evas_Object *grid_of_choice;
    Elm_Gengrid_Item *near_item = NULL;
-   Eina_List *near_node = NULL;
+   Eina_List *near_node = NULL, *list_of_choice = NULL;
    
+   
+   if (e->is_dir)
+     {
+        ic = &_ephoto_thumb_dir_class;
+        grid_of_choice = tb->dir_grid;
+        list_of_choice = tb->dir_grid_items;
+     }
+   else
+     {
+        ic = &_ephoto_thumb_file_class;
+        grid_of_choice = tb->grid;
+        list_of_choice = tb->grid_items;
+     }
+
    near_node = eina_list_search_sorted_near_list
-     (tb->grid_items, _entry_cmp, e, &near_cmp);
+     (list_of_choice, _entry_cmp, e, &near_cmp);
 
    if (near_node)
      near_item = near_node->data;
 
-   if (e->is_dir) ic = &_ephoto_thumb_dir_class;
-   else           ic = &_ephoto_thumb_file_class;
-
    if (!near_item)
      {
-        e->item = elm_gengrid_item_append(tb->grid, ic, e, NULL, NULL);
-        tb->grid_items = eina_list_append(tb->grid_items, e->item);
+        e->item = elm_gengrid_item_append(grid_of_choice, ic, e, NULL, NULL);
+        list_of_choice = eina_list_append(list_of_choice, e->item);
      }
    else
      {
         if (near_cmp < 0)
           {
              e->item = elm_gengrid_item_insert_after
-                (tb->grid, ic, e, near_item, NULL, NULL);
-             tb->grid_items = eina_list_append_relative
-                (tb->grid_items, e->item, near_item);
+                (grid_of_choice, ic, e, near_item, NULL, NULL);
+             list_of_choice = eina_list_append_relative
+                (list_of_choice, e->item, near_item);
           }
         else
           {
              e->item = elm_gengrid_item_insert_before
-                (tb->grid, ic, e, near_item, NULL, NULL);
-             tb->grid_items = eina_list_prepend_relative
-                (tb->grid_items, e->item, near_item);
+                (grid_of_choice, ic, e, near_item, NULL, NULL);
+             list_of_choice = eina_list_prepend_relative
+                (list_of_choice, e->item, near_item);
           }
      }
 
@@ -222,29 +229,6 @@ _entry_item_add(Ephoto_Thumb_Browser *tb, Ephoto_Entry *e)
      }
 }
 
-static void
-_up_item_add_if_required(Ephoto_Thumb_Browser *tb)
-{
-   Ephoto_Entry *entry;
-   char *parent_dir;
-
-   if ((elm_gengrid_first_item_get(tb->grid)) ||
-       (strcmp(tb->ephoto->config->directory, "/") == 0))
-     return;
-
-   parent_dir = ecore_file_dir_get(tb->ephoto->config->directory);
-   if (!parent_dir) return;
-
-   entry = ephoto_entry_new(tb->ephoto, parent_dir, PARENT_DIR);
-   free(parent_dir);
-   EINA_SAFETY_ON_NULL_RETURN(entry);
-   entry->is_up = EINA_TRUE;
-   entry->is_dir = EINA_TRUE;
-   entry->item = elm_gengrid_item_append
-     (tb->grid, &_ephoto_thumb_up_class, entry, NULL, NULL);
-   /* does not go into entries as it is always the first - no sort! */
-}
-
 static Eina_Bool
 _todo_items_process(void *data)
 {
@@ -254,8 +238,6 @@ _todo_items_process(void *data)
 
    if ((tb->ls) && (eina_list_count(tb->todo_items) < TODO_ITEM_MIN_BATCH))
      return EINA_TRUE;
-
-   _up_item_add_if_required(tb);
 
    tb->animator.todo_items = NULL;
 
@@ -309,6 +291,7 @@ _zoom_set(Ephoto_Thumb_Browser *tb, int zoom)
 
    ephoto_thumb_size_set(tb->ephoto, zoom);
    elm_gengrid_item_size_set(tb->grid, zoom, zoom);
+   elm_gengrid_item_size_set(tb->dir_grid, zoom, zoom);   
 
    elm_toolbar_item_disabled_set(tb->action.zoom_out, zoom == ZOOM_MIN);
    elm_toolbar_item_disabled_set(tb->action.zoom_in, zoom == ZOOM_MAX);
@@ -447,6 +430,7 @@ _ephoto_thumb_populate_start(void *data, int type __UNUSED__, void *event __UNUS
    _todo_items_free(tb);
    _grid_items_free(tb);
    elm_gengrid_clear(tb->grid);
+   elm_gengrid_clear(tb->dir_grid);
    elm_fileselector_entry_path_set(tb->fsel, tb->ephoto->config->directory);
 
    edje_object_signal_emit(tb->edje, "populate,start", "ephoto");
@@ -465,8 +449,6 @@ _ephoto_thumb_populate_end(void *data, int type __UNUSED__, void *event __UNUSED
         free(tb);
         return ECORE_CALLBACK_PASS_ON;
      }
-
-   if (!tb->animator.todo_items) _up_item_add_if_required(tb);
 
    edje_object_signal_emit(tb->edje, "populate,stop", "ephoto");
 
@@ -497,6 +479,26 @@ _ephoto_thumb_entry_create(void *data, int type __UNUSED__, void *event)
      tb->animator.todo_items = ecore_animator_add(_todo_items_process, tb);
 
    return ECORE_CALLBACK_PASS_ON;
+}
+
+static void
+_ephoto_up_clicked(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+   Ephoto_Thumb_Browser *tb = data;
+   char *parent_dir;
+
+   parent_dir = ecore_file_dir_get(tb->ephoto->config->directory);
+   if (!parent_dir)
+     return;
+   ephoto_directory_set(tb->ephoto, parent_dir);
+}
+
+static void
+_ephoto_dir_clicked(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+   Ephoto_Thumb_Browser *tb = data;
+
+   evas_object_show(tb->dir_grid);
 }
 
 Evas_Object *
@@ -558,26 +560,52 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
    evas_object_show(tb->fsel);
    elm_layout_box_append(layout, "elm.box.content", tb->fsel);
 
-   tb->grid = elm_gengrid_add(layout);
-   EINA_SAFETY_ON_NULL_GOTO(tb->grid, error);
+   tb->overlay = elm_layout_add(layout);
+   elm_layout_file_set
+      (tb->overlay, PACKAGE_DATA_DIR "/themes/default/ephoto.edj", 
+                                            "ephoto,thumb,grid");
    evas_object_size_hint_weight_set
-     (tb->grid, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(tb->grid, EVAS_HINT_FILL, EVAS_HINT_FILL);
+     (tb->overlay, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set
+     (tb->overlay, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   edje_object_signal_callback_add
+     (elm_layout_edje_get(tb->overlay), "ephoto.signal.up", "ephoto", 
+                      _ephoto_up_clicked, tb);
+   edje_object_signal_callback_add
+     (elm_layout_edje_get(tb->overlay), "ephoto.signal.dir", "ephoto", 
+                      _ephoto_dir_clicked, tb);
+   evas_object_show(tb->overlay);
+   elm_layout_box_append(tb->layout, "elm.box.content", tb->overlay);
 
+   tb->grid = elm_gengrid_add(tb->overlay);
+   EINA_SAFETY_ON_NULL_GOTO(tb->grid, error);
    elm_gengrid_align_set(tb->grid, 0.5, 0.5);
    elm_gengrid_bounce_set(tb->grid, EINA_FALSE, EINA_TRUE);
    evas_object_size_hint_align_set
      (tb->grid, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set
      (tb->grid, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-
    evas_object_smart_callback_add
      (tb->grid, "selected", _ephoto_thumb_selected, tb);
-
    _zoom_set(tb, tb->ephoto->config->thumb_size);
-
    evas_object_show(tb->grid);
-   elm_layout_box_append(tb->layout, "elm.box.content", tb->grid);
+   elm_layout_content_set
+     (tb->overlay, "ephoto.swallow.content.thumb", tb->grid);
+
+   tb->dir_grid = elm_gengrid_add(tb->overlay);
+   EINA_SAFETY_ON_NULL_GOTO(tb->dir_grid, error);
+   elm_gengrid_align_set(tb->dir_grid, 0.5, 0.5);
+   elm_gengrid_bounce_set(tb->dir_grid, EINA_FALSE, EINA_TRUE);
+   evas_object_size_hint_align_set
+     (tb->dir_grid, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set
+     (tb->dir_grid, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_smart_callback_add
+     (tb->dir_grid, "selected", _ephoto_thumb_selected, tb);
+   _zoom_set(tb, tb->ephoto->config->thumb_size);
+   evas_object_show(tb->dir_grid);
+   elm_layout_content_set
+     (tb->overlay, "ephoto.swallow.content.dir", tb->dir_grid);
 
    tb->handlers = eina_list_append
       (tb->handlers, ecore_event_handler_add
