@@ -589,13 +589,21 @@ uri_sanitize(const char *uri) {
    tmp = strstr(uri, "://");
    if (!tmp || (tmp == uri) || (tmp > (uri + 15)))
      {
+        char *new_uri = NULL;
         if (ecore_file_exists(uri))
-          schema = "file";
+          {
+             schema = "file";
+             new_uri = ecore_file_realpath(uri);
+          }
         else
           schema = "http";
 
-        if (asprintf(&fixed_uri, "%s://%s", schema, uri) > 0)
-          return fixed_uri;
+        if (asprintf(&fixed_uri, "%s://%s", schema, new_uri ? new_uri : uri) > 0)
+          {
+             free(new_uri);
+             return fixed_uri;
+          }
+        free(new_uri);
      }
    else
      return strdup(uri);
