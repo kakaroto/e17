@@ -52,6 +52,8 @@ static Evas_Object *more_icon_get(void *data, Evas_Object *obj, const char *part
 static Eina_Bool more_state_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
 static void more_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__);
 
+static void proxy_config_home_page_set(Config *config, const char *home_page);
+
 typedef enum {
    ITEM_TYPE_LAST,
    ITEM_TYPE_STATIC_FOLDER,
@@ -201,7 +203,7 @@ static More_Menu_Item more_menu_config[] =
              .type = CONFIG_TYPE_STRING,
              .conf = EVE_CONFIG_HOME_PAGE,
              .conf_get = config_home_page_get,
-             .conf_set = config_home_page_set,
+             .conf_set = proxy_config_home_page_set,
            }}, NULL, ITEM_FLAG_ARROW },
          { ITEM_TYPE_LAST, NULL, NULL, NULL, ITEM_FLAG_NONE },
      }, NULL, ITEM_FLAG_ARROW },
@@ -402,6 +404,14 @@ static const Elm_Genlist_Item_Class glic_page = {
     },
    .item_style = "double_label/ewebkit"
 };
+
+static void
+proxy_config_home_page_set(Config *config, const char *home_page)
+{
+   char *tmp_uri = uri_sanitize(home_page);
+   config_home_page_set(config, tmp_uri);
+   free(tmp_uri);
+}
 
 static Eina_List *
 _eina_hash_sorted_keys_get(Eina_Hash *hash, Eina_Compare_Cb compare_func)
@@ -1085,7 +1095,9 @@ on_view_popup_delete(void *data, Evas_Object *view, void *event_info)
 static More_Menu_Item *
 more_menu_home_page_current_set(Browser_Window *win, More_Menu_Item *mmi __UNUSED__)
 {
-   config_home_page_set(config, ewk_view_uri_get(win->current_view));
+   char *tmp_uri = uri_sanitize(ewk_view_uri_get(win->current_view));
+   config_home_page_set(config, tmp_uri);
+   free(tmp_uri);
    return NULL;
 }
 
