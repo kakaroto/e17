@@ -822,6 +822,11 @@ gen_server_headers(Azy_Server_Module *s)
 
    EL(0, "#include <Azy.h>");
    EL(0, "#include \"%s%sCommon.h\"", azy->name, (azy->name && azy->name[0]) ? "_" : "");
+   if (s->stub_header)
+     {
+        EL(0, "%s", s->stub_header);
+        NL;
+     }
    NL;
 
    if (s->doc)
@@ -838,14 +843,19 @@ gen_server_headers(Azy_Server_Module *s)
       s->name);
    NL;
 
-   EL(0,
-      "/** Utility method that returns size of the module private data.");
+   EL(0, "struct _%s%sModule", azy->name, s->name);
+   EL(0, "{");
+   EL(0, "%s", s->stub_attrs);
+   EL(0, "};");
+   NL;
+
+   EL(0, "#define %s%s_module_data_get(Azy_Server_Module) (%s%sModule*)azy_server_module_data_get((Azy_Server_Module))",
+      azy->name, s->name);
+   EL(0, "/** Utility method that returns size of the module private data.");
    EL(0, " * ");
-   EL(0, " * @return Size of the @ref %s%sModule struct.",
-      azy->name,
-      s->name);
+   EL(0, " * @return Size of the @ref %s%sModule struct.", azy->name, s->name);
    EL(0, " */ ");
-   EL(0, "int __%s%sModule_data_size_get(void);", azy->name, s->name);
+   EL(0, "inline int %s%sModule_data_size_get(void);", azy->name, s->name);
    NL;
 
    if (s->stub_init)
@@ -1153,7 +1163,7 @@ gen_server_impl(Azy_Server_Module *s)
    GET_NAME(fallback);
    EL(0, ");");
    
-   EL(1, "azy_server_module_size_set(__module, __%s%sModule_data_size_get());", azy->name, s->name);
+   EL(1, "azy_server_module_size_set(__module, %s%sModule_data_size_get());", azy->name, s->name);
    EINA_LIST_FOREACH(s->methods, j, method)
      {
         EL(1, "__method = azy_server_module_method_new(\"%s\", __method_%s);", method->name, method->name);
@@ -1180,13 +1190,7 @@ gen_server_impl(Azy_Server_Module *s)
         NL;
      }
 
-   EL(0, "struct _%s%sModule", azy->name, s->name);
-   EL(0, "{");
-   STUB(s->stub_attrs);
-   EL(0, "};");
-   NL;
-
-   EL(0, "int __%s%sModule_data_size_get(void)", azy->name, s->name);
+   EL(0, "inline int %s%sModule_data_size_get(void)", azy->name, s->name);
    EL(0, "{");
    EL(1, "return sizeof(%s%sModule);", azy->name, s->name);
    EL(0, "}");
