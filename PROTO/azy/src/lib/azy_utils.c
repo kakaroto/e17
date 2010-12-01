@@ -98,10 +98,10 @@ azy_memstr(const unsigned char *big,
 {
    unsigned char *x = (unsigned char *)big;
 
-   if ((!big) || (!small) || (big_len < 1) || (small_len < 1))
+   if ((!big) || (!small) || (big_len < 1) || (small_len < 1) || (big_len < small_len))
      return NULL;
 
-   for (; (unsigned int)(x - big) <= (unsigned int)(big_len - small_len + 1); x++)
+   for (; big_len >= small_len; x++, big_len--)
      if (!memcmp(x, small, small_len))
        return x;
    return NULL;
