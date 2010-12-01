@@ -32,28 +32,6 @@ _check_err(Azy_Content *err)
    return EINA_TRUE;
 }
 
-static Eina_Error
-_TTest1_getAll_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
-{
-   static int x;
-   TAllTypes *ret;
-
-   x++;
- //  printf("#%i: Success? %s!\n", x, ret ? "YES" : "NO");
-   if (azy_content_error_is_set(content))
-     {
-        printf("%i: Error encountered: %s\n", x, azy_content_error_message_get(content));
-        return azy_content_error_code_get(content);
-     }
-
-   ret = azy_content_return_get(content);
-
-#ifndef HAVE_MYSQL
-   if (x == (NUM_CLIENTS * NUM_CLIENTS))
-     ecore_main_loop_quit();
-#endif
-   return AZY_ERROR_NONE;
-}
 
 #ifdef HAVE_MYSQL
 static Eina_Error
@@ -69,6 +47,28 @@ _TSQL_test_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
         return azy_content_error_code_get(content);
      }
    //printf("#%i: Success? %s!\n", x, azy_content_return_get(content) ? "YES" : "NO");
+
+   if (x == (NUM_CLIENTS * NUM_CLIENTS))
+     ecore_main_loop_quit();
+   return AZY_ERROR_NONE;
+}
+#else
+
+static Eina_Error
+_TTest1_getAll_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
+{
+   static int x;
+   TAllTypes *ret;
+
+   x++;
+   if (azy_content_error_is_set(content))
+     {
+        printf("%i: Error encountered: %s\n", x, azy_content_error_message_get(content));
+        return azy_content_error_code_get(content);
+     }
+
+   ret = azy_content_return_get(content);
+ //  printf("#%i: Success? %s!\n", x, ret ? "YES" : "NO");
 
    if (x == (NUM_CLIENTS * NUM_CLIENTS))
      ecore_main_loop_quit();
@@ -98,15 +98,16 @@ _connected(Azy_Client *cli __UNUSED__, int type __UNUSED__, Azy_Client *ev)
         Azy_Client_Call_Id ret;
         if (!azy_client_connected_get(ev))
           goto error;
-        ret = TTest1_getAll(ev, err, NULL);
-        if (_check_err(err) || (!ret))
-          goto error;
-        azy_client_callback_set(ev, ret, _TTest1_getAll_ret);
 #ifdef HAVE_MYSQL
         ret = TSQL_test(ev, err, NULL);
         if (_check_err(err) || (!ret))
           goto error;
         azy_client_callback_set(ev, ret, _TSQL_test_ret);
+#else
+        ret = TTest1_getAll(ev, err, NULL);
+        if (_check_err(err) || (!ret))
+          goto error;
+        azy_client_callback_set(ev, ret, _TTest1_getAll_ret);
 #endif
      }
    azy_content_free(err);
