@@ -337,7 +337,6 @@ azy_server_client_send(Azy_Net      *net,
 
 error:
    eina_strbuf_free(header);
-   free(send);
    return EINA_TRUE;
 }
 
