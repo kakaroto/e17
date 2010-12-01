@@ -13,7 +13,7 @@ static Eina_Bool _azy_client_recv_timer(Azy_Client_Handler_Data *handler_data);
 
 static void _azy_client_handler_call_free(Azy_Client *client, Azy_Content *content)
 {
-   void (*callback)(void *);
+   Ecore_Cb callback;
 
    if (client)
      {
@@ -82,6 +82,7 @@ _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
    INFO("Running RPC for %s", handler_data->method);
    handler_data->recv->transport = azy_events_net_transport_get(azy_net_header_get(handler_data->recv, "content-type"));
    content = azy_content_new(handler_data->method);
+
    EINA_SAFETY_ON_NULL_RETURN_VAL(content, ECORE_CALLBACK_RENEW);
 
    content->data = handler_data->content_data;
@@ -116,7 +117,7 @@ _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
      {
         Eina_Error ret;
         ret = cb(client, content);
-
+        
         ecore_event_add(AZY_CLIENT_RESULT, &ret, (Ecore_End_Cb)_azy_event_handler_fake_free, NULL);
         eina_hash_del_by_key(client->callbacks, &content->id);
         _azy_client_handler_call_free(client, content);
@@ -167,24 +168,29 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
    int offset = 0;
    void *data = (ev) ? ev->data : NULL;
    int len = (ev) ? ev->size : 0;
+   static unsigned int recursive;
    static unsigned char *overflow;
    static long long int overflow_length;
    static Azy_Client *client;
 
    if (!AZY_MAGIC_CHECK(handler_data, AZY_MAGIC_CLIENT_DATA_HANDLER))
      return ECORE_CALLBACK_RENEW;
+
    EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data->client, ECORE_CALLBACK_RENEW);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data->client->net, ECORE_CALLBACK_RENEW);
 
-   DBG("(handler_data=%p, method='%s', ev=%p, data=%p)", handler_data, (handler_data) ? handler_data->method : NULL, ev, (ev) ? ev->data : NULL);
-   DBG("(client=%p, server->client=%p)", handler_data->client, (ev) ? ecore_con_server_data_get(ev->server) : NULL);
-
-
+   if (!handler_data->client->net)
+     {
+        _azy_client_handler_data_free(handler_data);
+        return ECORE_CALLBACK_RENEW;
+     }
    if (handler_data->client != (Azy_Client*)((ev) ? ecore_con_server_data_get(ev->server) : client))
      {
         DBG("Ignoring callback due to pointer mismatch");
         return ECORE_CALLBACK_PASS_ON;
      }
+   DBG("(handler_data=%p, method='%s', ev=%p, data=%p)", handler_data, (handler_data) ? handler_data->method : NULL, ev, (ev) ? ev->data : NULL);
+   DBG("(client=%p, server->client=%p)", handler_data->client, (ev) ? ecore_con_server_data_get(ev->server) : NULL);
+
 
 #ifdef ISCOMFITOR
    if (data)
@@ -320,23 +326,27 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
    if (overflow && client && client->conns && (handler_data != client->conns->data))
      {
         Azy_Client_Handler_Data *dh;
-        char *method;
-        size_t mlen;
+        const char *method;
+        long long int prev_len;
+        unsigned int id;
 
         dh = client->conns->data;
         if (dh->recv)
           return ECORE_CALLBACK_RENEW;
 
-        mlen = strlen(dh->method);
-        method = calloc(mlen + 1, sizeof(char));
-        snprintf(method, mlen, "%s", dh->method);
-        WARN("%s: Calling %s again to try using %lli bytes of overflow data...", method, __PRETTY_FUNCTION__, overflow_length);
+        id = dh->id;
+        /* ref here in case recursive calls free dh to avoid segv */
+        method = eina_stringshare_ref(dh->method);
+        WARN("%s:%u (%u): Calling %s recursively to try using %lli bytes of overflow data...", method, id, recursive, __PRETTY_FUNCTION__, overflow_length);
+        recursive++;
+        prev_len = overflow_length;
         _azy_client_handler_data(dh, type, NULL);
+        recursive--;
         if (!overflow)
-          WARN("%s: Overflow has been successfully used!", method);
+          WARN("%s:%u (%u): Overflow has been successfully used (%lli bytes)!", method, id, recursive, prev_len - overflow_length);
         else
-          WARN("%s: Overflow could not be used, storing %lli bytes for next event.", method, overflow_length);
-        free(method);
+          WARN("%s:%u (%u): Overflow could not be entirely used (%lli bytes gone), storing %lli bytes for next event.", method, id, recursive, prev_len - overflow_length, overflow_length);
+        eina_stringshare_del(method);
      }
 
    return ECORE_CALLBACK_RENEW;

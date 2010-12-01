@@ -750,7 +750,7 @@ _azy_server_client_handler_del(Azy_Server_Client         *client,
                                 Ecore_Con_Event_Client_Del *ev)
 {
    DBG("(client=%p, server->client=%p)", client, (ev) ? ecore_con_client_data_get(ev->client) : NULL);
-   if (client != ecore_con_client_data_get(ev->client))
+   if (ev && (client != ecore_con_client_data_get(ev->client)))
      {
         DBG("Ignoring callback due to pointer mismatch");
         return ECORE_CALLBACK_PASS_ON;
@@ -773,7 +773,7 @@ azy_server_client_handler_add(Azy_Server                *server,
                                Ecore_Con_Event_Client_Add *ev)
 {
    DBG("(server=%p, server->client=%p)", server, (ev) ? ecore_con_server_data_get(ecore_con_client_server_get(ev->client)) : NULL);
-   if (server != ecore_con_server_data_get(ecore_con_client_server_get(ev->client)))
+   if (ev && (server != ecore_con_server_data_get(ecore_con_client_server_get(ev->client))))
      {
         DBG("Ignoring callback due to pointer mismatch");
         return ECORE_CALLBACK_PASS_ON;

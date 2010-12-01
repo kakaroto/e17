@@ -12,7 +12,7 @@
 #include "azy_private.h"
 
 #define AZY_SKIP_BLANK(PTR) \
-  if (PTR && len && isspace(*(PTR)))  \
+  if (PTR && (len > 0) && isspace(*(PTR)))  \
     do                       \
       {                      \
          (PTR)++;              \
@@ -196,18 +196,19 @@ azy_events_header_parse(Azy_Net      *net,
      return EINA_TRUE;
    EINA_SAFETY_ON_TRUE_RETURN_VAL((!net->buffer) && (!data), EINA_FALSE);
 
-   if (net->size)
+   if (net->size && net->buffer)
      {
-if (event_data)
-     {
-        char buf[64];
-        snprintf(buf, sizeof(buf), "STORED:\n<<<<<<<<<<<<<\n%%.%llis\n<<<<<<<<<<<<<", net->size);
-        INFO(buf, net->buffer);
-        snprintf(buf, sizeof(buf), "RECEIVED:\n<<<<<<<<<<<<<\n%%.%zus\n<<<<<<<<<<<<<", len - offset);
-        INFO(buf, data);
+#if 0
+        if (event_data)
+          {
+             char buf[64];
+             snprintf(buf, sizeof(buf), "STORED:\n<<<<<<<<<<<<<\n%%.%llis\n<<<<<<<<<<<<<", net->size);
+             INFO(buf, net->buffer);
+             snprintf(buf, sizeof(buf), "RECEIVED:\n<<<<<<<<<<<<<\n%%.%zus\n<<<<<<<<<<<<<", len - offset);
+             INFO(buf, data);
 
-     }
-
+          }
+#endif
         /* previous buffer */
          /* alloca should be safe here because ecore_con reads at most 64k
           * and even if no headers were found previously, the entire
@@ -240,6 +241,9 @@ if (event_data)
          /* skip all spaces/newlines/etc and decrement len */
          AZY_SKIP_BLANK(start);
      }
+
+   /* apparently this can happen? */
+   EINA_SAFETY_ON_NULL_RETURN_VAL(start, EINA_FALSE);
    /* find a header or append to buffer */
    if ((!(r = memchr(start, '\r', len)) && !(r = memchr(start, '\n', len))) || !(c = memchr(start, ':', len)))
      {  /* append to a buffer and use net->overflow */

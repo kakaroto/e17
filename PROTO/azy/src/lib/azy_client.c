@@ -325,7 +325,7 @@ azy_client_call(Azy_Client       *client,
    handler_data = calloc(1, sizeof(Azy_Client_Handler_Data));
    EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data, 0);
    handler_data->client = client;
-   handler_data->method = eina_stringshare_add(content->method);
+   handler_data->method = eina_stringshare_ref(content->method);
    handler_data->callback = cb;
    handler_data->content_data = content->data;
 
