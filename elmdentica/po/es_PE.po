@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: elmdentica 0.8.0\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
-"POT-Creation-Date: 2010-11-23 23:05+0000\n"
+"POT-Creation-Date: 2010-11-25 23:34+0000\n"
 "PO-Revision-Date: 2010-06-01 10:34+0005\n"
 "Last-Translator: Jorge Puente Sarrín <puentesarrin@gmail.com>\n"
 "Language-Team: Jorge Puente Sarrín <puentesarrin@gmail.com>\n"
@@ -173,7 +173,7 @@ msgstr "Responder"
 msgid "Repeat"
 msgstr "Repetir"
 
-#: src/elmdentica.c:1304 src/elmdentica.c:1962
+#: src/elmdentica.c:1304 src/elmdentica.c:1963
 msgid "DM"
 msgstr ""
 
@@ -213,59 +213,59 @@ msgstr "Aceptar"
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: src/elmdentica.c:1794 src/elmdentica.c:1900
+#: src/elmdentica.c:1794 src/elmdentica.c:1901
 msgid "Type your status here..."
 msgstr ""
 
-#: src/elmdentica.c:1917
+#: src/elmdentica.c:1918
 #, fuzzy
 msgid "Timelines"
 msgstr "Línea de tiempo"
 
-#: src/elmdentica.c:1923
+#: src/elmdentica.c:1924
 #, fuzzy
 msgid "Direct Messages"
 msgstr "Mensajes visibles:"
 
-#: src/elmdentica.c:1924
+#: src/elmdentica.c:1925
 msgid "Everyone"
 msgstr ""
 
-#: src/elmdentica.c:1925
+#: src/elmdentica.c:1926
 msgid "Just me"
 msgstr ""
 
-#: src/elmdentica.c:1926
+#: src/elmdentica.c:1927
 msgid "Favorites"
 msgstr ""
 
-#: src/elmdentica.c:1927
+#: src/elmdentica.c:1928
 msgid "Replies/Mentions"
 msgstr ""
 
-#: src/elmdentica.c:1928
+#: src/elmdentica.c:1929
 msgid "Friends & I"
 msgstr ""
 
-#: src/elmdentica.c:1935
+#: src/elmdentica.c:1936
 msgid "Post"
 msgstr "Enviar"
 
-#: src/elmdentica.c:1949
+#: src/elmdentica.c:1950
 #, fuzzy
 msgid "Send"
 msgstr "¿Enviar?"
 
-#: src/elmdentica.c:1975
+#: src/elmdentica.c:1976
 #, fuzzy
 msgid "Clear"
 msgstr "Cerrar"
 
-#: src/elmdentica.c:1984
+#: src/elmdentica.c:1985
 msgid "Fullscreen"
 msgstr "Pantalla completa"
 
-#: src/elmdentica.c:1985 src/settings.c:1344
+#: src/elmdentica.c:1986 src/settings.c:1344
 msgid "Settings"
 msgstr "Configuración"
 
