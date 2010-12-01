@@ -1873,8 +1873,9 @@ EAPI int elm_main(int argc, char **argv)
 		elm_genlist_height_for_width_mode_set(gui.timeline, EINA_TRUE);
 		//elm_genlist_no_select_mode_set(gui.timeline, EINA_TRUE);
 		elm_genlist_compress_mode_set(gui.timeline, EINA_TRUE);
+		elm_genlist_longpress_timeout_set(gui.timeline, 0.5);
 
-		evas_object_smart_callback_add(gui.timeline, "selected", on_status_action, NULL);
+		evas_object_smart_callback_add(gui.timeline, "longpressed", on_status_action, NULL);
 		// Statuses list
 		make_status_list(TIMELINE_FRIENDS);
 		fill_message_list(TIMELINE_FRIENDS);
@@ -1917,7 +1918,7 @@ EAPI int elm_main(int argc, char **argv)
 		it = elm_toolbar_item_append(toolbar, "chat", _("Timelines"), on_timelines_hv, NULL);
 		elm_toolbar_item_menu_set(it, EINA_TRUE);
 		elm_toolbar_item_priority_set(it, 0);
-		elm_toolbar_menu_parent_set(toolbar, gui.win);
+		elm_toolbar_menu_parent_set(toolbar, gui.timeline);
 		menu = elm_toolbar_item_menu_get(it);
 
 		elm_menu_item_add(menu, NULL, NULL, _("Direct Messages"), on_timeline_dmsgs_reload, NULL);

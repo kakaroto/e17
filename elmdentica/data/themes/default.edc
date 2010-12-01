@@ -1,7 +1,13 @@
 styles {
 	style {
 		name: "elmdentica_status";
-		base: "font=Sans font_size=8 align=left valign=bottom color=#000 wrap=word";
+		base: "font=Sans font_size=8 align=left valign=bottom color=#000000ff wrap=word";
+		tag: "u" "+ style=underline underline_color=#f00";
+		tag: "/u" "- style=underline";
+	}
+	style {
+		name: "elmdentica_status_selected";
+		base: "font=Sans font_size=8 align=left valign=bottom color=#000000ff wrap=word";
 		tag: "u" "+ style=underline underline_color=#f00";
 		tag: "/u" "- style=underline";
 	}
@@ -66,6 +72,11 @@ collections {
 						relative: 1 1;
 					}
 				}
+				description {
+					state: "selected" 0.0;
+					inherit: "default" 0.0;
+					color: 61 43 31 255;
+				}
 			}
 
 			part {	name: "icon";
@@ -107,6 +118,11 @@ collections {
 						align: 0.0 0.0;
 					}
 				}
+				description {
+					state: "selected" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255;
+				}
 			}
 
 			part {	name: "date";
@@ -132,6 +148,11 @@ collections {
 						min: 1 1;
 						align: 0.0 0.0;
 					}
+				}
+				description {
+					state: "selected" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255;
 				}
 			}
 
@@ -160,7 +181,7 @@ collections {
 
 			part {	name: "text";
 				type: TEXTBLOCK;
-				effect: SOFT_SHADOW;
+				//effect: SOFT_SHADOW;
 				mouse_events: 0;
 				scale: 1;
 				description {
@@ -184,8 +205,38 @@ collections {
 						text: "The quick brown fox jumped over the lazy dog? Yes, the quick brown fox did indeed jump over the lazy dog.";
 					}
 				}
+				description {
+					state: "selected" 0.0;
+					inherit: "default" 0.0;
+					color: 255 0 0 255;
+					text.style: "elmdentica_status_selected";
+				}
 			}
 
+		}
+
+		programs {
+			program {
+				name:	"go_active";
+				signal:	"elm,state,selected";
+				source:	"elm";
+				action:	STATE_SET "selected" 0.0;
+				target: "event";
+				target: "name";
+				target: "date";
+				target: "text";
+			}
+			program {
+				name:	"go_passive";
+				signal:	"elm,state,unselected";
+				source:	"elm";
+				action:	STATE_SET "default" 0.0;
+				target: "event";
+				target: "name";
+				target: "date";
+				target:	"text";
+				transition: LINEAR 0.1;
+			}
 		}
 	}
 }
