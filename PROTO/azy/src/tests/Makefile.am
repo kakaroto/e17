@@ -1,6 +1,20 @@
 SUBDIRS = unit
 
+if HAVE_MYSQL
+MYSQL_S = \
+  T_SQL.azy_server.c \
+  T_SQL.azy_client.c \
+  T_SQL.azy_server_stubs.c \
+  T_SQL.azy_server.h \
+  T_SQL.azy_client.h \
+  T_SQL.azy_server_stubs.h \
+  T_SQL.h
+else
+MYSQL_S =
+endif
+
 BUILT_SOURCES = \
+  $(MYSQL_S) \
   T_Common.h \
   T_Common.c \
   T_Test1.azy_server.c \
@@ -18,6 +32,7 @@ BUILT_SOURCES = \
   T_Test2.azy_server_stubs.h \
   T_Test2.h
 
+
 EXTRA_DIST = \
   bench.h \
   bench.sh \
@@ -31,6 +46,7 @@ EXTRA_DIST = \
 
 AM_CFLAGS= \
   $(ECORE_CFLAGS) \
+  $(MYSQL_CFLAGS) \
   -I$(top_srcdir) \
   -I$(top_srcdir)/src/include
 
@@ -41,6 +57,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 LDADD = \
   $(ECORE_LIBS) \
+  $(MYSQL_LIBS) \
   $(top_srcdir)/src/lib/libazy.la
 
 check_PROGRAMS = \

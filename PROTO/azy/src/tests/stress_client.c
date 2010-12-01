@@ -10,7 +10,11 @@
 
 #include "T_Test1.azy_client.h"
 
-#define NUM_CLIENTS 500
+#ifdef HAVE_MYSQL
+# include "T_SQL.azy_client.h"
+#endif
+
+#define NUM_CLIENTS 100
 
 static Eina_List *clients;
 
@@ -29,26 +33,48 @@ _check_err(Azy_Content *err)
 }
 
 static Eina_Error
-_TTest1_getAll_ret(Azy_Client *client __UNUSED__, int type __UNUSED__, Azy_Content *content)
+_TTest1_getAll_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
 {
    static int x;
    TAllTypes *ret;
 
-   ++x;
-
+   x++;
+ //  printf("#%i: Success? %s!\n", x, ret ? "YES" : "NO");
    if (azy_content_error_is_set(content))
      {
         printf("%i: Error encountered: %s\n", x, azy_content_error_message_get(content));
-        ecore_main_loop_quit();
         return azy_content_error_code_get(content);
      }
 
    ret = azy_content_return_get(content);
- //  printf("#%i: Success? %s!\n", x, ret ? "YES" : "NO");
+
+#ifndef HAVE_MYSQL
+   if (x == (NUM_CLIENTS * NUM_CLIENTS))
+     ecore_main_loop_quit();
+#endif
+   return AZY_ERROR_NONE;
+}
+
+#ifdef HAVE_MYSQL
+static Eina_Error
+_TSQL_test_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
+{
+
+   static int x;
+
+   x++;
+   if (azy_content_error_is_set(content))
+     {
+        printf("%u: Error encountered: %s\n", azy_content_id_get(content), azy_content_error_message_get(content));
+        return azy_content_error_code_get(content);
+     }
+   //printf("#%i: Success? %s!\n", x, azy_content_return_get(content) ? "YES" : "NO");
+
    if (x == (NUM_CLIENTS * NUM_CLIENTS))
      ecore_main_loop_quit();
    return AZY_ERROR_NONE;
 }
+#endif
 
 static Eina_Bool
 _disconnected(void *data __UNUSED__, int type __UNUSED__, void *data2 __UNUSED__)
@@ -75,6 +101,13 @@ _connected(Azy_Client *cli __UNUSED__, int type __UNUSED__, Azy_Client *ev)
         ret = TTest1_getAll(ev, err, NULL);
         if (_check_err(err) || (!ret))
           goto error;
+        azy_client_callback_set(ev, ret, _TTest1_getAll_ret);
+#ifdef HAVE_MYSQL
+        ret = TSQL_test(ev, err, NULL);
+        if (_check_err(err) || (!ret))
+          goto error;
+        azy_client_callback_set(ev, ret, _TSQL_test_ret);
+#endif
      }
    azy_content_free(err);
    return ECORE_CALLBACK_CANCEL;
@@ -102,7 +135,7 @@ _spawn(void *data __UNUSED__)
         if (!azy_client_host_set(cli, "localhost", 4444))
           return;
 
-        if (!azy_client_connect(cli, EINA_TRUE))
+        if (!azy_client_connect(cli, EINA_FALSE))
           return;
 
         azy_net_uri_set(azy_client_net_get(cli), "/");
@@ -125,7 +158,6 @@ main(void)
    ecore_job_add(_spawn, NULL);
    ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)_connected, NULL);
    ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)_disconnected, NULL);
-   ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)_TTest1_getAll_ret, NULL);
    ecore_main_loop_begin();
 
    EINA_LIST_FREE(clients, cli)

@@ -61,16 +61,11 @@ AC_PROG_MAKE_SET
 AC_HEADER_STDC
 AC_TYPE_SIZE_T
 
-# check for dependencies
-
-AC_CHECK_HEADERS([arpa/inet.h netdb.h netinet/in.h stdlib.h string.h sys/socket.h unistd.h])
-
 AC_HEADER_STDBOOL
 AC_C_CONST
 AC_C_INLINE
 AC_TYPE_SIZE_T
 AC_FUNC_MEMCMP
-AC_FUNC_MMAP
 
 AC_CHECK_SIZEOF([char])
 AC_CHECK_SIZEOF([short])
@@ -92,6 +87,19 @@ SSL_REQUIRES="libssl libcrypto"
 if test "$libdir" = '${exec_prefix}/lib';then
 	(gcc -dumpmachine | grep -q x86_64) && libdir='${exec_prefix}/lib64'
 fi
+
+AC_PATH_PROG([mysql_config], [mysql_config])
+if test "x$mysql_config" != "x";then
+      AC_CHECK_HEADERS([mysql/mysql.h])
+      MYSQL_CFLAGS="$($mysql_config --cflags)"                                                                 
+      MYSQL_LIBS="$($mysql_config --libs_r)"
+      AM_CONDITIONAL(HAVE_MYSQL, true)
+      AC_DEFINE_UNQUOTED(HAVE_MYSQL, 1, "enable some mysql code in tests")
+else
+      AM_CONDITIONAL(HAVE_MYSQL, false)
+fi              
+AC_SUBST(MYSQL_CFLAGS)
+AC_SUBST(MYSQL_LIBS)
 
 PKG_CHECK_MODULES(EINA, [$EINA_REQUIRES])
 PKG_CHECK_MODULES(ECORE, [$ECORE_REQUIRES])
