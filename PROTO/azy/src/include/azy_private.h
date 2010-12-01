@@ -37,6 +37,7 @@
 #define INFO(...) EINA_LOG_DOM_INFO(azy_log_dom, __VA_ARGS__)
 #define WARN(...) EINA_LOG_DOM_WARN(azy_log_dom, __VA_ARGS__)
 #define ERR(...)  EINA_LOG_DOM_ERR(azy_log_dom, __VA_ARGS__)
+#define CRI(...)  EINA_LOG_DOM_CRIT(azy_log_dom, __VA_ARGS__)
 
 extern Eina_Error AZY_ERROR_REQUEST_JSON_OBJECT;
 extern Eina_Error AZY_ERROR_REQUEST_JSON_METHOD;
