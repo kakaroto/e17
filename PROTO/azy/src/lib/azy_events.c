@@ -24,15 +24,41 @@
 static char _init = 0;
 static regex_t __response;
 static regex_t request;
-static regex_t a_header;
 
 static void
 _azy_events_init(void)
 {
    regcomp(&request, "^(GET|HEAD|POST|PUT) ([^ @\\]+) HTTP/1\\.([0-1])$", REG_EXTENDED);
-   regcomp(&a_header, "^([a-zA-Z-]+): ([[:alnum:][:punct:] ]+)", REG_EXTENDED);
    regcomp(&__response, "^HTTP/1\\.([0-1]) ([0-9]{3}) (.+)$", REG_EXTENDED);
    _init = 1;
+}
+
+static Eina_Bool
+_azy_events_valid_header_name(const char *name, unsigned int len)
+{
+   while (len--)
+     {
+        if ((!isalnum(*name)) && (*name != '-'))
+          return EINA_FALSE;
+
+        name++;
+     }
+
+   return EINA_TRUE;
+}
+
+static Eina_Bool
+_azy_events_valid_header_value(const char *name, unsigned int len)
+{
+   while (len--)
+     {
+        if (!isprint(*name))
+          return EINA_FALSE;
+
+        name++;
+     }
+
+   return EINA_TRUE;
 }
 
 int
@@ -151,7 +177,6 @@ azy_events_header_parse(Azy_Net      *net,
                          size_t         event_len,
                          int            offset)
 {
-   regmatch_t match[3];
    unsigned char *c = NULL, *r = NULL, *p = NULL, *start = NULL, *buf_start = NULL;
    unsigned char *data = (event_data) ? event_data + offset : NULL;
    size_t len = (event_len) ? event_len - offset : 0;
@@ -267,26 +292,35 @@ if (event_data)
    line_len = r - p;
    while (len && c && r)
      {
-        char *ptr;
+        const unsigned char *ptr, *semi;
 
         if (line_len > 4096)
           {
              WARN("Ignoring unreasonably large header starting with:\n %.32s\n", p);
              goto skip_header;
           }
-        ptr = alloca(line_len + 1);
-        memcpy(ptr, p, line_len);
-        ptr[line_len] = '\0';
-        if (!regexec(&a_header, ptr, 3, match, 0))
-          {
-             char *key, *value;
+        semi = memchr(p, ':', line_len);
+        if ((!semi) || (semi - p + 1 >= line_len))
+          goto skip_header;
+        if (!_azy_events_valid_header_name((const char*)p, semi - p))
+          goto skip_header;
 
-             key = strndupa(ptr + match[1].rm_so, match[1].rm_eo - match[1].rm_so);
-             value = strndupa(ptr + match[2].rm_so, match[2].rm_eo - match[2].rm_so);
-             INFO("Found header: key='%s'", key);
-             INFO("Found header: value='%s'", value);
-             azy_net_header_set(net, key, value);
-          }
+        ptr = semi + 1;
+        while ((isspace(*ptr)) && (ptr - p < line_len))
+          ptr++;
+
+        if (!_azy_events_valid_header_value((const char*)ptr, line_len - (ptr - p)))
+          goto skip_header;
+        {
+           char *key, *value;
+
+           key = strndupa((const char*)p, semi - p);
+           value = strndupa((const char*)ptr, line_len - (ptr - p));
+           INFO("Found header: key='%s'", key);
+           INFO("Found header: value='%s'", value);
+           azy_net_header_set(net, key, value);
+        }
+
 
 skip_header:
         len -= line_len + slen;
