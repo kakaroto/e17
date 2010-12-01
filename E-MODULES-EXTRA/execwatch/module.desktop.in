@@ -2,6 +2,7 @@
 Type=Link
 Name=Execwatch
 Name[eo]=KomandAtentilo
+Name[pt]=Vigiar execuções
 Icon=e-module-execwatch
 X-Enlightenment-ModuleType=utils
 Comment=Shows the last state of a periodic executed cmd. Useful as an update checker or for checking if a remote host is available (through ping).
@@ -11,4 +12,4 @@ Comment[eo]=<br>Vidigi la lastan staton de ofte plenumita komando. Utila kiel ko
 Comment[fr]=Affiche le dernier état d'une commande exécutée périodiquement. Utile pour le contrôle de mises à jour ou de la disponibilité d'un hôte distant (via ping).
 Comment[hu]=Egy időszakonként lefuttatott parancs legutóbbi állapotát mutatja meg. Ideális egy frissítéskezelőhöz, vagy mondjuk egy távoli kiszolgáló ellenőrzéséhez.
 Comment[it]=Mostra l'ultimo stato di un comando eseguito periodicamente. Utile per il controlo di aggiornamenti o per il controllo della disponibilità di un host remoto (tramite ping).
-Comment[pt]=Mostra a última situação do comando periódico. Útil para verificar atualizações ou a disponibilidade de um servidor remoto(através de "ping")
+Comment[pt]=Mostra a última situação do comando periódico. Útil para verificar atualizações ou a disponibilidade de um servidor remoto (através de "ping")

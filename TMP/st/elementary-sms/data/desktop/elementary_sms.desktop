@@ -2,7 +2,7 @@
 Encoding=UTF-8
 Name=SMS
 Comment=SMS Editor/Viewer
-Comment[cs]=SMS Editor/Prohlíeè
+Comment[cs]=SMS Editor/ProhlÃ­Å¾eÄ
 Exec=elementary_sms
 Icon=elementary_sms
 Terminal=false

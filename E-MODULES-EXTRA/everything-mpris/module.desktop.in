@@ -8,5 +8,6 @@ Comment=Control MPRIS compatible media player from Everything.
 Comment[de]=Steuert MPRIS kompatible Mediaplayer mit Everything.
 Comment[fr]=Contrôle de certains lecteurs multimédias compatibles MPRIS.
 Comment[it]=Controlla i lettori multimediali compatibili con MPRIS da Everything.
+Comment[pt]=Controlar reprodutores musicais compatíveis com MPRIS através do Everything
 #Several different types available here. NEED TO DOC THESE.
 X-Enlightenment-ModuleType=launcher

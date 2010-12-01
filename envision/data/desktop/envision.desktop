@@ -2,6 +2,9 @@
 Encoding=UTF-8
 Name=envision
 Comment=E-PDF Reader
+Comment[fr]=Lecteur E-PDF
+Comment[it]=Visualizzatore E-PDF
+Comment[pt]=Leitor de PDF
 Exec=envision
 Icon=envision
 Terminal=false

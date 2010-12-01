@@ -2,7 +2,9 @@
 Encoding=UTF-8
 Name=Presenter
 Comment=Presentation tool
-Comment[cs]=Prezentaèní nástroj
+Comment[cs]=PrezentaÄnÃ­ nÃ¡stroj
+Comment[pt]=Uma ferramenta de apresentaÃ§Ã£o
+Comment[it]=Strumento per presentazioni
 Exec=elementary_presenter
 Icon=elementary_presenter
 Terminal=false

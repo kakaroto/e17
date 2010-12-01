@@ -11,5 +11,5 @@ Comment[it]=Un modulo che fa da contenitore per dati.
 Comment[fr]=Un gadget faisant office de réceptacle.
 Comment[el]=Ένα συστατικό που λειτουργεί ως χώρος αποθήκευσης δεδομένων.
 Comment[eo]=Akcesoraĵo kiu agas kiel recivilo.
-Comment[pt]=Um módulo que atua como contentor de dados
+Comment[pt]=Um "gadget" utilizado para armazenar dados
 X-Enlightenment-ModuleType=utils

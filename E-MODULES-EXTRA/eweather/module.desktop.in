@@ -6,6 +6,7 @@ Name[eo]=Vetero
 Name[hu]=Időjárás
 Name[fr]=E-météo
 Name[el]=Καιρός
+Name[pt]=Metereologia E
 Icon=eweather
 X-Enlightenment-ModuleType=utils
 Comment=A weather gadget.

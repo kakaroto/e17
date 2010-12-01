@@ -1,9 +1,12 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=Alarm
-Name[cs]=Budík
+Name[cs]=BudÃ­k
+Name[pt]=Alarme
 Comment=Alarm Clock
-Comment[cs]=Budík
+Comment[cs]=BudÃ­k
+Comment[pt]=Um despertador
+Comment[it]=Applicazione per promemoria
 Exec=elementary_alarm
 Icon=elementary_alarm
 Terminal=false

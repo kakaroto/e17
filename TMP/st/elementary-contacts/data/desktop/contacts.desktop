@@ -2,8 +2,11 @@
 Encoding=UTF-8
 Name=Contacts
 Name[cs]=Kontakty
+Name[pt]=Contactos
 Comment=Contacts
 Comment[cs]=Kontakty
+Comment[pt]=Contactos
+Comment[it]=Elenco contatti
 Exec=contacts
 Icon=contacts
 Terminal=false

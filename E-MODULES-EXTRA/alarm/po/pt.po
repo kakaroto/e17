@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: alarm\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-09 08:00-0700\n"
-"PO-Revision-Date: 2010-09-26 01:49-0000\n"
+"PO-Revision-Date: 2010-12-01 11:12+0100\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -84,7 +84,7 @@ msgstr "Auto-remoção de alarmes"
 
 #: ../src/e_mod_config_alarm.c:68
 msgid "Alarm Configuration : Setup an alarm"
-msgstr "Configuração do alarme: Definir um alarme"
+msgstr "Configuração do alarme: definir um alarme"
 
 #: ../src/e_mod_config_alarm.c:185
 msgid "Informations"
@@ -233,7 +233,7 @@ msgstr "Executar este programa"
 
 #: ../src/e_mod_config_alarm.c:475
 msgid "<hilight>Alarm test SUCCEED !</hilight><br><br>But DONT FORGET to ACTIVATE the alarms<br>via the 'Active' check button on the<br>main Alarm configuration panel."
-msgstr "<hilight>O teste de alarme foi bem SUCEDIDO !</hilight><br><br>NÃO SE ESQUEÇA de ATIVAR os alarmes<br>através da caixa 'Ativo' no<br>painel de configuração do alarme."
+msgstr "<hilight>O teste de alarme foi bem SUCEDIDO !</hilight><br><br>NÃO SE ESQUEÇA de ATIVAR os alarmes<br>através da caixa \"Ativo\" no<br>painel de configuração do alarme."
 
 #: ../src/e_mod_config_alarm.c:481
 msgid "<hilight>Alarm test SUCCEED !</hilight>"
@@ -291,7 +291,7 @@ msgstr "Adiar %.14s de %.2d:%.2d"
 
 #: ../src/e_mod_main.c:857
 msgid "Snooze (No alarm to delay)"
-msgstr "Silenciar (Nenhum alarme a adiar)"
+msgstr "Silenciar (nenhum alarme a adiar)"
 
 #: ../src/e_mod_main.c:865
 msgid "Add an alarm"

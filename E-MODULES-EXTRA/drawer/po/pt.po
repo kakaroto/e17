@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: drawer\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-25 17:00-0700\n"
-"PO-Revision-Date: 2010-09-26 02:21-0000\n"
+"PO-Revision-Date: 2010-12-01 12:03-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 #. create new config dialog
 #: ../src/e_mod_config.c:51
 msgid "Drawer Module"
-msgstr "Módulo \"Drawer\""
+msgstr "Módulo Drawer"
 
 #: ../src/e_mod_config.c:104
 msgid "Plugins selection"
@@ -53,11 +53,11 @@ msgstr "Definições de visualização"
 
 #: ../src/e_mod_main.c:212
 msgid "Drawer Module Configuration data needed upgrading. Your old configuration<br> has been wiped and a new set of defaults initialized. This<br>will happen regularly during development, so don't report a<br>bug. This simply means the module needs new configuration<br>data by default for usable functionality that your old<br>configuration simply lacks. This new set of defaults will fix<br>that by adding it in. You can re-configure things now to your<br>liking. Sorry for the inconvenience.<br>"
-msgstr "A configuração do \"Drawer\" precisa de ser atualizada. A sua configuração<br> foi apagada e foi inicializada uma nova. Isto<br>irá acontecer recorrentemente durante o desenvolvimento e o utilizador não deve reportar nenhum<br>erro. Isto é, o módulo precisa de novos dados<br>para funcionar corretamente e a sua antiga configuração<br>não os possui. Este conjunto de valores irá corrigir<br>a configuração. Agora pode configurar o módulo à sua maneira<br>. Desculpe qualquer inconveniente.<br>"
+msgstr "A configuração do Drawer precisa de ser atualizada. A sua configuração foi apagada e foi inicializada uma nova.<br> Isto irá acontecer recorrentemente durante o desenvolvimento e o utilizador não deve reportar nenhum erro.<br>  O módulo precisa de novos dados para funcionar corretamente e a sua antiga configuração não os possui.<br> Este conjunto de valores irá corrigir a configuração e posteriormente pode configurar o módulo ao seu gosto.<br>Desculpe qualquer inconveniente.<br>"
 
 #: ../src/e_mod_main.c:232
 msgid "Your Drawer Module configuration is NEWER than the module version. This is very<br>strange. This should not happen unless you downgraded<br>the module or copied the configuration from a place where<br>a newer version of the module was running. This is bad and<br>as a precaution your configuration has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
-msgstr "A sua versão do \"Drawer\" é mais recente do que a do módulo. Esta situação é<br>estranha. Isto não deveria ocorrer a meno que tivesse revertido<br>o módulo para uma versão inferior ou caso tenha copiado a configuração de um local em que esteja a ser executada<br>uma versão mais recente do módulo. Isto é mau e<br>por precaução, a sua configuração foi restaurada para as<br>omissões. Desculpe quaquer inconveniente.<br>"
+msgstr "A sua versão do Drawer é mais recente do que a do módulo<br>Esta situação é estranha e não deveria acontecer a menos que você tivesse revertido o módulo para uma versão inferior ou tenha copiado a configuração de um local em que esteja a ser executada uma versão mais recente do módulo.<br> Isto é mau e por precaução, a sua configuração foi restaurada para as omissões.<br>Desculpe quaquer inconveniente.<br>"
 
 #: ../src/e_mod_main.c:478
 msgid "The plugin is not configurable"
@@ -71,7 +71,7 @@ msgstr "Não pode configurar o \"plug-in\""
 #: ../src/e_mod_main.c:1110
 #: ../src/e_mod_main.c:1155
 msgid "Drawer Plugins"
-msgstr "\"Plug-ins\" do \"Drawer\""
+msgstr "\"Plug-ins\" do Drawer"
 
 #: ../src/e_mod_main.c:958
 #, c-format
@@ -98,11 +98,11 @@ msgstr "O \"plug-in\" \"%s\" não possui a versão API necessária."
 
 #: ../src/e_mod_main.c:1326
 msgid "Drawer"
-msgstr "\"Drawer\""
+msgstr "Drawer"
 
 #: ../src/e_mod_main.c:1419
 msgid "Drawer Configuration Updated"
-msgstr "A configuração do \"Drawer\" foi atualizada"
+msgstr "A configuração do Drawer foi atualizada"
 
 #: ../src/e_mod_main.c:1789
 msgid "Settings"
@@ -114,7 +114,7 @@ msgstr "Abrir diretório"
 
 #: ../src/plugins/sources/directory_watcher.c:296
 msgid "Directory Watcher settings"
-msgstr "Definições do vigilante de pastas"
+msgstr "Definições do vigilante de diretórios"
 
 #: ../src/plugins/sources/directory_watcher.c:355
 msgid "Home"
@@ -127,7 +127,7 @@ msgstr "Diretório (%s)"
 
 #: ../src/plugins/sources/directory_watcher.c:524
 msgid "Drawer Plugin : Directory Watcher"
-msgstr "\"Plug-in\" do \"Drawer\": Vigilante de diretórios"
+msgstr "\"Plug-in\" do Drawer: Vigilante de diretórios"
 
 #: ../src/plugins/sources/directory_watcher.c:567
 msgid "Watch path"
@@ -167,7 +167,7 @@ msgstr "Ordenar por tamanho"
 
 #: ../src/plugins/sources/launcher.c:205
 msgid "Launcher settings"
-msgstr "Definições do iniciador"
+msgstr "Definições do lançador"
 
 #: ../src/plugins/sources/launcher.c:324
 msgid "Change Item Properties"
@@ -184,7 +184,7 @@ msgstr "Fonte de %s"
 
 #: ../src/plugins/sources/launcher.c:535
 msgid "Drawer Plugin : Launcher"
-msgstr "\"Plug-in\" do \"Drawer\": Iniciador"
+msgstr "\"Plug-in\" do Drawer: Lançador"
 
 #: ../src/plugins/sources/launcher.c:606
 msgid "Selected Bar Source"
@@ -208,11 +208,11 @@ msgstr "Opções de organização"
 
 #: ../src/plugins/sources/launcher.c:629
 msgid "Unsorted"
-msgstr "Não ordenados"
+msgstr "Não ordenadar"
 
 #: ../src/plugins/sources/launcher.c:631
 msgid "Sort applications by local rating"
-msgstr "Ordenar aplicações pela avaliação"
+msgstr "Ordenar aplicações por avaliação"
 
 #: ../src/plugins/sources/launcher.c:633
 msgid "Sort applications by overall popularity"
@@ -220,7 +220,7 @@ msgstr "Ordenar aplicações por popularidade"
 
 #: ../src/plugins/sources/launcher.c:670
 msgid "Create new Launcher source"
-msgstr "Criar nova fonte do \"Iniciador\""
+msgstr "Criar nova fonte do Lançador"
 
 #: ../src/plugins/sources/launcher.c:671
 msgid "Enter a name for this new source:"
@@ -237,11 +237,11 @@ msgstr "Tem a certeza que quer apagar esta fonte? "
 
 #: ../src/plugins/views/list.c:177
 msgid "List settings"
-msgstr "Definições de \"Listar\""
+msgstr "Definições da Lista"
 
 #: ../src/plugins/views/list.c:821
 msgid "Drawer Plugin : List"
-msgstr "\"Plug-in\" do \"Drawer\": Listar"
+msgstr "\"Plug-in\" do Drawer: Lista"
 
 #: ../src/plugins/views/list.c:858
 msgid "Item size options"

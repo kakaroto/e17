@@ -6,6 +6,7 @@ Name[eo]=Vetero
 Name[hu]=Időjárás
 Name[fr]=Météo
 Name[el]=Καιρός
+Name[pt]=Metereologia
 Icon=weather
 Comment=<title>Weather Gadget</title><br>A weather gadget.
 Comment[cs]=<title>Gadget na počasí</title><br>Zobrazí aktuální počasí.
@@ -14,4 +15,4 @@ Comment[hu]=<title>Időjárás modul</title><br>Az aktuális, helyi időjárást
 Comment[it]=<title>Modulo Weather</title><br>Un modulo per le condizioni meteo.
 Comment[fr]=<title>Gadget Météo</title><br>Affiche la météo actuelle.
 Comment[el]=<title>Συστατικό-Καιρός</title><br>Ένα συστατικό που δείχνει τις καιρικές συνθήκες.
-
+Comment[pt]=<title>"Gadget" Metereológico</title><br>Um "gadget" metereológico
