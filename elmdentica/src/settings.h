@@ -26,7 +26,8 @@ typedef struct _settings {
 	char *browser_name;
 	char *browser_cmd;
 	int max_messages;
-
+	Eina_Bool rel_timestamps;
+	Ecore_Timer *rel_ts_timer;
 } Settings;
 
 void ed_settings_init(int argc, char ** argv);

@@ -62,6 +62,7 @@ int current_gag = 0;
 extern char * home;
 extern char * url_post;
 extern char * url_friends;
+extern Eina_Bool ed_statuses_update_time(void *data);
 
 const char * browserNames[] = {
         "XDG Open",
@@ -975,6 +976,16 @@ void on_toggle_online_changed(void *data, Evas_Object *toggle, void *event_info)
 		settings->online=0;
 }
 
+void on_toggle_timestamps(void *data, Evas_Object *toggle, void *event_info) {
+	if(elm_toggle_state_get(toggle)) {
+		settings->rel_timestamps=EINA_TRUE;
+		settings->rel_ts_timer = ecore_timer_add(60, ed_statuses_update_time, NULL);
+	} else {
+		settings->rel_timestamps=EINA_FALSE;
+		if(settings->rel_ts_timer) ecore_timer_del(settings->rel_ts_timer);
+	}
+}
+
 void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
 	Evas_Object *frame=NULL, *hoversel=NULL, *toggle=NULL;
 
@@ -1003,6 +1014,16 @@ void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
 			evas_object_smart_callback_add(toggle, "changed", on_toggle_online_changed, NULL);
 			elm_frame_content_set(frame, toggle);
 			elm_table_pack(options_editor, frame, 1, 0, 1, 1);
+		evas_object_show(frame);
+		
+		frame = elm_frame_add(settings_area);
+			elm_frame_label_set(frame, _("Timestamps..."));
+			toggle = elm_toggle_add(settings_area);
+			elm_toggle_states_labels_set(toggle, _("Relative"), _("Absolute"));
+			elm_toggle_state_set(toggle, settings->rel_timestamps);
+			evas_object_smart_callback_add(toggle, "changed", on_toggle_timestamps, NULL);
+			elm_frame_content_set(frame, toggle);
+			elm_table_pack(options_editor, frame, 0, 1, 1, 1);
 		evas_object_show(frame);
 		
 		elm_box_pack_start(settings_area, options_editor);
@@ -1454,6 +1475,7 @@ void ed_settings_init(int argc, char ** argv) {
 	EET_DATA_DESCRIPTOR_ADD_BASIC(settings_edd, Settings, "browser_name",	browser_name,	EET_T_STRING);
 	EET_DATA_DESCRIPTOR_ADD_BASIC(settings_edd, Settings, "browser_cmd",	browser_cmd,	EET_T_STRING);
 	EET_DATA_DESCRIPTOR_ADD_BASIC(settings_edd, Settings, "max_messages",	max_messages,	EET_T_INT);
+	EET_DATA_DESCRIPTOR_ADD_BASIC(settings_edd, Settings, "rel_timestamps",	rel_timestamps,	EET_T_INT);
 
 	settings = eet_data_read(conf_file, settings_edd, "/settings");
 	if(!settings) {
@@ -1468,6 +1490,8 @@ void ed_settings_init(int argc, char ** argv) {
 		settings->online=1;
 		settings->fullscreen=0;
 		settings->max_messages=20;
+		settings->rel_timestamps=EINA_TRUE;
+		settings->rel_ts_timer=NULL;
 	}
 
 	while((option = getopt(argc,argv,options)) != -1) {

@@ -1059,7 +1059,7 @@ char *ed_status_label_get(void *data, Evas_Object *obj, const char *part) {
 		time(&now);
 		localtime_r(&now, &date_now);
 
-		if(localtime_r(&(as->created_at), &date_tm)) {
+		if(settings->rel_timestamps && localtime_r(&(as->created_at), &date_tm)) {
 			dt = now - as->created_at;
 			if(dt < 60)
 				snprintf(buf, sizeof(buf), _("a few seconds ago"));
@@ -1074,6 +1074,10 @@ char *ed_status_label_get(void *data, Evas_Object *obj, const char *part) {
 					snprintf(buf, sizeof(buf), _("~ 1 hour ago"));
 			} else
 				strftime(buf, sizeof(buf), _("on %F"), &date_tm);
+		} else if(!settings->rel_timestamps) {
+				if(localtime_r(&(as->created_at), &date_tm)) {
+					strftime(buf, sizeof(buf), _("%F %T"), &date_tm);
+				} else snprintf(buf, sizeof(buf), _("some-when"));
 		} else snprintf(buf, sizeof(buf), _("some-when"));
 	}
 
@@ -1276,8 +1280,6 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 	Evas_Object *box=NULL, *table=NULL, *button=NULL;
 
 	if(elm_genlist_item_selected_get(gli) == EINA_FALSE) return;
-
-	elm_genlist_item_selected_set(gli, EINA_FALSE);
 
 	gui.hover = elm_hover_add(gui.win);
 		evas_object_name_set(gui.hover, "hover_actions");
@@ -1885,7 +1887,8 @@ EAPI int elm_main(int argc, char **argv)
 		elm_layout_content_set(gui.main, "timeline", gui.timeline);
 	evas_object_show(gui.timeline);
 
-	ecore_timer_add(60, ed_statuses_update_time, NULL);
+	if(settings->rel_timestamps)
+		settings->rel_ts_timer = ecore_timer_add(60, ed_statuses_update_time, NULL);
 
 	edit_panel = elm_box_add(gui.win);
 		elm_box_homogenous_set(edit_panel, 0);
