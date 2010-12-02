@@ -106,9 +106,16 @@ _azy_magic_fail(const void *d, Azy_Magic m, Azy_Magic req_m, const char *fname)
    if (getenv("AZY_ERROR_ABORT")) abort();
 }
 
+/**
+ * @brief Initialize Azy
+ * This function initializes error handlers, events, and
+ * logging functions for Azy, and must be called prior to making any
+ * calls.
+ */
 EAPI void
-azy_init()
+azy_init(void)
 {
+ /* FIXME: make this like other libs with init count */
    if (_azy_initialized)
      return;
    eina_init();
@@ -141,6 +148,11 @@ azy_init()
    _azy_initialized = 1;
 }
 
+/**
+ * @brief Shut down Azy
+ * This function uninitializes memory allocated by azy_init.
+ * Call when no further Azy functions will be used.
+ */
 EAPI void
 azy_shutdown()
 {
