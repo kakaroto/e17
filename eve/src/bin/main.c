@@ -364,7 +364,7 @@ static const Ecore_Getopt options = {
       ECORE_GETOPT_STORE_DEF_BOOL('T', "disable-touch-interface",
                                   "disable touch interface handling of mouse events", 1),
       ECORE_GETOPT_STORE_STR('U', "user-agent",
-                             "user agent string to use. Special cases=iphone,safari,chrome,firefox,ie,ie9,ie8,ie7."),
+                             "user agent string to use. Special cases=iphone,safari,chrome,firefox,android,ie,ie9,ie8,ie7."),
       ECORE_GETOPT_STORE_DEF_UINT('R', "rotate", "Screen Rotation in degrees", 0),
       ECORE_GETOPT_VERSION('V', "version"),
       ECORE_GETOPT_COPYRIGHT('C', "copyright"),
@@ -685,6 +685,8 @@ elm_main(int argc, char **argv)
           user_agent_str = "Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.514.0 Safari/534.7";
         else if (strcasecmp(user_agent_option, "firefox") == 0)
           user_agent_str = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.2) Gecko/20121223 Firefox/3.8";
+        else if (strcasecmp(user_agent_option, "android") == 0)
+          user_agent_str = "Mozilla/5.0 (Linux; U; Android 2.1; en-US;) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17";
 
         else if (strcasecmp(user_agent_option, "ie") == 0) /* last */
           user_agent_str = "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)";
