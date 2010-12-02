@@ -151,10 +151,6 @@ extern "C" {
                             double      len);
    char *azy_base64_decode(const char *string,
                             int         len);
-   //DOES NOT ALLOC
-   unsigned char *azy_rand(unsigned char *buf,
-                            int            num);
-   uint32_t       azy_rand_uint32(void);
    unsigned char *azy_memstr(const unsigned char *big,
                               const unsigned char *small,
                               size_t               big_len,

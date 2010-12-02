@@ -7,8 +7,6 @@
 # include "config.h"
 #endif
 
-#include "openssl/crypto.h"
-#include "openssl/rand.h"
 #include "cencode.h"
 #include "cdecode.h"
 #include "Azy.h"
@@ -48,26 +46,6 @@ azy_base64_decode(const char *string,
    base64_init_decodestate(&s);
    retlen = base64_decode_block(string, len, ret, &s);
    ret[retlen] = '\0';
-
-   return ret;
-}
-
-unsigned char *
-azy_rand(unsigned char *buf,
-          int            num)
-{
-   if (!RAND_bytes(buf, num))
-     return NULL;
-
-   return buf;
-}
-
-uint32_t
-azy_rand_uint32(void)
-{
-   uint32_t ret;
-
-   azy_rand((unsigned char *)&ret, sizeof(uint32_t));
 
    return ret;
 }

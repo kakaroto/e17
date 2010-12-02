@@ -81,7 +81,6 @@ AC_CHECK_FUNCS([memset regcomp select socket strchr strndup strrchr strstr strto
 EINA_REQUIRES="eina >= 1.0.0"
 ECORE_REQUIRES="ecore-con >= 1.0.0 ecore >= 1.0.0"
 XML_REQUIRES="libxml-2.0 >= 2.6.20"
-SSL_REQUIRES="libssl libcrypto"
 
 #this fixes things on some stupid broken distros
 if test "$libdir" = '${exec_prefix}/lib';then
@@ -104,7 +103,6 @@ AC_SUBST(MYSQL_LIBS)
 PKG_CHECK_MODULES(EINA, [$EINA_REQUIRES])
 PKG_CHECK_MODULES(ECORE, [$ECORE_REQUIRES])
 PKG_CHECK_MODULES(XML, [$XML_REQUIRES])
-PKG_CHECK_MODULES(SSL, [$SSL_REQUIRES])
 
 AC_SUBST(EINA_REQUIRES)
 
@@ -114,9 +112,6 @@ AC_SUBST(ECORE_LIBS)
 AC_SUBST(XML_REQUIRES)
 AC_SUBST(XML_CFLAGS)
 AC_SUBST(XML_LIBS)
-AC_SUBST(SSL_REQUIRES)
-AC_SUBST(SSL_CFLAGS)
-AC_SUBST(SSL_LIBS)
 
 AC_ARG_ENABLE([debug], AS_HELP_STRING([--enable-debug],[enable debug mode @<:@default=yes@:>@]))
 if test "x$enable_debug" != "xno";then
