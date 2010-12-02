@@ -503,7 +503,7 @@ _azy_server_client_send(Azy_Server_Client *client,
 #endif
 
    EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_client_send(client->net->conn, eina_strbuf_string_get(header), eina_strbuf_length_get(header)), error);
-   INFO("Send [1/2] complete! %i bytes queued for sending.", eina_strbuf_length_get(header));
+   INFO("Send [1/2] complete! %zu bytes queued for sending.", eina_strbuf_length_get(header));
    EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_client_send(client->net->conn, content->buffer, content->length), error);
    INFO("Send [2/2] complete! %lli bytes queued for sending.", content->length);
    ecore_con_client_flush(client->net->conn);
