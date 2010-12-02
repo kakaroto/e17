@@ -11,6 +11,9 @@
 #include "cdecode.h"
 #include "Azy.h"
 
+/* length of a uuid */
+#define UUID_LEN 36
+
 /**
  * @brief Base64 encode a string of known length
  * @param string The string to encode
@@ -104,15 +107,15 @@ azy_memstr(const unsigned char *big,
 const char *
 azy_uuid_new(void)
 {
-   char uuid[40];
+   char uuid[UUID_LEN + 1];
    FILE *f;
    const char *ret = NULL;
 
    if (!(f = fopen("/proc/sys/kernel/random/uuid", "r")))
      return NULL;
 
-   if (fgets(uuid, 37, f))
-     ret = eina_stringshare_add_length(uuid, 36);
+   if (fgets(uuid, UUID_LEN + 1, f))
+     ret = eina_stringshare_add_length(uuid, UUID_LEN);
 
    fclose(f);
 
