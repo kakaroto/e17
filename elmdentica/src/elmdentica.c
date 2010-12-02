@@ -1275,6 +1275,8 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
 	Evas_Object *box=NULL, *table=NULL, *button=NULL;
 
+	if(elm_genlist_item_selected_get(gli) == EINA_FALSE) return;
+
 	elm_genlist_item_selected_set(gli, EINA_FALSE);
 
 	gui.hover = elm_hover_add(gui.win);
