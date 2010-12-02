@@ -15,6 +15,14 @@
 #define ACT_PLAY_FILE		10
 
 
+#define MPRIS_CAN_GO_NEXT(caps)			(caps & (1 << 0))
+#define MPRIS_CAN_GO_PREV(caps)			(caps & (1 << 1))
+#define MPRIS_CAN_PAUSE(caps)			(caps & (1 << 2))
+#define MPRIS_CAN_PLAY(caps)			(caps & (1 << 3))
+#define MPRIS_CAN_SEEK(caps)			(caps & (1 << 4))
+#define MPRIS_CAN_PROVIDE_METADATA(caps)	(caps & (1 << 5))
+#define MPRIS_CAN_HAS_TRACKLIST(caps)		(caps & (1 << 6))
+
 typedef struct _Plugin Plugin;
 typedef struct _Track Track;
 
@@ -176,6 +184,8 @@ _dbus_cb_current_track(void *data, DBusMessage *reply, DBusError *error)
    Evry_Item *it;
    int num;
 
+   p->pnd_curtrack = NULL;
+   
    if (!_dbus_check_msg(reply, error))
      return;
 
@@ -193,8 +203,6 @@ _dbus_cb_current_track(void *data, DBusMessage *reply, DBusError *error)
 	it = eina_list_nth(p->tracks, p->current_track);
 	if (it) evry->item_changed(it, 1, plugin_selected);
      }
-
-   p->pnd_curtrack = NULL;
 }
 
 static void
@@ -510,6 +518,8 @@ _dbus_cb_tracklist_length(void *data, DBusMessage *reply, DBusError *error)
 {
    Plugin *p = data;
 
+   p->pnd_tracklist = NULL;
+   
    if (!_dbus_check_msg(reply, error)) return;
 
    dbus_message_get_args(reply, error,
@@ -517,8 +527,6 @@ _dbus_cb_tracklist_length(void *data, DBusMessage *reply, DBusError *error)
 			 DBUS_TYPE_INVALID);
 
    _mpris_get_metadata(p, EINA_FALSE);
-
-   p->pnd_tracklist = NULL;
 }
 
 static void
@@ -554,11 +562,11 @@ _dbus_cb_get_status(void *data, DBusMessage *reply, DBusError *error)
 {
    GET_PLUGIN(p, data);
 
+   p->pnd_status = NULL;
+   
    if (!_dbus_check_msg(reply, error)) return;
 
    _set_status(data, reply);
-
-   p->pnd_status = NULL;
 }
 
 static void
@@ -1148,6 +1156,49 @@ _mpris_check_item(Evry_Action *act, const Evry_Item *it)
 }
 
 static void
+_dbus_cb_get_caps(void *data, DBusMessage *reply, DBusError *error)
+{
+   const char *player = data;
+   int caps;
+
+   if (!_dbus_check_msg(reply, error))
+     {
+	eina_stringshare_del(player);
+	return;
+     }
+
+   dbus_message_get_args(reply, error,
+			 DBUS_TYPE_INT32, (dbus_int32_t*) &(caps),
+			 DBUS_TYPE_INVALID);
+
+   DBG("player: %s\n go next:%d\n go prev %d\n pause %d\n play"
+       "% d\n seek %d\n metadata %d\n tracklist %d\n",
+	  player,
+	  caps & (1 << 0),
+	  caps & (1 << 1),
+	  caps & (1 << 2),
+	  caps & (1 << 3),
+	  caps & (1 << 4),
+	  caps & (1 << 5),
+	  caps & (1 << 6));
+
+   if (!MPRIS_CAN_HAS_TRACKLIST(caps))
+     {
+	eina_stringshare_del(player);
+	return;
+     }
+
+   players = eina_list_append(players, player);
+
+   if (!dbus_active)
+     {
+	bus_name = player;
+	DBG("use::%s", bus_name);
+	dbus_active = EINA_TRUE;
+     }
+}
+
+static void
 _dbus_cb_name_owner_changed(void *data __UNUSED__, DBusMessage *msg)
 {
    DBusError err;
@@ -1203,19 +1254,13 @@ _dbus_cb_name_owner_changed(void *data __UNUSED__, DBusMessage *msg)
 	/* new player appeared? */
 	if (!eina_list_data_find(players, tmp))
 	  {
-	     eina_stringshare_ref(tmp);
-	     players = eina_list_append(players, tmp);
-	  }
-
-	/* no active player - make player current */
-	if (!dbus_active)
-	  {
+	     const char *bus_tmp = bus_name;
 	     bus_name = tmp;
-	     dbus_active = EINA_TRUE;
+	     _dbus_send_msg("/Player", "GetCaps", _dbus_cb_get_caps,
+			    (void *) bus_name);
+	     bus_name = bus_tmp;;
 	  }
      }
-
-   eina_stringshare_del(tmp);
 }
 
 static void
@@ -1234,22 +1279,17 @@ _dbus_cb_list_names(void *data __UNUSED__, DBusMessage *msg, DBusError *err)
 	while(dbus_message_iter_get_arg_type(&item) == DBUS_TYPE_STRING)
 	  {
 	     dbus_message_iter_get_basic(&item, &name);
+
 	     if (strncmp(name, "org.mpris.", 10) == 0)
 	       {
-		  DBG("found %s", name);
-
-		  players = eina_list_append(players, eina_stringshare_add(name));
+		  bus_name = eina_stringshare_add(name);
+		  _dbus_send_msg("/Player", "GetCaps", _dbus_cb_get_caps,
+				 (void *) bus_name);
+		  bus_name = NULL;
 	       }
 
 	     dbus_message_iter_next(&item);
 	  }
-     }
-
-   if (eina_list_count(players) > 0)
-     {
-	bus_name = players->data;
-	DBG("use::%s", bus_name);
-	dbus_active = EINA_TRUE;
      }
 }
 
