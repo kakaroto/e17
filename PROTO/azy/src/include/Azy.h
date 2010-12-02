@@ -155,7 +155,6 @@ extern "C" {
    unsigned char *azy_rand(unsigned char *buf,
                             int            num);
    uint32_t       azy_rand_uint32(void);
-   const char    *azy_str_strip(const char *str);
    unsigned char *azy_memstr(const unsigned char *big,
                               const unsigned char *small,
                               size_t               big_len,

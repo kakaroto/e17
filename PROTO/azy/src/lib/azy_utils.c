@@ -72,24 +72,6 @@ azy_rand_uint32(void)
    return ret;
 }
 
-const char *
-azy_str_strip(const char *str)
-{
-   const char *start, *end;
-
-   if (!str)
-     return NULL;
-   for (start = str, end = str + strlen(str); (*start == ' ') || (*end == ' '); )
-     {
-        if (*start == ' ')
-          start++;
-        if (*end == ' ')
-          end--;
-     }
-
-   return eina_stringshare_add_length(start, end - start);
-}
-
 unsigned char *
 azy_memstr(const unsigned char *big,
             const unsigned char *small,
