@@ -8,3 +8,6 @@ libxml2
 
 Install:
 Simply run bootstrap.sh to configure and compile the code, then run make install
+
+Tests:
+run 'make check' to compile the tests; more to come on this
