@@ -67,6 +67,7 @@ typedef unsigned int Azy_Magic;
 
 struct _Azy_Content
 {
+   AZY_MAGIC;
    void               *data;
    const char         *method;
    Eina_List          *params;
@@ -82,11 +83,11 @@ struct _Azy_Content
    Eina_Error          errcode; //internal code
    int                 faultcode; //code to actually report
    const char         *faultmsg; //if non-null, message to reply with instead of message associated with errcode
-   AZY_MAGIC;
 };
 
 struct _Azy_Net
 {
+   AZY_MAGIC;
    void              *conn;
    Eina_Bool          server_client : 1;
 
@@ -117,11 +118,11 @@ struct _Azy_Net
       long long int        content_length;
    } http;
    Eina_Bool headers_read : 1;
-   AZY_MAGIC;
 };
 
 struct _Azy_Server
 {
+   AZY_MAGIC;
    Ecore_Con_Server    *server;
    Ecore_Event_Handler *add;
 
@@ -132,11 +133,11 @@ struct _Azy_Server
    } security;
 
    Eina_List *module_defs;
-   AZY_MAGIC;
 };
 
 typedef struct _Azy_Server_Client
 {
+   AZY_MAGIC;
    Ecore_Event_Handler *del;
    Ecore_Event_Handler *data;
 
@@ -146,21 +147,21 @@ typedef struct _Azy_Server_Client
 
    const char          *session_id;
    const char          *ip;
-   AZY_MAGIC;
 } Azy_Server_Client;
 
 struct _Azy_Server_Module
 {
+   AZY_MAGIC;
    void                   *data;
    Azy_Server_Module_Def *def;
    Azy_Content           *content;
    Azy_Server_Client     *client;
    double                  last_used;
-   AZY_MAGIC;
 };
 
 struct _Azy_Value
 {
+   AZY_MAGIC;
    Azy_Value_Type     type;
    int                 ref;
 
@@ -173,11 +174,11 @@ struct _Azy_Value
 
    const char         *member_name;
    Azy_Value         *member_value;
-   AZY_MAGIC;
 };
 
 struct _Azy_Client
 {
+   AZY_MAGIC;
    void        *data;
    Azy_Net    *net;
 
@@ -195,31 +196,31 @@ struct _Azy_Client
    int                  secure;
 
    Eina_Bool            connected : 1;
-   AZY_MAGIC;
 };
 
 struct _Azy_Client_Handler_Data
 {
+   AZY_MAGIC;
    Azy_Client_Call_Id  id;
    Azy_Client         *client;
    Azy_Net            *recv;
    const char         *method;
    Azy_Content_Cb      callback; //callback set to convert from Azy_Value to Return_Type
    void               *content_data;
-   AZY_MAGIC;
 };
 
 
 struct _Azy_Blob
 {
+   AZY_MAGIC;
    const char *buf;
    int         len;
    char        refs;
-   AZY_MAGIC;
 };
 
 struct _Azy_Server_Module_Def
 {
+   AZY_MAGIC;
    const char *name;
    int         data_size;
    Azy_Server_Module_Cb init;
@@ -230,14 +231,13 @@ struct _Azy_Server_Module_Def
    Azy_Server_Module_Cb download;
    Azy_Server_Module_Cb upload;
    Eina_List *methods;
-   AZY_MAGIC;
 };
 
 struct _Azy_Server_Module_Method
 {
+   AZY_MAGIC;
    const char *name;
    Azy_Server_Module_Content_Cb method;
-   AZY_MAGIC;
 };
 
 extern void _azy_magic_fail(const void *d, Azy_Magic m, Azy_Magic req_m, const char *fname);
