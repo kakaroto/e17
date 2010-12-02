@@ -11,6 +11,14 @@
 #include "cdecode.h"
 #include "Azy.h"
 
+/**
+ * @brief Base64 encode a string of known length
+ * @param string The string to encode
+ * @param len The length of the string
+ * @return Allocated base64 encoded string or #NULL on error
+ * This calls base64 encode functions to encode @p string, allocating
+ * memory for the encoded string.
+ */
 char *
 azy_base64_encode(const char *string,
                    double      len)
@@ -31,6 +39,14 @@ azy_base64_encode(const char *string,
    return ret;
 }
 
+/**
+ * @brief Base64 decode a string of known length
+ * @param string The string to decode
+ * @param len The length of the string
+ * @return Allocated decoded string or #NULL on error
+ * This calls base64 decode functions to decode @p string, allocating
+ * memory for the decoded string.
+ */
 char *
 azy_base64_decode(const char *string,
                    int         len)
@@ -50,6 +66,17 @@ azy_base64_decode(const char *string,
    return ret;
 }
 
+/**
+ * @brief Find a string of known length in a larger string of known length
+ * @param big The large string
+ * @param small The string to find
+ * @param big_len The length of @p big
+ * @param small_len The length of @p small
+ * @return Pointer to the first occurrence of @p small, or #NULL on error/failure
+ * This can be considered strnstr, a utility function for finding a bounded string
+ * in another bounded string.  It compares using unsigned char, however, so non-ascii
+ * data can be found as well.
+ */
 unsigned char *
 azy_memstr(const unsigned char *big,
             const unsigned char *small,
@@ -67,17 +94,24 @@ azy_memstr(const unsigned char *big,
    return NULL;
 }
 
+/**
+ * @brief Read a UUID from /proc/sys/kernel/random/uuid and stringshare it
+ * @return The stringshared uuid
+ * This function is used to return a stringshared random UUID.  UUIDS are
+ * Universally Unique IDentifiers, strings of 36 characters such as:
+ * 550e8400-e29b-41d4-a716-446655440000
+ */
 const char *
 azy_uuid_new(void)
 {
-   char uuid[48];
+   char uuid[40];
    FILE *f;
    const char *ret = NULL;
 
    if (!(f = fopen("/proc/sys/kernel/random/uuid", "r")))
      return NULL;
 
-   if (fgets(uuid, 36, f))
+   if (fgets(uuid, 37, f))
      ret = eina_stringshare_add_length(uuid, 36);
 
    fclose(f);
