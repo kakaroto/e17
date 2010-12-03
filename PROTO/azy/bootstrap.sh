@@ -6,7 +6,9 @@ rm -f "${bs_dir}"/aclocal.m4 "${bs_dir}"/ltmain.sh
 echo 'Running autoreconf -if...'
 autoreconf -if || exit 1
 echo 'Configuring...'
-[[ -n "$NOCONFIGURE" ]] || cd "${bs_dir}" && ./configure $@ && cd - &> /dev/null || exit 1
+if [[ -z "$NOCONFIGURE" ]] ; then
+	cd "${bs_dir}" && ./configure $@ && cd - &> /dev/null || exit 1
+fi
 echo -e "\nRunning make..."
 make -C "${bs_dir}" -j2 --no-print-directory V=0 || exit 1
 echo -e "\n\nDone!"
