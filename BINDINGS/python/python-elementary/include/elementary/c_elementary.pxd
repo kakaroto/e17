@@ -21,6 +21,7 @@ import evas.c_evas
 
 cdef extern from *:
     ctypedef char* const_char_ptr "const char *"
+    ctypedef void const_void "const void"
 
 cdef extern from "string.h":
     void *memcpy(void *dst, void *src, int n)
@@ -193,6 +194,7 @@ cdef extern from "Elementary.h":
 
     ctypedef evas.c_evas.Evas_Object *(*Elm_Tooltip_Content_Cb) (void *data, evas.c_evas.Evas_Object *obj)
     ctypedef evas.c_evas.Evas_Object *(*Elm_Tooltip_Item_Content_Cb) (void *data, evas.c_evas.Evas_Object *obj, void *item)
+    ctypedef evas.c_evas.Eina_Bool (*Elm_Event_Cb) (void *data, evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *src, evas.c_evas.Evas_Callback_Type t, void *event_info)
 
     ctypedef struct Elm_Hoversel_Item
     ctypedef struct Elm_Menu_Item
@@ -265,6 +267,9 @@ cdef extern from "Elementary.h":
     void         elm_finger_size_set(evas.c_evas.Evas_Coord size)
 
     void         elm_object_focus(evas.c_evas.Evas_Object *obj)
+
+    void         elm_object_event_callback_add(evas.c_evas.Evas_Object *obj, Elm_Event_Cb func, const_void *data)
+    void        *elm_object_event_callback_del(evas.c_evas.Evas_Object *obj, Elm_Event_Cb func, const_void *data)
 
     void         elm_coords_finger_size_adjust(int times_w, evas.c_evas.Evas_Coord *w, int times_h, evas.c_evas.Evas_Coord *h)
 

@@ -47,12 +47,47 @@ cdef c_evas.Evas_Object *_tooltip_content_create(void *data, c_evas.Evas_Object 
 cdef void _tooltip_data_del_cb(void *data, c_evas.Evas_Object *o, void *event_info) with gil:
     Py_DECREF(<object>data)
 
+cdef evas.c_evas.Eina_Bool _event_dispatcher(o, src, c_evas.Evas_Callback_Type t, event_info):
+    cdef Object obj = o
+    cdef object ret
+    for func, args, kargs in obj._elm_event_cbs:
+        try:
+            ret = func(obj, src, t, event_info, *args, **kargs)
+        except Exception, e:
+            traceback.print_exc()
+        else:
+            if ret:
+                return True
+    return False
+
+cdef evas.c_evas.Eina_Bool _event_callback(void *data, c_evas.Evas_Object *o, c_evas.Evas_Object *src, c_evas.Evas_Callback_Type t, void *event_info) with gil:
+    cdef Object obj = <Object>evas.c_evas._Object_from_instance(<long>o)
+    cdef Object src_obj = <Object>evas.c_evas._Object_from_instance(<long>src)
+    cdef evas.c_evas.Eina_Bool ret = False
+    cdef evas.c_evas.EventKeyDown down_event
+    cdef evas.c_evas.EventKeyUp up_event
+    if t == evas.c_evas.EVAS_CALLBACK_KEY_DOWN:
+        down_event = evas.c_evas.EventKeyDown()
+        down_event._set_obj(event_info)
+        ret = _event_dispatcher(obj, src_obj, t, down_event)
+        down_event._unset_obj()
+    elif t == evas.c_evas.EVAS_CALLBACK_KEY_UP:
+        up_event = evas.c_evas.EventKeyUp()
+        up_event._set_obj(event_info)
+        ret = _event_dispatcher(obj, src_obj, t, up_event)
+        up_event._unset_obj()
+
+
+cdef void _event_data_del_cb(void *data, c_evas.Evas_Object *o, void *event_info) with gil:
+    Py_DECREF(<object>data)
+
 cdef class Canvas(evas.c_evas.Canvas):
     def __init__(self):
         pass
 
 cdef class Object(evas.c_evas.Object):
     cdef object _elmcallbacks
+    cdef object _elm_event_cbs
     """
     elementary.Object
 
@@ -387,6 +422,27 @@ cdef class Object(evas.c_evas.Object):
         if relative:
             rel = relative.obj
         elm_object_focus_custom_chain_prepend(self.obj, obj.obj, rel)
+
+    def elm_event_callback_add(self, func, *args, **kargs):
+        if not callable(func):
+            raise TypeError("func must be callable")
+
+        if self._elm_event_cbs is None:
+            self._elm_event_cbs = []
+
+        if not self._elm_event_cbs:
+            elm_object_event_callback_add(self.obj, _event_callback, NULL)
+
+        data = (func, args, kargs)
+        self._elm_event_cbs.append(data)
+
+    def elm_event_callback_del(self, func, *args, **kargs):
+        data = (func, args, kargs)
+        self._elm_event_cbs.remove(data)
+
+        if not self._elm_event_cbs:
+            elm_object_event_callback_del(self.obj, _event_callback, NULL)
+
 
 def __elm_widget_cls_resolver(long ptr):
     cdef c_evas.Evas_Object *obj = <c_evas.Evas_Object *>ptr

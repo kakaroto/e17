@@ -6,9 +6,13 @@ import ecore
 import evas
 
 #----- Layout -{{{-
+def _event(*args, **kargs):
+    print args, kargs
+
 def layout_clicked(obj, it):
     win = elementary.Window("layout", elementary.ELM_WIN_BASIC)
     win.title_set("Layout")
+    win.elm_event_callback_add(_event)
     win.autodel_set(True)
 
     bg = elementary.Background(win)
@@ -25,6 +29,8 @@ def layout_clicked(obj, it):
     bt = elementary.Button(win)
     bt.label_set("Button 1")
     ly.content_set("element1", bt)
+    bt.elm_event_callback_add(_event)
+    bt.elm_event_callback_del(_event)
     bt.show()
 
     bt = elementary.Button(win)
