@@ -147,6 +147,7 @@ class SwapFile(object):
                         filepath))
                 return
             self.__filepath = filepath
+            _opened_files[self.__filepath] = self
             try:
                 self.__file_check()
             except Exception, e:
