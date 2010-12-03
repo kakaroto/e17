@@ -10,27 +10,43 @@
 #include "azy_private.h"
 
 static void
-_azy_net_header_hash(__UNUSED__ Eina_Hash *hash,
-                      const char           *key,
-                      const char           *data,
-                      Eina_Strbuf          *header)
+azy_net_header_hash_(Eina_Hash            *hash __UNUSED__ ,
+                     const char           *key,
+                     const char           *data,
+                     Eina_Strbuf          *header)
 {
    eina_strbuf_append_printf(header, "%s: %s\r\n", key, data);
 }
 
+
+/**
+ * @brief Create a new #Azy_Net object
+ * This function is used to create an object which will store/manipulate
+ * all network-related information.
+ * @param conn Either an #Ecore_Con_Client or an #Ecore_Con_Server (NOT #NULL)
+ * @return A new #Azy_Net object, or #NULL on failure/error
+ */
 Azy_Net *
 azy_net_new(void *conn)
 {
-   if (!conn)
-     return NULL;
+   Azy_Net *net;
+   
+   if (!conn) return NULL;
 
-   Azy_Net *net = calloc(1, sizeof(Azy_Net));
+   net = calloc(1, sizeof(Azy_Net));
+   EINA_SAFETY_ON_NULL_RETURN_VAL(net, NULL);
    net->conn = conn;
 
    AZY_MAGIC_SET(net, AZY_MAGIC_NET);
    return net;
 }
 
+/**
+ * @brief Free an #Azy_Net object
+ * This function frees an #Azy_Net object, including all data associated with it.
+ * It does NOT free the Ecore_Con client/server object.
+ * @param net The object to free (NOT #NULL)
+ */
 void
 azy_net_free(Azy_Net *net)
 {
@@ -56,6 +72,15 @@ azy_net_free(Azy_Net *net)
    free(net);
 }
 
+/**
+ * @brief Find a value for a http header
+ * This function returns the http header value for the header name
+ * specified.  For example, if name is "Connection", the return
+ * might be "close"
+ * @param net The #Azy_Net object to get the header from
+ * @param name The name of the header (NOT #NULL)
+ * @return The value of the header, or #NULL if header is not present
+ */
 const char *
 azy_net_header_get(Azy_Net   *net,
                     const char *name)
@@ -81,6 +106,12 @@ azy_net_header_get(Azy_Net   *net,
    return value;
 }
 
+/**
+ * @brief Free all headers associated with @p net
+ * This function resets the http headers for @p net, freeing all
+ * memory associated with them.
+ * @param net The #Azy_Net object containing the headers to free
+ */
 void
 azy_net_header_reset(Azy_Net *net)
 {
@@ -98,6 +129,16 @@ azy_net_header_reset(Azy_Net *net)
    net->headers_read = EINA_FALSE;
 }
 
+/**
+ * @brief Set up http basic auth headers using a name and password
+ * This function is used to set up http basic authentication using
+ * base64 encoded copies of @p username and @p password strings.  If you don't know
+ * what this is, see http://en.wikipedia.org/wiki/Basic_access_authentication
+ * @param net The net object
+ * @param username The username to use (NOT #NULL)
+ * @param password The password to use (NOT #NULL)
+ * @return #EINA_TRUE on success, else #EINA_FALSE
+ */
 Eina_Bool
 azy_net_auth_set(Azy_Net   *net,
                   const char *username,
@@ -131,6 +172,16 @@ azy_net_auth_set(Azy_Net   *net,
    return EINA_TRUE;
 }
 
+/**
+ * @brief Get username and password from http basic auth headers
+ * This function is used to get a http basic authentication username/password pair
+ * using base64 encodes of @p username and @p password.  If you don't know
+ * what this is, see http://en.wikipedia.org/wiki/Basic_access_authentication
+ * @param net The net object
+ * @param username A pointer to store the stringshared username in (NOT #NULL)
+ * @param password A pointer to store the stringshared password in (NOT #NULL)
+ * @return #EINA_TRUE on success, else #EINA_FALSE
+ */
 Eina_Bool
 azy_net_auth_get(Azy_Net    *net,
                   const char **username,
@@ -179,6 +230,10 @@ azy_net_auth_get(Azy_Net    *net,
    return EINA_TRUE;
 }
 
+/**
+ * @brief Returns the http uri (path) that requests go to/came from
+ * This function returns the uri specified in the HTTP header
+ */
 const char *
 azy_net_uri_get(Azy_Net *net)
 {
@@ -440,7 +495,7 @@ azy_net_header_create(Azy_Net *net)
                                   net->http.version, net->http.res.http_code, net->http.res.http_msg);
      }
 
-   eina_hash_foreach(net->http.headers, (Eina_Hash_Foreach)_azy_net_header_hash, header);
+   eina_hash_foreach(net->http.headers, (Eina_Hash_Foreach)azy_net_header_hash_, header);
 
    eina_strbuf_append(header, "\r\n");
    return header;
