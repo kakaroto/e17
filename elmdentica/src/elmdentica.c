@@ -1024,8 +1024,8 @@ char *ed_shorten_text(char *text) {
 	char *shortened_text=NULL;
 	char *tmp=NULL;
 
-	if(!re_percent)	re_percent  = g_regex_new("%", G_REGEX_OPTIMIZE, 0, &re_err);
-	tmp = g_regex_replace(re_percent, text, strlen(text), 0, "%%", 0, &re_err);
+	if(!re_percent)	re_percent  = g_regex_new("\%", G_REGEX_OPTIMIZE, 0, &re_err);
+	tmp = g_regex_replace(re_percent, text, strlen(text), 0, "\%\%", 0, &re_err);
 	shortened_text = tmp;
 
 	if(!re_link)	re_link  = g_regex_new("([a-z]+://.*?)(?=\\s|$)", G_REGEX_OPTIMIZE, 0, &re_err);
@@ -1052,13 +1052,13 @@ char *ed_status_label_get(void *data, Evas_Object *obj, const char *part) {
 
 	if (!strcmp(part, "text")) {
 		shortened_text = ed_shorten_text(as->text);
-		snprintf(buf, sizeof(buf), shortened_text);
+		snprintf(buf, sizeof(buf), "%s", shortened_text);
 		free(shortened_text);
 	} else if (!strcmp(part, "name")) {
 		res = asprintf(&key, "%lld", as->user);
 		if(res != -1)  {
 			au = eina_hash_find(userHash, key);
-			snprintf(buf, sizeof(buf), au->name);
+			snprintf(buf, sizeof(buf), "%s", au->name);
 		} else snprintf(buf, sizeof(buf), "unknown");
 	} else if (!strcmp(part, "date")) {
 		time(&now);
