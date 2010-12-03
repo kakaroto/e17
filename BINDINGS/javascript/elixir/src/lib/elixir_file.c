@@ -439,8 +439,8 @@ elixir_file_canonicalize(const char* path)
         char cwd[PATH_MAX];
         char *tmp = NULL;
 
-        cwd = getcwd(cwd, PATH_MAX);
-        if (!cwd) return NULL;
+        tmp = getcwd(cwd, PATH_MAX);
+        if (!tmp) return NULL;
 
         len += strlen(cwd) + 2;
         tmp = alloca(sizeof (char) * len);
