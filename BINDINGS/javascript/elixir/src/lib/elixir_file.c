@@ -436,17 +436,16 @@ elixir_file_canonicalize(const char* path)
 
    if (*path != '/')
      {
-        char *cwd = NULL;
+        char cwd[PATH_MAX];
         char *tmp = NULL;
 
-        cwd = get_current_dir_name();
+        cwd = getcwd(cwd, PATH_MAX);
+        if (!cwd) return NULL;
 
         len += strlen(cwd) + 2;
         tmp = alloca(sizeof (char) * len);
 
         slprintf(tmp, len, "%s/%s", cwd, path);
-
-        free(cwd);
 
         result = tmp;
      }
