@@ -83,21 +83,12 @@ cdef class ToolbarItem(WidgetItem):
             raise ValueError("Object already deleted")
         elm_toolbar_item_del(self.obj)
 
-    def icon_name_get(self):
+    def icon_get(self):
         cdef const_char_ptr i
-        i = elm_toolbar_item_icon_name_get(self.obj)
+        i = elm_toolbar_item_icon_get(self.obj)
         if i == NULL:
             return None
         return i
-
-    property icon_name:
-        def __get__(self):
-            return self.icon_name_get()
-
-    def icon_get(self):
-        cdef c_evas.Evas_Object *icon
-        icon = elm_toolbar_item_icon_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long> icon)
 
     property icon:
         def __get__(self):
