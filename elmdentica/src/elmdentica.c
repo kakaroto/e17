@@ -94,7 +94,7 @@ double mouse_held_down=0;
 
 struct sqlite3 *ed_DB=NULL;
 
-GRegex *re_link=NULL, *re_link_content=NULL, *re_user=NULL, *re_tags=NULL, *re_group=NULL, *re_amp=NULL;
+GRegex *re_percent=NULL, *re_link=NULL, *re_link_content=NULL, *re_user=NULL, *re_tags=NULL, *re_group=NULL, *re_amp=NULL;
 GError *re_err=NULL;
 
 static Elm_Genlist_Item_Class itc1;
@@ -1024,8 +1024,13 @@ char *ed_shorten_text(char *text) {
 	char *shortened_text=NULL;
 	char *tmp=NULL;
 
+	if(!re_percent)	re_percent  = g_regex_new("%", G_REGEX_OPTIMIZE, 0, &re_err);
+	tmp = g_regex_replace(re_percent, text, strlen(text), 0, "%%", 0, &re_err);
+	shortened_text = tmp;
+
 	if(!re_link)	re_link  = g_regex_new("([a-z]+://.*?)(?=\\s|$)", G_REGEX_OPTIMIZE, 0, &re_err);
 	tmp = g_regex_replace(re_link, text, strlen(text), 0, "<u>[link]</u>", 0, &re_err);
+	free(shortened_text);
 	shortened_text = tmp;
 
 	if(!re_amp)	re_amp  = g_regex_new("(&)(?!amp;)", G_REGEX_OPTIMIZE, 0, &re_err);
@@ -2008,6 +2013,7 @@ EAPI int elm_main(int argc, char **argv)
 
 	ed_settings_shutdown();
 
+	if(re_percent) g_regex_unref(re_percent);
 	if(re_link) g_regex_unref(re_link);
 	if(re_user) g_regex_unref(re_user);
 	if(re_tags) g_regex_unref(re_tags);

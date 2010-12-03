@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: elmdentica 0.8.0\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
-"POT-Creation-Date: 2010-12-02 20:20+0000\n"
+"POT-Creation-Date: 2010-12-03 14:02+0000\n"
 "PO-Revision-Date: 2010-11-22 19:38+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/curl.c:92 src/elmdentica.c:1260 src/elmdentica.c:1467
+#: src/curl.c:92 src/elmdentica.c:1265 src/elmdentica.c:1472
 msgid "Close"
 msgstr "Chiudi"
 
@@ -111,158 +111,158 @@ msgstr "Ultimi %d messaggi"
 msgid "Check it out!"
 msgstr "Controllare!"
 
-#: src/elmdentica.c:1065
+#: src/elmdentica.c:1070
 #, c-format
 msgid "a few seconds ago"
 msgstr "pochi secondi fa"
 
-#: src/elmdentica.c:1067
+#: src/elmdentica.c:1072
 #, c-format
 msgid "a few minutes ago"
 msgstr "pochi minuti fa"
 
-#: src/elmdentica.c:1069
+#: src/elmdentica.c:1074
 #, c-format
 msgid "~ %d minutes ago"
 msgstr "~ %d mnuti fa"
 
-#: src/elmdentica.c:1072
+#: src/elmdentica.c:1077
 #, c-format
 msgid "~ %d hours ago"
 msgstr "~ %d ore fa"
 
-#: src/elmdentica.c:1074
+#: src/elmdentica.c:1079
 #, c-format
 msgid "~ 1 hour ago"
 msgstr "~ 1 ora fa"
 
-#: src/elmdentica.c:1076
+#: src/elmdentica.c:1081
 #, c-format
 msgid "on %F"
 msgstr "alle %F"
 
-#: src/elmdentica.c:1079
+#: src/elmdentica.c:1084
 msgid "%F %T"
 msgstr ""
 
-#: src/elmdentica.c:1080 src/elmdentica.c:1081
+#: src/elmdentica.c:1085 src/elmdentica.c:1086
 #, c-format
 msgid "some-when"
 msgstr "non determinato"
 
-#: src/elmdentica.c:1168
+#: src/elmdentica.c:1173
 msgid "Users"
 msgstr "Utenti"
 
-#: src/elmdentica.c:1197
+#: src/elmdentica.c:1202
 msgid "Links"
 msgstr "Link"
 
-#: src/elmdentica.c:1216
+#: src/elmdentica.c:1221
 msgid "Tags"
 msgstr "Tag"
 
-#: src/elmdentica.c:1234
+#: src/elmdentica.c:1239
 msgid "Groups"
 msgstr "Gruppi"
 
-#: src/elmdentica.c:1292
+#: src/elmdentica.c:1297
 msgid "Reply"
 msgstr "Rispondi"
 
-#: src/elmdentica.c:1300
+#: src/elmdentica.c:1305
 msgid "Repeat"
 msgstr "Ripeti"
 
-#: src/elmdentica.c:1308 src/elmdentica.c:1968
+#: src/elmdentica.c:1313 src/elmdentica.c:1973
 msgid "DM"
 msgstr "DM"
 
-#: src/elmdentica.c:1317
+#: src/elmdentica.c:1322
 msgid "Unmark favorite"
 msgstr "Rimuovi da preferiti"
 
-#: src/elmdentica.c:1319
+#: src/elmdentica.c:1324
 msgid "Mark favorite"
 msgstr "Aggiungi ai preferiti"
 
-#: src/elmdentica.c:1328
+#: src/elmdentica.c:1333
 msgid "View related"
 msgstr "Vedi correlati"
 
-#: src/elmdentica.c:1337
+#: src/elmdentica.c:1342
 msgid "Status details"
 msgstr "Dettagli dello stato"
 
-#: src/elmdentica.c:1437
+#: src/elmdentica.c:1442
 msgid "Error"
 msgstr "Errore"
 
-#: src/elmdentica.c:1438
+#: src/elmdentica.c:1443
 msgid "µ-blog Error"
 msgstr "Errore µ-blog"
 
-#: src/elmdentica.c:1701
+#: src/elmdentica.c:1706
 msgid "Send a DM to..."
 msgstr "Invia un DM a..."
 
-#: src/elmdentica.c:1713 src/settings.c:491 src/settings.c:1198
+#: src/elmdentica.c:1718 src/settings.c:491 src/settings.c:1198
 msgid "OK"
 msgstr "OK"
 
-#: src/elmdentica.c:1719 src/settings.c:499 src/settings.c:1207
+#: src/elmdentica.c:1724 src/settings.c:499 src/settings.c:1207
 msgid "Cancel"
 msgstr "Annulla"
 
-#: src/elmdentica.c:1798 src/elmdentica.c:1906
+#: src/elmdentica.c:1803 src/elmdentica.c:1911
 msgid "Type your status here..."
 msgstr "Inserisci il tuo stato qui..."
 
-#: src/elmdentica.c:1923
+#: src/elmdentica.c:1928
 msgid "Timelines"
 msgstr "Cronologea"
 
-#: src/elmdentica.c:1929
+#: src/elmdentica.c:1934
 msgid "Direct Messages"
 msgstr "Messaggi diretti"
 
-#: src/elmdentica.c:1930
+#: src/elmdentica.c:1935
 msgid "Everyone"
 msgstr "Tutti"
 
-#: src/elmdentica.c:1931
+#: src/elmdentica.c:1936
 msgid "Just me"
 msgstr "Solo io"
 
-#: src/elmdentica.c:1932
+#: src/elmdentica.c:1937
 msgid "Favorites"
 msgstr "Preferiti"
 
-#: src/elmdentica.c:1933
+#: src/elmdentica.c:1938
 msgid "Replies/Mentions"
 msgstr "Risposte/Menzioni"
 
-#: src/elmdentica.c:1934
+#: src/elmdentica.c:1939
 msgid "Friends & I"
 msgstr "Io e gli amici"
 
-#: src/elmdentica.c:1941
+#: src/elmdentica.c:1946
 msgid "Post"
 msgstr "Pubblica"
 
-#: src/elmdentica.c:1955
+#: src/elmdentica.c:1960
 msgid "Send"
 msgstr "Invia"
 
-#: src/elmdentica.c:1981
+#: src/elmdentica.c:1986
 msgid "Clear"
 msgstr "Pulisci"
 
-#: src/elmdentica.c:1990
+#: src/elmdentica.c:1995
 msgid "Fullscreen"
 msgstr "Schermo pieno"
 
-#: src/elmdentica.c:1991 src/settings.c:1365
+#: src/elmdentica.c:1996 src/settings.c:1365
 msgid "Settings"
 msgstr "Impostazioni"
 
