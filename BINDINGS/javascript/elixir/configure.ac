@@ -480,6 +480,7 @@ AC_MSG_RESULT($active_emotion_security)
 
 ###############################
 
+EFL_CHECK_PATH_MAX
 EFL_LINKER_FLAG([-Wl,--as-needed])
 
 elixir_cflags="${EMOTION_CFLAGS} ${EDJE_CFLAGS} ${EET_CFLAGS} ${EINA_CFLAGS} ${EVAS_CFLAGS}"
