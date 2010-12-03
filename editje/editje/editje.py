@@ -102,7 +102,7 @@ class Editje(elementary.Window, OpenFileManager):
 
         self._clipboard = None
 
-        self.main_layout.on_key_down_add(self._on_key_down_cb)
+        self.elm_event_callback_add(self._event_cb)
 
         self.__notification = None
 
@@ -117,9 +117,12 @@ class Editje(elementary.Window, OpenFileManager):
             editje.show()
         swapfile.open_new(ok, None)
 
-    def _on_key_down_cb(self, win, event):
+    def _event_cb(self, obj, src, t, event):
+        if t != evas.EVAS_CALLBACK_KEY_DOWN:
+            return False
+
         if self.mode == "Animations":
-            return
+            return False
 
         key = event.keyname
         alt_key = event.modifier_is_set("Alt")
@@ -127,31 +130,38 @@ class Editje(elementary.Window, OpenFileManager):
         shift_key = event.modifier_is_set("Shift")
         super_key = event.modifier_is_set("Super")
 
-        if key == "Delete":
-            name = self.e.part.name
-            if not name:
-                return
+        if not control_key:
+            if key == "Delete":
+                name = self.e.part.name
+                if not name:
+                    return False
 
-            relatives = self.e.relative_parts_get(name)
-            op = Operation("part deletion: " + name)
-            op.undo_callback_add(
-                self.e.part_add_bydata,
-                objects_data.Part(self.e.part_get(name)), relatives)
-            op.redo_callback_add(self.e.part_del, name)
-            self._operation_stack(op)
-            op.redo()
+                relatives = self.e.relative_parts_get(name)
+                op = Operation("part deletion: " + name)
+                op.undo_callback_add(
+                    self.e.part_add_bydata,
+                    objects_data.Part(self.e.part_get(name)), relatives)
+                op.redo_callback_add(self.e.part_del, name)
+                self._operation_stack(op)
+                op.redo()
+                return True
 
-        elif control_key:
+        else:
             if key == "x":
                 self._cut_cb(self, None, None)
+                return True
             elif key == "c":
                 self._copy_cb(self, None, None)
+                return True
             elif key == "v":
                 self._paste_cb(self, None, None)
+                return True
             elif not shift_key and key == "z":
                 self._undo_cb(self, None, None)
+                return True
             elif shift_key and key == "z":
                 self._redo_cb(self, None, None)
+                return True
 
     def _destroy_cb(self, obj):
         if self.e.filename:
