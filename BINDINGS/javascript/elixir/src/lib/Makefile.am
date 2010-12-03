@@ -28,7 +28,7 @@ elixir_context.c	\
 elixir_eet.c		\
 $(sources)
 
-libelixir_la_LDFLAGS = -version-info 0:1:0 -Wl,--as-needed
+libelixir_la_LDFLAGS = -version-info 0:1:0
 libelixir_la_DEPENDENCIES = $(top_builddir)/config.h
 libelixir_la_LIBADD = @elixir_libs@ @EET_LIBS@
 

@@ -13,7 +13,7 @@ pkg_LTLIBRARIES = module.la
 module_la_SOURCES = main_module.c
 
 module_la_LIBADD = $(top_builddir)/src/lib/libelixir.la
-module_la_LDFLAGS = -module -avoid-version -L$(top_builddir)/src/lib -L$(top_builddir)/src/lib/.libs -Wl,--as-needed @elixir_libs@
+module_la_LDFLAGS = -module -avoid-version -L$(top_builddir)/src/lib -L$(top_builddir)/src/lib/.libs @elixir_libs@
 module_la_DEPENDENCIES = $(top_srcdir)/src/include/Elixir.h
 
 include_HEADERS =

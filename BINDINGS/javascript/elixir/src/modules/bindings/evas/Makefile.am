@@ -32,7 +32,7 @@ if BUILD_MODULE_ECORE_EVAS
 module_la_LIBADD += @ECORE_EVAS_LIBS@
 endif
 
-module_la_LDFLAGS = -module -avoid-version -L$(tob_buildir)/src/lib -L$(top_buildir)/src/lib/.libs -Wl,--as-needed
+module_la_LDFLAGS = -module -avoid-version -L$(tob_buildir)/src/lib -L$(top_buildir)/src/lib/.libs
 module_la_DEPENDENCIES = $(top_builddir)/config.h
 
 endif

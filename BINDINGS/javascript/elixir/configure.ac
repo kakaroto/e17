@@ -480,6 +480,8 @@ AC_MSG_RESULT($active_emotion_security)
 
 ###############################
 
+EFL_LINKER_FLAG([-Wl,--as-needed])
+
 elixir_cflags="${EMOTION_CFLAGS} ${EDJE_CFLAGS} ${EET_CFLAGS} ${EINA_CFLAGS} ${EVAS_CFLAGS}"
 elixir_libs="${EMOTION_LIBS} ${EDJE_LIBS} ${EET_LIBS} ${zlib_libs} ${gcrypt_libs} ${tomcrypt_libs} ${magic_libs} ${EINA_LIBS}"
 

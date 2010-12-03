@@ -8,14 +8,14 @@ endif
 elixir_SOURCES = elixir_main.c
 
 elixir_LDADD = $(top_builddir)/src/lib/libelixir.la @EINA_LIBS@
-elixir_LDFLAGS = -Wl,--as-needed
+elixir_LDFLAGS =
 elixir_DEPENDENCIES = $(top_builddir)/src/include/Elixir.h
 
 if BUILD_MODULE_EET
 elixir_compile_SOURCES = elixir_compile_main.c
 
 elixir_compile_LDADD = $(top_builddir)/src/lib/libelixir.la @EINA_LIBS@ @EET_LIBS@
-elixir_compile_LDFLAGS = -Wl,--as-needed
+elixir_compile_LDFLAGS =
 elixir_compile_DEPENDENCIES = $(top_builddir)/src/include/Elixir.h
 
 if ELIXIR_STATIC
