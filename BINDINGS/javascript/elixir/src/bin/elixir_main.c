@@ -15,6 +15,7 @@
 #include <Elixir.h>
 
 #include "config.h"
+#include "elixir_private.h"
 
 extern char **environ;
 
