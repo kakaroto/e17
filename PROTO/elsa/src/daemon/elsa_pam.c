@@ -77,9 +77,11 @@ _elsa_pam_conv(int num_msg, const struct pam_message **msg,
 
 
 int
-elsa_pam_open_session() {
+elsa_pam_open_session()
+{
    last_result = pam_setcred(_pam_handle, PAM_ESTABLISH_CRED);
-   switch (last_result) {
+   switch (last_result)
+     {
       case PAM_CRED_ERR:
       case PAM_USER_UNKNOWN:
          fprintf(stderr, PACKAGE": PAM user unknow\n");
@@ -94,7 +96,17 @@ elsa_pam_open_session() {
          return 1;
       case PAM_SUCCESS:
          break;
-   }
+     }
+   last_result = pam_open_session(_pam_handle, 0);
+   switch(last_result)
+     {
+      default:
+         //case PAM_SESSION_ERROR: ???
+         pam_setcred(_pam_handle, PAM_DELETE_CRED);
+         elsa_pam_end();
+      case PAM_SUCCESS:
+         break;
+     }
    return 0;
 }
 
@@ -133,9 +145,11 @@ elsa_pam_end() {
 }
 
 int
-elsa_pam_authenticate() {
+elsa_pam_authenticate()
+{
    last_result = pam_authenticate(_pam_handle, 0);
-   switch (last_result) {
+   switch (last_result)
+     {
       case PAM_ABORT:
       case PAM_AUTHINFO_UNAVAIL:
          fprintf(stderr, PACKAGE": PAM error !\n");
@@ -158,7 +172,23 @@ elsa_pam_authenticate() {
          return 1;
       case PAM_SUCCESS:
          break;
-   }
+     }
+   last_result=pam_acct_mgmt(_pam_handle, PAM_SILENT);
+   switch(last_result)
+     {
+      default:
+         //case PAM_NEW_AUTHTOKEN_REQD:
+      case PAM_ACCT_EXPIRED:
+      case PAM_USER_UNKNOWN:
+         elsa_pam_end();
+         return 1;
+      case PAM_AUTH_ERR:
+      case PAM_PERM_DENIED:
+         return 1;
+      case PAM_SUCCESS:
+         break;
+     }
+
    return 0;
 }
 
