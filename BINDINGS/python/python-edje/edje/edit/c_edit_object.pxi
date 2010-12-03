@@ -303,3 +303,28 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
                return c_evas.eina_error_msg_get(last_error)
 
             return None
+
+    # Script
+    property script:
+        def __get__(self):
+            cdef char *code
+            code = edje_edit_script_get(self.obj)
+            if code == NULL:
+                return None
+            r = code
+            free(code)
+            return r
+
+        def __set__(self, code):
+            cdef char *c
+            if code:
+                c = code
+            else:
+                c = NULL
+            edje_edit_script_set(self.obj, c)
+
+        def __del__(self):
+            edje_edit_script_set(self.obj, NULL)
+
+    def script_compile(self):
+        return bool(edje_edit_script_compile(self.obj))

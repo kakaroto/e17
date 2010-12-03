@@ -325,6 +325,11 @@ cdef extern from "Edje_Edit.h":
 
     # SCRIPTS API
     char* edje_edit_script_get(evas.c_evas.Evas_Object *obj)
+    void  edje_edit_script_set(evas.c_evas.Evas_Object *obj, const_char_ptr code)
+    char* edje_edit_script_program_get(evas.c_evas.Evas_Object *obj, const_char_ptr prog)
+    void  edje_edit_script_program_set(evas.c_evas.Evas_Object *obj, const_char_ptr prog, const_char_ptr code)
+    evas.c_evas.Eina_Bool edje_edit_script_compile(evas.c_evas.Evas_Object *obj)
+
 
 cdef public class EdjeEdit(edje.c_edje.Edje) [object PyEdjeEdit, type PyEdjeEdit_Type]:
     pass

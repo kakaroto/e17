@@ -210,3 +210,24 @@ cdef class Program:
 
             edje_edit_program_api_description_set(self.edje.obj, self.name, d)
             edje_edit_program_api_name_set(self.edje.obj, self.name, n)
+
+    property script:
+        def __get__(self):
+            cdef char *code
+            code = edje_edit_script_program_get(self.edje.obj, self.name)
+            if code == NULL:
+                return None
+            r = code
+            free(code)
+            return r
+
+        def __set__(self, code):
+            cdef char *c
+            if code:
+                c = code
+            else:
+                c = NULL
+            edje_edit_script_program_set(self.edje.obj, self.name, c)
+
+        def __del__(self):
+            edje_edit_script_program_set(self.edje.obj, self.name, NULL)
