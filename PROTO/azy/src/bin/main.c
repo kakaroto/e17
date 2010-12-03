@@ -42,8 +42,8 @@
   EL(0, "#line %d \"%s\"", _line, _file)
 
 #define GET_NAME(func)                                             \
-  if (s->stub_##func)                                              \
-    E(0, "%s%sModule_"#func, azy->name, s->name);                  \
+  if (s->stub_##func && s->stub_##func[0])                          \
+    E(0, "%s%s%s_module_"#func, name, sep, s->name);                  \
   else                                                             \
     E(0, "NULL")
 
@@ -71,7 +71,9 @@ static Eina_Bool azy_gen;
 static char *out_dir = ".";
 static char *azy_file;
 static FILE *f;
-static const char *i, *b, *blob;
+static const char *i, *b;
+static const char *sep;
+static const char *name;
 
 static const Ecore_Getopt opts = {
    "azy_parser",
@@ -204,8 +206,8 @@ gen_type_marshalizers(Azy_Typedef *t,
 
         EINA_LIST_FOREACH(t->struct_members, l, m)
           {
-             EL(1, "%sif (!%s(azy_value_struct_member_get(_struct, \"%s\"), %s&_tmp_nstruct->%s))", l->prev ? "else " : "",
-                m->type->demarch_name, m->name, (!strcmp(m->type->demarch_name, "azy_value_to_bool")) ? "(int*)" : "", m->name);
+             EL(1, "%sif (!%s(azy_value_struct_member_get(_struct, \"%s\"), &_tmp_nstruct->%s))", l->prev ? "else " : "",
+                m->type->demarch_name, m->name, m->name);
              EL(2, "goto error;");
           }
           
@@ -260,8 +262,7 @@ gen_type_marshalizers(Azy_Typedef *t,
         NL;
         EL(1, "EINA_LIST_FOREACH(azy_value_children_items_get(_array), _item, v)");
         EL(1, "{");
-        EL(2, "%s _item_value = %s;", (t->item_type->ctype == b) ? "int" : t->item_type->ctype,
-           t->item_type->cnull);
+        EL(2, "%s _item_value = %s;", t->item_type->ctype, t->item_type->cnull);
         NL;
         EL(2, "if (!%s(v, &_item_value))", t->item_type->demarch_name);
         EL(2, "{");
@@ -441,8 +442,6 @@ gen_type_print(Azy_Typedef *t,
                {
                   if (m->type->ctype == b)
                     EL(1, "printf(\"%s: %s\\n\", (a->%s) ? \"yes\" : \"no\");", m->name, m->type->fmt_str, m->name);
-                  else if (m->type->cname == blob)
-                    EL(1, "printf(\"%s: Binary data\");", m->name);
                   else
                     EL(1, "printf(\"%s: %s\\n\", a->%s);", m->name, m->type->fmt_str, m->name);
                }
@@ -462,13 +461,6 @@ gen_type_print(Azy_Typedef *t,
         NL;
         EL(1, "if (!a)");
         EL(2, "return;");
-        if (t->item_type->cname == blob)
-          {
-             EL(1, "printf(\"Array of binary data\");");
-             EL(0, "}");
-             NL;
-             return;
-          }
         EL(1, "EINA_LIST_FOREACH(a, l, t)");
         if (t->item_type->print_func)
           EL(2, "%s(pre, indent + 1, t);", t->item_type->print_func);
@@ -619,22 +611,6 @@ gen_type_defs(Eina_List *types)
 
    EINA_LIST_FOREACH(types, j, t)
      {
-        if (t->type == TD_STRUCT)
-          {
-             if (t->doc)
-               {
-                  NL;
-                  EL(0, "%s", t->doc);
-               }
-
-             EL(0, "typedef struct _%s %s;", t->cname, t->cname);
-          }
-     }
-
-   NL;
-
-   EINA_LIST_FOREACH(types, j, t)
-     {
         Azy_Struct_Member *m;
 
         if (t->type == TD_STRUCT)
@@ -642,8 +618,7 @@ gen_type_defs(Eina_List *types)
              if (t->doc)
                EL(0, "%s", t->doc);
 
-             EL(0, "struct _%s",
-                t->cname);
+             EL(0, "typedef struct %s", t->cname);
              EL(0, "{");
 
              EINA_LIST_FOREACH(t->struct_members, l, m)
@@ -652,7 +627,7 @@ gen_type_defs(Eina_List *types)
                      (m->type->type == TD_ARRAY) ? m->type->cname : "");
                }
 
-             EL(0, "};");
+             EL(0, "} %s;", t->cname);
              NL;
           }
      }
@@ -701,7 +676,7 @@ gen_errors_header(Azy_Server_Module *s)
    NL;
 
    if (s)
-     EL(0, "void azy_err_init_%s(void);", s->name);
+     EL(0, "void azy_err_init_%s%s%s(void);", name, sep, s->name);
    else
      EL(0, "void azy_err_init(void);");
 }
@@ -721,7 +696,7 @@ gen_errors_impl(Azy_Server_Module *s)
      {
         EINA_LIST_FOREACH(azy->modules, j, s)
           if (s->errors)
-            EL(0, "extern void azy_err_init_%s(void);", s->name);
+            EL(0, "extern void azy_err_init_%s%s%s(void);", name, sep, s->name);
      }
 
    EINA_LIST_FOREACH(errs, j, e)
@@ -732,7 +707,7 @@ gen_errors_impl(Azy_Server_Module *s)
      }
 
    if (s)
-     EL(0, "void azy_err_init_%s(void)", s->name);
+     EL(0, "void azy_err_init_%s%s%s(void)", name, sep, s->name);
    else
      EL(0, "void azy_err_init(void)");
    EL(0, "{");
@@ -741,7 +716,7 @@ gen_errors_impl(Azy_Server_Module *s)
      {
         EINA_LIST_FOREACH(azy->modules, j, s)
           if (s->errors)
-            EL(1, "azy_err_init_%s();", s->name);
+            EL(1, "azy_err_init_%s%s%s();", name, sep, s->name);
      }
    EINA_LIST_FOREACH(errs, j, e)
      EL(1, "%s = eina_error_msg_static_register(%s_str);", e->cenum, e->cenum);
@@ -756,10 +731,10 @@ gen_common_headers(void)
    Eina_List *j;
    Azy_Typedef *t;
    
-   OPEN("%s/%s%sCommon.h", out_dir, azy->name, (azy->name && azy->name[0]) ? "_" : "");
+   OPEN("%s/%s%sCommon.h", out_dir, name, sep);
 
-   EL(0, "#ifndef %s_Common_H__", (azy->name && azy->name[0]) ? azy->name : "AZY");
-   EL(0, "#define %s_Common_H__", (azy->name && azy->name[0]) ? azy->name : "AZY");
+   EL(0, "#ifndef %s_Common_H", (azy->name) ? azy->name : "AZY");
+   EL(0, "#define %s_Common_H", (azy->name) ? azy->name : "AZY");
    NL;
 
    EL(0, "#include <Azy.h>");
@@ -788,9 +763,9 @@ gen_common_impl(void)
    Eina_List *j;
    Azy_Typedef *t;
    
-   OPEN("%s/%s%sCommon.c", out_dir, azy->name, (azy->name && azy->name[0]) ? "_" : "");
+   OPEN("%s/%s%sCommon.c", out_dir, name, sep);
 
-   EL(0, "#include \"%s%sCommon.h\"", azy->name, (azy->name && azy->name[0]) ? "_" : "");
+   EL(0, "#include \"%s%sCommon.h\"", name, sep);
    EL(0, "#include <string.h>");
    NL;
 
@@ -814,14 +789,14 @@ gen_server_headers(Azy_Server_Module *s)
    Azy_Method_Param *p;
    Azy_Method *method;
    
-   OPEN("%s/%s%s%s.azy_server_stubs.h", out_dir, azy->name, (azy->name && azy->name[0]) ? "_" : "", s->name);
+   OPEN("%s/%s%s%s.azy_server_stubs.h", out_dir, name, sep, s->name);
 
-   EL(0, "#ifndef %s_%s_STUBS_H__", (azy->name && azy->name[0]) ? azy->name : "AZY", s->name);
-   EL(0, "#define %s_%s_STUBS_H__", (azy->name && azy->name[0]) ? azy->name : "AZY", s->name);
+   EL(0, "#ifndef %s_%s_STUBS_H", (azy->name) ? azy->name : "AZY", s->name);
+   EL(0, "#define %s_%s_STUBS_H", (azy->name) ? azy->name : "AZY", s->name);
    NL;
 
    EL(0, "#include <Azy.h>");
-   EL(0, "#include \"%s%sCommon.h\"", azy->name, (azy->name && azy->name[0]) ? "_" : "");
+   EL(0, "#include \"%s%sCommon.h\"", name, sep);
    if (s->stub_header)
      {
         EL(0, "%s", s->stub_header);
@@ -838,48 +813,43 @@ gen_server_headers(Azy_Server_Module *s)
         EL(0, " */ ");
      }
 
-   EL(0, "typedef struct _%s%sModule %s%sModule;",
-      azy->name, s->name, azy->name,
-      s->name);
-   NL;
-
-   EL(0, "struct _%s%sModule", azy->name, s->name);
+   EL(0, "typedef struct %s%s%s_Module", name, sep, s->name);
    EL(0, "{");
    /* FIXME: does this need to be output at all if there is no attrs stub? */
    EL(0, "%s", s->stub_attrs ? s->stub_attrs : "");
-   EL(0, "};");
+   EL(0, "} %s%s%s_Module;", name, sep, s->name);
    NL;
 
-   EL(0, "#define %s%s_module_data_get(Azy_Server_Module) (%s%sModule*)azy_server_module_data_get((Azy_Server_Module))",
-      azy->name, s->name);
+   EL(0, "#define %s%s%s_module_data_get(Azy_Server_Module) (%s%s%s_Module*)azy_server_module_data_get((Azy_Server_Module))",
+      name, sep, s->name, name, sep, s->name);
 
-   if (s->stub_init)
+   if (s->stub_init && s->stub_init[0])
      {
         EL(0, "/** Module constructor.");
         EL(0, " * ");
-        EL(0, " * @param _module Module object.");
+        EL(0, " * @param module Module object.");
         EL(0, " * ");
         EL(0, " * @return EINA_TRUE if all is ok.");
         EL(0, " */ ");
         EL(0,
-           "Eina_Bool %s%sModule_init(Azy_Server_Module* _module);",
-           azy->name, s->name);
+           "Eina_Bool %s%s%s_module_init(Azy_Server_Module *module);",
+           name, sep, s->name);
         NL;
      }
 
-   if (s->stub_shutdown)
+   if (s->stub_shutdown && s->stub_shutdown[0])
      {
         EL(0, "/** Module destructor.");
         EL(0, " * ");
         EL(0, " * @param _module Module object.");
         EL(0, " */ ");
         EL(0,
-           "void %s%sModule_shutdown(Azy_Server_Module* _module);",
-           azy->name, s->name);
+           "void %s%s%s_module_shutdown(Azy_Server_Module* _module);",
+           name, sep, s->name);
         NL;
      }
 
-   if (s->stub_pre)
+   if (s->stub_pre && s->stub_pre[0])
      {
         EL(0, "/** Pre-call hook.");
         EL(0, " * ");
@@ -890,12 +860,12 @@ gen_server_headers(Azy_Server_Module *s)
            " * @return EINA_TRUE if you want to continue execution of the call.");
         EL(0, " */ ");
         EL(0,
-           "Eina_Bool %s%sModule_pre(Azy_Server_Module* _module, Azy_Content* _content);",
-           azy->name, s->name);
+           "Eina_Bool %s%s%s_module_pre(Azy_Server_Module* _module, Azy_Content* _content);",
+           name, sep, s->name);
         NL;
      }
 
-   if (s->stub_post)
+   if (s->stub_post && s->stub_post[0])
      {
         EL(0, "/** Post-call hook.");
         EL(0, " * ");
@@ -906,12 +876,12 @@ gen_server_headers(Azy_Server_Module *s)
            " * @return EINA_TRUE if you want to continue execution of the call.");
         EL(0, " */ ");
         EL(0,
-           "Eina_Bool %s%sModule_post(Azy_Server_Module* _module, Azy_Content* _content);",
-           azy->name, s->name);
+           "Eina_Bool %s%s%s_module_post(Azy_Server_Module* _module, Azy_Content* _content);",
+           name, sep, s->name);
         NL;
      }
 
-   if (s->stub_fallback)
+   if (s->stub_fallback && s->stub_fallback[0])
      {
         EL(0,
            "/** Fallback hook. (for undefined methods)");
@@ -923,12 +893,12 @@ gen_server_headers(Azy_Server_Module *s)
            " * @return EINA_TRUE if you handled the call.");
         EL(0, " */ ");
         EL(0,
-           "Eina_Bool %s%sModule_fallback(Azy_Server_Module* _module, Azy_Content* _content);",
-           azy->name, s->name);
+           "Eina_Bool %s%s%s_module_fallback(Azy_Server_Module* _module, Azy_Content* _content);",
+           name, sep, s->name);
         NL;
      }
 
-   if (s->stub_download)
+   if (s->stub_download && s->stub_download[0])
      {
         EL(0, "/** Download hook.");
         EL(0, " * ");
@@ -938,12 +908,12 @@ gen_server_headers(Azy_Server_Module *s)
            " * @return EINA_TRUE if you want to continue execution of the call.");
         EL(0, " */ ");
         EL(0,
-           "Eina_Bool %s%sModule_download(Azy_Server_Module* _module);",
-           azy->name, s->name);
+           "Eina_Bool %s%s%s_module_download(Azy_Server_Module* _module);",
+           name, sep, s->name);
         NL;
      }
 
-   if (s->stub_upload)
+   if (s->stub_upload && s->stub_download[0])
      {
         EL(0, "/** Upload hook.");
         EL(0, " * ");
@@ -953,14 +923,14 @@ gen_server_headers(Azy_Server_Module *s)
            " * @return EINA_TRUE if you want to continue execution of the call.");
         EL(0, " */ ");
         EL(0,
-           "Eina_Bool %s%sModule_upload(Azy_Server_Module* _module);",
-           azy->name, s->name);
+           "Eina_Bool %s%s%s_module_upload(Azy_Server_Module* _module);",
+           name, sep, s->name);
         NL;
      }
 
    EINA_LIST_FOREACH(s->methods, j, method)
      {
-        if (method->doc)
+        if (method->doc && method->doc[0])
           EL(0, "%s", method->doc);
         else
           {
@@ -979,8 +949,8 @@ gen_server_headers(Azy_Server_Module *s)
              EL(0, " */ ");
           }
 
-        E(0, "%s %s%sModule_%s(Azy_Server_Module* _module",
-          method->return_type->ctype, azy->name, s->name,
+        E(0, "%s %s%s%s_module_%s(Azy_Server_Module* _module",
+          method->return_type->ctype, name, sep, s->name,
           method->name);
 
         EINA_LIST_FOREACH(method->params, k, p)
@@ -996,18 +966,17 @@ gen_server_headers(Azy_Server_Module *s)
    fclose(f);
 
 
-   OPEN("%s/%s%s%s.azy_server.h", out_dir, azy->name, (azy->name && azy->name[0]) ? "_" : "", s->name);
-   EL(0, "#ifndef %s_%s_AZY_SERVER_H__", (azy->name && azy->name[0]) ? azy->name : "AZY", s->name);
-   EL(0, "#define %s_%s_AZY_SERVER_H__", (azy->name && azy->name[0]) ? azy->name : "AZY", s->name);
+   OPEN("%s/%s%s%s.azy_server.h", out_dir, name, sep, s->name);
+   EL(0, "#ifndef %s_%s_AZY_SERVER_H", (azy->name) ? azy->name : "AZY", s->name);
+   EL(0, "#define %s_%s_AZY_SERVER_H", (azy->name) ? azy->name : "AZY", s->name);
    NL;
 
    EL(0, "#include <Azy.h>");
-   EL(0, "#include \"%s%s%s.azy_server_stubs.h\"", azy->name, (azy->name && azy->name[0]) ? "_" : "", s->name);
+   EL(0, "#include \"%s%s%s.azy_server_stubs.h\"", name, sep, s->name);
    NL;
 
-   EL(0, "Azy_Server_Module_Def* __%s%sModule_def();",
-      azy->name,
-      s->name);
+   EL(0, "Azy_Server_Module_Def* %s%s%s_module_def();",
+      name, sep, s->name);
    NL;
 
    EL(0, "#endif");
@@ -1021,21 +990,21 @@ gen_server_impl(Azy_Server_Module *s)
    Azy_Method *method;
    Azy_Method_Param *p;
 
-   OPEN("%s/%s%s%s.azy_server.c", out_dir, azy->name, (azy->name && azy->name[0]) ? "_" : "", s->name);
+   OPEN("%s/%s%s%s.azy_server.c", out_dir, name, sep, s->name);
 
-   EL(0, "#include \"%s%s%s.azy_server.h\"", azy->name, (azy->name && azy->name[0]) ? "_" : "", s->name);
-   EL(0, "#include \"%s%s%s.azy_server_stubs.h\"", azy->name, (azy->name && azy->name[0]) ? "_" : "", s->name);
+   EL(0, "#include \"%s%s%s.azy_server.h\"", name, sep, s->name);
+   EL(0, "#include \"%s%s%s.azy_server_stubs.h\"", name, sep, s->name);
    NL;
 
 
-   EL(0, "static Azy_Server_Module_Def *__module = NULL;");
+   EL(0, "static Azy_Server_Module_Def *module = NULL;");
    NL;
    
    EINA_LIST_FOREACH(s->methods, j, method)
      {
         int n = 0;
 
-        EL(0, "static Eina_Bool __method_%s(Azy_Server_Module* _module, Azy_Content* _content)", method->name);
+        EL(0, "static Eina_Bool method_%s(Azy_Server_Module* _module, Azy_Content* _content)", method->name);
         EL(0, "{");
         // forward declarations
         EL(1, "Eina_Bool _retval = EINA_FALSE;");
@@ -1082,7 +1051,7 @@ gen_server_impl(Azy_Server_Module *s)
 
 // call stub
         NL;
-        E(1, "_nreturn_value = %s%sModule_%s(_module", azy->name, s->name, method->name);
+        E(1, "_nreturn_value = %s%s%s_module_%s(_module", name, sep, s->name, method->name);
 
         EINA_LIST_FOREACH(method->params, k, p)
           {
@@ -1127,57 +1096,57 @@ gen_server_impl(Azy_Server_Module *s)
 
    NL;
 
-   EL(0, "Azy_Server_Module_Def *\n__%s%sModule_def(void)", azy->name, s->name);
+   EL(0, "Azy_Server_Module_Def *\n%s%s%s_module_def(void)", name, sep, s->name);
    EL(0, "{");
-   EL(1, "Azy_Server_Module_Method *__method;");
+   EL(1, "Azy_Server_Module_Method *method;");
    NL;
-   EL(1, "if (__module) return __module;");
+   EL(1, "if (module) return module;");
    NL;
-   EL(1, "__module = azy_server_module_def_new(\"%s%s\");", azy->name, s->name);
-   EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(__module, NULL);");
+   EL(1, "module = azy_server_module_def_new(\"%s%s%s\");", name, sep, s->name);
+   EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(module, NULL);");
    NL;
    
-   E(1, "azy_server_module_def_init_shutdown_set(__module, ");
+   E(1, "azy_server_module_def_init_shutdown_set(module, ");
    GET_NAME(init);
    E(0, ", ");
    GET_NAME(shutdown);
    EL(0, ");");
 
-   E(1, "azy_server_module_def_pre_post_set(__module, ");
+   E(1, "azy_server_module_def_pre_post_set(module, ");
    GET_NAME(pre);
    E(0, ", ");
    GET_NAME(post);
    EL(0, ");");
 
-   E(1, "azy_server_module_def_download_upload_set(__module, ");
+   E(1, "azy_server_module_def_download_upload_set(module, ");
    GET_NAME(download);
    E(0, ", ");
    GET_NAME(upload);
    EL(0, ");");
 
-   E(1, "azy_server_module_def_fallback_set(__module, ");
+   E(1, "azy_server_module_def_fallback_set(module, ");
    GET_NAME(fallback);
    EL(0, ");");
    
-   EL(1, "azy_server_module_size_set(__module, sizeof(%s%sModule));", azy->name, s->name);
+   EL(1, "azy_server_module_size_set(module, sizeof(%s%s%s_Module));", name, sep, s->name);
    EINA_LIST_FOREACH(s->methods, j, method)
      {
-        EL(1, "__method = azy_server_module_method_new(\"%s\", __method_%s);", method->name, method->name);
-        EL(1, "EINA_SAFETY_ON_NULL_GOTO(__method, error);");
-        EL(1, "azy_server_module_def_method_add(__module, __method);");
+        EL(1, "method = azy_server_module_method_new(\"%s\", method_%s);", method->name, method->name);
+        EL(1, "EINA_SAFETY_ON_NULL_GOTO(method, error);");
+        EL(1, "azy_server_module_def_method_add(module, method);");
      }
    NL;
-   EL(1, "return __module;");
+   EL(1, "return module;");
    EL(0, "error:");
-   EL(2, "azy_server_module_def_free(__module);");
+   EL(2, "azy_server_module_def_free(module);");
    EL(1, "return NULL;");
    EL(0, "}");
    fclose(f);
 
 
    /* ************************STUBS************************* */
-   OPEN("%s/%s%s%s.azy_server_stubs.c", out_dir, azy->name, (azy->name && azy->name[0]) ? "_" : "", s->name);
-   EL(0, "#include \"%s%s%s.azy_server_stubs.h\"", azy->name, (azy->name && azy->name[0]) ? "_" : "", s->name);
+   OPEN("%s/%s%s%s.azy_server_stubs.c", out_dir, name, sep, s->name);
+   EL(0, "#include \"%s%s%s.azy_server_stubs.h\"", name, sep, s->name);
    NL;
 
    if (s->stub_header)
@@ -1188,12 +1157,12 @@ gen_server_impl(Azy_Server_Module *s)
 
    if (s->stub_init)
      {
-        EL(0, "Eina_Bool %s%sModule_init(Azy_Server_Module* _module)",
-           azy->name, s->name);
+        EL(0, "Eina_Bool %s%s%s_module_init(Azy_Server_Module* _module)",
+           name, sep, s->name);
         EL(0, "{");
 
         if (strstr(s->stub_init, "_priv"))
-          EL(1, "%s%sModule* _priv = azy_server_module_data_get(_module);", azy->name, s->name);
+          EL(1, "%s%s%s_module* _priv = azy_server_module_data_get(_module);", name, sep, s->name);
         else
           EL(1, "(void)_module;");
 
@@ -1206,13 +1175,13 @@ gen_server_impl(Azy_Server_Module *s)
    if (s->stub_shutdown)
      {
         EL(0,
-           "void %s%sModule_shutdown(Azy_Server_Module* _module)",
-           azy->name, s->name);
+           "void %s%s%s_module_shutdown(Azy_Server_Module* _module)",
+           name, sep, s->name);
         EL(0, "{");
 
         if (strstr(s->stub_shutdown, "_priv"))
-          EL(1, "%s%sModule* _priv = azy_server_module_data_get(_module);",
-             azy->name, s->name);
+          EL(1, "%s%s%s_module* _priv = azy_server_module_data_get(_module);",
+             name, sep, s->name);
         else
           EL(1, "(void)_module;");
 
@@ -1223,13 +1192,13 @@ gen_server_impl(Azy_Server_Module *s)
 
    if (s->stub_pre)
      {
-        EL(0, "Eina_Bool %s%sModule_pre(Azy_Server_Module* _module, Azy_Content* _content)", azy->name, s->name);
+        EL(0, "Eina_Bool %s%s%s_module_pre(Azy_Server_Module* _module, Azy_Content* _content)", name, sep, s->name);
         EL(0, "{");
 
         EL(1, "(void)_content;");
         if (strstr(s->stub_pre, "_priv"))
-          EL(1, "%s%sModule* _priv = azy_server_module_data_get(_module);",
-             azy->name, s->name);
+          EL(1, "%s%s%s_module* _priv = azy_server_module_data_get(_module);",
+             name, sep, s->name);
         else
           EL(1, "(void)_module;");
 
@@ -1242,15 +1211,15 @@ gen_server_impl(Azy_Server_Module *s)
    if (s->stub_post)
      {
         EL(0,
-           "Eina_Bool %s%sModule_post(Azy_Server_Module* _module, Azy_Content* _content)",
-           azy->name, s->name);
+           "Eina_Bool %s%s%s_module_post(Azy_Server_Module* _module, Azy_Content* _content)",
+           name, sep, s->name);
         EL(0, "{");
 
         EL(1, "(void)_content;");
         if (strstr(s->stub_post, "_priv"))
           EL(1,
-             "%s%sModule* _priv = azy_server_module_data_get(_module);",
-             azy->name, s->name);
+             "%s%s%s_module* _priv = azy_server_module_data_get(_module);",
+             name, sep, s->name);
         else
           EL(1, "(void)_module;");
 
@@ -1262,13 +1231,13 @@ gen_server_impl(Azy_Server_Module *s)
 
    if (s->stub_fallback)
      {
-        EL(0, "Eina_Bool %s%sModule_fallback(Azy_Server_Module* _module, Azy_Content* _content)",
-           azy->name, s->name);
+        EL(0, "Eina_Bool %s%s%s_module_fallback(Azy_Server_Module* _module, Azy_Content* _content)",
+           name, sep, s->name);
         EL(0, "{");
 
         if (strstr(s->stub_fallback, "_priv"))
-          EL(1, "%s%sModule* _priv = azy_server_module_data_get(_module);",
-             azy->name, s->name);
+          EL(1, "%s%s%s_module* _priv = azy_server_module_data_get(_module);",
+             name, sep, s->name);
         else
           EL(1, "(void)_module;");
 
@@ -1281,14 +1250,14 @@ gen_server_impl(Azy_Server_Module *s)
    if (s->stub_download)
      {
         EL(0,
-           "Eina_Bool %s%sModule_download(Azy_Server_Module* _module)",
-           azy->name, s->name);
+           "Eina_Bool %s%s%s_module_download(Azy_Server_Module* _module)",
+           name, sep, s->name);
         EL(0, "{");
 
         if (strstr(s->stub_download, "_priv"))
           EL(1,
-             "%s%sModule* _priv = azy_server_module_data_get(_module);",
-             azy->name, s->name);
+             "%s%s%s_module* _priv = azy_server_module_data_get(_module);",
+             name, sep, s->name);
         else
           EL(1, "(void)_module;");
 
@@ -1303,14 +1272,14 @@ gen_server_impl(Azy_Server_Module *s)
    if (s->stub_upload)
      {
         EL(0,
-           "Eina_Bool %s%sModule_upload(Azy_Server_Module* _module)",
-           azy->name, s->name);
+           "Eina_Bool %s%s%s_module_upload(Azy_Server_Module* _module)",
+           name, sep, s->name);
         EL(0, "{");
 
         if (strstr(s->stub_upload, "_priv"))
           EL(1,
-             "%s%sModule* _priv = azy_server_module_data_get(_module);",
-             azy->name, s->name);
+             "%s%s%s_module* _priv = azy_server_module_data_get(_module);",
+             name, sep, s->name);
         else
           EL(1, "(void)_module;");
 
@@ -1323,8 +1292,8 @@ gen_server_impl(Azy_Server_Module *s)
 
    EINA_LIST_FOREACH(s->methods, j, method)
      {
-        E(0, "%s %s%sModule_%s(Azy_Server_Module* _module",
-          method->return_type->ctype, azy->name, s->name,
+        E(0, "%s %s%s%s_module_%s(Azy_Server_Module* _module",
+          method->return_type->ctype, name, sep, s->name,
           method->name);
 
         EINA_LIST_FOREACH(method->params, k, p)
@@ -1339,7 +1308,7 @@ gen_server_impl(Azy_Server_Module *s)
 * worth iiiiiiiiiiiiiiiiiiiiit
 */
         if ((method->stub_impl) && (strstr(method->stub_impl, "_PRIV") || strstr(method->stub_impl, "_priv")))
-          EL(1, "%s%sModule* _priv = azy_server_module_data_get(_module);", azy->name, s->name);
+          EL(1, "%s%s%s_Module* _priv = azy_server_module_data_get(_module);", name, sep, s->name);
         else
           EL(1, "(void)_module;");
 
@@ -1368,13 +1337,13 @@ gen_client_headers(Azy_Server_Module *s)
    Azy_Method *method;
    Azy_Method_Param *p;
 
-   OPEN("%s/%s%s%s.azy_client.h", out_dir, azy->name, (azy->name && azy->name[0]) ? "_" : "", s->name);
-   EL(0, "#ifndef %s_%s_AZY_CLIENT_H__", (azy->name && azy->name[0]) ? azy->name : "AZY", s->name);
-   EL(0, "#define %s_%s_AZY_CLIENT_H__", (azy->name && azy->name[0]) ? azy->name : "AZY", s->name);
+   OPEN("%s/%s%s%s.azy_client.h", out_dir, name, sep, s->name);
+   EL(0, "#ifndef %s_%s_AZY_CLIENT_H", (azy->name) ? azy->name : "AZY", s->name);
+   EL(0, "#define %s_%s_AZY_CLIENT_H", (azy->name) ? azy->name : "AZY", s->name);
    NL;
 
    EL(0, "#include <Azy.h>");
-   EL(0, "#include \"%s%sCommon.h\"", azy->name, (azy->name && azy->name[0]) ? "_" : "");
+   EL(0, "#include \"%s%sCommon.h\"", name, sep);
    NL;
 
    EINA_LIST_FOREACH(s->methods, j, method)
@@ -1393,7 +1362,7 @@ gen_client_headers(Azy_Server_Module *s)
         EL(0, " * @return ");
         EL(0, " */ ");
 
-        E(0, "Azy_Client_Call_Id %s%s_%s(Azy_Client* _client", azy->name, s->name, method->name);
+        E(0, "Azy_Client_Call_Id %s%s%s_%s(Azy_Client* _client", name, sep, s->name, method->name);
 
         EINA_LIST_FOREACH(method->params, k, p)
           {
@@ -1417,9 +1386,9 @@ gen_client_impl(Azy_Server_Module *s)
    Azy_Typedef *t;
    Azy_Method_Param *p;
    
-   OPEN("%s/%s%s%s.azy_client.c", out_dir, azy->name, (azy->name && azy->name[0]) ? "_" : "", s->name);
+   OPEN("%s/%s%s%s.azy_client.c", out_dir, name, sep, s->name);
 
-   EL(0, "#include \"%s%s%s.azy_client.h\"", azy->name, (azy->name && azy->name[0]) ? "_" : "", s->name);
+   EL(0, "#include \"%s%s%s.azy_client.h\"", name, sep, s->name);
    NL;
 
    gen_marshalizers(s, EINA_TRUE);
@@ -1433,7 +1402,7 @@ gen_client_impl(Azy_Server_Module *s)
    NL;
    EINA_LIST_FOREACH(s->methods, j, method)
      {
-        E(0, "Azy_Client_Call_Id %s%s_%s(Azy_Client* _client", azy->name, s->name, method->name);
+        E(0, "Azy_Client_Call_Id %s%s%s_%s(Azy_Client* _client", name, sep, s->name, method->name);
 
         EINA_LIST_FOREACH(method->params, k, p)
           {
@@ -1455,7 +1424,7 @@ gen_client_impl(Azy_Server_Module *s)
         EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(_client, _retval);");
         EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(_error, _retval);");
         NL;
-        EL(1, "_content = azy_content_new(\"%s%s.%s\");", azy->name, s->name, method->name);
+        EL(1, "_content = azy_content_new(\"%s%s%s.%s\");", name, sep, s->name, method->name);
         EL(1, "if (!_content) return 0;");
         EL(1, "if (data) azy_content_data_set(_content, data);");
 
@@ -1652,12 +1621,11 @@ main(int argc, char *argv[])
 
    if (!azy_file)
      {
-        printf("You must specify AZY file.\n");
+        printf("You must specify the .azy file.\n");
         return 1;
      }
 
-   if (debug)
-     azyParserTrace(stdout, "azy_parser: ");
+   if (debug) azyParserTrace(stdout, "azy_parser: ");
    err = EINA_FALSE;
    azy = azy_parse_file(azy_file, &err);
    if ((!azy) || (err))
@@ -1666,7 +1634,8 @@ main(int argc, char *argv[])
         exit(1);
      }
    azy_process(azy);
-
+   sep = (azy->name) ? "_" : "";
+   name = (azy->name) ? azy->name : "";
 
    client_headers = strstr(modes, "all") || strstr(modes, "client-headers");
    client_impl = strstr(modes, "all") || strstr(modes, "client-impl");
@@ -1684,7 +1653,6 @@ main(int argc, char *argv[])
 
    i = eina_stringshare_add("int");
    b = eina_stringshare_add("Eina_Bool");
-   blob = eina_stringshare_add("blob");
    azy_write();
 
    if (debug)

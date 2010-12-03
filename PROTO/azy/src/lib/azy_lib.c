@@ -142,7 +142,6 @@ azy_init(void)
    eina_magic_string_set(AZY_MAGIC_CLIENT_DATA_HANDLER, "Azy_Client_Handler_Data");
    eina_magic_string_set(AZY_MAGIC_NET, "Azy_Net");
    eina_magic_string_set(AZY_MAGIC_VALUE, "Azy_Value");
-   eina_magic_string_set(AZY_MAGIC_BLOB, "Azy_Blob");
    eina_magic_string_set(AZY_MAGIC_CONTENT, "Azy_Content");
 
    _azy_initialized = 1;

@@ -18,7 +18,6 @@
 #define AZY_MAGIC_CLIENT 0x31342
 #define AZY_MAGIC_NET 0x31343
 #define AZY_MAGIC_VALUE 0x31344
-#define AZY_MAGIC_BLOB 0x31345
 #define AZY_MAGIC_CONTENT 0x31346
 #define AZY_MAGIC_CLIENT_DATA_HANDLER 0x31347
 
@@ -61,11 +60,11 @@ extern Eina_Error AZY_ERROR_RESPONSE_XML_FAULT;
 extern Eina_Error AZY_ERROR_RESPONSE_XML_INVAL;
 extern Eina_Error AZY_ERROR_RESPONSE_XML_UNSERIAL;
 
-typedef struct _Azy_Client_Handler_Data Azy_Client_Handler_Data;
+typedef struct Azy_Client_Handler_Data Azy_Client_Handler_Data;
 typedef unsigned int Azy_Magic;
 
 
-struct _Azy_Content
+struct Azy_Content
 {
    AZY_MAGIC;
    void               *data;
@@ -85,7 +84,7 @@ struct _Azy_Content
    const char         *faultmsg; //if non-null, message to reply with instead of message associated with errcode
 };
 
-struct _Azy_Net
+struct Azy_Net
 {
    AZY_MAGIC;
    void              *conn;
@@ -120,7 +119,7 @@ struct _Azy_Net
    Eina_Bool headers_read : 1;
 };
 
-struct _Azy_Server
+struct Azy_Server
 {
    AZY_MAGIC;
    Ecore_Con_Server    *server;
@@ -135,7 +134,7 @@ struct _Azy_Server
    Eina_List *module_defs;
 };
 
-typedef struct _Azy_Server_Client
+typedef struct Azy_Server_Client
 {
    AZY_MAGIC;
    Ecore_Event_Handler *del;
@@ -149,7 +148,7 @@ typedef struct _Azy_Server_Client
    const char          *ip;
 } Azy_Server_Client;
 
-struct _Azy_Server_Module
+struct Azy_Server_Module
 {
    AZY_MAGIC;
    void                   *data;
@@ -159,7 +158,7 @@ struct _Azy_Server_Module
    double                  last_used;
 };
 
-struct _Azy_Value
+struct Azy_Value
 {
    AZY_MAGIC;
    Azy_Value_Type     type;
@@ -168,7 +167,6 @@ struct _Azy_Value
    const char         *str_val;
    int                 int_val;
    double              dbl_val;
-   Azy_Blob          *blob_val;
 
    Eina_List          *children;
 
@@ -176,7 +174,7 @@ struct _Azy_Value
    Azy_Value         *member_value;
 };
 
-struct _Azy_Client
+struct Azy_Client
 {
    AZY_MAGIC;
    void        *data;
@@ -198,7 +196,7 @@ struct _Azy_Client
    Eina_Bool            connected : 1;
 };
 
-struct _Azy_Client_Handler_Data
+struct Azy_Client_Handler_Data
 {
    AZY_MAGIC;
    Azy_Client_Call_Id  id;
@@ -210,15 +208,7 @@ struct _Azy_Client_Handler_Data
 };
 
 
-struct _Azy_Blob
-{
-   AZY_MAGIC;
-   const char *buf;
-   int         len;
-   char        refs;
-};
-
-struct _Azy_Server_Module_Def
+struct Azy_Server_Module_Def
 {
    AZY_MAGIC;
    const char *name;
@@ -233,7 +223,7 @@ struct _Azy_Server_Module_Def
    Eina_List *methods;
 };
 
-struct _Azy_Server_Module_Method
+struct Azy_Server_Module_Method
 {
    AZY_MAGIC;
    const char *name;

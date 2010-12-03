@@ -72,15 +72,14 @@ extern int AZY_CLIENT_ERROR;
  * This type is for hosting a server, and is used by the
  * azy_server namespace.
  */
-typedef struct _Azy_Server               Azy_Server;
-typedef struct _Azy_Server_Module        Azy_Server_Module;
-typedef struct _Azy_Server_Module_Method Azy_Server_Module_Method;
-typedef struct _Azy_Client Azy_Client;
-typedef struct _Azy_Net Azy_Net;
-typedef struct _Azy_Server_Module_Def Azy_Server_Module_Def;
-typedef struct _Azy_Value Azy_Value;
-typedef struct _Azy_Blob Azy_Blob;
-typedef struct _Azy_Content Azy_Content;
+typedef struct Azy_Server               Azy_Server;
+typedef struct Azy_Server_Module        Azy_Server_Module;
+typedef struct Azy_Server_Module_Method Azy_Server_Module_Method;
+typedef struct Azy_Client Azy_Client;
+typedef struct Azy_Net Azy_Net;
+typedef struct Azy_Server_Module_Def Azy_Server_Module_Def;
+typedef struct Azy_Value Azy_Value;
+typedef struct Azy_Content Azy_Content;
 
 typedef unsigned int Azy_Client_Call_Id;
 
@@ -109,7 +108,7 @@ typedef enum {
    AZY_VALUE_BOOLEAN,
    AZY_VALUE_DOUBLE,
    AZY_VALUE_TIME,
-   AZY_VALUE_BLOB
+   AZY_VALUE_BASE64
 } Azy_Value_Type;
 
 typedef enum
@@ -244,30 +243,24 @@ extern "C" {
 
 
    /* values */
-   Azy_Blob  *azy_blob_new(const char *buf,
-                             int         len);
-   void        azy_blob_unref(Azy_Blob *blob);
-   Azy_Blob  *azy_blob_ref(Azy_Blob *blob);
    Azy_Value *azy_value_ref(Azy_Value *val);
    void        azy_value_unref(Azy_Value *val);
+   Azy_Value *azy_value_base64_new(const char *val);
    Azy_Value *azy_value_string_new(const char *val);
    Azy_Value *azy_value_int_new(int val);
    Azy_Value *azy_value_bool_new(Eina_Bool val);
    Azy_Value *azy_value_double_new(double val);
    Azy_Value *azy_value_time_new(const char *val);
-   Azy_Value *azy_value_blob_new(Azy_Blob *val);
    Eina_Bool   azy_value_to_int(Azy_Value *val,
                                  int        *nval);
    Eina_Bool   azy_value_to_string(Azy_Value  *val,
-                                    const char **nval);
+                                   const char **nval);
+   Eina_Bool   azy_value_to_base64(Azy_Value  *val,
+                                   const char **nval);
    Eina_Bool   azy_value_to_bool(Azy_Value *val,
-                                  int        *nval);
+                                 Eina_Bool *nval);
    Eina_Bool   azy_value_to_double(Azy_Value *val,
                                     double     *nval);
-   Eina_Bool   azy_value_to_time(Azy_Value  *val,
-                                  const char **nval);
-   Eina_Bool   azy_value_to_blob(Azy_Value *val,
-                                  Azy_Blob **nval);
    Eina_Bool   azy_value_to_value(Azy_Value  *val,
                                    Azy_Value **nval);
    Azy_Value_Type azy_value_type_get(Azy_Value *val);

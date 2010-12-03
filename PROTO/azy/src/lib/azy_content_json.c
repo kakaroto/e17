@@ -52,6 +52,7 @@ azy_value_serialize_json(Azy_Value *val)
       }
 
       case AZY_VALUE_STRING:
+      case AZY_VALUE_TIME:
       {
          const char *str_val;
          azy_value_to_string(val, &str_val);
@@ -62,7 +63,7 @@ azy_value_serialize_json(Azy_Value *val)
 
       case AZY_VALUE_BOOLEAN:
       {
-         int bool_val = -1;
+         Eina_Bool bool_val = -1;
          azy_value_to_bool(val, &bool_val);
 
          if (bool_val)
@@ -78,24 +79,9 @@ azy_value_serialize_json(Azy_Value *val)
          return cJSON_CreateNumber(dbl_val);
       }
 
-      case AZY_VALUE_TIME:
+      case AZY_VALUE_BASE64:
       {
-         const char *str_val;
-         azy_value_to_time(val, &str_val);
-         object = cJSON_CreateString(str_val);
-         eina_stringshare_del(str_val);
-         return object;
-      }
-
-      case AZY_VALUE_BLOB:
-      {
-         char *data = NULL;
-         Azy_Blob *b = NULL;
-         azy_value_to_blob(val, &b);
-         data = azy_base64_encode(b->buf, b->len);
-         azy_blob_unref(b);
-         object = cJSON_CreateString(data);
-         free(data);
+         object = cJSON_CreateString(val->str_val);
          return object;
       }
      }

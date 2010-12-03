@@ -34,7 +34,7 @@ xml_get_cont_str(xmlNodePtr n)
 
    if (!(str = xmlNodeListGetString(n->doc, n->xmlChildrenNode, 1)))
      return NULL;
-   ret = eina_stringshare_add((char *)str);
+   ret = eina_stringshare_add((const char *)str);
    xmlFree(str);
    return ret;
 }
@@ -213,7 +213,7 @@ azy_value_serialize_xml(xmlNode    *node,
 
       case AZY_VALUE_BOOLEAN:
       {
-         int bool_val = -1;
+         Eina_Bool bool_val = -1;
          azy_value_to_bool(val, &bool_val);
          xmlNewChild(node, NULL, BAD_CAST "boolean", BAD_CAST (bool_val ? "1" : "0"));
          break;
@@ -231,21 +231,15 @@ azy_value_serialize_xml(xmlNode    *node,
       case AZY_VALUE_TIME:
       {
          const char *str_val;
-         azy_value_to_time(val, &str_val);
+         azy_value_to_string(val, &str_val);
          xmlNewChild(node, NULL, BAD_CAST "dateTime.iso8601", BAD_CAST str_val);
          eina_stringshare_del(str_val);
          break;
       }
 
-      case AZY_VALUE_BLOB:
+      case AZY_VALUE_BASE64:
       {
-         char *data = NULL;
-         Azy_Blob *b = NULL;
-         azy_value_to_blob(val, &b);
-         data = azy_base64_encode(b->buf, b->len);
-         azy_blob_unref(b);
-         xmlNewChild(node, NULL, BAD_CAST "base64", BAD_CAST data);
-         free(data);
+         xmlNewChild(node, NULL, BAD_CAST "base64", BAD_CAST val->str_val);
          break;
       }
      }
@@ -287,16 +281,15 @@ azy_value_unserialize_xml(xmlNode *node)
      }
    else if (match_node(tn, "base64"))
      {
-        Azy_Blob *b;
-        Azy_Value *bv;
-        const char *base64 = xml_get_cont_str(tn);
+        Azy_Value *b;
+        const char *base64;
+
+        base64 = xml_get_cont_str(tn);        
         char *buf = azy_base64_decode(base64, eina_stringshare_strlen(base64));
         eina_stringshare_del(base64);
-        b = azy_blob_new(buf, strlen(buf));
+        b = azy_value_base64_new(buf);
         free(buf);
-        bv = azy_value_blob_new(b);
-        azy_blob_unref(b);
-        return bv;
+        return b;
      }
    else if (match_node(tn, "array"))
      {

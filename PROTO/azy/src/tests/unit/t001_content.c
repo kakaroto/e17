@@ -147,7 +147,6 @@ static int requestUnserialize4()
   TEST_ASSERT(_assert_param_type(content, 3, AZY_VALUE_BOOLEAN));
   TEST_ASSERT(_assert_param_type(content, 4, AZY_VALUE_DOUBLE));
   TEST_ASSERT(_assert_param_type(content, 5, AZY_VALUE_TIME));
-  TEST_ASSERT(_assert_param_type(content, 6, AZY_VALUE_BLOB));
   TEST_ASSERT(_assert_param_type(content, 7, AZY_VALUE_ARRAY));
   TEST_ASSERT(_assert_param_type(content, 8, AZY_VALUE_STRUCT));
   eina_strbuf_free(str);

@@ -13,7 +13,6 @@ enum
    TD_BASE,
    TD_STRUCT,
    TD_ARRAY,
-   TD_BLOB,
    TD_ANY,
 };
 

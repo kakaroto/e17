@@ -14,7 +14,7 @@
 
 /* this function prints client error if any and resets error so that futher calls to client funcs work */
 static Eina_Bool
-_check_err(Azy_Content *err)
+check_err(Azy_Content *err)
 {
    if (!err)
      return EINA_TRUE;
@@ -36,7 +36,7 @@ _disconnected(void *data __UNUSED__, int type __UNUSED__, void *data2 __UNUSED__
 }
 
 static Eina_Error
-_TTest1_getBigArray_ret(Azy_Client *client, Azy_Content *content)
+_T_Test1_getBigArray_ret(Azy_Client *client, Azy_Content *content)
 {
    Eina_List *ret;
 
@@ -56,7 +56,7 @@ _TTest1_getBigArray_ret(Azy_Client *client, Azy_Content *content)
 }
 
 static Eina_Error
-_TTest1_putBigArray_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
+_T_Test1_putBigArray_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
 {
    Eina_Bool ret;
  
@@ -74,9 +74,9 @@ _TTest1_putBigArray_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
 }
 
 static Eina_Error
-_TTest1_getAll_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
+_T_Test1_getAll_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
 {
-   TAllTypes *ret;
+   T_AllTypes *ret;
 
    if (azy_content_error_is_set(content))
      {
@@ -92,9 +92,9 @@ _TTest1_getAll_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
 }
 
 static Eina_Error
-_TTest1_getAllArrays_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
+_T_Test1_getAllArrays_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
 {
-   TAllArrays *ret;
+   T_AllArrays *ret;
 
    if (azy_content_error_is_set(content))
      {
@@ -110,7 +110,7 @@ _TTest1_getAllArrays_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
 }
 
 static Eina_Error
-_TTest2_auth_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
+_T_Test2_auth_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
 {
    Eina_Bool ret;
  
@@ -128,7 +128,7 @@ _TTest2_auth_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
 }
 
 static Eina_Error
-_TTest1_undefined_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
+_T_Test1_undefined_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
 {
    if (azy_content_error_is_set(content))
      printf("Error encountered: %s\n", azy_content_error_message_get(content));
@@ -138,7 +138,7 @@ _TTest1_undefined_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
 }
 
 static Eina_Bool
-_connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
+connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
 {
    unsigned int ret;
    const char *s;
@@ -155,11 +155,11 @@ _connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
    azy_net_transport_set(net, AZY_NET_TRANSPORT_JSON);
    azy_net_uri_set(net, "/RPC2");
 
-   ret = TTest1_getBigArray(cli, err, NULL);
-   if (_check_err(err) || (!ret))
+   ret = T_Test1_getBigArray(cli, err, NULL);
+   if (check_err(err) || (!ret))
      exit(1);
 
-   if (!azy_client_callback_set(cli, ret, _TTest1_getBigArray_ret))
+   if (!azy_client_callback_set(cli, ret, _T_Test1_getBigArray_ret))
      {
         azy_client_close(cli);
         return ECORE_CALLBACK_CANCEL;
@@ -168,10 +168,10 @@ _connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
    for (i = 0; i < 5000; i++)
      list = eina_list_append(list, eina_stringshare_printf("user.bob%d@zonio.net", i));
 
-   ret = TTest1_putBigArray(cli, list, err, NULL);
-   if (_check_err(err) || (!ret))
+   ret = T_Test1_putBigArray(cli, list, err, NULL);
+   if (check_err(err) || (!ret))
      exit(1);
-   if (!azy_client_callback_set(cli, ret, _TTest1_putBigArray_ret))
+   if (!azy_client_callback_set(cli, ret, _T_Test1_putBigArray_ret))
      {
         azy_client_close(cli);
         return ECORE_CALLBACK_CANCEL;
@@ -181,37 +181,37 @@ _connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
 
    azy_net_transport_set(net, AZY_NET_TRANSPORT_XML);
 
-   ret = TTest1_getAll(cli, err, NULL);
-   if (_check_err(err) || (!ret))
+   ret = T_Test1_getAll(cli, err, NULL);
+   if (check_err(err) || (!ret))
      exit(1);
-   if (!azy_client_callback_set(cli, ret, _TTest1_getAll_ret))
+   if (!azy_client_callback_set(cli, ret, _T_Test1_getAll_ret))
      {
         azy_client_close(cli);
         return ECORE_CALLBACK_CANCEL;
      }
 
-   ret = TTest1_getAllArrays(cli, err, NULL);
-   if (_check_err(err) || (!ret))
+   ret = T_Test1_getAllArrays(cli, err, NULL);
+   if (check_err(err) || (!ret))
      exit(1);
-   if (!azy_client_callback_set(cli, ret, _TTest1_getAllArrays_ret))
+   if (!azy_client_callback_set(cli, ret, _T_Test1_getAllArrays_ret))
      {
         azy_client_close(cli);
         return ECORE_CALLBACK_CANCEL;
      }
 
-   ret = TTest2_auth(cli, "name", "pass", err, NULL);
-   if (_check_err(err) || (!ret))
+   ret = T_Test2_auth(cli, "name", "pass", err, NULL);
+   if (check_err(err) || (!ret))
      exit(1);
-   if (!azy_client_callback_set(cli, ret, _TTest2_auth_ret))
+   if (!azy_client_callback_set(cli, ret, _T_Test2_auth_ret))
      {
         azy_client_close(cli);
         return ECORE_CALLBACK_CANCEL;
      }
 
-   ret = TTest1_getAll(cli, err, NULL);
-   if (_check_err(err) || (!ret))
+   ret = T_Test1_getAll(cli, err, NULL);
+   if (check_err(err) || (!ret))
      exit(1);
-   if (!azy_client_callback_set(cli, ret, _TTest1_getAll_ret))
+   if (!azy_client_callback_set(cli, ret, _T_Test1_getAll_ret))
      {
         azy_client_close(cli);
         return ECORE_CALLBACK_CANCEL;
@@ -221,12 +221,12 @@ _connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
    {
       Azy_Content *content;
 
-      content = azy_content_new("TTest1.undefined");
+      content = azy_content_new("T_Test1.undefined");
       azy_content_param_add(content, azy_value_struct_new_from_int("test", 100));
       ret = azy_client_call(cli, content, AZY_NET_TRANSPORT_JSON, NULL);
-      if (_check_err(err) || (!ret))
+      if (check_err(err) || (!ret))
         exit(1);
-      if (!azy_client_callback_set(cli, ret, _TTest1_undefined_ret))
+      if (!azy_client_callback_set(cli, ret, _T_Test1_undefined_ret))
         {
            azy_client_close(cli);
            return ECORE_CALLBACK_CANCEL;
@@ -258,7 +258,7 @@ main(void)
    if (!azy_client_host_set(cli, "localhost", 4444))
      return 1;
 
-   handler = ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)_connected, cli);
+   handler = ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)connected, cli);
    handler = ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)_disconnected, cli);
 
    /* connect to the servlet on the server specified by uri */

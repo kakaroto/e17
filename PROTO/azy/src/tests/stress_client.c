@@ -19,7 +19,7 @@
 static Eina_List *clients;
 
 static Eina_Bool
-_check_err(Azy_Content *err)
+check_err(Azy_Content *err)
 {
    if (!err)
      return EINA_TRUE;
@@ -35,7 +35,7 @@ _check_err(Azy_Content *err)
 
 #ifdef HAVE_MYSQL
 static Eina_Error
-_TSQL_test_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
+T_SQL_test_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
 {
 
    static int x;
@@ -55,10 +55,10 @@ _TSQL_test_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
 #else
 
 static Eina_Error
-_TTest1_getAll_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
+T_Test1_getAll_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
 {
    static int x;
-   TAllTypes *ret;
+   T_AllTypes *ret;
 
    x++;
    if (azy_content_error_is_set(content))
@@ -77,7 +77,7 @@ _TTest1_getAll_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
 #endif
 
 static Eina_Bool
-_disconnected(void *data __UNUSED__, int type __UNUSED__, void *data2 __UNUSED__)
+disconnected(void *data __UNUSED__, int type __UNUSED__, void *data2 __UNUSED__)
 {
    printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
    ecore_main_loop_quit();
@@ -86,7 +86,7 @@ _disconnected(void *data __UNUSED__, int type __UNUSED__, void *data2 __UNUSED__
 }
 
 static Eina_Bool
-_connected(Azy_Client *cli __UNUSED__, int type __UNUSED__, Azy_Client *ev)
+connected(Azy_Client *cli __UNUSED__, int type __UNUSED__, Azy_Client *ev)
 {
    Azy_Content *err;
    int i;
@@ -99,15 +99,15 @@ _connected(Azy_Client *cli __UNUSED__, int type __UNUSED__, Azy_Client *ev)
         if (!azy_client_connected_get(ev))
           goto error;
 #ifdef HAVE_MYSQL
-        ret = TSQL_test(ev, err, NULL);
-        if (_check_err(err) || (!ret))
+        ret = T_SQL_test(ev, err, NULL);
+        if (check_err(err) || (!ret))
           goto error;
-        azy_client_callback_set(ev, ret, _TSQL_test_ret);
+        azy_client_callback_set(ev, ret, T_SQL_test_ret);
 #else
-        ret = TTest1_getAll(ev, err, NULL);
-        if (_check_err(err) || (!ret))
+        ret = T_Test1_getAll(ev, err, NULL);
+        if (check_err(err) || (!ret))
           goto error;
-        azy_client_callback_set(ev, ret, _TTest1_getAll_ret);
+        azy_client_callback_set(ev, ret, T_Test1_getAll_ret);
 #endif
      }
    azy_content_free(err);
@@ -120,7 +120,7 @@ error:
 }
 
 static void
-_spawn(void *data __UNUSED__)
+spawn(void *data __UNUSED__)
 {
    int i;
 
@@ -156,9 +156,9 @@ main(void)
    eina_log_domain_level_set("ecore_con", EINA_LOG_LEVEL_UNKNOWN);
 
 
-   ecore_job_add(_spawn, NULL);
-   ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)_connected, NULL);
-   ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)_disconnected, NULL);
+   ecore_job_add(spawn, NULL);
+   ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)connected, NULL);
+   ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)disconnected, NULL);
    ecore_main_loop_begin();
 
    EINA_LIST_FREE(clients, cli)

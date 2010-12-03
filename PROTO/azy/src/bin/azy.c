@@ -10,19 +10,26 @@
 #include <stdio.h>
 
 #include "azy.h"
+#ifdef HAVE_ALLOCA_H
+#include <alloca.h>
+#elif defined __GNUC__
+#define alloca __builtin_alloca
+#elif defined _AIX
+#define alloca __alloca
+#else
+#include <stddef.h>
+void *alloca (size_t);
+#endif
+
 
 const char *
 azy_stringshare_toupper(const char *str)
 {
    char *tmp;
-   const char *ret;
 
-   if (!(tmp = strdup(str)))
-     return NULL;
+   tmp = strdupa(str);
    eina_str_toupper(&tmp);
-   ret = eina_stringshare_add(tmp);
-   free(tmp);
-   return ret;
+   return eina_stringshare_add(tmp);
 }
 
 static Azy_Typedef *
@@ -44,12 +51,10 @@ azy_typedef_new(int         type,
    t->cnull = eina_stringshare_add(cnull);
    if (free_func) t->free_func = eina_stringshare_add(free_func);
 
-   if (type == TD_BASE && (!strcmp(name, "string") || !strcmp(name, "time")))
+   if (type == TD_BASE && (!strcmp(name, "string") || !strcmp(name, "time") || !strcmp(name, "base64")))
      {
         t->copy_func = eina_stringshare_add("eina_stringshare_ref");
      }
-   else if (type == TD_BLOB)
-     t->copy_func = eina_stringshare_add("azy_blob_ref");
    else if (type == TD_ANY)
      t->copy_func = eina_stringshare_add("azy_value_ref");
    else if (type == TD_STRUCT || type == TD_ARRAY)
@@ -68,28 +73,30 @@ azy_typedef_new(int         type,
    if (dem_name)
      t->demarch_name = eina_stringshare_add(dem_name);
    else
-     t->demarch_name = eina_stringshare_printf("__azy_value_to_%s", t->cname);
+     t->demarch_name = eina_stringshare_printf("azy_value_to_%s", t->cname);
 
    if (mar_name)
      t->march_name = eina_stringshare_add(mar_name);
    else
-     t->march_name = eina_stringshare_printf("__%s_to_azy_value", t->cname);
+     t->march_name = eina_stringshare_printf("%s_to_azy_value", t->cname);
 
    return t;
 }
 
 Azy_Model *
-azy_new()
+azy_new(void)
 {
-   Azy_Model *c = calloc(1, sizeof(Azy_Model));
+   Azy_Model *c;
+
+   c = calloc(1, sizeof(Azy_Model));
+   EINA_SAFETY_ON_NULL_RETURN_VAL(c, NULL);
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "int", "int", "int", "0", "azy_value_to_int", "azy_value_int_new", NULL, "%i"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "boolean", "boolean", "Eina_Bool", "EINA_FALSE", "azy_value_to_bool", "azy_value_bool_new", NULL, "%s"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "string", "string", "const char *", "NULL", "azy_value_to_string", "azy_value_string_new", "eina_stringshare_del", "%s"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "double", "double", "double", "0.0", "azy_value_to_double", "azy_value_double_new", NULL, "%.3lf"));
-   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "time", "time", "const char *", "NULL", "azy_value_to_time", "azy_value_time_new", "eina_stringshare_del", "%s"));
-   c->types = eina_list_append(c->types, azy_typedef_new(TD_BLOB, "blob", "blob", "Azy_Blob *", "NULL", "azy_value_to_blob", "azy_value_blob_new", "azy_blob_unref", "%s"));
+   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "time", "time", "const char *", "NULL", "azy_value_to_string", "azy_value_time_new", "eina_stringshare_del", "%s"));
+   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "base64", "base64", "const char *", "NULL", "azy_value_to_base64", "azy_value_base64_new", "eina_stringshare_del", "%s"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_ANY, "any", "any", "Azy_Value *", "NULL", "azy_value_to_value", "azy_value_ref", "azy_value_unref", NULL));
-   c->name = "";
    return c;
 }
 
@@ -157,14 +164,20 @@ azy_typedef_new_struct(Azy_Model                *azy,
                         Azy_Server_Module *module __UNUSED__,
                         const char                *name)
 {
-   Azy_Typedef *s = azy_typedef_new(TD_STRUCT,
-                                      name,
-                                      eina_stringshare_printf("%s%s", (azy->name && azy->name[0]) ? azy->name : "", name),
-                                      eina_stringshare_printf("%s%s*", (azy->name && azy->name[0]) ? azy->name : "", name),
-                                      "NULL", NULL, NULL,
-                                      eina_stringshare_printf("%s%s_free", (azy->name && azy->name[0]) ? azy->name : "", name),
-                                      "%s"
-                                      );
+   Azy_Typedef *s;
+   const char *n, *sep;
+
+   n = (azy->name) ? azy->name : "";
+   sep = (azy->name) ? "_" : "";
+
+   s = azy_typedef_new(TD_STRUCT,
+                       name,
+                       eina_stringshare_printf("%s%s%s", n, sep, name),
+                       eina_stringshare_printf("%s%s%s *", n, sep, name),
+                       "NULL", NULL, NULL,
+                       eina_stringshare_printf("%s%s%s_free", n, sep, name),
+                       "%s"
+                       );
    return s;
 }
 
@@ -194,12 +207,12 @@ azy_error_new(Azy_Model         *azy,
 
    if (module != NULL)
      {
-        e->cenum = eina_stringshare_printf("%s_RPC_ERROR_%s_%s", (azy->name && azy->name[0]) ? azy_stringshare_toupper(azy->name) : "AZY", azy_stringshare_toupper(module->name), azy_stringshare_toupper(name));
+        e->cenum = eina_stringshare_printf("%s_RPC_ERROR_%s_%s", (azy->name) ? azy_stringshare_toupper(azy->name) : "AZY", azy_stringshare_toupper(module->name), azy_stringshare_toupper(name));
         module->errors = eina_list_append(module->errors, e);
      }
    else
      {
-        e->cenum = eina_stringshare_printf("%s_RPC_ERROR_%s", (azy->name && azy->name[0]) ? azy_stringshare_toupper(azy->name) : "AZY", azy_stringshare_toupper(name));
+        e->cenum = eina_stringshare_printf("%s_RPC_ERROR_%s", (azy->name) ? azy_stringshare_toupper(azy->name) : "AZY", azy_stringshare_toupper(name));
         azy->errors = eina_list_append(azy->errors, e);
      }
 

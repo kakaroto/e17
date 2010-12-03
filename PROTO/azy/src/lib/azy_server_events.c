@@ -606,7 +606,7 @@ _azy_server_client_handler_data(Azy_Server_Client          *client,
 
         overflow = NULL;
         overflow_length = 0;
-        client->data = NULL;
+        if (client) client->data = NULL;
         return ECORE_CALLBACK_CANCEL;
      }
    if (!client->net)

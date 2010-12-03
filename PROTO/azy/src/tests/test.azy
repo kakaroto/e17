@@ -17,7 +17,7 @@ struct AllArrays
 {
    array<string>      a_string;
    array<time>    a_time;
-   array<blob>    a_blob;
+   array<base64>  a_base64;
    array<int>     a_int;
    array<boolean> a_boolean;
 //    array<double>      a_double;
@@ -30,7 +30,7 @@ struct AllTypes
 {
    string v_string;
    time      v_time;
-   blob      v_blob;
+   base64    v_base64;
    int       v_int;
    boolean   v_boolean;
    double    v_double;
@@ -50,22 +50,25 @@ Azy_Module Test1
 
    AllTypes getAll()
    <%
+     char *buf;
   //   printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
-     retval = TAllTypes_new();
+     retval = T_AllTypes_new();
      retval->v_string = eina_stringshare_add("Hi!");
      retval->v_time = eina_stringshare_add("2010-11-01");
-     retval->v_blob = azy_blob_new(eina_stringshare_add("Hi all!"), strlen("Hi all!"));
+     buf = azy_base64_encode("Hi all!", sizeof("Hi all!"));
+     retval->v_base64 = eina_stringshare_add(buf);
+     free(buf);
      retval->v_int = 5645;
      retval->v_boolean = EINA_FALSE;
      retval->v_double = 123.123e-3;
-     retval->v_struct = TStruct_new();
+     retval->v_struct = T_Struct_new();
      retval->v_struct->v_string = eina_stringshare_add("some str");
-     retval->v_arrays = TAllArrays_new();
+     retval->v_arrays = T_AllArrays_new();
 
      /* test copy/free */
-     TAllTypes *orig = retval;
-     retval = TAllTypes_copy(retval);
-     TAllTypes_free(orig);
+     T_AllTypes *orig = retval;
+     retval = T_AllTypes_copy(retval);
+     T_AllTypes_free(orig);
      return retval;
    %>
 
@@ -77,7 +80,7 @@ Azy_Module Test1
 
     // printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
 
-     retval = TAllArrays_new();
+     retval = T_AllArrays_new();
 
      for (i = 0; i < 5; i++)
        ADD(a_string, eina_stringshare_printf("str%d", i));
@@ -88,7 +91,16 @@ Azy_Module Test1
        ADD(a_time, eina_stringshare_printf("2006-04-%02d", i));
 
      for (i = 0; i < 2; i++)
-       ADD(a_blob, azy_blob_new(eina_stringshare_printf("BBBBBBBBBBBBBBBBBLOOOOOB%d", i), -1));
+       {
+          const char *buf;
+          char *b64;
+
+          buf = eina_stringshare_printf("BBBBBBBBBBBBBBBBBLOOOOOB%d", i);
+          b64 = azy_base64_encode(buf, eina_stringshare_strlen(buf));
+          eina_stringshare_del(buf);
+          ADD(a_base64, eina_stringshare_add(b64));
+          free(b64);
+       }
 
      for (i = 0; i < 10; i++)
        ADD(a_int, (void *)&i);
@@ -103,7 +115,7 @@ Azy_Module Test1
      //      ADD(a_double, (void *)(double)(i * 1.11e-3));
      for (i = 0; i < 2; i++)
        {
-          TStruct *s = TStruct_new();
+          T_Struct *s = T_Struct_new();
           s->v_string = eina_stringshare_printf("struct val %d", i);
           ADD(a_struct, s);
        }
@@ -141,9 +153,9 @@ Azy_Module Test1
           #undef ADD
 
      /* test copy/free */
-     TAllArrays *orig = retval;
-     retval = TAllArrays_copy(retval);
-     TAllArrays_free(orig);
+     T_AllArrays *orig = retval;
+     retval = T_AllArrays_copy(retval);
+     T_AllArrays_free(orig);
    %>
 
    boolean setAll(AllTypes all)
@@ -159,11 +171,9 @@ Azy_Module Test1
        retval = eina_list_append(retval, eina_stringshare_printf("user.bob%d@zentific.com", i));
    %>
 
-   boolean putBigArray(take array<string> arr)
+   boolean putBigArray(array<string> arr)
    <%
-     const char *x;
-     EINA_LIST_FREE(arr, x)
-       eina_stringshare_del(x);
+     (void)arr;
      return EINA_TRUE;
    %>
 
@@ -298,8 +308,8 @@ Azy_Module Test2
      printf("Shutdown AUTH Servlet!\n");
    %>
 
-   boolean auth(take string name,
-                take string password)
+   boolean auth(string name,
+                string password)
    <%
      printf("AUTH-PRE:  %s, %s\n", _priv->username, _priv->password);
      _priv->username = name;
@@ -337,11 +347,11 @@ Azy_Module SQL
 
    boolean test()
    <%
-      TSQLModule *data;
-      static int x;
+//      static int x;
+      T_SQL_Module *data;
       Eina_Bool ret = EINA_TRUE;
 
-      data = TSQL_module_data_get(_module);
+      data = T_SQL_module_data_get(_module);
       data->m = mysql_init(NULL);
       if (!mysql_real_connect(data->m, "localhost", "zentific", "zentific", "zentific", 0, NULL, CLIENT_REMEMBER_OPTIONS))
         {
@@ -354,7 +364,6 @@ Azy_Module SQL
         ret = EINA_FALSE;
 out:
       mysql_close(data->m);
-
 //      printf("Call #%i: %s!\n", ++x, ret ? "Success" : "Failure");
       return ret;
    %>

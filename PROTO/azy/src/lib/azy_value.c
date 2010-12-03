@@ -78,51 +78,6 @@ _azy_value_multi_line_get(Azy_Value *val,
    return EINA_FALSE;
 }
 
-Azy_Blob *
-azy_blob_new(const char *buf,
-              int         len)
-{
-   Azy_Blob *b;
-   EINA_SAFETY_ON_NULL_RETURN_VAL(buf, NULL);
-
-   b = calloc(1, sizeof(Azy_Blob));
-   EINA_SAFETY_ON_NULL_RETURN_VAL(b, NULL);
-   b->buf = eina_stringshare_add(buf);
-   b->len = len < 0 ? eina_stringshare_strlen(buf) : len;
-   b->refs = 1;
-   AZY_MAGIC_SET(b, AZY_MAGIC_BLOB);
-   return b;
-}
-
-Azy_Blob *
-azy_blob_ref(Azy_Blob *b)
-{
-   if (!AZY_MAGIC_CHECK(b, AZY_MAGIC_BLOB))
-     {
-        AZY_MAGIC_FAIL(b, AZY_MAGIC_BLOB);
-        return NULL;
-     }
-
-   b->refs++;
-   return b;
-}
-
-void
-azy_blob_unref(Azy_Blob *b)
-{
-   if (!AZY_MAGIC_CHECK(b, AZY_MAGIC_BLOB))
-     {
-        AZY_MAGIC_FAIL(b, AZY_MAGIC_BLOB);
-        return;
-     }
-
-   if (--b->refs == 0)
-     {
-        if (b->buf) eina_stringshare_del(b->buf);
-        free(b);
-     }
-}
-
 Azy_Value *
 azy_value_ref(Azy_Value *val)
 {
@@ -153,8 +108,6 @@ azy_value_unref(Azy_Value *val)
      return;
 
    AZY_MAGIC_SET(val, AZY_MAGIC_NONE);
-   if (val->type == AZY_VALUE_BLOB)
-     azy_blob_unref(val->blob_val);
 
    if (val->str_val) eina_stringshare_del(val->str_val);
    if (val->member_name) eina_stringshare_del(val->member_name);
@@ -227,20 +180,16 @@ azy_value_time_new(const char *val)
 }
 
 Azy_Value *
-azy_value_blob_new(Azy_Blob *b)
+azy_value_base64_new(const char *base64)
 {
    Azy_Value *val;
-   
-   if (!AZY_MAGIC_CHECK(b, AZY_MAGIC_BLOB))
-     {
-        AZY_MAGIC_FAIL(b, AZY_MAGIC_BLOB);
-        return NULL;
-     }
 
+   if (!base64) return NULL;
+   
    val = _azy_value_new();
    EINA_SAFETY_ON_NULL_RETURN_VAL(val, NULL);
-   val->type = AZY_VALUE_BLOB;
-   val->blob_val = azy_blob_ref(b);
+   val->type = AZY_VALUE_BASE64;
+   val->str_val = eina_stringshare_add(base64);
    return val;
 }
 
@@ -269,17 +218,48 @@ azy_value_to_string(Azy_Value  *val,
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return EINA_FALSE;
      }
- 
-   if ((!nval) || (val->type != AZY_VALUE_STRING))
-     return EINA_FALSE;
+   if (!nval) return EINA_FALSE;
 
-   *nval = eina_stringshare_add(val->str_val);
+   switch (val->type)
+     {
+      case AZY_VALUE_STRING:
+      case AZY_VALUE_TIME:
+        *nval = eina_stringshare_ref(val->str_val);
+        break;
+      case AZY_VALUE_BASE64:
+        {
+           char *buf;
+           buf = azy_base64_decode(val->str_val, eina_stringshare_strlen(val->str_val));
+           EINA_SAFETY_ON_NULL_RETURN_VAL(buf, EINA_FALSE);
+           *nval = eina_stringshare_add(buf);
+           free(buf);
+           break;
+        }
+      default:
+        return EINA_FALSE;
+     }
+        
+   return EINA_TRUE;
+}
+
+Eina_Bool
+azy_value_to_base64(Azy_Value  *val,
+                    const char **nval)
+{
+   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
+     {
+        AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
+        return EINA_FALSE;
+     }
+   if ((!nval) || (val->type != AZY_VALUE_BASE64)) return EINA_FALSE;
+
+   *nval = eina_stringshare_ref(val->str_val);
    return EINA_TRUE;
 }
 
 Eina_Bool
 azy_value_to_bool(Azy_Value *val,
-                   int        *nval)
+                  Eina_Bool *nval)
 {
    if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
      {
@@ -289,7 +269,7 @@ azy_value_to_bool(Azy_Value *val,
    if ((!nval) || (val->type != AZY_VALUE_BOOLEAN))
      return EINA_FALSE;
 
-   *nval = val->int_val;
+   *nval = !!val->int_val;
    return EINA_TRUE;
 }
 
@@ -309,41 +289,6 @@ azy_value_to_double(Azy_Value *val,
      *nval = val->dbl_val;
    else
      *nval = (double)val->int_val;
-   return EINA_TRUE;
-}
-
-Eina_Bool
-azy_value_to_time(Azy_Value  *val,
-                   const char **nval)
-{
-   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
-     {
-        AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
-        return EINA_FALSE;
-     }
-   if ((!nval) || ((val->type != AZY_VALUE_TIME) && (val->type != AZY_VALUE_STRING)))
-     return EINA_FALSE;
-
-   *nval = eina_stringshare_add(val->str_val);
-   return EINA_TRUE;
-}
-
-Eina_Bool
-azy_value_to_blob(Azy_Value *val,
-                   Azy_Blob **nval)
-{
-   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
-     {
-        AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
-        return EINA_FALSE;
-     }
-   if ((!nval) || ((val->type != AZY_VALUE_BLOB) && (val->type != AZY_VALUE_STRING)))
-     return EINA_FALSE;
-
-   if (val->blob_val)
-     *nval = azy_blob_ref(val->blob_val);
-   else
-     *nval = azy_blob_new(val->str_val, strlen(val->str_val));
    return EINA_TRUE;
 }
 
@@ -702,6 +647,8 @@ azy_value_dump(Azy_Value  *v,
       }
 
       case AZY_VALUE_STRING:
+      case AZY_VALUE_TIME:
+      case AZY_VALUE_BASE64:
       {
          eina_strbuf_append_printf(string, "\"%s\"", v->str_val);
          break;
@@ -716,18 +663,6 @@ azy_value_dump(Azy_Value  *v,
       case AZY_VALUE_DOUBLE:
       {
          eina_strbuf_append_printf(string, "%g", v->dbl_val);
-         break;
-      }
-
-      case AZY_VALUE_TIME:
-      {
-         eina_strbuf_append_printf(string, "%s", v->str_val);
-         break;
-      }
-
-      case AZY_VALUE_BLOB:
-      {
-         eina_strbuf_append_printf(string, "<BLOB>");
          break;
       }
      }

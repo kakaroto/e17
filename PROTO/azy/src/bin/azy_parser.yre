@@ -78,7 +78,6 @@ main:
   "Azy_Module"       { RET(TK_MODULE); }
   "array"            { RET(TK_ARRAY); }
   "struct"           { RET(TK_STRUCT); }
-  "take"             { RET(TK_TAKE); }
   ("{" C+ "}")       { RET(TK_ERRMSG); }
   L (L|D)*           { RET(TK_ID); }
   D+                 { RET(TK_INTEGER); }
@@ -322,9 +321,6 @@ params(Y) ::= params(L) COMMA param(X). {
 %type opt_owner {int}
 opt_owner(Y) ::= . {
   Y = 0;
-}
-opt_owner(Y) ::= TAKE. {
-  Y = 1;
 }
 
 %type param {Azy_Method_Param*}
