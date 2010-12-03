@@ -1030,6 +1030,7 @@ gen_server_impl(Azy_Server_Module *s)
    OPEN("%s/%s%s%s.azy_server.c", out_dir, azy->name, (azy->name && azy->name[0]) ? "_" : "", s->name);
 
    EL(0, "#include \"%s%s%s.azy_server.h\"", azy->name, (azy->name && azy->name[0]) ? "_" : "", s->name);
+   EL(0, "#include \"%s%s%s.azy_server_stubs.h\"", azy->name, (azy->name && azy->name[0]) ? "_" : "", s->name);
    NL;
 
 
