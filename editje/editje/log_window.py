@@ -79,8 +79,6 @@ class LogWindow(InnerWindow):
         self.__sc.show()
         content.pack_end(self.__sc)
 
-        #self._action_add("Close", self.close, key="Escape")
-
     def _subtitle_text_set(self, value):
         if not value:
             self.__edje.signal_emit("wizard,subtitle,hide", "")

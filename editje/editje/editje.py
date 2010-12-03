@@ -52,6 +52,8 @@ from rpc_handlers import QueriesHandler, ReportsHandler
 
 from misc import name_generate, accepted_filetype
 
+from log_window import LogWindow
+
 
 def debug_cb(obj, emission, source):
     print "%s: %s %s" % (obj, emission, source)
@@ -217,6 +219,22 @@ class Editje(elementary.Window, OpenFileManager):
     # Save
     def save(self):
 
+        # Just call the compile, if it's not required it will return True
+        if not self.e.edje.script_compile():
+            # Oops, build failed and we don't yet have errors, so just
+            # say the build failed.
+            log_win = LogWindow(self)
+            message = "There was an error rebuilding the Embryo script.<br>" \
+                       "This could be caused by referenced parts or programs" \
+                       "that have been removed or renamed.<br>" \
+                       "The object will be saved and the generated source will" \
+                       "contain the script. For the time being, it requires" \
+                       "the user to manually edit it. Use edje_decc to extract" \
+                       "the edc source from a binary file, fix it by hand and" \
+                       "build again with edje_cc.<br>"
+            log_win.message_set(message, title = "Script Error",
+                                subtitle = "Could Not Compile, Got Fix Your Code")
+            log_win.open()
         if not self.e.filename:
             return self.save_as()
 
@@ -327,6 +345,8 @@ class Editje(elementary.Window, OpenFileManager):
     def block(self, value=True, object_over=None):
 
         def create_window_blocker():
+            if self._window_blocker:
+                return
             self._window_blocker = elementary.Layout(self)
             self._window_blocker.file_set(self.theme, "blocker")
             self._window_blocker.size_hint_weight_set(
