@@ -13,7 +13,7 @@ main(void)
 {
    eina_init();
    azy_init();
-   Azy_Server_Module_Def *modules[4] = {
+   Azy_Server_Module_Def *modules[] = {
                                            __TTest1Module_def(),
                                            __TTest2Module_def(),
 #ifdef HAVE_MYSQL
