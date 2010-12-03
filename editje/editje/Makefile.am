@@ -4,6 +4,7 @@ MAINTAINERCLEANFILES = Makefile.in sysconfig.py
 pkgpython_PYTHON = \
 __init__.py \
 about.py \
+log_window.py \
 actions_box.py \
 animations.py \
 clist.py \
