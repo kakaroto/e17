@@ -82,11 +82,6 @@ EINA_REQUIRES="eina >= 1.0.0"
 ECORE_REQUIRES="ecore-con >= 1.0.0 ecore >= 1.0.0"
 XML_REQUIRES="libxml-2.0 >= 2.6.20"
 
-##this fixes things on some stupid broken distros
-if (test "$libdir" = '${exec_prefix}/lib') && (test -d /lib64);then
-	(gcc -dumpmachine | grep -q x86_64) && libdir='${exec_prefix}/lib64'
-fi
-
 AC_PATH_PROG([mysql_config], [mysql_config])
 if test "x$mysql_config" != "x";then
       AC_CHECK_HEADERS([mysql/mysql.h])
