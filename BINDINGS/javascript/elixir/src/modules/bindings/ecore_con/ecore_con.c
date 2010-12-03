@@ -1023,7 +1023,7 @@ static JSBool
 elixir_ecore_con_server_ip_get(JSContext *cx, uintN argc, jsval *vp)
 {
    Ecore_Con_Server *svr;
-   char *ip;
+   const char *ip;
    elixir_value_t val[1];
 
    if (!elixir_params_check(cx, _ecore_con_server_params, val, argc, JS_ARGV(cx, vp)))
@@ -1274,7 +1274,7 @@ static JSBool
 elixir_ecore_con_client_ip_get(JSContext *cx, uintN argc, jsval *vp)
 {
    Ecore_Con_Client *clt;
-   char *ip;
+   const char *ip;
    elixir_value_t val[1];
 
    if (!elixir_params_check(cx, _ecore_con_client_params, val, argc, JS_ARGV(cx, vp)))
