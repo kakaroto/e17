@@ -845,7 +845,8 @@ gen_server_headers(Azy_Server_Module *s)
 
    EL(0, "struct _%s%sModule", azy->name, s->name);
    EL(0, "{");
-   EL(0, "%s", s->stub_attrs);
+   /* FIXME: does this need to be output at all if there is no attrs stub? */
+   EL(0, "%s", s->stub_attrs ? s->stub_attrs : "");
    EL(0, "};");
    NL;
 
