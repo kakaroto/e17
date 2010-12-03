@@ -29,7 +29,7 @@ EAPI void       slprintf(char *str, size_t size, const char *format, ...);
 
 #ifndef HAVE_STRNDUP
 
-static inline char *strndup(char *str, size_t n)
+static inline char *strndup(const char *str, size_t n)
 {
    char *__new;
    size_t __len;
