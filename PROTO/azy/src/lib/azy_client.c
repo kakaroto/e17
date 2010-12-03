@@ -373,7 +373,7 @@ azy_client_send(Azy_Client   *client,
        eina_strbuf_length_get(msg), eina_strbuf_string_get(msg), length, data);
 #endif
    EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_server_send(client->net->conn, eina_strbuf_string_get(msg), eina_strbuf_length_get(msg)), error);
-   INFO("Send [1/2] complete! %i bytes queued for sending.", eina_strbuf_length_get(msg));
+   INFO("Send [1/2] complete! %zi bytes queued for sending.", eina_strbuf_length_get(msg));
    eina_strbuf_free(msg);
    msg = NULL;
 
