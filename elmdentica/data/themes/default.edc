@@ -58,6 +58,7 @@ collections {
 
 		images {
 			image: "bubble_3.png" COMP;
+			image: "bubble_left.png" COMP;
 		}
 
 		parts {
@@ -171,8 +172,10 @@ collections {
 						offset: 0 -10;
 					}
 					image {
-						normal: "bubble_3.png";
-						border: 36 11 18 9;
+						//normal: "bubble_3.png";
+						//border: 36 11 18 9;
+						normal: "bubble_left.png";
+						border: 20 9 17 9;
 						middle: SOLID;
 					}
 					fill.smooth: 0;
@@ -190,11 +193,11 @@ collections {
 					rel1 {
 						to: "name";
 						relative: 0.0 1.0;
-						offset: 11 11;
+						offset: 21 0;
 					}
 					rel2 {
 						to: "bubble";
-						offset: 0 -10;
+						offset: -9 -9;
 					}
 					color: 0 0 0 255;
 					color3: 0 0 0 0;

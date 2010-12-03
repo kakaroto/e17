@@ -10,6 +10,7 @@ files_DATA = default.edj
 
 EXTRA_DIST = \
 	default.edc	\
+	bubble_left.png \
 	bubble_3.png
 
 default.edj: Makefile $(EXTRA_DIST)
