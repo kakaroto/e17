@@ -241,14 +241,12 @@ _channel_callback(__UNUSED__ void *data, void *buffer, unsigned int nbyte)
    JSObject *parent;
    jsval argv[1];
    jsval js_return;
-   void *tmp;
    int channel;
 
    if (!callback_context) return ;
 
-   if (nbyte != sizeof (void*)) return ;
-   tmp = *(void**) buffer;
-   channel = (int) tmp;
+   if (nbyte != sizeof (int)) return ;
+   channel = *(int*) buffer;
 
    fct = elixir_void_get_private(callback_context);
    if (fct)
@@ -277,10 +275,7 @@ _channel_callback(__UNUSED__ void *data, void *buffer, unsigned int nbyte)
 static void
 _channel_finished_cb(int channel)
 {
-   void *tmp;
-
-   tmp = (void*) channel;
-   ecore_pipe_write(callback_pipe, &tmp, sizeof (void*));
+   ecore_pipe_write(callback_pipe, &channel, sizeof (int));
 }
 
 static JSBool
