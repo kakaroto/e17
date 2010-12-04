@@ -15,25 +15,25 @@
 #endif
 
 static Azy_Value *
-_azy_value_new(void)
+azy_value_new_(void)
 {
    Azy_Value *v;
 
    v = calloc(1, sizeof(Azy_Value));
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
+   v->ref = 1;
    AZY_MAGIC_SET(v, AZY_MAGIC_VALUE);
-   return azy_value_ref(v);
+   return v;
 }
 
 static Eina_Bool
-_azy_value_list_multi_line_get(Azy_Value *v)
+azy_value_list_multi_line_get_(Azy_Value *v)
 {
    Eina_List *l;
    Azy_Value *val;
 
-   if (!v)
-     return EINA_FALSE;
+   if (!v) return EINA_FALSE;
 
    if (v->type == AZY_VALUE_ARRAY)
      {
@@ -41,7 +41,7 @@ _azy_value_list_multi_line_get(Azy_Value *v)
           return EINA_TRUE;
         else
           EINA_LIST_FOREACH(azy_value_children_items_get(v), l, val)
-            if (_azy_value_multi_line_get(val, 35))
+            if (azy_value_multi_line_get_(val, 35))
               return EINA_TRUE;
      }
    else if (v->type == AZY_VALUE_STRUCT)
@@ -50,15 +50,15 @@ _azy_value_list_multi_line_get(Azy_Value *v)
           return EINA_TRUE;
         else
           EINA_LIST_FOREACH(azy_value_children_items_get(v), l, val)
-            if (_azy_value_multi_line_get(azy_value_struct_member_value_get(val), 25))
+            if (azy_value_multi_line_get_(azy_value_struct_member_value_get(val), 25))
               return EINA_TRUE;
      }
 
    return EINA_FALSE;
 }
 
-Eina_Bool
-_azy_value_multi_line_get(Azy_Value *val,
+static Eina_Bool
+azy_value_multi_line_get_(Azy_Value *val,
                           int        max_strlen)
 {
    switch (val->type)
@@ -124,7 +124,7 @@ azy_value_string_new(const char *val)
 {
    Azy_Value *v;
 
-   v = _azy_value_new();
+   v = azy_value_new_();
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
    v->type = AZY_VALUE_STRING;
    v->str_val = eina_stringshare_add(val ? val : "");
@@ -136,7 +136,7 @@ azy_value_int_new(int val)
 {
    Azy_Value *v;
 
-   v = _azy_value_new();
+   v = azy_value_new_();
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
    v->type = AZY_VALUE_INT;
    v->int_val = val;
@@ -148,7 +148,7 @@ azy_value_bool_new(Eina_Bool val)
 {
    Azy_Value *v;
 
-   v = _azy_value_new();
+   v = azy_value_new_();
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
    v->type = AZY_VALUE_BOOLEAN;
    v->int_val = val;
@@ -160,7 +160,7 @@ azy_value_double_new(double val)
 {
    Azy_Value *v;
 
-   v = _azy_value_new();
+   v = azy_value_new_();
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
    v->type = AZY_VALUE_DOUBLE;
    v->dbl_val = val;
@@ -172,7 +172,7 @@ azy_value_time_new(const char *val)
 {
    Azy_Value *v;
 
-   v = _azy_value_new();
+   v = azy_value_new_();
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
    v->type = AZY_VALUE_TIME;
    v->str_val = eina_stringshare_add(val ? val : "");
@@ -186,7 +186,7 @@ azy_value_base64_new(const char *base64)
 
    if (!base64) return NULL;
    
-   val = _azy_value_new();
+   val = azy_value_new_();
    EINA_SAFETY_ON_NULL_RETURN_VAL(val, NULL);
    val->type = AZY_VALUE_BASE64;
    val->str_val = eina_stringshare_add(base64);
@@ -396,7 +396,7 @@ azy_value_struct_new(void)
 {
    Azy_Value *v;
 
-   v = _azy_value_new();
+   v = azy_value_new_();
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
    v->type = AZY_VALUE_STRUCT;
    return v;
@@ -407,7 +407,7 @@ azy_value_struct_new_from_string(const char *name, const char *value)
 {
    Azy_Value *v, *str;
 
-   v = _azy_value_new();
+   v = azy_value_new_();
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
    v->type = AZY_VALUE_STRUCT;
    str = azy_value_string_new(value);
@@ -425,7 +425,7 @@ azy_value_struct_new_from_int(const char *name, int value)
 {
    Azy_Value *v, *i;
 
-   v = _azy_value_new();
+   v = azy_value_new_();
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
    v->type = AZY_VALUE_STRUCT;
    i = azy_value_int_new(value);
@@ -443,7 +443,7 @@ azy_value_struct_new_from_double(const char *name, double value)
 {
    Azy_Value *v, *d;
 
-   v = _azy_value_new();
+   v = azy_value_new_();
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
    v->type = AZY_VALUE_STRUCT;
    d = azy_value_double_new(value);
@@ -461,7 +461,7 @@ azy_value_array_new(void)
 {
    Azy_Value *v;
 
-   v = _azy_value_new();
+   v = azy_value_new_();
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
    v->type = AZY_VALUE_ARRAY;
    return v;
@@ -500,7 +500,7 @@ azy_value_struct_member_set(Azy_Value *str,
           return;
        }
 
-   v = _azy_value_new();
+   v = azy_value_new_();
    EINA_SAFETY_ON_NULL_RETURN(v);
    v->type = AZY_VALUE_MEMBER;
    v->member_name = eina_stringshare_add(name);
@@ -575,7 +575,7 @@ azy_value_dump(Azy_Value  *v,
       {
          if (!azy_value_children_items_get(v))
            eina_strbuf_append(string, "[]");
-         else if (!_azy_value_list_multi_line_get(v))
+         else if (!azy_value_list_multi_line_get_(v))
            {
               eina_strbuf_append(string, "[ ");
               EINA_LIST_FOREACH(azy_value_children_items_get(v), l, val)
@@ -606,7 +606,7 @@ azy_value_dump(Azy_Value  *v,
       {
          if (!azy_value_children_items_get(v))
            eina_strbuf_append(string, "{}");
-         else if (!_azy_value_list_multi_line_get(v))
+         else if (!azy_value_list_multi_line_get_(v))
            {
               eina_strbuf_append(string, "{ ");
               EINA_LIST_FOREACH(azy_value_children_items_get(v), l, val)
