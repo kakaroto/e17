@@ -105,7 +105,7 @@ typedef enum {
    AZY_VALUE_MEMBER,
    AZY_VALUE_INT,
    AZY_VALUE_STRING,
-   AZY_VALUE_BOOLEAN,
+   AZY_VALUE_BOOL,
    AZY_VALUE_DOUBLE,
    AZY_VALUE_TIME,
    AZY_VALUE_BASE64
@@ -251,30 +251,24 @@ extern "C" {
    Azy_Value *azy_value_bool_new(Eina_Bool val);
    Azy_Value *azy_value_double_new(double val);
    Azy_Value *azy_value_time_new(const char *val);
-   Eina_Bool   azy_value_to_int(Azy_Value *val,
-                                 int        *nval);
-   Eina_Bool   azy_value_to_string(Azy_Value  *val,
-                                   const char **nval);
-   Eina_Bool   azy_value_to_base64(Azy_Value  *val,
-                                   const char **nval);
-   Eina_Bool   azy_value_to_bool(Azy_Value *val,
-                                 Eina_Bool *nval);
-   Eina_Bool   azy_value_to_double(Azy_Value *val,
+   Eina_Bool   azy_value_int_get(Azy_Value *val,
+                                 int       *nval);
+   Eina_Bool   azy_value_string_get(Azy_Value  *val,
+                                    const char **nval);
+   Eina_Bool   azy_value_base64_get(Azy_Value  *val,
+                                    const char **nval);
+   Eina_Bool   azy_value_bool_get(Azy_Value *val,
+                                  Eina_Bool *nval);
+   Eina_Bool   azy_value_double_get(Azy_Value *val,
                                     double     *nval);
-   Eina_Bool   azy_value_to_value(Azy_Value  *val,
+   Eina_Bool   azy_value_value_get(Azy_Value  *val,
                                    Azy_Value **nval);
    Azy_Value_Type azy_value_type_get(Azy_Value *val);
-   Azy_Value *azy_value_array_new(void);
-   void        azy_value_array_append(Azy_Value *arr,
-                                       Azy_Value *val);
+   Azy_Value  *azy_value_array_new(void);
+   void        azy_value_array_push(Azy_Value *arr,
+                                    Azy_Value *val);
    Eina_List  *azy_value_children_items_get(Azy_Value *arr);
-   Azy_Value *azy_value_struct_new(void);
-   Azy_Value *azy_value_struct_new_from_string(const char *name,
-                                                 const char *value);
-   Azy_Value *azy_value_struct_new_from_double(const char *name,
-                                                 double      value);
-   Azy_Value *azy_value_struct_new_from_int(const char *name,
-                                              int         value);
+   Azy_Value  *azy_value_struct_new(void);
    void        azy_value_struct_member_set(Azy_Value *str,
                                             const char *name,
                                             Azy_Value *val);

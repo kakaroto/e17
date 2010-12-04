@@ -84,7 +84,7 @@ static int requestUnserialize3()
   TEST_ASSERT(val != 0);
   TEST_ASSERT(azy_value_type_get(val) == AZY_VALUE_STRING);
   const char* str_val = 0;
-  rs = azy_value_to_string(val, &str_val);
+  rs = azy_value_string_get(val, &str_val);
   TEST_ASSERT(rs);
   TEST_ASSERT(str_val != 0);
   int param_match = !strcmp(str_val, "");
@@ -95,7 +95,7 @@ static int requestUnserialize3()
   TEST_ASSERT(val != 0);
   TEST_ASSERT(azy_value_type_get(val) == AZY_VALUE_STRING);
   str_val = 0;
-  rs = azy_value_to_string(val, &str_val);
+  rs = azy_value_string_get(val, &str_val);
   TEST_ASSERT(rs);
   TEST_ASSERT(str_val != 0);
   param_match = !strcmp(str_val, "s2");
@@ -144,7 +144,7 @@ static int requestUnserialize4()
   TEST_ASSERT(_assert_param_type(content, 0, AZY_VALUE_INT));
   TEST_ASSERT(_assert_param_type(content, 1, AZY_VALUE_INT));
   TEST_ASSERT(_assert_param_type(content, 2, AZY_VALUE_STRING));
-  TEST_ASSERT(_assert_param_type(content, 3, AZY_VALUE_BOOLEAN));
+  TEST_ASSERT(_assert_param_type(content, 3, AZY_VALUE_BOOL));
   TEST_ASSERT(_assert_param_type(content, 4, AZY_VALUE_DOUBLE));
   TEST_ASSERT(_assert_param_type(content, 5, AZY_VALUE_TIME));
   TEST_ASSERT(_assert_param_type(content, 7, AZY_VALUE_ARRAY));

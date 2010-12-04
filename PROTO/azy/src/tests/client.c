@@ -220,9 +220,17 @@ connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
    /* call undefined servlet methods */
    {
       Azy_Content *content;
+      Azy_Value *struc;
 
       content = azy_content_new("T_Test1.undefined");
-      azy_content_param_add(content, azy_value_struct_new_from_int("test", 100));
+      struc = azy_value_struct_new();
+      if (!struc)
+        {
+           azy_client_close(cli);
+           return ECORE_CALLBACK_CANCEL;
+        }
+      azy_value_struct_member_set(struc, "test", azy_value_int_new(100));
+      azy_content_param_add(content, struc);
       ret = azy_client_call(cli, content, AZY_NET_TRANSPORT_JSON, NULL);
       if (check_err(err) || (!ret))
         exit(1);

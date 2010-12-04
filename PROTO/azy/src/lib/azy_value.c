@@ -14,7 +14,11 @@
 # define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #endif
 
-static Azy_Value *
+static Azy_Value *azy_value_new_(void);
+static Eina_Bool  azy_value_list_multi_line_get_(Azy_Value *v);
+
+/* allocate a new Azy_Value */
+static inline Azy_Value *
 azy_value_new_(void)
 {
    Azy_Value *v;
@@ -27,6 +31,7 @@ azy_value_new_(void)
    return v;
 }
 
+/* returns EINA_TRUE if a struct/array object requires multiple lines to print */
 static Eina_Bool
 azy_value_list_multi_line_get_(Azy_Value *v)
 {
@@ -57,7 +62,8 @@ azy_value_list_multi_line_get_(Azy_Value *v)
    return EINA_FALSE;
 }
 
-static Eina_Bool
+/* returns EINA_TRUE if the line requires multiple lines to print */
+Eina_Bool
 azy_value_multi_line_get_(Azy_Value *val,
                           int        max_strlen)
 {
@@ -78,6 +84,14 @@ azy_value_multi_line_get_(Azy_Value *val,
    return EINA_FALSE;
 }
 
+/**
+ * @brief Increase the refcount of an existing #Azy_Value
+ * This function can be used to increase the reference count of @p val,
+ * effectively copying the struct.  Note that only the struct itself has
+ * its refcount increased, not the members.
+ * @param val The #Azy_Value to ref (NOT NULL)
+ * @return The same variable, or #NULL on error
+ */
 Azy_Value *
 azy_value_ref(Azy_Value *val)
 {
@@ -86,12 +100,18 @@ azy_value_ref(Azy_Value *val)
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return NULL;
      }
-
    val->ref++;
-
    return val;
 }
 
+/**
+ * @brief Decrease the refcount of an existing #Azy_Value
+ * This function can be used to decrease the reference count of @p val,
+ * effectively deleting an instance of the struct.  Note that only the
+ * struct itself has its refcount decreased, not the members.  If the refcount
+ * of an object reaches 0, it and its data are automatically freed.
+ * @param val The #Azy_Value to ref (NOT NULL)
+ */
 void
 azy_value_unref(Azy_Value *val)
 {
@@ -119,6 +139,13 @@ azy_value_unref(Azy_Value *val)
 }
 
 /* base types */
+/**
+ * @brief Create an #Azy_Value of type #AZY_VALUE_STRING
+ * This function allocates memory around and stringshares a string into
+ * an #Azy_Value struct.
+ * @param val The string
+ * @return The allocated struct, or #NULL on error
+ */
 Azy_Value *
 azy_value_string_new(const char *val)
 {
@@ -131,6 +158,13 @@ azy_value_string_new(const char *val)
    return v;
 }
 
+/**
+ * @brief Create an #Azy_Value of type #AZY_VALUE_INT
+ * This function allocates memory around an int into
+ * an #Azy_Value struct.
+ * @param val The int
+ * @return The allocated struct, or #NULL on error
+ */
 Azy_Value *
 azy_value_int_new(int val)
 {
@@ -143,6 +177,13 @@ azy_value_int_new(int val)
    return v;
 }
 
+/**
+ * @brief Create an #Azy_Value of type #AZY_VALUE_BOOL
+ * This function allocates memory around a boolean value into
+ * an #Azy_Value struct.
+ * @param val The boolean value
+ * @return The allocated struct, or #NULL on error
+ */
 Azy_Value *
 azy_value_bool_new(Eina_Bool val)
 {
@@ -150,11 +191,18 @@ azy_value_bool_new(Eina_Bool val)
 
    v = azy_value_new_();
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
-   v->type = AZY_VALUE_BOOLEAN;
-   v->int_val = val;
+   v->type = AZY_VALUE_BOOL;
+   v->int_val = !!val;
    return v;
 }
 
+/**
+ * @brief Create an #Azy_Value of type #AZY_VALUE_DOUBLE
+ * This function allocates memory around a double into
+ * an #Azy_Value struct.
+ * @param val The double
+ * @return The allocated struct, or #NULL on error
+ */
 Azy_Value *
 azy_value_double_new(double val)
 {
@@ -167,6 +215,13 @@ azy_value_double_new(double val)
    return v;
 }
 
+/**
+ * @brief Create an #Azy_Value of type #AZY_VALUE_TIME
+ * This function allocates memory around and stringshares a time string into
+ * an #Azy_Value struct.
+ * @param val The time string
+ * @return The allocated struct, or #NULL on error
+ */
 Azy_Value *
 azy_value_time_new(const char *val)
 {
@@ -179,6 +234,13 @@ azy_value_time_new(const char *val)
    return v;
 }
 
+/**
+ * @brief Create an #Azy_Value of type #AZY_VALUE_BASE64
+ * This function allocates memory around a base64 encoded
+ * string into an #Azy_Value struct.
+ * @param val The base64 string
+ * @return The allocated struct, or #NULL on error
+ */
 Azy_Value *
 azy_value_base64_new(const char *base64)
 {
@@ -193,8 +255,17 @@ azy_value_base64_new(const char *base64)
    return val;
 }
 
+/* conversion functions */
+/**
+ * @brief Retrieve the int value from an #Azy_Value struct of type #AZY_VALUE_INT
+ * This function gets the int value previously stored in the struct,
+ * returning success or failure.
+ * @param val The #Azy_Value (NOT NULL)
+ * @param nval The pointer to store the int in (NOT NULL)
+ * @return EINA_TRUE on success, else EINA_FALSE
+ */
 Eina_Bool
-azy_value_to_int(Azy_Value *val,
+azy_value_int_get(Azy_Value *val,
                   int        *nval)
 {
    if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
@@ -209,8 +280,18 @@ azy_value_to_int(Azy_Value *val,
    return EINA_TRUE;
 }
 
+/**
+ * @brief Retrieve the string value from an #Azy_Value struct of type
+ * #AZY_VALUE_STRING, #AZY_VALUE_TIME, or #AZY_VALUE_BASE64
+ * This function stringshare_refs the string value previously stored in the struct,
+ * returning success or failure.  It accepts all string type values, and
+ * will automatically decode base64 strings.
+ * @param val The #Azy_Value (NOT NULL)
+ * @param nval The pointer to store the value in (NOT NULL)
+ * @return EINA_TRUE on success, else EINA_FALSE
+ */
 Eina_Bool
-azy_value_to_string(Azy_Value  *val,
+azy_value_string_get(Azy_Value  *val,
                      const char **nval)
 {
    if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
@@ -242,8 +323,17 @@ azy_value_to_string(Azy_Value  *val,
    return EINA_TRUE;
 }
 
+/**
+ * @brief Retrieve the string value from an #Azy_Value struct of type #AZY_VALUE_BASE64
+ * This function stringshare_refs the base64 encoded string previously stored in
+ * the struct into a new pointer.
+ * To retrieve the value and decode it in one call, @see azy_value_string_get
+ * @param val The #Azy_Value (NOT NULL)
+ * @param nval The pointer to store the value in (NOT NULL)
+ * @return EINA_TRUE on success, else EINA_FALSE
+ */
 Eina_Bool
-azy_value_to_base64(Azy_Value  *val,
+azy_value_base64_get(Azy_Value  *val,
                     const char **nval)
 {
    if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
@@ -257,8 +347,16 @@ azy_value_to_base64(Azy_Value  *val,
    return EINA_TRUE;
 }
 
+/**
+ * @brief Retrieve the int value from an #Azy_Value struct of type #AZY_VALUE_BOOL
+ * This function gets the bool value previously stored in the struct,
+ * returning success or failure.
+ * @param val The #Azy_Value (NOT NULL)
+ * @param nval The pointer to store the bool in (NOT NULL)
+ * @return EINA_TRUE on success, else EINA_FALSE
+ */
 Eina_Bool
-azy_value_to_bool(Azy_Value *val,
+azy_value_bool_get(Azy_Value *val,
                   Eina_Bool *nval)
 {
    if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
@@ -266,15 +364,24 @@ azy_value_to_bool(Azy_Value *val,
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return EINA_FALSE;
      }
-   if ((!nval) || (val->type != AZY_VALUE_BOOLEAN))
+   if ((!nval) || (val->type != AZY_VALUE_BOOL))
      return EINA_FALSE;
 
    *nval = !!val->int_val;
    return EINA_TRUE;
 }
 
+/**
+ * @brief Retrieve the double value from an #Azy_Value struct of type
+ * #AZY_VALUE_DOUBLE, or #AZY_TYPE_INT
+ * This function gets the double value previously stored in the struct,
+ * returning success or failure.
+ * @param val The #Azy_Value (NOT NULL)
+ * @param nval The pointer to store the value in (NOT NULL)
+ * @return EINA_TRUE on success, else EINA_FALSE
+ */
 Eina_Bool
-azy_value_to_double(Azy_Value *val,
+azy_value_double_get(Azy_Value *val,
                      double     *nval)
 {
    if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
@@ -292,8 +399,16 @@ azy_value_to_double(Azy_Value *val,
    return EINA_TRUE;
 }
 
+/**
+ * @brief Increases the refcount of an #Azy_Value
+ * This function increases the refcount of an #Azy_Value, returning
+ * success or failure.
+ * @param val The #Azy_Value (NOT NULL)
+ * @param nval The pointer to store the value in (NOT NULL)
+ * @return EINA_TRUE on success, else EINA_FALSE
+ */
 Eina_Bool
-azy_value_to_value(Azy_Value  *val,
+azy_value_value_get(Azy_Value  *val,
                     Azy_Value **nval)
 {
    if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
@@ -309,6 +424,13 @@ azy_value_to_value(Azy_Value  *val,
    return EINA_TRUE;
 }
 
+/**
+ * @brief Return the type of an #Azy_Value
+ * This function is used to return the type of value in
+ * an #Azy_Value.
+ * @param val The #Azy_Value struct (NOT NULL)
+ * @return The #Azy_Value_Type, or -1 on error
+ */
 Azy_Value_Type
 azy_value_type_get(Azy_Value *val)
 {
@@ -321,6 +443,14 @@ azy_value_type_get(Azy_Value *val)
    return val->type;
 }
 
+/**
+ * @brief Returns the name of the #Azy_Value struct member
+ * This function returns the name of the struct member that the #Azy_Value
+ * contains.  Note that the name is still owned by the #Azy_Value, but is
+ * guaranteed to be stringshared.
+ * @param val The #Azy_Value of type #AZY_VALUE_MEMBER (NOT NULL)
+ * @return The struct member's name, or #NULL on failure
+ */
 const char *
 azy_value_struct_member_name_get(Azy_Value *val)
 {
@@ -335,6 +465,14 @@ azy_value_struct_member_name_get(Azy_Value *val)
    return val->member_name;
 }
 
+/**
+ * @brief Returns the value of the #Azy_Value struct member
+ * This function returns the value of the struct member that the specified
+ * #Azy_Value contains.  Note that the returned value is still owned by the
+ * specified #Azy_Value.
+ * @param val The #Azy_Value of type #AZY_VALUE_MEMBER (NOT NULL)
+ * @return The struct member's value, or #NULL on failure
+ */
 Azy_Value *
 azy_value_struct_member_value_get(Azy_Value *val)
 {
@@ -349,6 +487,16 @@ azy_value_struct_member_value_get(Azy_Value *val)
    return val->member_value;
 }
 
+/**
+ * @brief Returns the #Azy_Value struct member that matches a name
+ * This function returns the struct member that the specified
+ * #Azy_Value contains which matches @p name.
+ * Note that the returned value is still owned by the
+ * specified #Azy_Value.
+ * @param val The #Azy_Value of type #AZY_VALUE_STRUCT (NOT NULL)
+ * @param name The name of the member to return (NOT NULL)
+ * @return The #Azy_Value of the named struct member, or #NULL on failure
+ */
 Azy_Value *
 azy_value_struct_member_get(Azy_Value *val,
                              const char *name)
@@ -375,6 +523,15 @@ azy_value_struct_member_get(Azy_Value *val,
    return NULL;
 }
 
+/**
+ * @brief Returns a list of the child members of an #Azy_Value
+ * This function returns the list of struct member that the specified
+ * #Azy_Value contains.
+ * Note that the returned values (including the list) are still owned by the
+ * specified #Azy_Value.
+ * @param val The #Azy_Value of type #AZY_VALUE_ARRAY or #AZY_VALUE_STRUCT (NOT NULL)
+ * @return An #Eina_List of #Azy_Value members, or #NULL on failure
+ */
 Eina_List *
 azy_value_children_items_get(Azy_Value *val)
 {
@@ -390,7 +547,10 @@ azy_value_children_items_get(Azy_Value *val)
 }
 
 /* composite types */
-
+/**
+ * @brief This function allocates and returns a new #Azy_Value of type AZY_VALUE_STRUCT
+ * @return The new #Azy_Value struct, or #NULL on failure
+ */
 Azy_Value *
 azy_value_struct_new(void)
 {
@@ -402,60 +562,10 @@ azy_value_struct_new(void)
    return v;
 }
 
-Azy_Value *
-azy_value_struct_new_from_string(const char *name, const char *value)
-{
-   Azy_Value *v, *str;
-
-   v = azy_value_new_();
-   EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
-   v->type = AZY_VALUE_STRUCT;
-   str = azy_value_string_new(value);
-   if (!str)
-     {
-        azy_value_unref(v);
-        return NULL;
-     }
-   azy_value_struct_member_set(v, name, str);
-   return v;
-}
-
-Azy_Value *
-azy_value_struct_new_from_int(const char *name, int value)
-{
-   Azy_Value *v, *i;
-
-   v = azy_value_new_();
-   EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
-   v->type = AZY_VALUE_STRUCT;
-   i = azy_value_int_new(value);
-   if (!i)
-     {
-        azy_value_unref(v);
-        return NULL;
-     }
-   azy_value_struct_member_set(v, name, i);
-   return v;
-}
-
-Azy_Value *
-azy_value_struct_new_from_double(const char *name, double value)
-{
-   Azy_Value *v, *d;
-
-   v = azy_value_new_();
-   EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
-   v->type = AZY_VALUE_STRUCT;
-   d = azy_value_double_new(value);
-   if (!d)
-     {
-        azy_value_unref(v);
-        return NULL;
-     }
-   azy_value_struct_member_set(v, name, d);
-   return v;
-}
-
+/**
+ * @brief This function allocates and returns a new #Azy_Value of type AZY_VALUE_ARRAY
+ * @return The new #Azy_Value array struct, or #NULL on failure
+ */
 Azy_Value *
 azy_value_array_new(void)
 {
@@ -467,8 +577,16 @@ azy_value_array_new(void)
    return v;
 }
 
+/**
+ * @brief Set a struct member in an #Azy_Value to use a name and a value
+ * This function sets member with name @p name to @p val.  If a previous member
+ * with @p name exists, unref it and use @p val instead.
+ * @param struc The #Azy_Value struct to set the member in (NOT NULL)
+ * @param name The member name (NOT NULL)
+ * @param val The struct member value (NOT NULL)
+ */
 void
-azy_value_struct_member_set(Azy_Value *str,
+azy_value_struct_member_set(Azy_Value *struc,
                              const char *name,
                              Azy_Value *val)
 {
@@ -481,18 +599,18 @@ azy_value_struct_member_set(Azy_Value *str,
         return;
      }
 
-   if (!AZY_MAGIC_CHECK(str, AZY_MAGIC_VALUE))
+   if (!AZY_MAGIC_CHECK(struc, AZY_MAGIC_VALUE))
      {
-        AZY_MAGIC_FAIL(str, AZY_MAGIC_VALUE);
+        AZY_MAGIC_FAIL(struc, AZY_MAGIC_VALUE);
         return;
      }
 
    EINA_SAFETY_ON_NULL_RETURN(name);
 
-   if (str->type != AZY_VALUE_STRUCT)
+   if (struc->type != AZY_VALUE_STRUCT)
      return;
 
-   EINA_LIST_FOREACH(str->children, l, m)
+   EINA_LIST_FOREACH(struc->children, l, m)
      if (!strcmp(m->member_name, name))
        {
           azy_value_unref(m->member_value);
@@ -505,12 +623,18 @@ azy_value_struct_member_set(Azy_Value *str,
    v->type = AZY_VALUE_MEMBER;
    v->member_name = eina_stringshare_add(name);
    v->member_value = val;
-   str->children = eina_list_append(str->children, v);
+   struc->children = eina_list_append(struc->children, v);
 }
 
+/**
+ * @brief Add a value to an array
+ * This function adds @p val to array @p arr.
+ * @param arr The array (NOT NULL)
+ * @param val The value to add (NOT NULL)
+ */
 void
-azy_value_array_append(Azy_Value *arr,
-                        Azy_Value *val)
+azy_value_array_push(Azy_Value *arr,
+                     Azy_Value *val)
 {
    if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
      {
@@ -526,10 +650,21 @@ azy_value_array_append(Azy_Value *arr,
    arr->children = eina_list_append(arr->children, val);
 }
 
+/**
+ * @brief Check if an #Azy_Value is an RPC error
+ * This function checks to see if @p val is an RPC error
+ * with a faultcode and faultstring, returning both if
+ * it is.
+ * Note that the faultstring returned is still owned by @p val.
+ * @param val The #Azy_Value to check
+ * @param errcode Pointer to store a faultcode in
+ * @param errmsg Pointer to store a faultmsg in
+ * @return EINA_FALSE if @p val is not an error value, else EINA_TRUE
+ */
 Eina_Bool
 azy_value_retval_is_error(Azy_Value  *val,
-                           int         *errcode,
-                           const char **errmsg)
+                          int         *errcode,
+                          const char **errmsg)
 {
    Azy_Value *c, *s;
    
@@ -555,17 +690,27 @@ azy_value_retval_is_error(Azy_Value  *val,
    return EINA_TRUE;
 }
 
+/**
+ * @brief Dump a value's contents into a string
+ * This function appends the values in @p v into #Eina_Strbuf @p string,
+ * indenting @p indent spaces.  It calls itself recursively, dumping all sub-values
+ * into @p string as well.
+ * Note that base64 values are NOT decoded when dumping.
+ * @param v The value to dump (NOT NULL)
+ * @param string The #Eina_Strbuf to append to (NOT NULL)
+ * @param indent The number of spaces to indent
+ */
 void
 azy_value_dump(Azy_Value  *v,
-                Eina_Strbuf *string,
-                unsigned int indent)
+               Eina_Strbuf *string,
+               unsigned int indent)
 {
    Eina_List *l;
    Azy_Value *val;
    char buf[256];
 
-   if (!v)
-     return;
+   EINA_SAFETY_ON_NULL_RETURN(v);
+   EINA_SAFETY_ON_NULL_RETURN(string);
 
    memset(buf, ' ', MIN(indent * 2, sizeof(buf) - 1));
 
@@ -654,7 +799,7 @@ azy_value_dump(Azy_Value  *v,
          break;
       }
 
-      case AZY_VALUE_BOOLEAN:
+      case AZY_VALUE_BOOL:
       {
          eina_strbuf_append_printf(string, "%s", v->int_val ? "true" : "false");
          break;

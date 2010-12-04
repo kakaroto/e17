@@ -196,7 +196,7 @@ azy_value_serialize_xml(xmlNode    *node,
       case AZY_VALUE_INT:
       {
          int int_val = -1;
-         azy_value_to_int(val, &int_val);
+         azy_value_int_get(val, &int_val);
          snprintf(buf, sizeof(buf), "%d", int_val);
          xmlNewChild(node, NULL, BAD_CAST "int", BAD_CAST buf);
          break;
@@ -205,16 +205,16 @@ azy_value_serialize_xml(xmlNode    *node,
       case AZY_VALUE_STRING:
       {
          const char *str_val;
-         azy_value_to_string(val, &str_val);
+         azy_value_string_get(val, &str_val);
          xmlNewChild(node, NULL, BAD_CAST "string", BAD_CAST str_val);
          eina_stringshare_del(str_val);
          break;
       }
 
-      case AZY_VALUE_BOOLEAN:
+      case AZY_VALUE_BOOL:
       {
          Eina_Bool bool_val = -1;
-         azy_value_to_bool(val, &bool_val);
+         azy_value_bool_get(val, &bool_val);
          xmlNewChild(node, NULL, BAD_CAST "boolean", BAD_CAST (bool_val ? "1" : "0"));
          break;
       }
@@ -222,7 +222,7 @@ azy_value_serialize_xml(xmlNode    *node,
       case AZY_VALUE_DOUBLE:
       {
          double dbl_val = -1;
-         azy_value_to_double(val, &dbl_val);
+         azy_value_double_get(val, &dbl_val);
          snprintf(buf, sizeof(buf), "%g", dbl_val);
          xmlNewChild(node, NULL, BAD_CAST "double", BAD_CAST buf);
          break;
@@ -231,7 +231,7 @@ azy_value_serialize_xml(xmlNode    *node,
       case AZY_VALUE_TIME:
       {
          const char *str_val;
-         azy_value_to_string(val, &str_val);
+         azy_value_string_get(val, &str_val);
          xmlNewChild(node, NULL, BAD_CAST "dateTime.iso8601", BAD_CAST str_val);
          eina_stringshare_del(str_val);
          break;
@@ -310,7 +310,7 @@ azy_value_unserialize_xml(xmlNode *node)
                        return NULL;
                     }
 
-                  azy_value_array_append(arr, elem);
+                  azy_value_array_push(arr, elem);
                }
 
              for_each_node_end()

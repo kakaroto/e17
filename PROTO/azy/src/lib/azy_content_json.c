@@ -47,7 +47,7 @@ azy_value_serialize_json(Azy_Value *val)
       case AZY_VALUE_INT:
       {
          int int_val = -1;
-         azy_value_to_int(val, &int_val);
+         azy_value_int_get(val, &int_val);
          return cJSON_CreateNumber(int_val);
       }
 
@@ -55,16 +55,16 @@ azy_value_serialize_json(Azy_Value *val)
       case AZY_VALUE_TIME:
       {
          const char *str_val;
-         azy_value_to_string(val, &str_val);
+         azy_value_string_get(val, &str_val);
          object = cJSON_CreateString(str_val);
          eina_stringshare_del(str_val);
          return object;
       }
 
-      case AZY_VALUE_BOOLEAN:
+      case AZY_VALUE_BOOL:
       {
          Eina_Bool bool_val = -1;
-         azy_value_to_bool(val, &bool_val);
+         azy_value_bool_get(val, &bool_val);
 
          if (bool_val)
            return cJSON_CreateTrue();
@@ -75,7 +75,7 @@ azy_value_serialize_json(Azy_Value *val)
       case AZY_VALUE_DOUBLE:
       {
          double dbl_val = -1;
-         azy_value_to_double(val, &dbl_val);
+         azy_value_double_get(val, &dbl_val);
          return cJSON_CreateNumber(dbl_val);
       }
 
@@ -119,7 +119,7 @@ azy_value_unserialize_json(cJSON *object)
          uint32_t arr_len = cJSON_GetArraySize(object);
 
          for (i = 0; i < arr_len; i++)
-           azy_value_array_append(arr, azy_value_unserialize_json(cJSON_GetArrayItem(object, i)));
+           azy_value_array_push(arr, azy_value_unserialize_json(cJSON_GetArrayItem(object, i)));
 
          return arr;
       }

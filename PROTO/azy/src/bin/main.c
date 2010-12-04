@@ -243,7 +243,7 @@ gen_type_marshalizers(Azy_Typedef *t,
         EL(3, "return NULL;");
         EL(2, "}");
         NL;
-        EL(2, "azy_value_array_append(_array, _item_value);");
+        EL(2, "azy_value_array_push(_array, _item_value);");
         EL(1, "}");
         NL;
         EL(1, "return _array;");
@@ -1453,7 +1453,7 @@ gen_client_impl(Azy_Server_Module *s)
 /*
         EL(1, "{");
         EL(2,"if (!%s(azy_content_retval_get(_content), %s&_retval))",
-           method->return_type->demarch_name, (!strcmp(method->return_type->demarch_name, "azy_value_to_bool")) ? "(int*)" : "");
+           method->return_type->demarch_name, (!strcmp(method->return_type->demarch_name, "azy_value_bool_get")) ? "(int*)" : "");
         EL(3,
            "azy_content_error_faultmsg_set(_error, AZY_CLIENT_ERROR_MARSHALIZER, \"Call return value demarshalization failed.\");");
         EL(1, "}");

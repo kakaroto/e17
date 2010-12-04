@@ -485,7 +485,7 @@ azy_content_dump_string(const Azy_Content *content,
      single_line = EINA_FALSE;
    else
      EINA_LIST_FOREACH(content->params, l, v)
-       if (_azy_value_multi_line_get(v, 25))
+       if (azy_value_multi_line_get_(v, 25))
          single_line = EINA_FALSE;
 
    eina_strbuf_append_printf(string, "%s%s(", buf, content->method ? content->method : "<anonymous>");

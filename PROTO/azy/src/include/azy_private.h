@@ -232,7 +232,7 @@ struct Azy_Server_Module_Method
 
 extern void _azy_magic_fail(const void *d, Azy_Magic m, Azy_Magic req_m, const char *fname);
 
-Eina_Bool _azy_value_multi_line_get(Azy_Value *v,
+Eina_Bool azy_value_multi_line_get_(Azy_Value *v,
                                       int                 max_strlen);
 int azy_events_type_parse(Azy_Net            *net,
                            int                  type,
