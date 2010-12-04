@@ -124,6 +124,7 @@ struct Azy_Server
    AZY_MAGIC;
    Ecore_Con_Server    *server;
    Ecore_Event_Handler *add;
+   const char *addr;
 
    struct
    {
