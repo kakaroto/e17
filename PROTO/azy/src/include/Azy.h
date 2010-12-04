@@ -50,15 +50,21 @@ void *alloca (size_t);
 # endif
 #endif /* ! _WIN32 */
 
+/**
+ * Convenience define for Azy_Client_Return_Cb functions.
+ */
 #define AZY_ERROR_NONE 0
 
 extern int azy_log_dom;
 
-extern int AZY_CLIENT_DISCONNECTED;
-extern int AZY_CLIENT_CONNECTED;
-extern int AZY_CLIENT_RESULT;
-extern int AZY_CLIENT_RETURN;
-extern int AZY_CLIENT_ERROR;
+extern int AZY_CLIENT_DISCONNECTED; /**< Event emitted upon client disconnecting */
+extern int AZY_CLIENT_CONNECTED; /**< Event emitted upon client connecting */
+extern int AZY_CLIENT_RESULT; /**< Event emitted upon client method returning if
+                                   no callback was set */
+extern int AZY_CLIENT_RETURN; /**< Event emitted upon client method returning if
+                                   a callback for the method has been set */
+extern int AZY_CLIENT_ERROR; /**< Event emitted upon client method encountering
+                                  an error */
 
 /**
  * @defgroup Azy_Typedefs Azy types
@@ -67,29 +73,76 @@ extern int AZY_CLIENT_ERROR;
  */
 
 /**
- * @typedef _Azy_Server Azy_Server
- * @brief An object representing the local server
- * This type is for hosting a server, and is used by the
- * azy_server namespace.
+ * @typedef Azy_Server
+ * A server object for hosting a server, and is used by the
+ * azy_server namespace
  */
 typedef struct Azy_Server               Azy_Server;
+/**
+ * @typedef Azy_Server_Module
+ * A module object which contains all of the connection info
+ * for the associated client
+ */
 typedef struct Azy_Server_Module        Azy_Server_Module;
+/**
+ * @typedef Azy_Server_Module_Method
+ * A method object containing the name and callback
+ */
 typedef struct Azy_Server_Module_Method Azy_Server_Module_Method;
-typedef struct Azy_Client Azy_Client;
-typedef struct Azy_Net Azy_Net;
+/**
+ * @typedef Azy_Server_Module_Def
+ * A module definition object.  This type is the means by which
+ * #Azy_Server_Module objects are created and manipulated by users
+ * of the api; contains all methods present in the module
+ */
 typedef struct Azy_Server_Module_Def Azy_Server_Module_Def;
+/**
+ * @typedef Azy_Client
+ * A client object for connecting to a server, used by the
+ * azy_client namespace
+ */
+typedef struct Azy_Client Azy_Client;
+/**
+ * @typedef Azy_Net
+ * A network object containing all connection and http
+ * information
+ */
+typedef struct Azy_Net Azy_Net;
+/**
+ * @typedef Azy_Value
+ * A general struct which can hold any type of value
+ */
 typedef struct Azy_Value Azy_Value;
+/**
+ * @typedef Azy_Content
+ * A struct which holds the content being sent/received in an rpc method call
+ * in a list of #Azy_Value objects
+ */
 typedef struct Azy_Content Azy_Content;
-
+/**
+ * @typedef Azy_Client_Call_Id
+ * A unique identifier for every azy_client_call and azy_client_send
+ * which can be used to set callbacks for the transmission
+ */
 typedef unsigned int Azy_Client_Call_Id;
 
+/**
+ * @typedef Azy_Server_Type
+ * A simple enum for easily specifying the type of server to run
+ */
 typedef enum
 {
-   AZY_SERVER_LOCAL = 1,
-   AZY_SERVER_BROADCAST = 2,
-   AZY_SERVER_TLS = (1 << 4)
+   AZY_SERVER_NONE = 0, /**< Server listen address must be set using azy_server_addr_set */
+   AZY_SERVER_LOCAL = 1, /**< Server listen address is 127.0.0.1 */
+   AZY_SERVER_BROADCAST = 2, /**< Server listen address is 0.0.0.0 */
+   AZY_SERVER_TLS = (1 << 4) /**< If bitwise ORed into the type, server will use TLS */
 } Azy_Server_Type;
 
+/**
+ * @typedef Azy_Client_Error
+ * Enum for client errors
+ */
+/* FIXME: THIS NEEDS TO GO AWAY OR SOMETHING!!!! */
 typedef enum
 {
    AZY_CLIENT_ERROR_MARSHALIZER,
@@ -99,18 +152,26 @@ typedef enum
    AZY_CLIENT_ERROR_FAILED
 } Azy_Client_Error;
 
+/**
+ * @typedef Azy_Value_Type
+ * Represents the type of value stored in the #Azy_Value object
+ */
 typedef enum {
-   AZY_VALUE_ARRAY,
-   AZY_VALUE_STRUCT,
-   AZY_VALUE_MEMBER,
-   AZY_VALUE_INT,
-   AZY_VALUE_STRING,
-   AZY_VALUE_BOOL,
-   AZY_VALUE_DOUBLE,
-   AZY_VALUE_TIME,
-   AZY_VALUE_BASE64
+   AZY_VALUE_ARRAY, /**< Array object */
+   AZY_VALUE_STRUCT, /** Struct object */
+   AZY_VALUE_MEMBER, /** Struct member object */
+   AZY_VALUE_INT, /** Int object */
+   AZY_VALUE_STRING, /** String (stringshared) object */
+   AZY_VALUE_BOOL, /** Boolean object */
+   AZY_VALUE_DOUBLE, /** Double object */
+   AZY_VALUE_TIME, /** Time (stringshared) object */
+   AZY_VALUE_BASE64 /** Base64 encoded string (stringshared) object */
 } Azy_Value_Type;
 
+/**
+ * @typedef Azy_Net_Type
+ * Represents the type of http method in the header
+ */
 typedef enum
 {
    AZY_NET_TYPE_NONE,
@@ -121,6 +182,10 @@ typedef enum
    AZY_NET_TYPE_RESPONSE_ERROR
 } Azy_Net_Type;
 
+/**
+ * @typedef Azy_Net_Transport
+ * Represents the content-type in the http headers
+ */
 typedef enum
 {
    AZY_NET_TRANSPORT_XML,
@@ -135,6 +200,11 @@ typedef Eina_Bool (*Azy_Server_Module_Cb)(Azy_Server_Module *);
 typedef void (*Azy_Server_Module_Shutdown_Cb)(Azy_Server_Module *);
 typedef Eina_Bool (*Azy_Server_Module_Content_Cb)(Azy_Server_Module *, Azy_Content *);
 typedef void *(*Azy_Content_Cb)(Azy_Value *, void **);
+/**
+ * @typedef Azy_Client_Return_Cb
+ * Function must return AZY_ERROR_NONE (0) on success, else
+ * an error number.
+ */
 typedef Eina_Error (*Azy_Client_Return_Cb)(Azy_Client *, Azy_Content *);
 
 #ifdef __cplusplus
@@ -184,6 +254,8 @@ extern "C" {
                                                                 Azy_Server_Module_Content_Cb fallback);
    void                      azy_server_module_def_method_add(Azy_Server_Module_Def *def,
                                                               Azy_Server_Module_Method *method);
+   Eina_Bool                 azy_server_module_def_method_del(Azy_Server_Module_Def    *def,
+                                                              Azy_Server_Module_Method *method);
    int                       azy_server_module_def_size_get(Azy_Server_Module_Def *def);
    Eina_Bool                 azy_server_module_size_set(Azy_Server_Module_Def *def,
                                                         int                    size);
@@ -200,6 +272,9 @@ extern "C" {
                                    int                      type,
                                    const char              *cert,
                                    Azy_Server_Module_Def **modules);
+   Eina_Bool azy_server_addr_set(Azy_Server *server,
+                                 const char *addr);
+   const char *azy_server_addr_get(Azy_Server *server);
 
    /* net */
    Azy_Net   *azy_net_new(void *conn);

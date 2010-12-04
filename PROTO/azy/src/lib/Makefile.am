@@ -30,6 +30,7 @@ libazy_la_SOURCES = \
   azy_content_json.c \
   azy_content_xml.c \
   azy_server.c \
+  azy_server_module.c \
   azy_net.c \
   azy_utils.c
 
