@@ -30,7 +30,7 @@ azy_base64_encode(const char *string,
    char *ret = NULL;
    int retlen[2];
 
-   if (len < 1) return NULL;
+   if ((len < 1) || (!string)) return NULL;
 
    if (!(ret = malloc(sizeof(char) * ((((len + 2) - ((int)(len + 2) % 3)) / 3) * 4) + 4)))
      return NULL;
@@ -58,7 +58,7 @@ azy_base64_decode(const char *string,
    char *ret = NULL;
    int retlen;
 
-   if (len < 1) return NULL;
+   if ((len < 1) || (!string)) return NULL;
 
    if (!(ret = malloc(sizeof(char) * (int)((double)len / (double)(4 / 3)) + 1)))
      return NULL;
@@ -99,7 +99,7 @@ azy_memstr(const unsigned char *big,
 
 /**
  * @brief Read a UUID from /proc/sys/kernel/random/uuid and stringshare it
- * @return The stringshared uuid
+ * @return The stringshared uuid or #NULL on error
  * This function is used to return a stringshared random UUID.  UUIDS are
  * Universally Unique IDentifiers, strings of 36 characters such as:
  * 550e8400-e29b-41d4-a716-446655440000
