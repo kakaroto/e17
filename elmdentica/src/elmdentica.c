@@ -1078,10 +1078,10 @@ char *ed_status_label_get(void *data, Evas_Object *obj, const char *part) {
 				else
 					snprintf(buf, sizeof(buf), _("~ 1 hour ago"));
 			} else
-				strftime(buf, sizeof(buf), _("on %F"), &date_tm);
+				strftime(buf, sizeof(buf), _("on %x"), &date_tm);
 		} else if(!settings->rel_timestamps) {
 				if(localtime_r(&(as->created_at), &date_tm)) {
-					strftime(buf, sizeof(buf), _("%F %T"), &date_tm);
+					strftime(buf, sizeof(buf), _("%x %X"), &date_tm);
 				} else snprintf(buf, sizeof(buf), _("some-when"));
 		} else snprintf(buf, sizeof(buf), _("some-when"));
 	}
