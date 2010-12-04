@@ -113,9 +113,13 @@ if test "x$enable_debug" != "xno";then
 		CFLAGS+=" -ggdb -rdynamic -Wall "
 fi
 
+EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
+
 # write output
 AC_CONFIG_FILES([
   Makefile
+  doc/azy.dox
+  doc/Makefile
   src/Makefile
   src/lib/Makefile
   src/include/Makefile

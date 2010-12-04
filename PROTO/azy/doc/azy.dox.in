@@ -1,0 +1,20 @@
+/**
+@file azy.dox
+@brief Azy library
+*/
+
+/**
+@mainpage Azy
+@image html  azy.png
+@version @PACKAGE_VERSION@
+@author Mike Blumenkrantz (zmike/discomfitor) <mike@zentific.com>
+@date 2010
+
+@section intro What is Azy?
+
+Who knows.
+
+@verbatim
+Pants
+@endverbatim
+*/
