@@ -1,21 +1,23 @@
 # Portuguese translation for exal-client
 # This file is distributed under the same license as the enlightenment package.
-# Sérgio Marques <smarquespt@gmail.com>, 2010
 # Adaptado ao acordo ortográfico de 1990
+# Sérgio Marques <smarquespt@gmail.com>, 2010.
+# Sérgio Marques <sarquespt@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: exaltclient\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-09 08:00-0700\n"
-"PO-Revision-Date: 2010-09-29 01:56-0000\n"
-"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2010-12-05 10:48+0000\n"
+"Last-Translator: Sérgio Marques <sarquespt@gmail.com>\n"
+"Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: PORTUGAL\n"
+"X-Generator: Lokalize 1.1\n"
 
 #. create new config dialog
 #: ../src/e_mod_config.c:41
@@ -76,7 +78,7 @@ msgstr "exalt"
 
 #: ../src/e_mod_main.c:453
 msgid "exalt Configuration Updated"
-msgstr "Configuração do exalt atualizada"
+msgstr "A configuração do exalt foi atualizada"
 
 #: ../src/e_mod_main.c:525
 msgid "Settings"
@@ -130,7 +132,7 @@ msgstr "Desativar"
 #: ../src/wired_dialog.c:58
 #: ../src/network_dialog.c:61
 msgid "DHCP (Dynamic host configuration protocol)"
-msgstr "DHCP (Dynamic host configuration protocol)"
+msgstr "DHCP (Protocolo dinâmico para configuração do servidor)"
 
 #: ../src/wired_dialog.c:63
 #: ../src/network_dialog.c:66
@@ -140,22 +142,22 @@ msgstr "Estático"
 #: ../src/wired_dialog.c:68
 #: ../src/network_dialog.c:71
 msgid "IP address: "
-msgstr "Endereço IP:"
+msgstr "Endereço IP: "
 
 #: ../src/wired_dialog.c:73
 #: ../src/network_dialog.c:76
 msgid "Netmask address: "
-msgstr "Endereço da máscara de rede:"
+msgstr "Endereço da máscara de rede: "
 
 #: ../src/wired_dialog.c:78
 #: ../src/network_dialog.c:81
 msgid "Gateway address: "
-msgstr "Endereço \"Gateway\":"
+msgstr "Endereço \"Gateway\": "
 
 #: ../src/wired_dialog.c:83
 #: ../src/network_dialog.c:86
 msgid "Command: "
-msgstr "Comando:"
+msgstr "Comando: "
 
 #.
 #.
@@ -195,11 +197,11 @@ msgstr "\"Essid\": "
 
 #: ../src/network_dialog.c:32
 msgid "Address: "
-msgstr "Endereço:"
+msgstr "Endereço: "
 
 #: ../src/network_dialog.c:37
 msgid "Quality: "
-msgstr "Qualidade:"
+msgstr "Qualidade: "
 
 #. IFACE frame
 #: ../src/network_dialog.c:45
@@ -208,7 +210,7 @@ msgstr "Configuração da rede sem fios"
 
 #: ../src/network_dialog.c:91
 msgid "Add to favorites: "
-msgstr "Adicionar aos favoritos:"
+msgstr "Adicionar aos favoritos: "
 
 #: ../src/network_dialog.c:203
 msgid "WEP information"
@@ -216,7 +218,7 @@ msgstr "Informação WEP"
 
 #: ../src/network_dialog.c:205
 msgid "Description: "
-msgstr "Descrição:"
+msgstr "Descrição: "
 
 #: ../src/network_dialog.c:207
 msgid "WEP"
@@ -233,7 +235,7 @@ msgstr "Chave ASCII"
 #: ../src/network_dialog.c:235
 #: ../src/network_dialog.c:313
 msgid "Password: "
-msgstr "Senha:"
+msgstr "Senha: "
 
 #: ../src/network_dialog.c:258
 msgid "WPA information"
@@ -241,15 +243,15 @@ msgstr "Informações WPA"
 
 #: ../src/network_dialog.c:324
 msgid "CA certificate: "
-msgstr "Certificado CA:"
+msgstr "Certificado CA: "
 
 #: ../src/network_dialog.c:336
 msgid "Client certificate: "
-msgstr "Certificado do cliente:"
+msgstr "Certificado do cliente: "
 
 #: ../src/network_dialog.c:349
 msgid "Private key: "
-msgstr "Chave privada:"
+msgstr "Chave privada: "
 
 #: ../src/network_dialog.c:666
 msgid "Select the company certificate"
@@ -262,11 +264,11 @@ msgstr "Selecione o certificado do cliente"
 
 #: ../src/dns_dialog.c:20
 msgid "DNS (Domain Name Server) Settings"
-msgstr "Definições DNS (Domain Name Server)"
+msgstr "Definições DNS (Nome do servidor de domínio)"
 
 #: ../src/dns_dialog.c:25
 msgid "DNS (Domain Name Server) configuration"
-msgstr "Configuração DNS (Domain Name Server)"
+msgstr "Configuração DNS (Nome do servido do domínio)"
 
 #.
 #. buttons
@@ -288,7 +290,7 @@ msgstr "Fechar"
 
 #: ../src/wireless_dialog.c:21
 msgid "Wireless Interface Settings"
-msgstr "Definições da interface da rede sem fios"
+msgstr "Definições da rede sem fios"
 
 #: ../src/wireless_dialog.c:27
 msgid "wireless interface"
@@ -297,4 +299,5 @@ msgstr "interface da rede sem fios"
 #: ../src/wireless_dialog.c:42
 msgid "Create a new network"
 msgstr "Criar uma nova rede"
+
 

@@ -15,6 +15,6 @@ Comment[eo]=<br>Akcesoraĵo por E17 kiu vidigas la nunan lunan fazon.
 Comment[hu]=Egy E17 modul, amellyel a Hold aktuális fázisait követhetjük nyomon.
 Comment[it]=Modulo per e17 che mostra l'attuale fase lunare.
 Comment[fr]=Ce gadget pour e17 affiche la phase lunaire actuelle.
-Comment[pt]=Um módulo do e17 que exibe as diferentes fases lunares.
+Comment[pt]=Um "gadget" para exibir a fase lunar
 Icon=e-module-moon
 X-Enlightenment-ModuleType=utils

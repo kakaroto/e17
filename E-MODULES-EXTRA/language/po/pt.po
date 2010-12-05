@@ -1,50 +1,52 @@
 # Portuguese translation for language
 # This file is distributed under the same license as the enlightenment package.
-# Sérgio Marques <smarquespt@gmail.com>, 2010
 #
+# Sérgio Marques <smarquespt@gmail.com>, 2010.
+# Sérgio Marques <sarquespt@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: language\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-02-25 17:01-0800\n"
-"PO-Revision-Date: 2010-08-11 19:38-0000\n"
-"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2010-12-05 11:21+0000\n"
+"Last-Translator: Sérgio Marques <sarquespt@gmail.com>\n"
+"Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: Portugal\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Lokalize 1.1\n"
 
 #: ../src/e_mod_config.c:104
 msgid "Language Module Settings"
-msgstr "Definições do Módulo Idioma"
+msgstr "Definições do módulo Idioma"
 
 #: ../src/e_mod_config.c:174
 #: ../src/e_mod_config.c:249
 msgid "Available Languages"
-msgstr "Idiomas Disponíveis"
+msgstr "Idiomas disponíveis"
 
 #: ../src/e_mod_config.c:182
 #: ../src/e_mod_config.c:257
 msgid "Selected Languages"
-msgstr "Idiomas seleccionados"
+msgstr "Idiomas selecionados"
 
 #: ../src/e_mod_config.c:198
 #: ../src/e_mod_config.c:273
 msgid "Up"
-msgstr "Para Cima"
+msgstr "Para cima"
 
 #: ../src/e_mod_config.c:203
 #: ../src/e_mod_config.c:278
 msgid "Down"
-msgstr "Para Baixo"
+msgstr "Para baixo"
 
 #: ../src/e_mod_config.c:211
 #: ../src/e_mod_config.c:304
 msgid "Language Switch Policy"
-msgstr "Política de Mudança de Idioma"
+msgstr "Política de mudança do idioma"
 
 #: ../src/e_mod_config.c:214
 #: ../src/e_mod_config.c:307
@@ -63,11 +65,11 @@ msgstr "Aplicação"
 
 #: ../src/e_mod_config.c:287
 msgid "Keyboard Model"
-msgstr "Modelo do Teclado"
+msgstr "Modelo do teclado"
 
 #: ../src/e_mod_config.c:295
 msgid "Layout Variant"
-msgstr "Variante do Teclado"
+msgstr "Variante do teclado"
 
 #: ../src/e_mod_keybindings.c:6
 #: ../src/e_mod_main.c:116
@@ -76,11 +78,11 @@ msgstr "Idioma"
 
 #: ../src/e_mod_keybindings.c:7
 msgid "Switch To Next Language"
-msgstr "Mudar Para o Idioma Seguinte"
+msgstr "Mudar para o idioma seguinte"
 
 #: ../src/e_mod_keybindings.c:8
 msgid "Switch To Previous Language"
-msgstr "Mudar Para o Idioma Anterior"
+msgstr "Mudar para o idioma anterior"
 
 #: ../src/e_mod_main.c:429
 msgid "Configuration"
@@ -88,9 +90,10 @@ msgstr "Configuração"
 
 #: ../src/e_mod_main.c:434
 msgid "Configure Key Bindings"
-msgstr "Configurar Teclas de Atalho"
+msgstr "Configurar teclas de atalho"
 
 #: ../src/e_mod_main.c:451
 msgid "Module Configuration"
-msgstr "Configuração do Módulo"
+msgstr "Configuração do módulo"
+
 

@@ -1,26 +1,28 @@
 # Portuguese translation for places
 # This file is distributed under the same license as the enlightenment package.
-# Sérgio Marques <smarquespt@gmail.com>, 2010
 # Adaptado ao acordo ortográfico de 1990
+# Sérgio Marques <smarquespt@gmail.com>, 2010.
+# Sérgio Marques <sarquespt@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: places\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-09 08:01-0700\n"
-"PO-Revision-Date: 2010-09-29 14:58-0000\n"
-"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2010-12-05 12:01+0000\n"
+"Last-Translator: Sérgio Marques <sarquespt@gmail.com>\n"
+"Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: Portugal\n"
+"X-Generator: Lokalize 1.1\n"
 
 #. create new config dialog
 #: ../src/e_mod_config.c:51
 msgid "Places Settings"
-msgstr "Definições do Locais"
+msgstr "Definições do módulo"
 
 #. General frame
 #: ../src/e_mod_config.c:118
@@ -41,7 +43,7 @@ msgstr "Ao inserir, abrir gestor de ficheiros"
 
 #: ../src/e_mod_config.c:133
 msgid "Use a custom file manager"
-msgstr "Usar gestor de ficheiros personalizado"
+msgstr "Utilizar um gestor de ficheiros personalizado"
 
 #. Display frame
 #: ../src/e_mod_config.c:146
@@ -56,7 +58,7 @@ msgstr "Pasta pessoal"
 #: ../src/e_mod_config.c:152
 #: ../src/e_mod_places.c:388
 msgid "Desktop"
-msgstr "Ambiente de trabalho"
+msgstr "Área de trabalho"
 
 #: ../src/e_mod_config.c:155
 #: ../src/e_mod_places.c:398
@@ -112,4 +114,5 @@ msgstr "desmontar"
 #: ../src/e_mod_places.c:698
 msgid "eject"
 msgstr "ejetar"
+
 

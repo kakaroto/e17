@@ -3,6 +3,7 @@ Type=Link
 Name=Everything Skeleton
 Name[fr]=Omni - Squelette
 Name[it]=Everything - Scheletro
+Name[pt]=Everything - Skeleton
 Icon=e-module
 Comment=Everything skeleton example module
 Comment[fr]=Base pour construire de nouveaux modules pour Omni.

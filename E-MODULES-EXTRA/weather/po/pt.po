@@ -1,23 +1,26 @@
 # Portuguese translation for wheater
 # This file is distributed under the same license as the enlightenment package.
-# Sérgio Marques <smarquespt@gmail.com>, 2010
 # Adaptado ao acordo ortográfico de 1990
+# Sérgio Marques <smarquespt@gmail.com>, 2010.
+# Sérgio Marques <sarquespt@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-09 08:02-0700\n"
-"PO-Revision-Date: 2010-10-02 00:58-0000\n"
-"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
+"PO-Revision-Date: 2010-12-05 12:26+0000\n"
+"Last-Translator: Sérgio Marques <sarquespt@gmail.com>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../src/e_mod_config.c:36
 #| msgid "Degree Settings"
 msgid "Weather Settings"
-msgstr "Definições de metereologia"
+msgstr "Definições de meteorologia"
 
 #: ../src/e_mod_config.c:78
 msgid "Display Settings"
@@ -33,7 +36,7 @@ msgstr "Detalhado"
 
 #: ../src/e_mod_config.c:84
 msgid "Poll Time"
-msgstr "Hora de piscina"
+msgstr "Intervalo entre atualizações"
 
 #: ../src/e_mod_config.c:86
 #, c-format
@@ -46,11 +49,11 @@ msgstr "Definições de graus"
 
 #: ../src/e_mod_config.c:93
 msgid "Celsius"
-msgstr "\"Celsius\""
+msgstr "Celsius"
 
 #: ../src/e_mod_config.c:95
 msgid "Farenheit"
-msgstr "\"Farenheit\""
+msgstr "Farenheit"
 
 #: ../src/e_mod_config.c:99
 #: ../src/e_mod_config.c:100
@@ -59,7 +62,7 @@ msgstr "Código ICAO"
 
 #: ../src/e_mod_config.c:105
 msgid "Get your ICAO code at:"
-msgstr "Obtenha o seu cófigo ICAO em:"
+msgstr "Obtenha o seu código ICAO em:"
 
 #: ../src/e_mod_config.c:107
 msgid "http://www.weather.gov/tg/siteloc.shtml"
@@ -73,4 +76,5 @@ msgstr "Meteorologia"
 #| msgid "Degree Settings"
 msgid "Settings"
 msgstr "Definições"
+
 

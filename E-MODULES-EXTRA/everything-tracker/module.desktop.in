@@ -4,6 +4,7 @@ Name=Everything Tracker
 Name[fr]=Omni - Tracker
 Name[it]=Everything - Tracker
 Name[el]=ΤαΠάνταΌλα - Tracker
+Name[pt]=Everything - Tracker
 Icon=e-module
 Comment=Find Files with Tracker (requires version 0.8)
 Comment[fr]=Trouver des fichiers avec Tracker (version 0.8 requise).

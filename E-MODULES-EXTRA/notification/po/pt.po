@@ -1,21 +1,23 @@
 # Portuguese translation for notificationetk
 # This file is distributed under the same license as the enlightenment package.
-# Sérgio Marques <smarquespt@gmail.com>, 2010
 # Adaptado ao acordo ortográfico de 1990
+# Sérgio Marques <smarquespt@gmail.com>, 2010.
+# Sérgio Marques <sarquespt@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: notifications\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-26 05:00-0700\n"
-"PO-Revision-Date: 2010-09-29 13:40-0000\n"
-"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2010-12-05 11:46+0000\n"
+"Last-Translator: Sérgio Marques <sarquespt@gmail.com>\n"
+"Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: Portugal\n"
+"X-Generator: Lokalize 1.1\n"
 
 #: ../src/e_mod_box.c:677
 #: ../src/e_mod_box.c:824
@@ -28,19 +30,19 @@ msgstr "Caixa de notificação"
 
 #: ../src/e_mod_main.c:213
 msgid "Enter Presentation Mode"
-msgstr "Entrar no modo de apresentação"
+msgstr "Entrar no modo de demonstração"
 
 #: ../src/e_mod_main.c:214
 msgid "Enlightenment is in <b>presentation</b> mode.<br>During presentation mode, screen saver, lock and power saving will be disabled so you are not interrupted."
-msgstr "O Enlightenment está no modo de <b>apresentação.</b> Durante este modo e para que não seja incomodado os serviços de bloqueio, poupança de energia e proteção de ecrã estarão inativos."
+msgstr "O Enlightenment está no modo de <b>demostração.</b> Durante este modo e para que não seja incomodado, os serviços de bloqueio, poupança de energia e proteção de ecrã estarão inativos."
 
 #: ../src/e_mod_main.c:220
 msgid "Exited Presentation Mode"
-msgstr "Saiu do modo de apresentação"
+msgstr "Saiu do modo de demonstração"
 
 #: ../src/e_mod_main.c:221
 msgid "Presentation mode is over.<br>Now screen saver, lock and power saving settings will be restored."
-msgstr "Terminou o modo de apresentação.<br> Os serviços bloqueio, poupança de energia e proteção de ecrã vão ser restaurados."
+msgstr "Terminou o modo de demonstração.<br> Os serviços de bloqueio, poupança de energia e proteção de ecrã vão ser restaurados."
 
 #: ../src/e_mod_main.c:236
 msgid "Enter Offline Mode"
@@ -48,11 +50,11 @@ msgstr "Entrar no modo \"off-line\""
 
 #: ../src/e_mod_main.c:237
 msgid "Enlightenment is in <b>offline</b> mode.<br>During offline mode, modules that use network will stop polling remote services."
-msgstr "O Enlightenment está no modo <b>\"off-line\".</b> Durante este modo, os módulo que utilizem a rede irão parar os serviços remotos."
+msgstr "O Enlightenment está no modo <b>\"off-line\".</b> Durante este modo, os módulo que utilizem a rede irão parar de analisar os serviços remotos."
 
 #: ../src/e_mod_main.c:243
 msgid "Exited Offline Mode"
-msgstr "Saiu no modo \"off-line\""
+msgstr "Saiu do modo \"off-line\""
 
 #: ../src/e_mod_main.c:244
 msgid "Now in <b>online</b> mode.<br>Now modules that use network will resume regular tasks."
@@ -69,19 +71,19 @@ msgstr "Notificação"
 
 #: ../src/e_mod_main.c:335
 msgid "Notification Module"
-msgstr "Módulo de notificação"
+msgstr "Módulo de notificações"
 
 #: ../src/e_mod_main.c:363
 msgid "Error During DBus Init!"
-msgstr "Erro ao inicar DBus!"
+msgstr "Erro ao iniciar DBus!"
 
 #: ../src/e_mod_main.c:364
 msgid "Error during DBus init! Please check if dbus is correctly installed and running."
-msgstr "Erro ao inicar DBus! Verifique se o DBus está bem instalado e em execução."
+msgstr "Erro ao iniciar DBus! Verifique se o DBus está bem instalado e em execução."
 
 #: ../src/e_mod_config.c:37
 msgid "Notification Settings"
-msgstr "Definições do notificações"
+msgstr "Definições das notificações"
 
 #: ../src/e_mod_config.c:79
 #: ../src/e_mod_config_item.c:91
@@ -90,7 +92,7 @@ msgstr "Urgência"
 
 #: ../src/e_mod_config.c:80
 msgid "Levels of urgency to popup : "
-msgstr "Níveis para o alerta de urgência:"
+msgstr "Níveis para o alerta de urgência: "
 
 #: ../src/e_mod_config.c:82
 #: ../src/e_mod_config_item.c:94
@@ -151,5 +153,6 @@ msgstr "Focar a janela de origem ao clicar "
 
 #: ../src/e_mod_config_item.c:92
 msgid "Levels of urgency to store : "
-msgstr "Níveis de urgência a armazenar:"
+msgstr "Níveis de urgência a guardar: "
+
 

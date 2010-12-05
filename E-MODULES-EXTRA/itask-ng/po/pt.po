@@ -1,22 +1,24 @@
 # Portuguese translation for itaskng
 # This file is distributed under the same license as the enlightenment package.
-# Sérgio Marques <smarquespt@gmail.com>, 2010.
 #
+# Sérgio Marques <smarquespt@gmail.com>, 2010.
+# Sérgio Marques <sarquespt@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: Itask-ng\n"
 "Report-Msgid-Bugs-To: hannes.janetzek@gmail.com\n"
 "POT-Creation-Date: 2008-09-02 16:42+0200\n"
-"PO-Revision-Date: 2010-10-06 13:24-0000\n"
-"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2010-12-05 11:18+0000\n"
+"Last-Translator: Sérgio Marques <sarquespt@gmail.com>\n"
+"Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: Portugal\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Lokalize 1.1\n"
 
 #: src/e_mod_main.c:338
 msgid "Itask NG"
@@ -36,7 +38,7 @@ msgstr "Configurar lançador"
 
 #: src/ng_launcher.c:737
 msgid "Lock Dragging"
-msgstr "Bloquear o arrasto"
+msgstr "Bloquear o arrastamento"
 
 #: src/ng_launcher.c:746
 msgid "Set Single Instance"
@@ -61,15 +63,15 @@ msgstr "Contornos"
 
 #: src/ng_border_menu.c:184
 msgid "Send to Desktop"
-msgstr "Enviar para o ambiente"
+msgstr "Enviar para a área de trabalho"
 
 #: src/ng_border_menu.c:196
 msgid "Pin to Desktop"
-msgstr "Fixar no ambiente"
+msgstr "Fixar na área de trabalho"
 
 #: src/ng_border_menu.c:208
 msgid "Unpin from Desktop"
-msgstr "Desafixar do ambiente"
+msgstr "Não fixar na área de trabalho"
 
 #: src/ng_border_menu.c:241
 msgid "State"
@@ -78,7 +80,7 @@ msgstr "Estado"
 #: src/ng_border_menu.c:255
 #: src/ng_border_menu.c:750
 msgid "Sticky"
-msgstr "Pagajosa"
+msgstr "Pegajosa"
 
 #: src/ng_border_menu.c:268
 #: src/ng_border_menu.c:763
@@ -150,7 +152,7 @@ msgstr "Remover \"gadget\""
 #: src/ng_gadcon.c:492
 #: src/ng_gadcon.c:514
 msgid "Description: Unavailable"
-msgstr "Descrição indisponível"
+msgstr "Descrição: indisponível"
 
 #: src/ng_config.c:83
 msgid "Itask NG Configuration"
@@ -289,11 +291,11 @@ msgstr "Menu avançado"
 
 #: src/ng_config.c:629
 msgid "Only Show Current Desk"
-msgstr "Mostrar apenas no ecrã atual"
+msgstr "Mostrar apenas na área de trabalho atual"
 
 #: src/ng_config.c:634
 msgid "Show Iconified"
-msgstr "Mostrar minimizados"
+msgstr "Mostrar as minimizadas"
 
 #: src/ng_config.c:720
 #: src/ng_config.c:761
@@ -337,4 +339,5 @@ msgstr "Solicitou a eliminação de \"%s\".<br><br>Tem a certeza que quer elimin
 #: src/ng_config_instances.c:340
 msgid "Are you sure you want to delete this Instance?"
 msgstr "Tem a certeza que quer eliminar esta instância?"
+
 

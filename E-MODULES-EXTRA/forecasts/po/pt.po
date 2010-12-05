@@ -1,25 +1,27 @@
 # Portuguese translation for forecasts
 # This file is distributed under the same license as the enlightenment package.
-# Sérgio Marques <smarquespt@gmail.com>, 2010
 # Adaptado ao acordo ortográfico de 1990
+# Sérgio Marques <smarquespt@gmail.com>, 2010.
+# Sérgio Marques <sarquespt@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: forecasts\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-26 05:00-0700\n"
-"PO-Revision-Date: 2010-09-29 02:08-0000\n"
-"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2010-12-05 10:56+0000\n"
+"Last-Translator: Sérgio Marques <sarquespt@gmail.com>\n"
+"Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: Portugal\n"
+"X-Generator: Lokalize 1.1\n"
 
 #: ../src/e_mod_config.c:42
 msgid "Forecasts Settings"
-msgstr "Definiçoes do Forecasts"
+msgstr "Definições"
 
 #: ../src/e_mod_config.c:90
 msgid "Display Settings"
@@ -27,7 +29,7 @@ msgstr "Definições de exibição"
 
 #: ../src/e_mod_config.c:91
 msgid "Poll Time"
-msgstr "Hora de piscina"
+msgstr "Intervalo entre atualizações"
 
 #: ../src/e_mod_config.c:94
 #, c-format
@@ -40,7 +42,7 @@ msgstr "Mostrar descrição"
 
 #: ../src/e_mod_config.c:99
 msgid "Popup on mouse over"
-msgstr "Alerta ao passar com o rato"
+msgstr "Alertar ao passar com o rato"
 
 #: ../src/e_mod_config.c:103
 msgid "Unit Settings"
@@ -60,7 +62,7 @@ msgstr "Código das previsões Weather.com"
 
 #: ../src/e_mod_config.c:112
 msgid "Forecasts Code/US Zip Code"
-msgstr "Código das previsões/ código postal dos EUA"
+msgstr "Código das previsões/código postal dos EUA"
 
 #: ../src/e_mod_config.c:117
 msgid "To find the code for your area, go to:"
@@ -73,7 +75,7 @@ msgstr "%s, encontre a sua área e veja a URL"
 
 #: ../src/e_mod_main.c:254
 msgid "Forecasts"
-msgstr "Peivisões Metereológicas"
+msgstr "Previsões Meteorológicas"
 
 #: ../src/e_mod_main.c:301
 msgid "Settings"
@@ -90,7 +92,7 @@ msgstr "Vento frio"
 
 #: ../src/e_mod_main.c:1015
 msgid "Wind Speed"
-msgstr "Muito ventoso"
+msgstr "Velocidade do vento"
 
 #: ../src/e_mod_main.c:1021
 msgid "Humidity"
@@ -118,7 +120,7 @@ msgstr "Estável"
 
 #: ../src/e_mod_main.c:1048
 msgid "Sunrise / Sunset"
-msgstr "Nascer do sol/ pôr do sol"
+msgstr "Nascer do sol/pôr do sol"
 
 #: ../src/e_mod_main.c:1066
 msgid "Today"
@@ -135,4 +137,5 @@ msgstr "Alta"
 #: ../src/e_mod_main.c:1087
 msgid "Low"
 msgstr "Baixa"
+
 

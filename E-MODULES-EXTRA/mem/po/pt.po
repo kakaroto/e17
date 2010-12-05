@@ -1,26 +1,28 @@
 # Portuguese translation for mem
 # This file is distributed under the same license as the enlightenment package.
-# Sérgio Marques <smarquespt@gmail.com>, 2010
 # Adaptado ao acordo ortográfico de 1990
+# Sérgio Marques <smarquespt@gmail.com>, 2010.
+# Sérgio Marques <sarquespt@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: mem\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-09 08:00-0700\n"
-"PO-Revision-Date: 2010-09-29 02:22-0000\n"
-"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2010-12-05 11:25+0000\n"
+"Last-Translator: Sérgio Marques <sarquespt@gmail.com>\n"
+"Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: Portugal\n"
+"X-Generator: Lokalize 1.1\n"
 
 #: ../src/e_mod_config.c:43
 #| msgid "General Settings"
 msgid "Mem Settings"
-msgstr "Definições do \"Mem\""
+msgstr "Definições do módulo"
 
 #: ../src/e_mod_config.c:92
 msgid "General Settings"
@@ -44,7 +46,7 @@ msgstr "Ignorar \"buffers\""
 
 #: ../src/e_mod_config.c:108
 msgid "Ignore Cached"
-msgstr "Ignorar itens em cache"
+msgstr "Ignorar itens em \"cache\""
 
 #: ../src/e_mod_config.c:112
 msgid "Check Interval:"
@@ -57,10 +59,11 @@ msgstr "%1.0f segundos"
 
 #: ../src/e_mod_main.c:108
 msgid "Mem"
-msgstr "\"Mem\""
+msgstr "Memória"
 
 #: ../src/e_mod_main.c:167
 #| msgid "General Settings"
 msgid "Settings"
 msgstr "Definições"
+
 

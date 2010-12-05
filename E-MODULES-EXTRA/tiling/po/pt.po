@@ -1,27 +1,29 @@
 # Portuguese translation for tiling
 # This file is distributed under the same license as the enlightenment package.
-# Sérgio Marques <smarquespt@gmail.com>, 2010
 # Adaptado ao acordo ortográfico de 1990
+# Sérgio Marques <smarquespt@gmail.com>, 2010.
+# Sérgio Marques <sarquespt@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: tiling\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-26 05:00-0700\n"
-"PO-Revision-Date: 2010-10-02 00:53-0000\n"
-"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2010-12-05 12:36+0000\n"
+"Last-Translator: Sérgio Marques <sarquespt@gmail.com>\n"
+"Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: Portugal\n"
+"X-Generator: Lokalize 1.1\n"
 
 #: ../src/e_mod_main.c:80
 #: ../src/e_mod_main.c:85
 #: ../src/e_mod_main.c:1009
 msgid "Tiling"
-msgstr "\"Tiling\""
+msgstr "Mosaico"
 
 #: ../src/e_mod_main.c:1008
 msgid "Windows"
@@ -29,7 +31,7 @@ msgstr "Janelas"
 
 #: ../src/e_mod_config.c:67
 msgid "Tiling Configuration"
-msgstr "Configuração do \"Tiling\""
+msgstr "Configuração do módulo"
 
 #. General settings
 #: ../src/e_mod_config.c:214
@@ -53,12 +55,12 @@ msgstr "Vertical:"
 #. Virtual desktop settings
 #: ../src/e_mod_config.c:238
 msgid "Virtual Desktops"
-msgstr "Ambientes virtuais"
+msgstr "Áreas de trabalho virtuais"
 
 #. Grid mode settings
 #: ../src/e_mod_config.c:276
 msgid "Grid mode settings"
-msgstr "Definições da grelha"
+msgstr "Definições do modo em grelha"
 
 #: ../src/e_mod_config.c:280
 #, c-format
@@ -86,4 +88,5 @@ msgstr "Contornos do mosaico"
 #: ../src/e_mod_config.c:307
 msgid "Floating border"
 msgstr "Contornos flutuantes"
+
 

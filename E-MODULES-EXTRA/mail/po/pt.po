@@ -1,21 +1,23 @@
 # Portuguese translation for mail
 # This file is distributed under the same license as the enlightenment package.
-# Sérgio Marques <smarquespt@gmail.com>, 2010
 # Adaptado ao acordo ortográfico de 1990
+# Sérgio Marques <smarquespt@gmail.com>, 2010.
+# Sérgio Marques <sarquespt@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: mail\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-09 08:00-0700\n"
-"PO-Revision-Date: 2010-09-29 02:21-0000\n"
-"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
-"Language-Team: Portuguese\n"
+"PO-Revision-Date: 2010-12-05 11:23+0000\n"
+"Last-Translator: Sérgio Marques <sarquespt@gmail.com>\n"
+"Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: Portugal\n"
+"X-Generator: Lokalize 1.1\n"
 
 #: ../src/e_mod_config_box.c:68
 msgid "Mailbox Configuration"
@@ -48,15 +50,15 @@ msgstr "Imap"
 
 #: ../src/e_mod_config_box.c:187
 msgid "Maildir"
-msgstr "\"Maildir\""
+msgstr "Maildir"
 
 #: ../src/e_mod_config_box.c:190
 msgid "Mbox"
-msgstr "\"Mbox\""
+msgstr "Mbox"
 
 #: ../src/e_mod_config_box.c:193
 msgid "Monitor Mbox file permanently"
-msgstr "Vigiar permanentemento o ficheiro \"Mbox\""
+msgstr "Vigiar permanentemente o ficheiro mbox"
 
 #: ../src/e_mod_config_box.c:210
 msgid "Port Settings"
@@ -104,7 +106,7 @@ msgstr "Senha:"
 
 #: ../src/e_mod_config_box.c:260
 msgid "New Mail Path:"
-msgstr "Caminho para novo correio:"
+msgstr "Caminho do novo correio:"
 
 #: ../src/e_mod_config_box.c:272
 msgid "Current Mail Path:"
@@ -164,4 +166,5 @@ msgstr "Correio"
 #| msgid "Port Settings"
 msgid "Settings"
 msgstr "Definições"
+
 

@@ -1,21 +1,23 @@
 # Portuguese translation for iiirk
 # This file is distributed under the same license as the enlightenment package.
-# Sérgio Marques <smarquespt@gmail.com>, 2010
 # Adaptado ao acordo ortográfico de 1990
+# Sérgio Marques <smarquespt@gmail.com>, 2010.
+# Sérgio Marques <sarquespt@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: iiirk\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-09 08:00-0700\n"
-"PO-Revision-Date: 2010-09-29 02:11-0000\n"
-"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2010-12-05 10:59+0000\n"
+"Last-Translator: Sérgio Marques <sarquespt@gmail.com>\n"
+"Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: Portugal\n"
+"X-Generator: Lokalize 1.1\n"
 
 #: ../src/e_mod_main.c:234
 msgid "IIirk"
@@ -74,7 +76,7 @@ msgstr "Definições gerais"
 
 #: ../src/e_mod_config.c:129
 msgid "Hide window from any list when iconified"
-msgstr "Ocultar de qualquer lista se minimizadas em ícones"
+msgstr "Ocultar janela de qualquer lista se minimizada em ícones"
 
 #: ../src/e_mod_config.c:131
 msgid "Show Icon Label"
@@ -114,15 +116,15 @@ msgstr "Mostrar janelas do ecrã atual"
 
 #: ../src/e_mod_config.c:178
 msgid "Desktop"
-msgstr "Ambiente de trabalho"
+msgstr "Área de trabalho"
 
 #: ../src/e_mod_config.c:181
 msgid "Show windows from all desktops"
-msgstr "Mostrar janelas de todos os ambientes de trabalho"
+msgstr "Mostrar janelas de todas das áreas de trabalho"
 
 #: ../src/e_mod_config.c:186
 msgid "Show windows from active desktop"
-msgstr "Mostrar janelas do ambiente de trabalho ativo"
+msgstr "Mostrar janelas da área de trabalho ativa"
 
 #: ../src/e_mod_config.c:225
 msgid "Create new IIirk source"
@@ -156,4 +158,5 @@ msgstr "Para cima"
 #: ../src/e_int_config_iiirk.c:179
 msgid "Down"
 msgstr "Para baixo"
+
 

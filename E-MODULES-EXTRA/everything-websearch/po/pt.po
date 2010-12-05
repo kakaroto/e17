@@ -1,21 +1,23 @@
 # Portuguese translation for everything-websearch
 # This file is distributed under the same license as the enlightenment package.
 # Sérgio Marques <smarquespt@gmail.com>, 2010.
+# Sérgio Marques <sarquespt@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: Everything-websearch\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2010-05-30 21:21+0200\n"
-"PO-Revision-Date: 2010-10-06 13:01-0000\n"
-"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2010-12-03 21:58+0000\n"
+"Last-Translator: Sérgio Marques <sarquespt@gmail.com>\n"
+"Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: Portugal\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Lokalize 1.1\n"
 
 #: src/e_mod_main.c:579
 #: src/e_mod_main.c:1203
@@ -72,11 +74,11 @@ msgstr "Youtube"
 #: src/e_mod_main.c:1104
 #: src/e_mod_main.c:1239
 msgid "Upload Image"
-msgstr "Enciar imagem"
+msgstr "Enviar imagem"
 
 #: src/e_mod_main.c:1038
 msgid "Link copied to clipboard"
-msgstr "Ligação copiada para a área de notificação"
+msgstr "Ligação copiada para a área de transferência"
 
 #: src/e_mod_main.c:1042
 msgid "Something went wrong :("
@@ -131,7 +133,7 @@ msgstr "Transferir e reproduzir"
 #: src/e_mod_main.c:1489
 #: src/e_mod_main.c:1509
 msgid "Everything Websearch"
-msgstr "Everything Websearch"
+msgstr "Everything - Pesquisa web"
 
 #: src/e_mod_main.c:1331
 msgid "General"
@@ -160,4 +162,5 @@ msgstr "A transferência requer mplayer e mp3lame"
 #: src/e_mod_main.c:1486
 msgid "Extensions"
 msgstr "Extensões"
+
 

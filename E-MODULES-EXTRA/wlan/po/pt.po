@@ -1,26 +1,28 @@
 # Portuguese translation for wlan
 # This file is distributed under the same license as the enlightenment package.
-# Sérgio Marques <smarquespt@gmail.com>, 2010
 # Adaptado ao acordo ortográfico de 1990
+# Sérgio Marques <smarquespt@gmail.com>, 2010.
+# Sérgio Marques <sarquespt@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: wlan\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-09 08:02-0700\n"
-"PO-Revision-Date: 2010-10-02 01:00-0000\n"
-"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
-"Language-Team: Portuguese\n"
+"PO-Revision-Date: 2010-12-05 12:28+0000\n"
+"Last-Translator: Sérgio Marques <sarquespt@gmail.com>\n"
+"Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: Portugal\n"
+"X-Generator: Lokalize 1.1\n"
 
 #: ../src/e_mod_config.c:44
 #| msgid "General Settings"
 msgid "Wlan Settings"
-msgstr "Definições do \"Wlan\""
+msgstr "Definições do Wlan"
 
 #: ../src/e_mod_config.c:122
 msgid "General Settings"
@@ -53,10 +55,11 @@ msgstr "Definições do dispositivo"
 
 #: ../src/e_mod_main.c:110
 msgid "Wlan"
-msgstr "\"Wlan\""
+msgstr "Wlan"
 
 #: ../src/e_mod_main.c:169
 #| msgid "Device Settings"
 msgid "Settings"
 msgstr "Definições"
+
 

@@ -1,21 +1,23 @@
 # Portuguese translation for taskbar
 # This file is distributed under the same license as the enlightenment package.
-# Sérgio Marques <smarquespt@gmail.com>, 2010
 # Adaptado ao acordo ortográfico de 1990
+# Sérgio Marques <smarquespt@gmail.com>, 2010.
+# Sérgio Marques <sarquespt@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: taskbar\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-09 08:01-0700\n"
-"PO-Revision-Date: 2010-10-02 00:44-0000\n"
-"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2010-12-05 12:12+0000\n"
+"Last-Translator: Sérgio Marques <sarquespt@gmail.com>\n"
+"Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: Portugal\n"
+"X-Generator: Lokalize 1.1\n"
 
 #: ../src/e_mod_config.c:30
 msgid "Taskbar Configuration"
@@ -23,11 +25,11 @@ msgstr "Configuração da barra de tarefas"
 
 #: ../src/e_mod_config.c:71
 msgid "Display"
-msgstr "Exibição"
+msgstr "Exibir"
 
 #: ../src/e_mod_config.c:72
 msgid "Show windows from all desktops"
-msgstr "Mostrar janelas de todos os ambientes"
+msgstr "Mostrar janelas de todas as áreas de trabalho"
 
 #: ../src/e_mod_main.c:291
 #: ../src/e_mod_main.c:655
@@ -37,4 +39,5 @@ msgstr "Barra de tarefas"
 #: ../src/e_mod_main.c:662
 msgid "Settings"
 msgstr "Definições"
+
 

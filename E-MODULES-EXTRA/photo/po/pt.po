@@ -1,21 +1,23 @@
 # Portuguese translation for photo
 # This file is distributed under the same license as the enlightenment package.
-# Sérgio Marques <smarquespt@gmail.com>, 2010
 # Adaptado ao acordo ortográfico de 1990
+# Sérgio Marques <smarquespt@gmail.com>, 2010.
+# Sérgio Marques <sarquespt@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-26 05:00-0700\n"
-"PO-Revision-Date: 2010-09-29 14:53-0000\n"
-"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2010-12-05 11:58+0000\n"
+"Last-Translator: Sérgio Marques <sarquespt@gmail.com>\n"
+"Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: Portugal\n"
+"X-Generator: Lokalize 1.1\n"
 
 #: ../src/e_mod_main.c:53
 #: ../src/e_mod_main.c:60
@@ -24,7 +26,7 @@ msgstr ""
 #: ../src/e_mod_main.c:81
 #: ../src/e_mod_main.c:88
 msgid "Photo Module"
-msgstr "Módulo Fotos"
+msgstr "Módulo de Fotos"
 
 #: ../src/e_mod_main.c:53
 msgid "E Canvas init failed !"
@@ -40,7 +42,7 @@ msgstr "Falha ao iniciar configuração!"
 
 #: ../src/e_mod_main.c:74
 msgid "Picture subsystem init failed"
-msgstr "Falha ao iniciar o sitema de fotos!"
+msgstr "Falha ao iniciar o sistema de imagens!"
 
 #: ../src/e_mod_main.c:81
 msgid "Popup warn subsystem init failed"
@@ -48,7 +50,7 @@ msgstr "Falha ao iniciar os alertas de aviso!"
 
 #: ../src/e_mod_main.c:88
 msgid "Popup info subsystem init failed"
-msgstr "Falha ao iniciar os alertas de info!"
+msgstr "Falha ao iniciar os alertas de informações!"
 
 #: ../src/e_mod_main.c:181
 msgid "Photo"
@@ -57,21 +59,21 @@ msgstr "Foto"
 #: ../src/photo_config.c:65
 #, c-format
 msgid "<hilight>Photo module : Configuration Upgraded</hilight><br><br>Your configuration of photo module<br>has been upgraded<br>Your settings were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
-msgstr "<hilight>Módulo de fotos : Configuração atualizada</hilight><br><br>A configuração do módulo<br>foi atualizada<br>As suas definições foram removidas<br>Desculpe qualquer inconveniente<br><br>(%d -> %d)"
+msgstr "<hilight>Módulo de fotos : Configuração atualizada</hilight><br><br>A configuração do módulo foi atualizada.<br>As suas definições foram removidas.<br>Desculpe qualquer inconveniente<br><br>(%d -> %d)"
 
 #: ../src/photo_config.c:71
 #: ../src/photo_config.c:85
 msgid "Photo Module version "
-msgstr "Versão do módulo"
+msgstr "Versão do módulo "
 
 #: ../src/photo_config.c:79
 #, c-format
 msgid "<hilight>Photo module : Configuration Downgraded</hilight><br><br>Your configuration of Photo module<br>has been downgraded<br>Your settings were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
-msgstr "<hilight>Módulo de fotos : Configuração revertida</hilight><br><br>A configuração do módulo<br>foi revertida<br>As suas definições foram removidas<br>Desculpe qualquer inconveniente<br><br>(%d -> %d)"
+msgstr "<hilight>Módulo de fotos : Configuração revertida</hilight><br><br>A configuração do módulo foi revertida.<br>As suas definições foram removidas.<br>Desculpe qualquer inconveniente<br><br>(%d -> %d)"
 
 #: ../src/photo_config_dialog.c:64
 msgid "Photo Configuration"
-msgstr "Configuração do Foto"
+msgstr "Configuração"
 
 #: ../src/photo_config_dialog.c:220
 msgid "Picture directories"
@@ -91,11 +93,11 @@ msgstr "Configurar"
 
 #: ../src/photo_config_dialog.c:242
 msgid "Reload picture directories"
-msgstr "Recarregar diretório"
+msgstr "Atualizar diretórios de imagens"
 
 #: ../src/photo_config_dialog.c:245
 msgid "Stop loading"
-msgstr "Parar carregamento"
+msgstr "Parar atualização"
 
 #: ../src/photo_config_dialog.c:252
 #: ../src/photo_config_dialog_item.c:127
@@ -152,7 +154,7 @@ msgstr "Alertas de carregamento"
 
 #: ../src/photo_config_dialog.c:323
 msgid "Never"
-msgstr "Nenuca"
+msgstr "Nunca"
 
 #: ../src/photo_config_dialog.c:325
 msgid "Summary"
@@ -176,7 +178,7 @@ msgstr "Visualizador de imagens"
 
 #: ../src/photo_config_dialog.c:344
 msgid "Images Quality"
-msgstr "Qualidade"
+msgstr "Qualidade das imagens"
 
 #: ../src/photo_config_dialog.c:346
 #, c-format
@@ -252,11 +254,11 @@ msgstr "Aviso do módulo de fotos"
 
 #: ../src/photo_config_dialog_item.c:48
 msgid "Photo Item Configuration"
-msgstr "Configuração de itens"
+msgstr "Configuração dos itens"
 
 #: ../src/photo_config_dialog_item.c:112
 msgid "Timer between pictures change"
-msgstr "Duração entre transição de imagens"
+msgstr "Duração entre a transição de imagens"
 
 #: ../src/photo_config_dialog_item.c:114
 msgid "Activate"
@@ -265,7 +267,7 @@ msgstr "Ativar"
 #: ../src/photo_config_dialog_item.c:117
 #, c-format
 msgid "%1.0f seconds"
-msgstr "%1.0f seconds"
+msgstr "%1.0f segundos"
 
 #: ../src/photo_config_dialog_item.c:129
 msgid "Alpha"
@@ -283,7 +285,7 @@ msgstr "Sim"
 #: ../src/photo_config_dialog_item.c:144
 #: ../src/photo_config_dialog_item.c:206
 msgid "Default setting"
-msgstr "Definição padrão"
+msgstr "Omissões"
 
 #: ../src/photo_config_dialog_item.c:189
 msgid "Mouse actions"
@@ -300,7 +302,7 @@ msgstr "<hilight>O ficheiro %s não existe.</hilight><br><br>O ficheiro está na
 #: ../src/photo_item.c:475
 #: ../src/photo_picture_local.c:259
 msgid "Photo Module Error"
-msgstr "Erro nomódulo de fotos"
+msgstr "Erro no módulo de fotos"
 
 #: ../src/photo_item.c:413
 #, c-format
@@ -315,7 +317,7 @@ msgstr "<hilight>O ficheiro %s não existe.</hilight><br><br>O ficheiro está na
 #: ../src/photo_item.c:472
 #, c-format
 msgid "<hilight>Viewer %s not found !</hilight><br><br>You can change the viewer for images in Photo module configuration panel (Advanced view)"
-msgstr "<hilight>O visualizador %s não foi encontrado !</hilight><br><br>Pode alterar o visualizador de imagens no painel de configurações do módulo. (Vista avançada)"
+msgstr "<hilight>O visualizador %s não foi encontrado !</hilight><br><br>Pode alterar o visualizador de imagens no painel de configurações do módulo. (vista avançada)"
 
 #: ../src/photo_menu.c:31
 msgid "Pause slideshow"
@@ -348,7 +350,7 @@ msgstr "Histórico"
 #: ../src/photo_picture_local.c:253
 #, c-format
 msgid "<hilight>Directory %s doesnt exists.</hilight><br><br>You can change the picture's folders in main configuration panel<br>They can be jpeg or png<br><br>After import, if you can remove these files and the pictures still can<br>be viewed, but you wont be able to set them as wallpaper anymore<br><br>"
-msgstr "<hilight>O diretório %s não existe.</hilight><br><br>Pode alterar as pastas das imagens no painel de configuração<br>As fotos pode ser jpeg ou png<br><br>Após a importação, pode remover os ficheiros que as imagens ainda <br>serão visíveis, mas já não as consegue definir como imagem de fundo."
+msgstr "<hilight>O diretório %s não existe.</hilight><br><br>Pode alterar as pastas das imagens no painel de configuração<br>As fotos podem ser jpeg ou png<br><br>Após a importação, pode remover os ficheiros pois as imagens ainda <br>serão visíveis, mas já não as consegue definir como imagem de fundo."
 
 #: ../src/photo_picture_local.c:591
 msgid "Photo Module Information"
@@ -357,4 +359,5 @@ msgstr "Informação do módulo"
 #: ../src/photo_picture_local.c:592
 msgid "<hilight>Creating thumbs</hilight><br><br>Some pictures are being thumbed in a <hilight>background task</hilight>.<br>It can take a while, but after, loading will be faster and lighter :)<br><br>Each time wou will load pictures that haven't been loaded in Photo module before,<br>they will be thumbed.<br><br>While creating popups, you will not be able to see any picture in Photo.<br>I hope i'll be able to change that :)"
 msgstr "<hilight>Criando miniaturas</hilight><br><br>Estão a ser criadas miniaturas de imagens numa<hilight>tarefa secundária</hilight>.<br>Inicialmente pode levar algum tempo mas, posteriormente, o carregamento das fotos será mais rápido :)<br><br>Cada vez que carregar imagens que não tenham sido abertas no módulo,<br>será criada uma miniatura.<br><br>Durante a criação, não será capaz de ver as fotos.<br>Espero conseguir alterar isto :)"
+
 
