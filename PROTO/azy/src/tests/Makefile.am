@@ -1,6 +1,5 @@
 SUBDIRS = unit
 
-if HAVE_MYSQL
 MYSQL_S = \
   T_SQL.azy_server.c \
   T_SQL.azy_client.c \
@@ -9,9 +8,6 @@ MYSQL_S = \
   T_SQL.azy_client.h \
   T_SQL.azy_server_stubs.h \
   T_SQL.h
-else
-MYSQL_S =
-endif
 
 BUILT_SOURCES = \
   $(MYSQL_S) \
@@ -37,12 +33,7 @@ EXTRA_DIST = \
   bench.h \
   bench.sh \
   test.azy \
-  server.pem \
-  zblok/build.sh \
-  zblok/client.c \
-  zblok/server.c \
-  zblok/server.pem \
-  zblok/zblok.azy
+  server.pem
 
 AM_CFLAGS= \
   $(ECORE_CFLAGS) \
@@ -64,16 +55,10 @@ check_PROGRAMS = \
   client \
   stress_client \
   server
-#  session-client \
-#  value-utils-test
 
 client_SOURCES = \
   client.c \
   $(BUILT_SOURCES)
-
-#session_client_SOURCES = \
-#  session-client.c \
-#  $(BUILT_SOURCES)
 
 stress_client_SOURCES = \
   stress_client.c \
@@ -82,9 +67,6 @@ stress_client_SOURCES = \
 server_SOURCES = \
   server.c \
   $(BUILT_SOURCES)
-
-#value_utils_test_SOURCES = \
-#  value-utils-test.c
 
 $(BUILT_SOURCES): .sources-ts
 
