@@ -30,8 +30,6 @@ BUILT_SOURCES = \
 
 
 EXTRA_DIST = \
-  bench.h \
-  bench.sh \
   test.azy \
   server.pem
 
