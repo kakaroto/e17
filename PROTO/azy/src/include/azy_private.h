@@ -249,11 +249,11 @@ Eina_Bool          azy_events_connection_kill(void             *conn,
                                                const char       *msg);
 
 Eina_Bool _azy_client_handler_add(Azy_Client            *client,
-                                   int type                        __UNUSED__,
-                                   Ecore_Con_Event_Server_Add *add __UNUSED__);
+                                   int type,
+                                   Ecore_Con_Event_Server_Add *add);
 Eina_Bool _azy_client_handler_del(Azy_Client            *client,
-                                   int type                        __UNUSED__,
-                                   Ecore_Con_Event_Server_Del *del __UNUSED__);
+                                   int type,
+                                   Ecore_Con_Event_Server_Del *del);
 Eina_Bool _azy_client_handler_data(Azy_Client_Handler_Data *handler_data,
                                     int                               type,
                                     Ecore_Con_Event_Server_Data      *ev);
@@ -261,5 +261,22 @@ Eina_Bool _azy_client_handler_data(Azy_Client_Handler_Data *handler_data,
 Eina_Bool azy_server_client_handler_add(Azy_Server                *server,
                                          int                         type,
                                          Ecore_Con_Event_Client_Add *ev);
-void      _azy_event_handler_fake_free(void *data __UNUSED__, void *data2 __UNUSED__);
+void      _azy_event_handler_fake_free(void *data __UNUSED__, void *data2);
+
+   Eina_Bool azy_content_serialize_request_xml(Azy_Content *content);
+   Eina_Bool azy_content_serialize_response_xml(Azy_Content *content);
+   Eina_Bool azy_content_unserialize_request_xml(Azy_Content *content,
+                                                  const char *buf,
+                                                  ssize_t     len);
+   Eina_Bool azy_content_unserialize_response_xml(Azy_Content *content,
+                                                   const char *buf,
+                                                   ssize_t     len);
+   Eina_Bool azy_content_serialize_request_json(Azy_Content *content);
+   Eina_Bool azy_content_serialize_response_json(Azy_Content *content);
+   Eina_Bool azy_content_unserialize_request_json(Azy_Content *content,
+                                                   const char *buf,
+                                                   ssize_t     len);
+   Eina_Bool azy_content_unserialize_response_json(Azy_Content *content,
+                                                    const char *buf,
+                                                    ssize_t     len);
 #endif

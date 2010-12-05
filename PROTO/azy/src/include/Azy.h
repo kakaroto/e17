@@ -359,23 +359,6 @@ extern "C" {
                         unsigned int indent);
 
    /* content */
-   Eina_Bool azy_content_serialize_request_xml(Azy_Content *content);
-   Eina_Bool azy_content_serialize_response_xml(Azy_Content *content);
-   Eina_Bool azy_content_unserialize_request_xml(Azy_Content *content,
-                                                  const char *buf,
-                                                  ssize_t     len);
-   Eina_Bool azy_content_unserialize_response_xml(Azy_Content *content,
-                                                   const char *buf,
-                                                   ssize_t     len);
-   Eina_Bool azy_content_serialize_request_json(Azy_Content *content);
-   Eina_Bool azy_content_serialize_response_json(Azy_Content *content);
-   Eina_Bool azy_content_unserialize_request_json(Azy_Content *content,
-                                                   const char *buf,
-                                                   ssize_t     len);
-   Eina_Bool azy_content_unserialize_response_json(Azy_Content *content,
-                                                    const char *buf,
-                                                    ssize_t     len);
-
    Azy_Content  *azy_content_new(const char *method);
    void           azy_content_free(Azy_Content *content);
    unsigned char *azy_content_buffer_get(Azy_Content *content);
