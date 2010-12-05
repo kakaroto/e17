@@ -1,0 +1,8 @@
+azy_parser
+Makefile.in
+azy_parser.y
+azy_parser.c
+azy_parser.h
+.deps
+lemon
+Makefile

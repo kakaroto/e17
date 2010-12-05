@@ -17,6 +17,9 @@ maintainer-clean-local:
 
 # Documentation
 
+EXTRA_DIST = \
+	azy.spec
+
 doc: all
 	@echo "entering doc/"
 	$(MAKE) -C doc doc

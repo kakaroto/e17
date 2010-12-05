@@ -113,6 +113,7 @@ EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 # write output
 AC_CONFIG_FILES([
   Makefile
+  azy.spec
   doc/azy.dox
   doc/Makefile
   src/Makefile
