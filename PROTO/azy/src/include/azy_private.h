@@ -6,6 +6,7 @@
 #define AZY_PRIV_H
 
 #include <Eina.h>
+#include <Ecore_Con.h>
 #include <Azy.h>
 
 #define AZY_SERVER_TYPE 0x0f
@@ -189,7 +190,7 @@ struct Azy_Client
    Eina_Hash           *callbacks;
    Eina_Hash           *free_callbacks;
 
-   const char          *host;
+   const char          *addr;
    int                  port;
    const char          *session_id;
    int                  secure;

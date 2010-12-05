@@ -22,7 +22,6 @@ void *alloca (size_t);
 
 #include <Eina.h>
 #include <Ecore.h>
-#include <Ecore_Con.h>
 
 #ifdef EAPI
 # undef EAPI
@@ -426,20 +425,20 @@ extern "C" {
                                              Azy_Client_Return_Cb callback);
    Eina_Bool        azy_client_callback_free_set(Azy_Client *client,
                                                   Azy_Client_Call_Id id,
-                                                  void (*callback)(void*));
+                                                  Ecore_Cb callback);
    void             azy_client_free(Azy_Client *client);
    Eina_Bool        azy_client_port_set(Azy_Client *client,
                                          int          port);
    Eina_Bool        azy_client_connected_get(Azy_Client *client);
    Eina_Bool        azy_client_host_set(Azy_Client *client,
-                                         const char  *host,
+                                         const char  *addr,
                                          int          port);
    Azy_Net          *azy_client_net_get(Azy_Client *client);
    void               azy_client_net_set(Azy_Client *client,
                                           Azy_Net    *net);
-   const char        *azy_client_hostname_get(Azy_Client *client);
-   Eina_Bool          azy_client_hostname_set(Azy_Client *client,
-                                        const char  *hostname);
+   const char        *azy_client_addr_get(Azy_Client *client);
+   Eina_Bool          azy_client_addr_set(Azy_Client *client,
+                                        const char  *addr);
    int                azy_client_port_get(Azy_Client *client);
    Eina_Bool          azy_client_connect(Azy_Client *client,
                                           Eina_Bool    secure);

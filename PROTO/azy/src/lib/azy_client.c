@@ -11,7 +11,7 @@
 #include "Azy.h"
 #include "azy_private.h"
 
-static Azy_Client_Call_Id __azy_client_send_id = 0;
+static Azy_Client_Call_Id azy_client_send_id__ = 0;
 
 int AZY_CLIENT_DISCONNECTED;
 int AZY_CLIENT_CONNECTED;
@@ -19,30 +19,12 @@ int AZY_CLIENT_RETURN;
 int AZY_CLIENT_RESULT;
 int AZY_CLIENT_ERROR;
 
-void *
-azy_client_data_get(Azy_Client *client)
-{
-   DBG("(client=%p)", client);
-   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
-     {
-        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
-        return NULL;
-     }
-   return client->data;
-}
-
-void
-azy_client_data_set(Azy_Client *client, const void *data)
-{
-   DBG("(client=%p)", client);
-   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
-     {
-        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
-        return;
-     }
-   client->data = (void*)data;
-}
-
+/**
+ * @brief Allocate a new client object
+ * This function creates a new client object for use in connecting to a
+ * server.
+ * @return The new client, or #NULL on failure
+ */
 Azy_Client *
 azy_client_new(void)
 {
@@ -58,9 +40,57 @@ azy_client_new(void)
    return client;
 }
 
+/**
+ * @brief Get the data previously associated with a client
+ * This function retrieves the data previously set to @p client
+ * with azy_client_data_set.
+ * @param client The client object (NOT #NULL)
+ * @return The data, or #NULL on error
+ */
+void *
+azy_client_data_get(Azy_Client *client)
+{
+   DBG("(client=%p)", client);
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
+        return NULL;
+     }
+   return client->data;
+}
+
+/**
+ * @brief Set the data previously associated with a client
+ * This function sets the data associated with @p client to @p data
+ * for retrieval with azy_client_data_get.
+ * @param client The client object (NOT #NULL)
+ * @param data The data to associate
+ */
+void
+azy_client_data_set(Azy_Client *client, const void *data)
+{
+   DBG("(client=%p)", client);
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
+        return;
+     }
+   client->data = (void*)data;
+}
+
+/**
+ * @brief Set the connection info for a client
+ * This function sets the server address and port for a client to
+ * connect to.  The address can be either an ip string (ipv6 supported)
+ * or a web address.
+ * @param client The client object (NOT #NULL)
+ * @param addr The server's address (NOT #NULL)
+ * @param port The port on the server (-1 < port < 65536)
+ * @return #EINA_TRUE on success, else #EINA_FALSE
+ */
 Eina_Bool
 azy_client_host_set(Azy_Client *client,
-                     const char  *host,
+                     const char  *addr,
                      int          port)
 {
    DBG("(client=%p)", client);
@@ -69,19 +99,27 @@ azy_client_host_set(Azy_Client *client,
         AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
         return EINA_FALSE;
      }
-   if ((!host) || (port < 1) || (port > 65535))
+   if ((!addr) || (port < 0) || (port > 65536))
      return EINA_FALSE;
 
-   if (client->host)
-     eina_stringshare_del(client->host);
-   client->host = eina_stringshare_add(host);
+   if (client->addr)
+     eina_stringshare_del(client->addr);
+   client->addr = eina_stringshare_add(addr);
    client->port = port;
    
    return EINA_TRUE;
 }
 
+/**
+ * @brief Get the address of the server that the client connects to
+ * This function returns the address string of the server that @p client
+ * connects to.  The returned string is stringshared but still
+ * belongs to the client object.
+ * @param client The client object (NOT #NULL)
+ * @return The address string, or #NULL on failure
+ */
 const char *
-azy_client_hostname_get(Azy_Client *client)
+azy_client_addr_get(Azy_Client *client)
 {
    DBG("(client=%p)", client);
    if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
@@ -90,11 +128,18 @@ azy_client_hostname_get(Azy_Client *client)
         return NULL;
      }
 
-   return client->host;
+   return client->addr;
 }
 
+/**
+ * @brief Set the address of the server that the client connects to
+ * This function sets the address string of the server that @p client
+ * connects to.
+ * @param client The client object (NOT #NULL)
+ * @return The address string
+ */
 Eina_Bool
-azy_client_hostname_set(Azy_Client *client, const char *hostname)
+azy_client_addr_set(Azy_Client *client, const char *addr)
 {
    DBG("(client=%p)", client);
    if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
@@ -102,12 +147,19 @@ azy_client_hostname_set(Azy_Client *client, const char *hostname)
         AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
         return EINA_FALSE;
      }
-   EINA_SAFETY_ON_NULL_RETURN_VAL(hostname, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(addr, EINA_FALSE);
 
-   client->host = eina_stringshare_add(hostname);
+   client->addr = eina_stringshare_add(addr);
    return EINA_TRUE;
 }
 
+/**
+ * @brief Get the port that the client connects to
+ * This function returns the port number on the server that @p client
+ * connects to.
+ * @param client The client object (NOT #NULL)
+ * @return The port number, or -1 on failure
+ */
 int
 azy_client_port_get(Azy_Client *client)
 {
@@ -121,6 +173,14 @@ azy_client_port_get(Azy_Client *client)
    return client->port;
 }
 
+/**
+ * @brief Set the port that the client connects to
+ * This function sets the port number on the server that @p client
+ * connects to.
+ * @param client The client object (NOT #NULL)
+ * @param port The port number (-1 < port < 65536)
+ * @return #EINA_TRUE on success, or #EINA_FALSE on failure
+ */
 Eina_Bool
 azy_client_port_set(Azy_Client *client, int port)
 {
@@ -130,13 +190,21 @@ azy_client_port_set(Azy_Client *client, int port)
         AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
         return EINA_FALSE;
      }
-   if (port < 1)
+   if ((port < 0) || (port > 65535))
      return EINA_FALSE;
 
    client->port = port;
    return EINA_TRUE;
 }
 
+/**
+ * @brief Connect the client to its server
+ * This function begins the connection process for @p client to its
+ * previously set server.  This will return EINA_FALSE immediately if an error occurs.
+ * @param client The client object (NOT #NULL)
+ * @param secure If #EINA_TRUE, TLS will be used in the connection
+ * @return #EINA_TRUE if successful, or #EINA_FALSE on failure
+ */
 Eina_Bool
 azy_client_connect(Azy_Client *client,
                     Eina_Bool    secure)
@@ -150,15 +218,14 @@ azy_client_connect(Azy_Client *client,
         AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
         return EINA_FALSE;
      }
-   if ((client->connected) || (!client->host) || (!client->port))
+   if ((client->connected) || (!client->addr) || (!client->port))
      return EINA_FALSE;
 
-   client->secure = secure;
+   client->secure = !!secure;
 
-   if (secure)
-     flags |= ECORE_CON_USE_MIXED;
+   if (secure) flags |= ECORE_CON_USE_MIXED;
 
-   if (!(svr = ecore_con_server_connect(flags, client->host, client->port, NULL)))
+   if (!(svr = ecore_con_server_connect(flags, client->addr, client->port, NULL)))
      return EINA_FALSE;
 
    ecore_con_server_data_set(svr, client);
@@ -170,6 +237,16 @@ azy_client_connect(Azy_Client *client,
    return EINA_TRUE;
 }
 
+/**
+ * @brief Get the network object associated with the client
+ * This function returns the #Azy_Net object associated with @p client
+ * which is used for all outgoing data transmissions.  From here, azy_net
+ * namespaced functions can be called as normal upon the returned object.
+ * Note that the returned object belongs to the client, and will only exist
+ * if the client is connected.
+ * @param client The client object (NOT #NULL)
+ * @return The #Azy_Net object, or #NULL on failure
+ */
 Azy_Net *
 azy_client_net_get(Azy_Client *client)
 {
@@ -183,6 +260,12 @@ azy_client_net_get(Azy_Client *client)
    return client->net;
 }
 
+/**
+ * @brief Check whether a client is connected
+ * This function returns true only when the client is connected.
+ * @param client The client (NOT #NULL)
+ * @return #EINA_TRUE if the client is connected, else #EINA_FALSE
+ */
 Eina_Bool
 azy_client_connected_get(Azy_Client *client)
 {
@@ -195,6 +278,12 @@ azy_client_connected_get(Azy_Client *client)
    return client->connected;
 }
 
+/**
+ * @brief Close a client's connection
+ * This function is the opposite of azy_client_connect, it
+ * terminates an existing connection.
+ * @param client The client (NOT #NULL)
+ */
 void
 azy_client_close(Azy_Client *client)
 {
@@ -216,9 +305,19 @@ azy_client_close(Azy_Client *client)
    client->connected = EINA_FALSE;
 }
 
+/**
+ * @brief Set a callback for an #Azy_Client_Call_Id
+ * This function is used to setup a callback to be called for the response of
+ * a transmission with @p id, overriding (disabling) the AZY_CLIENT_RESULT event
+ * for that call.  If a previous callback was set for @p id, this will overwrite it.
+ * @param client The client (NOT #NULL)
+ * @param id The transmission id (> 0)
+ * @param callback The callback to use (NOT #NULL)
+ * @return #EINA_TRUE on success, or #EINA_FALSE on failure
+ */
 Eina_Bool
 azy_client_callback_set(Azy_Client *client,
-                         unsigned int id,
+                         Azy_Client_Call_Id id,
                          Azy_Client_Return_Cb callback)
 {
    DBG("(client=%p, id=%u)", client, id);
@@ -238,10 +337,17 @@ azy_client_callback_set(Azy_Client *client,
    return eina_hash_add(client->callbacks, &id, callback);
 }
 
+/**
+ * @brief Set a callback to free the retval struct of @p id
+ * This function should not be called by users.
+ * @param client The client
+ * @param id The transmission id
+ * @param callback The free callback
+ */
 Eina_Bool
 azy_client_callback_free_set(Azy_Client *client,
-                              unsigned int id,
-                              void (*callback)(void*))
+                              Azy_Client_Call_Id id,
+                              Ecore_Cb callback)
 {
    DBG("(client=%p, id=%u)", client, id);
 
@@ -260,6 +366,19 @@ azy_client_callback_free_set(Azy_Client *client,
    return eina_hash_add(client->free_callbacks, &id, callback);
 }
 
+/**
+ * @brief Make a method call using a connected client
+ * This function is used to make a method call on @p client as defined in
+ * @p content, using content-type defined by @p transport and the deserialization
+ * function specified by @p cb.  This should generally not be used by users, as azy_parser
+ * will automatically generate the correct calls from a .azy file.
+ * @param client The client (NOT #NULL)
+ * @param content The content containing the method name and parameters (NOT #NULL)
+ * @param transport The content-type (xml/json/etc) to use
+ * @param cb The deserialization callback to use for the response (NOT #NULL)
+ * @return The #Azy_Client_Call_Id of the transmission, to be used with azy_client_callback_set,
+ * or 0 on failure
+ */
 Azy_Client_Call_Id
 azy_client_call(Azy_Client       *client,
                  Azy_Content      *content,
@@ -288,9 +407,9 @@ azy_client_call(Azy_Client       *client,
 
    INFO("New method call: '%s'", content->method);
 
-   while (++__azy_client_send_id < 1);
+   while (++azy_client_send_id__ < 1);
 
-   content->id = __azy_client_send_id;
+   content->id = azy_client_send_id__;
 
    azy_net_transport_set(client->net, transport);
    if (!azy_content_serialize_request(content, transport))
@@ -329,7 +448,7 @@ azy_client_call(Azy_Client       *client,
    handler_data->callback = cb;
    handler_data->content_data = content->data;
 
-   handler_data->id = __azy_client_send_id;
+   handler_data->id = azy_client_send_id__;
    AZY_MAGIC_SET(handler_data, AZY_MAGIC_CLIENT_DATA_HANDLER);
    if (!client->conns)
      {
@@ -341,13 +460,24 @@ azy_client_call(Azy_Client       *client,
    client->conns = eina_list_append(client->conns, handler_data);
 
    DBG("(client=%p, net=%p, content=%p, handler_data=%p)", client, client->net, content, handler_data);
-   return __azy_client_send_id;
+   return azy_client_send_id__;
 error:
    if (msg)
      eina_strbuf_free(msg);
    return 0;
 }
 
+/**
+ * @brief Send arbitrary data to a connected server
+ * This function is used to send arbitrary data to a connected server using @p client.
+ * It will automatically generate the http header based on the content-length and other
+ * data specified in the client's #Azy_Net object.
+ * @param client The client (NOT #NULL)
+ * @param data The data to send (NOT #NULL)
+ * @param length The length (in bytes) of the data (> 0)
+ * @return The #Azy_Client_Call_Id of the transmission, to be used with azy_client_callback_set,
+ * or 0 on failure
+ */
 Azy_Client_Call_Id
 azy_client_send(Azy_Client   *client,
                  unsigned char *data,
@@ -393,12 +523,12 @@ azy_client_send(Azy_Client   *client,
    handler_data->client = client;
    AZY_MAGIC_SET(handler_data, AZY_MAGIC_CLIENT_DATA_HANDLER);
 
-   while (++__azy_client_send_id < 1);
+   while (++azy_client_send_id__ < 1);
 
-   handler_data->id = __azy_client_send_id;
+   handler_data->id = azy_client_send_id__;
    client->conns = eina_list_append(client->conns, handler_data);
    
-   return __azy_client_send_id;
+   return azy_client_send_id__;
 
 error:
    if (msg)
@@ -406,6 +536,13 @@ error:
    return 0;
 }
 
+/**
+ * @brief Free an #Azy_Client
+ * This function frees a client and ALL associated data.  If called
+ * on a connected client, azy_client_close will be called and then the client
+ * will be freed.
+ * @param client The client (NOT #NULL)
+ */
 void
 azy_client_free(Azy_Client *client)
 {
@@ -420,8 +557,8 @@ azy_client_free(Azy_Client *client)
    if (client->connected)
      azy_client_close(client);
    AZY_MAGIC_SET(client, AZY_MAGIC_NONE);
-   if (client->host)
-     eina_stringshare_del(client->host);
+   if (client->addr)
+     eina_stringshare_del(client->addr);
    if (client->session_id)
      eina_stringshare_del(client->session_id);
    if (client->add)
