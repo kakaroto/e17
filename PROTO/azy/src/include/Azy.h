@@ -212,8 +212,8 @@ extern "C" {
 #endif
 
    /* library */
-   void azy_init(void);
-   void azy_shutdown(void);
+   int azy_init(void);
+   int azy_shutdown(void);
 
    /* utils */
    char *azy_base64_encode(const char *string,

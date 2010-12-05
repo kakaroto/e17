@@ -54,11 +54,11 @@ Eina_Error AZY_ERROR_RESPONSE_XML_FAULT;
 Eina_Error AZY_ERROR_RESPONSE_XML_INVAL;
 Eina_Error AZY_ERROR_RESPONSE_XML_UNSERIAL;
 
-int azy_log_dom;
-static int _azy_initialized = 0;
+int azy_log_dom = -1;
+static int azy_init_count_ = 0;
 
 static void
-_azy_lib_register_errors(void)
+azy_lib_register_errors_(void)
 {
    AZY_ERROR_REQUEST_JSON_OBJECT = eina_error_msg_static_register(AZY_ERROR_REQUEST_JSON_OBJECT_err);
    AZY_ERROR_REQUEST_JSON_METHOD = eina_error_msg_static_register(AZY_ERROR_REQUEST_JSON_METHOD_err);
@@ -109,28 +109,33 @@ _azy_magic_fail(const void *d, Azy_Magic m, Azy_Magic req_m, const char *fname)
 /**
  * @brief Initialize Azy
  * This function initializes error handlers, events, and
- * logging functions for Azy, and must be called prior to making any
+ * logging functions for Azy and must be called prior to making any
  * calls.
+ * @return The number of times the function has been called, or -1 on failure
  */
-EAPI void
+EAPI int
 azy_init(void)
 {
  /* FIXME: make this like other libs with init count */
-   if (_azy_initialized)
-     return;
-   eina_init();
-   ecore_init();
-   ecore_con_init();
+   if (++azy_init_count_ != 1)
+     return azy_init_count_;
+   if (!eina_init()) return 0;
+   azy_log_dom = eina_log_domain_register("azy", EINA_COLOR_BLUE);
+   if (azy_log_dom < 0)
+     {
+        ERR("Could not register 'azy' log domain!");
+        goto eina_fail;
+     }
+   if (!ecore_init()) goto fail;
+   if (!ecore_con_init()) goto ecore_fail;
 
-   _azy_lib_register_errors();
+   azy_lib_register_errors_();
 
    AZY_CLIENT_DISCONNECTED = ecore_event_type_new();
    AZY_CLIENT_CONNECTED = ecore_event_type_new();
    AZY_CLIENT_RETURN = ecore_event_type_new();
    AZY_CLIENT_RESULT = ecore_event_type_new();
    AZY_CLIENT_ERROR = ecore_event_type_new();
-
-   azy_log_dom = eina_log_domain_register("azy", EINA_COLOR_BLUE);
 
 
    eina_magic_string_set(AZY_MAGIC_SERVER, "Azy_Server");
@@ -144,24 +149,34 @@ azy_init(void)
    eina_magic_string_set(AZY_MAGIC_VALUE, "Azy_Value");
    eina_magic_string_set(AZY_MAGIC_CONTENT, "Azy_Content");
 
-   _azy_initialized = 1;
+ecore_fail:
+   ecore_shutdown();
+fail:
+   eina_log_domain_unregister(azy_log_dom);
+   azy_log_dom = -1;
+eina_fail:
+   eina_shutdown();
+   return 0;
 }
 
 /**
  * @brief Shut down Azy
  * This function uninitializes memory allocated by azy_init.
  * Call when no further Azy functions will be used.
+ * @return The number of times the az_init has been called, or -1 if 
+ * all occurrences of azy have been shut down
  */
-EAPI void
-azy_shutdown()
+EAPI int
+azy_shutdown(void)
 {
-   if (!_azy_initialized)
-     return;
+   if (--azy_init_count_ != 0)
+     return azy_init_count_;
 
    eina_log_domain_unregister(azy_log_dom);
    ecore_con_shutdown();
    ecore_shutdown();
    eina_shutdown();
-   _azy_initialized = 0;
+   azy_log_dom = -1;
+   return azy_init_count_;
 }
 
