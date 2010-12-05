@@ -1,3 +1,5 @@
+handle http 1.0 correctly by not attempting to pipeline (ughhhhhhhhhhhhhhhhhh)
+handle http 1.1 connection header correctly (close, upgrade, etc)
 use eet_node and add eetrpc using eet 1.5
 switch to SAX parsing for xml, rewrite all xml parsing
 
