@@ -31,7 +31,9 @@
 #ifndef __GNUC__
 # define __PRETTY_FUNCTION__ __FILE__
 #endif
-
+#ifndef MIN
+# define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#endif
 
 #define DBG(...)  EINA_LOG_DOM_DBG(azy_log_dom, __VA_ARGS__)
 #define INFO(...) EINA_LOG_DOM_INFO(azy_log_dom, __VA_ARGS__)

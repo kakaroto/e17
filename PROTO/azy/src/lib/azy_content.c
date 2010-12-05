@@ -8,10 +8,6 @@
 #include "Azy.h"
 #include "azy_private.h"
 
-#ifndef MIN
-# define MIN(a, b) (((a) < (b)) ? (a) : (b))
-#endif
-
 Azy_Content *
 azy_content_new(const char *method)
 {

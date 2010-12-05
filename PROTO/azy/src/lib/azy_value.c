@@ -10,10 +10,6 @@
 #include "Azy.h"
 #include "azy_private.h"
 
-#ifndef MIN
-# define MIN(a, b) (((a) < (b)) ? (a) : (b))
-#endif
-
 static Azy_Value *azy_value_new_(void);
 static Eina_Bool  azy_value_list_multi_line_get_(Azy_Value *v);
 
