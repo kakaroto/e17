@@ -189,7 +189,7 @@ azy_server_addr_get(Azy_Server *server)
  * @param server The server object (NOT NULL)
  * @param type The #Azy_Server_Type of the server; #AZY_SERVER_LOCAL for localhost,
  * #AZY_SERVER_BROADCAST for 0.0.0.0, else #AZY_SERVER_NONE and call azy_server_addr_set
- * @param port The port to listen on (0 < port < 65537)
+ * @param port The port to listen on (-1 < port < 65536)
  * @return EINA_TRUE on success (after main loop exits), else the function will return
  * immediately with EINA_FALSE
  */
@@ -205,7 +205,7 @@ azy_server_run(Azy_Server     *server,
         AZY_MAGIC_FAIL(server, AZY_MAGIC_SERVER);
         return EINA_FALSE;
      }
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(port < 1, EINA_FALSE);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(port < 0 || port > 65535, EINA_FALSE);
 
    az = type & AZY_SERVER_TYPE;
 
@@ -249,7 +249,7 @@ azy_server_run(Azy_Server     *server,
  * provides less functionality and flexibility.
  * It will call ecore_main_loop_begin, set up server modules, and
  * free all allocated data upon return.
- * @param port The port to listen on (0 < port < 65537)
+ * @param port The port to listen on (-1 < port < 65536)
  * @param type The #Azy_Server_Type of the server; #AZY_SERVER_LOCAL for localhost,
  * or #AZY_SERVER_BROADCAST for 0.0.0.0.  To listen on another address you will need
  * to manually set up your server object and use azy_server_run
@@ -270,7 +270,7 @@ azy_server_basic_run(int                      port,
    Eina_Bool secure = EINA_FALSE;
    int az, ecore = ECORE_CON_REMOTE_NODELAY;
 
-   if ((port < 1) || (port > 65535) || (!modules) || !(*modules))
+   if ((port < 0) || (port > 65535) || (!modules) || !(*modules))
      return EINA_FALSE;
 
    az = type & AZY_SERVER_TYPE;
