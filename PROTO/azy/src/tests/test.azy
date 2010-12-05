@@ -3,56 +3,105 @@
  * Copyright 2010 Mike Blumenkrantz <mike@zentific.com>
  */
 
+/**
+ * Set the namespace to T: this prefixes all generated functions and types with 'T_'
+ */
 namespace T;
 
+/**
+ * define two #Eina_Error codes with values 1, 2
+ * set their strings to the value between and including the braces
+ * semicolon required, empty error string permitted between braces
+ */
 error ERR1 = 1 { sup this is an error };
 error ERR2 = 2 { chea dawg this is also an error };
 
+/**
+ * Create typedef struct named Struct (T_Struct in C)
+ */
 struct Struct
 {
+   /** string member named v_string; strings are stringshared
+    * const char*
+    */
    string v_string;
 }
 
+/**
+ * Create typedef struct named AllArrays (T_AllArrays in C)
+ */
 struct AllArrays
 {
-   array<string>      a_string;
-   array<time>    a_time;
-   array<base64>  a_base64;
-   array<int>     a_int;
-   array<boolean> a_boolean;
-//    array<double>      a_double;
-   array<Struct>  a_struct;
-                  array < array < string >> aa_string;
-                  array < array < array<string >>> aaa_string;
+   array<string>  a_string; /**< array of stringshared strings */
+   array<time>    a_time; /**< array of stringshared time strings */
+   array<base64>  a_base64; /**< array of stringshared base64-encoded strings */
+   array<int>     a_int; /**< array of ints */
+   array<boolean> a_boolean; /**< array of Eina_Bools */
+  //FIXME array<double>  a_double; /**< array of doubles */
+   array<Struct>  a_struct; /**< array of Struct objects (T_Structs in C) */
+   array<array<string>> aa_string; /**< array of arrays of stringshared strings */
+   array<array<array<string>>> aaa_string; /** array of arrays of arrays of stringshared strings */
 }
 
+/**
+ * Create typedef struct named AllTypes (T_AllTypes in C)
+ */
 struct AllTypes
 {
-   string v_string;
-   time      v_time;
-   base64    v_base64;
-   int       v_int;
-   boolean   v_boolean;
-   double    v_double;
-   Struct    v_struct;
-   AllArrays v_arrays;
+   string v_string; /**< stringshared string */
+   time      v_time; /**< stringshared time string */
+   base64    v_base64; /**< stringshared base64-encoded string */
+   int       v_int; /**< int */
+   boolean   v_boolean; /**< Eina_Bool */
+   double    v_double; /**< double */
+   Struct    v_struct; /**< Struct object (T_Struct in C) */
+   AllArrays v_arrays; /**< AllArrays object (T_AllArrays in C) */
 }
 
+/**
+ * Create a module named 'Test1' which can contain methods, structs, errors, etc
+ */
 Azy_Module Test1
 {
+   /** <% %> are {} for .azy files and are placed around sections of modules
+    * this first section is the includes section which is placed at the top of the
+    * generated c code files, so all headers required by the server methods in this
+    * module must be included here
+    */
    <%
     #include <stdio.h>
     #include <string.h>
    %>
 
+   /**
+    * define some module-specific errors which are only used
+    * within this module
+    */
    error NOTHING = 2 { error messageeeeeeeeeeeeeeee };
    error NO_DATA = 5 { and another errrorrrrrrrrrrrrrrr woooo };
 
+   /**
+    * this is a method description for method "getAll" in module Test1
+    * with namespace T.  to call this method externally, you would use the string
+    * "T_Test1.getAll" in your rpc call.
+    * Note, however, that since we are in the .azy file, we can skip using any
+    * namespacing IN THE METHOD PROTOTYPE ONLY and just use the types themselves
+    * Note also that getAll(void) is not allowed.
+    */
    AllTypes getAll()
    <%
+   /** begin method code */
      char *buf;
+     /** the below line can be uncommented so you can see where it gets called
+      * from when the method is called
+      */
   //   printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
-     retval = T_AllTypes_new();
+     retval = T_AllTypes_new(); /**< We are in C here since it is between < % % >
+                                     * This means we must use all namespaces. since this
+                                     * is a globally accessible struct, it must be prefixed with T_
+                                     * Note that using < % % > without spaces in a comment
+                                     * will result in a parser error (FIXME).
+                                     */
      retval->v_string = eina_stringshare_add("Hi!");
      retval->v_time = eina_stringshare_add("2010-11-01");
      buf = azy_base64_encode("Hi all!", sizeof("Hi all!"));
@@ -63,13 +112,18 @@ Azy_Module Test1
      retval->v_double = 123.123e-3;
      retval->v_struct = T_Struct_new();
      retval->v_struct->v_string = eina_stringshare_add("some str");
-     retval->v_arrays = T_AllArrays_new();
+     retval->v_arrays = T_AllArrays_new(); /**< Again, we're still in C so we must use the T namespace */
 
-     /* test copy/free */
+     /** The 3 lines below this demonstrate how to use generated copy and eq functions */
      T_AllTypes *orig = retval;
-     retval = T_AllTypes_copy(retval);
-     T_AllTypes_free(orig);
-     return retval;
+     retval = T_AllTypes_copy(retval); /**< copying is always nullsafe */
+     if (!T_AllTypes_eq(retval, orig)) /**< as is eq */
+       printf("Error! Copying failed!\n");
+     T_AllTypes_free(orig); /**< as is free */
+     return retval; /**< as the method prototype describes, this must return a AllTypes (T_Alltypes in C)
+                      * struct, so we return one here
+                      */
+   /** end method code */
    %>
 
    AllArrays getAllArrays()
