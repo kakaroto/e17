@@ -284,7 +284,7 @@ _azy_server_client_method_run(Azy_Server_Client *client,
      azy_content_error_faultmsg_set(content, -1, "Method %s not found in %s module.", azy_content_method_get(content), module->def->name);
 
    if (module->def->post)
-     module->def->post(module, content);
+     retval = module->def->post(module, content);
 
    module->content = NULL;
    return retval;
