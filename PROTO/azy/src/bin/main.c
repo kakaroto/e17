@@ -758,27 +758,38 @@ gen_common_headers(void)
 }
 
 static void
-gen_common_impl(void)
+gen_common_impl(Azy_Server_Module *s)
 {
-   Eina_List *j;
-   Azy_Typedef *t;
-   
-   OPEN("%s/%s%sCommon.c", out_dir, name, sep);
-
-   EL(0, "#include \"%s%sCommon.h\"", name, sep);
-   EL(0, "#include <string.h>");
-   NL;
-
-   EINA_LIST_FOREACH(azy->types, j, t)
+   if (!s)
      {
-        gen_type_copyfree(t, EINA_FALSE, EINA_FALSE);
-        gen_type_eq(t, EINA_FALSE);
-        gen_type_print(t, EINA_FALSE);
-        gen_type_isnull(t, EINA_FALSE);
-     }
-   gen_errors_impl(NULL);
-   gen_marshalizers(NULL, EINA_FALSE);
+        Eina_List *j;
+        Azy_Typedef *t;
 
+        OPEN("%s/%s%sCommon.c", out_dir, name, sep);
+
+        EL(0, "#include \"%s%sCommon.h\"", name, sep);
+        EL(0, "#include <string.h>");
+        NL;
+
+        EINA_LIST_FOREACH(azy->types, j, t)
+          {
+             gen_type_copyfree(t, EINA_FALSE, EINA_FALSE);
+             gen_type_eq(t, EINA_FALSE);
+             gen_type_print(t, EINA_FALSE);
+             gen_type_isnull(t, EINA_FALSE);
+          }
+        
+        gen_errors_impl(NULL);
+        gen_marshalizers(NULL, EINA_FALSE);
+     }
+   else
+     {
+        OPEN("%s/%s%s%s.c", out_dir, name, sep, s->name);
+        EL(0, "#include \"%s%sCommon.h\"", name, sep);
+        EL(0, "#include <string.h>");
+        NL;
+        gen_errors_impl(s);
+     }
    fclose(f);
 }
 
@@ -1395,7 +1406,6 @@ gen_client_impl(Azy_Server_Module *s)
    EINA_LIST_FOREACH(s->types, k, t)
      gen_type_copyfree(t, EINA_TRUE, EINA_TRUE);
    NL;
-   gen_errors_impl(s);
    gen_marshalizers(s, EINA_FALSE);
    EINA_LIST_FOREACH(s->types, k, t)
      gen_type_copyfree(t, EINA_FALSE, EINA_TRUE);
@@ -1478,7 +1488,7 @@ azy_write(void)
      gen_common_headers();
 
    if (common_impl)
-     gen_common_impl();
+     gen_common_impl(NULL);
 
    EINA_LIST_FOREACH(azy->modules, l, s)
      {
@@ -1493,6 +1503,9 @@ azy_write(void)
 
         if (server_impl)
           gen_server_impl(s);
+
+        if (common_impl)
+          gen_common_impl(s);
      }
 #if 0
    if (azy_gen)
