@@ -6,7 +6,7 @@
 #include <sstream>
 #include "scanner.h"
 #include "parser.h"
-#include "y.tab.h"
+#include "re_parser.h"
 #include "globals.h"
 #include "dfa.h"
 

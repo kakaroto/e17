@@ -5,7 +5,6 @@
 #include <sstream>
 #include "scanner.h"
 #include "parser.h"
-#include "y.tab.h"
 #include "globals.h"
 #include "dfa.h"
 
