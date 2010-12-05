@@ -409,7 +409,7 @@ _azy_server_client_download(Azy_Server_Client *client)
    client->net->http.res.http_msg = azy_net_http_msg_get(501);
    azy_net_header_set(client->net, "Content-Type", "text/plain");
    content = azy_content_new(NULL);
-   azy_content_buffer_set(content, (unsigned char *)strdup("Download hook is not implemented."), 33);
+   azy_content_buffer_set_(content, (unsigned char *)strdup("Download hook is not implemented."), 33);
 
    _azy_server_client_send(client, content);
    return ECORE_CALLBACK_RENEW;
@@ -453,7 +453,7 @@ _azy_server_client_upload(Azy_Server_Client *client)
    client->net->http.res.http_msg = azy_net_http_msg_get(501);
    azy_net_header_set(client->net, "Content-Type", "text/plain");
    content = azy_content_new(NULL);
-   azy_content_buffer_set(content, (unsigned char *)strdup("Upload hook is not implemented."), 31);
+   azy_content_buffer_set_(content, (unsigned char *)strdup("Upload hook is not implemented."), 31);
 
    _azy_server_client_send(client, content);
    return ECORE_CALLBACK_RENEW;
@@ -474,7 +474,14 @@ _azy_server_client_send(Azy_Server_Client *client,
      }
 
 #ifdef ISCOMFITOR
-   azy_content_dump(content, 0);
+   {
+      char *d;
+      d = azy_content_dump_string(content, 0);
+      if (d)
+        {
+           DBG("%s\n", d);
+           free(d);
+        }
 #endif
 
    if (!client->net->http.res.http_code)

@@ -139,7 +139,16 @@ static int requestUnserialize4()
   ));
   printf("%s\n",eina_strbuf_string_get(str));
   Eina_Bool rs = azy_content_unserialize_request(content, AZY_NET_TRANSPORT_XML, eina_strbuf_string_get(str), eina_strbuf_length_get(str));
-//  azy_content_dump(content, 0);
+/*
+   {
+      char *d;
+      d = azy_content_dump_string(content, 0);
+      if (d)
+        {
+           DBG("%s\n", d);
+           free(d);
+   }
+*/
   TEST_ASSERT(rs);
   TEST_ASSERT(_assert_param_type(content, 0, AZY_VALUE_INT));
   TEST_ASSERT(_assert_param_type(content, 1, AZY_VALUE_INT));

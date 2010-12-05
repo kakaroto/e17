@@ -205,7 +205,7 @@ typedef void *(*Azy_Content_Cb)(Azy_Value *, void **);
  * an error number.
  */
 typedef Eina_Error (*Azy_Client_Return_Cb)(Azy_Client *, Azy_Content *);
-
+/** }@ */
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -360,12 +360,6 @@ extern "C" {
    /* content */
    Azy_Content  *azy_content_new(const char *method);
    void           azy_content_free(Azy_Content *content);
-   unsigned char *azy_content_buffer_get(Azy_Content *content);
-   int            azy_content_length_get(Azy_Content *content);
-   Eina_Bool      azy_content_buffer_set(Azy_Content  *content,
-                                          unsigned char *buffer,
-                                          int            length);
-   void        azy_content_buffer_reset(Azy_Content *content);
    Azy_Content_Cb azy_content_callback_get(Azy_Content *content);
    const char *azy_content_method_get(Azy_Content *content);
    const char *azy_content_method_full_get(Azy_Content *content);
@@ -400,8 +394,6 @@ extern "C" {
    void        azy_content_data_set(Azy_Content *content,
                                     const void  *data);
    void       *azy_content_data_get(Azy_Content *content);
-   void        azy_content_dump(const Azy_Content *content,
-                                 unsigned int  indent);
    Eina_Bool   azy_content_serialize_request(Azy_Content *content,
                                               Azy_Net_Transport type);
    Eina_Bool   azy_content_unserialize_request(Azy_Content *content,

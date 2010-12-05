@@ -177,7 +177,7 @@ azy_content_serialize_request_json(Azy_Content *content)
      msg = cJSON_Print(object);
    else
      msg = cJSON_PrintUnformatted(object);
-   azy_content_buffer_set(content, (unsigned char *)msg, strlen(msg));
+   azy_content_buffer_set_(content, (unsigned char *)msg, strlen(msg));
 
    cJSON_Delete(object);
    return EINA_TRUE;
@@ -221,7 +221,7 @@ azy_content_serialize_response_json(Azy_Content *content)
      msg = cJSON_Print(object);
    else
      msg = cJSON_PrintUnformatted(object);
-   azy_content_buffer_set(content, (unsigned char *)msg, strlen(msg));
+   azy_content_buffer_set_(content, (unsigned char *)msg, strlen(msg));
 
    cJSON_Delete(object);
    return EINA_TRUE;

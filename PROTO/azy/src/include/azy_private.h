@@ -282,4 +282,8 @@ void      _azy_event_handler_fake_free(void *data __UNUSED__, void *data2);
    Eina_Bool azy_content_unserialize_response_json(Azy_Content *content,
                                                     const char *buf,
                                                     ssize_t     len);
+
+   Eina_Bool      azy_content_buffer_set_(Azy_Content  *content,
+                                          unsigned char *buffer,
+                                          int            length);
 #endif
