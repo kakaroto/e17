@@ -1161,8 +1161,8 @@ gen_server_impl(Azy_Server_Module *s)
            name, sep, s->name);
         EL(0, "{");
 
-        if (strstr(s->stub_init, "_priv"))
-          EL(1, "%s%s%s_module* _priv = azy_server_module_data_get(_module);", name, sep, s->name);
+        if (strstr(s->stub_init, "data_"))
+          EL(1, "%s%s%s_module* data_ = azy_server_module_data_get(_module);", name, sep, s->name);
         else
           EL(1, "(void)_module;");
 
@@ -1179,8 +1179,8 @@ gen_server_impl(Azy_Server_Module *s)
            name, sep, s->name);
         EL(0, "{");
 
-        if (strstr(s->stub_shutdown, "_priv"))
-          EL(1, "%s%s%s_module* _priv = azy_server_module_data_get(_module);",
+        if (strstr(s->stub_shutdown, "data_"))
+          EL(1, "%s%s%s_module* data_ = azy_server_module_data_get(_module);",
              name, sep, s->name);
         else
           EL(1, "(void)_module;");
@@ -1196,8 +1196,8 @@ gen_server_impl(Azy_Server_Module *s)
         EL(0, "{");
 
         EL(1, "(void)_content;");
-        if (strstr(s->stub_pre, "_priv"))
-          EL(1, "%s%s%s_module* _priv = azy_server_module_data_get(_module);",
+        if (strstr(s->stub_pre, "data_"))
+          EL(1, "%s%s%s_module* data_ = azy_server_module_data_get(_module);",
              name, sep, s->name);
         else
           EL(1, "(void)_module;");
@@ -1216,9 +1216,9 @@ gen_server_impl(Azy_Server_Module *s)
         EL(0, "{");
 
         EL(1, "(void)_content;");
-        if (strstr(s->stub_post, "_priv"))
+        if (strstr(s->stub_post, "data_"))
           EL(1,
-             "%s%s%s_module* _priv = azy_server_module_data_get(_module);",
+             "%s%s%s_module* data_ = azy_server_module_data_get(_module);",
              name, sep, s->name);
         else
           EL(1, "(void)_module;");
@@ -1235,8 +1235,8 @@ gen_server_impl(Azy_Server_Module *s)
            name, sep, s->name);
         EL(0, "{");
 
-        if (strstr(s->stub_fallback, "_priv"))
-          EL(1, "%s%s%s_module* _priv = azy_server_module_data_get(_module);",
+        if (strstr(s->stub_fallback, "data_"))
+          EL(1, "%s%s%s_module* data_ = azy_server_module_data_get(_module);",
              name, sep, s->name);
         else
           EL(1, "(void)_module;");
@@ -1254,9 +1254,9 @@ gen_server_impl(Azy_Server_Module *s)
            name, sep, s->name);
         EL(0, "{");
 
-        if (strstr(s->stub_download, "_priv"))
+        if (strstr(s->stub_download, "data_"))
           EL(1,
-             "%s%s%s_module* _priv = azy_server_module_data_get(_module);",
+             "%s%s%s_module* data_ = azy_server_module_data_get(_module);",
              name, sep, s->name);
         else
           EL(1, "(void)_module;");
@@ -1276,9 +1276,9 @@ gen_server_impl(Azy_Server_Module *s)
            name, sep, s->name);
         EL(0, "{");
 
-        if (strstr(s->stub_upload, "_priv"))
+        if (strstr(s->stub_upload, "data_"))
           EL(1,
-             "%s%s%s_module* _priv = azy_server_module_data_get(_module);",
+             "%s%s%s_module* data_ = azy_server_module_data_get(_module);",
              name, sep, s->name);
         else
           EL(1, "(void)_module;");
@@ -1307,8 +1307,8 @@ gen_server_impl(Azy_Server_Module *s)
 /* attempt to evade even more compile warnings at the expense of slightly slower runtime.
 * worth iiiiiiiiiiiiiiiiiiiiit
 */
-        if ((method->stub_impl) && (strstr(method->stub_impl, "_PRIV") || strstr(method->stub_impl, "_priv")))
-          EL(1, "%s%s%s_Module* _priv = azy_server_module_data_get(_module);", name, sep, s->name);
+        if ((method->stub_impl) && (strstr(method->stub_impl, "data_")))
+          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(_module);", name, sep, s->name);
         else
           EL(1, "(void)_module;");
 
