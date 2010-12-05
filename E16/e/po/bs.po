@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-11-08 23:35+0100\n"
+"POT-Creation-Date: 2010-12-01 23:14+0100\n"
 "PO-Revision-Date: 2010-05-09 01:27+0000\n"
 "Last-Translator: Kemal Sanjta <Unknown>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -614,7 +614,7 @@ msgstr "Lijevo"
 msgid "Right"
 msgstr "Desno"
 
-#: src/desktops.c:2435 src/menus-misc.c:585
+#: src/desktops.c:2435 src/menus-misc.c:586
 msgid "Desks"
 msgstr ""
 
@@ -963,7 +963,7 @@ msgstr "Globalne osobine:"
 msgid "Swap Window Locations"
 msgstr "Swap prozor lokacije"
 
-#: src/groups.c:1016 src/menus-misc.c:645 config/strings.c:138
+#: src/groups.c:1016 src/menus-misc.c:646 config/strings.c:138
 msgid "Groups"
 msgstr "Grupe"
 
@@ -1204,32 +1204,32 @@ msgstr "Pozadine"
 msgid "Themes"
 msgstr "Teme"
 
-#: src/menus-misc.c:481
+#: src/menus-misc.c:482
 msgid "Border"
 msgstr "Granica"
 
-#: src/menus-misc.c:545
+#: src/menus-misc.c:546
 msgid "Window List"
 msgstr "Lista Prozora"
 
-#: src/menus-misc.c:567
+#: src/menus-misc.c:568
 msgid "Go to this Desktop"
 msgstr ""
 
-#: src/menus-misc.c:571 src/menus-misc.c:667
+#: src/menus-misc.c:572 src/menus-misc.c:668
 #, c-format
 msgid "Desktop %i"
 msgstr "Desktop %i"
 
-#: src/menus-misc.c:614
+#: src/menus-misc.c:615
 msgid "Show/Hide this group"
 msgstr "Pokaži/Sakrij ovu grupu"
 
-#: src/menus-misc.c:619
+#: src/menus-misc.c:620
 msgid "Iconify this group"
 msgstr "Ikonificiraj ovu grupu"
 
-#: src/menus-misc.c:630
+#: src/menus-misc.c:631
 #, c-format
 msgid "Group %i"
 msgstr "Grupa %i"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-11-08 23:35+0100\n"
+"POT-Creation-Date: 2010-12-01 23:14+0100\n"
 "PO-Revision-Date: 2009-12-02 09:48+0000\n"
 "Last-Translator: Michael Kim <Unknown>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -612,7 +612,7 @@ msgstr "왼쪽"
 msgid "Right"
 msgstr "오른쪽"
 
-#: src/desktops.c:2435 src/menus-misc.c:585
+#: src/desktops.c:2435 src/menus-misc.c:586
 msgid "Desks"
 msgstr ""
 
@@ -961,7 +961,7 @@ msgstr "공통 설정:"
 msgid "Swap Window Locations"
 msgstr "창 위치 바꿈"
 
-#: src/groups.c:1016 src/menus-misc.c:645 config/strings.c:138
+#: src/groups.c:1016 src/menus-misc.c:646 config/strings.c:138
 msgid "Groups"
 msgstr ""
 
@@ -1200,32 +1200,32 @@ msgstr ""
 msgid "Themes"
 msgstr ""
 
-#: src/menus-misc.c:481
+#: src/menus-misc.c:482
 msgid "Border"
 msgstr ""
 
-#: src/menus-misc.c:545
+#: src/menus-misc.c:546
 msgid "Window List"
 msgstr ""
 
-#: src/menus-misc.c:567
+#: src/menus-misc.c:568
 msgid "Go to this Desktop"
 msgstr ""
 
-#: src/menus-misc.c:571 src/menus-misc.c:667
+#: src/menus-misc.c:572 src/menus-misc.c:668
 #, c-format
 msgid "Desktop %i"
 msgstr "데스크탑 %i"
 
-#: src/menus-misc.c:614
+#: src/menus-misc.c:615
 msgid "Show/Hide this group"
 msgstr "이 그룹 보여주기/숨기기"
 
-#: src/menus-misc.c:619
+#: src/menus-misc.c:620
 msgid "Iconify this group"
 msgstr "이 그룹 아이콘화"
 
-#: src/menus-misc.c:630
+#: src/menus-misc.c:631
 #, c-format
 msgid "Group %i"
 msgstr "그룹 %i"

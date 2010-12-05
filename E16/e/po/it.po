@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-11-08 23:35+0100\n"
+"POT-Creation-Date: 2010-12-01 23:14+0100\n"
 "PO-Revision-Date: 2010-08-13 12:58+0200\n"
 "Last-Translator: Massimo Maiurana <Unknown>\n"
 "Language-Team: none\n"
@@ -647,7 +647,7 @@ msgstr "Sinistra"
 msgid "Right"
 msgstr "Destra"
 
-#: src/desktops.c:2435 src/menus-misc.c:585
+#: src/desktops.c:2435 src/menus-misc.c:586
 msgid "Desks"
 msgstr "Desktop"
 
@@ -1002,7 +1002,7 @@ msgstr "Impostazioni globali:"
 msgid "Swap Window Locations"
 msgstr "Scambia posizione finestra"
 
-#: src/groups.c:1016 src/menus-misc.c:645 config/strings.c:138
+#: src/groups.c:1016 src/menus-misc.c:646 config/strings.c:138
 msgid "Groups"
 msgstr "Gruppi"
 
@@ -1249,32 +1249,32 @@ msgstr "Sfondi"
 msgid "Themes"
 msgstr "Tema"
 
-#: src/menus-misc.c:481
+#: src/menus-misc.c:482
 msgid "Border"
 msgstr "Bordo"
 
-#: src/menus-misc.c:545
+#: src/menus-misc.c:546
 msgid "Window List"
 msgstr "Lista finestre"
 
-#: src/menus-misc.c:567
+#: src/menus-misc.c:568
 msgid "Go to this Desktop"
 msgstr "Vai a questo desktop"
 
-#: src/menus-misc.c:571 src/menus-misc.c:667
+#: src/menus-misc.c:572 src/menus-misc.c:668
 #, c-format
 msgid "Desktop %i"
 msgstr "Desktop %i"
 
-#: src/menus-misc.c:614
+#: src/menus-misc.c:615
 msgid "Show/Hide this group"
 msgstr "Mostra/nascondi questo gruppo"
 
-#: src/menus-misc.c:619
+#: src/menus-misc.c:620
 msgid "Iconify this group"
 msgstr "Iconifica questo gruppo"
 
-#: src/menus-misc.c:630
+#: src/menus-misc.c:631
 #, c-format
 msgid "Group %i"
 msgstr "Gruppo %i"
