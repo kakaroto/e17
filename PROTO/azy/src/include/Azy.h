@@ -56,14 +56,14 @@ void *alloca (size_t);
 
 extern int azy_log_dom;
 
-extern int AZY_CLIENT_DISCONNECTED; /**< Event emitted upon client disconnecting */
-extern int AZY_CLIENT_CONNECTED; /**< Event emitted upon client connecting */
-extern int AZY_CLIENT_RESULT; /**< Event emitted upon client method returning if
-                                   no callback was set */
+extern int AZY_CLIENT_DISCONNECTED; /**< Event emitted upon client disconnecting, sends #Azy_Client object */
+extern int AZY_CLIENT_CONNECTED; /**< Event emitted upon client connecting, sends #Azy_Client object */
 extern int AZY_CLIENT_RETURN; /**< Event emitted upon client method returning if
-                                   a callback for the method has been set */
+                                   no callback was set, sends #Azy_Content */
+extern int AZY_CLIENT_RESULT; /**< Event emitted upon client method returning if
+                                   a callback for the method has been set, sends #Eina_Error */
 extern int AZY_CLIENT_ERROR; /**< Event emitted upon client method encountering
-                                  an error */
+                                  an error, sends #Azy_Content containing error */
 
 /**
  * @defgroup Azy_Typedefs Azy types
