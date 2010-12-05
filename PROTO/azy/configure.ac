@@ -108,11 +108,6 @@ AC_SUBST(XML_REQUIRES)
 AC_SUBST(XML_CFLAGS)
 AC_SUBST(XML_LIBS)
 
-AC_ARG_ENABLE([debug], AS_HELP_STRING([--enable-debug],[enable debug mode @<:@default=yes@:>@]))
-if test "x$enable_debug" != "xno";then
-		CFLAGS+=" -ggdb -rdynamic -Wall "
-fi
-
 EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
 # write output
