@@ -285,12 +285,11 @@ AC_ARG_ENABLE(zoom,
   [  --enable-zoom           compile with zoom support @<:@default=yes@:>@],,
   enable_zoom=yes)
 if test "x$enable_zoom" = "xyes"; then
-# Prefer xf86vm for now
-# if test "x$have_randr_13" = "xy"; then
-#   enable_zoom=xrandr
-# else
+  if test "x$have_randr_13" = "xy"; then
+    enable_zoom=xrandr
+  else
     enable_zoom=xf86vm
-# fi
+  fi
 fi
 if test "x$enable_zoom" = "xxf86vm"; then
   AC_CHECK_LIB(Xxf86vm, XF86VidModeQueryExtension,
