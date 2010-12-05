@@ -4,4 +4,6 @@ y.tab.h
 Makefile
 parser.cc
 re2c
+re_parser.h
+re_parser.cc
 scanner.cc
