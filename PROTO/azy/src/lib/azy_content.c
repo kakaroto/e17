@@ -442,7 +442,8 @@ azy_content_params_get(Azy_Content *content)
 /* retval manipulation */
 /**
  * @brief Set the retval of a content object
- * This function should not be called by users.
+ * This function sets the retval of the content, which is
+ * what will be serialized and sent back to the client.
  * @param content The content (NOT #NULL)
  * @param val The retval
  */
@@ -463,7 +464,8 @@ azy_content_retval_set(Azy_Content *content,
 
 /**
  * @brief Get the retval of a content object
- * This function should not be called by users.
+ * This function gets the retval of the content, which is
+ * what is serialized and sent to the client.
  * @param content The content (NOT #NULL)
  * @return The retval, or #NULL on failure
  */
