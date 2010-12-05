@@ -1,33 +1,59 @@
 SUBDIRS = unit
 
-MYSQL_S = \
-  T_SQL.azy_server.c \
-  T_SQL.azy_client.c \
-  T_SQL.azy_server_stubs.c \
-  T_SQL.azy_server.h \
-  T_SQL.azy_client.h \
-  T_SQL.azy_server_stubs.h \
-  T_SQL.h
+if HAVE_MYSQL
+MYSQL_COMMON_S = T_SQL.h
+else
+MYSQL_COMMON_S =
+endif
 
-BUILT_SOURCES = \
-  $(MYSQL_S) \
+COMMON_S = \
   T_Common.h \
   T_Common.c \
-  T_Test1.azy_server.c \
-  T_Test1.azy_client.c \
-  T_Test1.azy_server_stubs.c \
-  T_Test1.azy_server.h \
-  T_Test1.azy_client.h \
-  T_Test1.azy_server_stubs.h \
   T_Test1.h \
-  T_Test2.azy_server.c \
-  T_Test2.azy_client.c \
-  T_Test2.azy_server_stubs.c \
-  T_Test2.azy_server.h \
-  T_Test2.azy_client.h \
-  T_Test2.azy_server_stubs.h \
   T_Test2.h
 
+if HAVE_MYSQL
+MYSQL_SERVER_S = \
+  T_SQL.azy_server.c \
+  T_SQL.azy_server_stubs.c \
+  T_SQL.azy_server.h \
+  T_SQL.azy_server_stubs.h
+else
+MYSQL_SERVER_S =
+endif
+
+SERVER_S = \
+  T_Test1.azy_server.c \
+  T_Test1.azy_server_stubs.c \
+  T_Test1.azy_server.h \
+  T_Test1.azy_server_stubs.h \
+  T_Test2.azy_server.c \
+  T_Test2.azy_server_stubs.c \
+  T_Test2.azy_server.h \
+  T_Test2.azy_server_stubs.h
+
+if HAVE_MYSQL
+MYSQL_CLIENT_S = \
+  T_SQL.azy_client.c \
+  T_SQL.azy_client.h
+else
+MYSQL_CLIENT_S = 
+endif
+
+CLIENT_S = \
+  T_Test1.azy_client.c \
+  T_Test1.azy_client.h \
+  T_Test2.azy_client.c \
+  T_Test2.azy_client.h
+
+
+BUILT_SOURCES = \
+  $(COMMON_S) \
+  $(MYSQL_COMMON_S) \
+  $(CLIENT_S) \
+  $(MYSQL_CLIENT_S) \
+  $(SERVER_S) \
+  $(MYSQL_SERVER_S)
 
 EXTRA_DIST = \
   test.azy \
@@ -54,17 +80,27 @@ check_PROGRAMS = \
   stress_client \
   server
 
-client_SOURCES = \
+nodist_client_SOURCES = \
   client.c \
-  $(BUILT_SOURCES)
+  $(COMMON_SOURCES) \
+  $(MYSQL_COMMON_S) \
+  $(CLIENT_SOURCES) \
+  $(MYSQL_CLIENT_S)
 
-stress_client_SOURCES = \
+
+nodist_stress_client_SOURCES = \
   stress_client.c \
-  $(BUILT_SOURCES)
+  $(COMMON_SOURCES) \
+  $(MYSQL_COMMON_S) \
+  $(CLIENT_SOURCES) \
+  $(MYSQL_CLIENT_S)
 
-server_SOURCES = \
+nodist_server_SOURCES = \
   server.c \
-  $(BUILT_SOURCES)
+  $(COMMON_SOURCES) \
+  $(MYSQL_COMMON_S) \
+  $(SERVER_SOURCES) \
+  $(MYSQL_SERVER_S)
 
 $(BUILT_SOURCES): .sources-ts
 
