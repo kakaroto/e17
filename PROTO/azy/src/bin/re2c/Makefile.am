@@ -16,7 +16,7 @@ AM_YFLAGS = -d
 RE2C         = re2c$(EXEEXT)
 RE2CFLAGS    = -bi
 
-CLEANFILES   = re_parser.c re_parser.h scanner.cc re2c.1 .version htdocs/manual.html
+CLEANFILES   = re_parser.cc re_parser.h scanner.cc re2c.1 .version htdocs/manual.html
 
 DISTCLEANFILES = makerpm re2c.spec README scanner.cc re2c$(EXEEXT)
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.h.in config.h.in~ config_w32.h.in configure depcomp install-sh missing

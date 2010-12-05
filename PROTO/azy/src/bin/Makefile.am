@@ -1,8 +1,15 @@
 SUBDIRS = re2c
 
 BUILT_SOURCES = \
+	$(top_builddir)/src/bin/re2c/re2c \
 	azy_parser.h \
 	azy_parser.c
+
+MAINTAINERCLEANFILES = Makefile.in
+CLEANFILES = \
+	azy_parser.h \
+	azy_parser.c \
+	azy_parser.y
 
 EXTRA_DIST = \
 	lempar.c \
@@ -29,19 +36,25 @@ azy_parser_SOURCES = \
 	azy_parser.h \
 	azy_parser.c
 
-BUILT_SOURCES += re2c/re2c
+noinst_PROGRAMS = lemon
+lemon_SOURCES = lemon.c
 
 # parser
 
-re2c/re2c:
-	cd re2c && $(MAKE) $(AM_MAKEFLAGS)
-azy_parser.h: azy_parser.c
-azy_parser.c: azy_parser.yre re2c/re2c
-	test -r lempar.c || test x$(top_srcdir)/bin = x$(top_builddir)/bin || cat lempar.c > lempar.c
-	gcc -o lemon lemon.c
-	re2c/re2c -s -i -o azy_parser.y $<
+$(top_builddir)/src/bin/re2c/re2c:
+	cd $(top_builddir)/src/bin/re2c && $(MAKE) $(AM_MAKEFLAGS)
+azy_parser.h: azy_parser.c $(top_builddir)/src/bin/re2c/re2c
+azy_parser.c: azy_parser.yre $(top_builddir)/src/bin/re2c/re2c lemon
+	@if test -x $(top_srcdir)/src/bin/re2c/re2c -a "x$(top_srcdir)" != "x$(top_builddir)"; then \
+		cp $(top_srcdir)/src/bin/re2c/re2c $(top_builddir)/src/bin/re2c; \
+	fi
+	$(top_builddir)/src/bin/re2c/re2c -s -i -o azy_parser.y $<
+	@if test "x$(top_srcdir)" != "x$(top_builddir)"; then \
+		cp $(top_srcdir)/src/bin/lempar.c $(top_builddir)/src/bin; \
+	fi
 	./lemon -q azy_parser.y
-	test x$(top_srcdir)/bin = x$(top_builddir)/bin || rm -f lempar.c
 
-CLEANFILES = lemon azy_parser.y
-MAINTAINERCLEANFILES = Makefile.in
+clean-local:
+	@if test "x$(top_srcdir)" != "x$(top_builddir)"; then \
+		rm -f $(top_builddir)/src/bin/lempar.c; \
+	fi
