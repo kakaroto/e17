@@ -90,7 +90,9 @@ Azy_Module Test1
     */
    AllTypes getAll()
    <%
-   /** begin method code */
+   /** begin method code
+    * NOTE: if you are only writing client code, you can leave the method code blank!
+    */
      char *buf;
      /** the below line can be uncommented so you can see where it gets called
       * from when the method is called
