@@ -56,6 +56,9 @@ BUILT_SOURCES = \
   $(MYSQL_SERVER_S)
 
 EXTRA_DIST = \
+  client.c \
+  server.c \
+  stress_client.c \
   test.azy \
   server.pem
 
