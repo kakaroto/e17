@@ -460,10 +460,11 @@ MenuCreateFromThemes(const char *name, MenuStyle * ms)
 }
 
 static int
-BorderNameCompare(void *b1, void *b2)
+BorderNameCompare(const void *b1, const void *b2)
 {
    if (b1 && b2)
-      return strcmp(BorderGetName((Border *) b1), BorderGetName((Border *) b2));
+      return strcmp(BorderGetName((const Border *)b1),
+		    BorderGetName((const Border *)b2));
 
    return 0;
 }

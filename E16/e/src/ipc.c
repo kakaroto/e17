@@ -1796,9 +1796,9 @@ EFuncDefer(EWin * ewin, const char *cmd)
 }
 
 static int
-ipccmp(void *p1, void *p2)
+ipccmp(const void *p1, const void *p2)
 {
-   return strcmp(((IpcItem *) p1)->name, ((IpcItem *) p2)->name);
+   return strcmp(((const IpcItem *)p1)->name, ((const IpcItem *)p2)->name);
 }
 
 static void

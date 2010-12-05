@@ -1819,10 +1819,10 @@ CB_BGNext(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static int
-BG_SortFileCompare(void *_bg1, void *_bg2)
+BG_SortFileCompare(const void *_bg1, const void *_bg2)
 {
-   Background         *bg1 = (Background *) _bg1;
-   Background         *bg2 = (Background *) _bg2;
+   const Background   *bg1 = (const Background *)_bg1;
+   const Background   *bg2 = (const Background *)_bg2;
    const char         *name1, *name2;
 
    /* return < 0 is b1 <  b2 */
