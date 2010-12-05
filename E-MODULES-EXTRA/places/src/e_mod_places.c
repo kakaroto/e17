@@ -70,11 +70,10 @@ places_init(void)
                                           "DeviceRemoved",
                                           _places_device_rem_cb, NULL);
 
-
    e_hal_manager_find_device_by_capability(conn, "volume",
                                            _places_volume_all_cb, NULL);
 
-   poller = ecore_timer_add(3, _places_poller, NULL);
+   poller = ecore_timer_add(3.0, _places_poller, NULL);
 }
 
 void
@@ -142,7 +141,6 @@ _places_custom_volume(Evas_Object *box, const char *label, const char *icon, con
    /* gauge */
    edje_object_signal_emit(o, "gauge,hide", "places");
    edje_object_part_text_set(o, "size_label", "");
-
 
    /* orient the separator*/
    if (!e_box_orientation_get(box))
@@ -372,7 +370,7 @@ places_generate_menu(void *data, E_Menu *em)
    E_Menu_Item *mi;
    char buf[PATH_MAX];
 
-   /* Home */
+   // Home
    if (places_conf->show_home)
      {
         mi = e_menu_item_new(em);
@@ -381,7 +379,7 @@ places_generate_menu(void *data, E_Menu *em)
         e_menu_item_callback_set(mi, _places_run_fm, (char*)e_user_homedir_get());
      }
 
-   /* Desktop */
+   // Desktop
    if (places_conf->show_desk)
      {
         mi = e_menu_item_new(em);
@@ -391,7 +389,7 @@ places_generate_menu(void *data, E_Menu *em)
         e_menu_item_callback_set(mi, _places_run_fm, strdup(buf)); //TODO free somewhere
      }
 
-   /* Trash */
+   // Trash
    if (places_conf->show_trash)
      {
         mi = e_menu_item_new(em);
@@ -400,7 +398,7 @@ places_generate_menu(void *data, E_Menu *em)
         e_menu_item_callback_set(mi, _places_run_fm, "trash:///");
      }
 
-   /* File System */
+   // File System
    if (places_conf->show_root)
      {
         mi = e_menu_item_new(em);
@@ -409,7 +407,7 @@ places_generate_menu(void *data, E_Menu *em)
         e_menu_item_callback_set(mi, _places_run_fm, "/");
      }
 
-   /* Temp */
+   // Temp
    if (places_conf->show_temp)
      {
         mi = e_menu_item_new(em);
@@ -418,7 +416,7 @@ places_generate_menu(void *data, E_Menu *em)
         e_menu_item_callback_set(mi, _places_run_fm, "/tmp");
      }
 
-   //separator
+   // Separator
    if (places_conf->show_home || places_conf->show_desk ||
        places_conf->show_trash || places_conf->show_root ||
        places_conf->show_temp)
@@ -427,7 +425,7 @@ places_generate_menu(void *data, E_Menu *em)
         e_menu_item_separator_set(mi, 1);
      }
 
-   /* Volumes */
+   // Volumes
    Eina_Bool volumes_visible = 0;
    const Eina_List *l;
    Volume *vol;
@@ -455,7 +453,7 @@ places_generate_menu(void *data, E_Menu *em)
         volumes_visible = 1;
      }
 
-   /* Favorites */
+   // Favorites
    if (places_conf->show_bookm)
      {
         if (volumes_visible)
@@ -660,7 +658,7 @@ _places_update_size(Evas_Object *obj, Volume *vol)
    const char *tot_h, *free_h;
    unsigned long long free;
 
-   //Free label
+   // Free label
    tot_h = _places_human_size_get(vol->size);
    if (vol->mounted)
      {
@@ -677,7 +675,7 @@ _places_update_size(Evas_Object *obj, Volume *vol)
      }
    eina_stringshare_del(tot_h);
 
-   //Gauge
+   // Gauge
    int percent;
    Edje_Message_Float msg_float;
 
@@ -754,9 +752,9 @@ _places_eject_activated_cb(void *data, Evas_Object *o, const char *emission, con
 
 }
 
-/***********************/
-/* HAL /DBUS Callbacks */
-/***********************/
+/************************/
+/* HAL / DBUS Callbacks */
+/************************/
 static Eina_Bool
 _places_open_when_mounted(void *data)
 {
@@ -1018,6 +1016,5 @@ _places_storage_properties_cb(void *data, void *reply_data, DBusError *error)
    v->to_mount = 0;
 
    places_update_all_gadgets(); //TODO Update only this volume, not all
-   return;
 }
 

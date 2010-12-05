@@ -10,7 +10,7 @@ typedef struct _Volume
    const char *mount_point;
    const char *fstype;
    unsigned long long size;
-   
+
    const char *bus;
    const char *drive_type;
    const char *model;
@@ -18,14 +18,14 @@ typedef struct _Volume
    const char *serial;
    unsigned char removable;
    unsigned char requires_eject;
-   
+
    E_DBus_Signal_Handler *sh_prop;
    unsigned char valid;
    unsigned char to_mount;
    unsigned char force_open;
    Evas_Object *obj;
    const char *icon;
-   
+
 }Volume;
 
 void places_init(void);
@@ -39,3 +39,4 @@ void places_augmentation(void *data, E_Menu *em);
 
 
 #endif
+
