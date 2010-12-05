@@ -25,3 +25,6 @@ libtrip_la_LIBADD   = $(DLOPEN_LIBS)
 libtrip_la_LDFLAGS  = -avoid-version
 
 endif
+
+install-data-hook:
+	rm -f $(DESTDIR)$(libe16dir)/*.la

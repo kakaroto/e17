@@ -208,3 +208,5 @@ MODULE_CFLAGS = $(ESD_CFLAGS) $(PA_CFLAGS) $(AUDIOFILE_CFLAGS) $(PANGO_CFLAGS) $
 
 endif
 
+install-data-hook:
+	rm -f $(DESTDIR)$(libe16dir)/*.la
