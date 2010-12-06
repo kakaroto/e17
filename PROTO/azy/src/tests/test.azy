@@ -37,7 +37,7 @@ struct AllArrays
    array<base64>  a_base64; /**< array of stringshared base64-encoded strings */
    array<int>     a_int; /**< array of ints */
    array<boolean> a_boolean; /**< array of Eina_Bools */
-  //FIXME array<double>  a_double; /**< array of doubles */
+   array<double>  a_double; /**< array of doubles */
    array<Struct>  a_struct; /**< array of Struct objects (T_Structs in C) */
    array<array<string>> aa_string; /**< array of arrays of stringshared strings */
    array<array<array<string>>> aaa_string; /** array of arrays of arrays of stringshared strings */
@@ -499,6 +499,8 @@ Azy_Module SQL
       Eina_Bool ret = EINA_TRUE;
 
       data = T_SQL_module_data_get(_module); /**< demonstrate use of generated define */
+      if (data != data_)
+        printf("Serious problem here!\n");
       data->m = mysql_init(NULL); /** allocate memory for MYSQL object */
       /** connect to database using super secure credentials */
       if (!mysql_real_connect(data->m, "localhost", "zentific", "zentific", "zentific", 0, NULL, CLIENT_REMEMBER_OPTIONS))

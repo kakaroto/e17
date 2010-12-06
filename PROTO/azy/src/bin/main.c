@@ -71,7 +71,7 @@ static Eina_Bool azy_gen;
 static char *out_dir = ".";
 static char *azy_file;
 static FILE *f;
-static const char *i, *b;
+static const char *i, *b, *d;
 static const char *sep;
 static const char *name;
 
@@ -222,16 +222,23 @@ gen_type_marshalizers(Azy_Typedef *t,
      }
    else if (t->type == TD_ARRAY)
      {
+        const char *type;
+        if ((t->item_type->ctype == i) || (t->item_type->ctype == b))
+          type = "int32_t *";
+        else if (t->item_type->ctype == d)
+          type = "double *";
+        else
+          type = t->item_type->ctype;
         EL(0, "%sAzy_Value *%s(%s _narray)", (_static) ? "static " : "", t->march_name, t->ctype);
         EL(0, "{");
         EL(1, "Eina_List *_item;");
-        EL(1, "%s v;", ((t->item_type->ctype == i) || (t->item_type->ctype == b)) ? "int32_t*" : t->item_type->ctype);
+        EL(1, "%s v;", type);
         EL(1, "Azy_Value *_array = azy_value_array_new();");
         NL;
         EL(1, "EINA_LIST_FOREACH(_narray, _item, v)");
         EL(1, "{");
 
-        if ((t->item_type->ctype == i) || (t->item_type->ctype == b))
+        if ((t->item_type->ctype == i) || (t->item_type->ctype == b) || (t->item_type->ctype == d))
           EL(2, "Azy_Value *_item_value = %s(*v);", t->item_type->march_name);
         else
           EL(2, "Azy_Value *_item_value = %s((%s)v);", t->item_type->march_name, t->item_type->ctype);
@@ -271,7 +278,7 @@ gen_type_marshalizers(Azy_Typedef *t,
         EL(2, "}");
         NL;
 
-        if ((t->item_type->ctype == i) || (t->item_type->ctype == b))
+        if ((t->item_type->ctype == i) || (t->item_type->ctype == b) || (t->item_type->ctype == d))
           EL(2, "_tmp_narray = eina_list_append(_tmp_narray, &_item_value);");
         else
 
@@ -352,6 +359,8 @@ gen_type_eq(Azy_Typedef *t,
           {
              if ((t->item_type->ctype == i) || (t->item_type->ctype == b))
                EL(2, "if ((intptr_t)(y->data) != (intptr_t)(z->data))");
+             else if (t->item_type->ctype == d)
+               EL(2, "if (*(double*)(y->data) != *(double*)(z->data))");
              else
                EL(2, "if ((%s)(y->data) != (%s)(z->data))", t->item_type->ctype, t->item_type->ctype);
           }
@@ -456,6 +465,8 @@ gen_type_print(Azy_Typedef *t,
         EL(1, "Eina_List *l;");
         if ((t->item_type->ctype == i) || (t->item_type->ctype == b))
           EL(1, "int *t;");
+        else if  (t->item_type->ctype == d)
+          EL(1, "double *t;");
         else
           EL(1, "%s t;", t->item_type->ctype);
         NL;
@@ -474,6 +485,8 @@ gen_type_print(Azy_Typedef *t,
                  EL(2, "printf(\"%s, \", (intptr_t)t);", t->item_type->fmt_str);
                else if (t->item_type->ctype == b)
                  EL(2, "printf(\"%s, \", ((intptr_t)t) ? \"yes\" : \"no\");", t->item_type->fmt_str);
+               else if (t->item_type->ctype == d)
+                 EL(2, "printf(\"%s, \", *(double*)t);", t->item_type->fmt_str);
                else
                  EL(2, "printf(\"%s, \", t);", t->item_type->fmt_str);
                EL(1, "}");
@@ -1666,6 +1679,7 @@ main(int argc, char *argv[])
 
    i = eina_stringshare_add("int");
    b = eina_stringshare_add("Eina_Bool");
+   d = eina_stringshare_add("double");
    azy_write();
 
    if (debug)
