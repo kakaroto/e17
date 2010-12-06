@@ -116,7 +116,7 @@ _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
    if (cb)
      {
         Eina_Error ret;
-        ret = cb(client, content);
+        ret = cb(client, content, content->ret);
         
         ecore_event_add(AZY_CLIENT_RESULT, &ret, (Ecore_End_Cb)_azy_event_handler_fake_free, NULL);
         eina_hash_del_by_key(client->callbacks, &content->id);

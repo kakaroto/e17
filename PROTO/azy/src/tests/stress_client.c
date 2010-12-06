@@ -35,7 +35,7 @@ check_err(Azy_Content *err)
 
 #ifdef HAVE_MYSQL
 static Eina_Error
-T_SQL_test_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
+ret_(Azy_Client *client __UNUSED__, int type __UNUSED__, Azy_Content *content)
 {
 
    static int x;
@@ -55,7 +55,7 @@ T_SQL_test_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
 #else
 
 static Eina_Error
-T_Test1_getAll_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
+ret_(Azy_Client *client __UNUSED__, int type __UNUSED__, Azy_Content *content)
 {
    static int x;
    T_AllTypes *ret;
@@ -102,12 +102,10 @@ connected(Azy_Client *cli __UNUSED__, int type __UNUSED__, Azy_Client *ev)
         ret = T_SQL_test(ev, err, NULL);
         if (check_err(err) || (!ret))
           goto error;
-        azy_client_callback_set(ev, ret, T_SQL_test_ret);
 #else
         ret = T_Test1_getAll(ev, err, NULL);
         if (check_err(err) || (!ret))
           goto error;
-        azy_client_callback_set(ev, ret, T_Test1_getAll_ret);
 #endif
      }
    azy_content_free(err);
@@ -158,7 +156,8 @@ main(void)
 
    ecore_job_add(spawn, NULL);
    ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)connected, NULL);
-   ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)disconnected, NULL);
+   ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)ret_, NULL);
+   ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)disconnected, NULL);
    ecore_main_loop_begin();
 
    EINA_LIST_FREE(clients, cli)

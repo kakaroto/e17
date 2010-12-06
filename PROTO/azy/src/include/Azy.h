@@ -204,7 +204,7 @@ typedef void *(*Azy_Content_Cb)(Azy_Value *, void **);
  * Function must return AZY_ERROR_NONE (0) on success, else
  * an error number.
  */
-typedef Eina_Error (*Azy_Client_Return_Cb)(Azy_Client *, Azy_Content *);
+typedef Eina_Error (*Azy_Client_Return_Cb)(Azy_Client *cli, Azy_Content *ret_content, void *ret);
 /** }@ */
 #ifdef __cplusplus
 extern "C" {

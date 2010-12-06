@@ -36,7 +36,7 @@ _disconnected(void *data __UNUSED__, int type __UNUSED__, void *data2 __UNUSED__
 }
 
 static Eina_Error
-_T_Test1_getBigArray_ret(Azy_Client *client, Azy_Content *content)
+_T_Test1_getBigArray_ret(Azy_Client *client, Azy_Content *content, void *r)
 {
    Eina_List *ret;
 
@@ -47,7 +47,7 @@ _T_Test1_getBigArray_ret(Azy_Client *client, Azy_Content *content)
         ecore_main_loop_quit();
         return azy_content_error_code_get(content);
      }
-   ret = azy_content_return_get(content);
+   ret = r;
 
    if (ret)
      printf("%i list entries\n", eina_list_count(ret));
@@ -56,7 +56,7 @@ _T_Test1_getBigArray_ret(Azy_Client *client, Azy_Content *content)
 }
 
 static Eina_Error
-_T_Test1_putBigArray_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
+_T_Test1_putBigArray_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *r)
 {
    Eina_Bool ret;
  
@@ -68,13 +68,13 @@ _T_Test1_putBigArray_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
         return azy_content_error_code_get(content);
      }
 
-   ret = (intptr_t)azy_content_return_get(content);
+   ret = (intptr_t)r;
    printf("%s: Success? %s!\n", __PRETTY_FUNCTION__, ret ? "YES" : "NO");
    return AZY_ERROR_NONE;
 }
 
 static Eina_Error
-_T_Test1_getAll_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
+_T_Test1_getAll_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *r)
 {
    T_AllTypes *ret;
 
@@ -86,13 +86,13 @@ _T_Test1_getAll_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
         return azy_content_error_code_get(content);
      }
 
-   ret = azy_content_return_get(content);
+   ret = r;
    printf("%s: Success? %s!\n", __PRETTY_FUNCTION__, ret ? "YES" : "NO");
    return AZY_ERROR_NONE;
 }
 
 static Eina_Error
-_T_Test1_getAllArrays_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
+_T_Test1_getAllArrays_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *r)
 {
    T_AllArrays *ret;
 
@@ -104,13 +104,13 @@ _T_Test1_getAllArrays_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
         return azy_content_error_code_get(content);
      }
 
-   ret = azy_content_return_get(content);
+   ret = r;
    printf("%s: Success? %s!\n", __PRETTY_FUNCTION__, ret ? "YES" : "NO");
    return AZY_ERROR_NONE;
 }
 
 static Eina_Error
-_T_Test2_auth_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
+_T_Test2_auth_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *r)
 {
    Eina_Bool ret;
  
@@ -122,13 +122,13 @@ _T_Test2_auth_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
         return azy_content_error_code_get(content);
      }
 
-   ret = (intptr_t)azy_content_return_get(content);
+   ret = (intptr_t)r;
    printf("%s: Success? %s!\n", __PRETTY_FUNCTION__, ret ? "YES" : "NO");
    return AZY_ERROR_NONE;
 }
 
 static Eina_Error
-_T_Test1_undefined_ret(Azy_Client *client __UNUSED__, Azy_Content *content)
+_T_Test1_undefined_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *r __UNUSED__)
 {
    if (azy_content_error_is_set(content))
      printf("Error encountered: %s\n", azy_content_error_message_get(content));
