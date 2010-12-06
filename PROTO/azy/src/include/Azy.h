@@ -435,6 +435,11 @@ extern "C" {
    Eina_Bool          azy_client_connect(Azy_Client *client,
                                           Eina_Bool    secure);
    void               azy_client_close(Azy_Client *client);
+   Eina_Bool          azy_client_call_checker(Azy_Client *cli,
+                                              Azy_Content *err_content,
+                                              Azy_Client_Call_Id ret,
+                                              Azy_Client_Return_Cb cb,
+                                              const char *func);
    Azy_Client_Call_Id azy_client_call(Azy_Client       *client,
                                        Azy_Content      *content,
                                        Azy_Net_Transport transport,

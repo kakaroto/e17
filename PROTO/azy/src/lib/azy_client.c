@@ -537,6 +537,46 @@ error:
 }
 
 /**
+ * @brief Validate a transmission attempt
+ * This function is used to check both the #Azy_Client_Call_Id and the #Azy_Content
+ * of an azy_client_call or azy_client_send attempt, and will additionally set
+ * an #Azy_Client_Return_Cb and log the calling function name upon failure.
+ * Note that this function also calls azy_content_error_reset.
+ * Also note: THIS FUNCTION IS MEANT TO BE USED IN A MACRO!!!!
+ * @param cli The client (NOT #NULL)
+ * @param err_content The content used to make the call which may contain an error (NOT #NULL)
+ * @param ret The call id
+ * @param cb The callback to set for @p ret (NOT #NULL)
+ * @param func The function name of the calling function
+ * @return This function returns #EINA_TRUE only if the call was successful and @p cb was set, else #EINA_FALSE
+ */
+Eina_Bool
+azy_client_call_checker(Azy_Client *cli, Azy_Content *err_content, Azy_Client_Call_Id ret, Azy_Client_Return_Cb cb, const char *func)
+{
+   DBG("(cli=%p, cb=%p, func='%s')", cli, cb, func);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cli, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(err_content, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cb, EINA_FALSE);
+   if (!ret) return EINA_FALSE;
+
+   if (azy_content_error_is_set(err_content))
+     {
+        ERR("%s:\n%s", func ? func : "<calling function not specified>", azy_content_error_message_get(err_content));
+        azy_content_error_reset(err_content);
+        return EINA_FALSE;
+     }
+
+   azy_content_error_reset(err_content);
+   if (!azy_client_callback_set(cli, ret, cb))
+     {
+        CRI("Could not set callback from %s!", func ? func : "<calling function not specified>");
+        return EINA_FALSE;
+     }
+
+   return EINA_TRUE;
+}
+
+/**
  * @brief Free an #Azy_Client
  * This function frees a client and ALL associated data.  If called
  * on a connected client, azy_client_close will be called and then the client
