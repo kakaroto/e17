@@ -26,7 +26,7 @@ _disconnected(void *data __UNUSED__, int type __UNUSED__, void *data2 __UNUSED__
 }
 
 static Eina_Error
-_T_Test1_getBigArray_ret(Azy_Client *client, Azy_Content *content, void *r)
+_T_Test1_getBigArray_ret(Azy_Client *client, Azy_Content *content, void *retval)
 {
    Eina_List *ret;
 
@@ -37,7 +37,7 @@ _T_Test1_getBigArray_ret(Azy_Client *client, Azy_Content *content, void *r)
         ecore_main_loop_quit();
         return azy_content_error_code_get(content);
      }
-   ret = r;
+   ret = retval;
 
    if (ret)
      printf("%i list entries\n", eina_list_count(ret));
@@ -46,7 +46,7 @@ _T_Test1_getBigArray_ret(Azy_Client *client, Azy_Content *content, void *r)
 }
 
 static Eina_Error
-_T_Test1_putBigArray_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *r)
+_T_Test1_putBigArray_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *retval)
 {
    Eina_Bool ret;
  
@@ -58,13 +58,15 @@ _T_Test1_putBigArray_ret(Azy_Client *client __UNUSED__, Azy_Content *content, vo
         return azy_content_error_code_get(content);
      }
 
-   ret = (intptr_t)r;
+   ret = (intptr_t)retval;
+   printf("data passed to function: %s\n", azy_content_data_get(content));
+   eina_stringshare_del(azy_content_data_get(content));
    printf("%s: Success? %s!\n", __PRETTY_FUNCTION__, ret ? "YES" : "NO");
    return AZY_ERROR_NONE;
 }
 
 static Eina_Error
-_T_Test1_getAll_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *r)
+_T_Test1_getAll_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *retval)
 {
    T_AllTypes *ret;
 
@@ -76,13 +78,13 @@ _T_Test1_getAll_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *r
         return azy_content_error_code_get(content);
      }
 
-   ret = r;
+   ret = retval;
    printf("%s: Success? %s!\n", __PRETTY_FUNCTION__, ret ? "YES" : "NO");
    return AZY_ERROR_NONE;
 }
 
 static Eina_Error
-_T_Test1_getAllArrays_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *r)
+_T_Test1_getAllArrays_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *retval)
 {
    T_AllArrays *ret;
 
@@ -94,13 +96,13 @@ _T_Test1_getAllArrays_ret(Azy_Client *client __UNUSED__, Azy_Content *content, v
         return azy_content_error_code_get(content);
      }
 
-   ret = r;
+   ret = retval;
    printf("%s: Success? %s!\n", __PRETTY_FUNCTION__, ret ? "YES" : "NO");
    return AZY_ERROR_NONE;
 }
 
 static Eina_Error
-_T_Test2_auth_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *r)
+_T_Test2_auth_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *retval)
 {
    Eina_Bool ret;
  
@@ -112,13 +114,13 @@ _T_Test2_auth_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *r)
         return azy_content_error_code_get(content);
      }
 
-   ret = (intptr_t)r;
+   ret = (intptr_t)retval;
    printf("%s: Success? %s!\n", __PRETTY_FUNCTION__, ret ? "YES" : "NO");
    return AZY_ERROR_NONE;
 }
 
 static Eina_Error
-_T_Test1_undefined_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *r __UNUSED__)
+_T_Test1_undefined_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *retval __UNUSED__)
 {
    if (azy_content_error_is_set(content))
      printf("Error encountered: %s\n", azy_content_error_message_get(content));
@@ -151,7 +153,7 @@ connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
    for (i = 0; i < 5000; i++)
      list = eina_list_append(list, eina_stringshare_printf("user.bob%d@zonio.net", i));
 
-   ret = T_Test1_putBigArray(cli, list, err, NULL);
+   ret = T_Test1_putBigArray(cli, list, err, eina_stringshare_add("stored data"));
    CALL_CHECK(_T_Test1_putBigArray_ret);
    
    EINA_LIST_FREE(list, s)
