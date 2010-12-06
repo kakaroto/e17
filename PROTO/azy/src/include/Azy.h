@@ -389,6 +389,8 @@ extern "C" {
    void        azy_content_error_reset(Azy_Content *content);
    Eina_Error  azy_content_error_code_get(Azy_Content *content);
    const char *azy_content_error_message_get(Azy_Content *content);
+   void        azy_content_error_copy(Azy_Content *from,
+                                      Azy_Content *to);
    char       *azy_content_dump_string(const Azy_Content *content,
                                         unsigned int  indent);
    void        azy_content_data_set(Azy_Content *content,

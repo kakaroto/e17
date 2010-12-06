@@ -19,6 +19,7 @@ static const char AZY_ERROR_RESPONSE_JSON_ERROR_err[] = "Can't parse JSON-RPC re
 static const char AZY_ERROR_RESPONSE_JSON_NULL_err[] = "Can't parse JSON-RPC response. Null result.";
 static const char AZY_ERROR_RESPONSE_JSON_INVALID_err[] = "Can't parse JSON-RPC response. Invalid result.";
 
+#ifdef HAVE_XML
 static const char AZY_ERROR_REQUEST_XML_DOC_err[] = "Can't parse XML-RPC XML request. Invalid XML document.";
 static const char AZY_ERROR_REQUEST_XML_ROOT_err[] = "Can't parse XML-RPC XML request. Root element is missing.";
 static const char AZY_ERROR_REQUEST_XML_METHODNAME_err[] = "Can't parse XML-RPC XML request. Missing methodName.";
@@ -31,6 +32,9 @@ static const char AZY_ERROR_RESPONSE_XML_MULTI_err[] = "Can't parse XML-RPC XML 
 static const char AZY_ERROR_RESPONSE_XML_FAULT_err[] = "Can't parse XML-RPC XML response. Failed to unserialize fault response.";
 static const char AZY_ERROR_RESPONSE_XML_INVAL_err[] = "Can't parse XML-RPC XML response. Invalid fault response.";
 static const char AZY_ERROR_RESPONSE_XML_UNSERIAL_err[] = "Can't parse XML-RPC XML response. Failed to unserialize retval.";
+#else
+static const char AZY_ERROR_XML_UNSUPPORTED_err[] = "XML support is not enabled.";
+#endif
 
 Eina_Error AZY_ERROR_REQUEST_JSON_OBJECT;
 Eina_Error AZY_ERROR_REQUEST_JSON_METHOD;
@@ -41,6 +45,7 @@ Eina_Error AZY_ERROR_RESPONSE_JSON_ERROR;
 Eina_Error AZY_ERROR_RESPONSE_JSON_NULL;
 Eina_Error AZY_ERROR_RESPONSE_JSON_INVALID;
 
+#ifdef HAVE_XML
 Eina_Error AZY_ERROR_REQUEST_XML_DOC;
 Eina_Error AZY_ERROR_REQUEST_XML_ROOT;
 Eina_Error AZY_ERROR_REQUEST_XML_METHODNAME;
@@ -53,6 +58,9 @@ Eina_Error AZY_ERROR_RESPONSE_XML_MULTI;
 Eina_Error AZY_ERROR_RESPONSE_XML_FAULT;
 Eina_Error AZY_ERROR_RESPONSE_XML_INVAL;
 Eina_Error AZY_ERROR_RESPONSE_XML_UNSERIAL;
+#else
+Eina_Error AZY_ERROR_XML_UNSUPPORTED;
+#endif
 
 int azy_log_dom = -1;
 static int azy_init_count_ = 0;
@@ -68,7 +76,7 @@ azy_lib_register_errors_(void)
    AZY_ERROR_RESPONSE_JSON_ERROR = eina_error_msg_static_register(AZY_ERROR_RESPONSE_JSON_ERROR_err);
    AZY_ERROR_RESPONSE_JSON_NULL = eina_error_msg_static_register(AZY_ERROR_RESPONSE_JSON_NULL_err);
    AZY_ERROR_RESPONSE_JSON_INVALID = eina_error_msg_static_register(AZY_ERROR_RESPONSE_JSON_INVALID_err);
-
+#ifdef HAVE_XML
    AZY_ERROR_REQUEST_XML_DOC = eina_error_msg_static_register(AZY_ERROR_REQUEST_XML_DOC_err);
    AZY_ERROR_REQUEST_XML_ROOT = eina_error_msg_static_register(AZY_ERROR_REQUEST_XML_ROOT_err);
    AZY_ERROR_REQUEST_XML_METHODNAME = eina_error_msg_static_register(AZY_ERROR_REQUEST_XML_METHODNAME_err);
@@ -81,6 +89,9 @@ azy_lib_register_errors_(void)
    AZY_ERROR_RESPONSE_XML_FAULT = eina_error_msg_static_register(AZY_ERROR_RESPONSE_XML_FAULT_err);
    AZY_ERROR_RESPONSE_XML_INVAL = eina_error_msg_static_register(AZY_ERROR_RESPONSE_XML_INVAL_err);
    AZY_ERROR_RESPONSE_XML_UNSERIAL = eina_error_msg_static_register(AZY_ERROR_RESPONSE_XML_UNSERIAL_err);
+#else
+   AZY_ERROR_XML_UNSUPPORTED = eina_error_msg_static_register(AZY_ERROR_XML_UNSUPPORTED_err);
+#endif
 }
 
 void
@@ -116,7 +127,6 @@ _azy_magic_fail(const void *d, Azy_Magic m, Azy_Magic req_m, const char *fname)
 EAPI int
 azy_init(void)
 {
- /* FIXME: make this like other libs with init count */
    if (++azy_init_count_ != 1)
      return azy_init_count_;
    if (!eina_init()) return 0;
@@ -148,6 +158,7 @@ azy_init(void)
    eina_magic_string_set(AZY_MAGIC_NET, "Azy_Net");
    eina_magic_string_set(AZY_MAGIC_VALUE, "Azy_Value");
    eina_magic_string_set(AZY_MAGIC_CONTENT, "Azy_Content");
+   return azy_init_count_;
 
 ecore_fail:
    ecore_shutdown();

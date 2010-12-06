@@ -80,7 +80,7 @@ AC_C___ATTRIBUTE__
 AC_CHECK_FUNCS([memset regcomp select socket strchr strndup strrchr strstr strtol munmap strdup])
 EINA_REQUIRES="eina >= 1.0.0"
 ECORE_REQUIRES="ecore-con >= 1.0.0 ecore >= 1.0.0"
-XML_REQUIRES="libxml-2.0 >= 2.6.20"
+XML_REQUIRES=
 
 AC_PATH_PROG([mysql_config], [mysql_config])
 if test "x$mysql_config" != "x";then
@@ -97,8 +97,20 @@ AC_SUBST(MYSQL_LIBS)
 
 PKG_CHECK_MODULES(EINA, [$EINA_REQUIRES])
 PKG_CHECK_MODULES(ECORE, [$ECORE_REQUIRES])
-PKG_CHECK_MODULES(XML, [$XML_REQUIRES])
+want_xml=
+AC_ARG_ENABLE([xml],
+   [AC_HELP_STRING([--enable-xml], [enable xml parser support @<:@default=detect@:>@])],
+   [want_xml=$enableval]
+)
 
+
+if test "x${want_xml}" != "xno" ; then
+   XML_REQUIRES="libxml-2.0 >= 2.6.20"
+   PKG_CHECK_MODULES(XML, [$XML_REQUIRES],
+     AC_DEFINE([HAVE_XML], [1], [xml support is enabled]),[]
+   )
+fi
+AM_CONDITIONAL([HAVE_XML], [test -n "$XML_LIBS"])
 AC_SUBST(EINA_REQUIRES)
 
 AC_SUBST(ECORE_REQUIRES)

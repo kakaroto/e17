@@ -11,7 +11,6 @@
 int
 main(void)
 {
-   eina_init();
    azy_init();
    Azy_Server_Module_Def *modules[] = {
                                           T_Test1_module_def(),
@@ -28,8 +27,6 @@ main(void)
 //   azy_server_basic_run(4444, AZY_SERVER_BROADCAST, NULL, modules);
 
    azy_shutdown();
-   eina_shutdown();
-
    return 0;
 }
 

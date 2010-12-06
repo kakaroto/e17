@@ -18,6 +18,12 @@ libazy_la_LIBADD = \
   extras/libb64.la
 
 libazy_la_LDFLAGS = -version-info @version_info@ @release_info@ -no-undefined --as-needed
+if HAVE_XML
+xml_c = azy_content_xml.c
+else
+xml_c =
+endif
+
 
 libazy_la_SOURCES = \
   azy_lib.c \
@@ -28,7 +34,7 @@ libazy_la_SOURCES = \
   azy_client.c \
   azy_content.c \
   azy_content_json.c \
-  azy_content_xml.c \
+  $(xml_c) \
   azy_server.c \
   azy_server_module.c \
   azy_net.c \

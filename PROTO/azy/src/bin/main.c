@@ -878,13 +878,13 @@ gen_server_headers(Azy_Server_Module *s)
         EL(0, "/** Pre-call hook.");
         EL(0, " * ");
         EL(0, " * @param _module Module object.");
-        EL(0, " * @param _content Call object.");
+        EL(0, " * @param content Call object.");
         EL(0, " * ");
         EL(0,
            " * @return EINA_TRUE if you want to continue execution of the call.");
         EL(0, " */ ");
         EL(0,
-           "Eina_Bool %s%s%s_module_pre(Azy_Server_Module* _module, Azy_Content* _content);",
+           "Eina_Bool %s%s%s_module_pre(Azy_Server_Module* _module, Azy_Content* content);",
            name, sep, s->name);
         NL;
      }
@@ -894,13 +894,13 @@ gen_server_headers(Azy_Server_Module *s)
         EL(0, "/** Post-call hook.");
         EL(0, " * ");
         EL(0, " * @param _module Module object.");
-        EL(0, " * @param _content Call object.");
+        EL(0, " * @param content Call object.");
         EL(0, " * ");
         EL(0,
            " * @return EINA_TRUE if you want to continue execution of the call.");
         EL(0, " */ ");
         EL(0,
-           "Eina_Bool %s%s%s_module_post(Azy_Server_Module* _module, Azy_Content* _content);",
+           "Eina_Bool %s%s%s_module_post(Azy_Server_Module* _module, Azy_Content* content);",
            name, sep, s->name);
         NL;
      }
@@ -911,13 +911,13 @@ gen_server_headers(Azy_Server_Module *s)
            "/** Fallback hook. (for undefined methods)");
         EL(0, " * ");
         EL(0, " * @param _module Module object.");
-        EL(0, " * @param _content Call object.");
+        EL(0, " * @param content Call object.");
         EL(0, " * ");
         EL(0,
            " * @return EINA_TRUE if you handled the call.");
         EL(0, " */ ");
         EL(0,
-           "Eina_Bool %s%s%s_module_fallback(Azy_Server_Module* _module, Azy_Content* _content);",
+           "Eina_Bool %s%s%s_module_fallback(Azy_Server_Module* _module, Azy_Content* content);",
            name, sep, s->name);
         NL;
      }
@@ -982,7 +982,7 @@ gen_server_headers(Azy_Server_Module *s)
              E(0, ", %s %s", p->type->ctype, p->name);
           }
 
-        EL(0, ", Azy_Content* _error);");
+        EL(0, ", Azy_Content* error_);");
         NL;
      }
 
@@ -1028,10 +1028,10 @@ gen_server_impl(Azy_Server_Module *s)
      {
         int n = 0;
 
-        EL(0, "static Eina_Bool method_%s(Azy_Server_Module* _module, Azy_Content* _content)", method->name);
+        EL(0, "static Eina_Bool method_%s(Azy_Server_Module* _module, Azy_Content* content)", method->name);
         EL(0, "{");
         // forward declarations
-        EL(1, "Eina_Bool _retval = EINA_FALSE;");
+        EL(1, "Eina_Bool retval = EINA_FALSE;");
         EL(1, "%s _nreturn_value = %s;",
            method->return_type->ctype,
            method->return_type->cnull);
@@ -1046,15 +1046,15 @@ gen_server_impl(Azy_Server_Module *s)
 
         NL;
         EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(_module, EINA_FALSE);");
-        EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(_content, EINA_FALSE);");
+        EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(content, EINA_FALSE);");
 
         NL;
         EL(1,
-           "if (eina_list_count(azy_content_params_get(_content)) != %d) /* number of parameters taken by call */",
+           "if (eina_list_count(azy_content_params_get(content)) != %d) /* number of parameters taken by call */",
            eina_list_count(method->params));
         EL(1, "{");
         EL(2,
-           "azy_content_error_faultmsg_set(_content, -1, \"Invalid number of parameters passed to stub function!\");");
+           "azy_content_error_faultmsg_set(content, -1, \"Invalid number of parameters passed to stub function!\");");
         EL(2, "goto out;");
         EL(1, "}");
 
@@ -1062,12 +1062,12 @@ gen_server_impl(Azy_Server_Module *s)
           {
              NL;
              EL(1,
-                "if (!%s(azy_content_param_get(_content, %d), &%s))",
+                "if (!%s(azy_content_param_get(content, %d), &%s))",
                 p->type->demarch_name, n++,
                 p->name);
              EL(1, "{");
              EL(2,
-                "azy_content_error_faultmsg_set(_content, -1, \"Stub parameter value demarshalization failed. (%s:%s)\");",
+                "azy_content_error_faultmsg_set(content, -1, \"Stub parameter value demarshalization failed. (%s:%s)\");",
                 method->name, p->name);
              EL(2, "goto out;");
              EL(1, "}");
@@ -1082,10 +1082,10 @@ gen_server_impl(Azy_Server_Module *s)
              E(0, ", %s", p->name);
           }
 
-        EL(0, ", _content);");
+        EL(0, ", content);");
 
 // check for errors
-        EL(1, "if (azy_content_error_is_set(_content))");
+        EL(1, "if (azy_content_error_is_set(content))");
         EL(2, "goto out;");
 
 // prepare retval
@@ -1093,12 +1093,12 @@ gen_server_impl(Azy_Server_Module *s)
         EL(1, "_return_value = %s(_nreturn_value);", method->return_type->march_name);
         EL(1, "if (!_return_value)");
         EL(1, "{");
-        EL(2, "azy_content_error_faultmsg_set(_content, -1, \"Stub return value marshalization failed. (%s)\");", method->name);
+        EL(2, "azy_content_error_faultmsg_set(content, -1, \"Stub return value marshalization failed. (%s)\");", method->name);
         EL(2, "goto out;");
         EL(1, "}");
         NL;
-        EL(1, "azy_content_retval_set(_content, _return_value);");
-        EL(1, "_retval = EINA_TRUE;");
+        EL(1, "azy_content_retval_set(content, _return_value);");
+        EL(1, "retval = EINA_TRUE;");
 
 // free native types and return
         NL;
@@ -1113,7 +1113,7 @@ gen_server_impl(Azy_Server_Module *s)
                EL(1, "%s(%s);", p->type->free_func, p->name);
           }
 
-        EL(1, "return _retval;");
+        EL(1, "return retval;");
         EL(0, "}");
         NL;
      }
@@ -1216,10 +1216,10 @@ gen_server_impl(Azy_Server_Module *s)
 
    if (s->stub_pre)
      {
-        EL(0, "Eina_Bool %s%s%s_module_pre(Azy_Server_Module* _module, Azy_Content* _content)", name, sep, s->name);
+        EL(0, "Eina_Bool %s%s%s_module_pre(Azy_Server_Module* _module, Azy_Content* content)", name, sep, s->name);
         EL(0, "{");
 
-        EL(1, "(void)_content;");
+        EL(1, "(void)content;");
         if (strstr(s->stub_pre, "data_"))
           EL(1, "%s%s%s_module* data_ = azy_server_module_data_get(_module);",
              name, sep, s->name);
@@ -1235,11 +1235,11 @@ gen_server_impl(Azy_Server_Module *s)
    if (s->stub_post)
      {
         EL(0,
-           "Eina_Bool %s%s%s_module_post(Azy_Server_Module* _module, Azy_Content* _content)",
+           "Eina_Bool %s%s%s_module_post(Azy_Server_Module* _module, Azy_Content* content)",
            name, sep, s->name);
         EL(0, "{");
 
-        EL(1, "(void)_content;");
+        EL(1, "(void)content;");
         if (strstr(s->stub_post, "data_"))
           EL(1,
              "%s%s%s_module* data_ = azy_server_module_data_get(_module);",
@@ -1255,7 +1255,7 @@ gen_server_impl(Azy_Server_Module *s)
 
    if (s->stub_fallback)
      {
-        EL(0, "Eina_Bool %s%s%s_module_fallback(Azy_Server_Module* _module, Azy_Content* _content)",
+        EL(0, "Eina_Bool %s%s%s_module_fallback(Azy_Server_Module* _module, Azy_Content* content)",
            name, sep, s->name);
         EL(0, "{");
 
@@ -1286,7 +1286,7 @@ gen_server_impl(Azy_Server_Module *s)
           EL(1, "(void)_module;");
 
         EL(1,
-           "Azy_Net* _net = azy_server_module_net_get(_module);");
+           "Azy_Net* net = azy_server_module_net_get(_module);");
         STUB(s->stub_download);
         EL(1, "return EINA_FALSE;");
         EL(0, "}");
@@ -1307,7 +1307,7 @@ gen_server_impl(Azy_Server_Module *s)
         else
           EL(1, "(void)_module;");
 
-        EL(1, "Azy_Net* _net = azy_server_module_net_get(_module);");
+        EL(1, "Azy_Net* net = azy_server_module_net_get(_module);");
         STUB(s->stub_upload);
         EL(1, "return EINA_FALSE;");
         EL(0, "}");
@@ -1325,7 +1325,7 @@ gen_server_impl(Azy_Server_Module *s)
              E(0, ", %s %s", p->type->ctype, p->name);
           }
 
-        EL(0, ", Azy_Content* _error)");
+        EL(0, ", Azy_Content* error_)");
         EL(0, "{");
 
 /* attempt to evade even more compile warnings at the expense of slightly slower runtime.
@@ -1340,11 +1340,11 @@ gen_server_impl(Azy_Server_Module *s)
 
         if (method->stub_impl)
           {
-             EL(1, "(void)_error;");
+             EL(1, "(void)error_;");
              STUB(method->stub_impl);
           }
         else
-          EL(1, "azy_content_error_faultmsg_set(_error, -1, \"Method is not implemented. (%s)\");",
+          EL(1, "azy_content_error_faultmsg_set(error_, -1, \"Method is not implemented. (%s)\");",
              method->name);
 
         EL(1, "return retval;");
@@ -1374,26 +1374,26 @@ gen_client_headers(Azy_Server_Module *s)
      {
         EL(0, "/** ");
         EL(0, " * ");
-        EL(0, " * @param _client Client object.");
+        EL(0, " * @param cli Client object.");
 
         EINA_LIST_FOREACH(method->params, k, p)
           {
              EL(0, " * @param %s", p->name);
           }
 
-        EL(0, " * @param _error Error content (cannot be NULL).");
+        EL(0, " * @param error_ Error content (cannot be NULL).");
         EL(0, " *");
         EL(0, " * @return ");
         EL(0, " */ ");
 
-        E(0, "Azy_Client_Call_Id %s%s%s_%s(Azy_Client* _client", name, sep, s->name, method->name);
+        E(0, "Azy_Client_Call_Id %s%s%s_%s(Azy_Client* cli", name, sep, s->name, method->name);
 
         EINA_LIST_FOREACH(method->params, k, p)
           {
              E(0, ", %s%s %s", !strcmp(p->type->ctype, "char*") ? "const " : "", p->type->ctype, p->name);
           }
 
-        EL(0, ", Azy_Content *_error, const void *data);");
+        EL(0, ", Azy_Content *error_, const void *data);");
         NL;
      }
 
@@ -1425,66 +1425,60 @@ gen_client_impl(Azy_Server_Module *s)
    NL;
    EINA_LIST_FOREACH(s->methods, j, method)
      {
-        E(0, "Azy_Client_Call_Id %s%s%s_%s(Azy_Client* _client", name, sep, s->name, method->name);
+        E(0, "Azy_Client_Call_Id %s%s%s_%s(Azy_Client* cli", name, sep, s->name, method->name);
 
         EINA_LIST_FOREACH(method->params, k, p)
           {
              E(0, ", %s%s %s", !strcmp(p->type->ctype, "char*") ? "const " : "", p->type->ctype, p->name);
           }
 
-        EL(0, ", Azy_Content *_error, const void *data)");
+        EL(0, ", Azy_Content *error_, const void *data)");
         EL(0, "{");
-          EL(1, "Azy_Client_Call_Id _retval = 0;");
-      //  EL(1, "%s _retval = %s;", method->return_type->ctype, method->return_type->cnull);
+          EL(1, "Azy_Client_Call_Id retval = 0;");
+      //  EL(1, "%s retval = %s;", method->return_type->ctype, method->return_type->cnull);
 
         if (method->params)
-          EL(1, "Azy_Value *_param_value;");
+          EL(1, "Azy_Value *param_value;");
 
-        EL(1, "Azy_Content* _content;");
-        EL(1, "Azy_Net *_net;");
+        EL(1, "Azy_Content *content;");
+        EL(1, "Azy_Net *net;");
         EL(1, "Azy_Net_Transport tr = AZY_NET_TRANSPORT_XML;");
         NL;
-        EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(_client, _retval);");
-        EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(_error, _retval);");
+        EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(cli, retval);");
+        EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(error_, retval);");
         NL;
-        EL(1, "_content = azy_content_new(\"%s%s%s.%s\");", name, sep, s->name, method->name);
-        EL(1, "if (!_content) return 0;");
-        EL(1, "if (data) azy_content_data_set(_content, data);");
+        EL(1, "content = azy_content_new(\"%s%s%s.%s\");", name, sep, s->name, method->name);
+        EL(1, "if (!content) return 0;");
+        EL(1, "if (data) azy_content_data_set(content, data);");
 
         EINA_LIST_FOREACH(method->params, k, p)
           {
              NL;
-             EL(1, "_param_value = %s(%s);", p->type->march_name, p->name);
-             EL(1, "if (!_param_value)");
+             EL(1, "param_value = %s(%s);", p->type->march_name, p->name);
+             EL(1, "if (!param_value)");
              EL(1, "{");
-             EL(2, "azy_content_error_faultmsg_set(_error, AZY_CLIENT_ERROR_MARSHALIZER, "
+             EL(2, "azy_content_error_faultmsg_set(error_, AZY_CLIENT_ERROR_MARSHALIZER, "
                     "\"Call parameter value marshalization failed (param=%s).\");", p->name);
-             EL(2, "azy_content_free(_content);");
-             EL(2, "return _retval;");
+             EL(2, "azy_content_free(content);");
+             EL(2, "return retval;");
              EL(1, "}");
-             EL(1, "azy_content_param_add(_content, _param_value);");
+             EL(1, "azy_content_param_add(content, param_value);");
           }
 
         NL;
-        EL(1, "_net = azy_client_net_get(_client);");
-        EL(1, "if (azy_net_transport_get(_net) != AZY_NET_TRANSPORT_UNKNOWN)");
-        EL(2, "tr = azy_net_transport_get(_net);");
-        EL(1, "_retval = azy_client_call(_client, _content, tr, (Azy_Content_Cb)%s);", method->return_type->demarch_name);
-        EL(1, "EINA_SAFETY_ON_TRUE_GOTO(!_retval, error);");
+        EL(1, "net = azy_client_net_get(cli);");
+        EL(1, "if (azy_net_transport_get(net) != AZY_NET_TRANSPORT_UNKNOWN)");
+        EL(2, "tr = azy_net_transport_get(net);");
+        EL(1, "retval = azy_client_call(cli, content, tr, (Azy_Content_Cb)%s);", method->return_type->demarch_name);
+        EL(1, "EINA_SAFETY_ON_TRUE_GOTO(!retval, error);");
         if (method->return_type->free_func)
-          EL(1, "azy_client_callback_free_set(_client, _retval, (Ecore_Cb)%s);", method->return_type->free_func);
-/*
-        EL(1, "{");
-        EL(2,"if (!%s(azy_content_retval_get(_content), %s&_retval))",
-           method->return_type->demarch_name, (!strcmp(method->return_type->demarch_name, "azy_value_bool_get")) ? "(int*)" : "");
-        EL(3,
-           "azy_content_error_faultmsg_set(_error, AZY_CLIENT_ERROR_MARSHALIZER, \"Call return value demarshalization failed.\");");
-        EL(1, "}");
-*/
+          EL(1, "azy_client_callback_free_set(cli, retval, (Ecore_Cb)%s);", method->return_type->free_func);
+
         NL;
         EL(0, "error:");
-        EL(1, "azy_content_free(_content);");
-        EL(1, "return _retval;");
+        EL(1, "azy_content_error_copy(content, error_);");
+        EL(1, "azy_content_free(content);");
+        EL(1, "return retval;");
         EL(0, "}");
         NL;
      }

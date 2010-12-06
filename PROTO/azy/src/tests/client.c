@@ -14,9 +14,14 @@
 
 /* this is a demo macro to show use of azy_client_call_checker */
 #define CALL_CHECK(X) \
-   if (!azy_client_call_checker(cli, err, ret, X, __PRETTY_FUNCTION__)) \
-     exit(1)
-
+   do \
+     { \
+        if (!azy_client_call_checker(cli, err, ret, X, __PRETTY_FUNCTION__)) \
+          { \
+             printf("%s\n", azy_content_error_message_get(err)); \
+             exit(1); \
+          } \
+     } while (0)
 static Eina_Bool
 _disconnected(void *data __UNUSED__, int type __UNUSED__, void *data2 __UNUSED__)
 {
@@ -49,6 +54,7 @@ static Eina_Error
 _T_Test1_putBigArray_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *retval)
 {
    Eina_Bool ret;
+   const char *data;
  
    if (azy_content_error_is_set(content))
      {
@@ -59,8 +65,9 @@ _T_Test1_putBigArray_ret(Azy_Client *client __UNUSED__, Azy_Content *content, vo
      }
 
    ret = (intptr_t)retval;
-   printf("data passed to function: %s\n", azy_content_data_get(content));
-   eina_stringshare_del(azy_content_data_get(content));
+   data = azy_content_data_get(content);
+   printf("data passed to function: %s\n", data);
+   eina_stringshare_del(data);
    printf("%s: Success? %s!\n", __PRETTY_FUNCTION__, ret ? "YES" : "NO");
    return AZY_ERROR_NONE;
 }

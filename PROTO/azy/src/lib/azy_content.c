@@ -148,7 +148,14 @@ azy_content_serialize_request(Azy_Content *content,
      return azy_content_serialize_request_json(content);
 
    if (type == AZY_NET_TRANSPORT_XML)
-     return azy_content_serialize_request_xml(content);
+     {
+#ifdef HAVE_XML
+        return azy_content_serialize_request_xml(content);
+#else
+        azy_content_error_code_set(content, AZY_ERROR_XML_UNSUPPORTED);
+        return EINA_FALSE;
+#endif
+     }
 
    ERR("ILLEGAL TYPE PASSED! %i", type);
    return EINA_FALSE;
@@ -183,7 +190,14 @@ azy_content_unserialize_request(Azy_Content *content,
      return azy_content_unserialize_request_json(content, buf, len);
 
    if (type == AZY_NET_TRANSPORT_XML)
-     return azy_content_unserialize_request_xml(content, buf, len);
+     {
+#ifdef HAVE_XML
+        return azy_content_unserialize_request_xml(content, buf, len);
+#else
+        azy_content_error_code_set(content, AZY_ERROR_XML_UNSUPPORTED);
+        return EINA_FALSE;
+#endif
+     }
 
    azy_content_error_faultmsg_set(content, 1, eina_stringshare_add_length(buf, len));
    return EINA_FALSE;
@@ -212,7 +226,14 @@ azy_content_serialize_response(Azy_Content *content,
 
 
    if (type == AZY_NET_TRANSPORT_XML)
-     return azy_content_serialize_response_xml(content);
+     {
+#ifdef HAVE_XML
+        return azy_content_serialize_response_xml(content);
+#else
+        azy_content_error_code_set(content, AZY_ERROR_XML_UNSUPPORTED);
+        return EINA_FALSE;
+#endif
+     }
 
    ERR("ILLEGAL TYPE PASSED! %i", type);
    return EINA_FALSE;
@@ -248,7 +269,14 @@ azy_content_unserialize_response(Azy_Content *content,
      return azy_content_unserialize_response_json(content, buf, len);
 
    if (type == AZY_NET_TRANSPORT_XML)
-     return azy_content_unserialize_response_xml(content, buf, len);
+     {
+#ifdef HAVE_XML
+        return azy_content_unserialize_response_xml(content, buf, len);
+#else
+        azy_content_error_code_set(content, AZY_ERROR_XML_UNSUPPORTED);
+        return EINA_FALSE;
+#endif
+     }
 
    azy_content_error_faultmsg_set(content, 1, eina_stringshare_add_length(buf, len));
    return EINA_FALSE;
@@ -637,6 +665,37 @@ azy_content_error_reset(Azy_Content *content)
 
    content->error_set = EINA_FALSE;
    return;
+}
+
+/**
+ * @brief Copy all error information from one #Azy_Content to another
+ * This function propogates error information from one content object to
+ * another object, also copying a user-specified faultstring if previously
+ * set.
+ * @param from The content to copy from
+ * @param to The content to copy to
+ */
+void
+azy_content_error_copy(Azy_Content *from, Azy_Content *to)
+{
+   DBG("(from=%p, to=%p)", from, to);
+
+   if (!AZY_MAGIC_CHECK(from, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(from, AZY_MAGIC_CONTENT);
+        return;
+     }
+
+   if (!AZY_MAGIC_CHECK(to, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(to, AZY_MAGIC_CONTENT);
+        return;
+     }
+
+   to->errcode = from->errcode;
+   to->faultcode = from->faultcode;
+   to->error_set = from->error_set;
+   if (from->faultmsg) to->faultmsg = eina_stringshare_ref(from->faultmsg);
 }
 
 /**

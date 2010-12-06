@@ -314,13 +314,13 @@ Azy_Module Test1
    %>
 
    /** __fallback__ is the method that is called if an undefined method is called by a client.
-    * it has _module and _content parameters just like a regular method call, but it returns Eina_Bool
+    * it has _module and content parameters just like a regular method call, but it returns Eina_Bool
     * for success.
     */
    __fallback__
    <%
-     printf("Unknown method called %s!\n", azy_content_method_full_get(_content));
-     azy_content_retval_set(_content, azy_value_bool_new(EINA_TRUE)); /**< retval must be explicitly set here */
+     printf("Unknown method called %s!\n", azy_content_method_full_get(content));
+     azy_content_retval_set(content, azy_value_bool_new(EINA_TRUE)); /**< retval must be explicitly set here */
      return EINA_TRUE; /**< fallback will use the default handler if #EINA_FALSE is returned;
                          * the default handler does almost exactly this
                          */
@@ -337,16 +337,16 @@ Azy_Module Test1
      const char *username;
      const char *password;
 
-     /** _net is the #Azy_Net object of the client and is automatically set
+     /** net is the #Azy_Net object of the client and is automatically set
       * for the download and upload functions
       */
-     path = azy_net_uri_get(_net);
-     if (!azy_net_auth_get(_net, &username, &password))
+     path = azy_net_uri_get(net);
+     if (!azy_net_auth_get(net, &username, &password))
        {
-          azy_net_code_set(_net, 401);
-          azy_net_header_set(_net, "Content-Type", "text/plain");
-          azy_net_header_set(_net, "WWW-Authenticate", "Basic realm=\"Azy Testsuite\"");
-          azy_server_client_send(_net, (unsigned char *)"Authentication Required", 23);
+          azy_net_code_set(net, 401);
+          azy_net_header_set(net, "Content-Type", "text/plain");
+          azy_net_header_set(net, "WWW-Authenticate", "Basic realm=\"Azy Testsuite\"");
+          azy_server_client_send(net, (unsigned char *)"Authentication Required", 23);
           return EINA_TRUE;
        }
 
@@ -356,9 +356,9 @@ Azy_Module Test1
 
      if (1) /**< this if could compare username/password against correct values */
        {
-          azy_net_code_set(_net, 200);
-          azy_net_header_set(_net, "Content-Type", "text/plain");
-          azy_server_client_send(_net, (unsigned char *)"Crap\n", 5);
+          azy_net_code_set(net, 200);
+          azy_net_header_set(net, "Content-Type", "text/plain");
+          azy_server_client_send(net, (unsigned char *)"Crap\n", 5);
           return EINA_TRUE;
        }
      else
@@ -366,9 +366,9 @@ Azy_Module Test1
           Eina_Strbuf *response = eina_strbuf_new();
           eina_strbuf_append_printf(response, "<html><head><title>401 Not Authorized</title></head><body><h1>401 Not Authorized</h1><p>You are not authorized to download %s</p></body></html>", path);
 
-          azy_net_code_set(_net, 401);
-          azy_net_header_set(_net, "Content-Type", "text/html");
-          azy_server_client_send(_net, (unsigned char *)eina_strbuf_string_get(response), eina_strbuf_length_get(response));
+          azy_net_code_set(net, 401);
+          azy_net_header_set(net, "Content-Type", "text/html");
+          azy_server_client_send(net, (unsigned char *)eina_strbuf_string_get(response), eina_strbuf_length_get(response));
 
           eina_strbuf_free(response);
           return EINA_TRUE;
@@ -384,16 +384,16 @@ Azy_Module Test1
         __upload__
         <%
         //	size_t read_bytes;
-        //	const char* path = azy_net_resource_get(_net);
+        //	const char* path = azy_net_resource_get(net);
                 const char* username;
                 const char* password;
 
-                if (!azy_net_basic_auth_get(_net, &username, &password))
+                if (!azy_net_basic_auth_get(net, &username, &password))
                 {
-                        azy_net_code_set(_net, 401);
-                        azy_net_header_set(_net, "Content-Type", "text/plain");
-                        azy_net_header_set(_net, "WWW-Authenticate", "Basic realm=\"Azy Testsuite\"");
-                        azy_server_client_send(_net, (unsigned char*)"Authentication Required", -1);
+                        azy_net_code_set(net, 401);
+                        azy_net_header_set(net, "Content-Type", "text/plain");
+                        azy_net_header_set(net, "WWW-Authenticate", "Basic realm=\"Azy Testsuite\"");
+                        azy_server_client_send(net, (unsigned char*)"Authentication Required", -1);
                         return EINA_TRUE;
                 }
 
@@ -401,13 +401,13 @@ Azy_Module Test1
                 eina_stringshare_del(username);
                 eina_stringshare_del(password);
 
-                Eina_Strbuf* data = azy_net_read_all(_net);
+                Eina_Strbuf* data = azy_net_read_all(net);
                 printf("%s\n", eina_strbuf_string_get(data));
                 eina_strbuf_free(data);
 
-                azy_net_code_set(_net, 200);
-                azy_net_header_set(_net, "Content-Type", "text/plain");
-                azy_server_client_send(_net, (unsigned char*)"Crap\n", -1);
+                azy_net_code_set(net, 200);
+                azy_net_header_set(net, "Content-Type", "text/plain");
+                azy_server_client_send(net, (unsigned char*)"Crap\n", -1);
                 return EINA_TRUE;
         %>
  */

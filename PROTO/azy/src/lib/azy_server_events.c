@@ -531,7 +531,8 @@ _azy_server_client_rpc(Azy_Server_Client *client,
    content = azy_content_new(NULL);
    EINA_SAFETY_ON_NULL_GOTO(content, error);
 
-   if (!azy_content_unserialize_request(content, t, (char *)client->net->buffer, client->net->size))
+   if ((!azy_content_unserialize_request(content, t, (char *)client->net->buffer, client->net->size)) &&
+        (!content->faultcode))
      azy_content_error_faultmsg_set(content, -1, "Unserialize request failure.");
    else
      _azy_server_client_method_run(client, content);

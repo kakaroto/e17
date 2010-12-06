@@ -50,6 +50,7 @@ extern Eina_Error AZY_ERROR_RESPONSE_JSON_ERROR;
 extern Eina_Error AZY_ERROR_RESPONSE_JSON_NULL;
 extern Eina_Error AZY_ERROR_RESPONSE_JSON_INVALID;
 
+#ifdef HAVE_XML
 extern Eina_Error AZY_ERROR_REQUEST_XML_DOC;
 extern Eina_Error AZY_ERROR_REQUEST_XML_ROOT;
 extern Eina_Error AZY_ERROR_REQUEST_XML_METHODNAME;
@@ -62,6 +63,9 @@ extern Eina_Error AZY_ERROR_RESPONSE_XML_MULTI;
 extern Eina_Error AZY_ERROR_RESPONSE_XML_FAULT;
 extern Eina_Error AZY_ERROR_RESPONSE_XML_INVAL;
 extern Eina_Error AZY_ERROR_RESPONSE_XML_UNSERIAL;
+#else
+extern Eina_Error AZY_ERROR_XML_UNSUPPORTED;
+#endif
 
 typedef struct Azy_Client_Handler_Data Azy_Client_Handler_Data;
 typedef unsigned int Azy_Magic;
@@ -81,7 +85,7 @@ struct Azy_Content
    unsigned char      *buffer;
    long long int       length;
 
-   Eina_Bool           error_set;
+   Eina_Bool           error_set : 1;
    Eina_Error          errcode; //internal code
    int                 faultcode; //code to actually report
    const char         *faultmsg; //if non-null, message to reply with instead of message associated with errcode
@@ -266,6 +270,7 @@ Eina_Bool azy_server_client_handler_add(Azy_Server                *server,
                                          Ecore_Con_Event_Client_Add *ev);
 void      _azy_event_handler_fake_free(void *data __UNUSED__, void *data2);
 
+#ifdef HAVE_XML
    Eina_Bool azy_content_serialize_request_xml(Azy_Content *content);
    Eina_Bool azy_content_serialize_response_xml(Azy_Content *content);
    Eina_Bool azy_content_unserialize_request_xml(Azy_Content *content,
@@ -274,6 +279,7 @@ void      _azy_event_handler_fake_free(void *data __UNUSED__, void *data2);
    Eina_Bool azy_content_unserialize_response_xml(Azy_Content *content,
                                                    const char *buf,
                                                    ssize_t     len);
+#endif
    Eina_Bool azy_content_serialize_request_json(Azy_Content *content);
    Eina_Bool azy_content_serialize_response_json(Azy_Content *content);
    Eina_Bool azy_content_unserialize_request_json(Azy_Content *content,
