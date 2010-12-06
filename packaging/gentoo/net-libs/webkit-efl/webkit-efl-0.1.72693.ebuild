@@ -57,6 +57,10 @@ src_configure() {
 	else
 		mycmakeargs+=" -DNETWORK_BACKEND=soup -DENABLE_GLIB_SUPPORT=ON"
 	fi
+	if use gstreamer && ! use glib ; then
+		mycmakeargs="${mycmakeargs/curl/soup}"
+		mycmakeargs="${mycmakeargs/ENABLE_GLIB_SUPPORT=OFF/ENABLE_GLIB_SUPPORT=ON}"
+	fi
 	mycmakeargs+=" $(cmake-utils_use_enable gstreamer VIDEO)"
 	enable_cmake-utils_src_configure
 }
