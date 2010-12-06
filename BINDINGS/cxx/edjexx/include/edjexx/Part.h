@@ -7,7 +7,6 @@
 /* EFL++ */
 #include <eflxx/Common.h>
 #include <eflxx/CountedPtr.h>
-
 #include <evasxx/Object.h>
 
 /* EFL */
@@ -17,6 +16,8 @@ using std::string;
 
 namespace Edjexx {
 
+// forward declarations
+class ExternalParam;
 class Object;
 
 class Part
@@ -42,7 +43,7 @@ public:
   Eflxx::CountedPtr <Evasxx::Object> getExternalObject ();
 
   // TODO: wrap Param?
-  bool setParam (const Edje_External_Param *param);
+  bool setParam (Edjexx::ExternalParam *param);
 
   //const Evasxx::Object* getObject ( const char* name );
 

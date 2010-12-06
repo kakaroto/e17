@@ -66,19 +66,11 @@ int main (int argc, char **argv)
 
   Eflxx::CountedPtr <Edjexx::Part> part (edje->getPart ("Slider01"));
 
-  Edje_External_Param param;
-  param.type = EDJE_EXTERNAL_PARAM_TYPE_DOUBLE;
-  param.name = "value";
-  param.d = 5;
-
-  Edje_External_Param param2;
-  param2.type = EDJE_EXTERNAL_PARAM_TYPE_STRING;
-  param2.name = "label";
-  param2.s = "Changed Slider Value";
+  Edjexx::ExternalParam param ("value", 5.0f);
+  Edjexx::ExternalParam param2 ("label", "Changed Slider Value");
 
   part->setParam (&param);
   part->setParam (&param2);
-
   
   bg->setWeightHintSize (1.0, 1.0);
   elmWin->addObjectResize (*bg);

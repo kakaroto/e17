@@ -17,6 +17,7 @@
 #include "ImageStateEdit.h"
 #include "TextStateEdit.h"
 #include "GradientStateEdit.h"
+#include "ExternalParam.h"
 
 #endif // EDJEXX_H
 

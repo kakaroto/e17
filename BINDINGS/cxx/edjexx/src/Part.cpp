@@ -4,6 +4,7 @@
 
 #include "../include/edjexx/Part.h"
 #include "../include/edjexx/Object.h"
+#include "../include/edjexx/ExternalParam.h"
 
 /* STD */
 #include <map>
@@ -71,9 +72,9 @@ Eflxx::CountedPtr <Evasxx::Object> Part::getExternalObject ()
   return Eflxx::CountedPtr <Evasxx::Object> (ret_o);
 }
 
-bool Part::setParam (const Edje_External_Param *param)
+bool Part::setParam (Edjexx::ExternalParam *param)
 {
-  return edje_object_part_external_param_set (_parent->obj (), _partname.c_str (), param);
+  return edje_object_part_external_param_set (_parent->obj (), _partname.c_str (), param->getRaw ());
 }
 
 /*const Evasxx::Object* Part::getObject ( const char* name )

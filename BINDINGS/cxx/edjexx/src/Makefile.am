@@ -25,7 +25,8 @@ libedjexx_la_SOURCES = \
 	StateEdit.cpp  \
 	ImageStateEdit.cpp  \
 	TextStateEdit.cpp  \
-	GradientStateEdit.cpp
+	GradientStateEdit.cpp  \
+	ExternalParam.cpp
 
 libedjexx_la_LIBADD = \
 	$(EFL_LIBS)

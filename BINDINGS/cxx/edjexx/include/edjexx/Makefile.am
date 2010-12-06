@@ -10,7 +10,8 @@ libedjexx_HEADERS = \
 	StateEdit.h \
 	ImageStateEdit.h \
 	TextStateEdit.h \
-	GradientStateEdit.h
+	GradientStateEdit.h \
+	ExternalParam.h
 
 libedjexxdir = \
 	$(pkgincludedir)
