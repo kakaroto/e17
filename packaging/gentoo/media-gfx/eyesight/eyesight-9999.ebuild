@@ -16,7 +16,7 @@ RDEPEND="${DEPEND}"
 
 src_configure() {
 	MY_ECONF="
-		$(use_enable poppler)
+		$(use_with poppler pdf-backend poppler)
 		$(use_enable postscript)"
 	enlightenment_src_configure
 }
