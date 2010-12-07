@@ -87,11 +87,9 @@ if test "x$mysql_config" != "x";then
       AC_CHECK_HEADERS([mysql/mysql.h])
       MYSQL_CFLAGS="$($mysql_config --cflags)"                                                                 
       MYSQL_LIBS="$($mysql_config --libs_r)"
-      AM_CONDITIONAL(HAVE_MYSQL, true)
       AC_DEFINE_UNQUOTED(HAVE_MYSQL, 1, "enable some mysql code in tests")
-else
-      AM_CONDITIONAL(HAVE_MYSQL, false)
 fi              
+AM_CONDITIONAL(HAVE_MYSQL, [test -n "$MYSQL_LIBS"])
 AC_SUBST(MYSQL_CFLAGS)
 AC_SUBST(MYSQL_LIBS)
 
