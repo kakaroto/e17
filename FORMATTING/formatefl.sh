@@ -27,6 +27,7 @@ if [[ -z "$DIR" ]]; then
       make install
     popd
     ln -sf $PWD/ecrustify.cfg $HOME/.ecrustify.cfg
+    ln -sf $PWD/ecrustify-headers.cfg $HOME/.ecrustify-headers.cfg
     popd
   fi
   echo "==================================================================="
@@ -53,14 +54,20 @@ function funcnewlines ()
   done
 }
 FMT1="funcnewlines"
-FMT2="$UNC --no-backup --replace -l C"
-FMT3="$UNC --no-backup --replace -l CPP"
-F=$(find $1 -name '*.[chx]' -print)
-if [[ -n "$F" ]]; then $FMT1 $F; $FMT2 $F; fi
-F=$(find $1 -name '*.h.in' -print)
+FMT2="$UNC -c $HOME/.ecrustify.cfg --no-backup --replace -l C"
+FMT3="$UNC -c $HOME/.ecrustify.cfg --no-backup --replace -l CPP"
+FMTH="$UNC -c $HOME/.ecrustify-headers.cfg --no-backup --replace -l C"
+
+F=$(find $1 -name '*.c' -print)
 if [[ -n "$F" ]]; then $FMT1 $F; $FMT2 $F; fi
 F=$(find $1 -name '*.cpp' -print)
 if [[ -n "$F" ]]; then $FMT1 $F; $FMT3 $F; fi
+
+F=$(find $1 -name '*.[hx]' -print)
+if [[ -n "$F" ]]; then $FMT1 $F; $FMTH $F; fi
+F=$(find $1 -name '*.h.in' -print)
+if [[ -n "$F" ]]; then $FMT1 $F; $FMTH $F; fi
+
   echo "==================================================================="
   echo " DONE"
   echo "==================================================================="
