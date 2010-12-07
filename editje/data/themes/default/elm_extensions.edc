@@ -369,6 +369,9 @@
 ////////////////////////////////////////////////////////////////////////////
    group {
       name: "elm/button/base/hoversel_vertical/editje";
+      data {
+         item: "focus_highlight" "on";
+      }
       parts {
          part {
             name: "outline";
@@ -467,6 +470,22 @@
             signal: "mouse,up,1";
             source: "over";
             action: SIGNAL_EMIT "elm,action,click" "";
+         }
+         program {
+            name: "highlight_show";
+            signal: "elm,action,focus_highlight,show";
+            source: "elm";
+            action: STATE_SET "focused" 0.0;
+            target: "outline";
+            target: "bg";
+         }
+         program {
+            name: "highlight_hide";
+            signal: "elm,action,focus_highlight,hide";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "outline";
+            target: "bg";
          }
       }
    }

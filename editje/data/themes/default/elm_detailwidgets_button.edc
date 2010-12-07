@@ -18,6 +18,9 @@
  * <http://www.gnu.org/licenses/>.
  */
    group { name: "elm/button/base/editje.details";
+      data {
+         item: "focus_highlight" "on";
+      }
       parts {
          part {
             name: "outline";
@@ -258,6 +261,20 @@
 	       else
 		 set_state(PART:"elm.text", "default", 0.0);
 	    }
+         }
+         program { name: "highlight_show";
+            signal: "elm,action,focus_highlight,show";
+            source: "elm";
+            action: STATE_SET "focused" 0.0;
+            target: "outline";
+            target: "bg";
+         }
+         program { name: "highlight_hide";
+            signal: "elm,action,focus_highlight,hide";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "outline";
+            target: "bg";
          }
       }
    }

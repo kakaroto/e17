@@ -26,6 +26,10 @@
          image: "knob_scrollbar.png" COMP;
       }
 
+      data {
+         item: "focus_highlight" "on";
+      }
+
       parts {
          part { name: "clipper";
             type: RECT;
