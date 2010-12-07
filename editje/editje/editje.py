@@ -242,8 +242,12 @@ class Editje(elementary.Window, OpenFileManager):
                        "the user to manually edit it. Use edje_decc to extract" \
                        "the edc source from a binary file, fix it by hand and" \
                        "build again with edje_cc.<br>"
+            for p, e in self.e.edje.script_errors:
+                if not p:
+                    p = "shared group script"
+                message += "in '%s'<br>   %s<br>" % (p, e)
             log_win.message_set(message, title = "Script Error",
-                                subtitle = "Could Not Compile, Got Fix Your Code")
+                                subtitle = "Could not build Embryo script.")
             log_win.open()
         if not self.e.filename:
             return self.save_as()
