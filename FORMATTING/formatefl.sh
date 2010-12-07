@@ -1,34 +1,32 @@
 #!/bin/bash
 DIR="$1"
 SCRIPTDIR="$0"
-PREFIX="$HOME/.uncrustify"
+PREFIX="$HOME/.ecrustify"
 
-if which uncrustify &> /dev/null ;then
-  UNC="$(which uncrustify)"
+if which ecrustify &> /dev/null ;then
+  UNC="$(which ecrustify)"
   VER=$($UNC --version | awk '{printf("%s\n", $2);}')
-  [[ "$VER" = "0.56" ]] || UNC="$PREFIX/bin/uncrustify"
+  [[ "$VER" = "0.56" ]] || UNC="$PREFIX/bin/ecrustify"
 else
-  UNC="$PREFIX/bin/uncrustify"
+  UNC="$PREFIX/bin/ecrustify"
 fi
 if [[ -z "$DIR" ]]; then
   echo "==================================================================="
-  echo " Checking if uncrustify installed already and is the right version"
+  echo " Checking if ecrustify installed already and is the right version"
   echo "==================================================================="
   VER=$($UNC --version | awk '{printf("%s\n", $2);}')
   if [[ "$VER" != "0.56" ]]; then
     echo "==================================================================="
-    echo " Not there or wrong version. Need to install it in ~/.uncrustify"
+    echo " Not there or wrong version. Need to install it in ~/.ecrustify"
     echo " Doing that now."
     echo "==================================================================="
     pushd $(dirname $SCRIPTDIR)
-    tar zxf uncrustify-0.56.tar.gz
-    pushd uncrustify-0.56
+    pushd ecrustify
       ./configure --prefix=$PREFIX
       make
       make install
     popd
-    rm -rf uncrustify-0.56
-    ln -sf $PWD/efl_uncrustify.cfg $HOME/.uncrustify.cfg
+    ln -sf $PWD/ecrustify.cfg $HOME/.ecrustify.cfg
     popd
   fi
   echo "==================================================================="
@@ -41,11 +39,22 @@ echo "==================================================================="
 echo " Uncrustifying your source to match EFL programming guidelines for"
 echo " formatting etc."
 echo "==================================================================="
-FMT1="true"
+function funcnewlines ()
+{
+  T="/tmp/tmpfl"
+  X="$1"
+  while [ -n "$X" ]; do
+    shift
+    echo "Fixing function newlines in $X..."
+    sed -r 's/^([a-zA-Z].*\*?) ([a-z][a-zA-Z0-9_]*\()/\1\n\2/' < $X > $T
+    cp $T $X
+    rm $T
+    X="$1"
+  done
+}
+FMT1="funcnewlines"
 FMT2="$UNC --no-backup --replace -l C"
 FMT3="$UNC --no-backup --replace -l CPP"
-#FMT2="indent -kr"
-#FMT3="indent -kr"
 F=$(find $1 -name '*.[chx]' -print)
 if [[ -n "$F" ]]; then $FMT1 $F; $FMT2 $F; fi
 F=$(find $1 -name '*.h.in' -print)
