@@ -328,3 +328,20 @@ cdef class EdjeEdit(edje.c_edje.Edje): # [object PyEdjeEdit, type PyEdjeEdit_Typ
 
     def script_compile(self):
         return bool(edje_edit_script_compile(self.obj))
+
+    property script_errors:
+        def __get__(self):
+            cdef const_Eina_List lst
+            cdef Edje_Edit_Script_Error *se
+            ret = []
+            lst = edje_edit_script_error_list_get(self.obj)
+            while lst:
+                se = <Edje_Edit_Script_Error*>lst.data
+                if se.program_name != NULL:
+                    pr = se.program_name
+                else:
+                    pr = ''
+                err = (pr, se.error_str)
+                ret.append(err)
+                lst = lst.next
+            return ret

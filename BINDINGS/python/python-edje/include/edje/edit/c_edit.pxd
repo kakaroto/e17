@@ -22,6 +22,7 @@ import edje.c_edje
 
 cdef extern from *:
     ctypedef char* const_char_ptr "const char *"
+    ctypedef evas.c_evas.Eina_List* const_Eina_List "const Eina_List *"
 
 cdef extern from "Edje_Edit.h":
     ####################################################################
@@ -36,6 +37,10 @@ cdef extern from "Edje_Edit.h":
     ####################################################################
     # Structures
     #
+    ctypedef struct Edje_Edit_Script_Error:
+        const_char_ptr program_name
+        int line
+        const_char_ptr error_str
 
 
     ####################################################################
@@ -329,6 +334,7 @@ cdef extern from "Edje_Edit.h":
     char* edje_edit_script_program_get(evas.c_evas.Evas_Object *obj, const_char_ptr prog)
     void  edje_edit_script_program_set(evas.c_evas.Evas_Object *obj, const_char_ptr prog, const_char_ptr code)
     evas.c_evas.Eina_Bool edje_edit_script_compile(evas.c_evas.Evas_Object *obj)
+    const_Eina_List edje_edit_script_error_list_get(evas.c_evas.Evas_Object *obj)
 
 
 cdef public class EdjeEdit(edje.c_edje.Edje) [object PyEdjeEdit, type PyEdjeEdit_Type]:
