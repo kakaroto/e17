@@ -104,9 +104,7 @@ AC_ARG_ENABLE([xml],
 
 if test "x${want_xml}" != "xno" ; then
    XML_REQUIRES="libxml-2.0 >= 2.6.20"
-   PKG_CHECK_MODULES(XML, [$XML_REQUIRES],
-     AC_DEFINE([HAVE_XML], [1], [xml support is enabled]),[]
-   )
+   PKG_CHECK_MODULES(XML, [$XML_REQUIRES],AC_DEFINE([HAVE_XML], [1], [xml support is enabled]),[])
 fi
 AM_CONDITIONAL([HAVE_XML], [test -n "$XML_LIBS"])
 AC_SUBST(EINA_REQUIRES)
