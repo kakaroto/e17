@@ -1,13 +1,9 @@
 
 images
 {
+   image: "icon_hdd.png" COMP;
    image: "eject.png" COMP;
    image: "eject_bg.png" COMP;
-   image: "icon_hdd.png" COMP;
-   image: "icon_ipod.png" COMP;
-   image: "icon_sdmmc.png" COMP;
-   image: "icon_ms.png" COMP;
-   image: "icon_psp.png" COMP;
    image: "tag_ext3.png" COMP;
    image: "tag_fat.png" COMP;
    image: "tag_hfs.png" COMP;
@@ -47,24 +43,6 @@ collections
          }
       }
    }
-/****************************************************/
-/**  VOLUMES ICON  **********************************/
-/****************************************************/
-   group { name: "modules/places/icon/generic";
-      parts {
-         part { name: "image";
-            mouse_events: 0;
-            type: IMAGE;
-            description { state: "default" 0.0;
-               image.normal: "icon_hdd.png";
-            }
-         }
-      }
-   }
-   ICONS("ipod");
-   ICONS("sdmmc");
-   ICONS("ms");
-   ICONS("psp");
 /****************************************************/
 /**  GADGET VOLUME  *********************************/
 /****************************************************/

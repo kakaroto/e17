@@ -117,7 +117,6 @@ _places_volume_sort_cb(const void *d1, const void *d2)
    return strcmp(v1->label, v2->label);
 }
 
-
 void
 _places_custom_volume(Evas_Object *box, const char *label, const char *icon, const char *uri)
 {
@@ -170,8 +169,10 @@ void
 places_fill_box(Evas_Object *box)
 {
    Eina_List *l;
-   int min_w, min_h, max_w, max_h;
+   int min_w, min_h, max_w, max_h, found;
    Evas_Object *o, *sep, *icon;
+   char *f1, *f2, *f3;
+   char buf[128];
 
    places_empty_box(box);
 
@@ -194,7 +195,7 @@ places_fill_box(Evas_Object *box)
 
         if (!vol->valid) continue;
 
-        /* volume object */
+        //volume object
         o = edje_object_add(evas_object_evas_get(box));
         edje_object_file_set(o, theme_file, "modules/places/main");
         vol->obj = o;
@@ -213,20 +214,60 @@ places_fill_box(Evas_Object *box)
         //set free label e gauge
         _places_update_size(o, vol);
 
-        //choose icon
-        vol->icon = "e/icons/drive-harddisk";
+        //choose the right icon
+        icon = e_icon_add(evas_object_evas_get(box));
+        f1 = f2 = f3 = NULL;
+        /* optical discs */
         if (!strcmp(vol->drive_type, "cdrom"))
-          vol->icon = "e/icons/drive-optical";
-        else if (!strcmp(vol->model, "\"PSP\" MS"))
-          vol->icon = "modules/places/icon/psp";
-        else if (!strcmp(vol->drive_type, "sd_mmc"))
-          vol->icon = "modules/places/icon/sdmmc";
-        else if (!strcmp(vol->drive_type, "memory_stick"))
-          vol->icon = "modules/places/icon/ms";
+          {
+             f1 = "drive"; f2 = "optical";  // OR media-optical ??
+          }
+        /* flash cards */
+        else if (!strcmp(vol->drive_type, "sd_mmc") ||
+                 !strcmp(vol->model, "SD/MMC"))
+          {
+             f1 = "media"; f2 = "flash"; f3 = "sdmmc"; // NOTE sd-mmc in Oxigen :(
+          }
+        else if (!strcmp(vol->drive_type, "memory_stick") ||
+                 !strcmp(vol->model, "MS/MS-Pro"))
+          {
+             f1 = "media"; f2 = "flash"; f3 = "ms"; // NOTE memory-stick in Oxigen :(
+          }
+        /* iPods */
         else if (!strcmp(vol->model, "iPod"))
-          vol->icon = "modules/places/icon/ipod";
+          {
+             f1 = "multimedia-player"; f2 = "apple"; f3 = "ipod";
+          }
+        /* generic usb drives */
         else if (!strcmp(vol->bus, "usb") && !strcmp(vol->drive_type, "disk"))
-          vol->icon = "e/icons/drive-removable-media";
+          {
+             f1 = "drive"; f2 = "removable-media"; f3 = "usb";
+          }
+
+        // search the icon, following freedesktop fallback system
+        found = 0;
+        if (f1 && f2 && f3)
+          {
+             snprintf(buf, sizeof(buf), "%s-%s-%s", f1, f2, f3);
+             found = e_util_icon_theme_set(icon, buf);
+          }
+        if (!found && f1 && f2)
+          {
+             snprintf(buf, sizeof(buf), "%s-%s", f1, f2);
+             found = e_util_icon_theme_set(icon, buf);
+          }
+        if (!found)
+          {
+             snprintf(buf, sizeof(buf), "drive-harddisk");
+             found = e_util_icon_theme_set(icon, buf);
+          }
+        if (found)
+          {
+             edje_object_part_swallow(o, "icon", icon);
+             vol->icon = eina_stringshare_add(buf);
+          }
+        else evas_object_del(icon);
+
 
         //set partition type tag
         if (!strcmp(vol->fstype, "ext2") || !strcmp(vol->fstype, "ext3") ||
@@ -239,16 +280,6 @@ places_fill_box(Evas_Object *box)
           edje_object_signal_emit(o, "icon,tag,hfs", "places");
         else if (!strcmp(vol->fstype, "udf"))
           edje_object_signal_emit(o, "icon,tag,dvd", "places");
-
-        //set icon
-        icon = edje_object_add(evas_object_evas_get(box));
-        if (strncmp(vol->icon, "e/", 2))
-          edje_object_file_set(icon, theme_file, vol->icon);
-        else
-          edje_object_file_set(icon,
-                               e_theme_edje_file_get("base/theme/fileman",
-                                                     vol->icon), vol->icon);
-        edje_object_part_swallow(o, "icon", icon);
 
         //set mount/eject icon
         if (vol->requires_eject || (vol->mounted && strcmp(vol->mount_point, "/")) ||
@@ -441,14 +472,8 @@ places_generate_menu(void *data, E_Menu *em)
           e_menu_item_label_set(mi, ecore_file_file_get(vol->mount_point));
 
         if (vol->icon)
-          {
-             if (strncmp(vol->icon, "e/", 2))
-               e_menu_item_icon_edje_set(mi, theme_file, vol->icon);
-             else
-               e_menu_item_icon_edje_set(mi,
-                                    e_theme_edje_file_get("base/theme/fileman",
-                                                          vol->icon), vol->icon);
-          }
+          e_util_menu_item_theme_icon_set(mi, vol->icon);
+
         e_menu_item_callback_set(mi, places_menu_click_cb, (void*)vol);
         volumes_visible = 1;
      }
@@ -550,15 +575,16 @@ _places_volume_del(Volume *v)
 {
    e_dbus_signal_handler_del(conn, v->sh_prop);
    volumes = eina_list_remove(volumes, v);
-   eina_stringshare_del(v->udi);
-   eina_stringshare_del(v->label);
-   eina_stringshare_del(v->mount_point);
-   eina_stringshare_del(v->fstype);
-   eina_stringshare_del(v->bus);
-   eina_stringshare_del(v->drive_type);
-   eina_stringshare_del(v->model);
-   eina_stringshare_del(v->vendor);
-   eina_stringshare_del(v->serial);
+   if (v->udi)         eina_stringshare_del(v->udi);
+   if (v->label)       eina_stringshare_del(v->label);
+   if (v->icon)        eina_stringshare_del(v->icon);
+   if (v->mount_point) eina_stringshare_del(v->mount_point);
+   if (v->fstype)      eina_stringshare_del(v->fstype);
+   if (v->bus)         eina_stringshare_del(v->bus);
+   if (v->drive_type)  eina_stringshare_del(v->drive_type);
+   if (v->model)       eina_stringshare_del(v->model);
+   if (v->vendor)      eina_stringshare_del(v->vendor);
+   if (v->serial)      eina_stringshare_del(v->serial);
    free(v);
 }
 
@@ -998,7 +1024,7 @@ _places_storage_properties_cb(void *data, void *reply_data, DBusError *error)
    //~ s->icon.drive = e_hal_property_string_get(ret, "storage.icon.drive", &err);
    //~ s->icon.volume = e_hal_property_string_get(ret, "storage.icon.volume", &err);
 
-   //_places_print_volume(v);  //Use this for debug
+   //~ _places_print_volume(v);  //Use this for debug
    v->valid = 1;
 
    if (v->to_mount && !v->mounted)
