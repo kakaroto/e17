@@ -288,7 +288,7 @@ class FontSelectionWizard(FileSelectionWizard):
             #if local is True, we'll get fonts from Edje
             #if local is False, we'll get fonts from System
             if local:
-                message = "Edje Fonts"
+                message = "Embedded Fonts"
                 self._edje_fonts = self._file_list_cb(local)
                 self._files += self._edje_fonts
             else:
@@ -312,7 +312,7 @@ class FontSelectionWizard(FileSelectionWizard):
                                             icon_get_func=None,
                                             state_get_func=None)
 
-        if item_data == "Edje Fonts":
+        if item_data == "Embedded Fonts":
             self._files = self._edje_fonts
         else:
             self._files = self._system_fonts

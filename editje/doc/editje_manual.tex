@@ -52,7 +52,7 @@ pictured in figure \ref{fig:new_file}.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.87\textwidth]{images/new_file.png}
-  \caption{``New file'' group main}
+  \caption{A new file and its group ``main''}
   \label{fig:new_file}
 \end{figure}
 
@@ -93,17 +93,20 @@ Finally, there's the button \GUIButton{``New''}, found in this
 dialog's first page. As you may imagine, it's going to lead you to a
 third page, asking for a name to the group to be created. From there,
 you may desist and go back one page or, if sure, create and start
-editing the fresh new group. This group will also be 500x500 sized and
-have no parts.
+editing the fresh new group. This group will also be 500$\times$500
+sized and have no parts.
 
 Finally, there is a third way of invoking Editje, which is:
 
 \begin{verbatim}
-editje-bin <filename>:<groupname>
+editje-bin <filename> <groupname>
 \end{verbatim}
 
 This is a shortcut to have it opened directly on the editing window,
 with the group named ``\texttt{groupname}'' selected for edition.
+
+Enter ``\texttt{editje-bin -h}'' in the command line for a thorough
+explanation of the the editor's usage.
 
 \section{Editje's Window}
 
@@ -125,7 +128,14 @@ them:
 
 \begin{description}
 \item[1 -- Actions on file and group] The first action,
-  \GUIIcon{``Open''}, will show the screen picture in \ref{fig:open_file}.
+  \GUIIcon{``New''}, will open a new Editje window, editing a fresh
+  new file, still residing in memory only. To the current date, this
+  new file starts with just one group, named ``main'', with no parts
+  and with a default size of 500$\times$500 pixels. Group templates
+  will come as an option to start new files, shortly.
+
+ The second action, \GUIIcon{``Open''}, will show the screen picture
+ in \ref{fig:open_file}.
   \begin{figure}[h!]
     \centering
     \includegraphics[width=0.87\textwidth]{images/open_file.png}
@@ -139,32 +149,27 @@ them:
   \GUICheckbox{``filter extensions''} checkbox will only list files
   whose extension match \texttt{.edc} or \texttt{.edj}.
 
-  %FIXME: the fscking \times, instead of 'x' (not working)
   If a (valid) file on the list on the right is selected, you may click
   the \GUIButton{``Ok''} button and Editje will open it and lead you to
-  its main window. The \GUIButton{``New''} button will ask you for a
-  name to a \emph{new} file to work on. Just give it a name and hit
-  \GUIButton{``Ok''} to start editing it. To the current date, this new
-  file starts with just one group, named ``main'', with no parts and
-  with a default size of 500x500 pixels. Group templates will come as an
-  option to start new files, shortly.
+  its main window.
 
   When you select the file to operate on, you'll get \emph{another}
-  independent instance of a main window with an opened file. It's
+  independent instance of a main window with an opened file. In both
+  this case and the \GUIIcon{``New''} button one, the new window is
   \emph{not} another instance of the editor, though, and the process
   will only finish when the last editor's window is closed.
 
-  The second action, \GUIIcon{``Save''}, naturally tells the editor to
-  save back the modifications on the file under edition.
-  If you are editing new file, the save action
-  \GUIIcon{``Save''}, will show the screen picture in \ref{fig:save_file}.
+  The third action, \GUIIcon{``Save''}, naturally tells the editor to
+  save back the modifications on the file under edition. If you are
+  editing a new file, the action will lead you to the dialog depicted
+  in figure \ref{fig:save_file}.
   \begin{figure}[h!]
     \centering
     \includegraphics[width=0.87\textwidth]{images/save_file.png}
     \caption{``Save file'' dialog}
     \label{fig:save_file}
   \end{figure}
-  If the file being edited is a already existing opened file, as said
+  If the file being edited is an already existing file, as said
   before, they get saved in the same format they were opened with, be
   it \texttt{.edc} or \texttt{.edj}, and no dialog is shown.
 
@@ -175,8 +180,6 @@ them:
   this stage it \emph{won't} ask if you want to save the modifications
   on the group being left, so make sure you have them saved before
   switching groups.
-
-% undo/redo
 
   The next two actions do what is expected: \GUIIcon{``Undo''} and
   \GUIIcon{``Redo''} actions you took while editing your
@@ -270,10 +273,10 @@ be described better on section \ref{sec:part_editing}.
   lists all the parts composing the group being edited and has also
   some actions on them. These actions will be described better later
   in the document. On the bottom of this area, one sees the \emph{list
-    of available widgets/parts}. From this place, you'll see all types
-  of GUI elements Editje supports. Interaction with this list is one
-  of the ways of telling the editor to add new widgets to the group
-  under edition.
+    of available widgets/parts to populate groups}. From this place,
+  you'll see all types of GUI elements Editje supports. Interaction
+  with this list is one of the ways of telling the editor to add new
+  widgets to the group under edition.
 
 \end{description}
 
@@ -307,9 +310,10 @@ wish\footnote{Editje will complain only if that name belongs to
   another part already present on the group under edition.}. The
 ``External Widget'' type is special: it's a meta type which will let
 you select objects from external modules (exporting edje objects) as
-parts of your interface. Currently, the only module supported is
-Elementary, a widget library which has some of its widgets with
-properties externalized to edje-edition.
+parts of your interface. Currently, the only two modules supported are
+\emph{Elementary}, a widget library which has some of its widgets with
+properties externalized to edje-edition, and \emph{Emotion}, which
+provides an element for media playback.
 
 Then, if you click over \GUIButton{``External Widget''}, the bottom
 part of the dialog box will show two lists side-by-side. The left one
@@ -343,11 +347,10 @@ you'll see it populated with our new part.
   \label{fig:new_rectangle}
 \end{figure}
 
-%FIXME: the fscking \times, instead of 'x' (not working)
 The region with number 4 is the actual new rectangle object. By
 default, Editje will put it centered in the group's region, with half
-of its size and colored with transparent green, as seen on region 7,
-the ``part state'' collapsable property group (check out the
+of its size and colored with solid white, as seen on region 7, the
+``part state'' collapsable property group (check out the
 \GUILabel{``current''} and \GUILabel{``align''} labels). Note that all
 the collapsable property groups are expanded on figure
 \ref{fig:new_rectangle}.
@@ -356,7 +359,9 @@ Note, also, the eight black squares over \texttt{Rectangle01}'s
 corners. They, together with the fact that \texttt{Rectangle01} is
 highlighted in the parts list, mean that that specific object is
 \emph{selected} in Editje. These squares are also where the user is
-going to click to visually \emph{resize} the selected object.
+going to click to visually \emph{resize} the selected
+object\footnote{Note how the mouse cursor changes while over those
+  squares, indicating this action.}.
 
 The four squares on the \emph{middle of the part's edges}, when
 clicked and dragged, will grow or shrink it on the perpendicular axis
@@ -589,6 +594,9 @@ figure \ref{fig:overlap_white}.
   \label{fig:overlap_clipped}
 \end{figure}
 
+%TODO: document ``scale'' property, take new screenshot involving the
+%part properties collapsable group
+
 To finish the ``part properties'' collapsable group, we have the
 \GUIEditable{``mouse events''} and \GUIEditable{``repeat events''}
 properties. These are true/false ones which will set the same
@@ -640,7 +648,7 @@ being resized.
   \label{fig:rectangle_rel1rel2}
 \end{figure}
 
-Roughly, properties seem inside regions 3, 4 and 5 have the exact
+Roughly, properties seen inside regions 3, 4 and 5 have the exact
 meaning of the homonymous building blocks found in \texttt{.edc}
 files.  Their meanings should be straightforward to readers with a
 minimal prior knowledge of Edje Data Collections. If you're not
@@ -650,7 +658,7 @@ the ones willing to skip it, we quote that text's part on object
 relative positioning on appendix \ref{app:edje_pos}.
 
 Figures \ref{fig:visibility_false} to \ref{fig:rel_drag} illustrate
-some effects one gets by modifying some of the properties seem on
+some effects one gets by modifying some of the properties seen on
 figure \ref{fig:part_state_group}.
 
 \begin{figure}[h!]
@@ -720,7 +728,7 @@ the name of the just created state displayed. Customize its properties
 as you wish, then.
 
 Starting from the state where we have our default
-``\texttt{Rectangle01}'' (figure \ref{fig:new_rectangle01}), let's
+``\texttt{Rectangle01}'' (figure \ref{fig:new_rectangle}), let's
 create another state, for which we change the red channel of the
 part's color to 255, making it transparent yellow (see figure
 \ref{fig:new_state}).
@@ -732,12 +740,19 @@ part's color to 255, making it transparent yellow (see figure
   \label{fig:new_state}
 \end{figure}
 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.28\textwidth]{images/state_actions.png}
+  \caption{State actions}
+  \label{fig:state_actions}
+\end{figure}
+
 Then, click on the state selection icon again and select, in the list,
 the state ``\texttt{default 0.0}''. You'll be presented with the
 dialog seen on figure \ref{fig:state_actions}. The \GUIButton{``Change
   to''} button, naturally, is the way to switch to the selected state.
 \GUIButton{``Reset to''} will copy all the properties of the selected
-state into the same ones of the \emph{current} one. If you choose to
+state into the same ones of the \emph{current} state. If you choose to
 click on it from the example we suggested for this section, you'll see
 state ``\texttt{default01 0.0}'' have its color property reset to
 transparent green. Finally, \GUIButton{``Delete''} will remove the
@@ -788,13 +803,45 @@ text parts, called \GUILabel{``text''} (region 2 in figure
 
 \begin{description}
 \item[\GUIEditable{``text''}:] The actual text to display.
-\item[\GUIEditable{``font''}:] The font to render the text from.
+\item[\GUIEditable{``font''}:] The font to render the text from. You
+  may type in directly the font family's name in the entry in the
+  left, or choose it through a dialog by clicking over the ``Aa''
+  icon. The latter will present you the \emph{font addition wizard},
+  whose screen is seen in figure \ref{fig:font_dialog_choose}. There
+  will be two lists:
+  \begin{description}
+    \item[Embedded fonts] Fonts which are, naturally, embedded in the
+      file under edition.
+    \item[System Fonts] Fonts made available by your operating system.
+  \end{description}
+  If you select any item from either list, you'll get to a \emph{font
+    preview} page in the wizard, depicted in figure
+  \ref{fig:font_preview}. One can only delete embedded fonts,
+  naturally, when they will be taken away completely from the file. To
+  select the font in question to the text part you called the dialog
+  from, hit the \GUIButton{``Use''} button. The \GUIButton{``Add
+    New''} button one sees on the previous page leads you to a file
+  choose dialog similar to the ones we've seen so far in Editje. After
+  you choose a file, that font will be copied into the file under
+  edition itself.
 
-%TODO: introduce the fonts wizard, when it's complete
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\textwidth]{images/font_selection.png}
+  \caption{Font selection}
+  \label{fig:font_dialog_choose}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\textwidth]{images/font_preview.png}
+  \caption{Font preview}
+  \label{fig:font_preview}
+\end{figure}
 
 \item[\GUIEditable{``size''}:] The text size.
 \item[\GUIEditable{``fit''}:] When any of these entries is set to
-  ``True'', Editje will resize the text, so that it to fits in it's
+  ``True'', Editje will resize the text, so that it fits in its
   container, in the respective axis (the \GUIEditable{``size''} is
   ignored, if this property is enabled). Both are disabled by default.
 \item[\GUIEditable{``align''}:] Changes the alignment of the actual
@@ -886,24 +933,25 @@ practically the same as of rectangle parts.
 
 Group parts also aggregate child edje objects, but in a ``hardcoded''
 manner: one does it while declaring an interface and that ``hole'''s
-contents \emph{can't} be swapped at run time. Editje, currently,
-displays nicely group parts it finds inside the files it was opened
-with, but its management capabilities on group parts is minimal (just
-moving, resizing, etc) and it won't create \emph{new} group parts.
+contents \emph{can't} be swapped at run time. When you insert a new
+group part, just type the name of the inner group you want to put
+inside at the \GUILabel{``source''} property, seen at part properties
+for group parts.
 
 \subsection{External Widgets: Elementary}
 %FIXME: explain briefly what each kind of widget is/does!
 
-By now, Elementary is the only external module whose widgets have been
-made available to edje-edition as common part objects. Region 6 of
-figure \ref{fig:new_rectangle}, the list of available widgets/parts,
-is a quick way of adding these widgets into the group. The ``Edje''
-entry of that list will lead to a list of the ``common'' UI elements
-one gets -- the ones implemented directly on the evas or edje
-libraries. The ``Elementary'' one, naturally, will list (some) widgets
-provided by that library (see figure \ref{fig:elm_widgets}). Each list
-entry has an icon illustrating the respective widget. Clicking over
-one of them will add that kind of object to the group under edition.
+Elementary, as said before, is one external module whose widgets have
+been made available to edje-edition as common part objects. Region 6
+of figure \ref{fig:new_rectangle}, the list of available
+widgets/parts, is a quick way of adding these widgets into the
+group. The ``Edje'' entry of that list will lead to a list of the
+``common'' UI elements one gets -- the ones implemented directly in
+the Evas or Edje libraries. The ``Elementary'' one, naturally, will
+list (some) widgets provided by that library (see figure
+\ref{fig:elm_widgets}). Each list entry has an icon illustrating the
+respective widget. Clicking over one of them will add that kind of
+object to the group under edition.
 
 \begin{figure}[h!]
   \centering
@@ -913,9 +961,9 @@ one of them will add that kind of object to the group under edition.
 \end{figure}
 
 In what follows, we document the specific properties one finds for
-each of those widget parts. All of them have, as extra tabs in the
-property collapsable groups, one (and only one) common tab, which is
-named \GUILabel{``external''}.
+\emph{some} of those widget parts. All of them have, as extra tabs in
+the property collapsable groups, one (and only one) common tab, which
+is named \GUILabel{``external''}.
 
 \subsubsection{Button}
 
@@ -931,9 +979,12 @@ them:
   \item[\GUIEditable{``icon'':}] This is the icon object to be
     displayed over the button. Elementary's standard set of icons is
     supported and using them is accomplished by entering their name
-    strings in this entry. In figure \ref{fig:new_button}, we have
-    used the ``close'' one, which is that ``X''-like image.
-    %TODO: group parts supported as icon?
+    strings in this entry. Freedesktop.org (FDO) icon names are also
+    valid and the respective image lookup will take place in your
+    system. In figure \ref{fig:new_button}, we have used the ``close''
+    one, which is that ``X''-like image. Finally, other groups present
+    in the file under edition can have their names declared in this
+    property's entry and one gets it bound to the button's icon.
 \end{description}
 
 The part's type has also been highlighted: note that all external
@@ -959,7 +1010,6 @@ being them:
   \item[\GUIEditable{``icon''}:] Has also the meaning you are familiar
     with. In figure \ref{fig:new_checkbox}, we have used the ``file''
     one.
-    %TODO: group parts supported as icon?
   \item[\GUIEditable{``state''}:] This is a boolean property telling
     whether the checkbox should be at checked or unchecked
     state. Clicking on it would draw or erase the tip mark inside the
@@ -1008,8 +1058,6 @@ being them:
 \end{figure}
 
 \subsubsection{Text Entry}
-%FIXME: "text:" property was killed from editje. not updating 'till it gets
-%fixed
 
 Figure \ref{fig:new_entry} shows a recently created text entry
 part. The part's specific properties are highlighted on the figure,
