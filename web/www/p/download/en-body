@@ -189,7 +189,7 @@
      0.16.999.54504 </em></p><p>
      Enlightenment, the window manager. </p><p align=right><?php blinkdl("i/dl.png", 
      "DOWNLOAD ENLIGHTENMENT",
-     "http://download.enlightenment.org/snapshots/2010-10-03/enlightenment-0.16.999.54504.tar.gz"
+     "http://download.enlightenment.org/snapshots/2010-11-12/enlightenment-0.16.999.54504.tar.gz"
    );?></p></div>
    <?php frame2();?>
    
@@ -199,7 +199,7 @@
      0.7.0.54504 </em></p><p>
      Elementary, the widget set.. </p><p align=right><?php blinkdl("i/dl.png", 
      "DOWNLOAD ELEMENTARY",
-     "http://download.enlightenment.org/snapshots/2010-10-03/elementary-0.7.0.54504.tar.gz"
+     "http://download.enlightenment.org/snapshots/2010-11-12/elementary-0.7.0.54504.tar.gz"
    );?></p></div>
    <?php frame2();?>
    
