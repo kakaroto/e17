@@ -387,7 +387,7 @@ collections {
          }
          part { name: "elm.text.clipper";
             type: RECT;
-            description {
+            description { state: "default" 0.0;
                color: 255 255 255 255;
             }
          }

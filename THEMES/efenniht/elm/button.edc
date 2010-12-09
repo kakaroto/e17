@@ -32,7 +32,6 @@ collections {
          part { name: "button_left";
             mouse_events: 0;
             description { state: "default" 0.0;
-               state: "default" 0.0;
                rel1 {
                   relative: 0.0 0.0;
                   offset: 2 0;
@@ -47,7 +46,6 @@ collections {
          part { name: "button_right";
             mouse_events: 0;
             description { state: "default" 0.0;
-               state: "default" 0.0;
                rel1 {
                   relative: 1.0 0.0;
                   offset: -3 0;
@@ -382,13 +380,11 @@ collections {
 	    }
 	    description { state: "clicked" 0.0;
 	       inherit: "default" 0.0;
-          inherit: "visible" 0.0;
 	       image.normal: "bt_base1.png";
                image.middle: SOLID;
 	    }
 	    description { state: "disabled" 0.0;
 	       inherit:  "default" 0.0;
-          inherit: "visible" 0.0;
 	       image {
 		  normal: "bt_dis_base.png";
 		  border: 4 4 4 4;
@@ -479,7 +475,7 @@ collections {
 	    }
 	    description { state: "disabled" 0.0;
 	       inherit:  "default" 0.0;
-          inherit:  "visible" 0.0;
+               color: 255 255 255 255;
 	       image {
 		  normal: "bt_dis_hilight.png";
 		  border: 4 4 4 0;
@@ -742,7 +738,7 @@ collections {
          part {
             name: "end";
             type: RECT;
-            description {
+            description { state: "default" 0.0;
                rel1 {
                   to_x: "elm.text";
                   relative: 1.0 0.0;
