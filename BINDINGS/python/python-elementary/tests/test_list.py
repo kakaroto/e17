@@ -168,7 +168,7 @@ def list2_clicked(obj, it):
     li = elementary.List(win)
     li.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     li.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
-    li.horizontal_mode_set(elementary.ELM_LIST_LIMIT)
+    li.mode_set(elementary.ELM_LIST_LIMIT)
 
     ic = elementary.Icon(win)
     ic.file_set('images/logo_small.png')
@@ -263,7 +263,7 @@ def list3_clicked(obj, it):
     li = elementary.List(win)
     win.resize_object_add(li)
     li.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
-    li.horizontal_mode_set(elementary.ELM_LIST_COMPRESS)
+    li.mode_set(elementary.ELM_LIST_COMPRESS)
 
     ic = elementary.Icon(win)
     ic.file_set('images/logo_small.png')
