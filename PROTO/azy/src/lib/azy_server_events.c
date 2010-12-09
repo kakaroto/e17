@@ -527,6 +527,13 @@ _azy_server_client_send(Azy_Server_Client *client,
    EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_client_send(client->net->conn, content->buffer, content->length), error);
    INFO("Send [2/2] complete! %lli bytes queued for sending.", content->length);
    ecore_con_client_flush(client->net->conn);
+   /* http 1.0 requires that we disconnect after every request has been served */
+   if (client->net->http.version == 0)
+     {
+        INFO("Disconnecting for HTTP/1.0 compliance");
+        ecore_con_client_flush(client->net->conn);
+        ecore_con_client_del(client->net->conn);
+     }
 
 error:
    eina_strbuf_free(header);

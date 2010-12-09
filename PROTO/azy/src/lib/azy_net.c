@@ -36,7 +36,7 @@ azy_net_header_hash_(Eina_Hash            *hash __UNUSED__ ,
 /**
  * @brief Create a new #Azy_Net object
  * This function is used to create an object which will store/manipulate
- * all network-related information.
+ * all network-related information.  HTTP version defaults to 1.1.
  * @param conn Either an #Ecore_Con_Client or an #Ecore_Con_Server (NOT #NULL)
  * @return A new #Azy_Net object, or #NULL on failure/error
  */
@@ -50,6 +50,7 @@ azy_net_new(void *conn)
    net = calloc(1, sizeof(Azy_Net));
    EINA_SAFETY_ON_NULL_RETURN_VAL(net, NULL);
    net->conn = conn;
+   net->http.version = 1;
 
    AZY_MAGIC_SET(net, AZY_MAGIC_NET);
    return net;

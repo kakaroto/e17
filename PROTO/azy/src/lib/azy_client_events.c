@@ -41,6 +41,8 @@ static void _azy_client_handler_call_free(Azy_Client *client, Azy_Content *conte
              eina_hash_del_by_key(client->free_callbacks, &content->id);
           }
      }
+      /* http 1.0 requires that we disconnect after every response */
+   if (content->recv_net->http.version == 0) ecore_con_server_del(content->recv_net->conn);
    azy_content_free(content);
 }
 
