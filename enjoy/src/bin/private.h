@@ -91,12 +91,13 @@ void         list_freeze(Evas_Object *obj);
 void         list_thaw(Evas_Object *obj);
 Song        *list_song_nth_get(Evas_Object *obj, int32_t n);
 int32_t      list_song_selected_n_get(Evas_Object *obj);
-void         list_page_back(Evas_Object *obj);
-void         list_page_songs(Evas_Object *obj);
 
 const char  *page_title_get(const Evas_Object *obj);
 void         page_songs_exists_changed(Evas_Object *obj, Eina_Bool exists);
-
+void         page_back_show(Evas_Object *page);
+void         page_back_hide(Evas_Object *page);
+void         page_playing_show(Evas_Object *page);
+void         page_playing_hide(Evas_Object *page);
 
 Evas_Object *page_root_add(Evas_Object *parent);
 

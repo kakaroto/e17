@@ -297,48 +297,6 @@ _win_list_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
 }
 
 static void
-_win_title_changed(void *data, Evas_Object *obj __UNUSED__, void *event_info)
-{
-   Win *w = data;
-   edje_object_part_text_set(w->edje, "elm.text.title", event_info);
-}
-
-static void
-_win_back_show(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
-{
-   Win *w = data;
-   edje_object_signal_emit(w->edje, "elm,back,show", "elm");
-}
-
-static void
-_win_back_hide(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
-{
-   Win *w = data;
-   edje_object_signal_emit(w->edje, "elm,back,hide", "elm");
-}
-
-static void
-_win_playing_show(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
-{
-   Win *w = data;
-   edje_object_signal_emit(w->edje, "elm,next,show", "elm");
-}
-
-static void
-_win_playing_hide(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
-{
-   Win *w = data;
-   edje_object_signal_emit(w->edje, "elm,next,hide", "elm");
-}
-
-static void
-_win_action_back(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
-{
-   Win *w = data;
-   list_page_back(w->list);
-}
-
-static void
 _win_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Win *w = data;
@@ -433,13 +391,6 @@ _win_mode_nowplaying(void *data, Evas_Object *obj __UNUSED__, void *event_info _
    edje_object_signal_emit(w->edje, "elm,title,hide", "elm");
    elm_toolbar_item_state_set(w->action.nowplaying, w->action.playlist);
    elm_pager_content_promote(w->list, w->nowplaying);
-}
-
-static void
-_win_action_next(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
-{
-   Win *w = data;
-   list_page_songs(w->list);
 }
 
 static void
@@ -764,7 +715,6 @@ win_new(App *app)
    Evas_Coord iw = 320, ih = 240;
    char path[PATH_MAX];
    Evas_Object *nowplaying_edje;
-   Edje_External_Param param;
 
    memset(w, 0, sizeof(*w));
 
@@ -818,27 +768,13 @@ win_new(App *app)
    elm_win_resize_object_add(w->win, w->layout);
 
    if (!elm_layout_theme_set
-       (w->layout, "layout", "application", "toolbar-content-back-next"))
+       (w->layout, "layout", "application", "toolbar-content"))
      {
-        ERR("could not load style 'toolbar-content-back-next' from theme");
+        ERR("could not load style 'toolbar-content' from theme");
         goto error;
      }
 
    w->edje = elm_layout_edje_get(w->layout);
-   _win_playing_hide(w, NULL, NULL);
-   _win_back_hide(w, NULL, NULL);
-   edje_object_part_text_set(w->edje, "elm.text.next", "Playing");
-
-   param.type = EDJE_EXTERNAL_PARAM_TYPE_STRING;
-   param.name = "label";
-   param.s = "Playing";
-   edje_object_part_external_param_set (w->edje, "next", &param);
-
-   edje_object_signal_callback_add(w->edje, "elm,action,back", "",
-                                   _win_action_back, w);
-   edje_object_signal_callback_add(w->edje, "elm,action,next", "",
-                                   _win_action_next, w);
-
    w->toolbar = edje_object_part_external_object_get
      (w->edje, "elm.external.toolbar");
    if (!w->toolbar)
@@ -874,11 +810,6 @@ win_new(App *app)
      }
    elm_layout_content_set(w->layout, "elm.swallow.content", w->list);
    evas_object_smart_callback_add(w->list, "selected", _win_list_selected, w);
-   evas_object_smart_callback_add(w->list, "title_changed", _win_title_changed, w);
-   evas_object_smart_callback_add(w->list, "elm,back,hide", _win_back_hide, w);
-   evas_object_smart_callback_add(w->list, "elm,back,show", _win_back_show, w);
-   evas_object_smart_callback_add(w->list, "elm,playing,hide", _win_playing_hide, w);
-   evas_object_smart_callback_add(w->list, "elm,playing,show", _win_playing_show, w);
 
    w->nowplaying = nowplaying_add(w->layout);
    nowplaying_edje = elm_layout_edje_get(w->nowplaying);

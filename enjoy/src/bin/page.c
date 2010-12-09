@@ -109,8 +109,10 @@ typedef struct _Page_Class
 struct _Page
 {
    const Page_Class *cls;
+   Evas_Object *layout_list;
    Evas_Object *layout;
    Evas_Object *edje;
+   Evas_Object *edje_list;
    Evas_Object *list;
    Evas_Object *index;
    Evas_Object *parent;
@@ -238,12 +240,27 @@ _page_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
    free(page);
 }
 
+static void
+_page_action_back(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+{
+   Page *page = data;
+   evas_object_smart_callback_call(page->layout, "back", page->layout);
+}
+
+static void
+_page_action_next(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+{
+   Page *page = data;
+   evas_object_smart_callback_call(page->layout, "playing", page->layout);
+}
+
 static Evas_Object *
 _page_add(Evas_Object *parent, void *model, Eina_Iterator *it, const char *title, const Page_Class *cls)
 {
-   Evas_Object *obj;
+   Evas_Object *obj_list, *obj = NULL;
    Page *page;
    const char *s;
+   Edje_External_Param param;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
    EINA_SAFETY_ON_NULL_RETURN_VAL(cls, NULL);
@@ -257,11 +274,17 @@ _page_add(Evas_Object *parent, void *model, Eina_Iterator *it, const char *title
    DBG("creating page %s with key %s, item style %s",
        cls->name, cls->key, cls->item_cls->item_style);
 
+   obj_list = elm_layout_add(parent);
+   if (!obj_list)
+     {
+        eina_iterator_free(it);
+        return NULL;
+     }
    obj = elm_layout_add(parent);
    if (!obj)
      {
         eina_iterator_free(it);
-        return NULL;
+        goto error_layout;
      }
 
    page = calloc(1, sizeof(*page));
@@ -273,42 +296,64 @@ _page_add(Evas_Object *parent, void *model, Eina_Iterator *it, const char *title
      }
    evas_object_data_set(obj, "_enjoy_page", page);
    evas_object_data_set(obj, cls->key, page);
-   evas_object_event_callback_add(obj, EVAS_CALLBACK_DEL, _page_del, page);
-   page->layout = obj;
+   evas_object_event_callback_add(obj_list, EVAS_CALLBACK_DEL, _page_del, page);
+   page->layout_list = obj_list;
    page->model = model;
    page->iterator = it;
    page->cls = cls;
    page->parent = parent;
    page->od_to_list_item = NULL;
+   page->layout = obj;
 
-   if (!elm_layout_file_set(obj, PACKAGE_DATA_DIR "/default.edj", cls->layout))
+   if (!elm_layout_file_set(obj_list, PACKAGE_DATA_DIR "/default.edj", cls->layout))
      {
         CRITICAL("no theme for '%s' at %s",
                  cls->layout, PACKAGE_DATA_DIR "/default.edj");
         goto error;
      }
 
-   page->title = eina_stringshare_add(title);
-   page->edje = elm_layout_edje_get(obj);
+   if (!elm_layout_theme_set
+       (obj, "layout", "application", "content-back-next"))
+     {
+        CRITICAL("no theme for 'elm/layout/application/content-back-next'.");
+        goto error;
+     }
 
-   page->list = elm_genlist_add(obj);
+   page->title = eina_stringshare_add(title);
+   page->edje_list = elm_layout_edje_get(obj_list);
+
+   page->list = elm_genlist_add(obj_list);
    elm_genlist_bounce_set(page->list, EINA_FALSE, EINA_TRUE);
    elm_genlist_horizontal_mode_set(page->list, ELM_LIST_COMPRESS);
    elm_genlist_compress_mode_set(page->list, EINA_TRUE);
    elm_object_style_set(page->list, "enjoy");
 
-   s = edje_object_data_get(page->edje, "homogeneous");
+   s = edje_object_data_get(page->edje_list, "homogeneous");
    elm_genlist_homogeneous_set(page->list, s ? !!atoi(s) : EINA_FALSE);
 
-   elm_layout_content_set(obj, "ejy.swallow.list", page->list);
+   elm_layout_content_set(obj_list, "ejy.swallow.list", page->list);
 
-   if (edje_object_part_exists(page->edje, "ejy.swallow.index"))
+   if (edje_object_part_exists(page->edje_list, "ejy.swallow.index"))
      {
-        page->index = elm_index_add(obj);
+        page->index = elm_index_add(obj_list);
         evas_object_smart_callback_add
           (page->index, "delay,changed", _page_index_changed, page);
-        elm_layout_content_set(obj, "ejy.swallow.index", page->index);
+        elm_layout_content_set(obj_list, "ejy.swallow.index", page->index);
      }
+
+   page->edje = elm_layout_edje_get(page->layout);
+   elm_layout_content_set(page->layout, "elm.swallow.content", page->layout_list);
+   edje_object_part_text_set(page->edje,
+                             "elm.text.title", page->title);
+   edje_object_signal_callback_add(page->edje, "elm,action,back", "",
+                                   _page_action_back, page);
+   edje_object_signal_callback_add(page->edje, "elm,action,next", "",
+                                   _page_action_next, page);
+   param.type = EDJE_EXTERNAL_PARAM_TYPE_STRING;
+   param.name = "label";
+   param.s = "Playing";
+   edje_object_part_external_param_set (page->edje, "next", &param);
+
 
    page->container = eina_iterator_container_get(it);
    evas_object_data_set(page->list, "_enjoy_container", page->container);
@@ -324,8 +369,10 @@ _page_add(Evas_Object *parent, void *model, Eina_Iterator *it, const char *title
 
    return obj;
 
- error:
-   evas_object_del(obj); /* should delete everything */
+error:
+   evas_object_del(obj);
+error_layout:
+   evas_object_del(obj_list);
    return NULL;
 }
 
@@ -576,7 +623,7 @@ _song_album_cover_size_changed(void *data, Evas *e __UNUSED__, Evas_Object *part
 
    DBG("cover view changed size to %dx%d, query cover size %d", w, h, size);
    cover = cover_album_fetch(page->layout, page->container, page->model, size, NULL, NULL);
-   elm_layout_content_set(page->layout, "ejy.swallow.cover", cover);
+   elm_layout_content_set(page->layout_list, "ejy.swallow.cover", cover);
 }
 
 static Eina_Bool
@@ -584,35 +631,35 @@ _song_album_init(Page *page)
 {
    Album *album = page->model;
 
-   if (edje_object_part_exists(page->edje, "ejy.swallow.cover"))
+   if (edje_object_part_exists(page->edje_list, "ejy.swallow.cover"))
      {
         DB *db = _page_db_get(page->layout);
         Evas_Object *cover, *part;
         const char *s;
         int size = 0;
 
-        s = edje_object_data_get(page->edje, "cover_size");
+        s = edje_object_data_get(page->edje_list, "cover_size");
         if (s) size = atoi(s);
         if (size < 32) size = 32;
 
         cover = cover_album_fetch(page->layout, db, album, size, NULL, NULL);
-        elm_layout_content_set(page->layout, "ejy.swallow.cover", cover);
+        elm_layout_content_set(page->layout_list, "ejy.swallow.cover", cover);
 
         part = (Evas_Object *)
-          edje_object_part_object_get(page->edje, "ejy.swallow.cover");
+          edje_object_part_object_get(page->edje_list, "ejy.swallow.cover");
         evas_object_event_callback_add
           (part, EVAS_CALLBACK_RESIZE, _song_album_cover_size_changed, page);
      }
 
    if (album->name)
-     edje_object_part_text_set(page->edje, "ejy.text.album", album->name);
+     edje_object_part_text_set(page->edje_list, "ejy.text.album", album->name);
    else
-     edje_object_part_text_set(page->edje, "ejy.text.album", "");
+     edje_object_part_text_set(page->edje_list, "ejy.text.album", "");
 
    if (album->artist)
-     edje_object_part_text_set(page->edje, "ejy.text.artist", album->artist);
+     edje_object_part_text_set(page->edje_list, "ejy.text.artist", album->artist);
    else
-     edje_object_part_text_set(page->edje, "ejy.text.artist", "");
+     edje_object_part_text_set(page->edje_list, "ejy.text.artist", "");
 
    return EINA_TRUE;
 }
@@ -1273,4 +1320,32 @@ page_root_add(Evas_Object *parent)
    Eina_Iterator *it = _array_iterator_new
      (root_items, sizeof(Static_Item), ARRAY_SIZE(root_items));
    return _page_add(parent, NULL, it, "Enjoy your music!", &root_cls);
+}
+
+void
+page_back_show(Evas_Object *obj)
+{
+   PAGE_GET_OR_RETURN(page, obj);
+   edje_object_signal_emit(page->edje, "elm,back,show", "elm");
+}
+
+void
+page_back_hide(Evas_Object *obj)
+{
+   PAGE_GET_OR_RETURN(page, obj);
+   edje_object_signal_emit(page->edje, "elm,back,hide", "elm");
+}
+
+void
+page_playing_show(Evas_Object *obj)
+{
+   PAGE_GET_OR_RETURN(page, obj);
+   edje_object_signal_emit(page->edje, "elm,next,show", "elm");
+}
+
+void
+page_playing_hide(Evas_Object *obj)
+{
+   PAGE_GET_OR_RETURN(page, obj);
+   edje_object_signal_emit(page->edje, "elm,next,hide", "elm");
 }
