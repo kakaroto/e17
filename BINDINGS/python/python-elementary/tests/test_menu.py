@@ -45,12 +45,6 @@ def menu_populate_2(menu, item):
     menu_populate_3(menu, item2)
 
     menu.item_separator_add(item)
-    menu.item_separator_add(item)
-    menu.item_separator_add(item)
-    menu.item_separator_add(item)
-    menu.item_separator_add(item)
-    menu.item_separator_add(item)
-    menu.item_separator_add(item)
 
     item2 = menu.item_add(item, "menu 2", "refresh");
 
