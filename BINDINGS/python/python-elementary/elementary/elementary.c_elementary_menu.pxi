@@ -148,6 +148,8 @@ cdef class MenuItemSeparator:
         if parent:
             parent_obj = parent.obj
         self.obj = elm_menu_item_separator_add(menu.obj, parent_obj)
+        if not self.obj:
+            raise RuntimeError("Error creating separator")
 
         elm_menu_item_data_set(self.obj, <void*>self)
         Py_INCREF(self)
