@@ -1,3 +1,171 @@
+#define BUTTON_BACK(NAME, TITLE, CLIPPER)                            \
+         part { name: NAME;                                          \
+            type: EXTERNAL;                                          \
+            source: "elm/button";                                    \
+            clip_to: NAME"_clipper";                                 \
+            description { state: "default" 0.0;                      \
+               align: 0.0 0.0;                                       \
+               fixed: 1 1;                                           \
+               rel1 { to: TITLE;                                     \
+                  relative: 0.0 0.0;                                 \
+                  offset: 1 0;                                       \
+               }                                                     \
+               rel2 { to: TITLE;                                     \
+                  relative: 0.0 1.0;                                 \
+                  offset: 2 0;                                       \
+               }                                                     \
+               params.string: "label" "Back";                        \
+               params.string: "style" "back";                        \
+            }                                                        \
+            description { state: "hidden" 0.0;                       \
+               inherit: "default" 0.0;                               \
+               visible: 0;                                           \
+            }                                                        \
+         }                                                           \
+         part { name: NAME"_clipper";                                \
+            type: RECT;                                              \
+            clip_to: CLIPPER;                                        \
+            description {                                            \
+               state: "default" 0.0;                                 \
+               visible: 1;                                           \
+            }                                                        \
+            description {                                            \
+               state: "hidden" 0.0;                                  \
+               visible: 0;                                           \
+            }                                                        \
+         }                                                           \
+         programs {                                                  \
+            program {                                                \
+               signal: "mouse,clicked,1";                            \
+               source: NAME;                                         \
+               action: SIGNAL_EMIT "elm,action,back" "";             \
+            }                                                        \
+            program {                                                \
+               signal: "elm,"NAME",hide";                            \
+               source: "elm";                                        \
+               action: STATE_SET "hidden" 0.0;                       \
+               target: NAME;                                         \
+            }                                                        \
+            program {                                                \
+               signal: "elm,"NAME",show";                            \
+               source: "elm";                                        \
+               action: STATE_SET "default" 0.0;                      \
+               target: NAME;                                         \
+            }                                                        \
+         }                                                           \
+
+
+#define BUTTON_NEXT(NAME, TITLE, CLIPPER)                            \
+         part { name: NAME;                                          \
+            type: EXTERNAL;                                          \
+            source: "elm/button";                                    \
+            clip_to: NAME"_clipper";                                 \
+            description { state: "default" 0.0;                      \
+               align: 1.0 0.0;                                       \
+               fixed: 1 1;                                           \
+               rel1 { to_y: "title.bg";                              \
+                  relative: 1.0 0.0;                                 \
+                  offset: -2 1;                                      \
+               }                                                     \
+               rel2 { to_y: "title.bg";                              \
+                  relative: 1.0 1.0;                                 \
+                  offset: -1 -1;                                     \
+               }                                                     \
+               params.string: "label" "Next";                        \
+               params.string: "style" "next";                        \
+           }                                                         \
+         }                                                           \
+         part { name: NAME"_clipper";                                \
+            type: RECT;                                              \
+            clip_to: "title_clipper";                                \
+            description {                                            \
+               state: "default" 0.0;                                 \
+               visible: 1;                                           \
+            }                                                        \
+            description {                                            \
+               state: "hidden" 0.0;                                  \
+               visible: 0;                                           \
+            }                                                        \
+         }                                                           \
+         programs {                                                  \
+            program {                                                \
+               signal: "clicked";                                    \
+               source: "next";                                       \
+               action: SIGNAL_EMIT "elm,action,next" "";             \
+            }                                                        \
+            program {                                                \
+               signal: "elm,next,hide";                              \
+               source: "elm";                                        \
+               action: STATE_SET "hidden" 0.0;                       \
+               target: "next_clipper";                               \
+            }                                                        \
+            program {                                                \
+               signal: "elm,next,show";                              \
+               source: "elm";                                        \
+               action: STATE_SET "default" 0.0;                      \
+               target: "next_clipper";                               \
+            }                                                        \
+         }                                                           \
+
+#define TITLE_BAR(NAME, TITLE_AREA, AFTER, BEFORE, CLIPPER)          \
+         part { name: NAME"_clipper";                                \
+            type: RECT;                                              \
+            clip_to: CLIPPER;                                        \
+            description {                                            \
+               rel1 {                                                \
+                  to_y: TITLE_AREA;                                  \
+                  to_x: AFTER;                                       \
+                  relative: 1.0 0.0;                                 \
+               }                                                     \
+               rel2 {                                                \
+                  to_y: TITLE_AREA;                                  \
+                  to_x: BEFORE;                                      \
+                  relative: 0.0 1.0;                                 \
+               }                                                     \
+               color: 255 255 255 255;                               \
+            }                                                        \
+         }                                                           \
+         part { name: NAME;                                          \
+            type: TEXT;                                              \
+            effect: SOFT_SHADOW;                                     \
+            scale: 1;                                                \
+            clip_to: NAME"_clipper";                                 \
+            description { state: "default" 0.0;                      \
+               rel1 {                                                \
+                  to: TITLE_AREA;                                    \
+                  relative: 0.0 0.0;                                 \
+                  offset: 2 1;                                       \
+               }                                                     \
+               rel2 {                                                \
+                  to: TITLE_AREA;                                    \
+                  offset: -3 -1;                                     \
+               }                                                     \
+               text {                                                \
+                  font: "Sans:style=Bold";                           \
+                  size: 12;                                          \
+                  text: "title";                                     \
+               }                                                     \
+            }                                                        \
+         }                                                           \
+         programs {                                                  \
+            program {                                                \
+               signal: "elm,title,hide";                             \
+               source: "elm";                                        \
+               action: STATE_SET "hidden" 0.0;                       \
+               transition: DECELERATE 0.1;                           \
+               target: CLIPPER;                                      \
+               target: TITLE_AREA;                                   \
+            }                                                        \
+            program {                                                \
+               signal: "elm,title,show";                             \
+               source: "elm";                                        \
+               action: STATE_SET "default" 0.0;                      \
+               transition: DECELERATE 0.5;                           \
+               target: CLIPPER;                                      \
+               target: TITLE_AREA;                                   \
+            }                                                        \
+         }                                                           \
+
 collections {
    externals.external: "elm";
 
@@ -74,47 +242,21 @@ collections {
                }
             }
          }
-         part { name: "back";
-            type: EXTERNAL;
-            source: "elm/button";
-            description { state: "default" 0.0;
-               align: 0.0 0.0;
-               fixed: 1 1;
-               rel1 { to_y: "title.bg";
-                  relative: 0.0 0.0;
-                  offset: 1 1;
-               }
-               rel2 { to_y: "title.bg";
-                  relative: 0.0 1.0;
-                  offset: 2 -1;
-               }
-               params.string: "label" "Back";
-               params.string: "style" "back";
+         part { name: "title_clipper";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               rel1.to: "title.bg";
+               rel2.to: "title.bg";
+               visible: 1;
             }
-            description { state: "hidden" 0.0;
+            description {
+               state: "hidden" 0.0;
                inherit: "default" 0.0;
                visible: 0;
             }
          }
-         programs {
-            program {
-               signal: "mouse,clicked,1";
-               source: "back";
-               action: SIGNAL_EMIT "elm,action,back" "";
-            }
-            program {
-               signal: "elm,back,hide";
-               source: "elm";
-               action: STATE_SET "hidden" 0.0;
-               target: "back";
-            }
-            program {
-               signal: "elm,back,show";
-               source: "elm";
-               action: STATE_SET "default" 0.0;
-               target: "back";
-            }
-         }
+         BUTTON_BACK("back", "title.bg", "title_clipper");
          part { name: "elm.swallow.end";
             type: SWALLOW;
             description { state: "default" 0.0;
@@ -130,28 +272,75 @@ collections {
                }
             }
          }
+         TITLE_BAR("elm.text.title", "title.bg", "back", "elm.swallow.end", "title_clipper")
+      }
+   }
 
-         part { name: "elm.text.title";
-            type: TEXT;
-            effect: SOFT_SHADOW;
+   /* application with a main content area with a back button and title area */
+   group { name: "elm/layout/application/content-back";
+      images {
+         image: "back-button.png" COMP;
+         image: "top_bg.png" COMP;
+      }
+      parts {
+         part {
+            name: "title.bg";
+            type: IMAGE;
             scale: 1;
-            description { state: "default" 0.0;
-               rel1 {
-                  to_x: "back";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel2 {
                   relative: 1.0 0.0;
-                  offset: 2 1;
+                  offset: -1 35;
                }
-               rel2 { to_y: "back";
-                  to_x: "elm.swallow.end";
-                  relative: 0.0 1.0;
-                  offset: -3 -1;
-               }
-               text {
-                  font: "Sans:style=Bold";
-                  size: 12;
+               image {
+                  normal: "top_bg.png";
+                  border: 0 0 0 1;
                }
             }
          }
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               rel1 { to_y: "title.bg";
+                  relative: 0.0 1.0;
+                  offset: -1 0;
+               }
+            }
+         }
+         part { name: "title_clipper";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               rel1.to: "title.bg";
+               rel2.to: "title.bg";
+               visible: 1;
+            }
+            description {
+               state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+         }
+         BUTTON_BACK("back", "title.bg", "title_clipper");
+         part { name: "elm.swallow.end";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               align: 1.0 0.0;
+               fixed: 1 1;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: -50 1;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 32;
+               }
+            }
+         }
+         TITLE_BAR("elm.text.title", "title.bg", "back", "elm.swallow.end", "title_clipper")
       }
    }
 
@@ -227,144 +416,73 @@ collections {
                }
             }
          }
-         part { name: "back";
-            type: EXTERNAL;
-            source: "elm/button";
-            clip_to: "back_clipper";
-            description { state: "default" 0.0;
-               align: 0.0 0.0;
-               fixed: 1 1;
-               rel1 { to_y: "title.bg";
-                  relative: 0.0 0.0;
-                  offset: 1 1;
-               }
-               rel2 { to_y: "title.bg";
-                  relative: 0.0 1.0;
-                  offset: 2 -1;
-               }
-               params.string: "label" "Back";
-               params.string: "style" "back";
-            }
-         }
-         part { name: "back_clipper";
-            type: RECT;
+         BUTTON_BACK("back", "title.bg", "title_clipper")
+         BUTTON_NEXT("next", "title.bg", "title_clipper")
+         TITLE_BAR("elm.text.title", "title.bg", "back", "next", "title_clipper")
+      }
+   }
+
+   /* application with a main content area with back and next buttons and title area */
+   group { name: "elm/layout/application/content-back-next";
+      images {
+         image: "top_bg.png" COMP;
+      }
+      parts {
+         part {
+            name: "title.bg";
             clip_to: "title_clipper";
-            description {
-               state: "default" 0.0;
-               visible: 1;
-            }
-            description {
-               state: "hidden" 0.0;
-               visible: 0;
-            }
-         }
-         part { name: "next";
-            type: EXTERNAL;
-            source: "elm/button";
-            clip_to: "next_clipper";
-            description { state: "default" 0.0;
-               align: 1.0 0.0;
-               fixed: 1 1;
-               rel1 { to_y: "title.bg";
-                  relative: 1.0 0.0;
-                  offset: -2 1;
-               }
-               rel2 { to_y: "title.bg";
-                  relative: 1.0 1.0;
-                  offset: -1 -1;
-               }
-               params.string: "label" "Next";
-               params.string: "style" "next";
-           }
-         }
-         part { name: "next_clipper";
-            type: RECT;
-            clip_to: "title_clipper";
-            description {
-               state: "default" 0.0;
-               visible: 1;
-            }
-            description {
-               state: "hidden" 0.0;
-               visible: 0;
-            }
-         }
-         part { name: "elm.text.title";
-            type: TEXT;
-            effect: SOFT_SHADOW;
+            type: IMAGE;
             scale: 1;
-            clip_to: "title_clipper";
-            description { state: "default" 0.0;
-               rel1 {
-                  to: "back";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel2 {
                   relative: 1.0 0.0;
-                  offset: 2 1;
+                  offset: -1 35;
+               }
+               image {
+                  normal: "top_bg.png";
+                  border: 0 0 0 1;
+               }
+            }
+            description {
+               state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               rel2 {
+                  offset: -1 0;
+               }
+            }
+         }
+         part { name: "title_clipper";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               rel1.to: "title.bg";
+               rel2.to: "title.bg";
+               visible: 1;
+            }
+            description {
+               state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+         }
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               rel1 { to_y: "title.bg";
+                  relative: 0.0 1.0;
+                  offset: 0 -1;
                }
                rel2 {
-                  to_y: "back";
-                  to_x: "next";
-                  relative: 0.0 1.0;
-                  offset: -3 -1;
-               }
-               text {
-                  font: "Sans:style=Bold";
-                  size: 12;
-                  text: "title";
+                  relative: 1.0 1.0;
                }
             }
          }
-         programs {
-            program {
-               signal: "clicked";
-               source: "back";
-               action: SIGNAL_EMIT "elm,action,back" "";
-            }
-            program {
-               signal: "elm,back,hide";
-               source: "elm";
-               action: STATE_SET "hidden" 0.0;
-               target: "back_clipper";
-            }
-            program {
-               signal: "elm,back,show";
-               source: "elm";
-               action: STATE_SET "default" 0.0;
-               target: "back_clipper";
-            }
-            program {
-               signal: "elm,title,hide";
-               source: "elm";
-               action: STATE_SET "hidden" 0.0;
-               transition: DECELERATE 0.1;
-               target: "title_clipper";
-               target: "title.bg";
-            }
-            program {
-               signal: "elm,title,show";
-               source: "elm";
-               action: STATE_SET "default" 0.0;
-               transition: DECELERATE 0.5;
-               target: "title_clipper";
-               target: "title.bg";
-            }
-            program {
-               signal: "clicked";
-               source: "next";
-               action: SIGNAL_EMIT "elm,action,next" "";
-            }
-            program {
-               signal: "elm,next,hide";
-               source: "elm";
-               action: STATE_SET "hidden" 0.0;
-               target: "next_clipper";
-            }
-            program {
-               signal: "elm,next,show";
-               source: "elm";
-               action: STATE_SET "default" 0.0;
-               target: "next_clipper";
-            }
-         }
+         BUTTON_BACK("back", "title.bg", "title_clipper")
+         BUTTON_NEXT("next", "title.bg", "title_clipper")
+         TITLE_BAR("elm.text.title", "title.bg", "back", "next", "title_clipper")
       }
    }
 
