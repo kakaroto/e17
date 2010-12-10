@@ -109,7 +109,7 @@ class LogWindow(InnerWindow):
         _instance = self
 
         self._parent.block(True, self)
-        InnerWindow.show(self)
+        InnerWindow.activate(self)
         self.focus_set(True)
 
     def hide(self):
