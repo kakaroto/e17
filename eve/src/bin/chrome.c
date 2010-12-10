@@ -545,7 +545,7 @@ compare_domain_cb(const void *d1, const void *d2)
 }
 
 static More_Menu_Item *
-more_menu_history_by_domain(Browser_Window *win __UNUSED__, More_Menu_Item *current_item)
+more_menu_history_by_domain(Browser_Window *win __UNUSED__, More_Menu_Item *current_item __UNUSED__)
 {
    More_Menu_Item *bm_item;
    More_Menu_Item *ret = NULL, *new_ret;
@@ -696,7 +696,7 @@ compare_fav_cb(const void *d1, const void *d2)
 }
 
 static void
-index_selected(void *data, Evas_Object *obj, void *event_info)
+index_selected(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
    elm_genlist_item_top_bring_in(event_info);
 }
@@ -778,7 +778,7 @@ more_menu_history_most_visited(Browser_Window *win __UNUSED__, More_Menu_Item *c
 }
 
 static More_Menu_Item *
-more_menu_favorites(Browser_Window *win __UNUSED__, More_Menu_Item *current_item)
+more_menu_favorites(Browser_Window *win __UNUSED__, More_Menu_Item *current_item __UNUSED__)
 {
    More_Menu_Item *bm_item;
    More_Menu_Item *ret = NULL, *new_ret;
@@ -838,15 +838,6 @@ realloc_error:
    free(bm_item);
 
    return ret;
-}
-
-static void
-on_view_mask_visible(void *data, Evas_Object *o __UNUSED__,
-                     const char *emission __UNUSED__, const char *source __UNUSED__)
-{
-   Browser_Window *win = data;
-   Evas_Object *ed = elm_layout_edje_get(win->current_chrome);
-   Evas_Object *url_entry = edje_object_part_swallow_get(ed, "url-entry");
 }
 
 static void
@@ -993,11 +984,10 @@ _chrome_state_apply(Evas_Object *chrome, Evas_Object *view)
 }
 
 static void
-on_view_load_progress(void *data, Evas_Object *view, void *event_info)
+on_view_load_progress(void *data, Evas_Object *view __UNUSED__, void *event_info)
 {
    Evas_Object *chrome = data;
    Evas_Object *ed = elm_layout_edje_get(chrome);
-   Session_Item *si;
 
    double *progress = event_info;
    Edje_Message_Float msg = { *progress };
@@ -1100,7 +1090,7 @@ _view_popup_delete(void *notify)
 }
 
 static void
-on_view_popup_delete(void *data, Evas_Object *view, void *event_info)
+on_view_popup_delete(void *data, Evas_Object *view __UNUSED__, void *event_info __UNUSED__)
 {
    ecore_idler_add(_view_popup_delete, data);
 }
@@ -1162,7 +1152,7 @@ more_menu_privacy_clear_cookies(Browser_Window *win __UNUSED__, More_Menu_Item *
 }
 
 static void
-_popup_item_selected(void *data, Evas_Object *obj, void *event_info)
+_popup_item_selected(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 {
    Evas_Object *view = data;
    Elm_List_Item *it = elm_list_selected_item_get(obj);
@@ -1183,7 +1173,7 @@ _popup_item_selected(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-on_view_popup_new(void *data, Evas_Object *view, void *event_info)
+on_view_popup_new(void *data __UNUSED__, Evas_Object *view, void *event_info)
 {
    Ewk_Menu *menu = event_info;
    Ewk_Menu_Item *item;
@@ -1261,7 +1251,7 @@ on_tab_close(void *data, Evas_Object *o,
 }
 
 static void
-on_tab_gengrid_item_realized(void *data, Evas_Object *o, void *event_info)
+on_tab_gengrid_item_realized(void *data, Evas_Object *o __UNUSED__, void *event_info)
 {
    Browser_Window *win = data;
    Evas_Object *item = (Evas_Object *)elm_gengrid_item_object_get(event_info);
@@ -1418,6 +1408,7 @@ conf_updated(More_Menu_Config *mmc, void *new_value)
          ewk_cookies_policy_set((*(Ewk_Cookie_Policy *)new_value));
          break;
       }
+   default: ;
    }
 
 #undef SET_PREF_TO_ALL_VIEWS
@@ -1494,9 +1485,9 @@ config_widget_get(Evas_Object *parent, More_Menu_Config *mmc)
 
          return spinner;
       }
+   default:
+      return NULL;
    }
-
-   return NULL;
 }
 
 static void
@@ -1535,7 +1526,6 @@ on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UN
 
    for (i = 0; params->root[i].type != ITEM_TYPE_LAST; i++)
      {
-        Evas_Object *icon = NULL, *end = NULL;
         Elm_Genlist_Item *item = NULL;
         switch (params->root[i].type) {
         case ITEM_TYPE_SEPARATOR:
@@ -1660,7 +1650,6 @@ callback_menu_config_list_set(Browser_Window *win __UNUSED__, More_Menu_Item *i)
    More_Menu_Config *p = i->data;
    More_Menu_Config_List *l = p->data;
    void (*conf_set)(Config *, const char *);
-   const char *title = NULL;
    int item;
 
    for (item = 0; l[item].title; item++)
@@ -1683,7 +1672,6 @@ callback_menu_config_list_int_set(Browser_Window *win __UNUSED__, More_Menu_Item
    More_Menu_Config *p = i->data;
    More_Menu_Config_List_Int *l = p->data;
    void (*conf_set)(Config *, const int);
-   const char *title = NULL;
    int item;
 
    for (item = 0; l[item].title; item++)
@@ -1701,7 +1689,7 @@ callback_menu_config_list_int_set(Browser_Window *win __UNUSED__, More_Menu_Item
 }
 
 static More_Menu_Item *
-more_menu_config_list_create(More_Menu_Item *i, More_Menu_Config *p)
+more_menu_config_list_create(More_Menu_Item *i __UNUSED__, More_Menu_Config *p)
 {
    More_Menu_Config_List *list = p->data;
    More_Menu_Item *mmi;
@@ -1729,7 +1717,7 @@ more_menu_config_list_create(More_Menu_Item *i, More_Menu_Config *p)
 }
 
 static More_Menu_Item *
-more_menu_config_list_int_create(More_Menu_Item *i, More_Menu_Config *p)
+more_menu_config_list_int_create(More_Menu_Item *i __UNUSED__, More_Menu_Config *p)
 {
    More_Menu_Config_List_Int *list = p->data;
    More_Menu_Item *mmi;
@@ -1757,7 +1745,7 @@ more_menu_config_list_int_create(More_Menu_Item *i, More_Menu_Config *p)
 }
 
 static void
-on_string_ask_ok_click(void *data, Evas_Object *obj, void *event_info)
+on_string_ask_ok_click(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Eina_Bool *response = data;
    *response = EINA_TRUE;
@@ -1765,7 +1753,7 @@ on_string_ask_ok_click(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-on_string_ask_cancel_click(void *data, Evas_Object *obj, void *event_info)
+on_string_ask_cancel_click(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Eina_Bool *response = data;
    *response = EINA_FALSE;
@@ -1855,8 +1843,8 @@ more_menu_config_create(Evas_Object *parent, More_Menu_Item *item, More_Menu_Con
    case CONFIG_TYPE_PASSWORD:
       more_menu_config_string_ask(parent, item, config, EINA_TRUE);
       break;
+   default: ;
    }
-
    return NULL;
 }
 
@@ -1869,8 +1857,6 @@ on_more_item_click(void *data, Evas_Object *obj,
    More_Menu_Item *mmi = data;
    Browser_Window *win = evas_object_data_get(chrome, "win");
    const char *old_text = edje_object_part_text_get(ed, "more-list-title");
-   Evas_Object *list = evas_object_data_get(chrome, "more-list");
-   Evas_Object *index = evas_object_data_get(list, "more-index");
 
    if (!mmi) return;
 
@@ -2019,7 +2005,7 @@ error_cairo_surface_create:
 }
 
 static void
-tab_grid_item_click(void *data, Evas_Object *obj, void *event_info)
+tab_grid_item_click(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Evas_Object *chrome = data;
    Browser_Window *win = evas_object_data_get(chrome, "win");
@@ -2061,13 +2047,6 @@ on_action_tab_show(void *data, Evas_Object *o __UNUSED__,
       Evas_Object *itr_view = evas_object_data_get(itr_chrome, "view");
       elm_gengrid_item_append(grid, &gic_default, itr_view, tab_grid_item_click, itr_chrome);
    }
-}
-
-static void
-on_action_tab_hide(void *data, Evas_Object *o __UNUSED__,
-                   const char *emission __UNUSED__,
-                   const char *source __UNUSED__)
-{
 }
 
 static void
@@ -2187,7 +2166,7 @@ on_view_load_error(void *data __UNUSED__, Evas_Object *view __UNUSED__,
 }
 
 static void
-on_view_download_request(void *data, Evas_Object *view __UNUSED__,
+on_view_download_request(void *data __UNUSED__, Evas_Object *view __UNUSED__,
                          void *event_info)
 {
    Ewk_Download *download = event_info;
@@ -2433,7 +2412,6 @@ list_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part)
         void *(*conf_get)(void *);
         if ((conf_get = mmc->conf_get))
           {
-             char *selected_value = NULL;
              if (mmc->type == CONFIG_TYPE_LIST_INT)
                 return strdup(_get_selected_int_value_title(mmc->data, (int)conf_get(config)));
              else if (mmc->type == CONFIG_TYPE_LIST)
@@ -2464,7 +2442,6 @@ more_icon_get(void *data, Evas_Object *obj, const char *part)
         else if (mmi->type == ITEM_TYPE_PAGE)
           {
              Evas_Object *chrome = evas_object_data_get(obj, "chrome");
-             Evas_Object *view = evas_object_data_get(chrome, "view");
              Evas *canvas = evas_object_evas_get(chrome);
              icon = ewk_settings_icon_database_icon_object_add(mmi->next, canvas);
           }
@@ -2601,7 +2578,6 @@ chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
    edje_object_signal_callback_add(ed, "action,fav_on", "", on_fav_on, view);
    edje_object_signal_callback_add(ed, "action,fav_off", "", on_fav_off, view);
 
-   edje_object_signal_callback_add(ed, "view,mask,visible", "", on_view_mask_visible, win);
    edje_object_signal_callback_add(ed, "view,mask,hidden", "", on_view_mask_hidden, win);
 
    edje_object_signal_callback_add(ed, "more,show", "",
@@ -2610,8 +2586,6 @@ chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
                                    on_action_more_hide, chrome);
    edje_object_signal_callback_add(ed, "tab,show", "",
                                    on_action_tab_show, chrome);
-   edje_object_signal_callback_add(ed, "tab,hide", "",
-                                   on_action_tab_hide, chrome);
    evas_object_smart_callback_add(view, "load,progress", on_view_load_progress,
                                   chrome);
    evas_object_smart_callback_add(view, "title,changed", on_view_title_changed,

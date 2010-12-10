@@ -923,7 +923,7 @@ _view_contextmenu_free(void *data)
 }
 
 static void
-_view_contextmenu_item_selected(void *data, Evas_Object *li, void *event_info)
+_view_contextmenu_item_selected(void *data, Evas_Object *li, void *event_info __UNUSED__)
 {
    Ewk_Context_Menu_Item *item = data;
    Evas_Object *view = evas_object_data_get(li, "view");
@@ -1293,7 +1293,7 @@ _view_smart_mouse_move(Ewk_View_Smart_Data *esd, const Evas_Event_Mouse_Move *ev
  * We just print message to stdout
  */
 static void
-_view_smart_add_console_message(Ewk_View_Smart_Data *esd, const char *message, unsigned int lineNumber, const char *sourceID)
+_view_smart_add_console_message(Ewk_View_Smart_Data *esd __UNUSED__, const char *message, unsigned int lineNumber, const char *sourceID)
 {
    printf("BROWSER console: %s @%d: %s\n", sourceID, lineNumber, message);
 }
@@ -1315,7 +1315,7 @@ struct _dialog_data
 };
 
 static void
-_bt_close(void *data, Evas_Object *obj, void *event_info)
+_bt_close(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 {
    struct _dialog_data *d = data;
 
@@ -1416,7 +1416,7 @@ _run_dialog(Evas_Object *parent, enum dialog_type type, const char *message, con
  *
  */
 static void
-_view_smart_run_javascript_alert(Ewk_View_Smart_Data *esd, Evas_Object *frame, const char *message)
+_view_smart_run_javascript_alert(Ewk_View_Smart_Data *esd, Evas_Object *frame __UNUSED__, const char *message)
 {
    View_Smart_Data *sd = (View_Smart_Data *)esd;
    Evas_Object *view = sd->base.self;
@@ -1428,7 +1428,7 @@ _view_smart_run_javascript_alert(Ewk_View_Smart_Data *esd, Evas_Object *frame, c
  *
  */
 static Eina_Bool
-_view_smart_run_javascript_confirm(Ewk_View_Smart_Data *esd, Evas_Object *frame, const char *message)
+_view_smart_run_javascript_confirm(Ewk_View_Smart_Data *esd, Evas_Object *frame __UNUSED__, const char *message)
 {
    View_Smart_Data *sd = (View_Smart_Data *)esd;
    Evas_Object *view = sd->base.self;
@@ -1440,7 +1440,7 @@ _view_smart_run_javascript_confirm(Ewk_View_Smart_Data *esd, Evas_Object *frame,
  *
  */
 static Eina_Bool
-_view_smart_run_javascript_prompt(Ewk_View_Smart_Data *esd, Evas_Object *frame, const char *message, const char *default_value, char **value)
+_view_smart_run_javascript_prompt(Ewk_View_Smart_Data *esd, Evas_Object *frame __UNUSED__, const char *message, const char *default_value, char **value)
 {
    View_Smart_Data *sd = (View_Smart_Data *)esd;
    Evas_Object *view = sd->base.self;

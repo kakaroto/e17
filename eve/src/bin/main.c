@@ -379,7 +379,6 @@ static const Ecore_Getopt options = {
 static DBusMessage *
 _cb_dbus_open_url(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
-   DBusMessage *reply;
    Browser_Window *win = eina_list_data_get(app.windows);
    char *tmp_uri;
    char *uri;
@@ -542,7 +541,7 @@ session_restore(void)
 
    EINA_LIST_FOREACH(windows, window_iter, window)
    {
-      Evas_Object *frame, *focused_chrome;
+      Evas_Object *focused_chrome;
       Eina_List *items = session_window_tabs_list_get(window);
       Eina_List *items_iter;
       Browser_Window *win;
