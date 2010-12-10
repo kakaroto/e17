@@ -7,9 +7,6 @@
 #include <Eina.h>
 #include <Ecore.h>
 #include <Ecore_Getopt.h>
-#include <stdio.h>
-#include <inttypes.h>
-#include <string.h>
 
 #include "azy.h"
 
