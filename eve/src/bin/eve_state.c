@@ -27,6 +27,7 @@ struct _Config {
     int minimum_font_size;
     const char *__eet_filename;
     int cookie_policy;
+    int backing_store;
 };
 
 struct _Hist_Item {
@@ -113,6 +114,7 @@ _config_init(void)
     EET_DATA_DESCRIPTOR_ADD_BASIC(_config_descriptor, Config, "text_only_zoom", text_only_zoom, EET_T_UCHAR);
     EET_DATA_DESCRIPTOR_ADD_BASIC(_config_descriptor, Config, "minimum_font_size", minimum_font_size, EET_T_INT);
     EET_DATA_DESCRIPTOR_ADD_BASIC(_config_descriptor, Config, "cookie_policy", cookie_policy, EET_T_INT);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(_config_descriptor, Config, "backing_store", backing_store, EET_T_INT);
 }
 
 static inline void
@@ -124,7 +126,7 @@ _config_shutdown(void)
 }
 
 Config *
-config_new(unsigned char allow_popup, unsigned char enable_auto_load_images, unsigned char enable_auto_shrink_images, unsigned char enable_javascript, unsigned char enable_mouse_cursor, unsigned char enable_plugins, unsigned char enable_private_mode, unsigned char enable_touch_interface, const char * home_page, const char * proxy, unsigned char restore_state, const char * user_agent, unsigned char frame_flattening, unsigned char text_only_zoom, int minimum_font_size, int cookie_policy)
+config_new(unsigned char allow_popup, unsigned char enable_auto_load_images, unsigned char enable_auto_shrink_images, unsigned char enable_javascript, unsigned char enable_mouse_cursor, unsigned char enable_plugins, unsigned char enable_private_mode, unsigned char enable_touch_interface, const char * home_page, const char * proxy, unsigned char restore_state, const char * user_agent, unsigned char frame_flattening, unsigned char text_only_zoom, int minimum_font_size, int cookie_policy, int backing_store)
 {
     Config *config = calloc(1, sizeof(Config));
 
@@ -150,6 +152,7 @@ config_new(unsigned char allow_popup, unsigned char enable_auto_load_images, uns
     config->text_only_zoom = text_only_zoom;
     config->minimum_font_size = minimum_font_size;
     config->cookie_policy = cookie_policy;
+    config->backing_store = backing_store;
 
     return config;
 }
@@ -369,6 +372,19 @@ config_cookie_policy_set(Config *config, int cookie_policy)
 {
     EINA_SAFETY_ON_NULL_RETURN(config);
     config->cookie_policy = cookie_policy;
+}
+
+inline int
+config_backing_store_get(const Config *config)
+{
+    return config->backing_store;
+}
+
+inline void
+config_backing_store_set(Config *config, int backing_store)
+{
+    EINA_SAFETY_ON_NULL_RETURN(config);
+    config->backing_store = backing_store;
 }
   
 Config *

@@ -315,6 +315,18 @@ static More_Menu_Item more_menu_config[] =
                { NULL, 0, EINA_FALSE },
              }
            }}, NULL, ITEM_FLAG_ARROW | ITEM_FLAG_SELECTABLE },
+         { ITEM_TYPE_CONFIG, "Backing Store",
+           (More_Menu_Config[]) {{
+             .type = CONFIG_TYPE_LIST_INT,
+             .conf = EVE_CONFIG_MINIMUM_FONT_SIZE,
+             .conf_get = config_backing_store_get,
+             .conf_set = config_backing_store_set,
+             .data = (More_Menu_Config_List_Int[]) {
+               { "Single", BACKING_STORE_SINGLE, EINA_TRUE },
+               { "Tiled", BACKING_STORE_TILED, EINA_FALSE },
+               { NULL, 0, EINA_FALSE }
+             }
+           }}, NULL, ITEM_FLAG_ARROW | ITEM_FLAG_SELECTABLE },
          { ITEM_TYPE_LAST, NULL, NULL, NULL, ITEM_FLAG_NONE },
      }, NULL, ITEM_FLAG_ARROW },
    { ITEM_TYPE_SEPARATOR, NULL, NULL, NULL, ITEM_FLAG_NONE },
@@ -2500,7 +2512,7 @@ chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
         return NULL;
      }
 
-   view = view_add(win->win);
+   view = view_add(win->win, config_backing_store_get(config));
    if (!view)
      {
         CRITICAL("Could not create view");

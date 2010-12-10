@@ -1500,7 +1500,7 @@ _view_smart_window_close(Ewk_View_Smart_Data *esd)
  * @return newly added Evas_Object or @c NULL on errors.
  */
 Evas_Object *
-view_add(Evas_Object *parent)
+view_add(Evas_Object *parent, Backing_Store bs)
 {
    static Evas_Smart *smart = NULL;
    Evas *canvas = evas_object_evas_get(parent);
@@ -1509,11 +1509,19 @@ view_add(Evas_Object *parent)
    if (!smart)
      {
         /* create ewk_view_single subclass, this is done only once! */
-        static Ewk_View_Smart_Class api = EWK_VIEW_SMART_CLASS_INIT_NAME_VERSION("EWK_View_Single_Demo");
+        static Ewk_View_Smart_Class api = EWK_VIEW_SMART_CLASS_INIT_NAME_VERSION("EWK_View_Demo");
 
         /* set current and parent apis to vanilla ewk_view_single methods */
-        ewk_view_single_smart_set(&api);
-        ewk_view_single_smart_set(&_parent_sc);
+        if (bs == BACKING_STORE_TILED)
+          {
+             ewk_view_tiled_smart_set(&api);
+             ewk_view_tiled_smart_set(&_parent_sc);
+          }
+        else
+          {
+             ewk_view_single_smart_set(&api);
+             ewk_view_single_smart_set(&_parent_sc);
+          }
 
         /* override methods we want custom behavior */
         api.sc.add = _view_smart_add;

@@ -15,6 +15,7 @@ Config {
       text_only_zoom            : uchar;
       minimum_font_size         : int;
       cookie_policy             : int;
+      backing_store             : int;
 }
 
 Hist_Item {

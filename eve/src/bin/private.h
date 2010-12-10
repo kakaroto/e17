@@ -65,6 +65,12 @@ struct _View_Zoom_Interactive
    float      zoom;
 };
 
+typedef enum
+{
+   BACKING_STORE_SINGLE,
+   BACKING_STORE_TILED
+} Backing_Store;
+
 /**
  * Create new view object.
  *
@@ -81,7 +87,7 @@ Evas_Object *         window_create(void);
 void                  window_mouse_enabled_set(Evas_Object *win, Eina_Bool setting);
 void                  window_title_set(Browser_Window *win, const char *title);
 
-Evas_Object *         view_add(Evas_Object *parent);
+Evas_Object *         view_add(Evas_Object *parent, Backing_Store bs);
 void                  view_zoom_reset(Evas_Object *view);
 void                  view_zoom_next_up(Evas_Object *view);
 void                  view_zoom_next_down(Evas_Object *view);

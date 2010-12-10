@@ -283,7 +283,7 @@ win_add(App *app, const char *url, Session_Window *session_window, Session_Item 
         goto error_pager_create;
      }
 
-   elm_object_style_set(win->pager, "ewebkit");
+   elm_object_style_set(win->pager, "flip");
    evas_object_size_hint_weight_set(win->pager, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    elm_win_resize_object_add(win->win, win->pager);
@@ -365,6 +365,8 @@ static const Ecore_Getopt options = {
                                   "disable touch interface handling of mouse events", 1),
       ECORE_GETOPT_STORE_STR('U', "user-agent",
                              "user agent string to use. Special cases=iphone,safari,chrome,firefox,android,ie,ie9,ie8,ie7."),
+      ECORE_GETOPT_STORE_DEF_STR('B', "backing store",
+                             "backing store to use. single or tiled.", "single"),
       ECORE_GETOPT_STORE_DEF_UINT('R', "rotate", "Screen Rotation in degrees", 0),
       ECORE_GETOPT_VERSION('V', "version"),
       ECORE_GETOPT_COPYRIGHT('C', "copyright"),
@@ -624,6 +626,8 @@ elm_main(int argc, char **argv)
    Eina_Bool disable_touch_interface = 0xff;
    char *user_agent_option = NULL;
    const char *user_agent_str;
+   char *backing_store_option = NULL;
+   Backing_Store backing_store_enum;
    E_DBus_Connection *conn = NULL;
    size_t dirlen;
    Ecore_Timer *session_save_timer = NULL;
@@ -634,6 +638,7 @@ elm_main(int argc, char **argv)
       ECORE_GETOPT_VALUE_BOOL(disable_mouse_cursor),
       ECORE_GETOPT_VALUE_BOOL(disable_touch_interface),
       ECORE_GETOPT_VALUE_STR(user_agent_option),
+      ECORE_GETOPT_VALUE_STR(backing_store_option),
       ECORE_GETOPT_VALUE_UINT(app.rotate),
       ECORE_GETOPT_VALUE_BOOL(quit_option),
       ECORE_GETOPT_VALUE_BOOL(quit_option),
@@ -699,6 +704,11 @@ elm_main(int argc, char **argv)
         else
           user_agent_str = user_agent_option;
      }
+
+   if (backing_store_option && !strcasecmp(backing_store_option, "tiled"))
+      backing_store_enum = BACKING_STORE_TILED;
+   else
+      backing_store_enum = BACKING_STORE_SINGLE;
 
    elm_theme_extension_add(NULL, PACKAGE_DATA_DIR "/default.edj");
    ewk_init();
@@ -771,13 +781,16 @@ elm_main(int argc, char **argv)
                             EINA_FALSE /* frame_flattening */,
                             EINA_FALSE /* text_only_zoom */,
                             12 /* minimum_font_size */,
-                            ewk_cookies_policy_get());
+                            ewk_cookies_policy_get(),
+                            backing_store_enum);
         if (!config_save(config, path))
           {
              r = -1;
              goto end_config;
           }
      }
+     else
+       config_backing_store_set(config, backing_store_enum);
 
    hist = hist_load(path);
    if (!hist)
