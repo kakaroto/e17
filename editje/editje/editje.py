@@ -162,6 +162,16 @@ class Editje(elementary.Window, OpenFileManager):
             elif shift_key and key == "z":
                 self._redo_cb(self, None, None)
                 return True
+            elif key == "n":
+                self._new_cb(self, None, None)
+            elif key == "o":
+                self._open_cb(self, None, None)
+            elif key == "s":
+                self._save_cb(self, None, None)
+            elif key == "g":
+                self._group_cb(self, None, None)
+            elif key == "r":
+                self._run_cb(self, None, None)
 
     def _destroy_cb(self, obj):
         if self.e.filename:
