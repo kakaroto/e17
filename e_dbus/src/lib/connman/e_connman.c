@@ -7,7 +7,7 @@ static DBusPendingCall *pending_get_name_owner = NULL;
 static unsigned int init_count = 0;
 static char *unique_name = NULL;
 
-static const char bus_name[] = "org.moblin.connman";
+static const char bus_name[] = "net.connman";
 
 E_DBus_Connection *e_connman_conn = NULL;
 
@@ -209,7 +209,7 @@ _e_connman_get_name_owner(void *data __UNUSED__, DBusMessage *msg, DBusError *er
 /**
  * Initialize E Connection Manager (E_Connman) system.
  *
- * This will connect and watch org.moblin.connman.Manager and Element
+ * This will connect and watch net.connman.Manager and Element
  * events and translate to Ecore main loop events, also provide a
  * proxy for method invocation on server.
  *
@@ -262,19 +262,19 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
       E_CONNMAN_EVENT_ELEMENT_UPDATED = ecore_event_type_new();
 
    if (!e_connman_iface_manager)
-      e_connman_iface_manager = eina_stringshare_add("org.moblin.connman.Manager");
+      e_connman_iface_manager = eina_stringshare_add("net.connman.Manager");
 
    if (!e_connman_iface_profile)
-      e_connman_iface_profile = eina_stringshare_add("org.moblin.connman.Profile");
+      e_connman_iface_profile = eina_stringshare_add("net.connman.Profile");
 
    if (!e_connman_iface_service)
-      e_connman_iface_service = eina_stringshare_add("org.moblin.connman.Service");
+      e_connman_iface_service = eina_stringshare_add("net.connman.Service");
 
    if (!e_connman_iface_connection)
-      e_connman_iface_connection = eina_stringshare_add("org.moblin.connman.Connection");
+      e_connman_iface_connection = eina_stringshare_add("net.connman.Connection");
 
    if (!e_connman_iface_technology)
-      e_connman_iface_technology = eina_stringshare_add("org.moblin.connman.Technology");
+      e_connman_iface_technology = eina_stringshare_add("net.connman.Technology");
 
    if (!e_connman_prop_available)
       e_connman_prop_available = eina_stringshare_add("Available");
