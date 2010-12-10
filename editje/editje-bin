@@ -155,7 +155,7 @@ def _open_err_cb(e, filepath=None, group=None, slave_mode=None, in_port=None):
         pop.pack_end(lb)
         lb.show()
 
-        pop.action_add("OK", popup_cancel, data=pop)
+        pop.action_add("OK", _open_abort_cb, data=pop)
 
         pop.show()
     else:
@@ -167,7 +167,7 @@ def _open_err_cb(e, filepath=None, group=None, slave_mode=None, in_port=None):
         pop.pack_end(lb)
         lb.show()
 
-        pop.action_add("OK", popup_cancel, data=pop)
+        pop.action_add("OK", _open_abort_cb, data=pop)
 
         pop.show()
 

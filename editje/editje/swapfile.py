@@ -219,8 +219,8 @@ class FileSwapTypeError(FileError):
 
 
 class CompileError(FileError):
-    def __init__(self, file, message):
-        FileError.__init__(self, file)
+    def __init__(self, filename, swapfile, message):
+        FileError.__init__(self, filename)
         self.message = message
 
     def __str__(self):
