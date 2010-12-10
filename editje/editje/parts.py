@@ -27,6 +27,7 @@ from groupselector import NameEntry
 from operation import Operation
 from filewizard import ImageSelectionWizard
 import objects_data
+import sysconfig
 
 
 class PartsList(CList):
@@ -463,11 +464,24 @@ class NewPartWizard(Wizard):
         self._ext_list.show()
 
         self.action_add("default", "Cancel", self._cancel, key="Escape")
-        self.action_add("default", "Add", self._add, key="Return")
+        self.action_add("default", "Add", self._sizing_go, key="Return")
         self.action_disabled_set("default", "Add", True)
 
         edje.message_signal_process()
         self._name_changed = False
+
+        self.page_add("sizing", "New Part", "Position and size of new part.")
+        self._partsetup = PartSetup(self)
+        self._partsetup.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
+                evas.EVAS_HINT_EXPAND)
+        self._partsetup.size_hint_align_set(evas.EVAS_HINT_FILL,
+                evas.EVAS_HINT_FILL)
+        self._partsetup.show()
+        self.action_add("sizing", "Cancel", self._default_go, key="Escape")
+        self.action_add("sizing", "Add", self._add, key="Return")
+        self.content_add("sizing", self._partsetup)
+
+        self.goto("default")
 
     def _name_changed_cb(self, obj):
         self._name_changed = True
@@ -531,7 +545,8 @@ class NewPartWizard(Wizard):
 
     def _add(self):
         def add_internal(name, edje_type, ext_name=""):
-            if not self._edit_grp.part_add(name, edje_type, ext_name):
+            if not self._edit_grp.part_add(name, edje_type, ext_name,
+                                           init=self._partsetup.apply_to):
                 self.notify("Error adding new part.")
                 return False
             return True
@@ -584,3 +599,268 @@ class NewPartWizard(Wizard):
 
     def _cancel(self):
         self.close()
+
+    def _sizing_go(self):
+        self.goto("sizing")
+
+    def _default_go(self):
+        self.goto("default")
+
+
+class PartSetup(elementary.Box):
+    def __init__(self, parent):
+        elementary.Box.__init__(self, parent)
+        self.__reference_init()
+        self.__position_init()
+        self.__size_init()
+
+    def __reference_init(self):
+        fr = elementary.Frame(self)
+        fr.label_set("Reference")
+        fr.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+        fr.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
+        self.pack_end(fr)
+        fr.show()
+
+        fbx = elementary.Box(self)
+        fbx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+        fbx.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+        fr.content_set(fbx)
+        fbx.show()
+
+        rdg = elementary.Radio(fbx)
+        rdg.state_value_set(0)
+        rdg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+        rdg.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
+        rdg.label_set("Group")
+        fbx.pack_end(rdg)
+        rdg.show()
+        self.__reference = rdg
+
+        fbx2 = elementary.Box(fbx)
+        fbx2.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+        fbx2.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+        fbx.pack_end(fbx2)
+        fbx2.horizontal_set(True)
+        fbx2.show()
+
+        rd = elementary.Radio(fbx2)
+        rd.state_value_set(1)
+        rd.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+        rd.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
+        rd.label_set("Part")
+        rd.group_add(rdg)
+        rd.disabled_set(True)
+        fbx2.pack_end(rd)
+        rd.show()
+
+    def __position_init(self):
+        fr = elementary.Frame(self)
+        fr.label_set("Position")
+        fr.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+        fr.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+        self.pack_end(fr)
+        fr.show()
+
+        ly = elementary.Layout(fr)
+        ly.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+        ly.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+        ly.file_set(sysconfig.theme_file_get("default"), "editje/position")
+        fr.content_set(ly)
+        ly.show()
+
+        rdg = elementary.Radio(ly)
+        rdg.state_value_set(0)
+        ly.content_set("internal.middle", rdg)
+        rdg.show()
+        self.__position = rdg
+
+        rd = elementary.Radio(ly)
+        rd.state_value_set(1)
+        rd.group_add(rdg)
+        ly.content_set("external.top_left", rd)
+        rd.show()
+
+        rd = elementary.Radio(ly)
+        rd.state_value_set(2)
+        rd.group_add(rdg)
+        ly.content_set("external.top", rd)
+        rd.show()
+
+        rd = elementary.Radio(ly)
+        rd.state_value_set(3)
+        rd.group_add(rdg)
+        ly.content_set("external.top_right", rd)
+        rd.show()
+
+        rd = elementary.Radio(ly)
+        rd.state_value_set(4)
+        rd.group_add(rdg)
+        ly.content_set("external.left", rd)
+        rd.show()
+
+        rd = elementary.Radio(ly)
+        rd.state_value_set(5)
+        rd.group_add(rdg)
+        ly.content_set("external.right", rd)
+        rd.show()
+
+        rd = elementary.Radio(ly)
+        rd.state_value_set(6)
+        rd.group_add(rdg)
+        ly.content_set("external.bottom_left", rd)
+        rd.show()
+
+        rd = elementary.Radio(ly)
+        rd.state_value_set(7)
+        rd.group_add(rdg)
+        ly.content_set("external.bottom", rd)
+        rd.show()
+
+        rd = elementary.Radio(ly)
+        rd.state_value_set(8)
+        rd.group_add(rdg)
+        ly.content_set("external.bottom_right", rd)
+        rd.show()
+
+        rd = elementary.Radio(ly)
+        rd.state_value_set(9)
+        rd.group_add(rdg)
+        ly.content_set("internal.top_left", rd)
+        rd.show()
+
+        rd = elementary.Radio(ly)
+        rd.state_value_set(10)
+        rd.group_add(rdg)
+        ly.content_set("internal.top", rd)
+        rd.show()
+
+        rd = elementary.Radio(ly)
+        rd.state_value_set(11)
+        rd.group_add(rdg)
+        ly.content_set("internal.top_right", rd)
+        rd.show()
+
+        rd = elementary.Radio(ly)
+        rd.state_value_set(12)
+        rd.group_add(rdg)
+        ly.content_set("internal.left", rd)
+        rd.show()
+
+        rd = elementary.Radio(ly)
+        rd.state_value_set(13)
+        rd.group_add(rdg)
+        ly.content_set("internal.right", rd)
+        rd.show()
+
+        rd = elementary.Radio(ly)
+        rd.state_value_set(14)
+        rd.group_add(rdg)
+        ly.content_set("internal.bottom_left", rd)
+        rd.show()
+
+        rd = elementary.Radio(ly)
+        rd.state_value_set(15)
+        rd.group_add(rdg)
+        ly.content_set("internal.bottom", rd)
+        rd.show()
+
+        rd = elementary.Radio(ly)
+        rd.state_value_set(16)
+        rd.group_add(rdg)
+        ly.content_set("internal.bottom_right", rd)
+        rd.show()
+
+    def __size_init(self):
+        fr = elementary.Frame(self)
+        fr.label_set("Size")
+        fr.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+        fr.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
+        self.pack_end(fr)
+        fr.show()
+
+        fbx = elementary.Box(self)
+        fbx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+        fbx.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+        fr.content_set(fbx)
+        fbx.show()
+
+        rdg = elementary.Radio(fbx)
+        rdg.state_value_set(0)
+        rdg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+        rdg.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
+        rdg.label_set("Fill reference")
+        fbx.pack_end(rdg)
+        rdg.show()
+        self.__size = rdg
+
+        fbx2 = elementary.Box(fbx)
+        fbx2.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+        fbx2.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+        fbx.pack_end(fbx2)
+        fbx2.horizontal_set(True)
+        fbx2.show()
+
+        rd = elementary.Radio(fbx2)
+        rd.state_value_set(1)
+        rd.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+        rd.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
+        rd.label_set("Fixed size:")
+        rd.group_add(rdg)
+        rd.disabled_set(True)
+        fbx2.pack_end(rd)
+        rd.show()
+
+    def apply_to(self, part):
+        state = part.state_get(*part.state_selected_get())
+
+        if self.__reference.value_get() == 0:
+            to = None
+        else:
+            to = None # FIXME
+        state.rel1_to = (to, to)
+        state.rel2_to = (to, to)
+
+        align_x = 0.5
+        align_y = 0.5
+        rel1_x = 0.0
+        rel1_y = 0.0
+        ofs1_x = 0
+        ofs1_y = 0
+        rel2_x = 1.0
+        rel2_y = 1.0
+        ofs2_x = -1
+        ofs2_y = -1
+
+        position = self.__position.value_get()
+        if position in [1, 4, 6]:
+            align_x = 1.0
+            rel1_x = -1.0
+            rel2_x = 0.0
+        elif position in [11, 13, 16]:
+            align_x = 1.0
+        elif position in [3, 5, 8]:
+            align_x = 0.0
+            rel1_x = 1.0
+            rel2_x = 2.0
+        elif position in [9, 12, 14]:
+            align_x = 0.0
+
+        if position in [1, 2, 3]:
+            align_y = 1.0
+            rel1_y = -1.0
+            rel2_y = 0.0
+        elif position in [14, 15, 16]:
+            align_y = 1.0
+        elif position in [6, 7, 8]:
+            align_y = 0.0
+            rel1_y = 1.0
+            rel2_y = 2.0
+        elif position in [9, 10, 11]:
+            align_y = 0.0
+
+        state.align = (align_x, align_y)
+        state.rel1_relative = (rel1_x, rel1_y)
+        state.rel1_offset = (ofs1_x, ofs1_y)
+        state.rel2_relative = (rel2_x, rel2_y)
+        state.rel2_offset = (ofs2_x, ofs2_y)

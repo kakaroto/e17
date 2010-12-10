@@ -54,4 +54,5 @@ images {
    image: "timeline_lightdot.png" COMP;
    image: "timeline_line.png" COMP;
    image: "timeline_selected.png" COMP;
+   image: "rect_shadow.png" COMP;
 }

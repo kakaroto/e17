@@ -68,4 +68,5 @@ timeline_selected.png \
 trans_accelerate.png \
 trans_desaccelerate.png \
 trans_linear.png \
-trans_sinusoidal.png
+trans_sinusoidal.png \
+rect_shadow.png
