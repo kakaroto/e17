@@ -24,10 +24,8 @@ const char *e_connman_iface_connection = NULL;
 const char *e_connman_iface_technology = NULL;
 
 const char *e_connman_prop_available = NULL;
-const char *e_connman_prop_connected = NULL;
 const char *e_connman_prop_connections = NULL;
 const char *e_connman_prop_default = NULL;
-const char *e_connman_prop_interface = NULL;
 const char *e_connman_prop_ipv4 = NULL;
 const char *e_connman_prop_ipv4_configuration = NULL;
 const char *e_connman_prop_ethernet = NULL;
@@ -39,25 +37,15 @@ const char *e_connman_prop_mtu = NULL;
 const char *e_connman_prop_name = NULL;
 const char *e_connman_prop_offline_mode = NULL;
 const char *e_connman_prop_policy = NULL;
-const char *e_connman_prop_powered = NULL;
 const char *e_connman_prop_priority = NULL;
 const char *e_connman_prop_profiles = NULL;
 const char *e_connman_prop_profile_active = NULL;
 const char *e_connman_prop_services = NULL;
 const char *e_connman_prop_technologies = NULL;
 const char *e_connman_prop_remember = NULL;
-const char *e_connman_prop_scan_interval = NULL;
-const char *e_connman_prop_scanning = NULL;
 const char *e_connman_prop_state = NULL;
 const char *e_connman_prop_strength = NULL;
-const char *e_connman_prop_frequency = NULL;
 const char *e_connman_prop_type = NULL;
-const char *e_connman_prop_wifi_mode = NULL;
-const char *e_connman_prop_wifi_passphrase = NULL;
-const char *e_connman_prop_wifi_security = NULL;
-const char *e_connman_prop_wifi_ssid = NULL;
-const char *e_connman_prop_wifi_channel = NULL;
-const char *e_connman_prop_wifi_eap = NULL;
 const char *e_connman_prop_error = NULL;
 const char *e_connman_prop_mode = NULL;
 const char *e_connman_prop_security = NULL;
@@ -291,17 +279,11 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
    if (!e_connman_prop_available)
       e_connman_prop_available = eina_stringshare_add("Available");
 
-   if (!e_connman_prop_connected)
-      e_connman_prop_connected = eina_stringshare_add("Connected");
-
    if (!e_connman_prop_connections)
       e_connman_prop_connections = eina_stringshare_add("Connections");
 
    if (!e_connman_prop_default)
       e_connman_prop_default = eina_stringshare_add("Default");
-
-   if (!e_connman_prop_interface)
-      e_connman_prop_interface = eina_stringshare_add("Interface");
 
    if (!e_connman_prop_ipv4)
       e_connman_prop_ipv4 = eina_stringshare_add("IPv4");
@@ -336,9 +318,6 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
    if (!e_connman_prop_policy)
       e_connman_prop_policy = eina_stringshare_add("Policy");
 
-   if (!e_connman_prop_powered)
-      e_connman_prop_powered = eina_stringshare_add("Powered");
-
    if (!e_connman_prop_priority)
       e_connman_prop_priority = eina_stringshare_add("Priority");
 
@@ -357,41 +336,14 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
    if (!e_connman_prop_remember)
       e_connman_prop_remember = eina_stringshare_add("Remember");
 
-   if (!e_connman_prop_scan_interval)
-      e_connman_prop_scan_interval = eina_stringshare_add("ScanInterval");
-
-   if (!e_connman_prop_scanning)
-      e_connman_prop_scanning = eina_stringshare_add("Scanning");
-
    if (!e_connman_prop_state)
       e_connman_prop_state = eina_stringshare_add("State");
 
    if (!e_connman_prop_strength)
       e_connman_prop_strength = eina_stringshare_add("Strength");
 
-   if (!e_connman_prop_frequency)
-      e_connman_prop_frequency = eina_stringshare_add("Frequency");
-
    if (!e_connman_prop_type)
       e_connman_prop_type = eina_stringshare_add("Type");
-
-   if (!e_connman_prop_wifi_mode)
-      e_connman_prop_wifi_mode = eina_stringshare_add("WiFi.Mode");
-
-   if (!e_connman_prop_wifi_passphrase)
-      e_connman_prop_wifi_passphrase = eina_stringshare_add("WiFi.Passphrase");
-
-   if (!e_connman_prop_wifi_security)
-      e_connman_prop_wifi_security = eina_stringshare_add("WiFi.Security");
-
-   if (!e_connman_prop_wifi_ssid)
-      e_connman_prop_wifi_ssid = eina_stringshare_add("WiFi.SSID");
-
-   if (!e_connman_prop_wifi_channel)
-      e_connman_prop_wifi_channel = eina_stringshare_add("WiFi.Channel");
-
-   if (!e_connman_prop_wifi_eap)
-      e_connman_prop_wifi_eap = eina_stringshare_add("WiFi.EAP");
 
    if (!e_connman_prop_error)
       e_connman_prop_error = eina_stringshare_add("Error");
@@ -496,10 +448,8 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_iface_technology);
 
    _stringshare_del(&e_connman_prop_available);
-   _stringshare_del(&e_connman_prop_connected);
    _stringshare_del(&e_connman_prop_connections);
    _stringshare_del(&e_connman_prop_default);
-   _stringshare_del(&e_connman_prop_interface);
    _stringshare_del(&e_connman_prop_ipv4);
    _stringshare_del(&e_connman_prop_ipv4_configuration);
    _stringshare_del(&e_connman_prop_ethernet);
@@ -511,25 +461,15 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_prop_name);
    _stringshare_del(&e_connman_prop_offline_mode);
    _stringshare_del(&e_connman_prop_policy);
-   _stringshare_del(&e_connman_prop_powered);
    _stringshare_del(&e_connman_prop_priority);
    _stringshare_del(&e_connman_prop_profiles);
    _stringshare_del(&e_connman_prop_profile_active);
    _stringshare_del(&e_connman_prop_services);
    _stringshare_del(&e_connman_prop_technologies);
    _stringshare_del(&e_connman_prop_remember);
-   _stringshare_del(&e_connman_prop_scan_interval);
-   _stringshare_del(&e_connman_prop_scanning);
    _stringshare_del(&e_connman_prop_state);
    _stringshare_del(&e_connman_prop_strength);
-   _stringshare_del(&e_connman_prop_frequency);
    _stringshare_del(&e_connman_prop_type);
-   _stringshare_del(&e_connman_prop_wifi_mode);
-   _stringshare_del(&e_connman_prop_wifi_passphrase);
-   _stringshare_del(&e_connman_prop_wifi_security);
-   _stringshare_del(&e_connman_prop_wifi_ssid);
-   _stringshare_del(&e_connman_prop_wifi_channel);
-   _stringshare_del(&e_connman_prop_wifi_eap);
    _stringshare_del(&e_connman_prop_error);
    _stringshare_del(&e_connman_prop_mode);
    _stringshare_del(&e_connman_prop_security);
