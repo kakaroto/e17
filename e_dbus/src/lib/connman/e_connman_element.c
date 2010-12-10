@@ -458,12 +458,6 @@ _e_connman_element_get_interface(const char *key)
 
          break;
 
-      case 'N':
-         if (strcmp(tail, "etworks") == 0)
-            interface = e_connman_iface_network;
-
-         break;
-
       case 'S':
          if (strcmp(tail, "ervices") == 0)
             interface = e_connman_iface_service;
@@ -2379,13 +2373,6 @@ e_connman_element_is_profile(const E_Connman_Element *element)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
    return _e_connman_element_is(element, e_connman_iface_profile);
-}
-
-Eina_Bool
-e_connman_element_is_network(const E_Connman_Element *element)
-{
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
-   return _e_connman_element_is(element, e_connman_iface_network);
 }
 
 Eina_Bool

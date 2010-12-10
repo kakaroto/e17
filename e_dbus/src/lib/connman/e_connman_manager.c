@@ -280,8 +280,8 @@ e_connman_manager_technologies_get(unsigned int *count, E_Connman_Element ***p_e
 /**
  * Request to trigger a scan for given technology.
  *
- * Call method RequestScan(type) on server in order to
- * find new services and networks for such technology type.
+ * Call method RequestScan(type) on server in order to find new services for
+ * such technology type.
  *
  * The empty string for type means all technolgies.
  *

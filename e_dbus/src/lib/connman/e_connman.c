@@ -18,7 +18,6 @@ EAPI int E_CONNMAN_EVENT_ELEMENT_DEL = 0;
 EAPI int E_CONNMAN_EVENT_ELEMENT_UPDATED = 0;
 
 const char *e_connman_iface_manager = NULL;
-const char *e_connman_iface_network = NULL;
 const char *e_connman_iface_profile = NULL;
 const char *e_connman_iface_service = NULL;
 const char *e_connman_iface_device = NULL;
@@ -41,8 +40,6 @@ const char *e_connman_prop_gateway = NULL;
 const char *e_connman_prop_netmask = NULL;
 const char *e_connman_prop_mtu = NULL;
 const char *e_connman_prop_name = NULL;
-const char *e_connman_prop_network = NULL;
-const char *e_connman_prop_networks = NULL;
 const char *e_connman_prop_offline_mode = NULL;
 const char *e_connman_prop_policy = NULL;
 const char *e_connman_prop_powered = NULL;
@@ -282,9 +279,6 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
    if (!e_connman_iface_manager)
       e_connman_iface_manager = eina_stringshare_add("org.moblin.connman.Manager");
 
-   if (!e_connman_iface_network)
-      e_connman_iface_network = eina_stringshare_add("org.moblin.connman.Network");
-
    if (!e_connman_iface_profile)
       e_connman_iface_profile = eina_stringshare_add("org.moblin.connman.Profile");
 
@@ -347,12 +341,6 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
 
    if (!e_connman_prop_name)
       e_connman_prop_name = eina_stringshare_add("Name");
-
-   if (!e_connman_prop_network)
-      e_connman_prop_network = eina_stringshare_add("Network");
-
-   if (!e_connman_prop_networks)
-      e_connman_prop_networks = eina_stringshare_add("Networks");
 
    if (!e_connman_prop_offline_mode)
       e_connman_prop_offline_mode = eina_stringshare_add("OfflineMode");
@@ -514,7 +502,6 @@ e_connman_system_shutdown(void)
       return init_count;
 
    _stringshare_del(&e_connman_iface_manager);
-   _stringshare_del(&e_connman_iface_network);
    _stringshare_del(&e_connman_iface_profile);
    _stringshare_del(&e_connman_iface_service);
    _stringshare_del(&e_connman_iface_device);
@@ -537,8 +524,6 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_prop_netmask);
    _stringshare_del(&e_connman_prop_mtu);
    _stringshare_del(&e_connman_prop_name);
-   _stringshare_del(&e_connman_prop_network);
-   _stringshare_del(&e_connman_prop_networks);
    _stringshare_del(&e_connman_prop_offline_mode);
    _stringshare_del(&e_connman_prop_policy);
    _stringshare_del(&e_connman_prop_powered);

@@ -29,7 +29,6 @@ void *    alloca (size_t);
 static const char manager_path[] = "/";
 
 extern const char *e_connman_iface_manager;
-extern const char *e_connman_iface_network;
 extern const char *e_connman_iface_profile;
 extern const char *e_connman_iface_service;
 extern const char *e_connman_iface_device;
@@ -52,8 +51,6 @@ extern const char *e_connman_prop_gateway;
 extern const char *e_connman_prop_netmask;
 extern const char *e_connman_prop_mtu;
 extern const char *e_connman_prop_name;
-extern const char *e_connman_prop_network;
-extern const char *e_connman_prop_networks;
 extern const char *e_connman_prop_offline_mode;
 extern const char *e_connman_prop_policy;
 extern const char *e_connman_prop_powered;

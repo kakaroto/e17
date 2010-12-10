@@ -218,7 +218,6 @@ EAPI Eina_Bool              e_connman_element_property_get(const E_Connman_Eleme
 EAPI Eina_Bool              e_connman_element_is_manager(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_element_is_device(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_element_is_profile(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_element_is_network(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_element_is_service(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_element_is_technology(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -244,27 +243,6 @@ EAPI Eina_Bool              e_connman_device_scan_interval_set(E_Connman_Element
 EAPI Eina_Bool              e_connman_device_scanning_get(const E_Connman_Element *device, Eina_Bool *scanning) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 EAPI Eina_Bool              e_connman_device_networks_get(const E_Connman_Element *device, unsigned int *count, E_Connman_Element ***p_elements) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
-
-/* Network Methods: Low-Level API
- *
- * The network API is informational only, to set these parameters,
- * use the services API instead.
- */
-EAPI E_Connman_Element *    e_connman_network_get(const char *path) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-
-EAPI Eina_Bool              e_connman_network_address_get(const E_Connman_Element *network, const char **address) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_network_name_get(const E_Connman_Element *network, const char **name) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_network_connected_get(const E_Connman_Element *network, Eina_Bool *connected) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_network_strength_get(const E_Connman_Element *network, unsigned char *strength) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_network_frequency_get(const E_Connman_Element *network, unsigned short *frequency) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_network_device_get(const E_Connman_Element *network, E_Connman_Element **element) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-
-EAPI Eina_Bool              e_connman_network_wifi_ssid_get(const E_Connman_Element *network, unsigned int *count, unsigned char **wifi_ssid) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_network_wifi_mode_get(const E_Connman_Element *network, const char **wifi_mode) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_network_wifi_security_get(const E_Connman_Element *network, const char **wifi_security) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_network_wifi_passphrase_get(const E_Connman_Element *network, const char **wifi_passphrase) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_network_wifi_channel_get(const E_Connman_Element *network, unsigned short *wifi_channel) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_network_wifi_eap_get(const E_Connman_Element *network, const char **wifi_eap) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 #ifdef __cplusplus
 }
