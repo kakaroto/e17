@@ -404,42 +404,12 @@ static const struct test_desc test_desc_manager[] = {
   TEST_DESC_SENTINEL
 };
 
-static const struct test_desc test_desc_device[] = {
-  TEST_DESC_STRING_GET(e_connman_device_address_get, 0),
-  TEST_DESC_STRING_GET(e_connman_device_name_get, 0),
-  TEST_DESC_STRING_GET(e_connman_device_type_get, 0),
-  TEST_DESC_STRING_GET(e_connman_device_interface_get, 0),
-  TEST_DESC_BOOL_GET(e_connman_device_powered_get, 0),
-  //TEST_DESC_BOOL_SET(e_connman_device_powered_set, 0),
-  TEST_DESC_USHORT_GET(e_connman_device_scan_interval_get, 1),
-  //TEST_DESC_USHORT_SET(e_connman_device_scan_interval_set, 1),
-  TEST_DESC_BOOL_GET(e_connman_device_scanning_get, 1),
-  TEST_DESC_ELEMENTS_GET(e_connman_device_networks_get, 1),
-  TEST_DESC_SENTINEL
-};
-
 static const struct test_desc test_desc_profile[] = {
   TEST_DESC_STRING_GET(e_connman_profile_name_get, 1),
   //TEST_DESC_STRING_SET(e_connman_profile_name_set, 1),
   TEST_DESC_BOOL_GET(e_connman_profile_offline_mode_get, 0),
   //TEST_DESC_BOOL_SET(e_connman_profile_offline_mode_set, 0),
   TEST_DESC_ELEMENTS_GET(e_connman_profile_services_get, 1),
-  TEST_DESC_SENTINEL
-};
-
-static const struct test_desc test_desc_network[] = {
-  TEST_DESC_STRING_GET(e_connman_network_address_get, 0),
-  TEST_DESC_STRING_GET(e_connman_network_name_get, 0),
-  TEST_DESC_BOOL_GET(e_connman_network_connected_get, 0),
-  TEST_DESC_UCHAR_GET(e_connman_network_strength_get, 1),
-  TEST_DESC_USHORT_GET(e_connman_network_frequency_get, 1),
-  TEST_DESC_ELEMENT_GET(e_connman_network_device_get, 0),
-  TEST_DESC_UCHAR_ARRAY_GET(e_connman_network_wifi_ssid_get, 1),
-  TEST_DESC_STRING_GET(e_connman_network_wifi_mode_get, 1),
-  TEST_DESC_STRING_GET(e_connman_network_wifi_security_get, 1),
-  TEST_DESC_STRING_GET(e_connman_network_wifi_passphrase_get, 1),
-  TEST_DESC_USHORT_GET(e_connman_network_wifi_channel_get, 1),
-  TEST_DESC_STRING_GET(e_connman_network_wifi_eap_get, 1),
   TEST_DESC_SENTINEL
 };
 
@@ -516,12 +486,8 @@ _test_element_timer(void *data)
    struct test_element_timer_data *d = data;
    E_Connman_Element *element = d->element;
 
-   if (e_connman_element_is_device(element))
-     _test_element(element, test_desc_device);
-   else if (e_connman_element_is_profile(element))
+   if (e_connman_element_is_profile(element))
      _test_element(element, test_desc_profile);
-   else if (e_connman_element_is_network(element))
-     _test_element(element, test_desc_network);
    else if (e_connman_element_is_manager(element))
      _test_element(element, test_desc_manager);
    else if (e_connman_element_is_service(element))
