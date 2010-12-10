@@ -4,6 +4,3 @@ switch to SAX parsing for xml, rewrite all xml parsing
 
 optimize http parsing
 optimize by converting a large number of lists to arrays/inlists
-
-parser:
-	generated types from hash table
