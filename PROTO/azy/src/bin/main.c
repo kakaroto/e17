@@ -300,9 +300,11 @@ gen_type_eq(Azy_Typedef *t,
 
    if (def)
      {
+        if ((t->type != TD_STRUCT) && (t->type != TD_ARRAY))
+          return;
+        EL(0, "/** @brief Check whether all the values of @p a are equal to @p b */");
         if (t->type == TD_STRUCT)
-          EL(0, "Eina_Bool %s_eq(%s a, %s b);", t->cname, t->ctype,
-             t->ctype);
+          EL(0, "Eina_Bool %s_eq(%s a, %s b);", t->cname, t->ctype, t->ctype);
         else if (t->type == TD_ARRAY)
           EL(0, "Eina_Bool %s(%s a, %s b);", t->eq_func, t->ctype, t->ctype);
 
@@ -380,8 +382,10 @@ gen_type_isnull(Azy_Typedef *t,
 
    if (def)
      {
-        if (t->type == TD_STRUCT)
-          EL(0, "Eina_Bool %s_isnull(%s a);", t->cname, t->ctype);
+        if (t->type != TD_STRUCT) return;
+
+        EL(0, "/** @brief Check whether all the values of @p a are #NULL */");
+        EL(0, "Eina_Bool %s_isnull(%s a);", t->cname, t->ctype);
         return;
      }
 
@@ -421,6 +425,7 @@ gen_type_hash(Azy_Typedef *t,
 
    if (def)
      {
+        EL(0, "/** @brief Create, from a hash table of strings, a %s */", t->cname);
         EL(0, "%s%s_hash(Eina_Hash *h);", t->ctype, t->cname);
         return;
      }
@@ -444,26 +449,24 @@ gen_type_hash(Azy_Typedef *t,
           {
              if (m->type->ctype == b)
                {
-                  EL(1, "if (!azy_str_to_bool_(eina_hash_find(h, \"%s\"), &new->%s))", m->name, m->name);
+                  EL(1, "EINA_SAFETY_ON_TRUE_GOTO(!azy_str_to_bool_(eina_hash_find(h, \"%s\"), &new->%s), error);", m->name, m->name);
                   need_err = EINA_TRUE;
                }
              else if (m->type->ctype == d)
                {
-                  EL(1, "if (!azy_str_to_double_(eina_hash_find(h, \"%s\"), &new->%s))", m->name, m->name);
+                  EL(1, "EINA_SAFETY_ON_TRUE_GOTO(!azy_str_to_double_(eina_hash_find(h, \"%s\"), &new->%s), error);", m->name, m->name);
                   need_err = EINA_TRUE;
                }
              else if (m->type->ctype == i)
                {
-                  EL(1, "if (!azy_str_to_int_(eina_hash_find(h, \"%s\"), &new->%s))", m->name, m->name);
+                  EL(1, "EINA_SAFETY_ON_TRUE_GOTO(!azy_str_to_int_(eina_hash_find(h, \"%s\"), &new->%s), error);", m->name, m->name);
                   need_err = EINA_TRUE;
                }
              else if (m->type->ctype == c)
                {
-                  EL(1, "if (!azy_str_to_str_(eina_hash_find(h, \"%s\"), &new->%s))", m->name, m->name);
+                  EL(1, "EINA_SAFETY_ON_TRUE_GOTO(!azy_str_to_str_(eina_hash_find(h, \"%s\"), &new->%s), error);", m->name, m->name);
                   need_err = EINA_TRUE;
                }
-             else continue;
-             EL(2, "goto error;");
           }
      }
    EL(1, "return new;");
@@ -475,6 +478,7 @@ gen_type_hash(Azy_Typedef *t,
         EL(1, "return NULL;");
      }
    EL(0, "}");
+   NL;
 }
 
 static void
@@ -487,9 +491,15 @@ gen_type_print(Azy_Typedef *t,
    if (def)
      {
         if (t->type == TD_STRUCT)
-          EL(0, "void %s_print(const char *pre, int indent, %sa);", t->cname, t->ctype);
+          {
+             EL(0, "/** @brief Print, indenting @p indent times @p pre, a %s */", t->cname);
+             EL(0, "void %s_print(const char *pre, int indent, %sa);", t->cname, t->ctype);
+          }
         else if (t->type == TD_ARRAY)
-          EL(0, "void %s(const char *pre, int indent, Eina_List *a);", t->print_func);
+          {
+             EL(0, "/** @brief Print, indenting @p indent times @p pre, an array of %s */", t->cname);
+             EL(0, "void %s(const char *pre, int indent, Eina_List *a);", t->print_func);
+          }
         return;
      }
 
@@ -577,8 +587,10 @@ gen_type_copyfree(Azy_Typedef *t,
 
         if (t->type == TD_STRUCT || t->type == TD_ARRAY)
           {
+             EL(0, "/** @brief Free a #%s */", t->ctype);
              EL(0, "%svoid %s(%s val);", (_static) ? "static " : "", t->free_func, t->ctype);
-             EL(0, "%s%s %s(%s orig);", (_static) ? "static " : "", t->ctype, t->copy_func, t->ctype);
+             EL(0, "/** @brief Copy a #%s */", t->ctype);
+             EL(0, "%s%s%s(%sorig);", (_static) ? "static " : "", t->ctype, t->copy_func, t->ctype);
           }
         t->fcheader = EINA_TRUE;
         return;
@@ -588,7 +600,7 @@ gen_type_copyfree(Azy_Typedef *t,
    if (t->type == TD_STRUCT)
      {
         /* new */
-         EL(0, "%s%s %s_new()", (_static) ? "static " : "", t->ctype, t->cname);
+         EL(0, "%s%s%s_new(void)", (_static) ? "static " : "", t->ctype, t->cname);
          EL(0, "{");
          EL(1, "return calloc(1, sizeof(%s));", t->cname);
          EL(0, "}");
@@ -624,9 +636,7 @@ gen_type_copyfree(Azy_Typedef *t,
          EINA_LIST_FOREACH(t->struct_members, l, m)
            {
               if (m->type->copy_func)
-                EL(1, "copy->%s = %s(orig->%s);", m->name,
-                   m->type->copy_func,
-                   m->name);
+                EL(1, "copy->%s = %s(orig->%s);", m->name, m->type->copy_func, m->name);
               else
                 EL(1, "copy->%s = orig->%s;", m->name, m->name);
            }

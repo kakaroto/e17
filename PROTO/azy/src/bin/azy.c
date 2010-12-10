@@ -34,14 +34,14 @@ azy_stringshare_toupper(const char *str)
 
 static Azy_Typedef *
 azy_typedef_new(int         type,
-                 const char *name,
-                 const char *cname,
-                 const char *ctype,
-                 const char *cnull,
-                 const char *dem_name,
-                 const char *mar_name,
-                 const char *free_func,
-                 const char *fmt_str)
+                const char *name,
+                const char *cname,
+                const char *ctype,
+                const char *cnull,
+                const char *dem_name,
+                const char *mar_name,
+                const char *free_func,
+                const char *fmt_str)
 {
    Azy_Typedef *t = calloc(1, sizeof(Azy_Typedef));
    t->type = type;
@@ -148,7 +148,7 @@ azy_typedef_new_array(Azy_Model         *azy,
      }
    Azy_Typedef *a = azy_typedef_new(TD_ARRAY,
                                       NULL, eina_stringshare_printf("Array_%s", item->cname),
-                                      "Eina_List*", "NULL", NULL, NULL,
+                                      "Eina_List *", "NULL", NULL, NULL,
                                       eina_stringshare_printf("Array_%s_free", item->cname),
                                       "%s"
                                       );
