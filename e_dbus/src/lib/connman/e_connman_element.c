@@ -452,12 +452,6 @@ _e_connman_element_get_interface(const char *key)
 
          break;
 
-      case 'D':
-         if (strcmp(tail, "evices") == 0)
-            interface = e_connman_iface_device;
-
-         break;
-
       case 'S':
          if (strcmp(tail, "ervices") == 0)
             interface = e_connman_iface_service;
@@ -1114,7 +1108,6 @@ e_connman_element_free(E_Connman_Element *element)
    e_connman_element_pending_cancel_and_free(&element->_pending.technology_enable);
    e_connman_element_pending_cancel_and_free(&element->_pending.technology_disable);
    e_connman_element_pending_cancel_and_free(&element->_pending.profile_remove);
-   e_connman_element_pending_cancel_and_free(&element->_pending.device_propose_scan);
    e_connman_element_pending_cancel_and_free(&element->_pending.service_connect);
    e_connman_element_pending_cancel_and_free(&element->_pending.service_disconnect);
    e_connman_element_pending_cancel_and_free(&element->_pending.service_remove);
@@ -2359,13 +2352,6 @@ e_connman_element_is_manager(const E_Connman_Element *element)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
    return _e_connman_element_is(element, e_connman_iface_manager);
-}
-
-Eina_Bool
-e_connman_element_is_device(const E_Connman_Element *element)
-{
-   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
-   return _e_connman_element_is(element, e_connman_iface_device);
 }
 
 Eina_Bool

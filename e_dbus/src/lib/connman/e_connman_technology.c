@@ -104,30 +104,3 @@ e_connman_technology_state_get(const E_Connman_Element *technology, const char *
    return e_connman_element_property_get_stringshared
              (technology, e_connman_prop_state, NULL, state);
 }
-
-/**
- * Get array of device elements.
- *
- * If this property isn't found then @c EINA_FALSE is returned.
- * If @c EINA_FALSE is returned, then this call failed and parameter-returned
- * values shall be considered invalid.
- *
- * @param technology path to get property.
- * @param count return the number of elements in array.
- * @param t_elements array with all elements, these are not referenced
- *        and in no particular order, just set if return is @c EINA_TRUE.  The
- *        array itself is allocated using malloc() and should be freed
- *        after usage is done.
- *
- * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
- */
-Eina_Bool
-e_connman_technology_devices_get(const E_Connman_Element *technology, unsigned int *count, E_Connman_Element ***t_elements)
-{
-   EINA_SAFETY_ON_NULL_RETURN_VAL(technology, EINA_FALSE);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(count, EINA_FALSE);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(t_elements, EINA_FALSE);
-   return e_connman_element_objects_array_get_stringshared
-             (technology, e_connman_prop_devices, count, t_elements);
-}
-

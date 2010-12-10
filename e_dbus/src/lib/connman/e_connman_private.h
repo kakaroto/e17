@@ -31,7 +31,6 @@ static const char manager_path[] = "/";
 extern const char *e_connman_iface_manager;
 extern const char *e_connman_iface_profile;
 extern const char *e_connman_iface_service;
-extern const char *e_connman_iface_device;
 extern const char *e_connman_iface_connection;
 extern const char *e_connman_iface_technology;
 
@@ -39,8 +38,6 @@ extern const char *e_connman_prop_available;
 extern const char *e_connman_prop_connected;
 extern const char *e_connman_prop_connections;
 extern const char *e_connman_prop_default;
-extern const char *e_connman_prop_device;
-extern const char *e_connman_prop_devices;
 extern const char *e_connman_prop_interface;
 extern const char *e_connman_prop_ipv4;
 extern const char *e_connman_prop_ipv4_configuration;

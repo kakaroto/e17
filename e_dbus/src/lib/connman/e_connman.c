@@ -20,7 +20,6 @@ EAPI int E_CONNMAN_EVENT_ELEMENT_UPDATED = 0;
 const char *e_connman_iface_manager = NULL;
 const char *e_connman_iface_profile = NULL;
 const char *e_connman_iface_service = NULL;
-const char *e_connman_iface_device = NULL;
 const char *e_connman_iface_connection = NULL;
 const char *e_connman_iface_technology = NULL;
 
@@ -28,8 +27,6 @@ const char *e_connman_prop_available = NULL;
 const char *e_connman_prop_connected = NULL;
 const char *e_connman_prop_connections = NULL;
 const char *e_connman_prop_default = NULL;
-const char *e_connman_prop_device = NULL;
-const char *e_connman_prop_devices = NULL;
 const char *e_connman_prop_interface = NULL;
 const char *e_connman_prop_ipv4 = NULL;
 const char *e_connman_prop_ipv4_configuration = NULL;
@@ -285,9 +282,6 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
    if (!e_connman_iface_service)
       e_connman_iface_service = eina_stringshare_add("org.moblin.connman.Service");
 
-   if (!e_connman_iface_device)
-      e_connman_iface_device = eina_stringshare_add("org.moblin.connman.Device");
-
    if (!e_connman_iface_connection)
       e_connman_iface_connection = eina_stringshare_add("org.moblin.connman.Connection");
 
@@ -305,12 +299,6 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
 
    if (!e_connman_prop_default)
       e_connman_prop_default = eina_stringshare_add("Default");
-
-   if (!e_connman_prop_device)
-      e_connman_prop_device = eina_stringshare_add("Device");
-
-   if (!e_connman_prop_devices)
-      e_connman_prop_devices = eina_stringshare_add("Devices");
 
    if (!e_connman_prop_interface)
       e_connman_prop_interface = eina_stringshare_add("Interface");
@@ -504,7 +492,6 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_iface_manager);
    _stringshare_del(&e_connman_iface_profile);
    _stringshare_del(&e_connman_iface_service);
-   _stringshare_del(&e_connman_iface_device);
    _stringshare_del(&e_connman_iface_connection);
    _stringshare_del(&e_connman_iface_technology);
 
@@ -512,8 +499,6 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_prop_connected);
    _stringshare_del(&e_connman_prop_connections);
    _stringshare_del(&e_connman_prop_default);
-   _stringshare_del(&e_connman_prop_device);
-   _stringshare_del(&e_connman_prop_devices);
    _stringshare_del(&e_connman_prop_interface);
    _stringshare_del(&e_connman_prop_ipv4);
    _stringshare_del(&e_connman_prop_ipv4_configuration);

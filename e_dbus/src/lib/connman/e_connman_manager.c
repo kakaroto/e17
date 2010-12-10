@@ -78,7 +78,7 @@ e_connman_manager_agent_unregister(const char *object_path, E_DBus_Method_Return
  *
  * The global connection state of a system. Possible
  * values are "online" if at least one connection exists
- * and "offline" if no device is connected.
+ * and "offline" if no service is connected.
  *
  * In certain situations the state might change to
  * the value "connected". This can only be seen if
@@ -113,16 +113,14 @@ e_connman_manager_state_get(const char **state)
  * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
- * The offline mode indicates the global setting for
- * switching all radios on or off. Changing offline mode
- * to true results in powering down all devices. When
- * leaving offline mode the individual policy of each
- * device decides to switch the radio back on or not.
+ * The offline mode indicates the global setting for switching all radios on or
+ * off. Changing offline mode to true results in powering down all devices that
+ * use radio technology. When leaving offline mode the individual policy of each
+ * technology decides to switch the radio back on or not.
  *
- * During offline mode, it is still possible to switch
- * certain technologies manually back on. For example
- * the limited usage of WiFi or Bluetooth devices might
- * be allowed in some situations.
+ * During offline mode, it is still possible to switch certain technologies
+ * manually back on. For example the limited usage of WiFi or Bluetooth
+ * technologies might be allowed in some situations.
  *
  * @param offline where to store the property value, must be a pointer
  *        to Eina_Bool (Eina_Bool *).
@@ -152,16 +150,14 @@ e_connman_manager_offline_mode_get(Eina_Bool *offline)
  * no property is updated locally. If the value was set the event
  * E_CONNMAN_EVENT_ELEMENT_UPDATED will be added to main loop.
  *
- * The offline mode indicates the global setting for
- * switching all radios on or off. Changing offline mode
- * to true results in powering down all devices. When
- * leaving offline mode the individual policy of each
- * device decides to switch the radio back on or not.
+ * The offline mode indicates the global setting for switching all radios on or
+ * off. Changing offline mode to true results in powering down all devices that
+ * use radio technology. When leaving offline mode the individual policy of each
+ * technology decides to switch the radio back on or not.
  *
- * During offline mode, it is still possible to switch
- * certain technologies manually back on. For example
- * the limited usage of WiFi or Bluetooth devices might
- * be allowed in some situations.
+ * During offline mode, it is still possible to switch certain technologies
+ * manually back on. For example the limited usage of WiFi or Bluetooth
+ * technologies might be allowed in some situations.
  *
  * @param offline value to set.
  * @param cb function to call when server replies or some error happens.

@@ -45,7 +45,6 @@ struct _E_Connman_Element
       Eina_Inlist *technology_enable;
       Eina_Inlist *technology_disable;
       Eina_Inlist *profile_remove;
-      Eina_Inlist *device_propose_scan;
       Eina_Inlist *service_connect;
       Eina_Inlist *service_disconnect;
       Eina_Inlist *service_remove;
@@ -177,7 +176,6 @@ EAPI E_Connman_Element *    e_connman_technology_get(const char *path) EINA_ARG_
 EAPI Eina_Bool              e_connman_technology_state_get(const E_Connman_Element *technology, const char **state) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_technology_name_get(const E_Connman_Element *technology, const char **state) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_technology_type_get(const E_Connman_Element *technology, const char **state) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_technology_devices_get(const E_Connman_Element *technology, unsigned int *count, E_Connman_Element ***t_elements) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 
 // TODO: ethernet_speed_get (not in connman yet)
 // TODO: ethernet_duplex_get (not in connman yet)
@@ -216,33 +214,9 @@ EAPI Eina_Bool              e_connman_element_property_get_stringshared(const E_
 EAPI Eina_Bool              e_connman_element_property_get(const E_Connman_Element *element, const char *name, int *type, void *value) EINA_ARG_NONNULL(1, 2, 4) EINA_WARN_UNUSED_RESULT;
 
 EAPI Eina_Bool              e_connman_element_is_manager(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_element_is_device(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_element_is_profile(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_element_is_service(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_element_is_technology(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-
-/* Device Methods: Low-Level API
- *
- * Fine tune device, such as turn off and change scan interval.
- */
-EAPI E_Connman_Element *    e_connman_device_get(const char *path) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-
-EAPI Eina_Bool              e_connman_device_propose_scan(E_Connman_Element *device, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-
-EAPI Eina_Bool              e_connman_device_address_get(const E_Connman_Element *device, const char **address);
-EAPI Eina_Bool              e_connman_device_name_get(const E_Connman_Element *device, const char **name) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_device_type_get(const E_Connman_Element *device, const char **type) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_device_interface_get(const E_Connman_Element *device, const char **interface) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-
-EAPI Eina_Bool              e_connman_device_powered_get(const E_Connman_Element *device, Eina_Bool *powered) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_device_powered_set(E_Connman_Element *device, Eina_Bool powered, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-
-EAPI Eina_Bool              e_connman_device_scan_interval_get(const E_Connman_Element *device, unsigned short *scan_interval) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_device_scan_interval_set(E_Connman_Element *device, unsigned short scan_interval, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-
-EAPI Eina_Bool              e_connman_device_scanning_get(const E_Connman_Element *device, Eina_Bool *scanning) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-
-EAPI Eina_Bool              e_connman_device_networks_get(const E_Connman_Element *device, unsigned int *count, E_Connman_Element ***p_elements) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 
 #ifdef __cplusplus
 }

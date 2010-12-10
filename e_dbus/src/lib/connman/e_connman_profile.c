@@ -76,9 +76,9 @@ e_connman_profile_name_set(E_Connman_Element *profile, const char *name, E_DBus_
  * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
- * The offline mode indicates the global setting for
- * switching all radios on or off. Changing offline mode
- * to true results in powering down all devices.
+ * The offline mode indicates the global setting for switching all radios on or
+ * off. Changing offline mode to true results in powering down all devices that
+ * use radio technology.
  *
  * @param offline where to store the property value, must be a pointer
  *        to Eina_Bool (Eina_Bool *).
@@ -102,9 +102,9 @@ e_connman_profile_offline_mode_get(const E_Connman_Element *profile, Eina_Bool *
  * no property is updated locally. If the value was set the event
  * E_CONNMAN_EVENT_ELEMENT_UPDATED will be added to main loop.
  *
- * The offline mode indicates the global setting for
- * switching all radios on or off. Changing offline mode
- * to true results in powering down all devices.
+ * The offline mode indicates the global setting for switching all radios on or
+ * off. Changing offline mode to true results in powering down all devices that
+ * use radio technology.
  *
  * @param offline value to set.
  * @param cb function to call when server replies or some error happens.
