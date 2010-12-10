@@ -62,7 +62,10 @@ azy_typedef_new(int         type,
         t->copy_func = eina_stringshare_printf("%s_copy", t->cname);
         t->eq_func = eina_stringshare_printf("%s_eq", t->cname);
         if (type == TD_STRUCT)
-          t->isnull_func = eina_stringshare_printf("%s_isnull", t->cname);
+          {
+             t->isnull_func = eina_stringshare_printf("%s_isnull", t->cname);
+             t->hash_func = eina_stringshare_printf("%s_hash", t->cname);
+          }
         t->fmt_str = fmt_str ? eina_stringshare_add(fmt_str) : NULL;
         t->print_func = eina_stringshare_printf("%s_print", t->cname);
      }
@@ -92,8 +95,8 @@ azy_new(void)
    EINA_SAFETY_ON_NULL_RETURN_VAL(c, NULL);
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "int", "int", "int", "0", "azy_value_int_get", "azy_value_int_new", NULL, "%i"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "boolean", "boolean", "Eina_Bool", "EINA_FALSE", "azy_value_bool_get", "azy_value_bool_new", NULL, "%s"));
-   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "string", "string", "const char *", "NULL", "azy_value_string_get", "azy_value_string_new", "eina_stringshare_del", "%s"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "double", "double", "double", "0.0", "azy_value_double_get", "azy_value_double_new", NULL, "%.3lf"));
+   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "string", "string", "const char *", "NULL", "azy_value_string_get", "azy_value_string_new", "eina_stringshare_del", "%s"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "time", "time", "const char *", "NULL", "azy_value_string_get", "azy_value_time_new", "eina_stringshare_del", "%s"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "base64", "base64", "const char *", "NULL", "azy_value_base64_get", "azy_value_base64_new", "eina_stringshare_del", "%s"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_ANY, "any", "any", "Azy_Value *", "NULL", "azy_value_value_get", "azy_value_ref", "azy_value_unref", NULL));

@@ -68,7 +68,7 @@ static Eina_Bool azy_gen;
 static char *out_dir = ".";
 static char *azy_file;
 static FILE *f;
-static const char *i, *b, *d;
+static const char *i, *b, *d, *c, *e;
 static const char *sep;
 static const char *name;
 
@@ -293,7 +293,7 @@ gen_type_marshalizers(Azy_Typedef *t,
 
 static void
 gen_type_eq(Azy_Typedef *t,
-            int           def)
+            Eina_Bool    def)
 {
    Eina_List *l;
    Azy_Struct_Member *m;
@@ -373,7 +373,7 @@ gen_type_eq(Azy_Typedef *t,
 
 static void
 gen_type_isnull(Azy_Typedef *t,
-                 int           def)
+                Eina_Bool    def)
 {
    Eina_List *l;
    Azy_Struct_Member *m;
@@ -410,8 +410,76 @@ gen_type_isnull(Azy_Typedef *t,
 }
 
 static void
+gen_type_hash(Azy_Typedef *t,
+              Eina_Bool    def)
+{
+   Eina_List *l;
+   Eina_Bool need_err = EINA_FALSE;
+   Azy_Struct_Member *m;
+   
+   if (t->type != TD_STRUCT) return;
+
+   if (def)
+     {
+        EL(0, "%s%s_hash(Eina_Hash *h);", t->ctype, t->cname);
+        return;
+     }
+
+   EL(0, "%s%s_hash(Eina_Hash *h)", t->ctype, t->cname);
+   EL(0, "{");
+   EL(1, "%snew;", t->ctype);
+   NL;
+   EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(h, NULL);");
+   NL;
+   EL(1, "new = %s_new();", t->cname);
+   EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(new, NULL);");
+   EINA_LIST_FOREACH(t->struct_members, l, m)
+     {
+        if (m->type->hash_func)
+          {
+             EL(1, "new->%s = %s(eina_hash_find(h, \"%s\"));", m->name, m->type->hash_func, m->name);
+             EL(1, "EINA_SAFETY_ON_NULL_GOTO(new->%s, error);", m->name);
+          }
+        else
+          {
+             if (m->type->ctype == b)
+               {
+                  EL(1, "if (!azy_str_to_bool_(eina_hash_find(h, \"%s\"), &new->%s))", m->name, m->name);
+                  need_err = EINA_TRUE;
+               }
+             else if (m->type->ctype == d)
+               {
+                  EL(1, "if (!azy_str_to_double_(eina_hash_find(h, \"%s\"), &new->%s))", m->name, m->name);
+                  need_err = EINA_TRUE;
+               }
+             else if (m->type->ctype == i)
+               {
+                  EL(1, "if (!azy_str_to_int_(eina_hash_find(h, \"%s\"), &new->%s))", m->name, m->name);
+                  need_err = EINA_TRUE;
+               }
+             else if (m->type->ctype == c)
+               {
+                  EL(1, "if (!azy_str_to_str_(eina_hash_find(h, \"%s\"), &new->%s))", m->name, m->name);
+                  need_err = EINA_TRUE;
+               }
+             else continue;
+             EL(2, "goto error;");
+          }
+     }
+   EL(1, "return new;");
+   if (need_err)
+     {
+        NL;
+        EL(0, "error:");
+        EL(1, "%s(new);", t->free_func);
+        EL(1, "return NULL;");
+     }
+   EL(0, "}");
+}
+
+static void
 gen_type_print(Azy_Typedef *t,
-               int           def)
+               Eina_Bool    def)
 {
    Eina_List *l;
    Azy_Struct_Member *m;
@@ -419,7 +487,7 @@ gen_type_print(Azy_Typedef *t,
    if (def)
      {
         if (t->type == TD_STRUCT)
-          EL(0, "void %s_print(const char *pre, int indent, %s a);", t->cname, t->ctype, t->ctype);
+          EL(0, "void %s_print(const char *pre, int indent, %sa);", t->cname, t->ctype);
         else if (t->type == TD_ARRAY)
           EL(0, "void %s(const char *pre, int indent, Eina_List *a);", t->print_func);
         return;
@@ -427,7 +495,7 @@ gen_type_print(Azy_Typedef *t,
 
    if (t->type == TD_STRUCT)
      {
-        EL(0, "void %s_print(const char *pre, int indent, %s a)", t->cname, t->ctype);
+        EL(0, "void %s_print(const char *pre, int indent, %sa)", t->cname, t->ctype);
         EL(0, "{");
         EL(1, "int i;");
         EL(1, "if (!a)");
@@ -457,7 +525,7 @@ gen_type_print(Azy_Typedef *t,
      }
    else if (t->type == TD_ARRAY)
      {
-        EL(0, "void %s(const char *pre, int indent, %s a)", t->print_func, t->ctype);
+        EL(0, "void %s(const char *pre, int indent, %sa)", t->print_func, t->ctype);
         EL(0, "{");
         EL(1, "Eina_List *l;");
         if ((t->item_type->ctype == i) || (t->item_type->ctype == b))
@@ -749,6 +817,10 @@ gen_common_headers(void)
 
    EL(0, "#include <Azy.h>");
    NL;
+   EL(0, "Eina_Bool azy_str_to_bool_(const char *d, Eina_Bool *ret);");
+   EL(0, "Eina_Bool azy_str_to_str_(const char *d, const char **ret);");
+   EL(0, "Eina_Bool azy_str_to_int_(const char *d, int *ret);");
+   EL(0, "Eina_Bool azy_str_to_double_(const char *d, double *ret);");
    gen_errors_header(NULL);
    gen_type_defs(azy->types);
 
@@ -758,6 +830,7 @@ gen_common_headers(void)
         gen_type_eq(t, EINA_TRUE);
         gen_type_print(t, EINA_TRUE);
         gen_type_isnull(t, EINA_TRUE);
+        gen_type_hash(t, EINA_TRUE);
      }
 
    NL;
@@ -779,7 +852,56 @@ gen_common_impl(Azy_Server_Module *s)
 
         EL(0, "#include \"%s%sCommon.h\"", name, sep);
         EL(0, "#include <string.h>");
+        EL(0, "#include <errno.h>");
         NL;
+
+        EL(0, "Eina_Bool");
+        EL(0, "azy_str_to_bool_(const char *d, Eina_Bool *ret)");
+        EL(0, "{");
+        EL(1, "if (d && (*d == '1'))");
+        EL(2, "*ret = EINA_TRUE;");
+        EL(1, "return EINA_TRUE;");
+        EL(0, "}");
+        NL;
+        EL(0, "Eina_Bool");
+        EL(0, "azy_str_to_str_(const char *d, const char **ret)");
+        EL(0, "{");
+        EL(1, "if (!d) return EINA_TRUE;");
+        EL(1, "*ret = eina_stringshare_add(d);");
+        EL(1, "return EINA_TRUE;");
+        EL(0, "}");
+        NL;
+        EL(0, "Eina_Bool");
+        EL(0, "azy_str_to_int_(const char *d, int *ret)");
+        EL(0, "{");
+        EL(1, "errno = 0;");
+        EL(1, "if (!d) return EINA_TRUE;");
+        EL(1, "*ret = strtol(d, NULL, 10);");
+        EL(1, "if (errno)");
+        EL(2, "{");
+        EL(0, "#ifdef ERR");
+        EL(3, "ERR(\"Error converting %%s to int: '%%s'\", d, strerror(errno));");
+        EL(0, "#endif");
+        EL(3, "return EINA_FALSE;");
+        EL(2, "}");
+        EL(1, "return EINA_TRUE;");
+        EL(0, "}");
+        NL;
+        EL(0, "Eina_Bool");
+        EL(0, "azy_str_to_double_(const char *d, double *ret)");
+        EL(0, "{");
+        EL(1, "errno = 0;");
+        EL(1, "if (!d) return EINA_TRUE;");
+        EL(1, "*ret = strtod(d, NULL);");
+        EL(1, "if (errno)");
+        EL(2, "{");
+        EL(0, "#ifdef ERR");
+        EL(3, "ERR(\"Error converting %%s to double: '%%s'\", d, strerror(errno));");
+        EL(0, "#endif");
+        EL(3, "return EINA_FALSE;");
+        EL(2, "}");
+        EL(1, "return EINA_TRUE;");
+        EL(0, "}");
 
         EINA_LIST_FOREACH(azy->types, j, t)
           {
@@ -787,6 +909,7 @@ gen_common_impl(Azy_Server_Module *s)
              gen_type_eq(t, EINA_FALSE);
              gen_type_print(t, EINA_FALSE);
              gen_type_isnull(t, EINA_FALSE);
+             gen_type_hash(t, EINA_FALSE);
           }
         
         gen_errors_impl(NULL);
@@ -1671,6 +1794,8 @@ main(int argc, char *argv[])
    i = eina_stringshare_add("int");
    b = eina_stringshare_add("Eina_Bool");
    d = eina_stringshare_add("double");
+   c = eina_stringshare_add("const char *");
+   e = eina_stringshare_add("Eina_List *");
    azy_write();
 
    if (debug)
