@@ -39,7 +39,7 @@
 #define match_comment(_node) \
   (_node->type == XML_COMMENT_NODE)
 
-static __inline__ const char *
+static const char *
 xml_get_cont_str(xmlNodePtr n)
 {
    xmlChar *str;
@@ -52,7 +52,7 @@ xml_get_cont_str(xmlNodePtr n)
    return ret;
 }
 
-static __inline__ int
+static int
 xml_get_cont_int(xmlNodePtr n)
 {
    xmlChar *str;
@@ -66,7 +66,7 @@ xml_get_cont_int(xmlNodePtr n)
    return ret;
 }
 
-static __inline__ double
+static double
 xml_get_cont_double(xmlNodePtr n)
 {
    xmlChar *str;
@@ -80,7 +80,7 @@ xml_get_cont_double(xmlNodePtr n)
    return ret;
 }
 
-static __inline__ int
+static int
 xml_get_cont_bool(xmlNodePtr n)
 {
    xmlChar *str;
@@ -108,7 +108,7 @@ struct nodeset
    long              count;
 };
 
-static __inline__ struct nodeset *
+static struct nodeset *
 xp_eval_nodes(xmlXPathContextPtr ctx,
               const char        *path)
 {
@@ -125,7 +125,7 @@ xp_eval_nodes(xmlXPathContextPtr ctx,
    return ns;
 }
 
-static __inline__ void
+static void
 xp_free_nodes(struct nodeset *ns)
 {
    if (!ns)
@@ -136,7 +136,7 @@ xp_free_nodes(struct nodeset *ns)
      free(ns);
 }
 
-static __inline__ const char *
+static const char *
 xp_eval_cont_str(xmlXPathContextPtr ctx,
                  const char        *path)
 {
@@ -149,7 +149,7 @@ xp_eval_cont_str(xmlXPathContextPtr ctx,
    return ret;
 }
 
-static __inline__ int
+static int
 xp_eval_cont_int(xmlXPathContextPtr ctx,
                  const char        *path,
                  int                fallback)
