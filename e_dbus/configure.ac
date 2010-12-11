@@ -116,16 +116,6 @@ AC_ARG_ENABLE([eukit],
    [enable_eukit="${want_eukit}"])
 
 
-EFL_ENABLE_BIN([edbus-test])
-EFL_ENABLE_BIN([edbus-test-client])
-EFL_ENABLE_BIN([edbus-bluez-test])
-EFL_ENABLE_BIN([edbus-connman-test])
-EFL_ENABLE_BIN([edbus-notification-deamon-test])
-EFL_ENABLE_BIN([edbus-notify-send])
-EFL_ENABLE_BIN([edbus-notify-test])
-EFL_ENABLE_BIN([edbus-ofono-test])
-EFL_ENABLE_BIN([edbus-ukit-test])
-
 ### Checks for programs
 
 AC_PROG_CC
@@ -190,40 +180,77 @@ AM_CONDITIONAL([BUILD_EUKIT],    [test "x${enable_eukit}"    = "xyes"])
 
 # Dependencies for the binaries
 
+EFL_ENABLE_BIN([edbus-test], ["yes"])
+EFL_ENABLE_BIN([edbus-test-client], ["yes"])
+EFL_ENABLE_BIN([edbus-bluez-test], [${enable_ebluez}])
+EFL_ENABLE_BIN([edbus-connman-test], [${enable_econnman}])
+EFL_ENABLE_BIN([edbus-notification-deamon-test], [${enable_enotify}])
+EFL_ENABLE_BIN([edbus-notify-send], [${enable_enotify}])
+EFL_ENABLE_BIN([edbus-notify-test], [${enable_enotify}])
+EFL_ENABLE_BIN([edbus-ofono-test], [${enable_eofono}])
+EFL_ENABLE_BIN([edbus-ukit-test], [${enable_eukit}])
+
 if test "x${have_edbus_test}" = "xyes" ; then
-   PKG_CHECK_MODULES([EDBUS_TEST], [ecore >= 1.0.0 dbus-1 >= 0.62])
+   PKG_CHECK_MODULES([EDBUS_TEST],
+      [ecore >= 1.0.0 dbus-1 >= 0.62],
+      [have_edbus_test="yes"],
+      [have_edbus_test="no"])
 fi
 
 if test "x${have_edbus_test_client}" = "xyes" ; then
-   PKG_CHECK_MODULES([EDBUS_TEST_CLIENT], [ecore >= 1.0.0 dbus-1 >= 0.62])
+   PKG_CHECK_MODULES([EDBUS_TEST_CLIENT],
+      [ecore >= 1.0.0 dbus-1 >= 0.62],
+      [have_edbus_test_client="yes"],
+      [have_edbus_test_client="no"])
 fi
 
 if test "x${have_edbus_bluez_test}" = "xyes" ; then
-   PKG_CHECK_MODULES([EDBUS_BLUEZ_TEST], [ecore >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62])
+   PKG_CHECK_MODULES([EDBUS_BLUEZ_TEST],
+      [ecore >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62],
+      [have_edbus_bluez_test="yes"],
+      [have_edbus_bluez_test="no"])
 fi
 
 if test "x${have_edbus_connman_test}" = "xyes" ; then
-   PKG_CHECK_MODULES([EDBUS_CONNMAN_TEST], [ecore >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62])
+   PKG_CHECK_MODULES([EDBUS_CONNMAN_TEST],
+      [ecore >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62],
+      [have_edbus_connman_test="yes"],
+      [have_edbus_connman_test="no"])
 fi
 
 if test "x${have_edbus_notification_deamon_test}" = "xyes" ; then
-   PKG_CHECK_MODULES([EDBUS_NOTIFICATION_DEAMON_TEST], [ecore >= 1.0.0 evas >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62])
+   PKG_CHECK_MODULES([EDBUS_NOTIFICATION_DEAMON_TEST],
+      [ecore >= 1.0.0 evas >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62],
+      [have_edbus_notification_deamon_test="yes"],
+      [have_edbus_notification_deamon_test="no"])
 fi
 
 if test "x${have_edbus_notify_send}" = "xyes" ; then
-   PKG_CHECK_MODULES([EDBUS_NOTIFY_SEND], [ecore >= 1.0.0 evas >= 1.0.0 dbus-1 >= 0.62])
+   PKG_CHECK_MODULES([EDBUS_NOTIFY_SEND],
+      [ecore >= 1.0.0 evas >= 1.0.0 dbus-1 >= 0.62],
+      [have_edbus_notify_send="yes"],
+      [have_edbus_notify_send="no"])
 fi
 
 if test "x${have_edbus_notify_test}" = "xyes" ; then
-   PKG_CHECK_MODULES([EDBUS_NOTIFY_TEST], [ecore >= 1.0.0 evas >= 1.0.0 dbus-1 >= 0.62])
+   PKG_CHECK_MODULES([EDBUS_NOTIFY_TEST],
+      [ecore >= 1.0.0 evas >= 1.0.0 dbus-1 >= 0.62],
+      [have_edbus_notify_test="yes"],
+      [have_edbus_notify_test="no"])
 fi
 
 if test "x${have_edbus_ofono_test}" = "xyes" ; then
-   PKG_CHECK_MODULES([EDBUS_OFONO_TEST], [ecore >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62])
+   PKG_CHECK_MODULES([EDBUS_OFONO_TEST],
+      [ecore >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62],
+      [have_edbus_ofono_test="yes"],
+      [have_edbus_ofono_test="no"])
 fi
 
 if test "x${have_edbus_ukit_test}" = "xyes" ; then
-   PKG_CHECK_MODULES([EDBUS_UKIT_TEST], [ecore >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62])
+   PKG_CHECK_MODULES([EDBUS_UKIT_TEST],
+      [ecore >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62],
+      [have_edbus_ukit_test="yes"],
+      [have_edbus_ukit_test="no"])
 fi
 
 
@@ -326,6 +353,18 @@ echo "    EHal...............: $enable_ehal"
 echo "    ENotify............: $enable_enotify"
 echo "    EOfono.............: $enable_eofono"
 echo "    EUkit..............: $enable_eukit"
+echo
+echo "  Binaries:"
+echo
+echo "    EDbus test.........: $have_edbus_test"
+echo "    EDbus client test..: $have_edbus_test_client"
+echo "    EBluez test........: $have_edbus_bluez_test"
+echo "    EConnman test......: $have_edbus_connman_test"
+echo "    ENotify Deamon test: $have_edbus_notification_deamon_test"
+echo "    ENotify send.......: $have_edbus_notify_send"
+echo "    ENotify test.......: $have_edbus_notify_test"
+echo "    EOfono test........: $have_edbus_ofono_test"
+echo "    EUkit test.........: $have_edbus_ukit_test"
 echo
 echo "Documentation..........: ${build_doc}"
 echo

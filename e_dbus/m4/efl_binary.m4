@@ -3,7 +3,7 @@ dnl That code is public domain and can be freely used or copied.
 
 dnl Macro that checks if a binary is built or not
 
-dnl Usage: EFL_ENABLE_BIN(binary)
+dnl Usage: EFL_ENABLE_BIN(binary, dep[, ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]])
 dnl Call AC_SUBST(BINARY_PRG) (BINARY is the uppercase of binary, - being transformed into _)
 dnl Define have_binary (- is transformed into _)
 dnl Define conditional BUILD_BINARY (BINARY is the uppercase of binary, - being transformed into _)
@@ -13,8 +13,6 @@ AC_DEFUN([EFL_ENABLE_BIN],
 
 m4_pushdef([UP], m4_translit([[$1]], [-a-z], [_A-Z]))dnl
 m4_pushdef([DOWN], m4_translit([[$1]], [-A-Z], [_a-z]))dnl
-
-have_[]m4_defn([DOWN])="yes"
 
 dnl configure option
 
@@ -26,7 +24,8 @@ AC_ARG_ENABLE([$1],
     else
        have_[]m4_defn([DOWN])="no"
     fi
-   ])
+   ],
+   [have_[]m4_defn([DOWN])=$2])
 
 AC_MSG_CHECKING([whether to build ]DOWN[ binary])
 AC_MSG_RESULT([$have_[]m4_defn([DOWN])])
@@ -39,7 +38,7 @@ AC_SUBST(UP[]_PRG)
 
 AM_CONDITIONAL(BUILD_[]UP, test "x$have_[]m4_defn([DOWN])" = "xyes")
 
-AS_IF([test "x$have_[]m4_defn([DOWN])" = "xyes"], [$2], [$3])
+AS_IF([test "x$have_[]m4_defn([DOWN])" = "xyes"], [$3], [$4])
 
 ])
 
