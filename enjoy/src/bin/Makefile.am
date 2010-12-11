@@ -29,7 +29,7 @@ if BUILD_QUICKLAUNCH
 ############################################################################
 enjoy_qldir = $(quicklauncher_libdir)
 enjoy_ql_LTLIBRARIES = enjoy_ql.la
-enjoy_ql_la_SOURCES = main.c win.c db.c list.c page.c cover.c libmanager.c mpris.c coverart-lastfm.c
+enjoy_ql_la_SOURCES = main.c win.c db.c list.c page.c cover.c nowplaying.c libmanager.c mpris.c coverart-lastfm.c
 enjoy_ql_la_LIBADD = @ELEMENTARY_LIBS@ @EMOTION_LIBS@ @LMS_LIBS@ @SQLITE3_LIBS@ @EDBUS_LIBS@
 enjoy_ql_la_CFLAGS =
 enjoy_ql_la_LDFLAGS = -module -avoid-version -no-undefined
