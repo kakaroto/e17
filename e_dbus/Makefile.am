@@ -65,6 +65,7 @@ eukit.pc.in \
 e_dbus.spec \
 e_dbus.spec.in \
 m4/ac_attribute.m4 \
+m4/efl_binary.m4 \
 m4/efl_compiler_flag.m4 \
 m4/efl_doxygen.m4
 
