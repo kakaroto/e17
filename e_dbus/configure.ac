@@ -116,6 +116,16 @@ AC_ARG_ENABLE([eukit],
    [enable_eukit="${want_eukit}"])
 
 
+EFL_ENABLE_BIN([edbus-test])
+EFL_ENABLE_BIN([edbus-test-client])
+EFL_ENABLE_BIN([edbus-bluez-test])
+EFL_ENABLE_BIN([edbus-connman-test])
+EFL_ENABLE_BIN([edbus-notification-deamon-test])
+EFL_ENABLE_BIN([edbus-notify-send])
+EFL_ENABLE_BIN([edbus-notify-test])
+EFL_ENABLE_BIN([edbus-ofono-test])
+EFL_ENABLE_BIN([edbus-ukit-test])
+
 ### Checks for programs
 
 AC_PROG_CC
@@ -163,9 +173,9 @@ DBUS_VERSION_CFLAGS="$DBUS_VERSION_CFLAGS -DDBUS_VERSION_MINOR=$DBUS_VERSION_MIN
 DBUS_VERSION_CFLAGS="$DBUS_VERSION_CFLAGS -DDBUS_VERSION_MICRO=$DBUS_VERSION_MICRO"
 AC_SUBST(DBUS_VERSION_CFLAGS)
 
-# evas
+# Dependencies for the libraries
 if test "x${enable_enotify}" = "xyes" ; then
-   PKG_CHECK_MODULES(EVAS,
+   PKG_CHECK_MODULES([EVAS],
       [evas >= 1.0.0],
       [requirement_enotify="evas >= 1.0.0 ${requirement_enotify}"],
       [enable_enotify="no"])
@@ -177,6 +187,44 @@ AM_CONDITIONAL([BUILD_EHAL],     [test "x${enable_ehal}"     = "xyes"])
 AM_CONDITIONAL([BUILD_ENOTIFY],  [test "x${enable_enotify}"  = "xyes"])
 AM_CONDITIONAL([BUILD_EOFONO],   [test "x${enable_eofono}"   = "xyes"])
 AM_CONDITIONAL([BUILD_EUKIT],    [test "x${enable_eukit}"    = "xyes"])
+
+# Dependencies for the binaries
+
+if test "x${have_edbus_test}" = "xyes" ; then
+   PKG_CHECK_MODULES([EDBUS_TEST], [ecore >= 1.0.0 dbus-1 >= 0.62])
+fi
+
+if test "x${have_edbus_test_client}" = "xyes" ; then
+   PKG_CHECK_MODULES([EDBUS_TEST_CLIENT], [ecore >= 1.0.0 dbus-1 >= 0.62])
+fi
+
+if test "x${have_edbus_bluez_test}" = "xyes" ; then
+   PKG_CHECK_MODULES([EDBUS_BLUEZ_TEST], [ecore >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62])
+fi
+
+if test "x${have_edbus_connman_test}" = "xyes" ; then
+   PKG_CHECK_MODULES([EDBUS_CONNMAN_TEST], [ecore >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62])
+fi
+
+if test "x${have_edbus_notification_deamon_test}" = "xyes" ; then
+   PKG_CHECK_MODULES([EDBUS_NOTIFICATION_DEAMON_TEST], [ecore >= 1.0.0 evas >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62])
+fi
+
+if test "x${have_edbus_notify_send}" = "xyes" ; then
+   PKG_CHECK_MODULES([EDBUS_NOTIFY_SEND], [ecore >= 1.0.0 evas >= 1.0.0 dbus-1 >= 0.62])
+fi
+
+if test "x${have_edbus_notify_test}" = "xyes" ; then
+   PKG_CHECK_MODULES([EDBUS_NOTIFY_TEST], [ecore >= 1.0.0 evas >= 1.0.0 dbus-1 >= 0.62])
+fi
+
+if test "x${have_edbus_ofono_test}" = "xyes" ; then
+   PKG_CHECK_MODULES([EDBUS_OFONO_TEST], [ecore >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62])
+fi
+
+if test "x${have_edbus_ukit_test}" = "xyes" ; then
+   PKG_CHECK_MODULES([EDBUS_UKIT_TEST], [ecore >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62])
+fi
 
 
 ### Checks for header files
