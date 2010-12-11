@@ -219,7 +219,7 @@ if test "x${have_edbus_connman_test}" = "xyes" ; then
 fi
 
 if test "x${have_edbus_notification_daemon_test}" = "xyes" ; then
-   PKG_CHECK_MODULES([EDBUS_NOTIFICATION_DEAMON_TEST],
+   PKG_CHECK_MODULES([EDBUS_NOTIFICATION_DAEMON_TEST],
       [ecore >= 1.0.0 evas >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62],
       [have_edbus_notification_daemon_test="yes"],
       [have_edbus_notification_daemon_test="no"])
@@ -360,7 +360,7 @@ echo "    EDbus test.........: $have_edbus_test"
 echo "    EDbus client test..: $have_edbus_test_client"
 echo "    EBluez test........: $have_edbus_bluez_test"
 echo "    EConnman test......: $have_edbus_connman_test"
-echo "    ENotify Deamon test: $have_edbus_notification_daemon_test"
+echo "    ENotify Daemon test: $have_edbus_notification_daemon_test"
 echo "    ENotify send.......: $have_edbus_notify_send"
 echo "    ENotify test.......: $have_edbus_notify_test"
 echo "    EOfono test........: $have_edbus_ofono_test"

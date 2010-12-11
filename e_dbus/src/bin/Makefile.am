@@ -27,7 +27,7 @@ if BUILD_EDBUS_CONNMAN_TEST
 bin_PROGRAMS += e_dbus_connman_test
 endif
 
-if BUILD_EDBUS_NOTIFICATION_DEAMON_TEST
+if BUILD_EDBUS_NOTIFICATION_DAEMON_TEST
 bin_PROGRAMS += e_dbus_notification_daemon
 endif
 
@@ -109,15 +109,15 @@ endif
 
 ENOTIFY_LIBS = $(top_builddir)/src/lib/notification/libenotify.la
 
-if BUILD_EDBUS_NOTIFICATION_DEAMON_TEST
+if BUILD_EDBUS_NOTIFICATION_DAEMON_TEST
 e_dbus_notification_daemon_SOURCES = notification_daemon.c
 e_dbus_notification_daemon_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/dbus \
 -I$(top_srcdir)/src/lib/notification \
-@EDBUS_NOTIFICATION_DEAMON_TEST_CFLAGS@
+@EDBUS_NOTIFICATION_DAEMON_TEST_CFLAGS@
 e_dbus_notification_daemon_LDADD = \
 $(ENOTIFY_LIBS) \
-@EDBUS_NOTIFICATION_DEAMON_TEST_LIBS@
+@EDBUS_NOTIFICATION_DAEMON_TEST_LIBS@
 endif
 
 if BUILD_EDBUS_NOTIFY_SEND
