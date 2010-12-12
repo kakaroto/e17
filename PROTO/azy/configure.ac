@@ -97,16 +97,26 @@ PKG_CHECK_MODULES(EINA, [$EINA_REQUIRES])
 PKG_CHECK_MODULES(ECORE, [$ECORE_REQUIRES])
 want_xml=
 AC_ARG_ENABLE([xml],
-   [AC_HELP_STRING([--enable-xml], [enable xml parser support @<:@default=detect@:>@])],
+   [AC_HELP_STRING([--enable-xml], [enable xml parser support @<:@default=yes@:>@])],
    [want_xml=$enableval]
 )
 
+want_external_xml=
+AC_ARG_ENABLE([external-xml],
+   [AC_HELP_STRING([--enable-external-xml], [enable libxml2 parser support @<:@default=detect@:>@])],
+   [want_external_xml=$enableval]
+)
 
-if test "x${want_xml}" != "xno" ; then
-   XML_REQUIRES="libxml-2.0 >= 2.6.20"
-   PKG_CHECK_MODULES(XML, [$XML_REQUIRES],AC_DEFINE([HAVE_XML], [1], [xml support is enabled]),[])
+
+if test "x${want_xml}" != "xno"; then
+   if test "x${want_external_xml}" != "xno" ; then
+     XML_REQUIRES="libxml-2.0 >= 2.6.20"
+     PKG_CHECK_MODULES(XML, [$XML_REQUIRES],[],[])
+   fi
+   AC_DEFINE([HAVE_XML], [1], [xml support is enabled])
+   AM_CONDITIONAL([HAVE_XML], [true])
 fi
-AM_CONDITIONAL([HAVE_XML], [test -n "$XML_LIBS"])
+AM_CONDITIONAL([HAVE_LIBXML], [test -n "$XML_LIBS"])
 AC_SUBST(EINA_REQUIRES)
 
 AC_SUBST(ECORE_REQUIRES)

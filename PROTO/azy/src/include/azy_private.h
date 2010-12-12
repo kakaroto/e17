@@ -62,7 +62,7 @@ extern Eina_Error AZY_ERROR_RESPONSE_XML_RETVAL;
 extern Eina_Error AZY_ERROR_RESPONSE_XML_MULTI;
 extern Eina_Error AZY_ERROR_RESPONSE_XML_FAULT;
 extern Eina_Error AZY_ERROR_RESPONSE_XML_INVAL;
-extern Eina_Error AZY_ERROR_RESPONSE_XML_UNSERIAL;
+extern Eina_Error AZY_ERROR_XML_UNSERIAL;
 #else
 extern Eina_Error AZY_ERROR_XML_UNSUPPORTED;
 #endif
@@ -271,6 +271,9 @@ Eina_Bool azy_server_client_handler_add(Azy_Server                *server,
 void      _azy_event_handler_fake_free(void *data __UNUSED__, void *data2);
 
 #ifdef HAVE_XML
+#ifdef __cplusplus 
+extern "C" {
+#endif
    Eina_Bool azy_content_serialize_request_xml(Azy_Content *content);
    Eina_Bool azy_content_serialize_response_xml(Azy_Content *content);
    Eina_Bool azy_content_unserialize_request_xml(Azy_Content *content,
@@ -279,6 +282,9 @@ void      _azy_event_handler_fake_free(void *data __UNUSED__, void *data2);
    Eina_Bool azy_content_unserialize_response_xml(Azy_Content *content,
                                                    const char *buf,
                                                    ssize_t     len);
+#ifdef __cplusplus 
+}
+#endif
 #endif
    Eina_Bool azy_content_serialize_request_json(Azy_Content *content);
    Eina_Bool azy_content_serialize_response_json(Azy_Content *content);

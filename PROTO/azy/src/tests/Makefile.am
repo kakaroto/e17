@@ -1,5 +1,13 @@
 SUBDIRS = unit
 
+if HAVE_XML
+if ! HAVE_LIBXML
+  pugi_ld = -lstdc++
+else
+  pugi_ld =
+endif
+endif
+
 if HAVE_MYSQL
 MYSQL_COMMON_S = \
   $(top_builddir)/src/tests/T_SQL.c \
@@ -71,37 +79,70 @@ AM_CFLAGS= \
   $(MYSQL_CFLAGS) \
   -I$(top_srcdir) \
   -I$(top_srcdir)/src/include
-
+AM_CXXFLAGS = $(AM_CFLAGS)
 AM_LDFLAGS = -static
 
 CLEANFILES = $(BUILT_SOURCES) .sources-ts
 MAINTAINERCLEANFILES = Makefile.in
-
-LDADD = \
-  $(ECORE_LIBS) \
-  $(MYSQL_LIBS) \
-  $(top_builddir)/src/lib/libazy.la
 
 check_PROGRAMS = \
   client \
   stress_client \
   server
 
-nodist_client_SOURCES = \
-  client.c \
+noinst_LTLIBRARIES = libclient.la libserver.la
+
+nodist_libclient_la_SOURCES = \
   $(COMMON_S) \
   $(CLIENT_S)
 
-
-nodist_stress_client_SOURCES = \
-  stress_client.c \
-  $(COMMON_S) \
-  $(CLIENT_S)
-
-nodist_server_SOURCES = \
-  server.c \
+nodist_libserver_la_SOURCES = \
   $(COMMON_S) \
   $(SERVER_S)
+
+libclient_la_LIBADD = \
+  $(ECORE_LIBS) \
+  $(XML_LIBS) \
+  $(pugi_ld) \
+  $(top_builddir)/src/lib/libazy.la
+
+libserver_la_LIBADD = \
+  $(ECORE_LIBS) \
+  $(XML_LIBS) \
+  $(MYSQL_LIBS) \
+  $(pugi_ld) \
+  $(top_builddir)/src/lib/libazy.la
+
+nodist_client_SOURCES = \
+  client.c
+client_LDADD = \
+  $(MYSQL_LIBS) \
+  $(ECORE_LIBS) \
+  $(XML_LIBS) \
+  $(pugi_ld) \
+  $(top_builddir)/src/lib/libazy.la \
+  libclient.la
+
+nodist_stress_client_SOURCES = \
+  stress_client.c
+stress_client_LDADD = \
+  $(MYSQL_LIBS) \
+  $(ECORE_LIBS) \
+  $(XML_LIBS) \
+  $(pugi_ld) \
+  $(top_builddir)/src/lib/libazy.la \
+  libclient.la
+
+nodist_server_SOURCES = \
+  server.c
+
+server_LDADD = \
+  $(MYSQL_LIBS) \
+  $(ECORE_LIBS) \
+  $(XML_LIBS) \
+  $(pugi_ld) \
+  $(top_builddir)/src/lib/libazy.la \
+  libserver.la
 
 $(BUILT_SOURCES): .sources-ts
 

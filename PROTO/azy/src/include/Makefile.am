@@ -8,4 +8,6 @@ EXTRA_DIST = \
   azy_private.h \
   extras/cJSON.h \
   extras/cdecode.h \
-  extras/cencode.h
+  extras/cencode.h \
+  extras/pugixml.hpp \
+  extras/pugiconfig.hpp

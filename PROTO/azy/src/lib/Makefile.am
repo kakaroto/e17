@@ -3,26 +3,34 @@ SUBDIRS = extras
 lib_LTLIBRARIES = \
   libazy.la
 
-libazy_la_CFLAGS = \
+AM_CFLAGS = \
   $(ECORE_CFLAGS) \
   $(XML_CFLAGS) \
  -I$(top_srcdir) \
  -I$(top_srcdir)/src/include \
  -I$(top_srcdir)/src/include/extras
+AM_CXXFLAGS = $(AM_CFLAGS)
+
+if HAVE_LIBXML
+xml_c = azy_content_xml.c
+PUGI = 
+else
+if HAVE_XML
+xml_c = azy_content_xml_pugi.cpp
+PUGI = -lstdc++ extras/libpugixml.la
+endif
+endif
+
 
 libazy_la_LIBADD = \
   $(ECORE_LIBS) \
   $(XML_LIBS) \
+  $(PUGI) \
   -lm \
   extras/libcJSON.la \
   extras/libb64.la
 
 libazy_la_LDFLAGS = -version-info @version_info@ @release_info@ -no-undefined --as-needed
-if HAVE_XML
-xml_c = azy_content_xml.c
-else
-xml_c =
-endif
 
 
 libazy_la_SOURCES = \
