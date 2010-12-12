@@ -604,7 +604,7 @@ azy_content_unserialize_response_xml(Azy_Content *content,
      }
    else     // no fault either
      {
-        azy_content_error_code_set(content, AZY_ERROR_RESPONSE_XML_UNSERIAL);
+        azy_content_error_code_set(content, AZY_ERROR_XML_UNSERIAL);
         goto err_2;
      }
 
