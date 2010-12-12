@@ -557,7 +557,7 @@ gen_type_print(Azy_Typedef *t,
                EL(2, "for (i = 0; i < indent; i++)");
                EL(3, "printf(\"%%s\", pre);");
                if (t->item_type->ctype == i)
-                 EL(2, "printf(\"%%li, \", (intptr_t)t);");
+                 EL(2, "printf(\"%%\"PRIdPTR\", \", (intptr_t)t);");
                else if (t->item_type->ctype == b)
                  EL(2, "printf(\"%s, \", ((intptr_t)t) ? \"yes\" : \"no\");", t->item_type->fmt_str);
                else if (t->item_type->ctype == d)
@@ -862,6 +862,7 @@ gen_common_impl(Azy_Server_Module *s)
 
         EL(0, "#include \"%s%sCommon.h\"", name, sep);
         EL(0, "#include <string.h>");
+        EL(0, "#include <inttypes.h>");
         EL(0, "#include <errno.h>");
         NL;
 
