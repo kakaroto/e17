@@ -250,9 +250,11 @@ Azy_Module Test1
 
    boolean putBigArray(array<string> arr)
    <%
+#if 0
      Array_string_print(">>>", 0, arr); /**< demonstrate generated print function; prefix all lines
                                           * with '>>>'
                                           */
+#endif
      return EINA_TRUE;
    %>
 
