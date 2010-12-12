@@ -103,8 +103,6 @@ if test "x${want_xml}" != "xno"; then
 fi
 
 AC_SUBST(AZY_REQUIRES)
-AC_SUBST(AZY_CFLAGS)
-AC_SUBST(AZY_LIBS)
 
 EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
