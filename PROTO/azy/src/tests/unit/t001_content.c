@@ -125,7 +125,7 @@ _assert_param_type(Azy_Content   *content,
                    Azy_Value_Type type)
 {
    Azy_Value *val = azy_content_param_get(content, no);
-   TEST_ASSERT(val);
+   TEST_ASSERT(val != NULL);
    TEST_ASSERT(azy_value_type_get(val) == type);
    return azy_value_type_get(val) == type;
 }
