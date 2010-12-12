@@ -77,7 +77,7 @@ AC_FUNC_REALLOC
 AC_FUNC_STRTOD
 AC_C___ATTRIBUTE__
 AC_CHECK_FUNCS([memset regcomp select socket strchr strndup strrchr strstr strtol munmap strdup])
-ECORE_REQUIRES="ecore-con >= 1.0.0 ecore >= 1.0.0"
+AZY_REQUIRES="ecore-con >= 1.0.0 ecore >= 1.0.0 eina >= 1.0.0"
 
 AC_PATH_PROG([mysql_config], [mysql_config])
 if test "x$mysql_config" != "x";then
@@ -90,7 +90,7 @@ AM_CONDITIONAL(HAVE_MYSQL, [test -n "$MYSQL_LIBS"])
 AC_SUBST(MYSQL_CFLAGS)
 AC_SUBST(MYSQL_LIBS)
 
-PKG_CHECK_MODULES(ECORE, [$ECORE_REQUIRES])
+PKG_CHECK_MODULES(AZY, [$AZY_REQUIRES])
 want_xml=
 AC_ARG_ENABLE([xml],
    [AC_HELP_STRING([--enable-xml], [enable xml parser support @<:@default=yes@:>@])],
@@ -102,9 +102,9 @@ if test "x${want_xml}" != "xno"; then
    AM_CONDITIONAL([HAVE_XML], [true])
 fi
 
-AC_SUBST(ECORE_REQUIRES)
-AC_SUBST(ECORE_CFLAGS)
-AC_SUBST(ECORE_LIBS)
+AC_SUBST(AZY_REQUIRES)
+AC_SUBST(AZY_CFLAGS)
+AC_SUBST(AZY_LIBS)
 
 EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 

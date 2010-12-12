@@ -67,7 +67,7 @@ EXTRA_DIST = \
   server.pem
 
 AM_CFLAGS= \
-  $(ECORE_CFLAGS) \
+  $(AZY_CFLAGS) \
   $(MYSQL_CFLAGS) \
   -I$(top_srcdir) \
   -I$(top_srcdir)/src/include
@@ -92,11 +92,11 @@ nodist_libserver_la_SOURCES = \
   $(SERVER_S)
 
 libclient_la_LIBADD = \
-  $(ECORE_LIBS) \
+  $(AZY_LIBS) \
   $(top_builddir)/src/lib/libazy.la
 
 libserver_la_LIBADD = \
-  $(ECORE_LIBS) \
+  $(AZY_LIBS) \
   $(MYSQL_LIBS) \
   $(top_builddir)/src/lib/libazy.la
 
@@ -104,7 +104,7 @@ nodist_client_SOURCES = \
   client.c
 client_LDADD = \
   $(MYSQL_LIBS) \
-  $(ECORE_LIBS) \
+  $(AZY_LIBS) \
   $(top_builddir)/src/lib/libazy.la \
   libclient.la
 
@@ -112,7 +112,7 @@ nodist_stress_client_SOURCES = \
   stress_client.c
 stress_client_LDADD = \
   $(MYSQL_LIBS) \
-  $(ECORE_LIBS) \
+  $(AZY_LIBS) \
   $(top_builddir)/src/lib/libazy.la \
   libclient.la
 
@@ -121,7 +121,7 @@ nodist_server_SOURCES = \
 
 server_LDADD = \
   $(MYSQL_LIBS) \
-  $(ECORE_LIBS) \
+  $(AZY_LIBS) \
   $(top_builddir)/src/lib/libazy.la \
   libserver.la
 

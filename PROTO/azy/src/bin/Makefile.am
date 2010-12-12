@@ -19,10 +19,10 @@ EXTRA_DIST = \
 	$(BUILT_SOURCES)
 
 AM_CFLAGS = \
-	$(ECORE_CFLAGS)
+	$(AZY_CFLAGS)
 
 LDADD = \
-	$(ECORE_LIBS)
+	$(AZY_LIBS)
 
 man_MANS = azy_parser.1
 bin_PROGRAMS = azy_parser

@@ -4,7 +4,7 @@ lib_LTLIBRARIES = \
   libazy.la
 
 AM_CFLAGS = \
-  $(ECORE_CFLAGS) \
+  $(AZY_CFLAGS) \
  -I$(top_srcdir) \
  -I$(top_srcdir)/src/include \
  -I$(top_srcdir)/src/include/extras
@@ -20,7 +20,7 @@ endif
 
 
 libazy_la_LIBADD = \
-  $(ECORE_LIBS) \
+  $(AZY_LIBS) \
   $(PUGI) \
   -lm \
   extras/libcJSON.la \
