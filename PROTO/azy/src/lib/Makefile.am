@@ -5,26 +5,22 @@ lib_LTLIBRARIES = \
 
 AM_CFLAGS = \
   $(ECORE_CFLAGS) \
-  $(XML_CFLAGS) \
  -I$(top_srcdir) \
  -I$(top_srcdir)/src/include \
  -I$(top_srcdir)/src/include/extras
 AM_CXXFLAGS = $(AM_CFLAGS)
 
-if HAVE_LIBXML
-xml_c = azy_content_xml.c
-PUGI = 
-else
 if HAVE_XML
-xml_c = azy_content_xml_pugi.cpp
-PUGI = -lstdc++ extras/libpugixml.la
-endif
+xml_c = azy_content_xml.cpp
+PUGI = extras/libpugixml.la
+else
+xml_c =
+PUGI =
 endif
 
 
 libazy_la_LIBADD = \
   $(ECORE_LIBS) \
-  $(XML_LIBS) \
   $(PUGI) \
   -lm \
   extras/libcJSON.la \

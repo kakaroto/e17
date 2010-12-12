@@ -7,6 +7,5 @@ Name: azy
 Description: A Lazy Zentific EFL RPC library
 Version: @VERSION@
 Requires: @ECORE_REQUIRES@ @EINA_REQUIRES@
-Requires.private: @XML_REQUIRES@
 Libs: -L${libdir} -lazy
 Cflags: -I${includedir}/azy-@VMAJ@

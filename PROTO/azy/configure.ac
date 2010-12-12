@@ -24,10 +24,8 @@ AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADER([config.h])
 
-AC_LIBTOOL_DLOPEN
 AC_LIBLTDL_CONVENIENCE
 AC_GNU_SOURCE
-AC_PROG_LIBTOOL
 AC_ISC_POSIX
 AC_SUBST(INCLTDL)
 AC_SUBST(LIBLTDL)
@@ -52,6 +50,7 @@ AC_SUBST(VMAJ)
 AM_INIT_AUTOMAKE([foreign])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES])
 
+AC_PROG_LIBTOOL
 AC_PROG_YACC
 AC_PROG_CXX
 AC_PROG_INSTALL
@@ -80,7 +79,6 @@ AC_C___ATTRIBUTE__
 AC_CHECK_FUNCS([memset regcomp select socket strchr strndup strrchr strstr strtol munmap strdup])
 EINA_REQUIRES="eina >= 1.0.0"
 ECORE_REQUIRES="ecore-con >= 1.0.0 ecore >= 1.0.0"
-XML_REQUIRES=
 
 AC_PATH_PROG([mysql_config], [mysql_config])
 if test "x$mysql_config" != "x";then
@@ -101,30 +99,15 @@ AC_ARG_ENABLE([xml],
    [want_xml=$enableval]
 )
 
-want_external_xml=
-AC_ARG_ENABLE([external-xml],
-   [AC_HELP_STRING([--enable-external-xml], [enable libxml2 parser support @<:@default=detect@:>@])],
-   [want_external_xml=$enableval]
-)
-
-
 if test "x${want_xml}" != "xno"; then
-   if test "x${want_external_xml}" != "xno" ; then
-     XML_REQUIRES="libxml-2.0 >= 2.6.20"
-     PKG_CHECK_MODULES(XML, [$XML_REQUIRES],[],[])
-   fi
    AC_DEFINE([HAVE_XML], [1], [xml support is enabled])
    AM_CONDITIONAL([HAVE_XML], [true])
 fi
-AM_CONDITIONAL([HAVE_LIBXML], [test -n "$XML_LIBS"])
 AC_SUBST(EINA_REQUIRES)
 
 AC_SUBST(ECORE_REQUIRES)
 AC_SUBST(ECORE_CFLAGS)
 AC_SUBST(ECORE_LIBS)
-AC_SUBST(XML_REQUIRES)
-AC_SUBST(XML_CFLAGS)
-AC_SUBST(XML_LIBS)
 
 EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
