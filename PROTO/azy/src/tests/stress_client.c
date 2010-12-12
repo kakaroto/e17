@@ -134,11 +134,11 @@ spawn(void *data __UNUSED__)
         if (!azy_client_host_set(cli, "localhost", 4444))
           return;
 
-        if (!azy_client_connect(cli, EINA_FALSE))
+        if (!azy_client_connect(cli, EINA_TRUE))
           return;
 
         azy_net_uri_set(azy_client_net_get(cli), "/");
-        azy_net_transport_set(azy_client_net_get(cli), AZY_NET_TRANSPORT_JSON);
+        azy_net_transport_set(azy_client_net_get(cli), AZY_NET_TRANSPORT_XML);
         clients = eina_list_append(clients, cli);
      }
 }
