@@ -365,7 +365,7 @@ static const Ecore_Getopt options = {
                                   "disable touch interface handling of mouse events", 1),
       ECORE_GETOPT_STORE_STR('U', "user-agent",
                              "user agent string to use. Special cases=iphone,safari,chrome,firefox,android,ie,ie9,ie8,ie7."),
-      ECORE_GETOPT_STORE_DEF_STR('B', "backing store",
+      ECORE_GETOPT_STORE_DEF_STR('B', "backing-store",
                              "backing store to use. single or tiled.", "single"),
       ECORE_GETOPT_STORE_DEF_UINT('R', "rotate", "Screen Rotation in degrees", 0),
       ECORE_GETOPT_VERSION('V', "version"),
