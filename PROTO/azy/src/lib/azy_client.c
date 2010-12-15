@@ -503,6 +503,100 @@ error:
 }
 
 /**
+ * @brief Make an HTTP GET request using a connected client
+ * 
+ * This function is used to make a GET request using @p client to @p uri of the client's
+ * #Azy_Net object using content-type defined by @p transport and the deserialization
+ * function specified by @p cb.
+ * @param client The client (NOT #NULL)
+ * @param uri The uri path to GET
+ * @param cb The deserialization callback to use for the response (NOT #NULL)
+ * @param data The user data to be passed to resulting callbacks
+ * @return The #Azy_Client_Call_Id of the transmission, to be used with azy_client_callback_set,
+ * or 0 on failure
+ */
+Azy_Client_Call_Id
+azy_client_get(Azy_Client       *client,
+               const char       *uri,
+               Azy_Content_Cb    cb,
+               void             *data)
+{
+   Eina_Strbuf *msg;
+   Azy_Client_Handler_Data *handler_data;
+
+   DBG("(client=%p, net=%p, uri=%s)", client, client->net, uri);
+
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
+        return 0;
+     }
+   EINA_SAFETY_ON_NULL_RETURN_VAL(client->net, 0);
+
+   if (!client->connected)
+     {
+        ERR("Can't perform HTTP GET on closed connection.");
+        return 0;
+     }
+
+   while (++azy_client_send_id__ < 1);
+
+   azy_net_type_set(client->net, AZY_NET_TYPE_GET);
+   if (uri && uri[0])
+     azy_net_uri_set(client->net, uri);
+   else
+     {
+        if (client->net->http.req.http_path)
+          WARN("NULL URI passed, using previously set uri '%s'", client->net->http.req.http_path);
+        else
+          {
+             WARN("NULL URI passed, defaulting to \"/\"");
+             azy_net_uri_set(client->net, "/");
+          }
+     }
+
+   msg = azy_net_header_create(client->net);
+   EINA_SAFETY_ON_NULL_GOTO(msg, error);
+
+#ifdef ISCOMFITOR
+   char buf[64];
+   snprintf(buf, sizeof(buf), "\nSENDING >>>>>>>>>>>>>>>>>>>>>>>>\n%%.%zus\n>>>>>>>>>>>>>>>>>>>>>>>>",
+            eina_strbuf_length_get(msg));
+   DBG(buf, eina_strbuf_string_get(msg));
+#endif
+
+   EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_server_send(client->net->conn, eina_strbuf_string_get(msg), eina_strbuf_length_get(msg)), error);
+   INFO("Send [1/1] complete! %zu bytes queued for sending.", eina_strbuf_length_get(msg));
+   eina_strbuf_free(msg);
+   msg = NULL;
+
+   ecore_con_server_flush(client->net->conn);
+ 
+   handler_data = calloc(1, sizeof(Azy_Client_Handler_Data));
+   EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data, 0);
+   handler_data->client = client;
+   handler_data->callback = cb;
+   handler_data->content_data = data;
+
+   handler_data->id = azy_client_send_id__;
+   AZY_MAGIC_SET(handler_data, AZY_MAGIC_CLIENT_DATA_HANDLER);
+   if (!client->conns)
+     {
+        client->recv =  ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA,
+                                                (Ecore_Event_Handler_Cb)_azy_client_handler_data, handler_data);
+        ecore_con_server_data_set(client->net->conn, client);
+     }
+     
+   client->conns = eina_list_append(client->conns, handler_data);
+
+   DBG("(client=%p, net=%p, handler_data=%p)", client, client->net, handler_data);
+   return azy_client_send_id__;
+error:
+   if (msg) eina_strbuf_free(msg);
+   return 0;
+}
+
+/**
  * @brief Send arbitrary data to a connected server
  * 
  * This function is used to send arbitrary data to a connected server using @p client.
@@ -571,6 +665,7 @@ error:
      eina_strbuf_free(msg);
    return 0;
 }
+
 
 /**
  * @brief Validate a transmission attempt

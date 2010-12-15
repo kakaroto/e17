@@ -49,6 +49,39 @@ azy_content_buffer_set_(Azy_Content  *content,
    return EINA_TRUE;
 }
 
+/*
+ * @brief Convert the xml/json parameters to #Azy_Value
+ * 
+ * This function converts a block of xml/json (based on @p type)
+ */
+Azy_Value *
+azy_content_unserialize(Azy_Net_Transport type,
+                        const char   *buf,
+                        ssize_t       len)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(buf, NULL);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!buf[0], NULL);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!len, NULL);
+
+   if (type == AZY_NET_TRANSPORT_JSON)
+     return azy_content_unserialize_json(buf, len);
+
+
+   ERR("UNSUPPORTED TYPE PASSED! FIXME!");
+   return NULL;
+#if 0
+   if (type == AZY_NET_TRANSPORT_XML)
+     {
+#ifdef HAVE_XML
+        return azy_content_unserialize_xml(content, buf, len);
+#else
+        ERR("%s", eina_error_msg_get(AZY_ERROR_XML_UNSUPPORTED));
+        return NULL;
+#endif
+     }
+#endif
+}
+
 /**
  * @brief Create a new content object
  * 

@@ -213,6 +213,7 @@ struct Azy_Client_Handler_Data
    Azy_Client         *client;
    Azy_Net            *recv;
    const char         *method;
+   Azy_Net_Transport   transport;
    Azy_Content_Cb      callback; //callback set to convert from Azy_Value to Return_Type
    void               *content_data;
 };
@@ -270,7 +271,16 @@ Eina_Bool _azy_client_handler_data(Azy_Client_Handler_Data *handler_data,
 Eina_Bool azy_server_client_handler_add(Azy_Server                *server,
                                          int                         type,
                                          Ecore_Con_Event_Client_Add *ev);
-void      _azy_event_handler_fake_free(void *data __UNUSED__, void *data2);
+void      _azy_event_handler_fake_free(void *data, void *data2);
+
+Azy_Value *
+azy_content_unserialize(Azy_Net_Transport type,
+                        const char   *buf,
+                        ssize_t       len);
+
+Azy_Value *
+azy_content_unserialize_json(const char *buf,
+                             ssize_t len __UNUSED__);
 
 #ifdef HAVE_XML
 #ifdef __cplusplus 

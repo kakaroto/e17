@@ -24,6 +24,7 @@
 #include "azy_private.h"
 
 static void _azy_client_handler_call_free(Azy_Client *client, Azy_Content *content);
+static Eina_Bool _azy_client_handler_get(Azy_Client_Handler_Data *handler_data);
 static Eina_Bool _azy_client_handler_call(Azy_Client_Handler_Data *handler_data);
 static void _azy_client_handler_data_free(Azy_Client_Handler_Data *data);
 static Eina_Bool _azy_client_recv_timer(Azy_Client_Handler_Data *handler_data);
@@ -81,6 +82,66 @@ _azy_client_handler_data_free(Azy_Client_Handler_Data *handler_data)
    free(handler_data);
 }
 
+/* FIXME: code dupication */
+static Eina_Bool
+_azy_client_handler_get(Azy_Client_Handler_Data *handler_data)
+{
+   void *ret = NULL;
+   Azy_Content *content;
+   Azy_Client_Return_Cb cb;
+   Azy_Client *client;
+
+   DBG("(handler_data=%p, client=%p, net=%p)", handler_data, handler_data->client, handler_data->recv);
+
+   client = handler_data->client;
+   handler_data->recv->transport = azy_events_net_transport_get(azy_net_header_get(handler_data->recv, "content-type"));
+   content = azy_content_new(NULL);
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(content, ECORE_CALLBACK_RENEW);
+
+   content->data = handler_data->content_data;
+
+   content->retval = azy_content_unserialize(handler_data->recv->transport, (const char*)handler_data->recv->buffer, handler_data->recv->size);
+   if (!content->retval)
+     azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return parsing failed.");
+   else if (handler_data->callback && content->retval && (!handler_data->callback(content->retval, &ret)))
+     azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return value demarshalization failed.");
+
+   if (azy_content_error_is_set(content))
+     {
+        char buf[64];
+        snprintf(buf, sizeof(buf), "%s:\n<<<<<<<<<<<<<\n%%.%llis\n<<<<<<<<<<<<<", handler_data->method, handler_data->recv->size);
+        ERR(buf, handler_data->recv->buffer);
+     }
+
+   content->id = handler_data->id;
+   content->ret = ret;
+   content->recv_net = handler_data->recv;
+   handler_data->recv = NULL;
+
+   _azy_client_handler_data_free(handler_data);
+
+   cb = eina_hash_find(client->callbacks, &content->id);
+   if (cb)
+     {
+        Eina_Error ret;
+        ret = cb(client, content, content->ret);
+        
+        ecore_event_add(AZY_CLIENT_RESULT, &ret, (Ecore_End_Cb)_azy_event_handler_fake_free, NULL);
+        eina_hash_del_by_key(client->callbacks, &content->id);
+        _azy_client_handler_call_free(client, content);
+     }
+   else
+     {
+       if (!azy_content_error_is_set(content))
+         ecore_event_add(AZY_CLIENT_RETURN, content, (Ecore_End_Cb)_azy_client_handler_call_free, client);
+       else
+         ecore_event_add(AZY_CLIENT_ERROR, content, (Ecore_End_Cb)_azy_client_handler_call_free, client);
+     }
+
+   return ECORE_CALLBACK_RENEW;
+}
+
 static Eina_Bool
 _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
 {
@@ -97,7 +158,8 @@ _azy_client_handler_call(Azy_Client_Handler_Data *handler_data)
    snprintf(buf, sizeof(buf), "RECEIVED:\n<<<<<<<<<<<<<\n%%.%llis\n<<<<<<<<<<<<<", handler_data->recv->size);
    INFO(buf, handler_data->recv->buffer);
 #endif
-
+   /* handle HTTP GET request */
+   if (!handler_data->method) return _azy_client_handler_get(handler_data);
    INFO("Running RPC for %s", handler_data->method);
    handler_data->recv->transport = azy_events_net_transport_get(azy_net_header_get(handler_data->recv, "content-type"));
    content = azy_content_new(handler_data->method);

@@ -472,6 +472,10 @@ extern "C" {
                                        Azy_Content      *content,
                                        Azy_Net_Transport transport,
                                        Azy_Content_Cb    cb);
+   EAPI Azy_Client_Call_Id azy_client_get(Azy_Client       *client,
+																																										const char       *uri,
+																																										Azy_Content_Cb    cb,
+																																										void             *data);
    EAPI Azy_Client_Call_Id azy_client_send(Azy_Client   *client,
                                       unsigned char *data,
                                       int            length);

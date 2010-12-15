@@ -240,6 +240,24 @@ azy_content_serialize_response_json(Azy_Content *content)
    return EINA_TRUE;
 }
 
+Azy_Value *
+azy_content_unserialize_json(const char *buf,
+                             ssize_t len __UNUSED__)
+{
+   cJSON *object;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(buf, NULL);
+
+   if (!(object = cJSON_Parse(buf)))
+     {
+        ERR("%s", eina_error_msg_get(AZY_ERROR_REQUEST_JSON_OBJECT));
+        return NULL;
+     }
+
+   return azy_value_unserialize_json(object);
+}
+
+
 Eina_Bool
 azy_content_unserialize_request_json(Azy_Content *content,
                                       const char *buf,
