@@ -10,9 +10,21 @@
 @author Mike Blumenkrantz (zmike/discomfitor) <mike@zentific.com>
 @date 2010
 
-@section intro What is Azy?
+@section azy_intro Introduction
 
-Who knows.
+Azy is a library which simplifies using HTTP RPC through XML/JSON.
+It's cross-platform, providing an easy API to manage both connecting to
+and hosting a server.
+
+The following modules exist:
+@li @ref Azy_Library
+@li @ref Azy_Utils
+@li @ref Azy_Client
+@li @ref Azy_Content
+@li @ref Azy_Net
+@li @ref Azy_Value
+@li @ref Azy_Server
+@li @ref Azy_Server_Module
 
 @verbatim
 Pants

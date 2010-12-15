@@ -33,7 +33,14 @@ int AZY_CLIENT_RESULT;
 int AZY_CLIENT_ERROR;
 
 /**
+ * @defgroup Azy_Client
+ * @brief Functions which affect #Azy_Client
+ * @{
+ */
+ 
+/**
  * @brief Allocate a new client object
+ * 
  * This function creates a new client object for use in connecting to a
  * server.
  * @return The new client, or #NULL on failure
@@ -55,6 +62,7 @@ azy_client_new(void)
 
 /**
  * @brief Get the data previously associated with a client
+ * 
  * This function retrieves the data previously set to @p client
  * with azy_client_data_set.
  * @param client The client object (NOT #NULL)
@@ -74,6 +82,7 @@ azy_client_data_get(Azy_Client *client)
 
 /**
  * @brief Set the data previously associated with a client
+ * 
  * This function sets the data associated with @p client to @p data
  * for retrieval with azy_client_data_get.
  * @param client The client object (NOT #NULL)
@@ -93,6 +102,7 @@ azy_client_data_set(Azy_Client *client, const void *data)
 
 /**
  * @brief Set the connection info for a client
+ * 
  * This function sets the server address and port for a client to
  * connect to.  The address can be either an ip string (ipv6 supported)
  * or a web address.
@@ -125,6 +135,7 @@ azy_client_host_set(Azy_Client *client,
 
 /**
  * @brief Get the address of the server that the client connects to
+ * 
  * This function returns the address string of the server that @p client
  * connects to.  The returned string is stringshared but still
  * belongs to the client object.
@@ -146,9 +157,11 @@ azy_client_addr_get(Azy_Client *client)
 
 /**
  * @brief Set the address of the server that the client connects to
+ * 
  * This function sets the address string of the server that @p client
  * connects to.
  * @param client The client object (NOT #NULL)
+ * @param addr The address string (NOT #NULL)
  * @return The address string
  */
 Eina_Bool
@@ -168,6 +181,7 @@ azy_client_addr_set(Azy_Client *client, const char *addr)
 
 /**
  * @brief Get the port that the client connects to
+ * 
  * This function returns the port number on the server that @p client
  * connects to.
  * @param client The client object (NOT #NULL)
@@ -188,6 +202,7 @@ azy_client_port_get(Azy_Client *client)
 
 /**
  * @brief Set the port that the client connects to
+ * 
  * This function sets the port number on the server that @p client
  * connects to.
  * @param client The client object (NOT #NULL)
@@ -212,6 +227,7 @@ azy_client_port_set(Azy_Client *client, int port)
 
 /**
  * @brief Connect the client to its server
+ * 
  * This function begins the connection process for @p client to its
  * previously set server.  This will return EINA_FALSE immediately if an error occurs.
  * @param client The client object (NOT #NULL)
@@ -252,6 +268,7 @@ azy_client_connect(Azy_Client *client,
 
 /**
  * @brief Get the network object associated with the client
+ * 
  * This function returns the #Azy_Net object associated with @p client
  * which is used for all outgoing data transmissions.  From here, azy_net
  * namespaced functions can be called as normal upon the returned object.
@@ -275,6 +292,7 @@ azy_client_net_get(Azy_Client *client)
 
 /**
  * @brief Check whether a client is connected
+ * 
  * This function returns true only when the client is connected.
  * @param client The client (NOT #NULL)
  * @return #EINA_TRUE if the client is connected, else #EINA_FALSE
@@ -293,6 +311,7 @@ azy_client_connected_get(Azy_Client *client)
 
 /**
  * @brief Close a client's connection
+ * 
  * This function is the opposite of azy_client_connect, it
  * terminates an existing connection.
  * @param client The client (NOT #NULL)
@@ -320,6 +339,7 @@ azy_client_close(Azy_Client *client)
 
 /**
  * @brief Set a callback for an #Azy_Client_Call_Id
+ * 
  * This function is used to setup a callback to be called for the response of
  * a transmission with @p id, overriding (disabling) the AZY_CLIENT_RESULT event
  * for that call.  If a previous callback was set for @p id, this will overwrite it.
@@ -352,6 +372,7 @@ azy_client_callback_set(Azy_Client *client,
 
 /**
  * @brief Set a callback to free the retval struct of @p id
+ * 
  * This function should not be called by users.
  * @param client The client
  * @param id The transmission id
@@ -381,6 +402,7 @@ azy_client_callback_free_set(Azy_Client *client,
 
 /**
  * @brief Make a method call using a connected client
+ * 
  * This function is used to make a method call on @p client as defined in
  * @p content, using content-type defined by @p transport and the deserialization
  * function specified by @p cb.  This should generally not be used by users, as azy_parser
@@ -482,6 +504,7 @@ error:
 
 /**
  * @brief Send arbitrary data to a connected server
+ * 
  * This function is used to send arbitrary data to a connected server using @p client.
  * It will automatically generate the http header based on the content-length and other
  * data specified in the client's #Azy_Net object.
@@ -551,6 +574,7 @@ error:
 
 /**
  * @brief Validate a transmission attempt
+ * 
  * This function is used to check both the #Azy_Client_Call_Id and the #Azy_Content
  * of an azy_client_call or azy_client_send attempt, and will additionally set
  * an #Azy_Client_Return_Cb and log the calling function name upon failure.
@@ -591,6 +615,7 @@ azy_client_call_checker(Azy_Client *cli, Azy_Content *err_content, Azy_Client_Ca
 
 /**
  * @brief Free an #Azy_Client
+ * 
  * This function frees a client and ALL associated data.  If called
  * on a connected client, azy_client_close will be called and then the client
  * will be freed.
@@ -626,3 +651,4 @@ azy_client_free(Azy_Client *client)
      client->conns = eina_list_free(client->conns);
    free(client);
 }
+/** @} */

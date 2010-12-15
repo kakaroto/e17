@@ -25,7 +25,11 @@
 
 /* length of a uuid */
 #define UUID_LEN 36
-
+/**
+ * @defgroup Azy_Utils Utilities
+ * @brief Functions which provide utility
+ * @{
+ */
 /**
  * @brief Base64 encode a string of known length
  * @param string The string to encode
@@ -133,3 +137,4 @@ azy_uuid_new(void)
 
    return ret;
 }
+/** @} */

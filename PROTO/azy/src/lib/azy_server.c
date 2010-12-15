@@ -23,7 +23,14 @@
 #include "azy_private.h"
 
 /**
+ * @defgroup Azy_Server
+ * @brief Functions which affect #Azy_Server objects
+ * @{
+ */
+ 
+/**
  * @brief Stop a running server
+ * 
  * This function stops running the specified server and stops the
  * main loop.
  * @param server The server object (NOT NULL)
@@ -44,6 +51,7 @@ azy_server_stop(Azy_Server *server)
 
 /**
  * @brief Create a new server object
+ * 
  * Create a new server object.  If @p secure is specified, the server will require
  * ssl/tls for connections.
  * @param secure If true, server will use ssl for connections
@@ -71,6 +79,7 @@ err:
 
 /**
  * @brief Free the given server
+ * 
  * This function frees @p server.
  * Note that the #Azy_Server_Module_Def objects are not freed
  * with this function.
@@ -92,6 +101,7 @@ azy_server_free(Azy_Server *server)
 
 /**
  * @brief Retrieve the list of #Azy_Server_Module_Def objects from a server
+ * 
  * This function will return an #Eina_List of #Azy_Server_Module_Def objects
  * present in @p server.  This list and the objects all belong to the server.
  * They must NOT be freed.
@@ -112,6 +122,7 @@ azy_server_module_defs_get(Azy_Server *server)
 
 /**
  * @brief Send data to a client
+ * 
  * This function is used to queue arbitrary data to send to a client.  It will automatically
  * generate all http header strings from @p net including the content-length.
  * @param net The client's #Azy_Net object (NOT NULL)
@@ -153,6 +164,7 @@ error:
 
 /**
  * @brief Set the address for a server to listen on
+ * 
  * This function sets the listen address for @p server to @p addr.
  * Examples: 127.0.0.1, 0.0.0.0, localhost, etc
  * @param server The server object (NOT NULL)
@@ -176,6 +188,7 @@ azy_server_addr_set(Azy_Server *server,
 
 /**
  * @brief Get the address for a server to listen on
+ * 
  * This function gets the listen address for @p server.
  * Examples: 127.0.0.1, 0.0.0.0, localhost, etc
  * @param server The server object (NOT NULL)
@@ -196,6 +209,7 @@ azy_server_addr_get(Azy_Server *server)
 
 /**
  * @brief Run the specified server
+ * 
  * This function starts the specified server, calling ecore_main_loop_begin.
  * If the server's listen address has been previously specified, @p type should be
  * #AZY_SERVER_NONE, otherwise it will be detected based on @p type.
@@ -258,6 +272,7 @@ azy_server_run(Azy_Server     *server,
 
 /**
  * @brief Run a server in a single call with no prior setup
+ * 
  * This function will create a server and run it all in one call, but
  * provides less functionality and flexibility.
  * It will call ecore_main_loop_begin, set up server modules, and
@@ -334,4 +349,4 @@ error:
    azy_server_free(server);
    return EINA_FALSE;
 }
-
+/** @} */

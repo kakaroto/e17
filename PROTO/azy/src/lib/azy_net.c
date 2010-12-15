@@ -21,7 +21,11 @@
 
 #include "Azy.h"
 #include "azy_private.h"
-
+/**
+ * @defgroup Azy_Net Network Functions
+ * @brief Functions which interact with the network transport
+ * @{
+ */
 /* append a header hash to a strbuf */
 static void
 azy_net_header_hash_(Eina_Hash            *hash __UNUSED__ ,
@@ -35,6 +39,7 @@ azy_net_header_hash_(Eina_Hash            *hash __UNUSED__ ,
 
 /**
  * @brief Create a new #Azy_Net object
+ * 
  * This function is used to create an object which will store/manipulate
  * all network-related information.  HTTP version defaults to 1.1.
  * @param conn Either an #Ecore_Con_Client or an #Ecore_Con_Server (NOT #NULL)
@@ -58,6 +63,7 @@ azy_net_new(void *conn)
 
 /**
  * @brief Free an #Azy_Net object
+ * 
  * This function frees an #Azy_Net object, including all data associated with it.
  * It does NOT free the Ecore_Con client/server object.
  * @param net The object to free (NOT #NULL)
@@ -89,6 +95,7 @@ azy_net_free(Azy_Net *net)
 
 /**
  * @brief Find a value for a http header
+ * 
  * This function returns the http header value for the header name
  * specified.  For example, if name is "Connection", the return
  * might be "close"
@@ -123,6 +130,7 @@ azy_net_header_get(Azy_Net   *net,
 
 /**
  * @brief Free all headers associated with @p net
+ * 
  * This function resets the http headers for @p net, freeing all
  * memory associated with them.
  * @param net The #Azy_Net object containing the headers to free (NOT #NULL)
@@ -146,6 +154,7 @@ azy_net_header_reset(Azy_Net *net)
 
 /**
  * @brief Set up http basic auth headers using a name and password
+ * 
  * This function is used to set up http basic authentication using
  * base64 encoded copies of @p username and @p password strings.  If you don't know
  * what this is, see http://en.wikipedia.org/wiki/Basic_access_authentication
@@ -189,6 +198,7 @@ azy_net_auth_set(Azy_Net   *net,
 
 /**
  * @brief Get username and password from http basic auth headers
+ * 
  * This function is used to get a http basic authentication username/password pair
  * using base64 encodes of @p username and @p password.  If you don't know
  * what this is, see http://en.wikipedia.org/wiki/Basic_access_authentication
@@ -247,6 +257,7 @@ azy_net_auth_get(Azy_Net    *net,
 
 /**
  * @brief Returns the http uri (path) that requests go to/came from
+ * 
  * This function returns the uri specified in the HTTP header.
  * Example:
  *  GET {/images/logo.png}<==URI HTTP/1.1
@@ -268,6 +279,7 @@ azy_net_uri_get(Azy_Net *net)
 
 /**
  * @brief Sets the http uri (path) that requests go to/came from
+ * 
  * This function sets the uri specified in the HTTP header.
  * Example:
  *  GET {/images/logo.png}<==URI HTTP/1.1
@@ -292,6 +304,7 @@ azy_net_uri_set(Azy_Net *net, const char *path)
 
 /**
  * @brief Returns the http protocol version used
+ * 
  * This function returns 0 for http v1.0 or 1 for http v1.1.
  * @param net The network object (NOT #NULL)
  * @return 0 or 1 for version, else -1 on error
@@ -311,6 +324,7 @@ azy_net_version_get(Azy_Net *net)
 
 /**
  * @brief Set the http protocol version used
+ * 
  * This function sets the protocol version to be used in the @p net object.
  * Use 0 for http 1.0 or 1 for http 1.1.  Other values will return EINA_FALSE
  * @param net The network object (NOT #NULL)
@@ -334,6 +348,7 @@ azy_net_version_set(Azy_Net *net, int version)
 
 /**
  * @brief Return the status code of an http response
+ * 
  * This function returns the http status code from a response.
  * Some commonly used status codes are 404 (resource not found) and
  * 200 (OK).
@@ -357,6 +372,7 @@ azy_net_code_get(Azy_Net *net)
 
 /**
  * @brief Set the status code of an http response
+ * 
  * This function Sets the http status code for a response as well
  * as its corresponding http message (200 OK).
  * @param net The network object (NOT #NULL)
@@ -380,6 +396,7 @@ azy_net_code_set(Azy_Net *net,
 
 /**
  * @brief Returns the http method used in the network object
+ * 
  * This function returns the #Azy_Net_Type of the http method used in @p net
  * which correspond to a matching method string (eg. AZY_NET_TYPE_GET == GET)
  * @param net The network object (NOT #NULL)
@@ -400,6 +417,7 @@ azy_net_type_get(Azy_Net *net)
 
 /**
  * @brief Sets the http method used in the network object
+ * 
  * This function sets the #Azy_Net_Type of the http method used in @p net
  * which correspond to a matching method string (eg. AZY_NET_TYPE_GET == GET)
  * @param net The network object (NOT #NULL)
@@ -423,6 +441,7 @@ azy_net_type_set(Azy_Net     *net,
 
 /**
  * @brief Return the message length of a transmission
+ * 
  * This function is used to return the content-length set in the header
  * of @p net, and is equivalent to calling azy_net_header_get(net, "content-length").
  * @param net The network object (NOT #NULL)
@@ -443,6 +462,7 @@ azy_net_message_length_get(Azy_Net *net)
 
 /**
  * @brief Set the message length of a transmission
+ * 
  * This function is used to set the content-length in the header
  * of @p net, but is NOT equivalent to calling
  * azy_net_header_set(net, "content-length", value).
@@ -471,6 +491,7 @@ azy_net_message_length_set(Azy_Net *net,
 
 /**
  * @brief Set a http header for use in a transmission
+ * 
  * This function is used to set an http header in @p net object.
  * @param net The network object (NOT #NULL)
  * @param name The header's name (NOT #NULL)
@@ -506,6 +527,7 @@ azy_net_header_set(Azy_Net   *net,
 
 /**
  * @brief Return the ip address associated with a network object
+ * 
  * This function returns the ip address of the client/server to which it represents.
  * Note that while the returned string is stringshared, it must not be freed since
  * it still belongs to @p net.
@@ -533,6 +555,7 @@ azy_net_ip_get(Azy_Net *net)
 
 /**
  * @brief Set the http transport to be used in a network object
+ * 
  * This function is similar, but NOT the same as setting the "content-type"
  * header, as it sets internal variables to make type retrieval faster.
  * @param net The network object (NOT #NULL)
@@ -558,6 +581,7 @@ azy_net_transport_set(Azy_Net          *net,
 
 /**
  * @brief Get the http transport used in a network object
+ * 
  * This function retrieves the #Azy_Net_Transport used in @p net,
  * representing the content-type.
  * @param net The network object (NOT #NULL)
@@ -577,6 +601,7 @@ azy_net_transport_get(Azy_Net *net)
 
 /**
  * @brief Create an http header string from data in a network object
+ * 
  * This function creates a full http header from data previously set in
  * @p net, including the http method line, content-type/length, and any others
  * which were set.
@@ -627,6 +652,7 @@ azy_net_header_create(Azy_Net *net)
 
 /**
  * @brief Return a stringshared http status string
+ * 
  * This function takes an http status code and returns a stringshared string
  * which corresponds to that code.
  * @param code The status code (NOT #NULL)
@@ -764,4 +790,4 @@ azy_net_http_msg_get(int code)
         return eina_stringshare_add("Unknown Status");
      }
 }
-
+/** @} */

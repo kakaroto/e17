@@ -1,5 +1,19 @@
-/*
+/* Azy - Lazy Zentific RPC library
  * Copyright 2010 Mike Blumenkrantz <mike@zentific.com>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library;
+ * if not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef AZY_H
@@ -28,15 +42,11 @@ void *alloca (size_t);
 #endif
 
 #ifdef _WIN32
-# ifdef EFL_ECORE_BUILD
 #  ifdef DLL_EXPORT
 #   define EAPI __declspec(dllexport)
 #  else
 #   define EAPI
 #  endif /* ! DLL_EXPORT */
-# else
-#  define EAPI __declspec(dllimport)
-# endif /* ! EFL_ECORE_BUILD */
 #else
 # ifdef __GNUC__
 #  if __GNUC__ >= 4
@@ -50,12 +60,10 @@ void *alloca (size_t);
 #endif /* ! _WIN32 */
 
 /**
- * Convenience define for Azy_Client_Return_Cb functions.
+ * @defgroup Azy_Events Azy Events
+ * @brief Events that are emitted from the library
+ * @{
  */
-#define AZY_ERROR_NONE 0
-
-extern int azy_log_dom;
-
 extern int AZY_CLIENT_DISCONNECTED; /**< Event emitted upon client disconnecting, sends #Azy_Client object */
 extern int AZY_CLIENT_CONNECTED; /**< Event emitted upon client connecting, sends #Azy_Client object */
 extern int AZY_CLIENT_RETURN; /**< Event emitted upon client method returning if
@@ -64,7 +72,7 @@ extern int AZY_CLIENT_RESULT; /**< Event emitted upon client method returning if
                                    a callback for the method has been set, sends #Eina_Error */
 extern int AZY_CLIENT_ERROR; /**< Event emitted upon client method encountering
                                   an error, sends #Azy_Content containing error */
-
+/**@}*/
 /**
  * @defgroup Azy_Typedefs Azy types
  * @brief These types are used throughout the library
@@ -157,14 +165,14 @@ typedef enum
  */
 typedef enum {
    AZY_VALUE_ARRAY, /**< Array object */
-   AZY_VALUE_STRUCT, /** Struct object */
-   AZY_VALUE_MEMBER, /** Struct member object */
-   AZY_VALUE_INT, /** Int object */
-   AZY_VALUE_STRING, /** String (stringshared) object */
-   AZY_VALUE_BOOL, /** Boolean object */
-   AZY_VALUE_DOUBLE, /** Double object */
-   AZY_VALUE_TIME, /** Time (stringshared) object */
-   AZY_VALUE_BASE64 /** Base64 encoded string (stringshared) object */
+   AZY_VALUE_STRUCT, /**< Struct object */
+   AZY_VALUE_MEMBER, /**< Struct member object */
+   AZY_VALUE_INT, /**< Int object */
+   AZY_VALUE_STRING, /**< String (stringshared) object */
+   AZY_VALUE_BOOL, /**< Boolean object */
+   AZY_VALUE_DOUBLE, /**< Double object */
+   AZY_VALUE_TIME, /**< Time (stringshared) object */
+   AZY_VALUE_BASE64 /**< Base64 encoded string (stringshared) object */
 } Azy_Value_Type;
 
 /**
@@ -194,10 +202,26 @@ typedef enum
    AZY_NET_TRANSPORT_UNKNOWN
 } Azy_Net_Transport;
 
-
+/**
+ * @typedef Azy_Server_Module_Cb
+ * Function used to serve GET/PUT requests.  Must return EINA_FALSE
+ * on error to prevent a response, otherwise response will be sent.
+ */
 typedef Eina_Bool (*Azy_Server_Module_Cb)(Azy_Server_Module *);
+/**
+ * @typedef Azy_Server_Module_Shutdown_Cb
+ * Function called when module is unloaded for given connection.
+ */
 typedef void (*Azy_Server_Module_Shutdown_Cb)(Azy_Server_Module *);
+/**
+ * @typedef Azy_Server_Module_Content_Cb
+ * Function called before/after http method is handled as well as for fallback method.
+ */
 typedef Eina_Bool (*Azy_Server_Module_Content_Cb)(Azy_Server_Module *, Azy_Content *);
+/**
+ * @typedef Azy_Content_Cb
+ * Function to convert Azy_Value* to user type.
+ */
 typedef void *(*Azy_Content_Cb)(Azy_Value *, void **);
 /**
  * @typedef Azy_Client_Return_Cb
@@ -205,6 +229,8 @@ typedef void *(*Azy_Content_Cb)(Azy_Value *, void **);
  * an error number.
  */
 typedef Eina_Error (*Azy_Client_Return_Cb)(Azy_Client *cli, Azy_Content *ret_content, void *ret);
+
+#define AZY_ERROR_NONE 0 /**< Convenience define for Azy_Client_Return_Cb functions. */
 /** }@ */
 #ifdef __cplusplus
 extern "C" {
@@ -224,7 +250,7 @@ extern "C" {
                               size_t               big_len,
                               size_t               small_len);
    const char *   azy_uuid_new(void);
-
+   
    /* server */
    void                    azy_server_stop(Azy_Server *server);
    void                   *azy_server_module_data_get(Azy_Server_Module *module);

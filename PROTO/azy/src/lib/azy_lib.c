@@ -22,7 +22,10 @@
 
 #include <Azy.h>
 #include <azy_private.h>
-
+   /**
+    * @defgroup Azy_Library Library
+    * @brief Functions to control initialization of the library
+    * @{*/
 static const char AZY_ERROR_REQUEST_JSON_OBJECT_err[] = "Can't parse JSON-RPC request. Invalid JSON object.";
 static const char AZY_ERROR_REQUEST_JSON_METHOD_err[] = "Can't parse JSON-RPC request. Missing method.";
 static const char AZY_ERROR_REQUEST_JSON_PARAM_err[] = "Can't parse JSON-RPC request. Failed to unserialize a parameter.";
@@ -132,6 +135,7 @@ _azy_magic_fail(const void *d, Azy_Magic m, Azy_Magic req_m, const char *fname)
 
 /**
  * @brief Initialize Azy
+ * 
  * This function initializes error handlers, events, and
  * logging functions for Azy and must be called prior to making any
  * calls.
@@ -185,6 +189,7 @@ eina_fail:
 
 /**
  * @brief Shut down Azy
+ * 
  * This function uninitializes memory allocated by azy_init.
  * Call when no further Azy functions will be used.
  * @return The number of times the az_init has been called, or -1 if 
@@ -203,4 +208,4 @@ azy_shutdown(void)
    azy_log_dom = -1;
    return azy_init_count_;
 }
-
+/** @} */

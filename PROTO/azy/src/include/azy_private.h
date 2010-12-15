@@ -35,6 +35,8 @@
 # define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #endif
 
+extern int azy_log_dom;
+
 #define DBG(...)  EINA_LOG_DOM_DBG(azy_log_dom, __VA_ARGS__)
 #define INFO(...) EINA_LOG_DOM_INFO(azy_log_dom, __VA_ARGS__)
 #define WARN(...) EINA_LOG_DOM_WARN(azy_log_dom, __VA_ARGS__)

@@ -21,6 +21,12 @@
 #include "Azy.h"
 #include "azy_private.h"
 
+/**
+ * @defgroup Azy_Content
+ * @brief Functions which affect #Azy_Content objects
+ * @{
+ */
+
 /* internal helper function to set buffer and free existing buffer if present */
 Eina_Bool
 azy_content_buffer_set_(Azy_Content  *content,
@@ -45,6 +51,7 @@ azy_content_buffer_set_(Azy_Content  *content,
 
 /**
  * @brief Create a new content object
+ * 
  * This function creates a new content object, stringsharing
  * @p method as its method if specified.
  * @param method The rpc method that the content represents
@@ -68,6 +75,7 @@ azy_content_new(const char *method)
 
 /**
  * @brief Free a content object
+ * 
  * This function frees a content object and all subobjects within it
  * including parameters added.
  * @param content The content to free (NOT #NULL)
@@ -103,6 +111,7 @@ azy_content_free(Azy_Content *content)
 
 /**
  * @brief Associate data with an #Azy_Content object
+ * 
  * This function associates @p data with @p content to
  * be retrieved with azy_content_data_get.
  * @param content The content object (NOT #NULL)
@@ -122,6 +131,7 @@ azy_content_data_set(Azy_Content *content,
 
 /**
  * @brief Return the data associated with a content object
+ * 
  * This function returns the data associated with @p content
  * previously.
  * @see azy_content_data_set
@@ -141,6 +151,7 @@ azy_content_data_get(Azy_Content *content)
 
 /**
  * @brief Internally convert the #Azy_Value parameters to xml/json
+ * 
  * This function converts an rpc method request into xml/json (based on @p type)
  * for transmission to a server.
  * @param content The content containing the method request (NOT #NULL)
@@ -176,6 +187,7 @@ azy_content_serialize_request(Azy_Content *content,
 
 /**
  * @brief Internally convert the xml/json parameters to #Azy_Value
+ * 
  * This function converts an rpc method request from xml/json (based on @p type)
  * and stores it in @p content for use by a server.
  * @param content The content containing the method request (NOT #NULL)
@@ -218,6 +230,7 @@ azy_content_unserialize_request(Azy_Content *content,
 
 /**
  * @brief Internally convert the #Azy_Value parameters to xml/json
+ * 
  * This function converts an rpc method response into xml/json (based on @p type)
  * for transmission to a client.
  * @param content The content containing the method response (NOT #NULL)
@@ -254,6 +267,7 @@ azy_content_serialize_response(Azy_Content *content,
 
 /**
  * @brief Internally convert the xml/json parameters to #Azy_Value
+ * 
  * This function converts an rpc method response from xml/json (based on @p type)
  * and stores it in @p content for use by a client.
  * @param content The content containing the method request (NOT #NULL)
@@ -297,6 +311,7 @@ azy_content_unserialize_response(Azy_Content *content,
 
 /**
  * @brief Return the full method name of a content object
+ * 
  * This function returns @p content's full method name including
  * the module name.
  * Note that the return value is stringshared but belongs to @p content
@@ -324,6 +339,7 @@ azy_content_method_full_get(Azy_Content *content)
 
 /**
  * @brief Return only the method name of a content object
+ * 
  * This function returns @p content's method name NOT including
  * the module name.
  * Note that the return value is NOT stringshared, belongs to @p content,
@@ -358,6 +374,7 @@ azy_content_method_get(Azy_Content *content)
 
 /**
  * @brief Return only the module name of a content object's method
+ * 
  * This function returns @p content's method's module name NOT including
  * the method name.
  * Note that the return value is stringshared.
@@ -366,11 +383,12 @@ azy_content_method_get(Azy_Content *content)
  * Module.{methodname}<==azy_content_method_get
  * {Module}.methodname<==azy_content_module_name_get
  * @param content The content (NOT #NULL)
+ * @param fallback The fallback string to return if module name is not found
  * @return The module name, or #NULL on failure
  */
 const char *
 azy_content_module_name_get(Azy_Content *content,
-                             const char   *fallback)
+                            const char   *fallback)
 {
    const char *ret;
    DBG("(content=%p)", content);
@@ -389,6 +407,7 @@ azy_content_module_name_get(Azy_Content *content,
 
 /**
  * @brief Get the #Azy_Net object of a transmission
+ * 
  * This function is used by clients to retrieve the network object containing
  * http header information from a server's response.  It will always return #NULL
  * if used outside of a transmission result callback/event.
@@ -410,6 +429,7 @@ azy_content_net_get(Azy_Content *content)
 
 /**
  * @brief Add a parameter to a content object
+ * 
  * This function adds @p val parameter to @p content for later serialization
  * and transmission to a client/server.
  * @param content The content object (NOT #NULL)
@@ -438,6 +458,7 @@ azy_content_param_add(Azy_Content *content,
 
 /**
  * @brief Return the Nth parameter from a content object
+ * 
  * This function returns the parameter from @p content in position
  * @p pos.
  * @param content The content object (NOT #NULL)
@@ -461,6 +482,7 @@ azy_content_param_get(Azy_Content *content,
 
 /**
  * @brief Get the list of params
+ * 
  * This function returns an #Eina_List of #Azy_Value structs which
  * represent the parameters for the method call in @p content.
  * @param content The content object (NOT #NULL)
@@ -483,6 +505,7 @@ azy_content_params_get(Azy_Content *content)
 /* retval manipulation */
 /**
  * @brief Set the retval of a content object
+ * 
  * This function sets the retval of the content, which is
  * what will be serialized and sent back to the client.
  * @param content The content (NOT #NULL)
@@ -505,6 +528,7 @@ azy_content_retval_set(Azy_Content *content,
 
 /**
  * @brief Get the retval of a content object
+ * 
  * This function gets the retval of the content, which is
  * what is serialized and sent to the client.
  * @param content The content (NOT #NULL)
@@ -527,6 +551,7 @@ azy_content_retval_get(Azy_Content *content)
 /* error manipulation */
 /**
  * @brief Set the error/fault code to a pre-set error
+ * 
  * This function sets @p content's faultcode to @p code
  * which must be a previously defined #Eina_Error with an error string.
  * This error code and string will be used to serialize an error response
@@ -553,6 +578,7 @@ azy_content_error_code_set(Azy_Content *content,
 
 /**
  * @brief Set the faultcode to an arbitrary number, but use a previously defined faultstring
+ * 
  * This function sets @p content's faultcode to @p faultcode
  * but uses the error message from @p code which must be a previously defined
  * #Eina_Error with an error string.
@@ -582,6 +608,7 @@ azy_content_error_faultcode_set(Azy_Content *content,
 
 /**
  * @brief Set the faultcode and faultstring to arbitrary values
+ * 
  * This function sets @p content's faultcode to @p faultcode
  * and faultstring to the format string defined by @p fmt and its subarguments.
  * This faultcode and format string will be used to serialize an error response
@@ -629,6 +656,7 @@ azy_content_error_faultmsg_set(Azy_Content *content,
 
 /**
  * @brief Check if a content object contains an rpc error
+ * 
  * This function will return true if and only if @p content contains
  * an rpc error.
  * @param content The content object (NOT #NULL)
@@ -650,6 +678,7 @@ azy_content_error_is_set(Azy_Content *content)
 
 /**
  * @brief Reset a content's error status
+ * 
  * This function unsets the error marker in @p content,
  * resets its stored error codes, and frees any previously set
  * fault strings.
@@ -682,6 +711,7 @@ azy_content_error_reset(Azy_Content *content)
 
 /**
  * @brief Copy all error information from one #Azy_Content to another
+ * 
  * This function propogates error information from one content object to
  * another object, also copying a user-specified faultstring if previously
  * set.
@@ -713,6 +743,7 @@ azy_content_error_copy(Azy_Content *from, Azy_Content *to)
 
 /**
  * @brief Return the error code of an #Azy_Content object
+ * 
  * This function returns the error code of @p content object.  The
  * error code returned will be one set with a previously defined
  * #EINA_ERROR or an arbitrary faultcode.
@@ -736,6 +767,7 @@ azy_content_error_code_get(Azy_Content *content)
 
 /**
  * @brief Get the error message from a content object
+ * 
  * This function returns the error message of an #Azy_Content.
  * Precedence is given to specific fault strings over #Eina_Error
  * strings.
@@ -765,6 +797,7 @@ azy_content_error_message_get(Azy_Content *content)
 
 /**
  * @brief Dump an #Azy_Content's params to a string with optional indentation
+ * 
  * This function dumps the params in @p content to a string and returns it,
  * optionally indenting each line @p indent spaces.
  * Note that the returned string must be manually freed.
@@ -843,6 +876,7 @@ azy_content_dump_string(const Azy_Content *content,
 
 /**
  * @brief Get the return value of a transmission
+ * 
  * This function gets the return value of a method call, and is only
  * functional for clients in return callbacks/events.
  * Note that the returned content is owned by @p content and should not
@@ -863,6 +897,7 @@ azy_content_return_get(Azy_Content *content)
 
 /**
  * @brief Get the id of a content object
+ * 
  * This function returns the client transmission id of @p content,
  * allowing a user to determine which call the content object returned from.
  * Note that this function will return 0 unless called in a client return
@@ -880,3 +915,4 @@ azy_content_id_get(Azy_Content *content)
      }
    return content->id;
 }
+/** @} */
