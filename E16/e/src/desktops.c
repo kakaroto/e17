@@ -1904,6 +1904,8 @@ DeskRootResize(int root, int w, int h)
    ScreenInit();
    DesksResize(w, h);
 
+   HintsSetDesktopConfig();
+
    Mode.screen.w_old = WinGetW(VROOT);
    Mode.screen.h_old = WinGetH(VROOT);
 }
