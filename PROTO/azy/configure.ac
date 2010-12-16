@@ -120,6 +120,7 @@ AC_CONFIG_FILES([
   src/bin/re2c/Makefile
   src/tests/Makefile
   src/tests/unit/Makefile
+  src/tests/identi.ca/Makefile
   azy.pc
 ])
 AC_OUTPUT

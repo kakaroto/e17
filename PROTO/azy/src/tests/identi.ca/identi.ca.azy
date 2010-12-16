@@ -1,0 +1,71 @@
+/*
+ * Copyright 2010 Mike Blumenkrantz <mike@zentific.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace identica;
+
+struct Geo
+{
+   array<double> coordinates;
+   string type;
+}
+
+struct User
+{
+   time created_at;
+   string description;
+   int favourites_count;
+   int followers_count;
+   boolean following;
+   int friends_count;
+   int id;
+   string location;
+   string name;
+   boolean notifications;
+   string profile_background_color;
+   string profile_background_image_url;
+   string profile_background_tile;
+   string profile_image_url;
+   string profile_link_color;
+   string profile_sidebar_border_color;
+   string profile_sidebar_fill_color;
+   string profile_text_color;
+   boolean protected;
+   string screen_name;
+   int statuses_count;
+   boolean statusnet_blocking; /* This actually has a colon instead of underscore? */
+   string statusnet_profile_url;
+   string time_zone;
+   string url;
+   string utc_offset;
+}
+
+struct Ident
+{
+   time created_at;
+   boolean favorited;
+   Geo geo;
+   int id;
+   string in_reply_to_screen_name;
+   int in_reply_to_status_id;
+   int in_reply_to_user_id;
+   string source;
+   string statusnet_html;
+   string text;
+   boolean truncated;
+   User user;
+}
+
