@@ -629,6 +629,7 @@ azy_net_header_create(Azy_Net *net)
       case AZY_NET_TYPE_GET:
         eina_strbuf_append_printf(header, "GET %s HTTP/1.%i\r\n",
                                   net->http.req.http_path, net->http.version);
+        break;
 
       case AZY_NET_TYPE_POST:
         eina_strbuf_append_printf(header, "POST %s HTTP/1.%i\r\n",
