@@ -213,7 +213,6 @@ struct Azy_Client_Handler_Data
    Azy_Client         *client;
    Azy_Net            *recv;
    const char         *method;
-   Azy_Net_Transport   transport;
    Azy_Content_Cb      callback; //callback set to convert from Azy_Value to Return_Type
    void               *content_data;
 };

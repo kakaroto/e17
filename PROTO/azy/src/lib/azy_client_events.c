@@ -33,6 +33,8 @@ static void _azy_client_handler_call_free(Azy_Client *client, Azy_Content *conte
 {
    Ecore_Cb callback;
 
+   DBG("(client=%p, content=%p)", client, content);
+
    if (client)
      {
         callback = eina_hash_find(client->free_callbacks, &content->id);
@@ -43,7 +45,7 @@ static void _azy_client_handler_call_free(Azy_Client *client, Azy_Content *conte
           }
      }
       /* http 1.0 requires that we disconnect after every response */
-   if (content->recv_net->http.version == 0) ecore_con_server_del(content->recv_net->conn);
+   if ((!content->recv_net->http.version) || (client && client->net && (!client->net->http.version))) ecore_con_server_del(content->recv_net->conn);
    azy_content_free(content);
 }
 
@@ -110,7 +112,7 @@ _azy_client_handler_get(Azy_Client_Handler_Data *handler_data)
    if (azy_content_error_is_set(content))
      {
         char buf[64];
-        snprintf(buf, sizeof(buf), "%s:\n<<<<<<<<<<<<<\n%%.%llis\n<<<<<<<<<<<<<", handler_data->method, handler_data->recv->size);
+        snprintf(buf, sizeof(buf), "%lli bytes:\n<<<<<<<<<<<<<\n%%.%llis\n<<<<<<<<<<<<<", handler_data->recv->size, handler_data->recv->size);
         ERR(buf, handler_data->recv->buffer);
      }
 
@@ -322,8 +324,11 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
      {   /* otherwise keep appending to buffer */
         unsigned char *tmp;
         
-        if (handler_data->recv->size + len > handler_data->recv->http.content_length)
-          tmp = realloc(handler_data->recv->buffer, handler_data->recv->http.content_length);
+        if (handler_data->recv->size + len > handler_data->recv->http.content_length && (handler_data->recv->http.content_length > 0))
+          tmp = realloc(handler_data->recv->buffer,
+                        handler_data->recv->http.content_length > 0 ?
+                          handler_data->recv->http.content_length :
+                          ev->size - offset);
         else
           tmp = realloc(handler_data->recv->buffer, handler_data->recv->size + len);
 
@@ -331,7 +336,8 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
         
         handler_data->recv->buffer = tmp;
 
-        if (handler_data->recv->size + len > handler_data->recv->http.content_length)
+        if ((handler_data->recv->size + len > handler_data->recv->http.content_length) &&
+            (handler_data->recv->http.content_length > 0))
           {
              overflow_length = (handler_data->recv->size + len) - handler_data->recv->http.content_length;
              memcpy(handler_data->recv->buffer + handler_data->recv->size, data, len - overflow_length);
@@ -393,7 +399,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
           /* timer and full content length not received, reset timer */
           ecore_timer_interval_set(handler_data->recv->timer, 30);
      }
-   else
+   else if (handler_data->recv->size && (handler_data->recv->http.content_length > 0))
      {
          /* else create a "done" event */
          if (handler_data->recv->timer)
@@ -445,11 +451,18 @@ _azy_client_handler_del(Azy_Client                    *client,
 
    DBG("(client=%p, net=%p)", client, client->net);
    client->connected = EINA_FALSE;
-   if (client->net) azy_net_free(client->net);
-   client->net = NULL;
-   EINA_LIST_FREE(client->conns, handler_data)
-     _azy_client_handler_data_free(handler_data);
 
+   handler_data = client->conns->data;
+
+   if (((!client->net->http.version) || (!handler_data->recv->http.version)) && handler_data->recv->buffer)
+     _azy_client_handler_call(client->conns->data);
+   else
+     EINA_LIST_FREE(client->conns, handler_data)
+       _azy_client_handler_data_free(handler_data);
+
+   if (client->net) azy_net_free(client->net);
+     client->net = NULL;
+   
    ecore_event_add(AZY_CLIENT_DISCONNECTED, client, (Ecore_End_Cb)_azy_event_handler_fake_free, NULL);
    return ECORE_CALLBACK_CANCEL;
 }

@@ -693,9 +693,12 @@ _azy_server_client_handler_data(Azy_Server_Client          *client,
    else if (data)
      {   /* otherwise keep appending to buffer */
         unsigned char *tmp;
-        
-        if (client->net->size + len > client->net->http.content_length)
-          tmp = realloc(client->net->buffer, client->net->http.content_length);
+
+        if (client->net->size + len > client->net->http.content_length && (client->net->http.content_length > 0))
+          tmp = realloc(client->net->buffer,
+                        client->net->http.content_length > 0 ?
+                          client->net->http.content_length :
+                          ev->size - offset);
         else
           tmp = realloc(client->net->buffer, client->net->size + len);
 
@@ -703,7 +706,8 @@ _azy_server_client_handler_data(Azy_Server_Client          *client,
         
         client->net->buffer = tmp;
 
-        if (client->net->size + len > client->net->http.content_length)
+        if ((client->net->size + len > client->net->http.content_length) &&
+            (client->net->http.content_length > 0))
           {
              overflow_length = (client->net->size + len) - client->net->http.content_length;
              memcpy(client->net->buffer + client->net->size, data, len - overflow_length);
@@ -756,7 +760,7 @@ _azy_server_client_handler_data(Azy_Server_Client          *client,
    if (!client->net->headers_read)
      return ECORE_CALLBACK_RENEW;
 
-   if (client->net->size >= client->net->http.content_length)
+   if (client->net->size && (client->net->size >= client->net->http.content_length) && (client->net->http.content_length > 0))
       _azy_server_client_handler_request(client);
 
    if (overflow && (!client->net->buffer))
@@ -790,6 +794,9 @@ _azy_server_client_handler_del(Azy_Server_Client         *client,
      _azy_server_client_handler_data(NULL, -500, NULL);
 
    client->del = NULL;
+   if ((!client->net->http.version) && client->net->buffer)
+     _azy_server_client_handler_request(client);
+
    _azy_server_client_free(client);
 
    return ECORE_CALLBACK_CANCEL;
