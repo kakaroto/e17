@@ -618,7 +618,7 @@ azy_value_array_new(void)
  * with @p name exists, unref it and use @p val instead.
  * @param struc The #Azy_Value struct to set the member in (NOT NULL)
  * @param name The member name (NOT NULL)
- * @param val The struct member value (NOT NULL)
+ * @param val The struct member value
  */
 void
 azy_value_struct_member_set(Azy_Value *struc,
@@ -627,12 +627,6 @@ azy_value_struct_member_set(Azy_Value *struc,
 {
    Eina_List *l;
    Azy_Value *m, *v;
-
-   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
-     {
-        AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
-        return;
-     }
 
    if (!AZY_MAGIC_CHECK(struc, AZY_MAGIC_VALUE))
      {
