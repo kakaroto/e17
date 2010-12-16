@@ -127,6 +127,10 @@ azy_client_host_set(Azy_Client *client,
 
    if (client->addr)
      eina_stringshare_del(client->addr);
+   if (!strncmp(addr, "http://", 7))
+     addr += 7;
+   else if (!strncmp(addr, "https://", 8))
+     addr += 8;
    client->addr = eina_stringshare_add(addr);
    client->port = port;
    
@@ -174,7 +178,10 @@ azy_client_addr_set(Azy_Client *client, const char *addr)
         return EINA_FALSE;
      }
    EINA_SAFETY_ON_NULL_RETURN_VAL(addr, EINA_FALSE);
-
+   if (!strncmp(addr, "http://", 7))
+     addr += 7;
+   else if (!strncmp(addr, "https://", 8))
+     addr += 8;
    client->addr = eina_stringshare_add(addr);
    return EINA_TRUE;
 }
