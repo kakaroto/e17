@@ -297,7 +297,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
         INFO("%s: Set recv size to %lli from overflow", handler_data->method, handler_data->recv->size);
         
         /* returns offset where http header line ends */
-         if (!(offset = azy_events_type_parse(handler_data->recv, type, data, len)) && ev)
+         if (!(offset = azy_events_type_parse(handler_data->recv, type, data, len)) && ev && (!handler_data->recv->http.res.http_msg))
            return azy_events_connection_kill(handler_data->client->net->conn, EINA_FALSE, NULL);
          else if (!offset && overflow)
            {
