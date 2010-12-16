@@ -620,8 +620,9 @@ azy_net_header_create(Azy_Net *net)
         return NULL;
      }
 
-   if ((!net->http.headers) || (net->type == AZY_NET_TYPE_NONE))
-     return NULL;
+   EINA_SAFETY_ON_TRUE_RETURN_VAL((!net->http.headers) &&
+                                  (net->type == AZY_NET_TYPE_NONE) &&
+                                  (net->transport == AZY_NET_TRANSPORT_UNKNOWN), NULL);
 
    header = eina_strbuf_new();
    switch (net->type)
@@ -645,7 +646,8 @@ azy_net_header_create(Azy_Net *net)
                                   net->http.version, net->http.res.http_code, net->http.res.http_msg);
      }
 
-   eina_hash_foreach(net->http.headers, (Eina_Hash_Foreach)azy_net_header_hash_, header);
+   if (net->http.headers)
+     eina_hash_foreach(net->http.headers, (Eina_Hash_Foreach)azy_net_header_hash_, header);
 
    eina_strbuf_append(header, "\r\n");
    return header;
