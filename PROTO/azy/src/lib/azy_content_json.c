@@ -113,12 +113,17 @@ azy_value_unserialize_json(cJSON *object)
      {
       case cJSON_Object:
       {
-         Azy_Value *str = azy_value_struct_new();
+         Azy_Value *str;
+         const char *name;
+
+         str = azy_value_struct_new();
+
+         EINA_SAFETY_ON_NULL_RETURN_VAL(str, NULL);
          cJSON *child = object->child;
 
          while (child)
            {
-              const char *name = child->string;
+              name = child->string;
               azy_value_struct_member_set(str, name, azy_value_unserialize_json(child));
               child = child->next;
            }
@@ -154,9 +159,6 @@ azy_value_unserialize_json(cJSON *object)
 
       case cJSON_String:
         return azy_value_string_new(object->valuestring);
-
-      case cJSON_NULL:
-        DBG("Null value passed to %s!", __PRETTY_FUNCTION__);
      }
 
    return NULL;
