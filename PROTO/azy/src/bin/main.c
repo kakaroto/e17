@@ -193,6 +193,7 @@ gen_type_marshalizers(Azy_Typedef *t,
            t->demarch_name, t->ctype);
         EL(0, "{");
         EL(1, "%s _tmp_nstruct = NULL;", t->ctype);
+        EL(1, "Azy_Value *v;");
         NL;
         EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(_nstruct, EINA_FALSE);");
         EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(_struct, EINA_FALSE);");
@@ -203,8 +204,8 @@ gen_type_marshalizers(Azy_Typedef *t,
 
         EINA_LIST_FOREACH(t->struct_members, l, m)
           {
-             EL(1, "%sif (!%s(azy_value_struct_member_get(_struct, \"%s\"), &_tmp_nstruct->%s))", l->prev ? "else " : "",
-                m->type->demarch_name, m->name, m->name);
+             EL(1, "v = azy_value_struct_member_get(_struct, \"%s\");", m->name);
+             EL(1, "if (v && (!%s(v, &_tmp_nstruct->%s)))", m->type->demarch_name, m->name);
              EL(2, "goto error;");
           }
           
@@ -1796,9 +1797,11 @@ main(int argc, char *argv[])
    server_headers = strstr(modes, "all") || strstr(modes, "server-headers");
    azy_gen = strstr(modes, "azy") || 0;
 
-   if ((!client_headers) && (!client_impl) && (!server_impl) && (!server_headers) && (!azy_gen))
+   args = client_headers | client_impl | common_headers | common_impl | server_headers | server_impl;
+
+   if (!args)
      {
-        printf("You have not specified a valid method!\n");
+        printf("You have not specified a valid parsing mode!\n");
         exit(1);
      }
 
