@@ -132,9 +132,9 @@ azy_value_unserialize_xml(xml_node node)
                   Azy_Value *val;
                   const char *name;
 
-                  if ((std::distance(it.begin(), it.end()) != 2) ||
-                      (std::distance(it.first_child().begin(), it.first_child().end()) != 1) ||
-                      (std::distance(it.first_child().first_child().begin(), it.first_child().first_child().end())))
+                  if ((std::distance(it.begin(), it.end()) != 2) || /* member */
+                      (std::distance(it.first_child().begin(), it.first_child().end()) != 1) || /* name/value */
+                      (std::distance(it.first_child().first_child().begin(), it.first_child().first_child().end()))) /* name */
                     {
                        azy_value_unref(v);
                        return NULL;
@@ -238,7 +238,8 @@ azy_value_serialize_xml(xml_node   node,
         return;
 
       case AZY_VALUE_MEMBER:
-        node.append_child("member").append_child("name").append_child(node_pcdata).set_value(val->member_name);
+        node = node.append_child("member");
+        node.append_child("name").append_child(node_pcdata).set_value(val->member_name);
         azy_value_serialize_xml(node, val->member_value);
         return;
 
