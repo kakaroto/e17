@@ -49,7 +49,8 @@ _elixir_evas_object_box_layout(Evas_Object *o, Evas_Object_Box_Data *priv, void 
    elixir_function_start(cx);
 
    if (!evas_object_to_jsval(cx, o, &argv[0]))
-     goto on_error;
+     goto on_error_empty;
+   elixir_rval_register(cx, argv);
 
    jspriv = JS_NewObject(cx, elixir_class_request("Evas_Object_Box_Data", NULL), NULL, NULL);
    if (!jspriv) goto on_error;
@@ -60,36 +61,36 @@ _elixir_evas_object_box_layout(Evas_Object *o, Evas_Object_Box_Data *priv, void 
    if (!elixir_rval_register(cx, argv + 1)) goto on_error;
 
    jstmp = JS_DefineObject(cx, jspriv, "base", elixir_class_request("Evas_Object_Smart_Clipped_Data", NULL), NULL, JSPROP_ENUMERATE | JSPROP_READONLY);
-   if (!jstmp) goto on_error;
+   if (!jstmp) goto on_error2;
 
-   if (!elixir_object_register(cx, &jstmp, NULL)) goto on_error;
+   if (!elixir_object_register(cx, &jstmp, NULL)) goto on_error2;
 
-   if (!evas_object_to_jsval(cx, priv->base.clipper, &jobj)) goto on_error;
+   if (!evas_object_to_jsval(cx, priv->base.clipper, &jobj)) goto on_error2;
    JS_DefineProperty(cx, jstmp, "clipper", jobj, NULL, NULL,  JSPROP_ENUMERATE | JSPROP_READONLY);
 
    jsson = JS_DefineObject(cx, jstmp, "evas", elixir_class_request("evas", NULL), NULL, JSPROP_ENUMERATE | JSPROP_READONLY);
-   if (!jsson) goto on_error;
+   if (!jsson) goto on_error2;
 
    elixir_object_unregister(cx, &jstmp);
 
    jstmp = JS_DefineObject(cx, jspriv, "align", elixir_class_request("Elixir_Align", NULL), NULL, JSPROP_ENUMERATE | JSPROP_READONLY);
-   if (!jstmp) goto on_error;
+   if (!jstmp) goto on_error2;
 
-   if (!elixir_object_register(cx, &jstmp, NULL)) goto on_error;
-   if (!elixir_add_dbl_prop(cx, jstmp, "h", priv->align.h)) goto on_error;
-   if (!elixir_add_dbl_prop(cx, jstmp, "v", priv->align.v)) goto on_error;
+   if (!elixir_object_register(cx, &jstmp, NULL)) goto on_error2;
+   if (!elixir_add_dbl_prop(cx, jstmp, "h", priv->align.h)) goto on_error2;
+   if (!elixir_add_dbl_prop(cx, jstmp, "v", priv->align.v)) goto on_error2;
    elixir_object_unregister(cx, &jstmp);
 
    jstmp = JS_DefineObject(cx, jspriv, "pad", elixir_class_request("Evas_Align_Coord", NULL), NULL, JSPROP_ENUMERATE | JSPROP_READONLY);
-   if (!jstmp) goto on_error;
+   if (!jstmp) goto on_error2;
 
-   if (!elixir_object_register(cx, &jstmp, NULL)) goto on_error;
-   if (!elixir_add_int_prop(cx, jstmp, "h", priv->pad.h)) goto on_error;
-   if (!elixir_add_int_prop(cx, jstmp, "v", priv->pad.v)) goto on_error;
+   if (!elixir_object_register(cx, &jstmp, NULL)) goto on_error2;
+   if (!elixir_add_int_prop(cx, jstmp, "h", priv->pad.h)) goto on_error2;
+   if (!elixir_add_int_prop(cx, jstmp, "v", priv->pad.v)) goto on_error2;
    elixir_object_unregister(cx, &jstmp);
 
    jstmp = JS_DefineObject(cx, jspriv, "children", &js_ArrayClass, NULL, JSPROP_ENUMERATE | JSPROP_READONLY);
-   if (!jstmp) goto on_error;
+   if (!jstmp) goto on_error2;
 
    i = 0;
    if (!elixir_object_register(cx, &jstmp, NULL)) goto on_error;
@@ -105,12 +106,18 @@ _elixir_evas_object_box_layout(Evas_Object *o, Evas_Object_Box_Data *priv, void 
    jstmp = NULL;
 
    argv[2] = elixir_void_get_jsval(user_data);
+   elixir_rval_register(cx, argv + 2);
 
    elixir_function_run(cx, cb[0], parent, 3, argv, &rval);
+   elixir_rval_delete(cx, argv + 2);
 
  on_error:
-   elixir_rval_delete(cx, argv);
    elixir_rval_delete(cx, argv + 1);
+
+ on_error2:
+   elixir_rval_delete(cx, argv);
+
+ on_error_empty:
 
    elixir_object_unregister(cx, &jspriv);
    elixir_object_unregister(cx, &jstmp);

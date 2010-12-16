@@ -238,16 +238,13 @@ elixir_evas_event_callback(void *data, Evas *e, void *event_info)
    JSObject *parent;
    JSContext *cx;
    Eina_Bool suspended;
-   jsval js_event = JSVAL_NULL;
    jsval js_return;
-   jsval js_data;
    jsval argv[3];
 
    cb = elixir_void_get_private(data);
    if (!cb)
      return ;
 
-   js_data = elixir_void_get_jsval(data);
    cx = elixir_void_get_cx(data);
    parent = elixir_void_get_parent(data);
    if (!cx || !parent)
@@ -256,6 +253,9 @@ elixir_evas_event_callback(void *data, Evas *e, void *event_info)
    suspended = elixir_function_suspended(cx);
    if (suspended)
      elixir_function_start(cx);
+
+   argv[2] = JSVAL_NULL;
+   elixir_rval_register(cx, argv + 2);
 
    switch (cb->type)
      {
@@ -266,7 +266,7 @@ elixir_evas_event_callback(void *data, Evas *e, void *event_info)
 	break;
      case EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_IN:
      case EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_OUT:
-	if (!evas_object_to_jsval(cx, event_info, &js_event))
+	if (!evas_object_to_jsval(cx, event_info, argv + 2))
 	  goto on_error;
 	break;
      case EVAS_CALLBACK_MOUSE_IN:
@@ -294,14 +294,19 @@ elixir_evas_event_callback(void *data, Evas *e, void *event_info)
 
    if (!evas_to_jsval(cx, e, argv + 1))
      goto on_error;
+   elixir_rval_register(cx, argv + 1);
 
-   argv[0] = js_data;
-   argv[2] = js_event;
+   argv[0] = elixir_void_get_jsval(data);
+   elixir_rval_register(cx, argv);
 
    elixir_function_run(cx, cb->fct, parent, 3, argv, &js_return);
 
- on_error:
    elixir_rval_delete(cx, argv + 1);
+   elixir_rval_delete(cx, argv);
+
+ on_error:
+   elixir_rval_delete(cx, argv + 2);
+
    if (obj_event)
      elixir_object_unregister(cx, &obj_event);
 
@@ -319,17 +324,13 @@ elixir_object_event_callback(void *data, Evas *e, Evas_Object *obj, void *event)
    JSObject *parent;
    JSContext *cx;
    Eina_Bool suspended;
-   jsval js_event = JSVAL_NULL;
    jsval js_return;
-   jsval js_data;
-   jsval js_obj;
    jsval argv[4];
 
    cb = elixir_void_get_private(data);
    if (!cb)
      return ;
 
-   js_data = elixir_void_get_jsval(data);
    cx = elixir_void_get_cx(data);
    parent = elixir_void_get_parent(data);
    if (!cx || !parent)
@@ -382,39 +383,49 @@ elixir_object_event_callback(void *data, Evas *e, Evas_Object *obj, void *event)
      case EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_IN:
      case EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_OUT:
 	JS_ReportError(cx, "Unauthorized callback type: %i", cb->type);
-	goto on_error;
+	goto on_error_empty;
      default:
 	JS_ReportError(cx, "Unknow callback type: %i", cb->type);
-	goto on_error;
+	goto on_error_empty;
      }
 
    if (!evas_to_jsval(cx, e, argv + 1))
-     goto on_error;
+     goto on_error_empty;
+   elixir_rval_register(cx, argv + 1);
 
-   if (!evas_object_to_jsval(cx, obj, &js_obj))
+   if (!evas_object_to_jsval(cx, obj, argv + 2))
      goto on_error;
+   elixir_rval_register(cx, argv + 2);
 
+   argv[3] = JSVAL_NULL;
    if (fct)
      {
         evas_event_class = elixir_class_request("evas_object_event", NULL);
 
         obj_event = JS_NewObject(cx, evas_event_class, NULL, NULL);
         if (!elixir_object_register(cx, &obj_event, NULL))
-          goto on_error;
-        js_event = OBJECT_TO_JSVAL(obj_event);
+          goto on_error2;
 
         if (!fct(cx, event, obj_event))
-          goto on_error;
-     }
+          goto on_error2;
 
-   argv[0] = js_data;
-   argv[2] = js_obj;
-   argv[3] = js_event;
+        argv[3] = OBJECT_TO_JSVAL(obj_event);
+     }
+   elixir_rval_register(cx, argv + 3);
+
+   argv[0] = elixir_void_get_jsval(data);
+   elixir_rval_register(cx, argv);
 
    elixir_function_run(cx, cb->fct, parent, 4, argv, &js_return);
 
+   elixir_rval_delete(cx, argv + 3);
+   elixir_rval_delete(cx, argv);
+
+ on_error2:
+   elixir_rval_delete(cx, argv + 2);
  on_error:
    elixir_rval_delete(cx, argv + 1);
+ on_error_empty:
    if (obj_event)
      elixir_object_unregister(cx, &obj_event);
 

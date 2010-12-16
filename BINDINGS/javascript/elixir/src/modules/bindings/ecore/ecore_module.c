@@ -267,7 +267,7 @@ _ecore_event_handler_func(void *data, int type, void *event)
    JSObject *parent;
    Eina_Bool ret = EINA_FALSE;
    Eina_Bool suspended;
-   jsval js_return;
+   jsval js_return = JSVAL_NULL;
    jsval argv[3];
 
    cb = elixir_void_get_private(data);
@@ -282,13 +282,21 @@ _ecore_event_handler_func(void *data, int type, void *event)
      elixir_function_start(cx);
 
    argv[0] = elixir_void_get_jsval(data);
+   elixir_rval_register(cx, argv);
    argv[1] = INT_TO_JSVAL(type);
+   elixir_rval_register(cx, argv + 1);
    argv[2] = elixir_void_get_jsval(event);
+   elixir_rval_register(cx, argv + 2);
 
-   if (!elixir_function_run(cx, cb, parent, 3, argv, &js_return))
-     goto end;
+   elixir_rval_register(cx, &js_return);
 
-   ret = _ecore_jsval_to_boolean(cx, js_return);
+   if (elixir_function_run(cx, cb, parent, 3, argv, &js_return))
+     ret = _ecore_jsval_to_boolean(cx, js_return);
+
+   elixir_rval_delete(cx, &js_return);
+   elixir_rval_delete(cx, argv + 2);
+   elixir_rval_delete(cx, argv + 1);
+   elixir_rval_delete(cx, argv);
 
   end:
    if (suspended)
@@ -342,7 +350,7 @@ _ecore_event_func_free(void* data, void* ev)
      {
         JSContext *cx;
         JSObject *parent;
-        jsval js_return;
+        jsval js_return = JSVAL_NULL;
         jsval argv[2];
 
         cx = elixir_void_get_cx(ev);
@@ -352,9 +360,14 @@ _ecore_event_func_free(void* data, void* ev)
 	elixir_function_start(cx);
 
         argv[0] = elixir_void_get_jsval(data);
+        elixir_rval_register(cx, argv);
         argv[1] = elixir_void_get_jsval(ev);
+        elixir_rval_register(cx, argv + 1);
 
         elixir_function_run(cx, cb, parent, 2, argv, &js_return);
+
+        elixir_rval_delete(cx, argv);
+        elixir_rval_delete(cx, argv + 1);
 
 	elixir_function_stop(cx);
      }
@@ -435,10 +448,12 @@ _ecore_filter_func_start(void *data)
    if (effs && effs->start)
      {
         argv[0] = elixir_void_get_jsval(data);
+        elixir_rval_register(cx, argv);
 
         if (elixir_function_run(cx, effs->start, parent, 1, argv, &js_return))
 	  /* Return loop_data. */
 	  res = elixir_void_new(cx, parent, js_return, NULL);
+        elixir_rval_delete(cx, argv);
      }
 
    elixir_function_stop(cx);
@@ -452,7 +467,7 @@ _ecore_filter_func_filter(void *data, void *loop_data, int type, void *event)
    struct _ecore_filter_func_s *effs;
    JSContext *cx;
    JSObject *parent;
-   jsval js_return;
+   jsval js_return = JSVAL_NULL;
    jsval argv[4];
    Eina_Bool ret = EINA_TRUE;
 
@@ -466,9 +481,15 @@ _ecore_filter_func_filter(void *data, void *loop_data, int type, void *event)
    effs = elixir_void_get_private(data);
 
    argv[0] = elixir_void_get_jsval(data);
+   elixir_rval_register(cx, argv);
    argv[1] = elixir_void_get_jsval(loop_data);
+   elixir_rval_register(cx, argv + 1);
    argv[2] = INT_TO_JSVAL(type);
+   elixir_rval_register(cx, argv + 2);
    argv[3] = elixir_void_get_jsval(event);
+   elixir_rval_register(cx, argv + 3);
+
+   elixir_rval_register(cx, &js_return);
 
    if (effs && effs->filter)
      {
@@ -480,6 +501,12 @@ _ecore_filter_func_filter(void *data, void *loop_data, int type, void *event)
 
    /* If we return 0, the event will be deleted. Free data before loosing reference. */
    if (!ret) elixir_void_free(event);
+
+   elixir_rval_delete(cx, &js_return);
+   elixir_rval_delete(cx, argv + 3);
+   elixir_rval_delete(cx, argv + 2);
+   elixir_rval_delete(cx, argv + 1);
+   elixir_rval_delete(cx, argv);
 
    elixir_function_stop(cx);
 
@@ -505,10 +532,15 @@ _ecore_filter_func_end(void *data, void *loop_data)
    effs = elixir_void_get_private(data);
 
    argv[0] = elixir_void_get_jsval(data);
+   elixir_rval_register(cx, argv);
    argv[1] = elixir_void_get_jsval(loop_data);
+   elixir_rval_register(cx, argv + 1);
 
    if (effs && effs->end)
      elixir_function_run(cx, effs->end, parent, 2, argv, &js_return);
+
+   elixir_rval_delete(cx, argv + 1);
+   elixir_rval_delete(cx, argv);
 
    elixir_void_free(loop_data);
 
@@ -575,7 +607,7 @@ _ecore_int_func_void(void* data)
    JSContext *cx;
    JSObject *parent;
    Eina_Bool ret = ECORE_CALLBACK_CANCEL;
-   jsval js_return;
+   jsval js_return = JSVAL_NULL;
    jsval argv[1];
 
    cx = elixir_void_get_cx(data);
@@ -586,6 +618,8 @@ _ecore_int_func_void(void* data)
    elixir_function_start(cx);
 
    argv[0] = elixir_void_get_jsval(data);
+   elixir_rval_register(cx, argv);
+   elixir_rval_register(cx, &js_return);
 
    eeh = elixir_void_get_private(data);
    if (eeh && eeh->cb)
@@ -597,6 +631,9 @@ _ecore_int_func_void(void* data)
 
 	eeh->running = EINA_FALSE;
      }
+
+   elixir_rval_delete(cx, argv);
+   elixir_rval_delete(cx, &js_return);
 
    /* The event will be deleted after this call, cleaning memory is a good idea. */
    if (eeh && (!ret || eeh->delete))
@@ -890,6 +927,7 @@ _elixir_func_heavy(void *data, Ecore_Thread *thread)
      goto on_error;
 
    argv[0] = elixir_void_get_jsval(data);
+   elixir_rval_register(cx, argv);
 
    if (elixir_api_version_get() == 0)
      {
@@ -901,6 +939,8 @@ _elixir_func_heavy(void *data, Ecore_Thread *thread)
 
         elixir_function_run(cx, dt->func_heavy, parent, 2, argv, &rval);
      }
+
+   elixir_rval_delete(cx, argv);
 
  on_error:
    elixir_unlock_cx(cx);
@@ -951,7 +991,9 @@ _elixir_func_end(void *data, Ecore_Thread *thread)
    JS_SetContextThread(dt->runtime->cx);
 
    argv[0] = elixir_void_get_jsval(data);
+   elixir_rval_register(cx, argv);
    rval = JSVAL_VOID;
+   elixir_rval_register(cx, &rval);
 
    if (elixir_api_version_get() == 0)
      {
@@ -963,6 +1005,9 @@ _elixir_func_end(void *data, Ecore_Thread *thread)
 
         elixir_function_run(cx, dt->func_end, parent, 2, argv, &rval);
      }
+
+   elixir_rval_delete(cx, argv);
+   elixir_rval_delete(cx, &rval);
 
    _elixir_func_cleanup(cx, dt, data);
 }
@@ -990,7 +1035,9 @@ _elixir_func_cancel(void *data, Ecore_Thread *thread)
    JS_SetContextThread(dt->runtime->cx);
 
    argv[0] = elixir_void_get_jsval(data);
+   elixir_rval_register(cx, argv);
    rval = JSVAL_VOID;
+   elixir_rval_register(cx, &rval);
 
    if (elixir_api_version_get() == 0)
      {
@@ -1002,6 +1049,9 @@ _elixir_func_cancel(void *data, Ecore_Thread *thread)
 
         elixir_function_run(cx, dt->func_cancel, parent, 2, argv, &rval);
      }
+
+   elixir_rval_delete(cx, argv);
+   elixir_rval_delete(cx, &rval);
 
    _elixir_func_cleanup(cx, dt, data);
 }
@@ -1107,8 +1157,11 @@ _elixir_ecore_job_cb(void* data)
    elixir_function_start(cx);
 
    argv[0] = elixir_void_get_jsval(data);
+   elixir_rval_register(cx, argv);
 
    elixir_function_run(cx, cb, parent, 1, argv, &js_return);
+
+   elixir_rval_register(cx, argv);
 
    elixir_function_stop(cx);
 }

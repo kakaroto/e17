@@ -1853,18 +1853,22 @@ _elixir_edje_object_item_provider_set(void *data,
 
    if (!evas_object_to_jsval(cx, obj, argv + 1))
      goto on_edje_error;
+   elixir_rval_register(cx, argv + 1);
 
    js_part = elixir_ndup(cx, part, strlen(part));
    if (!elixir_string_register(cx, &js_part))
      goto on_part_error;
+   argv[2] = STRING_TO_JSVAL(js_part);
+   elixir_rval_register(cx, argv + 2);
 
    js_item = elixir_ndup(cx, item, strlen(item));
    if (!elixir_string_register(cx, &js_item))
      goto on_item_error;
+   argv[3] = STRING_TO_JSVAL(js_item);
+   elixir_rval_register(cx, argv + 3);
 
    argv[0] = elixir_void_get_jsval(data);
-   argv[2] = STRING_TO_JSVAL(js_part);
-   argv[3] = STRING_TO_JSVAL(js_item);
+   elixir_rval_register(cx, argv);
 
    if (!elixir_function_run(cx, cb, parent, 4, argv, &js_return))
      goto on_item_error;
@@ -1890,6 +1894,9 @@ _elixir_edje_object_item_provider_set(void *data,
 
  on_item_error:
    elixir_string_unregister(cx, &js_part);
+   elixir_rval_delete(cx, argv + 2);
+   elixir_rval_delete(cx, argv + 3);
+   elixir_rval_delete(cx, argv);
 
  on_part_error:
    elixir_rval_delete(cx, argv + 1);
@@ -1946,19 +1953,25 @@ _elixir_edje_object_text_insert_filter_cb(void *data, Evas_Object *obj, const ch
 
    if (!evas_object_to_jsval(cx, obj, argv + 1))
      goto on_edje_error;
+   elixir_rval_register(cx, argv + 1);
 
    spart = elixir_ndup(cx, part, strlen(part));
    if (!elixir_string_register(cx, &spart))
      goto on_part_error;
+   argv[2] = STRING_TO_JSVAL(spart);
+   elixir_rval_register(cx, argv + 2);
 
    stext = elixir_ndup(cx, *text, strlen(*text));
    if (!elixir_string_register(cx, &stext))
      goto on_text_error;
+   argv[4] = STRING_TO_JSVAL(stext);
+   elixir_rval_register(cx, argv + 4);
 
    argv[0] = elixir_void_get_jsval(data);
-   argv[2] = STRING_TO_JSVAL(spart);
+   elixir_rval_register(cx, argv);
+
    argv[3] = INT_TO_JSVAL(type);
-   argv[4] = STRING_TO_JSVAL(stext);
+   elixir_rval_register(cx, argv + 3);
 
    if (!elixir_function_run(cx, cb, parent, 5, argv, &js_return))
      goto on_run_error;
@@ -1967,9 +1980,13 @@ _elixir_edje_object_text_insert_filter_cb(void *data, Evas_Object *obj, const ch
 
  on_run_error:
    elixir_string_unregister(cx, &stext);
+   elixir_rval_delete(cx, argv + 4);
+   elixir_rval_delete(cx, argv + 3);
+   elixir_rval_delete(cx, argv);
 
  on_text_error:
    elixir_string_unregister(cx, &spart);
+   elixir_rval_delete(cx, argv + 2);
 
  on_part_error:
    elixir_rval_delete(cx, argv + 1);
@@ -2052,15 +2069,21 @@ _elixir_edje_object_text_change_cb(void* data, Evas_Object* obj, const char* par
 
    if (!evas_object_to_jsval(cx, obj, argv + 1))
      goto on_firt_error;
+   elixir_rval_register(cx, argv + 1);
 
    str = elixir_ndup(cx, part, strlen(part));
    if (!elixir_string_register(cx, &str))
      goto on_error;
+   argv[2] = STRING_TO_JSVAL(str);
+   elixir_rval_register(cx, argv + 2);
 
    argv[0] = elixir_void_get_jsval(data);
-   argv[2] = STRING_TO_JSVAL(str);
+   elixir_rval_register(cx, argv);
 
    elixir_function_run(cx, cb, parent, 3, argv, &js_return);
+
+   elixir_rval_delete(cx, argv + 2);
+   elixir_rval_delete(cx, argv);
 
  on_error:
    elixir_rval_delete(cx, argv + 1);
@@ -2116,20 +2139,30 @@ _elixir_edje_object_signal_cb(void* data, Evas_Object* obj,
 
    if (!evas_object_to_jsval(cx, obj, argv + 1))
      goto on_finish;
+   elixir_rval_register(cx, argv + 1);
 
    jse = elixir_ndup(cx, emission, strlen(emission));
    if (!elixir_string_register(cx, &jse))
      goto on_error;
+   argv[2] = STRING_TO_JSVAL(jse);
+   elixir_rval_register(cx, argv + 2);
 
    jss = elixir_ndup(cx, source, strlen(source));
    if (!elixir_string_register(cx, &jss))
-     goto on_error;
+     goto on_error2;
+   argv[3] = STRING_TO_JSVAL(jss);
+   elixir_rval_register(cx, argv + 3);
 
    argv[0] = elixir_void_get_jsval(data);
-   argv[2] = STRING_TO_JSVAL(jse);
-   argv[3] = STRING_TO_JSVAL(jss);
+   elixir_rval_register(cx, argv);
 
    elixir_function_run(cx, cb, parent, 4, argv, &js_return);
+
+   elixir_rval_delete(cx, argv + 3);
+   elixir_rval_delete(cx, argv);
+
+ on_error2:
+   elixir_rval_delete(cx, argv + 2);
 
  on_error:
    elixir_rval_delete(cx, argv + 1);
@@ -2513,10 +2546,14 @@ _elixir_edje_object_message_handler_cb(void *data, Evas_Object *obj, Edje_Messag
 
    if (!evas_object_to_jsval(cx, obj, argv + 1))
      goto on_finish;
+   elixir_rval_register(cx, argv + 1);
 
    argv[0] = elixir_void_get_jsval(data);
+   elixir_rval_register(cx, argv);
    argv[2] = INT_TO_JSVAL(type);
+   elixir_rval_register(cx, argv + 2);
    argv[3] = INT_TO_JSVAL(id);
+   elixir_rval_register(cx, argv + 3);
 
    switch (type)
      {
@@ -2705,10 +2742,16 @@ _elixir_edje_object_message_handler_cb(void *data, Evas_Object *obj, Edje_Messag
    if (jmsg)
      argv[4] = OBJECT_TO_JSVAL(jmsg);
 
+   elixir_rval_register(cx, argv + 4);
+
    elixir_function_run(cx, cb, parent, 5, argv, &js_return);
+
+   elixir_rval_delete(cx, argv + 4);
 
  on_error:
    elixir_rval_delete(cx, argv + 1);
+   elixir_rval_delete(cx, argv + 2);
+   elixir_rval_delete(cx, argv + 3);
    if (jmsg)
      elixir_object_unregister(cx, &jmsg);
  on_finish:

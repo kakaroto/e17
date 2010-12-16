@@ -886,6 +886,7 @@ _elixir_ecore_evas_callback(const char *name, Ecore_Evas *ee)
      elixir_function_start(cx);
 
    argv[0] = _elixir_ecore_evas_to_jsval(cx, ee);
+   elixir_rval_register(cx, argv);
 
    elixir_function_run(cx, cb, parent, 1, argv, &js_return);
 
