@@ -365,7 +365,7 @@ class Wizard(InnerWindow):
 
         # only Wizard InnerWindows are to be on top of the window blocker
         self._parent.block(True, self)
-        InnerWindow.activate(self)
+        InnerWindow.show(self)
         self.focus_set(True)
 
     def hide(self):

@@ -48,7 +48,7 @@ class PopUp(InnerWindow):
 
     def open(self):
         self._parent.block(True)
-        InnerWindow.activate(self)
+        InnerWindow.show(self)
 
     def close(self):
         self.hide()
