@@ -516,6 +516,8 @@ _elixir_con_event_client_del_cb(__UNUSED__ void *data, __UNUSED__ int type, void
 
    ececd = event;
 
+   if (!ececd->client) return ECORE_CALLBACK_PASS_ON;
+
    server = ecore_con_client_server_get(ececd->client);
    private_data = ecore_con_server_data_get(server);
    cx = elixir_void_get_cx(private_data);
