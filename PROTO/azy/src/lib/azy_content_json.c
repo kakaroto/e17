@@ -247,6 +247,7 @@ azy_content_unserialize_json(const char *buf,
                              ssize_t len __UNUSED__)
 {
    cJSON *object;
+   Azy_Value *ret;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(buf, NULL);
 
@@ -256,7 +257,9 @@ azy_content_unserialize_json(const char *buf,
         return NULL;
      }
 
-   return azy_value_unserialize_json(object);
+   ret = azy_value_unserialize_json(object);
+   cJSON_Delete(object);
+   return ret;
 }
 
 
