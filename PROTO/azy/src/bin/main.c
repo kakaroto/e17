@@ -325,8 +325,7 @@ gen_type_eq(Azy_Typedef *t,
           {
              if (m->type->eq_func)
                {
-                  EL(1, "if (%s(a->%s, b->%s))", m->type->eq_func,
-                     m->name, m->name);
+                  EL(1, "if (!%s(a->%s, b->%s))", m->type->eq_func, m->name, m->name);
                }
              else
                EL(1, "if (a->%s != b->%s)", m->name, m->name);
@@ -353,8 +352,7 @@ gen_type_eq(Azy_Typedef *t,
         EL(1, "{");
 
         if (t->item_type->eq_func)
-          EL(2, "if (%s(y->data, z->data))",
-             t->item_type->eq_func);
+          EL(2, "if (!%s(y->data, z->data))", t->item_type->eq_func);
         else
           {
              if ((t->item_type->ctype == i) || (t->item_type->ctype == b))
