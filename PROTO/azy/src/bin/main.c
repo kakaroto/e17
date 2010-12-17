@@ -35,9 +35,6 @@
 #define ORIG_LINE() \
   EL(0, "#line %d \"%s\"", current_line + 1, current_file)
 
-#define FILE_LINE(line, _file) \
-  EL(0, "#line %d \"%s\"", line, _file)
-
 #define GET_NAME(func)                                             \
   if (s->stub_##func && s->stub_##func[0])                          \
     E(0, "%s%s%s_module_"#func, name, sep, s->name);                  \
@@ -48,7 +45,7 @@
   do {                                            \
        if (s)                                     \
          {                                        \
-            FILE_LINE(s ## line + 1, azy_file); \
+            EL(0, "#line %d \"%s\"", s ## _line + 1, azy_file); \
             EL(0, "%s", s);                       \
             ORIG_LINE();                          \
          }                                        \
