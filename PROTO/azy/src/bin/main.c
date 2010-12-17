@@ -65,6 +65,10 @@ static Eina_Bool common_impl;
 static Eina_Bool server_impl;
 static Eina_Bool server_headers;
 static Eina_Bool azy_gen;
+static Eina_Bool hash_funcs;
+static Eina_Bool isnull_funcs;
+static Eina_Bool print_funcs;
+static Eina_Bool eq_funcs;
 static char *out_dir = ".";
 static char *azy_file;
 static FILE *f;
@@ -84,8 +88,12 @@ static const Ecore_Getopt opts = {
       ECORE_GETOPT_STORE_STR('m', "modes", "Parser modes: all, server-impl, server-headers,\n"
                                            "\t\t\tclient-impl, client-headers,\n"
                                            "\t\t\tcommon-impl, common-headers"),
-      ECORE_GETOPT_STORE_STR('o', "output", "Output directory."),
-      ECORE_GETOPT_STORE_TRUE('d', "debug", "Print debugging output."),
+      ECORE_GETOPT_STORE_STR('o', "output", "Output directory"),
+      ECORE_GETOPT_STORE_TRUE('d', "debug", "Print debugging output"),
+      ECORE_GETOPT_STORE_TRUE('H', "Hash", "Do not generate hash functions"),
+      ECORE_GETOPT_STORE_TRUE('n', "Null", "Do not generate isnull functions"),
+      ECORE_GETOPT_STORE_TRUE('p', "Print", "Do not generate print functions"),
+      ECORE_GETOPT_STORE_TRUE('e', "Eq", "Do not generate eq functions"),
       ECORE_GETOPT_VERSION('V', "version"),
       ECORE_GETOPT_COPYRIGHT('R', "copyright"),
       ECORE_GETOPT_LICENSE('L', "license"),
@@ -1752,6 +1760,10 @@ main(int argc, char *argv[])
       ECORE_GETOPT_VALUE_STR(modes),
       ECORE_GETOPT_VALUE_STR(out_dir),
       ECORE_GETOPT_VALUE_BOOL(debug),
+      ECORE_GETOPT_VALUE_BOOL(hash_funcs),
+      ECORE_GETOPT_VALUE_BOOL(isnull_funcs),
+      ECORE_GETOPT_VALUE_BOOL(print_funcs),
+      ECORE_GETOPT_VALUE_BOOL(eq_funcs),
       ECORE_GETOPT_VALUE_BOOL(exit_option),
       ECORE_GETOPT_VALUE_BOOL(exit_option),
       ECORE_GETOPT_VALUE_BOOL(exit_option),
