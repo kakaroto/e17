@@ -273,7 +273,7 @@ Azy_Module Test1
 
    /** the __attrs__ section determines the struct that is passed to every method
     * and can be thought of as the data associated with the module.  calling
-    * azy_server_module_data_get(_module) in any function will return this data as a void*.
+    * azy_server_module_data_get(module) in any function will return this data as a void*.
     * there is also a convenience macro generated to automatically cast the data to the correct
     * type: here, using these namespaces, the macro is T_Test1_module_data_get()
     */
@@ -285,7 +285,7 @@ Azy_Module Test1
    %>
 
    /** the __init__ section is called one time upon the module being loaded.
-    * The only param passed to it is (Azy_Server_Module _module) which can be
+    * The only param passed to it is (Azy_Server_Module module) which can be
     * used to get the private data struct.  no network information is available yet as the
     * call has not actually begun.
     * init functions must explicitly return EINA_FALSE to cancel initialization, as the default is
@@ -297,7 +297,7 @@ Azy_Module Test1
    %>
 
    /** the __init__ section is called one time upon the module being loaded.
-    * The only param passed to it is (Azy_Server_Module _module) which can be
+    * The only param passed to it is (Azy_Server_Module module) which can be
     * used to get the private data struct.  no network information is available yet as the
     * call has not actually begun.
     * shutdown functions return no value.
@@ -329,7 +329,7 @@ Azy_Module Test1
    %>
 
    /** __fallback__ is the method that is called if an undefined method is called by a client.
-    * it has _module and content parameters just like a regular method call, but it returns Eina_Bool
+    * it has module and content parameters just like a regular method call, but it returns Eina_Bool
     * for success.
     */
    __fallback__
@@ -446,7 +446,7 @@ Azy_Module Test2
 
    __init__
    <%
-     Azy_Net *net = azy_server_module_net_get(_module);
+     Azy_Net *net = azy_server_module_net_get(module);
      printf("Init AUTH Servlet!\n");
      printf("Accepted connection from: %s\n", azy_net_ip_get(net));
    %>
@@ -513,7 +513,7 @@ Azy_Module SQL
       T_SQL_Module *data;
       Eina_Bool ret = EINA_TRUE;
 
-      data = T_SQL_module_data_get(_module); /**< demonstrate use of generated define */
+      data = T_SQL_module_data_get(module); /**< demonstrate use of generated define */
       if (data != data_)
         printf("Serious problem here!\n");
       data->m = mysql_init(NULL); /** allocate memory for MYSQL object */
