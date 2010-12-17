@@ -36,5 +36,5 @@ get_LDADD = \
 $(BUILT_SOURCES): .sources-ts
 
 .sources-ts: identi.ca.azy $(top_builddir)/src/bin/azy_parser
-	$(top_builddir)/src/bin/azy_parser -m common-impl,common-headers -o $(top_builddir)/src/tests/identi.ca $(top_srcdir)/src/tests/identi.ca/identi.ca.azy
+	$(top_builddir)/src/bin/azy_parser -eHn -m common-impl,common-headers -o $(top_builddir)/src/tests/identi.ca $(top_srcdir)/src/tests/identi.ca/identi.ca.azy
 	touch .sources-ts

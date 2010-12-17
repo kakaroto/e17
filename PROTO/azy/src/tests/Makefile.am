@@ -128,5 +128,5 @@ server_LDADD = \
 $(BUILT_SOURCES): .sources-ts
 
 .sources-ts: test.azy $(top_builddir)/src/bin/azy_parser
-	$(top_builddir)/src/bin/azy_parser -o $(top_builddir)/src/tests $(top_srcdir)/src/tests/test.azy
+	$(top_builddir)/src/bin/azy_parser -H -p -o $(top_builddir)/src/tests $(top_srcdir)/src/tests/test.azy
 	touch .sources-ts
