@@ -59,6 +59,7 @@ typedef struct {
    Desk               *desk[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
    unsigned int        order[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
    int                 drag_x0, drag_y0;
+   unsigned int        prev_num;
 } Desktops;
 
 static void         DeskRaise(unsigned int num);
@@ -1133,6 +1134,7 @@ DeskEnter(Desk * dsk)
    DeskBackgroundRefresh(dsk, DESK_BG_REFRESH);
    MoveToDeskTop(dsk);
 
+   desks.prev_num = desks.current->num;
    desks.previous = desks.current = dsk;
 
    if (dsk->num == 0)
@@ -2718,6 +2720,10 @@ DesksIpcDesk(const char *params)
      {
 	DeskOpGotoRel(-1);
      }
+   else if (!strncmp(cmd, "back", 2))
+     {
+	DeskOpGoto(desks.prev_num);
+     }
    else if (!strncmp(cmd, "this", 2))
      {
 	DeskOpGotoRel(0);
@@ -2820,6 +2826,7 @@ static const IpcItem DesksIpcArray[] = {
     "  desk list            Show desk info\n"
     "  desk next            Goto next desktop\n"
     "  desk prev            Goto previous desktop\n"
+    "  desk back            Goto previous active desktop\n"
     "  desk this            Goto this desktop\n"
     "  desk lower <d>       Lower desktop\n"
     "  desk raise <d>       Raise desktop\n"
