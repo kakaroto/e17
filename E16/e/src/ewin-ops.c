@@ -371,22 +371,22 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
 	EMoveResizeWindow(EwinGetClientWin(ewin), 0, 0, ewin->client.w,
 			  ewin->client.h);
 	EwinBorderCalcSizes(ewin, 0);
-
-	/* Clear maximized state on resize */
-	if (resize && !ewin->state.maximizing && !ewin->state.shading)
-	  {
-	     if (ewin->state.maximized_horz || ewin->state.maximized_vert)
-	       {
-		  ewin->state.maximized_horz = 0;
-		  ewin->state.maximized_vert = 0;
-		  HintsSetWindowState(ewin);
-	       }
-	  }
 	if (resize && ewin->state.shaped)
 	   ewin->update.shape = 1;
      }
 
    EwinPropagateShapes(ewin);
+
+   /* Clear maximized state on move or resize */
+   if ((move || resize) && !ewin->state.maximizing && !ewin->state.shading)
+     {
+	if (ewin->state.maximized_horz || ewin->state.maximized_vert)
+	  {
+	     ewin->state.maximized_horz = 0;
+	     ewin->state.maximized_vert = 0;
+	     HintsSetWindowState(ewin);
+	  }
+     }
 
    if (raise)
      {
