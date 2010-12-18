@@ -62,7 +62,7 @@ AM_ICONV
 AM_LANGINFO_CODESET
 
 AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION([0.12.1])
+AM_GNU_GETTEXT_VERSION([0.16.1])
 
 AC_ARG_ENABLE(hints-gnome,
   [  --enable-hints-gnome    compile with GNOME(<2.0) hints support @<:@default=no@:>@],,
