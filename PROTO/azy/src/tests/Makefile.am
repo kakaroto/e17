@@ -54,10 +54,7 @@ CLIENT_S = \
   $(top_builddir)/src/tests/T_Test2.azy_client.h
 
 
-BUILT_SOURCES = \
-  $(COMMON_S) \
-  $(CLIENT_S) \
-  $(SERVER_S)
+BUILT_SOURCES = .sources
 
 EXTRA_DIST = \
   client.c \
@@ -73,7 +70,7 @@ AM_CFLAGS= \
   -I$(top_srcdir)/src/include
 AM_CXXFLAGS = $(AM_CFLAGS)
 
-CLEANFILES = $(BUILT_SOURCES) .sources-ts
+CLEANFILES = $(BUILT_SOURCES)
 MAINTAINERCLEANFILES = Makefile.in
 
 check_PROGRAMS = \
@@ -125,8 +122,5 @@ server_LDADD = \
   $(top_builddir)/src/lib/libazy.la \
   libserver.la
 
-$(BUILT_SOURCES): .sources-ts
-
-.sources-ts: test.azy $(top_builddir)/src/bin/azy_parser
+.sources: test.azy $(top_builddir)/src/bin/azy_parser
 	$(top_builddir)/src/bin/azy_parser -H -p -o $(top_builddir)/src/tests $(top_srcdir)/src/tests/test.azy
-	touch .sources-ts
