@@ -70,7 +70,11 @@ AM_CFLAGS= \
   -I$(top_srcdir)/src/include
 AM_CXXFLAGS = $(AM_CFLAGS)
 
-CLEANFILES = $(BUILT_SOURCES)
+CLEANFILES = \
+  $(CLIENT_S) \
+  $(COMMON_S) \
+  $(SERVER_S)
+
 MAINTAINERCLEANFILES = Makefile.in
 
 check_PROGRAMS = \
