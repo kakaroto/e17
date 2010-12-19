@@ -77,6 +77,12 @@ AC_FUNC_REALLOC
 AC_FUNC_STRTOD
 AC_C___ATTRIBUTE__
 AC_CHECK_FUNCS([memset regcomp select socket strchr strndup strrchr strstr strtol munmap strdup])
+CC_PIC="$lt_prog_compiler_pic"
+CXX_PIC="$lt_prog_compiler_pic_CXX"
+AC_SUBST([CC_PIC])
+AC_SUBST([CXX_PIC])
+
+
 AZY_REQUIRES="ecore-con >= 1.0.0 ecore >= 1.0.0 eina >= 1.0.0"
 
 AC_PATH_PROG([mysql_config], [mysql_config])
