@@ -438,6 +438,7 @@ azy_client_call(Azy_Client       *client,
         return 0;
      }
    EINA_SAFETY_ON_NULL_RETURN_VAL(client->net, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cb, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(content, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(content->method, 0);
 
@@ -510,12 +511,13 @@ error:
 }
 
 /**
- * @brief Make an HTTP GET request using a connected client
+ * @brief Make an HTTP GET or POST request using a connected client with no HTTP BODY
  * 
- * This function is used to make a GET request using @p client to @p uri of the client's
- * #Azy_Net object using content-type defined by @p transport and the deserialization
+ * This function is used to make a GET or POST request using @p client to @p uri of the client's
+ * #Azy_Net object using HTTP method @p type, content-type defined by @p transport, and the deserialization
  * function specified by @p cb.
  * @param client The client (NOT #NULL)
+ * @param type The HTTP method to use (NOT #NULL)
  * @param uri The uri path to GET
  * @param cb The deserialization callback to use for the response (NOT #NULL)
  * @param data The user data to be passed to resulting callbacks
@@ -523,10 +525,11 @@ error:
  * or 0 on failure
  */
 Azy_Client_Call_Id
-azy_client_get(Azy_Client       *client,
-               const char       *uri,
-               Azy_Content_Cb    cb,
-               void             *data)
+azy_client_blank(Azy_Client       *client,
+                 Azy_Net_Type      type,
+																	const char       *uri,
+																	Azy_Content_Cb    cb,
+																	void             *data)
 {
    Eina_Strbuf *msg;
    Azy_Client_Handler_Data *handler_data;
@@ -539,6 +542,8 @@ azy_client_get(Azy_Client       *client,
         return 0;
      }
    EINA_SAFETY_ON_NULL_RETURN_VAL(client->net, 0);
+			EINA_SAFETY_ON_NULL_RETURN_VAL(cb, 0);
+			EINA_SAFETY_ON_TRUE_RETURN_VAL((type != AZY_NET_TYPE_GET) && (type != AZY_NET_TYPE_POST), 0);
 
    if (!client->connected)
      {
@@ -548,7 +553,7 @@ azy_client_get(Azy_Client       *client,
 
    while (++azy_client_send_id__ < 1);
 
-   azy_net_type_set(client->net, AZY_NET_TYPE_GET);
+   azy_net_type_set(client->net, type);
    if (uri && uri[0])
      azy_net_uri_set(client->net, uri);
    else

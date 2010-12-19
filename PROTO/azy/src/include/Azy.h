@@ -464,18 +464,19 @@ extern "C" {
                                           Eina_Bool    secure);
    EAPI void               azy_client_close(Azy_Client *client);
    EAPI Eina_Bool          azy_client_call_checker(Azy_Client *cli,
-                                              Azy_Content *err_content,
-                                              Azy_Client_Call_Id ret,
-                                              Azy_Client_Return_Cb cb,
-                                              const char *func);
+                                                   Azy_Content *err_content,
+                                                   Azy_Client_Call_Id ret,
+                                                   Azy_Client_Return_Cb cb,
+                                                   const char *func);
    EAPI Azy_Client_Call_Id azy_client_call(Azy_Client       *client,
                                        Azy_Content      *content,
                                        Azy_Net_Transport transport,
                                        Azy_Content_Cb    cb);
-   EAPI Azy_Client_Call_Id azy_client_get(Azy_Client       *client,
-                                          const char       *uri,
-                                          Azy_Content_Cb    cb,
-                                          void             *data);
+   EAPI Azy_Client_Call_Id azy_client_blank(Azy_Client       *client,
+                                            Azy_Net_Type      type,
+                                            const char       *uri,
+                                            Azy_Content_Cb    cb,
+                                            void             *data);
    EAPI Azy_Client_Call_Id azy_client_send(Azy_Client   *client,
                                       unsigned char *data,
                                       int            length);
