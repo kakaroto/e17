@@ -117,6 +117,8 @@ _azy_client_handler_get(Azy_Client_Handler_Data *handler_data)
              ERR(buf, handler_data->recv->buffer);
           }
      }
+   else
+     ret = handler_data->recv->buffer;
    content->id = handler_data->id;
    content->ret = ret;
    content->recv_net = handler_data->recv;
@@ -127,15 +129,18 @@ _azy_client_handler_get(Azy_Client_Handler_Data *handler_data)
    cb = eina_hash_find(client->callbacks, &content->id);
    if (cb)
      {
-        Eina_Error ret;
-        ret = cb(client, content, content->ret);
+        Eina_Error r;
+        if (ret == content->recv_net->buffer)
+          r = cb(client, content, &content->recv_net->size);
+        else
+          r = cb(client, content, content->ret);
         
-        ecore_event_add(AZY_CLIENT_RESULT, &ret, (Ecore_End_Cb)_azy_event_handler_fake_free, NULL);
+        ecore_event_add(AZY_CLIENT_RESULT, &r, (Ecore_End_Cb)_azy_event_handler_fake_free, NULL);
         eina_hash_del_by_key(client->callbacks, &content->id);
         _azy_client_handler_call_free(client, content);
      }
    else
-     {
+     {/*FIXME: add non-rpc versions here*/
        if (!azy_content_error_is_set(content))
          ecore_event_add(AZY_CLIENT_RETURN, content, (Ecore_End_Cb)_azy_client_handler_call_free, client);
        else
