@@ -105,13 +105,22 @@ AC_ARG_ENABLE([xml],
 
 if test "x${want_xml}" != "xno"; then
    AC_DEFINE([HAVE_XML], [1], [xml support is enabled])
-   AM_CONDITIONAL([HAVE_XML], [true])
 fi
+AM_CONDITIONAL([HAVE_XML], [test "x${want_xml}" != "xno"])
 
 AC_SUBST(AZY_REQUIRES)
 
-EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
+want_extern_rec=
+AC_ARG_ENABLE([external-re2c],
+   [AC_HELP_STRING([--disable-external-re2c], [disable use of external re2c @<:@default=detect@:>@])],
+   [want_extern_rec=$enableval]
+)
+if test "x$want_extern_rec" != "xno" ; then
+   AC_PATH_PROG([RE2C], [re2c], [want_extern_rec=no])
+fi
+AM_CONDITIONAL([NEED_RE2C], [test -z $RE2C])
 
+EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 # write output
 AC_CONFIG_FILES([
   Makefile
