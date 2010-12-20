@@ -12,8 +12,5 @@ BUILT_SOURCES = re_parser.h
 
 AM_YFLAGS = -d
 
-RE2C         = re2c$(EXEEXT)
-RE2CFLAGS    = -bi
-
-CLEANFILES   = re_parser.cc re_parser.h parser.cc y.tab.h
+CLEANFILES = re_parser.cc re_parser.h parser.cc y.tab.h
 MAINTAINERCLEANFILES = Makefile.in
