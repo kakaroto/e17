@@ -35,8 +35,8 @@ azy_parser_SOURCES = \
 	azy.h \
 	azy.c \
 	main.c \
-	parser_lib.h \
-	parser_lib.c \
+	azy_parser_lib.h \
+	azy_parser_lib.c \
 	azy_parser.c
 
 noinst_PROGRAMS = lemon

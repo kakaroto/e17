@@ -21,7 +21,7 @@ struct Geo
 {
    array<double> coordinates;
    string type;
-}
+};
 
 struct User
 {
@@ -51,7 +51,7 @@ struct User
    string time_zone;
    string url;
    string utc_offset;
-}
+};
 
 struct Ident
 {
@@ -67,5 +67,5 @@ struct Ident
    string text;
    boolean truncated;
    User user;
-}
+};
 

@@ -1,8 +1,19 @@
 /*
- * Parts copyright 2006-2008 Ondrej Jirman <ondrej.jirman@zonio.net>
  * Copyright 2010 Mike Blumenkrantz <mike@zentific.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 
 #include <Eina.h>
 #include <Ecore.h>
@@ -74,8 +85,8 @@ static const char *sep;
 static const char *name;
 
 static const Ecore_Getopt opts = {
-   "azy_parser",
-   "azy_parser file.azy -o destination_directory/",
+   "Azy_Parser",
+   "Azy_Parser file.azy -o destination_directory/",
    "1.0alpha",
    "(C) 2010 Mike Blumenkrantz, previously others, see AUTHORS",
    "LGPL",
@@ -100,8 +111,8 @@ static const Ecore_Getopt opts = {
 };
 
 
-void azyParserTrace(FILE *TraceFILE,
-                     char *zTracePrompt);
+extern void azy_parser_Trace(FILE *,
+                     char *);
 static void
 line_fprintf(unsigned int indent,
              const char  *fmt,
@@ -1784,7 +1795,7 @@ main(int argc, char *argv[])
         return 1;
      }
 
-   if (debug) azyParserTrace(stdout, "azy_parser: ");
+   if (debug) azy_parser_Trace(stdout, "Azy_Parser: ");
    err = EINA_FALSE;
    azy = azy_parse_file(azy_file, &err);
    if ((!azy) || (err))

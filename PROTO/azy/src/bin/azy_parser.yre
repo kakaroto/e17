@@ -1,285 +1,298 @@
 /*
  * Copyright 2010 Mike Blumenkrantz <mike@zentific.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
- * Copyright 2006, 2007 Ondrej Jirman <ondrej.jirman@zonio.net>
- * 
- * This file is part of libxr.
- *
- * Libxr is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option) any
- * later version.
- *
- * Libxr is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with libxr.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-/* vim: set ft=c : */
-
-%name azyParser
-%token_prefix TK_
-%token_type {token*}
-%token_destructor {token_free($$);}
-%extra_argument {parser_context *ctx}
-%syntax_error {HANDLE_SYNTAX_ERROR(TOKEN);}
-%stack_overflow {HANDLE_STACK_OVERFLOW();}
+%name azy_parser_
+%token_prefix AZY_
+%token_type {Azy_Token *}
+%token_destructor {azy_parser_token_free($$);}
+%extra_argument {Azy_Parser *parser}
+%syntax_error {SYNTAX_ERROR(TOKEN);}
+%stack_overflow {
+   if (parser->error)
+     eina_stringshare_del(parser->error);  \
+   parser->error = eina_stringshare_add("Parser stack overflow!\n");
+}
 %include {
-
-#include <stdlib.h>
-#include "parser_lib.h"
+#include "azy_parser_lib.h"
 #include "azy_parser.h"
 #include "azy.h"
 
-#define YYDEBUG(state, ch) \
-  printf("lexer:%d:%c\n", state, ch)
+#define YYCTYPE  char
+#define YYCURSOR c
+#define YYMARKER q
 
-DECLARE_LEXER()
+#define AZY_EOF     0
+#define AZY_UNKNOWN (-1)
+
+#define RET(tok) \
+  return azy_parser_token_new(s, tok, c - b)
+
+#define NEXT \
+  azy_parser_stream_next(s, c - b); \
+  b = c
+
+#define MODEL ((Azy_Model*)parser->data)
+#define _MODEL parser->data
+extern void *azy_parser_Alloc(void *(*)(size_t));
+extern void  azy_parser_Free(void *,
+                             void (*)(void *));
+extern void  azy_parser_(void *,
+                         int,
+                         Azy_Token *,
+                         Azy_Parser *);
+/* for reference
+extern void        azy_parser_Trace(FILE *,
+                                    char *);
+extern const char *azy_parser_TokenName(int);
+*/
+static Azy_Token *
+azy_parser_stream_to_token(Azy_Stream *s)
+{
+   const char *c, *b, *q;
+
+   if (s->length == s->index)
+     return azy_parser_token_new(s, AZY_EOF, 0);
+
+   c = b = s->buffer + s->index;
 
 main:
 /*!re2c
 
-  re2c:indent:top       = 1;
-  re2c:indent:string    = "  ";
-  re2c:define:YYCTYPE   = "unsigned char";
-  re2c:define:YYCURSOR  = "c";
-  re2c:define:YYMARKER  = "q";
-  re2c:yyfill:enable    = 0;
+   re2c:indent:top       = 0;
+   re2c:indent:string    = "";
+   re2c:yyfill:enable    = 0;
 
-  any   = [\001-\377];
-  eoi   = "\000";
-  D     = [0-9];
-  L     = [A-Za-z_];
-  C	= [A-Za-z0-9_ !?,.];
-  ICS   = "<%";
-  ICE   = "%>";
-  SLCOM = "//" (.\eoi)* ("\n"|eoi);
+   NONPRINT   = [\001-\377];
+   ENDINPUT   = "\000";
+   D     = [0-9];
+   L     = [A-Za-z_];
+   C     = [A-Za-z0-9_ !?,.];
+   CODESTART   = "<%";
+   CODEEND   = "%>";
+   SLCOM = "//" (.\ENDINPUT)* ("\n"|ENDINPUT);
 
-  SLCOM              { EAT(); goto main; }
-  "/*"               { goto comment; }
-  ICS                { goto code; }
-  [ \t\n\r]+         { EAT(); goto main; }
-  "__init__"         { RET(TK_INIT); }
-  "__shutdown__"     { RET(TK_SHUTDOWN); }
-  "__attrs__"        { RET(TK_ATTRS); }
-  "__pre__"     { RET(TK_PRECALL); }
-  "__post__"    { RET(TK_POSTCALL); }
-  "__fallback__"     { RET(TK_FALLBACK); }
-  "__download__"     { RET(TK_DOWNLOAD); }
-  "__upload__"       { RET(TK_UPLOAD); }
-  "error"            { RET(TK_ERROR); }
-  "namespace"        { RET(TK_NAMESPACE); }
-  "Azy_Module"       { RET(TK_MODULE); }
-  "array"            { RET(TK_ARRAY); }
-  "struct"           { RET(TK_STRUCT); }
-  ("{" C+ "}")       { RET(TK_ERRMSG); }
-  L (L|D)*           { RET(TK_ID); }
-  D+                 { RET(TK_INTEGER); }
-  "="                { RET(TK_EQ); }
-  ";"                { RET(TK_SEMICOL); }
-  "<"                { RET(TK_LT); }
-  ">"                { RET(TK_GT); }
-  "{"                { RET(TK_LB); }
-  "}"                { RET(TK_RB); }
-  "("                { RET(TK_LP); }
-  ")"                { RET(TK_RP); }
-  ","                { RET(TK_COMMA); }
-  eoi                { RET(TK_EOF); }
-  any                { RET(TK_UNKNOWN); }
+   SLCOM              { NEXT; goto main; }
+   "/*"               { goto comment; }
+   CODESTART          { goto code; }
+   [ \t\n\r]+         { NEXT; goto main; }
+   "__init__"         { RET(AZY_INIT); }
+   "__shutdown__"     { RET(AZY_SHUTDOWN); }
+   "__attrs__"        { RET(AZY_ATTRS); }
+   "__pre__"          { RET(AZY_PRECALL); }
+   "__post__"         { RET(AZY_POSTCALL); }
+   "__fallback__"     { RET(AZY_FALLBACK); }
+   "__download__"     { RET(AZY_DOWNLOAD); }
+   "__upload__"       { RET(AZY_UPLOAD); }
+   "error"            { RET(AZY_ERROR); }
+   "namespace"        { RET(AZY_NAMESPACE); }
+   "Azy_Module"       { RET(AZY_MODULE); }
+   "array"            { RET(AZY_ARRAY); }
+   "struct"           { RET(AZY_STRUCT); }
+   ("{" C+ "}")       { RET(AZY_ERRMSG); }
+   L (L|D)*           { RET(AZY_ID); }
+   D+                 { RET(AZY_INTEGER); }
+   "="                { RET(AZY_EQ); }
+   ";"                { RET(AZY_SEMICOL); }
+   "<"                { RET(AZY_LT); }
+   ">"                { RET(AZY_GT); }
+   "{"                { RET(AZY_LB); }
+   "}"                { RET(AZY_RB); }
+   "("                { RET(AZY_LP); }
+   ")"                { RET(AZY_RP); }
+   ","                { RET(AZY_COMMA); }
+   ENDINPUT          { RET(AZY_EOF); }
+   NONPRINT           { RET(AZY_UNKNOWN); }
 
-*/
+ */
 
 code:
 /*!re2c
-  "%>"           { RET(TK_CODE); }
-  eoi            { RET(TK_UNKNOWN); }
-  any            { goto code; }
-*/
+   "%>"           { RET(AZY_CODE); }
+   ENDINPUT            { RET(AZY_UNKNOWN); }
+   NONPRINT            { goto code; }
+ */
 
 comment:
 /*!re2c
-  "*/"           { EAT(); goto main; }
-  eoi            { RET(TK_UNKNOWN); }
-  any            { goto comment; }
+   "*/"           { NEXT; goto main; }
+  ENDINPUT       { RET(AZY_UNKNOWN); }
+  NONPRINT            { goto comment; }
 */
 
-DECLARE_LEXER_END()
+     return NULL;
+   }
 
-DECLARE_PARSER(azyParser, azy_parse, Azy_Model*);
-
-#define MODEL ((Azy_Model*)ctx->data)
-#define _MODEL ctx->data
+   Azy_Model *azy_parse_string(const char *str, Eina_Bool * err)
+   {
+      return azy_parser_string_parse(str, err, azy_parser_, azy_parser_Alloc, azy_parser_Free, azy_parser_stream_to_token);
+   }
+   Azy_Model *azy_parse_file(const char *path, Eina_Bool * err)
+   {
+      return azy_parser_file_parse(path, err, azy_parser_, azy_parser_Alloc, azy_parser_Free, azy_parser_stream_to_token);
+   }
 
 }
-
-/* non-terminal types definition */
-
-/* grammar */
 
 compilation_unit ::= opt_namespace_decl toplevel_decls.
 
-%type opt_inline_code {token*}
-opt_inline_code(Y) ::= . {
-  Y = NULL;
-}
-opt_inline_code(Y) ::= CODE(X). {
-  Y = X;
-}
+%type opt_inline_code {Azy_Token *}
+opt_inline_code(Y) ::= . {Y = NULL;}
+opt_inline_code(Y) ::= CODE(X). {Y = X;}
 
-%type opt_doc_comment {const char*}
-opt_doc_comment(Y) ::= . {
-  Y = NULL;
-}
+%type opt_doc_comment {const char *}
+opt_doc_comment(Y) ::= . {Y = NULL;}
 opt_doc_comment(Y) ::= DOC(X). {
   Y = X->text;
   X->text = NULL;
-  token_free(X);
+  azy_parser_token_free(X);
 }
 
 opt_namespace_decl ::= .
 opt_namespace_decl ::= namespace_decl.
-
 namespace_decl ::= NAMESPACE ID(N) SEMICOL. {
-  if (!MODEL)
-    _MODEL = azy_new();
-  if (N->text && N->text[0])
-    MODEL->name = eina_stringshare_add(N->text);
-  token_free(N);
+  if (!MODEL) _MODEL = azy_new();
+  if (N->text && N->text[0]) MODEL->name = eina_stringshare_add(N->text);
+  azy_parser_token_free(N);
 }
 
 toplevel_decls ::= toplevel_decl.
 toplevel_decls ::= toplevel_decls toplevel_decl.
 
 toplevel_decl ::= error_decl.
-toplevel_decl ::= struct_decl(X). {
-  MODEL->types = eina_list_append(MODEL->types, X);
-}
+toplevel_decl ::= struct_decl(X). {MODEL->types = eina_list_append(MODEL->types, X);}
 toplevel_decl ::= module_decl.
 
+/* error with message */
 error_decl ::= ERROR ID(N) EQ INTEGER(C) ERRMSG(S) SEMICOL. {
-  if (!MODEL)
-    _MODEL = azy_new();
-  azy_error_new(MODEL, MODEL->cur_module, N->text, atoi(C->text), S->text);
-  token_free(N);
-  token_free(C);
-  token_free(S);
+  if (!MODEL) _MODEL = azy_new();
+  azy_error_new(_MODEL, MODEL->cur_module, N->text, strtol(C->text, NULL, 10), S->text);
+  azy_parser_token_free(N);
+  azy_parser_token_free(C);
+  azy_parser_token_free(S);
+}
+/* error without message */
+error_decl ::= ERROR ID(N) EQ INTEGER(C) SEMICOL. {
+  if (!MODEL) _MODEL = azy_new();
+  azy_error_new(_MODEL, MODEL->cur_module, N->text, strtol(C->text, NULL, 10), NULL);
+  azy_parser_token_free(N);
+  azy_parser_token_free(C);
 }
 
-%type struct_decl {Azy_Typedef*}
-struct_decl(Y) ::= opt_doc_comment(C) STRUCT ID(N) LB struct_members(M) RB. {
-  if (!MODEL)
-    _MODEL = azy_new();
+%type struct_decl {Azy_Typedef *}
+struct_decl(Y) ::= opt_doc_comment(C) STRUCT ID(N) LB struct_members(M) RB SEMICOL. {
+  if (!MODEL) _MODEL = azy_new();
   if (azy_typedef_find(MODEL, MODEL->cur_module, N->text))
-  {
-    printf("Redefining already defined type %s\n", N->text);
-    exit(1);
-  }
+    {
+      printf("Redefining already defined type %s\n", N->text);
+      exit(1);
+    }
   Y = azy_typedef_new_struct(MODEL, MODEL->cur_module, N->text);
   Y->struct_members = M;
   Y->doc = C;
-  token_free(N);
+  azy_parser_token_free(N);
 }
 
-%type struct_members {Eina_List*}
-struct_members(Y) ::= struct_member(X). {
-  Y = eina_list_append(NULL, X);
-}
-struct_members(Y) ::= struct_members(L) struct_member(X). {
-  Y = eina_list_append(L, X);
-}
+%type struct_members {Eina_List *}
+struct_members(Y) ::= struct_member(X). {Y = eina_list_append(NULL, X);}
+struct_members(Y) ::= struct_members(L) struct_member(X). {Y = eina_list_append(L, X);}
 
-%type struct_member {Azy_Struct_Member*}
+%type struct_member {Azy_Struct_Member *}
 struct_member(Y) ::= type(T) ID(N) SEMICOL. {
-  Y = calloc(sizeof(Azy_Struct_Member), 1);
-  Y->type = T;
-  Y->name = eina_stringshare_add(N->text);
-  token_free(N);
+   Y = calloc(sizeof(Azy_Struct_Member), 1);
+   Y->type = T;
+   Y->name = eina_stringshare_add(N->text);
+   azy_parser_token_free(N);
 }
 
 module_decl ::= module_decl_head module_decl_body.
 module_decl_head ::= opt_doc_comment(C) MODULE ID(N). {
-  if (!MODEL)
-    _MODEL = azy_new();
-  MODEL->cur_module = calloc(sizeof(Azy_Server_Module), 1);
-  MODEL->modules = eina_list_append(MODEL->modules, MODEL->cur_module);
-  MODEL->cur_module->name = eina_stringshare_add(N->text);
-  MODEL->cur_module->doc = C;
-  token_free(N);
+   if (!MODEL)_MODEL = azy_new();
+   MODEL->cur_module = calloc(sizeof(Azy_Server_Module), 1);
+   MODEL->modules = eina_list_append(MODEL->modules, MODEL->cur_module);
+   MODEL->cur_module->name = eina_stringshare_add(N->text);
+   MODEL->cur_module->doc = C;
+   azy_parser_token_free(N);
 }
 module_decl_body ::= LB opt_inline_code(C) module_body_decls RB. {
   if (C)
-  {
-    MODEL->cur_module->stub_header = eina_stringshare_add_length(C->text+2, strlen(C->text)-4);
-    MODEL->cur_module->stub_header_line = C->sline;
-    token_free(C);
-  }
+    {
+      MODEL->cur_module->stub_header = eina_stringshare_add_length(C->text + 2, strlen(C->text) - 4);
+      MODEL->cur_module->stub_header_line = C->sline;
+      azy_parser_token_free(C);
+    }
   MODEL->cur_module = NULL;
 }
 
 module_body_decls ::= module_body_decl.
 module_body_decls ::= module_body_decls module_body_decl.
 
-module_body_decl ::= struct_decl(S). {
-  MODEL->cur_module->types = eina_list_append(MODEL->cur_module->types, S);
-}
+module_body_decl ::= struct_decl(S). {MODEL->cur_module->types = eina_list_append(MODEL->cur_module->types, S);}
 module_body_decl ::= method_decl(M) CODE(C). {
-  MODEL->cur_module->methods = eina_list_append(MODEL->cur_module->methods, M);
-  M->stub_impl = eina_stringshare_add_length(C->text+2, strlen(C->text)-4);
-  M->stub_impl_line = C->sline;
-  token_free(C);
+   MODEL->cur_module->methods = eina_list_append(MODEL->cur_module->methods, M);
+   M->stub_impl = eina_stringshare_add_length(C->text + 2, strlen(C->text) - 4);
+   M->stub_impl_line = C->sline;
+   azy_parser_token_free(C);
 }
 module_body_decl ::= method_decl(M) SEMICOL. {
   MODEL->cur_module->methods = eina_list_append(MODEL->cur_module->methods, M);
 }
 module_body_decl ::= INIT CODE(C). {
-  MODEL->cur_module->stub_init = eina_stringshare_add_length(C->text+2, strlen(C->text)-4);
+  MODEL->cur_module->stub_init = eina_stringshare_add_length(C->text + 2, strlen(C->text) - 4);
   MODEL->cur_module->stub_init_line = C->sline;
-  token_free(C);
+  azy_parser_token_free(C);
 }
 module_body_decl ::= SHUTDOWN CODE(C). {
-  MODEL->cur_module->stub_shutdown = eina_stringshare_add_length(C->text+2, strlen(C->text)-4);
+  MODEL->cur_module->stub_shutdown = eina_stringshare_add_length(C->text + 2, strlen(C->text) - 4);
   MODEL->cur_module->stub_shutdown_line = C->sline;
-  token_free(C);
+  azy_parser_token_free(C);
 }
 module_body_decl ::= ATTRS CODE(C). {
-  MODEL->cur_module->stub_attrs = eina_stringshare_add_length(C->text+2, strlen(C->text)-4);
+  MODEL->cur_module->stub_attrs = eina_stringshare_add_length(C->text + 2, strlen(C->text) - 4);
   MODEL->cur_module->stub_attrs_line = C->sline;
-  token_free(C);
+  azy_parser_token_free(C);
 }
 module_body_decl ::= PRECALL CODE(C). {
-  MODEL->cur_module->stub_pre = eina_stringshare_add_length(C->text+2, strlen(C->text)-4);
+  MODEL->cur_module->stub_pre = eina_stringshare_add_length(C->text + 2, strlen(C->text) - 4);
   MODEL->cur_module->stub_pre_line = C->sline;
-  token_free(C);
+  azy_parser_token_free(C);
 }
 module_body_decl ::= POSTCALL CODE(C). {
-  MODEL->cur_module->stub_post = eina_stringshare_add_length(C->text+2, strlen(C->text)-4);
+  MODEL->cur_module->stub_post = eina_stringshare_add_length(C->text + 2, strlen(C->text) - 4);
   MODEL->cur_module->stub_post_line = C->sline;
-  token_free(C);
+  azy_parser_token_free(C);
 }
 module_body_decl ::= FALLBACK CODE(C). {
-  MODEL->cur_module->stub_fallback = eina_stringshare_add_length(C->text+2, strlen(C->text)-4);
+  MODEL->cur_module->stub_fallback = eina_stringshare_add_length(C->text + 2, strlen(C->text) - 4);
   MODEL->cur_module->stub_fallback_line = C->sline;
-  token_free(C);
+  azy_parser_token_free(C);
 }
 module_body_decl ::= DOWNLOAD CODE(C). {
-  MODEL->cur_module->stub_download = eina_stringshare_add_length(C->text+2, strlen(C->text)-4);
+  MODEL->cur_module->stub_download = eina_stringshare_add_length(C->text + 2, strlen(C->text) - 4);
   MODEL->cur_module->stub_download_line = C->sline;
-  token_free(C);
+  azy_parser_token_free(C);
 }
 module_body_decl ::= UPLOAD CODE(C). {
-  MODEL->cur_module->stub_upload = eina_stringshare_add_length(C->text+2, strlen(C->text)-4);
+  MODEL->cur_module->stub_upload = eina_stringshare_add_length(C->text + 2, strlen(C->text) - 4);
   MODEL->cur_module->stub_upload_line = C->sline;
-  token_free(C);
+  azy_parser_token_free(C);
 }
 module_body_decl ::= error_decl.
 
-%type type {Azy_Typedef*}
+%type type {Azy_Typedef *}
 type(Y) ::= ARRAY LT type(T) GT. {
   if (!MODEL)
     _MODEL = azy_new();
@@ -291,23 +304,23 @@ type(Y) ::= ID(N). {
   Y = azy_typedef_find(MODEL, MODEL->cur_module, N->text);
   if (Y == NULL)
   {
-    printf("Undefined type %s\n", N->text);
+    printf(" Undefined type %s \n", N->text);
     exit(1);
   }
-  token_free(N);
+  azy_parser_token_free(N);
 }
 
-%type method_decl {Azy_Method*}
+%type method_decl {Azy_Method *}
 method_decl(Y) ::= opt_doc_comment(C) type(RT) ID(N) LP params(P) RP. {
   Y = calloc(sizeof(Azy_Method), 1);
   Y->name = eina_stringshare_add(N->text);
   Y->return_type = RT;
   Y->params = P;
   Y->doc = C;
-  token_free(N);
+  azy_parser_token_free(N);
 }
 
-%type params {Eina_List*}
+%type params {Eina_List *}
 params(Y) ::= . {
   Y = NULL;
 }
@@ -323,11 +336,11 @@ opt_owner(Y) ::= . {
   Y = 0;
 }
 
-%type param {Azy_Method_Param*}
+%type param {Azy_Method_Param *}
 param(Y) ::= opt_owner(C) type(T) ID(N). {
   Y = calloc(sizeof(Azy_Method_Param), 1);
   Y->type = T;
   Y->pass_ownership = C;
   Y->name = eina_stringshare_add(N->text);
-  token_free(N);
+  azy_parser_token_free(N);
 }

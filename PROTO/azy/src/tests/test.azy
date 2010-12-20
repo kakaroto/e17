@@ -1,5 +1,4 @@
 /*
- * Parts copyright 2006, 2007 Ondrej Jirman <ondrej.jirman@zonio.net>
  * Copyright 2010 Mike Blumenkrantz <mike@zentific.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,6 +27,7 @@ namespace T;
  */
 error ERR1 = 1 { sup this is an error };
 error ERR2 = 2 { chea dawg this is also an error };
+error ERR3 = 3; /* look ma, no message! */
 
 /**
  * Create typedef struct named Struct (T_Struct in C)
@@ -38,7 +38,7 @@ struct Struct
     * const char*
     */
    string v_string;
-}
+};
 
 /**
  * Create typedef struct named AllArrays (T_AllArrays in C)
@@ -54,7 +54,7 @@ struct AllArrays
    array<Struct>  a_struct; /**< array of Struct objects (T_Structs in C) */
    array<array<string>> aa_string; /**< array of arrays of stringshared strings */
    array<array<array<string>>> aaa_string; /** array of arrays of arrays of stringshared strings */
-}
+};
 
 /**
  * Create typedef struct named AllTypes (T_AllTypes in C)
@@ -69,7 +69,7 @@ struct AllTypes
    double    v_double; /**< double */
    Struct    v_struct; /**< Struct object (T_Struct in C) */
    AllArrays v_arrays; /**< AllArrays object (T_AllArrays in C) */
-}
+};
 
 /**
  * Create a module named 'Test1' which can contain methods, structs, errors, etc
