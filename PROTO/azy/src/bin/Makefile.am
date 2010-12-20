@@ -9,8 +9,7 @@ RE2C_OPTS = -si -o azy_parser.y
 
 BUILT_SOURCES = \
 	azy_parser.c \
-	azy_parser.y \
-	lemon
+	azy_parser.y
 
 MAINTAINERCLEANFILES = Makefile.in
 CLEANFILES = \
@@ -40,25 +39,25 @@ azy_parser_SOURCES = \
 	parser_lib.c \
 	azy_parser.c
 
+noinst_PROGRAMS = lemon
+lemon_SOURCES = lemon.c
+
+# parser
+
 if NEED_RE2C
 $(REC):
 	cd re2c && $(MAKE) $(AM_MAKEFLAGS)
 else
 .PHONY: $(REC)
 endif
-
-lemon:
-	test -x $(top_builddir)/src/bin/lemon || \
-	$(CC) $(CFLAGS) -o $(top_builddir)/src/bin/lemon $(top_srcdir)/src/bin/lemon.c
-
-azy_parser.y: azy_parser.yre $(REC)
+azy_parser.y: azy_parser.yre $(REC) lemon
 	$(REC) $(RE2C_OPTS) $<
 
 azy_parser.c: azy_parser.y lemon
 	@if test "x$(top_srcdir)" != "x$(top_builddir)"; then \
 		cp $(top_srcdir)/src/bin/lempar.c $(top_builddir)/src/bin; \
 	fi
-	$(top_builddir)/src/bin/lemon -q $<
+	./lemon -q $<
 
 clean-local:
 	@if test "x$(top_srcdir)" != "x$(top_builddir)"; then \
