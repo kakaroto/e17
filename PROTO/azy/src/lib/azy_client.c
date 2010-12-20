@@ -519,7 +519,7 @@ error:
  * @param client The client (NOT #NULL)
  * @param type The HTTP method to use (NOT #NULL)
  * @param uri The uri path to GET
- * @param cb The deserialization callback to use for the response (NOT #NULL)
+ * @param cb The deserialization callback to use for the response
  * @param data The user data to be passed to resulting callbacks
  * @return The #Azy_Client_Call_Id of the transmission, to be used with azy_client_callback_set,
  * or 0 on failure
@@ -542,7 +542,6 @@ azy_client_blank(Azy_Client       *client,
         return 0;
      }
    EINA_SAFETY_ON_NULL_RETURN_VAL(client->net, 0);
-			EINA_SAFETY_ON_NULL_RETURN_VAL(cb, 0);
 			EINA_SAFETY_ON_TRUE_RETURN_VAL((type != AZY_NET_TYPE_GET) && (type != AZY_NET_TYPE_POST), 0);
 
    if (!client->connected)

@@ -103,19 +103,20 @@ _azy_client_handler_get(Azy_Client_Handler_Data *handler_data)
 
    content->data = handler_data->content_data;
 
-   content->retval = azy_content_unserialize(handler_data->recv->transport, (const char*)handler_data->recv->buffer, handler_data->recv->size);
-   if (!content->retval)
-     azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return parsing failed.");
-   else if (handler_data->callback && content->retval && (!handler_data->callback(content->retval, &ret)))
-     azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return value demarshalization failed.");
-
-   if (azy_content_error_is_set(content))
+   if ((handler_data->recv->transport == AZY_NET_TRANSPORT_JSON) || (handler_data->recv->transport == AZY_NET_TRANSPORT_XML))
      {
-        char buf[64];
-        snprintf(buf, sizeof(buf), "%lli bytes:\n<<<<<<<<<<<<<\n%%.%llis\n<<<<<<<<<<<<<", handler_data->recv->size, handler_data->recv->size);
-        ERR(buf, handler_data->recv->buffer);
+        content->retval = azy_content_unserialize(handler_data->recv->transport, (const char*)handler_data->recv->buffer, handler_data->recv->size);
+        if (!content->retval)
+          azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return parsing failed.");
+        else if (handler_data->callback && content->retval && (!handler_data->callback(content->retval, &ret)))
+          azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return value demarshalization failed.");
+        if (azy_content_error_is_set(content))
+          {
+             char buf[64];
+             snprintf(buf, sizeof(buf), "%lli bytes:\n<<<<<<<<<<<<<\n%%.%llis\n<<<<<<<<<<<<<", handler_data->recv->size, handler_data->recv->size);
+             ERR(buf, handler_data->recv->buffer);
+          }
      }
-
    content->id = handler_data->id;
    content->ret = ret;
    content->recv_net = handler_data->recv;
