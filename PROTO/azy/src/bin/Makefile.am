@@ -5,7 +5,7 @@ else
 REC = $(RE2C)
 endif
 
-RE2C_OPTS = -si -o azy_parser.y
+RE2C_OPTS = -bsi -o azy_parser.y
 
 BUILT_SOURCES = \
 	azy_parser.c \
