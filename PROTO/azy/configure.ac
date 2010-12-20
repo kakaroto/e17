@@ -116,7 +116,7 @@ AC_ARG_ENABLE([external-re2c],
    [want_extern_rec=$enableval]
 )
 if test "x$want_extern_rec" != "xno" ; then
-   AC_PATH_PROG([RE2C], [re2c], [want_extern_rec=no])
+   AC_PATH_PROG([RE2C], [re2c])
 fi
 AM_CONDITIONAL([NEED_RE2C], [test -z $RE2C])
 
