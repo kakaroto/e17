@@ -274,6 +274,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
 
    if (!handler_data->client->net)
      {
+        INFO("Removing probably dead client %p", client);
         _azy_client_handler_data_free(handler_data);
         return ECORE_CALLBACK_RENEW;
      }
