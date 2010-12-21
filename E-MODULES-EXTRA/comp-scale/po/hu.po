@@ -1,0 +1,83 @@
+# Hungarian translation for enlightenment
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2010-12-10 13:52+0100\n"
+"PO-Revision-Date: 2009-10-24 12:05+0000\n"
+"Last-Translator: lisovszki <lisovszki@gmail.com>\n"
+"Language-Team: Hungarian <hu@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-11-12 04:51+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: src/e_mod_config.c:44
+msgid "Skeleton Module"
+msgstr "Csontváz modul"
+
+#: src/e_mod_config.c:84
+msgid "General"
+msgstr "Általános"
+
+#: src/e_mod_config.c:86
+msgid "Use Switch 1"
+msgstr "'-es váltó használata"
+
+#: src/e_mod_main.c:82
+#, fuzzy
+msgid "Skel"
+msgstr "Csontváz"
+
+#: src/e_mod_main.c:113
+msgid ""
+"Skeleton Module Configuration data needed upgrading. Your old "
+"configuration<br> has been wiped and a new set of defaults initialized. "
+"This<br>will happen regularly during development, so don't report a<br>bug. "
+"This simply means the module needs new configuration<br>data by default for "
+"usable functionality that your old<br>configuration simply lacks. This new "
+"set of defaults will fix<br>that by adding it in. You can re-configure "
+"things now to your<br>liking. Sorry for the inconvenience.<br>"
+msgstr ""
+"A Csontváz modul beállítófájlját frissíteni kell. A régi beállításaid ki "
+"lettek írtva<br> és egy új, alapértelmezett beállítás került a helyére."
+"<br>Ez a fejlesztés alatt rendszerint megtörténik, ezért kérlek ne jelents "
+"hibát.<br>Ez csak azt jelenti, hogy a modulodnak a megfelelő működéshez új "
+"beállításokra volt szüksége,<br>mert a régiek nem voltak alkalmasak erre. Az "
+"új beállításokkal a hiba ki lett javítva.<br>Elnézést a kellemetlenségekért."
+"<br>"
+
+#: src/e_mod_main.c:133
+msgid ""
+"Your Skeleton Module configuration is NEWER than the module version. This is "
+"very<br>strange. This should not happen unless you downgraded<br>the module "
+"or copied the configuration from a place where<br>a newer version of the "
+"module was running. This is bad and<br>as a precaution your configuration "
+"has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
+msgstr ""
+"A Csontváz modulod beállításfájlja ÚJABB mint a modul verziója. Ez nagyon "
+"furcsa.<br>Ez nem történhetett volna meg,<br>csak abban az esetben, ha te "
+"visszatelepítettél egy régebbi verziót a modulból,<br>vagy valahonnan "
+"máshonnan bemásoltad egy már működő,<br>korábbi verzióju modul "
+"beállításfájlját. Ez így rossz,<br>és a fájlok helyre lettek állítva alap "
+"értékre. Elnézést a kellemetlenségekért.<br>"
+
+#: src/e_mod_main.c:300
+msgid "Skeleton"
+msgstr "Csontváz"
+
+#: src/e_mod_main.c:385
+msgid "Skeleton Configuration Updated"
+msgstr "Csontváz beállítások frissítve"
+
+#: src/e_mod_main.c:447
+msgid "Settings"
+msgstr ""
+
+#~ msgid "Configuration"
+#~ msgstr "Beállítások"

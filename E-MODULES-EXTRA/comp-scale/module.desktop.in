@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Link
+Name=Scale Windows
+Icon=e-module-skel
+Comment=Not meant for users. Basis for building new ones.
+#Several different types available here. NEED TO DOC THESE.
+X-Enlightenment-ModuleType=look

@@ -1,0 +1,68 @@
+# Arabic translation for enlightenment
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2010-12-10 13:52+0100\n"
+"PO-Revision-Date: 2009-07-26 10:47+0000\n"
+"Last-Translator: الـشـبـح <the-ghost@live.com>\n"
+"Language-Team: Arabic <ar@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/e_mod_config.c:44
+msgid "Skeleton Module"
+msgstr "وحدة الهيكل العضمي"
+
+#: src/e_mod_config.c:84
+msgid "General"
+msgstr "عام"
+
+#: src/e_mod_config.c:86
+msgid "Use Switch 1"
+msgstr ""
+
+#: src/e_mod_main.c:82
+#, fuzzy
+msgid "Skel"
+msgstr "الهيكل العضمي"
+
+#: src/e_mod_main.c:113
+msgid ""
+"Skeleton Module Configuration data needed upgrading. Your old "
+"configuration<br> has been wiped and a new set of defaults initialized. "
+"This<br>will happen regularly during development, so don't report a<br>bug. "
+"This simply means the module needs new configuration<br>data by default for "
+"usable functionality that your old<br>configuration simply lacks. This new "
+"set of defaults will fix<br>that by adding it in. You can re-configure "
+"things now to your<br>liking. Sorry for the inconvenience.<br>"
+msgstr ""
+
+#: src/e_mod_main.c:133
+msgid ""
+"Your Skeleton Module configuration is NEWER than the module version. This is "
+"very<br>strange. This should not happen unless you downgraded<br>the module "
+"or copied the configuration from a place where<br>a newer version of the "
+"module was running. This is bad and<br>as a precaution your configuration "
+"has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
+msgstr ""
+
+#: src/e_mod_main.c:300
+msgid "Skeleton"
+msgstr "الهيكل العضمي"
+
+#: src/e_mod_main.c:385
+msgid "Skeleton Configuration Updated"
+msgstr ""
+
+#: src/e_mod_main.c:447
+msgid "Settings"
+msgstr ""
+
+#~ msgid "Configuration"
+#~ msgstr "الإعدادات"

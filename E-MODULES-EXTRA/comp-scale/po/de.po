@@ -1,0 +1,83 @@
+# German translation for enlightenment
+# This file is distributed under the same license as the enlightenment package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2010-12-10 13:52+0100\n"
+"PO-Revision-Date: 2009-11-07 18:18+0000\n"
+"Last-Translator: MixCool <lars.thoms@mixcool.de>\n"
+"Language-Team: German <de@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-11-12 04:51+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: src/e_mod_config.c:44
+msgid "Skeleton Module"
+msgstr ""
+
+#: src/e_mod_config.c:84
+msgid "General"
+msgstr "Allgemein"
+
+#: src/e_mod_config.c:86
+msgid "Use Switch 1"
+msgstr "Schalter eins benutzen"
+
+#: src/e_mod_main.c:82
+msgid "Skel"
+msgstr ""
+
+#: src/e_mod_main.c:113
+msgid ""
+"Skeleton Module Configuration data needed upgrading. Your old "
+"configuration<br> has been wiped and a new set of defaults initialized. "
+"This<br>will happen regularly during development, so don't report a<br>bug. "
+"This simply means the module needs new configuration<br>data by default for "
+"usable functionality that your old<br>configuration simply lacks. This new "
+"set of defaults will fix<br>that by adding it in. You can re-configure "
+"things now to your<br>liking. Sorry for the inconvenience.<br>"
+msgstr ""
+"Die Moduleinstellungen bedurften einer Aktualisierung. Ihre alte "
+"Konfiguration<br> wurde durch neue Standardwerte ersetzt. Dies<br>wird "
+"regelmäßig während des Entwicklungsprozesses passieren. Melden Sie dies "
+"nicht als<br>Fehler. Es bedeutet lediglich, dass das Benachrichtigungsmodul "
+"neue Standard-<br>einstellungen benötigt, die Ihre alte Einstellung nicht "
+"hatte,<br>um ordnungsgemäß zu funktionieren. Diese Standardeinstellungen "
+"werden<br>hinzugefügt, um ordnungsgemäßes Funktionieren sicherzustellen. Sie "
+"können die<br>Einstellungen nun nach ihrem Belieben neu anpassen. "
+"Entschuldigen Sie die Umstände.<br>"
+
+#: src/e_mod_main.c:133
+msgid ""
+"Your Skeleton Module configuration is NEWER than the module version. This is "
+"very<br>strange. This should not happen unless you downgraded<br>the module "
+"or copied the configuration from a place where<br>a newer version of the "
+"module was running. This is bad and<br>as a precaution your configuration "
+"has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
+msgstr ""
+"Ihre Moduleinstellungen sind NEUER als die Modulversion selbst. Das ist "
+"sehr<br>seltsam und sollte nicht passieren, außer Sie haben das Modul "
+"<br>deaktualisiert oder die Moduleinstellungen von einem Ort kopiert, an "
+"dem<br>eine neuere Version des Modules lief. Das ist kritisch.<br>Ihre "
+"Einstellungen wurden vorbeugend auf Standardwerte<br>zurückgesetzt. "
+"Entschuldigen Sie die Umstände.<br>"
+
+#: src/e_mod_main.c:300
+msgid "Skeleton"
+msgstr ""
+
+#: src/e_mod_main.c:385
+msgid "Skeleton Configuration Updated"
+msgstr "Skeleton Einstellungen aktualisiert"
+
+#: src/e_mod_main.c:447
+msgid "Settings"
+msgstr ""
+
+#~ msgid "Configuration"
+#~ msgstr "Einstellungen"
