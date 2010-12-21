@@ -311,7 +311,7 @@ azy_events_header_parse(Azy_Net      *net,
      {
         const unsigned char *ptr, *semi;
 
-        if (line_len > 4096)
+        if (line_len > MAX_HEADER_SIZE)
           {
              WARN("Ignoring unreasonably large header starting with:\n %.32s\n", p);
              goto skip_header;
