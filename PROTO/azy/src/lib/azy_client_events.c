@@ -43,6 +43,8 @@ static void _azy_client_handler_call_free(Azy_Client *client, Azy_Content *conte
              callback(content->ret);
              eina_hash_del_by_key(client->free_callbacks, &content->id);
           }
+        else if (content->ret)
+          free(content->ret);
      }
       /* http 1.0 requires that we disconnect after every response */
    if ((!content->recv_net->http.version) || (client && client->net && (!client->net->http.version))) ecore_con_server_del(content->recv_net->conn);
@@ -118,7 +120,10 @@ _azy_client_handler_get(Azy_Client_Handler_Data *handler_data)
           }
      }
    else
-     ret = handler_data->recv->buffer;
+     {
+        ret = handler_data->recv->buffer;
+        content->retsize = handler_data->recv->size;
+     }
    content->id = handler_data->id;
    content->ret = ret;
    content->recv_net = handler_data->recv;
@@ -131,7 +136,7 @@ _azy_client_handler_get(Azy_Client_Handler_Data *handler_data)
      {
         Eina_Error r;
         if (ret == content->recv_net->buffer)
-          r = cb(client, content, &content->recv_net->size);
+          r = cb(client, content, content->ret);
         else
           r = cb(client, content, content->ret);
         
@@ -140,7 +145,7 @@ _azy_client_handler_get(Azy_Client_Handler_Data *handler_data)
         _azy_client_handler_call_free(client, content);
      }
    else
-     {/*FIXME: add non-rpc versions here*/
+     {
        if (!azy_content_error_is_set(content))
          ecore_event_add(AZY_CLIENT_RETURN, content, (Ecore_End_Cb)_azy_client_handler_call_free, client);
        else
@@ -259,7 +264,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
    int len = (ev) ? ev->size : 0;
    static unsigned int recursive;
    static unsigned char *overflow;
-   static long long int overflow_length;
+   static int64_t overflow_length;
    static Azy_Client *client;
 
    if (!AZY_MAGIC_CHECK(handler_data, AZY_MAGIC_CLIENT_DATA_HANDLER))
@@ -420,7 +425,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
      {
         Azy_Client_Handler_Data *dh;
         const char *method;
-        long long int prev_len;
+        int64_t prev_len;
         unsigned int id;
 
         dh = client->conns->data;

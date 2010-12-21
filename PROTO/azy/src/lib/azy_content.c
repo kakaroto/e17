@@ -929,6 +929,27 @@ azy_content_return_get(Azy_Content *content)
 }
 
 /**
+ * @brief Get the size of the return value of a transmission
+ * 
+ * This function gets the size of the return value of a method call, and is only
+ * functional for clients in return callbacks/events.
+ * Note that the returned content is owned by @p content and should not
+ * be manually freed.
+ * @param content The content object (NOT #NULL)
+ * @return The method response return value, or #NULL on failure
+ */
+uint64_t
+azy_content_return_size_get(Azy_Content *content)
+{
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return -1;
+     }
+   return content->retsize;
+}
+
+/**
  * @brief Get the id of a content object
  * 
  * This function returns the client transmission id of @p content,

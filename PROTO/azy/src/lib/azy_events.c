@@ -197,7 +197,7 @@ azy_events_header_parse(Azy_Net      *net,
    unsigned char slen = 0;
    unsigned char sep[5];
    int line_len = 0;
-   long long int prev_size = 0;
+   int64_t prev_size = 0;
 
    DBG("(net=%p, event_data=%p, len=%zu, offset=%i)", net, event_data, event_len, offset);
    if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
@@ -375,10 +375,10 @@ out:
 
         if (net->http.content_length > 0)
           {
-             if ((long long int)len > net->http.content_length)
+             if ((int64_t)len > net->http.content_length)
                {
                   rlen = net->http.content_length;
-                  net->overflow_length = (long long int)(len - rlen);
+                  net->overflow_length = (int64_t)(len - rlen);
                   WARN("Extra content length of %lli!", net->overflow_length);
                   net->overflow = malloc(net->overflow_length);
                   /* FIXME: uhhhh fuck? */
@@ -386,7 +386,7 @@ out:
                   memcpy(net->overflow, p + rlen, net->overflow_length);
 #ifdef ISCOMFITOR
      {
-        long long int x;
+        int64_t x;
         INFO("OVERFLOW:\n<<<<<<<<<<<<<");
         for (x = 0; x < net->overflow_length; x++)
           putc(net->overflow[x], stdout);

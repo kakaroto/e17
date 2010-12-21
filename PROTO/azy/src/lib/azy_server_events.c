@@ -624,7 +624,7 @@ _azy_server_client_handler_data(Azy_Server_Client          *client,
    void *data = (ev) ? ev->data : NULL;
    int len = (ev) ? ev->size : 0;
    static unsigned char *overflow;
-   static long long int overflow_length;
+   static int64_t overflow_length;
    static Azy_Server_Client *cli;
 
    if (type == -500)

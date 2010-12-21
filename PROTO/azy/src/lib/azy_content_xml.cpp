@@ -65,7 +65,7 @@ struct xml_memory_writer : xml_writer
 
 static char *
 azy_content_xmlnode_to_buf(xml_node       node,
-                           long long int *len)
+                           int64_t *len)
 {
    xml_memory_writer counter;
    char *buffer;
@@ -75,7 +75,7 @@ azy_content_xmlnode_to_buf(xml_node       node,
    xml_memory_writer writer(buffer, counter.result);
    node.print(writer);
    buffer[writer.written_size()] = 0;
-   *len = static_cast<long long int> (writer.written_size());
+   *len = static_cast<int64_t> (writer.written_size());
 
    return buffer;
 }
@@ -375,7 +375,7 @@ azy_content_unserialize_request_xml(Azy_Content *content,
 
         v = params.first().node(); /* <value> */
         p = v.parent(); /* <param> */
-        if (std::distance(p.parent().begin(), p.parent().end()) != static_cast<long long int>(params.size())) /* that's a paddlin */
+        if (std::distance(p.parent().begin(), p.parent().end()) != static_cast<int64_t>(params.size())) /* that's a paddlin */
           return EINA_FALSE;
         if (std::distance(p.begin(), p.end()) != 1) /* that's a paddlin */
           return EINA_FALSE;

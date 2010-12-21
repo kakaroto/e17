@@ -389,6 +389,7 @@ extern "C" {
    EAPI void        azy_content_retval_set(Azy_Content *content,
                                        Azy_Value   *val);
    EAPI void       *azy_content_return_get(Azy_Content *content);
+   EAPI uint64_t    azy_content_return_size_get(Azy_Content *content);
    EAPI Azy_Client_Call_Id azy_content_id_get(Azy_Content *content);
    EAPI Azy_Value *azy_content_retval_get(Azy_Content *content);
    EAPI void        azy_content_error_code_set(Azy_Content *content,

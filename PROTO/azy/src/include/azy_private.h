@@ -92,11 +92,12 @@ struct Azy_Content
    Eina_List          *params;
    Azy_Value          *retval;
    void               *ret;
+   int64_t             retsize;
    Azy_Client_Call_Id  id;
    Azy_Net            *recv_net;
 
    unsigned char      *buffer;
-   long long int       length;
+   int64_t             length;
 
    Eina_Bool           error_set : 1;
    Eina_Error          errcode; //internal code
@@ -110,10 +111,10 @@ struct Azy_Net
    void              *conn;
    Eina_Bool          server_client : 1;
 
-   long long int      size;
+   int64_t      size;
    unsigned char     *buffer;
    unsigned char      *overflow;
-   long long int       overflow_length;
+   int64_t       overflow_length;
 
    Ecore_Timer       *timer;
    Eina_Bool          nodata : 1;
@@ -134,7 +135,7 @@ struct Azy_Net
       } res;
       int        version;
       Eina_Hash *headers;
-      long long int        content_length;
+      int64_t        content_length;
    } http;
    Eina_Bool headers_read : 1;
 };
