@@ -220,8 +220,6 @@ _place()
    int overlap = 0;
    int outside = 0;
 
-   cnt++;
-
    EINA_LIST_FOREACH(items, l, it)
      {	
 	it->mx = it->x;
@@ -230,12 +228,15 @@ _place()
    
    EINA_LIST_FOREACH(items, l, it)
      {	
-	EINA_LIST_FOREACH(l->next, ll, ot)
+	EINA_LIST_FOREACH(items, ll, ot)
 	  {
 	     int w = it->w;
 	     int h = it->h;
 
-	     if (!E_INTERSECTS(it->x-2, it->y-2, it->w+4, it->h+4, ot->x, ot->y, ot->w, ot->h))
+	     if (it == ot)
+	       continue;
+	     
+	     if (!E_INTERSECTS(it->x, it->y, it->w, it->h, ot->x, ot->y, ot->w, ot->h))
 	       continue;
 
 	     overlap += 1;
@@ -270,13 +271,11 @@ _place()
 		    {
 		       dist_y = (dist_y > 0 ? 2 : -2);
 		       it->my += dist_y;
-		       ot->my -= dist_y;
 		    }
 		  if (dist_x)
 		    {		       
 		       dist_x = (dist_x > 0 ? 1 : -1);
 		       it->mx += dist_x;
-		       ot->mx -= dist_x;
 		    }
 	       }
 	     else //if (w < h)
@@ -285,13 +284,11 @@ _place()
 		    {
 		       dist_y = (dist_y > 0 ? 1 : -1);
 		       it->my += dist_y;
-		       ot->my -= dist_y;
 		    }
 		  if (dist_x)
 		    {
 		       dist_x = (dist_x > 0 ? 2 : -2);
 		       it->mx += dist_x;
-		       ot->mx -= dist_x;
 		    }
 	       }
 	  }
@@ -333,7 +330,7 @@ _place()
    if (outside)
      {	
 	
-	if (cnt > 20)
+	if (cnt++ > 20)
 	  {
 	     /* printf("resize %f\n", factor); */
 	     cnt = 0;
@@ -344,7 +341,6 @@ _place()
 	       {
 		  it->w = it->bd->w * factor;
 		  it->h = it->bd->h * factor;
-
 	       }
 	  }
 	
@@ -427,7 +423,6 @@ _redraw(void *blah)
 static void
 delorig(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-   /* Eina_List *l; */
    Item *it = data;
 
    items = eina_list_remove(items, it);
@@ -488,6 +483,9 @@ newwin(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk)
    if (!cw->bd) return;
 
    if (cw->bd->desk != desk)
+     return;
+
+   if (cw->bd->iconic)
      return;
 
    it = E_NEW(Item, 1);
@@ -598,16 +596,15 @@ setup(E_Manager *man)
      }
       
    i = 0;
-   while (i++ < 10000 && _grow())
+   while (i++ < 1000 && _grow())
      {
    	int k = 0;
    	cnt = 0;
    	
    	while (k++ < 10 && _place());
      }
-
    printf("grow %d\n", i);
-   
+      
    advance = 0.0;
    zoom = 0.1;
    
