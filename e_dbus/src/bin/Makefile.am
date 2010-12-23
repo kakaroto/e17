@@ -117,6 +117,7 @@ e_dbus_notification_daemon_CPPFLAGS = \
 @EDBUS_NOTIFICATION_DAEMON_TEST_CFLAGS@
 e_dbus_notification_daemon_LDADD = \
 $(ENOTIFY_LIBS) \
+$(top_builddir)/src/lib/dbus/libedbus.la \
 @EDBUS_NOTIFICATION_DAEMON_TEST_LIBS@
 endif
 
@@ -128,6 +129,7 @@ e_notify_send_CPPFLAGS = \
 @EDBUS_NOTIFY_SEND_CFLAGS@
 e_notify_send_LDADD = \
 $(ENOTIFY_LIBS) \
+$(top_builddir)/src/lib/dbus/libedbus.la \
 @EDBUS_NOTIFY_SEND_LIBS@
 endif
 
@@ -139,6 +141,7 @@ e_dbus_notify_CPPFLAGS = \
 @EDBUS_NOTIFY_TEST_CFLAGS@
 e_dbus_notify_LDADD = \
 $(ENOTIFY_LIBS) \
+$(top_builddir)/src/lib/dbus/libedbus.la \
 @EDBUS_NOTIFY_TEST_LIBS@
 endif
 
