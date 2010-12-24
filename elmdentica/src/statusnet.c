@@ -1100,7 +1100,7 @@ Eina_Bool ed_sn_connected_single_status_parse(Azy_Value *value, Eina_List **_nar
 	anUser *au=NULL;
 	statusnet_RT_Status *snS=NULL;
 	statusnet_Error *snE=NULL;
-	Eina_Strbuf *str=eina_strbuf_new();
+	Eina_Strbuf *str;
 
 	if( (!value) || (azy_value_type_get(value) != AZY_VALUE_STRUCT) ) {
 		printf("Didn't get a struct\n");
@@ -1108,12 +1108,18 @@ Eina_Bool ed_sn_connected_single_status_parse(Azy_Value *value, Eina_List **_nar
 		return(EINA_FALSE);
 	}
 	
+	if(azy_value_to_statusnet_Error(value, &snE)) {
+		str=eina_strbuf_new();
+		if(str) {
+			azy_value_dump(value, str, 1);
+			fprintf(stderr, _("Got an error: %s\n"), eina_strbuf_string_get(str));
+			eina_strbuf_free(str);
+		} else fprintf(stderr, _("Got an error without content\n"));
+		return(EINA_FALSE);
+	}
+
 	if(azy_value_to_statusnet_RT_Status(value, &snS)) {
 		printf("Got a status: %s\n", snS->text);
-	} else if(azy_value_to_statusnet_Error(value, &snE)) {
-		printf("Got an error: %s\n", snE->error);
-		azy_value_dump(value, str, 1);
-		printf("Got: %s\n", eina_strbuf_string_get(str));
 	} else {
 		statusnet_RT_Status_free(snS);
 		printf("Didn't get a status!\n");
