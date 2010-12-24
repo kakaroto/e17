@@ -191,11 +191,6 @@ azy_method_compare(Azy_Method *m1,
    return strcmp(m1->name, m2->name);
 }
 
-void
-azy_process(Azy_Model *azy __UNUSED__)
-{
-}
-
 Azy_Error_Code *
 azy_error_new(Azy_Model         *azy,
                Azy_Server_Module *module,

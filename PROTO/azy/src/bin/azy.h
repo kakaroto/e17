@@ -55,6 +55,7 @@ struct _Azy_Typedef
 struct _Azy_Struct_Member
 {
    const char   *name;
+   const char   *strname;
    Azy_Typedef *type;
 };
 
@@ -153,8 +154,6 @@ Azy_Typedef *azy_typedef_find(Azy_Model         *azy,
                                 const char         *name);
 const char *azy_typedef_vala_name(Azy_Typedef *t);
 const char *azy_typedef_azy_name(Azy_Typedef *t);
-
-void        azy_process(Azy_Model *ctx);
 
 const char *azy_stringshare_toupper(const char *str);
 

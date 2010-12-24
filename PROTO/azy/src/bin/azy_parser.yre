@@ -30,10 +30,12 @@
 #include "azy_parser_lib.h"
 #include "azy_parser.h"
 #include "azy.h"
+#include <ctype.h>
 
 #define YYCTYPE  char
 #define YYCURSOR c
 #define YYMARKER q
+#define YYCTXMARKER t
 
 #define AZY_EOF     0
 #define AZY_UNKNOWN (-1)
@@ -62,7 +64,7 @@ extern const char *azy_parser_TokenName(int);
 static Azy_Token *
 azy_parser_stream_to_token(Azy_Stream *s)
 {
-   const char *c, *b, *q;
+   const char *c, *b, *q, *t;
 
    if (s->length == s->index)
      return azy_parser_token_new(s, AZY_EOF, 0);
@@ -81,6 +83,7 @@ main:
    D     = [0-9];
    L     = [A-Za-z_];
    C     = [A-Za-z0-9_ !?,.];
+   S     = [\041-\172\|~];
    CODESTART   = "<%";
    CODEEND   = "%>";
    SLCOM = "//" (.\ENDINPUT)* ("\n"|ENDINPUT);
@@ -102,7 +105,8 @@ main:
    "Azy_Module"       { RET(AZY_MODULE); }
    "array"            { RET(AZY_ARRAY); }
    "struct"           { RET(AZY_STRUCT); }
-   ("{" C+ "}")       { RET(AZY_ERRMSG); }
+   "{" C+ "}"         { RET(AZY_ERRMSG); }
+   [{][ ]S+/[ ][}]    { RET(AZY_STRUCTMEMSTR); }
    L (L|D)*           { RET(AZY_ID); }
    D+                 { RET(AZY_INTEGER); }
    "="                { RET(AZY_EQ); }
@@ -114,33 +118,33 @@ main:
    "("                { RET(AZY_LP); }
    ")"                { RET(AZY_RP); }
    ","                { RET(AZY_COMMA); }
-   ENDINPUT          { RET(AZY_EOF); }
+   ENDINPUT           { RET(AZY_EOF); }
    NONPRINT           { RET(AZY_UNKNOWN); }
 
  */
 
 code:
 /*!re2c
-   "%>"           { RET(AZY_CODE); }
+   "%>"                { RET(AZY_CODE); }
    ENDINPUT            { RET(AZY_UNKNOWN); }
    NONPRINT            { goto code; }
  */
 
 comment:
 /*!re2c
-   "*/"           { NEXT; goto main; }
-  ENDINPUT       { RET(AZY_UNKNOWN); }
-  NONPRINT            { goto comment; }
+   "*/"                { NEXT; goto main; }
+  ENDINPUT             { RET(AZY_UNKNOWN); }
+  NONPRINT             { goto comment; }
 */
 
      return NULL;
    }
 
-   Azy_Model *azy_parse_string(const char *str, Eina_Bool * err)
+   Azy_Model *azy_parse_string(const char *str, Eina_Bool *err)
    {
       return azy_parser_string_parse(str, err, azy_parser_, azy_parser_Alloc, azy_parser_Free, azy_parser_stream_to_token);
    }
-   Azy_Model *azy_parse_file(const char *path, Eina_Bool * err)
+   Azy_Model *azy_parse_file(const char *path, Eina_Bool *err)
    {
       return azy_parser_file_parse(path, err, azy_parser_, azy_parser_Alloc, azy_parser_Free, azy_parser_stream_to_token);
    }
@@ -210,12 +214,27 @@ struct_decl(Y) ::= opt_doc_comment(C) STRUCT ID(N) LB struct_members(M) RB SEMIC
 struct_members(Y) ::= struct_member(X). {Y = eina_list_append(NULL, X);}
 struct_members(Y) ::= struct_members(L) struct_member(X). {Y = eina_list_append(L, X);}
 
+/* struct member without special name */
 %type struct_member {Azy_Struct_Member *}
 struct_member(Y) ::= type(T) ID(N) SEMICOL. {
    Y = calloc(sizeof(Azy_Struct_Member), 1);
    Y->type = T;
    Y->name = eina_stringshare_add(N->text);
    azy_parser_token_free(N);
+}
+/* struct member with special name */
+struct_member(Y) ::= type(T) ID(N) STRUCTMEMSTR(S) RB SEMICOL. {
+   Y = calloc(sizeof(Azy_Struct_Member), 1);
+   Y->type = T;
+   Y->name = eina_stringshare_add(N->text);
+   {
+      const char *nospaces = S->text + 1; /* skip LB */
+
+      while (isspace(*nospaces)) nospaces++; /* skip spaces */
+      Y->strname = eina_stringshare_add(nospaces);
+   }
+   azy_parser_token_free(N);
+   azy_parser_token_free(S);
 }
 
 module_decl ::= module_decl_head module_decl_body.

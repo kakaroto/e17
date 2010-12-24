@@ -37,6 +37,7 @@ struct Struct
    /** string member named v_string; strings are stringshared
     * const char*
     */
+   string crazy_string { this_!#$@$#:_is&the+name::\\of|the%struct^member* };
    string v_string;
 };
 

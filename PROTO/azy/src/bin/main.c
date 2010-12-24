@@ -193,7 +193,7 @@ gen_type_marshalizers(Azy_Typedef *t,
 
         EINA_LIST_FOREACH(t->struct_members, l, m)
           {
-             EL(1, "azy_value_struct_member_set(azy_value_struct, \"%s\", %s);", m->name, m->name);
+             EL(1, "azy_value_struct_member_set(azy_value_struct, \"%s\", %s);", m->strname ? m->strname : m->name, m->name);
           }
 
         EL(1, "return azy_value_struct;");
@@ -220,7 +220,7 @@ gen_type_marshalizers(Azy_Typedef *t,
 
         EINA_LIST_FOREACH(t->struct_members, l, m)
           {
-             EL(1, "v = azy_value_struct_member_get(azy_value_struct, \"%s\");", m->name);
+             EL(1, "v = azy_value_struct_member_get(azy_value_struct, \"%s\");", m->strname ? m->strname : m->name);
              EL(1, "if (v && (!%s(v, &azy_user_type_tmp->%s)))", m->type->demarch_name, m->name);
              EL(2, "goto error;");
           }
@@ -457,7 +457,7 @@ gen_type_hash(Azy_Typedef *t,
      {
         if (m->type->hash_func)
           {
-             EL(1, "new->%s = %s(eina_hash_find(h, \"%s\"));", m->name, m->type->hash_func, m->name);
+             EL(1, "new->%s = %s(eina_hash_find(h, \"%s\"));", m->name, m->type->hash_func, m->strname ? m->strname : m->name);
              EL(1, "EINA_SAFETY_ON_NULL_GOTO(new->%s, error);", m->name);
           }
         else
@@ -1803,7 +1803,6 @@ main(int argc, char *argv[])
         printf("Error parsing file!\n");
         exit(1);
      }
-   azy_process(azy);
    sep = (azy->name) ? "_" : "";
    name = (azy->name) ? azy->name : "";
 
