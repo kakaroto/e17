@@ -13,8 +13,8 @@ Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project 
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 URL: http://www.enlightenment.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
-Requires: libxml2, eina, ecore
-BuildRequires: libxml2-devel, eina-devel, ecore-devel
+Requires: eina, ecore
+BuildRequires: eina-devel, ecore-devel
 
 %description
 Azy is a full rewrite of libzxr, itself a modification of libxr.  It is meant for
