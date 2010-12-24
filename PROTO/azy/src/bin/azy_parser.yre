@@ -97,8 +97,8 @@ main:
    "__fallback__"     { RET(AZY_FALLBACK); }
    "__download__"     { RET(AZY_DOWNLOAD); }
    "__upload__"       { RET(AZY_UPLOAD); }
-   "error"            { RET(AZY_ERROR); }
-   "namespace"        { RET(AZY_NAMESPACE); }
+   "Azy_Error"        { RET(AZY_ERROR); }
+   "Azy_Namespace"    { RET(AZY_NAMESPACE); }
    "Azy_Module"       { RET(AZY_MODULE); }
    "array"            { RET(AZY_ARRAY); }
    "struct"           { RET(AZY_STRUCT); }

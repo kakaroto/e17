@@ -18,16 +18,16 @@
 /**
  * Set the namespace to T: this prefixes all generated functions and types with 'T_'
  */
-namespace T;
+Azy_Namespace T;
 
 /**
  * define two #Eina_Error codes with values 1, 2
  * set their strings to the value between and including the braces
  * semicolon required, empty error string permitted between braces
  */
-error ERR1 = 1 { sup this is an error };
-error ERR2 = 2 { chea dawg this is also an error };
-error ERR3 = 3; /* look ma, no message! */
+Azy_Error ERR1 = 1 { sup this is an error };
+Azy_Error ERR2 = 2 { chea dawg this is also an error };
+Azy_Error ERR3 = 3; /* look ma, no message! */
 
 /**
  * Create typedef struct named Struct (T_Struct in C)
@@ -90,8 +90,8 @@ Azy_Module Test1
     * define some module-specific errors which are only used
     * within this module
     */
-   error NOTHING = 2 { error messageeeeeeeeeeeeeeee };
-   error NO_DATA = 5 { and another errrorrrrrrrrrrrrrrr woooo };
+   Azy_Error NOTHING = 2 { error messageeeeeeeeeeeeeeee };
+   Azy_Error NO_DATA = 5 { and another errrorrrrrrrrrrrrrrr woooo };
 
    /**
     * this is a method description for method "getAll" in module Test1
