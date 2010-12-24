@@ -1,7 +1,7 @@
 Azy_Namespace statusnet;
 
 struct Error {
-	string Error;
+	string error;
 };
 
 struct Geo {

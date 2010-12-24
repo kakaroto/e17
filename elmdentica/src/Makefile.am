@@ -30,6 +30,7 @@ bin_PROGRAMS = elmdentica
 elmdentica_SOURCES =	\
 	$(BUILT_SOURCES) \
 	curl.c	\
+	cJSON.c \
 	statusnet.c	\
 	settings.c	\
 	elmdentica.c
@@ -38,6 +39,7 @@ EXTRA_DIST=		\
 	statusnet.azy	\
 	gettext.h	\
 	curl.h		\
+	cJSON.h \
 	statusnet.h	\
 	settings.h	\
 	elmdentica.h

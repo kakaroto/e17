@@ -1091,7 +1091,7 @@ void ed_statusnet_user_abandon(int account_id, char *screen_name, char *password
 	if(request) free(request);
 }
 
-static void ed_sn_single_status_free(statusnet_Status *s) {
+static void ed_sn_single_status_free(statusnet_RT_Status *s) {
 	statusnet_RT_Status_free(s);
 }
 
@@ -1111,7 +1111,7 @@ Eina_Bool ed_sn_connected_single_status_parse(Azy_Value *value, Eina_List **_nar
 	if(azy_value_to_statusnet_RT_Status(value, &snS)) {
 		printf("Got a status: %s\n", snS->text);
 	} else if(azy_value_to_statusnet_Error(value, &snE)) {
-		printf("Got an error: %s\n", snE->Error);
+		printf("Got an error: %s\n", snE->error);
 		azy_value_dump(value, str, 1);
 		printf("Got: %s\n", eina_strbuf_string_get(str));
 	} else {
