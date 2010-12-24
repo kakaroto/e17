@@ -1,4 +1,4 @@
-namespace statusnet;
+Azy_Namespace statusnet;
 
 struct Error {
 	string Error;
