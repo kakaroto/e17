@@ -23,6 +23,15 @@
 #include <Elementary.h>
 #include <Ecore_X.h>
 
+typedef struct _StatusNetBaAccount {
+	double id;
+	char *screen_name;
+	char *password;
+	char *proto;
+	char *domain;
+	short port;
+	char *base_url;
+} StatusNetBaAccount;
 
 typedef struct _Group_Profile {
     char  *name;
@@ -54,16 +63,6 @@ typedef struct _User_Profile {
     Eina_Bool   following;
 } UserProfile;
 
-typedef struct _ub_Status {
-    char * screen_name;
-    char * name;
-    char * text;
-    time_t created_at;
-    long long int    id;
-    long long int   user_id;
-    long long int   in_reply_to;
-} ub_Status;
-
 typedef struct _a_Status {
 	long long int sid;
 	char *text;
@@ -75,7 +74,7 @@ typedef struct _a_Status {
 	Eina_Bool favorited;
 	long long int user;
 	int account_id;
-	int account_type;
+	short account_type;
 	Evas_Object *bubble;
 	Eina_Bool	in_db;
 } aStatus;
@@ -104,6 +103,8 @@ typedef struct _user_get {
 	int account_id;
 	anUser *au;
 } UserGet;
+
+void ed_statusnet_account_free(StatusNetBaAccount *account);
 
 void ed_statusnet_group_get(GroupProfile *group);
 

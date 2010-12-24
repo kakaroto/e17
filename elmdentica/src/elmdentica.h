@@ -49,6 +49,18 @@ typedef struct _Gui {
 	Evas *win_evas;
 } Gui;
 
+typedef union _AccountTypes {
+	StatusNetBaAccount *snba;
+} AccountTypes;
+
+typedef struct _Account {
+	short sqlid;
+	short type;
+	AccountTypes details;
+	Eina_Bool send;
+	Eina_Bool receive;
+	Eina_Bool disabled;
+} Account;
 
 #define ACCOUNT_TYPE_NONE 0
 #define ACCOUNT_TYPE_STATUSNET 1

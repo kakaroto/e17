@@ -1,0 +1,77 @@
+namespace statusnet;
+
+struct Error {
+	string Error;
+};
+
+struct Geo {
+	array<double> coordinates;
+	string type;
+};
+
+struct Attachment {
+	string url;
+	string mime_type;
+};
+
+struct User {
+	int id;
+	string name;
+	string screen_name;
+	string location;
+	string description;
+	string profile_image_url;
+	string url;
+	boolean protected;
+	int followers_count;
+	string profile_background_color;
+	string profile_text_color;
+	string profile_link_color;
+	string profile_sidebar_fill_color;
+	string profile_sidebar_border_color;
+	int friends_count;
+	time created_at;
+	int favourites_count;
+	string utc_offset;
+	string time_zone;
+	string profile_background_image_url;
+	boolean profile_background_tile;
+	int statuses_count;
+	boolean following;
+	boolean statusnet_blocking;
+	boolean notifications;
+	string statusnet_profile_url;
+};
+
+struct Status {
+	string text;
+	boolean truncated;
+	time created_at;
+	int in_reply_to_status_id;
+	string source;
+	int id;
+	int in_reply_to_user_id;
+	int in_reply_to_screen_name;
+	Geo geo;
+	boolean favorited;
+	array<Attachment> attachments;
+	User user;
+	string statusnet_html;
+};
+
+struct RT_Status {
+	string text;
+	boolean truncated;
+	time created_at;
+	int in_reply_to_status_id;
+	string source;
+	int id;
+	int in_reply_to_user_id;
+	int in_reply_to_screen_name;
+	Geo geo;
+	boolean favorited;
+	array<Attachment> attachments;
+	User user;
+	string statusnet_html;
+	Status retweeted_status;
+};

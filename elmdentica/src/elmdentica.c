@@ -43,6 +43,7 @@
 
 #include <Elementary.h>
 #include <Ecore_X.h>
+#include <Azy.h>
 
 #include <sqlite3.h>
 
@@ -84,6 +85,7 @@ extern char * browsers[];
 extern char * browserNames[];
 char * follow_user=NULL;
 char * home=NULL;
+Eina_Hash* accounts=NULL;
 extern Eina_Hash* statusHash;
 extern Eina_Hash* userHash;
 extern Settings *settings;
@@ -105,12 +107,83 @@ int my_strcmp(const void*a, const void*b) {
 	return(strcmp((const char*)a, (const char*)b));
 }
 
-static int count_accounts(void *notUsed, int argc, char **argv, char **azColName) {
-	int count = atoi(argv[0]);
 
-	if(count == 0)
-		on_settings(NULL, NULL, NULL);
+void hash_account_del(void *data) {
+	Account *a = (Account*)data;
 
+	switch(a->type) {
+		case ACCOUNT_TYPE_STATUSNET: { ed_statusnet_account_free(a->details.snba); break; }
+		default: break;
+	}
+
+	free(a);
+}
+
+static int load_account(void *notUsed, int argc, char **argv, char **azColName) {
+	Account *account=calloc(1, sizeof(Account));
+	char *key=NULL;
+	int res=0;
+
+	/* In this query handler, these are the current fields:
+		argv[0]	== id INTEGER
+		argv[1]	== enabled INTEGER
+		argv[2]	== name TEXT
+		argv[3]	== password TEXT
+		argv[4]	== type INTEGER
+		argv[5]	== proto TEXT
+		argv[6]	== domain TEXT
+		argv[7]	== port INTEGER
+		argv[8]	== base_url TEXT
+		argv[9]	== receive INTEGER
+		argv[10] == send INTEGER
+	*/
+
+	if(!account) return(-1);
+
+	account->sqlid = atoi(argv[0]);
+	account->disabled = atoi(argv[1])?EINA_FALSE:EINA_TRUE;
+	account->type = atoi(argv[4]);
+
+	switch(account->type) {
+		case ACCOUNT_TYPE_STATUSNET: {
+			account->details.snba = (StatusNetBaAccount*)calloc(1, sizeof(StatusNetBaAccount));
+
+			if(!account->details.snba) {
+				free(account);
+				return(-1);
+			}
+
+			account->details.snba->screen_name = strndup(argv[2], NAME_MAX);
+			account->details.snba->password = strndup(argv[3], NAME_MAX);
+			account->details.snba->proto = strndup(argv[5], NAME_MAX);
+			account->details.snba->domain = strndup(argv[6], NAME_MAX);
+			account->details.snba->port = atoi(argv[7]);
+			account->details.snba->base_url = strndup(argv[8], NAME_MAX);
+
+			break;
+		}
+		default: {
+			free(account);
+			return(-1);
+		}
+	}
+
+	account->receive = atoi(argv[9]);
+	account->send = atoi(argv[10]);
+
+	res = asprintf(&key, "%s@%s", account->details.snba->screen_name, account->details.snba->domain);
+	if(res != -1) {
+		eina_hash_add(accounts, key, account);
+	} else {
+		if(account->details.snba->screen_name) free(account->details.snba->screen_name);
+		if(account->details.snba->password) free(account->details.snba->password);
+		if(account->details.snba->proto) free(account->details.snba->proto);
+		if(account->details.snba->domain) free(account->details.snba->domain);
+		if(account->details.snba->base_url) free(account->details.snba->base_url);
+		free(account->details.snba->screen_name);
+		free(account);
+		return(-1);
+	}
 	return(0);
 }
 
@@ -167,10 +240,16 @@ void elmdentica_init(void) {
 		exit(sqlite_res);
 	}
 
-	sqlite3_exec(ed_DB, "SELECT count(*) FROM accounts;", count_accounts, NULL, &db_err);
+	accounts = eina_hash_string_superfast_new(hash_account_del);
+
+	sqlite3_exec(ed_DB, "SELECT * FROM accounts;", load_account, NULL, &db_err);
 	if(sqlite_res != 0) {
-		printf("Can't get current account: %d => %s\n", sqlite_res, db_err);
+		printf("Can't load accounts: %d => %s\n", sqlite_res, db_err);
 	}
+
+	if(eina_hash_population(accounts) == 0)
+		on_settings(NULL, NULL, NULL);
+
 	sqlite3_free(db_err);
 
 	gui.win=NULL;
@@ -201,15 +280,6 @@ void make_status_list(int timeline) {
 	elm_win_title_set(gui.win, label);
 
 	elm_genlist_clear(gui.timeline);
-}
-
-void print_status(gpointer data, gpointer user_data) {
-        ub_Status *status = (ub_Status*)data;
-
-        printf("Name: '%s'\n", (char*)status->name);
-        printf("Screen Name: '%s'\n", (char*)status->screen_name);
-        printf("Created at: '%s'\n", (char*)status->created_at);
-        printf("Text: '%s'\n", (char*)status->text);
 }
 
 void error_win_del(void *data, Evas_Object *zbr, void *event_info) {
@@ -1478,16 +1548,6 @@ void show_error(StatusesList * statuses) {
 	evas_object_show(error_win);
 }
 
-void del_status(gpointer data, gpointer user_data) {
-	ub_Status	* status=(ub_Status*)data;
-
-	free(status->screen_name);
-	free(status->name);
-	free(status->text);
-	free(status);
-
-}
-
 static int get_messages_for_account(void *pTimeline, int argc, char **argv, char **azColName) {
 	char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
 	int port=0, id=0;
@@ -1847,6 +1907,8 @@ EAPI int elm_main(int argc, char **argv)
 
 	ed_settings_init(argc, argv);
 
+	azy_init();
+
 	elmdentica_init();
 
 	gui.win = elm_win_add(NULL, "elmdentica", ELM_WIN_BASIC);
@@ -2009,6 +2071,9 @@ EAPI int elm_main(int argc, char **argv)
 	finger_size =  elm_finger_size_get();
 
 	elm_run();
+
+	azy_shutdown();
+
 	elm_shutdown();
 
 	ed_settings_shutdown();

@@ -2,3 +2,6 @@ Makefile.in
 elmdentica
 .deps
 Makefile
+statusnet_Common.h
+statusnet_Common.c
+.sources-ts

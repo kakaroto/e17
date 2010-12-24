@@ -21,6 +21,10 @@ PKG_CHECK_MODULES(SQLITE, sqlite3, [],
 		[AC_MSG_FAILURE([sqlite3 not found])]
 		)
 
+PKG_CHECK_MODULES(AZY, azy, [],
+		[AC_MSG_FAILURE([azy not found])]
+		)
+
 PKG_CHECK_MODULES(CURL, libcurl, [],
 		[AC_MSG_FAILURE([libcurl not found])]
 		)

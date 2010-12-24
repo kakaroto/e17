@@ -35,6 +35,9 @@
 #include <Elementary.h>
 #include <Ecore_X.h>
 
+#include <Azy.h>
+#include "statusnet_Common.h"
+
 #include <sqlite3.h>
 
 #include <curl/curl.h>
@@ -58,11 +61,27 @@ long long max_status_id=0;
 
 Eina_Hash *userHash=NULL;
 Eina_Hash *statusHash=NULL;
+Eina_Hash *azy_agents=NULL;
 
 extern struct sqlite3 *ed_DB;
 extern int debug;
 extern char *home, *dm_to;
 extern Gui gui;
+
+void ed_statusnet_azy_agent_free(void *data) {
+	azy_client_free((Azy_Client*)data);
+}
+
+void ed_statusnet_account_free(StatusNetBaAccount *account) {
+	if(!account) return;
+
+	if(account->screen_name) free(account->screen_name);
+	if(account->password) free(account->password);
+	if(account->proto) free(account->proto);
+	if(account->domain) free(account->domain);
+	if(account->base_url) free(account->base_url);
+	free(account);
+}
 
 void json_group_show(GroupProfile *group, char *stream) {
 	cJSON *json_stream, *obj;
@@ -1072,10 +1091,65 @@ void ed_statusnet_user_abandon(int account_id, char *screen_name, char *password
 	if(request) free(request);
 }
 
+static void ed_sn_single_status_free(statusnet_Status *s) {
+	statusnet_RT_Status_free(s);
+}
+
+Eina_Bool ed_sn_connected_single_status_parse(Azy_Value *value, Eina_List **_narray) {
+	aStatus *as=NULL;
+	anUser *au=NULL;
+	statusnet_RT_Status *snS=NULL;
+	statusnet_Error *snE=NULL;
+	Eina_Strbuf *str=eina_strbuf_new();
+
+	if( (!value) || (azy_value_type_get(value) != AZY_VALUE_STRUCT) ) {
+		printf("Didn't get a struct\n");
+		eina_strbuf_free(str);
+		return(EINA_FALSE);
+	}
+	
+	if(azy_value_to_statusnet_RT_Status(value, &snS)) {
+		printf("Got a status: %s\n", snS->text);
+	} else if(azy_value_to_statusnet_Error(value, &snE)) {
+		printf("Got an error: %s\n", snE->Error);
+		azy_value_dump(value, str, 1);
+		printf("Got: %s\n", eina_strbuf_string_get(str));
+	} else {
+		statusnet_RT_Status_free(snS);
+		printf("Didn't get a status!\n");
+		azy_value_dump(value, str, 1);
+		printf("Got: %s\n", eina_strbuf_string_get(str));
+	}
+
+	eina_strbuf_free(str);
+	return(EINA_TRUE);
+}
+
+Eina_Bool ed_statusnet_repeat_returned(Azy_Client *cli, int type, Azy_Client *ev) {
+	return(EINA_TRUE);
+}
+
+Eina_Bool ed_statusnet_repeat_disconnected(Azy_Client *cli, int type, Azy_Client *ev) {
+	if(debug) printf("Disconnection.\nReconnecting...");
+	azy_client_connect(ev, EINA_TRUE);
+}
+
+Eina_Bool ed_statusnet_repeat_connected(Azy_Client *cli, int type, Azy_Client *ev) {
+	Azy_Client_Call_Id id;
+
+	id = azy_client_blank(ev, AZY_NET_TYPE_POST, NULL, (Azy_Content_Cb)ed_sn_connected_single_status_parse, NULL);
+	if(!id) return(EINA_FALSE);
+
+	azy_client_callback_free_set(ev, id, (Ecore_Cb)ed_sn_single_status_free);
+
+	return(EINA_TRUE);
+}
+
 static int ed_statusnet_repeat_handler(void *data, int argc, char **argv, char **azColName) {
-    char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
+    char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL, *url_start=NULL, *url_end=NULL;
     int port=0, id=0, res;
-	http_request * request=calloc(1, sizeof(http_request));
+	Azy_Client *repeat=NULL;
+
     /* In this query handler, these are the current fields:
         argv[0] == name TEXT
         argv[1] == password TEXT
@@ -1096,19 +1170,23 @@ static int ed_statusnet_repeat_handler(void *data, int argc, char **argv, char *
     id = atoi(argv[7]);
 
 
-	if(!request) return(-1);
+	res = asprintf(&url_start, "%s://%s", proto, domain);
+	res = asprintf(&url_end, "%s/statuses/retweet/%lld.json?source=elmdentica", base_url, *(long long int*)data);
 
-	res = asprintf(&request->url, "%s://%s:%d%s/statuses/retweet/%lld.json", proto, domain, port, base_url, *(long long int*)data);
+	repeat = azy_client_new();
+	azy_client_host_set(repeat, url_start, port);
+	free(url_start);
 
-	if(res != -1) {
-		if (debug) printf("gnome-open %s\n", request->url);
+	azy_client_connect(repeat, EINA_TRUE);
 
-		res = ed_curl_post(screen_name, password, request, "", id);
-	}
+	azy_net_uri_set(azy_client_net_get(repeat), url_end);
+	azy_net_auth_set(azy_client_net_get(repeat), screen_name, password);
 
-	if(request->url) free(request->url);
-	if(request->content.memory) free(request->content.memory);
-	free(request);
+	azy_net_version_set(azy_client_net_get(repeat), 0);
+
+	ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)ed_statusnet_repeat_connected, NULL);
+	ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)ed_statusnet_repeat_returned, NULL);
+	//ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)ed_statusnet_repeat_disconnected, NULL);
 
 	return(0);
 }

@@ -71,6 +71,7 @@ collections {
 					rel2 {
 						to_y: "bubble";
 						relative: 1 1;
+						offset: 0 2;
 					}
 				}
 				description {

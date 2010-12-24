@@ -56,7 +56,7 @@ extern int debug;
 Eet_File *conf_file=NULL;
 char *conf_file_path=NULL;
 
-int current_account_type = ACCOUNT_TYPE_NONE;
+short current_account_type = ACCOUNT_TYPE_NONE;
 int current_account = 0;
 int current_gag = 0;
 extern char * home;
