@@ -378,9 +378,11 @@ azy_client_callback_set(Azy_Client *client,
 }
 
 /**
- * @brief Set a callback to free the retval struct of @p id
+ * @brief Set a callback to free the return struct of @p id
  * 
- * This function should not be called by users.
+ * This function, when set, frees the returned user-type struct of a call.  If not specified,
+ * free() will be called on the struct.  To avoid a SEGV, set a dummy free function if you wish
+ * to save the returned data.
  * @param client The client
  * @param id The transmission id
  * @param callback The free callback
