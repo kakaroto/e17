@@ -2175,7 +2175,7 @@ on_view_download_request(void *data __UNUSED__, Evas_Object *view __UNUSED__,
 }
 
 static void
-on_inputmethods_changed(void *data, Evas_Object *view, void *event_info)
+on_inputmethod_changed(void *data, Evas_Object *view, void *event_info)
 {
    Eina_Bool active = (Eina_Bool)(long)event_info;
    Evas_Object *win = data;
@@ -2520,8 +2520,8 @@ chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
    evas_object_smart_callback_add(view, "load,error", on_view_load_error, win);
    evas_object_smart_callback_add(view, "download,request",
                                   on_view_download_request, win);
-   evas_object_smart_callback_add(view, "inputmethods,changed",
-                                  on_inputmethods_changed, win->win);
+   evas_object_smart_callback_add(view, "inputmethod,changed",
+                                  on_inputmethod_changed, win->win);
 
    if (url)
       ewk_view_uri_set(view, url);
