@@ -24,6 +24,26 @@ public:
   
   virtual void focus ();
 
+  /*!
+   * Check if the given Evas Object is an Elementary widget.
+   */
+  bool checkWidget ();
+ 
+  /*!
+   * Get the first parent of the given object that is an Elementary widget.
+   */
+ 	Eflxx::CountedPtr <Evasxx::Object> getParentWidget ();
+    
+  /*!
+   * Get the top level parent of an Elementary widget.
+   */
+ 	Eflxx::CountedPtr <Evasxx::Object> getTopWidget ();
+
+  /*!
+   * Get the string that represents this Elementary widget. 
+   */
+  const std::string getWidgetType ();	
+
   /*void         elm_object_scroll_hold_push(Evas_Object *obj);
   void         elm_object_scroll_hold_pop(Evas_Object *obj);
   void         elm_object_scroll_freeze_push(Evas_Object *obj);

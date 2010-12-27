@@ -47,10 +47,12 @@ int main (int argc, char **argv)
   edje->setLayer (0);
   edje->show ();
 
+  // This access is type unsafe as a cast is done without checking prior the type!
   Eflxx::CountedPtr <Evasxx::Object> ext_eo (edje->getPart ("Button01")->getExternalObject ());
   Elmxx::Button *button = static_cast <Elmxx::Button*> (&(*ext_eo));
   button->setLabel ("This is a changed button");
 
+  // This access is type unsafe as a cast is done without checking prior the type!
   Eflxx::CountedPtr <Evasxx::Object> ext_eo2 (edje->getPart ("List01")->getExternalObject ());
   Elmxx::List *list = static_cast <Elmxx::List*> (&(*ext_eo2));
   assert (list->append ("1. Line", NULL, NULL));
@@ -59,11 +61,24 @@ int main (int argc, char **argv)
   assert (list->append ("4. Line", NULL, NULL));
   list->go ();
 
+  // The code below accesses a Edje External widget (here: Elementary Progressbar) in a type save way
   Eflxx::CountedPtr <Evasxx::Object> ext_eo3 (edje->getPart ("Progressbar01")->getExternalObject ());
-  Elmxx::Progressbar *progressbar = static_cast <Elmxx::Progressbar*> (&(*ext_eo3));
-  progressbar->setLabel ("This is the status");
-  progressbar->setValue (0.5);
+  cout << "Edje Widget type: " << ext_eo3->getType () << endl;
+  if (ext_eo3->getType () == "elm_widget")
+  {
+    Elmxx::Object *elm_object = static_cast <Elmxx::Object*> (&(*ext_eo3));
 
+    cout << "Elm Widget type: " << elm_object->getWidgetType () << endl;
+    if (elm_object->getWidgetType () == "progressbar")
+    {
+      Elmxx::Progressbar *progressbar = static_cast <Elmxx::Progressbar*> (elm_object);
+      progressbar->setLabel ("This is the status");
+      progressbar->setValue (0.5);
+      progressbar->obj();
+    }
+  }
+
+  // This External access is save as it only calls the ExternalParam interface
   Eflxx::CountedPtr <Edjexx::Part> part (edje->getPart ("Slider01"));
 
   Edjexx::ExternalParam param ("value", 5.0f);

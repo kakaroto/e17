@@ -79,4 +79,32 @@ void Object::focus ()
   elm_object_focus (o); 
 }
 
+bool Object::checkWidget ()
+{
+  return elm_object_widget_check (o);
+}
+
+Eflxx::CountedPtr <Evasxx::Object> Object::getParentWidget ()
+{
+  Evas_Object *eo = elm_object_parent_widget_get (o);
+ 
+  Evasxx::Object *ret_o = Evasxx::Object::wrap (eo);
+
+  return Eflxx::CountedPtr <Evasxx::Object> (ret_o);
+}
+
+Eflxx::CountedPtr <Evasxx::Object> Object::getTopWidget ()
+{
+  Evas_Object *eo = elm_object_top_widget_get (o);
+ 
+  Evasxx::Object *ret_o = Evasxx::Object::wrap (eo);
+
+  return Eflxx::CountedPtr <Evasxx::Object> (ret_o);
+}
+
+const std::string Object::getWidgetType ()
+{
+  return elm_object_widget_type_get (o);
+}
+
 } // end namespace Elmxx
