@@ -74,7 +74,6 @@ int main (int argc, char **argv)
       Elmxx::Progressbar *progressbar = static_cast <Elmxx::Progressbar*> (elm_object);
       progressbar->setLabel ("This is the status");
       progressbar->setValue (0.5);
-      progressbar->obj();
     }
   }
 
