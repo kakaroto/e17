@@ -215,11 +215,9 @@ _basic_apply_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 	if (ci->okstate_string) eina_stringshare_del(ci->okstate_string);
 	ci->okstate_string = eina_stringshare_add(cfdata->okstate_string);
      }
+   if (ci->dblclk_cmd) eina_stringshare_del(ci->dblclk_cmd);
    if (strlen(cfdata->dblclk_cmd))
-     {
-	if (ci->dblclk_cmd) eina_stringshare_del(ci->dblclk_cmd);
-	ci->dblclk_cmd = eina_stringshare_add(cfdata->dblclk_cmd);
-     }
+     ci->dblclk_cmd = eina_stringshare_add(cfdata->dblclk_cmd);
    if (strlen(cfdata->okstate_exitcode))
      ci->okstate_exitcode = atoi (cfdata->okstate_exitcode);
    if (strlen(cfdata->okstate_lines))
