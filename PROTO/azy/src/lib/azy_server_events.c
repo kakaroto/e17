@@ -601,6 +601,7 @@ _azy_server_client_handler_request(Azy_Server_Client *client)
           {
            case AZY_NET_TRANSPORT_JSON:
            case AZY_NET_TRANSPORT_XML:
+           /*case AZY_NET_TRANSPORT_EET:*/
              _azy_server_client_rpc(client, client->net->transport);
              break;
 

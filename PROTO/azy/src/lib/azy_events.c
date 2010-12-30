@@ -428,13 +428,16 @@ azy_events_net_transport_get(const char *content_type)
    if (!strncmp(content_type, "application/json", 16))
      return AZY_NET_TRANSPORT_JSON;
 
+   if (!strncmp(content_type, "application/eet", 16))
+     return AZY_NET_TRANSPORT_EET;
+
    if (!strncmp(content_type, "text/plain", 10))
      return AZY_NET_TRANSPORT_TEXT;
 
    if (!strncmp(content_type, "text/html", 9))
      return AZY_NET_TRANSPORT_HTML;
 
-   return -1;
+   return AZY_NET_TRANSPORT_UNKNOWN;
 }
 
 Eina_Bool
