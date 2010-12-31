@@ -1168,7 +1168,10 @@ IPC_EwinInfo(const char *params)
    int                 i, num;
 
    if (!params)
-      return;
+     {
+	IpcPrintf("Error: no window specified\n");
+	return;
+     }
 
    sscanf(params, "%1000s", match);
 
