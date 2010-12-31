@@ -50,6 +50,12 @@
 #include "curl.h"
 #include "elmdentica.h"
 
+typedef struct _account_data {
+	long long int account_id;
+	int	timeline;
+	Status_List_Cb update_status_list;
+} accountData;
+
 extern struct sqlite3 *ed_DB;
 extern int debug;
 extern char *home;
@@ -67,6 +73,42 @@ extern struct sqlite3 *ed_DB;
 extern int debug;
 extern char *home, *dm_to;
 extern Gui gui;
+
+aStatus *statusnet_new_status(statusnet_Status *snS, int account_id) {
+	aStatus *as=calloc(1, sizeof(aStatus));
+	anUser *au=NULL;
+
+	char *uid=NULL;
+	int res=0;
+
+	if(!as) {
+		fprintf(stderr, _("Not enough memory to create a status\n"));
+		return(NULL);
+	}
+
+	as->status = snS;
+	as->created_at = curl_getdate(snS->created_at, NULL);
+	as->account_id = account_id;
+	as->account_type = ACCOUNT_TYPE_STATUSNET;
+	as->in_db = EINA_FALSE;
+
+	res = asprintf(&uid, "%d/%lld", account_id, (long long int)snS->user->id);
+	if(res != -1) {
+		au = eina_hash_find(userHash, uid);
+		if(au) {
+			statusnet_User_free(snS->user);
+		} else {
+			au = calloc(1, sizeof(anUser));
+			au->user = snS->user;
+			au->account_id = account_id;
+			au->account_type = ACCOUNT_TYPE_STATUSNET;
+			au->created_at = curl_getdate(snS->user->created_at, NULL);
+			eina_hash_add(userHash, uid, au);
+		}
+		as->status->user = NULL;
+	}
+	return(as);
+}
 
 void ed_statusnet_azy_agent_free(void *data) {
 	azy_client_free((Azy_Client*)data);
@@ -373,8 +415,7 @@ void status_hash_data_free(void *data) {
 	aStatus *s = (aStatus*)data;
 
     if(s) {
-		if(s->text) free(s->text);
-    	if(s->source) free(s->source);
+		if(s->status) statusnet_Status_free(s->status);
 		free(s);
 	}
 }
@@ -383,12 +424,7 @@ void user_hash_data_free(void *data) {
 	anUser *u = (anUser*)data;
 
 	if(u) {
-		if(u->name) free(u->name);
-		if(u->screen_name) free(u->screen_name);
-		if(u->location) free(u->location);
-		if(u->description) free(u->description);
-		if(u->profile_image_url) free(u->profile_image_url);
-		if(u->url) free(u->url);
+		if(u->user) statusnet_User_free(u->user);
 		free(u);
 	}
 }
@@ -401,46 +437,25 @@ static int set_max_status_id(void *notUsed, int argc, char **argv, char **azColN
 	return(0);
 }
 
-void message_insert(void *list_item, void *user_data) {
+void message_insert(statusnet_Status *s, void *user_data) {
 	struct sqlite3_stmt **insert_stmt = (struct sqlite3_stmt**)user_data;
-	char *sid_str = (char*)list_item, *uid_str=NULL;
-	aStatus *s=NULL;
-	anUser *user=NULL;
 	long long int sid=0;
-	int sqlite_res=0, res=0;
+	int sqlite_res=0;
 
-	s = eina_hash_find(statusHash, sid_str);
-	if(!s) {
-		printf(_("Oops, there should be a status here, for %s!\n"), sid_str);
-		return;
-	}
-
-	res = asprintf(&uid_str, "%lld", s->user);
-	if(res != -1) {
-		user = eina_hash_find(userHash, uid_str);
-		if(!user) {
-			printf(_("Oops, there should be an user here for %lld!\n"), s->user);
-			return;
-		}
-		free(uid_str);
-	}
-
-	sid = strtoll(sid_str, NULL, 10);
-	if(sid > max_status_id) {
+	if(s->id > max_status_id) {
 		max_status_id = sid;
-		sqlite3_bind_int64(*insert_stmt, 1, sid);
+		sqlite3_bind_int64(*insert_stmt, 1, s->id);
 		sqlite3_bind_text(*insert_stmt,  2, s->text, -1, NULL);
 		sqlite3_bind_int64(*insert_stmt, 3, s->truncated);
-		sqlite3_bind_int64(*insert_stmt, 4, s->created_at);
+		sqlite3_bind_int64(*insert_stmt, 4, curl_getdate(s->created_at, NULL));
 		sqlite3_bind_int64(*insert_stmt, 5, s->in_reply_to_status_id);
 		sqlite3_bind_text(*insert_stmt,  6, s->source, -1, NULL);
 		sqlite3_bind_int64(*insert_stmt, 7, s->in_reply_to_user_id);
 		sqlite3_bind_int64(*insert_stmt, 8, s->favorited);
-		sqlite3_bind_int64(*insert_stmt, 9, s->user);
+		sqlite3_bind_int64(*insert_stmt, 9, s->user->id);
 
 		sqlite_res = sqlite3_step(*insert_stmt);
-		if(sqlite_res != 0 && sqlite_res != 101 ) printf("ERROR: %d while inserting message:\n(%s) %s\n", sqlite_res, user->screen_name,s->text);
-		else s->in_db = EINA_TRUE;
+		if(sqlite_res != 0 && sqlite_res != 101 ) printf("ERROR: %d while inserting message:\n(%s) %s\n", sqlite_res, s->user->screen_name, s->text);
 
 		sqlite3_reset(*insert_stmt);
 	}
@@ -462,22 +477,22 @@ Eina_Bool user_insert(const Eina_Hash *hash, const void *key, void *data, void *
 	if(sqlite_res != -1) {
 		sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
 		if(sqlite_res == 0) {
-			sqlite3_bind_text(insert_stmt,  1,  au->name, -1, NULL);
-			sqlite3_bind_text(insert_stmt,  2,  au->screen_name, -1, NULL);
-			sqlite3_bind_text(insert_stmt,  3,  au->location, -1, NULL);
-			sqlite3_bind_text(insert_stmt,  4,  au->description, -1, NULL);
-			sqlite3_bind_text(insert_stmt,  5,  au->profile_image_url, -1, NULL);
-			sqlite3_bind_text(insert_stmt,  6,  au->url, -1, NULL);
-			sqlite3_bind_int64(insert_stmt, 7,  au->protected);
-			sqlite3_bind_int64(insert_stmt, 8,  au->followers_count);
-			sqlite3_bind_int64(insert_stmt, 9,  au->friends_count);
+			sqlite3_bind_text(insert_stmt,  1,  au->user->name, -1, NULL);
+			sqlite3_bind_text(insert_stmt,  2,  au->user->screen_name, -1, NULL);
+			sqlite3_bind_text(insert_stmt,  3,  au->user->location, -1, NULL);
+			sqlite3_bind_text(insert_stmt,  4,  au->user->description, -1, NULL);
+			sqlite3_bind_text(insert_stmt,  5,  au->user->profile_image_url, -1, NULL);
+			sqlite3_bind_text(insert_stmt,  6,  au->user->url, -1, NULL);
+			sqlite3_bind_int64(insert_stmt, 7,  au->user->protected);
+			sqlite3_bind_int64(insert_stmt, 8,  au->user->followers_count);
+			sqlite3_bind_int64(insert_stmt, 9,  au->user->friends_count);
 			sqlite3_bind_int64(insert_stmt, 10, au->created_at);
-			sqlite3_bind_int64(insert_stmt, 11, au->favorites_count);
-			sqlite3_bind_int64(insert_stmt, 12, au->statuses_count);
-			sqlite3_bind_int64(insert_stmt, 13, au->following);
-			sqlite3_bind_int64(insert_stmt, 14, au->statusnet_blocking);
+			sqlite3_bind_int64(insert_stmt, 11, au->user->favourites_count);
+			sqlite3_bind_int64(insert_stmt, 12, au->user->statuses_count);
+			sqlite3_bind_int64(insert_stmt, 13, au->user->following);
+			sqlite3_bind_int64(insert_stmt, 14, au->user->statusnet_blocking);
 			sqlite_res = sqlite3_step(insert_stmt);
-			if(sqlite_res != 0 && sqlite_res != 101 ) printf("ERROR: %d while inserting user:\n(%s)\n", sqlite_res, au->screen_name);
+			if(sqlite_res != 0 && sqlite_res != 101 ) printf("ERROR: %d while inserting user:\n(%s)\n", sqlite_res, au->user->screen_name);
 			else au->in_db = EINA_TRUE;
 
 			sqlite3_reset(insert_stmt);
@@ -606,309 +621,201 @@ void ed_statusnet_statuses_get_avatar(char *id, char *url) {
 }
 
 
-anUser *json_timeline_user_parse(cJSON *user) {
-	anUser *u;
-	cJSON *jo = NULL;
+Eina_Bool azy_value_to_Array_statusnet_Status(Azy_Value *array, Eina_List **narray) {
+	Eina_List *tmp_narray=NULL, *item;
+	Azy_Value *v;
+	statusnet_Status *snS;
 
-	if(!user) return(NULL);
+	if (!array)
+		return(EINA_FALSE);
 
-	u = calloc(1, sizeof(anUser));
+	switch(azy_value_type_get(array)) {
+		case AZY_VALUE_ARRAY: {
 
-	if(!u) return(NULL);
+			EINA_LIST_FOREACH(azy_value_children_items_get(array), item, v) {
+				snS=NULL;
 
-	jo = cJSON_GetObjectItem(user, "id");
-	if(jo && jo->type == cJSON_Number)
-		u->uid = (long long int)jo->valuedouble;
-	else {
-		free(u);
-		return(NULL);
-	}
-
-	jo = cJSON_GetObjectItem(user, "name");
-	if(jo && jo->type == cJSON_String)
-		u->name = strndup(jo->valuestring, PIPE_BUF);
-
-	jo = cJSON_GetObjectItem(user, "screen_name");
-	if(jo && jo->type == cJSON_String)
-		u->screen_name = strndup(jo->valuestring, PIPE_BUF);
-
-	jo = cJSON_GetObjectItem(user, "location");
-	if(jo && jo->type == cJSON_String)
-		u->location = strndup(jo->valuestring, PIPE_BUF);
-
-	jo = cJSON_GetObjectItem(user, "description");
-	if(jo && jo->type == cJSON_String)
-		u->description = strndup(jo->valuestring, PIPE_BUF);
-
-	jo = cJSON_GetObjectItem(user, "profile_image_url");
-	if(jo && jo->type == cJSON_String)
-		u->profile_image_url = strndup((char*)jo->valuestring, PIPE_BUF);
-
-	jo = cJSON_GetObjectItem(user, "url");
-	if(jo && jo->type == cJSON_String)
-		u->url = strndup((char*)jo->valuestring, PIPE_BUF);
-
-	jo = cJSON_GetObjectItem(user, "protected");
-	if(jo && (jo->type == cJSON_True || jo->type == cJSON_False))
-		u->protected = jo->valueint;
-
-	jo = cJSON_GetObjectItem(user, "followers_count");
-	if(jo && jo->type == cJSON_Number)
-		u->followers_count = jo->valueint;
-
-	jo = cJSON_GetObjectItem(user, "friends_count");
-	if(jo && jo->type == cJSON_Number)
-		u->friends_count = jo->valueint;
-
-	jo = cJSON_GetObjectItem(user, "created_at");
-	if(jo && jo->type == cJSON_String)
-		u->created_at = curl_getdate(jo->valuestring, NULL);
-
-	jo = cJSON_GetObjectItem(user, "favorites_count");
-	if(jo && jo->type == cJSON_Number)
-		u->favorites_count = jo->valueint;
-
-	jo = cJSON_GetObjectItem(user, "statuses_count");
-	if(jo && jo->type == cJSON_Number)
-		u->statuses_count = jo->valueint;
-
-	jo = cJSON_GetObjectItem(user, "following");
-	if(jo && (jo->type == cJSON_True || jo->type == cJSON_False))
-		u->following = jo->valueint;
-
-	jo = cJSON_GetObjectItem(user, "statusnet:blocking");
-	if(jo && (jo->type == cJSON_True || jo->type == cJSON_False))
-		u->statusnet_blocking = jo->valueint;
-
-	return(u);
-}
-
-aStatus *json_timeline_handle_single(int timeline, StatusesList *statuses, cJSON *astatus, int account_id) {
-	cJSON *jo, *user=NULL;
-	anUser *u=NULL;
-	aStatus *s=NULL;
-	char *tmp=NULL, *uid_str=NULL, *sid_str=NULL;
-	int res=0;
-	long long int uid=0;
-
-	if(!astatus) return(NULL);
-
-	if(statusHash == NULL)
-		statusHash = eina_hash_string_superfast_new(status_hash_data_free);
-	if(userHash == NULL)
-		userHash = eina_hash_string_superfast_new(user_hash_data_free);
-
-	if(timeline == TIMELINE_DMSGS)
-		user = cJSON_GetObjectItem(astatus, "sender");
-	else
-		user = cJSON_GetObjectItem(astatus, "user");
-
-	if(user && user->type == cJSON_Object) {
-		jo = cJSON_GetObjectItem(user, "id");
-		if(jo && jo->type == cJSON_Number) {
-			uid = (long long int)jo->valuedouble;
-			if(debug > 3) printf("Status user is: %lld\n", uid);
-
-			res = asprintf(&uid_str, "%lld", uid);
-			if(res != -1) {
-				u = eina_hash_find(userHash, uid_str);
-				if(!u) {
-					if(debug>3) printf("User is not already known, parsing it's data\n");
-					u = json_timeline_user_parse(user);
-					if(u && eina_hash_add(userHash, uid_str, (void*)u)) {
-						if(debug>3) printf("Fetching avatar for %s at %s\n", uid_str, u->profile_image_url);
-						ed_statusnet_statuses_get_avatar(uid_str, u->profile_image_url);
-					} else
-						printf("Failed to parsed data for user %lld\n", uid);
-				} else if(debug > 3) printf("User already known, not parsing it's data\n");
-			} else uid_str=NULL;
-		}
-	}
-
-	s = calloc(1, sizeof(aStatus));
-	if(debug>3) printf("Pointer allocated for a status: %ld\n", (long int)s);
-	if(!s) return(NULL);
-	
-	jo = cJSON_GetObjectItem(astatus, "id");
-	if(jo) {
-		if(jo->type == cJSON_Number)
-			s->sid = (long long int)jo->valuedouble;
-		else if(jo->type == cJSON_String)
-			s->sid = strtoll(jo->valuestring, NULL, 10);
-		if(debug>3) printf("Getting status id: %lld\n", s->sid);
-	}
-
-	s->account_id = account_id;
-	s->account_type = ACCOUNT_TYPE_STATUSNET;
-
-	jo = cJSON_GetObjectItem(astatus, "text");
-	if(jo && jo->type == cJSON_String) {
-		s->text = strndup((char*)jo->valuestring, PIPE_BUF);
-		if(debug>3) printf("Getting status text: %s\n", s->text);
-	}
-
-	jo = cJSON_GetObjectItem(astatus, "created_at");
-	if(jo && jo->type == cJSON_String) {
-		tmp = (char*)jo->valuestring;
-		s->created_at = curl_getdate(tmp, NULL);
-		if(debug>3) printf("Getting status created_at: %d\n", (int)s->created_at);
-	}
-
-	jo = cJSON_GetObjectItem(astatus, "favorited");
-	if(jo && (jo->type == cJSON_True || jo->type == cJSON_False)) {
-		s->favorited = jo->valueint;
-		if(debug>3) printf("Getting status favorited: %d\n", (int)s->favorited);
-	}
-
-	jo = cJSON_GetObjectItem(astatus, "in_reply_to_user_id");
-	if(jo && jo->type == cJSON_Number) {
-		s->in_reply_to_user_id = (long long int)jo->valuedouble;
-		if(debug>3) printf("Getting status in_reply_to_user_id: %d\n", (int)s->in_reply_to_user_id);
-	}
-
-	jo = cJSON_GetObjectItem(astatus, "in_reply_to_status_id");
-	if(jo && jo->type == cJSON_Number) {
-		s->in_reply_to_status_id = (long long int)jo->valuedouble;
-		if(debug>3) printf("Getting status in_reply_to_status_id: %d\n", (int)s->in_reply_to_status_id);
-	}
-
-	if(uid) s->user = uid;
-	if(uid_str) free(uid_str);
-
-	res = asprintf(&sid_str, "%lld", s->sid);
-	if(res != -1) {
-		if(eina_hash_add(statusHash, sid_str, (void*)s) && debug>3)
-			printf("Added status %s to statusHash\n", sid_str);
-		else if(debug >3)  printf("Failed to add status %s to statusHash\n", sid_str);
-		if(statuses) statuses->list = eina_list_append(statuses->list, (void*)sid_str);
-	}
-
-	return(s);
-}
-
-void json_timeline_handle(int timeline, StatusesList *statuses, cJSON *json_stream, int account_id) {
-	cJSON *astatus;
-	int size,pos=0;
-
-	size = cJSON_GetArraySize(json_stream);
-
-	for(pos=0; pos<size; pos++) {
-		if(debug > 3) printf("Parsing status %d of %d\n", pos+1, size);
-		astatus = cJSON_GetArrayItem(json_stream, pos);
-		if(astatus) {
-			json_timeline_handle_single(timeline, statuses, astatus, account_id);
-		}
-	}
-}
-
-void json_timeline(int timeline, StatusesList *statuses, char *stream, int account_id) {
-	cJSON *json_stream, *obj;
-
-	json_stream = cJSON_Parse(stream);
-
-	if(!json_stream) {
-		fprintf(stderr, "ERROR parsing json stream:\n%s\n", stream);
-		return;
-	}
-
-	switch(json_stream->type) {
-		case cJSON_Array: {
-			if(debug > 3) printf("Got an array of json objects\n");
-			json_timeline_handle(timeline, statuses, json_stream, account_id);
+				if (azy_value_to_statusnet_Status(v, &snS)) {
+					tmp_narray = eina_list_append(tmp_narray, snS);
+				}
+			}
 			break;
 		}
-		case cJSON_Object: {
-			obj = cJSON_GetObjectItem(json_stream, "error");
-			if(obj)
-				fprintf(stderr, "ERROR: %s\n", obj->valuestring);
-			else if(!json_timeline_handle_single(timeline, statuses, json_stream, account_id))
-				fprintf(stderr, "ERROR unexpected content in json stream:\n%s\n", stream);
+		case AZY_VALUE_STRUCT: {
+			snS=NULL;
+			if (azy_value_to_statusnet_Status(array, &snS)) {
+				tmp_narray = eina_list_append(tmp_narray, snS);
+			}
 			break;
 		}
-		default: {
-			fprintf(stderr, "ERROR unsupported json type: %d\n%s\n", json_stream->type, stream);
-		}
+		default: { return(EINA_FALSE); }
 	}
-	cJSON_Delete(json_stream);
+
+	*narray = tmp_narray;
+	return(EINA_TRUE);
 }
 
-void ed_statusnet_timeline_get(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline) {
+static void Array_statusnet_Status_free(Eina_List *array) {
+	statusnet_Status *snS;
+
+	EINA_SAFETY_ON_NULL_RETURN(array);
+	EINA_LIST_FREE(array, snS)
+		statusnet_Status_free(snS);
+}
+
+Eina_Bool timeline_connected(void *data, int type, Azy_Client *cli) {
+	Azy_Client_Call_Id id;
+
+	id = azy_client_blank(cli, AZY_NET_TYPE_GET, NULL, (Azy_Content_Cb)azy_value_to_Array_statusnet_Status, NULL);
+	azy_client_callback_free_set(cli, id, (Ecore_Cb)Array_statusnet_Status_free);
+
+	return(EINA_TRUE);
+}
+
+Eina_Bool timeline_returned(void *data, int type, Azy_Content *content) {
+	int sqlite_res=0;
+	struct sqlite3_stmt *insert_stmt=NULL;
+	const char *missed=NULL;
+	char *db_err=NULL, *query=NULL;
+	accountData *ad = (accountData*)data;
+	statusnet_Status *snS=NULL, *snS2=NULL;
+	aStatus *as=NULL;
+	Eina_List *l, *list=NULL;
+
+	if (azy_content_error_is_set(content)) {
+		fprintf(stderr, _("Error encountered: %s\n"), azy_content_error_message_get(content));
+		return(azy_content_error_code_get(content));
+	}
+
+	list = azy_content_return_get(content);
+
+	sqlite_res = asprintf(&query, "SELECT max(status_id) FROM messages where account_id = %lld and timeline = %d;", ad->account_id, ad->timeline);
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_exec(ed_DB, query, set_max_status_id, NULL, &db_err);
+		if(sqlite_res != 0) {
+			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, db_err);
+			sqlite3_free(db_err);
+		}
+		free(query);
+	}
+
+	sqlite_res = asprintf(&query, "insert into messages (status_id, account_id, timeline, s_text, s_truncated, s_created_at, s_in_reply_to_status_id, s_source, s_in_reply_to_user_id, s_favorited, s_user) values (?, %lld, %d, ?, ?, ?, ?, ?, ?, ?, ?);", ad->account_id, ad->timeline);;
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
+		if(sqlite_res == 0) {
+			EINA_LIST_REVERSE_FOREACH(list, l, snS) {
+				message_insert(snS, &insert_stmt);
+				snS2 = statusnet_Status_copy(snS);
+				as = statusnet_new_status(snS2, ad->account_id);
+			}
+		} else {
+			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, missed);
+		}
+		free(query);
+		sqlite3_finalize(insert_stmt);
+	}
+
+	ad->update_status_list(ad->timeline);
+
+	return(EINA_TRUE);
+}
+
+Eina_Bool timeline_disconnected(void *data, int type, Azy_Client *cli) {
+	return(EINA_TRUE);
+}
+
+void ed_statusnet_timeline_get(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline, Status_List_Cb update_status_list) {
 	int res=0;
 	long long int since_id=0;
-	char *timeline_str, *notify_message;
-	http_request * request=calloc(1, sizeof(http_request));
-	StatusesList *statuses=(StatusesList*)calloc(1, sizeof(StatusesList));
-	time_t now;
-	Evas_Object *notify, *label;
+	char *host=NULL, *timeline_str=NULL;
+	Azy_Client *cli = azy_client_new();
+	accountData *ad=NULL;
+	
+	if(!cli) return;
 
 	switch(timeline) {
-		case TIMELINE_USER:		{ timeline_str="user";    break; }
-		case TIMELINE_PUBLIC:	{ timeline_str="public";  break; }
-		case TIMELINE_FRIENDS:
-		default:				{ timeline_str="friends"; break; }
+		case TIMELINE_USER:		{
+			if(since_id)
+				res = asprintf(&timeline_str, "%s/statuses/user_timeline.json?since_id=%lld", base_url, since_id);
+			else
+				res = asprintf(&timeline_str, "%s/statuses/user_timeline.json", base_url);
+			break;
+		}
+		case TIMELINE_PUBLIC:	{
+			if(since_id)
+				res = asprintf(&timeline_str, "%s/statuses/public_timeline.json?since_id=%lld", base_url, since_id);
+			else
+				res = asprintf(&timeline_str, "%s/statuses/public_timeline.json", base_url);
+			break;
+		}
+		case TIMELINE_MENTIONS:	{
+			if(since_id)
+				res = asprintf(&timeline_str, "%s/statuses/mentions.json?since_id=%lld", base_url, since_id);
+			else
+				res = asprintf(&timeline_str, "%s/statuses/mentions.json", base_url);
+			break;
+		}
+		case TIMELINE_FAVORITES:	{
+			if(since_id)
+				res = asprintf(&timeline_str, "%s/favorites.json?since_id=%lld", base_url, since_id);
+			else
+				res = asprintf(&timeline_str, "%s/favorites.json", base_url);
+			break;
+		}
+		case TIMELINE_FRIENDS:	{
+			if(since_id)
+				res = asprintf(&timeline_str, "%s/statuses/friends_timeline.json?since_id=%lld", base_url, since_id);
+			else
+				res = asprintf(&timeline_str, "%s/statuses/friends_timeline.json", base_url);
+			break;
+		}
+		case TIMELINE_DMSGS:	{
+			if(since_id)
+				res = asprintf(&timeline_str, "%s/direct_messages.json?since_id=%lld", base_url, since_id);
+			else
+				res = asprintf(&timeline_str, "%s/direct_messages.json", base_url);
+			break;
+		}
+		default:				{
+			azy_client_free(cli);
+			fprintf(stderr, _("Unknown timeline %d\n"), timeline);
+			return;
+		}
+	}
+
+	if(res == -1) {
+			azy_client_free(cli);
+			fprintf(stderr, _("Not enough memory to construct timeline URI\n"));
+			return;
 	}
 
 	ed_statusnet_max_status_id(account_id, &since_id, timeline);
 
-	if(timeline < TIMELINE_FAVORITES) {
-		if(since_id > 0)
-			res = asprintf(&request->url, "%s://%s:%d%s/statuses/%s_timeline.json?since_id=%lld", proto, domain, port, base_url, timeline_str, since_id);
-		else
-			res = asprintf(&request->url, "%s://%s:%d%s/statuses/%s_timeline.json", proto, domain, port, base_url, timeline_str);
-	} else if(timeline == TIMELINE_FAVORITES) {
-		if(since_id > 0)
-			res = asprintf(&request->url, "%s://%s:%d%s/favorites.json?since_id=%lld", proto, domain, port, base_url, since_id);
-		else
-			res = asprintf(&request->url, "%s://%s:%d%s/favorites.json", proto, domain, port, base_url);
-	} else if(timeline == TIMELINE_MENTIONS) {
-		if(since_id > 0)
-			res = asprintf(&request->url, "%s://%s:%d%s/statuses/mentions.json?since_id=%lld", proto, domain, port, base_url, since_id);
-		else
-			res = asprintf(&request->url, "%s://%s:%d%s/statuses/mentions.json", proto, domain, port, base_url);
-	} else if(timeline == TIMELINE_DMSGS) {
-		if(since_id > 0)
-			res = asprintf(&request->url, "%s://%s:%d%s/direct_messages.json?since_id=%lld", proto, domain, port, base_url, since_id);
-		else
-			res = asprintf(&request->url, "%s://%s:%d%s/direct_messages.json", proto, domain, port, base_url);
+	res = asprintf(&host, "%s://%s", proto, domain);
+	if(res == -1) {
+			azy_client_free(cli);
+			fprintf(stderr, _("Not enough memory to prepare host url\n"));
+			return;
 	}
 
-	if(res != -1) {
-		if (debug) printf("gnome-open %s\n", request->url);
+	azy_client_host_set(cli, host, port);
+	azy_client_connect(cli, EINA_TRUE);
+	azy_net_auth_set(azy_client_net_get(cli), screen_name, password);
+	azy_net_uri_set(azy_client_net_get(cli), timeline_str);
+	azy_net_version_set(azy_client_net_get(cli), 0);
 
-		res = ed_curl_get(screen_name, password, request, account_id);
+	ad=(accountData*)calloc(1, sizeof(accountData));
 
-		if((res == 0) && (request->response_code == 200)) {
-			json_timeline(timeline, statuses, request->content.memory, account_id);
+	ad->account_id = account_id;
+	ad->timeline = timeline;
+	ad->update_status_list = update_status_list;
 
-			now = time(NULL);
-			messages_insert(account_id, statuses->list, timeline);
-		} else {
-			res = asprintf(&notify_message, _("%s@%s had HTTP response: %ld"), screen_name, domain, request->response_code);
-			if(res != -1) {
-				notify = elm_notify_add(gui.win);
-					evas_object_size_hint_weight_set(notify, 1, 1);
-					evas_object_size_hint_align_set(notify, -1, -1);
-					label = elm_label_add(gui.win);
-						evas_object_size_hint_weight_set(label, 1, 1);
-						evas_object_size_hint_align_set(label, -1, -1);
-						elm_label_label_set(label, notify_message);
-						elm_label_line_wrap_set(label, EINA_TRUE);
-					evas_object_show(label);
-					elm_notify_content_set(notify, label);
-					elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_TOP_RIGHT);
-					elm_notify_parent_set(notify, gui.win);
-					elm_notify_timeout_set(notify, 5);
-				evas_object_show(notify);
+	ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)timeline_connected, ad);
+	ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)timeline_returned, ad);
+	ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)timeline_disconnected, ad);
 
-				free(notify_message);
-			}
-		}
-
-	}
-
-	if(request->url) free(request->url);
-	if(request->content.memory) free(request->content.memory);
-	if(request) free(request);
+	free(timeline_str);
+	free(host);
 }
 
 void ed_statusnet_toggle_favorite(int account_id, long long int status_id, Eina_Bool favorite) {
@@ -929,7 +836,7 @@ void ed_statusnet_toggle_favorite(int account_id, long long int status_id, Eina_
 	sqlite_res = asprintf(&sid_str, "%lld", status_id);
 	if(sqlite_res != -1) {
 		as = eina_hash_find(statusHash, sid_str);
-		if(as) as->favorited=favorite;
+		if(as) as->status->favorited=favorite;
 		free(sid_str);
 	}
 }
@@ -976,31 +883,65 @@ void ed_statusnet_favorite_destroy(int account_id, char *screen_name, char *pass
 	if(request) free(request);
 }
 
-void json_user_show(UserGet *ug, char *stream) {
-	cJSON *json_stream, *obj;
+static void ed_sn_single_user_free(statusnet_User *u) {
+        statusnet_User_free(u);
+}
 
-	json_stream = cJSON_Parse(stream);
-	if(debug) printf("About to parse\n%s\n", stream);
+Eina_Bool ed_sn_userget_parse(Azy_Value *value, Eina_List **_narray) {
+        statusnet_User *snU=NULL;
+        statusnet_Error *snE=NULL;
+        Eina_Strbuf *str=NULL;
 
-	if(!json_stream) {
-		fprintf(stderr, "ERROR parsing json stream:\n%s\n", stream);
-		return;
-	}
+        if( (!value) || (azy_value_type_get(value) != AZY_VALUE_STRUCT) ) {
+                printf("Didn't get a struct\n");
+                return(EINA_FALSE);
+        }
+        
+        if(azy_value_to_statusnet_Error(value, &snE)) {
+                str=eina_strbuf_new();
+                if(str) {
+                        azy_value_dump(value, str, 1);
+                        fprintf(stderr, _("Got an error: %s\n"), eina_strbuf_string_get(str));
+                        eina_strbuf_free(str);
+                } else fprintf(stderr, _("Got an error without content\n"));
+                return(EINA_FALSE);
+        }
 
-	if(json_stream->type == cJSON_Object) {
-		obj = cJSON_GetObjectItem(json_stream, "error");
-		if(obj) fprintf(stderr, "ERROR: %s\n", obj->valuestring);
-		else ug->au = json_timeline_user_parse(json_stream);
-	}
-	cJSON_Delete(json_stream);
+        if(azy_value_to_statusnet_User(value, &snU)) {
+                printf("Got an user: %s\n", snU->name);
+        } else {
+                statusnet_User_free(snU);
+                printf("Didn't get an User!\n");
+                azy_value_dump(value, str, 1);
+                printf("Got: %s\n", eina_strbuf_string_get(str));
+        }
+
+        eina_strbuf_free(str);
+        return(EINA_TRUE);
+}
+
+Eina_Bool ed_statusnet_userget_returned(Azy_Client *cli, int type, Azy_Client *ev) {
+        return(EINA_TRUE);
+}
+
+Eina_Bool ed_statusnet_userget_connected(Azy_Client *cli, int type, Azy_Client *ev) {
+        Azy_Client_Call_Id id;
+
+        id = azy_client_blank(ev, AZY_NET_TYPE_GET, NULL, (Azy_Content_Cb)ed_sn_userget_parse, NULL);
+        if(!id) return(EINA_FALSE);
+
+        azy_client_callback_free_set(ev, id, (Ecore_Cb)ed_sn_single_user_free);
+
+        return(EINA_TRUE);
 }
 
 static int ed_statusnet_user_get_handler(void *data, int argc, char **argv, char **azColName) {
 	UserGet *ug=(UserGet*)data;
 	UserProfile *user = ug->user;
-    char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
+    char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL, *url_start=NULL, *url_end=NULL;
     int port=0, id=0, res;
-	http_request * request=calloc(1, sizeof(http_request));
+	Azy_Client *cli=NULL;
+
     /* In this query handler, these are the current fields:
         argv[0] == name TEXT
         argv[1] == password TEXT
@@ -1020,23 +961,24 @@ static int ed_statusnet_user_get_handler(void *data, int argc, char **argv, char
     base_url = argv[6];
     id = atoi(argv[7]);
 
+	cli = azy_client_new();
+	if(!cli) return(-1);
 
-	if(!request) return(-1);
+	res = asprintf(&url_start, "%s://%s", proto, domain);
+	res = asprintf(&url_end, "%s/users/show.json?screen_name=%s&source=elmdentica", base_url, user->screen_name);
 
-	res = asprintf(&request->url, "%s://%s:%d%s/users/show.json?screen_name=%s", proto, domain, port, base_url, user->screen_name);
+	azy_client_host_set(cli, url_start, port);
+	free(url_start);
 
-	if(res != -1) {
-		if (debug) printf("gnome-open %s\n", request->url);
+	azy_client_connect(cli, EINA_TRUE);
+	azy_net_uri_set(azy_client_net_get(cli), url_end);
+	azy_net_auth_set(azy_client_net_get(cli), screen_name, password);
 
-		res = ed_curl_get(screen_name, password, request, ug->account_id);
-		if((res == 0) && (request->response_code == 200))
-			json_user_show(ug, request->content.memory);
+	azy_net_version_set(azy_client_net_get(cli), 0);
 
-	}
+	ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)ed_statusnet_userget_connected, NULL);
+	ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)ed_statusnet_userget_returned, NULL);
 
-	if(request->url) free(request->url);
-	if(request->content.memory) free(request->content.memory);
-	free(request);
 
 	return(0);
 }
@@ -1091,59 +1033,18 @@ void ed_statusnet_user_abandon(int account_id, char *screen_name, char *password
 	if(request) free(request);
 }
 
-static void ed_sn_single_status_free(statusnet_RT_Status *s) {
-	statusnet_RT_Status_free(s);
-}
-
-Eina_Bool ed_sn_connected_single_status_parse(Azy_Value *value, Eina_List **_narray) {
-	aStatus *as=NULL;
-	anUser *au=NULL;
-	statusnet_RT_Status *snS=NULL;
-	statusnet_Error *snE=NULL;
-	Eina_Strbuf *str;
-
-	if( (!value) || (azy_value_type_get(value) != AZY_VALUE_STRUCT) ) {
-		printf("Didn't get a struct\n");
-		eina_strbuf_free(str);
-		return(EINA_FALSE);
-	}
-	
-	if(azy_value_to_statusnet_Error(value, &snE)) {
-		str=eina_strbuf_new();
-		if(str) {
-			azy_value_dump(value, str, 1);
-			fprintf(stderr, _("Got an error: %s\n"), eina_strbuf_string_get(str));
-			eina_strbuf_free(str);
-		} else fprintf(stderr, _("Got an error without content\n"));
-		return(EINA_FALSE);
-	}
-
-	if(azy_value_to_statusnet_RT_Status(value, &snS)) {
-		printf("Got a status: %s\n", snS->text);
-	} else {
-		statusnet_RT_Status_free(snS);
-		printf("Didn't get a status!\n");
-		azy_value_dump(value, str, 1);
-		printf("Got: %s\n", eina_strbuf_string_get(str));
-	}
-
-	eina_strbuf_free(str);
-	return(EINA_TRUE);
-}
-
-Eina_Bool ed_statusnet_repeat_returned(Azy_Client *cli, int type, Azy_Client *ev) {
-	return(EINA_TRUE);
+static void ed_sn_single_status_free(statusnet_Status *s) {
+	statusnet_Status_free(s);
 }
 
 Eina_Bool ed_statusnet_repeat_disconnected(Azy_Client *cli, int type, Azy_Client *ev) {
-	if(debug) printf("Disconnection.\nReconnecting...");
-	azy_client_connect(ev, EINA_TRUE);
+	return(EINA_TRUE);
 }
 
 Eina_Bool ed_statusnet_repeat_connected(Azy_Client *cli, int type, Azy_Client *ev) {
 	Azy_Client_Call_Id id;
 
-	id = azy_client_blank(ev, AZY_NET_TYPE_POST, NULL, (Azy_Content_Cb)ed_sn_connected_single_status_parse, NULL);
+	id = azy_client_blank(ev, AZY_NET_TYPE_POST, NULL, (Azy_Content_Cb)azy_value_to_Array_statusnet_Status, NULL);
 	if(!id) return(EINA_FALSE);
 
 	azy_client_callback_free_set(ev, id, (Ecore_Cb)ed_sn_single_status_free);
@@ -1191,8 +1092,8 @@ static int ed_statusnet_repeat_handler(void *data, int argc, char **argv, char *
 	azy_net_version_set(azy_client_net_get(repeat), 0);
 
 	ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)ed_statusnet_repeat_connected, NULL);
-	ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)ed_statusnet_repeat_returned, NULL);
-	//ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)ed_statusnet_repeat_disconnected, NULL);
+	ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)timeline_returned, NULL);
+	ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)timeline_disconnected, NULL);
 
 	return(0);
 }
@@ -1212,13 +1113,15 @@ void ed_statusnet_repeat(int account_id, long long int status_id) {
 	}
 }
 
+Eina_Bool ed_sn_single_status_disconnected(void *data, int type, Azy_Client *cli) {
+        return(EINA_TRUE);
+}
+
 static int ed_statusnet_status_get_handler(void *data, int argc, char **argv, char **azColName) {
-    char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL, *notify_message=NULL;
+    char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL, *url_start=NULL, *url_end=NULL;
     int port=0, id=0, res;
 	long long int in_reply_to;
-	cJSON *json_stream = NULL;
-	http_request * request=calloc(1, sizeof(http_request));
-	Evas_Object *notify, *label;
+	Azy_Client *cli=NULL;
 	aStatus **prelated_status = (aStatus**)data;
 	int sqlite_res=0;
 	struct sqlite3_stmt *insert_stmt=NULL;
@@ -1246,72 +1149,41 @@ static int ed_statusnet_status_get_handler(void *data, int argc, char **argv, ch
     id = atoi(argv[7]);
     in_reply_to = strtoll(argv[8], NULL, 10);
 
-	if(request == NULL) return(-1);
+	cli = azy_client_new();
 
-	res = asprintf(&request->url, "%s://%s:%d%s/statuses/show/%lld.json", proto, domain, port, base_url, in_reply_to);
+	res = asprintf(&url_start, "%s://%s", proto, domain);
+	res = asprintf(&url_end, "%s/statuses/show/%lld.json?source=elmdentica", base_url, in_reply_to);
 
-	if(res != -1) {
-		if (debug) printf("gnome-open %s\n", request->url);
+	azy_client_host_set(cli, url_start, port);
+	azy_client_connect(cli, EINA_TRUE);
+	azy_net_auth_set(azy_client_net_get(cli), screen_name, password);
+	azy_net_uri_set(azy_client_net_get(cli), url_end);
+	azy_net_version_set(azy_client_net_get(cli), 0);
 
-		res = ed_curl_get(screen_name, password, request, id);
-	
-		if((res == 0) && (request->response_code == 200)) {
-			if(debug>4) printf("Parsing status %lld got...\n%s\n", in_reply_to, request->content.memory);
-			json_stream = cJSON_Parse(request->content.memory);
+    ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)timeline_connected, NULL);
+    ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)timeline_returned, NULL);
+    ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)ed_sn_single_status_disconnected, NULL);
 
+	if(*prelated_status) {
+		(*prelated_status)->account_id = id;
+		(*prelated_status)->account_type = atoi(argv[2]);
 
-			if(!json_stream) {
-				fprintf(stderr, "ERROR parsing json stream:\n%s\n", request->content.memory);
-				return(-1);
+		res = asprintf(&query, "insert into messages (status_id, account_id, timeline, s_text, s_truncated, s_created_at, s_in_reply_to_status_id, s_source, s_in_reply_to_user_id, s_favorited, s_user) values (?, %d, %d, ?, ?, ?, ?, ?, ?, ?, ?);", id, -1);;
+		if(sqlite_res != -1) {
+			sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
+			if(sqlite_res == 0) {
+				if(debug > 3) printf("Inserting: %lld\n", (long long int)(*prelated_status)->status->id);
+				res = asprintf(&key, "%lld", (long long int)(*prelated_status)->status->id);
+				if(res != -1) {
+					message_insert((*prelated_status)->status, &insert_stmt);
+					free(key);
+				}
+				sqlite3_finalize(insert_stmt);
+			} else {
+				fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, missed);
 			}
-			*prelated_status = json_timeline_handle_single(-1, NULL, json_stream, id);
-			if(*prelated_status) {
-				(*prelated_status)->account_id = id;
-				(*prelated_status)->account_type = atoi(argv[2]);
-			}
-			cJSON_Delete(json_stream);
-		} else {
-			res = asprintf(&notify_message, _("%s@%s had HTTP response: %ld"), screen_name, domain, request->response_code);
-			if(res != -1) {
-				notify = elm_notify_add(gui.win);
-					evas_object_size_hint_weight_set(notify, 1, 1);
-					evas_object_size_hint_align_set(notify, -1, -1);
-					label = elm_label_add(gui.win);
-						evas_object_size_hint_weight_set(label, 1, 1);
-						evas_object_size_hint_align_set(label, -1, -1);
-						elm_label_label_set(label, notify_message);
-						elm_label_line_wrap_set(label, EINA_TRUE);
-					evas_object_show(label);
-					elm_notify_content_set(notify, label);
-					elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_TOP_RIGHT);
-					elm_notify_parent_set(notify, gui.win);
-					elm_notify_timeout_set(notify, 5);
-				evas_object_show(notify);
-
-				free(notify_message);
-			}
+			free(query);
 		}
-	}
-
-	if(request->url) free(request->url);
-	if(request->content.memory) free(request->content.memory);
-	free(request);
-
-	res = asprintf(&query, "insert into messages (status_id, account_id, timeline, s_text, s_truncated, s_created_at, s_in_reply_to_status_id, s_source, s_in_reply_to_user_id, s_favorited, s_user) values (?, %d, %d, ?, ?, ?, ?, ?, ?, ?, ?);", id, -1);;
-	if(sqlite_res != -1) {
-		sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
-		if(sqlite_res == 0) {
-			if(debug > 3) printf("Inserting: %lld\n", (*prelated_status)->sid);
-			res = asprintf(&key, "%lld", (*prelated_status)->sid);
-			if(res != -1) {
-				message_insert(key, &insert_stmt);
-				free(key);
-			}
-			sqlite3_finalize(insert_stmt);
-		} else {
-			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, missed);
-		}
-		free(query);
 	}
 	return(0);
 }
@@ -1340,19 +1212,20 @@ static int ed_statusnet_user_get_from_db(void *data, int argc, char **argv, char
 	argv[16] := statusnet_blocking	INTEGER
 */
 
-	au->uid = strtoll(uid_str, NULL, 10);
-	au->name = strndup(argv[3], PIPE_BUF);
-	au->screen_name = strndup(argv[4], PIPE_BUF);
-	au->description = strndup(argv[6], PIPE_BUF);
-	au->profile_image_url = strndup(argv[7], PIPE_BUF);
-	au->followers_count = atoi(argv[10]);
-	au->friends_count = atoi(argv[11]);
-	au->created_at = atoi(argv[12]);
-	au->favorites_count = atoi(argv[13]);
-	au->statuses_count = atoi(argv[14]);
-	au->following = atoi(argv[15]);
-	au->statusnet_blocking = atoi(argv[16]);
+	au->user = calloc(1, sizeof(statusnet_User));
 
+	au->user->id = strtoll(uid_str, NULL, 10);
+	au->user->name = strndup(argv[3], PIPE_BUF);
+	au->user->screen_name = strndup(argv[4], PIPE_BUF);
+	au->user->description = strndup(argv[6], PIPE_BUF);
+	au->user->profile_image_url = strndup(argv[7], PIPE_BUF);
+	au->user->followers_count = atoi(argv[10]);
+	au->user->friends_count = atoi(argv[11]);
+	au->created_at = atoi(argv[12]);
+	au->user->favourites_count = atoi(argv[13]);
+	au->user->statuses_count = atoi(argv[14]);
+	au->user->following = atoi(argv[15]);
+	au->user->statusnet_blocking = atoi(argv[16]);
 
 	eina_hash_add(userHash, uid_str, au);
 	return(0);
@@ -1364,6 +1237,7 @@ static int ed_statusnet_status_get_from_db(void *data, int argc, char **argv, ch
 	int sqlite_res = 0;
 
 	(*as) = calloc(1, sizeof(aStatus));
+	(*as)->status = calloc(1, sizeof(statusnet_Status));
 
 /*
 	argv[0]  := id						INTEGER
@@ -1383,13 +1257,13 @@ static int ed_statusnet_status_get_from_db(void *data, int argc, char **argv, ch
 	argv[14] := accounts.enabled		INTEGER
 */
 
-	(*as)->sid = strtoll(argv[0], NULL, 10);
-	(*as)->text = strndup(argv[4], PIPE_BUF);
-	(*as)->truncated = atoi(argv[5]);
+	(*as)->status->id = strtoll(argv[0], NULL, 10);
+	(*as)->status->text = strndup(argv[4], PIPE_BUF);
+	(*as)->status->truncated = atoi(argv[5]);
 	(*as)->created_at = atoi(argv[6]);
-	(*as)->in_reply_to_status_id = strtoll(argv[7], NULL, 10);
-	(*as)->in_reply_to_user_id = strtoll(argv[9], NULL, 10);
-	(*as)->favorited = atoi(argv[10]);
+	(*as)->status->in_reply_to_status_id = strtoll(argv[7], NULL, 10);
+	(*as)->status->in_reply_to_user_id = strtoll(argv[9], NULL, 10);
+	(*as)->status->favorited = atoi(argv[10]);
 	(*as)->user = strtoll(argv[11], NULL, 10);
 	(*as)->account_id = atoi(argv[13]);
 	(*as)->account_type = ACCOUNT_TYPE_STATUSNET;

@@ -72,6 +72,7 @@ StatusesList	*statuses=NULL;
 int debug=0, mouse_x=0, mouse_y=0;
 Evas_Coord finger_size;
 int first_message=1;
+int current_timeline=-1;
 time_t now;
 
 Eina_Hash * bubble2status=NULL;
@@ -268,18 +269,21 @@ void toggle_fullscreen(Eina_Bool new_fullscreen) {
 void make_status_list(int timeline) {
 	char *label;
 
-	switch(timeline) {
-		case TIMELINE_USER:		{	label = _("Last messages...");		break; }
-		case TIMELINE_PUBLIC:	{	label = _("Everyone...");	break; }
-		case TIMELINE_FAVORITES: {	label = _("My favorites...");	break; }
-		case TIMELINE_MENTIONS: {	label = _("Replies / mentions...");	break; }
-		case TIMELINE_FRIENDS:
-		default:				{	label = _("My friends...");	break; }
+	if(timeline != current_timeline) {
+		switch(timeline) {
+			case TIMELINE_USER:		{	label = _("Last messages...");		break; }
+			case TIMELINE_PUBLIC:	{	label = _("Everyone...");	break; }
+			case TIMELINE_FAVORITES: {	label = _("My favorites...");	break; }
+			case TIMELINE_MENTIONS: {	label = _("Replies / mentions...");	break; }
+			case TIMELINE_FRIENDS:
+			default:				{	label = _("My friends...");	break; }
+		}
+
+		elm_win_title_set(gui.win, label);
+
+		elm_genlist_clear(gui.timeline);
+		current_timeline = timeline;
 	}
-
-	elm_win_title_set(gui.win, label);
-
-	elm_genlist_clear(gui.timeline);
 }
 
 void error_win_del(void *data, Evas_Object *zbr, void *event_info) {
@@ -311,15 +315,15 @@ static int ed_mark_favorite(void *data, int argc, char **argv, char **azColName)
 	base_url = argv[6];
 	id = atoi(argv[7]);
 
-	if(as->favorited) {
+	if(as->status->favorited) {
 		switch(atoi(argv[2])) {
 			case ACCOUNT_TYPE_STATUSNET:
-			default: { ed_statusnet_favorite_destroy(id, screen_name, password, proto, domain, port, base_url, as->sid); break; }
+			default: { ed_statusnet_favorite_destroy(id, screen_name, password, proto, domain, port, base_url, as->status->id); break; }
 		}
 	} else {
 		switch(atoi(argv[2])) {
 			case ACCOUNT_TYPE_STATUSNET:
-			default: { ed_statusnet_favorite_create(id, screen_name, password, proto, domain, port, base_url, as->sid); break; }
+			default: { ed_statusnet_favorite_create(id, screen_name, password, proto, domain, port, base_url, as->status->id); break; }
 		}
 	}
 	return(0);
@@ -356,7 +360,7 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 	if(as) {
 		switch(as->account_type) {
 			case ACCOUNT_TYPE_STATUSNET:
-			default: { ed_statusnet_repeat(as->account_id, as->sid); break; }
+			default: { ed_statusnet_repeat(as->account_id, as->status->id); break; }
 		}
 	}
 
@@ -373,7 +377,7 @@ static void on_view_related(void *data, Evas_Object *obj, void *event_info) {
 	if(as) {
 		switch(as->account_type) {
 			case ACCOUNT_TYPE_STATUSNET:
-			default: { ed_statusnet_status_get(as->account_id, as->in_reply_to_status_id, &related_status); break; }
+			default: { ed_statusnet_status_get(as->account_id, as->status->in_reply_to_status_id, &related_status); break; }
 		}
 	}
 
@@ -401,12 +405,12 @@ static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 		if(res != -1) {
 			au = eina_hash_find(userHash, uid_str);
 			if(au) {
-				res = asprintf(&entry_str, "@%s: ", au->screen_name);
+				res = asprintf(&entry_str, "@%s: ", au->user->screen_name);
 				if(res != -1) {
 					elm_entry_entry_set(entry, entry_str);
 					free(entry_str);
 					elm_object_focus(entry);
-					reply_id=as->sid;
+					reply_id=as->status->id;
 					elm_entry_cursor_end_set(entry);
 				}
 			}
@@ -638,11 +642,11 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 
 	if(!au) return;
 
-	user_win = elm_win_add(NULL, au->name, ELM_WIN_BASIC);
+	user_win = elm_win_add(NULL, au->user->name, ELM_WIN_BASIC);
 		evas_object_name_set(user_win, "user_win");
 		evas_object_size_hint_min_set(user_win, 480, 480);
 		evas_object_size_hint_max_set(user_win, 640, 640);
-		elm_win_title_set(user_win, au->name);
+		elm_win_title_set(user_win, au->user->name);
 		evas_object_smart_callback_add(user_win, "delete-request", user_win_del, user);
 
 		bg = elm_bg_add(user_win);
@@ -657,7 +661,7 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 			elm_win_resize_object_add(user_win, table);
 			elm_table_padding_set(table, 20, 20);
 
-			res = asprintf(&path, "%s/cache/icons/%lld", home, au->uid);
+			res = asprintf(&path, "%s/cache/icons/%lld", home, (long long int)au->user->id);
 
 			if(res!=-1 && stat(path, &buf) == 0 ) {
 				icon = elm_icon_add(user_win);
@@ -673,7 +677,7 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 				evas_object_size_hint_weight_set(label, 1, 1);
 				evas_object_size_hint_align_set(label, -1, -1);
 
-				res = asprintf(&description, "%s is following %d and has %d followers.", au->name, au->friends_count, au->followers_count);
+				res = asprintf(&description, "%s is following %d and has %d followers.", au->user->name, au->user->friends_count, au->user->followers_count);
 				elm_entry_line_wrap_set(label, EINA_TRUE);
 				if(res!=-1) {
 					elm_entry_entry_set(label, description);
@@ -688,7 +692,7 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 				evas_object_size_hint_weight_set(button, 1, 1);
 				evas_object_size_hint_align_set(button, 0.5, 0);
 
-				if(!au->following && !au->protected) {
+				if(!au->user->following && !au->user->protected) {
 					elm_button_label_set(button, _("Follow"));
 					evas_object_smart_callback_add(button, "clicked", on_user_follow, as);
 				} else {
@@ -698,12 +702,12 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 				elm_table_pack(table, button, 1, 1, 1, 1);
 			evas_object_show(button);
 
-			if(au->description) {
+			if(au->user->description) {
 					label = elm_label_add(user_win);
 						evas_object_size_hint_weight_set(label, 1, 1);
 						evas_object_size_hint_align_set(label, -1, -1);
 						elm_label_line_wrap_set(label, EINA_TRUE);
-						elm_label_label_set(label, au->description);
+						elm_label_label_set(label, au->user->description);
 					evas_object_show(label);
 					elm_table_pack(table, label, 0, 2, 2, 1);
 			}
@@ -985,7 +989,7 @@ static int ed_check_gag_message(void *user_data, int argc, char **argv, char **a
 	if(strchr(pattern, '@')) {
 		res = asprintf(&sn, "@%s", gd->screen_name);
 		if(res == -1)
-			sn = gd->screen_name;
+			sn = (char*)gd->screen_name;
 	}
 
 	if(debug > 2) printf("(%s|%s|%s) ~ %s ?", sn?sn:gd->screen_name, gd->name, gd->message, pattern);
@@ -1004,7 +1008,7 @@ static int ed_check_gag_message(void *user_data, int argc, char **argv, char **a
 	return(0);
 }
 
-Eina_Bool ed_check_gag(char *screen_name, char *name, char *message) {
+Eina_Bool ed_check_gag(const char *screen_name, const char *name, const char *message) {
 	GagData gd;
 	char *query, *db_err=NULL;
 	int sqlite_res = 0;
@@ -1033,6 +1037,8 @@ static int fetch_user_from_db_handler(void *user_data, int argc, char **argv, ch
 
 	au = *pau;
 
+	au->user = calloc(1, sizeof(statusnet_User));
+
 /*
  argv[0]  := id                 INTEGER
  argv[1]  := uid                INTEGER
@@ -1054,20 +1060,20 @@ static int fetch_user_from_db_handler(void *user_data, int argc, char **argv, ch
 
 */
 
-	if(argv[3]) au->name = strndup(argv[3], PIPE_BUF);
-	if(argv[4]) au->screen_name = strndup(argv[4], PIPE_BUF);
-	if(argv[5]) au->location = strndup(argv[5], PIPE_BUF);
-	if(argv[6]) au->description = strndup(argv[6], PIPE_BUF);
-	if(argv[7]) au->profile_image_url = strndup(argv[7], PIPE_BUF);
-	if(argv[8]) au->url = strndup(argv[8], PIPE_BUF);
-	if(argv[9]) au->protected = atoi(argv[9]);
-	if(argv[10]) au->followers_count = atoi(argv[10]);
-	if(argv[11]) au->friends_count = atoi(argv[11]);
+	if(argv[3]) au->user->name = strndup(argv[3], PIPE_BUF);
+	if(argv[4]) au->user->screen_name = strndup(argv[4], PIPE_BUF);
+	if(argv[5]) au->user->location = strndup(argv[5], PIPE_BUF);
+	if(argv[6]) au->user->description = strndup(argv[6], PIPE_BUF);
+	if(argv[7]) au->user->profile_image_url = strndup(argv[7], PIPE_BUF);
+	if(argv[8]) au->user->url = strndup(argv[8], PIPE_BUF);
+	if(argv[9]) au->user->protected = atoi(argv[9]);
+	if(argv[10]) au->user->followers_count = atoi(argv[10]);
+	if(argv[11]) au->user->friends_count = atoi(argv[11]);
 	if(argv[12]) au->created_at = atoi(argv[12]);
-	if(argv[13]) au->favorites_count = atoi(argv[13]);
-	if(argv[14]) au->statuses_count = atoi(argv[14]);
-	if(argv[15]) au->following = atoi(argv[15]);
-	if(argv[16]) au->statusnet_blocking = atoi(argv[16]);
+	if(argv[13]) au->user->favourites_count = atoi(argv[13]);
+	if(argv[14]) au->user->statuses_count = atoi(argv[14]);
+	if(argv[15]) au->user->following = atoi(argv[15]);
+	if(argv[16]) au->user->statusnet_blocking = atoi(argv[16]);
 	au->in_db = EINA_TRUE;
 
 	return(0);
@@ -1089,7 +1095,7 @@ anUser *fetch_user_from_db(long long int uid) {
 	return(au);
 }
 
-char *ed_shorten_text(char *text) {
+char *ed_shorten_text(const char *text) {
 	GError *re_err=NULL;
 	char *shortened_text=NULL;
 	char *tmp=NULL;
@@ -1121,14 +1127,14 @@ char *ed_status_label_get(void *data, Evas_Object *obj, const char *part) {
 	struct tm date_tm, date_now;
 
 	if (!strcmp(part, "text")) {
-		shortened_text = ed_shorten_text(as->text);
+		shortened_text = ed_shorten_text(as->status->text);
 		snprintf(buf, sizeof(buf), "%s", shortened_text);
 		free(shortened_text);
 	} else if (!strcmp(part, "name")) {
 		res = asprintf(&key, "%lld", as->user);
 		if(res != -1)  {
 			au = eina_hash_find(userHash, key);
-			snprintf(buf, sizeof(buf), "%s", au->name);
+			snprintf(buf, sizeof(buf), "%s", au->user->name);
 		} else snprintf(buf, sizeof(buf), "unknown");
 	} else if (!strcmp(part, "date")) {
 		time(&now);
@@ -1247,7 +1253,7 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 				evas_object_size_hint_align_set(list, -1, -1);
 				evas_object_smart_callback_add(list, "selected", on_handle_user, as);
 
-				if(g_regex_match(re_user, as->text, 0, &user_matches)) {
+				if(g_regex_match(re_user, as->status->text, 0, &user_matches)) {
 					while((match = g_match_info_fetch(user_matches, 1))) {
 						li = elm_list_item_sorted_insert(list, match, NULL, NULL, NULL, NULL, my_strcmp);
 						g_match_info_next(user_matches, &re_err);
@@ -1258,7 +1264,7 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 				res = asprintf(&key, "%lld", as->user);
 				if(res != -1) {
 					au = eina_hash_find(userHash, key);
-					if(au) li = elm_list_item_prepend(list, au->screen_name, NULL, NULL, NULL, NULL);
+					if(au) li = elm_list_item_prepend(list, au->user->screen_name, NULL, NULL, NULL, NULL);
 					free(key);
 				}
 
@@ -1268,7 +1274,7 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 				elm_pager_content_promote(pager, gui.status_detail_users);
 			evas_object_show(list);
 
-			if(g_regex_match(re_link, as->text, 0, &link_matches)) {
+			if(g_regex_match(re_link, as->status->text, 0, &link_matches)) {
 				elm_toolbar_item_append(toolbar, NULL, _("Links"), on_status_show_page_links, pager);
 
 				list = elm_list_add(gui.win);
@@ -1287,7 +1293,7 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 			}
 			g_match_info_free(link_matches);
 
-			if(re_tags && g_regex_match(re_tags, as->text, 0, &tags_matches)) {
+			if(re_tags && g_regex_match(re_tags, as->status->text, 0, &tags_matches)) {
 				elm_toolbar_item_append(toolbar, NULL, _("Tags"), on_status_show_page_tags, pager);
 
 				list = elm_list_add(gui.win);
@@ -1305,7 +1311,7 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 			}
 			g_match_info_free(tags_matches);
 
-			if(re_group && g_regex_match(re_group, as->text, 0, &group_matches)) {
+			if(re_group && g_regex_match(re_group, as->status->text, 0, &group_matches)) {
 				elm_toolbar_item_append(toolbar, NULL, _("Groups"), on_status_show_page_groups, pager);
 
 				list = elm_list_add(gui.win);
@@ -1388,7 +1394,7 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 				button = elm_button_add(gui.win);
 					evas_object_size_hint_weight_set(button, 1, 1);
 					evas_object_size_hint_align_set(button, -1, 0);
-					if(as->favorited)
+					if(as->status->favorited)
 						elm_button_label_set(button, _("Unmark favorite"));
 					else
 						elm_button_label_set(button, _("Mark favorite"));
@@ -1396,7 +1402,7 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 					elm_table_pack(table, button, 0, 1, 3, 1);
 				evas_object_show(button);
 
-				if(as->in_reply_to_status_id != 0) {
+				if(as->status->in_reply_to_status_id != 0) {
 					button = elm_button_add(gui.win);
 						evas_object_size_hint_weight_set(button, 1, 1);
 						evas_object_size_hint_align_set(button, -1, 0);
@@ -1439,7 +1445,7 @@ void add_status(aStatus *as, Elm_Genlist_Item *gli) {
 		else return;
 	}
 
-	if(ed_check_gag(au->screen_name, au->name, as->text)) return;
+	if(ed_check_gag(au->user->screen_name, au->user->name, as->status->text)) return;
 
 	icon = ed_get_icon(as->user, gui.win);
 
@@ -1486,13 +1492,14 @@ static int add_status_from_db(void *data, int argc, char **argv, char **azColNam
 	if(!as) {
 		as = (aStatus*)calloc(1, sizeof(aStatus));
 		if(!as) return(-1);
+		as->status = (statusnet_Status*)calloc(1, sizeof(statusnet_Status));
 
-		as->sid = strtoll(argv[1], NULL, 10);
-		as->text = strndup(argv[4], PIPE_BUF);
+		as->status->id = strtoll(argv[1], NULL, 10);
+		as->status->text = strndup(argv[4], PIPE_BUF);
 		as->created_at = atoi(argv[6]);
-		as->in_reply_to_status_id = strtoll(argv[7], NULL, 10);
-		as->in_reply_to_user_id = strtoll(argv[9], NULL, 10);
-		as->favorited = atoi(argv[10]);
+		as->status->in_reply_to_status_id = strtoll(argv[7], NULL, 10);
+		as->status->in_reply_to_user_id = strtoll(argv[9], NULL, 10);
+		as->status->favorited = atoi(argv[10]);
 		as->user = strtoll(argv[11], NULL, 10);
 		as->account_type = atoi(argv[12]);
 		as->account_id = atoi(argv[13]);
@@ -1548,6 +1555,8 @@ void show_error(StatusesList * statuses) {
 	evas_object_show(error_win);
 }
 
+void update_status_list(int timeline);
+
 static int get_messages_for_account(void *pTimeline, int argc, char **argv, char **azColName) {
 	char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
 	int port=0, id=0;
@@ -1573,7 +1582,7 @@ static int get_messages_for_account(void *pTimeline, int argc, char **argv, char
 
 	switch(atoi(argv[2])) {
 		case ACCOUNT_TYPE_STATUSNET:
-		default: { ed_statusnet_timeline_get(id, screen_name, password, proto, domain, port, base_url, timeline); break; }
+		default: { ed_statusnet_timeline_get(id, screen_name, password, proto, domain, port, base_url, timeline, update_status_list); break; }
 	}
 
 	return(0);
@@ -1583,6 +1592,8 @@ static void get_messages(int timeline) {
 	int sqlite_res=0;
 	char *db_err=NULL, *query=NULL;
 
+	elm_toolbar_item_disabled_set(gui.timelines, EINA_TRUE);
+	elm_toolbar_item_disabled_set(gui.post, EINA_TRUE);
 	query = "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE enabled = 1 and receive = 1;";
 	sqlite3_exec(ed_DB, query, get_messages_for_account, &timeline, &db_err);
 	if(sqlite_res != 0) {
@@ -1617,43 +1628,48 @@ void fill_message_list(int timeline) {
 	}
 }
 
-
+void update_status_list(int timeline) {
+	make_status_list(timeline);
+	fill_message_list(timeline);
+	elm_toolbar_item_disabled_set(gui.timelines, EINA_FALSE);
+	elm_toolbar_item_disabled_set(gui.post, EINA_FALSE);
+}
 
 /* ********** CALLBACKS *********** */
 static void on_timeline_friends_reload(void *data, Evas_Object *obj, void *event_info) {
 	if(settings->online) get_messages(TIMELINE_FRIENDS);
-	make_status_list(TIMELINE_FRIENDS);
-	fill_message_list(TIMELINE_FRIENDS);
+	else
+		update_status_list(TIMELINE_FRIENDS);
 }
 
 static void on_timeline_mentions_reload(void *data, Evas_Object *obj, void *event_info) {
 	if(settings->online) get_messages(TIMELINE_MENTIONS);
-	make_status_list(TIMELINE_MENTIONS);
-	fill_message_list(TIMELINE_MENTIONS);
+	else
+		update_status_list(TIMELINE_MENTIONS);
 }
 
 static void on_timeline_user_reload(void *data, Evas_Object *obj, void *event_info) {
 	if(settings->online) get_messages(TIMELINE_USER);
-	make_status_list(TIMELINE_USER);
-	fill_message_list(TIMELINE_USER);
+	else
+		update_status_list(TIMELINE_USER);
 }
 
 static void on_timeline_dmsgs_reload(void *data, Evas_Object *obj, void *event_info) {
 	if(settings->online) get_messages(TIMELINE_DMSGS);
-	make_status_list(TIMELINE_DMSGS);
-	fill_message_list(TIMELINE_DMSGS);
+	else
+		update_status_list(TIMELINE_DMSGS);
 }
 
 static void on_timeline_public_reload(void *data, Evas_Object *obj, void *event_info) {
 	if(settings->online) get_messages(TIMELINE_PUBLIC);
-	make_status_list(TIMELINE_PUBLIC);
-	fill_message_list(TIMELINE_PUBLIC);
+	else
+		update_status_list(TIMELINE_PUBLIC);
 }
 
 static void on_timeline_favorites_reload(void *data, Evas_Object *obj, void *event_info) {
 	if(settings->online) get_messages(TIMELINE_FAVORITES);
-	make_status_list(TIMELINE_FAVORITES);
-	fill_message_list(TIMELINE_FAVORITES);
+	else
+		update_status_list(TIMELINE_FAVORITES);
 }
 
 static void on_fs(void *data, Evas_Object *obj, void *event_info) {
@@ -1987,11 +2003,11 @@ EAPI int elm_main(int argc, char **argv)
 		evas_object_size_hint_align_set(toolbar, -1, 0);
 		elm_toolbar_homogenous_set(toolbar, EINA_TRUE);
 
-		it = elm_toolbar_item_append(toolbar, "chat", _("Timelines"), on_timelines_hv, NULL);
-		elm_toolbar_item_menu_set(it, EINA_TRUE);
-		elm_toolbar_item_priority_set(it, 0);
+		gui.timelines = elm_toolbar_item_append(toolbar, "chat", _("Timelines"), on_timelines_hv, NULL);
+		elm_toolbar_item_menu_set(gui.timelines, EINA_TRUE);
+		elm_toolbar_item_priority_set(gui.timelines, 0);
 		elm_toolbar_menu_parent_set(toolbar, gui.timeline);
-		menu = elm_toolbar_item_menu_get(it);
+		menu = elm_toolbar_item_menu_get(gui.timelines);
 
 		elm_menu_item_add(menu, NULL, NULL, _("Direct Messages"), on_timeline_dmsgs_reload, NULL);
 		elm_menu_item_add(menu, NULL, NULL, _("Everyone"), on_timeline_public_reload, NULL);
@@ -2005,7 +2021,7 @@ EAPI int elm_main(int argc, char **argv)
 			elm_hover_parent_set(hv, gui.win);
 			elm_hover_content_set(hv, "top", edit_panel);
 
-			it = elm_toolbar_item_append(toolbar, "edit", _("Post"), on_post_hv, NULL);
+			gui.post = elm_toolbar_item_append(toolbar, "edit", _("Post"), on_post_hv, NULL);
 
 		elm_hover_target_set(hv, toolbar);
 

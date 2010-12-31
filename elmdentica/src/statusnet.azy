@@ -15,7 +15,7 @@ struct Attachment {
 };
 
 struct User {
-	int id;
+	double id;
 	string name;
 	string screen_name;
 	string location;
@@ -43,14 +43,14 @@ struct User {
 	string statusnet_profile_url;
 };
 
-struct Status {
+struct Basic_Status {
 	string text;
 	boolean truncated;
 	time created_at;
-	int in_reply_to_status_id;
+	double in_reply_to_status_id;
 	string source;
-	int id;
-	int in_reply_to_user_id;
+	double id;
+	double in_reply_to_user_id;
 	int in_reply_to_screen_name;
 	Geo geo;
 	boolean favorited;
@@ -59,19 +59,19 @@ struct Status {
 	string statusnet_html;
 };
 
-struct RT_Status {
+struct Status {
 	string text;
 	boolean truncated;
 	time created_at;
-	int in_reply_to_status_id;
+	double in_reply_to_status_id;
 	string source;
-	int id;
-	int in_reply_to_user_id;
+	double id;
+	double in_reply_to_user_id;
 	int in_reply_to_screen_name;
 	Geo geo;
 	boolean favorited;
 	array<Attachment> attachments;
 	User user;
 	string statusnet_html;
-	Status retweeted_status;
+	Basic_Status retweeted_status;
 };

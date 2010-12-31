@@ -22,6 +22,7 @@
 
 #include <Elementary.h>
 #include <Ecore_X.h>
+#include "statusnet_Common.h"
 
 typedef struct _StatusNetBaAccount {
 	double id;
@@ -64,38 +65,20 @@ typedef struct _User_Profile {
 } UserProfile;
 
 typedef struct _a_Status {
-	long long int sid;
-	char *text;
-	Eina_Bool truncated;
-	time_t	created_at;
-	long long int in_reply_to_status_id;
-	char *source;
-	long long int in_reply_to_user_id;
-	Eina_Bool favorited;
-	long long int user;
-	int account_id;
-	short account_type;
-	Evas_Object *bubble;
-	Eina_Bool	in_db;
+	statusnet_Status *status;
+	time_t           created_at;
+	long long int    user;
+	int              account_id;
+	short            account_type;
+	Eina_Bool        in_db;
 } aStatus;
 
 typedef struct _an_User {
-	long long int uid;
-	char *name;
-	char *screen_name;
-	char *location;
-	char *description;
-	char *profile_image_url;
-	char *url;
-	Eina_Bool protected;
-	int followers_count;
-	int friends_count;
-	time_t created_at;
-	int favorites_count;
-	int statuses_count;
-	Eina_Bool following;
-	Eina_Bool statusnet_blocking;
-	Eina_Bool	in_db;
+	statusnet_User	*user;
+	time_t			created_at;
+    int				account_id;
+	short			account_type;
+	Eina_Bool		in_db;
 } anUser;
 
 typedef struct _user_get {
@@ -103,6 +86,9 @@ typedef struct _user_get {
 	int account_id;
 	anUser *au;
 } UserGet;
+
+
+typedef void (*Status_List_Cb)(int);
 
 void ed_statusnet_account_free(StatusNetBaAccount *account);
 
@@ -114,7 +100,7 @@ void ed_statusnet_group_join(GroupProfile *group);
 void ed_statusnet_group_leave(GroupProfile *group);
 
 int ed_statusnet_post(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *msg);
-void ed_statusnet_timeline_get(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline);
+void ed_statusnet_timeline_get(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline, Status_List_Cb update_status_list);
 void ed_statusnet_favorite_create(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, long long int status_id);
 void ed_statusnet_favorite_destroy(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, long long int status_id);
 void ed_statusnet_init_friends(void);

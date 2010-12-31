@@ -32,9 +32,9 @@ typedef struct anchor_data {
 } AnchorData;
 
 typedef struct gag_data {
-	char        *screen_name;
-	char        *name;
-	char        *message;
+	const char        *screen_name;
+	const char        *name;
+	const char        *message;
 	Eina_Bool	match;
 } GagData;
 
@@ -46,6 +46,7 @@ typedef struct _StatusesList {
 
 typedef struct _Gui {
 	Evas_Object *win, *timeline, *pager, *main, *status_detail, *status_detail_users, *status_detail_links, *status_detail_tags, *status_detail_groups, *hover;
+	Elm_Toolbar_Item *timelines, *post;
 	Evas *win_evas;
 } Gui;
 
