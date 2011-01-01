@@ -17,6 +17,9 @@ namespace Evasxx {
 Object::Object ()
 {
   // no need to call init() here as it has to be done by the child class!
+  
+  // TODO: think about makeing init private and call it from Object constructor
+  // in the current design there's no need to call from child...
 }
 
 Object::Object (Evas_Object *eo)

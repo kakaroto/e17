@@ -38,8 +38,14 @@ public:
   void swallow( Evasxx::Object* );
   void unswallow( Evasxx::Object* );
 
+  /*!
+   * @throw SwallowNotExistingException
+   */
   Evasxx::Object &getSwallow ();
 
+  /*!
+   * @throw ExternalNotExistingException
+   */
   Evasxx::Object &getExternalObject ();
 
   // TODO: wrap Param?
