@@ -62,13 +62,17 @@ Object::Object( Evasxx::Canvas &canvas, const Eflxx::Point &pos, const std::stri
 Object::Object( Evas_Object* object)
 {
   o = object;
-  mFree = false;
 }
 
 Object::~Object()
 {
 	disconnectAll ();
   evas_object_del( o );
+}
+
+void Object::deleteAllParts ()
+{
+	Eflxx::delete_stl_container (mPartList);
 }
 
 void Object::setFile( const std::string &filename, const std::string &groupname )
@@ -95,23 +99,36 @@ Eflxx::Size Object::getMaximumSize() const
   return Eflxx::Size( w, h );
 }
 
-bool Object::hasPart( const std::string &partname ) const
+bool Object::hasPart (const std::string &partname) const
 {
   return edje_object_part_exists( o, partname.c_str () );
 }
 
-Eflxx::CountedPtr <Edjexx::Part> Object::operator[]( const std::string &partname )
+Part &Object::operator[]( const std::string &partname )
 {
   return getPart( partname );
 }
 
-Eflxx::CountedPtr <Part> Object::getPart( const std::string &partname )
+Part &Object::getPart (const std::string &partname)
 {
-  if ( hasPart( partname ) )
+  if (hasPart (partname))
   {
-    Part* ep = new Part( this, partname );
-    return Eflxx::CountedPtr <Part> (ep);
+    Part *p;
+    map <std::string, Part*>::iterator partFound = mPartList.find (partname);
+
+    if (partFound != mPartList.end ()) // found
+    {
+      p = partFound->second;
+    }
+    else // not found
+    {
+      p = new Part (this, partname);
+      mPartList[partname] = p;
+    }
+
+    return *p;
   }
+
   throw PartNotExistingException (partname);
 }
 

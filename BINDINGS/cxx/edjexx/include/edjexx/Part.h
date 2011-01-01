@@ -38,9 +38,9 @@ public:
   void swallow( Evasxx::Object* );
   void unswallow( Evasxx::Object* );
 
-  Eflxx::CountedPtr <Evasxx::Object> getSwallow ();
+  Evasxx::Object &getSwallow ();
 
-  Eflxx::CountedPtr <Evasxx::Object> getExternalObject ();
+  Evasxx::Object &getExternalObject ();
 
   // TODO: wrap Param?
   bool setParam (Edjexx::ExternalParam *param);
@@ -48,8 +48,10 @@ public:
   //const Evasxx::Object* getObject ( const char* name );
 
 private:
-  Object* _parent;
-  const std::string &_partname;
+  Object* mParent;
+  const std::string &mPartname;
+  Evasxx::Object *mExternalObject;
+  Evasxx::Object *mSwallowObject;
 
   /* State?
   EAPI const char  *edje_object_part_state_get      (Evas_Object *obj, const char *part, double *val_ret);

@@ -6,10 +6,10 @@
 #include <map>
 
 /* EFL++ */
-#include <eflxx/Common.h>
-#include <eflxx/CountedPtr.h>
+#include <eflxx/Eflxx.h>
+#include <evasxx/Evasxx.h>
 
-#include <evasxx/Canvas.h>
+/* local */
 #include "Part.h"
 
 /* EFL */
@@ -69,13 +69,13 @@ public:
   void recalculateLayout();
 
   bool hasPart( const std::string &partname ) const;
-  Eflxx::CountedPtr <Part> operator[]( const std::string &partname );
+  Part &operator[]( const std::string &partname );
 
   /*!
    * @param partname Access a Part in the Object.
    * @throw PartNotExistingException
    */
-  Eflxx::CountedPtr <Part> getPart( const std::string &partname );
+  Part &getPart( const std::string &partname );
 
   /* signals and slots */
   void connect (const std::string &emission, const std::string &source, const SignalSlot& slot);
@@ -95,10 +95,13 @@ private:
 
   Object( Evas_Object* object );
 
+  void deleteAllParts ();
+
   bool operator=( const Object& );
   bool operator==( const Object& );
 
 	std::map <std::pair <std::string, std::string>, SignalSignal*> mSignalList;
+  std::map <std::string, Part*> mPartList;
 };
 
 

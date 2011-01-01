@@ -5,6 +5,7 @@ libeflxx_HEADERS = \
 	DebugInternal.h \
 	System.h \
 	Debug.h \
+	MemoryUtil.h \
 	Eflxx.h
 
 libeflxxdir = \

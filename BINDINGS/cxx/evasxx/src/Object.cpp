@@ -23,13 +23,7 @@ Object::Object (Evas_Object *eo)
 {
   o = eo; // set member Evas_Edje*
 
-  mFree = false; // don't manage the object and free it at delete time
-
-  /* Set up magic object back link */
-  evas_object_data_set( o, "obj_c++", this );
-
-  /* Set up callbacks */
-  registerCallbacks();
+  init ();
 }
 
 Object *Object::wrap( Evas_Object* o )
@@ -39,8 +33,6 @@ Object *Object::wrap( Evas_Object* o )
 
 void Object::init ()
 {
-  mFree = true; // manage the object and free it at delete time
-
   /* Set up magic object back link */
   evas_object_data_set( o, "obj_c++", this );
 
@@ -51,6 +43,7 @@ void Object::init ()
 Object::~Object()
 {
   Dout( dc::notice, *this << " Object::~Object" );
+  unregisterCallbacks ();
 }
 
 const std::string Object::getName() const
@@ -374,7 +367,7 @@ Eflxx::CountedPtr <Canvas> Object::getEvas ()
 }
 
 // PRIVATE
-void Object::registerCallbacks()
+void Object::registerCallbacks ()
 {
   // TODO: think about if it's good design to register all at start
   // does this cost performance?
@@ -396,6 +389,28 @@ void Object::registerCallbacks()
   evas_object_event_callback_add( o, EVAS_CALLBACK_HOLD,         &dispatcher, reinterpret_cast<void*>( EVAS_CALLBACK_HOLD ) );
   evas_object_event_callback_add( o, EVAS_CALLBACK_CHANGED_SIZE_HINTS,   &dispatcher, reinterpret_cast<void*>( EVAS_CALLBACK_CHANGED_SIZE_HINTS ) );
   evas_object_event_callback_add( o, EVAS_CALLBACK_IMAGE_PRELOADED,      &dispatcher, reinterpret_cast<void*>( EVAS_CALLBACK_IMAGE_PRELOADED ) );
+}
+
+void Object::unregisterCallbacks ()
+{
+  evas_object_event_callback_del (o, EVAS_CALLBACK_MOUSE_IN,	dispatcher);
+  evas_object_event_callback_del (o, EVAS_CALLBACK_MOUSE_OUT,	dispatcher);
+  evas_object_event_callback_del (o, EVAS_CALLBACK_MOUSE_DOWN,	dispatcher);
+  evas_object_event_callback_del (o, EVAS_CALLBACK_MOUSE_UP,	dispatcher);
+  evas_object_event_callback_del (o, EVAS_CALLBACK_MOUSE_MOVE,	dispatcher);
+  evas_object_event_callback_del (o, EVAS_CALLBACK_MOUSE_WHEEL,	dispatcher);
+  evas_object_event_callback_del (o, EVAS_CALLBACK_KEY_DOWN,	dispatcher);
+  evas_object_event_callback_del (o, EVAS_CALLBACK_KEY_UP,	dispatcher);
+  evas_object_event_callback_del (o, EVAS_CALLBACK_FREE,	dispatcher);
+  evas_object_event_callback_del (o, EVAS_CALLBACK_SHOW,	dispatcher);
+  evas_object_event_callback_del (o, EVAS_CALLBACK_HIDE,	dispatcher);
+  evas_object_event_callback_del (o, EVAS_CALLBACK_MOVE,	dispatcher);
+  evas_object_event_callback_del (o, EVAS_CALLBACK_RESIZE,	dispatcher);
+  evas_object_event_callback_del (o, EVAS_CALLBACK_RESTACK,	dispatcher);
+  evas_object_event_callback_del (o, EVAS_CALLBACK_DEL,	dispatcher);
+  evas_object_event_callback_del (o, EVAS_CALLBACK_HOLD,	dispatcher);
+  evas_object_event_callback_del (o, EVAS_CALLBACK_CHANGED_SIZE_HINTS,	dispatcher);
+  evas_object_event_callback_del (o, EVAS_CALLBACK_IMAGE_PRELOADED,	dispatcher);
 }
 
 //PRIVATE

@@ -32,6 +32,26 @@ private:
   const std::string &txt;
 };
 
+class ExternalNotExistingException : public std::exception
+{
+public:
+  ExternalNotExistingException (const std::string &partname) : txt (partname) {}
+  const char* what () const throw ();
+
+private:
+  const std::string &txt;
+};
+
+class SwallowNotExistingException : public std::exception
+{
+public:
+  SwallowNotExistingException (const std::string &partname) : txt (partname) {}
+  const char* what () const throw ();
+
+private:
+  const std::string &txt;
+};
+
 } // end namespace Edjexx
 
 #endif // EDJEXX_EXCEPTIONS_H

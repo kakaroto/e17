@@ -222,14 +222,16 @@ public:
 
 private:
   
-  void registerCallbacks();
+  void registerCallbacks ();
+  void unregisterCallbacks ();
   static void dispatcher( void *data, Evas *evas, Evas_Object *evas_object, void *event_info);
 
 protected:
+  // TODO: think about makeing init private and call it from Object constructor
+  // in the current design there's no need to call from child...
   void init ();
 
   Evas_Object* o;
-  bool mFree; /// @deprecated
 
 private:
 

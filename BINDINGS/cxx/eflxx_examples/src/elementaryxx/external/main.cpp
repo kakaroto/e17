@@ -35,6 +35,7 @@ int main (int argc, char **argv)
   
   Background *bg = Background::factory (*elmWin);
 
+  // TODO wrap this
   Evas *e = evas_object_evas_get(bg->obj ());
 
   // TODO: CountedPtr
@@ -47,44 +48,84 @@ int main (int argc, char **argv)
   edje->setLayer (0);
   edje->show ();
 
-  // This access is type unsafe as a cast is done without checking prior the type!
-  Eflxx::CountedPtr <Evasxx::Object> ext_eo (edje->getPart ("Button01")->getExternalObject ());
-  Elmxx::Button *button = static_cast <Elmxx::Button*> (&(*ext_eo));
-  button->setLabel ("This is a changed button");
-
-  // This access is type unsafe as a cast is done without checking prior the type!
-  Eflxx::CountedPtr <Evasxx::Object> ext_eo2 (edje->getPart ("List01")->getExternalObject ());
-  Elmxx::List *list = static_cast <Elmxx::List*> (&(*ext_eo2));
-  assert (list->append ("1. Line", NULL, NULL));
-  assert (list->append ("2. Line", NULL, NULL));
-  assert (list->append ("3. Line", NULL, NULL));
-  assert (list->append ("4. Line", NULL, NULL));
-  list->go ();
-
-  // The code below accesses a Edje External widget (here: Elementary Progressbar) in a type save way
-  Eflxx::CountedPtr <Evasxx::Object> ext_eo3 (edje->getPart ("Progressbar01")->getExternalObject ());
-  cout << "Edje Widget type: " << ext_eo3->getType () << endl;
-  if (ext_eo3->getType () == "elm_widget")
+  try
   {
-    Elmxx::Object *elm_object = static_cast <Elmxx::Object*> (&(*ext_eo3));
-
-    cout << "Elm Widget type: " << elm_object->getWidgetType () << endl;
-    if (elm_object->getWidgetType () == "progressbar")
-    {
-      Elmxx::Progressbar *progressbar = static_cast <Elmxx::Progressbar*> (elm_object);
-      progressbar->setLabel ("This is the status");
-      progressbar->setValue (0.5);
-    }
+    // This access is type unsafe as a cast is done without checking prior the type!
+    Evasxx::Object &ext_eo = edje->getPart ("Button01").getExternalObject ();
+    Elmxx::Button &button = *(static_cast <Elmxx::Button*> (&ext_eo));
+    button.setLabel ("This is a changed button");
+  }
+  catch (Edjexx::PartNotExistingException pne)
+  {
+    cerr << pne.what () << endl;
+  }
+  catch (Edjexx::ExternalNotExistingException ene)
+  {
+    cerr << ene.what () << endl;
   }
 
+  try
+  {
+    // This access is type unsafe as a cast is done without checking prior the type!
+    Evasxx::Object &ext_eo2 = edje->getPart ("List01").getExternalObject ();
+    Elmxx::List &list = *(static_cast <Elmxx::List*> (&ext_eo2));
+    assert (list.append ("1. Line", NULL, NULL));
+    assert (list.append ("2. Line", NULL, NULL));
+    assert (list.append ("3. Line", NULL, NULL));
+    assert (list.append ("4. Line", NULL, NULL));
+    list.go ();
+  }
+  catch (Edjexx::PartNotExistingException pne)
+  {
+    cerr << pne.what () << endl;
+  }
+  catch (Edjexx::ExternalNotExistingException ene)
+  {
+    cerr << ene.what () << endl;
+  }
+
+  try
+  {
+    // The code below accesses a Edje External widget (here: Elementary Progressbar) in a type save way
+    Evasxx::Object &ext_eo3 = edje->getPart ("Progressbar01").getExternalObject ();
+    cout << "Edje Widget type: " << ext_eo3.getType () << endl;
+    if (ext_eo3.getType () == "elm_widget")
+    {
+      Elmxx::Object &elm_object = *(static_cast <Elmxx::Object*> (&ext_eo3));
+
+      cout << "Elm Widget type: " << elm_object.getWidgetType () << endl;
+      if (elm_object.getWidgetType () == "progressbar")
+      {
+        Elmxx::Progressbar &progressbar = *(static_cast <Elmxx::Progressbar*> (&elm_object));
+        progressbar.setLabel ("This is the status");
+        progressbar.setValue (0.5);
+      }
+    }
+  }
+  catch (Edjexx::PartNotExistingException pne)
+  {
+    cerr << pne.what () << endl;
+  }
+  catch (Edjexx::ExternalNotExistingException ene)
+  {
+    cerr << ene.what () << endl;
+  }
+  
   // This External access is save as it only calls the ExternalParam interface
-  Eflxx::CountedPtr <Edjexx::Part> part (edje->getPart ("Slider01"));
+  try
+  {
+    Edjexx::Part &part = edje->getPart ("Slider01");
 
-  Edjexx::ExternalParam param ("value", 5.0f);
-  Edjexx::ExternalParam param2 ("label", "Changed Slider Value");
+    Edjexx::ExternalParam param ("value", 5.0f);
+    Edjexx::ExternalParam param2 ("label", "Changed Slider Value");
 
-  part->setParam (&param);
-  part->setParam (&param2);
+    part.setParam (&param);
+    part.setParam (&param2);
+  }
+  catch (Edjexx::PartNotExistingException pne)
+  {
+    cerr << pne.what () << endl;
+  }
   
   bg->setWeightHintSize (1.0, 1.0);
   elmWin->addObjectResize (*bg);

@@ -6,5 +6,6 @@
 #include "Debug.h"
 #include "DebugInternal.h"
 #include "System.h"
+#include "MemoryUtil.h"
 
 #endif // EFLXX_H
