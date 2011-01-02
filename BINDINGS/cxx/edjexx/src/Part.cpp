@@ -16,6 +16,7 @@ Part::Part (Object* parent, const std::string &partname) :
   mParent (parent),
   mPartname (partname),
   mExternalObject (NULL),
+  mExternalContent (NULL),
   mSwallowObject (NULL)
 {
   Dout( dc::notice, " Part::EdjePart( '" << mPartname << "' ) constructing..." );
@@ -64,31 +65,43 @@ void Part::unswallow( Evasxx::Object* object )
 Evasxx::Object &Part::getSwallow()
 {
   Evas_Object *eo = edje_object_part_swallow_get (mParent->obj(), mPartname.c_str ());
-
+  if (!eo)
+    throw SwallowNotExistingException (mPartname);
+  
   if (!mSwallowObject)
   {
     mSwallowObject = Evasxx::Object::wrap (eo);
   }
 
-  if (!mSwallowObject)
-    throw SwallowNotExistingException (mPartname);
-  
   return *mSwallowObject;
 }
 
 Evasxx::Object &Part::getExternalObject ()
 {
   Evas_Object *eo = edje_object_part_external_object_get (mParent->obj(), mPartname.c_str ());
+  if (!eo)
+    throw ExternalNotExistingException (mPartname);
   
   if (!mExternalObject)
   {
     mExternalObject = Evasxx::Object::wrap (eo);
   }
-
-  if (!mExternalObject)
-    throw ExternalNotExistingException (mPartname);
   
   return *mExternalObject;
+}
+
+Evasxx::Object &Part::getExternalContent (const std::string &content)
+{
+  Evas_Object *eo = edje_object_part_external_content_get (mParent->obj(), mPartname.c_str (), content.c_str ());
+  if (!eo)
+    throw ExternalNotExistingException (mPartname);
+  
+  if (!mExternalContent)
+  {
+    mExternalContent = Evasxx::Object::wrap (eo);
+  }
+  
+  return *mExternalContent;
 }
 
 bool Part::setParam (Edjexx::ExternalParam *param)

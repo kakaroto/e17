@@ -48,6 +48,8 @@ public:
    */
   Evasxx::Object &getExternalObject ();
 
+  Evasxx::Object &getExternalContent (const std::string &content);
+
   // TODO: wrap Param?
   bool setParam (Edjexx::ExternalParam *param);
 
@@ -57,6 +59,7 @@ private:
   Object* mParent;
   const std::string &mPartname;
   Evasxx::Object *mExternalObject;
+  Evasxx::Object *mExternalContent;
   Evasxx::Object *mSwallowObject;
 
   /* State?
