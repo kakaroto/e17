@@ -1619,6 +1619,8 @@ gen_client_impl(Azy_Server_Module *s)
         EL(1, "EINA_SAFETY_ON_TRUE_GOTO(!retval, error);");
         if (method->return_type->free_func)
           EL(1, "azy_client_callback_free_set(cli, retval, (Ecore_Cb)%s);", method->return_type->free_func);
+        else
+          EL(1, "azy_client_callback_free_set(cli, retval, AZY_FAKE_FREE_CB);");
 
         NL;
         EL(0, "error:");
