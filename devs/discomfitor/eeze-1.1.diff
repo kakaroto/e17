@@ -52,7 +52,7 @@ Index: m4/ac_attribute.m4
 +dnl End of ac_attribute.m4
 Index: configure.ac
 ===================================================================
---- configure.ac	(revision 55444)
+--- configure.ac	(revision 55798)
 +++ configure.ac	(working copy)
 @@ -1,15 +1,12 @@
  ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
@@ -76,7 +76,7 @@ Index: configure.ac
  ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
  
 -AC_INIT([eeze], [v_ver.beta3], [enlightenment-devel@lists.sourceforge.net])
-+AC_INIT([eeze], [v_ver.alpha], [enlightenment-devel@lists.sourceforge.net])
++AC_INIT([eeze], [v_ver.beta], [enlightenment-devel@lists.sourceforge.net])
  AC_PREREQ([2.52])
  AC_CONFIG_SRCDIR([configure.ac])
  AC_CONFIG_MACRO_DIR([m4])
@@ -88,7 +88,7 @@ Index: configure.ac
  
  # pkg-config
  PKG_PROG_PKG_CONFIG
-@@ -89,7 +87,34 @@
+@@ -88,7 +86,34 @@
    AC_DEFINE([OLD_UDEV_RRRRRRRRRRRRRR],[1],[compat functionality for udev < 148])
  fi
  
@@ -123,23 +123,21 @@ Index: configure.ac
  ### Checks for header files
  
  
-@@ -136,9 +161,13 @@
+@@ -139,7 +164,12 @@
  echo "------------------------------------------------------------------------"
  echo
  echo "Configuration Options Summary:"
+-echo
 +if test "x$eeze_mount" = "xyes";then
 +  echo
 +  echo "Mount..................: ${with_mount}"
 +  echo "Umount.................: ${with_umount}"
 +  echo
 +fi
+ echo "Test...................: ${have_eeze_udev_test}"
  echo
--echo "Documentation..........: ${build_doc}"
--echo
- echo "Compilation............: make (or gmake)"
- echo "  CPPFLAGS.............: $CPPFLAGS"
- echo "  CFLAGS...............: $CFLAGS"
-@@ -147,3 +176,4 @@
+ echo "Documentation..........: ${build_doc}"
+@@ -152,3 +182,4 @@
  echo "Installation...........: make install (as root if needed, with 'su' or 'sudo')"
  echo "  prefix...............: $prefix"
  echo
@@ -689,7 +687,7 @@ Index: src/lib/eeze_disk_mount.c
 ===================================================================
 --- src/lib/eeze_disk_mount.c	(revision 0)
 +++ src/lib/eeze_disk_mount.c	(revision 0)
-@@ -0,0 +1,346 @@
+@@ -0,0 +1,345 @@
 +#ifdef HAVE_CONFIG_H
 +#include "config.h"
 +#endif
@@ -749,6 +747,7 @@ Index: src/lib/eeze_disk_mount.c
 +_eeze_disk_mount_result_handler(void *data __UNUSED__, int type __UNUSED__, Ecore_Exe_Event_Del *ev)
 +{
 +   Eeze_Disk *disk;
++   Eeze_Event_Disk_Mount *e;
 +
 +   if ((!ev) || (!ev->exe))
 +     return ECORE_CALLBACK_RENEW;
@@ -788,13 +787,11 @@ Index: src/lib/eeze_disk_mount.c
 +           break;
 +
 +         default:
-+           Eeze_Event_Disk_Mount *e;
-+
 +           e = malloc(sizeof(Eeze_Event_Disk_Mount));
 +           EINA_SAFETY_ON_NULL_RETURN_VAL(e, ECORE_CALLBACK_RENEW);
 +           e->disk = disk;
 +           ecore_event_add(EEZE_EVENT_DISK_MOUNT, e, NULL, NULL);
-+       }
++        }
 +    else
 +      switch (ev->exit_code)
 +        {
@@ -1040,7 +1037,7 @@ Index: src/lib/Eeze_Disk.h
 ===================================================================
 --- src/lib/Eeze_Disk.h	(revision 0)
 +++ src/lib/Eeze_Disk.h	(revision 0)
-@@ -0,0 +1,117 @@
+@@ -0,0 +1,116 @@
 +#ifndef EEZE_DISK_H
 +#define EEZE_DISK_H
 +
@@ -1096,6 +1093,7 @@ Index: src/lib/Eeze_Disk.h
 +
 +typedef struct _Eeze_Event_Disk_Mount Eeze_Event_Disk_Mount;
 +typedef struct _Eeze_Event_Disk_Unmount Eeze_Event_Disk_Unmount;
++typedef struct _Eeze_Disk Eeze_Disk;
 +
 +struct _Eeze_Event_Disk_Mount
 +{
@@ -1107,8 +1105,6 @@ Index: src/lib/Eeze_Disk.h
 +   Eeze_Disk *disk;
 +};
 +
-+struct _Eeze_Disk;
-+typedef struct _Eeze_Disk Eeze_Disk;
 +
 +typedef struct _Eeze_Event_Disk_Error Eeze_Event_Disk_Error;
 +
@@ -1160,19 +1156,18 @@ Index: src/lib/Eeze_Disk.h
 +#endif
 Index: src/lib/Makefile.am
 ===================================================================
---- src/lib/Makefile.am	(revision 55444)
+--- src/lib/Makefile.am	(revision 55798)
 +++ src/lib/Makefile.am	(working copy)
-@@ -1,20 +1,34 @@
- MAINTAINERCLEANFILES = Makefile.in
+@@ -2,19 +2,34 @@
  
--AM_CPPFLAGS = @ECORE_CFLAGS@ @LIBUDEV_CFLAGS@
+ AM_CPPFLAGS = @EEZE_CFLAGS@
  
 +if HAVE_EEZE_MOUNT
-+  AM_CFLAGS = @ECORE_CFLAGS@ @LIBUDEV_CFLAGS@ @LIBMOUNT_CFLAGS@ @ECORE_FILE_CFLAGS@
++  AM_CFLAGS = @EEZE_CFLAGS@ @LIBMOUNT_CFLAGS@ @ECORE_FILE_CFLAGS@
 +  MOUNT_FILES = eeze_disk.c eeze_disk_mount.c eeze_disk_libmount.c
 +  MOUNT_INCLUDES = Eeze_Disk.h
 +else
-+  AM_CFLAGS = @ECORE_CFLAGS@ @LIBUDEV_CFLAGS@
++  AM_CFLAGS = @EEZE_CFLAGS@ @LIBUDEV_CFLAGS@
 +  MOUNT_FILES = 
 +  MOUNT_INCLUDES =
 +endif
@@ -1194,18 +1189,18 @@ Index: src/lib/Makefile.am
 +eeze_udev_watch.c \
 +$(MOUNT_FILES)
  
--libeeze_la_LIBADD = @ECORE_LIBS@ @LIBUDEV_LIBS@
+-libeeze_la_LIBADD = @EEZE_LIBS@
 +if HAVE_EEZE_MOUNT
-+  libeeze_la_LIBADD = @ECORE_LIBS@ @LIBUDEV_LIBS@ @LIBMOUNT_LIBS@ @ECORE_FILE_LIBS@
++  libeeze_la_LIBADD = @EEZE_LIBS@ @LIBMOUNT_LIBS@ @ECORE_FILE_LIBS@
 +else
-+  libeeze_la_LIBADD = @ECORE_LIBS@ @LIBUDEV_LIBS@
++  libeeze_la_LIBADD = @EEZE_LIBS@
 +endif
  libeeze_la_LDFLAGS = -no-undefined -version-info @version_info@ @release_info@
  
  EXTRA_DIST = eeze_udev_private.h
 Index: src/lib/eeze_udev_private.h
 ===================================================================
---- src/lib/eeze_udev_private.h	(revision 55444)
+--- src/lib/eeze_udev_private.h	(revision 55798)
 +++ src/lib/eeze_udev_private.h	(working copy)
 @@ -1,6 +1,6 @@
  #ifndef EEZE_UDEV_PRIVATE_H
@@ -1636,7 +1631,7 @@ Index: src/lib/eeze_disk_libmount.c
 +/** @} */
 Index: src/lib/eeze_main.c
 ===================================================================
---- src/lib/eeze_main.c	(revision 55444)
+--- src/lib/eeze_main.c	(revision 55798)
 +++ src/lib/eeze_main.c	(working copy)
 @@ -4,7 +4,9 @@
  
@@ -1908,44 +1903,41 @@ Index: src/bin/eeze_disk_ls.c
 +}
 Index: src/bin/Makefile.am
 ===================================================================
---- src/bin/Makefile.am	(revision 55444)
+--- src/bin/Makefile.am	(revision 55798)
 +++ src/bin/Makefile.am	(working copy)
-@@ -1,14 +1,32 @@
+@@ -1,8 +1,33 @@
  MAINTAINERCLEANFILES = Makefile.in
  
--EEZE_CPPFLAGS = \
+-bin_PROGRAMS = @EEZE_UDEV_TEST_PRG@
 +EEZE_CFLAGS = \
- -I$(top_srcdir)/src/lib \
- @ECORE_CFLAGS@ \
--@LIBUDEV_CFLAGS@
-+@LIBUDEV_CFLAGS@ 
++-I$(top_srcdir)/src/lib \
++@EEZE_CFLAGS@
++
+ EXTRA_PROGRAMS = eeze_udev_test
  
--EEZE_UDEV_PROG = eeze_udev_test
 +if HAVE_EEZE_MOUNT
 +  DISK_PROGS = eeze_mount eeze_umount eeze_disk_ls
 +else
 +  DISK_PROGS = 
 +endif
- 
--bin_PROGRAMS = eeze_udev_test
-+bin_PROGRAMS = eeze_udev_test $(DISK_PROGS)
- 
++
++bin_PROGRAMS = @EEZE_UDEV_TEST_PRG@ $(DISK_PROGS)
++
  eeze_udev_test_SOURCES = eeze_udev_test.c
--eeze_udev_test_CPPFLAGS = $(EEZE_CPPFLAGS)
-+eeze_udev_test_CFLAGS = $(EEZE_CFLAGS)
- eeze_udev_test_LDADD = $(top_builddir)/src/lib/libeeze.la
+ eeze_udev_test_CPPFLAGS = -I$(top_srcdir)/src/lib @EEZE_CFLAGS@
+ eeze_udev_test_LDADD = $(top_builddir)/src/lib/libeeze.la @EEZE_LIBS@
 +
 +if HAVE_EEZE_MOUNT
 +  eeze_mount_SOURCES = eeze_mount.c
-+  eeze_mount_CFLAGS = $(EEZE_CFLAGS) @LIBMOUNT_CFLAGS@ @ECORE_FILE_CFLAGS@
++  eeze_mount_CFLAGS = -I$(top_srcdir)/src/lib $(EEZE_CFLAGS) @LIBMOUNT_CFLAGS@ @ECORE_FILE_CFLAGS@
 +  eeze_mount_LDADD = $(top_builddir)/src/lib/libeeze.la @LIBMOUNT_CFLAGS@ @ECORE_FILE_CFLAGS@
 +
 +  eeze_umount_SOURCES = eeze_umount.c
-+  eeze_umount_CFLAGS = $(EEZE_CFLAGS) @LIBMOUNT_CFLAGS@ @ECORE_FILE_CFLAGS@
++  eeze_umount_CFLAGS = -I$(top_srcdir)/src/lib $(EEZE_CFLAGS) @LIBMOUNT_CFLAGS@ @ECORE_FILE_CFLAGS@
 +  eeze_umount_LDADD = $(top_builddir)/src/lib/libeeze.la @LIBMOUNT_CFLAGS@ @ECORE_FILE_CFLAGS@
 +
 +  eeze_disk_ls_SOURCES = eeze_disk_ls.c
-+  eeze_disk_ls_CFLAGS = $(EEZE_CFLAGS) @LIBMOUNT_CFLAGS@ @ECORE_FILE_CFLAGS@
++  eeze_disk_ls_CFLAGS = -I$(top_srcdir)/src/lib $(EEZE_CFLAGS) @LIBMOUNT_CFLAGS@ @ECORE_FILE_CFLAGS@
 +  eeze_disk_ls_LDADD = $(top_builddir)/src/lib/libeeze.la @LIBMOUNT_CFLAGS@ @ECORE_FILE_CFLAGS@
 +endif
 Index: src/bin/eeze_mount.c
