@@ -462,7 +462,7 @@ azy_events_connection_kill(void             *conn,
 }
 
 void
-azy_event_handler_fake_free(void *data __UNUSED__, void *data2 __UNUSED__)
+_azy_event_handler_fake_free(void *data __UNUSED__, void *data2 __UNUSED__)
 {}
 
 void
