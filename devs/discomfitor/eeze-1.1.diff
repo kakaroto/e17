@@ -146,7 +146,7 @@ Index: src/lib/eeze_disk_private.h
 ===================================================================
 --- src/lib/eeze_disk_private.h	(revision 0)
 +++ src/lib/eeze_disk_private.h	(revision 0)
-@@ -0,0 +1,77 @@
+@@ -0,0 +1,78 @@
 +#ifndef EEZE_DISK_PRIVATE_H
 +#define EEZE_DISK_PRIVATE_H
 +#include <Eeze.h>
@@ -201,6 +201,7 @@ Index: src/lib/eeze_disk_private.h
 +   struct
 +     {
 +        Eeze_Disk_Type type;
++        Eina_Bool removable : 1;
 +        const char *vendor;
 +        const char *model;
 +        const char *serial;
@@ -228,7 +229,7 @@ Index: src/lib/eeze_disk.c
 ===================================================================
 --- src/lib/eeze_disk.c	(revision 0)
 +++ src/lib/eeze_disk.c	(revision 0)
-@@ -0,0 +1,454 @@
+@@ -0,0 +1,466 @@
 +#ifdef HAVE_CONFIG_H
 +#include "config.h"
 +#endif
@@ -469,8 +470,7 @@ Index: src/lib/eeze_disk.c
 +{
 +   EINA_SAFETY_ON_NULL_RETURN(disk);
 +   /* never rescan; if these values change then something is seriously wrong */
-+   if (disk->cache.filled)
-+     return;
++   if (disk->cache.filled) return;
 +     
 +   if (!disk->cache.vendor)
 +     disk->cache.vendor = udev_device_get_property_value(disk->device, "ID_VENDOR");
@@ -484,6 +484,7 @@ Index: src/lib/eeze_disk.c
 +     disk->cache.type = _eeze_disk_type_find(disk);
 +   if (!disk->cache.label)
 +     disk->cache.label = udev_device_get_property_value(disk->device, "ID_FS_LABEL");
++   disk->removable = !!strtol(udev_device_get_sysattr_value(disk->device, "removable"), NULL, 10);
 +
 +   disk->cache.filled = EINA_TRUE;
 +}
@@ -680,6 +681,18 @@ Index: src/lib/eeze_disk.c
 +     return disk->cache.type;
 +   disk->cache.type = _eeze_disk_type_find(disk);
 +   return disk->cache.type;
++}
++
++EAPI Eina_Bool
++eeze_disk_removable_get(Eeze_Disk *disk)
++{
++   EINA_SAFETY_ON_NULL_RETURN_VAL(disk, EINA_FALSE);
++
++   if (disk->cache.filled)
++     return disk->cache.removable;
++
++   disk->removable = !!strtol(udev_device_get_sysattr_value(disk->device, "removable"), NULL, 10);
++   return disk->cache.removablel;
 +}
 +
 +/** @} */
@@ -1037,7 +1050,7 @@ Index: src/lib/Eeze_Disk.h
 ===================================================================
 --- src/lib/Eeze_Disk.h	(revision 0)
 +++ src/lib/Eeze_Disk.h	(revision 0)
-@@ -0,0 +1,116 @@
+@@ -0,0 +1,117 @@
 +#ifndef EEZE_DISK_H
 +#define EEZE_DISK_H
 +
@@ -1135,6 +1148,7 @@ Index: src/lib/Eeze_Disk.h
 +EAPI const char    *eeze_disk_uuid_get(Eeze_Disk *disk);
 +EAPI const char    *eeze_disk_label_get(Eeze_Disk *disk);
 +EAPI Eeze_Disk_Type eeze_disk_type_get(Eeze_Disk *disk);
++EAPI Eina_Bool      eeze_disk_removable_get(Eeze_Disk *disk);
 +
 +EAPI Eina_Bool      eeze_disk_mounted_get(Eeze_Disk *disk);
 +EAPI Eina_Bool      eeze_disk_mount(Eeze_Disk *disk);
