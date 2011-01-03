@@ -484,7 +484,7 @@ Index: src/lib/eeze_disk.c
 +     disk->cache.type = _eeze_disk_type_find(disk);
 +   if (!disk->cache.label)
 +     disk->cache.label = udev_device_get_property_value(disk->device, "ID_FS_LABEL");
-+   disk->removable = !!strtol(udev_device_get_sysattr_value(disk->device, "removable"), NULL, 10);
++   disk->cache.removable = !!strtol(udev_device_get_sysattr_value(disk->device, "removable"), NULL, 10);
 +
 +   disk->cache.filled = EINA_TRUE;
 +}
@@ -691,8 +691,8 @@ Index: src/lib/eeze_disk.c
 +   if (disk->cache.filled)
 +     return disk->cache.removable;
 +
-+   disk->removable = !!strtol(udev_device_get_sysattr_value(disk->device, "removable"), NULL, 10);
-+   return disk->cache.removablel;
++   disk->cache.removable = !!strtol(udev_device_get_sysattr_value(disk->device, "removable"), NULL, 10);
++   return disk->cache.removable;
 +}
 +
 +/** @} */
