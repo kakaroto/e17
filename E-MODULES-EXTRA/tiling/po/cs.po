@@ -1,4 +1,5 @@
-# Czech translation for E17 tiling module.
+# Czech translation.
+# This file is put in the public domain.
 # quaker <quaker66@gmail.com>, 2009.
 # Stanislaw Gackowski <launchpad@soeb.eu>, 2009.
 #
@@ -6,73 +7,82 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tiling\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-10-22 15:20+0200\n"
-"PO-Revision-Date: 2009-02-24 09:08+0000\n"
-"Last-Translator: Stanislaw Gackowski <launchpad@soeb.eu>\n"
-"Language-Team: none\n"
+"POT-Creation-Date: 2011-01-04 18:06+0100\n"
+"PO-Revision-Date: 2011-01-04 18:06+0100\n"
+"Last-Translator: quaker66 <quaker66@gmail.com>\n"
+"Language-Team: Czech <quaker66@gmail.com>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_main.c:83 src/e_mod_main.c:88 src/e_mod_main.c:1007
+#: ../src/e_mod_main.c:80
+#: ../src/e_mod_main.c:85
+#: ../src/e_mod_main.c:1009
 msgid "Tiling"
 msgstr "Dlaždicce"
 
-#: src/e_mod_main.c:1006
+#: ../src/e_mod_main.c:1008
 msgid "Windows"
 msgstr "Okna"
 
-#: src/e_mod_config.c:70
+#: ../src/e_mod_config.c:67
 msgid "Tiling Configuration"
 msgstr "Nastavení modulu"
 
-#: src/e_mod_config.c:217
+#. General settings
+#: ../src/e_mod_config.c:214
 msgid "General"
 msgstr "Hlavní"
 
-#: src/e_mod_config.c:227
+#: ../src/e_mod_config.c:224
 msgid "Horizontal:"
 msgstr "Horizontální:"
 
-#: src/e_mod_config.c:228 src/e_mod_config.c:232
+#: ../src/e_mod_config.c:225
+#: ../src/e_mod_config.c:229
 #, c-format
 msgid "%1.0f px"
 msgstr "%1.0f px"
 
-#: src/e_mod_config.c:231
+#: ../src/e_mod_config.c:228
 msgid "Vertical:"
 msgstr "Vertikální:"
 
-#: src/e_mod_config.c:241
+#. Virtual desktop settings
+#: ../src/e_mod_config.c:238
 msgid "Virtual Desktops"
 msgstr "Virtuální plochy"
 
-#: src/e_mod_config.c:279
+#. Grid mode settings
+#: ../src/e_mod_config.c:276
 msgid "Grid mode settings"
 msgstr "Nastavení módu mřížky"
 
-#: src/e_mod_config.c:283
+#: ../src/e_mod_config.c:280
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
-#: src/e_mod_config.c:288
+#. Bigmain settings
+#: ../src/e_mod_config.c:285
 msgid "Bigmain settings"
 msgstr "Nastavení bigmain"
 
-#: src/e_mod_config.c:289
+#: ../src/e_mod_config.c:286
 msgid "Big win takes percent of screen:"
 msgstr "Velká okna zaberou procent z obrazovky:"
 
-#: src/e_mod_config.c:290
+#: ../src/e_mod_config.c:287
 #, c-format
 msgid "%.2f"
 msgstr "%.2f"
 
-#: src/e_mod_config.c:296
+#: ../src/e_mod_config.c:293
 msgid "Tiling border"
 msgstr "Okraj"
 
-#: src/e_mod_config.c:310
+#: ../src/e_mod_config.c:307
 msgid "Floating border"
 msgstr "Plovoucí okraj"
+

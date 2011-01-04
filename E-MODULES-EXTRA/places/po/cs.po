@@ -1,107 +1,121 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Enlightenment development team
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# Czech translation.
+# This file is put in the public domain.
+# quaker66@gmail.com
 msgid ""
 msgstr ""
-"Project-Id-Version: PLACES\n"
+"Project-Id-Version: Places\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-02-28 12:14+0100\n"
-"PO-Revision-Date: 2009-06-11 15:32+0100\n"
+"POT-Creation-Date: 2011-01-04 18:02+0100\n"
+"PO-Revision-Date: 2011-01-04 18:02+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
-"Language-Team: easylinux <quaker66@gmail.com>\n"
+"Language-Team: Czech <quaker66@gmail.com>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_config.c:51
-msgid "Places Configuration"
+#. create new config dialog
+#: ../src/e_mod_config.c:51
+msgid "Places Settings"
 msgstr "Nastavení modulu Místa"
 
-#: src/e_mod_config.c:118
+#. General frame
+#: ../src/e_mod_config.c:118
 msgid "General"
-msgstr "Hlavní"
+msgstr "Obecné"
 
-#: src/e_mod_config.c:121
+#: ../src/e_mod_config.c:121
 msgid "Show in main menu"
 msgstr "Zobrazit v hlavním menu"
 
-#: src/e_mod_config.c:125
+#: ../src/e_mod_config.c:125
 msgid "Mount volumes on insert"
 msgstr "Připojit zařízení při vložení"
 
-#: src/e_mod_config.c:129
+#: ../src/e_mod_config.c:129
 msgid "Open filemanager on insert"
 msgstr "Otevřít správce souborů při vložení"
 
-#: src/e_mod_config.c:133
+#: ../src/e_mod_config.c:133
 msgid "Use a custom file manager"
 msgstr "Použít vlastní správce souborů"
 
-#: src/e_mod_config.c:146
+#. Display frame
+#: ../src/e_mod_config.c:146
 msgid "Show in menu"
 msgstr "Zobrazit v menu"
 
-#: src/e_mod_config.c:149 src/e_mod_places.c:402
+#: ../src/e_mod_config.c:149
+#: ../src/e_mod_places.c:408
 msgid "Home"
 msgstr "Domovská složka"
 
-#: src/e_mod_config.c:152 src/e_mod_places.c:411
+#: ../src/e_mod_config.c:152
+#: ../src/e_mod_places.c:417
 msgid "Desktop"
 msgstr "Plocha"
 
-#: src/e_mod_config.c:155 src/e_mod_places.c:421
+#: ../src/e_mod_config.c:155
+#: ../src/e_mod_places.c:427
 msgid "Trash"
 msgstr "Koš"
 
-#: src/e_mod_config.c:158 src/e_mod_places.c:232 src/e_mod_places.c:430
+#: ../src/e_mod_config.c:158
+#: ../src/e_mod_places.c:207
+#: ../src/e_mod_places.c:436
 msgid "Filesystem"
 msgstr "Systém souborů"
 
-#: src/e_mod_config.c:161 src/e_mod_places.c:439
+#: ../src/e_mod_config.c:161
+#: ../src/e_mod_places.c:445
 msgid "Temp"
 msgstr "Dočasné"
 
-#: src/e_mod_config.c:164
+#: ../src/e_mod_config.c:164
 msgid "Favorites"
 msgstr "Oblíbené"
 
-#: src/e_mod_main.c:75
+#. Display this Modules config info in the main Config Panel
+#: ../src/e_mod_main.c:58
 msgid "Files"
 msgstr "Soubory"
 
-#: src/e_mod_main.c:77 src/e_mod_places.c:502
+#: ../src/e_mod_main.c:60
+#: ../src/e_mod_places.c:502
 msgid "Places"
 msgstr "Místa"
 
-#: src/e_mod_main.c:443
-msgid "Configuration"
-msgstr "Konfigurace"
+#: ../src/e_mod_main.c:430
+msgid "Settings"
+msgstr "Volby"
 
-#: src/e_mod_places.c:237
+#: ../src/e_mod_places.c:212
 msgid "No Name"
 msgstr "Beze jména"
 
-#: src/e_mod_places.c:692
+#: ../src/e_mod_places.c:693
 msgid "free of"
 msgstr "volných z"
 
-#: src/e_mod_places.c:698
+#: ../src/e_mod_places.c:699
 #, c-format
 msgid "%s Not Mounted"
 msgstr "%s Není připojeno"
 
-#: src/e_mod_places.c:715
+#: ../src/e_mod_places.c:716
 msgid "unmount"
 msgstr "odpojit"
 
-#: src/e_mod_places.c:721
+#: ../src/e_mod_places.c:722
 msgid "eject"
 msgstr "vysunout"
 
+#~ msgid "Places Configuration"
+#~ msgstr "Nastavení modulu Místa"
+#~ msgid "Configuration"
+#~ msgstr "Konfigurace"
 #~ msgid "Show header"
 #~ msgstr "Zobrazit nadpis"
-
 #~ msgid "p  l  a  c  e  s"
 #~ msgstr "m  í  s  t  a"
+
