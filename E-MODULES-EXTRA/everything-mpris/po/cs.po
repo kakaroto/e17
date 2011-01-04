@@ -1,0 +1,89 @@
+# Czech translation.
+# This file is put in the public domain.
+# quaker66@gmail.com
+msgid ""
+msgstr ""
+"Project-Id-Version: Everything-mpris\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2011-01-04 15:59+0100\n"
+"PO-Revision-Date: 2011-01-04 16:25+0100\n"
+"Last-Translator: quaker66 <quaker66@gmail.com>\n"
+"Language-Team: Czech <quaker66@gmail.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/e_mod_main.c:276
+msgid "No Title"
+msgstr "Bez titulku"
+
+#: ../src/e_mod_main.c:491
+#: ../src/e_mod_main.c:644
+msgid "Loading Playlist"
+msgstr "Načítám playlist"
+
+#: ../src/e_mod_main.c:504
+msgid "Empty Playlist"
+msgstr "Prázdný playlist"
+
+#: ../src/e_mod_main.c:1404
+msgid "Playlist"
+msgstr "Playlist"
+
+#: ../src/e_mod_main.c:1437
+msgid "Play Track"
+msgstr "Přehrát stopu"
+
+#: ../src/e_mod_main.c:1442
+msgid "Play"
+msgstr "Přehrát"
+
+#: ../src/e_mod_main.c:1446
+msgid "Pause"
+msgstr "Pauza"
+
+#: ../src/e_mod_main.c:1450
+msgid "Stop"
+msgstr "Stop"
+
+#: ../src/e_mod_main.c:1454
+msgid "Forward"
+msgstr "Vpřed"
+
+#: ../src/e_mod_main.c:1458
+msgid "Rewind"
+msgstr "Vzad"
+
+#: ../src/e_mod_main.c:1462
+msgid "Remove Track"
+msgstr "Odstranit stopu"
+
+#: ../src/e_mod_main.c:1467
+msgid "Clear Playlist"
+msgstr "Vymazat playlist"
+
+#: ../src/e_mod_main.c:1471
+msgid "Play File"
+msgstr "Přehrát soubor"
+
+#: ../src/e_mod_main.c:1476
+msgid "Add Files..."
+msgstr "Přidat soubory..."
+
+#: ../src/e_mod_main.c:1480
+msgid "Enqueue in Playlist"
+msgstr "Zařadit do playlistu"
+
+#: ../src/e_mod_main.c:1485
+msgid "Add Music..."
+msgstr "Přidat hudbu..."
+
+#: ../src/e_mod_main.c:1489
+msgid "Remove Duplicates"
+msgstr "Odstranit totožné"
+
+#: ../src/e_mod_main.c:1493
+msgid "Remove Missing Files"
+msgstr "Odstranit chybějící soubory"
+
