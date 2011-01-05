@@ -5418,3 +5418,20 @@ Change WITH_ZOOM to ENABLE_ZOOM. Zoom related build tweaks.
 Fix desk/area dialog changes sometimes not being saved.
 Enable using randr (1.3) for zooming.
 Revert "If CM is active, change snap to live pager mode."
+
+-------------------------------------------------------------------------------
+
+Tue Jan  4 23:54:36 CET 2011
+
+--- 1.0.7.001 ---
+Add auto* stuff to set __func__.
+Change XWarpPointer wrapping.
+Fix missing synthetic ConfigureNotify when doing simultaneous move and resize.
+Prefer randr over xf86vm if available.
+Add const to Quicksort compare function prototype.
+No need to install .la files for libs that are only loaded dynamically.
+Update _NET_WORKAREA when screen size changes.
+Switch to gettext 0.16.1.
+Reset maximised state on move as well as on resize.
+Add command ("desk back") to go back to previous active desktop.
+Print error message if no argument is given to win_info command.
