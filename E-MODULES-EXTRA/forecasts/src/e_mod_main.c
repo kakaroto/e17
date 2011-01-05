@@ -636,7 +636,7 @@ _forecasts_server_data(void *data, int type, void *event)
 
    if ((!inst->server) || (inst->server != ev->server))
      return EINA_TRUE;
-   eina_strbuf_append_n(inst->buffer, ev->data, ev->size);
+   eina_strbuf_append_length(inst->buffer, ev->data, ev->size);
    return EINA_FALSE;
 }
 
