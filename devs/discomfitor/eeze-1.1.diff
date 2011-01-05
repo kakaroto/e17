@@ -52,7 +52,7 @@ Index: m4/ac_attribute.m4
 +dnl End of ac_attribute.m4
 Index: configure.ac
 ===================================================================
---- configure.ac	(revision 55902)
+--- configure.ac	(revision 55904)
 +++ configure.ac	(working copy)
 @@ -1,15 +1,12 @@
  ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
@@ -1170,7 +1170,7 @@ Index: src/lib/Eeze_Disk.h
 +#endif
 Index: src/lib/Makefile.am
 ===================================================================
---- src/lib/Makefile.am	(revision 55902)
+--- src/lib/Makefile.am	(revision 55904)
 +++ src/lib/Makefile.am	(working copy)
 @@ -2,19 +2,34 @@
  
@@ -1214,7 +1214,7 @@ Index: src/lib/Makefile.am
  EXTRA_DIST = eeze_udev_private.h
 Index: src/lib/eeze_udev_private.h
 ===================================================================
---- src/lib/eeze_udev_private.h	(revision 55902)
+--- src/lib/eeze_udev_private.h	(revision 55904)
 +++ src/lib/eeze_udev_private.h	(working copy)
 @@ -1,6 +1,6 @@
  #ifndef EEZE_UDEV_PRIVATE_H
@@ -1645,7 +1645,7 @@ Index: src/lib/eeze_disk_libmount.c
 +/** @} */
 Index: src/lib/eeze_main.c
 ===================================================================
---- src/lib/eeze_main.c	(revision 55902)
+--- src/lib/eeze_main.c	(revision 55904)
 +++ src/lib/eeze_main.c	(working copy)
 @@ -4,7 +4,9 @@
  
@@ -1916,7 +1916,7 @@ Index: src/bin/eeze_disk_ls.c
 +}
 Index: src/bin/Makefile.am
 ===================================================================
---- src/bin/Makefile.am	(revision 55902)
+--- src/bin/Makefile.am	(revision 55904)
 +++ src/bin/Makefile.am	(working copy)
 @@ -1,8 +1,33 @@
  MAINTAINERCLEANFILES = Makefile.in
