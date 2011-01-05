@@ -30,10 +30,9 @@ double              GetTime(void);
 unsigned int        GetTimeMs(void);
 unsigned int        GetTimeUs(void);
 
-Timer              *TimerAdd(double in_time,
-			     int (*func) (void *data), void *data);
+Timer              *TimerAdd(int dt_ms, int (*func) (void *data), void *data);
 void                TimerDel(Timer * timer);
-void                TimerSetInterval(Timer * timer, double dt);
+void                TimerSetInterval(Timer * timer, int dt_ms);
 unsigned int        TimersRun(unsigned int t_ms);
 
 #define TIMER_ADD(timer, in, func, prm) \

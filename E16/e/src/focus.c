@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -402,7 +402,7 @@ doFocusToEwin(EWin * ewin, int why)
 	TIMER_DEL(focus_timer_autoraise);
 
 	if (Conf.focus.mode != MODE_FOCUS_CLICK)
-	   TIMER_ADD(focus_timer_autoraise, 0.001 * Conf.autoraise.delay,
+	   TIMER_ADD(focus_timer_autoraise, Conf.autoraise.delay,
 		     AutoraiseTimeout, ewin);
      }
 
@@ -1026,7 +1026,7 @@ FocusSighan(int sig, void *prm __UNUSED__)
      case ESIGNAL_START:
 	/* Delay focusing a bit to allow things to settle down */
 	IdlerAdd(_FocusIdler, NULL);
-	TIMER_ADD(focus_init_timer, 0.5, FocusInitTimeout, NULL);
+	TIMER_ADD(focus_init_timer, 500, FocusInitTimeout, NULL);
 	break;
 
      case ESIGNAL_EXIT:

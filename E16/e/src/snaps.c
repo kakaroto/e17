@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -1074,7 +1074,7 @@ void
 SnapshotsSave(void)
 {
    TIMER_DEL(ss_timer);
-   TIMER_ADD(ss_timer, 5.0, SnapshotsSaveReal, NULL);
+   TIMER_ADD(ss_timer, 5000, SnapshotsSaveReal, NULL);
 }
 
 /* save out all snapped info to disk */

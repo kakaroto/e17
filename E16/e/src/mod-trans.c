@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2004-2007 Jaron Omega
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -49,7 +49,7 @@ static void
 TransparencyChange(int val)
 {
    TIMER_DEL(st_timer);
-   TIMER_ADD(st_timer, .01, TransparencyChangeTimeout, INT2PTR(val));
+   TIMER_ADD(st_timer, 10, TransparencyChangeTimeout, INT2PTR(val));
 }
 
 /*

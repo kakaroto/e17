@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -1346,7 +1346,7 @@ BackgroundsTimeout(void *data __UNUSED__)
 
    BackgroundsAccounting();
 
-   TimerSetInterval(bg_timer, 1.0 * Conf.backgrounds.timeout);
+   TimerSetInterval(bg_timer, 1000 * Conf.backgrounds.timeout);
 
    return 1;
 }
@@ -1368,7 +1368,7 @@ BackgroundsSighan(int sig, void *prm __UNUSED__)
 	break;
 
      case ESIGNAL_START:
-	TIMER_ADD(bg_timer, 30.0, BackgroundsTimeout, NULL);
+	TIMER_ADD(bg_timer, 30000, BackgroundsTimeout, NULL);
 	break;
 
      case ESIGNAL_EXIT:

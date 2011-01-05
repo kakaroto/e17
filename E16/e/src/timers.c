@@ -136,10 +136,9 @@ _TimerDel(Timer * timer)
 }
 
 Timer              *
-TimerAdd(double in_time, int (*func) (void *data), void *data)
+TimerAdd(int dt_ms, int (*func) (void *data), void *data)
 {
    Timer              *timer;
-   int                 dt_ms = in_time * 1000;
 
    timer = EMALLOC(Timer, 1);
    if (!timer)
@@ -249,10 +248,8 @@ TimerDel(Timer * timer)
 }
 
 void
-TimerSetInterval(Timer * timer, double dt)
+TimerSetInterval(Timer * timer, int dt_ms)
 {
-   int                 dt_ms = dt * 1000;
-
    timer->in_time = (unsigned int)dt_ms;
 }
 
@@ -382,8 +379,7 @@ AnimatorAdd(AnimatorFunc * func, void *data)
 	if (Conf.animation.step <= 0)
 	   Conf.animation.step = 1;
 	/* Animator list was empty - Add to timer qeueue */
-	TIMER_ADD(animator_timer, 1e-3 * Conf.animation.step,
-		  AnimatorsRun, NULL);
+	TIMER_ADD(animator_timer, Conf.animation.step, AnimatorsRun, NULL);
      }
 
    return an;

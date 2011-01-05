@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -1734,7 +1734,7 @@ MenuActivateItem(Menu * m, MenuItem * mi)
      {
 	mdata.m = m;
 	mdata.mi = mi;
-	TIMER_ADD(menu_timer_submenu, 0.2, SubmenuShowTimeout, &mdata);
+	TIMER_ADD(menu_timer_submenu, 200, SubmenuShowTimeout, &mdata);
      }
 }
 
@@ -2058,7 +2058,7 @@ MenusSighan(int sig, void *prm __UNUSED__)
    switch (sig)
      {
      case ESIGNAL_START:
-	TIMER_ADD(menu_unload_timer, 1. * MENU_UNLOAD_CHECK_INTERVAL,
+	TIMER_ADD(menu_unload_timer, 1000 * MENU_UNLOAD_CHECK_INTERVAL,
 		  MenusTimeout, NULL);
 	break;
 

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -138,7 +138,7 @@ static void
 FX_Ripple_Init(const char *name __UNUSED__)
 {
    fx_ripple_count = 0;
-   TIMER_ADD(fx_ripple_timer, 0.066, FX_ripple_timeout, NULL);
+   TIMER_ADD(fx_ripple_timer, 66, FX_ripple_timeout, NULL);
 }
 
 static void
@@ -289,7 +289,7 @@ static void
 FX_Waves_Init(const char *name __UNUSED__)
 {
    fx_wave_count = 0;
-   TIMER_ADD(fx_wave_timer, 0.066, FX_Wave_timeout, NULL);
+   TIMER_ADD(fx_wave_timer, 66, FX_Wave_timeout, NULL);
 }
 
 static void
@@ -541,7 +541,7 @@ FX_Raindrops_Init(const char *name __UNUSED__)
 	fx_raindrops[i].x = rand() % (WinGetW(VROOT) - fx_raindrop_size);
 	fx_raindrops[i].y = rand() % (WinGetH(VROOT) - fx_raindrop_size);
      }
-   TIMER_ADD(fx_raindrops_timer, 0.066, FX_raindrops_timeout, NULL);
+   TIMER_ADD(fx_raindrops_timer, 66, FX_raindrops_timeout, NULL);
 }
 
 static void
@@ -631,7 +631,7 @@ static void
 FX_ImageSpinner_Init(const char *name)
 {
    fx_imagespinner_count = 3;
-   TIMER_ADD(fx_imagespinner_timer, 0.066, FX_imagespinner_timeout, NULL);
+   TIMER_ADD(fx_imagespinner_timer, 66, FX_imagespinner_timeout, NULL);
    fx_imagespinner_params = Estrdup(name);
 }
 

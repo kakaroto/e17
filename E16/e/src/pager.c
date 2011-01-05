@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -171,8 +171,7 @@ PagerScanTrig(Pager * p)
    if (p->scan_timer || Conf_pagers.scanspeed <= 0)
       return;
 
-   TIMER_ADD(p->scan_timer, 1 / ((double)Conf_pagers.scanspeed),
-	     PagerScanTimeout, p);
+   TIMER_ADD(p->scan_timer, 1000 / Conf_pagers.scanspeed, PagerScanTimeout, p);
 }
 
 static void
@@ -244,7 +243,7 @@ PagerScanTimeout(void *data)
 	p->update_phase = 0;
      }
 
-   TimerSetInterval(p->scan_timer, 1 / ((double)Conf_pagers.scanspeed));
+   TimerSetInterval(p->scan_timer, 1000 / Conf_pagers.scanspeed);
    return 1;
 
  nomore:
@@ -860,8 +859,10 @@ PagersCheckUpdate(void)
 	if (t - tlast < dt)
 	  {
 	     /* The purpose of this timer is to trigger the idler */
-	     if (!Mode_pagers.timer_pending)
-		TIMER_ADD(pager_update_timer, dt, _PagersUpdateTimeout, NULL);
+	     if (Mode_pagers.timer_pending)
+		return;
+	     TIMER_ADD(pager_update_timer, 1000 * dt,
+		       _PagersUpdateTimeout, NULL);
 	     Mode_pagers.timer_pending = 1;
 	     return;
 	  }
@@ -1748,7 +1749,7 @@ PagersReconfigure(void)
    if (!Conf_pagers.enable)
       return;
 
-   TIMER_ADD(pg_timer_cfg, .5, _PagersReconfigureTimeout, NULL);
+   TIMER_ADD(pg_timer_cfg, 500, _PagersReconfigureTimeout, NULL);
 }
 
 #if ENABLE_DIALOGS

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -710,7 +710,7 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	     EoChangeOpacity(ewin, OpacityFromPercent(a));
 	     TIMER_DEL(op_timer);
 	     if (ewin->props.focused_opacity)
-		TIMER_ADD(op_timer, 0.001 * 700, OpacityTimeout, ewin);
+		TIMER_ADD(op_timer, 700, OpacityTimeout, ewin);
 	  }
 	if (ewin->state.in_action)
 	   CoordsShowOpacity(ewin);
@@ -1795,7 +1795,7 @@ EFuncDefer(EWin * ewin, const char *cmd)
    prm[0] = ewin;
    prm[1] = Estrdup(cmd);
 
-   TIMER_ADD(defer_timer, 0.0, doEFuncDeferred, prm);
+   TIMER_ADD(defer_timer, 0, doEFuncDeferred, prm);
 }
 
 static int

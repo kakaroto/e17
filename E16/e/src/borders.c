@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -1034,7 +1034,7 @@ BorderFrameHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 		 y >= 4 && y < EoGetH(ewin) - 4)
 		break;
 	     TIMER_DEL(ewin->timer);
-	     TIMER_ADD(ewin->timer, .5, _BorderAutoshadeTimeout, ewin);
+	     TIMER_ADD(ewin->timer, 500, _BorderAutoshadeTimeout, ewin);
 	  }
 	if (ewin->border->aclass)
 	   ActionclassEvent(ewin->border->aclass, ev, ewin);

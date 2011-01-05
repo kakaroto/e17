@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -1158,7 +1158,7 @@ void
 ActionclassesReload(void)
 {
    TIMER_DEL(ac_reload_timer);
-   TIMER_ADD(ac_reload_timer, 0.2, _ac_reload, NULL);
+   TIMER_ADD(ac_reload_timer, 200, _ac_reload, NULL);
 }
 
 /*

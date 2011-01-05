@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2010 Kim Woelders
+ * Copyright (C) 2007-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -356,7 +356,7 @@ MagwinEvent(Win win __UNUSED__, XEvent * ev, void *prm)
      case MapNotify:
 	MagwinKeyPress(mw, XK_g);
 #if USE_TIMER
-	TIMER_ADD(mw->timer, .050, _MagwinTimeout, 0, mw);
+	TIMER_ADD(mw->timer, 50, _MagwinTimeout, 0, mw);
 #elif USE_ANIMATOR
 	AnimatorAdd(_MagwinAnimator, mw);
 #endif
