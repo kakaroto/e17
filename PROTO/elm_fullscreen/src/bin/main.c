@@ -1,4 +1,3 @@
-#include <Ecore_X.h>
 #include "elm_fullscreen.h"
 
 #ifndef ELM_LIB_QUICKLAUNCH

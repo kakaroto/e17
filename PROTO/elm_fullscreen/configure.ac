@@ -78,7 +78,6 @@ AC_MSG_CHECKING([Which edje_cc to use])
 AC_MSG_RESULT(${EDJE_CC})
 
 PKG_CHECK_MODULES(ELM_FULLSCREEN, [
-  ecore-x
   elementary
 ])
 
