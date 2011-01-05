@@ -2,6 +2,7 @@
 Type=Link
 Name=Calendar
 Name[cs]=Kalendář
+Name[de]=Kalender
 Name[eo]=Kalendaro
 Name[hu]=Naptár
 Name[fr]=Calendrier
@@ -12,6 +13,7 @@ Icon=e-module-calendar
 X-Enlightenment-ModuleType=utils
 Comment=Calendar sheet showing the current day.
 Comment[cs]=Kalendář zobrazující aktuální den.
+Comment[de]=Kalenderblatt mit dem aktuellen Datum und dahinter befindlichem Kalender
 Comment[eo]=Kalendara folio vidiganta la nunan tagon.
 Comment[hu]=Naptár, amely az aktuális napot mutatja.
 Comment[it]=Un foglio di calendario che mostra la data attuale.

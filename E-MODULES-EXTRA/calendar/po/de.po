@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-10-13 10:43-0300\n"
+"POT-Creation-Date: 2010-11-23 23:32+0100\n"
 "PO-Revision-Date: 2008-12-29 10:27+0000\n"
 "Last-Translator: meica <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
@@ -15,22 +15,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_main.c:586
+#: src/e_mod_main.c:600
 msgid "Sunday"
 msgstr "Sonntag"
 
-#: src/e_mod_main.c:593
+#: src/e_mod_main.c:607
 msgid "Monday"
 msgstr "Montag"
 
-#: src/e_mod_main.c:602
+#: src/e_mod_main.c:616
 msgid "First Day of Week"
 msgstr "Erster Tag der Woche"
 
-#: src/e_mod_main.c:685 src/e_mod_main.c:702
+#: src/e_mod_main.c:699 src/e_mod_main.c:716
 msgid "Calendar"
 msgstr "Kalender"
 
-#: src/e_mod_main.c:686 src/e_mod_main.c:702
+#: src/e_mod_main.c:700 src/e_mod_main.c:716
 msgid "Monthview Popup (Show/Hide)"
 msgstr "Monatsansichts-Popup (zeigen/verstecken)"

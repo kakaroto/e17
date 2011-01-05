@@ -1,15 +1,17 @@
 [Desktop Entry]
 Type=Link
 Name=Drawer
-Name[fr]=Tiroir
+Name[de]=Ablage
 Name[el]=Συρτάρι
 Name[eo]=Entenilo
+Name[fr]=Tiroir
 Icon=e-module-drawer
 Comment=A Gadget that acts as a container for data.
 Comment[cs]=Gadget sloužící jako kontejner pro data.
-Comment[it]=Un modulo che fa da contenitore per dati.
-Comment[fr]=Un gadget faisant office de réceptacle.
+Comment[de]=Helfer, der als Datenablage fungiert
 Comment[el]=Ένα συστατικό που λειτουργεί ως χώρος αποθήκευσης δεδομένων.
 Comment[eo]=Akcesoraĵo kiu agas kiel recivilo.
+Comment[fr]=Un gadget faisant office de réceptacle.
+Comment[it]=Un modulo che fa da contenitore per dati.
 Comment[pt]=Um "gadget" utilizado para armazenar dados
 X-Enlightenment-ModuleType=utils
