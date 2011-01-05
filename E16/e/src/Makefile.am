@@ -151,6 +151,7 @@ LDADD = \
 	$(X_EXTRA_LIBS)		\
 	$(E_X_LIBS)		\
 	$(DBUS_LIBS)		\
+	$(CLOCK_LIBS)		\
 	-lX11 -lm
 
 if BUILD_MODULES

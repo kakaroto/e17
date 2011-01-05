@@ -64,6 +64,16 @@ AM_LANGINFO_CODESET
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.16.1])
 
+AC_CHECK_FUNCS([clock_gettime], [have_clock_gettime=yes],
+  [AC_CHECK_LIB([rt], [clock_gettime], [have_clock_gettime=-lrt],
+     [have_clock_gettime=no])])
+if test "x$have_clock_gettime" != xno; then
+  AC_DEFINE(USE_MONOTONIC_CLOCK, 1, [Use monotonic clock from clock_gettime()])
+  if test "x$have_clock_gettime" != xyes; then
+    AC_SUBST(CLOCK_LIBS, [$have_clock_gettime])
+  fi
+fi
+
 AC_ARG_ENABLE(hints-gnome,
   [  --enable-hints-gnome    compile with GNOME(<2.0) hints support @<:@default=no@:>@],,
   enable_hints_gnome=no)
