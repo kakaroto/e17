@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -43,12 +43,13 @@ static Container   *SelectIconboxForEwin(EWin * ewin);
 #define IB_ANIM_STEP    Conf.animation.step
 
 static void
-IB_Animate_Sleep(double t0, double a)
+IB_Animate_Sleep(unsigned int t0, double a)
 {
-   double              t, dt;
+   unsigned int        t;
+   double              dt;
 
-   t = GetTime();
-   dt = t - t0 - a * 1e-3 * IB_ANIM_TIME;
+   t = GetTimeMs() - t0;
+   dt = 1e-3 * (t - a * IB_ANIM_TIME);
    dt = 1e-3 * IB_ANIM_STEP - dt;
    if (dt > 0)
       usleep((unsigned long)(1e6 * dt));
@@ -58,7 +59,8 @@ static void
 IB_Animate_A(char iconify, EWin * ewin, EWin * ibox)
 {
    EWin               *fr, *to;
-   double              a, aa, spd, t0;
+   unsigned int        t0;
+   double              a, aa, spd;
    int                 x, y, x1, y1, x2, y2, x3, y3, x4, y4, w, h;
    int                 fx, fy, fw, fh, tx, ty, tw, th;
    Window              root = WinGetXwin(VROOT);
@@ -109,7 +111,7 @@ IB_Animate_A(char iconify, EWin * ewin, EWin * ibox)
 
    spd = (1. * IB_ANIM_STEP) / IB_ANIM_TIME;
 
-   t0 = GetTime();
+   t0 = GetTimeMs();
    for (a = 0.0; a < 1.0; a += spd)
      {
 	aa = 1.0 - a;
@@ -154,7 +156,8 @@ static void
 IB_Animate_B(char iconify, EWin * ewin, EWin * ibox)
 {
    EWin               *fr, *to;
-   double              a, spd, t0;
+   unsigned int        t0;
+   double              a, spd;
    int                 x, y, w, h;
    int                 fx, fy, fw, fh, tx, ty, tw, th;
    Window              root = WinGetXwin(VROOT);
@@ -206,7 +209,7 @@ IB_Animate_B(char iconify, EWin * ewin, EWin * ibox)
 
    spd = (1. * IB_ANIM_STEP) / IB_ANIM_TIME;
 
-   t0 = GetTime();
+   t0 = GetTimeMs();
    for (a = 0.0; a < 1.0; a += spd)
      {
 	x = (int)(fx + a * (tx - fx));

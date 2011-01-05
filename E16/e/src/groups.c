@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -31,7 +31,6 @@
 #include "settings.h"
 #include "snaps.h"
 #include "timers.h"
-#include <math.h>
 
 #define DEBUG_GROUPS 0
 #if DEBUG_GROUPS
@@ -70,7 +69,6 @@ static Group       *
 GroupCreate(int gid)
 {
    Group              *g;
-   double              t;
 
    g = ECALLOC(Group, 1);
    if (!g)
@@ -83,9 +81,8 @@ GroupCreate(int gid)
    if (gid == -1)
      {
 	/* Create new group id */
-	t = GetTime();
-	g->index = (int)((GetTime() - (floor(t / 1000) * 1000)) * 10000);
-	/* g->index = (int)(GetTime() * 100); */
+	/* ... using us time. Should really be checked for uniqueness. */
+	g->index = (int)GetTimeUs();
      }
    else
      {

@@ -26,7 +26,6 @@
 
 #include "etypes.h"
 
-double              GetTime(void);
 unsigned int        GetTimeMs(void);
 unsigned int        GetTimeUs(void);
 

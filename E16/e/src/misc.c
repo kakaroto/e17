@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -101,7 +101,7 @@ Quicksort(void **a, int l, int r,
 /*
  * Stuff to make loops for animated effects.
  */
-static double       etl_t_start;
+static unsigned int etl_t_start;
 static int          etl_k1, etl_k2;
 static double       etl_k, etl_fac;
 
@@ -143,7 +143,7 @@ ETimedLoopInit(int k1, int k2, int speed)
    /* When speed is 1000 the loop will take one sec. */
    etl_fac = (k2 - k1) * (double)speed / 1000.;
 
-   etl_t_start = GetTime();
+   etl_t_start = GetTimeMs();
 
    ESync(ESYNC_TLOOP);
 }
@@ -157,7 +157,7 @@ ETimedLoopNext(void)
    usleep(5000);
 
    /* Find elapsed time since loop start */
-   tm = GetTime() - etl_t_start;
+   tm = 1e-3 * (GetTimeMs() - etl_t_start);
    etl_k = etl_k1 + tm * etl_fac;
 #if 0
    Eprintf("ETimedLoopNext k=%4f tm=%.3f\n", etl_k, tm);

@@ -845,8 +845,9 @@ _PagersUpdateTimeout(void *data __UNUSED__)
 static void
 PagersCheckUpdate(void)
 {
-   static double       tlast = 0.;
-   double              t, dt;
+   static unsigned int tms_last = 0;
+   unsigned int        tms;
+   int                 dtms;
    Timer              *pager_update_timer;
 
    if (!Mode_pagers.update_pending || !Conf_pagers.enable)
@@ -854,19 +855,18 @@ PagersCheckUpdate(void)
 
    if (Mode_pagers.update_pending == (1 << PAGER_UPD_EWIN_DAMAGE))
      {
-	t = GetTime();
-	dt = (Conf_pagers.scanspeed > 0) ? 1. / Conf_pagers.scanspeed : .1;
-	if (t - tlast < dt)
+	tms = GetTimeMs();
+	dtms = (Conf_pagers.scanspeed > 0) ? 1000 / Conf_pagers.scanspeed : 100;
+	if ((int)(tms - tms_last) < dtms)
 	  {
 	     /* The purpose of this timer is to trigger the idler */
 	     if (Mode_pagers.timer_pending)
 		return;
-	     TIMER_ADD(pager_update_timer, 1000 * dt,
-		       _PagersUpdateTimeout, NULL);
+	     TIMER_ADD(pager_update_timer, dtms, _PagersUpdateTimeout, NULL);
 	     Mode_pagers.timer_pending = 1;
 	     return;
 	  }
-	tlast = t;
+	tms_last = tms;
      }
 
    PagersForeach(NULL, PagerCheckUpdate, NULL);

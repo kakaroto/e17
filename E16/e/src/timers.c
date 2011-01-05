@@ -24,8 +24,11 @@
 #include "E.h"
 #include "e16-ecore_list.h"
 #include "timers.h"
+#if USE_MONOTONIC_CLOCK
 #include <time.h>
+#else
 #include <sys/time.h>
+#endif
 
 #define DEBUG_TIMERS 0
 
@@ -37,15 +40,6 @@ struct _timer {
    void               *data;
    char                again;
 };
-
-double
-GetTime(void)
-{
-   struct timeval      timev;
-
-   gettimeofday(&timev, NULL);
-   return (double)timev.tv_sec + (((double)timev.tv_usec) / 1000000);
-}
 
 unsigned int
 GetTimeMs(void)

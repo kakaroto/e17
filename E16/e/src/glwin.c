@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2010 Kim Woelders
+ * Copyright (C) 2007-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -75,7 +75,7 @@ static GLfloat      rot_y;	/* Y rotation */
 static GLfloat      speed_x;	/* X rotation speed */
 static GLfloat      speed_y;	/* Y rotation speed */
 static GLfloat      bg_z;	/* Background z */
-static double       t0, tn;
+static unsigned int t0, tn;
 
 #define N_TEXTURES 5
 static unsigned int sel_bg;
@@ -83,15 +83,10 @@ static unsigned int filter;
 static ETexture    *texture[N_TEXTURES];
 static int          sel_ewin;
 
-static double
+static unsigned int
 GetDTime(void)
 {
-   double              t, dt;
-
-   t = GetTime();
-   dt = t - t0;
-
-   return dt;
+   return GetTimeMs() - t0;
 }
 
 static void
@@ -305,11 +300,14 @@ DrawQube(ETexture * et, GLfloat x, GLfloat y, GLfloat z, GLfloat w, GLfloat h,
 }
 
 static void
-SceneDraw2(double t, EWin ** ewins, int num)
+SceneDraw2(unsigned int tms, EWin ** ewins, int num)
 {
+   double              t;
    int                 i, j, k, nx, ny;
    GLfloat             x, y, w, h, dx, dy, sz;
    EObj               *eo;
+
+   t = 1e-3 * tms;
 
    w = EobjGetW(GLWin.eo);
    h = EobjGetH(GLWin.eo);
@@ -374,7 +372,7 @@ SceneDraw2(double t, EWin ** ewins, int num)
 }
 
 static void
-SceneDraw1(double t, EWin ** ewins, int num)
+SceneDraw1(unsigned int tms, EWin ** ewins, int num)
 {
    double              t1, arg;
    int                 i;
@@ -384,7 +382,7 @@ SceneDraw1(double t, EWin ** ewins, int num)
    w = EobjGetW(GLWin.eo);
    h = EobjGetH(GLWin.eo);
 
-   t1 = 2 * M_PI * (-exp(-(20. * (t - tn))) / num);
+   t1 = 2 * M_PI * (-exp(-(20e-3 * (tms - tn))) / num);
 
    DrawBackground(texture[sel_bg], w, h);
 
@@ -396,7 +394,7 @@ SceneDraw1(double t, EWin ** ewins, int num)
 
 	eo = EoObj(ewins[i]);
 	if (i == sel_ewin)
-	   sz = 0.5 + .01 * cos(10. * (t - tn));
+	   sz = 0.5 + .01 * cos(10e-3 * (tms - tn));
 	else
 	   sz = 0.3;
 	DrawQube(EobjGetTexture(eo), dx, dy, 500.0,
@@ -431,7 +429,7 @@ GlwinEwins(int *pnum)
 static void
 SceneDraw(void)
 {
-   double              t;
+   unsigned int        t;
    EWin              **ewins;
    int                 num;
 
@@ -656,8 +654,8 @@ GlwinCreate(const char *title __UNUSED__, int width, int height)
 
    EobjMap(GLWin.eo, 1);
 
-   t0 = GetTime();
-   tn = -1e6;
+   t0 = GetTimeMs();
+   tn = t0;
 
    return 0;
 }

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -902,7 +902,7 @@ void
 EwinSyncRequestWait(EWin * ewin)
 {
    XSyncWaitCondition  xswc[2];
-   double              t;
+   unsigned int        tus;
 
    if (!ewin->ewmh.sync_request_enable || EServerIsGrabbed())
       return;
@@ -921,11 +921,11 @@ EwinSyncRequestWait(EWin * ewin)
    xswc[1].trigger.test_type = XSyncPositiveComparison;
    XSyncIntsToValue(&xswc[1].event_threshold, 0, 0);
 
-   t = GetTime();
+   tus = GetTimeUs();
    XSyncAwait(disp, xswc, 2);
    if (EDebug(EDBUG_TYPE_SYNC))
-      Eprintf("Sync t=%#lx c=%llx: Delay=%8.6lf us\n",
+      Eprintf("Sync t=%#lx c=%llx: Delay=%u us\n",
 	      xswc[0].trigger.counter, ewin->ewmh.sync_request_count,
-	      GetTime() - t);
+	      GetTimeUs() - tus);
 }
 #endif /* USE_XSYNC */
