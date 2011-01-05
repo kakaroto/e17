@@ -125,14 +125,14 @@ TimersRun(double tt)
    double              t;
 
    timer = q_first;
-   if (!q_first)
+   if (!timer)
       return 0.;		/* No timers pending */
 
    t = tt;
    if (t <= 0.)
       t = timer->at_time;
 
-   q_run = q_old = q_first;
+   q_run = q_old = timer;
    for (; timer; timer = q_first)
      {
 	if (timer->at_time > t + 200e-6)	/* Within 200 us is close enough */
@@ -201,7 +201,7 @@ TimersRun(double tt)
    return t;
 }
 
-int
+void
 TimerDel(Timer * timer)
 {
    Timer              *qe, *ptr, *pptr;
@@ -221,12 +221,7 @@ TimerDel(Timer * timer)
 
 	/* free it */
 	_TimerDel(timer);
-
-	/* done */
-	return 1;
      }
-
-   return 0;
 }
 
 void

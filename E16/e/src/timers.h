@@ -31,7 +31,7 @@ double              GetTime(void);
 
 Timer              *TimerAdd(double in_time,
 			     int (*func) (void *data), void *data);
-int                 TimerDel(Timer * timer);
+void                TimerDel(Timer * timer);
 void                TimerSetInterval(Timer * timer, double dt);
 double              TimersRun(double t);
 
