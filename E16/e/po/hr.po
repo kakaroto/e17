@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-12-01 23:14+0100\n"
+"POT-Creation-Date: 2011-01-01 12:44+0100\n"
 "PO-Revision-Date: 2010-01-16 04:42+0000\n"
 "Last-Translator: Miro Glavić <glavicmiro@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -404,7 +404,7 @@ msgstr "Enlightenment Započinje..."
 msgid "Settings..."
 msgstr "Postavke..."
 
-#: src/container.c:1191 src/dialog.c:705 src/pager.c:1019 config/strings.c:30
+#: src/container.c:1191 src/dialog.c:705 src/pager.c:1020 config/strings.c:30
 #: config/strings.c:122
 msgid "Close"
 msgstr "Zatvori"
@@ -494,7 +494,7 @@ msgstr "Prikaži nazive ikona"
 msgid "Animation mode:"
 msgstr ""
 
-#: src/container.c:1679 src/desktops.c:2587
+#: src/container.c:1679 src/desktops.c:2591
 msgid "Off"
 msgstr "Isključen"
 
@@ -544,7 +544,7 @@ msgstr ""
 msgid "Focused/unfocused opacity: %d/%d %%"
 msgstr "Fokusirana/nefokusirana neprozirnost: %d/%d %%"
 
-#: src/desktops.c:124
+#: src/desktops.c:125
 msgid ""
 "Hold down the mouse button and drag\n"
 "the mouse to be able to drag the desktop\n"
@@ -555,7 +555,7 @@ msgid ""
 "applications currently running.\n"
 msgstr ""
 
-#: src/desktops.c:135
+#: src/desktops.c:136
 msgid ""
 "This is the Root desktop.\n"
 "You cannot drag the root desktop around.\n"
@@ -565,7 +565,7 @@ msgid ""
 "applications currently running.\n"
 msgstr ""
 
-#: src/desktops.c:153
+#: src/desktops.c:154
 msgid ""
 "Click here to raise this desktop\n"
 "to the top."
@@ -573,7 +573,7 @@ msgstr ""
 "Kliknite ovdje da podignete radnu površinu\n"
 "do vrha."
 
-#: src/desktops.c:165
+#: src/desktops.c:166
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom."
@@ -581,55 +581,55 @@ msgstr ""
 "Kliknite ovdje da spustite radnu površinu\n"
 "na dno."
 
-#: src/desktops.c:2346
+#: src/desktops.c:2350
 msgid "Number of virtual desktops:"
 msgstr "Broj virtualnih radnih površina:"
 
-#: src/desktops.c:2371
+#: src/desktops.c:2375
 msgid "Slide desktops around when changing"
 msgstr ""
 
-#: src/desktops.c:2377
+#: src/desktops.c:2381
 msgid "Desktop Slide speed:"
 msgstr "Brzina Klizanja Radne Površine:"
 
-#: src/desktops.c:2391
+#: src/desktops.c:2395
 msgid "Wrap desktops around"
 msgstr ""
 
-#: src/desktops.c:2399
+#: src/desktops.c:2403
 msgid "Display desktop dragbar"
 msgstr ""
 
-#: src/desktops.c:2405
+#: src/desktops.c:2409
 msgid "Drag bar position:"
 msgstr ""
 
-#: src/desktops.c:2409
+#: src/desktops.c:2413
 msgid "Top"
 msgstr "Vrh"
 
-#: src/desktops.c:2415
+#: src/desktops.c:2419
 msgid "Bottom"
 msgstr "Dno"
 
-#: src/desktops.c:2421 src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
+#: src/desktops.c:2425 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
 msgid "Left"
 msgstr "Lijevo"
 
-#: src/desktops.c:2427 src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
+#: src/desktops.c:2431 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
 msgid "Right"
 msgstr "Desno"
 
-#: src/desktops.c:2435 src/menus-misc.c:586
+#: src/desktops.c:2439 src/menus-misc.c:586
 msgid "Desks"
 msgstr "Radni stolovi"
 
-#: src/desktops.c:2436
+#: src/desktops.c:2440
 msgid "Multiple Desktop Settings"
 msgstr "Postavke Brojnih Radnih Površina"
 
-#: src/desktops.c:2439
+#: src/desktops.c:2443
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog"
@@ -637,39 +637,39 @@ msgstr ""
 "Enlightenment Višestruka Radna Površina\n"
 "Dijalog Postavki"
 
-#: src/desktops.c:2541
+#: src/desktops.c:2545
 msgid "Virtual Desktop size:"
 msgstr "Veličina Virtualne Radne Površine:"
 
-#: src/desktops.c:2577
+#: src/desktops.c:2581
 msgid "Wrap virtual desktops around"
 msgstr ""
 
-#: src/desktops.c:2584
+#: src/desktops.c:2588
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2592
+#: src/desktops.c:2596
 msgid "On"
 msgstr "Uključen"
 
-#: src/desktops.c:2597
+#: src/desktops.c:2601
 msgid "Only when moving window"
 msgstr "Samo kod pomjeranja prozora"
 
-#: src/desktops.c:2603
+#: src/desktops.c:2607
 msgid "Resistance at edge of screen:"
 msgstr "Otpor pri rubu zaslona:"
 
-#: src/desktops.c:2615
+#: src/desktops.c:2619
 msgid "Areas"
 msgstr "Prostori"
 
-#: src/desktops.c:2616
+#: src/desktops.c:2620
 msgid "Virtual Desktop Settings"
 msgstr "Postavke Virtualnih Radnih Površina"
 
-#: src/desktops.c:2619
+#: src/desktops.c:2623
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog"
@@ -854,11 +854,11 @@ msgstr ""
 "Enlightenment Specijalni Efekti\n"
 "Dijalog Postavki"
 
-#: src/groups.c:706
+#: src/groups.c:703
 msgid "Window Group Selection"
 msgstr "Odabir Grupe Prozora"
 
-#: src/groups.c:709
+#: src/groups.c:706
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog"
@@ -866,33 +866,33 @@ msgstr ""
 "Enlightenment Grupa Prozora\n"
 "Dijalog Odabira"
 
-#: src/groups.c:732 src/groups.c:741 src/groups.c:749 src/groups.c:924
+#: src/groups.c:729 src/groups.c:738 src/groups.c:746 src/groups.c:921
 msgid "Window Group Error"
 msgstr "Greška Grupe Prozora"
 
-#: src/groups.c:734
+#: src/groups.c:731
 msgid ""
 "This window currently does not belong to any groups.\n"
 "You can only destroy groups or remove windows from groups\n"
 "through a window that actually belongs to at least one group."
 msgstr ""
 
-#: src/groups.c:742
+#: src/groups.c:739
 msgid ""
 "Currently, no groups exist or this window\n"
 "already belongs to all existing groups.\n"
 "You have to start other groups first."
 msgstr ""
 
-#: src/groups.c:751
+#: src/groups.c:748
 msgid "Currently, no groups exist. You have to start a group first."
 msgstr "Trenutno, nema grupa. Prvo morate pokrenuti grupu."
 
-#: src/groups.c:835
+#: src/groups.c:832
 msgid "Pick the group to configure:"
 msgstr "Odaberite grupu za konfiguriranje:"
 
-#: src/groups.c:866
+#: src/groups.c:863
 msgid ""
 "The following actions are\n"
 "applied to all group members:"
@@ -900,39 +900,39 @@ msgstr ""
 "Slijedeće akcije su\n"
 "primijenjene na sve članove grupe:"
 
-#: src/groups.c:871 src/groups.c:967
+#: src/groups.c:868 src/groups.c:964
 msgid "Changing Border Style"
 msgstr "Promjena Rubnog Stila"
 
-#: src/groups.c:876 src/groups.c:972
+#: src/groups.c:873 src/groups.c:969
 msgid "Iconifying"
 msgstr "Ikoniziranje"
 
-#: src/groups.c:881 src/groups.c:977
+#: src/groups.c:878 src/groups.c:974
 msgid "Killing"
 msgstr ""
 
-#: src/groups.c:886 src/groups.c:982
+#: src/groups.c:883 src/groups.c:979
 msgid "Moving"
 msgstr "Premještanje"
 
-#: src/groups.c:891 src/groups.c:987
+#: src/groups.c:888 src/groups.c:984
 msgid "Raising/Lowering"
 msgstr "Dizanje/Spuštanje"
 
-#: src/groups.c:896 src/groups.c:992
+#: src/groups.c:893 src/groups.c:989
 msgid "Sticking"
 msgstr ""
 
-#: src/groups.c:901 src/groups.c:997
+#: src/groups.c:898 src/groups.c:994
 msgid "Shading"
 msgstr "Sjenčenje"
 
-#: src/groups.c:908
+#: src/groups.c:905
 msgid "Window Group Settings"
 msgstr "Postavke Grupe Prozora"
 
-#: src/groups.c:911
+#: src/groups.c:908
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog"
@@ -940,31 +940,31 @@ msgstr ""
 "Enlightenment Grupa Prozora\n"
 "Dijalog Postavki"
 
-#: src/groups.c:925
+#: src/groups.c:922
 msgid "This window currently does not belong to any groups."
 msgstr "Ovaj prozor ne pripada nijednoj grupi."
 
-#: src/groups.c:960
+#: src/groups.c:957
 msgid "Per-group settings:"
 msgstr "Grupne postavke:"
 
-#: src/groups.c:1006
+#: src/groups.c:1003
 msgid "Global settings:"
 msgstr "Globalne postavke:"
 
-#: src/groups.c:1010
+#: src/groups.c:1007
 msgid "Swap Window Locations"
 msgstr "Zamijeni Lokacije Prozora"
 
-#: src/groups.c:1016 src/menus-misc.c:646 config/strings.c:138
+#: src/groups.c:1013 src/menus-misc.c:646 config/strings.c:138
 msgid "Groups"
 msgstr "Grupe"
 
-#: src/groups.c:1017
+#: src/groups.c:1014
 msgid "Default Group Control Settings"
 msgstr "Kontrolne Postavke Zadane Grupe"
 
-#: src/groups.c:1020
+#: src/groups.c:1017
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog"
@@ -972,15 +972,15 @@ msgstr ""
 "Enlightenment Standard\n"
 "Dijalog Postavki Kontrole Grupe"
 
-#: src/groups.c:1047
+#: src/groups.c:1044
 msgid "Pick the group the window will belong to:"
 msgstr "Odaberi grupu kojoj će prozor pripadati:"
 
-#: src/groups.c:1053
+#: src/groups.c:1050
 msgid "Select the group to remove the window from:"
 msgstr "Odaberi grupu iz koje ukloniti prozor:"
 
-#: src/groups.c:1058
+#: src/groups.c:1055
 msgid "Select the group to break:"
 msgstr "Odaberi grupu za razbiti:"
 
@@ -1043,36 +1043,36 @@ msgstr "Greška Odabira!"
 msgid "Could not acquire selection: %s"
 msgstr "Nemoguće pribaviti odabir: %s"
 
-#: src/iconify.c:468
+#: src/iconify.c:471
 msgid "Iconbox Options"
 msgstr ""
 
-#: src/iconify.c:469
+#: src/iconify.c:472
 msgid "Iconbox Settings"
 msgstr ""
 
-#: src/ipc.c:195 src/ipc.c:1461 src/ipc.c:1468 src/theme.c:379
+#: src/ipc.c:195 src/ipc.c:1464 src/ipc.c:1471 src/theme.c:379
 msgid "Message"
 msgstr "Poruka"
 
-#: src/ipc.c:1461 src/ipc.c:1468
+#: src/ipc.c:1464 src/ipc.c:1471
 #, c-format
 msgid "e16 was built without %s support"
 msgstr "e16 je napravljen bez %s podrške"
 
-#: src/ipc.c:1462
+#: src/ipc.c:1465
 msgid "composite"
 msgstr "spregnut"
 
-#: src/ipc.c:1469
+#: src/ipc.c:1472
 msgid "sound"
 msgstr "zvuk"
 
-#: src/ipc.c:1813
+#: src/ipc.c:1816
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Pomoć za Enlightenment IPC Naredbe\n"
 
-#: src/ipc.c:1817
+#: src/ipc.c:1820
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1082,19 +1082,19 @@ msgstr ""
 "Upotrijebi \"pomoć <naredba>\" za individualni opis\n"
 "\n"
 
-#: src/ipc.c:1819 src/ipc.c:1839 src/ipc.c:1851
+#: src/ipc.c:1822 src/ipc.c:1842 src/ipc.c:1854
 msgid "Commands currently available:\n"
 msgstr "Naredbe trenutno dostupne:\n"
 
-#: src/ipc.c:1837
+#: src/ipc.c:1840
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "Upotrijebi \"cjelokupna pomoć\" za cjelokupan opis svake naredbe\n"
 
-#: src/ipc.c:1838
+#: src/ipc.c:1841
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "Upotrijebi \"pomoć <naredba>\" za individualni opis\n"
 
-#: src/ipc.c:1840 src/ipc.c:1852
+#: src/ipc.c:1843 src/ipc.c:1855
 msgid "         <command>     : <description>\n"
 msgstr "         <naredba>     : <opis>\n"
 
@@ -1262,129 +1262,129 @@ msgstr ""
 "Enlightenment Selektivna Providnost\n"
 "Dijalog Postavki"
 
-#: src/pager.c:1008 config/strings.c:49 config/strings.c:121
+#: src/pager.c:1009 config/strings.c:49 config/strings.c:121
 msgid "Window Options"
 msgstr "Opcije Prozora"
 
-#: src/pager.c:1015 config/strings.c:51 config/strings.c:124
+#: src/pager.c:1016 config/strings.c:51 config/strings.c:124
 msgid "Iconify"
 msgstr "Ikonizirati"
 
-#: src/pager.c:1023 config/strings.c:123
+#: src/pager.c:1024 config/strings.c:123
 msgid "Annihilate"
 msgstr ""
 
-#: src/pager.c:1027
+#: src/pager.c:1028
 msgid "Stick / Unstick"
 msgstr ""
 
-#: src/pager.c:1034
+#: src/pager.c:1035
 msgid "Desktop Options"
 msgstr "Opcije Radne Površine"
 
-#: src/pager.c:1040
+#: src/pager.c:1041
 msgid "Pager Settings..."
 msgstr ""
 
-#: src/pager.c:1045
+#: src/pager.c:1046
 msgid "Snapshotting Off"
 msgstr ""
 
-#: src/pager.c:1049
+#: src/pager.c:1050
 msgid "High Quality Off"
 msgstr "Visoka Kvaliteta Isključena"
 
-#: src/pager.c:1051
+#: src/pager.c:1052
 msgid "High Quality On"
 msgstr "Visoka Kvaliteta Uključena"
 
-#: src/pager.c:1056
+#: src/pager.c:1057
 msgid "Snapshotting On"
 msgstr ""
 
-#: src/pager.c:1060
+#: src/pager.c:1061
 msgid "Zoom Off"
 msgstr "Zum Isključen"
 
-#: src/pager.c:1062
+#: src/pager.c:1063
 msgid "Zoom On"
 msgstr "Zum Uključen"
 
-#: src/pager.c:1808 src/pager.c:1903
+#: src/pager.c:1809 src/pager.c:1904
 msgid "Pager scanning speed:"
 msgstr ""
 
-#: src/pager.c:1809 src/pager.c:1904
+#: src/pager.c:1810 src/pager.c:1905
 msgid "lines per second"
 msgstr "linija u sekundi"
 
-#: src/pager.c:1842
+#: src/pager.c:1843
 msgid "Enable pager display"
 msgstr ""
 
-#: src/pager.c:1852
+#: src/pager.c:1853
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1856
+#: src/pager.c:1857
 msgid "Simple"
 msgstr "Jednostavno"
 
-#: src/pager.c:1862
+#: src/pager.c:1863
 msgid "Make miniature snapshots of the screen"
 msgstr ""
 
-#: src/pager.c:1869
+#: src/pager.c:1870
 msgid "Live Update"
 msgstr "Dopune Uživo"
 
-#: src/pager.c:1880
+#: src/pager.c:1881
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr ""
 
-#: src/pager.c:1885
+#: src/pager.c:1886
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr ""
 
-#: src/pager.c:1891
+#: src/pager.c:1892
 msgid "Pop up window title when mouse is over the window"
 msgstr ""
 
-#: src/pager.c:1896
+#: src/pager.c:1897
 msgid "Continuously scan screen to update pager"
 msgstr ""
 
-#: src/pager.c:1919
+#: src/pager.c:1920
 msgid "Mouse button to select and drag windows:"
 msgstr ""
 
-#: src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
+#: src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
 msgid "Middle"
 msgstr "Sredina"
 
-#: src/pager.c:1944
+#: src/pager.c:1945
 msgid "Mouse button to select desktops:"
 msgstr "Dugme miša za odabir radnih površina:"
 
-#: src/pager.c:1969
+#: src/pager.c:1970
 msgid "Mouse button to display pager menu:"
 msgstr ""
 
-#: src/pager.c:1993
+#: src/pager.c:1994
 msgid "Pagers"
 msgstr ""
 
-#: src/pager.c:1994
+#: src/pager.c:1995
 msgid "Pager Settings"
 msgstr "Postavke Preglednika"
 
-#: src/pager.c:1997
+#: src/pager.c:1998
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog"
 msgstr ""
 
-#: src/session.c:345
+#: src/session.c:342
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1399,51 +1399,51 @@ msgid ""
 "... I hope.\n"
 msgstr ""
 
-#: src/session.c:646
+#: src/session.c:643
 msgid "Are you sure?"
 msgstr "Jeste li sigurni?"
 
-#: src/session.c:648
+#: src/session.c:645
 msgid "Are you sure you wish to log out ?"
 msgstr "Jeste li sigurni da se želite odjaviti ?"
 
-#: src/session.c:656
+#: src/session.c:653
 msgid "Yes, Shut Down"
 msgstr "Da, Ugasi"
 
-#: src/session.c:658
+#: src/session.c:655
 msgid "Yes, Reboot"
 msgstr "Da, Prekini Rad Računala"
 
-#: src/session.c:661
+#: src/session.c:658
 msgid "Yes, Log Out"
 msgstr "Da, Odjavi Se"
 
-#: src/session.c:663
+#: src/session.c:660
 msgid "No"
 msgstr "Ne"
 
-#: src/session.c:798
+#: src/session.c:795
 msgid "Enable Session Script"
 msgstr ""
 
-#: src/session.c:803
+#: src/session.c:800
 msgid "Enable Logout Dialog"
 msgstr "Omogući Odjavni Dijalog"
 
-#: src/session.c:808
+#: src/session.c:805
 msgid "Enable Reboot/Halt on Logout"
 msgstr ""
 
-#: src/session.c:814
+#: src/session.c:811
 msgid "Session"
 msgstr "Sesija"
 
-#: src/session.c:815
+#: src/session.c:812
 msgid "Session Settings"
 msgstr "Postavke Sesije"
 
-#: src/session.c:818
+#: src/session.c:815
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog"
