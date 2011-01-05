@@ -5435,3 +5435,14 @@ Switch to gettext 0.16.1.
 Reset maximised state on move as well as on resize.
 Add command ("desk back") to go back to previous active desktop.
 Print error message if no argument is given to win_info command.
+
+-------------------------------------------------------------------------------
+
+Tue Jan  4 23:57:08 CET 2011
+
+--- 1.0.7.002 ---
+Add GetTimeMs/Us().
+Move timers to int/ms.
+Eliminate TimersRunExpired().
+Change TimerAdd() and TimerSetInterval() time to ms.
+Use GetTimeMs/Us() in stead of GetTime().
