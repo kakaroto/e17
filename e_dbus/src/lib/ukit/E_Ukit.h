@@ -154,9 +154,9 @@ extern "C" {
    EAPI const Eina_List    *e_ukit_property_strlist_get(E_Ukit_Properties *properties, const char *key, int *err);
 
 /* (un)mount */
-   EAPI DBusPendingCall *e_udisks_volume_mount(E_DBus_Connection *conn, const char *udi, const char *fstype, Eina_List *options, E_DBus_Callback_Func cb_func, void *data);
-   EAPI DBusPendingCall *e_udisks_volume_unmount(E_DBus_Connection *conn, const char *udi, Eina_List *options, E_DBus_Callback_Func cb_func, void *data);
-   EAPI DBusPendingCall *e_udisks_volume_eject(E_DBus_Connection *conn, const char *udi, Eina_List *options, E_DBus_Callback_Func cb_func, void *data);
+   EAPI DBusPendingCall *e_udisks_volume_mount(E_DBus_Connection *conn, const char *udi, const char *fstype, Eina_List *options);
+   EAPI DBusPendingCall *e_udisks_volume_unmount(E_DBus_Connection *conn, const char *udi, Eina_List *options);
+   EAPI DBusPendingCall *e_udisks_volume_eject(E_DBus_Connection *conn, const char *udi, Eina_List *options);
 
 #ifdef __cplusplus
 }

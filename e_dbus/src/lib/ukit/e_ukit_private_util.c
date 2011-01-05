@@ -13,6 +13,8 @@ unmarshal_property(DBusMessage *msg, DBusError *err)
    int type;
    char *tmp;
 
+   if (!dbus_message_iter_init(msg, &iter)) return NULL; /* no params in message */
+
    ret = calloc(1, sizeof(E_Ukit_Get_Property_Return));
    if (!ret) 
      {
@@ -20,7 +22,6 @@ unmarshal_property(DBusMessage *msg, DBusError *err)
         return NULL;
      }
 
-   dbus_message_iter_init(msg, &iter);
    dbus_message_iter_recurse(&iter, &a_iter);
    if (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
      {

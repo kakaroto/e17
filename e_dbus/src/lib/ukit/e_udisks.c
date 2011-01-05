@@ -55,14 +55,12 @@ e_udisks_get_all_properties(E_DBus_Connection *conn, const char *udi, E_DBus_Cal
  * @param conn the E_DBus_Connection
  * @param udi the udi of the device object
  * @param fstype the fstype of the device (e.g. volume.fstype property)
- * @param options a list of additional options (not sure... fstype dependent?)
- * @param cb_func an optional callback to call when the mount is done
- * @param data custom data pointer for the callback function
+ * @param options a list of additional options to pass to mount
  *
  * @return mount point of fs or error
  */
 EAPI DBusPendingCall *
-e_udisks_volume_mount(E_DBus_Connection *conn, const char *udi, const char *fstype, Eina_List *options, E_DBus_Callback_Func cb_func, void *data)
+e_udisks_volume_mount(E_DBus_Connection *conn, const char *udi, const char *fstype, Eina_List *options)
 {
    DBusMessage *msg;
    DBusMessageIter iter, subiter;
@@ -84,7 +82,7 @@ e_udisks_volume_mount(E_DBus_Connection *conn, const char *udi, const char *fsty
      }
    dbus_message_iter_close_container(&iter, &subiter) ;
 
-   ret = e_dbus_method_call_send(conn, msg, unmarshal_property, cb_func, free_property, -1, data);
+   ret = e_dbus_method_call_send(conn, msg, NULL, NULL, NULL, -1, NULL);
    dbus_message_unref(msg);
    return ret;
 }
@@ -97,11 +95,9 @@ e_udisks_volume_mount(E_DBus_Connection *conn, const char *udi, const char *fsty
  * @param conn the E_DBus_Connection
  * @param udi the udi of the device object
  * @param options a list of additional options (currently only 'force' is supported)
- * @param cb_func an optional callback to call when the unmount is done
- * @param data custom data pointer for the callback function
  */
 EAPI DBusPendingCall *
-e_udisks_volume_unmount(E_DBus_Connection *conn, const char *udi, Eina_List *options, E_DBus_Callback_Func cb_func, void *data)
+e_udisks_volume_unmount(E_DBus_Connection *conn, const char *udi, Eina_List *options)
 {
    DBusMessage *msg;
    DBusMessageIter iter, subiter;
@@ -121,7 +117,7 @@ e_udisks_volume_unmount(E_DBus_Connection *conn, const char *udi, Eina_List *opt
      }
    dbus_message_iter_close_container(&iter, &subiter) ;
 
-   ret = e_dbus_method_call_send(conn, msg, NULL, cb_func, NULL, -1, data);
+   ret = e_dbus_method_call_send(conn, msg, NULL, NULL, NULL, -1, NULL);
    dbus_message_unref(msg);
    return ret;
 }
@@ -132,11 +128,9 @@ e_udisks_volume_unmount(E_DBus_Connection *conn, const char *udi, Eina_List *opt
  * @param conn the E_DBus_Connection
  * @param udi the udi of the device object
  * @param options a list of additional options (none currently supported)
- * @param cb_func an optional callback to call when the eject is done
- * @param data cuatom data pointer for the callback function
  */
 EAPI DBusPendingCall *
-e_udisks_volume_eject(E_DBus_Connection *conn, const char *udi, Eina_List *options, E_DBus_Callback_Func cb_func, void *data)
+e_udisks_volume_eject(E_DBus_Connection *conn, const char *udi, Eina_List *options)
 {
    DBusMessage *msg;
    DBusMessageIter iter, subiter;
@@ -156,7 +150,7 @@ e_udisks_volume_eject(E_DBus_Connection *conn, const char *udi, Eina_List *optio
      }
    dbus_message_iter_close_container(&iter, &subiter) ;
 
-   ret = e_dbus_method_call_send(conn, msg, NULL, cb_func, NULL, -1, data);
+   ret = e_dbus_method_call_send(conn, msg, NULL, NULL, NULL, -1, NULL);
    dbus_message_unref(msg);
    return ret;
 }
