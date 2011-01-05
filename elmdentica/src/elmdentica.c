@@ -1456,7 +1456,7 @@ void add_status(aStatus *as, Elm_Genlist_Item *gli) {
 	itc1.func.del		= ed_status_del;
 
 	if(gli) {
-		li = elm_genlist_item_insert_after(gui.timeline, &itc1, as, gli, ELM_GENLIST_ITEM_NONE, NULL, NULL);
+		li = elm_genlist_item_insert_after(gui.timeline, &itc1, as, NULL, gli, ELM_GENLIST_ITEM_NONE, NULL, NULL);
 		elm_genlist_item_show(li);
 	} else
 		li = elm_genlist_item_append(gui.timeline, &itc1, as, NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL);

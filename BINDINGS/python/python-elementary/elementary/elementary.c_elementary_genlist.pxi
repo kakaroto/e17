@@ -788,6 +788,7 @@ cdef class Genlist(Object):
         prm = (item_class, item_data, ret, func)
         item = elm_genlist_item_insert_before(self.obj, &item_class.obj,
                                               <void*>prm,
+                                              NULL,
                                               before,
                                               <Elm_Genlist_Item_Flags>flags, cb,
                                               <void*>prm)
@@ -840,6 +841,7 @@ cdef class Genlist(Object):
         prm = (item_class, item_data, ret, func)
         item = elm_genlist_item_insert_after(self.obj, &item_class.obj,
                                              <void*>prm,
+                                             NULL,
                                              after,
                                              <Elm_Genlist_Item_Flags>flags, cb,
                                              <void*>prm)

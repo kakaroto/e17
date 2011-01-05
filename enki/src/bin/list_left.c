@@ -133,7 +133,7 @@ void list_left_append_relative(List_Left *list_left, Enlil_Album *album, Elm_Gen
 	    album);
     else
       enlil_album_data->list_album_item = elm_genlist_item_insert_after(list_left->gl_albums, &itc_album,
-	    album, relative, ELM_GENLIST_ITEM_NONE, _gl_sel,
+	    album, NULL, relative, ELM_GENLIST_ITEM_NONE, _gl_sel,
 	    album);
 }
 

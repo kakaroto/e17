@@ -216,6 +216,7 @@ GenListItem *GenList::insertInternal (GenListColumnConstructor *construction, Ge
       gli = elm_genlist_item_insert_before (o, &mModel->mGLIC,
                                             construction /* item data */,
                                             opItem ? opItem->mItem : NULL /* parent */,
+                                            NULL,
                                             flags,
                                             GenList::gl_sel/* func */,
                                             selection /* func data */);
@@ -225,6 +226,7 @@ GenListItem *GenList::insertInternal (GenListColumnConstructor *construction, Ge
       gli = elm_genlist_item_insert_after (o, &mModel->mGLIC,
                                             construction /* item data */,
                                             opItem ? opItem->mItem : NULL /* parent */,
+                                            NULL,
                                             flags,
                                             GenList::gl_sel/* func */,
                                             selection /* func data */);

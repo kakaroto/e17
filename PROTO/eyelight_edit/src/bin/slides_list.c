@@ -253,6 +253,7 @@ void slides_list_slide_append_relative(List_Item *item, List_Item *item_prev)
     if(item_prev)
         item->item = elm_genlist_item_insert_after(slides_list, &itc_slides,
                 item,
+                NULL,
                 item_prev->item,
                 ELM_GENLIST_ITEM_NONE,
                 _slides_list_sel,
@@ -299,6 +300,7 @@ void slides_list_item_move(int id, int id_after)
     {
         item->item = elm_genlist_item_insert_after(slides_list, &itc_slides,
                 item,
+                NULL,
                 item_after->item,
                 ELM_GENLIST_ITEM_NONE,
                 _slides_list_sel,
