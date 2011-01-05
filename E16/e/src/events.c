@@ -995,23 +995,18 @@ EventsMain(void)
 	       count, pfds[0].fd, FD_ISSET(pfds[0].fd, &fdset), dt * 1e-3,
 	       time2 * 1e-3);
 
-	if (count == 0)
+	if (count <= 0)
+	   continue;		/* Timeout (or error) */
+
+	/* Excluding X fd */
+	for (i = 1; i < nfds; i++)
 	  {
-	     /* We can only get here by timeout in select */
-	     TimersRunExpired();
-	  }
-	else if (count > 0)
-	  {
-	     /* Excluding X fd */
-	     for (i = 1; i < nfds; i++)
+	     fd = pfds[i].fd;
+	     if ((fd >= 0) && (FD_ISSET(fd, &fdset)))
 	       {
-		  fd = pfds[i].fd;
-		  if ((fd >= 0) && (FD_ISSET(fd, &fdset)))
-		    {
-		       if (EDebug(EDBUG_TYPE_EVENTS))
-			  Eprintf("Event fd %d\n", i);
-		       pfds[i].handler();
-		    }
+		  if (EDebug(EDBUG_TYPE_EVENTS))
+		     Eprintf("Event fd %d\n", i);
+		  pfds[i].handler();
 	       }
 	  }
      }

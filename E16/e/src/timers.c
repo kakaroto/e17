@@ -225,14 +225,6 @@ TimersRun(unsigned int t_ms)
    return tn;
 }
 
-unsigned int
-TimersRunExpired(void)
-{
-   if (!q_first)		/* I don't think this should ever happen but... */
-      return 0;
-   return TimersRun(q_first->at_time);
-}
-
 void
 TimerDel(Timer * timer)
 {
