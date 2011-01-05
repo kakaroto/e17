@@ -34,7 +34,8 @@ Timer              *TimerAdd(double in_time,
 			     int (*func) (void *data), void *data);
 void                TimerDel(Timer * timer);
 void                TimerSetInterval(Timer * timer, double dt);
-double              TimersRun(double t);
+unsigned int        TimersRun(unsigned int t_ms);
+unsigned int        TimersRunExpired(void);
 
 #define TIMER_ADD(timer, in, func, prm) \
    timer = TimerAdd(in, func, prm)

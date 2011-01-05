@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -920,11 +920,12 @@ EventsMain(void)
    static XEvent      *evq_ptr = NULL;
    fd_set              fdset;
    struct timeval      tval;
-   double              time1, time2, dt;
+   unsigned int        time1, time2;
+   int                 dt;
    int                 count, pfetch;
    int                 fdsize, fd, i;
 
-   time1 = GetTime();
+   time1 = GetTimeMs();
 
    for (;;)
      {
@@ -950,7 +951,7 @@ EventsMain(void)
 	IdlersRun();
 
 	/* time2 = current time */
-	time2 = GetTime();
+	time2 = GetTimeMs();
 	dt = time2 - time1;
 	time1 = time2;
 	/* dt = time spent since we last were here */
@@ -979,8 +980,8 @@ EventsMain(void)
 
 	if (time2 > 0.)
 	  {
-	     tval.tv_sec = (long)time2;
-	     tval.tv_usec = (long)((time2 - ((double)tval.tv_sec)) * 1000000);
+	     tval.tv_sec = (long)time2 / 1000;
+	     tval.tv_usec = ((long)time2 - tval.tv_sec * 1000) * 1000;
 	     count = select(fdsize, &fdset, NULL, NULL, &tval);
 	  }
 	else
@@ -990,13 +991,14 @@ EventsMain(void)
 
 	if (EDebug(EDBUG_TYPE_EVENTS))
 	   Eprintf
-	      ("EventsMain - count=%d xfd=%d:%d dt=%lf time2=%lf\n",
-	       count, pfds[0].fd, FD_ISSET(pfds[0].fd, &fdset), dt, time2);
+	      ("EventsMain - count=%d xfd=%d:%d dt=%.6lf time2=%.6lf\n",
+	       count, pfds[0].fd, FD_ISSET(pfds[0].fd, &fdset), dt * 1e-3,
+	       time2 * 1e-3);
 
 	if (count == 0)
 	  {
 	     /* We can only get here by timeout in select */
-	     TimersRun(0.);
+	     TimersRunExpired();
 	  }
 	else if (count > 0)
 	  {

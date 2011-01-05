@@ -30,8 +30,8 @@
 #define DEBUG_TIMERS 0
 
 struct _timer {
-   double              in_time;
-   double              at_time;
+   unsigned int        in_time;
+   unsigned int        at_time;
    struct _timer      *next;
    int                 (*func) (void *data);
    void               *data;
@@ -83,6 +83,12 @@ GetTimeUs(void)
 #endif
 }
 
+static int
+tdiff(unsigned int t1, unsigned int t2)
+{
+   return (int)(t1 - t2);
+}
+
 static Timer       *q_first = NULL;
 
 static void
@@ -107,7 +113,7 @@ _TimerSet(Timer * timer)
 	pptr = NULL;
 	for (ptr = q_first; ptr; pptr = ptr, ptr = ptr->next)
 	  {
-	     if (ptr->at_time > timer->at_time)
+	     if (tdiff(ptr->at_time, timer->at_time) > 0)
 		break;
 	  }
 	if (pptr)
@@ -133,50 +139,46 @@ Timer              *
 TimerAdd(double in_time, int (*func) (void *data), void *data)
 {
    Timer              *timer;
+   int                 dt_ms = in_time * 1000;
 
    timer = EMALLOC(Timer, 1);
    if (!timer)
       return NULL;
 
-   if (in_time < 0.)		/* No negative in-times */
-      in_time = 0.;
-
+   timer->in_time = (unsigned int)dt_ms;
+   timer->at_time = GetTimeMs() + dt_ms;
    timer->func = func;
-   timer->in_time = in_time;
-   timer->at_time = GetTime() + in_time;
    timer->data = data;
 
    if (EDebug(EDBUG_TYPE_TIMERS))
-      Eprintf("TimerAdd %p: func=%p data=%p: %8.3f\n", timer,
-	      timer->func, timer->data, in_time);
+      Eprintf("TimerAdd %p: func=%p data=%p: %8d\n", timer,
+	      timer->func, timer->data, dt_ms);
 
    _TimerSet(timer);		/* Add to timer queue */
 
    return timer;
 }
 
-double
-TimersRun(double tt)
+unsigned int
+TimersRun(unsigned int t_ms)
 {
    Timer              *timer, *q_old, *q_run;
-   double              t;
+   unsigned int        t, tn;
 
    timer = q_first;
    if (!timer)
-      return 0.;		/* No timers pending */
+      return 0;			/* No timers pending */
 
-   t = tt;
-   if (t <= 0.)
-      t = timer->at_time;
+   t = t_ms;
 
    q_run = q_old = timer;
    for (; timer; timer = q_first)
      {
-	if (timer->at_time > t + 200e-6)	/* Within 200 us is close enough */
+	if (tdiff(timer->at_time, t) > 0)
 	   break;
 
 	if (EDebug(EDBUG_TYPE_TIMERS))
-	   Eprintf("TimersRun - run %p: func=%p data=%p: %8.3lf\n", timer,
+	   Eprintf("TimersRun - run %p: func=%p data=%p: %8d\n", timer,
 		   timer->func, timer->data, timer->at_time - t);
 
 	q_first = timer->next;
@@ -207,35 +209,28 @@ TimersRun(double tt)
 	  }
      }
 
-   if (tt <= 0.)		/* Avoid some redundant debug output */
-      return tt;
-
-   timer = q_first;
-
    if (EDebug(EDBUG_TYPE_TIMERS) > 1)
      {
-	Timer              *qp;
-
-	for (qp = timer; qp; qp = qp->next)
-	   Eprintf("TimersRun - pend %p: func=%p data=%p: %8.3lf\n", qp,
-		   qp->func, qp->data, qp->at_time - t);
+	for (timer = q_first; timer; timer = timer->next)
+	   Eprintf("TimersRun - pend %p: func=%p data=%p: %8d\n",
+		   timer, timer->func, timer->data, timer->at_time - t);
      }
 
-   if (timer)
-     {
-	t = timer->at_time - t;
-	if (t <= 0.)
-	   t = 1e-6;
-     }
-   else
-     {
-	t = 0.;
-     }
+   timer = q_first;
+   tn = (timer) ? t = timer->at_time - t : 0;
 
    if (EDebug(EDBUG_TYPE_TIMERS))
-      Eprintf("TimersRun - next in %8.3lf\n", t);
+      Eprintf("TimersRun - next in %8u\n", tn);
 
-   return t;
+   return tn;
+}
+
+unsigned int
+TimersRunExpired(void)
+{
+   if (!q_first)		/* I don't think this should ever happen but... */
+      return 0;
+   return TimersRun(q_first->at_time);
 }
 
 void
@@ -264,7 +259,9 @@ TimerDel(Timer * timer)
 void
 TimerSetInterval(Timer * timer, double dt)
 {
-   timer->in_time = dt;
+   int                 dt_ms = dt * 1000;
+
+   timer->in_time = (unsigned int)dt_ms;
 }
 
 /*
@@ -358,7 +355,7 @@ AnimatorsRun(void *data __UNUSED__)
 
    if (ecore_list_count(animator_list))
      {
-	TimerSetInterval(animator_timer, 1e-3 * Conf.animation.step);
+	TimerSetInterval(animator_timer, Conf.animation.step);
 	return 1;
      }
    else
