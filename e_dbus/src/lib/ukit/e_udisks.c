@@ -24,6 +24,11 @@ e_udisks_get_property(E_DBus_Connection *conn, const char *udi, const char *prop
    DBusMessage *msg;
    DBusPendingCall *ret;
 
+   EINA_SAFETY_ON_NULL_RETURN_VAL(udi, NULL);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!udi[0], NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(conn, NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(property, NULL);
+
    msg = e_ukit_property_call_new(udi, "Get");
    dbus_message_append_args(msg, DBUS_TYPE_STRING, &e_udisks_iface, DBUS_TYPE_STRING, &property, DBUS_TYPE_INVALID);
    ret = e_dbus_method_call_send(conn, msg, unmarshal_property, cb_func, free_property, -1, data);
@@ -37,6 +42,10 @@ e_udisks_get_all_properties(E_DBus_Connection *conn, const char *udi, E_DBus_Cal
 {
    DBusMessage *msg;
    DBusPendingCall *ret;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(udi, NULL);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!udi[0], NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(conn, NULL);
 
    msg = e_ukit_property_call_new(udi, "GetAll");
    dbus_message_append_args(msg, DBUS_TYPE_STRING, &e_udisks_iface, DBUS_TYPE_INVALID);
@@ -66,6 +75,10 @@ e_udisks_volume_mount(E_DBus_Connection *conn, const char *udi, const char *fsty
    DBusMessageIter iter, subiter;
    Eina_List *l;
    DBusPendingCall *ret;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(udi, NULL);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!udi[0], NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(conn, NULL);
 
    msg = e_ukit_device_call_new(udi, "FilesystemMount");
 
@@ -104,6 +117,10 @@ e_udisks_volume_unmount(E_DBus_Connection *conn, const char *udi, Eina_List *opt
    Eina_List *l;
    DBusPendingCall *ret;
 
+   EINA_SAFETY_ON_NULL_RETURN_VAL(udi, NULL);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!udi[0], NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(conn, NULL);
+
    msg = e_ukit_device_call_new(udi, "FilesystemUnmount");
 
    dbus_message_iter_init_append(msg, &iter);
@@ -137,6 +154,10 @@ e_udisks_volume_eject(E_DBus_Connection *conn, const char *udi, Eina_List *optio
    Eina_List *l;
    DBusPendingCall *ret;
 
+   EINA_SAFETY_ON_NULL_RETURN_VAL(udi, NULL);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!udi[0], NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(conn, NULL);
+
    msg = e_ukit_device_call_new(udi, "DriveEject");
 
    dbus_message_iter_init_append(msg, &iter);
@@ -162,27 +183,10 @@ e_udisks_get_all_devices(E_DBus_Connection *conn, E_DBus_Callback_Func cb_func, 
    DBusMessage *msg;
    DBusPendingCall *ret;
 
+   EINA_SAFETY_ON_NULL_RETURN_VAL(conn, NULL);
+
    msg = e_ukit_call_new(E_UKIT_PATH, "EnumerateDevices");
    ret = e_dbus_method_call_send(conn, msg, unmarshal_string_list, cb_func, free_string_list, -1, data);
    dbus_message_unref(msg);
    return ret;
 }
-
-
-/* Manager.FindDeviceByCapability */
-/*
- * not implemented in udisks yet...
- * 
-EAPI DBusPendingCall *
-e_udisks_find_device_by_capability(E_DBus_Connection *conn, const char *capability, E_DBus_Callback_Func cb_func, void *data)
-{
-   DBusMessage *msg;
-   DBusPendingCall *ret;
-
-   msg = e_udisks_call_new("FindDeviceByCapability");
-   dbus_message_append_args(msg, DBUS_TYPE_STRING, &capability, DBUS_TYPE_INVALID);
-   ret = e_dbus_method_call_send(conn, msg, unmarshal_string_list, cb_func, free_string_list, -1, data);
-   dbus_message_unref(msg);
-   return ret;
-}
-*/
