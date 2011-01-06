@@ -195,6 +195,7 @@ int main(int argc, char *argv[])
 {
   Ecore_Evas *ee;
   Evas *evas;
+  Evas_Object *bg;
   Evas_Object *o;
   int w, h;
   char *backend = NULL;
@@ -241,6 +242,13 @@ int main(int argc, char *argv[])
     return -1;
 
   evas = ecore_evas_get(ee);
+
+  /* beckground */
+  o = evas_object_rectangle_add(evas);
+  evas_object_color_set(o, 0, 0, 0, 255);
+  evas_object_move(o, 0, 0);
+  evas_object_show(o);
+  bg = o;
 
   o = eyesight_object_add(evas);
   if (!(eb = eyesight_object_init(o, backend)))
@@ -331,6 +339,7 @@ int main(int argc, char *argv[])
   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_UP, _cb_mouse_up, links);
   evas_object_show (o);
 
+  evas_object_resize(bg, w, h);
   ecore_evas_resize(ee, w, h);
   ecore_evas_show(ee);
 
