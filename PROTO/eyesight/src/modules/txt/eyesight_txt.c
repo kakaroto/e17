@@ -38,6 +38,74 @@
 
 static int _eyesight_txt_log_domain = -1;
 
+/*
+ * TODO: consider resizing pages with resizing of the textblock
+ * if pages are dynamically resized, this function should be
+ * called at each resize, otherwise only once for each document
+ */
+
+/*
+ * TODO: consider storing pages array instead of ebt->text
+ * in the backend struct
+ */
+
+static Eina_Bool
+_eyesight_txt_page_generate(void *eb){
+  Eyesight_Backend_Txt  *ebt;
+  Evas_Textblock_Cursor *c1;
+  Evas_Textblock_Cursor *c2;
+  Evas_Object           *tb;
+  int                    w;
+  int                    h;
+  int                    page = 1;
+  char                  *s;
+
+  if (!eb)
+    return EINA_FALSE;
+
+  ebt = (Eyesight_Backend_Txt *)eb;
+
+  tb = ebt->obj;
+  evas_object_textblock_clear(tb);
+  w = 600;
+  h = 700;
+  evas_object_textblock_text_markup_set(tb, ebt->text);
+  evas_object_resize(tb, w, h);
+  evas_object_show(tb);
+
+  ebt->pages = eina_array_new(10);
+  if (!(ebt->pages))
+    return EINA_FALSE;
+
+  c1 = evas_object_textblock_cursor_new(tb);
+  c2 = evas_object_textblock_cursor_new(tb);
+
+  evas_textblock_cursor_paragraph_first(c1);
+  evas_textblock_cursor_line_coord_set(c2, h - 1);
+
+  do{
+    evas_textblock_cursor_line_char_last(c2);
+    s = evas_textblock_cursor_range_text_get(c1, c2, EVAS_TEXTBLOCK_TEXT_MARKUP);
+    eina_array_push(ebt->pages, s);
+
+    page++;
+    evas_textblock_cursor_copy(c2, c1);
+    evas_textblock_cursor_char_next(c1);
+    evas_textblock_cursor_line_coord_set(c2, page * h - 1);
+  }while(evas_textblock_cursor_compare(c1, c2) < 0);
+
+  evas_textblock_cursor_paragraph_last(c2);
+  if (evas_textblock_cursor_compare(c1, c2) < 0)
+  {
+    s = evas_textblock_cursor_range_text_get(c1, c2, EVAS_TEXTBLOCK_TEXT_MARKUP);
+    eina_array_push(ebt->pages, s);
+  }
+
+  evas_textblock_cursor_free(c2);
+  evas_textblock_cursor_free(c1);
+
+  return EINA_TRUE;
+}
 
 static Eina_Bool
 em_init (Evas *evas, Evas_Object **obj, void **eyesight_backend)
@@ -127,6 +195,7 @@ em_file_open (void *eb, const char *filename)
   eina_strbuf_replace_all(sb, ">", "&gt;");
   eina_strbuf_replace_all(sb, "\n", "<br>");
 
+  /* TODO: use eina_strbuf*() to avoid the duplication */
   ebt->text = strdup(eina_strbuf_string_get(sb));
   eina_strbuf_free(sb);
 
@@ -143,6 +212,8 @@ em_file_open (void *eb, const char *filename)
   ebt->page.hscale = 1.0;
   ebt->page.vscale = 1.0;
   ebt->page.orientation = EYESIGHT_ORIENTATION_PORTRAIT;
+
+  _eyesight_txt_page_generate(eb);
 
   return doc;
 
@@ -198,22 +269,22 @@ em_page_count(void *eb)
 
   ebt = (Eyesight_Backend_Txt *)eb;
 
-  /* FIXME: todo */
-  return 0;
+  return eina_array_count_get(ebt->pages);
 }
 
 static void
 em_page_set(void *eb, int page)
 {
   Eyesight_Backend_Txt *ebt;
+  const char                 *s;
 
   if (!eb)
     return;
 
   ebt = (Eyesight_Backend_Txt *)eb;
 
-  /* FIXME: todo */
-  return;
+  s = eina_array_data_get(ebt->pages, page);
+  evas_object_textblock_text_markup_set(ebt->obj, s);
 }
 
 static int
@@ -307,7 +378,7 @@ em_page_render(void *eb)
   ebt = (Eyesight_Backend_Txt *)eb;
   printf ("%s\n", ebt->text);
   evas_object_resize(ebt->obj, 600, 700);
-  evas_object_textblock_text_markup_set(ebt->obj, ebt->text);
+/*   evas_object_textblock_text_markup_set(ebt->obj, ebt->text); */
 }
 
 char *

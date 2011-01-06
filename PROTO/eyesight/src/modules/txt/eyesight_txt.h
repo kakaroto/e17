@@ -29,6 +29,7 @@ struct _Eyesight_Backend_Txt
   Eyesight_Document_Txt *document;
   Evas_Object *obj;
   char *text;
+  Eina_Array *pages;
 
   /* Current page */
   struct {
