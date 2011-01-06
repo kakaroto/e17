@@ -259,10 +259,10 @@ _ecore_request(const char *url, const char *req, Eina_Array *additional_headers,
 
    DBG("Sending request %p", request);
 
-   if (!ecore_con_url_send(con,
-			   request->body,
-			   body_length,
-			   content_type))
+   if (!ecore_con_url_post(con,
+                           request->body,
+                           body_length,
+                           content_type))
      {
 	ERR("Failed to send request request");
 	goto send_error;

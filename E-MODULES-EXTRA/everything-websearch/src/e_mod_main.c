@@ -216,7 +216,7 @@ _url_data_send(Url_Data *dd, const char *url)
 
    ecore_con_url_url_set(dd->con_url, url);
 
-   return ecore_con_url_send(dd->con_url, NULL, 0, NULL);
+   return ecore_con_url_get(dd->con_url, NULL, 0, NULL);
 }
 
 static Eina_Bool
@@ -1133,7 +1133,7 @@ _action_upload(Evry_Action *act)
 	/* strip 'Content-Type:' == 14 */
    	snprintf(buf, i-14, "%s", ud->data+14);
    
-   	ecore_con_url_send(ud->dd->con_url, ud->data+i, ud->size-i, buf);
+   	ecore_con_url_post(ud->dd->con_url, ud->data+i, ud->size-i, buf);
      }
    
    /* ecore_con_url_http_post_send(ud->dd->con_url, post); */
