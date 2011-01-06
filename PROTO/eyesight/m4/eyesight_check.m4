@@ -74,7 +74,21 @@ dnl openjpeg
    fi
 
    if test "x${have_dep}" = "xyes" ; then
-      AC_CHECK_LIB([openjpeg], [opj_set_default_decoder_parameters], [have_dep="yes"], [have_dep="no"])
+      SAVE_LIBS=${LIBS}
+      LIBS="${LIBS} -lopenjpeg"
+      AC_LINK_IFELSE(
+         [AC_LANG_PROGRAM([[
+#include <stdlib.h>
+#include <openjpeg.h>
+                          ]],
+                          [[
+opj_set_default_decoder_parameters (NULL);
+                          ]])],
+         [have_dep="yes"],
+         [have_dep="no"])
+      LIBS=${SAVE_LIBS}
+      AC_MSG_CHECKING([for opj_set_default_decoder_parameters in -lopenjpeg])
+      AC_MSG_RESULT([${have_dep}])
    fi
 
 dnl jbig2
