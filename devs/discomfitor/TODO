@@ -1,19 +1,17 @@
 things I am/will be working on:
 ___URGENT___ (pre 1.0 hopefully?)
-*eeze integration into efm to replace hal
-*finish elm_config
+*eeze integration into efm
 *fix battery fuzzy mode for when plugged in
 *update battery fuzzy mode to do rolling averages
 
 
 ___SOON___ (whenever I feel like it)
 **ecore xcb updates
-**exchange integration with e17 and libazer
+**exchange integration with e17 and azy
 
 
 ___EVENTUAL___ (hahahahahaha)
 efl guake+vte lib clones
-efl comix clone
 efl gmpc clone
 evry module for controlling vms (libvirt, xen, possibly vmware depending on legality?)
 efl bittorrent client
