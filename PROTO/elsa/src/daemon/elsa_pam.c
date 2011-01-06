@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "elsa.h"
 
@@ -27,6 +28,8 @@ static int _elsa_pam_conv(int num_msg, const struct pam_message **msg, struct pa
 static struct pam_conv _pam_conversation;
 static pam_handle_t* _pam_handle;
 static int last_result;
+static char *_login = NULL;
+static char *_passwd = NULL;
 
 
 
@@ -42,12 +45,13 @@ _elsa_pam_conv(int num_msg, const struct pam_message **msg,
             case PAM_PROMPT_ECHO_ON:
                  // We assume PAM is asking for the username
                  fprintf(stderr, PACKAGE": echo on\n");
-                 resp[i]->resp = strdup(elsa_server_login_get());
+                 resp[i]->resp = _login;
                  break;
 
             case PAM_PROMPT_ECHO_OFF:
                  fprintf(stderr, PACKAGE": echo off\n");
-                 resp[i]->resp = strdup(elsa_server_password_get());
+                 resp[i]->resp = _passwd;
+                 _passwd = NULL;
                  break;
             case PAM_ERROR_MSG:
                  fprintf(stderr, PACKAGE": error msg\n");
@@ -73,6 +77,16 @@ _elsa_pam_conv(int num_msg, const struct pam_message **msg,
          *resp=0;
      }
      return result;
+}
+
+static char *
+_get_running_username(void)
+{
+   char *result;
+   struct passwd *pwent = NULL;
+   pwent = getpwuid(getuid());
+   result = strdup(pwent->pw_name);
+   return (result);
 }
 
 
@@ -113,7 +127,7 @@ elsa_pam_open_session()
 void
 elsa_pam_close_session() {
    fprintf(stderr, PACKAGE": PAM close session\n");
-   last_result = pam_close_session(_pam_handle, 0);
+   last_result = pam_close_session(_pam_handle, PAM_SILENT);
    switch (last_result) {
       default:
          //case PAM_SESSION_ERROR:
@@ -193,7 +207,7 @@ elsa_pam_authenticate()
 }
 
 int
-elsa_pam_init(const char *service, const char *display) {
+elsa_pam_init(const char *service, const char *display, const char *user) {
    int status;
 
    if (!service && !*service) goto pam_error;
@@ -206,12 +220,12 @@ elsa_pam_init(const char *service, const char *display) {
 
    fprintf(stderr, PACKAGE": Pam init with name %s\n", service);
    if (_pam_handle) elsa_pam_end();
-   status = pam_start(service, NULL, &_pam_conversation, &_pam_handle);
+   status = pam_start(service, user, &_pam_conversation, &_pam_handle);
 
    if (status != 0) goto pam_error;
    status = elsa_pam_item_set(ELSA_PAM_ITEM_TTY, display);
    if (status != 0) goto pam_error;
-   status = elsa_pam_item_set(ELSA_PAM_ITEM_RUSER, "root");
+   status = elsa_pam_item_set(ELSA_PAM_ITEM_RUSER, _get_running_username());
    if (status != 0) goto pam_error;
    status = elsa_pam_item_set(ELSA_PAM_ITEM_RHOST, "localhost");
    if (status != 0) goto pam_error;
@@ -278,3 +292,13 @@ elsa_pam_shutdown() {
    fprintf(stderr, PACKAGE": Pam shutdown\n");
 }
 
+int
+elsa_pam_auth_set(const char *login, const char *passwd)
+{
+   if (!login)
+     return 1;
+   _login = strdup(login);
+   if (passwd)
+     _passwd = strdup(passwd);
+   return 0;
+}

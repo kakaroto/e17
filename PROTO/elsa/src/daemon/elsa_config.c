@@ -1,5 +1,6 @@
 #include "elsa.h"
 #include <sys/stat.h>
+#include <Ecore_File.h>
 
 #define ELSA_CONFIG_KEY "config"
 #define ELSA_SESSION_KEY "session"

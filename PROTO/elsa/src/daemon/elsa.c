@@ -12,7 +12,7 @@ static Eina_Bool _testing = EINA_FALSE;
 
 static void _elsa_help ();
 static Eina_Bool _open_log();
-static Eina_Bool _close_log();
+//static Eina_Bool _close_log();
 static void _remove_lock();
 static void _signal_cb();
 
@@ -31,7 +31,9 @@ _get_lock()
 {
    FILE *f;
    char buf[128];
+   int my_pid;
 
+   my_pid = getpid();
    f = fopen(elsa_config->lockfile, "r");
    if (!f)
      {
@@ -43,7 +45,7 @@ _get_lock()
                      elsa_config->lockfile);
              return (EINA_FALSE);
           }
-        snprintf(buf, sizeof(buf), "%d\n", getpid());
+        snprintf(buf, sizeof(buf), "%d\n", my_pid);
         if (!fwrite(buf, strlen(buf), 1, f))
           {
              fclose(f);
@@ -54,8 +56,13 @@ _get_lock()
      }
    else
      {
+        int pid = 0;
         /* read the lockfile */
+        if (fgets(buf, sizeof(buf), f))
+          pid = atoi(buf);
         fclose(f);
+        if (pid == my_pid)
+          return EINA_TRUE;
         fprintf(stderr, "A lock file are present another instance are present ?\n");
         return EINA_FALSE;
      }
@@ -85,6 +92,7 @@ static Eina_Bool
 _open_log()
 {
    FILE *elog;
+   if (_testing) return EINA_TRUE;
    elog = fopen(elsa_config->logfile, "a");
    if (!elog)
      {
@@ -102,12 +110,14 @@ _open_log()
    return EINA_TRUE;
 }
 
-static Eina_Bool
-_close_log()
+void
+elsa_close_log()
 {
+   if (!_testing)
+   {
    fclose(stderr);
    fclose(stdout);
-   return EINA_TRUE;
+   }
 }
 
 static void
@@ -116,13 +126,29 @@ _elsa_help() {
    fprintf(stderr, "\th: print this help message\n");
 }
 
+static void
+_elsa_wait(const char *display)
+{
+   char buf[16]; /* I think is sufisant ... */
+   snprintf(buf, sizeof(buf), "%d", elsa_xserver_pid_get());
+   sleep(20);
+   execl("/usr/sbin/elsa_wait", "/usr/sbin/elsa_wait",
+         buf, elsa_session_login_get(), display, NULL);
+   fprintf(stderr, PACKAGE": HUM HUM HUM ...\n\n\n");
+}
+
 int
 elsa_main()
 {
    fprintf(stderr, PACKAGE": Run client\n");
-   ecore_exe_run("elsa_client", NULL);
+   if (elsa_config->autologin)
+     ecore_main_loop_quit();
+   else
+     ecore_exe_run("elsa_client", NULL);
    return 0;
 }
+
+
 
 
 int
@@ -154,7 +180,7 @@ main (int argc, char ** argv)
         exit(1);
      }
 
-   if (elsa_config->daemonize)
+   if (!_testing && elsa_config->daemonize)
      {
         if (daemon(0, 1) == -1)
           {
@@ -166,9 +192,13 @@ main (int argc, char ** argv)
 
    if (!_open_log())
       exit(1);
-
    ecore_init();
    /* Initialise event handler */
+
+   elsa_pam_init(PACKAGE, dname, NULL);
+   elsa_session_init(elsa_config->command.xauth_file);
+
+   elsa_xserver_init(elsa_main, dname);
    signal(SIGQUIT, _signal_cb);
    signal(SIGTERM, _signal_cb);
    signal(SIGKILL, _signal_cb);
@@ -176,13 +206,6 @@ main (int argc, char ** argv)
    signal(SIGHUP, _signal_cb);
    signal(SIGPIPE, _signal_cb);
    signal(SIGALRM, _signal_cb);
-
-   elsa_pam_init(PACKAGE, dname);
-   free(dname);
-   elsa_session_init(elsa_config->command.xauth_file);
-
-   if (!_testing)
-     elsa_xserver_init(elsa_main, dname);
    if (elsa_config->autologin)
      {
         ecore_main_loop_begin();
@@ -193,16 +216,16 @@ main (int argc, char ** argv)
    else
      {
         elsa_server_init();
+        ecore_main_loop_begin();
         elsa_server_shutdown();
      }
-   elsa_xserver_wait();
-   elsa_xserver_shutdown();
+//   elsa_xserver_shutdown();
    elsa_pam_shutdown();
-   _remove_lock();
    elsa_config_shutdown();
    ecore_shutdown();
-   fprintf(stderr, PACKAGE": Goodbye until next time :)\n\n\n");
-   _close_log();
+   _elsa_wait(dname);
+   _remove_lock();
+   elsa_close_log();
    return 0;
 }
 

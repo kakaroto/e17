@@ -8,7 +8,7 @@ AM_CPPFLAGS = \
 -DSYSTEM_CONFIG_DIR=\"$(sysconfdir)\" \
 @ELSA_CFLAGS@
 
-sbin_PROGRAMS = elsa
+sbin_PROGRAMS = elsa elsa_wait
 
 elsa_SOURCES =     \
 elsa_config.h      \
@@ -27,3 +27,9 @@ elsa.c
 elsa_LDFLAGS =
 elsa_LDADD = @ELSA_LIBS@ -lpam
 
+elsa_wait_SOURCES = \
+elsa_wait.c         \
+elsa_pam.c
+
+elsa_wait_LDFLAGS = 
+elsa_wait_LDADD = -lpam

@@ -2,7 +2,7 @@
 #define ELSA_H_
 
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+#include <config.h>
 #endif
 
 #include <stdio.h>
@@ -17,6 +17,7 @@
 #include "elsa_xserver.h"
 #include "elsa_server.h"
 
+void elsa_close_log();
 int elsa_main();
 
 #endif /* ELSA_H_ */

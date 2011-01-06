@@ -15,4 +15,3 @@ BUG REPORTED
   fail to register with the dbus system after sometime (usually a couple
   of hours). I have come across this same problem once while using lxdm
   (lxdm itself has other problems).
-- Elsa does not restart after you restart X using Ctrl-Alt-Backspace.

@@ -32,6 +32,4 @@ typedef struct Elsa_Server_Event_
 
 void elsa_server_init();
 void elsa_server_shutdown();
-const char *elsa_server_login_get();
-const char *elsa_server_password_get();
 #endif /* ELSA_CONNECT_ */

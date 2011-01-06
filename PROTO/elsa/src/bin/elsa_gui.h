@@ -9,6 +9,6 @@ char *elsa_gui_password_get();
 void elsa_gui_auth_error();
 void elsa_gui_auth_valid();
 char *elsa_gui_login_command_get();
-void elsa_gui_xsessions_set(Eina_List *xsessions);
+void elsa_gui_xsession_set(Eina_List *xsessions);
 
 #endif /* ELSA_GUI_H_ */

@@ -17,9 +17,9 @@ typedef struct Elsa_Server_Send_
 
 typedef struct Elsa_Auth_Send_
 {
-   const char *login;
-   const char *password;
-   const char *session;
+   char *login;
+   char *password;
+   char *session;
 } Elsa_Auth_Send;
 
 
@@ -39,7 +39,7 @@ Eina_List *_xsessions = NULL;
 Elsa_Auth_Send *eas = NULL;
 
 static Eina_Bool
-_elsa_server_add(void *data, int type, void *event)
+_elsa_server_add(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Con_Event_Client_Add *ev;
    ev = event;
@@ -54,7 +54,7 @@ _elsa_server_add(void *data, int type, void *event)
 }
 
 static Eina_Bool
-_elsa_server_del(void *data, int type, void *event)
+_elsa_server_del(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Con_Event_Client_Del *ev;
    ev = event;
@@ -66,15 +66,14 @@ _elsa_server_del(void *data, int type, void *event)
 }
 
 static Eina_Bool
-_elsa_server_data(void *data, int type, void *event)
+_elsa_server_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
 
    Ecore_Con_Event_Client_Data *ev;
-   const char *command;
    ev = event;
    fprintf(stderr, PACKAGE": server client data received %d\n", ev->size);
    _elsa_server_get_auth(ev->data, ev->size);
-   if (elsa_session_authenticate())
+   if (elsa_session_authenticate(eas->login, eas->password))
      {
         ecore_main_loop_quit();
         elsa_session_login(_elsa_server_find_command(eas->session));
@@ -108,7 +107,6 @@ elsa_server_init()
    h = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DATA,
                                _elsa_server_data, NULL);
    _handlers = eina_list_append(_handlers, h);
-   ecore_main_loop_begin();
 }
 
 void
@@ -120,6 +118,7 @@ elsa_server_shutdown()
      ecore_con_server_del(_elsa_server);
    EINA_LIST_FREE(_handlers, h)
      ecore_event_handler_del(h);
+//   if (eas) free(eas);
    ecore_con_shutdown();
 }
 
@@ -268,14 +267,3 @@ _elsa_server_find_command(const char *session)
    return (elsa_config->command.session_login);
 }
 
-const char *
-elsa_server_login_get()
-{
-   return eas->login;
-}
-
-const char *
-elsa_server_password_get()
-{
-   return eas->password;
-}

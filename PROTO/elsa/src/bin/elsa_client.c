@@ -1,27 +1,13 @@
 #include "elsa_client.h"
 #include <Ecore.h>
 #include <Ecore_X.h>
-
-static Ecore_Event_Handler *_exit_handler = NULL;
-
-static void _elsa_help ();
 /*
-static Eina_Bool _event_exit_cb(void *data, int type, void *event);
-
-static Eina_Bool
-_event_exit_cb(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
-{
-   fprintf(stderr, PACKAGE": client quit\n");
-   elm_exit();
-   return ECORE_CALLBACK_DONE;
-}
-*/
-
 static void
 _elsa_help() {
    fprintf(stderr, "Usage: %s [options...]\n", PACKAGE);
    fprintf(stderr, "\th: print this help message\n");
 }
+*/
 
 int
 elsa_client_main()
@@ -50,6 +36,3 @@ main(int argc, char **argv)
    ecore_shutdown();
    eina_shutdown();
 }
-
-
-//ELM_MAIN()

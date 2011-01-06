@@ -14,10 +14,11 @@
 
 char *_mcookie;
 char **env;
-char *_user;
+char *_login = NULL;
 Ecore_Thread *_running;
 static pid_t _session_pid;
 static int _elsa_session_userid_set(struct passwd *pwd);
+static void _elsa_session_run(struct passwd *pwd, const char *cmd, const char *cookie);
 
 long
 elsa_session_seed_get()
@@ -39,7 +40,7 @@ _elsa_session_cookie_add(const char *mcookie, const char *display,
     if (!xauth_cmd || !auth_file) return 1;
     snprintf(buf, sizeof(buf), "%s -f %s -q", xauth_cmd, auth_file);
     fprintf(stderr, PACKAGE": write auth %s\n", buf);
-
+    remove(auth_file);
     cmd = popen(strdup(buf), "w");
     if (!cmd) return 1;
     fprintf(cmd, "remove %s\n", display);
@@ -73,132 +74,83 @@ _elsa_session_userid_set(struct passwd *pwd)
         return 1;
      }
 
-   fprintf(stderr, PACKAGE": name -> %s, gid -> %d, uid -> %d\n", pwd->pw_name, pwd->pw_gid, pwd->pw_uid);
+   fprintf(stderr, PACKAGE": name -> %s, gid -> %d, uid -> %d\n",
+           pwd->pw_name, pwd->pw_gid, pwd->pw_uid);
    return 0;
 }
 
-static void
-_elsa_session_end()
-{
-   char buf[PATH_MAX];
-   fprintf(stderr, PACKAGE": Session Shutdown\n");
-   if (_user)
-     {
-        snprintf(buf, sizeof(buf),
-                 "%s %s ",
-                 elsa_config->command.session_stop,
-                 _user);
-        free(_user);
-        if (-1 == system(buf))
-          fprintf(stderr, PACKAGE": Errore on session stop command %s", buf);
-     }
-}
-
-static void
-_elsa_session_run_wait(void *data __UNUSED__)
-{
-   int status;
-   pid_t wpid = -1;
-   pid_t pid;
-   pid = elsa_session_pid_get();
-   fprintf(stderr, PACKAGE": wait pid %d\n", pid);
-   while (wpid != pid)
-     {
-        pid = waitpid(pid, &status, 0);
-        fprintf(stderr, PACKAGE": pid %d quit\n", wpid);
-     }
-}
-
-static void
-_elsa_session_run_end(void *data __UNUSED__)
-{
-   fprintf(stderr, PACKAGE": session run end\n");
-   _running = NULL;
-   _elsa_session_end();
-   elsa_main();
-}
-
-static void
-_elsa_session_run_cancel(void *data __UNUSED__)
-{
-   /* Not called ? why ? this is not important,
-    * to call this when xserver shutdown ?? */
-   fprintf(stderr, PACKAGE": session run cancel\n");
-   _elsa_session_end();
-   _running = NULL;
-}
-
 static Eina_Bool
-_elsa_session_begin(struct passwd *pwd)
+_elsa_session_begin(struct passwd *pwd, const char *cookie)
 {
-   char buf[PATH_MAX];
-   char **tmp;
-   fprintf(stderr, "%s: Session Init\n", PACKAGE);
-   env = elsa_pam_env_list_get();
-   elsa_pam_end();
-   for (tmp = env; *tmp; ++tmp)
-      fprintf(stderr, "%s: env %s\n", PACKAGE, *tmp);
-   if(_elsa_session_userid_set(pwd)) return EINA_FALSE;
+   char *term;
+   fprintf(stderr, PACKAGE": Session Init\n");
    if (pwd->pw_shell[0] == '\0')
      {
         setusershell();
         strcpy(pwd->pw_shell, getusershell());
         endusershell();
      }
-   snprintf(buf, sizeof(buf), "%s/.Xauthority", pwd->pw_dir);
-   _elsa_session_cookie_add(_mcookie, ":0",
-                            elsa_config->command.xauth_path, buf);
+   term = getenv("TERM");
+   if (term) elsa_pam_env_set("TERM", term);
+   elsa_pam_env_set("HOME", pwd->pw_dir);
+   elsa_pam_env_set("SHELL", pwd->pw_shell);
+   elsa_pam_env_set("USER", pwd->pw_name);
+   elsa_pam_env_set("LOGNAME", pwd->pw_name);
+   elsa_pam_env_set("PATH", "/bin:/usr/bin:/usr/local/bin");
+   elsa_pam_env_set("DISPLAY", ":0.0");
+   elsa_pam_env_set("MAIL", "");
+   elsa_pam_env_set("XAUTHORITY", cookie);
    return EINA_TRUE;
 }
 
-void
-elsa_session_run(struct passwd *pwd, char *cmd)
+static void
+_elsa_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
 {
 #ifdef HAVE_PAM
+   char **tmp;
    char buf[PATH_MAX];
    pid_t pid;
    pid = fork();
    if (pid == 0)
      {
         fprintf(stderr, PACKAGE": Session Run\n");
-        if (!_elsa_session_begin(pwd))
-          {
-             fprintf(stderr, "Elsa: couldn't open session\n");
-             exit(1);
-          }
-        fprintf(stderr, PACKAGE": Open %s`s session\n", pwd->pw_name);
+        elsa_close_log();
+        env = elsa_pam_env_list_get();
+        elsa_pam_end();
+        for (tmp = env; *tmp; ++tmp)
+          fprintf(stderr, "%s: env %s\n", PACKAGE, *tmp);
         snprintf(buf, sizeof(buf),
                  "%s %s ",
                  elsa_config->command.session_start,
                  pwd->pw_name);
         if (-1 == system(buf))
           fprintf(stderr, PACKAGE": Error on session start command %s\n", buf);
+        if(_elsa_session_userid_set(pwd)) return;
+//        _elsa_session_cookie_add(_mcookie, ":0",
+        _elsa_session_cookie_add(_mcookie, ":0.0",
+                                 elsa_config->command.xauth_path, cookie);
         if (chdir(pwd->pw_dir))
           {
              fprintf(stderr, PACKAGE": change directory for user fail\n");
              return;
           }
-
+        fprintf(stderr, PACKAGE": Open %s`s session\n", pwd->pw_name);
         snprintf(buf, sizeof(buf), "%s/.elsa_session.log", pwd->pw_dir);
         remove(buf);
-        snprintf(buf, sizeof(buf),
-                 "%s > %s/.elsa_session.log 2>&1",
-                  cmd,
-                  pwd->pw_dir);
-//        free(cmd);
-        execle(pwd->pw_shell, pwd->pw_shell, "-c",
-               buf, NULL, env);
+        snprintf(buf, sizeof(buf), "%s > %s/.elsa_session.log 2>&1", cmd, buf);
+        execle(pwd->pw_shell, pwd->pw_shell, "-c", cmd, NULL, env);
         fprintf(stderr, PACKAGE": The Xsessions are not launched :(\n");
      }
+   /*
    else
      {
         elsa_session_pid_set(pid);
-        _user = strdup(pwd->pw_name);
-        _running = ecore_thread_run(_elsa_session_run_wait,
-                                    _elsa_session_run_end,
-                                    _elsa_session_run_cancel,
-                                    NULL);
+        snprintf(buf, sizeof(buf), "%d", elsa_xserver_pid_get());
+        sleep(20);
+        execl("/usr/sbin/elsa_wait", "/usr/sbin/elsa_wait",
+              buf, pwd->pw_name, ":0.0", NULL);
      }
+     */
 #endif
 }
 
@@ -244,7 +196,9 @@ elsa_session_init(const char *file)
    snprintf(buf, sizeof(buf), "XAUTHORITY=%s", file);
    putenv(buf);
    fprintf(stderr, PACKAGE": cookie %s \n", _mcookie);
-   _elsa_session_cookie_add(_mcookie, ":0", "/usr/bin/xauth", file);
+//   _elsa_session_cookie_add(_mcookie, ":0",
+   _elsa_session_cookie_add(_mcookie, ":0.0",
+                            elsa_config->command.xauth_path, file);
 }
 
 void
@@ -255,9 +209,10 @@ elsa_session_shutdown()
 }
 
 Eina_Bool
-elsa_session_authenticate()
+elsa_session_authenticate(char *login, char *passwd)
 {
-   return !elsa_pam_authenticate();
+   return (!elsa_pam_auth_set(login, passwd)
+           && !elsa_pam_authenticate());
 }
 
 Eina_Bool
@@ -266,27 +221,28 @@ elsa_session_login(const char *command)
 #ifdef HAVE_PAM
    struct passwd *pwd;
    char buf[PATH_MAX];
-   char *term;
    if (!command) return ECORE_CALLBACK_CANCEL;
    if (!elsa_pam_open_session())
      {
         pwd = getpwnam(elsa_pam_item_get(ELSA_PAM_ITEM_USER));
         endpwent();
-        term = getenv("TERM");
-        if (term) elsa_pam_env_set("TERM", term);
-        elsa_pam_env_set("HOME", pwd->pw_dir);
-        elsa_pam_env_set("SHELL", pwd->pw_shell);
-        elsa_pam_env_set("USER", pwd->pw_name);
-        elsa_pam_env_set("LOGNAME", pwd->pw_name);
-        elsa_pam_env_set("PATH", "./:/bin:/usr/bin:/usr/local/bin");
-        elsa_pam_env_set("DISPLAY", ":0.0");
-        elsa_pam_env_set("MAIL", "");
+        if (!pwd) return ECORE_CALLBACK_CANCEL;
         snprintf(buf, sizeof(buf), "%s/.Xauthority", pwd->pw_dir);
-        elsa_pam_env_set("XAUTHORITY", buf);
-        fprintf(stderr, PACKAGE": launching %s\n", command);
-        elsa_session_run(pwd, command);
+        if (!_elsa_session_begin(pwd, buf))
+          {
+             fprintf(stderr, "Elsa: couldn't open session\n");
+             exit(1);
+          }
+        _login = strdup(pwd->pw_name);
+        fprintf(stderr, PACKAGE": launching %s for user %s\n", command, _login);
+        _elsa_session_run(pwd, command, buf);
      }
 #endif
    return ECORE_CALLBACK_CANCEL;
 }
 
+char *
+elsa_session_login_get()
+{
+   return _login;
+}

@@ -1,12 +1,14 @@
 #include "elsa.h"
 #include <wait.h>
 #include <unistd.h>
+#include <xcb/xcb.h>
 
 typedef struct Elsa_Xserver_
 {
    const char *dname;
    Elsa_X_Cb start;
    pid_t pid;
+   xcb_connection_t *display;
 } Elsa_Xserver;
 
 Elsa_Xserver *_xserver;
@@ -39,11 +41,12 @@ _xserver_start()
    pid = fork();
    if (!pid)
      {
+        char *token;
+        int num_token = 0;
+        elsa_close_log();
         signal(SIGTTIN, SIG_IGN);
         signal(SIGTTOU, SIG_IGN);
         signal(SIGUSR1, SIG_IGN);
-        char *token;
-        int num_token = 0;
 
         if (!(buf = strdup(elsa_config->command.xinit_args)))
           return;
@@ -105,9 +108,12 @@ elsa_xserver_wait()
 {
    int status;
    pid_t pid = _xserver->pid;
+   char buf[64];
    _xserver->pid = pid;
    pid_t wpid = -1;
    fprintf(stderr, PACKAGE": waiting Xserver with pid %d\n", pid);
+   snprintf(buf, sizeof(buf), "%d", pid);
+   execl("/usr/bin/elsa_wait", "/usr/bin/elsa_wait", buf, NULL);
    while (wpid != pid)
      {
 //        pid = waitpid(pid, &status, 0);
@@ -119,11 +125,17 @@ elsa_xserver_wait()
 static Eina_Bool
 _xserver_started(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
 {
-   _env_set(_xserver->dname);
-   if (elsa_config->autologin)
-     ecore_main_loop_quit();
-   else
-     _xserver->start();
+   xcb_connection_t *disp = NULL;
+//   char buf[4];
+//   snprintf(buf, sizeof(buf), ":%d\0", atoi(_xserver->dname));
+//   disp = xcb_connect(buf, NULL);
+   disp = xcb_connect(":0.0", NULL);
+   if (disp)
+     {
+        _env_set(_xserver->dname);
+        _xserver->display = disp;
+        _xserver->start();
+     }
    return ECORE_CALLBACK_PASS_ON;
 }
 
@@ -146,9 +158,15 @@ elsa_xserver_init(Elsa_X_Cb start, const char *dname)
 void
 elsa_xserver_shutdown()
 {
+   if (_xserver->display) xcb_disconnect(_xserver->display);
    kill(_xserver->pid, SIGTERM);
    eina_stringshare_del(_xserver->dname);
    free(_xserver);
    ecore_event_handler_del(_handler_start);
 }
 
+int
+elsa_xserver_pid_get()
+{
+   return _xserver->pid;
+}

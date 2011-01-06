@@ -10,7 +10,10 @@ Eina_List *_handlers;
 #define ELSA_EVENT_DESKTOP
 
 static void _elsa_connect_xserver_get(const void *data , const int size);
-static void _elsa_connect_send_auth(Ecore_Con_Server *server, const char *login, const char *password, const char *session);
+//static void _elsa_connect_send_auth(Ecore_Con_Server *server, const char *login, const char *password, const char *session);
+static Eina_Bool _elsa_connect_add(void *data, int type, void *event);
+static Eina_Bool _elsa_connect_del(void *data, int type, void *event);
+static Eina_Bool _elsa_connect_data(void *data, int type, void *event);
 
 typedef struct Elsa_Xsession_
 {
@@ -38,7 +41,7 @@ typedef struct Elsa_Server_Event_
 } Elsa_Server_Event;
 
 static Eina_Bool
-_elsa_connect_add(void *data, int type, void *event)
+_elsa_connect_add(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Con_Event_Server_Add *ev;
    ev = event;
@@ -48,7 +51,7 @@ _elsa_connect_add(void *data, int type, void *event)
 }
 
 static Eina_Bool
-_elsa_connect_del(void *data, int type, void *event)
+_elsa_connect_del(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Con_Event_Server_Del *ev;
    ev = event;
@@ -61,7 +64,7 @@ _elsa_connect_del(void *data, int type, void *event)
 }
 
 static Eina_Bool
-_elsa_connect_data(void *data, int type, void *event)
+_elsa_connect_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Con_Event_Server_Data *ev;
    ev = event;
@@ -130,9 +133,9 @@ elsa_connect_init()
    _elsa_connect = ecore_con_server_connect(ECORE_CON_LOCAL_SYSTEM,
                                             "elsa", 42, NULL);
    if (_elsa_connect)
-     printf(PACKAGE": client sever ok\n");
+     printf(PACKAGE": client server init ok\n");
    else
-     printf(PACKAGE": client server fail\n");
+     printf(PACKAGE": client server init fail\n");
    h = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD,
                                _elsa_connect_add, NULL);
    _handlers = eina_list_append(_handlers, h);
@@ -148,6 +151,7 @@ void
 elsa_connect_shutdown()
 {
    Ecore_Event_Handler *h;
+   printf(PACKAGE": client server shutdown\n");
    EINA_LIST_FREE(_handlers, h)
       ecore_event_handler_del(h);
    ecore_con_shutdown();
