@@ -9,14 +9,16 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
 "POT-Creation-Date: 2010-12-03 14:02+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Giorgos Koutsikos <ragecryx@yahoo.gr>\n"
+"Last-Translator: George Koutsikos <ragecryx@yahoo.gr>\n"
 "Language-Team: Greek\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/curl.c:92 src/elmdentica.c:1265 src/elmdentica.c:1472
+#: src/curl.c:92
+#: src/elmdentica.c:1265
+#: src/elmdentica.c:1472
 msgid "Close"
 msgstr "Κλείσιμο"
 
@@ -33,33 +35,29 @@ msgid "Can't open %s for writing: %s\n"
 msgstr "Αδύνατο το άνοιγμα του %s για εγγραφή: %s\n"
 
 #: src/elmdentica.c:193
-#, fuzzy
 msgid "Last messages..."
-msgstr " <b>Τα πιο πρόσφατα μηνύματα...</b>"
+msgstr "Πρόσφατα μηνύματα..."
 
 #: src/elmdentica.c:194
-#, fuzzy
 msgid "Everyone..."
-msgstr "Όλοι"
+msgstr "Όλοι..."
 
 #: src/elmdentica.c:195
-#, fuzzy
 msgid "My favorites..."
-msgstr " <b>Τα αγαπημένα μου...</b>"
+msgstr "Τα αγαπημένα μου..."
 
 #: src/elmdentica.c:196
 msgid "Replies / mentions..."
-msgstr ""
+msgstr "Απαντήσεις / Αναφορές"
 
 #: src/elmdentica.c:198
-#, fuzzy
 msgid "My friends..."
-msgstr " <b>Εγώ και οι φίλοι μου...</b>"
+msgstr "Οι φίλοι μου..."
 
 #: src/elmdentica.c:313
 #, c-format
 msgid "Error importing related status\n"
-msgstr ""
+msgstr "Σφάλμα κατά την εισαγωγή σχετικής κατάστασης\n"
 
 #: src/elmdentica.c:387
 #, c-format
@@ -72,9 +70,8 @@ msgid "System failed, child exited with status %d\n"
 msgstr ""
 
 #: src/elmdentica.c:612
-#, fuzzy
 msgid "Couldn't parse user info message..."
-msgstr "Αδυναμία λήψης του μηνύματος πληροφοριών χρήστη..."
+msgstr "Αδυναμία λήψης πληροφοριών χρήστη..."
 
 #: src/elmdentica.c:622
 msgid "Follow"
@@ -86,59 +83,65 @@ msgstr ""
 
 #: src/elmdentica.c:655
 msgid "Not implemented yet"
-msgstr ""
+msgstr "Δεν έχει υλοποιηθεί ακόμη"
 
-#: src/elmdentica.c:676 src/elmdentica.c:705 src/elmdentica.c:803
+#: src/elmdentica.c:676
+#: src/elmdentica.c:705
+#: src/elmdentica.c:803
 #, c-format
 msgid "You are a member of group %s along with %d other people.<br>«%s»"
 msgstr ""
 
-#: src/elmdentica.c:678 src/elmdentica.c:707 src/elmdentica.c:805
+#: src/elmdentica.c:678
+#: src/elmdentica.c:707
+#: src/elmdentica.c:805
 #, c-format
 msgid "You are not a member of group %s but %d people are.<br>«%s»"
 msgstr ""
 
-#: src/elmdentica.c:683 src/elmdentica.c:838
+#: src/elmdentica.c:683
+#: src/elmdentica.c:838
 msgid "Leave"
-msgstr ""
+msgstr "Αποχώρηση"
 
-#: src/elmdentica.c:712 src/elmdentica.c:841
+#: src/elmdentica.c:712
+#: src/elmdentica.c:841
 msgid "Join"
-msgstr ""
+msgstr "Συμμετοχή"
 
 #: src/elmdentica.c:847
-#, fuzzy, c-format
+#, c-format
 msgid "Last %d messages"
-msgstr " <b>Τα πιο πρόσφατα μηνύματα...</b>"
+msgstr "Τα %d πιο πρόσφατα μηνύματα"
 
 #: src/elmdentica.c:894
 msgid "Check it out!"
-msgstr ""
+msgstr "Δες το!"
 
 #: src/elmdentica.c:1070
 #, c-format
 msgid "a few seconds ago"
-msgstr ""
+msgstr "λίγα δευτερόλεπτα πριν"
 
 #: src/elmdentica.c:1072
 #, c-format
 msgid "a few minutes ago"
-msgstr ""
+msgstr "λίγα λεπτά πριν"
 
 #: src/elmdentica.c:1074
 #, c-format
 msgid "~ %d minutes ago"
-msgstr ""
+msgstr "~ %d λεπτά πριν"
 
 #: src/elmdentica.c:1077
 #, c-format
 msgid "~ %d hours ago"
-msgstr ""
+msgstr "~ %d ώρες πριν"
 
 #: src/elmdentica.c:1079
 #, c-format
 msgid "~ 1 hour ago"
-msgstr ""
+msgstr "~ 1 ώρα πριν"
 
 #: src/elmdentica.c:1081
 #, c-format
@@ -149,26 +152,27 @@ msgstr ""
 msgid "%F %T"
 msgstr ""
 
-#: src/elmdentica.c:1085 src/elmdentica.c:1086
+#: src/elmdentica.c:1085
+#: src/elmdentica.c:1086
 #, c-format
 msgid "some-when"
 msgstr ""
 
 #: src/elmdentica.c:1173
 msgid "Users"
-msgstr ""
+msgstr "Χρήστες"
 
 #: src/elmdentica.c:1202
 msgid "Links"
-msgstr ""
+msgstr "Σύνδεσμοι"
 
 #: src/elmdentica.c:1221
 msgid "Tags"
-msgstr ""
+msgstr "Ετικέτες"
 
 #: src/elmdentica.c:1239
 msgid "Groups"
-msgstr ""
+msgstr "Ομάδες"
 
 #: src/elmdentica.c:1297
 msgid "Reply"
@@ -178,7 +182,8 @@ msgstr "Απάντηση"
 msgid "Repeat"
 msgstr "Επανάληψη"
 
-#: src/elmdentica.c:1313 src/elmdentica.c:1973
+#: src/elmdentica.c:1313
+#: src/elmdentica.c:1973
 msgid "DM"
 msgstr ""
 
@@ -196,7 +201,7 @@ msgstr ""
 
 #: src/elmdentica.c:1342
 msgid "Status details"
-msgstr ""
+msgstr "Λεπτομέρειες κατάστασης"
 
 #: src/elmdentica.c:1442
 msgid "Error"
@@ -210,27 +215,30 @@ msgstr "Σφάλμα µ-blog"
 msgid "Send a DM to..."
 msgstr ""
 
-#: src/elmdentica.c:1718 src/settings.c:491 src/settings.c:1198
+#: src/elmdentica.c:1718
+#: src/settings.c:491
+#: src/settings.c:1198
 msgid "OK"
 msgstr "Οκ"
 
-#: src/elmdentica.c:1724 src/settings.c:499 src/settings.c:1207
+#: src/elmdentica.c:1724
+#: src/settings.c:499
+#: src/settings.c:1207
 msgid "Cancel"
 msgstr "Άκυρο"
 
-#: src/elmdentica.c:1803 src/elmdentica.c:1911
+#: src/elmdentica.c:1803
+#: src/elmdentica.c:1911
 msgid "Type your status here..."
-msgstr ""
+msgstr "Γράψτε την κατάσταση σας εδώ..."
 
 #: src/elmdentica.c:1928
-#, fuzzy
 msgid "Timelines"
-msgstr "Γραμμή χρόνου"
+msgstr ""
 
 #: src/elmdentica.c:1934
-#, fuzzy
 msgid "Direct Messages"
-msgstr "Εμφανιζόμενα μηνύματα"
+msgstr "Άμεσα μηνύματα"
 
 #: src/elmdentica.c:1935
 msgid "Everyone"
@@ -246,7 +254,7 @@ msgstr "Αγαπημένα"
 
 #: src/elmdentica.c:1938
 msgid "Replies/Mentions"
-msgstr ""
+msgstr "Απαντήσεις/Αναφορές"
 
 #: src/elmdentica.c:1939
 msgid "Friends & I"
@@ -257,20 +265,19 @@ msgid "Post"
 msgstr "Δημοσίευση"
 
 #: src/elmdentica.c:1960
-#, fuzzy
 msgid "Send"
-msgstr "Αποστολή?"
+msgstr "Αποστολή"
 
 #: src/elmdentica.c:1986
-#, fuzzy
 msgid "Clear"
-msgstr "Κλείσιμο"
+msgstr "Εκκαθάριση"
 
 #: src/elmdentica.c:1995
 msgid "Fullscreen"
 msgstr "Πλήρης οθόνη"
 
-#: src/elmdentica.c:1996 src/settings.c:1365
+#: src/elmdentica.c:1996
+#: src/settings.c:1365
 msgid "Settings"
 msgstr "Ρυθμίσεις"
 
@@ -284,7 +291,8 @@ msgstr ""
 msgid "Oops, there should be an user here for %lld!\n"
 msgstr ""
 
-#: src/statusnet.c:867 src/statusnet.c:1190
+#: src/statusnet.c:867
+#: src/statusnet.c:1190
 #, c-format
 msgid "%s@%s had HTTP response: %ld"
 msgstr ""
@@ -329,35 +337,40 @@ msgstr "Αποστολή?"
 msgid "Accounts..."
 msgstr "Λογαριασμοί..."
 
-#: src/settings.c:703 src/settings.c:1314
+#: src/settings.c:703
+#: src/settings.c:1314
 msgid "Add"
 msgstr "Προσθήκη"
 
-#: src/settings.c:716 src/settings.c:1327
+#: src/settings.c:716
+#: src/settings.c:1327
 msgid "Edit"
 msgstr "Επεξεργασία"
 
-#: src/settings.c:730 src/settings.c:1340
+#: src/settings.c:730
+#: src/settings.c:1340
 msgid "Delete"
 msgstr "Διαγραφή"
 
-#: src/settings.c:757 src/settings.c:780
+#: src/settings.c:757
+#: src/settings.c:780
 msgid "No posts<br>in cache."
 msgstr "Χωρίς "
 
 #: src/settings.c:759
 #, c-format
 msgid "Currently remembering<br>%d posts."
-msgstr ""
+msgstr "Τρέχουσα ενθύμιση<br>%d μηνυμάτων."
 
-#: src/settings.c:795 src/settings.c:818
+#: src/settings.c:795
+#: src/settings.c:818
 msgid "No messages<br>in cache."
 msgstr "Χωρίς μηνύματα<br>στην προσωρινή μνήμη."
 
 #: src/settings.c:797
 #, c-format
 msgid "Currently remembering<br>%d messages."
-msgstr ""
+msgstr "Τρέχουσα ενθύμιση<br>%d μηνυμάτων."
 
 #: src/settings.c:896
 msgid "Displayed messages"
@@ -389,15 +402,15 @@ msgstr "Χωρίς σύνδεση"
 
 #: src/settings.c:1020
 msgid "Timestamps..."
-msgstr ""
+msgstr "Χρονοσημάνσεις..."
 
 #: src/settings.c:1022
 msgid "Relative"
-msgstr ""
+msgstr "Σχετικό"
 
 #: src/settings.c:1022
 msgid "Absolute"
-msgstr ""
+msgstr "Απόλυτο"
 
 #: src/settings.c:1178
 msgid "Pattern..."
@@ -437,6 +450,12 @@ msgid ""
 "   -m N Show N messages at a time\n"
 "\n"
 msgstr ""
+"\n"
+"Χρήση:\n"
+"   -d   Λειτουργία αποσφαλμάτωσης (για πιο λαχταριστά μηνύματα εξόδου χρησιμοποιήστε πολλαπλές φορές)\n"
+"   -h   Βοήθεια (αυτό που διαβάζετε αυτή τη στιγμή)\n"
+"   -m N Εμφάνισε N μηνύματα κάθε φορά\n"
+"\n"
 
 #: src/settings.c:1431
 #, c-format
@@ -466,7 +485,7 @@ msgstr ""
 #: src/settings.c:1458
 #, c-format
 msgid "Can't create %s"
-msgstr ""
+msgstr "Αδύνατη η δημιουργία του %s"
 
 #: src/settings.c:1466
 #, c-format
@@ -475,8 +494,7 @@ msgstr ""
 
 #: src/settings.c:1484
 #, c-format
-msgid ""
-"Not enough memory for settings, no doubt for anything else either, surely..."
+msgid "Not enough memory for settings, no doubt for anything else either, surely..."
 msgstr ""
 
 #~ msgid "More..."

@@ -8,7 +8,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2010-05-30 21:20+0200\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Giorgos Koutsikos <ragecryx@yahoo.gr>\n"
+"Last-Translator: George Koutsikos <ragecryx@yahoo.gr>\n"
 "Language-Team: Greek <ragecryx@yahoo.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -22,10 +22,10 @@ msgstr ""
 msgid "No Title"
 msgstr "Χωρίς τίτλο"
 
-#: src/e_mod_main.c:488 src/e_mod_main.c:632
-#, fuzzy
+#: src/e_mod_main.c:488
+#: src/e_mod_main.c:632
 msgid "Loading Playlist"
-msgstr "Λίστα αναπαραγωγής"
+msgstr "Φόρτωση λίστας αναπαραγωγής"
 
 #: src/e_mod_main.c:498
 msgid "Empty Playlist"
@@ -85,11 +85,11 @@ msgstr "Προσθήκη μουσικής..."
 
 #: src/e_mod_main.c:1406
 msgid "Remove Duplicates"
-msgstr ""
+msgstr "Αφαίρεση διπλότυπων"
 
 #: src/e_mod_main.c:1410
 msgid "Remove Missing Files"
-msgstr ""
+msgstr "Αφαίρεση χαμένων αρχείων"
 
 #~ msgid "Enqueue File"
 #~ msgstr "Προσθήκη αρχείου στη λίστα"

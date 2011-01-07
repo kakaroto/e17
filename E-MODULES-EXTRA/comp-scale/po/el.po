@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2010-12-10 13:52+0100\n"
-"PO-Revision-Date: 2009-02-08 21:01+0000\n"
-"Last-Translator: Galatsanos Panagiotis <Unknown>\n"
+"PO-Revision-Date: 2011-01-07 19:00+0200\n"
+"Last-Translator: George Koutsikos <ragecryx@yahoo.gr>\n"
 "Language-Team: Greek <el@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,7 +16,7 @@ msgstr ""
 
 #: src/e_mod_config.c:44
 msgid "Skeleton Module"
-msgstr ""
+msgstr "Άρθρωμα Σκελετός"
 
 #: src/e_mod_config.c:84
 msgid "General"
@@ -24,43 +24,31 @@ msgstr "Γενικά"
 
 #: src/e_mod_config.c:86
 msgid "Use Switch 1"
-msgstr ""
+msgstr "Χρήση διακόπτη 1"
 
 #: src/e_mod_main.c:82
 msgid "Skel"
-msgstr ""
+msgstr "Σκελ"
 
 #: src/e_mod_main.c:113
-msgid ""
-"Skeleton Module Configuration data needed upgrading. Your old "
-"configuration<br> has been wiped and a new set of defaults initialized. "
-"This<br>will happen regularly during development, so don't report a<br>bug. "
-"This simply means the module needs new configuration<br>data by default for "
-"usable functionality that your old<br>configuration simply lacks. This new "
-"set of defaults will fix<br>that by adding it in. You can re-configure "
-"things now to your<br>liking. Sorry for the inconvenience.<br>"
+msgid "Skeleton Module Configuration data needed upgrading. Your old configuration<br> has been wiped and a new set of defaults initialized. This<br>will happen regularly during development, so don't report a<br>bug. This simply means the module needs new configuration<br>data by default for usable functionality that your old<br>configuration simply lacks. This new set of defaults will fix<br>that by adding it in. You can re-configure things now to your<br>liking. Sorry for the inconvenience.<br>"
 msgstr ""
 
 #: src/e_mod_main.c:133
-msgid ""
-"Your Skeleton Module configuration is NEWER than the module version. This is "
-"very<br>strange. This should not happen unless you downgraded<br>the module "
-"or copied the configuration from a place where<br>a newer version of the "
-"module was running. This is bad and<br>as a precaution your configuration "
-"has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
+msgid "Your Skeleton Module configuration is NEWER than the module version. This is very<br>strange. This should not happen unless you downgraded<br>the module or copied the configuration from a place where<br>a newer version of the module was running. This is bad and<br>as a precaution your configuration has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
 msgstr ""
 
 #: src/e_mod_main.c:300
 msgid "Skeleton"
-msgstr ""
+msgstr "Σκελετός"
 
 #: src/e_mod_main.c:385
 msgid "Skeleton Configuration Updated"
-msgstr ""
+msgstr "Ρύθμιση σκελετού ανανεώθηκε"
 
 #: src/e_mod_main.c:447
 msgid "Settings"
-msgstr ""
+msgstr "Ρυθμίσεις"
 
 #~ msgid "Configuration"
 #~ msgstr "Ρύθμιση"
