@@ -175,8 +175,6 @@ engine_software_16_wince_args(const char *engine, int width, int height)
    HWND                                task_bar;
    HWND                                sip_window;
    HWND                                sip_icon;
-   int                                 width;
-   int                                 height;
    int                                 stride_x;
    int                                 stride_y;
    int                                 bpp;

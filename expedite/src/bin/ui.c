@@ -551,10 +551,12 @@ _ui_setup(void)
 #undef UI
    _ui_menu_item_add("exit.png", "Exit", _ui_exit);
 
+#ifndef _WIN32
    /* make sure disk io isn't going to turn up unexpectedly */
    sync();
    sync();
    sync();
+#endif
    /* warm up the cpu with some spinning */
    t0 = time(NULL);
    for (;;)
