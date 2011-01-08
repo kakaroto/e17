@@ -127,6 +127,7 @@ azy_uuid_new(void)
    FILE *f;
    const char *ret = NULL;
 
+#ifndef _WIN32 /* FIXME: add windows code for this */
    if (!(f = fopen("/proc/sys/kernel/random/uuid", "r")))
      return NULL;
 
@@ -134,7 +135,7 @@ azy_uuid_new(void)
      ret = eina_stringshare_add_length(uuid, UUID_LEN);
 
    fclose(f);
-
+#endif
    return ret;
 }
 /** @} */
