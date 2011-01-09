@@ -1,0 +1,21 @@
+Index: src/lib/ecore/ecore_main.c
+===================================================================
+--- src/lib/ecore/ecore_main.c	(revision 55997)
++++ src/lib/ecore/ecore_main.c	(working copy)
+@@ -154,6 +154,8 @@
+ static gboolean ecore_fds_ready;
+ #endif
+ 
++extern int thisistheepollfd;
++
+ void
+ _ecore_fd_valid(void)
+ {
+@@ -179,6 +181,7 @@
+      {
+         _ecore_main_loop_init();
+      }
++   thisistheepollfd = epoll_fd;
+    return epoll_fd;
+ }
+ 
