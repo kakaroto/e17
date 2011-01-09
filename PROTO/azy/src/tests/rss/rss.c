@@ -1,0 +1,83 @@
+/*
+ * Copyright 2010 Mike Blumenkrantz <mike@zentific.com>
+ */
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <Azy.h>
+
+static Eina_Error
+ret_(Azy_Client *cli __UNUSED__, int type __UNUSED__, Azy_Content *content)
+{
+   Azy_Rss *ret;
+
+   if (azy_content_error_is_set(content))
+     {
+        printf("Error encountered: %s\n", azy_content_error_message_get(content));
+        return azy_content_error_code_get(content);
+     }
+
+   ret = azy_content_return_get(content);
+ //  printf("Success? %s!\n", ret ? "YES" : "NO");
+
+   azy_rss_print("> ", 0, ret);
+   return AZY_ERROR_NONE;
+}
+
+static Eina_Bool
+disconnected(void *data __UNUSED__, int type __UNUSED__, void *data2 __UNUSED__)
+{
+   printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
+   ecore_main_loop_quit();
+   return ECORE_CALLBACK_RENEW;
+}
+
+static Eina_Bool
+connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *ev)
+{
+   Azy_Client_Call_Id id;
+   
+   id = azy_client_blank(ev, AZY_NET_TYPE_GET, NULL, NULL, NULL);
+   if (!id) ecore_main_loop_quit();
+   azy_client_callback_free_set(ev, id, (Ecore_Cb)azy_rss_free);
+   
+   return ECORE_CALLBACK_RENEW;
+}
+
+int
+main(void)
+{
+   Azy_Client *cli;
+   eina_init();
+   ecore_init();
+   azy_init();
+   eina_log_domain_level_set("azy", EINA_LOG_LEVEL_DBG);
+   eina_log_domain_level_set("ecore_con", EINA_LOG_LEVEL_DBG);
+
+   cli = azy_client_new();
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cli, 1);
+//   EINA_SAFETY_ON_TRUE_RETURN_VAL(!azy_client_host_set(cli, "http://cyber.law.harvard.edu", 80), 1);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!azy_client_host_set(cli, "http://www.enlightenment.org", 80), 1);
+
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!azy_client_connect(cli, EINA_FALSE), 1);
+
+//   azy_net_uri_set(azy_client_net_get(cli), "/rss/examples/rss2sample.xml");
+   azy_net_uri_set(azy_client_net_get(cli), "/p.php?p=news&amp;l=en");
+   azy_net_version_set(azy_client_net_get(cli), 0);
+
+   ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)connected, NULL);
+   ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)ret_, NULL);
+   ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)disconnected, NULL);
+   ecore_main_loop_begin();
+
+   azy_client_free(cli);
+
+   azy_shutdown();
+   ecore_shutdown();
+   eina_shutdown();
+   return 0;
+}
+

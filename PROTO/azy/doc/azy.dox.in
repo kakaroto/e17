@@ -23,6 +23,8 @@ The following modules exist:
 @li @ref Azy_Content
 @li @ref Azy_Net
 @li @ref Azy_Value
+@li @ref Azy_Rss
+@li @ref Azy_Rss_Item
 @li @ref Azy_Server
 @li @ref Azy_Server_Module
 

@@ -493,3 +493,89 @@ azy_content_unserialize_response_xml(Azy_Content *content,
    return EINA_TRUE;
 }
 
+Eina_Bool
+azy_content_unserialize_rss_xml(Azy_Content *content,
+                                const char  *buf,
+                                ssize_t      len)
+{
+   xml_document doc;
+   xpath_node_set channel, img;
+   Azy_Rss *rss;
+   static xpath_query cquery("/rss/channel");
+   static xpath_query iquery("/rss/channel/image/url");
+   
+   if (!doc.load_buffer(const_cast<char *>(buf), len))
+     {
+        azy_content_error_code_set(content, AZY_ERROR_RESPONSE_XML_DOC);
+        return EINA_FALSE;
+     }
+
+   channel = cquery.evaluate_node_set(doc);
+
+   if (channel.empty())
+     {
+        azy_content_error_code_set(content, AZY_ERROR_RESPONSE_XML_FAULT);
+        return EINA_FALSE;
+     }
+
+   rss = azy_rss_new();
+   if (!rss)
+     {
+        azy_content_error_code_set(content, AZY_ERROR_RESPONSE_XML_FAULT);
+        return EINA_FALSE;
+     }
+   img = iquery.evaluate_node_set(doc);
+   if (!img.empty())
+     rss->img_url = eina_stringshare_add(img.first().node().child_value());
+
+   for (xpath_node_set::const_iterator it = channel.begin(); it != channel.end(); ++it)
+     {
+        xpath_node n;
+
+        n = *it;
+
+        if (n.node().name() == "title")
+          rss->title = eina_stringshare_add(n.node().child_value());
+        else if (n.node().name() == "link")
+          rss->link = eina_stringshare_add(n.node().child_value());
+        else if (n.node().name() == "description")
+          rss->desc = eina_stringshare_add(n.node().child_value());
+        else if ((n.node().name() == "item") && (!n.node().empty()))
+          {
+             Azy_Rss_Item *i;
+
+             for (xml_node::iterator x = n.node().begin(); x != n.node().end(); ++x)
+               {
+                  xml_node nn;
+
+                  nn = *x;
+                  i = azy_rss_item_new();
+                  if (!i)
+                    goto error;
+
+                  if (nn.name() == "title")
+                    i->title = eina_stringshare_add(nn.child_value());
+                  else if (nn.name() == "link")
+                    i->link = eina_stringshare_add(nn.child_value());
+                  else if (nn.name() == "description")
+                    i->desc = eina_stringshare_add(nn.child_value());
+                  else if (nn.name() == "author")
+                    i->author = eina_stringshare_add(nn.child_value());
+                  else if (nn.name() == "pubDate")
+                    i->date = eina_stringshare_add(nn.child_value());
+                  else if (nn.name() == "guid")
+                    i->guid = eina_stringshare_add(nn.child_value());
+                  else if (nn.name() == "comments")
+                    i->comment_url = eina_stringshare_add(nn.child_value());
+
+                  rss->items = eina_list_append(rss->items, i);
+               }
+          }
+     }
+   content->ret = rss;
+   return EINA_TRUE;
+
+error:
+   azy_rss_free(rss);
+   return EINA_FALSE;
+}

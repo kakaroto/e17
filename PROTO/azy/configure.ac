@@ -136,6 +136,7 @@ AC_CONFIG_FILES([
   src/tests/Makefile
   src/tests/unit/Makefile
   src/tests/identi.ca/Makefile
+  src/tests/rss/Makefile
   azy.pc
 ])
 AC_OUTPUT

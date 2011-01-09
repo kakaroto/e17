@@ -410,11 +410,8 @@ _azy_server_client_download(Azy_Server_Client *client)
                   client->modules = eina_list_append(client->modules, module);
                }
 
-             if (def->download(module))
-               {
-                  _azy_server_client_send(client, module->content);
-                  return ECORE_CALLBACK_RENEW;
-               }
+             def->download(module);
+             return ECORE_CALLBACK_RENEW;
           }
      }
 
@@ -511,11 +508,12 @@ _azy_server_client_send(Azy_Server_Client *client,
      }
 
    client->net->type = AZY_NET_TYPE_RESPONSE;
-   azy_net_message_length_set(client->net, content->length);
+   if (content && content->length)
+     azy_net_message_length_set(client->net, content->length);
    header = azy_net_header_create(client->net);
    EINA_SAFETY_ON_NULL_GOTO(header, error);
    azy_net_header_reset(client->net);
-   INFO("Sending response for method: '%s'", content->method);
+   INFO("Sending response for method: '%s'", content ? content->method : NULL);
 
 #ifdef ISCOMFITOR
 {
@@ -527,8 +525,11 @@ _azy_server_client_send(Azy_Server_Client *client,
 
    EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_client_send(client->net->conn, eina_strbuf_string_get(header), eina_strbuf_length_get(header)), error);
    INFO("Send [1/2] complete! %zu bytes queued for sending.", eina_strbuf_length_get(header));
-   EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_client_send(client->net->conn, content->buffer, content->length), error);
-   INFO("Send [2/2] complete! %lli bytes queued for sending.", content->length);
+   if (content && content->buffer && content->length)
+     {
+        EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_client_send(client->net->conn, content->buffer, content->length), error);
+        INFO("Send [2/2] complete! %lli bytes queued for sending.", content->length);
+     }
    ecore_con_client_flush(client->net->conn);
    /* http 1.0 requires that we disconnect after every request has been served */
    if (client->net->http.version == 0)
@@ -540,7 +541,7 @@ _azy_server_client_send(Azy_Server_Client *client,
 
 error:
    eina_strbuf_free(header);
-   azy_content_free(content);
+   if (content) azy_content_free(content);
 
 }
 
@@ -763,7 +764,8 @@ _azy_server_client_handler_data(Azy_Server_Client          *client,
    if (!client->net->headers_read)
      return ECORE_CALLBACK_RENEW;
 
-   if (client->net->size && (client->net->size >= client->net->http.content_length) && (client->net->http.content_length > 0))
+   if ((client->net->size && (client->net->size >= client->net->http.content_length) && (client->net->http.content_length > 0)) ||
+       ((!client->net->size) && (!client->net->http.content_length) && client->net->headers_read))
       _azy_server_client_handler_request(client);
 
    if (overflow && (!client->net->buffer))

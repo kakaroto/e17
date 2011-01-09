@@ -1,4 +1,4 @@
-SUBDIRS = unit identi.ca
+SUBDIRS = unit identi.ca rss
 
 if HAVE_MYSQL
 MYSQL_COMMON_S = \

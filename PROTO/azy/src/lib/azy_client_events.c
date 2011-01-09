@@ -28,6 +28,7 @@ static Eina_Bool _azy_client_handler_get(Azy_Client_Handler_Data *handler_data);
 static Eina_Bool _azy_client_handler_call(Azy_Client_Handler_Data *handler_data);
 static void _azy_client_handler_data_free(Azy_Client_Handler_Data *data);
 static Eina_Bool _azy_client_recv_timer(Azy_Client_Handler_Data *handler_data);
+static void _azy_client_handler_redirect(Azy_Client_Handler_Data *handler_data);
 
 static void _azy_client_handler_call_free(Azy_Client *client, Azy_Content *content)
 {
@@ -43,8 +44,6 @@ static void _azy_client_handler_call_free(Azy_Client *client, Azy_Content *conte
              callback(content->ret);
              eina_hash_del_by_key(client->free_callbacks, &content->id);
           }
-        else if (content->ret)
-          free(content->ret);
      }
       /* http 1.0 requires that we disconnect after every response */
    if ((!content->recv_net->http.version) || (client && client->net && (!client->net->http.version))) ecore_con_server_del(content->recv_net->conn);
@@ -83,6 +82,7 @@ _azy_client_handler_data_free(Azy_Client_Handler_Data *handler_data)
    
    if (handler_data->recv)
      azy_net_free(handler_data->recv);
+   if (handler_data->send) eina_strbuf_free(handler_data->send);
    free(handler_data);
 }
 
@@ -105,13 +105,27 @@ _azy_client_handler_get(Azy_Client_Handler_Data *handler_data)
 
    content->data = handler_data->content_data;
 
-   if ((handler_data->recv->transport == AZY_NET_TRANSPORT_JSON) || (handler_data->recv->transport == AZY_NET_TRANSPORT_XML))
+   if (handler_data->recv->transport == AZY_NET_TRANSPORT_JSON) /* assume block of json */
      {
         content->retval = azy_content_unserialize(handler_data->recv->transport, (const char*)handler_data->recv->buffer, handler_data->recv->size);
         if (!content->retval)
           azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return parsing failed.");
         else if (handler_data->callback && content->retval && (!handler_data->callback(content->retval, &ret)))
           azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return value demarshalization failed.");
+        if (azy_content_error_is_set(content))
+          {
+             char buf[64];
+             snprintf(buf, sizeof(buf), "%lli bytes:\n<<<<<<<<<<<<<\n%%.%llis\n<<<<<<<<<<<<<", handler_data->recv->size, handler_data->recv->size);
+             ERR(buf, handler_data->recv->buffer);
+          }
+     }
+   else if  ((handler_data->recv->transport == AZY_NET_TRANSPORT_XML) && (!handler_data->callback))/* assume rss */
+     {
+        if (!azy_content_unserialize_rss_xml(content, (const char*)handler_data->recv->buffer, handler_data->recv->size))
+          {
+             if (!azy_content_error_is_set(content))
+               azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return parsing failed.");
+          }
         if (azy_content_error_is_set(content))
           {
              char buf[64];
@@ -135,10 +149,8 @@ _azy_client_handler_get(Azy_Client_Handler_Data *handler_data)
    if (cb)
      {
         Eina_Error r;
-        if (ret == content->recv_net->buffer)
-          r = cb(client, content, content->ret);
-        else
-          r = cb(client, content, content->ret);
+
+        r = cb(client, content, content->ret);
         
         ecore_event_add(AZY_CLIENT_RESULT, &r, (Ecore_End_Cb)_azy_event_handler_fake_free, NULL);
         eina_hash_del_by_key(client->callbacks, &content->id);
@@ -254,6 +266,50 @@ _azy_client_recv_timer(Azy_Client_Handler_Data *handler_data)
    return ECORE_CALLBACK_CANCEL;
 }
 
+static void
+_azy_client_handler_redirect(Azy_Client_Handler_Data *handler_data)
+{
+ #if 0
+   const char *location, *slash;
+   Eina_Strbuf *msg;
+
+   location = azy_net_header_get(handler_data->recv, "location");
+   INFO("Handling HTTP 302: redirect to %s", location);
+   slash = strchr(location, '/');
+   if (slash && (slash - location < 8))
+     {
+        slash += 1;
+        if (slash && *slash && (*slash == '/'))
+          slash += 1;
+        slash = strchr(slash, '/');
+     }
+   azy_net_uri_set(handler_data->client->net, slash);
+   if (handler_data->send)
+     azy_net_message_length_set(handler_data->client->net, eina_strbuf_length_get(handler_data->send));
+   msg = azy_net_header_create(handler_data->client->net);
+   EINA_SAFETY_ON_NULL_RETURN(msg);
+   
+   if ((!handler_data->client->net->http.version) || (!handler_data->recv->http.version))
+     { /* handle http 1.0 */
+        Azy_Client_Call_Id id;
+        
+        azy_events_connection_kill(handler_data->client->net->conn, EINA_FALSE, NULL);
+        azy_client_connect(handler_data->client, handler_data->client->secure);
+        /* need to handle redirects, so we get a bit crazy here */
+        if (handler_data->method)
+          id = azy_client_call(handler_data->client, handler_data->client->net->type, NULL, NULL, NULL);
+        else
+          id = azy_client_blank(handler_data->client, handler_data->client->net->type, NULL, NULL, NULL);
+        if (!id) /* ohhh god we're fucked */
+          {
+             ERR("Redirect attempt failed to allocate, prepare for turbulence");
+             return ECORE_CALLBACK_RENEW;
+          }
+        return ECORE_CALLBACK_RENEW;
+     }
+     #endif
+}
+
 Eina_Bool
 _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
                           int                          type,
@@ -326,6 +382,11 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *handler_data,
               overflow_length = 0;
               INFO("%s: Overflow was parsed! Removing...", handler_data->method);
            }
+     }
+   if (handler_data->recv->http.res.http_code == 302) /* ughhhh redirect */
+     {
+        _azy_client_handler_redirect(handler_data);
+        return ECORE_CALLBACK_RENEW;
      }
    if (!handler_data->recv->headers_read) /* if headers aren't done being read, keep reading them */
      {
@@ -464,14 +525,16 @@ _azy_client_handler_del(Azy_Client                    *client,
    DBG("(client=%p, net=%p)", client, client->net);
    client->connected = EINA_FALSE;
 
-   handler_data = client->conns->data;
+   if (client->conns)
+     {
+        handler_data = client->conns->data;
 
-   if (((!client->net->http.version) || (!handler_data->recv->http.version)) && handler_data->recv->buffer)
-     _azy_client_handler_call(client->conns->data);
-   else
-     EINA_LIST_FREE(client->conns, handler_data)
-       _azy_client_handler_data_free(handler_data);
-
+        if (handler_data->recv && ((!client->net->http.version) || (!handler_data->recv->http.version)) && handler_data->recv->buffer)
+          _azy_client_handler_call(client->conns->data);
+        else
+          EINA_LIST_FREE(client->conns, handler_data)
+            _azy_client_handler_data_free(handler_data);
+     }
    if (client->net) azy_net_free(client->net);
      client->net = NULL;
    

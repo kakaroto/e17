@@ -380,9 +380,7 @@ azy_client_callback_set(Azy_Client *client,
 /**
  * @brief Set a callback to free the return struct of @p id
  * 
- * This function, when set, frees the returned user-type struct of a call.  If not specified,
- * free() will be called on the struct.  To avoid a SEGV, set a dummy free function if you wish
- * to save the returned data.
+ * This function, when set, frees the returned user-type struct of a call.
  * @param client The client
  * @param id The transmission id
  * @param callback The free callback
@@ -492,6 +490,8 @@ azy_client_call(Azy_Client       *client,
    handler_data->method = eina_stringshare_ref(content->method);
    handler_data->callback = cb;
    handler_data->content_data = content->data;
+   handler_data->send = eina_strbuf_new();
+   eina_strbuf_append_length(handler_data->send, (char*)content->buffer, content->length);
 
    handler_data->id = azy_client_send_id__;
    AZY_MAGIC_SET(handler_data, AZY_MAGIC_CLIENT_DATA_HANDLER);

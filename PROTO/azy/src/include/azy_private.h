@@ -32,6 +32,8 @@ void *alloca (size_t);
 #define AZY_MAGIC_VALUE 0x31344
 #define AZY_MAGIC_CONTENT 0x31346
 #define AZY_MAGIC_CLIENT_DATA_HANDLER 0x31347
+#define AZY_MAGIC_RSS 0x66442
+#define AZY_MAGIC_RSS_ITEM 0x66443
 
 #define AZY_MAGIC_NONE 0x1234fedc
 #define AZY_MAGIC                 Azy_Magic  __magic
@@ -103,6 +105,29 @@ struct Azy_Content
    Eina_Error          errcode; //internal code
    int                 faultcode; //code to actually report
    const char         *faultmsg; //if non-null, message to reply with instead of message associated with errcode
+};
+
+struct Azy_Rss
+{
+   AZY_MAGIC;
+   const char *title;
+   const char *link;
+   const char *img_url;
+   const char *desc;
+
+   Eina_List *items;
+};
+
+struct Azy_Rss_Item
+{
+   AZY_MAGIC;
+   const char *title;
+   const char *link;
+   const char *desc;
+   const char *date;
+   const char *guid;
+   const char *comment_url;
+   const char *author;
 };
 
 struct Azy_Net
@@ -227,6 +252,7 @@ struct Azy_Client_Handler_Data
    const char         *method;
    Azy_Content_Cb      callback; //callback set to convert from Azy_Value to Return_Type
    void               *content_data;
+   Eina_Strbuf        *send;
 };
 
 
@@ -305,6 +331,9 @@ extern "C" {
    Eina_Bool azy_content_unserialize_response_xml(Azy_Content *content,
                                                    const char *buf,
                                                    ssize_t     len);
+   Eina_Bool azy_content_unserialize_rss_xml(Azy_Content *content,
+                                             const char  *buf,
+                                             ssize_t      len);
 #ifdef __cplusplus 
 }
 #endif

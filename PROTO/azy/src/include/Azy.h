@@ -105,6 +105,16 @@ typedef struct Azy_Client Azy_Client;
  */
 typedef struct Azy_Net Azy_Net;
 /**
+ * @typedef Azy_Rss
+ * An object representing an RSS feed's content
+ */
+typedef struct Azy_Rss Azy_Rss;
+/**
+ * @typedef Azy_Rss_Item
+ * An object representing a content item from an RSS feed
+ */
+typedef struct Azy_Rss_Item Azy_Rss_Item;
+/**
  * @typedef Azy_Value
  * A general struct which can hold any type of value
  */
@@ -221,7 +231,7 @@ typedef void *(*Azy_Content_Cb)(Azy_Value *, void **);
 typedef Eina_Error (*Azy_Client_Return_Cb)(Azy_Client *cli, Azy_Content *ret_content, void *ret);
 
 #define AZY_ERROR_NONE 0 /**< Convenience define for Azy_Client_Return_Cb functions. */
-#define AZY_FAKE_FREE_CB (Ecore_Cb)azy_fake_free
+#define AZY_FAKE_FREE_CB (Ecore_Cb)azy_fake_free /**< Convenience define for "fake" free */
 /** }@ */
 #ifdef __cplusplus
 extern "C" {
@@ -474,6 +484,29 @@ extern "C" {
                                       int            length);
 
    EAPI void               azy_fake_free(void *data);
+
+   EAPI Azy_Rss            *azy_rss_new(void);
+   EAPI Azy_Rss_Item       *azy_rss_item_new(void);
+   EAPI void                azy_rss_free(Azy_Rss *rss);
+   EAPI void                azy_rss_item_free(Azy_Rss_Item *item);
+   EAPI Eina_List          *azy_rss_items_get(Azy_Rss *rss);
+   EAPI const char         *azy_rss_title_get(Azy_Rss *rss);
+   EAPI const char         *azy_rss_link_get(Azy_Rss *rss);
+   EAPI const char         *azy_rss_img_url_get(Azy_Rss *rss);
+   EAPI const char         *azy_rss_desc_get(Azy_Rss *rss);
+   EAPI const char         *azy_rss_item_title_get(Azy_Rss_Item *item);
+   EAPI const char         *azy_rss_item_link_get(Azy_Rss_Item *item);
+   EAPI const char         *azy_rss_item_desc_get(Azy_Rss_Item *item);
+   EAPI const char         *azy_rss_item_date_get(Azy_Rss_Item *item);
+   EAPI const char         *azy_rss_item_guid_get(Azy_Rss_Item *item);
+   EAPI const char         *azy_rss_item_comment_url_get(Azy_Rss_Item *item);
+   EAPI const char         *azy_rss_item_author_get(Azy_Rss_Item *item);
+   EAPI void                azy_rss_print(const char *pre,
+                                          int         indent,
+                                          Azy_Rss    *rss);
+   EAPI void                azy_rss_item_print(const char   *pre,
+                                               int           indent,
+                                               Azy_Rss_Item *item);
 #ifdef __cplusplus
 }
 #endif
