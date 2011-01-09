@@ -255,6 +255,11 @@ azy_events_header_parse(Azy_Net      *net,
          AZY_SKIP_BLANK(start);
      }
 
+   if ((!len) && (event_len - offset > 0))
+     { /* only blanks were passed, assume http separator */
+        net->headers_read = EINA_TRUE;
+        return EINA_TRUE;
+     }
    /* apparently this can happen? */
    EINA_SAFETY_ON_NULL_RETURN_VAL(start, EINA_FALSE);
    /* find a header or append to buffer */
