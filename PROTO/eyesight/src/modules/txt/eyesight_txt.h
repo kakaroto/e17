@@ -25,11 +25,12 @@ typedef struct _Eyesight_Backend_Txt Eyesight_Backend_Txt;
 
 struct _Eyesight_Backend_Txt
 {
-  char *filename;
+  char                  *filename;
   Eyesight_Document_Txt *document;
-  Evas_Object *obj;
-  char *text;
-  Eina_Array *pages;
+  Evas_Object           *obj;
+  char                  *text;
+  Eina_Array            *pages;
+  int                    current_page;
 
   /* Current page */
   struct {

@@ -232,6 +232,9 @@ static void
 em_file_close (void *eb)
 {
   Eyesight_Backend_Txt *ebt;
+  Eina_Array_Iterator   iterator;
+  char                 *page;
+  unsigned int          counter;
 
   if (!eb)
     return;
@@ -239,6 +242,12 @@ em_file_close (void *eb)
   ebt = (Eyesight_Backend_Txt *)eb;
 
   DBG("Close file %s", ebt->filename);
+
+  EINA_ARRAY_ITER_NEXT(ebt->pages, counter, page, iterator)
+    {
+      free(page);
+    }
+  eina_array_free(ebt->pages);
 
   if (ebt->document)
     {
@@ -283,6 +292,7 @@ em_page_set(void *eb, int page)
 
   ebt = (Eyesight_Backend_Txt *)eb;
 
+  ebt->current_page = page;
   s = eina_array_data_get(ebt->pages, page);
   evas_object_textblock_text_markup_set(ebt->obj, s);
 }
@@ -295,8 +305,7 @@ em_page_get(void *eb)
   if (!eb)
     return 0;
 
-  /* FIXME: todo */
-  return 0;
+  return ebt->current_page;
 }
 
 static void
