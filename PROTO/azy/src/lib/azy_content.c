@@ -22,7 +22,7 @@
 #include "azy_private.h"
 
 /**
- * @defgroup Azy_Content
+ * @defgroup Azy_Content Content Object Functions
  * @brief Functions which affect #Azy_Content objects
  * @{
  */

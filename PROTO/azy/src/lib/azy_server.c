@@ -23,7 +23,7 @@
 #include "azy_private.h"
 
 /**
- * @defgroup Azy_Server
+ * @defgroup Azy_Server Server Functions
  * @brief Functions which affect #Azy_Server objects
  * @{
  */

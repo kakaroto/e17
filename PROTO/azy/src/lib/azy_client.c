@@ -33,7 +33,7 @@ EAPI int AZY_CLIENT_RESULT;
 EAPI int AZY_CLIENT_ERROR;
 
 /**
- * @defgroup Azy_Client
+ * @defgroup Azy_Client Client Functions
  * @brief Functions which affect #Azy_Client
  * @{
  */
