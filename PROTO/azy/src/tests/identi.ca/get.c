@@ -78,7 +78,7 @@ disconnected(void *data __UNUSED__, int type __UNUSED__, void *data2 __UNUSED__)
 }
 
 static Eina_Bool
-connected(Azy_Client *cli __UNUSED__, int type __UNUSED__, Azy_Client *ev)
+connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *ev)
 {
    Azy_Client_Call_Id id;
    
