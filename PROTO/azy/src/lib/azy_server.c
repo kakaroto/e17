@@ -143,10 +143,12 @@ azy_server_client_send(Azy_Net      *net,
         return EINA_FALSE;
      }
    EINA_SAFETY_ON_NULL_RETURN_VAL(data, 0);
-
    EINA_SAFETY_ON_TRUE_RETURN_VAL(length < 1, 0);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(!ecore_con_server_connected_get(net->conn), 0);
+
    azy_net_message_length_set(net, length);
+   if (!net->http.res.http_code)
+     azy_net_code_set(net, 200); /* OK */
+   azy_net_type_set(net, AZY_NET_TYPE_RESPONSE);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!(header = azy_net_header_create(net)), 0);
 
    if (!ecore_con_client_send(net->conn, eina_strbuf_string_get(header), eina_strbuf_length_get(header)))
@@ -155,7 +157,7 @@ azy_server_client_send(Azy_Net      *net,
         goto error;
      }
 
-   EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_server_send(net->conn, data, length), error);
+   EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_client_send(net->conn, data, length), error);
 
 error:
    eina_strbuf_free(header);
