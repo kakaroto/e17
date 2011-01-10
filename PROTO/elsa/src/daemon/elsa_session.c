@@ -74,8 +74,8 @@ _elsa_session_userid_set(struct passwd *pwd)
         return 1;
      }
 
-   fprintf(stderr, PACKAGE": name -> %s, gid -> %d, uid -> %d\n",
-           pwd->pw_name, pwd->pw_gid, pwd->pw_uid);
+/*   fprintf(stderr, PACKAGE": name -> %s, gid -> %d, uid -> %d\n",
+           pwd->pw_name, pwd->pw_gid, pwd->pw_uid); */
    return 0;
 }
 
@@ -137,20 +137,11 @@ _elsa_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
         fprintf(stderr, PACKAGE": Open %s`s session\n", pwd->pw_name);
         snprintf(buf, sizeof(buf), "%s/.elsa_session.log", pwd->pw_dir);
         remove(buf);
-        snprintf(buf, sizeof(buf), "%s > %s/.elsa_session.log 2>&1", cmd, buf);
-        execle(pwd->pw_shell, pwd->pw_shell, "-c", cmd, NULL, env);
+        snprintf(buf, sizeof(buf), "%s > %s/.elsa_session.log 2>&1",
+                 cmd, pwd->pw_dir);
+        execle(pwd->pw_shell, pwd->pw_shell, "-c", buf, NULL, env);
         fprintf(stderr, PACKAGE": The Xsessions are not launched :(\n");
      }
-   /*
-   else
-     {
-        elsa_session_pid_set(pid);
-        snprintf(buf, sizeof(buf), "%d", elsa_xserver_pid_get());
-        sleep(20);
-        execl("/usr/sbin/elsa_wait", "/usr/sbin/elsa_wait",
-              buf, pwd->pw_name, ":0.0", NULL);
-     }
-     */
 #endif
 }
 
@@ -179,6 +170,7 @@ elsa_session_init(const char *file)
    char buf[PATH_MAX];
 
    _mcookie = calloc(32, sizeof(char));
+   _mcookie[0] = 'a';
 
    const char *dig = "0123456789abcdef";
    srand(elsa_session_seed_get());
@@ -246,3 +238,4 @@ elsa_session_login_get()
 {
    return _login;
 }
+
