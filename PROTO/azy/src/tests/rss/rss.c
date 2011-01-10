@@ -64,15 +64,15 @@ main(void)
    cli = azy_client_new();
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(cli, 1);
-//   EINA_SAFETY_ON_TRUE_RETURN_VAL(!azy_client_host_set(cli, "http://cyber.law.harvard.edu", 80), 1);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!azy_client_host_set(cli, "http://cyber.law.harvard.edu", 80), 1);
 //   EINA_SAFETY_ON_TRUE_RETURN_VAL(!azy_client_host_set(cli, "http://www.enlightenment.org", 80), 1);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(!azy_client_host_set(cli, "http://rss.cnn.com", 80), 1);
+//   EINA_SAFETY_ON_TRUE_RETURN_VAL(!azy_client_host_set(cli, "http://rss.cnn.com", 80), 1);
 
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!azy_client_connect(cli, EINA_FALSE), 1);
 
-//   azy_net_uri_set(azy_client_net_get(cli), "/rss/examples/rss2sample.xml");
+   azy_net_uri_set(azy_client_net_get(cli), "/rss/examples/rss2sample.xml");
 //   azy_net_uri_set(azy_client_net_get(cli), "/rss.php?p=news&l=en");
-   azy_net_uri_set(azy_client_net_get(cli), "/rss/cnn_topstories.rss");
+//   azy_net_uri_set(azy_client_net_get(cli), "/rss/cnn_topstories.rss");
 
    azy_net_version_set(azy_client_net_get(cli), 0);
 

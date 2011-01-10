@@ -269,6 +269,7 @@ azy_client_connect(Azy_Client *client,
    ecore_con_server_timeout_set(svr, 1);
 
    client->net = azy_net_new(svr);
+   azy_net_header_set(client->net, "host", client->addr);
 
    return EINA_TRUE;
 }
@@ -715,7 +716,7 @@ azy_client_call_checker(Azy_Client *cli, Azy_Content *err_content, Azy_Client_Ca
  * @brief Helper function to automatically handle redirection
  *
  * This function is used inside an AZY_CLIENT_DISCONNECTED callback to automatically
- * reconnect to the server if necessary (HTTP 302 returned).
+ * reconnect to the server if necessary (HTTP 301/302/303 returned).
  * @param cli The client object (NOT #NULL)
  * @return #EINA_TRUE only if reconnection has succeeded, else #EINA_FALSE
  */
@@ -735,7 +736,7 @@ azy_client_redirect(Azy_Client *cli)
    if (!net) return EINA_FALSE;
    code = azy_net_code_get(net);
 
-   if (code == 302)
+   if ((code >= 301) && (code <= 303))
      {
         azy_client_connect(cli, cli->secure);
         return EINA_TRUE;

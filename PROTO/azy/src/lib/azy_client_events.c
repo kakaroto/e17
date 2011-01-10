@@ -281,7 +281,7 @@ _azy_client_handler_redirect(Azy_Client_Handler_Data *hd)
         azy_events_connection_kill(hd->client->net->conn, EINA_FALSE, NULL);
         return;
      }
-   INFO("Handling HTTP 302: redirect to %s", location);
+   INFO("Handling HTTP %i: redirect to %s", hd->recv->http.res.http_code, location);
    next = strchr(location, '/');
    if (next && (next - location < 8))
      {
@@ -473,7 +473,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *hd,
 
      }
 
-   if (hd->recv->http.res.http_code == 302) /* ughhhh redirect */
+   if ((hd->recv->http.res.http_code >= 301) && (hd->recv->http.res.http_code <= 303))/* ughhhh redirect */
      {
         _azy_client_handler_redirect(hd);
         return ECORE_CALLBACK_RENEW;
@@ -613,7 +613,7 @@ _azy_client_handler_add(Azy_Client                    *client,
              EINA_SAFETY_ON_TRUE_RETURN_VAL(
                !ecore_con_server_send(client->net->conn, eina_strbuf_string_get(hd->send), eina_strbuf_length_get(hd->send)),
                ECORE_CALLBACK_CANCEL);
-             printf("Sent>>>>>>>>>\n%*s\n>>>>>>>>", eina_strbuf_length_get(hd->send), eina_strbuf_string_get(hd->send));
+             //CRI("Sent>>>>>>>>>\n%*s\n>>>>>>>>", eina_strbuf_length_get(hd->send), eina_strbuf_string_get(hd->send));
              eina_strbuf_free(hd->send);
              hd->send = NULL;
           }
