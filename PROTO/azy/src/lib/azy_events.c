@@ -173,7 +173,10 @@ azy_events_type_parse(Azy_Net            *net,
 
         memcpy(buf, start + match[2].rm_so, sizeof(buf));
         if (sscanf(buf, "%3i", &code) == 1)
-          net->http.res.http_code = code;
+          {
+             net->http.res.http_code = code;
+             INFO("Found HTTP reply: %i", code);
+          }
         eina_stringshare_replace_length(&net->http.res.http_msg, (const char *)start + match[3].rm_so, match[3].rm_eo - match[3].rm_so);
 
         net->type = AZY_NET_TYPE_RESPONSE;
