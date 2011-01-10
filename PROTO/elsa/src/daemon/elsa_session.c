@@ -68,7 +68,7 @@ _elsa_session_userid_set(struct passwd *pwd)
         fprintf(stderr, PACKAGE": can't set gid\n");
         return 1;
      }
-   if (setuid(pwd->pw_uid) != 0) 
+   if (setuid(pwd->pw_uid) != 0)
      {
         fprintf(stderr, PACKAGE": can't set uid\n");
         return 1;
@@ -126,8 +126,7 @@ _elsa_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
         if (-1 == system(buf))
           fprintf(stderr, PACKAGE": Error on session start command %s\n", buf);
         if(_elsa_session_userid_set(pwd)) return;
-//        _elsa_session_cookie_add(_mcookie, ":0",
-        _elsa_session_cookie_add(_mcookie, ":0.0",
+        _elsa_session_cookie_add(_mcookie, ":0",
                                  elsa_config->command.xauth_path, cookie);
         if (chdir(pwd->pw_dir))
           {
@@ -188,8 +187,7 @@ elsa_session_init(const char *file)
    snprintf(buf, sizeof(buf), "XAUTHORITY=%s", file);
    putenv(buf);
    fprintf(stderr, PACKAGE": cookie %s \n", _mcookie);
-//   _elsa_session_cookie_add(_mcookie, ":0",
-   _elsa_session_cookie_add(_mcookie, ":0.0",
+   _elsa_session_cookie_add(_mcookie, ":0",
                             elsa_config->command.xauth_path, file);
 }
 
