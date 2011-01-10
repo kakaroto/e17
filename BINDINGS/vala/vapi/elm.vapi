@@ -949,8 +949,8 @@ public class Genlist : Elm.Object
     public Genlist( Elm.Object? parent );
     public unowned GenlistItem item_append( GenlistItemClass itc, void *data, GenlistItem? parent, GenlistItemFlags flags, Evas.Callback callback );
     public unowned GenlistItem item_prepend( GenlistItemClass itc, void *data, GenlistItem? parent, GenlistItemFlags flags, Evas.Callback callback );
-    public unowned GenlistItem item_insert_before( GenlistItemClass itc, void *data, GenlistItem before, GenlistItemFlags flags, Evas.Callback callback );
-    public unowned GenlistItem item_insert_after( GenlistItemClass itc, void *data, GenlistItem after, GenlistItemFlags flags, Evas.Callback callback );
+    public unowned GenlistItem item_insert_before( GenlistItemClass itc, void *data, GenlistItem? parent, GenlistItem before, GenlistItemFlags flags, Evas.Callback callback );
+    public unowned GenlistItem item_insert_after( GenlistItemClass itc, void *data, GenlistItem? parent, GenlistItem after, GenlistItemFlags flags, Evas.Callback callback );
 
     public void clear();
     public void multi_select_set( bool multi );
