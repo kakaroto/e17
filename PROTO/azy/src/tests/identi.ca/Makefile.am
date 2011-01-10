@@ -5,7 +5,6 @@ COMMON_S = \
 BUILT_SOURCES = .sources
 
 EXTRA_DIST = \
-  get.c \
   identi.ca.azy
 
 AM_CFLAGS= \
@@ -25,7 +24,7 @@ libidentica_la_LIBADD = \
 
 
 check_PROGRAMS = get
-nodist_get_SOURCES = get.c
+get_SOURCES = get.c
 get_LDADD = \
   $(AZY_LIBS) \
   $(top_builddir)/src/lib/libazy.la \
