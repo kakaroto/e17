@@ -247,12 +247,14 @@ struct Azy_Client_Handler_Data
 {
    AZY_MAGIC;
    Azy_Client_Call_Id  id;
+   Azy_Net_Type        type;
    Azy_Client         *client;
    Azy_Net            *recv;
    const char         *method;
    Azy_Content_Cb      callback; //callback set to convert from Azy_Value to Return_Type
    void               *content_data;
    Eina_Strbuf        *send;
+   Eina_Bool           nodelete : 1;
 };
 
 

@@ -528,48 +528,51 @@ azy_content_unserialize_rss_xml(Azy_Content *content,
    if (!img.empty())
      rss->img_url = eina_stringshare_add(img.first().node().child_value());
 
-   for (xpath_node_set::const_iterator it = channel.begin(); it != channel.end(); ++it)
+   for (xml_node::iterator it = channel.first().node().begin(); it != channel.first().node().end(); ++it)
      {
-        xpath_node n;
+        xml_node n;
+        const char *name;
 
         n = *it;
+        name = n.name();
 
-        if (n.node().name() == "title")
-          rss->title = eina_stringshare_add(n.node().child_value());
-        else if (n.node().name() == "link")
-          rss->link = eina_stringshare_add(n.node().child_value());
-        else if (n.node().name() == "description")
-          rss->desc = eina_stringshare_add(n.node().child_value());
-        else if ((n.node().name() == "item") && (!n.node().empty()))
+        if ((!rss->title) && (!strcmp(name, "title")))
+          rss->title = eina_stringshare_add(n.child_value());
+        else if ((!rss->link) && (!strcmp(name, "link")))
+          rss->link = eina_stringshare_add(n.child_value());
+        else if ((!rss->desc) && (!strcmp(name, "description")))
+          rss->desc = eina_stringshare_add(n.child_value());
+        else if (!strcmp(name, "item") && (!n.empty()))
           {
              Azy_Rss_Item *i;
 
-             for (xml_node::iterator x = n.node().begin(); x != n.node().end(); ++x)
+             i = azy_rss_item_new();
+             if (!i) goto error;
+             
+             for (xml_node::iterator x = n.begin(); x != n.end(); ++x)
                {
                   xml_node nn;
 
                   nn = *x;
-                  i = azy_rss_item_new();
-                  if (!i)
-                    goto error;
+                  name = nn.name();
 
-                  if (nn.name() == "title")
+                  if ((!i->title) && (!strcmp(name, "title")))
                     i->title = eina_stringshare_add(nn.child_value());
-                  else if (nn.name() == "link")
+                  else if ((!i->link) && (!strcmp(name, "link")))
                     i->link = eina_stringshare_add(nn.child_value());
-                  else if (nn.name() == "description")
+                  else if ((!i->desc) && (!strcmp(name, "description")))
                     i->desc = eina_stringshare_add(nn.child_value());
-                  else if (nn.name() == "author")
+                  else if ((!i->author) && (!strcmp(name, "author")))
                     i->author = eina_stringshare_add(nn.child_value());
-                  else if (nn.name() == "pubDate")
+                  else if ((!i->date) && (!strcmp(name, "pubDate")))
                     i->date = eina_stringshare_add(nn.child_value());
-                  else if (nn.name() == "guid")
+                  else if ((!i->guid) && (!strcmp(name, "guid")))
                     i->guid = eina_stringshare_add(nn.child_value());
-                  else if (nn.name() == "comments")
+                  else if ((!i->comment_url) && (!strcmp(name, "comments")))
                     i->comment_url = eina_stringshare_add(nn.child_value());
 
-                  rss->items = eina_list_append(rss->items, i);
                }
+             rss->items = eina_list_append(rss->items, i);
           }
      }
    content->ret = rss;

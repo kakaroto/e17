@@ -145,13 +145,21 @@ azy_rss_print(const char *pre, int indent, Azy_Rss *rss)
 
    for (i = 0; i < indent; i++)
      printf("%s", pre);
-
    printf("title: %s\n", rss->title);
+   for (i = 0; i < indent; i++)
+     printf("%s", pre);
    printf("link: %s\n", rss->link);
+   for (i = 0; i < indent; i++)
+     printf("%s", pre);
    printf("img_url: %s\n", rss->img_url);
+   for (i = 0; i < indent; i++)
+     printf("%s", pre);
    printf("description: %s\n", rss->desc);
    
    EINA_LIST_FOREACH(rss->items, l, item)
-     azy_rss_item_print(pre, indent + 1, item);
+     {
+        azy_rss_item_print(pre, indent + 1, item);
+        if (l->next) printf("\n");
+     }
 }
 /** @} */

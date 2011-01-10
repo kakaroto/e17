@@ -231,7 +231,6 @@ typedef void *(*Azy_Content_Cb)(Azy_Value *, void **);
 typedef Eina_Error (*Azy_Client_Return_Cb)(Azy_Client *cli, Azy_Content *ret_content, void *ret);
 
 #define AZY_ERROR_NONE 0 /**< Convenience define for Azy_Client_Return_Cb functions. */
-#define AZY_FAKE_FREE_CB (Ecore_Cb)azy_fake_free /**< Convenience define for "fake" free */
 /** }@ */
 #ifdef __cplusplus
 extern "C" {
@@ -482,9 +481,10 @@ extern "C" {
    EAPI Azy_Client_Call_Id azy_client_send(Azy_Client   *client,
                                       unsigned char *data,
                                       int            length);
+   EAPI Eina_Bool          azy_client_redirect(Azy_Client *cli);
+   EAPI Azy_Client_Call_Id azy_client_current(Azy_Client *cli);
 
-   EAPI void               azy_fake_free(void *data);
-
+   /* RSS */
    EAPI Azy_Rss            *azy_rss_new(void);
    EAPI Azy_Rss_Item       *azy_rss_item_new(void);
    EAPI void                azy_rss_free(Azy_Rss *rss);

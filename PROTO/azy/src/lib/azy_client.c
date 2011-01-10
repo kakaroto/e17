@@ -428,7 +428,7 @@ azy_client_call(Azy_Client       *client,
                  Azy_Content_Cb    cb)
 {
    Eina_Strbuf *msg;
-   Azy_Client_Handler_Data *handler_data;
+   Azy_Client_Handler_Data *hd;
 
    DBG("(client=%p, net=%p, content=%p)", client, client->net, content);
 
@@ -441,12 +441,6 @@ azy_client_call(Azy_Client       *client,
    EINA_SAFETY_ON_NULL_RETURN_VAL(cb, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(content, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(content->method, 0);
-
-   if (!client->connected)
-     {
-        ERR("Can't perform RPC on closed connection.");
-        return 0;
-     }
 
    INFO("New method call: '%s'", content->method);
 
@@ -484,27 +478,28 @@ azy_client_call(Azy_Client       *client,
    INFO("Send [2/2] complete! %lli bytes queued for sending.", content->length);
    ecore_con_server_flush(client->net->conn);
  
-   handler_data = calloc(1, sizeof(Azy_Client_Handler_Data));
-   EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data, 0);
-   handler_data->client = client;
-   handler_data->method = eina_stringshare_ref(content->method);
-   handler_data->callback = cb;
-   handler_data->content_data = content->data;
-   handler_data->send = eina_strbuf_new();
-   eina_strbuf_append_length(handler_data->send, (char*)content->buffer, content->length);
+   hd = calloc(1, sizeof(Azy_Client_Handler_Data));
+   EINA_SAFETY_ON_NULL_RETURN_VAL(hd, 0);
+   hd->client = client;
+   hd->method = eina_stringshare_ref(content->method);
+   hd->callback = cb;
+   hd->type = AZY_NET_TYPE_POST;
+   hd->content_data = content->data;
+   hd->send = eina_strbuf_new();
+   eina_strbuf_append_length(hd->send, (char*)content->buffer, content->length);
 
-   handler_data->id = azy_client_send_id__;
-   AZY_MAGIC_SET(handler_data, AZY_MAGIC_CLIENT_DATA_HANDLER);
+   hd->id = azy_client_send_id__;
+   AZY_MAGIC_SET(hd, AZY_MAGIC_CLIENT_DATA_HANDLER);
    if (!client->conns)
      {
         client->recv =  ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA,
-                                                (Ecore_Event_Handler_Cb)_azy_client_handler_data, handler_data);
+                                                (Ecore_Event_Handler_Cb)_azy_client_handler_data, hd);
         ecore_con_server_data_set(client->net->conn, client);
      }
      
-   client->conns = eina_list_append(client->conns, handler_data);
+   client->conns = eina_list_append(client->conns, hd);
 
-   DBG("(client=%p, net=%p, content=%p, handler_data=%p)", client, client->net, content, handler_data);
+   DBG("(client=%p, net=%p, content=%p, hd=%p)", client, client->net, content, hd);
    return azy_client_send_id__;
 error:
    if (msg)
@@ -534,7 +529,7 @@ azy_client_blank(Azy_Client       *client,
 																	void             *data)
 {
    Eina_Strbuf *msg;
-   Azy_Client_Handler_Data *handler_data;
+   Azy_Client_Handler_Data *hd;
 
    DBG("(client=%p, net=%p, uri=%s)", client, client->net, uri);
 
@@ -545,12 +540,6 @@ azy_client_blank(Azy_Client       *client,
      }
    EINA_SAFETY_ON_NULL_RETURN_VAL(client->net, 0);
 			EINA_SAFETY_ON_TRUE_RETURN_VAL((type != AZY_NET_TYPE_GET) && (type != AZY_NET_TYPE_POST), 0);
-
-   if (!client->connected)
-     {
-        ERR("Can't perform HTTP GET on closed connection.");
-        return 0;
-     }
 
    while (++azy_client_send_id__ < 1);
 
@@ -585,24 +574,25 @@ azy_client_blank(Azy_Client       *client,
 
    ecore_con_server_flush(client->net->conn);
  
-   handler_data = calloc(1, sizeof(Azy_Client_Handler_Data));
-   EINA_SAFETY_ON_NULL_RETURN_VAL(handler_data, 0);
-   handler_data->client = client;
-   handler_data->callback = cb;
-   handler_data->content_data = data;
+   hd = calloc(1, sizeof(Azy_Client_Handler_Data));
+   EINA_SAFETY_ON_NULL_RETURN_VAL(hd, 0);
+   hd->client = client;
+   hd->callback = cb;
+   hd->type = type;
+   hd->content_data = data;
 
-   handler_data->id = azy_client_send_id__;
-   AZY_MAGIC_SET(handler_data, AZY_MAGIC_CLIENT_DATA_HANDLER);
+   hd->id = azy_client_send_id__;
+   AZY_MAGIC_SET(hd, AZY_MAGIC_CLIENT_DATA_HANDLER);
    if (!client->conns)
      {
         client->recv =  ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA,
-                                                (Ecore_Event_Handler_Cb)_azy_client_handler_data, handler_data);
+                                                (Ecore_Event_Handler_Cb)_azy_client_handler_data, hd);
         ecore_con_server_data_set(client->net->conn, client);
      }
      
-   client->conns = eina_list_append(client->conns, handler_data);
+   client->conns = eina_list_append(client->conns, hd);
 
-   DBG("(client=%p, net=%p, handler_data=%p)", client, client->net, handler_data);
+   DBG("(client=%p, net=%p, hd=%p)", client, client->net, hd);
    return azy_client_send_id__;
 error:
    if (msg) eina_strbuf_free(msg);
@@ -627,7 +617,7 @@ azy_client_send(Azy_Client   *client,
                  int            length)
 {
    Eina_Strbuf *msg;
-   Azy_Client_Handler_Data *handler_data;
+   Azy_Client_Handler_Data *hd;
 
       if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
      {
@@ -654,22 +644,22 @@ azy_client_send(Azy_Client   *client,
    INFO("Send [2/2] complete! %i bytes queued for sending.", length);
    ecore_con_server_flush(client->net->conn);
 
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(!(handler_data = calloc(1, sizeof(Azy_Client_Handler_Data))), 0);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!(hd = calloc(1, sizeof(Azy_Client_Handler_Data))), 0);
 
    if (!client->conns)
      {
         client->recv =  ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA,
-                                                (Ecore_Event_Handler_Cb)_azy_client_handler_data, handler_data);
+                                                (Ecore_Event_Handler_Cb)_azy_client_handler_data, hd);
         ecore_con_server_data_set(client->net->conn, client);
      }
 
-   handler_data->client = client;
-   AZY_MAGIC_SET(handler_data, AZY_MAGIC_CLIENT_DATA_HANDLER);
+   hd->client = client;
+   AZY_MAGIC_SET(hd, AZY_MAGIC_CLIENT_DATA_HANDLER);
 
    while (++azy_client_send_id__ < 1);
 
-   handler_data->id = azy_client_send_id__;
-   client->conns = eina_list_append(client->conns, handler_data);
+   hd->id = azy_client_send_id__;
+   client->conns = eina_list_append(client->conns, hd);
    
    return azy_client_send_id__;
 
@@ -719,6 +709,63 @@ azy_client_call_checker(Azy_Client *cli, Azy_Content *err_content, Azy_Client_Ca
      }
 
    return EINA_TRUE;
+}
+
+/**
+ * @brief Helper function to automatically handle redirection
+ *
+ * This function is used inside an AZY_CLIENT_DISCONNECTED callback to automatically
+ * reconnect to the server if necessary (HTTP 302 returned).
+ * @param cli The client object (NOT #NULL)
+ * @return #EINA_TRUE only if reconnection has succeeded, else #EINA_FALSE
+ */
+Eina_Bool
+azy_client_redirect(Azy_Client *cli)
+{
+   int code;
+   Azy_Net *net;
+
+   if (!AZY_MAGIC_CHECK(cli, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(cli, AZY_MAGIC_CLIENT);
+        return EINA_FALSE;
+     }
+
+   net = azy_client_net_get(cli);
+   if (!net) return EINA_FALSE;
+   code = azy_net_code_get(net);
+
+   if (code == 302)
+     {
+        azy_client_connect(cli, cli->secure);
+        return EINA_TRUE;
+     }
+   return EINA_FALSE;
+}
+
+/**
+ * @brief Returns the currently active call id
+ *
+ * This function returns the currently active #Azy_Client_Call_Id, or 0 if no call
+ * is currently active/pending.
+ * @param cli The client object (NOT #NULL)
+ * @return The currently active/pending call id, or 0 on failure
+ */
+Azy_Client_Call_Id
+azy_client_current(Azy_Client *cli)
+{
+   Azy_Client_Handler_Data *hd;
+   
+   if (!AZY_MAGIC_CHECK(cli, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(cli, AZY_MAGIC_CLIENT);
+        return 0;
+     }
+
+   if (!cli->conns) return 0;
+
+   hd = cli->conns->data;
+   return hd->id;
 }
 
 /**

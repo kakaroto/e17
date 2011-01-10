@@ -27,22 +27,26 @@ ret_(Azy_Client *cli __UNUSED__, int type __UNUSED__, Azy_Content *content)
 }
 
 static Eina_Bool
-disconnected(void *data __UNUSED__, int type __UNUSED__, void *data2 __UNUSED__)
+disconnected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *ev)
 {
    printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
-   ecore_main_loop_quit();
+   if (!azy_client_redirect(ev))
+     ecore_main_loop_quit();
    return ECORE_CALLBACK_RENEW;
 }
 
 static Eina_Bool
-connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *ev)
+connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
 {
    Azy_Client_Call_Id id;
-   
-   id = azy_client_blank(ev, AZY_NET_TYPE_GET, NULL, NULL, NULL);
-   if (!id) ecore_main_loop_quit();
-   azy_client_callback_free_set(ev, id, (Ecore_Cb)azy_rss_free);
-   
+
+   if (!azy_client_current(cli))
+     {
+        id = azy_client_blank(cli, AZY_NET_TYPE_GET, NULL, NULL, NULL);
+        EINA_SAFETY_ON_TRUE_RETURN_VAL(!id, ECORE_CALLBACK_CANCEL);
+        azy_client_callback_free_set(cli, id, (Ecore_Cb)azy_rss_free);
+     }
+
    return ECORE_CALLBACK_RENEW;
 }
 
@@ -50,6 +54,7 @@ int
 main(void)
 {
    Azy_Client *cli;
+   
    eina_init();
    ecore_init();
    azy_init();
@@ -60,12 +65,15 @@ main(void)
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(cli, 1);
 //   EINA_SAFETY_ON_TRUE_RETURN_VAL(!azy_client_host_set(cli, "http://cyber.law.harvard.edu", 80), 1);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(!azy_client_host_set(cli, "http://www.enlightenment.org", 80), 1);
+//   EINA_SAFETY_ON_TRUE_RETURN_VAL(!azy_client_host_set(cli, "http://www.enlightenment.org", 80), 1);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!azy_client_host_set(cli, "http://rss.cnn.com", 80), 1);
 
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!azy_client_connect(cli, EINA_FALSE), 1);
 
 //   azy_net_uri_set(azy_client_net_get(cli), "/rss/examples/rss2sample.xml");
-   azy_net_uri_set(azy_client_net_get(cli), "/p.php?p=news&amp;l=en");
+//   azy_net_uri_set(azy_client_net_get(cli), "/rss.php?p=news&l=en");
+   azy_net_uri_set(azy_client_net_get(cli), "/rss/cnn_topstories.rss");
+
    azy_net_version_set(azy_client_net_get(cli), 0);
 
    ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)connected, NULL);

@@ -126,13 +126,24 @@ azy_rss_item_print(const char *pre, int indent, Azy_Rss_Item *item)
 
    for (i = 0; i < indent; i++)
      printf("%s", pre);
-
    printf("title: %s\n", item->title);
+   for (i = 0; i < indent; i++)
+     printf("%s", pre);
    printf("link: %s\n", item->link);
+   for (i = 0; i < indent; i++)
+     printf("%s", pre);
    printf("description: %s\n", item->desc);
+   for (i = 0; i < indent; i++)
+     printf("%s", pre);
    printf("date: %s\n", item->date);
+   for (i = 0; i < indent; i++)
+     printf("%s", pre);
    printf("guid: %s\n", item->guid);
+   for (i = 0; i < indent; i++)
+     printf("%s", pre);
    printf("comment_url: %s\n", item->comment_url);
+   for (i = 0; i < indent; i++)
+     printf("%s", pre);
    printf("author: %s\n", item->author);
 }
 /** @} */
