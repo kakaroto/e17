@@ -22,6 +22,7 @@
              exit(1); \
           } \
      } while (0)
+     
 static Eina_Bool
 _disconnected(void *data __UNUSED__, int type __UNUSED__, void *data2 __UNUSED__)
 {
@@ -194,8 +195,13 @@ connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
         }
       azy_value_struct_member_set(struc, "test", azy_value_int_new(100));
       azy_content_param_add(content, struc);
-      ret = azy_client_call(cli, content, AZY_NET_TRANSPORT_JSON, NULL);
-      CALL_CHECK(_T_Test1_undefined_ret);
+      ret = azy_client_call(cli, content, AZY_NET_TRANSPORT_JSON, (Azy_Content_Cb)azy_value_to_T_Struct);
+           if (!azy_client_call_checker(cli, err, ret, _T_Test1_undefined_ret, __PRETTY_FUNCTION__)) 
+          { 
+             printf("%s\n", azy_content_error_message_get(err)); 
+             exit(1); 
+          } 
+   //   CALL_CHECK(_T_Test1_undefined_ret);
       azy_content_free(content);
    }
 
@@ -214,13 +220,14 @@ main(void)
    eina_init();
    ecore_init();
    azy_init();
+//   eina_log_domain_level_set("ecore_con", EINA_LOG_LEVEL_DBG);
    eina_log_domain_level_set("azy", EINA_LOG_LEVEL_DBG);
    uri = "https://localhost:4444/RPC2";
 
    /* create object for performing client connections */
    cli = azy_client_new();
 
-   if (!azy_client_host_set(cli, "localhost", 4444))
+   if (!azy_client_host_set(cli, "127.0.0.1", 4444))
      return 1;
 
    handler = ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)connected, cli);

@@ -131,7 +131,7 @@ spawn(void *data __UNUSED__)
         if (!cli)
           return;
 
-        if (!azy_client_host_set(cli, "localhost", 4444))
+        if (!azy_client_host_set(cli, "127.0.0.1", 4444))
           return;
 
         if (!azy_client_connect(cli, EINA_TRUE))
@@ -150,8 +150,8 @@ main(void)
    eina_init();
    ecore_init();
    azy_init();
-   eina_log_domain_level_set("azy", EINA_LOG_LEVEL_ERR);
-   eina_log_domain_level_set("ecore_con", EINA_LOG_LEVEL_UNKNOWN);
+   eina_log_domain_level_set("azy", EINA_LOG_LEVEL_DBG);
+   eina_log_domain_level_set("ecore_con", EINA_LOG_LEVEL_DBG);
 
 
    ecore_job_add(spawn, NULL);
