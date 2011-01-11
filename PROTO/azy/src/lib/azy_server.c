@@ -121,50 +121,6 @@ azy_server_module_defs_get(Azy_Server *server)
 }
 
 /**
- * @brief Send data to a client
- * 
- * This function is used to queue arbitrary data to send to a client.  It will automatically
- * generate all http header strings from @p net including the content-length.
- * @param net The client's #Azy_Net object (NOT NULL)
- * @param data The data to send (NOT NULL)
- * @param length The length of the data (NOT < 1)
- * @return EINA_TRUE on success, else EINA_FALSE
- */
-Eina_Bool
-azy_server_client_send(Azy_Net      *net,
-                       unsigned char *data,
-                       int            length)
-{
-   Eina_Strbuf *header;
-
-   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
-     {
-        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
-        return EINA_FALSE;
-     }
-   EINA_SAFETY_ON_NULL_RETURN_VAL(data, 0);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(length < 1, 0);
-
-   azy_net_message_length_set(net, length);
-   if (!net->http.res.http_code)
-     azy_net_code_set(net, 200); /* OK */
-   azy_net_type_set(net, AZY_NET_TYPE_RESPONSE);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(!(header = azy_net_header_create(net)), 0);
-
-   if (!ecore_con_client_send(net->conn, eina_strbuf_string_get(header), eina_strbuf_length_get(header)))
-     {
-        ERR("Could not queue header for sending!");
-        goto error;
-     }
-
-   EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_client_send(net->conn, data, length), error);
-
-error:
-   eina_strbuf_free(header);
-   return EINA_TRUE;
-}
-
-/**
  * @brief Set the address for a server to listen on
  * 
  * This function sets the listen address for @p server to @p addr.

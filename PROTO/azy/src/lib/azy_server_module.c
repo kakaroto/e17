@@ -29,13 +29,29 @@
  */
 
 /**
+ * @brief Return the data received from a client
+ * 
+ * This function returns the received data from a server module (client).
+ * This data is set only when clients have called HTTP PUT, and will be handled by
+ * the __upload__ directive in the server.
+ * @param module The server module (NOT #NULL)
+ * @return The module's received data
+ */
+Azy_Net_Data *
+azy_server_module_recv_get(Azy_Server_Module *module)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(module, NULL);
+   return &module->recv;
+}
+
+/**
  * @brief Return the private data of a server module
  * 
  * This function returns the private data of a server module.
  * This data is set only in the server module definition function,
  * and has the value specified in the __attrs__ section of the module
  * in a .azy file.
- * @param module The server module (NOT NULL)
+ * @param module The server module (NOT #NULL)
  * @return The module's data
  */
 void *
@@ -52,7 +68,7 @@ azy_server_module_data_get(Azy_Server_Module *module)
  * 
  * This function is used to return the current module's network information,
  * allowing parsing of headers.
- * @param module The server module (NOT NULL)
+ * @param module The server module (NOT #NULL)
  * @return The #Azy_Net object
  */
 Azy_Net *
@@ -69,8 +85,8 @@ azy_server_module_net_get(Azy_Server_Module *module)
  * 
  * This function finds the #Azy_Server_Module_Def with @p name in @p server and
  * returns it.
- * @param server The server object (NOT NULL)
- * @param name The #Azy_Server_Module_Def's name (NOT NULL)
+ * @param server The server object (NOT #NULL)
+ * @param name The #Azy_Server_Module_Def's name (NOT #NULL)
  * @return The #Azy_Server_Module_Def, or NULL on failure
  */
 Azy_Server_Module_Def *
@@ -105,8 +121,8 @@ azy_server_module_def_find(Azy_Server *server,
  * 
  * This function adds @p module to @p server.  After calling this,
  * the module should not be freed until the server has stopped running.
- * @param server The server object (NOT NULL)
- * @param module The module definition (NOT NULL)
+ * @param server The server object (NOT #NULL)
+ * @param module The module definition (NOT #NULL)
  * @return EINA_TRUE on success, else EINA_FALSE
  */
 Eina_Bool
@@ -137,8 +153,8 @@ azy_server_module_add(Azy_Server            *server,
  * has been removed, its methods can no longer be called.
  * Note that this function only removes the module from the server's list
  * and does not actually free the module.
- * @param server The server object (NOT NULL)
- * @param module The module definition (NOT NULL)
+ * @param server The server object (NOT #NULL)
+ * @param module The module definition (NOT #NULL)
  * @return EINA_TRUE on success, else EINA_FALSE
  */
 Eina_Bool
@@ -164,7 +180,7 @@ azy_server_module_del(Azy_Server            *server,
  * @brief Create a new module definition with the given name
  * 
  * This function creates a blank #Azy_Server_Module_Def with @p name.
- * @param name The name of the module (NOT NULL)
+ * @param name The name of the module (NOT #NULL)
  * @return The new #Azy_Server_Module_Def, or #NULL on failure
  */
 Azy_Server_Module_Def *
@@ -187,7 +203,7 @@ azy_server_module_def_new(const char *name)
  * 
  * This function frees the given #Azy_Server_Module_Def, and should only
  * be called after the module will no longer be used.
- * @param def The #Azy_Server_Module_Def to free (NOT NULL)
+ * @param def The #Azy_Server_Module_Def to free (NOT #NULL)
  */
 void
 azy_server_module_def_free(Azy_Server_Module_Def *def)
@@ -212,7 +228,7 @@ azy_server_module_def_free(Azy_Server_Module_Def *def)
  * @brief Set the __init__ and __shutdown__ callback functions for a #Azy_Server_Module_Def
  * 
  * This function sets the callbacks called upon module load and module shutdown for @p def.
- * @param def The module definition (NOT NULL)
+ * @param def The module definition (NOT #NULL)
  * @param init The callback function to call upon module init
  * @param shutdown The callback function to call upon module shutdown
  */
@@ -232,12 +248,12 @@ azy_server_module_def_init_shutdown_set(Azy_Server_Module_Def *def, Azy_Server_M
  * @brief Set the __pre__ and __post__ callback functions for a #Azy_Server_Module_Def
  * 
  * This function sets the callbacks called before and after method calls for @p def.
- * @param def The module definition (NOT NULL)
+ * @param def The module definition (NOT #NULL)
  * @param pre The callback function to call immediately before method calls
  * @param post The callback function to call immediately after method calls
  */
 void
-azy_server_module_def_pre_post_set(Azy_Server_Module_Def *def, Azy_Server_Module_Content_Cb pre, Azy_Server_Module_Content_Cb post)
+azy_server_module_def_pre_post_set(Azy_Server_Module_Def *def, Azy_Server_Module_Pre_Cb pre, Azy_Server_Module_Content_Cb post)
 {
    if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
      {
@@ -252,7 +268,7 @@ azy_server_module_def_pre_post_set(Azy_Server_Module_Def *def, Azy_Server_Module
  * @brief Set the __download__ and __upload__ callback functions for a #Azy_Server_Module_Def
  * 
  * This function sets the callbacks called before and after method calls for @p def.
- * @param def The module definition (NOT NULL)
+ * @param def The module definition (NOT #NULL)
  * @param download The callback function to call for HTTP GET requests
  * @param upload The callback function to call for HTTP PUT requests
  */
@@ -273,7 +289,7 @@ azy_server_module_def_download_upload_set(Azy_Server_Module_Def *def, Azy_Server
  * 
  * This function sets the callback that is called any time a user attempts
  * to call an undefined rpc method.
- * @param def The module definition (NOT NULL)
+ * @param def The module definition (NOT #NULL)
  * @param fallback The callback function to call when an undefined method is requested
  */
 void
@@ -292,8 +308,8 @@ azy_server_module_def_fallback_set(Azy_Server_Module_Def *def, Azy_Server_Module
  * 
  * This function adds a callable rpc method to module @p def.  After adding,
  * @p method should be considered as belonging to @p def until the module is unloaded.
- * @param def The module definition (NOT NULL)
- * @param method The method to add (NOT NULL)
+ * @param def The module definition (NOT #NULL)
+ * @param method The method to add (NOT #NULL)
  */
 void
 azy_server_module_def_method_add(Azy_Server_Module_Def *def, Azy_Server_Module_Method *method)
@@ -318,8 +334,8 @@ azy_server_module_def_method_add(Azy_Server_Module_Def *def, Azy_Server_Module_M
  * This function removes a callable rpc method from module @p def.  After
  * removal, @p method will no longer be callable.
  * Note that this does not free the method object.
- * @param def The module definition (NOT NULL)
- * @param method The method to remove (NOT NULL)
+ * @param def The module definition (NOT #NULL)
+ * @param method The method to remove (NOT #NULL)
  * @return EINA_TRUE on success, else EINA_FALSE
  */
 Eina_Bool
@@ -380,7 +396,7 @@ azy_server_module_method_new(const char *name, Azy_Server_Module_Content_Cb cb)
  * longer be callable.  This function must only be called AFTER
  * azy_server_module_def_method_del to avoid undefined methods remaining
  * in the module's method list after they've been freed.
- * @param method The method to free (NOT NULL)
+ * @param method The method to free (NOT #NULL)
  */
 void
 azy_server_module_method_free(Azy_Server_Module_Method *method)
@@ -401,7 +417,7 @@ azy_server_module_method_free(Azy_Server_Module_Method *method)
  * 
  * This function is equivalent to calling sizeof(Azy_Server_Module).
  * It returns the total size of the __attrs__ section of a module.
- * @param def The module def (NOT NULL)
+ * @param def The module def (NOT #NULL)
  * @return The size of the module, or -1 on failure
  */
 int
@@ -420,7 +436,7 @@ azy_server_module_def_size_get(Azy_Server_Module_Def *def)
  * @brief Set the size of the private data of a module
  * 
  * This function should never be called by users.
- * @param def The module def (NOT NULL)
+ * @param def The module def (NOT #NULL)
  * @param size The size of the module
  * @return EINA_TRUE on success, else EINA_FALSE
  */
@@ -436,4 +452,57 @@ azy_server_module_size_set(Azy_Server_Module_Def *def, int size)
    def->data_size = size;
    return EINA_TRUE;
 }
+
+
+/**
+ * @brief Send data to a client
+ * 
+ * This function is used to queue arbitrary data to send to a client through its module.  It will automatically
+ * generate all http header strings from @p net including the content-length (based on @p data).
+ * @param module The client's #Azy_Server_Module object (NOT #NULL)
+ * @param net An #Azy_Net object containing http information to use (NOT #NULL)
+ * @param data The data to send (NOT #NULL)
+ * @return EINA_TRUE on success, else EINA_FALSE
+ */
+Eina_Bool
+azy_server_module_send(Azy_Server_Module  *module,
+                       Azy_Net            *net,
+                       const Azy_Net_Data *data)
+{
+   Eina_Strbuf *header;
+
+   if (!AZY_MAGIC_CHECK(module, AZY_MAGIC_SERVER_MODULE))
+     {
+        AZY_MAGIC_FAIL(module, AZY_MAGIC_SERVER_MODULE);
+        return EINA_FALSE;
+     }
+
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return EINA_FALSE;
+     }
+   EINA_SAFETY_ON_NULL_RETURN_VAL(data, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(data->data, EINA_FALSE);
+
+   azy_net_message_length_set(net, data->size);
+   if (!net->http.res.http_code)
+     azy_net_code_set(net, 200); /* OK */
+   if (!net->type)
+     azy_net_type_set(net, AZY_NET_TYPE_RESPONSE);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!(header = azy_net_header_create(net)), 0);
+
+   if (!ecore_con_client_send(module->client->net->conn, eina_strbuf_string_get(header), eina_strbuf_length_get(header)))
+     {
+        ERR("Could not queue header for sending!");
+        goto error;
+     }
+
+   EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_client_send(net->conn, data->data, data->size), error);
+
+error:
+   eina_strbuf_free(header);
+   return EINA_TRUE;
+}
+
 /** @} */

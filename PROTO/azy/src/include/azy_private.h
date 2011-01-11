@@ -188,8 +188,11 @@ typedef struct Azy_Server_Client
    Ecore_Event_Handler *data;
 
    Azy_Net    *net;
+   Azy_Net    *send;
    Azy_Server *server;
    Eina_List   *modules;
+
+   Eina_Bool handled : 1;
 
    const char          *session_id;
    const char          *ip;
@@ -202,7 +205,8 @@ struct Azy_Server_Module
    Azy_Server_Module_Def *def;
    Azy_Content           *content;
    Azy_Server_Client     *client;
-   double                  last_used;
+   double                 last_used;
+   Azy_Net_Data           recv;
 };
 
 struct Azy_Value
@@ -265,7 +269,7 @@ struct Azy_Server_Module_Def
    int         data_size;
    Azy_Server_Module_Cb init;
    Azy_Server_Module_Shutdown_Cb shutdown;
-   Azy_Server_Module_Content_Cb pre;
+   Azy_Server_Module_Pre_Cb pre;
    Azy_Server_Module_Content_Cb post;
    Azy_Server_Module_Content_Cb fallback;
    Azy_Server_Module_Cb download;

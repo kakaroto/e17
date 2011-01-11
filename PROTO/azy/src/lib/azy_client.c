@@ -20,7 +20,7 @@
 #endif
 #include <regex.h>
 #include <ctype.h>
-
+#include <inttypes.h>
 #include "Azy.h"
 #include "azy_private.h"
 
@@ -511,12 +511,11 @@ error:
 /**
  * @brief Make an HTTP GET or POST request using a connected client with no HTTP BODY
  * 
- * This function is used to make a GET or POST request using @p client to @p uri of the client's
- * #Azy_Net object using HTTP method @p type, content-type defined by @p transport, and the deserialization
- * function specified by @p cb.
+ * This function is used to make a GET or POST request using @p client to the uri of the client's
+ * #Azy_Net object (azy_net_get(client)) using HTTP method @p type, content-type
+ * defined by @p transport, and the optional deserialization function specified by @p cb.
  * @param client The client (NOT #NULL)
  * @param type The HTTP method to use (NOT #NULL)
- * @param uri The uri path to GET
  * @param cb The deserialization callback to use for the response
  * @param data The user data to be passed to resulting callbacks
  * @return The #Azy_Client_Call_Id of the transmission, to be used with azy_client_callback_set,
@@ -525,14 +524,13 @@ error:
 Azy_Client_Call_Id
 azy_client_blank(Azy_Client       *client,
                  Azy_Net_Type      type,
-																	const char       *uri,
 																	Azy_Content_Cb    cb,
 																	void             *data)
 {
    Eina_Strbuf *msg;
    Azy_Client_Handler_Data *hd;
 
-   DBG("(client=%p, net=%p, uri=%s)", client, client->net, uri);
+   DBG("(client=%p, net=%p)", client, client->net);
 
    if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
      {
@@ -545,17 +543,13 @@ azy_client_blank(Azy_Client       *client,
    while (++azy_client_send_id__ < 1);
 
    azy_net_type_set(client->net, type);
-   if (uri && uri[0])
-     azy_net_uri_set(client->net, uri);
+
+   if (client->net->http.req.http_path)
+     WARN("NULL URI passed, using previously set uri '%s'", client->net->http.req.http_path);
    else
      {
-        if (client->net->http.req.http_path)
-          WARN("NULL URI passed, using previously set uri '%s'", client->net->http.req.http_path);
-        else
-          {
-             WARN("NULL URI passed, defaulting to \"/\"");
-             azy_net_uri_set(client->net, "/");
-          }
+        WARN("NULL URI passed, defaulting to \"/\"");
+        azy_net_uri_set(client->net, "/");
      }
 
    msg = azy_net_header_create(client->net);
@@ -603,46 +597,46 @@ error:
 /**
  * @brief Send arbitrary data to a connected server
  * 
- * This function is used to send arbitrary data to a connected server using @p client.
- * It will automatically generate the http header based on the content-length and other
- * data specified in the client's #Azy_Net object.
+ * This function is used to send arbitrary data to a connected server using @p client through HTTP PUT.
+ * It relies on the user to set required headers by operating on the client's #Azy_Net object.
  * @param client The client (NOT #NULL)
- * @param data The data to send (NOT #NULL)
- * @param length The length (in bytes) of the data (> 0)
+ * @param send The data+length to send (NOT #NULL)
+ * @param data Optional data to pass to associated callbacks
  * @return The #Azy_Client_Call_Id of the transmission, to be used with azy_client_callback_set,
  * or 0 on failure
+ * @see azy_net_header_set
  */
 Azy_Client_Call_Id
-azy_client_send(Azy_Client   *client,
-                 unsigned char *data,
-                 int            length)
+azy_client_put(Azy_Client         *client,
+               const Azy_Net_Data *send,
+               void               *data)
 {
    Eina_Strbuf *msg;
    Azy_Client_Handler_Data *hd;
 
-      if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
      {
         AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
         return 0;
      }
-   EINA_SAFETY_ON_NULL_RETURN_VAL(data, 0);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(length < 1, 0);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(!ecore_con_server_connected_get(client->net->conn), 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(send, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(send->data, 0);
 
-   azy_net_message_length_set(client->net, length);
+   azy_net_message_length_set(client->net, send->size);
+   azy_net_type_set(client->net, AZY_NET_TYPE_PUT);
    msg = azy_net_header_create(client->net);
    EINA_SAFETY_ON_NULL_GOTO(msg, error);
 #ifdef ISCOMFITOR
    DBG("\nSENDING >>>>>>>>>>>>>>>>>>>>>>>>\n%.*s%.*s\n>>>>>>>>>>>>>>>>>>>>>>>>",
-       eina_strbuf_length_get(msg), eina_strbuf_string_get(msg), length, data);
+       eina_strbuf_length_get(msg), eina_strbuf_string_get(msg), (int)send.size, send.data);
 #endif
    EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_server_send(client->net->conn, eina_strbuf_string_get(msg), eina_strbuf_length_get(msg)), error);
    INFO("Send [1/2] complete! %zi bytes queued for sending.", eina_strbuf_length_get(msg));
    eina_strbuf_free(msg);
    msg = NULL;
 
-   EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_server_send(client->net->conn, data, length), error);
-   INFO("Send [2/2] complete! %i bytes queued for sending.", length);
+   EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_server_send(client->net->conn, send->data, send->size), error);
+   INFO("Send [2/2] complete! %"PRIi64" bytes queued for sending.", send->size);
    ecore_con_server_flush(client->net->conn);
 
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!(hd = calloc(1, sizeof(Azy_Client_Handler_Data))), 0);
@@ -655,6 +649,7 @@ azy_client_send(Azy_Client   *client,
      }
 
    hd->client = client;
+   hd->content_data = data;
    AZY_MAGIC_SET(hd, AZY_MAGIC_CLIENT_DATA_HANDLER);
 
    while (++azy_client_send_id__ < 1);
@@ -675,7 +670,7 @@ error:
  * @brief Validate a transmission attempt
  * 
  * This function is used to check both the #Azy_Client_Call_Id and the #Azy_Content
- * of an azy_client_call or azy_client_send attempt, and will additionally set
+ * of an azy_client_call or azy_client_put attempt, and will additionally set
  * an #Azy_Client_Return_Cb and log the calling function name upon failure.
  * Note that this function also calls azy_content_error_reset.
  * Also note: THIS FUNCTION IS MEANT TO BE USED IN A MACRO!!!!

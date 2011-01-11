@@ -85,6 +85,7 @@ Azy_Module Test1
    <%
     #include <stdio.h>
     #include <string.h>
+    #include <inttypes.h>
    %>
 
    /**
@@ -107,6 +108,7 @@ Azy_Module Test1
    /** begin method code
     * NOTE: if you are only writing client code, you can leave the method code blank!
     */
+     (void)module; /** shut up compiler warnings */
      char *buf;
      /** the below line can be uncommented so you can see where it gets called
       * from when the method is called
@@ -152,7 +154,7 @@ Azy_Module Test1
    AllArrays getAllArrays()
    <%
      int i;
-
+     (void)module;
      /** method-specific macro */
      #define ADD(a, val) retval->a = eina_list_append(retval->a, val)
 
@@ -245,6 +247,7 @@ Azy_Module Test1
 
    boolean setAll(AllTypes all)
    <%
+     (void)module;
      printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
      /** demonstrate generated isnull usage */
      if (T_AllTypes_isnull(all))
@@ -256,6 +259,8 @@ Azy_Module Test1
    <%
      int i;
 
+     (void)module;
+
      for (i = 0; i < 5000; i++)
        /** retval exists, is the correct return type, and is always null to begin with, so this is safe */
        retval = eina_list_append(retval, eina_stringshare_printf("user.bob%d@zentific.com", i));
@@ -264,10 +269,13 @@ Azy_Module Test1
 
    boolean putBigArray(array<string> arr)
    <%
+      (void)module;
 #if 0
      Array_string_print(">>>", 0, arr); /**< demonstrate generated print function; prefix all lines
                                           * with '>>>'
                                           */
+#else
+     (void)arr;
 #endif
      return EINA_TRUE;
    %>
@@ -285,38 +293,53 @@ Azy_Module Test1
                              */
    %>
 
-   /** the __init__ section is called one time upon the module being loaded.
-    * The only param passed to it is (Azy_Server_Module module) which can be
-    * used to get the private data struct.  no network information is available yet as the
-    * call has not actually begun.
+   /**
+    * The azy parser is vaguely intelligent.  If you use the 'data_' variable in any of the
+    * following directives, the parser will automatically generate the following line for you so that you
+    * do not have to write it:
+    * ($NAMESPACE|Azy)[_$MODULENAME]_module *data = azy_server_module_data_get(module);
+    * network data is also available in the form of an #Azy_Net object.
+    * The parser will now recognize the 'net_' variable and generate the following line to save time:
+    * Azy_Net *net_ = azy_server_module_net_get(module);
+    */
+
+   /** the __init__ section is called one time upon the module (client) being loaded.
+    * The only param passed to it is (Azy_Server_Module *module) which can be
+    * used to get the private data struct.
     * init functions must explicitly return EINA_FALSE to cancel initialization, as the default is
     * to return EINA_TRUE.
     */
    __init__
-   <%
+   <% /*Eina_Bool (*Azy_Server_Module_Cb)(Azy_Server_Module *module)*/
  //    printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
+       (void)module;
    %>
 
-   /** the __init__ section is called one time upon the module being loaded.
-    * The only param passed to it is (Azy_Server_Module module) which can be
-    * used to get the private data struct.  no network information is available yet as the
-    * call has not actually begun.
+
+   /** the __shutdown section is called one time upon the module (client) being loaded.
+    * The only param passed to it is (Azy_Server_Module *module) which can be
+    * used to get the private data struct.  shutdown functions retain full network data
+    * from the associated client, as they are called immediately prior to disconnect.
+    * a shutdown function will NOT be called if the __init__ directive returns EINA_FALSE.
     * shutdown functions return no value.
     */
    __shutdown__
-   <%
+   <% /* void (*Azy_Server_Module_Shutdown_Cb)(Azy_Server_Module *) */
   //   printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
+       (void)module;
    %>
 
-   /** __pre__ is called just before the method call itself, and network information
-    * can be retrieved using azy_server_module_net_get.  the private data struct also
-    * exists here. this is generally where any sort of authorization (login) or session
-    * validating functions should be called.
+   /** __pre__ is called just before the method call itself.
+    * this is generally where any sort of authorization (login) or session
+    * validating functions should be called, as it is the last place where client
+    * headers can be read.  the #Azy_Net object here will be a new object that will
+    * persist through the rest of the directives which initiate here (method, post, shutdown).
     * to prevent the call from occurring, explicitly return EINA_FALSE.
     */
    __pre__
-   <%
-    //printf("Pre-call!\n");
+   <% /* Eina_Bool (*Azy_Server_Module_Pre_Cb)(Azy_Server_Module *module, Azy_Net *net) */
+      (void)module;
+      (void)net;
    %>
 
    /** __post__ is called just after the method call itself, and network information
@@ -325,8 +348,12 @@ Azy_Module Test1
     * to prevent the call from occurring, explicitly return EINA_FALSE.
     */
    __post__
-   <%
-    //printf("Post-call!\n");
+   <% /* Eina_Bool (*Azy_Server_Module_Content_Cb)(Azy_Server_Module *module, Azy_Content *content) */
+    /*static int num_methods;
+     * num_methods++;
+     */
+     (void)module;
+     (void)content;
    %>
 
    /** __fallback__ is the method that is called if an undefined method is called by a client.
@@ -334,7 +361,8 @@ Azy_Module Test1
     * for success.
     */
    __fallback__
-   <%
+   <% /* Eina_Bool (*Azy_Server_Module_Content_Cb)(Azy_Server_Module *module, Azy_Content *content) */
+     (void)module;
      printf("Unknown method called %s!\n", azy_content_method_full_get(content));
      azy_content_retval_set(content, azy_value_bool_new(EINA_TRUE)); /**< retval must be explicitly set here */
      return EINA_TRUE; /**< fallback will use the default handler if #EINA_FALSE is returned;
@@ -343,26 +371,31 @@ Azy_Module Test1
    %>
 
    /** __download__ is the function called for HTTP GET requests, and is how you can make azy
-    * behave like a web server.  simply use azy_server_client_send on the #Azy_Server_Module's
-    * #Azy_Net object and return EINA_TRUE to send the data that you want.  #EINA_FALSE will
-    * send an HTTP 501 error.
+    * behave like a web server.  simply use azy_server_module_send on the #Azy_Server_Module and
+    * an #Azy_Net object and return EINA_TRUE to send the data that you want.  #EINA_FALSE will
+    * send an HTTP 501 error, so be sure not to send data if this is the case.
     */
    __download__
    <%
+     /*
+      * Eina_Bool (*Azy_Server_Module_Cb)(Azy_Server_Module *module)
+      * Azy_Net* net = azy_server_module_net_get(module);
+      */
      const char *path; /**< The http uri requested */
      const char *username;
      const char *password;
+     Azy_Net_Data netdata;
 
-     /** net is the #Azy_Net object of the client and is automatically set
-      * for the download and upload functions
-      */
-     path = azy_net_uri_get(net);
-     if (!azy_net_auth_get(net, &username, &password))
+     /** net_ is the #Azy_Net object of the client, automatically generated as previously mentioned */
+     path = azy_net_uri_get(net_);
+     if (!azy_net_auth_get(net_, &username, &password))
        {
-          azy_net_code_set(net, 401);
-          azy_net_header_set(net, "Content-Type", "text/plain");
-          azy_net_header_set(net, "WWW-Authenticate", "Basic realm=\"Azy Testsuite\"");
-          azy_server_client_send(net, (unsigned char *)"Authentication Required", 23);
+          azy_net_code_set(net_, 401);
+          azy_net_header_set(net_, "Content-Type", "text/plain");
+          azy_net_header_set(net_, "WWW-Authenticate", "Basic realm=\"Azy Testsuite\"");
+          netdata.data = (unsigned char*)"Authentication Required";
+          netdata.size = 23;
+          azy_server_module_send(module, net_, &netdata);
           return EINA_TRUE;
        }
 
@@ -372,19 +405,26 @@ Azy_Module Test1
 
      if (1) /**< this if could compare username/password against correct values */
        {
-          azy_net_code_set(net, 200);
-          azy_net_header_set(net, "Content-Type", "text/plain");
-          azy_server_client_send(net, (unsigned char *)"Crap\n", 5);
+          azy_net_code_set(net_, 200);
+          azy_net_header_set(net_, "Content-Type", "text/plain");
+          netdata.data = (unsigned char*)"Crap\n";
+          netdata.size = 5;
+          azy_server_module_send(module, net_, &netdata);
           return EINA_TRUE;
        }
      else
        {
           Eina_Strbuf *response = eina_strbuf_new();
-          eina_strbuf_append_printf(response, "<html><head><title>401 Not Authorized</title></head><body><h1>401 Not Authorized</h1><p>You are not authorized to download %s</p></body></html>", path);
+          eina_strbuf_append_printf(response,
+            "<html><head><title>401 Not Authorized</title></head><body>"
+            "<h1>401 Not Authorized</h1>"
+            "<p>You are not authorized to download %s</p></body></html>", path);
 
-          azy_net_code_set(net, 401);
-          azy_net_header_set(net, "Content-Type", "text/html");
-          azy_server_client_send(net, (unsigned char *)eina_strbuf_string_get(response), eina_strbuf_length_get(response));
+          azy_net_code_set(net_, 401);
+          azy_net_header_set(net_, "Content-Type", "text/html");
+          netdata.data = (unsigned char *)eina_strbuf_string_get(response);
+          netdata.size = eina_strbuf_length_get(response);
+          azy_server_module_send(module, net_, &netdata);
 
           eina_strbuf_free(response);
           return EINA_TRUE;
@@ -393,40 +433,30 @@ Azy_Module Test1
    %>
 
    /** __upload__ is the function called for HTTP PUT requests, and is how you can make azy
-    * behave like an ftp server.  #EINA_FALSE will send an HTTP 501 error.
-    * FIXME: document better
+    * behave like an ftp server.  #EINA_FALSE will send an HTTP 501 error, so be sure not to
+    * send data in this case.
     */
-/*
-        __upload__
-        <%
-        //	size_t read_bytes;
-        //	const char* path = azy_net_resource_get(net);
-                const char* username;
-                const char* password;
+    __upload__
+    <% /*
+         Eina_Bool (*Azy_Server_Module_Cb)(Azy_Server_Module *module)
+         Azy_Net* net = azy_server_module_net_get(module);
+         */
+       Azy_Net_Data *data;
+       const char *str;
+       char buf[64];
 
-                if (!azy_net_basic_auth_get(net, &username, &password))
-                {
-                        azy_net_code_set(net, 401);
-                        azy_net_header_set(net, "Content-Type", "text/plain");
-                        azy_net_header_set(net, "WWW-Authenticate", "Basic realm=\"Azy Testsuite\"");
-                        azy_server_client_send(net, (unsigned char*)"Authentication Required", -1);
-                        return EINA_TRUE;
-                }
+       str = azy_net_header_get(net_, "content-type");
+       if (str)
+         printf("Content-type: %s\n", str);
+       else
+         printf("No Content-type header found!\n");
 
-                printf("Authorized: '%s' '%s'\n", username, password);
-                eina_stringshare_del(username);
-                eina_stringshare_del(password);
-
-                Eina_Strbuf* data = azy_net_read_all(net);
-                printf("%s\n", eina_strbuf_string_get(data));
-                eina_strbuf_free(data);
-
-                azy_net_code_set(net, 200);
-                azy_net_header_set(net, "Content-Type", "text/plain");
-                azy_server_client_send(net, (unsigned char*)"Crap\n", -1);
-                return EINA_TRUE;
-        %>
- */
+       data = azy_server_module_recv_get(module);
+       snprintf(buf, sizeof(buf), "%%.%"PRIi64"s\n", data->size);
+       printf("Received:\n");
+       printf(buf, data->data);
+       return EINA_TRUE;
+    %>
 }
 
 /**
@@ -447,21 +477,22 @@ Azy_Module Test2
 
    __init__
    <%
-     Azy_Net *net = azy_server_module_net_get(module);
-     printf("Init AUTH Servlet!\n");
-     printf("Accepted connection from: %s\n", azy_net_ip_get(net));
+     (void)module;
+     printf("Init AUTH Module!\n");
+     printf("Accepted connection from: %s\n", azy_net_ip_get(net_));
    %>
 
    __shutdown__
    <%
-     printf("Shutdown AUTH Servlet!\n");
+     (void)module;
+     printf("Shutdown AUTH Module!\n");
    %>
 
    boolean auth(string name,
                 string password)
    <%
-     /** really, the manual retrieval of the private data is unnecessary as it will
-      * always be stored in data_ prior to this code being called, as seen here
+     /** as mentioned previously, the 'data_' variable is a keyword for the parser to automagically generate the right
+      * variable for it when used in a directive.
       */
      printf("AUTH-PRE:  %s, %s\n", data_->username, data_->password);
      data_->username = eina_stringshare_ref(name); /**< all params are freed immediately following the call,
@@ -490,6 +521,7 @@ Azy_Module SQL
 
    __init__
    <%
+      (void)module;
       /** make sure to init the library for the module's use.
        * this should actually be done in the server's code (not in the .azy at all),
        * but it's an example. so we init for every load. deal with it.
@@ -499,6 +531,7 @@ Azy_Module SQL
 
    __shutdown__
    <%
+      (void)module;
       /** clean up on unload */
       mysql_library_end();
    %>

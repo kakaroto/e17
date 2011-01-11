@@ -127,7 +127,7 @@ typedef struct Azy_Value Azy_Value;
 typedef struct Azy_Content Azy_Content;
 /**
  * @typedef Azy_Client_Call_Id
- * A unique identifier for every azy_client_call and azy_client_send
+ * A unique identifier for every azy_client_call and azy_client_put
  * which can be used to set callbacks for the transmission
  */
 typedef unsigned int Azy_Client_Call_Id;
@@ -143,6 +143,12 @@ typedef enum
    AZY_SERVER_BROADCAST = 2, /**< Server listen address is 0.0.0.0 */
    AZY_SERVER_TLS = (1 << 4) /**< If bitwise ORed into the type, server will use TLS */
 } Azy_Server_Type;
+
+typedef struct
+{
+   unsigned char *data;
+   int64_t        size;
+} Azy_Net_Data;
 
 /**
  * @typedef Azy_Client_Error
@@ -204,8 +210,10 @@ typedef enum
 
 /**
  * @typedef Azy_Server_Module_Cb
- * Function used to serve GET/PUT requests.  Must return EINA_FALSE
- * on error to prevent a response, otherwise response will be sent.
+ * Function called on client connect (__init__) as well as to serve GET/PUT requests.
+ * If #EINA_FALSE is returned in __init__, client will be disconnected immediately.
+ * Must return #EINA_FALSE on error to prevent a response in __download__ or __upload__,
+ * otherwise response will be sent.
  */
 typedef Eina_Bool (*Azy_Server_Module_Cb)(Azy_Server_Module *);
 /**
@@ -214,8 +222,17 @@ typedef Eina_Bool (*Azy_Server_Module_Cb)(Azy_Server_Module *);
  */
 typedef void (*Azy_Server_Module_Shutdown_Cb)(Azy_Server_Module *);
 /**
+ * @typedef Azy_Server_Module_Pre_Cb
+ * Function called prior to a regular method.  The #Azy_Server_Module object
+ * contains the network data for the client, and the #Azy_Net object contains
+ * the network data which will be used for sending.
+ * Note that after this call, the network data received from the client will no longer be
+ * available.
+ */
+typedef Eina_Bool (*Azy_Server_Module_Pre_Cb)(Azy_Server_Module *, Azy_Net *);
+/**
  * @typedef Azy_Server_Module_Content_Cb
- * Function called before/after http method is handled as well as for fallback method.
+ * Function called after rpc method is handled as well as for fallback method.
  */
 typedef Eina_Bool (*Azy_Server_Module_Content_Cb)(Azy_Server_Module *, Azy_Content *);
 /**
@@ -230,7 +247,7 @@ typedef void *(*Azy_Content_Cb)(Azy_Value *, void **);
  */
 typedef Eina_Error (*Azy_Client_Return_Cb)(Azy_Client *cli, Azy_Content *ret_content, void *ret);
 
-#define AZY_ERROR_NONE 0 /**< Convenience define for Azy_Client_Return_Cb functions. */
+#define AZY_ERROR_NONE 0 /**< More explicit define for #Azy_Client_Return_Cb functions. */
 /** }@ */
 #ifdef __cplusplus
 extern "C" {
@@ -253,7 +270,26 @@ extern "C" {
    
    /* server */
    EAPI void                    azy_server_stop(Azy_Server *server);
+   EAPI Azy_Server            *azy_server_new(Eina_Bool   secure);
+   EAPI void                    azy_server_free(Azy_Server *server);
+   EAPI Eina_List              *azy_server_module_defs_get(Azy_Server *server);
+   EAPI Eina_Bool azy_server_run(Azy_Server *server,
+                             int          type,
+                             int          port);
+   EAPI Eina_Bool azy_server_basic_run(int                      port,
+                                   int                      type,
+                                   const char              *cert,
+                                   Azy_Server_Module_Def **modules);
+   EAPI Eina_Bool azy_server_addr_set(Azy_Server *server,
+                                 const char *addr);
+   EAPI const char *azy_server_addr_get(Azy_Server *server);
+
+   /* server module */
+   EAPI Eina_Bool               azy_server_module_send(Azy_Server_Module  *module,
+                                                       Azy_Net            *net,
+                                                       const Azy_Net_Data *data);
    EAPI void                   *azy_server_module_data_get(Azy_Server_Module *module);
+   EAPI Azy_Net_Data          *azy_server_module_recv_get(Azy_Server_Module *module);
    EAPI Azy_Net               *azy_server_module_net_get(Azy_Server_Module *module);
    EAPI Azy_Server_Module_Def *azy_server_module_def_find(Azy_Server *server,
                                                        const char  *name);
@@ -270,7 +306,7 @@ extern "C" {
                                                                      Azy_Server_Module_Cb init,
                                                                      Azy_Server_Module_Shutdown_Cb shutdown);
    EAPI void                      azy_server_module_def_pre_post_set(Azy_Server_Module_Def *def,
-                                                                Azy_Server_Module_Content_Cb pre,
+                                                                Azy_Server_Module_Pre_Cb pre,
                                                                 Azy_Server_Module_Content_Cb post);
    EAPI void                      azy_server_module_def_download_upload_set(Azy_Server_Module_Def *def,
                                                                        Azy_Server_Module_Cb download,
@@ -283,23 +319,7 @@ extern "C" {
                                                               Azy_Server_Module_Method *method);
    EAPI int                       azy_server_module_def_size_get(Azy_Server_Module_Def *def);
    EAPI Eina_Bool                 azy_server_module_size_set(Azy_Server_Module_Def *def,
-                                                        int                    size);
-   EAPI Azy_Server            *azy_server_new(Eina_Bool   secure);
-   EAPI void                    azy_server_free(Azy_Server *server);
-   EAPI Eina_List              *azy_server_module_defs_get(Azy_Server *server);
-   EAPI Eina_Bool               azy_server_client_send(Azy_Net      *net,
-                                            unsigned char *data,
-                                            int            length);
-   EAPI Eina_Bool azy_server_run(Azy_Server *server,
-                             int          type,
-                             int          port);
-   EAPI Eina_Bool azy_server_basic_run(int                      port,
-                                   int                      type,
-                                   const char              *cert,
-                                   Azy_Server_Module_Def **modules);
-   EAPI Eina_Bool azy_server_addr_set(Azy_Server *server,
-                                 const char *addr);
-   EAPI const char *azy_server_addr_get(Azy_Server *server);
+                                                             int                    size);
 
    /* net */
    EAPI Azy_Net   *azy_net_new(void *conn);
@@ -337,9 +357,6 @@ extern "C" {
                                             int       length);
    EAPI Eina_Strbuf *azy_net_header_create(Azy_Net *net);
    EAPI const char  *azy_net_http_msg_get(int code);
-   EAPI Eina_Bool    azy_net_send(Azy_Net      *net,
-                              unsigned char *data,
-                              int            length);
 
 
    /* values */
@@ -475,12 +492,11 @@ extern "C" {
                                        Azy_Content_Cb    cb);
    EAPI Azy_Client_Call_Id azy_client_blank(Azy_Client       *client,
                                             Azy_Net_Type      type,
-                                            const char       *uri,
                                             Azy_Content_Cb    cb,
                                             void             *data);
-   EAPI Azy_Client_Call_Id azy_client_send(Azy_Client   *client,
-                                      unsigned char *data,
-                                      int            length);
+   EAPI Azy_Client_Call_Id azy_client_put(Azy_Client         *client,
+                                          const Azy_Net_Data *send,
+                                          void               *data);
    EAPI Eina_Bool          azy_client_redirect(Azy_Client *cli);
    EAPI Azy_Client_Call_Id azy_client_current(Azy_Client *cli);
 

@@ -23,8 +23,8 @@ main(void)
 
    eina_log_domain_level_set("azy", EINA_LOG_LEVEL_DBG);
 
-   azy_server_basic_run(4444, AZY_SERVER_TLS | AZY_SERVER_BROADCAST, "server.pem", modules);
-//   azy_server_basic_run(4444, AZY_SERVER_BROADCAST, NULL, modules);
+//   azy_server_basic_run(4444, AZY_SERVER_TLS | AZY_SERVER_BROADCAST, "server.pem", modules);
+   azy_server_basic_run(4444, AZY_SERVER_BROADCAST, NULL, modules);
 
    azy_shutdown();
    return 0;
