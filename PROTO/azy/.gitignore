@@ -3,6 +3,7 @@
 .*.swp
 .libs
 .deps
+.svn
 Makefile
 Makefile.in
 *.spec
