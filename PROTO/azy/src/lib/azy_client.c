@@ -453,7 +453,7 @@ azy_client_call(Azy_Client       *client,
    if (!azy_content_serialize_request(content, transport))
      return 0;
    azy_net_type_set(client->net, AZY_NET_TYPE_POST);
-   if (!azy_net_uri_get(client->net))
+   if (!client->net->http.req.http_path)
      {
         WARN("URI currently set to NULL, defaulting to \"/\"");
         azy_net_uri_set(client->net, "/");
@@ -544,9 +544,7 @@ azy_client_blank(Azy_Client       *client,
 
    azy_net_type_set(client->net, type);
 
-   if (client->net->http.req.http_path)
-     WARN("NULL URI passed, using previously set uri '%s'", client->net->http.req.http_path);
-   else
+   if (!client->net->http.req.http_path)
      {
         WARN("NULL URI passed, defaulting to \"/\"");
         azy_net_uri_set(client->net, "/");
