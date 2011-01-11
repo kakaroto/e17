@@ -71,7 +71,7 @@ azy_content_xmlnode_to_buf(xml_node       node,
    char *buffer;
 
    node.print(counter);
-   buffer = new char[counter.result + 1];
+   buffer = static_cast<char*>(calloc(1, counter.result + 1));
    xml_memory_writer writer(buffer, counter.result);
    node.print(writer);
    buffer[writer.written_size()] = 0;
