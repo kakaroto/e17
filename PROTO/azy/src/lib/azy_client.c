@@ -524,8 +524,8 @@ error:
 Azy_Client_Call_Id
 azy_client_blank(Azy_Client       *client,
                  Azy_Net_Type      type,
-																	Azy_Content_Cb    cb,
-																	void             *data)
+                 Azy_Content_Cb    cb,
+                 void             *data)
 {
    Eina_Strbuf *msg;
    Azy_Client_Handler_Data *hd;
@@ -538,7 +538,7 @@ azy_client_blank(Azy_Client       *client,
         return 0;
      }
    EINA_SAFETY_ON_NULL_RETURN_VAL(client->net, 0);
-			EINA_SAFETY_ON_TRUE_RETURN_VAL((type != AZY_NET_TYPE_GET) && (type != AZY_NET_TYPE_POST), 0);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL((type != AZY_NET_TYPE_GET) && (type != AZY_NET_TYPE_POST), 0);
 
    while (++azy_client_send_id__ < 1);
 
