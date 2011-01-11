@@ -274,6 +274,10 @@ _azy_server_client_method_run(Azy_Server_Client *client,
    if (module->def->pre)
      run_method = module->def->pre(module, new);
 
+   /* grab the req path before it gets freed */
+   new->http.req.http_path = module->client->net->http.req.http_path;
+   module->client->net->http.req.http_path = NULL;
+   
    azy_net_free(module->client->net);
    module->client->net = new;
 
@@ -434,6 +438,10 @@ _azy_server_client_get_put(Azy_Server_Client *client)
    module->recv.size = client->net->size;
    client->net->buffer = NULL; /* prevent buffer from being freed */
 
+   /* grab the req path before it gets freed */
+   net->http.req.http_path = client->net->http.req.http_path;
+   client->net->http.req.http_path = NULL;
+   
    azy_net_free(client->net);
    client->net = net;
 
@@ -774,7 +782,7 @@ _azy_server_client_handler_data(Azy_Server_Client          *client,
      return ECORE_CALLBACK_RENEW;
 
    if ((client->net->size && (client->net->size >= client->net->http.content_length) && (client->net->http.content_length > 0)) ||
-       ((!client->net->size) && (!client->net->http.content_length) && client->net->headers_read))
+       ((!client->net->size) && (client->net->http.content_length < 1) && client->net->headers_read))
       _azy_server_client_handler_request(client);
 
    if (overflow && (!client->net->buffer))
