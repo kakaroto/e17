@@ -1287,6 +1287,7 @@ public enum MapZoomMode
     MANUAL,
     AUTO_FIT,
     AUTO_FILL,
+    LAST
 }
 
 
@@ -1304,22 +1305,22 @@ public enum MapSource
     CUSTOM_4,
     CUSTOM_5,
     CUSTOM_6,
-    CUSTOM_7
+    CUSTOM_7,
+    LAST
 }
-
-//=======================================================================
-[Compact]
-[CCode (cname = "Elm_Map_Marker", free_function = "")]
-public class MapMarker
-{
-}
-
 
 //=======================================================================
 [Compact]
 [CCode (cname = "Elm_Map_Marker_Class", free_function = "")]
 public class MapMarkerClass
 {
+    [CCode (cname = "elm_map_marker_class_new")]
+    public MapMarkerClass( Elm.Map? map );
+
+    public void style_set( string style );
+    //public void icon_cb_set( ElmMapMarkerIconGetFunc icon_get );
+    //public void get_cb_set( ElmMapMarkerGetFunc get );
+    //public void del_cb_set( ElmMapMarkerDelFunc del );
 }
 
 
@@ -1328,6 +1329,16 @@ public class MapMarkerClass
 [CCode (cname = "Elm_Map_Group_Class", free_function = "")]
 public class MapGroupClass
 {
+    [CCode (cname = "elm_map_group_class_new")]
+    public MapGroupClass( Elm.Map? map );
+
+   public void style_set( string style );
+   //public void icon_cb_set( ElmMapGroupIconGetFunc icon_get );
+   //public void data_set( void *data );
+   public void zoom_displayed_set( int zoom );
+   public void zoom_grouped_set( int zoom );
+   [CCode (instance_pos = 0.1)]
+   public void hide_set( Elm.Map obj, bool hide );
 }
 
 //=======================================================================
@@ -1341,19 +1352,47 @@ public class Map : Elm.Object
     public double zoom_get();
     public void zoom_mode_set( MapZoomMode mode );
     public MapZoomMode zoom_mode_get();
+
     public void geo_region_get( out double lon, out double lat );
     public void geo_region_bring_in( double lon, double lat );
     public void geo_region_show( double lon, double lat );
+
     public void paused_set( bool paused );
     public bool paused_get();
     public void paused_markers_set( bool paused );
     public bool paused_markers_get();
-    [CCode (cname = "utils_convert_coord_into_geo")]
+
+    [CCode (cname = "elm_map_utils_convert_coord_into_geo")]
     public static void convert_coord_into_geo( int x, int y, int size, out double lon, out double lat );
-    [CCode (cname = "utils_convert_geo_into_coord")]
+    [CCode (cname = "elm_map_utils_convert_geo_into_coord")]
     public static void convert_geo_into_coord( double lon, double lat, int size, out int x, out int y );
+
+    public void max_marker_per_group_set( int max );
+    public static void markers_list_show( Eina.List<MapMarker> list );
+    public void bubbles_close();
+
+    public void source_set( MapSource source );
+    public MapSource source_get();
+
+    //public static void source_custom_api_set( MapSource source, const char *label, int zoom_min, int zoom_max, ElmMapSourceURLFunc url_cb );
+    public static int source_zoom_min_get( MapSource source );
+    public static int source_zoom_max_get( MapSource source );
+    public static string source_name_get( MapSource source );
 }
 
+//=======================================================================
+[Compact]
+[CCode (cname = "Elm_Map_Marker", free_function = "elm_map_marker_remove")]
+public class MapMarker : Elm.Object
+{
+    [CCode (cname = "elm_map_marker_add")]
+    public MapMarker( Elm.Object parent, double lon, double lat, MapMarkerClass klass, MapGroupClass group, void* data );
+
+    public void         bring_in();
+    public void         show();
+    public Elm.Map      object_get();
+    public void         update();
+}
 
 //=======================================================================
 [CCode (cprefix = "ELM_PANEL_ORIENT_")]

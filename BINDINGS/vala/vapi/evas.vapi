@@ -164,7 +164,7 @@ namespace Evas
         RESTRICT_REPEAT,
         PAD
     }
-    
+
     //=======================================================================
 
 
@@ -321,7 +321,7 @@ namespace Evas
         public void event_feed_mouse_out( uint timestamp, void* data = null );
         public void event_feed_mouse_cancel (uint timestamp, void* data = null );
         public void event_feed_mouse_wheel( int direction, int z, uint timestamp, void* data = null );
-        
+
         public void event_feed_multi_down( int d, int x, int y, double rad, double radx, double rady, double pres, double ang, double fx, double fy, ButtonFlags flags, uint timestamp, void* data = null );
         public void event_feed_multi_up( int d, int x, int y, double rad, double radx, double rady, double pres, double ang, double fx, double fy, ButtonFlags flags, uint timestamp, void* data = null );
         public void event_feed_multi_move( int d, int x, int y, double rad, double radx, double rady, double pres, double ang, double fx, double fy, uint timestamp, void* data = null );
@@ -656,7 +656,7 @@ namespace Evas
 
         public void file_set( string file, string key );
         public void file_get( out string file, out string key );
-        
+
 
         [CCode (cname = "evas_object_image_data_set")]
         public void data_set( void* data );

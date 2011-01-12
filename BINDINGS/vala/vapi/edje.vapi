@@ -225,7 +225,7 @@ namespace Edje
         public bool part_exists( string part );
         public Evas.Object? part_object_get( string part );
 
-        public void part_geometry_get( string part, Evas.Coord x, Evas.Coord y, Evas.Coord w, Evas.Coord h );
+        public void part_geometry_get( string part, out Evas.Coord x, out Evas.Coord y, out Evas.Coord w, out Evas.Coord h );
 
         public void text_change_cb_set( TextChangedCallback callback );
         public void part_text_set( string part, string text );
