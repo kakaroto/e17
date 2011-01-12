@@ -1,0 +1,27 @@
+
+ * improve explosions (there is the empty image hack which is actually not a
+   good idea).
+
+ * better scenario management (putting it in edc ? an eet ? something else ?)
+
+ * once scenario is correctly managed, a game editor ?
+
+ * better graphics (my dream would be a xenon 2 clone). So someone with
+   pixel art abilities would be welcome. If you know one...
+
+ * manage aliens with more complex movements (sinusoidal, or following a curve
+   which parametrical equation is given, for example). Also, aliens with more
+   than one "image" (like a snake, for example. See Xenon 2 again...), aliens
+   that have an animation when destroyed (adding that for the rock, for example)
+
+ * fill that file !
+
+Some videos to have ideas of graphisms:
+
+r-type (of course !) : http://www.youtube.com/watch?v=con40be5nTM
+
+xenon 2 : http://www.youtube.com/watch?v=DCAUTrgso8k
+
+gradius 5 : http://www.youtube.com/watch?v=I3tpF3B_aWA
+
+ikaruga : http://www.youtube.com/watch?v=v7bmTmc9F6s

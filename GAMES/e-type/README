@@ -1,0 +1,9 @@
+e-type is the beginning of an old type of game : a shoot'em up
+
+It is not finished and is in svn just so that other dev can help
+me, especially with the theme.
+
+to compile : make
+other rules : clean, dist, distclean, distcheck
+
+to play: ./e-type and use arrows and spacebar
