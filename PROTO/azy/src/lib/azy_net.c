@@ -638,7 +638,8 @@ azy_net_header_create(Azy_Net *net)
         break;
 
       case AZY_NET_TYPE_PUT:
-        /* FIXME: implement this */
+        eina_strbuf_append_printf(header, "PUT %s HTTP/1.%i\r\n",
+                                  net->http.req.http_path, net->http.version);
         break;
 
       default:
