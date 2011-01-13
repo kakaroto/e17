@@ -1,6 +1,6 @@
 /*
  * Copyright 2006-2008 Ondrej Jirman <ondrej.jirman@zonio.net>
- * Copyright 2010 Mike Blumenkrantz <mike@zentific.com>
+ * Copyright 2010, 2011 Mike Blumenkrantz <mike@zentific.com>
  */
 
 #ifdef HAVE_CONFIG_H

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mike Blumenkrantz <mike@zentific.com>
+ * Copyright 2010, 2011 Mike Blumenkrantz <mike@zentific.com>
  */
 
 #ifdef HAVE_CONFIG_H

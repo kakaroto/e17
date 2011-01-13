@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mike Blumenkrantz <mike@zentific.com>
+ * Copyright 2010, 2011 Mike Blumenkrantz <mike@zentific.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -121,7 +121,7 @@ Azy_Module Test1
                                      * will result in a parser error (FIXME).
                                      */
      retval->v_string = eina_stringshare_add("Hi!");
-     retval->v_time = eina_stringshare_add("2010-11-01");
+     retval->v_time = eina_stringshare_add("2011-01-01");
      buf = azy_base64_encode("Hi all!", sizeof("Hi all!"));
      retval->v_base64 = eina_stringshare_add(buf);
      free(buf);

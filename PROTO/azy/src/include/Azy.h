@@ -1,5 +1,5 @@
 /* Azy - Lazy Zentific RPC library
- * Copyright 2010 Mike Blumenkrantz <mike@zentific.com>
+ * Copyright 2010, 2011 Mike Blumenkrantz <mike@zentific.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
