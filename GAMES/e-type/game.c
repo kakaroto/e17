@@ -104,15 +104,12 @@ game_free(Game *g)
   void *data;
 
   if (!g) return;
-  printf("game_free\n");
+
   scenario_free(g->scenario);
   EINA_LIST_FREE(g->powerups, data)
-    {
-      printf("fin : %p\n", data);
-      powerup_free((Powerup *)data);
-    }
+    powerup_free((Powerup *)data);
   EINA_LIST_FREE(g->shoots, data)
-    shoot_free((Shoot *)data, EINA_TRUE);
+    shoot_free((Shoot *)data);
   EINA_LIST_FREE(g->aliens, data)
     alien_free((Alien *)data);
   ship_free(g->ship);
@@ -143,9 +140,11 @@ game_alien_append(Game *g, Alien *a)
 }
 
 void
-game_alien_remove(Game *g, Eina_List *l)
+game_alien_remove(Game *g, Alien *a)
 {
-  g->aliens = eina_list_remove_list(g->aliens, l);
+  if (!a) return;
+
+  g->aliens = eina_list_remove(g->aliens, a);
 }
 
 void
@@ -157,9 +156,11 @@ game_shoot_append(Game *g, Shoot *s)
 }
 
 void
-game_shoot_remove(Game *g, Eina_List *l)
+game_shoot_remove(Game *g, Shoot *s)
 {
-  g->shoots = eina_list_remove_list(g->shoots, l);
+  if (!s) return;
+
+  g->shoots = eina_list_remove(g->shoots, s);
 }
 
 void
@@ -167,7 +168,6 @@ game_powerup_append(Game *g, Powerup *p)
 {
   if (!p) return;
 
-  printf("game_powerup_append\n");
   g->powerups = eina_list_append(g->powerups, p);
 }
 
@@ -176,7 +176,6 @@ game_powerup_remove(Game *g, Powerup *p)
 {
   if (!p) return;
 
-  printf("game_powerup_remove\n");
   g->powerups = eina_list_remove(g->powerups, p);
 }
 

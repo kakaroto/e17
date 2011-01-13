@@ -128,8 +128,7 @@ _ship_shoot_cb(void *data)
 
       evas_object_geometry_get(s->o, &x, &y, &w, &h);
       shoot = shoot_new(s->g, SHOOT_DIR_UP_SHIP, &sw, &sh);
-      if (shoot)
-        shoot_start(shoot, x + (w - sw) / 2, y - sh, 0.005);
+      shoot_start(shoot, x + (w - sw) / 2, y - sh, 0.005);
     }
 
   if (s->upg.upgrade & SHIP_UPGRADE_FRONT_DOUBLE)
@@ -143,11 +142,9 @@ _ship_shoot_cb(void *data)
 
       evas_object_geometry_get(s->upg.front_double, &x, &y, &w, &h);
       shoot = shoot_new(s->g, SHOOT_DIR_UP, &sw, &sh);
-      if (shoot)
-        shoot_start(shoot, x, y - sh, 0.005);
+      shoot_start(shoot, x, y - sh, 0.005);
       shoot = shoot_new(s->g, SHOOT_DIR_UP, &sw, &sh);
-      if (shoot)
-        shoot_start(shoot, x + w - sw, y - sh, 0.005);
+      shoot_start(shoot, x + w - sw, y - sh, 0.005);
     }
 
   if (s->upg.upgrade & SHIP_UPGRADE_FRONT_TRIPLE)
@@ -161,14 +158,11 @@ _ship_shoot_cb(void *data)
 
       evas_object_geometry_get(s->upg.front_triple, &x, &y, &w, &h);
       shoot = shoot_new(s->g, SHOOT_DIR_UP, &sw, &sh);
-      if (shoot)
-        shoot_start(shoot, x + (w - sw) / 2, y - sh, 0.005);
+      shoot_start(shoot, x + (w - sw) / 2, y - sh, 0.005);
       shoot = shoot_new(s->g, SHOOT_DIR_TOP_LEFT, &sw, &sh);
-      if (shoot)
-        shoot_start(shoot, x, y - sh, 0.005);
+      shoot_start(shoot, x, y - sh, 0.005);
       shoot = shoot_new(s->g, SHOOT_DIR_TOP_RIGHT, &sw, &sh);
-      if (shoot)
-        shoot_start(shoot, x + w - sw, y - sh, 0.005);
+      shoot_start(shoot, x + w - sw, y - sh, 0.005);
     }
 
   if (s->upg.upgrade & SHIP_UPGRADE_REAR_SINGLE)
@@ -182,8 +176,7 @@ _ship_shoot_cb(void *data)
 
       evas_object_geometry_get(s->upg.rear_single, &x, &y, &w, &h);
       shoot = shoot_new(s->g, SHOOT_DIR_DOWN, &sw, &sh);
-      if (shoot)
-        shoot_start(shoot, x + (w - sw) / 2, y, 0.005);
+      shoot_start(shoot, x + (w - sw) / 2, y, 0.005);
     }
 
   if (s->upg.upgrade & SHIP_UPGRADE_REAR_CIRCLE)
@@ -197,29 +190,21 @@ _ship_shoot_cb(void *data)
 
       evas_object_geometry_get(s->upg.rear_circle, &x, &y, &w, &h);
       shoot = shoot_new(s->g, SHOOT_DIR_UP, &sw, &sh);
-      if (shoot)
-        shoot_start(shoot, x + (w - sw) / 2, y - sh, 0.005);
+      shoot_start(shoot, x + (w - sw) / 2, y - sh, 0.005);
       shoot = shoot_new(s->g, SHOOT_DIR_DOWN, &sw, &sh);
-      if (shoot)
-        shoot_start(shoot, x + (w - sw) / 2, y, 0.005);
+      shoot_start(shoot, x + (w - sw) / 2, y, 0.005);
       shoot = shoot_new(s->g, SHOOT_DIR_TOP_LEFT, &sw, &sh);
-      if (shoot)
-        shoot_start(shoot, x, y - sh, 0.005);
+      shoot_start(shoot, x, y - sh, 0.005);
       shoot = shoot_new(s->g, SHOOT_DIR_TOP_RIGHT, &sw, &sh);
-      if (shoot)
-        shoot_start(shoot, x + w - sw, y - sh, 0.005);
+      shoot_start(shoot, x + w - sw, y - sh, 0.005);
       shoot = shoot_new(s->g, SHOOT_DIR_LEFT, &sw, &sh);
-      if (shoot)
-        shoot_start(shoot, x - sw, y + (h - sh) / 2, 0.005);
+      shoot_start(shoot, x - sw, y + (h - sh) / 2, 0.005);
       shoot = shoot_new(s->g, SHOOT_DIR_RIGHT, &sw, &sh);
-      if (shoot)
-        shoot_start(shoot, x + sw, y + (h - sh) / 2, 0.005);
+      shoot_start(shoot, x + sw, y + (h - sh) / 2, 0.005);
       shoot = shoot_new(s->g, SHOOT_DIR_BOTTOM_LEFT, &sw, &sh);
-      if (shoot)
-        shoot_start(shoot, x, y + h, 0.005);
+      shoot_start(shoot, x, y + h, 0.005);
       shoot = shoot_new(s->g, SHOOT_DIR_BOTTOM_RIGHT, &sw, &sh);
-      if (shoot)
-        shoot_start(shoot, x + sw, y + h, 0.005);
+      shoot_start(shoot, x + sw, y + h, 0.005);
     }
 
   return EINA_TRUE;

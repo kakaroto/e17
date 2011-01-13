@@ -68,7 +68,6 @@ _power_move_cb(void *data)
     {
       /* FIXME: improve ship powerups */
 
-      printf("collision : %p\n", data);
       game_powerup_remove(pu->g, pu);
       powerup_free(pu);
       return EINA_FALSE;

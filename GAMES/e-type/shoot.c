@@ -46,11 +46,10 @@ _shoot_cb(void *data)
       {
         Eina_List *aliens;
         Eina_List *l = NULL;
-        Eina_List *l_next = NULL;
         Alien *alien;
 
         aliens = game_aliens_get(s->g);
-        EINA_LIST_FOREACH_SAFE(aliens, l, l_next, alien)
+        EINA_LIST_FOREACH(aliens, l, alien)
           {
             int status;
 
@@ -58,35 +57,45 @@ _shoot_cb(void *data)
             if (status >= 0)
               {
                 printf("touche %p\n", alien);
-                if (status == 0)
-                  {
-                    game_alien_remove(s->g, l);
-                  }
-                shoot_free(s, EINA_FALSE);
+                game_shoot_remove(s->g, s);
+                shoot_free(s);
                 return EINA_FALSE;
               }
           }
       }
+
+      if ((y + h) < 0)
+        {
+          game_shoot_remove(s->g, s);
+          shoot_free(s);
+          return EINA_FALSE;
+        }
     }
 
   if (s->dir == SHOOT_DIR_DOWN_ALIEN)
     {
+      Ship *ship;
+
       evas_object_geometry_get(s->o, &x, &y, NULL, &h);
       y++;
       evas_object_move(s->o, x, y);
 
-      /* collision avec le vaisseau */
-      {
-        Ship *ship;
+      /* collision with the ship */
+      ship = game_ship_get(s->g);
+      if (ship_explode(ship, x + s->hot_x, y + s->hot_y))
+        {
+          printf("touche vaisseau\n");
+          game_shoot_remove(s->g, s);
+          shoot_free(s);
+          return EINA_FALSE;
+        }
 
-        ship = game_ship_get(s->g);
-        if (ship_explode(ship, x + s->hot_x, y + s->hot_y))
-          {
-            printf("touche vaisseau\n");
-            shoot_free(s, EINA_FALSE);
-            return EINA_FALSE;
-          }
-      }
+      if (y >= gh)
+        {
+          game_shoot_remove(s->g, s);
+          shoot_free(s);
+          return EINA_FALSE;
+        }
     }
 
   if (s->dir == SHOOT_DIR_UP)
@@ -97,7 +106,7 @@ _shoot_cb(void *data)
 
       if ((y + h) < 0)
         {
-          shoot_free(s, EINA_FALSE);
+          shoot_free(s);
           return EINA_FALSE;
         }
     }
@@ -110,7 +119,7 @@ _shoot_cb(void *data)
 
       if (y >= gh)
         {
-          shoot_free(s, EINA_FALSE);
+          shoot_free(s);
           return EINA_FALSE;
         }
     }
@@ -123,7 +132,7 @@ _shoot_cb(void *data)
 
       if ((x + w) < 0)
         {
-          shoot_free(s, EINA_FALSE);
+          shoot_free(s);
           return EINA_FALSE;
         }
     }
@@ -136,7 +145,7 @@ _shoot_cb(void *data)
 
       if (x >= gw)
         {
-          shoot_free(s, EINA_FALSE);
+          shoot_free(s);
           return EINA_FALSE;
         }
     }
@@ -150,7 +159,7 @@ _shoot_cb(void *data)
 
       if (((x + w) < 0) || ((y + h) < 0))
         {
-          shoot_free(s, EINA_FALSE);
+          shoot_free(s);
           return EINA_FALSE;
         }
     }
@@ -164,7 +173,7 @@ _shoot_cb(void *data)
 
       if ((x >= gw) || ((y + h) < 0))
         {
-          shoot_free(s, EINA_FALSE);
+          shoot_free(s);
           return EINA_FALSE;
         }
     }
@@ -178,7 +187,7 @@ _shoot_cb(void *data)
 
       if (((x + w) < 0) || (y >= gh))
         {
-          shoot_free(s, EINA_FALSE);
+          shoot_free(s);
           return EINA_FALSE;
         }
     }
@@ -192,7 +201,7 @@ _shoot_cb(void *data)
 
       if ((x >= gw) || (y >= gh))
         {
-          shoot_free(s, EINA_FALSE);
+          shoot_free(s);
           return EINA_FALSE;
         }
     }
@@ -263,28 +272,11 @@ shoot_new(Game *g, Shoot_Dir dir, Evas_Coord *w, Evas_Coord *h)
 }
 
 void
-shoot_free(Shoot *s, Eina_Bool last)
+shoot_free(Shoot *s)
 {
   if (!s) return;
 
   evas_object_del(s->o);
-  if (!last)
-    {
-      Eina_List *shoots;
-      Eina_List *l = NULL;
-      Eina_List *l_next = NULL;
-      Shoot *shoot;
-
-      shoots = game_shoots_get(s->g);
-      EINA_LIST_FOREACH_SAFE(shoots, l, l_next, shoot)
-        {
-          if (s == shoot)
-            {
-              game_shoot_remove(s->g, l);
-              break;
-            }
-        }
-    }
   free(s);
 }
 

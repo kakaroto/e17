@@ -25,7 +25,7 @@ typedef enum
 
 
 Shoot *shoot_new(Game *g, Shoot_Dir dir, Evas_Coord *w, Evas_Coord *h);
-void   shoot_free(Shoot *s, Eina_Bool last);
+void   shoot_free(Shoot *s);
 void   shoot_start(Shoot *s, Evas_Coord x, Evas_Coord y, double fps);
 
 

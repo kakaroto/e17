@@ -63,13 +63,10 @@ _alien_shoot_cb(void *data)
 
   evas_object_geometry_get(a->o, &x, &y, &w, &h);
   shoot = shoot_new(a->g, SHOOT_DIR_DOWN_ALIEN, &sw, &sh);
-  if (shoot)
-    {
-      shoot_start(shoot, x + (w - sw) / 2, y + h, 0.01);
-      return EINA_TRUE;
-    }
-  else
-    return EINA_FALSE;
+  if (!shoot) return EINA_FALSE;
+
+  shoot_start(shoot, x + (w - sw) / 2, y + h, 0.01);
+  return EINA_TRUE;
 }
 
 
@@ -166,6 +163,7 @@ alien_explode(Alien *a, Evas_Coord hot_x, Evas_Coord hot_y)
 
           evas_object_geometry_get(a->o, &x, &y, &w, &h);
           pu = powerup_new(a->g, a->ptype, x + w / 2, y + h / 2);
+          game_alien_remove(a->g, a);
           alien_free(a);
           return 0;
         }
