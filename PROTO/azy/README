@@ -1,10 +1,9 @@
-Azy is a full rewrite of libzxr, itself a modification of libxr.  It is meant for
-implementing rpc clients and servers in a simple manner.
+Azy is a full rewrite of libzxr, itself a modification of libxr.
+It provides functions for manipulating RPC clients/servers as well as RSS feeds.
 
 Dependencies:
 eina
 ecore
-libxml2
 
 Install:
 Simply run bootstrap.sh to configure and compile the code, then run make install
