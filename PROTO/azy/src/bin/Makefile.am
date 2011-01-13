@@ -28,7 +28,6 @@ AM_CFLAGS = \
 LDADD = \
 	$(AZY_LIBS)
 
-man_MANS = azy_parser.1
 bin_PROGRAMS = azy_parser
 
 azy_parser_SOURCES = \
