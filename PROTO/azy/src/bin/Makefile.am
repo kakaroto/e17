@@ -19,7 +19,6 @@ CLEANFILES = \
 EXTRA_DIST = \
 	lempar.c \
 	lemon.c \
-	azy_parser.1 \
 	azy_parser.yre
 
 AM_CFLAGS = \
