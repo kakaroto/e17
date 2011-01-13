@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mike Blumenkrantz <mike@zentific.com>
+ * Copyright 2010, 2011 Mike Blumenkrantz <mike@zentific.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -88,7 +88,7 @@ static const Ecore_Getopt opts = {
    "Azy_Parser",
    "Azy_Parser file.azy -o destination_directory/",
    "1.0alpha",
-   "(C) 2010 Mike Blumenkrantz, previously others, see AUTHORS",
+   "(C) 2010, 2011 Mike Blumenkrantz, previously others, see AUTHORS",
    "LGPL",
    "Parse an azy file into *.{c,h} files\n\n",
    1,
@@ -96,12 +96,12 @@ static const Ecore_Getopt opts = {
       ECORE_GETOPT_STORE_STR('m', "modes", "Parser modes: all, server-impl, server-headers,\n"
                                            "\t\t\tclient-impl, client-headers,\n"
                                            "\t\t\tcommon-impl, common-headers"),
-      ECORE_GETOPT_STORE_STR('o', "output", "Output directory"),
+      ECORE_GETOPT_STORE_STR('o', "output", "Output directory (default is .)"),
       ECORE_GETOPT_STORE_TRUE('d', "debug", "Print debugging output"),
       ECORE_GETOPT_STORE_TRUE('H', "Hash", "Do not generate hash functions"),
-      ECORE_GETOPT_STORE_TRUE('n', "Null", "Do not generate isnull functions"),
-      ECORE_GETOPT_STORE_TRUE('p', "Print", "Do not generate print functions"),
-      ECORE_GETOPT_STORE_TRUE('e', "Eq", "Do not generate eq functions"),
+      ECORE_GETOPT_STORE_TRUE('n', "null", "Do not generate isnull functions"),
+      ECORE_GETOPT_STORE_TRUE('p', "print", "Do not generate print functions"),
+      ECORE_GETOPT_STORE_TRUE('e', "eq", "Do not generate eq functions"),
       ECORE_GETOPT_VERSION('V', "version"),
       ECORE_GETOPT_COPYRIGHT('R', "copyright"),
       ECORE_GETOPT_LICENSE('L', "license"),
