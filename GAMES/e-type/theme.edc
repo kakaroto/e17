@@ -203,42 +203,30 @@ collections {
          image: "explode1_5.png" COMP;
          image: "explode1_6.png" COMP;
          image: "explode1_7.png" COMP;
-         image: "explode1_8.png" COMP;
       }
       min: 49 49;
       max: 49 49;
       parts {
          part {
             name: "explosion1";
-            type: IMAGE;
             mouse_events: 0;
             description {
                state: "default" 0.0;
                visible: 0;
-               aspect: 1.0 1.0;
-               color: 0 0 0 0;
                image {
-                  tween: "explode1_1.png";
+                  normal: "explode1_1.png";
+               }
+            }
+            description {
+               state: "explode" 0.0;
+               image {
                   tween: "explode1_2.png";
                   tween: "explode1_3.png";
                   tween: "explode1_4.png";
                   tween: "explode1_5.png";
                   tween: "explode1_6.png";
-                  tween: "explode1_7.png";
-                  normal: "explode1_8.png";
+                  normal: "explode1_7.png";
                }
-            }
-            description {
-               state: "explode" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-               color: 255 255 255 255;
-            }
-            description {
-               state: "hide_explode" 0.0;
-               inherit: "default" 0.0;
-               visible: 0;
-               color: 0 0 0 0;
             }
          }
       }
@@ -246,7 +234,7 @@ collections {
          name: "start_explosion";
          signal: "start";
          action: STATE_SET "explode" 0.0;
-         transition: LINEAR 0.5;
+         transition: LINEAR 1.0;
          target: "explosion1";
          after: "end_explosion";
       }
@@ -267,37 +255,31 @@ collections {
          image: "explode2_6.png" COMP;
          image: "explode2_7.png" COMP;
          image: "explode2_8.png" COMP;
-         image: "explode2_9.png" COMP;
       }
       min: 23 23;
       max: 23 23;
       parts {
          part {
             name: "explosion2";
-            type: IMAGE;
             mouse_events: 0;
             description {
                state: "default" 0.0;
                visible: 0;
-               aspect: 1.0 1.0;
-               color: 0 0 0 0;
                image {
-                  tween: "explode2_1.png";
+                  normal: "explode2_1.png";
+               }
+            }
+            description {
+               state: "explode" 0.0;
+               image {
                   tween: "explode2_2.png";
                   tween: "explode2_3.png";
                   tween: "explode2_4.png";
                   tween: "explode2_5.png";
                   tween: "explode2_6.png";
                   tween: "explode2_7.png";
-                  tween: "explode2_8.png";
-                  normal: "explode2_9.png";
+                  normal: "explode2_8.png";
                }
-            }
-            description {
-               state: "explode" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-               color: 255 255 255 255;
             }
          }
       }
@@ -305,7 +287,7 @@ collections {
          name: "start_explosion";
          signal: "start";
          action: STATE_SET "explode" 0.0;
-         transition: LINEAR 0.5;
+         transition: LINEAR 1.0;
          target: "explosion2";
          after: "end_explosion";
       }
