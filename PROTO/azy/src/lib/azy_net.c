@@ -433,7 +433,7 @@ azy_net_type_set(Azy_Net     *net,
         AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
         return;
      }
-   if (((type < AZY_NET_TYPE_GET) || (type > AZY_NET_TYPE_RESPONSE_ERROR)))
+   if (((!type) || (type > AZY_NET_TYPE_RESPONSE_ERROR)))
      return;
 
    net->type = type;
