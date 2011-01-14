@@ -113,7 +113,7 @@ Part &Object::getPart (const std::string &partname)
 {
   if (hasPart (partname))
   {
-    Part *p;
+    Part *p = NULL;
     map <std::string, Part*>::iterator partFound = mPartList.find (partname);
 
     if (partFound != mPartList.end ()) // found

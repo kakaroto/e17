@@ -57,7 +57,7 @@ public:
 
 private:
   Object* mParent;
-  const std::string &mPartname;
+  std::string mPartname;
   Evasxx::Object *mExternalObject;
   Evasxx::Object *mExternalContent;
   Evasxx::Object *mSwallowObject;

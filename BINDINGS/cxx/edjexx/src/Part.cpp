@@ -10,6 +10,8 @@
 /* STD */
 #include <map>
 
+using namespace std;
+
 namespace Edjexx {
 
 Part::Part (Object* parent, const std::string &partname) :
@@ -19,12 +21,12 @@ Part::Part (Object* parent, const std::string &partname) :
   mExternalContent (NULL),
   mSwallowObject (NULL)
 {
-  Dout( dc::notice, " Part::EdjePart( '" << mPartname << "' ) constructing..." );
+  cout << "Part::EdjePart( '" << mPartname << "' ) constructing..." << endl;
 }
 
 Part::~Part()
 {
-  Dout( dc::notice, "~Part::EdjePart( '" << mPartname << "' ) destructing..." );
+  cout << "~Part::EdjePart( '" << mPartname << "' ) destructing..." << endl;
 
   delete mExternalObject;
   delete mSwallowObject;
