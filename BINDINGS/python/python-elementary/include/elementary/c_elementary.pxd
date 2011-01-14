@@ -616,6 +616,8 @@ cdef extern from "Elementary.h":
     void  elm_toolbar_item_disabled_set(Elm_Toolbar_Item *item, evas.c_evas.Eina_Bool disabled)
     void  elm_toolbar_item_separator_set(Elm_Toolbar_Item *item, evas.c_evas.Eina_Bool separator)
     evas.c_evas.Eina_Bool elm_toolbar_item_separator_get(Elm_Toolbar_Item *item)
+    evas.c_evas.Eina_Bool  elm_toolbar_no_select_mode_get(evas.c_evas.Evas_Object *obj)
+    void  elm_toolbar_no_select_mode_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool setting)
     void  elm_toolbar_homogenous_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool homogenous)
     void  elm_toolbar_menu_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
     void  elm_toolbar_align_set(evas.c_evas.Evas_Object *obj, double align)

@@ -370,6 +370,12 @@ cdef class Toolbar(Object):
     property last_item:
         def __get__(self):
             return self.last_item_get()
+    
+    def no_select_mode_set(self, setting):
+        elm_toolbar_no_select_mode_set(self.obj, setting)
+
+    def no_select_mode_get(self):
+        return elm_toolbar_no_select_mode_get(self.obj)
 
     def item_append(self, icon, label, callback = None, *args, **kargs):
         """
