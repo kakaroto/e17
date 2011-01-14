@@ -54,21 +54,28 @@ azy_content_buffer_set_(Azy_Content  *content,
  * 
  * This function converts a block of xml/json (based on @p type)
  */
-Azy_Value *
-azy_content_unserialize(Azy_Net_Transport type,
-                        const char   *buf,
-                        ssize_t       len)
+Eina_Bool
+azy_content_unserialize(Azy_Content *content,
+                        Azy_Net     *net)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(buf, NULL);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(!buf[0], NULL);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(!len, NULL);
-
-   if (type == AZY_NET_TRANSPORT_JSON)
-     return azy_content_unserialize_json(buf, len);
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return EINA_FALSE;
+     }
+   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+     {
+        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
+        return EINA_FALSE;
+     }
+   EINA_SAFETY_ON_NULL_RETURN_VAL(net->buffer, EINA_FALSE);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(net->buffer[0], EINA_FALSE);
+   if (net->type == AZY_NET_TRANSPORT_JSON)
+     return azy_content_unserialize_json(content, (char*)net->buffer, net->size);
 
 
    ERR("UNSUPPORTED TYPE PASSED! FIXME!");
-   return NULL;
+   return EINA_FALSE;
 #if 0
    if (type == AZY_NET_TRANSPORT_XML)
      {

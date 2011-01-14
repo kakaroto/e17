@@ -542,7 +542,7 @@ azy_client_blank(Azy_Client       *client,
 
    while (++azy_client_send_id__ < 1);
 
-   azy_net_type_set(client->net, type);
+   client->net->type = type;
 
    if (!client->net->http.req.http_path)
      {

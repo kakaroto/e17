@@ -316,14 +316,14 @@ Eina_Bool azy_server_client_handler_add(Azy_Server                *server,
                                          Ecore_Con_Event_Client_Add *ev);
 void      _azy_event_handler_fake_free(void *data, void *data2);
 
-Azy_Value *
-azy_content_unserialize(Azy_Net_Transport type,
-                        const char   *buf,
-                        ssize_t       len);
+Eina_Bool
+azy_content_unserialize(Azy_Content *content,
+                        Azy_Net     *net);
 
-Azy_Value *
-azy_content_unserialize_json(const char *buf,
-                             ssize_t len __UNUSED__);
+Eina_Bool
+azy_content_unserialize_json(Azy_Content *content,
+                             const char *buf,
+                             ssize_t len);
 
 #ifdef HAVE_XML
 #ifdef __cplusplus 

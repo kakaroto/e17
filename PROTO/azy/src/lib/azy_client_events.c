@@ -108,8 +108,7 @@ _azy_client_handler_get(Azy_Client_Handler_Data *hd)
 
    if (hd->recv->transport == AZY_NET_TRANSPORT_JSON) /* assume block of json */
      {
-        content->retval = azy_content_unserialize(hd->recv->transport, (const char*)hd->recv->buffer, hd->recv->size);
-        if (!content->retval)
+        if (!azy_content_unserialize(content, hd->recv))
           azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return parsing failed.");
         else if (hd->callback && content->retval && (!hd->callback(content->retval, &ret)))
           azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return value demarshalization failed.");

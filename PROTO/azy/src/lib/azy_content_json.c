@@ -242,24 +242,26 @@ azy_content_serialize_response_json(Azy_Content *content)
    return EINA_TRUE;
 }
 
-Azy_Value *
-azy_content_unserialize_json(const char *buf,
+Eina_Bool
+azy_content_unserialize_json(Azy_Content *content,
+                             const char *buf,
                              ssize_t len __UNUSED__)
 {
    cJSON *object;
    Azy_Value *ret;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(buf, NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(buf, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(content, EINA_FALSE);
 
    if (!(object = cJSON_Parse(buf)))
      {
         ERR("%s", eina_error_msg_get(AZY_ERROR_REQUEST_JSON_OBJECT));
-        return NULL;
+        return EINA_FALSE;
      }
 
-   ret = azy_value_unserialize_json(object);
+   content->retval = azy_value_unserialize_json(object);
    cJSON_Delete(object);
-   return ret;
+   return EINA_TRUE;
 }
 
 
