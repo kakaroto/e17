@@ -648,6 +648,7 @@ azy_client_put(Azy_Client         *client,
 
    hd->client = client;
    hd->content_data = data;
+   hd->type = AZY_NET_TYPE_PUT;
    AZY_MAGIC_SET(hd, AZY_MAGIC_CLIENT_DATA_HANDLER);
 
    while (++azy_client_send_id__ < 1);
