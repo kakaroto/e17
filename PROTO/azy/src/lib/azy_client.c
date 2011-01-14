@@ -349,7 +349,7 @@ azy_client_close(Azy_Client *client)
  * @brief Set a callback for an #Azy_Client_Call_Id
  * 
  * This function is used to setup a callback to be called for the response of
- * a transmission with @p id, overriding (disabling) the AZY_CLIENT_RESULT event
+ * a transmission with @p id, overriding (disabling) the AZY_CLIENT_RETURN event
  * for that call.  If a previous callback was set for @p id, this will overwrite it.
  * @param client The client (NOT #NULL)
  * @param id The transmission id (> 0)
