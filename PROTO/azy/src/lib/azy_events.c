@@ -424,6 +424,7 @@ out:
 Azy_Net_Transport
 azy_events_net_transport_get(const char *content_type)
 {
+   DBG("(content_type='%s')", content_type);
    if (!content_type)
      return AZY_NET_TRANSPORT_TEXT;
 

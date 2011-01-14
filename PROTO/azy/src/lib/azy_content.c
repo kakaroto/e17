@@ -70,7 +70,8 @@ azy_content_unserialize(Azy_Content *content,
      }
    EINA_SAFETY_ON_NULL_RETURN_VAL(net->buffer, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(net->buffer[0], EINA_FALSE);
-   if (net->type == AZY_NET_TRANSPORT_JSON)
+   DBG("(content=%p, net=%p, net->type=%u)", content, net, net->transport);
+   if (net->transport == AZY_NET_TRANSPORT_JSON)
      return azy_content_unserialize_json(content, (char*)net->buffer, net->size);
 
 
