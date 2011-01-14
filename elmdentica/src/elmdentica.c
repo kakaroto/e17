@@ -108,6 +108,10 @@ int my_strcmp(const void*a, const void*b) {
 	return(strcmp((const char*)a, (const char*)b));
 }
 
+void network_busy(Eina_Bool state) {
+	elm_toolbar_item_disabled_set(gui.timelines, state);
+	elm_toolbar_item_disabled_set(gui.post, state);
+}
 
 void hash_account_del(void *data) {
 	Account *a = (Account*)data;
@@ -719,18 +723,6 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 
 }
 
-static void on_group_messages_view(void *data, Evas_Object *obj, void *event_info) {
-	Evas_Object *s = (Evas_Object*)data, *label=NULL, *group_win = evas_object_smart_parent_get(obj);
-
-	label = elm_label_add(group_win);
-		evas_object_size_hint_weight_set(label, 1, 1);
-		evas_object_size_hint_align_set(label, -1, -1);
-		elm_label_line_wrap_set(label, EINA_TRUE);
-		elm_label_label_set(label, _("Not implemented yet"));
-		elm_scroller_content_set(s, label);
-	evas_object_show(s);
-}
-
 static void on_group_leave(void *data, Evas_Object *obj, void *event_info);
 
 static void on_group_join(void *data, Evas_Object *obj, void *event_info) {
@@ -792,52 +784,22 @@ static void on_group_leave(void *data, Evas_Object *obj, void *event_info) {
 }
 
 static void group_win_del(void *data, Evas_Object *obj, void *event_info) {
-	GroupProfile *gp = (GroupProfile*)data;
-	ed_statusnet_group_free(gp);
+	groupData *gd = (groupData*)data;
+	ed_statusnet_group_free(gd);
 	evas_object_del(obj);
 }
 
-static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
-	aStatus* as = (aStatus*)data;
-	Elm_List_Item *li = elm_list_selected_item_get(obj);
-	Evas_Object *group_win=NULL, *bg=NULL, *box=NULL, *label=NULL, *notify=NULL, *s=NULL, *box2=NULL, *icon=NULL, *button=NULL, *frame=NULL;
-	GroupProfile *gp = (GroupProfile*)calloc(1, sizeof(GroupProfile));
+static void group_show(aStatus *as, void *gdp, void *data) {
+	groupData *gd=(groupData*)gdp;
+	Evas_Object *group_win=NULL, *bg=NULL, *box=NULL, *label=NULL, *s=NULL, *box2=NULL, *icon=NULL, *button=NULL, *frame=NULL;
 	char *m, *path;
 	int res = 0;
 	struct stat buf;
 
-	elm_list_item_selected_set(li, EINA_FALSE);
-
-	if(!settings->online) return;
-
-	gp->name=strdup(elm_list_item_label_get(li));
-	gp->account_id = as->account_id;
-
-	ed_statusnet_group_get(gp);
-
-	if(gp->failed) {
-		notify = elm_notify_add(gui.win);
-			evas_object_size_hint_weight_set(notify, 1, 1);
-			evas_object_size_hint_align_set(notify, -1, -1);
-			label = elm_label_add(gui.win);
-				evas_object_size_hint_weight_set(label, 1, 1);
-				evas_object_size_hint_align_set(label, -1, -1);
-				elm_label_label_set(label, gp->error);
-				elm_label_line_wrap_set(label, EINA_TRUE);
-			evas_object_show(label);
-			elm_notify_content_set(notify, label);
-			elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_TOP_RIGHT);
-			elm_notify_parent_set(notify, gui.win);
-			elm_notify_timeout_set(notify, 5);
-		evas_object_show(notify);
-
-		return;
-	}
-
-	group_win = elm_win_add(NULL, gp->name, ELM_WIN_BASIC);
+	group_win = elm_win_add(NULL, gd->group->fullname, ELM_WIN_BASIC);
 		evas_object_name_set(group_win, "group_win");
-		elm_win_title_set(group_win, gp->name);
-		evas_object_smart_callback_add(group_win, "delete-request", group_win_del, gp);
+		elm_win_title_set(group_win, gd->group->fullname);
+		evas_object_smart_callback_add(group_win, "delete-request", group_win_del, gd);
 
 		bg = elm_bg_add(group_win);
 			evas_object_size_hint_weight_set(bg, 1, 1);
@@ -854,14 +816,14 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 				evas_object_name_set(frame, "group");
 				evas_object_size_hint_weight_set(frame, 1, 1);
 				evas_object_size_hint_align_set(frame, -1, 0);
-				elm_frame_label_set(frame, gp->name);
+				elm_frame_label_set(frame, gd->group->fullname);
 
 			box2 = elm_box_add(group_win);
 				evas_object_size_hint_weight_set(box2, 1, 1);
 				evas_object_size_hint_align_set(box2, -1, 0);
 				elm_box_horizontal_set(box2, EINA_TRUE);
 
-				res = asprintf(&path, "%s/cache/icons/%s", home, gp->name);
+				res = asprintf(&path, "%s/cache/icons/%s", home, gd->group->fullname);
 
 				if(res != -1 && stat(path, &buf) == 0 ) {
 					icon = elm_icon_add(group_win);
@@ -873,10 +835,10 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 					evas_object_show(icon);
 				}
 
-				if(gp->member)
-					res = asprintf(&m, _("You are a member of group %s along with %d other people.<br>«%s»"), gp->fullname, gp->member_count -1, gp->description);
+				if(gd->group->member)
+					res = asprintf(&m, _("You are a member of group %s along with %d other people.<br>«%s»"), gd->group->fullname, gd->group->member_count -1, gd->group->description);
 				else
-					res = asprintf(&m, _("You are not a member of group %s but %d people are.<br>«%s»"), gp->fullname, gp->member_count, gp->description);
+					res = asprintf(&m, _("You are not a member of group %s but %d people are.<br>«%s»"), gd->group->fullname, gd->group->member_count, gd->group->description);
 
 				if(res != -1) {
 					label = elm_label_add(group_win);
@@ -908,28 +870,16 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 				button = elm_button_add(group_win);
 					evas_object_size_hint_weight_set(button, 1, 1);
 					evas_object_size_hint_align_set(button, -1, 0);
-					if(gp->member) {
+					if(gd->group->member) {
 						elm_button_label_set(button, _("Leave"));
-						evas_object_smart_callback_add(button, "clicked", on_group_leave, gp);
+						evas_object_smart_callback_add(button, "clicked", on_group_leave, gd);
 					} else {
 						elm_button_label_set(button, _("Join"));
-						evas_object_smart_callback_add(button, "clicked", on_group_join, gp);
+						evas_object_smart_callback_add(button, "clicked", on_group_join, gd);
 					}
 					elm_box_pack_end(box2, button);
 				evas_object_show(button);
 				
-				res = asprintf(&m, _("Last %d messages"), settings->max_messages);
-				if(res != -1) {
-					button = elm_button_add(group_win);
-						evas_object_size_hint_weight_set(button, 1, 1);
-						evas_object_size_hint_align_set(button, -1, 0);
-						elm_button_label_set(button, m);
-						evas_object_smart_callback_add(button, "clicked", on_group_messages_view, s);
-						elm_box_pack_end(box2, button);
-					evas_object_show(button);
-					free(m);
-				}
-
 				elm_box_pack_start(box, box2);
 				elm_box_pack_end(box, s);
 			evas_object_show(box2);
@@ -940,6 +890,17 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 
 	evas_object_resize(group_win, 480, 640);
 	evas_object_show(group_win);
+}
+
+static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
+	aStatus* as = (aStatus*)data;
+	Elm_List_Item *li = elm_list_selected_item_get(obj);
+
+	elm_list_item_selected_set(li, EINA_FALSE);
+
+	if(!settings->online) return;
+
+	ed_statusnet_group_get(as, elm_list_item_label_get(li), group_show, NULL);
 }
 
 static void on_url_dismissed(void *data, Evas_Object *obj, void *event_info) {
@@ -1459,7 +1420,7 @@ void add_status(aStatus *as, Elm_Genlist_Item *gli) {
 		li = elm_genlist_item_insert_after(gui.timeline, &itc1, as, NULL, gli, ELM_GENLIST_ITEM_NONE, NULL, NULL);
 		elm_genlist_item_show(li);
 	} else
-		li = elm_genlist_item_append(gui.timeline, &itc1, as, NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL);
+		li = elm_genlist_item_prepend(gui.timeline, &itc1, as, NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL);
 
 	eina_hash_add(bubble2status, &li, as);
 }
@@ -1592,8 +1553,7 @@ static void get_messages(int timeline) {
 	int sqlite_res=0;
 	char *db_err=NULL, *query=NULL;
 
-	elm_toolbar_item_disabled_set(gui.timelines, EINA_TRUE);
-	elm_toolbar_item_disabled_set(gui.post, EINA_TRUE);
+	network_busy(EINA_TRUE);
 	query = "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE enabled = 1 and receive = 1;";
 	sqlite3_exec(ed_DB, query, get_messages_for_account, &timeline, &db_err);
 	if(sqlite_res != 0) {
@@ -1616,7 +1576,7 @@ void fill_message_list(int timeline) {
     if(!userHash) userHash = eina_hash_string_superfast_new(user_hash_data_free);
 
 
-	sqlite_res = asprintf(&query, "SELECT messages.*, accounts.type, accounts.id, accounts.enabled FROM messages,accounts where messages.timeline = %d and messages.account_id=accounts.id and accounts.enabled=1 ORDER BY messages.s_created_at DESC LIMIT %d;", timeline, settings->max_messages);
+	sqlite_res = asprintf(&query, "SELECT messages.*, accounts.type, accounts.id, accounts.enabled FROM messages,accounts where messages.timeline = %d and messages.account_id=accounts.id and accounts.enabled=1 ORDER BY messages.s_created_at ASC LIMIT %d;", timeline, settings->max_messages);
 	if(sqlite_res != -1) {
 		sqlite_res = 0;
 		sqlite3_exec(ed_DB, query, add_status_from_db, (void*)(long)timeline, &db_err);
@@ -1631,8 +1591,7 @@ void fill_message_list(int timeline) {
 void update_status_list(int timeline) {
 	make_status_list(timeline);
 	fill_message_list(timeline);
-	elm_toolbar_item_disabled_set(gui.timelines, EINA_FALSE);
-	elm_toolbar_item_disabled_set(gui.post, EINA_FALSE);
+	network_busy(EINA_FALSE);
 }
 
 /* ********** CALLBACKS *********** */

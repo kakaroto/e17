@@ -24,6 +24,8 @@
 #include <Ecore_X.h>
 #include "statusnet_Common.h"
 
+typedef void (*Status_List_Cb)(int);
+
 typedef struct _StatusNetBaAccount {
 	double id;
 	char *screen_name;
@@ -73,6 +75,8 @@ typedef struct _a_Status {
 	Eina_Bool        in_db;
 } aStatus;
 
+typedef void (*Group_Show_Cb)(aStatus *, void*, void *);
+
 typedef struct _an_User {
 	statusnet_User	*user;
 	time_t			created_at;
@@ -87,14 +91,20 @@ typedef struct _user_get {
 	anUser *au;
 } UserGet;
 
+typedef struct _group_data {
+	aStatus *as;
+	const char *group_name;
+	Group_Show_Cb group_show;
+	void *data;
+	statusnet_Group *group;
+} groupData;
 
-typedef void (*Status_List_Cb)(int);
 
 void ed_statusnet_account_free(StatusNetBaAccount *account);
 
-void ed_statusnet_group_get(GroupProfile *group);
+void ed_statusnet_group_get(aStatus *as, const char *group_name, Group_Show_Cb callback, void *data);
 
-void ed_statusnet_group_free(GroupProfile *group);
+void ed_statusnet_group_free(groupData *gd);
 
 void ed_statusnet_group_join(GroupProfile *group);
 void ed_statusnet_group_leave(GroupProfile *group);

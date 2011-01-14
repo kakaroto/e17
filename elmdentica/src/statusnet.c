@@ -125,62 +125,74 @@ void ed_statusnet_account_free(StatusNetBaAccount *account) {
 	free(account);
 }
 
-void json_group_show(GroupProfile *group, char *stream) {
-	cJSON *json_stream, *obj;
+Eina_Bool azy_value_to_Array_statusnet_Group(Azy_Value *array, Eina_List **narray) {
+    Eina_List *tmp_narray=NULL;
+    statusnet_Group *group;
 
-	json_stream = cJSON_Parse(stream);
-	if(debug) printf("About to parse\n%s\n", stream);
+    if (!array)
+        return(EINA_FALSE);
 
-	if(!json_stream) {
-		fprintf(stderr, "ERROR parsing json stream:\n%s\n", stream);
-		return;
-	}
+    switch(azy_value_type_get(array)) {
+        case AZY_VALUE_STRUCT: {
+            group=NULL;
+            if (azy_value_to_statusnet_Group(array, &group)) {
+                tmp_narray = eina_list_append(tmp_narray, group);
+            }
+            break;
+        }
+        default: { return(EINA_FALSE); }
+    }
 
-	if(json_stream->type == cJSON_Object) {
-		obj = cJSON_GetObjectItem(json_stream, "error");
-		if(obj && obj->type == cJSON_String) {
-			fprintf(stderr, "ERROR: %s\n", obj->valuestring);
-			cJSON_Delete(json_stream);
-			return;
-		}
+    *narray = tmp_narray;
+    return(EINA_TRUE);
+}
 
-		obj = cJSON_GetObjectItem(json_stream, "nickname");
-		if(obj && obj->type == cJSON_String) {
-			if(group->name) free(group->name);
-			group->name = strndup(obj->valuestring, PIPE_BUF);
-		}
+static void Array_statusnet_Group_free(Eina_List *array) {
+    statusnet_Group *group;
 
-		obj = cJSON_GetObjectItem(json_stream, "fullname");
-		if(obj && obj->type == cJSON_String)
-			group->fullname = strndup(obj->valuestring, PIPE_BUF);
+    EINA_SAFETY_ON_NULL_RETURN(array);
+    EINA_LIST_FREE(array, group)
+        statusnet_Group_free(group);
+}
 
-		obj = cJSON_GetObjectItem(json_stream, "description");
-		if(obj && obj->type == cJSON_String)
-			group->description = strndup(obj->valuestring, PIPE_BUF);
+Eina_Bool groupget_connected(void *data, int type, Azy_Client *cli) {
+    Azy_Client_Call_Id id;
 
-		obj = cJSON_GetObjectItem(json_stream, "original_logo");
-		if(obj && obj->type == cJSON_String) {
-			group->original_logo = strndup(obj->valuestring, PIPE_BUF);
-			ed_statusnet_statuses_get_avatar(group->name, group->original_logo);
-		}
+    id = azy_client_blank(cli, AZY_NET_TYPE_GET, (Azy_Content_Cb)azy_value_to_Array_statusnet_Group, NULL);
+    azy_client_callback_free_set(cli, id, (Ecore_Cb)Array_statusnet_Group_free);
 
-		obj = cJSON_GetObjectItem(json_stream, "member");
-		if(obj && (obj->type == cJSON_True || obj->type == cJSON_False))
-			group->member = (Eina_Bool)obj->valueint;
+    return(EINA_TRUE);
+}
 
-		obj = cJSON_GetObjectItem(json_stream, "member_count");
-		if(obj && obj->type == cJSON_Number)
-			group->member_count = obj->valueint;
-	} else { printf("oopsie\n"); }
-	cJSON_Delete(json_stream);
+Eina_Bool groupget_returned(void *data, int type, Azy_Content *content) {
+	groupData *gd = (groupData*)data;
+	Eina_List *list=NULL;
+	statusnet_Group *group=NULL, *groupCopy=NULL;
+
+    if (azy_content_error_is_set(content)) {
+        fprintf(stderr, _("Error encountered: %s\n"), azy_content_error_message_get(content));
+        return(azy_content_error_code_get(content));
+    }
+
+    list = azy_content_return_get(content);
+
+	group = eina_list_data_get(list);
+	groupCopy = statusnet_Group_copy(group);
+	gd->group_show(gd->as, groupCopy, gd->data);
+
+	return(EINA_TRUE);
+}
+
+Eina_Bool groupget_disconnected(void *data, int type, Azy_Client *cli) {
+	return(EINA_TRUE);
 }
 
 static int ed_statusnet_group_get_handler(void *data, int argc, char **argv, char **azColName) {
-	GroupProfile *group = (GroupProfile*)data;
-    char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
-    int port=0, id=0, res, redir=3;
-	http_request * request=calloc(1, sizeof(http_request));
-	cJSON *json_stream, *obj;
+	groupData *gd = (groupData*)data;
+    char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL, *url_end=NULL, *url_start=NULL;
+    int port=0, id=0, res;
+	Azy_Client *cli;
+
     /* In this query handler, these are the current fields:
         argv[0] == name TEXT
         argv[1] == password TEXT
@@ -200,55 +212,40 @@ static int ed_statusnet_group_get_handler(void *data, int argc, char **argv, cha
     base_url = argv[6];
     id = atoi(argv[7]);
 
+	cli = azy_client_new();
+	if(!cli) return(-1);
 
-	if(!request) return(-1);
+	res = asprintf(&url_start, "%s://%s", proto, domain);
+	res = asprintf(&url_end, "%s/statusnet/groups/show.json?id=%s&source=elmdentica", base_url, gd->group_name);
 
-	res = asprintf(&request->url, "%s://%s:%d%s/statusnet/groups/show.json?id=%s", proto, domain, port, base_url, group->name);
+	azy_client_host_set(cli, url_start, port);
+	azy_client_connect(cli, EINA_TRUE);
+	azy_net_auth_set(azy_client_net_get(cli), screen_name, password);
+	azy_net_uri_set(azy_client_net_get(cli), url_end);
+	azy_net_version_set(azy_client_net_get(cli), 0);
 
-	if(res != -1) {
-		if (debug) printf("gnome-open %s\n", request->url);
 
-		res = ed_curl_get(screen_name, password, request, group->account_id);
-		while(request->redir_url && redir--) {
-			free(request->url);
-			request->url = request->redir_url;
-			request->redir_url = NULL;
-			free(request->content.memory);
-			request->content.size = 0;
-			request->content.memory = NULL;
-			res = ed_curl_get(screen_name, password, request, group->account_id);
-		}
-		
-		if((res == 0) && (request->response_code == 200))
-			json_group_show(group, request->content.memory);
-		else {
-			group->failed = EINA_TRUE;
-			json_stream = cJSON_Parse(request->content.memory);
-			if(json_stream->type == cJSON_Object) {
-				obj = cJSON_GetObjectItem(json_stream, "error");
-				if(obj) {
-					group->error = strdup(obj->valuestring);
-					cJSON_Delete(obj);
-				}
-			}
-		}
-	}
-
-	if(request->url) free(request->url);
-	if(request->content.memory) free(request->content.memory);
-	free(request);
+	ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)groupget_connected, gd);
+	ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)groupget_returned, gd);
+	ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)groupget_disconnected, gd);
 
 	return(0);
 }
 
-void ed_statusnet_group_get(GroupProfile *group) {
+void ed_statusnet_group_get(aStatus *as, const char *group_name, Group_Show_Cb callback, void *data) {
 	char *query=NULL, *db_err=NULL;
 	int sqlite_res;
-	
-	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE id = %d and type = %d and enabled = 1;", group->account_id, ACCOUNT_TYPE_STATUSNET);
+	groupData *gd=calloc(1, sizeof(groupData));
+
+	gd->as = as;
+	gd->group_name = group_name;
+	gd->group_show = callback;
+	gd->data = data;
+
+	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE id = %d and type = %d and enabled = 1;", as->account_id, ACCOUNT_TYPE_STATUSNET);
 
 	if(sqlite_res != -1) {
-		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_group_get_handler, (void*)group, &db_err);
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_group_get_handler, (void*)gd, &db_err);
 		if(sqlite_res != 0) {
 			fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
 			sqlite3_free(db_err);
@@ -257,15 +254,12 @@ void ed_statusnet_group_get(GroupProfile *group) {
 	}
 }
 
-void ed_statusnet_group_free(GroupProfile *group) {
-    if(group) {
-        if(group->name) free(group->name);
-        if(group->fullname) free(group->fullname);
-        if(group->description) free(group->description);
-        if(group->original_logo) free(group->original_logo);
-		if(group->error) free(group->error);
+void ed_statusnet_group_free(groupData *gd) {
+    if(gd) {
+        if(gd->data) free(gd->data);
+		if(gd->group) statusnet_Group_free(gd->group);
 
-        free(group);
+        free(gd);
     }
 }
 
@@ -297,25 +291,6 @@ static int ed_statusnet_group_join_handler(void *data, int argc, char **argv, ch
 	if(!request) return(-1);
 
 	res = asprintf(&request->url, "%s://%s:%d%s/statusnet/groups/join.json?id=%s", proto, domain, port, base_url, group->name);
-
-	if(res != -1) {
-		if (debug) printf("gnome-open %s\n", request->url);
-
-		res = ed_curl_post(screen_name, password, request, "",  group->account_id);
-		if((res == 0) && (request->response_code == 200))
-			json_group_show(group, request->content.memory);
-		else {
-			group->failed = EINA_TRUE;
-			json_stream = cJSON_Parse(request->content.memory);
-			if(json_stream->type == cJSON_Object) {
-				obj = cJSON_GetObjectItem(json_stream, "error");
-				if(obj) {
-					group->error = strdup(obj->valuestring);
-					cJSON_Delete(obj);
-				}
-			}
-		}
-	}
 
 	if(request->url) free(request->url);
 	if(request->content.memory) free(request->content.memory);
@@ -368,24 +343,6 @@ static int ed_statusnet_group_leave_handler(void *data, int argc, char **argv, c
 
 	res = asprintf(&request->url, "%s://%s:%d%s/statusnet/groups/leave.json?id=%s", proto, domain, port, base_url, group->name);
 
-	if(res != -1) {
-		if (debug) printf("gnome-open %s\n", request->url);
-
-		res = ed_curl_post(screen_name, password, request, "",  group->account_id);
-		if((res == 0) && (request->response_code == 200))
-			json_group_show(group, request->content.memory);
-		else {
-			group->failed = EINA_TRUE;
-			json_stream = cJSON_Parse(request->content.memory);
-			if(json_stream->type == cJSON_Object) {
-				obj = cJSON_GetObjectItem(json_stream, "error");
-				if(obj) {
-					group->error = strdup(obj->valuestring);
-					cJSON_Delete(obj);
-				}
-			}
-		}
-	}
 
 	if(request->url) free(request->url);
 	if(request->content.memory) free(request->content.memory);
@@ -666,7 +623,7 @@ static void Array_statusnet_Status_free(Eina_List *array) {
 Eina_Bool timeline_connected(void *data, int type, Azy_Client *cli) {
 	Azy_Client_Call_Id id;
 
-	id = azy_client_blank(cli, AZY_NET_TYPE_GET, NULL, (Azy_Content_Cb)azy_value_to_Array_statusnet_Status, NULL);
+	id = azy_client_blank(cli, AZY_NET_TYPE_GET, (Azy_Content_Cb)azy_value_to_Array_statusnet_Status, NULL);
 	azy_client_callback_free_set(cli, id, (Ecore_Cb)Array_statusnet_Status_free);
 
 	return(EINA_TRUE);
@@ -927,7 +884,7 @@ Eina_Bool ed_statusnet_userget_returned(Azy_Client *cli, int type, Azy_Client *e
 Eina_Bool ed_statusnet_userget_connected(Azy_Client *cli, int type, Azy_Client *ev) {
         Azy_Client_Call_Id id;
 
-        id = azy_client_blank(ev, AZY_NET_TYPE_GET, NULL, (Azy_Content_Cb)ed_sn_userget_parse, NULL);
+        id = azy_client_blank(ev, AZY_NET_TYPE_GET, (Azy_Content_Cb)ed_sn_userget_parse, NULL);
         if(!id) return(EINA_FALSE);
 
         azy_client_callback_free_set(ev, id, (Ecore_Cb)ed_sn_single_user_free);
@@ -1044,7 +1001,7 @@ Eina_Bool ed_statusnet_repeat_disconnected(Azy_Client *cli, int type, Azy_Client
 Eina_Bool ed_statusnet_repeat_connected(Azy_Client *cli, int type, Azy_Client *ev) {
 	Azy_Client_Call_Id id;
 
-	id = azy_client_blank(ev, AZY_NET_TYPE_POST, NULL, (Azy_Content_Cb)azy_value_to_Array_statusnet_Status, NULL);
+	id = azy_client_blank(ev, AZY_NET_TYPE_POST, (Azy_Content_Cb)azy_value_to_Array_statusnet_Status, NULL);
 	if(!id) return(EINA_FALSE);
 
 	azy_client_callback_free_set(ev, id, (Ecore_Cb)ed_sn_single_status_free);

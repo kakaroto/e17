@@ -75,3 +75,21 @@ struct Status {
 	string statusnet_html;
 	Basic_Status retweeted_status;
 };
+
+struct Group {
+	double id;
+	string url;
+	string nickname;
+	string fullname;
+	boolean	member;
+	int member_count;
+	string original_logo;
+	string homepage_logo;
+	string stream_logo;
+	string mini_logo;
+	string homepage;
+	string description;
+	Geo location;
+	time created;
+	time modified;
+};
