@@ -158,7 +158,7 @@ static void Array_statusnet_Group_free(Eina_List *array) {
 Eina_Bool groupget_connected(void *data, int type, Azy_Client *cli) {
     Azy_Client_Call_Id id;
 
-    id = azy_client_blank(cli, AZY_NET_TYPE_GET, (Azy_Content_Cb)azy_value_to_Array_statusnet_Group, NULL);
+    id = azy_client_blank(cli, AZY_NET_TYPE_GET, NULL, (Azy_Content_Cb)azy_value_to_Array_statusnet_Group, NULL);
     azy_client_callback_free_set(cli, id, (Ecore_Cb)Array_statusnet_Group_free);
 
     return(EINA_TRUE);
@@ -623,7 +623,7 @@ static void Array_statusnet_Status_free(Eina_List *array) {
 Eina_Bool timeline_connected(void *data, int type, Azy_Client *cli) {
 	Azy_Client_Call_Id id;
 
-	id = azy_client_blank(cli, AZY_NET_TYPE_GET, (Azy_Content_Cb)azy_value_to_Array_statusnet_Status, NULL);
+	id = azy_client_blank(cli, AZY_NET_TYPE_GET, NULL, (Azy_Content_Cb)azy_value_to_Array_statusnet_Status, NULL);
 	azy_client_callback_free_set(cli, id, (Ecore_Cb)Array_statusnet_Status_free);
 
 	return(EINA_TRUE);
@@ -693,44 +693,44 @@ void ed_statusnet_timeline_get(int account_id, char *screen_name, char *password
 	switch(timeline) {
 		case TIMELINE_USER:		{
 			if(since_id)
-				res = asprintf(&timeline_str, "%s/statuses/user_timeline.json?since_id=%lld", base_url, since_id);
+				res = asprintf(&timeline_str, "%s/statuses/user_timeline.json?source=elmdentica&since_id=%lld", base_url, since_id);
 			else
-				res = asprintf(&timeline_str, "%s/statuses/user_timeline.json", base_url);
+				res = asprintf(&timeline_str, "%s/statuses/user_timeline.json?source=elmdentica", base_url);
 			break;
 		}
 		case TIMELINE_PUBLIC:	{
 			if(since_id)
-				res = asprintf(&timeline_str, "%s/statuses/public_timeline.json?since_id=%lld", base_url, since_id);
+				res = asprintf(&timeline_str, "%s/statuses/public_timeline.json?source=elmdentica&since_id=%lld", base_url, since_id);
 			else
-				res = asprintf(&timeline_str, "%s/statuses/public_timeline.json", base_url);
+				res = asprintf(&timeline_str, "%s/statuses/public_timeline.json?source=elmdentica", base_url);
 			break;
 		}
 		case TIMELINE_MENTIONS:	{
 			if(since_id)
-				res = asprintf(&timeline_str, "%s/statuses/mentions.json?since_id=%lld", base_url, since_id);
+				res = asprintf(&timeline_str, "%s/statuses/mentions.json?source=elmdentica&since_id=%lld", base_url, since_id);
 			else
-				res = asprintf(&timeline_str, "%s/statuses/mentions.json", base_url);
+				res = asprintf(&timeline_str, "%s/statuses/mentions.json?source=elmdentica", base_url);
 			break;
 		}
 		case TIMELINE_FAVORITES:	{
 			if(since_id)
-				res = asprintf(&timeline_str, "%s/favorites.json?since_id=%lld", base_url, since_id);
+				res = asprintf(&timeline_str, "%s/favorites.json?source=elmdentica&since_id=%lld", base_url, since_id);
 			else
-				res = asprintf(&timeline_str, "%s/favorites.json", base_url);
+				res = asprintf(&timeline_str, "%s/favorites.json?source=elmdentica", base_url);
 			break;
 		}
 		case TIMELINE_FRIENDS:	{
 			if(since_id)
-				res = asprintf(&timeline_str, "%s/statuses/friends_timeline.json?since_id=%lld", base_url, since_id);
+				res = asprintf(&timeline_str, "%s/statuses/friends_timeline.json?source=elmdentica&since_id=%lld", base_url, since_id);
 			else
-				res = asprintf(&timeline_str, "%s/statuses/friends_timeline.json", base_url);
+				res = asprintf(&timeline_str, "%s/statuses/friends_timeline.json?source=elmdentica", base_url);
 			break;
 		}
 		case TIMELINE_DMSGS:	{
 			if(since_id)
-				res = asprintf(&timeline_str, "%s/direct_messages.json?since_id=%lld", base_url, since_id);
+				res = asprintf(&timeline_str, "%s/direct_messages.json?source=elmdentica&since_id=%lld", base_url, since_id);
 			else
-				res = asprintf(&timeline_str, "%s/direct_messages.json", base_url);
+				res = asprintf(&timeline_str, "%s/direct_messages.json?source=elmdentica", base_url);
 			break;
 		}
 		default:				{
@@ -884,7 +884,7 @@ Eina_Bool ed_statusnet_userget_returned(Azy_Client *cli, int type, Azy_Client *e
 Eina_Bool ed_statusnet_userget_connected(Azy_Client *cli, int type, Azy_Client *ev) {
         Azy_Client_Call_Id id;
 
-        id = azy_client_blank(ev, AZY_NET_TYPE_GET, (Azy_Content_Cb)ed_sn_userget_parse, NULL);
+        id = azy_client_blank(ev, AZY_NET_TYPE_GET, NULL, (Azy_Content_Cb)ed_sn_userget_parse, NULL);
         if(!id) return(EINA_FALSE);
 
         azy_client_callback_free_set(ev, id, (Ecore_Cb)ed_sn_single_user_free);
@@ -1001,7 +1001,7 @@ Eina_Bool ed_statusnet_repeat_disconnected(Azy_Client *cli, int type, Azy_Client
 Eina_Bool ed_statusnet_repeat_connected(Azy_Client *cli, int type, Azy_Client *ev) {
 	Azy_Client_Call_Id id;
 
-	id = azy_client_blank(ev, AZY_NET_TYPE_POST, (Azy_Content_Cb)azy_value_to_Array_statusnet_Status, NULL);
+	id = azy_client_blank(ev, AZY_NET_TYPE_POST, "source=elmdentica", (Azy_Content_Cb)azy_value_to_Array_statusnet_Status, NULL);
 	if(!id) return(EINA_FALSE);
 
 	azy_client_callback_free_set(ev, id, (Ecore_Cb)ed_sn_single_status_free);
@@ -1035,7 +1035,7 @@ static int ed_statusnet_repeat_handler(void *data, int argc, char **argv, char *
 
 
 	res = asprintf(&url_start, "%s://%s", proto, domain);
-	res = asprintf(&url_end, "%s/statuses/retweet/%lld.json?source=elmdentica", base_url, *(long long int*)data);
+	res = asprintf(&url_end, "%s/statuses/retweet/%lld.json", base_url, *(long long int*)data);
 
 	repeat = azy_client_new();
 	azy_client_host_set(repeat, url_start, port);
@@ -1117,7 +1117,7 @@ static int ed_statusnet_status_get_handler(void *data, int argc, char **argv, ch
 	azy_net_uri_set(azy_client_net_get(cli), url_end);
 	azy_net_version_set(azy_client_net_get(cli), 0);
 
-    ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)timeline_connected, NULL);
+    ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)timeline_connected, NULL); // FIXME: FALTAM AQUI accountDatas
     ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)timeline_returned, NULL);
     ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)ed_sn_single_status_disconnected, NULL);
 
