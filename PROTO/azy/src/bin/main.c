@@ -1071,7 +1071,7 @@ gen_server_headers(Azy_Server_Module *s)
         NL;
      }
 
-   if (s->stub_upload && s->stub_download[0])
+   if (s->stub_upload && s->stub_upload[0])
      {
         EL(0, "/** Upload hook.");
         EL(0, " * ");
