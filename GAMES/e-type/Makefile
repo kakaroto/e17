@@ -3,6 +3,9 @@ BINARY=e-type
 DIRNAME=etype
 TARNAME=$(BINARY).tar
 
+PREFIX=/usr/local
+BINDIR=$(PREFIX)/bin
+
 
 CC = gcc
 
@@ -27,7 +30,12 @@ $(BINARY): $(OBJECTS)
 
 theme.edj: theme.edc
 	@echo "  Compilation of $(@D)/$(<F)"
-	$(EDJE_CC) $(EDJE_FLAGS) theme.edc theme.edj
+	@$(EDJE_CC) $(EDJE_FLAGS) theme.edc theme.edj
+
+install: $(BINARY) theme.edj
+	@echo "installation of $(BINARY)"
+	@mkdir -p $(BINDIR)
+	@install -m 0755 $(BINARY) $(BINDIR)
 
 clean:
 	@rm -f *.o theme.edj *~ $(BINARY)
