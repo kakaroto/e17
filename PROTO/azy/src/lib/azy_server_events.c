@@ -432,11 +432,11 @@ _azy_server_client_get_put(Azy_Server_Client *client)
           }
         if (def->pre)
           run_method = def->pre(module, net);
-     }
 
-   module->recv.data = client->net->buffer;
-   module->recv.size = client->net->size;
-   client->net->buffer = NULL; /* prevent buffer from being freed */
+        module->recv.data = client->net->buffer;
+        module->recv.size = client->net->size;
+        client->net->buffer = NULL; /* prevent buffer from being freed */
+     }
 
    /* grab the req path before it gets freed */
    net->http.req.http_path = client->net->http.req.http_path;
