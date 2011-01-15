@@ -120,7 +120,7 @@ _azy_client_handler_get(Azy_Client_Handler_Data *hd)
           }
         content->ret = ret;
      }
-   else if  ((hd->recv->transport == AZY_NET_TRANSPORT_XML) && (!hd->callback))/* assume rss */
+   else if ((hd->recv->transport == AZY_NET_TRANSPORT_XML) && (!hd->callback)) /* assume rss */
      {
         if (!azy_content_unserialize_rss_xml(content, (const char*)hd->recv->buffer, hd->recv->size))
           {
@@ -581,8 +581,10 @@ _azy_client_handler_del(Azy_Client                    *client,
         hd = client->conns->data;
 
         if (hd->recv)
-          azy_net_code_set(client->net, hd->recv->http.res.http_code);
-        azy_net_free(hd->recv);
+          {
+             azy_net_code_set(client->net, hd->recv->http.res.http_code);
+             azy_net_free(hd->recv);
+          }
         hd->recv = NULL;
      }
    
