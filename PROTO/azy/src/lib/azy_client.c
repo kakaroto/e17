@@ -516,6 +516,7 @@ error:
  * defined by @p transport, and the optional deserialization function specified by @p cb.
  * @param client The client (NOT #NULL)
  * @param type The HTTP method to use (NOT #NULL)
+ * @param netdata The HTTP BODY to send with a POST
  * @param cb The deserialization callback to use for the response
  * @param data The user data to be passed to resulting callbacks
  * @return The #Azy_Client_Call_Id of the transmission, to be used with azy_client_callback_set,
@@ -524,6 +525,7 @@ error:
 Azy_Client_Call_Id
 azy_client_blank(Azy_Client       *client,
                  Azy_Net_Type      type,
+                 Azy_Net_Data      *netdata,
                  Azy_Content_Cb    cb,
                  void             *data)
 {
@@ -549,6 +551,8 @@ azy_client_blank(Azy_Client       *client,
         WARN("NULL URI passed, defaulting to \"/\"");
         azy_net_uri_set(client->net, "/");
      }
+   if (netdata && netdata->size && (type == AZY_NET_TYPE_POST))
+     azy_net_message_length_set(client->net, netdata->size);
 
    msg = azy_net_header_create(client->net);
    EINA_SAFETY_ON_NULL_GOTO(msg, error);
@@ -561,7 +565,14 @@ azy_client_blank(Azy_Client       *client,
 #endif
 
    EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_server_send(client->net->conn, eina_strbuf_string_get(msg), eina_strbuf_length_get(msg)), error);
-   INFO("Send [1/1] complete! %zu bytes queued for sending.", eina_strbuf_length_get(msg));
+   if (netdata && netdata->size && (type == AZY_NET_TYPE_POST))
+     {
+        INFO("Send [1/2] complete! %zu bytes queued for sending.", eina_strbuf_length_get(msg));
+        EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_server_send(client->net->conn, netdata->data, netdata->size), error);
+        INFO("Send [2/2] complete! %"PRIi64" bytes queued for sending.", netdata->size);
+     }
+   else
+     INFO("Send [1/1] complete! %zu bytes queued for sending.", eina_strbuf_length_get(msg));
    eina_strbuf_free(msg);
    msg = NULL;
 
@@ -573,6 +584,11 @@ azy_client_blank(Azy_Client       *client,
    hd->callback = cb;
    hd->type = type;
    hd->content_data = data;
+   if (netdata && netdata->size && (type == AZY_NET_TYPE_POST))
+     {
+        hd->send = eina_strbuf_new();
+        eina_strbuf_append_length(hd->send, (char*)netdata->data, netdata->size);
+     }
 
    hd->id = azy_client_send_id__;
    AZY_MAGIC_SET(hd, AZY_MAGIC_CLIENT_DATA_HANDLER);

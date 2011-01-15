@@ -492,6 +492,7 @@ extern "C" {
                                        Azy_Content_Cb    cb);
    EAPI Azy_Client_Call_Id azy_client_blank(Azy_Client       *client,
                                             Azy_Net_Type      type,
+                                            Azy_Net_Data     *netdata,
                                             Azy_Content_Cb    cb,
                                             void             *data);
    EAPI Azy_Client_Call_Id azy_client_put(Azy_Client         *client,

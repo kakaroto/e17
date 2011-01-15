@@ -42,7 +42,7 @@ connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
 
    if (!azy_client_current(cli))
      {
-        id = azy_client_blank(cli, AZY_NET_TYPE_GET, NULL, NULL);
+        id = azy_client_blank(cli, AZY_NET_TYPE_GET, NULL, NULL, NULL);
         EINA_SAFETY_ON_TRUE_RETURN_VAL(!id, ECORE_CALLBACK_CANCEL);
         azy_client_callback_free_set(cli, id, (Ecore_Cb)azy_rss_free);
      }
