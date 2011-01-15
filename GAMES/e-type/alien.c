@@ -40,6 +40,7 @@ _alien_move_cb(void *data)
   evas_object_move(a->o, x, y + 1);
   if (y > gh)
     {
+      game_alien_remove(a->g, a);
       alien_free(a);
       return EINA_FALSE;
     }
