@@ -17,6 +17,7 @@ struct _Shoot
   Shoot_Dir dir;
   Evas_Coord hot_x;
   Evas_Coord hot_y;
+  int power;
 };
 
 
@@ -53,7 +54,7 @@ _shoot_cb(void *data)
           {
             int status;
 
-            status = alien_explode(alien, x + s->hot_x, y + s->hot_y);
+            status = alien_explode(alien, x + s->hot_x, y + s->hot_y, s->power);
             if (status >= 0)
               {
                 printf("touche %p\n", alien);
@@ -82,7 +83,7 @@ _shoot_cb(void *data)
 
       /* collision with the ship */
       ship = game_ship_get(s->g);
-      if (ship_explode(ship, x + s->hot_x, y + s->hot_y))
+      if (ship_explode(ship, x + s->hot_x, y + s->hot_y, s->power))
         {
           printf("touche vaisseau\n");
           game_shoot_remove(s->g, s);
@@ -265,6 +266,8 @@ shoot_new(Game *g, Shoot_Dir dir, Evas_Coord *w, Evas_Coord *h)
   edje_object_size_min_get(s->o, w, h);
   evas_object_resize(s->o, *w, *h);
   evas_object_layer_set(s->o, 11);
+
+  s->power = atoi(edje_object_data_get(s->o, "power"));
 
   game_shoot_append(g, s);
 

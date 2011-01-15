@@ -19,7 +19,7 @@ typedef enum
 Alien     *alien_new(Game *g, Alien_Type type, Powerup_Type ptype, Evas_Coord x);
 void       alien_free(Alien *a);
 void       alien_attack(Alien *a);
-int        alien_explode(Alien *a, Evas_Coord hot_x, Evas_Coord hot_y);
+int        alien_explode(Alien *a, Evas_Coord hot_x, Evas_Coord hot_y, int power);
 Eina_List *alien_shoots_get(Alien *a);
 
 

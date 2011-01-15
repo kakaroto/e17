@@ -26,7 +26,7 @@ Ship     *ship_new(Game *g);
 void      ship_free(Ship *s);
 void      ship_upgrade_set(Ship *s, Ship_Upgrade upg);
 void      ship_upgrade_unset(Ship *s, Ship_Upgrade upg);
-Eina_Bool ship_explode(Ship *s, Evas_Coord hot_x, Evas_Coord hot_y);
+Eina_Bool ship_explode(Ship *s, Evas_Coord hot_x, Evas_Coord hot_y, int power);
 void      ship_geometry_get(Ship *s, Evas_Coord *x, Evas_Coord *y, Evas_Coord *w, Evas_Coord *h);
 
 

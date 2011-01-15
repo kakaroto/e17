@@ -33,6 +33,7 @@ struct _Ship
   Ecore_Timer *timer_shoot;
   double interval_move;
   double interval_shoot;
+  int power;
   Eina_Bool up_first : 1;
   Eina_Bool down_first : 1;
   Eina_Bool left_first : 1;
@@ -46,32 +47,45 @@ _ship_move(Ship *s, int dx, int dy)
 {
   Evas_Coord x;
   Evas_Coord y;
+  Evas_Coord w;
+  Evas_Coord h;
+  Evas_Coord gw;
+  Evas_Coord gh;
+  Evas_Coord nx;
+  Evas_Coord ny;
 
-  evas_object_geometry_get(s->o, &x, &y, NULL, NULL);
-  evas_object_move(s->o, x + dx, y + dy);
+  evas_object_geometry_get(s->o, &x, &y, &w, &h);
+  game_size_get(s->g, &gw, &gh);
+  nx = x + dx;
+  ny = y + dy;
+  if (nx < 0) nx = 0;
+  if (ny < 0) ny = 0;
+  if (nx + w >= gw) nx = gw - w - 1;
+  if (ny + h >= gh) ny = gh - h - 1;
+  evas_object_move(s->o, nx, ny);
 
   if (s->upg.front_double && (s->upg.upgrade & SHIP_UPGRADE_FRONT_DOUBLE))
     {
       evas_object_geometry_get(s->upg.front_double, &x, &y, NULL, NULL);
-      evas_object_move(s->upg.front_double, x + dx, y + dy);
+      evas_object_move(s->upg.front_double, nx, ny);
     }
 
   if (s->upg.front_triple && (s->upg.upgrade & SHIP_UPGRADE_FRONT_TRIPLE))
     {
       evas_object_geometry_get(s->upg.front_triple, &x, &y, NULL, NULL);
-      evas_object_move(s->upg.front_triple, x + dx, y + dy);
+      evas_object_move(s->upg.front_triple, nx, ny);
     }
 
   if (s->upg.rear_single && (s->upg.upgrade & SHIP_UPGRADE_REAR_SINGLE))
     {
       evas_object_geometry_get(s->upg.rear_single, &x, &y, NULL, NULL);
-      evas_object_move(s->upg.rear_single, x + dx, y + dy);
+      evas_object_move(s->upg.rear_single, nx, ny);
     }
 
   if (s->upg.rear_circle && (s->upg.upgrade & SHIP_UPGRADE_REAR_CIRCLE))
     {
       evas_object_geometry_get(s->upg.rear_circle, &x, &y, NULL, NULL);
-      evas_object_move(s->upg.rear_circle, x + dx, y + dy);
+      evas_object_move(s->upg.rear_circle, nx, ny);
     }
 }
 
@@ -363,6 +377,7 @@ ship_new(Game *g)
 
   s->interval_move = atof(edje_object_data_get(s->o, "interval_move"));
   s->interval_shoot = atof(edje_object_data_get(s->o, "interval_shoot"));
+  s->power = atoi(edje_object_data_get(s->o, "power"));
 
   evas_object_event_callback_add(s->o, EVAS_CALLBACK_KEY_DOWN, _ship_key_down_cb, s);
   evas_object_event_callback_add(s->o, EVAS_CALLBACK_KEY_UP, _ship_key_up_cb, s);
@@ -511,13 +526,17 @@ ship_upgrade_unset(Ship *s, Ship_Upgrade upg)
 }
 
 Eina_Bool
-ship_explode(Ship *s, Evas_Coord hot_x, Evas_Coord hot_y)
+ship_explode(Ship *s, Evas_Coord hot_x, Evas_Coord hot_y, int power)
 {
   if (!s) return EINA_FALSE;
 
   if (explosion_launch(s->e, hot_x, hot_y))
     {
-/*       alien_free(a); */
+      s->power -= power;
+      if (s->power <= 0)
+        {
+          printf("Vaisseau mort !!\n");
+        }
       return EINA_TRUE;
     }
 

@@ -147,14 +147,14 @@ alien_attack(Alien *a)
 }
 
 int
-alien_explode(Alien *a, Evas_Coord hot_x, Evas_Coord hot_y)
+alien_explode(Alien *a, Evas_Coord hot_x, Evas_Coord hot_y, int power)
 {
   if (!a) return EINA_FALSE;
 
   if (explosion_launch(a->e, hot_x, hot_y))
     {
-      a->power--;
-      if (a->power == 0)
+      a->power -= power;
+      if (a->power <= 0)
         {
           Powerup *pu;
           Evas_Coord x;
