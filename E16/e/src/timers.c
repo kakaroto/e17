@@ -238,6 +238,7 @@ TimerDel(Timer * timer)
 
 	/* free it */
 	_TimerDel(timer);
+	break;
      }
 }
 
