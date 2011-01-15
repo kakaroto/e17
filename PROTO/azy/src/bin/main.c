@@ -1439,9 +1439,10 @@ gen_server_impl(Azy_Server_Module *s)
              STUB(method->stub_impl);
           }
         else
-          EL(1, "azy_content_error_faultmsg_set(error_, -1, \"Method is not implemented. (%s)\");", method->name);
-
-        EL(1, "return retval;");
+          {
+             EL(1, "azy_content_error_faultmsg_set(error_, -1, \"Method is not implemented. (%s)\");", method->name);
+             EL(1, "return retval;");
+          }
         EL(0, "}");
         NL;
      }
