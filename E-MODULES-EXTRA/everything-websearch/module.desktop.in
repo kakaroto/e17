@@ -4,10 +4,12 @@ Name=Everything WebSearch
 Name[fr]=Omni - WebSearch
 Name[it]=Everything - WebSearch
 Name[pt]=Everything - Pesquisa Web
+Name[de]=Everything Websuche
 Icon=e-module
 Comment=Find stuff on Wikipedia, use Google suggestions and 'Google for it'(tm) action. <br>Triggers can be configured, defaults are 'g ' and 'w '.
 Comment[fr]=Recherche sur Wikipedia, utilise les suggestions Google et l'action « Recherche Google » (tm).<br>Les déclencheurs sont configurables, « g » et « w » par défaut.
 Comment[it]=Fa ricerche su Wikipedia, usa i suggerimenti di Google e l'azione 'Cerca con Google'(tm).<br>I richiami sono configurabili, quelli predefiniti sono 'g' e 'w'.
 Comment[pt]=Encontre itens na Wikipedia, utilize sugestões Google e "Google for it(tm)".<br>Pode configurar os aceleradores. As omissões são "g" e "w".
+Comment[de]=Sachen auf Wikipedia finden, Googles Vorschläge übernehmen und als Aktion "Google for it"(tm) ausführen.<br>Die Schalter sind einstellbar, standardmäßig "g " und "w ".
 #Several different types available here. NEED TO DOC THESE.
 X-Enlightenment-ModuleType=launcher

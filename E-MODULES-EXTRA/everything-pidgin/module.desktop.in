@@ -4,11 +4,13 @@ Name=Everything Pidgin
 Name[fr]=Omni - Pidgin
 Name[it]=Everything - Pidgin
 Name[el]=ΤαΠάνταΌλα - Pidgin
+Name[de]=Everything Pidgin
 Icon=e-module
 Comment=Open chat windows and send files to buddies.
 Comment[fr]=Pour chatter avec les potes et leur envoyer des fichiers.
 Comment[it]=Apre finestre di chat e invia file ai contatti.
 Comment[el]= Ανοίγει παράθυρα συνομιλιών και αποστολής αρχείων στους φίλους.
 Comment[pt]=Abrir janela de conversação e enviar ficheiros aos amigos
+Comment[de]=Chat-Fenster öffnen und Dateien an Kontakte senden.
 #Several different types available here. NEED TO DOC THESE.
 X-Enlightenment-ModuleType=launcher

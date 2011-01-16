@@ -1,0 +1,35 @@
+# German translations for evry-tracker package
+# German messages for evry-tracker.
+# Copyright (C) 2011 Enlightenment development team
+# This file is distributed under the same license as the evry-tracker package.
+# Fabian Nowak <timystery@arcor.de>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: evry-tracker 0.0.1\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2010-11-23 23:36+0100\n"
+"PO-Revision-Date: 2011-01-16 18:47+0100\n"
+"Last-Translator: Fabian Nowak <timystery@arcor.de>\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/e_mod_main.c:953 src/e_mod_main.c:956
+msgid "Tracker"
+msgstr "Tracker"
+
+#: src/e_mod_main.c:972
+msgid "Albums"
+msgstr "Alben"
+
+#: src/e_mod_main.c:975
+msgid "Artist"
+msgstr "Künstler"
+
+#: src/e_mod_main.c:978
+msgid "Most Listened"
+msgstr "Am meisten gehört"

@@ -1,0 +1,35 @@
+# German translations for evry-pidgin package
+# German messages for evry-pidgin.
+# Copyright (C) 2011 Enlightenment development team
+# This file is distributed under the same license as the evry-pidgin package.
+# Fabian Nowak <timystery@arcor.de>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: evry-pidgin 0.0.1\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2010-11-23 23:36+0100\n"
+"PO-Revision-Date: 2011-01-16 18:43+0100\n"
+"Last-Translator: Fabian Nowak <timystery@arcor.de>\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/e_mod_main.c:616
+msgid "Pidgin"
+msgstr "Pidgin"
+
+#: src/e_mod_main.c:621
+msgid "Chat"
+msgstr "Unterhaltung"
+
+#: src/e_mod_main.c:624
+msgid "Send File"
+msgstr "Datei übertragen"
+
+#: src/e_mod_main.c:627
+msgid "Write Message"
+msgstr "Nachricht verfassen"

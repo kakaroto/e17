@@ -1,0 +1,91 @@
+# German translations for evry-mpris package
+# German messages for evry-mpris.
+# Copyright (C) 2011 Enlightenment development team
+# This file is distributed under the same license as the evry-mpris package.
+# Fabian Nowak <timystery@arcor.de>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: evry-mpris 0.0.1\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2011-01-09 21:19+0100\n"
+"PO-Revision-Date: 2011-01-16 18:34+0100\n"
+"Last-Translator: Fabian Nowak <timystery@arcor.de>\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/e_mod_main.c:276
+msgid "No Title"
+msgstr "Kein Titel"
+
+#: src/e_mod_main.c:491 src/e_mod_main.c:644
+msgid "Loading Playlist"
+msgstr "Lade Wiedergabeliste"
+
+#: src/e_mod_main.c:504
+msgid "Empty Playlist"
+msgstr "Leere Wiedergabeliste"
+
+#: src/e_mod_main.c:1404
+msgid "Playlist"
+msgstr "Wiedergabeliste"
+
+#: src/e_mod_main.c:1437
+msgid "Play Track"
+msgstr "Stück abspielen"
+
+#: src/e_mod_main.c:1442
+msgid "Play"
+msgstr "Wiedergabe starten"
+
+#: src/e_mod_main.c:1446
+msgid "Pause"
+msgstr "Pausieren"
+
+#: src/e_mod_main.c:1450
+msgid "Stop"
+msgstr "Anhalten"
+
+#: src/e_mod_main.c:1454
+msgid "Forward"
+msgstr "Vorspulen"
+
+#: src/e_mod_main.c:1458
+msgid "Rewind"
+msgstr "Zurückspulen"
+
+#: src/e_mod_main.c:1462
+msgid "Remove Track"
+msgstr "Stück entfernen"
+
+#: src/e_mod_main.c:1467
+msgid "Clear Playlist"
+msgstr "Wiedergabeliste leeren"
+
+#: src/e_mod_main.c:1471
+msgid "Play File"
+msgstr "Datei abspielen"
+
+#: src/e_mod_main.c:1476
+msgid "Add Files..."
+msgstr "Dateien hinzufügen..."
+
+#: src/e_mod_main.c:1480
+msgid "Enqueue in Playlist"
+msgstr "In Wiedergabeliste hinten anfügen"
+
+#: src/e_mod_main.c:1485
+msgid "Add Music..."
+msgstr "Musik hinzufügen..."
+
+#: src/e_mod_main.c:1489
+msgid "Remove Duplicates"
+msgstr "Duplikate entferen"
+
+#: src/e_mod_main.c:1493
+msgid "Remove Missing Files"
+msgstr "Fehlende Dateien entfernen"

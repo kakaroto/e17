@@ -1,0 +1,154 @@
+# German translations for evry-websearch package
+# German messages for evry-websearch.
+# Copyright (C) 2011 Enlightenment development team
+# This file is distributed under the same license as the evry-websearch package.
+# Fabian Nowak <timystery@arcor.de>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: evry-websearch 0.0.1\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2010-11-23 23:37+0100\n"
+"PO-Revision-Date: 2011-01-16 18:56+0100\n"
+"Last-Translator: Fabian Nowak <timystery@arcor.de>\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/e_mod_main.c:587 src/e_mod_main.c:1240 src/e_mod_main.c:1382
+msgid "Translate"
+msgstr "Übersetzen"
+
+#: src/e_mod_main.c:727
+msgid "Abort download"
+msgstr "Download abbrechen"
+
+#: src/e_mod_main.c:772
+#, c-format
+msgid "Got %d kbytes of"
+msgstr "%d KBytes erhalten von"
+
+#: src/e_mod_main.c:786
+msgid "Enqueue in Playlist"
+msgstr "In Wiedergabeliste hinten einordnen"
+
+#: src/e_mod_main.c:790
+msgid "Enqueue"
+msgstr "Hinten einordnen"
+
+#: src/e_mod_main.c:793
+msgid "Play File"
+msgstr "Datei wiedergeben"
+
+#: src/e_mod_main.c:797
+msgid "Play"
+msgstr "Abspielen"
+
+#: src/e_mod_main.c:827
+msgid "Finished download"
+msgstr "Download abgeschlossen"
+
+#: src/e_mod_main.c:909
+msgid "Start download"
+msgstr "Download beginnen"
+
+#: src/e_mod_main.c:991
+msgid "Enqueue files for download"
+msgstr "Dateien zum Download hinten einordnen"
+
+#: src/e_mod_main.c:1008 src/e_mod_main.c:1235 src/e_mod_main.c:1388
+msgid "Youtube"
+msgstr "Youtube"
+
+#: src/e_mod_main.c:1049 src/e_mod_main.c:1053 src/e_mod_main.c:1080
+#: src/e_mod_main.c:1141 src/e_mod_main.c:1277
+msgid "Upload Image"
+msgstr "Bild hochladen"
+
+#: src/e_mod_main.c:1049
+msgid "Link copied to clipboard"
+msgstr "Kopiertes mit Zwischenablage verbinden"
+
+#: src/e_mod_main.c:1053
+msgid "Something went wrong :("
+msgstr "Etwas ist fehlgeschlagen :("
+
+#: src/e_mod_main.c:1078
+#, c-format
+msgid "Completed %1.1f%% of %s"
+msgstr "%1.1f%% von %s beendet"
+
+#: src/e_mod_main.c:1225
+msgid "Google"
+msgstr "Google"
+
+#: src/e_mod_main.c:1230
+msgid "Wikipedia"
+msgstr "Wikipedia"
+
+#: src/e_mod_main.c:1253
+msgid "Google for it"
+msgstr "Google for it"
+
+#: src/e_mod_main.c:1256
+msgid "Wikipedia Page"
+msgstr "Wikipedia-Seite"
+
+#: src/e_mod_main.c:1259
+msgid "Feeling Lucky"
+msgstr "Auf gut Glück"
+
+#: src/e_mod_main.c:1262
+msgid "Watch on Youtube"
+msgstr "Auf Youtube anschauen"
+
+#: src/e_mod_main.c:1265
+msgid "Download as Audio"
+msgstr "Als Audio-Datei herunterladen"
+
+#: src/e_mod_main.c:1268
+msgid "Play Video"
+msgstr "Video abspielen"
+
+#: src/e_mod_main.c:1271
+msgid "Download and enqueue"
+msgstr "Dowloaden und hinten einreihen"
+
+#: src/e_mod_main.c:1274
+msgid "Download and play"
+msgstr "Downloaden und abspielen"
+
+#: src/e_mod_main.c:1355 src/e_mod_main.c:1527 src/e_mod_main.c:1547
+msgid "Everything Websearch"
+msgstr "Everything Websuche"
+
+#: src/e_mod_main.c:1369
+msgid "General"
+msgstr "Allgemein"
+
+#: src/e_mod_main.c:1372
+msgid "Browser"
+msgstr "Webbrowser"
+
+#: src/e_mod_main.c:1377
+msgid "Language"
+msgstr "Sprache"
+
+#: src/e_mod_main.c:1391
+msgid "Video player"
+msgstr "Video-Abspieler"
+
+#: src/e_mod_main.c:1396
+msgid "Download directory"
+msgstr "Download-Verzeichnis"
+
+#: src/e_mod_main.c:1401
+msgid "Download requires mplayer and mp3lame"
+msgstr "Downloaden benötigt Mplayer und mp3lame"
+
+#: src/e_mod_main.c:1524
+msgid "Extensions"
+msgstr "Erweiterungen"
