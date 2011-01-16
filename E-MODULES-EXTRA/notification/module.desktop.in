@@ -2,6 +2,7 @@
 Type=Link
 Name=Notification
 Name[cs]=Notifikace
+Name[de]=Benachrichtigungen
 Name[eo]=Sciigo
 Name[hu]=Értesítések
 Name[el]=Ειδοποίηση
@@ -9,6 +10,7 @@ Name[pt]=Notificação
 Icon=e-module-notification
 Comment=libnotify alternative.<br>Popup if an event occur.
 Comment[cs]=Alternativa k libnotify.<br>Zobrazí bublinu při události.
+Comment[de]=Alternative zu libnotify.<br>Zeigt Benachrichtigungen für Ereignisse an.
 Comment[eo]=Alternativa al libnotify.<br>Avertas ŝprucfenestro kiam okazas evento.
 Comment[it]=Alternativa a libnotify.<br>Mostra un popup al verificarsi di un evento.
 Comment[hu]=libnotify alternatíva.<br>Egy esemény megtörténtét jelzi.

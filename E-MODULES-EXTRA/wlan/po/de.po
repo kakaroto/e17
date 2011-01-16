@@ -1,56 +1,64 @@
 # German translation for enlightenment
 # This file is distributed under the same license as the enlightenment package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+# meica, 2008.
+# Fabian Nowak <timystery@arcor.de>, 2010
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-28 16:32+0800\n"
+"POT-Creation-Date: 2011-01-09 21:20+0100\n"
 "PO-Revision-Date: 2008-12-29 10:31+0000\n"
-"Last-Translator: meica <Unknown>\n"
+"Last-Translator: Fabian Nowak <timystery@arcor.de>\n"
 "Language-Team: German <de@li.org>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/e_mod_config.c:44
-msgid "Wlan Configuration"
-msgstr "WLAN-Konfiguration"
+#: src/e_mod_config.c:44
+msgid "Wlan Settings"
+msgstr "WLAN-Einstellungen"
 
-#: ../src/e_mod_config.c:117
+#: src/e_mod_config.c:122
 msgid "General Settings"
 msgstr "Allgemeine Einstellungen"
 
-#: ../src/e_mod_config.c:119
+#: src/e_mod_config.c:124
 msgid "Always Show Text"
 msgstr "Text immer anzeigen"
 
-#: ../src/e_mod_config.c:121
+#: src/e_mod_config.c:126
 msgid "Show Text On Mouse Over"
 msgstr "Text anzeigen, wenn der Mauszeiger ihn berührt"
 
-#: ../src/e_mod_config.c:124
+#: src/e_mod_config.c:129
 msgid "Show Text As Percent"
 msgstr "Text in Prozent anzeigen"
 
-#: ../src/e_mod_config.c:128
+#: src/e_mod_config.c:133
 msgid "Check Interval:"
 msgstr "Kontrollintervall:"
 
-#: ../src/e_mod_config.c:131
+#: src/e_mod_config.c:136
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f Sekunden"
 
-#: ../src/e_mod_config.c:138
+#: src/e_mod_config.c:143
 msgid "Device Settings"
 msgstr "Geräte-Einstellungen"
 
-#: ../src/e_mod_main.c:107
+#: src/e_mod_main.c:109
 msgid "Wlan"
 msgstr "Drahtloses Netzwerk"
 
-#: ../src/e_mod_main.c:165
-msgid "Configuration"
-msgstr "Konfiguration"
+#: src/e_mod_main.c:168
+msgid "Settings"
+msgstr "Einstellungen"
+
+#~ msgid "Wlan Configuration"
+#~ msgstr "WLAN-Konfiguration"
+
+#~ msgid "Configuration"
+#~ msgstr "Konfiguration"

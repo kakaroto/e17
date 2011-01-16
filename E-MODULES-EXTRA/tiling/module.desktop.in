@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=Tiling
+Name[de]=Kacheln
 Name[hu]=Tiling
 Name[eo]=Kahela aranÄo
 Name[fr]=Pavage
@@ -8,6 +9,7 @@ Name[pt]=Mosaico
 Icon=e-module-tiling
 Comment=Positions/resizes your windows tilingly, like ion for example.
 Comment[cs]=Seøadí/­zmìní velikost oken do dladic, napø. jako ion.
+Comment[de]=Positioniert Fenster kachelartig und ändert ihre Größe.
 Comment[eo]=AranÄi / regrandigi viajn fenestrojn kahele, kiel en Ion ekzemple.
 Comment[it]=Posiziona/ridimensiona le finestre affiancandole, come ad esempio ion.
 Comment[hu]=Ablakok pozicionÃ¡lÃ¡sa/Ã¡tmÃ©retezÃ©se, mint pl.:az ion.

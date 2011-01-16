@@ -3,6 +3,7 @@ Type=Link
 Name=Exalt
 Name[eo]=Exalt
 Name[el]=Exalt
+Name[de]=Exalt
 Icon=e-module-exalt
 Comment=A user-friendly tool to setup and manage network interfaces.
 Comment[cs]=Uživatelsky přívětivé rozhraní k nastavení a správě sítových zařízení.
@@ -11,5 +12,6 @@ Comment[el]=Ένα φιίκό στο χρήστη εργαλείο για οργ
 Comment[eo]=
 Comment[fr]=Un outil pour configurer simplement vos interfaces réseau.
 Comment[pt]=Uma ferramenta para configurar e gerir interfaces de rede.
+Comment[de]=Ein nutzerfreundliches Werkzeug zum Einrichten von Netzwerkschnittstellen
 #Several different types available here. NEED TO DOC THESE.
 X-Enlightenment-ModuleType=system

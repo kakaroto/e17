@@ -2,22 +2,24 @@
 # Copyright (C) 2009 Enlightenment development team
 # This file is distributed under the same license as the Places (e17) module.
 # Andreas Volz <andreas@tux-style.de>, 2009.
+# Fabian Nowak <timystery@arcor.de>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Places (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-02-28 12:14+0100\n"
+"POT-Creation-Date: 2011-01-09 18:22+0100\n"
 "PO-Revision-Date: 2010-02-28 12:13+0100\n"
-"Last-Translator: Andreas Volz <andreas@tux-style.de>\n"
+"Last-Translator: Fabian Nowak <timtystery@arcor.de>\n"
 "Language-Team:  <enlightenment-devel@lists.sourceforge.net>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/e_mod_config.c:51
-msgid "Places Configuration"
-msgstr "Konfiguration der Orte"
+msgid "Places Settings"
+msgstr "Einstellungen für das Orte-Modul"
 
 #: src/e_mod_config.c:118
 msgid "General"
@@ -25,11 +27,11 @@ msgstr "Allgemein"
 
 #: src/e_mod_config.c:121
 msgid "Show in main menu"
-msgstr "Im Hauptmenü anzeigen"
+msgstr "Im Hauptmenü zeigen"
 
 #: src/e_mod_config.c:125
 msgid "Mount volumes on insert"
-msgstr "Binde Laufwerke beim Einlegen ein"
+msgstr "Laufwerke beim Einlegen einbinden"
 
 #: src/e_mod_config.c:129
 msgid "Open filemanager on insert"
@@ -37,29 +39,29 @@ msgstr "Dateimanager automatisch starten"
 
 #: src/e_mod_config.c:133
 msgid "Use a custom file manager"
-msgstr "Benutze einen speziellen Datei-Manager"
+msgstr "Benutzerdefinierten Dateimanager verwenden"
 
 #: src/e_mod_config.c:146
 msgid "Show in menu"
-msgstr "Im Menü anzeigen"
+msgstr "Im Menü zeigen"
 
-#: src/e_mod_config.c:149 src/e_mod_places.c:402
+#: src/e_mod_config.c:149 src/e_mod_places.c:408
 msgid "Home"
 msgstr "Persönlicher Ordner"
 
-#: src/e_mod_config.c:152 src/e_mod_places.c:411
+#: src/e_mod_config.c:152 src/e_mod_places.c:417
 msgid "Desktop"
-msgstr "Arbeitsplatz"
+msgstr "Desktop"
 
-#: src/e_mod_config.c:155 src/e_mod_places.c:421
+#: src/e_mod_config.c:155 src/e_mod_places.c:427
 msgid "Trash"
 msgstr "Mülleimer"
 
-#: src/e_mod_config.c:158 src/e_mod_places.c:232 src/e_mod_places.c:430
+#: src/e_mod_config.c:158 src/e_mod_places.c:207 src/e_mod_places.c:436
 msgid "Filesystem"
 msgstr "Dateisystem"
 
-#: src/e_mod_config.c:161 src/e_mod_places.c:439
+#: src/e_mod_config.c:161 src/e_mod_places.c:445
 msgid "Temp"
 msgstr "Temporäre Daten"
 
@@ -67,38 +69,44 @@ msgstr "Temporäre Daten"
 msgid "Favorites"
 msgstr "Favoriten"
 
-#: src/e_mod_main.c:75
+#: src/e_mod_main.c:58
 msgid "Files"
 msgstr "Dateien"
 
-#: src/e_mod_main.c:77 src/e_mod_places.c:502
+#: src/e_mod_main.c:60 src/e_mod_places.c:502
 msgid "Places"
 msgstr "Orte"
 
-#: src/e_mod_main.c:443
-msgid "Configuration"
-msgstr "Konfiguration"
+#: src/e_mod_main.c:430
+msgid "Settings"
+msgstr "Einstellungen"
 
-#: src/e_mod_places.c:237
+#: src/e_mod_places.c:212
 msgid "No Name"
 msgstr "Kein Name"
 
-#: src/e_mod_places.c:692
+#: src/e_mod_places.c:693
 msgid "free of"
 msgstr "frei von"
 
-#: src/e_mod_places.c:698
+#: src/e_mod_places.c:699
 #, c-format
 msgid "%s Not Mounted"
-msgstr "%s nicht eingebunden"
+msgstr "%s nicht eingehängt"
 
-#: src/e_mod_places.c:715
+#: src/e_mod_places.c:716
 msgid "unmount"
-msgstr "Lösen"
+msgstr "Aushängen"
 
-#: src/e_mod_places.c:721
+#: src/e_mod_places.c:722
 msgid "eject"
 msgstr "Auswerfen"
+
+#~ msgid "Places Configuration"
+#~ msgstr "Konfiguration der Orte"
+
+#~ msgid "Configuration"
+#~ msgstr "Konfiguration"
 
 #~ msgid "File manager (if blank uses Enlightenment)"
 #~ msgstr "Dateimanager (Leeres Feld nutzt internen)"

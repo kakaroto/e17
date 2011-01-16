@@ -1,12 +1,14 @@
 [Desktop Entry]
 Type=Link
 Name=Quick Access
+Name[de]=Schnellzugriff
 Name[el]=Γρήγορη πρόσβαση
 Name[fr]=Rapidos
 Name[it]=Accesso rapido
 Name[pt]=Accesso rápido
 Icon=e-module-quickaccess
 Comment=provides quick access to chosen applications.
+Comment[de]=Schnell und bequem auf ausgewählte Anwendungen zugreifen.
 Comment[el]=Παρέχει γρήγορη πρόσβαση σε επιλεγμένες εφαρμογές.
 Comment[fr]=Permet d'accéder rapidement à des applications sélectionnées.
 Comment[it]=Permette di accedere rapidamente ad alcune applicazioni.

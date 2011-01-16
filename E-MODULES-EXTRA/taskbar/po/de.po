@@ -1,35 +1,40 @@
 # German translation for enlightenment
 # This file is distributed under the same license as the enlightenment package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+# meica, 2008.
+# Fabian Nowak <timystery@arcor.de>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-25 17:14+0800\n"
+"POT-Creation-Date: 2010-11-23 23:50+0100\n"
 "PO-Revision-Date: 2008-12-29 10:28+0000\n"
-"Last-Translator: meica <Unknown>\n"
+"Last-Translator: Fabian Nowak <timystery@arcor.de>\n"
 "Language-Team: German <de@li.org>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/e_mod_config.c:30
+#: src/e_mod_config.c:30
 msgid "Taskbar Configuration"
-msgstr "Startleiste konfigurieren"
+msgstr "Taskleisten-Einstellung"
 
-#: ../src/e_mod_config.c:71
+#: src/e_mod_config.c:71
 msgid "Display"
 msgstr "Anzeige"
 
-#: ../src/e_mod_config.c:72
+#: src/e_mod_config.c:72
 msgid "Show windows from all desktops"
-msgstr "Zeige Fenster aller Arbeitsflächen"
+msgstr "Fenster aller Arbeitsflächen zeigen"
 
-#: ../src/e_mod_main.c:294 ../src/e_mod_main.c:667
+#: src/e_mod_main.c:291 src/e_mod_main.c:655
 msgid "Taskbar"
 msgstr "Taskleiste"
 
-#: ../src/e_mod_main.c:656
-msgid "Configuration"
-msgstr "Konfiguration"
+#: src/e_mod_main.c:662
+msgid "Settings"
+msgstr "Einstellungen"
+
+#~ msgid "Configuration"
+#~ msgstr "Konfiguration"

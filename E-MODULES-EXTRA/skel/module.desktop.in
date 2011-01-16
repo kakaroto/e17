@@ -1,11 +1,13 @@
 [Desktop Entry]
 Type=Link
 Name=Skel
+Name[de]=Skelett
 Name[eo]=Skeleto
 Name[el]=Skel
 Icon=e-module-skel
 Comment=Not meant for users. Basis for building new ones.
 Comment[cs]=Není pro uivatele. Jen jako základ pro vytváøení nových modulù.
+Comment[de]=Nicht für Nutzer gedacht. Basis für neue Helfermodule.
 Comment[eo]=Ne celas uzantojn. Bazo pour krei novajn modulojn.
 Comment[fr]=Pas orienté utilisateur. C'est une base pour construire de nouveaux modules.
 Comment[it]=Non inteso per gli utenti. Fornisce la base per costruire nuovi moduli.

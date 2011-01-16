@@ -1,0 +1,112 @@
+# German translations for shellementary package
+# German messages for shellementary.
+# Copyright (C) 2011 Enlightenment development team
+# This file is distributed under the same license as the shellementary package.
+# Fabian Nowak <timystery@arcor.de>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: shellementary 0.2.0\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2010-11-24 00:45+0100\n"
+"PO-Revision-Date: 2011-01-09 16:58+0100\n"
+"Last-Translator: Fabian Nowak <timystery@arcor.de>\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/bin/shelm.c:197
+msgid "Error!"
+msgstr "Fehler!"
+
+#: src/bin/shelm.c:202
+msgid "Warning!"
+msgstr "Warnung!"
+
+#: src/bin/shelm.c:207
+msgid "Information"
+msgstr "Information"
+
+#: src/bin/shelm_about.c:9
+msgid "About Shellementary"
+msgstr "Über Shellelementary"
+
+#: src/bin/shelm_about.c:34
+msgid ""
+"<b>Display dialogs from shell scripts</><br>Written as a zenity replacement, "
+"supports the same arguments<br><b>http://svn.enlightenment.org/svn/e/trunk/"
+"PROTO/shellementary</><br>Based on great Elementary toolkit by <b>raster</> "
+"and C programming language.<br><b>License:</> GNU General Public License v3"
+msgstr ""
+"<b>Zeigt Dialoge von Shell-Skripten an</><br>Geschrieben als Ersatz für "
+"zenity, unterstützt dit gleichen Argumente.<br><b>http://svn.enlightenment."
+"org/svn/e/trunk/PROTO/shellelementary</><br>Basiert auf dem großartigen "
+"Werkzeugkasten \"Elementary\" von <b>raster</> und der Programmiersprache C."
+"<br><b>Lizenz:</> GNU General Public License v3"
+
+#: src/bin/shelm_about.c:43
+msgid ""
+"<b>Author:</> quaker (quaker66@gmail.com)<br><br><b>Credits:</"
+"><br><b>Carsten Haitzler (raster)</> for Enlightenment DR17, great "
+"Elementary toolkit and help with developenment<br><b>Christopher Michael "
+"(devilhorns)</> for help with developenment<br>"
+msgstr ""
+"<b>Autor:</> Quaker  (quaker66@gmail.com)<br><br><b>Dank geht an:</"
+"><br><b>Carsten Haitzler (raster)</> für Enlightenment DR17, den großartigen "
+"Werkzeugkasten \"Elementary\" und die Hilfe bei der "
+"Entwicklung<br><b>Christopher Michael (devilhorns)</> für die Hilfe bei der "
+"Entwicklung<br>"
+
+#: src/bin/shelm_about.c:58
+msgid "Close"
+msgstr "Schließen"
+
+#: src/bin/shelm_dlg_entry.c:12
+msgid "Enter something here"
+msgstr "Geben Sie hier etwas ein"
+
+#: src/bin/shelm_dlg_entry.c:47 src/bin/shelm_dlg_list.c:56
+#: src/bin/shelm_dlg_scale.c:43 src/bin/shelm_dlg_textinfo.c:80
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: src/bin/shelm_dlg_entry.c:53 src/bin/shelm_dlg_simpleicon.c:44
+#: src/bin/shelm_dlg_list.c:62 src/bin/shelm_dlg_scale.c:49
+#: src/bin/shelm_dlg_textinfo.c:86
+msgid "OK"
+msgstr "OK"
+
+#: src/bin/shelm_dlg_list.c:12
+msgid "Select an item"
+msgstr "Eintrag auswählen"
+
+#: src/bin/shelm_dlg_question.c:12
+msgid "Question"
+msgstr "Frage"
+
+#: src/bin/shelm_dlg_question.c:48
+msgid "No"
+msgstr "Nein"
+
+#: src/bin/shelm_dlg_question.c:54
+msgid "Yes"
+msgstr "Ja"
+
+#: src/bin/shelm_dlg_scale.c:12
+msgid "Adjust the value"
+msgstr "Wert einstellen"
+
+#: src/bin/shelm_dlg_textinfo.c:12
+msgid "Text Information"
+msgstr "Textinformation"
+
+#: src/bin/shelm_callbacks.c:76
+msgid "fd error, exit."
+msgstr "Fehler beim Dateizugriff, Programmende."
+
+#: src/bin/shelm_callbacks.c:81
+msgid "nothing to read?"
+msgstr "nichts zu lesen?"

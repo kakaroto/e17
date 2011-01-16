@@ -2,6 +2,7 @@
 Type=Link
 Name=Rain
 Name[cs]=Déšť
+Name[de]=Regen
 Name[eo]=Pluvo
 Name[hu]=Nyári Zápor
 Name[fr]=Pluie
@@ -11,6 +12,7 @@ Icon=e-module-rain
 X-Enlightenment-ModuleType=look
 Comment=Module to display rain on the desktop.
 Comment[cs]=Zobrazí déšť na ploše.
+Comment[de]=Regen auf dem Desktop.
 Comment[eo]=Vidigi pluvon sur la labortablo.
 Comment[hu]=Nyári záporral áztathatjuk a munkaasztalunkat.
 Comment[it]=Modulo per visualizzare la pioggia sul desktop.

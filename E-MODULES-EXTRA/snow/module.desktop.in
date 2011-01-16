@@ -2,6 +2,7 @@
 Type=Link
 Name=Snow
 Name[cs]=Sníh
+Name[de]=Schnee
 Name[eo]=Neĝo
 Name[hu]=Havazás
 Name[fr]=Neige
@@ -11,6 +12,7 @@ Icon=e-module-snow
 X-Enlightenment-ModuleType=look
 Comment=Module to display snow on the desktop.
 Comment[cs]=Modul zobrazující sněžení na ploše.
+Comment[de]=Schnee auf dem Desktop
 Comment[eo]=Vidigi neĝon sur la labortablo.
 Comment[hu]=Havazik a munkaasztalunkon...
 Comment[it]=Modulo per visualizzare la neve sul desktop.

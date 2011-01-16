@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=Taskbar
+Name[de]=Taskleiste
 Name[eo]=Taskopleto
 Name[hu]=Folyamatjelző
 Name[fr]=Barre des tâches
@@ -11,6 +12,7 @@ X-Enlightenment-ModuleType=utils
 Icon=e-module-taskbar
 Comment=Gadget to provide a taskbar.
 Comment[cs]=Gadget poskytující taskbar.
+Comment[de]=Stellt eine Taskleiste zur Verfügung.
 Comment[eo]=Provizi taskopleton.
 Comment[hu]=Egy folyamatjelző modul.
 Comment[it]=Modulo che fornisce una barra contenente le applicazioni in esecuzione.

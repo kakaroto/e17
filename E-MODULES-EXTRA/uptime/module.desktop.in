@@ -1,12 +1,14 @@
 [Desktop Entry]
 Type=Link
 Name=Uptime
+Name[de]=Betriebszeit
 Name[eo]=Daŭro de funkciado
 Name[hu]=Üzemóra
 Icon=e-module-uptime
 X-Enlightenment-ModuleType=utils
 Comment=Gadget to display the current uptime of the system.
-Comment[cs]=Zobrazuje aktu�ln�� uptime syst�mu.
+Comment[cs]=Zobrazuje aktuální uptime systému.
+Comment[de]=Aktuelle Systembetriebsdauer anzeigen
 Comment[eo]=Vidigi la nunan daŭron de funkciado de la operaciumo.
 Comment[hu]=Egy modul, amely megmutatja mióta van folyamatosan üzemben a rendszer.
 Comment[it]=Modulo per visualizzare il tempo di servizio del sistema.
