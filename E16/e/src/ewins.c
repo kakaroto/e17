@@ -812,6 +812,20 @@ AddToFamily(EWin * ewin, Window xwin, int startup)
 
    x = EoGetX(ewin);
    y = EoGetY(ewin);
+
+   doslide = manplace = 0;
+   if (Mode.place.enable_features > 0)
+     {
+	/* if set for borderless then dont slide it in */
+	if (Conf.place.slidein && !Mode.place.doing_slide &&
+	    !ewin->state.no_border && dsk == DesksGetCurrent())
+	   doslide = 1;
+
+	if (Conf.place.manual && !Mode.place.doing_manual &&
+	    !ewin->state.placed && !ewin->icccm.transient)
+	   manplace = 1;
+     }
+
    if (ewin->icccm.transient && Conf.focus.transientsfollowleader)
      {
 	EWin               *const *lst2;
@@ -846,13 +860,12 @@ AddToFamily(EWin * ewin, Window xwin, int startup)
      {
 	EwinOpFullscreen(ewin, OPSRC_WM, 2);
 	ewin->state.placed = 1;
-	EwinMoveToDesktopAt(ewin, dsk, EoGetX(ewin), EoGetY(ewin));
-	EwinShow(ewin);
-	goto done;
+	doslide = manplace = 0;
+	x = EoGetX(ewin);
+	y = EoGetY(ewin);
      }
-
-   if (!ewin->state.identified &&
-       (ewin->state.maximized_horz || ewin->state.maximized_vert))
+   else if (!ewin->state.identified &&
+	    (ewin->state.maximized_horz || ewin->state.maximized_vert))
      {
 	int                 hor, ver;
 
@@ -873,21 +886,18 @@ AddToFamily(EWin * ewin, Window xwin, int startup)
 	EwinResize(ewin, ewin->client.w, ewin->client.h);
      }
 
-   doslide = manplace = 0;
-   if (Mode.place.enable_features > 0)
+   /* if the window asked to be iconified at the start */
+   if (ewin->icccm.start_iconified)
      {
-	/* if set for borderless then dont slide it in */
-	if (Conf.place.slidein && !Mode.place.doing_slide &&
-	    !ewin->state.no_border && dsk == DesksGetCurrent())
-	   doslide = 1;
-
-	if (Conf.place.manual && !Mode.place.doing_manual &&
-	    !ewin->state.placed && !ewin->icccm.transient)
-	  {
-	     if (GrabPointerSet(VROOT, ECSR_GRAB, 0) == GrabSuccess)
-		manplace = 1;
-	  }
+	EwinMoveToDesktopAt(ewin, dsk, x, y);
+	ewin->state.state = EWIN_STATE_MAPPED;
+	EwinIconify(ewin);
+	ewin->state.state = EWIN_STATE_ICONIC;
+	goto done;
      }
+
+   if (manplace && GrabPointerSet(VROOT, ECSR_GRAB, 0) != GrabSuccess)
+      manplace = 0;
 
    /* if it hasn't been placed yet.... find a spot for it */
    if ((!ewin->state.placed) && (!manplace))
@@ -932,16 +942,6 @@ AddToFamily(EWin * ewin, Window xwin, int startup)
 	     ArrangeEwinXY(ewin, &x, &y);
 	  }
 	ewin->state.placed = 1;
-     }
-
-   /* if the window asked to be iconified at the start */
-   if (ewin->icccm.start_iconified)
-     {
-	EwinMoveToDesktopAt(ewin, dsk, x, y);
-	ewin->state.state = EWIN_STATE_MAPPED;
-	EwinIconify(ewin);
-	ewin->state.state = EWIN_STATE_ICONIC;
-	goto done;
      }
 
    /* if we should slide it in and are not currently in the middle of a slide */
