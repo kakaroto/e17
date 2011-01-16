@@ -1,13 +1,13 @@
 # Places module (e17), French translation.
 # This file is put in the public domain.
-# batden <batden@orange.fr>, 2009, 2010.
+# batden <batden@orange.fr>, 2009, 2010, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Places module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-09-11 12:59+0400\n"
-"PO-Revision-Date: 2010-09-11 13:50+0400\n"
+"POT-Creation-Date: 2011-01-16 06:34+0400\n"
+"PO-Revision-Date: 2011-01-16 08:31+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <pourunmondesansgourou@gmail.com>\n"
 "Language: \n"
@@ -47,23 +47,23 @@ msgstr "Utiliser un gestionnaire de fichiers personnalisé"
 msgid "Show in menu"
 msgstr "Afficher dans le menu"
 
-#: src/e_mod_config.c:149 src/e_mod_places.c:379
+#: src/e_mod_config.c:149 src/e_mod_places.c:408
 msgid "Home"
 msgstr "Dossier personnel"
 
-#: src/e_mod_config.c:152 src/e_mod_places.c:388
+#: src/e_mod_config.c:152 src/e_mod_places.c:417
 msgid "Desktop"
 msgstr "Bureau"
 
-#: src/e_mod_config.c:155 src/e_mod_places.c:398
+#: src/e_mod_config.c:155 src/e_mod_places.c:427
 msgid "Trash"
 msgstr "Corbeille"
 
-#: src/e_mod_config.c:158 src/e_mod_places.c:208 src/e_mod_places.c:407
+#: src/e_mod_config.c:158 src/e_mod_places.c:207 src/e_mod_places.c:436
 msgid "Filesystem"
-msgstr "Système"
+msgstr "Racine"
 
-#: src/e_mod_config.c:161 src/e_mod_places.c:416
+#: src/e_mod_config.c:161 src/e_mod_places.c:445
 msgid "Temp"
 msgstr "/tmp"
 
@@ -75,7 +75,7 @@ msgstr "Favoris"
 msgid "Files"
 msgstr "Fichiers"
 
-#: src/e_mod_main.c:60 src/e_mod_places.c:479
+#: src/e_mod_main.c:60 src/e_mod_places.c:502
 msgid "Places"
 msgstr "Raccourcis"
 
@@ -83,24 +83,24 @@ msgstr "Raccourcis"
 msgid "Settings"
 msgstr "Configuration"
 
-#: src/e_mod_places.c:213
+#: src/e_mod_places.c:212
 msgid "No Name"
 msgstr "Sans nom"
 
-#: src/e_mod_places.c:669
+#: src/e_mod_places.c:693
 msgid "free of"
 msgstr "de libre sur"
 
-#: src/e_mod_places.c:675
+#: src/e_mod_places.c:699
 #, c-format
 msgid "%s Not Mounted"
 msgstr "%s Pas Monté"
 
-#: src/e_mod_places.c:692
+#: src/e_mod_places.c:716
 msgid "unmount"
 msgstr "démonter"
 
-#: src/e_mod_places.c:698
+#: src/e_mod_places.c:722
 msgid "eject"
 msgstr "éjecter"
 
