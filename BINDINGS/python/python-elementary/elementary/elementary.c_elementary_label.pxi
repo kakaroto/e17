@@ -43,5 +43,16 @@ cdef class Label(Object):
         def __set__(self, label):
             self.label_set(label)
 
+    def fontsize_set(self, int fontsize):
+        """Set the label fontsize"""
+        elm_label_fontsize_set(self.obj, fontsize)
+
+    def align_set(self, char *alignmode):
+        """Set the label text alignment"""
+        elm_label_text_align_set(self.obj, alignmode)
+
+    def text_color_set(self, int r, int g, int b, int a):
+        """Set the label text color"""
+        elm_label_text_color_set(self.obj, r, g, b, a)
 
 _elm_widget_type_register("label", Label)

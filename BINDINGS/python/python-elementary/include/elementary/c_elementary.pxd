@@ -387,6 +387,9 @@ cdef extern from "Elementary.h":
     evas.c_evas.Evas_Object *elm_label_add(evas.c_evas.Evas_Object *parent)
     void elm_label_label_set(evas.c_evas.Evas_Object *obj, char *label)
     char *elm_label_label_get(evas.c_evas.Evas_Object *obj)
+    void elm_label_fontsize_set(evas.c_evas.Evas_Object *obj, int fontsize)
+    void elm_label_text_align_set(evas.c_evas.Evas_Object *obj, char *alignmode)
+    void elm_label_text_color_set(evas.c_evas.Evas_Object *obj, unsigned int r, unsigned int g, unsigned int b, unsigned int a)
 
     # Toggle object
     evas.c_evas.Evas_Object *elm_toggle_add(evas.c_evas.Evas_Object *parent)
