@@ -1054,7 +1054,7 @@ all_cb(void* cdata, JSFunction* fct, sqlite3_context* ctx, int argc, sqlite3_val
 
         elixir_function_run(cx, fct, parent, 2, js_argv, &js_return);
 
-        elixir_rval_register(cx, js_argv + 1);
+        elixir_rval_delete(cx, js_argv + 1);
 
      on_error:
         elixir_rval_delete(cx, js_argv + 0);
