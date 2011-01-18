@@ -1002,8 +1002,11 @@ _elixir_func_end(void *data, Ecore_Thread *thread)
    else
      {
         elixir_return_ptr(cx, &argv[1], thread, elixir_class_request("Ecore_Thread", NULL));
+        elixir_rval_register(cx, argv + 1);
 
         elixir_function_run(cx, dt->func_end, parent, 2, argv, &rval);
+
+        elixir_rval_delete(cx, argv + 1);
      }
 
    elixir_rval_delete(cx, argv);
@@ -1046,8 +1049,11 @@ _elixir_func_cancel(void *data, Ecore_Thread *thread)
    else
      {
         elixir_return_ptr(cx, &argv[1], thread, elixir_class_request("Ecore_Thread", NULL));
+        elixir_rval_register(cx, argv + 1);
 
         elixir_function_run(cx, dt->func_cancel, parent, 2, argv, &rval);
+
+        elixir_rval_delete(cx, argv + 1);
      }
 
    elixir_rval_delete(cx, argv);

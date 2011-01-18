@@ -1029,7 +1029,7 @@ all_cb(void* cdata, JSFunction* fct, sqlite3_context* ctx, int argc, sqlite3_val
 	elixir_function_start(cx);
 
         if (!elixir_rval_new(cx, elixir_class_request("sqlite3_context", NULL), ctx, js_argv + 0))
-          goto on_error;
+          goto on_error_empty;
 
         js_array = JS_NewArrayObject(cx, argc, NULL);
         if (!elixir_object_register(cx, &js_array, NULL))
@@ -1058,6 +1058,7 @@ all_cb(void* cdata, JSFunction* fct, sqlite3_context* ctx, int argc, sqlite3_val
 
      on_error:
         elixir_rval_delete(cx, js_argv + 0);
+     on_error_empty:
         elixir_object_unregister(cx, &js_array);
 	elixir_function_stop(cx);
      }

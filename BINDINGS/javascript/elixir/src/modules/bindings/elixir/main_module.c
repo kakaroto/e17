@@ -27,19 +27,25 @@ elixir_current(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    if (!elixir_add_str_prop(cx, result, "filename", elixir_id_filename()))
-     return JS_FALSE;
+     goto on_error;
    if (elixir_id_section())
      {
 	if (!elixir_add_str_prop(cx, result, "section", elixir_id_section()))
-	  return JS_FALSE;
+	  goto on_error;
      }
    else
      if (!JS_DefineProperty(cx, result, "section", JSVAL_NULL, NULL, NULL,
 			    JSPROP_ENUMERATE | JSPROP_READONLY))
-       return JS_FALSE;
+       goto on_error;
+
+   elixir_object_unregister(cx, &result);
 
    JS_SET_RVAL(cx, vp, OBJECT_TO_JSVAL(result));
    return JS_TRUE;
+
+ on_error:
+   elixir_object_unregister(cx, &result);
+   return JS_FALSE;
 }
 
 static JSBool

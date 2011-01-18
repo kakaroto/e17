@@ -44,6 +44,12 @@ static const elixir_parameter_t*        _int_mix_chunk_int_params[4] = {
    &int_parameter,
    NULL
 };
+static const elixir_parameter_t*        _int_null_int_params[4] = {
+   &int_parameter,
+   &null_parameter,
+   &int_parameter,
+   NULL
+};
 static const elixir_parameter_t*        _int_mix_chunk_2int_params[5] = {
    &int_parameter,
    &_mix_chunk_parameter,
@@ -169,7 +175,14 @@ elixir_Mix_PlayChannel(JSContext *cx, uintN argc, jsval *vp)
    elixir_value_t val[3];
 
    if (!elixir_params_check(cx, _int_mix_chunk_int_params, val, argc, JS_ARGV(cx, vp)))
-     return JS_FALSE;
+     {
+        if (elixir_params_check(cx, _int_null_int_params, val, argc, JS_ARGV(cx, vp)))
+          {
+             JS_SET_RVAL(cx, vp, INT_TO_JSVAL(0));
+             return JS_TRUE;
+          }
+        return JS_FALSE;
+     }
 
    channel = val[0].v.num;
    GET_PRIVATE(cx, val[1].v.obj, chunk);
