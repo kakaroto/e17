@@ -571,6 +571,7 @@ echo "  Edje................: $have_edje"
 echo "  Emotion.............: $have_emotion"
 echo "     regexp match.....: $active_emotion_security"
 echo "  Eet.................: $have_eet"
+echo "  Eio.................: $have_eio"
 echo
 echo "Loaders modules:"
 echo "  Edje................: $have_edje"
