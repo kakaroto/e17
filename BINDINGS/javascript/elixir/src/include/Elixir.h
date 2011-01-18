@@ -211,11 +211,18 @@ EAPI void      elixir_unlock_cx(JSContext *cx);
 EAPI void      elixir_suspended_gc(void);
 EAPI Eina_Bool elixir_string_register(JSContext *cx, JSString **string);
 EAPI Eina_Bool elixir_string_unregister(JSContext *cx, JSString **string);
-EAPI Eina_Bool elixir_object_register(JSContext *cx, JSObject **obj, void *data);
+EAPI Eina_Bool elixir_object_named_register(JSContext *cx, const char *name, JSObject **obj, void *data);
 EAPI Eina_Bool elixir_object_unregister(JSContext *cx, JSObject **obj);
-EAPI Eina_Bool elixir_rval_new(JSContext *cx, JSClass *class, void *data, jsval *rval);
-EAPI Eina_Bool elixir_rval_register(JSContext *cx, jsval *rval);
+EAPI Eina_Bool elixir_rval_named_new(JSContext *cx, const char *name, JSClass *class, void *data, jsval *rval);
+EAPI Eina_Bool elixir_rval_named_register(JSContext *cx, const char *name, jsval *rval);
 EAPI Eina_Bool elixir_rval_delete(JSContext *cx, jsval *rval);
+
+#define ELIXIR_DEFINE_TO_TOKEN(def) #def
+#define ELIXIR_DEFINE_TO_STRING(def) ELIXIR_DEFINE_TO_TOKEN(def)
+
+#define elixir_object_register(Cx, Obj, Data) elixir_object_named_register(Cx, (__FILE__ ":" ELIXIR_DEFINE_TO_STRING(__LINE__)), Obj, Data)
+#define elixir_rval_new(Cx, Class, Data, Rval) elixir_rval_named_new(Cx, (__FILE__ ":" ELIXIR_DEFINE_TO_STRING(__LINE__)), Class, Data, Rval)
+#define elixir_rval_register(Cx, Rval) elixir_rval_named_register(Cx, (__FILE__ ":" ELIXIR_DEFINE_TO_STRING(__LINE__)), Rval)
 
 EAPI Elixir_Script      *elixir_script_file(Elixir_Runtime *er, int param, const char **params);
 EAPI Elixir_Script      *elixir_script_template(Elixir_Runtime *er, int param, const char **params);

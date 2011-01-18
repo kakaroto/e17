@@ -382,13 +382,13 @@ elixir_string_unregister(JSContext *cx, JSString **string)
 }
 
 Eina_Bool
-elixir_object_register(JSContext *cx, JSObject **obj, void *data)
+elixir_object_named_register(JSContext *cx, const char *name, JSObject **obj, void *data)
 {
    if (!obj || !*obj)
      return EINA_FALSE;
 
    elixir_lock_cx(cx);
-   if (!JS_AddRoot(cx, obj))
+   if (!JS_AddNamedRoot(cx, obj, name))
      goto on_first_error;
    if (data)
      if (!JS_SetPrivate(cx, *obj, data))
@@ -428,7 +428,7 @@ elixir_object_unregister(JSContext *cx, JSObject **obj)
 }
 
 Eina_Bool
-elixir_rval_new(JSContext *cx, JSClass *class, void *data, jsval *rval)
+elixir_rval_named_new(JSContext *cx, const char *name, JSClass *class, void *data, jsval *rval)
 {
    JSObject *new;
    Eina_Bool leave;
@@ -442,14 +442,14 @@ elixir_rval_new(JSContext *cx, JSClass *class, void *data, jsval *rval)
    new = JS_NewObject(cx, class, NULL, NULL);
    if (!new)
      goto on_first_error;
-   if (!JS_AddRoot(cx, &new))
+   if (!JS_AddNamedRoot(cx, &new, name))
      goto on_first_error;
    if (data)
      if (!JS_SetPrivate(cx, new, data))
        goto on_error;
 
    *rval = OBJECT_TO_JSVAL(new);
-   if (!JS_AddRoot(cx, rval))
+   if (!JS_AddNamedRoot(cx, rval, name))
      goto on_error;
 
    elixir_increase_count(cx);
@@ -465,7 +465,7 @@ elixir_rval_new(JSContext *cx, JSClass *class, void *data, jsval *rval)
 }
 
 Eina_Bool
-elixir_rval_register(JSContext *cx, jsval *rval)
+elixir_rval_named_register(JSContext *cx, const char *name, jsval *rval)
 {
    JSBool ret;
 
@@ -473,7 +473,7 @@ elixir_rval_register(JSContext *cx, jsval *rval)
      return EINA_FALSE;
 
    elixir_lock_cx(cx);
-   ret = JS_AddRoot(cx, rval);
+   ret = JS_AddNamedRoot(cx, rval, name);
    elixir_unlock_cx(cx);
 
    if (!ret)
