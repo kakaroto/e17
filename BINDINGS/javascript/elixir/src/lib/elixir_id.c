@@ -129,6 +129,7 @@ elixir_id_compute(char sign[ELIXIR_SIGNATURE_SIZE], int length, const char *buff
 #ifdef HAVE_ZLIB
    do {
       strm.avail_out = CHUNK;
+      strm.next_out = (unsigned char*) comp;
 
       deflate(&strm, Z_FINISH);
 
@@ -147,7 +148,7 @@ elixir_id_compute(char sign[ELIXIR_SIGNATURE_SIZE], int length, const char *buff
      SIGN_COMPUTE(buffer + i * BLOCK_SIZE);
 
    for (i = 0; i < length % BLOCK_SIZE; ++i)
-     out[i] = update[length - i - 1];
+     out[i] = buffer[length - i - 1];
 
    SIGN_COMPUTE(out);
 #endif
