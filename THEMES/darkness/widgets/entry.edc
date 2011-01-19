@@ -93,6 +93,7 @@ group {
          action: STATE_SET "focus" 0.0;
          transition: LINEAR 0.2;
          target: "entry_bg";
+         target: "entry_focus";
       }
       program {
          name: "entry_unfocus";
@@ -101,6 +102,7 @@ group {
          action: STATE_SET "default" 0.0;
          transition: LINEAR 0.2;
          target: "entry_bg";
+         target: "entry_focus";
       }
    }
 }
