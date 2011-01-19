@@ -32,6 +32,7 @@ e_hal_property_string_get(E_Hal_Properties *properties, const char *key, int *er
 {
   E_Hal_Property *prop;
   if (err) *err = 0;
+  if (!properties) return NULL;
   if (!properties->properties) return NULL;
   if (!key) return NULL;
   prop = eina_hash_find(properties->properties, key);
@@ -46,6 +47,7 @@ e_hal_property_bool_get(E_Hal_Properties *properties, const char *key, int *err)
 {
   E_Hal_Property *prop;
   if (err) *err = 0;
+  if (!properties) return EINA_FALSE;
   if (!properties->properties) return EINA_FALSE;
   if (!key) return EINA_FALSE;
   prop = eina_hash_find(properties->properties, key);
@@ -60,6 +62,7 @@ e_hal_property_int_get(E_Hal_Properties *properties, const char *key, int *err)
 {
   E_Hal_Property *prop;
   if (err) *err = 0;
+  if (!properties) return 0;
   if (!properties->properties) return 0;
   if (!key) return 0;
   prop = eina_hash_find(properties->properties, key);
@@ -74,6 +77,7 @@ e_hal_property_uint64_get(E_Hal_Properties *properties, const char *key, int *er
 {
   E_Hal_Property *prop;
   if (err) *err = 0;
+  if (!properties) return 0;
   if (!properties->properties) return 0;
   if (!key) return 0;
   prop = eina_hash_find(properties->properties, key);
@@ -88,6 +92,7 @@ e_hal_property_double_get(E_Hal_Properties *properties, const char *key, int *er
 {
   E_Hal_Property *prop;
   if (err) *err = 0;
+  if (!properties) return 0;
   if (!properties->properties) return 0;
   if (!key) return 0;
   prop = eina_hash_find(properties->properties, key);
@@ -102,6 +107,7 @@ e_hal_property_strlist_get(E_Hal_Properties *properties, const char *key, int *e
 {
   E_Hal_Property *prop;
   if (err) *err = 0;
+  if (!properties) return NULL;
   if (!properties->properties) return NULL;
   if (!key) return NULL;
   prop = eina_hash_find(properties->properties, key);
