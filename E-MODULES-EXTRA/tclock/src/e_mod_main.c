@@ -132,7 +132,7 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 
    inst = gcc->data;
    edje_object_size_min_calc(inst->tclock, &mw, &mh);
-   e_gadcon_client_min_size_set(gcc, mw, mh);
+   e_gadcon_client_min_size_set(gcc, mw, 16);
 }
 
 static char *
