@@ -128,10 +128,10 @@ static void
 _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 {
    Instance *inst;
-   Evas_Coord mw, mh;
+   Evas_Coord mw;
 
-   inst = gcc->data;
-   edje_object_size_min_calc(inst->tclock, &mw, &mh);
+   if (!(inst = gcc->data)) return;
+   edje_object_size_min_calc(inst->tclock, &mw, NULL);
    e_gadcon_client_min_size_set(gcc, mw, 16);
 }
 
