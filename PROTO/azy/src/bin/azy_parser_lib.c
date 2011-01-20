@@ -200,6 +200,7 @@ azy_parser_file_parse(const char  *path,
    
 
    buf = mmap(NULL, s.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+   close(fd);
    if (buf == MAP_FAILED) return NULL;
 
    data = azy_parser_string_parse(buf, err, cb, new_cb, free_cb, token_cb);
