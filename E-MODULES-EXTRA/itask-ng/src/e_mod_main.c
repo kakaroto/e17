@@ -716,12 +716,6 @@ _ngi_mouse_in_timer(void *data)
    ng->mouse_in = 1;
    ng->zoom_out = 0;
 
-   if (!ng->dnd)
-     {
-        evas_event_feed_mouse_in(ng->win->evas, 0, NULL);
-        _ngi_item_activate(ng);
-     }
-
    ngi_animate(ng);
    
    return EINA_FALSE;
@@ -751,7 +745,6 @@ ngi_mouse_out(Ng *ng)
       ecore_timer_del(ng->mouse_in_timer);
    ng->mouse_in_timer = NULL;
 
-   evas_event_feed_mouse_out(ng->win->evas, 0, NULL);
    ITEM_MOUSE_OUT(ng->item_active);
    edje_object_signal_emit(ng->label, "e,state,label_hide", "e");
 
@@ -776,9 +769,6 @@ _ngi_win_cb_mouse_in(void *data, int type, void *event)
 
    ngi_mouse_in(ng);
 
-   /* evas_event_feed_mouse_in(ng->win->evas, 0, NULL);
-    * evas_object_focus_set(ng->bg_clip, 1); */
-
    return EINA_TRUE;
 }
 
@@ -792,8 +782,6 @@ _ngi_win_cb_mouse_out(void *data, int type, void *event)
       return EINA_TRUE;
 
    ngi_mouse_out(ng);
-
-   evas_event_feed_mouse_out(ng->win->evas, 0, NULL);
 
    return EINA_TRUE;
 }
@@ -854,9 +842,6 @@ _ngi_win_cb_mouse_down(void *data, int type, void *event)
 
    ITEM_MOUSE_DOWN(it, ev);
 
-   evas_event_feed_mouse_down
-      (ng->win->evas, ev->buttons, 0, ev->timestamp, NULL);
-
    if (ng->menu_wait_timer)
       ecore_timer_del(ng->menu_wait_timer);
 
@@ -879,9 +864,6 @@ _ngi_win_cb_mouse_up(void *data, int type, void *event)
      {
         ITEM_MOUSE_UP(ng->item_active, ev);
 
-        evas_event_feed_mouse_up
-           (ng->win->evas, ev->buttons, 0, ev->timestamp, NULL);
-
         if (ng->item_drag)
           {
              ng->item_drag->drag.start = 0;
@@ -900,9 +882,6 @@ _ngi_win_cb_mouse_wheel(void *data, int type, void *event)
 
    if (ev->event_window != ng->win->evas_win)
       return EINA_TRUE;
-
-   evas_event_feed_mouse_wheel
-      (ng->win->evas, 0, ev->z, ev->timestamp, NULL);
 
    return EINA_TRUE;
 }
@@ -930,12 +909,6 @@ _ngi_win_cb_mouse_move(void *data, int type, void *event)
      {
         if (pos >= ng->start && pos < ng->start + ng->w)
           {
-             evas_event_feed_mouse_move
-                (ng->win->evas,
-                ev->root.x - ng->win->popup->x,
-                ev->root.y - ng->win->popup->y,
-                0, NULL);
-
              ng->pos = pos;
              ng->zoom_out = 0;
           }
