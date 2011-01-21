@@ -45,7 +45,7 @@ ngi_box_new(Ng *ng)
    ng->boxes = eina_list_append(ng->boxes, box);
 
    return box;
-} /* ngi_box_new */
+}
 
 void
 ngi_box_free(Ngi_Box *box)
@@ -61,7 +61,7 @@ ngi_box_free(Ngi_Box *box)
       evas_object_del(box->separator);
 
    E_FREE(box);
-} /* ngi_box_free */
+}
 
 void
 ngi_box_item_show(Ng *ng, Ngi_Item *it, int instant)
@@ -90,7 +90,7 @@ ngi_box_item_show(Ng *ng, Ngi_Item *it, int instant)
    //evas_object_show(ng->clip);
 
    ngi_animate(ng);
-} /* ngi_box_item_show */
+}
 
 Ngi_Item *
 ngi_box_item_at_position_get(Ngi_Box *box)
@@ -114,5 +114,5 @@ ngi_box_item_at_position_get(Ngi_Box *box)
           }
      }
    return NULL;
-} /* ngi_box_item_at_position_get */
+}
 

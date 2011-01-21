@@ -42,14 +42,14 @@ ngi_gadcon_init(void)
            }
       }
    }
-} /* ngi_gadcon_init */
+}
 
 void
 ngi_gadcon_shutdown(void)
 {
    if (ngi_gadcon_hash)
       eina_hash_free(ngi_gadcon_hash);
-} /* ngi_gadcon_shutdown */
+}
 
 static char *
 _ngi_gadcon_name_new()
@@ -71,24 +71,24 @@ _ngi_gadcon_name_new()
      }
 
    return strdup(name);
-} /* _ngi_gadcon_name_new */
+}
 
 static void
 _ngi_gadcon_item_cb_mouse_down(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
 {
    //  evas_event_feed_mouse_down(it->box->ng->win->evas, ev->button, 0, 0, NULL);
-} /* _ngi_gadcon_item_cb_mouse_down */
+}
 
 static void
 _ngi_gadcon_item_cb_mouse_up(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
 {
-} /* _ngi_gadcon_item_cb_mouse_up */
+}
 
 static void
 _ngi_gadcon_item_cb_mouse_in(Ngi_Item *it)
 {
    evas_object_focus_set(it->obj, 1);
-} /* _ngi_gadcon_item_cb_mouse_in */
+}
 
 static void
 _ngi_gadcon_item_cb_mouse_out(Ngi_Item *it)
@@ -98,19 +98,20 @@ _ngi_gadcon_item_cb_mouse_out(Ngi_Item *it)
    evas_event_feed_mouse_up(it->box->ng->win->evas, 2, 0, 0, NULL);
    evas_event_feed_mouse_up(it->box->ng->win->evas, 3, 0, 0, NULL);
    evas_object_focus_set(it->obj, 0);
-} /* _ngi_gadcon_item_cb_mouse_out */
+}
 
 static void
 _ngi_gadcon_locked_set(void *data, int lock)
 {
    Ng *ng = data;
+
    if (lock)
       ng->show_bar++;
    else if (ng->show_bar > 0)
       ng->show_bar--;
 
    ngi_animate(ng);
-} /* _ngi_gadcon_locked_set */
+}
 
 static Ngi_Item *
 _ngi_gadcon_item_new(Ngi_Box *box, const char *name, Ngi_Item *after)
@@ -138,7 +139,7 @@ _ngi_gadcon_item_new(Ngi_Box *box, const char *name, Ngi_Item *after)
    e_gadcon_frame_request_callback_set(it->gadcon, _ngi_gadcon_cb_gadcon_frame_request, it);
    e_gadcon_orient(it->gadcon, ng->cfg->orient);
    e_gadcon_zone_set(it->gadcon, box->ng->zone);
-   e_gadcon_ecore_evas_set(it->gadcon, box->ng->win->ee);
+   e_gadcon_ecore_evas_set(it->gadcon, box->ng->win->popup->ecore_evas);
    e_gadcon_util_lock_func_set(it->gadcon, _ngi_gadcon_locked_set, ng);
 
    e_gadcon_populate(it->gadcon);
@@ -165,7 +166,7 @@ _ngi_gadcon_item_new(Ngi_Box *box, const char *name, Ngi_Item *after)
    ngi_box_item_show(ng, it, instant);
 
    return it;
-} /* _ngi_gadcon_item_new */
+}
 
 void
 ngi_gadcon_new(Ng *ng, Config_Box *cfg)
@@ -189,13 +190,13 @@ ngi_gadcon_new(Ng *ng, Config_Box *cfg)
            it->cfg_gadcon = cg;
         }
      }
-} /* ngi_gadcon_new */
+}
 
 void
 ngi_gadcon_remove(Ngi_Box *box)
 {
    ngi_box_free(box);
-} /* ngi_gadcon_remove */
+}
 
 static void
 _ngi_gadcon_cb_gadcon_min_size_request(void *data, E_Gadcon *gc, Evas_Coord w, Evas_Coord h)
@@ -211,7 +212,7 @@ _ngi_gadcon_cb_gadcon_min_size_request(void *data, E_Gadcon *gc, Evas_Coord w, E
      }
 
    return;
-} /* _ngi_gadcon_cb_gadcon_min_size_request */
+}
 
 static void
 _ngi_gadcon_cb_gadcon_size_request(void *data, E_Gadcon *gc, Evas_Coord w, Evas_Coord h)
@@ -221,14 +222,14 @@ _ngi_gadcon_cb_gadcon_size_request(void *data, E_Gadcon *gc, Evas_Coord w, Evas_
    it = data;
 
    return;
-} /* _ngi_gadcon_cb_gadcon_size_request */
+}
 
 static Evas_Object *
 _ngi_gadcon_cb_gadcon_frame_request(void *data, E_Gadcon_Client *gcc, const char *style)
 {
    /* FIXME: provide an inset look edje thing */
    return NULL;
-} /* _ngi_gadcon_cb_gadcon_frame_request */
+}
 
 struct _E_Config_Dialog_Data
 {
@@ -264,7 +265,7 @@ ngi_gadcon_config(Ngi_Box *box)
                              "enlightenment/shelf", 0, v, box);
    //gc->config_dialog = cfd;
    e_dialog_resizable_set(cfd->dia, 1);
-} /* ngi_gadcon_config */
+}
 
 static void *
 _create_data(E_Config_Dialog *cfd)
@@ -274,7 +275,7 @@ _create_data(E_Config_Dialog *cfd)
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
    cfdata->box = cfd->data;
    return cfdata;
-} /* _create_data */
+}
 
 static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
@@ -290,7 +291,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
       return;
 
    gc->config_dialog = NULL;
-} /* _free_data */
+}
 
 static Evas_Object *
 _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
@@ -337,7 +338,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    cfdata->hdl = ecore_event_handler_add(E_EVENT_MODULE_UPDATE,
                                          _cb_mod_update, cfdata);
    return o;
-} /* _basic_create */
+}
 
 static Eina_Bool
 _cb_mod_update(void *data, int type, void *event)
@@ -353,7 +354,7 @@ _cb_mod_update(void *data, int type, void *event)
    _load_avail_gadgets(cfdata);
    _load_sel_gadgets(cfdata);
    return EINA_TRUE;
-} /* _cb_mod_update */
+}
 
 static void
 _avail_list_cb_change(void *data, Evas_Object *obj)
@@ -377,7 +378,7 @@ _avail_list_cb_change(void *data, Evas_Object *obj)
         name = (char *)e_widget_ilist_nth_data_get(cfdata->o_avail, sel);
         _set_description(cfdata, name);
      }
-} /* _avail_list_cb_change */
+}
 
 static void
 _sel_list_cb_change(void *data, Evas_Object *obj)
@@ -401,7 +402,7 @@ _sel_list_cb_change(void *data, Evas_Object *obj)
         name = (char *)e_widget_ilist_nth_data_get(cfdata->o_sel, sel);
         _set_description(cfdata, name);
      }
-} /* _sel_list_cb_change */
+}
 
 static void
 _load_avail_gadgets(void *data)
@@ -448,7 +449,7 @@ _load_avail_gadgets(void *data)
    e_widget_ilist_thaw(cfdata->o_avail);
    edje_thaw();
    evas_event_thaw(evas);
-} /* _load_avail_gadgets */
+}
 
 static void
 _load_sel_gadgets(void *data)
@@ -518,7 +519,7 @@ _load_sel_gadgets(void *data)
 
    if (l2)
       eina_list_free(l2);
-} /* _load_sel_gadgets */
+}
 
 static void
 _cb_add(void *data, void *data2)
@@ -598,7 +599,7 @@ _cb_add(void *data, void *data2)
 
    if (l)
       eina_list_free(l);
-} /* _cb_add */
+}
 
 static void
 _cb_del(void *data, void *data2)
@@ -666,7 +667,7 @@ _cb_del(void *data, void *data2)
 
    if (l)
       eina_list_free(l);
-} /* _cb_del */
+}
 
 static void
 _set_description(void *data, const char *name)
@@ -696,5 +697,5 @@ _set_description(void *data, const char *name)
       e_widget_textblock_markup_set(cfdata->o_desc, desk->comment);
 
    efreet_desktop_free(desk);
-} /* _set_description */
+}
 

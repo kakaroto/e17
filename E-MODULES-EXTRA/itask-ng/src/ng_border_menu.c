@@ -96,7 +96,7 @@ ngi_border_menu_show(Ngi_Box *box, E_Border *bd, Evas_Coord x, Evas_Coord y, int
 
    e_menu_activate_mouse(m, ng->zone, ng->zone->x + x, ng->zone->y + y, 1, 1,
                          dir, timestamp);
-} /* ngi_border_menu_show */
+}
 
 static void
 _ng_border_cb_border_menu_end(void *data, E_Menu *m)
@@ -116,7 +116,7 @@ _ng_border_cb_border_menu_end(void *data, E_Menu *m)
      }
 
    //  if (ng) ngi_thaw(ng);
-} /* _ng_border_cb_border_menu_end */
+}
 
 static void
 _ng_border_menu_cb_close(void *data, E_Menu *m, E_Menu_Item *mi)
@@ -124,7 +124,7 @@ _ng_border_menu_cb_close(void *data, E_Menu *m, E_Menu_Item *mi)
    E_Border *bd = (E_Border *)data;
    if (!bd->lock_close)
       e_border_act_close_begin(bd);
-} /* _ng_border_menu_cb_close */
+}
 
 static void
 _ng_border_menu_cb_iconify(void *data, E_Menu *m, E_Menu_Item *mi)
@@ -137,7 +137,7 @@ _ng_border_menu_cb_iconify(void *data, E_Menu *m, E_Menu_Item *mi)
         else
            e_border_iconify(bd);
      }
-} /* _ng_border_menu_cb_iconify */
+}
 
 static void
 _ng_border_menu_cb_maximize(void *data, E_Menu *m, E_Menu_Item *mi)
@@ -146,14 +146,14 @@ _ng_border_menu_cb_maximize(void *data, E_Menu *m, E_Menu_Item *mi)
    if (!bd->lock_user_maximize)
       e_border_maximize(bd, (e_config->maximize_policy & E_MAXIMIZE_TYPE) |
                         E_MAXIMIZE_BOTH);
-} /* _ng_border_menu_cb_maximize */
+}
 
 static void
 _ng_border_menu_cb_unmaximize(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    E_Border *bd = (E_Border *)data;
    e_border_unmaximize(bd, E_MAXIMIZE_BOTH);
-} /* _ng_border_menu_cb_unmaximize */
+}
 
 static void
 _ng_border_menu_cb_fullscreen(void *data, E_Menu *m, E_Menu_Item *mi)
@@ -172,5 +172,5 @@ _ng_border_menu_cb_fullscreen(void *data, E_Menu *m, E_Menu_Item *mi)
         else
            e_border_unfullscreen(bd);
      }
-} /* _ng_border_menu_cb_fullscreen */
+}
 

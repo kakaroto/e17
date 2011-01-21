@@ -33,7 +33,7 @@ _ngi_item_new(Ngi_Box *box)
 
    it->overlay_signal_timer = NULL;
    return it;
-} /* _ngi_item_new */
+}
 
 Ngi_Item *
 ngi_item_new(Ngi_Box *box)
@@ -54,7 +54,7 @@ ngi_item_new(Ngi_Box *box)
    evas_object_show(it->over);
 
    return it;
-} /* ngi_item_new */
+}
 
 void
 ngi_item_remove(Ngi_Item *it)
@@ -77,7 +77,7 @@ ngi_item_remove(Ngi_Item *it)
       ng->item_drag = NULL;
 
    ngi_animate(ng);
-} /* ngi_item_remove */
+}
 
 EAPI void
 ngi_item_free(Ngi_Item *it)
@@ -124,7 +124,7 @@ ngi_item_free(Ngi_Item *it)
      }
 
    E_FREE(it);
-} /* ngi_item_free */
+}
 
 void
 ngi_item_del_icon(Ngi_Item *it)
@@ -142,7 +142,7 @@ ngi_item_del_icon(Ngi_Item *it)
         evas_object_del(it->o_icon2);
         it->o_icon2 = NULL;
      }
-} /* ngi_item_del_icon */
+}
 
 /* static int
  * _ngi_item_over_idle_hide_cb(void *data)
@@ -162,7 +162,7 @@ ngi_item_signal_emit(Ngi_Item *it, char *sig)
         edje_object_signal_emit(it->over, sig, "e");
         //it->overlay_signal_timer = ecore_timer_add(2.0, _ngi_item_over_idle_hide_cb, it);
      }
-} /* ngi_item_signal_emit */
+}
 
 void
 ngi_item_mouse_in(Ngi_Item *it)
@@ -173,7 +173,7 @@ ngi_item_mouse_in(Ngi_Item *it)
        //      evas_object_show(it->over);
        edje_object_signal_emit(it->over, "e,state,item_focused", "e");
        }*/
-} /* ngi_item_mouse_in */
+}
 
 void
 ngi_item_mouse_out(Ngi_Item *it)
@@ -184,5 +184,5 @@ ngi_item_mouse_out(Ngi_Item *it)
        //      evas_object_hide(it->over);
        edje_object_signal_emit(it->over, "e,state,item_unfocused", "e");
        }*/
-} /* ngi_item_mouse_out */
+}
 

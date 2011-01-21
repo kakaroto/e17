@@ -66,7 +66,7 @@ ngi_instances_config(E_Container *con, const char *params)
                              "enlightenment/module/ng-instances", 0, v, NULL);
    ngi_config->cfd = cfd;
    return cfd;
-} /* ngi_instances_config */
+}
 
 static void *
 _create_data(E_Config_Dialog *cfd)
@@ -75,14 +75,14 @@ _create_data(E_Config_Dialog *cfd)
 
    cfdata = E_NEW(E_Config_Dialog_Data, 1);
    return cfdata;
-} /* _create_data */
+}
 
 static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    ngi_config->cfd = NULL;
    E_FREE(cfdata);
-} /* _free_data */
+}
 
 static Evas_Object *
 _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
@@ -115,7 +115,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    e_dialog_resizable_set(cfd->dia, 1);
    return o;
-} /* _basic_create_widgets */
+}
 
 /* private functions */
 static void
@@ -209,7 +209,7 @@ _ilist_fill(E_Config_Dialog_Data *cfdata)
         e_widget_disabled_set(cfdata->o_delete, 1);
         e_widget_disabled_set(cfdata->o_config, 1);
      }
-} /* _ilist_fill */
+}
 
 static void
 _ilist_cb_selected(void *data)
@@ -220,7 +220,7 @@ _ilist_cb_selected(void *data)
 
    e_widget_disabled_set(cfdata->o_delete, 0);
    e_widget_disabled_set(cfdata->o_config, 0);
-} /* _ilist_cb_selected */
+}
 
 static void
 _cb_add(void *data, void *data2)
@@ -246,7 +246,7 @@ _cb_add(void *data, void *data2)
    cfg->zone = zone->num;
    cfg->orient = E_GADCON_ORIENT_BOTTOM;
    cfg->size = 30;
-   cfg->autohide = 0;
+   cfg->autohide = AUTOHIDE_FULLSCREEN;
    cfg->autohide_show_urgent = 0;
    cfg->hide_below_windows = 0;
    cfg->zoom_duration = 0.2;
@@ -334,7 +334,7 @@ _cb_add(void *data, void *data2)
    ngi_new(cfg);
 
    _ilist_fill(cfdata);
-} /* _cb_add */
+}
 
 static void
 _cb_delete(void *data, void *data2)
@@ -367,7 +367,7 @@ _cb_delete(void *data, void *data2)
    e_confirm_dialog_show(D_("Are you sure you want to delete this Instance?"),
                          "enlightenment/exit", buf, NULL, NULL, _cb_dialog_yes, NULL, d, NULL,
                          _cb_dialog_destroy, d);
-} /* _cb_delete */
+}
 
 static void
 _cb_dialog_yes(void *data)
@@ -382,7 +382,7 @@ _cb_dialog_yes(void *data)
    ngi_config->items = eina_list_remove(ngi_config->items, d->cfg);
 
    e_config_domain_save("module.ng", ngi_conf_edd, ngi_config);
-} /* _cb_dialog_yes */
+}
 
 static void
 _cb_dialog_destroy(void *data)
@@ -390,7 +390,7 @@ _cb_dialog_destroy(void *data)
    Ngi_Del_Confirm_Data *d = (Ngi_Del_Confirm_Data *)data;
    _ilist_fill(d->cfdata);
    E_FREE(d);
-} /* _cb_dialog_destroy */
+}
 
 static void
 _cb_config(void *data, void *data2)
@@ -409,5 +409,5 @@ _cb_config(void *data, void *data2)
       return;
 
    ngi_configure_module(ci);
-} /* _cb_config */
+}
 

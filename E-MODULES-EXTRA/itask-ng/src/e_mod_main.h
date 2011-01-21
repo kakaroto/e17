@@ -49,8 +49,6 @@ typedef struct _Ngi_Item      Ngi_Item;
 typedef struct _Ngi_Win       Ngi_Win;
 typedef struct _Ngi_Box       Ngi_Box;
 
-
-
 struct _Config
 {
   E_Module      *module;
@@ -98,8 +96,6 @@ struct _Config_Item
   E_Config_Dialog *config_dialog;
 };
 
-
-
 struct _Config_Box
 {
   enum { launcher, taskbar, gadcon } type;
@@ -130,17 +126,10 @@ struct _Ngi_Win
 {
   Ng             *ng;
 
-  int             x, y, w, h;
+  /* int             x, y, w, h; */
   E_Popup        *popup;
   Evas           *evas;
-  Ecore_Evas     *ee;
   Ecore_X_Window  evas_win;
-   
-  Ecore_X_Window input;
-  Ecore_X_Window edge;
-  E_Drop_Handler *drop_handler;
-  E_Win          *fake_ewin;
-  E_Win          *fake_iwin;
 };
 
 
@@ -193,7 +182,6 @@ struct _Ng
   Eina_List       *handlers;
   
   Ecore_Timer     *animator;
-  Ecore_Timer     *mouse_out_timer;  
   Ecore_Timer     *mouse_in_timer;  
   Ecore_Timer     *menu_wait_timer;
   Ecore_Timer     *effect_timer;

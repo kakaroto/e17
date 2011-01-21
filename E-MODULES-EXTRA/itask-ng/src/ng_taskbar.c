@@ -78,7 +78,7 @@ ngi_taskbar_init(void)
       ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
 
    ECOMORPH_ATOM_THUMBNAIL = ecore_x_atom_get("__ECOMORPH_THUMBNAIL");
-} /* ngi_taskbar_init */
+}
 
 void
 ngi_taskbar_new(Ng *ng, Config_Box *cfg)
@@ -92,13 +92,13 @@ ngi_taskbar_new(Ng *ng, Config_Box *cfg)
 
    // "enlightenment/border", "enlightenment/desktop",
    const char *drop[] = {"text/uri-list","text/x-moz-url", "enlightenment/x-file"};
-   box->drop_handler = e_drop_handler_add(E_OBJECT(ng->win->fake_iwin), box,
+   box->drop_handler = e_drop_handler_add(E_OBJECT(ng->win->popup), box,
                                           _ngi_taskbar_cb_drop_enter, _ngi_taskbar_cb_drop_move,
                                           _ngi_taskbar_cb_drop_leave, _ngi_taskbar_cb_drop_end,
                                           drop, 3, 0, 0, 0, 0);
 
    ngi_taskbar_fill(box);
-} /* ngi_taskbar_new */
+}
 
 void
 ngi_taskbar_fill(Ngi_Box *box)
@@ -115,7 +115,7 @@ ngi_taskbar_fill(Ngi_Box *box)
      }
 
    e_container_border_list_free(bl);
-} /* ngi_taskbar_fill */
+}
 
 void
 ngi_taskbar_remove(Ngi_Box *box)
@@ -123,7 +123,7 @@ ngi_taskbar_remove(Ngi_Box *box)
    e_drop_handler_del(box->drop_handler);
 
    ngi_box_free(box);
-} /* ngi_taskbar_remove */
+}
 
 static int
 _ngi_taskbar_border_check(Ngi_Box *box, E_Border *bd)
@@ -149,7 +149,7 @@ _ngi_taskbar_border_check(Ngi_Box *box, E_Border *bd)
       return 0;
 
    return 1;
-} /* _ngi_taskbar_border_check */
+}
 
 static Ngi_Item *
 _ngi_taskbar_border_find(Ngi_Box *box, E_Border *bd)
@@ -162,17 +162,9 @@ _ngi_taskbar_border_find(Ngi_Box *box, E_Border *bd)
       return it;
 
    return NULL;
-} /* _ngi_taskbar_border_find */
+}
 
 /* *************************  DND  CALLBACKS  ************************** */
-
-static int
-_ngi_taskbar_pos_set(Ngi_Box *box, int pos)
-{
-   box->ng->pos = pos + box->pos;
-
-   return 1;
-} /* _ngi_taskbar_pos_set */
 
 static void
 _ngi_taskbar_cb_drop_enter(void *data, const char *type, void *event_info)
@@ -181,10 +173,12 @@ _ngi_taskbar_cb_drop_enter(void *data, const char *type, void *event_info)
    Ngi_Box *box = (Ngi_Box *)data;
    Ng *ng = box->ng;
 
-   _ngi_taskbar_pos_set(box, ng->horizontal ? ev->x : ev->y);
+   ng->pos = (ng->horizontal ? ev->x : ev->y);
 
    ng->item_active = ngi_box_item_at_position_get(box);
 
+   printf("drop enter %d %p\n", ng->pos, ng->item_active);
+   
    if (!ng->item_active)
       return;  /* FIXME set edge_in before ?*/
 
@@ -192,12 +186,12 @@ _ngi_taskbar_cb_drop_enter(void *data, const char *type, void *event_info)
 
    if (box->dnd_timer)
       ecore_timer_del(box->dnd_timer);
+   
+   box->dnd_timer = ecore_timer_add(0.5, _ngi_taskbar_cb_show_window, box);
 
-   box->dnd_timer = ecore_timer_add(0.6, _ngi_taskbar_cb_show_window, box);
-   //ng->mouse_in = 0;
-   //ng->edge_in = 0;
+   ng->dnd = 1;
    ngi_mouse_in(ng);
-} /* _ngi_taskbar_cb_drop_enter */
+}
 
 static void
 _ngi_taskbar_cb_drop_leave(void *data, const char *type, void *event_info)
@@ -205,15 +199,17 @@ _ngi_taskbar_cb_drop_leave(void *data, const char *type, void *event_info)
    Ngi_Box *box = (Ngi_Box *)data;
    Ng *ng = box->ng;
 
+   printf("drop leave %d %p\n", ng->pos, ng->item_active);
+   
    if (box->dnd_timer)
-      ecore_timer_del(box->dnd_timer);
-
-   box->dnd_timer = NULL;
-
+     {
+	ecore_timer_del(box->dnd_timer);
+	box->dnd_timer = NULL;
+     }
+   
    ng->item_active = NULL;
-
    ngi_mouse_out(ng);
-} /* _ngi_taskbar_cb_drop_leave */
+}
 
 static void
 _ngi_taskbar_cb_drop_move(void *data, const char *type, void *event_info)
@@ -223,8 +219,8 @@ _ngi_taskbar_cb_drop_move(void *data, const char *type, void *event_info)
    Ng *ng = box->ng;
    Ngi_Item *it;
 
-   _ngi_taskbar_pos_set(box, ng->horizontal ? ev->x : ev->y);
-
+   ng->pos = (ng->horizontal ? ev->x : ev->y);
+   
    it = ngi_box_item_at_position_get(box);
 
    if (!it || !ng->item_active)
@@ -234,17 +230,21 @@ _ngi_taskbar_cb_drop_move(void *data, const char *type, void *event_info)
      {
         if (box->dnd_timer)
            ecore_timer_del(box->dnd_timer);
+	box->dnd_timer = NULL;
+	
+	if (it)
+	  {
+	     ITEM_MOUSE_OUT(ng->item_active);
+	     ITEM_MOUSE_IN(it);
 
-        ITEM_MOUSE_OUT(ng->item_active);
-        ITEM_MOUSE_IN(it);
+	     ng->item_active = it;
 
-        ng->item_active = it;
-
-        box->dnd_timer = ecore_timer_add(0.6, _ngi_taskbar_cb_show_window, box);
+	     box->dnd_timer = ecore_timer_add(0.5, _ngi_taskbar_cb_show_window, box);
+	  }	
      }
 
    ngi_animate(ng);
-} /* _ngi_taskbar_cb_drop_move */
+}
 
 static void
 _ngi_taskbar_cb_drop_end(void *data, const char *type, void *event_info)
@@ -255,15 +255,15 @@ _ngi_taskbar_cb_drop_end(void *data, const char *type, void *event_info)
    if (!ng->item_active)
       return;
 
-   ng->item_active = NULL;
-
    if (box->dnd_timer)
-      ecore_timer_del(box->dnd_timer);
+     {
+	ecore_timer_del(box->dnd_timer);
+	box->dnd_timer = NULL;
+     }
 
-   box->dnd_timer = NULL;
-
+   ng->item_active = NULL;
    ngi_mouse_out(ng);
-} /* _ngi_taskbar_cb_drop_end */
+}
 
 static Eina_Bool
 _ngi_taskbar_cb_show_window(void *data)
@@ -306,7 +306,7 @@ _ngi_taskbar_cb_show_window(void *data)
 
    box->dnd_timer = NULL;
    return EINA_FALSE;
-} /* _ngi_taskbar_cb_show_window */
+}
 
 /* ************************** BORDER CALLBACKS ************************* */
 
@@ -445,7 +445,7 @@ _ngi_taskbar_cb_border_event(void *data, int type, void *event)
       }
    }
    return EINA_TRUE;
-} /* _ngi_taskbar_cb_border_event */
+}
 
 static Eina_Bool
 _ngi_taskbar_cb_desk_show(void *data, int type, void *event)
@@ -487,7 +487,7 @@ _ngi_taskbar_cb_desk_show(void *data, int type, void *event)
       }
    }
    return EINA_TRUE;
-} /* _ngi_taskbar_cb_desk_show */
+}
 
 /* ***************************  TASKBAR  ITEM  *************************** */
 
@@ -568,7 +568,7 @@ _ngi_taskbar_item_new(Ngi_Box *box, E_Border *bd)
 
    if (!bd->iconic || box->cfg->taskbar_show_iconified == 2)
       ngi_item_signal_emit(it, "e,state,taskbar_item_normal");
-} /* _ngi_taskbar_item_new */
+}
 
 Evas_Object *
 _ngi_taskbar_border_icon_add(E_Border *bd, Evas *evas)
@@ -693,7 +693,7 @@ _ngi_taskbar_border_icon_add(E_Border *bd, Evas *evas)
    e_util_edje_icon_set(o, "enlightenment/unknown");
 
    return o;
-} /* _ngi_taskbar_border_icon_add */
+}
 
 static void
 _ngi_taskbar_item_set_icon(Ngi_Item *it)
@@ -712,7 +712,7 @@ _ngi_taskbar_item_set_icon(Ngi_Item *it)
 
    if (it->border->iconic && it->box->cfg->taskbar_show_iconified != 2)
       ngi_item_signal_emit(it, "e,state,taskbar_item_iconify");
-} /* _ngi_taskbar_item_set_icon */
+}
 
 static void
 _ngi_taskbar_item_set_label(Ngi_Item *it)
@@ -751,7 +751,7 @@ _ngi_taskbar_item_set_label(Ngi_Item *it)
      {
         it->label = eina_stringshare_add(title);
      }
-} /* _ngi_taskbar_item_set_label */
+}
 
 /* **************************  ITEM  CALLBACKS  ************************** */
 
@@ -773,8 +773,8 @@ _ngi_taskbar_item_cb_mouse_down(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
         int dir = E_MENU_POP_DIRECTION_AUTO;
         evas_object_geometry_get(it->obj, &x, &y, &w, &h);
 
-        x += ng->win->x + ng->zone->x;
-        y += ng->win->y + ng->zone->y;
+        x += ng->win->popup->x + ng->zone->x;
+        y += ng->win->popup->y + ng->zone->y;
 
         ITEM_MOUSE_OUT(it);
 
@@ -806,7 +806,7 @@ _ngi_taskbar_item_cb_mouse_down(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
      }
    else
       it->mouse_down = 1;
-} /* _ngi_taskbar_item_cb_mouse_down */
+}
 
 void
 ngi_taskbar_item_border_show(Ngi_Item *it, int to_desk)
@@ -846,7 +846,7 @@ ngi_taskbar_item_border_show(Ngi_Item *it, int to_desk)
      }
 
    e_border_focus_set(bd, 1, 1);
-} /* ngi_taskbar_item_border_show */
+}
 
 static void
 _ngi_taskbar_item_cb_mouse_up(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
@@ -879,7 +879,7 @@ _ngi_taskbar_item_cb_mouse_up(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
      {
         ngi_taskbar_item_border_show(it, 1);
      }
-} /* _ngi_taskbar_item_cb_mouse_up */
+}
 
 static void
 _ngi_taskbar_item_cb_drag_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
@@ -888,7 +888,7 @@ _ngi_taskbar_item_cb_drag_del(void *data, Evas *e, Evas_Object *obj, void *event
 
    ng->show_bar--;
    ngi_thaw(ng);
-} /* _ngi_taskbar_item_cb_drag_del */
+}
 
 static void
 _ngi_taskbar_item_cb_drag_start(Ngi_Item *it)
@@ -923,7 +923,7 @@ _ngi_taskbar_item_cb_drag_start(Ngi_Item *it)
    ecore_x_pointer_xy_get(ng->win->evas_win, &px, &py);
 
    e_drag_start(d, px, py);
-} /* _ngi_taskbar_item_cb_drag_start */
+}
 
 static void
 _ngi_taskbar_item_cb_drag_end(E_Drag *drag, int dropped)
@@ -952,7 +952,7 @@ _ngi_taskbar_item_cb_drag_end(E_Drag *drag, int dropped)
       e_border_unshade(bd, E_DIRECTION_UP);
 
    e_object_unref(E_OBJECT(bd));
-} /* _ngi_taskbar_item_cb_drag_end */
+}
 
 #define TEXT_DIST 36
 
@@ -976,7 +976,7 @@ _ngi_taskbar_zoom_function(Ng *ng)
       ((sqrt_ff_1 - sqrt_ffxx) / (sqrt_ff_1 - f)) + 1.0;
 
    return (int)(zoom * (double)ng->size) + TEXT_DIST;
-} /* _ngi_taskbar_zoom_function */
+}
 
 static Eina_Bool
 _ngi_taskbar_cb_preview_hide(void *data)
@@ -990,7 +990,7 @@ _ngi_taskbar_cb_preview_hide(void *data)
                                  SubstructureNotifyMask,
                                  0, 0, 0, 0, 0);
    return EINA_FALSE;
-} /* _ngi_taskbar_cb_preview_hide */
+}
 
 static void
 _ngi_taskbar_item_mouse_in(Ngi_Item *it)
@@ -1010,7 +1010,7 @@ _ngi_taskbar_item_mouse_in(Ngi_Item *it)
                                       _ngi_taskbar_zoom_function(ng),
                                       ng->cfg->orient,0);
      }
-} /* _ngi_taskbar_item_mouse_in */
+}
 
 static void
 _ngi_taskbar_item_mouse_out(Ngi_Item *it)
@@ -1023,5 +1023,5 @@ _ngi_taskbar_item_mouse_out(Ngi_Item *it)
 
         ng->effect_timer = ecore_timer_add(0.2, _ngi_taskbar_cb_preview_hide, ng);
      }
-} /* _ngi_taskbar_item_mouse_out */
+}
 

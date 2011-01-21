@@ -38,7 +38,7 @@ ngi_launcher_new(Ng *ng, Config_Box *cfg)
      "text/uri-list" };
 
    box->drop_handler = e_drop_handler_add
-         (E_OBJECT(ng->win->fake_iwin), box,
+         (E_OBJECT(ng->win->popup), box,
          _ngi_launcher_cb_drop_enter, _ngi_launcher_cb_drop_move,
          _ngi_launcher_cb_drop_leave, _ngi_launcher_cb_drop_end,
          drop, 3, 0, 0, 0, 0);
@@ -58,7 +58,7 @@ ngi_launcher_new(Ng *ng, Config_Box *cfg)
    e_order_update_callback_set(box->apps, _ngi_launcher_app_change_cb, box);
 
    _ngi_launcher_fill(box);
-} /* ngi_launcher_new */
+}
 
 void
 ngi_launcher_remove(Ngi_Box *box)
@@ -72,7 +72,7 @@ ngi_launcher_remove(Ngi_Box *box)
      }
 
    ngi_box_free(box);
-} /* ngi_launcher_remove */
+}
 
 static void
 _ngi_launcher_fill(Ngi_Box *box)
@@ -89,7 +89,7 @@ _ngi_launcher_fill(Ngi_Box *box)
      }
 
    ngi_thaw(box->ng);
-} /* _ngi_launcher_fill */
+}
 
 static void
 _ngi_launcher_app_change_cb(void *data, E_Order *eo)
@@ -182,7 +182,7 @@ _ngi_launcher_app_change_cb(void *data, E_Order *eo)
    _ngi_launcher_fill(box);
 
    ngi_thaw(ng);
-} /* _ngi_launcher_app_change_cb */
+}
 
 /* ******************************* LAUNCHER DROP HANDLER ******************** */
 
@@ -190,10 +190,10 @@ static void
 _ngi_launcher_pos_set(Ngi_Box *box, int x, int y)
 {
    if (box->ng->horizontal)
-      box->ng->pos = x + box->pos + box->ng->size;
+      box->ng->pos = x + box->ng->size;
    else
-      box->ng->pos = y + box->pos + box->ng->size;
-} /* _ngi_launcher_pos_set */
+      box->ng->pos = y + box->ng->size;
+}
 
 static void
 _ngi_launcher_cb_drop_enter(void *data, const char *type, void *event_info)
@@ -227,7 +227,7 @@ _ngi_launcher_cb_drop_enter(void *data, const char *type, void *event_info)
    box->ng->state = unzoomed;
 
    ngi_mouse_in(box->ng);
-} /* _ngi_launcher_cb_drop_enter */
+}
 
 static void
 _ngi_launcher_cb_drop_move (void *data, const char *type, void *event_info)
@@ -268,7 +268,7 @@ _ngi_launcher_cb_drop_move (void *data, const char *type, void *event_info)
      }
 
    ngi_thaw(ng);
-} /* _ngi_launcher_cb_drop_move */
+}
 
 static void
 _ngi_launcher_cb_drop_leave(void *data, const char *type, void *event_info)
@@ -291,7 +291,7 @@ _ngi_launcher_cb_drop_leave(void *data, const char *type, void *event_info)
    ngi_input_extents_calc(ng, 1);
    ng->dnd = 0;
    ngi_mouse_out(ng);
-} /* _ngi_launcher_cb_drop_leave */
+}
 
 static void
 _ngi_launcher_cb_drop_end  (void *data, const char *type, void *event_info)
@@ -397,7 +397,7 @@ _ngi_launcher_cb_drop_end  (void *data, const char *type, void *event_info)
    printf("mouse_out drop end\n");
    ng->dnd = 0;
    ngi_mouse_out(ng);
-} /* _ngi_launcher_cb_drop_end */
+}
 
 /* ******************************* LAUNCHER ITEM ********************************** */
 
@@ -435,7 +435,7 @@ _ngi_launcher_item_new(Ngi_Box *box, Efreet_Desktop *desktop, int instant, Ngi_I
 
    ngi_box_item_show(ng, it, instant);
    ngi_item_signal_emit(it, "e,state,launcher_item_normal");
-} /* _ngi_launcher_item_new */
+}
 
 static void
 _ngi_launcher_item_fill(Ngi_Item *it)
@@ -457,7 +457,7 @@ _ngi_launcher_item_fill(Ngi_Item *it)
       it->label = eina_stringshare_add(it->app->generic_name);
    else
       it->label = eina_stringshare_add("");
-} /* _ngi_launcher_item_fill */
+}
 
 static void
 _ngi_launcher_item_cb_drag_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
@@ -466,7 +466,7 @@ _ngi_launcher_item_cb_drag_del(void *data, Evas *e, Evas_Object *obj, void *even
 
    ng->show_bar--;
    ngi_thaw(ng);
-} /* _ngi_launcher_item_cb_drag_del */
+}
 
 static void
 _ngi_launcher_item_cb_drag_start(Ngi_Item *it)
@@ -508,7 +508,7 @@ _ngi_launcher_item_cb_drag_start(Ngi_Item *it)
    ng->show_bar++;
 
    ngi_thaw(ng);
-} /* _ngi_launcher_item_cb_drag_start */
+}
 
 static void
 _ngi_launcher_menu_cb_lock_dnd(void *data, E_Menu *m, E_Menu_Item *mi)
@@ -518,7 +518,7 @@ _ngi_launcher_menu_cb_lock_dnd(void *data, E_Menu *m, E_Menu_Item *mi)
       return;
 
    box->cfg->launcher_lock_dnd = e_menu_item_toggle_get(mi);
-} /* _ngi_launcher_menu_cb_lock_dnd */
+}
 
 static void
 _ngi_launcher_menu_cb_edit_icon(void *data, E_Menu *m, E_Menu_Item *mi)
@@ -528,7 +528,7 @@ _ngi_launcher_menu_cb_edit_icon(void *data, E_Menu *m, E_Menu_Item *mi)
       return;
 
    e_desktop_edit(it->box->ng->zone->container, it->app);
-} /* _ngi_launcher_menu_cb_edit_icon */
+}
 
 static void
 _ngi_launcher_menu_cb_configure_bar(void *data, E_Menu *m, E_Menu_Item *mi)
@@ -538,7 +538,7 @@ _ngi_launcher_menu_cb_configure_bar(void *data, E_Menu *m, E_Menu_Item *mi)
       return;
 
    ngi_configure_module(ng->cfg);
-} /* _ngi_launcher_menu_cb_configure_bar */
+}
 
 static void
 _ngi_launcher_menu_cb_configure_launcher(void *data, E_Menu *m, E_Menu_Item *mi)
@@ -555,7 +555,7 @@ _ngi_launcher_menu_cb_configure_launcher(void *data, E_Menu *m, E_Menu_Item *mi)
    e_configure_registry_call("internal/ibar_other",
                              e_container_current_get(e_manager_current_get()),
                              path);
-} /* _ngi_launcher_menu_cb_configure_launcher */
+}
 
 static void
 _ngi_launcher_menu_cb_menu_end(void *data, E_Menu *m)
@@ -565,7 +565,7 @@ _ngi_launcher_menu_cb_menu_end(void *data, E_Menu *m)
    e_object_del(E_OBJECT(m));
 
    ngi_thaw(ng);
-} /* _ngi_launcher_menu_cb_menu_end */
+}
 
 static void
 _ngi_launcher_item_cb_mouse_down(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
@@ -585,8 +585,8 @@ _ngi_launcher_item_cb_mouse_down(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
      {
         evas_object_geometry_get(it->obj, &x, &y, &w, &h);
 
-        x += box->ng->win->x + box->ng->zone->x;
-        y += box->ng->win->y + box->ng->zone->y;
+        x += box->ng->win->popup->x + box->ng->zone->x;
+        y += box->ng->win->popup->y + box->ng->zone->y;
 
         int dir = E_MENU_POP_DIRECTION_AUTO;
 
@@ -643,7 +643,7 @@ _ngi_launcher_item_cb_mouse_down(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
      }
    else
       it->mouse_down = 1;
-} /* _ngi_launcher_item_cb_mouse_down */
+}
 
 static void
 _ngi_launcher_item_cb_mouse_up(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
@@ -669,5 +669,5 @@ _ngi_launcher_item_cb_mouse_up(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
      }
 
    it->mouse_down = 0;
-} /* _ngi_launcher_item_cb_mouse_up */
+}
 
