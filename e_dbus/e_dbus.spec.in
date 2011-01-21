@@ -57,7 +57,7 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(-, root, root)
-%{_includedir}/*.h
+%{_includedir}/e_dbus-1/*.h
 %{_libdir}/*.so
 %{_libdir}/*.la
 %{_libdir}/*.a
