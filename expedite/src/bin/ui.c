@@ -229,7 +229,10 @@ _ui_all(void)
         wfps += (p_fps * weights[t_count]);
 	key_func("Escape");
      }
-   for (i = 1; i < ((sizeof(weights) / sizeof(double)) - 1); i++)
+   for (i = 1; 
+        (i < ((sizeof(weights) / sizeof(double)) - 1)) &&
+        (weights[i] > 0.0);
+        i++)
      avgw += weights[i];
    avgw /= (i - 1);
    if (t_count > 0)
