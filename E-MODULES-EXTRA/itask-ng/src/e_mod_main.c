@@ -1,6 +1,5 @@
 #include "e_mod_main.h"
 #include <X11/extensions/shape.h>
-#include <X11/Xlib.h>
 
 #define WINDOW_HEIGHT 200
 
@@ -613,6 +612,7 @@ _ngi_win_new(Ng *ng)
 	ecore_evas_alpha_set(win->popup->ecore_evas, 1);
 	win->popup->evas_win = ecore_evas_software_x11_window_get(win->popup->ecore_evas);
 	win->input = win->popup->evas_win;
+	win->drop_win = E_OBJECT(win->popup);
      }
    else
      {
@@ -623,6 +623,7 @@ _ngi_win_new(Ng *ng)
 
 	win->fake_iwin = E_OBJECT_ALLOC(E_Win, E_WIN_TYPE, NULL);
 	win->fake_iwin->evas_win = win->input;
+	win->drop_win = E_OBJECT(win->fake_iwin);
      }
    
    ecore_x_netwm_window_type_set(win->popup->evas_win, ECORE_X_WINDOW_TYPE_DOCK);
@@ -721,6 +722,14 @@ ngi_win_position_calc(Ngi_Win *win)
 
       default:
          break;
+     }
+
+   if (win->fake_iwin)
+     {
+	win->fake_iwin->x = win->popup->x;
+	win->fake_iwin->y = win->popup->y;
+	win->fake_iwin->w = win->popup->w;
+	win->fake_iwin->h = win->popup->h;
      }
 }
 
@@ -984,7 +993,6 @@ ngi_input_extents_calc(Ng *ng, int resize)
    int item_zoomed;
    Ngi_Win *win = ng->win;
    E_Zone *zone = ng->zone;
-   XRectangle rect;
    int x, y, w, h;
    int hidden = 0;
    int extra = ng->size;
@@ -1004,31 +1012,31 @@ ngi_input_extents_calc(Ng *ng, int resize)
    switch (ng->cfg->orient)
      {
       case E_GADCON_ORIENT_BOTTOM:
-         rect.x = ng->start - extra;
-         rect.y = (ng->win->popup->h + hidden) - item_zoomed;
-         rect.width = ng->w + 2 * extra;
-         rect.height = item_zoomed;
+         win->rect.x = ng->start - extra;
+         win->rect.y = (ng->win->popup->h + hidden) - item_zoomed;
+         win->rect.width = ng->w + 2 * extra;
+         win->rect.height = item_zoomed;
          break;
 
       case E_GADCON_ORIENT_TOP:
-         rect.x = ng->start;
-         rect.y = -hidden;
-         rect.width = ng->w;
-	 rect.height = item_zoomed;
+         win->rect.x = ng->start;
+         win->rect.y = -hidden;
+         win->rect.width = ng->w;
+	 win->rect.height = item_zoomed;
          break;
 
       case E_GADCON_ORIENT_LEFT:
-         rect.x = -hidden;
-         rect.y = ng->start;
-         rect.width = item_zoomed;
-         rect.height = ng->w;
+         win->rect.x = -hidden;
+         win->rect.y = ng->start;
+         win->rect.width = item_zoomed;
+         win->rect.height = ng->w;
          break;
 
       case E_GADCON_ORIENT_RIGHT:
-         rect.x = (ng->win->popup->w + hidden) - item_zoomed;
-         rect.y = ng->start;
-         rect.width = item_zoomed;
-         rect.height = ng->w;
+         win->rect.x = (ng->win->popup->w + hidden) - item_zoomed;
+         win->rect.y = ng->start;
+         win->rect.width = item_zoomed;
+         win->rect.height = ng->w;
          break;
      }
 
@@ -1038,19 +1046,14 @@ ngi_input_extents_calc(Ng *ng, int resize)
      {
 	XShapeCombineRectangles((Display *)ecore_x_display_get(),
 				win->input, ShapeInput, 0, 0,
-				&rect, 1, ShapeSet, Unsorted);
+				&win->rect, 1, ShapeSet, Unsorted);
      }
    else  
      {
 	ecore_x_window_move_resize(win->input,
-				   ng->zone->x + win->popup->x + rect.x,
-				   ng->zone->y + win->popup->y + rect.y,
-				   rect.width, rect.height);
-
-	ng->win->fake_iwin->x = ng->zone->x + win->popup->x + rect.x;
-	ng->win->fake_iwin->y = ng->zone->y + win->popup->y + rect.y;
-	ng->win->fake_iwin->w = rect.width;
-	ng->win->fake_iwin->h = rect.height;
+				   ng->zone->x + win->popup->x + win->rect.x,
+				   ng->zone->y + win->popup->y + win->rect.y,
+				   win->rect.width, win->rect.height);
      }
 
    EINA_LIST_FOREACH (ng->boxes, l, box)

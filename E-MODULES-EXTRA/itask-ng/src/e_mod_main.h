@@ -1,4 +1,5 @@
 #include <e.h>
+#include <X11/Xlib.h>
 
 #define D_(str) dgettext(PACKAGE, str)
 
@@ -127,7 +128,9 @@ struct _Ngi_Win
   Ng             *ng;
   E_Popup        *popup;
   Ecore_X_Window  input;
+  XRectangle      rect;
   E_Win          *fake_iwin;
+  E_Object       *drop_win;
 };
 
 

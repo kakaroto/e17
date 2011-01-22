@@ -92,7 +92,7 @@ ngi_taskbar_new(Ng *ng, Config_Box *cfg)
 
    // "enlightenment/border", "enlightenment/desktop",
    const char *drop[] = {"text/uri-list","text/x-moz-url", "enlightenment/x-file"};
-   box->drop_handler = e_drop_handler_add(E_OBJECT(ng->win->popup), box,
+   box->drop_handler = e_drop_handler_add(ng->win->drop_win, box,
                                           _ngi_taskbar_cb_drop_enter, _ngi_taskbar_cb_drop_move,
                                           _ngi_taskbar_cb_drop_leave, _ngi_taskbar_cb_drop_end,
                                           drop, 3, 0, 0, 0, 0);
@@ -910,8 +910,8 @@ _ngi_taskbar_item_cb_drag_start(Ngi_Item *it)
 
    if (!ngi_config->use_composite)
      {
-	x -= ng->win->fake_iwin->x - (ng->zone->x + ng->win->popup->x);
-	y -= ng->win->fake_iwin->y - (ng->zone->y + ng->win->popup->y);
+	x -= ng->win->rect.x;
+	y -= ng->win->rect.y;
      }
    
    const char *drag_types[] = { "enlightenment/border" };
