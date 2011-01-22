@@ -17,7 +17,7 @@ ngi_box_new(Ng *ng)
    box->dnd_timer = NULL;
    box->items = NULL;
 
-   box->separator = edje_object_add(ng->win->evas);
+   box->separator = edje_object_add(ng->evas);
 
    if (!e_theme_edje_object_set(box->separator,
                                 "base/theme/modules/itask-ng",

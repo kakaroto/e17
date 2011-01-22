@@ -125,11 +125,9 @@ struct _Config_Gadcon
 struct _Ngi_Win
 {
   Ng             *ng;
-
-  /* int             x, y, w, h; */
   E_Popup        *popup;
-  Evas           *evas;
-  Ecore_X_Window  evas_win;
+  Ecore_X_Window  input;
+  E_Win          *fake_iwin;
 };
 
 
@@ -137,6 +135,7 @@ struct _Ngi_Win
 struct _Ng
 {
   Ngi_Win         *win;
+  Evas            *evas;
   Eina_List       *boxes;
 
   Config_Item     *cfg;

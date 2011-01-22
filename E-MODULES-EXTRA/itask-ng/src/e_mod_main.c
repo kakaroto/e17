@@ -184,12 +184,12 @@ ngi_new(Config_Item *cfg)
 
    ng->size = ng->cfg->size;
 
-   ng->clip = evas_object_rectangle_add(ng->win->evas);
+   ng->clip = evas_object_rectangle_add(ng->evas);
    evas_object_move(ng->clip, -100004, -100004);
    evas_object_resize(ng->clip, 200008, 200008);
    evas_object_color_set(ng->clip, 255, 255, 255, 255);
 
-   ng->bg_clip = evas_object_rectangle_add(ng->win->evas);
+   ng->bg_clip = evas_object_rectangle_add(ng->evas);
    evas_object_move(ng->bg_clip, -100004, -100004);
    evas_object_resize(ng->bg_clip, 200008, 200008);
    evas_object_color_set(ng->bg_clip, cfg->alpha, cfg->alpha,
@@ -197,7 +197,7 @@ ngi_new(Config_Item *cfg)
 
    evas_object_show(ng->bg_clip);
 
-   ng->o_bg = edje_object_add(ng->win->evas);
+   ng->o_bg = edje_object_add(ng->evas);
    if (!e_theme_edje_object_set(ng->o_bg,
                                 "base/theme/modules/itask-ng",
                                 "e/modules/itask-ng/bg"))
@@ -207,7 +207,7 @@ ngi_new(Config_Item *cfg)
    evas_object_show(ng->o_bg);
    evas_object_clip_set(ng->o_bg, ng->bg_clip);
 
-   ng->o_frame = edje_object_add(ng->win->evas);
+   ng->o_frame = edje_object_add(ng->evas);
    if (!e_theme_edje_object_set(ng->o_frame,
                                 "base/theme/modules/itask-ng",
                                 "e/modules/itask-ng/bg_frame"))
@@ -216,7 +216,7 @@ ngi_new(Config_Item *cfg)
 
    evas_object_show(ng->o_frame);
 
-   ng->label = edje_object_add(ng->win->evas);
+   ng->label = edje_object_add(ng->evas);
 
    if (ng->horizontal)
      {
@@ -607,31 +607,48 @@ _ngi_win_new(Ng *ng)
 
    win->ng = ng;
    win->popup = e_popup_new(ng->zone, 0, 0, 0, 0);
-   
-   ecore_evas_alpha_set(win->popup->ecore_evas, 1);
-   win->popup->evas_win = ecore_evas_software_x11_window_get(win->popup->ecore_evas);
 
-   ecore_x_netwm_window_type_set(win->popup->evas_win, ECORE_X_WINDOW_TYPE_DOCK);
+   if (ngi_config->use_composite)
+     {
+	ecore_evas_alpha_set(win->popup->ecore_evas, 1);
+	win->popup->evas_win = ecore_evas_software_x11_window_get(win->popup->ecore_evas);
+	win->input = win->popup->evas_win;
+     }
+   else
+     {
+	ecore_evas_shaped_set(win->popup->ecore_evas, 1);
 	
-   win->evas = win->popup->evas;
-   win->evas_win = win->popup->evas_win;
+	win->input = ecore_x_window_input_new(ng->zone->container->win, 0, 0, 1, 1);
+	ecore_x_window_show(win->input);
 
-   e_drop_xdnd_register_set(win->popup->evas_win, 1);
-
-   e_container_window_raise(ng->zone->container, win->popup->evas_win, 999);
+	win->fake_iwin = E_OBJECT_ALLOC(E_Win, E_WIN_TYPE, NULL);
+	win->fake_iwin->evas_win = win->input;
+     }
+   
+   ecore_x_netwm_window_type_set(win->popup->evas_win, ECORE_X_WINDOW_TYPE_DOCK);
+   ng->evas = win->popup->evas;
+   
+   e_drop_xdnd_register_set(win->input, 1);
+   e_container_window_raise(ng->zone->container, win->input, 999);
    
    ngi_win_position_calc(win);
-
-
    e_popup_show(win->popup); 
+
    return win;
 }
 
 static int
 _ngi_win_free(Ngi_Win *win)
 {
-   e_drop_xdnd_register_set(win->popup->evas_win, 0);
-   e_object_del(E_OBJECT(win->popup)); 
+   e_drop_xdnd_register_set(win->input, 0);
+   e_object_del(E_OBJECT(win->popup));
+
+   if (win->fake_iwin)
+     {
+   	ecore_x_window_free(win->input);
+   	free(win->fake_iwin);
+     }
+   
    free(win);
 
    return 1;
@@ -698,7 +715,7 @@ ngi_win_position_calc(Ngi_Win *win)
          break;
 
       case E_GADCON_ORIENT_BOTTOM:
-	 e_popup_move_resize(win->popup, 0, ng->zone->h - size, ng->zone->w, size);
+	 e_popup_move_resize(win->popup, 0, ng->zone->h - size, ng->zone->w, size);	 
          ng->horizontal = 1;
          break;
 
@@ -760,7 +777,7 @@ _ngi_win_cb_mouse_in(void *data, int type, void *event)
    Ecore_X_Event_Mouse_In *ev = event;
    Ng *ng = data;
 
-   if (ev->win != ng->win->evas_win)
+   if (ev->win != ng->win->input)
       return EINA_TRUE;
 
    ng->pos = ng->horizontal ?
@@ -778,7 +795,7 @@ _ngi_win_cb_mouse_out(void *data, int type, void *event)
    Ecore_X_Event_Mouse_Out *ev = event;
    Ng *ng = data;
 
-   if (ev->win != ng->win->evas_win)
+   if (ev->win != ng->win->input)
       return EINA_TRUE;
 
    ngi_mouse_out(ng);
@@ -817,7 +834,7 @@ _ngi_win_cb_mouse_down(void *data, int type, void *event)
    Ecore_Event_Mouse_Button *ev = event;
    Ng *ng = data;
 
-   if (ev->event_window != ng->win->evas_win)
+   if (ev->event_window != ng->win->input)
       return EINA_TRUE;
 
    Ngi_Item *it = ng->item_active;
@@ -857,7 +874,7 @@ _ngi_win_cb_mouse_up(void *data, int type, void *event)
    Ecore_Event_Mouse_Button *ev = event;
    Ng *ng = data;
 
-   if (ev->event_window != ng->win->evas_win)
+   if (ev->event_window != ng->win->input)
       return EINA_TRUE;
 
    if (ng->item_active)
@@ -880,7 +897,7 @@ _ngi_win_cb_mouse_wheel(void *data, int type, void *event)
    Ecore_Event_Mouse_Wheel *ev = event;
    Ng *ng = data;
 
-   if (ev->event_window != ng->win->evas_win)
+   if (ev->event_window != ng->win->input)
       return EINA_TRUE;
 
    return EINA_TRUE;
@@ -892,7 +909,7 @@ _ngi_win_cb_mouse_move(void *data, int type, void *event)
    Ecore_Event_Mouse_Move *ev = event;
    Ng *ng = data;
 
-   if (ev->event_window != ng->win->evas_win)
+   if (ev->event_window != ng->win->input)
       return EINA_TRUE;
 
    int pos = ng->horizontal ? ev->root.x : ev->root.y;
@@ -981,7 +998,6 @@ ngi_input_extents_calc(Ng *ng, int resize)
      }
    else
      {
-        /* eeeek FIXME calc with edge distances + hidestep*/
         item_zoomed = ng->size + (ng->cfg->autohide ? 18 : 10);
      }
 
@@ -1016,42 +1032,57 @@ ngi_input_extents_calc(Ng *ng, int resize)
          break;
      }
 
-   e_container_window_raise(ng->zone->container, win->popup->evas_win, 999);
+   e_container_window_raise(ng->zone->container, win->input, 999);
 
-   XShapeCombineRectangles((Display *)ecore_x_display_get(),
-			   win->evas_win, ShapeInput, 0, 0,
-			   &rect, 1, ShapeSet, Unsorted);
+   if (ngi_config->use_composite)
+     {
+	XShapeCombineRectangles((Display *)ecore_x_display_get(),
+				win->input, ShapeInput, 0, 0,
+				&rect, 1, ShapeSet, Unsorted);
+     }
+   else  
+     {
+	ecore_x_window_move_resize(win->input,
+				   ng->zone->x + win->popup->x + rect.x,
+				   ng->zone->y + win->popup->y + rect.y,
+				   rect.width, rect.height);
+
+	ng->win->fake_iwin->x = ng->zone->x + win->popup->x + rect.x;
+	ng->win->fake_iwin->y = ng->zone->y + win->popup->y + rect.y;
+	ng->win->fake_iwin->w = rect.width;
+	ng->win->fake_iwin->h = rect.height;
+     }
 
    EINA_LIST_FOREACH (ng->boxes, l, box)
-   {
-      if (!box->drop_handler)
-         continue;
+     {
+	if (!box->drop_handler)
+	  continue;
 
-      int w = box->w;
-      if (w < 10) w = 10;
+	int w = box->w;
+	if (w < 10) w = 10;
 
-      switch (ng->cfg->orient)
-        {
-         case E_GADCON_ORIENT_BOTTOM:
-            e_drop_handler_geometry_set(box->drop_handler,
-					box->pos, win->popup->h - item_zoomed, w, item_zoomed);
-            break;
+	switch (ng->cfg->orient)
+	  {
+	   case E_GADCON_ORIENT_BOTTOM:
+	      e_drop_handler_geometry_set(box->drop_handler,
+					  box->pos, win->popup->h - item_zoomed, w, item_zoomed);
+	      break;
 
-         case E_GADCON_ORIENT_TOP:
-            e_drop_handler_geometry_set(box->drop_handler,
-					box->pos, 0, w, item_zoomed);
-            break;
+	   case E_GADCON_ORIENT_TOP:
+	      e_drop_handler_geometry_set(box->drop_handler,
+					  box->pos, 0, w, item_zoomed);
+	      break;
 
-         case E_GADCON_ORIENT_LEFT:
-            e_drop_handler_geometry_set(box->drop_handler,
-                                        0, box->pos, item_zoomed, w);
-            break;
+	   case E_GADCON_ORIENT_LEFT:
+	      e_drop_handler_geometry_set(box->drop_handler,
+					  0, box->pos, item_zoomed, w);
+	      break;
 
-         case E_GADCON_ORIENT_RIGHT:
-            e_drop_handler_geometry_set(box->drop_handler,
-                                        win->popup->w - item_zoomed, box->pos, item_zoomed, w);
-        }
-   }
+	   case E_GADCON_ORIENT_RIGHT:
+	      e_drop_handler_geometry_set(box->drop_handler,
+					  win->popup->w - item_zoomed, box->pos, item_zoomed, w);
+	  }
+     }
 }
 
 /**************************************************************************/
@@ -1104,26 +1135,22 @@ _ngi_item_activate(Ng *ng)
    else if (!it || ng->zoom_out)
      {
         ITEM_MOUSE_OUT(ng->item_active);
-        ng->item_active = NULL; /*XXX TEST*/
+        ng->item_active = NULL;
      }
 
    if (ng->item_active && ng->cfg->show_label)
      {
-        /* XXX this duplicates code from ngi_redraw */
         int h, size;
         double zoom = 1.0, disp;
 
 	h = ng->win->popup->h;
-
-        /* if (ng->zoom > 1.0)
-         *    _ngi_zoom_function(ng, 0, &zoom, &disp); */
 
         size = ng->cfg->zoomfactor * ng->size;
         switch (ng->cfg->orient)
           {
            case E_GADCON_ORIENT_BOTTOM:
               evas_object_move(ng->label, ng->item_active->pos,
-                               (h + ng->hide_step) - (size + 12 + TEXT_DIST)); /*XXX 12?*/
+                               (h + ng->hide_step) - (size + 12 + TEXT_DIST));
               break;
 
            case E_GADCON_ORIENT_TOP:
@@ -1285,9 +1312,6 @@ _ngi_autohide(Ng *ng, int hide)
 
    step = ((double)(size * 2) / (double)e_config->framerate) / cfg->zoom_duration;
 
-   /* if (!ng->zoom_out)
-    *   step *= 2.0; */
-   
    if (step < 1)
       step = 1;
 
@@ -1344,7 +1368,7 @@ static Eina_Bool
 _ngi_animator(void *data)
 {
    Ng *ng = (Ng *)data;
-   Eina_Bool cont = 0; /* continue */
+   Eina_Bool cont = 0;
    Eina_List *l;
    Ngi_Item *it;
 

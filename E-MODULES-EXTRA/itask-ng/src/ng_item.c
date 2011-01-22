@@ -40,13 +40,13 @@ ngi_item_new(Ngi_Box *box)
 {
    Ngi_Item *it = _ngi_item_new(box);
 
-   it->obj = edje_object_add(box->ng->win->evas);
+   it->obj = edje_object_add(box->ng->evas);
    if (!e_theme_edje_object_set(it->obj, "base/theme/modules/itask-ng", "e/modules/itask-ng/icon"))
       edje_object_file_set(it->obj, ngi_config->theme_path, "e/modules/itask-ng/icon");
 
    evas_object_show(it->obj);
 
-   it->over = edje_object_add(box->ng->win->evas);
+   it->over = edje_object_add(box->ng->evas);
    if (!e_theme_edje_object_set(it->over, "base/theme/modules/itask-ng", "e/modules/itask-ng/icon_overlay"))
       edje_object_file_set(it->over, ngi_config->theme_path, "e/modules/itask-ng/icon_overlay");
 

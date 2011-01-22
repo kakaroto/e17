@@ -94,9 +94,9 @@ static void
 _ngi_gadcon_item_cb_mouse_out(Ngi_Item *it)
 {
    /*TODO check if it is in mouse_down state */
-   evas_event_feed_mouse_up(it->box->ng->win->evas, 1, 0, 0, NULL);
-   evas_event_feed_mouse_up(it->box->ng->win->evas, 2, 0, 0, NULL);
-   evas_event_feed_mouse_up(it->box->ng->win->evas, 3, 0, 0, NULL);
+   evas_event_feed_mouse_up(it->box->ng->evas, 1, 0, 0, NULL);
+   evas_event_feed_mouse_up(it->box->ng->evas, 2, 0, 0, NULL);
+   evas_event_feed_mouse_up(it->box->ng->evas, 3, 0, 0, NULL);
    evas_object_focus_set(it->obj, 0);
 }
 

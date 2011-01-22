@@ -442,12 +442,12 @@ _ngi_launcher_item_fill(Ngi_Item *it)
 {
    ngi_item_del_icon(it);
 
-   it->o_icon = e_util_desktop_icon_add(it->app, 128, it->box->ng->win->evas);
+   it->o_icon = e_util_desktop_icon_add(it->app, 128, it->box->ng->evas);
    edje_object_part_swallow(it->obj, "e.swallow.content", it->o_icon);
    evas_object_pass_events_set(it->o_icon, 1);
    evas_object_show(it->o_icon);
 
-   it->o_icon2 = e_util_desktop_icon_add(it->app, 128, it->box->ng->win->evas);
+   it->o_icon2 = e_util_desktop_icon_add(it->app, 128, it->box->ng->evas);
    edje_object_part_swallow(it->over, "e.swallow.content", it->o_icon2);
    evas_object_pass_events_set(it->o_icon2, 1);
 
@@ -484,6 +484,12 @@ _ngi_launcher_item_cb_drag_start(Ngi_Item *it)
 
    evas_object_geometry_get(it->o_icon, &x, &y, &w, &h);
 
+   if (!ngi_config->use_composite)
+     {
+	x -= ng->win->fake_iwin->x - (ng->zone->x + ng->win->popup->x);
+	y -= ng->win->fake_iwin->y - (ng->zone->y + ng->win->popup->y);
+     }
+   
    const char *drag_types[] = { "enlightenment/desktop" };
 
    d = e_drag_new(ng->zone->container, x, y, drag_types, 1,
@@ -499,7 +505,7 @@ _ngi_launcher_item_cb_drag_start(Ngi_Item *it)
    e_drag_resize(d, w, h);
    evas_object_event_callback_add(o, EVAS_CALLBACK_DEL, _ngi_launcher_item_cb_drag_del, ng);
 
-   ecore_x_pointer_xy_get(ng->win->evas_win, &px, &py);
+   ecore_x_pointer_xy_get(ng->win->input, &px, &py);
 
    e_drag_start(d, px, py);
 
