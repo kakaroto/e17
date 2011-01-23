@@ -64,7 +64,7 @@ extern int debug;
 extern int current_timeline;
 extern char *home;
 extern char *dm_to;
-extern long long int reply_id;
+extern aStatus *reply_as;
 extern long long int user_id;
 
 long long max_status_id=0;
@@ -479,9 +479,9 @@ int ed_statusnet_post(int account_id, char *screen_name, char *password, char *p
 	request = calloc(1, sizeof(http_request));
 
 	if(request && strlen(msg) > 0) {
-		if(reply_id>0) {
-			res = asprintf(&ub_status, "source=%s&status=%s&in_reply_to_status_id=%lld", PACKAGE, msg, reply_id);
-			reply_id=0;
+		if(reply_as) {
+			res = asprintf(&ub_status, "source=%s&status=%s&in_reply_to_status_id=%lld", PACKAGE, msg, (long long int)reply_as->status->id);
+			reply_as=NULL;
 		} else if(user_id>0 || dm_to)
 			res = asprintf(&ub_status, "source=%s&text=%s", PACKAGE, msg);
 		else
@@ -1037,10 +1037,6 @@ void ed_statusnet_user_abandon(int account_id, char *screen_name, char *password
 	if(request) free(request);
 }
 
-static void ed_sn_single_status_free(statusnet_Status *s) {
-	statusnet_Status_free(s);
-}
-
 Eina_Bool ed_statusnet_repeat_disconnected(Azy_Client *cli, int type, Azy_Client *ev) {
 	return(EINA_TRUE);
 }
@@ -1055,7 +1051,7 @@ Eina_Bool ed_statusnet_repeat_connected(Azy_Client *cli, int type, Azy_Client *e
 	id = azy_client_blank(ev, AZY_NET_TYPE_POST, &buffer, (Azy_Content_Cb)azy_value_to_Array_statusnet_Status, NULL);
 	if(!id) return(EINA_FALSE);
 
-	azy_client_callback_free_set(ev, id, (Ecore_Cb)ed_sn_single_status_free);
+	azy_client_callback_free_set(ev, id, (Ecore_Cb)Array_statusnet_Status_free);
 
 	return(EINA_TRUE);
 }
@@ -1202,108 +1198,6 @@ static int ed_statusnet_status_get_handler(void *data, int argc, char **argv, ch
 	}
 	return(0);
 }
-
-static int ed_statusnet_user_get_from_db(void *data, int argc, char **argv, char **azColName) {
-	anUser *au = calloc(1, sizeof(anUser));
-	char *uid_str = argv[1];
-
-/*
-	argv[0]  := id					INTEGER
-	argv[1]  := uid					INTEGER
-	argv[2]  := account_id			INTEGER
-	argv[3]  := name				TEXT
-	argv[4]  := screen_name			TEXT
-	argv[5]  := location			TEXT
-	argv[6]  := description			TEXT
-	argv[7]  := profile_image_url	TEXT
-	argv[8]  := url					TEXT
-	argv[9]  := protected			INTEGER
-	argv[10] := followers_count		INTEGER
-	argv[11] := friends_count		INTEGER
-	argv[12] := created_at			INTEGER
-	argv[13] := favorites_count		INTEGER
-	argv[14] := statuses_count		INTEGER
-	argv[15] := following			INTEGER
-	argv[16] := statusnet_blocking	INTEGER
-*/
-
-	au->user = calloc(1, sizeof(statusnet_User));
-
-	au->user->id = strtoll(uid_str, NULL, 10);
-	au->user->name = strndup(argv[3], PIPE_BUF);
-	au->user->screen_name = strndup(argv[4], PIPE_BUF);
-	au->user->description = strndup(argv[6], PIPE_BUF);
-	au->user->profile_image_url = strndup(argv[7], PIPE_BUF);
-	au->user->followers_count = atoi(argv[10]);
-	au->user->friends_count = atoi(argv[11]);
-	au->created_at = atoi(argv[12]);
-	au->user->favourites_count = atoi(argv[13]);
-	au->user->statuses_count = atoi(argv[14]);
-	au->user->following = atoi(argv[15]);
-	au->user->statusnet_blocking = atoi(argv[16]);
-
-	eina_hash_add(userHash, uid_str, au);
-	return(0);
-}
-
-/*
-static int ed_statusnet_status_get_from_db(void *data, int argc, char **argv, char **azColName) {
-	aStatus **as = (aStatus**)data;
-	char *query=NULL, *db_err=NULL, *uid_str=NULL;
-	int sqlite_res = 0;
-
-	(*as) = calloc(1, sizeof(aStatus));
-	(*as)->status = calloc(1, sizeof(statusnet_Status));
-
-*/
-/*
-	argv[0]  := id						INTEGER
-	argv[1]  := status_id				INTEGER
-	argv[2]  := account_id				INTEGER
-	argv[3]  := timeline				INTEGER
-	argv[4]  := s_text					TEXT
-	argv[5]  := s_truncated				INTEGER
-	argv[6]  := s_created_at			INTEGER
-	argv[7]  := s_in_reply_to_status_id INTEGER
-	argv[8]  := s_source				TEXT
-	argv[9]  := s_in_reply_to_user_id	INTEGER
-	argv[10] := s_favorited				INTEGER
-	argv[11] := s_user					INTEGER
-	argv[12] := accounts.type			INTEGER
-	argv[13] := accounts.id				INTEGER
-	argv[14] := accounts.enabled		INTEGER
-*/
-/*
-	(*as)->status->id = strtoll(argv[0], NULL, 10);
-	(*as)->status->text = strndup(argv[4], PIPE_BUF);
-	(*as)->status->truncated = atoi(argv[5]);
-	(*as)->created_at = atoi(argv[6]);
-	(*as)->status->in_reply_to_status_id = strtoll(argv[7], NULL, 10);
-	(*as)->status->in_reply_to_user_id = strtoll(argv[9], NULL, 10);
-	(*as)->status->favorited = atoi(argv[10]);
-	(*as)->user_id = strtoll(argv[11], NULL, 10);
-	(*as)->account_id = atoi(argv[13]);
-	(*as)->account_type = ACCOUNT_TYPE_STATUSNET;
-	(*as)->in_db = EINA_TRUE;
-
-	sqlite_res = asprintf(&uid_str, "%lld", (*as)->user_id);
-	if(sqlite_res != -1) {
-		if(!eina_hash_find(userHash, uid_str)) {
-			sqlite_res = asprintf(&query, "SELECT * FROM users WHERE uid = %lld LIMIT 1;", (*as)->user_id);
-			if(sqlite_res != -1) {
-				sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_user_get_from_db, NULL, &db_err);
-				if(sqlite_res != 0) {
-					fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
-					sqlite3_free(db_err);
-				}
-				free(query);
-			}
-		}
-		free(uid_str);
-	}
-	return(0);
-}
-*/
 
 void ed_statusnet_status_get(int account_id, long long int in_reply_to, aStatus **prelated_status) {
 	char *query=NULL, *db_err=NULL, *key=NULL;

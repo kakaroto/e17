@@ -77,7 +77,7 @@ time_t now;
 
 Eina_Hash * bubble2status=NULL;
 
-long long int reply_id=0;
+aStatus *reply_as=NULL;
 long long int user_id=0;
 const char *url=NULL;
 char * url_post = NULL;
@@ -419,7 +419,7 @@ static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 					elm_entry_entry_set(entry, entry_str);
 					free(entry_str);
 					elm_object_focus(entry);
-					reply_id=as->status->id;
+					reply_as=as;
 					elm_entry_cursor_end_set(entry);
 				}
 			}
