@@ -24,7 +24,7 @@
 #include <Ecore_X.h>
 #include "statusnet_Common.h"
 
-typedef void (*Status_List_Cb)(int);
+typedef void (*Status_List_Cb)(int, Eina_Bool);
 
 typedef struct _StatusNetBaAccount {
 	double id;
@@ -66,17 +66,6 @@ typedef struct _User_Profile {
     Eina_Bool   following;
 } UserProfile;
 
-typedef struct _a_Status {
-	statusnet_Status *status;
-	time_t           created_at;
-	long long int    user;
-	int              account_id;
-	short            account_type;
-	Eina_Bool        in_db;
-} aStatus;
-
-typedef void (*Group_Show_Cb)(aStatus *, void*, void *);
-
 typedef struct _an_User {
 	statusnet_User	*user;
 	time_t			created_at;
@@ -85,9 +74,22 @@ typedef struct _an_User {
 	Eina_Bool		in_db;
 } anUser;
 
+typedef struct _a_Status {
+	statusnet_Status *status;
+	time_t           created_at;
+	anUser			*au;
+	int              account_id;
+	short            account_type;
+	Eina_Bool        in_db;
+} aStatus;
+
+typedef void (*Group_Show_Cb)(aStatus *, void*, void *);
+typedef void (*Repeat_Cb)(aStatus *, void *);
+
 typedef struct _user_get {
 	UserProfile *user;
 	int account_id;
+	long long int id;
 	anUser *au;
 } UserGet;
 
@@ -115,9 +117,10 @@ void ed_statusnet_favorite_create(int account_id, char *screen_name, char *passw
 void ed_statusnet_favorite_destroy(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, long long int status_id);
 void ed_statusnet_init_friends(void);
 anUser *ed_statusnet_user_get(int account_id, UserProfile *user);
+anUser *ed_statusnet_user_get_by_id(int account_id, long long int user_id);
 void ed_statusnet_user_follow(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *user_screen_name);
 void ed_statusnet_user_abandon(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *user_screen_name);
-void ed_statusnet_repeat(int account_id, long long int status_id);
+void ed_statusnet_repeat(int account_id, aStatus *as, Repeat_Cb callback, void *data);
 void ed_statusnet_status_get(int account_id, long long int in_reply_to, aStatus **related_status);
 
 void status_hash_data_free(void *data);

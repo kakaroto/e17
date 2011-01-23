@@ -52,12 +52,16 @@
 
 typedef struct _account_data {
 	long long int account_id;
+	aStatus *as;
 	int	timeline;
 	Status_List_Cb update_status_list;
+	Repeat_Cb add_repeat;
+	void *data;
 } accountData;
 
 extern struct sqlite3 *ed_DB;
 extern int debug;
+extern int current_timeline;
 extern char *home;
 extern char *dm_to;
 extern long long int reply_id;
@@ -67,12 +71,57 @@ long long max_status_id=0;
 
 Eina_Hash *userHash=NULL;
 Eina_Hash *statusHash=NULL;
+Eina_List* newStatuses=NULL;
 Eina_Hash *azy_agents=NULL;
 
 extern struct sqlite3 *ed_DB;
 extern int debug;
 extern char *home, *dm_to;
 extern Gui gui;
+
+Eina_Bool user_insert(anUser *au, int account_id) {
+	int sqlite_res=0;
+	struct sqlite3_stmt *insert_stmt=NULL;
+	const char *missed=NULL;
+	char *query=NULL;
+
+	if(!au) return(EINA_FALSE);
+
+	if(au->in_db == EINA_TRUE) return(EINA_TRUE);
+
+	sqlite_res = asprintf(&query, "insert into users (uid, account_id, name, screen_name, location, description, profile_image_url, url, protected, followers_count, friends_count, created_at, favorites_count, statuses_count, following, statusnet_blocking) values (%lld, %d, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", (long long int)au->user->id, account_id);
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
+		if(sqlite_res == 0) {
+			sqlite3_bind_text(insert_stmt,  1,  au->user->name, -1, NULL);
+			sqlite3_bind_text(insert_stmt,  2,  au->user->screen_name, -1, NULL);
+			sqlite3_bind_text(insert_stmt,  3,  au->user->location, -1, NULL);
+			sqlite3_bind_text(insert_stmt,  4,  au->user->description, -1, NULL);
+			sqlite3_bind_text(insert_stmt,  5,  au->user->profile_image_url, -1, NULL);
+			sqlite3_bind_text(insert_stmt,  6,  au->user->url, -1, NULL);
+			sqlite3_bind_int64(insert_stmt, 7,  au->user->protected);
+			sqlite3_bind_int64(insert_stmt, 8,  au->user->followers_count);
+			sqlite3_bind_int64(insert_stmt, 9,  au->user->friends_count);
+			sqlite3_bind_int64(insert_stmt, 10, au->created_at);
+			sqlite3_bind_int64(insert_stmt, 11, au->user->favourites_count);
+			sqlite3_bind_int64(insert_stmt, 12, au->user->statuses_count);
+			sqlite3_bind_int64(insert_stmt, 13, au->user->following);
+			sqlite3_bind_int64(insert_stmt, 14, au->user->statusnet_blocking);
+			sqlite_res = sqlite3_step(insert_stmt);
+			if(sqlite_res != 0 && sqlite_res != 101 ) printf("ERROR: %d while inserting user:\n(%s)\n", sqlite_res, au->user->screen_name);
+			else au->in_db = EINA_TRUE;
+
+			sqlite3_reset(insert_stmt);
+			sqlite3_finalize(insert_stmt);
+			return(EINA_TRUE);
+		} else {
+			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, missed);
+		}
+		free(query);
+	}
+	return(EINA_FALSE);
+
+}
 
 aStatus *statusnet_new_status(statusnet_Status *snS, int account_id) {
 	aStatus *as=calloc(1, sizeof(aStatus));
@@ -97,6 +146,7 @@ aStatus *statusnet_new_status(statusnet_Status *snS, int account_id) {
 		au = eina_hash_find(userHash, uid);
 		if(au) {
 			statusnet_User_free(snS->user);
+			snS->user = NULL;
 		} else {
 			au = calloc(1, sizeof(anUser));
 			au->user = snS->user;
@@ -104,7 +154,10 @@ aStatus *statusnet_new_status(statusnet_Status *snS, int account_id) {
 			au->account_type = ACCOUNT_TYPE_STATUSNET;
 			au->created_at = curl_getdate(snS->user->created_at, NULL);
 			eina_hash_add(userHash, uid, au);
+
+			user_insert(au, as->account_id);
 		}
+		as->au = au;
 		as->status->user = NULL;
 	}
 	return(as);
@@ -268,7 +321,7 @@ static int ed_statusnet_group_join_handler(void *data, int argc, char **argv, ch
     char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
     int port=0, id=0, res;
 	http_request * request=calloc(1, sizeof(http_request));
-	cJSON *json_stream, *obj;
+
     /* In this query handler, these are the current fields:
         argv[0] == name TEXT
         argv[1] == password TEXT
@@ -319,7 +372,7 @@ static int ed_statusnet_group_leave_handler(void *data, int argc, char **argv, c
     char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
     int port=0, id=0, res;
 	http_request * request=calloc(1, sizeof(http_request));
-	cJSON *json_stream, *obj;
+
     /* In this query handler, these are the current fields:
         argv[0] == name TEXT
         argv[1] == password TEXT
@@ -365,8 +418,6 @@ void ed_statusnet_group_leave(GroupProfile *group) {
 		free(query);
 	}
 }
-
-
 
 void status_hash_data_free(void *data) {
 	aStatus *s = (aStatus*)data;
@@ -418,87 +469,7 @@ void message_insert(statusnet_Status *s, void *user_data) {
 	}
 }
 
-Eina_Bool user_insert(const Eina_Hash *hash, const void *key, void *data, void *fdata) {
-	anUser *au = (anUser*)data;
-	long long int account_id = *(long long int*)fdata;
-	int sqlite_res=0;
-	struct sqlite3_stmt *insert_stmt=NULL;
-	const char *missed=NULL;
-	char *query=NULL;
 
-	if(!au) return(EINA_FALSE);
-
-	if(au->in_db == EINA_TRUE) return(EINA_TRUE);
-
-	sqlite_res = asprintf(&query, "insert into users (uid, account_id, name, screen_name, location, description, profile_image_url, url, protected, followers_count, friends_count, created_at, favorites_count, statuses_count, following, statusnet_blocking) values (%s, %lld, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", (char*)key, account_id);
-	if(sqlite_res != -1) {
-		sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
-		if(sqlite_res == 0) {
-			sqlite3_bind_text(insert_stmt,  1,  au->user->name, -1, NULL);
-			sqlite3_bind_text(insert_stmt,  2,  au->user->screen_name, -1, NULL);
-			sqlite3_bind_text(insert_stmt,  3,  au->user->location, -1, NULL);
-			sqlite3_bind_text(insert_stmt,  4,  au->user->description, -1, NULL);
-			sqlite3_bind_text(insert_stmt,  5,  au->user->profile_image_url, -1, NULL);
-			sqlite3_bind_text(insert_stmt,  6,  au->user->url, -1, NULL);
-			sqlite3_bind_int64(insert_stmt, 7,  au->user->protected);
-			sqlite3_bind_int64(insert_stmt, 8,  au->user->followers_count);
-			sqlite3_bind_int64(insert_stmt, 9,  au->user->friends_count);
-			sqlite3_bind_int64(insert_stmt, 10, au->created_at);
-			sqlite3_bind_int64(insert_stmt, 11, au->user->favourites_count);
-			sqlite3_bind_int64(insert_stmt, 12, au->user->statuses_count);
-			sqlite3_bind_int64(insert_stmt, 13, au->user->following);
-			sqlite3_bind_int64(insert_stmt, 14, au->user->statusnet_blocking);
-			sqlite_res = sqlite3_step(insert_stmt);
-			if(sqlite_res != 0 && sqlite_res != 101 ) printf("ERROR: %d while inserting user:\n(%s)\n", sqlite_res, au->user->screen_name);
-			else au->in_db = EINA_TRUE;
-
-			sqlite3_reset(insert_stmt);
-			sqlite3_finalize(insert_stmt);
-			return(EINA_TRUE);
-		} else {
-			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, missed);
-		}
-		free(query);
-	}
-	return(EINA_FALSE);
-
-}
-
-void messages_insert(int account_id, Eina_List *list, int timeline) {
-	int sqlite_res=0;
-	struct sqlite3_stmt *insert_stmt=NULL;
-	const char *missed=NULL;
-	char *db_err=NULL;
-	char *query=NULL;
-	Eina_List *l;
-	void *data;
-
-	sqlite_res = asprintf(&query, "SELECT max(status_id) FROM messages where account_id = %d and timeline = %d;", account_id, timeline);
-	if(sqlite_res != -1) {
-		sqlite_res = sqlite3_exec(ed_DB, query, set_max_status_id, NULL, &db_err);
-		if(sqlite_res != 0) {
-			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, db_err);
-			sqlite3_free(db_err);
-		}
-		free(query);
-	}
-
-	sqlite_res = asprintf(&query, "insert into messages (status_id, account_id, timeline, s_text, s_truncated, s_created_at, s_in_reply_to_status_id, s_source, s_in_reply_to_user_id, s_favorited, s_user) values (?, %d, %d, ?, ?, ?, ?, ?, ?, ?, ?);", account_id, timeline);;
-	if(sqlite_res != -1) {
-		sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
-		if(sqlite_res == 0) {
-			EINA_LIST_REVERSE_FOREACH(list, l, data) {
-				if(debug > 3) printf("Inserting: %s\n", (char*)data);
-				message_insert(data, &insert_stmt);
-			}
-			eina_hash_foreach(userHash, user_insert, &account_id);
-			sqlite3_finalize(insert_stmt);
-		} else {
-			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, missed);
-		}
-		free(query);
-	}
-}
 
 int ed_statusnet_post(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *msg) {
 	char *ub_status=NULL;
@@ -664,6 +635,7 @@ Eina_Bool timeline_returned(void *data, int type, Azy_Content *content) {
 				message_insert(snS, &insert_stmt);
 				snS2 = statusnet_Status_copy(snS);
 				as = statusnet_new_status(snS2, ad->account_id);
+				newStatuses = eina_list_append(newStatuses, as);
 			}
 		} else {
 			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, missed);
@@ -672,7 +644,10 @@ Eina_Bool timeline_returned(void *data, int type, Azy_Content *content) {
 		sqlite3_finalize(insert_stmt);
 	}
 
-	ad->update_status_list(ad->timeline);
+	if(ad->as)
+		ad->add_repeat(ad->as, ad->data);
+	else
+		ad->update_status_list(ad->timeline, EINA_FALSE);
 
 	return(EINA_TRUE);
 }
@@ -922,7 +897,10 @@ static int ed_statusnet_user_get_handler(void *data, int argc, char **argv, char
 	if(!cli) return(-1);
 
 	res = asprintf(&url_start, "%s://%s", proto, domain);
-	res = asprintf(&url_end, "%s/users/show.json?screen_name=%s&source=elmdentica", base_url, user->screen_name);
+	if(ug->id)
+		res = asprintf(&url_end, "%s/users/show.json?user_id=%lld&source=elmdentica", base_url, ug->id);
+	else
+		res = asprintf(&url_end, "%s/users/show.json?screen_name=%s&source=elmdentica", base_url, user->screen_name);
 
 	azy_client_host_set(cli, url_start, port);
 	free(url_start);
@@ -963,6 +941,75 @@ anUser *ed_statusnet_user_get(int account_id, UserProfile *user) {
 	return(ug->au);
 }
 
+static int ed_statusnet_user_get_by_id_handler(void *data, int argc, char **argv, char **azColName) {
+    statusnet_User *snU = statusnet_User_new();
+	anUser **p_au = (anUser**)data;
+
+	*p_au = calloc(1, sizeof(anUser));
+
+    /* In this query handler, these are the current fields:
+        argv[0] == id INTEGER
+        argv[1] == uid INTEGER
+        argv[2] == account_id INTEGER
+        argv[3] == name TEXT
+        argv[4] == screen_name TEXT
+        argv[5] == location TEXT
+        argv[6] == description TEXT
+        argv[7] == profile_image_url TEXT
+        argv[8] == url TEXT
+        argv[9] == protected INTEGER
+        argv[10] == followers_count INTEGER
+        argv[11] == friends_count INTEGER
+        argv[12] == created_at INTEGER
+        argv[13] == favorites_count INTEGER
+        argv[14] == statuses_count INTEGER
+        argv[15] == following INTEGER
+        argv[16] == statusnet_blocking INTEGER
+    */
+
+	snU->id = argv[1]?strtoll(argv[1], NULL, 10):0;
+	(*p_au)->account_id = argv[2]?atoi(argv[2]):0;
+	snU->name = strdup(argv[3]?argv[3]:"noname");
+	snU->screen_name = strdup(argv[4]?argv[4]:"noname");
+	snU->location = strdup(argv[5]?argv[5]:"");
+	snU->description = strdup(argv[6]?argv[6]:"");
+	snU->profile_image_url = strdup(argv[7]?argv[7]:"");
+	snU->url = strdup(argv[8]?argv[8]:"");
+	snU->protected = argv[9]?atoi(argv[9]):0;
+	snU->followers_count = argv[10]?atoi(argv[10]):0;
+	snU->friends_count = argv[11]?atoi(argv[11]):0;
+	(*p_au)->created_at = argv[12]?atoi(argv[12]):0;
+	snU->favourites_count = argv[13]?atoi(argv[13]):0;
+	snU->statuses_count = argv[14]?atoi(argv[14]):0;
+	snU->following = argv[15]?atoi(argv[15]):0;
+	snU->statusnet_blocking = argv[16]?atoi(argv[16]):0;
+	(*p_au)->account_type = ACCOUNT_TYPE_STATUSNET;
+	(*p_au)->user = snU;
+
+	eina_hash_add(userHash, argv[1], *p_au);
+
+	return(0);
+}
+
+anUser *ed_statusnet_user_get_by_id(int account_id, long long int user_id) {
+	char *query=NULL, *db_err=NULL;
+	int sqlite_res;
+	anUser *au=NULL;
+
+	sqlite_res = asprintf(&query, "SELECT * from users WHERE uid = %lld and account_id = %d LIMIT 1;", user_id, account_id);
+
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_user_get_by_id_handler, (void*)&au, &db_err);
+		if(sqlite_res != 0) {
+			fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
+			sqlite3_free(db_err);
+		}
+		free(query);
+	}
+
+	return(au);
+}
+
 void ed_statusnet_user_follow(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *user_screen_name) {
 	http_request * request=calloc(1, sizeof(http_request));
 	int res;
@@ -1000,8 +1047,12 @@ Eina_Bool ed_statusnet_repeat_disconnected(Azy_Client *cli, int type, Azy_Client
 
 Eina_Bool ed_statusnet_repeat_connected(Azy_Client *cli, int type, Azy_Client *ev) {
 	Azy_Client_Call_Id id;
+	Azy_Net_Data buffer;
 
-	id = azy_client_blank(ev, AZY_NET_TYPE_POST, "source=elmdentica", (Azy_Content_Cb)azy_value_to_Array_statusnet_Status, NULL);
+	buffer.data = (unsigned char*)"source=elmdentica";
+	buffer.size = strlen((const char*)buffer.data);
+
+	id = azy_client_blank(ev, AZY_NET_TYPE_POST, &buffer, (Azy_Content_Cb)azy_value_to_Array_statusnet_Status, NULL);
 	if(!id) return(EINA_FALSE);
 
 	azy_client_callback_free_set(ev, id, (Ecore_Cb)ed_sn_single_status_free);
@@ -1013,6 +1064,7 @@ static int ed_statusnet_repeat_handler(void *data, int argc, char **argv, char *
     char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL, *url_start=NULL, *url_end=NULL;
     int port=0, id=0, res;
 	Azy_Client *repeat=NULL;
+	accountData *ad = (accountData*)data;
 
     /* In this query handler, these are the current fields:
         argv[0] == name TEXT
@@ -1035,7 +1087,7 @@ static int ed_statusnet_repeat_handler(void *data, int argc, char **argv, char *
 
 
 	res = asprintf(&url_start, "%s://%s", proto, domain);
-	res = asprintf(&url_end, "%s/statuses/retweet/%lld.json", base_url, *(long long int*)data);
+	res = asprintf(&url_end, "%s/statuses/retweet/%lld.json", base_url, (long long int)ad->as->status->id);
 
 	repeat = azy_client_new();
 	azy_client_host_set(repeat, url_start, port);
@@ -1048,20 +1100,26 @@ static int ed_statusnet_repeat_handler(void *data, int argc, char **argv, char *
 
 	azy_net_version_set(azy_client_net_get(repeat), 0);
 
-	ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)ed_statusnet_repeat_connected, NULL);
-	ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)timeline_returned, NULL);
-	ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)timeline_disconnected, NULL);
+	ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)ed_statusnet_repeat_connected, ad);
+	ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)timeline_returned, ad);
+	ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)timeline_disconnected, ad);
 
 	return(0);
 }
 
-void ed_statusnet_repeat(int account_id, long long int status_id) {
+void ed_statusnet_repeat(int account_id, aStatus *as, Repeat_Cb callback, void *data) {
 	char *query=NULL, *db_err=NULL;
 	int sqlite_res;
+	accountData *ad;
 	
 	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE id = %d and type = %d and enabled = 1;", account_id, ACCOUNT_TYPE_STATUSNET);
 	if(sqlite_res != -1) {
-		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_repeat_handler, (void*)&status_id, &db_err);
+		ad = calloc(1, sizeof(accountData));
+		ad->account_id = account_id;
+		ad->as = as;
+		ad->add_repeat = callback;
+		ad->data = data;
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_repeat_handler, (void*)ad, &db_err);
 		if(sqlite_res != 0) {
 			fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
 			sqlite3_free(db_err);
@@ -1188,6 +1246,7 @@ static int ed_statusnet_user_get_from_db(void *data, int argc, char **argv, char
 	return(0);
 }
 
+/*
 static int ed_statusnet_status_get_from_db(void *data, int argc, char **argv, char **azColName) {
 	aStatus **as = (aStatus**)data;
 	char *query=NULL, *db_err=NULL, *uid_str=NULL;
@@ -1196,6 +1255,7 @@ static int ed_statusnet_status_get_from_db(void *data, int argc, char **argv, ch
 	(*as) = calloc(1, sizeof(aStatus));
 	(*as)->status = calloc(1, sizeof(statusnet_Status));
 
+*/
 /*
 	argv[0]  := id						INTEGER
 	argv[1]  := status_id				INTEGER
@@ -1213,7 +1273,7 @@ static int ed_statusnet_status_get_from_db(void *data, int argc, char **argv, ch
 	argv[13] := accounts.id				INTEGER
 	argv[14] := accounts.enabled		INTEGER
 */
-
+/*
 	(*as)->status->id = strtoll(argv[0], NULL, 10);
 	(*as)->status->text = strndup(argv[4], PIPE_BUF);
 	(*as)->status->truncated = atoi(argv[5]);
@@ -1221,15 +1281,15 @@ static int ed_statusnet_status_get_from_db(void *data, int argc, char **argv, ch
 	(*as)->status->in_reply_to_status_id = strtoll(argv[7], NULL, 10);
 	(*as)->status->in_reply_to_user_id = strtoll(argv[9], NULL, 10);
 	(*as)->status->favorited = atoi(argv[10]);
-	(*as)->user = strtoll(argv[11], NULL, 10);
+	(*as)->user_id = strtoll(argv[11], NULL, 10);
 	(*as)->account_id = atoi(argv[13]);
 	(*as)->account_type = ACCOUNT_TYPE_STATUSNET;
 	(*as)->in_db = EINA_TRUE;
 
-	sqlite_res = asprintf(&uid_str, "%lld", (*as)->user);
+	sqlite_res = asprintf(&uid_str, "%lld", (*as)->user_id);
 	if(sqlite_res != -1) {
 		if(!eina_hash_find(userHash, uid_str)) {
-			sqlite_res = asprintf(&query, "SELECT * FROM users WHERE uid = %lld LIMIT 1;", (*as)->user);
+			sqlite_res = asprintf(&query, "SELECT * FROM users WHERE uid = %lld LIMIT 1;", (*as)->user_id);
 			if(sqlite_res != -1) {
 				sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_user_get_from_db, NULL, &db_err);
 				if(sqlite_res != 0) {
@@ -1243,6 +1303,7 @@ static int ed_statusnet_status_get_from_db(void *data, int argc, char **argv, ch
 	}
 	return(0);
 }
+*/
 
 void ed_statusnet_status_get(int account_id, long long int in_reply_to, aStatus **prelated_status) {
 	char *query=NULL, *db_err=NULL, *key=NULL;
@@ -1260,6 +1321,7 @@ void ed_statusnet_status_get(int account_id, long long int in_reply_to, aStatus 
 		}
 	}
 
+/*
 	sqlite_res = asprintf(&query, "SELECT messages.*, accounts.type, accounts.id, accounts.enabled FROM messages,accounts WHERE account_id = %d and status_id = %lld LIMIT 1;", account_id, in_reply_to);
 	if(sqlite_res != -1) {
 		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_status_get_from_db, (void**)prelated_status, &db_err);
@@ -1274,6 +1336,7 @@ void ed_statusnet_status_get(int account_id, long long int in_reply_to, aStatus 
 			return;
 		} else if(debug > 3) printf("Status %lld is NOT present in disk cache\n", in_reply_to);
 	}
+*/
 
 	if(debug>3) printf("Downloading status %lld with account %d\n", in_reply_to, account_id);
 	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id,%lld FROM accounts WHERE id = %d and type = %d and enabled = 1;", in_reply_to, account_id, ACCOUNT_TYPE_STATUSNET);

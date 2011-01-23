@@ -32,9 +32,7 @@ typedef struct anchor_data {
 } AnchorData;
 
 typedef struct gag_data {
-	const char        *screen_name;
-	const char        *name;
-	const char        *message;
+	aStatus		*as;
 	Eina_Bool	match;
 } GagData;
 
@@ -84,7 +82,7 @@ void error_win_del(void *data, Evas_Object *zbr, void *event_info);
 
 void set_urls(void);
 
-void fill_message_list(int timeline);
+void fill_message_list(int timeline, Eina_Bool fromdb);
 
 Evas_Object *ed_make_bubble(Evas_Object *parent, aStatus *as, anUser *au);
 Evas_Object *ed_make_message(char *text, Evas_Object *bubble, Evas_Object *window);

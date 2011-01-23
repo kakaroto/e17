@@ -88,6 +88,7 @@ char * follow_user=NULL;
 char * home=NULL;
 Eina_Hash* accounts=NULL;
 extern Eina_Hash* statusHash;
+extern Eina_List* newStatuses;
 extern Eina_Hash* userHash;
 extern Settings *settings;
 
@@ -357,6 +358,10 @@ static void on_mark_favorite(void *data, Evas_Object *obj, void *event_info) {
 	}
 }
 
+static void status_prepend(aStatus *as, void *data) {
+	add_status(as, NULL);
+}
+
 static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)data;
 	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
@@ -364,7 +369,7 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 	if(as) {
 		switch(as->account_type) {
 			case ACCOUNT_TYPE_STATUSNET:
-			default: { ed_statusnet_repeat(as->account_id, as->status->id); break; }
+			default: { ed_statusnet_repeat(as->account_id, as, status_prepend, NULL); break; }
 		}
 	}
 
@@ -405,7 +410,7 @@ static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 	int res = 0;
 
 	if(as) {
-		res = asprintf(&uid_str, "%lld", as->user);
+		res = asprintf(&uid_str, "%lld", (long long int)as->au->user->id);
 		if(res != -1) {
 			au = eina_hash_find(userHash, uid_str);
 			if(au) {
@@ -436,7 +441,7 @@ static void on_dm(void *data, Evas_Object *obj, void *event_info) {
 
 	if(as) {
 		elm_object_focus(entry);
-		user_id=as->user;
+		user_id=(long long int)as->au->user->id;
 	}
 
 	if(gui.hover) {
@@ -940,47 +945,37 @@ static void on_handle_url(void *data, Evas_Object *obj, void *event_info) {
 
 static int ed_check_gag_message(void *user_data, int argc, char **argv, char **azColName) {
 	GagData *gd = (GagData*)user_data;
-	char *sn = NULL, *pattern=argv[0];
-	int res = -1;
 
 	/* In this query handler, these are the current fields:
 		argv[0] == patern STRING
 	*/
 
-	if(strchr(pattern, '@')) {
-		res = asprintf(&sn, "@%s", gd->screen_name);
-		if(res == -1)
-			sn = (char*)gd->screen_name;
-	}
-
-	if(debug > 2) printf("(%s|%s|%s) ~ %s ?", sn?sn:gd->screen_name, gd->name, gd->message, pattern);
+	if(debug > 2) printf("(%s|%s|%s) ~ %s ?", gd->as->au->user->screen_name, gd->as->au->user->name, gd->as->status->text, argv[0]);
 
 	// only do costly matches if there's isn't a match already
 	if(	gd->match == EINA_FALSE &&
-			(g_regex_match_simple(pattern, sn?sn:gd->screen_name, G_REGEX_CASELESS, 0) ||
-			 g_regex_match_simple(pattern, gd->name, G_REGEX_CASELESS, 0)        ||
-			 g_regex_match_simple(pattern, gd->message, G_REGEX_CASELESS, 0))) {
+			(g_regex_match_simple(argv[0], gd->as->au->user->screen_name, G_REGEX_CASELESS, 0) ||
+			 g_regex_match_simple(argv[0], gd->as->au->user->name, G_REGEX_CASELESS, 0)        ||
+			 g_regex_match_simple(argv[0], gd->as->status->text, G_REGEX_CASELESS, 0))) {
 		gd->match = EINA_TRUE;
 		if(debug > 2) printf(" %s\n", "Yes");
 	} else if(debug > 2) printf(" %s\n", "No");
 
-	if(res != -1) free(sn);
-
 	return(0);
 }
 
-Eina_Bool ed_check_gag(const char *screen_name, const char *name, const char *message) {
+Eina_Bool ed_check_gag(aStatus *as) {
 	GagData gd;
 	char *query, *db_err=NULL;
 	int sqlite_res = 0;
 
-	gd.screen_name = screen_name;
-	gd.name = name;
-	gd.message = message;
+	gd.as = as;
 	gd.match = EINA_FALSE;
 
 	query = "SELECT pattern FROM gag where enabled = 1;";
+
 	sqlite_res = sqlite3_exec(ed_DB, query, ed_check_gag_message, &gd, &db_err);
+
 	if(sqlite_res != 0) {
 		printf("Can't run %s: %s\n", query, db_err);
 		sqlite3_free(db_err);
@@ -1082,7 +1077,6 @@ char *ed_status_label_get(void *data, Evas_Object *obj, const char *part) {
 	aStatus *as = (aStatus *)data;
 	char *shortened_text;
 	int res=0,h=0;
-	anUser *au;
 	char buf[256], *key=NULL;
 	time_t now, dt;
 	struct tm date_tm, date_now;
@@ -1092,11 +1086,7 @@ char *ed_status_label_get(void *data, Evas_Object *obj, const char *part) {
 		snprintf(buf, sizeof(buf), "%s", shortened_text);
 		free(shortened_text);
 	} else if (!strcmp(part, "name")) {
-		res = asprintf(&key, "%lld", as->user);
-		if(res != -1)  {
-			au = eina_hash_find(userHash, key);
-			snprintf(buf, sizeof(buf), "%s", au->user->name);
-		} else snprintf(buf, sizeof(buf), "unknown");
+		snprintf(buf, sizeof(buf), "%s", as->au->user->name);
 	} else if (!strcmp(part, "date")) {
 		time(&now);
 		localtime_r(&now, &date_now);
@@ -1133,7 +1123,7 @@ Evas_Object *ed_status_icon_get(void *data, Evas_Object *obj, const char *part) 
 	Evas_Object *icon=NULL;
 
 	if (!strcmp(part, "icon")) {
-		icon = ed_get_icon(as->user, gui.win);
+		icon = ed_get_icon(as->au->user->id, gui.win);
 		//evas_object_smart_callback_add(icon, "clicked", on_bubble_icon_clicked, as);
 	}
 	return(icon);
@@ -1222,7 +1212,7 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 				}
 				g_match_info_free(user_matches);
 
-				res = asprintf(&key, "%lld", as->user);
+				res = asprintf(&key, "%lld", (long long int)as->au->user->id);
 				if(res != -1) {
 					au = eina_hash_find(userHash, key);
 					if(au) li = elm_list_item_prepend(list, au->user->screen_name, NULL, NULL, NULL, NULL);
@@ -1395,20 +1385,10 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 void add_status(aStatus *as, Elm_Genlist_Item *gli) {
 	Elm_Genlist_Item *li=NULL;
 	Evas_Object *icon=NULL;
-	char uid_str[PIPE_BUF];
-	anUser *au=NULL;
 
-	snprintf(uid_str, PIPE_BUF, "%lld", as->user);
-	au = eina_hash_find(userHash, uid_str);
-	if(!au) {
-		au = fetch_user_from_db(as->user);
-		if(au) eina_hash_add(userHash, uid_str, au);
-		else return;
-	}
+	if(ed_check_gag(as)) return;
 
-	if(ed_check_gag(au->user->screen_name, au->user->name, as->status->text)) return;
-
-	icon = ed_get_icon(as->user, gui.win);
+	icon = ed_get_icon(as->au->user->id, gui.win);
 
 	itc1.item_style		= "elmdentica";
 	itc1.func.label_get	= ed_status_label_get;
@@ -1427,6 +1407,7 @@ void add_status(aStatus *as, Elm_Genlist_Item *gli) {
 
 static int add_status_from_db(void *data, int argc, char **argv, char **azColName) {
 	aStatus *as=NULL;
+	long long int user_id=0;
 
 	char *sid_str=NULL;
 
@@ -1447,13 +1428,12 @@ static int add_status_from_db(void *data, int argc, char **argv, char **azColNam
 		argv[13] := accounts.id                       INTEGER
 		argv[14] := accounts.enabled                  INTEGER
 	*/
-
 	sid_str = strndup(argv[1], PIPE_BUF);
 	as = eina_hash_find(statusHash, sid_str);
 	if(!as) {
 		as = (aStatus*)calloc(1, sizeof(aStatus));
 		if(!as) return(-1);
-		as->status = (statusnet_Status*)calloc(1, sizeof(statusnet_Status));
+		as->status = statusnet_Status_new();
 
 		as->status->id = strtoll(argv[1], NULL, 10);
 		as->status->text = strndup(argv[4], PIPE_BUF);
@@ -1461,11 +1441,21 @@ static int add_status_from_db(void *data, int argc, char **argv, char **azColNam
 		as->status->in_reply_to_status_id = strtoll(argv[7], NULL, 10);
 		as->status->in_reply_to_user_id = strtoll(argv[9], NULL, 10);
 		as->status->favorited = atoi(argv[10]);
-		as->user = strtoll(argv[11], NULL, 10);
 		as->account_type = atoi(argv[12]);
 		as->account_id = atoi(argv[13]);
 		as->in_db = EINA_TRUE;
 		eina_hash_add(statusHash, sid_str, as);
+
+		as->au = eina_hash_find(userHash, argv[11]);
+		if(!as->au) {
+			user_id = strtoll(argv[11], NULL, 10);
+
+			as->au = ed_statusnet_user_get_by_id(as->account_id, user_id);
+			if(!as->au) {
+				if(debug) fprintf(stderr, "Can find user id %lld in memory, db or network.\n", user_id);
+				return(0);
+			}
+		}
 	}
 
 	add_status(as, NULL);
@@ -1516,7 +1506,7 @@ void show_error(StatusesList * statuses) {
 	evas_object_show(error_win);
 }
 
-void update_status_list(int timeline);
+void update_status_list(int timeline, Eina_Bool from_db);
 
 static int get_messages_for_account(void *pTimeline, int argc, char **argv, char **azColName) {
 	char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
@@ -1543,6 +1533,7 @@ static int get_messages_for_account(void *pTimeline, int argc, char **argv, char
 
 	switch(atoi(argv[2])) {
 		case ACCOUNT_TYPE_STATUSNET:
+		//default: { ed_statusnet_timeline_get(id, screen_name, password, proto, domain, port, base_url, timeline, status_prepend); break; }
 		default: { ed_statusnet_timeline_get(id, screen_name, password, proto, domain, port, base_url, timeline, update_status_list); break; }
 	}
 
@@ -1562,35 +1553,46 @@ static void get_messages(int timeline) {
 	sqlite3_free(db_err);
 }
 
-void fill_message_list(int timeline) {
+void fill_message_list(int timeline, Eina_Bool fromdb) {
 	int sqlite_res=0;
 	char *db_err=NULL, *query=NULL;
+	Eina_List *ns=NULL;
+	void *data;
 
-	if(bubble2status) {
-		eina_hash_free(bubble2status);
-		bubble2status = NULL;
-	}
+	if(fromdb) {
 
-	bubble2status = eina_hash_pointer_new(NULL);
-	if(!statusHash) statusHash = eina_hash_string_superfast_new(status_hash_data_free);
-    if(!userHash) userHash = eina_hash_string_superfast_new(user_hash_data_free);
-
-
-	sqlite_res = asprintf(&query, "SELECT messages.*, accounts.type, accounts.id, accounts.enabled FROM messages,accounts where messages.timeline = %d and messages.account_id=accounts.id and accounts.enabled=1 ORDER BY messages.s_created_at ASC LIMIT %d;", timeline, settings->max_messages);
-	if(sqlite_res != -1) {
-		sqlite_res = 0;
-		sqlite3_exec(ed_DB, query, add_status_from_db, (void*)(long)timeline, &db_err);
-		if(sqlite_res != 0) {
-			printf("Can't run %s: %d => %s\n", query, sqlite_res, db_err);
+		if(bubble2status) {
+			eina_hash_free(bubble2status);
+			bubble2status = NULL;
 		}
-		sqlite3_free(db_err);
-		free(query);
+
+		bubble2status = eina_hash_pointer_new(NULL);
+		if(!statusHash) statusHash = eina_hash_string_superfast_new(status_hash_data_free);
+    	if(!userHash) userHash = eina_hash_string_superfast_new(user_hash_data_free);
+
+
+		//sqlite_res = asprintf(&query, "SELECT messages.*, accounts.type, accounts.id, accounts.enabled, users.* FROM messages,accounts where messages.timeline = %d and messages.account_id=accounts.id and accounts.enabled=1 and users.uid = messages.s_user and messages.account_id=users.account_id ORDER BY messages.s_created_at ASC LIMIT %d;", timeline, settings->max_messages);
+		sqlite_res = asprintf(&query, "SELECT messages.*, accounts.type, accounts.id, accounts.enabled FROM messages,accounts where messages.timeline = %d and messages.account_id=accounts.id and accounts.enabled=1 ORDER BY messages.s_created_at ASC LIMIT %d;", timeline, settings->max_messages);
+		if(sqlite_res != -1) {
+			sqlite_res = 0;
+			sqlite3_exec(ed_DB, query, add_status_from_db, (void*)(long)timeline, &db_err);
+			if(sqlite_res != 0) {
+				printf("Can't run %s: %d => %s\n", query, sqlite_res, db_err);
+			}
+			sqlite3_free(db_err);
+			free(query);
+		}
+
+	} else {
+		EINA_LIST_FOREACH(newStatuses, ns, data)
+			add_status((aStatus*)data, NULL);
+		eina_list_free(newStatuses);
 	}
 }
 
-void update_status_list(int timeline) {
+void update_status_list(int timeline, Eina_Bool fromdb) {
 	make_status_list(timeline);
-	fill_message_list(timeline);
+	fill_message_list(timeline, fromdb);
 	network_busy(EINA_FALSE);
 }
 
@@ -1598,37 +1600,37 @@ void update_status_list(int timeline) {
 static void on_timeline_friends_reload(void *data, Evas_Object *obj, void *event_info) {
 	if(settings->online) get_messages(TIMELINE_FRIENDS);
 	else
-		update_status_list(TIMELINE_FRIENDS);
+		update_status_list(TIMELINE_FRIENDS, EINA_TRUE);
 }
 
 static void on_timeline_mentions_reload(void *data, Evas_Object *obj, void *event_info) {
 	if(settings->online) get_messages(TIMELINE_MENTIONS);
 	else
-		update_status_list(TIMELINE_MENTIONS);
+		update_status_list(TIMELINE_MENTIONS, EINA_TRUE);
 }
 
 static void on_timeline_user_reload(void *data, Evas_Object *obj, void *event_info) {
 	if(settings->online) get_messages(TIMELINE_USER);
 	else
-		update_status_list(TIMELINE_USER);
+		update_status_list(TIMELINE_USER, EINA_TRUE);
 }
 
 static void on_timeline_dmsgs_reload(void *data, Evas_Object *obj, void *event_info) {
 	if(settings->online) get_messages(TIMELINE_DMSGS);
 	else
-		update_status_list(TIMELINE_DMSGS);
+		update_status_list(TIMELINE_DMSGS, EINA_TRUE);
 }
 
 static void on_timeline_public_reload(void *data, Evas_Object *obj, void *event_info) {
 	if(settings->online) get_messages(TIMELINE_PUBLIC);
 	else
-		update_status_list(TIMELINE_PUBLIC);
+		update_status_list(TIMELINE_PUBLIC, EINA_TRUE);
 }
 
 static void on_timeline_favorites_reload(void *data, Evas_Object *obj, void *event_info) {
 	if(settings->online) get_messages(TIMELINE_FAVORITES);
 	else
-		update_status_list(TIMELINE_FAVORITES);
+		update_status_list(TIMELINE_FAVORITES, EINA_TRUE);
 }
 
 static void on_fs(void *data, Evas_Object *obj, void *event_info) {
@@ -1922,9 +1924,6 @@ EAPI int elm_main(int argc, char **argv)
 		elm_genlist_longpress_timeout_set(gui.timeline, 0.5);
 
 		evas_object_smart_callback_add(gui.timeline, "longpressed", on_status_action, NULL);
-		// Statuses list
-		make_status_list(TIMELINE_FRIENDS);
-		fill_message_list(TIMELINE_FRIENDS);
 
 		elm_layout_content_set(gui.main, "timeline", gui.timeline);
 	evas_object_show(gui.timeline);
@@ -2044,6 +2043,9 @@ EAPI int elm_main(int argc, char **argv)
 	curl_global_init(CURL_GLOBAL_ALL);
 
 	finger_size =  elm_finger_size_get();
+
+	// Statuses list
+	update_status_list(TIMELINE_FRIENDS, EINA_TRUE);
 
 	elm_run();
 
