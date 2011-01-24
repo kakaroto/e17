@@ -16,6 +16,11 @@
 #define MEMBER(name, value) \
   "<member><name>" #name "</name>" value "</member>"
 
+EAPI Eina_Bool
+azy_content_unserialize_json(Azy_Content *content,
+                             const char *buf,
+                             ssize_t len);
+
 static void
 print_result(Eina_Bool result, int line, const char *cond)
 {
@@ -49,6 +54,16 @@ constructCallNoMethod(void)
 }
 
 static Eina_Bool
+responseUnserializeJson(void)
+{
+   Azy_Content *content = azy_content_new(NULL);
+   Eina_Bool rs = azy_content_unserialize_json(content, "[]", 2);
+   TEST_ASSERT(rs);
+   azy_content_free(content);
+   return EINA_TRUE;
+}
+
+static Eina_Bool
 requestUnserialize1(void)
 {
    Azy_Content *content = azy_content_new(NULL);
@@ -57,6 +72,7 @@ requestUnserialize1(void)
    azy_content_free(content);
    return EINA_TRUE;
 }
+
 
 static Eina_Bool
 requestUnserialize2(void)
@@ -280,6 +296,7 @@ main()
    RUN_TEST(requestUnserialize5);
    RUN_TEST(responseUnserialize1);
    RUN_TEST(responseUnserialize2);
+   RUN_TEST(responseUnserializeJson);
    eina_counter_stop(c, 1);
    printf("%s", eina_counter_dump(c));
    eina_counter_free(c);
