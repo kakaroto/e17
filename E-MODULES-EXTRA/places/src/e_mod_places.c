@@ -934,6 +934,8 @@ _places_volume_properties_cb(void *data, void *reply_data, DBusError *error)
    int err = 0;
    const char *str = NULL;
 
+   if (!v) return;
+
    /* skip volumes with volume.ignore set */
    if (e_hal_property_bool_get(reply, "volume.ignore", &err) || err)
      return;
