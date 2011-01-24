@@ -649,11 +649,10 @@ _fetch(Evry_Plugin *plugin, const char *input)
 /***************************************************************************/
 
 static int
-_action(Evry_Action *act)
+_open_url(const char *url)
 {
    Evry_Item_App *app = E_NEW(Evry_Item_App, 1);
    Evry_Item_File *file = E_NEW(Evry_Item_File, 1);
-   char buf[1024];
    Eina_List *l;
    E_Border *bd;
 
@@ -661,6 +660,35 @@ _action(Evry_Action *act)
 
    if (!app->desktop)
      app->file = "xdg-open";
+
+   file->path = url;
+
+   evry->util_exec_app(EVRY_ITEM(app), EVRY_ITEM(file));
+
+   if (app->desktop)
+     {
+	EINA_LIST_FOREACH(e_border_client_list(), l, bd)
+	  {
+	     if (bd->desktop && bd->desktop == app->desktop)
+	       {
+		  e_desk_show(bd->desk);
+		  e_border_raise(bd);
+		  break;
+	       }
+	  }
+	efreet_desktop_free(app->desktop);
+     }
+
+   E_FREE(file);
+   E_FREE(app);
+
+   return 1;
+}
+
+static int
+_action(Evry_Action *act)
+{
+   char buf[1024];
 
    char *tmp = evry->util_url_escape(act->it1.item->label, 0);
 
@@ -687,26 +715,7 @@ _action(Evry_Action *act)
 
    E_FREE(tmp);
 
-   file->path = buf;
-
-   evry->util_exec_app(EVRY_ITEM(app), EVRY_ITEM(file));
-
-   if (app->desktop)
-     {
-	EINA_LIST_FOREACH(e_border_client_list(), l, bd)
-	  {
-	     if (bd->desktop && bd->desktop == app->desktop)
-	       {
-		  e_desk_show(bd->desk);
-		  e_border_raise(bd);
-		  break;
-	       }
-	  }
-	efreet_desktop_free(app->desktop);
-     }
-
-   E_FREE(file);
-   E_FREE(app);
+   _open_url(buf);
 
    return 1;
 }
@@ -839,7 +848,7 @@ _youtube_dl_data_cb(Url_Data *dd)
 
    Json_Data *rsp = NULL, *d, *d2;
    char *msg;
-   const char *video_id, *t;
+   const char *video_id, *t, *fmt;
    Ecore_Exe *exe = NULL;
    char url[1024];
    char buf[1024];
@@ -849,6 +858,7 @@ _youtube_dl_data_cb(Url_Data *dd)
      goto error;
 
    msg = dd->data;
+
    msg = strstr(msg, "var swfConfig = ");
    if ((!msg) || !(msg += 16))
      goto error;
@@ -862,16 +872,19 @@ _youtube_dl_data_cb(Url_Data *dd)
 
 	d2 = _json_data_find(rsp, "t", 3);
 	if (d2) t = d2->value;
+
+	d2 = _json_data_find(rsp, "fmt_url_map", 3);
+	if (d2) fmt = d2->value;
      }
 
    if (!t || !video_id)
      goto error;
 
    snprintf(url, sizeof(url),
-	    "\"http://www.youtube.com/get_video?"
-	    "video_id=%s&t=%s"
-	    "&eurl=&el=detailpage&ps=default&gl=US&hl=en&"
-	    "fmt=18\"", video_id, t);
+   	    "\"http://www.youtube.com/get_video?"
+   	    "video_id=%s&t=%s"
+   	    "&eurl=&el=detailpage&ps=default&gl=US&hl=en&"
+   	    "fmt=18\"", video_id, t);
 
    if (yd->method == YOUTUBE_PLAY)
      {
@@ -915,7 +928,7 @@ _youtube_dl_data_cb(Url_Data *dd)
    return 1;
 
  error:
-   ERR("parse failed\n");
+   ERR("parse failed!!!\n");
    _json_data_free(rsp);
    _url_data_free(dd);
 
@@ -1025,7 +1038,7 @@ struct _Upload_Data
 
   char *data;
   unsigned int size;
-  
+
   Url_Data *dd;
 };
 
@@ -1037,7 +1050,7 @@ _upload_data(Url_Data *dd)
    int len;
 
    if (ud->data) free(ud->data);
-   
+
    rsp = _json_parse(dd->data, dd->size);
    d = _json_data_find(rsp, "imgur_page", 5);
 
@@ -1047,6 +1060,7 @@ _upload_data(Url_Data *dd)
 	ecore_x_selection_primary_set(ecore_x_window_root_first_get(), d->value, len);
 	ecore_x_selection_clipboard_set(ecore_x_window_root_first_get(), d->value, len);
 	_send_notification(ud->id, "image", N_("Upload Image"), N_("Link copied to clipboard") , -1);
+	_open_url(d->value);
      }
    else
      {
@@ -1132,10 +1146,10 @@ _action_upload(Evry_Action *act)
 	for(i = 0, line = ud->data; i < 200 && *line != '\n'; i++, line++);
 	/* strip 'Content-Type:' == 14 */
    	snprintf(buf, i-14, "%s", ud->data+14);
-   
+
    	ecore_con_url_post(ud->dd->con_url, ud->data+i, ud->size-i, buf);
      }
-   
+
    /* ecore_con_url_http_post_send(ud->dd->con_url, post); */
 
    _send_notification(ud->id, "image", N_("Upload Image"), ud->file, -1);
@@ -1262,6 +1276,7 @@ _plugins_init(const Evry_API *_api)
    ACTION_NEW(N_("Watch on Youtube"), WEBLINK, "youtube",
 	      _action, _youtube_dl_check, ACT_YOUTUBE);
 
+#if 0
    ACTION_NEW(N_("Download as Audio"), WEBLINK, "youtube",
 	      _youtube_dl_action, _youtube_dl_check, YOUTUBE_DL);
 
@@ -1273,6 +1288,7 @@ _plugins_init(const Evry_API *_api)
 
    ACTION_NEW(N_("Download and play"), WEBLINK, "youtube",
 	      _youtube_dl_action, _youtube_dl_check, YOUTUBE_DL_PLAY);
+#endif
 
    ACTION_NEW(N_("Upload Image"), EVRY_TYPE_FILE, "image",
 	      _action_upload, _action_upload_check, ACT_UPLOAD_IMGUR);
@@ -1384,7 +1400,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    ow = e_widget_entry_add(evas, &cfdata->translate, NULL, NULL, NULL);
    e_widget_framelist_object_append(of, ow);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
-
+#if 0
    of = e_widget_framelist_add(evas, _("Youtube"), 0);
    e_widget_framelist_content_align_set(of, 0.0, 0.0);
 
@@ -1400,8 +1416,8 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 
    ow = e_widget_label_add(evas, _("Download requires mplayer and mp3lame"));
    e_widget_framelist_object_append(of, ow);
-
    e_widget_list_object_append(o, of, 1, 1, 0.5);
+#endif
    return o;
 }
 
@@ -1699,7 +1715,7 @@ _json_data_find2(const Json_Data *jd, const char *key, int level)
      {
 	if (d && d->key == key)
 	  {
-	     DBG("found %d %s",level, key);
+	     //DBG("found %d %s",level, key);
 	     break;
 	  }
 
