@@ -24,9 +24,9 @@ def cb_progress(file, dltotal, dlnow, ultotal, ulnow):
 
 
 if __name__ == "__main__":
-    # get a 1.4 Mb file from the ubuntu servers
+    # get a 8.1 Mb file from the ubuntu servers
     # and save the file in the current dir
-    url = "http://cdimage.ubuntu.com/daily-live/current/maverick-desktop-i386.iso.zsync"
+    url = "http://cdimage.ubuntu.com/releases/10.10/release/ubuntu-10.10-dvd-i386.iso.zsync"
     dst = os.path.join(os.getcwd(), os.path.basename(url))
 
     print 'URL: ' + url
