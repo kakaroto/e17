@@ -76,7 +76,6 @@ _ngi_gadcon_name_new()
 static void
 _ngi_gadcon_item_cb_mouse_down(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
 {
-   //  evas_event_feed_mouse_down(it->box->ng->win->evas, ev->button, 0, 0, NULL);
 }
 
 static void
@@ -87,17 +86,11 @@ _ngi_gadcon_item_cb_mouse_up(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
 static void
 _ngi_gadcon_item_cb_mouse_in(Ngi_Item *it)
 {
-   evas_object_focus_set(it->obj, 1);
 }
 
 static void
 _ngi_gadcon_item_cb_mouse_out(Ngi_Item *it)
 {
-   /*TODO check if it is in mouse_down state */
-   evas_event_feed_mouse_up(it->box->ng->evas, 1, 0, 0, NULL);
-   evas_event_feed_mouse_up(it->box->ng->evas, 2, 0, 0, NULL);
-   evas_event_feed_mouse_up(it->box->ng->evas, 3, 0, 0, NULL);
-   evas_object_focus_set(it->obj, 0);
 }
 
 static void
@@ -642,10 +635,13 @@ _cb_del(void *data, void *data2)
 
            e_gadcon_client_config_del(it->gadcon->cf, cgc);
 
-           cfdata->box->cfg->gadcon_items = eina_list_remove(cfdata->box->cfg->gadcon_items, it->cfg_gadcon);
+           cfdata->box->cfg->gadcon_items =
+	     eina_list_remove(cfdata->box->cfg->gadcon_items, it->cfg_gadcon);
            eina_hash_del_by_key(ngi_gadcon_hash, it->cfg_gadcon->name);
 
            e_gadcon_unpopulate(it->gadcon);
+	   it->obj = NULL;
+	   it->box->items = eina_list_remove(it->box->items, it);
            ngi_item_free(it);
            e_config_save_queue();
 
