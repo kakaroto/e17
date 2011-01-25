@@ -80,6 +80,8 @@ main(int argc, char **argv)
   int print_id = 0;
   E_Notification *n;
 
+  eina_init();
+  ecore_init();
   e_notification_init();
   n = e_notification_new();
   e_notification_app_name_set(n, "e-notify-send");
@@ -170,6 +172,8 @@ main(int argc, char **argv)
 
   e_notification_unref(n);
   e_notification_shutdown();
+  ecore_shutdown();
+  eina_shutdown();
 
   return EXIT_SUCCESS;
 }
