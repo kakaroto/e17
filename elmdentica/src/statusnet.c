@@ -67,8 +67,6 @@ extern char *dm_to;
 extern aStatus *reply_as;
 extern long long int user_id;
 
-long long max_status_id=0;
-
 Eina_Hash *userHash=NULL;
 Eina_Hash *statusHash=NULL;
 Eina_List* newStatuses=NULL;
@@ -141,26 +139,30 @@ aStatus *statusnet_new_status(statusnet_Status *snS, int account_id) {
 	as->account_type = ACCOUNT_TYPE_STATUSNET;
 	as->in_db = EINA_FALSE;
 
-	res = asprintf(&uid, "%d/%lld", account_id, (long long int)snS->user->id);
+	res = asprintf(&uid, "%lld", (long long int)snS->user->id);
 	if(res != -1) {
 		au = eina_hash_find(userHash, uid);
 		if(au) {
 			statusnet_User_free(snS->user);
-			snS->user = NULL;
 		} else {
 			au = calloc(1, sizeof(anUser));
 			au->user = snS->user;
 			au->account_id = account_id;
 			au->account_type = ACCOUNT_TYPE_STATUSNET;
-			au->created_at = curl_getdate(snS->user->created_at, NULL);
+			au->created_at = curl_getdate(au->user->created_at, NULL);
 			eina_hash_add(userHash, uid, au);
 
 			user_insert(au, as->account_id);
 		}
 		as->au = au;
 		as->status->user = NULL;
+		snS->user = NULL;
+
+		return(as);
 	}
-	return(as);
+
+	free(as);
+	return(NULL);
 }
 
 void ed_statusnet_azy_agent_free(void *data) {
@@ -437,36 +439,25 @@ void user_hash_data_free(void *data) {
 	}
 }
 
-static int set_max_status_id(void *notUsed, int argc, char **argv, char **azColName) {
-	if(!argv[0])
-		max_status_id = 0;
-	else
-		max_status_id = atoi(argv[0]);
-	return(0);
-}
 
 void message_insert(statusnet_Status *s, void *user_data) {
 	struct sqlite3_stmt **insert_stmt = (struct sqlite3_stmt**)user_data;
-	long long int sid=0;
 	int sqlite_res=0;
 
-	if(s->id > max_status_id) {
-		max_status_id = sid;
-		sqlite3_bind_int64(*insert_stmt, 1, s->id);
-		sqlite3_bind_text(*insert_stmt,  2, s->text, -1, NULL);
-		sqlite3_bind_int64(*insert_stmt, 3, s->truncated);
-		sqlite3_bind_int64(*insert_stmt, 4, curl_getdate(s->created_at, NULL));
-		sqlite3_bind_int64(*insert_stmt, 5, s->in_reply_to_status_id);
-		sqlite3_bind_text(*insert_stmt,  6, s->source, -1, NULL);
-		sqlite3_bind_int64(*insert_stmt, 7, s->in_reply_to_user_id);
-		sqlite3_bind_int64(*insert_stmt, 8, s->favorited);
-		sqlite3_bind_int64(*insert_stmt, 9, s->user->id);
+	sqlite3_bind_int64(*insert_stmt, 1, s->id);
+	sqlite3_bind_text(*insert_stmt,  2, s->text, -1, NULL);
+	sqlite3_bind_int64(*insert_stmt, 3, s->truncated);
+	sqlite3_bind_int64(*insert_stmt, 4, curl_getdate(s->created_at, NULL));
+	sqlite3_bind_int64(*insert_stmt, 5, s->in_reply_to_status_id);
+	sqlite3_bind_text(*insert_stmt,  6, s->source, -1, NULL);
+	sqlite3_bind_int64(*insert_stmt, 7, s->in_reply_to_user_id);
+	sqlite3_bind_int64(*insert_stmt, 8, s->favorited);
+	sqlite3_bind_int64(*insert_stmt, 9, s->user->id);
 
-		sqlite_res = sqlite3_step(*insert_stmt);
-		if(sqlite_res != 0 && sqlite_res != 101 ) printf("ERROR: %d while inserting message:\n(%s) %s\n", sqlite_res, s->user->screen_name, s->text);
+	sqlite_res = sqlite3_step(*insert_stmt);
+	if(sqlite_res != 0 && sqlite_res != 101 ) printf("ERROR: %d while inserting message:\n(%s) %s\n", sqlite_res, s->user->screen_name, s->text);
 
-		sqlite3_reset(*insert_stmt);
-	}
+	sqlite3_reset(*insert_stmt);
 }
 
 
@@ -586,14 +577,17 @@ Eina_Bool azy_value_to_Array_statusnet_Status(Azy_Value *array, Eina_List **narr
 static void Array_statusnet_Status_free(Eina_List *array) {
 	statusnet_Status *snS;
 
-	EINA_SAFETY_ON_NULL_RETURN(array);
-	EINA_LIST_FREE(array, snS)
-		statusnet_Status_free(snS);
+	printf("ARRAY_STATUSNET_STATUS_FREE\n");
+	if(array) {
+		EINA_LIST_FREE(array, snS)
+			statusnet_Status_free(snS);
+	}
 }
 
 Eina_Bool timeline_connected(void *data, int type, Azy_Client *cli) {
 	Azy_Client_Call_Id id;
 
+	printf("TIMELINE_CONNECTED\n");
 	id = azy_client_blank(cli, AZY_NET_TYPE_GET, NULL, (Azy_Content_Cb)azy_value_to_Array_statusnet_Status, NULL);
 	azy_client_callback_free_set(cli, id, (Ecore_Cb)Array_statusnet_Status_free);
 
@@ -604,29 +598,25 @@ Eina_Bool timeline_returned(void *data, int type, Azy_Content *content) {
 	int sqlite_res=0;
 	struct sqlite3_stmt *insert_stmt=NULL;
 	const char *missed=NULL;
-	char *db_err=NULL, *query=NULL;
+	char *query=NULL;
 	accountData *ad = (accountData*)data;
 	statusnet_Status *snS=NULL, *snS2=NULL;
 	aStatus *as=NULL;
 	Eina_List *l, *list=NULL;
 
+	printf("TIMELINE_RETURNED\n");
 	if (azy_content_error_is_set(content)) {
+		printf("TIMELINE_RETURNED azy_content_error_is_set\n");
 		fprintf(stderr, _("Error encountered: %s\n"), azy_content_error_message_get(content));
-		return(azy_content_error_code_get(content));
+		return(EINA_FALSE);
 	}
 
+	printf("TIMELINE_RETURNED azy_content_return_get\n");
 	list = azy_content_return_get(content);
 
-	sqlite_res = asprintf(&query, "SELECT max(status_id) FROM messages where account_id = %lld and timeline = %d;", ad->account_id, ad->timeline);
-	if(sqlite_res != -1) {
-		sqlite_res = sqlite3_exec(ed_DB, query, set_max_status_id, NULL, &db_err);
-		if(sqlite_res != 0) {
-			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, db_err);
-			sqlite3_free(db_err);
-		}
-		free(query);
-	}
+	if( ! (list && eina_list_count(list) > 0) ) return(EINA_TRUE);
 
+	printf("TIMELINE_RETURNED insert into messages %d statuses\n", eina_list_count(list));
 	sqlite_res = asprintf(&query, "insert into messages (status_id, account_id, timeline, s_text, s_truncated, s_created_at, s_in_reply_to_status_id, s_source, s_in_reply_to_user_id, s_favorited, s_user) values (?, %lld, %d, ?, ?, ?, ?, ?, ?, ?, ?);", ad->account_id, ad->timeline);;
 	if(sqlite_res != -1) {
 		sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
@@ -635,24 +625,32 @@ Eina_Bool timeline_returned(void *data, int type, Azy_Content *content) {
 				message_insert(snS, &insert_stmt);
 				snS2 = statusnet_Status_copy(snS);
 				as = statusnet_new_status(snS2, ad->account_id);
-				newStatuses = eina_list_append(newStatuses, as);
+				if(as) newStatuses = eina_list_append(newStatuses, as);
 			}
 		} else {
 			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, missed);
 		}
 		free(query);
 		sqlite3_finalize(insert_stmt);
+	printf("TIMELINE_RETURNED insert ended\n");
 	}
-
-	if(ad->as)
-		ad->add_repeat(ad->as, ad->data);
-	else
-		ad->update_status_list(ad->timeline, EINA_FALSE);
 
 	return(EINA_TRUE);
 }
 
 Eina_Bool timeline_disconnected(void *data, int type, Azy_Client *cli) {
+	accountData *ad = (accountData*)data;
+
+	if(ad->as)
+		ad->add_repeat(ad->as, ad->data);
+	else {
+		printf("TIMELINE_DISCONNECTED calling callback %ld\n", ad->update_status_list);
+		ad->update_status_list(ad->timeline, EINA_FALSE);
+	}
+
+	free(ad);
+
+	printf("TIMELINE_DISCONNECTED\n");
 	return(EINA_TRUE);
 }
 
@@ -665,47 +663,49 @@ void ed_statusnet_timeline_get(int account_id, char *screen_name, char *password
 	
 	if(!cli) return;
 
+	ed_statusnet_max_status_id(account_id, &since_id, timeline);
+
 	switch(timeline) {
 		case TIMELINE_USER:		{
 			if(since_id)
-				res = asprintf(&timeline_str, "%s/statuses/user_timeline.json?source=elmdentica&since_id=%lld", base_url, since_id);
+				res = asprintf(&timeline_str, "%s/statuses/user_timeline.json?source=%s&since_id=%lld", base_url, PACKAGE, since_id);
 			else
-				res = asprintf(&timeline_str, "%s/statuses/user_timeline.json?source=elmdentica", base_url);
+				res = asprintf(&timeline_str, "%s/statuses/user_timeline.json?source=%s", base_url, PACKAGE);
 			break;
 		}
 		case TIMELINE_PUBLIC:	{
 			if(since_id)
-				res = asprintf(&timeline_str, "%s/statuses/public_timeline.json?source=elmdentica&since_id=%lld", base_url, since_id);
+				res = asprintf(&timeline_str, "%s/statuses/public_timeline.json?source=%s&since_id=%lld", base_url, PACKAGE, since_id);
 			else
-				res = asprintf(&timeline_str, "%s/statuses/public_timeline.json?source=elmdentica", base_url);
+				res = asprintf(&timeline_str, "%s/statuses/public_timeline.json?source=%s", base_url, PACKAGE);
 			break;
 		}
 		case TIMELINE_MENTIONS:	{
 			if(since_id)
-				res = asprintf(&timeline_str, "%s/statuses/mentions.json?source=elmdentica&since_id=%lld", base_url, since_id);
+				res = asprintf(&timeline_str, "%s/statuses/mentions.json?source=%s&since_id=%lld", base_url, PACKAGE, since_id);
 			else
-				res = asprintf(&timeline_str, "%s/statuses/mentions.json?source=elmdentica", base_url);
+				res = asprintf(&timeline_str, "%s/statuses/mentions.json?source=%s", base_url, PACKAGE);
 			break;
 		}
 		case TIMELINE_FAVORITES:	{
 			if(since_id)
-				res = asprintf(&timeline_str, "%s/favorites.json?source=elmdentica&since_id=%lld", base_url, since_id);
+				res = asprintf(&timeline_str, "%s/favorites.json?source=%s&since_id=%lld", base_url, PACKAGE, since_id);
 			else
-				res = asprintf(&timeline_str, "%s/favorites.json?source=elmdentica", base_url);
+				res = asprintf(&timeline_str, "%s/favorites.json?source=%s", base_url, PACKAGE);
 			break;
 		}
 		case TIMELINE_FRIENDS:	{
 			if(since_id)
-				res = asprintf(&timeline_str, "%s/statuses/friends_timeline.json?source=elmdentica&since_id=%lld", base_url, since_id);
+				res = asprintf(&timeline_str, "%s/statuses/friends_timeline.json?source=%s&since_id=%lld", base_url, PACKAGE, since_id);
 			else
-				res = asprintf(&timeline_str, "%s/statuses/friends_timeline.json?source=elmdentica", base_url);
+				res = asprintf(&timeline_str, "%s/statuses/friends_timeline.json?source=%s", base_url, PACKAGE);
 			break;
 		}
 		case TIMELINE_DMSGS:	{
 			if(since_id)
-				res = asprintf(&timeline_str, "%s/direct_messages.json?source=elmdentica&since_id=%lld", base_url, since_id);
+				res = asprintf(&timeline_str, "%s/direct_messages.json?source=%s&since_id=%lld", base_url, PACKAGE, since_id);
 			else
-				res = asprintf(&timeline_str, "%s/direct_messages.json?source=elmdentica", base_url);
+				res = asprintf(&timeline_str, "%s/direct_messages.json?source=%s", base_url, PACKAGE);
 			break;
 		}
 		default:				{
@@ -720,8 +720,6 @@ void ed_statusnet_timeline_get(int account_id, char *screen_name, char *password
 			fprintf(stderr, _("Not enough memory to construct timeline URI\n"));
 			return;
 	}
-
-	ed_statusnet_max_status_id(account_id, &since_id, timeline);
 
 	res = asprintf(&host, "%s://%s", proto, domain);
 	if(res == -1) {

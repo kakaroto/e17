@@ -1386,7 +1386,11 @@ void add_status(aStatus *as, Elm_Genlist_Item *gli) {
 	Elm_Genlist_Item *li=NULL;
 	Evas_Object *icon=NULL;
 
+	printf("ADD STATUS: %lld (%ld) USER: %ld\n", (long long int)as->status->id, as, as->au);
+
+	printf("GAG?... ");
 	if(ed_check_gag(as)) return;
+	printf("NOT GAGGED\n");
 
 	icon = ed_get_icon(as->au->user->id, gui.win);
 
@@ -1533,7 +1537,6 @@ static int get_messages_for_account(void *pTimeline, int argc, char **argv, char
 
 	switch(atoi(argv[2])) {
 		case ACCOUNT_TYPE_STATUSNET:
-		//default: { ed_statusnet_timeline_get(id, screen_name, password, proto, domain, port, base_url, timeline, status_prepend); break; }
 		default: { ed_statusnet_timeline_get(id, screen_name, password, proto, domain, port, base_url, timeline, update_status_list); break; }
 	}
 
@@ -1584,13 +1587,16 @@ void fill_message_list(int timeline, Eina_Bool fromdb) {
 		}
 
 	} else {
+	printf("update_status_list from newStatuses\n");
 		EINA_LIST_FOREACH(newStatuses, ns, data)
 			add_status((aStatus*)data, NULL);
 		eina_list_free(newStatuses);
+		newStatuses = NULL;
 	}
 }
 
 void update_status_list(int timeline, Eina_Bool fromdb) {
+	printf("update_status_list %d / %d\n", timeline, fromdb);
 	make_status_list(timeline);
 	fill_message_list(timeline, fromdb);
 	network_busy(EINA_FALSE);
