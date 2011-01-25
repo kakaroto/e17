@@ -157,6 +157,7 @@ aStatus *statusnet_new_status(statusnet_Status *snS, int account_id) {
 		as->au = au;
 		as->status->user = NULL;
 		snS->user = NULL;
+		free(uid);
 
 		return(as);
 	}
