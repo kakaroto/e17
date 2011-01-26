@@ -6,6 +6,9 @@
 
 #include "private.h"
 #include "mpris.h"
+#ifdef _HAVE_FSO_
+  #include "fso.h"	
+#endif
 
 #include <Ecore_Getopt.h>
 #include <Ecore_File.h>
@@ -148,6 +151,12 @@ elm_main(int argc, char **argv)
 
    app.win = win_new(&app);
    if (!app.win) goto end;
+   
+#ifdef _HAVE_FSO_
+   fso_init();
+   fso_request_resource("CPU");	
+#endif
+   
    mpris_init();
    cover_init();
    elm_run();
@@ -166,6 +175,11 @@ elm_main(int argc, char **argv)
    elm_shutdown();
    mpris_shutdown();
    cover_shutdown();
+
+#ifdef _HAVE_FSO_
+   fso_release_resource("CPU");
+   fso_shutdown();
+#endif
 
    return r;
 }

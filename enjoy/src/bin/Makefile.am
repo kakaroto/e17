@@ -18,7 +18,7 @@ bin_PROGRAMS += enjoy_ql
 endif
 
 enjoy_LDADD = @ELEMENTARY_LIBS@ @EMOTION_LIBS@ @LMS_LIBS@ @SQLITE3_LIBS@ @EDBUS_LIBS@
-enjoy_SOURCES = main.c win.c db.c list.c page.c cover.c nowplaying.c libmanager.c mpris.c coverart-lastfm.c
+enjoy_SOURCES = main.c win.c db.c list.c page.c cover.c nowplaying.c libmanager.c mpris.c coverart-lastfm.c fso.c
 
 if BUILD_QUICKLAUNCH
 ############################################################################
