@@ -608,6 +608,13 @@ e_dbus_init(void)
       return --_edbus_init_count;
     }
 
+  _e_dbus_log_dom = eina_log_domain_register("e_dbus", E_DBUS_COLOR_DEFAULT);
+  if (_e_dbus_log_dom < 0)
+    {
+      EINA_LOG_ERR("Enable to create an 'e_dbus' log domain");
+      eina_shutdown();
+      return --_edbus_init_count;
+    }
   if (!ecore_init())
     {
       fprintf(stderr,"E-dbus: Enable to initialize ecore\n");
@@ -615,14 +622,6 @@ e_dbus_init(void)
       return --_edbus_init_count;
     }
 
-  _e_dbus_log_dom = eina_log_domain_register("e_dbus", E_DBUS_COLOR_DEFAULT);
-  if (_e_dbus_log_dom < 0)
-    {
-      EINA_LOG_ERR("Enable to create an 'e_dbus' log domain");
-      eina_shutdown();
-      ecore_shutdown();
-      return --_edbus_init_count;
-    }
 
   E_DBUS_EVENT_SIGNAL = ecore_event_type_new();
   e_dbus_object_init();
