@@ -611,7 +611,7 @@ e_dbus_init(void)
   _e_dbus_log_dom = eina_log_domain_register("e_dbus", E_DBUS_COLOR_DEFAULT);
   if (_e_dbus_log_dom < 0)
     {
-      ERR("Unable to create an 'e_dbus' log domain");
+      EINA_LOG_ERR("Unable to create an 'e_dbus' log domain");
       eina_shutdown();
       return --_edbus_init_count;
     }
@@ -619,6 +619,7 @@ e_dbus_init(void)
     {
       ERR("E-dbus: Unable to initialize ecore");
       eina_log_domain_unregister(_e_dbus_log_dom);
+      _e_dbus_log_dom = -1;
       eina_shutdown();
       return --_edbus_init_count;
     }
