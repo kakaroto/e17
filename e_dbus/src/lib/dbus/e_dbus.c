@@ -639,9 +639,9 @@ e_dbus_shutdown(void)
     return _edbus_init_count;
 
   e_dbus_object_shutdown();
+  ecore_shutdown();
   eina_log_domain_unregister(_e_dbus_log_dom);
   _e_dbus_log_dom = -1;
-  ecore_shutdown();
   eina_shutdown();
 
   return _edbus_init_count;
