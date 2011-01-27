@@ -4,6 +4,6 @@ Cloak:        developer/Sachiel
 Name:         Iván Briano
 Location:     Campinas, Brazil
 E-Mail:       sachieru@gmail.com
-Contributing: eina, evas, ecore, edje, elementary, e, python-evas, python-ecore, python-edje, python-elementary, editje
+Contributing: eina, evas, ecore, edje, e
 Platform:     Arch (Linux)
 GeoData:      -22.83083 -47.076893
