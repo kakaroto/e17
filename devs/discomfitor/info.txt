@@ -1,5 +1,6 @@
 Login:		discomfitor
 IRC Nick:	discomfitor/zmike
+Cloak:          developer/discomfitor
 Name:		Mike Blumenkrantz
 Location:	CT, USA
 E-Mail:		mike@zentific.com
