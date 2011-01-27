@@ -536,21 +536,7 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
 
     def move_children_relative(self, int dx, int dy):
         "Move all children relatively."
-        cdef Eina_List *lst, *itr
-        cdef Evas_Object *o
-        cdef int orig_x, orig_y
-
-        if dx == 0 and dy == 0:
-            return
-
-        lst = evas_object_smart_members_get(self.obj)
-        itr = lst
-        while itr:
-            o = <Evas_Object*>itr.data
-            evas_object_geometry_get(o, &orig_x, &orig_y, NULL, NULL)
-            evas_object_move(o, orig_x + dx, orig_y + dy)
-            itr = itr.next
-        eina_list_free(lst)
+        evas_object_smart_move_children_relative(self.obj, dx, dy)
 
     def move(self, int x, int y):
         "Default implementation to move all children."

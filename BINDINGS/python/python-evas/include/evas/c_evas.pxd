@@ -706,6 +706,7 @@ cdef extern from "Evas.h":
     void evas_object_smart_need_recalculate_set(Evas_Object *obj, int value)
     int evas_object_smart_need_recalculate_get(const_Evas_Object *obj)
     void evas_object_smart_calculate(Evas_Object *obj)
+    void evas_object_smart_move_children_relative(Evas_Object *obj, int dx, int dy)
 
 
 
