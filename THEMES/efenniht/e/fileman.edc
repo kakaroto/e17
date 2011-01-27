@@ -815,6 +815,7 @@ collections {
             scale: 1;
             description { state: "default" 0.0;
                align: 0.5 1.0;
+               fixed: 0 1;
                rel1 {
                   to_x: "bg";
                   to_y: "icon_base";
