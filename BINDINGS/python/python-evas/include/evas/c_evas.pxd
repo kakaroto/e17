@@ -636,6 +636,9 @@ cdef extern from "Evas.h":
     void evas_object_hide(Evas_Object *obj)
     Eina_Bool evas_object_visible_get(const_Evas_Object *obj)
 
+    void evas_object_static_clip_set(Evas_Object *obj, Eina_Bool is_static_clip)
+    Eina_Bool evas_object_static_clip_get(Evas_Object *obj)
+
     void evas_object_render_op_set(Evas_Object *obj, Evas_Render_Op op)
     Evas_Render_Op evas_object_render_op_get(const_Evas_Object *obj)
 

@@ -1052,6 +1052,21 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         def __set__(self, spec):
             self.visible_set(spec)
 
+    def static_clip_get(self):
+        "@rtype: bool"
+        return bool(evas_object_static_clip_get(self.obj))
+
+    def static_clip_set(self, int value):
+        "Set a hint flag on the object that this is used as a static clipper."
+        evas_object_static_clip_set(self.obj, value)
+
+    property static_clip:
+        def __get__(self):
+            return self.static_clip_get()
+
+        def __set__(self, value):
+            self.static_clip_set(value)
+
     def render_op_get(self):
         """Return the id of the operation used for rendering.
 
