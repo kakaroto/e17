@@ -112,7 +112,7 @@ e_dbus_handler_data_free(void *data)
   DBG("e_dbus_handler_data_free");
   if (hd->fd_handler)
   {
-    hd->cd->fd_handlers = eina_list_remove(hd->cd->fd_handlers, hd->cd->fd_handlers);
+    hd->cd->fd_handlers = eina_list_remove(hd->cd->fd_handlers, hd->fd_handler);
     ecore_main_fd_handler_del(hd->fd_handler);
   }
   free(hd);
@@ -340,7 +340,7 @@ cb_watch_del(DBusWatch *watch, void *data __UNUSED__)
 
   if (hd->fd_handler) 
   {
-    hd->cd->fd_handlers = eina_list_remove(hd->cd->fd_handlers, hd->cd->fd_handlers);
+    hd->cd->fd_handlers = eina_list_remove(hd->cd->fd_handlers, hd->fd_handler);
     ecore_main_fd_handler_del(hd->fd_handler);
     hd->fd_handler = NULL;
   }
