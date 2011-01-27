@@ -716,8 +716,9 @@ cdef public class ClippedSmartObject(SmartObject) \
         SmartObject.__init__(self, canvas, **kargs)
         if self.clipper is None:
             self.clipper = Rectangle(canvas)
-            evas_object_move(self.clipper.obj, -10000, -10000);
-            evas_object_resize(self.clipper.obj, 20000, 20000);
+            evas_object_move(self.clipper.obj, -100000, -100000);
+            evas_object_resize(self.clipper.obj, 200000, 200000);
+            evas_object_static_clip_set(self.clipper.obj, 1);
             evas_object_pass_events_set(self.clipper.obj, 1);
             evas_object_smart_member_add(self.clipper.obj, self.obj)
 
