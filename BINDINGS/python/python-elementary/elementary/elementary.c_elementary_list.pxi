@@ -49,7 +49,7 @@ cdef class ListItem(WidgetItem):
     cdef Elm_List_Item *item
     cdef object cbt
 
-    def __new__(self):
+    def __cinit__(self):
         self.item = NULL
 
     def __del_cb(self):

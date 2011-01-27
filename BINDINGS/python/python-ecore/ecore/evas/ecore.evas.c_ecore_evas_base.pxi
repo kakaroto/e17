@@ -203,7 +203,7 @@ cdef class EcoreEvas:
      callback_pre_render, callback_resize, callback_show, callback_sticky,
      callback_unsticky
     """
-    def __new__(self, *args, **kargs):
+    def __cinit__(self, *args, **kargs):
         self.obj = NULL
         self.data = dict()
 

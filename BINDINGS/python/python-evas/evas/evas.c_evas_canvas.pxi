@@ -117,7 +117,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
            obscured_clear, render_updates, render, norender, freeze_get,
            output_method_set, output_method_get, output_method
     """
-    def __new__(self, *a, **ka):
+    def __cinit__(self, *a, **ka):
         self.obj = NULL
         self._callbacks = [None] * evas_canvas_event_callbacks_len
 

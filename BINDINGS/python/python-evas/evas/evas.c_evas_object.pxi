@@ -217,7 +217,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
        anti_alias_set, anti_alias_get, anti_alias, pointer_mode_set,
        pointer_mode_get, pointer_mode
     """
-    def __new__(self, *a, **ka):
+    def __cinit__(self, *a, **ka):
         self.obj = NULL
         self.evas = None
         self.data = dict()

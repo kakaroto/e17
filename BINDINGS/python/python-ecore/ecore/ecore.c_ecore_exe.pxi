@@ -91,7 +91,7 @@ cdef Eina_Bool _exe_event_filter_cb(void *data, int type, void *event) with gil:
 
 
 cdef class ExeEventFilter:
-    def __new__(self, *a, **ka):
+    def __cinit__(self, *a, **ka):
         self.exe = NULL
         self.handler = NULL
         self.owner = None
@@ -280,7 +280,7 @@ cdef class Exe:
     One may delete handlers explicitly with L{EventHandler.delete()}
     method.
     """
-    def __new__(self, *a, **ka):
+    def __cinit__(self, *a, **ka):
         self.exe = NULL
         self.__data = None
         self.__callbacks = {}

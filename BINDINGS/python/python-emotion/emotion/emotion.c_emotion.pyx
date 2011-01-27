@@ -50,7 +50,7 @@ class EmotionModuleInitError(Exception):
 
 
 cdef class Emotion(evas.c_evas.Object):
-    def __new__(self, *a, **ka):
+    def __cinit__(self, *a, **ka):
         self._emotion_callbacks = {}
 
     def __init__(self, c_evas.Canvas canvas not None, **kargs):

@@ -126,7 +126,7 @@ cdef class GenlistItemClass:
     cdef readonly object _state_get_func
     cdef readonly object _del_func
 
-    def __new__(self, *a, **ka):
+    def __cinit__(self, *a, **ka):
         self._item_style = "default"
         self._label_get_func = None
         self._icon_get_func = None

@@ -139,7 +139,7 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
         ...
         >>> my_edje.message_handler_set(msg_dbg)
     """
-    def __new__(self, *a, **ka):
+    def __cinit__(self, *a, **ka):
         self._signal_callbacks = {}
 
     def __init__(self, c_evas.Canvas canvas not None, **kargs):

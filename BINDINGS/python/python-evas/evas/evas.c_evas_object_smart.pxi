@@ -359,7 +359,7 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
 
     @see: L{ClippedSmartObject}
     """
-    def __new__(self, *a, **ka):
+    def __cinit__(self, *a, **ka):
         self._smart_callbacks = dict()
         cls = self.__class__
         self._m_delete = _smart_class_get_impl_method(cls, "delete")
