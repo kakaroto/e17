@@ -259,7 +259,7 @@ lastfm_cover_search_request(const char *artist, const char *album,
     req->cb_data = data;
     
     ecore_con_url_data_set(con_url, req);
-    if (!ecore_con_url_get(con_url, NULL, 0, NULL))
+    if (!ecore_con_url_get(con_url))
       {
          ERR("Failed to send request");
          goto send_error;

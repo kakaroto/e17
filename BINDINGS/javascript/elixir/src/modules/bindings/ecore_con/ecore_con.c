@@ -1548,9 +1548,6 @@ static JSBool
 elixir_ecore_con_url_get(JSContext *cx, uintN argc, jsval *vp)
 {
    Ecore_Con_Url *curl;
-   const char *data;
-   const char *content_type;
-   size_t length;
    int size;
    elixir_value_t val[3];
 
@@ -1558,10 +1555,8 @@ elixir_ecore_con_url_get(JSContext *cx, uintN argc, jsval *vp)
      return JS_FALSE;
 
    GET_PRIVATE(cx, val[0].v.obj, curl);
-   data = elixir_get_string_bytes(val[1].v.str, &length);
-   content_type = elixir_get_string_bytes(val[2].v.str, NULL);
 
-   size = ecore_con_url_get(curl, data, length, content_type);
+   size = ecore_con_url_get(curl);
 
    JS_SET_RVAL(cx, vp, INT_TO_JSVAL(size));
    return JS_TRUE;
@@ -1752,7 +1747,7 @@ static JSFunctionSpec           ecore_con_functions[] = {
   JS_FN("ecore_con_url_destroy", elixir_ecore_con_url_free, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_url_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_send, 4, JSPROP_ENUMERATE, 0 ),
-  ELIXIR_FN(ecore_con_url_get, 4, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(ecore_con_url_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_post, 4, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_verbose_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_ftp_use_epsv_set, 2, JSPROP_ENUMERATE, 0 ),
