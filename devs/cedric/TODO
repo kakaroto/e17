@@ -6,6 +6,7 @@
 
 * Eet
 	- add inheritance
+	- improve speed of array decoding
 
 * Evas
 	- add _stringshared version for evas_event_feed_*
@@ -25,6 +26,7 @@ h	- Add specialized task for each match automate case
 	- Add internationalization support
 	- Add an optimizer to change edje layout for better performance
 	- Add benchmark tools.
+	- Try to improve speed of object destruction by moving them to another thread.
 
 * Elixir
 h	- add eet -> js object
@@ -32,6 +34,7 @@ h	- add eet -> js object
 	- add physique binding
 h	- add eio binding
 	- use eet connection
+	- add explicit binding
 
 * Explicit
 	- add server
@@ -59,20 +62,27 @@ h	- fix expose and thumbnail display to be fully async
 * Eio 1.0
 h	- provide a completly asynchronous IO API using ecore thread infra
 	- add notify support
-	- use dirfd helper
+	- use dirfd helper (partial support with eina 1.0 and full with 1.1)
 	- add tutorial
 	- add tests suite
+	- add recursive ls API
 
 * Efreet 1.0
-	- implement cache with icons directory content to avoid uneeded stat
+d	- implement cache with icons directory content to avoid uneeded stat
 	(should require a daemon to do the monitoring and the generation for
 	every one in the background).
+	- make mime check thread safe
 
 * Ecore 1.1
 	- add ecore_thread_reschedule (to reschedule it again after all other
 	pending jobs)
 	- add ecore_thread_batch_run/ecore_thread_batch_feedback_run (to create
-	batch a list of data instead of creating one ecore_thread per data)
+	batch, a list of data instead of creating one ecore_thread per data)
+
+* eak - configuration library on top of eet
+	- support text config and binary file
+	- support variable number and location of backup file
+	- look at elsa to understand the idea
 
 h: half done
 d: done
