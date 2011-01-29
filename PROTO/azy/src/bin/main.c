@@ -598,7 +598,7 @@ gen_type_copyfree(Azy_Typedef *t,
      {
         if (t->fcheader) return;
         if (t->type == TD_STRUCT)
-          EL(0, "%s %s_new();", t->ctype, t->cname);
+          EL(0, "%s %s_new(void);", t->ctype, t->cname);
 
         if (t->type == TD_STRUCT || t->type == TD_ARRAY)
           {
