@@ -9,7 +9,7 @@ TAIL = /usr/bin/tail
 COMPILE = $(CC) $(EDJE_CC_FLAGS)
 SRC = main.edc
 OUT = detour-elm.edj
-PATH_INSTALL = $(HOME)/.e/elementary
+PATH_INSTALL = $(HOME)/.elementary/themes
 
 EDJE_CC_FLAGS = -id images \
 -id icons \
@@ -30,14 +30,14 @@ build: main.edc
 	$(COMPILE) $(SRC) -o $(OUT)
 
 install: detour-elm.edj
-	#@echo "Running make install..."
-	#if [ -e $(OUT) ]; then $(CP) $? $(PATH_INSTALL)/; fi
-	#@echo
-	#@echo --------------------------------------------------
-	#@echo $(OUT) was installed in your
-	#@echo $(PATH_INSTALL)/ directory.
-	#@echo --------------------------------------------------
-	#@echo
+	@echo "Running make install..."
+	if [ -e $(OUT) ]; then $(CP) $(OUT) $(PATH_INSTALL)/; fi
+	@echo
+	@echo --------------------------------------------------
+	@echo $(OUT) was installed in your
+	@echo $(PATH_INSTALL)/ directory.
+	@echo --------------------------------------------------
+	@echo
 	@echo
 
 version:
