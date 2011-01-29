@@ -17,18 +17,18 @@
 /* Func Proto Requirements for Gadcon */
 static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
 static void _gc_shutdown(E_Gadcon_Client *gcc);
-static void _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
-static char *_gc_label(E_Gadcon_Client_Class *client_class);
-static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
-static const char *_gc_id_new(E_Gadcon_Client_Class *client_class);
+static void _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient __UNUSED__);
+static char *_gc_label(E_Gadcon_Client_Class *client_class __UNUSED__);
+static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class __UNUSED__, Evas *evas);
+static const char *_gc_id_new(E_Gadcon_Client_Class *client_class __UNUSED__);
 
 /* Module Protos */
-static void _tclock_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void _tclock_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void _tclock_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void _tclock_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
-static void _tclock_menu_cb_post(void *data, E_Menu *m);
-static Eina_Bool _tclock_cb_check(void *data);
+static void _tclock_cb_mouse_down(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info);
+static void _tclock_cb_mouse_in(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__);
+static void _tclock_cb_mouse_out(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__);
+static void _tclock_menu_cb_configure(void *data, E_Menu *m __UNUSED__, E_Menu_Item *mi __UNUSED__);
+static void _tclock_menu_cb_post(void *data __UNUSED__, E_Menu *m __UNUSED__);
+static Eina_Bool _tclock_cb_check(void *data __UNUSED__);
 static Config_Item *_tclock_config_item_get(const char *id);
 
 static E_Config_DD *conf_edd = NULL;
@@ -125,7 +125,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 }
 
 static void
-_gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
+_gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient __UNUSED__)
 {
    Instance *inst;
    Evas_Coord mw;
@@ -136,13 +136,13 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 }
 
 static char *
-_gc_label(E_Gadcon_Client_Class *client_class)
+_gc_label(E_Gadcon_Client_Class *client_class __UNUSED__)
 {
    return D_("TClock");
 }
 
 static Evas_Object *
-_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
+_gc_icon(E_Gadcon_Client_Class *client_class __UNUSED__, Evas *evas)
 {
    Evas_Object *o;
    char buf[PATH_MAX];
@@ -154,7 +154,7 @@ _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
 }
 
 static const char *
-_gc_id_new(E_Gadcon_Client_Class *client_class)
+_gc_id_new(E_Gadcon_Client_Class *client_class __UNUSED__)
 {
    Config_Item *ci;
 
@@ -163,7 +163,7 @@ _gc_id_new(E_Gadcon_Client_Class *client_class)
 }
 
 static void
-_tclock_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_tclock_cb_mouse_down(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Instance *inst;
    Evas_Event_Mouse_Down *ev;
@@ -197,10 +197,10 @@ _tclock_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 }
 
 static void 
-_tclock_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info) 
+_tclock_cb_mouse_in(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__) 
 {
    Instance *inst = NULL;
-   char buf[PATH_MAX];
+   char buf[1024];
    time_t current_time;
    struct tm *local_time;
 
@@ -221,7 +221,7 @@ _tclock_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 }
 
 static void 
-_tclock_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info) 
+_tclock_cb_mouse_out(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__) 
 {
    Instance *inst = NULL;
 
@@ -234,7 +234,7 @@ _tclock_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
 }
 
 static void
-_tclock_menu_cb_post(void *data, E_Menu *m)
+_tclock_menu_cb_post(void *data __UNUSED__, E_Menu *m __UNUSED__)
 {
    if (!tclock_config->menu) return;
    e_object_del(E_OBJECT(tclock_config->menu));
@@ -242,11 +242,11 @@ _tclock_menu_cb_post(void *data, E_Menu *m)
 }
 
 static void
-_tclock_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
+_tclock_menu_cb_configure(void *data, E_Menu *m __UNUSED__, E_Menu_Item *mi __UNUSED__)
 {
-   Instance *inst;
+   Instance *inst = NULL;
 
-   inst = data;
+   if (!(inst = data)) return;
    _config_tclock_module(inst->ci);
 }
 
@@ -279,7 +279,7 @@ _tclock_config_updated(Config_Item *ci)
 }
 
 static Eina_Bool
-_tclock_cb_check(void *data)
+_tclock_cb_check(void *data __UNUSED__)
 {
    Instance *inst;
    Eina_List *l;
@@ -432,7 +432,7 @@ e_modapi_init(E_Module *m)
 }
 
 EAPI int
-e_modapi_shutdown(E_Module *m)
+e_modapi_shutdown(E_Module *m __UNUSED__)
 {
    e_gadcon_provider_unregister(&_gc_class);
 
@@ -471,7 +471,7 @@ e_modapi_shutdown(E_Module *m)
 }
 
 EAPI int
-e_modapi_save(E_Module *m)
+e_modapi_save(E_Module *m __UNUSED__)
 {
    e_config_domain_save("module.tclock", conf_edd, tclock_config);
    return 1;
