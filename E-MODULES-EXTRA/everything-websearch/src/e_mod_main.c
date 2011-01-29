@@ -216,7 +216,7 @@ _url_data_send(Url_Data *dd, const char *url)
 
    ecore_con_url_url_set(dd->con_url, url);
 
-   return ecore_con_url_get(dd->con_url, NULL, 0, NULL);
+   return ecore_con_url_get(dd->con_url);
 }
 
 static Eina_Bool
