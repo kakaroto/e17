@@ -77,13 +77,13 @@ extern int debug;
 extern char *home, *dm_to;
 extern Gui gui;
 
-typedef enum { TIMELINE } AzyDownloadType;
+typedef enum { TIMELINE, REPEAT } SNAzyDownloadType;
 
-typedef struct _Azy_Download_Helper {
-	AzyDownloadType type;
+typedef struct _SN_Azy_Download_Helper {
+	SNAzyDownloadType type;
 	char *host;
 	char *url;
-	char *data;
+	Azy_Net_Data post_body;
 	Azy_Net_Type method;
 	int timeline;
 	int account_id;
@@ -93,9 +93,9 @@ typedef struct _Azy_Download_Helper {
 		Repeat_Cb		add_repeat;
 	} callback;
 	void *callback_data;
-} AzyDownloadHelper;
+} SNAzyDownloadHelper;
 
-AzyDownloadHelper ADH;
+SNAzyDownloadHelper ADH;
 
 static void Array_statusnet_Status_free(Eina_List *array) {
 	statusnet_Status *snS;
@@ -111,6 +111,10 @@ static void statusnet_azy_value_free(Eina_List *array) {
 	printf("statusnet_azy_value_free -> ");
 	switch(ADH.type) {
 		case TIMELINE: {
+			Array_statusnet_Status_free(array);
+			break;
+		}
+		case REPEAT: {
 			Array_statusnet_Status_free(array);
 			break;
 		}
@@ -162,6 +166,9 @@ Eina_Bool statusnet_azy_value_to_data(Azy_Value *array, Eina_List **narray) {
 		case TIMELINE: {
 			return(azy_value_to_Array_statusnet_Status(array, narray));
 		}
+		case REPEAT: {
+			return(azy_value_to_Array_statusnet_Status(array, narray));
+		}
 		default: {
 			printf("Unknown ADH.type!!\n");
 			return(EINA_FALSE);
@@ -173,7 +180,7 @@ Eina_Bool statusnet_azy_connected(void *data, int type, Azy_Client *cli) {
 	Azy_Client_Call_Id id;
 
 	printf("AZY_CONNECTED\n");
-	id = azy_client_blank(cli, ADH.method, (void*)ADH.data, (Azy_Content_Cb)statusnet_azy_value_to_data, NULL);
+	id = azy_client_blank(cli, ADH.method, &ADH.post_body, (Azy_Content_Cb)statusnet_azy_value_to_data, NULL);
 	azy_client_callback_free_set(cli, id, (Ecore_Cb)statusnet_azy_value_free);
 
 	return(EINA_TRUE);
@@ -333,6 +340,9 @@ Eina_Bool statusnet_azy_returned(void *data, int type, Azy_Content *content) {
 		case TIMELINE: {
 			return(timeline_returned(data, type, content));
 		}
+		case REPEAT: {
+			return(timeline_returned(data, type, content));
+		}
 		default: {
 			printf("Unknown ADH.type!!\n");
 			return(EINA_FALSE);
@@ -361,6 +371,10 @@ Eina_Bool statusnet_azy_disconnected(void *data, int type, Azy_Client *cli) {
 			retval = timeline_disconnected(data, type, cli);
 			break;
 		}
+		case REPEAT: {
+			retval = timeline_disconnected(data, type, cli);
+			break;
+		}
 		default: {
 			printf("Unknown ADH.type!!\n");
 		}
@@ -377,10 +391,6 @@ void statusnet_init() {
 	ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)statusnet_azy_connected, NULL);
 	ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)statusnet_azy_returned, NULL);
 	ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)statusnet_azy_disconnected, NULL);
-}
-
-void ed_statusnet_azy_agent_free(void *data) {
-	azy_client_free((Azy_Client*)data);
 }
 
 void ed_statusnet_account_free(StatusNetBaAccount *account) {
@@ -1096,30 +1106,11 @@ void ed_statusnet_user_abandon(int account_id, char *screen_name, char *password
 	if(request) free(request);
 }
 
-Eina_Bool ed_statusnet_repeat_disconnected(Azy_Client *cli, int type, Azy_Client *ev) {
-	return(EINA_TRUE);
-}
-
-Eina_Bool ed_statusnet_repeat_connected(Azy_Client *cli, int type, Azy_Client *ev) {
-	Azy_Client_Call_Id id;
-	Azy_Net_Data buffer;
-
-	buffer.data = (unsigned char*)"source=elmdentica";
-	buffer.size = strlen((const char*)buffer.data);
-
-	id = azy_client_blank(ev, AZY_NET_TYPE_POST, &buffer, (Azy_Content_Cb)azy_value_to_Array_statusnet_Status, NULL);
-	if(!id) return(EINA_FALSE);
-
-	azy_client_callback_free_set(ev, id, (Ecore_Cb)Array_statusnet_Status_free);
-
-	return(EINA_TRUE);
-}
 
 static int ed_statusnet_repeat_handler(void *data, int argc, char **argv, char **azColName) {
     char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL, *url_start=NULL, *url_end=NULL;
     int port=0, id=0, res;
 	Azy_Client *repeat=NULL;
-	accountData *ad = (accountData*)data;
 
     /* In this query handler, these are the current fields:
         argv[0] == name TEXT
@@ -1142,7 +1133,7 @@ static int ed_statusnet_repeat_handler(void *data, int argc, char **argv, char *
 
 
 	res = asprintf(&url_start, "%s://%s", proto, domain);
-	res = asprintf(&url_end, "%s/statuses/retweet/%lld.json", base_url, (long long int)ad->as->status->id);
+	res = asprintf(&url_end, "%s/statuses/retweet/%lld.json", base_url, (long long int)ADH.as->status->id);
 
 	repeat = azy_client_new();
 	azy_client_host_set(repeat, url_start, port);
@@ -1155,26 +1146,26 @@ static int ed_statusnet_repeat_handler(void *data, int argc, char **argv, char *
 
 	azy_net_version_set(azy_client_net_get(repeat), 0);
 
-	ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)ed_statusnet_repeat_connected, ad);
-	ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)timeline_returned, ad);
-	ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)timeline_disconnected, ad);
-
 	return(0);
 }
 
 void ed_statusnet_repeat(int account_id, aStatus *as, Repeat_Cb callback, void *data) {
 	char *query=NULL, *db_err=NULL;
 	int sqlite_res;
-	accountData *ad;
-	
+
+	memset(&ADH, 0, sizeof(ADH));
+
 	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE id = %d and type = %d and enabled = 1;", account_id, ACCOUNT_TYPE_STATUSNET);
 	if(sqlite_res != -1) {
-		ad = calloc(1, sizeof(accountData));
-		ad->account_id = account_id;
-		ad->as = as;
-		ad->add_repeat = callback;
-		ad->data = data;
-		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_repeat_handler, (void*)ad, &db_err);
+		ADH.type = REPEAT;
+		ADH.account_id = account_id;
+		ADH.as = as;
+		ADH.callback.add_repeat = callback;
+		ADH.callback_data = data;
+		ADH.method = AZY_NET_TYPE_POST;
+		ADH.post_body.data = (unsigned char*)"source=elmdentica";
+		ADH.post_body.size = strlen(ADH.post_body.data);
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_repeat_handler, NULL, &db_err);
 		if(sqlite_res != 0) {
 			fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
 			sqlite3_free(db_err);
