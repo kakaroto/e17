@@ -43,6 +43,7 @@
 
 #include <Elementary.h>
 #include <Ecore_X.h>
+#include <Ecore_File.h>
 #include <Azy.h>
 
 #include <sqlite3.h>
@@ -610,14 +611,15 @@ static void user_free(UserProfile *user) {
 	}
 }
 
-Evas_Object *ed_get_icon(long long int id, Evas_Object *parent) {
+Evas_Object *ed_get_icon(long long int id, Evas_Object *parent, Elm_Genlist_Item *li) {
 	Evas_Object *icon=NULL;
 	int res=0;
 	char *file_path=NULL;
 
 	res = asprintf(&file_path, "%s/cache/icons/%lld", home, id);
-	if(res != -1 && (icon = elm_icon_add(parent))) {
-		elm_icon_file_set(icon, file_path, "fubar?");
+	if(res != -1) {
+		if( ecore_file_exists(file_path) && (icon = elm_icon_add(parent)) )
+			elm_icon_file_set(icon, file_path, "fubar?");
 		free(file_path);
 	}
 	return(icon);
@@ -1123,8 +1125,7 @@ Evas_Object *ed_status_icon_get(void *data, Evas_Object *obj, const char *part) 
 	Evas_Object *icon=NULL;
 
 	if (!strcmp(part, "icon")) {
-		icon = ed_get_icon(as->au->user->id, gui.win);
-		//evas_object_smart_callback_add(icon, "clicked", on_bubble_icon_clicked, as);
+		icon = ed_get_icon(as->au->user->id, gui.win, as->li);
 	}
 	return(icon);
 }
@@ -1384,15 +1385,12 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 
 void add_status(aStatus *as, Elm_Genlist_Item *gli) {
 	Elm_Genlist_Item *li=NULL;
-	Evas_Object *icon=NULL;
 
 	printf("ADD STATUS: %lld (%ld) USER: %ld\n", (long long int)as->status->id, as, as->au);
 
 	printf("GAG?... ");
 	if(ed_check_gag(as)) return;
 	printf("NOT GAGGED\n");
-
-	icon = ed_get_icon(as->au->user->id, gui.win);
 
 	itc1.item_style		= "elmdentica";
 	itc1.func.label_get	= ed_status_label_get;
@@ -1405,6 +1403,8 @@ void add_status(aStatus *as, Elm_Genlist_Item *gli) {
 		elm_genlist_item_show(li);
 	} else
 		li = elm_genlist_item_prepend(gui.timeline, &itc1, as, NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL);
+
+	as->li = li;
 
 	eina_hash_add(bubble2status, &li, as);
 }
@@ -1893,6 +1893,9 @@ EAPI int elm_main(int argc, char **argv)
 	azy_init();
 
 	elmdentica_init();
+#ifdef STATUSNET_H
+	statusnet_init();
+#endif
 
 	gui.win = elm_win_add(NULL, "elmdentica", ELM_WIN_BASIC);
 	evas_object_smart_callback_add(gui.win, "delete-request", win_del, NULL);

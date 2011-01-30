@@ -81,6 +81,7 @@ typedef struct _a_Status {
 	int              account_id;
 	short            account_type;
 	Eina_Bool        in_db;
+	Elm_Genlist_Item *li;
 } aStatus;
 
 typedef void (*Group_Show_Cb)(aStatus *, void*, void *);
@@ -101,6 +102,8 @@ typedef struct _group_data {
 	statusnet_Group *group;
 } groupData;
 
+
+void statusnet_init();
 
 void ed_statusnet_account_free(StatusNetBaAccount *account);
 

@@ -77,6 +77,108 @@ extern int debug;
 extern char *home, *dm_to;
 extern Gui gui;
 
+typedef enum { TIMELINE } AzyDownloadType;
+
+typedef struct _Azy_Download_Helper {
+	AzyDownloadType type;
+	char *host;
+	char *url;
+	char *data;
+	Azy_Net_Type method;
+	int timeline;
+	int account_id;
+	aStatus *as;
+	union _callback {
+		Status_List_Cb	update_status_list;
+		Repeat_Cb		add_repeat;
+	} callback;
+	void *callback_data;
+} AzyDownloadHelper;
+
+AzyDownloadHelper ADH;
+
+static void Array_statusnet_Status_free(Eina_List *array) {
+	statusnet_Status *snS;
+
+	printf("Array_statusnet_Status_free\n");
+	if(array) {
+		EINA_LIST_FREE(array, snS)
+			statusnet_Status_free(snS);
+	}
+}
+
+static void statusnet_azy_value_free(Eina_List *array) {
+	printf("statusnet_azy_value_free -> ");
+	switch(ADH.type) {
+		case TIMELINE: {
+			Array_statusnet_Status_free(array);
+			break;
+		}
+		default: {
+			printf("Unknown ADH.type!!\n");
+			break;
+		}
+	}
+}
+
+Eina_Bool azy_value_to_Array_statusnet_Status(Azy_Value *array, Eina_List **narray) {
+	Eina_List *tmp_narray=NULL, *item;
+	Azy_Value *v;
+	statusnet_Status *snS;
+
+	printf("azy_value_to_Array_statusnet_Status\n");
+	if (!array)
+		return(EINA_FALSE);
+
+	switch(azy_value_type_get(array)) {
+		case AZY_VALUE_ARRAY: {
+
+			EINA_LIST_FOREACH(azy_value_children_items_get(array), item, v) {
+				snS=NULL;
+
+				if (azy_value_to_statusnet_Status(v, &snS)) {
+					tmp_narray = eina_list_append(tmp_narray, snS);
+				}
+			}
+			break;
+		}
+		case AZY_VALUE_STRUCT: {
+			snS=NULL;
+			if (azy_value_to_statusnet_Status(array, &snS)) {
+				tmp_narray = eina_list_append(tmp_narray, snS);
+			}
+			break;
+		}
+		default: { return(EINA_FALSE); }
+	}
+
+	*narray = tmp_narray;
+	return(EINA_TRUE);
+}
+
+Eina_Bool statusnet_azy_value_to_data(Azy_Value *array, Eina_List **narray) {
+	printf("statusnet_azy_value_to_data -> ");
+	switch(ADH.type) {
+		case TIMELINE: {
+			return(azy_value_to_Array_statusnet_Status(array, narray));
+		}
+		default: {
+			printf("Unknown ADH.type!!\n");
+			return(EINA_FALSE);
+		}
+	}
+}
+
+Eina_Bool statusnet_azy_connected(void *data, int type, Azy_Client *cli) {
+	Azy_Client_Call_Id id;
+
+	printf("AZY_CONNECTED\n");
+	id = azy_client_blank(cli, ADH.method, (void*)ADH.data, (Azy_Content_Cb)statusnet_azy_value_to_data, NULL);
+	azy_client_callback_free_set(cli, id, (Ecore_Cb)statusnet_azy_value_free);
+
+	return(EINA_TRUE);
+}
+
 Eina_Bool user_insert(anUser *au, int account_id) {
 	int sqlite_res=0;
 	struct sqlite3_stmt *insert_stmt=NULL;
@@ -164,6 +266,117 @@ aStatus *statusnet_new_status(statusnet_Status *snS, int account_id) {
 
 	free(as);
 	return(NULL);
+}
+
+void message_insert(statusnet_Status *s, void *user_data) {
+	struct sqlite3_stmt **insert_stmt = (struct sqlite3_stmt**)user_data;
+	int sqlite_res=0;
+
+	sqlite3_bind_int64(*insert_stmt, 1, s->id);
+	sqlite3_bind_text(*insert_stmt,  2, s->text, -1, NULL);
+	sqlite3_bind_int64(*insert_stmt, 3, s->truncated);
+	sqlite3_bind_int64(*insert_stmt, 4, curl_getdate(s->created_at, NULL));
+	sqlite3_bind_int64(*insert_stmt, 5, s->in_reply_to_status_id);
+	sqlite3_bind_text(*insert_stmt,  6, s->source, -1, NULL);
+	sqlite3_bind_int64(*insert_stmt, 7, s->in_reply_to_user_id);
+	sqlite3_bind_int64(*insert_stmt, 8, s->favorited);
+	sqlite3_bind_int64(*insert_stmt, 9, s->user->id);
+
+	sqlite_res = sqlite3_step(*insert_stmt);
+	if(sqlite_res != 0 && sqlite_res != 101 ) printf("ERROR: %d while inserting message:\n(%s) %s\n", sqlite_res, s->user->screen_name, s->text);
+
+	sqlite3_reset(*insert_stmt);
+}
+
+Eina_Bool timeline_returned(void *data, int type, Azy_Content *content) {
+	int sqlite_res=0;
+	struct sqlite3_stmt *insert_stmt=NULL;
+	const char *missed=NULL;
+	char *query=NULL;
+	statusnet_Status *snS=NULL, *snS2=NULL;
+	aStatus *as=NULL;
+	Eina_List *l, *list=NULL;
+
+	printf("timeline_returned\n");
+	if (azy_content_error_is_set(content)) {
+		fprintf(stderr, _("Error encountered: %s\n"), azy_content_error_message_get(content));
+		return(EINA_FALSE);
+	}
+
+	list = azy_content_return_get(content);
+
+	if( ! (list && eina_list_count(list) > 0) ) return(EINA_TRUE);
+
+	sqlite_res = asprintf(&query, "insert into messages (status_id, account_id, timeline, s_text, s_truncated, s_created_at, s_in_reply_to_status_id, s_source, s_in_reply_to_user_id, s_favorited, s_user) values (?, %lld, %d, ?, ?, ?, ?, ?, ?, ?, ?);", ADH.account_id, ADH.timeline);;
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
+		if(sqlite_res == 0) {
+			EINA_LIST_REVERSE_FOREACH(list, l, snS) {
+				message_insert(snS, &insert_stmt);
+				snS2 = statusnet_Status_copy(snS);
+				as = statusnet_new_status(snS2, ADH.account_id);
+				if(as) newStatuses = eina_list_append(newStatuses, as);
+			}
+		} else {
+			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, missed);
+		}
+		free(query);
+		sqlite3_finalize(insert_stmt);
+	}
+
+	return(EINA_TRUE);
+}
+
+Eina_Bool statusnet_azy_returned(void *data, int type, Azy_Content *content) {
+	printf("statusnet_azy_returned -> ");
+	switch(ADH.type) {
+		case TIMELINE: {
+			return(timeline_returned(data, type, content));
+		}
+		default: {
+			printf("Unknown ADH.type!!\n");
+			return(EINA_FALSE);
+		}
+	}
+}
+
+Eina_Bool timeline_disconnected(void *data, int type, Azy_Client *cli) {
+	printf("timeline_disconnected\n");
+
+	if(ADH.as)
+		ADH.callback.add_repeat(ADH.as, ADH.callback_data);
+	else {
+		ADH.callback.update_status_list(ADH.timeline, EINA_FALSE);
+	}
+
+	return(EINA_TRUE);
+}
+
+Eina_Bool statusnet_azy_disconnected(void *data, int type, Azy_Client *cli) {
+	Eina_Bool retval=EINA_FALSE;
+
+	printf("statusnet_azy_disconnected -> ");
+	switch(ADH.type) {
+		case TIMELINE: {
+			retval = timeline_disconnected(data, type, cli);
+			break;
+		}
+		default: {
+			printf("Unknown ADH.type!!\n");
+		}
+	}
+
+	memset(&ADH, 0, sizeof(ADH));
+	return(retval);
+}
+
+
+void statusnet_init() {
+	memset(&ADH, 0, sizeof(ADH));
+
+	ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)statusnet_azy_connected, NULL);
+	ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)statusnet_azy_returned, NULL);
+	ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)statusnet_azy_disconnected, NULL);
 }
 
 void ed_statusnet_azy_agent_free(void *data) {
@@ -441,27 +654,6 @@ void user_hash_data_free(void *data) {
 }
 
 
-void message_insert(statusnet_Status *s, void *user_data) {
-	struct sqlite3_stmt **insert_stmt = (struct sqlite3_stmt**)user_data;
-	int sqlite_res=0;
-
-	sqlite3_bind_int64(*insert_stmt, 1, s->id);
-	sqlite3_bind_text(*insert_stmt,  2, s->text, -1, NULL);
-	sqlite3_bind_int64(*insert_stmt, 3, s->truncated);
-	sqlite3_bind_int64(*insert_stmt, 4, curl_getdate(s->created_at, NULL));
-	sqlite3_bind_int64(*insert_stmt, 5, s->in_reply_to_status_id);
-	sqlite3_bind_text(*insert_stmt,  6, s->source, -1, NULL);
-	sqlite3_bind_int64(*insert_stmt, 7, s->in_reply_to_user_id);
-	sqlite3_bind_int64(*insert_stmt, 8, s->favorited);
-	sqlite3_bind_int64(*insert_stmt, 9, s->user->id);
-
-	sqlite_res = sqlite3_step(*insert_stmt);
-	if(sqlite_res != 0 && sqlite_res != 101 ) printf("ERROR: %d while inserting message:\n(%s) %s\n", sqlite_res, s->user->screen_name, s->text);
-
-	sqlite3_reset(*insert_stmt);
-}
-
-
 
 int ed_statusnet_post(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *msg) {
 	char *ub_status=NULL;
@@ -526,141 +718,11 @@ void ed_statusnet_max_status_id(int account_id, long long int*since_id, int time
 	}
 }
 
-void ed_statusnet_statuses_get_avatar(char *id, char *url) {
-	int res=0;
-	char * file_path=NULL;
-
-	if(!url || !id) return;
-
-	res = asprintf(&file_path, "%s/cache/icons/%s", home, id);
-
-	if(res != -1) {
-		ed_curl_dump_url_to_file(url, file_path);
-		free(file_path);
-	}
-}
-
-
-Eina_Bool azy_value_to_Array_statusnet_Status(Azy_Value *array, Eina_List **narray) {
-	Eina_List *tmp_narray=NULL, *item;
-	Azy_Value *v;
-	statusnet_Status *snS;
-
-	if (!array)
-		return(EINA_FALSE);
-
-	switch(azy_value_type_get(array)) {
-		case AZY_VALUE_ARRAY: {
-
-			EINA_LIST_FOREACH(azy_value_children_items_get(array), item, v) {
-				snS=NULL;
-
-				if (azy_value_to_statusnet_Status(v, &snS)) {
-					tmp_narray = eina_list_append(tmp_narray, snS);
-				}
-			}
-			break;
-		}
-		case AZY_VALUE_STRUCT: {
-			snS=NULL;
-			if (azy_value_to_statusnet_Status(array, &snS)) {
-				tmp_narray = eina_list_append(tmp_narray, snS);
-			}
-			break;
-		}
-		default: { return(EINA_FALSE); }
-	}
-
-	*narray = tmp_narray;
-	return(EINA_TRUE);
-}
-
-static void Array_statusnet_Status_free(Eina_List *array) {
-	statusnet_Status *snS;
-
-	printf("ARRAY_STATUSNET_STATUS_FREE\n");
-	if(array) {
-		EINA_LIST_FREE(array, snS)
-			statusnet_Status_free(snS);
-	}
-}
-
-Eina_Bool timeline_connected(void *data, int type, Azy_Client *cli) {
-	Azy_Client_Call_Id id;
-
-	printf("TIMELINE_CONNECTED\n");
-	id = azy_client_blank(cli, AZY_NET_TYPE_GET, NULL, (Azy_Content_Cb)azy_value_to_Array_statusnet_Status, NULL);
-	azy_client_callback_free_set(cli, id, (Ecore_Cb)Array_statusnet_Status_free);
-
-	return(EINA_TRUE);
-}
-
-Eina_Bool timeline_returned(void *data, int type, Azy_Content *content) {
-	int sqlite_res=0;
-	struct sqlite3_stmt *insert_stmt=NULL;
-	const char *missed=NULL;
-	char *query=NULL;
-	accountData *ad = (accountData*)data;
-	statusnet_Status *snS=NULL, *snS2=NULL;
-	aStatus *as=NULL;
-	Eina_List *l, *list=NULL;
-
-	printf("TIMELINE_RETURNED\n");
-	if (azy_content_error_is_set(content)) {
-		printf("TIMELINE_RETURNED azy_content_error_is_set\n");
-		fprintf(stderr, _("Error encountered: %s\n"), azy_content_error_message_get(content));
-		return(EINA_FALSE);
-	}
-
-	printf("TIMELINE_RETURNED azy_content_return_get\n");
-	list = azy_content_return_get(content);
-
-	if( ! (list && eina_list_count(list) > 0) ) return(EINA_TRUE);
-
-	printf("TIMELINE_RETURNED insert into messages %d statuses\n", eina_list_count(list));
-	sqlite_res = asprintf(&query, "insert into messages (status_id, account_id, timeline, s_text, s_truncated, s_created_at, s_in_reply_to_status_id, s_source, s_in_reply_to_user_id, s_favorited, s_user) values (?, %lld, %d, ?, ?, ?, ?, ?, ?, ?, ?);", ad->account_id, ad->timeline);;
-	if(sqlite_res != -1) {
-		sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
-		if(sqlite_res == 0) {
-			EINA_LIST_REVERSE_FOREACH(list, l, snS) {
-				message_insert(snS, &insert_stmt);
-				snS2 = statusnet_Status_copy(snS);
-				as = statusnet_new_status(snS2, ad->account_id);
-				if(as) newStatuses = eina_list_append(newStatuses, as);
-			}
-		} else {
-			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, missed);
-		}
-		free(query);
-		sqlite3_finalize(insert_stmt);
-	printf("TIMELINE_RETURNED insert ended\n");
-	}
-
-	return(EINA_TRUE);
-}
-
-Eina_Bool timeline_disconnected(void *data, int type, Azy_Client *cli) {
-	accountData *ad = (accountData*)data;
-
-	if(ad->as)
-		ad->add_repeat(ad->as, ad->data);
-	else {
-		printf("TIMELINE_DISCONNECTED calling callback %ld\n", ad->update_status_list);
-		ad->update_status_list(ad->timeline, EINA_FALSE);
-	}
-
-	free(ad);
-
-	printf("TIMELINE_DISCONNECTED\n");
-	return(EINA_TRUE);
-}
-
 void ed_statusnet_timeline_get(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline, Status_List_Cb update_status_list) {
 	int res=0;
 	long long int since_id=0;
 	char *host=NULL, *timeline_str=NULL;
 	Azy_Client *cli = azy_client_new();
-	accountData *ad=NULL;
 	
 	if(!cli) return;
 
@@ -729,21 +791,19 @@ void ed_statusnet_timeline_get(int account_id, char *screen_name, char *password
 			return;
 	}
 
+	memset(&ADH, 0, sizeof(ADH));
+
+	ADH.method = AZY_NET_TYPE_GET;
+	ADH.account_id = account_id;
+	ADH.as = NULL;
+	ADH.timeline = timeline;
+	ADH.callback.update_status_list = update_status_list;
+
 	azy_client_host_set(cli, host, port);
 	azy_client_connect(cli, EINA_TRUE);
 	azy_net_auth_set(azy_client_net_get(cli), screen_name, password);
 	azy_net_uri_set(azy_client_net_get(cli), timeline_str);
 	azy_net_version_set(azy_client_net_get(cli), 0);
-
-	ad=(accountData*)calloc(1, sizeof(accountData));
-
-	ad->account_id = account_id;
-	ad->timeline = timeline;
-	ad->update_status_list = update_status_list;
-
-	ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)timeline_connected, ad);
-	ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)timeline_returned, ad);
-	ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)timeline_disconnected, ad);
 
 	free(timeline_str);
 	free(host);
@@ -1170,9 +1230,9 @@ static int ed_statusnet_status_get_handler(void *data, int argc, char **argv, ch
 	azy_net_uri_set(azy_client_net_get(cli), url_end);
 	azy_net_version_set(azy_client_net_get(cli), 0);
 
-    ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)timeline_connected, NULL); // FIXME: FALTAM AQUI accountDatas
-    ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)timeline_returned, NULL);
-    ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)ed_sn_single_status_disconnected, NULL);
+    //ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)timeline_connected, NULL); // FIXME: FALTAM AQUI accountDatas
+    //ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)timeline_returned, NULL);
+    //ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)ed_sn_single_status_disconnected, NULL);
 
 	if(*prelated_status) {
 		(*prelated_status)->account_id = id;
