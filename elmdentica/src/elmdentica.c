@@ -1386,11 +1386,7 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 void add_status(aStatus *as, Elm_Genlist_Item *gli) {
 	Elm_Genlist_Item *li=NULL;
 
-	printf("ADD STATUS: %lld (%ld) USER: %ld\n", (long long int)as->status->id, as, as->au);
-
-	printf("GAG?... ");
 	if(ed_check_gag(as)) return;
-	printf("NOT GAGGED\n");
 
 	itc1.item_style		= "elmdentica";
 	itc1.func.label_get	= ed_status_label_get;

@@ -305,16 +305,11 @@ Eina_Bool timeline_returned(void *data, int type, Azy_Content *content) {
 	Eina_List *l, *list=NULL;
 
 	printf("timeline_returned\n");
-	if (azy_content_error_is_set(content)) {
-		fprintf(stderr, _("Error encountered: %s\n"), azy_content_error_message_get(content));
-		return(EINA_FALSE);
-	}
-
 	list = azy_content_return_get(content);
 
 	if( ! (list && eina_list_count(list) > 0) ) return(EINA_TRUE);
 
-	sqlite_res = asprintf(&query, "insert into messages (status_id, account_id, timeline, s_text, s_truncated, s_created_at, s_in_reply_to_status_id, s_source, s_in_reply_to_user_id, s_favorited, s_user) values (?, %lld, %d, ?, ?, ?, ?, ?, ?, ?, ?);", ADH.account_id, ADH.timeline);;
+	sqlite_res = asprintf(&query, "insert into messages (status_id, account_id, timeline, s_text, s_truncated, s_created_at, s_in_reply_to_status_id, s_source, s_in_reply_to_user_id, s_favorited, s_user) values (?, %d, %d, ?, ?, ?, ?, ?, ?, ?, ?);", ADH.account_id, ADH.timeline);;
 	if(sqlite_res != -1) {
 		sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
 		if(sqlite_res == 0) {
@@ -336,11 +331,15 @@ Eina_Bool timeline_returned(void *data, int type, Azy_Content *content) {
 
 Eina_Bool statusnet_azy_returned(void *data, int type, Azy_Content *content) {
 	printf("statusnet_azy_returned -> ");
+
+	if (azy_content_error_is_set(content)) {
+		fprintf(stderr, _("Error encountered: %s\n"), azy_content_error_message_get(content));
+		return(EINA_FALSE);
+	}
+
 	switch(ADH.type) {
+		case REPEAT:
 		case TIMELINE: {
-			return(timeline_returned(data, type, content));
-		}
-		case REPEAT: {
 			return(timeline_returned(data, type, content));
 		}
 		default: {
@@ -367,11 +366,8 @@ Eina_Bool statusnet_azy_disconnected(void *data, int type, Azy_Client *cli) {
 
 	printf("statusnet_azy_disconnected -> ");
 	switch(ADH.type) {
+		case REPEAT:
 		case TIMELINE: {
-			retval = timeline_disconnected(data, type, cli);
-			break;
-		}
-		case REPEAT: {
 			retval = timeline_disconnected(data, type, cli);
 			break;
 		}
@@ -1164,7 +1160,7 @@ void ed_statusnet_repeat(int account_id, aStatus *as, Repeat_Cb callback, void *
 		ADH.callback_data = data;
 		ADH.method = AZY_NET_TYPE_POST;
 		ADH.post_body.data = (unsigned char*)"source=elmdentica";
-		ADH.post_body.size = strlen(ADH.post_body.data);
+		ADH.post_body.size = strlen((const char*)ADH.post_body.data);
 		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_repeat_handler, NULL, &db_err);
 		if(sqlite_res != 0) {
 			fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
