@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-01-01 12:44+0100\n"
+"POT-Creation-Date: 2011-01-29 17:01+0100\n"
 "PO-Revision-Date: 2009-12-02 09:48+0000\n"
 "Last-Translator: Michael Kim <Unknown>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -386,7 +386,7 @@ msgstr "인라이튼먼트 시작중..."
 msgid "Settings..."
 msgstr ""
 
-#: src/container.c:1191 src/dialog.c:705 src/pager.c:1020 config/strings.c:30
+#: src/container.c:1191 src/dialog.c:705 src/pager.c:1019 config/strings.c:30
 #: config/strings.c:122
 msgid "Close"
 msgstr "닫기"
@@ -395,7 +395,7 @@ msgstr "닫기"
 msgid "Create New Iconbox"
 msgstr "새 아이콘상자 생성"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2118
+#: src/container.c:1507 src/container.c:1583 src/menus.c:2115
 #, c-format
 msgid "Icon size: %2d"
 msgstr ""
@@ -604,11 +604,11 @@ msgstr "위"
 msgid "Bottom"
 msgstr "아래"
 
-#: src/desktops.c:2425 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
+#: src/desktops.c:2425 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
 msgid "Left"
 msgstr "왼쪽"
 
-#: src/desktops.c:2431 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
+#: src/desktops.c:2431 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
 msgid "Right"
 msgstr "오른쪽"
 
@@ -1104,30 +1104,30 @@ msgstr ""
 msgid "sound"
 msgstr ""
 
-#: src/ipc.c:1816
+#: src/ipc.c:1815
 msgid "Enlightenment IPC Commands Help\n"
 msgstr ""
 
-#: src/ipc.c:1820
+#: src/ipc.c:1819
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
 "\n"
 msgstr ""
 
-#: src/ipc.c:1822 src/ipc.c:1842 src/ipc.c:1854
+#: src/ipc.c:1821 src/ipc.c:1841 src/ipc.c:1853
 msgid "Commands currently available:\n"
 msgstr ""
 
-#: src/ipc.c:1840
+#: src/ipc.c:1839
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1841
+#: src/ipc.c:1840
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr ""
 
-#: src/ipc.c:1843 src/ipc.c:1855
+#: src/ipc.c:1842 src/ipc.c:1854
 msgid "         <command>     : <description>\n"
 msgstr ""
 
@@ -1230,27 +1230,27 @@ msgstr "이 그룹 아이콘화"
 msgid "Group %i"
 msgstr "그룹 %i"
 
-#: src/menus.c:2141
+#: src/menus.c:2138
 msgid "Animated display of menus"
 msgstr "메뉴 표시 에니메이트"
 
-#: src/menus.c:2146
+#: src/menus.c:2143
 msgid "Always pop up menus on screen"
 msgstr "항상 화면에 메뉴를 팝업"
 
-#: src/menus.c:2151
+#: src/menus.c:2148
 msgid "Warp pointer after moving menus"
 msgstr "메뉴를 움직인 후에 포인터 뒤집기"
 
-#: src/menus.c:2168
+#: src/menus.c:2165
 msgid "Menus"
 msgstr ""
 
-#: src/menus.c:2169
+#: src/menus.c:2166
 msgid "Menu Settings"
 msgstr ""
 
-#: src/menus.c:2172
+#: src/menus.c:2169
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"
@@ -1313,123 +1313,123 @@ msgstr ""
 "인라이튼먼트 테마 투명도 설정\n"
 "설정 대화상자"
 
-#: src/pager.c:1009 config/strings.c:49 config/strings.c:121
+#: src/pager.c:1008 config/strings.c:49 config/strings.c:121
 msgid "Window Options"
 msgstr "창 옵션"
 
-#: src/pager.c:1016 config/strings.c:51 config/strings.c:124
+#: src/pager.c:1015 config/strings.c:51 config/strings.c:124
 msgid "Iconify"
 msgstr "아이콘화"
 
-#: src/pager.c:1024 config/strings.c:123
+#: src/pager.c:1023 config/strings.c:123
 msgid "Annihilate"
 msgstr "전멸시킴"
 
-#: src/pager.c:1028
+#: src/pager.c:1027
 msgid "Stick / Unstick"
 msgstr "고착 / 잡아뗌"
 
-#: src/pager.c:1035
+#: src/pager.c:1034
 msgid "Desktop Options"
 msgstr "데스크탑 옵션"
 
-#: src/pager.c:1041
+#: src/pager.c:1040
 msgid "Pager Settings..."
 msgstr "페이저 설정..."
 
-#: src/pager.c:1046
+#: src/pager.c:1045
 msgid "Snapshotting Off"
 msgstr "스냅샷 사용않함"
 
-#: src/pager.c:1050
+#: src/pager.c:1049
 msgid "High Quality Off"
 msgstr "고해상도 사용않함"
 
-#: src/pager.c:1052
+#: src/pager.c:1051
 msgid "High Quality On"
 msgstr "고해상도 사용"
 
-#: src/pager.c:1057
+#: src/pager.c:1056
 msgid "Snapshotting On"
 msgstr "스냅샷 사용"
 
-#: src/pager.c:1061
+#: src/pager.c:1060
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1063
+#: src/pager.c:1062
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1809 src/pager.c:1904
+#: src/pager.c:1806 src/pager.c:1901
 msgid "Pager scanning speed:"
 msgstr "페이저 스캐닝 속도:"
 
-#: src/pager.c:1810 src/pager.c:1905
+#: src/pager.c:1807 src/pager.c:1902
 msgid "lines per second"
 msgstr "초당 줄수"
 
-#: src/pager.c:1843
+#: src/pager.c:1840
 msgid "Enable pager display"
 msgstr "페이저 표시 가능"
 
-#: src/pager.c:1853
+#: src/pager.c:1850
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1857
+#: src/pager.c:1854
 msgid "Simple"
 msgstr ""
 
-#: src/pager.c:1863
+#: src/pager.c:1860
 msgid "Make miniature snapshots of the screen"
 msgstr "축소된 화면의 스냅샷 만들기"
 
-#: src/pager.c:1870
+#: src/pager.c:1867
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1881
+#: src/pager.c:1878
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "스냅샷 모드에서 부드러운 고해상도 스냅샷"
 
-#: src/pager.c:1886
+#: src/pager.c:1883
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "마우스가 페이저 안의 창 위에 있을 때 그 창 확대"
 
-#: src/pager.c:1892
+#: src/pager.c:1889
 msgid "Pop up window title when mouse is over the window"
 msgstr "마우스가 페이저 안의 창 위에 있을 때 그 창 제목 보여주기"
 
-#: src/pager.c:1897
+#: src/pager.c:1894
 msgid "Continuously scan screen to update pager"
 msgstr "페이저를 갱신하기 위해 연속적으로 화면 스캔"
 
-#: src/pager.c:1920
+#: src/pager.c:1917
 msgid "Mouse button to select and drag windows:"
 msgstr "창을 선택하고 끌기 위한 마우스 버튼:"
 
-#: src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
+#: src/pager.c:1927 src/pager.c:1952 src/pager.c:1977
 msgid "Middle"
 msgstr "중간"
 
-#: src/pager.c:1945
+#: src/pager.c:1942
 msgid "Mouse button to select desktops:"
 msgstr "데스크탑을 선택할 마우스 버튼"
 
-#: src/pager.c:1970
+#: src/pager.c:1967
 msgid "Mouse button to display pager menu:"
 msgstr "페이저 메뉴를 표시할 마우스 버튼:"
 
-#: src/pager.c:1994
+#: src/pager.c:1991
 msgid "Pagers"
 msgstr ""
 
-#: src/pager.c:1995
+#: src/pager.c:1992
 msgid "Pager Settings"
 msgstr "페이저 설정"
 
-#: src/pager.c:1998
+#: src/pager.c:1995
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog"

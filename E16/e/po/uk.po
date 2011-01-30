@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-01-01 12:44+0100\n"
+"POT-Creation-Date: 2011-01-29 17:01+0100\n"
 "PO-Revision-Date: 2010-01-25 00:46+0000\n"
 "Last-Translator: Sergiy Gavrylov <sergiovana@bigmir.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -421,7 +421,7 @@ msgstr "Запуск Enlightenment..."
 msgid "Settings..."
 msgstr "Налаштування..."
 
-#: src/container.c:1191 src/dialog.c:705 src/pager.c:1020 config/strings.c:30
+#: src/container.c:1191 src/dialog.c:705 src/pager.c:1019 config/strings.c:30
 #: config/strings.c:122
 msgid "Close"
 msgstr "Закрити"
@@ -430,7 +430,7 @@ msgstr "Закрити"
 msgid "Create New Iconbox"
 msgstr "Створити новий Iconbox"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2118
+#: src/container.c:1507 src/container.c:1583 src/menus.c:2115
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Розмір піктограми: %2d"
@@ -640,11 +640,11 @@ msgstr "Вверху"
 msgid "Bottom"
 msgstr "Внизу"
 
-#: src/desktops.c:2425 src/pager.c:1924 src/pager.c:1949 src/pager.c:1974
+#: src/desktops.c:2425 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
 msgid "Left"
 msgstr "Ліворуч"
 
-#: src/desktops.c:2431 src/pager.c:1936 src/pager.c:1961 src/pager.c:1986
+#: src/desktops.c:2431 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
 msgid "Right"
 msgstr "Праворуч"
 
@@ -1148,11 +1148,11 @@ msgstr "композитний"
 msgid "sound"
 msgstr "звук"
 
-#: src/ipc.c:1816
+#: src/ipc.c:1815
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Довідка з команд Enlightenment IPC\n"
 
-#: src/ipc.c:1820
+#: src/ipc.c:1819
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1162,19 +1162,19 @@ msgstr ""
 "Команда \"help <command>\", опис конкретної команди\n"
 "\n"
 
-#: src/ipc.c:1822 src/ipc.c:1842 src/ipc.c:1854
+#: src/ipc.c:1821 src/ipc.c:1841 src/ipc.c:1853
 msgid "Commands currently available:\n"
 msgstr "Доступні на цей час команди:\n"
 
-#: src/ipc.c:1840
+#: src/ipc.c:1839
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "Команда \"help full\" надає повний опис всіх команд\n"
 
-#: src/ipc.c:1841
+#: src/ipc.c:1840
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "Команда \"help <command>\" надає опис окремої команди\n"
 
-#: src/ipc.c:1843 src/ipc.c:1855
+#: src/ipc.c:1842 src/ipc.c:1854
 msgid "         <command>     : <description>\n"
 msgstr "         <command>     : <description>\n"
 
@@ -1279,27 +1279,27 @@ msgstr "Згорнути цю групу"
 msgid "Group %i"
 msgstr "Група %i"
 
-#: src/menus.c:2141
+#: src/menus.c:2138
 msgid "Animated display of menus"
 msgstr "Анімоване відображення меню"
 
-#: src/menus.c:2146
+#: src/menus.c:2143
 msgid "Always pop up menus on screen"
 msgstr "Зринаючі меню завжди на екрані"
 
-#: src/menus.c:2151
+#: src/menus.c:2148
 msgid "Warp pointer after moving menus"
 msgstr "Рух вказівника після переміщення меню"
 
-#: src/menus.c:2168
+#: src/menus.c:2165
 msgid "Menus"
 msgstr "Меню"
 
-#: src/menus.c:2169
+#: src/menus.c:2166
 msgid "Menu Settings"
 msgstr "Налаштування меню"
 
-#: src/menus.c:2172
+#: src/menus.c:2169
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"
@@ -1364,123 +1364,123 @@ msgstr ""
 "Діалог налаштування вибору\n"
 "прозорості Enlightenment"
 
-#: src/pager.c:1009 config/strings.c:49 config/strings.c:121
+#: src/pager.c:1008 config/strings.c:49 config/strings.c:121
 msgid "Window Options"
 msgstr "Параметри вікна"
 
-#: src/pager.c:1016 config/strings.c:51 config/strings.c:124
+#: src/pager.c:1015 config/strings.c:51 config/strings.c:124
 msgid "Iconify"
 msgstr "Згорнути"
 
-#: src/pager.c:1024 config/strings.c:123
+#: src/pager.c:1023 config/strings.c:123
 msgid "Annihilate"
 msgstr "Знищити"
 
-#: src/pager.c:1028
+#: src/pager.c:1027
 msgid "Stick / Unstick"
 msgstr "Прикріпити / звільнити"
 
-#: src/pager.c:1035
+#: src/pager.c:1034
 msgid "Desktop Options"
 msgstr "Параметри стільниці"
 
-#: src/pager.c:1041
+#: src/pager.c:1040
 msgid "Pager Settings..."
 msgstr "Налаштування пейджера..."
 
-#: src/pager.c:1046
+#: src/pager.c:1045
 msgid "Snapshotting Off"
 msgstr "Вимкнути копію екрана"
 
-#: src/pager.c:1050
+#: src/pager.c:1049
 msgid "High Quality Off"
 msgstr "Вимкнути високу якість"
 
-#: src/pager.c:1052
+#: src/pager.c:1051
 msgid "High Quality On"
 msgstr "Ввімкнути високу якість"
 
-#: src/pager.c:1057
+#: src/pager.c:1056
 msgid "Snapshotting On"
 msgstr "Ввімкнути копію екрана"
 
-#: src/pager.c:1061
+#: src/pager.c:1060
 msgid "Zoom Off"
 msgstr "Вимкнути масштабування"
 
-#: src/pager.c:1063
+#: src/pager.c:1062
 msgid "Zoom On"
 msgstr "Ввімкнути масштабування"
 
-#: src/pager.c:1809 src/pager.c:1904
+#: src/pager.c:1806 src/pager.c:1901
 msgid "Pager scanning speed:"
 msgstr "Швидкість сканування пейджера:"
 
-#: src/pager.c:1810 src/pager.c:1905
+#: src/pager.c:1807 src/pager.c:1902
 msgid "lines per second"
 msgstr "рядків в секунду"
 
-#: src/pager.c:1843
+#: src/pager.c:1840
 msgid "Enable pager display"
 msgstr "Ввімкнути відображення пейджера"
 
-#: src/pager.c:1853
+#: src/pager.c:1850
 msgid "Pager Mode:"
 msgstr "Режим пейджера:"
 
-#: src/pager.c:1857
+#: src/pager.c:1854
 msgid "Simple"
 msgstr "Простий"
 
-#: src/pager.c:1863
+#: src/pager.c:1860
 msgid "Make miniature snapshots of the screen"
 msgstr "Створити мініатюру копії еарана"
 
-#: src/pager.c:1870
+#: src/pager.c:1867
 msgid "Live Update"
 msgstr "Чинне оновлення"
 
-#: src/pager.c:1881
+#: src/pager.c:1878
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Високоякісне згладжування в режимі копії екрана"
 
-#: src/pager.c:1886
+#: src/pager.c:1883
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Збільшувати вікна в пейджері під час руху вказівника над ними"
 
-#: src/pager.c:1892
+#: src/pager.c:1889
 msgid "Pop up window title when mouse is over the window"
 msgstr "Показувати заголовок вікна під час руху вказівника над ним"
 
-#: src/pager.c:1897
+#: src/pager.c:1894
 msgid "Continuously scan screen to update pager"
 msgstr "Постійно сканувати екран для оновлення пейджера"
 
-#: src/pager.c:1920
+#: src/pager.c:1917
 msgid "Mouse button to select and drag windows:"
 msgstr "Кнопка миші для вибору і перетягування вікон:"
 
-#: src/pager.c:1930 src/pager.c:1955 src/pager.c:1980
+#: src/pager.c:1927 src/pager.c:1952 src/pager.c:1977
 msgid "Middle"
 msgstr "Середня"
 
-#: src/pager.c:1945
+#: src/pager.c:1942
 msgid "Mouse button to select desktops:"
 msgstr "Кнопка миші для вибору стільниць:"
 
-#: src/pager.c:1970
+#: src/pager.c:1967
 msgid "Mouse button to display pager menu:"
 msgstr "Кнопка миші для відображення меню пейджера:"
 
-#: src/pager.c:1994
+#: src/pager.c:1991
 msgid "Pagers"
 msgstr "Пейджери"
 
-#: src/pager.c:1995
+#: src/pager.c:1992
 msgid "Pager Settings"
 msgstr "Параметри пейджера"
 
-#: src/pager.c:1998
+#: src/pager.c:1995
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog"
