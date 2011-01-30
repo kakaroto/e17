@@ -3,6 +3,7 @@
  * Written by Per Bothner, 1994.
  * Based on CCCP program by by Paul Rubin, June 1986
  * Adapted to ANSI C, Richard Stallman, Jan 1987
+ * Copyright (C) 2003-2011 Kim Woelders
  * 
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -72,10 +73,9 @@ cpp_print_containing_files(cpp_reader * pfile)
 }
 
 void
-cpp_file_line_for_message(cpp_reader * pfile, const char *filename,
+cpp_file_line_for_message(cpp_reader * pfile __UNUSED__, const char *filename,
 			  int line, int column)
 {
-   pfile = NULL;
    if (column > 0)
      {
 	fprintf(stderr, "%s:%d:%d: ", filename, line, column);

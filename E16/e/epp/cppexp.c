@@ -1,5 +1,6 @@
 /* Parse C expressions for CCCP.
  * Copyright (C) 1987, 1992, 1994, 1995 Free Software Foundation.
+ * Copyright (C) 2003-2011 Kim Woelders
  * 
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -335,11 +336,6 @@ cpp_lex(struct operation *op, cpp_reader * pfile)
 #ifdef MULTIBYTE_CHARS
 	   char                token_buffer[MAX_LONG_TYPE_SIZE /
 					    MAX_CHAR_TYPE_SIZE + MB_CUR_MAX];
-
-#else
-	   char                token_buffer[MAX_LONG_TYPE_SIZE /
-					    MAX_CHAR_TYPE_SIZE + 1];
-
 #endif
 
 	   if (*ptr == 'L')
@@ -378,11 +374,15 @@ cpp_lex(struct operation *op, cpp_reader * pfile)
 			result = (result << width) | (c & ((1 << width) - 1));
 		     else
 			result = c;
+#ifdef MULTIBYTE_CHARS
 		     token_buffer[num_chars - 1] = c;
+#endif
 		  }
 	     }
 
+#ifdef MULTIBYTE_CHARS
 	   token_buffer[num_chars] = 0;
+#endif
 
 	   if (c != '\'')
 	      cpp_error(pfile, "malformatted character constant");
@@ -617,9 +617,9 @@ left_shift(cpp_reader * pfile, long a, int unsignedp, unsigned long b)
 }
 
 static long
-right_shift(cpp_reader * pfile, long a, int unsignedp, unsigned long b)
+right_shift(cpp_reader * pfile __UNUSED__, long a, int unsignedp,
+	    unsigned long b)
 {
-   pfile = NULL;
    if (b >= HOST_BITS_PER_LONG)
      {
 	return unsignedp ? 0 : a >> (HOST_BITS_PER_LONG - 1);

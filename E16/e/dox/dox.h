@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2007-2010 Kim Woelders
+ * Copyright (C) 2007-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -86,10 +86,9 @@ void                EFont_draw_string(Display * disp, Drawable win, GC gc,
 /* text.c */
 void                TextStateLoadFont(TextState * ts);
 void                TextSize(TextState * ts, const char *text,
-			     int *width, int *height, int fsize);
+			     int *width, int *height);
 void                TextDraw(TextState * ts, Window win, char *text,
-			     int x, int y, int w, int h, int fsize,
-			     int justification);
+			     int x, int y, int w, int h, int justification);
 
 /* file.c */
 int                 exists(char *s);

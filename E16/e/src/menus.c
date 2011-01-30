@@ -2053,13 +2053,10 @@ MenusTimeout(void *data __UNUSED__)
 static void
 MenusSighan(int sig, void *prm __UNUSED__)
 {
-   Timer              *menu_unload_timer;
-
    switch (sig)
      {
      case ESIGNAL_START:
-	TIMER_ADD(menu_unload_timer, 1000 * MENU_UNLOAD_CHECK_INTERVAL,
-		  MenusTimeout, NULL);
+	TIMER_ADD_NP(1000 * MENU_UNLOAD_CHECK_INTERVAL, MenusTimeout, NULL);
 	break;
 
      case ESIGNAL_AREA_SWITCH_START:

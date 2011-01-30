@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2007-2010 Kim Woelders
+ * Copyright (C) 2007-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -139,7 +139,7 @@ TextStateLoadFont(TextState * ts)
 }
 
 void
-TextSize(TextState * ts, const char *text, int *width, int *height, int fsize)
+TextSize(TextState * ts, const char *text, int *width, int *height)
 {
    char              **lines;
    int                 i, num_lines;
@@ -211,13 +211,11 @@ TextSize(TextState * ts, const char *text, int *width, int *height, int fsize)
      }
 #endif /* USE_XFONT */
    freestrlist(lines, num_lines);
-   return;
-   fsize = 0;
 }
 
 void
 TextDraw(TextState * ts, Window win, char *text,
-	 int x, int y, int w, int h, int fsize, int justification)
+	 int x, int y, int w, int h __UNUSED__, int justification)
 {
    char              **lines;
    int                 i, num_lines;
@@ -395,6 +393,4 @@ TextDraw(TextState * ts, Window win, char *text,
      }
 #endif /* USE_XFONT */
    freestrlist(lines, num_lines);
-   return;
-   h = fsize = 0;
 }

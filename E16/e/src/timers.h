@@ -36,6 +36,8 @@ unsigned int        TimersRun(unsigned int t_ms);
 
 #define TIMER_ADD(timer, in, func, prm) \
    timer = TimerAdd(in, func, prm)
+#define TIMER_ADD_NP(in, func, prm) \
+   TimerAdd(in, func, prm)
 #define TIMER_DEL(timer) \
    if (timer) { TimerDel(timer); timer = NULL; }
 

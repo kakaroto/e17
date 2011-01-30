@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2008-2010 Kim Woelders
+ * Copyright (C) 2008-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -55,7 +55,7 @@ void
 word(char *s, int num, char *wd)
 {
    int                 cnt, i;
-   char               *start, *finish, *ss, *w;
+   char               *start, *finish, *ss;
 
    if (!s)
       return;
@@ -71,7 +71,6 @@ word(char *s, int num, char *wd)
    start = NULL;
    finish = NULL;
    ss = NULL;
-   w = wd;
 
    while (s[i])
      {

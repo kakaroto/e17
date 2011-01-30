@@ -1786,7 +1786,6 @@ void
 EFuncDefer(EWin * ewin, const char *cmd)
 {
    void              **prm;
-   Timer              *defer_timer;
 
    prm = EMALLOC(void *, 2);
 
@@ -1795,7 +1794,7 @@ EFuncDefer(EWin * ewin, const char *cmd)
    prm[0] = ewin;
    prm[1] = Estrdup(cmd);
 
-   TIMER_ADD(defer_timer, 0, doEFuncDeferred, prm);
+   TIMER_ADD_NP(0, doEFuncDeferred, prm);
 }
 
 static int

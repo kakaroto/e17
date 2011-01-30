@@ -848,7 +848,6 @@ PagersCheckUpdate(void)
    static unsigned int tms_last = 0;
    unsigned int        tms;
    int                 dtms;
-   Timer              *pager_update_timer;
 
    if (!Mode_pagers.update_pending || !Conf_pagers.enable)
       return;
@@ -862,7 +861,7 @@ PagersCheckUpdate(void)
 	     /* The purpose of this timer is to trigger the idler */
 	     if (Mode_pagers.timer_pending)
 		return;
-	     TIMER_ADD(pager_update_timer, dtms, _PagersUpdateTimeout, NULL);
+	     TIMER_ADD_NP(dtms, _PagersUpdateTimeout, NULL);
 	     Mode_pagers.timer_pending = 1;
 	     return;
 	  }
@@ -1744,12 +1743,10 @@ _PagersReconfigureTimeout(void *data __UNUSED__)
 static void
 PagersReconfigure(void)
 {
-   Timer              *pg_timer_cfg;
-
    if (!Conf_pagers.enable)
       return;
 
-   TIMER_ADD(pg_timer_cfg, 500, _PagersReconfigureTimeout, NULL);
+   TIMER_ADD_NP(500, _PagersReconfigureTimeout, NULL);
 }
 
 #if ENABLE_DIALOGS

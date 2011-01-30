@@ -1019,14 +1019,12 @@ _FocusIdler(void *data __UNUSED__)
 static void
 FocusSighan(int sig, void *prm __UNUSED__)
 {
-   Timer              *focus_init_timer;
-
    switch (sig)
      {
      case ESIGNAL_START:
 	/* Delay focusing a bit to allow things to settle down */
 	IdlerAdd(_FocusIdler, NULL);
-	TIMER_ADD(focus_init_timer, 500, FocusInitTimeout, NULL);
+	TIMER_ADD_NP(500, FocusInitTimeout, NULL);
 	break;
 
      case ESIGNAL_EXIT:

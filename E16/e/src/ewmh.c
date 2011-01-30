@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2010 Kim Woelders
+ * Copyright (C) 2003-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -640,7 +640,7 @@ EWMH_GetWindowIcons(EWin * ewin)
 }
 
 static void
-EWMH_GetWindowUserTime(EWin * ewin)
+EWMH_GetWindowUserTime(EWin * ewin __UNUSED__)
 {
 #if 0				/* TBD */
    int                 num;
@@ -651,8 +651,6 @@ EWMH_GetWindowUserTime(EWin * ewin)
       return;
 
    Eprintf("EWMH_GetWindowUserTime %#x\n", ts);
-#else
-   ewin = NULL;
 #endif
 }
 

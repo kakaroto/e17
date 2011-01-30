@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -259,21 +259,27 @@ static Rotation     ss_rot;
 static              RRMode
 FindMode(XRRScreenResources * xsr, int w, int h, int *dw, int *dh)
 {
-   int                 i, ic, in, norm, best;
+   int                 i, in, norm, best;
    RRMode              mode;
+
+#if DEBUG_ZOOM
+   int                 ic = 0;
+#endif
 
    if (Mode.screen.rotation & (RR_Rotate_90 | RR_Rotate_270))
       SWAP(w, h);
 
+   mode = 0;
    best = 0x7fffffff;
    in = -1;
-   ic = 0;
    for (i = 0; i < xsr->nmode; i++)
      {
 	Dprintf("Sz%2d: %dx%d\n", i, xsr->modes[i].width, xsr->modes[i].height);
 
+#if DEBUG_ZOOM
 	if (ss_mode == xsr->modes[i].id)
 	   ic = i;
+#endif
 	if ((int)xsr->modes[i].width < w || (int)xsr->modes[i].height < h)
 	   continue;
 	norm = xsr->modes[i].width - w + xsr->modes[i].height - h;

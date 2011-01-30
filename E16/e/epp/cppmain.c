@@ -1,6 +1,7 @@
 /* CPP main program, using CPP Library.
  * Copyright (C) 1995 Free Software Foundation, Inc.
  * Written by Per Bothner, 1994-95.
+ * Copyright (C) 2003-2011 Kim Woelders
  * 
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the

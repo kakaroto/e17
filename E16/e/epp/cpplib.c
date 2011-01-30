@@ -3,6 +3,7 @@
  * Written by Per Bothner, 1994-95.
  * Based on CCCP program by by Paul Rubin, June 1986
  * Adapted to ANSI C, Richard Stallman, Jan 1987
+ * Copyright (C) 2003-2011 Kim Woelders
  * 
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -642,7 +643,6 @@ cpp_define(cpp_reader * pfile, unsigned char *str)
 static void
 make_assertion(cpp_reader * pfile, const char *option, const char *str)
 {
-   cpp_buffer         *ip;
    unsigned char      *buf, *p, *q;
 
    /* Copy the entire option so we can modify it.  */
@@ -671,7 +671,7 @@ make_assertion(cpp_reader * pfile, const char *option, const char *str)
 	cpp_error(pfile, "malformed option `%s %s'", option, str);
 	return;
      }
-   ip = cpp_push_buffer(pfile, buf, strlen((char *)buf));
+   cpp_push_buffer(pfile, buf, strlen((char *)buf));
    do_assert(pfile, NULL, NULL, NULL);
    cpp_pop_buffer(pfile);
 }
@@ -838,26 +838,22 @@ init_parse_options(struct cpp_options *opts)
 }
 
 static enum cpp_token
-null_underflow(cpp_reader * pfile)
+null_underflow(cpp_reader * pfile __UNUSED__)
 {
-   pfile = NULL;
    return CPP_EOF;
 }
 
 static int
-null_cleanup(cpp_buffer * pbuf, cpp_reader * pfile)
+null_cleanup(cpp_buffer * pbuf __UNUSED__, cpp_reader * pfile __UNUSED__)
 {
-   pbuf = NULL;
-   pfile = NULL;
    return 0;
 }
 
 static int
-macro_cleanup(cpp_buffer * pbuf, cpp_reader * pfile)
+macro_cleanup(cpp_buffer * pbuf, cpp_reader * pfile __UNUSED__)
 {
    HASHNODE           *macro = (HASHNODE *) pbuf->data;
 
-   pfile = NULL;
    if (macro->type == T_DISABLED)
       macro->type = T_MACRO;
    if (macro->type != T_MACRO || pbuf->buf != macro->value.defn->expansion)
@@ -866,9 +862,8 @@ macro_cleanup(cpp_buffer * pbuf, cpp_reader * pfile)
 }
 
 static int
-file_cleanup(cpp_buffer * pbuf, cpp_reader * pfile)
+file_cleanup(cpp_buffer * pbuf, cpp_reader * pfile __UNUSED__)
 {
-   pfile = NULL;
    if (pbuf->buf)
      {
 	free(pbuf->buf);
@@ -3167,12 +3162,11 @@ get_directive_token(cpp_reader * pfile)
 
 static int
 do_include(cpp_reader * pfile, struct directive *keyword,
-	   unsigned char *unused1, unsigned char *unused2)
+	   unsigned char *unused1 __UNUSED__, unsigned char *unused2 __UNUSED__)
 {
    int                 importing = (keyword->type == T_IMPORT);
    int                 skip_dirs = (keyword->type == T_INCLUDE_NEXT);
    char               *fname;	/* Dynamically allocated fname buffer */
-   char               *pcftry;
    unsigned char      *fbeg, *fend;	/* Beginning and end of fname */
    enum cpp_token      token;
 
@@ -3181,19 +3175,12 @@ do_include(cpp_reader * pfile, struct directive *keyword,
    file_name_list      dsp[1];	/* First in chain, if #include "..." */
    file_name_list     *searchptr = 0;
    long                old_written = CPP_WRITTEN(pfile);
-
    int                 flen;
-
    int                 f;	/* file number */
-
    int                 angle_brackets = 0;	/* 0 for "...", 1 for <...> */
-   char               *pcfbuf;
-   int                 pcfnum;
 
    f = -1;			/* JF we iz paranoid! */
 
-   unused1 = NULL;
-   unused2 = NULL;
    if (importing && CPP_OPTIONS(pfile)->warn_import
        && !CPP_OPTIONS(pfile)->inhibit_warnings
        && !CPP_BUFFER(pfile)->system_header_p && !pfile->import_warning)
@@ -3530,10 +3517,6 @@ do_include(cpp_reader * pfile, struct directive *keyword,
 	/* Record file on "seen" list for #import. */
 	add_import(pfile, f, fname);
 
-	pcftry = (char *)alloca(strlen(fname) + 30);
-	pcfbuf = 0;
-	pcfnum = 0;
-
 	/* Actually process the file */
 	cpp_push_buffer(pfile, NULL, 0);
 	if (finclude(pfile, f, fname, is_system_include(pfile, fname),
@@ -3737,8 +3720,8 @@ convert_string(cpp_reader * pfile, char *result, char *in, char *limit,
 #define FNAME_HASHSIZE 37
 
 static int
-do_line(cpp_reader * pfile, struct directive *keyword,
-	unsigned char *unused1, unsigned char *unused2)
+do_line(cpp_reader * pfile, struct directive *keyword __UNUSED__,
+	unsigned char *unused1 __UNUSED__, unsigned char *unused2 __UNUSED__)
 {
    cpp_buffer         *ip = CPP_BUFFER(pfile);
    int                 new_lineno;
@@ -3747,9 +3730,6 @@ do_line(cpp_reader * pfile, struct directive *keyword,
    enum cpp_token      token;
 
    token = get_directive_token(pfile);
-
-   keyword = NULL;
-   unused1 = unused2 = NULL;
 
    if (token != CPP_NUMBER || !isdigit(pfile->token_buffer[old_written]))
      {
@@ -3905,13 +3885,12 @@ do_undef(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
  */
 
 static int
-do_error(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
-	 unsigned char *limit)
+do_error(cpp_reader * pfile, struct directive *keyword __UNUSED__,
+	 unsigned char *buf, unsigned char *limit)
 {
    int                 length = limit - buf;
    unsigned char      *copy = (unsigned char *)xmalloc(length + 1);
 
-   keyword = NULL;
    memcpy(copy, buf, length);
    copy[length] = 0;
    SKIP_WHITE_SPACE(copy);
@@ -3926,13 +3905,12 @@ do_error(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
  */
 
 static int
-do_warning(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
-	   unsigned char *limit)
+do_warning(cpp_reader * pfile, struct directive *keyword __UNUSED__,
+	   unsigned char *buf, unsigned char *limit)
 {
    int                 length = limit - buf;
    unsigned char      *copy = (unsigned char *)xmalloc(length + 1);
 
-   keyword = NULL;
    memcpy(copy, buf, length);
    copy[length] = 0;
    SKIP_WHITE_SPACE(copy);
@@ -3972,8 +3950,8 @@ do_once(cpp_reader * pfile)
 /* #ident has already been copied to the output file, so just ignore it.  */
 
 static int
-do_ident(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
-	 unsigned char *limit)
+do_ident(cpp_reader * pfile, struct directive *keyword __UNUSED__,
+	 unsigned char *buf __UNUSED__, unsigned char *limit __UNUSED__)
 {
 /*  long old_written = CPP_WRITTEN (pfile); */
 
@@ -3981,9 +3959,6 @@ do_ident(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
    if (CPP_PEDANTIC(pfile) && !CPP_BUFFER(pfile)->system_header_p)
       cpp_pedwarn(pfile, "ANSI C does not allow `#ident'");
 
-   keyword = NULL;
-   buf = NULL;
-   limit = NULL;
    /* Leave rest of line to be read by later calls to cpp_get_token. */
 
    return 0;
@@ -3993,14 +3968,12 @@ do_ident(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
  * Just check for some recognized pragmas that need validation here.  */
 
 static int
-do_pragma(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
-	  unsigned char *limit)
+do_pragma(cpp_reader * pfile, struct directive *keyword __UNUSED__,
+	  unsigned char *buf, unsigned char *limit __UNUSED__)
 {
    while (*buf == ' ' || *buf == '\t')
       buf++;
 
-   keyword = NULL;
-   limit = NULL;
    if (!strncmp((const char *)buf, "once", 4))
      {
 	/* Allow #pragma once in system headers, since that's not the user's
@@ -4054,12 +4027,11 @@ do_pragma(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
  */
 
 static int
-do_if(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
-      unsigned char *limit)
+do_if(cpp_reader * pfile, struct directive *keyword __UNUSED__,
+      unsigned char *buf, unsigned char *limit)
 {
    HOST_WIDE_INT       value = eval_if_expression(pfile, buf, limit - buf);
 
-   keyword = NULL;
    conditional_skip(pfile, value == 0, T_IF, NULL);
    return 0;
 }
@@ -4070,12 +4042,9 @@ do_if(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
  */
 
 static int
-do_elif(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
-	unsigned char *limit)
+do_elif(cpp_reader * pfile, struct directive *keyword __UNUSED__,
+	unsigned char *buf, unsigned char *limit)
 {
-
-   keyword = NULL;
-
    if (pfile->if_stack == CPP_BUFFER(pfile)->if_stack)
      {
 	cpp_error(pfile, "`#elif' not within a conditional");
@@ -4118,14 +4087,13 @@ do_elif(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
  * then parse the result as a C expression and return the value as an int.
  */
 static              HOST_WIDE_INT
-eval_if_expression(cpp_reader * pfile, unsigned char *buf, int length)
+eval_if_expression(cpp_reader * pfile, unsigned char *buf __UNUSED__,
+		   int length __UNUSED__)
 {
    HASHNODE           *save_defined;
    HOST_WIDE_INT       value;
    long                old_written = CPP_WRITTEN(pfile);
 
-   buf = NULL;
-   length = 0;
    save_defined = install("defined", -1, T_SPEC_DEFINED, 0, 0, -1);
    pfile->pcp_inside_if = 1;
 
@@ -4145,8 +4113,8 @@ eval_if_expression(cpp_reader * pfile, unsigned char *buf, int length)
  */
 
 static int
-do_xifdef(cpp_reader * pfile, struct directive *keyword, unsigned char *unused1,
-	  unsigned char *unused2)
+do_xifdef(cpp_reader * pfile, struct directive *keyword,
+	  unsigned char *unused1 __UNUSED__, unsigned char *unused2 __UNUSED__)
 {
    int                 skip;
    cpp_buffer         *ip = CPP_BUFFER(pfile);
@@ -4157,8 +4125,6 @@ do_xifdef(cpp_reader * pfile, struct directive *keyword, unsigned char *unused1,
    unsigned char      *control_macro = 0;
    int                 old_written = CPP_WRITTEN(pfile);
 
-   unused1 = NULL;
-   unused2 = NULL;
    /* Detect a #ifndef at start of file (not counting comments).  */
    if (ip->fname != 0 && keyword->type == T_IFNDEF)
       start_of_file = pfile->only_seen_white == 2;
@@ -4410,14 +4376,10 @@ skip_if_group(cpp_reader * pfile, int any)
  */
 
 static int
-do_else(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
-	unsigned char *limit)
+do_else(cpp_reader * pfile, struct directive *keyword __UNUSED__,
+	unsigned char *buf __UNUSED__, unsigned char *limit __UNUSED__)
 {
    cpp_buffer         *ip = CPP_BUFFER(pfile);
-
-   keyword = NULL;
-   buf = NULL;
-   limit = NULL;
 
    if (CPP_PEDANTIC(pfile))
       validate_else(pfile, "#else");
@@ -4460,16 +4422,12 @@ do_else(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
  */
 
 static int
-do_endif(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
-	 unsigned char *limit)
+do_endif(cpp_reader * pfile, struct directive *keyword __UNUSED__,
+	 unsigned char *buf __UNUSED__, unsigned char *limit __UNUSED__)
 {
    if (CPP_PEDANTIC(pfile))
       validate_else(pfile, "#endif");
    skip_rest_of_line(pfile);
-
-   keyword = NULL;
-   buf = NULL;
-   limit = NULL;
 
    if (pfile->if_stack == CPP_BUFFER(pfile)->if_stack)
      {
@@ -5552,11 +5510,9 @@ open_include_file(cpp_reader * pfile, char *filename,
 #else
 
 static int
-open_include_file(cpp_reader * pfile, char *filename,
-		  file_name_list * searchptr)
+open_include_file(cpp_reader * pfile __UNUSED__, char *filename,
+		  file_name_list * searchptr __UNUSED__)
 {
-   pfile = NULL;
-   searchptr = NULL;
    return open(filename, O_RDONLY, 0666);
 }
 
@@ -6742,8 +6698,8 @@ cpp_finish(cpp_reader * pfile)
 }
 
 static int
-do_assert(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
-	  unsigned char *limit)
+do_assert(cpp_reader * pfile, struct directive *keyword __UNUSED__,
+	  unsigned char *buf __UNUSED__, unsigned char *limit __UNUSED__)
 {
    long                symstart;	/* remember where symbol name starts */
    int                 c;
@@ -6753,10 +6709,6 @@ do_assert(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
    if (CPP_PEDANTIC(pfile) && CPP_OPTIONS(pfile)->done_initializing
        && !CPP_BUFFER(pfile)->system_header_p)
       cpp_pedwarn(pfile, "ANSI C does not allow `#assert'");
-
-   keyword = NULL;
-   buf = NULL;
-   limit = NULL;
 
    cpp_skip_hspace(pfile);
    symstart = CPP_WRITTEN(pfile);	/* remember where it starts */
@@ -6820,8 +6772,8 @@ do_assert(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
 }
 
 static int
-do_unassert(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
-	    unsigned char *limit)
+do_unassert(cpp_reader * pfile, struct directive *keyword __UNUSED__,
+	    unsigned char *buf __UNUSED__, unsigned char *limit __UNUSED__)
 {
    long                symstart;	/* remember where symbol name starts */
    int                 sym_length;	/* and how long it is */
@@ -6829,10 +6781,6 @@ do_unassert(cpp_reader * pfile, struct directive *keyword, unsigned char *buf,
 
    struct arglist     *tokens = NULL;
    int                 tokens_specified = 0;
-
-   keyword = NULL;
-   buf = NULL;
-   limit = NULL;
 
    if (CPP_PEDANTIC(pfile) && CPP_OPTIONS(pfile)->done_initializing
        && !CPP_BUFFER(pfile)->system_header_p)

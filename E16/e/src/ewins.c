@@ -969,8 +969,6 @@ AddToFamily(EWin * ewin, Window xwin, int startup)
      }
    else if (doslide)
      {
-	Timer              *slide_timer;
-
 	k = rand() % 4;
 	if (k == 0)
 	  {
@@ -1000,7 +998,7 @@ AddToFamily(EWin * ewin, Window xwin, int startup)
 	EwinShow(ewin);
 	ewin->req_x = x;
 	ewin->req_y = y;
-	TIMER_ADD(slide_timer, 50, EwinSlideIn, ewin);
+	TIMER_ADD_NP(50, EwinSlideIn, ewin);
      }
    else
      {

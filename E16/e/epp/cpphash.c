@@ -3,6 +3,7 @@
  * Written by Per Bothner, 1994.
  * Based on CCCP program by by Paul Rubin, June 1986
  * Adapted to ANSI C, Richard Stallman, Jan 1987
+ * Copyright (C) 2003-2011 Kim Woelders
  * 
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -22,6 +23,7 @@
  * You are forbidden to forbid anyone else to use, share and improve
  * what you give them.   Help stamp out software-hoarding!  */
 
+#include "config.h"
 #include "cpplib.h"
 #include "cpphash.h"
 
@@ -181,11 +183,10 @@ install(const char *name, int len, enum node_type type, int ivalue, char *value,
 }
 
 void
-cpp_hash_cleanup(cpp_reader * pfile)
+cpp_hash_cleanup(cpp_reader * pfile __UNUSED__)
 {
    int                 i;
 
-   pfile = NULL;
    for (i = HASHSIZE; --i >= 0;)
      {
 	while (hashtab[i])

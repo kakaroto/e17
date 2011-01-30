@@ -3,6 +3,7 @@
  * Written by Per Bothner, 1994.
  * Based on CCCP program by by Paul Rubin, June 1986
  * Adapted to ANSI C, Richard Stallman, Jan 1987
+ * Copyright (C) 2003-2011 Kim Woelders
  * 
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2007-2010 Kim Woelders
+ * Copyright (C) 2007-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -610,7 +610,7 @@ RenderPage(Window win, int page_num, int w, int h)
    Link               *ll = NULL;
    Page               *pg;
    TextState           ts;
-   int                 i, col_w, col_h;
+   int                 i, col_w;
    int                 x, y;
    int                 justification = 0;
    int                 firstp = 1;
@@ -622,7 +622,7 @@ RenderPage(Window win, int page_num, int w, int h)
    x = pg->padding;
    y = pg->padding;
    col_w = ((w - (pg->padding * (pg->columns + 1))) / pg->columns);
-   col_h = h - (pg->padding * 2);
+
    if (pg->background)
      {
 	im = ImageLoadDoc(pg->background);
@@ -756,7 +756,7 @@ RenderPage(Window win, int page_num, int w, int h)
 		       link_link[0] = '\0';
 		       islink = 1;
 		       oldwc = wc;
-		       TextSize(&ts, s, &lx, &th, 17);
+		       TextSize(&ts, s, &lx, &th);
 		    }
 
 		  if (islink == 1)
@@ -830,7 +830,7 @@ RenderPage(Window win, int page_num, int w, int h)
 
 		  CalcOffset(pg, col_w, x, y, ts.height, &xspace, &off);
 
-		  TextSize(&ts, s, &tw, &th, 17);
+		  TextSize(&ts, s, &tw, &th);
 		  txt_disp = ss;
 		  if (eot == 1)
 		     txt_disp = s;
@@ -857,7 +857,7 @@ RenderPage(Window win, int page_num, int w, int h)
 				    for (ii = 0; ii < len; ii++, cnt++)
 				       p1[cnt] = txt_disp[point + cnt];
 				 p1[cnt] = 0;
-				 TextSize(&ts, p1, &tw, &th, 17);
+				 TextSize(&ts, p1, &tw, &th);
 				 if ((tw > xspace)
 				     || (!txt_disp[(point + cnt)]))
 				   {
@@ -875,8 +875,7 @@ RenderPage(Window win, int page_num, int w, int h)
 					}
 				      wastext = 1;
 				      TextDraw(&ts, win, p1, x + off, y,
-					       xspace, 99999, 17,
-					       justification);
+					       xspace, 99999, justification);
 				      y += ts.height;
 				      if (y >=
 					  (h -
@@ -897,7 +896,7 @@ RenderPage(Window win, int page_num, int w, int h)
 			       wc--;
 			    wastext = 1;
 			    TextDraw(&ts, win, txt_disp, x + off, y,
-				     xspace, 99999, 17, justification);
+				     xspace, 99999, justification);
 			    if (islink > 1 && linkwc > wc)
 			      {
 				 islink = 0;
@@ -919,12 +918,12 @@ RenderPage(Window win, int page_num, int w, int h)
 					   pg->linkb);
 				 EAllocColor(&ts.fg_col);
 				 XSetForeground(disp, gc, ts.fg_col.pixel);
-				 TextSize(&ts, txt_disp, &tw, &th, 17);
+				 TextSize(&ts, txt_disp, &tw, &th);
 				 extra = ((xspace - tw) * justification) >> 10;
 				 TextDraw(&ts, win, link_txt,
 					  x + off + lx + extra, y, 99999, 99999,
-					  17, 0);
-				 TextSize(&ts, link_txt, &lw, &th, 17);
+					  0);
+				 TextSize(&ts, link_txt, &lw, &th);
 				 XDrawLine(disp, win, gc,
 					   x + off + lx + extra,
 					   y + ts.xfontset_ascent,

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -60,7 +60,7 @@ Eiconv(iconv_t icd, const char *txt, size_t len)
    char                buf[4096];
    ICONV_CONST char   *pi;
    char               *po;
-   size_t              err, ni, no;
+   size_t              ni, no;
 
    pi = (ICONV_CONST char *)txt;
    po = buf;
@@ -68,7 +68,7 @@ Eiconv(iconv_t icd, const char *txt, size_t len)
    if (icd == BAD_CD)
       return Estrndup(txt, ni);
    no = sizeof(buf);
-   err = iconv(icd, &pi, &ni, &po, &no);
+   iconv(icd, &pi, &ni, &po, &no);
 
    po = Estrndup(buf, sizeof(buf) - no);
 
