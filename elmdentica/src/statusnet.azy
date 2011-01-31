@@ -77,11 +77,12 @@ struct Status {
 };
 
 struct Group {
-	double id;
+	string id;
 	string url;
 	string nickname;
 	string fullname;
-	boolean	member;
+	boolean member;
+	boolean blocked;
 	int member_count;
 	string original_logo;
 	string homepage_logo;
@@ -89,7 +90,7 @@ struct Group {
 	string mini_logo;
 	string homepage;
 	string description;
-	Geo location;
+	string location;
 	time created;
 	time modified;
 };

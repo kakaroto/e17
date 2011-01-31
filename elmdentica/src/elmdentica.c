@@ -796,14 +796,15 @@ static void group_win_del(void *data, Evas_Object *obj, void *event_info) {
 	evas_object_del(obj);
 }
 
-static void group_show(aStatus *as, void *gdp, void *data) {
-	groupData *gd=(groupData*)gdp;
+static void group_show(void *data) {
+	groupData *gd = (groupData*)data;
 	Evas_Object *group_win=NULL, *bg=NULL, *box=NULL, *label=NULL, *s=NULL, *box2=NULL, *icon=NULL, *button=NULL, *frame=NULL;
 	char *m, *path;
 	int res = 0;
 	struct stat buf;
 
 	group_win = elm_win_add(NULL, gd->group->fullname, ELM_WIN_BASIC);
+
 		evas_object_name_set(group_win, "group_win");
 		elm_win_title_set(group_win, gd->group->fullname);
 		evas_object_smart_callback_add(group_win, "delete-request", group_win_del, gd);

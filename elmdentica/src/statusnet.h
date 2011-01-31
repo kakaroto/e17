@@ -84,7 +84,7 @@ typedef struct _a_Status {
 	Elm_Genlist_Item *li;
 } aStatus;
 
-typedef void (*Group_Show_Cb)(aStatus *, void*, void *);
+typedef void (*Group_Show_Cb)(void*);
 typedef void (*Repeat_Cb)(aStatus *, void *);
 
 typedef struct _user_get {
