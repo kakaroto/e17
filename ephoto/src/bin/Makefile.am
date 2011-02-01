@@ -16,12 +16,8 @@ endif
 _sources = \
 	ephoto.c \
 	ephoto_main.c \
-	ephoto_config.c \
-	ephoto_preferences.c \
-	ephoto_thumb_browser.c \
-	ephoto_flow_browser.c \
-	ephoto_slideshow.c \
-	ephoto_directory_thumb.c
+        ephoto_flow_browser.c \
+        ephoto_thumb_browser.c
 
 _libs =	@ELEMENTARY_LIBS@ @EFREET_MIME_LIBS@ @EIO_LIBS@ @EXIF_LIBS@
 
