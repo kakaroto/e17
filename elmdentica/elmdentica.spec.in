@@ -13,8 +13,8 @@ Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project 
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 URL: http://www.enlightenment.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
-Requires: elementary, sqlite > 3.0, libcurl, glib2
-BuildRequires: elementary-devel, sqlite-devel > 3.0, libcurl-devel, glib2-devel
+Requires: elementary, sqlite > 3.0, libcurl, glib2, azy
+BuildRequires: elementary-devel, sqlite-devel > 3.0, libcurl-devel, glib2-devel, azy-devel
 
 %description
 Simple Status.Net µ-blogging tool
