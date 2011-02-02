@@ -642,7 +642,7 @@ azy_client_put(Azy_Client         *client,
    EINA_SAFETY_ON_NULL_GOTO(msg, error);
 #ifdef ISCOMFITOR
    DBG("\nSENDING >>>>>>>>>>>>>>>>>>>>>>>>\n%.*s%.*s\n>>>>>>>>>>>>>>>>>>>>>>>>",
-       eina_strbuf_length_get(msg), eina_strbuf_string_get(msg), (int)send.size, send.data);
+       eina_strbuf_length_get(msg), eina_strbuf_string_get(msg), (int)send->size, send->data);
 #endif
    EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_server_send(client->net->conn, eina_strbuf_string_get(msg), eina_strbuf_length_get(msg)), error);
    INFO("Send [1/2] complete! %zi bytes queued for sending.", eina_strbuf_length_get(msg));
