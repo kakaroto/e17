@@ -3,7 +3,6 @@
 # $Header: $
 
 EAPI="2"
-ESVN_SUB_PROJECT="TMP/st"
 
 inherit enlightenment
 
