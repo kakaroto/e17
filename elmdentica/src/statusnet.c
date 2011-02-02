@@ -68,7 +68,7 @@ extern aStatus *reply_as;
 extern long long int user_id;
 
 Eina_Hash *userHash=NULL;
-Eina_Hash *imageHash=NULL;
+Eina_List *imageList=NULL;
 Eina_Hash *statusHash=NULL;
 Eina_List* newStatuses=NULL;
 Eina_Hash *azy_agents=NULL;
@@ -300,7 +300,7 @@ aStatus *statusnet_new_status(statusnet_Status *snS, int account_id) {
 			au->account_type = ACCOUNT_TYPE_STATUSNET;
 			au->created_at = curl_getdate(au->user->created_at, NULL);
 			eina_hash_add(userHash, uid, au);
-			eina_hash_add(imageHash, uid, au->user->profile_image_url);
+			imageList = eina_list_append(imageList, (void*)au);
 
 			user_insert(au, as->account_id);
 		}
@@ -492,7 +492,6 @@ void image_hash_data_free(void *data) {
 void statusnet_init() {
 	memset(&ADH, 0, sizeof(ADH));
 
-	imageHash = eina_hash_string_superfast_new(image_hash_data_free);
 	ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)statusnet_azy_connected, NULL);
 	ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)statusnet_azy_returned, NULL);
 	ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)statusnet_azy_disconnected, NULL);

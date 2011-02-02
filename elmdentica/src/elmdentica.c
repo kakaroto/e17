@@ -91,7 +91,7 @@ Eina_Hash* accounts=NULL;
 extern Eina_Hash* statusHash;
 extern Eina_List* newStatuses;
 extern Eina_Hash* userHash;
-extern Eina_Hash* imageHash;
+extern Eina_List* imageList;
 extern Settings *settings;
 
 extern CURL * user_agent;
@@ -105,7 +105,7 @@ GError *re_err=NULL;
 
 static Elm_Genlist_Item_Class itc1;
 
-void add_status(aStatus *as, Elm_Genlist_Item *gli);
+void add_status(aStatus *as, void *data);
 
 int my_strcmp(const void*a, const void*b) {
 	return(strcmp((const char*)a, (const char*)b));
@@ -383,7 +383,7 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 
 static void on_view_related(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)data;
-	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli), *related_status=NULL;
+	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
 
 	network_busy(EINA_TRUE);
 
@@ -611,15 +611,18 @@ static void user_free(UserProfile *user) {
 
 Evas_Object *ed_get_icon(long long int id, Evas_Object *parent, Elm_Genlist_Item *li) {
 	Evas_Object *icon=NULL;
-	int res=0;
-	char *file_path=NULL;
+	aStatus *as = li?(aStatus*)elm_genlist_item_data_get(li):NULL;
+	char file_path[PATH_MAX], *p=NULL;
 
-	res = asprintf(&file_path, "%s/cache/icons/%lld", home, id);
-	if(res != -1) {
-		if( ecore_file_exists(file_path) && (icon = elm_icon_add(parent)) )
-			elm_icon_file_set(icon, file_path, "fubar?");
-		free(file_path);
+	if(as) {
+		p = strrchr(as->au->user->profile_image_url, '/');
+		if(p && *p) {
+			snprintf(file_path, PATH_MAX, "%s/cache/icons/%s", home, p);
+			if( (icon = elm_icon_add(parent)) )
+				elm_icon_file_set(icon, file_path, "fubar?");
+		}
 	}
+
 	return(icon);
 }
 
@@ -1377,8 +1380,9 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 	evas_object_show(gui.hover);
 }
 
-void add_status(aStatus *as, Elm_Genlist_Item *gli) {
+void add_status(aStatus *as, void *data) {
 	Elm_Genlist_Item *li=NULL;
+	Elm_Genlist_Item *gli=(Elm_Genlist_Item *)data;
 
 	if(ed_check_gag(as)) return;
 
@@ -1587,9 +1591,29 @@ void fill_message_list(int timeline, Eina_Bool fromdb) {
 }
 
 void update_status_list(int timeline, Eina_Bool fromdb) {
+	anUser *au=NULL;
+	char path[PATH_MAX], *p=NULL;
+	Eina_List *l=NULL;
+	void *data=NULL;
+
 	printf("update_status_list %d / %d\n", timeline, fromdb);
 	make_status_list(timeline);
 	fill_message_list(timeline, fromdb);
+
+	if(settings->online) {
+		EINA_LIST_FOREACH(imageList, l, data) {
+			au = (anUser*)data;
+			p = strrchr(au->user->profile_image_url, '/');
+			if(p && *p) {
+				snprintf(path, PATH_MAX, "%s/cache/icons/%s", home, p);
+				if(!ecore_file_exists(path))
+					ed_curl_dump_url_to_file((char*)au->user->profile_image_url, path);
+			}
+		}
+		eina_list_free(imageList);
+		imageList = NULL;
+	}
+
 	network_busy(EINA_FALSE);
 }
 
