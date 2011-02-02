@@ -224,11 +224,11 @@ collections {
 				source: "ephoto";
 				action: STATE_SET right 0.0;
 				transition: LINEAR 0.4;
+                                target: "offscreen_right";
+                                target: "right";
+                                target: "center";
+                                target: "left";
 				target: "offscreen_left";
-				target: "left";
-				target: "center";
-				target: "right";
-				target: "offscreen_right";
 				after: "done";
 			}
 			program
@@ -278,11 +278,11 @@ collections {
 				signal: "reset";
 				source: "ephoto";
 				action: STATE_SET default 0.0;
-				target: "offscreen_left";
-				target: "left";
-				target: "center";
-				target: "right";
 				target: "offscreen_right";
+				target: "right";
+				target: "center";
+				target: "left";
+				target: "offscreen_left";
 			}
 		}
 	}

@@ -21,6 +21,7 @@ struct _Ephoto_Flow_Browser
    Evas_Object *images[5];
    Evas_Object *toolbar;
    Ephoto_Flow_State efs;
+   int flow_direct;
    struct {
       Elm_Toolbar_Item *go_back;
       Elm_Toolbar_Item *go_prev;
@@ -112,11 +113,11 @@ ephoto_flow_browser_image_set(void)
    if (!eina_list_data_get(nextt))
      nextt = eina_list_nth_list(ephoto->images, 0);
 
-   elm_bg_file_set(efb->images[0], eina_list_data_get(prevv), NULL);
-   elm_bg_file_set(efb->images[1], eina_list_data_get(prev), NULL);
-   elm_bg_file_set(efb->images[2], eina_list_data_get(ephoto->current_index), NULL);
-   elm_bg_file_set(efb->images[3], eina_list_data_get(next), NULL);
-   elm_bg_file_set(efb->images[4], eina_list_data_get(nextt), NULL);
+   elm_image_file_set(efb->images[0], eina_list_data_get(prevv), NULL);
+   elm_image_file_set(efb->images[1], eina_list_data_get(prev), NULL);
+   elm_image_file_set(efb->images[2], eina_list_data_get(ephoto->current_index), NULL);
+   elm_image_file_set(efb->images[3], eina_list_data_get(next), NULL);
+   elm_image_file_set(efb->images[4], eina_list_data_get(nextt), NULL);
 }
 
 void
@@ -141,7 +142,8 @@ _ephoto_add_image(const char *swallow)
 {
    Evas_Object *o;
 
-   o = elm_bg_add(efb->box);
+   o = elm_image_add(efb->box);
+   elm_image_prescale_set(o, 800);
    elm_layout_content_set(efb->layout, swallow, o);
    evas_object_show(o);
 
@@ -170,22 +172,42 @@ _ephoto_flow_done(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *
    edje = elm_layout_edje_get(efb->layout);
    edje_object_freeze(edje);
 
-   elm_bg_file_set(efb->images[0], eina_list_data_get(prevv), NULL);
-   elm_layout_content_unset(efb->layout, "offscreen_left");
-   elm_layout_content_set(efb->layout, "offscreen_left", efb->images[0]);
-   elm_bg_file_set(efb->images[1], eina_list_data_get(prev), NULL);
-   elm_layout_content_unset(efb->layout, "left");
-   elm_layout_content_set(efb->layout, "left", efb->images[1]);
-   elm_bg_file_set(efb->images[2], eina_list_data_get(ephoto->current_index), NULL);
-   elm_layout_content_unset(efb->layout, "center");
-   elm_layout_content_set(efb->layout, "center", efb->images[2]);
-   elm_bg_file_set(efb->images[3], eina_list_data_get(next), NULL);
-   elm_layout_content_unset(efb->layout, "right");
-   elm_layout_content_set(efb->layout, "right", efb->images[3]);
-   elm_bg_file_set(efb->images[4], eina_list_data_get(nextt), NULL);
-   elm_layout_content_unset(efb->layout, "offscreen_right");
-   elm_layout_content_set(efb->layout, "offscreen_right", efb->images[4]);
-
+   if (efb->flow_direct == 0)
+     {
+        elm_image_file_set(efb->images[4], eina_list_data_get(nextt), NULL);
+        elm_layout_content_unset(efb->layout, "offscreen_right");
+        elm_layout_content_set(efb->layout, "offscreen_right", efb->images[4]);
+        elm_image_file_set(efb->images[3], eina_list_data_get(next), NULL);
+        elm_layout_content_unset(efb->layout, "right");
+        elm_layout_content_set(efb->layout, "right", efb->images[3]);
+        elm_image_file_set(efb->images[2], eina_list_data_get(ephoto->current_index), NULL);
+        elm_layout_content_unset(efb->layout, "center");
+        elm_layout_content_set(efb->layout, "center", efb->images[2]);
+        elm_image_file_set(efb->images[1], eina_list_data_get(prev), NULL);
+        elm_layout_content_unset(efb->layout, "left");
+        elm_layout_content_set(efb->layout, "left", efb->images[1]);
+        elm_image_file_set(efb->images[0], eina_list_data_get(prevv), NULL);
+        elm_layout_content_unset(efb->layout, "offscreen_left");
+        elm_layout_content_set(efb->layout, "offscreen_left", efb->images[0]);
+     }
+   else
+     {
+        elm_image_file_set(efb->images[0], eina_list_data_get(prevv), NULL);
+        elm_layout_content_unset(efb->layout, "offscreen_left");
+        elm_layout_content_set(efb->layout, "offscreen_left", efb->images[0]);
+        elm_image_file_set(efb->images[1], eina_list_data_get(prev), NULL);
+        elm_layout_content_unset(efb->layout, "left");
+        elm_layout_content_set(efb->layout, "left", efb->images[1]);
+        elm_image_file_set(efb->images[2], eina_list_data_get(ephoto->current_index), NULL);
+        elm_layout_content_unset(efb->layout, "center");
+        elm_layout_content_set(efb->layout, "center", efb->images[2]);
+        elm_image_file_set(efb->images[3], eina_list_data_get(next), NULL);
+        elm_layout_content_unset(efb->layout, "right");
+        elm_layout_content_set(efb->layout, "right", efb->images[3]);
+        elm_image_file_set(efb->images[4], eina_list_data_get(nextt), NULL);
+        elm_layout_content_unset(efb->layout, "offscreen_right");
+        elm_layout_content_set(efb->layout, "offscreen_right", efb->images[4]);
+     }
    edje_object_signal_emit(edje, "reset", "ephoto");
    edje_object_thaw(edje);
 
@@ -224,7 +246,7 @@ _ephoto_flow_prev(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_
         edje_object_signal_emit(edje, "full_reset", "ephoto");
         efb->efs = EPHOTO_FLOW_STATE_FLOW;
      }
-
+   efb->flow_direct = 0;
    edje_object_signal_emit(edje, "right", "ephoto");
 }
 
@@ -250,7 +272,7 @@ _ephoto_flow_next(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_
         edje_object_signal_emit(edje, "full_reset", "ephoto");
         efb->efs = EPHOTO_FLOW_STATE_FLOW;
      }
-
+   efb->flow_direct = 1;
    edje_object_signal_emit(edje, "left", "ephoto");
 }
 
