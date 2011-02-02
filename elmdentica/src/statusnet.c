@@ -78,7 +78,7 @@ extern int debug;
 extern char *home, *dm_to;
 extern Gui gui;
 
-typedef enum { TIMELINE, REPEAT, GROUP } SNAzyDownloadType;
+typedef enum { TIMELINE, REPEAT, GROUP, RELATED } SNAzyDownloadType;
 
 typedef struct _SN_Azy_Download_Helper {
 	SNAzyDownloadType type;
@@ -122,6 +122,7 @@ static void statusnet_azy_value_free(Eina_List *array) {
 
 	switch(ADH.type) {
 		case REPEAT:
+		case RELATED:
 		case TIMELINE: {
 			Array_statusnet_Status_free(array);
 			break;
@@ -152,7 +153,7 @@ Eina_Bool azy_value_to_Array_statusnet_Status(Azy_Value *array, Eina_List **narr
 
 				if (azy_value_to_statusnet_Status(v, &snS)) {
 					tmp_narray = eina_list_append(tmp_narray, snS);
-				}
+				} else fprintf(stderr, "FAILED TO RECOGNIZE A STATUS\n");
 			}
 			break;
 		}
@@ -198,6 +199,7 @@ Eina_Bool statusnet_azy_value_to_data(Azy_Value *array, Eina_List **narray) {
 
 	switch(ADH.type) {
 		case REPEAT:
+		case RELATED:
 		case TIMELINE: {
 			return(azy_value_to_Array_statusnet_Status(array, narray));
 		}
@@ -338,12 +340,21 @@ Eina_Bool timeline_returned(void *data, int type, Azy_Content *content) {
 	int sqlite_res=0;
 	struct sqlite3_stmt *insert_stmt=NULL;
 	const char *missed=NULL;
-	char *query=NULL;
+	char *query=NULL, *timeline_id;
 	statusnet_Status *snS=NULL, *snS2=NULL;
 	aStatus *as=NULL;
 	Eina_List *l, *list=NULL;
 
-	if(debug > 2) printf("timeline_returned\n");
+	if(debug > 2) {
+		switch(ADH.type) {
+			case REPEAT:   { timeline_id = "repeat" ; break; }
+			case RELATED:  { timeline_id = "related" ; break; }
+			case TIMELINE: { timeline_id = "timeline" ; break; }
+			default:       { timeline_id = "oops, unknown on timeline" ; break; }
+		}
+		printf("%s_disconnected\n", timeline_id);
+	}
+
 	list = azy_content_return_get(content);
 
 	if( ! (list && eina_list_count(list) > 0) ) return(EINA_TRUE);
@@ -356,7 +367,12 @@ Eina_Bool timeline_returned(void *data, int type, Azy_Content *content) {
 				message_insert(snS, &insert_stmt);
 				snS2 = statusnet_Status_copy(snS);
 				as = statusnet_new_status(snS2, ADH.account_id);
-				if(as) newStatuses = eina_list_append(newStatuses, as);
+				if(as) {
+					if(ADH.type == RELATED)
+						ADH.as = as;
+					else
+						newStatuses = eina_list_append(newStatuses, as);
+				}
 			}
 		} else {
 			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, missed);
@@ -372,6 +388,7 @@ Eina_Bool groupget_returned(void *data, int type, Azy_Content *content) {
 	Eina_List *list=NULL;
 	statusnet_Group *group=NULL;
 
+	if(debug > 2) printf("groupget_returned\n");
     list = azy_content_return_get(content);
 
 	group = eina_list_data_get(list);
@@ -394,6 +411,7 @@ Eina_Bool statusnet_azy_returned(void *data, int type, Azy_Content *content) {
 
 	switch(ADH.type) {
 		case REPEAT:
+		case RELATED:
 		case TIMELINE: {
 			return(timeline_returned(data, type, content));
 		}
@@ -408,7 +426,17 @@ Eina_Bool statusnet_azy_returned(void *data, int type, Azy_Content *content) {
 }
 
 Eina_Bool timeline_disconnected(void *data, int type, Azy_Client *cli) {
-	if(debug > 2) printf("timeline_disconnected\n");
+	char *timeline_id = NULL;
+
+	if(debug > 2) {
+		switch(ADH.type) {
+			case REPEAT:   { timeline_id = "repeat" ; break; }
+			case RELATED:  { timeline_id = "related" ; break; }
+			case TIMELINE: { timeline_id = "timeline" ; break; }
+			default:       { timeline_id = "oops, unknown on timeline" ; break; }
+		}
+		printf("%s_disconnected\n", timeline_id);
+	}
 
 	if(ADH.as)
 		ADH.callback.add_repeat(ADH.as, ADH.callback_data);
@@ -438,6 +466,7 @@ Eina_Bool statusnet_azy_disconnected(void *data, int type, Azy_Client *cli) {
 
 	switch(ADH.type) {
 		case REPEAT:
+		case RELATED:
 		case TIMELINE: {
 			retval = timeline_disconnected(data, type, cli);
 			break;
@@ -1163,20 +1192,11 @@ void ed_statusnet_repeat(int account_id, aStatus *as, Repeat_Cb callback, void *
 	}
 }
 
-Eina_Bool ed_sn_single_status_disconnected(void *data, int type, Azy_Client *cli) {
-        return(EINA_TRUE);
-}
-
-static int ed_statusnet_status_get_handler(void *data, int argc, char **argv, char **azColName) {
+static int ed_statusnet_related_status_get_handler(void *data, int argc, char **argv, char **azColName) {
     char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL, *url_start=NULL, *url_end=NULL;
     int port=0, id=0, res;
 	long long int in_reply_to;
 	Azy_Client *cli=NULL;
-	aStatus **prelated_status = (aStatus**)data;
-	int sqlite_res=0;
-	struct sqlite3_stmt *insert_stmt=NULL;
-	const char *missed=NULL;
-	char *key=NULL, *query=NULL;
 
     /* In this query handler, these are the current fields:
         argv[0] == name TEXT
@@ -1210,46 +1230,21 @@ static int ed_statusnet_status_get_handler(void *data, int argc, char **argv, ch
 	azy_net_uri_set(azy_client_net_get(cli), url_end);
 	azy_net_version_set(azy_client_net_get(cli), 0);
 
-    //ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)timeline_connected, NULL); // FIXME: FALTAM AQUI accountDatas
-    //ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)timeline_returned, NULL);
-    //ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)ed_sn_single_status_disconnected, NULL);
-
-	if(*prelated_status) {
-		(*prelated_status)->account_id = id;
-		(*prelated_status)->account_type = atoi(argv[2]);
-
-		res = asprintf(&query, "insert into messages (status_id, account_id, timeline, s_text, s_truncated, s_created_at, s_in_reply_to_status_id, s_source, s_in_reply_to_user_id, s_favorited, s_user) values (?, %d, %d, ?, ?, ?, ?, ?, ?, ?, ?);", id, -1);;
-		if(sqlite_res != -1) {
-			sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
-			if(sqlite_res == 0) {
-				if(debug > 3) printf("Inserting: %lld\n", (long long int)(*prelated_status)->status->id);
-				res = asprintf(&key, "%lld", (long long int)(*prelated_status)->status->id);
-				if(res != -1) {
-					message_insert((*prelated_status)->status, &insert_stmt);
-					free(key);
-				}
-				sqlite3_finalize(insert_stmt);
-			} else {
-				fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, missed);
-			}
-			free(query);
-		}
-	}
 	return(0);
 }
 
-void ed_statusnet_status_get(int account_id, long long int in_reply_to, aStatus **prelated_status) {
+void ed_statusnet_related_status_get(aStatus *as, Repeat_Cb callback, void *data) {
 	char *query=NULL, *db_err=NULL, *key=NULL;
-	aStatus *as=NULL;
+	aStatus *rel_as=NULL;
 	int sqlite_res;
 
-	sqlite_res = asprintf(&key, "%lld", in_reply_to);
+	sqlite_res = asprintf(&key, "%lld", (long long int)as->status->in_reply_to_status_id);
 	if(sqlite_res != -1) {
-		as = eina_hash_find(statusHash, key);
+		rel_as = eina_hash_find(statusHash, key);
 		free(key);
-		if(as) {
-			if(debug > 3) printf("Status %lld is present in memory cache\n", in_reply_to);
-			*prelated_status = as;
+		if(rel_as) {
+			if(debug > 3) printf("Status %lld is present in memory cache\n", (long long int)rel_as->status->in_reply_to_status_id);
+			callback(rel_as, data);
 			return;
 		}
 	}
@@ -1271,10 +1266,15 @@ void ed_statusnet_status_get(int account_id, long long int in_reply_to, aStatus 
 	}
 */
 
-	if(debug>3) printf("Downloading status %lld with account %d\n", in_reply_to, account_id);
-	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id,%lld FROM accounts WHERE id = %d and type = %d and enabled = 1;", in_reply_to, account_id, ACCOUNT_TYPE_STATUSNET);
+	ADH.type = RELATED;
+	ADH.method = AZY_NET_TYPE_GET;
+	ADH.callback.add_repeat = callback;
+	ADH.callback_data = data;
+
+	if(debug>3) printf("Downloading status %lld with account %d\n", (long long int)rel_as->status->in_reply_to_status_id, as->account_id);
+	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id,%lld FROM accounts WHERE id = %d and type = %d and enabled = 1;", (long long int)as->status->in_reply_to_status_id, as->account_id, ACCOUNT_TYPE_STATUSNET);
 	if(sqlite_res != -1) {
-		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_status_get_handler, (void**)prelated_status, &db_err);
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_related_status_get_handler, NULL, &db_err);
 		if(sqlite_res != 0) {
 			fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
 			sqlite3_free(db_err);

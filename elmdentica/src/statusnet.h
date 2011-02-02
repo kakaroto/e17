@@ -126,7 +126,7 @@ anUser *ed_statusnet_user_get_by_id(int account_id, long long int user_id);
 void ed_statusnet_user_follow(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *user_screen_name);
 void ed_statusnet_user_abandon(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *user_screen_name);
 void ed_statusnet_repeat(int account_id, aStatus *as, Repeat_Cb callback, void *data);
-void ed_statusnet_status_get(int account_id, long long int in_reply_to, aStatus **related_status);
+void ed_statusnet_related_status_get(aStatus *as, Repeat_Cb callback, void *data);
 
 void status_hash_data_free(void *data);
 void user_hash_data_free(void *data);

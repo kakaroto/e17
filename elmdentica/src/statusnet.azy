@@ -51,7 +51,7 @@ struct Basic_Status {
 	string source;
 	double id;
 	double in_reply_to_user_id;
-	int in_reply_to_screen_name;
+	string in_reply_to_screen_name;
 	Geo geo;
 	boolean favorited;
 	array<Attachment> attachments;
@@ -67,7 +67,7 @@ struct Status {
 	string source;
 	double id;
 	double in_reply_to_user_id;
-	int in_reply_to_screen_name;
+	string in_reply_to_screen_name;
 	Geo geo;
 	boolean favorited;
 	array<Attachment> attachments;

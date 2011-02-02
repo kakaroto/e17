@@ -385,17 +385,14 @@ static void on_view_related(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)data;
 	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli), *related_status=NULL;
 
+	network_busy(EINA_TRUE);
+
 	if(as) {
 		switch(as->account_type) {
 			case ACCOUNT_TYPE_STATUSNET:
-			default: { ed_statusnet_status_get(as->account_id, as->status->in_reply_to_status_id, &related_status); break; }
+			default: { ed_statusnet_related_status_get(as, add_status, data); break; }
 		}
 	}
-
-	if(related_status)
-		add_status(related_status, gli);
-	else
-		printf(_("Error importing related status\n"));
 
 	if(gui.hover) {
 		evas_object_del(gui.hover);
@@ -1394,6 +1391,7 @@ void add_status(aStatus *as, Elm_Genlist_Item *gli) {
 	if(gli) {
 		li = elm_genlist_item_insert_after(gui.timeline, &itc1, as, NULL, gli, ELM_GENLIST_ITEM_NONE, NULL, NULL);
 		elm_genlist_item_show(li);
+		network_busy(EINA_FALSE);
 	} else
 		li = elm_genlist_item_prepend(gui.timeline, &itc1, as, NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL);
 
