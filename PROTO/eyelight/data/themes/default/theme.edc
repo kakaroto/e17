@@ -1912,6 +1912,7 @@ collections
                     }
                     text
                     {
+                        max: 1 0; //max: 1 1; are needed here
                         text: "TITLE";
                         style: "titleStyle";
                     }
@@ -1966,6 +1967,7 @@ collections
                     }
                     text
                     {
+                        max: 1 0; //max: 1 1; are needed here
                         text: "subtitle";
                         style: "subtitleStyle";
                     }
