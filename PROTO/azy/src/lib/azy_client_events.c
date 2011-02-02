@@ -555,7 +555,7 @@ _azy_client_handler_del(Azy_Client                    *client,
      {
         hd = client->conns->data;
 
-        if (hd->recv && ((!client->net->http.version) || (!hd->recv->http.version)) && hd->recv->buffer && hd->recv->size)
+        if (hd->recv && hd->recv->buffer && hd->recv->size)
           _azy_client_handler_call(client->conns->data);
         else
           {
