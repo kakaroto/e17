@@ -100,6 +100,8 @@ typedef struct _group_data {
 	Group_Show_Cb group_show;
 	void *data;
 	statusnet_Group *group;
+	Evas_Object *win;
+	Eina_Bool failed;
 } groupData;
 
 
@@ -111,8 +113,8 @@ void ed_statusnet_group_get(aStatus *as, const char *group_name, Group_Show_Cb c
 
 void ed_statusnet_group_free(groupData *gd);
 
-void ed_statusnet_group_join(GroupProfile *group);
-void ed_statusnet_group_leave(GroupProfile *group);
+void ed_statusnet_group_join(groupData *gd);
+void ed_statusnet_group_leave(groupData *gd);
 
 int ed_statusnet_post(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *msg);
 void ed_statusnet_timeline_get(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline, Status_List_Cb update_status_list);

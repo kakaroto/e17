@@ -68,6 +68,7 @@ extern aStatus *reply_as;
 extern long long int user_id;
 
 Eina_Hash *userHash=NULL;
+Eina_Hash *imageHash=NULL;
 Eina_Hash *statusHash=NULL;
 Eina_List* newStatuses=NULL;
 Eina_Hash *azy_agents=NULL;
@@ -77,7 +78,7 @@ extern int debug;
 extern char *home, *dm_to;
 extern Gui gui;
 
-typedef enum { TIMELINE, REPEAT, GROUPGET } SNAzyDownloadType;
+typedef enum { TIMELINE, REPEAT, GROUP } SNAzyDownloadType;
 
 typedef struct _SN_Azy_Download_Helper {
 	SNAzyDownloadType type;
@@ -101,7 +102,7 @@ SNAzyDownloadHelper ADH;
 static void Array_statusnet_Status_free(Eina_List *array) {
 	statusnet_Status *snS;
 
-	printf("Array_statusnet_Status_free\n");
+	if(debug > 2) printf("Array_statusnet_Status_free\n");
 
 	EINA_LIST_FREE(array, snS)
 		statusnet_Status_free(snS);
@@ -115,7 +116,7 @@ static void Array_statusnet_Group_free(Eina_List *array) {
 }
 
 static void statusnet_azy_value_free(Eina_List *array) {
-	printf("statusnet_azy_value_free -> ");
+	if(debug > 2) printf("statusnet_azy_value_free -> ");
 
     EINA_SAFETY_ON_NULL_RETURN(array);
 
@@ -125,12 +126,12 @@ static void statusnet_azy_value_free(Eina_List *array) {
 			Array_statusnet_Status_free(array);
 			break;
 		}
-		case GROUPGET: {
+		case GROUP: {
 			Array_statusnet_Group_free(array);
 			break;
 		}
 		default: {
-			printf("Unknown ADH.type!!\n");
+			if(debug > 2) printf("Unknown ADH.type!!\n");
 			break;
 		}
 	}
@@ -141,7 +142,7 @@ Eina_Bool azy_value_to_Array_statusnet_Status(Azy_Value *array, Eina_List **narr
 	Azy_Value *v;
 	statusnet_Status *snS;
 
-	printf("azy_value_to_Array_statusnet_Status\n");
+	if(debug > 2) printf("azy_value_to_Array_statusnet_Status\n");
 
 	switch(azy_value_type_get(array)) {
 		case AZY_VALUE_ARRAY: {
@@ -173,7 +174,7 @@ Eina_Bool azy_value_to_Array_statusnet_Group(Azy_Value *array, Eina_List **narra
     Eina_List *tmp_narray=NULL;
     statusnet_Group *group;
 
-	printf("azy_value_to_Array_statusnet_Group\n");
+	if(debug > 2) printf("azy_value_to_Array_statusnet_Group\n");
 
     switch(azy_value_type_get(array)) {
         case AZY_VALUE_STRUCT: {
@@ -191,7 +192,7 @@ Eina_Bool azy_value_to_Array_statusnet_Group(Azy_Value *array, Eina_List **narra
 }
 
 Eina_Bool statusnet_azy_value_to_data(Azy_Value *array, Eina_List **narray) {
-	printf("statusnet_azy_value_to_data -> ");
+	if(debug > 2) printf("statusnet_azy_value_to_data -> ");
 
     if (!array) return(EINA_FALSE);
 
@@ -200,11 +201,11 @@ Eina_Bool statusnet_azy_value_to_data(Azy_Value *array, Eina_List **narray) {
 		case TIMELINE: {
 			return(azy_value_to_Array_statusnet_Status(array, narray));
 		}
-		case GROUPGET: {
+		case GROUP: {
 			return(azy_value_to_Array_statusnet_Group(array, narray));
 		}
 		default: {
-			printf("Unknown ADH.type!!\n");
+			if(debug > 2) printf("Unknown ADH.type!!\n");
 			return(EINA_FALSE);
 		}
 	}
@@ -213,9 +214,12 @@ Eina_Bool statusnet_azy_value_to_data(Azy_Value *array, Eina_List **narray) {
 Eina_Bool statusnet_azy_connected(void *data, int type, Azy_Client *cli) {
 	Azy_Client_Call_Id id;
 
-	printf("AZY_CONNECTED\n");
-	id = azy_client_blank(cli, ADH.method, &ADH.post_body, (Azy_Content_Cb)statusnet_azy_value_to_data, NULL);
-	azy_client_callback_free_set(cli, id, (Ecore_Cb)statusnet_azy_value_free);
+	if(debug > 2) printf("AZY_CONNECTED\n");
+
+	if (!azy_client_current(cli)) {
+		id = azy_client_blank(cli, ADH.method, &ADH.post_body, (Azy_Content_Cb)statusnet_azy_value_to_data, NULL);
+		azy_client_callback_free_set(cli, id, (Ecore_Cb)statusnet_azy_value_free);
+	}
 
 	return(EINA_TRUE);
 }
@@ -294,6 +298,7 @@ aStatus *statusnet_new_status(statusnet_Status *snS, int account_id) {
 			au->account_type = ACCOUNT_TYPE_STATUSNET;
 			au->created_at = curl_getdate(au->user->created_at, NULL);
 			eina_hash_add(userHash, uid, au);
+			eina_hash_add(imageHash, uid, au->user->profile_image_url);
 
 			user_insert(au, as->account_id);
 		}
@@ -338,7 +343,7 @@ Eina_Bool timeline_returned(void *data, int type, Azy_Content *content) {
 	aStatus *as=NULL;
 	Eina_List *l, *list=NULL;
 
-	printf("timeline_returned\n");
+	if(debug > 2) printf("timeline_returned\n");
 	list = azy_content_return_get(content);
 
 	if( ! (list && eina_list_count(list) > 0) ) return(EINA_TRUE);
@@ -380,7 +385,7 @@ Eina_Bool groupget_returned(void *data, int type, Azy_Content *content) {
 }
 
 Eina_Bool statusnet_azy_returned(void *data, int type, Azy_Content *content) {
-	printf("statusnet_azy_returned -> ");
+	if(debug > 2) printf("statusnet_azy_returned -> ");
 
 	if (azy_content_error_is_set(content)) {
 		fprintf(stderr, _("Error encountered: %s\n"), azy_content_error_message_get(content));
@@ -392,18 +397,18 @@ Eina_Bool statusnet_azy_returned(void *data, int type, Azy_Content *content) {
 		case TIMELINE: {
 			return(timeline_returned(data, type, content));
 		}
-		case GROUPGET: {
+		case GROUP: {
 			return(groupget_returned(data, type, content));
 		}
 		default: {
-			printf("Unknown ADH.type!!\n");
+			if(debug > 2) printf("Unknown ADH.type!!\n");
 			return(EINA_FALSE);
 		}
 	}
 }
 
 Eina_Bool timeline_disconnected(void *data, int type, Azy_Client *cli) {
-	printf("timeline_disconnected\n");
+	if(debug > 2) printf("timeline_disconnected\n");
 
 	if(ADH.as)
 		ADH.callback.add_repeat(ADH.as, ADH.callback_data);
@@ -414,32 +419,51 @@ Eina_Bool timeline_disconnected(void *data, int type, Azy_Client *cli) {
 	return(EINA_TRUE);
 }
 
+Eina_Bool group_disconnected(void *data, int type, Azy_Client *cli) {
+	if(debug > 2) printf("group_disconnected\n");
+
+	if(ADH.post_body.data) free(ADH.post_body.data);
+	return(EINA_TRUE);
+}
+
 Eina_Bool statusnet_azy_disconnected(void *data, int type, Azy_Client *cli) {
 	Eina_Bool retval=EINA_FALSE;
 
-	printf("statusnet_azy_disconnected -> ");
+	if(debug > 2) printf("statusnet_azy_disconnected -> ");
+
+	if(azy_client_redirect(cli)) {
+		if(debug > 2) printf("redirected\n");
+		return(ECORE_CALLBACK_RENEW); // this is EINA_TRUE, actually.
+	}
+
 	switch(ADH.type) {
 		case REPEAT:
 		case TIMELINE: {
 			retval = timeline_disconnected(data, type, cli);
 			break;
 		}
-		case GROUPGET: {
-			retval = EINA_TRUE;
+		case GROUP: {
+			retval = group_disconnected(data, type, cli);
 			break;
 		}
 		default: {
-			printf("Unknown ADH.type!!\n");
+			if(debug > 2) printf("Unknown ADH.type!!\n");
 		}
 	}
 
 	return(retval);
 }
 
+void image_hash_data_free(void *data) {
+	char *url = (char*)data;
+
+	if(url) free(url);
+}
 
 void statusnet_init() {
 	memset(&ADH, 0, sizeof(ADH));
 
+	imageHash = eina_hash_string_superfast_new(image_hash_data_free);
 	ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)statusnet_azy_connected, NULL);
 	ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)statusnet_azy_returned, NULL);
 	ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)statusnet_azy_disconnected, NULL);
@@ -505,7 +529,7 @@ void ed_statusnet_group_get(aStatus *as, const char *group_name, Group_Show_Cb c
 	gd->group_show = callback;
 	gd->data = data;
 
-	ADH.type = GROUPGET;
+	ADH.type = GROUP;
 	ADH.method = AZY_NET_TYPE_GET;
 	ADH.gd = gd;
 
@@ -530,11 +554,11 @@ void ed_statusnet_group_free(groupData *gd) {
     }
 }
 
-static int ed_statusnet_group_join_handler(void *data, int argc, char **argv, char **azColName) {
-	GroupProfile *group = (GroupProfile*)data;
-    char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
+static int ed_statusnet_group_toggle_handler(void *data, int argc, char **argv, char **azColName) {
+	char *method = (char*)data;
+    char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL, *url_start=NULL, *url_end=NULL;
     int port=0, id=0, res;
-	http_request * request=calloc(1, sizeof(http_request));
+	Azy_Client *cli;
 
     /* In this query handler, these are the current fields:
         argv[0] == name TEXT
@@ -555,82 +579,59 @@ static int ed_statusnet_group_join_handler(void *data, int argc, char **argv, ch
     base_url = argv[6];
     id = atoi(argv[7]);
 
-	if(!request) return(-1);
+	cli = azy_client_new();
+	if(!cli) return(-1);
 
-	res = asprintf(&request->url, "%s://%s:%d%s/statusnet/groups/join.json?id=%s", proto, domain, port, base_url, group->name);
+	res = asprintf(&url_start, "%s://%s", proto, domain);
+	res = asprintf(&url_end, "%s/statusnet/groups/%s.json?id=%s", base_url, method, ADH.gd->group->nickname);
 
-	if(request->url) free(request->url);
-	if(request->content.memory) free(request->content.memory);
-	free(request);
+	azy_client_host_set(cli, url_start, port);
+	azy_client_connect(cli, EINA_TRUE);
+	azy_net_auth_set(azy_client_net_get(cli), screen_name, password);
+	azy_net_uri_set(azy_client_net_get(cli), url_end);
+	azy_net_version_set(azy_client_net_get(cli), 0);
+
+	free(url_start);
+	free(url_end);
 
 	return(0);
 }
 
-void ed_statusnet_group_join(GroupProfile *group) {
+void ed_statusnet_group_toggle(groupData *gd, Eina_Bool join) {
 	char *query=NULL, *db_err=NULL;
 	int sqlite_res;
 	
-	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE id = %d and type = %d and enabled = 1;", group->account_id, ACCOUNT_TYPE_STATUSNET);
+	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE id = %d and type = %d and enabled = 1 LIMIT 1;", gd->as->account_id, ACCOUNT_TYPE_STATUSNET);
 	if(sqlite_res != -1) {
-		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_group_join_handler, (void*)group, &db_err);
+
+		ADH.method = AZY_NET_TYPE_POST;
+		sqlite_res = asprintf((char**)&(ADH.post_body.data),"source=elmdentica&id=%s", gd->group->nickname);
+		gd->failed = EINA_TRUE; // just in case sqlite fails
+		if(sqlite_res == -1) return;
+		ADH.post_body.size = strlen((const char*)ADH.post_body.data);
+		ADH.gd = gd;
+		ADH.type = GROUP;
+
+		if(join)
+			sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_group_toggle_handler, "join", &db_err);
+		else
+			sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_group_toggle_handler, "leave", &db_err);
+
 		if(sqlite_res != 0) {
 			fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
 			sqlite3_free(db_err);
+			gd->group_show(gd);
 		}
 		free(query);
 	}
 }
 
-static int ed_statusnet_group_leave_handler(void *data, int argc, char **argv, char **azColName) {
-	GroupProfile *group =(GroupProfile*)data;
-    char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
-    int port=0, id=0, res;
-	http_request * request=calloc(1, sizeof(http_request));
-
-    /* In this query handler, these are the current fields:
-        argv[0] == name TEXT
-        argv[1] == password TEXT
-        argv[2] == type INTEGER
-        argv[3] == proto TEXT
-        argv[4] == domain TEXT
-        argv[5] == port INTEGER
-        argv[6] == base_url TEXT
-        argv[7] == id INTEGER
-    */
-
-    screen_name = argv[0];
-    password = argv[1];
-    proto = argv[3];
-    domain = argv[4];
-    port = atoi(argv[5]);
-    base_url = argv[6];
-    id = atoi(argv[7]);
-
-	if(!request) return(-1);
-
-	res = asprintf(&request->url, "%s://%s:%d%s/statusnet/groups/leave.json?id=%s", proto, domain, port, base_url, group->name);
-
-
-	if(request->url) free(request->url);
-	if(request->content.memory) free(request->content.memory);
-	free(request);
-
-	return(0);
+void ed_statusnet_group_join(groupData *gd) {
+	ed_statusnet_group_toggle(gd, EINA_TRUE);
 }
 
-void ed_statusnet_group_leave(GroupProfile *group) {
-	char *query=NULL, *db_err=NULL;
-	int sqlite_res;
-	
-	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE id = %d and type = %d and enabled = 1;", group->account_id, ACCOUNT_TYPE_STATUSNET);
-	if(sqlite_res != -1) {
-		sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_group_leave_handler, (void*)group, &db_err);
-		if(sqlite_res != 0) {
-			fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
-			sqlite3_free(db_err);
-		}
-		free(query);
-	}
+void ed_statusnet_group_leave(groupData *gd) {
+	ed_statusnet_group_toggle(gd, EINA_FALSE);
 }
 
 void status_hash_data_free(void *data) {

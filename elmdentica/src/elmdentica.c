@@ -91,6 +91,7 @@ Eina_Hash* accounts=NULL;
 extern Eina_Hash* statusHash;
 extern Eina_List* newStatuses;
 extern Eina_Hash* userHash;
+extern Eina_Hash* imageHash;
 extern Settings *settings;
 
 extern CURL * user_agent;
@@ -731,63 +732,52 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 }
 
 static void on_group_leave(void *data, Evas_Object *obj, void *event_info);
+static void on_group_join(void *data, Evas_Object *obj, void *event_info);
 
-static void on_group_join(void *data, Evas_Object *obj, void *event_info) {
-	Evas *e = evas_object_evas_get(obj);
-	Evas_Object *group_desc = NULL;
-	GroupProfile *gp = (GroupProfile*)data;
+static void on_group_update_win(void *data) {
+	groupData *gd = (groupData*)data;
+	Evas *e = evas_object_evas_get(gd->win);
+	Evas_Object *group_desc=NULL, *group_action=NULL;
 	char *m;
 	int res = 0;
 
-	gp->failed = 0;
-	ed_statusnet_group_join(gp);
+	group_action = evas_object_name_find(e, "group_action");
 
-	if(gp->failed) {
-		printf("Error joining group %s: %s\n", gp->name, gp->error);
+	if(gd->group->member) {
+		res = asprintf(&m, _("You are a member of group %s along with %d other people.<br>«%s»"), gd->group->fullname, gd->group->member_count -1, gd->group->description);
+		evas_object_smart_callback_del(group_action, "clicked", on_group_join);
+		evas_object_smart_callback_add(group_action, "clicked", on_group_leave, gd);
+		elm_button_label_set(group_action, _("Leave"));
 	} else {
-		if(gp->member)
-			res = asprintf(&m, _("You are a member of group %s along with %d other people.<br>«%s»"), gp->fullname, gp->member_count -1, gp->description);
-		else
-			res = asprintf(&m, _("You are not a member of group %s but %d people are.<br>«%s»"), gp->fullname, gp->member_count, gp->description);
-
-		if(res != -1) {
-			group_desc = evas_object_name_find(e, "group_desc");
-			elm_label_label_set(group_desc, m);
-			elm_button_label_set(obj, _("Leave"));
-			evas_object_smart_callback_del(obj, "clicked", on_group_join);
-			evas_object_smart_callback_add(obj, "clicked", on_group_leave, gp);
-			free(m);
-		}
+		res = asprintf(&m, _("You are not a member of group %s but %d people are.<br>«%s»"), gd->group->fullname, gd->group->member_count, gd->group->description);
+		evas_object_smart_callback_del(group_action, "clicked", on_group_leave);
+		evas_object_smart_callback_add(group_action, "clicked", on_group_join, gd);
+		elm_button_label_set(group_action, _("Join"));
 	}
+	if(res != -1) {
+		group_desc = evas_object_name_find(e, "group_desc");
+		elm_label_label_set(group_desc, m);
+		free(m);
+	}
+	elm_object_disabled_set(group_action, EINA_FALSE);
+	network_busy(EINA_FALSE);
+}
+
+static void on_group_join(void *data, Evas_Object *obj, void *event_info) {
+	groupData *gd = (groupData*)data;
+
+	network_busy(EINA_TRUE);
+	elm_object_disabled_set(obj, EINA_TRUE);
+	ed_statusnet_group_join(gd);
+
 }
 
 static void on_group_leave(void *data, Evas_Object *obj, void *event_info) {
-	Evas *e = evas_object_evas_get(obj);
-	Evas_Object *group_desc = NULL;
-	GroupProfile *gp = (GroupProfile*)data;
-	char *m;
-	int res = 0;
+	groupData *gd = (groupData*)data;
 
-	gp->failed = 0;
-	ed_statusnet_group_leave(gp);
-
-	if(gp->failed && debug)
-		printf("Error leaving group %s: %s\n", gp->name, gp->error);
-	else {
-		if(gp->member)
-			res = asprintf(&m, _("You are a member of group %s along with %d other people.<br>«%s»"), gp->fullname, gp->member_count -1, gp->description);
-		else
-			res = asprintf(&m, _("You are not a member of group %s but %d people are.<br>«%s»"), gp->fullname, gp->member_count, gp->description);
-
-		if(res != -1) {
-			group_desc = evas_object_name_find(e, "group_desc");
-			elm_label_label_set(group_desc, m);
-			elm_button_label_set(obj, _("Join"));
-			evas_object_smart_callback_del(obj, "clicked", on_group_leave);
-			evas_object_smart_callback_add(obj, "clicked", on_group_join, gp);
-			free(m);
-		}
-	}
+	network_busy(EINA_TRUE);
+	elm_object_disabled_set(obj, EINA_TRUE);
+	ed_statusnet_group_leave(gd);
 }
 
 static void group_win_del(void *data, Evas_Object *obj, void *event_info) {
@@ -798,35 +788,37 @@ static void group_win_del(void *data, Evas_Object *obj, void *event_info) {
 
 static void group_show(void *data) {
 	groupData *gd = (groupData*)data;
-	Evas_Object *group_win=NULL, *bg=NULL, *box=NULL, *label=NULL, *s=NULL, *box2=NULL, *icon=NULL, *button=NULL, *frame=NULL;
+	Evas_Object *bg=NULL, *box=NULL, *label=NULL, *s=NULL, *box2=NULL, *icon=NULL, *button=NULL, *frame=NULL;
 	char *m, *path;
 	int res = 0;
 	struct stat buf;
 
-	group_win = elm_win_add(NULL, gd->group->fullname, ELM_WIN_BASIC);
+	gd->group_show = on_group_update_win;
 
-		evas_object_name_set(group_win, "group_win");
-		elm_win_title_set(group_win, gd->group->fullname);
-		evas_object_smart_callback_add(group_win, "delete-request", group_win_del, gd);
+	gd->win = elm_win_add(NULL, gd->group->fullname, ELM_WIN_BASIC);
 
-		bg = elm_bg_add(group_win);
+		evas_object_name_set(gd->win, "group_win");
+		elm_win_title_set(gd->win, gd->group->fullname);
+		evas_object_smart_callback_add(gd->win, "delete-request", group_win_del, gd);
+
+		bg = elm_bg_add(gd->win);
 			evas_object_size_hint_weight_set(bg, 1, 1);
 			evas_object_size_hint_align_set(bg, -1, 0);
-			elm_win_resize_object_add(group_win, bg);
+			elm_win_resize_object_add(gd->win, bg);
 		evas_object_show(bg);
 
-		box = elm_box_add(group_win);
+		box = elm_box_add(gd->win);
 			evas_object_size_hint_weight_set(box, 1, 1);
 			evas_object_size_hint_align_set(box, -1, 0);
-			elm_win_resize_object_add(group_win, box);
+			elm_win_resize_object_add(gd->win, box);
 
-			frame = elm_frame_add(group_win);
+			frame = elm_frame_add(gd->win);
 				evas_object_name_set(frame, "group");
 				evas_object_size_hint_weight_set(frame, 1, 1);
 				evas_object_size_hint_align_set(frame, -1, 0);
 				elm_frame_label_set(frame, gd->group->fullname);
 
-			box2 = elm_box_add(group_win);
+			box2 = elm_box_add(gd->win);
 				evas_object_size_hint_weight_set(box2, 1, 1);
 				evas_object_size_hint_align_set(box2, -1, 0);
 				elm_box_horizontal_set(box2, EINA_TRUE);
@@ -834,7 +826,7 @@ static void group_show(void *data) {
 				res = asprintf(&path, "%s/cache/icons/%s", home, gd->group->fullname);
 
 				if(res != -1 && stat(path, &buf) == 0 ) {
-					icon = elm_icon_add(group_win);
+					icon = elm_icon_add(gd->win);
 						evas_object_size_hint_weight_set(icon, 1, 1);
 						evas_object_size_hint_align_set(icon, -1, -1);
 						elm_icon_file_set(icon, path, "fubar?");
@@ -849,7 +841,7 @@ static void group_show(void *data) {
 					res = asprintf(&m, _("You are not a member of group %s but %d people are.<br>«%s»"), gd->group->fullname, gd->group->member_count, gd->group->description);
 
 				if(res != -1) {
-					label = elm_label_add(group_win);
+					label = elm_label_add(gd->win);
 						evas_object_name_set(label, "group_desc");
 						evas_object_size_hint_weight_set(label, 1, 1);
 						evas_object_size_hint_align_set(label, -1, -1);
@@ -865,17 +857,18 @@ static void group_show(void *data) {
 				elm_box_pack_end(box, frame);
 			evas_object_show(frame);
 
-			s = elm_scroller_add(group_win);
+			s = elm_scroller_add(gd->win);
 				evas_object_size_hint_weight_set(s, 1, 1);
 				evas_object_size_hint_align_set(s, -1, -1);
 
 
-			box2 = elm_box_add(group_win);
+			box2 = elm_box_add(gd->win);
 				evas_object_size_hint_weight_set(box2, 1, 1);
 				evas_object_size_hint_align_set(box2, -1, 0);
 				elm_box_horizontal_set(box2, EINA_TRUE);
 
-				button = elm_button_add(group_win);
+				button = elm_button_add(gd->win);
+					evas_object_name_set(button, "group_action");
 					evas_object_size_hint_weight_set(button, 1, 1);
 					evas_object_size_hint_align_set(button, -1, 0);
 					if(gd->group->member) {
@@ -896,8 +889,10 @@ static void group_show(void *data) {
 		evas_object_show(box);
 
 
-	evas_object_resize(group_win, 480, 640);
-	evas_object_show(group_win);
+	evas_object_resize(gd->win, 480, 640);
+	evas_object_show(gd->win);
+
+	network_busy(EINA_FALSE);
 }
 
 static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
@@ -908,6 +903,7 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 
 	if(!settings->online) return;
 
+	network_busy(EINA_TRUE);
 	ed_statusnet_group_get(as, elm_list_item_label_get(li), group_show, NULL);
 }
 
