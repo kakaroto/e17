@@ -564,10 +564,7 @@ _azy_client_handler_del(Azy_Client                    *client,
              EINA_LIST_FOREACH_SAFE(client->conns, l, l2, hd)
                {
                   if (!hd->nodelete)
-                    {
-                       _azy_client_handler_data_free(hd);
-                       client->conns = eina_list_remove_list(client->conns, l);
-                    }
+                    _azy_client_handler_data_free(hd);
                }
           }
      }
