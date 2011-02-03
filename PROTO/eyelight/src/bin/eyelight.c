@@ -8,6 +8,7 @@
 
 #include <Evas.h>
 #include <Ecore.h>
+#include <Ecore_X.h>
 #include <Ecore_Evas.h>
 #include <Ecore_File.h>
 #include <Edje.h>
@@ -382,6 +383,7 @@ static const Ecore_Getopt options = {
             ECORE_GETOPT_STORE_TRUE('d', "display-areas", "display the borders of each area"),
             ECORE_GETOPT_STORE_FALSE('b', "no-thumbs-bg", "deactivate the creation of the thumbnails list in the background, saves a lot of memory, some mode (expose, slideshow) will be slow"),
             ECORE_GETOPT_STORE_TRUE('H', "hd", "Display the presentation with a default size of 1280x720"),
+            ECORE_GETOPT_STORE_TRUE('f', "fullscreen", "Display the presentation in fullscreen mode"),
             ECORE_GETOPT_HELP('h', "help"),
             ECORE_GETOPT_VERSION('V', "version"),
             ECORE_GETOPT_COPYRIGHT('R', "copyright"),
@@ -411,6 +413,7 @@ int main(int argc, char*argv[])
     unsigned char with_border = 0;
     unsigned char no_thumbs_bg = 0;
     unsigned char hd = 0;
+    unsigned char fs = 0;
     unsigned char exit_option = 0;
 
     Ecore_Getopt_Value values[] = {
@@ -423,6 +426,7 @@ int main(int argc, char*argv[])
         ECORE_GETOPT_VALUE_BOOL(with_border),
         ECORE_GETOPT_VALUE_BOOL(no_thumbs_bg),
         ECORE_GETOPT_VALUE_BOOL(hd),
+        ECORE_GETOPT_VALUE_BOOL(fs),
         ECORE_GETOPT_VALUE_BOOL(exit_option),
         ECORE_GETOPT_VALUE_BOOL(exit_option),
         ECORE_GETOPT_VALUE_BOOL(exit_option),
@@ -468,7 +472,14 @@ int main(int argc, char*argv[])
         goto shutdown_eyelight;
     }
 
-    if(hd)
+    if (fs)
+      {
+         ecore_x_init(getenv("DISPLAY"));
+         ecore_x_window_size_get(ecore_x_window_root_first_get(),
+                                 &sizew, &sizeh);
+         ecore_x_shutdown();
+      }
+    else if(hd)
     {
         sizew = 1280;
         sizeh = 720;
@@ -481,6 +492,10 @@ int main(int argc, char*argv[])
         goto shutdown_eyelight;
     }
 
+    if (fs)
+      {
+         ecore_evas_fullscreen_set(ee,1);
+      }
     ecore_event_handler_add (ECORE_EVENT_SIGNAL_EXIT, app_signal_exit, NULL);
     ecore_evas_callback_delete_request_set (ee, app_delete_request);
     ecore_evas_title_set (ee, "Eyelight: presentation tools");
