@@ -110,10 +110,13 @@ ephoto_thumb_browser_show(void)
 void 
 ephoto_thumb_browser_thumb_append(const char *file)
 {
+   char *f;
    const Elm_Gengrid_Item_Class *egic;
 
+   f = strdup(file);
+
    egic = &_ephoto_thumbnail_class;
-   elm_gengrid_item_append(etb->grid, egic, file, NULL, NULL);
+   elm_gengrid_item_append(etb->grid, egic, f, NULL, NULL);
 }
 
 static Evas_Object *
