@@ -93,10 +93,10 @@ _ephoto_thumb_populate_filter(void *data __UNUSED__, Eio_File *handler __UNUSED_
    if (ext)
      {
         if ((!strncasecmp(ext, ".jpeg", 5)) ||
-            (!strncasecmp(ext, ".jpg", 5)) ||
-            (!strncasecmp(ext, ".png", 5)) ||
-            (!strncasecmp(ext, ".gif", 5)) ||
-            (!strncasecmp(ext, ".svg", 5)))
+            (!strncasecmp(ext, ".jpg", 4)) ||
+            (!strncasecmp(ext, ".png", 4)) ||
+            (!strncasecmp(ext, ".gif", 4)) ||
+            (!strncasecmp(ext, ".svg", 4)))
               return EINA_TRUE;
      }
    return EINA_FALSE;
