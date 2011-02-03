@@ -119,17 +119,10 @@ ephoto_thumb_browser_thumb_append(const char *file)
 static Evas_Object *
 _ephoto_thumbnail_icon_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
-   Ethumb_Thumb_Format format;
    Evas_Object *o;
    const char *file = data;
-   char *ext = strrchr(file, '.');
 
-   if ((strcasecmp(ext, "jpg") == 0) ||
-       (strcasecmp(ext, "jpeg") == 0))
-     format = ETHUMB_THUMB_JPEG;
-   else
-     format = ETHUMB_THUMB_FDO;
-   ethumb_client_format_set(ephoto->client, format);
+   ethumb_client_format_set(ephoto->client, ETHUMB_THUMB_FDO);
    ethumb_client_size_set(ephoto->client, etb->thumb_size, etb->thumb_size);
 
    o = elm_thumb_add(ephoto->win);
