@@ -87,22 +87,17 @@ _ephoto_thumb_populate(void)
 static Eina_Bool
 _ephoto_thumb_populate_filter(void *data __UNUSED__, Eio_File *handler __UNUSED__, const Eina_File_Direct_Info *info)
 {
-   const char *bname = info->path + info->name_start, *ext;
+   const char *bname = info->path + info->name_start, *type;
 
    if (bname[0] == '.') return EINA_FALSE;
    if (info->type == EINA_FILE_DIR) return EINA_FALSE;
    if ((info->type != EINA_FILE_REG) && (info->type != EINA_FILE_UNKNOWN))
      return EINA_FALSE;
-   ext = strrchr(info->path, '.');
-   if (ext)
-     {
-        if ((strcasecmp(ext, ".jpeg") == 0) ||
-            (strcasecmp(ext, ".jpg") == 0) ||
-            (strcasecmp(ext, ".png") == 0) ||
-            (strcasecmp(ext, ".svg") == 0) ||
-            (strcasecmp(ext, ".gif") == 0))
-              return EINA_TRUE;
-     }
+   
+   type = efreet_mime_type_get(bname);
+   if (!strncmp(type, "image", 5))
+     return EINA_TRUE;
+
    return EINA_FALSE;
 }
 
