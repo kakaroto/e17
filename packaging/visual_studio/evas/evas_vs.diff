@@ -1,0 +1,73 @@
+diff -Naur ./src/lib/canvas/evas_render.c ../evas_new/src/lib/canvas/evas_render.c
+--- ./src/lib/canvas/evas_render.c	2010-12-18 10:19:57.167508000 +0100
++++ ../evas_new/src/lib/canvas/evas_render.c	2010-12-18 10:27:00.230008000 +0100
+@@ -39,7 +39,7 @@
+       rend_dbg(__tmpbuf); \
+    }
+ #else
+-#define RD(args...)
++#define RD(args,...)
+ #define RDI(x)
+ #endif
+ 
+diff -Naur ./src/lib/file/evas_module.h ../evas_new/src/lib/file/evas_module.h
+--- ./src/lib/file/evas_module.h	2010-12-18 10:19:57.198758000 +0100
++++ ../evas_new/src/lib/file/evas_module.h	2010-12-18 10:27:47.120633000 +0100
+@@ -47,7 +47,9 @@
+    int           ref; /* how many refs */
+    int           last_used; /* the cycle count when it was last used */
+ 
++#ifdef BUILD_PTHREAD
+    LK(lock);
++#endif
+ 
+    unsigned char	loaded : 1;
+ };
+diff -Naur ./src/lib/include/evas_common.h ../evas_new/src/lib/include/evas_common.h
+--- ./src/lib/include/evas_common.h	2010-12-18 10:19:57.214383000 +0100
++++ ../evas_new/src/lib/include/evas_common.h	2010-12-18 10:29:14.230008000 +0100
+@@ -370,10 +370,10 @@
+ 
+ /*****************************************************************************/
+ 
+-#define UNROLL2(op...) op op
+-#define UNROLL4(op...) UNROLL2(op) UNROLL2(op)
+-#define UNROLL8(op...) UNROLL4(op) UNROLL4(op)
+-#define UNROLL16(op...) UNROLL8(op) UNROLL8(op)
++#define UNROLL2(op) op op
++#define UNROLL4(op) UNROLL2(op) UNROLL2(op)
++#define UNROLL8(op) UNROLL4(op) UNROLL4(op)
++#define UNROLL16(op) UNROLL8(op) UNROLL8(op)
+ 
+ #define UNROLL8_PLD_WHILE(start, size, end, op)         \
+     pld(start, 0);                                      \
+@@ -776,7 +776,9 @@
+    } image;
+ 
+    struct {
++#ifdef BUILD_PTHREAD
+       LK(lock);
++#endif
+       Eina_List *list;
+       unsigned long long orig_usage;
+       unsigned long long usage_count;
+@@ -859,7 +861,9 @@
+    LK(ref_fq_add);
+    LK(ref_fq_del);
+ #endif
++#ifdef BUILD_PTHREAD
+    LK(lock);
++#endif
+    unsigned char    sizeok : 1;
+ };
+ 
+@@ -877,7 +881,9 @@
+    struct {
+       FT_Size       size;
+    } ft;
++#ifdef BUILD_PTHREAD
+    LK(ft_mutex);
++#endif
+    Font_Hint_Flags  hinting;
+    unsigned char    sizeok : 1;
+    unsigned char    inuse : 1;
