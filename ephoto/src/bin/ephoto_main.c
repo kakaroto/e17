@@ -93,17 +93,15 @@ _ephoto_thumb_populate_filter(void *data __UNUSED__, Eio_File *handler __UNUSED_
    if (info->type == EINA_FILE_DIR) return EINA_FALSE;
    if ((info->type != EINA_FILE_REG) && (info->type != EINA_FILE_UNKNOWN))
      return EINA_FALSE;
-   ext = info->path + info->path_length - 1;
-   for (; ext > bname; ext--) if (*ext == '.') break;
-   if (*ext == '.')
+   ext = strrchr(info->path, '.');
+   if (ext)
      {
-        ext++;
-        if ((strcasecmp(ext, "jpeg") == 0) ||
-            (strcasecmp(ext, "jpg") == 0) ||
-            (strcasecmp(ext, "png") == 0) ||
-            (strcasecmp(ext, "svg") == 0) ||
-            (strcasecmp(ext, "gif") == 0))
-          return EINA_TRUE;
+        if ((strcasecmp(ext, ".jpeg") == 0) ||
+            (strcasecmp(ext, ".jpg") == 0) ||
+            (strcasecmp(ext, ".png") == 0) ||
+            (strcasecmp(ext, ".svg") == 0) ||
+            (strcasecmp(ext, ".gif") == 0))
+              return EINA_TRUE;
      }
    return EINA_FALSE;
 }
