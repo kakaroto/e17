@@ -20,10 +20,11 @@ AM_LDFLAGS =	@PTHREAD_LIBS@		\
 		@ELEMENTARY_LIBS@
 
 BUILT_SOURCES = statusnet_Common.h statusnet_Common.c
-CLEANFILES = $(BUILT_SOURCES) .sources-ts
+CLEANFILES = $(BUILT_SOURCES) .source-ts
 $(BUILT_SOURCES): .sources-ts
 .sources-ts: statusnet.azy
 	azy_parser -eHn -m common-impl,common-headers -o $(top_builddir)/src $(top_builddir)/src/statusnet.azy
+	touch $(top_builddir)/src/.sources-ts
 
 bin_PROGRAMS = elmdentica
 
