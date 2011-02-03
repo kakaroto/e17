@@ -19,6 +19,8 @@ elsa_xserver.h     \
 elsa_xserver.c     \
 elsa_pam.h         \
 elsa_pam.c         \
+../event/elsa_event.c \
+../event/elsa_event.h \
 elsa_server.h     \
 elsa_server.c     \
 elsa.h             \

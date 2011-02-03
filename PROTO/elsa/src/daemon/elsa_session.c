@@ -40,7 +40,6 @@ _elsa_session_cookie_add(const char *mcookie, const char *display,
     if (!xauth_cmd || !auth_file) return 1;
     snprintf(buf, sizeof(buf), "%s -f %s -q", xauth_cmd, auth_file);
     fprintf(stderr, PACKAGE": write auth %s\n", buf);
-    remove(auth_file);
     cmd = popen(strdup(buf), "w");
     if (!cmd) return 1;
     fprintf(cmd, "remove %s\n", display);
@@ -96,7 +95,7 @@ _elsa_session_begin(struct passwd *pwd, const char *cookie)
    elsa_pam_env_set("SHELL", pwd->pw_shell);
    elsa_pam_env_set("USER", pwd->pw_name);
    elsa_pam_env_set("LOGNAME", pwd->pw_name);
-   elsa_pam_env_set("PATH", "/bin:/usr/bin:/usr/local/bin");
+   elsa_pam_env_set("PATH", elsa_config->session_path);
    elsa_pam_env_set("DISPLAY", ":0.0");
    elsa_pam_env_set("MAIL", "");
    elsa_pam_env_set("XAUTHORITY", cookie);
@@ -186,7 +185,7 @@ elsa_session_init(const char *file)
    remove(file);
    snprintf(buf, sizeof(buf), "XAUTHORITY=%s", file);
    putenv(buf);
-   fprintf(stderr, PACKAGE": cookie %s \n", _mcookie);
+   //fprintf(stderr, PACKAGE": cookie %s \n", _mcookie);
    _elsa_session_cookie_add(_mcookie, ":0",
                             elsa_config->command.xauth_path, file);
 }
@@ -199,7 +198,7 @@ elsa_session_shutdown()
 }
 
 Eina_Bool
-elsa_session_authenticate(char *login, char *passwd)
+elsa_session_authenticate(const char *login, const char *passwd)
 {
    return (!elsa_pam_auth_set(login, passwd)
            && !elsa_pam_authenticate());

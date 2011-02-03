@@ -8,13 +8,16 @@
 
 #define ELSA_DISPLAY ":0.0"
 
-static Eina_Bool _testing = EINA_FALSE;
 
 static void _elsa_help ();
 static Eina_Bool _open_log();
 //static Eina_Bool _close_log();
 static void _remove_lock();
 static void _signal_cb();
+static Eina_Bool _elsa_client_del(void *data, int type, void *event);
+
+static Eina_Bool _testing = EINA_FALSE;
+static Ecore_Exe *_elsa_client = NULL;
 
 
 static void
@@ -127,13 +130,12 @@ _elsa_help() {
 }
 
 static void
-_elsa_wait(const char *display)
+_elsa_wait(const char *display, const char *session_end)
 {
    char buf[16]; /* I think is sufisant ... */
    snprintf(buf, sizeof(buf), "%d", elsa_xserver_pid_get());
-   sleep(20);
-   execl("/usr/sbin/elsa_wait", "/usr/sbin/elsa_wait",
-         buf, elsa_session_login_get(), display, NULL);
+   execl("/usr/sbin/elsa_wait", "/usr/sbin/elsa",
+         buf, elsa_session_login_get(), display, session_end, NULL);
    fprintf(stderr, PACKAGE": HUM HUM HUM ...\n\n\n");
 }
 
@@ -144,10 +146,22 @@ elsa_main()
    if (elsa_config->autologin)
      ecore_main_loop_quit();
    else
-     ecore_exe_run("elsa_client", NULL);
+     ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
+                             _elsa_client_del, NULL);
+     _elsa_client = ecore_exe_run("elsa_client", NULL);
    return 0;
 }
 
+static Eina_Bool
+_elsa_client_del(void *data, int type, void *event)
+{
+   Ecore_Exe_Event_Del *ev;
+   ev = event;
+   if (ev->exe != _elsa_client)
+     return ECORE_CALLBACK_PASS_ON;
+   ecore_main_loop_quit();
+   return ECORE_CALLBACK_DONE;
+}
 
 
 
@@ -221,9 +235,8 @@ main (int argc, char ** argv)
      }
 //   elsa_xserver_shutdown();
    elsa_pam_shutdown();
-   elsa_config_shutdown();
    ecore_shutdown();
-   _elsa_wait(dname);
+   _elsa_wait(dname, elsa_config_shutdown());
    _remove_lock();
    elsa_close_log();
    return 0;

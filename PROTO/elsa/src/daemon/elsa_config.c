@@ -7,13 +7,13 @@
 
 static void _defaults_set(Elsa_Config *config);
 static void _users_get();
-static void _config_free(Elsa_Config *config);
+static const char *_config_free(Elsa_Config *config);
 static Elsa_Config *_cache_get(Eet_Data_Descriptor *edd);
 
 static void
 _defaults_set(Elsa_Config *config)
 {
-   config->session_path = eina_stringshare_add("./:/bin:/usr/bin:/usr/local/bin");
+   config->session_path = eina_stringshare_add("/bin:/usr/bin:/usr/local/bin");
    config->command.xinit_path = eina_stringshare_add("/usr/bin/X");
    config->command.xinit_args = eina_stringshare_add("-nolisten tcp -br vt7");
    config->command.xauth_path = eina_stringshare_add("/usr/bin/xauth");
@@ -95,7 +95,8 @@ _cache_get(Eet_Data_Descriptor *edd)
    config = eet_data_read(file, edd, ELSA_CONFIG_KEY);
    if (!config)
      {
-        fprintf(stderr, PACKAGE": Warning no configuration found! This must not append, we will go back to default configuration\n" );
+        fprintf(stderr, PACKAGE": Warning no configuration found! This must \
+                not append, we will go back to default configuration\n");
         config = (Elsa_Config *) calloc(1, sizeof(Elsa_Config));
         _defaults_set(config);
      }
@@ -106,9 +107,10 @@ _cache_get(Eet_Data_Descriptor *edd)
    return config;
 }
 
-static void
+static const char *
 _config_free(Elsa_Config *config)
 {
+   const char *session_end;
    if (config->last_session) free(config->last_session);
    eina_stringshare_del(config->session_path);
    eina_stringshare_del(config->command.xinit_path);
@@ -117,7 +119,8 @@ _config_free(Elsa_Config *config)
    eina_stringshare_del(config->command.xauth_file);
    eina_stringshare_del(config->command.session_start);
    eina_stringshare_del(config->command.session_login);
-   eina_stringshare_del(config->command.session_stop);
+   //eina_stringshare_del(config->command.session_stop);
+   session_end = config->command.session_stop;
    eina_stringshare_del(config->command.shutdown);
    eina_stringshare_del(config->command.reboot);
    eina_stringshare_del(config->command.suspend);
@@ -125,6 +128,7 @@ _config_free(Elsa_Config *config)
    eina_stringshare_del(config->lockfile);
    eina_stringshare_del(config->logfile);
    free(config);
+   return session_end;
 }
 
 void
@@ -193,10 +197,12 @@ elsa_config_last_session_set(const char *session)
    elsa_config->last_session = strdup(session);
 }
 
-void
+const char *
 elsa_config_shutdown()
 {
-   _config_free(elsa_config);
+   const char *r;
+   r = _config_free(elsa_config);
    eet_shutdown();
+   return r;
 }
 

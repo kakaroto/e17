@@ -11,6 +11,8 @@ AM_CPPFLAGS = \
 bin_PROGRAMS = elsa_client
 
 elsa_client_SOURCES = \
+../event/elsa_event.h \
+../event/elsa_event.c \
 elsa_client.h         \
 elsa_client.c         \
 elsa_connect.h        \

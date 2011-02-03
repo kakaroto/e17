@@ -60,8 +60,12 @@ _elsa_gui_hostname_activated_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED
 static void
 _elsa_gui_login_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *sig __UNUSED__, const char *src __UNUSED__)
 {
-//   struct passwd *pwd = data;
-//   elsa_session_run(pwd, elsa_gui_login_command_get());
+   elsa_gui_shutdown();
+}
+
+static void
+_elsa_gui_shutdown(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
    elsa_gui_shutdown();
 }
 
@@ -113,12 +117,6 @@ _elsa_gui_password_activated_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED
 }
 
 static void
-_elsa_gui_shutdown(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
-{
-   elm_exit();
-}
-
-static void
 _elsa_gui_xsessions_clicked_cb(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 {
    Evas_Object *icon;
@@ -136,6 +134,9 @@ static void
 _elsa_gui_callback_add()
 {
    Evas_Object *host, *pwd;
+   Evas_Object *edj;
+
+   edj = elm_layout_edje_get(_gui->edj);
 
    host = ELSA_GUI_GET(_gui->edj, "hostname");
    pwd = ELSA_GUI_GET(_gui->edj, "password");
@@ -143,12 +144,12 @@ _elsa_gui_callback_add()
                                   _elsa_gui_hostname_activated_cb, pwd);
    evas_object_smart_callback_add(pwd, "activated",
                                   _elsa_gui_password_activated_cb, host);
-   edje_object_signal_callback_add(elm_layout_edje_get(_gui->edj),
-                                   "elsa.auth.cancel", "",
+   edje_object_signal_callback_add(edj, "elsa.auth.cancel", "",
                                    _elsa_gui_login_cancel_cb, NULL);
-   edje_object_signal_callback_add(elm_layout_edje_get(_gui->edj),
-                                   "elsa.auth.request", "",
+   edje_object_signal_callback_add(edj, "elsa.auth.request", "",
                                    _elsa_gui_login_request_cb, NULL);
+   edje_object_signal_callback_add(edj, "elsa.auth.end", "",
+                                   _elsa_gui_login_cb, NULL);
    elm_entry_single_line_set(host, EINA_TRUE);
    elm_entry_single_line_set(pwd, EINA_TRUE);
    elm_object_focus(host);
@@ -236,12 +237,6 @@ elsa_gui_init()
                                     EVAS_HINT_EXPAND);
    elm_win_resize_object_add(_gui->win, _gui->edj);
 
-/*
-   if (elsa_config->xsessions)
-     {
-        _elsa_gui_init_desktops();
-     }
-     */
    _elsa_gui_callback_add();
 
    /* Get root window and init pointer. Maybee add theme for this pointer */
@@ -274,6 +269,7 @@ elsa_gui_shutdown()
         if (xsession->icon) eina_stringshare_del(xsession->icon);
      }
    if (_gui) free(_gui);
+   elm_exit();
 }
 
 char *
@@ -306,11 +302,8 @@ elsa_gui_auth_error()
 }
 
 void
-elsa_gui_auth_valid(void *data)
+elsa_gui_auth_valid()
 {
-   edje_object_signal_callback_add(elm_layout_edje_get(_gui->edj),
-                                   "elsa.auth.end", "",
-                                   _elsa_gui_login_cb, data);
    edje_object_signal_emit(elm_layout_edje_get(_gui->edj),
                            "elsa.auth.valid", "");
 }

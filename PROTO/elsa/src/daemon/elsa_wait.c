@@ -49,7 +49,7 @@ main (int argc, char **argv)
    _x_pid = atoi(argv[1]);
    user = argv[2];
    dname = argv[3];
-   //command = argv[4];
+   command = argv[4];
    printf("%s pam setting with user %s on display %s\n", argv[0], user, dname);
    elsa_pam_init(PACKAGE, dname, user);
    elsa_pam_auth_set(user, NULL);
@@ -82,16 +82,15 @@ main (int argc, char **argv)
      }
    if (_x_pid == rpid)
      {
-        /*
         if (command)
           {
              fprintf(stderr, PACKAGE": Session Shutdown\n");
              snprintf(buf, sizeof(buf),
                       "%s %s ", command, user);
              if (-1 == system(buf))
-               fprintf(stderr, PACKAGE": Errore on session stop command %s", buf);
+               fprintf(stderr, PACKAGE": Error on session stop command %s",
+                       buf);
           }
-*/
         elsa_pam_close_session();
         if (WIFEXITED(status) && WEXITSTATUS(status))
           {
@@ -105,6 +104,8 @@ main (int argc, char **argv)
           else
             {
                fprintf(stderr, "Wait done - child exited normally\n");
+               elsa_pam_end();
+               elsa_pam_shutdown();
                if (_restart)
                  execlp("elsa", "elsa", NULL);
                exit(0);
