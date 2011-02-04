@@ -62,34 +62,14 @@ if test "x${with_pdf_backend}" = "xpoppler" ; then
 else
 dnl PDF backend is enabled and it's not poppler, then it is mupdf
 
-MUPDF_CFLAGS=""
-MUPDF_LIBS=""
+   MUPDF_CFLAGS=""
+   MUPDF_LIBS=""
 
 dnl Freetype
-   PKG_CHECK_MODULES([FREETYPE], [freetype2], [have_dep="yes"], [have_dep="no"])
-
-dnl openjpeg
-   if test "x${have_dep}" = "xyes" ; then
-      AC_CHECK_HEADER([openjpeg.h], [have_dep="yes"], [have_dep="no"])
-   fi
-
-   if test "x${have_dep}" = "xyes" ; then
-      SAVE_LIBS=${LIBS}
-      LIBS="${LIBS} -lopenjpeg"
-      AC_LINK_IFELSE(
-         [AC_LANG_PROGRAM([[
-#include <stdlib.h>
-#include <openjpeg.h>
-                          ]],
-                          [[
-opj_set_default_decoder_parameters (NULL);
-                          ]])],
-         [have_dep="yes"],
-         [have_dep="no"])
-      LIBS=${SAVE_LIBS}
-      AC_MSG_CHECKING([for opj_set_default_decoder_parameters in -lopenjpeg])
-      AC_MSG_RESULT([${have_dep}])
-   fi
+   PKG_CHECK_MODULES([MUPDF_DEP],
+      [freetype2 libopenjpeg1],
+      [have_dep="yes"],
+      [have_dep="no"])
 
 dnl jbig2
    if test "x${have_dep}" = "xyes" ; then
@@ -101,9 +81,9 @@ dnl jbig2
    fi
 
    if test "x${have_dep}" = "xyes" ; then
-      requirement="freetype2"
-      MUPDF_CFLAGS="${FREETYPE_CFLAGS}"
-      MUPDF_LIBS="${FREETYPE_LIBS} -lopenjpeg -ljbig2dec"
+      requirement="freetype2 libopenjpeg1"
+      MUPDF_CFLAGS="${MUPDF_DEP_CFLAGS}"
+      MUPDF_LIBS="${MUPDF_DEP_LIBS} -ljbig2dec"
    fi
 
 dnl CJK fonts
