@@ -30,8 +30,6 @@ AC_SUBST(version_info)
 
 ### Default options with respect to host
 
-requirements_epdf="evas >= 1.0.0 ecore >= 1.0.0"
-
 ### Additional options to configure
 
 # mupdf
@@ -105,19 +103,28 @@ EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
 ### Checks for libraries
 
+requirements_epdf="ecore >= 1.0.0 evas >= 1.0.0"
+
+case "$host_os" in
+   mingw*)
+      requirements_epdf="${requirements_epdf} evil"
+      AC_DEFINE(HAVE_EVIL, 1, [Set to 1 if evil package is installed])
+   ;;
+esac
+
 BUILD_MUPDF_CJK_FONTS=""
 if test "x${want_mupdf}" = "xyes" ; then
    PKG_CHECK_MODULES(FREETYPE, [freetype2])
-   PKG_CHECK_MODULES(EPDF, [evas >= 1.0.0 eina >= 1.0.0])
+   PKG_CHECK_MODULES(EPDF, [${requirements_epdf}])
    backend="mupdf"
    if ! test "x${want_mupdf_cjk}" = "xyes" ; then
       BUILD_MUPDF_CJK_FONTS="-DNOCJK"
    fi
 else
-   PKG_CHECK_MODULES(EPDF, [poppler evas >= 1.0.0 eina >= 1.0.0])
+   requirements_epdf="poppler ${requirements_epdf}"
+   PKG_CHECK_MODULES(EPDF, [${requirements_epdf}])
    POPPLER_VERSION=`${PKG_CONFIG} --modversion poppler`
    AC_DEFINE_UNQUOTED([POPPLER_VERSION], ["${POPPLER_VERSION}"], [Poppler version.])
-   requirements_epdf="poppler ${requirements_epdf}"
    backend="poppler"
 fi
 

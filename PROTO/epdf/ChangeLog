@@ -1,3 +1,17 @@
+2011-02-04  Vincent Torri  <doursse at users dot sf dot net>
+
+	* configure.ac:
+	Support Evil inclusion and better pkg-config support.
+
+	* src/lib/Makefile.am:
+	Useless preprocessor flag.
+
+	* src/lib/mupdf/epdf_mupdf_document.c:
+	Use Evil for asprintf on Windows.
+
+	* src/lib/mupdf/epdf_mupdf_index.c:
+	use correctly Eina_List lists.
+
 2010-07-02  Vincent Torri  <doursse at users dot sf dot net>
 
 	* src/bin/epdf_esmart_test.c:

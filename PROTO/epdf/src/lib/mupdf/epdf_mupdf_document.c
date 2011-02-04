@@ -7,6 +7,10 @@
 #include <fitz.h>
 #include <mupdf.h>
 
+#ifdef HAVE_EVIL
+# include <Evil.h>
+#endif
+
 #include "Epdf.h"
 #include "epdf_mupdf_private.h"
 

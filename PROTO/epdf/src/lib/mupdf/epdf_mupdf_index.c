@@ -9,7 +9,7 @@
 #include "epdf_mupdf_private.h"
 
 
-static void epdf_index_fill(Eina_List *items, pdf_outline *entry);
+static void epdf_index_fill(Eina_List **items, pdf_outline *entry);
 static void epdf_index_unfill(Eina_List *items);
 
 /* Index item */
@@ -147,7 +147,7 @@ epdf_index_new(const Epdf_Document *doc)
    if (!doc->outline)
      return index;
 
-   epdf_index_fill(index, doc->outline);
+   epdf_index_fill(&index, doc->outline);
 
    return index;
 }
@@ -162,21 +162,18 @@ epdf_index_delete(Eina_List *index)
 }
 
 static void
-epdf_index_fill(Eina_List *items, pdf_outline *entry)
+epdf_index_fill(Eina_List **items, pdf_outline *entry)
 {
    Epdf_Index_Item *item;
-
-   if (!items || !entry)
-     return;
 
    item = epdf_index_item_new();
    item->title = entry->title;
    item->link = entry->link;
 
-   items = eina_list_append (items, item);
+   *items = eina_list_append (*items, item);
 
    if (entry->child)
-     epdf_index_fill(item->children, entry->child);
+     epdf_index_fill(&item->children, entry->child);
 
    if (entry->next)
      epdf_index_fill(items, entry->next);
