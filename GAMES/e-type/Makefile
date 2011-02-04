@@ -9,9 +9,9 @@ BINDIR=$(PREFIX)/bin
 
 CC = gcc
 
-CPPFLAGS = `pkg-config --cflags edje ecore-evas`
+CPPFLAGS = `pkg-config --cflags edje ecore-evas ecore evas eina`
 CFLAGS = -g -Wall -W -Wextra -Wshadow
-LDFLAGS = `pkg-config --libs edje ecore-evas`
+LDFLAGS = `pkg-config --libs edje ecore-evas ecore evas eina`
 
 
 EDJE_CC = edje_cc
