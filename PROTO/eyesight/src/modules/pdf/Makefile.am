@@ -14,7 +14,7 @@ pkg_LTLIBRARIES = pdf.la
 if HAVE_PDF_BACKEND_MUPDF
 
 noinst_PROGRAMS = cmapdump fontdump
-#BUILT_SOURCES = cmapdump fontdump
+BUILT_SOURCES = cmapdump$(EXEEXT) fontdump$(EXEEXT)
 
 cmapdump_SOURCES = mupdf-0.7/mupdf/cmapdump.c
 cmapdump_CPPFLAGS = \
