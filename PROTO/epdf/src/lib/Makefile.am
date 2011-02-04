@@ -43,6 +43,7 @@ libepdf_la_SOURCES = esmart_pdf.c
 libepdf_la_CPPFLAGS = \
 -I$(top_srcdir)/src/lib \
 -I$(top_builddir)/src/lib \
+@EFL_EPDF_BUILD@ \
 @EPDF_CFLAGS@
 
 if BUILD_EPDF_MUPDF

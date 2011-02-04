@@ -3,9 +3,6 @@
 	* configure.ac:
 	Support Evil inclusion and better pkg-config support.
 
-	* src/lib/Makefile.am:
-	Useless preprocessor flag.
-
 	* src/lib/mupdf/epdf_mupdf_document.c:
 	Use Evil for asprintf on Windows.
 
