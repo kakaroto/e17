@@ -1,6 +1,10 @@
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = src data po
+SUBDIRS = src data
+
+if HAVE_PO
+SUBDIRS += po
+endif
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
