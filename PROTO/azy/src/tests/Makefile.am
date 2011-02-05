@@ -67,6 +67,8 @@ EXTRA_DIST = \
   server.c \
   stress_client.c \
   test.azy \
+  type1.azy \
+  type2.azy \
   server.pem
 
 AM_CFLAGS= \
