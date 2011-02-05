@@ -47,8 +47,7 @@
   azy_parser_stream_next(s, c - b); \
   b = c
 
-#define MODEL ((Azy_Model*)parser->data)
-#define _MODEL parser->data
+#define MODEL parser->data
 extern void *azy_parser_Alloc(void *(*)(size_t));
 extern void  azy_parser_Free(void *,
                              void (*)(void *));
@@ -168,7 +167,7 @@ opt_doc_comment(Y) ::= DOC(X). {
 opt_namespace_decl ::= .
 opt_namespace_decl ::= namespace_decl.
 namespace_decl ::= NAMESPACE ID(N) SEMICOL. {
-  if (!MODEL) _MODEL = azy_new();
+  if (!MODEL) MODEL = azy_new();
   if (N->text && N->text[0]) MODEL->name = eina_stringshare_add(N->text);
   azy_parser_token_free(N);
 }
@@ -182,23 +181,23 @@ toplevel_decl ::= module_decl.
 
 /* error with message */
 error_decl ::= ERROR ID(N) EQ INTEGER(C) ERRMSG(S) SEMICOL. {
-  if (!MODEL) _MODEL = azy_new();
-  azy_error_new(_MODEL, MODEL->cur_module, N->text, strtol(C->text, NULL, 10), S->text);
+  if (!MODEL) MODEL = azy_new();
+  azy_error_new(MODEL, MODEL->cur_module, N->text, strtol(C->text, NULL, 10), S->text);
   azy_parser_token_free(N);
   azy_parser_token_free(C);
   azy_parser_token_free(S);
 }
 /* error without message */
 error_decl ::= ERROR ID(N) EQ INTEGER(C) SEMICOL. {
-  if (!MODEL) _MODEL = azy_new();
-  azy_error_new(_MODEL, MODEL->cur_module, N->text, strtol(C->text, NULL, 10), NULL);
+  if (!MODEL) MODEL = azy_new();
+  azy_error_new(MODEL, MODEL->cur_module, N->text, strtol(C->text, NULL, 10), NULL);
   azy_parser_token_free(N);
   azy_parser_token_free(C);
 }
 
 %type struct_decl {Azy_Typedef *}
 struct_decl(Y) ::= opt_doc_comment(C) STRUCT ID(N) LB struct_members(M) RB SEMICOL. {
-  if (!MODEL) _MODEL = azy_new();
+  if (!MODEL) MODEL = azy_new();
   if (azy_typedef_find(MODEL, MODEL->cur_module, N->text))
     {
       printf("Redefining already defined type %s\n", N->text);
@@ -239,7 +238,7 @@ struct_member(Y) ::= type(T) ID(N) STRUCTMEMSTR(S) RB SEMICOL. {
 
 module_decl ::= module_decl_head module_decl_body.
 module_decl_head ::= opt_doc_comment(C) MODULE ID(N). {
-   if (!MODEL)_MODEL = azy_new();
+   if (!MODEL)MODEL = azy_new();
    MODEL->cur_module = calloc(1, sizeof(Azy_Server_Module));
    MODEL->modules = eina_list_append(MODEL->modules, MODEL->cur_module);
    MODEL->cur_module->name = eina_stringshare_add(N->text);
@@ -314,12 +313,12 @@ module_body_decl ::= error_decl.
 %type type {Azy_Typedef *}
 type(Y) ::= ARRAY LT type(T) GT. {
   if (!MODEL)
-    _MODEL = azy_new();
+    MODEL = azy_new();
   Y = azy_typedef_new_array(MODEL, MODEL->cur_module, T);
 }
 type(Y) ::= ID(N). {
   if (!MODEL)
-    _MODEL = azy_new();
+    MODEL = azy_new();
   Y = azy_typedef_find(MODEL, MODEL->cur_module, N->text);
   if (Y == NULL)
   {

@@ -44,7 +44,7 @@ typedef struct
 
 typedef struct
 {
-   void       *data;
+   Azy_Model  *data;
    Azy_Stream *stream;
    const char *error;
 } Azy_Parser;
