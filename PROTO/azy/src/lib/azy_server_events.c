@@ -503,7 +503,7 @@ _azy_server_client_send(Azy_Server_Client *client,
       if (content)
         d = azy_content_dump_string(content, 0);
       else
-        d = data->data;
+        d = (char*)data->data;
       if (d)
         {
            DBG("%s\n", d);
