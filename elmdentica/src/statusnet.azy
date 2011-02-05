@@ -41,22 +41,7 @@ struct User {
 	boolean statusnet_blocking { statusnet:blocking };
 	boolean notifications;
 	string statusnet_profile_url;
-};
-
-struct Basic_Status {
-	string text;
-	boolean truncated;
-	time created_at;
-	double in_reply_to_status_id;
-	string source;
-	double id;
-	double in_reply_to_user_id;
-	string in_reply_to_screen_name;
-	Geo geo;
-	boolean favorited;
-	array<Attachment> attachments;
-	User user;
-	string statusnet_html;
+	Status status;
 };
 
 struct Status {
@@ -73,7 +58,7 @@ struct Status {
 	array<Attachment> attachments;
 	User user;
 	string statusnet_html;
-	Basic_Status retweeted_status;
+	Status retweeted_status;
 };
 
 struct Group {

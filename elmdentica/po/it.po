@@ -6,16 +6,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: elmdentica 0.8.0\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
-"POT-Creation-Date: 2011-02-02 18:31+0000\n"
+"POT-Creation-Date: 2011-02-05 21:26+0000\n"
 "PO-Revision-Date: 2011-02-05 16:26+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 
-#: src/curl.c:92 src/elmdentica.c:1290 src/elmdentica.c:1497
+#: src/curl.c:92 src/elmdentica.c:1277 src/elmdentica.c:1486
 msgid "Close"
 msgstr "Chiudi"
 
@@ -33,265 +33,255 @@ msgstr ""
 msgid "Can't open %s for writing: %s\n"
 msgstr "Impossibile aprire %s in scrittura: %s\n"
 
-#: src/elmdentica.c:281
+#: src/elmdentica.c:282
 msgid "Last messages..."
 msgstr "Ultimi messaggi..."
 
-#: src/elmdentica.c:282
+#: src/elmdentica.c:283
 msgid "Everyone..."
 msgstr "Tutti..."
 
-#: src/elmdentica.c:283
+#: src/elmdentica.c:284
 msgid "My favorites..."
 msgstr "I miei preferiti..."
 
-#: src/elmdentica.c:284
+#: src/elmdentica.c:285
 msgid "Replies / mentions..."
 msgstr "Risposte / menzioni..."
 
-#: src/elmdentica.c:286
+#: src/elmdentica.c:287
 msgid "My friends..."
 msgstr "I miei amici..."
 
-#: src/elmdentica.c:398
-#, c-format
-msgid "Error importing related status\n"
-msgstr "Errore importazione stato correlato\n"
-
-#: src/elmdentica.c:472
+#: src/elmdentica.c:470
 #, c-format
 msgid "Error %d: %s\n"
 msgstr "Errore %d: %s\n"
 
-#: src/elmdentica.c:475
+#: src/elmdentica.c:473
 #, c-format
 msgid "System failed, child exited with status %d\n"
 msgstr "Il sistema ha fallito, il figlio esce con stato %d\n"
 
-#: src/elmdentica.c:698
+#: src/elmdentica.c:668
 msgid "Couldn't parse user info message..."
 msgstr "Impossibile interpretare messaggio informazioni utente...."
 
-#: src/elmdentica.c:708
+#: src/elmdentica.c:678
 msgid "Follow"
 msgstr "Segui"
 
-#: src/elmdentica.c:711
+#: src/elmdentica.c:681
 msgid "Stop following"
 msgstr "Smetti di seguire"
 
-#: src/elmdentica.c:747 src/elmdentica.c:839
+#: src/elmdentica.c:734 src/elmdentica.c:826
 #, c-format
 msgid "You are a member of group %s along with %d other people.<br>«%s»"
 msgstr "Tu non fai parte del gruppo %s insieme ad altre %d persone.<br>«%s»"
 
-#: src/elmdentica.c:750 src/elmdentica.c:875
+#: src/elmdentica.c:737 src/elmdentica.c:862
 msgid "Leave"
 msgstr "Lascia"
 
-#: src/elmdentica.c:752 src/elmdentica.c:841
+#: src/elmdentica.c:739 src/elmdentica.c:828
 #, c-format
 msgid "You are not a member of group %s but %d people are.<br>«%s»"
 msgstr "Tu non fai parte del gruppo %s ma %d persone ne fanno parte.<br>«%s»"
 
-#: src/elmdentica.c:755 src/elmdentica.c:878
+#: src/elmdentica.c:742 src/elmdentica.c:865
 msgid "Join"
 msgstr "Sottoscrivi"
 
-#: src/elmdentica.c:933
+#: src/elmdentica.c:920
 msgid "Check it out!"
 msgstr "Controllare!"
 
-#: src/elmdentica.c:1096
+#: src/elmdentica.c:1083
 #, c-format
 msgid "a few seconds ago"
 msgstr "pochi secondi fa"
 
-#: src/elmdentica.c:1098
+#: src/elmdentica.c:1085
 #, c-format
 msgid "a few minutes ago"
 msgstr "pochi minuti fa"
 
-#: src/elmdentica.c:1100
+#: src/elmdentica.c:1087
 #, c-format
 msgid "~ %d minutes ago"
 msgstr "~ %d mnuti fa"
 
-#: src/elmdentica.c:1103
+#: src/elmdentica.c:1090
 #, c-format
 msgid "~ %d hours ago"
 msgstr "~ %d ore fa"
 
-#: src/elmdentica.c:1105
+#: src/elmdentica.c:1092
 #, c-format
 msgid "~ 1 hour ago"
 msgstr "~ 1 ora fa"
 
-#: src/elmdentica.c:1107
+#: src/elmdentica.c:1094
 #, c-format
 msgid "on %x"
 msgstr "il %x"
 
-#: src/elmdentica.c:1110
+#: src/elmdentica.c:1097
 #, c-format
 msgid "%x %X"
 msgstr "%x %X"
 
-#: src/elmdentica.c:1111 src/elmdentica.c:1112
+#: src/elmdentica.c:1098 src/elmdentica.c:1099
 #, c-format
 msgid "some-when"
 msgstr "non determinato"
 
-#: src/elmdentica.c:1198
+#: src/elmdentica.c:1185
 msgid "Users"
 msgstr "Utenti"
 
-#: src/elmdentica.c:1227
+#: src/elmdentica.c:1214
 msgid "Links"
 msgstr "Link"
 
-#: src/elmdentica.c:1246
+#: src/elmdentica.c:1233
 msgid "Tags"
 msgstr "Tag"
 
-#: src/elmdentica.c:1264
+#: src/elmdentica.c:1251
 msgid "Groups"
 msgstr "Gruppi"
 
-#: src/elmdentica.c:1322
+#: src/elmdentica.c:1309
 msgid "Reply"
 msgstr "Rispondi"
 
-#: src/elmdentica.c:1330
+#: src/elmdentica.c:1317
 msgid "Repeat"
 msgstr "Ripeti"
 
-#: src/elmdentica.c:1338 src/elmdentica.c:2011
+#: src/elmdentica.c:1325 src/elmdentica.c:2020
 msgid "DM"
 msgstr "DM"
 
-#: src/elmdentica.c:1347
+#: src/elmdentica.c:1334
 msgid "Unmark favorite"
 msgstr "Rimuovi da preferiti"
 
-#: src/elmdentica.c:1349
+#: src/elmdentica.c:1336
 msgid "Mark favorite"
 msgstr "Aggiungi ai preferiti"
 
-#: src/elmdentica.c:1358
+#: src/elmdentica.c:1345
 msgid "View related"
 msgstr "Vedi correlati"
 
-#: src/elmdentica.c:1367
+#: src/elmdentica.c:1354
 msgid "Status details"
 msgstr "Dettagli dello stato"
 
-#: src/elmdentica.c:1467
+#: src/elmdentica.c:1456
 msgid "Error"
 msgstr "Errore"
 
-#: src/elmdentica.c:1468
+#: src/elmdentica.c:1457
 msgid "µ-blog Error"
 msgstr "Errore µ-blog"
 
-#: src/elmdentica.c:1742
+#: src/elmdentica.c:1751
 msgid "Send a DM to..."
 msgstr "Invia un DM a..."
 
-#: src/elmdentica.c:1754 src/settings.c:491 src/settings.c:1198
+#: src/elmdentica.c:1763 src/settings.c:491 src/settings.c:1198
 msgid "OK"
 msgstr "OK"
 
-#: src/elmdentica.c:1760 src/settings.c:499 src/settings.c:1207
+#: src/elmdentica.c:1769 src/settings.c:499 src/settings.c:1207
 msgid "Cancel"
 msgstr "Annulla"
 
-#: src/elmdentica.c:1839 src/elmdentica.c:1949
+#: src/elmdentica.c:1848 src/elmdentica.c:1958
 msgid "Type your status here..."
 msgstr "Inserisci il tuo stato qui..."
 
-#: src/elmdentica.c:1966
+#: src/elmdentica.c:1975
 msgid "Timelines"
 msgstr "Cronologea"
 
-#: src/elmdentica.c:1972
+#: src/elmdentica.c:1981
 msgid "Direct Messages"
 msgstr "Messaggi diretti"
 
-#: src/elmdentica.c:1973
+#: src/elmdentica.c:1982
 msgid "Everyone"
 msgstr "Tutti"
 
-#: src/elmdentica.c:1974
+#: src/elmdentica.c:1983
 msgid "Just me"
 msgstr "Solo io"
 
-#: src/elmdentica.c:1975
+#: src/elmdentica.c:1984
 msgid "Favorites"
 msgstr "Preferiti"
 
-#: src/elmdentica.c:1976
+#: src/elmdentica.c:1985
 msgid "Replies/Mentions"
 msgstr "Risposte/Menzioni"
 
-#: src/elmdentica.c:1977
+#: src/elmdentica.c:1986
 msgid "Friends & I"
 msgstr "Io e gli amici"
 
-#: src/elmdentica.c:1984
+#: src/elmdentica.c:1993
 msgid "Post"
 msgstr "Pubblica"
 
-#: src/elmdentica.c:1998
+#: src/elmdentica.c:2007
 msgid "Send"
 msgstr "Invia"
 
-#: src/elmdentica.c:2024
+#: src/elmdentica.c:2033
 msgid "Clear"
 msgstr "Pulisci"
 
-#: src/elmdentica.c:2033
+#: src/elmdentica.c:2042
 msgid "Fullscreen"
 msgstr "Schermo pieno"
 
-#: src/elmdentica.c:2034 src/settings.c:1365
+#: src/elmdentica.c:2043 src/settings.c:1365
 msgid "Settings"
 msgstr "Impostazioni"
 
-#: src/statusnet.c:279
+#: src/statusnet.c:316
 #, c-format
 msgid "Not enough memory to create a status\n"
 msgstr "Memoria insufficiente per creare uno stato\n"
 
-#: src/statusnet.c:391
+#: src/statusnet.c:368
+#, fuzzy, c-format
+msgid "Not enough memory to create an user\n"
+msgstr "Memoria insufficiente per creare uno stato\n"
+
+#: src/statusnet.c:499
 #, c-format
 msgid "Error encountered: %s\n"
 msgstr "Errore ottenuto: %s\n"
 
-#: src/statusnet.c:775
+#: src/statusnet.c:907
 #, c-format
 msgid "Unknown timeline %d\n"
 msgstr "Timeline sconosciuta %d\n"
 
-#: src/statusnet.c:782
+#: src/statusnet.c:914
 #, c-format
 msgid "Not enough memory to construct timeline URI\n"
 msgstr "Memoria insufficiente per costruire URI su timeline\n"
 
-#: src/statusnet.c:789
+#: src/statusnet.c:921
 #, c-format
 msgid "Not enough memory to prepare host url\n"
 msgstr "Memoria insufficiente per preparare la url dell'host\n"
-
-#: src/statusnet.c:894
-#, c-format
-msgid "Got an error: %s\n"
-msgstr "Ottenuto un errore: %s\n"
-
-#: src/statusnet.c:896
-#, c-format
-msgid "Got an error without content\n"
-msgstr "Ottenuto un errore vuoto\n"
 
 #: src/settings.c:353
 msgid "Screen name"
@@ -491,3 +481,12 @@ msgid ""
 msgstr ""
 "Memoria insufficiente per impostazioni, e sicuramente anche per "
 "nient'altro..."
+
+#~ msgid "Error importing related status\n"
+#~ msgstr "Errore importazione stato correlato\n"
+
+#~ msgid "Got an error: %s\n"
+#~ msgstr "Ottenuto un errore: %s\n"
+
+#~ msgid "Got an error without content\n"
+#~ msgstr "Ottenuto un errore vuoto\n"

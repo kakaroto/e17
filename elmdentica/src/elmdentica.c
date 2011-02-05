@@ -96,7 +96,7 @@ extern Settings *settings;
 
 extern CURL * user_agent;
 
-double mouse_held_down=0;
+Eina_Bool network_busy=EINA_FALSE;
 
 struct sqlite3 *ed_DB=NULL;
 
@@ -111,7 +111,8 @@ int my_strcmp(const void*a, const void*b) {
 	return(strcmp((const char*)a, (const char*)b));
 }
 
-void network_busy(Eina_Bool state) {
+void network_busy_set(Eina_Bool state) {
+	network_busy = state;
 	elm_toolbar_item_disabled_set(gui.timelines, state);
 	elm_toolbar_item_disabled_set(gui.post, state);
 }
@@ -385,7 +386,7 @@ static void on_view_related(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)data;
 	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
 
-	network_busy(EINA_TRUE);
+	network_busy_set(EINA_TRUE);
 
 	if(as) {
 		switch(as->account_type) {
@@ -606,58 +607,55 @@ Evas_Object *ed_get_icon(long long int id, Evas_Object *parent, Elm_Genlist_Item
 }
 
 static void user_win_del(void *data, Evas_Object *obj, void *event_info) {
-	userData *user = (userData*)data;
-	if(user) free(user);
+	userData *ud = (userData*)data;
+	if(ud) free(ud);
 	evas_object_del(obj);
 }
 
 void user_show(void *data) {
 	userData *ud = (userData*)data;
-	Evas_Object *user_win=NULL, *icon=NULL, *bg=NULL, *table=NULL, *button=NULL, *label=NULL;
-	char *description=NULL, *path=NULL;
+	Evas_Object *icon=NULL, *bg=NULL, *table=NULL, *button=NULL, *label=NULL;
+	char *description=NULL, icon_path[PATH_MAX], *p=NULL;
 	int res=0;
-	struct stat buf;
-	char icon_path[PATH_MAX], *p=NULL;
+	Eina_Bool got_image=EINA_FALSE;
 
 	p = strrchr(ud->au->user->profile_image_url, '/');
 	if(p && *p) {
 		snprintf(icon_path, PATH_MAX, "%s/cache/icons/%s", home, p);
 		if(!ecore_file_exists(icon_path) && settings->online)
 			ed_curl_dump_url_to_file((char*)ud->au->user->profile_image_url, icon_path);
+		got_image = EINA_TRUE;
 	}
 
-	user_win = elm_win_add(NULL, ud->au->user->name, ELM_WIN_BASIC);
-		evas_object_name_set(user_win, "user_win");
-		evas_object_size_hint_min_set(user_win, 480, 480);
-		evas_object_size_hint_max_set(user_win, 640, 640);
-		elm_win_title_set(user_win, ud->au->user->name);
-		evas_object_smart_callback_add(user_win, "delete-request", user_win_del, ud);
+	ud->win = elm_win_add(NULL, ud->au->user->name, ELM_WIN_BASIC);
+		evas_object_name_set(ud->win, "user_win");
+		evas_object_size_hint_min_set(ud->win, 480, 480);
+		evas_object_size_hint_max_set(ud->win, 640, 640);
+		elm_win_title_set(ud->win, ud->au->user->name);
+		evas_object_smart_callback_add(ud->win, "delete-request", user_win_del, ud);
 
-		bg = elm_bg_add(user_win);
+		bg = elm_bg_add(ud->win);
 			evas_object_size_hint_weight_set(bg, 1, 1);
 			evas_object_size_hint_align_set(bg, -1, -1);
-			elm_win_resize_object_add(user_win, bg);
+			elm_win_resize_object_add(ud->win, bg);
 		evas_object_show(bg);
 
-		table=elm_table_add(user_win);
+		table=elm_table_add(ud->win);
 			evas_object_size_hint_weight_set(table, 1, 0);
 			evas_object_size_hint_align_set(table, -1, 0);
-			elm_win_resize_object_add(user_win, table);
+			elm_win_resize_object_add(ud->win, table);
 			elm_table_padding_set(table, 20, 20);
 
-			res = asprintf(&path, "%s/cache/icons/%lld", home, (long long int)ud->au->user->id);
-
-			if(res!=-1 && stat(path, &buf) == 0 ) {
-				icon = elm_icon_add(user_win);
+			if(got_image) {
+				icon = elm_icon_add(ud->win);
 					evas_object_size_hint_weight_set(icon, 1, 1);
 					evas_object_size_hint_align_set(icon, -1, -1);
-					elm_icon_file_set(icon, path, "fubar?");
+					elm_icon_file_set(icon, icon_path, "fubar?");
 					elm_table_pack(table, icon, 0, 0, 1, 2);
 				evas_object_show(icon);
-				free(path);
 			}
 
-			label = elm_entry_add(user_win);
+			label = elm_entry_add(ud->win);
 				evas_object_size_hint_weight_set(label, 1, 1);
 				evas_object_size_hint_align_set(label, -1, -1);
 
@@ -672,7 +670,7 @@ void user_show(void *data) {
 				elm_table_pack(table, label, 1, 0, 1, 1);
 			evas_object_show(label);
 
-			button = elm_button_add(user_win);
+			button = elm_button_add(ud->win);
 				evas_object_size_hint_weight_set(button, 1, 1);
 				evas_object_size_hint_align_set(button, 0.5, 0);
 
@@ -687,7 +685,7 @@ void user_show(void *data) {
 			evas_object_show(button);
 
 			if(ud->au->user->description) {
-					label = elm_label_add(user_win);
+					label = elm_label_add(ud->win);
 						evas_object_size_hint_weight_set(label, 1, 1);
 						evas_object_size_hint_align_set(label, -1, -1);
 						elm_label_line_wrap_set(label, EINA_TRUE);
@@ -698,10 +696,10 @@ void user_show(void *data) {
 
 		evas_object_show(table);
 
-	    evas_object_resize(user_win, 480, 640);
-	evas_object_show(user_win);
+	    evas_object_resize(ud->win, 480, 640);
+	evas_object_show(ud->win);
 
-	network_busy(EINA_FALSE);
+	network_busy_set(EINA_FALSE);
 }
 
 static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
@@ -710,13 +708,13 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 
 	elm_list_item_selected_set(li, EINA_FALSE);
 
-	if(!settings->online) return;
+	if(network_busy || !settings->online) return;
 
 	ud = calloc(1,sizeof(userData*));
 	ud->screen_name=elm_list_item_label_get(li);
 	ud->as = (aStatus*)data;
 
-	network_busy(EINA_TRUE);
+	network_busy_set(EINA_TRUE);
 	ed_statusnet_user_get(ud, user_show, NULL);
 }
 
@@ -749,13 +747,13 @@ static void on_group_update_win(void *data) {
 		free(m);
 	}
 	elm_object_disabled_set(group_action, EINA_FALSE);
-	network_busy(EINA_FALSE);
+	network_busy_set(EINA_FALSE);
 }
 
 static void on_group_join(void *data, Evas_Object *obj, void *event_info) {
 	groupData *gd = (groupData*)data;
 
-	network_busy(EINA_TRUE);
+	network_busy_set(EINA_TRUE);
 	elm_object_disabled_set(obj, EINA_TRUE);
 	ed_statusnet_group_join(gd);
 
@@ -764,7 +762,7 @@ static void on_group_join(void *data, Evas_Object *obj, void *event_info) {
 static void on_group_leave(void *data, Evas_Object *obj, void *event_info) {
 	groupData *gd = (groupData*)data;
 
-	network_busy(EINA_TRUE);
+	network_busy_set(EINA_TRUE);
 	elm_object_disabled_set(obj, EINA_TRUE);
 	ed_statusnet_group_leave(gd);
 }
@@ -881,7 +879,7 @@ static void group_show(void *data) {
 	evas_object_resize(gd->win, 480, 640);
 	evas_object_show(gd->win);
 
-	network_busy(EINA_FALSE);
+	network_busy_set(EINA_FALSE);
 }
 
 static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
@@ -890,9 +888,9 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 
 	elm_list_item_selected_set(li, EINA_FALSE);
 
-	if(!settings->online) return;
+	if(network_busy || !settings->online) return;
 
-	network_busy(EINA_TRUE);
+	network_busy_set(EINA_TRUE);
 	ed_statusnet_group_get(as, elm_list_item_label_get(li), group_show, NULL);
 }
 
@@ -1384,7 +1382,7 @@ void add_status(aStatus *as, void *data) {
 	if(gli) {
 		li = elm_genlist_item_insert_after(gui.timeline, &itc1, as, NULL, gli, ELM_GENLIST_ITEM_NONE, NULL, NULL);
 		elm_genlist_item_show(li);
-		network_busy(EINA_FALSE);
+		network_busy_set(EINA_FALSE);
 	} else
 		li = elm_genlist_item_prepend(gui.timeline, &itc1, as, NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL);
 
@@ -1531,7 +1529,7 @@ static void get_messages(int timeline) {
 	int sqlite_res=0;
 	char *db_err=NULL, *query=NULL;
 
-	network_busy(EINA_TRUE);
+	network_busy_set(EINA_TRUE);
 	query = "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE enabled = 1 and receive = 1;";
 	sqlite3_exec(ed_DB, query, get_messages_for_account, &timeline, &db_err);
 	if(sqlite_res != 0) {
@@ -1603,7 +1601,7 @@ void update_status_list(int timeline, Eina_Bool fromdb) {
 		imageList = NULL;
 	}
 
-	network_busy(EINA_FALSE);
+	network_busy_set(EINA_FALSE);
 }
 
 /* ********** CALLBACKS *********** */
