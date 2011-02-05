@@ -1,5 +1,11 @@
 SUBDIRS = unit identi.ca rss
 
+TYPES_S = \
+  $(top_builddir)/src/tests/type1_Common.c \
+  $(top_builddir)/src/tests/type1_Common.h \
+  $(top_builddir)/src/tests/type2_Common.c \
+  $(top_builddir)/src/tests/type2_Common.h
+
 if HAVE_MYSQL
 MYSQL_COMMON_S = \
   $(top_builddir)/src/tests/T_SQL.c \
@@ -71,6 +77,7 @@ AM_CFLAGS= \
 AM_CXXFLAGS = $(AM_CFLAGS)
 
 CLEANFILES = \
+  $(TYPES_S) \
   $(CLIENT_S) \
   $(COMMON_S) \
   $(SERVER_S)
@@ -128,3 +135,5 @@ server_LDADD = \
 
 .sources: test.azy $(top_builddir)/src/bin/azy_parser
 	$(top_builddir)/src/bin/azy_parser -H -p -o $(top_builddir)/src/tests $(top_srcdir)/src/tests/test.azy
+	$(top_builddir)/src/bin/azy_parser -H -p -o $(top_builddir)/src/tests $(top_srcdir)/src/tests/type1.azy
+	$(top_builddir)/src/bin/azy_parser -H -p -o $(top_builddir)/src/tests $(top_srcdir)/src/tests/type2.azy

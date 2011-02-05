@@ -170,6 +170,29 @@ azy_parser_string_parse(const char  *str,
      }
 
    azy_parser_parse(parser, cb, new_cb, free_cb, token_cb);
+   /* validate types */
+   {
+      Eina_List *l, *ll;
+      Azy_Typedef *t;
+      Azy_Server_Module *m;
+      EINA_LIST_FOREACH(parser->data->types, l, t)
+        {
+           if (t->struct_members || (t->type != TD_STRUCT)) continue;
+
+           fprintf(stderr, "Undefined type %s!\n", t->name);
+           exit(1);
+        }
+      EINA_LIST_FOREACH(parser->data->modules, l, m)
+        {
+           EINA_LIST_FOREACH(m->types, ll, t)
+             {
+                if (t->struct_members || (t->type != TD_STRUCT)) continue;
+
+                fprintf(stderr, "Undefined type %s!\n", t->name);
+                exit(1);
+             }
+        }
+   }
 
    if (parser->error)
      {

@@ -143,7 +143,6 @@ Azy_Typedef *azy_typedef_new_array(Azy_Model         *azy,
                                      Azy_Server_Module *module,
                                      Azy_Typedef       *item);
 Azy_Typedef *azy_typedef_new_struct(Azy_Model         *azy,
-                                      Azy_Server_Module *module,
                                       const char         *name);
 
 int azy_method_compare(Azy_Method *m1,

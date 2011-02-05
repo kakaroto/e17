@@ -1,0 +1,12 @@
+Azy_Namespace type2;
+
+struct type2
+{
+   type2 t2;
+   type3 t3;
+};
+
+struct type3
+{
+   type2 t2;
+};

@@ -714,25 +714,32 @@ gen_type_defs(Eina_List *types)
 
    EINA_LIST_FOREACH(types, j, t)
      {
+        if (t->type != TD_STRUCT)
+          continue;
+        EL(0, "typedef struct %s %s;", t->cname, t->cname);
+     }
+
+   NL;
+
+   EINA_LIST_FOREACH(types, j, t)
+     {
         Azy_Struct_Member *m;
 
-        if (t->type == TD_STRUCT)
+        if (t->type != TD_STRUCT)
+          continue;
+        if (t->doc)
+          EL(0, "%s", t->doc);
+
+        EL(0, "struct %s\n{", t->cname);
+
+        EINA_LIST_FOREACH(t->struct_members, l, m)
           {
-             if (t->doc)
-               EL(0, "%s", t->doc);
-
-             EL(0, "typedef struct %s", t->cname);
-             EL(0, "{");
-
-             EINA_LIST_FOREACH(t->struct_members, l, m)
-               {
-                  EL(1, "%s %s; /* %s */", m->type->ctype, m->name,
-                     (m->type->type == TD_ARRAY) ? m->type->cname : "");
-               }
-
-             EL(0, "} %s;", t->cname);
-             NL;
+             EL(1, "%s %s; /* %s */", m->type->ctype, m->name,
+                (m->type->type == TD_ARRAY) ? m->type->cname : "");
           }
+
+        EL(0, "};");
+        NL;
      }
 }
 

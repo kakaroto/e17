@@ -164,7 +164,6 @@ azy_typedef_new_array(Azy_Model         *azy,
 
 Azy_Typedef *
 azy_typedef_new_struct(Azy_Model                *azy,
-                        Azy_Server_Module *module __UNUSED__,
                         const char                *name)
 {
    Azy_Typedef *s;
