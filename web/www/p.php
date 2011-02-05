@@ -46,7 +46,7 @@ if (is_file("p/$page/$lang-rss"))
                 <!-- <?php echo(nav_button("main8", "")); ?> -->
                 <li class="tracker"><a href="http://trac.enlightenment.org/e"><span>Tracker</span></a></li>
             </ul>
-
+	<li class="events"><a href="http://trac.enlightenment.org/e/wiki/Events"><span>Events/span></a></li>
         </div>
         </div>
 
