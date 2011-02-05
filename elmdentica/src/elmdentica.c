@@ -476,17 +476,6 @@ static void on_open_url(void *data, Evas_Object *obj, void *event_info) {
 	}
 }
 
-anUser *user_info_get(aStatus *as, UserProfile *user) {
-	anUser *au=NULL;
-
-	switch(as->account_type) {
-		case ACCOUNT_TYPE_STATUSNET:
-		default: { au = ed_statusnet_user_get(as->account_id, user); break; }
-	}
-
-	return(au);
-}
-
 static int ed_user_follow(void *data, int argc, char **argv, char **azColName) {
 	char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
 	int port=0, id=0;
@@ -599,16 +588,6 @@ static void on_user_abandon(void *data, Evas_Object *obj, void *event_info) {
 	}
 }
 
-static void user_free(UserProfile *user) {
-	if(user) {
-		if(user->name) free(user->name);
-		if(user->tmp) free(user->tmp);
-		if(user->text) free(user->text);
-
-		free(user);
-	}
-}
-
 Evas_Object *ed_get_icon(long long int id, Evas_Object *parent, Elm_Genlist_Item *li) {
 	Evas_Object *icon=NULL;
 	aStatus *as = li?(aStatus*)elm_genlist_item_data_get(li):NULL;
@@ -627,39 +606,32 @@ Evas_Object *ed_get_icon(long long int id, Evas_Object *parent, Elm_Genlist_Item
 }
 
 static void user_win_del(void *data, Evas_Object *obj, void *event_info) {
-	UserProfile *user = (UserProfile*)data;
-	if(user) user_free(user);
+	userData *user = (userData*)data;
+	if(user) free(user);
 	evas_object_del(obj);
 }
 
-static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
-	Elm_List_Item *li = elm_list_selected_item_get(obj);
+void user_show(void *data) {
+	userData *ud = (userData*)data;
 	Evas_Object *user_win=NULL, *icon=NULL, *bg=NULL, *table=NULL, *button=NULL, *label=NULL;
-	UserProfile *user=NULL;
-	aStatus *as = (aStatus*)data;
 	char *description=NULL, *path=NULL;
 	int res=0;
 	struct stat buf;
-	anUser *au=NULL;
+	char icon_path[PATH_MAX], *p=NULL;
 
-	elm_list_item_selected_set(li, EINA_FALSE);
+	p = strrchr(ud->au->user->profile_image_url, '/');
+	if(p && *p) {
+		snprintf(icon_path, PATH_MAX, "%s/cache/icons/%s", home, p);
+		if(!ecore_file_exists(icon_path) && settings->online)
+			ed_curl_dump_url_to_file((char*)ud->au->user->profile_image_url, icon_path);
+	}
 
-	if(!settings->online) return;
-
-	follow_user=(char*)elm_list_item_label_get(li);
-
-	user = calloc(1,sizeof(UserProfile));
-	user->screen_name=follow_user;
-	au = user_info_get(as, user);
-
-	if(!au) return;
-
-	user_win = elm_win_add(NULL, au->user->name, ELM_WIN_BASIC);
+	user_win = elm_win_add(NULL, ud->au->user->name, ELM_WIN_BASIC);
 		evas_object_name_set(user_win, "user_win");
 		evas_object_size_hint_min_set(user_win, 480, 480);
 		evas_object_size_hint_max_set(user_win, 640, 640);
-		elm_win_title_set(user_win, au->user->name);
-		evas_object_smart_callback_add(user_win, "delete-request", user_win_del, user);
+		elm_win_title_set(user_win, ud->au->user->name);
+		evas_object_smart_callback_add(user_win, "delete-request", user_win_del, ud);
 
 		bg = elm_bg_add(user_win);
 			evas_object_size_hint_weight_set(bg, 1, 1);
@@ -673,7 +645,7 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 			elm_win_resize_object_add(user_win, table);
 			elm_table_padding_set(table, 20, 20);
 
-			res = asprintf(&path, "%s/cache/icons/%lld", home, (long long int)au->user->id);
+			res = asprintf(&path, "%s/cache/icons/%lld", home, (long long int)ud->au->user->id);
 
 			if(res!=-1 && stat(path, &buf) == 0 ) {
 				icon = elm_icon_add(user_win);
@@ -689,7 +661,7 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 				evas_object_size_hint_weight_set(label, 1, 1);
 				evas_object_size_hint_align_set(label, -1, -1);
 
-				res = asprintf(&description, "%s is following %d and has %d followers.", au->user->name, au->user->friends_count, au->user->followers_count);
+				res = asprintf(&description, "%s is following %d and has %d followers.", ud->au->user->name, ud->au->user->friends_count, ud->au->user->followers_count);
 				elm_entry_line_wrap_set(label, EINA_TRUE);
 				if(res!=-1) {
 					elm_entry_entry_set(label, description);
@@ -704,22 +676,22 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 				evas_object_size_hint_weight_set(button, 1, 1);
 				evas_object_size_hint_align_set(button, 0.5, 0);
 
-				if(!au->user->following && !au->user->protected) {
+				if(!ud->au->user->following && !ud->au->user->protected) {
 					elm_button_label_set(button, _("Follow"));
-					evas_object_smart_callback_add(button, "clicked", on_user_follow, as);
+					evas_object_smart_callback_add(button, "clicked", on_user_follow, ud);
 				} else {
 					elm_button_label_set(button, _("Stop following"));
-					evas_object_smart_callback_add(button, "clicked", on_user_abandon, as);
+					evas_object_smart_callback_add(button, "clicked", on_user_abandon, ud);
 				}
 				elm_table_pack(table, button, 1, 1, 1, 1);
 			evas_object_show(button);
 
-			if(au->user->description) {
+			if(ud->au->user->description) {
 					label = elm_label_add(user_win);
 						evas_object_size_hint_weight_set(label, 1, 1);
 						evas_object_size_hint_align_set(label, -1, -1);
 						elm_label_line_wrap_set(label, EINA_TRUE);
-						elm_label_label_set(label, au->user->description);
+						elm_label_label_set(label, ud->au->user->description);
 					evas_object_show(label);
 					elm_table_pack(table, label, 0, 2, 2, 1);
 			}
@@ -729,6 +701,23 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 	    evas_object_resize(user_win, 480, 640);
 	evas_object_show(user_win);
 
+	network_busy(EINA_FALSE);
+}
+
+static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
+	Elm_List_Item *li = elm_list_selected_item_get(obj);
+ 	userData *ud=NULL;
+
+	elm_list_item_selected_set(li, EINA_FALSE);
+
+	if(!settings->online) return;
+
+	ud = calloc(1,sizeof(userData*));
+	ud->screen_name=elm_list_item_label_get(li);
+	ud->as = (aStatus*)data;
+
+	network_busy(EINA_TRUE);
+	ed_statusnet_user_get(ud, user_show, NULL);
 }
 
 static void on_group_leave(void *data, Evas_Object *obj, void *event_info);

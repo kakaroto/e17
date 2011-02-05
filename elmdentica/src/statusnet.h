@@ -85,6 +85,7 @@ typedef struct _a_Status {
 } aStatus;
 
 typedef void (*Group_Show_Cb)(void*);
+typedef void (*User_Show_Cb)(void*);
 typedef void (*Repeat_Cb)(aStatus *, void *);
 
 typedef struct _user_get {
@@ -104,15 +105,23 @@ typedef struct _group_data {
 	Eina_Bool failed;
 } groupData;
 
+typedef struct _user_data {
+	aStatus *as;
+	anUser *au;
+	const char *screen_name;
+	User_Show_Cb user_show;
+	void *data;
+	Evas_Object *win;
+	Eina_Bool failed;
+} userData;
+
 
 void statusnet_init();
 
 void ed_statusnet_account_free(StatusNetBaAccount *account);
 
 void ed_statusnet_group_get(aStatus *as, const char *group_name, Group_Show_Cb callback, void *data);
-
 void ed_statusnet_group_free(groupData *gd);
-
 void ed_statusnet_group_join(groupData *gd);
 void ed_statusnet_group_leave(groupData *gd);
 
@@ -121,7 +130,7 @@ void ed_statusnet_timeline_get(int account_id, char *screen_name, char *password
 void ed_statusnet_favorite_create(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, long long int status_id);
 void ed_statusnet_favorite_destroy(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, long long int status_id);
 void ed_statusnet_init_friends(void);
-anUser *ed_statusnet_user_get(int account_id, UserProfile *user);
+void ed_statusnet_user_get(userData *ud, User_Show_Cb callback, void *data);
 anUser *ed_statusnet_user_get_by_id(int account_id, long long int user_id);
 void ed_statusnet_user_follow(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *user_screen_name);
 void ed_statusnet_user_abandon(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *user_screen_name);
