@@ -27,8 +27,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include "cJSON.h"
-
 #include <glib.h>
 #include <glib/gprintf.h>
 

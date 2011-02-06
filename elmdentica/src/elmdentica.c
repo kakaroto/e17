@@ -85,7 +85,6 @@ char * url_post = NULL;
 char * url_friends = NULL;
 extern char * browsers[];
 extern char * browserNames[];
-char * follow_user=NULL;
 char * home=NULL;
 Eina_Hash* accounts=NULL;
 extern Eina_Hash* statusHash;
