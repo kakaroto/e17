@@ -1,4 +1,4 @@
-NTAINERCLEANFILES = Makefile.in
+MAINTAINERCLEANFILES = Makefile.in .sources-ts
 
 AM_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\" \
 		-I ../			\
