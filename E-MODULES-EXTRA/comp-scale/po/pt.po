@@ -6,10 +6,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: skel\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-12-10 13:52+0100\n"
-"PO-Revision-Date: 2010-12-05 12:36+0000\n"
-"Last-Translator: Sérgio Marques <sarquespt@gmail.com>\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2011-01-29 21:31-0800\n"
+"PO-Revision-Date: 2011-02-06 19:50-0000\n"
+"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,62 +19,66 @@ msgstr ""
 "X-Poedit-Country: Portugal\n"
 "X-Generator: Lokalize 1.1\n"
 
-#: src/e_mod_config.c:44
-msgid "Skeleton Module"
-msgstr "Módulo Skeleton"
+#. create our config dialog
+#: ../src/e_mod_config.c:44
+#| msgid "Skeleton Module"
+msgid "Scaleeton Module"
+msgstr "Módulo Scaleeton"
 
-#: src/e_mod_config.c:84
+#: ../src/e_mod_config.c:84
 msgid "General"
 msgstr "Geral"
 
-#: src/e_mod_config.c:86
+#: ../src/e_mod_config.c:86
 msgid "Use Switch 1"
 msgstr "Utilizar \"Switch\" 1"
 
-#: src/e_mod_main.c:82
-msgid "Skel"
-msgstr "Skel"
+#. add right-side item
+#: ../src/e_mod_main.c:735
+#: ../src/e_mod_main.c:972
+msgid "Scale"
+msgstr "Escala"
 
-#: src/e_mod_main.c:113
-msgid ""
-"Skeleton Module Configuration data needed upgrading. Your old "
-"configuration<br> has been wiped and a new set of defaults initialized. "
-"This<br>will happen regularly during development, so don't report a<br>bug. "
-"This simply means the module needs new configuration<br>data by default for "
-"usable functionality that your old<br>configuration simply lacks. This new "
-"set of defaults will fix<br>that by adding it in. You can re-configure "
-"things now to your<br>liking. Sorry for the inconvenience.<br>"
-msgstr ""
-"A configuração do Skeleton precisa de ser atualizada. A sua configuração foi "
-"apagada e foram iniciados novos valores padrão.<br>Isto irá ocorrer "
-"recorrentemente durante o desenvolvimento e não deve reportar nenhum erro."
-"<br>Isto apenas significa que o módulo precisa de novos dados de "
-"configuração que a sua antiga configuração não possui.<br>Este conjunto de "
-"valores irá corrigir a configuração.<br> Mais tarde poderá configurar o "
-"módulo ao seu gosto. Desculpe qualquer inconveniente."
+#: ../src/e_mod_main.c:766
+#| msgid ""
+#| "Skeleton Module Configuration data needed upgrading. Your old "
+#| "configuration<br> has been wiped and a new set of defaults initialized. "
+#| "This<br>will happen regularly during development, so don't report "
+#| "a<br>bug. This simply means the module needs new configuration<br>data by "
+#| "default for usable functionality that your old<br>configuration simply "
+#| "lacks. This new set of defaults will fix<br>that by adding it in. You can "
+#| "re-configure things now to your<br>liking. Sorry for the inconvenience."
+#| "<br>"
+msgid "Scale Module Configuration data needed upgrading. Your old configuration<br> has been wiped and a new set of defaults initialized. This<br>will happen regularly during development, so don't report a<br>bug. This simply means the module needs new configuration<br>data by default for usable functionality that your old<br>configuration simply lacks. This new set of defaults will fix<br>that by adding it in. You can re-configure things now to your<br>liking. Sorry for the inconvenience.<br>"
+msgstr "A configuração do Scale precisa de ser atualizada. A sua configuração foi apagada e foram iniciados novos valores padrão.<br>Isto irá ocorrer recorrentemente durante o desenvolvimento e não deve reportar nenhum erro.<br>Isto apenas significa que o módulo precisa de novos dados de configuração que a sua antiga configuração não possui.<br>Este conjunto de valores irá corrigir a configuração.<br> Mais tarde poderá configurar o módulo ao seu gosto. Desculpe qualquer inconveniente."
 
-#: src/e_mod_main.c:133
-msgid ""
-"Your Skeleton Module configuration is NEWER than the module version. This is "
-"very<br>strange. This should not happen unless you downgraded<br>the module "
-"or copied the configuration from a place where<br>a newer version of the "
-"module was running. This is bad and<br>as a precaution your configuration "
-"has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
-msgstr ""
-"A configuração do módulo Skeleton é mais recente que a do módulo.<br>Isto é "
-"muito estranho e só acontece se reverter o seu módulo ou caso tenha copiado "
-"a configuração de um local em que está instalada uma versão mais recente do "
-"módulo.<br>Isto é mau e por precaução, a sua configuração foi restaurada "
-"para as omissões.<br>Desculpe qualquer inconveniente.<br>"
+#: ../src/e_mod_main.c:786
+#| msgid ""
+#| "Your Skeleton Module configuration is NEWER than the module version. This "
+#| "is very<br>strange. This should not happen unless you downgraded<br>the "
+#| "module or copied the configuration from a place where<br>a newer version "
+#| "of the module was running. This is bad and<br>as a precaution your "
+#| "configuration has been now restored to<br>defaults. Sorry for the "
+#| "inconvenience.<br>"
+msgid "Your Scale Module configuration is NEWER than the module version. This is very<br>strange. This should not happen unless you downgraded<br>the module or copied the configuration from a place where<br>a newer version of the module was running. This is bad and<br>as a precaution your configuration has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
+msgstr "A configuração do seu módulo Scale é mais recente que a do módulo.<br>Isto é muito estranho e só acontece se reverter o seu módulo ou caso tenha copiado a configuração de um local em que está instalada uma versão mais recente do módulo.<br>Isto é mau e por precaução, a sua configuração foi restaurada para as omissões.<br>Desculpe qualquer inconveniente.<br>"
 
-#: src/e_mod_main.c:300
-msgid "Skeleton"
-msgstr "Skeleton"
+#: ../src/e_mod_main.c:817
+#: ../src/e_mod_main.c:876
+msgid "Desktop"
+msgstr "Área de trabalho"
 
-#: src/e_mod_main.c:385
-msgid "Skeleton Configuration Updated"
+#: ../src/e_mod_main.c:818
+#: ../src/e_mod_main.c:877
+msgid "Scale Windows"
+msgstr "Ajustar janelas"
+
+#: ../src/e_mod_main.c:1057
+#| msgid "Skeleton Configuration Updated"
+msgid "Scale Windows Configuration Updated"
 msgstr "A configuração foi atualizada"
 
-#: src/e_mod_main.c:447
+#: ../src/e_mod_main.c:1123
 msgid "Settings"
 msgstr "Definições"
+

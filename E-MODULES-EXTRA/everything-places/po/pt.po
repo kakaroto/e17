@@ -4,9 +4,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Everything-places\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-05-18 09:23+0200\n"
-"PO-Revision-Date: 2010-10-06 12:55-0000\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2011-01-29 21:41-0800\n"
+"PO-Revision-Date: 2011-02-06 19:51-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -17,11 +17,24 @@ msgstr ""
 "X-Poedit-Country: Portugal\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: src/e_mod_main.c:49
+#: ../src/e_mod_main.c:135
+msgid "Home"
+msgstr "Pasta pessoal"
+
+#: ../src/e_mod_main.c:138
 msgid "Wallpaper"
 msgstr "Papel de parede"
 
-#: src/e_mod_main.c:95
+#: ../src/e_mod_main.c:269
+#: ../src/e_mod_main.c:280
 msgid "Places"
 msgstr "Locais"
+
+#: ../src/e_mod_main.c:291
+msgid "Mount Drive"
+msgstr "Montar unidade"
+
+#: ../src/e_mod_main.c:296
+msgid "Unmount Drive"
+msgstr "Desmontar unidade"
 

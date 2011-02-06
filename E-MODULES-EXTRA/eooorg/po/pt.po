@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eooorg\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-07-07 10:43+0400\n"
-"PO-Revision-Date: 2010-12-01 12:11-0000\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2011-01-29 21:34-0800\n"
+"PO-Revision-Date: 2011-02-06 19:51-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,33 +18,33 @@ msgstr ""
 "X-Poedit-Country: Portugal\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: src/e_mod_config.c:44
-#: src/e_mod_main.c:83
-#: src/e_mod_main.c:306
+#. create our config dialog
+#: ../src/e_mod_config.c:44
+#: ../src/e_mod_main.c:306
 msgid "OpenOffice.org Quickstart"
 msgstr "Início rápido do OpenOffice.org"
 
-#: src/e_mod_config.c:84
+#: ../src/e_mod_config.c:84
 msgid "General"
 msgstr "Geral"
 
-#: src/e_mod_config.c:86
+#: ../src/e_mod_config.c:86
 msgid "Use Switch 1"
 msgstr "Utilizar \"switch\" 1"
 
-#: src/e_mod_main.c:114
+#: ../src/e_mod_main.c:114
 msgid "eOOorg Module Configuration data needed upgrading. Your old configuration<br> has been wiped and a new set of defaults initialized. This<br>will happen regularly during development, so don't report a<br>bug. This simply means the module needs new configuration<br>data by default for usable functionality that your old<br>configuration simply lacks. This new set of defaults will fix<br>that by adding it in. You can re-configure things now to your<br>liking. Sorry for the inconvenience.<br>"
 msgstr "A configuração do módulo eOOorg precisa de ser atualizada. A sua configuração  foi apagada e foram iniciados novos valores padrão.<br>Isto irá acontecer recorrentemente durante o desenvolvimento e não deve reportar nenhum erro.<br> Isto apenas significa que o módulo precisa de novos dados de configuração que a sua antiga configuração não possui.<br>Este conjunto de valores irá corrigir a configuração e posteriormente poderá configurar o módulo ao seu gosto.<br>Desculpe qualquer inconveniente."
 
-#: src/e_mod_main.c:134
+#: ../src/e_mod_main.c:134
 msgid "Your eOOorg Module configuration is NEWER than the module version. This is very<br>strange. This should not happen unless you downgraded<br>the module or copied the configuration from a place where<br>a newer version of the module was running. This is bad and<br>as a precaution your configuration has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
 msgstr "A sua versão do EOOorg é mais recente do que a do módulo<br>Esta situação é estranha e não deveria acontecer a menos que você tivesse revertido o módulo para uma versão inferior ou tenha copiado a configuração de um local em que esteja a ser executada uma versão mais recente do módulo.<br> Isto é mau e por precaução, a sua configuração foi restaurada para as omissões.<br>Desculpe quaquer inconveniente.<br>"
 
-#: src/e_mod_main.c:391
+#: ../src/e_mod_main.c:391
 msgid "OpenOffice.org Quickstart Configuration Updated"
 msgstr "A configuração do início rápido do Openoffice.org foi atualizada"
 
-#: src/e_mod_main.c:449
-msgid "Configuration"
-msgstr "Configuração"
+#: ../src/e_mod_main.c:453
+msgid "Settings"
+msgstr "Definições"
 
