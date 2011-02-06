@@ -796,7 +796,7 @@ static int ed_statusnet_group_toggle_handler(void *data, int argc, char **argv, 
 	return(0);
 }
 
-void ed_statusnet_group_toggle(groupData *gd, Eina_Bool join) {
+void ed_statusnet_group_membership_toggle(groupData *gd) {
 	char *query=NULL, *db_err=NULL;
 	int sqlite_res;
 	
@@ -811,10 +811,10 @@ void ed_statusnet_group_toggle(groupData *gd, Eina_Bool join) {
 		ADH.gd = gd;
 		ADH.type = GROUP;
 
-		if(join)
-			sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_group_toggle_handler, "join", &db_err);
-		else
+		if(gd->group->member)
 			sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_group_toggle_handler, "leave", &db_err);
+		else
+			sqlite_res = sqlite3_exec(ed_DB, query, ed_statusnet_group_toggle_handler, "join", &db_err);
 
 		if(sqlite_res != 0) {
 			fprintf(stderr, "Can't run %s: %d = %s\n", query, sqlite_res, db_err);
@@ -823,14 +823,6 @@ void ed_statusnet_group_toggle(groupData *gd, Eina_Bool join) {
 		}
 		free(query);
 	}
-}
-
-void ed_statusnet_group_join(groupData *gd) {
-	ed_statusnet_group_toggle(gd, EINA_TRUE);
-}
-
-void ed_statusnet_group_leave(groupData *gd) {
-	ed_statusnet_group_toggle(gd, EINA_FALSE);
 }
 
 void status_hash_data_free(void *data) {

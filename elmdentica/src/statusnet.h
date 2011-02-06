@@ -122,8 +122,7 @@ void ed_statusnet_account_free(StatusNetBaAccount *account);
 
 void ed_statusnet_group_get(aStatus *as, const char *group_name, Group_Show_Cb callback, void *data);
 void ed_statusnet_group_free(groupData *gd);
-void ed_statusnet_group_join(groupData *gd);
-void ed_statusnet_group_leave(groupData *gd);
+void ed_statusnet_group_membership_toggle(groupData *gd);
 
 int ed_statusnet_post(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *msg);
 void ed_statusnet_timeline_get(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, int timeline, Status_List_Cb update_status_list);
