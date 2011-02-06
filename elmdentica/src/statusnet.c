@@ -78,7 +78,14 @@ extern int debug;
 extern char *home, *dm_to;
 extern Gui gui;
 
-typedef enum { TIMELINE, REPEAT, GROUP, RELATED, USER } SNAzyDownloadType;
+typedef enum {
+	TIMELINE,
+	REPEAT,
+	RELATED,
+	GROUP,
+	USER,
+	USER_FOLLOW_TOGGLE
+} SNAzyDownloadType;
 
 typedef struct _SN_Azy_Download_Helper {
 	SNAzyDownloadType type;
@@ -139,6 +146,7 @@ static void statusnet_azy_value_free(Eina_List *array) {
 			Array_statusnet_Group_free(array);
 			break;
 		}
+		case USER_FOLLOW_TOGGLE:
 		case USER: {
 			Array_statusnet_User_free(array);
 			break;
@@ -235,11 +243,12 @@ Eina_Bool statusnet_azy_value_to_data(Azy_Value *array, Eina_List **narray) {
 		case TIMELINE: {
 			return(azy_value_to_Array_statusnet_Status(array, narray));
 		}
-		case USER: {
-			return(azy_value_to_Array_statusnet_User(array, narray));
-		}
 		case GROUP: {
 			return(azy_value_to_Array_statusnet_Group(array, narray));
+		}
+		case USER_FOLLOW_TOGGLE:
+		case USER: {
+			return(azy_value_to_Array_statusnet_User(array, narray));
 		}
 		default: {
 			if(debug > 2) printf("Unknown ADH.type!!\n");
@@ -259,6 +268,48 @@ Eina_Bool statusnet_azy_connected(void *data, int type, Azy_Client *cli) {
 	}
 
 	return(EINA_TRUE);
+}
+
+Eina_Bool user_update(anUser *au) {
+	int sqlite_res=0;
+	struct sqlite3_stmt *insert_stmt=NULL;
+	const char *missed=NULL;
+	char *query=NULL;
+
+	if(!au) return(EINA_FALSE);
+
+	sqlite_res = asprintf(&query, "update users set account_id=%d, name=?, screen_name=?, location=?, description=?, profile_image_url=?, url=?, protected=?, followers_count=?, friends_count=?, created_at=?, favorites_count=?, statuses_count=?, following=?, statusnet_blocking=? where uid = %lld;", ADH.account_id, (long long int)au->user->id);
+	if(sqlite_res != -1) {
+		sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
+		if(sqlite_res == 0) {
+			sqlite3_bind_text(insert_stmt,  1,  au->user->name, -1, NULL);
+			sqlite3_bind_text(insert_stmt,  2,  au->user->screen_name, -1, NULL);
+			sqlite3_bind_text(insert_stmt,  3,  au->user->location, -1, NULL);
+			sqlite3_bind_text(insert_stmt,  4,  au->user->description, -1, NULL);
+			sqlite3_bind_text(insert_stmt,  5,  au->user->profile_image_url, -1, NULL);
+			sqlite3_bind_text(insert_stmt,  6,  au->user->url, -1, NULL);
+			sqlite3_bind_int64(insert_stmt, 7,  au->user->protected);
+			sqlite3_bind_int64(insert_stmt, 8,  au->user->followers_count);
+			sqlite3_bind_int64(insert_stmt, 9,  au->user->friends_count);
+			sqlite3_bind_int64(insert_stmt, 10, au->created_at);
+			sqlite3_bind_int64(insert_stmt, 11, au->user->favourites_count);
+			sqlite3_bind_int64(insert_stmt, 12, au->user->statuses_count);
+			sqlite3_bind_int64(insert_stmt, 13, au->user->following);
+			sqlite3_bind_int64(insert_stmt, 14, au->user->statusnet_blocking);
+			sqlite_res = sqlite3_step(insert_stmt);
+			if(sqlite_res != 0 && sqlite_res != 101 ) printf("ERROR: %d while updating user:\n(%s)\n", sqlite_res, au->user->screen_name);
+			else au->in_db = EINA_TRUE;
+
+			sqlite3_reset(insert_stmt);
+			sqlite3_finalize(insert_stmt);
+			return(EINA_TRUE);
+		} else {
+			fprintf(stderr, "Can't do %s: %d means '%s' was missed in the statement.\n", query, sqlite_res, missed);
+		}
+		free(query);
+	}
+	return(EINA_FALSE);
+
 }
 
 Eina_Bool user_insert(anUser *au) {
@@ -485,7 +536,13 @@ Eina_Bool user_returned(void *data, int type, Azy_Content *content) {
 		return(EINA_FALSE);
 	}
 
-	ADH.ud->au = statusnet_new_user(statusnet_User_copy(user));
+	if(!ADH.ud->au)
+		ADH.ud->au = statusnet_new_user(statusnet_User_copy(user));
+	else {
+		statusnet_User_free(ADH.ud->au->user);
+		ADH.ud->au->user = statusnet_User_copy(user);
+		user_update(ADH.ud->au);
+	}
 
 	ADH.ud->user_show((void*)ADH.ud);
 
@@ -506,11 +563,12 @@ Eina_Bool statusnet_azy_returned(void *data, int type, Azy_Content *content) {
 		case TIMELINE: {
 			return(timeline_returned(data, type, content));
 		}
-		case USER: {
-			return(user_returned(data, type, content));
-		}
 		case GROUP: {
 			return(groupget_returned(data, type, content));
+		}
+		case USER_FOLLOW_TOGGLE:
+		case USER: {
+			return(user_returned(data, type, content));
 		}
 		default: {
 			if(debug > 2) printf("Unknown ADH.type!!\n");
@@ -554,6 +612,13 @@ Eina_Bool user_disconnected(void *data, int type, Azy_Client *cli) {
 	return(EINA_TRUE);
 }
 
+Eina_Bool user_ft_disconnected(void *data, int type, Azy_Client *cli) {
+	if(debug > 2) printf("user_disconnected\n");
+
+	if(ADH.post_body.data) free(ADH.post_body.data);
+	return(EINA_TRUE);
+}
+
 Eina_Bool statusnet_azy_disconnected(void *data, int type, Azy_Client *cli) {
 	Eina_Bool retval=EINA_FALSE;
 
@@ -577,6 +642,10 @@ Eina_Bool statusnet_azy_disconnected(void *data, int type, Azy_Client *cli) {
 		}
 		case USER: {
 			retval = user_disconnected(data, type, cli);
+			break;
+		}
+		case USER_FOLLOW_TOGGLE: {
+			retval = user_ft_disconnected(data, type, cli);
 			break;
 		}
 		default: {
@@ -1142,31 +1211,31 @@ anUser *ed_statusnet_user_get_by_id(int account_id, long long int user_id) {
 	return(au);
 }
 
-void ed_statusnet_user_follow(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *user_screen_name) {
-	http_request * request=calloc(1, sizeof(http_request));
-	int res;
+void ed_statusnet_user_follow_toggle(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, userData *ud, User_Show_Cb callback) {
+	char url_start[PATH_MAX], url_end[PATH_MAX];
+	Azy_Client *cli=NULL;
 
-	res = asprintf(&request->url, "%s://%s:%d%s/friendships/create.json?screen_name=%s", proto, domain, port, base_url, user_screen_name);
-	if(res != -1) {
-		ed_curl_post(screen_name, password, request, "", account_id);
-		if(debug && request->response_code != 200)
-			printf("User follow failed with response code %ld\n", request->response_code);
-		free(request->url);
-	}
-	if(request) free(request);
-}
-void ed_statusnet_user_abandon(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *user_screen_name) {
-	http_request * request=calloc(1, sizeof(http_request));
-	int res;
+	ud->user_show = callback;
 
-	res = asprintf(&request->url, "%s://%s:%d%s/friendships/destroy.json?screen_name=%s", proto, domain, port, base_url, user_screen_name);
-	if(res != -1) {
-		ed_curl_post(screen_name, password, request, "", account_id);
-		if(debug && request->response_code != 200)
-			printf("User abandon failed with response code %ld\n", request->response_code);
-		free(request->url);
-	}
-	if(request) free(request);
+	memset(&ADH, 0, sizeof(ADH));
+	ADH.type = USER_FOLLOW_TOGGLE;
+	ADH.account_id = account_id;
+	ADH.as = ud->as;
+	ADH.ud = ud;
+	ADH.method = AZY_NET_TYPE_POST;
+
+	ADH.post_body.data = (unsigned char*)strdup("source=elmdentica");
+	ADH.post_body.size = strlen((const char*)ADH.post_body.data);
+
+	snprintf(url_start, PATH_MAX, "%s://%s", proto, domain);
+	snprintf(url_end, PATH_MAX, "%s/friendships/%s.json?screen_name=%s", base_url, ud->au->user->following?"destroy":"create", ud->au->user->screen_name);
+
+	cli = azy_client_new();
+	azy_client_host_set(cli, url_start, port);
+	azy_client_connect(cli, EINA_TRUE);
+	azy_net_uri_set(azy_client_net_get(cli), url_end);
+	azy_net_auth_set(azy_client_net_get(cli), screen_name, password);
+	azy_net_version_set(azy_client_net_get(cli), 0);
 }
 
 

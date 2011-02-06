@@ -477,7 +477,29 @@ static void on_open_url(void *data, Evas_Object *obj, void *event_info) {
 	}
 }
 
-static int ed_user_follow(void *data, int argc, char **argv, char **azColName) {
+void user_update_win(void *data) {
+	userData *ud = (userData*)data;
+	Evas *e = evas_object_evas_get(ud->win);
+	Evas_Object *w=NULL;
+	char *desc=NULL;
+	int res=0;
+
+	res = asprintf(&desc, "%s is following %d and has %d followers.", ud->au->user->name, ud->au->user->friends_count, ud->au->user->followers_count);
+	if(res!=-1) {
+		w = evas_object_name_find(e, "user_description");
+		elm_entry_entry_set(w, desc);
+		w = evas_object_name_find(e, "user_action");
+		if(!ud->au->user->following && !ud->au->user->protected)
+			elm_button_label_set(w, _("Follow"));
+		else
+			elm_button_label_set(w, _("Stop following"));
+	}
+
+	network_busy_set(EINA_FALSE);
+}
+
+static int ed_user_follow_toggle(void *data, int argc, char **argv, char **azColName) {
+	userData *ud = (userData*)data;
 	char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
 	int port=0, id=0;
 
@@ -500,92 +522,31 @@ static int ed_user_follow(void *data, int argc, char **argv, char **azColName) {
 	base_url = argv[6];
 	id = atoi(argv[7]);
 
+	network_busy_set(EINA_TRUE);
+
 	switch(atoi(argv[2])) {
 		case ACCOUNT_TYPE_STATUSNET:
-		default: { ed_statusnet_user_follow(id, screen_name, password, proto, domain, port, base_url, follow_user); break; }
+		default: { ed_statusnet_user_follow_toggle(id, screen_name, password, proto, domain, port, base_url, ud, user_update_win); break; }
 	}
-
-	follow_user=NULL;
 
 	return(0);
 }
 
-static void on_user_follow(void *data, Evas_Object *obj, void *event_info) {
-	Evas *e = evas_object_evas_get(obj);
-	Evas_Object *user_win=NULL;
-	aStatus *as = (aStatus*)data;
+static void on_user_follow_toggle(void *data, Evas_Object *obj, void *event_info) {
+	userData *ud = (userData*)data;
 	int sqlite_res=0;
 	char *db_err=NULL, *query=NULL;
 
-	if(!as) return;
+	if( ! (ud && settings->online) ) return;
 
-	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE enabled = 1 and id = %d;", as->account_id);
+	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE enabled = 1 and id = %d;", ud->as->account_id);
 	if(sqlite_res != -1) {
-		sqlite_res = sqlite3_exec(ed_DB, query, ed_user_follow, NULL, &db_err);
+		sqlite_res = sqlite3_exec(ed_DB, query, ed_user_follow_toggle, (void*)ud, &db_err);
 		if(sqlite_res != 0) {
 			printf("Can't run %s: %d => %s\n", query, sqlite_res, db_err);
 		}
 		sqlite3_free(db_err);
 		free(query);
-		if(e) {
-			user_win = evas_object_name_find(e, "user_win");
-			evas_object_del(user_win);
-		}
-	}
-}
-
-static int ed_user_abandon(void *data, int argc, char **argv, char **azColName) {
-	char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
-	int port=0, id=0;
-
-	/* In this query handler, these are the current fields:
-		argv[0] == name TEXT
-		argv[1] == password TEXT
-		argv[2] == type INTEGER
-		argv[3] == proto TEXT
-		argv[4] == domain TEXT
-		argv[5] == port INTEGER
-		argv[6] == base_url TEXT
-		argv[7] == id INTEGER
-	*/
-
-	screen_name = argv[0];
-	password = argv[1];
-	proto = argv[3];
-	domain = argv[4];
-	port = atoi(argv[5]);
-	base_url = argv[6];
-	id = atoi(argv[7]);
-
-	switch(atoi(argv[2])) {
-		case ACCOUNT_TYPE_STATUSNET:
-		default: { ed_statusnet_user_abandon(id, screen_name, password, proto, domain, port, base_url, follow_user); break; }
-	}
-
-	follow_user=NULL;
-
-	return(0);
-}
-
-static void on_user_abandon(void *data, Evas_Object *obj, void *event_info) {
-	Evas *e = evas_object_evas_get(obj);
-	Evas_Object *user_win=NULL;
-	aStatus *as = (aStatus*)data;
-	int sqlite_res=0;
-	char *db_err=NULL, *query=NULL;
-
-	if(!as) return;
-
-	sqlite_res = asprintf(&query, "SELECT name,password,type,proto,domain,port,base_url,id FROM accounts WHERE enabled = 1 and id = %d;", as->account_id);
-	if(sqlite_res != -1) {
-		sqlite_res = sqlite3_exec(ed_DB, query, ed_user_abandon, NULL, &db_err);
-		if(sqlite_res != 0) {
-			printf("Can't run %s: %d => %s\n", query, sqlite_res, db_err);
-		}
-		sqlite3_free(db_err);
-		free(query);
-		user_win = evas_object_name_find(e, "user_win");
-		if(user_win) evas_object_del(user_win);
 	}
 }
 
@@ -628,7 +589,6 @@ void user_show(void *data) {
 	}
 
 	ud->win = elm_win_add(NULL, ud->au->user->name, ELM_WIN_BASIC);
-		evas_object_name_set(ud->win, "user_win");
 		evas_object_size_hint_min_set(ud->win, 480, 480);
 		evas_object_size_hint_max_set(ud->win, 640, 640);
 		elm_win_title_set(ud->win, ud->au->user->name);
@@ -656,6 +616,7 @@ void user_show(void *data) {
 			}
 
 			label = elm_entry_add(ud->win);
+				evas_object_name_set(label, "user_description");
 				evas_object_size_hint_weight_set(label, 1, 1);
 				evas_object_size_hint_align_set(label, -1, -1);
 
@@ -671,16 +632,16 @@ void user_show(void *data) {
 			evas_object_show(label);
 
 			button = elm_button_add(ud->win);
+				evas_object_name_set(button, "user_action");
 				evas_object_size_hint_weight_set(button, 1, 1);
 				evas_object_size_hint_align_set(button, 0.5, 0);
 
-				if(!ud->au->user->following && !ud->au->user->protected) {
+				if(!ud->au->user->following && !ud->au->user->protected)
 					elm_button_label_set(button, _("Follow"));
-					evas_object_smart_callback_add(button, "clicked", on_user_follow, ud);
-				} else {
+				else
 					elm_button_label_set(button, _("Stop following"));
-					evas_object_smart_callback_add(button, "clicked", on_user_abandon, ud);
-				}
+
+				evas_object_smart_callback_add(button, "clicked", on_user_follow_toggle, ud);
 				elm_table_pack(table, button, 1, 1, 1, 1);
 			evas_object_show(button);
 

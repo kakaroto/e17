@@ -132,8 +132,7 @@ void ed_statusnet_favorite_destroy(int account_id, char *screen_name, char *pass
 void ed_statusnet_init_friends(void);
 void ed_statusnet_user_get(userData *ud, User_Show_Cb callback, void *data);
 anUser *ed_statusnet_user_get_by_id(int account_id, long long int user_id);
-void ed_statusnet_user_follow(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *user_screen_name);
-void ed_statusnet_user_abandon(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, char *user_screen_name);
+void ed_statusnet_user_follow_toggle(int account_id, char *screen_name, char *password, char *proto, char *domain, int port, char *base_url, userData *ud, User_Show_Cb callback);
 void ed_statusnet_repeat(int account_id, aStatus *as, Repeat_Cb callback, void *data);
 void ed_statusnet_related_status_get(aStatus *as, Repeat_Cb callback, void *data);
 
