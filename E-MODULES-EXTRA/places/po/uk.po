@@ -1,101 +1,115 @@
 # This file is put in the public domain.
-#
 # Daniel Korostil <ted.korostiled@gmail.com>, 2009.
+# Korostil Daniel <ted.korostiled@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: places.HEAD\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-02-28 12:14+0100\n"
-"PO-Revision-Date: 2009-11-12 17:50+0000\n"
-"Last-Translator: Sergio Gavrylov <sergiovana@bigmir.net>\n"
-"Language-Team: Ukrainian <translation@linux.org.ua>\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2010-09-09 08:01-0700\n"
+"PO-Revision-Date: 2011-02-06 09:46+0300\n"
+"Last-Translator: Korostil Daniel <ted.korostiled@gmail.com>\n"
+"Language-Team: translation@linux.org.ua\n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Virtaal 0.6.1\n"
 "X-Launchpad-Export-Date: 2009-11-13 11:33+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
 
-#: src/e_mod_config.c:51
-msgid "Places Configuration"
-msgstr "Налаштування місцин"
+#. create new config dialog
+#: ../src/e_mod_config.c:51
+msgid "Places Settings"
+msgstr "Налаштування"
 
-#: src/e_mod_config.c:118
+#. General frame
+#: ../src/e_mod_config.c:118
 msgid "General"
-msgstr "Загальні"
+msgstr "Загальне"
 
-#: src/e_mod_config.c:121
+#: ../src/e_mod_config.c:121
 msgid "Show in main menu"
 msgstr "Показати в головному меню"
 
-#: src/e_mod_config.c:125
+#: ../src/e_mod_config.c:125
 msgid "Mount volumes on insert"
 msgstr "Змонтовувати том при вводі"
 
-#: src/e_mod_config.c:129
+#: ../src/e_mod_config.c:129
 msgid "Open filemanager on insert"
 msgstr "Відкривати менеджера файлів при вводі"
 
-#: src/e_mod_config.c:133
+#: ../src/e_mod_config.c:133
 msgid "Use a custom file manager"
-msgstr "Використовувати звичайного менеджера файлів"
+msgstr "Використовувати вибраний файловий менеджер"
 
-#: src/e_mod_config.c:146
+#. Display frame
+#: ../src/e_mod_config.c:146
 msgid "Show in menu"
 msgstr "Показати в меню"
 
-#: src/e_mod_config.c:149 src/e_mod_places.c:402
+#: ../src/e_mod_config.c:149 ../src/e_mod_places.c:379
 msgid "Home"
 msgstr "Домівка"
 
-#: src/e_mod_config.c:152 src/e_mod_places.c:411
+#: ../src/e_mod_config.c:152 ../src/e_mod_places.c:388
 msgid "Desktop"
 msgstr "Стільниця"
 
-#: src/e_mod_config.c:155 src/e_mod_places.c:421
+#: ../src/e_mod_config.c:155 ../src/e_mod_places.c:398
 msgid "Trash"
 msgstr "Корзина"
 
-#: src/e_mod_config.c:158 src/e_mod_places.c:232 src/e_mod_places.c:430
+#: ../src/e_mod_config.c:158 ../src/e_mod_places.c:208
+#: ../src/e_mod_places.c:407
 msgid "Filesystem"
 msgstr "Файлова система"
 
-#: src/e_mod_config.c:161 src/e_mod_places.c:439
+#: ../src/e_mod_config.c:161 ../src/e_mod_places.c:416
 msgid "Temp"
-msgstr "Тимчасові"
+msgstr "Тимчасове"
 
-#: src/e_mod_config.c:164
+#: ../src/e_mod_config.c:164
 msgid "Favorites"
 msgstr "Улюблені"
 
-#: src/e_mod_main.c:75
+#. Display this Modules config info in the main Config Panel
+#: ../src/e_mod_main.c:58
 msgid "Files"
 msgstr "Файли"
 
-#: src/e_mod_main.c:77 src/e_mod_places.c:502
+#: ../src/e_mod_main.c:60 ../src/e_mod_places.c:479
 msgid "Places"
-msgstr "Місцини"
+msgstr "Місця"
 
-#: src/e_mod_main.c:443
-msgid "Configuration"
+#: ../src/e_mod_main.c:430
+msgid "Settings"
 msgstr "Налаштування"
 
-#: src/e_mod_places.c:237
+#: ../src/e_mod_places.c:213
 msgid "No Name"
 msgstr "Без назви"
 
-#: src/e_mod_places.c:692
+#: ../src/e_mod_places.c:669
 msgid "free of"
 msgstr "вільно з"
 
-#: src/e_mod_places.c:698
+#: ../src/e_mod_places.c:675
 #, c-format
 msgid "%s Not Mounted"
-msgstr "%s не змонтований"
+msgstr "%s не змонтовано"
 
-#: src/e_mod_places.c:715
+#: ../src/e_mod_places.c:692
 msgid "unmount"
 msgstr "демонтувати"
 
-#: src/e_mod_places.c:721
+#: ../src/e_mod_places.c:698
 msgid "eject"
 msgstr "вийняти"
+
+#~ msgid "Places Configuration"
+#~ msgstr "Налаштування місцин"
+
+#~ msgid "Configuration"
+#~ msgstr "Налаштування"

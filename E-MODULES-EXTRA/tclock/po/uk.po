@@ -1,23 +1,26 @@
 # This file is put in the public domain.
-#
 # Daniel Korostil <ted.korostiled@gmail.com>, 2009.
+# Korostil Daniel <ted.korostiled@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: tclock.HEAD\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-05 16:07+0800\n"
-"PO-Revision-Date: 2009-09-11 10:10+0000\n"
-"Last-Translator: Сергій Матрунчик <Unknown>\n"
-"Language-Team: Ukrainian <translation@linux.org.ua>\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2009-12-03 02:03-0800\n"
+"PO-Revision-Date: 2011-02-06 10:57+0300\n"
+"Last-Translator: Korostil Daniel <ted.korostiled@gmail.com>\n"
+"Language-Team: translation@linux.org.ua\n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Virtaal 0.6.1\n"
 "X-Launchpad-Export-Date: 2009-11-12 04:52+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/e_mod_config.c:39
 msgid "Tclock Settings"
-msgstr "Налаштування Tclock"
+msgstr "Налаштування"
 
 #: ../src/e_mod_config.c:88
 msgid "Top"
@@ -34,7 +37,7 @@ msgstr "Узгодити strftime(3) для розуміння синтакси�
 
 #: ../src/e_mod_config.c:102
 msgid "Bottom"
-msgstr "Дно"
+msgstr "Низ"
 
 #: ../src/e_mod_config.c:104
 msgid "Show Bottom Line"
@@ -46,7 +49,7 @@ msgstr "Підказка"
 
 #: ../src/e_mod_config.c:119
 msgid "Show Tooltip"
-msgstr "Показати підказку"
+msgstr "Показувати підказку"
 
 #: ../src/e_mod_main.c:141
 msgid "TClock"
@@ -54,7 +57,7 @@ msgstr "Годинник"
 
 #: ../src/e_mod_main.c:184
 msgid "Settings"
-msgstr "Параметри"
+msgstr "Налаштування"
 
 #~ msgid "Tclock Configuration"
 #~ msgstr "Налаштування годинника"

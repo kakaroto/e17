@@ -1,287 +1,292 @@
 # This file is put in the public domain.
-#
 # Daniel Korostil <ted.korostiled@gmail.com>, 2009.
+# Korostil Daniel <ted.korostiled@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: exalt-client.HEAD\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-27 01:05+1100\n"
-"PO-Revision-Date: 2009-06-08 00:13+0300\n"
-"Last-Translator: Daniel Korostil <ted.korostiled@gmail.com>\n"
-"Language-Team: Ukrainian <translation@linux.org.ua>\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2010-09-09 08:00-0700\n"
+"PO-Revision-Date: 2011-02-06 07:21+0300\n"
+"Last-Translator: Korostil Daniel <ted.korostiled@gmail.com>\n"
+"Language-Team: translation@linux.org.ua\n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 0.2\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Virtaal 0.6.1\n"
 
-#: src/e_mod_config.c:41
-#, fuzzy
+#. create new config dialog
+#: ../src/e_mod_config.c:41
 msgid "Exalt Configuration"
 msgstr "Налаштування"
 
-#: src/e_mod_config.c:84
+#: ../src/e_mod_config.c:84
 msgid "General"
 msgstr "Загальне"
 
-#: src/e_mod_config.c:89
+#: ../src/e_mod_config.c:89
 msgid "Basic mode"
-msgstr ""
+msgstr "Основне"
 
-#: src/e_mod_config.c:91
+#: ../src/e_mod_config.c:91
 msgid "Advanced mode"
-msgstr ""
+msgstr "Додатково"
 
-#: src/e_mod_config.c:97
-#, fuzzy
+#: ../src/e_mod_config.c:97
 msgid "Wireless network"
-msgstr "Інтерфейс радіомережі"
+msgstr "Радіомережа"
 
-#: src/e_mod_config.c:99
+#: ../src/e_mod_config.c:99
 msgid "Save the configuration of each wireless network"
-msgstr ""
+msgstr "Зберегти налаштування кожної радіомережі"
 
-#: src/e_mod_config.c:104
-#, fuzzy
+#: ../src/e_mod_config.c:104
 msgid "Notifications"
-msgstr "Налаштування"
+msgstr "Сповіщення"
 
-#: src/e_mod_config.c:106
+#: ../src/e_mod_config.c:106
 msgid "Enable the notifications"
-msgstr ""
+msgstr "Увімкнути сповіщення"
 
-#: src/e_mod_main.c:232
+#: ../src/e_mod_main.c:232
 msgid "Exalt Warning"
-msgstr "Попередження мережі"
+msgstr "Попередження"
 
-#: src/e_mod_main.c:235
+#: ../src/e_mod_main.c:235
 msgid "Warning"
 msgstr "Попередження"
 
-#: src/e_mod_main.c:236
+#: ../src/e_mod_main.c:236
 msgid "NetworkManager has been detected on your computer."
-msgstr "На вашому комп'ютері виявлено NetworkManager."
+msgstr "На комп'ютері виявлено NetworkManager."
 
-#: src/e_mod_main.c:238
+#: ../src/e_mod_main.c:238
 msgid ""
 "Exalt can't work properly if networkManager is running, please stop "
 "NetworkManager or Exalt."
 msgstr ""
 "Exalt не може працювати як слід, коли запущено networkManager, будь ласка, "
-"вимкніть один із них."
+"вимкніть одного із них."
 
-#: src/e_mod_main.c:241
+#: ../src/e_mod_main.c:241
 msgid "Ok"
 msgstr "Гаразд"
 
-#: src/e_mod_main.c:368
+#: ../src/e_mod_main.c:368
 msgid "exalt"
 msgstr "Exalt"
 
-#: src/e_mod_main.c:453
+#: ../src/e_mod_main.c:453
 msgid "exalt Configuration Updated"
-msgstr "Налаштування оновлені"
+msgstr "Налаштування оновлено"
 
-#: src/e_mod_main.c:521
-msgid "Configuration"
+#: ../src/e_mod_main.c:525
+msgid "Settings"
 msgstr "Налаштування"
 
-#: src/popup.c:43
-#, fuzzy
+#: ../src/popup.c:43
 msgid "DNS configuration"
-msgstr "Налаштування"
+msgstr "Налаштування DNS"
 
-#: src/popup.c:47
-#, fuzzy
+#: ../src/popup.c:47
 msgid "Network configuration"
-msgstr "Інформація про мережу"
+msgstr "Налаштування мережі"
 
-#: src/popup.c:53
+#: ../src/popup.c:53
 msgid "Modem dialer"
-msgstr ""
+msgstr "Телефонний модем"
 
-#: src/popup.c:57
+#: ../src/popup.c:57
 msgid "Mobile Phone (3G)"
-msgstr ""
+msgstr "Мобільний телефон (3G)"
 
-#: src/popup.c:229
+#: ../src/popup.c:231
 msgid "No IP Address"
 msgstr "Нема адреси IP"
 
-#: src/popup.c:233 src/wired_dialog.c:42
+#: ../src/popup.c:236 ../src/wired_dialog.c:42
 msgid "Wired interface"
-msgstr "Вбудований інтерфейс"
+msgstr "Дротовий інтерфейс"
 
-#: src/popup.c:236
+#: ../src/popup.c:239
 msgid "Wireless interface"
 msgstr "Інтерфейс радіомережі"
 
-#: src/wired_dialog.c:36
-#, fuzzy
+#: ../src/wired_dialog.c:36
 msgid "Wired Configuration Settings"
-msgstr "Налаштування з'єднання вбудованого"
+msgstr "Налаштування дротової мережі"
 
-#: src/wired_dialog.c:51 src/network_dialog.c:54 src/wireless_dialog.c:36
+#: ../src/wired_dialog.c:51 ../src/network_dialog.c:54
+#: ../src/wireless_dialog.c:36
 msgid "Activate"
 msgstr "Увімкнути"
 
-#: src/wired_dialog.c:54 src/network_dialog.c:57 src/wireless_dialog.c:39
+#: ../src/wired_dialog.c:54 ../src/network_dialog.c:57
+#: ../src/wireless_dialog.c:39
 msgid "Deactivate"
 msgstr "Вимкнути"
 
-#: src/wired_dialog.c:58 src/network_dialog.c:61
+#: ../src/wired_dialog.c:58 ../src/network_dialog.c:61
 msgid "DHCP (Dynamic host configuration protocol)"
 msgstr "DHCP (протокол динамічної конфігурації вузла)"
 
-#: src/wired_dialog.c:63 src/network_dialog.c:66
+#: ../src/wired_dialog.c:63 ../src/network_dialog.c:66
 msgid "Static"
 msgstr "Статична"
 
-#: src/wired_dialog.c:68 src/network_dialog.c:71
+#: ../src/wired_dialog.c:68 ../src/network_dialog.c:71
 msgid "IP address: "
 msgstr "Адреса IP: "
 
-#: src/wired_dialog.c:73 src/network_dialog.c:76
+#: ../src/wired_dialog.c:73 ../src/network_dialog.c:76
 msgid "Netmask address: "
 msgstr "Адреса маски мережі:"
 
-#: src/wired_dialog.c:78 src/network_dialog.c:81
+#: ../src/wired_dialog.c:78 ../src/network_dialog.c:81
 msgid "Gateway address: "
 msgstr "Адреса шлюзу: "
 
-#: src/wired_dialog.c:83 src/network_dialog.c:86
+#: ../src/wired_dialog.c:83 ../src/network_dialog.c:86
 msgid "Command: "
 msgstr "Команда:"
 
-#: src/wired_dialog.c:96 src/network_dialog.c:98 src/network_dialog.c:677
-#: src/network_dialog.c:723 src/network_dialog.c:771 src/wireless_dialog.c:52
+#.
+#.
+#: ../src/wired_dialog.c:96 ../src/network_dialog.c:98
+#: ../src/network_dialog.c:677 ../src/network_dialog.c:723
+#: ../src/network_dialog.c:771 ../src/wireless_dialog.c:52
 msgid "OK"
 msgstr "Гаразд"
 
-#: src/wired_dialog.c:97 src/network_dialog.c:99
+#: ../src/wired_dialog.c:97 ../src/network_dialog.c:99
 msgid "Apply"
 msgstr "Застосувати"
 
-#: src/wired_dialog.c:98 src/network_dialog.c:100 src/network_dialog.c:678
-#: src/network_dialog.c:724 src/network_dialog.c:772
+#: ../src/wired_dialog.c:98 ../src/network_dialog.c:100
+#: ../src/network_dialog.c:678 ../src/network_dialog.c:724
+#: ../src/network_dialog.c:772
 msgid "Cancel"
 msgstr "Скасувати"
 
-#: src/network_dialog.c:17
-#, fuzzy
+#: ../src/network_dialog.c:17
 msgid "Wireless Configuration Settings"
 msgstr "Налаштування радіомережі"
 
-#: src/network_dialog.c:25
+#: ../src/network_dialog.c:25
 msgid "Network information"
 msgstr "Інформація про мережу"
 
-#: src/network_dialog.c:27
+#: ../src/network_dialog.c:27
 msgid "Essid: "
 msgstr "Essid:"
 
-#: src/network_dialog.c:32
+#: ../src/network_dialog.c:32
 msgid "Address: "
 msgstr "Адреса:"
 
-#: src/network_dialog.c:37
+#: ../src/network_dialog.c:37
 msgid "Quality: "
 msgstr "Якість:"
 
-#: src/network_dialog.c:45
+#. IFACE frame
+#: ../src/network_dialog.c:45
 msgid "Wireless interface configuration"
 msgstr "Налаштування інтерфесу радіомережі"
 
-#: src/network_dialog.c:91
+#: ../src/network_dialog.c:91
 msgid "Add to favorites: "
-msgstr ""
+msgstr "Додати до улюбленого:"
 
-#: src/network_dialog.c:203
+#: ../src/network_dialog.c:203
 msgid "WEP information"
 msgstr "Інформація про WEP"
 
-#: src/network_dialog.c:205
+#: ../src/network_dialog.c:205
 msgid "Description: "
 msgstr "Опис:"
 
-#: src/network_dialog.c:207
+#: ../src/network_dialog.c:207
 msgid "WEP"
 msgstr "WEP"
 
-#: src/network_dialog.c:225
+#: ../src/network_dialog.c:225
 msgid "Hexadecimal Key"
 msgstr "Шістнадцятковий код"
 
-#: src/network_dialog.c:229
+#: ../src/network_dialog.c:229
 msgid "ASCII Key"
 msgstr "ASCII код"
 
-#: src/network_dialog.c:235 src/network_dialog.c:313
+#: ../src/network_dialog.c:235 ../src/network_dialog.c:313
 msgid "Password: "
 msgstr "Пароль:"
 
-#: src/network_dialog.c:258
+#: ../src/network_dialog.c:258
 msgid "WPA information"
 msgstr "Інформація про WPA"
 
-#: src/network_dialog.c:324
+#: ../src/network_dialog.c:324
 msgid "CA certificate: "
-msgstr ""
+msgstr "Сертифікат CA:"
 
-#: src/network_dialog.c:336
+#: ../src/network_dialog.c:336
 msgid "Client certificate: "
-msgstr ""
+msgstr "Сертифікат клієнта:"
 
-#: src/network_dialog.c:349
+#: ../src/network_dialog.c:349
 msgid "Private key: "
-msgstr ""
+msgstr "Особистий ключ:"
 
-#: src/network_dialog.c:666
+#: ../src/network_dialog.c:666
 msgid "Select the company certificate"
-msgstr ""
+msgstr "Виберіть сертифікат компанії"
 
-#: src/network_dialog.c:712 src/network_dialog.c:760
+#: ../src/network_dialog.c:712 ../src/network_dialog.c:760
 msgid "Select the client certificate"
-msgstr ""
+msgstr "Виберіть сертифікат клієнта"
 
-#: src/dns_dialog.c:20
+#: ../src/dns_dialog.c:20
 msgid "DNS (Domain Name Server) Settings"
-msgstr ""
+msgstr "Налаштування DNS (сервер доменних назв)"
 
-#: src/dns_dialog.c:25
+#: ../src/dns_dialog.c:25
 msgid "DNS (Domain Name Server) configuration"
-msgstr ""
+msgstr "Налаштування DNS (сервер доменних назв)"
 
-#: src/dns_dialog.c:45
+#.
+#. buttons
+#: ../src/dns_dialog.c:45
 msgid "Add"
-msgstr ""
+msgstr "Додати"
 
-#: src/dns_dialog.c:47
+#: ../src/dns_dialog.c:47
 msgid "Replace"
-msgstr ""
+msgstr "Замінити"
 
-#: src/dns_dialog.c:49
+#: ../src/dns_dialog.c:49
 msgid "Delete"
-msgstr ""
+msgstr "Вилучити"
 
-#: src/dns_dialog.c:59
+#: ../src/dns_dialog.c:59
 msgid "Close"
-msgstr ""
+msgstr "Закрити"
 
-#: src/wireless_dialog.c:21
-#, fuzzy
+#: ../src/wireless_dialog.c:21
 msgid "Wireless Interface Settings"
-msgstr "Налаштування радіомережі"
+msgstr "Налаштування інтерфейсу радіомережі"
 
-#: src/wireless_dialog.c:27
-#, fuzzy
+#: ../src/wireless_dialog.c:27
 msgid "wireless interface"
 msgstr "Інтерфейс радіомережі"
 
-#: src/wireless_dialog.c:42
+#: ../src/wireless_dialog.c:42
 msgid "Create a new network"
-msgstr ""
+msgstr "Сворити нову мережу"
+
+#~ msgid "Configuration"
+#~ msgstr "Налаштування"
 
 #~ msgid "Login: "
 #~ msgstr "Користувач:"
@@ -291,6 +296,3 @@ msgstr ""
 
 #~ msgid "Use Switch 1"
 #~ msgstr "Використовувати перемикання 1"
-
-#~ msgid "Settings"
-#~ msgstr "Налаштування"
