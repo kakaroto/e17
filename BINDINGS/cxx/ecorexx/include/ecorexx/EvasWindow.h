@@ -1,5 +1,5 @@
-#ifndef ECORE_EVAS_WINDOW_H
-#define ECORE_EVAS_WINDOW_H
+#ifndef ECOREXX_EVAS_WINDOW_H
+#define ECOREXX_EVAS_WINDOW_H
 
 /* EFLxx */
 #include <eflxx/Common.h>
@@ -16,7 +16,6 @@
 namespace Ecorexx {
 
 /* forward declarations */
-class XWindow;
 
 // TODO: Test for supported backends?
 class EvasWindow : public Eflxx::Trackable
@@ -162,80 +161,6 @@ private:
   bool mQuit;
 };
 
-class EvasWindowSoftwareX11 : public EvasWindow
-{
-public:
-  EvasWindowSoftwareX11( const Eflxx::Size &size, const char* display = 0 );
-  virtual ~EvasWindowSoftwareX11();
-
-  /*!
-   * \brief Gets a pointer to the X window. The returned pointer needs to be
-   *        deleted if you don't need it any longer.
-   *
-   * \return The XWindow.
-   */
-  XWindow *getXWindow();
-
-private:
-  EvasWindowSoftwareX11();
-  bool operator=( const EvasWindowSoftwareX11& );
-  bool operator==( const EvasWindowSoftwareX11& );
-};
-
-class EvasWindowGLX11 : public EvasWindow
-{
-public:
-  EvasWindowGLX11( const Eflxx::Size &size, const char* display = 0 );
-  virtual ~EvasWindowGLX11();
-
-  /*!
-   * \brief Gets a pointer to the X window. The returned pointer needs to be
-   *        deleted if you don't need it any longer.
-   *
-   * \return The XWindow.
-   */
-  XWindow *getXWindow();
-
-private:
-  EvasWindowGLX11();
-  bool operator=( const EvasWindowGLX11& );
-  bool operator==( const EvasWindowGLX11& );
-};
-
-class EvasWindowXRenderX11 : public EvasWindow
-{
-public:
-  EvasWindowXRenderX11( const Eflxx::Size &size, const char* display = 0 );
-  virtual ~EvasWindowXRenderX11();
-
-  /*!
-   * \brief Gets a pointer to the X window. The returned pointer needs to be
-   *        deleted if you don't need it any longer.
-   *
-   * \return The XWindow.
-   */
-  XWindow *getXWindow();
-
-private:
-  EvasWindowXRenderX11();
-  bool operator=( const EvasWindowXRenderX11& );
-  bool operator==( const EvasWindowXRenderX11& );
-};
-
-class EvasWindowFB : public EvasWindow
-{
-public:
-  EvasWindowFB( const Eflxx::Size &size, const char* display = 0, int rotation = 0 );
-  virtual ~EvasWindowFB();
-
-  XWindow *getXWindow();
-
-private:
-  EvasWindowFB();
-  bool operator=( const EvasWindowFB& );
-  bool operator==( const EvasWindowFB& );
-};
-
 } // end namespace Ecorexx
 
-#endif // ECORE_EVAS_WINDOW_H
+#endif // ECOREXX_EVAS_WINDOW_H

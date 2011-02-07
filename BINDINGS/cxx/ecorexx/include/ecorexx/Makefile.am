@@ -6,7 +6,11 @@ libecorexx_HEADERS = \
 	Animator.h \
 	Timer.h \
 	Ecorexx.h \
-	Job.h
+	Job.h \
+	EvasWindowFB.h \
+	EvasWindowGLX11.h \
+	EvasWindowSoftwareX11.h \
+	EvasWindowXRenderX11.h
 
 libecorexxdir = \
 	$(pkgincludedir)

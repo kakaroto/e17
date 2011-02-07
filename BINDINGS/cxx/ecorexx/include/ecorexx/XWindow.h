@@ -50,7 +50,7 @@ public:
 protected:
 
 private:
-  bool operator=( const XWindow& );
+  //bool operator=( const XWindow& );
   bool operator==( const XWindow& );
 
   Ecore_X_Window _exwin;

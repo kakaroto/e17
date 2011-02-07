@@ -21,7 +21,11 @@ libecorexx_la_SOURCES = \
 	XWindow.cpp \
 	Animator.cpp \
 	Timer.cpp \
-	Job.cpp
+	Job.cpp \
+	EvasWindowFB.cpp \
+	EvasWindowGLX11.cpp \
+	EvasWindowSoftwareX11.cpp \
+	EvasWindowXRenderX11.cpp
 
 libecorexx_la_LIBADD = \
 	$(EFL_LIBS)
