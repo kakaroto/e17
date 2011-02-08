@@ -99,6 +99,7 @@ ephoto_flow_browser_add(void)
           evas_object_event_callback_add
             (efb->images[2], EVAS_CALLBACK_MOUSE_DOWN, _ephoto_center_image_clicked, NULL);
      }
+
    return efb->box;
 }
 
@@ -106,6 +107,7 @@ void
 ephoto_flow_browser_image_set(void)
 {
    Eina_List *prevv, *prev, *next, *nextt;
+   int i;
 
    prev = eina_list_prev(ephoto->current_index);
    if (!eina_list_data_get(prev))
@@ -120,11 +122,19 @@ ephoto_flow_browser_image_set(void)
    if (!eina_list_data_get(nextt))
      nextt = eina_list_nth_list(ephoto->images, 0);
 
+   for (i = 0; i < 5; i++)
+     elm_layout_content_unset(efb->layout, efb->swallows[i]);
+
    elm_image_file_set(efb->images[0], eina_list_data_get(prevv), NULL);
+   elm_layout_content_set(efb->layout, "offscreen_left", efb->images[0]);
    elm_image_file_set(efb->images[1], eina_list_data_get(prev), NULL);
+   elm_layout_content_set(efb->layout, "left", efb->images[1]);
    elm_image_file_set(efb->images[2], eina_list_data_get(ephoto->current_index), NULL);
+   elm_layout_content_set(efb->layout, "center", efb->images[2]);
    elm_image_file_set(efb->images[3], eina_list_data_get(next), NULL);
+   elm_layout_content_set(efb->layout, "right", efb->images[3]);
    elm_image_file_set(efb->images[4], eina_list_data_get(nextt), NULL);
+   elm_layout_content_set(efb->layout, "offscreen_right", efb->images[4]);
 }
 
 void
@@ -133,11 +143,9 @@ ephoto_flow_browser_del(void)
    int i;
 
    for (i = 0; i < 5; i++)
-     {
-        elm_layout_content_unset(efb->layout, efb->swallows[i]);
-        evas_object_del(efb->images[i]);
-     }
+     evas_object_del(efb->images[i]);
    evas_object_del(efb->layout);
+   evas_object_del(efb->toolbar);
    evas_object_del(efb->box);
    free(efb);
 }
