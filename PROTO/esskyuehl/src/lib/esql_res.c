@@ -100,6 +100,13 @@ esql_res_esql_get(Esql_Res *res)
    return res->e;
 }
 
+const char *
+esql_res_error_get(Esql_Res *res)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
+
+   return res->error;
+}
 
 int
 esql_res_rows_count(Esql_Res *res)

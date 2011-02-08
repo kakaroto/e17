@@ -30,6 +30,7 @@ int esql_log_dom = -1;
 static int esql_init_count_ = 0;
 
 int ESQL_EVENT_ERROR = 0;
+int ESQL_EVENT_CONNECT = 0;
 int ESQL_EVENT_RESULT = 0;
 
 
@@ -54,10 +55,12 @@ esql_init(void)
         goto eina_fail;
      }
    if (!ecore_init()) goto fail;
-      return esql_init_count_;
 
    ESQL_EVENT_ERROR = ecore_event_type_new();
    ESQL_EVENT_RESULT = ecore_event_type_new();
+   ESQL_EVENT_CONNECT = ecore_event_type_new();
+
+   return esql_init_count_;
 
 fail:
    eina_log_domain_unregister(esql_log_dom);

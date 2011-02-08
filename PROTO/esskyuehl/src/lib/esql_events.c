@@ -99,7 +99,15 @@ esql_connect_handler(Esql *e, Ecore_Fd_Handler *fdh)
         break;
       default:
         ERR("Connection error: %s", e->backend.error_get(e));
-        ecore_event_add(ESQL_EVENT_ERROR, (void*)e->backend.error_get(e), (Ecore_End_Cb)esql_fake_free, NULL);
+        {
+           Esql_Res *res;
+
+           res = calloc(1, sizeof(Esql_Res));
+           EINA_SAFETY_ON_NULL_GOTO(res, out);
+           res->e = e;
+           res->error = e->backend.error_get(e);
+           ecore_event_add(ESQL_EVENT_ERROR, res, (Ecore_End_Cb)esql_res_free, NULL);
+        }
         return ECORE_CALLBACK_CANCEL;
      }
    return ECORE_CALLBACK_RENEW;

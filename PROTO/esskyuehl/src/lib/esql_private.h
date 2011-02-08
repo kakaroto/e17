@@ -5,8 +5,8 @@
 #ifndef ESQL_PRIV_H
 #define ESQL_PRIV_H
 
-#include <Eina.h>
 #include <Esskyuehl.h>
+#include <Ecore.h>
 #include <time.h>
 
 #ifdef HAVE_ALLOCA_H
@@ -80,6 +80,7 @@ struct Esql
 struct Esql_Res
 {
    Esql *e; /* parent object */
+   const char *error;
 
    Eina_Inlist *rows;
    int row_count;

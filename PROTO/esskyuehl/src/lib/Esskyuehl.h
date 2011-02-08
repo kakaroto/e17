@@ -18,7 +18,6 @@
 #define ESQL_H
 
 #include <Eina.h>
-#include <Ecore.h>
 
 #ifdef EAPI
 # undef EAPI
@@ -43,6 +42,7 @@
 #endif /* ! _WIN32 */
 
 extern int ESQL_EVENT_ERROR;
+extern int ESQL_EVENT_CONNECT;
 extern int ESQL_EVENT_RESULT;
 
 typedef struct Esql Esql;
@@ -116,6 +116,7 @@ EAPI Eina_Bool esql_query(Esql *e, const char *fmt, ...);
 
 /* res */
 EAPI Esql *esql_res_esql_get(Esql_Res *res);
+EAPI const char *esql_res_error_get(Esql_Res *res);
 EAPI int esql_res_rows_count(Esql_Res *res);
 EAPI int esql_res_cols_count(Esql_Res *res);
 EAPI long long int esql_res_rows_affected(Esql_Res *res);
