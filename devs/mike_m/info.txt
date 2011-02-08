@@ -1,0 +1,5 @@
+Login:    mike_m
+IRC Nick: mike_m
+Name:     Mike McCormack
+Location: Seoul, Korea
+E-Mail:   mj.mccormack@samsung.com
