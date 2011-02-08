@@ -21,12 +21,12 @@ Part::Part (Object* parent, const std::string &partname) :
   mExternalContent (NULL),
   mSwallowObject (NULL)
 {
-  cout << "Part::EdjePart( '" << mPartname << "' ) constructing..." << endl;
+  //cout << "Part::EdjePart( '" << mPartname << "' ) constructing..." << endl;
 }
 
 Part::~Part()
 {
-  cout << "~Part::EdjePart( '" << mPartname << "' ) destructing..." << endl;
+  //cout << "~Part::EdjePart( '" << mPartname << "' ) destructing..." << endl;
 
   delete mExternalObject;
   delete mSwallowObject;
