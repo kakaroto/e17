@@ -1,6 +1,5 @@
 What elsa do:
 open session with pam
-Integrate with the rc script of your discribution.
 User can choose the WM to open
 Admin can make a script who are called to open session (/etc/X11/xinit/xinitrc)
 Everything can be configured in elsa.conf

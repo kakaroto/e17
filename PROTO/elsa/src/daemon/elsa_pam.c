@@ -106,7 +106,7 @@ elsa_pam_open_session()
          fprintf(stderr, PACKAGE": PAM error on login password\n");
          return 1;
       default:
-         fprintf(stderr, PACKAGE": PAM warning unknow error\n");
+         fprintf(stderr, PACKAGE": PAM open warning unknow error\n");
          return 1;
       case PAM_SUCCESS:
          break;
@@ -182,7 +182,7 @@ elsa_pam_authenticate()
          fprintf(stderr, PACKAGE": PAM authenticate error !\n");
          return 1;
       default:
-         fprintf(stderr, PACKAGE": PAM warning unknow error\n");
+         fprintf(stderr, PACKAGE": PAM auth warning unknow error\n");
          return 1;
       case PAM_SUCCESS:
          break;

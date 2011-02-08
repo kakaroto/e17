@@ -1,17 +1,12 @@
 ++Make a very simple theme, to make a new theme easily
-++Catch Pam error on login (too many wrong password ...)
+++Catch more Pam error on login (too many wrong password ...)
 ++theme for cursor
 +Make a theme switcher on the fly with preview
 +multisession
 +authentification with fingerprint and others
 +support Xephyr
 Add code to don't use pam login (Nowadays, important?)
-fix warning
 Study possibility to use it with wayland so we can have transition when switching from one terminal to another.
 
 BUG REPORTED
-- It doesn't seem to kill the dbus-launch programs after you exit your WM.
-- Some other weird problems: such as some kde programs such as okular
-  fail to register with the dbus system after sometime (usually a couple
-  of hours). I have come across this same problem once while using lxdm
-  (lxdm itself has other problems).
+-communication between dbus and X failed

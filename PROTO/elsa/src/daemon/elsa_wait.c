@@ -107,7 +107,7 @@ main (int argc, char **argv)
                elsa_pam_end();
                elsa_pam_shutdown();
                if (_restart)
-                 execlp("elsa", "elsa", NULL);
+                 execlp("elsa", "elsa", "--nodaemon", NULL);
                exit(0);
             }
      }
