@@ -22,6 +22,37 @@
 #include <Esskyuehl.h>
 #include <esql_private.h>
 
+static Eina_Bool
+esql_row_iterator_next(Esql_Row_Iterator *it, Esql_Row **r)
+{
+   Eina_Inlist *l;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
+   if (!it->current) return EINA_FALSE;
+
+   *r = (Esql_Row*)it->current;
+
+   l = EINA_INLIST_GET((Esql_Row*)it->current);
+   it->current = l ? EINA_INLIST_CONTAINER_GET(l->next, Esql_Row) : NULL;
+
+   return EINA_TRUE;
+}
+
+static Esql_Row *
+esql_row_iterator_container_get(Esql_Row_Iterator *it)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
+
+   return (Esql_Row*)it->head;
+}
+
+static void
+eina_row_iterator_free(Esql_Row_Iterator *it)
+{
+   EINA_SAFETY_ON_NULL_RETURN(it);
+
+   free(it);
+}
+
 void
 esql_res_free(Esql_Res *res)
 {
@@ -54,44 +85,17 @@ esql_row_free(Esql_Row *r)
      }
    free(r);
 }
-
-static Eina_Bool
-esql_row_iterator_next(Esql_Row_Iterator *it, Esql_Row **r)
-{
-   Eina_Inlist *l;
-   EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
-   if (!it->current) return EINA_FALSE;
-
-   *r = (Esql_Row*)it->current;
-
-   l = EINA_INLIST_GET((Esql_Row*)it->current);
-   it->current = l ? EINA_INLIST_CONTAINER_GET(l->next, Esql_Row) : NULL;
-
-   return EINA_TRUE;
-}
-
-static Esql_Row *
-esql_row_iterator_container_get(Esql_Row_Iterator *it)
-{
-   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
-
-   return (Esql_Row*)it->head;
-}
-
-static void
-eina_row_iterator_free(Esql_Row_Iterator *it)
-{
-   EINA_SAFETY_ON_NULL_RETURN(it);
-
-   free(it);
-}
-
 /**
  * @defgroup Esql_Res Results
  * @brief Functions to use result objects
  * @{
  */
 
+/**
+ * @brief Retrieve the parent object of a result set
+ * @param res The result object (NOT #NULL)
+ * @return The parent object (NEVER #NULL)
+ */
 Esql *
 esql_res_esql_get(Esql_Res *res)
 {
@@ -100,6 +104,12 @@ esql_res_esql_get(Esql_Res *res)
    return res->e;
 }
 
+/**
+ * @brief Retrieve the error string associated with a result set
+ * This function will return #NULL in all cases where an error has not occurred.
+ * @param res The result object (NOT #NULL)
+ * @return The error string, #NULL if no error
+ */
 const char *
 esql_res_error_get(Esql_Res *res)
 {
@@ -108,6 +118,12 @@ esql_res_error_get(Esql_Res *res)
    return res->error;
 }
 
+/**
+ * @brief Retrieve the number of rows selected by a SELECT statement
+ * This function has no effect for INSERT/UPDATE/etc statements.
+ * @param res The result object (NOT #NULL)
+ * @return The number of rows, -1 on failure
+ */
 int
 esql_res_rows_count(Esql_Res *res)
 {
@@ -116,6 +132,12 @@ esql_res_rows_count(Esql_Res *res)
    return res->row_count;
 }
 
+/**
+ * @brief Retrieve the number of columns in a result set
+ * This function has no effect for INSERT/UPDATE/etc statements.
+ * @param res The result object (NOT #NULL)
+ * @return The number of columns, -1 on failure
+ */
 int
 esql_res_cols_count(Esql_Res *res)
 {
@@ -124,6 +146,12 @@ esql_res_cols_count(Esql_Res *res)
    return res->num_cols;
 }
 
+/**
+ * @brief Retrieve the number of rows affected by a non-SELECT statement
+ * This function has no effect for SELECT statements.
+ * @param res The result object (NOT #NULL)
+ * @return The number of rows affected, -1 on failure
+ */
 long long int
 esql_res_rows_affected(Esql_Res *res)
 {
@@ -132,6 +160,12 @@ esql_res_rows_affected(Esql_Res *res)
    return res->affected;
 }
 
+/**
+ * @brief Retrieve the insert id for a query
+ * This function has no effect for statements without an insert id.
+ * @param res The result object (NOT #NULL)
+ * @return The insert id, -1 on failure
+ */
 long long int
 esql_res_id(Esql_Res *res)
 {
@@ -140,11 +174,21 @@ esql_res_id(Esql_Res *res)
    return res->id;
 }
 
+/**
+ * @brief Create a new iterator for the rows in a result set
+ * This function is used to create an iterator for easily managing the rows in a result set.
+ * @note This function has no effect for non-SELECT statements.
+ * @param res The result object (NOT #NULL)
+ * @return The iterator object, #NULL on failure
+ */
 Eina_Iterator *
 esql_res_row_iterator_new(Esql_Res *res)
 {
    Esql_Row_Iterator *it;
 
+   EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(res->rows, NULL);
+   
    it = calloc(1, sizeof(Esql_Row_Iterator));
    EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
 
@@ -161,6 +205,13 @@ esql_res_row_iterator_new(Esql_Res *res)
    return &it->iterator;
 }
 
+/**
+ * @brief Retrieve the list of cells in a row
+ * This returns the inlist for the #Esql_Cell objects in row @p r.
+ * @note This function has no effect for non-SELECT statements.
+ * @param r The row object (NOT #NULL)
+ * @return The inlist, or #NULL on failure
+ */
 Eina_Inlist *
 esql_row_cells_get(Esql_Row *r)
 {
@@ -169,6 +220,13 @@ esql_row_cells_get(Esql_Row *r)
    return r->cells;
 }
 
+/**
+ * @brief Retrieve the number of cells in a row
+ * This is equivalent to esql_res_cols_count.
+ * @note This function has no effect for INSERT/UPDATE/etc statements.
+ * @param r The row object (NOT #NULL)
+ * @return The number of cells, -1 on failure
+ */
 int
 esql_row_cell_count(Esql_Row *r)
 {
@@ -177,6 +235,11 @@ esql_row_cell_count(Esql_Row *r)
    return r->num_cells;
 }
 
+/**
+ * @brief Retrieve the parent object of a row
+ * @param r The row object (NOT #NULL)
+ * @return The parent object (NEVER #NULL)
+ */
 Esql_Res *
 esql_row_res_get(Esql_Row *r)
 {

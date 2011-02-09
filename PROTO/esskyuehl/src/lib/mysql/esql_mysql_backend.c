@@ -64,6 +64,7 @@ esql_mysac_disconnect(Esql *e)
    MYSAC *m;
 
    m = e->backend.db;
+   if (m->fd < 0) return;
    close(m->fd);
    m->fd = -1;
 }
@@ -257,6 +258,7 @@ esql_mysac_free(Esql *e)
    MYSAC *m;
 
    m = e->backend.db;
+   esql_mysac_disconnect(e);
    free(m->buf);
    free(m);
 }

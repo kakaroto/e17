@@ -41,25 +41,54 @@
 # endif
 #endif /* ! _WIN32 */
 
-#define ESQL_DEFAULT_MYSQL_PORT "3306"
+#define ESQL_DEFAULT_MYSQL_PORT "3306" /**< Convenience define for default MYSQL port */
 
-extern int ESQL_EVENT_ERROR;
-extern int ESQL_EVENT_CONNECT;
-extern int ESQL_EVENT_DB;
-extern int ESQL_EVENT_RESULT;
+/**
+ * @defgroup Esql_Events Esql Events
+ * @brief Events that are emitted from the library
+ * @{
+ */
+extern int ESQL_EVENT_ERROR; /**< Event emitted on error, ev object is #Esql_Res */
+extern int ESQL_EVENT_CONNECT; /**< Event emitted connection to db, ev object is #Esql */
+extern int ESQL_EVENT_DB; /**< Event emitted on db change, ev object is #Esql */
+extern int ESQL_EVENT_RESULT; /**< Event emitted on query completion, ev object is #Esql_Res */
+/** @} */
+/**
+ * @defgroup Esql_Typedefs Esql types
+ * @brief These types are used throughout the library
+ * @{
+ */
 
+/**
+ * @typedef Esql
+ * Base Esskyuehl object for connecting to servers
+ */
 typedef struct Esql Esql;
+/**
+ * @typedef Esql_Res
+ * Esskyuehl result set object for managing query results
+ */
 typedef struct Esql_Res Esql_Res;
+/**
+ * @typedef Esql_Row
+ * Esskyuehl row object for accessing result rows
+ */
 typedef struct Esql_Row Esql_Row;
-typedef struct Esql_Cell Esql_Cell;
 
+/**
+ * @typedef Esql_Type
+ * Convenience enum for determining server backend type
+ */
 typedef enum
 {
    ESQL_TYPE_NONE,
    ESQL_TYPE_MYSQL
 } Esql_Type;
 
-
+/**
+ * @typedef Esql_Cell_Type
+ * This type determines which value to use from an #Esql_Cell
+ */
 typedef enum
 {
    ESQL_CELL_TYPE_UNKNOWN,
@@ -74,27 +103,34 @@ typedef enum
    ESQL_CELL_TYPE_DOUBLE
 } Esql_Cell_Type;
 
-struct Esql_Cell
+/**
+ * @typedef Esql_Cell
+ * Low-level object for managing cells in an #Esql_Row
+ * @note No value in this object is allocated, and all members belong
+ * to other objects.
+ */
+typedef struct Esql_Cell
 {
-   EINA_INLIST;
-   Esql_Row *row; /* parent row */
+   EINA_INLIST; /**< use to iterate through cells */
+   Esql_Row *row; /**< parent row */
    Esql_Cell_Type type;
-   const char *colname;
+   const char *colname; /**< NOT stringshared */
 
    union
    {
-      char c;
-      short s;
-      int i;
-      long long int l;
-      float f;
-      double d;
-      const char *string;
-      struct tm *tm;
-      struct timeval *tv;
+      char c; /**< ESQL_CELL_TYPE_TINYINT */
+      short s; /**< ESQL_CELL_TYPE_SHORT */
+      int i; /**< ESQL_CELL_TYPE_LONG */
+      long long int l; /**< ESQL_CELL_TYPE_LONGLONG */
+      float f; /**< ESQL_CELL_TYPE_FLOAT */
+      double d; /**< ESQL_CELL_TYPE_DOUBLE */
+      const char *string; /**< ESQL_CELL_TYPE_STRING */
+      struct tm *tm; /**< ESQL_CELL_TYPE_TIMESTAMP */
+      struct timeval *tv; /**< ESQL_CELL_TYPE_TIME */
+      /** ESQL_CELL_TYPE_UNKNOWN == #NULL */
    } value;
-};
-
+} Esql_Cell;
+/** @} */
 /* lib */
 EAPI int esql_init(void);
 EAPI int esql_shutdown(void);

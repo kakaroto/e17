@@ -188,6 +188,14 @@ err:
  * @defgroup Esql_Query Query
  * @brief Functions to manage/setup queries to databases
  * @{*/
+
+/**
+ * @brief Make a basic query
+ * Use this function to make a query which does not use printf-style arguments.
+ * @param e The #Esql object to query with (NOT #NULL)
+ * @param query The query SQL (NOT #NULL)
+ * @return EINA_TRUE on successful queuing of the query, else EINA_FALSE
+ */
 Eina_Bool
 esql_query(Esql *e, const char *query)
 {
@@ -215,7 +223,15 @@ esql_query(Esql *e, const char *query)
    return EINA_TRUE;
 }
 
-
+/**
+ * @brief Make a query using a format string and arguments
+ * Use this function to make a query which uses printf-style arguments.
+ * @param e The #Esql object to query with (NOT #NULL)
+ * @param fmt The format string for the query
+ * @return EINA_TRUE on successful queuing of the query, else EINA_FALSE
+ * @note This function automatically does all necessary escaping of the args required by
+ * @p e 's backend database.
+ */
 Eina_Bool
 esql_query_args(Esql *e, const char *fmt, ...)
 {

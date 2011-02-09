@@ -97,7 +97,12 @@ esql_shutdown(void)
  * @defgroup Esql_Object Objects
  * @brief Functions to control Esql objects
  * @{*/
- 
+
+/**
+ * @brief Create a new #Esql object
+ * This function does nothing but allocate a generic Esskyuehl struct.
+ * @return The new object, or #NULL on failure
+ */
 Esql *
 esql_new(void)
 {
@@ -109,6 +114,11 @@ esql_new(void)
    return e;
 }
 
+/**
+ * @brief Retrieve data previously associated with an object
+ * @param e The #Esql object (NOT #NULL)
+ * @return The data
+ */
 void *
 esql_data_get(Esql *e)
 {
@@ -116,6 +126,11 @@ esql_data_get(Esql *e)
    return e->data;
 }
 
+/**
+ * @brief Associate data with an #Esql object for later use
+ * @param e The #Esql object (NOT #NULL)
+ * @param data The data to associate
+ */
 void
 esql_data_set(Esql *e, void *data)
 {
@@ -123,11 +138,25 @@ esql_data_set(Esql *e, void *data)
    e->data = data;
 }
 
+/**
+ * @brief Set the database type of an #Esql object
+ * This function sets up all necessary function hooks to use @p e with a database
+ * type specified by @p type.
+ * @note If this function is called on an object multiple times, any connections associated
+ * with the object will be immediately lost.
+ * @param e The #Esql object (NOT #NULL)
+ * @param type The type of database to use.
+ * @return EINA_TRUE on success, else EINA_FALSE
+ */
 Eina_Bool
 esql_type_set(Esql *e, Esql_Type type)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
-   
+
+   if ((type != e->type) && e->backend.db && e->backend.free)
+     e->backend.free(e);
+
+   memset(&e->backend, 0, sizeof(e->backend));
    switch (type)
      {
       case ESQL_TYPE_MYSQL:
@@ -139,6 +168,12 @@ esql_type_set(Esql *e, Esql_Type type)
    return EINA_TRUE;
 }
 
+/**
+ * @brief Return the database type of an #Esql object
+ * @see esql_type_set
+ * @param e The #Esql object (NOT #NULL)
+ * @return The database type currently used by @p e
+ */
 Esql_Type
 esql_type_get(Esql *e)
 {
@@ -147,6 +182,12 @@ esql_type_get(Esql *e)
    return e->type;
 }
 
+/**
+ * @brief Free an #Esql object
+ * This function frees an #Esql object, shutting down all
+ * open connections and freeing all db-related data.
+ * @param e The #Esql object (NOT #NULL)
+ */
 void
 esql_free(Esql *e)
 {

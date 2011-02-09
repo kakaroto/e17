@@ -26,7 +26,16 @@
  * @defgroup Esql_Connect Connection
  * @brief Functions to manage/setup connections to databases
  * @{*/
-
+/**
+ * @brief Connect to an sql server
+ * Use this function to connect to an sql server with @p e after
+ * setting its type with esql_type_set.
+ * @param e The object to connect with (NOT #NULL)
+ * @param addr The address of the server (ie "127.0.0.1:3306") (NOT #NULL)
+ * @param user The username to connect with (NOT #NULL)
+ * @param passwd The password for @p user
+ * @return EINA_TRUE if the connection could be started, else EINA_FALSE
+ */
 Eina_Bool
 esql_connect(Esql *e, const char *addr, const char *user,
                  const char *passwd)
@@ -37,7 +46,6 @@ esql_connect(Esql *e, const char *addr, const char *user,
    EINA_SAFETY_ON_NULL_RETURN_VAL(e->backend.db, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(addr, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(user, EINA_FALSE);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(passwd, EINA_FALSE);
    
    e->backend.setup(e, addr, user, passwd);
    if (e->connected)
@@ -60,6 +68,14 @@ esql_connect(Esql *e, const char *addr, const char *user,
    return EINA_TRUE;
 }
 
+/**
+ * @brief Disconnect from the currently connected server
+ * This function calls all necessary functions to cleanly disconnect from the server
+ * previously connected to by @p e.
+ * @note Disconnecting is immediate.
+ * @param e The #Esql object (NOT #NULL)
+ * @return EINA_TRUE on success, else EINA_FALSE
+ */
 Eina_Bool
 esql_disconnect(Esql *e)
 {
@@ -72,6 +88,17 @@ esql_disconnect(Esql *e)
    return EINA_TRUE;
 }
 
+/**
+ * @brief Set the currently active database
+ * This function calls all necessary functions to switch databases to
+ * @p database_name. After it is called, all subsequent queries should be assumed
+ * to be directed at database specified by @p database_name. ESQL_EVENT_DB is emitted
+ * when the database change has succeeded.
+ * @note Must be connected to a database.
+ * @param e The #Esql object (NOT #NULL)
+ * @param database_name The database name
+ * @return EINA_TRUE on successful queue of the action, else EINA_FALSE
+ */
 Eina_Bool
 esql_database_set(Esql *e, const char *database_name)
 {
@@ -100,6 +127,11 @@ esql_database_set(Esql *e, const char *database_name)
    return EINA_TRUE;
 }
 
+/**
+ * @brief Return the currently active database name
+ * @param e The #Esql object (NOT #NULL)
+ * @return The stringshared database name, or #NULL on failure
+ */
 const char *
 esql_database_get(Esql *e)
 {
