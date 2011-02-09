@@ -25,7 +25,7 @@
 static Eina_Bool
 result_(void *data __UNUSED__, int type __UNUSED__, Esql_Res *res)
 {
-   printf("%i rows returned!\n", esql_res_rows_count(res));
+   printf("%i rows returned!\n", esql_res_rows_count(res)); /**< could do more here, but it's a simple example so we just print the number of rows */
    ecore_main_loop_quit();
    return ECORE_CALLBACK_RENEW;
 }
@@ -33,7 +33,7 @@ result_(void *data __UNUSED__, int type __UNUSED__, Esql_Res *res)
 static Eina_Bool
 error_(void *data __UNUSED__, int type __UNUSED__, Esql_Res *res)
 {
-   fprintf(stderr, "%s\n", esql_res_error_get(res));
+   fprintf(stderr, "%s\n", esql_res_error_get(res)); /**< print error condition */
    ecore_main_loop_quit();
    return ECORE_CALLBACK_RENEW;
 }
@@ -50,12 +50,12 @@ static Eina_Bool
 connect_(void *data __UNUSED__, int type __UNUSED__, Esql *e)
 {
    printf("Connected!\n");
-   if (!esql_database_set(e, "zentific"))
+   if (!esql_database_set(e, "zentific")) /**< switch to databse named zentific */
      {
         fprintf(stderr, "Could not create query!\n");
         ecore_main_loop_quit();
      }
-   if (!esql_query_args(e, "SELECT * FROM %s", "jobs"))
+   if (!esql_query_args(e, "SELECT * FROM %s", "jobs")) /**< queue up a simple query */
      {
         fprintf(stderr, "Could not create query!\n");
         ecore_main_loop_quit();
@@ -75,10 +75,9 @@ main(void)
    ecore_event_handler_add(ESQL_EVENT_RESULT, (Ecore_Event_Handler_Cb)result_, NULL);
    ecore_event_handler_add(ESQL_EVENT_ERROR, (Ecore_Event_Handler_Cb)error_, NULL);
 
-   e = esql_new();
-   esql_type_set(e, ESQL_TYPE_MYSQL);
-#define _(X) #X
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(!esql_connect(e, "127.0.0.1:" ESQL_DEFAULT_MYSQL_PORT, "zentific", "zentific"), 1);
+   e = esql_new(); /**< new object */
+   esql_type_set(e, ESQL_TYPE_MYSQL); /**< set mysql type */
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!esql_connect(e, "127.0.0.1:" ESQL_DEFAULT_MYSQL_PORT, "zentific", "zentific"), 1); /**< connect to localhost at default port */
    ecore_main_loop_begin();
 
    esql_free(e);
