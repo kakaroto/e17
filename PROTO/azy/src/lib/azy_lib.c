@@ -192,7 +192,7 @@ eina_fail:
  * 
  * This function uninitializes memory allocated by azy_init.
  * Call when no further Azy functions will be used.
- * @return The number of times the az_init has been called, or -1 if 
+ * @return The number of times azy_init has been called, or -1 if 
  * all occurrences of azy have been shut down
  */
 EAPI int
