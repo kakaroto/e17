@@ -48,7 +48,7 @@ int mysac_decode_binary_row(char *buf, int packet_len,
 	unsigned long len;
 	int tmp_len;
 	char *wh;
-	char _null_ptr[16];
+	char _null_ptr[16] = {0};
 	char *null_ptr;
 	unsigned char bit;
 

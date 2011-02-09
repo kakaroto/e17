@@ -52,7 +52,7 @@ int mysac_encode_value(MYSAC_BIND *val, char *out, int len) {
 	char *null_ptr;
 	unsigned char bit;
 	*/
-	int l;
+	int l = 0;
 //	int data_len;
 	struct timeval *tv;
 	struct tm *tm;
@@ -63,7 +63,6 @@ int mysac_encode_value(MYSAC_BIND *val, char *out, int len) {
 	
 	/* read null */
 	case MYSQL_TYPE_NULL:
-		l = 0;
 		break;
 	
 	/* read blob */
