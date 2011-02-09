@@ -210,7 +210,16 @@ TimersRun(unsigned int t_ms)
      }
 
    timer = q_first;
-   tn = (timer) ? t = timer->at_time - t : 0;
+
+   /* If the next (rescheduled) timer is already expired, set timeout time
+    * to 1 ms. This avoids starving the fd's and should maintain the intended
+    * (mean) timer rate.
+    * The (mean) amount of work done in a timer function should of course not
+    * exceed the timeout time. */
+   if (timer)
+      tn = (int)(timer->at_time - t) > 0 ? timer->at_time - t : 1;
+   else
+      tn = 0;
 
    if (EDebug(EDBUG_TYPE_TIMERS))
       Eprintf("TimersRun - next in %8u\n", tn);
