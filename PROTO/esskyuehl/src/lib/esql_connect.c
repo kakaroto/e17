@@ -66,7 +66,7 @@ esql_disconnect(Esql *e)
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(e->backend.db, EINA_FALSE);
 
-   ecore_main_fd_handler_del(e->fdh);
+   if (e->fdh) ecore_main_fd_handler_del(e->fdh);
    e->fdh = NULL;
    e->backend.disconnect(e);
    return EINA_TRUE;
@@ -75,7 +75,7 @@ esql_disconnect(Esql *e)
 Eina_Bool
 esql_database_set(Esql *e, const char *database_name)
 {
-   int ret;
+   DBG("(e=%p, database_name='%s')", e, database_name);
    
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(e->backend.db, EINA_FALSE);
@@ -85,16 +85,9 @@ esql_database_set(Esql *e, const char *database_name)
         ERR("Esql object must be connected!");
         return EINA_FALSE;
      }
-   if ((!e->backend_set_funcs) || (e->backend_set_funcs->data == esql_database_set))
+   if (!e->current)
      {
         e->backend.database_set(e, database_name);
-        ret = e->backend.io(e);
-        if (ret == ECORE_FD_ERROR)
-          {
-             ERR("Connection error: %s", e->backend.error_get(e));
-             return EINA_FALSE;
-          }
-        ecore_main_fd_handler_active_set(e->fdh, ret);
         e->current = ESQL_CONNECT_TYPE_DATABASE_SET;
      }
    else

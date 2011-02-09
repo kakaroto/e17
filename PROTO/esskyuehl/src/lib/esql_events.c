@@ -41,14 +41,19 @@ esql_call_complete(Esql *e)
 {
    Esql_Set_Cb cb;
    int ret;
-   
-   switch (e->type)
+
+   DBG("(e=%p)", e);
+   switch (e->current)
      {
       case ESQL_CONNECT_TYPE_INIT:
+        INFO("Connected");
         e->connected = EINA_TRUE;
+        ecore_event_add(ESQL_EVENT_CONNECT, e, (Ecore_End_Cb)esql_fake_free, NULL);
         break;
       case ESQL_CONNECT_TYPE_DATABASE_SET:
+        INFO("Working database is now '%s'", e->database);
         UPDATE_LISTS(database_set);
+        ecore_event_add(ESQL_EVENT_DB, e, (Ecore_End_Cb)esql_fake_free, NULL);
         break;
       case ESQL_CONNECT_TYPE_QUERY:
         UPDATE_LISTS(query);
@@ -66,7 +71,12 @@ esql_call_complete(Esql *e)
         break;
      }
 out:
-   if (!e->backend_set_funcs) return;
+   e->current = ESQL_CONNECT_TYPE_NONE;
+   if (!e->backend_set_funcs)
+     {
+        INFO("No calls queued");
+        return;
+     }
    /* next call */
    cb = e->backend_set_funcs->data;
    cb(e, e->backend_set_params->data);
@@ -76,20 +86,36 @@ out:
         ERR("Connection error: %s", e->backend.error_get(e));
         return;
      }
+   else if (!ret)
+     {
+        esql_call_complete(e);
+        return;
+     }
    ecore_main_fd_handler_active_set(e->fdh, ret);
    if (cb == (Esql_Set_Cb)esql_database_set)
-     e->current = ESQL_CONNECT_TYPE_DATABASE_SET;
+     {
+        e->current = ESQL_CONNECT_TYPE_DATABASE_SET;
+        INFO("Next call: DB change");
+     }
    else if (cb == (Esql_Set_Cb)esql_query)
-     e->current = ESQL_CONNECT_TYPE_QUERY;
+     {
+        e->current = ESQL_CONNECT_TYPE_QUERY;
+        INFO("Next call: query");
+     }
 }
 
 Eina_Bool
 esql_connect_handler(Esql *e, Ecore_Fd_Handler *fdh)
 {
+   DBG("(e=%p, fdh=%p)", e, fdh);
+
+   if (!ecore_main_fd_handler_active_get(fdh, ECORE_FD_READ | ECORE_FD_WRITE))
+     return ECORE_CALLBACK_RENEW;
    switch (e->backend.io(e))
      {
       case 0:
         esql_call_complete(e);
+        ecore_main_fd_handler_active_set(fdh, ECORE_FD_WRITE);
         break;
       case ECORE_FD_READ:
         ecore_main_fd_handler_active_set(fdh, ECORE_FD_READ);
@@ -103,11 +129,12 @@ esql_connect_handler(Esql *e, Ecore_Fd_Handler *fdh)
            Esql_Res *res;
 
            res = calloc(1, sizeof(Esql_Res));
-           EINA_SAFETY_ON_NULL_GOTO(res, out);
+           EINA_SAFETY_ON_NULL_RETURN_VAL(res, ECORE_CALLBACK_RENEW);
            res->e = e;
            res->error = e->backend.error_get(e);
            ecore_event_add(ESQL_EVENT_ERROR, res, (Ecore_End_Cb)esql_res_free, NULL);
         }
+        e->fdh = NULL;
         return ECORE_CALLBACK_CANCEL;
      }
    return ECORE_CALLBACK_RENEW;

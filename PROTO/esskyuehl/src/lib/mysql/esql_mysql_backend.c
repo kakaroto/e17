@@ -95,7 +95,7 @@ esql_mysac_io(Esql *e)
 static void
 esql_mysac_setup(Esql *e, const char *addr, const char *user, const char *passwd)
 {
-   mysac_setup(e->backend.db, addr, user, passwd, NULL, CLIENT_COMPRESS);
+   mysac_setup(e->backend.db, addr, user, passwd, NULL, 0);
 }
 
 static void
@@ -117,6 +117,7 @@ esql_mysac_res(Esql_Res *res)
    Esql_Row *r;
 
    re = res->backend.res = mysac_get_res(res->e->backend.db);
+   if (!re) return;
    m = res->e->backend.db;
    res->num_cols = re->nb_cols;
    mysac_first_row(re);
@@ -263,7 +264,6 @@ esql_mysac_free(Esql *e)
 void
 esql_mysac_init(Esql *e)
 {
-   char *buf;
    e->type = ESQL_TYPE_MYSQL;
    e->backend.connect = esql_mysac_connect;
    e->backend.disconnect = esql_mysac_disconnect;
@@ -276,7 +276,7 @@ esql_mysac_init(Esql *e)
    e->backend.query = esql_mysac_query;
    e->backend.res = esql_mysac_res;
    e->backend.free = esql_mysac_free;
-   buf = malloc(sizeof(char) * 1024);
-   EINA_SAFETY_ON_NULL_RETURN(buf);
-   mysac_init(e->backend.db, buf, 1024);
+
+   e->backend.db = mysac_new(1024);
+   EINA_SAFETY_ON_NULL_RETURN(e->backend.db);
 }

@@ -30,6 +30,7 @@ int esql_log_dom = -1;
 static int esql_init_count_ = 0;
 
 int ESQL_EVENT_ERROR = 0;
+int ESQL_EVENT_DB = 0;
 int ESQL_EVENT_CONNECT = 0;
 int ESQL_EVENT_RESULT = 0;
 
@@ -48,7 +49,7 @@ esql_init(void)
    if (++esql_init_count_ != 1)
      return esql_init_count_;
    if (!eina_init()) return 0;
-   esql_log_dom = eina_log_domain_register("esql", EINA_COLOR_BLUE);
+   esql_log_dom = eina_log_domain_register("esskyuehl", EINA_COLOR_BLUE);
    if (esql_log_dom < 0)
      {
         ERR("Could not register 'esql' log domain!");
@@ -57,6 +58,7 @@ esql_init(void)
    if (!ecore_init()) goto fail;
 
    ESQL_EVENT_ERROR = ecore_event_type_new();
+   ESQL_EVENT_DB = ecore_event_type_new();
    ESQL_EVENT_RESULT = ecore_event_type_new();
    ESQL_EVENT_CONNECT = ecore_event_type_new();
 
@@ -149,6 +151,7 @@ void
 esql_free(Esql *e)
 {
    EINA_SAFETY_ON_NULL_RETURN(e);
+   if (e->connected) esql_disconnect(e);
    if (e->backend.free) e->backend.free(e);
    free(e);
 }

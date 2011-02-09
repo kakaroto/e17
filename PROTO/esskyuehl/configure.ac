@@ -90,6 +90,7 @@ src/Makefile
 src/lib/Makefile
 src/lib/mysql/Makefile
 src/lib/mysql/mysac/Makefile
+src/tests/Makefile
 esskyuehl.pc
 ])
 

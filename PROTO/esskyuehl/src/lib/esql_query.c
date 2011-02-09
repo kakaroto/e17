@@ -88,7 +88,9 @@ esql_query_escape(Eina_Bool backslashes, size_t *len, const char *fmt, va_list a
 
    buf = eina_strbuf_new();
    *len = 0;
-   for (p = fmt, pp = strchr(fmt, '%'); p && *p; pp = strchr(p, '%'))
+   pp = strchr(fmt, '%');
+   if (!pp) pp = fmt + strlen(fmt) - 1;
+   for (p = fmt; p && *p; pp = strchr(p, '%'))
      {
         Eina_Bool l = EINA_FALSE;
         Eina_Bool ll = EINA_FALSE;
@@ -96,7 +98,9 @@ esql_query_escape(Eina_Bool backslashes, size_t *len, const char *fmt, va_list a
         double d;
         char *s;
 
-        if (!eina_strbuf_append_length(buf, p, pp - p)) goto err;
+        if (!pp) pp = fmt + strlen(fmt) - 1;
+        EINA_SAFETY_ON_FALSE_GOTO(eina_strbuf_append_length(buf, p, ((pp - p > 1) ? pp - p : 1)), err);
+        if (*pp != '%') break; /* no more fmt strings */
 top:
         switch (pp[1])
           {
@@ -122,7 +126,7 @@ top:
                   goto err;
                }
              d = va_arg(args, double);
-             if (!eina_strbuf_append_printf(buf, "%lf", d)) goto err;
+             EINA_SAFETY_ON_FALSE_GOTO(eina_strbuf_append_printf(buf, "%lf", d), err);
              break;
            case 'i':
            case 'd':
@@ -132,7 +136,7 @@ top:
                i = va_arg(args, long int);
              else
                i = va_arg(args, int);
-             if (!eina_strbuf_append_printf(buf, "%lli", i)) goto err;
+             EINA_SAFETY_ON_FALSE_GOTO(eina_strbuf_append_printf(buf, "%lli", i), err);
              break;
            case 's':
              if (l)
@@ -142,8 +146,8 @@ top:
                }
              s = va_arg(args, char*);
              s = esql_string_escape(backslashes, s);
-             if (!s) goto err;
-             if (!eina_strbuf_append(buf, s)) goto err;
+             EINA_SAFETY_ON_NULL_GOTO(s, err);
+             EINA_SAFETY_ON_FALSE_GOTO(eina_strbuf_append(buf, s), err);
              free(s);
              break;
            case 'c':
@@ -158,8 +162,8 @@ top:
                 c[0] = va_arg(args, int);
                 c[1] = c[2] = 0;
                 s = esql_string_escape(backslashes, c);
-                if (!s) goto err;
-                if (!eina_strbuf_append(buf, s)) goto err;
+                EINA_SAFETY_ON_NULL_GOTO(s, err);
+                EINA_SAFETY_ON_FALSE_GOTO(eina_strbuf_append(buf, s), err);
                 free(s);
              }
              break;
@@ -171,7 +175,7 @@ top:
              goto err;
           }
         
-        p = pp + 1;
+        p = pp + ((pp[1]) ? 2 : 1);
      }
    *len = eina_strbuf_length_get(buf);
    ret = eina_strbuf_string_steal(buf);
@@ -185,9 +189,36 @@ err:
  * @brief Functions to manage/setup queries to databases
  * @{*/
 Eina_Bool
-esql_query(Esql *e, const char *fmt, ...)
+esql_query(Esql *e, const char *query)
 {
-   int ret;
+   DBG("(e=%p, fmt='%s')", e, query);
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(e->backend.db, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(query, EINA_FALSE);
+   if ((!e->fdh) || (!e->connected))
+     {
+        ERR("Esql object must be connected!");
+        return EINA_FALSE;
+     }
+   if (!e->current)
+     {
+        e->backend.query(e, query);
+        e->current = ESQL_CONNECT_TYPE_QUERY;
+     }
+   else
+     {
+        e->backend_set_funcs = eina_list_append(e->backend_set_funcs, esql_query);
+        e->backend_set_params = eina_list_append(e->backend_set_params, query);
+     }
+
+   return EINA_TRUE;
+}
+
+
+Eina_Bool
+esql_query_args(Esql *e, const char *fmt, ...)
+{
    va_list args;
    char *query;
 
@@ -205,16 +236,10 @@ esql_query(Esql *e, const char *fmt, ...)
    va_start(args, fmt);
    query = e->backend.escape(e, fmt, args);
    va_end(args);
-   if ((!e->backend_set_funcs) || (e->backend_set_funcs->data == esql_query))
+   EINA_SAFETY_ON_NULL_RETURN_VAL(query, EINA_FALSE);
+   if (!e->current)
      {
         e->backend.query(e, query);
-        ret = e->backend.io(e);
-        if (ret == ECORE_FD_ERROR)
-          {
-             ERR("Connection error: %s", e->backend.error_get(e));
-             return EINA_FALSE;
-          }
-        ecore_main_fd_handler_active_set(e->fdh, ret);
         e->current = ESQL_CONNECT_TYPE_QUERY;
         free(query);
      }

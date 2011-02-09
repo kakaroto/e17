@@ -41,8 +41,11 @@
 # endif
 #endif /* ! _WIN32 */
 
+#define ESQL_DEFAULT_MYSQL_PORT "3306"
+
 extern int ESQL_EVENT_ERROR;
 extern int ESQL_EVENT_CONNECT;
+extern int ESQL_EVENT_DB;
 extern int ESQL_EVENT_RESULT;
 
 typedef struct Esql Esql;
@@ -112,7 +115,8 @@ EAPI Eina_Bool esql_database_set(Esql *e, const char *database_name);
 EAPI const char *esql_database_get(Esql *e);
 
 /* query */
-EAPI Eina_Bool esql_query(Esql *e, const char *fmt, ...);
+EAPI Eina_Bool esql_query(Esql *e, const char *query);
+EAPI Eina_Bool esql_query_args(Esql *e, const char *fmt, ...);
 
 /* res */
 EAPI Esql *esql_res_esql_get(Esql_Res *res);
