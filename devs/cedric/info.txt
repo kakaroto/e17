@@ -5,8 +5,8 @@ Name:		Cedric BAIL
 Location:	Paris, France
 E-Mail:		cedric.bail@free.fr
 WWW:		none
-Managing:	eina, eet, eio, explicit
-Contributing:	evas, ecore, edje, expedite, e, ephoto, eyelight
+Managing:	eina, eet, evas, edje, ecore, eio, emotion
+Contributing:	expedite, e, ephoto, eyelight, efreet
 Group:		Core, Libraries, Applications
 Platform:	Ubuntu (Linux), Buildroot (Linux)
 GeoData:	48.834519 2.290574
