@@ -5,7 +5,7 @@ Name:         Tom Hacohen
 Location:     Tel-Aviv, Israel
 E-Mail:       tom@stosb.com
 WWW:          http://www.stosb.com
-Managing:     
-Contributing: evas, edje, eina, expedite, elementary, illume
+Managing:     evas, edje, eina, elementary
+Contributing: expedite, illume
 Group:        Libraries
 Platform:     Arch (Linux), Openembedded/Openmoko (Linux), Ubuntu (Linux)
