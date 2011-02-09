@@ -7,7 +7,7 @@ HEAD = /usr/bin/head
 RM = /bin/rm -f
 TAIL = /usr/bin/tail
 COMPILE = $(CC) $(EDJE_CC_FLAGS)
-SRC = main.edc
+SRC = main.edc entry_text.edc
 OUT = detour-elm.edj
 PATH_INSTALL = $(HOME)/.elementary/themes
 

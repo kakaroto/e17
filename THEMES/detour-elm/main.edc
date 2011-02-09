@@ -34,6 +34,7 @@ styles
 
 
 collections {
+#include "entry_text.edc"
     ///////////////////////////////////////////////////////////////////////////////
     group {
         name: "elm/bg/base/default";
@@ -44,18 +45,11 @@ collections {
                     image.normal: "images/win_background.png";
                 }
             }
-            part {
-                name: "popover";
-                mouse_events: 0;
-                description {
-                    state: "default" 0.0;
-                    rel1.offset: -20 -20;
-                    rel2.relative: 1.0 0.5;
-                    rel2.offset: 20 0;
-                    image {
-                        normal: "images/button_im4.png";
-                        border: 4 4 4 0;
-                    }
+	    part { name: "base2";
+                type: RECT;
+                mouse_events:  0;
+                description { state: "default" 0.0;
+		color: 0 0 0 100;
                 }
             }
             part { name: "elm.swallow.background";
@@ -142,6 +136,22 @@ collections {
 	       fill.smooth : 0;
 	    }
 	 }
+         part { name: "focus";
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       rel1.offset: 0 0;
+	       rel2.offset: -1 -1;
+	       image {
+		  normal: "images/scrollframe_im2.png";
+		  border: 7 7 7 7;
+	       }
+               color: 255 255 255 0;
+	    }
+	    description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+	       color: 255 255 255 255;
+	    }
+         }
 	 part { name: "sb_vbar_clip_master";
 	    type: RECT;
 	    mouse_events: 0;
@@ -362,7 +372,22 @@ collections {
 	       set_int(sbvis_timer, 0);
 	    }
 	 }
-
+          program {
+                name: "focused";
+                signal: "elm,action,focus";
+                source: "elm";
+                action: STATE_SET "visible" 0.0;
+                transition: DECELERATE 0.5;
+                target: "focus";
+            }
+            program {
+                name: "unfocused";
+                signal: "elm,action,unfocus";
+                source: "elm";
+                action: STATE_SET "default" 0.0;
+                transition: DECELERATE 0.5;
+                target: "focus";
+            }
 	 program { name: "vbar_show";
 	    signal: "elm,action,show,vbar";
 	    source: "elm";
@@ -500,20 +525,119 @@ collections {
 	       set_int(sbvis_timer, v);
 	    }
 	 }
+        
+         
       }
     }
+    group {
+      name: "elm/scroller/entry/default";
+      script {
+	 public sbvis_v, sbvis_h, sbalways_v, sbalways_h, sbvis_timer;
+	 public timer0(val) {
+	    new v;
+	    v = get_int(sbvis_v);
+	    if (v) {
+               v = get_int(sbalways_v);
+               if (!v) {
+                  emit("do-hide-vbar", "");
+                  set_int(sbvis_v, 0);
+               }
+	    }
+	    v = get_int(sbvis_h);
+	    if (v) {
+               v = get_int(sbalways_h);
+               if (!v) {
+                  emit("do-hide-hbar", "");
+                  set_int(sbvis_h, 0);
+               }
+	    }
+	    set_int(sbvis_timer, 0);
+	    return 0;
+	 }
+      }
+      parts {
+	 part { name: "clipper";
+	    type: RECT;
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+		rel1.offset: 10 5;
+		rel2.offset: -11 -6;
+	    }
+	 }
+	 part { name: "base";
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       rel1.offset: 0 0;
+	       rel2.offset: -1 -1;
+	       image {
+		  normal: "images/entry_im0.png";
+		  border: 5 5 5 5;
+		  middle: 1;
+	       }
+	       fill.smooth : 0;
+	    }
+	 }
+	 part { name: "elm.swallow.content";
+	    clip_to: "clipper";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1.offset: 10 5;
+	       rel2.offset: -11 -6;
+	    }
+	 }
+      }
+      programs {
+	 program { name: "load";
+	    signal: "load";
+	    source: "";
+	    script {
+	       set_int(sbvis_h, 0);
+	       set_int(sbvis_v, 0);
+	       set_int(sbalways_v, 0);
+	       set_int(sbalways_h, 0);
+	       set_int(sbvis_timer, 0);
+	    }
+	 }
+
+	 program { name: "scroll";
+	    signal: "elm,action,scroll";
+	    source: "elm";
+	    script {
+	       new v;
+	       v = get_int(sbvis_v);
+               v |= get_int(sbalways_v);
+	       if (!v) {
+                  emit("do-show-vbar", "");
+                  set_int(sbvis_v, 1);
+	       }
+	       v = get_int(sbvis_h);
+               v |= get_int(sbalways_h);
+	       if (!v) {
+                  emit("do-show-hbar", "");
+                  set_int(sbvis_h, 1);
+	       }
+	       v = get_int(sbvis_timer);
+	       if (v > 0) cancel_timer(v);
+	       v = timer(2.0, "timer0", 0);
+	       set_int(sbvis_timer, v);
+	    }
+	 }
+      }
+    }
+
     ///////////////////////////////////////////////////////////////////////////////
     group {
         name: "elm/label/base/default";
         styles
         {
             style { name: "textblock_style";
-                base: "font=DejaVuSans.ttf font_size=10 align=left color=#000 wrap=word";
+                base: "font=DejaVuSans font_size=10 align=left color=#000 wrap=word";
 
                 tag:  "br" "\n";
-                tag:  "hilight" "+ font=DejaVuSans-Bold.ttf";
-                tag:  "b" "+ font=DejaVuSans-Bold.ttf";
+                tag:  "hilight" "+ font=DejaVuSans-Bold";
+                tag:  "b" "+ font=DejaVuSans-Bold";
                 tag:  "tab" "\t";
+                tag:  "title" "+ font_size=12 font=DejaVuSans-Bold";
             }
         }
         parts {
@@ -561,7 +685,7 @@ collections {
                 mouse_events: 0;
                 description {
                     state: "default" 0.0;
-                    min: 50 26;
+                    min: 32 32;
                     rel1 {
                         offset: 3 4;
                     }
@@ -1013,7 +1137,7 @@ collections {
                 mouse_events: 0;
                 description {
                     state: "default" 0.0;
-                    min: 50 26;
+                    min: 26 26;
                     rel1 {
                         offset: 3 4;
                     }
@@ -2159,7 +2283,7 @@ collections {
                         offset: -5 -1;
                     }
                     text {
-                        text: "Frame Label";
+                        text: "";
                         font: "DejaVuSans-Bold";
                         size: 11;
                         min: 1 1;
@@ -3600,6 +3724,7 @@ collections {
                 name: "left_arrow";
                 type: IMAGE;
                 mouse_events: 1;
+		repeat_events: 1;
                 description {
                     state: "default" 0.0;
                     min: 22 22;
@@ -3623,6 +3748,7 @@ collections {
                 name: "right_arrow";
                 type: IMAGE;
                 mouse_events: 1;
+		repeat_events: 1;
                 description {
                     state: "default" 0.0;
                     min: 22 22;
@@ -6912,6 +7038,5 @@ collections {
            }
        }
    }
-
 }
 
