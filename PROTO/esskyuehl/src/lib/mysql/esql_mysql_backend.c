@@ -46,6 +46,7 @@ static void esql_mysac_database_set(Esql *e, const char *database_name);
 static Ecore_Fd_Handler_Flags esql_mysac_io(Esql *e);
 static void esql_mysac_setup(Esql *e, const char *addr, const char *user, const char *passwd);
 static void esql_mysac_query(Esql *e, const char *query);
+static void esql_mysac_res_free(Esql_Res *res);
 static void esql_mysac_res(Esql_Res *res);
 static char *esql_mysac_escape(Esql *e, const char *fmt, va_list args);
 static void esql_mysac_row_init(Esql_Row *r);
@@ -107,6 +108,12 @@ esql_mysac_query(Esql *e, const char *query)
    res = mysac_new_res(1024, 1);
    EINA_SAFETY_ON_NULL_RETURN(res);
    mysac_s_set_query(e->backend.db, res, query);
+}
+
+static void
+esql_mysac_res_free(Esql_Res *res)
+{
+   mysac_free_res(res->backend.res);
 }
 
 static void
@@ -277,6 +284,7 @@ esql_mysac_init(Esql *e)
    e->backend.escape = esql_mysac_escape;
    e->backend.query = esql_mysac_query;
    e->backend.res = esql_mysac_res;
+   e->backend.res_free = esql_mysac_res_free;
    e->backend.free = esql_mysac_free;
 
    e->backend.db = mysac_new(1024);

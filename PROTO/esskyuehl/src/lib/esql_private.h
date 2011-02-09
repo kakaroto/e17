@@ -65,6 +65,7 @@ struct Esql
       Esql_Fd_Cb fd_get;
       Esql_Escape_Cb escape;
       Esql_Res_Cb res;
+      Esql_Res_Cb res_free;
    } backend;
 
    const char *database;
@@ -118,7 +119,7 @@ typedef struct Esql_Row_Iterator
 
 void esql_mysac_init(Esql *e);
 
-void esql_res_free(Esql_Res *res);
+void esql_res_free(void *data __UNUSED__, Esql_Res *res);
 void esql_row_free(Esql_Row *r);
 
 Eina_Bool esql_connect_handler(Esql *e, Ecore_Fd_Handler *fdh);

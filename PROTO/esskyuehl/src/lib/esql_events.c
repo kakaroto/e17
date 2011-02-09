@@ -23,7 +23,7 @@
 #include <esql_private.h>
 
 #define UPDATE_LISTS(TYPE) do { \
-  if (e->backend_set_funcs && (e->backend_set_funcs->data == e->backend.TYPE)) \
+  if (e->backend_set_funcs && (e->backend_set_funcs->data == esql_##TYPE)) \
     { \
        free(e->backend_set_params->data); \
        e->backend_set_funcs = eina_list_remove_list(e->backend_set_funcs, e->backend_set_funcs); \
@@ -80,6 +80,16 @@ out:
    /* next call */
    cb = e->backend_set_funcs->data;
    cb(e, e->backend_set_params->data);
+   if (cb == (Esql_Set_Cb)esql_database_set)
+     {
+        e->current = ESQL_CONNECT_TYPE_DATABASE_SET;
+        INFO("Next call: DB change");
+     }
+   else if (cb == (Esql_Set_Cb)esql_query)
+     {
+        e->current = ESQL_CONNECT_TYPE_QUERY;
+        INFO("Next call: query");
+     }
    ret = e->backend.io(e);
    if (ret == ECORE_FD_ERROR)
      {
@@ -92,16 +102,6 @@ out:
         return;
      }
    ecore_main_fd_handler_active_set(e->fdh, ret);
-   if (cb == (Esql_Set_Cb)esql_database_set)
-     {
-        e->current = ESQL_CONNECT_TYPE_DATABASE_SET;
-        INFO("Next call: DB change");
-     }
-   else if (cb == (Esql_Set_Cb)esql_query)
-     {
-        e->current = ESQL_CONNECT_TYPE_QUERY;
-        INFO("Next call: query");
-     }
 }
 
 Eina_Bool

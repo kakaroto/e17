@@ -54,18 +54,19 @@ eina_row_iterator_free(Esql_Row_Iterator *it)
 }
 
 void
-esql_res_free(Esql_Res *res)
+esql_res_free(void *data __UNUSED__, Esql_Res *res)
 {
    Esql_Row *r;
    Eina_Inlist *l, *ll;
    
    if (!res) return;
 
-   for (l = res->rows, ll = l->next; ll; l = ll, ll = ll->next)
+   for (l = res->rows, ll = l->next; l; l = ll, ll = ll ? ll->next : NULL)
      {
         r = EINA_INLIST_CONTAINER_GET(l, Esql_Row);
-        free(r);
+        esql_row_free(r);
      }
+   res->e->backend.res_free(res);
    free(res);
 }
 
@@ -75,10 +76,9 @@ esql_row_free(Esql_Row *r)
    Esql_Cell *cell;
    Eina_Inlist *l, *ll;
 
-   
    if (!r) return;
 
-   for (l = r->cells, ll = l->next; ll; l = ll, ll = ll->next)
+   for (l = r->cells, ll = l->next; l; l = ll, ll = ll ? ll->next : NULL)
      {
         cell = EINA_INLIST_CONTAINER_GET(l, Esql_Cell);
         free(cell);

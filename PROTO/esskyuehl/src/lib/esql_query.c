@@ -168,7 +168,7 @@ top:
              }
              break;
            case '%':
-             if (!eina_strbuf_append_char(buf, '%')) goto err;
+             EINA_SAFETY_ON_FALSE_GOTO(eina_strbuf_append_char(buf, '%'), err);
              break;
            default:
              ERR("Unsupported format string: '%s'!", pp);
