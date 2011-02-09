@@ -8,11 +8,21 @@
 @image html  esskyuehl.png
 @version @PACKAGE_VERSION@
 @author Mike Blumenkrantz (zmike/discomfitor) <mike@zentific.com>
-@date 2010
+@date 2010, 2011
 
 @section intro What is Esskyuehl?
 
 Esskyuehl is a library for easily performing asynchronous sql queries.
+
+The following modules exist:
+@li @ref Esql_Library
+@li @ref Esql_Object
+@li @ref Esql_Connect
+@li @ref Esql_Query
+@li @ref Esql_Res
+@li @ref Esql_Events
+@li @ref Esql_Typedefs
+
 
 @verbatim
 Pants
