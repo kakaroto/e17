@@ -56,6 +56,14 @@ extern int azy_log_dom;
 #define ERR(...)  EINA_LOG_DOM_ERR(azy_log_dom, __VA_ARGS__)
 #define CRI(...)  EINA_LOG_DOM_CRIT(azy_log_dom, __VA_ARGS__)
 
+#if !defined(strdupa)
+# define strdupa(str) strcpy(alloca(strlen(str) + 1), str)
+#endif
+
+#if !defined(strndupa)
+# define strndupa(str, len) strncpy(alloca(len + 1), str, len)
+#endif
+
 extern Eina_Error AZY_ERROR_REQUEST_JSON_OBJECT;
 extern Eina_Error AZY_ERROR_REQUEST_JSON_METHOD;
 extern Eina_Error AZY_ERROR_REQUEST_JSON_PARAM;
