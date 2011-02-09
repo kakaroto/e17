@@ -186,7 +186,7 @@ static inline int set_my_lcb(unsigned long long len, int null, char *out, int ou
 	}
 
 	/* set value 0-250 */
-	if (len >= 0 && len <= 250) {
+	if (len <= 250) {
 		if (out_len < 1)
 			return -1;
 		out[0] = len;

@@ -107,7 +107,7 @@ int mysac_decode_binary_row(char *buf, int packet_len,
 				if (tmp_len == -1)
 					return -1;
 				i += tmp_len;
-				if (i + len > packet_len)
+				if ((unsigned long)(i + len) > (unsigned long)packet_len)
 					return -1;
 				if (nul == 1)
 					row->data[j].blob = NULL;
@@ -171,7 +171,7 @@ int mysac_decode_binary_row(char *buf, int packet_len,
 				if (tmp_len == -1)
 					return -1;
 				i += tmp_len;
-				if (i + len > packet_len)
+				if ((unsigned long)(i + len) > (unsigned long)packet_len)
 					return -1;
 				if (nul == 1)
 					row->data[j].blob = NULL;
@@ -206,7 +206,7 @@ int mysac_decode_binary_row(char *buf, int packet_len,
 				if (tmp_len == -1)
 					return -1;
 				i += tmp_len;
-				if (i + len > packet_len)
+				if ((unsigned long)(i + len) > (unsigned long)packet_len)
 					return -1;
 				if (nul == 1)
 					row->data[j].blob = NULL;
@@ -232,7 +232,7 @@ int mysac_decode_binary_row(char *buf, int packet_len,
 				if (tmp_len == -1)
 					return -1;
 				i += tmp_len;
-				if (i + len > packet_len)
+				if ((unsigned long)(i + len) > (unsigned long)packet_len)
 					return -1;
 				if (nul == 1)
 					row->data[j].blob = NULL;
@@ -288,7 +288,7 @@ int mysac_decode_string_row(char *buf, int packet_len,
 
 		i += tmp_len;
 
-		if (i + len > packet_len)
+		if ((unsigned long)(i + len) > (unsigned long)packet_len)
 			return -MYERR_LEN_OVER_BUFFER;
 
 		if (nul == 1) {

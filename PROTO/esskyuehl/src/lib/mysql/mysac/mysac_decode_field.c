@@ -74,7 +74,7 @@ int mysac_decode_field(char *buf, int len, MYSQL_FIELD *col) {
 	if (tmp_len == -1)
 		return -MYERR_BAD_LCB;
 	i += tmp_len;
-	if (i + size > len)
+	if ((unsigned long)(i + size) > (unsigned long)len)
 		return -MYERR_LEN_OVER_BUFFER;
 	col->catalog_length = size;
 	memmove(wh, &buf[i], size);
@@ -88,7 +88,7 @@ int mysac_decode_field(char *buf, int len, MYSQL_FIELD *col) {
 	if (tmp_len == -1)
 		return -MYERR_BAD_LCB;
 	i += tmp_len;
-	if (i + size > len)
+	if ((unsigned long)(i + size) > (unsigned long)len)
 		return -MYERR_LEN_OVER_BUFFER;
 	col->db_length = size;
 	memmove(wh, &buf[i], size);
@@ -102,7 +102,7 @@ int mysac_decode_field(char *buf, int len, MYSQL_FIELD *col) {
 	if (tmp_len == -1)
 		return -MYERR_BAD_LCB;
 	i += tmp_len;
-	if (i + size > len)
+	if ((unsigned long)(i + size) > (unsigned long)len)
 		return -MYERR_LEN_OVER_BUFFER;
 	col->table_length = size;
 	memmove(wh, &buf[i], size);
@@ -116,7 +116,7 @@ int mysac_decode_field(char *buf, int len, MYSQL_FIELD *col) {
 	if (tmp_len == -1)
 		return -MYERR_BAD_LCB;
 	i += tmp_len;
-	if (i + size > len)
+	if ((unsigned long)(i + size) > (unsigned long)len)
 		return -MYERR_LEN_OVER_BUFFER;
 	col->org_table_length = size;
 	memmove(wh, &buf[i], size);
@@ -130,7 +130,7 @@ int mysac_decode_field(char *buf, int len, MYSQL_FIELD *col) {
 	if (tmp_len == -1)
 		return -MYERR_BAD_LCB;
 	i += tmp_len;
-	if (i + size > len)
+	if ((unsigned long)(i + size) > (unsigned long)len)
 		return -MYERR_LEN_OVER_BUFFER;
 	col->name_length = size;
 	memmove(wh, &buf[i], size);
@@ -144,7 +144,7 @@ int mysac_decode_field(char *buf, int len, MYSQL_FIELD *col) {
 	if (tmp_len == -1)
 		return -MYERR_BAD_LCB;
 	i += tmp_len;
-	if (i + size > len)
+	if ((unsigned long)(i + size) > (unsigned long)len)
 		return -MYERR_LEN_OVER_BUFFER;
 	col->org_name_length = size;
 	memmove(wh, &buf[i], size);
@@ -189,7 +189,7 @@ int mysac_decode_field(char *buf, int len, MYSQL_FIELD *col) {
 		if (tmp_len == -1)
 			return -MYERR_BAD_LCB;
 		i += tmp_len;
-		if (i + size > len)
+		if ((unsigned long)(i + size) > (unsigned long)len)
 			return -MYERR_LEN_OVER_BUFFER;
 		col->def_length = size;
 		memmove(wh, &buf[i], size);

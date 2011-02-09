@@ -257,7 +257,7 @@ static int my_response(MYSAC *m) {
 	case RDST_READ_DATA:
 
 		/* check for avalaible size in buffer */
-		while (m->read_len < m->packet_length)
+		while ((unsigned int)m->read_len < m->packet_length)
 			if (mysac_extend_res(m) != 0)
 				return MYSAC_RET_ERROR;
 
@@ -267,7 +267,7 @@ static int my_response(MYSAC *m) {
 			return errcode;
 
 		m->len += err;
-		if (m->len < m->packet_length) {
+		if ((unsigned int)m->len < m->packet_length) {
 			m->errorcode = MYERR_WANT_READ;
 			return MYERR_WANT_READ;
 		}
@@ -374,19 +374,18 @@ MYSAC *mysac_new(int buffsize) {
 	char *buf;
 
 	/* struct memory */
-	m = malloc(sizeof(MYSAC));
+	m = calloc(1, sizeof(MYSAC));
 	if (m == NULL)
 		return NULL;
 	
 	/* buff memory */
-	buf = malloc(buffsize);
+	buf = calloc(1, buffsize);
 	if (buf == NULL) {
 		free(m);
 		return NULL;
 	}
 
 	/* init */
-	memset(m, 0, sizeof(MYSAC));
 	m->free_it = 1;
 	m->qst = MYSAC_START;
 	m->buf = buf;
@@ -798,7 +797,7 @@ int mysac_b_set_stmt_prepare(MYSAC *mysac, unsigned long *stmt_id,
 	mysac->buf[4] = COM_STMT_PREPARE;
 
 	/* check len */
-	if (mysac->bufsize - 5 < len)
+	if (mysac->bufsize - 5 < (unsigned int)len)
 		return -1;
 
 	/* build sql query */
@@ -834,7 +833,7 @@ int mysac_v_set_stmt_prepare(MYSAC *mysac, unsigned long *stmt_id,
 
 	/* build sql query */
 	len = vsnprintf(&mysac->buf[5], mysac->bufsize - 5, fmt, ap);
-	if (len >= mysac->bufsize - 5)
+	if ((unsigned int)len >= mysac->bufsize - 5)
 		return -1;
 
 	/* len */
@@ -1080,7 +1079,7 @@ int mysac_set_stmt_execute(MYSAC *mysac, MYSAC_RES *res, unsigned long stmt_id,
 	int ret;
 
 	/* check len */
-	if (mysac->bufsize < len) {
+	if (mysac->bufsize < (unsigned int)len) {
 		mysac->errorcode = MYERR_BUFFER_TOO_SMALL;
 		mysac->len = 0;
 		return -1;
@@ -1107,7 +1106,7 @@ int mysac_set_stmt_execute(MYSAC *mysac, MYSAC_RES *res, unsigned long stmt_id,
 	vals_off = desc_off + ( nb * 2 );
 
 	/* check len */
-	if (mysac->bufsize < vals_off) {
+	if (mysac->bufsize < (unsigned int)vals_off) {
 		mysac->errorcode = MYERR_BUFFER_TOO_SMALL;
 		mysac->len = 0;
 		return -1;
@@ -1178,7 +1177,7 @@ int mysac_b_set_query(MYSAC *mysac, MYSAC_RES *res, const char *query, int len) 
 	mysac->buf[4] = COM_QUERY;
 
 	/* build sql query */
-	if (mysac->bufsize - 5 < len) {
+	if (mysac->bufsize - 5 < (unsigned int)len) {
 		mysac->errorcode = MYERR_BUFFER_TOO_SMALL;
 		mysac->len = 0;
 		return -1;
@@ -1214,7 +1213,7 @@ int mysac_v_set_query(MYSAC *mysac, MYSAC_RES *res, const char *fmt, va_list ap)
 
 	/* build sql query */
 	len = vsnprintf(&mysac->buf[5], mysac->bufsize - 5, fmt, ap);
-	if (len >= mysac->bufsize - 5) {
+	if ((unsigned int)len >= mysac->bufsize - 5) {
 		mysac->errorcode = MYERR_BUFFER_TOO_SMALL;
 		mysac->len = 0;
 		return -1;
@@ -1315,7 +1314,7 @@ int mysac_send_query(MYSAC *mysac) {
 		/* prepare cols space */
 
 		/* check for avalaible size in buffer */
-		while (mysac->read_len < sizeof(MYSQL_FIELD) * mysac->res->nb_cols)
+		while ((unsigned int)mysac->read_len < sizeof(MYSQL_FIELD) * mysac->res->nb_cols)
 			if (mysac_extend_res(mysac) != 0)
 				return mysac->errorcode;
 
@@ -1412,7 +1411,7 @@ int mysac_send_query(MYSAC *mysac) {
 	 */
 
 	/* check for avalaible size in buffer */
-	while (mysac->read_len < sizeof(MYSAC_ROWS) + ( mysac->res->nb_cols * (
+	while ((unsigned int)mysac->read_len < sizeof(MYSAC_ROWS) + ( mysac->res->nb_cols * (
 	                         sizeof(MYSAC_ROW) + sizeof(unsigned long) ) ) )
 		if (mysac_extend_res(mysac) != 0)
 			return mysac->errorcode;
@@ -1443,7 +1442,7 @@ int mysac_send_query(MYSAC *mysac) {
 		case MYSQL_TYPE_TIMESTAMP:
 		case MYSQL_TYPE_DATETIME:
 		case MYSQL_TYPE_DATE:
-			while (mysac->read_len < sizeof(struct tm))
+			while ((unsigned int)mysac->read_len < sizeof(struct tm))
 				if (mysac_extend_res(mysac) != 0)
 					return mysac->errorcode;
 
@@ -1620,7 +1619,7 @@ MYSAC_RES *mysac_new_res(int chunk_size, int extend)
 {
 	MYSAC_RES *res;
 
-	res = malloc(chunk_size);
+	res = calloc(1, chunk_size);
 	if (res == NULL)
 		return NULL;
 
