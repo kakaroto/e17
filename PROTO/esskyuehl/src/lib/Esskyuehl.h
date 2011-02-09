@@ -82,6 +82,7 @@ typedef struct Esql_Row Esql_Row;
 typedef enum
 {
    ESQL_TYPE_NONE,
+#define ESQL_TYPE_DRIZZLE ESQL_TYPE_MYSQL /**< Drizzle supports the mysql protocol */
    ESQL_TYPE_MYSQL
 } Esql_Type;
 
