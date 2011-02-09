@@ -1,0 +1,85 @@
+
+group {
+	name: "win/preferences";
+	parts {
+	    part {
+			name: "title";
+			type: EXTERNAL;
+			source: "elm/label";
+			description {
+				state: "default" 0.0;
+				align: 0.0 0.0;
+				rel1.offset: 5 5;
+				rel2.offset: -20 0;
+				params {
+					string: "label" "<title>Preferences.</title>";
+				}
+			}
+		}
+		part {
+			name: "lbl";
+			type: EXTERNAL;
+			source: "elm/label";
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "title";
+				rel1.relative: 0.0 1.0;
+				rel1.offset: 20 10;
+				rel2.offset: -20 0;
+				align: 0.5 0.0;
+				params {
+					string: "label" "Which video software do you wish to use to display videos: ";
+				}
+			}
+		}
+		part {
+			name: "object.win.preferences.video_software";
+			type: EXTERNAL;
+			source: "elm/scrolled_entry";
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "lbl";
+				rel1.offset: 0 5;
+				rel1.relative: 0.05 1.0;
+				align: 0.5 0.0;
+				params {
+					bool: "single line" 1; 
+				}
+			}
+		}
+		part {
+			name: "object.win.preferences.cancel";
+			type: EXTERNAL;
+			source: "elm/button";
+			description {
+				state: "default" 0.0;
+				rel1.to_x: "object.win.preferences.apply";
+				rel1.offset: 0 10;
+				rel1.relative: 9.0 1.0;
+				rel2.to_x: "object.win.preferences.apply";
+				rel2.relative: 0.0 1.0;
+				align: 1.0 1.0;
+				fixed: 1 0;
+				params {
+					string: "label" "Cancel";
+				}
+			}
+		}
+		part {
+			name: "object.win.preferences.apply";
+			type: EXTERNAL;
+			source: "elm/button";
+			description {
+				state: "default" 0.0;
+				rel1.offset: 0 10;
+				rel1.relative: 1.0 1.0;
+				rel2.relative: 1.0 1.0;
+				align: 1.0 1.0;
+				fixed: 1 0;
+				params {
+					string: "label" "Apply";
+				}
+			}
+		}
+	}
+}

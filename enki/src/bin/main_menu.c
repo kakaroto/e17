@@ -128,10 +128,12 @@ void main_menu_update_libraries_list()
         lib->photo1 = enlil_photo_new();
         Enlil_Photo_Data *photo_data1 = calloc(1, sizeof(Enlil_Photo_Data));
         enlil_photo_user_data_set(lib->photo1, photo_data1, enlil_photo_data_free);
+        enlil_photo_mustNotBeSaved_set(lib->photo1, EINA_TRUE);
 
         lib->photo2 = enlil_photo_new();
         Enlil_Photo_Data *photo_data2 = calloc(1, sizeof(Enlil_Photo_Data));
         enlil_photo_user_data_set(lib->photo2, photo_data2, enlil_photo_data_free);
+        enlil_photo_mustNotBeSaved_set(lib->photo2, EINA_TRUE);
 
         photo_data1->library_item = elm_gengrid_item_append(libraries_list, &itc_grid, lib, _library_select, NULL);
         photo_data2->library_item = photo_data1->library_item;
@@ -182,7 +184,7 @@ static void  _library_del(void *data, Evas_Object *obj)
 
 static Evas_Object* _library_icon_get(void *data, Evas_Object *obj, const char *part)
 {
-	const char *s1 = NULL, *s2 = NULL;
+	const char *s1 = NULL, *s2 = NULL, *g1 = NULL, *g2 = NULL;;
 	Library *lib = data;
 
 	if(strcmp(part, "elm.swallow.icon"))
@@ -194,12 +196,12 @@ static Evas_Object* _library_icon_get(void *data, Evas_Object *obj, const char *
 		elm_layout_file_set(o, THEME, "photo_library");
 
 		Evas_Object *icon = elm_icon_add(obj);
-		elm_icon_standard_set(icon, "add");
+		elm_icon_file_set(icon, THEME, "icons/plus");
 		elm_icon_fill_outside_set(icon, EINA_TRUE);
 		elm_layout_content_set(o, "object.photo.front.swallow" , icon);
 
 		icon = elm_icon_add(obj);
-		elm_icon_standard_set(icon, "folder");
+		elm_icon_file_set(icon, THEME, "icons/folder");
 		elm_icon_fill_outside_set(icon, EINA_TRUE);
 		elm_layout_content_set(o, "object.photo.back.swallow" , icon);
 
@@ -212,48 +214,66 @@ static Evas_Object* _library_icon_get(void *data, Evas_Object *obj, const char *
 
 	//
 	Enlil_Photo *photo1 = enlil_library_photo_get(lib->path,1);
-	if(!photo1)
-		return o;
-
-	enlil_photo_path_set(lib->photo1, enlil_photo_path_get(photo1));
-	enlil_photo_file_name_set(lib->photo1, enlil_photo_file_name_get(photo1));
-	Enlil_Photo_Data *photo_data1 = enlil_photo_user_data_get(lib->photo1);
-
-	if(photo1 && !photo_data1->cant_create_thumb)
-		s1 = enlil_thumb_photo_get(lib->photo1, Enlil_THUMB_FDO_LARGE, thumb_done_cb, thumb_error_cb, NULL);
-
-	enlil_photo_free(&(photo1));
-	//
-
-	//
-	Enlil_Photo *photo2 = enlil_library_photo_get(lib->path,2);
-	enlil_photo_path_set(lib->photo2, enlil_photo_path_get(photo2));
-	enlil_photo_file_name_set(lib->photo2, enlil_photo_file_name_get(photo2));
-	Enlil_Photo_Data *photo_data2 = enlil_photo_user_data_get(lib->photo2);
-
-	if(photo2 && !photo_data2->cant_create_thumb)
-		s2 = enlil_thumb_photo_get(lib->photo2, Enlil_THUMB_FDO_LARGE, thumb_done_cb, thumb_error_cb, NULL);
-
-	enlil_photo_free(&(photo2));
-	//
-
-	if(s1 && !s2)
-		s2 = s1;
-
-	if(s1 && s2)
+	if(photo1)
 	{
-		Evas_Object *icon = elm_icon_add(obj);
-		elm_icon_file_set(icon, s1, NULL);
-		elm_icon_fill_outside_set(icon, EINA_TRUE);
-		elm_layout_content_set(o, "object.photo.front.swallow" , icon);
+		if( enlil_photo_path_get(lib->photo1) != enlil_photo_path_get(photo1)
+				|| enlil_photo_file_name_get(lib->photo1) != enlil_photo_file_name_get(photo1))
+		{
+			enlil_photo_path_set(lib->photo1, enlil_photo_path_get(photo1));
+			enlil_photo_file_name_set(lib->photo1, enlil_photo_file_name_get(photo1));
+		}
+        Enlil_Photo_Data *photo_data1 = enlil_photo_user_data_get(lib->photo1);
 
-		icon = elm_icon_add(obj);
-		elm_icon_file_set(icon, s2, NULL);
-		elm_icon_fill_outside_set(icon, EINA_TRUE);
-		elm_layout_content_set(o, "object.photo.back.swallow" , icon);
+        if(photo1 && !photo_data1->cant_create_thumb)
+			s1 = enlil_thumb_photo_get(lib->photo1, Enlil_THUMB_FDO_LARGE, thumb_done_cb, thumb_error_cb, NULL);
+
+		enlil_photo_free(&(photo1));
+		//
+
+		//
+		Enlil_Photo *photo2 = enlil_library_photo_get(lib->path,2);
+		if( enlil_photo_path_get(lib->photo2) != enlil_photo_path_get(photo2)
+				|| enlil_photo_file_name_get(lib->photo2) != enlil_photo_file_name_get(photo2))
+		{
+			enlil_photo_path_set(lib->photo2, enlil_photo_path_get(photo2));
+			enlil_photo_file_name_set(lib->photo2, enlil_photo_file_name_get(photo2));
+		}
+		Enlil_Photo_Data *photo_data2 = enlil_photo_user_data_get(lib->photo2);
+
+		if(photo2 && !photo_data2->cant_create_thumb)
+			s2 = enlil_thumb_photo_get(lib->photo2, Enlil_THUMB_FDO_LARGE, thumb_done_cb, thumb_error_cb, NULL);
+
+		enlil_photo_free(&(photo2));
+		//
+
+		if(!s1)
+		{
+			s1 = THEME;
+			g1 = "libraries/icon/nophoto";
+		}
+		if(!s2)
+		{
+			s2 = THEME;
+			g2 = "libraries/icon/nophoto";
+		}
 	}
-	//else
-	//	photo_object_progressbar_set(o, EINA_TRUE);
+	else
+	{
+		s1 = THEME;
+		s2 = THEME;
+		g1 = "libraries/icon/nophoto";
+		g2 = "libraries/icon/nophoto";
+	}
+
+	Evas_Object *icon = elm_icon_add(obj);
+	elm_icon_file_set(icon, s1, g1);
+	elm_icon_fill_outside_set(icon, EINA_TRUE);
+	elm_layout_content_set(o, "object.photo.front.swallow" , icon);
+
+	icon = elm_icon_add(obj);
+	elm_icon_file_set(icon, s2, g2);
+	elm_icon_fill_outside_set(icon, EINA_TRUE);
+	elm_layout_content_set(o, "object.photo.back.swallow" , icon);
 
 
 	evas_object_show(o);
@@ -273,6 +293,10 @@ static void _library_select(void *data, Evas_Object *obj, void *event_info)
 		library_set(lib->path);
 		select_list_photo();
 	}
+
+	//unselect items
+    elm_gengrid_item_selected_set(elm_gengrid_selected_item_get(obj), EINA_FALSE);
+	//
 }
 
 static void _new_library()
@@ -290,23 +314,22 @@ static void _new_library()
 
    fs = elm_fileselector_add(inwin);
    elm_fileselector_folder_only_set(fs, 1);
-   elm_fileselector_is_save_set(fs, 1);
    elm_fileselector_expandable_set(fs, EINA_FALSE);
-   elm_fileselector_path_set(fs,  getenv("HOME"));
+   elm_fileselector_path_set(fs, getenv("HOME"));
    evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_box_pack_end(vbox, fs);
    evas_object_show(fs);
 
-   evas_object_smart_callback_add(fs, "done", _new_library_done_cb, NULL);
+   evas_object_smart_callback_add(fs, "done", _new_library_done_cb, inwin);
 }
 
 static void _new_library_done_cb(void *data, Evas_Object *obj, void *event_info)
 {
    const char *selected = event_info;
-
    if (selected)
      {
+	   LOG_INFO("Create new library: %s\n", elm_fileselector_selected_get(obj));
 	if(!ecore_file_exists(selected))
 	  ecore_file_mkdir(selected);
 	if(ecore_file_is_dir(selected))
@@ -316,7 +339,8 @@ static void _new_library_done_cb(void *data, Evas_Object *obj, void *event_info)
             main_menu_update_libraries_list();
         }
      }
-   evas_object_del(inwin);
+
+   evas_object_del(data);
 }
 
 static void _slideshow_cb(void *data, Evas_Object *obj, void *event_info)

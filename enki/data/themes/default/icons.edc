@@ -1,4 +1,45 @@
-
+group {
+    name: "icons/logo";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                max: 64 64;
+                image.normal: "enki_logo.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
+            }
+        }
+    }
+}
+group {
+    name: "icons/plus";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                max: 64 64;
+                image.normal: "plus.png";
+            }
+        }
+    }
+}
+group {
+    name: "icons/folder";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                max: 64 64;
+                image.normal: "folder.png";
+            }
+        }
+    }
+}
 group {
     name: "icons/rotate/90/reverse";
     parts {
@@ -7,6 +48,9 @@ group {
             description {
                 state: "default" 0.0;
                 image.normal: "r_rotate.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
             }
         }
     }
@@ -19,6 +63,9 @@ group {
             description {
                 state: "default" 0.0;
                 image.normal: "rotate.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
             }
         }
     }
@@ -31,6 +78,9 @@ group {
             description {
                 state: "default" 0.0;
                 image.normal: "rotate.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
             }
         }
     }
@@ -43,6 +93,9 @@ group {
             description {
                 state: "default" 0.0;
                 image.normal: "flip_horizontal.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
             }
         }
     }
@@ -55,6 +108,9 @@ group {
             description {
                 state: "default" 0.0;
                 image.normal: "flip_vertical.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
             }
         }
     }
@@ -67,6 +123,9 @@ group {
             description {
                 state: "default" 0.0;
                 image.normal: "blur.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
             }
         }
     }
@@ -79,6 +138,9 @@ group {
             description {
                 state: "default" 0.0;
                 image.normal: "sharpen.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
             }
         }
     }
@@ -91,6 +153,9 @@ group {
             description {
                 state: "default" 0.0;
                 image.normal: "grayscale.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
             }
         }
     }
@@ -103,6 +168,9 @@ group {
             description {
                 state: "default" 0.0;
                 image.normal: "sepia.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
             }
         }
     }
@@ -115,6 +183,9 @@ group {
             description {
                 state: "default" 0.0;
                 image.normal: "undo.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
             }
         }
     }
@@ -127,6 +198,9 @@ group {
             description {
                 state: "default" 0.0;
                 image.normal: "r_rotate.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
             }
         }
     }
@@ -139,6 +213,9 @@ group {
             description {
                 state: "default" 0.0;
                 image.normal: "1_1.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
             }
         }
     }
@@ -151,6 +228,9 @@ group {
             description {
                 state: "default" 0.0;
                 image.normal: "fit.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
             }
         }
     }
@@ -163,6 +243,9 @@ group {
             description {
                 state: "default" 0.0;
                 image.normal: "fill.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
             }
         }
     }

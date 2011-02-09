@@ -115,7 +115,6 @@ Photo_Menu *photo_menu_new(Evas_Object *parent, Enlil_Photo *photo, Eina_List *p
    else
      mi = elm_menu_item_add(menu, NULL, NULL, D_("Delete the video"), _photo_delete_cb, am);
 
-
    evas_object_show(menu);
    return am;
 }

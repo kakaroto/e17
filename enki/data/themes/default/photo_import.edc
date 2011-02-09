@@ -46,7 +46,7 @@ group {
 	            state: "default" 0.0;
 	            visible: 1;
 	            color: 255 255 255 0;
-	            image.normal: "library_photo.png";
+	            image.normal: "select.png";
 	            rel1.offset: -5 -5;
 	            rel2.offset: 5 5;
 	            image.border: 15 15 15 15;

@@ -28,10 +28,11 @@ static void _tabpanel_album_select_cb(void *data, Tabpanel *tabpanel, Tabpanel_I
 static void _tabpanel_collection_select_cb(void *data, Tabpanel *tabpanel, Tabpanel_Item *item);
 static void _tabpanel_tag_select_cb(void *data, Tabpanel *tabpanel, Tabpanel_Item *item);
 
+static void _library_delete_cb(void *data, Evas_Object *obj, void *event_info);
 
 List_Left *list_left_new(Evas_Object *edje)
 {
-    Evas_Object *gl;
+    Evas_Object *gl, *bt;
     Tabpanel_Item *tp_item;
     List_Left *list_left = calloc(1,sizeof(List_Left));
 
@@ -94,6 +95,11 @@ List_Left *list_left_new(Evas_Object *edje)
     tabpanel_item_add_with_signal(list_left->tabpanel, D_("Tags"), edje, "list_left,tags,show", _tabpanel_tag_select_cb, list_left);
 
     tabpanel_item_select(tp_item);
+
+    //delete library
+    bt =  edje_object_part_external_object_get(edje, "object.library.delete");
+    evas_object_smart_callback_add(bt, "clicked", _library_delete_cb, NULL);
+    //
 
     return list_left;
 }
@@ -480,5 +486,14 @@ static void _gl_tag_sel(void *data, Evas_Object *obj, void *event_info)
      }
    photos_list_object_freeze(tag_data->enlil_data->list_photo->o_list, 0);
    photos_list_object_top_goto(tag_data->enlil_data->list_photo->o_list);
+}
+
+
+static void _library_delete_cb(void *data, Evas_Object *obj, void *event_info)
+{
+	if(!enlil_data->library)
+		return ;
+
+	Inwin *inwin = inwin_library_delete_new(enlil_data);
 }
 

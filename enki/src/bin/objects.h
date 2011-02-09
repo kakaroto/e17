@@ -202,7 +202,8 @@ enum inwin_type
    INWIN_PHOTO_SAVE,
    INWIN_ALBUM_RENAME,
    INWIN_SAVE_AS_FILE_EXISTS,
-   INWIN_PREFERENCES
+   INWIN_PREFERENCES,
+   INWIN_LIBRARY_DELETE
 };
 
 struct inwin
@@ -218,6 +219,7 @@ struct inwin
    Evas_Object *gl;
    Evas_Object *entry;
    Evas_Object *bt_apply;
+   Evas_Object *check;
 
    Enlil_Photo *photo;
    Eina_List *photos;
@@ -325,6 +327,7 @@ Inwin *inwin_photo_save_new(Inwin_Del del_cb, Inwin_Apply apply_cb, Inwin_Close 
 Inwin *inwin_album_rename_new(Inwin_Del del_cb, void *data, Enlil_Album *album);
 Inwin *inwin_save_as_file_exists_new(Inwin_Del del_cb, Inwin_Apply apply_cb, void *data, const char *file);
 Inwin *inwin_preferences_new();
+Inwin *inwin_library_delete_new(Enlil_Data *enlil_data);
 
 Evas_Object *flickr_menu_new(Evas_Object *win);
 void flickr_menu_animated_set(Eina_Bool animated);

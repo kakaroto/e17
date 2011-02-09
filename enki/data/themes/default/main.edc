@@ -4,46 +4,25 @@ group {
 	name: "main";
 	
 	parts {
-           part {
-              name: "object.photos.bg";
-              type: RECT;
-              description {
-                 state : "default" 0.0;
-                 color: 70 70 70 255;
-              }
-           }
-
+		
 		part {
 			name: "object.menu";
 			type: EXTERNAL;
 			source: "elm/toolbar";
 			description {
 				state: "default" 0.0;
-				rel2.to_x: "object.flickr";
-				rel2.relative: 0.0 0.0;
+				rel1.relative: 0.0 -1.0;
+				rel2.relative: 1.0 0.0;
 				align: 0.0 0.0;
 				fixed: 0 1;
 			}
-		}
-		
-		part {
-			name: "object.flickr";
-			type: EXTERNAL;
-			source: "elm/button";
 			description {
-				state: "default" 0.0;
-				rel1.relative: 1.0 0.0;
-				rel2.relative: 1.0 0.0;
-				align: 1.0 0.0;
-				fixed: 1 1;
-				params {
-					string: "icon" "flickr/logo";
-					//string: "icon" "arrow_up";
-					string: "label" "";
-				}
+				state: "display" 0.0;
+				inherit: "default" 0.0;
+				rel1.relative: 0.0 0.0;
 			}
 		}
-	
+		
 		part {
 			name: "object.pages";
 			type: "SWALLOW";
@@ -53,6 +32,31 @@ group {
 				rel1.relative: 0.0 1.0;
 			}
 		}
-		
+	}
+	
+	programs
+	{
+		program
+		{
+			name: "show_flickr_logo_selection";
+			signal: "show";
+			action: SIGNAL_EMIT "object.flickr[content]:show_select" "";
+		}
+		program
+		{
+			name: "toolbar_show";
+			signal: "toolbar,show";
+			action: STATE_SET "display" 0.0;
+			target: "object.menu";
+			transition: DECELERATE 0.4;
+		}
+		program
+		{
+			name: "toolbar_hide";
+			signal: "toolbar,hide";
+			action: STATE_SET "default" 0.0;
+			target: "object.menu";
+			transition: ACCELERATE 0.4;
+		}
 	}
 }

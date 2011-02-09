@@ -50,6 +50,7 @@ PKG_CHECK_MODULES(ENKI, [
                              eet >= 1.2.2
                              enlil >= 0.6
                              elementary >= 0.5.1.0
+                             eio >= 0.1
                         ])
 # required libs / cflags
 enki_libs=$ENKI_LIBS

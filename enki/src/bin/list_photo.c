@@ -2,8 +2,8 @@
 #include "evas_object/photo_object.h"
 #include "slideshow.h"
 
-#define DEFAULT_W 128
-#define DEFAULT_H 96
+#define DEFAULT_W 192
+#define DEFAULT_H 128
 
 static PL_Header_Item_Class itc_album;
 static PL_Child_Item_Class itc_photo;
@@ -77,7 +77,6 @@ List_Photo *list_photo_new(Evas_Object *edje)
    evas_object_show(tg);
 
    bt = elm_button_add(edje);
-   elm_object_style_set(bt, "anchor");
    evas_object_size_hint_weight_set(bt, -1.0, -1.0);
    evas_object_size_hint_align_set(bt, 1.0, -1.0);
    elm_button_label_set(bt, D_("Unselect all"));
@@ -206,7 +205,7 @@ static Evas_Object *_album_icon_get(const void *data, Evas_Object *obj)
 
    bt = elm_button_add(obj);
    elm_object_style_set(bt, "anchor");
-   elm_button_label_set(bt, D_("Collections"));
+   elm_button_label_set(bt, D_("Options"));
    evas_object_smart_callback_add(bt, "clicked", _collection_cb, album);
    evas_object_show(bt);
    evas_object_size_hint_weight_set(bt, 0.0, 1.0);
@@ -258,7 +257,7 @@ static Evas_Object *_album_icon_get(const void *data, Evas_Object *obj)
 
 
    Evas_Object *ic = edje_object_add(evas_object_evas_get(obj));
-   album_data->flickr_sync.icon = ic;
+   album_data->netsync.icon = ic;
    evas_object_show(ic);
    edje_object_file_set(ic, THEME, "flickr/sync");
    evas_object_size_hint_weight_set(ic, 1.0, 1.0);
@@ -302,7 +301,7 @@ static Evas_Object *_photo_icon_get(const void *data, Evas_Object *obj)
      photo_object_camera_set(o, EINA_TRUE);
 
    Evas_Object *flickr =
-      photo_object_flickr_state_set(o, photo_flickr_edje_signal_get(enlil_photo_data->flickr_sync.state));
+      photo_object_flickr_state_set(o, photo_flickr_edje_signal_get(enlil_photo_data->netsync.state));
    evas_object_event_callback_add(flickr, EVAS_CALLBACK_MOUSE_UP, _photo_sync_flickr_cb, photo);
 
    photo_object_text_set(o, enlil_photo_name_get(photo));
@@ -375,6 +374,10 @@ static void _right_click(void *data, Evas_Object *obj, void *event_info)
    evas_pointer_output_xy_get(evas_object_evas_get(obj), &x, &y);
    Photo_Menu *photo_menu = photo_menu_new(photo_data->enlil_data->win->win, photo, photos);
    elm_menu_move(photo_menu->menu, x, y);
+
+   Evas_Object *menu = edje_object_part_external_object_get(global_object, "object.photo.menu");
+   printf("%p\n", menu);
+   evas_object_show(menu);
 }
 
 
@@ -478,20 +481,20 @@ static void _photo_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *e
    Enlil_Photo *photo = data;
    Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
 
-   if(photo_data->flickr_sync.state == PHOTO_FLICKR_FLICKRNOTUPTODATE)
+   if(photo_data->netsync.state == PHOTO_FLICKR_FLICKRNOTUPTODATE)
      {
 	upload_add(enlil_data->ul, photo);
      }
-   else if(photo_data->flickr_sync.state == PHOTO_FLICKR_NOTUPTODATE)
+   else if(photo_data->netsync.state == PHOTO_FLICKR_NOTUPTODATE)
      {
 	//get the list of sizes of the photo
-	Enlil_Flickr_Job *job =
-	   enlil_flickr_job_get_photo_sizes_append(enlil_photo_flickr_id_get(photo),
-		 flickr_photos_notinlocal_sizes_get_cb, photo);
-	if(!eina_list_data_find(photo_data->flickr_sync.jobs, job))
-	  photo_data->flickr_sync.jobs = eina_list_append(photo_data->flickr_sync.jobs, job);
+	//Enlil_Flickr_Job *job =
+	//   enlil_flickr_job_get_photo_sizes_prepend(enlil_photo_netsync_id_get(photo),
+	//	 flickr_photos_notinlocal_sizes_get_cb, photo);
+	//if(!eina_list_data_find(photo_data->netsync.jobs, job))
+	  //photo_data->netsync.jobs = eina_list_append(photo_data->netsync.jobs, job);
      }
-   else if(photo_data->flickr_sync.state == PHOTO_FLICKR_NOTINFLICKR)
+   else if(photo_data->netsync.state == PHOTO_FLICKR_NOTINFLICKR)
      {
 	upload_add(enlil_data->ul, photo);
      }

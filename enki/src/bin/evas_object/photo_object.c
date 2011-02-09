@@ -29,6 +29,8 @@ struct _Smart_Data
 	Eina_Bool selected: 1;
 	Eina_Bool preloading: 1;
 	Eina_Bool show: 1;
+
+	Eina_Bool fill: 1;
 };
 
 #define E_SMART_OBJ_GET_RETURN(smart, o, type, ret) \
@@ -156,6 +158,15 @@ void photo_object_theme_file_set(Evas_Object *obj, const char *theme, const char
 
 	_update(obj);
 }
+
+void photo_object_fill_set(Evas_Object *obj, Eina_Bool fill)
+{
+	Smart_Data *sd;
+	sd = evas_object_smart_data_get(obj);
+	if (!sd) return;
+	sd->fill = EINA_TRUE;
+}
+
 
 void photo_object_file_set(Evas_Object *obj, const char *image, const char *photo_group)
 {
@@ -419,25 +430,51 @@ static void _update(Evas_Object *obj)
 	w_img2 = w - w_img;
 	h_img2 = h - h_img;
 
-	if(w_img2 >= 0 && w_img2 < h_img2)
+	if(!sd->fill)
 	{
-		h_img2 = h_img * (w/(double)w_img);
-		w_img2 = w_img * (w/(double)w_img);
-	}
-	else if(h_img2 >= 0 && h_img2 < w_img2)
-	{
-		w_img2 = w_img * (h/(double)h_img);
-		h_img2 = h_img * (h/(double)h_img);
-	}
-	else if(w_img2 < 0 && w_img2 < h_img2)
-	{
-		h_img2 = h_img * (w/(double)w_img);
-		w_img2 = w_img * (w/(double)w_img);
+		if(w_img2 >= 0 && w_img2 < h_img2)
+		{
+			h_img2 = h_img * (w/(double)w_img);
+			w_img2 = w_img * (w/(double)w_img);
+		}
+		else if(h_img2 >= 0 && h_img2 < w_img2)
+		{
+			w_img2 = w_img * (h/(double)h_img);
+			h_img2 = h_img * (h/(double)h_img);
+		}
+		else if(w_img2 < 0 && w_img2 < h_img2)
+		{
+			h_img2 = h_img * (w/(double)w_img);
+			w_img2 = w_img * (w/(double)w_img);
+		}
+		else
+		{
+			w_img2 = w_img * (h/(double)h_img);
+			h_img2 = h_img * (h/(double)h_img);
+		}
 	}
 	else
 	{
-		w_img2 = w_img * (h/(double)h_img);
-		h_img2 = h_img * (h/(double)h_img);
+		if(w_img2 >= 0 && w_img2 > h_img2)
+		{
+			h_img2 = h_img * (w/(double)w_img);
+			w_img2 = w_img * (w/(double)w_img);
+		}
+		else if(h_img2 >= 0 && h_img2 > w_img2)
+		{
+			w_img2 = w_img * (h/(double)h_img);
+			h_img2 = h_img * (h/(double)h_img);
+		}
+		else if(w_img2 < 0 && w_img2 > h_img2)
+		{
+			h_img2 = h_img * (w/(double)w_img);
+			w_img2 = w_img * (w/(double)w_img);
+		}
+		else
+		{
+			w_img2 = w_img * (h/(double)h_img);
+			h_img2 = h_img * (h/(double)h_img);
+		}
 	}
 
 	Edje_Message_Int_Set *msg = alloca(sizeof(Edje_Message_Int_Set) + (3 * sizeof(int)));

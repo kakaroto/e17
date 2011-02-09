@@ -22,43 +22,15 @@ Panel_Geocaching *panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geoca
    geo_data->panel_geocaching = panel_geocaching;
    panel_geocaching->geocaching = geocaching;
 
-   bx = elm_box_add(obj);
-   main_bx = bx;
-   elm_box_horizontal_set(bx, 1);
-   evas_object_size_hint_weight_set(bx, 1.0, 1.0);
-   evas_object_size_hint_align_set(bx, -1.0, -1.0);
-   evas_object_show(bx);
-
-   // left panel
-   vbox = elm_box_add(obj);
-   evas_object_size_hint_weight_set(vbox, 0.0, 1.0);
-   evas_object_size_hint_align_set(vbox, -1.0, 0.0);
-   evas_object_show(vbox);
-   elm_box_pack_end(bx, vbox);
-
-   bt = elm_button_add(obj);
-   elm_button_label_set(bt, D_("Close the cache"));
-   evas_object_size_hint_weight_set(bt, 1.0, 0.0);
-   evas_object_size_hint_align_set(bt, -1.0, 0.0);
-   evas_object_smart_callback_add(bt, "clicked", _bt_close_cb, panel_geocaching);
-   evas_object_show(bt);
-   elm_box_pack_end(vbox, bt);
-   //
-
-   
-   fr = elm_frame_add(obj);
-   evas_object_size_hint_weight_set(fr, 1.0, 1.0);
-   evas_object_size_hint_align_set(fr, -1.0, -1.0);
-   evas_object_show(fr);
-   elm_box_pack_end(bx, fr);
-
    ly = elm_layout_add(obj);
    elm_layout_file_set(ly, THEME, "panel/geocaching");
-   evas_object_size_hint_weight_set(ly, 1.0, 1.0);
-   evas_object_size_hint_align_set(ly, -1.0, -1.0);
-   evas_object_show(ly);
-   elm_frame_content_set(fr, ly);
    edje = elm_layout_edje_get(ly);
+   evas_object_show(ly);
+
+   //
+   bt = edje_object_part_external_object_get(edje, "object.geocaching.panel.close");
+   evas_object_smart_callback_add(bt, "clicked", _bt_close_cb, panel_geocaching);
+   //
 
    ic =  edje_object_part_external_object_get(edje, "object.geocaching.panel.icon");
    snprintf(buf, PATH_MAX, "icons/geocaching/%s", enlil_geocaching_gp_type_get(geocaching));
@@ -223,7 +195,7 @@ Panel_Geocaching *panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geoca
 
 
    panel_geocaching->tabpanel_item = tabpanel_item_add(enlil_data->tabpanel,
-	 enlil_geocaching_name_get(geocaching), main_bx, _panel_select_cb, geocaching);
+	 enlil_geocaching_name_get(geocaching), ly, _panel_select_cb, geocaching);
 
    return panel_geocaching;
 }
@@ -233,8 +205,8 @@ void panel_geocaching_free(Panel_Geocaching **_panel_geocaching)
    Panel_Geocaching *panel_geocaching = *_panel_geocaching;
    Geocaching_Data *geo_data = enlil_geocaching_user_data_get( panel_geocaching->geocaching );
 
-   elm_map_marker_remove(panel_geocaching->marker);
    evas_object_del(panel_geocaching->rect);
+   panel_geocaching->rect = NULL;
 
    tabpanel_item_del(panel_geocaching->tabpanel_item);
    panel_geocaching->tabpanel_item = NULL;
@@ -284,6 +256,9 @@ _map_move_resize_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    int x,y,w,h;
    Panel_Geocaching *panel_geocaching = data;
+
+   if(!panel_geocaching->rect)
+	   return ;
 
    evas_object_geometry_get(panel_geocaching->map,&x,&y,&w,&h);
    evas_object_resize(panel_geocaching->rect,w,h);

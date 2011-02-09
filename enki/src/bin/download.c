@@ -90,7 +90,7 @@ static void _done_cb(void *data, Enlil_Photo *photo, int status)
     if(photo_data)
     {
         //if the photo is new, the data doesnt exists right now
-        photo_data->flickr_sync.state = PHOTO_FLICKR_NONE;
+        photo_data->netsync.state = PHOTO_FLICKR_NONE;
         photos_list_object_item_update(photo_data->list_photo_item);
     }
 
@@ -98,26 +98,26 @@ static void _done_cb(void *data, Enlil_Photo *photo, int status)
     {
         //set the album as uptodate and force to check if it is really uptodate
         Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
-        album_data->flickr_sync.album_flickr_notuptodate = EINA_FALSE;
-	album_data->flickr_sync.album_notinflickr = EINA_FALSE;
-	album_data->flickr_sync.album_notuptodate = EINA_FALSE;
-	album_data->flickr_sync.photos_notinlocal = EINA_FALSE;
+        album_data->netsync.album_netsync_notuptodate = EINA_FALSE;
+	album_data->netsync.album_notinnetsync = EINA_FALSE;
+	album_data->netsync.album_local_notuptodate = EINA_FALSE;
+	album_data->netsync.photos_notinlocal = EINA_FALSE;
 
         photos_list_object_header_update(album_data->list_photo_item);
 
-        album_data->flickr_sync.inwin.notinlocal.is_updating = EINA_FALSE;
-        elm_pager_content_promote(album_data->flickr_sync.inwin.notinlocal.pager,
-                album_data->flickr_sync.inwin.notinlocal.pb);
-        elm_progressbar_pulse(album_data->flickr_sync.inwin.notinlocal.pb, EINA_FALSE);
+        album_data->netsync.inwin.notinlocal.is_updating = EINA_FALSE;
+        elm_pager_content_promote(album_data->netsync.inwin.notinlocal.pager,
+                album_data->netsync.inwin.notinlocal.pb);
+        elm_progressbar_pulse(album_data->netsync.inwin.notinlocal.pb, EINA_FALSE);
 
-        enlil_flickr_job_sync_album_photos_append(album,
-                flickr_photo_new_cb,
-                flickr_photo_notinflickr_cb,
+        /*enlil_flickr_job_sync_album_photos_append(album,
+                netsync_photo_new_cb,
+                netsync_photo_notinflickr_cb,
                 flickr_photo_known_cb,
-                flickr_album_error_cb,
-                enlil_data);
+                netsync_error_cb,
+                enlil_data);*/
 
-        if(album_data->flickr_sync.inwin.win)
+        if(album_data->netsync.inwin.win)
             flickr_sync_update(album);
     }
 }

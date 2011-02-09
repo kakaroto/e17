@@ -75,10 +75,11 @@ struct enlil_album_data
    struct
      {
 	Evas_Object *icon;
-	Eina_Bool album_flickr_notuptodate;
-	Eina_Bool album_notinflickr;
-	Eina_Bool album_notuptodate;
-	Eina_Bool photos_notinlocal; //photo which are on flickr but not in the local library
+	Eina_Bool album_netsync_notuptodate;
+	Eina_Bool album_notinnetsync;
+	int nb_photos_dl;
+	Eina_Bool album_local_notuptodate;
+	Eina_Bool photos_notinlocal; //photo which are on netsync but not in the local library
 	Eina_List *photos_notinlocal_name; //list of char *
 
 	struct
@@ -121,7 +122,7 @@ struct enlil_album_data
 	  } inwin;
 
 	Eina_List *jobs; // list of Enlil_Flickr_Job*
-     } flickr_sync;
+     } netsync;
 };
 
 struct enlil_photo_data
@@ -148,7 +149,7 @@ struct enlil_photo_data
      {
 	Photo_Flickr_Enum state;
 	Eina_List *jobs; // list of Enlil_Flickr_Job*
-     } flickr_sync;
+     } netsync;
 };
 
 struct enlil_collection_data

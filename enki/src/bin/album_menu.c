@@ -32,12 +32,6 @@ Album_Menu *album_menu_new(Evas_Object *parent, Enlil_Album *album)
    evas_object_smart_callback_add(menu, "clicked", _menu_dismiss_cb, am);
    am->menu = menu;
 
-   EINA_LIST_FOREACH(enlil_album_collections_get(album), l, album_col)
-   {
-      Elm_Menu_Item *mi2;
-      mi2 = elm_menu_item_add(menu, NULL, NULL, album_col->name, NULL, am);
-   }
-
    if(enlil_album_collections_get(album))
    {
       elm_menu_item_separator_add(menu, NULL);

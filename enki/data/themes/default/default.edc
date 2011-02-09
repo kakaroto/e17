@@ -1,4 +1,12 @@
 externals { external: "elm"; }
+
+fonts {
+	font: "fonts/DejaVuSans.ttf" "DejaVuSans";
+	font: "fonts/DejaVuSans-Bold.ttf" "DejaVuSans-Bold";
+	font: "fonts/DejaVuSansMono.ttf" "DejaVuSans-Mono";
+	font: "fonts/DejaVuSansMono-Bold.ttf" "DejaVuSans-Mono-Bold";
+}
+
 images {
     image: "shadow.png" COMP;
     image: "album_header.png" COMP;
@@ -21,8 +29,13 @@ images {
     image:  "star_demi.png" COMP;
     image:  "star_empty.png" COMP;
     image:  "flickr_logo.png" COMP;
+    image:  "plus.png" COMP;
+    image:  "folder.png" COMP;
+    image:  "library_txt_bg.png" COMP;
+    
     
     image:  "library_photo.png" COMP;
+    image:  "select.png" COMP;
     image:  "enki_logo.png" COMP;
 
     image: "geocaching/2.png" COMP;
@@ -71,6 +84,15 @@ images {
 #include "utils.edc"
 	
 collections {
+	#include "win_album_new.edc"
+	#include "win_album_rename.edc"
+	#include "win_album_delete.edc"
+	#include "win_album_tag_new.edc"
+	#include "win_album_collection_new.edc"
+	#include "win_preferences.edc"
+	#include "win_photo_delete.edc"
+	#include "win_library_delete.edc"
+
 	#include "libraries.edc"
 	#include "map.edc"
 	#include "main_panel.edc"
@@ -78,10 +100,17 @@ collections {
 	#include "list_left_menu.edc"
 	#include "list_left.edc"
 	#include "main_page.edc"
+	
+	
 	#include "main.edc"
+	
+	
 	#include "geocaching.edc"
+	#include "geocaching_bubble.edc"
 	
+	#include "panel_image.edc"
 	
+	#include "album_header.edc"
 	#include "photo.edc"
 	#include "photo_library.edc"
 	#include "photo_simple.edc"
@@ -95,6 +124,7 @@ collections {
 	
 	
 	#include "elm.edc"
+	
 
 }
 

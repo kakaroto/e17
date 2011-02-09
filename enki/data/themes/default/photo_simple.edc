@@ -92,7 +92,7 @@ group {
 	            rel1.to: "border";
 	            rel2.to: "border";
 	            rel1.offset: 1 1;
-	            rel2.offset: -2 -2;
+	            rel2.offset: -3 -2;
 	        }
 	        description {
 	            state: "visible" 0.0;

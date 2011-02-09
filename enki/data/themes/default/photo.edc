@@ -1,10 +1,10 @@
 group {
     name: "photo";
     data {
-        item: left_marge 5;
-        item: right_marge 5;
-        item: top_marge 5;
-        item: bottom_marge 5;
+        item: left_marge 12;
+        item: right_marge 13;
+        item: top_marge 12;
+        item: bottom_marge 14;
     }
     /*lua_script {
     function message(ed, typ, id, ...)
@@ -46,7 +46,7 @@ group {
 	            state: "default" 0.0;
 	            visible: 1;
 	            color: 255 255 255 0;
-	            image.normal: "library_photo.png";
+	            image.normal: "select.png";
 	            rel1.offset: -5 -5;
 	            rel2.offset: 5 5;
 	            image.border: 15 15 15 15;
@@ -69,7 +69,7 @@ group {
 	            state: "default" 0.0;
 	            visible: 1;
 	            image.normal: "shadow.png";
-                    image.border: 15 15 15 15;
+                image.border: 8 8 8 8;
 	        }
 	    }
 	    part {
@@ -82,8 +82,8 @@ group {
 	            color: 255 255 255 255;
 	            rel1.to: "shadow";
 	            rel2.to: "shadow";
-	            rel1.offset: 15 15;
-	            rel2.offset: -16 -16;
+	            rel1.offset: 8 8;
+	            rel2.offset: -9 -9;
 	        }
 	    }
 	    part {
@@ -96,8 +96,8 @@ group {
 	            color: 255 255 255 0;
 	            rel1.to: "border";
 	            rel2.to: "border";
-	            rel1.offset: 5 5;
-	            rel2.offset: -6 -6;
+	            rel1.offset: 4 4;
+	            rel2.offset: -5 -5;
 	        }
 	        description {
 	            state: "visible" 0.0;

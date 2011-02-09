@@ -1,7 +1,7 @@
 
 group {
     name: "photo_library";
-    #define LIBRARY_ROTATE 20
+    #define LIBRARY_ROTATE 10
 	parts {
 	    part {
 	        name: "whole";
@@ -36,8 +36,6 @@ group {
 	        description {
 	            state: "display_back" 0.0;
 	            inherit: "default" 0.0;
-	            rel1.relative: 0.05 0.15;
-	            rel2.relative: 0.95 0.85;
 	            map {
 		        	on: 1;
 		            rotation {
@@ -56,8 +54,8 @@ group {
 	            color: 255 255 255 0;
 	            rel1.to: "bg_back";
 	            rel2.to: "bg_back";
-	            rel1.relative: 0.1 0.15;
-	            rel2.relative: 0.9 0.85;
+	            rel1.relative: 0.07 0.1;
+	            rel2.relative: 0.94 0.9;
 	            map {
 		        	on: 1;
 		            rotation {
@@ -139,8 +137,6 @@ group {
 	        description {
 	            state: "display_back" 0.0;
 	            inherit: "default" 0.0;
-	            rel1.relative: 1.1 1.2;
-	            rel2.relative: 1.9 1.8;
 	            color : 255 255 255 0;
 	            map {
 		        	on: 1;
@@ -160,8 +156,8 @@ group {
 	            color: 255 255 255 0;
 	            rel1.to: "bg_front";
 	            rel2.to: "bg_front";
-	            rel1.relative: 0.1 0.15;
-	            rel2.relative: 0.9 0.85;
+	            rel1.relative: 0.07 0.1;
+	            rel2.relative: 0.94 0.9;
 	            map {
 		        	on: 1;
 		            rotation {
@@ -218,6 +214,7 @@ group {
 		        }
 	        }
 	    }
+	    
 	    part {
 	        name: "catcher";
 	        type: RECT;

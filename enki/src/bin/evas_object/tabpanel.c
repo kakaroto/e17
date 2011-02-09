@@ -5,7 +5,11 @@ struct tabpanel
 	Evas_Object *tabs;
 	Evas_Object *panels;
 
+	Evas_Object *parent;
+
 	Eina_List *items;
+
+	Eina_Bool from_edje;
 };
 
 struct tabpanel_item
@@ -35,28 +39,6 @@ static void _tb_select_cb(void *data, Evas_Object *obj, void *event_info)
 		item->select_cb(item->data, item->tab, item);
 }
 
-static void _hide_finished_cb(void *data, Evas_Object *obj, void *event_info)
-{
-	Tabpanel *tab = data;
-	Eina_List *l;
-	Evas_Object *content = event_info;
-	Tabpanel_Item *item;
-
-	EINA_LIST_FOREACH(tab->items, l, item)
-	{
-		if(item->content == content)
-			break;
-	}
-
-	if(item && item->del)
-	{
-		item->tab->items = eina_list_remove(item->tab->items, item);
-		if(!item->signal)
-			evas_object_del(item->content);
-		free(item);
-	}
-}
-
 
 Tabpanel *tabpanel_add(Evas_Object *parent)
 {
@@ -68,9 +50,10 @@ Tabpanel *tabpanel_add(Evas_Object *parent)
 	evas_object_size_hint_weight_set(tab->panels ,1.0, 1.0);
 	evas_object_size_hint_align_set(tab->panels, -1.0, -1.0);
 
-	elm_object_style_set(tab->panels, "fade_translucide");
+	tab->from_edje = EINA_FALSE;
+	tab->parent = parent;
 
-	evas_object_smart_callback_add(tab->panels, "hide,finished", _hide_finished_cb, tab);
+	elm_object_style_set(tab->panels, "fade_translucide");
 
 	return tab;
 }
@@ -85,9 +68,10 @@ Tabpanel *tabpanel_add_with_edje(Evas_Object *parent, Evas_Object *tabs)
 	evas_object_size_hint_weight_set(tab->panels ,1.0, 1.0);
 	evas_object_size_hint_align_set(tab->panels, -1.0, -1.0);
 
-	elm_object_style_set(tab->panels, "fade_translucide");
+	tab->from_edje = EINA_TRUE;
+	tab->parent = parent;
 
-	evas_object_smart_callback_add(tab->panels, "hide,finished", _hide_finished_cb, tab);
+	elm_object_style_set(tab->panels, "fade_translucide");
 
 	return tab;
 }
@@ -121,6 +105,10 @@ Tabpanel_Item *tabpanel_item_add(Tabpanel *tab, const char *label, Evas_Object *
 	item->select_cb = select_cb;
 
 	elm_toolbar_item_selected_set(item->item_tb, EINA_TRUE);
+
+	if(tab->from_edje
+			&& eina_list_count(tab->items) > 1)
+		edje_object_signal_emit(tab->parent, "toolbar,show", "");
 	return item;
 }
 
@@ -147,6 +135,11 @@ Tabpanel_Item *tabpanel_item_add_with_signal(Tabpanel *tab, const char *label, E
 	item->select_cb = select_cb;
 
 	elm_toolbar_item_selected_set(item->item_tb, EINA_TRUE);
+
+	if(tab->from_edje
+			&& eina_list_count(tab->items) > 1)
+		edje_object_signal_emit(tab->parent, "toolbar,show", "");
+
 	return item;
 }
 
@@ -163,11 +156,21 @@ void tabpanel_del(Tabpanel *tab)
 
 void tabpanel_item_del(Tabpanel_Item *item)
 {
-	elm_toolbar_item_del(item->item_tb);
-
+	if(!item->signal)
+	{
+		elm_pager_content_pop(item->tab->panels);
+		evas_object_del(item->content);
+	}
 	if(item->tab->items)
 		tabpanel_item_select(eina_list_data_get(item->tab->items));
 
-	item->del = EINA_TRUE;
+	elm_toolbar_item_del(item->item_tb);
+
+	if(item->tab->from_edje
+			&& eina_list_count(item->tab->items) <= 2)
+		edje_object_signal_emit(item->tab->parent, "toolbar,hide", "");
+
+	item->tab->items = eina_list_remove(item->tab->items, item);
+	free(item);
 }
 

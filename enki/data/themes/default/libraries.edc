@@ -9,15 +9,15 @@ group {
     parts {
     	part {
             name: "bg";
-            type: RECT;
+            type: IMAGE;
             description {
                 state : "default" 0.0;
-                color: 25 25 25 255;
-               //rel1.relative: 0.2 0.2;
-               //rel2.relative: 0.8 0.8;
-               //aspect_preference : BOTH;
-               // aspect: (541/400) 1;
-               //image.normal: "enki_logo.png";
+                color: 255 255 255 50;
+               rel1.relative: 0.2 0.2;
+               rel2.relative: 0.8 0.8;
+               aspect_preference : BOTH;
+               aspect: 1 1;
+               image.normal: "enki_logo.png";
             }
         }
         part {
@@ -25,6 +25,23 @@ group {
             type: SWALLOW;
             description {
                 state : "default" 0.0;
+            }
+        }
+    }
+}
+
+group {
+    name : "libraries/icon/nophoto";
+    parts {
+    	part {
+            name: "bg";
+            type: IMAGE;
+            description {
+               state : "default" 0.0;
+               color: 255 255 255 255;
+               aspect_preference : BOTH;
+               aspect: 1 1;
+               image.normal: "enki_logo.png";
             }
         }
     }

@@ -207,7 +207,7 @@ static Evas_Object *_marker_get(Evas_Object *obj, Elm_Map_Marker *marker, void *
 
    Evas_Object *o = photo_object_add(obj);
    photo_object_theme_file_set(o, THEME, "photo");
-   evas_object_size_hint_min_set(o, 128, 96);
+   evas_object_size_hint_min_set(o, 192, 128);
 
    evas_object_smart_callback_add(o, "open", _open, photo);
    evas_object_smart_callback_add(o, "select", _photo_select_cb, photo);
@@ -238,120 +238,47 @@ static Evas_Object *_marker_get(Evas_Object *obj, Elm_Map_Marker *marker, void *
 static Evas_Object *_gp_marker_get(Evas_Object *obj, Elm_Map_Marker *marker, void *data)
 {
    char buf[PATH_MAX];
-   Evas_Object *tb, *o, *fr, *bx, *bt;
+   Evas_Object *tb, *o, *fr, *bx, *bt, *ly, *edje, *lbl;
    Enlil_Geocaching *gp = data;
    //Geocaching_Data *gp_data = enlil_geocaching_user_data_get(gp);
 
-   fr = elm_frame_add(enlil_data->win->win);
-   elm_frame_label_set(fr, enlil_geocaching_url_name_get(gp));
-   evas_object_show(fr);
-   evas_object_size_hint_weight_set(fr, 1.0, 1.0);
-   evas_object_size_hint_align_set(fr, -1.0, -1.0);
 
-   tb = elm_table_add(enlil_data->win->win);
-   evas_object_size_hint_weight_set(tb, 1.0, 1.0);
-   evas_object_size_hint_align_set(tb, -1.0, -1.0);
-   evas_object_show(tb);
-   elm_frame_content_set(fr, tb);
-   elm_table_padding_set(tb, 5, 5);
-
-   snprintf(buf, PATH_MAX, D_("<b>Created by :</b> %s"), enlil_geocaching_gp_placed_by_get(gp));
-   o = elm_label_add(tb);
-   elm_label_label_set(o, buf);
-   evas_object_show(o);
-   evas_object_size_hint_weight_set(o, 1.0, 1.0);
-   evas_object_size_hint_align_set(o, -1.0, 0.5);
-   elm_table_pack(tb, o, 0, 0, 1, 1);
-
-   bt = elm_button_add(tb);
-   elm_button_label_set(bt, enlil_geocaching_name_get(gp));
-   o = elm_icon_add(tb);
-   snprintf(buf, PATH_MAX, "icons/geocaching/%s", enlil_geocaching_gp_type_get(gp));
-   elm_icon_file_set(o, THEME, buf);
-   evas_object_smart_callback_add(bt, "clicked", _bt_geocaching_cb, gp);
-   elm_button_icon_set(bt, o);
-   evas_object_show(bt);
-   evas_object_size_hint_weight_set(bt, 1.0, 1.0);
-   evas_object_size_hint_align_set(bt, 0.0, 1.0);
-   elm_table_pack(tb, bt, 1, 0, 1, 1);
+   edje = edje_object_add(evas_object_evas_get(obj));
+   evas_object_show(edje);
+   edje_object_file_set(edje, THEME, "bubble/geocaching");
+   evas_object_size_hint_min_set(edje, 300, 100);
 
 
-   bx = elm_box_add(tb);
-   evas_object_show(bx);
-   elm_box_horizontal_set(bx, EINA_TRUE);
-   evas_object_size_hint_weight_set(bx, 1.0, 0.0);
-   evas_object_size_hint_align_set(bx, -1.0, 1.0);
-   elm_table_pack(tb, bx, 0, 1, 1, 1);
+   snprintf(buf, sizeof(buf), "<b><font_size=14>%s</font_size></b>", enlil_geocaching_url_name_get(gp));
+   lbl = edje_object_part_external_object_get(edje, "object.geocaching.bubble.title");
+   elm_label_label_set(lbl, buf);
 
-   o = elm_label_add(tb);
-   elm_label_label_set(o, D_("<b>Difficulty :</b>"));
-   evas_object_show(o);
-   evas_object_size_hint_weight_set(o, 0.0, 1.0);
-   evas_object_size_hint_align_set(o, 0.0, -1.0);
-   elm_box_pack_end(bx, o);
+   snprintf(buf, sizeof(buf), "<b>A cache by %s</b>", enlil_geocaching_gp_owner_get(gp));
+   lbl = edje_object_part_external_object_get(edje, "object.geocaching.bubble.owner");
+   elm_label_label_set(lbl, buf);
 
-   o = elm_layout_add(tb);
-   elm_layout_file_set(o, THEME, "stars");
-   evas_object_show(o);
-   evas_object_size_hint_weight_set(o, 1.0, 0.0);
-   evas_object_size_hint_align_set(o, -1.0, 0.0);
-   elm_box_pack_end(bx, o);
-   edje_object_signal_emit(elm_layout_edje_get(o), enlil_geocaching_gp_difficulty_get(gp), "");
+   lbl = edje_object_part_external_object_get(edje, "object.geocaching.bubble.cache_size");
+   elm_label_label_set(lbl, enlil_geocaching_gp_container_get(gp));
+
+   lbl = edje_object_part_external_object_get(edje, "object.geocaching.bubble.date_hidden");
+   elm_label_label_set(lbl, enlil_geocaching_time_get(gp));
 
 
+	bt = edje_object_part_external_object_get(edje, "object.geocaching.bubble.open");
+	elm_button_label_set(bt, enlil_geocaching_name_get(gp));
+	o = elm_icon_add(obj);
+	snprintf(buf, sizeof(buf), "icons/geocaching/%s", enlil_geocaching_gp_type_get(gp));
+	elm_icon_file_set(o, THEME, buf);
+	elm_button_icon_set(bt, o);
+	evas_object_smart_callback_add(bt, "clicked", _bt_geocaching_cb, gp);
 
-   bx = elm_box_add(tb);
-   evas_object_show(bx);
-   elm_box_horizontal_set(bx, EINA_TRUE);
-   evas_object_size_hint_weight_set(bx, 1.0, 0.0);
-   evas_object_size_hint_align_set(bx, -1.0, 1.0);
-   elm_table_pack(tb, bx, 1, 1, 1, 1);
+	snprintf(buf, sizeof(buf), "terrain,%s", enlil_geocaching_gp_terrain_get(gp));
+	edje_object_signal_emit(edje, buf, "");
 
-   o = elm_label_add(tb);
-   elm_label_label_set(o, D_("<b>Terrain :</b>"));
-   evas_object_show(o);
-   evas_object_size_hint_weight_set(o, 0.0, 1.0);
-   evas_object_size_hint_align_set(o, 0.0, 1.0);
-   elm_box_pack_end(bx, o);
+	snprintf(buf, sizeof(buf), "difficulty,%s", enlil_geocaching_gp_difficulty_get(gp));
+	edje_object_signal_emit(edje, buf, "");
 
-   o = elm_layout_add(tb);
-   elm_layout_file_set(o, THEME, "stars");
-   evas_object_show(o);
-   evas_object_size_hint_weight_set(o, 1.0, 0.0);
-   evas_object_size_hint_align_set(o, -1.0, 1.0);
-   elm_box_pack_end(bx, o);
-   edje_object_signal_emit(elm_layout_edje_get(o), enlil_geocaching_gp_terrain_get(gp), "");
-
-
-   snprintf(buf, PATH_MAX, D_("<b>Date Hidden :</b> %s"), enlil_geocaching_time_get(gp));
-   buf[21+10] = '\0';
-   o = elm_label_add(tb);
-   elm_label_label_set(o, buf);
-   evas_object_show(o);
-   evas_object_size_hint_weight_set(o, 1.0, 1.0);
-   evas_object_size_hint_align_set(o, -1.0, -1.0);
-   elm_table_pack(tb, o, 0, 2, 1, 1);
-
-   snprintf(buf, PATH_MAX, D_("<b>cache size :</b> %s"), enlil_geocaching_gp_container_get(gp));
-   o = elm_label_add(tb);
-   elm_label_label_set(o, buf);
-   evas_object_show(o);
-   evas_object_size_hint_weight_set(o, 1.0, 1.0);
-   evas_object_size_hint_align_set(o, -1.0, -1.0);
-   elm_table_pack(tb, o, 1, 2, 1, 1);
-
-   
-   if(!strcmp(enlil_geocaching_gp_available_get(gp), "False"))
-     {
-	o = elm_label_add(tb);
-	elm_label_label_set(o, D_("<b><color=#f00>Not available.<color></b>"));
-	evas_object_show(o);
-	evas_object_size_hint_weight_set(o, 1.0, 1.0);
-	evas_object_size_hint_align_set(o, -1.0, -1.0);
-	elm_table_pack(tb, o, 0, 3, 1, 1);
-     }
-
-   return fr;
+   return edje;
 }
 
 static Evas_Object *_gp_marker_icon_get(Evas_Object *obj, Elm_Map_Marker *marker, void *data)

@@ -7,6 +7,8 @@ int APP_LOG_DOMAIN;
 const char *media_player = NULL;
 Enlil_Data *enlil_data = NULL;
 static Tabpanel_Item *tp_list_photo;
+static Tabpanel_Item *tp_menu;
+Evas_Object *global_object;
 
 
 static const Ecore_Getopt options = {
@@ -93,15 +95,16 @@ static void _menu_select_cb(void *data, Tabpanel *tabpanel, Tabpanel_Item *item)
 
 void library_set(const char *library_path)
 {
-	main_menu_nolibrary_disabled_set(EINA_FALSE);
+	//close the current library
+	main_menu_nolibrary_disabled_set(EINA_TRUE);
 
-	photos_list_object_freeze(enlil_data->list_photo->o_list, 1);
+	photos_list_object_freeze(enlil_data->list_photo->o_list, EINA_TRUE);
 	enlil_thumb_clear();
 	slideshow_hide();
 	slideshow_clear();
 
-	enlil_flickr_job_start_cb_set(flickr_job_start_cb, NULL);
-	enlil_flickr_job_done_cb_set(flickr_job_done_cb, NULL);
+	enlil_netsync_job_start_cb_set(flickr_job_start_cb, NULL);
+	enlil_netsync_job_done_cb_set(flickr_job_done_cb, NULL);
 
 	if(enlil_data->sync)
 		enlil_sync_free(&enlil_data->sync);
@@ -112,11 +115,21 @@ void library_set(const char *library_path)
 		enlil_library_free(&enlil_data->library);
 	}
 
-	photos_list_object_freeze(enlil_data->list_photo->o_list, 0);
+	enlil_data->sync = NULL;
+	enlil_data->load = NULL;
+	enlil_data->library = NULL;
 
+	photos_list_object_freeze(enlil_data->list_photo->o_list, EINA_FALSE);
 	elm_label_label_set(enlil_data->list_photo->lbl_nb_albums_photos, "");
-
 	list_left_data_set(enlil_data->list_left, enlil_data);
+	//
+
+
+	if(library_path == NULL)
+		return ;
+
+	//open the new library
+	main_menu_nolibrary_disabled_set(EINA_FALSE);
 
 	//
 	Enlil_Library *library = enlil_library_new(monitor_album_new_cb, monitor_album_delete_cb, monitor_enlil_delete_cb,
@@ -191,14 +204,13 @@ static void _panes_clicked_double(void *data, Evas_Object *obj, void *event_info
 int elm_main(int argc, char **argv)
 {
 	Evas_Object *panels, *ly, *edje;
-	Tabpanel_Item *tp_item;
 	unsigned char exit_option = 0;
 	char *library_path = NULL;
 
 	enlil_init();
 	ecore_file_init();
 
-	elm_theme_all_set(THEME);
+	elm_theme_extension_add(NULL, THEME);
 
 	LOG_DOMAIN = eina_log_domain_register("Enki", "\033[34;1m");
 
@@ -225,8 +237,6 @@ int elm_main(int argc, char **argv)
 		return 0;
 	//
 
-	elm_finger_size_set(1);
-
 	//
 	enlil_data = calloc(1, sizeof(Enlil_Data));
 	//
@@ -235,7 +245,6 @@ int elm_main(int argc, char **argv)
 	Enlil_Win *win = enlil_win_new();
 	enlil_data->win = win;
 	evas_object_smart_callback_add(win->win, "delete-request", close_cb, NULL);
-
 
 	//
 	ly = elm_layout_add(win->win);
@@ -246,10 +255,11 @@ int elm_main(int argc, char **argv)
 	evas_object_show(ly);
 
 	edje = elm_layout_edje_get(ly);
+	global_object = edje;
 	//
 
 	Evas_Object *menu = edje_object_part_external_object_get(edje, "object.menu");
-	enlil_data->tabpanel = tabpanel_add_with_edje(win->win, menu);
+	enlil_data->tabpanel = tabpanel_add_with_edje(edje, menu);
 
 	/*Evas_Object *flickr = */flickr_menu_new(edje);
 
@@ -279,7 +289,7 @@ int elm_main(int argc, char **argv)
 
 	//
 	main_menu_new(edje);
-	tp_item = tabpanel_item_add_with_signal(list_album->tb_liste_map, D_("Menu"), edje, "main_panel,menu,show", _menu_select_cb, enlil_data);
+	tp_menu = tabpanel_item_add_with_signal(list_album->tb_liste_map, D_("Menu"), edje, "main_panel,menu,show", _menu_select_cb, enlil_data);
 
 
 	List_Photo *list_photo = list_photo_new(edje);
@@ -291,7 +301,7 @@ int elm_main(int argc, char **argv)
 	enlil_data->map = map;
 	tabpanel_item_add_with_signal(list_album->tb_liste_map, D_("Map"), edje, "main_panel,map,show", _map_select_cb, enlil_data);
 
-	tabpanel_item_select(tp_item);
+	tabpanel_item_select(tp_menu);
 	//
 
 	//
@@ -441,7 +451,7 @@ void enlil_album_data_free(Enlil_Album *album, void *_data)
 	list_left_remove(enlil_data->list_left, album);
 	photos_list_object_header_del(data->list_photo_item);
 
-	EINA_LIST_FREE(data->flickr_sync.jobs, job)
+	EINA_LIST_FREE(data->netsync.jobs, job)
 	{
 		enlil_flickr_job_del(job);
 	}
@@ -475,7 +485,7 @@ void enlil_photo_data_free(Enlil_Photo *photo, void *_data)
 		slideshow_object_item_del(item);
 	}
 
-	EINA_LIST_FREE(data->flickr_sync.jobs, job)
+	EINA_LIST_FREE(data->netsync.jobs, job)
 	{
 		enlil_flickr_job_del(job);
 	}
@@ -522,10 +532,10 @@ const char *album_flickr_edje_signal_get(Enlil_Album *album)
 	if(!album_data)
 		return "uptodate";
 
-	if(album_data->flickr_sync.album_flickr_notuptodate
-			|| album_data->flickr_sync.album_notinflickr
-			|| album_data->flickr_sync.album_notuptodate
-			|| album_data->flickr_sync.photos_notinlocal
+	if(album_data->netsync.album_netsync_notuptodate
+			|| album_data->netsync.album_notinnetsync
+			|| album_data->netsync.album_local_notuptodate
+			|| album_data->netsync.photos_notinlocal
 	)
 		return "update";
 
@@ -533,7 +543,7 @@ const char *album_flickr_edje_signal_get(Enlil_Album *album)
 	EINA_LIST_FOREACH(enlil_album_photos_get(album), l, photo)
 	{
 		Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-		if (photo_data && photo_data->flickr_sync.state != PHOTO_FLICKR_NONE)
+		if (photo_data && photo_data->netsync.state != PHOTO_FLICKR_NONE)
 			return "update";
 	}
 
@@ -559,6 +569,12 @@ const char *photo_flickr_edje_signal_get(Photo_Flickr_Enum e)
 void select_list_photo()
 {
 	tabpanel_item_select(tp_list_photo);
+}
+
+
+void select_menu()
+{
+	tabpanel_item_select(tp_menu);
 }
 
 ELM_MAIN()

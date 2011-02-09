@@ -17,7 +17,6 @@ enki_SOURCES = \
 								slideshow.c \
 								panel_image.c \
 								panel_geocaching.c \
-								menu.c \
 								import.c \
 								album_menu.c \
 								photo_menu.c \

@@ -156,6 +156,8 @@ group {
 				state: "default" 0.0;
 				rel1.to_y: "object.menu.lvl2";
 				rel1.relative: 0.0 1.0;
+				rel2.to_y: "object.library.delete";
+				rel2.relative: 1.0 0.0;
 				params {
 					string: "horizontal mode" "scroll";
 				}
@@ -210,6 +212,8 @@ group {
 				state: "default" 0.0;
 				rel1.to_y: "object.menu.lvl2";
 				rel1.relative: 0.0 1.0;
+				rel2.to_y: "object.library.delete";
+				rel2.relative: 1.0 0.0;
 				params {
 					string: "horizontal mode" "scroll";
 				}
@@ -264,8 +268,25 @@ group {
 				state: "default" 0.0;
 				rel1.to_y: "object.menu.lvl2";
 				rel1.relative: 0.0 1.0;
+				rel2.to_y: "object.library.delete";
+				rel2.relative: 1.0 0.0;
 				params {
 					string: "horizontal mode" "scroll";
+				}
+			}
+		}
+		
+		part {
+			name: "object.library.delete";
+			type: EXTERNAL;
+			source: "elm/button";
+			clip_to: "lvl2_clipper";
+			description {
+				state: "default" 0.0;
+				rel1.relative: 0.0 1.0;
+				align: 0.5 1.0;
+				params {
+					string: "label" "Delete the library";
 				}
 			}
 		}

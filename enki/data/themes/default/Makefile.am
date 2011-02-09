@@ -15,6 +15,7 @@ main_panel.edc \
 map.edc main.edc \
 main_page.edc \
 geocaching.edc \
+geocaching_bubble.edc \
 photo.edc \
 photo_library.edc \
 photo_simple.edc \
@@ -23,7 +24,17 @@ photo_slideshow.edc \
 icons.edc \
 flickr.edc \
 minislideshow.edc \
-elm.edc
+elm.edc \
+album_header.edc \
+panel_image.edc \
+win_album_new.edc \
+win_album_rename.edc \
+win_album_delete.edc \
+win_preferences.edc \
+win_album_tag_new.edc \
+win_album_collection_new.edc \
+win_photo_delete.edc\
+win_library_delete.edc
 	$(EDJE_CC) $(EDJE_FLAGS) default.edc -id ../images/
 
 icondir = $(pkgdatadir)/themes

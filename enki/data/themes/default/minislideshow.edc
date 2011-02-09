@@ -1,8 +1,8 @@
 
 group {
     name: "slideshow";
-    min: 350 50;
-    max: 350 50;
+    min: 350 40;
+    max: 350 40;
 
     parts{
     part {

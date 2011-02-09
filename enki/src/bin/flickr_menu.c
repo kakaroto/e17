@@ -20,7 +20,7 @@ static void _account_set_entry_changed_cb(void *data, Evas_Object *obj, void *ev
 
 Evas_Object *flickr_menu_new(Evas_Object *edje)
 {
-    Evas_Object *bt = edje_object_part_external_object_get(edje, "object.flickr");
+    Evas_Object *bt = (Evas_Object *)edje_object_part_object_get(edje, "object.flickr");
     evas_object_smart_callback_add(bt, "clicked", _menu_open_cb, edje);
 
     return bt;

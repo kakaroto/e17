@@ -25,6 +25,7 @@ group {
     	alias: "object.list.albums" 				"panes[left]:object.list.albums";
     	alias: "object.list.collections" 			"panes[left]:object.list.collections";
     	alias: "object.list.tags" 					"panes[left]:object.list.tags";
+    	alias: "object.library.delete" 				"panes[left]:object.library.delete";
     	//
     	
     	//list left menu
@@ -46,7 +47,7 @@ group {
 				params {
 					string: "content left" "list_left";
 					string: "content right" "main_panel";
-					double: "left size" 0.2;
+					double: "left size" 0.22;
 				}
 			}
 		}

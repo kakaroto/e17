@@ -1,15 +1,130 @@
 
 
 
-
 group {
     name: "panel/geocaching";
     parts {
+        alias: "object.geocaching.panel.close" 		"panes[left]:object.geocaching.panel.close";
+        alias: "object.geocaching.panel.map" 		"panes[left]:object.geocaching.panel.map";
+        alias: "object.geocaching.panel.comments" 	"panes[left]:object.geocaching.panel.comments";
+        
+        
+		alias: "object.geocaching.panel.date_hidden" 		"panes[right]:header[2]:object.geocaching.panel.date_hidden";
+		alias: "object.geocaching.panel.cache_size" 		"panes[right]:header[3]:object.geocaching.panel.cache_size";
+		alias: "object.geocaching.panel.coordinates" 		"panes[right]:header[4]:object.geocaching.panel.coordinates";
+    	alias: "object.geocaching.panel.hints" 				"panes[right]:header[5]:object.geocaching.panel.hints";
+    	
+    	alias: "object.geocaching.panel.description" 		"panes[right]:object.geocaching.panel.description";
+    	alias: "object.geocaching.panel.icon2" 				"panes[right]:object.geocaching.panel.icon2";
+    	alias: "object.geocaching.panel.owner" 				"panes[right]:object.geocaching.panel.owner";
+    	alias: "object.geocaching.panel.title" 				"panes[right]:object.geocaching.panel.title";
+    	alias: "object.geocaching.panel.icon" 				"panes[right]:object.geocaching.panel.icon";
+        
+    	part {
+			name: "panes";
+			type: EXTERNAL;
+			source: "elm/panes";
+			description {
+				state: "default" 0.0;
+				params {
+					string: "content left" "panel/geocaching/left";
+					string: "content right" "panel/geocaching/right";
+					double: "left size" 0.2;
+				}
+			}
+		}
+    }
+    programs {
+    	//wrap stars signals
+		#define wrap_stars_signal(type, table, num) 		\
+		program { 							 				\
+    		name: type" "num;								\
+    		signal: type","num;								\
+    		action: SIGNAL_EMIT "panes[right]:header["table"]:"num ""; 	\
+    	}	
+    
+    	wrap_stars_signal("terrain", "1", "0")
+    	wrap_stars_signal("terrain", "1", "0.5")
+    	wrap_stars_signal("terrain", "1", "1")
+    	wrap_stars_signal("terrain", "1", "1.5")
+    	wrap_stars_signal("terrain", "1", "2")
+    	wrap_stars_signal("terrain", "1", "2.5")
+    	wrap_stars_signal("terrain", "1", "3")
+    	wrap_stars_signal("terrain", "1", "3.5")
+    	wrap_stars_signal("terrain", "1", "4")
+    	wrap_stars_signal("terrain", "1", "4.5")
+    	wrap_stars_signal("terrain", "1", "5")
+    	
+    	wrap_stars_signal("difficulty", "0", "0")
+    	wrap_stars_signal("difficulty", "0", "0.5")
+    	wrap_stars_signal("difficulty", "0", "1")
+    	wrap_stars_signal("difficulty", "0", "1.5")
+    	wrap_stars_signal("difficulty", "0", "2")
+    	wrap_stars_signal("difficulty", "0", "2.5")
+    	wrap_stars_signal("difficulty", "0", "3")
+    	wrap_stars_signal("difficulty", "0", "3.5")
+    	wrap_stars_signal("difficulty", "0", "4")
+    	wrap_stars_signal("difficulty", "0", "4.5")
+    	wrap_stars_signal("difficulty", "0", "5")
 
-		alias: "object.geocaching.panel.date_hidden" 		"header[2]:object.geocaching.panel.date_hidden";
-		alias: "object.geocaching.panel.cache_size" 		"header[3]:object.geocaching.panel.cache_size";
-		alias: "object.geocaching.panel.coordinates" 		"header[4]:object.geocaching.panel.coordinates";
-    	alias: "object.geocaching.panel.hints" 				"header[5]:object.geocaching.panel.hints";
+    	//
+    }
+}
+
+group {
+    name: "panel/geocaching/left";
+    parts {
+        part {
+            name : "object.geocaching.panel.close";
+            type : EXTERNAL;
+            source: "elm/button";
+            description {
+                state : "default" 0.0;
+                rel1.relative : 0.0 0.0;
+                rel1.offset: 5 0;
+                rel2.relative : 1.0 0.0;
+                align: 0.0 0.0;
+                fixed: 1 1;
+                params {
+                	string: "label" "close the cache";
+                }
+            }
+        }
+        part {
+            name : "object.geocaching.panel.map";
+            type : EXTERNAL;
+            source: "elm/map";
+            description {
+                state : "default" 0.0;
+                max: 99999 250;
+                rel1.to_y: "object.geocaching.panel.close";
+                rel1.relative : 0.0 1.0;
+                rel1.offset: 5 0;
+                rel2.relative : 1.0 1.0;
+                align: 0.5 0.0;
+                aspect: 1 1;
+                aspect_preference: BOTH;
+            }
+        }
+        part {
+            name : "object.geocaching.panel.comments";
+            type : EXTERNAL;
+            source: "elm/scroller";
+            description {
+                state : "default" 0.0;
+                rel1.to_y: "object.geocaching.panel.map";
+                rel1.relative : 0.0 1.0;
+                rel1.offset: 0 5;
+                rel2.relative : 1.0 1.0;
+            }
+        }
+    }
+    
+}
+
+group {
+    name: "panel/geocaching/right";
+    parts {
     	
         part {
             name : "object.geocaching.panel.icon";
@@ -20,7 +135,8 @@ group {
                 fixed : 1 1;
                 aspect : 1 1;
                 rel1.relative : 0.0 0.0;
-                rel2.relative : 0.05 0.05;
+                rel2.relative : 0.0 0.05;
+                align: 0.0 0.5;
             }
         }
         part {
@@ -62,7 +178,7 @@ group {
                 align: 0.0 0.0;
                 rel1.to_y : "object.geocaching.panel.icon";
                 rel1.relative : 0.0 1.0;
-                rel1.offset: 0 10;
+                rel1.offset: 10 10;
                 rel2.to_y : "object.geocaching.panel.icon";
                 rel2.to_x : "object.geocaching.panel.icon2";
                 rel2.relative : 0.0 1.0;
@@ -149,79 +265,17 @@ group {
                 state : "default" 0.0;
                 rel1.to_y : "header";
                 rel1.relative : 0.0 1.0;
-                rel1.offset: 5 10;
-                rel2.relative : 0.7 1.0;
+                rel1.offset: 10 10;
+                rel2.relative : 1.0 1.0;
                 params {
                 	string: "editable" "0";
                 }
             }
         }
-        part {
-            name : "object.geocaching.panel.map";
-            type : EXTERNAL;
-            source: "elm/map";
-            description {
-                state : "default" 0.0;
-                rel1.to_x : "object.geocaching.panel.description";
-                align: 0.0 0.0;
-                aspect: 1 1;
-                aspect_preference: BOTH;
-                rel1.relative : 1.0 0.0;
-                rel1.offset: 5 0;
-                rel2.relative : 1.0 1.0;
-            }
-        }
-        part {
-            name : "object.geocaching.panel.comments";
-            type : EXTERNAL;
-            source: "elm/scroller";
-            description {
-                state : "default" 0.0;
-                rel1.to : "object.geocaching.panel.map";
-                rel1.relative : 0.0 1.0;
-                rel1.offset: 0 5;
-                rel2.relative : 1.0 1.0;
-            }
-        }
     }
     
-    
-    programs {
-    	//wrap stars signals
-		#define wrap_stars_signal(type, table, num) 		\
-		program { 							 				\
-    		name: type" "num;								\
-    		signal: type","num;								\
-    		action: SIGNAL_EMIT "header["table"]:"num ""; 	\
-    	}	
-    
-    	wrap_stars_signal("terrain", "1", "0")
-    	wrap_stars_signal("terrain", "1", "0.5")
-    	wrap_stars_signal("terrain", "1", "1")
-    	wrap_stars_signal("terrain", "1", "1.5")
-    	wrap_stars_signal("terrain", "1", "2")
-    	wrap_stars_signal("terrain", "1", "2.5")
-    	wrap_stars_signal("terrain", "1", "3")
-    	wrap_stars_signal("terrain", "1", "3.5")
-    	wrap_stars_signal("terrain", "1", "4")
-    	wrap_stars_signal("terrain", "1", "4.5")
-    	wrap_stars_signal("terrain", "1", "5")
-    	
-    	wrap_stars_signal("difficulty", "0", "0")
-    	wrap_stars_signal("difficulty", "0", "0.5")
-    	wrap_stars_signal("difficulty", "0", "1")
-    	wrap_stars_signal("difficulty", "0", "1.5")
-    	wrap_stars_signal("difficulty", "0", "2")
-    	wrap_stars_signal("difficulty", "0", "2.5")
-    	wrap_stars_signal("difficulty", "0", "3")
-    	wrap_stars_signal("difficulty", "0", "3.5")
-    	wrap_stars_signal("difficulty", "0", "4")
-    	wrap_stars_signal("difficulty", "0", "4.5")
-    	wrap_stars_signal("difficulty", "0", "5")
-
-    	//
-    }
 }
+
   
 #define stars(rel1_x) 		 				\
         part { 								\

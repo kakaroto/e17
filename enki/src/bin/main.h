@@ -32,13 +32,14 @@ extern const char *media_player;
 
 extern Enlil_Photo *current_photo;
 extern Enlil_Data *enlil_data;
-
+extern Evas_Object *global_object;
 
 
 void library_set(const char *root_path);
 void close_cb(void *data, Evas_Object *obj, void *event_info);
 
 void select_list_photo();
+void select_menu();
 
 /**cb called when a enlil object is destroyed */
 void enlil_album_data_free(Enlil_Album *album, void *_data);
