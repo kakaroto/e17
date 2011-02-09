@@ -601,6 +601,7 @@ static void _enlil_sync_album_folder_start(Enlil_Sync *sync, const char *folder)
    //load the album from the eet file
    if(album_list)
      album = enlil_library_eet_album_load(library, folder);
+
    //test if the folder exists
    folder_exist = ecore_file_exists(buf_album);
    //
@@ -1170,6 +1171,7 @@ static int file_album_comp_cb(const void *d1, const void *d2)
 {
    const Enlil_Album *album = d1;
    const char *s = d2;
+
 
    return strcmp(enlil_album_file_name_get(album), s);
 }

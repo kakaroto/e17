@@ -32,6 +32,9 @@ struct enlil_photo
 
    Enlil_Photo_Type type;
 
+   //some Photo object must never be saved
+   Eina_Bool mustNotBeSaved: 1;
+
    const char *name;
    const char *file_name;
    const char *path;
@@ -47,10 +50,11 @@ struct enlil_photo
 
    struct
      {
-	const char *id;
-	long long last_change;
-	long long fs_time;
-     } flickr;
+		int id;
+		int timestamp_last_update_header;
+		int timestamp_last_update_tags;
+		int timestamp_last_update_file;
+     } netsync;
 
    Eina_Bool exif_loaded;
    Enlil_Photo_Exif *exifs;
@@ -241,6 +245,7 @@ void enlil_photo_album_set(Enlil_Photo *photo, Enlil_Album *album)
 #define STRUCT_TYPE Enlil_Photo
 
    SET(type, Enlil_Photo_Type)
+   SET(mustNotBeSaved, Eina_Bool)
    STRING_SET(file_name)
    SET(time, long long)
    SET(eet_save, Eina_Bool)
@@ -252,6 +257,7 @@ SET(size_h, int)
 
 
    GET(type, Enlil_Photo_Type)
+   GET(mustNotBeSaved, Eina_Bool)
    GET(album, Enlil_Album*)
    GET(name, const char*)
    GET(path, const char*)
@@ -272,74 +278,104 @@ GET(size_h, int)
 #undef FCT_NAME
 #undef STRUCT_TYPE
 
-const char *enlil_photo_flickr_id_get(Enlil_Photo *photo)
+
+int enlil_photo_netsync_id_get(Enlil_Photo *photo)
 {
     ASSERT_RETURN(photo!=NULL);
 
-    return photo->flickr.id;
+    return photo->netsync.id;
 }
 
-void enlil_photo_flickr_id_set(Enlil_Photo *photo, const char *id)
-{
-   ASSERT_RETURN_VOID(photo != NULL);
 
-   EINA_STRINGSHARE_DEL(photo->flickr.id);
-
-   if(id)
-     photo->flickr.id = eina_stringshare_add(id);
-   else
-     photo->flickr.id = NULL;
-}
-
-long long int _enlil_photo_flickr_last_change_get(Enlil_Photo *photo)
+int enlil_photo_netsync_timestamp_last_update_header_get(Enlil_Photo *photo)
 {
     ASSERT_RETURN(photo!=NULL);
-    return photo->flickr.last_change;
+
+    return photo->netsync.timestamp_last_update_header;
 }
 
-void _enlil_photo_flickr_last_change_set(Enlil_Photo *photo, long long last_change)
+void _enlil_photo_netsync_timestamp_last_update_header_set(Enlil_Photo *photo, int timestamp)
+{
+    ASSERT_RETURN_VOID(photo!=NULL);
+
+    photo->netsync.timestamp_last_update_header = timestamp;
+
+    enlil_photo_eet_save(photo);
+    Enlil_Album *album = enlil_photo_album_get(photo);
+    if(album)
+ 	   enlil_album_eet_photos_list_save(album);
+}
+
+int enlil_photo_netsync_timestamp_last_update_tags_get(Enlil_Photo *photo)
+{
+    ASSERT_RETURN(photo!=NULL);
+
+    return photo->netsync.timestamp_last_update_tags;
+}
+
+void _enlil_photo_netsync_timestamp_last_update_tags_set(Enlil_Photo *photo, int timestamp)
+{
+    ASSERT_RETURN_VOID(photo!=NULL);
+
+    photo->netsync.timestamp_last_update_tags = timestamp;
+
+    enlil_photo_eet_save(photo);
+    Enlil_Album *album = enlil_photo_album_get(photo);
+    if(album)
+ 	   enlil_album_eet_photos_list_save(album);
+}
+int enlil_photo_netsync_timestamp_last_update_file_get(Enlil_Photo *photo)
+{
+    ASSERT_RETURN(photo!=NULL);
+
+    return photo->netsync.timestamp_last_update_file;
+}
+
+void _enlil_photo_netsync_timestamp_last_update_file_set(Enlil_Photo *photo, int timestamp)
+{
+    ASSERT_RETURN_VOID(photo!=NULL);
+
+    photo->netsync.timestamp_last_update_file = timestamp;
+
+    enlil_photo_eet_save(photo);
+    Enlil_Album *album = enlil_photo_album_get(photo);
+    if(album)
+ 	   enlil_album_eet_photos_list_save(album);
+}
+
+void _enlil_photo_netsync_id_set(Enlil_Photo *photo, int id)
 {
    ASSERT_RETURN_VOID(photo != NULL);
-   photo->flickr.last_change = last_change;
+
+   photo->netsync.id = id;
 }
 
-long long _enlil_photo_flickr_fs_time_get(Enlil_Photo *photo)
-{
-   ASSERT_RETURN(photo!=NULL);
-   return photo->flickr.fs_time;
-}
-
-void _enlil_photo_flickr_fs_time_calc(Enlil_Photo *photo)
-{
-   char buf[PATH_MAX];
-   time_t time;
-   int size;
-   ASSERT_RETURN_VOID(photo!=NULL);
-
-   snprintf(buf, sizeof(buf), "%s/%s", enlil_photo_path_get(photo), enlil_photo_file_name_get(photo));
-   FILE_INFO_GET(buf, time, size);
-
-   photo->flickr.fs_time = time;
-}
-
-void enlil_photo_flickr_last_change_set(Enlil_Photo *photo, long long last_change)
-{
-   ASSERT_RETURN_VOID(photo != NULL);
-   photo->flickr.last_change = last_change;
-}
 
 void enlil_photo_name_set(Enlil_Photo *photo, const char *name)
 {
    ASSERT_RETURN_VOID(photo!=NULL);
    ASSERT_RETURN_VOID(name != NULL);
 
-   EINA_STRINGSHARE_DEL(photo->name);
-   photo->name = eina_stringshare_add(name);
+   if(name[0] == '\0' && photo->name == NULL)
+   	   return ;
+
+  const char *new_name = eina_stringshare_add(name);
+
+  if(photo->name == new_name)
+  {
+   EINA_STRINGSHARE_DEL(new_name);
+   return ;
+  }
+  EINA_STRINGSHARE_DEL(photo->name);
+
+  photo->name = new_name;
 
    if(photo->album && enlil_album_photos_sort_get(photo->album) == ENLIL_PHOTO_SORT_NAME)
      _enlil_album_photo_name_changed(photo->album, photo);
 
    enlil_photo_iptc_add(photo, "ObjectName", photo->name, EINA_FALSE);
+
+   _enlil_photo_netsync_timestamp_last_update_header_set(photo, time(NULL));
 }
 
 void enlil_photo_description_set(Enlil_Photo *photo, const char *desc)
@@ -347,13 +383,23 @@ void enlil_photo_description_set(Enlil_Photo *photo, const char *desc)
    ASSERT_RETURN_VOID(photo!=NULL);
    ASSERT_RETURN_VOID(desc != NULL);
 
-   const char *old = photo->description;
-   //EINA_STRINGSHARE_DEL(photo->description);
-   photo->description = eina_stringshare_add(desc);
+   if(desc[0] == '\0' && photo->description == NULL)
+	   return ;
 
-   if(!old && desc[0] == '\0') return ;
+   const char *new_description = eina_stringshare_add(desc);
+
+   if(photo->description == new_description)
+   {
+	   EINA_STRINGSHARE_DEL(new_description);
+	   return ;
+   }
+   EINA_STRINGSHARE_DEL(photo->description);
+
+   photo->description = new_description;
 
    enlil_photo_iptc_add(photo, "Caption", photo->description, EINA_FALSE);
+
+   _enlil_photo_netsync_timestamp_last_update_header_set(photo, time(NULL));
 }
 
 void enlil_photo_exif_clear(Enlil_Photo *photo)
@@ -1144,6 +1190,9 @@ int enlil_photo_eet_save(Enlil_Photo *photo)
 
    ASSERT_RETURN(photo!=NULL);
 
+   if(photo->mustNotBeSaved)
+	   return 1;
+
    if(!photo->eet_save) return 0;
 
    snprintf(path, PATH_MAX, "%s/"EET_FILE, enlil_photo_path_get(photo));
@@ -1219,6 +1268,9 @@ static int _photo_eet_exif_save(Enlil_Photo *photo)
 
    ASSERT_RETURN(photo!=NULL);
 
+   if(photo->mustNotBeSaved)
+	   return 1;
+
    if(!photo->eet_save) return 0;
 
    snprintf(path, PATH_MAX, "%s/"EET_FILE, enlil_photo_path_get(photo));
@@ -1281,6 +1333,8 @@ static int _photo_eet_iptc_save(Enlil_Photo *photo)
    int res;
 
    ASSERT_RETURN(photo!=NULL);
+   if(photo->mustNotBeSaved)
+	   return 1;
 
    if(!photo->eet_save) return 0;
 
@@ -1316,6 +1370,11 @@ Eet_Data_Descriptor * _enlil_photo_file_name_edd_new()
 
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "path", path, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "file_name", file_name, EET_T_STRING);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.id", netsync.id, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.timestamp_last_update_header", netsync.timestamp_last_update_header, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.timestamp_last_update_tags", netsync.timestamp_last_update_tags, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.timestamp_last_update_file", netsync.timestamp_last_update_file, EET_T_INT);
 
    return edd;
 }
@@ -1353,9 +1412,10 @@ Eet_Data_Descriptor * enlil_photo_edd_new(Eet_Data_Descriptor *edd_tag)
 
    EET_DATA_DESCRIPTOR_ADD_LIST(edd, Enlil_Photo, "tags", tags, edd_tag);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "flickr.id", flickr.id, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "flickr.last_change", flickr.last_change, EET_T_LONG_LONG);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "flickr.fs_time", flickr.fs_time, EET_T_LONG_LONG);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.id", netsync.id, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.timestamp_last_update_header", netsync.timestamp_last_update_header, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.timestamp_last_update_tags", netsync.timestamp_last_update_tags, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.timestamp_last_update_file", netsync.timestamp_last_update_file, EET_T_INT);
 
    return edd;
 }

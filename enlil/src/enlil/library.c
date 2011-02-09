@@ -322,16 +322,15 @@ Enlil_Album *enlil_library_album_search_name(Enlil_Library *library, const char 
  * @brief
  * @param id The flickr id. The string has to be in eina_stringshare
  */
-Enlil_Album *enlil_library_album_search_flickr_id(Enlil_Library *library, const char *id)
+Enlil_Album *enlil_library_album_search_flickr_id(Enlil_Library *library, int id)
 {
    Eina_List *l;
    Enlil_Album *album;
    ASSERT_RETURN(library!=NULL);
-   ASSERT_RETURN(id!=NULL);
 
    EINA_LIST_FOREACH(library->albums, l, album)
      {
-	if(enlil_album_flickr_id_get(album) == id)
+	if(enlil_album_netsync_id_get(album) == id)
 	  return album;
      }
 
@@ -391,7 +390,7 @@ Enlil_Album *enlil_library_album_prev_get(Enlil_Library *library, Enlil_Album *a
    ASSERT_RETURN(library != NULL);
    ASSERT_RETURN(album != NULL);
 
-   Eina_List *l = eina_list_data_find_list(library->albums, album);
+   Eina_List *l = eina_list_data_find_list(enlil_library_albums_get(library), album);
    return eina_list_data_get(eina_list_prev(l));
 }
 
@@ -795,6 +794,37 @@ int enlil_library_eet_path_save(Enlil_Library *library)
 
    enlil_file_manager_close(path);
    eet_data_descriptor_free(edd);
+
+   return res;
+}
+
+/**
+ * Delete the library path
+ *
+ * @param library The library struct
+ */
+int enlil_library_eet_path_delete(Enlil_Library *library)
+{
+   int res;
+   Eet_File *f;
+   char path[PATH_MAX];
+   char key[PATH_MAX];
+
+   ASSERT_RETURN(library!=NULL);
+   ASSERT_RETURN(enlil_library_path_get(library)!=NULL);
+
+   snprintf(path,PATH_MAX,"%s/"EET_FOLDER_ROOT_DB, getenv("HOME"));
+   if(!ecore_file_exists(path))
+     ecore_file_mkdir(path);
+
+   snprintf(path,PATH_MAX,"%s/"EET_FOLDER_ROOT_DB"/"EET_FILE_ROOT_DB, getenv("HOME"));
+   f = enlil_file_manager_open(path);
+   ASSERT_RETURN(f!=NULL);
+
+   snprintf(key,PATH_MAX,"/library %s", enlil_library_path_get(library));
+   res = eet_delete(f, key);
+
+   enlil_file_manager_close(path);
 
    return res;
 }

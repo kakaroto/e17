@@ -52,11 +52,11 @@ EFL_CHECK_PTHREAD(["yes"],
 requirement_flickr=""
 have_flickr="no"
 
-PKG_CHECK_MODULES(FLICKR, [flickcurl >= 1.14],
-                  requirement_flickr="flickcurl"
-                  have_flickr="yes"
-                  AC_DEFINE_UNQUOTED(HAVE_FLICKR, "${have_flickr}", [have flickcurl support]),
-                  have_flickr="no"
+PKG_CHECK_MODULES(EABZU, [eabzu_client > 0.0.1 ],
+                  requirement_eabzu="eabzu_client"
+                  have_eabzu="yes"
+                  AC_DEFINE_UNQUOTED(HAVE_EABZU, "${have_eabzu}", [have network synchronization (eabzu) support]),
+                  have_eabzu="no"
                   )
 # required libs / cflags
 flickr_libs=$FLICKR_LIBS
@@ -113,7 +113,7 @@ echo
 echo "  Installation Path...................: $prefix"
 echo ""
 echo "  Thread Support...........................: ${have_pthread} (spinlock: ${have_pthread_spinlock})"
-echo "  Flickr support (requires flickcurl) .....: ${have_flickr}"
+echo "  Network synchronisation support (requires eabzu_client) .....: ${have_eabzu}"
 echo
 echo "Now type 'make' ('gmake' on some systems) to compile $PACKAGE,"
 echo "and then afterwards as root (or the user who will install this), type"

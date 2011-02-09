@@ -2,7 +2,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES = \
-   -Wall -g @ENLIL_CFLAGS@ @FLICKR_CFLAGS@
+   -Wall -g @ENLIL_CFLAGS@ @EABZU_CFLAGS@
 
 lib_LTLIBRARIES      = libenlil.la
 ENLILHEADERS      = Enlil.h
@@ -26,13 +26,14 @@ exif/jpeg-data.c \
 exif/jpeg-marker.c \
 exif/exif-i18n.c \
 geocaching.c \
+net_sync.c \
 flickr.c \
 download.c
 
 installed_headersdir = $(prefix)/include/enlil
 installed_headers_DATA = $(ENLILHEADERS)
 
-libenlil_la_LIBADD  = @ENLIL_LIBS@ @FLICKR_LIBS@
+libenlil_la_LIBADD  = @ENLIL_LIBS@ @EABZU_LIBS@
 
 libenlil_la_DEPENDENCIES =
 

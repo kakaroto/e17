@@ -1,6 +1,10 @@
 #include "enlil_private.h"
 #include <eina_main.h>
 
+#ifdef HAVE_EABZU
+#include <Eabzu.h>
+#endif
+
 int ENLIL_LOG_DOMAIN_99;
 
 static int count = 0;
@@ -21,6 +25,10 @@ int enlil_init()
     enlil_file_manager_init();
     enlil_thumb_init();
     enlil_trans_init();
+
+#ifdef HAVE_EABZU
+    azy_init();
+#endif
 
     LOG_DOMAIN = eina_log_domain_register("Enlil", "\033[34;1m");
 
@@ -44,6 +52,10 @@ int enlil_shutdown()
     ecore_file_shutdown();
     ecore_shutdown();
     eet_shutdown();
+
+#ifdef HAVE_EABZU
+    azy_shutdown();
+#endif
 
     return --count;
 }

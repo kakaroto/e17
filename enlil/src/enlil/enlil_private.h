@@ -74,12 +74,14 @@ Eet_Data_Descriptor *   _enlil_photo_tag_edd_new();
 Eet_Data_Descriptor *   _enlil_exif_edd_new();
 Eet_Data_Descriptor *   _enlil_iptc_edd_new();
 
-void                    _enlil_album_flickr_id_set(Enlil_Album *album, const char *id);
+void                    _enlil_album_netsync_id_set(Enlil_Album *album, int id);
+void                    _enlil_album_netsync_timestamp_last_update_header_set(Enlil_Album *album, int id);
+void                    _enlil_album_netsync_timestamp_last_update_collections_set(Enlil_Album *album, int id);
 
-long long               _enlil_photo_flickr_last_change_get(Enlil_Photo *photo);
-void                    _enlil_photo_flickr_last_change_set(Enlil_Photo *photo, long long last_change);
-long long               _enlil_photo_flickr_fs_time_get(Enlil_Photo *photo);
-void                    _enlil_photo_flickr_fs_time_calc(Enlil_Photo *photo);
+void                    _enlil_photo_netsync_id_set(Enlil_Photo *photo, int id);
+void                    _enlil_photo_netsync_timestamp_last_update_header_set(Enlil_Photo *photo, int id);
+void                    _enlil_photo_netsync_timestamp_last_update_tags_set(Enlil_Photo *photo, int id);
+void                    _enlil_photo_netsync_timestamp_last_update_file_set(Enlil_Photo *photo, int id);
 
 int                     enlil_trans_init();
 int                     enlil_trans_shutdown();
