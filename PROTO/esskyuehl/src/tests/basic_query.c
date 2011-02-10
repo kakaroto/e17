@@ -39,22 +39,9 @@ error_(void *data __UNUSED__, int type __UNUSED__, Esql_Res *res)
 }
 
 static Eina_Bool
-db_(void *data __UNUSED__, int type __UNUSED__, Esql *e __UNUSED__)
-{
-   printf("Switched working database!\n");
-
-   return ECORE_CALLBACK_RENEW;
-}
-
-static Eina_Bool
 connect_(void *data __UNUSED__, int type __UNUSED__, Esql *e)
 {
    printf("Connected!\n");
-   if (!esql_database_set(e, "zentific")) /**< switch to databse named zentific */
-     {
-        fprintf(stderr, "Could not create query!\n");
-        ecore_main_loop_quit();
-     }
    if (!esql_query_args(e, "SELECT * FROM %s", "jobs")) /**< queue up a simple query */
      {
         fprintf(stderr, "Could not create query!\n");
@@ -71,15 +58,18 @@ main(void)
 
    eina_log_domain_level_set("esskyuehl", EINA_LOG_LEVEL_DBG);
    ecore_event_handler_add(ESQL_EVENT_CONNECT, (Ecore_Event_Handler_Cb)connect_, NULL);
-   ecore_event_handler_add(ESQL_EVENT_DB, (Ecore_Event_Handler_Cb)db_, NULL);
    ecore_event_handler_add(ESQL_EVENT_RESULT, (Ecore_Event_Handler_Cb)result_, NULL);
    ecore_event_handler_add(ESQL_EVENT_ERROR, (Ecore_Event_Handler_Cb)error_, NULL);
 
-   e = esql_new(); /**< new object */
-   esql_type_set(e, ESQL_TYPE_MYSQL); /**< set mysql type */
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(!esql_connect(e, "127.0.0.1:" ESQL_DEFAULT_MYSQL_PORT, "zentific", "zentific"), 1); /**< connect to localhost at default port */
+   e = esql_new(ESQL_TYPE_POSTGRESQL); /**< new object for postgresql */
+   esql_database_set(e, "zentific"); /**< use database named zentific on connect */
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!esql_connect(e, "127.0.0.1:" ESQL_DEFAULT_PORT_POSTGRESQL, "zentific", "zentific"), 1); /**< connect to localhost at default port */
    ecore_main_loop_begin();
-
+   esql_disconnect(e); /**< disconnect */
+   esql_type_set(e, ESQL_TYPE_MYSQL); /**< now switch to mysql! */
+   esql_database_set(e, "zentific"); /**< use database named zentific on connect */
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!esql_connect(e, "127.0.0.1:" ESQL_DEFAULT_PORT_MYSQL, "zentific", "zentific"), 1); /**< connect to localhost at default port */
+   ecore_main_loop_begin();
    esql_free(e);
    esql_shutdown();
    return 0;

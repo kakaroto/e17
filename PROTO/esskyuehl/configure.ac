@@ -69,16 +69,43 @@ PKG_CHECK_MODULES([EFL], [$requirement_esskyuehl])
 AC_MSG_CHECKING([for mysql])
 AC_PATH_PROG([mysql_config], [mysql_config])
 if test "x$mysql_config" != "x";then
-      AC_CHECK_HEADERS([mysql/mysql.h])
       MYSQL_CFLAGS="$($mysql_config --cflags)"
       MYSQL_LIBS="$($mysql_config --libs)"
+      cflags="$CFLAGS"
+      cppflags="$CPPFLAGS"
+      CFLAGS="$MYSQL_CFLAGS"
+      CPPFLAGS="$CFLAGS"
+      AC_CHECK_HEADERS([mysql.h])
+      CFLAGS="$cflags"
+      CPPFLAGS="$cppflags"
       AC_MSG_RESULT([yes])
+      mysql=mysql
 else
       AC_MSG_RESULT([no])
 fi
 AM_CONDITIONAL([MYSQL], [test -n "$MYSQL_LIBS"])
 AC_SUBST(MYSQL_CFLAGS)
 AC_SUBST(MYSQL_LIBS)
+
+AC_MSG_CHECKING([for postgresql])
+AC_PATH_PROG([pg_config], [pg_config])
+if test "x$pg_config" != "x";then
+      POSTGRESQL_CFLAGS="-I$($pg_config --includedir) -I$($pg_config --includedir-server)"
+      POSTGRESQL_LIBS="-L$($pg_config --libdir) -lpq"
+      cflags="$CFLAGS"
+      CFLAGS="$POSTGRESQL_CFLAGS"
+      CPPFLAGS="$CFLAGS"
+      AC_CHECK_HEADERS([libpq-fe.h])
+      CFLAGS="$cflags"
+      CPPFLAGS="$cppflags"
+      AC_MSG_RESULT([yes])
+      postgresql=postgresql
+else
+      AC_MSG_RESULT([no])
+fi
+AM_CONDITIONAL([POSTGRESQL], [test -n "$POSTGRESQL_LIBS"])
+AC_SUBST(POSTGRESQL_CFLAGS)
+AC_SUBST(POSTGRESQL_LIBS)
 
 EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
@@ -108,6 +135,8 @@ echo
 echo "Configuration Options Summary:"
 echo
 echo "Documentation..........: ${build_doc}"
+echo
+echo "Backend support........: $mysql $postgresql"
 echo
 echo "Compilation............: make (or gmake)"
 echo "  CPPFLAGS.............: $CPPFLAGS"

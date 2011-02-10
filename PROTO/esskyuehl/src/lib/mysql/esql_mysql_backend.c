@@ -183,13 +183,17 @@ esql_mysac_row_init(Esql_Row *r)
 {
    MYSAC_RES *res;
    MYSAC_ROW *row;
+   MYSAC_ROWS *rows;
+   struct mysac_list_head *l;
    Esql_Cell *cell;
    int i, cols;
 
    res = r->res->backend.res;
+   rows = res->cr;
+   l = res->data.next;
    row = r->backend.row;
    cols = res->nb_cols;
-   for (i = 0; i < cols; i++)
+   for (i = 0; i < cols; i++, l = l->next, rows = mysac_container_of(l, MYSAC_ROWS, link))
      {
         cell = calloc(1, sizeof(Esql_Cell));
         EINA_SAFETY_ON_NULL_RETURN(cell);
@@ -199,7 +203,7 @@ esql_mysac_row_init(Esql_Row *r)
           {
            case MYSQL_TYPE_TIME:
              cell->type = ESQL_CELL_TYPE_TIME;
-             cell->value.tv = &row[i].tv;
+             memcpy(&cell->value.tv, &row[i].tv, sizeof(row[i].tv));
              break;
 
            case MYSQL_TYPE_YEAR:
@@ -207,18 +211,24 @@ esql_mysac_row_init(Esql_Row *r)
            case MYSQL_TYPE_DATETIME:
            case MYSQL_TYPE_DATE:
              cell->type = ESQL_CELL_TYPE_TIMESTAMP;
-             cell->value.tm = row[i].tm;
+             memcpy(&cell->value.tm, row[i].tm, sizeof(row[i].tm));
              break;
 
            case MYSQL_TYPE_STRING:
            case MYSQL_TYPE_VARCHAR:
            case MYSQL_TYPE_VAR_STRING:
+             cell->type = ESQL_CELL_TYPE_STRING;
+             cell->value.string = row[i].string;
+             cell->len = rows->lengths[i];
+             break;
+
            case MYSQL_TYPE_TINY_BLOB:
            case MYSQL_TYPE_MEDIUM_BLOB:
            case MYSQL_TYPE_LONG_BLOB:
            case MYSQL_TYPE_BLOB:
-             cell->type = ESQL_CELL_TYPE_STRING;
-             cell->value.string = row[i].string;
+             cell->type = ESQL_CELL_TYPE_BLOB;
+             cell->value.blob = (unsigned char*)row[i].string;
+             cell->len = rows->lengths[i];
              break;
 
            case MYSQL_TYPE_TINY:

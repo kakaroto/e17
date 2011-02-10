@@ -53,7 +53,6 @@ esql_call_complete(Esql *e)
       case ESQL_CONNECT_TYPE_DATABASE_SET:
         INFO("Working database is now '%s'", e->database);
         UPDATE_LISTS(database_set);
-        ecore_event_add(ESQL_EVENT_DB, e, (Ecore_End_Cb)esql_fake_free, NULL);
         break;
       case ESQL_CONNECT_TYPE_QUERY:
         UPDATE_LISTS(query);
@@ -91,11 +90,20 @@ out:
         INFO("Next call: query");
      }
    ret = e->backend.io(e);
-   if (ret == ECORE_FD_ERROR)
+   if ((ret == ECORE_FD_ERROR) && (cb != (Esql_Set_Cb)esql_database_set))
      {
-        ERR("Connection error: %s", e->backend.error_get(e));
-        return;
+        Esql_Res *res;
+
+        res = calloc(1, sizeof(Esql_Res));
+        EINA_SAFETY_ON_NULL_RETURN(res);
+        res->e = e;
+        e->res = res;
+        res->error = e->backend.error_get(e);
+        ERR("Connection error: %s", res->error);
+        ecore_event_add(ESQL_EVENT_ERROR, res, (Ecore_End_Cb)esql_res_free, NULL);
      }
+   else if (ret == ECORE_FD_ERROR)
+     ERR("Connection error: %s", e->backend.error_get(e));
    else if (!ret)
      {
         esql_call_complete(e);
@@ -117,6 +125,9 @@ esql_connect_handler(Esql *e, Ecore_Fd_Handler *fdh)
         esql_call_complete(e);
         ecore_main_fd_handler_active_set(fdh, ECORE_FD_WRITE);
         break;
+      case ECORE_FD_READ | ECORE_FD_WRITE:
+        ecore_main_fd_handler_active_set(fdh, ECORE_FD_READ | ECORE_FD_WRITE);
+        break;
       case ECORE_FD_READ:
         ecore_main_fd_handler_active_set(fdh, ECORE_FD_READ);
         break;
@@ -124,14 +135,15 @@ esql_connect_handler(Esql *e, Ecore_Fd_Handler *fdh)
         ecore_main_fd_handler_active_set(fdh, ECORE_FD_WRITE);
         break;
       default:
-        ERR("Connection error: %s", e->backend.error_get(e));
         {
            Esql_Res *res;
 
            res = calloc(1, sizeof(Esql_Res));
            EINA_SAFETY_ON_NULL_RETURN_VAL(res, ECORE_CALLBACK_RENEW);
            res->e = e;
+           e->res = res;
            res->error = e->backend.error_get(e);
+           ERR("Connection error: %s", res->error);
            ecore_event_add(ESQL_EVENT_ERROR, res, (Ecore_End_Cb)esql_res_free, NULL);
         }
         e->fdh = NULL;

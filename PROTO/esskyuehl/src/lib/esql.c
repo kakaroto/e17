@@ -30,7 +30,6 @@ int esql_log_dom = -1;
 static int esql_init_count_ = 0;
 
 int ESQL_EVENT_ERROR = 0;
-int ESQL_EVENT_DB = 0;
 int ESQL_EVENT_CONNECT = 0;
 int ESQL_EVENT_RESULT = 0;
 
@@ -58,7 +57,6 @@ esql_init(void)
    if (!ecore_init()) goto fail;
 
    ESQL_EVENT_ERROR = ecore_event_type_new();
-   ESQL_EVENT_DB = ecore_event_type_new();
    ESQL_EVENT_RESULT = ecore_event_type_new();
    ESQL_EVENT_CONNECT = ecore_event_type_new();
 
@@ -100,16 +98,18 @@ esql_shutdown(void)
 
 /**
  * @brief Create a new #Esql object
+ * @param The database type to use
  * This function does nothing but allocate a generic Esskyuehl struct.
  * @return The new object, or #NULL on failure
  */
 Esql *
-esql_new(void)
+esql_new(Esql_Type type)
 {
    Esql *e;
 
    e = calloc(1, sizeof(Esql));
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, NULL);
+   esql_type_set(e, type);
 
    return e;
 }
@@ -161,6 +161,9 @@ esql_type_set(Esql *e, Esql_Type type)
      {
       case ESQL_TYPE_MYSQL:
         esql_mysac_init(e);
+        break;
+      case ESQL_TYPE_POSTGRESQL:
+        esql_postgresql_init(e);
         break;
       default:
         return EINA_FALSE;

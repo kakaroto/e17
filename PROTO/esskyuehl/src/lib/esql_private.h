@@ -28,6 +28,14 @@ extern int esql_log_dom;
 #define ERR(...)  EINA_LOG_DOM_ERR(esql_log_dom, __VA_ARGS__)
 #define CRI(...)  EINA_LOG_DOM_CRIT(esql_log_dom, __VA_ARGS__)
 
+#if !defined(strdupa)
+# define strdupa(str) strcpy(alloca(strlen(str) + 1), str)
+#endif
+
+#if !defined(strndupa)
+# define strndupa(str, len) strncpy(alloca(len + 1), str, len)
+#endif
+
 typedef enum
 {
    ESQL_CONNECT_TYPE_NONE,
@@ -53,6 +61,8 @@ struct Esql
    struct
    {
       void *db; /* db object pointer */
+      char *conn_str; /* unused for some db types */
+      int conn_str_len;
       Esql_Error_Cb error_get;
       Esql_Connect_Cb connect;
       Esql_Cb disconnect;
@@ -71,6 +81,7 @@ struct Esql
    const char *database;
    Ecore_Fd_Handler *fdh;
    Eina_Bool connected : 1;
+   Esql_Res *res; /* current working result */
    Esql_Type type;
    Esql_Connect_Type current;
    Eina_List *backend_set_funcs; /* Esql_Set_Cb */
@@ -118,6 +129,7 @@ typedef struct Esql_Row_Iterator
 } Esql_Row_Iterator;
 
 void esql_mysac_init(Esql *e);
+void esql_postgresql_init(Esql *e);
 
 void esql_res_free(void *data __UNUSED__, Esql_Res *res);
 void esql_row_free(Esql_Row *r);

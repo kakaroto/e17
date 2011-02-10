@@ -18,6 +18,7 @@
 #define ESQL_H
 
 #include <Eina.h>
+#include <time.h>
 
 #ifdef EAPI
 # undef EAPI
@@ -41,7 +42,8 @@
 # endif
 #endif /* ! _WIN32 */
 
-#define ESQL_DEFAULT_MYSQL_PORT "3306" /**< Convenience define for default MYSQL port */
+#define ESQL_DEFAULT_PORT_MYSQL "3306" /**< Convenience define for default MySQL port */
+#define ESQL_DEFAULT_PORT_POSTGRESQL "5432" /**< Convenience define for default PostgreSQL port */
 
 /**
  * @defgroup Esql_Events Esql Events
@@ -50,7 +52,6 @@
  */
 extern int ESQL_EVENT_ERROR; /**< Event emitted on error, ev object is #Esql_Res */
 extern int ESQL_EVENT_CONNECT; /**< Event emitted connection to db, ev object is #Esql */
-extern int ESQL_EVENT_DB; /**< Event emitted on db change, ev object is #Esql */
 extern int ESQL_EVENT_RESULT; /**< Event emitted on query completion, ev object is #Esql_Res */
 /** @} */
 /**
@@ -83,7 +84,8 @@ typedef enum
 {
    ESQL_TYPE_NONE,
 #define ESQL_TYPE_DRIZZLE ESQL_TYPE_MYSQL /**< Drizzle supports the mysql protocol */
-   ESQL_TYPE_MYSQL
+   ESQL_TYPE_MYSQL,
+   ESQL_TYPE_POSTGRESQL
 } Esql_Type;
 
 /**
@@ -96,6 +98,7 @@ typedef enum
    ESQL_CELL_TYPE_TIME,
    ESQL_CELL_TYPE_TIMESTAMP,
    ESQL_CELL_TYPE_STRING,
+   ESQL_CELL_TYPE_BLOB,
    ESQL_CELL_TYPE_TINYINT,
    ESQL_CELL_TYPE_SHORT,
    ESQL_CELL_TYPE_LONG,
@@ -126,10 +129,12 @@ typedef struct Esql_Cell
       float f; /**< ESQL_CELL_TYPE_FLOAT */
       double d; /**< ESQL_CELL_TYPE_DOUBLE */
       const char *string; /**< ESQL_CELL_TYPE_STRING */
-      struct tm *tm; /**< ESQL_CELL_TYPE_TIMESTAMP */
-      struct timeval *tv; /**< ESQL_CELL_TYPE_TIME */
+      const unsigned char *blob; /**< ESQL_CELL_TYPE_BLOB */
+      struct tm tm; /**< ESQL_CELL_TYPE_TIMESTAMP */
+      struct timeval tv; /**< ESQL_CELL_TYPE_TIME */
       /** ESQL_CELL_TYPE_UNKNOWN == #NULL */
    } value;
+  size_t len; /**< only valid with ESQL_CELL_TYPE_BLOB and ESQL_CELL_TYPE_STRING */
 } Esql_Cell;
 /** @} */
 /* lib */
@@ -137,7 +142,7 @@ EAPI int esql_init(void);
 EAPI int esql_shutdown(void);
 
 /* esql */
-Esql *esql_new(void);
+Esql *esql_new(Esql_Type type);
 EAPI void *esql_data_get(Esql *e);
 EAPI void esql_data_set(Esql *e, void *data);
 EAPI Eina_Bool esql_type_set(Esql *e, Esql_Type type);

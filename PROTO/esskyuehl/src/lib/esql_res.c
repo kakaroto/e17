@@ -59,7 +59,7 @@ esql_res_free(void *data __UNUSED__, Esql_Res *res)
    Esql_Row *r;
    Eina_Inlist *l, *ll;
    
-   if (!res) return;
+   if ((!res) || (!res->rows)) return;
 
    for (l = res->rows, ll = l->next; l; l = ll, ll = ll ? ll->next : NULL)
      {
@@ -76,7 +76,7 @@ esql_row_free(Esql_Row *r)
    Esql_Cell *cell;
    Eina_Inlist *l, *ll;
 
-   if (!r) return;
+   if ((!r) || (!r->cells)) return;
 
    for (l = r->cells, ll = l->next; l; l = ll, ll = ll ? ll->next : NULL)
      {
