@@ -54,6 +54,7 @@ int
 main(void)
 {
    Esql *e;
+   Eina_Counter *c;
    esql_init();
 
    eina_log_domain_level_set("esskyuehl", EINA_LOG_LEVEL_DBG);
@@ -62,14 +63,21 @@ main(void)
    ecore_event_handler_add(ESQL_EVENT_ERROR, (Ecore_Event_Handler_Cb)error_, NULL);
 
    e = esql_new(ESQL_TYPE_POSTGRESQL); /**< new object for postgresql */
+   c = eina_counter_new("esql");
+   eina_counter_start(c);
    esql_database_set(e, "zentific"); /**< use database named zentific on connect */
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!esql_connect(e, "127.0.0.1:" ESQL_DEFAULT_PORT_POSTGRESQL, "zentific", "zentific"), 1); /**< connect to localhost at default port */
    ecore_main_loop_begin();
    esql_disconnect(e); /**< disconnect */
+   eina_counter_stop(c, 0);
+   eina_counter_start(c);
    esql_type_set(e, ESQL_TYPE_MYSQL); /**< now switch to mysql! */
    esql_database_set(e, "zentific"); /**< use database named zentific on connect */
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!esql_connect(e, "127.0.0.1:" ESQL_DEFAULT_PORT_MYSQL, "zentific", "zentific"), 1); /**< connect to localhost at default port */
    ecore_main_loop_begin();
+   esql_disconnect(e);
+   eina_counter_stop(c, 1);
+   printf("Times:\n%s\n", eina_counter_dump(c));
    esql_free(e);
    esql_shutdown();
    return 0;
