@@ -379,7 +379,7 @@ _mail_imap_server_data (void *data, int type, void *event)
 	   }
 	 break;
       case IMAP_STATE_AUTHENTICATED:
-	 len = snprintf (out, sizeof (out), "A%04i EXAMINE %s\r\n", ic->cmd++,
+	 len = snprintf (out, sizeof (out), "A%04i EXAMINE \"%s\"\r\n", ic->cmd++,
 			 ic->config->new_path);
 	 ecore_con_server_send (ic->server, out, len);
 	 ic->state = IMAP_STATE_SEARCH_UNSEEN;
