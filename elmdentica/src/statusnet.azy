@@ -35,7 +35,7 @@ struct User {
 	string utc_offset;
 	string time_zone;
 	string profile_background_image_url;
-	string profile_background_tile;
+	boolean profile_background_tile;
 	int statuses_count;
 	boolean following;
 	boolean statusnet_blocking { statusnet:blocking };
