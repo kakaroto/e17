@@ -28,6 +28,7 @@ typedef enum	_Ephoto_State Ephoto_State;
 
 /*Main Functions*/
 Evas_Object	*ephoto_window_add(void);
+void		 ephoto_populate(void);
 void		 ephoto_title_set(const char *title);
 void		 ephoto_thumb_size_set(int size);
 void		 ephoto_directory_set(const char *path);

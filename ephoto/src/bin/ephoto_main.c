@@ -60,6 +60,12 @@ ephoto_window_add(void)
 }
 
 void
+ephoto_populate()
+{
+   _ephoto_thumb_populate();
+}
+
+void
 ephoto_title_set(const char *title)
 {
    elm_win_title_set(ephoto->win, title);

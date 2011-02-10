@@ -8,6 +8,7 @@
 static Evas_Object *_ephoto_thumbnail_icon_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
 static char *_ephoto_thumbnail_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
 static void _ephoto_thumbnail_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__);
+static void _ephoto_change_dir(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info);
 static void _ephoto_zoom_in(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__);
 static void _ephoto_zoom_out(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__);
 static void _ephoto_show_flow(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__);
@@ -26,6 +27,7 @@ typedef struct _Ephoto_Thumb_Browser Ephoto_Thumb_Browser;
 struct _Ephoto_Thumb_Browser
 {
    Evas_Object *box;
+   Evas_Object *dir_entry;
    Evas_Object *grid;
    Evas_Object *toolbar;
    int thumb_size;
@@ -76,6 +78,19 @@ ephoto_thumb_browser_add(void)
    elm_toolbar_icon_size_set(etb->toolbar, 32);
    elm_box_pack_end(etb->box, etb->toolbar);
    evas_object_show(etb->toolbar);
+
+   etb->dir_entry = elm_fileselector_entry_add(etb->box);
+   elm_fileselector_entry_path_set(etb->dir_entry, ephoto->directory);
+   elm_fileselector_entry_button_label_set(etb->dir_entry, "Choose");
+   elm_fileselector_entry_folder_only_set(etb->dir_entry, EINA_TRUE);
+   elm_fileselector_entry_is_save_set(etb->dir_entry, EINA_FALSE);
+   elm_fileselector_entry_inwin_mode_set(etb->dir_entry, EINA_TRUE);
+   evas_object_size_hint_weight_set(etb->dir_entry, 0.0, 0.0);
+   evas_object_size_hint_align_set(etb->dir_entry, EVAS_HINT_FILL, 0.0);
+   evas_object_smart_callback_add
+     (etb->dir_entry, "file,chosen", _ephoto_change_dir, NULL);
+   elm_box_pack_end(etb->box, etb->dir_entry);
+   evas_object_show(etb->dir_entry);
 
    etb->grid = elm_gengrid_add(etb->box);
    elm_gengrid_align_set(etb->grid, 0.5, 0.5);
@@ -150,6 +165,21 @@ static void
 _ephoto_thumbnail_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__)
 {
 
+}
+
+static void 
+_ephoto_change_dir(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info)
+{
+   const char *path = event_info;
+
+   if (!path) return;
+
+   elm_gengrid_clear(etb->grid);
+   ephoto->images = eina_list_free(ephoto->images);
+   ephoto->current_index = NULL;
+   eina_stringshare_del(ephoto->directory);
+   ephoto->directory = eina_stringshare_add(path);
+   ephoto_populate();
 }
 
 static void 
