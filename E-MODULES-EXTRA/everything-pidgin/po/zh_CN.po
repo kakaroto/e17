@@ -1,0 +1,33 @@
+# Chinese translations for evry-pidgin package
+# evry-pidgin 软件包的简体中文翻译.
+# This file is put in the public domain.
+# Aron Xu <happyaron.xu@gmail.com>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: evry-pidgin trunk\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2011-02-11 01:12+0800\n"
+"PO-Revision-Date: 2011-02-11 01:13+0800\n"
+"Last-Translator: Aron Xu <happyaron.xu@gmail.com>\n"
+"Language-Team: Chinese (simplified)\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/e_mod_main.c:616
+msgid "Pidgin"
+msgstr "Pidgin"
+
+#: ../src/e_mod_main.c:621
+msgid "Chat"
+msgstr "聊天"
+
+#: ../src/e_mod_main.c:624
+msgid "Send File"
+msgstr "发送文件"
+
+#: ../src/e_mod_main.c:627
+msgid "Write Message"
+msgstr "写消息"

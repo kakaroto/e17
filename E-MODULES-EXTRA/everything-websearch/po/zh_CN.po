@@ -1,0 +1,153 @@
+# Chinese translations for evry-websearch package
+# evry-websearch 软件包的简体中文翻译.
+# This file is put in the public domain.
+# Aron Xu <happyaron.xu@gmail.com>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: evry-websearch master\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2011-02-11 01:37+0800\n"
+"PO-Revision-Date: 2011-02-11 01:56+0800\n"
+"Last-Translator: Aron Xu <happyaron.xu@gmail.com>\n"
+"Language-Team: Chinese (simplified)\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/e_mod_main.c:587 ../src/e_mod_main.c:1254 ../src/e_mod_main.c:1398
+msgid "Translate"
+msgstr "翻译"
+
+#: ../src/e_mod_main.c:736
+msgid "Abort download"
+msgstr "中止下载"
+
+#: ../src/e_mod_main.c:781
+#, c-format
+msgid "Got %d kbytes of"
+msgstr "已下载 %d KiB，共 "
+
+#: ../src/e_mod_main.c:795
+msgid "Enqueue in Playlist"
+msgstr "加入播放列表"
+
+#: ../src/e_mod_main.c:799
+msgid "Enqueue"
+msgstr "队列"
+
+#: ../src/e_mod_main.c:802
+msgid "Play File"
+msgstr "播放文件"
+
+#: ../src/e_mod_main.c:806
+msgid "Play"
+msgstr "播放"
+
+#: ../src/e_mod_main.c:836
+msgid "Finished download"
+msgstr "下载完成"
+
+#: ../src/e_mod_main.c:922
+msgid "Start download"
+msgstr "开始下载"
+
+#: ../src/e_mod_main.c:1004
+msgid "Enqueue files for download"
+msgstr "添加文件到下载队列"
+
+#: ../src/e_mod_main.c:1021 ../src/e_mod_main.c:1249 ../src/e_mod_main.c:1404
+msgid "Youtube"
+msgstr "Youtube"
+
+#. ecore_con_url_http_post_send(ud->dd->con_url, post);
+#: ../src/e_mod_main.c:1062 ../src/e_mod_main.c:1067 ../src/e_mod_main.c:1094
+#: ../src/e_mod_main.c:1155 ../src/e_mod_main.c:1293
+msgid "Upload Image"
+msgstr "上传图像"
+
+#: ../src/e_mod_main.c:1062
+msgid "Link copied to clipboard"
+msgstr "已复制链接到剪贴板"
+
+#: ../src/e_mod_main.c:1067
+msgid "Something went wrong :("
+msgstr "出错了 :("
+
+#: ../src/e_mod_main.c:1092
+#, c-format
+msgid "Completed %1.1f%% of %s"
+msgstr "已完成 %2$s 的 %1.1f%%"
+
+#: ../src/e_mod_main.c:1239
+msgid "Google"
+msgstr "Google"
+
+#: ../src/e_mod_main.c:1244
+msgid "Wikipedia"
+msgstr "Wikipedia"
+
+#: ../src/e_mod_main.c:1267
+msgid "Google for it"
+msgstr "Google 它！"
+
+#: ../src/e_mod_main.c:1270
+msgid "Wikipedia Page"
+msgstr "Wikipedia 页面"
+
+#: ../src/e_mod_main.c:1273
+msgid "Feeling Lucky"
+msgstr "手气不错"
+
+#: ../src/e_mod_main.c:1276
+msgid "Watch on Youtube"
+msgstr "在 Youtube 上观看"
+
+#: ../src/e_mod_main.c:1280
+msgid "Download as Audio"
+msgstr "下载音频"
+
+#: ../src/e_mod_main.c:1283
+msgid "Play Video"
+msgstr "播放视频"
+
+#: ../src/e_mod_main.c:1286
+msgid "Download and enqueue"
+msgstr "下载并加入队列"
+
+#: ../src/e_mod_main.c:1289
+msgid "Download and play"
+msgstr "下载并播放"
+
+#: ../src/e_mod_main.c:1371 ../src/e_mod_main.c:1543 ../src/e_mod_main.c:1563
+msgid "Everything Websearch"
+msgstr ""
+
+#: ../src/e_mod_main.c:1385
+msgid "General"
+msgstr "常规"
+
+#: ../src/e_mod_main.c:1388
+msgid "Browser"
+msgstr "浏览器"
+
+#: ../src/e_mod_main.c:1393
+msgid "Language"
+msgstr "语言"
+
+#: ../src/e_mod_main.c:1407
+msgid "Video player"
+msgstr "视频播放器"
+
+#: ../src/e_mod_main.c:1412
+msgid "Download directory"
+msgstr "下载目录"
+
+#: ../src/e_mod_main.c:1417
+msgid "Download requires mplayer and mp3lame"
+msgstr "下载需要 mplayer 和 mp3lame"
+
+#: ../src/e_mod_main.c:1540
+msgid "Extensions"
+msgstr "扩展"
