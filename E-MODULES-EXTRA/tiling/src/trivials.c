@@ -5,7 +5,8 @@
 #define TILING_DEBUG
 
 void
-change_window_border(E_Border *bd, char *bordername)
+change_window_border(E_Border *bd,
+                     char     *bordername)
 {
    if (bd->bordername)
      eina_stringshare_del(bd->bordername);
@@ -15,13 +16,18 @@ change_window_border(E_Border *bd, char *bordername)
 }
 
 void
-move_resize(E_Border *bd, int x, int y, int w, int h)
+move_resize(E_Border *bd,
+            int       x,
+            int       y,
+            int       w,
+            int       h)
 {
    e_border_move_resize(bd, (bd->zone ? bd->zone->x : 0) + x, (bd->zone ? bd->zone->y : 0) + y, w, h);
 }
 
 void
-recursively_set_disabled(Evas_Object *obj, int disabled)
+recursively_set_disabled(Evas_Object *obj,
+                         int          disabled)
 {
    if (!obj) return;
    E_Widget_Smart_Data *sd = evas_object_smart_data_get(obj);
@@ -30,16 +36,17 @@ recursively_set_disabled(Evas_Object *obj, int disabled)
    Eina_List *l;
    for (l = sd->subobjs; l; l = l->next)
      {
-	Evas_Object *o = l->data;
-	if (!o) continue;
-	recursively_set_disabled(o, disabled);
+        Evas_Object *o = l->data;
+        if (!o) continue;
+        recursively_set_disabled(o, disabled);
      }
 
    e_widget_disabled_set(obj, disabled);
 }
 
 void
-DBG(const char *fmt, ...)
+DBG(const char *fmt,
+    ...)
 {
 #ifdef TILING_DEBUG
    va_list ap;
@@ -53,27 +60,31 @@ DBG(const char *fmt, ...)
 
 /* Returns the bigger one. Needed to avoid SIGFPE */
 int
-max(int a, int b)
+max(int a,
+    int b)
 {
-   return (a < b ? b : a);
+   return a < b ? b : a;
 }
 
 /* Returns the smaller one *doh* */
 int
-min(int a, int b)
+min(int a,
+    int b)
 {
-   return (a < b ? a : b);
+   return a < b ? a : b;
 }
 
 /* Returns true if value is between or equal to minimum and maximum */
 int
-between(int value, int minimum, int maximum)
+between(int value,
+        int minimum,
+        int maximum)
 {
-   return (value >= minimum && value <= maximum);
+   return value >= minimum && value <= maximum;
 }
 
 /* I wonder why noone has implemented the following one yet? */
-E_Desk*
+E_Desk *
 get_current_desk()
 {
    E_Manager *m = e_manager_current_get();
@@ -84,7 +95,8 @@ get_current_desk()
 
 /* Returns 1 if the given shelf is visible on the given desk */
 int
-shelf_show_on_desk(E_Shelf *sh, E_Desk *desk)
+shelf_show_on_desk(E_Shelf *sh,
+                   E_Desk  *desk)
 {
    if (!sh || !desk) return 0;
    E_Config_Shelf *cf = sh->cfg;
@@ -93,11 +105,11 @@ shelf_show_on_desk(E_Shelf *sh, E_Desk *desk)
    Eina_List *l;
    for (l = cf->desk_list; l; l = l->next)
      {
-	E_Config_Shelf_Desk *sd = l->data;
-	if (sd && sd->x == desk->x && sd->y == desk->y)
-	  return 1;
+        E_Config_Shelf_Desk *sd = l->data;
+        if (sd && sd->x == desk->x && sd->y == desk->y)
+          return 1;
      }
    return 0;
 }
 
-
+/* vim:set ts=8 sw=3 sts=3 expandtab cino=>5n-2f0^-2{2(0W1st0 :*/
