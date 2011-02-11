@@ -7,4 +7,4 @@ WWW:          http://www.hermet.pe.kr
 Contributing: elementary
 Group:        Core, Applications, Libraries
 Platform:     Ubuntu (Linux), Windows
-GeoData:      37.120482 127.042510
+GeoData:      37.20225 127.07137
