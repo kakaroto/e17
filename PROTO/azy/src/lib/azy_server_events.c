@@ -633,6 +633,7 @@ _azy_server_client_handler_request(Azy_Server_Client *client)
    { /* reset net object for next request if pipelining */
       Azy_Net *net;
       net = azy_net_new(client->net->conn);
+      net->server_client = EINA_TRUE;
       azy_net_free(client->net);
       client->net = net;
    }
