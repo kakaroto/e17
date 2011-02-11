@@ -82,7 +82,6 @@ ephoto_thumb_browser_add(void)
    etb->dir_entry = elm_fileselector_entry_add(etb->box);
    elm_fileselector_entry_path_set(etb->dir_entry, ephoto->directory);
    elm_fileselector_entry_button_label_set(etb->dir_entry, "Choose");
-   elm_fileselector_entry_folder_only_set(etb->dir_entry, EINA_TRUE);
    elm_fileselector_entry_is_save_set(etb->dir_entry, EINA_FALSE);
    elm_fileselector_entry_inwin_mode_set(etb->dir_entry, EINA_TRUE);
    evas_object_size_hint_weight_set(etb->dir_entry, 0.0, 0.0);

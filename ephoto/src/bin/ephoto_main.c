@@ -35,6 +35,15 @@ ephoto_window_add(void)
    elm_win_resize_object_add(ephoto->win, ephoto->pager);
    evas_object_show(ephoto->pager);
 
+   if (!ephoto->directory && !ephoto->file)
+     {
+        char buf[PATH_MAX], *cwd;
+        cwd = getcwd(buf, PATH_MAX);
+        ephoto->directory = eina_stringshare_add(cwd);
+     }
+   else if (ephoto->file)
+     ephoto->directory = eina_stringshare_add(ecore_file_dir_get(ephoto->file));
+
    ephoto->flow_browser = ephoto_flow_browser_add();
    elm_pager_content_push(ephoto->pager, ephoto->flow_browser);
 
@@ -43,15 +52,6 @@ ephoto_window_add(void)
 
    elm_pager_content_promote(ephoto->pager, ephoto->thumb_browser);
    ephoto->state = EPHOTO_STATE_THUMB;
-
-   if (!ephoto->directory && !ephoto->file)
-     {
-        char buf[PATH_MAX], *cwd;
-        cwd = getcwd(buf, PATH_MAX);
-        ephoto->directory = eina_stringshare_add(cwd);
-     }
-   else if (ephoto->file)
-       ephoto->directory = eina_stringshare_add(ecore_file_dir_get(ephoto->file));
 
    ephoto->current_index = ephoto->images;
    _ephoto_thumb_populate();
