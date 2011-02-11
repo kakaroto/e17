@@ -83,6 +83,7 @@ azy_events_type_parse(Azy_Net            *net,
    regmatch_t match[4];
    char *first = NULL;
    const unsigned char *endline = NULL, *start = NULL;
+   int size;
 
    DBG("(net=%p, header=%p, len=%i)", net, header, len);
    if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
@@ -94,7 +95,6 @@ azy_events_type_parse(Azy_Net            *net,
    if (net->size && net->buffer)
      {
         unsigned char *buf_start;
-        int size;
 
         /* previous buffer */
         size = (net->size + len > MAX_HEADER_SIZE) ? MAX_HEADER_SIZE : net->size + len;
@@ -120,6 +120,7 @@ azy_events_type_parse(Azy_Net            *net,
      {
         /* copy pointer */
          start = header;
+         size = len;
          /* skip all spaces/newlines/etc and decrement len */
          AZY_SKIP_BLANK(start);
      }
@@ -130,7 +131,7 @@ azy_events_type_parse(Azy_Net            *net,
    /* some clients are dumb and send leading cr/nl/etc */
    AZY_SKIP_BLANK(start);
 
-   if (!(endline = memchr(start, '\r', MAX_HEADER_SIZE)) && !(endline = memchr(start, '\n', MAX_HEADER_SIZE)))
+   if (!(endline = memchr(start, '\r', len)) && !(endline = memchr(start, '\n', len)))
      /*no newline/cr, so invalid start*/
      return 0;
 
