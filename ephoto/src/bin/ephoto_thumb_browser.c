@@ -63,10 +63,10 @@ ephoto_thumb_browser_add(void)
    evas_object_size_hint_align_set(etb->toolbar, EVAS_HINT_FILL, 0.0);
 
    etb->action.zoom_in = elm_toolbar_item_append
-     (etb->toolbar, "zoom-in", "Zoom In", _ephoto_zoom_in, NULL);
+     (etb->toolbar, "add", "Zoom In", _ephoto_zoom_in, NULL);
    elm_toolbar_item_priority_set(etb->action.zoom_in, 0);
    etb->action.zoom_out = elm_toolbar_item_append
-     (etb->toolbar, "zoom-out", "Zoom Out", _ephoto_zoom_out, NULL);
+     (etb->toolbar, "remove", "Zoom Out", _ephoto_zoom_out, NULL);
    elm_toolbar_item_priority_set(etb->action.zoom_out, 1);
    etb->action.view_flow = elm_toolbar_item_append
      (etb->toolbar, "image", "View Flow", _ephoto_show_flow, NULL);
