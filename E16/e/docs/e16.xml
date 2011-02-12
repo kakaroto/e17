@@ -1019,8 +1019,6 @@ compmgr.shadows.blur.opacity = 75
 compmgr.shadows.sharp.opacity = 30
 # [int] Shadow color (0xRRGGBB)
 compmgr.shadows.color = 0
-# [bool] Hack to fix problems with resize on old xorg servers
-compmgr.resize_fix_enable = 0
 # [bool] Experimental - leave at 0
 compmgr.use_name_pixmap = 0
 # [bool] Use composite overlay window
@@ -1333,6 +1331,8 @@ warplist.warpfocused = 1
 warplist.raise_on_select = 1
 # [bool] Warp pointer to window while selecting
 warplist.warp_on_select = 0
+# [bool] Outline windows while switching
+warplist.show_shape = 0
 # [bool] Icon mode (0: none, 3: e/app/snap, 4: app/e/snap)
 warplist.icon_mode = 3
       </programlisting></para>
@@ -1524,10 +1524,6 @@ warplist.icon_mode = 3
       try: <programlisting>$ eesh set compmgr.override_redirect.mode 0</programlisting>
       This should make the pop-up windows usable, but not always rendered
       properly. This problem should not occur with recent X-servers.</para>
-
-      <para>If window resize/shading with composite enabled is ugly, try:
-      <programlisting>$ eesh set compmgr.resize_fix_enable 1</programlisting>
-      This problem should not occur with recent X-servers.</para>
     </sect2>
 
     <sect2 id="fonts">
