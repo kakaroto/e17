@@ -19,26 +19,26 @@ ngi_box_new(Ng *ng)
 
    box->separator = edje_object_add(ng->evas);
 
-   if (!e_theme_edje_object_set(box->separator,
-                                "base/theme/modules/itask-ng",
-                                "e/modules/itask-ng/separator"))
-      edje_object_file_set(box->separator, ngi_config->theme_path,
-                           "e/modules/itask-ng/separator");
+   switch(box->ng->cfg->orient)
+     {
+      case E_GADCON_ORIENT_BOTTOM:
+	 ngi_object_theme_set(box->separator, "e/modules/itask-ng/separator_bottom");
+	 break;
+      case E_GADCON_ORIENT_TOP:
+	 ngi_object_theme_set(box->separator, "e/modules/itask-ng/separator_top");
+         break;
+      case E_GADCON_ORIENT_LEFT:
+	 ngi_object_theme_set(box->separator, "e/modules/itask-ng/separator_left");
+         break;
+      case E_GADCON_ORIENT_RIGHT:
+	 ngi_object_theme_set(box->separator, "e/modules/itask-ng/separator_right");
+         break;
+     }
 
    const char *clip_to = edje_object_data_get(box->separator, "clip_to_background");
 
    if (clip_to && atoi(clip_to))
       evas_object_clip_set(box->separator, ng->bg_clip);
-
-   if (ng->separator_width == 0)
-     {
-        int w, h;
-        edje_object_size_min_get(box->separator, &w, &h);
-        ng->separator_width = w;
-     }
-
-   if (!ng->horizontal)
-      edje_object_signal_emit(box->separator, "e,state,vertical", "e");
 
    evas_object_clip_set(box->separator, ng->bg_clip);
 
@@ -105,9 +105,9 @@ ngi_box_item_at_position_get(Ngi_Box *box)
      {
         it = l->data;
 
-        if(pos <= it->pos + size + ng->item_spacing)
+        if(pos <= it->pos + size + ng->opt.item_spacing)
           {
-             if(pos + ng->item_spacing < it->pos - size)
+             if(pos + ng->opt.item_spacing < it->pos - size)
                 return NULL;
              else
                 return it;

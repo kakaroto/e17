@@ -123,9 +123,10 @@ _ngi_gadcon_item_new(Ngi_Box *box, const char *name, Ngi_Item *after)
    it->cb_mouse_up = _ngi_gadcon_item_cb_mouse_up;
    it->cb_drag_start = NULL; //_ngi_gadcon_item_cb_drag_start;
 
-   it->gadcon = e_gadcon_swallowed_new(name, 0, ng->o_bg, "e.swallow.content");
+   evas_object_show(it->obj);
+   it->gadcon = e_gadcon_swallowed_new(name, 0, it->obj, "e.swallow.content");
    it->gadcon->instant_edit = 0;
-   edje_extern_object_min_size_set(it->gadcon->o_container, ng->size, ng->size); /* FIXME */
+   edje_extern_object_min_size_set(it->gadcon->o_container, ng->size, ng->size);
 
    e_gadcon_min_size_request_callback_set(it->gadcon, _ngi_gadcon_cb_gadcon_min_size_request, it);
    e_gadcon_size_request_callback_set(it->gadcon, _ngi_gadcon_cb_gadcon_size_request, it);
@@ -135,19 +136,10 @@ _ngi_gadcon_item_new(Ngi_Box *box, const char *name, Ngi_Item *after)
    e_gadcon_ecore_evas_set(it->gadcon, box->ng->win->popup->ecore_evas);
    e_gadcon_util_lock_func_set(it->gadcon, _ngi_gadcon_locked_set, ng);
 
-   e_gadcon_populate(it->gadcon);
-
    it->label = NULL; //name;
 
-   if(it->gadcon->clients)
-     {
-        char buf[256];
-        E_Gadcon_Client *gcc = it->gadcon->clients->data;
-        snprintf(buf, 256, "%s-%d", gcc->name, gcc->id);
-        it->label = e_datastore_get(buf);
-     }
-
-   it->obj = it->gadcon->o_container;
+   evas_object_del(it->over);
+   it->over = NULL;
 
    if (after)
       box->items = eina_list_prepend_relative(box->items, it, after);
@@ -156,7 +148,19 @@ _ngi_gadcon_item_new(Ngi_Box *box, const char *name, Ngi_Item *after)
 
    it->usable = 1;
 
+   ngi_item_signal_emit(it, "e,state,launcher_item_normal");
+
    ngi_box_item_show(ng, it, instant);
+
+   e_gadcon_populate(it->gadcon);
+
+   if(it->gadcon->clients)
+     {
+        char buf[256];
+        E_Gadcon_Client *gcc = it->gadcon->clients->data;
+        snprintf(buf, 256, "%s-%d", gcc->name, gcc->id);
+        it->label = e_datastore_get(buf);
+     }
 
    return it;
 }
@@ -197,12 +201,6 @@ _ngi_gadcon_cb_gadcon_min_size_request(void *data, E_Gadcon *gc, Evas_Coord w, E
    Ngi_Item *it;
 
    it = data;
-
-   if (gc == it->gadcon)
-     {
-        edje_extern_object_min_size_set(it->gadcon->o_container, w, h);
-        evas_object_show(it->gadcon->o_container);
-     }
 
    return;
 }

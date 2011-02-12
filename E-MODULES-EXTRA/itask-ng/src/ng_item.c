@@ -24,7 +24,7 @@ _ngi_item_new(Ngi_Box *box)
    it->visible = 1;
    it->size = 0;
 
-   /* it->cb_free       = _ngi_item_cb_free; */
+   /* it->cb_free  = _ngi_item_cb_free; */
    it->cb_mouse_in = ngi_item_mouse_in;
    it->cb_mouse_out = ngi_item_mouse_out;
    it->cb_mouse_up = NULL;
@@ -39,19 +39,59 @@ Ngi_Item *
 ngi_item_new(Ngi_Box *box)
 {
    Ngi_Item *it = _ngi_item_new(box);
+   int ok = 0;
 
    it->obj = edje_object_add(box->ng->evas);
-   if (!e_theme_edje_object_set(it->obj, "base/theme/modules/itask-ng", "e/modules/itask-ng/icon"))
-      edje_object_file_set(it->obj, ngi_config->theme_path, "e/modules/itask-ng/icon");
 
-   evas_object_show(it->obj);
+   switch(box->ng->cfg->orient)
+     {
+      case E_GADCON_ORIENT_BOTTOM:
+	 ok = ngi_object_theme_set(it->obj, "e/modules/itask-ng/icon_bottom");
+   	 break;
+      case E_GADCON_ORIENT_TOP:
+	 ok = ngi_object_theme_set(it->obj, "e/modules/itask-ng/icon_top");
+   	 break;
+      case E_GADCON_ORIENT_LEFT:
+	 ok = ngi_object_theme_set(it->obj, "e/modules/itask-ng/icon_left");
+   	 break;
+      case E_GADCON_ORIENT_RIGHT:
+	 ok = ngi_object_theme_set(it->obj, "e/modules/itask-ng/icon_right");
+   	 break;
+     }
+
+   /* TODO remove fallback */
+   if (!ok)
+     {
+   	if (!e_theme_edje_object_set(it->obj, "base/theme/modules/itask-ng", "e/modules/itask-ng/icon"))
+   	  edje_object_file_set(it->obj, ngi_config->theme_path, "e/modules/itask-ng/icon");
+     }
 
    it->over = edje_object_add(box->ng->evas);
-   if (!e_theme_edje_object_set(it->over, "base/theme/modules/itask-ng", "e/modules/itask-ng/icon_overlay"))
-      edje_object_file_set(it->over, ngi_config->theme_path, "e/modules/itask-ng/icon_overlay");
+
+   switch(box->ng->cfg->orient)
+     {
+      case E_GADCON_ORIENT_BOTTOM:
+	 ok = ngi_object_theme_set(it->over, "e/modules/itask-ng/icon_over_bottom");
+   	 break;
+      case E_GADCON_ORIENT_TOP:
+	 ok = ngi_object_theme_set(it->over, "e/modules/itask-ng/icon_over_top");
+   	 break;
+      case E_GADCON_ORIENT_LEFT:
+	 ok = ngi_object_theme_set(it->over, "e/modules/itask-ng/icon_over_left");
+   	 break;
+      case E_GADCON_ORIENT_RIGHT:
+	 ok = ngi_object_theme_set(it->over, "e/modules/itask-ng/icon_over_right");
+   	 break;
+     }
+   if (!ok)
+     {
+	if (!e_theme_edje_object_set(it->over, "base/theme/modules/itask-ng", "e/modules/itask-ng/icon_overlay"))
+	  edje_object_file_set(it->over, ngi_config->theme_path, "e/modules/itask-ng/icon_overlay");
+     }
 
    evas_object_layer_set(it->over, 9999);
    evas_object_show(it->over);
+   evas_object_show(it->obj);
 
    return it;
 }

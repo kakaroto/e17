@@ -223,8 +223,6 @@ _ngi_launcher_cb_drop_enter(void *data, const char *type, void *event_info)
      }
 
    box->ng->dnd = 1;
-   box->ng->zoom_out = 1;
-   box->ng->state = unzoomed;
 
    ngi_mouse_in(box->ng);
 }
@@ -288,7 +286,7 @@ _ngi_launcher_cb_drop_leave(void *data, const char *type, void *event_info)
      }
 
    ngi_reposition(ng);
-   ngi_input_extents_calc(ng, 1);
+   ngi_input_extents_calc(ng);
    ng->dnd = 0;
    ngi_mouse_out(ng);
 }
@@ -392,7 +390,7 @@ _ngi_launcher_cb_drop_end  (void *data, const char *type, void *event_info)
    box->item_drop = NULL;
 
    ngi_reposition(ng);
-   ngi_input_extents_calc(ng, 1);
+   ngi_input_extents_calc(ng);
 
    printf("mouse_out drop end\n");
    ng->dnd = 0;

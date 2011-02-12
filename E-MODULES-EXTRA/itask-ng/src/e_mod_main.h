@@ -86,12 +86,12 @@ struct _Config_Item
   int            sia_remove; /* remove single instance apps from launcher while running */
   int            zoom_one;   /* zoom only the icon under the pointer */
   int            mouse_over_anim;
-  
+
   enum { above_all, below_fullscreen } stacking;
 
   int            lock_deskswitch;
   int            ecomorph_features;
-    
+
   Eina_List     *boxes;
 
   E_Config_Dialog *config_dialog;
@@ -107,10 +107,10 @@ struct _Config_Box
   int            taskbar_show_desktop;
   int            taskbar_append_right;
   int            taskbar_group_apps;
-  
+
   const char    *launcher_app_dir;
   int            launcher_lock_dnd;
-  
+
   Eina_List     *gadcon_items;
 
   Ngi_Box       *box;
@@ -121,7 +121,7 @@ struct _Config_Gadcon
   const char    *name;
 };
 
-  
+
 
 struct _Ngi_Win
 {
@@ -142,26 +142,26 @@ struct _Ng
   Eina_List       *boxes;
 
   Config_Item     *cfg;
-  /* E_Config_Dialog *cfd; */
 
   E_Zone          *zone;
 
   Evas_Object     *o_bg;
   Evas_Object     *o_frame;
+  Evas_Object     *o_label;
+  Evas_Object     *o_event;
   Evas_Object     *clip;
   Evas_Object     *bg_clip;
-  Evas_Object     *label;
-  Evas_Object     *o_event;
 
   unsigned char    changed : 1;
 
   int              pos;  /* mouse position    */
   int              size; /* current icon size */
-  int              item_spacing;  
-  int              separator_width;
+  /* int              item_spacing;
+   * int              separator_width; */
 
   enum { unzoomed, zooming, zoomed, unzooming } state;
   enum { hidden, hiding, showing, show } hide_state;
+  int             hide_fullscreen;
 
   double           zoom;
   double           start_time;
@@ -175,26 +175,31 @@ struct _Ng
   int              horizontal;
 
   int              mouse_in;
-  int              zoom_out;
-  int              show_bar; /* XXX make this a hide_state */ 
+  int              show_bar;
 
   int              dnd;
   Ngi_Item        *item_drag;
 
   Eina_List       *handlers;
-  
-  Ecore_Timer     *animator;
-  Ecore_Timer     *mouse_in_timer;  
+
+  Ecore_Animator  *animator;
+  Ecore_Timer     *mouse_in_timer;
   Ecore_Timer     *menu_wait_timer;
   Ecore_Timer     *effect_timer;
 
-  int             hide_fullscreen;
+  struct
+  {
+    int clip_separator;
+    int separator_width;
+    int item_spacing;
+    int edge_spacing;
+  } opt;
 };
 
 struct _Ngi_Item
 {
   enum { taskbar_item, launcher_item, gadcon_item, transient_item } type;
- 
+
   enum { normal, appearing, disappearing, bouncing } state;
 
   Ngi_Box        *box;
@@ -209,7 +214,7 @@ struct _Ngi_Item
   Efreet_Desktop *app;
   E_Gadcon       *gadcon;
   Config_Gadcon  *cfg_gadcon;
-  
+
   const char     *label;
 
   const char     *class; /* store icccm.class...*/
@@ -232,7 +237,7 @@ struct _Ngi_Item
 
   unsigned int border_was_fullscreen;
   unsigned int urgent;
-  
+
   Ecore_Timer *overlay_signal_timer;
 
   /* void (*cb_free)       (Ngi_Item *it); */
@@ -243,7 +248,7 @@ struct _Ngi_Item
   void (*cb_drag_start) (Ngi_Item *it);
 
   int size;
-  
+
   int visible;
 };
 
@@ -276,7 +281,7 @@ EAPI E_Config_Dialog *ngi_instances_config(E_Container *con, const char *params)
 Ng          *ngi_new                          (Config_Item *ci);
 void         ngi_free                         (Ng *ng);
 void         ngi_reposition                   (Ng *ng);
-void         ngi_input_extents_calc           (Ng *ng, int resize);
+void         ngi_input_extents_calc           (Ng *ng);
 void         ngi_freeze                       (Ng *ng);
 void         ngi_thaw                         (Ng *ng);
 void         ngi_animate                      (Ng *ng);
@@ -323,10 +328,11 @@ void         ngi_gadcon_new                   (Ng *ng, Config_Box *cfg_box);
 void         ngi_gadcon_remove                (Ngi_Box *box);
 void         ngi_gadcon_config                (Ngi_Box *box);
 
-void         ngi_border_menu_show             (Ngi_Box *box, E_Border *bd, 
-                                               Evas_Coord x, Evas_Coord y, 
+void         ngi_border_menu_show             (Ngi_Box *box, E_Border *bd,
+                                               Evas_Coord x, Evas_Coord y,
                                                int dir, Ecore_X_Time timestamp);
 
+Eina_Bool    ngi_object_theme_set(Evas_Object *obj, const char *part);
 
 extern Config *ngi_config;
 extern E_Config_DD *ngi_conf_edd;

@@ -178,7 +178,7 @@ _ngi_taskbar_cb_drop_enter(void *data, const char *type, void *event_info)
    ng->item_active = ngi_box_item_at_position_get(box);
 
    printf("drop enter %d %p\n", ng->pos, ng->item_active);
-   
+
    if (!ng->item_active)
       return;  /* FIXME set edge_in before ?*/
 
@@ -186,7 +186,7 @@ _ngi_taskbar_cb_drop_enter(void *data, const char *type, void *event_info)
 
    if (box->dnd_timer)
       ecore_timer_del(box->dnd_timer);
-   
+
    box->dnd_timer = ecore_timer_add(0.5, _ngi_taskbar_cb_show_window, box);
 
    ng->dnd = 1;
@@ -200,13 +200,13 @@ _ngi_taskbar_cb_drop_leave(void *data, const char *type, void *event_info)
    Ng *ng = box->ng;
 
    printf("drop leave %d %p\n", ng->pos, ng->item_active);
-   
+
    if (box->dnd_timer)
      {
 	ecore_timer_del(box->dnd_timer);
 	box->dnd_timer = NULL;
      }
-   
+
    ng->item_active = NULL;
    ngi_mouse_out(ng);
 }
@@ -220,7 +220,7 @@ _ngi_taskbar_cb_drop_move(void *data, const char *type, void *event_info)
    Ngi_Item *it;
 
    ng->pos = (ng->horizontal ? ev->x : ev->y);
-   
+
    it = ngi_box_item_at_position_get(box);
 
    if (!it || !ng->item_active)
@@ -231,7 +231,7 @@ _ngi_taskbar_cb_drop_move(void *data, const char *type, void *event_info)
         if (box->dnd_timer)
            ecore_timer_del(box->dnd_timer);
 	box->dnd_timer = NULL;
-	
+
 	if (it)
 	  {
 	     ITEM_MOUSE_OUT(ng->item_active);
@@ -240,7 +240,7 @@ _ngi_taskbar_cb_drop_move(void *data, const char *type, void *event_info)
 	     ng->item_active = it;
 
 	     box->dnd_timer = ecore_timer_add(0.5, _ngi_taskbar_cb_show_window, box);
-	  }	
+	  }
      }
 
    ngi_animate(ng);
@@ -904,7 +904,7 @@ _ngi_taskbar_item_cb_drag_start(Ngi_Item *it)
    if (!it->border)
       return;
 
-   edje_object_signal_emit(ng->label, "e,state,label_hide", "e");
+   edje_object_signal_emit(ng->o_label, "e,state,label_hide", "e");
 
    evas_object_geometry_get(it->o_icon, &x, &y, &w, &h);
 
@@ -913,7 +913,7 @@ _ngi_taskbar_item_cb_drag_start(Ngi_Item *it)
 	x -= ng->win->rect.x;
 	y -= ng->win->rect.y;
      }
-   
+
    const char *drag_types[] = { "enlightenment/border" };
 
    d = e_drag_new(ng->zone->container, x, y, drag_types, 1,

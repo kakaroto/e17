@@ -245,15 +245,15 @@ _cb_add(void *data, void *data2)
    cfg->container = con->num;
    cfg->zone = zone->num;
    cfg->orient = E_GADCON_ORIENT_BOTTOM;
-   cfg->size = 30;
+   cfg->size = 36;
    cfg->autohide = AUTOHIDE_FULLSCREEN;
    cfg->autohide_show_urgent = 0;
    cfg->hide_below_windows = 0;
-   cfg->zoom_duration = 0.2;
-   cfg->zoom_range = 2.8;
+   cfg->zoom_duration = 0.3;
+   cfg->zoom_range = 1.5;
    cfg->zoom_one = 0;
    cfg->hide_timeout = 0.1;
-   cfg->zoomfactor = 2.3;
+   cfg->zoomfactor = 2.0;
    cfg->alpha = 255;
    cfg->sia_remove = 0;
    cfg->stacking = above_all;
@@ -262,29 +262,11 @@ _cb_add(void *data, void *data2)
    cfg->ecomorph_features = 0;
    cfg->boxes = NULL;
 
-   //cfg_box = E_NEW(Config_Box, 1);
-   //cfg_box->type = gadcon;
-   //cfg_box->gadcon_name = eina_stringshare_add("ng_gadcon-1");
-
-   //cfg->boxes = eina_list_append(cfg->boxes, cfg_box);
-
-   //cfg_box = E_NEW(Config_Box, 1);
-   //cfg_box->type = gadcon;
-   //cfg_box->gadcon_name = eina_stringshare_add("ng_gadcon-2");
-   //cfg->boxes = eina_list_append(cfg->boxes, cfg_box);
-
-   char *app_dir = "default";
-
    cfg_box = E_NEW(Config_Box, 1);
    cfg_box->type = launcher;
    cfg_box->launcher_app_dir = eina_stringshare_add("default");
    cfg_box->launcher_lock_dnd = 0;
    cfg->boxes = eina_list_append(cfg->boxes, cfg_box);
-
-   // cfg_box = E_NEW(Config_Box, 1);
-   //cfg_box->type = gadcon;
-   //cfg_box->gadcon_name = eina_stringshare_add("ng_gadcon-3");
-   //cfg->boxes = eina_list_append(cfg->boxes, cfg_box);
 
    cfg_box = E_NEW(Config_Box, 1);
    cfg_box->type = taskbar;
@@ -297,19 +279,14 @@ _cb_add(void *data, void *data2)
 
    cfg->boxes = eina_list_append(cfg->boxes, cfg_box);
 
-   //cfg_box = E_NEW(Config_Box, 1);
-   //cfg_box->type = gadcon;
-   //cfg_box->gadcon_name = eina_stringshare_add("ng_gadcon-4");
-   //cfg->boxes = eina_list_append(cfg->boxes, cfg_box);
-
    ngi_config->items = eina_list_append(ngi_config->items, cfg);
 
    e_config_domain_save("module.ng", ngi_conf_edd, ngi_config);
 
-   /* redundant -> ng_config*/
    char buf[4096];
    char tmp[4096];
    FILE *f;
+   char *app_dir = "default";
 
    snprintf(buf, sizeof(buf), "%s/.e/e/applications/bar/%s",
             e_user_homedir_get(), app_dir);
@@ -324,8 +301,8 @@ _cb_add(void *data, void *data2)
           {
              /* Populate this .order file with some defaults */
              snprintf(tmp, sizeof(tmp), "xterm.desktop\n" "sylpheed.desktop\n"
-                                                          "firefox.desktop\n" "openoffice.desktop\n" "xchat.desktop\n"
-                                                                                                     "gimp.desktop\n" "xmms.desktop\n");
+		      "firefox.desktop\n" "openoffice.desktop\n" "xchat.desktop\n"
+		      "gimp.desktop\n" "xmms.desktop\n");
              fwrite(tmp, sizeof(char), strlen(tmp), f);
              fclose(f);
           }

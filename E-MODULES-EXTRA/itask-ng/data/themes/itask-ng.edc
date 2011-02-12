@@ -1,849 +1,1061 @@
-//#define BG_IMAGE "bg.png"
-#define BG_IMAGE "bg_detour.png"
+#define BG_OFFSET 20
 
 images
 {
-  image: "bg.png" COMP;
-  image: "bg_detour.png" COMP;
-  image:"ibar_im0.png" COMP;
-  image:"itask_im0.png" COMP;
-  image:"itask_im1.png" COMP;
-  image:"itask_im2.png" COMP;
-  image:"itask_im3.png" COMP;
-  image:"itask_im4.png" COMP;
-  image:"itask_im5.png" COMP;
-  image:"clip_over.png" COMP;
+	image:"itask_im0.png" COMP;
+	image:"itask_im1.png" COMP;
+	image:"itask_im2.png" COMP;
+	image:"itask_im3.png" COMP;
+	image:"itask_im4.png" COMP;
+	image:"itask_im5.png" COMP;
 }
 
 collections{
+	group {
+		/* bg frame that keeps is not affected by 'Background
+		 * Transparency' setting. not used here.. */
 
+		name: "e/modules/itask-ng/frame_top";
+		alias: "e/modules/itask-ng/frame_left";
+		alias: "e/modules/itask-ng/frame_right";
 
-group {
-	name: "e/modules/itask-ng/bg_frame";
+		data {
+			/* space between icons */
+			item: "icon_spacing"    "1";
 
-	parts { 
-		part {
-			name: "frame";
-			type: RECT;
-			mouse_events: 0;
+			/* space between boxes */
+			item: "separator_width" "6";
 
-			description {
-				state: "default" 0.0;
-				color: 255 255 255 0;
-				
-			}
+			/* space between screen edge and icons */
+			item: "edge_spacing"    "6";
+		
+			/* clip separator to background group 
+			 * change opacity with background transparency */
+			item: "clip_separator"  "1";
 		}
-	}
-}
-
-group {
-	name: "e/modules/itask-ng/bg";
-
-/*
- * itask-ng: new generation taskbar
- * this group corresponds to the [image] bar itself and describes
- * what image to use depending on the bar's orientation.
- * 
- * four signals are emitted to position the [image] bar's orientation.
- */
-
-	parts {
-		part {
-			name: "bg";
-			type: IMAGE;
-			mouse_events: 0;
-
-			description {
-				state: "default" 0.0;
-
-				rel1 {
-					relative: 0.0 0.0;
-					offset: -5 0;
-				}
-
-				rel2 {
-					relative: 1.0 1.0;
-					offset: 6 -1;
-				}
-
-				image {
-					normal: "itask_im0.png";
-					border: 18 18 20 0;
-				}
-
-				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
-				}		
-			}
-
-			description {
-				state: "top" 0.0;
-
-				rel1 {
-					relative: 0.0 0.0;
-					offset: -5 0;
-				}
-
-				rel2 {
-					relative: 1.0 1.0;
-					offset: 6 -1;
-				}
-
-				image {
-					normal: "itask_im1.png";
-					border: 18 18 0 28;
-				}
-
-				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
-				}
-			}
-
-			description {
-				state: "left" 0.0;
-
-				rel1 {
-					relative: 0.0 0.0;
-					offset: 0 -5;
-				}
-
-				rel2 {
-					relative: 1.0 1.0;
-					offset: 10 4;
-				}
-
-				image {
-					normal: "itask_im2.png";
-					border: 0 20 32 18;
-				}
-
-				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
-				}
-			}
 	
-			description {
-				state: "right" 0.0;
+		parts { 
+			part {
+				name: "frame";
+				type: RECT;
+				mouse_events: 0;
 
-				rel1 {
-					relative: 0.0 0.0;
-					offset: -10 -5;
-				}
-
-				rel2 {
-					relative: 1.0 1.0;
-					offset: 10 4;
-				}
-
-				image {
-					normal: "itask_im3.png";
-					border: 20 0 32 18;
-				}
-
-				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
+				description {
+					state: "default" 0.0;
+					color: 255 255 255 0;
+				
 				}
 			}
 		}
 	}
 
-	programs {
-		program {
-			name: "bg_bottom";
-			signal: "e,state,bg_bottom"; /* default state */
-			source: "e";
-			action: STATE_SET "default" 0.0; 
-			target: "bg";
-		}
+	group {
+		name: "e/modules/itask-ng/frame_bottom";
 
-		/* notice that you might not want any transitions at this stage */
-		program {
-			name: "bg_top";
-			signal: "e,state,bg_top";
-			source: "e";
-			action: STATE_SET "top" 0.0;
-			target: "bg";
-		}
-		program {
-			name: "bg_left";
-			signal: "e,state,bg_left";
-			source: "e";
-			action: STATE_SET "left" 0.0;
-			target: "bg";
-		}
-
-		program {
-			name: "bg_right";
-			signal: "e,state,bg_right";
-			source: "e";
-			action: STATE_SET "right" 0.0;
-			target: "bg";
+		data {
+			item: "icon_spacing"    "1";
+			item: "separator_width" "6";
+			item: "edge_spacing"    "10";
+			item: "clip_separator"  "1";
 		}
 	}
-}
 
-group {
-	name: "e/modules/itask-ng/separator";
-	min: 1 1;
-	max: 1 128;
+	group {
+		name: "e/modules/itask-ng/bg_bottom";
+		parts {
+			part {
+				name: "bg";
+				mouse_events: 0;
 
-	data { 
-		item: "clip_to_background" "1";
-	}
+				description {
+					state: "default" 0.0;
 
-/*
- * the vertical and horizontal separator image. it can be a rectangle
- * as it is in this example.
- */
+					rel1.offset: -25 0;
+					rel2.offset: 24 -1;
 
-	parts {
-		part {
-			name: "separator";
-			type: RECT;
-			mouse_events: 0;
-
-			description {
-				state: "default" 0.0;
-				color: 182 182 182 255;
-
-				rel1 {
-					relative: 0.0 0.0;
-					offset: 0 6;
-				}
-
-				rel2 {
-					relative: 1.0 1.0;
-					offset: 0 -6;
-				}
-			}
-
-			description {
-				state: "vertical" 0.0;
-				color: 182 182 182 255;
-
-				rel1 {
-					relative: 0.0 0.0;
-					offset: 5 0;
-				}
-
-				rel2 {
-					relative: 1.0 1.0;
-					offset: -5 0;
+					image {
+						normal: "itask_im0.png";
+						border: 25 25 10 4;
+					}
 				}
 			}
 		}
 	}
 
-	programs {
-		program {
-			name: "go_horizontal";
-			signal: "e,state,horizontal";
-			source: "e";
-			action: STATE_SET "default" 0.0;
-			target: "separator";
-		}
+	group {
+		name: "e/modules/itask-ng/bg_top";
+		parts {
+			part {
+				name: "bg";
+				mouse_events: 0;
 
-		program {
-			name: "go_vertical";
-			signal: "e,state,vertical";
-			source: "e";
-			action: STATE_SET "vertical" 0.0;
-			target: "separator";
+				description {
+					state: "default" 0.0;
+
+					rel1.offset: (-BG_OFFSET) 0;
+					rel2.offset: (-1 + BG_OFFSET) (-1 + BG_OFFSET);
+
+					image {
+						normal: "itask_im1.png";
+						border: 18 18 0 28;
+					}
+
+				}
+			}
 		}
 	}
-}
+	group {
+		name: "e/modules/itask-ng/bg_left";
+		parts {
+			part {
+				name: "bg";
+				mouse_events: 0;
 
-group {
-	name: "e/modules/itask-ng/label";
+				description {
+					state: "default" 0.0;
 
-/* label: application name label group */
+					rel1.offset: 0 (-BG_OFFSET);
+					rel2.offset: (-1 + BG_OFFSET) (-1 + BG_OFFSET);
 
-	parts {
-		part {      
-			name: "label";
-			type: IMAGE;               
-			mouse_events: 0;
-			clip_to: "label.clip";  
-
-			description {
-				state: "default" 0.0;
-				align: 0.5 0.5;
-				color: 0 0 0 148;
-				max: 999 26;
-
-				rel1 { 
-					to: "e.text.label"; 
-					relative: 0.0 0.0; 
-					offset: -8 -2; 
-				}
-
-				rel2 { 
-					to: "e.text.label"; 
-					relative: 1.0 1.0; 
-					offset: 4 -1; 
-				}
-
-				image {
-					normal: "itask_im4.png";
-					border: 5 5 5 5;
+					image {
+						normal: "itask_im2.png";
+						border: 0 20 32 18;
+					}
 				}
 			}
 		}
+	}
 
-		part {      
-			name: "label_decoration";
-			type: IMAGE;               
-			mouse_events: 0;
-			clip_to: "label.clip";  
+	group {
+		name: "e/modules/itask-ng/bg_right";
+		parts {
+			part {
+				name: "bg";
+				mouse_events: 0;
 
-			description {
-				state: "default" 0.0;
-				align: 0.5 1.0;
-				color: 255 0 0 148;
-				min: 11 6;
-				max: 11 6;
-				fixed: 1 1;
+				description {
+					state: "default" 0.0;
 
-				rel1 { 
-					to: "label"; 
-					relative: 0.0 1.0; 
-					offset: 0 0; 
-				}
+					rel1.offset: (-BG_OFFSET) (-BG_OFFSET);
+					rel2.offset: -1  (-1 + BG_OFFSET);
 
-				rel2 { 
-					to: "label"; 
-					relative: 1.0 1.0; 
-					offset: -1 4; 
-				}
-
-				image {
-					normal: "itask_im5.png";
+					image {
+						normal: "itask_im3.png";
+						border: 20 0 32 18;
+					}
 				}
 			}
 		}
+	}
 
-		part {      
-			name: "e.text.label";
-			type: TEXT;
-			effect: SHADOW;                
-			mouse_events: 0;
-			clip_to: "label.clip";
-			scale: 1;
 
-			description {
-				state: "default" 0.0;
-				align: 0.5 0.5;
-				color: 255 255 255 255;
-				color3: 0 0 0 0;
-		
-				rel1 { 
-					relative: 0.0 0.0; 
-					offset: 0 2; 
+	/* the vertical and horizontal separator image. it can be a rectangle
+	 * as it is in this example.
+	 */
+
+	group {
+		name: "e/modules/itask-ng/separator_bottom";
+	}
+
+	group {
+		name: "e/modules/itask-ng/separator_top";
+	
+		parts {
+			part {
+				name: "separator";
+				type: RECT;
+				mouse_events: 0;
+			
+				description {
+					state: "default" 0.0;
+					color: 182 182 182 255;
+					max: 1 999;
+					align: 0.5 0.0;
+				
+					rel1.offset: 0 0;
+					rel2.offset: 0 2;
 				}
+			}
+		}
+	}
 
-				rel2 { 
-					relative: 1.0 1.0; 
-					offset: -1 -1; 
+	group {
+		name: "e/modules/itask-ng/separator_left";
+		alias: "e/modules/itask-ng/separator_right";
+
+		parts {
+			part {
+				name: "separator";
+				type: RECT;
+				mouse_events: 0;
+
+				description {
+					state: "default" 0.0;
+					color: 182 182 182 255;
+					max: 999 1;
+					align: 0.0 0.5;
+				
+					rel1.offset: -4 0;
+					rel2.offset: 3 0;
 				}
+			}
+		}
+	}
 
-				text {
-					text: "";
-					#if USE_FONTCONFIG == 0
-						font: "DejaVuSans-Bold";
-					#else
-					#if USE_FONTCONFIG == 1
-						font: "Sans:style=Bold";
-					#endif
-					#endif
-					size: 11;
-					min: 1 1;
+	group {
+		name: "e/modules/itask-ng/label_bottom";
+
+		parts {
+			part {      
+				name: "label";
+				type: IMAGE;               
+				mouse_events: 0;
+				clip_to: "label.clip";  
+
+				description {
+					state: "default" 0.0;
 					align: 0.5 0.5;
-					#if ENABLE_TEXT_CLASSES == 0
-						text_class: "";
-					#else
-					#if ENABLE_TEXT_CLASSES == 1
+					color: 0 0 0 148;
+					max: 999 26;
+
+					rel1 { 
+						to: "e.text.label"; 
+						offset: -8 -2; 
+					}
+
+					rel2 { 
+						to: "e.text.label"; 
+						offset: 4 -1; 
+					}
+
+					image {
+						normal: "itask_im4.png";
+						border: 5 5 5 5;
+					}
+				}
+			}
+
+			part {      
+				name: "label_decoration";
+				type: IMAGE;               
+				mouse_events: 0;
+				clip_to: "label.clip";  
+
+				description {
+					state: "default" 0.0;
+					align: 0.5 1.0;
+					color: 255 0 0 148;
+					min: 11 6;
+					max: 11 6;
+					fixed: 1 1;
+
+					rel1 { 
+						to: "label"; 
+						offset: 0 0; 
+					}
+
+					rel2 { 
+						to: "label"; 
+						offset: -1 4; 
+					}
+
+					image {
+						normal: "itask_im5.png";
+					}
+				}
+			}
+
+			part {      
+				name: "e.text.label";
+				type: TEXT;
+				effect: SHADOW;                
+				mouse_events: 0;
+				clip_to: "label.clip";
+				scale: 1;
+
+				description {
+					state: "default" 0.0;
+					align: 0.5 0.5;
+					color: 255 255 255 255;
+					color3: 0 0 0 0;
+		
+					rel1.offset: 0 2; 
+					rel2.offset: -1 -1; 
+
+					text {
+						text: "";
+						font: "Sans:style=Bold";
+						size: 11;
+						min: 1 1;
+						align: 0.5 0.5;
 						text_class: "module_large";
-					#endif
-					#endif
+					}
+				}
+			}
+
+			part {      
+				name: "label.clip";
+				type: RECT;                 
+				mouse_events: 0;
+
+				description {
+					state: "default" 0.0;
+					align: 0.5 0.5;
+					color: 255 255 255 0;
+					min: 0 33;
+
+					rel1 { 
+						to: "e.text.label"; 
+						offset: -12 -4; 
+					}
+
+					rel2 { 
+						to: "e.text.label"; 
+						offset: 11 -1; 
+					}
+
+				}
+
+				description {
+					state: "visible" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255;
 				}
 			}
 		}
 
-		part {      
-			name: "label.clip";
-			type: RECT;                 
-			mouse_events: 0;
-
-			description {
-				state: "default" 0.0;
-				align: 0.5 0.5;
-				color: 255 255 255 0;
-				min: 0 33;
-
-				rel1 { 
-					to: "e.text.label"; 
-					relative: 0.0 0.0; 
-					offset: -12 -4; 
-				}
-
-				rel2 { 
-					to: "e.text.label"; 
-					relative: 1.0 1.0; 
-					offset: 11 -1; 
-				}
-
+		programs {
+			program {
+				name: "go_label_show";
+				signal: "e,state,label_show";
+				source: "e";
+				action: STATE_SET "visible" 0.0;
+				transition: DECELERATE 0.5;
+				target: "label.clip";
 			}
 
-			description {
-				state: "visible" 0.0;
-				inherit: "default" 0.0;
-				color: 255 255 255 255;
+			program {
+				name: "go_label_hide";
+				signal: "e,state,label_hide";
+				source: "e";
+				action: STATE_SET "default" 0.0;
+				transition: ACCELERATE 0.25;
+				target: "label.clip";
+			}
+		}
+	}
+
+	group {
+		name: "e/modules/itask-ng/label_top";
+		parts {
+			part {      
+				name: "label";
+				type: IMAGE;               
+				mouse_events: 0;
+				clip_to: "label.clip";  
+
+				description {
+					state: "default" 0.0;
+					align: 0.5 0.5;
+					color: 0 0 0 148;
+					max: 999 26;
+
+					rel1 { 
+						to: "e.text.label"; 
+						offset: -8 -2; 
+					}
+
+					rel2 { 
+						to: "e.text.label"; 
+						offset: 4 -1; 
+					}
+
+					image {
+						normal: "itask_im4.png";
+						border: 5 5 5 5;
+					}
+				}
+			}
+
+			part {      
+				name: "e.text.label";
+				type: TEXT;
+				effect: SHADOW;                
+				mouse_events: 0;
+				clip_to: "label.clip";
+				scale: 1;
+
+				description {
+					state: "default" 0.0;
+					align: 0.5 0.5;
+					color: 255 255 255 255;
+					color3: 0 0 0 0;
+		
+					rel1.offset: 0 2; 
+					rel2.offset: -1 -1; 
+
+					text {
+						text: "";
+						font: "Sans:style=Bold";
+						size: 11;
+						min: 1 1;
+						align: 0.5 0.5;
+						text_class: "module_large";
+					}
+				}
+			}
+
+			part {      
+				name: "label.clip";
+				type: RECT;                 
+				mouse_events: 0;
+
+				description {
+					state: "default" 0.0;
+					align: 0.5 0.5;
+					color: 255 255 255 0;
+					min: 0 33;
+
+					rel1 { 
+						to: "e.text.label"; 
+						offset: -12 -4; 
+					}
+
+					rel2 { 
+						to: "e.text.label"; 
+						offset: 11 -1; 
+					}
+				}
+
+				description {
+					state: "visible" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255;
+				}
+			}
+		}
+
+		programs {
+			program {
+				name: "go_label_show";
+				signal: "e,state,label_show";
+				source: "e";
+				action: STATE_SET "visible" 0.0;
+				transition: DECELERATE 0.5;
+				target: "label.clip";
+			}
+
+			program {
+				name: "go_label_hide";
+				signal: "e,state,label_hide";
+				source: "e";
+				action: STATE_SET "default" 0.0;
+				transition: ACCELERATE 0.25;
+				target: "label.clip";
 			}
 		}
 	}
 
-	programs {
-		program {
-			name: "go_label_show";
-			signal: "e,state,label_show";
-			source: "e";
-			action: STATE_SET "visible" 0.0;
-			transition: DECELERATE 0.5;
-			target: "label.clip";
-		}
+	/* TODO needs to be supported in code */
+	/* group {
+	 * 	name: "e/modules/itask-ng/label_left";
+	 * 	alias: "e/modules/itask-ng/label_right";
+	 * } */
 
-		program {
-			name: "go_label_hide";
-			signal: "e,state,label_hide";
-			source: "e";
-			action: STATE_SET "default" 0.0;
-			transition: ACCELERATE 0.25;
-			target: "label.clip";
-		}
-	}
-}
+	group {
+		name: "e/modules/itask-ng/icon";
+		alias: "e/modules/itask-ng/icon_top";
+		alias: "e/modules/itask-ng/icon_left";
+		alias: "e/modules/itask-ng/icon_right";
 
-group {
-	name: "e/modules/itask-ng/icon"; 
-	min: 32 32;
-	max: 128 128;    
+		min: 32 32;
+		max: 128 128;    
 
-	parts {
-	  /*	  part {
-			name: "icon_bg";
-			type: RECT;
-			mouse_events: 0;
-
-			description {
-				state: "default" 0.0;
-				color: 155 155 255 100; 
-
-			}
-	  }*/
-	  
-		part {
-			name: "icon_clip";
-			type: RECT;
-			mouse_events: 0;
-
-			description {
-				state: "default" 0.0;
-				color: 255 255 255 0; /* app launched */
-
-				rel1 {
-					relative: 0.0 0.0;
-					offset: -10 -10;
+		parts {	  
+			part {
+				name: "icon_clip";
+				type: RECT;
+				mouse_events: 0;
+		
+				description {
+					state: "default" 0.0;
+					color: 255 255 255 0;
 				}
+		
+				// please do not set this 255 255 255 129;
+				// if a composite manager is not found the icons
+				// will be completely invisible
+				description {
+					state: "iconic" 0.0;
+					inherit: "default" 0.0;
+					/*
+					 * A minimize application is still running. consequently fading
+					 * the icon only confuses the user. The taskbar icons should 
+					 * always be visible at all times, unless:
+					 * 
+					 * a) application sends urgent signal
+					 * b) application is focused, visible on screen
+					 * 
+					 * when this happens, the icon should advert the user
+					 * that a) its running or b) urgent
+					 */
+					color: 255 255 255 255; /* app minimized */
+				}
+		
+				description {
+					state: "launcher_normal" 0.0;
+					inherit: "default" 0.0;
+					/*
+					 * controls aspect of all icons.
+					 * when an application is first launched the corresponding
+					 * icon equals: 255 255 255 0;
+					 */
+					color: 255 255 255 255;
+				} 
+		
+				description {
+					state: "taskbar_normal" 0.0;
+					inherit: "default" 0.0;
+					/*
+					 * controls aspect of all icons.
+					 * when an application is first launched the corresponding
+					 * icon equals: 255 255 255 0;
+					 */
+					color: 255 255 255 255;
+				} 
+		
+				description {
+					state: "taskbar_urgent" 0.0;
+					inherit: "default" 0.0;
+					color: 255 180 180 255;
+				}  
+		
+				description {
+					state: "taskbar_focused" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255;
+				} 
+		
+				description {
+					state: "taskbar_iconic" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 129;
+				} 
+			}
 
-				rel2 {
-					relative: 1.0 1.0;
-					offset: 5 5;
+			part {
+				name: "e.swallow.content";
+				type: SWALLOW;
+				clip_to: "icon_clip";
+
+				description {
+					state: "default" 0.0;
+					aspect: 1.0 1.0;
+					aspect_preference: BOTH;
 				}
 			}
-
-			// please do not set this 255 255 255 129;
-			// if a composite manager is not found the icons
-			// will be completely invisible
-			description {
-				state: "iconic" 0.0;
-				inherit: "default" 0.0;
-			/*
-			 * A minimize application is still running. consequently fading
-			 * the icon only confuses the user. The taskbar icons should 
-			 * always be visible at all times, unless:
-			 * 
-			 * a) application sends urgent signal
-			 * b) application is focused, visible on screen
-			 * 
-			 * when this happens, the icon should advert the user
-			 * that a) its running or b) urgent
-			 */
-				color: 255 255 255 255; /* app minimized */
-			}
-
-			description {
-				state: "launcher_normal" 0.0;
-				inherit: "default" 0.0;
-				/*
-				 * controls aspect of all icons.
-				 * when an application is first launched the corresponding
-				 * icon equals: 255 255 255 0;
-				 */
-				color: 255 255 255 255;
-			} 
-
-			description {
-				state: "taskbar_normal" 0.0;
-				inherit: "default" 0.0;
-				/*
-				 * controls aspect of all icons.
-				 * when an application is first launched the corresponding
-				 * icon equals: 255 255 255 0;
-				 */
-				color: 255 255 255 225;
-			} 
-
-			description {
-				state: "taskbar_urgent" 0.0;
-				inherit: "default" 0.0;
-				color: 255 180 180 255;
-			}  
-
-			description {
-				state: "taskbar_focused" 0.0;
-				inherit: "default" 0.0;
-				color: 255 255 255 255;
-			} 
-
-			description {
-				state: "taskbar_iconic" 0.0;
-				inherit: "default" 0.0;
-				color: 255 255 255 129;
-			} 
 		} 
-
-		part {
-			name: "e.swallow.content";
-			type: SWALLOW;
-			clip_to: "icon_clip";
-
-			description {
-				state: "default" 0.0;
-				aspect: 1.0 1.0;
-				aspect_preference: BOTH;
-
-				rel1 {
-					relative: 0.0 0.0;
-					offset: 0 0;
-				}
-
-				rel2 {
-					relative: 1.0 1.0;
-					offset: -1 -1;
-				}
-			}
-		}
-	} 
  
-	programs {
-		program {
-			name: "go_launcher_normal";
-			signal: "e,state,launcher_item_normal";
-			source: "e";
-			action: STATE_SET "launcher_normal" 0.0;
-			/* transition when launching an application */
-			transition: SINUSOIDAL 0.3;
-			target: "icon_clip";
-		}
-
-		program {
-			name: "go_hide";
-			signal: "e,state,item_hide";
-			source: "e";
-			/* when closing an application or removing a launcher item */
-			action: STATE_SET "default" 0.0;
-			transition: SINUSOIDAL 0.1;
-			target: "icon_clip";
-		}
-
-		program {
-			name: "go_taskbar_normal";
-			signal: "e,state,taskbar_item_normal";
-			source: "e";
-			/* application is not minimized, urgent or focused  */
-			action: STATE_SET "taskbar_normal" 0.0;
-			transition: LINEAR 0.5;
-			target: "icon_clip";
-		}
-
-		program {
-			name: "go_taskbar_iconic";
-			signal: "e,state,taskbar_item_iconify";
-			source: "e";
-			action: STATE_SET "taskbar_iconic" 0.0;
-			/* when minimizing an application */
-			transition: LINEAR 0.5;
-			target: "icon_clip";
-		}
-
-		program {
-			name: "go_taskbar_focused";
-			signal: "e,state,taskbar_item_focused";
-			source: "e";
-			/* when an application got focus */
-			action: STATE_SET "taskbar_focused" 0.0;
-			transition: SINUSOIDAL 0.3;
-			target: "icon_clip";
-		}
+		programs {
+			program {
+				name: "go_launcher_normal";
+				signal: "e,state,launcher_item_normal";
+				source: "e";
+				action: STATE_SET "launcher_normal" 0.0;
+				/* transition when launching an application */
+				transition: SINUSOIDAL 0.3;
+				target: "icon_clip";
+			}
 		
-		program {
-			name: "go_taskbar_urgent";
-			signal: "e,state,taskbar_item_urgent";
-			source: "e";
-			action: STATE_SET "taskbar_urgent" 0.0;
-			/* application is sending urgent signal  */
-			transition: LINEAR 1.0;
-			target: "icon_clip";
-			after: "go_taskbar_urgent2";
-		}
-
-		program {
-			name: "go_taskbar_urgent2";
-			action: STATE_SET "taskbar_normal" 0.0;
-			transition: LINEAR 1.0;
-			target: "icon_clip";
-			after: "go_taskbar_urgent";
+			program {
+				name: "go_hide";
+				signal: "e,state,item_hide";
+				source: "e";
+				/* when closing an application or removing a launcher item */
+				action: STATE_SET "default" 0.0;
+				transition: SINUSOIDAL 0.1;
+				target: "icon_clip";
+			}
+		
+			program {
+				name: "go_taskbar_normal";
+				signal: "e,state,taskbar_item_normal";
+				source: "e";
+				/* application is not minimized, urgent or focused  */
+				action: STATE_SET "taskbar_normal" 0.0;
+				transition: LINEAR 0.5;
+				target: "icon_clip";
+			}
+		
+			program {
+				name: "go_taskbar_iconic";
+				signal: "e,state,taskbar_item_iconify";
+				source: "e";
+				action: STATE_SET "taskbar_iconic" 0.0;
+				/* when minimizing an application */
+				transition: LINEAR 0.5;
+				target: "icon_clip";
+			}
+		
+			program {
+				name: "go_taskbar_focused";
+				signal: "e,state,taskbar_item_focused";
+				source: "e";
+				/* when an application got focus */
+				action: STATE_SET "taskbar_focused" 0.0;
+				transition: SINUSOIDAL 0.3;
+				target: "icon_clip";
+			}
+		
+			program {
+				name: "go_taskbar_urgent";
+				signal: "e,state,taskbar_item_urgent";
+				source: "e";
+				action: STATE_SET "taskbar_urgent" 0.0;
+				/* application is sending urgent signal  */
+				transition: LINEAR 1.0;
+				target: "icon_clip";
+				after: "go_taskbar_urgent2";
+			}
+		
+			program {
+				name: "go_taskbar_urgent2";
+				action: STATE_SET "taskbar_normal" 0.0;
+				transition: LINEAR 1.0;
+				target: "icon_clip";
+				after: "go_taskbar_urgent";
+			}
 		}
 	}
-}
 
-group {
-	name: "e/modules/itask-ng/icon_overlay";
-
-/* These are the pulsing animation overlays taken from ibar */
+	group {
+		/* These are the pulsing animation overlays taken from ibar */
+	
+		name: "e/modules/itask-ng/icon_over_top";
+		alias: "e/modules/itask-ng/icon_over_left";
+		alias: "e/modules/itask-ng/icon_over_right";
 		
-	parts {
-		part {
-			name: "icon_clip";
-			type: RECT;
-			mouse_events: 0;
+		parts {
+			part {
+				name: "icon_clip";
+				type: RECT;
+				mouse_events: 0;
 
-			description {
-				state: "default" 0.0;
-				color: 255 255 255 255;
-				rel1 {
-					relative: 0.0 0.0;
-					offset: -256 -256;
+				description {
+					state: "default" 0.0;
+					color: 255 255 255 255;
+					rel1 {
+						relative: 0.0 0.0;
+						offset: -256 -256;
+					}
+
+					rel2 {
+						relative: 1.0 1.0;
+						offset: 256 256;
+					}
+				}
+				description {
+					state: "urgent" 0.0;
+					inherit: "default" 0.0;
+					color: 255 180 180 255;
+				}
+			}
+			part {
+				name: "background";
+				clip_to: "icon_clip";
+				type: RECT;
+				mouse_events: 0;
+
+				description {
+					state: "default" 0.0;
+					color: 255 255 255 0;
+					visible: 0;
 				}
 
-				rel2 {
-					relative: 1.0 1.0;
-					offset: 256 256;
+				description {
+					state: "visible" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255;
+					visible: 1;
+				}
+
+				description {
+					state: "hidden" 0.0;
+					inherit: "default" 0.0;
+					visible: 1;
+					rel1.relative: -0.5 -0.5;
+					rel2.relative: 1.5 1.5;
+				}
+
+				description {
+					state: "huge" 0.0;
+					inherit: "default" 0.0;
+					visible: 1;
+					rel1.relative: -1.0 -1.0;
+					rel2.relative: 2.0 2.0;
 				}
 			}
-			description {
-				state: "urgent" 0.0;
-				inherit: "default" 0.0;
-				color: 255 180 180 255;
-			}
-		}
-		part {
-			name: "background";
-			clip_to: "icon_clip";
-			type: RECT;
-			mouse_events: 0;
 
-			description {
-				state: "default" 0.0;
-				color: 255 255 255 0;
-				visible: 0;
-			}
+			part {
+				name: "e.swallow.content";
+				type: SWALLOW;
+				clip_to: "background";
 
-			description {
-				state: "visible" 0.0;
-				inherit: "default" 0.0;
-				color: 255 255 255 255;
-				visible: 1;
-			}
-
-			description {
-				state: "hidden" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
-				rel1.relative: -0.5 -0.5;
-				rel2.relative: 1.5 1.5;
-			}
-
-			description {
-				state: "huge" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
-				rel1.relative: -1.0 -1.0;
-				rel2.relative: 2.0 2.0;
+				description {
+					state: "default" 0.0;
+					rel1.to: "background";
+					rel2.to: "background";
+				}
 			}
 		}
 
-		part {
-			name: "e.swallow.content";
-			type: SWALLOW;
-			clip_to: "background";
+		programs {
+			/*program {
+			  name: "go_active2_in";
+			  signal: "";
+			  source: "";
+			  action: STATE_SET "hidden" 0.0;
+			  transition: LINEAR 0.3;
+			  target: "background";
+			  after:  "go_active3_in";
+			  }
 
-			description {
-				state: "default" 0.0;
-				rel1.to: "background";
-				rel2.to: "background";
+			  program {
+			  name: "go_active3_in";
+			  signal: "";
+			  source: "";
+			  action: STATE_SET "visible" 0.0;
+			  transition: LINEAR 0.3;
+			  target: "background";
+			  after: "go_active";
+			  }
+			*/
+			program {
+				name: "go_active";
+				signal: "e,state,item_focused";
+				source: "e";
+				action: STATE_SET "visible" 0.0;
+				target: "background";
+				after: "go_active2";
 			}
-		}
-	}
 
-	programs {
-		/*program {
-			name: "go_active2_in";
-			signal: "";
-			source: "";
-			action: STATE_SET "hidden" 0.0;
-			transition: LINEAR 0.3;
-			target: "background";
-			after:  "go_active3_in";
-		}
+			program {
+				name: "go_active2";
+				signal: "";
+				source: "";
+				action: STATE_SET "hidden" 0.0;
+				transition: LINEAR 0.5;
+				target: "background";
+				after: "go_active";
+			}
 
-		program {
-			name: "go_active3_in";
-			signal: "";
-			source: "";
-			action: STATE_SET "visible" 0.0;
-			transition: LINEAR 0.3;
-			target: "background";
-			after: "go_active";
-		}
-		*/
-		program {
-			name: "go_active";
-			signal: "e,state,item_focused";
-			source: "e";
-			action: STATE_SET "visible" 0.0;
-			target: "background";
-			after: "go_active2";
-		}
+			program {
+				name: "go_passive";
+				signal: "e,state,item_unfocused";
+				source: "e";
+				action: ACTION_STOP;
+				target: "go_active";
+				target: "go_active2";
+				after: "go_passive2";
+			}
 
-		program {
-			name: "go_active2";
-			signal: "";
-			source: "";
-			action: STATE_SET "hidden" 0.0;
-			transition: LINEAR 0.5;
-			target: "background";
-			after: "go_active";
-		}
+			program {
+				name: "go_passive2";
+				signal: "";
+				source: "";
+				action: STATE_SET "default" 0.0;
+				target: "background";
+			}
 
-		program {
-			name: "go_passive";
-			signal: "e,state,item_unfocused";
-			source: "e";
-			action: ACTION_STOP;
-			target: "go_active";
-			target: "go_active2";
-			after: "go_passive2";
-		}
+			program {
+				name: "go_big";
+				action: STATE_SET "visible" 0.0;
+				target: "background";
+				after: "go_big2";
+			}
 
-		program {
-			name: "go_passive2";
-			signal: "";
-			source: "";
-			action: STATE_SET "default" 0.0;
-			target: "background";
-		}
+			program {
+				name: "go_big2";
+				action: STATE_SET "huge" 0.0;
+				transition: LINEAR 0.5;
+				target: "background";
+			}
 
-		program {
-			name: "go_big";
-			action: STATE_SET "visible" 0.0;
-			target: "background";
-			after: "go_big2";
-		}
-
-		program {
-			name: "go_big2";
-			action: STATE_SET "huge" 0.0;
-			transition: LINEAR 0.5;
-			target: "background";
-		}
-
-		program {
-			name: "exec_start";
-			signal: "e,action,start";
-			source: "e";
-			action: ACTION_STOP;
-			target: "go_active";
-			target: "go_active2";
-			target: "go_passive";
-			target: "go_passive2";
-			target: "go_big";
-			target: "go_big2";
-			after: "go_big";
-		}
-		program {
-			name: "go_taskbar_urgent2";
-			signal: "";
-			source: "";
-			action: STATE_SET "hidden" 0.0;
-			transition: LINEAR 0.5;
-			target: "background";
-			after: "go_taskbar_urgent";
-		}
+			program {
+				name: "exec_start";
+				signal: "e,action,start";
+				source: "e";
+				action: ACTION_STOP;
+				target: "go_active";
+				target: "go_active2";
+				target: "go_passive";
+				target: "go_passive2";
+				target: "go_big";
+				target: "go_big2";
+				after: "go_big";
+			}
+			program {
+				name: "go_taskbar_urgent2";
+				signal: "";
+				source: "";
+				action: STATE_SET "hidden" 0.0;
+				transition: LINEAR 0.5;
+				target: "background";
+				after: "go_taskbar_urgent";
+			}
 		
-		program {
-			name: "go_taskbar_urgent";
-			signal: "e,state,taskbar_item_urgent";
-			source: "e";
-			action: STATE_SET "visible" 0.0;
-			target: "background";
-			after: "go_taskbar_urgent2";
-			/* action: ACTION_STOP; */
-			/* target: "go_active"; */
-			/* target: "go_active2"; */
-			/* target: "go_passive"; */
-			/* target: "go_passive2"; */
-			/* target: "go_big"; */
-			/* target: "go_big2"; */
-			/* after: "go_big"; */
-		}
+			program {
+				name: "go_taskbar_urgent";
+				signal: "e,state,taskbar_item_urgent";
+				source: "e";
+				action: STATE_SET "visible" 0.0;
+				target: "background";
+				after: "go_taskbar_urgent2";
+				/* action: ACTION_STOP; */
+				/* target: "go_active"; */
+				/* target: "go_active2"; */
+				/* target: "go_passive"; */
+				/* target: "go_passive2"; */
+				/* target: "go_big"; */
+				/* target: "go_big2"; */
+				/* after: "go_big"; */
+			}
 
-		program {
-			name: "go_taskbar_stop_urgent";
-			signal: "e,state,taskbar_item_normal";
-			source: "e";
-			action: ACTION_STOP;
-			target: "go_taskbar_urgent";
-			target: "go_taskbar_urgent2";
-			after: "go_passive2";
-			/* action: STATE_SET "default" 0.0; */
-			/* target: "icon_clip"; */
+			program {
+				name: "go_taskbar_stop_urgent";
+				signal: "e,state,taskbar_item_normal";
+				source: "e";
+				action: ACTION_STOP;
+				target: "go_taskbar_urgent";
+				target: "go_taskbar_urgent2";
+				after: "go_passive2";
+				/* action: STATE_SET "default" 0.0; */
+				/* target: "icon_clip"; */
+			}
+
 		}
 	}
-}
+
+	group {
+		name: "e/modules/itask-ng/icon_bottom";
+
+		min: 32 32;
+		max: 128 128;    
+
+		parts {	  
+			part {
+				name: "icon_clip";
+				type: RECT;
+				mouse_events: 0;
+		
+				description {
+					state: "default" 0.0;
+					color: 255 255 255 0; /* app launched */
+		
+					rel1 {
+						relative: 0.0 0.0;
+						offset: -10 -20;
+					}
+		
+					rel2 {
+						relative: 1.0 1.0;
+						offset: 5 15;
+					}
+				}
+				description {
+					state: "iconic" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255; /* app minimized */
+				}
+		
+				description {
+					state: "launcher_normal" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255;
+				} 
+		
+				description {
+					state: "taskbar_normal" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255;
+				} 
+		
+				description {
+					state: "taskbar_urgent" 0.0;
+					inherit: "default" 0.0;
+					color: 255 180 180 255;
+				}  
+		
+				description {
+					state: "taskbar_focused" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255;
+				} 
+		
+				description {
+					state: "taskbar_iconic" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 129;
+				} 
+			}
+
+			part {
+				name: "e.swallow.content";
+				type: SWALLOW;
+				clip_to: "icon_clip";
+
+				description {
+					state: "default" 0.0;
+					aspect: 1.0 1.0;
+					aspect_preference: BOTH;
+
+					rel1 {
+						relative: 0.0 0.0;
+						offset: 0 -10;
+					}
+
+					rel2 {
+						relative: 1.0 1.0;
+						offset: -1 -10;
+					}
+				}
+			}
+		} 
+ 
+		programs {
+			program {
+				name: "go_launcher_normal";
+				signal: "e,state,launcher_item_normal";
+				source: "e";
+				action: STATE_SET "launcher_normal" 0.0;
+				/* transition when launching an application */
+				transition: SINUSOIDAL 0.3;
+				target: "icon_clip";
+			}
+		
+			program {
+				name: "go_hide";
+				signal: "e,state,item_hide";
+				source: "e";
+				/* when closing an application or removing a launcher item */
+				action: STATE_SET "default" 0.0;
+				transition: SINUSOIDAL 0.1;
+				target: "icon_clip";
+			}
+		
+			program {
+				name: "go_taskbar_normal";
+				signal: "e,state,taskbar_item_normal";
+				source: "e";
+				/* application is not minimized, urgent or focused  */
+				action: STATE_SET "taskbar_normal" 0.0;
+				transition: LINEAR 0.5;
+				target: "icon_clip";
+			}
+		
+			program {
+				name: "go_taskbar_iconic";
+				signal: "e,state,taskbar_item_iconify";
+				source: "e";
+				action: STATE_SET "taskbar_iconic" 0.0;
+				/* when minimizing an application */
+				transition: LINEAR 0.5;
+				target: "icon_clip";
+			}
+		
+			program {
+				name: "go_taskbar_focused";
+				signal: "e,state,taskbar_item_focused";
+				source: "e";
+				/* when an application got focus */
+				action: STATE_SET "taskbar_focused" 0.0;
+				transition: SINUSOIDAL 0.3;
+				target: "icon_clip";
+			}
+		
+			program {
+				name: "go_taskbar_urgent";
+				signal: "e,state,taskbar_item_urgent";
+				source: "e";
+				action: STATE_SET "taskbar_urgent" 0.0;
+				/* application is sending urgent signal  */
+				transition: LINEAR 1.0;
+				target: "icon_clip";
+				after: "go_taskbar_urgent2";
+			}
+		
+			program {
+				name: "go_taskbar_urgent2";
+				action: STATE_SET "taskbar_normal" 0.0;
+				transition: LINEAR 1.0;
+				target: "icon_clip";
+				after: "go_taskbar_urgent";
+			}
+		}
+	}
+
+	group {
+		/* overlay copy used for reflection effect here  */
+	
+		name: "e/modules/itask-ng/icon_over_bottom";
+
+		parts {
+			part {
+				name: "bottom";
+				type: RECT;
+				description {
+					visible: 0;
+					rel1.relative: 0.0 1.0;
+					rel1.offset: 0 -10;
+				}
+			}
+			part {
+				name: "background";
+				type: RECT;
+				mouse_events: 0;
+		
+				description {
+					state: "default" 0.0;
+					color: 242 242 242 120;
+					rel1.relative: 0.0 0.0;
+					rel2.relative: 1.0 1.0;
+					rel2.offset: 0 3;
+				}
+			}
+			part {
+				name: "e.swallow.content";
+				type: SWALLOW;
+				clip_to: "background";
+
+				description {
+					state: "default" 0.0;
+					color: 255 255 255 120;
+				
+					map {
+						on: 1;
+						rotation.center: "bottom";
+						rotation.x: 180.0;
+					}
+				}
+			}
+			part {
+				name: "over";
+				type: RECT;
+				clip_to: "background";
+				description {
+					state: "default" 0.0;
+					color: 242 242 242 220;
+
+					rel1.offset: 0 5;
+					map {
+						on: 1;
+						perspective_on: 1;
+						rotation.center: "bottom";
+						rotation.x: 180.0;
+					}
+				}
+			}
+		}
+	}
 }
 

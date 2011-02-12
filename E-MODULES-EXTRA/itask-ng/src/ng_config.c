@@ -235,18 +235,22 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_radio_add(evas, D_("Below Fullscreen"), 1, rg);
    e_widget_framelist_object_append(of, ob);
-   
+
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    of = e_widget_frametable_add(evas, D_("Orientation"), 1);
    rg = e_widget_radio_group_new(&(cfdata->orient));
-   ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_left", 24, 24, E_GADCON_ORIENT_LEFT, rg);
+   ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_left",
+				24, 24, E_GADCON_ORIENT_LEFT, rg);
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 0, 0);
-   ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_right", 24, 24, E_GADCON_ORIENT_RIGHT, rg);
+   ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_right",
+				24, 24, E_GADCON_ORIENT_RIGHT, rg);
    e_widget_frametable_object_append(of, ob, 2, 1, 1, 1, 1, 1, 0, 0);
-   ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_top", 24, 24, E_GADCON_ORIENT_TOP, rg);
+   ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_top",
+				24, 24, E_GADCON_ORIENT_TOP, rg);
    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 0, 0);
-   ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_bottom", 24, 24, E_GADCON_ORIENT_BOTTOM, rg);
+   ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_bottom",
+				24, 24, E_GADCON_ORIENT_BOTTOM, rg);
    e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 1, 0, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
@@ -278,23 +282,13 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_framelist_object_append (of, ob);
    ob = e_widget_label_add (evas, D_("Duration:"));
    e_widget_framelist_object_append (of, ob);
-   ob = e_widget_slider_add (evas, 1, 0, "%1.2f", 0.1, 0.5,
+   ob = e_widget_slider_add (evas, 1, 0, "%1.2f", 0.1, 1.0,
                              0.01, 0, &(cfdata->zoom_duration), NULL, 100);
    e_widget_on_change_hook_set(ob, _cb_slider_change, cfdata);
    e_widget_framelist_object_append (of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    of = e_widget_framelist_add(evas, D_("Auto Hide"), 0);
-   /*ob = e_widget_check_add(evas, D_("Autohide"), &(cfdata->autohide));
-      e_widget_framelist_object_append(of, ob);
-      ob = e_widget_check_add(evas, D_("Hide Below Windows"), &(cfdata->hide_below_windows));
-      e_widget_framelist_object_append(of, ob);
-    */
-   /*
-    * if (cfdata->autohide == 1)
-    *   cfdata->hide_mode = 1;
-    * else if (cfdata->hide_below_windows)
-    *   cfdata->hide_mode = 2; */
    cfdata->hide_mode = cfdata->autohide;
 
    rg = e_widget_radio_group_new(&cfdata->hide_mode);
@@ -311,16 +305,6 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    ob = e_widget_check_add(evas, D_("Show Bar when Urgent"), &(cfdata->autohide_show_urgent));
    e_widget_framelist_object_append(of, ob);
 
-   /*  ob = e_widget_radio_add(evas, "Hide Below Windows", 2, rg);
-       e_widget_framelist_object_append(of, ob);
-       //  e_widget_on_change_hook_set(ob, _cb_check_if_launcher_source, cfdata);
-    */
-   /* ob = e_widget_label_add (evas, D_("Hide Timeout:"));
-    * e_widget_framelist_object_append (of, ob);
-    * ob = e_widget_slider_add (evas, 1, 0, "%1.2f", 0.1, 1.0,
-    *                           0.01, 0, &(cfdata->hide_timeout), NULL, 100);
-    * e_widget_on_change_hook_set(ob, _cb_slider_change, cfdata);
-    * e_widget_framelist_object_append (of, ob); */
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
 
@@ -339,11 +323,9 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    Ngi_Box *box;
    int restart = 0;
    Eina_List *l;
-   
+
    ci = cfd->data;
    ng = ci->ng;
-
-   ng->hide_step = 0;
    ngi_bar_show(ng);
 
    ci->size = cfdata->size;
@@ -360,11 +342,11 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    ci->show_background = cfdata->show_background;
    ci->show_label = cfdata->show_label;
    ci->stacking = cfdata->stacking;
-   
+
    if (ci->show_label)
-     evas_object_show(ng->label);
+     evas_object_show(ng->o_label);
    else
-     evas_object_hide(ng->label);
+     evas_object_hide(ng->o_label);
 
    if (ci->show_background)
      evas_object_show(ng->bg_clip);
@@ -374,57 +356,20 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    if (ci->orient != cfdata->orient)
      {
         ci->orient = cfdata->orient;
-
-        ngi_win_position_calc(ng->win);
-        ngi_reposition(ng);
-        ngi_input_extents_calc(ng, 1);
-
-        evas_object_resize(ng->o_event, ng->win->popup->w, ng->win->popup->h);
-
-        evas_object_move(ng->o_event, 0, 0);
-
-        EINA_LIST_FOREACH (ng->boxes, l, box)
-        if (ng->horizontal)
-           edje_object_signal_emit(box->separator, "e,state,horizontal", "e");
-        else
-           edje_object_signal_emit(box->separator, "e,state,vertical", "e");
-
-        switch(ci->orient)
-          {
-           case E_GADCON_ORIENT_LEFT:
-              edje_object_signal_emit(ng->o_bg, "e,state,bg_left", "e");
-              edje_object_signal_emit(ng->o_frame, "e,state,bg_left", "e");
-              break;
-
-           case E_GADCON_ORIENT_RIGHT:
-              edje_object_signal_emit(ng->o_bg, "e,state,bg_right", "e");
-              edje_object_signal_emit(ng->o_frame, "e,state,bg_right", "e");
-              break;
-
-           case E_GADCON_ORIENT_TOP:
-              edje_object_signal_emit(ng->o_bg, "e,state,bg_top", "e");
-              edje_object_signal_emit(ng->o_frame, "e,state,bg_top", "e");
-              break;
-
-           case E_GADCON_ORIENT_BOTTOM:
-              edje_object_signal_emit(ng->o_bg, "e,state,bg_bottom", "e");
-              edje_object_signal_emit(ng->o_frame, "e,state,bg_bottom", "e");
-          }
-        ngi_thaw(ng);
+	ngi_free(ng);
+	ngi_new(ci);
+     }
+   else
+     {
+	ng->hide_step = 0;
+	ng->hide_state = show;
+	ngi_reposition(ng);
+	ngi_input_extents_calc(ng);
+	ngi_thaw(ng);
      }
 
    e_config_domain_save("module.ng", ngi_conf_edd, ngi_config);
 
-   if (ci->autohide != AUTOHIDE_NORMAL)
-     {
-        ng->hide_step = 0;
-        ngi_win_position_calc(ng->win);
-        ngi_thaw(ng);
-     }
-
-   if (ci->stacking == above_all)
-     e_popup_show(ng->win->popup);
-   
    return 1;
 }
 
@@ -594,15 +539,20 @@ _basic_create_box_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data
      {
         of = e_widget_framelist_add(evas, D_("Taskbar Settings"), 0);
 
-        ob = e_widget_check_add(evas, D_("Dont Show Dialogs"), &(cfdata->cfg_box->taskbar_skip_dialogs));
+        ob = e_widget_check_add(evas, D_("Dont Show Dialogs"),
+				&(cfdata->cfg_box->taskbar_skip_dialogs));
         e_widget_framelist_object_append(of, ob);
-        ob = e_widget_check_add(evas, D_("Advanced Window Menu"), &(cfdata->cfg_box->taskbar_adv_bordermenu));
+        ob = e_widget_check_add(evas, D_("Advanced Window Menu"),
+				&(cfdata->cfg_box->taskbar_adv_bordermenu));
         e_widget_framelist_object_append(of, ob);
-        ob = e_widget_check_add(evas, D_("Only Show Current Desk"), &(cfdata->cfg_box->taskbar_show_desktop));
+        ob = e_widget_check_add(evas, D_("Only Show Current Desk"),
+				&(cfdata->cfg_box->taskbar_show_desktop));
         e_widget_framelist_object_append(of, ob);
-        ob = e_widget_check_add(evas, D_("Group Applications by Window Class"), &(cfdata->cfg_box->taskbar_group_apps));
+        ob = e_widget_check_add(evas, D_("Group Applications by Window Class"),
+				&(cfdata->cfg_box->taskbar_group_apps));
         e_widget_framelist_object_append(of, ob);
-        ob = e_widget_check_add(evas, D_("Append new Applications on the right Side"), &(cfdata->cfg_box->taskbar_append_right));
+        ob = e_widget_check_add(evas, D_("Append new Applications on the right Side"),
+				&(cfdata->cfg_box->taskbar_append_right));
         e_widget_framelist_object_append(of, ob);
 
         e_widget_list_object_append(o, of, 1, 1, 0.5);
@@ -954,8 +904,6 @@ _cb_slider_change(void *data, Evas_Object *obj)
    ng->cfg->zoom_range = cfdata->zoom_range;
    ng->cfg->hide_timeout = cfdata->hide_timeout;
    ng->cfg->alpha = cfdata->alpha;
-
-   ng->hide_step = 0;
 
    evas_object_color_set(ng->bg_clip, ng->cfg->alpha, ng->cfg->alpha, ng->cfg->alpha, ng->cfg->alpha);
    ngi_thaw(ng);
