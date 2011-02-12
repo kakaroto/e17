@@ -78,7 +78,7 @@ msgstr "出错了 :("
 #: ../src/e_mod_main.c:1092
 #, c-format
 msgid "Completed %1.1f%% of %s"
-msgstr "已完成 %2$s 的 %1.1f%%"
+msgstr ""
 
 #: ../src/e_mod_main.c:1239
 msgid "Google"
