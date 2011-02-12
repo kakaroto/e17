@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -395,20 +395,15 @@ EobjUnmap(EObj * eo)
 void
 EobjMoveResize(EObj * eo, int x, int y, int w, int h)
 {
+#if USE_COMPOSITE
    int                 move, resize;
 
    move = x != EobjGetX(eo) || y != EobjGetY(eo);
    resize = w != EobjGetW(eo) || h != EobjGetH(eo);
-#if USE_COMPOSITE
-   if (eo->type == EOBJ_TYPE_EWIN)
-     {
-	ECompMgrMoveResizeFix(eo, x, y, w, h);
-     }
-   else
 #endif
-     {
-	EMoveResizeWindow(EobjGetWin(eo), x, y, w, h);
-     }
+
+   EMoveResizeWindow(EobjGetWin(eo), x, y, w, h);
+
 #if USE_COMPOSITE
    if (eo->cmhook)
       ECompMgrWinMoveResize(eo, move, resize, 0);

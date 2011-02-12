@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -144,7 +144,6 @@ struct _cmhook {
 
 static struct {
    char                enable;
-   char                resize_fix_enable;
    char                use_name_pixmap;
 #if USE_COMPOSITE_OVERLAY_WINDOW
    char                use_cow;
@@ -252,46 +251,6 @@ ECompMgrWinClipToGC(EObj * eo, GC gc)
    ERegionCopy(rgn, Mode_compmgr.rgn_screen);
    ERegionSubtract(rgn, eo->cmhook->clip);
    XFixesSetGCClipRegion(disp, gc, 0, 0, rgn);
-}
-
-/* Hack to fix redirected window resize bug(?) */
-void
-ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w, int h)
-{
-   Picture             pict;
-   int                 wo, ho;
-   ECmWinInfo         *cw = eo->cmhook;
-
-   if (!cw || !Conf_compmgr.resize_fix_enable)
-     {
-	EMoveResizeWindow(EobjGetWin(eo), x, y, w, h);
-	return;
-     }
-
-   wo = ho = 0;
-   EGetGeometry(EobjGetWin(eo), NULL, NULL, NULL, &wo, &ho, NULL, NULL);
-   if (wo <= 0 || ho <= 0 || (wo == w && ho == h))
-     {
-	EMoveResizeWindow(EobjGetWin(eo), x, y, w, h);
-	return;
-     }
-
-   /* Resizing - grab old contents */
-   pict = EPictureCreateBuffer(EobjGetWin(eo), wo, ho, NULL);
-   XRenderComposite(disp, PictOpSrc, cw->picture, None, pict, 0, 0, 0, 0, 0, 0,
-		    wo, ho);
-
-   /* Resize (+move) */
-   EMoveResizeWindow(EobjGetWin(eo), x, y, w, h);
-
-   /* Paste old contents back in */
-   if (w < wo)
-      w = wo;
-   if (h < ho)
-      h = ho;
-   XRenderComposite(disp, PictOpSrc, pict, None, cw->picture,
-		    0, 0, 0, 0, 0, 0, w, h);
-   XRenderFreePicture(disp, pict);
 }
 
 #if !USE_BG_WIN_ON_ALL_DESKS
@@ -2649,7 +2608,6 @@ static const CfgItem CompMgrCfgItems[] = {
    CFG_ITEM_INT(Conf_compmgr, shadows.blur.opacity, 75),
    CFG_ITEM_INT(Conf_compmgr, shadows.sharp.opacity, 30),
    CFG_ITEM_HEX(Conf_compmgr, shadows.color, 0),
-   CFG_ITEM_BOOL(Conf_compmgr, resize_fix_enable, 0),
    CFG_ITEM_BOOL(Conf_compmgr, use_name_pixmap, 0),
 #if USE_COMPOSITE_OVERLAY_WINDOW
    CFG_ITEM_BOOL(Conf_compmgr, use_cow, 1),

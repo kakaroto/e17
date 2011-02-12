@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -63,9 +63,6 @@ void                ECompMgrWinClipToGC(EObj * eo, GC gc);
 
 void                ECompMgrConfigGet(cfg_composite * cfg);
 void                ECompMgrConfigSet(const cfg_composite * cfg);
-
-void                ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w,
-					  int h);
 
 void                ECompMgrRepaint(void);
 
