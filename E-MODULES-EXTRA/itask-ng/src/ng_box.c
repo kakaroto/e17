@@ -98,19 +98,18 @@ ngi_box_item_at_position_get(Ngi_Box *box)
    Eina_List *l;
    Ngi_Item *it;
    Ng *ng = box->ng;
-   int size = ng->size / 2;
    int pos = ng->pos;
 
    for(l = box->items; l; l = l->next)
      {
         it = l->data;
 
-        if(pos <= it->pos + size + ng->opt.item_spacing)
+        if(pos <= it->pos + ng->size + ng->opt.item_spacing)
           {
-             if(pos + ng->opt.item_spacing < it->pos - size)
+             if(pos + ng->opt.item_spacing < it->pos - ng->size)
                 return NULL;
-             else
-                return it;
+
+	     return it;
           }
      }
    return NULL;

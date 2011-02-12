@@ -70,7 +70,7 @@ collections{
 				description {
 					state: "default" 0.0;
 
-					rel1.offset: -25 0;
+					rel1.offset: -25 8;
 					rel2.offset: 24 -1;
 
 					image {
@@ -1006,7 +1006,7 @@ collections{
 				description {
 					visible: 0;
 					rel1.relative: 0.0 1.0;
-					rel1.offset: 0 -10;
+					rel1.offset: 0 -8;
 				}
 			}
 			part {
@@ -1019,7 +1019,7 @@ collections{
 					color: 242 242 242 120;
 					rel1.relative: 0.0 0.0;
 					rel2.relative: 1.0 1.0;
-					rel2.offset: 0 3;
+					rel2.offset: 0 6;
 				}
 			}
 			part {

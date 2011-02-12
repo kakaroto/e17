@@ -190,9 +190,9 @@ static void
 _ngi_launcher_pos_set(Ngi_Box *box, int x, int y)
 {
    if (box->ng->horizontal)
-      box->ng->pos = x + box->ng->size;
+      box->ng->pos = x + box->ng->size/2;
    else
-      box->ng->pos = y + box->ng->size;
+      box->ng->pos = y + box->ng->size/2;
 }
 
 static void
@@ -487,7 +487,7 @@ _ngi_launcher_item_cb_drag_start(Ngi_Item *it)
 	x -= ng->win->rect.x;
 	y -= ng->win->rect.y;
      }
-   
+
    const char *drag_types[] = { "enlightenment/desktop" };
 
    d = e_drag_new(ng->zone->container, x, y, drag_types, 1,

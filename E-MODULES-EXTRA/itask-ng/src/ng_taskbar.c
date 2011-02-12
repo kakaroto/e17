@@ -234,11 +234,12 @@ _ngi_taskbar_cb_drop_move(void *data, const char *type, void *event_info)
 
 	if (it)
 	  {
-	     ITEM_MOUSE_OUT(ng->item_active);
-	     ITEM_MOUSE_IN(it);
-
-	     ng->item_active = it;
-
+	     /* ITEM_MOUSE_OUT(ng->item_active);
+	      * ITEM_MOUSE_IN(it);
+	      * 
+	      * ng->item_active = it; */
+	     ngi_item_activate(ng); 
+	     
 	     box->dnd_timer = ecore_timer_add(0.5, _ngi_taskbar_cb_show_window, box);
 	  }
      }

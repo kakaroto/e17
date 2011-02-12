@@ -156,8 +156,6 @@ struct _Ng
 
   int              pos;  /* mouse position    */
   int              size; /* current icon size */
-  /* int              item_spacing;
-   * int              separator_width; */
 
   enum { unzoomed, zooming, zoomed, unzooming } state;
   enum { hidden, hiding, showing, show } hide_state;
@@ -311,6 +309,7 @@ void         ngi_item_del_icon                (Ngi_Item *it);
 void         ngi_item_mouse_in                (Ngi_Item *it);
 void         ngi_item_mouse_out               (Ngi_Item *it);
 void         ngi_item_signal_emit             (Ngi_Item *it, char *sig);
+void         ngi_item_activate                (Ng *ng);
 
 void         ngi_launcher_new                 (Ng *ng, Config_Box *cfg_box);
 void         ngi_launcher_remove              (Ngi_Box *box);

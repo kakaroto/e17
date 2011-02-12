@@ -27,7 +27,6 @@ static Eina_Bool      _ngi_animator(void *data);
 static void           _ngi_redraw(Ng *ng);
 static int            _ngi_autohide(Ng *ng, int hide);
 
-static void           _ngi_item_activate(Ng *ng);
 static Ngi_Item *     _ngi_item_at_position_get(Ng *ng);
 
 void                  ngi_hide_clip(Ng *ng);
@@ -919,7 +918,7 @@ _ngi_win_cb_mouse_move(void *data, int type, void *event)
    if (!ng->mouse_in)
      return EINA_TRUE;
 
-   _ngi_item_activate(ng);
+   ngi_item_activate(ng);
 
    if (ng->item_drag)
      {
@@ -1066,46 +1065,45 @@ _ngi_item_at_position_get(Ng *ng)
    Eina_List *l, *ll;
    Ngi_Item *it;
    Ngi_Box *box;
-   int size = ng->size / 2;
    int pos = ng->pos;
 
    EINA_LIST_FOREACH (ng->boxes, ll, box)
-   {
-      if (pos < box->pos)
-         continue;
+     {
+	if (pos < box->pos)
+	  continue;
 
-      EINA_LIST_FOREACH (box->items, l, it)
-      {
-         if (it->scale == 0.0)
-            continue;
+	EINA_LIST_FOREACH (box->items, l, it)
+	  {
+	     if (it->scale == 0.0)
+	       continue;
 
-         if (pos <= it->pos + size + ng->opt.item_spacing)
-           {
-              if (pos + ng->opt.item_spacing < it->pos - size)
-                 return NULL;
-              else
-                 return it;
-           }
-      }
-   }
+	     if (pos <= it->pos + ng->size + ng->opt.item_spacing)
+	       {
+		  if (pos + ng->opt.item_spacing < it->pos - ng->size)
+		    return NULL;
+
+		  return it;
+	       }
+	  }
+     }
    return NULL;
 }
 
-static void
-_ngi_item_activate(Ng *ng)
+void
+ngi_item_activate(Ng *ng)
 {
    Ngi_Item *it = _ngi_item_at_position_get(ng);
 
    if (it && ng->cfg->zoom_one)
       ng->pos = it->pos;
 
-   if (ng->mouse_in && it && it != ng->item_active)
+   if (it && ng->mouse_in && (it != ng->item_active))
      {
         ITEM_MOUSE_OUT(ng->item_active);
         ITEM_MOUSE_IN(it);
         ng->item_active = it;
      }
-   else if (!it || !ng->mouse_in)
+   else if (!it /* || !ng->mouse_in */)
      {
         ITEM_MOUSE_OUT(ng->item_active);
         ng->item_active = NULL;
@@ -1113,20 +1111,16 @@ _ngi_item_activate(Ng *ng)
 
    if (ng->item_active && ng->cfg->show_label)
      {
-        int h;
-        double zoom = 1.0, disp;
-
-	h = ng->win->popup->h;
-
 	switch (ng->cfg->orient)
           {
            case E_GADCON_ORIENT_BOTTOM:
-              evas_object_move(ng->o_label, ng->item_active->pos, (h + ng->hide_step) -
+              evas_object_move(ng->o_label, ng->item_active->pos + ng->size/2,
+			       (ng->win->popup->h + ng->hide_step) -
 			       ((double)ng->size * ng->zoom + TEXT_DIST));
               break;
 
            case E_GADCON_ORIENT_TOP:
-              evas_object_move(ng->o_label, ng->item_active->pos,
+              evas_object_move(ng->o_label, ng->item_active->pos + ng->size/2,
 			       ((double)ng->size * ng->zoom + TEXT_DIST) - ng->hide_step);
               break;
           }
@@ -1166,7 +1160,7 @@ _ngi_item_appear(Ng *ng, Ngi_Item *it)
         ngi_input_extents_calc(ng);
      }
 
-   _ngi_item_activate(ng);
+   ngi_item_activate(ng);
 }
 
 static void
@@ -1206,7 +1200,7 @@ _ngi_item_disappear(Ng *ng, Ngi_Item *it)
         ngi_hide_clip(ng);
      }
 
-   _ngi_item_activate(ng);
+   ngi_item_activate(ng);
 }
 
 static void
@@ -1456,9 +1450,9 @@ ngi_reposition(Ng *ng)
          if (it->scale == 0.0)
             continue;
 
-         pos += 0.5 * (it->scale * size + ng->opt.item_spacing);
-         it->pos = (int)pos;
-         pos += 0.5 * (it->scale * size + ng->opt.item_spacing);
+         it->pos = pos;
+
+         pos += it->scale * size + ng->opt.item_spacing;
       }
    }
 
@@ -1601,12 +1595,12 @@ _ngi_redraw(Ng *ng)
         switch (cfg->orient)
           {
            case E_GADCON_ORIENT_BOTTOM:
-              evas_object_move(ng->o_label, ng->item_active->pos, (h + hide_step) -
-			       ((double)ng->size * ng->zoom + TEXT_DIST));
+              evas_object_move(ng->o_label, ng->item_active->pos + ng->size/2,
+			       (h + hide_step) - ((double)ng->size * ng->zoom + TEXT_DIST));
               break;
 
            case E_GADCON_ORIENT_TOP:
-              evas_object_move(ng->o_label, ng->item_active->pos,
+              evas_object_move(ng->o_label, ng->item_active->pos + ng->size/2,
 			       ((double)ng->size * ng->zoom + TEXT_DIST) - hide_step);
               break;
           }
@@ -1651,20 +1645,20 @@ _ngi_redraw(Ng *ng)
 
          if (!l->prev)
            {
-              _ngi_zoom_function(ng, it->pos - ng->size/2 - ng->pos,  &pos);
-              pos = it->pos - ng->size/2 + pos;
+              _ngi_zoom_function(ng, it->pos - ng->pos,  &pos);
+              pos = it->pos + pos;
            }
          else
            {
               pos = pos2 + ng->opt.item_spacing;
            }
 
-         _ngi_zoom_function(ng, it->pos + ng->size/2 - ng->pos, &pos2);
+         _ngi_zoom_function(ng, it->pos + (ng->size * it->scale) - ng->pos, &pos2);
 
-         pos2 = it->pos + ng->size/2 + pos2;
-
-         size = (pos2 - pos) - 0.5;
-
+         pos2 = it->pos + (ng->size * it->scale) + pos2;
+	 
+	 size = (pos2 - pos) - 0.5;
+	 
          switch (cfg->orient)
            {
             case E_GADCON_ORIENT_BOTTOM:
