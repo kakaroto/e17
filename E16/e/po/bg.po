@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-01-29 17:01+0100\n"
+"POT-Creation-Date: 2011-02-12 12:17+0100\n"
 "PO-Revision-Date: 2010-05-09 01:24+0000\n"
 "Last-Translator: Aron Xu <Unknown>\n"
 "Language-Team: Bulgarian\n"
@@ -297,11 +297,11 @@ msgstr ""
 "Е: Фон\n"
 "Диалог за настройки"
 
-#: src/comms.c:240
+#: src/comms.c:241
 msgid "E IPC Error"
 msgstr "Грешка на Е IPC"
 
-#: src/comms.c:241
+#: src/comms.c:242
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -688,7 +688,7 @@ msgstr "Е: Виртуални полетаДиалог за настройки"
 msgid "Apply"
 msgstr "Приложи"
 
-#: src/ecompmgr.c:2338
+#: src/ecompmgr.c:2297
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1489,51 +1489,51 @@ msgstr ""
 "\n"
 "... Надявам се.\n"
 
-#: src/session.c:643
+#: src/session.c:646
 msgid "Are you sure?"
 msgstr "Сигурни ли сте?"
 
-#: src/session.c:645
+#: src/session.c:648
 msgid "Are you sure you wish to log out ?"
 msgstr "Сигурни ли сте че искате да излезнете ?"
 
-#: src/session.c:653
+#: src/session.c:656
 msgid "Yes, Shut Down"
 msgstr "Да, изключи компютъра"
 
-#: src/session.c:655
+#: src/session.c:658
 msgid "Yes, Reboot"
 msgstr "Да, рестартирай компютъра"
 
-#: src/session.c:658
+#: src/session.c:661
 msgid "Yes, Log Out"
 msgstr "Да, излез"
 
-#: src/session.c:660
+#: src/session.c:663
 msgid "No"
 msgstr "Не"
 
-#: src/session.c:795
+#: src/session.c:798
 msgid "Enable Session Script"
 msgstr ""
 
-#: src/session.c:800
+#: src/session.c:803
 msgid "Enable Logout Dialog"
 msgstr "Разрешавай Изходен Диалог"
 
-#: src/session.c:805
+#: src/session.c:808
 msgid "Enable Reboot/Halt on Logout"
 msgstr "Разрешавай Рестартиране/Изключване при Изход"
 
-#: src/session.c:811
+#: src/session.c:814
 msgid "Session"
 msgstr ""
 
-#: src/session.c:812
+#: src/session.c:815
 msgid "Session Settings"
 msgstr ""
 
-#: src/session.c:815
+#: src/session.c:818
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog"

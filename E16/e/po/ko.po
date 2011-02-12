@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-01-29 17:01+0100\n"
+"POT-Creation-Date: 2011-02-12 12:17+0100\n"
 "PO-Revision-Date: 2009-12-02 09:48+0000\n"
 "Last-Translator: Michael Kim <Unknown>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -298,11 +298,11 @@ msgstr ""
 "인라이튼먼트 데스크탑\n"
 "배경 설정 대화상자"
 
-#: src/comms.c:240
+#: src/comms.c:241
 msgid "E IPC Error"
 msgstr "E IPC 오류"
 
-#: src/comms.c:241
+#: src/comms.c:242
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -672,7 +672,7 @@ msgstr ""
 msgid "Apply"
 msgstr "적용"
 
-#: src/ecompmgr.c:2338
+#: src/ecompmgr.c:2297
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1463,51 +1463,51 @@ msgstr ""
 "\n"
 "... 그러길 바랍니다.\n"
 
-#: src/session.c:643
+#: src/session.c:646
 msgid "Are you sure?"
 msgstr "확실한가요?"
 
-#: src/session.c:645
+#: src/session.c:648
 msgid "Are you sure you wish to log out ?"
 msgstr "정말로 로그아웃하기를 바라십니까 ?"
 
-#: src/session.c:653
+#: src/session.c:656
 msgid "Yes, Shut Down"
 msgstr ""
 
-#: src/session.c:655
+#: src/session.c:658
 msgid "Yes, Reboot"
 msgstr ""
 
-#: src/session.c:658
+#: src/session.c:661
 msgid "Yes, Log Out"
 msgstr "예, 로그아웃"
 
-#: src/session.c:660
+#: src/session.c:663
 msgid "No"
 msgstr "아니오"
 
-#: src/session.c:795
+#: src/session.c:798
 msgid "Enable Session Script"
 msgstr ""
 
-#: src/session.c:800
+#: src/session.c:803
 msgid "Enable Logout Dialog"
 msgstr ""
 
-#: src/session.c:805
+#: src/session.c:808
 msgid "Enable Reboot/Halt on Logout"
 msgstr ""
 
-#: src/session.c:811
+#: src/session.c:814
 msgid "Session"
 msgstr ""
 
-#: src/session.c:812
+#: src/session.c:815
 msgid "Session Settings"
 msgstr ""
 
-#: src/session.c:815
+#: src/session.c:818
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog"

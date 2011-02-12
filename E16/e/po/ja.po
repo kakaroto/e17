@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-01-29 17:01+0100\n"
+"POT-Creation-Date: 2011-02-12 12:17+0100\n"
 "PO-Revision-Date: 2010-08-13 16:37+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -315,11 +315,11 @@ msgstr ""
 "Enlightenment デスクトップ\n"
 "背景設定ダイアログ"
 
-#: src/comms.c:240
+#: src/comms.c:241
 msgid "E IPC Error"
 msgstr "E IPC エラー"
 
-#: src/comms.c:241
+#: src/comms.c:242
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -714,7 +714,7 @@ msgstr ""
 msgid "Apply"
 msgstr "適用"
 
-#: src/ecompmgr.c:2338
+#: src/ecompmgr.c:2297
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1543,57 +1543,57 @@ msgstr ""
 "\n"
 "...たぶん。\n"
 
-#: src/session.c:643
+#: src/session.c:646
 msgid "Are you sure?"
 msgstr "いいですか?"
 
-#: src/session.c:645
+#: src/session.c:648
 msgid "Are you sure you wish to log out ?"
 msgstr "本当にログアウトしますか ?"
 
 #
-#: src/session.c:653
+#: src/session.c:656
 msgid "Yes, Shut Down"
 msgstr "シャットダウンします"
 
 #
-#: src/session.c:655
+#: src/session.c:658
 msgid "Yes, Reboot"
 msgstr "再起動します"
 
-#: src/session.c:658
+#: src/session.c:661
 msgid "Yes, Log Out"
 msgstr "ログアウトします"
 
-#: src/session.c:660
+#: src/session.c:663
 msgid "No"
 msgstr "いいえ、ログアウトしません"
 
-#: src/session.c:795
+#: src/session.c:798
 msgid "Enable Session Script"
 msgstr "セッションスクリプトを有効にする"
 
 #
-#: src/session.c:800
+#: src/session.c:803
 msgid "Enable Logout Dialog"
 msgstr "ログアウトダイアログを有効にする"
 
-#: src/session.c:805
+#: src/session.c:808
 msgid "Enable Reboot/Halt on Logout"
 msgstr "ログアウト時に再起動または停止できるようにする"
 
 #
-#: src/session.c:811
+#: src/session.c:814
 msgid "Session"
 msgstr "セッション"
 
 #
-#: src/session.c:812
+#: src/session.c:815
 msgid "Session Settings"
 msgstr "セッションの設定"
 
 #
-#: src/session.c:815
+#: src/session.c:818
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog"
