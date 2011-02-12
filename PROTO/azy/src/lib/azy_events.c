@@ -300,7 +300,25 @@ azy_events_header_parse(Azy_Net      *net,
              if ((x - r) > 0)
                s = "\r\n";
              else
-               s = "\n\r";
+               { /* we currently have \n\r: b64 encoding can leave a trailing \n
+                  * so we have to check for an extra \n
+                  */
+                  if ((x - r < 0) && ((unsigned int)(r + 1 - start) < len) && (r[1] == '\n'))
+                    { /* \n\r\n */
+                       if (((unsigned int)(r + 2 - start) < len) && (r[2] == '\r'))
+                         { /* \n\r\n\r */
+                            if (((unsigned int)(r + 3 - start) < len) && (r[3] == '\n'))
+                              /* \n\r\n\r\n oh hey I'm gonna stop here before it gets too insane */
+                              s = "\r\n";
+                            else
+                              s = "\n\r";
+                         }
+                       else
+                         s = "\r\n";
+                    }
+                  else
+                    s = "\n\r";
+               }
           }
         else
           s = "\r";
@@ -311,7 +329,7 @@ azy_events_header_parse(Azy_Net      *net,
    slen = strlen(s);
    snprintf((char *)sep, sizeof(sep), "%s%s", s, s);
    /* by spec, this is only found between header and content */
-   if (azy_memstr(start, sep, len, 2 * slen))
+   if (azy_memstr(r - 1, sep, len - (r - 1 - start), 2 * slen))
      net->headers_read = EINA_TRUE;
 
    p = start;
