@@ -65,7 +65,7 @@ _azy_events_valid_header_value(const char *name, unsigned int len)
 {
    while (len--)
      {
-        if (!isprint(*name))
+        if ((!isprint(*name)) && (!isspace(*name)))
           return EINA_FALSE;
 
         name++;
