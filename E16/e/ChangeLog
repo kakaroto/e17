@@ -5446,3 +5446,14 @@ Move timers to int/ms.
 Eliminate TimersRunExpired().
 Change TimerAdd() and TimerSetInterval() time to ms.
 Use GetTimeMs/Us() in stead of GetTime().
+
+-------------------------------------------------------------------------------
+
+Sat Feb 12 10:35:09 CET 2011
+
+--- 1.0.7.003 ---
+Fix trouble around initially iconified windows and manual placement (noted by
+ Daniel Manjarres).
+Warning fixes for gcc-4.6.
+Fix handling rescheduled timers that are already expired.
+Remove compositing resize fixup hack for old Xorgs.
