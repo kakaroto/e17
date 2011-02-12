@@ -89,7 +89,7 @@ azy_server_module_net_get(Azy_Server_Module *module)
      }
    EINA_SAFETY_ON_NULL_RETURN_VAL(module->client, NULL);
 
-   return module->client->net;
+   return module->client->current;
 }
 
 /**
@@ -524,7 +524,7 @@ azy_server_module_send(Azy_Server_Module  *module,
      azy_net_type_set(net, AZY_NET_TYPE_RESPONSE);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!(header = azy_net_header_create(net)), 0);
 
-   if (!ecore_con_client_send(module->client->net->conn, eina_strbuf_string_get(header), eina_strbuf_length_get(header)))
+   if (!ecore_con_client_send(module->client->current->conn, eina_strbuf_string_get(header), eina_strbuf_length_get(header)))
      {
         ERR("Could not queue header for sending!");
         goto error;
