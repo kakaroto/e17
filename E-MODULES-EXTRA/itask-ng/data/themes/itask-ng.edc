@@ -53,8 +53,8 @@ collections{
 		name: "e/modules/itask-ng/frame_bottom";
 
 		data {
-			item: "icon_spacing"    "1";
-			item: "separator_width" "6";
+			item: "icon_spacing"    "2";
+			item: "separator_width" "8";
 			item: "edge_spacing"    "10";
 			item: "clip_separator"  "1";
 		}

@@ -212,25 +212,25 @@ ngi_new(Config_Item *cfg)
    switch(cfg->orient)
      {
       case E_GADCON_ORIENT_BOTTOM:
-	 ngi_object_theme_set(ng->o_bg,	"e/modules/itask-ng/bg_bottom");
+	 ngi_object_theme_set(ng->o_bg,	  "e/modules/itask-ng/bg_bottom");
 	 ngi_object_theme_set(ng->o_frame,"e/modules/itask-ng/frame_bottom");
 	 ngi_object_theme_set(ng->o_label,"e/modules/itask-ng/label_bottom");
 	 break;
 
       case E_GADCON_ORIENT_TOP:
-	 ngi_object_theme_set(ng->o_bg,	"e/modules/itask-ng/bg_top");
+	 ngi_object_theme_set(ng->o_bg,	  "e/modules/itask-ng/bg_top");
 	 ngi_object_theme_set(ng->o_frame,"e/modules/itask-ng/frame_top");
 	 ngi_object_theme_set(ng->o_label,"e/modules/itask-ng/label_top");
          break;
 
       case E_GADCON_ORIENT_LEFT:
-	 ngi_object_theme_set(ng->o_bg,	"e/modules/itask-ng/bg_left");
+	 ngi_object_theme_set(ng->o_bg,	  "e/modules/itask-ng/bg_left");
 	 ngi_object_theme_set(ng->o_frame,"e/modules/itask-ng/frame_left");
 	 ngi_object_theme_set(ng->o_label,"e/modules/itask-ng/label_left");
          break;
 
       case E_GADCON_ORIENT_RIGHT:
-	 ngi_object_theme_set(ng->o_bg,	"e/modules/itask-ng/bg_right");
+	 ngi_object_theme_set(ng->o_bg,	  "e/modules/itask-ng/bg_right");
 	 ngi_object_theme_set(ng->o_frame,"e/modules/itask-ng/frame_right");
 	 ngi_object_theme_set(ng->o_label,"e/modules/itask-ng/label_right");
          break;
@@ -1656,7 +1656,7 @@ _ngi_redraw(Ng *ng)
            }
          else
            {
-              pos = pos2 + 1.0;
+              pos = pos2 + ng->opt.item_spacing;
            }
 
          _ngi_zoom_function(ng, it->pos + ng->size/2 - ng->pos, &pos2);
