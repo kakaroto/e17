@@ -18,7 +18,7 @@
      { \
         if (!azy_client_call_checker(cli, err, ret, X, __PRETTY_FUNCTION__)) \
           { \
-             printf("%s\n", azy_content_error_message_get(err)); \
+             /* printf("%s\n", azy_content_error_message_get(err)); \ */ \
              exit(1); \
           } \
      } while (0)
@@ -110,6 +110,23 @@ _T_Test1_getAllArrays_ret(Azy_Client *client __UNUSED__, Azy_Content *content, v
 }
 
 static Eina_Error
+_T_Test2_suspend_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *retval)
+{
+   const char *ret;
+ 
+   if (azy_content_error_is_set(content))
+     {
+        printf("Error encountered: %s\n", azy_content_error_message_get(content));
+        azy_client_close(client);
+        ecore_main_loop_quit();
+        return azy_content_error_code_get(content);
+     }
+   ret = retval;
+   printf("%s: Success? %s! %s\n", __PRETTY_FUNCTION__, ret ? "YES" : "NO", ret ? ret : "");
+   return AZY_ERROR_NONE;
+}
+
+static Eina_Error
 _T_Test2_auth_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *retval)
 {
    Eina_Bool ret;
@@ -175,6 +192,9 @@ connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
    ret = T_Test1_getAllArrays(cli, err, NULL);
    CALL_CHECK(_T_Test1_getAllArrays_ret);
 
+   ret = T_Test2_suspend(cli, err, NULL);
+   CALL_CHECK(_T_Test2_suspend_ret);
+
    ret = T_Test2_auth(cli, "name", "pass", err, NULL);
    CALL_CHECK(_T_Test2_auth_ret);
 
@@ -195,13 +215,8 @@ connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
         }
       azy_value_struct_member_set(struc, "test", azy_value_int_new(100));
       azy_content_param_add(content, struc);
-      ret = azy_client_call(cli, content, AZY_NET_TRANSPORT_JSON, (Azy_Content_Cb)azy_value_to_T_Struct);
-           if (!azy_client_call_checker(cli, err, ret, _T_Test1_undefined_ret, __PRETTY_FUNCTION__)) 
-          { 
-             printf("%s\n", azy_content_error_message_get(err)); 
-             exit(1); 
-          } 
-   //   CALL_CHECK(_T_Test1_undefined_ret);
+      ret = azy_client_call(cli, content, AZY_NET_TRANSPORT_JSON, NULL);
+      CALL_CHECK(_T_Test1_undefined_ret);
       azy_content_free(content);
    }
 

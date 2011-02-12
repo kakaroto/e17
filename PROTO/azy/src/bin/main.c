@@ -1221,6 +1221,9 @@ gen_server_impl(Azy_Server_Module *s)
         EL(1, "if (azy_content_error_is_set(content))");
         EL(2, "goto out;");
         NL;
+        EL(1, "if (azy_server_module_events_suspended_get(module))");
+        EL(2, "return EINA_TRUE;");
+        NL;
         EL(1, "azy_return_value = %s(azy_return_module);", method->return_type->march_name);
         EL(1, "if (!azy_return_value)");
         EL(1, "{");

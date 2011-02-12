@@ -27,6 +27,7 @@ The following modules exist:
 @li @ref Azy_Rss_Item
 @li @ref Azy_Server
 @li @ref Azy_Server_Module
+@li @ref Azy_Server_Module_Advanced
 
 @verbatim
 Pants

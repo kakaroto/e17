@@ -8,6 +8,21 @@
 #include "T_SQL.azy_server.h"
 #endif
 
+Eina_Bool
+server_suspend(Azy_Server_Module *m)
+{
+   Azy_Value *v;
+   Azy_Content *content;
+
+   if (!azy_server_module_active_get(m)) return EINA_FALSE;
+   v = azy_value_string_new(eina_stringshare_add("that was crazy!"));
+   content = azy_server_module_content_get(m);
+   azy_content_retval_set(content, v);
+   
+   azy_server_module_events_resume(m);
+   return EINA_FALSE;
+}
+
 int
 main(void)
 {

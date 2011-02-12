@@ -40,7 +40,11 @@
 Azy_Net_Data *
 azy_server_module_recv_get(Azy_Server_Module *module)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(module, NULL);
+   if (!AZY_MAGIC_CHECK(module, AZY_MAGIC_SERVER_MODULE))
+     {
+        AZY_MAGIC_FAIL(module, AZY_MAGIC_SERVER_MODULE);
+        return NULL;
+     }
    return &module->recv;
 }
 
@@ -57,7 +61,11 @@ azy_server_module_recv_get(Azy_Server_Module *module)
 void *
 azy_server_module_data_get(Azy_Server_Module *module)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(module, NULL);
+   if (!AZY_MAGIC_CHECK(module, AZY_MAGIC_SERVER_MODULE))
+     {
+        AZY_MAGIC_FAIL(module, AZY_MAGIC_SERVER_MODULE);
+        return NULL;
+     }
 
    return module->data;
 }
@@ -74,10 +82,34 @@ azy_server_module_data_get(Azy_Server_Module *module)
 Azy_Net *
 azy_server_module_net_get(Azy_Server_Module *module)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(module, NULL);
+   if (!AZY_MAGIC_CHECK(module, AZY_MAGIC_SERVER_MODULE))
+     {
+        AZY_MAGIC_FAIL(module, AZY_MAGIC_SERVER_MODULE);
+        return NULL;
+     }
    EINA_SAFETY_ON_NULL_RETURN_VAL(module->client, NULL);
 
    return module->client->net;
+}
+
+/**
+ * @brief Return the #Azy_Content object of the current module's connection
+ *
+ * This function is used to return the current module's return content object,
+ * allowing manipulation of the return value.
+ * @note This should only be used on a suspended module.
+ * @param module The server module (NOT #NULL)
+ * @return The #Azy_Content object
+ */
+Azy_Content *
+azy_server_module_content_get(Azy_Server_Module *module)
+{
+   if (!AZY_MAGIC_CHECK(module, AZY_MAGIC_SERVER_MODULE))
+     {
+        AZY_MAGIC_FAIL(module, AZY_MAGIC_SERVER_MODULE);
+        return NULL;
+     }
+   return module->content;
 }
 
 /**
@@ -503,6 +535,24 @@ azy_server_module_send(Azy_Server_Module  *module,
 error:
    eina_strbuf_free(header);
    return EINA_TRUE;
+}
+
+/**
+ * @brief Return the state of an #Azy_Server_Module object
+ * The return value of this function represents the connection state of the associated client.
+ * @param module The module (NOT #NULL)
+ * @return EINA_TRUE if the client is connected, else EINA_FALSE
+ */
+Eina_Bool
+azy_server_module_active_get(Azy_Server_Module *module)
+{
+   if (!AZY_MAGIC_CHECK(module, AZY_MAGIC_SERVER_MODULE))
+     {
+        AZY_MAGIC_FAIL(module, AZY_MAGIC_SERVER_MODULE);
+        return EINA_FALSE;
+     }
+
+   return !module->client->dead;
 }
 
 /** @} */

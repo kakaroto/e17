@@ -145,6 +145,7 @@ _azy_server_module_new(Azy_Server_Module_Def *def,
 
    s->def = def;
    s->client = client;
+   s->run_method = EINA_TRUE;
 
    AZY_MAGIC_SET(s, AZY_MAGIC_SERVER_MODULE);
    if (s->def->init && !s->def->init(s))
@@ -217,8 +218,6 @@ _azy_server_client_method_run(Azy_Server_Client *client,
 {
    Azy_Server_Module *module = NULL;
    Azy_Server_Module_Method *method;
-   Eina_Bool retval = EINA_FALSE;
-   Eina_Bool run_method = EINA_TRUE;
    Azy_Net *new;
    const char *module_name;
 
@@ -236,7 +235,7 @@ _azy_server_client_method_run(Azy_Server_Client *client,
 
    INFO("Running RPC for %s", content->method);
    /* get Azy_Server_Module object for current connection and given module name */
-   if (!(module_name = azy_content_module_name_get(content, client->net->http.req.http_path)))
+   if (!(module_name = azy_content_module_name_get(content, client->current->http.req.http_path)))
      {
         azy_content_error_faultmsg_set(content, -1, "Undefined module name.");
         return EINA_FALSE;
@@ -269,22 +268,32 @@ _azy_server_client_method_run(Azy_Server_Client *client,
    module->content = content;
    method = _azy_server_module_method_find(module, azy_content_method_get(content));
 
-   new = azy_net_new(module->client->net->conn);
-   new->server_client = EINA_TRUE;
-   if (module->def->pre)
-     run_method = module->def->pre(module, new);
-
-   /* grab the req path before it gets freed */
-   new->http.req.http_path = module->client->net->http.req.http_path;
-   module->client->net->http.req.http_path = NULL;
-   
-   azy_net_free(module->client->net);
-   module->client->net = new;
-
-   if (run_method)
+   switch (module->state)
      {
+      case AZY_SERVER_MODULE_STATE_INIT:
+        new = azy_net_new(module->client->current->conn);
+        new->server_client = EINA_TRUE;
+        if (module->def->pre)
+          module->run_method = module->def->pre(module, new);
+
+        /* grab the req path before it gets freed */
+        new->http.req.http_path = module->client->current->http.req.http_path;
+        module->client->current->http.req.http_path = NULL;
+        new->type = module->client->current->type;
+        new->transport = module->client->current->transport;
+        
+        azy_net_free(module->client->current);
+        module->client->current = new;
+
+        module->state = AZY_SERVER_MODULE_STATE_PRE;
+        if (module->suspend) return EINA_TRUE;
+
+      case AZY_SERVER_MODULE_STATE_PRE:
+        if (!module->run_method)
+          goto out;
+           
         if (method)
-          retval = method->method(module, content);
+          client->resume_ret = method->method(module, content);
         else if (module->def->fallback)
           {
              if (module->def->fallback(module, content))
@@ -294,15 +303,33 @@ _azy_server_client_method_run(Azy_Server_Client *client,
                }
              else if (!azy_content_error_is_set(content))
                azy_content_error_faultmsg_set(content, -1, "Method %s not found in %s module.", azy_content_method_get(content), module->def->name);
+             client->resume_ret = EINA_FALSE;
           }
         else
-          azy_content_error_faultmsg_set(content, -1, "Method %s not found in %s module.", azy_content_method_get(content), module->def->name);
+          {
+             azy_content_error_faultmsg_set(content, -1, "Method %s not found in %s module.", azy_content_method_get(content), module->def->name);
+             client->resume_ret = EINA_FALSE;
+          }
 
+        module->state = AZY_SERVER_MODULE_STATE_METHOD;
+        if (module->suspend) return EINA_TRUE;
+      case AZY_SERVER_MODULE_STATE_METHOD:
+      case AZY_SERVER_MODULE_STATE_ERR:
         if (module->def->post)
-          retval = module->def->post(module, content);
+          client->resume_ret = module->def->post(module, content);
+
+        module->state = AZY_SERVER_MODULE_STATE_POST;
+        if (module->suspend) return EINA_TRUE;
+      case AZY_SERVER_MODULE_STATE_POST:
+      default:
+        break;
      }
+out:
+   module->state = AZY_SERVER_MODULE_STATE_INIT;
    module->content = NULL;
-   return retval;
+   module->run_method = EINA_TRUE;
+   client->resume_rpc = NULL;
+   return client->resume_ret;
 }
 
 static void
@@ -344,6 +371,8 @@ _azy_server_client_free(Azy_Server_Client *client)
         AZY_MAGIC_FAIL(client, AZY_MAGIC_SERVER_CLIENT);
         return;
      }
+   client->dead = EINA_TRUE;
+   if (client->suspend || client->resume) return;
    AZY_MAGIC_SET(client, AZY_MAGIC_NONE);
    ecore_con_client_data_set(client->net->conn, NULL);
 
@@ -351,6 +380,8 @@ _azy_server_client_free(Azy_Server_Client *client)
      _azy_server_module_free(s, EINA_TRUE);
    azy_net_free(client->net);
    client->net = NULL;
+   if (client->current) azy_net_free(client->current);
+   client->current = NULL;
    if (client->session_id)
      eina_stringshare_del(client->session_id);
 
@@ -389,7 +420,6 @@ static Eina_Bool
 _azy_server_client_get_put(Azy_Server_Client *client)
 {
    Eina_List *l;
-   Eina_Bool run_method = EINA_TRUE;
    Azy_Server_Module *module = NULL;
    Azy_Server_Module_Def *def;
    Azy_Net *net;
@@ -397,24 +427,22 @@ _azy_server_client_get_put(Azy_Server_Client *client)
    Azy_Server_Module_Content_Cb fallback = NULL;
 
    DBG("(client=%p)", client);
-
    /* for each available module type, check if it has download hook */
    EINA_LIST_FOREACH(client->server->module_defs, l, def)
      {
-        if ((client->net->type == AZY_NET_TYPE_GET) && def->download)
+        if ((client->current->type == AZY_NET_TYPE_GET) && def->download)
           {
              cb = def->download;
              break;
           }
-        if ((client->net->type == AZY_NET_TYPE_PUT) && def->upload)
+        if ((client->current->type == AZY_NET_TYPE_PUT) && def->upload)
           {
              cb = def->upload;
              break;
           }
         if (def->fallback) fallback = def->fallback;
      }
-   net = azy_net_new(client->net->conn);
-   net->server_client = EINA_TRUE;
+
    if (cb)
      {
         Azy_Server_Module *existing_module;
@@ -422,49 +450,38 @@ _azy_server_client_get_put(Azy_Server_Client *client)
         /* check if module exists already */
         EINA_LIST_FOREACH(client->modules, l, existing_module)
           if (existing_module->def == def)
-            module = existing_module;
+            {
+               module = existing_module;
+               break;
+            }
 
-        /* it's not, create it now */
         if (!module)
           {
              module = _azy_server_module_new(def, client);
              client->modules = eina_list_append(client->modules, module);
+             if (module->suspend) return EINA_TRUE;
           }
-        if (def->pre)
-          run_method = def->pre(module, net);
-
-        module->recv.data = client->net->buffer;
-        module->recv.size = client->net->size;
-        client->net->buffer = NULL; /* prevent buffer from being freed */
      }
-
-   /* grab the req path before it gets freed */
-   net->http.req.http_path = client->net->http.req.http_path;
-   client->net->http.req.http_path = NULL;
    
-   azy_net_free(client->net);
-   client->net = net;
-
-
-   if (cb && run_method)
-     {
-        cb(module);
-        if (module->def->post)
-          module->def->post(module, NULL);
-     }
-   else if (fallback)
-     {
-        if (!fallback(module, NULL))
-          ERR("Fallback did not return value.");
-     }
-   else
+   if ((!module) || (module->state == AZY_SERVER_MODULE_STATE_ERR))
      {
         Azy_Net_Data data;
+not_impl:
+        net = azy_net_new(client->current->conn);
+        net->server_client = EINA_TRUE;
 
+        /* grab the req path before it gets freed */
+        net->http.req.http_path = client->current->http.req.http_path;
+        client->current->http.req.http_path = NULL;
+        net->type = module->client->current->type;
+        net->transport = module->client->current->transport;
+   
+        azy_net_free(client->current);
+        client->current = net;
         net->http.res.http_code = 501;
         net->http.res.http_msg = azy_net_http_msg_get(501);
         azy_net_header_set(net, "Content-Type", "text/plain");
-        if (client->net->type == AZY_NET_TYPE_GET)
+        if (client->current->type == AZY_NET_TYPE_GET)
           {
              data.data = (unsigned char *)"Download hook is not implemented.";
              data.size = 31;
@@ -475,9 +492,60 @@ _azy_server_client_get_put(Azy_Server_Client *client)
              data.size = 31;
           }
         _azy_server_client_send(client, &data, NULL);
+        if (module && module->recv.data) free(module->recv.data);
+        if (module)
+          module->state = AZY_SERVER_MODULE_STATE_INIT;
+        return EINA_TRUE;
      }
-   if (module->recv.data) free(module->recv.data);
-   return ECORE_CALLBACK_RENEW;
+
+   switch (module->state)
+     {
+      case AZY_SERVER_MODULE_STATE_INIT:
+        net = azy_net_new(client->current->conn);
+        net->server_client = EINA_TRUE;
+        if (def->pre)
+          module->run_method = def->pre(module, net);
+
+        module->recv.data = client->current->buffer;
+        module->recv.size = client->current->size;
+        client->current->buffer = NULL; /* prevent buffer from being freed */
+
+        /* grab the req path before it gets freed */
+        net->http.req.http_path = client->current->http.req.http_path;
+        client->current->http.req.http_path = NULL;
+        net->type = module->client->current->type;
+        net->transport = module->client->current->transport;
+        
+        azy_net_free(client->current);
+        client->current = net;
+        
+        module->state = AZY_SERVER_MODULE_STATE_PRE;
+        if (module->suspend) return EINA_TRUE;
+        
+      case AZY_SERVER_MODULE_STATE_PRE:
+           if (cb && module->run_method)
+             client->resume_ret = cb(module);
+           else
+             client->resume_ret = fallback(module, NULL);
+                
+            module->state = client->resume_ret ? AZY_SERVER_MODULE_STATE_METHOD : AZY_SERVER_MODULE_STATE_ERR;
+            if (module->suspend) return EINA_TRUE;
+
+      case AZY_SERVER_MODULE_STATE_METHOD:
+              if (!client->resume_ret) goto not_impl; /* line 444ish (above) */
+              if (module->def->post)
+                client->resume_ret = module->def->post(module, NULL);
+                
+              module->state = AZY_SERVER_MODULE_STATE_POST;
+              if (module->suspend) return EINA_TRUE;
+      
+      default:
+        if (module->recv.data) free(module->recv.data);
+        module->recv.data = NULL;
+     }
+   module->run_method = EINA_TRUE;
+   module->state = AZY_SERVER_MODULE_STATE_INIT;
+   return client->resume_ret;
 }
 
 static void
@@ -488,7 +556,7 @@ _azy_server_client_send(Azy_Server_Client *client,
    Eina_Strbuf *header;
    Azy_Net *net;
 
-   net = client->net;
+   net = client->current;
 
    DBG("(client=%p, data=%p, content=%p)", client, data, content);
    if (!ecore_con_client_connected_get(net->conn))
@@ -524,8 +592,7 @@ _azy_server_client_send(Azy_Server_Client *client,
         azy_net_header_set(net, "Set-Cookie", idstr);
      }
 
-   if (!net->type)
-     net->type = AZY_NET_TYPE_RESPONSE;
+   net->type = AZY_NET_TYPE_RESPONSE;
    if (!net->http.content_length)
      {
         if (content && content->length)
@@ -562,7 +629,6 @@ _azy_server_client_send(Azy_Server_Client *client,
    if (net->http.version == 0)
      {
         INFO("Disconnecting for HTTP/1.0 compliance");
-        ecore_con_client_flush(net->conn);
         ecore_con_client_del(net->conn);
      }
 
@@ -577,20 +643,28 @@ _azy_server_client_rpc(Azy_Server_Client *client,
    Azy_Content *content;
    
    DBG("(client=%p)", client);
-   content = azy_content_new(NULL);
+   if (client->resume_rpc)
+     content = client->resume_rpc;
+   else
+     content = azy_content_new(NULL);
    EINA_SAFETY_ON_NULL_RETURN_VAL(content, EINA_FALSE);
 
-   if ((!azy_content_unserialize_request(content, t, (char *)client->net->buffer, client->net->size)) &&
+   if (!client->resume_rpc)
+     if ((!azy_content_unserialize_request(content, t, (char *)client->current->buffer, client->current->size)) &&
         (!content->faultcode))
-     azy_content_error_faultmsg_set(content, -1, "Unserialize request failure.");
-   else
+       azy_content_error_faultmsg_set(content, -1, "Unserialize request failure.");
+
+   client->resume_rpc = content;
+   if (!content->error_set)
      _azy_server_client_method_run(client, content);
 
+   if (client->suspend) return EINA_TRUE;
    azy_content_serialize_response(content, t);
-   azy_net_transport_set(client->net, t);
+   azy_net_transport_set(client->current, t);
    _azy_server_client_send(client, NULL, content);
 
    azy_content_free(content);
+   client->resume_rpc = NULL;
 
    return EINA_TRUE;
 }
@@ -598,49 +672,70 @@ _azy_server_client_rpc(Azy_Server_Client *client,
 static Eina_Bool
 _azy_server_client_handler_request(Azy_Server_Client *client)
 {
+   Azy_Net *new;
+   
    DBG("(client=%p)", client);
-
    client->handled = EINA_TRUE;
-
-   switch (client->net->type)
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(client->dead, EINA_TRUE);
+   if (client->suspend)
+     {
+        INFO("Storing new call for suspended client");
+        client->suspended_nets = eina_list_append(client->suspended_nets, client->net);
+        client->net = azy_net_new(client->net->conn);
+        client->net->server_client = EINA_TRUE;
+        return EINA_TRUE;
+     }
+   if (client->resume)
+     client->current = client->resume;
+   else
+     {
+        new = azy_net_new(client->net->conn);
+        new->server_client = EINA_TRUE;
+        client->current = client->net;
+        client->net = new;
+     }
+   
+   switch (client->current->type)
      {
       case AZY_NET_TYPE_GET:
       case AZY_NET_TYPE_PUT:
         _azy_server_client_get_put(client);
+        if (!client->suspend)
+          {
+             azy_net_free(client->current);
+             client->current = NULL;
+             client->resume_ret = EINA_FALSE;
+          }
         return ECORE_CALLBACK_RENEW;
       case AZY_NET_TYPE_POST:
-        client->net->transport = azy_events_net_transport_get(azy_net_header_get(client->net, "content-type"));
-        switch (client->net->transport)
+        if (!client->current->transport)
+          client->current->transport = azy_events_net_transport_get(azy_net_header_get(client->current, "content-type"));
+        switch (client->current->transport)
           {
            case AZY_NET_TRANSPORT_JSON:
            case AZY_NET_TRANSPORT_XML:
            /*case AZY_NET_TRANSPORT_EET:*/
-             _azy_server_client_rpc(client, client->net->transport);
-             break;
+             _azy_server_client_rpc(client, client->current->transport);
+             if (!client->suspend)
+               {
+                  azy_net_free(client->current);
+                  client->current = NULL;
+                  client->resume_ret = EINA_FALSE;
+               }
+             return ECORE_CALLBACK_RENEW;
 
            case AZY_NET_TRANSPORT_TEXT:
            case AZY_NET_TRANSPORT_HTML:
            default:
              /* FIXME: this isn't supported yet but probably should be somehow? */
-             goto error;
+             break;
 
           }
-        break;
       default:
-        goto error;
+        break;
      }
-
-   { /* reset net object for next request if pipelining */
-      Azy_Net *net;
-      net = azy_net_new(client->net->conn);
-      net->server_client = EINA_TRUE;
-      azy_net_free(client->net);
-      client->net = net;
-   }
    
-   return ECORE_CALLBACK_RENEW;
-error:
-   azy_events_connection_kill(client->net->conn, EINA_TRUE, error501);
+   azy_events_connection_kill(client->current->conn, EINA_TRUE, error501);
    _azy_server_client_free(client);
    return ECORE_CALLBACK_RENEW;
 }
@@ -851,3 +946,113 @@ azy_server_client_handler_add(Azy_Server                *server,
    return ECORE_CALLBACK_RENEW;
 }
 
+/**
+ * @defgroup Azy_Server_Module_Advanced Advanced Server Module Functions
+ * @brief Advanced functions which affect #Azy_Server_Module objects
+ * @{
+ */
+/**
+ * @brief Resume a suspended client's activities
+ * This function is used on a suspended client to resume it,
+ * allowing the current and subsequent transmissions to begin processing again.
+ * @param module The suspended module (NOT #NULL)
+ */
+void
+azy_server_module_events_resume(Azy_Server_Module *module)
+{
+   Azy_Server_Client *client;
+   Azy_Net *net;
+   
+   DBG("(module=%p)", module);
+   
+   if (!AZY_MAGIC_CHECK(module, AZY_MAGIC_SERVER_MODULE))
+     {
+        AZY_MAGIC_FAIL(module, AZY_MAGIC_SERVER_MODULE);
+        return;
+     }
+   client = module->client;
+   if (client->dead)
+     {
+        azy_net_free(client->resume);
+        client->resume = NULL;
+        if (client->resume_rpc) azy_content_free(client->resume_rpc);
+        client->suspend = EINA_FALSE;
+        EINA_LIST_FREE(client->suspended_nets, net)
+          azy_net_free(net);
+        _azy_server_client_free(module->client);
+        return;
+     }
+   if (!module->suspend)
+     {
+        WARN("Module is currently active, this function has no effect!");
+        return;
+     }
+   
+   module->suspend = EINA_FALSE;
+   client->suspend = EINA_FALSE;
+   _azy_server_client_handler_request(client);
+   if (client->suspend) return;
+   EINA_LIST_FREE(client->suspended_nets, net)
+     {
+        client->resume = net;
+        _azy_server_client_handler_request(client);
+        if (client->suspend) return;
+        client->resume_ret = EINA_FALSE;
+     }
+  
+   client->resume = NULL;
+   if (client->dead)
+     _azy_server_client_free(client);
+}
+
+/**
+ * @brief Suspend an active client's activity
+ * This function allows for a module (and therefore its client)
+ * to be suspended, preventing any further action from occurring until
+ * azy_server_module_events_resume is called on it. Since RPC is synchronous
+ * by nature, all subsequent methods sent by the client will be stored until
+ * the client is resumed.
+ * @param module The module
+ */
+void
+azy_server_module_events_suspend(Azy_Server_Module *module)
+{
+   DBG("(module=%p)", module);
+   
+   if (!AZY_MAGIC_CHECK(module, AZY_MAGIC_SERVER_MODULE))
+     {
+        AZY_MAGIC_FAIL(module, AZY_MAGIC_SERVER_MODULE);
+        return;
+     }
+   EINA_SAFETY_ON_TRUE_RETURN(module->client->dead);
+   if (module->suspend)
+     {
+        WARN("Module is currently suspended, this function has no effect!");
+        return;
+     }
+
+
+   module->suspend = EINA_TRUE;
+   module->client->suspend = EINA_TRUE;
+   module->client->resume = module->client->current;
+}
+
+/**
+ * @brief Return the suspend state of a module
+ * Use this function to determine whether a module is currently suspended
+ * @param module The module (NOT #NULL)
+ * @return EINA_TRUE if the module is suspended, else EINA_FALSE
+ */
+Eina_Bool
+azy_server_module_events_suspended_get(Azy_Server_Module *module)
+{
+   DBG("(module=%p)", module);
+   
+   if (!AZY_MAGIC_CHECK(module, AZY_MAGIC_SERVER_MODULE))
+     {
+        AZY_MAGIC_FAIL(module, AZY_MAGIC_SERVER_MODULE);
+        return EINA_FALSE;
+     }
+   return module->suspend;
+}
+/** @} */

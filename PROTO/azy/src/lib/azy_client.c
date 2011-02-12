@@ -418,7 +418,7 @@ azy_client_callback_free_set(Azy_Client *client,
  * @param client The client (NOT #NULL)
  * @param content The content containing the method name and parameters (NOT #NULL)
  * @param transport The content-type (xml/json/etc) to use
- * @param cb The deserialization callback to use for the response (NOT #NULL)
+ * @param cb The deserialization callback to use for the response
  * @return The #Azy_Client_Call_Id of the transmission, to be used with azy_client_callback_set,
  * or 0 on failure
  */
@@ -439,7 +439,6 @@ azy_client_call(Azy_Client       *client,
         return 0;
      }
    EINA_SAFETY_ON_NULL_RETURN_VAL(client->net, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(cb, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(content, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(content->method, 0);
 

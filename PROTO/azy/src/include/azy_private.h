@@ -196,15 +196,31 @@ typedef struct Azy_Server_Client
    Ecore_Event_Handler *data;
 
    Azy_Net    *net;
-   Azy_Net    *send;
+   Azy_Net    *current;
    Azy_Server *server;
    Eina_List   *modules;
 
    Eina_Bool handled : 1;
+   Eina_Bool dead : 1;
+   
+   Eina_Bool suspend : 1;
+   Eina_List *suspended_nets; /* Azy_Net* */
+   Azy_Net *resume;
+   Azy_Content *resume_rpc;
+   Eina_Bool resume_ret : 1;
 
    const char          *session_id;
    const char          *ip;
 } Azy_Server_Client;
+
+typedef enum
+{
+   AZY_SERVER_MODULE_STATE_INIT,
+   AZY_SERVER_MODULE_STATE_PRE,
+   AZY_SERVER_MODULE_STATE_METHOD,
+   AZY_SERVER_MODULE_STATE_POST,
+   AZY_SERVER_MODULE_STATE_ERR
+} Azy_Server_Module_State;
 
 struct Azy_Server_Module
 {
@@ -213,8 +229,10 @@ struct Azy_Server_Module
    Azy_Server_Module_Def *def;
    Azy_Content           *content;
    Azy_Server_Client     *client;
-   double                 last_used;
    Azy_Net_Data           recv;
+   Eina_Bool              suspend : 1;
+   Eina_Bool              run_method : 1;
+   Azy_Server_Module_State state;
 };
 
 struct Azy_Value

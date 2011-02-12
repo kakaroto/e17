@@ -363,8 +363,7 @@ Azy_Module Test1
    __fallback__
    <% /* Eina_Bool (*Azy_Server_Module_Content_Cb)(Azy_Server_Module *module, Azy_Content *content) */
      (void)module;
-     printf("Unknown method called %s!\n", azy_content_method_full_get(content));
-     azy_content_retval_set(content, azy_value_bool_new(EINA_TRUE)); /**< retval must be explicitly set here */
+     azy_content_error_faultmsg_set(content, -1, "Unknown method called: %s!", azy_content_method_full_get(content));
      return EINA_TRUE; /**< fallback will use the default handler if #EINA_FALSE is returned;
                          * the default handler does almost exactly this
                          */
@@ -507,6 +506,13 @@ Azy_Module Test2
    string getUsername()
    <%
      return eina_stringshare_ref(data_->username);
+   %>
+
+   string suspend()
+   <%
+     Eina_Bool server_suspend(Azy_Server_Module *m);
+     ecore_timer_add(5.0, (Ecore_Task_Cb)server_suspend, module);
+     azy_server_module_events_suspend(module);
    %>
 }
 
