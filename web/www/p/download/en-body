@@ -171,6 +171,24 @@
 
   <td class='main'>
    <div class="main">
+    <p><h2>Distributions</h2></p>
+    <p>Some Linux distributions are Enlightenment-centric. Here is a
+    list:
+    </p>
+    <p>
+     <ul>
+      <li><a href=http://bodhilinux.com/>Bodhi</a></li>
+      <li><a href=http://www.elivecd.org/>Elive</a></li>
+      <li><a href=http://macpup.org/>Macpup</a></li>
+      <li><a href=http://moonos.org/>MoonOS</a></li>
+      <li><a href=http://opengeu.intilinux.com/>OpenGEU</a></li>
+      <li><a href=http://www.pentoo.ch/>Pentoo</a></li>
+      <li><a href=http://www.pclinuxos.com/>PCLinuxOS</a></li>
+      <li><a href=http://www.sabayon.org/>Sabayon</a></li>
+      <li><a href=http://www.unity-linux.hu/unite17/>Unite17</a></li>
+      <li><a href=http://www.yellowdoglinux.com/>Yellow Dog</a></li>
+     </ul>
+    </p>
    </div>
   </td>
    
