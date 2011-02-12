@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -379,15 +379,11 @@ ECreateWindowVD(Win parent, int x, int y, int w, int h,
 }
 #endif
 
-#endif /* USE_COMPOSITE */
-
 Win
 ECreateObjectWindow(Win parent, int x, int y, int w, int h, int saveunder,
 		    int type, Win cwin)
 {
    Win                 win;
-
-#if USE_COMPOSITE
    int                 argb = 0;
 
    switch (type)
@@ -415,14 +411,20 @@ ECreateObjectWindow(Win parent, int x, int y, int w, int h, int saveunder,
       win = ECreateArgbWindow(parent, x, y, w, h, cwin);
    else
       win = ECreateWindow(parent, x, y, w, h, saveunder);
-#else
-   win = ECreateWindow(parent, x, y, w, h, saveunder);
-   type = 0;
-   cwin = NULL;
-#endif
 
    return win;
 }
+
+#else
+
+Win
+ECreateObjectWindow(Win parent, int x, int y, int w, int h, int saveunder,
+		    int type __UNUSED__, Win cwin __UNUSED__)
+{
+   return ECreateWindow(parent, x, y, w, h, saveunder);
+}
+
+#endif /* USE_COMPOSITE */
 
 Win
 ECreateClientWindow(Win parent, int x, int y, int w, int h)

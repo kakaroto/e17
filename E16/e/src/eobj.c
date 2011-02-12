@@ -422,23 +422,28 @@ EobjResize(EObj * eo, int w, int h)
    EobjMoveResize(eo, EobjGetX(eo), EobjGetY(eo), w, h);
 }
 
+#if USE_COMPOSITE
 void
 EobjDamage(EObj * eo)
 {
-#if USE_COMPOSITE
    if (eo->cmhook)
       ECompMgrWinDamageArea(eo, 0, 0, 0, 0);
-#else
-   eo = NULL;
-#endif
 }
+#else
+void
+EobjDamage(EObj * eo __UNUSED__)
+{
+}
+#endif
 
 void
 EobjReparent(EObj * eo, EObj * dst, int x, int y)
 {
+#if USE_COMPOSITE
    int                 move;
 
    move = x != EobjGetX(eo) || y != EobjGetY(eo);
+#endif
 
    EReparentWindow(EobjGetWin(eo), EobjGetWin(dst), x, y);
    if (dst->type == EOBJ_TYPE_DESK)
@@ -536,32 +541,35 @@ EobjShapeUpdate(EObj * eo, int propagate)
 #endif
 }
 
+#if USE_COMPOSITE
 Pixmap
 EobjGetPixmap(const EObj * eo)
 {
-   Pixmap              pmap = None;
+   return ECompMgrWinGetPixmap(eo);
+}
+#else
+Pixmap
+EobjGetPixmap(const EObj * eo __UNUSED__)
+{
+   return None;
+}
+#endif
 
 #if USE_COMPOSITE
-   pmap = ECompMgrWinGetPixmap(eo);
-#else
-   eo = NULL;
-#endif
-   return pmap;
-}
-
 void
 EobjChangeOpacity(EObj * eo, unsigned int opacity)
 {
-#if USE_COMPOSITE
    if (eo->opacity == opacity)
       return;
    eo->opacity = opacity;
    ECompMgrWinChangeOpacity(eo, opacity);
-#else
-   eo = NULL;
-   opacity = 0;
-#endif
 }
+#else
+void
+EobjChangeOpacity(EObj * eo __UNUSED__, unsigned int opacity __UNUSED__)
+{
+}
+#endif
 
 #if USE_COMPOSITE
 void

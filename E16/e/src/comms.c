@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2009 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -233,6 +233,7 @@ ClientHandleComms(XClientMessageEvent * ev)
 
    if (!IpcExecReply(s, ClientIpcReply, c))
      {
+#if ENABLE_DIALOGS
 	const char         *s1, *s2;
 
 	s1 = (c->clientname) ? c->clientname : "UNKNOWN";
@@ -241,6 +242,7 @@ ClientHandleComms(XClientMessageEvent * ev)
 		 _("Received Unknown Client Message.\n"
 		   "Client Name:    %s\n" "Client Version: %s\n"
 		   "Message Contents:\n\n" "%s\n"), s1, s2, s);
+#endif
 	SoundPlay(SOUND_ERROR_IPC);
      }
 

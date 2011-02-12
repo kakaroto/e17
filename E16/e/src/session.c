@@ -458,15 +458,18 @@ SessionGetInfo(EWin * ewin __UNUSED__)
 #endif
 }
 
+#if USE_SM
 void
 SetSMID(const char *smid)
 {
-#if USE_SM
    sm_client_id = Estrdup(smid);
-#else
-   smid = NULL;
-#endif /* USE_SM */
 }
+#else
+void
+SetSMID(const char *smid __UNUSED__)
+{
+}
+#endif /* USE_SM */
 
 static void
 SessionSave(int shutdown)
