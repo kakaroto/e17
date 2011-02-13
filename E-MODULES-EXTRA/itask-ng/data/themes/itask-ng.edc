@@ -11,9 +11,10 @@ images
 }
 
 collections{
+
 	group {
 		/* bg frame that keeps is not affected by 'Background
-		 * Transparency' setting. not used here.. */
+		 * Transparency' setting */
 
 		name: "e/modules/itask-ng/frame_top";
 		alias: "e/modules/itask-ng/frame_left";
@@ -28,13 +29,13 @@ collections{
 
 			/* space between screen edge and icons */
 			item: "edge_spacing"    "6";
-		
-			/* clip separator to background group 
+
+			/* clip separator to background group
 			 * change opacity with background transparency */
 			item: "clip_separator"  "1";
 		}
-	
-		parts { 
+
+		parts {
 			part {
 				name: "frame";
 				type: RECT;
@@ -43,7 +44,7 @@ collections{
 				description {
 					state: "default" 0.0;
 					color: 255 255 255 0;
-				
+
 				}
 			}
 		}
@@ -54,15 +55,30 @@ collections{
 
 		data {
 			item: "icon_spacing"    "2";
-			item: "separator_width" "8";
+			item: "separator_width" "15";
 			item: "edge_spacing"    "10";
 			item: "clip_separator"  "1";
 		}
+		parts {
+			part {
+				name: "frame";
+				type: RECT;
+				mouse_events: 0;
+
+				description {
+					state: "default" 0.0;
+					color: 255 255 255 0;
+
+				}
+			}
+		}
+
 	}
 
 	group {
 		name: "e/modules/itask-ng/bg_bottom";
 		parts {
+
 			part {
 				name: "bg";
 				mouse_events: 0;
@@ -70,12 +86,12 @@ collections{
 				description {
 					state: "default" 0.0;
 
-					rel1.offset: -25 8;
-					rel2.offset: 24 -1;
+					rel1.offset: -35 8;
+					rel2.offset: 34 3;
 
 					image {
 						normal: "itask_im0.png";
-						border: 25 25 10 4;
+						border: 26 26 10 4;
 					}
 				}
 			}
@@ -159,19 +175,19 @@ collections{
 
 	group {
 		name: "e/modules/itask-ng/separator_top";
-	
+
 		parts {
 			part {
 				name: "separator";
 				type: RECT;
 				mouse_events: 0;
-			
+
 				description {
 					state: "default" 0.0;
 					color: 182 182 182 255;
 					max: 1 999;
 					align: 0.5 0.0;
-				
+
 					rel1.offset: 0 0;
 					rel2.offset: 0 2;
 				}
@@ -194,7 +210,7 @@ collections{
 					color: 182 182 182 255;
 					max: 999 1;
 					align: 0.0 0.5;
-				
+
 					rel1.offset: -4 0;
 					rel2.offset: 3 0;
 				}
@@ -206,11 +222,11 @@ collections{
 		name: "e/modules/itask-ng/label_bottom";
 
 		parts {
-			part {      
+			part {
 				name: "label";
-				type: IMAGE;               
+				type: IMAGE;
 				mouse_events: 0;
-				clip_to: "label.clip";  
+				clip_to: "label.clip";
 
 				description {
 					state: "default" 0.0;
@@ -218,14 +234,14 @@ collections{
 					color: 0 0 0 148;
 					max: 999 26;
 
-					rel1 { 
-						to: "e.text.label"; 
-						offset: -8 -2; 
+					rel1 {
+						to: "e.text.label";
+						offset: -8 -2;
 					}
 
-					rel2 { 
-						to: "e.text.label"; 
-						offset: 4 -1; 
+					rel2 {
+						to: "e.text.label";
+						offset: 4 -1;
 					}
 
 					image {
@@ -235,11 +251,11 @@ collections{
 				}
 			}
 
-			part {      
+			part {
 				name: "label_decoration";
-				type: IMAGE;               
+				type: IMAGE;
 				mouse_events: 0;
-				clip_to: "label.clip";  
+				clip_to: "label.clip";
 
 				description {
 					state: "default" 0.0;
@@ -249,14 +265,14 @@ collections{
 					max: 11 6;
 					fixed: 1 1;
 
-					rel1 { 
-						to: "label"; 
-						offset: 0 0; 
+					rel1 {
+						to: "label";
+						offset: 0 0;
 					}
 
-					rel2 { 
-						to: "label"; 
-						offset: -1 4; 
+					rel2 {
+						to: "label";
+						offset: -1 4;
 					}
 
 					image {
@@ -265,10 +281,10 @@ collections{
 				}
 			}
 
-			part {      
+			part {
 				name: "e.text.label";
 				type: TEXT;
-				effect: SHADOW;                
+				effect: SHADOW;
 				mouse_events: 0;
 				clip_to: "label.clip";
 				scale: 1;
@@ -278,9 +294,9 @@ collections{
 					align: 0.5 0.5;
 					color: 255 255 255 255;
 					color3: 0 0 0 0;
-		
-					rel1.offset: 0 2; 
-					rel2.offset: -1 -1; 
+
+					rel1.offset: 0 2;
+					rel2.offset: -1 -1;
 
 					text {
 						text: "";
@@ -293,9 +309,9 @@ collections{
 				}
 			}
 
-			part {      
+			part {
 				name: "label.clip";
-				type: RECT;                 
+				type: RECT;
 				mouse_events: 0;
 
 				description {
@@ -304,14 +320,14 @@ collections{
 					color: 255 255 255 0;
 					min: 0 33;
 
-					rel1 { 
-						to: "e.text.label"; 
-						offset: -12 -4; 
+					rel1 {
+						to: "e.text.label";
+						offset: -12 -4;
 					}
 
-					rel2 { 
-						to: "e.text.label"; 
-						offset: 11 -1; 
+					rel2 {
+						to: "e.text.label";
+						offset: 11 -1;
 					}
 
 				}
@@ -348,11 +364,11 @@ collections{
 	group {
 		name: "e/modules/itask-ng/label_top";
 		parts {
-			part {      
+			part {
 				name: "label";
-				type: IMAGE;               
+				type: IMAGE;
 				mouse_events: 0;
-				clip_to: "label.clip";  
+				clip_to: "label.clip";
 
 				description {
 					state: "default" 0.0;
@@ -360,14 +376,14 @@ collections{
 					color: 0 0 0 148;
 					max: 999 26;
 
-					rel1 { 
-						to: "e.text.label"; 
-						offset: -8 -2; 
+					rel1 {
+						to: "e.text.label";
+						offset: -8 -2;
 					}
 
-					rel2 { 
-						to: "e.text.label"; 
-						offset: 4 -1; 
+					rel2 {
+						to: "e.text.label";
+						offset: 4 -1;
 					}
 
 					image {
@@ -377,10 +393,10 @@ collections{
 				}
 			}
 
-			part {      
+			part {
 				name: "e.text.label";
 				type: TEXT;
-				effect: SHADOW;                
+				effect: SHADOW;
 				mouse_events: 0;
 				clip_to: "label.clip";
 				scale: 1;
@@ -390,9 +406,9 @@ collections{
 					align: 0.5 0.5;
 					color: 255 255 255 255;
 					color3: 0 0 0 0;
-		
-					rel1.offset: 0 2; 
-					rel2.offset: -1 -1; 
+
+					rel1.offset: 0 2;
+					rel2.offset: -1 -1;
 
 					text {
 						text: "";
@@ -405,9 +421,9 @@ collections{
 				}
 			}
 
-			part {      
+			part {
 				name: "label.clip";
-				type: RECT;                 
+				type: RECT;
 				mouse_events: 0;
 
 				description {
@@ -416,14 +432,14 @@ collections{
 					color: 255 255 255 0;
 					min: 0 33;
 
-					rel1 { 
-						to: "e.text.label"; 
-						offset: -12 -4; 
+					rel1 {
+						to: "e.text.label";
+						offset: -12 -4;
 					}
 
-					rel2 { 
-						to: "e.text.label"; 
-						offset: 11 -1; 
+					rel2 {
+						to: "e.text.label";
+						offset: 11 -1;
 					}
 				}
 
@@ -469,19 +485,19 @@ collections{
 		alias: "e/modules/itask-ng/icon_right";
 
 		min: 32 32;
-		max: 128 128;    
+		max: 128 128;
 
-		parts {	  
+		parts {
 			part {
 				name: "icon_clip";
 				type: RECT;
 				mouse_events: 0;
-		
+
 				description {
 					state: "default" 0.0;
 					color: 255 255 255 0;
 				}
-		
+
 				// please do not set this 255 255 255 129;
 				// if a composite manager is not found the icons
 				// will be completely invisible
@@ -490,18 +506,18 @@ collections{
 					inherit: "default" 0.0;
 					/*
 					 * A minimize application is still running. consequently fading
-					 * the icon only confuses the user. The taskbar icons should 
+					 * the icon only confuses the user. The taskbar icons should
 					 * always be visible at all times, unless:
-					 * 
+					 *
 					 * a) application sends urgent signal
 					 * b) application is focused, visible on screen
-					 * 
+					 *
 					 * when this happens, the icon should advert the user
 					 * that a) its running or b) urgent
 					 */
 					color: 255 255 255 255; /* app minimized */
 				}
-		
+
 				description {
 					state: "launcher_normal" 0.0;
 					inherit: "default" 0.0;
@@ -511,8 +527,8 @@ collections{
 					 * icon equals: 255 255 255 0;
 					 */
 					color: 255 255 255 255;
-				} 
-		
+				}
+
 				description {
 					state: "taskbar_normal" 0.0;
 					inherit: "default" 0.0;
@@ -522,25 +538,25 @@ collections{
 					 * icon equals: 255 255 255 0;
 					 */
 					color: 255 255 255 255;
-				} 
-		
+				}
+
 				description {
 					state: "taskbar_urgent" 0.0;
 					inherit: "default" 0.0;
 					color: 255 180 180 255;
-				}  
-		
+				}
+
 				description {
 					state: "taskbar_focused" 0.0;
 					inherit: "default" 0.0;
 					color: 255 255 255 255;
-				} 
-		
+				}
+
 				description {
 					state: "taskbar_iconic" 0.0;
 					inherit: "default" 0.0;
 					color: 255 255 255 129;
-				} 
+				}
 			}
 
 			part {
@@ -554,8 +570,8 @@ collections{
 					aspect_preference: BOTH;
 				}
 			}
-		} 
- 
+		}
+
 		programs {
 			program {
 				name: "go_launcher_normal";
@@ -566,7 +582,7 @@ collections{
 				transition: SINUSOIDAL 0.3;
 				target: "icon_clip";
 			}
-		
+
 			program {
 				name: "go_hide";
 				signal: "e,state,item_hide";
@@ -576,7 +592,7 @@ collections{
 				transition: SINUSOIDAL 0.1;
 				target: "icon_clip";
 			}
-		
+
 			program {
 				name: "go_taskbar_normal";
 				signal: "e,state,taskbar_item_normal";
@@ -586,7 +602,7 @@ collections{
 				transition: LINEAR 0.5;
 				target: "icon_clip";
 			}
-		
+
 			program {
 				name: "go_taskbar_iconic";
 				signal: "e,state,taskbar_item_iconify";
@@ -596,7 +612,7 @@ collections{
 				transition: LINEAR 0.5;
 				target: "icon_clip";
 			}
-		
+
 			program {
 				name: "go_taskbar_focused";
 				signal: "e,state,taskbar_item_focused";
@@ -606,7 +622,7 @@ collections{
 				transition: SINUSOIDAL 0.3;
 				target: "icon_clip";
 			}
-		
+
 			program {
 				name: "go_taskbar_urgent";
 				signal: "e,state,taskbar_item_urgent";
@@ -617,7 +633,7 @@ collections{
 				target: "icon_clip";
 				after: "go_taskbar_urgent2";
 			}
-		
+
 			program {
 				name: "go_taskbar_urgent2";
 				action: STATE_SET "taskbar_normal" 0.0;
@@ -630,11 +646,11 @@ collections{
 
 	group {
 		/* These are the pulsing animation overlays taken from ibar */
-	
+
 		name: "e/modules/itask-ng/icon_over_top";
 		alias: "e/modules/itask-ng/icon_over_left";
 		alias: "e/modules/itask-ng/icon_over_right";
-		
+
 		parts {
 			part {
 				name: "icon_clip";
@@ -803,7 +819,7 @@ collections{
 				target: "background";
 				after: "go_taskbar_urgent";
 			}
-		
+
 			program {
 				name: "go_taskbar_urgent";
 				signal: "e,state,taskbar_item_urgent";
@@ -840,23 +856,23 @@ collections{
 		name: "e/modules/itask-ng/icon_bottom";
 
 		min: 32 32;
-		max: 128 128;    
+		max: 128 128;
 
-		parts {	  
+		parts {
 			part {
 				name: "icon_clip";
 				type: RECT;
 				mouse_events: 0;
-		
+
 				description {
 					state: "default" 0.0;
 					color: 255 255 255 0; /* app launched */
-		
+
 					rel1 {
 						relative: 0.0 0.0;
 						offset: -10 -20;
 					}
-		
+
 					rel2 {
 						relative: 1.0 1.0;
 						offset: 5 15;
@@ -867,36 +883,36 @@ collections{
 					inherit: "default" 0.0;
 					color: 255 255 255 255; /* app minimized */
 				}
-		
+
 				description {
 					state: "launcher_normal" 0.0;
 					inherit: "default" 0.0;
 					color: 255 255 255 255;
-				} 
-		
+				}
+
 				description {
 					state: "taskbar_normal" 0.0;
 					inherit: "default" 0.0;
 					color: 255 255 255 255;
-				} 
-		
+				}
+
 				description {
 					state: "taskbar_urgent" 0.0;
 					inherit: "default" 0.0;
 					color: 255 180 180 255;
-				}  
-		
+				}
+
 				description {
 					state: "taskbar_focused" 0.0;
 					inherit: "default" 0.0;
 					color: 255 255 255 255;
-				} 
-		
+				}
+
 				description {
 					state: "taskbar_iconic" 0.0;
 					inherit: "default" 0.0;
 					color: 255 255 255 129;
-				} 
+				}
 			}
 
 			part {
@@ -920,8 +936,8 @@ collections{
 					}
 				}
 			}
-		} 
- 
+		}
+
 		programs {
 			program {
 				name: "go_launcher_normal";
@@ -932,7 +948,7 @@ collections{
 				transition: SINUSOIDAL 0.3;
 				target: "icon_clip";
 			}
-		
+
 			program {
 				name: "go_hide";
 				signal: "e,state,item_hide";
@@ -942,7 +958,7 @@ collections{
 				transition: SINUSOIDAL 0.1;
 				target: "icon_clip";
 			}
-		
+
 			program {
 				name: "go_taskbar_normal";
 				signal: "e,state,taskbar_item_normal";
@@ -952,7 +968,7 @@ collections{
 				transition: LINEAR 0.5;
 				target: "icon_clip";
 			}
-		
+
 			program {
 				name: "go_taskbar_iconic";
 				signal: "e,state,taskbar_item_iconify";
@@ -962,7 +978,7 @@ collections{
 				transition: LINEAR 0.5;
 				target: "icon_clip";
 			}
-		
+
 			program {
 				name: "go_taskbar_focused";
 				signal: "e,state,taskbar_item_focused";
@@ -972,7 +988,7 @@ collections{
 				transition: SINUSOIDAL 0.3;
 				target: "icon_clip";
 			}
-		
+
 			program {
 				name: "go_taskbar_urgent";
 				signal: "e,state,taskbar_item_urgent";
@@ -983,7 +999,7 @@ collections{
 				target: "icon_clip";
 				after: "go_taskbar_urgent2";
 			}
-		
+
 			program {
 				name: "go_taskbar_urgent2";
 				action: STATE_SET "taskbar_normal" 0.0;
@@ -996,7 +1012,7 @@ collections{
 
 	group {
 		/* overlay copy used for reflection effect here  */
-	
+
 		name: "e/modules/itask-ng/icon_over_bottom";
 
 		parts {
@@ -1007,6 +1023,16 @@ collections{
 					visible: 0;
 					rel1.relative: 0.0 1.0;
 					rel1.offset: 0 -8;
+					/* map {
+					 * 	on: 1;
+					 * 	perspective_on: 1;
+					 * 	rotation.x: 180.0;
+					 * } */
+
+					/* perspective {
+					 * 	zplane: 100;
+					 * 	focal: 1000;
+					 * } */
 				}
 			}
 			part {
@@ -1019,22 +1045,25 @@ collections{
 					color: 242 242 242 120;
 					rel1.relative: 0.0 0.0;
 					rel2.relative: 1.0 1.0;
-					rel2.offset: 0 6;
+					rel1.offset: -4 0;
+					rel2.offset: 4 10;
 				}
 			}
 			part {
 				name: "e.swallow.content";
 				type: SWALLOW;
 				clip_to: "background";
-
+				mouse_events: 0;
 				description {
 					state: "default" 0.0;
 					color: 255 255 255 120;
-				
+
 					map {
 						on: 1;
 						rotation.center: "bottom";
-						rotation.x: 180.0;
+						rotation.x: 210.0;
+
+						/* perspective: "bottom"; */
 					}
 				}
 			}
@@ -1042,16 +1071,18 @@ collections{
 				name: "over";
 				type: RECT;
 				clip_to: "background";
+				mouse_events: 0;
 				description {
 					state: "default" 0.0;
 					color: 242 242 242 220;
-
-					rel1.offset: 0 5;
+		
+					rel1.offset: -5 -5;
+					rel2.offset: 5 0;
 					map {
 						on: 1;
-						perspective_on: 1;
 						rotation.center: "bottom";
-						rotation.x: 180.0;
+						rotation.x: 210.0;
+						/* perspective: "bottom"; */
 					}
 				}
 			}

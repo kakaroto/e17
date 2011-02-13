@@ -138,9 +138,6 @@ _ngi_gadcon_item_new(Ngi_Box *box, const char *name, Ngi_Item *after)
 
    it->label = NULL; //name;
 
-   evas_object_del(it->over);
-   it->over = NULL;
-
    if (after)
       box->items = eina_list_prepend_relative(box->items, it, after);
    else
@@ -161,6 +158,14 @@ _ngi_gadcon_item_new(Ngi_Box *box, const char *name, Ngi_Item *after)
         snprintf(buf, 256, "%s-%d", gcc->name, gcc->id);
         it->label = e_datastore_get(buf);
      }
+
+   it->o_icon2 = evas_object_image_add(it->box->ng->evas);
+   evas_object_image_source_set(it->o_icon2, it->gadcon->o_container);
+   evas_object_resize(it->o_icon2, 128, 128);
+   evas_object_image_fill_set(it->o_icon2, 0,0,128,128);
+   edje_object_part_swallow(it->over, "e.swallow.content", it->o_icon2);
+   evas_object_pass_events_set(it->o_icon2, 1);
+   evas_object_show(it->o_icon2);
 
    return it;
 }

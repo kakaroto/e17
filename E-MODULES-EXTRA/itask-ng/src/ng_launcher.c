@@ -436,6 +436,18 @@ _ngi_launcher_item_new(Ngi_Box *box, Efreet_Desktop *desktop, int instant, Ngi_I
 }
 
 static void
+_cb_moveresize(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Ngi_Item *it = data;
+   Evas_Coord w, h;
+
+   evas_object_geometry_get(it->obj, NULL, NULL, &w, &h);
+
+   evas_object_resize(it->o_icon2, w, h);
+   evas_object_image_fill_set(it->o_icon2, 0,0,w,h);
+}
+
+static void
 _ngi_launcher_item_fill(Ngi_Item *it)
 {
    ngi_item_del_icon(it);
@@ -445,10 +457,17 @@ _ngi_launcher_item_fill(Ngi_Item *it)
    evas_object_pass_events_set(it->o_icon, 1);
    evas_object_show(it->o_icon);
 
-   it->o_icon2 = e_util_desktop_icon_add(it->app, 128, it->box->ng->evas);
+   evas_object_event_callback_add(it->obj, EVAS_CALLBACK_RESIZE,
+				  _cb_moveresize, it);
+
+   it->o_icon2 = evas_object_image_add(it->box->ng->evas);
+   evas_object_image_source_set(it->o_icon2, it->o_icon);
+   evas_object_resize(it->o_icon2, 128, 128);
+   evas_object_image_fill_set(it->o_icon2, 0,0,128,128);
    edje_object_part_swallow(it->over, "e.swallow.content", it->o_icon2);
    evas_object_pass_events_set(it->o_icon2, 1);
-
+   evas_object_show(it->o_icon2);
+   
    if (it->app->name)
       it->label = eina_stringshare_add(it->app->name);
    else if (it->app->generic_name)
