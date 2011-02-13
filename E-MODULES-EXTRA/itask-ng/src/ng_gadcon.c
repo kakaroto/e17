@@ -159,10 +159,14 @@ _ngi_gadcon_item_new(Ngi_Box *box, const char *name, Ngi_Item *after)
         it->label = e_datastore_get(buf);
      }
 
-   it->o_icon2 = evas_object_image_add(it->box->ng->evas);
-   evas_object_image_source_set(it->o_icon2, it->gadcon->o_container);
-   evas_object_resize(it->o_icon2, 128, 128);
-   evas_object_image_fill_set(it->o_icon2, 0,0,128,128);
+   it->o_icon2 = e_icon_add(it->box->ng->evas);
+   
+   Evas_Object *o = evas_object_image_add(it->box->ng->evas);
+   evas_object_image_source_set(o, it->gadcon->o_container);
+   evas_object_resize(o, 128, 128);
+   evas_object_image_fill_set(o, 0,0,128,128);
+   e_icon_object_set(it->o_icon2, o); 
+
    edje_object_part_swallow(it->over, "e.swallow.content", it->o_icon2);
    evas_object_pass_events_set(it->o_icon2, 1);
    evas_object_show(it->o_icon2);

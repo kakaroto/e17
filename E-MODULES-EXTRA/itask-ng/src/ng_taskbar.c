@@ -234,10 +234,6 @@ _ngi_taskbar_cb_drop_move(void *data, const char *type, void *event_info)
 
 	if (it)
 	  {
-	     /* ITEM_MOUSE_OUT(ng->item_active);
-	      * ITEM_MOUSE_IN(it);
-	      * 
-	      * ng->item_active = it; */
 	     ngi_item_activate(ng); 
 	     
 	     box->dnd_timer = ecore_timer_add(0.5, _ngi_taskbar_cb_show_window, box);
@@ -706,11 +702,19 @@ _ngi_taskbar_item_set_icon(Ngi_Item *it)
    evas_object_pass_events_set(it->o_icon, 1);
    evas_object_show(it->o_icon);
 
-   it->o_icon2 = _ngi_taskbar_border_icon_add(it->border, it->box->ng->evas);
+   it->o_icon2 = e_icon_add(it->box->ng->evas);
+   
+   Evas_Object *o = evas_object_image_add(it->box->ng->evas);
+   evas_object_image_source_set(o, it->o_icon);
+   evas_object_resize(o, 128, 128);
+   evas_object_image_fill_set(o, 0,0,128,128);
+   e_icon_object_set(it->o_icon2, o); 
+
    edje_object_part_swallow(it->over, "e.swallow.content", it->o_icon2);
    evas_object_pass_events_set(it->o_icon2, 1);
    evas_object_show(it->o_icon2);
 
+   
    if (it->border->iconic && it->box->cfg->taskbar_show_iconified != 2)
       ngi_item_signal_emit(it, "e,state,taskbar_item_iconify");
 }

@@ -1,4 +1,5 @@
 #define BG_OFFSET 20
+#define REFLECTION 1
 
 images
 {
@@ -87,11 +88,11 @@ collections{
 					state: "default" 0.0;
 
 					rel1.offset: -35 8;
-					rel2.offset: 34 3;
+					rel2.offset: 34 -1;
 
 					image {
 						normal: "itask_im0.png";
-						border: 26 26 10 4;
+						border: 43 43 10 4;
 					}
 				}
 			}
@@ -650,7 +651,9 @@ collections{
 		name: "e/modules/itask-ng/icon_over_top";
 		alias: "e/modules/itask-ng/icon_over_left";
 		alias: "e/modules/itask-ng/icon_over_right";
-
+#if REFLECTION == 0
+	alias: "e/modules/itask-ng/icon_over_bottom";
+#endif
 		parts {
 			part {
 				name: "icon_clip";
@@ -1009,7 +1012,7 @@ collections{
 			}
 		}
 	}
-
+#if REFLECTION == 1
 	group {
 		/* overlay copy used for reflection effect here  */
 
@@ -1046,7 +1049,7 @@ collections{
 					rel1.relative: 0.0 0.0;
 					rel2.relative: 1.0 1.0;
 					rel1.offset: -4 0;
-					rel2.offset: 4 10;
+					rel2.offset: 4 6;
 				}
 			}
 			part {
@@ -1088,5 +1091,6 @@ collections{
 			}
 		}
 	}
+#endif
 }
 
