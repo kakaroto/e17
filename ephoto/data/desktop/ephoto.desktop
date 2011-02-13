@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Ephoto
+Comment=Enlightened Photo Viewer
+Exec=ephoto
+Icon=ephoto
+Terminal=false
+Type=Application
+Categories=Application;Graphics;Photos;Images;Viewer;
