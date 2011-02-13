@@ -86,3 +86,6 @@
 #include "image_blend_occlude2_very_many.c"
 #include "image_blend_occlude3_very_many.c"
 #include "poly_blend.c"
+#include "proxy_image.c"
+#include "proxy_text_fixed.c"
+#include "proxy_text_random.c"

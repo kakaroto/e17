@@ -157,6 +157,9 @@ static double weights[] =
      38.2952, // test 86
      5.5560,
      0.5000,
+     10.000, // Proxy tests
+     10.000,
+     10.000,
    
      0.0, // no final test - add a 0 at the end anyway to pad
      0.0,

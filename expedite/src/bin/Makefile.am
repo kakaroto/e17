@@ -109,7 +109,10 @@ image_blend_occlude3_many.c \
 image_blend_occlude1_very_many.c \
 image_blend_occlude2_very_many.c \
 image_blend_occlude3_very_many.c \
-poly_blend.c
+poly_blend.c \
+proxy_image.c \
+proxy_text_fixed.c \
+proxy_text_random.c
 
 expedite_CFLAGS = @WIN32_CFLAGS@
 expedite_CXXFLAGS = @EXPEDITE_CXXFLAGS@
