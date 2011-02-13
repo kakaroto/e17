@@ -152,18 +152,19 @@
   <td class='main'>
    <div class="main">
     <p><h2>Packages</h2></p>
-    <p>Unoffical packages are availble for several platforms including:</p>
+    <p>Unofficial packages are available for several platforms including:</p>
     <p>
      <ul>
       <li>Debian</li>
       <li><a href="http://ubuntuforums.org/showthread.php?t=97199&highlight=E17+cvs">Ubuntu</a></li>
       <li><a href="http://sps.nus.edu.sg/~didierbe">Fedora</a></li>
       <li><a href="http://wiki.archlinux.org/index.php/E17">ArchLinux</a></li>
-      <li><a href="http://overlays.gentoo.org/dev/vapier/wiki/enlightenment">Gentoo</a>
-      <li>FreeBSD</p>
+      <li><a href="http://overlays.gentoo.org/dev/vapier/wiki/enlightenment">Gentoo</a></li>
+      <li><a href="http://slacke17.sourceforge.net">Slackware</a></li>
+      <li>FreeBSD</li>
      </ul>
     </p>
-    <p>There are no guarentees if these packages will work as expected. If you experience
+    <p>There are no guarantees if these packages will work as expected. If you experience
     any problems with DR17 or the EFL using the packages, please first refer to the
     packagers, not to the Enlightenment team.</p>
    </div>
