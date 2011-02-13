@@ -47,6 +47,14 @@
     <center>
      <?php img("logo.png", "E"); ?>
      <?php blink("i/dl.png", "DOWNLOAD E", "download"); ?>
+     <?php img("cebit.png", "CeBIT"); ?>
+     <p>
+      Thanks to <a href=http://www.linux-magazin.de/>Linux Magazin</a>
+      we have a stand at <a href=http://www.cebit.de>CeBIT</a> from
+      the 1st to the 5th of March 2011. We will be at the Linux
+      Magazin stand showing our stuff off. Some of the E dev team will
+      be there, so come by and say hello!
+     </p>
     </center>
    </div>
   </td>
