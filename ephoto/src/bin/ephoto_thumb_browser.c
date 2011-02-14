@@ -138,8 +138,16 @@ _ephoto_thumbnail_icon_get(void *data, Evas_Object *obj __UNUSED__, const char *
 {
    Eina_List *node = data;
    Evas_Object *o;
+   const char *ext = strrchr(eina_list_data_get(node), '.');
 
-   ethumb_client_format_set(ephoto->client, ETHUMB_THUMB_FDO);
+   if (ext)
+     {
+        if ((!strcasecmp(ext, "jpg")) || (!strcasecmp(ext, "jpeg")))
+          ethumb_client_format_set(ephoto->client, ETHUMB_THUMB_JPEG);
+     }
+   else
+     ethumb_client_format_set(ephoto->client, ETHUMB_THUMB_FDO);
+
    ethumb_client_size_set(ephoto->client, etb->thumb_size, etb->thumb_size);
 
    o = elm_thumb_add(ephoto->win);
