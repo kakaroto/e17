@@ -21,6 +21,8 @@ void *alloca (size_t);
 #endif
 
 extern int esql_log_dom;
+extern Eina_Hash *esql_query_callbacks;
+extern Eina_Hash *esql_query_data;
 
 #define DBG(...)            EINA_LOG_DOM_DBG(esql_log_dom, __VA_ARGS__)
 #define INFO(...)           EINA_LOG_DOM_INFO(esql_log_dom, __VA_ARGS__)
@@ -48,7 +50,7 @@ typedef const char *           (*Esql_Error_Cb)(Esql *);
 typedef void                   (*Esql_Cb)(Esql *);
 typedef Ecore_Fd_Handler_Flags (*Esql_Connect_Cb)(Esql *);
 typedef void                   (*Esql_Setup_Cb)(Esql *, const char *, const char *, const char *);
-typedef void                   (*Esql_Set_Cb)(Esql *, const char *);
+typedef void                   (*Esql_Set_Cb)(); /* yes this is intentionally variable args */
 typedef int                    (*Esql_Fd_Cb)(Esql *);
 typedef char *                 (*Esql_Escape_Cb)(Esql *, const char *, va_list);
 typedef void                   (*Esql_Res_Cb)(Esql_Res *);
@@ -86,6 +88,9 @@ struct Esql
    Esql_Connect_Type current;
    Eina_List        *backend_set_funcs; /* Esql_Set_Cb */
    Eina_List        *backend_set_params; /* char * */
+   Eina_List        *backend_ids; /* Esql_Query_Id * */
+   void             *cur_data;
+   Esql_Query_Id     cur_id;
    void             *data;
 };
 
@@ -93,6 +98,7 @@ struct Esql_Res
 {
    Esql         *e; /* parent object */
    const char   *error;
+   void         *data;
 
    Eina_Inlist  *rows;
    int           row_count;

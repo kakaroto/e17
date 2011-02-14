@@ -23,6 +23,10 @@
 #include <esql_private.h>
 #include <stdarg.h>
 
+static Esql_Query_Id esql_id = 0;
+Eina_Hash *esql_query_callbacks = NULL;
+Eina_Hash *esql_query_data = NULL;
+
 char *
 esql_string_escape(Eina_Bool   backslashes,
                    const char *s)
@@ -209,47 +213,60 @@ err:
  * Use this function to make a query which does not use printf-style arguments.
  * @param e The #Esql object to query with (NOT #NULL)
  * @param query The query SQL (NOT #NULL)
- * @return EINA_TRUE on successful queuing of the query, else EINA_FALSE
+ * @param data Data to associate with the result
+ * @return EINA_TRUE on successful queuing of the query, else 0
  */
-Eina_Bool
+Esql_Query_Id
 esql_query(Esql       *e,
+           void       *data,
            const char *query)
 {
    DBG("(e=%p, fmt='%s')", e, query);
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(e->backend.db, EINA_FALSE);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(query, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(e, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(e->backend.db, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(query, 0);
    if ((!e->fdh) || (!e->connected))
      {
         ERR("Esql object must be connected!");
-        return EINA_FALSE;
+        return 0;
      }
+   while (++esql_id < 1);
    if (!e->current)
      {
         e->backend.query(e, query);
         e->current = ESQL_CONNECT_TYPE_QUERY;
+        e->cur_data = data;
+        e->cur_id = esql_id;
      }
    else
      {
         e->backend_set_funcs = eina_list_append(e->backend_set_funcs, esql_query);
         e->backend_set_params = eina_list_append(e->backend_set_params, query);
+        e->backend_ids = eina_list_append(e->backend_ids, &esql_id);
+        if (data)
+          {
+             if (!esql_query_data) esql_query_data = eina_hash_int64_new(NULL);
+             eina_hash_add(esql_query_data, &esql_id, data);
+          }
      }
 
-   return EINA_TRUE;
+   return esql_id;
 }
 
 /**
  * @brief Make a query using a format string and arguments
  * Use this function to make a query which uses printf-style arguments.
  * @param e The #Esql object to query with (NOT #NULL)
+ * @param data Data to associate with the result
  * @param fmt The format string for the query
- * @return EINA_TRUE on successful queuing of the query, else EINA_FALSE
+ * @return EINA_TRUE on successful queuing of the query, else 0
  * @note This function automatically does all necessary escaping of the args required by
  * @p e 's backend database.
  */
-Eina_Bool
+Esql_Query_Id
 esql_query_args(Esql       *e,
+                void       *data,
                 const char *fmt,
                 ...)
 {
@@ -258,32 +275,66 @@ esql_query_args(Esql       *e,
 
    DBG("(e=%p, fmt='%s')", e, fmt);
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(e->backend.db, EINA_FALSE);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(fmt, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(e, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(e->backend.db, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(fmt, 0);
    if ((!e->fdh) || (!e->connected))
      {
         ERR("Esql object must be connected!");
-        return EINA_FALSE;
+        return 0;
      }
 
    va_start(args, fmt);
    query = e->backend.escape(e, fmt, args);
    va_end(args);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(query, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(query, 0);
+   while (++esql_id < 1);
    if (!e->current)
      {
         e->backend.query(e, query);
         e->current = ESQL_CONNECT_TYPE_QUERY;
+        e->cur_data = data;
+        e->cur_id = esql_id;
         free(query);
      }
    else
      {
         e->backend_set_funcs = eina_list_append(e->backend_set_funcs, esql_query);
         e->backend_set_params = eina_list_append(e->backend_set_params, query);
-     }
+        e->backend_ids = eina_list_append(e->backend_ids, &esql_id);
+        if (data)
+          {
+             if (!esql_query_data) esql_query_data = eina_hash_int64_new(NULL);
+             eina_hash_add(esql_query_data, &esql_id, data);
+          }
 
-   return EINA_TRUE;
+     }
+   return esql_id;
 }
 
+/**
+ * @brief Set a callback for an #Esql_Query_Id
+ * 
+ * This function is used to setup a callback to be called for the response of
+ * a query with @p id, overriding (disabling) the ESQL_EVENT_RESULT event
+ * for that call.  If a previous callback was set for @p id, this will overwrite it.
+ * @param id The query id (> 0)
+ * @param callback The callback to use (NOT #NULL)
+ * @return #EINA_TRUE on success, or #EINA_FALSE on failure
+ */
+Eina_Bool
+esql_query_callback_set(Esql_Query_Id id,
+                        Esql_Query_Cb callback)
+{
+   DBG("(id=%lu)", id);
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(callback, EINA_FALSE);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(id < 1, EINA_FALSE);
+
+   if (!esql_query_callbacks)
+     esql_query_callbacks = eina_hash_int64_new(NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(esql_query_callbacks, EINA_FALSE);
+
+   return eina_hash_add(esql_query_callbacks, &id, callback);
+}
 /** @} */

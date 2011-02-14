@@ -122,6 +122,19 @@ esql_res_error_get(Esql_Res *res)
 }
 
 /**
+ * @brief Retrieve data pointer previously associated with esql_query or esql_query_args
+ * @param res The result object (NOT #NULL)
+ * @return The data pointer
+ */
+void *
+esql_res_data_get(Esql_Res *res)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
+
+   return res->data;
+}
+
+/**
  * @brief Retrieve the number of rows selected by a SELECT statement
  * This function has no effect for INSERT/UPDATE/etc statements.
  * @param res The result object (NOT #NULL)

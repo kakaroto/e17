@@ -28,6 +28,7 @@
             free(e->backend_set_params->data);                                                           \
             e->backend_set_funcs = eina_list_remove_list(e->backend_set_funcs, e->backend_set_funcs);    \
             e->backend_set_params = eina_list_remove_list(e->backend_set_params, e->backend_set_params); \
+            e->backend_ids = eina_list_remove_list(e->backend_ids, e->backend_ids);                      \
          }                                                                                               \
   } while (0)
 
@@ -41,7 +42,7 @@ static void
 esql_call_complete(Esql *e)
 {
    Esql_Set_Cb cb;
-   int ret;
+   Esql_Query_Cb qcb = NULL;
 
    DBG("(e=%p)", e);
    switch (e->current)
@@ -66,7 +67,22 @@ esql_call_complete(Esql *e)
            EINA_SAFETY_ON_NULL_GOTO(res, out);
            res->e = e;
            e->backend.res(res);
-           ecore_event_add(ESQL_EVENT_RESULT, res, (Ecore_End_Cb)esql_res_free, NULL);
+           res->data = e->cur_data;
+           qcb = eina_hash_find(esql_query_callbacks, &e->cur_id);
+           if (qcb)
+             {
+                INFO("Executing callback for current query");
+                qcb(res, e->cur_data);
+                
+                eina_hash_del_by_key(esql_query_callbacks, &e->cur_id);
+                esql_res_free(NULL, res);
+                
+             }
+           else
+             {
+                INFO("Emitting event for current query");
+                ecore_event_add(ESQL_EVENT_RESULT, res, (Ecore_End_Cb)esql_res_free, NULL);
+             }
         }
         break;
 
@@ -82,38 +98,24 @@ out:
      }
    /* next call */
    cb = e->backend_set_funcs->data;
-   cb(e, e->backend_set_params->data);
    if (cb == (Esql_Set_Cb)esql_database_set)
      {
-        e->current = ESQL_CONNECT_TYPE_DATABASE_SET;
+        cb(e, e->backend_set_params->data);
         INFO("Next call: DB change");
      }
    else if (cb == (Esql_Set_Cb)esql_query)
      {
+        void *data;
+
+        data = eina_hash_find(esql_query_data, e->backend_ids->data);
+        e->backend.query(e, e->backend_set_params->data);
         e->current = ESQL_CONNECT_TYPE_QUERY;
+        e->cur_data = data;
+        e->cur_id = *((Esql_Query_Id*)e->backend_ids->data);
+        if (data) eina_hash_del_by_key(esql_query_data, e->backend_ids->data);
         INFO("Next call: query");
      }
-   ret = e->backend.io(e);
-   if ((ret == ECORE_FD_ERROR) && (cb != (Esql_Set_Cb)esql_database_set))
-     {
-        Esql_Res *res;
-
-        res = calloc(1, sizeof(Esql_Res));
-        EINA_SAFETY_ON_NULL_RETURN(res);
-        res->e = e;
-        e->res = res;
-        res->error = e->backend.error_get(e);
-        ERR("Connection error: %s", res->error);
-        ecore_event_add(ESQL_EVENT_ERROR, res, (Ecore_End_Cb)esql_res_free, NULL);
-     }
-   else if (ret == ECORE_FD_ERROR)
-     ERR("Connection error: %s", e->backend.error_get(e));
-   else if (!ret)
-     {
-        esql_call_complete(e);
-        return;
-     }
-   ecore_main_fd_handler_active_set(e->fdh, ret);
+   esql_connect_handler(e, e->fdh); /* have to call again to start next call */
 }
 
 Eina_Bool

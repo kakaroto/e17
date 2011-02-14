@@ -77,6 +77,18 @@ typedef struct Esql_Res Esql_Res;
 typedef struct Esql_Row Esql_Row;
 
 /**
+ * @typedef Esql_Query_Id
+ * Id to use as a reference for a query
+ */
+typedef unsigned long Esql_Query_Id;
+
+/**
+ * @typedef Esql_Query_Cb
+ * Callback to use with a query
+ * @see esql_query_callback_set
+ */
+typedef void (*Esql_Query_Cb)(Esql_Res *, void *);
+/**
  * @typedef Esql_Type
  * Convenience enum for determining server backend type
  */
@@ -162,15 +174,20 @@ EAPI Eina_Bool   esql_database_set(Esql       *e,
 EAPI const char *esql_database_get(Esql *e);
 
 /* query */
-EAPI Eina_Bool esql_query(Esql       *e,
-                          const char *query);
-EAPI Eina_Bool esql_query_args(Esql       *e,
-                               const char *fmt,
-                               ...);
+EAPI Esql_Query_Id esql_query(Esql       *e,
+                              void       *data,
+                              const char *query);
+EAPI Esql_Query_Id esql_query_args(Esql       *e,
+                                   void       *data,
+                                   const char *fmt,
+                                   ...);
+EAPI Eina_Bool     esql_query_callback_set(Esql_Query_Id id,
+                                           Esql_Query_Cb callback);
 
 /* res */
 EAPI Esql          *esql_res_esql_get(Esql_Res *res);
 EAPI const char    *esql_res_error_get(Esql_Res *res);
+EAPI void          *esql_res_data_get(Esql_Res *res);
 EAPI int            esql_res_rows_count(Esql_Res *res);
 EAPI int            esql_res_cols_count(Esql_Res *res);
 EAPI long long int  esql_res_rows_affected(Esql_Res *res);

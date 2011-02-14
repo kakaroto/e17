@@ -82,6 +82,7 @@ esql_connect(Esql       *e,
 Eina_Bool
 esql_disconnect(Esql *e)
 {
+   DBG("(e=%p)", e);
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(e->backend.db, EINA_FALSE);
 
@@ -89,6 +90,7 @@ esql_disconnect(Esql *e)
    e->fdh = NULL;
    e->backend.disconnect(e);
    e->connected = EINA_FALSE;
+   INFO("Disconnected");
    return EINA_TRUE;
 }
 
@@ -126,6 +128,7 @@ esql_database_set(Esql       *e,
      {
         e->backend_set_funcs = eina_list_append(e->backend_set_funcs, esql_database_set);
         e->backend_set_params = eina_list_append(e->backend_set_params, strdup(database_name));
+        e->backend_ids = eina_list_append(e->backend_ids, e);
      }
 
    return EINA_TRUE;

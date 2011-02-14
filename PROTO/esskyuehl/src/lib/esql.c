@@ -83,6 +83,10 @@ esql_shutdown(void)
    if (--esql_init_count_ != 0)
      return esql_init_count_;
 
+   if (esql_query_callbacks) eina_hash_free(esql_query_callbacks);
+   esql_query_callbacks = NULL;
+   if (esql_query_data) eina_hash_free(esql_query_data);
+   esql_query_data = NULL;
    eina_log_domain_unregister(esql_log_dom);
    ecore_shutdown();
    eina_shutdown();
@@ -162,14 +166,17 @@ esql_type_set(Esql     *e,
    switch (type)
      {
       case ESQL_TYPE_MYSQL:
+        INFO("Esql type for %p set to MySQL", e);
         esql_mysac_init(e);
         break;
 
       case ESQL_TYPE_POSTGRESQL:
+        INFO("Esql type for %p set to PostgreSQL", e);
         esql_postgresql_init(e);
         break;
 
       default:
+        INFO("Esql type for %p is unknown!", e);
         return EINA_FALSE;
      }
    return EINA_TRUE;
@@ -201,6 +208,10 @@ esql_free(Esql *e)
    EINA_SAFETY_ON_NULL_RETURN(e);
    if (e->connected) esql_disconnect(e);
    if (e->backend.free) e->backend.free(e);
+   if (e->backend_ids) eina_list_free(e->backend_set_funcs);
+   if (e->backend_set_params) eina_list_free(e->backend_set_params);
+   if (e->backend_ids) eina_list_free(e->backend_ids);
+
    free(e);
 }
 

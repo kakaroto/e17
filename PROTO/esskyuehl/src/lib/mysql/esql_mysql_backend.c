@@ -63,11 +63,21 @@ static void
 esql_mysac_disconnect(Esql *e)
 {
    MYSAC *m;
+   char *buf;
+   size_t size;
 
+   /* mysac is very complicated :/ */
    m = e->backend.db;
-   if (m->fd < 0) return;
-   close(m->fd);
-   m->fd = -1;
+   if (m->fd >= 0) close(m->fd);
+   buf = m->buf;
+   size = m->bufsize;
+   /* avoid allocating new mem */
+   memset(m, 0, sizeof(MYSAC));
+   memset(buf, 0, size);
+   m->buf = buf;
+   m->bufsize = size;
+   m->free_it = 1;
+   m->qst = MYSAC_START;
 }
 
 static int
@@ -274,8 +284,8 @@ esql_mysac_free(Esql *e)
 {
    MYSAC *m;
 
-   m = e->backend.db;
    esql_mysac_disconnect(e);
+   m = e->backend.db;
    free(m->buf);
    free(m);
 }
