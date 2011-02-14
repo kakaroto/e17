@@ -7,15 +7,24 @@ ________/ /__/      /__/ /__/ /_______/    /_/    /_______/
 
 
 TODO-
-[Complete?]Rotate Images.
-[Complete?]Zoom Images.
+===Thumb Browser============
+Add the ability to see some more info. A bar at the bottom?
+============================
+===Flow Browser=============
+Looks cool for now, but will need some sort of functionality.
+============================
+===Single/Edit Image Mode===
+Rotate Images.
+Flip Images.
+Zoom Images.
 -Possibly Grayscale, Sepia, etc..?
+-Possibly HSV, Brightness, Contrast, RGB, etc..?
+-Magnifier and color chooser
+============================
+===Slideshow================
 -Slideshow features.
-[Complete?]Include directory in the listing.
-[Complete?]Use edje external.
--Transition from one directory to another.
--Maybe implement a wallpaper2 like object in elementary and use it in ephoto.
--Similar to the previous todo item, make the flow view an actual flow view, while keeping the current flow view around as a zoom view.
--Possibly some sort of simple edit view or simple edit options? HSV, Brightness, Contrast, RGB, etc...
+============================
+===Other Random Features====
 -Exporting to flickr, facebook, etc..
 -Possibly a tag system?
+============================
