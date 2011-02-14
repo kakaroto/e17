@@ -1,6 +1,8 @@
 [Desktop Entry]
 Name=Ephoto
 Comment=Enlightened Photo Viewer
+Comment[fr]=Visionneuse photo pour Enlightenment
+Comment[it]=Visualizzatore di foto per Enlightenment
 Exec=ephoto
 Icon=ephoto
 Terminal=false

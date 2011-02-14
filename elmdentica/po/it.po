@@ -7,13 +7,13 @@ msgstr ""
 "Project-Id-Version: elmdentica 0.8.0\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
 "POT-Creation-Date: 2011-02-06 01:26+0000\n"
-"PO-Revision-Date: 2011-02-05 16:26+0100\n"
+"PO-Revision-Date: 2011-02-14 19:35+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
 #: src/curl.c:92 src/elmdentica.c:1237 src/elmdentica.c:1446
 msgid "Close"
@@ -259,9 +259,9 @@ msgid "Not enough memory to create a status\n"
 msgstr "Memoria insufficiente per creare uno stato\n"
 
 #: src/statusnet.c:417
-#, fuzzy, c-format
+#, c-format
 msgid "Not enough memory to create an user\n"
-msgstr "Memoria insufficiente per creare uno stato\n"
+msgstr "Memoria insufficiente per creare un utente\n"
 
 #: src/statusnet.c:554
 #, c-format
@@ -481,12 +481,3 @@ msgid ""
 msgstr ""
 "Memoria insufficiente per impostazioni, e sicuramente anche per "
 "nient'altro..."
-
-#~ msgid "Error importing related status\n"
-#~ msgstr "Errore importazione stato correlato\n"
-
-#~ msgid "Got an error: %s\n"
-#~ msgstr "Ottenuto un errore: %s\n"
-
-#~ msgid "Got an error without content\n"
-#~ msgstr "Ottenuto un errore vuoto\n"

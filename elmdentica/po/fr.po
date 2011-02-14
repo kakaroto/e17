@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Elmdentica\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
 "POT-Creation-Date: 2011-02-06 01:26+0000\n"
-"PO-Revision-Date: 2011-02-05 14:43+0400\n"
+"PO-Revision-Date: 2011-02-14 08:37+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <pourunmondesansgourou@gmail.com>\n"
 "Language: fr\n"
@@ -19,7 +19,9 @@ msgstr ""
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: src/curl.c:92 src/elmdentica.c:1237 src/elmdentica.c:1446
+#: src/curl.c:92
+#: src/elmdentica.c:1237
+#: src/elmdentica.c:1446
 msgid "Close"
 msgstr "Fermer"
 
@@ -67,11 +69,13 @@ msgstr "Erreur %d : %s\n"
 msgid "System failed, child exited with status %d\n"
 msgstr "Échec, statut du processus fils en sortie : %d\n"
 
-#: src/elmdentica.c:492 src/elmdentica.c:639
+#: src/elmdentica.c:492
+#: src/elmdentica.c:639
 msgid "Follow"
 msgstr "Suivre"
 
-#: src/elmdentica.c:494 src/elmdentica.c:641
+#: src/elmdentica.c:494
+#: src/elmdentica.c:641
 msgid "Stop following"
 msgstr "Ne plus suivre"
 
@@ -79,22 +83,25 @@ msgstr "Ne plus suivre"
 msgid "Couldn't parse user info message..."
 msgstr "Analyse du message d'info de l'utilisateur impossible..."
 
-#: src/elmdentica.c:694 src/elmdentica.c:786
+#: src/elmdentica.c:694
+#: src/elmdentica.c:786
 #, c-format
 msgid "You are a member of group %s along with %d other people.<br>«%s»"
 msgstr "Vous êtes membre du groupe %s avec %d autres personnes.<br>« %s »"
 
-#: src/elmdentica.c:697 src/elmdentica.c:822
+#: src/elmdentica.c:697
+#: src/elmdentica.c:822
 msgid "Leave"
 msgstr "Quitter"
 
-#: src/elmdentica.c:699 src/elmdentica.c:788
+#: src/elmdentica.c:699
+#: src/elmdentica.c:788
 #, c-format
 msgid "You are not a member of group %s but %d people are.<br>«%s»"
-msgstr ""
-"Vous n'êtes pas membre du groupe %s mais %d personnes le sont.<br>« %s »"
+msgstr "Vous n'êtes pas membre du groupe %s mais %d personnes le sont.<br>« %s »"
 
-#: src/elmdentica.c:702 src/elmdentica.c:825
+#: src/elmdentica.c:702
+#: src/elmdentica.c:825
 msgid "Join"
 msgstr "Rejoindre"
 
@@ -137,7 +144,8 @@ msgstr "sur %x"
 msgid "%x %X"
 msgstr "%x %X"
 
-#: src/elmdentica.c:1058 src/elmdentica.c:1059
+#: src/elmdentica.c:1058
+#: src/elmdentica.c:1059
 #, c-format
 msgid "some-when"
 msgstr "indéterminé"
@@ -166,7 +174,8 @@ msgstr "Répondre"
 msgid "Repeat"
 msgstr "Répéter"
 
-#: src/elmdentica.c:1285 src/elmdentica.c:1980
+#: src/elmdentica.c:1285
+#: src/elmdentica.c:1980
 msgid "DM"
 msgstr "DM"
 
@@ -198,15 +207,20 @@ msgstr "Erreur du microblogue"
 msgid "Send a DM to..."
 msgstr "Envoyer un DM à..."
 
-#: src/elmdentica.c:1723 src/settings.c:491 src/settings.c:1198
+#: src/elmdentica.c:1723
+#: src/settings.c:491
+#: src/settings.c:1198
 msgid "OK"
 msgstr "OK"
 
-#: src/elmdentica.c:1729 src/settings.c:499 src/settings.c:1207
+#: src/elmdentica.c:1729
+#: src/settings.c:499
+#: src/settings.c:1207
 msgid "Cancel"
 msgstr "Annuler"
 
-#: src/elmdentica.c:1808 src/elmdentica.c:1918
+#: src/elmdentica.c:1808
+#: src/elmdentica.c:1918
 msgid "Type your status here..."
 msgstr "Entrer ici votre statut..."
 
@@ -254,7 +268,8 @@ msgstr "Effacer"
 msgid "Fullscreen"
 msgstr "Plein écran"
 
-#: src/elmdentica.c:2003 src/settings.c:1365
+#: src/elmdentica.c:2003
+#: src/settings.c:1365
 msgid "Settings"
 msgstr "Configuration"
 
@@ -264,9 +279,9 @@ msgid "Not enough memory to create a status\n"
 msgstr "Mémoire insuffisante pour créer un statut\n"
 
 #: src/statusnet.c:417
-#, fuzzy, c-format
+#, c-format
 msgid "Not enough memory to create an user\n"
-msgstr "Mémoire insuffisante pour créer un statut\n"
+msgstr "Mémoire insuffisante pour créer un utilisateur\n"
 
 #: src/statusnet.c:554
 #, c-format
@@ -328,19 +343,23 @@ msgstr "Envoyer ?"
 msgid "Accounts..."
 msgstr "Comptes..."
 
-#: src/settings.c:703 src/settings.c:1314
+#: src/settings.c:703
+#: src/settings.c:1314
 msgid "Add"
 msgstr "Ajouter"
 
-#: src/settings.c:716 src/settings.c:1327
+#: src/settings.c:716
+#: src/settings.c:1327
 msgid "Edit"
 msgstr "Éditer"
 
-#: src/settings.c:730 src/settings.c:1340
+#: src/settings.c:730
+#: src/settings.c:1340
 msgid "Delete"
 msgstr "Supprimer"
 
-#: src/settings.c:757 src/settings.c:780
+#: src/settings.c:757
+#: src/settings.c:780
 msgid "No posts<br>in cache."
 msgstr "Aucun post<br>dans le cache."
 
@@ -349,7 +368,8 @@ msgstr "Aucun post<br>dans le cache."
 msgid "Currently remembering<br>%d posts."
 msgstr "%d posts<br>en mémoire."
 
-#: src/settings.c:795 src/settings.c:818
+#: src/settings.c:795
+#: src/settings.c:818
 msgid "No messages<br>in cache."
 msgstr "Aucun message<br>dans le cache."
 
@@ -455,9 +475,7 @@ msgstr "La création des dossiers de préférences a échoué à cause de asprin
 #: src/settings.c:1437
 #, c-format
 msgid "Can't create preferences directories since ecore_file_mkpath failed\n"
-msgstr ""
-"La création des dossiers de préférences a échoué à cause de "
-"ecore_file_mkpath\n"
+msgstr "La création des dossiers de préférences a échoué à cause de ecore_file_mkpath\n"
 
 #: src/settings.c:1445
 #, c-format
@@ -481,61 +499,43 @@ msgstr "Impossible d'initialiser settings_edd."
 
 #: src/settings.c:1484
 #, c-format
-msgid ""
-"Not enough memory for settings, no doubt for anything else either, surely..."
-msgstr ""
-"Mémoire insuffisante pour la configuration, ou quoi que ce soit d'autre..."
+msgid "Not enough memory for settings, no doubt for anything else either, surely..."
+msgstr "Mémoire insuffisante pour la configuration, ou quoi que ce soit d'autre..."
 
 #~ msgid "Error importing related status\n"
 #~ msgstr "Ne peut définir le statut associé\n"
-
 #~ msgid "Got an error: %s\n"
 #~ msgstr "Erreur: %s\n"
-
 #~ msgid "Got an error without content\n"
 #~ msgstr "Erreur sans contenu\n"
-
 #~ msgid "Not implemented yet"
 #~ msgstr "Pas encore disponible"
-
 #~ msgid "Last %d messages"
 #~ msgstr "%d derniers messages"
-
 #~ msgid "%F %T"
 #~ msgstr "%F %T"
-
 #~ msgid "Oops, there should be a status here, for %s!\n"
 #~ msgstr "Oups ! on devrait avoir un statut  pour %s ici.\n"
-
 #~ msgid "Oops, there should be an user here for %lld!\n"
 #~ msgstr "Oups ! on devrait avoir un utilisateur pour %lld ici.\n"
-
 #~ msgid "%s@%s had HTTP response: %ld"
 #~ msgstr "%s@%s a reçu la réponse HTTP : %ld"
-
 #~ msgid "More..."
 #~ msgstr "Plus..."
-
 #~ msgid "Visit website?"
 #~ msgstr "Visiter le site ?"
-
 #~ msgid "%s posted the following URL...<br>"
 #~ msgstr "%s postés pour l'URL suivante...<br>"
-
 #~ msgid "View details?"
 #~ msgstr "Voir les détails ?"
-
 #~ msgid "View group?"
 #~ msgstr "Voir le groupe ?"
-
 #~ msgid "FAILED TO SAX FRIENDS: %d\n"
 #~ msgstr "ÉCHEC SAX POUR LES AMIS : %d\n"
-
 #~ msgid "Error fetching user info: %s"
 #~ msgstr "Échec de récupération de l'info pour : %s"
-
 #~ msgid "Unknown error fetching user info."
 #~ msgstr "Erreur inconnue lors de la récupération de l'info utilisateur."
-
 #~ msgid "FAILED TO SAX USERS SHOW: %d\n"
 #~ msgstr "ÉCHEC SAX POUR LES UTILISATEURS : %d\n"
+
