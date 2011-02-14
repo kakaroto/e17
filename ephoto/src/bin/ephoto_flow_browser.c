@@ -7,6 +7,7 @@ static void _ephoto_flow_back(void *data __UNUSED__, Evas_Object *o __UNUSED__, 
 static void _ephoto_flow_prev(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__);
 static void _ephoto_flow_next(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__);
 static void _ephoto_center_image_clicked(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__);
+static void _ephoto_show_slideshow(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__);
 static void _ephoto_key_down(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info);
 static void _ephoto_mouse_wheel(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info);
 
@@ -84,7 +85,7 @@ ephoto_flow_browser_add(void)
      (efb->toolbar, "go-next", "Next", _ephoto_flow_next, NULL);
    elm_toolbar_item_priority_set(efb->action.go_next, 2);
    efb->action.slideshow = elm_toolbar_item_append
-     (efb->toolbar, "media-playback-start", "Slideshow", NULL, NULL);
+     (efb->toolbar, "media-playback-start", "Slideshow", _ephoto_show_slideshow, NULL);
    elm_toolbar_item_priority_set(efb->action.slideshow, 3);
 
    elm_toolbar_icon_size_set(efb->toolbar, 32);
@@ -379,6 +380,14 @@ _ephoto_center_image_clicked(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Obj
         edje_object_signal_emit(edje, "full_reset", "ephoto");
         efb->efs = EPHOTO_FLOW_STATE_FLOW;
      }
+}
+
+static void
+_ephoto_show_slideshow(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+   elm_toolbar_item_selected_set(efb->action.slideshow, EINA_FALSE);
+
+   ephoto_slideshow_show();
 }
 
 static void

@@ -44,6 +44,9 @@ ephoto_window_add(void)
    else if (ephoto->file)
      ephoto->directory = eina_stringshare_add(ecore_file_dir_get(ephoto->file));
 
+   ephoto->slideshow = ephoto_slideshow_add();
+   elm_pager_content_push(ephoto->pager, ephoto->slideshow);
+
    ephoto->flow_browser = ephoto_flow_browser_add();
    elm_pager_content_push(ephoto->pager, ephoto->flow_browser);
 

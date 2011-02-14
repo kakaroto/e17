@@ -13,6 +13,7 @@ static void _ephoto_change_dir(void *data __UNUSED__, Evas_Object *o __UNUSED__,
 static void _ephoto_zoom_in(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__);
 static void _ephoto_zoom_out(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__);
 static void _ephoto_show_flow(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__);
+static void _ephoto_show_slideshow(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__);
 
 static const Elm_Gengrid_Item_Class _ephoto_thumbnail_class = {
      "thumb",
@@ -73,7 +74,7 @@ ephoto_thumb_browser_add(void)
      (etb->toolbar, "image", "View Flow", _ephoto_show_flow, NULL);
    elm_toolbar_item_priority_set(etb->action.view_flow, 2);
    etb->action.slideshow = elm_toolbar_item_append
-     (etb->toolbar, "media-playback-start", "Slideshow", NULL, NULL);
+     (etb->toolbar, "media-playback-start", "Slideshow", _ephoto_show_slideshow, NULL);
    elm_toolbar_item_priority_set(etb->action.slideshow, 3);
 
    elm_toolbar_icon_size_set(etb->toolbar, 32);
@@ -227,4 +228,12 @@ _ephoto_show_flow(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_
      ephoto->current_index = elm_gengrid_item_data_get(egi);
 
    ephoto_flow_browser_show(); 
+}
+
+static void
+_ephoto_show_slideshow(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+   elm_toolbar_item_selected_set(etb->action.slideshow, EINA_FALSE);
+
+   ephoto_slideshow_show();
 }
