@@ -100,6 +100,7 @@ ephoto_thumb_browser_add(void)
    evas_object_size_hint_weight_set
      (etb->grid, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_box_pack_end(etb->box, etb->grid);
+   evas_object_smart_callback_add(etb->grid, "clicked", _ephoto_show_flow, NULL);
    evas_object_show(etb->grid);
 
    return etb->box;
@@ -122,29 +123,28 @@ ephoto_thumb_browser_show(void)
 }
 
 void 
-ephoto_thumb_browser_thumb_append(const char *file)
+ephoto_thumb_browser_thumb_append(Eina_List *node)
 {
-   char *f;
+   Elm_Gengrid_Item *egi;
    const Elm_Gengrid_Item_Class *egic;
 
-   f = strdup(file);
-
    egic = &_ephoto_thumbnail_class;
-   elm_gengrid_item_append(etb->grid, egic, f, NULL, NULL);
+   egi = elm_gengrid_item_append(etb->grid, egic, node, NULL, NULL);
+   elm_gengrid_item_data_set(egi, node);
 }
 
 static Evas_Object *
 _ephoto_thumbnail_icon_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
+   Eina_List *node = data;
    Evas_Object *o;
-   const char *file = data;
 
    ethumb_client_format_set(ephoto->client, ETHUMB_THUMB_FDO);
    ethumb_client_size_set(ephoto->client, etb->thumb_size, etb->thumb_size);
 
    o = elm_thumb_add(ephoto->win);
    elm_object_style_set(o, "noframe");
-   elm_thumb_file_set(o, file, NULL);
+   elm_thumb_file_set(o, eina_list_data_get(node), NULL);
    evas_object_show(o);
 
    return o;
@@ -153,9 +153,10 @@ _ephoto_thumbnail_icon_get(void *data, Evas_Object *obj __UNUSED__, const char *
 static char *
 _ephoto_thumbnail_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
-   const char *file = data, *f;
+   Eina_List *node = data;
+   const char *f;
 
-   f = ecore_file_file_get(file);
+   f = ecore_file_file_get(eina_list_data_get(node));
 
    return strdup(f);
 }
@@ -208,8 +209,13 @@ _ephoto_zoom_out(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_i
 static void
 _ephoto_show_flow(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
-   elm_toolbar_item_selected_set
-     (elm_toolbar_selected_item_get(etb->toolbar), EINA_FALSE);
+   Elm_Gengrid_Item *egi;
+
+   elm_toolbar_item_selected_set(etb->action.view_flow, EINA_FALSE);
+
+   egi = elm_gengrid_selected_item_get(etb->grid);
+   if (egi)
+     ephoto->current_index = elm_gengrid_item_data_get(egi);
 
    ephoto_flow_browser_show(); 
 }

@@ -111,11 +111,14 @@ _ephoto_thumb_populate_filter(void *data __UNUSED__, Eio_File *handler __UNUSED_
 static void
 _ephoto_thumb_populate_main(void *data __UNUSED__, Eio_File *handler __UNUSED__, const Eina_File_Direct_Info *info)
 {
+   Eina_List *node;
    ephoto->images = eina_list_append(ephoto->images, info->path);
+   node = eina_list_nth_list
+     (ephoto->images, (eina_list_count(ephoto->images)-1));
 
-   ephoto_thumb_browser_thumb_append(info->path);
+   ephoto_thumb_browser_thumb_append(node);
    if (ephoto->file && !strcmp(ephoto->file, info->path))
-     ephoto->current_index = ephoto->images;
+     ephoto->current_index = node;
 }
 
 static void

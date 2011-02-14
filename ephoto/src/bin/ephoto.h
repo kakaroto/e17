@@ -43,7 +43,7 @@ Evas_Object	*ephoto_slideshow_add(void);
 void		 ephoto_slideshow_del(void);
 
 Evas_Object	*ephoto_thumb_browser_add(void);
-void		 ephoto_thumb_browser_thumb_append(const char *file);
+void		 ephoto_thumb_browser_thumb_append(Eina_List *node);
 void		 ephoto_thumb_browser_del(void);
 void		 ephoto_thumb_browser_show(void);
 
