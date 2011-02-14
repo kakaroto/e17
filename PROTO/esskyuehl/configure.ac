@@ -80,6 +80,7 @@ if test "x$mysql_config" != "x";then
       CPPFLAGS="$cppflags"
       AC_MSG_RESULT([yes])
       mysql=mysql
+      AC_DEFINE_UNQUOTED([HAVE_MSQL], [1], [have mysql])
 else
       AC_MSG_RESULT([no])
 fi
@@ -100,6 +101,7 @@ if test "x$pg_config" != "x";then
       CPPFLAGS="$cppflags"
       AC_MSG_RESULT([yes])
       postgresql=postgresql
+      AC_DEFINE_UNQUOTED([HAVE_PSQL], [1], [have postgresql])
 else
       AC_MSG_RESULT([no])
 fi

@@ -134,8 +134,12 @@ typedef struct Esql_Row_Iterator
    const Esql_Row *current;
 } Esql_Row_Iterator;
 
+#ifdef HAVE_MSQL
 void      esql_mysac_init(Esql *e);
+#endif
+#ifdef HAVE_PSQL
 void      esql_postgresql_init(Esql *e);
+#endif
 
 void      esql_res_free(void *data __UNUSED__,
                         Esql_Res  *res);
