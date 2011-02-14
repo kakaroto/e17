@@ -95,10 +95,28 @@ esql_disconnect(Esql *e)
 }
 
 /**
+ * @brief Set a connected callback for an #Esql object
+ * Use this function to set a callback to override the ESQL_EVENT_CONNECTED event,
+ * calling @p cb with @p data instead.
+ * @param e The #Esql object (NOT #NULL)
+ * @param cb The callback
+ * @param data The data
+ */
+void
+esql_connect_callback_set(Esql *e, Esql_Connect_Cb cb, void *data)
+{
+   EINA_SAFETY_ON_NULL_RETURN(e);
+
+   e->connect_cb = cb;
+   e->connect_cb_data = data;
+}
+
+/**
  * @brief Set the currently active database
  * This function calls all necessary functions to switch databases to
  * @p database_name. After it is called, all subsequent queries should be assumed
  * to be directed at database specified by @p database_name.
+ * @note This function should always be called before esql_connect to ensure portability.
  * @param e The #Esql object (NOT #NULL)
  * @param database_name The database name
  * @return EINA_TRUE on successful queue of the action, else EINA_FALSE

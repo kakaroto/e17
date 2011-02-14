@@ -135,6 +135,19 @@ esql_res_data_get(Esql_Res *res)
 }
 
 /**
+ * @brief Return the #Esql_Query_Id of a result
+ * @param res The result object (NOT #NULL)
+ * @return The query id
+ */
+Esql_Query_Id
+esql_res_query_id_get(Esql_Res *res)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(res, 0);
+
+   return res->qid;
+}
+
+/**
  * @brief Retrieve the number of rows selected by a SELECT statement
  * This function has no effect for INSERT/UPDATE/etc statements.
  * @param res The result object (NOT #NULL)

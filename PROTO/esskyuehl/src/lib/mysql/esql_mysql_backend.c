@@ -107,7 +107,7 @@ esql_mysac_io(Esql *e)
 static void
 esql_mysac_setup(Esql *e, const char *addr, const char *user, const char *passwd)
 {
-   mysac_setup(e->backend.db, addr, user, passwd, NULL, 0);
+   mysac_setup(e->backend.db, addr, user, passwd, e->database, 0);
 }
 
 static void

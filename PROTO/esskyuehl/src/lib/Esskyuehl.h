@@ -50,7 +50,7 @@
  * @brief Events that are emitted from the library
  * @{
  */
-extern int ESQL_EVENT_ERROR; /**< Event emitted on error, ev object is #Esql_Res */
+extern int ESQL_EVENT_ERROR; /**< Event emitted on error, ev object is #Esql */
 extern int ESQL_EVENT_CONNECT; /**< Event emitted connection to db, ev object is #Esql */
 extern int ESQL_EVENT_RESULT; /**< Event emitted on query completion, ev object is #Esql_Res */
 /** @} */
@@ -88,6 +88,14 @@ typedef unsigned long Esql_Query_Id;
  * @see esql_query_callback_set
  */
 typedef void (*Esql_Query_Cb)(Esql_Res *, void *);
+
+/**
+ * @typedef Esql_Connect_Cb
+ * Callback to use with a query
+ * @see esql_connect_callback_set
+ */
+typedef void (*Esql_Connect_Cb)(Esql *, void *);
+
 /**
  * @typedef Esql_Type
  * Convenience enum for determining server backend type
@@ -158,6 +166,8 @@ Esql          *esql_new(Esql_Type type);
 EAPI void     *esql_data_get(Esql *e);
 EAPI void      esql_data_set(Esql *e,
                              void *data);
+EAPI Esql_Query_Id esql_current_query_id_get(Esql *e);
+EAPI const char *esql_error_get(Esql *e);
 EAPI Eina_Bool esql_type_set(Esql     *e,
                              Esql_Type type);
 EAPI Esql_Type esql_type_get(Esql *e);
@@ -169,6 +179,7 @@ EAPI Eina_Bool esql_connect(Esql       *e,
                             const char *user,
                             const char *passwd);
 EAPI Eina_Bool   esql_disconnect(Esql *e);
+EAPI void esql_connect_callback_set(Esql *e, Esql_Connect_Cb cb, void *data);
 EAPI Eina_Bool   esql_database_set(Esql       *e,
                                    const char *database_name);
 EAPI const char *esql_database_get(Esql *e);
@@ -188,6 +199,7 @@ EAPI Eina_Bool     esql_query_callback_set(Esql_Query_Id id,
 EAPI Esql          *esql_res_esql_get(Esql_Res *res);
 EAPI const char    *esql_res_error_get(Esql_Res *res);
 EAPI void          *esql_res_data_get(Esql_Res *res);
+EAPI Esql_Query_Id  esql_res_query_id_get(Esql_Res *res);
 EAPI int            esql_res_rows_count(Esql_Res *res);
 EAPI int            esql_res_cols_count(Esql_Res *res);
 EAPI long long int  esql_res_rows_affected(Esql_Res *res);

@@ -48,7 +48,7 @@ typedef enum
 
 typedef const char *           (*Esql_Error_Cb)(Esql *);
 typedef void                   (*Esql_Cb)(Esql *);
-typedef Ecore_Fd_Handler_Flags (*Esql_Connect_Cb)(Esql *);
+typedef Ecore_Fd_Handler_Flags (*Esql_Connection_Cb)(Esql *);
 typedef void                   (*Esql_Setup_Cb)(Esql *, const char *, const char *, const char *);
 typedef void                   (*Esql_Set_Cb)(); /* yes this is intentionally variable args */
 typedef int                    (*Esql_Fd_Cb)(Esql *);
@@ -60,20 +60,21 @@ typedef const char *           (*Esql_Row_Col_Name_Cb)(Esql_Row *);
 
 struct Esql
 {
+   const char       *error;
    struct
    {
       void           *db; /* db object pointer */
       char           *conn_str; /* unused for some db types */
       int             conn_str_len;
       Esql_Error_Cb   error_get;
-      Esql_Connect_Cb connect;
+      Esql_Connection_Cb connect;
       Esql_Cb         disconnect;
       Esql_Cb         free;
       Esql_Setup_Cb   setup;
       Esql_Set_Cb     database_set;
       Esql_Set_Cb     query;
-      Esql_Connect_Cb database_send;
-      Esql_Connect_Cb io;
+      Esql_Connection_Cb database_send;
+      Esql_Connection_Cb io;
       Esql_Fd_Cb      fd_get;
       Esql_Escape_Cb  escape;
       Esql_Res_Cb     res;
@@ -85,19 +86,23 @@ struct Esql
    Eina_Bool         connected : 1;
    Esql_Res         *res; /* current working result */
    Esql_Type         type;
+   
    Esql_Connect_Type current;
    Eina_List        *backend_set_funcs; /* Esql_Set_Cb */
    Eina_List        *backend_set_params; /* char * */
    Eina_List        *backend_ids; /* Esql_Query_Id * */
    void             *cur_data;
    Esql_Query_Id     cur_id;
+
+   Esql_Connect_Cb   connect_cb;
+   void             *connect_cb_data;
    void             *data;
 };
 
 struct Esql_Res
 {
-   Esql         *e; /* parent object */
    const char   *error;
+   Esql         *e; /* parent object */
    void         *data;
 
    Eina_Inlist  *rows;
@@ -105,6 +110,7 @@ struct Esql_Res
    int           num_cols;
    long long int affected;
    long long int id;
+   Esql_Query_Id qid;
 
    struct
    {
@@ -134,12 +140,9 @@ typedef struct Esql_Row_Iterator
    const Esql_Row *current;
 } Esql_Row_Iterator;
 
-#ifdef HAVE_MSQL
+
 void      esql_mysac_init(Esql *e);
-#endif
-#ifdef HAVE_PSQL
 void      esql_postgresql_init(Esql *e);
-#endif
 
 void      esql_res_free(void *data __UNUSED__,
                         Esql_Res  *res);

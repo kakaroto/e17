@@ -167,14 +167,20 @@ esql_type_set(Esql     *e,
      {
       case ESQL_TYPE_MYSQL:
         INFO("Esql type for %p set to MySQL", e);
+#ifdef HAVE_MSQL
         esql_mysac_init(e);
+#else
+        ERROR("MySQL not supported!");
+#endif
         break;
-#ifdef HAVE_PSQL
       case ESQL_TYPE_POSTGRESQL:
         INFO("Esql type for %p set to PostgreSQL", e);
+#ifdef HAVE_PSQL
         esql_postgresql_init(e);
-        break;
+#else
+        ERROR("PostgreSQL not supported!");
 #endif
+        break;
       default:
         INFO("Esql type for %p is unknown!", e);
         return EINA_FALSE;
@@ -194,6 +200,33 @@ esql_type_get(Esql *e)
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, ESQL_TYPE_NONE);
 
    return e->type;
+}
+
+/**
+ * @brief Return the #Esql_Query_Id of the current active query
+ * @param res The #Esql object (NOT #NULL)
+ * @return The query id, or 0 if no query is active
+ */
+Esql_Query_Id
+esql_current_query_id_get(Esql *e)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(e, 0);
+
+   return e->cur_id;
+}
+
+/**
+ * @brief Retrieve the error string associated with an #Esql object
+ * This function will return #NULL in all cases where an error has not occurred.
+ * @param res The #Esql object (NOT #NULL)
+ * @return The error string, #NULL if no error
+ */
+const char *
+esql_error_get(Esql *e)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(e, NULL);
+
+   return e->error;
 }
 
 /**

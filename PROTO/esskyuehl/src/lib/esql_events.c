@@ -34,15 +34,15 @@
 
 static void
 esql_fake_free(void *data  __UNUSED__,
-               void *data2 __UNUSED__)
+               Esql *e)
 {
+   e->error = NULL;
 }
 
 static void
 esql_call_complete(Esql *e)
 {
    Esql_Set_Cb cb;
-   Esql_Query_Cb qcb = NULL;
 
    DBG("(e=%p)", e);
    switch (e->current)
@@ -50,7 +50,11 @@ esql_call_complete(Esql *e)
       case ESQL_CONNECT_TYPE_INIT:
         INFO("Connected");
         e->connected = EINA_TRUE;
-        ecore_event_add(ESQL_EVENT_CONNECT, e, (Ecore_End_Cb)esql_fake_free, NULL);
+
+        if (e->connect_cb)
+          e->connect_cb(e, e->connect_cb_data);
+        else
+          ecore_event_add(ESQL_EVENT_CONNECT, e, (Ecore_End_Cb)esql_fake_free, NULL);
         break;
 
       case ESQL_CONNECT_TYPE_DATABASE_SET:
@@ -62,6 +66,7 @@ esql_call_complete(Esql *e)
         UPDATE_LISTS(query);
         {
            Esql_Res *res;
+           Esql_Query_Cb qcb;
 
            res = calloc(1, sizeof(Esql_Res));
            EINA_SAFETY_ON_NULL_GOTO(res, out);
@@ -76,7 +81,6 @@ esql_call_complete(Esql *e)
                 
                 eina_hash_del_by_key(esql_query_callbacks, &e->cur_id);
                 esql_res_free(NULL, res);
-                
              }
            else
              {
@@ -91,6 +95,7 @@ esql_call_complete(Esql *e)
      }
 out:
    e->current = ESQL_CONNECT_TYPE_NONE;
+   e->error = NULL;
    if (!e->backend_set_funcs)
      {
         INFO("No calls queued");
@@ -146,17 +151,43 @@ esql_connect_handler(Esql             *e,
         break;
 
       default:
-      {
-         Esql_Res *res;
+        e->error = e->backend.error_get(e);
+        if (e->type == ESQL_CONNECT_TYPE_QUERY)
+          {
+             Esql_Query_Cb qcb;
 
-         res = calloc(1, sizeof(Esql_Res));
-         EINA_SAFETY_ON_NULL_RETURN_VAL(res, ECORE_CALLBACK_RENEW);
-         res->e = e;
-         e->res = res;
-         res->error = e->backend.error_get(e);
-         ERR("Connection error: %s", res->error);
-         ecore_event_add(ESQL_EVENT_ERROR, res, (Ecore_End_Cb)esql_res_free, NULL);
-      }
+             qcb = eina_hash_find(esql_query_callbacks, &e->cur_id);
+             if (qcb)
+               {
+                  Esql_Res *res;
+
+                  res = calloc(1, sizeof(Esql_Res));
+                  EINA_SAFETY_ON_NULL_RETURN_VAL(res, ECORE_CALLBACK_RENEW);
+                  res->e = e;
+                  res->data = e->cur_data;
+                  res->qid = e->cur_id;
+                  e->res = res;
+                  
+                  res->error = e->error;
+                  ERR("Connection error: %s", res->error);
+
+                  INFO("Executing callback for current event");
+                  qcb(res, e->cur_data);
+                  
+                  eina_hash_del_by_key(esql_query_callbacks, &e->cur_id);
+                  esql_res_free(NULL, res);
+               }
+             else
+               ecore_event_add(ESQL_EVENT_ERROR, e, (Ecore_End_Cb)esql_fake_free, NULL);
+          }
+        else
+          {
+             if (e->connect_cb)
+               e->connect_cb(e, e->connect_cb_data);
+             else
+               ecore_event_add(ESQL_EVENT_ERROR, e, (Ecore_End_Cb)esql_fake_free, NULL);
+          }
+
         e->fdh = NULL;
         return ECORE_CALLBACK_CANCEL;
      }
