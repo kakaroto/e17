@@ -169,12 +169,12 @@ esql_type_set(Esql     *e,
         INFO("Esql type for %p set to MySQL", e);
         esql_mysac_init(e);
         break;
-
+#ifdef HAVE_PSQL
       case ESQL_TYPE_POSTGRESQL:
         INFO("Esql type for %p set to PostgreSQL", e);
         esql_postgresql_init(e);
         break;
-
+#endif
       default:
         INFO("Esql type for %p is unknown!", e);
         return EINA_FALSE;
