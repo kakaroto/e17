@@ -3,6 +3,7 @@
 #define ZOOM_MAX 512
 #define ZOOM_MED 256
 #define ZOOM_MIN 128
+#define ZOOM_START 192
 #define ZOOM_STEP 32
 
 static Evas_Object *_ephoto_thumbnail_icon_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
@@ -45,7 +46,7 @@ Evas_Object *
 ephoto_thumb_browser_add(void)
 {
    etb = calloc(1, sizeof(Ephoto_Thumb_Browser));
-   etb->thumb_size = ZOOM_MED;
+   etb->thumb_size = ZOOM_START;
 
    etb->box = elm_box_add(ephoto->win);
    elm_box_horizontal_set(etb->box, EINA_FALSE);
