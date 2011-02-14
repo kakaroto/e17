@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -23,15 +23,16 @@
 #include <esql_private.h>
 
 static Eina_Bool
-esql_row_iterator_next(Esql_Row_Iterator *it, Esql_Row **r)
+esql_row_iterator_next(Esql_Row_Iterator *it,
+                       Esql_Row         **r)
 {
    Eina_Inlist *l;
    EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
    if (!it->current) return EINA_FALSE;
 
-   *r = (Esql_Row*)it->current;
+   *r = (Esql_Row *)it->current;
 
-   l = EINA_INLIST_GET((Esql_Row*)it->current);
+   l = EINA_INLIST_GET((Esql_Row *)it->current);
    it->current = l ? EINA_INLIST_CONTAINER_GET(l->next, Esql_Row) : NULL;
 
    return EINA_TRUE;
@@ -42,7 +43,7 @@ esql_row_iterator_container_get(Esql_Row_Iterator *it)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
 
-   return (Esql_Row*)it->head;
+   return (Esql_Row *)it->head;
 }
 
 static void
@@ -54,11 +55,12 @@ eina_row_iterator_free(Esql_Row_Iterator *it)
 }
 
 void
-esql_res_free(void *data __UNUSED__, Esql_Res *res)
+esql_res_free(void *data __UNUSED__,
+              Esql_Res  *res)
 {
    Esql_Row *r;
    Eina_Inlist *l, *ll;
-   
+
    if ((!res) || (!res->rows)) return;
 
    for (l = res->rows, ll = l->next; l; l = ll, ll = ll ? ll->next : NULL)
@@ -85,6 +87,7 @@ esql_row_free(Esql_Row *r)
      }
    free(r);
 }
+
 /**
  * @defgroup Esql_Res Results
  * @brief Functions to use result objects
@@ -188,7 +191,7 @@ esql_res_row_iterator_new(Esql_Res *res)
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
    EINA_SAFETY_ON_NULL_RETURN_VAL(res->rows, NULL);
-   
+
    it = calloc(1, sizeof(Esql_Row_Iterator));
    EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
 
@@ -247,4 +250,5 @@ esql_row_res_get(Esql_Row *r)
 
    return r->res;
 }
+
 /** @} */

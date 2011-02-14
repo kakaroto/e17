@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -24,7 +24,8 @@
 #include <stdarg.h>
 
 char *
-esql_string_escape(Eina_Bool backslashes, const char *s)
+esql_string_escape(Eina_Bool   backslashes,
+                   const char *s)
 {
    char *ret, *rp;
    const char *p;
@@ -49,7 +50,7 @@ esql_string_escape(Eina_Bool backslashes, const char *s)
         for (p = s, rp = ret; *p; p++, rp++)
           {
              char e = 0;
-             
+
              switch (*p)
                {
                 case '\'':
@@ -57,15 +58,19 @@ esql_string_escape(Eina_Bool backslashes, const char *s)
                 case '"':
                   e = *p;
                   break;
+
                 case '\n':
                   e = 'n';
                   break;
+
                 case '\r':
                   e = 'r';
                   break;
+
                 case '\0':
                   e = '0';
                   break;
+
                 default:
                   *rp = *p;
                   continue;
@@ -80,7 +85,10 @@ esql_string_escape(Eina_Bool backslashes, const char *s)
 }
 
 char *
-esql_query_escape(Eina_Bool backslashes, size_t *len, const char *fmt, va_list args)
+esql_query_escape(Eina_Bool   backslashes,
+                  size_t     *len,
+                  const char *fmt,
+                  va_list     args)
 {
    Eina_Strbuf *buf;
    const char *p, *pp;
@@ -100,13 +108,14 @@ esql_query_escape(Eina_Bool backslashes, size_t *len, const char *fmt, va_list a
 
         if (!pp) pp = fmt + strlen(fmt) - 1;
         EINA_SAFETY_ON_FALSE_GOTO(eina_strbuf_append_length(buf, p, ((pp - p > 1) ? pp - p : 1)), err);
-        if (*pp != '%') break; /* no more fmt strings */
+        if (*pp != '%') break;  /* no more fmt strings */
 top:
         switch (pp[1])
           {
            case 0:
              ERR("Invalid format string!");
              goto err;
+
            case 'l':
              if (!l)
                l = EINA_TRUE;
@@ -119,6 +128,7 @@ top:
                }
              pp++;
              goto top;
+
            case 'f':
              if (l && ll)
                {
@@ -128,6 +138,7 @@ top:
              d = va_arg(args, double);
              EINA_SAFETY_ON_FALSE_GOTO(eina_strbuf_append_printf(buf, "%lf", d), err);
              break;
+
            case 'i':
            case 'd':
              if (l && ll)
@@ -138,18 +149,20 @@ top:
                i = va_arg(args, int);
              EINA_SAFETY_ON_FALSE_GOTO(eina_strbuf_append_printf(buf, "%lli", i), err);
              break;
+
            case 's':
              if (l)
                {
                   ERR("Invalid format string!");
                   goto err;
                }
-             s = va_arg(args, char*);
+             s = va_arg(args, char *);
              s = esql_string_escape(backslashes, s);
              EINA_SAFETY_ON_NULL_GOTO(s, err);
              EINA_SAFETY_ON_FALSE_GOTO(eina_strbuf_append(buf, s), err);
              free(s);
              break;
+
            case 'c':
              if (l)
                {
@@ -167,14 +180,16 @@ top:
                 free(s);
              }
              break;
+
            case '%':
              EINA_SAFETY_ON_FALSE_GOTO(eina_strbuf_append_char(buf, '%'), err);
              break;
+
            default:
              ERR("Unsupported format string: '%s'!", pp);
              goto err;
           }
-        
+
         p = pp + ((pp[1]) ? 2 : 1);
      }
    *len = eina_strbuf_length_get(buf);
@@ -197,7 +212,8 @@ err:
  * @return EINA_TRUE on successful queuing of the query, else EINA_FALSE
  */
 Eina_Bool
-esql_query(Esql *e, const char *query)
+esql_query(Esql       *e,
+           const char *query)
 {
    DBG("(e=%p, fmt='%s')", e, query);
 
@@ -233,7 +249,9 @@ esql_query(Esql *e, const char *query)
  * @p e 's backend database.
  */
 Eina_Bool
-esql_query_args(Esql *e, const char *fmt, ...)
+esql_query_args(Esql       *e,
+                const char *fmt,
+                ...)
 {
    va_list args;
    char *query;

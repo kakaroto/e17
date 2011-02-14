@@ -42,7 +42,7 @@
 # endif
 #endif /* ! _WIN32 */
 
-#define ESQL_DEFAULT_PORT_MYSQL "3306" /**< Convenience define for default MySQL port */
+#define ESQL_DEFAULT_PORT_MYSQL      "3306" /**< Convenience define for default MySQL port */
 #define ESQL_DEFAULT_PORT_POSTGRESQL "5432" /**< Convenience define for default PostgreSQL port */
 
 /**
@@ -64,7 +64,7 @@ extern int ESQL_EVENT_RESULT; /**< Event emitted on query completion, ev object 
  * @typedef Esql
  * Base Esskyuehl object for connecting to servers
  */
-typedef struct Esql Esql;
+typedef struct Esql     Esql;
 /**
  * @typedef Esql_Res
  * Esskyuehl result set object for managing query results
@@ -116,25 +116,25 @@ typedef enum
 typedef struct Esql_Cell
 {
    EINA_INLIST; /**< use to iterate through cells */
-   Esql_Row *row; /**< parent row */
+   Esql_Row      *row; /**< parent row */
    Esql_Cell_Type type;
-   const char *colname; /**< NOT stringshared */
+   const char    *colname; /**< NOT stringshared */
 
    union
    {
-      char c; /**< ESQL_CELL_TYPE_TINYINT */
-      short s; /**< ESQL_CELL_TYPE_SHORT */
-      int i; /**< ESQL_CELL_TYPE_LONG */
-      long long int l; /**< ESQL_CELL_TYPE_LONGLONG */
-      float f; /**< ESQL_CELL_TYPE_FLOAT */
-      double d; /**< ESQL_CELL_TYPE_DOUBLE */
-      const char *string; /**< ESQL_CELL_TYPE_STRING */
+      char                 c; /**< ESQL_CELL_TYPE_TINYINT */
+      short                s; /**< ESQL_CELL_TYPE_SHORT */
+      int                  i; /**< ESQL_CELL_TYPE_LONG */
+      long long int        l; /**< ESQL_CELL_TYPE_LONGLONG */
+      float                f; /**< ESQL_CELL_TYPE_FLOAT */
+      double               d; /**< ESQL_CELL_TYPE_DOUBLE */
+      const char          *string; /**< ESQL_CELL_TYPE_STRING */
       const unsigned char *blob; /**< ESQL_CELL_TYPE_BLOB */
-      struct tm tm; /**< ESQL_CELL_TYPE_TIMESTAMP */
-      struct timeval tv; /**< ESQL_CELL_TYPE_TIME */
+      struct tm            tm; /**< ESQL_CELL_TYPE_TIMESTAMP */
+      struct timeval       tv; /**< ESQL_CELL_TYPE_TIME */
       /** ESQL_CELL_TYPE_UNKNOWN == #NULL */
    } value;
-  size_t len; /**< only valid with ESQL_CELL_TYPE_BLOB and ESQL_CELL_TYPE_STRING */
+   size_t len; /**< only valid with ESQL_CELL_TYPE_BLOB and ESQL_CELL_TYPE_STRING */
 } Esql_Cell;
 /** @} */
 /* lib */
@@ -142,35 +142,43 @@ EAPI int esql_init(void);
 EAPI int esql_shutdown(void);
 
 /* esql */
-Esql *esql_new(Esql_Type type);
-EAPI void *esql_data_get(Esql *e);
-EAPI void esql_data_set(Esql *e, void *data);
-EAPI Eina_Bool esql_type_set(Esql *e, Esql_Type type);
+Esql          *esql_new(Esql_Type type);
+EAPI void     *esql_data_get(Esql *e);
+EAPI void      esql_data_set(Esql *e,
+                             void *data);
+EAPI Eina_Bool esql_type_set(Esql     *e,
+                             Esql_Type type);
 EAPI Esql_Type esql_type_get(Esql *e);
-EAPI void esql_free(Esql *e);
+EAPI void      esql_free(Esql *e);
 
 /* connect */
-EAPI Eina_Bool esql_connect(Esql *e, const char *addr, const char *user,
-                 const char *passwd);
-EAPI Eina_Bool esql_disconnect(Esql *e);
-EAPI Eina_Bool esql_database_set(Esql *e, const char *database_name);
+EAPI Eina_Bool esql_connect(Esql       *e,
+                            const char *addr,
+                            const char *user,
+                            const char *passwd);
+EAPI Eina_Bool   esql_disconnect(Esql *e);
+EAPI Eina_Bool   esql_database_set(Esql       *e,
+                                   const char *database_name);
 EAPI const char *esql_database_get(Esql *e);
 
 /* query */
-EAPI Eina_Bool esql_query(Esql *e, const char *query);
-EAPI Eina_Bool esql_query_args(Esql *e, const char *fmt, ...);
+EAPI Eina_Bool esql_query(Esql       *e,
+                          const char *query);
+EAPI Eina_Bool esql_query_args(Esql       *e,
+                               const char *fmt,
+                               ...);
 
 /* res */
-EAPI Esql *esql_res_esql_get(Esql_Res *res);
-EAPI const char *esql_res_error_get(Esql_Res *res);
-EAPI int esql_res_rows_count(Esql_Res *res);
-EAPI int esql_res_cols_count(Esql_Res *res);
-EAPI long long int esql_res_rows_affected(Esql_Res *res);
-EAPI long long int esql_res_id(Esql_Res *res);
+EAPI Esql          *esql_res_esql_get(Esql_Res *res);
+EAPI const char    *esql_res_error_get(Esql_Res *res);
+EAPI int            esql_res_rows_count(Esql_Res *res);
+EAPI int            esql_res_cols_count(Esql_Res *res);
+EAPI long long int  esql_res_rows_affected(Esql_Res *res);
+EAPI long long int  esql_res_id(Esql_Res *res);
 EAPI Eina_Iterator *esql_res_row_iterator_new(Esql_Res *res);
 
 /* row */
 EAPI Eina_Inlist *esql_row_cells_get(Esql_Row *r);
-EAPI int esql_row_cell_count(Esql_Row *r);
-EAPI Esql_Res *esql_row_res_get(Esql_Row *r);
+EAPI int          esql_row_cell_count(Esql_Row *r);
+EAPI Esql_Res    *esql_row_res_get(Esql_Row *r);
 #endif

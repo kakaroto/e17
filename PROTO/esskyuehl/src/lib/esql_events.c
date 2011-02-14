@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -22,17 +22,18 @@
 #include <Esskyuehl.h>
 #include <esql_private.h>
 
-#define UPDATE_LISTS(TYPE) do { \
-  if (e->backend_set_funcs && (e->backend_set_funcs->data == esql_##TYPE)) \
-    { \
-       free(e->backend_set_params->data); \
-       e->backend_set_funcs = eina_list_remove_list(e->backend_set_funcs, e->backend_set_funcs); \
-       e->backend_set_params = eina_list_remove_list(e->backend_set_params, e->backend_set_params); \
-    } \
-} while (0)
+#define UPDATE_LISTS(TYPE) do {                                                                          \
+       if (e->backend_set_funcs && (e->backend_set_funcs->data == esql_##TYPE))                          \
+         {                                                                                               \
+            free(e->backend_set_params->data);                                                           \
+            e->backend_set_funcs = eina_list_remove_list(e->backend_set_funcs, e->backend_set_funcs);    \
+            e->backend_set_params = eina_list_remove_list(e->backend_set_params, e->backend_set_params); \
+         }                                                                                               \
+  } while (0)
 
 static void
-esql_fake_free(void *data __UNUSED__, void *data2 __UNUSED__)
+esql_fake_free(void *data  __UNUSED__,
+               void *data2 __UNUSED__)
 {
 }
 
@@ -50,10 +51,12 @@ esql_call_complete(Esql *e)
         e->connected = EINA_TRUE;
         ecore_event_add(ESQL_EVENT_CONNECT, e, (Ecore_End_Cb)esql_fake_free, NULL);
         break;
+
       case ESQL_CONNECT_TYPE_DATABASE_SET:
         INFO("Working database is now '%s'", e->database);
         UPDATE_LISTS(database_set);
         break;
+
       case ESQL_CONNECT_TYPE_QUERY:
         UPDATE_LISTS(query);
         {
@@ -66,6 +69,7 @@ esql_call_complete(Esql *e)
            ecore_event_add(ESQL_EVENT_RESULT, res, (Ecore_End_Cb)esql_res_free, NULL);
         }
         break;
+
       default:
         break;
      }
@@ -113,7 +117,8 @@ out:
 }
 
 Eina_Bool
-esql_connect_handler(Esql *e, Ecore_Fd_Handler *fdh)
+esql_connect_handler(Esql             *e,
+                     Ecore_Fd_Handler *fdh)
 {
    DBG("(e=%p, fdh=%p)", e, fdh);
 
@@ -125,29 +130,34 @@ esql_connect_handler(Esql *e, Ecore_Fd_Handler *fdh)
         esql_call_complete(e);
         ecore_main_fd_handler_active_set(fdh, ECORE_FD_WRITE);
         break;
+
       case ECORE_FD_READ | ECORE_FD_WRITE:
         ecore_main_fd_handler_active_set(fdh, ECORE_FD_READ | ECORE_FD_WRITE);
         break;
+
       case ECORE_FD_READ:
         ecore_main_fd_handler_active_set(fdh, ECORE_FD_READ);
         break;
+
       case ECORE_FD_WRITE:
         ecore_main_fd_handler_active_set(fdh, ECORE_FD_WRITE);
         break;
-      default:
-        {
-           Esql_Res *res;
 
-           res = calloc(1, sizeof(Esql_Res));
-           EINA_SAFETY_ON_NULL_RETURN_VAL(res, ECORE_CALLBACK_RENEW);
-           res->e = e;
-           e->res = res;
-           res->error = e->backend.error_get(e);
-           ERR("Connection error: %s", res->error);
-           ecore_event_add(ESQL_EVENT_ERROR, res, (Ecore_End_Cb)esql_res_free, NULL);
-        }
+      default:
+      {
+         Esql_Res *res;
+
+         res = calloc(1, sizeof(Esql_Res));
+         EINA_SAFETY_ON_NULL_RETURN_VAL(res, ECORE_CALLBACK_RENEW);
+         res->e = e;
+         e->res = res;
+         res->error = e->backend.error_get(e);
+         ERR("Connection error: %s", res->error);
+         ecore_event_add(ESQL_EVENT_ERROR, res, (Ecore_End_Cb)esql_res_free, NULL);
+      }
         e->fdh = NULL;
         return ECORE_CALLBACK_CANCEL;
      }
    return ECORE_CALLBACK_RENEW;
 }
+

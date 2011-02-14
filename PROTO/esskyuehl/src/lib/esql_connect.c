@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -37,17 +37,19 @@
  * @return EINA_TRUE if the connection could be started, else EINA_FALSE
  */
 Eina_Bool
-esql_connect(Esql *e, const char *addr, const char *user,
-                 const char *passwd)
+esql_connect(Esql       *e,
+             const char *addr,
+             const char *user,
+             const char *passwd)
 {
    int ret, fd;
-   
+
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(e->type == ESQL_TYPE_NONE, EINA_FALSE);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!e->backend.db && (e->type == ESQL_TYPE_MYSQL), EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(addr, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(user, EINA_FALSE);
-   
+
    if (e->connected)
      {
         ERR("Connection error: already connected!");
@@ -100,10 +102,11 @@ esql_disconnect(Esql *e)
  * @return EINA_TRUE on successful queue of the action, else EINA_FALSE
  */
 Eina_Bool
-esql_database_set(Esql *e, const char *database_name)
+esql_database_set(Esql       *e,
+                  const char *database_name)
 {
    DBG("(e=%p, database_name='%s')", e, database_name);
-   
+
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(database_name, EINA_FALSE);
    if (e->database && (!e->backend.database_set))
@@ -124,7 +127,7 @@ esql_database_set(Esql *e, const char *database_name)
         e->backend_set_funcs = eina_list_append(e->backend_set_funcs, esql_database_set);
         e->backend_set_params = eina_list_append(e->backend_set_params, strdup(database_name));
      }
-   
+
    return EINA_TRUE;
 }
 
@@ -140,4 +143,5 @@ esql_database_get(Esql *e)
 
    return e->database;
 }
+
 /** @} */

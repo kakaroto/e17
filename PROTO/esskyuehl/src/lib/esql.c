@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -33,10 +33,9 @@ int ESQL_EVENT_ERROR = 0;
 int ESQL_EVENT_CONNECT = 0;
 int ESQL_EVENT_RESULT = 0;
 
-
 /**
  * @brief Initialize Esql
- * 
+ *
  * This function initializes events and
  * logging functions for Esql and must be called prior to making any
  * calls.
@@ -72,10 +71,10 @@ eina_fail:
 
 /**
  * @brief Shut down Esql
- * 
+ *
  * This function uninitializes memory allocated by esql_init.
  * Call when no further Esql functions will be used.
- * @return The number of times the esql_init has been called, or -1 if 
+ * @return The number of times the esql_init has been called, or -1 if
  * all occurrences of esql have been shut down
  */
 int
@@ -90,6 +89,7 @@ esql_shutdown(void)
    esql_log_dom = -1;
    return esql_init_count_;
 }
+
 /** @} */
 /**
  * @defgroup Esql_Object Objects
@@ -132,7 +132,8 @@ esql_data_get(Esql *e)
  * @param data The data to associate
  */
 void
-esql_data_set(Esql *e, void *data)
+esql_data_set(Esql *e,
+              void *data)
 {
    EINA_SAFETY_ON_NULL_RETURN(e);
    e->data = data;
@@ -149,7 +150,8 @@ esql_data_set(Esql *e, void *data)
  * @return EINA_TRUE on success, else EINA_FALSE
  */
 Eina_Bool
-esql_type_set(Esql *e, Esql_Type type)
+esql_type_set(Esql     *e,
+              Esql_Type type)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
 
@@ -162,9 +164,11 @@ esql_type_set(Esql *e, Esql_Type type)
       case ESQL_TYPE_MYSQL:
         esql_mysac_init(e);
         break;
+
       case ESQL_TYPE_POSTGRESQL:
         esql_postgresql_init(e);
         break;
+
       default:
         return EINA_FALSE;
      }
@@ -199,4 +203,5 @@ esql_free(Esql *e)
    if (e->backend.free) e->backend.free(e);
    free(e);
 }
- /** @} */
+
+/** @} */
