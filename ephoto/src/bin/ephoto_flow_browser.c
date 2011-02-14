@@ -7,6 +7,8 @@ static void _ephoto_flow_back(void *data __UNUSED__, Evas_Object *o __UNUSED__, 
 static void _ephoto_flow_prev(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__);
 static void _ephoto_flow_next(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__);
 static void _ephoto_center_image_clicked(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__);
+static void _ephoto_key_down(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info);
+static void _ephoto_mouse_wheel(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info);
 
 typedef enum _Ephoto_Flow_State
 {
@@ -17,6 +19,8 @@ typedef enum _Ephoto_Flow_State
 typedef struct _Ephoto_Flow_Browser Ephoto_Flow_Browser;
 struct _Ephoto_Flow_Browser
 {
+   Eina_Bool key_down;
+   Eina_Bool mouse_wheel;
    Evas_Object *box;
    Evas_Object *layout;
    Evas_Object *images[5];
@@ -48,6 +52,8 @@ ephoto_flow_browser_add(void)
    efb->swallows[2] = "center";
    efb->swallows[3] = "right";
    efb->swallows[4] = "offscreen_right";
+   efb->key_down = EINA_FALSE;
+   efb->mouse_wheel = EINA_FALSE;
 
    efb->box = elm_box_add(ephoto->win);
    elm_box_horizontal_set(efb->box, EINA_FALSE);
@@ -55,6 +61,10 @@ ephoto_flow_browser_add(void)
    evas_object_size_hint_weight_set
      (efb->box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_win_resize_object_add(ephoto->win, efb->box);
+   evas_object_event_callback_add
+     (efb->box, EVAS_CALLBACK_MOUSE_WHEEL, _ephoto_mouse_wheel, NULL);
+   evas_object_event_callback_add
+     (efb->box, EVAS_CALLBACK_KEY_DOWN, _ephoto_key_down, NULL);
    evas_object_show(efb->box);
 
    efb->toolbar = elm_toolbar_add(efb->box);
@@ -91,6 +101,7 @@ ephoto_flow_browser_add(void)
    elm_win_resize_object_add(ephoto->win, efb->layout);
    elm_box_pack_end(efb->box, efb->layout);
    evas_object_show(efb->layout);
+
    edje_object_signal_callback_add
      (elm_layout_edje_get(efb->layout), "done", "ephoto", _ephoto_flow_done, NULL);
 
@@ -146,6 +157,8 @@ ephoto_flow_browser_image_set(void)
    elm_thumb_file_set(efb->images[4], eina_list_data_get(nextt), NULL);
    elm_layout_content_set(efb->img_edje[4], "image", efb->images[4]);
    elm_layout_content_set(efb->layout, "offscreen_right", efb->img_edje[4]);
+
+   elm_object_focus(efb->box);
 }
 
 void
@@ -167,6 +180,16 @@ ephoto_flow_browser_show(void)
    ephoto->prev_state = ephoto->state;
    ephoto->state = EPHOTO_STATE_FLOW;
 
+   if (!evas_object_key_grab(efb->box, "Escape", 0, 0, 1))
+     printf("Couldn't grab Escape key\n");
+   if (!evas_object_key_grab(efb->box, "Left", 0, 0, 1))
+     printf("Couldn't grab Left key\n");
+   if (!evas_object_key_grab(efb->box, "Right", 0, 0, 1))
+     printf("Couldn't grab Right key\n");
+   if (!evas_object_key_grab(efb->box, "BackSpace", 0, 0, 1))
+     printf("Couldn't grab BackSpace key\n");
+   if (!evas_object_key_grab(efb->box, "space", 0, 0, 1))
+     printf("Couldn't grab space key\n");
    ephoto_flow_browser_image_set();
    elm_pager_content_promote(ephoto->pager, ephoto->flow_browser);
 }
@@ -267,13 +290,20 @@ _ephoto_flow_done(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char *
 
    elm_toolbar_item_disabled_set(efb->action.go_prev, EINA_FALSE);
    elm_toolbar_item_disabled_set(efb->action.go_next, EINA_FALSE);
+   efb->mouse_wheel = EINA_FALSE;
+   efb->key_down = EINA_FALSE;
 }
 
 static void
 _ephoto_flow_back(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
-   elm_toolbar_item_selected_set
-     (elm_toolbar_selected_item_get(efb->toolbar), EINA_FALSE);
+   elm_toolbar_item_selected_set(efb->action.go_back, EINA_FALSE);
+
+   evas_object_key_ungrab(efb->box, "Escape", 0, 0);
+   evas_object_key_ungrab(efb->box, "Left", 0, 0);
+   evas_object_key_ungrab(efb->box, "Right", 0, 0);
+   evas_object_key_ungrab(efb->box, "BackSpace", 0, 0);
+   evas_object_key_ungrab(efb->box, "space", 0, 0);
 
    ephoto_thumb_browser_show();
 }
@@ -283,8 +313,7 @@ _ephoto_flow_prev(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_
 {
    Evas_Object *edje;
 
-   elm_toolbar_item_selected_set
-     (elm_toolbar_selected_item_get(efb->toolbar), EINA_FALSE);
+   elm_toolbar_item_selected_set(efb->action.go_prev, EINA_FALSE);
 
    ephoto->current_index = eina_list_prev(ephoto->current_index);
    if (!eina_list_data_get(ephoto->current_index))
@@ -292,6 +321,8 @@ _ephoto_flow_prev(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_
 
    elm_toolbar_item_disabled_set(efb->action.go_prev, EINA_TRUE);
    elm_toolbar_item_disabled_set(efb->action.go_next, EINA_TRUE);
+   efb->mouse_wheel = EINA_TRUE;
+   efb->key_down = EINA_TRUE;
 
    edje = elm_layout_edje_get(efb->layout);
 
@@ -309,8 +340,7 @@ _ephoto_flow_next(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_
 {
    Evas_Object *edje;
 
-   elm_toolbar_item_selected_set
-     (elm_toolbar_selected_item_get(efb->toolbar), EINA_FALSE);
+   elm_toolbar_item_selected_set(efb->action.go_next, EINA_FALSE);
 
    ephoto->current_index = eina_list_next(ephoto->current_index);
    if (!ephoto->current_index)
@@ -318,6 +348,8 @@ _ephoto_flow_next(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_
 
    elm_toolbar_item_disabled_set(efb->action.go_prev, EINA_TRUE);
    elm_toolbar_item_disabled_set(efb->action.go_next, EINA_TRUE);
+   efb->mouse_wheel = EINA_TRUE;
+   efb->key_down = EINA_TRUE;
 
    edje = elm_layout_edje_get(efb->layout);
 
@@ -349,3 +381,35 @@ _ephoto_center_image_clicked(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Obj
      }
 }
 
+static void
+_ephoto_key_down(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
+{
+   Evas_Event_Key_Down *ev = event_info;
+   const char *k = ev->keyname;
+   
+   if (efb->key_down)
+     return;
+   efb->key_down = EINA_TRUE;
+
+   if (!strcmp(k, "Escape"))
+     _ephoto_flow_back(NULL, NULL, NULL);
+   if (!strcmp(k, "Left") || !strcmp(k, "BackSpace"))
+     _ephoto_flow_prev(NULL, NULL, NULL);
+   if (!strcmp(k, "Right") || !strcmp(k, "space"))
+     _ephoto_flow_next(NULL, NULL, NULL);
+}
+
+static void
+_ephoto_mouse_wheel(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
+{
+   Evas_Event_Mouse_Wheel *ev = event_info;
+
+   if (efb->mouse_wheel)
+     return;
+   efb->mouse_wheel = EINA_TRUE;
+
+   if (ev->z > 0) 
+     _ephoto_flow_next(NULL, NULL, NULL);
+   else
+     _ephoto_flow_prev(NULL, NULL, NULL);
+}
