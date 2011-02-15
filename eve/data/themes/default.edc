@@ -295,7 +295,7 @@ collections {
                 type: RECT;
                 description { state: "default" 0.0;
                     color: 0 0 0 255;
-                    min: 480 800;
+                    min: 240 320;
                 }
             }
         }
@@ -526,7 +526,7 @@ collections {
                 type: RECT;
                 description { state: "default" 0.0;
                     color: 0 0 0 255;
-                    min: 480 800;
+                    min: 240 320;
                 }
             }
             part { name: "view";
