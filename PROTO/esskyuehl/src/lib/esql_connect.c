@@ -86,9 +86,9 @@ esql_disconnect(Esql *e)
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(e->backend.db, EINA_FALSE);
 
+   e->backend.disconnect(e);
    if (e->fdh) ecore_main_fd_handler_del(e->fdh);
    e->fdh = NULL;
-   e->backend.disconnect(e);
    e->connected = EINA_FALSE;
    INFO("Disconnected");
    return EINA_TRUE;
