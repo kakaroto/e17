@@ -170,7 +170,7 @@ esql_type_set(Esql     *e,
 #ifdef HAVE_MSQL
         esql_mysac_init(e);
 #else
-        ERROR("MySQL not supported!");
+        ERR("MySQL not supported!");
 #endif
         break;
       case ESQL_TYPE_POSTGRESQL:
@@ -178,7 +178,7 @@ esql_type_set(Esql     *e,
 #ifdef HAVE_PSQL
         esql_postgresql_init(e);
 #else
-        ERROR("PostgreSQL not supported!");
+        ERR("PostgreSQL not supported!");
 #endif
         break;
       default:
