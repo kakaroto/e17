@@ -3,6 +3,7 @@ Name=Ephoto
 Comment=Enlightened Photo Viewer
 Comment[fr]=Visionneuse photo pour Enlightenment
 Comment[it]=Visualizzatore di foto per Enlightenment
+Comment[pt]=Visualizador de fotos para o Enlightenment
 Exec=ephoto
 Icon=ephoto
 Terminal=false
