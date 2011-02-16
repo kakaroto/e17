@@ -181,7 +181,7 @@ _itask_menu_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_inf
 
       mi = e_menu_item_new(mg);
       e_menu_item_label_set(mi, N_("Settings"));
-      e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+      e_util_menu_item_theme_icon_set(mi, "enlightenment/configuration");
       e_menu_item_callback_set(mi, _itask_menu_cb_configuration, it);
 
       e_gadcon_client_util_menu_items_append(it->inst->gcc, ma, mg, 0);
