@@ -32,7 +32,7 @@ news_theme_icon_set(Evas_Object *ic, char *key)
 void
 news_theme_menu_icon_set(E_Menu_Item *mi, char *key)
 {
-   if (!e_util_menu_item_edje_icon_set(mi, key))
+   if (!e_util_menu_item_theme_icon_set(mi, key))
      e_menu_item_icon_edje_set(mi, news_theme_file_get(NULL), key);
 }
 

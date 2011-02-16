@@ -31,7 +31,7 @@ static Eina_List   *_sort_feedrefs_unreadfirst_list_get(News_Item *ni);
 static Eina_List   *_sort_articles_unreadfirst_list_get(News_Feed *f);
 static Eina_List   *_sort_articles_unreadfirst(Eina_List *articles);
 static Eina_List   *_sort_articles_date_list_get(News_Feed *f);
-static int          _sort_articles_date_list_cb(void *d1, void *d2);
+static int          _sort_articles_date_list_cb(const void *d1, const void *d2);
 
 static Eina_List *_viewers;
 
@@ -1014,9 +1014,9 @@ _sort_articles_date_list_get(News_Feed *f)
 }
 
 static int
-_sort_articles_date_list_cb(void *d1, void *d2)
+_sort_articles_date_list_cb(const void *d1, const void *d2)
 {
-   News_Feed_Article *a1, *a2;
+   const News_Feed_Article *a1, *a2;
 
    a1 = d1;
    a2 = d2;

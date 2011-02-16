@@ -31,7 +31,7 @@ int         news_util_url_image_get(char *url, void (*func_cb) (News_Feed_Docume
 int         news_util_ecanvas_geometry_get(int *canvas_w, int *canvas_h);
 const char *news_util_convert_locale_to_utf8(char *txt);
 const char *news_util_convert_utf8_to_locale(char *txt);
-int         news_util_datecmp(struct tm *t1, struct tm *t2);
+int         news_util_datecmp(const struct tm *t1, const struct tm *t2);
 int         news_util_browser_open(const char *url);
 Eina_List  *news_util_lang_detect(void);
 int         news_util_proxy_detect(void);

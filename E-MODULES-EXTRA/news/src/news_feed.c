@@ -29,8 +29,8 @@ static Eina_Bool        _cb_feed_server_del(void *data, int type, void *event);
 static Eina_Bool        _cb_feed_server_data(void *data, int type, void *event);
 static void       _cb_feed_parse(News_Feed_Document *doc, News_Parse_Error error, int changes);
 static Eina_Bool        _cb_feeds_timer(void *data);
-static int        _cb_sort_cats(void *d1, void *d2);
-static int        _cb_sort_feeds(void *d1, void *d2);
+static int        _cb_sort_cats(const void *d1, const void *d2);
+static int        _cb_sort_feeds(const void *d1, const void *d2);
 
 static const News_Feed_Lang _feed_langs[] = {
    {"ca", "Catalan"},
@@ -1363,9 +1363,9 @@ _cb_feeds_timer(void *data)
 }
 
 static int
-_cb_sort_cats(void *d1, void *d2)
+_cb_sort_cats(const void *d1, const void *d2)
 {
-   News_Feed_Category *c1, *c2;
+   const News_Feed_Category *c1, *c2;
 
    c1 = d1;
    c2 = d2;
@@ -1374,9 +1374,9 @@ _cb_sort_cats(void *d1, void *d2)
 }
 
 static int
-_cb_sort_feeds(void *d1, void *d2)
+_cb_sort_feeds(const void *d1, const void *d2)
 {
-   News_Feed *f1, *f2;
+   const News_Feed *f1, *f2;
 
    f1 = d1;
    f2 = d2;

@@ -121,43 +121,29 @@ _menu_append(E_Menu *ma, News_Item *ni)
    E_Menu *mg, *mn;
    E_Menu_Item *mi;
 
-   mn = e_menu_new();
-
    if (ni->config->feed_refs)
      {
         if (ni->unread_count)
           {
-             mi = e_menu_item_new(mn);
+             mi = e_menu_item_new(ma);
              e_menu_item_label_set(mi, D_("Set all as read"));
              news_theme_menu_icon_set(mi, NEWS_THEME_ICON_SETASREAD);
              e_menu_item_callback_set(mi, _cb_item_setasread, ni);
           }
 
-        mi = e_menu_item_new(mn);
+        mi = e_menu_item_new(ma);
         e_menu_item_label_set(mi, D_("Update"));
         news_theme_menu_icon_set(mi, NEWS_THEME_ICON_UPDATE);
         e_menu_item_callback_set(mi, _cb_item_update, ni);
-
-		mi = e_menu_item_new(mn);
-        e_menu_item_separator_set(mi, 1);
      }
 
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, D_("Settings"));
-   news_theme_menu_icon_set(mi, "icon");
-   e_menu_item_callback_set(mi, _cb_configure_feeds, NULL);
-
    mi = e_menu_item_new(ma);
-   e_menu_item_label_set(mi, D_("Newsfeeds"));
-   e_util_menu_item_theme_icon_set(mi, "preferences-system");
-   e_menu_item_submenu_set(mi, mn);
-
-   mg = e_menu_new();
-
-   mi = e_menu_item_new(mg);
-   e_menu_item_label_set(mi, D_("Contents"));
+   e_menu_item_label_set(mi, D_("Gadget Contents"));
    news_theme_menu_icon_set(mi, "icon");
    e_menu_item_callback_set(mi, _cb_configure_item_content, ni);
+
+   mi = e_menu_item_new(ma);
+   e_menu_item_separator_set(mi, 1);
 
    mn = e_menu_new();
 
@@ -165,16 +151,23 @@ _menu_append(E_Menu *ma, News_Item *ni)
    e_menu_item_label_set(mi, D_("Gadget"));
    e_util_menu_item_theme_icon_set(mi, "preferences-system");
    e_menu_item_callback_set(mi, _cb_configure_item, ni);
+
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, D_("Feeds"));
+   news_theme_menu_icon_set(mi, "icon");
+   e_menu_item_callback_set(mi, _cb_configure_feeds, NULL);
+
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, D_("Main"));
    e_util_menu_item_theme_icon_set(mi, "preferences-system");
    e_menu_item_callback_set(mi, _cb_configure_main, NULL);
 
-   mi = e_menu_item_new(mg);
+   mi = e_menu_item_new(ma);
    e_menu_item_label_set(mi, D_("Settings"));
    e_util_menu_item_theme_icon_set(mi, "preferences-system");
    e_menu_item_submenu_set(mi, mn);
 
+   mg = e_menu_new();
    e_gadcon_client_util_menu_items_append(ni->gcc, ma, mg, 0);
 }
 

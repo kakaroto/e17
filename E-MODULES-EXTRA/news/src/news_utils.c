@@ -27,7 +27,7 @@ news_util_ecanvas_geometry_get(int *canvas_w, int *canvas_h)
 }
 
 int
-news_util_datecmp(struct tm *t1, struct tm *t2)
+news_util_datecmp(const struct tm *t1, const struct tm *t2)
 {
    if (t1->tm_year != t2->tm_year)
      return (t1->tm_year - t2->tm_year);
