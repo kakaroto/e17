@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: News module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-10-07 06:29+0400\n"
+"POT-Creation-Date: 2011-02-16 22:50+0100\n"
 "PO-Revision-Date: 2010-10-07 14:57+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <pourunmondesansgourou@gmail.com>\n"
@@ -45,31 +45,42 @@ msgstr "Nouvelles"
 
 #: src/news_config.c:100
 #, c-format
-msgid "<hilight>News module : Configuration Upgraded</hilight><br><br>Your configuration of news module<br>has been upgraded<br>Your settings were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
-msgstr "<hilight>Module de nouvelles : configuration actualisée</hilight><br><br>La configuration du module de nouvelles<br>a été mise à jour<br>Vos réglages ont dû être supprimés<br>Désolé pour le désagrément<br><br>(%d ->%d)"
+msgid ""
+"<hilight>News module : Configuration Upgraded</hilight><br><br>Your "
+"configuration of news module<br>has been upgraded<br>Your settings were "
+"removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
+msgstr ""
+"<hilight>Module de nouvelles : configuration actualisée</hilight><br><br>La "
+"configuration du module de nouvelles<br>a été mise à jour<br>Vos réglages "
+"ont dû être supprimés<br>Désolé pour le désagrément<br><br>(%d ->%d)"
 
 #: src/news_config.c:112
 #, c-format
-msgid "<hilight>News module : Configuration Downgraded</hilight><br><br>Your configuration of News module<br>has been downgraded<br>Your settings were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
-msgstr "<hilight>Module de nouvelles : configuration rétrogradée</hilight><br><br>La configuration du module de nouvelles<br>a été ramenée à un état antérieur<br>Vos réglages ont dû être supprimés<br>Désolé pour le désagrément<br><br>(%d ->%d)"
+msgid ""
+"<hilight>News module : Configuration Downgraded</hilight><br><br>Your "
+"configuration of News module<br>has been downgraded<br>Your settings were "
+"removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
+msgstr ""
+"<hilight>Module de nouvelles : configuration rétrogradée</hilight><br><br>La "
+"configuration du module de nouvelles<br>a été ramenée à un état "
+"antérieur<br>Vos réglages ont dû être supprimés<br>Désolé pour le "
+"désagrément<br><br>(%d ->%d)"
 
 #: src/news_config_dialog.c:90
 msgid "News Main Configuration"
 msgstr "Configuration principale du module de nouvelles"
 
-#: src/news_config_dialog.c:190
-#: src/news_config_dialog.c:228
-#: src/news_config_dialog_feeds.c:358
+#: src/news_config_dialog.c:190 src/news_config_dialog.c:228
+#: src/news_config_dialog_feeds.c:358 src/news_menu.c:156
 msgid "Feeds"
 msgstr "Flux"
 
-#: src/news_config_dialog.c:192
-#: src/news_config_dialog.c:236
+#: src/news_config_dialog.c:192 src/news_config_dialog.c:236
 msgid "Sort lists by name (disable Move action)"
-msgstr "Classer les listes par ordre alphabétique (désactive l'action déplacer)"
+msgstr ""
+"Classer les listes par ordre alphabétique (désactive l'action déplacer)"
 
-#: src/news_config_dialog.c:197
-#: src/news_config_dialog.c:305
+#: src/news_config_dialog.c:197 src/news_config_dialog.c:305
 msgid "News Viewer"
 msgstr "Lecteur de nouvelles"
 
@@ -77,8 +88,7 @@ msgstr "Lecteur de nouvelles"
 msgid "Font size"
 msgstr "Taille de la police"
 
-#: src/news_config_dialog.c:202
-#: src/news_config_dialog.c:316
+#: src/news_config_dialog.c:202 src/news_config_dialog.c:316
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
@@ -87,8 +97,7 @@ msgstr "%1.0f"
 msgid "Font color"
 msgstr "Couleur de la police"
 
-#: src/news_config_dialog.c:230
-#: src/news_config_dialog.c:270
+#: src/news_config_dialog.c:230 src/news_config_dialog.c:270
 #: src/news_config_dialog.c:290
 msgid "Timer"
 msgstr "Minuteur"
@@ -122,8 +131,7 @@ msgstr "Uniquement pour les flux urgents"
 msgid "On all feeds"
 msgstr "Pour tous les flux"
 
-#: src/news_config_dialog.c:272
-#: src/news_config_dialog.c:292
+#: src/news_config_dialog.c:272 src/news_config_dialog.c:292
 #, c-format
 msgid "%1.0f s"
 msgstr "%1.0f s"
@@ -180,23 +188,19 @@ msgstr "Configuration de la catégorie des nouvelles"
 msgid "Icon"
 msgstr "Icone"
 
-#: src/news_config_dialog_category.c:145
-#: src/news_config_dialog_feed.c:410
+#: src/news_config_dialog_category.c:145 src/news_config_dialog_feed.c:410
 msgid "Name"
 msgstr "Nom"
 
-#: src/news_config_dialog_category.c:203
-#: src/news_config_dialog_feed.c:543
+#: src/news_config_dialog_category.c:203 src/news_config_dialog_feed.c:543
 msgid "Select an Icon"
 msgstr "Sélectionner un icone"
 
-#: src/news_config_dialog_category.c:228
-#: src/news_config_dialog_feed.c:568
+#: src/news_config_dialog_category.c:228 src/news_config_dialog_feed.c:568
 msgid "OK"
 msgstr "O.K."
 
-#: src/news_config_dialog_category.c:229
-#: src/news_config_dialog_feed.c:569
+#: src/news_config_dialog_category.c:229 src/news_config_dialog_feed.c:569
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -228,8 +232,7 @@ msgstr "Marquer comme important"
 msgid "Category"
 msgstr "Catégorie"
 
-#: src/news_config_dialog_feed.c:368
-#: src/news_config_dialog_feed.c:412
+#: src/news_config_dialog_feed.c:368 src/news_config_dialog_feed.c:412
 msgid "Language"
 msgstr "Langue"
 
@@ -237,13 +240,11 @@ msgstr "Langue"
 msgid "Advanced informations"
 msgstr "Informations avancées"
 
-#: src/news_config_dialog_feed.c:393
-#: src/news_config_dialog_feed.c:414
+#: src/news_config_dialog_feed.c:393 src/news_config_dialog_feed.c:414
 msgid "Description"
 msgstr "Description"
 
-#: src/news_config_dialog_feed.c:397
-#: src/news_config_dialog_feed.c:416
+#: src/news_config_dialog_feed.c:397 src/news_config_dialog_feed.c:416
 msgid "Home url"
 msgstr "Url de démarrage"
 
@@ -263,23 +264,19 @@ msgstr "Configuration des flux de nouvelles"
 msgid "Categories"
 msgstr "Catégories"
 
-#: src/news_config_dialog_feeds.c:314
-#: src/news_config_dialog_feeds.c:388
+#: src/news_config_dialog_feeds.c:314 src/news_config_dialog_feeds.c:388
 msgid "Add"
 msgstr "Ajouter"
 
-#: src/news_config_dialog_feeds.c:316
-#: src/news_config_dialog_feeds.c:390
+#: src/news_config_dialog_feeds.c:316 src/news_config_dialog_feeds.c:390
 msgid "Delete"
 msgstr "Supprimer"
 
-#: src/news_config_dialog_feeds.c:319
-#: src/news_config_dialog_feeds.c:393
+#: src/news_config_dialog_feeds.c:319 src/news_config_dialog_feeds.c:393
 msgid "Configure"
 msgstr "Configurer"
 
-#: src/news_config_dialog_feeds.c:331
-#: src/news_config_dialog_langs.c:133
+#: src/news_config_dialog_feeds.c:331 src/news_config_dialog_langs.c:133
 msgid "Languages"
 msgstr "Langues"
 
@@ -300,11 +297,14 @@ msgid "Restore default lists"
 msgstr "Restaurer les listes par défaut"
 
 #: src/news_config_dialog_feeds.c:686
-msgid "There are <hilight>feeds</hilight> in this category.<br>You have to <hilight>remove them first</hilight>"
-msgstr "Il y a des <hilight>flux</hilight> dans cette catégorie.<br>Vous devez <hilight>d'abord les supprimer</hilight>"
+msgid ""
+"There are <hilight>feeds</hilight> in this category.<br>You have to "
+"<hilight>remove them first</hilight>"
+msgstr ""
+"Il y a des <hilight>flux</hilight> dans cette catégorie.<br>Vous devez "
+"<hilight>d'abord les supprimer</hilight>"
 
-#: src/news_config_dialog_feeds.c:754
-#: src/news_config_dialog_feeds.c:779
+#: src/news_config_dialog_feeds.c:754 src/news_config_dialog_feeds.c:779
 msgid "News Module - Are you sure ?"
 msgstr "Modules de nouvelles : êtes-vous sûr ?"
 
@@ -402,8 +402,14 @@ msgstr "Il est nécessaire de <hilight>sélectionner une catégorie</hilight>."
 
 #: src/news_feed.c:302
 #, c-format
-msgid "A feed with the <hilight>name</hilight> %s <hilight>already exists</hilight><br>in the %s category<br><br>Its not possible to have feeds with the same name<br>in one category."
-msgstr "Un flux du <hilight>nom</hilight> %s <hilight>existe déjà</hilight><br>dans la catégorie %s<br><br>Il n'est pas possible d'avoir deux flux de même nom<br>dans une catégorie."
+msgid ""
+"A feed with the <hilight>name</hilight> %s <hilight>already exists</"
+"hilight><br>in the %s category<br><br>Its not possible to have feeds with "
+"the same name<br>in one category."
+msgstr ""
+"Un flux du <hilight>nom</hilight> %s <hilight>existe déjà</hilight><br>dans "
+"la catégorie %s<br><br>Il n'est pas possible d'avoir deux flux de même "
+"nom<br>dans une catégorie."
 
 #: src/news_feed.c:311
 msgid "You need to select a <hilight>language</hilight>."
@@ -418,37 +424,37 @@ msgid "You need to enter a <hilight>name</hilight> !"
 msgstr "Vous devez entrer un <hilight>nom</hilight> !"
 
 #: src/news_feed.c:888
-msgid "The <hilight>name</hilight> you entered is <hilight>already used</hilight><br>by another category"
-msgstr "Le <hilight>nom</hilight> que vous avez choisi est <hilight>déjà utilisé</hilight>par une autre catégorie"
+msgid ""
+"The <hilight>name</hilight> you entered is <hilight>already used</"
+"hilight><br>by another category"
+msgstr ""
+"Le <hilight>nom</hilight> que vous avez choisi est <hilight>déjà utilisé</"
+"hilight>par une autre catégorie"
 
-#: src/news_menu.c:131
+#: src/news_menu.c:129
 msgid "Set all as read"
 msgstr "Marquer tout comme lu"
 
-#: src/news_menu.c:137
+#: src/news_menu.c:135
 msgid "Update"
 msgstr "Mettre à jour"
 
-#: src/news_menu.c:146
-#: src/news_menu.c:174
-msgid "Settings"
-msgstr "Configuration"
-
-#: src/news_menu.c:151
-msgid "Newsfeeds"
-msgstr "Flux de nouvelles"
-
-#: src/news_menu.c:158
-msgid "Contents"
+#: src/news_menu.c:141
+#, fuzzy
+msgid "Gadget Contents"
 msgstr "Contenu"
 
-#: src/news_menu.c:165
+#: src/news_menu.c:151
 msgid "Gadget"
 msgstr "Gadget"
 
-#: src/news_menu.c:169
+#: src/news_menu.c:161
 msgid "Main"
 msgstr "Principal"
+
+#: src/news_menu.c:166
+msgid "Settings"
+msgstr "Configuration"
 
 #: src/news_utils.h:13
 msgid "News Module DEBUG DEBUG DEBUG DEBUG"
@@ -470,3 +476,5 @@ msgstr "Flux dans ce gadget"
 msgid "Articles in selected feed"
 msgstr "Articles du flux sélectionné"
 
+#~ msgid "Newsfeeds"
+#~ msgstr "Flux de nouvelles"

@@ -6,11 +6,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: news\n"
-"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2010-10-06 09:00-0700\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2011-02-16 22:50+0100\n"
 "PO-Revision-Date: 2010-12-05 11:41+0000\n"
 "Last-Translator: Sérgio Marques <sarquespt@gmail.com>\n"
 "Language-Team: Portuguese <>\n"
+"Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,468 +20,464 @@ msgstr ""
 "X-Poedit-Country: Portugal\n"
 "X-Generator: Lokalize 1.1\n"
 
-#: ../src/e_mod_main.c:52
+#: src/e_mod_main.c:52
 msgid "Config init failed"
 msgstr "Falha ao iniciar a configuração"
 
-#: ../src/e_mod_main.c:53
+#: src/e_mod_main.c:53
 msgid "Parser init failed"
 msgstr "Falha ao iniciar o analisador"
 
-#: ../src/e_mod_main.c:54
+#: src/e_mod_main.c:54
 msgid "Feeds init failed"
 msgstr "Falha ao iniciar as fontes"
 
-#: ../src/e_mod_main.c:55
+#: src/e_mod_main.c:55
 msgid "Viewer init failed"
 msgstr "Falha ao iniciar o visualizador"
 
-#: ../src/e_mod_main.c:56
+#: src/e_mod_main.c:56
 msgid "Popup subsystem init failed"
 msgstr "Falha ao iniciar o sistema de alertas"
 
-#: ../src/e_mod_main.c:219
+#: src/e_mod_main.c:219
 msgid "News"
 msgstr "Notícias"
 
-#: ../src/news_config.c:100
+#: src/news_config.c:100
 #, c-format
-msgid "<hilight>News module : Configuration Upgraded</hilight><br><br>Your configuration of news module<br>has been upgraded<br>Your settings were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
+msgid ""
+"<hilight>News module : Configuration Upgraded</hilight><br><br>Your "
+"configuration of news module<br>has been upgraded<br>Your settings were "
+"removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
 msgstr ""
-"<hilight>Módulo de notícias: Configuração atualizada</hilight><br><br>A configuração do módulo de notícias foi atualizada<br>As suas definições foram removidas.<br>Desculpe qualquer inconveniente<br><br>(%d -> "
-"%d)"
+"<hilight>Módulo de notícias: Configuração atualizada</hilight><br><br>A "
+"configuração do módulo de notícias foi atualizada<br>As suas definições "
+"foram removidas.<br>Desculpe qualquer inconveniente<br><br>(%d -> %d)"
 
-#: ../src/news_config.c:112
+#: src/news_config.c:112
 #, c-format
-msgid "<hilight>News module : Configuration Downgraded</hilight><br><br>Your configuration of News module<br>has been downgraded<br>Your settings were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
+msgid ""
+"<hilight>News module : Configuration Downgraded</hilight><br><br>Your "
+"configuration of News module<br>has been downgraded<br>Your settings were "
+"removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
 msgstr ""
-"<hilight>Módulo de notícias: Configuração revertida</hilight><br><br>A configuração do módulo de notícias foi revertida.<br>As suas definições foram removidas.<br>Desculpe qualquer inconveniente<br><br>(%d -> "
-"%d)"
+"<hilight>Módulo de notícias: Configuração revertida</hilight><br><br>A "
+"configuração do módulo de notícias foi revertida.<br>As suas definições "
+"foram removidas.<br>Desculpe qualquer inconveniente<br><br>(%d -> %d)"
 
-#: ../src/news_config_dialog.c:90
+#: src/news_config_dialog.c:90
 msgid "News Main Configuration"
 msgstr "Configurações principais"
 
-#: ../src/news_config_dialog.c:190
-#: ../src/news_config_dialog.c:228
-#: ../src/news_config_dialog_feeds.c:358
+#: src/news_config_dialog.c:190 src/news_config_dialog.c:228
+#: src/news_config_dialog_feeds.c:358 src/news_menu.c:156
 msgid "Feeds"
 msgstr "Fontes"
 
-#: ../src/news_config_dialog.c:192
-#: ../src/news_config_dialog.c:236
+#: src/news_config_dialog.c:192 src/news_config_dialog.c:236
 msgid "Sort lists by name (disable Move action)"
 msgstr "Ordenar listas por nome (inativar \"Mover\")"
 
-#: ../src/news_config_dialog.c:197
-#: ../src/news_config_dialog.c:305
+#: src/news_config_dialog.c:197 src/news_config_dialog.c:305
 msgid "News Viewer"
 msgstr "Visualizador de notícias"
 
-#: ../src/news_config_dialog.c:199
+#: src/news_config_dialog.c:199
 msgid "Font size"
 msgstr "Tamanho da letra"
 
-#: ../src/news_config_dialog.c:202
-#: ../src/news_config_dialog.c:316
+#: src/news_config_dialog.c:202 src/news_config_dialog.c:316
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
-#: ../src/news_config_dialog.c:205
+#: src/news_config_dialog.c:205
 msgid "Font color"
 msgstr "Cor da letra"
 
-#: ../src/news_config_dialog.c:230
-#: ../src/news_config_dialog.c:270
-#: ../src/news_config_dialog.c:290
+#: src/news_config_dialog.c:230 src/news_config_dialog.c:270
+#: src/news_config_dialog.c:290
 msgid "Timer"
 msgstr "Temporizador"
 
-#: ../src/news_config_dialog.c:232
+#: src/news_config_dialog.c:232
 #, c-format
 msgid "%1.0f min"
 msgstr "%1.0f min"
 
-#: ../src/news_config_dialog.c:241
+#: src/news_config_dialog.c:241
 msgid "Browser"
 msgstr "Navegador"
 
-#: ../src/news_config_dialog.c:243
+#: src/news_config_dialog.c:243
 msgid "Uses xdg-open script, from freedesktop.org"
 msgstr "Utiliza o \"script\" xdg-open, de freedesktop.org"
 
-#: ../src/news_config_dialog.c:248
+#: src/news_config_dialog.c:248
 msgid "Popup On News"
 msgstr "Alertar ao receber notícias"
 
-#: ../src/news_config_dialog.c:251
+#: src/news_config_dialog.c:251
 msgid "Never"
 msgstr "Nunca"
 
-#: ../src/news_config_dialog.c:257
+#: src/news_config_dialog.c:257
 msgid "Only on urgent feeds"
 msgstr "Apenas nas fontes urgentes"
 
-#: ../src/news_config_dialog.c:263
+#: src/news_config_dialog.c:263
 msgid "On all feeds"
 msgstr "Em todas as fontes"
 
-#: ../src/news_config_dialog.c:272
-#: ../src/news_config_dialog.c:292
+#: src/news_config_dialog.c:272 src/news_config_dialog.c:292
 #, c-format
 msgid "%1.0f s"
 msgstr "%1.0f s"
 
-#: ../src/news_config_dialog.c:280
+#: src/news_config_dialog.c:280
 msgid "Popup On Warning / Error"
 msgstr "Alertar nos erros ou avisos"
 
-#: ../src/news_config_dialog.c:285
+#: src/news_config_dialog.c:285
 msgid "Show on timeout ?"
 msgstr "Mostrar ao expirar?"
 
-#: ../src/news_config_dialog.c:307
+#: src/news_config_dialog.c:307
 msgid "Unread feeds first"
 msgstr "Primeiro, as fontes não lidas"
 
-#: ../src/news_config_dialog.c:309
+#: src/news_config_dialog.c:309
 msgid "Unread articles first"
 msgstr "Primeiro, os artigos não lidos"
 
-#: ../src/news_config_dialog.c:311
+#: src/news_config_dialog.c:311
 msgid "Sort articles by date"
 msgstr "Ordenar artigos por data"
 
-#: ../src/news_config_dialog.c:314
+#: src/news_config_dialog.c:314
 msgid "Font"
 msgstr "Letra"
 
-#: ../src/news_config_dialog.c:324
+#: src/news_config_dialog.c:324
 msgid "Font Shadow"
 msgstr "Sombra das letras"
 
-#: ../src/news_config_dialog.c:336
+#: src/news_config_dialog.c:336
 msgid "Proxy"
 msgstr "\"Proxy\""
 
-#: ../src/news_config_dialog.c:338
+#: src/news_config_dialog.c:338
 msgid "Enable"
 msgstr "Ativar"
 
-#: ../src/news_config_dialog.c:340
+#: src/news_config_dialog.c:340
 msgid "Host"
 msgstr "Servidor"
 
-#: ../src/news_config_dialog.c:344
+#: src/news_config_dialog.c:344
 msgid "Port"
 msgstr "Porta"
 
-#: ../src/news_config_dialog_category.c:50
+#: src/news_config_dialog_category.c:50
 msgid "News Category Configuration"
 msgstr "Configuração das categorias de notícias"
 
-#: ../src/news_config_dialog_category.c:135
+#: src/news_config_dialog_category.c:135
 msgid "Icon"
 msgstr "Ícone"
 
-#: ../src/news_config_dialog_category.c:145
-#: ../src/news_config_dialog_feed.c:410
+#: src/news_config_dialog_category.c:145 src/news_config_dialog_feed.c:410
 msgid "Name"
 msgstr "Nome"
 
-#: ../src/news_config_dialog_category.c:203
-#: ../src/news_config_dialog_feed.c:543
+#: src/news_config_dialog_category.c:203 src/news_config_dialog_feed.c:543
 msgid "Select an Icon"
 msgstr "Selecione um ícone"
 
-#. buttons at the bottom
-#: ../src/news_config_dialog_category.c:228
-#: ../src/news_config_dialog_feed.c:568
+#: src/news_config_dialog_category.c:228 src/news_config_dialog_feed.c:568
 msgid "OK"
 msgstr "OK"
 
-#: ../src/news_config_dialog_category.c:229
-#: ../src/news_config_dialog_feed.c:569
+#: src/news_config_dialog_category.c:229 src/news_config_dialog_feed.c:569
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: ../src/news_config_dialog_feed.c:63
+#: src/news_config_dialog_feed.c:63
 msgid "You need to <hilight>create a category</hilight> first"
 msgstr "Antes de mais, tem que <hilight>criar uma categoria</hilight>."
 
-#: ../src/news_config_dialog_feed.c:77
+#: src/news_config_dialog_feed.c:77
 msgid "News Feed Configuration"
 msgstr "Configuração das fontes de notícias"
 
-#: ../src/news_config_dialog_feed.c:329
+#: src/news_config_dialog_feed.c:329
 msgid "Basic informations"
 msgstr "Informações básicas"
 
-#. ob = e_widget_check_add(evas, D_("Get from the server"), &(cfdata->icon_ovrw));
-#. TODO: NOT IMPLEMENTED YET
-#. e_widget_check_checked_set(ob, 0);
-#. e_widget_disabled_set(ob, 1);
-#. e_widget_list_object_append(o2, of, 1, 1, 0.5);
-#: ../src/news_config_dialog_feed.c:345
+#: src/news_config_dialog_feed.c:345
 msgid "Name :"
 msgstr "Nome :"
 
-#: ../src/news_config_dialog_feed.c:349
+#: src/news_config_dialog_feed.c:349
 msgid "Feed url :"
 msgstr "\"Url\" da fonte:"
 
-#: ../src/news_config_dialog_feed.c:353
+#: src/news_config_dialog_feed.c:353
 msgid "Mark as important feed"
 msgstr "Marcar como fonte importante"
 
-#: ../src/news_config_dialog_feed.c:358
+#: src/news_config_dialog_feed.c:358
 msgid "Category"
 msgstr "Categoria"
 
-#: ../src/news_config_dialog_feed.c:368
-#: ../src/news_config_dialog_feed.c:412
+#: src/news_config_dialog_feed.c:368 src/news_config_dialog_feed.c:412
 msgid "Language"
 msgstr "Idioma"
 
-#: ../src/news_config_dialog_feed.c:391
+#: src/news_config_dialog_feed.c:391
 msgid "Advanced informations"
 msgstr "Informações avançadas"
 
-#: ../src/news_config_dialog_feed.c:393
-#: ../src/news_config_dialog_feed.c:414
+#: src/news_config_dialog_feed.c:393 src/news_config_dialog_feed.c:414
 msgid "Description"
 msgstr "Descrição"
 
-#: ../src/news_config_dialog_feed.c:397
-#: ../src/news_config_dialog_feed.c:416
+#: src/news_config_dialog_feed.c:397 src/news_config_dialog_feed.c:416
 msgid "Home url"
 msgstr "\"Url\" pessoal"
 
-#: ../src/news_config_dialog_feed.c:405
+#: src/news_config_dialog_feed.c:405
 msgid "Server informations"
 msgstr "Informações do servidor"
 
-#: ../src/news_config_dialog_feed.c:407
+#: src/news_config_dialog_feed.c:407
 msgid "Do allow the server to overwrite the informations you entered ?"
 msgstr "Permite que o servidor sobrescreva as informações que indicou?"
 
-#: ../src/news_config_dialog_feeds.c:82
+#: src/news_config_dialog_feeds.c:82
 msgid "News Feeds Configuration"
 msgstr "Configuração das fontes de notícias"
 
-#: ../src/news_config_dialog_feeds.c:290
+#: src/news_config_dialog_feeds.c:290
 msgid "Categories"
 msgstr "Categorias"
 
-#: ../src/news_config_dialog_feeds.c:314
-#: ../src/news_config_dialog_feeds.c:388
+#: src/news_config_dialog_feeds.c:314 src/news_config_dialog_feeds.c:388
 msgid "Add"
 msgstr "Adicionar"
 
-#: ../src/news_config_dialog_feeds.c:316
-#: ../src/news_config_dialog_feeds.c:390
+#: src/news_config_dialog_feeds.c:316 src/news_config_dialog_feeds.c:390
 msgid "Delete"
 msgstr "Apagar"
 
-#: ../src/news_config_dialog_feeds.c:319
-#: ../src/news_config_dialog_feeds.c:393
+#: src/news_config_dialog_feeds.c:319 src/news_config_dialog_feeds.c:393
 msgid "Configure"
 msgstr "Configurar"
 
-#: ../src/news_config_dialog_feeds.c:331
-#: ../src/news_config_dialog_langs.c:133
+#: src/news_config_dialog_feeds.c:331 src/news_config_dialog_langs.c:133
 msgid "Languages"
 msgstr "Idiomas"
 
-#: ../src/news_config_dialog_feeds.c:333
+#: src/news_config_dialog_feeds.c:333
 msgid "All"
 msgstr "Todas"
 
-#: ../src/news_config_dialog_feeds.c:336
+#: src/news_config_dialog_feeds.c:336
 msgid "Select"
 msgstr "Selecione"
 
-#: ../src/news_config_dialog_feeds.c:346
+#: src/news_config_dialog_feeds.c:346
 msgid "Empty the lists"
 msgstr "Limpar as listas"
 
-#: ../src/news_config_dialog_feeds.c:349
+#: src/news_config_dialog_feeds.c:349
 msgid "Restore default lists"
 msgstr "Restaurar as listas iniciais"
 
-#: ../src/news_config_dialog_feeds.c:686
-msgid "There are <hilight>feeds</hilight> in this category.<br>You have to <hilight>remove them first</hilight>"
-msgstr "Já existem <hilight>fontes</hilight> nesta categoria.<br>Antes de mais, <hilight>tem que as remover</hilight>"
+#: src/news_config_dialog_feeds.c:686
+msgid ""
+"There are <hilight>feeds</hilight> in this category.<br>You have to "
+"<hilight>remove them first</hilight>"
+msgstr ""
+"Já existem <hilight>fontes</hilight> nesta categoria.<br>Antes de mais, "
+"<hilight>tem que as remover</hilight>"
 
-#: ../src/news_config_dialog_feeds.c:754
-#: ../src/news_config_dialog_feeds.c:779
+#: src/news_config_dialog_feeds.c:754 src/news_config_dialog_feeds.c:779
 msgid "News Module - Are you sure ?"
 msgstr "Módulo de notícias - Tem a certeza?"
 
-#: ../src/news_config_dialog_item.c:40
+#: src/news_config_dialog_item.c:40
 msgid "News Gadget Configuration"
 msgstr "Configuração do \"gadget\" de notícias"
 
-#: ../src/news_config_dialog_item.c:104
+#: src/news_config_dialog_item.c:104
 msgid "View Mode"
 msgstr "Modo de visualização"
 
-#: ../src/news_config_dialog_item.c:107
+#: src/news_config_dialog_item.c:107
 msgid "Show one icon for all feeds"
 msgstr "Mostrar um ícone para todas as fontes"
 
-#: ../src/news_config_dialog_item.c:109
+#: src/news_config_dialog_item.c:109
 msgid "Show all feeds"
 msgstr "Mostrar todas as fontes"
 
-#: ../src/news_config_dialog_item.c:111
+#: src/news_config_dialog_item.c:111
 msgid "Show unread feeds"
 msgstr "Mostrar fontes não lidas"
 
-#: ../src/news_config_dialog_item.c:113
+#: src/news_config_dialog_item.c:113
 msgid "Show all feeds marked as important"
 msgstr "Mostrar as fontes importantes"
 
-#: ../src/news_config_dialog_item.c:115
+#: src/news_config_dialog_item.c:115
 msgid "Show unread feeds marked as important"
 msgstr "Mostrar as fontes não lidas marcadas como importantes"
 
-#: ../src/news_config_dialog_item.c:120
+#: src/news_config_dialog_item.c:120
 msgid "Feed open in"
 msgstr "As fontes são abertas"
 
-#: ../src/news_config_dialog_item.c:123
+#: src/news_config_dialog_item.c:123
 msgid "the feed viewer"
 msgstr "no visualizador"
 
-#: ../src/news_config_dialog_item.c:125
+#: src/news_config_dialog_item.c:125
 msgid "my favorite browser"
 msgstr "no navegador"
 
-#: ../src/news_config_dialog_item.c:127
+#: src/news_config_dialog_item.c:127
 msgid "Browser opens home url"
 msgstr "O navegador abre a \"url\" pessoal"
 
-#: ../src/news_config_dialog_item.c:129
+#: src/news_config_dialog_item.c:129
 msgid "instead of feed url"
 msgstr "ao invés da \"url\" da fonte"
 
-#: ../src/news_config_dialog_item.c:136
+#: src/news_config_dialog_item.c:136
 msgid "Apply this to all News gadgets"
 msgstr "Aplicar a todos os \"gadgets\" de notícias"
 
-#: ../src/news_config_dialog_item_content.c:53
+#: src/news_config_dialog_item_content.c:53
 msgid "News Gadget Content Configuration"
 msgstr "Configuração dos conteúdos do \"gadget\""
 
-#: ../src/news_config_dialog_item_content.c:258
+#: src/news_config_dialog_item_content.c:258
 msgid "Avalaible Feeds"
 msgstr "Fontes disponíveis"
 
-#: ../src/news_config_dialog_item_content.c:267
+#: src/news_config_dialog_item_content.c:267
 msgid "Add this Feed"
 msgstr "Adicionar esta fonte"
 
-#: ../src/news_config_dialog_item_content.c:274
+#: src/news_config_dialog_item_content.c:274
 msgid "Selected Feeds"
 msgstr "Fontes selecionadas"
 
-#: ../src/news_config_dialog_item_content.c:292
+#: src/news_config_dialog_item_content.c:292
 msgid "Remove this Feed"
 msgstr "Remover esta fonte"
 
-#: ../src/news_config_dialog_langs.c:45
+#: src/news_config_dialog_langs.c:45
 msgid "News Feeds Language Configuration"
 msgstr "Configuração do idioma das fontes de notícias"
 
-#: ../src/news_config_dialog_langs.c:123
+#: src/news_config_dialog_langs.c:123
 msgid "Welcome to News Module !"
 msgstr "Bem vindo ao módulo de notícias!"
 
-#: ../src/news_config_dialog_langs.c:125
+#: src/news_config_dialog_langs.c:125
 msgid "Please select the languages that you are able to read"
 msgstr "Por favor, selecione o(s) idioma(s) que consegue ler"
 
-#: ../src/news_feed.c:291
+#: src/news_feed.c:291
 msgid "The <hilight>name</hilight> you entered is not correct"
 msgstr "O <hilight>nome</hilight> indicado é inválido"
 
-#: ../src/news_feed.c:296
+#: src/news_feed.c:296
 msgid "The need to <hilight>select a category</hilight>."
 msgstr "Precisa de selecionar uma <hilight>categoria</hilight>."
 
-#: ../src/news_feed.c:302
+#: src/news_feed.c:302
 #, c-format
-msgid "A feed with the <hilight>name</hilight> %s <hilight>already exists</hilight><br>in the %s category<br><br>Its not possible to have feeds with the same name<br>in one category."
-msgstr "Já existe uma <hilight>fonte </hilight>com o nome <hilight>%s</hilight><br>na categoria %s.<br><br>Não é possível ter na mesma categoria<br>fontes com nomes iguais."
+msgid ""
+"A feed with the <hilight>name</hilight> %s <hilight>already exists</"
+"hilight><br>in the %s category<br><br>Its not possible to have feeds with "
+"the same name<br>in one category."
+msgstr ""
+"Já existe uma <hilight>fonte </hilight>com o nome <hilight>%s</"
+"hilight><br>na categoria %s.<br><br>Não é possível ter na mesma "
+"categoria<br>fontes com nomes iguais."
 
-#: ../src/news_feed.c:311
+#: src/news_feed.c:311
 msgid "You need to select a <hilight>language</hilight>."
 msgstr "Precisa de escolher um <hilight>idioma</hilight>."
 
-#: ../src/news_feed.c:318
+#: src/news_feed.c:318
 msgid "The <hilight>url</hilight> you specified is not correct"
 msgstr "A <hilight>\"url\"</hilight> indicada é inválida."
 
-#: ../src/news_feed.c:880
+#: src/news_feed.c:880
 msgid "You need to enter a <hilight>name</hilight> !"
 msgstr "Precisa de indicar um <hilight>nome</hilight> !"
 
-#: ../src/news_feed.c:888
-msgid "The <hilight>name</hilight> you entered is <hilight>already used</hilight><br>by another category"
-msgstr "O <hilight>nome</hilight> indicado já <hilight>está a ser utilizado</hilight><br>por outra categoria."
+#: src/news_feed.c:888
+msgid ""
+"The <hilight>name</hilight> you entered is <hilight>already used</"
+"hilight><br>by another category"
+msgstr ""
+"O <hilight>nome</hilight> indicado já <hilight>está a ser utilizado</"
+"hilight><br>por outra categoria."
 
-#: ../src/news_menu.c:131
-#| msgid "Set all feeds as read"
+#: src/news_menu.c:129
 msgid "Set all as read"
 msgstr "Marcar todas como lidas"
 
-#: ../src/news_menu.c:137
+#: src/news_menu.c:135
 msgid "Update"
 msgstr "Atualizar"
 
-#: ../src/news_menu.c:146
-#: ../src/news_menu.c:174
-msgid "Settings"
-msgstr "Definições"
-
-#: ../src/news_menu.c:151
-#| msgid "News"
-msgid "Newsfeeds"
-msgstr "Fontes de notícias"
-
-#: ../src/news_menu.c:158
-msgid "Contents"
+#: src/news_menu.c:141
+#, fuzzy
+msgid "Gadget Contents"
 msgstr "Conteúdos"
 
-#: ../src/news_menu.c:165
+#: src/news_menu.c:151
 msgid "Gadget"
 msgstr "\"Gadget\""
 
-#: ../src/news_menu.c:169
+#: src/news_menu.c:161
 msgid "Main"
 msgstr "Principal"
 
-#: ../src/news_utils.h:13
+#: src/news_menu.c:166
+msgid "Settings"
+msgstr "Definições"
+
+#: src/news_utils.h:13
 msgid "News Module DEBUG DEBUG DEBUG DEBUG"
 msgstr "Módulo de notícias DEBUG DEBUG DEBUG DEBUG"
 
-#: ../src/news_utils.h:20
+#: src/news_utils.h:20
 msgid "News Module"
 msgstr "Módulo de notícias"
 
-#: ../src/news_utils.h:27
+#: src/news_utils.h:27
 msgid "News Module Error"
 msgstr "Erro no módulo de notícias"
 
-#: ../src/news_viewer.c:372
+#: src/news_viewer.c:372
 msgid "Feeds in this gadget"
 msgstr "Fontes neste \"gadget\""
 
-#: ../src/news_viewer.c:438
+#: src/news_viewer.c:438
 msgid "Articles in selected feed"
 msgstr "Artigos na fonte selecionada"
+
+#~| msgid "News"
+#~ msgid "Newsfeeds"
+#~ msgstr "Fontes de notícias"
 
 #~ msgid "Configure this Feed"
 #~ msgstr "Configurar esta fonte"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-11-23 23:45+0100\n"
+"POT-Creation-Date: 2011-02-16 22:50+0100\n"
 "PO-Revision-Date: 2009-12-05 10:48+0000\n"
 "Last-Translator: MixCool <lars.thoms@mixcool.de>\n"
 "Language-Team: German <de@li.org>\n"
@@ -63,7 +63,7 @@ msgid "News Main Configuration"
 msgstr "Nachrichten-Hauptkonfiguration"
 
 #: src/news_config_dialog.c:190 src/news_config_dialog.c:228
-#: src/news_config_dialog_feeds.c:358
+#: src/news_config_dialog_feeds.c:358 src/news_menu.c:156
 msgid "Feeds"
 msgstr "Feeds"
 
@@ -422,33 +422,30 @@ msgstr ""
 "Der eingegebene <hilight>Name</hilight> wird <hilight>bereits verwendet</"
 "hilight> von einer anderen Kategorie"
 
-#: src/news_menu.c:131
+#: src/news_menu.c:129
 msgid "Set all as read"
 msgstr "Alles als gelesen markieren"
 
-#: src/news_menu.c:137
+#: src/news_menu.c:135
 msgid "Update"
 msgstr "Aktualisieren"
 
-#: src/news_menu.c:146 src/news_menu.c:174
-msgid "Settings"
-msgstr "Einstellungen"
-
-#: src/news_menu.c:151
-msgid "Newsfeeds"
-msgstr "Newsfeeds"
-
-#: src/news_menu.c:158
-msgid "Contents"
+#: src/news_menu.c:141
+#, fuzzy
+msgid "Gadget Contents"
 msgstr "Inhalte"
 
-#: src/news_menu.c:165
+#: src/news_menu.c:151
 msgid "Gadget"
 msgstr "Helfer"
 
-#: src/news_menu.c:169
+#: src/news_menu.c:161
 msgid "Main"
 msgstr "Haupt"
+
+#: src/news_menu.c:166
+msgid "Settings"
+msgstr "Einstellungen"
 
 #: src/news_utils.h:13
 msgid "News Module DEBUG DEBUG DEBUG DEBUG"
@@ -469,6 +466,9 @@ msgstr "Feeds in diesem Helfer"
 #: src/news_viewer.c:438
 msgid "Articles in selected feed"
 msgstr "Artikel im ausgewählten Feed"
+
+#~ msgid "Newsfeeds"
+#~ msgstr "Newsfeeds"
 
 #~ msgid "Configure this feed"
 #~ msgstr "Dieses Feed konfigurieren"
