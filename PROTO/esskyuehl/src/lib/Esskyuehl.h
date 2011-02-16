@@ -162,7 +162,8 @@ EAPI int esql_init(void);
 EAPI int esql_shutdown(void);
 
 /* esql */
-Esql          *esql_new(Esql_Type type);
+EAPI Esql     *esql_new(Esql_Type type);
+EAPI Esql     *esql_pool_new(int size, Esql_Type type);
 EAPI void     *esql_data_get(Esql *e);
 EAPI void      esql_data_set(Esql *e,
                              void *data);
@@ -178,7 +179,7 @@ EAPI Eina_Bool esql_connect(Esql       *e,
                             const char *addr,
                             const char *user,
                             const char *passwd);
-EAPI Eina_Bool   esql_disconnect(Esql *e);
+EAPI void   esql_disconnect(Esql *e);
 EAPI void esql_connect_callback_set(Esql *e, Esql_Connect_Cb cb, void *data);
 EAPI Eina_Bool   esql_database_set(Esql       *e,
                                    const char *database_name);
@@ -192,6 +193,10 @@ EAPI Esql_Query_Id esql_query_args(Esql       *e,
                                    void       *data,
                                    const char *fmt,
                                    ...);
+EAPI Esql_Query_Id esql_query_vargs(Esql       *e,
+                                    void       *data,
+                                    const char *fmt,
+                                    va_list     args);
 EAPI Eina_Bool     esql_query_callback_set(Esql_Query_Id id,
                                            Esql_Query_Cb callback);
 

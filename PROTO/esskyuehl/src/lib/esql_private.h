@@ -58,9 +58,35 @@ typedef Esql_Row *             (*Esql_Row_Cb)(Esql_Res *);
 
 typedef const char *           (*Esql_Row_Col_Name_Cb)(Esql_Row *);
 
+typedef struct Esql_Pool
+{
+   EINA_INLIST;
+   const char       *error;
+   Eina_Bool         pool : 1;
+   Eina_Bool         connected : 1;
+   const char       *database;
+   Esql_Type         type;
+   Esql_Connect_Cb   connect_cb;
+   void             *connect_cb_data;
+   void             *data;
+   /* non-esql */
+   int size;
+   int e_connected;
+   Eina_Inlist *esqls;
+} Esql_Pool;
+
 struct Esql
 {
+   EINA_INLIST;
    const char       *error;
+   Eina_Bool         pool : 1;
+   Eina_Bool         connected : 1;
+   const char       *database;
+   Esql_Type         type;
+   Esql_Connect_Cb   connect_cb;
+   void             *connect_cb_data;
+   void             *data;
+      
    struct
    {
       void           *db; /* db object pointer */
@@ -81,22 +107,21 @@ struct Esql
       Esql_Res_Cb     res_free;
    } backend;
 
-   const char       *database;
+   Esql_Pool        *pool_struct;
+   Eina_Bool         pool_member : 1;
+   unsigned int      pool_id;
+
    Ecore_Fd_Handler *fdh;
-   Eina_Bool         connected : 1;
    Esql_Res         *res; /* current working result */
-   Esql_Type         type;
    
    Esql_Connect_Type current;
+   double            query_start;
+   double            query_end;
    Eina_List        *backend_set_funcs; /* Esql_Set_Cb */
    Eina_List        *backend_set_params; /* char * */
    Eina_List        *backend_ids; /* Esql_Query_Id * */
    void             *cur_data;
    Esql_Query_Id     cur_id;
-
-   Esql_Connect_Cb   connect_cb;
-   void             *connect_cb_data;
-   void             *data;
 };
 
 struct Esql_Res
@@ -157,4 +182,22 @@ char *esql_query_escape(Eina_Bool   backslashes,
                         va_list     args);
 char *esql_string_escape(Eina_Bool   backslashes,
                          const char *s);
+
+Esql_Query_Id
+esql_pool_query(Esql_Pool *ep, void *data, const char *query);
+Esql_Query_Id
+esql_pool_query_args(Esql_Pool *ep, void *data, const char *fmt, va_list args);
+void
+esql_pool_disconnect(Esql_Pool *ep);
+Eina_Bool
+esql_pool_connect(Esql_Pool  *ep,
+                  const char *addr,
+                  const char *user,
+                  const char *passwd);
+Eina_Bool
+esql_pool_database_set(Esql_Pool *ep, const char *database_name);
+Eina_Bool
+esql_pool_type_set(Esql_Pool *ep, Esql_Type type);
+void
+esql_pool_free(Esql_Pool *ep);
 #endif

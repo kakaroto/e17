@@ -158,6 +158,7 @@ esql_type_set(Esql     *e,
               Esql_Type type)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
+   if (e->pool) return esql_pool_type_set((Esql_Pool*)e, type);
 
    if ((type != e->type) && e->backend.db && e->backend.free)
      e->backend.free(e);
@@ -185,6 +186,7 @@ esql_type_set(Esql     *e,
         INFO("Esql type for %p is unknown!", e);
         return EINA_FALSE;
      }
+   e->type = type;
    return EINA_TRUE;
 }
 
@@ -206,11 +208,13 @@ esql_type_get(Esql *e)
  * @brief Return the #Esql_Query_Id of the current active query
  * @param res The #Esql object (NOT #NULL)
  * @return The query id, or 0 if no query is active
+ * @note For obvious reasons, this cannot be used with connection pools
  */
 Esql_Query_Id
 esql_current_query_id_get(Esql *e)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, 0);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(e->pool, 0);
 
    return e->cur_id;
 }
@@ -239,6 +243,11 @@ void
 esql_free(Esql *e)
 {
    EINA_SAFETY_ON_NULL_RETURN(e);
+   if (e->pool)
+     {
+        esql_pool_free((Esql_Pool*)e);
+        return;
+     }
    if (e->connected) esql_disconnect(e);
    if (e->backend.free) e->backend.free(e);
    if (e->backend_ids) eina_list_free(e->backend_set_funcs);

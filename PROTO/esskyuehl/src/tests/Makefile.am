@@ -13,6 +13,7 @@ LDADD = \
   @EFL_LIBS@ \
   @top_builddir@/src/lib/libesskyuehl.la
 
-check_PROGRAMS = basic_query
+check_PROGRAMS = basic_query basic_pool
 
 basic_query_SOURCES = basic_query.c
+basic_pool_SOURCES = basic_pool.c

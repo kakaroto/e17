@@ -95,7 +95,7 @@ esql_row_free(Esql_Row *r)
  */
 
 /**
- * @brief Retrieve the parent object of a result set
+ * @brief Retrieve the object from which the query was made
  * @param res The result object (NOT #NULL)
  * @return The parent object (NEVER #NULL)
  */

@@ -43,18 +43,34 @@ static void
 esql_call_complete(Esql *e)
 {
    Esql_Set_Cb cb;
+   Esql *ev;
 
    DBG("(e=%p)", e);
+   ev = e->pool_struct ? (Esql*)e->pool_struct : e;
    switch (e->current)
      {
       case ESQL_CONNECT_TYPE_INIT:
-        INFO("Connected");
         e->connected = EINA_TRUE;
-
-        if (e->connect_cb)
-          e->connect_cb(e, e->connect_cb_data);
+        if (e->pool_struct)
+          {
+             e->pool_struct->e_connected++;
+             INFO("Pool connection %u created (%i/%i)", e->pool_id, e->pool_struct->e_connected, e->pool_struct->size);
+          }
         else
-          ecore_event_add(ESQL_EVENT_CONNECT, e, (Ecore_End_Cb)esql_fake_free, NULL);
+          INFO("Connected");
+        
+        if ((!e->pool_struct) || (e->pool_struct->e_connected == e->pool_struct->size))
+          {
+             if (e->pool_struct)
+               {
+                  e->pool_struct->connected = EINA_TRUE;
+                  INFO("[%i/%i] connections made for pool", e->pool_struct->size, e->pool_struct->size);
+               }
+             if (ev->connect_cb)
+               ev->connect_cb(ev, ev->connect_cb_data);
+             else
+               ecore_event_add(ESQL_EVENT_CONNECT, ev, (Ecore_End_Cb)esql_fake_free, NULL);
+          }
         break;
 
       case ESQL_CONNECT_TYPE_DATABASE_SET:
@@ -64,6 +80,7 @@ esql_call_complete(Esql *e)
 
       case ESQL_CONNECT_TYPE_QUERY:
         UPDATE_LISTS(query);
+        e->query_end = ecore_time_get();
         {
            Esql_Res *res;
            Esql_Query_Cb qcb;
@@ -78,7 +95,7 @@ esql_call_complete(Esql *e)
              {
                 INFO("Executing callback for current query");
                 qcb(res, e->cur_data);
-                
+                e->query_start = e->query_end = 0.0;
                 eina_hash_del_by_key(esql_query_callbacks, &e->cur_id);
                 esql_res_free(NULL, res);
              }
@@ -99,6 +116,8 @@ out:
    if (!e->backend_set_funcs)
      {
         INFO("No calls queued");
+        if (e->pool_struct)
+          INFO("Pool member %u is now idle", e->pool_id);
         return;
      }
    /* next call */
@@ -127,7 +146,10 @@ Eina_Bool
 esql_connect_handler(Esql             *e,
                      Ecore_Fd_Handler *fdh)
 {
+   Esql *ev;
+   
    DBG("(e=%p, fdh=%p)", e, fdh);
+   ev = e->pool_struct ? (Esql*)e->pool_struct : e; /* use pool struct for events */
 
    if (!ecore_main_fd_handler_active_get(fdh, ECORE_FD_READ | ECORE_FD_WRITE))
      return ECORE_CALLBACK_RENEW;
@@ -152,6 +174,8 @@ esql_connect_handler(Esql             *e,
 
       default:
         e->error = e->backend.error_get(e);
+        e->query_end = ecore_time_get();
+        if (e->pool_struct) e->pool_struct->error = e->error;
         if (e->type == ESQL_CONNECT_TYPE_QUERY)
           {
              Esql_Query_Cb qcb;
@@ -174,18 +198,19 @@ esql_connect_handler(Esql             *e,
                   INFO("Executing callback for current event");
                   qcb(res, e->cur_data);
                   
+                  e->query_start = e->query_end = 0.0;
                   eina_hash_del_by_key(esql_query_callbacks, &e->cur_id);
                   esql_res_free(NULL, res);
                }
              else
-               ecore_event_add(ESQL_EVENT_ERROR, e, (Ecore_End_Cb)esql_fake_free, NULL);
+               ecore_event_add(ESQL_EVENT_ERROR, ev, (Ecore_End_Cb)esql_fake_free, NULL);
           }
         else
           {
-             if (e->connect_cb)
-               e->connect_cb(e, e->connect_cb_data);
+             if (ev->connect_cb)
+               ev->connect_cb(ev, e->connect_cb_data);
              else
-               ecore_event_add(ESQL_EVENT_ERROR, e, (Ecore_End_Cb)esql_fake_free, NULL);
+               ecore_event_add(ESQL_EVENT_ERROR, ev, (Ecore_End_Cb)esql_fake_free, NULL);
           }
 
         e->fdh = NULL;

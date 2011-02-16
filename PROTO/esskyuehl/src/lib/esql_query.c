@@ -224,16 +224,19 @@ esql_query(Esql       *e,
    DBG("(e=%p, fmt='%s')", e, query);
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(e->backend.db, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(query, 0);
-   if ((!e->fdh) || (!e->connected))
+   if (!e->connected)
      {
         ERR("Esql object must be connected!");
         return 0;
      }
+   if (e->pool) return esql_pool_query((Esql_Pool*)e, data, query);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(e->backend.db, 0);
+
    while (++esql_id < 1);
    if (!e->current)
      {
+        e->query_start = ecore_time_get();
         e->backend.query(e, query);
         e->current = ESQL_CONNECT_TYPE_QUERY;
         e->cur_data = data;
@@ -271,22 +274,52 @@ esql_query_args(Esql       *e,
                 ...)
 {
    va_list args;
+   Esql_Query_Id ret;
+
+   DBG("(e=%p, fmt='%s')", e, fmt);
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(e, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(fmt, 0);
+   va_start(args, fmt);
+   ret = esql_query_vargs(e, data, fmt, args);
+   va_end(args);
+   return ret;
+}
+
+/**
+ * @brief Make a query using a format string and a va_list
+ * Use this function to make a query which uses printf-style arguments with a va_list.
+ * @param e The #Esql object to query with (NOT #NULL)
+ * @param data Data to associate with the result
+ * @param fmt The format string for the query
+ * @param args The arg list for @p fmt
+ * @return EINA_TRUE on successful queuing of the query, else 0
+ * @note This function automatically does all necessary escaping of the args required by
+ * @p e 's backend database.
+ */
+Esql_Query_Id
+esql_query_vargs(Esql       *e,
+                void       *data,
+                const char *fmt,
+                va_list     args)
+{
    char *query;
 
    DBG("(e=%p, fmt='%s')", e, fmt);
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(e->backend.db, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(fmt, 0);
-   if ((!e->fdh) || (!e->connected))
+   if (!e->connected)
      {
         ERR("Esql object must be connected!");
         return 0;
      }
+   if (e->pool)
+     return esql_pool_query_args((Esql_Pool*)e, data, fmt, args);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(e->backend.db, 0);
 
-   va_start(args, fmt);
    query = e->backend.escape(e, fmt, args);
-   va_end(args);
+
    EINA_SAFETY_ON_NULL_RETURN_VAL(query, 0);
    while (++esql_id < 1);
    if (!e->current)

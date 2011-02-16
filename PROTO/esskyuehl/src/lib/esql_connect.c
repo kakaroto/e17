@@ -46,9 +46,10 @@ esql_connect(Esql       *e,
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(e->type == ESQL_TYPE_NONE, EINA_FALSE);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(!e->backend.db && (e->type == ESQL_TYPE_MYSQL), EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(addr, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(user, EINA_FALSE);
+   if (e->pool) return esql_pool_connect((Esql_Pool*)e, addr, user, passwd);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!e->backend.db && (e->type == ESQL_TYPE_MYSQL), EINA_FALSE);
 
    if (e->connected)
      {
@@ -77,21 +78,24 @@ esql_connect(Esql       *e,
  * previously connected to by @p e.
  * @note Disconnecting is immediate.
  * @param e The #Esql object (NOT #NULL)
- * @return EINA_TRUE on success, else EINA_FALSE
  */
-Eina_Bool
+void
 esql_disconnect(Esql *e)
 {
    DBG("(e=%p)", e);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(e->backend.db, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN(e);
+   e->connected = EINA_FALSE;
+   if (e->pool)
+     {
+        esql_pool_disconnect((Esql_Pool*)e);
+        return;
+     }
+   EINA_SAFETY_ON_NULL_RETURN(e->backend.db);
 
    e->backend.disconnect(e);
    if (e->fdh) ecore_main_fd_handler_del(e->fdh);
    e->fdh = NULL;
-   e->connected = EINA_FALSE;
    INFO("Disconnected");
-   return EINA_TRUE;
 }
 
 /**
@@ -129,13 +133,15 @@ esql_database_set(Esql       *e,
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(database_name, EINA_FALSE);
-   if (e->database && (!e->backend.database_set))
+   if (e->database && (e->type == ESQL_TYPE_POSTGRESQL))
      {
         ERR("Database switching is not supported by this database type!");
         return EINA_FALSE;
      }
    eina_stringshare_replace(&e->database, database_name);
 
+   if (e->pool) return esql_pool_database_set((Esql_Pool*)e, database_name);
+   
    if (!e->backend.database_set) return EINA_TRUE;
    if ((!e->current) && e->connected)
      {
