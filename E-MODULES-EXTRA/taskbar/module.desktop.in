@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=Taskbar
+Name[ru]=Панель задач
 Name[de]=Taskleiste
 Name[eo]=Taskopleto
 Name[hu]=Folyamatjelző
@@ -11,6 +12,7 @@ X-Enlightenment-IconClass=taskbar,gadget
 X-Enlightenment-ModuleType=utils
 Icon=e-module-taskbar
 Comment=Gadget to provide a taskbar.
+Comment[ru]=Гаджет предоставляет панель задач.
 Comment[cs]=Gadget poskytující taskbar.
 Comment[de]=Stellt eine Taskleiste zur Verfügung.
 Comment[eo]=Provizi taskopleton.

@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=Moon
+Name[ru]=Луна
 Name[cs]=Měsíc
 Name[el]=Σελήνη
 Name[eo]=Luno
@@ -9,6 +10,7 @@ Name[hu]=Hold
 Nome[pt]=Lua
 GenericName=gadget
 Comment=Gadget for e17 which displays the current phase of the moon.
+Comment[ru]=Гаджет для Е17, которыей показывает текущую фазу луны.
 Comment[cs]=Gadget pro Enlightenment zobrazující aktuální fázi měsíce.
 Comment[el]=Συστατικό για το Ε17 που εμφανίζει την τρέχουσα φάση της σελήνης.
 Comment[eo]=<br>Akcesoraĵo por E17 kiu vidigas la nunan lunan fazon.

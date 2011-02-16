@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=Places
+Name[ru]=Места
 Name[cs]=Místa
 Name[de]=Orte
 Name[hu]=Helyek
@@ -10,6 +11,7 @@ Name[eo]=Portiloj
 Name[pt]=Locais
 Icon=e-module-places
 Comment=This module manage the volumes device attached to the system.
+Comment[ru]=Этот модуль позволяет управлять подключенными к системе устройствами (диски/USB/CD/DVD).
 Comment[cs]=Tento modul spravuje disky/USB/CD/DVD připojené k systému.
 Comment[de]=Verwalten der am System angeschlossenen Datenträger.
 Comment[it]=Questo modulo gestisce le unità connesse al sistema.

@@ -1,8 +1,10 @@
 [Desktop Entry]
 Type=Link
 Name=history
+Name[ru]=История
 Name[eo]=Historio
 Comment=An application history launcher source plugin
+Comment[ru]=Плагин для запуска приложений из списка истории
 Comment[cs]=Zdrojov� plugin - historie p��kaz�
 Comment[eo]=Lanĉilo de aplikaĵoj memoritaj.
 Comment[it]=Un plugin per uno storico del lancio applicazioni

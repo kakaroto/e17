@@ -1,8 +1,10 @@
 [Desktop Entry]
 Type=Link
 Name=winlist
+Name[ru]=список окон
 Name[eo]=fenestrolisto
 Comment=A window list source plugin
+Comment[ru]=Плагин списка окон
 Comment[cs]=Zdrojov� plugin - seznam oken
 Comment[eo]=Listo de fenestroj
 Comment[it]=Un plugin per una lista finestre

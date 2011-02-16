@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=Slideshow
+Name[ru]=Слайдоскоп
 Name[de]=Diaschau
 Name[eo]=Bildoprezentado
 Name[hu]=Diavetítés
@@ -10,6 +11,7 @@ Name[pt]=Apresentação
 Icon=e-module-slideshow
 X-Enlightenment-ModuleType=look
 Comment=Turns your desktop background into a slideshow.
+Comment[ru]=Превращает фон рабочего стола в слайдоскоп.
 Comment[cs]=Přemění pozadí plochy na slideshow.
 Comment[de]=Verwandelt den Desktop-Hintergrund in eine Diaschau.
 Comment[eo]=Aliformi la labortablan tapeton en bildoprezentado.

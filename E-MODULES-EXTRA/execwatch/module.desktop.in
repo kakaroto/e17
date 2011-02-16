@@ -7,6 +7,7 @@ Name[de]=Befehlsbeobachtung
 Icon=e-module-execwatch
 X-Enlightenment-ModuleType=utils
 Comment=Shows the last state of a periodic executed cmd. Useful as an update checker or for checking if a remote host is available (through ping).
+Comment[ru]=Показывает последний результат периодической комманды. Полезен для циклических проверок или проверок доступности другого хоста (через пинг).
 Comment[cs]=Zobrazuje poslední stav periodicky spouštěného příkazu. Užitečný jako kontrola aktualizací nebo jestli je dostupný vzdálený PC(přes ping).
 Comment[el]=Εμφανίζει την τελευταία κατάσταση μιας περιοδικά εκτελεσμένης εντολής. Χρήσιμο για τον έλεγχο αν ένας απομακρυσμένος Η/Υ είναι διαθέσιμος (μέσω ping).
 Comment[eo]=<br>Vidigi la lastan staton de ofte plenumita komando. Utila kiel kontrolilo de ĝisdatigo aŭ por kontroli ĉu fora servilo disponeblas (pere de ping).

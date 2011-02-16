@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=EWeather
+Name[ru]=Е-Погода
 Name[cs]=Počasí
 Name[eo]=Vetero
 Name[hu]=Időjárás
@@ -10,6 +11,7 @@ Name[pt]=E-Meteorologia
 Icon=eweather
 X-Enlightenment-ModuleType=utils
 Comment=A weather gadget.
+Comment[ru]=Гаджет сводки погоды. 
 Comment[cs]=Zobrazí aktuální počasí.
 Comment[eo]=Vidigi veteron.
 Comment[hu]=Az aktuális, helyi időjárást megjelenítő modul.

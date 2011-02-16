@@ -7,6 +7,7 @@ Version=1.0
 StartupNotify=false
 Terminal=false
 Name=Add Tracks
+Name[ru]=Добавить треки
 Name[en_US]=Add Tracks
 Name[it]=Aggiungi tracce
 Name[pt]=Adicionar faixas

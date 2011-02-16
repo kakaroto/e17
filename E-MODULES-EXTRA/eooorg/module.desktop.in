@@ -1,11 +1,13 @@
 [Desktop Entry]
 Type=Link
 Name=OpenOffice.org Quickstart
-Name[fr]=Démarrage rapide de OpenOffice.org
+Name[ru]=Быстрый запуск OpenOffice.org
+Name[fr]=Démarrage rapide OpenOffice.org
 Name[it]=Avvio rapido OpenOffice.org
 Name[pt]=Início rápido do OpenOffice.org
 Icon=e-module-eooorg
 Comment=This module preloads the openoffice process to save start time with the costs of some memory.
+Comment[ru]=Этот модуль подгружает процесс OpenOffice.org для убыстрения запуска, ценой некоторого объема памяти.
 Comment[fr]=Préchargement de OpenOffice.org pour accélérer son lancement, au prix d'un peu de mémoire vive.
 Comment[it]=Questo modulo precarica il processo di OpenOffice.org per risparmiare tempo<br>nell'avvio al costo di un po' di memoria.
 Comment[pt]=Este módulo faz o carregamento automático do openoffice para minimizar o tempo de arranque.

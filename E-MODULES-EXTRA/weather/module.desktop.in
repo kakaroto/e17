@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=Weather
+Name[ru]=Погода
 Name[cs]=Počasí
 Name[de]=Wetter
 Name[eo]=Vetero
@@ -11,6 +12,7 @@ Name[pt]=Meteorologia
 Icon=e-module-weather
 X-Enlightenment-ModuleType=utils
 Comment=A weather gadget.
+Comment[ru]=Гаджет показа погоды.
 Comment[cs]=Zobrazí aktuální počasí.
 Comment[de]=Aktuelles Wetter betrachten
 Comment[eo]=Vidigi veteron.

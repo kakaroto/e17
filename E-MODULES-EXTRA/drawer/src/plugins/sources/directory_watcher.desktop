@@ -1,8 +1,10 @@
 [Desktop Entry]
 Type=Link
 Name=directory_watcher
+Name[ru]=смотритель_папки
 Name[eo]=dosierujo_atentilo
 Comment=A directory watcher source plugin
+Comment[ru]=Плагин для наблюдения за папкой
 Comment[cs]=Zdrojov� plugin - hl�da� slo�ek
 Comment[eo]=Kromaĵo kiu atentas la enhavon de dosierujo
 Comment[it]=Un plugin per il controllo di directory

@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=Flame
+Name[ru]=Пламя
 Name[cs]=Plamen
 Name[eo]=Flamoj
 Name[hu]=Lángoló asztal
@@ -9,6 +10,7 @@ Name[pt]=Chama
 Icon=e-module-flame
 X-Enlightenment-ModuleType=look
 Comment=A module to display flames on the desktop.
+Comment[ru]=Модуль показа огня на рабочем столе.
 Comment[cs]=Modul zobrazujc�� plameny na plo�e.
 Comment[eo]=Vidigi flamojn sur la labortablo.
 Comment[hu]=Egy modul, amellyel lángra tudjuk lobbantani az asztalt.

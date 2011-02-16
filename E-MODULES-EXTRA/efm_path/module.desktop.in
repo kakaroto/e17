@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=EFM Path
+Name[ru]=Путь EFM
 Name[cs]=EFM Cesta
 Name[de]=
 Name[eo]=Vojo por EFM
@@ -18,6 +19,7 @@ Exec=enlightenment
 StartupNotify=false
 Icon=e-module-efm_path
 Comment=A module that allows a user to type a location into the filemanager.
+Comment[ru]=Модуль позволяет пользователю вводить путь в файловый менеджер EFM.
 Comment[cs]=Modul umožňující uživateli zadat cestu do správce souborů.
 Comment[de]=
 Comment[eo]=Modulo kiu ebligas entajpi vojon en la dosieradministrilon.

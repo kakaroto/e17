@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=Snow
+Name[ru]=Снег
 Name[cs]=Sníh
 Name[de]=Schnee
 Name[eo]=Neĝo
@@ -11,6 +12,7 @@ Name[pt]=Neve
 Icon=e-module-snow
 X-Enlightenment-ModuleType=look
 Comment=Module to display snow on the desktop.
+Comment[ru]=Модуль для показа снега на рабочем столе.
 Comment[cs]=Modul zobrazující sněžení na ploše.
 Comment[de]=Schnee auf dem Desktop
 Comment[eo]=Vidigi neĝon sur la labortablo.

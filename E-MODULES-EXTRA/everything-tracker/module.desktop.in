@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=Everything Tracker
+Name[ru]=Всё - Трекер
 Name[fr]=Omni - Tracker
 Name[it]=Everything - Tracker
 Name[el]=ΤαΠάνταΌλα - Tracker
@@ -8,6 +9,7 @@ Name[pt]=Everything - Tracker
 Name[de]=Everything Tracker
 Icon=e-module
 Comment=Find Files with Tracker (requires version 0.8)
+Comment[ru]=Искать файлы через трекер (требуется версия 0.8).
 Comment[fr]=Trouver des fichiers avec Tracker (version 0.8 requise).
 Comment[it]=Trova i file con Tracker (versione richiesta 0.8).
 Comment[el]= Βρίσκει Αρχεία με τον Tracker (απαιτεί την έκδοση 0,8).

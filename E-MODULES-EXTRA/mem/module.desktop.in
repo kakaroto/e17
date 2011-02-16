@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=Mem
+Name[ru]=Память
 Name[eo]=Memoro
 Name[hu]=Memória
 Name[fr]=Mémoire
@@ -9,6 +10,7 @@ Name[pt]=Memória
 Icon=e-module-mem
 X-Enlightenment-ModuleType=system
 Comment=Used to monitor memory utilization.
+Comment[ru]=Используется для мониторинга использования памяти.
 Comment[cs]=Zobrazí využití paměti.
 Comment[eo]=Elrigardi la uzadon de memoro.
 Comment[hu]=A fizikai memória foglaltságát jelzi ki.

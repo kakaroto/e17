@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=DiskIO
+Name[ru]=ДискВВ
 Name[de]=Festplatten-Ein-/Ausgabe
 Name[fr]=DisquES
 Name[el]=DiskIO
@@ -8,6 +9,7 @@ Name[eo]=DiskEE
 Name[pt]=DiscoES
 Icon=e-module-diskio
 Comment=Visualize disk i/o.
+Comment[ru]=Показывает ввод/вывод диска.
 Comment[cs]=Zviditelní I/O disku.
 Comment[de]=Festplatten-Zugriffe visualisieren.
 Comment[it]=Visualizza l'input/output del disco.

@@ -1,12 +1,14 @@
 [Desktop Entry]
 Type=Link
 Name=Everything Wallpaper
+Name[ru]=Всё - Обои
 Name[fr]=Omni - Fond d'écran
 Name[it]=Everything - Sfondo
 Name[pt]=Everything - Papel de parede
 Name[de]=Everything Hintergrundbild
 Icon=preferences-desktop-wallpaper
 Comment=Select wallpaper or create new ones from images
+Comment[ru]=Выбирайте обои или создавайте новые из изображений.
 Comment[fr]=Choisir un fond d'écran ou en créer de nouveaux à partir d'images.
 Comment[it]=Fornisce un'azione per impostare un'immagine come sfondo.
 Comment[pt]=Selecione ou crie o papel de parede a partir de imagens

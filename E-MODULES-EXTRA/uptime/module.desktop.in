@@ -7,6 +7,7 @@ Name[hu]=Üzemóra
 Icon=e-module-uptime
 X-Enlightenment-ModuleType=utils
 Comment=Gadget to display the current uptime of the system.
+Comment[ru]=Показывает текущий uptime системы.
 Comment[cs]=Zobrazuje aktuální uptime systému.
 Comment[de]=Aktuelle Systembetriebsdauer anzeigen
 Comment[eo]=Vidigi la nunan daŭron de funkciado de la operaciumo.

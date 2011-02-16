@@ -5,6 +5,7 @@ Name[eo]=MPDule
 Icon=e-module-mpdule
 X-Enlightenment-ModuleType=utils
 Comment=View what's playing in MPD.
+Comment[ru]=Показывает что играет в MPD.
 Comment[cs]=Zobrazí, co hraje v MPD.
 Comment[el]=Εμφάνιση του τι παίζει στο MPD.
 Comment[fr]=Une interface pour le démon MPD.

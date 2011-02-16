@@ -1,10 +1,12 @@
 [Desktop Entry]
 Type=Link
 Name=Everything Places
+Name[ru]=Всё - Места
 Name[fr]=Omni - Raccourcis
 Name[it]=Everything - Risorse
 Icon=e-module
 Comment=Access folder bookmarks and mount drives
+Comment[ru]=Доступ к закладкам директорий и монтирование дисков.
 Comment[fr]=Accès aux signets des dossiers et aux volumes montés. 
 Comment[it]=Accede ai segnalibro delle cartelle e monta le unità.
 Comment[pt]=Aceda aos marcadores de pastas e monte as unidades 

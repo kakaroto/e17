@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=Calendar
+Name[ru]=Календарь
 Name[cs]=Kalendář
 Name[de]=Kalender
 Name[eo]=Kalendaro
@@ -12,6 +13,7 @@ Name[pt]=Calendário
 Icon=e-module-calendar
 X-Enlightenment-ModuleType=utils
 Comment=Calendar sheet showing the current day.
+Comment[ru]=Календарный лист, показывает сегодняшний день.
 Comment[cs]=Kalendář zobrazující aktuální den.
 Comment[de]=Kalenderblatt mit dem aktuellen Datum und dahinter befindlichem Kalender
 Comment[eo]=Kalendara folio vidiganta la nunan tagon.

@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=Net
+Name[ru]=Сеть
 Name[cs]=Síť
 Name[eo]=Reto
 Name[hu]=Hálózat
@@ -9,6 +10,7 @@ Name[el]=Δίκτυο
 Icon=e-module-net
 X-Enlightenment-ModuleType=system
 Comment=Network interface monitor.
+Comment[ru]=Монитор сетевого интерфейса.
 Comment[cs]=Monitoruje síťové připojení.
 Comment[eo]=Elrigardi la retan interfacon.
 Comment[hu]=A hálózatot követhetjük nyomon (feltöltés/letöltés sebessége)a modullal.

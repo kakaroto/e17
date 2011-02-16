@@ -3,6 +3,7 @@ Type=Link
 Name=EMpris
 Icon=e-module-empris
 Comment=Control MPRIS supporting music player like Amarok, Audacious, xmms2, vlc  and others
+Comment[ru]=Контролирует MPRIS совместимые музыкальные проигрыватели типа  Amarok, Audacious, xmms2, vlc и другие.
 Comment[it]=Controlla i player multimediali che supportano MPRIS come Amarok, Audacious, xmms2, vlc ed altri.
 Comment[fr]=Contrôle de lecteurs multimédias compatibles MPRIS comme Amarok, Audacious, Xmms2, Vlc et autres.
 Comment[pt]=Controlar MPRIS através do Amarok, Audacious, xmms2, vlc  e outros

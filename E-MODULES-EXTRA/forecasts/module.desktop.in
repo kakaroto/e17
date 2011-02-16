@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=Forecasts
+Name[ru]=Прогноз погоды
 Name[cs]=Předpověď počasí
 Name[eo]=Veteraj prognozoj
 Name[hu]=Elõrejelzés
@@ -10,6 +11,7 @@ Name[pt]=Previsões meteorológicas
 Icon=e-module-forecasts
 X-Enlightenment-ModuleType=utils
 Comment=The forecasts gadget will display the current weather conditions plus a few days forecast.
+Comment[ru]=Гаджет показывает текущую погоду и прогноз на несколько дней.
 Comment[cs]=Zobrazuje aktuální počasí plus předpověď na několik dní.
 Comment[eo]=Vidigi la nunan veteron kaj prognozo por kelkaj tagoj.
 Comment[hu]=Az elõrejelzõ modul megmutatja az aktuális idõjárást, és elõre jelzi a következõ két nap idõjárását.

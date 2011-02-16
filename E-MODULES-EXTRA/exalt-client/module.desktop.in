@@ -1,11 +1,13 @@
 [Desktop Entry]
 Type=Link
 Name=Exalt
+Name[ru]=Exalt
 Name[eo]=Exalt
 Name[el]=Exalt
 Name[de]=Exalt
 Icon=e-module-exalt
 Comment=A user-friendly tool to setup and manage network interfaces.
+Comment[ru]=Дружественный к пользователю интерфейс настройки сетевых соединений.
 Comment[cs]=Uživatelsky přívětivé rozhraní k nastavení a správě sítových zařízení.
 Comment[it]=Una utilità per configurare e gestire le interfacce di rete.
 Comment[el]=Ένα φιίκό στο χρήστη εργαλείο για οργάνωση και διαχείρηση των διεπαφών δικτύου.

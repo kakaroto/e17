@@ -1,11 +1,13 @@
 [Desktop Entry]
 Type=Link
 Name=Everything MPRIS
+Name[ru]=Всё - MPRIS
 Name[fr]=Omni - MPRIS
 Name[it]=Everything - MPRIS
 Name[de]=Everything MPRIS
 Icon=e-module
 Comment=Control MPRIS compatible media player from Everything.
+Comment[ru]=Контроль над MPRIS совместимыми медиа проигрывателями из Everything.
 Comment[de]=MPRIS-kompatible Mediaplayer mit Everything steuern.
 Comment[fr]=Contrôle de certains lecteurs multimédias compatibles MPRIS.
 Comment[it]=Controlla i lettori multimediali compatibili con MPRIS da Everything.

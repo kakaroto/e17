@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=Photo
+Name[ru]=Фото
 Name[de]=Foto
 Name[eo]=Fotoj
 Name[hu]=Fénykép
@@ -13,6 +14,7 @@ X-Enlightenment-IconClass=photo,gadget
 X-Enlightenment-ModuleType=utils
 Icon=e-module-photo
 Comment=View photos or a mini slideshow within this gadget.
+Comment[ru]=Показывает мини слайд-шоу из фото внутри этого гаджета.
 Comment[cs]=Zobrazí fotky nebo malou slideshow uvnitř gadgetu.
 Comment[de]=Fotos oder eine kleine Diaschau innerhalb eines Helfers betrachten.
 Comment[eo]=Vidigi fotojn aŭ malgrandan bildoprezenton ene de tiu vanaĵo.

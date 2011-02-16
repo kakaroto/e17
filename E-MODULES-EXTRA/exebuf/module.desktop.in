@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=Run Command
+Name[ru]=Запустить комманду
 Name[cs]=Dialog Spustit
 Name[de]=Befehl ausführen
 Name[eo]=Lanĉi komandojn
@@ -17,6 +18,7 @@ Name[zh_TW]=
 Name[el]=Εκτέλεση εντολής
 Icon=e-module-exebuf
 Comment=The run command module provides an application launcher dialog.
+Comment[ru]=Модуль предоставляет диалог запуска приложения.
 Comment[cs]=Poskytuje dialog pro spuštění aplikací.
 Comment[de]=Der Ausführen-Befehl stellt einen Anwendungsstarter zur Verfügung.
 Comment[eo]=La modulo de lanĉo de komandoj provizas dialogon de lanĉilo de aplikaĵoj.

@@ -1,8 +1,10 @@
 [Desktop Entry]
 Type=Link
 Name=list
+Name[ru]=Список
 Name[eo]=Listo
 Comment=A list representation of elements
+Comment[ru]=Расположение элементов списком.
 Comment[cs]=Seznamov� zobrazen�
 Comment[eo]=Lista prezentado de elementoj
 Comment[it]=Rappresentazione ad elenco degli elementi

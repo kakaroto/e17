@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=EFM Navigation
+Name[ru]=Навигация EFM
 Name[cs]=EFM Navigace
 Name[de]=
 Name[eo]=Navigado per EFM
@@ -18,6 +19,7 @@ Exec=enlightenment
 StartupNotify=false
 Icon=e-module-efm_nav
 Comment=A module that allows a user to navigate the filemanager module.
+Comment[ru]=Модуль добавляет навигацию в файловом менеджере EFM.
 Comment[cs]=Modul umožňující uživateli navigovat integrovaný správce souborů.
 Comment[de]=
 Comment[eo]=Modulo por navigi en la dosieradministrilo.

@@ -1,12 +1,14 @@
 [Desktop Entry]
 Type=Link
 Name=Drawer
+Name[ru]=Ящик
 Name[de]=Ablage
 Name[el]=Συρτάρι
 Name[eo]=Entenilo
 Name[fr]=Tiroir
 Icon=e-module-drawer
 Comment=A Gadget that acts as a container for data.
+Comment[ru]=Гаджет, который действует как контейнер для данных.
 Comment[cs]=Gadget sloužící jako kontejner pro data.
 Comment[de]=Helfer, der als Datenablage fungiert
 Comment[el]=Ένα συστατικό που λειτουργεί ως χώρος αποθήκευσης δεδομένων.

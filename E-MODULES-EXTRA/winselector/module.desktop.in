@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Link
 Name=Winselector
+Name[ru]=Выбор окна
 Name[cs]=Výběr oken
 Name[eo]=Fenestro-elektilo
 Name[hu]=Ablak választó
@@ -10,6 +11,7 @@ Name[pt]=Seletor de janelas
 Icon=e-module-winselector
 X-Enlightenment-ModuleType=utils
 Comment=This module provides a menu-based access to all the windows.
+Comment[ru]=Модуль предоставляет доступ ко всем открытым окнам.
 Comment[cs]=Modul poskytující menu-přístup ke všem oknům.
 Comment[eo]=Provizi aliron al ĉiuj fenestroj per menuo.
 Comment[hu]=Ez a modul elérhetõséget biztosít számunkra az összes megnyitott ablakhoz, amelyeket egy listába rendez.
