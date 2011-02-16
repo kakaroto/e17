@@ -103,7 +103,7 @@ main (int argc, char **argv)
             }
           else
             {
-               fprintf(stderr, "Wait done - child exited normally\n");
+               fprintf(stderr, PACKAGE": Wait done - child exited normally\n");
                elsa_pam_end();
                elsa_pam_shutdown();
                if (_restart)

@@ -28,9 +28,7 @@ _elsa_connect_del(void *data __UNUSED__, int type __UNUSED__, void *event)
    Ecore_Con_Event_Server_Del *ev;
    ev = event;
    fprintf(stderr, PACKAGE": client disconnected\n");
-//   ecore_con_server_del(_elsa_connect);
    _elsa_connect = NULL;
-   //elm_exit();
 
    return ECORE_CALLBACK_RENEW;
 }
@@ -42,7 +40,6 @@ _elsa_connect_data(void *data __UNUSED__, int type __UNUSED__, void *event)
    Elsa_Event *eev;
    ev = event;
 
-   fprintf(stderr, PACKAGE": client data received %d\n", ev->size);
    eev = elsa_event_decode(ev->data, ev->size);
    if (eev)
      {

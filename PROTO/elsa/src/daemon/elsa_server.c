@@ -28,10 +28,12 @@ _elsa_server_add(void *data __UNUSED__, int type __UNUSED__, void *event)
    fprintf(stderr, PACKAGE": server client connected\n");
 
    eev.type = ELSA_EVENT_XSESSIONS;
-   eev.event.xsessions.xsessions = _xsessions;
-   enc = elsa_event_encode(&eev, &size);
-   ecore_con_client_send(ev->client, enc, size);
-
+   if (elsa_config->xsessions)
+     {
+        eev.event.xsessions.xsessions = _xsessions;
+        enc = elsa_event_encode(&eev, &size);
+        ecore_con_client_send(ev->client, enc, size);
+     }
 
    return ECORE_CALLBACK_RENEW;
 }
@@ -42,8 +44,6 @@ _elsa_server_del(void *data __UNUSED__, int type __UNUSED__, void *event)
    Ecore_Con_Event_Client_Del *ev;
    ev = event;
    fprintf(stderr, PACKAGE": server client disconnected\n");
-//   ecore_con_server_del(_elsa_server);
-//   _elsa_server = NULL;
 
    return ECORE_CALLBACK_RENEW;
 }
@@ -58,7 +58,6 @@ _elsa_server_data(void *data __UNUSED__, int type __UNUSED__, void *event)
    void *enc;
 
    ev = event;
-   fprintf(stderr, PACKAGE": server client data received %d\n", ev->size);
    eev = elsa_event_decode(ev->data, ev->size);
    if (eev->type == ELSA_EVENT_AUTH)
      {
@@ -86,7 +85,8 @@ elsa_server_init()
 {
    Ecore_Event_Handler *h;
    ecore_con_init();
-   _elsa_server_init_desktops();
+   if (elsa_config->xsessions)
+     _elsa_server_init_desktops();
    fprintf(stderr, PACKAGE": server init\n");
    _elsa_server = ecore_con_server_add(ECORE_CON_LOCAL_SYSTEM,
                                         "elsa", 42, NULL);
