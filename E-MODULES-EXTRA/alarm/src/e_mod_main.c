@@ -836,7 +836,7 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
                        mi = e_menu_item_new(ma);
                        e_menu_item_label_set(mi, buf);
                        e_menu_item_callback_set(mi, _menu_cb_alarm_snooze, al);
-                       if (!alarm_config->theme) e_util_menu_item_edje_icon_set(mi, THEME_ICON_SNOOZE);
+                       if (!alarm_config->theme) e_util_menu_item_theme_icon_set(mi, THEME_ICON_SNOOZE);
                        else e_menu_item_icon_edje_set(mi, alarm_config->theme, THEME_ICON_SNOOZE);
                        if (al->snooze.remember)
                          {
@@ -855,7 +855,7 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
           {
              mi = e_menu_item_new(ma);
              e_menu_item_label_set(mi, D_("Snooze (No alarm to delay)"));
-             if (!alarm_config->theme) e_util_menu_item_edje_icon_set(mi, THEME_ICON_SNOOZE);
+             if (!alarm_config->theme) e_util_menu_item_theme_icon_set(mi, THEME_ICON_SNOOZE);
              else e_menu_item_icon_edje_set(mi, alarm_config->theme, THEME_ICON_SNOOZE);
           }
 
@@ -864,7 +864,7 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	mi = e_menu_item_new(mg);
 	e_menu_item_label_set(mi, D_("Add an alarm"));
 	e_menu_item_callback_set(mi, _menu_cb_alarm_add, NULL);
-        if (!alarm_config->theme) e_util_menu_item_edje_icon_set(mi, THEME_ICON_ALARM_ON);
+        if (!alarm_config->theme) e_util_menu_item_theme_icon_set(mi, THEME_ICON_ALARM_ON);
         else e_menu_item_icon_edje_set(mi, alarm_config->theme, THEME_ICON_ALARM_ON);
         mi = e_menu_item_new(mg);
         e_menu_item_separator_set(mi, 1);
