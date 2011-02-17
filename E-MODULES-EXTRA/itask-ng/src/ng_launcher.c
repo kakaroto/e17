@@ -139,8 +139,8 @@ _drop_handle_move(Ngi_Box *box, int x, int y)
 
    if (item && (item->box != box))
      {
-	it = eina_list_last(box->items)->data;
-	if (!it->app) return;
+	l = eina_list_last(box->items);
+	if (l && (it = l->data) && (!it->app)) return;
 
 	ngi_item_remove(box->item_drop);
 
@@ -162,7 +162,6 @@ _drop_handle_move(Ngi_Box *box, int x, int y)
    	     box->items = eina_list_prepend_relative(box->items, box->item_drop, it);
    	  }
      }
-
 }
 
 static void
