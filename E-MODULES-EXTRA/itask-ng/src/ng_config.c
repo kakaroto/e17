@@ -254,26 +254,21 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_frametable_add(evas, D_("Orientation"), 1);
-   rg = e_widget_radio_group_new(&(cfdata->orient));
-   ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_left",
-				24, 24, E_GADCON_ORIENT_LEFT, rg);
-   e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 0, 0);
-   ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_right",
-				24, 24, E_GADCON_ORIENT_RIGHT, rg);
-   e_widget_frametable_object_append(of, ob, 2, 1, 1, 1, 1, 1, 0, 0);
-   ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_top",
-				24, 24, E_GADCON_ORIENT_TOP, rg);
-   e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 0, 0);
-   ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_bottom",
-				24, 24, E_GADCON_ORIENT_BOTTOM, rg);
-   e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 1, 0, 0);
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
+   of = e_widget_framelist_add(evas, D_("Auto Hide"), 0);
+   cfdata->hide_mode = cfdata->autohide;
 
-   of = e_widget_framelist_add(evas, D_("Other"), 0);
-   /* ob = e_widget_check_add(evas, D_("Lock Deskflip on Edge"), &(cfdata->lock_deskswitch));
-    * e_widget_framelist_object_append(of, ob); */
-   ob = e_widget_check_add(evas, D_("Ecomorph Features"), &(cfdata->ecomorph_features));
+   rg = e_widget_radio_group_new(&cfdata->hide_mode);
+   ob = e_widget_radio_add(evas, "None",
+                           AUTOHIDE_NONE, rg);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, "Autohide",
+                           AUTOHIDE_NORMAL, rg);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, "Autohide on Fullscreen",
+                           AUTOHIDE_FULLSCREEN, rg);
+   e_widget_framelist_object_append(of, ob);
+
+   ob = e_widget_check_add(evas, D_("Show Bar when Urgent"), &(cfdata->autohide_show_urgent));
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
@@ -303,26 +298,27 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_framelist_object_append (of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_framelist_add(evas, D_("Auto Hide"), 0);
-   cfdata->hide_mode = cfdata->autohide;
-
-   rg = e_widget_radio_group_new(&cfdata->hide_mode);
-   ob = e_widget_radio_add(evas, "None",
-                           AUTOHIDE_NONE, rg);
-   e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, "Autohide",
-                           AUTOHIDE_NORMAL, rg);
-   e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, "Autohide on Fullscreen",
-                           AUTOHIDE_FULLSCREEN, rg);
-   e_widget_framelist_object_append(of, ob);
-
-   ob = e_widget_check_add(evas, D_("Show Bar when Urgent"), &(cfdata->autohide_show_urgent));
-   e_widget_framelist_object_append(of, ob);
-
+   of = e_widget_frametable_add(evas, D_("Orientation"), 1);
+   rg = e_widget_radio_group_new(&(cfdata->orient));
+   ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_left",
+				24, 24, E_GADCON_ORIENT_LEFT, rg);
+   e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 0, 0);
+   ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_right",
+				24, 24, E_GADCON_ORIENT_RIGHT, rg);
+   e_widget_frametable_object_append(of, ob, 2, 1, 1, 1, 1, 1, 0, 0);
+   ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_top",
+				24, 24, E_GADCON_ORIENT_TOP, rg);
+   e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 0, 0);
+   ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_bottom",
+				24, 24, E_GADCON_ORIENT_BOTTOM, rg);
+   e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 1, 0, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-
+   of = e_widget_framelist_add(evas, D_("Other"), 0);
+   ob = e_widget_check_add(evas, D_("Ecomorph Features"), &(cfdata->ecomorph_features));
+   e_widget_framelist_object_append(of, ob);
+   e_widget_list_object_append(o, of, 1, 1, 0.5);
+   
    e_widget_table_object_append(o_table, o, 2, 0, 1, 1, 1, 1, 1, 1);
 
    e_widget_list_object_append (o_all, o_table, 1, 1, 0.5);

@@ -1346,7 +1346,6 @@ _ngi_redraw(Ng *ng)
 
    int edge_offset = ng->opt.edge_offset;
    int separator_width = ng->opt.separator_width;
-   int size = ng->size;
 
    int cnt = 0;
    double disp = 0.0;
