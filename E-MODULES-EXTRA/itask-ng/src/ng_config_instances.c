@@ -251,11 +251,9 @@ _cb_add(void *data, void *data2)
    cfg->hide_below_windows = 0;
    cfg->zoom_duration = 0.3;
    cfg->zoom_range = 1.5;
-   cfg->zoom_one = 0;
    cfg->hide_timeout = 0.1;
    cfg->zoomfactor = 2.0;
    cfg->alpha = 255;
-   cfg->sia_remove = 0;
    cfg->stacking = above_all;
    cfg->mouse_over_anim = 1;
    cfg->lock_deskswitch = 1;

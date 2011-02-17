@@ -1,10 +1,10 @@
 #include "e_mod_main.h"
 
 /*
-   TODO
-   - update on icon changes
+  TODO
+  - update on icon changes
 
- */
+*/
 
 static void      _ngi_launcher_fill               (Ngi_Box *box);
 static void      _ngi_launcher_app_change_cb      (void *data, E_Order *eo);
@@ -27,24 +27,24 @@ ngi_launcher_new(Ng *ng, Config_Box *cfg)
 
    Ngi_Box *box = ngi_box_new(ng);
    if (!box)
-      return;
+     return;
 
    box->cfg = cfg;
    cfg->box = box;
 
    const char *drop[] =
-   { "enlightenment/desktop",
-     "enlightenment/border",
-     "text/uri-list" };
+     { "enlightenment/desktop",
+       "enlightenment/border",
+       "text/uri-list" };
 
    box->drop_handler = e_drop_handler_add
-         (ng->win->drop_win, box,
-         _ngi_launcher_cb_drop_enter, _ngi_launcher_cb_drop_move,
-         _ngi_launcher_cb_drop_leave, _ngi_launcher_cb_drop_end,
-         drop, 3, 0, 0, 0, 0);
+     (ng->win->drop_win, box,
+      _ngi_launcher_cb_drop_enter, _ngi_launcher_cb_drop_move,
+      _ngi_launcher_cb_drop_leave, _ngi_launcher_cb_drop_end,
+      drop, 3, 0, 0, 0, 0);
 
    if (!cfg->launcher_app_dir || strlen(cfg->launcher_app_dir) == 0)
-      return;
+     return;
 
    if (cfg->launcher_app_dir[0] != '/')
      {
@@ -52,7 +52,7 @@ ngi_launcher_new(Ng *ng, Config_Box *cfg)
                  e_user_homedir_get(), cfg->launcher_app_dir);
      }
    else
-      snprintf(buf, sizeof(buf), "%s", cfg->launcher_app_dir);
+     snprintf(buf, sizeof(buf), "%s", cfg->launcher_app_dir);
 
    box->apps = e_order_new(buf);
    e_order_update_callback_set(box->apps, _ngi_launcher_app_change_cb, box);
@@ -85,7 +85,7 @@ _ngi_launcher_fill(Ngi_Box *box)
         Eina_List *l;
 
         EINA_LIST_FOREACH( box->apps->desktops, l, desktop)
-        _ngi_launcher_item_new(box, desktop, 1, NULL);
+	  _ngi_launcher_item_new(box, desktop, 1, NULL);
      }
 
    ngi_thaw(box->ng);
@@ -97,15 +97,25 @@ _ngi_launcher_app_change_cb(void *data, E_Order *eo)
    Ngi_Box *box = (Ngi_Box *)data;
    Ng *ng = box->ng;
    Ngi_Item *it = NULL;
+   /* Efreet_Desktop *app;
+    * Eina_List *apps, *items; */
 
-   /* Efreet_Desktop *app; */
-   Eina_List *apps, *items;
-   if (!box->apps)
-      return;
+   ngi_freeze(ng);
 
-   EINA_LIST_FOREACH(box->items, items, it)
-   if (!it->app || !it->usable)
-      return;
+   EINA_LIST_FREE(box->items, it)
+     ngi_item_free(it);
+
+   _ngi_launcher_fill(box);
+
+   ngi_thaw(ng);
+
+
+   /* if (!box->apps)
+    *    return; */
+
+   /* EINA_LIST_FOREACH(box->items, items, it)
+    * if (!it->app || !it->usable)
+    *    return; */
 
    /* apps = box->apps->desktops;
     * items = box->items;
@@ -172,16 +182,7 @@ _ngi_launcher_app_change_cb(void *data, E_Order *eo)
     *
     * _ngi_launcher_fill(box); */
 
-   apps = box->apps->desktops;
-
-   ngi_freeze(ng);
-
-   EINA_LIST_FREE(box->items, it)
-   ngi_item_free(it);
-
-   _ngi_launcher_fill(box);
-
-   ngi_thaw(ng);
+   /* apps = box->apps->desktops; */
 }
 
 /* ******************************* LAUNCHER DROP HANDLER ******************** */
@@ -190,9 +191,9 @@ static void
 _ngi_launcher_pos_set(Ngi_Box *box, int x, int y)
 {
    if (box->ng->horizontal)
-      box->ng->pos = x + box->ng->size/2;
+     box->ng->pos = x + box->ng->size/2;
    else
-      box->ng->pos = y + box->ng->size/2;
+     box->ng->pos = y + box->ng->size/2;
 }
 
 static void
@@ -206,24 +207,21 @@ _ngi_launcher_cb_drop_enter(void *data, const char *type, void *event_info)
 
    if (!strcmp(type, "text/uri-list"))
      {
-        box->ng->item_active = ngi_box_item_at_position_get(box);
      }
    else /* border || desktop */
      {
-        it = ngi_box_item_at_position_get(box);
-        if (it && it->border)
-           it = NULL;
-
         box->item_drop = ngi_item_new(box);
-        ngi_box_item_show(box->ng, box->item_drop, 1);
-        if (it)
-           box->items = eina_list_prepend_relative(box->items, box->item_drop, it);
+        ngi_item_show(box->item_drop, 1);
+
+	it = ngi_item_at_position_get(box->ng);
+
+        if (it && it->box != box)
+	  box->items = eina_list_prepend_relative(box->items, box->item_drop, it);
         else
-           box->items = eina_list_append(box->items, box->item_drop);
+	  box->items = eina_list_append(box->items, box->item_drop);
      }
 
    box->ng->dnd = 1;
-
    ngi_mouse_in(box->ng);
 }
 
@@ -233,50 +231,42 @@ _ngi_launcher_cb_drop_move (void *data, const char *type, void *event_info)
    E_Event_Dnd_Move *ev = (E_Event_Dnd_Move *)event_info;
    Ngi_Item *it, *next = NULL;
    Ngi_Box *box = (Ngi_Box *)data;
-   Ng *ng = box->ng;
    Eina_List *l;
 
    _ngi_launcher_pos_set(box, ev->x, ev->y);
 
-   it = ngi_box_item_at_position_get(box);
+   it = ngi_item_at_position_get(box->ng);
 
    if (!strcmp(type, "text/uri-list"))
      {
-        /*  if (it && it != box->item_active)
-            {
-            box->item_active = it;
-            ngi_item_over_signal_emit(it, "e,action,start");
-            }*/
      }
    else
      {
         l = eina_list_data_find_list(box->items, box->item_drop);
         if (l && l->next)
-           next = (Ngi_Item *)l->next->data;
+	  next = (Ngi_Item *)l->next->data;
 
         if (it != box->item_drop && (!next || it != next))
           {
              box->items = eina_list_remove(box->items, box->item_drop);
 
              if (it)
-                box->items = eina_list_prepend_relative(box->items, box->item_drop, it);
+	       box->items = eina_list_prepend_relative(box->items, box->item_drop, it);
              else
-                box->items = eina_list_append(box->items, box->item_drop);
+	       box->items = eina_list_append(box->items, box->item_drop);
           }
      }
 
-   ngi_thaw(ng);
+   ngi_thaw(box->ng);
 }
 
 static void
 _ngi_launcher_cb_drop_leave(void *data, const char *type, void *event_info)
 {
    Ngi_Box *box = (Ngi_Box *)data;
-   Ng *ng = box->ng;
 
    if (!strcmp(type, "text/uri-list"))
      {
-        ng->item_active = NULL;
      }
    else
      {
@@ -285,10 +275,10 @@ _ngi_launcher_cb_drop_leave(void *data, const char *type, void *event_info)
         box->item_drop = NULL;
      }
 
-   ngi_reposition(ng);
-   ngi_input_extents_calc(ng);
-   ng->dnd = 0;
-   ngi_mouse_out(ng);
+   ngi_reposition(box->ng);
+   ngi_input_extents_calc(box->ng);
+   box->ng->dnd = 0;
+   ngi_mouse_out(box->ng);
 }
 
 static void
@@ -297,11 +287,9 @@ _ngi_launcher_cb_drop_end  (void *data, const char *type, void *event_info)
    E_Event_Dnd_Drop *ev = (E_Event_Dnd_Drop *)event_info;
    Ngi_Box *box = (Ngi_Box *)data;
    Efreet_Desktop *app = NULL;
-   Eina_List *l, *fl = NULL;
-   Ngi_Item *it, *it2 = NULL;
+   Eina_List *l;
+   Ngi_Item *it;
    E_Border *bd;
-   char *file;
-   Ng *ng = box->ng;
 
    if (!strcmp(type, "enlightenment/desktop"))
      {
@@ -321,80 +309,51 @@ _ngi_launcher_cb_drop_end  (void *data, const char *type, void *event_info)
      }
    else if (!strcmp(type, "text/uri-list"))
      {
-        it = ng->item_active;
-
-        Eina_List *ll = NULL;
-
-        EINA_LIST_FOREACH (ev->data, l, file)
-        {
-           if (!strncmp(file, "file:///", 8))
-              file = file + 7;
-
-           ll = eina_list_append(ll, strdup(file));
-        }
-
-        ng->item_active = NULL;
-        e_exec(ng->zone, it->app, NULL, ll, "itask-ng"); /* FIXME ? */
-
-        ngi_item_signal_emit(it, "e,action,start");
-
+        /* it = ng->item_active;
+	 *
+         * Eina_List *ll = NULL;
+	 *
+         * EINA_LIST_FOREACH (ev->data, l, file)
+         * {
+         *    if (!strncmp(file, "file:///", 8))
+         *       file = file + 7;
+	 *
+         *    ll = eina_list_append(ll, strdup(file));
+         * }
+	 *
+         * ng->item_active = NULL;
+         * e_exec(ng->zone, it->app, NULL, ll, "itask-ng");
+	 *
+         * ngi_item_signal_emit(it, "e,action,start"); */
         //ngi_item_over_signal_emit(it, "e,action,start");
         return;
      }
 
-   for(l = box->items; l; l = l->next)
+   EINA_LIST_FOREACH(box->items, l, it)
      {
-        if (box->item_drop == l->data && l->next && l->next->data)
-          {
-             it2 = (Ngi_Item *)l->next->data;
-          }
-     }
-
-   if (it2 && it2->app && app)
-     {
-        e_order_prepend_relative(box->apps, app, it2->app);
-     }
-   else if (app)
-     {
-        e_order_append(box->apps, app);
-     }
-   else if (fl)
-     {
-        char *file;
-        app = NULL;
-        EINA_LIST_FOREACH(fl, l, file)
-        {
-           if (!strncmp(file, "file:///", 8))
-              file = file + 7;
-
-           app = efreet_desktop_get(strdup(file));
-
-           if (it2 && it2->app && app)
-             {
-                e_order_prepend_relative(box->apps, app, it2->app);
-             }
-           else if (app)
-             {
-                e_order_append(box->apps, app);
-             }
-        }
+	if (box->item_drop == it)
+	  break;
+	it = NULL;
      }
 
    if (app)
      {
-        _ngi_launcher_item_new(box, app, 1, it2);
+	if (it && it->app)
+	  e_order_prepend_relative(box->apps, app, it->app);
+	else
+	  e_order_append(box->apps, app);
+
+        _ngi_launcher_item_new(box, app, 1, it);
      }
 
    box->items = eina_list_remove(box->items, box->item_drop);
    ngi_item_free(box->item_drop);
    box->item_drop = NULL;
 
-   ngi_reposition(ng);
-   ngi_input_extents_calc(ng);
 
-   printf("mouse_out drop end\n");
-   ng->dnd = 0;
-   ngi_mouse_out(ng);
+   box->ng->dnd = 0;
+   ngi_reposition(box->ng);
+   ngi_input_extents_calc(box->ng);
 }
 
 /* ******************************* LAUNCHER ITEM ********************************** */
@@ -403,36 +362,24 @@ static void
 _ngi_launcher_item_new(Ngi_Box *box, Efreet_Desktop *desktop, int instant, Ngi_Item *after)
 {
    Ngi_Item *it;
-   Ng *ng = box->ng;
 
    it = ngi_item_new(box);
    it->type = launcher_item;
-
-   it->app = desktop;
-
-   if (!desktop->name)
-      return;  /* TODO remove later, when e stabilised...*/
-
-   efreet_desktop_ref(desktop);
-
-   /* it->cb_free       = _ngi_launcher_item_cb_free; */
-   it->cb_mouse_in = ngi_item_mouse_in;
-   it->cb_mouse_out = ngi_item_mouse_out;
    it->cb_mouse_down = _ngi_launcher_item_cb_mouse_down;
    it->cb_mouse_up = _ngi_launcher_item_cb_mouse_up;
    it->cb_drag_start = _ngi_launcher_item_cb_drag_start;
 
+   efreet_desktop_ref(desktop);
+   it->app = desktop;
+
    _ngi_launcher_item_fill(it);
 
    if (after)
-      box->items = eina_list_prepend_relative(box->items, it, after);
+     box->items = eina_list_prepend_relative(box->items, it, after);
    else
-      box->items = eina_list_append(box->items, it);
+     box->items = eina_list_append(box->items, it);
 
-   it->usable = 1;
-
-   ngi_box_item_show(ng, it, instant);
-   ngi_item_signal_emit(it, "e,state,launcher_item_normal");
+   ngi_item_show(it, instant);
 }
 
 static void
@@ -448,30 +395,36 @@ _ngi_launcher_item_fill(Ngi_Item *it)
    it->o_icon2 = e_icon_add(it->box->ng->evas);
 
    Evas_Object *o = evas_object_image_add(it->box->ng->evas);
-   evas_object_image_source_set(o, it->o_icon);
+   evas_object_image_source_set(o, it->obj);
    evas_object_resize(o, 128, 128);
    evas_object_image_fill_set(o, 0,0,128,128);
-   e_icon_object_set(it->o_icon2, o); 
-   
+   e_icon_object_set(it->o_icon2, o);
+
    edje_object_part_swallow(it->over, "e.swallow.content", it->o_icon2);
    evas_object_pass_events_set(it->o_icon2, 1);
    evas_object_show(it->o_icon2);
 
    if (it->app->name)
-      it->label = eina_stringshare_add(it->app->name);
+     it->label = eina_stringshare_add(it->app->name);
    else if (it->app->generic_name)
-      it->label = eina_stringshare_add(it->app->generic_name);
+     it->label = eina_stringshare_add(it->app->generic_name);
    else
-      it->label = eina_stringshare_add("");
+     it->label = eina_stringshare_add("");
 }
 
 static void
-_ngi_launcher_item_cb_drag_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_cb_drag_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Ng *ng = data;
 
-   ng->show_bar--;
+   ngi_bar_lock(ng, 0);
    ngi_thaw(ng);
+}
+
+static void
+_ngi_launcher_cb_drag_finished(E_Drag *d, int dropped)
+{
+
 }
 
 static void
@@ -480,13 +433,11 @@ _ngi_launcher_item_cb_drag_start(Ngi_Item *it)
    E_Drag *d;
    Evas_Object *o;
    Evas_Coord x, y, w, h, px, py;
+   const char *drag_types[] = { "enlightenment/desktop" };
    Ng *ng = it->box->ng;
 
-   if (!it->usable)
-      return;  /* FIXME needed? */
-
    if (it->box->cfg->launcher_lock_dnd)
-      return;
+     return;
 
    evas_object_geometry_get(it->o_icon, &x, &y, &w, &h);
 
@@ -496,20 +447,23 @@ _ngi_launcher_item_cb_drag_start(Ngi_Item *it)
 	y -= ng->win->rect.y;
      }
 
-   const char *drag_types[] = { "enlightenment/desktop" };
-
    d = e_drag_new(ng->zone->container, x, y, drag_types, 1,
-                  it->app, -1, NULL, NULL);
+                  it->app, -1, NULL,
+		  _ngi_launcher_cb_drag_finished);
 
-   o = e_util_desktop_icon_add(it->app, MIN(w, h), e_drag_evas_get(d));
+   o = e_util_desktop_icon_add(it->app, MIN(w, h),
+			       e_drag_evas_get(d));
 
    evas_object_hide(it->obj);
 
    e_order_remove(it->box->apps, it->app);
 
+   /* it->box->items = eina_list_remove(it->box->items, it);  */
+   /* ngi_item_free(it); */
+
    e_drag_object_set(d, o);
    e_drag_resize(d, w, h);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_DEL, _ngi_launcher_item_cb_drag_del, ng);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_DEL, _cb_drag_del, ng);
 
    ecore_x_pointer_xy_get(ng->win->input, &px, &py);
 
@@ -517,8 +471,7 @@ _ngi_launcher_item_cb_drag_start(Ngi_Item *it)
 
    ng->item_drag = NULL;
 
-   ng->show_bar++;
-
+   ngi_bar_lock(ng, 1);
    ngi_thaw(ng);
 }
 
@@ -526,30 +479,24 @@ static void
 _ngi_launcher_menu_cb_lock_dnd(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Ngi_Box *box = (Ngi_Box *)data;
-   if (!box)
-      return;
 
-   box->cfg->launcher_lock_dnd = e_menu_item_toggle_get(mi);
+   if (box) box->cfg->launcher_lock_dnd = e_menu_item_toggle_get(mi);
 }
 
 static void
 _ngi_launcher_menu_cb_edit_icon(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Ngi_Item *it = (Ngi_Item *)data;
-   if (!it)
-      return;
 
-   e_desktop_edit(it->box->ng->zone->container, it->app);
+   if (it) e_desktop_edit(it->box->ng->zone->container, it->app);
 }
 
 static void
 _ngi_launcher_menu_cb_configure_bar(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Ng *ng = (Ng *)data;
-   if (!ng)
-      return;
 
-   ngi_configure_module(ng->cfg);
+   if (ng) ngi_configure_module(ng->cfg);
 }
 
 static void
@@ -559,7 +506,7 @@ _ngi_launcher_menu_cb_configure_launcher(void *data, E_Menu *m, E_Menu_Item *mi)
    char path[4096];
 
    if (!box)
-      return;
+     return;
 
    snprintf(path, sizeof(path), "%s/.e/e/applications/bar/%s/.order",
             e_user_homedir_get(), box->cfg->launcher_app_dir);
@@ -575,7 +522,6 @@ _ngi_launcher_menu_cb_menu_end(void *data, E_Menu *m)
    Ng *ng = (Ng *)data;
 
    e_object_del(E_OBJECT(m));
-
    ngi_thaw(ng);
 }
 
@@ -588,9 +534,6 @@ _ngi_launcher_item_cb_mouse_down(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
    E_Menu_Item *mi;
    Ngi_Box *box = it->box;
 
-   if (!it->usable)
-      return;
-
    app = it->app;
 
    if (ev->buttons == 3 && app)
@@ -601,8 +544,6 @@ _ngi_launcher_item_cb_mouse_down(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
         y += box->ng->win->popup->y + box->ng->zone->y;
 
         int dir = E_MENU_POP_DIRECTION_AUTO;
-
-        ITEM_MOUSE_OUT(box->ng->item_active); /* FIXME check this again */
 
         switch(box->ng->cfg->orient)
           {
@@ -623,7 +564,7 @@ _ngi_launcher_item_cb_mouse_down(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
            case E_GADCON_ORIENT_RIGHT:
               dir = E_MENU_POP_DIRECTION_LEFT;
               break;
-          } /* switch */
+          }
 
         m = e_menu_new();
 
@@ -654,24 +595,20 @@ _ngi_launcher_item_cb_mouse_down(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
                               dir, ev->timestamp);
      }
    else
-      it->mouse_down = 1;
+     it->mouse_down = 1;
 }
 
 static void
 _ngi_launcher_item_cb_mouse_up(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
 {
    if (!it->mouse_down)
-      return;  /* FIXME remove */
-
-   if (!it->usable)
-      return;
+     return;  /* FIXME remove */
 
    if (ev->buttons == 1)
      {
         if (!it->border)
           {
-             e_exec(it->box->ng->zone, it->app, NULL, NULL, "itask-ng");
-
+             e_exec(it->box->ng->zone, it->app, NULL, NULL, NULL);
              ngi_item_signal_emit(it, "e,action,start");
           }
         else

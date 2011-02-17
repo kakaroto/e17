@@ -5,7 +5,7 @@ struct _E_Config_Dialog_Data
    int              show_label;
    int              show_background;
    int              orient;
-   double           size;
+   int           size;
    double           zoomfactor;
    int              autohide;
    int              autohide_show_urgent;
@@ -15,15 +15,18 @@ struct _E_Config_Dialog_Data
    double           hide_timeout;
    double           zoom_duration;
    double           zoom_range;
-   int              zoom_one;
 
    int              hide_below_windows;
    int              hide_mode;
-   double           alpha;
-   int              sia_remove;
+   int              alpha;
    int              stacking;
    int              mouse_over_anim;
 
+   int rflxn_alpha;
+   double rflxn_foc;
+   double rflxn_dist;
+   double rflxn_rot;
+  
    Eina_List       *boxes;
 
    Evas_Object     *ilist;
@@ -97,32 +100,37 @@ ngi_configure_module(Config_Item *ci)
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
                              D_("Itask NG Configuration"),
                              "E", path, buf, 0, v, ci);
-
+   
    ci->config_dialog = cfd;
+   ngi_bar_lock(ci->ng, 1);
 }
 
 static void
 _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
 {
-   cfdata->show_background = ci->show_background;
-   cfdata->show_label = ci->show_label;
-   cfdata->orient = ci->orient;
-   cfdata->size = ci->size;
-   cfdata->zoomfactor = ci->zoomfactor;
-   cfdata->autohide = ci->autohide;
-   cfdata->autohide_show_urgent = ci->autohide_show_urgent;
-   cfdata->hide_below_windows = ci->hide_below_windows;
-   cfdata->hide_timeout = ci->hide_timeout;
-   cfdata->zoom_duration = ci->zoom_duration;
-   cfdata->zoom_range = ci->zoom_range;
-   cfdata->zoom_one = ci->zoom_one;
-   cfdata->alpha = ci->alpha;
-   cfdata->sia_remove = ci->sia_remove;
-   cfdata->stacking = ci->stacking;
-   cfdata->mouse_over_anim = ci->mouse_over_anim;
-   cfdata->lock_deskswitch = ci->lock_deskswitch;
-   cfdata->ecomorph_features = ci->ecomorph_features;
-
+#define C(_name) cfdata->_name = ci->_name;
+   C(show_background);
+   C(show_label);
+   C(orient);
+   C(size);
+   C(zoomfactor);
+   C(autohide);
+   C(autohide_show_urgent);
+   C(hide_below_windows);
+   C(hide_timeout);
+   C(zoom_duration);
+   C(zoom_range);
+   C(alpha);
+   C(stacking);
+   C(mouse_over_anim);
+   C(lock_deskswitch);
+   C(ecomorph_features);
+   C(rflxn_alpha);
+   C(rflxn_rot);
+   C(rflxn_dist);
+   C(rflxn_foc);
+#undef C
+   
    cfdata->cfg = ci;
    cfdata->cfd = ci->config_dialog;
 
@@ -146,6 +154,7 @@ static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    cfdata->cfg->config_dialog = NULL;
+   if (cfdata->cfg->ng) ngi_bar_lock(cfdata->cfg->ng, 0);
    free(cfdata);
 }
 
@@ -212,16 +221,23 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    ob = e_widget_label_add (evas, D_("Icon Size:"));
    e_widget_framelist_object_append (of, ob);
    ob = e_widget_slider_add (evas, 1, 0, D_("%1.0f px"), 16.0, 128,
-                             1.0, 0, &(cfdata->size), NULL, 100);
+                             1.0, 0, NULL, &(cfdata->size), 100);
+   e_widget_on_change_hook_set(ob, _cb_slider_change, cfdata);
+   e_widget_framelist_object_append (of, ob);
+
+   ob = e_widget_label_add (evas, D_("Reflection Opacity:"));
+   e_widget_framelist_object_append (of, ob);
+   ob = e_widget_slider_add (evas, 1, 0, D_("%1.0f"), 0, 255,
+                             1.0, 0, NULL, &(cfdata->rflxn_alpha), 100);
    e_widget_on_change_hook_set(ob, _cb_slider_change, cfdata);
    e_widget_framelist_object_append (of, ob);
 
    if (ngi_config->use_composite)
      {
-        ob = e_widget_label_add (evas, D_("Background Transparency:"));
+        ob = e_widget_label_add (evas, D_("Background Opacity:"));
         e_widget_framelist_object_append (of, ob);
         ob = e_widget_slider_add (evas, 1, 0, D_("%1.0f \%"), 0, 255,
-                                  1.0, 0, &(cfdata->alpha), NULL, 100);
+                                  1.0, 0, NULL, &(cfdata->alpha), 100);
         e_widget_on_change_hook_set(ob, _cb_slider_change, cfdata);
         e_widget_framelist_object_append (of, ob);
      }
@@ -266,8 +282,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    /* _______ third column __________________________________________________*/
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, D_("Zoom"), 0);
-   /* ob = e_widget_check_add(evas, D_("Zoom only one icon"), &(cfdata->zoom_one));
-    * e_widget_framelist_object_append(of, ob); */
+
    ob = e_widget_label_add (evas, D_("Factor:"));
    e_widget_framelist_object_append (of, ob);
    ob = e_widget_slider_add (evas, 1, 0, "%1.2f", 1.0, 5.0,
@@ -282,7 +297,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_framelist_object_append (of, ob);
    ob = e_widget_label_add (evas, D_("Duration:"));
    e_widget_framelist_object_append (of, ob);
-   ob = e_widget_slider_add (evas, 1, 0, "%1.2f", 0.1, 1.0,
+   ob = e_widget_slider_add (evas, 1, 0, "%1.2f", 0.1, 0.5,
                              0.01, 0, &(cfdata->zoom_duration), NULL, 100);
    e_widget_on_change_hook_set(ob, _cb_slider_change, cfdata);
    e_widget_framelist_object_append (of, ob);
@@ -320,13 +335,9 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    Config_Item *ci;
    Ng *ng;
-   Ngi_Box *box;
-   int restart = 0;
-   Eina_List *l;
 
    ci = cfd->data;
    ng = ci->ng;
-   ngi_bar_show(ng);
 
    ci->size = cfdata->size;
    ci->zoomfactor = cfdata->zoomfactor;
@@ -334,7 +345,6 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    ci->zoom_duration = cfdata->zoom_duration;
    ci->zoom_range = cfdata->zoom_range;
    ci->alpha = cfdata->alpha;
-   ci->zoom_one = cfdata->zoom_one;
    ci->mouse_over_anim = cfdata->mouse_over_anim;
    ci->autohide = cfdata->hide_mode;
    ci->lock_deskswitch = cfdata->lock_deskswitch;
@@ -361,6 +371,7 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      }
    else
      {
+	ngi_bar_lock(ng, 0);
 	ng->hide_step = 0;
 	ng->hide_state = show;
 	ngi_reposition(ng);
@@ -895,7 +906,8 @@ _cb_slider_change(void *data, Evas_Object *obj)
 {
    E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data *)data;
    Ng *ng = cfdata->cfg->ng;
-
+   int a;
+   
    ng->cfg->size = (int)cfdata->size;
    ng->size = ng->cfg->size;
 
@@ -904,8 +916,14 @@ _cb_slider_change(void *data, Evas_Object *obj)
    ng->cfg->zoom_range = cfdata->zoom_range;
    ng->cfg->hide_timeout = cfdata->hide_timeout;
    ng->cfg->alpha = cfdata->alpha;
+   ng->cfg->rflxn_alpha = cfdata->rflxn_alpha;
 
-   evas_object_color_set(ng->bg_clip, ng->cfg->alpha, ng->cfg->alpha, ng->cfg->alpha, ng->cfg->alpha);
+   a = ng->cfg->alpha;
+   evas_object_color_set(ng->bg_clip, a, a, a, a);
+   a = ng->cfg->rflxn_alpha;
+   evas_object_color_set(ng->o_proxy, a, a, a, a);
+
+   ngi_win_position_calc(ng->win);
    ngi_thaw(ng);
 }
 

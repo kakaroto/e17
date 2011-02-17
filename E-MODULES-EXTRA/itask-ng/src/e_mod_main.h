@@ -6,25 +6,30 @@
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
+#define MOD_CONFIG_FILE_EPOCH 0x0001
+#define MOD_CONFIG_FILE_GENERATION 0x0001
+#define MOD_CONFIG_FILE_VERSION					\
+  ((MOD_CONFIG_FILE_EPOCH << 16) | MOD_CONFIG_FILE_GENERATION)
+
 #define AUTOHIDE_NONE 0
 #define AUTOHIDE_NORMAL 1
 #define AUTOHIDE_FULLSCREEN 2
 
-#define ITEM_MOUSE_DOWN(_item, _ev)     \
-  if(_item && _item->cb_mouse_down)     \
-    _item->cb_mouse_down(_item, _ev);   \
-
-#define ITEM_MOUSE_UP(_item, _ev)       \
-  if(_item && _item->cb_mouse_up)       \
-    _item->cb_mouse_up(_item, _ev);     \
-
-#define ITEM_MOUSE_OUT(_item)           \
-  if(_item && _item->cb_mouse_out)      \
-    _item->cb_mouse_out(_item);         \
-
-#define ITEM_MOUSE_IN(_item)            \
-  if(_item && _item->cb_mouse_in)       \
-    _item->cb_mouse_in(_item);          \
+/* #define ITEM_MOUSE_DOWN(_item, _ev)     \
+ *   if(_item && _item->cb_mouse_down)     \
+ *     _item->cb_mouse_down(_item, _ev);   \
+ * 
+ * #define ITEM_MOUSE_UP(_item, _ev)       \
+ *   if(_item && _item->cb_mouse_up)       \
+ *     _item->cb_mouse_up(_item, _ev);     \
+ * 
+ * #define ITEM_MOUSE_OUT(_item)           \
+ *   if(_item && _item->cb_mouse_out)      \
+ *     _item->cb_mouse_out(_item);         \
+ * 
+ * #define ITEM_MOUSE_IN(_item)            \
+ *   if(_item && _item->cb_mouse_in)       \
+ *     _item->cb_mouse_in(_item);          \ */
 
 #define ITEM_MOUSE_WHEEL(_item, ev)	\
   if(_item && _item->cb_mouse_wheel)    \
@@ -52,6 +57,8 @@ typedef struct _Ngi_Box       Ngi_Box;
 
 struct _Config
 {
+  int            version;
+  
   E_Module      *module;
   Eina_List     *instances;
   E_Menu        *menu;
@@ -65,7 +72,7 @@ struct _Config
 };
 
 struct _Config_Item
-{
+{ 
   Ng            *ng;
 
   int            show_label;
@@ -83,8 +90,6 @@ struct _Config_Item
   float	         hide_timeout;
   float	         zoom_duration;
   int            alpha;
-  int            sia_remove; /* remove single instance apps from launcher while running */
-  int            zoom_one;   /* zoom only the icon under the pointer */
   int            mouse_over_anim;
 
   enum { above_all, below_fullscreen } stacking;
@@ -92,6 +97,11 @@ struct _Config_Item
   int            lock_deskswitch;
   int            ecomorph_features;
 
+  int            rflxn_alpha;
+  float          rflxn_foc;
+  float          rflxn_dist;
+  float          rflxn_rot;
+  
   Eina_List     *boxes;
 
   E_Config_Dialog *config_dialog;
@@ -146,9 +156,11 @@ struct _Ng
   E_Zone          *zone;
 
   Evas_Object     *o_bg;
+  Evas_Object     *o_proxy;
+  Evas_Object     *o_icons;
   Evas_Object     *o_frame;
   Evas_Object     *o_label;
-  Evas_Object     *o_event;
+  
   Evas_Object     *clip;
   Evas_Object     *bg_clip;
 
@@ -162,7 +174,8 @@ struct _Ng
   int             hide_fullscreen;
 
   double           zoom;
-  double           start_time;
+  double           start_zoom;
+  double           start_hide;
 
   Eina_List       *items_scaling;
   Ngi_Item        *item_active;
@@ -190,7 +203,10 @@ struct _Ng
     int clip_separator;
     int separator_width;
     int item_spacing;
-    int edge_spacing;
+    int edge_offset;
+    int bg_offset;
+    int reflection_offset;
+    double keep_overlay_pos;
   } opt;
 };
 
@@ -218,8 +234,6 @@ struct _Ngi_Item
   const char     *class; /* store icccm.class...*/
 
   unsigned int    mouse_down;
-  unsigned int    usable;
-
   int             pos;
   double          start_time;
 
@@ -285,9 +299,8 @@ void         ngi_thaw                         (Ng *ng);
 void         ngi_animate                      (Ng *ng);
 void         ngi_mouse_in                     (Ng *ng);
 void         ngi_mouse_out                    (Ng *ng);
-void         ngi_bar_show                     (Ng *ng);
-void         ngi_bar_hide                     (Ng *ng);
-
+Ngi_Item *   ngi_item_at_position_get         (Ng *ng);
+void         ngi_bar_lock                     (Ng *ng, int lock);
 
 void         ngi_win_show                     (Ngi_Win *win);
 void         ngi_win_hide                     (Ngi_Win *win);
@@ -295,17 +308,17 @@ void         ngi_win_position_calc            (Ngi_Win *win);
 
 Ngi_Box     *ngi_box_new                      (Ng *ng);
 void         ngi_box_free                     (Ngi_Box *box);
-void         ngi_box_item_remove              (Ng *ng, Ngi_Item *it, int instant);
-void         ngi_box_item_show                (Ng *ng, Ngi_Item *it, int instant);
-Ngi_Item    *ngi_box_item_at_position_get     (Ngi_Box *box);
 
 void         ngi_configure_module             (Config_Item *ci);
 void         ngi_configure_box                (Ngi_Box *box);
 
 Ngi_Item    *ngi_item_new                     (Ngi_Box *box);
 void         ngi_item_free                    (Ngi_Item *it);
+void         ngi_item_show                    (Ngi_Item *it, int instant);
 void         ngi_item_remove                  (Ngi_Item *it);
 void         ngi_item_del_icon                (Ngi_Item *it);
+void         ngi_item_mouse_down              (Ngi_Item *it, Ecore_Event_Mouse_Button *ev);
+void         ngi_item_mouse_up                (Ngi_Item *it, Ecore_Event_Mouse_Button *ev);
 void         ngi_item_mouse_in                (Ngi_Item *it);
 void         ngi_item_mouse_out               (Ngi_Item *it);
 void         ngi_item_signal_emit             (Ngi_Item *it, char *sig);
