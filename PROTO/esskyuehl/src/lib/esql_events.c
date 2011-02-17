@@ -74,12 +74,13 @@ esql_call_complete(Esql *e)
         break;
 
       case ESQL_CONNECT_TYPE_DATABASE_SET:
-        INFO("Working database is now '%s'", e->database);
-        UPDATE_LISTS(database_set);
+        if (e->pool_struct)
+          INFO("Pool member %u: working database is now '%s'", e->pool_id, e->database);
+        else
+          INFO("Working database is now '%s'", e->database);
         break;
 
       case ESQL_CONNECT_TYPE_QUERY:
-        UPDATE_LISTS(query);
         e->query_end = ecore_time_get();
         {
            Esql_Res *res;
@@ -115,20 +116,33 @@ out:
    e->error = NULL;
    if (!e->backend_set_funcs)
      {
-        INFO("No calls queued");
         if (e->pool_struct)
-          INFO("Pool member %u is now idle", e->pool_id);
-        return;
+          {
+             if (!esql_pool_rebalance(e->pool_struct, e))
+               {
+                  INFO("Pool member %u is now idle", e->pool_id);
+                  return;
+               }
+          }
+        else
+          {
+             INFO("No calls queued");
+             return;
+          }
      }
    /* next call */
    cb = e->backend_set_funcs->data;
    if (cb == (Esql_Set_Cb)esql_database_set)
      {
         cb(e, e->backend_set_params->data);
-        INFO("Next call: DB change");
+        UPDATE_LISTS(database_set);
+        if (e->pool_struct)
+          INFO("Pool member %u: next call: DB change", e->pool_id);
+        else
+          INFO("Next call: DB change");
      }
    else if (cb == (Esql_Set_Cb)esql_query)
-     {
+     { /* don't use cb, leads to unnecessary calls and breakage */
         void *data;
 
         data = eina_hash_find(esql_query_data, e->backend_ids->data);
@@ -137,7 +151,11 @@ out:
         e->cur_data = data;
         e->cur_id = *((Esql_Query_Id *)e->backend_ids->data);
         if (data) eina_hash_del_by_key(esql_query_data, e->backend_ids->data);
-        INFO("Next call: query");
+        UPDATE_LISTS(query);
+        if (e->pool_struct)
+          INFO("Pool member %u: next call: query", e->pool_id);
+        else
+          INFO("Next call: query");
      }
    esql_connect_handler(e, e->fdh); /* have to call again to start next call */
 }

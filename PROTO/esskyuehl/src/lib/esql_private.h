@@ -39,10 +39,10 @@ extern Eina_Hash *esql_query_data;
 #endif
 
 #ifndef EINA_INLIST_FOREACH_SAFE
-#define EINA_INLIST_FOREACH_SAFE(list, list2, l) \
-   for (l = (list ? _EINA_INLIST_CONTAINER(l, list) : NULL), list2 = l ? ((EINA_INLIST_GET(l) ? EINA_INLIST_GET(l)->next : NULL)) : NULL; \
-        l; \
-        l = _EINA_INLIST_CONTAINER(l, list2), list2 = list2 ? list2->next : NULL)
+#define EINA_INLIST_FOREACH_SAFE(list, list2, l)                                                                                         \
+  for (l = (list ? _EINA_INLIST_CONTAINER(l, list) : NULL), list2 = l ? ((EINA_INLIST_GET(l) ? EINA_INLIST_GET(l)->next : NULL)) : NULL; \
+       l;                                                                                                                                \
+       l = _EINA_INLIST_CONTAINER(l, list2), list2 = list2 ? list2->next : NULL)
 #endif
 
 typedef enum
@@ -189,6 +189,9 @@ char *esql_query_escape(Eina_Bool   backslashes,
 char *esql_string_escape(Eina_Bool   backslashes,
                          const char *s);
 
+
+Eina_Bool
+esql_pool_rebalance(Esql_Pool *ep, Esql *e);
 Esql_Query_Id
 esql_pool_query(Esql_Pool  *ep,
                 void       *data,

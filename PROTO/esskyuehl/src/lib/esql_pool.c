@@ -48,6 +48,37 @@ esql_pool_idle_find_(Esql_Pool *ep)
    return use;
 }
 
+Eina_Bool
+esql_pool_rebalance(Esql_Pool *ep, Esql *e /* idle connection */)
+{
+   Esql *it;
+
+   DBG("(ep=%p, e=%p)", ep, e);
+   EINA_INLIST_FOREACH(ep->esqls, it)
+     {
+        if (it->backend_set_funcs) /* queued call */
+          {
+             INFO("Load balancing: moving query from %u to %u", it->pool_id, e->pool_id);
+#if defined(eina_list_move_list)
+             eina_list_move_list(&e->backend_set_funcs, &it->backend_set_funcs, it->backend_set_funcs);
+             eina_list_move_list(&e->backend_set_params, &it->backend_set_params, it->backend_set_params);
+             eina_list_move_list(&e->backend_ids, &it->backend_ids, it->backend_ids);
+#else
+#define LIST_MOVE(X) \
+  e->X = eina_list_append(e->X, it->X->data); \
+  it->X = eina_list_remove_list(it->X, it->X)
+             LIST_MOVE(backend_set_funcs);
+             LIST_MOVE(backend_set_params);
+             LIST_MOVE(backend_ids);
+#undef LIST_MOVE
+#endif
+             return EINA_TRUE;
+          }
+     }
+   INFO("No rebalancing necessary");
+   return EINA_FALSE;
+}
+
 void
 esql_pool_free(Esql_Pool *ep)
 {
