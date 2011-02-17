@@ -6,9 +6,6 @@ ngi_box_new(Ng *ng)
    Ngi_Box *box;
 
    box = E_NEW(Ngi_Box, 1);
-   if (!box)
-      return NULL;
-
    box->ng = ng;
    box->pos = 0;
    box->apps = NULL;
@@ -50,12 +47,10 @@ ngi_box_new(Ng *ng)
 void
 ngi_box_free(Ngi_Box *box)
 {
-   Ngi_Item *it;
-
    box->ng->boxes = eina_list_remove(box->ng->boxes, box);
 
-   EINA_LIST_FREE(box->items, it)
-     ngi_item_free(it);
+   while(box->items)
+     ngi_item_free(box->items->data);
 
    if (box->separator)
       evas_object_del(box->separator);

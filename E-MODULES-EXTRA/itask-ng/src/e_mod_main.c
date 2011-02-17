@@ -183,6 +183,8 @@ ngi_new(Config_Item *cfg)
    data = edje_object_data_get(ng->o_frame, "keep_overlay_pos");
    if (data) ng->opt.keep_overlay_pos = atof(data);
 
+   ng->opt.fade_duration = 0.25;
+
    evas_object_show(ng->o_frame);
    evas_object_show(ng->o_bg);
    evas_object_show(ng->o_icons);
@@ -889,45 +891,52 @@ ngi_item_at_position_get(Ng *ng)
 void
 ngi_item_activate(Ng *ng)
 {
-   Ngi_Item *it = ngi_item_at_position_get(ng);
+   Ngi_Item *it;
 
-   if (it && ng->mouse_in && (it != ng->item_active))
+   if (!ng->mouse_in)
+     {
+	ng->item_active = NULL;
+	evas_object_hide(ng->o_label);
+	return;
+     }
+
+   if ((it = ngi_item_at_position_get(ng)) && (it != ng->item_active))
      {
         ngi_item_mouse_out(ng->item_active);
         ngi_item_mouse_in(it);
         ng->item_active = it;
      }
-   else if (!it /* || !ng->mouse_in */)
+   else if (!it)
      {
         ngi_item_mouse_out(ng->item_active);
         ng->item_active = NULL;
      }
 
-   if (ng->item_active && ng->cfg->show_label)
+   if ((!ng->cfg->show_label) ||
+       (!ng->item_active) ||
+       (!ng->item_active->label))
      {
-	switch (ng->cfg->orient)
-          {
-           case E_GADCON_ORIENT_BOTTOM:
-              evas_object_move(ng->o_label, ng->item_active->pos + ng->size/2,
-			       (ng->win->popup->h + ng->hide_step) -
-			       ((double)ng->size * ng->zoom + TEXT_DIST));
-              break;
-
-           case E_GADCON_ORIENT_TOP:
-              evas_object_move(ng->o_label, ng->item_active->pos + ng->size/2,
-			       ((double)ng->size * ng->zoom + TEXT_DIST) - ng->hide_step);
-              break;
-          }
-
-        if (ng->item_active->label && ng->item_active->label[0])
-          {
-	     evas_object_show(ng->o_label);
-	     edje_object_signal_emit(ng->o_label, "e,state,label,show", "e");
-	     edje_object_part_text_set(ng->o_label, "e.text.label", ng->item_active->label);
-          }
-        else
-           evas_object_hide(ng->o_label);
+	evas_object_hide(ng->o_label);
+	return;
      }
+
+   switch (ng->cfg->orient)
+     {
+      case E_GADCON_ORIENT_BOTTOM:
+	 evas_object_move(ng->o_label, ng->item_active->pos + ng->size/2,
+			  (ng->win->popup->h + ng->hide_step) -
+			  ((double)ng->size * ng->zoom + TEXT_DIST));
+	 break;
+
+      case E_GADCON_ORIENT_TOP:
+	 evas_object_move(ng->o_label, ng->item_active->pos + ng->size/2,
+			  ((double)ng->size * ng->zoom + TEXT_DIST) - ng->hide_step);
+	 break;
+     }
+
+   evas_object_show(ng->o_label);
+   edje_object_signal_emit(ng->o_label, "e,state,label,show", "e");
+   edje_object_part_text_set(ng->o_label, "e.text.label", ng->item_active->label);
 }
 
 /**************************************************************************/
@@ -935,64 +944,41 @@ ngi_item_activate(Ng *ng)
 static void
 _ngi_item_appear(Ng *ng, Ngi_Item *it)
 {
-   double appear_duration = 0.2;
-
-   it->scale = (ecore_time_get() - it->start_time) / appear_duration;
+   it->scale = (ecore_time_get() - it->start_time) / ng->opt.fade_duration;
 
    if (it->scale < 1.0)
      {
         ngi_reposition(ng);
-     }
-   else
-     {
-        it->scale = 1.0;
-        it->state = normal;
-
-        ng->items_scaling = eina_list_remove(ng->items_scaling, it);
-
-        ngi_reposition(ng);
-        ngi_input_extents_calc(ng);
+	return;
      }
 
+   it->scale = 1.0;
+   ng->items_show = eina_list_remove(ng->items_show, it);
+
+   ngi_reposition(ng);
+   ngi_input_extents_calc(ng);
    ngi_item_activate(ng);
 }
 
 static void
 _ngi_item_disappear(Ng *ng, Ngi_Item *it)
 {
-   double appear_duration = 0.3;
-
-   double delta = it->scale - (1.0 - (ecore_time_get() - it->start_time) / appear_duration);
-
-   it->scale -= delta;
+   it->scale = 1.0 - (ecore_time_get() - it->start_time) / ng->opt.fade_duration;
 
    if (it->scale > 0.0)
      {
         ngi_reposition(ng);
-     }
-   else
-     {
-        ng->items_scaling = eina_list_remove(ng->items_scaling, it);
-
-        evas_object_clip_unset(it->obj);
-        /* evas_object_clip_unset(it->over); */
-
-        it->scale = 0.0;
-
-        if (ng->item_active == it)
-           ng->item_active = NULL;
-
-        it->box->items = eina_list_remove(it->box->items, it);
-        ngi_item_free(it);
-
-        ng->size = ng->cfg->size;
-
-        ngi_reposition(ng);
-        ngi_input_extents_calc(ng);
-
-        ngi_animate(ng);
+	return;
      }
 
+   ng->items_remove = eina_list_remove(ng->items_remove, it);
+
+   ngi_item_free(it);
+
+   ng->size = ng->cfg->size;
+   ngi_reposition(ng);
+   ngi_input_extents_calc(ng);
+   ngi_animate(ng);
    ngi_item_activate(ng);
 }
 
@@ -1138,43 +1124,35 @@ ngi_animate(Ng *ng)
 
    ng->animator = ecore_animator_add(_ngi_animator, ng);
 }
-static double _last;
-static double _new;
+
 static Eina_Bool
 _ngi_animator(void *data)
 {
-   Ng *ng = (Ng *)data;
+   Ng *ng = data;
    Eina_Bool cont = 0;
-   Eina_List *l;
+   Eina_List *l, *ll;
    Ngi_Item *it;
 
-   _last = _new;
-   _new = ecore_time_get();
+   if (ng->items_remove || ng->items_show)
+     cont = 1;
 
-   for(l = ng->items_scaling; l; )
-     {
-        it = (Ngi_Item *)l->data;
-        l = l->next;
+   EINA_LIST_FOREACH_SAFE(ng->items_show, l, ll, it)
+     _ngi_item_appear(ng, it);
 
-        if (it->state == appearing)
-           _ngi_item_appear(ng, it);
-        else if (it->state == disappearing)
-           _ngi_item_disappear(ng, it);
-
-        cont++;
-     }
+   EINA_LIST_FOREACH_SAFE(ng->items_remove, l, ll, it)
+     _ngi_item_disappear(ng, it);
 
    if (ng->cfg->zoomfactor > 1.0)
      {
         if (ng->mouse_in && (ng->state != zoomed))
           {
 	     _ngi_zoom_in(ng);
-	     cont++;
+	     cont = 1;
           }
         else if (!ng->mouse_in && (ng->state != unzoomed))
           {
 	     _ngi_zoom_out(ng);
-	     cont++;
+	     cont = 1;
           }
      }
 
@@ -1186,7 +1164,7 @@ _ngi_animator(void *data)
              if (ng->hide_state != show)
                {
 		  _ngi_autohide(ng, 0);
-                  cont++;
+                  cont = 1;
                }
           }
         else if ((ng->cfg->autohide == AUTOHIDE_NORMAL) || (ng->hide_fullscreen))
@@ -1194,19 +1172,20 @@ _ngi_animator(void *data)
              if ((ng->hide_state != hidden) && (ng->state == unzoomed))
                {
 		  _ngi_autohide(ng, 1);
-                  cont++;
+                  cont = 1;
                }
           }
      }
 
-   cont += ng->changed;
+   if (cont || ng->changed)
+     {
+	_ngi_redraw(ng);
+	return EINA_TRUE;
+     }
 
-   if (cont)
-     _ngi_redraw(ng);
-   else
-      ng->animator = NULL;
 
-   return cont;
+   ng->animator = NULL;
+   return EINA_FALSE;
 }
 
 void
@@ -1276,14 +1255,17 @@ ngi_reposition(Ng *ng)
       }
    }
 
-   if (ng->items_scaling)
-      return;
-
    if (!ng->cfg->ecomorph_features)
      return;
 
+   if (ng->items_show || ng->items_remove)
+      return;
+
+   /* FIXME */
    EINA_LIST_FOREACH (ng->boxes, l, box)
      {
+	Ngi_Item_Taskbar *it;
+
 	if (!(box->cfg->type == taskbar))
 	  continue;
 
@@ -1292,15 +1274,14 @@ ngi_reposition(Ng *ng)
 	   case E_GADCON_ORIENT_BOTTOM:
 	      EINA_LIST_FOREACH(box->items, ll, it)
 		_ngi_netwm_icon_geometry_set
-		(it->border, it->pos - size / 2,
-		 (ng->win->popup->y + ng->win->popup->h) - size,
-		 size, size);
+		(it->border, it->base.pos,
+		 (ng->win->popup->y + ng->win->popup->h) - size, size, size);
 	      break;
 
 	   case E_GADCON_ORIENT_TOP:
 	      EINA_LIST_FOREACH(box->items, ll, it)
 		_ngi_netwm_icon_geometry_set
-		(it->border, it->pos - size / 2,
+		(it->border, it->base.pos,
 		 ng->hide_step, size, size);
 	      break;
 
@@ -1308,15 +1289,14 @@ ngi_reposition(Ng *ng)
 	      EINA_LIST_FOREACH(box->items, ll, it)
 		_ngi_netwm_icon_geometry_set
 		(it->border, ng->hide_step,
-		 it->pos - size / 2, size, size);
+		 it->base.pos, size, size);
 	      break;
 
 	   case E_GADCON_ORIENT_RIGHT:
 	      EINA_LIST_FOREACH(box->items, ll, it)
 		_ngi_netwm_icon_geometry_set
-		(it->border,
-		 (ng->win->popup->x + ng->win->popup->w) - size,
-		 it->pos - size / 2, size, size);
+		(it->border, (ng->win->popup->x + ng->win->popup->w) - size,
+		 it->base.pos, size, size);
 	      break;
 	  }
      }
@@ -1363,27 +1343,6 @@ _ngi_redraw(Ng *ng)
 
    if (ng->o_proxy && ((ng->hide_state == hiding) || (ng->hide_state == showing)))
      _ngi_proxy_geometry_calc(ng);
-
-   /* /\* FIXME add changed_size hint in reposition() *\/
-    * 
-    *   {
-    * 	Evas_Map *m = evas_map_new(4);
-    * 
-    * 	evas_object_move(ng->o_icons, 0, h + hide_step - size - edge_offset);
-    * 	evas_object_move(ng->o_proxy, 0, h + hide_step - edge_offset - ng->opt.reflection_offset);
-    * 
-    * 	evas_map_util_points_populate_from_object(m, ng->o_proxy);
-    * 
-    * 	evas_map_point_image_uv_set(m, 0, 0, 1);
-    * 	evas_map_point_image_uv_set(m, 1, 1, 1);
-    * 	evas_map_point_image_uv_set(m, 2, 1, 0);
-    * 	evas_map_point_image_uv_set(m, 3, 0, 0);
-    * 
-    * 	evas_map_util_3d_perspective(m, w/2, h/2, 1, 1000);
-    * 
-    * 	evas_object_map_set(ng->o_proxy, m);
-    * 	evas_map_free(m);
-    *   } */
 
    if (cfg->show_background)
      {
@@ -1485,7 +1444,7 @@ _ngi_redraw(Ng *ng)
 	   if (!l->prev)
 	     {
 		_ngi_zoom_function(ng, it->pos - ng->pos,  &pos);
-		pos = it->pos + pos;
+		pos = (double)it->pos + pos;
 	     }
 	   else
 	     {
@@ -1493,8 +1452,7 @@ _ngi_redraw(Ng *ng)
 	     }
 
 	   _ngi_zoom_function(ng, it->pos + (ng->size * it->scale) - ng->pos, &pos2);
-	   pos2 = it->pos + (ng->size * it->scale) + pos2;
-
+	   pos2 = (double)it->pos + ((double)ng->size * it->scale) + pos2;
 	   size = (int)pos2 - (int)pos;
 
 	   switch (cfg->orient)
@@ -1523,11 +1481,8 @@ _ngi_redraw(Ng *ng)
 	   evas_object_move(it->obj,  bx, by);
 	   evas_object_resize(it->obj, size, size);
 
-	   if (!it->overlay_signal_timer)
-	     {
-		evas_object_move(it->over, bx, by);
-		evas_object_resize(it->over, size, size);
-	     }
+	   evas_object_move(it->over, bx, by);
+	   evas_object_resize(it->over, size, size);
 	}
    }
 

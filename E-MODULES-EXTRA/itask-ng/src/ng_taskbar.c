@@ -1,30 +1,30 @@
 #include "e_mod_main.h"
 #include <X11/Xlib.h>
 
-static int            _ngi_taskbar_border_check          (Ngi_Box *box, E_Border *bd);
-static Ngi_Item *     _ngi_taskbar_border_find           (Ngi_Box *box, E_Border *bd);
+static int            _border_check          (Ngi_Box *box, E_Border *bd);
+static Ngi_Item_Taskbar *_border_find        (Ngi_Box *box, E_Border *bd);
 
-static Eina_Bool      _ngi_taskbar_cb_border_event       (void *data, int type, void *event);
-static Eina_Bool      _ngi_taskbar_cb_desk_show          (void *data, int type, void *event);
+static Eina_Bool      _cb_border_event       (void *data, int type, void *event);
+static Eina_Bool      _cb_desk_show          (void *data, int type, void *event);
 
-static void           _ngi_taskbar_item_new              (Ngi_Box *box, E_Border *bd);
-static void           _ngi_taskbar_item_set_icon         (Ngi_Item *it);
-static void           _ngi_taskbar_item_set_label        (Ngi_Item *it);
+static void           _item_new              (Ngi_Box *box, E_Border *bd);
+static void           _item_cb_free          (Ngi_Item *it);
+static void           _item_set_icon         (Ngi_Item_Taskbar *it);
+static void           _item_set_label        (Ngi_Item_Taskbar *it);
 
-static void           _ngi_taskbar_item_cb_mouse_down    (Ngi_Item *it, Ecore_Event_Mouse_Button *ev);
-static void           _ngi_taskbar_item_cb_mouse_up      (Ngi_Item *it, Ecore_Event_Mouse_Button *ev);
-static void           _ngi_taskbar_item_cb_drag_start    (Ngi_Item *it);
+static void           _item_cb_mouse_down    (Ngi_Item *it, Ecore_Event_Mouse_Button *ev);
+static void           _item_cb_mouse_up      (Ngi_Item *it, Ecore_Event_Mouse_Button *ev);
+static void           _item_cb_mouse_in      (Ngi_Item *it);
+static void           _item_cb_mouse_out     (Ngi_Item *it);
+static void           _item_cb_drag_start    (Ngi_Item *it);
+static void           _item_cb_drag_end      (E_Drag *drag, int dropped);
 
-static void           _ngi_taskbar_item_cb_drag_end      (E_Drag *drag, int dropped);
+static Eina_Bool      _cb_show_window        (void *data);
+static void           _cb_drop_enter         (void *data, const char *type, void *event_info);
+static void           _cb_drop_move          (void *data, const char *type, void *event_info);
+static void           _cb_drop_end           (void *data, const char *type, void *event_info);
+static void           _cb_drop_leave         (void *data, const char *type, void *event_info);
 
-static Eina_Bool      _ngi_taskbar_cb_show_window        (void *data);
-static void           _ngi_taskbar_cb_drop_enter         (void *data, const char *type, void *event_info);
-static void           _ngi_taskbar_cb_drop_move          (void *data, const char *type, void *event_info);
-static void           _ngi_taskbar_cb_drop_end           (void *data, const char *type, void *event_info);
-static void           _ngi_taskbar_cb_drop_leave         (void *data, const char *type, void *event_info);
-
-static void           _ngi_taskbar_item_mouse_in         (Ngi_Item *it);
-static void           _ngi_taskbar_item_mouse_out        (Ngi_Item *it);
 
 static Ecore_X_Atom ECOMORPH_ATOM_THUMBNAIL = 0;
 
@@ -33,37 +33,37 @@ ngi_taskbar_init(void)
 {
    Ecore_Event_Handler *h;
 
-   h = ecore_event_handler_add(E_EVENT_BORDER_ADD, _ngi_taskbar_cb_border_event, NULL);
+   h = ecore_event_handler_add(E_EVENT_BORDER_ADD, _cb_border_event, NULL);
    if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
 
-   h = ecore_event_handler_add(E_EVENT_BORDER_REMOVE, _ngi_taskbar_cb_border_event, NULL);
+   h = ecore_event_handler_add(E_EVENT_BORDER_REMOVE, _cb_border_event, NULL);
    if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
 
-   h = ecore_event_handler_add(E_EVENT_BORDER_ICONIFY, _ngi_taskbar_cb_border_event, NULL);
+   h = ecore_event_handler_add(E_EVENT_BORDER_ICONIFY, _cb_border_event, NULL);
    if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
 
-   h = ecore_event_handler_add(E_EVENT_BORDER_UNICONIFY, _ngi_taskbar_cb_border_event, NULL);
+   h = ecore_event_handler_add(E_EVENT_BORDER_UNICONIFY, _cb_border_event, NULL);
    if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
 
-   h = ecore_event_handler_add(E_EVENT_BORDER_ICON_CHANGE, _ngi_taskbar_cb_border_event, NULL);
+   h = ecore_event_handler_add(E_EVENT_BORDER_ICON_CHANGE, _cb_border_event, NULL);
    if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
 
-   h = ecore_event_handler_add(E_EVENT_BORDER_PROPERTY, _ngi_taskbar_cb_border_event, NULL);
+   h = ecore_event_handler_add(E_EVENT_BORDER_PROPERTY, _cb_border_event, NULL);
    if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
 
-   h = ecore_event_handler_add(E_EVENT_BORDER_ZONE_SET, _ngi_taskbar_cb_border_event, NULL);
+   h = ecore_event_handler_add(E_EVENT_BORDER_ZONE_SET, _cb_border_event, NULL);
    if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
 
-   h = ecore_event_handler_add(E_EVENT_BORDER_URGENT_CHANGE, _ngi_taskbar_cb_border_event, NULL);
+   h = ecore_event_handler_add(E_EVENT_BORDER_URGENT_CHANGE, _cb_border_event, NULL);
    if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
 
-   h = ecore_event_handler_add(E_EVENT_BORDER_FOCUS_IN, _ngi_taskbar_cb_border_event, NULL);
+   h = ecore_event_handler_add(E_EVENT_BORDER_FOCUS_IN, _cb_border_event, NULL);
    if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
 
-   h = ecore_event_handler_add(E_EVENT_BORDER_FOCUS_OUT, _ngi_taskbar_cb_border_event, NULL);
+   h = ecore_event_handler_add(E_EVENT_BORDER_FOCUS_OUT, _cb_border_event, NULL);
    if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
 
-   h = ecore_event_handler_add(E_EVENT_DESK_SHOW, _ngi_taskbar_cb_desk_show, NULL);
+   h = ecore_event_handler_add(E_EVENT_DESK_SHOW, _cb_desk_show, NULL);
    if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
 
    ECOMORPH_ATOM_THUMBNAIL = ecore_x_atom_get("__ECOMORPH_THUMBNAIL");
@@ -73,6 +73,9 @@ void
 ngi_taskbar_new(Ng *ng, Config_Box *cfg)
 {
    Ngi_Box *box = ngi_box_new(ng);
+   E_Border *bd;
+   E_Border_List *bl;
+
    if (!box)
       return;
 
@@ -82,25 +85,16 @@ ngi_taskbar_new(Ng *ng, Config_Box *cfg)
    // "enlightenment/border", "enlightenment/desktop",
    const char *drop[] = {"text/uri-list","text/x-moz-url", "enlightenment/x-file"};
    box->drop_handler = e_drop_handler_add(ng->win->drop_win, box,
-                                          _ngi_taskbar_cb_drop_enter, _ngi_taskbar_cb_drop_move,
-                                          _ngi_taskbar_cb_drop_leave, _ngi_taskbar_cb_drop_end,
+                                          _cb_drop_enter, _cb_drop_move,
+                                          _cb_drop_leave, _cb_drop_end,
                                           drop, 3, 0, 0, 0, 0);
-
-   ngi_taskbar_fill(box);
-}
-
-void
-ngi_taskbar_fill(Ngi_Box *box)
-{
-   E_Border *bd;
-   E_Border_List *bl;
 
    bl = e_container_border_list_first(box->ng->zone->container);
 
    while ((bd = e_container_border_list_next(bl)))
      {
         if (box->ng->zone == bd->zone)
-           _ngi_taskbar_item_new(box, bd);
+	  _item_new(box, bd);
      }
 
    e_container_border_list_free(bl);
@@ -115,7 +109,7 @@ ngi_taskbar_remove(Ngi_Box *box)
 }
 
 static int
-_ngi_taskbar_border_check(Ngi_Box *box, E_Border *bd)
+_border_check(Ngi_Box *box, E_Border *bd)
 {
    if (box->cfg->taskbar_show_desktop && bd->desk != e_desk_current_get(box->ng->zone))
       return 0;
@@ -140,15 +134,14 @@ _ngi_taskbar_border_check(Ngi_Box *box, E_Border *bd)
    return 1;
 }
 
-static Ngi_Item *
-_ngi_taskbar_border_find(Ngi_Box *box, E_Border *bd)
+static Ngi_Item_Taskbar *
+_border_find(Ngi_Box *box, E_Border *bd)
 {
    Eina_List *l;
-   Ngi_Item *it;
+   Ngi_Item_Taskbar *it;
 
    EINA_LIST_FOREACH(box->items, l, it)
-   if (it->border == bd)
-      return it;
+   if (it->border == bd) return it;
 
    return NULL;
 }
@@ -156,7 +149,7 @@ _ngi_taskbar_border_find(Ngi_Box *box, E_Border *bd)
 /* *************************  DND  CALLBACKS  ************************** */
 
 static void
-_ngi_taskbar_cb_drop_enter(void *data, const char *type, void *event_info)
+_cb_drop_enter(void *data, const char *type, void *event_info)
 {
    E_Event_Dnd_Enter *ev = (E_Event_Dnd_Enter *)event_info;
    Ngi_Box *box = (Ngi_Box *)data;
@@ -166,27 +159,23 @@ _ngi_taskbar_cb_drop_enter(void *data, const char *type, void *event_info)
 
    ng->item_active = ngi_item_at_position_get(ng);
 
-   printf("drop enter %d %p\n", ng->pos, ng->item_active);
-
    if (!ng->item_active)
       return;  /* FIXME set edge_in before ?*/
 
    if (box->dnd_timer)
       ecore_timer_del(box->dnd_timer);
 
-   box->dnd_timer = ecore_timer_add(0.5, _ngi_taskbar_cb_show_window, box);
+   box->dnd_timer = ecore_timer_add(0.5, _cb_show_window, ng->item_active);
 
    ng->dnd = 1;
    ngi_mouse_in(ng);
 }
 
 static void
-_ngi_taskbar_cb_drop_leave(void *data, const char *type, void *event_info)
+_cb_drop_leave(void *data, const char *type, void *event_info)
 {
    Ngi_Box *box = (Ngi_Box *)data;
    Ng *ng = box->ng;
-
-   printf("drop leave %d %p\n", ng->pos, ng->item_active);
 
    if (box->dnd_timer)
      {
@@ -199,7 +188,7 @@ _ngi_taskbar_cb_drop_leave(void *data, const char *type, void *event_info)
 }
 
 static void
-_ngi_taskbar_cb_drop_move(void *data, const char *type, void *event_info)
+_cb_drop_move(void *data, const char *type, void *event_info)
 {
    E_Event_Dnd_Move *ev = (E_Event_Dnd_Move *)event_info;
    Ngi_Box *box = (Ngi_Box *)data;
@@ -223,7 +212,7 @@ _ngi_taskbar_cb_drop_move(void *data, const char *type, void *event_info)
 	  {
 	     ngi_item_activate(ng);
 
-	     box->dnd_timer = ecore_timer_add(0.5, _ngi_taskbar_cb_show_window, box);
+	     box->dnd_timer = ecore_timer_add(0.5, _cb_show_window, it);
 	  }
      }
 
@@ -231,7 +220,7 @@ _ngi_taskbar_cb_drop_move(void *data, const char *type, void *event_info)
 }
 
 static void
-_ngi_taskbar_cb_drop_end(void *data, const char *type, void *event_info)
+_cb_drop_end(void *data, const char *type, void *event_info)
 {
    Ngi_Box *box = (Ngi_Box *)data;
    Ng *ng = box->ng;
@@ -250,15 +239,12 @@ _ngi_taskbar_cb_drop_end(void *data, const char *type, void *event_info)
 }
 
 static Eina_Bool
-_ngi_taskbar_cb_show_window(void *data)
+_cb_show_window(void *data)
 {
-   Ngi_Box *box = (Ngi_Box *)data;
+   Ngi_Item_Taskbar *it = (Ngi_Item_Taskbar*) data;
    E_Desk *desk;
-   Ng *ng = box->ng;
-   Ngi_Item *it = ng->item_active;
 
-   if (!it)
-      return EINA_FALSE;
+   if (!it) return EINA_FALSE;
 
    desk = e_desk_current_get(it->border->zone);
 
@@ -288,19 +274,20 @@ _ngi_taskbar_cb_show_window(void *data)
 
    e_border_focus_set(it->border, 1, 1);
 
-   box->dnd_timer = NULL;
+   it->base.box->dnd_timer = NULL;
+
    return EINA_FALSE;
 }
 
 /* ************************** BORDER CALLBACKS ************************* */
 
 static Eina_Bool
-_ngi_taskbar_cb_border_event(void *data, int type, void *event)
+_cb_border_event(void *data, int type, void *event)
 {
    E_Event_Border_Add *ev = event;
    Ng *ng;
    Ngi_Box *box;
-   Ngi_Item *it;
+   Ngi_Item_Taskbar *it;
    Eina_List *l, *ll;
    E_Border *bd = ev->border;
 
@@ -311,52 +298,53 @@ _ngi_taskbar_cb_border_event(void *data, int type, void *event)
          if (box->cfg->type != taskbar)
             continue;
 
-         it = _ngi_taskbar_border_find(box, bd);
+         it = _border_find(box, bd);
 
          if (type == E_EVENT_BORDER_FOCUS_IN)
            {
               if (!it) continue;
-              ngi_item_signal_emit(it, "e,state,taskbar,focus,1");
+              ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,focus,1");
            }
          else if (type == E_EVENT_BORDER_FOCUS_OUT)
            {
               if (!it) continue;
-	      ngi_item_signal_emit(it, "e,state,taskbar,focus,0");
+	      ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,focus,0");
            }
          else if (type == E_EVENT_BORDER_ICONIFY)
            {
               if (!it) continue;
-              ngi_item_signal_emit(it, "e,state,taskbar,iconic,1");
+              ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,iconic,1");
            }
          else if (type == E_EVENT_BORDER_UNICONIFY)
            {
               if (!it) continue;
-              ngi_item_signal_emit(it, "e,state,taskbar,iconic,0");
+              ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,iconic,0");
            }
          else if (type == E_EVENT_BORDER_ICON_CHANGE)
            {
               if (!it) continue;
-              _ngi_taskbar_item_set_icon(it);
+              _item_set_icon(it);
            }
          else if (type == E_EVENT_BORDER_ADD)
            {
-              _ngi_taskbar_item_new(box, bd);
+              _item_new(box, bd);
            }
          else if (type == E_EVENT_BORDER_REMOVE)
            {
               if (!it) continue;
-              ngi_item_remove(it);
+              ngi_item_remove((Ngi_Item*)it);
            }
          else if (type == E_EVENT_BORDER_ZONE_SET)
            {
               if (ng->zone == bd->zone)
                 {
+		   /** FIXME ??? */
                    e_border_zone_set(bd, ng->zone);
-                   _ngi_taskbar_item_new(box, bd);
+                   _item_new(box, bd);
                 }
               else if (it)
                 {
-                   ngi_item_remove(it);
+                   ngi_item_remove((Ngi_Item*)it);
                 }
            }
          else if (type == E_EVENT_BORDER_URGENT_CHANGE)
@@ -367,17 +355,17 @@ _ngi_taskbar_cb_border_event(void *data, int type, void *event)
               if (bd->client.icccm.urgent)
                 {
                    it->urgent = 1;
-                   ngi_item_signal_emit(it, "e,state,taskbar,urgent,1");
+                   ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,urgent,1");
 
-		   ngi_bar_lock(it->box->ng, 1);
+		   ngi_bar_lock(box->ng, 1);
                    ngi_animate(ng);
                 }
               else
                 {
                    it->urgent = 0;
-                   ngi_item_signal_emit(it, "e,state,taskbar,urgent,0");
+                   ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,urgent,0");
 
-		   ngi_bar_lock(it->box->ng, 0);
+		   ngi_bar_lock(box->ng, 0);
                    ngi_animate(ng);
                 }
            }
@@ -391,14 +379,14 @@ _ngi_taskbar_cb_border_event(void *data, int type, void *event)
 
               if (it)
                 {
-                   if (!_ngi_taskbar_border_check(box, bd))
-                      ngi_item_remove(it);
+                   if (!_border_check(box, bd))
+		     ngi_item_remove((Ngi_Item*)it);
                    else
-                      _ngi_taskbar_item_set_label(it);
+		     _item_set_label(it);
                 }
               else
                 {
-                   _ngi_taskbar_item_new(box, ev->border);
+                   _item_new(box, ev->border);
                 }
            }
       }
@@ -406,13 +394,14 @@ _ngi_taskbar_cb_border_event(void *data, int type, void *event)
    return EINA_TRUE;
 }
 
+/* FIXME set it->visible to skip icons */
 static Eina_Bool
-_ngi_taskbar_cb_desk_show(void *data, int type, void *event)
+_cb_desk_show(void *data, int type, void *event)
 {
    /* E_Event_Desk_Show *ev = (E_Event_Desk_Show*) event; */
    Ng *ng;
    Ngi_Box *box;
-   Ngi_Item *it;
+   Ngi_Item_Taskbar *it;
    Eina_List *l, *ll, *lll;
    E_Desk *desk;
    int changed = 0;
@@ -421,7 +410,8 @@ _ngi_taskbar_cb_desk_show(void *data, int type, void *event)
    {
       EINA_LIST_FOREACH (ng->boxes, ll, box)
       {
-         if (box->cfg->type != taskbar || !box->cfg->taskbar_show_desktop)
+         if ((box->cfg->type != taskbar) ||
+	     (!box->cfg->taskbar_show_desktop))
             continue;
 
          desk = e_desk_current_get(ng->zone);
@@ -431,12 +421,12 @@ _ngi_taskbar_cb_desk_show(void *data, int type, void *event)
             if (it->border->desk == desk)
               {
                  changed = 1;
-                 it->scale = 1.0;
+                 it->base.scale = 1.0;
               }
             else
               {
                  changed = 1;
-                 it->scale = 0.0;
+                 it->base.scale = 0.0;
               }
          }
          if (changed)
@@ -451,58 +441,57 @@ _ngi_taskbar_cb_desk_show(void *data, int type, void *event)
 /* ***************************  TASKBAR  ITEM  *************************** */
 
 static void
-_ngi_taskbar_item_new(Ngi_Box *box, E_Border *bd)
+_item_new(Ngi_Box *box, E_Border *bd)
 {
-   Ngi_Item *it, *l_it = NULL, *ll_it = NULL;
+   Ngi_Item_Taskbar *it, *l_it = NULL, *ll_it = NULL;
    Eina_List *l;
 
-   if (!_ngi_taskbar_border_check(box, bd))
+   if (!_border_check(box, bd))
       return;
 
-   if (_ngi_taskbar_border_find(box, bd))
+   if (_border_find(box, bd))
       return;
 
-   it = ngi_item_new(box);
-   it->type = taskbar_item;
+   it = E_NEW(Ngi_Item_Taskbar, 1);
+   it->base.box = box;
+   ngi_item_init_defaults((Ngi_Item*)it);
 
    e_object_ref(E_OBJECT(bd));
-
    it->border = bd;
 
-   /* it->cb_free    = _ngi_taskbar_item_cb_free; */
-   it->cb_mouse_in   = _ngi_taskbar_item_mouse_in;
-   it->cb_mouse_out  = _ngi_taskbar_item_mouse_out;
-   it->cb_mouse_down = _ngi_taskbar_item_cb_mouse_down;
-   it->cb_mouse_up   = _ngi_taskbar_item_cb_mouse_up;
-   it->cb_drag_start = _ngi_taskbar_item_cb_drag_start;
+   it->base.cb_free       = _item_cb_free;
+   it->base.cb_mouse_in   = _item_cb_mouse_in;
+   it->base.cb_mouse_out  = _item_cb_mouse_out;
+   it->base.cb_mouse_down = _item_cb_mouse_down;
+   it->base.cb_mouse_up   = _item_cb_mouse_up;
+   it->base.cb_drag_start = _item_cb_drag_start;
 
-   _ngi_taskbar_item_set_icon(it);
-   _ngi_taskbar_item_set_label(it);
+   _item_set_icon(it);
+   _item_set_label(it);
 
-   if (box->cfg->taskbar_group_apps)
-      if (bd->client.icccm.class && bd->client.icccm.class[0])
-        {
-           it->class = eina_stringshare_add(bd->client.icccm.class);
+   if (box->cfg->taskbar_group_apps && (bd->client.icccm.class && bd->client.icccm.class[0]))
+     {
+	it->class = eina_stringshare_add(bd->client.icccm.class);
 
-           EINA_LIST_FOREACH (box->items, l, l_it)
-           {
-              if (box->cfg->taskbar_append_right)
-                {
-                   if (ll_it && l_it->class && ll_it->class &&
-                       ll_it->class == it->class &&
-                       l_it->class != it->class)
-                      break;
-                }
-              else
-                {
-                   if (l_it->class && l_it->class == it->class)
-                      break;
+	EINA_LIST_FOREACH (box->items, l, l_it)
+	  {
+	     if (box->cfg->taskbar_append_right)
+	       {
+		  if (ll_it && l_it->class && ll_it->class &&
+		      ll_it->class == it->class &&
+		      l_it->class != it->class)
+		    break;
+	       }
+	     else
+	       {
+		  if (l_it->class && l_it->class == it->class)
+		    break;
 
-                   ll_it = l_it;
-                   l_it = NULL;
-                }
-           }
-        }
+		  ll_it = l_it;
+		  l_it = NULL;
+	       }
+	  }
+     }
 
    if (l_it)
      {
@@ -519,16 +508,35 @@ _ngi_taskbar_item_new(Ngi_Box *box, E_Border *bd)
            box->items = eina_list_prepend(box->items, it);
      }
 
-   it->urgent = bd->client.icccm.urgent;
-
-   ngi_item_show(it, 0);
+   ngi_item_show((Ngi_Item*)it, 0);
 
    if (bd->iconic)
-     ngi_item_signal_emit(it, "e,state,taskbar,iconic,1");
+     ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,iconic,1");
+
+   it->urgent = bd->client.icccm.urgent;
+   if (it->urgent)
+     ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,urgent,1");
+}
+
+static void
+_item_cb_free(Ngi_Item *item)
+{
+   Ngi_Item_Taskbar *it = (Ngi_Item_Taskbar *) item;
+
+   if (it->border)
+     e_object_unref(E_OBJECT(it->border));
+
+   if (it->o_icon)
+     evas_object_del(it->o_icon);
+
+   if (it->o_proxy)
+     edje_object_part_unswallow(it->base.obj, it->o_proxy);
+
+   E_FREE(it);
 }
 
 Evas_Object *
-_ngi_taskbar_border_icon_add(E_Border *bd, Evas *evas)
+_border_icon_add(E_Border *bd, Evas *evas)
 {
    Evas_Object *o;
 
@@ -639,48 +647,54 @@ _ngi_taskbar_border_icon_add(E_Border *bd, Evas *evas)
 }
 
 static void
-_ngi_taskbar_item_set_icon(Ngi_Item *it)
+_item_set_icon(Ngi_Item_Taskbar *it)
 {
-   ngi_item_del_icon(it);
+   Evas_Object *o, *oo;
+   Evas *e = it->base.box->ng->evas;
 
-   it->o_icon = _ngi_taskbar_border_icon_add(it->border, it->box->ng->evas);
-   edje_object_part_swallow(it->obj, "e.swallow.content", it->o_icon);
-   evas_object_pass_events_set(it->o_icon, 1);
-   evas_object_show(it->o_icon);
+   if (it->o_icon)
+     {
+	edje_object_part_unswallow(it->base.obj, it->o_icon);
+	evas_object_del(it->o_icon);
+     }
+   if (it->o_proxy)
+     {
+	edje_object_part_unswallow(it->base.obj, it->o_proxy);
+	evas_object_del(it->o_proxy);
+     }
 
-   it->o_icon2 = e_icon_add(it->box->ng->evas);
+   o = _border_icon_add(it->border, e);
+   edje_object_part_swallow(it->base.obj, "e.swallow.content", o);
+   evas_object_show(o);
+   it->o_icon = o;
 
-   Evas_Object *o = evas_object_image_add(it->box->ng->evas);
-   evas_object_image_source_set(o, it->obj);
-   evas_object_resize(o, 128, 128);
-   evas_object_image_fill_set(o, 0,0,128,128);
-   e_icon_object_set(it->o_icon2, o);
+   oo = evas_object_image_add(e);
+   evas_object_image_source_set(oo, it->base.obj);
+   evas_object_resize(oo, 128, 128);
+   evas_object_image_fill_set(oo, 0,0,128,128);
 
-   edje_object_part_swallow(it->over, "e.swallow.content", it->o_icon2);
-   evas_object_pass_events_set(it->o_icon2, 1);
-   evas_object_show(it->o_icon2);
+   o = e_icon_add(e);
+   e_icon_object_set(o, oo);
+   edje_object_part_swallow(it->base.over, "e.swallow.content", o);
+   evas_object_show(o);
+   it->o_proxy = o;
 
    if (it->border->iconic)
-      ngi_item_signal_emit(it, "e,state,taskbar,iconic,1");
+      ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,iconic,1");
+   if (it->urgent)
+     ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,urgent,1");
 }
 
 static void
-_ngi_taskbar_item_set_label(Ngi_Item *it)
+_item_set_label(Ngi_Item_Taskbar *it)
 {
    const char *title;
-
-   if (it->label)
-     {
-        eina_stringshare_del(it->label);
-        it->label = NULL;
-     }
+   unsigned int max_len = 36;
 
    title = e_border_name_get(it->border);
 
    if ((!title) || (!title[0]))
       title = D_("No name!");
-
-   unsigned int max_len = 36;
 
    if (strlen(title) > max_len)
      {
@@ -695,30 +709,30 @@ _ngi_taskbar_item_set_label(Ngi_Item *it)
         strncat(abbv, "...", 3);
         strncat(abbv, right, max_len / 2);
 
-        it->label = eina_stringshare_add(abbv);
+	ngi_item_label_set((Ngi_Item*)it, abbv);
+	return;
      }
-   else
-     {
-        it->label = eina_stringshare_add(title);
-     }
+
+   ngi_item_label_set((Ngi_Item*)it, title);
 }
 
 /* **************************  ITEM  CALLBACKS  ************************** */
 
 static void
-_ngi_taskbar_item_cb_mouse_down(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
+_item_cb_mouse_down(Ngi_Item *item, Ecore_Event_Mouse_Button *ev)
 {
+   Ngi_Item_Taskbar *it = (Ngi_Item_Taskbar *) item;
    Evas_Coord x, y, w, h;
    E_Border *bd;
    Ng *ng;
 
-   ng = it->box->ng;
+   ng = item->box->ng;
    bd = it->border;
 
    if (ev->buttons == 3 && bd)
      {
         int dir = E_MENU_POP_DIRECTION_AUTO;
-        evas_object_geometry_get(it->obj, &x, &y, &w, &h);
+        evas_object_geometry_get(item->obj, &x, &y, &w, &h);
 
         x += ng->win->popup->x + ng->zone->x;
         y += ng->win->popup->y + ng->zone->y;
@@ -743,78 +757,67 @@ _ngi_taskbar_item_cb_mouse_down(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
               dir = E_MENU_POP_DIRECTION_LEFT;
               break;
           } /* switch */
-        ngi_border_menu_show(it->box, it->border, x, y, dir, ev->timestamp);
+        ngi_border_menu_show(item->box, it->border, x, y, dir, ev->timestamp);
      }
    else if (ev->buttons == 1 && ev->double_click && !it->border->iconic)
      {
         e_border_iconify(it->border);
      }
    else
-      it->mouse_down = 1;
-}
-
-void
-ngi_taskbar_item_border_show(Ngi_Item *it, int to_desk)
-{
-   E_Border *bd;
-   E_Desk *desk;
-   bd = it->border;
-
-   if (to_desk)
-     {
-        desk = e_desk_current_get(it->border->zone);
-
-        if (desk != it->border->desk && !it->border->sticky)
-          {
-             e_desk_show(it->border->desk);
-          }
-     }
-
-   if (bd->shaded)
-     {
-        e_border_unshade(it->border, E_DIRECTION_UP);
-     }
-
-   if (bd->iconic)
-     {
-        e_border_uniconify(it->border);
-
-        if (it->border_was_fullscreen) /* ditto */
-          {
-             e_border_fullscreen(bd, (E_Fullscreen)e_config->fullscreen_policy);
-             it->border_was_fullscreen = 0;
-          }
-     }
-   else
-     {
-        e_border_raise(bd);
-     }
-
-   e_border_focus_set(bd, 1, 1);
+      item->mouse_down = 1;
 }
 
 static void
-_ngi_taskbar_item_cb_mouse_up(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
+_item_cb_mouse_up(Ngi_Item *item, Ecore_Event_Mouse_Button *ev)
 {
-   if (!it->mouse_down)
+   Ngi_Item_Taskbar *it = (Ngi_Item_Taskbar *) item;
+   E_Border *bd = it->border;
+
+   if (!item->mouse_down)
       return;
 
-   it->mouse_down = 0;
+   item->mouse_down = 0;
 
    if (it->urgent)
      {
         it->urgent = 0;
 
-	ngi_item_signal_emit(it, "e,state,taskbar,urgent,0");
-	ngi_bar_lock(it->box->ng, 0);
+	ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,urgent,0");
+	ngi_bar_lock(item->box->ng, 0);
      }
 
-   if (ev->buttons == 1)
-     ngi_taskbar_item_border_show(it, 1);
+   if (ev->buttons != 1)
+     return;
+
+   if (bd->shaded)
+     e_border_unshade(bd, E_DIRECTION_UP);
+
+   if (bd->shaded)
+     e_border_unshade(bd, E_DIRECTION_UP);
+
+   if ((e_desk_current_get(bd->zone) != bd->desk) && (!bd->sticky))
+     e_desk_show(bd->desk);
+
+   if (bd->iconic)
+     {
+	e_border_uniconify(bd);
+
+	if (it->border_was_fullscreen)
+	  e_border_fullscreen(bd, (E_Fullscreen)e_config->fullscreen_policy);
+
+	it->border_was_fullscreen = 0;
+     }
+   else
+     {
+	e_border_raise(bd);
+     }
+
+   e_border_focus_set(bd, 1, 1);
 }
 
+
 static void
-_ngi_taskbar_item_cb_drag_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_item_cb_drag_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Ng *ng = data;
 
@@ -823,12 +826,13 @@ _ngi_taskbar_item_cb_drag_del(void *data, Evas *e, Evas_Object *obj, void *event
 }
 
 static void
-_ngi_taskbar_item_cb_drag_start(Ngi_Item *it)
+_item_cb_drag_start(Ngi_Item *item)
 {
+   Ngi_Item_Taskbar *it = (Ngi_Item_Taskbar *) item;
    E_Drag *d;
    Evas_Object *o;
    Evas_Coord x, y, w, h, px, py;
-   Ng *ng = it->box->ng;
+   Ng *ng = item->box->ng;
 
    if (!it->border)
       return;
@@ -846,22 +850,22 @@ _ngi_taskbar_item_cb_drag_start(Ngi_Item *it)
    const char *drag_types[] = { "enlightenment/border" };
 
    d = e_drag_new(ng->zone->container, x, y, drag_types, 1,
-                  it->border, -1, NULL, _ngi_taskbar_item_cb_drag_end);
+                  it->border, -1, NULL, _item_cb_drag_end);
 
-   o = _ngi_taskbar_border_icon_add(it->border,e_drag_evas_get(d));
+   o = _border_icon_add(it->border,e_drag_evas_get(d));
    e_object_ref(E_OBJECT(it->border));
    e_drag_object_set(d, o);
    e_drag_resize(d, w, h);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_DEL, _ngi_taskbar_item_cb_drag_del, ng);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_DEL, _item_cb_drag_del, ng);
 
    ecore_x_pointer_xy_get(ng->win->input, &px, &py);
    e_drag_start(d, px, py);
 
-   ngi_bar_lock(it->box->ng, 1);
+   ngi_bar_lock(ng, 1);
 }
 
 static void
-_ngi_taskbar_item_cb_drag_end(E_Drag *drag, int dropped)
+_item_cb_drag_end(E_Drag *drag, int dropped)
 {
    E_Border *bd = (E_Border *)drag->data;
 
@@ -879,7 +883,7 @@ _ngi_taskbar_item_cb_drag_end(E_Drag *drag, int dropped)
       e_border_desk_set(bd, desk);
 
    if ((bd->w < w) && (bd->h < w))
-     {	
+     {
 	int dx = abs(drag->x - w/2);
 	int dy = abs(drag->y - h/2);
 
@@ -897,7 +901,7 @@ _ngi_taskbar_item_cb_drag_end(E_Drag *drag, int dropped)
 	     if (x + bd->w > w) x = w - bd->w - 50;
 	  }
 	else x = bd->x;
-   
+
 	int y = drag->y - bd->h/2;
 
 	if (bd->h < h - 50)
@@ -921,32 +925,8 @@ _ngi_taskbar_item_cb_drag_end(E_Drag *drag, int dropped)
    e_object_unref(E_OBJECT(bd));
 }
 
-#define TEXT_DIST 36
-
-static int
-_ngi_taskbar_zoom_function(Ng *ng)
-{
-   double zoom;
-
-   double f, x, ff, sqrt_ffxx, sqrt_ff_1;
-
-   Config_Item *cfg = ng->cfg;
-
-   f = 5.5;
-   x = 0.0;
-
-   ff = f * f;
-   sqrt_ffxx = sqrt(ff - x * x);
-   sqrt_ff_1 = sqrt(ff - 1.0);
-
-   zoom = (cfg->zoomfactor - 1.0) * (cfg->zoomfactor - 1.0) *
-      ((sqrt_ff_1 - sqrt_ffxx) / (sqrt_ff_1 - f)) + 1.0;
-
-   return (int)(zoom * (double)ng->size) + TEXT_DIST;
-}
-
 static Eina_Bool
-_ngi_taskbar_cb_preview_hide(void *data)
+_cb_preview_hide(void *data)
 {
    Ng *ng = data;
 
@@ -960,9 +940,12 @@ _ngi_taskbar_cb_preview_hide(void *data)
 }
 
 static void
-_ngi_taskbar_item_mouse_in(Ngi_Item *it)
+_item_cb_mouse_in(Ngi_Item *item)
 {
-   Ng *ng = it->box->ng;
+   Ngi_Item_Taskbar *it = (Ngi_Item_Taskbar *) item;
+
+   Ng *ng = item->box->ng;
+
    if (ng->cfg->ecomorph_features)
      {
         if (ng->effect_timer)
@@ -973,14 +956,14 @@ _ngi_taskbar_item_mouse_in(Ngi_Item *it)
         ecore_x_client_message32_send(e_manager_current_get()->root,
                                       ECORE_X_ATOM_NET_WM_ICON_GEOMETRY,
                                       SubstructureNotifyMask,
-                                      it->border->win, it->pos,
-                                      _ngi_taskbar_zoom_function(ng),
+                                      it->border->win, item->pos,
+                                      (double)ng->size * item->scale,
                                       ng->cfg->orient,0);
      }
 }
 
 static void
-_ngi_taskbar_item_mouse_out(Ngi_Item *it)
+_item_cb_mouse_out(Ngi_Item *it)
 {
    Ng *ng = it->box->ng;
    if (ng->cfg->ecomorph_features)
@@ -988,7 +971,7 @@ _ngi_taskbar_item_mouse_out(Ngi_Item *it)
         if (ng->effect_timer)
            ecore_timer_del(ng->effect_timer);
 
-        ng->effect_timer = ecore_timer_add(0.2, _ngi_taskbar_cb_preview_hide, ng);
+        ng->effect_timer = ecore_timer_add(0.2, _cb_preview_hide, ng);
      }
 }
 

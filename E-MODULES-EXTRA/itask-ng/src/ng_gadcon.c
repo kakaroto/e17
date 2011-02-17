@@ -54,7 +54,7 @@ _ngi_gadcon_name_new()
    char name[256];
    int cnt = 0;
 
-   while(cnt > 1000)
+   while(cnt < 1000)
      {
         snprintf(name, 256, "ng_gadcon-%d", cnt++);
 
@@ -85,6 +85,23 @@ _ngi_gadcon_item_cb_mouse_out(Ngi_Item *it)
 }
 
 static void
+_ngi_gadcon_item_cb_free(Ngi_Item *item)
+{
+   Ngi_Item_Gadcon *it = (Ngi_Item_Gadcon *) item;
+
+   if (it->gadcon)
+     e_object_del(E_OBJECT(it->gadcon));
+
+   if (it->o_icon)
+     evas_object_del(it->o_icon);
+
+   if (it->o_proxy)
+     evas_object_del(it->o_proxy);
+
+   E_FREE(it);
+}
+
+static void
 _ngi_gadcon_locked_set(void *data, int lock)
 {
    Ng *ng = data;
@@ -93,27 +110,29 @@ _ngi_gadcon_locked_set(void *data, int lock)
    ngi_animate(ng);
 }
 
-static Ngi_Item *
-_ngi_gadcon_item_new(Ngi_Box *box, const char *name, Ngi_Item *after)
+static Ngi_Item_Gadcon *
+_ngi_gadcon_item_new(Ngi_Box *box, Config_Gadcon *cg, Ngi_Item *after)
 {
-   Ngi_Item *it;
+   Ngi_Item_Gadcon *it;
+   Evas_Object *o;
    Ng *ng = box->ng;
 
-   int instant = 1;
+   it = E_NEW(Ngi_Item_Gadcon, 1);
+   it->base.box = box;
+   it->cfg_gadcon = cg;
 
-   it = ngi_item_new(box);
-   it->type = gadcon_item;
+   ngi_item_init_defaults((Ngi_Item*)it);
 
-   it->cb_mouse_in = _ngi_gadcon_item_cb_mouse_in;
-   it->cb_mouse_out = _ngi_gadcon_item_cb_mouse_out;
-   it->cb_mouse_down = _ngi_gadcon_item_cb_mouse_down;
-   it->cb_mouse_up = _ngi_gadcon_item_cb_mouse_up;
-   it->cb_drag_start = NULL; //_ngi_gadcon_item_cb_drag_start;
+   it->base.cb_mouse_in = _ngi_gadcon_item_cb_mouse_in;
+   it->base.cb_mouse_out = _ngi_gadcon_item_cb_mouse_out;
+   it->base.cb_mouse_down = _ngi_gadcon_item_cb_mouse_down;
+   it->base.cb_mouse_up = _ngi_gadcon_item_cb_mouse_up;
+   it->base.cb_drag_start = NULL; //_ngi_gadcon_item_cb_drag_start;
+   it->base.cb_free = _ngi_gadcon_item_cb_free;
 
-   evas_object_show(it->obj);
-   it->gadcon = e_gadcon_swallowed_new(name, 0, it->obj, "e.swallow.content");
+   it->gadcon = e_gadcon_swallowed_new(cg->name, 0, it->base.obj, "e.swallow.content");
    it->gadcon->instant_edit = 0;
-   edje_extern_object_min_size_set(it->gadcon->o_container, ng->size, ng->size);
+   /* edje_extern_object_min_size_set(it->gadcon->o_container, ng->size, ng->size); */
 
    e_gadcon_min_size_request_callback_set(it->gadcon, _ngi_gadcon_cb_gadcon_min_size_request, it);
    e_gadcon_size_request_callback_set(it->gadcon, _ngi_gadcon_cb_gadcon_size_request, it);
@@ -123,34 +142,35 @@ _ngi_gadcon_item_new(Ngi_Box *box, const char *name, Ngi_Item *after)
    e_gadcon_ecore_evas_set(it->gadcon, box->ng->win->popup->ecore_evas);
    e_gadcon_util_lock_func_set(it->gadcon, _ngi_gadcon_locked_set, ng);
 
-   it->label = NULL; //name;
-
    if (after)
      box->items = eina_list_prepend_relative(box->items, it, after);
    else
      box->items = eina_list_append(box->items, it);
 
-   ngi_item_show(it, instant);
-
    e_gadcon_populate(it->gadcon);
 
-   if(it->gadcon->clients)
-     {
-        char buf[256];
-        E_Gadcon_Client *gcc = it->gadcon->clients->data;
-        snprintf(buf, 256, "%s-%d", gcc->name, gcc->id);
-        it->label = e_datastore_get(buf);
-     }
+   /* if(it->gadcon->clients)
+    *   {
+    *      char buf[256];
+    *      E_Gadcon_Client *gcc = it->gadcon->clients->data;
+    *      snprintf(buf, 256, "%s-%d", gcc->name, gcc->id);
+    *      it->label = e_datastore_get(buf);
+    *   } */
 
-   it->o_icon2 = e_icon_add(it->box->ng->evas);
+   evas_object_show(it->gadcon->o_container);
 
-   Evas_Object *o = evas_object_image_add(it->box->ng->evas);
-   evas_object_image_source_set(o, it->obj);
-   e_icon_object_set(it->o_icon2, o);
+   it->o_proxy = e_icon_add(ng->evas);
+   o = evas_object_image_add(ng->evas);
+   evas_object_image_source_set(o, it->base.obj);
+   evas_object_resize(o, 128, 128);
+   evas_object_image_fill_set(o, 0,0,128,128);
+   e_icon_object_set(it->o_proxy, o);
 
-   edje_object_part_swallow(it->over, "e.swallow.content", it->o_icon2);
-   evas_object_pass_events_set(it->o_icon2, 1);
-   evas_object_show(it->o_icon2);
+   edje_object_part_swallow(it->base.over, "e.swallow.content", it->o_proxy);
+   evas_object_pass_events_set(it->o_proxy, 1);
+   evas_object_show(it->o_proxy);
+
+   ngi_item_show((Ngi_Item*)it, 0);
 
    return it;
 }
@@ -158,25 +178,20 @@ _ngi_gadcon_item_new(Ngi_Box *box, const char *name, Ngi_Item *after)
 void
 ngi_gadcon_new(Ng *ng, Config_Box *cfg)
 {
+   Eina_List *l;
+   Config_Gadcon *cg;
    Ngi_Box *box = ngi_box_new(ng);
-   if(!box)
-     return;
+
+   if(!box) return;
 
    box->cfg = cfg;
    cfg->box = box;
 
-   if(cfg->gadcon_items)
-     {
-        Eina_List *l;
-        Config_Gadcon *cg;
-        Ngi_Item *it;
+   if(!cfg->gadcon_items)
+     return;
 
-        EINA_LIST_FOREACH (cfg->gadcon_items, l, cg)
-	  {
-	     it = _ngi_gadcon_item_new(box, cg->name, NULL);
-	     it->cfg_gadcon = cg;
-	  }
-     }
+   EINA_LIST_FOREACH (cfg->gadcon_items, l, cg)
+     _ngi_gadcon_item_new(box, cg, NULL);
 }
 
 void
@@ -244,7 +259,7 @@ ngi_gadcon_config(Ngi_Box *box)
 
    cfd = e_config_dialog_new(con, "Gadcon Config", "E", "_ngi_gadcon_config_dialog",
                              "enlightenment/shelf", 0, v, box);
-   //gc->config_dialog = cfd;
+   box->cfd = cfd;
    e_dialog_resizable_set(cfd->dia, 1);
 }
 
@@ -261,17 +276,17 @@ _create_data(E_Config_Dialog *cfd)
 static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   E_Gadcon *gc = NULL;
+   Ngi_Box *box;
 
    if (cfdata->hdl)
      ecore_event_handler_del(cfdata->hdl);
 
    E_FREE(cfdata);
 
-   if (!(gc = cfd->data))
+   if (!(box = cfd->data))
      return;
 
-   gc->config_dialog = NULL;
+   box->cfd = NULL;
 }
 
 static Evas_Object *
@@ -439,7 +454,7 @@ _load_sel_gadgets(void *data)
    Eina_List *ll = NULL, *l = NULL, *l2 = NULL;
    Evas *evas;
    int w;
-   Ngi_Item *it;
+   Ngi_Item_Gadcon *it;
    E_Config_Gadcon_Client *cgc;
    E_Gadcon_Client_Class *gcc;
    if (!(cfdata = data))
@@ -451,16 +466,11 @@ _load_sel_gadgets(void *data)
    e_widget_ilist_freeze(cfdata->o_sel);
    e_widget_ilist_clear(cfdata->o_sel);
 
-   EINA_LIST_FOREACH (cfdata->box->items, ll, it)
+   EINA_LIST_FOREACH(cfdata->box->items, ll, it)
      {
-
-
-	EINA_LIST_FOREACH (it->gadcon->cf->clients, l, cgc)
+	EINA_LIST_FOREACH(it->gadcon->cf->clients, l, cgc)
 	  {
-
-
-	     if (!cgc)
-	       continue;
+	     if (!cgc) continue;
 
 	     EINA_LIST_FOREACH(e_gadcon_provider_list(), l2, gcc)
 	       {
@@ -508,61 +518,48 @@ static void
 _cb_add(void *data, void *data2)
 {
    E_Config_Dialog_Data *cfdata = NULL;
-   Eina_List *l = NULL, *g = NULL;
-   int i = 0, update = 0;
-
+   Eina_List *l, *ll;
    char *gadcon_name;
+   Ngi_Box *box;
+   E_Ilist_Item *item;
+   int i = 0, update = 0;
 
    if (!(cfdata = data))
      return;
 
-   for (i = 0, l = e_widget_ilist_items_get(cfdata->o_avail); l; l = l->next, i++)
+   box = cfdata->box;
+
+   EINA_LIST_FOREACH(e_widget_ilist_items_get(cfdata->o_avail), l, item)
      {
-        E_Ilist_Item *item = NULL;
-        const char *name = NULL;
+	Config_Gadcon *cg;
+	E_Config_Gadcon_Client *cgc;
+	Ngi_Item_Gadcon *it;
+        const char *name;
 
-        if (!(item = l->data))
-	  continue;
+        if (!item->selected) continue;
 
-        if (!item->selected)
-	  continue;
-
-        name = (char *)e_widget_ilist_nth_data_get(cfdata->o_avail, i);
-        if (!name)
-	  continue;
-
-        printf("add gadget %s\n", name);
+        name = (char *)	e_widget_ilist_item_data_get(item);
+        if (!name) continue;
 
         gadcon_name = _ngi_gadcon_name_new();
-        if (!gadcon_name)
-	  continue;
+        if (!gadcon_name) continue;
 
-        Config_Gadcon *cg = E_NEW(Config_Gadcon, 1);
-
+        cg = E_NEW(Config_Gadcon, 1);
         cg->name = eina_stringshare_add(gadcon_name);
-
         eina_hash_add(ngi_gadcon_hash, cg->name, cg);
+        box->cfg->gadcon_items = eina_list_append(box->cfg->gadcon_items, cg);
 
-        cfdata->box->cfg->gadcon_items = eina_list_append(cfdata->box->cfg->gadcon_items, cg);
+        it = _ngi_gadcon_item_new(box, cg, NULL);
 
-        Ngi_Item *it = _ngi_gadcon_item_new(cfdata->box, cg->name, NULL);
-        it->cfg_gadcon = cg;
+	if (it->gadcon->cf->clients)
+	  e_gadcon_unpopulate(it->gadcon);
 
-        /* FIXME this removes left over client configs */
-        for (g = it->gadcon->cf->clients; g; g = g->next)
-          {
-             E_Config_Gadcon_Client *cgc;
-
-             if (!(cgc = g->data))
-	       continue;
-
-             e_gadcon_unpopulate(it->gadcon);
-             e_gadcon_client_config_del(it->gadcon->cf, cgc);
-          }
+        EINA_LIST_FOREACH(it->gadcon->cf->clients, ll, cgc)
+	  e_gadcon_client_config_del(it->gadcon->cf, cgc);
 
         if (!e_gadcon_client_config_new(it->gadcon, name))
           {
-             // free item
+             // FIXME free item
           }
         else
           {
@@ -570,6 +567,7 @@ _cb_add(void *data, void *data2)
              update = 1;
           }
      }
+
    if (update)
      {
         e_config_save_queue();
@@ -577,11 +575,8 @@ _cb_add(void *data, void *data2)
         _load_sel_gadgets(cfdata);
         e_widget_ilist_selected_set(cfdata->o_sel, i);
 
-        ngi_thaw(cfdata->box->ng);
+        ngi_thaw(box->ng);
      }
-
-   if (l)
-     eina_list_free(l);
 }
 
 static void
@@ -590,7 +585,7 @@ _cb_del(void *data, void *data2)
    E_Config_Dialog_Data *cfdata = NULL;
    Eina_List *l = NULL, *g = NULL;
    int i = 0, update = 0;
-   Ngi_Item *it;
+   Ngi_Item_Gadcon *it;
 
    if (!(cfdata = data))
      return;
@@ -627,12 +622,17 @@ _cb_del(void *data, void *data2)
 
 	     cfdata->box->cfg->gadcon_items =
 	       eina_list_remove(cfdata->box->cfg->gadcon_items, it->cfg_gadcon);
+
 	     eina_hash_del_by_key(ngi_gadcon_hash, it->cfg_gadcon->name);
 
 	     e_gadcon_unpopulate(it->gadcon);
-	     it->obj = NULL;
-	     it->box->items = eina_list_remove(it->box->items, it);
-	     ngi_item_free(it);
+
+	     /* it->base.obj = NULL;
+	      * it->box->items = eina_list_remove(it->box->items, it);
+	      * ngi_item_free(it); */
+
+	     ngi_item_remove((Ngi_Item*)it);
+
 	     e_config_save_queue();
 
 	     update = 1;

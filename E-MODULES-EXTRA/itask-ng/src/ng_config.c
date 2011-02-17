@@ -26,7 +26,7 @@ struct _E_Config_Dialog_Data
    double rflxn_foc;
    double rflxn_dist;
    double rflxn_rot;
-  
+
    Eina_List       *boxes;
 
    Evas_Object     *ilist;
@@ -100,7 +100,7 @@ ngi_configure_module(Config_Item *ci)
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
                              D_("Itask NG Configuration"),
                              "E", path, buf, 0, v, ci);
-   
+
    ci->config_dialog = cfd;
    ngi_bar_lock(ci->ng, 1);
 }
@@ -130,7 +130,7 @@ _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
    C(rflxn_dist);
    C(rflxn_foc);
 #undef C
-   
+
    cfdata->cfg = ci;
    cfdata->cfd = ci->config_dialog;
 
@@ -318,7 +318,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    ob = e_widget_check_add(evas, D_("Ecomorph Features"), &(cfdata->ecomorph_features));
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
-   
+
    e_widget_table_object_append(o_table, o, 2, 0, 1, 1, 1, 1, 1, 1);
 
    e_widget_list_object_append (o_all, o_table, 1, 1, 0.5);
@@ -903,7 +903,7 @@ _cb_slider_change(void *data, Evas_Object *obj)
    E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data *)data;
    Ng *ng = cfdata->cfg->ng;
    int a;
-   
+
    ng->cfg->size = (int)cfdata->size;
    ng->size = ng->cfg->size;
 

@@ -18,15 +18,15 @@
 /* #define ITEM_MOUSE_DOWN(_item, _ev)     \
  *   if(_item && _item->cb_mouse_down)     \
  *     _item->cb_mouse_down(_item, _ev);   \
- * 
+ *
  * #define ITEM_MOUSE_UP(_item, _ev)       \
  *   if(_item && _item->cb_mouse_up)       \
  *     _item->cb_mouse_up(_item, _ev);     \
- * 
+ *
  * #define ITEM_MOUSE_OUT(_item)           \
  *   if(_item && _item->cb_mouse_out)      \
  *     _item->cb_mouse_out(_item);         \
- * 
+ *
  * #define ITEM_MOUSE_IN(_item)            \
  *   if(_item && _item->cb_mouse_in)       \
  *     _item->cb_mouse_in(_item);          \ */
@@ -45,20 +45,22 @@
   _item = NULL;                         \
 
 
-typedef struct _Config        Config;
-typedef struct _Config_Item   Config_Item;
-typedef struct _Config_Box    Config_Box;
-typedef struct _Config_Gadcon Config_Gadcon;
-
-typedef struct _Ng            Ng;
-typedef struct _Ngi_Item      Ngi_Item;
-typedef struct _Ngi_Win       Ngi_Win;
-typedef struct _Ngi_Box       Ngi_Box;
+typedef struct _Config             Config;
+typedef struct _Config_Item        Config_Item;
+typedef struct _Config_Box         Config_Box;
+typedef struct _Config_Gadcon      Config_Gadcon;
+typedef struct _Ng                 Ng;
+typedef struct _Ngi_Item           Ngi_Item;
+typedef struct _Ngi_Item_Launcher  Ngi_Item_Launcher;
+typedef struct _Ngi_Item_Taskbar   Ngi_Item_Taskbar;
+typedef struct _Ngi_Item_Gadcon    Ngi_Item_Gadcon;
+typedef struct _Ngi_Win            Ngi_Win;
+typedef struct _Ngi_Box            Ngi_Box;
 
 struct _Config
 {
   int            version;
-  
+
   E_Module      *module;
   Eina_List     *instances;
   E_Menu        *menu;
@@ -72,7 +74,7 @@ struct _Config
 };
 
 struct _Config_Item
-{ 
+{
   Ng            *ng;
 
   int            show_label;
@@ -101,7 +103,7 @@ struct _Config_Item
   float          rflxn_foc;
   float          rflxn_dist;
   float          rflxn_rot;
-  
+
   Eina_List     *boxes;
 
   E_Config_Dialog *config_dialog;
@@ -160,7 +162,7 @@ struct _Ng
   Evas_Object     *o_icons;
   Evas_Object     *o_frame;
   Evas_Object     *o_label;
-  
+
   Evas_Object     *clip;
   Evas_Object     *bg_clip;
 
@@ -177,7 +179,9 @@ struct _Ng
   double           start_zoom;
   double           start_hide;
 
-  Eina_List       *items_scaling;
+  Eina_List       *items_show;
+  Eina_List       *items_remove;
+
   Ngi_Item        *item_active;
 
   int              hide_step;
@@ -207,36 +211,22 @@ struct _Ng
     int bg_offset;
     int reflection_offset;
     double keep_overlay_pos;
+    double fade_duration;
   } opt;
 };
 
 struct _Ngi_Item
 {
-  enum { taskbar_item, launcher_item, gadcon_item, transient_item } type;
-
-  enum { normal, appearing, disappearing, bouncing } state;
-
   Ngi_Box        *box;
 
   Evas_Object    *obj;
   Evas_Object    *over;
-  Evas_Object    *o_icon;
-  Evas_Object    *o_icon2;
-
-  /* FIXME use union for different types */
-  E_Border       *border;
-  Efreet_Desktop *app;
-  E_Gadcon       *gadcon;
-  Config_Gadcon  *cfg_gadcon;
 
   const char     *label;
 
-  const char     *class; /* store icccm.class...*/
-
   unsigned int    mouse_down;
   int             pos;
-  double          start_time;
-
+  double          displace;
   double          scale;
 
   struct
@@ -247,36 +237,70 @@ struct _Ngi_Item
     int            dx, dy;
   } drag;
 
-  unsigned int border_was_fullscreen;
-  unsigned int urgent;
-
-  Ecore_Timer *overlay_signal_timer;
-
-  /* void (*cb_free)       (Ngi_Item *it); */
+  void (*cb_free)       (Ngi_Item *it);
   void (*cb_mouse_down) (Ngi_Item *it, Ecore_Event_Mouse_Button *ev);
   void (*cb_mouse_up)   (Ngi_Item *it, Ecore_Event_Mouse_Button *ev);
   void (*cb_mouse_in)   (Ngi_Item *it);
   void (*cb_mouse_out)  (Ngi_Item *it);
   void (*cb_drag_start) (Ngi_Item *it);
 
-  int size;
+  double start_time;
 
-  int visible;
+  int delete_me;
 };
+
+struct _Ngi_Item_Launcher
+{
+  Ngi_Item base;
+
+  Evas_Object    *o_icon;
+  Evas_Object    *o_proxy;
+
+  Efreet_Desktop *app;
+};
+
+
+struct _Ngi_Item_Taskbar
+{
+  Ngi_Item base;
+
+  Evas_Object    *o_icon;
+  Evas_Object    *o_proxy;
+
+  E_Border       *border;
+
+  unsigned int border_was_fullscreen;
+  unsigned int urgent;
+  const char  *class; /* store icccm.class...*/
+};
+
+struct _Ngi_Item_Gadcon
+{
+  Ngi_Item base;
+
+  Evas_Object    *o_icon;
+  Evas_Object    *o_proxy;
+
+  E_Gadcon       *gadcon;
+  Config_Gadcon  *cfg_gadcon;
+
+};
+
 
 struct _Ngi_Box
 {
   Ng              *ng;
   Config_Box      *cfg;
   Eina_List       *items;
-  Evas_Coord       start, w, h;
   Ecore_Timer     *dnd_timer;
   E_Drop_Handler  *drop_handler;
   Ngi_Item        *item_drop;
   Evas_Object     *separator;
+  Evas_Coord       pos, w;
+
   E_Order         *apps;
 
-  int              pos;
+  E_Config_Dialog *cfd;
 };
 
 EAPI extern E_Module_Api e_modapi;
@@ -312,7 +336,10 @@ void         ngi_box_free                     (Ngi_Box *box);
 void         ngi_configure_module             (Config_Item *ci);
 void         ngi_configure_box                (Ngi_Box *box);
 
-Ngi_Item    *ngi_item_new                     (Ngi_Box *box);
+void         ngi_item_init_defaults           (Ngi_Item *it);
+void         ngi_item_label_set(Ngi_Item *it, const char *label);
+
+
 void         ngi_item_free                    (Ngi_Item *it);
 void         ngi_item_show                    (Ngi_Item *it, int instant);
 void         ngi_item_remove                  (Ngi_Item *it);
@@ -326,13 +353,10 @@ void         ngi_item_activate                (Ng *ng);
 
 void         ngi_launcher_new                 (Ng *ng, Config_Box *cfg_box);
 void         ngi_launcher_remove              (Ngi_Box *box);
-int          ngi_launcher_handle_border_event (Ng *ng, E_Border *bd, int remove);
 
 void         ngi_taskbar_init                 (void);
 void         ngi_taskbar_new                  (Ng *ng, Config_Box *cfg_box);
 void         ngi_taskbar_remove               (Ngi_Box *box);
-void         ngi_taskbar_fill                 (Ngi_Box *box);
-void         ngi_taskbar_item_border_show     (Ngi_Item *it, int to_desk);
 
 void         ngi_gadcon_init                  (void);
 void         ngi_gadcon_shutdown              (void);

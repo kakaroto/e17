@@ -1,47 +1,15 @@
 #include "e_mod_main.h"
 
 
-static Ngi_Item *
-_ngi_item_new(Ngi_Box *box)
+void
+ngi_item_init_defaults(Ngi_Item *it)
 {
-   Ngi_Item *it;
-
-   it = E_NEW(Ngi_Item, 1);
-
-   it->box = box;
-   it->border = NULL;
-   it->app = NULL;
-   it->gadcon = NULL;
-   it->cfg_gadcon = NULL;
-   it->label = NULL;
-   it->class = NULL;
-   it->o_icon = NULL;
-   it->o_icon2 = NULL;
-   it->scale = 1.0;
-   it->mouse_down = 0;
-   it->visible = 1;
-   it->size = 0;
-
-   /* it->cb_free  = _ngi_item_cb_free; */
-   it->cb_mouse_in = NULL;
-   it->cb_mouse_out = NULL;
-   it->cb_mouse_up = NULL;
-   it->cb_mouse_down = NULL;
-   it->cb_drag_start = NULL;
-
-   it->overlay_signal_timer = NULL;
-   return it;
-}
-
-Ngi_Item *
-ngi_item_new(Ngi_Box *box)
-{
-   Ngi_Item *it = _ngi_item_new(box);
+   Ng *ng = it->box->ng;
    int ok = 0;
+   
+   it->obj = edje_object_add(ng->evas);
 
-   it->obj = edje_object_add(box->ng->evas);
-
-   switch(box->ng->cfg->orient)
+   switch(ng->cfg->orient)
      {
       case E_GADCON_ORIENT_BOTTOM:
 	 ok = ngi_object_theme_set(it->obj, "e/modules/itask-ng/icon_bottom");
@@ -64,9 +32,9 @@ ngi_item_new(Ngi_Box *box)
    	  edje_object_file_set(it->obj, ngi_config->theme_path, "e/modules/itask-ng/icon");
      }
 
-   it->over = edje_object_add(box->ng->evas);
+   it->over = edje_object_add(ng->evas);
 
-   switch(box->ng->cfg->orient)
+   switch(ng->cfg->orient)
      {
       case E_GADCON_ORIENT_BOTTOM:
 	 ok = ngi_object_theme_set(it->over, "e/modules/itask-ng/icon_over_bottom");
@@ -91,45 +59,58 @@ ngi_item_new(Ngi_Box *box)
    evas_object_layer_set(it->over, 9999);
    evas_object_show(it->over);
 
-   evas_object_smart_member_add(it->obj, box->ng->o_icons);
+   evas_object_smart_member_add(it->obj, ng->o_icons);
    evas_object_show(it->obj);
-
-   return it;
 }
 
 void
 ngi_item_show(Ngi_Item *it, int instant)
 {
+   Ng *ng = it->box->ng;
+
+   evas_object_show(it->obj);
+   evas_object_show(it->over);
+   
    ngi_item_signal_emit(it, "e,state,item,show");
+
+   if (eina_list_data_find(ng->items_remove, it))
+     ng->items_remove = eina_list_remove(ng->items_remove, it);
 
    if (instant)
      {
-        it->state = normal;
         it->scale = 1.0;
+	ngi_animate(ng);
+	return;
      }
-   else
-     {
-        it->start_time = ecore_time_get();
-        it->state = appearing;
-        it->scale = 0.0;
-        it->box->ng->items_scaling =
-	  eina_list_append(it->box->ng->items_scaling, it);
-     }
-
-   ngi_animate(it->box->ng);
+   
+   it->start_time = ecore_time_get();
+   it->scale = 0.0;
+   ng->items_show = eina_list_append(ng->items_show, it);
+   ngi_animate(ng);
 }
 
 void
 ngi_item_remove(Ngi_Item *it)
 {
+   if (!it) return;
+     
    Ng *ng = it->box->ng;
-
+   double now = ecore_time_get();
+   
    edje_object_signal_emit(it->obj, "e,state,item,hide", "e");
-   it->start_time = ecore_time_get();
-   it->state = disappearing;
 
-   if (!eina_list_data_find(ng->items_scaling, it))
-      ng->items_scaling = eina_list_append(ng->items_scaling, it);
+   if (now - it->start_time < ng->opt.fade_duration)
+     it->start_time = now - (ng->opt.fade_duration - (now - it->start_time));
+   else
+     it->start_time = now;
+   
+   it->delete_me = 1;
+   
+   if (eina_list_data_find(ng->items_show, it))
+     ng->items_show = eina_list_remove(ng->items_show, it);
+
+   if (!eina_list_data_find(ng->items_remove, it))
+     ng->items_remove = eina_list_append(ng->items_remove, it);
 
    if (it == ng->item_active)
       ng->item_active = NULL;
@@ -143,79 +124,53 @@ ngi_item_remove(Ngi_Item *it)
 EAPI void
 ngi_item_free(Ngi_Item *it)
 {
-   ngi_item_del_icon(it);
+   Ng *ng = it->box->ng;
+   
+   if (eina_list_data_find(ng->items_remove, it))
+     ng->items_remove = eina_list_remove(ng->items_remove, it);
+
+   if (eina_list_data_find(ng->items_show, it))
+     ng->items_show = eina_list_remove(ng->items_show, it);
+
+   it->box->items = eina_list_remove(it->box->items, it);
 
    if (it->obj)
-     {
-        evas_object_clip_unset(it->obj);
-        evas_object_del(it->obj);
-     }
+     evas_object_del(it->obj);
 
    if (it->over)
-     {
-        /* evas_object_clip_unset(it->over); */
-        evas_object_del(it->over);
-     }
-
-   if (it->border)
-      e_object_unref(E_OBJECT(it->border));
-
-   if (it->gadcon)
-      e_object_del(E_OBJECT(it->gadcon));
-
-   if (it->app)
-      efreet_desktop_unref(it->app);
+     evas_object_del(it->over);
 
    if (it->label)
-      eina_stringshare_del(it->label);
+     eina_stringshare_del(it->label);
 
-   if (it->class)
-      eina_stringshare_del(it->class);
-
-   if (it->overlay_signal_timer)
-      ecore_timer_del(it->overlay_signal_timer);
-
-   if (it->box && it->box->ng)
-     {
-        if (it->box->ng->item_active)
-           it->box->ng->item_active = NULL;
-
-        if (it->box->ng->item_drag)
-           it->box->ng->item_drag = NULL;
-     }
-
-   E_FREE(it);
+   if (it->cb_free) it->cb_free(it);
 }
 
 void
-ngi_item_del_icon(Ngi_Item *it)
+ngi_item_label_set(Ngi_Item *it, const char *label)
 {
-   if (it->o_icon)
-     {
-        edje_object_part_unswallow(it->obj, it->o_icon);
-        evas_object_del(it->o_icon);
-        it->o_icon = NULL;
-     }
+   if (it->label)
+     eina_stringshare_del(it->label); 
 
-   if (it->o_icon2)
-     {
-        edje_object_part_unswallow(it->over, it->o_icon2);
-        evas_object_del(it->o_icon2);
-        it->o_icon2 = NULL;
-     }
+   if (label)
+     it->label = eina_stringshare_add(label);
+   else
+     it->label = NULL;
 }
 
 void
 ngi_item_signal_emit(Ngi_Item *it, char *sig)
 {
-   edje_object_signal_emit(it->obj, sig, "e");
-   edje_object_signal_emit(it->over, sig, "e");
+   if (it->obj)
+     edje_object_signal_emit(it->obj, sig, "e");
+   if (it->over)
+     edje_object_signal_emit(it->over, sig, "e");
 }
 
 void
 ngi_item_mouse_in(Ngi_Item *it)
 {
-   if (!it) return;
+   if (!it || it->delete_me) return;
 
    ngi_item_signal_emit(it,"e,state,mouse,in");
 
@@ -226,7 +181,7 @@ ngi_item_mouse_in(Ngi_Item *it)
 void
 ngi_item_mouse_out(Ngi_Item *it)
 {
-   if (!it) return;
+   if (!it || it->delete_me) return;
 
    ngi_item_signal_emit(it,"e,state,mouse,out");
 
@@ -237,7 +192,7 @@ ngi_item_mouse_out(Ngi_Item *it)
 void
 ngi_item_mouse_down(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
 {
-   if (!it) return;
+   if (!it || it->delete_me) return;
 
    ngi_item_signal_emit(it,"e,state,mouse,down");
 
@@ -248,7 +203,7 @@ ngi_item_mouse_down(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
 void
 ngi_item_mouse_up(Ngi_Item *it, Ecore_Event_Mouse_Button *ev)
 {
-   if (!it) return;
+   if (!it || it->delete_me) return;
 
    ngi_item_signal_emit(it,"e,state,mouse,up");
 
