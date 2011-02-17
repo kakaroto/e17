@@ -33,8 +33,8 @@
   } while (0)
 
 static void
-esql_fake_free(void *data  __UNUSED__,
-               Esql *e)
+esql_fake_free(void *data __UNUSED__,
+               Esql      *e)
 {
    e->error = NULL;
 }
@@ -46,7 +46,7 @@ esql_call_complete(Esql *e)
    Esql *ev;
 
    DBG("(e=%p)", e);
-   ev = e->pool_struct ? (Esql*)e->pool_struct : e;
+   ev = e->pool_struct ? (Esql *)e->pool_struct : e;
    switch (e->current)
      {
       case ESQL_CONNECT_TYPE_INIT:
@@ -58,7 +58,7 @@ esql_call_complete(Esql *e)
           }
         else
           INFO("Connected");
-        
+
         if ((!e->pool_struct) || (e->pool_struct->e_connected == e->pool_struct->size))
           {
              if (e->pool_struct)
@@ -135,7 +135,7 @@ out:
         e->backend.query(e, e->backend_set_params->data);
         e->current = ESQL_CONNECT_TYPE_QUERY;
         e->cur_data = data;
-        e->cur_id = *((Esql_Query_Id*)e->backend_ids->data);
+        e->cur_id = *((Esql_Query_Id *)e->backend_ids->data);
         if (data) eina_hash_del_by_key(esql_query_data, e->backend_ids->data);
         INFO("Next call: query");
      }
@@ -147,9 +147,9 @@ esql_connect_handler(Esql             *e,
                      Ecore_Fd_Handler *fdh)
 {
    Esql *ev;
-   
+
    DBG("(e=%p, fdh=%p)", e, fdh);
-   ev = e->pool_struct ? (Esql*)e->pool_struct : e; /* use pool struct for events */
+   ev = e->pool_struct ? (Esql *)e->pool_struct : e; /* use pool struct for events */
 
    if (!ecore_main_fd_handler_active_get(fdh, ECORE_FD_READ | ECORE_FD_WRITE))
      return ECORE_CALLBACK_RENEW;
@@ -191,13 +191,13 @@ esql_connect_handler(Esql             *e,
                   res->data = e->cur_data;
                   res->qid = e->cur_id;
                   e->res = res;
-                  
+
                   res->error = e->error;
                   ERR("Connection error: %s", res->error);
 
                   INFO("Executing callback for current event");
                   qcb(res, e->cur_data);
-                  
+
                   e->query_start = e->query_end = 0.0;
                   eina_hash_del_by_key(esql_query_callbacks, &e->cur_id);
                   esql_res_free(NULL, res);

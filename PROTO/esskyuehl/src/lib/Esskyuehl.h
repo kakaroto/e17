@@ -162,25 +162,28 @@ EAPI int esql_init(void);
 EAPI int esql_shutdown(void);
 
 /* esql */
-EAPI Esql     *esql_new(Esql_Type type);
-EAPI Esql     *esql_pool_new(int size, Esql_Type type);
-EAPI void     *esql_data_get(Esql *e);
-EAPI void      esql_data_set(Esql *e,
-                             void *data);
+EAPI Esql         *esql_new(Esql_Type type);
+EAPI Esql         *esql_pool_new(int       size,
+                                 Esql_Type type);
+EAPI void         *esql_data_get(Esql *e);
+EAPI void          esql_data_set(Esql *e,
+                                 void *data);
 EAPI Esql_Query_Id esql_current_query_id_get(Esql *e);
-EAPI const char *esql_error_get(Esql *e);
-EAPI Eina_Bool esql_type_set(Esql     *e,
-                             Esql_Type type);
-EAPI Esql_Type esql_type_get(Esql *e);
-EAPI void      esql_free(Esql *e);
+EAPI const char   *esql_error_get(Esql *e);
+EAPI Eina_Bool     esql_type_set(Esql     *e,
+                                 Esql_Type type);
+EAPI Esql_Type     esql_type_get(Esql *e);
+EAPI void          esql_free(Esql *e);
 
 /* connect */
 EAPI Eina_Bool esql_connect(Esql       *e,
                             const char *addr,
                             const char *user,
                             const char *passwd);
-EAPI void   esql_disconnect(Esql *e);
-EAPI void esql_connect_callback_set(Esql *e, Esql_Connect_Cb cb, void *data);
+EAPI void esql_disconnect(Esql *e);
+EAPI void esql_connect_callback_set(Esql           *e,
+                                    Esql_Connect_Cb cb,
+                                    void           *data);
 EAPI Eina_Bool   esql_database_set(Esql       *e,
                                    const char *database_name);
 EAPI const char *esql_database_get(Esql *e);
@@ -197,8 +200,8 @@ EAPI Esql_Query_Id esql_query_vargs(Esql       *e,
                                     void       *data,
                                     const char *fmt,
                                     va_list     args);
-EAPI Eina_Bool     esql_query_callback_set(Esql_Query_Id id,
-                                           Esql_Query_Cb callback);
+EAPI Eina_Bool esql_query_callback_set(Esql_Query_Id id,
+                                       Esql_Query_Cb callback);
 
 /* res */
 EAPI Esql          *esql_res_esql_get(Esql_Res *res);

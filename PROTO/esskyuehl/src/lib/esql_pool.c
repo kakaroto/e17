@@ -37,14 +37,14 @@ esql_pool_idle_find_(Esql_Pool *ep)
    time = ecore_time_get();
    EINA_INLIST_FOREACH(ep->esqls, e)
      {
-        if (time - e->query_start > cur)
-          { /* assume older query start time means faster return (obviously not always true) */
+        if (time - e->query_start > cur) /* assume older query start time means faster return (obviously not always true) */
+          {
              cur = time - e->query_start;
              use = e;
           }
      }
    if (!use) /* this should never happen in a reasonable setting */
-     use = EINA_INLIST_CONTAINER_GET(ep->esqls, Esql); /* use first one */
+     use = EINA_INLIST_CONTAINER_GET(ep->esqls, Esql);  /* use first one */
    return use;
 }
 
@@ -54,9 +54,7 @@ esql_pool_free(Esql_Pool *ep)
    Esql *e;
    Eina_Inlist *l;
 
-   for (e = (ep->esqls ? _EINA_INLIST_CONTAINER(e, ep->esqls) : NULL), l = e ? ((EINA_INLIST_GET(e) ? EINA_INLIST_GET(e)->next : NULL)) : NULL;
-        e; /* in 1.1, this is FOREACH_SAFE */
-        e = _EINA_INLIST_CONTAINER(e, l), l = l ? l->next : NULL)
+   EINA_INLIST_FOREACH_SAFE(ep->esqls, l, e)
      esql_free(e);
 
    eina_stringshare_del(ep->database);
@@ -64,7 +62,8 @@ esql_pool_free(Esql_Pool *ep)
 }
 
 Eina_Bool
-esql_pool_type_set(Esql_Pool *ep, Esql_Type type)
+esql_pool_type_set(Esql_Pool *ep,
+                   Esql_Type  type)
 {
    Esql *e;
    Eina_Bool ret = EINA_TRUE;
@@ -79,7 +78,8 @@ esql_pool_type_set(Esql_Pool *ep, Esql_Type type)
 }
 
 Eina_Bool
-esql_pool_database_set(Esql_Pool *ep, const char *database_name)
+esql_pool_database_set(Esql_Pool  *ep,
+                       const char *database_name)
 {
    Esql *e;
 
@@ -121,7 +121,10 @@ esql_pool_disconnect(Esql_Pool *ep)
 }
 
 Esql_Query_Id
-esql_pool_query_args(Esql_Pool *ep, void *data, const char *fmt, va_list args)
+esql_pool_query_args(Esql_Pool  *ep,
+                     void       *data,
+                     const char *fmt,
+                     va_list     args)
 {
    Esql *e;
 
@@ -131,7 +134,9 @@ esql_pool_query_args(Esql_Pool *ep, void *data, const char *fmt, va_list args)
 }
 
 Esql_Query_Id
-esql_pool_query(Esql_Pool *ep, void *data, const char *query)
+esql_pool_query(Esql_Pool  *ep,
+                void       *data,
+                const char *query)
 {
    Esql *e;
 
@@ -139,6 +144,7 @@ esql_pool_query(Esql_Pool *ep, void *data, const char *query)
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, 0);
    return esql_query(e, data, query);
 }
+
 /* API */
 
 /**
@@ -155,17 +161,18 @@ esql_pool_query(Esql_Pool *ep, void *data, const char *query)
  * @return The #Esql object representing a connection pool
  */
 Esql *
-esql_pool_new(int size, Esql_Type type)
+esql_pool_new(int       size,
+              Esql_Type type)
 {
    int i;
    Esql *e;
    Esql_Pool *ep;
-   
+
    EINA_SAFETY_ON_TRUE_RETURN_VAL(size < 1, NULL);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(type == ESQL_TYPE_NONE, NULL);
    ep = calloc(1, sizeof(Esql_Pool));
    EINA_SAFETY_ON_NULL_RETURN_VAL(ep, NULL);
-   
+
    for (i = 0; i < size; i++)
      {
         e = esql_new(type);
@@ -178,7 +185,7 @@ esql_pool_new(int size, Esql_Type type)
    ep->pool = EINA_TRUE;
    ep->type = type;
    ep->size = size;
-   return (Esql*)ep;
+   return (Esql *)ep;
 
 error:
    EINA_INLIST_FOREACH(ep->esqls, e)
@@ -186,3 +193,4 @@ error:
    free(ep);
    return NULL;
 }
+

@@ -48,7 +48,7 @@ esql_connect(Esql       *e,
    EINA_SAFETY_ON_TRUE_RETURN_VAL(e->type == ESQL_TYPE_NONE, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(addr, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(user, EINA_FALSE);
-   if (e->pool) return esql_pool_connect((Esql_Pool*)e, addr, user, passwd);
+   if (e->pool) return esql_pool_connect((Esql_Pool *)e, addr, user, passwd);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!e->backend.db && (e->type == ESQL_TYPE_MYSQL), EINA_FALSE);
 
    if (e->connected)
@@ -87,7 +87,7 @@ esql_disconnect(Esql *e)
    e->connected = EINA_FALSE;
    if (e->pool)
      {
-        esql_pool_disconnect((Esql_Pool*)e);
+        esql_pool_disconnect((Esql_Pool *)e);
         return;
      }
    EINA_SAFETY_ON_NULL_RETURN(e->backend.db);
@@ -107,7 +107,9 @@ esql_disconnect(Esql *e)
  * @param data The data
  */
 void
-esql_connect_callback_set(Esql *e, Esql_Connect_Cb cb, void *data)
+esql_connect_callback_set(Esql           *e,
+                          Esql_Connect_Cb cb,
+                          void           *data)
 {
    EINA_SAFETY_ON_NULL_RETURN(e);
 
@@ -140,8 +142,8 @@ esql_database_set(Esql       *e,
      }
    eina_stringshare_replace(&e->database, database_name);
 
-   if (e->pool) return esql_pool_database_set((Esql_Pool*)e, database_name);
-   
+   if (e->pool) return esql_pool_database_set((Esql_Pool *)e, database_name);
+
    if (!e->backend.database_set) return EINA_TRUE;
    if ((!e->current) && e->connected)
      {

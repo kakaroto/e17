@@ -38,6 +38,13 @@ extern Eina_Hash *esql_query_data;
 # define strndupa(str, len) strncpy(alloca(len + 1), str, len)
 #endif
 
+#ifndef EINA_INLIST_FOREACH_SAFE
+#define EINA_INLIST_FOREACH_SAFE(list, list2, l) \
+   for (l = (list ? _EINA_INLIST_CONTAINER(l, list) : NULL), list2 = l ? ((EINA_INLIST_GET(l) ? EINA_INLIST_GET(l)->next : NULL)) : NULL; \
+        l; \
+        l = _EINA_INLIST_CONTAINER(l, list2), list2 = list2 ? list2->next : NULL)
+#endif
+
 typedef enum
 {
    ESQL_CONNECT_TYPE_NONE,
@@ -61,50 +68,50 @@ typedef const char *           (*Esql_Row_Col_Name_Cb)(Esql_Row *);
 typedef struct Esql_Pool
 {
    EINA_INLIST;
-   const char       *error;
-   Eina_Bool         pool : 1;
-   Eina_Bool         connected : 1;
-   const char       *database;
-   Esql_Type         type;
-   Esql_Connect_Cb   connect_cb;
-   void             *connect_cb_data;
-   void             *data;
+   const char     *error;
+   Eina_Bool       pool : 1;
+   Eina_Bool       connected : 1;
+   const char     *database;
+   Esql_Type       type;
+   Esql_Connect_Cb connect_cb;
+   void           *connect_cb_data;
+   void           *data;
    /* non-esql */
-   int size;
-   int e_connected;
-   Eina_Inlist *esqls;
+   int             size;
+   int             e_connected;
+   Eina_Inlist    *esqls;
 } Esql_Pool;
 
 struct Esql
 {
-   EINA_INLIST;
-   const char       *error;
-   Eina_Bool         pool : 1;
-   Eina_Bool         connected : 1;
-   const char       *database;
-   Esql_Type         type;
-   Esql_Connect_Cb   connect_cb;
-   void             *connect_cb_data;
-   void             *data;
-      
+                   EINA_INLIST;
+   const char     *error;
+   Eina_Bool       pool : 1;
+   Eina_Bool       connected : 1;
+   const char     *database;
+   Esql_Type       type;
+   Esql_Connect_Cb connect_cb;
+   void           *connect_cb_data;
+   void           *data;
+
    struct
    {
-      void           *db; /* db object pointer */
-      char           *conn_str; /* unused for some db types */
-      int             conn_str_len;
-      Esql_Error_Cb   error_get;
+      void              *db; /* db object pointer */
+      char              *conn_str; /* unused for some db types */
+      int                conn_str_len;
+      Esql_Error_Cb      error_get;
       Esql_Connection_Cb connect;
-      Esql_Cb         disconnect;
-      Esql_Cb         free;
-      Esql_Setup_Cb   setup;
-      Esql_Set_Cb     database_set;
-      Esql_Set_Cb     query;
+      Esql_Cb            disconnect;
+      Esql_Cb            free;
+      Esql_Setup_Cb      setup;
+      Esql_Set_Cb        database_set;
+      Esql_Set_Cb        query;
       Esql_Connection_Cb database_send;
       Esql_Connection_Cb io;
-      Esql_Fd_Cb      fd_get;
-      Esql_Escape_Cb  escape;
-      Esql_Res_Cb     res;
-      Esql_Res_Cb     res_free;
+      Esql_Fd_Cb         fd_get;
+      Esql_Escape_Cb     escape;
+      Esql_Res_Cb        res;
+      Esql_Res_Cb        res_free;
    } backend;
 
    Esql_Pool        *pool_struct;
@@ -113,7 +120,7 @@ struct Esql
 
    Ecore_Fd_Handler *fdh;
    Esql_Res         *res; /* current working result */
-   
+
    Esql_Connect_Type current;
    double            query_start;
    double            query_end;
@@ -165,7 +172,6 @@ typedef struct Esql_Row_Iterator
    const Esql_Row *current;
 } Esql_Row_Iterator;
 
-
 void      esql_mysac_init(Esql *e);
 void      esql_postgresql_init(Esql *e);
 
@@ -184,20 +190,27 @@ char *esql_string_escape(Eina_Bool   backslashes,
                          const char *s);
 
 Esql_Query_Id
-esql_pool_query(Esql_Pool *ep, void *data, const char *query);
+esql_pool_query(Esql_Pool  *ep,
+                void       *data,
+                const char *query);
 Esql_Query_Id
-esql_pool_query_args(Esql_Pool *ep, void *data, const char *fmt, va_list args);
+esql_pool_query_args(Esql_Pool  *ep,
+                     void       *data,
+                     const char *fmt,
+                     va_list     args);
 void
-esql_pool_disconnect(Esql_Pool *ep);
+ esql_pool_disconnect(Esql_Pool *ep);
 Eina_Bool
-esql_pool_connect(Esql_Pool  *ep,
+ esql_pool_connect(Esql_Pool *ep,
                   const char *addr,
                   const char *user,
                   const char *passwd);
 Eina_Bool
-esql_pool_database_set(Esql_Pool *ep, const char *database_name);
+esql_pool_database_set(Esql_Pool  *ep,
+                       const char *database_name);
 Eina_Bool
-esql_pool_type_set(Esql_Pool *ep, Esql_Type type);
+esql_pool_type_set(Esql_Pool *ep,
+                   Esql_Type  type);
 void
 esql_pool_free(Esql_Pool *ep);
 #endif

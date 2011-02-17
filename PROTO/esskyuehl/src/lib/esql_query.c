@@ -230,10 +230,10 @@ esql_query(Esql       *e,
         ERR("Esql object must be connected!");
         return 0;
      }
-   if (e->pool) return esql_pool_query((Esql_Pool*)e, data, query);
+   if (e->pool) return esql_pool_query((Esql_Pool *)e, data, query);
    EINA_SAFETY_ON_NULL_RETURN_VAL(e->backend.db, 0);
 
-   while (++esql_id < 1);
+   while (++esql_id < 1) ;
    if (!e->current)
      {
         e->query_start = ecore_time_get();
@@ -299,9 +299,9 @@ esql_query_args(Esql       *e,
  */
 Esql_Query_Id
 esql_query_vargs(Esql       *e,
-                void       *data,
-                const char *fmt,
-                va_list     args)
+                 void       *data,
+                 const char *fmt,
+                 va_list     args)
 {
    char *query;
 
@@ -315,13 +315,13 @@ esql_query_vargs(Esql       *e,
         return 0;
      }
    if (e->pool)
-     return esql_pool_query_args((Esql_Pool*)e, data, fmt, args);
+     return esql_pool_query_args((Esql_Pool *)e, data, fmt, args);
    EINA_SAFETY_ON_NULL_RETURN_VAL(e->backend.db, 0);
 
    query = e->backend.escape(e, fmt, args);
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(query, 0);
-   while (++esql_id < 1);
+   while (++esql_id < 1) ;
    if (!e->current)
      {
         e->backend.query(e, query);
@@ -340,14 +340,13 @@ esql_query_vargs(Esql       *e,
              if (!esql_query_data) esql_query_data = eina_hash_int64_new(NULL);
              eina_hash_add(esql_query_data, &esql_id, data);
           }
-
      }
    return esql_id;
 }
 
 /**
  * @brief Set a callback for an #Esql_Query_Id
- * 
+ *
  * This function is used to setup a callback to be called for the response of
  * a query with @p id, overriding (disabling) the ESQL_EVENT_RESULT event
  * for that call.  If a previous callback was set for @p id, this will overwrite it.
@@ -370,4 +369,5 @@ esql_query_callback_set(Esql_Query_Id id,
 
    return eina_hash_add(esql_query_callbacks, &id, callback);
 }
+
 /** @} */

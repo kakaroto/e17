@@ -158,7 +158,7 @@ esql_type_set(Esql     *e,
               Esql_Type type)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
-   if (e->pool) return esql_pool_type_set((Esql_Pool*)e, type);
+   if (e->pool) return esql_pool_type_set((Esql_Pool *)e, type);
 
    if ((type != e->type) && e->backend.db && e->backend.free)
      e->backend.free(e);
@@ -174,6 +174,7 @@ esql_type_set(Esql     *e,
         ERR("MySQL not supported!");
 #endif
         break;
+
       case ESQL_TYPE_POSTGRESQL:
         INFO("Esql type for %p set to PostgreSQL", e);
 #ifdef HAVE_PSQL
@@ -182,6 +183,7 @@ esql_type_set(Esql     *e,
         ERR("PostgreSQL not supported!");
 #endif
         break;
+
       default:
         INFO("Esql type for %p is unknown!", e);
         return EINA_FALSE;
@@ -245,7 +247,7 @@ esql_free(Esql *e)
    EINA_SAFETY_ON_NULL_RETURN(e);
    if (e->pool)
      {
-        esql_pool_free((Esql_Pool*)e);
+        esql_pool_free((Esql_Pool *)e);
         return;
      }
    if (e->connected) esql_disconnect(e);
