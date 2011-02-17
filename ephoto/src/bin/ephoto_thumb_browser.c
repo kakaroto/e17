@@ -122,6 +122,7 @@ ephoto_thumb_browser_show(void)
    ephoto->state = EPHOTO_STATE_THUMB;
 
    elm_pager_content_promote(ephoto->pager, ephoto->thumb_browser);
+   elm_object_focus(etb->grid);
 }
 
 void 
@@ -222,6 +223,8 @@ _ephoto_show_flow(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_
    Elm_Gengrid_Item *egi;
 
    elm_toolbar_item_selected_set(etb->action.view_flow, EINA_FALSE);
+
+   elm_object_unfocus(etb->grid);
 
    egi = elm_gengrid_selected_item_get(etb->grid);
    if (egi)

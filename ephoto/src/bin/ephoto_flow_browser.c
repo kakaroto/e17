@@ -181,6 +181,7 @@ ephoto_flow_browser_show(void)
    ephoto->prev_state = ephoto->state;
    ephoto->state = EPHOTO_STATE_FLOW;
 
+   elm_object_focus(efb->layout);
    if (!evas_object_key_grab(efb->box, "Escape", 0, 0, 1))
      printf("Couldn't grab Escape key\n");
    if (!evas_object_key_grab(efb->box, "Left", 0, 0, 1))
@@ -306,6 +307,7 @@ _ephoto_flow_back(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_
    evas_object_key_ungrab(efb->box, "BackSpace", 0, 0);
    evas_object_key_ungrab(efb->box, "space", 0, 0);
 
+   elm_object_unfocus(efb->layout);
    ephoto_thumb_browser_show();
 }
 
