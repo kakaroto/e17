@@ -1,13 +1,13 @@
 # News module (e17), French translation.
 # This file is put in the public domain.
-# batden <batden@orange.fr>, 2009, 2010.
+# batden <batden@orange.fr>, 2009, 2010, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: News module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2011-02-16 22:50+0100\n"
-"PO-Revision-Date: 2010-10-07 14:57+0400\n"
+"PO-Revision-Date: 2011-02-18 07:11+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <pourunmondesansgourou@gmail.com>\n"
 "Language: fr\n"
@@ -440,9 +440,8 @@ msgid "Update"
 msgstr "Mettre à jour"
 
 #: src/news_menu.c:141
-#, fuzzy
 msgid "Gadget Contents"
-msgstr "Contenu"
+msgstr "Contenu du gadget"
 
 #: src/news_menu.c:151
 msgid "Gadget"
