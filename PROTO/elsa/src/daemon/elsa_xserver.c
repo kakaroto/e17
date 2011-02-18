@@ -1,5 +1,5 @@
 #include "elsa.h"
-#include <wait.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 typedef struct Elsa_Xserver_
