@@ -1,7 +1,10 @@
 #include "e_mod_main.h"
 #include <X11/extensions/shape.h>
 
-#define WINDOW_HEIGHT 250
+#define WINDOW_HEIGHT   250
+#define TEXT_DIST       45
+#define SIDE_OFFSET     30
+
 
 static int            _ngi_win_free(Ngi_Win *win);
 static Ngi_Win *      _ngi_win_new(Ng *ng);
@@ -40,9 +43,6 @@ Config *ngi_config = NULL;
 E_Int_Menu_Augmentation *maug = NULL;
 
 static Evas_Smart *_e_smart = NULL;
-
-#define TEXT_DIST       45
-#define SIDE_OFFSET     30
 
 static void
 _ngi_bar_add(Evas_Object *obj){}
@@ -437,6 +437,114 @@ _ngi_cb_container_resize(void *data, int ev_type, void *event_info)
 }
 
 static void
+_ngi_netwm_icon_geometry_set(E_Border *bd, int x, int y, int w, int h)
+{
+   unsigned int sizes[4];
+   sizes[0] = x;
+   sizes[1] = y;
+   sizes[2] = w;
+   sizes[3] = h;
+   ecore_x_window_prop_card32_set
+     (bd->win, ECORE_X_ATOM_NET_WM_ICON_GEOMETRY, sizes, 4);
+}
+void
+ngi_input_extents_calc(Ng *ng)
+{
+   int item_zoomed;
+   Ngi_Win *win = ng->win;
+   Ngi_Box *box;
+   Eina_List *l;
+
+   if (ng->mouse_in)
+     item_zoomed = ng->size * ng->cfg->zoomfactor + ng->opt.bg_offset;
+   else if (ng->hide_state == hidden)
+     item_zoomed = 2;
+   else
+     item_zoomed = ng->size + ng->opt.bg_offset;;
+
+   switch (ng->cfg->orient)
+     {
+      case E_GADCON_ORIENT_BOTTOM:
+         win->rect.x = ng->start;
+         win->rect.y = ng->win->popup->h - item_zoomed;
+         win->rect.width = ng->w;
+         win->rect.height = item_zoomed;
+         break;
+
+      case E_GADCON_ORIENT_TOP:
+         win->rect.x = ng->start + SIDE_OFFSET;
+         win->rect.y = 0;
+         win->rect.width = ng->w;
+	 win->rect.height = item_zoomed;
+         break;
+
+      case E_GADCON_ORIENT_LEFT:
+         win->rect.x = 0;
+         win->rect.y = ng->start + SIDE_OFFSET;
+         win->rect.width = item_zoomed;
+         win->rect.height = ng->w;
+         break;
+
+      case E_GADCON_ORIENT_RIGHT:
+         win->rect.x = ng->win->popup->w - item_zoomed;
+         win->rect.y = ng->start;
+         win->rect.width = item_zoomed;
+         win->rect.height = ng->w;
+         break;
+     }
+
+   e_container_window_raise(ng->zone->container, win->input, 999);
+
+   if (ngi_config->use_composite)
+     {
+	XShapeCombineRectangles((Display *)ecore_x_display_get(),
+				win->input, ShapeInput, 0, 0,
+				&win->rect, 1, ShapeSet, Unsorted);
+     }
+   else
+     {
+	ecore_x_window_move_resize(win->input,
+				   ng->zone->x + win->popup->x + win->rect.x,
+				   ng->zone->y + win->popup->y + win->rect.y,
+				   win->rect.width, win->rect.height);
+     }
+
+   EINA_LIST_FOREACH (ng->boxes, l, box)
+     {
+	if (!box->drop_handler)
+	  continue;
+
+	int w = box->w;
+	if (w < 10) w = 10;
+
+	switch (ng->cfg->orient)
+	  {
+	   case E_GADCON_ORIENT_BOTTOM:
+	      e_drop_handler_geometry_set
+		(box->drop_handler,
+		 box->pos, win->popup->h - item_zoomed, w, item_zoomed);
+	      break;
+
+	   case E_GADCON_ORIENT_TOP:
+	      e_drop_handler_geometry_set
+		(box->drop_handler, box->pos, 0, w, item_zoomed);
+	      break;
+
+	   case E_GADCON_ORIENT_LEFT:
+	      e_drop_handler_geometry_set
+		(box->drop_handler, 0, box->pos, item_zoomed, w);
+	      break;
+
+	   case E_GADCON_ORIENT_RIGHT:
+	      e_drop_handler_geometry_set
+		(box->drop_handler, win->popup->w - item_zoomed, box->pos,
+		 item_zoomed, w);
+	      break;
+	  }
+     }
+}
+
+static void
 _ngi_proxy_geometry_calc(Ng *ng)
 {
    int w = ng->win->popup->w;
@@ -747,116 +855,6 @@ _ngi_win_cb_mouse_move(void *data, int type, void *event)
 
 /**************************************************************************/
 
-static void
-_ngi_netwm_icon_geometry_set(E_Border *bd, int x, int y, int w, int h)
-{
-   unsigned int sizes[4];
-   sizes[0] = x;
-   sizes[1] = y;
-   sizes[2] = w;
-   sizes[3] = h;
-   ecore_x_window_prop_card32_set
-      (bd->win, ECORE_X_ATOM_NET_WM_ICON_GEOMETRY, sizes, 4);
-}
-
-void
-ngi_input_extents_calc(Ng *ng)
-{
-   int item_zoomed;
-   Ngi_Win *win = ng->win;
-   int extra = ng->size;
-   Ngi_Box *box;
-   Eina_List *l;
-   int offset = 20;
-
-   if (ng->mouse_in)
-     item_zoomed = ng->size * ng->cfg->zoomfactor + offset;
-   else if (ng->hide_state == hidden)
-     item_zoomed = 2;
-   else
-     item_zoomed = ng->size + offset;
-
-   switch (ng->cfg->orient)
-     {
-      case E_GADCON_ORIENT_BOTTOM:
-         win->rect.x = ng->start - extra;
-         win->rect.y = ng->win->popup->h - item_zoomed;
-         win->rect.width = ng->w + 2 * extra;
-         win->rect.height = item_zoomed;
-         break;
-
-      case E_GADCON_ORIENT_TOP:
-         win->rect.x = ng->start;
-         win->rect.y = 0;
-         win->rect.width = ng->w;
-	 win->rect.height = item_zoomed;
-         break;
-
-      case E_GADCON_ORIENT_LEFT:
-         win->rect.x = 0;
-         win->rect.y = ng->start;
-         win->rect.width = item_zoomed;
-         win->rect.height = ng->w;
-         break;
-
-      case E_GADCON_ORIENT_RIGHT:
-         win->rect.x = ng->win->popup->w - item_zoomed;
-         win->rect.y = ng->start;
-         win->rect.width = item_zoomed;
-         win->rect.height = ng->w;
-         break;
-     }
-
-   e_container_window_raise(ng->zone->container, win->input, 999);
-
-   if (ngi_config->use_composite)
-     {
-	XShapeCombineRectangles((Display *)ecore_x_display_get(),
-				win->input, ShapeInput, 0, 0,
-				&win->rect, 1, ShapeSet, Unsorted);
-     }
-   else
-     {
-	ecore_x_window_move_resize(win->input,
-				   ng->zone->x + win->popup->x + win->rect.x,
-				   ng->zone->y + win->popup->y + win->rect.y,
-				   win->rect.width, win->rect.height);
-     }
-
-   EINA_LIST_FOREACH (ng->boxes, l, box)
-     {
-	if (!box->drop_handler)
-	  continue;
-
-	int w = box->w;
-	if (w < 10) w = 10;
-
-	switch (ng->cfg->orient)
-	  {
-	   case E_GADCON_ORIENT_BOTTOM:
-	      e_drop_handler_geometry_set
-		(box->drop_handler,
-		 box->pos, win->popup->h - item_zoomed, w, item_zoomed);
-	      break;
-
-	   case E_GADCON_ORIENT_TOP:
-	      e_drop_handler_geometry_set
-		(box->drop_handler, box->pos, 0, w, item_zoomed);
-	      break;
-
-	   case E_GADCON_ORIENT_LEFT:
-	      e_drop_handler_geometry_set
-		(box->drop_handler, 0, box->pos, item_zoomed, w);
-	      break;
-
-	   case E_GADCON_ORIENT_RIGHT:
-	      e_drop_handler_geometry_set
-		(box->drop_handler, win->popup->w - item_zoomed, box->pos,
-		 item_zoomed, w);
-	      break;
-	  }
-     }
-}
 
 Ngi_Item *
 ngi_item_at_position_get(Ng *ng)
