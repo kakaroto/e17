@@ -683,7 +683,6 @@ static void on_group_update_win(void *data) {
 	Evas *e = evas_object_evas_get(gd->win);
 	Evas_Object *group_desc=NULL, *group_action=NULL;
 	char m[PATH_MAX];
-	int res = 0;
 
 	group_action = evas_object_name_find(e, "group_action");
 
@@ -719,9 +718,7 @@ static void group_win_del(void *data, Evas_Object *obj, void *event_info) {
 static void group_show(void *data) {
 	groupData *gd = (groupData*)data;
 	Evas_Object *bg=NULL, *box=NULL, *label=NULL, *s=NULL, *box2=NULL, *icon=NULL, *button=NULL, *frame=NULL;
-	char *m, *path;
-	int res = 0;
-	struct stat buf;
+	char m[PATH_MAX], path[PATH_MAX], *p=NULL;
 
 	gd->group_show = on_group_update_win;
 
@@ -753,36 +750,36 @@ static void group_show(void *data) {
 				evas_object_size_hint_align_set(box2, -1, 0);
 				elm_box_horizontal_set(box2, EINA_TRUE);
 
-				res = asprintf(&path, "%s/cache/icons/%s", home, gd->group->fullname);
+				p = strrchr(gd->group->original_logo, '/');
+				if(p && *p) {
+					snprintf(path, PATH_MAX, "%s/cache/icons/%s", home, p+1);
 
-				if(res != -1 && stat(path, &buf) == 0 ) {
+					if(!ecore_file_exists(path))
+						ed_curl_dump_url_to_file((char*)gd->group->original_logo, path);
+
 					icon = elm_icon_add(gd->win);
 						evas_object_size_hint_weight_set(icon, 1, 1);
 						evas_object_size_hint_align_set(icon, -1, -1);
 						elm_icon_file_set(icon, path, "fubar?");
 						elm_box_pack_end(box2, icon);
-						free(path);
 					evas_object_show(icon);
 				}
 
 				if(gd->group->member)
-					res = asprintf(&m, _("You are a member of group %s along with %d other people.<br>«%s»"), gd->group->fullname, gd->group->member_count -1, gd->group->description);
+					snprintf(m, PATH_MAX, _("You are a member of group %s along with %d other people.<br>«%s»"), gd->group->fullname, gd->group->member_count -1, gd->group->description);
 				else
-					res = asprintf(&m, _("You are not a member of group %s but %d people are.<br>«%s»"), gd->group->fullname, gd->group->member_count, gd->group->description);
+					snprintf(m, PATH_MAX, _("You are not a member of group %s but %d people are.<br>«%s»"), gd->group->fullname, gd->group->member_count, gd->group->description);
 
-				if(res != -1) {
-					label = elm_label_add(gd->win);
-						evas_object_name_set(label, "group_desc");
-						evas_object_size_hint_weight_set(label, 1, 1);
-						evas_object_size_hint_align_set(label, -1, -1);
-						elm_label_line_wrap_set(label, EINA_TRUE);
+				label = elm_label_add(gd->win);
+					evas_object_name_set(label, "group_desc");
+					evas_object_size_hint_weight_set(label, 1, 1);
+					evas_object_size_hint_align_set(label, -1, -1);
+					elm_label_line_wrap_set(label, EINA_TRUE);
 
-						elm_label_label_set(label, m);
-						free(m);
-						elm_box_pack_end(box2, label);
-					evas_object_show(label);
+					elm_label_label_set(label, m);
+					elm_box_pack_end(box2, label);
+				evas_object_show(label);
 
-				}
 				elm_frame_content_set(frame, box2);
 				elm_box_pack_end(box, frame);
 			evas_object_show(frame);
