@@ -1078,9 +1078,164 @@ static void on_status_show_page_tags(void *data, Evas_Object *obj, void *event_i
 	elm_pager_content_promote(pager, gui.status_detail_tags);
 }
 
+static void ed_open_file(void* data, Evas_Object *obj, void* event_info) {
+    char *file = (char*)data;
+    char *cmd = NULL;
+    int res;
+    evas_object_del(gui.download_win);
+    res = asprintf(&cmd, "xdg-open %s", file);
+    if(res != -1) {
+        printf("cmd %s &\n", cmd);
+        ecore_exe_run(cmd, NULL);
+        free(cmd);
+    }
+    free(file);
+}
+
+static int on_attachment_dl_progress(void *data, const char *file, long int dltotal, long int dlnow, long int ultotal, long int ulnow) {
+        Evas * e = (Evas*)data;
+        Evas_Object * p = evas_object_name_find(e, "download_progress");
+        elm_progressbar_value_set(p, (double)dlnow/dltotal);
+        return gui.downloadstatus;
+}
+static void ed_del_object_event(void* data, Evas_Object *obj, void* event_info) {
+    Evas_Object *o = (Evas_Object*)data;
+    evas_object_del(o);
+}
+
+static void on_attachment_dl_complete(void *data, const char *file, int status) {
+    Evas * e = (Evas*)data;
+    if(!status) {
+        Evas_Object *o = evas_object_name_find(e, "cancel_button");
+        Evas_Object *table = evas_object_name_find(e, "download_table");
+        Evas_Object *frame = evas_object_name_find(e, "download_frame");
+
+        char* base = strrchr(file, '/');
+        char *tmp = NULL;
+        (void)asprintf(&tmp, _("Finished %s"), base + 1);
+        elm_frame_label_set(frame, tmp);
+
+
+        evas_object_del(o);
+        Evas_Object *ok_button = elm_button_add(gui.win);
+            evas_object_size_hint_weight_set(ok_button, EVAS_HINT_EXPAND, 0);
+            evas_object_size_hint_align_set(ok_button, EVAS_HINT_FILL, 0);
+            elm_button_label_set(ok_button, _("Ok"));
+            evas_object_smart_callback_add(ok_button, "clicked", ed_del_object_event, gui.download_win);
+            elm_table_pack(table, ok_button, 0, 2, 1, 1);
+            evas_object_show(ok_button);
+        Evas_Object *open_button = elm_button_add(gui.win);
+            evas_object_size_hint_weight_set(open_button, EVAS_HINT_EXPAND, 0);
+            evas_object_size_hint_align_set(open_button, EVAS_HINT_FILL, 0);
+            elm_button_label_set(open_button, _("Open"));
+            evas_object_smart_callback_add(open_button, "clicked", ed_open_file, strdup(file));
+            elm_table_pack(table, open_button, 1, 2, 1, 1);
+            evas_object_show(open_button);
+    } else {
+        printf("download finished with %d\n", status);
+        evas_object_del(gui.download_win);
+    }
+}
+
+static void on_cancel_download(void* data, Evas_Object *obj, void* event_info) {
+    printf("cancel download\n");
+    Ecore_File_Download_Job *o = (Ecore_File_Download_Job*)data;
+    evas_object_del(gui.download_win);
+    ecore_file_download_abort(o);
+    gui.downloadstatus = ECORE_FILE_PROGRESS_ABORT;
+}
+
+static void ed_save_attachment(void* data, Evas_Object *obj, void *event_info) {
+    char* url = (char*)data;
+    int i = 0;
+    if(event_info) {
+        char *path = strdup((char*)event_info);
+        if(ecore_file_is_dir(path)) {
+            char *tmp = path;
+            i = asprintf(&path, "%s%s", path, ecore_file_file_get(url));
+            free(tmp);
+        } 
+        if(ecore_file_exists(path))
+            if(!ecore_file_remove(path))
+                printf("cannot remove target %s\n", path);
+
+        if(ecore_file_download(url, path, on_attachment_dl_complete, on_attachment_dl_progress, evas_object_evas_get(obj), &gui.current_download)) {
+            gui.download_win = elm_win_inwin_add(gui.win);
+                elm_object_style_set(gui.download_win, "minimal_vertical");
+                evas_object_size_hint_weight_set(gui.download_win, EVAS_HINT_EXPAND, 0);
+                evas_object_size_hint_align_set(gui.download_win, EVAS_HINT_FILL, 0);
+                Evas_Object *table = elm_table_add(gui.win);
+                    //evas_object_size_hint_weight_set(table, EVAS_HINT_EXPAND, 0);
+                    //evas_object_size_hint_align_set(table, EVAS_HINT_FILL, 0);
+                    elm_table_homogenous_set(table, EINA_FALSE);
+                    evas_object_name_set(table, "download_table");
+                    Evas_Object *url_frame = elm_frame_add(gui.win);
+                        evas_object_size_hint_weight_set(url_frame, EVAS_HINT_EXPAND, EVAS_HINT_FILL);
+                        evas_object_size_hint_align_set(url_frame, EVAS_HINT_FILL, EVAS_HINT_FILL);
+                        char * tmp = strrchr(url, '/');
+                        i = asprintf(&tmp, _("downloading %s"), tmp + 1);
+                        elm_frame_label_set(url_frame, tmp);
+                        evas_object_name_set(url_frame, "download_frame");
+                        evas_object_show(url_frame);
+                    Evas_Object *progress = elm_progressbar_add(gui.win);
+                        evas_object_size_hint_weight_set(progress, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+                        evas_object_size_hint_align_set(progress, EVAS_HINT_FILL, EVAS_HINT_FILL);
+                        elm_progressbar_value_set(progress, 0.0);
+                        elm_progressbar_unit_format_set(progress, "%3.1lf%%");
+                        evas_object_name_set(progress, "download_progress");
+                        elm_table_pack(table, progress, 0, 1, 2, 1);
+                        evas_object_show(progress);
+                    Evas_Object *cancel_button = elm_button_add(gui.win);
+                        evas_object_size_hint_weight_set(cancel_button, EVAS_HINT_EXPAND, 0);
+                        evas_object_size_hint_align_set(cancel_button, EVAS_HINT_FILL, 0);
+                        
+                        elm_button_label_set(cancel_button, _("Cancel"));
+                        evas_object_smart_callback_add(cancel_button, "clicked", on_cancel_download, gui.current_download);
+                        evas_object_name_set(cancel_button, "cancel_button");
+                        elm_table_pack(table, cancel_button, 1, 2, 1, 2);
+                        evas_object_show(cancel_button);
+                    elm_frame_content_set(url_frame, table);
+                    evas_object_show(table);
+                    evas_object_show(url_frame);
+                elm_win_inwin_content_set(gui.download_win, url_frame);
+
+            evas_object_show(gui.download_win);
+            gui.downloadstatus = ECORE_FILE_PROGRESS_CONTINUE;
+        }
+        free(path);
+        eina_stringshare_del(url);
+    }
+    evas_object_del(gui.fileselector_win);
+}
+
+
+static void on_attachment_click(void *data, Evas_Object *obj, void *event_info) {
+    statusnet_Attachment * a = (statusnet_Attachment*)data;
+
+    Evas_Object *fswin = elm_win_inwin_add(gui.win);
+        evas_object_size_hint_weight_set(fswin, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+        evas_object_size_hint_align_set(fswin, EVAS_HINT_FILL, EVAS_HINT_FILL);
+        Evas_Object *fileselector = elm_fileselector_add(gui.win);
+            elm_fileselector_is_save_set(fileselector, EINA_TRUE);
+            elm_fileselector_mode_set(fileselector, ELM_FILESELECTOR_LIST);
+            elm_fileselector_path_set(fileselector, getenv("HOME"));
+            evas_object_smart_callback_add(fileselector, "done", ed_save_attachment, eina_stringshare_add(a->url));
+            evas_object_size_hint_weight_set(fileselector, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+            evas_object_size_hint_align_set(fileselector, EVAS_HINT_FILL, EVAS_HINT_FILL);
+            elm_win_inwin_content_set(fswin, fileselector);
+        evas_object_show(fileselector);
+    evas_object_show(fswin);
+    gui.fileselector_win = fswin;
+}
+
 static void on_status_show_page_groups(void *data, Evas_Object *obj, void *event_info) {
 	Evas_Object *pager = (Evas_Object*)data;
 	elm_pager_content_promote(pager, gui.status_detail_groups);
+}
+
+static void on_status_show_page_attachments(void* data, Evas_Object *obj, void *event_info) {
+	Evas_Object *pager = (Evas_Object*)data;
+	elm_pager_content_promote(pager, gui.status_detail_attachments);
 }
 
 static void ed_status_status_action(void *data, Evas_Object *obj, void *event_info) {
@@ -1202,6 +1357,33 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 					gui.status_detail_groups=list;
 				evas_object_show(list);
 			}
+
+            if(as->status->attachments) {
+                elm_toolbar_item_append(toolbar, NULL, _("Attachments"), on_status_show_page_attachments, pager);
+                list = elm_list_add(gui.win);
+					evas_object_size_hint_weight_set(list, 1, 1);
+					evas_object_size_hint_align_set(list, -1, -1);
+                    statusnet_Attachment* a = NULL;
+                    Eina_List* l;
+                    EINA_LIST_FOREACH(as->status->attachments, l, a) {
+                        char *p = strrchr(a->url, '/');
+                        Evas_Object *mime_icon = NULL;
+                        if(a->mime_type) {
+                            //FIXME: figure out how to get current theme
+                            Efreet_Icon *ii = efreet_icon_find(a->mime_type, "sugar", 32);
+                            if(ii) {
+                                printf("using icon %s for %s\n", ii->path, a->mime_type);
+                                mime_icon = elm_icon_add(gui.win);
+                                elm_icon_file_set(mime_icon, ii->path, NULL);
+                            }
+                        }
+                        li = elm_list_item_sorted_insert(list, p + 1, mime_icon, NULL, on_attachment_click, a, NULL);
+                    }
+                    elm_list_go(list);
+                    elm_pager_content_push(pager, list);
+                    gui.status_detail_attachments=list;
+                evas_object_show(list);
+            }
 			g_match_info_free(group_matches);
 
 			elm_box_pack_end(box, toolbar);
