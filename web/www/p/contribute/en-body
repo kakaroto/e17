@@ -176,6 +176,7 @@
    <li>libungif dev headers (gif loading support in evas)</li>
    <li>libcurl dev headers (http download/fetch support in ecore)</li>
    <li>libgnutls dev headers (signed eet files, secure tcp conntection support for ecore)</li>
+   <li>libasound2 dev headers (alsa sound card support in E17 mixer module)</li>
   </ul>
  </p>
  <p>
