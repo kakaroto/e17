@@ -6,62 +6,77 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-12-10 13:52+0100\n"
+"POT-Creation-Date: 2011-01-04 18:16+0100\n"
 "PO-Revision-Date: 2009-03-14 11:47+0000\n"
 "Last-Translator: Yuki Kodama <Unknown>\n"
 "Language-Team: Japanese <ja@li.org>\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_config.c:44
-msgid "Skeleton Module"
+#. create our config dialog
+#: ../src/e_mod_config.c:44
+#, fuzzy
+msgid "Scaleeton Module"
 msgstr "Skeletonモジュール"
 
-#: src/e_mod_config.c:84
+#: ../src/e_mod_config.c:84
 msgid "General"
 msgstr "一般"
 
-#: src/e_mod_config.c:86
+#: ../src/e_mod_config.c:86
 msgid "Use Switch 1"
 msgstr "スイッチ１を使う"
 
-#: src/e_mod_main.c:82
-#, fuzzy
-msgid "Skel"
-msgstr "Skeleton"
-
-#: src/e_mod_main.c:113
-msgid ""
-"Skeleton Module Configuration data needed upgrading. Your old "
-"configuration<br> has been wiped and a new set of defaults initialized. "
-"This<br>will happen regularly during development, so don't report a<br>bug. "
-"This simply means the module needs new configuration<br>data by default for "
-"usable functionality that your old<br>configuration simply lacks. This new "
-"set of defaults will fix<br>that by adding it in. You can re-configure "
-"things now to your<br>liking. Sorry for the inconvenience.<br>"
+#. add right-side item
+#: ../src/e_mod_main.c:735 ../src/e_mod_main.c:972
+msgid "Scale"
 msgstr ""
 
-#: src/e_mod_main.c:133
+#: ../src/e_mod_main.c:766
 msgid ""
-"Your Skeleton Module configuration is NEWER than the module version. This is "
+"Scale Module Configuration data needed upgrading. Your old configuration<br> "
+"has been wiped and a new set of defaults initialized. This<br>will happen "
+"regularly during development, so don't report a<br>bug. This simply means "
+"the module needs new configuration<br>data by default for usable "
+"functionality that your old<br>configuration simply lacks. This new set of "
+"defaults will fix<br>that by adding it in. You can re-configure things now "
+"to your<br>liking. Sorry for the inconvenience.<br>"
+msgstr ""
+
+#: ../src/e_mod_main.c:786
+msgid ""
+"Your Scale Module configuration is NEWER than the module version. This is "
 "very<br>strange. This should not happen unless you downgraded<br>the module "
 "or copied the configuration from a place where<br>a newer version of the "
 "module was running. This is bad and<br>as a precaution your configuration "
 "has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
 msgstr ""
 
-#: src/e_mod_main.c:300
-msgid "Skeleton"
-msgstr "Skeleton"
+#: ../src/e_mod_main.c:817 ../src/e_mod_main.c:876
+msgid "Desktop"
+msgstr ""
 
-#: src/e_mod_main.c:385
-msgid "Skeleton Configuration Updated"
+#: ../src/e_mod_main.c:818 ../src/e_mod_main.c:877
+msgid "Scale Windows"
+msgstr ""
+
+#: ../src/e_mod_main.c:1057
+#, fuzzy
+msgid "Scale Windows Configuration Updated"
 msgstr "Skeleton設定が更新されました"
 
-#: src/e_mod_main.c:447
+#: ../src/e_mod_main.c:1123
 msgid "Settings"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Skel"
+#~ msgstr "Skeleton"
+
+#~ msgid "Skeleton"
+#~ msgstr "Skeleton"
 
 #~ msgid "Configuration"
 #~ msgstr "設定"
