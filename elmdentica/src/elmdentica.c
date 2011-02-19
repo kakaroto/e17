@@ -1521,6 +1521,10 @@ void update_status_list(int timeline, Eina_Bool fromdb) {
 	Eina_List *l=NULL;
 	void *data=NULL;
 
+    //reset if the user forced an update
+    if(settings->update_timer)
+        ecore_timer_interval_set(settings->update_timer, settings->update_interval);
+
 	printf("update_status_list %d / %d\n", timeline, fromdb);
 	make_status_list(timeline);
 	fill_message_list(timeline, fromdb);
@@ -1810,6 +1814,14 @@ Eina_Bool ed_statuses_update_time(void *data) {
 	return(EINA_TRUE);
 }
 
+Eina_Bool ed_statuses_update_interval(void *data) {
+        printf("timeout update after %d\n",settings->update_interval);
+        if(settings->online)
+            get_messages(current_timeline);
+            
+        return (EINA_TRUE);
+}
+
 EAPI int elm_main(int argc, char **argv)
 {
 	Evas_Object *bg=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *box2=NULL, *edit_panel=NULL, *menu=NULL;
@@ -1995,6 +2007,9 @@ EAPI int elm_main(int argc, char **argv)
 
 	// Statuses list
 	update_status_list(TIMELINE_FRIENDS, EINA_TRUE);
+
+    if(settings->update)
+        settings->update_timer = ecore_timer_add(settings->update_interval, ed_statuses_update_interval, NULL);
 
 	elm_run();
 

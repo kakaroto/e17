@@ -28,6 +28,10 @@ typedef struct _settings {
 	int max_messages;
 	Eina_Bool rel_timestamps;
 	Ecore_Timer *rel_ts_timer;
+    Eina_Bool update;
+    int update_interval;
+    int update_interval_val;
+    Ecore_Timer *update_timer;
 } Settings;
 
 void ed_settings_init(int argc, char ** argv);

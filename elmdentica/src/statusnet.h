@@ -34,6 +34,8 @@ typedef struct _StatusNetBaAccount {
 	char *domain;
 	short port;
 	char *base_url;
+    Eina_Bool autoupdate;
+    int update_timeout;
 } StatusNetBaAccount;
 
 typedef struct _Group_Profile {
