@@ -58,7 +58,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
              fclose(f);
              return 0;
           }
-        if (setjmp(png_ptr->jmpbuf))
+        if (setjmp(png_jmpbuf(png_ptr)))
           {
              png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
              fclose(f);
@@ -265,7 +265,7 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
         png_destroy_write_struct(&png_ptr, (png_infopp) NULL);
         return 0;
      }
-   if (setjmp(png_ptr->jmpbuf))
+   if (setjmp(png_jmpbuf(png_ptr)))
      {
         fclose(f);
         png_destroy_write_struct(&png_ptr, (png_infopp) & info_ptr);
