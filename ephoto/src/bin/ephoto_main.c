@@ -13,8 +13,8 @@ ephoto_window_add(void)
    ephoto->win = elm_win_add(NULL, "ephoto", ELM_WIN_BASIC);
    if (!ephoto->win)
      return NULL;
-   evas_object_resize(ephoto->win, 600, 400);
-   ephoto_title_set("Ephoto - Picture Enlightenment");
+   evas_object_resize(ephoto->win, 600, 480);
+   ephoto_title_set("Ephoto");
    evas_object_smart_callback_add
      (ephoto->win, "delete,request", _ephoto_window_del, NULL);
    evas_object_show(ephoto->win);
