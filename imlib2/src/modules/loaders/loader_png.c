@@ -238,7 +238,7 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
    png_structp         png_ptr;
    png_infop           info_ptr;
    DATA32             *ptr;
-   int                 x, y, j;
+   int                 x, y, j, interlace;
    png_bytep           row_ptr, data = NULL;
    png_color_8         sig_bit;
    int                 pl = 0;
@@ -274,11 +274,11 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
      }
 
    /* check whether we should use interlacing */
+   interlace = PNG_INTERLACE_NONE;
    if ((tag = __imlib_GetTag(im, "interlacing")) && tag->val)
      {
 #ifdef PNG_WRITE_INTERLACING_SUPPORTED
-          png_ptr->interlaced = PNG_INTERLACE_ADAM7;
-          num_passes = png_set_interlace_handling(png_ptr);
+          interlace = PNG_INTERLACE_ADAM7;
 #endif
      }
 
@@ -286,7 +286,7 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
    if (im->flags & F_HAS_ALPHA)
      {
         png_set_IHDR(png_ptr, info_ptr, im->w, im->h, 8,
-                     PNG_COLOR_TYPE_RGB_ALPHA, png_ptr->interlaced,
+                     PNG_COLOR_TYPE_RGB_ALPHA, interlace,
                      PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
 #ifdef WORDS_BIGENDIAN
         png_set_swap_alpha(png_ptr);
@@ -297,7 +297,7 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
    else
      {
         png_set_IHDR(png_ptr, info_ptr, im->w, im->h, 8, PNG_COLOR_TYPE_RGB,
-                     png_ptr->interlaced, PNG_COMPRESSION_TYPE_BASE,
+                     interlace, PNG_COMPRESSION_TYPE_BASE,
                      PNG_FILTER_TYPE_BASE);
         data = malloc(im->w * 3 * sizeof(char));
      }
@@ -343,6 +343,10 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
    png_write_info(png_ptr, info_ptr);
    png_set_shift(png_ptr, &sig_bit);
    png_set_packing(png_ptr);
+
+#ifdef PNG_WRITE_INTERLACING_SUPPORTED
+   num_passes = png_set_interlace_handling(png_ptr);
+#endif
 
    for (pass = 0; pass < num_passes; pass++)
      {
