@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: elmdentica\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
-"POT-Creation-Date: 2011-02-06 01:26+0000\n"
+"POT-Creation-Date: 2011-02-19 17:52+0000\n"
 "PO-Revision-Date: 2010-12-17 15:33-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Rui Miguel Silva Seabra <rms@1407.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: Portugal\n"
 
-#: src/curl.c:92 src/elmdentica.c:1237 src/elmdentica.c:1446
+#: src/curl.c:92 src/elmdentica.c:1397 src/elmdentica.c:1606
 msgid "Close"
 msgstr "Fechar"
 
@@ -78,181 +78,204 @@ msgstr "Abandonar"
 msgid "Couldn't parse user info message..."
 msgstr "Informação do utilizador imperceptível..."
 
-#: src/elmdentica.c:694 src/elmdentica.c:786
+#: src/elmdentica.c:690 src/elmdentica.c:769
 #, c-format
 msgid "You are a member of group %s along with %d other people.<br>«%s»"
 msgstr "Pertence ao grupo %s assim como mais %d utilizador(es).<br>«%s»"
 
-#: src/elmdentica.c:697 src/elmdentica.c:822
+#: src/elmdentica.c:691 src/elmdentica.c:802
 msgid "Leave"
 msgstr "Sair"
 
-#: src/elmdentica.c:699 src/elmdentica.c:788
+#: src/elmdentica.c:693 src/elmdentica.c:771
 #, c-format
 msgid "You are not a member of group %s but %d people are.<br>«%s»"
 msgstr "Não pertence ao grupo %s mas %d pessoas pertencem.<br>«%s»"
 
-#: src/elmdentica.c:702 src/elmdentica.c:825
+#: src/elmdentica.c:694 src/elmdentica.c:804
 msgid "Join"
 msgstr "Integrar"
 
-#: src/elmdentica.c:880
+#: src/elmdentica.c:858
 msgid "Check it out!"
 msgstr "Visitar!"
 
-#: src/elmdentica.c:1043
+#: src/elmdentica.c:1021
 #, c-format
 msgid "a few seconds ago"
 msgstr "alguns segundos atrás"
 
-#: src/elmdentica.c:1045
+#: src/elmdentica.c:1023
 #, c-format
 msgid "a few minutes ago"
 msgstr "alguns minutos atrás"
 
-#: src/elmdentica.c:1047
+#: src/elmdentica.c:1025
 #, c-format
 msgid "~ %d minutes ago"
 msgstr "~ %d minutos atrás"
 
-#: src/elmdentica.c:1050
+#: src/elmdentica.c:1028
 #, c-format
 msgid "~ %d hours ago"
 msgstr "~ %d horas atrás"
 
-#: src/elmdentica.c:1052
+#: src/elmdentica.c:1030
 #, c-format
 msgid "~ 1 hour ago"
 msgstr "~ 1 hora atrás"
 
-#: src/elmdentica.c:1054
+#: src/elmdentica.c:1032
 #, fuzzy, c-format
 msgid "on %x"
 msgstr "em %F"
 
-#: src/elmdentica.c:1057
+#: src/elmdentica.c:1035
 #, c-format
 msgid "%x %X"
 msgstr ""
 
-#: src/elmdentica.c:1058 src/elmdentica.c:1059
+#: src/elmdentica.c:1036 src/elmdentica.c:1037
 #, c-format
 msgid "some-when"
 msgstr "algures no tempo"
 
-#: src/elmdentica.c:1145
-msgid "Users"
-msgstr "Utilizadores"
+#: src/elmdentica.c:1115
+#, c-format
+msgid "Finished %s"
+msgstr ""
 
-#: src/elmdentica.c:1174
-msgid "Links"
-msgstr "Ligações"
+#: src/elmdentica.c:1123
+msgid "Ok"
+msgstr ""
 
-#: src/elmdentica.c:1193
-msgid "Tags"
-msgstr "\"Tags\""
+#: src/elmdentica.c:1130
+msgid "Open"
+msgstr ""
 
-#: src/elmdentica.c:1211
-msgid "Groups"
-msgstr "Grupos"
+#: src/elmdentica.c:1176
+#, c-format
+msgid "downloading %s"
+msgstr ""
 
-#: src/elmdentica.c:1269
-msgid "Reply"
-msgstr "Responder"
-
-#: src/elmdentica.c:1277
-msgid "Repeat"
-msgstr "Repetir"
-
-#: src/elmdentica.c:1285 src/elmdentica.c:1980
-msgid "DM"
-msgstr "MD"
-
-#: src/elmdentica.c:1294
-msgid "Unmark favorite"
-msgstr "Desmarcar favorita"
-
-#: src/elmdentica.c:1296
-msgid "Mark favorite"
-msgstr "Marcar favorita"
-
-#: src/elmdentica.c:1305
-msgid "View related"
-msgstr "Ver relacionado"
-
-#: src/elmdentica.c:1314
-msgid "Status details"
-msgstr "Detalhes do estado"
-
-#: src/elmdentica.c:1416
-msgid "Error"
-msgstr "Erro"
-
-#: src/elmdentica.c:1417
-msgid "µ-blog Error"
-msgstr "Erro de \"µ-blog\""
-
-#: src/elmdentica.c:1711
-msgid "Send a DM to..."
-msgstr "Enviar MD a..."
-
-#: src/elmdentica.c:1723 src/settings.c:491 src/settings.c:1198
-msgid "OK"
-msgstr "OK"
-
-#: src/elmdentica.c:1729 src/settings.c:499 src/settings.c:1207
+#: src/elmdentica.c:1192 src/elmdentica.c:1893 src/settings.c:569
+#: src/settings.c:1303
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: src/elmdentica.c:1808 src/elmdentica.c:1918
+#: src/elmdentica.c:1278
+msgid "Users"
+msgstr "Utilizadores"
+
+#: src/elmdentica.c:1307
+msgid "Links"
+msgstr "Ligações"
+
+#: src/elmdentica.c:1326
+msgid "Tags"
+msgstr "\"Tags\""
+
+#: src/elmdentica.c:1344
+msgid "Groups"
+msgstr "Grupos"
+
+#: src/elmdentica.c:1362
+msgid "Attachments"
+msgstr ""
+
+#: src/elmdentica.c:1429
+msgid "Reply"
+msgstr "Responder"
+
+#: src/elmdentica.c:1437
+msgid "Repeat"
+msgstr "Repetir"
+
+#: src/elmdentica.c:1445 src/elmdentica.c:2152
+msgid "DM"
+msgstr "MD"
+
+#: src/elmdentica.c:1454
+msgid "Unmark favorite"
+msgstr "Desmarcar favorita"
+
+#: src/elmdentica.c:1456
+msgid "Mark favorite"
+msgstr "Marcar favorita"
+
+#: src/elmdentica.c:1465
+msgid "View related"
+msgstr "Ver relacionado"
+
+#: src/elmdentica.c:1474
+msgid "Status details"
+msgstr "Detalhes do estado"
+
+#: src/elmdentica.c:1576
+msgid "Error"
+msgstr "Erro"
+
+#: src/elmdentica.c:1577
+msgid "µ-blog Error"
+msgstr "Erro de \"µ-blog\""
+
+#: src/elmdentica.c:1875
+msgid "Send a DM to..."
+msgstr "Enviar MD a..."
+
+#: src/elmdentica.c:1887 src/settings.c:561 src/settings.c:1294
+msgid "OK"
+msgstr "OK"
+
+#: src/elmdentica.c:1972 src/elmdentica.c:2090
 msgid "Type your status here..."
 msgstr "Escreva aqui o seu estado..."
 
-#: src/elmdentica.c:1935
+#: src/elmdentica.c:2107
 msgid "Timelines"
 msgstr "Ocorrências"
 
-#: src/elmdentica.c:1941
+#: src/elmdentica.c:2113
 msgid "Direct Messages"
 msgstr "Mensagens diretas"
 
-#: src/elmdentica.c:1942
+#: src/elmdentica.c:2114
 msgid "Everyone"
 msgstr "Todos"
 
-#: src/elmdentica.c:1943
+#: src/elmdentica.c:2115
 msgid "Just me"
 msgstr "Só minhas"
 
-#: src/elmdentica.c:1944
+#: src/elmdentica.c:2116
 msgid "Favorites"
 msgstr "Favoritas"
 
-#: src/elmdentica.c:1945
+#: src/elmdentica.c:2117
 msgid "Replies/Mentions"
 msgstr "Respostas/Citações"
 
-#: src/elmdentica.c:1946
+#: src/elmdentica.c:2118
 msgid "Friends & I"
 msgstr "Amigos e eu"
 
-#: src/elmdentica.c:1953
+#: src/elmdentica.c:2125
 msgid "Post"
 msgstr "Publicar"
 
-#: src/elmdentica.c:1967
+#: src/elmdentica.c:2139
 msgid "Send"
 msgstr "Enviar"
 
-#: src/elmdentica.c:1993
+#: src/elmdentica.c:2165
 msgid "Clear"
 msgstr "Limpar"
 
-#: src/elmdentica.c:2002
+#: src/elmdentica.c:2174
 msgid "Fullscreen"
 msgstr "ecrã completo"
 
-#: src/elmdentica.c:2003 src/settings.c:1365
+#: src/elmdentica.c:2175 src/settings.c:1461
 msgid "Settings"
 msgstr "Definições"
 
@@ -271,160 +294,176 @@ msgstr "Sem memória para definir o caminho para \"conf.eet\""
 msgid "Error encountered: %s\n"
 msgstr "Erro %d: %s\n"
 
-#: src/statusnet.c:974
+#: src/statusnet.c:966
 #, c-format
 msgid "Unknown timeline %d\n"
 msgstr ""
 
-#: src/statusnet.c:981
+#: src/statusnet.c:973
 #, fuzzy, c-format
 msgid "Not enough memory to construct timeline URI\n"
 msgstr "Sem memória para definir o caminho para \"conf.eet\""
 
-#: src/statusnet.c:988
+#: src/statusnet.c:980
 #, fuzzy, c-format
 msgid "Not enough memory to prepare host url\n"
 msgstr "Sem memória para definir o caminho para \"conf.eet\""
 
-#: src/settings.c:353
+#: src/settings.c:423
 msgid "Screen name"
 msgstr "Utilizador"
 
-#: src/settings.c:368
+#: src/settings.c:438
 msgid "Password"
 msgstr "Senha"
 
-#: src/settings.c:392
+#: src/settings.c:462
 msgid "Type"
 msgstr "Tipo"
 
-#: src/settings.c:411
+#: src/settings.c:481
 msgid "Secure"
 msgstr "Seguro"
 
-#: src/settings.c:411
+#: src/settings.c:481
 msgid "Faster"
 msgstr "Rápido"
 
-#: src/settings.c:423
+#: src/settings.c:493
 msgid "Domain"
 msgstr "Domínio"
 
-#: src/settings.c:438
+#: src/settings.c:508
 msgid "Base URL"
 msgstr "URL base"
 
-#: src/settings.c:453
+#: src/settings.c:523
 msgid "Receive?"
 msgstr "Receber?"
 
-#: src/settings.c:465
+#: src/settings.c:535
 msgid "Send?"
 msgstr "Enviar?"
 
-#: src/settings.c:668
+#: src/settings.c:738
 msgid "Accounts..."
 msgstr "Contas..."
 
-#: src/settings.c:703 src/settings.c:1314
+#: src/settings.c:773 src/settings.c:1410
 msgid "Add"
 msgstr "Adicionar"
 
-#: src/settings.c:716 src/settings.c:1327
+#: src/settings.c:786 src/settings.c:1423
 msgid "Edit"
 msgstr "Editar"
 
-#: src/settings.c:730 src/settings.c:1340
+#: src/settings.c:800 src/settings.c:1436
 msgid "Delete"
 msgstr "Apagar"
 
-#: src/settings.c:757 src/settings.c:780
+#: src/settings.c:827 src/settings.c:850
 msgid "No posts<br>in cache."
 msgstr "Sem publicações<br>memorizadas."
 
-#: src/settings.c:759
+#: src/settings.c:829
 #, c-format
 msgid "Currently remembering<br>%d posts."
 msgstr "Memorizando<br>%d mensagens."
 
-#: src/settings.c:795 src/settings.c:818
+#: src/settings.c:865 src/settings.c:888
 msgid "No messages<br>in cache."
 msgstr "Sem mensagens<br>memorizadas."
 
-#: src/settings.c:797
+#: src/settings.c:867
 #, c-format
 msgid "Currently remembering<br>%d messages."
 msgstr "%d mensagens<br>memorizadas."
 
-#: src/settings.c:896
+#: src/settings.c:966
 msgid "Displayed messages"
 msgstr "Mensagens exibidas"
 
-#: src/settings.c:963
+#: src/settings.c:1033
 msgid "Please choose a browser"
 msgstr "Escolha um navegador"
 
-#: src/settings.c:965
+#: src/settings.c:1035
 msgid "No supported browser available"
 msgstr "Sem navegadores suportados"
 
-#: src/settings.c:1002
+#: src/settings.c:1072
 msgid "Preferred browser..."
 msgstr "Navegador preferido..."
 
-#: src/settings.c:1010
+#: src/settings.c:1080
 msgid "Online mode..."
 msgstr "Modo \"on-line\"..."
 
-#: src/settings.c:1012
+#: src/settings.c:1082
 msgid "Online"
 msgstr "Ligado"
 
-#: src/settings.c:1012
+#: src/settings.c:1082
 msgid "Offline"
 msgstr "Desligado"
 
-#: src/settings.c:1020
+#: src/settings.c:1090
 msgid "Timestamps..."
 msgstr "Marcas temporais..."
 
-#: src/settings.c:1022
+#: src/settings.c:1092
 msgid "Relative"
 msgstr "Relativas"
 
-#: src/settings.c:1022
+#: src/settings.c:1092
 msgid "Absolute"
 msgstr "Absolutas"
 
-#: src/settings.c:1178
+#: src/settings.c:1100
+msgid "Auto updates"
+msgstr ""
+
+#: src/settings.c:1104
+msgid "Enabled"
+msgstr ""
+
+#: src/settings.c:1104
+msgid "Disabled"
+msgstr ""
+
+#: src/settings.c:1114
+msgid "every: "
+msgstr ""
+
+#: src/settings.c:1274
 msgid "Pattern..."
 msgstr "Padrão..."
 
-#: src/settings.c:1280
+#: src/settings.c:1376
 msgid "Gag patterns..."
 msgstr ""
 
-#: src/settings.c:1366
+#: src/settings.c:1462
 msgid "ElmDentica settings..."
 msgstr "Definições do ElmDentica..."
 
-#: src/settings.c:1391
+#: src/settings.c:1487
 msgid "Accounts"
 msgstr "Contas"
 
-#: src/settings.c:1393
+#: src/settings.c:1489
 msgid "Cache"
 msgstr "Cache"
 
-#: src/settings.c:1395
+#: src/settings.c:1491
 msgid "Options"
 msgstr "Opções"
 
-#: src/settings.c:1397
+#: src/settings.c:1493
 msgid "Gag"
 msgstr "Ignorar"
 
-#: src/settings.c:1408
+#: src/settings.c:1504
 #, c-format
 msgid ""
 "\n"
@@ -441,46 +480,46 @@ msgstr ""
 "\t-m N\tMostrar N mensagens de uma vez só\n"
 "\n"
 
-#: src/settings.c:1431
+#: src/settings.c:1527
 #, c-format
 msgid "Can't run ecore_file_init()\n"
 msgstr "Incapaz de executar \"ecore_file_init()\"\n"
 
-#: src/settings.c:1437
+#: src/settings.c:1533
 #, c-format
 msgid "Can't create preferences directories since asprintf failed\n"
 msgstr ""
 "Incapaz de criar o diretório de preferências uma vez que \"asprintf\" "
 "falhou\n"
 
-#: src/settings.c:1437
+#: src/settings.c:1533
 #, c-format
 msgid "Can't create preferences directories since ecore_file_mkpath failed\n"
 msgstr ""
 "Incapaz de criar o diretório de preferências uma vez que \"ecore_file_mkpath"
 "\" falhou\n"
 
-#: src/settings.c:1445
+#: src/settings.c:1541
 #, c-format
 msgid "Not enough memory to define conf.eet path"
 msgstr "Sem memória para definir o caminho para \"conf.eet\""
 
-#: src/settings.c:1451
+#: src/settings.c:1547
 #, c-format
 msgid "Couldn't run eet_init()"
 msgstr "Incapaz de executar \"eet_init()\""
 
-#: src/settings.c:1458
+#: src/settings.c:1554
 #, c-format
 msgid "Can't create %s"
 msgstr "Incapaz de criar %s"
 
-#: src/settings.c:1466
+#: src/settings.c:1562
 #, c-format
 msgid "Can't setup settings_edd."
 msgstr "Incapaz de definir \"settings_edd\"."
 
-#: src/settings.c:1484
+#: src/settings.c:1582
 #, c-format
 msgid ""
 "Not enough memory for settings, no doubt for anything else either, surely..."
