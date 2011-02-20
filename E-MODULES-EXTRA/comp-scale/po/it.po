@@ -1,13 +1,13 @@
-# Italian translation for E17 skel module.
+# Italian translation for E17 comp-scale module.
 # This file is put in the public domain.
-# Massimo Maiurana <maiurana@gmail.com>, 2009.
+# Massimo Maiurana <maiurana@gmail.com>, 2011.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Skel\n"
+"Project-Id-Version: Scale\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2011-01-04 18:16+0100\n"
-"PO-Revision-Date: 2010-09-11 14:01+0200\n"
+"PO-Revision-Date: 2011-02-20 09:37+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: Italiano\n"
 "Language: \n"
@@ -17,9 +17,8 @@ msgstr ""
 
 #. create our config dialog
 #: ../src/e_mod_config.c:44
-#, fuzzy
 msgid "Scaleeton Module"
-msgstr "Modulo Skeleton"
+msgstr "Modulo Scale"
 
 #: ../src/e_mod_config.c:84
 msgid "General"
@@ -32,10 +31,9 @@ msgstr "Usa switch 1"
 #. add right-side item
 #: ../src/e_mod_main.c:735 ../src/e_mod_main.c:972
 msgid "Scale"
-msgstr ""
+msgstr "Scale"
 
 #: ../src/e_mod_main.c:766
-#, fuzzy
 msgid ""
 "Scale Module Configuration data needed upgrading. Your old configuration<br> "
 "has been wiped and a new set of defaults initialized. This<br>will happen "
@@ -45,18 +43,17 @@ msgid ""
 "defaults will fix<br>that by adding it in. You can re-configure things now "
 "to your<br>liking. Sorry for the inconvenience.<br>"
 msgstr ""
-"I dati di configurazione del modulo Skeleton avevano bisogno di "
-"essere<br>aggiornati. La vostra vecchia configurazione è stata cancellata ed "
-"è<br>stato inizializzato un nuovo set di impostazioni predefinite. "
-"Questo<br>avverrà regolarmente durante lo sviluppo, quindi non riportate bug."
-"<br>Questo significa semplicemente che il modulo ha bisogno di nuovi<br>dati "
-"predefiniti di configurazione per funzionalità mancanti nella<br>vecchia "
-"configurazione. Questo nuovo set sistemerà le cose aggiungendo<br>quei dati. "
-"Potete riconfigurare le cose a vostro piacimento. Ci<br>scusiamo per "
-"l'inconveniente."
+"I dati di configurazione del modulo Scale avevano bisogno di essere<br>"
+"aggiornati. La vostra vecchia configurazione è stata cancellata ed è<br>"
+"stato inizializzato un nuovo set di impostazioni predefinite. Questo<br>"
+"avverrà regolarmente durante lo sviluppo, quindi non riportate bug.<br>"
+"Questo significa semplicemente che il modulo ha bisogno di nuovi<br>"
+"dati predefiniti di configurazione per funzionalità mancanti nella<br>"
+"vecchia configurazione. Questo nuovo set sistemerà le cose aggiungendo<br>"
+"quei dati. Potete riconfigurare le cose a vostro piacimento. Ci<br>"
+"scusiamo per l'inconveniente."
 
 #: ../src/e_mod_main.c:786
-#, fuzzy
 msgid ""
 "Your Scale Module configuration is NEWER than the module version. This is "
 "very<br>strange. This should not happen unless you downgraded<br>the module "
@@ -64,32 +61,26 @@ msgid ""
 "module was running. This is bad and<br>as a precaution your configuration "
 "has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
 msgstr ""
-"La vostra configurazione del modulo Skeleton è più NUOVA della<br>versione "
-"del modulo. Questo è molto strano. Non dovrebbe succedere a meno<br>che "
-"siate passati ad una vecchia versione del modulo Skeleton o avete<br>copiato "
-"la configurazione di un sistema su cui gira una versione<br>più nuova del "
-"modulo. A scopo precauzionale la vostra<br>configurazione è stata adesso "
-"ripristinata ai valori predefiniti.<br>Ci scusiamo per l'inconveniente."
+"La vostra configurazione del modulo Scale è più NUOVA della<br>"
+"versione del modulo. Questo è molto strano. Non dovrebbe succedere a meno<br>"
+"che siate passati ad una vecchia versione del modulo Skeleton o avete<br>"
+"copiato la configurazione di un sistema su cui gira una versione<br>"
+"più nuova del modulo. A scopo precauzionale la vostra<br>"
+"configurazione è stata adesso ripristinata ai valori predefiniti.<br>"
+"Ci scusiamo per l'inconveniente."
 
 #: ../src/e_mod_main.c:817 ../src/e_mod_main.c:876
 msgid "Desktop"
-msgstr ""
+msgstr "Desktop"
 
 #: ../src/e_mod_main.c:818 ../src/e_mod_main.c:877
 msgid "Scale Windows"
-msgstr ""
+msgstr "Scala finestre"
 
 #: ../src/e_mod_main.c:1057
-#, fuzzy
 msgid "Scale Windows Configuration Updated"
-msgstr "Configurazione di Skeleton aggiornata"
+msgstr "Configurazione di Scale aggiornata"
 
 #: ../src/e_mod_main.c:1123
 msgid "Settings"
 msgstr "Impostazioni"
-
-#~ msgid "Skel"
-#~ msgstr "Skel"
-
-#~ msgid "Skeleton"
-#~ msgstr "Skeleton"
