@@ -80,50 +80,12 @@ const char * browser_cmnds[] = {
         "/usr/bin/dillo %s &",
         "/usr/bin/eve %s &",
 	};
-const char* timeout_names[] = {
-        "never",
-        "15 seconds",
-        "30 seconds",
-        "45 seconds",
-        " 1 minute ",
-        " 2 minutes",
-        " 3 minutes",
-        " 5 minutes",
-        "10 minutes",
-        "15 minutes",
-        "30 minutes",
-        "45 minutes",
-        " 1 hour   ",
-        " 2 hours  ",
-        " 3 hours  ",
-        " 6 hours  ",
-        " 12 hours ",
-        " 24 hours "
-};
-const char* timeout_names_short[] = {
-        "0s",
-        "15s",
-        "30s",
-        "45s",
-        "1m",
-        "2m",
-        "3m",
-        "5m",
-        "10m",
-        "15m",
-        "30m",
-        "45m",
-        "1h",
-        "2h",
-        "3h",
-        "6h",
-        "12h",
-        "24h"
-};
-const int timeout_values[] = {
-        0,15,30,45,60,120,180,300,600,900,1800,2400,3600,7200,10800,21600,43200,86400
-};
 int browsersIndex=5;
+
+const int timeout_values[] = {
+        0,60,120,300,600,900,1800,3600
+};
+const int timeoutsIndex=7;
 
 Settings *settings=NULL;
 
@@ -179,9 +141,23 @@ void on_account_selected(void *data, Evas_Object *account_list, void *event_info
 
 extern Eina_Bool ed_statuses_update_interval(void *data);
 
+const char *timeout_names(double val, Eina_Bool longval) {
+	switch((int)val) {
+		case 0: { return longval?_("never"):_("0 s"); break; }
+		case 1: { return longval?_("1 minute"):_("1 min"); break; }
+		case 2: { return longval?_(_("2 minutes")):_(_("2 min")); break; }
+		case 3: { return longval?_("5 minutes"):_("5 min"); break; }
+		case 4: { return longval?_(_("10 minutes")):_(_("10 min")); break; }
+		case 5: { return longval?_("15 minutes"):_("15 min"); break; }
+		case 6: { return longval?_("30 minutes"):_("30 min"); break; }
+		case 7: { return longval?_("1 hour"):_("1 h"); break; }
+		default: { return ""; }
+	}
+}
+
 void on_update_timeout_changed(void* data, Evas_Object *obj, void *event_info) {
 	int val = (int)elm_slider_value_get(obj);
-	elm_slider_unit_format_set(obj, _(timeout_names[val]));
+	elm_slider_unit_format_set(obj, timeout_names(val, EINA_TRUE));
 
 	if( !val && settings->update_interval_val) // disable when changing to zero
 		ecore_timer_del(settings->update_timer);
@@ -193,11 +169,16 @@ void on_update_timeout_changed(void* data, Evas_Object *obj, void *event_info) {
 	ecore_timer_interval_set(settings->update_timer, settings->update_interval);
 	ecore_timer_freeze(settings->update_timer);
 	ecore_timer_thaw(settings->update_timer);
+
+	if(val)
+		elm_slider_label_set(obj, _("Every: "));
+	else
+		elm_slider_label_set(obj, "");
 }
 
 static const char* indicator_format_func(double val) {
 	int i = (int)val;
-	return _(timeout_names_short[i]);
+	return timeout_names(i, EINA_FALSE);
 }
 
 void on_account_enabled_toggle(void *data, Evas_Object *check, void *event_info) {
@@ -1089,23 +1070,26 @@ void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
 		evas_object_show(frame);
 
 		frame = elm_frame_add(settings_area);
-            elm_frame_label_set(frame, _("Auto updates"));
-            update_table = elm_table_add(settings_area);
+			elm_frame_label_set(frame, _("Auto updates"));
+			update_table = elm_table_add(settings_area);
 
-            auto_update_timeout = elm_slider_add(settings_area);
-                elm_slider_min_max_set(auto_update_timeout, 0.0, 17.0);
-                elm_slider_value_set(auto_update_timeout, settings->update_interval_val);
-                elm_slider_unit_format_set(auto_update_timeout, timeout_names[settings->update_interval_val]);
-                elm_slider_label_set(auto_update_timeout, _("every: "));
-                elm_slider_indicator_format_function_set(auto_update_timeout, indicator_format_func);
-                evas_object_smart_callback_add(auto_update_timeout, "delay,changed", on_update_timeout_changed, NULL);
-                elm_table_pack(update_table, auto_update_timeout, 1, 0, 1, 1);
-                evas_object_show(auto_update_timeout);
-            elm_frame_content_set(frame, update_table);
-            evas_object_show(update_table);
-        elm_table_pack(options_editor, frame, 0, 2, 2, 1);
-        elm_box_pack_start(settings_area, options_editor);
-        evas_object_show(frame);
+			auto_update_timeout = elm_slider_add(settings_area);
+				elm_slider_min_max_set(auto_update_timeout, 0.0, timeoutsIndex);
+				elm_slider_value_set(auto_update_timeout, settings->update_interval_val);
+				elm_slider_unit_format_set(auto_update_timeout, timeout_names(settings->update_interval_val, EINA_TRUE));
+				if(settings->update_interval_val)
+					elm_slider_label_set(auto_update_timeout, _("Every: "));
+				else
+					elm_slider_label_set(auto_update_timeout, "");
+				elm_slider_indicator_format_function_set(auto_update_timeout, indicator_format_func);
+				evas_object_smart_callback_add(auto_update_timeout, "delay,changed", on_update_timeout_changed, NULL);
+				elm_table_pack(update_table, auto_update_timeout, 1, 0, 1, 1);
+				evas_object_show(auto_update_timeout);
+				elm_frame_content_set(frame, update_table);
+			evas_object_show(update_table);
+		elm_table_pack(options_editor, frame, 0, 2, 2, 1);
+		elm_box_pack_start(settings_area, options_editor);
+		evas_object_show(frame);
 
 	evas_object_show(options_editor);
 }
@@ -1578,8 +1562,8 @@ void ed_settings_init(int argc, char ** argv) {
 
 	if(settings->update_interval_val < 0)
 		settings->update_interval_val = 0;
-	else if(settings->update_interval_val > 17)
-		settings->update_interval_val = 17;
+	else if(settings->update_interval_val > timeoutsIndex)
+		settings->update_interval_val = timeoutsIndex;
 
 	settings->update_interval = timeout_values[settings->update_interval_val];
 

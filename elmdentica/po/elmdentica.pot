@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
-"POT-Creation-Date: 2011-02-19 17:52+0000\n"
+"POT-Creation-Date: 2011-02-20 13:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -155,8 +155,8 @@ msgstr ""
 msgid "downloading %s"
 msgstr ""
 
-#: src/elmdentica.c:1192 src/elmdentica.c:1893 src/settings.c:569
-#: src/settings.c:1303
+#: src/elmdentica.c:1192 src/elmdentica.c:1893 src/settings.c:542
+#: src/settings.c:1271
 msgid "Cancel"
 msgstr ""
 
@@ -220,7 +220,7 @@ msgstr ""
 msgid "Send a DM to..."
 msgstr ""
 
-#: src/elmdentica.c:1887 src/settings.c:561 src/settings.c:1294
+#: src/elmdentica.c:1887 src/settings.c:534 src/settings.c:1262
 msgid "OK"
 msgstr ""
 
@@ -272,7 +272,7 @@ msgstr ""
 msgid "Fullscreen"
 msgstr ""
 
-#: src/elmdentica.c:2175 src/settings.c:1461
+#: src/elmdentica.c:2175 src/settings.c:1429
 msgid "Settings"
 msgstr ""
 
@@ -306,161 +306,217 @@ msgstr ""
 msgid "Not enough memory to prepare host url\n"
 msgstr ""
 
-#: src/settings.c:423
+#: src/settings.c:146
+msgid "never"
+msgstr ""
+
+#: src/settings.c:146
+msgid "0 s"
+msgstr ""
+
+#: src/settings.c:147
+msgid "1 minute"
+msgstr ""
+
+#: src/settings.c:147
+msgid "1 min"
+msgstr ""
+
+#: src/settings.c:148
+msgid "2 minutes"
+msgstr ""
+
+#: src/settings.c:148
+msgid "2 min"
+msgstr ""
+
+#: src/settings.c:149
+msgid "5 minutes"
+msgstr ""
+
+#: src/settings.c:149
+msgid "5 min"
+msgstr ""
+
+#: src/settings.c:150
+msgid "10 minutes"
+msgstr ""
+
+#: src/settings.c:150
+msgid "10 min"
+msgstr ""
+
+#: src/settings.c:151
+msgid "15 minutes"
+msgstr ""
+
+#: src/settings.c:151
+msgid "15 min"
+msgstr ""
+
+#: src/settings.c:152
+msgid "30 minutes"
+msgstr ""
+
+#: src/settings.c:152
+msgid "30 min"
+msgstr ""
+
+#: src/settings.c:153
+msgid "1 hour"
+msgstr ""
+
+#: src/settings.c:153
+msgid "1 h"
+msgstr ""
+
+#: src/settings.c:174 src/settings.c:1081
+msgid "Every: "
+msgstr ""
+
+#: src/settings.c:396
 msgid "Screen name"
 msgstr ""
 
-#: src/settings.c:438
+#: src/settings.c:411
 msgid "Password"
 msgstr ""
 
-#: src/settings.c:462
+#: src/settings.c:435
 msgid "Type"
 msgstr ""
 
-#: src/settings.c:481
+#: src/settings.c:454
 msgid "Secure"
 msgstr ""
 
-#: src/settings.c:481
+#: src/settings.c:454
 msgid "Faster"
 msgstr ""
 
-#: src/settings.c:493
+#: src/settings.c:466
 msgid "Domain"
 msgstr ""
 
-#: src/settings.c:508
+#: src/settings.c:481
 msgid "Base URL"
 msgstr ""
 
-#: src/settings.c:523
+#: src/settings.c:496
 msgid "Receive?"
 msgstr ""
 
-#: src/settings.c:535
+#: src/settings.c:508
 msgid "Send?"
 msgstr ""
 
-#: src/settings.c:738
+#: src/settings.c:711
 msgid "Accounts..."
 msgstr ""
 
-#: src/settings.c:773 src/settings.c:1410
+#: src/settings.c:746 src/settings.c:1378
 msgid "Add"
 msgstr ""
 
-#: src/settings.c:786 src/settings.c:1423
+#: src/settings.c:759 src/settings.c:1391
 msgid "Edit"
 msgstr ""
 
-#: src/settings.c:800 src/settings.c:1436
+#: src/settings.c:773 src/settings.c:1404
 msgid "Delete"
 msgstr ""
 
-#: src/settings.c:827 src/settings.c:850
+#: src/settings.c:800 src/settings.c:823
 msgid "No posts<br>in cache."
 msgstr ""
 
-#: src/settings.c:829
+#: src/settings.c:802
 #, c-format
 msgid "Currently remembering<br>%d posts."
 msgstr ""
 
-#: src/settings.c:865 src/settings.c:888
+#: src/settings.c:838 src/settings.c:861
 msgid "No messages<br>in cache."
 msgstr ""
 
-#: src/settings.c:867
+#: src/settings.c:840
 #, c-format
 msgid "Currently remembering<br>%d messages."
 msgstr ""
 
-#: src/settings.c:966
+#: src/settings.c:939
 msgid "Displayed messages"
 msgstr ""
 
-#: src/settings.c:1033
+#: src/settings.c:1006
 msgid "Please choose a browser"
 msgstr ""
 
-#: src/settings.c:1035
+#: src/settings.c:1008
 msgid "No supported browser available"
 msgstr ""
 
-#: src/settings.c:1072
+#: src/settings.c:1045
 msgid "Preferred browser..."
 msgstr ""
 
-#: src/settings.c:1080
+#: src/settings.c:1053
 msgid "Online mode..."
 msgstr ""
 
-#: src/settings.c:1082
+#: src/settings.c:1055
 msgid "Online"
 msgstr ""
 
-#: src/settings.c:1082
+#: src/settings.c:1055
 msgid "Offline"
 msgstr ""
 
-#: src/settings.c:1090
+#: src/settings.c:1063
 msgid "Timestamps..."
 msgstr ""
 
-#: src/settings.c:1092
+#: src/settings.c:1065
 msgid "Relative"
 msgstr ""
 
-#: src/settings.c:1092
+#: src/settings.c:1065
 msgid "Absolute"
 msgstr ""
 
-#: src/settings.c:1100
+#: src/settings.c:1073
 msgid "Auto updates"
 msgstr ""
 
-#: src/settings.c:1104
-msgid "Enabled"
-msgstr ""
-
-#: src/settings.c:1104
-msgid "Disabled"
-msgstr ""
-
-#: src/settings.c:1114
-msgid "every: "
-msgstr ""
-
-#: src/settings.c:1274
+#: src/settings.c:1242
 msgid "Pattern..."
 msgstr ""
 
-#: src/settings.c:1376
+#: src/settings.c:1344
 msgid "Gag patterns..."
 msgstr ""
 
-#: src/settings.c:1462
+#: src/settings.c:1430
 msgid "ElmDentica settings..."
 msgstr ""
 
-#: src/settings.c:1487
+#: src/settings.c:1455
 msgid "Accounts"
 msgstr ""
 
-#: src/settings.c:1489
+#: src/settings.c:1457
 msgid "Cache"
 msgstr ""
 
-#: src/settings.c:1491
+#: src/settings.c:1459
 msgid "Options"
 msgstr ""
 
-#: src/settings.c:1493
+#: src/settings.c:1461
 msgid "Gag"
 msgstr ""
 
-#: src/settings.c:1504
+#: src/settings.c:1472
 #, c-format
 msgid ""
 "\n"
@@ -471,42 +527,42 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/settings.c:1527
+#: src/settings.c:1495
 #, c-format
 msgid "Can't run ecore_file_init()\n"
 msgstr ""
 
-#: src/settings.c:1533
+#: src/settings.c:1501
 #, c-format
 msgid "Can't create preferences directories since asprintf failed\n"
 msgstr ""
 
-#: src/settings.c:1533
+#: src/settings.c:1501
 #, c-format
 msgid "Can't create preferences directories since ecore_file_mkpath failed\n"
 msgstr ""
 
-#: src/settings.c:1541
+#: src/settings.c:1509
 #, c-format
 msgid "Not enough memory to define conf.eet path"
 msgstr ""
 
-#: src/settings.c:1547
+#: src/settings.c:1515
 #, c-format
 msgid "Couldn't run eet_init()"
 msgstr ""
 
-#: src/settings.c:1554
+#: src/settings.c:1522
 #, c-format
 msgid "Can't create %s"
 msgstr ""
 
-#: src/settings.c:1562
+#: src/settings.c:1530
 #, c-format
 msgid "Can't setup settings_edd."
 msgstr ""
 
-#: src/settings.c:1582
+#: src/settings.c:1549
 #, c-format
 msgid ""
 "Not enough memory for settings, no doubt for anything else either, surely..."
