@@ -81,6 +81,7 @@ const char * browser_cmnds[] = {
         "/usr/bin/eve %s &",
 	};
 const char* timeout_names[] = {
+        "never",
         "15 seconds",
         "30 seconds",
         "45 seconds",
@@ -100,6 +101,7 @@ const char* timeout_names[] = {
         " 24 hours "
 };
 const char* timeout_names_short[] = {
+        "0s",
         "15s",
         "30s",
         "45s",
@@ -119,7 +121,7 @@ const char* timeout_names_short[] = {
         "24h"
 };
 const int timeout_values[] = {
-        15,30,45,60,120,180,300,600,900,1800,2400,3600,7200,10800,21600,43200,86400
+        0,15,30,45,60,120,180,300,600,900,1800,2400,3600,7200,10800,21600,43200,86400
 };
 int browsersIndex=5;
 
@@ -175,27 +177,17 @@ void on_account_selected(void *data, Evas_Object *account_list, void *event_info
 	if (debug) printf("Selected account: %d\n", current_account);
 }
 
-static void on_user_data_cancel(void *data, Evas_Object *obj, void *event_info) {
-       	evas_object_del(user_data_dialog);
-}
-
 extern Eina_Bool ed_statuses_update_interval(void *data);
-
-static void on_update_changed(void* data, Evas_Object *obj, void *event_info) {
-	settings->update = elm_toggle_state_get(obj);
-	int val = (int)elm_slider_value_get(auto_update_timeout);
-	elm_object_disabled_set(auto_update_timeout, !settings->update);
-	settings->update_interval = timeout_values[val];
-	settings->update_interval_val = val;
-	if(settings->update)
-		settings->update_timer = ecore_timer_add(settings->update_interval, ed_statuses_update_interval, NULL);
-	else
-		ecore_timer_del(settings->update_timer);
-}
 
 void on_update_timeout_changed(void* data, Evas_Object *obj, void *event_info) {
 	int val = (int)elm_slider_value_get(obj);
 	elm_slider_unit_format_set(obj, _(timeout_names[val]));
+
+	if( !val && settings->update_interval_val) // disable when changing to zero
+		ecore_timer_del(settings->update_timer);
+	if( val && !settings->update_interval_val ) // enable when changing from zero
+		settings->update_timer = ecore_timer_add(settings->update_interval, ed_statuses_update_interval, NULL);
+	
 	settings->update_interval = timeout_values[val];
 	settings->update_interval_val = val;
 	ecore_timer_interval_set(settings->update_timer, settings->update_interval);
@@ -1100,21 +1092,13 @@ void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
             elm_frame_label_set(frame, _("Auto updates"));
             update_table = elm_table_add(settings_area);
 
-            auto_update = elm_toggle_add(settings_area);
-                elm_toggle_states_labels_set(auto_update, _("Enabled"), _("Disabled"));
-                elm_toggle_state_set(auto_update, settings->update);
-                elm_table_pack(update_table, auto_update, 0, 0, 1, 1);
-                evas_object_smart_callback_add(auto_update, "changed", on_update_changed, NULL);
-                evas_object_show(auto_update);
-
             auto_update_timeout = elm_slider_add(settings_area);
-                elm_slider_min_max_set(auto_update_timeout, 0.0, 16.0);
+                elm_slider_min_max_set(auto_update_timeout, 0.0, 17.0);
                 elm_slider_value_set(auto_update_timeout, settings->update_interval_val);
                 elm_slider_unit_format_set(auto_update_timeout, timeout_names[settings->update_interval_val]);
                 elm_slider_label_set(auto_update_timeout, _("every: "));
                 elm_slider_indicator_format_function_set(auto_update_timeout, indicator_format_func);
-                evas_object_smart_callback_add(auto_update_timeout, "changed", on_update_timeout_changed, NULL);
-                elm_object_disabled_set(auto_update_timeout, !settings->update);
+                evas_object_smart_callback_add(auto_update_timeout, "delay,changed", on_update_timeout_changed, NULL);
                 elm_table_pack(update_table, auto_update_timeout, 1, 0, 1, 1);
                 evas_object_show(auto_update_timeout);
             elm_frame_content_set(frame, update_table);
@@ -1572,7 +1556,6 @@ void ed_settings_init(int argc, char ** argv) {
 	EET_DATA_DESCRIPTOR_ADD_BASIC(settings_edd, Settings, "browser_cmd",	browser_cmd,	EET_T_STRING);
 	EET_DATA_DESCRIPTOR_ADD_BASIC(settings_edd, Settings, "max_messages",	max_messages,	EET_T_INT);
 	EET_DATA_DESCRIPTOR_ADD_BASIC(settings_edd, Settings, "rel_timestamps",	rel_timestamps,	EET_T_INT);
-	EET_DATA_DESCRIPTOR_ADD_BASIC(settings_edd, Settings, "update",	        update,	        EET_T_INT);
 	EET_DATA_DESCRIPTOR_ADD_BASIC(settings_edd, Settings, "update_interval",update_interval_val,EET_T_INT);
 
 	settings = eet_data_read(conf_file, settings_edd, "/settings");
@@ -1590,14 +1573,13 @@ void ed_settings_init(int argc, char ** argv) {
 		settings->max_messages=20;
 		settings->rel_timestamps=EINA_TRUE;
 		settings->rel_ts_timer=NULL;
-		settings->update = EINA_FALSE;
 		settings->update_interval_val = 0;
 	}
 
 	if(settings->update_interval_val < 0)
-		settings->update_interval_val = 6;
-	else if(settings->update_interval_val > 16)
-		settings->update_interval_val = 6;
+		settings->update_interval_val = 0;
+	else if(settings->update_interval_val > 17)
+		settings->update_interval_val = 17;
 
 	settings->update_interval = timeout_values[settings->update_interval_val];
 

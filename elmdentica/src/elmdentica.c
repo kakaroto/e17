@@ -2190,7 +2190,7 @@ EAPI int elm_main(int argc, char **argv)
 	// Statuses list
 	update_status_list(TIMELINE_FRIENDS, EINA_TRUE);
 
-    if(settings->update)
+    if(settings->update_interval_val)
         settings->update_timer = ecore_timer_add(settings->update_interval, ed_statuses_update_interval, NULL);
 
 	elm_run();
