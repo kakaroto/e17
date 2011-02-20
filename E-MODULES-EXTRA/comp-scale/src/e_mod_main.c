@@ -1,11 +1,14 @@
 #include <e.h>
 #include "e_mod_main.h"
 
+//  TODO
+//~ handle add, delete border
+
+
 #define DBG(...)
 /* #define DBG(...) printf(__VA_ARGS__) */
 
 
-/* Local Function Prototypes */
 static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
 static void _gc_shutdown(E_Gadcon_Client *gcc);
 static void _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
@@ -16,14 +19,21 @@ static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
 static void _scale_conf_new(void);
 static void _scale_conf_free(void);
 static Config_Item *_scale_conf_item_get(const char *id);
-static void _scale_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event);
-static void _scale_cb_menu_post(void *data, E_Menu *menu);
-static void _scale_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
+static void _scale_gc_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event);
+static void _scale_gc_cb_menu_post(void *data, E_Menu *menu);
+static void _scale_gc_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
 
-static void movorig(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void reszorig(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void delorig(void *data, Evas *e, Evas_Object *obj, void *event_info);
+/* static void _scale_win_movorig(void *data, Evas *e, Evas_Object *obj, void *event_info);
+ * static void _scale_win_reszorig(void *data, Evas *e, Evas_Object *obj, void *event_info); */
+static void _scale_win_delorig(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
+static void _scale_finish(void);
+static void _scale_in(void);
+static void _scale_out(void);
+static Eina_Bool _scale_cb_mouse_down(void *data, int type, void *event);
+
+static void _scale_win_cb_intercept_move(void *data, Evas_Object *obj, Evas_Coord x, Evas_Coord y);
+static void _scale_win_cb_intercept_resize(void *data, Evas_Object *obj, Evas_Coord x, Evas_Coord y);
 
 static E_Action *act = NULL;
 
@@ -45,6 +55,13 @@ struct _Item
 
   double mx;
   double my;
+
+  double bd_x;
+  double bd_y;
+
+  int cur_x, cur_y, cur_w, cur_h;
+  
+  int overlaps;
 };
 
 static Eina_List *items = NULL;
@@ -147,20 +164,20 @@ _grow()
    int cont = 0;
    int overlap;
    double grow_l, grow_r, grow_d, grow_u;
-
    double mean = 0;
+   int off = scale_conf->spacing;
    
    EINA_LIST_FOREACH(items, l, it)
      mean += it->scale;
-
-   mean /= ((double) eina_list_count(items) + 0.5); 
+   
+   mean /= ((double) eina_list_count(items) /* + 0.5 */);
 
    EINA_LIST_FOREACH(items, l, it)
      {
 	overlap = 0;
 
-	if (it->scale > mean)
-	  continue;
+	/* if (it->scale > mean)
+	 *   continue; */
 
 	if (it->w >= it->bd->w)
 	  continue;
@@ -197,22 +214,22 @@ _grow()
 	     if (it == ot)
 	       continue;
 	     if (grow_l && E_INTERSECTS(it->x - grow_l, it->y, it->w, it->h,
-					ot->x, ot->y, ot->w + grow_l, ot->h))
+					ot->x - off, ot->y - off, ot->w + grow_l + off*2, ot->h + off*2))
 	       grow_l = 0;
 
 	     if (grow_r && E_INTERSECTS(it->x, it->y, it->w + grow_r, it->h,
-					ot->x - grow_r, ot->y, ot->w, ot->h))
+					ot->x - grow_r - off, ot->y - off, ot->w + off*2, ot->h + off*2))
 	       grow_r = 0;
 
 	     if ((grow_l == 0) && (grow_r == 0) && (overlap = 1))
 	       break;
 
 	     if (grow_u && E_INTERSECTS(it->x, it->y - grow_u, it->w, it->h,
-					ot->x, ot->y, ot->w, ot->h + grow_u))
+					ot->x - off, ot->y - off, ot->w + off*2, ot->h + grow_u + off*2))
 	       grow_u = 0;
 
 	     if (grow_d && E_INTERSECTS(it->x, it->y, it->w, it->h + grow_d,
-					ot->x, ot->y - grow_d, ot->w, ot->h))
+					ot->x - off, ot->y - grow_d - off, ot->w + off*2, ot->h + off*2))
 	       grow_d = 0;
 
 	     if ((grow_u == 0) && (grow_d == 0) && (overlap = 1))
@@ -274,6 +291,8 @@ _place(int offset)
 
 	     overlap += 1;
 
+	     it->overlaps++;
+	     
 	     if (it->x < ot->x)
 	       w += it->x - ot->x;
 	     if (w < 0) w = 0;
@@ -418,6 +437,9 @@ _place(int offset)
 	step_count = 0;
 	EINA_LIST_FOREACH(items, l, it)
 	  {
+	     if (!it->overlaps)
+	       continue;
+	     
 	     if (it->scale <= 0.005)
 	       continue;
 
@@ -429,6 +451,8 @@ _place(int offset)
 	     it->y += (it->h - sh)/2.0;
 	     it->w = sw;
 	     it->h = sh;
+
+	     it->overlaps = 0;
 	  }
 	return 1;
      }
@@ -540,6 +564,7 @@ _shrink()
    Eina_List *l, *ll;
    Item *it, *ot;
    int shrunk = 0;
+   int off = scale_conf->spacing;
    
    EINA_LIST_REVERSE_FOREACH(items, l, it)
      {
@@ -556,7 +581,7 @@ _shrink()
 	     while(move_x)
 	       {
 		  if (E_INTERSECTS(it->x - move_x, it->y, it->w, it->h,
-				   ot->x - 10, ot->y - 10, ot->w + 20, ot->h + 20))
+				   ot->x - off, ot->y - off, ot->w + off*2, ot->h + off*2))
 		    move_x = move_x / 2.0;
 		  else break;
 	       } 
@@ -564,7 +589,7 @@ _shrink()
 	     while(move_y)
 	       {
 		  if (E_INTERSECTS(it->x, it->y - move_y, it->w, it->h,
-				   ot->x - 10, ot->y - 10, ot->w + 20, ot->h + 20))
+				   ot->x - off, ot->y - off, ot->w + off*2, ot->h + off*2))
 		    move_y = move_y / 2.0;
 		  else break;
 	       }
@@ -582,45 +607,13 @@ _shrink()
    return shrunk;
 }
 
-static void
-_finish()
-{
-   Ecore_Event_Handler *handler;
-   Item *it;
-   e_grabinput_release(input_win, input_win);
-   ecore_x_window_free(input_win);
-   input_win = 0;
-
-   EINA_LIST_FREE(items, it)
-     {
-	evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOVE, movorig);
-	evas_object_event_callback_del(it->o, EVAS_CALLBACK_RESIZE, reszorig);
-	evas_object_event_callback_del(it->o, EVAS_CALLBACK_DEL, delorig);
-	E_FREE(it);
-     }
-
-   EINA_LIST_FREE(popups, it)
-     {
-	evas_object_event_callback_del(it->o, EVAS_CALLBACK_DEL, delorig);
-	E_FREE(it);
-     }
-
-   EINA_LIST_FREE(handlers, handler)
-     ecore_event_handler_del(handler);
-
-   e_msg_handler_del(msg_handler);
-   msg_handler = NULL;
-
-   e_manager_comp_evas_update(e_manager_current_get());
-}
-
 static Eina_Bool
 _redraw(void *blah)
 {
    Eina_List *l;
    Item *it;
    double scale;
-
+   
    if (scale_state)
      scale = (ecore_time_get() - start_time) / scale_conf->scale_duration;
    else
@@ -633,35 +626,36 @@ _redraw(void *blah)
 
    EINA_LIST_FOREACH(items, l, it)
      {
-	it->cw->x = it->bd->x * (1.0 - scale) + it->x * scale;
-	it->cw->y = it->bd->y * (1.0 - scale) + it->y * scale;
+	/* it->cw->x = it->bd_x * (1.0 - scale) + it->x * scale;
+	 * it->cw->y = it->bd_y * (1.0 - scale) + it->y * scale; */
 
-	double sw = (double)it->bd->w * (1.0 - scale) + it->w * scale;
-	double sh = (double)it->bd->h * (1.0 - scale) + it->h * scale;
+	it->cur_w = it->bd->w * (1.0 - scale) + it->w * scale;
+	it->cur_h = it->bd->h * (1.0 - scale) + it->h * scale;
+	it->cur_x = it->bd_x * (1.0 - scale) + it->x * scale;
+	it->cur_y = it->bd_y * (1.0 - scale) + it->y * scale;
 
-	/* printf("resize %f %f\n", sw, sh); */
+	/* printf("resize %d %d\n", it->cur_w, it->cur_h); */
 
-	evas_object_move(it->o,
-			 it->bd->x * (1.0 - scale) + it->x * scale,
-			 it->bd->y * (1.0 - scale) + it->y * scale);
-
-	evas_object_resize(it->o, sw, sh);
+	evas_object_move(it->o, it->cur_x, it->cur_y);
+	evas_object_resize(it->o, it->cur_w, it->cur_h);
      }
 
    double a = 255.0 * (1.0 - scale);
    
    EINA_LIST_FOREACH(popups, l, it)
      evas_object_color_set(it->o, a, a, a, a);
-   
-   e_manager_comp_evas_update(e_manager_current_get());
 
+   /* e = e_manager_comp_evas_get(e_manager_current_get()); */
+   
    if (scale < 1.0 && scale > 0.0)
      return 1;
 
+   
    if (scale == 0.0)
-     _finish();
+     _scale_finish();
 
    scale_animator = NULL;
+   
    return 0;
 }
 
@@ -693,49 +687,84 @@ _scale_out()
 }
 
 static void
-delorig(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_scale_finish()
+{
+   Ecore_Event_Handler *handler;
+   Item *it;
+   e_grabinput_release(input_win, input_win);
+   ecore_x_window_free(input_win);
+   input_win = 0;
+
+   E_Zone *zone = e_util_zone_current_get(e_manager_current_get());
+   E_Desk *desk = e_desk_current_get(zone);
+
+   EINA_LIST_FREE(items, it)
+     {
+	if (it->bd->desk != desk)
+	  e_border_hide(it->bd, 2);
+
+	evas_object_event_callback_del(it->o, EVAS_CALLBACK_DEL, _scale_win_delorig);
+
+	evas_object_intercept_move_callback_del(it->o, _scale_win_cb_intercept_move);
+	evas_object_intercept_resize_callback_del(it->o, _scale_win_cb_intercept_resize); 
+
+	E_FREE(it);
+     }
+
+   EINA_LIST_FREE(popups, it)
+     {
+	evas_object_event_callback_del(it->o, EVAS_CALLBACK_DEL, _scale_win_delorig);
+	E_FREE(it);
+     }
+
+   EINA_LIST_FREE(handlers, handler)
+     ecore_event_handler_del(handler);
+
+   e_msg_handler_del(msg_handler);
+   msg_handler = NULL;
+
+   e_manager_comp_evas_update(e_manager_current_get());
+}
+
+static void
+_scale_win_delorig(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Item *it = data;
 
    items = eina_list_remove(items, it);
    popups = eina_list_remove(popups, it);
 
-   evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOVE, movorig);
-   evas_object_event_callback_del(it->o, EVAS_CALLBACK_RESIZE, reszorig);
-   evas_object_event_callback_del(it->o, EVAS_CALLBACK_DEL, delorig);
+   evas_object_intercept_move_callback_del(it->o, _scale_win_cb_intercept_move);
+   evas_object_intercept_resize_callback_del(it->o, _scale_win_cb_intercept_resize); 
+
+   evas_object_event_callback_del(it->o, EVAS_CALLBACK_DEL, _scale_win_delorig);
+
    if (it->bd)
      _scale_out();
    
    E_FREE(it);
 }
 
-
-// FIXME on damage comp resetes size and position 
-
 static void
-movorig(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_scale_win_cb_intercept_move(void *data, Evas_Object *obj, Evas_Coord x, Evas_Coord y)
 {
    Item *it = data;
-   evas_object_move(it->o,
-		    it->bd->x * (1.0 - current_scaling) + it->x * current_scaling,
-		    it->bd->y * (1.0 - current_scaling) + it->y * current_scaling);
+
+   evas_object_move(obj, it->cur_x, it->cur_y);
 }
 
 static void
-reszorig(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_scale_win_cb_intercept_resize(void *data, Evas_Object *obj, Evas_Coord w, Evas_Coord h)
 {
    Item *it = data;
-   int w, h;
 
-   evas_object_geometry_get(obj, NULL, NULL, &w, &h);
+   evas_object_resize(obj, it->cur_w, it->cur_h);
 
-   double sw = (double)it->bd->w * (1.0 - current_scaling) + it->w * current_scaling;
-   double sh = (double)it->bd->h * (1.0 - current_scaling) + it->h * current_scaling;
-   evas_object_resize(it->o, sw, sh);
+   e_manager_comp_evas_update(e_manager_current_get());
 }
 
 static void
-newwin(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk)
+_scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk)
 {
    Item *it;
 
@@ -747,7 +776,7 @@ newwin(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk)
      {
    	it = E_NEW(Item, 1);
    	it->o = e_manager_comp_src_shadow_get(man, src);
-	evas_object_event_callback_add(it->o, EVAS_CALLBACK_DEL, delorig, it);
+	evas_object_event_callback_add(it->o, EVAS_CALLBACK_DEL, _scale_win_delorig, it);
 
    	popups = eina_list_append(popups, it);
    	return;
@@ -765,32 +794,128 @@ newwin(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk)
    it->scale = 1.0;
    it->x = cw->bd->x + (cw->bd->desk->x - desk->x) * width;
    it->y = cw->bd->y + (cw->bd->desk->y - desk->y) * height;
+
+   it->bd_x = it->x;
+   it->bd_y = it->y;
+
    it->w = cw->bd->w;
    it->h = cw->bd->h;
+
+   it->cur_x = it->x;
+   it->cur_y = it->y;
+   it->cur_w = it->w;
+   it->cur_h = it->h;
+
    it->bd = cw->bd;
    it->cw = cw;
    it->o = e_manager_comp_src_shadow_get(man, src);
    
-   //evas_object_event_callback_add(o, EVAS_CALLBACK_MOVE, movorig, it);
-   evas_object_event_callback_add(it->o, EVAS_CALLBACK_RESIZE, reszorig, it);
-   evas_object_event_callback_add(it->o, EVAS_CALLBACK_DEL, delorig, it);
+   evas_object_event_callback_add(it->o, EVAS_CALLBACK_DEL, _scale_win_delorig, it);
 
-   /* if (cw->bd->desk != desk)
-    *   {
-    * 	cw->visible = EINA_TRUE;
-    * 	evas_object_show(o);
-    * 	evas_object_move(o, it->x, it->y);
-    *   } */
+   evas_object_intercept_move_callback_add(it->o, _scale_win_cb_intercept_move, it);
+   evas_object_intercept_resize_callback_add(it->o, _scale_win_cb_intercept_resize, it); 
 
-   /*
-    * e_manager_comp_src_hidden_set(man, src, EINA_FALSE);
-    * evas_object_show(o); */
+   if (it->bd->desk != desk)
+     {
+	e_border_show(it->bd);
+  	evas_object_move(it->o, it->x, it->y);
+     }
 
    items = eina_list_append(items, it);
 }
 
+static int
+_cb_sort_center(const void *d1, const void *d2)
+{
+   const Item *it1 = d1;
+   const Item *it2 = d2;
+
+   double dx1 = ((it1->x + it1->w/2.0) - (double)(width/2));
+   double dy1 = ((it1->y + it1->h/2.0) - (double)(height/2));
+
+   double dx2 = ((it2->x + it2->w/2.0) - (double)(width/2));
+   double dy2 = ((it2->y + it2->h/2.0) - (double)(height/2));
+   
+   return (sqrt(dx1*dx1 + dy1*dy1) < sqrt(dx2*dx2 + dy2*dy2)) ? -1 : 1;
+}
+
+void
+scale_run(E_Manager *man)
+{
+   Eina_List *list, *l;
+   E_Manager_Comp_Source *src;
+   Evas *e;
+   int i, spacing;
+
+   E_Zone *zone = e_util_zone_current_get(e_manager_current_get());
+   E_Desk *desk = e_desk_current_get(zone);
+
+   input_win = ecore_x_window_input_new(zone->container->win, 0, 0, 1, 1);
+   ecore_x_window_show(input_win);
+   if (!e_grabinput_get(input_win, 0, input_win))
+     {
+	ecore_x_window_free(input_win);
+	input_win = 0;
+	return;
+     }
+   e_zone_useful_geometry_get(zone, &min_x, &min_y, &width, &height);
+
+   handlers = eina_list_append
+     (handlers, ecore_event_handler_add
+      (ECORE_EVENT_MOUSE_BUTTON_DOWN, _scale_cb_mouse_down, NULL));
+
+   e = e_manager_comp_evas_get(man);
+
+   list = (Eina_List *)e_manager_comp_src_list(man);
+   EINA_LIST_FOREACH(list, l, src)
+     _scale_win_new(e, man, src, desk);
+
+   items = eina_list_sort(items, eina_list_count(items), _cb_sort_center); 
+
+   max_x = width;
+   max_y = height;
+
+   start_time = ecore_time_get();
+   
+   step_count = 0;
+   i = 0;
+   spacing = scale_conf->spacing;
+   
+   if (scale_conf->grow && (spacing < 48)) spacing = 48;
+   if (scale_conf->tight && (spacing < 48)) spacing = 48;
+
+   while (i++ < 10000 && _place(spacing));
+
+   DBG("place %d\n", i);
+
+   if (i == 1)
+     {
+	_scale_finish();
+	return;
+     }
+
+   if (scale_conf->grow)
+     {	
+	i = 0;
+   	while (i++ < 1000 && _grow());
+	DBG("grow %d", i);
+     }
+
+   if (scale_conf->tight)
+     {
+	i = 0;
+	while (i++ < 1000 && _shrink());
+	DBG("shrunk %d", i);
+     }
+   
+   DBG("time: %f\n", ecore_time_get() - start_time);
+
+   _scale_in();   
+}
+
+
 static Eina_Bool
-_cb_mouse_down(void *data, int type, void *event)
+_scale_cb_mouse_down(void *data, int type, void *event)
 {
    Ecore_Event_Mouse_Button *ev;
    Item *it;
@@ -818,78 +943,7 @@ _cb_mouse_down(void *data, int type, void *event)
 }
 
 static void
-setup(E_Manager *man)
-{
-   Eina_List *list, *l;
-   E_Manager_Comp_Source *src;
-   Evas *e;
-   int i = 0;
-
-   E_Zone *zone = e_util_zone_current_get(e_manager_current_get());
-   E_Desk *desk = e_desk_current_get(zone);
-
-   input_win = ecore_x_window_input_new(zone->container->win, 0, 0, 1, 1);
-   ecore_x_window_show(input_win);
-   if (!e_grabinput_get(input_win, 0, input_win))
-     {
-	ecore_x_window_free(input_win);
-	input_win = 0;
-	return;
-     }
-   e_zone_useful_geometry_get(zone, &min_x, &min_y, &width, &height);
-
-   handlers = eina_list_append
-     (handlers, ecore_event_handler_add
-      (ECORE_EVENT_MOUSE_BUTTON_DOWN, _cb_mouse_down, NULL));
-
-   e = e_manager_comp_evas_get(man);
-
-   list = (Eina_List *)e_manager_comp_src_list(man);
-   EINA_LIST_FOREACH(list, l, src)
-     newwin(e, man, src, desk);
-
-   /* double time = ecore_time_get(); */
-
-   max_x = width;
-   max_y = height;
-   step_count = 0;
-   while (i++ < 10000 && _place(scale_conf->spacing));
-   DBG("place %d\n", i);
-
-   if (i == 1)
-     {
-	_finish();
-	return;
-     }
-
-   if (scale_conf->grow)
-     {	
-	i = 0;
-   	while (i++ < 1000 && _grow())
-   	  /* {	
-   	   *    int k = 0;
-   	   *    cnt = 0;
-   	   *    while(k++ < 1000 && _place(16));
-   	   *    DBG("place %d\n", k);
-   	   * } */
-	  DBG("grow %d\n", i);
-     }
-
-   if (scale_conf->tight)
-     {
-	i = 0;
-	while (i++ < 1000 && _shrink());
-	DBG("shrunk %d", i);
-     }
-   
-   DBG("time: %f\n", ecore_time_get() - time);
-
-   _scale_in();   
-}
-
-
-static void
-handler(void *data, const char *name, const char *info, int val,
+_scale_handler(void *data, const char *name, const char *info, int val,
         E_Object *obj, void *msgdata)
 {
    E_Manager *man = (E_Manager *)obj;
@@ -904,7 +958,6 @@ handler(void *data, const char *name, const char *info, int val,
      {
         if (!e) DBG("TTT: No comp manager\n");
         else DBG("TTT: comp canvas = %p\n", e);
-        if (e) setup(man);
      }
    else if (!strcmp(info, "resize.comp"))
      {
@@ -913,7 +966,8 @@ handler(void *data, const char *name, const char *info, int val,
    else if (!strcmp(info, "add.src"))
      {
         /* DBG("%s: %p | %p\n", info, man, src); */
-        newwin(e, man, src, e_desk_current_get(e_util_zone_current_get(man)));
+        _scale_win_new(e, man, src, e_desk_current_get(e_util_zone_current_get(man)));
+	
      }
    else if (!strcmp(info, "del.src"))
      {
@@ -930,8 +984,41 @@ handler(void *data, const char *name, const char *info, int val,
      }
 }
 
+static void
+_e_mod_action_cb_edge(E_Object *obj, const char *params, E_Event_Zone_Edge *ev)
+{
+   Eina_List *list, *l;
+   E_Manager *man;
+
+   msg_handler = e_msg_handler_add(_scale_handler, NULL);
+   list = e_manager_list();
+   EINA_LIST_FOREACH(list, l, man)
+     {
+        Evas *e = e_manager_comp_evas_get(man);
+        if (e) scale_run(man);
+     }
+}
+
+static void
+_e_mod_action_cb(E_Object *obj, const char *params)
+{
+   Eina_List *list, *l;
+   E_Manager *man;
+
+   msg_handler = e_msg_handler_add(_scale_handler, NULL);
+   list = e_manager_list();
+   EINA_LIST_FOREACH(list, l, man)
+     {
+        Evas *e = e_manager_comp_evas_get(man);
+        if (e) scale_run(man);
+     }
+}
+
+
+/* Module and Gadcon stuff */
 
 typedef struct _Instance Instance;
+
 struct _Instance
 {
   E_Gadcon_Client *gcc;
@@ -939,7 +1026,6 @@ struct _Instance
   E_Menu *menu;
   Config_Item *conf_item;
 };
-
 
 static int uuid = 0;
 static Eina_List *instances = NULL;
@@ -956,37 +1042,6 @@ static const E_Gadcon_Client_Class _gc_class =
   };
 
 EAPI E_Module_Api e_modapi = {E_MODULE_API_VERSION, "Scale"};
-
-
-static void
-_e_mod_action_cb_edge(E_Object *obj, const char *params, E_Event_Zone_Edge *ev)
-{
-   Eina_List *list, *l;
-   E_Manager *man;
-
-   msg_handler = e_msg_handler_add(handler, NULL);
-   list = e_manager_list();
-   EINA_LIST_FOREACH(list, l, man)
-     {
-        Evas *e = e_manager_comp_evas_get(man);
-        if (e) setup(man);
-     }
-}
-
-static void
-_e_mod_action_cb(E_Object *obj, const char *params)
-{
-   Eina_List *list, *l;
-   E_Manager *man;
-
-   msg_handler = e_msg_handler_add(handler, NULL);
-   list = e_manager_list();
-   EINA_LIST_FOREACH(list, l, man)
-     {
-        Evas *e = e_manager_comp_evas_get(man);
-        if (e) setup(man);
-     }
-}
 
 EAPI void *
 e_modapi_init(E_Module *m)
@@ -1121,7 +1176,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    inst->gcc->data = inst;
 
    evas_object_event_callback_add(inst->o_scale, EVAS_CALLBACK_MOUSE_DOWN,
-                                  _scale_cb_mouse_down, inst);
+                                  _scale_gc_cb_mouse_down, inst);
 
    instances = eina_list_append(instances, inst);
 
@@ -1145,7 +1200,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    if (inst->o_scale)
      {
         evas_object_event_callback_del(inst->o_scale, EVAS_CALLBACK_MOUSE_DOWN,
-                                       _scale_cb_mouse_down);
+                                       _scale_gc_cb_mouse_down);
         evas_object_del(inst->o_scale);
      }
    E_FREE(inst);
@@ -1258,7 +1313,7 @@ _scale_conf_item_get(const char *id)
 }
 
 static void
-_scale_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
+_scale_gc_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 {
    Instance *inst = NULL;
    Evas_Event_Mouse_Down *ev;
@@ -1279,7 +1334,7 @@ _scale_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
         zone = e_util_zone_current_get(e_manager_current_get());
 
         ma = e_menu_new();
-        e_menu_post_deactivate_callback_set(ma, _scale_cb_menu_post, inst);
+        e_menu_post_deactivate_callback_set(ma, _scale_gc_cb_menu_post, inst);
         inst->menu = ma;
 
         mg = e_menu_new();
@@ -1287,7 +1342,7 @@ _scale_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
         mi = e_menu_item_new(mg);
         e_menu_item_label_set(mi, D_("Settings"));
         e_util_menu_item_theme_icon_set(mi, "preferences-system");
-        e_menu_item_callback_set(mi, _scale_cb_menu_configure, NULL);
+        e_menu_item_callback_set(mi, _scale_gc_cb_menu_configure, NULL);
 
         e_gadcon_client_util_menu_items_append(inst->gcc, ma, mg, 0);
         e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &x, &y, 
@@ -1302,7 +1357,7 @@ _scale_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 }
 
 static void
-_scale_cb_menu_post(void *data, E_Menu *menu)
+_scale_gc_cb_menu_post(void *data, E_Menu *menu)
 {
    Instance *inst = NULL;
 
@@ -1314,7 +1369,7 @@ _scale_cb_menu_post(void *data, E_Menu *menu)
 
 /* call configure from popup */
 static void
-_scale_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi)
+_scale_gc_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi)
 {
    if (!scale_conf) return;
    if (scale_conf->cfd) return;

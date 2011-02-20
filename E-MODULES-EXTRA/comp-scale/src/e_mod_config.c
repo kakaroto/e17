@@ -33,7 +33,7 @@ e_int_config_scale_module(E_Container *con, const char *params)
    v->basic.create_widgets = _basic_create;
    v->basic.apply_cfdata   = _basic_apply;
 
-   snprintf(buf, sizeof(buf), "%s/e-module-skel.edj", scale_conf->module->dir);
+   snprintf(buf, sizeof(buf), "%s/e-module-scale.edj", scale_conf->module->dir);
 
    cfd = e_config_dialog_new(con, D_("Scale Windows Module"), "Scale",
                              "appearance/comp-scale", buf, 0, v, NULL);
@@ -63,11 +63,23 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static void
 _fill_data(E_Config_Dialog_Data *cfdata)
 {
-
    cfdata->tight    = scale_conf->tight;
    cfdata->grow	    = scale_conf->grow;
    cfdata->duration = scale_conf->scale_duration;
    cfdata->spacing  = scale_conf->spacing;
+}
+
+static void
+_cb_test(void *data, void *data2)
+{
+   E_Config_Dialog_Data *cfdata = data;
+   
+   scale_conf->grow	      = cfdata->grow;
+   scale_conf->tight	      = cfdata->tight;
+   scale_conf->scale_duration = cfdata->duration;
+   scale_conf->spacing	      = cfdata->spacing;
+
+   scale_run(e_manager_current_get());
 }
 
 static Evas_Object *
@@ -84,16 +96,19 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    ow = e_widget_check_add(evas, D_("Keep it tight!"), &(cfdata->tight));
    e_widget_framelist_object_append(of, ow);
 
+   ow = e_widget_label_add (evas, D_("Minimum space between windows"));
+   e_widget_framelist_object_append (of, ow);
+   ow = e_widget_slider_add (evas, 1, 0, D_("%1.0f"), 2.0, 64.0,
+                             1.0, 0, &(cfdata->spacing), NULL,100);
+   e_widget_framelist_object_append (of, ow);
+
    ow = e_widget_label_add (evas, D_("Scale duration"));
    e_widget_framelist_object_append (of, ow);
    ow = e_widget_slider_add (evas, 1, 0, D_("%1.2f"), 0.1, 3.0,
                              0.01, 0, &(cfdata->duration), NULL,100);
    e_widget_framelist_object_append (of, ow);
 
-   ow = e_widget_label_add (evas, D_("Spacing"));
-   e_widget_framelist_object_append (of, ow);
-   ow = e_widget_slider_add (evas, 1, 0, D_("%1.0f"), 2.0, 64.0,
-                             1.0, 0, &(cfdata->spacing), NULL,100);
+   ow = e_widget_button_add(evas, D_("Test"), NULL, _cb_test, cfdata, NULL);
    e_widget_framelist_object_append (of, ow);
 
    e_widget_list_object_append(o, of, 1, 1, 0.5);

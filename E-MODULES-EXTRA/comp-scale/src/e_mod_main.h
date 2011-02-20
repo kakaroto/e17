@@ -26,7 +26,7 @@ struct _Config
 
   double	spacing;
 
-  E_Config_Dialog	*cfd;
+  E_Config_Dialog *cfd;
 };
 
 
@@ -44,6 +44,7 @@ EAPI int e_modapi_save(E_Module *m);
 
 
 E_Config_Dialog *e_int_config_scale_module(E_Container *con, const char *params);
+void scale_run(E_Manager *man);
 
 extern Config *scale_conf;
 
