@@ -43,9 +43,12 @@ typedef struct _StatusesList {
 } StatusesList;
 
 typedef struct _Gui {
-	Evas_Object *win, *timeline, *pager, *main, *status_detail, *status_detail_users, *status_detail_links, *status_detail_tags, *status_detail_groups, *hover;
+	Evas_Object *win, *timeline, *pager, *main, *status_detail, *status_detail_users, *status_detail_links, *status_detail_tags, *status_detail_groups, *hover,
+			    *download_win, *fileselector_win, *status_detail_attachments;
 	Elm_Toolbar_Item *timelines, *post;
 	Evas *win_evas;
+	Ecore_File_Progress_Return downloadstatus;
+	Ecore_File_Download_Job* current_download;
 } Gui;
 
 typedef union _AccountTypes {
