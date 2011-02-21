@@ -30,7 +30,7 @@ group {
 				rel2.relative: 0.0 0.0;
 				align: 0.0 0.0;
 				params {
-					string: "label" "Are you sure you wish to delete these photo(s) ? ";
+					string: "label" "Are you sure you wish to delete these photos ? ";
 				}
 			}
 		}
@@ -81,7 +81,7 @@ group {
 				rel2.to_y: "object.win.photo.delete.name";
 				rel2.relative: 1.0 1.0;
 				align: 1.0 1.0;
-				fixed: 1 0;
+				fixed: 1 1;
 				params {
 					string: "label" "Apply";
 				}

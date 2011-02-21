@@ -16,7 +16,17 @@ group {
     	//
     	
     	//
-    	alias: "object.photos.swallow"				"panes[right]:object.photos.swallow";
+    	alias: "object.photos.swallow"					"panes[right]:object.photos.swallow";
+    	alias: "object.photo_menu.tools.reload_thumb"	"panes[right]:object.photo_menu.tools.reload_thumb";
+    	alias: "object.photo_menu.tools.reload_exifs"	"panes[right]:object.photo_menu.tools.reload_exifs";
+    	alias: "object.photo_menu.tools.reload_iptcs"	"panes[right]:object.photo_menu.tools.reload_iptcs";
+    	alias: "object.photo_menu.delete"				"panes[right]:object.photo_menu.delete";
+    	alias: "object.photo_menu.album.move"			"panes[right]:object.photo_menu.album.move";
+    	alias: "object.photo_menu.library.photo.front"	"panes[right]:object.photo_menu.library.photo.front";
+    	alias: "object.photo_menu.library.photo.back"	"panes[right]:object.photo_menu.library.photo.back";
+    	alias: "object.photo_menu.wallpaper.application" "panes[right]:object.photo_menu.wallpaper.application";
+    	alias: "object.photo_menu.tags_remove.list" 	"panes[right]:object.photo_menu.tags_remove.list";
+    	alias: "object.photo_menu.tags_add.list" 		"panes[right]:object.photo_menu.tags_add.list";
     	//
     	
     	//list left
@@ -67,6 +77,11 @@ group {
 		transfers_signal("", "list_left,albums,show", "", "panes", "left")
 		transfers_signal("", "list_left,collections,show", "", "panes", "left")
 		transfers_signal("", "list_left,tags,show", "", "panes", "left")
+		//
+		
+		//photo menu
+		transfers_signal("", "photo,menu,show", "", "panes", "right")
+		transfers_signal("", "photo,menu,hide", "", "panes", "right")
 		//
 	}
 }

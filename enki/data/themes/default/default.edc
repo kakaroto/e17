@@ -92,6 +92,7 @@ collections {
 	#include "win_preferences.edc"
 	#include "win_photo_delete.edc"
 	#include "win_library_delete.edc"
+	
 
 	#include "libraries.edc"
 	#include "map.edc"
@@ -100,7 +101,6 @@ collections {
 	#include "list_left_menu.edc"
 	#include "list_left.edc"
 	#include "main_page.edc"
-	
 	
 	#include "main.edc"
 	

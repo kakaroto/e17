@@ -170,9 +170,13 @@ group {
         	clip_to: "photos_clipper";
             description {
                 state : "default" 0.0;
+                rel1.to_y: "photo_menu";
+                rel1.relative: 0.0 1.0;
             }
         }
         
+        
+		#include "photo_menu_parts.edc"
 	}
 	programs {
 		program {

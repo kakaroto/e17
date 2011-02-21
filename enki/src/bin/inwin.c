@@ -609,7 +609,7 @@ Inwin *inwin_photo_move_album_new(Inwin_Del del_cb, void *data, Eina_List *photo
 
 Inwin *inwin_preferences_new()
 {
-	Evas_Object *bt, *ly;
+	Evas_Object *bt, *ly, *lbl;
 
 	Inwin *inwin = calloc(1, sizeof(Inwin));
 	inwin->type = INWIN_PREFERENCES;
@@ -626,6 +626,23 @@ Inwin *inwin_preferences_new()
 
 	inwin->entry = edje_object_part_external_object_get(edje, "object.win.preferences.video_software");
 	elm_scrolled_entry_entry_set(inwin->entry, media_player);
+
+
+	//library
+	if(enlil_data->library)
+	{
+		edje_object_signal_emit(edje, "win,preference,library,selected", "");
+
+		lbl = edje_object_part_external_object_get(edje, "object.win.preferences.library.name");
+		elm_label_label_set(lbl, enlil_library_path_get(enlil_data->library));
+
+		inwin->entry2 = edje_object_part_external_object_get(edje, "object.win.preferences.library.netsync.account");
+		elm_scrolled_entry_entry_set(inwin->entry2, enlil_library_netsync_account_get(enlil_data->library));
+	}
+	else
+		edje_object_signal_emit(edje, "win,preference,library,no,selected", "");
+	//
+
 
 	bt = edje_object_part_external_object_get(edje, "object.win.preferences.cancel");
 	evas_object_smart_callback_add(bt, "clicked", _bt_preferences_cancel_cb, inwin);
@@ -770,6 +787,13 @@ static void _bt_preferences_apply_cb(void *data, Evas_Object *obj, void *event_i
 		enlil_eet_app_data_save(edd, APP_NAME" media_player", &string);
 		eet_data_descriptor_free(edd);
 		eina_stringshare_del(string.string);
+	}
+
+	if(enlil_data->library)
+	{
+		s = elm_scrolled_entry_entry_get(inwin->entry2);
+		enlil_library_netsync_account_set(enlil_data->library, s);
+		enlil_netsync_account_set(enlil_library_netsync_account_get(enlil_data->library));
 	}
 
 	inwin_free(inwin);

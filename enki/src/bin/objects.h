@@ -218,6 +218,7 @@ struct inwin
 
    Evas_Object *gl;
    Evas_Object *entry;
+   Evas_Object *entry2;
    Evas_Object *bt_apply;
    Evas_Object *check;
 
@@ -248,6 +249,7 @@ void tag_menu_free(Tag_Menu *tag_menu);
 
 Photo_Menu *photo_tag_menu_new(Evas_Object *parent, Enlil_Photo *photo);
 Photo_Menu *photo_menu_new(Evas_Object *parent, Enlil_Photo *photo, Eina_List *photos);
+void photo_menu_init(List_Photo *enlil_photo, Evas_Object *edje);
 void photo_menu_free(Photo_Menu *photo_menu);
 
 

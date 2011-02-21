@@ -24,10 +24,15 @@ static void _tg_multiselect_changed_cb(void *data, Evas_Object *obj, void *event
 static void _album_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _photo_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
+static Evas_Object *_edje;
+
+
 List_Photo *list_photo_new(Evas_Object *edje)
 {
    Evas_Object *bx, *sl, *bx2, *lbl, *bt, *tg;
    List_Photo *enlil_photo = calloc(1, sizeof(List_Photo));
+
+   _edje = edje;
 
    enlil_photo->photo_w = DEFAULT_W;
    enlil_photo->photo_h = DEFAULT_H;
@@ -362,24 +367,9 @@ static void _open(void *data, Evas_Object *obj, void *event_info)
 
 static void _right_click(void *data, Evas_Object *obj, void *event_info)
 {
-   int x, y;
-   Enlil_Photo *photo = event_info;
-   PL_Child_Item *child;
-   Eina_List *l, *photos = NULL;
-   Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-
-   EINA_LIST_FOREACH(photos_list_object_selected_get(enlil_data->list_photo->o_list), l, child)
-	photos = eina_list_append(photos, photos_list_object_item_data_get(child));
-
-   evas_pointer_output_xy_get(evas_object_evas_get(obj), &x, &y);
-   Photo_Menu *photo_menu = photo_menu_new(photo_data->enlil_data->win->win, photo, photos);
-   elm_menu_move(photo_menu->menu, x, y);
-
-   Evas_Object *menu = edje_object_part_external_object_get(global_object, "object.photo.menu");
-   printf("%p\n", menu);
-   evas_object_show(menu);
+   photo_menu_init(enlil_data->list_photo, _edje);
+   edje_object_signal_emit(_edje, "photo,menu,show", "");
 }
-
 
 static void _collection_cb(void *data, Evas_Object *obj, void *event_info)
 {

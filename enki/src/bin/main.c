@@ -166,6 +166,10 @@ void library_set(const char *library_path)
 	enlil_load_run(load);
 	//
 
+	//netsync
+	enlil_netsync_account_set(enlil_library_netsync_account_get(library));
+	//
+
 	//the background
 	Enlil_String *s;
 	Eet_Data_Descriptor *edd;

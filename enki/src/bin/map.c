@@ -351,16 +351,16 @@ static void _open(void *data, Evas_Object *obj, void *event_info)
 
 static void _menu(void *data, Evas_Object *obj, void *event_info)
 {
-   int x, y;
-   Enlil_Photo *photo = data;
-   Eina_List *photos = NULL;
-   Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-
-   photos = eina_list_append(photos, photo);
-
-   evas_pointer_output_xy_get(evas_object_evas_get(obj), &x, &y);
-   Photo_Menu *photo_menu = photo_menu_new(photo_data->enlil_data->win->win, photo, photos);
-   elm_menu_move(photo_menu->menu, x, y);
+//   int x, y;
+//   Enlil_Photo *photo = data;
+//   Eina_List *photos = NULL;
+//   Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+//
+//   photos = eina_list_append(photos, photo);
+//
+//   evas_pointer_output_xy_get(evas_object_evas_get(obj), &x, &y);
+//   Photo_Menu *photo_menu = photo_menu_new(photo_data->enlil_data->win->win, photo, photos);
+//   elm_menu_move(photo_menu->menu, x, y);
 }
 
 static void _tg_geocaching_changed_cb(void *data, Evas_Object *obj, void *event_info)

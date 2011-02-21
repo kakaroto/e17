@@ -34,7 +34,8 @@ win_preferences.edc \
 win_album_tag_new.edc \
 win_album_collection_new.edc \
 win_photo_delete.edc\
-win_library_delete.edc
+win_library_delete.edc \
+photo_menu_parts.edc 
 	$(EDJE_CC) $(EDJE_FLAGS) default.edc -id ../images/
 
 icondir = $(pkgdatadir)/themes
